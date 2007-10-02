@@ -793,20 +793,14 @@ python read_shlibdeps () {
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
 	for pkg in packages:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${PKGDEST}/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${PKGDEST}/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
+		for extension in ".shlibdeps", ".pcdeps", ".clilibdeps":
+			depsfile = bb.data.expand("${PKGDEST}/" + pkg + extension, d)
+			if os.access(depsfile, os.R_OK):
+				fd = file(depsfile)
+				lines = fd.readlines()
+				fd.close()
+				for l in lines:
+					rdepends.append(l.rstrip())
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
 
