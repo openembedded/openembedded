@@ -7,7 +7,7 @@
 
 require mono_1.2.5.inc
 PR = "r0"
-DEPENDS = "mono-native glib-2.0-native"
+DEPENDS = "mono-native glib-2.0-native perl-native"
 
 PARALLEL_MAKE = ""
 
