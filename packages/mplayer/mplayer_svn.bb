@@ -40,9 +40,6 @@ DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
-DEPENDS_append_c7x0 = " sharp-aticore-oss libw100 "
-DEPENDS_append_hx4700 = " libw100 "
-
 S = "${WORKDIR}/trunk"
 
 PACKAGES =+ "mencoder"
@@ -175,11 +172,6 @@ EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
-
-#enable support for the ati imageon series (w100 and w3220)
-EXTRA_OECONF_append_c7x0 = " --enable-w100 --enable-imageon "
-EXTRA_OECONF_append_hx4700 = " --enable-imageon "
-
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
