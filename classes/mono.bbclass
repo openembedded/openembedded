@@ -186,7 +186,7 @@ python mono_do_clilibs() {
 				if not dep_pkg in deps:
 					deps.append(dep_pkg)
 			else:
-				bb.note("Couldn't find CLI library provider for %s" % n)
+				bb.note("Couldn't find CLI library provider for %s" % (n,))
 
 		deps_file = os.path.join(pkgdest, pkg + ".clilibdeps")
 		if os.path.exists(deps_file):
@@ -198,7 +198,8 @@ python mono_do_clilibs() {
 			fd.close()
 }
 
-python() {
+def mono_after_parse(d):
+	import bb
 	# Insert mono_do_clilibs into PACKAGEFUNCS
 	# Needs to be called after populate_packages, but before read_shlibdeps
 	PACKAGEFUNCS = bb.data.getVar("PACKAGEFUNCS", d, 1)
@@ -211,4 +212,7 @@ python() {
 			i = PACKAGEFUNCS.index("populate_packages")
 			PACKAGEFUNCS.insert(i+1, "mono_do_clilibs")
 		bb.data.setVar("PACKAGEFUNCS", " ".join(PACKAGEFUNCS), d)
+
+python () {
+    mono_after_parse(d)
 }
