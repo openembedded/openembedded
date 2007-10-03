@@ -4,7 +4,8 @@ DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
 PR = "r2"
 
-SRC_URI += "file://configure.patch;patch=1"
+SRC_URI += "file://configure.patch;patch=1 \
+	file://genmdesc-cpp.patch;patch=1"
 
 # Per http://www.mono-project.com/Mono:ARM
 EXTRA_OECONF += " --disable-mcs-build "
