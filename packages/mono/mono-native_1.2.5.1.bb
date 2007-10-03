@@ -4,6 +4,8 @@ DEPENDS = "glib-2.0-native"
 
 SRC_URI += "file://mono-fix-libdir-path.patch;patch=1"
 
+PARALLEL_MAKE = ""
+
 inherit native
 
 #do_stage_prepend() {

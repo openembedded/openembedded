@@ -9,6 +9,8 @@ require mono_1.2.5.inc
 PR = "r0"
 DEPENDS = "mono-native glib-2.0-native"
 
+PARALLEL_MAKE = ""
+
 SRC_URI += "file://mono-fix-libdir-path.patch;patch=1"
 
 # Inherit native to set up compiler and paths ...
