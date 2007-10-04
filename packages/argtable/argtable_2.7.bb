@@ -3,13 +3,13 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://argtable.sourceforge.net/"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libtool-cross"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/argtable/argtable2-6.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/argtable/argtable2-7.tar.gz"
 
-S = ${WORKDIR}/argtable2-6
+S = ${WORKDIR}/argtable2-7
 
 inherit autotools
 
