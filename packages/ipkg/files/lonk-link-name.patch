@@ -1,0 +1,38 @@
+--- ipkg-0.99.163/libbb/unarchive.c.orig	2007-10-04 12:39:42.000000000 +0200
++++ ipkg-0.99.163/libbb/unarchive.c	2007-10-04 12:41:28.000000000 +0200
+@@ -595,10 +595,6 @@
+         if (longname) {
+                 tar_entry->name = longname;
+                 longname = NULL;
+-        }
+-        else if (linkname) {
+-                tar_entry->name = linkname;
+-                linkname = NULL;
+         } else
+ #endif
+         if (tar.formated.prefix[0] == 0) {
+@@ -606,6 +602,15 @@
+         } else {                                              
+                 tar_entry->name = concat_path_file(tar.formated.prefix, tar.formated.name);
+         }
++        
++#ifdef CONFIG_FEATURE_TAR_GNU_EXTENSIONS
++	if (linkname) {
++                tar_entry->link_name = linkname;
++                linkname = NULL;
++        } else
++#endif
++	tar_entry->link_name  = strlen(tar.formated.linkname) ? 
++	    xstrdup(tar.formated.linkname) : NULL;
+ 
+ 	// tar_entry->name = xstrdup(tar.formated.name);
+ 
+@@ -618,8 +623,6 @@
+ 	tar_entry->gid   = strtol(tar.formated.gid, NULL, 8);
+ 	tar_entry->size  = strtol(tar.formated.size, NULL, 8);
+ 	tar_entry->mtime = strtol(tar.formated.mtime, NULL, 8);
+-	tar_entry->link_name  = strlen(tar.formated.linkname) ? 
+-	    xstrdup(tar.formated.linkname) : NULL;
+ 	tar_entry->device = (strtol(tar.formated.devmajor, NULL, 8) << 8) +
+ 		strtol(tar.formated.devminor, NULL, 8);
+ 
