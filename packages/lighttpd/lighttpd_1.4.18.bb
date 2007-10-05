@@ -2,6 +2,7 @@ DESCRIPTION = "Web server"
 SECTION = "net"
 LICENSE = "BSD"
 DEPENDS = "libpcre"
+PR = "r1"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
 	   file://configure.in.patch;patch=1 \
@@ -37,4 +38,11 @@ do_stage() {
 	autotools_stage_all
 }
 
-FILES_${PN} += "${libdir}/mod_*.so ${sysconfdir} /www"
+FILES_${PN} += "${sysconfdir} /www"
+
+PACKAGES_DYNAMIC = "lighttpd-module-*"
+
+python populate_packages_prepend () {
+        lighttpd_libdir = bb.data.expand('${libdir}', d)
+        do_split_packages(d, lighttpd_libdir, '^mod_(.*)\.so$', 'lighttpd-module-%s', 'Lighttpd module for %s', extra_depends='')
+}
