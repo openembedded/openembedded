@@ -1,0 +1,47 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:53.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:01:06.000000000 -0300
+@@ -16,6 +16,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/irq.h>
+ #include <linux/input.h>
++#include <linux/gpio_keys.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -292,11 +293,34 @@
+ 	.num_resources  = ARRAY_SIZE(pcap_ts_resources),
+ 	.resource       = pcap_ts_resources,
+ };
++/* Flip */
++#undef GPIO_FLIP_PIN
++#define GPIO_FLIP_PIN 15 /* FIXME */
++static struct gpio_keys_button a1200flip_buttons[] = {
++	[0] = {
++        	.keycode        = KEY_SLEEP,
++		.gpio           = GPIO_FLIP_PIN,
++		.desc           = "A1200 flip",
++	},
++};
++
++static struct gpio_keys_platform_data a1200flip_platform_data = {
++	.buttons        = a1200flip_buttons,
++	.nbuttons       = 1,
++};
++static struct platform_device a1200flip_device = {
++	.name           = "gpio-keys",
++	.id             = -1,
++	.dev            = {
++		.platform_data  = &a1200flip_platform_data,
++	},
++};
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&a1200_pcap_device,
+ 	&a1200_eoc_device,
+ 	&pcap_ts_device,
++	&a1200flip_device,
+ };
+ 
+ static void __init a1200_init(void)

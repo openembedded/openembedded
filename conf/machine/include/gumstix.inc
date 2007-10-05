@@ -13,6 +13,7 @@ module_autoload_mmc_block = "mmc_block"
 module_autoload_gumstix_gadget = "gumstix_gadget"
 module_autoload_g_ether = "g_ether"
 module_autoload_smc91x = "smc91x"
+module_autoload_smc911x = "smc911x"
 
 UBOOT_ENTRYPOINT = "a0008000"
 
@@ -33,8 +34,9 @@ MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-module-unix \
                              kernel-module-rtc-sysfs \
                              kernel-module-smc91x \
                              kernel-module-gumstix-smc91x \
-                             "          
-
+                             kernel-module-smc911x \
+                             kernel-module-gumstix-smc911x \
+                             "
 
 # used by sysvinit_2
 SERIAL_CONSOLE = "115200 ttyS0 vt100"

@@ -1,0 +1,11 @@
+--- mono-1.2.5/scripts/Makefile.am.orig	2007-09-27 04:23:39.000000000 +0200
++++ mono-1.2.5/scripts/Makefile.am	2007-09-27 04:24:19.000000000 +0200
+@@ -92,7 +92,7 @@
+ mono_instdir = $(shell cygpath -m $(libdir))/mono
+ else
+ plat_bindir = $(bindir)
+-mono_instdir = $(prefix)/lib/mono
++mono_instdir = $(libdir)/mono
+ endif
+ 
+ REWRITE_COMMON = sed \

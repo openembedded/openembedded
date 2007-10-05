@@ -55,6 +55,7 @@ file://uboot-gta02.patch;patch=1 \
 file://uboot-s3c2443.patch;patch=1 \
 file://uboot-smdk2443.patch;patch=1 \
 file://unbusy-i2c.patch;patch=1 \
+file://makefile-no-dirafter.patch;patch=1 \
 "
 
 PROVIDES = ""

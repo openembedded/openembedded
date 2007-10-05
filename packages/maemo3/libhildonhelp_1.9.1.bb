@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Nokia hildon help library"
 
-DEPENDS = "libart libpng jpeg libxml2 gtkhtml-3.8 libosso"
+DEPENDS = "libart-lgpl libpng jpeg libxml2 gtkhtml-3.8 libosso"
 
 PR = "r0"
 

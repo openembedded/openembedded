@@ -1,6 +1,7 @@
 DESCRIPTION = "RPC program number mapper."
 SECTION = "console/network"
 LICENSE = "GPL"
+DEPENDS = "fakeroot-native"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/p/portmap/portmap_5.orig.tar.gz \
 	${DEBIAN_MIRROR}/main/p/portmap/portmap_${PV}.diff.gz;patch=1 \

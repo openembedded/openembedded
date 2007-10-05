@@ -60,8 +60,42 @@ do_deploy() {
 	# format:
 	# name file md5sumfile destination
 	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
+	gen_haret_startup
 }   
    
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_package after do_install
+
+
+gen_haret_startup() {
+	cat >${DEPLOY_DIR_IMAGE}/startup.txt <<EOF 
+# This is startup file for HaRET, Linux bootloader for WinCE
+# http://handhelds.org/wiki/HaRET
+
+set kernel "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
+
+# Boot choices. Uncomment 'set' statements in exactly one section
+
+## Choice 1 - Boot from SD/MMC card
+# Have 2 partition on a card:
+# 1st - FAT with HaRET executable, this file and zImage above
+# 2nd - EXT2 with rootfs tarball extracted
+set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
+
+## Choice 2 - Boot from CD card, setup like above
+#set cmdline "root=/dev/hda2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
+
+## Choice 3 - Boot rootfs image as initramfs (works only for smaller images)
+# have a cpio.gz file below together with zImage, no EXT2 partition required
+#set initrd "<image>.rootfs.cpio.gz"
+#set cmdline "rdinit=/sbin/init console=ttyS0,115200n8 console=tty0"
+
+## Choice 4 - Boot via NFS over USB networking (must be kernel-builtin)
+# 192.168.x.x - Server address (the other side)
+# 192.168.x.x - Handheld's address
+#set cmdline "root=/dev/nfs nfsroot=192.168.x.x:<nfs_path> ip=192.168.y.y:192.168.x.x:192.168.x.x:255.255.255.0:pda:usb0 console=ttyS0,115200n8 console=tty0"
+
+bootlinux
+EOF
+}

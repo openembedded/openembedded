@@ -1,0 +1,25 @@
+--- src_cf8385/io/mcf/cf_io-orig.c	2006-04-29 16:26:16.000000000 -0700
++++ src_cf8385/io/mcf/cf_io.c	2006-04-29 16:32:59.000000000 -0700
+@@ -415,6 +415,14 @@
+ 
+ 
+ #ifndef LINUX_2_4
++static struct pcmcia_device_id cfio_ids[] = {
++	PCMCIA_DEVICE_MANF_CARD(0x02df, 0x8103),
++	PCMCIA_DEVICE_PROD_ID12("Marvell",	"88W8300 802.11g PC Card",
++				0xE86284BA,	0x8C78E0CD),
++	PCMCIA_DEVICE_NULL,
++};
++MODULE_DEVICE_TABLE(pcmcia, cfio_ids);
++
+ static struct pcmcia_driver cfio_cs_driver = {
+ 	.owner		= THIS_MODULE,
+ 	.drv		= {
+@@ -423,6 +431,7 @@
+ 	.attach		= cf_attach,
+ 	.detach		= cf_detach,
+ 	.event		= cf_event,
++	.id_table	= cfio_ids,
+ };
+ #endif
+ 

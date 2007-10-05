@@ -1,73 +1,15 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e6.c	2007-09-21 21:38:52.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-09-21 21:49:42.000000000 -0300
-@@ -25,6 +25,7 @@
- #include <asm/arch/mmc.h>
- 
- #include "generic.h"
-+#include "ezx-eoc.h"
- 
- extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
- extern void ezx_backlight_power(int);
-@@ -203,8 +204,65 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e6.c	2007-09-24 20:14:54.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e6.c	2007-09-24 20:15:18.000000000 -0300
+@@ -203,8 +203,15 @@
  	},
  };
  
 +
-+/* EOC */
-+static const unsigned int tab_init_eoc_reg[][2] =
-+{
-+    {POWER_IC_REG_EOC_INT_MASK,        0x00000FEF},
-+    {POWER_IC_REG_EOC_POWER_CONTROL_0, 0x00000C00},
-+    {POWER_IC_REG_EOC_POWER_CONTROL_1, 0x0000000C},
-+    {POWER_IC_REG_EOC_CONN_CONTROL,    0x00021044},
-+};
-+
-+static void dump_eoc_registers(void)
-+{
-+	int i, val = 0;
-+
-+	printk("========DUMP EOC=========\n");
-+	for (i = 0; i < POWER_IC_REG_EOC_NUM; i++) {
-+		eoc_reg_read(i, &val);
-+		printk("eoc_registers[%d] = 0x%08X\n", i, val);
-+	}
-+	printk("========END DUMP=========\n");
-+}
-+
-+/*
-+ * FIXME: The same about the PCAP driver applies here.
-+ * This is the initial state only.
-+ * Which bits does the change to USB/UART/AUDIO mode?
-+ * I think that this is causing the crash on pxa27x-udc
-+ * you are setting the 'port connected' bit, and thats why
-+ * you are getting interrupts early.
-+ * --WM
-+ */
-+
-+static int __init e6_eoc_init(void)
-+{
-+    int i;
-+
-+    for (i = 0; i < sizeof(tab_init_eoc_reg)/sizeof(unsigned int)/2; i++)
-+    {
-+		eoc_reg_write(tab_init_eoc_reg[i][0], tab_init_eoc_reg[i][1]);
-+    }
-+	dump_eoc_registers();
-+	return 0;
-+}
-+
-+static struct ezx_eoc_platform_data e6_eoc_platform_data = {
-+	.init		= e6_eoc_init,
-+};
-+
 +struct platform_device e6_eoc_device = {
 +	.name		= "ezx-eoc",
 +	.id		= -1,
-+	.dev		= {
-+		.platform_data = &e6_eoc_platform_data,
-+	},
 +};
 +
  static struct platform_device *devices[] __initdata = {
