@@ -143,8 +143,8 @@ RDEPENDS_python-fcntl="python-core"
 FILES_python-fcntl="${libdir}/python2.5/lib-dynload/fcntl.so "
 
 DESCRIPTION_python-netclient="Python Internet Protocol Clients"
-PR_python-netclient="ml1"
-RDEPENDS_python-netclient="python-core python-datetime python-io python-lang python-logging python-mime"
+PR_python-netclient="ml2"
+RDEPENDS_python-netclient="python-core python-datetime python-io python-lang python-logging python-mime python-stringold"
 FILES_python-netclient="${libdir}/python2.5/*Cookie*.* ${libdir}/python2.5/base64.* ${libdir}/python2.5/cookielib.* ${libdir}/python2.5/ftplib.* ${libdir}/python2.5/gopherlib.* ${libdir}/python2.5/hmac.* ${libdir}/python2.5/httplib.* ${libdir}/python2.5/mimetypes.* ${libdir}/python2.5/nntplib.* ${libdir}/python2.5/poplib.* ${libdir}/python2.5/smtplib.* ${libdir}/python2.5/telnetlib.* ${libdir}/python2.5/urllib.* ${libdir}/python2.5/urllib2.* ${libdir}/python2.5/urlparse.* "
 
 DESCRIPTION_python-pprint="Python Pretty-Print Support"
@@ -198,8 +198,8 @@ RDEPENDS_python-mailbox="python-core python-mime"
 FILES_python-mailbox="${libdir}/python2.5/mailbox.* "
 
 DESCRIPTION_python-xml="Python basic XML support."
-PR_python-xml="ml1"
-RDEPENDS_python-xml="python-core python-re"
+PR_python-xml="ml2"
+RDEPENDS_python-xml="python-core python-re python-netclient"
 FILES_python-xml="${libdir}/python2.5/lib-dynload/pyexpat.so ${libdir}/python2.5/xml ${libdir}/python2.5/xmllib.* "
 
 DESCRIPTION_python-mime="Python MIME Handling APIs"

@@ -1,4 +1,4 @@
-/dev/mtdblock1	/ 	jffs2	rw,noatime	1  1 
+rootfs		/	auto	rw,noatime	1  1 
 proc		/proc	proc	defaults	0  0
 /dev/hda1	/mnt/cf	auto	defaults,sync,noauto	0  0
 tmpfs		/var/volatile	tmpfs	mode=0755	0  0

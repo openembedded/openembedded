@@ -3,7 +3,7 @@ DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 DEPENDS = "libpcap"
 LICENSE = "BSD GPLv2"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
 	file://makefile.patch;patch=1 \
@@ -27,6 +27,10 @@ inherit autotools
 
 EXTRA_OEMAKE = "STRIPPROG=${STRIP} MANDIR=${D}${datadir}/man/man8 INCDIR=${D}/usr/include LIBDIR=${D}/usr/lib/pppd/${PV} BINDIR=${D}/usr/sbin"
 EXTRA_OECONF = "--disable-strip"
+
+do_stage () {
+         make INCDIR=${STAGING_INCDIR} install-devel
+}
 
 do_install_append () {
 	make install-etcppp ETCDIR=${D}/${sysconfdir}/ppp

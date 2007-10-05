@@ -60,9 +60,9 @@ do
 			
 		test "$pass" = 0 -o "$pass" = "" && rootcheck=no
 		
-		# Enable fsck for ext2 and ext3 rootfs, disable for everything else				
+		# Allow fsck for ext2 and ext3 rootfs, disable for everything else				
 		case "$type" in
-		ext2|ext3)	rootcheck=yes;;
+		ext2|ext3)	;;
 		*)		rootcheck=no;;
 		esac
 		
@@ -140,7 +140,7 @@ else
     esac
     test `uname -m` = s390 && spinner="" # This should go away
     test "$VERBOSE" != no && echo "Checking root filesystem..."
-    fsck $spinner $force $fix /
+    fsck $spinner $force $fix / </dev/null
     RTC=$?
     #
     # If there was a failure, drop into single-user mode.

@@ -6,6 +6,7 @@ PR = "r1"
 COMPATIBLE_MACHINE = "davinci-dvevm"
 
 SRC_URI = "git://source.mvista.com/git/linux-davinci-2.6.git;protocol=git \
+           file://binutils-buildid-arm.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/git"

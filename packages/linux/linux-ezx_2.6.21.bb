@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r20"
+PR = "${EZX}-r23"
 
 require linux.inc
 
@@ -47,6 +47,7 @@ SRC_URI = " \
     file://patches/pxa-kbd.patch;patch=1 \
     file://patches/a780-kbd.patch;patch=1 \
     file://patches/e680-kbd.patch;patch=1 \
+    file://patches/a1200-kbd.patch;patch=1 \
     file://patches/pcap-ts.patch;patch=1 \
     file://patches/a780-ts.patch;patch=1 \
     file://patches/e680-ts.patch;patch=1 \
@@ -54,6 +55,7 @@ SRC_URI = " \
     file://patches/e6-ts.patch;patch=1 \
     file://patches/a780-flip.patch;patch=1 \
     file://patches/e680-locksw.patch;patch=1 \
+    file://patches/a1200-flip.patch;patch=1 \
     file://patches/a780-leds.patch;patch=1 \
     file://patches/e680-leds.patch;patch=1 \
     file://patches/a780-vibrator.patch;patch=1 \
@@ -70,14 +72,10 @@ SRC_URI = " \
     file://patches/asoc-fix-loopback.patch;patch=1 \
     file://patches/ezx-asoc.patch;patch=1 \     
     file://patches/mtdfix.patch;patch=1 \
+    file://patches/ezx-backlight.patch;patch=1 \
     file://defconfig \
     \
     "
-
-BACKLIGHTPATCH = " file://patches/ezx-backlight.patch;patch=1 "
-BACKLIGHTPATCH_rokre6 = ""
-
-SRC_URI += "${BACKLIGHTPATCH}"
 
 S = "${WORKDIR}/linux-${PV}"
 
@@ -94,7 +92,7 @@ COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
 #CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
 CMDLINE_CON = "console=tty1 "
 
-CMDLINE_ROOT = "root=/dev/mmcblk0p1 rootfstype=ext3 rootdelay=5"
+CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=5"
 CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=5 "
 # Uncomment to enable dyntick
 #CMDLINE_OTHER = "dyntick=enable"

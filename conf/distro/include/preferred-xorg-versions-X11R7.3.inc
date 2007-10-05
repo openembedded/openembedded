@@ -277,6 +277,6 @@ PREFERRED_VERSION_util-macros ?= "1.1.5"
 PREFERRED_VERSION_xorg-cf-files ?= "1.0.2"
 
 # xserver
-PREFERRED_VERSION_xserver-kdrive ?= "1.4.0"
-PREFERRED_VERSION_xserver-xorg ?= "1.4.0"
+PREFERRED_VERSION_xserver-kdrive ?= "1.4"
+PREFERRED_VERSION_xserver-xorg ?= "1.4"
 

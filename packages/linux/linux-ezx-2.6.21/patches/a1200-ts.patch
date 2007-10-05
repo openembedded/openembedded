@@ -1,10 +1,10 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-21 21:50:31.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-21 21:51:06.000000000 -0300
-@@ -260,9 +260,34 @@
- 	},
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:40.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:53.000000000 -0300
+@@ -269,9 +269,34 @@
  };
+ 
  
 +/* PCAP_TS */
 +struct resource pcap_ts_resources[] = {

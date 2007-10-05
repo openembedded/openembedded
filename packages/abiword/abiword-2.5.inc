@@ -13,10 +13,10 @@ SHRT_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,
 
 FILES_${PN} += " \
 		${datadir}/icons/* \
-		${datadir}/abiword-${SHRT_VER}/AbiWord/glade \
-		${datadir}/abiword-${SHRT_VER}/AbiWord/scripts \
-		${datadir}/abiword-${SHRT_VER}/AbiWord/system.profile-en \
-		${datadir}/abiword-${SHRT_VER}/AbiWord/system.profile-en_GB \
+		${datadir}/abiword-${SHRT_VER}/glade \
+		${datadir}/abiword-${SHRT_VER}/scripts \
+		${datadir}/abiword-${SHRT_VER}/system.profile-en \
+		${datadir}/abiword-${SHRT_VER}/system.profile-en_GB \
 #		${datadir}/abiword-${SHRT_VER}/templates/A4.awt \
 #		${datadir}/abiword-${SHRT_VER}/templates/US-Letter.awt \
 		${datadir}/abiword-${SHRT_VER}/templates/normal.awt \

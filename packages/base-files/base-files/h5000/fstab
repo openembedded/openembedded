@@ -1,4 +1,4 @@
-/dev/mtdblock1	/ 	jffs2	defaults	1  1 
+rootfs		/ 	auto	defaults	1  1 
 #breaks h51xx
 /dev/mtdblock2 /home   jffs2   defaults        1  1
 proc            /proc   proc    defaults        0  0

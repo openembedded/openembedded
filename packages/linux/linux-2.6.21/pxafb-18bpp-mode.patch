@@ -154,7 +154,7 @@ Index: linux-2.6.21gum/drivers/video/pxafb.c
  				case '-':
  					namelen = i;
  					if (!bpp_specified && !yres_specified) {
-@@ -1227,6 +1268,18 @@ static int __init pxafb_parse_options(st
+@@ -1227,12 +1268,29 @@ static int __init pxafb_parse_options(st
  			}
  			if (bpp_specified)
  				switch (bpp) {
@@ -173,6 +173,17 @@ Index: linux-2.6.21gum/drivers/video/pxafb.c
  				case 1:
  				case 2:
  				case 4:
+ 				case 8:
+ 				case 16:
+ 					inf->modes[0].bpp = bpp;
++					if(nonstd_specified) {
++						dev_err(dev, "Depth %d requires nonstd to *not* be specified\n",bpp);
++					} else {
++						inf->modes[0].nonstd = 0;
++					}
+ 					dev_info(dev, "overriding bit depth: %d\n", bpp);
+ 					break;
+ 				default:
 Index: linux-2.6.21gum/include/asm-arm/arch-pxa/pxa-regs.h
 ===================================================================
 --- linux-2.6.21gum.orig/include/asm-arm/arch-pxa/pxa-regs.h
@@ -217,7 +228,7 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
 ===================================================================
 --- linux-2.6.21gum.orig/arch/arm/mach-pxa/gumstix.c
 +++ linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
-@@ -100,7 +100,8 @@ static struct pxafb_mode_info gumstix_fb
+@@ -116,7 +116,8 @@ static struct pxafb_mode_info gumstix_fb
  	.pixclock	= 110000,
  	.xres		= 480,
  	.yres		= 272,
@@ -227,7 +238,7 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
  	.hsync_len	= 41,
  	.left_margin	= 2,
  	.right_margin	= 2,
-@@ -139,7 +140,8 @@ static struct pxafb_mode_info gumstix_fb
+@@ -144,7 +145,8 @@ static struct pxafb_mode_info gumstix_fb
  	.vsync_len	= 10, // VLW from datasheet: 10 typ
  	.upper_margin	= 2, // VBP - VLW from datasheet: 12 - 10 = 2
  	.lower_margin	= 4, // VFP from datasheet: 4 typ
