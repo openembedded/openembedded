@@ -6,10 +6,6 @@
 # description: Gpsd manages access to a serial- or USB-connected GPS
 # processname: gpsd
 
-# If you must specify a non-NMEA driver, uncomment and modify the next line
-#GPSD_OPTS=
-GPS_DEV="/dev/ttyS3"
-
 # Source function library.
 #. /etc/rc.d/init.d/functions
 
@@ -39,7 +35,7 @@ start() {
 	     echo "success"
 	else
 	    # User needs to symlink ${GPS_DEV} to the right thing
-	    echo "No ${GPS_DEV} device, aborting gpsd startup."
+	    echo "No ${GPS_DEV} GPS device, aborting gpsd startup. Check /etc/default/$prog"
 	fi
 	RETVAL=$?
 	echo
