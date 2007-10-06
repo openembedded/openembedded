@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r40"
+PR = "r41"
 
 inherit task
 
@@ -40,6 +40,7 @@ RDEPENDS_task-boot = "\
     base-passwd \
     busybox \
     initscripts \
+    ${@base_contains("MACHINE_FEATURES", "keyboard", "keymaps", "", d)} \
     modutils-initscripts \
     netbase \
     update-alternatives \
