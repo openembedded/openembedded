@@ -5,28 +5,28 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://99_hal \
             file://20hal \
 	   "
 
+# machines with pci and acpi get a machine dependant hal
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
                 --with-expat=${STAGING_LIBDIR}/.. \
                 --with-dbus-sys=${sysconfdir}/dbus-1/system.d \
                 --with-hotplug=${sysconfdir}/hotplug.d \
                 --disable-docbook-docs \
                 --disable-policy-kit \
-                --disable-acpi --disable-pmu --disable-pci \
-                --disable-pci-ids --disable-pnp-ids \
-                "
+                --disable-pmu \
+                --disable-pnp-ids \
+                ${@base_contains('COMBINED_FEATURES', 'pci', '--enable-pci --enable-pci-ids', '--disable-pci --disable-pci-ids',d)} \
+                ${@base_contains('MACHINE_FEATURES', 'acpi', '--enable-acpi', '--disable-acpi',d)} \
+               "
 
-# work around autoconf >2.59 deps...
-do_configure() {
-	gnu-configize
-	libtoolize --force
-	oe_runconf
-}
+MY_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'acpi', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
+PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
 
 do_install_append() {
 	install -d ${D}/etc/default/volatiles
