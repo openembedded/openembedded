@@ -1,6 +1,6 @@
 require llvm.inc
 
-SRC_URI = "http://llvm.org/releases/2.0/llvm-${PV}.tar.gz"
+SRC_URI = "http://llvm.org/releases/2.1/llvm-${PV}.tar.gz"
 
 
 inherit native

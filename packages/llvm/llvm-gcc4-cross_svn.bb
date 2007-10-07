@@ -4,7 +4,7 @@ LICENSE = "various"
 
 DEPENDS = "llvm-native"
 
-PV = "2.0+svnr${SRCREV}"
+PV = "2.1+svnr${SRCREV}"
 
 inherit autotools cross
 
