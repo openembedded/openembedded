@@ -2,9 +2,9 @@ DESCRIPTION = "Music Player Daemon (mpd). This version is configured for alsa su
 HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
-DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmikmod libmad flac audiofile virtual/libiconv"
+DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmad flac audiofile virtual/libiconv faad2"
 RDEPENDS = "libao-alsa"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
 		file://mpd/mpd.init"
@@ -21,19 +21,25 @@ INITSCRIPT_NAME = "mpd"
 # versions.
 
 EXTRA_OECONF = "\
---disable-ogg \
---disable-oggvorbis \
+--enable-ogg \
+--enable-oggvorbis \
 --disable-oggflac \  
---disable-flac \ 
---without-faad \
---with-iconv-libraries=${STAGING_LIBDIR} \
---with-iconv-includes=${STAGING_INCDIR} \
+--enable-flac \ 
+--enable-faad \
 --with-ao-libraries=${STAGING_LIBDIR} \
 --with-ao-includes=${STAGING_INCDIR} \
+--with-iconv-libraries=${STAGING_LIBDIR} \
+--with-iconv-includes=${STAGING_INCDIR} \
 --with-id3tag-libraries=${STAGING_LIBDIR} \
 --with-id3tag-includes=${STAGING_INCDIR} \
+--with-faad-libraries=${STAGING_LIBDIR} \
+--with-faad-includes=${STAGING_INCDIR} \
 --with-mad-libraries=${STAGING_LIBDIR} \
 --with-mad-includes=${STAGING_INCDIR} \
+--with-ogg-libraries=${STAGING_LIBDIR} \
+--with-ogg-includes=${STAGING_INCDIR} \
+--with-vorbis-libraries=${STAGING_LIBDIR} \
+--with-vorbis-includes=${STAGING_INCDIR} \
 --disable-aotest \      
 --disable-alsatest \   
 --disable-oggtest \    
