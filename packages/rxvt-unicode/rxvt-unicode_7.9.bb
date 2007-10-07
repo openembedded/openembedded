@@ -13,7 +13,7 @@ FILES_${PN}-control = "${bindir}/rxvtc"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
            file://xwc.patch;patch=1 \
            file://signedchar.patch;patch=1"
-PR = "r0"
+PR = "r1"
 
 inherit autotools update-alternatives
 
@@ -22,6 +22,10 @@ ALTERNATIVE_NAME = "x-terminal-emulator"
 ALTERNATIVE_PATH = "${bindir}/rxvt"
 
 CFLAGS_append = " -fpermissive"
+
+# This is necessary so that the "tic" command executed during the install can
+# link with the correct libary in staging.
+export LD_LIBRARY_PATH = "${STAGING_LIBDIR_NATIVE}"
 
 EXTRA_OECONF = "--enable-menubar --enable-xim \
 		--enable-utmp --enable-wtmp --enable-lastlog \
