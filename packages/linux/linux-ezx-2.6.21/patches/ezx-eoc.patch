@@ -1,0 +1,294 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-eoc.c	2007-09-24 23:40:45.000000000 -0300
+@@ -0,0 +1,260 @@
++/*
++ *  EZX EOC Driver for Motorola EZX phones
++ *
++ *  Copyright (C) 2007 Alex Zhang <celeber2@gmail.com>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++
++#include <asm/arch/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx.h>
++#include <asm/arch/udc.h>
++
++#if 1
++#define EOC_DBG printk
++#else
++#define EOC_DBG(x, args...)
++#endif
++
++#define REG_INT_STATUS 32
++#define REG_INT_MASK 33
++#define REG_INT_SENSE 34
++#define REG_POWER_CONTROL_0 35
++#define REG_POWER_CONTROL_1 36
++#define REG_CONN_CONTROL 37
++
++#define EOC_REG_ADDR_SIZE  1
++#define EOC_REG_DATA_SIZE  3
++#define EOC_FUNC_NOTHING 0
++#define EOC_FUNC_USB_NET 1
++
++static const char eoc_i2c_driver_name[] = "ezx-eoc";
++static int eoc_func = EOC_FUNC_USB_NET;
++static struct pxa2xx_udc_mach_info ezx_udc_info;
++
++static int ezx_eoc_attach_adapter(struct i2c_adapter *adapter);
++static int ezx_eoc_detach_client(struct i2c_client *client);
++
++static struct i2c_client *eoc_i2c_client = NULL;
++
++static struct i2c_driver eoc_i2c_driver = {
++	.driver = {
++		.name	= (char *)eoc_i2c_driver_name,
++	},
++	.attach_adapter	= ezx_eoc_attach_adapter,
++	.detach_client	= ezx_eoc_detach_client,
++};
++
++int eoc_reg_read(int reg, unsigned int *reg_value)
++{
++	unsigned char reg_num = reg;
++	unsigned char value[EOC_REG_DATA_SIZE];
++	int retval;
++
++	struct i2c_msg msgs[2] =
++	{
++		{ eoc_i2c_client->addr, 0, EOC_REG_ADDR_SIZE, &reg_num },
++		{ eoc_i2c_client->addr, I2C_M_RD, EOC_REG_DATA_SIZE, value }
++	};
++
++	/* transfer message to client */
++	retval = i2c_transfer(eoc_i2c_client->adapter, msgs, 2);
++	if (retval < 0)
++		return retval;
++
++	*reg_value  = (value[2] <<  0);
++	*reg_value |= (value[1] <<  8);
++	*reg_value |= (value[0] << 16);
++	return 0;
++}
++
++int eoc_reg_write(int reg, unsigned int reg_value)
++{
++	unsigned char value[EOC_REG_ADDR_SIZE + EOC_REG_DATA_SIZE];
++	int retval;
++
++	/* Copy the data into a buffer into the correct format */
++	value[0] = reg;
++	value[1] = (reg_value >> 16) & 0xFF;
++	value[2] = (reg_value >>  8) & 0xFF;
++	value[3] = (reg_value >>  0) & 0xFF;
++
++	/* Write the data to the EOC */
++	retval = i2c_master_send (eoc_i2c_client, value, EOC_REG_ADDR_SIZE + EOC_REG_DATA_SIZE);
++	if (retval < 0)
++		return retval;
++	return 0;
++}
++
++static void eoc_switch_to_usb(void)
++{
++	EOC_DBG("EOC: Switching to USB\n");
++	pxa_gpio_mode(GPIO34_USB_P2_2_MD);
++	pxa_gpio_mode(GPIO35_USB_P2_1_MD);
++	pxa_gpio_mode(GPIO36_USB_P2_4_MD);
++	pxa_gpio_mode(GPIO39_USB_P2_6_MD);
++	pxa_gpio_mode(GPIO40_USB_P2_5_MD);
++	pxa_gpio_mode(GPIO53_USB_P2_3_MD);
++	UP2OCR = 0x02000000;
++	/* FIXME change eoc bits to USB */
++
++}
++
++static void eoc_switch_to_nothing(void)
++{
++	EOC_DBG("EOC: Switching do disconnected\n");
++	pxa_gpio_mode(GPIO34_TXENB | GPIO_OUT);
++	set_GPIO(GPIO34_TXENB);
++	pxa_gpio_mode(GPIO35_XRXD  | GPIO_IN);
++	pxa_gpio_mode(GPIO36_VMOUT | GPIO_IN);
++	pxa_gpio_mode(GPIO39_VPOUT | GPIO_IN);
++	pxa_gpio_mode(GPIO40_VPIN  | GPIO_IN);
++	pxa_gpio_mode(GPIO53_VMIN  | GPIO_IN);
++	/* FIXME disconnect mini usb port */
++}
++
++static void eoc_switch_to_default(void)
++{
++	switch (eoc_func) {
++	case EOC_FUNC_USB_NET:
++		eoc_switch_to_usb();
++		break;
++	case EOC_FUNC_NOTHING:
++		eoc_switch_to_nothing();
++		break;
++	}
++}
++
++static int ezx_eoc_attach_adapter(struct i2c_adapter *adapter)
++{
++	int err = 0;
++	EOC_DBG(">>>>attach adapter enter\n");
++
++	if (eoc_i2c_client != NULL) {
++		EOC_DBG(">>>>already loaded!!!\n");
++		return 0;
++	}
++
++	if (!(eoc_i2c_client = kmalloc(sizeof(struct i2c_client), GFP_KERNEL)))
++		return -ENOMEM;
++
++	eoc_i2c_client->addr = 0x17;
++	eoc_i2c_client->adapter = adapter;
++	eoc_i2c_client->driver = &eoc_i2c_driver;
++	eoc_i2c_client->flags = 0;
++	strlcpy(eoc_i2c_client->name, eoc_i2c_driver_name, I2C_NAME_SIZE);
++
++	if ((err = i2c_attach_client(eoc_i2c_client))) {
++		kfree(eoc_i2c_client);
++		eoc_i2c_client = NULL;
++		return err;
++	}
++	eoc_reg_write(REG_INT_MASK, 0x0000FEF);
++	eoc_reg_write(REG_POWER_CONTROL_0, 0x0000C00);
++	eoc_reg_write(REG_POWER_CONTROL_1, 0x000000C);
++	eoc_reg_write(REG_CONN_CONTROL,0x0021044);
++
++	eoc_switch_to_default();
++	EOC_DBG(">>>>attach adapter exit\n");
++	return 0;
++
++}
++
++static int ezx_eoc_detach_client(struct i2c_client *client)
++{
++	return i2c_detach_client(client);
++}
++
++static int __init ezx_eoc_probe(struct platform_device *dev)
++{
++	int ret;
++
++	ret = i2c_add_driver(&eoc_i2c_driver);
++	if (ret != 0)
++		return -EINVAL;
++
++	pxa_set_udc_info(&ezx_udc_info);
++
++	return 0;
++}
++
++static int ezx_eoc_remove(struct platform_device *dev)
++{
++	return i2c_del_driver(&eoc_i2c_driver);
++}
++
++static int ezx_eoc_suspend(struct platform_device *dev, pm_message_t state)
++{
++	eoc_switch_to_nothing();
++	return 0;
++}
++
++static int ezx_eoc_resume(struct platform_device *dev)
++{
++	eoc_switch_to_default();
++	return 0;
++}
++
++/* USB Device Controller */
++static int udc_connected_status;
++static void ezx_udc_command(int cmd)
++{
++	switch (cmd) {
++	case PXA2XX_UDC_CMD_DISCONNECT:
++		printk(KERN_NOTICE "USB cmd disconnect\n");
++//		ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_USB_PU,0);
++		udc_connected_status = 0;
++		break;
++	case PXA2XX_UDC_CMD_CONNECT:
++		printk(KERN_NOTICE "USB cmd connect\n");
++//		ezx_pcap_bit_set(PCAP_BIT_BUSCTRL_USB_PU,1);
++		udc_connected_status = 1;
++		break;
++	}
++}
++
++static int ezx_udc_is_connected(void)
++{
++	return udc_connected_status;
++}
++
++static struct pxa2xx_udc_mach_info ezx_udc_info __initdata = {
++	.udc_is_connected       = ezx_udc_is_connected,
++	.udc_command            = ezx_udc_command,
++};
++
++static struct platform_driver ezx_eoc_driver = {
++	.probe		= ezx_eoc_probe,
++	.remove		= ezx_eoc_remove,
++	.suspend	= ezx_eoc_suspend,
++	.resume		= ezx_eoc_resume,
++	.driver		= {
++		.name	= "ezx-eoc",
++		.owner	= THIS_MODULE,
++	},
++};
++
++int __init ezx_eoc_init(void)
++{
++	return platform_driver_register(&ezx_eoc_driver);
++}
++
++void ezx_eoc_exit(void)
++{
++	return platform_driver_unregister(&ezx_eoc_driver);
++}
++
++MODULE_AUTHOR("Alex Zhang <celeber2@gmail.com>");
++MODULE_DESCRIPTION("EZX EOC I2C driver");
++MODULE_LICENSE("GPL");
++
++module_init(ezx_eoc_init);
++module_exit(ezx_eoc_exit);
+Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-09-24 20:15:00.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-09-24 20:15:16.000000000 -0300
+@@ -108,6 +108,12 @@
+ config EZX_PCAP
+ 	bool "PCAP Support"
+ 
++config EZX_EOC
++	tristate "EOC i2c driver of Motorola EZX phones"
++	depends on I2C && EXPERIMENTAL
++	help
++	  EOC i2c driver of Motorola EZX phones
++
+ config EZX_EMU
+ 	bool "Motorola Enchanced Mini Usb"
+ 	depends on EZX_PCAP
+Index: linux-2.6.21/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/Makefile	2007-09-24 20:15:00.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/Makefile	2007-09-24 20:15:16.000000000 -0300
+@@ -27,6 +27,7 @@
+ obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
+ obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
+ obj-$(CONFIG_EZX_EMU)		+= ezx-emu.o
++obj-$(CONFIG_EZX_EOC)		+= ezx-eoc.o
+ 
+ # Support for blinky lights
+ led-y := leds.o

@@ -49,4 +49,3 @@
 /dev/urandom	c	644	0	0	1	9	-	-	-
 /dev/video	c	664	0	0	81	0	0	1	4
 /dev/zero	c	666	0	0	1	5	-	-	-
-/bin/tinylogin	f	6755	0	0	-	-	-	-	-

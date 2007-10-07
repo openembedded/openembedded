@@ -14,7 +14,7 @@ SRC_URI = "svn://projects.linuxtogo.org/svn/gpephone/trunk/source/ptim;module=im
 
 S = "${WORKDIR}/imengine"
 
-FILES_${PN} += " ${libdir}/gtk-2.0/*/immodules/ptim/engine/*.so "
+FILES_${PN} += " ${libdir}/gtk-2.0/*/immodules/ptim/engine/*.so ${libdir}/gtk-2.0/*/immodules/ptim/pydatabase/*"
 FILES_${PN}-dbg += "${libdir}/gtk-2.0/*/immodules/ptim/engine/.debug/*.so"
 FILES_${PN}-dev += "${libdir}/gtk-2.0/*/immodules/ptim/engine/*.la"
 

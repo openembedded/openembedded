@@ -21,7 +21,5 @@ require gcc4-build.inc
 EXTRA_OECONF += "--disable-libssp"
 
 FORTRAN = ""
-HAS_GFORTRAN = ""
-HAS_G2C = "no"
 
 

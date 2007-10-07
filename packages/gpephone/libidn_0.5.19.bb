@@ -2,7 +2,6 @@ LICENSE     = "LGPL"
 DESCRIPTION = "Implementation of the Stringprep, Punycode and IDNA specifications defined by the IETF Internationalized Domain Names (IDN) working group."
 SECTION = "libs"
 PRIORITY    = "optional"
-DEPENDS     = "glibc"
 PR          = "r0"
 
 inherit pkgconfig autotools

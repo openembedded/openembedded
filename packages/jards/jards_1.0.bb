@@ -23,8 +23,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/gakusei/jards_gakusei.cvs.sourceforge.net__2007
 inherit opie
 
 OE_QMAKE_CXXFLAGS := "${@oe_filter_out('-fno-rtti', '${OE_QMAKE_CXXFLAGS}', d)}"
-OE_QMAKE_CXXFLAFS += " -L${STAGING_DIR}/pkgdata"
-CXXFLAFS += " -L${STAGING_DIR}/pkgdata"
 
 S = "${WORKDIR}/${PN}/"
 export OE_QMAKE_LINK="${CXX}"

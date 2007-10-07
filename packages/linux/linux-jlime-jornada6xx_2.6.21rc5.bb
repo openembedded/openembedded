@@ -20,7 +20,6 @@ inherit kernel
 KERNEL_CCSUFFIX = "-3.4.4"
 
 ARCH = "sh"
-KERNEL_IMAGETYPE = "zImage"
 FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 
 do_configure_prepend() {

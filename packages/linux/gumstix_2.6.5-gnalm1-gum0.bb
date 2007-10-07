@@ -16,7 +16,6 @@ S = "${WORKDIR}/linux-2.6.5"
 
 inherit kernel
 
-KERNEL_IMAGETYPE = "zImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "no default configuration for ${MACHINE} available."

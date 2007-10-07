@@ -5,6 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \

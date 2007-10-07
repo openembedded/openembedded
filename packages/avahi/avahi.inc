@@ -4,24 +4,29 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 
 # uclibc has no nss
-RRECOMMENDS_append_linux = "libnss-mdns"
 RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
-RDEPENDS_avahi-daemon = "sysvinit-pidof"
+RDEPENDS_avahi-daemon = "sysvinit-pidof update-rc.d"
+RDEPENDS_avahi-autoipd = "update-rc.d"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
 	   file://00avahi-autoipd file://99avahi-autoipd"
 
 inherit autotools pkgconfig update-rc.d
+# handle update-rc.d RDEPENDS manually, we don't need it on
+# anything but avahi-daemon and avahi-autoipd
+RDEPENDS_append = ""
 
 # TODO: build and enable all the extra stuff avahi offers
-EXTRA_OECONF = "--with-distro=debian --disable-gdbm --disable-gtk --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 --disable-python"
+EXTRA_OECONF = "--with-distro=debian --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
+AVAHI_PYTHON = "--disable-python"
+AVAHI_GTK = "--disable-gtk"
 
-PACKAGES =+ "avahi-daemon libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib avahi-autoipd avahi-utils"
+PACKAGES =+ "avahi-daemon avahi-discover libavahi-common libavahi-core libavahi-client avahi-dnsconfd libavahi-glib libavahi-ui avahi-discover-standalone avahi-autoipd avahi-utils"
 
 FILES_libavahi-common = "${libdir}/libavahi-common.so.*"
 FILES_libavahi-core = "${libdir}/libavahi-core.so.*"
@@ -35,6 +40,7 @@ FILES_avahi-daemon = "${sbindir}/avahi-daemon \
                       ${datadir}/avahi/avahi-service.dtd \
                       ${datadir}/avahi/service-types"
 FILES_libavahi-client = "${libdir}/libavahi-client.so.*"
+FILES_libavahi-ui = "${libdir}/libavahi-ui.so.*"
 FILES_avahi-dnsconfd = "${sbindir}/avahi-dnsconfd \
                         ${sysconfdir}/avahi/avahi-dnsconfd.action \
                         ${sysconfdir}/init.d/avahi-dnsconfd"
@@ -43,7 +49,12 @@ FILES_avahi-utils = "${bindir}/avahi-*"
 FILES_avahi-autoipd = "${sbindir}/avahi-autoipd \
                        ${sysconfdir}/avahi/avahi-autoipd.action \
 		       ${sysconfdir}/udhcpc.d/*avahi-autoipd"
-
+FILES_python-avahi = "${libdir}/python*/site-packages/avahi/*"
+FILES_avahi-discover = "${bindir}/avahi-discover \
+                        ${datadir}/applications/avahi-discover.desktop \
+                        ${datadir}/avahi/interfaces/avahi-discover.glade"
+FILES_avahi-discover-standalone = "${bindir}/avahi-discover-standalone \
+                                   ${datadir}/avahi/interfaces/avahi-discover.glade"
 CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
 
 INITSCRIPT_PACKAGES = "avahi-daemon avahi-dnsconfd"

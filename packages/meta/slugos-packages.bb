@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r34"
+PR = "r36"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -37,6 +37,7 @@ SLUGOS_PACKAGES = "\
 	binutils \
 	bison \
 	bluez-utils \
+	bluez-hcidump \
 	bogofilter \
 	boost \
 	bridge-utils \
@@ -140,6 +141,7 @@ SLUGOS_PACKAGES = "\
 	nano \
 	ncftp \
 	ncurses \
+	net-tools \
 	netcat \
 	netpbm \
 	nfs-utils \

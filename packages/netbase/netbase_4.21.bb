@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r21"
+PR = "r23"
 
 inherit update-rc.d
 
@@ -21,20 +21,20 @@ SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
            file://init \
            file://hosts \
            file://interfaces \
-	   file://if-pre-up.d \
-	   file://if-up.d \
-	   file://if-down.d \
-	   file://if-post-down.d"
+           file://if-pre-up.d \
+           file://if-up.d \
+           file://if-down.d \
+           file://if-post-down.d"
 
 do_install () {
-	install -d ${D}${sysconfdir}/init.d \
-		   ${D}${sbindir} \
-		   ${D}${mandir}/man8 \
-		   ${D}${sysconfdir}/network/if-pre-up.d \
-		   ${D}${sysconfdir}/network/if-up.d \
-		   ${D}${sysconfdir}/network/if-down.d \
-		   ${D}${sysconfdir}/network/if-post-down.d
-		   
+	install -d ${D}${sysconfdir}/init.d
+	install	-d ${D}${sbindir}
+	install -d ${D}${mandir}/man8
+	install -d ${D}${sysconfdir}/network/if-pre-up.d
+	install -d ${D}${sysconfdir}/network/if-up.d
+	install -d ${D}${sysconfdir}/network/if-down.d
+	install -d ${D}${sysconfdir}/network/if-post-down.d
+
 	for dir in if-pre-up.d if-up.d if-down.d if-post-down.d
 	do
 		for script in `ls -1 "${WORKDIR}/${dir}"`

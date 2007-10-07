@@ -1,10 +1,12 @@
 require apt.inc
 inherit native
 
-DEPENDS += "dpkg-native curl-native"
+DEPENDS += "dpkg-native curl-native db-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/apt-${PV}"
 PACKAGES = ""
 USE_NLS = "no"
+
+SRC_URI += "file://db_linking_hack.patch;patch=1"
 
 python do_stage () {
 	bb.build.exec_func('do_stage_base', d)
@@ -22,7 +24,7 @@ python do_stage_config () {
 	outdir = os.path.join(bb.data.getVar('sysconfdir', d, 1), 'apt')
 	if not os.path.exists(outdir):
 		os.makedirs(outdir)
-	outpath = os.path.join(outdir, 'apt.conf')
+	outpath = os.path.join(outdir, 'apt.conf.sample')
 
 	outfile = file(outpath, 'w')
 	outfile.write(data)
@@ -35,7 +37,7 @@ do_stage_base () {
 	install -m 0755 bin/apt-get ${bindir}/
 	install -m 0755 bin/apt-config ${bindir}/
 	install -m 0755 bin/apt-cache ${bindir}/
-
+	install -m 0755 bin/apt-ftparchive ${bindir}/
 	install -m 0755 bin/apt-sortpkgs ${bindir}/
 	install -m 0755 bin/apt-extracttemplates ${bindir}/
 

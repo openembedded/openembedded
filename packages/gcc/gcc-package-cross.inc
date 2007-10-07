@@ -1,8 +1,6 @@
 # Packages emitted by our gcc-cross builds.
 #
 INHIBIT_PACKAGE_STRIP ?= ""
-HAS_G2C ?= "yes"
-HAS_GFORTRAN ?= "no"
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
@@ -53,12 +51,8 @@ do_install () {
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
 	mkdir -p ${D}${target_libdir}
 	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
-	if [ "${HAS_G2C}" = "yes" ]; then
-	  mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
-	fi
-	if [ "${HAS_GFORTRAN}" = "yes" ]; then
-	  mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir}
-	fi
+	mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
+	mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
 
        # Manually run the target stripper since we won't get it run by
        # the packaging.
@@ -66,5 +60,6 @@ do_install () {
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.*
-       fi
+               ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true
+	fi
 }

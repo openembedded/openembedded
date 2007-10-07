@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-PR = "r7"
+PR = "r8"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -18,6 +18,7 @@ RDEPENDS_task-sdk-x11 = "\
     libmatchbox-dev \
     matchbox-desktop-dev \
     pango-dev \
+    renderproto-dev \
     startup-notification-dev"
 
 RDEPENDS_task-sdk-x11-ext = "\
@@ -28,10 +29,7 @@ RDEPENDS_task-sdk-x11-ext = "\
     libxrender-dev \
     libxsettings-client-dev \
     randrext-dev \
-    resourceext-dev \
-    libx11-dev \
     libxau-dev \
-    libxcalibrate-dev \
     xcalibrateext-dev \
     libxcomposite-dev \
     libxdamage-dev \
@@ -53,5 +51,6 @@ RDEPENDS_task-sdk-gpe = "\
     libgpevtype-dev \
     libgpelaunch-dev \
     libgpewidget-dev \
-    libhandoff-dev"
+    libhandoff-dev \
+    gconf-dbus-dev"
 

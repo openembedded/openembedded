@@ -1,7 +1,7 @@
-LICENSE =	"LGPL"
-DEPENDS = 	"gtk+"
-DESCRIPTION =	"Window navigation construction toolkit"
-HOMEPAGE =	""
+DESCRIPTION = "Window navigation construction toolkit"
+LICENSE = "LGPL"
+SECTION = "x11/libs"
+DEPENDS = "gtk+ gdk-pixbuf-csource-native"
 
 inherit gnome
 

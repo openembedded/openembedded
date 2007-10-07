@@ -14,7 +14,6 @@ COMPATIBLE_MACHINE = "wrap"
 inherit kernel
 
 ARCH = "i386"
-KERNEL_IMAGETYPE = "bzImage"
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 
 do_configure_prepend() {

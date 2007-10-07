@@ -114,6 +114,7 @@ ettercap_cv_type_socklen_t=${ettercap_cv_type_socklen_t=yes}
 am_cv_func_working_getline=${am_cv_func_working_getline=yes}
 
 # glib
+glib_cv_sizeof_system_thread=${glib_cv_sizeof_system_thread=4}
 glib_cv_has__inline=${glib_cv_has__inline=yes}
 glib_cv_has__inline__=${glib_cv_has__inline__=yes}
 glib_cv_hasinline=${glib_cv_hasinline=yes}
@@ -164,6 +165,9 @@ libIDL_cv_long_long_format=${libIDL_cv_long_long_format=ll}
 # libnet 
 ac_cv_lbl_unaligned_fail=${ac_cv_lbl_unaligned_fail=no}
 ac_libnet_have_packet_socket=${ac_libnet_have_packet_socket=yes}
+
+# libpcap
+ac_cv_linux_vers=${ac_cv_linux_vers=2}
 
 # libxfce4util
 with_broken_putenv=${with_broken_putenv=no}
@@ -255,3 +259,9 @@ jm_cv_func_working_readdir=yes
 # xorg X11R7
 ac_cv_sys_linker_h=${ac_cv_sys_linker_h=no}
 ac_cv_file__usr_share_X11_sgml_defs_ent=${ac_cv_file__usr_share_X11_sgml_defs_ent=no}
+
+# eds-dbus
+ac_cv_libiconv_utf8=${ac_cv_libiconv_utf8=yes}
+
+#dbus
+ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=yes}

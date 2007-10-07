@@ -1,14 +1,10 @@
 DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
 
-SRC_URI_append_progear = " \
-           file://progear_bl-r6.patch;patch=1 \
-	   "
 SRC_URI_append_acern30 = "\
            http://lechat.rtp-net.org/ipaq/patches/2.6.14-3/v2.6.14-gitcurrent.patch;patch=1 \
            http://lechat.rtp-net.org/ipaq/patches/2.6.14-3/full.patch;patch=1 \
@@ -41,10 +37,6 @@ SRC_URI_append_acern30 = "\
            "
 
 inherit kernel
-
-KERNEL_IMAGETYPE = "bzImage"
-KERNEL_IMAGETYPE_simpad = "zImage"
-KERNEL_IMAGETYPE_acern30 = "zImage"
 
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config

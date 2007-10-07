@@ -1,12 +1,10 @@
 #Angstrom gateway image
 #gives you a gateway with SMB, ssh and dnsmasqs
-LICENSE = "MIT"
-PR = "r0"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
 
-RDEPENDS = "task-boot \
+IMAGE_INSTALL = "task-boot \
             ${DISTRO_SSH_DAEMON} \
             iptables \
             samba swat \
@@ -16,8 +14,7 @@ RDEPENDS = "task-boot \
 	   "
 
 export IMAGE_BASENAME = "gateway-image"
-export IMAGE_LINGUAS = ""
-export PACKAGE_INSTALL = "${RDEPENDS}"
+IMAGE_LINGUAS = ""
 
 inherit image
 

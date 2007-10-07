@@ -2,10 +2,9 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r57"
+PR = "r65"
 
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "all"
+inherit task
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -17,11 +16,13 @@ PACKAGES = "\
   \
   task-openmoko-games \
   task-openmoko-examples \
+"
+
+RDEPENDS_task-openmoko-everything := "\
+  ${PACKAGES} \
   task-openmoko-debug \
   task-openmoko-native-sdk \
 "
-
-RDEPENDS_task-openmoko-everything := "${PACKAGES}"
 
 #
 # task-openmoko-core
@@ -51,49 +52,65 @@ RDEPENDS_task-openmoko-ui = "\
   pango-module-basic-x \
   pango-module-basic-fc \
   gtk+ \
-  libgtkstylus \
-  libgtkinput \
   matchbox-common \
   matchbox-wm \
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
   xserver-nodm-init \
-#  x11-c-locale \
   ttf-bitstream-vera \
   xauth \
   xhost \
   xset \
   xrandr \
+  \
   settings-daemon \
+  notification-daemon \
+  neod \
+  libnotify \
   \
   openmoko-session2 \
-  openmoko-theme-standard2 \
-  openmoko-icon-theme-standard2 \
-  openmoko-sound-system \
-  openmoko-sound-theme-standard \
-  neod \
+  openmoko-sound-system2 \
+  openmoko-sound-theme-standard2 \
+  \
+  gpe-scap \
 "
+
+# Handle theming. FIXME: properly use machine database in a smart way,
+# taking into account not only size but also PPI! Ultimately this might
+# need recomputing some theme files and images on-the-fly :/ SVG and logical
+# theme description anyone? Or simply Edje to the rescue! :D
+THEMES          = "openmoko-icon-theme-standard2      openmoko-theme-standard2"
+THEMES_a780     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_e680     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_a1200    = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_rokre2   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_rokre6   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_magician = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+
+RDEPENDS_task-openmoko-ui += "${THEMES}"
+PACKAGE_ARCH_task-openmoko-ui = "${MACHINE_ARCH}"
 
 #
 # task-openmoko-base
 #
-DESCRIPTION_task-openmoko-base = "OpenMoko: Main-Menu Launcher, Top Panel, and Footer"
+DESCRIPTION_task-openmoko-base = "OpenMoko: Top Panel, Application Launcher, Application Manager"
 RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
   matchbox-panel-2-applets \
-  matchbox-applet-inputmanager \
-#  openmoko-appmanager \
   matchbox-keyboard-inputmethod \
   matchbox-keyboard-im \
+  matchbox-keyboard-applet \
   matchbox-stroke \
   openmoko-terminal2 \
-  openmoko-keyboard \
-#  openmoko-panel-mainmenu \
+#  openmoko-keyboard \
   openmoko-panel-battery \
   openmoko-panel-bt \
   openmoko-panel-clock \
   openmoko-panel-usb \
-  openmoko-panel-gps \
+  ${@base_contains('MACHINE_FEATURES', 'gps', 'openmoko-panel-gps', '',d)} \
+  \
+  openmoko-today2 \
+#  openmoko-appmanager \
 "
 
 #
@@ -111,13 +128,15 @@ RDEPENDS_task-openmoko-phone = "\
 #
 # task-openmoko-pim
 #
-DESCRIPTION_task-openmoko-pim = "OpenMoko: PIM Applications"
+DESCRIPTION_task-openmoko-pim = "OpenMoko: Personal Information Management Suite"
 RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-calculator2 \
   openmoko-contacts2 \
-  openmoko-today2 \
+  openmoko-dates2 \
   openmoko-feedreader2 \
+  openmoko-tasks2 \
+  openmoko-mediaplayer2 \
 #  openmoko-messages \
 "
 
@@ -136,77 +155,4 @@ RDEPENDS_task-openmoko-net = "\
 DESCRIPTION_task-openmoko-games = "OpenMoko: Games"
 RDEPENDS_task-openmoko-games = "\
   oh-puzzles \
-"
-
-#
-# task-openmoko-debug
-#
-DESCRIPTION_task-openmoko-debug = "OpenMoko: Debugging Tools"
-RDEPENDS_task-openmoko-debug = "\
-  alsa-utils-amixer \
-  alsa-utils-aplay \
-  alsa-utils-aconnect \
-  alsa-utils-alsamixer \
-  alsa-utils-speakertest \
-  madplay \
-  vorbis-tools \
-  strace \
-  ltrace \
-  gdb \
-  gdbserver \
-  tcpdump \
-  tslib-calibrate \
-  tslib-tests \
-  fbgrab \
-  fstests \
-  lsof \
-  lrzsz \
-  udev-utils \
-  usbutils \
-  uucp \
-  cu \
-#  sensors-i2cdetect sensors-i2cdump sensors-i2cset \
-  xev \
-  bonnie++ \
-  memtester \
-  dbench \
-"
-
-#
-# task-openmoko-native-sdk
-#
-DESCRIPTION_task-openmoko-native-sdk = "OpenMoko: Native SDK"
-RDEPENDS_task-openmoko-native-sdk = "\
-  binutils \
-  binutils-symlinks \
-  gcc \
-  gcc-symlinks \
-  cpp \
-  cpp-symlinks \
-  cvs \
-  libc6-dev \
-  libgcc-dev \
-  glibc-utils \
-  ldd \
-  g++ \
-  g++-symlinks \
-  libstdc++-dev \
-  \
-  make \
-  flex \
-  flex-dev \
-  bison \
-  gawk \
-  grep \
-  sed \
-  automake \
-  autoconf \
-  patch \
-  patchutils \
-  diffstat \
-  diffutils \
-  libtool \
-  pkgconfig \
-  \
-  xoo \
 "

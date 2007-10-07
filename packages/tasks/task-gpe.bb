@@ -1,7 +1,8 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r4"
+PR = "r5"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
+
+inherit task
 
 PACKAGES = "\
     gpe-base-depends \

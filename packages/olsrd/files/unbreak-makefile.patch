@@ -1,0 +1,45 @@
+--- /tmp/Makefile	2007-08-26 13:59:42.264688053 +0200
++++ olsrd-0.5.3/Makefile	2007-08-26 14:02:46.059161904 +0200
+@@ -89,9 +89,8 @@
+ install: install_olsrd
+ 
+ install_bin:
+-		mkdir -p $(SBINDIR)
+-		install -m 755 $(EXENAME) $(SBINDIR)
+-		$(STRIP) $(SBINDIR)/$(EXENAME)
++		mkdir -p $(INSTALL_PREFIX)$(SBINDIR)
++		install -m 755 $(EXENAME) $(INSTALL_PREFIX)$(SBINDIR)
+ 
+ install_olsrd:	install_bin
+ 		@echo ========= C O N F I G U R A T I O N - F I L E ============
+@@ -100,16 +99,16 @@
+ 		@echo configfile can be installed. Note that a LQ-based configfile
+ 		@echo can be found at files/olsrd.conf.default.lq
+ 		@echo ==========================================================
+-		mkdir -p $(ETCDIR)
++		mkdir -p $(INSTALL_PREFIX)$(ETCDIR)
+ 		-cp -i files/olsrd.conf.default.rfc $(CFGFILE)
+ 		@echo -------------------------------------------
+ 		@echo Edit $(CFGFILE) before running olsrd!!
+ 		@echo -------------------------------------------
+ 		@echo Installing manpages olsrd\(8\) and olsrd.conf\(5\)
+-		mkdir -p $(MANDIR)/man8/
+-		cp files/olsrd.8.gz $(MANDIR)/man8/olsrd.8.gz
+-		mkdir -p $(MANDIR)/man5/
+-		cp files/olsrd.conf.5.gz $(MANDIR)/man5/olsrd.conf.5.gz
++		mkdir -p $(INSTALL_PREFIX)$(MANDIR)/man8/
++		cp files/olsrd.8.gz $(INSTALL_PREFIX)$(MANDIR)/man8/olsrd.8.gz
++		mkdir -p $(INSTALL_PREFIX)$(MANDIR)/man5/
++		cp files/olsrd.conf.5.gz $(INSTALL_PREFIX)$(MANDIR)/man5/olsrd.conf.5.gz
+ 
+ tags:
+ 		$(TAGCMD) -o $(TAGFILE) $(TAG_SRCS)
+@@ -131,7 +130,7 @@
+ 		$(MAKECMD) -C lib LIBDIR=$(LIBDIR) clean
+ 
+ libs_install install_libs:
+-		$(MAKECMD) -C lib LIBDIR=$(LIBDIR) install
++		$(MAKECMD) -C lib LIBDIR=$(INSTALL_PREFIX)$(LIBDIR) install
+ 
+ httpinfo:
+ 		$(MAKECMD) -C lib/httpinfo clean

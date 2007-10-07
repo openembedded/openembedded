@@ -27,7 +27,7 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 BINARY_LOCALE_ARCHES ?= "arm.*"
 
 PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
-PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-*"
+PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-*"
 
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
@@ -79,6 +79,9 @@ do_install() {
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
 	rm -f ${D}/etc/rpc
+	rm -f ${D}${includedir}/scsi/sg.h
+	rm -f ${D}${includedir}/scsi/scsi_ioctl.h
+	rm -f ${D}${includedir}/scsi/scsi.h
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"
@@ -144,8 +147,11 @@ do_prep_locale_tree() {
 		gunzip $i
 	done
 	ls ${D}/lib/* | xargs -iBLAH cp -a BLAH $treedir/lib
-	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* ]; then
-		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.* $treedir/lib
+	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so ]; then
+		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so $treedir/lib
+	fi
+	if [ -f ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* ]; then
+		cp -a ${CROSS_DIR}/${TARGET_SYS}/lib/libgcc_s.so.* $treedir/lib
 	fi
 	install -m 0755 ${D}${bindir}/localedef $treedir/bin
 }

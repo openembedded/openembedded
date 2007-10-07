@@ -1,7 +1,8 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r8"
+PR = "r9"
 LICENSE = "MIT"
-ALLOW_EMPTY = "1"
+
+inherit task
 
 PACKAGES = "\
     gpephone-task-base \
@@ -28,6 +29,7 @@ RDEPENDS_gpephone-task-base = "\
     phoneserver \
     soundserver \
     voicecall \
+    vochistory \
     sms \
     audioplayer \
     videoplayer \
@@ -86,4 +88,5 @@ RDEPENDS_gpephone-task-apps = "\
     gpe-windowlist"
 
 RDEPENDS_gpephone-task-connectivity = "\
+    email \
 "

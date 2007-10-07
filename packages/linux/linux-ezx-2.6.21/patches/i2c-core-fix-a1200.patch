@@ -1,0 +1,15 @@
+Index: linux-2.6.21/drivers/i2c/i2c-core.c
+===================================================================
+--- linux-2.6.21.orig/drivers/i2c/i2c-core.c	2007-08-20 21:59:45.000000000 +0800
++++ linux-2.6.21/drivers/i2c/i2c-core.c	2007-08-20 22:03:12.000000000 +0800
+@@ -365,8 +365,10 @@
+ 		list_for_each(item,&adapters) {
+ 			adapter = list_entry(item, struct i2c_adapter, list);
+ 			driver->attach_adapter(adapter);
++			goto out;  // Alex added for fix the bug otherwise system will be crashed. FIXME
+ 		}
+ 	}
++out:
+ 
+ 	mutex_unlock(&core_lists);
+ 	return 0;

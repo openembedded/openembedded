@@ -1,10 +1,14 @@
 inherit rootfs_${IMAGE_PKGTYPE}
 
+LICENSE = "MIT"
 PACKAGES = ""
+RDEPENDS += "${IMAGE_INSTALL}"
+
+IMAGE_BASENAME[export] = "1"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
-BUILD_ALL_DEPS = "1"
-do_rootfs[recrdeptask] = "do_package_write do_deploy do_populate_staging"
+do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
 
 # Images are generally built explicitly, do not need to be part of world.
 EXCLUDE_FROM_WORLD = "1"
@@ -51,14 +55,13 @@ def get_devtable_list(d):
 	return str
 
 IMAGE_POSTPROCESS_COMMAND ?= ""
+MACHINE_POSTPROCESS_COMMAND ?= ""
+ROOTFS_POSTPROCESS_COMMAND ?= ""
 
 # some default locales
 IMAGE_LINGUAS ?= "de-de fr-fr en-gb"
 
 LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVar('IMAGE_LINGUAS', d, 1).split()))}"
-
-ROOTFS_POSTPROCESS_COMMAND ?= ""
-MACHINE_POSTPROCESS_COMMAND ?= ""
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
@@ -69,9 +72,9 @@ do_build[nostamp] = "1"
 fakeroot do_rootfs () {
 	set -x
 	rm -rf ${IMAGE_ROOTFS}
+	mkdir -p ${IMAGE_ROOTFS}
 
 	if [ "${USE_DEVFS}" != "1" ]; then
-		mkdir -p ${IMAGE_ROOTFS}/dev
 		for devtable in ${@get_devtable_list(d)}; do
 			makedevs -r ${IMAGE_ROOTFS} -D $devtable
 		done

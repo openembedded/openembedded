@@ -1,8 +1,9 @@
 DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|Mac|Embedded] version 4.x"
+DEPENDS = "libx11-native libxext-native"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz"
 

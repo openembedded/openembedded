@@ -1,11 +1,12 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-ALLOW_EMPTY = "1"
 LICENSE = "MIT"
-PROVIDES = "task-opie-everything"
 
-PR = "r11"
+PR = "r12"
+
+inherit task
+
+PROVIDES = "task-opie-everything"
 
 PACKAGES = "task-opie-base \
             task-opie-base-applets task-opie-base-apps \
@@ -32,6 +33,8 @@ RDEPENDS_task-opie-base = "opie-init opie-alarm opie-qcop opie-qss opie-quicklau
 RRECOMMENDS_task-opie-base = "opie-taskbar-images-${MACHINE_DISPLAY_WIDTH_PIXELS}x${MACHINE_DISPLAY_HEIGHT_PIXELS} \
                               opie-taskbar-images-${MACHINE_DISPLAY_HEIGHT_PIXELS}x${MACHINE_DISPLAY_WIDTH_PIXELS}"
 
+PACKAGE_ARCH_task-opie-base = "${MACHINE_ARCH}"
+
 #
 # things for reasonable bootstrap image
 #
@@ -43,6 +46,8 @@ RDEPENDS_task-opie-base-applets = "opie-aboutapplet opie-clockapplet opie-suspen
     ${@base_contains("COMBINED_FEATURES", "apm", "opie-batteryapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-pcmciaapplet", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
+
+PACKAGE_ARCH_task-opie-base-applets = "${MACHINE_ARCH}"
 
 #
 # clamshell models can benefit from the autorotate applet
@@ -68,6 +73,8 @@ RDEPENDS_task-opie-extra-settings = "opie-language opie-doctab opie-mediummount 
     ${@base_contains("DISTRO_FEATURES", "wifi", "opie-networksettings-wlanplugin", "",d)} \
     ${@base_contains("DISTRO_FEATURES", "ppp", "opie-networksettings-pppplugin", "",d)} \
 			    "
+
+PACKAGE_ARCH_task-opie-extra-settings = "${MACHINE_ARCH}"
 
 RDEPENDS_task-opie-base-decorations = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 

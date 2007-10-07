@@ -1,7 +1,4 @@
 #Angstrom e image
-LICENSE = "MIT"
-PR = "r1"
-
 
 PREFERRED_PROVIDER_virtual/evas   ?= "evas-x11"
 PREFERRED_PROVIDER_virtual/ecore  ?= "ecore-x11"
@@ -19,16 +16,13 @@ XSERVER ?= "xserver-kdrive-fbdev"
 export IMAGE_BASENAME = "e-image"
 
 DEPENDS = "task-base"
-RDEPENDS = "\
+IMAGE_INSTALL = "\
     ${XSERVER} \
     task-base-extended \
     angstrom-e-base-depends \
     angstrom-e-depends \
     angstrom-gpe-task-settings \
     ${ANGSTROM_EXTRA_INSTALL}"
-
-
-export PACKAGE_INSTALL = "${RDEPENDS}"
 
 #zap root password for release images
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'

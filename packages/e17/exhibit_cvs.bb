@@ -1,10 +1,10 @@
 DESCRIPTION = "Exhibit is the ETK picture viewer"
-DEPENDS = "evas ecore edje etk epsilon engrave"
+DEPENDS = "evas ecore epsilon edje eet etk efreet"
 LICENSE = "MIT"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 
 inherit e
 
-SRC_URI = "cvs://anonymous@anoncvs.enlightenment.org/var/cvs/e;module=e17/apps/exhibit"
+SRC_URI = "${E_CVS};module=e17/apps/exhibit"
 S = "${WORKDIR}/${PN}"

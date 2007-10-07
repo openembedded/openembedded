@@ -38,7 +38,8 @@ Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
-Machines:   compulab-pxa270, logicpd-pxa270, devkitidp-pxa255
+Machines:   compulab-pxa270, logicpd-pxa270, 
+Recipes:    mono argtable
 
 Person:     Erik Hovland
 Mail:       erik@hovland.org
@@ -72,7 +73,7 @@ Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
 Website:    http://www.openembedded.org/~zecke
 Interests:  icecream, insanity, QA
-Recipes:    sqlite3, xine
+Recipes:    qtopia*, sqlite3, xine
 
 Person:     Jamie Lenehan
 Mail:       lenehan@twibble.org
@@ -124,10 +125,10 @@ Recipes:    mx31ads-kernel*
 
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
-Website:    http://www.hrw.one.pl/
-Machines:   collie, tosa, progear
-Distros:    OpenZaurus, celinux-test
-Interests:  WiFi, Opie, Qtopia fonts, Native SDK
+Website:    http://blog.haerwu.biz/
+Machines:   collie, tosa, progear, alix
+Distros:    Poky, OpenZaurus, Ångström
+Interests:  WiFi, Native SDK
 Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
 Recipes:    linux-rp, gammu
 Recipes:    ttf-fonts/* 
@@ -154,9 +155,10 @@ Recipes:    linux-handhelds-2.6, opie-*
 Person:     Philip Balister
 Mail:       Crofton@balister.org
 Website:    http://www.balister.org
-Machines:   omap5912osk
-Distros:    openomap
-Recipes:    xerces-c, omniorb
+Machines:   omap5912osk, gumstix-connex, gumstix-verdex, Efika, davinci-dvevm
+Interests:  Software Defined Radio, 
+Interests:  wireless networking (not necessarily wireless NIC's)
+Recipes:    omniorb, gnuradio
 
 Person:     Philippe De Swert
 Mail:       philippedeswert@scarlet.be
@@ -203,6 +205,10 @@ Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
 Interest:   Cross-machine development
 Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
 
+Person:     Tim Sander
+Mail:       oe@iss.tu-darmstadt.de
+Receipes:   fxload
+
 Person:     Øyvind Repvik
 Mail:       nail@nslu2-linux.org
 Machines:   nslu2, fsg3, ixp4xx, n2100, turbostation
@@ -213,3 +219,14 @@ Recipes:    lcdproc, libol, mailx, mysql, musicpd, openntpd, qc-usb
 Recipes:    radlib, scsi-idle, rng-tools, slugos-init, syslog-ng
 Recipes:    vsftpd, zd1211
 
+Person:     Henning Heinold 'woglinde'
+Mail:       heinold@inf.fu-berlin.de
+Machines:   simpad
+Recipes:    classpath-minimal, midpath, cacao-cldc
+
+Person:     Philipp Zabel
+Mail:       philipp.zabel@gmail.com
+Interests:  Kernels, PXA, GTK+, gsmd
+Distros:    Ångström
+Machines:   hx4700, magician
+Recipes:    avahi, libgsmd

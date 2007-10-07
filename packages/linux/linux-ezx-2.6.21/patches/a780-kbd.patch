@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-05-24 00:54:38.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-05-24 00:56:22.000000000 -0300
-@@ -16,18 +16,21 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:03:16.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:05:18.000000000 -0300
+@@ -16,6 +16,7 @@
  #include <linux/fb.h>
  #include <linux/mmc/host.h>
  #include <linux/irq.h>
@@ -10,13 +10,13 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
- #include <asm/arch/pxa-regs.h>
- #include <asm/arch/pxafb.h>
+@@ -24,11 +25,13 @@
+ #include <asm/arch/ezx.h>
+ #include <asm/arch/ezx-pcap.h>
  #include <asm/arch/mmc.h>
 +#include <asm/arch/kbd.h>
  
  #include "generic.h"
- #include "ezx.h"
  
  extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
  extern void ezx_backlight_power(int);
@@ -24,8 +24,8 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
  
  #ifdef CONFIG_EZX_PCAP
  extern int ezx_pcap_mmcsd_power(int);
-@@ -141,6 +144,55 @@
- 	.pxafb_lcd_power = &ezx_lcd_power,
+@@ -235,6 +238,55 @@
+ 	.resource	= a780_emu_resources,
  };
  
 +static unsigned char a780_keycode[] = {
@@ -78,9 +78,9 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 +};
 +
  static struct platform_device *devices[] __initdata = {
- };
- 
-@@ -159,6 +211,7 @@
+ 	&a780_pcap_device,
+ 	&a780_emu_device,
+@@ -255,6 +307,7 @@
  
  	set_pxa_fb_info(&a780_fb_info);
  	pxa_set_mci_info(&a780_mci_platform_data);

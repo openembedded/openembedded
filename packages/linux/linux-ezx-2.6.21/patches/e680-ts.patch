@@ -1,9 +1,9 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-06-02 20:32:49.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-06-02 20:33:26.000000000 -0300
-@@ -124,6 +124,27 @@
- 	.exit           = e680_mci_exit,
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:10:47.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-07 11:11:01.000000000 -0300
+@@ -293,9 +293,34 @@
+        },
  };
  
 +/* PCAP_TS */
@@ -23,17 +23,16 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
 +struct platform_device pcap_ts_device = {
 +	.name           = "pcap-ts",
 +	.id             = -1,
++	.dev		= {
++		.parent = &e680_pcap_device.dev,
++	},
 +	.num_resources  = ARRAY_SIZE(pcap_ts_resources),
 +	.resource       = pcap_ts_resources,
 +};
 +
- static struct pxafb_mode_info mode_e680 = {
- 	.pixclock	= 150000,
- 	.xres		= 240,
-@@ -200,6 +221,7 @@
- };
- 
  static struct platform_device *devices[] __initdata = {
+ 	&e680_pcap_device,
+ 	&e680_emu_device,
 +	&pcap_ts_device,
  };
  

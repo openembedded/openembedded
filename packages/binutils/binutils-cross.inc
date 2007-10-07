@@ -18,13 +18,17 @@ do_stage () {
 	rm -rf ${CROSS_DIR}/share/man
 	rmdir ${CROSS_DIR}/share || :
 	rmdir ${CROSS_DIR}/${libdir}/gcc-lib || :
+	rmdir ${CROSS_DIR}/${libdir}64/gcc-lib || :
 	rmdir ${CROSS_DIR}/${libdir} || :
+	rmdir ${CROSS_DIR}/${libdir}64 || :
 	rmdir ${CROSS_DIR}/${prefix} || :
 
 	# We want to move this into the target specific location
 	mkdir -p ${CROSS_DIR}/${TARGET_SYS}/lib
-	mv -f ${CROSS_DIR}/lib/libiberty.a ${CROSS_DIR}/${TARGET_SYS}/lib
+	mv -f ${CROSS_DIR}/lib/libiberty.a ${CROSS_DIR}/${TARGET_SYS}/lib || \
+		mv -f ${CROSS_DIR}/lib64/libiberty.a ${CROSS_DIR}/${TARGET_SYS}/lib
 	rmdir ${CROSS_DIR}/lib || :
+	rmdir ${CROSS_DIR}/lib64 || :
 }
 
 do_install () {

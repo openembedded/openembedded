@@ -77,18 +77,11 @@ do_install () {
 	install -m 0755 bin/apt-sortpkgs ${D}${bindir}/
 	install -m 0755 bin/apt-extracttemplates ${D}${bindir}/
 
-	install -d ${D}${libdir}
 	eval `cat environment.mak | grep ^GLIBC_VER | sed -e's, = ,=,'`
-	eval `cat apt-pkg/makefile | grep ^MAJOR | sed -e's, = ,=,'`
-	eval `cat apt-pkg/makefile | grep ^MINOR | sed -e's, = ,=,'`
-	install bin/libapt-pkg$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/
-	ln -sf libapt-pkg$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/libapt-pkg$GLIBC_VER-6.so.$MAJOR
-	ln -sf libapt-pkg$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/libapt-pkg.so
-	eval `cat apt-inst/makefile | grep ^MAJOR | sed -e's, = ,=,'`
-	eval `cat apt-inst/makefile | grep ^MINOR | sed -e's, = ,=,'`
-	install bin/libapt-inst$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/
-	ln -sf libapt-inst$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/libapt-inst$GLIBC_VER-6.so.$MAJOR
-	ln -sf libapt-inst$GLIBC_VER-6.so.$MAJOR.$MINOR ${D}${libdir}/libapt-inst.so
+	oe_libinstall -so -C bin libapt-pkg$GLIBC_VER-6 ${D}${libdir}/
+	ln -sf libapt-pkg$GLIBC_VER-6.so ${D}${libdir}/libapt-pkg.so
+	oe_libinstall -so -C bin libapt-inst$GLIBC_VER-6 ${D}${libdir}/
+	ln -sf libapt-inst$GLIBC_VER-6.so ${D}${libdir}/libapt-inst.so
 
 	install -d ${D}${libdir}/apt/methods
 	install -m 0755 bin/methods/* ${D}${libdir}/apt/methods/

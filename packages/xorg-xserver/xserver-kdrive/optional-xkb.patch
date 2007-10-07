@@ -1,7 +1,9 @@
---- git/Makefile.am.orig	2006-06-09 16:01:51.000000000 +0200
-+++ git/Makefile.am	2006-06-09 16:02:59.000000000 +0200
-@@ -35,6 +35,10 @@
- XINPUT_DIR=Xi
+Index: xorg-server-1.4/Makefile.am
+===================================================================
+--- xorg-server-1.4.orig/Makefile.am	2007-08-23 21:04:52.000000000 +0200
++++ xorg-server-1.4/Makefile.am	2007-09-06 23:19:59.000000000 +0200
+@@ -26,6 +26,10 @@
+ GLX_DIR=GL
  endif
  
 +if XKB
@@ -11,26 +13,28 @@
  if DBE
  DBE_DIR=dbe
  endif
-@@ -51,7 +55,7 @@
+@@ -42,7 +46,7 @@
  	randr \
  	render  \
- 	$(XINPUT_DIR) \
+ 	Xi \
 -	xkb \
 +	$(XKB_DIR) \
  	$(DBE_DIR) \
  	$(MFB_DIR) \
  	$(AFB_DIR) \
---- git/configure.ac.orig	2006-05-22 22:40:00.000000000 +0200
-+++ git/configure.ac	2006-06-10 15:10:14.000000000 +0200
-@@ -418,6 +418,7 @@
- AC_ARG_ENABLE(xf86bigfont,    AS_HELP_STRING([--disable-xf86bigfont], [Build XF86 Big Font extension (default: enabled)]), [XF86BIGFONT=$enableval], [XF86BIGFONT=yes])
- AC_ARG_ENABLE(dpms,           AS_HELP_STRING([--disable-dpms], [Build DPMS extension (default: enabled)]), [DPMS=$enableval], [DPMSExtension=yes])
- AC_ARG_ENABLE(xinput,         AS_HELP_STRING([--disable-xinput], [Build XInput Extension (default: enabled)]), [XINPUT=$enableval], [XINPUT=yes])
+Index: xorg-server-1.4/configure.ac
+===================================================================
+--- xorg-server-1.4.orig/configure.ac	2007-09-06 07:59:00.000000000 +0200
++++ xorg-server-1.4/configure.ac	2007-09-06 23:19:19.000000000 +0200
+@@ -514,6 +514,7 @@
+ AC_ARG_ENABLE(config-dbus,    AS_HELP_STRING([--enable-config-dbus], [Build D-BUS API support (default: no)]), [CONFIG_DBUS_API=$enableval], [CONFIG_DBUS_API=no])
+ AC_ARG_ENABLE(config-hal,     AS_HELP_STRING([--disable-config-hal], [Build HAL support (default: auto)]), [CONFIG_HAL=$enableval], [CONFIG_HAL=auto])
+ AC_ARG_ENABLE(xfree86-utils,     AS_HELP_STRING([--enable-xfree86-utils], [Build xfree86 DDX utilities (default: enabled)]), [XF86UTILS=$enableval], [XF86UTILS=yes])
 +AC_ARG_ENABLE(xkb,            AS_HELP_STRING([--disable-xkb], [Build XKB (default: enabled)]), [XKB=$enableval], [XKB=yes])
  
  dnl DDXes.
  AC_ARG_ENABLE(xorg,    	      AS_HELP_STRING([--enable-xorg], [Build Xorg server (default: auto)]), [XORG=$enableval], [XORG=auto])
-@@ -739,12 +740,15 @@
+@@ -889,12 +890,15 @@
  
  AC_DEFINE(SHAPE, 1, [Support SHAPE extension])
  
@@ -51,4 +55,4 @@
 +fi
  
  AC_CHECK_FUNC(strcasecmp, [], AC_DEFINE([NEED_STRCASECMP], 1,
-                                         [Do not have `strcasecmp'.]))
+                                         [Do not have 'strcasecmp'.]))

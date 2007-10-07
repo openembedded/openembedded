@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox virtual keyboard for X11 - OpenMoko fork"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
 SECTION = "openmoko/inputmethods"
-PV = "0.0+svn${SRCDATE}"
+PV = "0.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit openmoko autotools pkgconfig gettext

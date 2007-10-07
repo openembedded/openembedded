@@ -3,7 +3,7 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	file://0001-cm-x270-base2.patch;patch=1 \
@@ -28,13 +28,14 @@ SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 S = "${WORKDIR}/linux-${PV}"
 
 COMPATIBLE_HOST = 'arm.*-linux'
-COMPATIBLE_MACHINE = "compulab-pxa270"
+COMPATIBLE_MACHINE = "cm-x270"
+
+CMDLINE = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
 inherit kernel
 inherit package
 
 ARCH = "arm"
-KERNEL_IMAGETYPE = "zImage"
 
 FILES_kernel-image = ""
 
@@ -44,13 +45,12 @@ python do_compulab_image() {
 	import struct
 
 	deploy_dir = bb.data.getVar('DEPLOY_DIR_IMAGE', d, 1)
-	kernel_name = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGETYPE}-${MACHINE}.bin', d))
-
-	img_file = os.path.join(deploy_dir, 'zImage-compulab-pxa270.cmx270')
+	kernel_file = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGE_BASE_NAME}', d) + '.bin')
+	img_file = os.path.join(deploy_dir, bb.data.expand('${KERNEL_IMAGE_BASE_NAME}', d) + '.cmx270')
 
 	fo = open(img_file, 'wb')
 
-	image_data = open(kernel_name, 'rb').read()
+	image_data = open(kernel_file, 'rb').read()
 
 	# first write size into first 4 bytes
 	size_s = struct.pack('i', len(image_data))
@@ -63,5 +63,5 @@ python do_compulab_image() {
 	fo.close()
 }
 
-addtask compulab_image before do_install after do_deploy
+addtask compulab_image after do_deploy before do_package
 

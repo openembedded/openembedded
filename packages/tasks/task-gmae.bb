@@ -1,16 +1,13 @@
 DESCRIPTION = "GNOME Mobile & Embedded Initiative"
-PR = "r0"
+PR = "r1"
+
+inherit task
 
 PACKAGES = 'gmae-core \
             gmae-toolkit \
             gmae-user \
 	    task-gmae \
 	    '
-
-ALLOW_EMPTY = "1"
-
-PACKAGE_ARCH = "all"
-
 
 RDEPENDS_gmae-core = " \
             ${XSERVER} \

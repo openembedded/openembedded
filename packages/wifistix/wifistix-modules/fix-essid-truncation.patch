@@ -1,0 +1,13 @@
+Index: src_cf8385/wlan/wlan_join.c
+===================================================================
+--- src_cf8385.orig/wlan/wlan_join.c
++++ src_cf8385/wlan/wlan_join.c
+@@ -213,7 +213,7 @@ int wlan_set_essid(struct net_device* de
+     } else {
+         /* Set the SSID */
+         memcpy(reqSSID.Ssid, extra, dwrq->length);
+-        reqSSID.SsidLength = dwrq->length - 1;
++        reqSSID.SsidLength = dwrq->length;
+     }
+ 
+     PRINTM(INFO, "Requested new SSID = %s\n",

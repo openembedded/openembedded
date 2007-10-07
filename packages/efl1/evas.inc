@@ -5,13 +5,12 @@ your CPU or graphics hardware are too slow."
 LICENSE = "MIT"
 # can also depend on valgrind (?)
 DEPENDS = "libsdl-x11 directfb eet freetype jpeg virtual/libx11 libxext"
-PV = "0.9.9+cvs${SRCDATE}"
+PV = "0.9.9.041+cvs${SRCDATE}"
 
 inherit efl_library
 
-export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"
-
 SRC_URI += "file://fix-configure.patch;patch=1"
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 
 EXTRA_OECONF = "<override me>"

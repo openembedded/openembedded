@@ -1,0 +1,12 @@
+--- free42-orig/common/skin2cc.conf	2006-03-22 11:33:35.000000000 -0800
++++ free42gtk/common/skin2cc.conf	2007-09-02 23:52:27.000000000 -0700
+@@ -1,4 +1,4 @@
+-skins/Standard
+-Standard
+-skins/Ehrling42sl
+-Realistic
++skins/Ehrling42ssv
++Portrait
++skins/42ct
++Landscape
+

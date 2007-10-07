@@ -1,8 +1,8 @@
 Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
 ===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-05-24 00:44:14.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-05-24 00:47:01.000000000 -0300
-@@ -14,11 +14,14 @@
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:01:54.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c	2007-08-31 23:02:13.000000000 -0300
+@@ -14,6 +14,8 @@
  #include <linux/init.h>
  #include <linux/platform_device.h>
  #include <linux/fb.h>
@@ -11,13 +11,14 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
- #include <asm/arch/pxa-regs.h>
+@@ -21,12 +23,102 @@
  #include <asm/arch/pxafb.h>
+ #include <asm/arch/ezx.h>
+ #include <asm/arch/ezx-pcap.h>
 +#include <asm/arch/mmc.h>
  
  #include "generic.h"
- #include "ezx.h"
-@@ -26,6 +29,95 @@
+ 
  extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
  extern void ezx_backlight_power(int);
  
@@ -113,7 +114,7 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
  static struct pxafb_mode_info mode_a780 = {
  	.pixclock	= 150000,
  	.xres		= 240,
-@@ -66,6 +158,7 @@
+@@ -137,6 +229,7 @@
  	PSLR  = 0x05800f00;
  
  	set_pxa_fb_info(&a780_fb_info);
@@ -121,15 +122,3 @@ Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a780.c
  
          /* clear EMU MUX1/MUX2 (low) to close the audio path to EMU */
  	pxa_gpio_mode(GPIO_EMU_MUX1|GPIO_OUT);
-Index: linux-2.6.21/arch/arm/mach-pxa/Kconfig
-===================================================================
---- linux-2.6.21.orig/arch/arm/mach-pxa/Kconfig	2007-05-24 00:47:13.000000000 -0300
-+++ linux-2.6.21/arch/arm/mach-pxa/Kconfig	2007-05-24 00:48:11.000000000 -0300
-@@ -87,6 +87,7 @@
- config PXA_EZX_A780
- 	bool "Motorola A780 GSM Phone"
- 	select PXA27x
-+	select EZX_MCI_TF
- 
- config PXA_EZX_E2
- 	bool "Motorola E2 GSM Phone"

@@ -7,20 +7,23 @@ DEPENDS += "libxkbfile libxcalibrate"
 PROVIDES = "virtual/xserver"
 
 PE = "1"
-PR = "r1"
+PR = "r3"
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.2.0:${FILE_DIRNAME}/xserver-kdrive"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
+	file://kdrive-evdev.patch;patch=1  \
+	file://kdrive-use-evdev.patch;patch=1  \
+	file://disable-xf86-dga-xorgcfg.patch;patch=1 \
 	file://enable-xcalibrate.patch;patch=1 \
         file://fbcompositesrc8888revnpx0565.patch;patch=1 \
         file://kdrive-vidmemarea.patch;patch=1 \
         file://kdrive-imageon.patch;patch=1 \
         file://xcalibrate_coords.patch;patch=1 \
+        file://enable-builtin-fonts.patch;patch=1 \
         "
        
 S = "${WORKDIR}/xorg-server-${PV}"
 
-IMAGEON_OECONF = "--disable-imageon"
-IMAGEON_OECONF_arm = "--enable-imageon"
+EXTRA_OECONF += "--enable-imageon"
 

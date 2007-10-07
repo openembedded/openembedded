@@ -2,6 +2,8 @@
 # General packaging help functions
 #
 
+PKGDEST = "${WORKDIR}/install"
+
 def legitimize_package_name(s):
 	"""
 	Make sure package names are legitimate strings
@@ -120,75 +122,68 @@ PACKAGE_DEPENDS += "file-native"
 
 python () {
     import bb
-
     if bb.data.getVar('PACKAGES', d, True) != '':
         deps = bb.data.getVarFlag('do_package', 'depends', d) or ""
         for dep in (bb.data.getVar('PACKAGE_DEPENDS', d, True) or "").split():
             deps += " %s:do_populate_staging" % dep
         bb.data.setVarFlag('do_package', 'depends', deps, d)
 
-        deps = bb.data.getVarFlag('do_package_write', 'depends', d) or ""
-        for dep in (bb.data.getVar('PACKAGE_EXTRA_DEPENDS', d, True) or "").split():
-            deps += " %s:do_populate_staging" % dep
-        bb.data.setVarFlag('do_package_write', 'depends', deps, d)
-	
+        deps = (bb.data.getVarFlag('do_package', 'deptask', d) or "").split()
         # shlibs requires any DEPENDS to have already packaged for the *.list files
-        bb.data.setVarFlag('do_package', 'deptask', 'do_package', d)
+        deps.append("do_package")
+        bb.data.setVarFlag('do_package', 'deptask', " ".join(deps), d)
 }
 
-# file(1) output to match to consider a file an unstripped executable
-FILE_UNSTRIPPED_MATCH ?= "not stripped"
-#FIXME: this should be "" when any errors are gone!
-IGNORE_STRIP_ERRORS ?= "1"
+def runstrip(file, d):
+    # Function to strip a single file, called from populate_packages below
+    # A working 'file' (one which works on the target architecture)
+    # is necessary for this stuff to work, hence the addition to do_package[depends]
 
-runstrip() {
-	# Function to strip a single file, called from RUNSTRIP in populate_packages below
-	# A working 'file' (one which works on the target architecture)
-	# is necessary for this stuff to work, hence the addition to do_package[depends]
+    import bb, os, commands, stat
 
-	local ro st
+    pathprefix = "export PATH=%s; " % bb.data.getVar('PATH', d, 1)
 
-	st=0
-	if {	file "$1" || {
-			oewarn "file $1: failed (forced strip)" >&2
-			echo '${FILE_UNSTRIPPED_MATCH}'
-		}
-	   } | grep -q '${FILE_UNSTRIPPED_MATCH}'
-	then
-		oenote "${STRIP} $1"
-		ro=
-		test -w "$1" || {
-			ro=1
-			chmod +w "$1"
-		}
-		mkdir -p $(dirname "$1")/.debug
-		debugfile="$(dirname "$1")/.debug/$(basename "$1")"
-		'${OBJCOPY}' --only-keep-debug "$1" "$debugfile"
-		'${STRIP}' "$1"
-		st=$?
-		'${OBJCOPY}' --add-gnu-debuglink="$debugfile" "$1"
-		test -n "$ro" && chmod -w "$1"
-		if test $st -ne 0
-		then
-			oewarn "runstrip: ${STRIP} $1: strip failed" >&2
-			if [ x${IGNORE_STRIP_ERRORS} = x1 ]
-			then
-				#FIXME: remove this, it's for error detection
-				if file "$1" 2>/dev/null >&2
-				then
-					(oefatal "${STRIP} $1: command failed" >/dev/tty)
-				else
-					(oefatal "file $1: command failed" >/dev/tty)
-				fi
-				st=0
-			fi
-		fi
-	else
-		oenote "runstrip: skip $1"
-	fi
-	return $st
-}
+    ret, result = commands.getstatusoutput("%sfile '%s'" % (pathprefix, file))
 
+    if ret:
+        bb.error("runstrip: 'file %s' failed (forced strip)" % file)
+
+    if "not stripped" not in result:
+        bb.debug(1, "runstrip: skip %s" % file)
+        return 0
+
+    strip = bb.data.getVar("STRIP", d, 1)
+    objcopy = bb.data.getVar("OBJCOPY", d, 1)
+
+    newmode = None
+    if not os.access(file, os.W_OK):
+        origmode = os.stat(file)[stat.ST_MODE]
+        newmode = origmode | stat.S_IWRITE
+        os.chmod(file, newmode)
+
+    extraflags = ""
+    if ".so" in file and "shared" in result:
+        extraflags = "--remove-section=.comment --remove-section=.note --strip-unneeded"
+    elif "shared" in result or "executable" in result:
+        extraflags = "--remove-section=.comment --remove-section=.note"
+
+    bb.mkdirhier(os.path.join(os.path.dirname(file), ".debug"))
+    debugfile=os.path.join(os.path.dirname(file), ".debug", os.path.basename(file))
+
+    stripcmd = "'%s' %s '%s'" % (strip, extraflags, file)
+    bb.debug(1, "runstrip: %s" % stripcmd)
+
+    os.system("%s'%s' --only-keep-debug '%s' '%s'" % (pathprefix, objcopy, file, debugfile))
+    ret = os.system("%s%s" % (pathprefix, stripcmd))
+    os.system("%s'%s' --add-gnu-debuglink='%s' '%s'" % (pathprefix, objcopy, debugfile, file))
+
+    if newmode:
+        os.chmod(file, origmode)
+
+    if ret:
+        bb.error("runstrip: '%s' strip command failed" % stripcmd)
+
+    return 1
 
 #
 # Package data handling routines
@@ -376,39 +371,27 @@ python populate_packages () {
 			package_list.append(pkg)
 
 	if (bb.data.getVar('INHIBIT_PACKAGE_STRIP', d, 1) != '1'):
-		stripfunc = ""
 		for root, dirs, files in os.walk(dvar):
 			for f in files:
 				file = os.path.join(root, f)
 				if not os.path.islink(file) and not os.path.isdir(file) and isexec(file):
-					stripfunc += "\trunstrip %s || st=1\n" % (file)
-		if not stripfunc == "":
-			from bb import build
-			localdata = bb.data.createCopy(d)
-			# strip
-			bb.data.setVar('RUNSTRIP', '\tlocal st\n\tst=0\n%s\treturn $st' % stripfunc, localdata)
-			bb.data.setVarFlag('RUNSTRIP', 'func', 1, localdata)
-			bb.build.exec_func('RUNSTRIP', localdata)
+					runstrip(file, d)
+
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+	os.system('rm -rf %s' % pkgdest)
 
 	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
-		root = os.path.join(workdir, "install", pkg)
+		root = os.path.join(pkgdest, pkg)
+		bb.mkdirhier(root)
 
-		os.system('rm -rf %s' % root)
-
-		bb.data.setVar('ROOT', '', localdata)
-		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
 		bb.data.setVar('PKG', pkg, localdata)
-
 		overrides = bb.data.getVar('OVERRIDES', localdata, 1)
 		if not overrides:
 			raise bb.build.FuncFailed('OVERRIDES not defined')
-		bb.data.setVar('OVERRIDES', overrides+':'+pkg, localdata)
-
+		bb.data.setVar('OVERRIDES', overrides + ':' + pkg, localdata)
 		bb.data.update_data(localdata)
 
-		root = bb.data.getVar('ROOT', localdata, 1)
-		bb.mkdirhier(root)
 		filesvar = bb.data.getVar('FILES', localdata, 1) or ""
 		files = filesvar.split()
 		for file in files:
@@ -461,7 +444,7 @@ python populate_packages () {
 	for pkg in package_list:
 		dangling_links[pkg] = []
 		pkg_files[pkg] = []
-		inst_root = os.path.join(workdir, "install", pkg)
+		inst_root = os.path.join(pkgdest, pkg)
 		for root, dirs, files in os.walk(inst_root):
 			for f in files:
 				path = os.path.join(root, f)
@@ -499,6 +482,8 @@ python populate_packages () {
 populate_packages[dirs] = "${D}"
 
 python emit_pkgdata() {
+	from glob import glob
+
 	def write_if_exists(f, pkg, var):
 		def encode(str):
 			import codecs
@@ -510,16 +495,16 @@ python emit_pkgdata() {
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		return
 
-	data_file = bb.data.expand("${STAGING_DIR}/pkgdata/${PN}", d)
+	data_file = bb.data.expand("${PKGDATA_DIR}/${PN}", d)
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
 	f.close()
 
+	workdir = bb.data.getVar('WORKDIR', d, 1)
+
 	for pkg in packages.split():
-		subdata_file = bb.data.expand("${STAGING_DIR}/pkgdata/runtime/%s" % pkg, d)
+		subdata_file = bb.data.expand("${PKGDATA_DIR}/runtime/%s" % pkg, d)
 		sf = open(subdata_file, 'w')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
@@ -537,8 +522,15 @@ python emit_pkgdata() {
 		write_if_exists(sf, pkg, 'pkg_preinst')
 		write_if_exists(sf, pkg, 'pkg_prerm')
 		sf.close()
+
+		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, 1)
+		root = "%s/install/%s" % (workdir, pkg)
+		os.chdir(root)
+		g = glob('*')
+		if g or allow_empty == "1":
+			file(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), 'w').close()
 }
-emit_pkgdata[dirs] = "${STAGING_DIR}/pkgdata/runtime"
+emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
@@ -558,9 +550,6 @@ python package_do_shlibs() {
 	libdir_re = re.compile(".*/lib$")
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "no packages to build; not calculating shlibs")
-		return
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -582,6 +571,8 @@ python package_do_shlibs() {
 		bb.error("TARGET_SYS not defined")
 		return
 
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+
 	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
 	old_shlibs_dir = os.path.join(staging, "shlibs")
 	bb.mkdirhier(shlibs_dir)
@@ -594,7 +585,7 @@ python package_do_shlibs() {
 
 		needed[pkg] = []
 		sonames = list()
-		top = os.path.join(workdir, "install", pkg)
+		top = os.path.join(pkgdest, pkg)
 		for root, dirs, files in os.walk(top):
 			for file in files:
 				soname = None
@@ -680,7 +671,7 @@ python package_do_shlibs() {
 			else:
 				bb.note("Couldn't find shared library provider for %s" % n)
 
-		deps_file = os.path.join(workdir, "install", pkg + ".shlibdeps")
+		deps_file = os.path.join(pkgdest, pkg + ".shlibdeps")
 		if os.path.exists(deps_file):
 			os.remove(deps_file)
 		if len(deps):
@@ -694,9 +685,6 @@ python package_do_pkgconfig () {
 	import re, os
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "no packages to build; not calculating pkgconfig dependencies")
-		return
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -713,6 +701,8 @@ python package_do_pkgconfig () {
 		bb.error("TARGET_SYS not defined")
 		return
 
+	pkgdest = bb.data.getVar('PKGDEST', d, 1)
+
 	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
 	old_shlibs_dir = os.path.join(staging, "shlibs")
 	bb.mkdirhier(shlibs_dir)
@@ -726,7 +716,7 @@ python package_do_pkgconfig () {
 	for pkg in packages.split():
 		pkgconfig_provided[pkg] = []
 		pkgconfig_needed[pkg] = []
-		top = os.path.join(workdir, "install", pkg)
+		top = os.path.join(pkgdest, pkg)
 		for root, dirs, files in os.walk(top):
 			for file in files:
 				m = pc_re.match(file)
@@ -789,7 +779,7 @@ python package_do_pkgconfig () {
 					found = True
 			if found == False:
 				bb.note("couldn't find pkgconfig module '%s' in any package" % n)
-		deps_file = os.path.join(workdir, "install", pkg + ".pcdeps")
+		deps_file = os.path.join(pkgdest, pkg + ".pcdeps")
 		if os.path.exists(deps_file):
 			os.remove(deps_file)
 		if len(deps):
@@ -800,23 +790,17 @@ python package_do_pkgconfig () {
 }
 
 python read_shlibdeps () {
-	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+	packages = bb.data.getVar('PACKAGES', d, 1).split()
 	for pkg in packages:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
-		shlibsfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".shlibdeps", d)
-		if os.access(shlibsfile, os.R_OK):
-			fd = file(shlibsfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
-		pcfile = bb.data.expand("${WORKDIR}/install/" + pkg + ".pcdeps", d)
-		if os.access(pcfile, os.R_OK):
-			fd = file(pcfile)
-			lines = fd.readlines()
-			fd.close()
-			for l in lines:
-				rdepends.append(l.rstrip())
+		for extension in ".shlibdeps", ".pcdeps", ".clilibdeps":
+			depsfile = bb.data.expand("${PKGDEST}/" + pkg + extension, d)
+			if os.access(depsfile, os.R_OK):
+				fd = file(depsfile)
+				lines = fd.readlines()
+				fd.close()
+				for l in lines:
+					rdepends.append(l.rstrip())
 		bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
 
@@ -840,7 +824,7 @@ python package_depchains() {
 
 	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
 		def packaged(pkg, d):
-			return os.access(bb.data.expand('${STAGING_DIR}/pkgdata/runtime/%s.packaged' % pkg, d), os.R_OK)
+			return os.access(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), os.R_OK)
 
                 #bb.note('rdepends for %s is %s' % (base, rdepends))
 
@@ -910,26 +894,24 @@ PACKAGEFUNCS ?= "package_do_split_locales \
 		emit_pkgdata"
 
 python package_do_package () {
+	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
+	if len(packages) < 1:
+		bb.debug(1, "No packages to build, skipping do_package")
+		return
+
 	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
 		bb.build.exec_func(f, d)
 }
 do_package[dirs] = "${D}"
 addtask package before do_build after do_install
 
-
-
-PACKAGE_WRITE_FUNCS ?= "read_subpackage_metadata"
-
-python package_do_package_write () {
-	for f in (bb.data.getVar('PACKAGE_WRITE_FUNCS', d, 1) or '').split():
-		bb.build.exec_func(f, d)
+# Dummy task to mark when all packaging is complete
+do_package_write () {
+	:
 }
-do_package_write[dirs] = "${D}"
 addtask package_write before do_build after do_package
 
-
 EXPORT_FUNCTIONS do_package do_package_write
-
 
 #
 # Helper functions for the package writing classes

@@ -1,7 +1,5 @@
 require atk.inc
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/atk/1.19/atk-${PV}.tar.bz2"
 
 do_stage () {

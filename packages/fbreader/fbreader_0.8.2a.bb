@@ -3,7 +3,7 @@ LICENSE = "GPL2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"
-DEPENDS = "gtk+ enca expat bzip2 libgpewidget"
+DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv"
 PR = "r5"
 
 # The RESOLUTION is defined at compile time which makes
@@ -39,8 +39,6 @@ FILES_${PN} += "${datadir}/FBReader ${datadir}/zlibrary"
 
 CFLAGS_append = " RESOLUTION=${READER_RESOLUTION} INSTALLDIR=/usr"
 EXTRA_OEMAKE = "CC='${CXX}' LD='${CXX}' OE_CFLAGS='${CXXFLAGS}' INCPATH='${STAGING_INCDIR}' LIBPATH='${STAGING_LIBDIR}'"
-
-LDFLAGS_append = " -liconv"
 
 inherit pkgconfig
 

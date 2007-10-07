@@ -23,15 +23,11 @@ TARGET_INSTALL = "\
 
 RDEPENDS = "${TARGET_INSTALL} ${HOST_INSTALL}"
 
-sdk_do_indexes () {
-        set -ex
-        rootfs_ipk_do_indexes
-        sdk_ipk_do_indexes
-        set +ex
-}
-
 do_populate_sdk() {
-        sdk_do_indexes
+	set -ex
+	package_update_index_ipk
+	set +ex
+
         echo "Creating host.conf..."
 
 	rm -rf ${SDK_OUTPUT}

@@ -1,7 +1,7 @@
 Index: linux-2.6.21/drivers/input/touchscreen/Kconfig
 ===================================================================
---- linux-2.6.21.orig/drivers/input/touchscreen/Kconfig	2007-06-02 20:17:58.000000000 -0300
-+++ linux-2.6.21/drivers/input/touchscreen/Kconfig	2007-06-02 20:18:40.000000000 -0300
+--- linux-2.6.21.orig/drivers/input/touchscreen/Kconfig	2007-08-31 22:27:48.000000000 -0300
++++ linux-2.6.21/drivers/input/touchscreen/Kconfig	2007-08-31 23:06:39.000000000 -0300
 @@ -164,4 +164,13 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called ucb1400_ts.
@@ -19,8 +19,8 @@ Index: linux-2.6.21/drivers/input/touchscreen/Kconfig
 Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/drivers/input/touchscreen/pcap_ts.c	2007-06-02 20:19:39.000000000 -0300
-@@ -0,0 +1,372 @@
++++ linux-2.6.21/drivers/input/touchscreen/pcap_ts.c	2007-08-31 23:57:56.000000000 -0300
+@@ -0,0 +1,331 @@
 +/*
 + * pcap_ts.c - Touchscreen driver for Motorola PCAP2 based touchscreen as found
 + * 	       in the EZX phone platform.
@@ -58,23 +58,21 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +#define DEBUGP(x, args ...)
 +#endif
 +
-+#define PRESSURE 1
-+#define COORDINATE 2
-+#define STANDBY 3
-+
-+extern int ezx_pcap_read(u_int8_t, u_int32_t *);
-+extern int ezx_pcap_write(u_int8_t, u_int32_t);
-+extern int ezx_pcap_bit_set(u_int32_t, u_int8_t);
++#define POSITION_X_MEASUREMENT	0
++#define POSITION_XY_MEASUREMENT	1
++#define PRESSURE_MEASUREMENT	2
++#define PLATE_X_MEASUREMENT	3
++#define PLATE_Y_MEASUREMENT	4
++#define STANDBY_MODE		5
++#define NONTS_MODE		6
 +
 +struct pcap_ts {
 +	int irq_xy;
 +	int irq_touch;
 +	struct input_dev *input;
 +	struct timer_list timer;
-+
 +	u_int16_t x, y;
 +	u_int16_t pressure;
-+
 +	u_int8_t read_state;
 +};
 +
@@ -91,27 +89,31 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +#define SAMPLE_INTERVAL		(HZ/50)
 +
 +
-+static void pcap_ts_mode(u_int32_t mode)
++static void pcap_ts_mode(struct pcap_ts *pcap_ts, u_int32_t mode)
 +{
 +	u_int32_t tmp;
 +
-+	ezx_pcap_read(SSP_PCAP_ADJ_ADC1_REGISTER, &tmp);
-+	tmp &= ~SSP_PCAP_TOUCH_PANEL_POSITION_DETECT_MODE_MASK;
-+	tmp |= mode;
-+	ezx_pcap_write(SSP_PCAP_ADJ_ADC1_REGISTER, tmp);
++	pcap_ts->read_state = mode;
++	ezx_pcap_read(PCAP_REG_ADC1, &tmp);
++	tmp &= ~PCAP_ADC1_TS_M_MASK;
++	tmp |= ((mode << PCAP_ADC1_TS_M_SHIFT) & PCAP_ADC1_TS_M_MASK);
++	ezx_pcap_write(PCAP_REG_ADC1, tmp);
 +}
 +
-+/* issue a XY read command to the ADC of PCAP2.  Well get an ADCDONE2 interrupt
++/* issue a XY read command to the ADC of PCAP2.  Well get an ADCDONE interrupt
 + * once the result of the conversion is available */
 +static void pcap_ts_start_xy_read(struct pcap_ts *pcap_ts)
 +{
 +	u_int32_t tmp;
 +
-+	ezx_pcap_read(SSP_PCAP_ADJ_ADC1_REGISTER, &tmp);
-+	tmp &= SSP_PCAP_ADC_START_VALUE_SET_MASK;
-+	tmp |= SSP_PCAP_ADC_START_VALUE;
-+	ezx_pcap_write(SSP_PCAP_ADJ_ADC1_REGISTER, tmp);
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ADC2_ASC, 1);
++	ezx_pcap_read(PCAP_REG_ADC1, &tmp);
++	tmp &= ~(PCAP_BIT_ADC1_RAND | PCAP_ADC1_ADA1_MASK |
++					PCAP_ADC1_ADA2_MASK);
++	tmp |= (PCAP_BIT_ADC1_ADEN | PCAP_BIT_ADC1_AD_SEL1 |
++		PCAP_BIT_ADC1_AD_SEL2 | (5 << PCAP_ADC1_ADA1_SHIFT) |
++					(3 << PCAP_ADC1_ADA2_SHIFT));
++	ezx_pcap_write(PCAP_REG_ADC1, tmp);
++	ezx_pcap_bit_set(PCAP_BIT_ADC2_ASC, 1);
 +}
 +
 +/* read the XY result from the ADC of PCAP2 */
@@ -119,17 +121,17 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +{
 +	u_int32_t tmp;
 +
-+	ezx_pcap_read(SSP_PCAP_ADJ_ADC2_REGISTER, &tmp);
++	ezx_pcap_read(PCAP_REG_ADC2, &tmp);
 +
-+	if (pcap_ts->read_state == COORDINATE && !(tmp & 0x00400000)) {
-+		pcap_ts->x = (tmp & SSP_PCAP_ADD1_VALUE_MASK);
-+		pcap_ts->y = (tmp & SSP_PCAP_ADD2_VALUE_MASK)
-+						>>SSP_PCAP_ADD2_VALUE_SHIFT;
++	if (pcap_ts->read_state == POSITION_XY_MEASUREMENT) {
++		pcap_ts->x = (tmp & PCAP_ADC2_ADD1_MASK) >>
++					PCAP_ADC2_ADD1_SHIFT;
++		pcap_ts->y = (tmp & PCAP_ADC2_ADD2_MASK) >>
++					PCAP_ADC2_ADD2_SHIFT;
 +	} else {
-+		pcap_ts->pressure = (tmp & SSP_PCAP_ADD2_VALUE_MASK)
-+						>>SSP_PCAP_ADD2_VALUE_SHIFT;
++		pcap_ts->pressure = (tmp & PCAP_ADC2_ADD2_MASK) >>
++						PCAP_ADC2_ADD2_SHIFT;
 +	}
-+
 +}
 +
 +/* PCAP2 interrupts us when ADC conversion result is available */
@@ -139,11 +141,10 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +
 +	pcap_ts_get_xy_value(pcap_ts);
 +	DEBUGP(KERN_DEBUG "%s X=%4d, Y=%4d Z=%4d ",
-+		pcap_ts->read_state == COORDINATE ? "COORD" : "PRESS",
-+		pcap_ts->x, pcap_ts->y, pcap_ts->pressure);
-+
++		pcap_ts->read_state == POSITION_XY_MEASUREMENT ? "COORD" :
++			"PRESS", pcap_ts->x, pcap_ts->y, pcap_ts->pressure);
 +	switch (pcap_ts->read_state) {
-+	case PRESSURE:
++	case PRESSURE_MEASUREMENT:
 +		if (pcap_ts->pressure >= PRESSURE_MAX ||
 +		     pcap_ts->pressure <= PRESSURE_MIN ) {
 +			/* pen has been released (or cant read pressure - WM)*/
@@ -156,11 +157,10 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +			input_report_abs(pcap_ts->input, ABS_PRESSURE, pcap_ts->pressure);
 +		}
 +		/* switch state machine into coordinate read mode */
-+		pcap_ts->read_state = COORDINATE;
-+		pcap_ts_mode(PCAP_TS_POSITION_XY_MEASUREMENT);
++		pcap_ts_mode(pcap_ts, POSITION_XY_MEASUREMENT);
 +		pcap_ts_start_xy_read(pcap_ts);
 +		break;
-+	case COORDINATE:
++	case POSITION_XY_MEASUREMENT:
 +		if (pcap_ts->x <= X_AXIS_MIN || pcap_ts->x >= X_AXIS_MAX ||
 +		    pcap_ts->y <= Y_AXIS_MIN || pcap_ts->y >= Y_AXIS_MAX) {
 +			/* pen has been released */
@@ -175,17 +175,15 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +
 +			/* ask PCAP2 to interrupt us if touch event happens
 +			 * again */
-+			pcap_ts->read_state = STANDBY;
-+			pcap_ts_mode(PCAP_TS_STANDBY_MODE);
-+			ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_TSM, 0);
++			pcap_ts_mode(pcap_ts, STANDBY_MODE);
++			enable_irq(pcap_ts->irq_touch);
 +		} else {
 +			DEBUGP("DOWN\n");
 +			input_report_abs(pcap_ts->input, ABS_X, pcap_ts->x);
 +			input_report_abs(pcap_ts->input, ABS_Y, pcap_ts->y);
 +
 +			/* switch back to pressure read mode */
-+			pcap_ts->read_state = PRESSURE;
-+			pcap_ts_mode(PCAP_TS_PRESSURE_MEASUREMENT);
++			pcap_ts_mode(pcap_ts, PRESSURE_MEASUREMENT);
 +			mod_timer(&pcap_ts->timer, jiffies + SAMPLE_INTERVAL);
 +		}
 +		input_sync(pcap_ts->input);
@@ -194,7 +192,6 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +		DEBUGP("ERROR\n");
 +		break;
 +	}
-+
 +	return IRQ_HANDLED;
 +}
 +
@@ -202,17 +199,14 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +static irqreturn_t pcap_ts_irq_touch(int irq, void *dev_id)
 +{
 +	struct pcap_ts *pcap_ts = dev_id;
-+
 +	/* mask Touchscreen interrupt bit, prevents further touch events
 +	 * from being reported to us until we're finished with reading
 +	 * both pressure and x/y from ADC */
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_TSM, 1);
++	disable_irq(pcap_ts->irq_touch);
 +
 +	DEBUGP("touched!!\n");
-+	pcap_ts_mode(PCAP_TS_PRESSURE_MEASUREMENT);
-+	pcap_ts->read_state = PRESSURE;
++	pcap_ts_mode(pcap_ts, PRESSURE_MEASUREMENT);
 +	pcap_ts_start_xy_read(pcap_ts);
-+
 +	return IRQ_HANDLED;
 +}
 +
@@ -225,8 +219,6 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +
 +static int __init ezxts_probe(struct platform_device *pdev)
 +{
-+	int ret;
-+	u_int32_t tmp;
 +	struct pcap_ts *pcap_ts;
 +	struct input_dev *input_dev;
 +	int err = -ENOMEM;
@@ -248,35 +240,8 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +		goto fail;
 +	}
 +
-+	// Some initialization before done in ssp_pcap_open()
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_TS_REFENB, 0);
-+	// ack interrupts
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ISR_ADCDONE2I, 1);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ISR_TSI, 1);
-+	// unmask interrupts
-+	// ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_MSR_TSM, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_MSR_ADCDONE2M, 0);
-+	// set adc bits? FIXME I dont think its necessary - WM
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC2_ADINC1, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC2_ADINC2, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_ATO0, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_ATO1, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_ATO2, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_ATO3, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_ATOX, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_MTR1, 0);
-+	ezx_pcap_bit_set( SSP_PCAP_ADJ_BIT_ADC1_MTR2, 0);
-+
-+	ret = ezx_pcap_read(SSP_PCAP_ADJ_ADC1_REGISTER, &tmp);
-+	if (ret < 0)
-+		return ret;
-+
-+	tmp &= (~SSP_PCAP_TOUCH_PANEL_POSITION_DETECT_MODE_MASK);
-+	tmp |= PCAP_TS_STANDBY_MODE;
-+
-+	ret = ezx_pcap_write(SSP_PCAP_ADJ_ADC1_REGISTER, tmp);
-+	if (ret < 0)
-+		return ret;
++	ezx_pcap_bit_set(PCAP_BIT_ADC1_TS_REFENB, 0);
++	pcap_ts_mode(pcap_ts, STANDBY_MODE);
 +
 +	err = request_irq(pcap_ts->irq_xy, pcap_ts_irq_xy, SA_INTERRUPT,
 +			  "pcap-ts X/Y", pcap_ts);
@@ -300,12 +265,6 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +	pcap_ts->timer.function = &pcap_ts_timer_fn;
 +
 +	platform_set_drvdata(pdev, pcap_ts);
-+
-+	pcap_ts->read_state = STANDBY;
-+	pcap_ts_mode(PCAP_TS_STANDBY_MODE);
-+
-+	/* enable pressure interrupt */
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_TSM, 0);
 +
 +	input_dev->name = "pcap-touchscreen";
 +	input_dev->phys = "ezxts/input0";
@@ -353,15 +312,15 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +
 +static int ezxts_suspend(struct platform_device *dev, pm_message_t state)
 +{
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ADC1_TS_REF_LOWPWR, 1);
++	ezx_pcap_bit_set(PCAP_BIT_ADC1_TS_REF_LOWPWR, 1);
 +        return 0;
 +}
 +
 +static int ezxts_resume(struct platform_device *dev)
 +{
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_ADC1_TS_REF_LOWPWR, 0);
++	ezx_pcap_bit_set(PCAP_BIT_ADC1_TS_REF_LOWPWR, 0);
 +	/* just in case we suspend with TSI masked. */
-+	ezx_pcap_bit_set(SSP_PCAP_ADJ_BIT_MSR_TSM, 0);
++//	ezx_pcap_bit_set(PCAP_BIT_MSR_TSM, 0);
 +        return 0;
 +}
 +
@@ -395,8 +354,8 @@ Index: linux-2.6.21/drivers/input/touchscreen/pcap_ts.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.21/drivers/input/touchscreen/Makefile
 ===================================================================
---- linux-2.6.21.orig/drivers/input/touchscreen/Makefile	2007-06-02 20:17:58.000000000 -0300
-+++ linux-2.6.21/drivers/input/touchscreen/Makefile	2007-06-02 20:18:40.000000000 -0300
+--- linux-2.6.21.orig/drivers/input/touchscreen/Makefile	2007-08-31 22:27:48.000000000 -0300
++++ linux-2.6.21/drivers/input/touchscreen/Makefile	2007-08-31 23:06:39.000000000 -0300
 @@ -16,3 +16,4 @@
  obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
  obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o

@@ -1,8 +1,3 @@
-LICENSE = "MIT"
-PR = "r6"
-
-export IMAGE_BASENAME = "sectest-gpe-image"
-
 GPE_EXTRA_THEMES = "\
     gtk-theme-industrial \
     gtk-industrial-engine \
@@ -19,9 +14,8 @@ GPE_EXTRA_INSTALL += "${GPE_EXTRA_INSTALL_${GUI_MACHINE_CLASS}}"
 XSERVER ?= "xserver-kdrive-fbdev"
 
 DEPENDS = "${MACHINE_TASK_PROVIDER} task-gpe"
-RDEPENDS = "${PACKAGE_INSTALL}"
 
-export PACKAGE_INSTALL = "\
+IMAGE_INSTALL = "\
     ${MACHINE_TASK_PROVIDER} \
     gpe-task-base \
     gpe-task-pim \

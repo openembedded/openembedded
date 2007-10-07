@@ -18,7 +18,7 @@ PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
 
-PACKAGES = "${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-600x800 ${PN}-320x240 ${PN}-240x320 ${PN}-320x320"
+PACKAGES = "${PN}-320x480 ${PN}-480x320 ${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-600x800 ${PN}-320x240 ${PN}-240x320 ${PN}-320x320"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
@@ -31,7 +31,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-320x240.jpg
 	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-320x240.jpg
 
-        for res in 480x640 640x480 800x600; do
+        for res in 320x480 480x320 480x640 640x480 800x600; do
          install -m 0644 ${WORKDIR}/pics/launcher/firstuse-${res}.jpg ${D}${palmtopdir}/pics/launcher/firstuse-${res}.jpg
          install -m 0644 ${WORKDIR}/pics/launcher/opie-background-${res}.jpg ${D}${palmtopdir}/pics/launcher/opie-background-${res}.jpg
         done
@@ -41,7 +41,7 @@ do_install() {
 }
 
 python do_package_prepend () {
-        reslist = ['240x320','320x240', '320x320', '480x640','640x480', '800x600','600x800']
+        reslist = ['240x320','320x240', '320x320', '320x480', '480x320', '480x640','640x480', '800x600','600x800']
         dir = bb.data.expand('${palmtopdir}/pics/launcher/', d)
         ft = bb.data.expand('${palmtopdir}/pics/*/*-%s.*', d)
         pn = bb.data.getVar('PN', d, 1)

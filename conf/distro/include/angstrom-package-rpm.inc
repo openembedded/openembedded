@@ -1,0 +1,1 @@
+INHERIT += "package_rpm"

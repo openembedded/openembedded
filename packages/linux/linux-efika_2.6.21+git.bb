@@ -16,7 +16,6 @@ inherit kernel
 
 export ARCH="powerpc"
 
-KERNEL_IMAGETYPE = "zImage"
 
 do_fetch () {
 	cd ${WORKDIR}

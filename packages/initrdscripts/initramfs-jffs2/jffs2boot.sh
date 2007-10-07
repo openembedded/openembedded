@@ -4,7 +4,7 @@ echo "Starting initrd boot..."
 mkdir /proc
 mount -t proc proc /proc
 
-modprobe mtdram total_size=24576 erase_size=256
+modprobe mtdram total_size=25088 erase_size=256
 sleep 1
 
 ID=`grep "mtdram test device" /proc/mtd | cut -d: -f1| cut -b4-`
