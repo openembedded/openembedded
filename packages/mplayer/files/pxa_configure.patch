@@ -29,7 +29,7 @@ Index: MPlayer-1.0rc1/configure
 +  _vosrc="$_vosrc vo_pxa.c"
 +  _vomodules="pxa $_vomodules"
 +else
-+  _def_pxa='#undef HAVE_IMAGEON'
++  _def_pxa='#undef HAVE_PXA'
 +  _novomodules="pxa $_novomodules"
 +fi
 +echores "$_pxa"
