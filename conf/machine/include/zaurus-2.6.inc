@@ -21,7 +21,8 @@ include conf/machine/include/tune-xscale.inc
 SERIAL_CONSOLE = "115200 ttyS0"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
-PREFERRED_PROVIDER_xserver = "xserver-kdrive"
+PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
+
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
