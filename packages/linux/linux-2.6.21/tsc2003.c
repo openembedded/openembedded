@@ -405,7 +405,7 @@ static int tsc2003_driver_register (struct tsc2003_data *data)
 }
 
 /* Magic definition of all other variables and things */
-static unsigned short normal_i2c[] = {0x48, I2C_CLIENT_END };
+static unsigned short normal_i2c[] = {0x48, 0x49, 0x4a, 0x48b, I2C_CLIENT_END };
 
 I2C_CLIENT_INSMOD;
 
