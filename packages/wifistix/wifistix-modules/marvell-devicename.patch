@@ -1,0 +1,11 @@
+--- src_cf8385-orig/wlan/wlan_main.c	2006-05-06 17:24:51.000000000 -0700
++++ src_cf8385/wlan/wlan_main.c	2006-05-06 17:26:14.000000000 -0700
+@@ -873,7 +873,7 @@
+ #ifdef LINUX_2_4
+ 	if (!(dev = init_etherdev(dev, sizeof(wlan_private)))) {
+ #else
+-	if (!(dev = alloc_etherdev(sizeof(wlan_private)))) {
++	if (!(dev = alloc_netdev(sizeof(wlan_private), "wlan%d", ether_setup))) {
+ #endif
+ 		PRINTM(MSG, "Init ethernet device failed!\n");
+ 		return NULL;

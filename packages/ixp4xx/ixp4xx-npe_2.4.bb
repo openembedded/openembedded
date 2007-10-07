@@ -3,8 +3,9 @@ LICENSE = "Intel Software Licence Agreement"
 PR = "r0"
 DEPENDS = "ixp4xx-npe-native"
 
-# You need to download the IPL_ixp400NpeLibrary-3_0.zip file (without crypto) from:
-# http://www.intel.com/design/network/products/npfamily/ixp400_current.htm
+# You need to download the IPL_ixp400NpeLibrary-2_4.zip file (without crypto) from:
+# http://www.intel.com/design/network/products/npfamily/download_ixp400.htm
+# "Intel IXP400 software - NPE microcode (non-crypto)" -> "2.4"
 # and put it in your downloads directory so bitbake will find it.
 # Make sure you *read* and accept the license - it is not a standard one.
 

@@ -2,13 +2,15 @@ SECTION = "base"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"
-DEPENDS = "expat virtual/libintl"
+DEPENDS = "expat glib-2.0 virtual/libintl"
 
-SRC_URI = "http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+	   file://cross.patch;patch=1 \
 	   file://tmpdir.patch;patch=1 \
 	   file://dbus-1.init \
-           file://cross.patch;patch=1 \
-	   file://fix-install-daemon.patch;patch=1"
+          "
 
 inherit autotools pkgconfig update-rc.d gettext
 
@@ -17,8 +19,8 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN} = "${bindir}/dbus-daemon ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${bindir}/dbus-uuidgen ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
-FILES_${PN}-dev += "${libdir}/dbus-1.0/include"
+FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
+FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
 pkg_postinst_dbus() {
 #!/bin/sh
@@ -36,9 +38,10 @@ chgrp "$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || addgroup "$MESSAGEUSER"
 chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
 }
 
-EXTRA_OECONF = "--disable-qt  --disable-qt3 --disable-gtk --disable-tests \
+EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \
 		--disable-checks --disable-xml-docs --disable-doxygen-docs \
 		--with-xml=expat --without-x"
+
 
 do_stage () {
 	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}

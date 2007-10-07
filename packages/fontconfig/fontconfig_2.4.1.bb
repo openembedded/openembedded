@@ -3,9 +3,9 @@ LICENSE = "BSD"
 DESCRIPTION = "A library for configuring and customizing font access."
 DEPENDS = "expat freetype freetype-native zlib"
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz"
-
-PR = "r0"
+SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
+           https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h"
+PR = "r1"
 
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
 FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
@@ -39,6 +39,7 @@ python do_unpack () {
 }
 
 do_stage () {
+	cp ${WORKDIR}/device_symbols.h ${S}/fontconfig/
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/fontconfig
 	for i in ${S}/fontconfig/*.h; do install -m 0644 $i ${STAGING_INCDIR}/fontconfig/; done

@@ -3,7 +3,8 @@ require procps.inc
 PR = "r5"
 
 SRC_URI += "file://procmodule.patch;patch=1 \
-            file://psmodule.patch;patch=1"
+            file://psmodule.patch;patch=1 \
+	    file://linux-limits.patch;patch=1"
 
 FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
 	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \

@@ -1,6 +1,7 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r35"
-ALLOW_EMPTY = "1"
+PR = "r36"
+
+inherit task
 
 XSERVER ?= "xserver-kdrive-fbdev"
 

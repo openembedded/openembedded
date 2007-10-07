@@ -10,10 +10,26 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
  #include <asm/arch/gumstix.h>
  
  #include "generic.h"
-@@ -86,6 +87,95 @@ static struct platform_device gum_audio_
+@@ -86,6 +87,89 @@ static struct platform_device gum_audio_
  	.id		= -1,
  };
  
++
++#if defined(CONFIG_FB_PXA_SHARP_LQ043_PSP) || defined(CONFIG_FB_PXA_SAMSUNG_LTE430WQ_F0C)
++static void gumstix_lcd_backlight(int on_or_off)
++{
++	if(on_or_off)
++	{
++		pxa_gpio_mode(17 | GPIO_IN);
++	} else {
++		GPCR(17) = GPIO_bit(17);
++		pxa_gpio_mode(17 | GPIO_OUT);
++		GPCR(17) = GPIO_bit(17);
++	}
++}
++#endif
++
++
 +#ifdef CONFIG_FB_PXA_ALPS_CDOLLAR
 +static struct pxafb_mode_info gumstix_fb_mode = {
 +	.pixclock	= 300000,
@@ -50,17 +66,6 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
 +	.sync		= 0, // Hsync and Vsync both active low
 +};
 +
-+static void gumstix_lcd_backlight(int on_or_off)
-+{
-+	pxa_gpio_mode(17 | GPIO_OUT);
-+	if(on_or_off)
-+	{
-+		GPSR(17) = GPIO_bit(17);
-+	} else {
-+		GPCR(17) = GPIO_bit(17);
-+	}
-+}
-+
 +static struct pxafb_mach_info gumstix_fb_info = {
 +	.modes			= &gumstix_fb_mode,
 +	.num_modes		= 1,
@@ -83,17 +88,6 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
 +	.sync		= 0, // Hsync and Vsync both active low
 +};
 +
-+static void gumstix_lcd_backlight(int on_or_off)
-+{
-+	pxa_gpio_mode(17 | GPIO_OUT);
-+	if(on_or_off)
-+	{
-+		GPSR(17) = GPIO_bit(17);
-+	} else {
-+		GPCR(17) = GPIO_bit(17);
-+	}
-+}
-+
 +static struct pxafb_mach_info gumstix_fb_info = {
 +	.modes			= &gumstix_fb_mode,
 +	.num_modes		= 1,
@@ -106,7 +100,7 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
  static struct platform_device *devices[] __initdata = {
  	&gum_audio_device,
  };
-@@ -94,6 +184,9 @@ static void __init gumstix_init(void)
+@@ -94,6 +178,9 @@ static void __init gumstix_init(void)
  {
  	pxa_set_mci_info(&gumstix_mci_platform_data);
  	pxa_set_udc_info(&gumstix_udc_info);

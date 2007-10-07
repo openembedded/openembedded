@@ -8,6 +8,14 @@ BOOTSTRAP_EXTRA_RDEPENDS += "dpkg"
 DISTRO_EXTRA_RDEPENDS += "dpkg"
 IMAGE_PKGTYPE ?= "deb"
 
+# Map TARGET_ARCH to Debian's ideas about architectures
+DPKG_ARCH ?= "${TARGET_ARCH}" 
+DPKG_ARCH_x86 ?= "i386"
+DPKG_ARCH_i486 ?= "i386"
+DPKG_ARCH_i586 ?= "i386"
+DPKG_ARCH_i686 ?= "i386"
+DPKG_ARCH_pentium ?= "i386"
+
 python package_deb_fn () {
     from bb import data
     bb.data.setVar('PKGFN', bb.data.getVar('PKG',d), d)
@@ -38,7 +46,7 @@ python do_package_deb_install () {
     if (exitstatus != 0 ):
         raise bb.build.FuncFailed(output)
 
-    f = open(os.path.join(tmpdir, "stamps", "do_packages"), "w")
+    f = open(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"), "w")
     f.close()
 
     # NOTE: this env stuff is racy at best, we need something more capable
@@ -86,9 +94,9 @@ python do_package_deb () {
         return
 
     tmpdir = bb.data.getVar('TMPDIR', d, 1)
-    # Invalidate the packages file
-    if os.access(os.path.join(tmpdir, "stamps", "do_packages"),os.R_OK):
-        os.unlink(os.path.join(tmpdir, "stamps", "do_packages"))
+
+    if os.access(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"),os.R_OK):
+        os.unlink(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"))
 
     if packages == []:
         bb.debug(1, "No packages; nothing to do")
@@ -141,6 +149,7 @@ python do_package_deb () {
             note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
             unlockfile(lf)
             continue
+
         controldir = os.path.join(root, 'DEBIAN')
         bb.mkdirhier(controldir)
         os.chmod(controldir, 0755)
@@ -161,7 +170,7 @@ python do_package_deb () {
         fields.append(["Section: %s\n", ['SECTION']])
         fields.append(["Priority: %s\n", ['PRIORITY']])
         fields.append(["Maintainer: %s\n", ['MAINTAINER']])
-        fields.append(["Architecture: %s\n", ['TARGET_ARCH']])
+        fields.append(["Architecture: %s\n", ['DPKG_ARCH']])
         fields.append(["OE: %s\n", ['PN']])
         fields.append(["Homepage: %s\n", ['HOMEPAGE']])
 
@@ -175,7 +184,7 @@ python do_package_deb () {
                 data = bb.data.getVar(i, d, 1)
                 if data is None:
                     raise KeyError(f)
-		if i == 'TARGET_ARCH' and bb.data.getVar('PACKAGE_ARCH', d, 1) == 'all':
+		if i == 'DPKG_ARCH' and bb.data.getVar('PACKAGE_ARCH', d, 1) == 'all':
                     data = 'all'
                 l2.append(data)
             return l2

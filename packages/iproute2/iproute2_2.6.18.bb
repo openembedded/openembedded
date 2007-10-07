@@ -1,10 +1,8 @@
-PR = "r2"
-
-DATE = "061002"
-
-SRC_URI_append = " file://iproute2-2.6.15_no_strip.diff;patch=1;pnum=0 \
-                   file://new-flex-fix.patch;patch=1"
-
-S = "${WORKDIR}/iproute2-${PV}-${DATE}"
+PR = "r3"
 
 require iproute2.inc
+
+SRC_URI += "file://iproute2-2.6.15_no_strip.diff;patch=1;pnum=0 \
+            file://new-flex-fix.patch;patch=1"
+
+DATE = "061002"

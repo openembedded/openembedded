@@ -1,8 +1,8 @@
 # Based on its sibling on Poky which is copyright (C) 2006,2007  OpenedHand LTD
 
 DESCRIPTION = "Gstreamer package groups"
-DEPENDS = "gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly"
-PR = "r5"
+DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
+PR = "r7"
 
 PACKAGES = "\
     gst-meta-base \

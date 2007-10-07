@@ -1,0 +1,24 @@
+--- src_cf8385/Makefile	2006-03-06 16:15:36.000000000 -0800
++++ /tmp/Makefile	2006-04-28 15:45:26.000000000 -0700
+@@ -36,9 +36,6 @@
+ # Valid options for OMAP1510: 15, 16
+ KERNEL_WE=16
+ 
+-CC=		$(CROSS)gcc
+-LD=		$(CROSS)ld
+-
+ BACKUP=		/root/backup
+ YMD=		`date +%Y%m%d%H%M`
+ 
+@@ -1095,6 +1092,11 @@
+ 		CROSS=$(TOOLPATH_iMX21)/arm-linux-
+ 	endif
+ endif
++ifeq ($(CONFIG_GUMSTIX), y)
++	INSTALLDIR=$(TARGET_DIR)
++	TOOLPATH=$(STAGING_DIR)/bin
++	CFLAGS += -DNOMEMCOPY
++endif
+ ifeq ($(CONFIG_BULVERDE), y)
+ 	INSTALLDIR=$(BULVERDE_DIR)
+ 	ifeq ($(CONFIG_SD),y)

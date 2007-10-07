@@ -4,7 +4,7 @@ LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 PV = "0.1+svnr${SRCREV}"
-PR = "r30"
+PR = "r31"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://024_sms-text-in-bracket.patch;patch=1;minrev=2957 \
@@ -16,6 +16,7 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://0003-Correctly-segment-incoming-usock-data-into-packets.patch;patch=1;minrev=2957 \
            file://0004-Handle-read-and-write-return-values.patch;patch=1;minrev=2957 \ 
            file://0005-Add-ask-ds-option-forSMS.patch;patch=1;minrev=2957 \ 
+           file://lgsm_send_fix_return_value.patch;patch=1 \
            file://gsmd \
            file://default"
 S = "${WORKDIR}/gsm"
