@@ -25,11 +25,11 @@ Index: MPlayer-1.0rc1/configure
  
 +echocheck "PXA27x Overlay Support"
 +if test "$_pxa" = yes ; then
-+  _def_imageon='#define HAVE_PXA 1'
++  _def_pxa='#define HAVE_PXA 1'
 +  _vosrc="$_vosrc vo_pxa.c"
 +  _vomodules="pxa $_vomodules"
 +else
-+  _def_imageon='#undef HAVE_IMAGEON'
++  _def_pxa='#undef HAVE_IMAGEON'
 +  _novomodules="pxa $_novomodules"
 +fi
 +echores "$_pxa"

@@ -40,7 +40,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc1+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
