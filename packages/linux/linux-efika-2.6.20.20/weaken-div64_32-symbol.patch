@@ -1,0 +1,23 @@
+2.6.20.20 with CFS fails to compile for powerpc, because this arch already has
+its assembly-optimized __div64_32() implementation, so linking fails due to
+two symbols.
+
+The same issue appeared on the s390 arch, so this patch is inspired by it.
+
+http://lkml.org/lkml/2007/4/11/24
+
+Leon 'likewise' Woestenberg <leonw@mailcan.com>
+
+Index: linux-2.6.20/lib/div64.c
+===================================================================
+--- linux-2.6.20.orig/lib/div64.c	2007-10-07 16:19:38.000000000 +0200
++++ linux-2.6.20/lib/div64.c	2007-10-07 16:20:15.000000000 +0200
+@@ -23,7 +23,7 @@
+ /* Not needed on 64bit architectures */
+ #if BITS_PER_LONG == 32
+ 
+-uint32_t __div64_32(uint64_t *n, uint32_t base)
++uint32_t __attribute__((weak)) __div64_32(uint64_t *n, uint32_t base)
+ {
+ 	uint64_t rem = *n;
+ 	uint64_t b = base;

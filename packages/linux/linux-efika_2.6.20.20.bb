@@ -41,11 +41,11 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \
            file://0032-POWERPC-EFIKA-Adds-missing-interrupts-from-bestcomm-node.txt;p=1;patch=1 \
            file://0033-EFIKA-fullduplex-prpl_aln.txt;p=1;patch=1 \
            file://v4l.diff;p=1;patch=1 \
-           http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.11.bz2;p=1;patch=1 \
-           file://sched-cfs-v9-v2.6.20.11.patch;p=1;patch=1 \
+           http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.20.20.bz2;p=1;patch=1 \
+           http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.20.20-v22.patch;p=1;patch=1 \
+           file://weaken-div64_32-symbol.patch;patch=1 \
            file://defconfig \
 		   "
-
 
 S = "${WORKDIR}/linux-2.6.20"
 
@@ -70,8 +70,6 @@ do_stage_append () {
        cp -a include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
        cp -a include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
-
-
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
