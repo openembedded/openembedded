@@ -100,4 +100,5 @@ SRCREV_pn-xoo ?= "1623"
 SRCREV_pn-mplayer ?= "24587"
 SRCREV_pn-networkmanager ?= "2887"
 SRCREV_pn-networkmanager-applet ?= "200"
+SRCREV_pn-libw100 ?= "47"
 
