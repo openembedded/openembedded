@@ -1,24 +1,28 @@
+require linux.inc
+
 DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ OpenMoko"
-VANILLA_VERSION = "2.6.22.5"
-PV = "${VANILLA_VERSION}-moko11+svnr${SRCREV}"
-PR = "r1"
+VANILLA_VERSION = "2.6.22"
+KERNEL_VERSION = "2.6.23-rc9"
+KERNEL_RELEASE = "2.6.23-rc9"
+PV = "${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
+PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
-
-require linux.inc
 
 ##############################################################
 # source and patches
 #
 SRCREV_FORMAT = "patches"
+SRCREV = "3101"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
-           svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http;name=patches \
-           file://squashfs.patch;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_VERSION}.bz2 \
+           svn://svn.openmoko.org/branches/src/target/kernel/2.6.23.x;module=patches;proto=http;name=patches \
+           file://squashfs-2.6.23.patch;patch=1 \
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
 #           file://printascii.patch;patch=1 \
-           file://defconfig \
+           file://defconfig-2.6.23-rc9 \
            file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 
@@ -47,9 +51,11 @@ module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 module_autoload_s3cmci = "s3cmci"
 
 do_prepatch() {
+        cd ${S} && patch -p1 < ${WORKDIR}/patch-${KERNEL_VERSION}
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openmoko
         mv .pc .pc.old
+	mv ${WORKDIR}/defconfig-${KERNEL_VERSION} ${WORKDIR}/defconfig
 }
 
 addtask prepatch after do_unpack before do_patch
