@@ -1,0 +1,47 @@
+From 53678aca529d43e8fd0443c0c5f7f0807d5fd850 Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Wed, 10 Jan 2007 19:18:06 +0100
+Subject: [PATCH] [AVR32] Don't include asm/delay.h
+
+Remove a couple of asm/delay.h inclusions and replace with
+linux/delay.h where necessary.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ arch/avr32/kernel/avr32_ksyms.c |    2 +-
+ arch/avr32/lib/delay.c          |    1 -
+ 2 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/arch/avr32/kernel/avr32_ksyms.c b/arch/avr32/kernel/avr32_ksyms.c
+index 372e3f8..7c4c761 100644
+--- a/arch/avr32/kernel/avr32_ksyms.c
++++ b/arch/avr32/kernel/avr32_ksyms.c
+@@ -7,12 +7,12 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
++#include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+ 
+ #include <asm/checksum.h>
+ #include <asm/uaccess.h>
+-#include <asm/delay.h>
+ 
+ /*
+  * GCC functions
+diff --git a/arch/avr32/lib/delay.c b/arch/avr32/lib/delay.c
+index 462c830..76a8474 100644
+--- a/arch/avr32/lib/delay.c
++++ b/arch/avr32/lib/delay.c
+@@ -14,7 +14,6 @@
+ #include <linux/module.h>
+ #include <linux/types.h>
+ 
+-#include <asm/delay.h>
+ #include <asm/processor.h>
+ #include <asm/sysreg.h>
+ 
+-- 
+1.4.4.1
+

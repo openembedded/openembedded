@@ -1,6 +1,7 @@
 # Packages emitted by our gcc-cross builds.
 #
 INHIBIT_PACKAGE_STRIP ?= ""
+
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
@@ -43,14 +44,14 @@ do_install () {
 		# Already in the right location
 		:
 	elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
-		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir} || true
 	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
+		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir} || true
 	fi
 
 	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
 	mkdir -p ${D}${target_libdir}
-	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
+	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir} || true 
 	mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
 	mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
 
@@ -59,7 +60,7 @@ do_install () {
        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
-               ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.*
+               ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.* || true
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true
 	fi
 }

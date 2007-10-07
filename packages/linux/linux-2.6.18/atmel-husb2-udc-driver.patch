@@ -1,0 +1,2488 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Fri Nov 18 18:13:25 2005 +0100
+Subject: [PATCH] Driver for the Atmel HUSB2 Device Controller
+
+This adds the driver for the Atmel HUSB2 Device Controller.
+
+---
+
+ drivers/usb/gadget/Kconfig        |   10 
+ drivers/usb/gadget/Makefile       |    1 
+ drivers/usb/gadget/gadget_chips.h |    8 
+ drivers/usb/gadget/husb2_udc.c    | 1998 ++++++++++++++++++++++++++++++++++++++
+ drivers/usb/gadget/husb2_udc.h    |  406 +++++++
+ 5 files changed, 2423 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/Kconfig	2006-11-02 15:54:18.000000000 +0100
++++ linux-2.6.18-avr32/drivers/usb/gadget/Kconfig	2006-11-02 15:56:20.000000000 +0100
+@@ -154,6 +154,16 @@ config USB_LH7A40X
+ 	default USB_GADGET
+ 	select USB_GADGET_SELECTED
+ 
++config USB_GADGET_HUSB2DEV
++	boolean "Atmel HUSB2DEVICE"
++	select USB_GADGET_DUALSPEED
++	depends on AVR32
++
++config USB_HUSB2DEV
++	tristate
++	depends on USB_GADGET_HUSB2DEV
++	default USB_GADGET
++	select USB_GADGET_SELECTED
+ 
+ config USB_GADGET_OMAP
+ 	boolean "OMAP USB Device Controller"
+Index: linux-2.6.18-avr32/drivers/usb/gadget/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/Makefile	2006-11-02 15:54:18.000000000 +0100
++++ linux-2.6.18-avr32/drivers/usb/gadget/Makefile	2006-11-02 15:56:20.000000000 +0100
+@@ -8,6 +8,7 @@ obj-$(CONFIG_USB_GOKU)		+= goku_udc.o
+ obj-$(CONFIG_USB_OMAP)		+= omap_udc.o
+ obj-$(CONFIG_USB_LH7A40X)	+= lh7a40x_udc.o
+ obj-$(CONFIG_USB_AT91)		+= at91_udc.o
++obj-$(CONFIG_USB_HUSB2DEV)	+= husb2_udc.o
+ 
+ #
+ # USB gadget drivers
+Index: linux-2.6.18-avr32/drivers/usb/gadget/gadget_chips.h
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/gadget_chips.h	2006-11-02 15:54:18.000000000 +0100
++++ linux-2.6.18-avr32/drivers/usb/gadget/gadget_chips.h	2006-11-02 15:56:20.000000000 +0100
+@@ -75,6 +75,12 @@
+ #define	gadget_is_pxa27x(g)	0
+ #endif
+ 
++#ifdef CONFIG_USB_GADGET_HUSB2DEV
++#define gadget_is_husb2dev(g)	!strcmp("husb2_udc", (g)->name)
++#else
++#define gadget_is_husb2dev(g)	0
++#endif
++
+ #ifdef CONFIG_USB_GADGET_S3C2410
+ #define gadget_is_s3c2410(g)    !strcmp("s3c2410_udc", (g)->name)
+ #else
+@@ -169,5 +175,7 @@ static inline int usb_gadget_controller_
+ 		return 0x16;
+ 	else if (gadget_is_mpc8272(gadget))
+ 		return 0x17;
++	else if (gadget_is_husb2dev(gadget))
++		return 0x80;
+ 	return -ENOENT;
+ }
+Index: linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.c	2006-11-02 16:06:40.000000000 +0100
+@@ -0,0 +1,1998 @@
++/*
++ * Driver for the Atmel HUSB2device high speed USB device controller
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#undef DEBUG
++
++#include <linux/config.h>
++#include <linux/clk.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/device.h>
++#include <linux/dma-mapping.h>
++#include <linux/list.h>
++#include <linux/platform_device.h>
++#include <linux/usb_ch9.h>
++#include <linux/usb_gadget.h>
++#include <linux/dmapool.h>
++#include <linux/delay.h>
++
++#include <asm/io.h>
++
++#include "husb2_udc.h"
++
++#define DRIVER_VERSION	"0.9"
++
++#define DMA_ADDR_INVALID (~(dma_addr_t)0)
++
++#define FIFO_IOMEM_ID	0
++#define CTRL_IOMEM_ID	1
++
++#ifdef DEBUG
++#define DBG_ERR		0x0001	/* report all error returns */
++#define DBG_HW		0x0002	/* debug hardware initialization */
++#define DBG_GADGET	0x0004	/* calls to/from gadget driver */
++#define DBG_INT		0x0008	/* interrupts */
++#define DBG_BUS		0x0010	/* report changes in bus state */
++#define DBG_QUEUE	0x0020  /* debug request queue processing */
++#define DBG_FIFO	0x0040  /* debug FIFO contents */
++#define DBG_DMA		0x0080  /* debug DMA handling */
++#define DBG_REQ		0x0100	/* print out queued request length */
++#define DBG_ALL		0xffff
++#define DBG_NONE	0x0000
++
++#define DEBUG_LEVEL	(DBG_ERR|DBG_REQ)
++#define DBG(level, fmt, ...)					\
++	do {							\
++		if ((level) & DEBUG_LEVEL)			\
++			printk(KERN_DEBUG "udc: " fmt, ## __VA_ARGS__);	\
++	} while (0)
++#else
++#define DBG(level, fmt...)
++#endif
++
++static struct husb2_udc the_udc;
++
++#ifdef CONFIG_DEBUG_FS
++#include <linux/debugfs.h>
++#include <asm/uaccess.h>
++
++static int queue_dbg_open(struct inode *inode, struct file *file)
++{
++	struct husb2_ep *ep = inode->u.generic_ip;
++	struct husb2_request *req, *req_copy;
++	struct list_head *queue_data;
++
++	queue_data = kmalloc(sizeof(*queue_data), GFP_KERNEL);
++	if (!queue_data)
++		return -ENOMEM;
++	INIT_LIST_HEAD(queue_data);
++
++	spin_lock_irq(&ep->udc->lock);
++	list_for_each_entry(req, &ep->queue, queue) {
++		req_copy = kmalloc(sizeof(*req_copy), GFP_ATOMIC);
++		if (!req_copy)
++			goto fail;
++		memcpy(req_copy, req, sizeof(*req_copy));
++		list_add_tail(&req_copy->queue, queue_data);
++	}
++	spin_unlock_irq(&ep->udc->lock);
++
++	file->private_data = queue_data;
++	return 0;
++
++fail:
++	spin_unlock_irq(&ep->udc->lock);
++	list_for_each_entry_safe(req, req_copy, queue_data, queue) {
++		list_del(&req->queue);
++		kfree(req);
++	}
++	kfree(queue_data);
++	return -ENOMEM;
++}
++
++/*
++ * bbbbbbbb llllllll IZS sssss nnnn FDL\n\0
++ *
++ * b: buffer address
++ * l: buffer length
++ * I/i: interrupt/no interrupt
++ * Z/z: zero/no zero
++ * S/s: short ok/short not ok
++ * s: status
++ * n: nr_packets
++ * F/f: submitted/not submitted to FIFO
++ * D/d: using/not using DMA
++ * L/l: last transaction/not last transaction
++ */
++static ssize_t queue_dbg_read(struct file *file, char __user *buf,
++			      size_t nbytes, loff_t *ppos)
++{
++	struct list_head *queue = file->private_data;
++	struct husb2_request *req, *tmp_req;
++	size_t len, remaining, actual = 0;
++	char tmpbuf[38];
++
++	if (!access_ok(VERIFY_WRITE, buf, nbytes))
++		return -EFAULT;
++
++	mutex_lock(&file->f_dentry->d_inode->i_mutex);
++	list_for_each_entry_safe(req, tmp_req, queue, queue) {
++		len = snprintf(tmpbuf, sizeof(tmpbuf),
++			       "%8p %08x %c%c%c %5d %4u %c%c%c\n",
++			       req->req.buf, req->req.length,
++			       req->req.no_interrupt ? 'i' : 'I',
++			       req->req.zero ? 'Z' : 'z',
++			       req->req.short_not_ok ? 's' : 'S',
++			       req->req.status,
++			       req->nr_pkts,
++			       req->submitted ? 'F' : 'f',
++			       req->using_dma ? 'D' : 'd',
++			       req->last_transaction ? 'L' : 'l');
++		len = min(len, sizeof(tmpbuf));
++		if (len > nbytes)
++			break;
++
++		list_del(&req->queue);
++		kfree(req);
++
++		remaining = __copy_to_user(buf, tmpbuf, len);
++		actual += len - remaining;
++		if (remaining)
++			break;
++
++		nbytes -= len;
++		buf += len;
++	}
++	mutex_unlock(&file->f_dentry->d_inode->i_mutex);
++
++	return actual;
++}
++
++static int queue_dbg_release(struct inode *inode, struct file *file)
++{
++	struct list_head *queue_data = file->private_data;
++	struct husb2_request *req, *tmp_req;
++
++	list_for_each_entry_safe(req, tmp_req, queue_data, queue) {
++		list_del(&req->queue);
++		kfree(req);
++	}
++	kfree(queue_data);
++	return 0;
++}
++
++static int regs_dbg_open(struct inode *inode, struct file *file)
++{
++	struct husb2_udc *udc;
++	unsigned int i;
++	u32 *data;
++	int ret = -ENOMEM;
++
++	mutex_lock(&inode->i_mutex);
++	udc = inode->u.generic_ip;
++	data = kmalloc(inode->i_size, GFP_KERNEL);
++	if (!data)
++		goto out;
++
++	spin_lock_irq(&udc->lock);
++	for (i = 0; i < inode->i_size / 4; i++)
++		data[i] = __raw_readl(udc->regs + i * 4);
++	spin_unlock_irq(&udc->lock);
++
++	file->private_data = data;
++	ret = 0;
++
++out:
++	mutex_unlock(&inode->i_mutex);
++
++	return ret;
++}
++
++static ssize_t regs_dbg_read(struct file *file, char __user *buf,
++			     size_t nbytes, loff_t *ppos)
++{
++	struct inode *inode = file->f_dentry->d_inode;
++	int ret;
++
++	mutex_lock(&inode->i_mutex);
++	ret = simple_read_from_buffer(buf, nbytes, ppos,
++				       file->private_data,
++				       file->f_dentry->d_inode->i_size);
++	mutex_unlock(&inode->i_mutex);
++
++	return ret;
++}
++
++static int regs_dbg_release(struct inode *inode, struct file *file)
++{
++	kfree(file->private_data);
++	return 0;
++}
++
++const struct file_operations queue_dbg_fops = {
++	.owner		= THIS_MODULE,
++	.open		= queue_dbg_open,
++	.llseek		= no_llseek,
++	.read		= queue_dbg_read,
++	.release	= queue_dbg_release,
++};
++
++const struct file_operations regs_dbg_fops = {
++	.owner		= THIS_MODULE,
++	.open		= regs_dbg_open,
++	.llseek		= generic_file_llseek,
++	.read		= regs_dbg_read,
++	.release	= regs_dbg_release,
++};
++
++static void husb2_ep_init_debugfs(struct husb2_udc *udc,
++				  struct husb2_ep *ep)
++{
++	struct dentry *ep_root;
++
++	ep_root = debugfs_create_dir(ep_name(ep), udc->debugfs_root);
++	if (!ep_root)
++		goto err_root;
++	ep->debugfs_dir = ep_root;
++
++	ep->debugfs_queue = debugfs_create_file("queue", 0400, ep_root,
++						ep, &queue_dbg_fops);
++	if (!ep->debugfs_queue)
++		goto err_queue;
++
++	if (ep_can_dma(ep)) {
++		ep->debugfs_dma_status
++			= debugfs_create_u32("dma_status", 0400, ep_root,
++					     &ep->last_dma_status);
++		if (!ep->debugfs_dma_status)
++			goto err_dma_status;
++	}
++
++	return;
++
++err_dma_status:
++	debugfs_remove(ep->debugfs_queue);
++err_queue:
++	debugfs_remove(ep_root);
++err_root:
++	dev_err(&ep->udc->pdev->dev,
++		"failed to create debugfs directory for %s\n", ep_name(ep));
++}
++
++static void husb2_ep_cleanup_debugfs(struct husb2_ep *ep)
++{
++	debugfs_remove(ep->debugfs_queue);
++	debugfs_remove(ep->debugfs_dma_status);
++	debugfs_remove(ep->debugfs_dir);
++	ep->debugfs_dma_status = NULL;
++	ep->debugfs_dir = NULL;
++}
++
++static void husb2_init_debugfs(struct husb2_udc *udc)
++{
++	struct dentry *root, *regs;
++	struct resource *regs_resource;
++
++	root = debugfs_create_dir(udc->gadget.name, NULL);
++	if (IS_ERR(root) || !root)
++		goto err_root;
++	udc->debugfs_root = root;
++
++	regs = debugfs_create_file("regs", 0400, root, udc, &regs_dbg_fops);
++	if (!regs)
++		goto err_regs;
++
++	regs_resource = platform_get_resource(udc->pdev, IORESOURCE_MEM,
++					      CTRL_IOMEM_ID);
++	regs->d_inode->i_size = regs_resource->end - regs_resource->start + 1;
++	udc->debugfs_regs = regs;
++
++	husb2_ep_init_debugfs(udc, to_husb2_ep(udc->gadget.ep0));
++
++	return;
++
++err_regs:
++	debugfs_remove(root);
++err_root:
++	udc->debugfs_root = NULL;
++	dev_err(&udc->pdev->dev, "debugfs is not available\n");
++}
++
++static void husb2_cleanup_debugfs(struct husb2_udc *udc)
++{
++	husb2_ep_cleanup_debugfs(to_husb2_ep(udc->gadget.ep0));
++	debugfs_remove(udc->debugfs_regs);
++	debugfs_remove(udc->debugfs_root);
++	udc->debugfs_regs = NULL;
++	udc->debugfs_root = NULL;
++}
++#else
++static inline void husb2_ep_init_debugfs(struct husb2_udc *udc,
++					 struct husb2_ep *ep)
++{
++
++}
++
++static inline void husb2_ep_cleanup_debugfs(struct husb2_ep *ep)
++{
++
++}
++
++static inline void husb2_init_debugfs(struct husb2_udc *udc)
++{
++
++}
++
++static inline void husb2_cleanup_debugfs(struct husb2_udc *udc)
++{
++
++}
++#endif
++
++static void copy_to_fifo(void __iomem *fifo, void *buf, int len)
++{
++	unsigned long tmp;
++
++	DBG(DBG_FIFO, "copy to FIFO (len %d):\n", len);
++	for (; len > 0; len -= 4, buf += 4, fifo += 4) {
++		tmp = *(unsigned long *)buf;
++		if (len >= 4) {
++			DBG(DBG_FIFO, "  -> %08lx\n", tmp);
++			__raw_writel(tmp, fifo);
++		} else {
++			do {
++				DBG(DBG_FIFO, "  -> %02lx\n", tmp >> 24);
++				__raw_writeb(tmp >> 24, fifo);
++				fifo++;
++				tmp <<= 8;
++			} while (--len);
++			break;
++		}
++	}
++}
++
++static void copy_from_fifo(void *buf, void __iomem *fifo, int len)
++{
++	union {
++		unsigned long *w;
++		unsigned char *b;
++	} p;
++	unsigned long tmp;
++
++	DBG(DBG_FIFO, "copy from FIFO (len %d):\n", len);
++	for (p.w = buf; len > 0; len -= 4, p.w++, fifo += 4) {
++		if (len >= 4) {
++			tmp = __raw_readl(fifo);
++			*p.w = tmp;
++			DBG(DBG_FIFO, "  -> %08lx\n", tmp);
++		} else {
++			do {
++				tmp = __raw_readb(fifo);
++				*p.b = tmp;
++				DBG(DBG_FIFO, " -> %02lx\n", tmp);
++				fifo++, p.b++;
++			} while (--len);
++		}
++	}
++}
++
++static void next_fifo_transaction(struct husb2_ep *ep,
++				  struct husb2_request *req)
++{
++	unsigned int transaction_len;
++
++	transaction_len = req->req.length - req->req.actual;
++	req->last_transaction = 1;
++	if (transaction_len > ep->ep.maxpacket) {
++		transaction_len = ep->ep.maxpacket;
++		req->last_transaction = 0;
++	} else if (transaction_len == ep->ep.maxpacket
++		   && req->req.zero) {
++		req->last_transaction = 0;
++	}
++	DBG(DBG_QUEUE, "%s: submit_transaction, req %p (length %d)%s\n",
++	    ep_name(ep), req, transaction_len,
++	    req->last_transaction ? ", done" : "");
++
++	copy_to_fifo(ep->fifo, req->req.buf + req->req.actual, transaction_len);
++	husb2_ep_writel(ep, SET_STA, HUSB2_BIT(TX_PK_RDY));
++	req->req.actual += transaction_len;
++}
++
++static void submit_request(struct husb2_ep *ep, struct husb2_request *req)
++{
++	DBG(DBG_QUEUE, "%s: submit_request: req %p (length %d)\n",
++	    ep_name(ep), req, req->req.length);
++
++	req->req.actual = 0;
++	req->submitted = 1;
++
++	if (req->using_dma) {
++		if (req->req.length == 0) {
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_PK_RDY));
++		} else {
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(TX_PK_RDY));
++			husb2_dma_writel(ep, NXT_DSC,
++					 req->packet[0].desc_dma);
++			husb2_dma_writel(ep, CONTROL, HUSB2_BIT(DMA_LINK));
++		}
++	} else {
++		next_fifo_transaction(ep, req);
++		if (req->last_transaction)
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_COMPLETE));
++		else
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_PK_RDY));
++	}
++}
++
++static void submit_next_request(struct husb2_ep *ep)
++{
++	struct husb2_request *req;
++
++	if (list_empty(&ep->queue)) {
++		husb2_ep_writel(ep, CTL_DIS, (HUSB2_BIT(TX_PK_RDY)
++					      | HUSB2_BIT(RX_BK_RDY)));
++		return;
++	}
++
++	req = list_entry(ep->queue.next, struct husb2_request, queue);
++	if (!req->submitted)
++		submit_request(ep, req);
++}
++
++static void send_status(struct husb2_udc *udc, struct husb2_ep *ep)
++{
++	ep->state = STATUS_STAGE_IN;
++	husb2_ep_writel(ep, SET_STA, HUSB2_BIT(TX_PK_RDY));
++	husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_COMPLETE));
++}
++
++static void receive_data(struct husb2_ep *ep)
++{
++	struct husb2_udc *udc = ep->udc;
++	struct husb2_request *req;
++	unsigned long status;
++	unsigned int bytecount, nr_busy;
++	int is_complete = 0;
++
++	status = husb2_ep_readl(ep, STA);
++	nr_busy = HUSB2_BFEXT(BUSY_BANKS, status);
++
++	DBG(DBG_QUEUE, "receive data: nr_busy=%u\n", nr_busy);
++
++	while (nr_busy > 0) {
++		if (list_empty(&ep->queue)) {
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(RX_BK_RDY));
++			break;
++		}
++		req = list_entry(ep->queue.next,
++				 struct husb2_request, queue);
++
++		bytecount = HUSB2_BFEXT(BYTE_COUNT, status);
++
++		if (status & (1 << 31))
++			is_complete = 1;
++		if (req->req.actual + bytecount >= req->req.length) {
++			is_complete = 1;
++			bytecount = req->req.length - req->req.actual;
++		}
++
++		copy_from_fifo(req->req.buf + req->req.actual,
++			       ep->fifo, bytecount);
++		req->req.actual += bytecount;
++
++		husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(RX_BK_RDY));
++
++		if (is_complete) {
++			DBG(DBG_QUEUE, "%s: request done\n", ep_name(ep));
++			req->req.status = 0;
++			list_del_init(&req->queue);
++			req->req.complete(&ep->ep, &req->req);
++		}
++
++		status = husb2_ep_readl(ep, STA);
++		nr_busy = HUSB2_BFEXT(BUSY_BANKS, status);
++
++		if (is_complete && ep_is_control(ep)) {
++			BUG_ON(nr_busy != 0);
++			send_status(udc, ep);
++			break;
++		}
++	}
++}
++
++static void request_complete(struct husb2_ep *ep,
++			     struct husb2_request *req,
++			     int status)
++{
++	struct husb2_udc *udc = ep->udc;
++	int i;
++
++	BUG_ON(!list_empty(&req->queue));
++
++	if (req->req.status == -EINPROGRESS)
++		req->req.status = status;
++
++	if (req->packet) {
++		for (i = 0; i < req->nr_pkts; i++)
++			dma_pool_free(udc->desc_pool, req->packet[i].desc,
++				      req->packet[i].desc_dma);
++		kfree(req->packet);
++		req->packet = NULL;
++		dma_unmap_single(&udc->pdev->dev,
++				 req->req.dma, req->req.length,
++				 (ep_is_in(ep)
++				  ? DMA_TO_DEVICE : DMA_FROM_DEVICE));
++		req->req.dma = DMA_ADDR_INVALID;
++	}
++
++	DBG(DBG_GADGET | DBG_REQ,
++	    "%s: req %p complete: status %d, actual %u\n",
++	    ep_name(ep), req, req->req.status, req->req.actual);
++	req->req.complete(&ep->ep, &req->req);
++}
++
++static void request_complete_list(struct husb2_ep *ep,
++				  struct list_head *list,
++				  int status)
++{
++	struct husb2_request *req, *tmp_req;
++
++	list_for_each_entry_safe(req, tmp_req, list, queue) {
++		list_del_init(&req->queue);
++		request_complete(ep, req, status);
++	}
++}
++
++static int husb2_ep_enable(struct usb_ep *_ep,
++			   const struct usb_endpoint_descriptor *desc)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++	unsigned long flags, ept_cfg, maxpacket;
++
++	DBG(DBG_GADGET, "%s: ep_enable: desc=%p\n", ep_name(ep), desc);
++
++	maxpacket = le16_to_cpu(desc->wMaxPacketSize);
++
++	if (ep->index == 0
++	    || desc->bDescriptorType != USB_DT_ENDPOINT
++	    || ((desc->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)
++		!= ep->index)
++	    || maxpacket == 0
++	    || maxpacket > ep->fifo_size) {
++		DBG(DBG_ERR, "ep_enable: Invalid argument");
++		return -EINVAL;
++	}
++
++	if (((desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK)
++	     == USB_ENDPOINT_XFER_ISOC)
++	    && !(ep->capabilities & HUSB2_EP_CAP_ISOC)) {
++		DBG(DBG_ERR, "ep_enable: %s is not isoc capable\n",
++		    ep_name(ep));
++		return -EINVAL;
++	}
++
++	if (maxpacket <= 8)
++		ept_cfg = HUSB2_BF(EPT_SIZE, HUSB2_EPT_SIZE_8);
++	else
++		/* LSB is bit 1, not 0 */
++		ept_cfg = HUSB2_BF(EPT_SIZE, fls(maxpacket - 1) - 3);
++	DBG(DBG_HW, "%s: EPT_SIZE = %lu (maxpacket = %lu)\n",
++	    ep_name(ep), ept_cfg, maxpacket);
++
++	if ((desc->bEndpointAddress & USB_ENDPOINT_DIR_MASK) == USB_DIR_IN)
++		ept_cfg |= HUSB2_BIT(EPT_DIR);
++
++	switch (desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK) {
++	case USB_ENDPOINT_XFER_CONTROL:
++		ept_cfg |= HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_CONTROL);
++		break;
++	case USB_ENDPOINT_XFER_ISOC:
++		ept_cfg |= HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_ISO);
++		break;
++	case USB_ENDPOINT_XFER_BULK:
++		ept_cfg |= HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_BULK);
++		break;
++	case USB_ENDPOINT_XFER_INT:
++		ept_cfg |= HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_INT);
++		break;
++	}
++	ept_cfg |= HUSB2_BF(BK_NUMBER, ep->nr_banks);
++
++	spin_lock_irqsave(&ep->udc->lock, flags);
++
++	if (ep->desc) {
++		spin_unlock_irqrestore(&ep->udc->lock, flags);
++		DBG(DBG_ERR, "ep%d already enabled\n", ep->index);
++		return -EBUSY;
++	}
++
++	ep->desc = desc;
++	ep->ep.maxpacket = maxpacket;
++
++	husb2_ep_writel(ep, CFG, ept_cfg);
++	husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(EPT_ENABLE));
++
++	if (ep_can_dma(ep)) {
++		husb2_writel(udc, INT_ENB,
++			     (husb2_readl(udc, INT_ENB)
++			      | HUSB2_BF(EPT_INT, 1 << ep->index)
++			      | HUSB2_BF(DMA_INT, 1 << ep->index)));
++		husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(AUTO_VALID));
++	} else {
++		husb2_writel(udc, INT_ENB,
++			     (husb2_readl(udc, INT_ENB)
++			      | HUSB2_BF(EPT_INT, 1 << ep->index)));
++	}
++
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	DBG(DBG_HW, "EPT_CFG%d after init: %#08lx\n", ep->index,
++	    (unsigned long)husb2_ep_readl(ep, CFG));
++	DBG(DBG_HW, "INT_ENB after init: %#08lx\n",
++	    (unsigned long)husb2_readl(udc, INT_ENB));
++
++	husb2_ep_init_debugfs(udc, ep);
++
++	return 0;
++}
++
++static int husb2_ep_disable(struct usb_ep *_ep)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++	LIST_HEAD(req_list);
++	unsigned long flags;
++
++	DBG(DBG_GADGET, "ep_disable: %s\n", ep_name(ep));
++
++	husb2_ep_cleanup_debugfs(ep);
++
++	spin_lock_irqsave(&udc->lock, flags);
++
++	if (!ep->desc) {
++		spin_unlock_irqrestore(&udc->lock, flags);
++		DBG(DBG_ERR, "ep_disable: %s not enabled\n",
++		    ep_name(ep));
++		return -EINVAL;
++	}
++	ep->desc = NULL;
++
++	list_splice_init(&ep->queue, &req_list);
++	if (ep_can_dma(ep)) {
++		husb2_dma_writel(ep, CONTROL, 0);
++		husb2_dma_writel(ep, ADDRESS, 0);
++		husb2_dma_readl(ep, STATUS);
++	}
++	husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(EPT_ENABLE));
++	husb2_writel(udc, INT_ENB, (husb2_readl(udc, INT_ENB)
++				    & ~HUSB2_BF(EPT_INT, 1 << ep->index)));
++
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	request_complete_list(ep, &req_list, -ESHUTDOWN);
++
++	return 0;
++}
++
++static struct usb_request *
++husb2_ep_alloc_request(struct usb_ep *_ep, unsigned gfp_flags)
++{
++	struct husb2_request *req;
++
++	DBG(DBG_GADGET, "ep_alloc_request: %p, 0x%x\n", _ep, gfp_flags);
++
++	req = kzalloc(sizeof(*req), gfp_flags);
++	if (!req)
++		return NULL;
++
++	INIT_LIST_HEAD(&req->queue);
++	req->req.dma = DMA_ADDR_INVALID;
++
++	return &req->req;
++}
++
++static void
++husb2_ep_free_request(struct usb_ep *_ep, struct usb_request *_req)
++{
++	struct husb2_request *req = to_husb2_req(_req);
++
++	DBG(DBG_GADGET, "ep_free_request: %p, %p\n", _ep, _req);
++
++	kfree(req);
++}
++
++static void *husb2_ep_alloc_buffer(struct usb_ep *_ep, unsigned bytes,
++				   dma_addr_t *dma, unsigned gfp_flags)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	void *buf;
++
++	/*
++	 * We depend on kmalloc() returning cache-aligned memory. This
++	 * is normally guaranteed as long as we allocate a whole
++	 * cacheline or more.
++	 *
++	 * When CONFIG_DEBUG_SLAB is enabled, however, the slab
++	 * allocator inserts red zones and ownership information,
++	 * causing the slab objects to be misaligned.
++	 *
++	 * One alternative would be to use dma_alloc_coherent, but
++	 * that would make us unable to allocate anything less than a
++	 * page at a time.
++	 */
++#ifdef CONFIG_DEBUG_SLAB
++# error The HUSB2 UDC driver breaks with SLAB debugging enabled
++#endif
++
++	if (bytes < L1_CACHE_BYTES)
++		bytes = L1_CACHE_BYTES;
++
++	buf = kmalloc(bytes, gfp_flags);
++
++	/*
++	 * Seems like we have to map the buffer any chance we get.
++	 * ether.c wants us to initialize the dma member of a
++	 * different request than the one receiving the buffer, so one
++	 * never knows...
++	 *
++	 * Ah, screw it.  The ether driver is probably wrong, and this
++	 * is not the right place to do the mapping.  The driver
++	 * shouldn't mess with our DMA mappings anyway.
++	 */
++	*dma = DMA_ADDR_INVALID;
++
++	DBG(DBG_GADGET, "ep_alloc_buffer: %s, %u, 0x%x -> %p\n",
++	    ep_name(ep), bytes, gfp_flags, buf);
++
++	return buf;
++}
++
++static void husb2_ep_free_buffer(struct usb_ep *_ep, void *buf,
++				 dma_addr_t dma, unsigned bytes)
++{
++	DBG(DBG_GADGET, "ep_free_buffer: %s, buf %p (size %u)\n",
++	    _ep->name, buf, bytes);
++	kfree(buf);
++}
++
++static int queue_dma(struct husb2_udc *udc, struct husb2_ep *ep,
++		     struct husb2_request *req, unsigned int direction,
++		     gfp_t gfp_flags)
++{
++	struct husb2_packet *pkt, *prev_pkt;
++	unsigned int pkt_size, nr_pkts, i;
++	unsigned int residue;
++	dma_addr_t addr;
++	unsigned long flags;
++	u32 ctrl;
++
++	req->using_dma = 1;
++
++	if (req->req.length == 0) {
++		if (!req->req.zero)
++			return -EINVAL;
++		req->send_zlp = 1;
++
++		spin_lock_irqsave(&udc->lock, flags);
++		husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_PK_RDY));
++		list_add_tail(&req->queue, &ep->queue);
++		spin_unlock_irqrestore(&udc->lock, flags);
++
++		return 0;
++	}
++
++	if (req->req.dma == DMA_ADDR_INVALID)
++		req->req.dma = dma_map_single(&udc->pdev->dev,
++					      req->req.buf,
++					      req->req.length,
++					      direction);
++	else
++		dma_sync_single_for_device(&udc->pdev->dev,
++					   req->req.dma,
++					   req->req.length,
++					   direction);
++
++	pkt_size = ep->ep.maxpacket;
++	nr_pkts = req->req.length / pkt_size;
++	residue = req->req.length % pkt_size;
++	if (residue != 0)
++		nr_pkts++;
++	else if (req->req.zero && ep_is_in(ep))
++		/* ensure last packet is short */
++		req->send_zlp = 1;
++
++	req->nr_pkts = nr_pkts;
++
++	req->packet = kzalloc(sizeof(*req->packet) * nr_pkts, gfp_flags);
++	if (!req->packet)
++		goto out_of_memory;
++
++	addr = req->req.dma;
++	ctrl = (HUSB2_BF(DMA_BUF_LEN, pkt_size)
++		| HUSB2_BIT(DMA_CH_EN) | HUSB2_BIT(DMA_LINK)
++		| HUSB2_BIT(DMA_END_TR_EN) | HUSB2_BIT(DMA_END_TR_IE));
++	prev_pkt = NULL;
++	pkt = NULL;
++	DBG(DBG_DMA, "DMA descriptors:\n");
++	for (i = 0; i < nr_pkts; i++) {
++		pkt = &req->packet[i];
++		pkt->desc = dma_pool_alloc(udc->desc_pool, gfp_flags,
++					   &pkt->desc_dma);
++		if (!pkt->desc)
++			goto out_of_memory;
++
++		if (prev_pkt) {
++			prev_pkt->desc->next = pkt->desc_dma;
++			DBG(DBG_DMA, "[%d] n%08x a%08x c%08x\n",
++			    i - 1, prev_pkt->desc->next, prev_pkt->desc->addr,
++			    prev_pkt->desc->ctrl);
++		}
++		prev_pkt = pkt;
++
++		pkt->desc->addr = addr;
++		pkt->desc->ctrl = ctrl;
++		addr += pkt_size;
++	}
++
++	/* special care is needed for the last packet... */
++	ctrl = (HUSB2_BIT(DMA_CH_EN)
++		| HUSB2_BIT(DMA_END_TR_EN) | HUSB2_BIT(DMA_END_TR_IE)
++		| HUSB2_BIT(DMA_END_BUF_IE));
++	if (ep_is_in(ep))
++		ctrl |= HUSB2_BIT(DMA_END_BUF_EN);
++	if (req->req.zero || residue)
++		ctrl |= HUSB2_BF(DMA_BUF_LEN, residue);
++	else
++		ctrl |= HUSB2_BF(DMA_BUF_LEN, pkt_size);
++	pkt->desc->ctrl = ctrl;
++
++	DBG(DBG_DMA, "[%d] n%08x a%08x c%08x\n",
++	    i - 1, prev_pkt->desc->next, prev_pkt->desc->addr,
++	    prev_pkt->desc->ctrl);
++
++	/* Add this request to the queue and try to chain the DMA descriptors */
++	spin_lock_irqsave(&udc->lock, flags);
++
++	/* If the DMA controller is idle, start it */
++	if (list_empty(&ep->queue)) {
++		husb2_dma_writel(ep, NXT_DSC, req->packet[0].desc_dma);
++		husb2_dma_writel(ep, CONTROL, HUSB2_BIT(DMA_LINK));
++	}
++
++	list_add_tail(&req->queue, &ep->queue);
++
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	return 0;
++
++out_of_memory:
++	printk(KERN_ERR "ERROR: Could not allocate DMA memory for endpoint %s\n",
++	       ep_name(ep));
++	if (req->packet) {
++		for (i = 0; i < nr_pkts; i++)
++			if (req->packet[i].desc)
++				dma_pool_free(udc->desc_pool,
++					      req->packet[i].desc,
++					      req->packet[i].desc_dma);
++		kfree(req->packet);
++	}
++
++	return -ENOMEM;
++}
++
++static int husb2_ep_queue(struct usb_ep *_ep, struct usb_request *_req,
++			  gfp_t gfp_flags)
++{
++	struct husb2_request *req = to_husb2_req(_req);
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++	unsigned long flags;
++	int direction_in = 0;
++
++	DBG(DBG_GADGET | DBG_QUEUE | DBG_REQ,
++	    "%s: queue req %p, len %u\n", ep_name(ep), req, _req->length);
++
++	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN)
++		return -ESHUTDOWN;
++	if (!ep->desc)
++		return -ENODEV;
++
++	req->nr_pkts = 0;
++	req->submitted = 0;
++	req->using_dma = 0;
++	req->last_transaction = 0;
++	req->send_zlp = 0;
++
++	BUG_ON(req->packet);
++
++	if (ep_is_in(ep)
++	    || (ep_is_control(ep) && (ep->state == DATA_STAGE_IN
++				      || ep->state == STATUS_STAGE_IN)))
++		direction_in = 1;
++
++	_req->status = -EINPROGRESS;
++	_req->actual = 0;
++
++	if (ep_can_dma(ep)) {
++		return queue_dma(udc, ep, req, (direction_in
++						? DMA_TO_DEVICE
++						: DMA_FROM_DEVICE),
++				 gfp_flags);
++	} else {
++		spin_lock_irqsave(&udc->lock, flags);
++		list_add_tail(&req->queue, &ep->queue);
++
++		if (direction_in)
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_PK_RDY));
++		else
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(RX_BK_RDY));
++		spin_unlock_irqrestore(&udc->lock, flags);
++	}
++
++	return 0;
++}
++
++static void husb2_update_req(struct husb2_ep *ep, struct husb2_request *req,
++			     u32 status)
++{
++	struct husb2_dma_desc *desc;
++	dma_addr_t from;
++	dma_addr_t addr;
++	size_t size;
++	unsigned int i;
++
++	addr = husb2_dma_readl(ep, ADDRESS);
++	req->req.actual = 0;
++
++	for (i = 0; i < req->nr_pkts; i++) {
++		desc = req->packet[i].desc;
++		from = desc->addr;
++		size = HUSB2_BFEXT(DMA_BUF_LEN, desc->ctrl);
++
++		req->req.actual += size;
++
++		DBG(DBG_DMA, " from=%#08x, size=%#zx\n", from, size);
++
++		if (from <= addr && (from + size) >= addr)
++			break;
++	}
++
++	req->req.actual -= HUSB2_BFEXT(DMA_BUF_LEN, status);
++}
++
++static int stop_dma(struct husb2_ep *ep, u32 *pstatus)
++{
++	unsigned int timeout;
++	u32 status;
++
++	/*
++	 * Stop the DMA controller. When writing both CH_EN
++	 * and LINK to 0, the other bits are not affected.
++	 */
++	husb2_dma_writel(ep, CONTROL, 0);
++
++	/* Wait for the FIFO to empty */
++	for (timeout = 40; timeout; --timeout) {
++		status = husb2_dma_readl(ep, STATUS);
++		if (!(status & HUSB2_BIT(DMA_CH_EN)))
++			break;
++		udelay(1);
++	}
++
++	if (pstatus)
++		*pstatus = status;
++
++	if (timeout == 0) {
++		dev_err(&ep->udc->pdev->dev,
++			"%s: timed out waiting for DMA FIFO to empty\n",
++			ep_name(ep));
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
++
++static int husb2_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++	struct husb2_request *req = to_husb2_req(_req);
++	unsigned long flags;
++	u32 status;
++
++	DBG(DBG_GADGET | DBG_QUEUE, "ep_dequeue: %s, req %p\n", ep_name(ep), req);
++
++	spin_lock_irqsave(&udc->lock, flags);
++
++	if (req->using_dma) {
++		/*
++		 * If this request is currently being transferred,
++		 * stop the DMA controller and reset the FIFO.
++		 */
++		if (ep->queue.next == &req->queue) {
++			status = husb2_dma_readl(ep, STATUS);
++			if (status & HUSB2_BIT(DMA_CH_EN))
++				stop_dma(ep, &status);
++
++#ifdef CONFIG_DEBUG_FS
++			ep->last_dma_status = status;
++#endif
++
++			husb2_writel(udc, EPT_RST,
++				     1 << ep_index(ep));
++
++			husb2_update_req(ep, req, status);
++		}
++	}
++
++	/*
++	 * Errors should stop the queue from advancing until the
++	 * completion function returns.
++	 */
++	list_del_init(&req->queue);
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	request_complete(ep, req, -ECONNRESET);
++
++	/* Process the next request if any */
++	spin_lock_irqsave(&udc->lock, flags);
++	submit_next_request(ep);
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	return 0;
++}
++
++static int husb2_ep_set_halt(struct usb_ep *_ep, int value)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++	unsigned long flags;
++	int ret = 0;
++
++	DBG(DBG_GADGET, "endpoint %s: %s HALT\n", ep_name(ep),
++	    value ? "set" : "clear");
++
++	if (!ep->desc) {
++		DBG(DBG_ERR, "Attempted to halt uninitialized ep %s\n",
++		    ep_name(ep));
++		return -ENODEV;
++	}
++	if (ep_is_isochronous(ep)) {
++		DBG(DBG_ERR, "Attempted to halt isochronous ep %s\n",
++		    ep_name(ep));
++		return -ENOTTY;
++	}
++
++	spin_lock_irqsave(&udc->lock, flags);
++
++	/*
++	 * We can't halt IN endpoints while there are still data to be
++	 * transferred
++	 */
++	if (!list_empty(&ep->queue)
++	    || ((value && ep_is_in(ep)
++		 && (husb2_ep_readl(ep, STA)
++		     & HUSB2_BF(BUSY_BANKS, -1L))))) {
++		ret = -EAGAIN;
++	} else {
++		if (value)
++			husb2_ep_writel(ep, SET_STA, HUSB2_BIT(FORCE_STALL));
++		else
++			husb2_ep_writel(ep, CLR_STA, (HUSB2_BIT(FORCE_STALL)
++						      | HUSB2_BIT(TOGGLE_SEQ)));
++		husb2_ep_readl(ep, STA);
++	}
++
++	spin_unlock_irqrestore(&udc->lock, flags);
++
++	return ret;
++}
++
++static int husb2_ep_fifo_status(struct usb_ep *_ep)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++
++	return HUSB2_BFEXT(BYTE_COUNT, husb2_ep_readl(ep, STA));
++}
++
++static void husb2_ep_fifo_flush(struct usb_ep *_ep)
++{
++	struct husb2_ep *ep = to_husb2_ep(_ep);
++	struct husb2_udc *udc = ep->udc;
++
++	husb2_writel(udc, EPT_RST, 1 << ep->index);
++}
++
++struct usb_ep_ops husb2_ep_ops = {
++	.enable		= husb2_ep_enable,
++	.disable	= husb2_ep_disable,
++	.alloc_request	= husb2_ep_alloc_request,
++	.free_request	= husb2_ep_free_request,
++	.alloc_buffer	= husb2_ep_alloc_buffer,
++	.free_buffer	= husb2_ep_free_buffer,
++	.queue		= husb2_ep_queue,
++	.dequeue	= husb2_ep_dequeue,
++	.set_halt	= husb2_ep_set_halt,
++	.fifo_status	= husb2_ep_fifo_status,
++	.fifo_flush	= husb2_ep_fifo_flush,
++};
++
++static int husb2_udc_get_frame(struct usb_gadget *gadget)
++{
++	struct husb2_udc *udc = to_husb2_udc(gadget);
++
++	return HUSB2_BFEXT(FRAME_NUMBER, husb2_readl(udc, FNUM));
++}
++
++struct usb_gadget_ops husb2_udc_ops = {
++	.get_frame	= husb2_udc_get_frame,
++};
++
++#define EP(nam, type, idx, caps) {				\
++	.ep	= {						\
++		.ops		= &husb2_ep_ops,		\
++		.name		= nam,				\
++		.maxpacket	= type##_FIFO_SIZE,		\
++	},							\
++	.udc		= &the_udc,				\
++	.queue		= LIST_HEAD_INIT(husb2_ep[idx].queue),	\
++	.fifo_size	= type##_FIFO_SIZE,			\
++	.nr_banks	= type##_NR_BANKS,			\
++	.index		= idx,					\
++	.capabilities	= caps,					\
++}
++
++static struct husb2_ep husb2_ep[] = {
++	EP("ep0", EP0, 0, 0),
++	EP("ep1in-bulk", BULK, 1, HUSB2_EP_CAP_DMA),
++	EP("ep2out-bulk", BULK, 2, HUSB2_EP_CAP_DMA),
++	EP("ep3in-iso", ISO, 3, HUSB2_EP_CAP_DMA | HUSB2_EP_CAP_ISOC),
++	EP("ep4out-iso", ISO, 4, HUSB2_EP_CAP_DMA | HUSB2_EP_CAP_ISOC),
++	EP("ep5in-int", INT, 5, HUSB2_EP_CAP_DMA),
++	EP("ep6out-int", INT, 6, HUSB2_EP_CAP_DMA),
++};
++#undef EP
++
++static struct usb_endpoint_descriptor husb2_ep0_desc = {
++	.bLength = USB_DT_ENDPOINT_SIZE,
++	.bDescriptorType = USB_DT_ENDPOINT,
++	.bEndpointAddress = 0,
++	.bmAttributes = USB_ENDPOINT_XFER_CONTROL,
++	.wMaxPacketSize = __constant_cpu_to_le16(64),
++	/* FIXME: I have no idea what to put here */
++	.bInterval = 1,
++};
++
++static void nop_release(struct device *dev)
++{
++
++}
++
++static struct husb2_udc the_udc = {
++	.gadget	= {
++		.ops		= &husb2_udc_ops,
++		.ep0		= &husb2_ep[0].ep,
++		.ep_list	= LIST_HEAD_INIT(the_udc.gadget.ep_list),
++		.is_dualspeed	= 1,
++		.name		= "husb2_udc",
++		.dev	= {
++			.bus_id		= "gadget",
++			.release	= nop_release,
++		},
++	},
++
++	.lock	= SPIN_LOCK_UNLOCKED,
++};
++
++static void udc_enable(struct husb2_udc *udc)
++{
++	struct husb2_ep *ep0 = &husb2_ep[0];
++
++	/* Enable the controller */
++	husb2_writel(udc, CTRL, HUSB2_BIT(EN_HUSB2));
++
++	/* Reset all endpoints and enable basic interrupts */
++	husb2_writel(udc, EPT_RST, ~0UL);
++	husb2_writel(udc, INT_ENB, (HUSB2_BIT(DET_SUSPEND)
++				    | HUSB2_BIT(END_OF_RESET)
++				    | HUSB2_BIT(END_OF_RESUME)));
++
++	/* Configure endpoint 0 */
++	ep0->desc = &husb2_ep0_desc;
++
++	husb2_writel(udc, EPT_RST, 1 << 0);
++	husb2_ep_writel(ep0, CTL_ENB, HUSB2_BIT(EPT_ENABLE));
++	husb2_ep_writel(ep0, CFG, (HUSB2_BF(EPT_SIZE, EP0_EPT_SIZE)
++				   | HUSB2_BF(EPT_TYPE, HUSB2_EPT_TYPE_CONTROL)
++				   | HUSB2_BF(BK_NUMBER, HUSB2_BK_NUMBER_ONE)));
++
++	husb2_ep_writel(ep0, CTL_ENB, HUSB2_BIT(RX_SETUP));
++	husb2_writel(udc, INT_ENB, (husb2_readl(udc, INT_ENB)
++				    | HUSB2_BF(EPT_INT, 1)));
++
++	if (!(husb2_ep_readl(ep0, CFG) & HUSB2_BIT(EPT_MAPPED)))
++		dev_warn(&udc->pdev->dev,
++		       "WARNING: EP0 configuration is invalid!\n");
++}
++
++static void udc_disable(struct husb2_udc *udc)
++{
++	udc->gadget.speed = USB_SPEED_UNKNOWN;
++
++	husb2_writel(udc, CTRL, 0);
++}
++
++/*
++ * Called with interrupts disabled and udc->lock held.
++ */
++static void reset_all_endpoints(struct husb2_udc *udc)
++{
++	struct husb2_ep *ep;
++	struct husb2_request *req, *tmp_req;
++
++	husb2_writel(udc, EPT_RST, ~0UL);
++
++	ep = to_husb2_ep(udc->gadget.ep0);
++	list_for_each_entry_safe(req, tmp_req, &ep->queue, queue) {
++		list_del_init(&req->queue);
++		request_complete(ep, req, -ECONNRESET);
++	}
++	BUG_ON(!list_empty(&ep->queue));
++
++	list_for_each_entry(ep, &udc->gadget.ep_list, ep.ep_list) {
++		if (ep->desc)
++			husb2_ep_disable(&ep->ep);
++	}
++}
++
++static struct husb2_ep *get_ep_by_addr(struct husb2_udc *udc, u16 wIndex)
++{
++	struct husb2_ep *ep;
++
++	if ((wIndex & USB_ENDPOINT_NUMBER_MASK) == 0)
++		return to_husb2_ep(udc->gadget.ep0);
++
++	list_for_each_entry (ep, &udc->gadget.ep_list, ep.ep_list) {
++		u8 bEndpointAddress;
++
++		if (!ep->desc)
++			continue;
++		bEndpointAddress = ep->desc->bEndpointAddress;
++		if ((wIndex ^ bEndpointAddress) & USB_DIR_IN)
++			continue;
++		if ((wIndex & USB_ENDPOINT_NUMBER_MASK)
++		    == (bEndpointAddress & USB_ENDPOINT_NUMBER_MASK))
++			return ep;
++	}
++
++	return NULL;
++}
++
++/* Called with interrupts disabled and udc->lock held */
++static inline void set_protocol_stall(struct husb2_udc *udc,
++				      struct husb2_ep *ep)
++{
++	husb2_ep_writel(ep, SET_STA, HUSB2_BIT(FORCE_STALL));
++	ep->state = WAIT_FOR_SETUP;
++}
++
++static inline int is_stalled(struct husb2_udc *udc, struct husb2_ep *ep)
++{
++	if (husb2_ep_readl(ep, STA) & HUSB2_BIT(FORCE_STALL))
++		return 1;
++	return 0;
++}
++
++static inline void set_address(struct husb2_udc *udc, unsigned int addr)
++{
++	u32 regval;
++
++	DBG(DBG_BUS, "setting address %u...\n", addr);
++	regval = husb2_readl(udc, CTRL);
++	regval = HUSB2_BFINS(DEV_ADDR, addr, regval);
++	husb2_writel(udc, CTRL, regval);
++}
++
++static int handle_ep0_setup(struct husb2_udc *udc, struct husb2_ep *ep,
++			    struct usb_ctrlrequest *crq)
++{
++	switch (crq->bRequest) {
++	case USB_REQ_GET_STATUS: {
++		u16 status;
++
++		if (crq->bRequestType == (USB_DIR_IN | USB_RECIP_DEVICE)) {
++			/* Self-powered, no remote wakeup */
++			status = __constant_cpu_to_le16(1 << 0);
++		} else if (crq->bRequestType
++			   == (USB_DIR_IN | USB_RECIP_INTERFACE)) {
++			status = __constant_cpu_to_le16(0);
++		} else if (crq->bRequestType
++			   == (USB_DIR_IN | USB_RECIP_ENDPOINT)) {
++			struct husb2_ep *target;
++
++			target = get_ep_by_addr(udc, le16_to_cpu(crq->wIndex));
++			if (!target)
++				goto stall;
++
++			status = 0;
++			if (is_stalled(udc, target))
++				status |= __constant_cpu_to_le16(1);
++		} else {
++			goto delegate;
++		}
++
++		/* Write directly to the FIFO. No queueing is done. */
++		if(crq->wLength != __constant_cpu_to_le16(sizeof(status)))
++			goto stall;
++		ep->state = DATA_STAGE_IN;
++		__raw_writew(status, ep->fifo);
++		husb2_ep_writel(ep, SET_STA, HUSB2_BIT(TX_PK_RDY));
++		break;
++	}
++
++	case USB_REQ_CLEAR_FEATURE: {
++		if (crq->bRequestType == USB_RECIP_DEVICE) {
++			/* We don't support TEST_MODE */
++			goto stall;
++		} else if (crq->bRequestType == USB_RECIP_ENDPOINT) {
++			struct husb2_ep *target;
++
++			if (crq->wValue != __constant_cpu_to_le16(USB_ENDPOINT_HALT)
++			    || crq->wLength != __constant_cpu_to_le16(0))
++				goto stall;
++			target = get_ep_by_addr(udc, le16_to_cpu(crq->wIndex));
++			if (!target)
++				goto stall;
++
++			husb2_ep_writel(target, CLR_STA, (HUSB2_BIT(FORCE_STALL)
++							  | HUSB2_BIT(TOGGLE_SEQ)));
++		} else {
++			goto delegate;
++		}
++
++		send_status(udc, ep);
++		break;
++	}
++
++	case USB_REQ_SET_FEATURE: {
++		if (crq->bRequestType == USB_RECIP_DEVICE) {
++			/* We don't support TEST_MODE */
++			goto stall;
++		} else if (crq->bRequestType == USB_RECIP_ENDPOINT) {
++			struct husb2_ep *target;
++
++			if (crq->wValue != __constant_cpu_to_le16(USB_ENDPOINT_HALT)
++			    || crq->wLength != __constant_cpu_to_le16(0))
++				goto stall;
++
++			target = get_ep_by_addr(udc, le16_to_cpu(crq->wIndex));
++			if (!target)
++				goto stall;
++
++			husb2_ep_writel(target, SET_STA, HUSB2_BIT(FORCE_STALL));
++		} else
++			goto delegate;
++
++		send_status(udc, ep);
++		break;
++	}
++
++	case USB_REQ_SET_ADDRESS:
++		if (crq->bRequestType != (USB_DIR_OUT | USB_RECIP_DEVICE))
++			goto delegate;
++
++		set_address(udc, le16_to_cpu(crq->wValue));
++		send_status(udc, ep);
++		ep->state = STATUS_STAGE_ADDR;
++		break;
++
++	default:
++	delegate:
++		return udc->driver->setup(&udc->gadget, crq);
++	}
++
++	return 0;
++
++stall:
++	printk(KERN_ERR
++	       "udc: %s: Invalid setup request: %02x.%02x v%04x i%04x l%d, "
++	       "halting endpoint...\n",
++	       ep_name(ep), crq->bRequestType, crq->bRequest,
++	       le16_to_cpu(crq->wValue), le16_to_cpu(crq->wIndex),
++	       le16_to_cpu(crq->wLength));
++	set_protocol_stall(udc, ep);
++	return -1;
++}
++
++static void husb2_control_irq(struct husb2_udc *udc, struct husb2_ep *ep)
++{
++	struct husb2_request *req;
++	u32 epstatus;
++	u32 epctrl;
++
++restart:
++	epstatus = husb2_ep_readl(ep, STA);
++	epctrl = husb2_ep_readl(ep, CTL);
++
++	DBG(DBG_INT, "%s: interrupt, status: 0x%08x\n",
++	    ep_name(ep), epstatus);
++
++	req = NULL;
++	if (!list_empty(&ep->queue))
++		req = list_entry(ep->queue.next,
++				 struct husb2_request, queue);
++
++	if ((epctrl & HUSB2_BIT(TX_PK_RDY))
++	    && !(epstatus & HUSB2_BIT(TX_PK_RDY))) {
++		DBG(DBG_BUS, "tx pk rdy: %d\n", ep->state);
++
++		if (req->submitted)
++			next_fifo_transaction(ep, req);
++		else
++			submit_request(ep, req);
++
++		if (req->last_transaction) {
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(TX_PK_RDY));
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_COMPLETE));
++		}
++		goto restart;
++	}
++	if ((epstatus & epctrl) & HUSB2_BIT(TX_COMPLETE)) {
++		husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(TX_COMPLETE));
++		DBG(DBG_BUS, "txc: %d\n", ep->state);
++
++		switch (ep->state) {
++		case DATA_STAGE_IN:
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(RX_BK_RDY));
++			husb2_ep_writel(ep, CTL_DIS,
++					HUSB2_BIT(TX_COMPLETE));
++			ep->state = STATUS_STAGE_OUT;
++			break;
++		case STATUS_STAGE_ADDR:
++			/* Activate our new address */
++			husb2_writel(udc, CTRL, (husb2_readl(udc, CTRL)
++						 | HUSB2_BIT(FADDR_EN)));
++			husb2_ep_writel(ep, CTL_DIS,
++					HUSB2_BIT(TX_COMPLETE));
++			ep->state = WAIT_FOR_SETUP;
++			break;
++		case STATUS_STAGE_IN:
++			if (req) {
++				list_del_init(&req->queue);
++				request_complete(ep, req, 0);
++				submit_next_request(ep);
++			}
++			BUG_ON(!list_empty(&ep->queue));
++			husb2_ep_writel(ep, CTL_DIS,
++					HUSB2_BIT(TX_COMPLETE));
++			ep->state = WAIT_FOR_SETUP;
++			break;
++		default:
++			printk(KERN_ERR
++			       "udc: %s: TXCOMP: Invalid endpoint state %d, "
++			       "halting endpoint...\n",
++			       ep_name(ep), ep->state);
++			set_protocol_stall(udc, ep);
++			break;
++		}
++
++		goto restart;
++	}
++	if ((epstatus & epctrl) & HUSB2_BIT(RX_BK_RDY)) {
++		DBG(DBG_BUS, "rxc: %d\n", ep->state);
++
++		switch (ep->state) {
++		case STATUS_STAGE_OUT:
++			husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(RX_BK_RDY));
++
++			if (req) {
++				list_del_init(&req->queue);
++				request_complete(ep, req, 0);
++			}
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(RX_BK_RDY));
++			ep->state = WAIT_FOR_SETUP;
++			break;
++
++		case DATA_STAGE_OUT:
++			receive_data(ep);
++			break;
++
++		default:
++			husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(RX_BK_RDY));
++			set_protocol_stall(udc, ep);
++			printk(KERN_ERR
++			       "udc: %s: RXRDY: Invalid endpoint state %d, "
++			       "halting endpoint...\n",
++			       ep_name(ep), ep->state);
++			break;
++		}
++
++		goto restart;
++	}
++	if (epstatus & HUSB2_BIT(RX_SETUP)) {
++		union {
++			struct usb_ctrlrequest crq;
++			unsigned long data[2];
++		} crq;
++		unsigned int pkt_len;
++		int ret;
++
++		if (ep->state != WAIT_FOR_SETUP) {
++			/*
++			 * Didn't expect a SETUP packet at this
++			 * point. Clean up any pending requests (which
++			 * may be successful).
++			 */
++			int status = -EPROTO;
++
++			/*
++			 * RXRDY is dropped when SETUP packets arrive.
++			 * Just pretend we received the status packet.
++			 */
++			if (ep->state == STATUS_STAGE_OUT)
++				status = 0;
++
++			if (req) {
++				list_del_init(&req->queue);
++				request_complete(ep, req, status);
++			}
++			BUG_ON(!list_empty(&ep->queue));
++		}
++
++		pkt_len = HUSB2_BFEXT(BYTE_COUNT, husb2_ep_readl(ep, STA));
++		DBG(DBG_HW, "Packet length: %u\n", pkt_len);
++		BUG_ON(pkt_len != sizeof(crq));
++
++		DBG(DBG_FIFO, "Copying ctrl request from 0x%p:\n", ep->fifo);
++		copy_from_fifo(crq.data, ep->fifo, sizeof(crq));
++
++		/* Free up one bank in the FIFO so that we can
++		 * generate or receive a reply right away. */
++		husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(RX_SETUP));
++
++		/* printk(KERN_DEBUG "setup: %d: %02x.%02x\n",
++		       ep->state, crq.crq.bRequestType,
++		       crq.crq.bRequest); */
++
++		if (crq.crq.bRequestType & USB_DIR_IN) {
++			/*
++			 * The USB 2.0 spec states that "if wLength is
++			 * zero, there is no data transfer phase."
++			 * However, testusb #14 seems to actually
++			 * expect a data phase even if wLength = 0...
++			 */
++			ep->state = DATA_STAGE_IN;
++		} else {
++			if (crq.crq.wLength != __constant_cpu_to_le16(0))
++				ep->state = DATA_STAGE_OUT;
++			else
++				ep->state = STATUS_STAGE_IN;
++		}
++
++		ret = -1;
++		if (ep->index == 0)
++			ret = handle_ep0_setup(udc, ep, &crq.crq);
++		else
++			ret = udc->driver->setup(&udc->gadget, &crq.crq);
++
++		DBG(DBG_BUS, "req %02x.%02x, length %d, state %d, ret %d\n",
++		    crq.crq.bRequestType, crq.crq.bRequest,
++		    le16_to_cpu(crq.crq.wLength), ep->state, ret);
++
++		if (ret < 0) {
++			/* Let the host know that we failed */
++			set_protocol_stall(udc, ep);
++		}
++	}
++}
++
++static void husb2_ep_irq(struct husb2_udc *udc, struct husb2_ep *ep)
++{
++	struct husb2_request *req;
++	u32 epstatus;
++	u32 epctrl;
++
++	epstatus = husb2_ep_readl(ep, STA);
++	epctrl = husb2_ep_readl(ep, CTL);
++
++	DBG(DBG_INT, "%s: interrupt, status: 0x%08x\n",
++	    ep_name(ep), epstatus);
++
++	while ((epctrl & HUSB2_BIT(TX_PK_RDY))
++	       && !(epstatus & HUSB2_BIT(TX_PK_RDY))) {
++		BUG_ON(!ep_is_in(ep));
++
++		DBG(DBG_BUS, "%s: TX PK ready\n", ep_name(ep));
++
++		if (list_empty(&ep->queue)) {
++			dev_warn(&udc->pdev->dev, "ep_irq: queue empty\n");
++			husb2_ep_writel(ep, CTL_DIS, HUSB2_BIT(TX_PK_RDY));
++			return;
++		}
++
++		req = list_entry(ep->queue.next, struct husb2_request, queue);
++
++		if (req->using_dma) {
++			BUG_ON(!req->send_zlp);
++
++			/* Send a zero-length packet */
++			husb2_ep_writel(ep, SET_STA,
++					HUSB2_BIT(TX_PK_RDY));
++			husb2_ep_writel(ep, CTL_DIS,
++					HUSB2_BIT(TX_PK_RDY));
++			list_del_init(&req->queue);
++			submit_next_request(ep);
++			request_complete(ep, req, 0);
++		} else {
++			if (req->submitted)
++				next_fifo_transaction(ep, req);
++			else
++				submit_request(ep, req);
++
++			if (req->last_transaction) {
++				list_del_init(&req->queue);
++				submit_next_request(ep);
++				request_complete(ep, req, 0);
++			}
++		}
++
++		epstatus = husb2_ep_readl(ep, STA);
++		epctrl = husb2_ep_readl(ep, CTL);
++	}
++	if ((epstatus & epctrl) & HUSB2_BIT(RX_BK_RDY)) {
++		BUG_ON(ep_is_in(ep));
++
++		DBG(DBG_BUS, "%s: RX data ready\n", ep_name(ep));
++		receive_data(ep);
++		husb2_ep_writel(ep, CLR_STA, HUSB2_BIT(RX_BK_RDY));
++	}
++}
++
++static void husb2_dma_irq(struct husb2_udc *udc, struct husb2_ep *ep)
++{
++	struct husb2_request *req;
++	u32 status, control, pending;
++
++	status = husb2_dma_readl(ep, STATUS);
++	control = husb2_dma_readl(ep, CONTROL);
++#ifdef CONFIG_DEBUG_FS
++	ep->last_dma_status = status;
++#endif
++	pending = status & control;
++	DBG(DBG_INT, "dma irq, status=%#08x, pending=%#08x, control=%#08x\n",
++	    status, pending, control);
++
++	BUG_ON(status & HUSB2_BIT(DMA_CH_EN));
++
++	if (list_empty(&ep->queue))
++		/* Might happen if a reset comes along at the right moment */
++		return;
++
++	if (pending & (HUSB2_BIT(DMA_END_TR_ST) | HUSB2_BIT(DMA_END_BUF_ST))) {
++		req = list_entry(ep->queue.next, struct husb2_request, queue);
++		husb2_update_req(ep, req, status);
++
++		if (req->send_zlp) {
++			husb2_ep_writel(ep, CTL_ENB, HUSB2_BIT(TX_PK_RDY));
++		} else {
++			list_del_init(&req->queue);
++			submit_next_request(ep);
++			request_complete(ep, req, 0);
++		}
++	}
++}
++
++static irqreturn_t husb2_udc_irq(int irq, void *devid, struct pt_regs *regs)
++{
++	struct husb2_udc *udc = devid;
++	u32 status;
++	u32 dma_status;
++	u32 ep_status;
++
++	spin_lock(&udc->lock);
++
++	status = husb2_readl(udc, INT_STA);
++	DBG(DBG_INT, "irq, status=%#08x\n", status);
++
++	if (status & HUSB2_BIT(DET_SUSPEND)) {
++		husb2_writel(udc, INT_CLR, HUSB2_BIT(DET_SUSPEND));
++		//DBG(DBG_BUS, "Suspend detected\n");
++		if (udc->gadget.speed != USB_SPEED_UNKNOWN
++		    && udc->driver && udc->driver->suspend)
++			udc->driver->suspend(&udc->gadget);
++	}
++
++	if (status & HUSB2_BIT(WAKE_UP)) {
++		husb2_writel(udc, INT_CLR, HUSB2_BIT(WAKE_UP));
++		//DBG(DBG_BUS, "Wake Up CPU detected\n");
++	}
++
++	if (status & HUSB2_BIT(END_OF_RESUME)) {
++		husb2_writel(udc, INT_CLR, HUSB2_BIT(END_OF_RESUME));
++		DBG(DBG_BUS, "Resume detected\n");
++		if (udc->gadget.speed != USB_SPEED_UNKNOWN
++		    && udc->driver && udc->driver->resume)
++			udc->driver->resume(&udc->gadget);
++	}
++
++	dma_status = HUSB2_BFEXT(DMA_INT, status);
++	if (dma_status) {
++		int i;
++
++		for (i = 1; i < HUSB2_NR_ENDPOINTS; i++)
++			if (dma_status & (1 << i))
++				husb2_dma_irq(udc, &husb2_ep[i]);
++	}
++
++	ep_status = HUSB2_BFEXT(EPT_INT, status);
++	if (ep_status) {
++		int i;
++
++		for (i = 0; i < HUSB2_NR_ENDPOINTS; i++)
++			if (ep_status & (1 << i)) {
++				if (ep_is_control(&husb2_ep[i]))
++					husb2_control_irq(udc, &husb2_ep[i]);
++				else
++					husb2_ep_irq(udc, &husb2_ep[i]);
++			}
++	}
++
++	if (status & HUSB2_BIT(END_OF_RESET)) {
++		husb2_writel(udc, INT_CLR, HUSB2_BIT(END_OF_RESET));
++		if (status & HUSB2_BIT(HIGH_SPEED)) {
++			DBG(DBG_BUS, "High-speed bus reset detected\n");
++			udc->gadget.speed = USB_SPEED_HIGH;
++		} else {
++			DBG(DBG_BUS, "Full-speed bus reset detected\n");
++			udc->gadget.speed = USB_SPEED_FULL;
++		}
++		/* Better start from scratch... */
++		reset_all_endpoints(udc);
++		husb2_ep[0].state = WAIT_FOR_SETUP;
++		udc_enable(udc);
++	}
++
++	spin_unlock(&udc->lock);
++
++	return IRQ_HANDLED;
++}
++
++int usb_gadget_register_driver(struct usb_gadget_driver *driver)
++{
++	struct husb2_udc *udc = &the_udc;
++	int ret;
++
++	spin_lock(&udc->lock);
++
++	ret = -ENODEV;
++	if (!udc->pdev)
++		goto out;
++	ret = -EBUSY;
++	if (udc->driver)
++		goto out;
++
++	udc->driver = driver;
++	udc->gadget.dev.driver = &driver->driver;
++
++	device_add(&udc->gadget.dev);
++	ret = driver->bind(&udc->gadget);
++	if (ret) {
++		DBG(DBG_ERR, "Could not bind to driver %s: error %d\n",
++		    driver->driver.name, ret);
++		device_del(&udc->gadget.dev);
++
++		udc->driver = NULL;
++		udc->gadget.dev.driver = NULL;
++		goto out;
++	}
++
++	/* TODO: Create sysfs files */
++
++	DBG(DBG_GADGET, "registered driver `%s'\n", driver->driver.name);
++	udc_enable(udc);
++
++out:
++	spin_unlock(&udc->lock);
++	return ret;
++}
++EXPORT_SYMBOL(usb_gadget_register_driver);
++
++int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
++{
++	struct husb2_udc *udc = &the_udc;
++	int ret;
++
++	spin_lock(&udc->lock);
++
++	ret = -ENODEV;
++	if (!udc->pdev)
++		goto out;
++	ret = -EINVAL;
++	if (driver != udc->driver)
++		goto out;
++
++	local_irq_disable();
++	udc_disable(udc);
++	local_irq_enable();
++
++	driver->unbind(&udc->gadget);
++	udc->driver = NULL;
++
++	device_del(&udc->gadget.dev);
++
++	/* TODO: Remove sysfs files */
++
++	DBG(DBG_GADGET, "unregistered driver `%s'\n", driver->driver.name);
++
++out:
++	spin_unlock(&udc->lock);
++	return ret;
++}
++EXPORT_SYMBOL(usb_gadget_unregister_driver);
++
++static int __devinit husb2_udc_probe(struct platform_device *pdev)
++{
++	struct resource *regs, *fifo;
++	struct clk *pclk, *hclk;
++	struct husb2_udc *udc = &the_udc;
++	int irq, ret, i;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, CTRL_IOMEM_ID);
++	fifo = platform_get_resource(pdev, IORESOURCE_MEM, FIFO_IOMEM_ID);
++	if (!regs || !fifo)
++		return -ENXIO;
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
++
++	pclk = clk_get(&pdev->dev, "pclk");
++	if (IS_ERR(pclk))
++		return PTR_ERR(pclk);
++	hclk = clk_get(&pdev->dev, "hclk");
++	if (IS_ERR(hclk)) {
++		ret = PTR_ERR(hclk);
++		goto out_put_pclk;
++	}
++
++	clk_enable(pclk);
++	clk_enable(hclk);
++
++	udc->pdev = pdev;
++	udc->pclk = pclk;
++	udc->hclk = hclk;
++
++	ret = -ENOMEM;
++	udc->regs = ioremap(regs->start, regs->end - regs->start + 1);
++	if (!udc->regs) {
++		dev_err(&pdev->dev, "Unable to map I/O memory, aborting.\n");
++		goto out_disable_clocks;
++	}
++	dev_info(&pdev->dev, "MMIO registers at 0x%08lx mapped at %p\n",
++		 (unsigned long)regs->start, udc->regs);
++	udc->fifo = ioremap(fifo->start, fifo->end - fifo->start + 1);
++	if (!udc->fifo) {
++		dev_err(&pdev->dev, "Unable to map FIFO, aborting.\n");
++		goto out_unmap_regs;
++	}
++	dev_info(&pdev->dev, "FIFO at 0x%08lx mapped at %p\n",
++		 (unsigned long)fifo->start, udc->fifo);
++
++	device_initialize(&udc->gadget.dev);
++	udc->gadget.dev.parent = &pdev->dev;
++	udc->gadget.dev.dma_mask = pdev->dev.dma_mask;
++
++	/* The 3-word descriptors must be 4-word aligned... */
++	udc->desc_pool = dma_pool_create("husb2-desc", &pdev->dev,
++					 sizeof(struct husb2_dma_desc),
++					 16, 0);
++	if (!udc->desc_pool) {
++		dev_err(&pdev->dev, "Cannot create descriptor DMA pool\n");
++		goto out_unmap_fifo;
++	}
++
++	platform_set_drvdata(pdev, udc);
++
++	udc_disable(udc);
++
++	INIT_LIST_HEAD(&husb2_ep[0].ep.ep_list);
++	husb2_ep[0].ep_regs = udc->regs + HUSB2_EPT_BASE(0);
++	husb2_ep[0].dma_regs = udc->regs + HUSB2_DMA_BASE(0);
++	husb2_ep[0].fifo = udc->fifo + HUSB2_FIFO_BASE(0);
++	for (i = 1; i < ARRAY_SIZE(husb2_ep); i++) {
++		struct husb2_ep *ep = &husb2_ep[i];
++
++		ep->ep_regs = udc->regs + HUSB2_EPT_BASE(i);
++		ep->dma_regs = udc->regs + HUSB2_DMA_BASE(i);
++		ep->fifo = udc->fifo + HUSB2_FIFO_BASE(i);
++
++		list_add_tail(&ep->ep.ep_list, &udc->gadget.ep_list);
++	}
++
++	ret = request_irq(irq, husb2_udc_irq, SA_SAMPLE_RANDOM,
++			  "husb2_udc", udc);
++	if (ret) {
++		dev_err(&pdev->dev, "Cannot request irq %d (error %d)\n",
++			irq, ret);
++		goto out_free_pool;
++	}
++	udc->irq = irq;
++
++	husb2_init_debugfs(udc);
++
++	return 0;
++
++out_free_pool:
++	dma_pool_destroy(udc->desc_pool);
++out_unmap_fifo:
++	iounmap(udc->fifo);
++out_unmap_regs:
++	iounmap(udc->regs);
++out_disable_clocks:
++	clk_disable(hclk);
++	clk_disable(pclk);
++	clk_put(hclk);
++out_put_pclk:
++	clk_put(pclk);
++
++	platform_set_drvdata(pdev, NULL);
++
++	return ret;
++}
++
++static int __devexit husb2_udc_remove(struct platform_device *pdev)
++{
++	struct husb2_udc *udc;
++
++	udc = platform_get_drvdata(pdev);
++	if (!udc)
++		return 0;
++
++	husb2_cleanup_debugfs(udc);
++
++	free_irq(udc->irq, udc);
++	dma_pool_destroy(udc->desc_pool);
++	iounmap(udc->fifo);
++	iounmap(udc->regs);
++	clk_disable(udc->hclk);
++	clk_disable(udc->pclk);
++	clk_put(udc->hclk);
++	clk_put(udc->pclk);
++	platform_set_drvdata(pdev, NULL);
++
++	return 0;
++}
++
++static struct platform_driver udc_driver = {
++	.probe		= husb2_udc_probe,
++	.remove		= __devexit_p(husb2_udc_remove),
++	.driver		= {
++		.name		= "usb",
++	},
++};
++
++static int __init udc_init(void)
++{
++	printk(KERN_INFO "husb2device: Driver version %s\n", DRIVER_VERSION);
++	return platform_driver_register(&udc_driver);
++}
++module_init(udc_init);
++
++static void __exit udc_exit(void)
++{
++	platform_driver_unregister(&udc_driver);
++}
++module_exit(udc_exit);
++
++MODULE_DESCRIPTION("Atmel HUSB2 Device Controller driver");
++MODULE_AUTHOR("Haavard Skinnemoen <hskinnemoen@atmel.com>");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/usb/gadget/husb2_udc.h	2006-11-02 16:03:44.000000000 +0100
+@@ -0,0 +1,406 @@
++/*
++ * Driver for the Atmel HUSB2device high speed USB device controller
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __LINUX_USB_GADGET_HUSB2_UDC_H__
++#define __LINUX_USB_GADGET_HUSB2_UDC_H__
++
++/* USB register offsets */
++#define HUSB2_CTRL				0x0000
++#define HUSB2_FNUM				0x0004
++#define HUSB2_INT_ENB				0x0010
++#define HUSB2_INT_STA				0x0014
++#define HUSB2_INT_CLR				0x0018
++#define HUSB2_EPT_RST				0x001c
++#define HUSB2_TST_SOF_CNT			0x00d0
++#define HUSB2_TST_CNT_A				0x00d4
++#define HUSB2_TST_CNT_B				0x00d8
++#define HUSB2_TST_MODE_REG			0x00dc
++#define HUSB2_TST				0x00f0
++
++/* USB endpoint register offsets */
++#define HUSB2_EPT_CFG				0x0000
++#define HUSB2_EPT_CTL_ENB			0x0004
++#define HUSB2_EPT_CTL_DIS			0x0008
++#define HUSB2_EPT_CTL				0x000c
++#define HUSB2_EPT_SET_STA			0x0014
++#define HUSB2_EPT_CLR_STA			0x0018
++#define HUSB2_EPT_STA				0x001c
++
++/* USB DMA register offsets */
++#define HUSB2_DMA_NXT_DSC			0x0000
++#define HUSB2_DMA_ADDRESS			0x0004
++#define HUSB2_DMA_CONTROL			0x0008
++#define HUSB2_DMA_STATUS			0x000c
++
++/* Bitfields in CTRL */
++#define HUSB2_DEV_ADDR_OFFSET			0
++#define HUSB2_DEV_ADDR_SIZE			7
++#define HUSB2_FADDR_EN_OFFSET			7
++#define HUSB2_FADDR_EN_SIZE			1
++#define HUSB2_EN_HUSB2_OFFSET			8
++#define HUSB2_EN_HUSB2_SIZE			1
++#define HUSB2_DETACH_OFFSET			9
++#define HUSB2_DETACH_SIZE			1
++#define HUSB2_REMOTE_WAKE_UP_OFFSET		10
++#define HUSB2_REMOTE_WAKE_UP_SIZE		1
++
++/* Bitfields in FNUM */
++#define HUSB2_MICRO_FRAME_NUM_OFFSET		0
++#define HUSB2_MICRO_FRAME_NUM_SIZE		3
++#define HUSB2_FRAME_NUMBER_OFFSET		3
++#define HUSB2_FRAME_NUMBER_SIZE			11
++#define HUSB2_FRAME_NUM_ERROR_OFFSET		31
++#define HUSB2_FRAME_NUM_ERROR_SIZE		1
++
++/* Bitfields in INT_ENB/INT_STA/INT_CLR */
++#define HUSB2_HIGH_SPEED_OFFSET			0
++#define HUSB2_HIGH_SPEED_SIZE			1
++#define HUSB2_DET_SUSPEND_OFFSET		1
++#define HUSB2_DET_SUSPEND_SIZE			1
++#define HUSB2_MICRO_SOF_OFFSET			2
++#define HUSB2_MICRO_SOF_SIZE			1
++#define HUSB2_SOF_OFFSET			3
++#define HUSB2_SOF_SIZE				1
++#define HUSB2_END_OF_RESET_OFFSET		4
++#define HUSB2_END_OF_RESET_SIZE			1
++#define HUSB2_WAKE_UP_OFFSET			5
++#define HUSB2_WAKE_UP_SIZE			1
++#define HUSB2_END_OF_RESUME_OFFSET		6
++#define HUSB2_END_OF_RESUME_SIZE		1
++#define HUSB2_UPSTREAM_RESUME_OFFSET		7
++#define HUSB2_UPSTREAM_RESUME_SIZE		1
++#define HUSB2_EPT_INT_OFFSET			8
++#define HUSB2_EPT_INT_SIZE			16
++#define HUSB2_DMA_INT_OFFSET			24
++#define HUSB2_DMA_INT_SIZE			8
++
++/* Bitfields in EPT_RST */
++#define HUSB2_RST_OFFSET			0
++#define HUSB2_RST_SIZE				16
++
++/* Bitfields in TST_SOF_CNT */
++#define HUSB2_SOF_CNT_MAX_OFFSET		0
++#define HUSB2_SOF_CNT_MAX_SIZE			7
++#define HUSB2_SOF_CNT_LOAD_OFFSET		7
++#define HUSB2_SOF_CNT_LOAD_SIZE			1
++
++/* Bitfields in TST_CNT_A */
++#define HUSB2_CNT_A_MAX_OFFSET			0
++#define HUSB2_CNT_A_MAX_SIZE			7
++#define HUSB2_CNT_A_LOAD_OFFSET			7
++#define HUSB2_CNT_A_LOAD_SIZE			1
++
++/* Bitfields in TST_CNT_B */
++#define HUSB2_CNT_B_MAX_OFFSET			0
++#define HUSB2_CNT_B_MAX_SIZE			7
++#define HUSB2_CNT_B_LOAD_OFFSET			7
++#define HUSB2_CNT_B_LOAD_SIZE			1
++
++/* Bitfields in TST_MODE_REG */
++#define HUSB2_TST_MODE_OFFSET			0
++#define HUSB2_TST_MODE_SIZE			6
++
++/* Bitfields in HUSB2_TST */
++#define HUSB2_SPEED_CFG_OFFSET			0
++#define HUSB2_SPEED_CFG_SIZE			2
++#define HUSB2_TST_J_MODE_OFFSET			2
++#define HUSB2_TST_J_MODE_SIZE			1
++#define HUSB2_TST_K_MODE_OFFSET			3
++#define HUSB2_TST_K_MODE_SIZE			1
++#define HUSB2_TST_PKT_MODE_OFFSE		4
++#define HUSB2_TST_PKT_MODE_SIZE			1
++#define HUSB2_OPMODE2_OFFSET			5
++#define HUSB2_OPMODE2_SIZE			1
++
++/* Bitfields in EPT_CFG */
++#define HUSB2_EPT_SIZE_OFFSET			0
++#define HUSB2_EPT_SIZE_SIZE			3
++#define HUSB2_EPT_DIR_OFFSET			3
++#define HUSB2_EPT_DIR_SIZE			1
++#define HUSB2_EPT_TYPE_OFFSET			4
++#define HUSB2_EPT_TYPE_SIZE			2
++#define HUSB2_BK_NUMBER_OFFSET			6
++#define HUSB2_BK_NUMBER_SIZE			2
++#define HUSB2_NB_TRANS_OFFSET			8
++#define HUSB2_NB_TRANS_SIZE			2
++#define HUSB2_EPT_MAPPED_OFFSET			31
++#define HUSB2_EPT_MAPPED_SIZE			1
++
++/* Bitfields in EPT_CTL/EPT_CTL_ENB/EPT_CTL_DIS */
++#define HUSB2_EPT_ENABLE_OFFSET			0
++#define HUSB2_EPT_ENABLE_SIZE			1
++#define HUSB2_AUTO_VALID_OFFSET			1
++#define HUSB2_AUTO_VALID_SIZE			1
++#define HUSB2_INT_DIS_DMA_OFFSET		3
++#define HUSB2_INT_DIS_DMA_SIZE			1
++#define HUSB2_NYET_DIS_OFFSET			4
++#define HUSB2_NYET_DIS_SIZE			1
++#define HUSB2_DATAX_RX_OFFSET			6
++#define HUSB2_DATAX_RX_SIZE			1
++#define HUSB2_MDATA_RX_OFFSET			7
++#define HUSB2_MDATA_RX_SIZE			1
++/* Bits 8-15 and 31 enable interrupts for respective bits in EPT_STA */
++#define HUSB2_BUSY_BANK_IE_OFFSET		18
++#define HUSB2_BUSY_BANK_IE_SIZE			1
++
++/* Bitfields in EPT_SET_STA/EPT_CLR_STA/EPT_STA */
++#define HUSB2_FORCE_STALL_OFFSET		5
++#define HUSB2_FORCE_STALL_SIZE			1
++#define HUSB2_TOGGLE_SEQ_OFFSET			6
++#define HUSB2_TOGGLE_SEQ_SIZE			2
++#define HUSB2_ERR_OVFLW_OFFSET			8
++#define HUSB2_ERR_OVFLW_SIZE			1
++#define HUSB2_RX_BK_RDY_OFFSET			9
++#define HUSB2_RX_BK_RDY_SIZE			1
++#define HUSB2_KILL_BANK_OFFSET			9
++#define HUSB2_KILL_BANK_SIZE			1
++#define HUSB2_TX_COMPLETE_OFFSET		10
++#define HUSB2_TX_COMPLETE_SIZE			1
++#define HUSB2_TX_PK_RDY_OFFSET			11
++#define HUSB2_TX_PK_RDY_SIZE			1
++#define HUSB2_ISO_ERR_TRANS_OFFSET		11
++#define HUSB2_ISO_ERR_TRANS_SIZE		1
++#define HUSB2_RX_SETUP_OFFSET			12
++#define HUSB2_RX_SETUP_SIZE			1
++#define HUSB2_ISO_ERR_FLOW_OFFSET		12
++#define HUSB2_ISO_ERR_FLOW_SIZE			1
++#define HUSB2_STALL_SENT_OFFSET			13
++#define HUSB2_STALL_SENT_SIZE			1
++#define HUSB2_ISO_ERR_CRC_OFFSET		13
++#define HUSB2_ISO_ERR_CRC_SIZE			1
++#define HUSB2_ISO_ERR_NBTRANS_OFFSET		13
++#define HUSB2_ISO_ERR_NBTRANS_SIZE		1
++#define HUSB2_NAK_IN_OFFSET			14
++#define HUSB2_NAK_IN_SIZE			1
++#define HUSB2_ISO_ERR_FLUSH_OFFSET		14
++#define HUSB2_ISO_ERR_FLUSH_SIZE		1
++#define HUSB2_NAK_OUT_OFFSET			15
++#define HUSB2_NAK_OUT_SIZE			1
++#define HUSB2_CURRENT_BANK_OFFSET		16
++#define HUSB2_CURRENT_BANK_SIZE			2
++#define HUSB2_BUSY_BANKS_OFFSET			18
++#define HUSB2_BUSY_BANKS_SIZE			2
++#define HUSB2_BYTE_COUNT_OFFSET			20
++#define HUSB2_BYTE_COUNT_SIZE			11
++#define HUSB2_SHORT_PACKET_OFFSET		31
++#define HUSB2_SHORT_PACKET_SIZE			1
++
++/* Bitfields in DMA_CONTROL */
++#define HUSB2_DMA_CH_EN_OFFSET			0
++#define HUSB2_DMA_CH_EN_SIZE			1
++#define HUSB2_DMA_LINK_OFFSET			1
++#define HUSB2_DMA_LINK_SIZE			1
++#define HUSB2_DMA_END_TR_EN_OFFSET		2
++#define HUSB2_DMA_END_TR_EN_SIZE		1
++#define HUSB2_DMA_END_BUF_EN_OFFSET		3
++#define HUSB2_DMA_END_BUF_EN_SIZE		1
++#define HUSB2_DMA_END_TR_IE_OFFSET		4
++#define HUSB2_DMA_END_TR_IE_SIZE		1
++#define HUSB2_DMA_END_BUF_IE_OFFSET		5
++#define HUSB2_DMA_END_BUF_IE_SIZE		1
++#define HUSB2_DMA_DESC_LOAD_IE_OFFSET		6
++#define HUSB2_DMA_DESC_LOAD_IE_SIZE		1
++#define HUSB2_DMA_BURST_LOCK_OFFSET		7
++#define HUSB2_DMA_BURST_LOCK_SIZE		1
++#define HUSB2_DMA_BUF_LEN_OFFSET		16
++#define HUSB2_DMA_BUF_LEN_SIZE			16
++
++/* Bitfields in DMA_STATUS */
++#define HUSB2_DMA_CH_ACTIVE_OFFSET		1
++#define HUSB2_DMA_CH_ACTIVE_SIZE		1
++#define HUSB2_DMA_END_TR_ST_OFFSET		4
++#define HUSB2_DMA_END_TR_ST_SIZE		1
++#define HUSB2_DMA_END_BUF_ST_OFFSET		5
++#define HUSB2_DMA_END_BUF_ST_SIZE		1
++#define HUSB2_DMA_DESC_LOAD_ST_OFFSET		6
++#define HUSB2_DMA_DESC_LOAD_ST_SIZE		1
++
++/* Constants for SPEED_CFG */
++#define HUSB2_SPEED_CFG_NORMAL			0
++#define HUSB2_SPEED_CFG_FORCE_HIGH		2
++#define HUSB2_SPEED_CFG_FORCE_FULL		3
++
++/* Constants for EPT_SIZE */
++#define HUSB2_EPT_SIZE_8			0
++#define HUSB2_EPT_SIZE_16			1
++#define HUSB2_EPT_SIZE_32			2
++#define HUSB2_EPT_SIZE_64			3
++#define HUSB2_EPT_SIZE_128			4
++#define HUSB2_EPT_SIZE_256			5
++#define HUSB2_EPT_SIZE_512			6
++#define HUSB2_EPT_SIZE_1024			7
++
++/* Constants for EPT_TYPE */
++#define HUSB2_EPT_TYPE_CONTROL			0
++#define HUSB2_EPT_TYPE_ISO			1
++#define HUSB2_EPT_TYPE_BULK			2
++#define HUSB2_EPT_TYPE_INT			3
++
++/* Constants for BK_NUMBER */
++#define HUSB2_BK_NUMBER_ZERO			0
++#define HUSB2_BK_NUMBER_ONE			1
++#define HUSB2_BK_NUMBER_DOUBLE			2
++#define HUSB2_BK_NUMBER_TRIPLE			3
++
++/* Bit manipulation macros */
++#define HUSB2_BIT(name)						\
++	(1 << HUSB2_##name##_OFFSET)
++#define HUSB2_BF(name,value)					\
++	(((value) & ((1 << HUSB2_##name##_SIZE) - 1))		\
++	 << HUSB2_##name##_OFFSET)
++#define HUSB2_BFEXT(name,value)					\
++	(((value) >> HUSB2_##name##_OFFSET)			\
++	 & ((1 << HUSB2_##name##_SIZE) - 1))
++#define HUSB2_BFINS(name,value,old)				\
++	(((old) & ~(((1 << HUSB2_##name##_SIZE) - 1)		\
++		    << HUSB2_##name##_OFFSET))			\
++	 | HUSB2_BF(name,value))
++
++/* Register access macros */
++#define husb2_readl(udc,reg)					\
++	__raw_readl((udc)->regs + HUSB2_##reg)
++#define husb2_writel(udc,reg,value)				\
++	__raw_writel((value), (udc)->regs + HUSB2_##reg)
++#define husb2_ep_readl(ep,reg)					\
++	__raw_readl((ep)->ep_regs + HUSB2_EPT_##reg)
++#define husb2_ep_writel(ep,reg,value)				\
++	__raw_writel((value), (ep)->ep_regs + HUSB2_EPT_##reg)
++#define husb2_dma_readl(ep,reg)					\
++	__raw_readl((ep)->dma_regs + HUSB2_DMA_##reg)
++#define husb2_dma_writel(ep,reg,value)				\
++	__raw_writel((value), (ep)->dma_regs + HUSB2_DMA_##reg)
++
++/* Calculate base address for a given endpoint or DMA controller */
++#define HUSB2_EPT_BASE(x)			(0x100 + (x) * 0x20)
++#define HUSB2_DMA_BASE(x)			(0x300 + (x) * 0x10)
++#define HUSB2_FIFO_BASE(x)			((x) << 16)
++
++/* Synth parameters */
++#define HUSB2_NR_ENDPOINTS	7
++
++#define EP0_FIFO_SIZE		64
++#define EP0_EPT_SIZE		HUSB2_EPT_SIZE_64
++#define EP0_NR_BANKS		1
++#define BULK_FIFO_SIZE		512
++#define BULK_EPT_SIZE		HUSB2_EPT_SIZE_512
++#define BULK_NR_BANKS		2
++#define ISO_FIFO_SIZE		1024
++#define ISO_EPT_SIZE		HUSB2_EPT_SIZE_1024
++#define ISO_NR_BANKS		3
++#define INT_FIFO_SIZE		64
++#define INT_EPT_SIZE		HUSB2_EPT_SIZE_64
++#define INT_NR_BANKS		3
++
++enum husb2_ctrl_state {
++	WAIT_FOR_SETUP,
++	DATA_STAGE_IN,
++	DATA_STAGE_OUT,
++	STATUS_STAGE_IN,
++	STATUS_STAGE_OUT,
++	STATUS_STAGE_ADDR,
++};
++/*
++  EP_STATE_IDLE,
++  EP_STATE_SETUP,
++  EP_STATE_IN_DATA,
++  EP_STATE_OUT_DATA,
++  EP_STATE_SET_ADDR_STATUS,
++  EP_STATE_RX_STATUS,
++  EP_STATE_TX_STATUS,
++  EP_STATE_HALT,
++*/
++
++struct husb2_dma_desc {
++	dma_addr_t next;
++	dma_addr_t addr;
++	u32 ctrl;
++};
++
++struct husb2_ep {
++	int					state;
++	void __iomem				*ep_regs;
++	void __iomem				*dma_regs;
++	void __iomem				*fifo;
++	struct usb_ep				ep;
++	struct husb2_udc			*udc;
++
++	struct list_head			queue;
++	const struct usb_endpoint_descriptor	*desc;
++
++	u16					fifo_size;
++	u8					nr_banks;
++	u8					index;
++	u8					capabilities;
++
++#ifdef CONFIG_DEBUG_FS
++	u32					last_dma_status;
++	struct dentry				*debugfs_dir;
++	struct dentry				*debugfs_queue;
++	struct dentry				*debugfs_dma_status;
++#endif
++};
++#define HUSB2_EP_CAP_ISOC	0x0001
++#define HUSB2_EP_CAP_DMA	0x0002
++
++struct husb2_packet {
++	struct husb2_dma_desc			*desc;
++	dma_addr_t				desc_dma;
++};
++
++struct husb2_request {
++	struct usb_request			req;
++	struct list_head			queue;
++
++	struct husb2_packet			*packet;
++	unsigned int				nr_pkts;
++
++	unsigned int				submitted:1;
++	unsigned int				using_dma:1;
++	unsigned int				last_transaction:1;
++	unsigned int				send_zlp:1;
++};
++
++struct husb2_udc {
++	spinlock_t lock;
++
++	void __iomem *regs;
++	void __iomem *fifo;
++
++	struct dma_pool *desc_pool;
++
++	struct usb_gadget gadget;
++	struct usb_gadget_driver *driver;
++	struct platform_device *pdev;
++	int irq;
++	struct clk *pclk;
++	struct clk *hclk;
++
++#ifdef CONFIG_DEBUG_FS
++	struct dentry *debugfs_root;
++	struct dentry *debugfs_regs;
++#endif
++};
++
++#define to_husb2_ep(x) container_of((x), struct husb2_ep, ep)
++#define to_husb2_req(x) container_of((x), struct husb2_request, req)
++#define to_husb2_udc(x) container_of((x), struct husb2_udc, gadget)
++
++#define ep_index(ep)	((ep)->index)
++#define ep_can_dma(ep)	((ep)->capabilities & HUSB2_EP_CAP_DMA)
++#define ep_is_in(ep)	(((ep)->desc->bEndpointAddress			\
++				 & USB_ENDPOINT_DIR_MASK)		\
++			 == USB_DIR_IN)
++#define ep_is_isochronous(ep)						\
++	(((ep)->desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK)	\
++	 == USB_ENDPOINT_XFER_ISOC)
++#define ep_is_control(ep) (ep_index(ep) == 0)
++#define ep_name(ep)	((ep)->ep.name)
++#define ep_is_idle(ep)	((ep)->state == EP_STATE_IDLE)
++
++#endif /* __LINUX_USB_GADGET_HUSB2_H */

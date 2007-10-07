@@ -1,0 +1,175 @@
+---
+ sound/oss/at32dac.c |   72 +++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 43 insertions(+), 29 deletions(-)
+
+Index: linux-2.6.18-avr32/sound/oss/at32dac.c
+===================================================================
+--- linux-2.6.18-avr32.orig/sound/oss/at32dac.c	2006-11-01 14:30:47.000000000 +0100
++++ linux-2.6.18-avr32/sound/oss/at32dac.c	2006-11-01 14:32:05.000000000 +0100
+@@ -71,6 +71,7 @@ struct at32_dac {
+ 	struct dma_request_cyclic req;
+ 
+ 	struct clk *mck;
++	struct clk *sample_clk;
+ 	struct platform_device *pdev;
+ 	int busy;
+ 	int playing;
+@@ -116,24 +117,6 @@ static void at32dac_update_dma_tail(stru
+ 	}
+ }
+ 
+-static int at32dac_start_genclock(struct at32_dac *dac)
+-{
+-	unsigned int div;
+-
+-	div = ((clk_get_rate(boot_cpu_data.clk) + 256 * dac->dsp_settings.sample_rate)
+-	       / (512 * dac->dsp_settings.sample_rate) - 1);
+-	pr_debug("Real sample rate: %llu (div=%u)\n",
+-		 boot_cpu_data.cpu_hz / (512 * (div + 1)), div);
+-	writel((div << 8) | 0x16, (void __iomem *)(0xfff00060 + 4 * 6));
+-
+-	return 0;
+-}
+-
+-static void at32dac_stop_genclock(struct at32_dac *dac)
+-{
+-	writel(0, (void __iomem *)(0xfff00060 + 4 * 6));
+-}
+-
+ static int at32dac_start(struct at32_dac *dac)
+ {
+ 	int ret;
+@@ -143,13 +126,11 @@ static int at32dac_start(struct at32_dac
+ 
+ 	memset(dac->dma.buf, 0, DMA_BUFFER_SIZE);
+ 
+-	ret = at32dac_start_genclock(dac);
+-	if (ret)
+-		return ret;
++	clk_enable(dac->sample_clk);
+ 
+ 	ret = dma_prepare_request_cyclic(dac->req.req.dmac, &dac->req);
+ 	if (ret)
+-		goto out_stop_genclock;
++		goto out_stop_clock;
+ 
+ 	pr_debug("Starting DMA...\n");
+ 	ret = dma_start_request(dac->req.req.dmac, dac->req.req.channel);
+@@ -164,8 +145,8 @@ static int at32dac_start(struct at32_dac
+ out_stop_request:
+ 	dma_stop_request(dac->req.req.dmac,
+ 			 dac->req.req.channel);
+-out_stop_genclock:
+-	at32dac_stop_genclock(dac);
++out_stop_clock:
++	clk_disable(dac->sample_clk);
+ 	return ret;
+ }
+ 
+@@ -176,7 +157,7 @@ static int at32dac_stop(struct at32_dac 
+ 		dac_writel(dac, DATA, 0);
+ 		dac_writel(dac, CTRL, 0);
+ 		dac->playing = 0;
+-		at32dac_stop_genclock(dac);
++		clk_disable(dac->sample_clk);
+ 	}
+ 
+ 	return 0;
+@@ -360,6 +341,26 @@ static int at32dac_set_format(struct at3
+ 	return 0;
+ }
+ 
++static int at32dac_set_sample_rate(struct at32_dac *dac, unsigned long rate)
++{
++	unsigned long new_rate;
++	int ret;
++
++	ret = clk_set_rate(dac->sample_clk, 256 * rate);
++	if (ret < 0)
++		return ret;
++
++	/* TODO: mplayer seems to have a problem with this */
++#if 0
++	new_rate = clk_get_rate(dac->sample_clk);
++	dac->dsp_settings.sample_rate = new_rate / 256;
++#else
++	dac->dsp_settings.sample_rate = rate;
++#endif
++
++	return 0;
++}
++
+ static ssize_t at32dac_dsp_write(struct file *file,
+ 				 const char __user *buffer,
+ 				 size_t count, loff_t *ppos)
+@@ -449,7 +450,9 @@ static int at32dac_dsp_ioctl(struct inod
+ 			return -EFAULT;
+ 		if (val >= 0) {
+ 			at32dac_stop(dac);
+-			dac->dsp_settings.sample_rate = val;
++			ret = at32dac_set_sample_rate(dac, val);
++			if (ret)
++				return ret;
+ 		}
+ 		return put_user(dac->dsp_settings.sample_rate, up);
+ 
+@@ -534,10 +537,11 @@ static int at32dac_dsp_open(struct inode
+ 	dac->dma.head = dac->dma.tail = 0;
+ 
+ 	/* FIXME: What are the correct defaults?  */
+-	dac->dsp_settings.format = AFMT_S16_BE;
+ 	dac->dsp_settings.channels = 2;
+-	dac->dsp_settings.sample_rate = 8000;
+-	dac->dsp_settings.input_order = 2;
++	at32dac_set_format(dac, AFMT_S16_BE);
++	ret = at32dac_set_sample_rate(dac, 8000);
++	if (ret)
++		goto out;
+ 
+ 	file->private_data = dac;
+ 	dac->busy = 1;
+@@ -578,6 +582,7 @@ static int __devinit at32dac_probe(struc
+ 	struct at32_dac *dac;
+ 	struct resource *regs;
+ 	struct clk *mck;
++	struct clk *sample_clk;
+ 	int irq;
+ 	int ret;
+ 
+@@ -594,6 +599,11 @@ static int __devinit at32dac_probe(struc
+ 	mck = clk_get(&pdev->dev, "mck");
+ 	if (IS_ERR(mck))
+ 		return PTR_ERR(mck);
++	sample_clk = clk_get(&pdev->dev, "sample_clk");
++	if (IS_ERR(sample_clk)) {
++		ret = PTR_ERR(sample_clk);
++		goto out_put_mck;
++	}
+ 	clk_enable(mck);
+ 
+ 	ret = -ENOMEM;
+@@ -606,6 +616,7 @@ static int __devinit at32dac_probe(struc
+ 	init_waitqueue_head(&dac->write_wait);
+ 	dac->pdev = pdev;
+ 	dac->mck = mck;
++	dac->sample_clk = sample_clk;
+ 
+ 	dac->regs = ioremap(regs->start, regs->end - regs->start + 1);
+ 	if (!dac->regs)
+@@ -658,6 +669,8 @@ out_free_dac:
+ 	kfree(dac);
+ out_disable_clk:
+ 	clk_disable(mck);
++	clk_put(sample_clk);
++out_put_mck:
+ 	clk_put(mck);
+ 	return ret;
+ }
+@@ -673,6 +686,7 @@ static int __devexit at32dac_remove(stru
+ 		free_irq(platform_get_irq(pdev, 0), dac);
+ 		iounmap(dac->regs);
+ 		clk_disable(dac->mck);
++		clk_put(dac->sample_clk);
+ 		clk_put(dac->mck);
+ 		kfree(dac);
+ 		platform_set_drvdata(pdev, NULL);

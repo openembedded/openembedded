@@ -1,0 +1,128 @@
+---
+ include/asm-avr32/io.h |   73 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 49 insertions(+), 24 deletions(-)
+
+Index: linux-2.6.18-avr32/include/asm-avr32/io.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/io.h	2006-11-02 16:40:37.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/io.h	2006-11-03 17:58:06.000000000 +0100
+@@ -5,6 +5,8 @@
+ 
+ #ifdef __KERNEL__
+ 
++#include <linux/types.h>
++
+ #include <asm/addrspace.h>
+ #include <asm/byteorder.h>
+ 
+@@ -36,37 +38,64 @@ extern void __raw_readsb(unsigned int ad
+ extern void __raw_readsw(unsigned int addr, void *data, int wordlen);
+ extern void __raw_readsl(unsigned int addr, void *data, int longlen);
+ 
+-static inline void writeb(unsigned char b, volatile void __iomem *addr)
++static inline void __raw_writeb(u8 v, volatile void __iomem *addr)
++{
++	*(volatile u8 __force *)addr = v;
++}
++static inline void __raw_writew(u16 v, volatile void __iomem *addr)
++{
++	*(volatile u16 __force *)addr = v;
++}
++static inline void __raw_writel(u32 v, volatile void __iomem *addr)
++{
++	*(volatile u32 __force *)addr = v;
++}
++
++static inline u8 __raw_readb(const volatile void __iomem *addr)
+ {
+-	*(volatile unsigned char __force *)addr = b;
++	return *(const volatile u8 __force *)addr;
+ }
+-static inline void writew(unsigned short b, volatile void __iomem *addr)
++static inline u16 __raw_readw(const volatile void __iomem *addr)
+ {
+-	*(volatile unsigned short __force *)addr = b;
++	return *(const volatile u16 __force *)addr;
+ }
+-static inline void writel(unsigned int b, volatile void __iomem *addr)
++static inline u32 __raw_readl(const volatile void __iomem *addr)
+ {
+-	*(volatile unsigned int __force *)addr = b;
++	return *(const volatile u32 __force *)addr;
+ }
+-#define __raw_writeb writeb
+-#define __raw_writew writew
+-#define __raw_writel writel
+ 
+-static inline unsigned char readb(const volatile void __iomem *addr)
++#define __swizzle_addr_b(addr)					\
++	((typeof(addr))((unsigned long)(addr) ^ 3UL))
++#define __swizzle_addr_w(addr)					\
++	((typeof(addr))((unsigned long)(addr) ^ 2UL))
++#define __swizzle_addr_l(addr)					\
++	(addr)
++
++static inline void writeb(u8 v, volatile void __iomem *addr)
+ {
+-	return *(const volatile unsigned char __force *)addr;
++	__raw_writeb(v, __swizzle_addr_b(addr));
+ }
+-static inline unsigned short readw(const volatile void __iomem *addr)
++static inline void writew(u16 v, volatile void __iomem *addr)
+ {
+-	return *(const volatile unsigned short __force *)addr;
++	__raw_writew(v, __swizzle_addr_w(addr));
+ }
+-static inline unsigned int readl(const volatile void __iomem *addr)
++static inline void writel(u32 v, volatile void __iomem *addr)
+ {
+-	return *(const volatile unsigned int __force *)addr;
++	__raw_writel(v, __swizzle_addr_l(addr));
++}
++
++static inline u8 readb(const volatile void __iomem *addr)
++{
++	return __raw_readb(__swizzle_addr_b(addr));
++}
++static inline u16 readw(const volatile void __iomem *addr)
++{
++	return __raw_readw(__swizzle_addr_w(addr));
++}
++static inline u32 readl(const volatile void __iomem *addr)
++{
++	return __raw_readl(__swizzle_addr_l(addr));
+ }
+-#define __raw_readb readb
+-#define __raw_readw readw
+-#define __raw_readl readl
+ 
+ #define writesb(p, d, l)	__raw_writesb((unsigned int)p, d, l)
+ #define writesw(p, d, l)	__raw_writesw((unsigned int)p, d, l)
+@@ -108,17 +137,13 @@ static inline unsigned int readl(const v
+ 
+ #endif
+ 
+-
+-/*
+- * These two are only here because ALSA _thinks_ it needs them...
+- */
+ static inline void memcpy_fromio(void * to, const volatile void __iomem *from,
+ 				 unsigned long count)
+ {
+ 	char *p = to;
+ 	while (count) {
+ 		count--;
+-		*p = readb(from);
++		*p = __raw_readb(from);
+ 		p++;
+ 		from++;
+ 	}
+@@ -130,7 +155,7 @@ static inline void  memcpy_toio(volatile
+ 	const char *p = from;
+ 	while (count) {
+ 		count--;
+-		writeb(*p, to);
++		__raw_writeb(*p, to);
+ 		p++;
+ 		to++;
+ 	}
