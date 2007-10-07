@@ -4,7 +4,7 @@ DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ 
 VANILLA_VERSION = "2.6.22"
 KERNEL_VERSION = "2.6.23-rc9"
 KERNEL_RELEASE = "2.6.23-rc9"
-PV = "${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
+PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
 PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
