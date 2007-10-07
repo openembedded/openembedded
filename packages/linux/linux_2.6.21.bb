@@ -4,10 +4,12 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 DEFAULT_PREFERENCE_gumstix-connex = "1"
 DEFAULT_PREFERENCE_gumstix-verdex = "1"
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
-           file://defconfig \
+           file://tsc2003.c \
+	   file://tsc2003-config.diff;patch=1 \
+	   file://defconfig \
 	   "
 
 SRC_URI_append_simpad = "\
@@ -76,3 +78,8 @@ GUMSTIX_PATCHES = "\
 
 SRC_URI_append_gumstix-verdex = "${GUMSTIX_PATCHES}"
 SRC_URI_append_gumstix-connex = "${GUMSTIX_PATCHES}"
+
+
+do_configure_prepend() {
+        cp ${WORKDIR}/tsc2003.c ${S}/drivers/i2c/chips/
+}

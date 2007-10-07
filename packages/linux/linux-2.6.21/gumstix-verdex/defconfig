@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21
-# Wed Oct  3 16:35:16 2007
+# Sun Oct  7 14:19:04 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1058,6 +1058,8 @@ CONFIG_I2C_PXA_SLAVE=y
 # CONFIG_SENSORS_PCA9539 is not set
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_MAX6875 is not set
+CONFIG_SENSORS_TSC2003=m
+CONFIG_SENSORS_TSC2003_SYSFS=m
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set
