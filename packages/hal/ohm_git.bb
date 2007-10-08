@@ -13,7 +13,11 @@ S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-distro=debian"
+EXTRA_OECONF = "--with-distro=debian --without-xauth"
+
+do_configure_prepend() {
+        touch gtk-doc.make
+}
 
 do_configure_append() {
         rm config.log

@@ -72,7 +72,7 @@ GUMSTIX_PATCHES = "\
        file://pxa-regs-fixup.patch;patch=1 \
        file://gumstix-fb-logo.patch;patch=1 \
        file://gumstix-pxa270-mmc.patch;patch=1 \
-       file://pxafb-18bpp-mode.patch;patch=1 \
+       ${RPSRC}/pxa27x_overlay-r5.patch;patch=1 \
        file://smc911x-fixup.patch;patch=1 \
        "
 
