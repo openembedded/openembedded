@@ -26,7 +26,7 @@ BINCOMMANDS = "dbclient ssh scp"
 EXTRA_OEMAKE = 'MULTI=1 SCPPROGRESS=1 PROGRAMS="${SBINCOMMANDS} ${BINCOMMANDS}"'
 
 do_configure_prepend() {
-	if [ "x${DISTRO}" != "xfamiliar" -a "${DISTRO_TYPE}" = "debug" ]; then
+	if [ "x${DISTRO_TYPE}" = "xdebug" ]; then
 		oenote "WARNING: applying allow-nopw.patch which allows password-less logins!"
 		patch -p1 < ${WORKDIR}/allow-nopw.patch
 	fi
