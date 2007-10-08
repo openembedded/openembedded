@@ -14,7 +14,7 @@ SRC_URI = "${GPE_MIRROR}/gpe-session-scripts-${PV}.tar.gz \
 	   file://disable-composite.xsettings \
            file://standard-apps.patch;patch=1"
 
-PR = "r9"
+PR = "r10"
 
 S = "${WORKDIR}/gpe-session-scripts-${PV}"
 

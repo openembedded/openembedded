@@ -54,6 +54,7 @@ esdplay /mnt/sd/sounds/startup.wav
 
 # Start SoundServer
 soundserver &
+alsactl restore -f /etc/gsmhandset.state
 
 # Run GSM support stuff
 
