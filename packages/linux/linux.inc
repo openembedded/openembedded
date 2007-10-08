@@ -18,6 +18,8 @@ DEPENDS_append_fic-gta01      = " u-boot-mkimage-openmoko-native "
 DEPENDS_append_fic-gta02      = " u-boot-mkimage-openmoko-native "
 
 
+RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
+
 # Specify the commandline for your device
 
 #boot from mmc
@@ -108,7 +110,7 @@ do_install_prepend() {
 
 UBOOT_ENTRYPOINT ?= "20008000"
 
-KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
