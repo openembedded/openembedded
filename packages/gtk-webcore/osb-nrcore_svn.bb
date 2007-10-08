@@ -1,7 +1,5 @@
 require osb-nrcore.inc
 
-DEFAULT_PREFERENCE = "-1"
-
 PV = "0.5.2+svnr${SRCREV}"
 PR = "r1"
 
