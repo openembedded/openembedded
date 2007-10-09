@@ -111,6 +111,7 @@ do_install_prepend() {
 UBOOT_ENTRYPOINT ?= "20008000"
 
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}"
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
@@ -130,6 +131,10 @@ do_deploy() {
                 rm -f linux.bin.gz
             fi
         fi
+
+		cd ${DEPLOY_DIR_IMAGE}
+		rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+		ln -sf ${KERNEL_IMAGE_BASE_NAME}.bin ${KERNEL_IMAGE_SYMLINK_NAME}.bin
 }
 
 do_deploy[dirs] = "${S}"
