@@ -51,6 +51,15 @@ python do_compulab_image() {
 	    fo.write(size_s)
 	    fo.write(image_data)
 	    fo.close()
+
+	    os.chdir(deploy_dir)
+	    link_file = bb.data.expand('${KERNEL_IMAGE_SYMLINK_NAME}', d) + '.cmx270'
+	    img_file = bb.data.expand('${KERNEL_IMAGE_BASE_NAME}', d) + '.cmx270'
+	    try:
+		os.unlink(link_file)
+	    except:
+		pass
+	    os.symlink(img_file, link_file)
 }
 
 addtask compulab_image after do_deploy before do_package
