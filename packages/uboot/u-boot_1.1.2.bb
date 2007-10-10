@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 require u-boot.inc
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
@@ -10,6 +10,7 @@ SRC_URI_append_mnci   = "file://mnci.patch;patch=1 \
                          file://command-names.patch;patch=1"
 
 SRC_URI_append_magicbox  = "file://u-boot-emetec.patch;patch=1 "
+SRC_URI_append_bd-neon = "file://u-boot-1.1.2-neon.patch;patch=1"
 
 # TODO: SRC_URI_append_rt3000
 
