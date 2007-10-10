@@ -1,4 +1,4 @@
-require angstrom-console-image.bb
+require console-image.bb
 
 ANGSTROM_EXTRA_INSTALL += " altboot "
 

@@ -1,4 +1,4 @@
-require angstrom-x11-image.bb
+require x11-image.bb
 
 ANGSTROM_EXTRA_INSTALL += " altboot "
 export IMAGE_BASENAME = "altboot-x11-image"
