@@ -19,7 +19,7 @@ IMAGE_INSTALL = "\
     abiword \
     gnumeric \
     cups \
-    claws-mail claws-mail claws-plugin-maildir claws-plugin-mailmbox claws-plugin-rssyl \
+    claws-mail claws-mail claws-plugin-mailmbox claws-plugin-rssyl \
     midori minimo \
     gphoto2 \
     ${ANGSTROM_EXTRA_INSTALL}"
