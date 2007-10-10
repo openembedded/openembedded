@@ -2,7 +2,7 @@
 # for creating a small initramfs image in NOR flash that can be used
 # to program the NAND flash.
 
-require angstrom-minimal-image.bb
+require minimal-image.bb
 IMAGE_INSTALL += "mtd-utils"
 
 export IMAGE_BASENAME = "minimalist-image-mtdutils"
