@@ -98,8 +98,6 @@ RDEPENDS_task-base = "\
     ${@base_contains('COMBINED_FEATURES', 'redboot', 'task-base-redboot', '',d)} \
     \
     ${@base_contains('DISTRO_FEATURES', 'nfs', 'task-base-nfs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'cramfs', 'task-base-cramfs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'smbfs', 'task-base-smbfs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'ipv6', 'task-base-ipv6', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'ipsec', 'task-base-ipsec', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'ppp', 'task-base-ppp', '',d)} \
