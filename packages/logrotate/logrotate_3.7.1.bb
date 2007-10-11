@@ -37,4 +37,4 @@ pkg_postrm() {
     mv ${sysconfdir}/crontab.no-${PF} ${sysconfdir}/crontab
 }
 
-CONFFILES += "${sysconfdir}/logrotate.conf"
+CONFFILES_${PN} += "${sysconfdir}/logrotate.conf"
