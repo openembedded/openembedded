@@ -3,6 +3,9 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
 DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS_append_c7x0 = " libw100 "
+DEPENDS_append_hx4700 = " libw100 "
+
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
@@ -28,14 +31,16 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 # discovers this is more general than please make this more general
 # ie. for all armv4 machines.
 SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
-PACKAGE_ARCH_mplayer_collie = "collie"
-PACKAGE_ARCH_mencoder_collie = "collie"
+
+PACKAGE_ARCH_collie = "collie"
+PACKAGE_ARCH_c7x0 = "c7x0"
+PACKAGE_ARCH_hx4700 = "hx4700"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc1+svnr${SRCREV}"
-PR = "r3"
+PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
@@ -165,13 +170,12 @@ EXTRA_OECONF = " \
         --disable-win32waveout \
         --enable-select \
         \
-        --disable-runtime-cpudetection \
         "
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
-
-EXTRA_OECONF_append_progear = " --disable-sse --disable-3dnow --disable-mmxext --disable-sse2"
+EXTRA_OECONF_append_c7x0 = " --enable-imageon "
+EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
@@ -182,6 +186,7 @@ MY_TARGET_CC_ARCH := "${TARGET_CC_ARCH}"
 TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt -mtune=iwmmxt', '${MY_TARGET_CC_ARCH}',d)}"
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
+EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo

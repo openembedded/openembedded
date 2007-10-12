@@ -60,13 +60,6 @@ do_stage() {
 }
 
 
-# Noooooooooooooooooooooooooooooooooooooooooooo...
-do_unstage() {
-        rm ${STAGING_LIBDIR}/libWebKitG* || true
-}
-
-addtask unstage before do_configure
-
 PACKAGES =+ "webkit-gtklauncher-dbg webkit-gtklauncher"
 
 FILES_webkit-gtklauncher = "${bindir}/GtkLauncher"

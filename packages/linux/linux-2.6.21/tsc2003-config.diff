@@ -1,0 +1,31 @@
+--- /tmp/Kconfig	2007-10-07 14:13:14.000000000 +0200
++++ linux-2.6.21/drivers/i2c/chips/Kconfig	2007-10-07 14:13:56.902045000 +0200
+@@ -125,4 +125,18 @@
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called max6875.
+ 
++config SENSORS_TSC2003
++	tristate "TI TSC2003"
++	depends on I2C && EXPERIMENTAL
++	default n
++	help
++	  Driver for TI tsc2003 touchscreen and sensor chip/
++
++config SENSORS_TSC2003_SYSFS
++	tristate "TI TSC2003 sysfs interface
++	depends on SENSORS_TSC2003
++	default n
++	help
++	  Enabled the sysfs interface for tsc2003
++
+ endmenu
+--- /tmp/Makefile	2007-10-07 14:14:14.000000000 +0200
++++ linux-2.6.21/drivers/i2c/chips/Makefile	2007-10-07 14:14:20.072045000 +0200
+@@ -12,6 +12,7 @@
+ obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
+ obj-$(CONFIG_ISP1301_OMAP)	+= isp1301_omap.o
+ obj-$(CONFIG_TPS65010)		+= tps65010.o
++obj-$(CONFIG_SENSORS_TSC2003)   += tsc2003.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_CHIP),y)
+ EXTRA_CFLAGS += -DDEBUG

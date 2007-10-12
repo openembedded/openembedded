@@ -6,13 +6,11 @@ RPROVIDES_${PN} = matchbox-keyboard
 #DEFAULT_PREFERENCE = "-1"
 SECTION = "x11"
 PV = "0.0+svnr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
 	file://smallscreen-fontsize.patch;patch=1 \
-        file://matchbox-keyboard-applet.patch;patch=1;pnum=0 \
-	file://80matchboxkeyboard \
-	file://matchbox-keyboard-hide-delay.patch;patch=1"
+	file://80matchboxkeyboard"
 
 SRC_URI_append_fic-gta01 = " file://fic-gta01-font-size.patch;patch=1"
 

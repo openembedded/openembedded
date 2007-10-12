@@ -11,4 +11,4 @@ SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;m
 
 S = "${WORKDIR}/NRCore"
 
-DEFAULT_PREFERENCE = "${@['-1', '1'][not bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1) or bb.data.getVar('PREFERRED_VERSION_gcc-cross', d, 1).split('.')[0] == '4']}"
+DEFAULT_PREFERENCE = "-1"

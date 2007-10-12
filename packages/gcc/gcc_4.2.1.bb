@@ -38,6 +38,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://unbreak-armv4t.patch;patch=1 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
+        file://gfortran.patch;patch=1 \
 "
 
 SRC_URI_append_ep93xx = " \
@@ -58,7 +59,6 @@ SRC_URI_append_ep93xx = " \
         file://arm-crunch-truncsi-disable.patch;patch=1 \
         file://arm-crunch-cfcvt64-disable.patch;patch=1 \
         file://arm-crunch-cirrus-bugfixes.patch;patch=1 \
-        file://gfortran.patch;patch=1 \	
        "
 
 PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"

@@ -61,3 +61,6 @@ SRCREV_pn-openocd ?= "${AUTOREV}"
 SRCREV_pn-openocd-native ?= "${AUTOREV}"
 
 SRCREV_pn-uboot-openmoko ?= "${AUTOREV}"
+SRCREV_pn-dfu-util ?= "${AUTOREV}"
+SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
+
