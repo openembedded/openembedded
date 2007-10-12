@@ -3,8 +3,9 @@ require linux.inc
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_cm-x270 = "-1"
+DEFAULT_PREFERENCE_bd-neon = "0"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
            file://defconfig \
@@ -23,6 +24,8 @@ SRC_URI_append_cm-x270 = "\
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
 FILES_kernel-image_cm-x270 = ""
+
+SRC_URI_append_bd-neon =  " http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1"
 
 python do_compulab_image() {
 	import os
