@@ -22,7 +22,7 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.dat
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
 	   file://trampoline.patch;patch=1;pnum=0 \
-	   file://dl-cache-libcmp.patch;patch=1;pnum=0 \
+	   file://dl-cache-libcmp.patch;patch=1 \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
