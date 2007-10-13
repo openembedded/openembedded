@@ -5,5 +5,8 @@
 # package in step 2.
 # See http://www.mono-project.com/Mono:ARM
 
-require mono_1.2.5.inc
+require mono_svn.inc
 require mono-mcs-intermediate.inc
+
+DEFAULT_PREFERENCE = "-1"
+EXTRA_OECONF_append = " --without-tls "
