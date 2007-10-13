@@ -1,4 +1,5 @@
 DESCRIPTION = "Input sharing, the avahi way"
+DEPENDS = "avahi-ui libglade libnotify"
 
 PV = "0.0+git${SRCDATE}"
 
