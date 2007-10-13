@@ -1,8 +1,10 @@
 require gutenprint.inc
 
-DEPENDS = "glib-2.0 cups tiff jpeg libpng gutenprint-native espgs"
+PR = "r1"
 
-SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/gimp-print/gutenprint-5.1.3.tar.bz2"
+DEPENDS = "glib-2.0 ijs ncurses cups tiff jpeg libpng gutenprint-native espgs"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/gimp-print/gutenprint-5.1.3.tar.bz2"
 S = "${WORKDIR}/gutenprint-${PV}"
 
 
@@ -30,5 +32,17 @@ do_configure() {
 	libtoolize --force
         oe_runconf
 }
+
+
+do_install_append() {
+        install -d ${D}${datadir}/cups/model/
+	install -m 644 ${STAGING_DIR}/${BUILD_SYS}/share/cups/model/* ${D}${datadir}/cups/model/
+        cp -pPr ${D}${STAGING_LIBDIR}/* ${D}${libdir}/
+	cp -pPr ${D}${STAGING_DATADIR}/* ${D}${datadir}/
+}
+
+
+FILES_${PN} += "${datadir}/cups/model ${libdir}/cups ${datadir}/cups/calibrate.ppm"
+FILES_${PN}-dbg += "${libdir}/cups/*/.debug"
 
 
