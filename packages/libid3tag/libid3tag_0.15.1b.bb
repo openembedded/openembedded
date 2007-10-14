@@ -4,7 +4,7 @@ DEPENDS = "zlib"
 DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"
 
-SRC_URI = "http://downloads.sourceforge.net/mad/libid3tag-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libid3tag-${PV}.tar.gz"
 S = "${WORKDIR}/libid3tag-${PV}"
 
 inherit autotools
