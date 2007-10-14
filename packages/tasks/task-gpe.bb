@@ -18,6 +18,7 @@ PACKAGES = "\
     gpe-task-sectest"
 
 RDEPENDS_gpe-base-depends = "\
+    diet-x11 \
     virtual/xserver"
 
 RDEPENDS_gpe-task-base = "\
@@ -124,9 +125,14 @@ RDEPENDS_gpe-task-desktopapps = "\
 
 RDEPENDS_gpe-task-sectest = "\
     mbmerlin \
+    nmap \
+    ettercap \
+    stunnel \
     curl \
 #    dsniff \
     prismstumbler \
     tcpdump \
     kismet \
+    hydra \
+    thcrut \
     miniclipboard"

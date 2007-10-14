@@ -74,7 +74,6 @@ PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Netw
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
-	install -d ${STAGING_BINDIR_NATIVE} ${STAGING_QT_DIR}/bin
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
