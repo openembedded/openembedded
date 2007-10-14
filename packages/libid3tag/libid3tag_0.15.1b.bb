@@ -3,9 +3,8 @@ PRIORITY = "optional"
 DEPENDS = "zlib"
 DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"
-PR = "r2"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libid3tag-${PV}.tar.gz "
+SRC_URI = "http://downloads.sourceforge.net/mad/libid3tag-${PV}.tar.gz"
 S = "${WORKDIR}/libid3tag-${PV}"
 
 inherit autotools
