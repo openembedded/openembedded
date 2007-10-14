@@ -7,7 +7,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-PR = "r0"
+PR = "r1"
 RV = "1.1-0"
 
 SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
@@ -27,6 +27,7 @@ EXTRA_OECONF = "--with-gfxdrivers=none \
 		--enable-libmpeg3=no \
 		--enable-freetype=yes \
 		--enable-sdl=no \
+	        --enable-vnc=no \
 		--disable-x11 \
 		"
 
@@ -38,6 +39,13 @@ do_install() {
         oe_runmake 'DESTDIR=${D}' install
 }
 
+PACKAGES_DYNAMIC = "directfb-inputdrivers-*"
+
+#python populate_packages_prepend () {
+#	import os.path
+#	inputdrivers_libdir    = bb.data.expand('${libdir}/directfb-${RV}/inputdrivers', d)
+#        do_split_packages(d, inputdrivers_libdir, '*.so$', 'directfb-inputdrivers-%s', 'Directfb plugin for %s')
+#}
 FILES_directfb-dbg_append = " ${libdir}/directfb-${RV}/*/*/.debug/*.so \
 			      ${libdir}/directfb-${RV}/*/.debug/*.so \
 			  "
@@ -50,8 +58,8 @@ FILES_directfb-dev_append = " ${libdir}/directfb-${RV}/systems/*.la \
 
 
 FILES_directfb_append = " ${libdir}/directfb-${RV}/systems/*.so \
-                          ${libdir}/directfb-${RV}/inputdrivers/*.so \
-                          ${libdir}/directfb-${RV}/interfaces/*/*.so \
+        #                  ${libdir}/directfb-${RV}/inputdrivers/*.so \
+        #                  ${libdir}/directfb-${RV}/interfaces/*/*.so \
                           ${libdir}/directfb-${RV}/wm/*.so \
                           ${datadir}/directfb-1.1.0 \
 			  "
