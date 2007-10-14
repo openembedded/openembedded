@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "gpe"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
@@ -11,8 +11,8 @@ SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz 
 	file://pda-interface.patch;patch=1"
 S = "${WORKDIR}/vlc-${PV}"
 
-export GTK2_CFLAGS  = "`pkg-config --cflags gtk+-2.0 gthread-2.0`"
-export GTK2_LIBS  = "`pkg-config --libs gtk+-2.0 gthread-2.0`"
+export GTK2_CFLAGS  = "`${STAGING_BINDIR_NATIVE}/pkg-config --cflags gtk+-2.0 gthread-2.0`"
+export GTK2_LIBS  = "`${STAGING_BINDIR_NATIVE}/pkg-config --libs gtk+-2.0 gthread-2.0`"
 export vlc_WORKAROUNDLDFLAGS = "lib/libvlc.a"
 
 LDFLAGS_append = " -L${STAGING_LIBDIR} -lpostproc"
