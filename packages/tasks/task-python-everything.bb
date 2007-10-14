@@ -18,7 +18,6 @@ RDEPENDS = "\
 		python-fnorb		\
 		python-formencode	\
 		python-fpconst		\
-		python-fuse			\
 		python-gmpy		\
 		python-gnosis		\
 		python-gst		\

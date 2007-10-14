@@ -12,3 +12,4 @@ inherit autotools pkgconfig gconf
 
 FILES_${PN} += "${datadir}/gconf"
 
+PARALLEL_MAKE = ""

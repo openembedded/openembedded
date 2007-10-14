@@ -3,7 +3,7 @@ SECTION = "network/misc"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"
-DEPENDS = "libnl dbus dbus-glib libhal-nm libgpewidget gnome-keyring gconf-dbus wireless-tools libglade"
+DEPENDS = "libnl dbus dbus-glib gnome-keyring gconf-dbus wireless-tools "
 RDEPENDS = "wpa-supplicant iproute2 dhcdbd gnome-keyring hicolor-icon-theme"
 
 PR = "r5"
@@ -17,11 +17,11 @@ SRC_URI="http://www.handhelds.org/~mmp/files/NetworkManager-${PV}-gpe.tar.gz \
 
 EXTRA_OECONF = " \
 		--without-gnome \
-		--with-gpe \
+		--without-gpe \
 		--with-distro=debian \
 		--without-gcrypt \
  		--with-wpa_supplicant=/usr/sbin/wpa_supplicant \
-		--disable-hal  \
+		--enable-hal  \
 		--with-dhcdbd=/sbin/dhcdbd"
 
 S = "${WORKDIR}/NetworkManager-${PV}"

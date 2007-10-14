@@ -3,7 +3,7 @@ AIM, IRC, Jabber and LiveJournal"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "openssl ncurses"
+DEPENDS = "gnutls ncurses"
 
 inherit autotools
 
@@ -11,4 +11,6 @@ SRC_URI = "http://centericq.de/archive/source/releases/centericq-${PV}.tar.bz2 \
            file://configure.patch;patch=1 \
            file://m4.patch;patch=1"
 
-EXTRA_OECONF = "--with-ssl --with-openssl=${STAGING_LIBDIR}/.."
+EXTRA_OECONF = "--with-ssl --disable-msn --without-curl"
+
+PARALLEL_MAKE = ""

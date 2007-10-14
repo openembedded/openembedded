@@ -1,0 +1,85 @@
+#! /bin/sh -e
+## 24_gpgv_manpage_cleanup.dpatch
+##
+## DP: Description: Small fixes for gpgv manpage (#177951)
+## DP: Author: "Jim W. Jaszewski" <grok@sprint.ca>
+## DP: Upstream status: Not yet submitted
+## DP: Date: 2003-01-22
+
+if [ $# -lt 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch} ${2:+-d $2}"
+
+case "$1" in
+    -patch) patch -p1 ${patch_opts} < $0;;
+    -unpatch) patch -R -p1 ${patch_opts} < $0;;
+    *)
+        echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+        exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+diff -urNad gnupg-1.4.6~/doc/gpgv.texi gnupg-1.4.6/doc/gpgv.texi
+--- gnupg-1.4.6~/doc/gpgv.texi	2006-12-04 14:01:31.000000000 +0000
++++ gnupg-1.4.6/doc/gpgv.texi	2006-12-07 02:33:20.000000000 +0000
+@@ -55,8 +55,8 @@
+ @mansect description
+ @code{@gpgvname} is an OpenPGP signature verification tool.
+ 
+-This program is actually a stripped down version of @code{gpg} which is
+-only able to check signatures. It is somewhat smaller than the fully blown
++This program is actually a stripped-down version of @code{gpg} which is
++only able to check signatures. It is somewhat smaller than the fully-blown
+ @code{gpg} and uses a different (and simpler) way to check that
+ the public keys used to make the signature are valid. There are
+ no configuration files and only a few options are implemented.
+@@ -114,7 +114,7 @@
+ 
+ @mansect return value
+ 
+-The program returns 0 if everything was fine, 1 if at least
++The program returns 0 if everything is fine, 1 if at least
+ one signature was bad, and other error codes for fatal errors.
+ 
+ @mansect examples
+@@ -126,7 +126,7 @@
+ @itemx @gpgvname @code{sigfile} 
+ Verify the signature of the file. The second form
+ is used for detached signatures, where @code{sigfile} is the detached
+-signature (either ASCII armored or binary) and are the signed
++signature (either ASCII-armored or binary) and are the signed
+ data; if this is not given the name of the file holding the signed data is
+ constructed by cutting off the extension (".asc", ".sig" or ".sign") from
+ @code{sigfile}.
+@@ -152,7 +152,7 @@
+ @table @asis
+ 
+ @item ~/.gnupg/trustedkeys.gpg
+-The default keyring with the allowed keys
++The default keyring with the allowed keys.
+ 
+ @end table
+ 
+diff -urNad gnupg-1.4.6~/doc/opt-homedir.texi gnupg-1.4.6/doc/opt-homedir.texi
+--- gnupg-1.4.6~/doc/opt-homedir.texi	2006-12-04 13:31:56.000000000 +0000
++++ gnupg-1.4.6/doc/opt-homedir.texi	2006-12-07 02:32:48.000000000 +0000
+@@ -1,11 +1,11 @@
+ @c This option is included at several places.
+ @item --homedir @var{dir}
+ @opindex homedir
+-Set the name of the home directory to @var{dir}. If his option is not
++Set the name of the home directory to @var{dir}. If this option is not
+ used, the home directory defaults to @file{~/.gnupg}.  It is only
+ recognized when given on the command line.  It also overrides any home
+ directory stated through the environment variable @env{GNUPGHOME} or
+-(on W32 systems) by means on the Registry entry
++(on W32 systems) by means of the Registry entry
+ @ifset isman
+ @var{HKCU\\Software\\GNU\\GnuPG:HomeDir}.
+ @end ifset

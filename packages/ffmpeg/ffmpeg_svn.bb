@@ -3,10 +3,11 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libogg zlib libvorbis faac liba52 lame"
+SRCREV = "10734"
 PV = "0.4.9+svnr${SRCREV}" 
 PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
+#DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.mplayerhq.hu/ffmpeg/;module=trunk"
 
@@ -28,9 +29,6 @@ EXTRA_OECONF = " \
         --enable-pthreads \
         --enable-gpl \
         \
-        --disable-audio-beos \
-        --disable-v4l \
-        --disable-dv1394 \
         --disable-debug \
         --disable-ffserver \
         --disable-ffplay \

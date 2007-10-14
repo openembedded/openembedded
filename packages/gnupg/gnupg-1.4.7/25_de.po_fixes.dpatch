@@ -1,0 +1,195 @@
+#! /bin/sh -e
+## 25_de.po_fixes.dpatch
+##
+## DP: Description: Small fixes for the German translation (#314069)
+## DP: Author: Jens Seidel <jensseidel@users.sf.net>
+## DP: Upstream status: Not yet submitted
+## DP: Date: 2005-06-14
+
+if [ $# -lt 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch} ${2:+-d $2}"
+
+case "$1" in
+    -patch) patch -p1 ${patch_opts} < $0;;
+    -unpatch) patch -R -p1 ${patch_opts} < $0;;
+    *)
+        echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+        exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+diff -urNad gnupg-1.4.5~/po/de.po gnupg-1.4.5/po/de.po
+--- gnupg-1.4.5~/po/de.po	2006-08-01 12:08:06.000000000 +0100
++++ gnupg-1.4.5/po/de.po	2006-08-01 21:50:19.000000000 +0100
+@@ -1241,7 +1241,7 @@
+ 
+ #: g10/gpg.c:791
+ msgid "Pubkey: "
+-msgstr "Öff.Schlüssel: "
++msgstr "Öff. Schlüssel: "
+ 
+ #: g10/gpg.c:797 g10/keyedit.c:2310
+ msgid "Cipher: "
+@@ -2330,7 +2330,7 @@
+ #: g10/import.c:319
+ #, c-format
+ msgid " secret keys unchanged: %lu\n"
+-msgstr "                 unveränderte geh.Schl.: %lu\n"
++msgstr "                unveränderte geh. Schl.: %lu\n"
+ 
+ #: g10/import.c:321
+ #, c-format
+@@ -3388,11 +3388,11 @@
+ 
+ #: g10/keyedit.c:2035
+ msgid "Do you really want to revoke the selected subkeys? (y/N) "
+-msgstr "Möchten Sie die ausgewählten Unterschlüssel wirklich widerrufen? "
++msgstr "Möchten Sie die ausgewählten Unterschlüssel wirklich widerrufen? (j/N) "
+ 
+ #: g10/keyedit.c:2037
+ msgid "Do you really want to revoke this subkey? (y/N) "
+-msgstr "Möchten Sie diesen Schlüssel wirklich widerrufen? "
++msgstr "Möchten Sie diesen Unterschlüssel wirklich widerrufen? (j/N) "
+ 
+ #: g10/keyedit.c:2087
+ msgid ""
+@@ -3568,7 +3568,7 @@
+ 
+ #: g10/keyedit.c:3022
+ msgid "You may not add a photo ID to a PGP2-style key.\n"
+-msgstr "Sie können einem PGP2-artigen SchlüÂüsel keine Foto-ID hinzufügen.\n"
++msgstr "Sie können einem PGP2-artigen Schlüssel keine Foto-ID hinzufügen.\n"
+ 
+ #: g10/keyedit.c:3162
+ msgid "Delete this good signature? (y/N/q)"
+@@ -3622,7 +3622,7 @@
+ #: g10/keyedit.c:3352
+ msgid "You may not add a designated revoker to a PGP 2.x-style key.\n"
+ msgstr ""
+-"Sie können einem PGP2-artigen SchlüÂüsel keine vorgesehenen Widerrufer "
++"Sie können einem PGP2-artigen Schlüssel keine vorgesehenen Widerrufer "
+ "hinzufügen.\n"
+ 
+ #: g10/keyedit.c:3372
+@@ -5034,7 +5034,7 @@
+ "Wählen Sie ein Bild für Ihre Photo ID aus. Das Bild muß eine JPEG Datei\n"
+ "sein.  Bitte beachten Sie, daß das Bild in Ihrem öffentlichen\n"
+ "Schlüssel gespeichert wird.  Wenn Sie ein sehr großes Bild benutzen,\n"
+-"wir Ihr Schlüssel leider auch sehr groß werden.  Ein Bild der GröÂße\n"
++"wir Ihr Schlüssel leider auch sehr groß werden.  Ein Bild der Größe\n"
+ "240x288 Pixel ist eine gute Wahl.\n"
+ 
+ #: g10/photoid.c:95
+@@ -5406,7 +5406,7 @@
+ #: g10/pubkey-enc.c:244
+ #, c-format
+ msgid "cipher algorithm %d%s is unknown or disabled\n"
+-msgstr "Verschüsselungsverfahren %d%s ist unbekannt oder abgeschaltet\n"
++msgstr "Verschlüsselungsverfahren %d%s ist unbekannt oder abgeschaltet\n"
+ 
+ #: g10/pubkey-enc.c:282
+ #, fuzzy, c-format
+@@ -5504,7 +5504,7 @@
+ msgstr ""
+ "Widerrufszertifikat wurde erzeugt.\n"
+ "\n"
+-"Bitte speichern Sie es auf einem Medium welches sie wegschliessen\n"
++"Bitte speichern Sie es auf einem Medium welches sie wegschließen\n"
+ "können; falls Mallory (ein Angreifer) Zugang zu diesem Zertifikat\n"
+ "erhält, kann erIhren Schlüssel unbrauchbar machen.  Es wäre klug,\n"
+ "dieses Widerrufszertifikat auch auszudrucken und sicher aufzubewahren,\n"
+@@ -5588,7 +5588,7 @@
+ msgid "cannot avoid weak key for symmetric cipher; tried %d times!\n"
+ msgstr ""
+ "Trotz %d-fachen Versuch konnte die Erzeugung eines unsicheren Schlüssels für "
+-"sym.Verschlüsselung nicht vermieden werden!\n"
++"sym. Verschlüsselung nicht vermieden werden!\n"
+ 
+ #: g10/seskey.c:222
+ msgid "DSA requires the hash length to be a multiple of 8 bits\n"
+@@ -6133,7 +6133,7 @@
+ #, fuzzy, c-format
+ msgid "public key of ultimately trusted key %s not found\n"
+ msgstr ""
+-"öff.Schlüssel des uneingeschränkt vertrautem Schlüssel %08lX nicht gefunden\n"
++"öff. Schlüssel des uneingeschränkt vertrautem Schlüssel %08lX nicht gefunden\n"
+ 
+ #: g10/trustdb.c:2197
+ #, c-format
+@@ -6190,7 +6190,7 @@
+ 
+ #: util/errors.c:60
+ msgid "bad public key"
+-msgstr "Falscher öffentlicher Schüssel"
++msgstr "Falscher öffentlicher Schlüssel"
+ 
+ #: util/errors.c:61
+ msgid "bad secret key"
+@@ -6366,7 +6366,7 @@
+ 
+ #: util/errors.c:106
+ msgid "unusable public key"
+-msgstr "unbrauchbarer öffentlicher Schüssel"
++msgstr "unbrauchbarer öffentlicher Schlüssel"
+ 
+ #: util/errors.c:107
+ msgid "unusable secret key"
+@@ -6775,7 +6775,7 @@
+ #~ "Es wird ein neues %s Schlüsselpaar erzeugt.\n"
+ #~ "              kleinste Schlüssellänge ist  768 Bit\n"
+ #~ "              standard Schlüssellänge ist 1024 Bit\n"
+-#~ "      gröÂßte sinnvolle Schlüssellänge ist 2048 Bit\n"
++#~ "      größte sinnvolle Schlüssellänge ist 2048 Bit\n"
+ 
+ #~ msgid "DSA only allows keysizes from 512 to 1024\n"
+ #~ msgstr "DSA erlaubt nur Schlüssellängen von 512 bis 1024\n"
+@@ -6787,13 +6787,13 @@
+ #~ msgstr "zu kurz; 768 ist die kleinste mögliche Schlüssellänge.\n"
+ 
+ #~ msgid "keysize too large; %d is largest value allowed.\n"
+-#~ msgstr "SchüsselgröÂße zu hoch; %d ist der Maximalwert.\n"
++#~ msgstr "Schlüsselgröße zu hoch; %d ist der Maximalwert.\n"
+ 
+ #~ msgid ""
+ #~ "Keysizes larger than 2048 are not suggested because\n"
+ #~ "computations take REALLY long!\n"
+ #~ msgstr ""
+-#~ "Schlüssellängen gröÂßer als 2048 werden nicht empfohlen, da die\n"
++#~ "Schlüssellängen größer als 2048 werden nicht empfohlen, da die\n"
+ #~ "Berechnungen dann WIRKLICH lange brauchen!\n"
+ 
+ #, fuzzy
+@@ -7136,7 +7136,7 @@
+ #~ msgstr "zu viele `%c' Voreinstellungen\n"
+ 
+ #~ msgid "key %08lX: not a rfc2440 key - skipped\n"
+-#~ msgstr "Schlüssel %08lX: dies ist kein RFC2440-Schüssel - übersprungen\n"
++#~ msgstr "Schlüssel %08lX: dies ist kein RFC2440-Schlüssel - übersprungen\n"
+ 
+ #~ msgid ""
+ #~ "NOTE: Elgamal primary key detected - this may take some time to import\n"
+@@ -7292,7 +7292,7 @@
+ #~ msgstr ""
+ #~ "Dieses Verfahren wird nur von GnuPG unterstützt.  Sie können diesen "
+ #~ "Schlüssel\n"
+-#~ "nicht zur Verständigung mit PGP-Anwendern benutzen.  Ausserdem ist "
++#~ "nicht zur Verständigung mit PGP-Anwendern benutzen.  Außerdem ist "
+ #~ "dieses\n"
+ #~ "Verfahren sehr langsam, und es könnte nicht so sicher wie die anderen "
+ #~ "sein.\n"
+@@ -7603,7 +7603,7 @@
+ 
+ #~ msgid "Do you really want to create a sign and encrypt key? "
+ #~ msgstr ""
+-#~ "Möchten Sie wirklich einen Unterschriften-/Verschlüsselungschlüssel "
++#~ "Möchten Sie wirklich einen Unterschriften-/Verschlüsselungsschlüssel "
+ #~ "erzeugen? "
+ 
+ #~ msgid "%s: user not found: %s\n"

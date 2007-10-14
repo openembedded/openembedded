@@ -3,7 +3,7 @@ SECTION = "x11/fonts"
 LICENSE = "MIT-X"
 
 DEPENDS = " encodings font-alias font-util-native mkfontdir-native mkfontscale-native"
-RDEPENDS = "encodings font-util font-alias"
+RDEPENDS = "encodings font-util font-alias mkfontscale mkfontdir"
 
 XORG_PN = "${PN}"
 XORG_RELEASE = "${@["individual",bb.data.getVar('PV', d, 1)[0:7]+"/src"][bb.data.getVar('PV', d, 1)[0:4] == "X11R"]}"
