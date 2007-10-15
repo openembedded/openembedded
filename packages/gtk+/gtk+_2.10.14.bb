@@ -30,12 +30,3 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 require gtk-fpu.inc
 EXTRA_OECONF += "${@get_gtk_fpu_setting(bb, d)}"
 
-# try to squeeze some more performance out of it
-SRC_URI_append_fic-gta01 = " file://lower-quality-scaling-in-pixbuf-engine.patch;patch=1"
-SRC_URI_append_fic-gta02 = " file://lower-quality-scaling-in-pixbuf-engine.patch;patch=1"
-
-# this doesn't seem to work
-SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
-# let's do it manually then
-PACKAGE_ARCH_fic-gta01 = "fic-gta01"
-PACKAGE_ARCH_fic-gta02 = "fic-gta02"
