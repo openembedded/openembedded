@@ -101,4 +101,6 @@ SRCREV_pn-mplayer ?= "24587"
 SRCREV_pn-networkmanager ?= "2887"
 SRCREV_pn-networkmanager-applet ?= "200"
 SRCREV_pn-libw100 ?= "47"
+SRCREV_pn-usbpath ?= "3108"
+SRCREV_pn-usbpath-native ?= "3108"
 
