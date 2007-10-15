@@ -5,12 +5,14 @@
 #
 DESCRIPTION = "Packages that are required for the SlugOS native build environment"
 LICENSE = "MIT"
-PR = "r5"
+PR = "r6"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
+
+inherit meta
 
 # Run-time only (RDEPENDS) stuff - no package explicitly provides
 # these targets.

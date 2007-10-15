@@ -5,13 +5,15 @@
 DESCRIPTION = "Packages that are compatible with the Openprotium on the iomega Storcenter"
 HOMEPAGE = "http://www.openprotium.org"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 CONFLICTS = "db3"
 PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
+
+inherit meta
 
 # The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
