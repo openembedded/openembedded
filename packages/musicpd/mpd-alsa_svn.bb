@@ -4,7 +4,8 @@ SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmad flac audiofile virtual/libiconv faad2"
 RDEPENDS = "libao-alsa"
-PR = "r1"
+PV = "0.11.5+svnr${SRCREV}"
+PR = "r2"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
 		file://mpd/mpd.init"
