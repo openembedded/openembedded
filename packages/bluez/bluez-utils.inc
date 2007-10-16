@@ -12,6 +12,8 @@ SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
 	file://hcid.conf \
 	file://hciattach-ti-bts.patch;patch=1 \
         file://handle-eintr.patch;patch=1;status=applied"
+SRC_URI_append_r1000      = " file://hciattach.sh"
+SRC_URI_append_ghi270      = " file://hciattach.sh"
 
 # Almost all serial CF cards w/ manfid 0x0000,0x0000 seem to use the bcs protocol
 # Let's default to that instead of 'any' until further notice...
@@ -41,6 +43,16 @@ do_install_append() {
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
         install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/
+}
+
+do_install_append_r1000() {
+        install -d ${D}${sysconfdir} ${D}${sysconfdir}/bluetooth
+        install -m 0755 ${WORKDIR}/hciattach.sh ${D}${sysconfdir}/bluetooth/hciattach
+}
+
+do_install_append_ghi270() {
+        install -d ${D}${sysconfdir} ${D}${sysconfdir}/bluetooth
+        install -m 0755 ${WORKDIR}/hciattach.sh ${D}${sysconfdir}/bluetooth/hciattach
 }
 
 CONFFILES_${PN} = "${sysconfdir}/bluetooth/hcid.conf ${sysconfdir}/bluetooth/rfcomm.conf \
