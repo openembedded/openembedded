@@ -5,3 +5,6 @@ PV = "0.1.0+svn${SVNREV}"
 PR = "r0"
 
 inherit openmoko2 
+
+FILES_${PN} += "/usr/share/openmoko-appmanager"
+

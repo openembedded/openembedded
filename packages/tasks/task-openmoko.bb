@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r65"
+PR = "r66"
 
 inherit task
 
@@ -135,6 +135,8 @@ RDEPENDS_task-openmoko-pim = "\
   openmoko-contacts2 \
   openmoko-dates2 \
   openmoko-feedreader2 \
+  openmoko-browser2 \
+  openmoko-appmanager2 \
   openmoko-tasks2 \
   openmoko-mediaplayer2 \
 #  openmoko-messages \
