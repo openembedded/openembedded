@@ -5,7 +5,7 @@
 
 # This will miss recipes that have skippackage set (e.g. uclibc)
 
-SRCREV_pn-bfin-uclibc ?= "1806"
+SRCREV_pn-bfin-uclibc ?= "1857"
 SRCREV_pn-dfu-util ?= "2866"
 SRCREV_pn-dfu-util-native ?= "2866"
 SRCREV_pn-eglibc ?= "3531"
@@ -25,6 +25,7 @@ SRCREV_pn-libmokopanelui2 ?= "2958"
 SRCREV_pn-libmokoui2 ?= "3111"
 SRCREV_pn-libowl ?= "277"
 SRCREV_pn-libxosd ?= "627"
+SRCREV_pn-linux-bfin ?= "3727"
 SRCREV_pn-linux-hackndev-2.6 ?= "1308"
 SRCREV_pn-llvm-gcc4 ?= "374"
 SRCREV_pn-llvm-gcc4-cross ?= "374"
