@@ -108,15 +108,18 @@ do_populate_sdk() {
 	rm -f ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/*.la
 
 	# fix pkgconfig data files
-	cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig
-	for f in *.pc ; do
-		sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
-	done
-	for f in *.pc ; do
-		sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
-	done
-
-        mkdir -p ${SDK_DEPLOY}
+	if [ -e ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig ]; then
+		cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig
+		for f in *.pc ; do
+			sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
+		done
+		for f in *.pc ; do
+			sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
+		done
+	fi
+	
+	# package it up
+	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
 	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-toolchain.tar.bz2 .
 }
