@@ -106,6 +106,10 @@ do_install_prepend() {
         if test -e arch/${ARCH}/boot/images/uImage ; then
              ln -f arch/${ARCH}/boot/images/uImage arch/${ARCH}/boot/uImage
         fi
+
+        if test -e arch/${ARCH}/kernel/vmlinux.lds ; then
+             ln -f arch/${ARCH}/kernel/vmlinux.lds arch/${ARCH}/boot/vmlinux
+        fi
 }
 
 UBOOT_ENTRYPOINT ?= "20008000"
