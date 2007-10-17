@@ -140,6 +140,23 @@ python mono_do_clilibs() {
 			fd.close()
 }
 
+do_mono_stage() {
+        if [ "${INHIBIT_MONO_STAGE}" = "1" ]
+        then
+                return
+        fi
+	
+	for package in ${PACKAGES}; do
+		if [ -d  "${PKGDEST}/${package}/${libdir}" ]; then
+			cd "${PKGDEST}/${package}/${libdir}"
+			for file in `find . -iname "*.dll"`; do
+				cp --parent -fpPR "${file}" "${STAGING_LIBDIR}/"
+			done
+		fi
+	done
+}
+addtask mono_stage after do_package before do_populate_staging
+
 def mono_after_parse(d):
 	import bb
 	# Insert mono_do_clilibs into PACKAGEFUNCS
