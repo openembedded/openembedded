@@ -39,8 +39,8 @@ fakeroot rootfs_ipk_do_rootfs () {
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
-	mkdir -p ${IMAGE_ROOTFS}/etc/ipkg/
-	grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}/etc/ipkg/arch.conf
+	mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/ipkg/
+	grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}${sysconfdir}/ipkg/arch.conf
 
 	for i in ${IMAGE_ROOTFS}${libdir}/ipkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then
@@ -82,5 +82,5 @@ rootfs_ipk_log_check() {
 }
 
 remove_packaging_data_files() {
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg/
+	rm -rf ${IMAGE_ROOTFS}${libdir}/ipkg/
 }
