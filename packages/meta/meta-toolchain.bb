@@ -100,6 +100,9 @@ do_populate_sdk() {
 		done
 	done
 
+	# add missing link to libgcc_s.so.1
+	# libgcc-dev should be responsible for that, but it's not getting built
+	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
