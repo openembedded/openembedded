@@ -18,6 +18,7 @@ SRC_URI = "\
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
+  file://makefile-no-dirafter.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 
