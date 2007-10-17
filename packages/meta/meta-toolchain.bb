@@ -124,7 +124,7 @@ do_populate_sdk() {
 	# package it up
 	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-toolchain.tar.bz2 .
+	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-${TARGET_OS}-toolchain.tar.bz2 .
 }
 
 do_populate_sdk[nostamp] = "1"
