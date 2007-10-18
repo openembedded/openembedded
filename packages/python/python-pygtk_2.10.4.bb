@@ -22,7 +22,6 @@ do_configure_prepend() {
 }
 
 
-PACKAGES =+ "${PN}-dev"
 FILES_${PN}-dev += "${libdir}/pygtk/2.0 ${bindir}/pygtk-*"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/.debug"
 
