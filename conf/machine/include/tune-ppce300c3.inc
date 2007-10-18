@@ -1,0 +1,2 @@
+TARGET_CC_ARCH = "-mcpu=e300c3"
+PACKAGE_ARCH = "ppce300c3"
