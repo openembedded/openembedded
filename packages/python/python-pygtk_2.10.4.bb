@@ -5,7 +5,7 @@ DEPENDS = "gtk+ libglade python-pycairo python-pygobject"
 RDEPENDS = "python-shell python-pycairo python-pygobject"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml2"
+PR = "ml3"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \
@@ -31,7 +31,6 @@ do_configure_prepend() {
 }
 
 require fix-path.inc
-PACKAGES =+ "${PN}-dev"
 FILES_${PN}-dev += "${libdir}/pygtk/2.0 ${bindir}/pygtk-*"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/*/.debug"
 FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/.debug"
