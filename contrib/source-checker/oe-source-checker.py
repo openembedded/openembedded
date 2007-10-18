@@ -36,37 +36,46 @@
 #
 
 
-import sys, ConfigParser
+import sys
+
+if len(sys.argv) < 3:
+    print """
+    OpenEmbedded source checker script require two arguments:
+
+    1. location of conf/checksums.ini
+    2. path to DL_DIR (without "/" at the end)
+    """
+    sys.exit(0)
+
+import ConfigParser, os
 
 checksums_parser = ConfigParser.ConfigParser()
 checksums_parser.read(sys.argv[1])
 
 for source in checksums_parser.sections():
     archive = source.split("/")[-1]
-    localpath = sys.argv[2] + "/" + archive
+    localpath = os.path.join(sys.argv[2], archive)
     md5 = checksums_parser.get(source, "md5")
     sha = checksums_parser.get(source, "sha256")
 
     try:
         os.stat(localpath)
-        try:
-            md5pipe = os.popen('md5sum ' + localpath)
-            md5data = (md5pipe.readline().split() or [ "" ])[0]
-            md5pipe.close()
-        except OSError:
-            raise Exception("Executing md5sum failed")
+    except:
+        continue
 
-        try:
-            shapipe = os.popen("oe_sha256sum " + localpath)
-            shadata = (shapipe.readline().split() or [ "" ])[0]
-            shapipe.close()
-        except OSError:
-            raise Exception("Executing shasum failed")
+    try:
+        md5pipe = os.popen('md5sum ' + localpath)
+        md5data = (md5pipe.readline().split() or [ "" ])[0]
+        md5pipe.close()
 
         if md5 != md5data:
             print "%s has wrong md5: %s instead of %s url: %s" % (archive, md5data, md5, source) 
 
-        if sha != shadata:
+        shapipe = os.popen("oe_sha256sum " + localpath)
+        shadata = (shapipe.readline().split() or [ "" ])[0]
+        shapipe.close()
+
+        if shadata != "" and sha != shadata:
             print "%s has wrong sha: %s instead of %s url: %s" % (archive, shadata, sha, source) 
     except:
         pass
