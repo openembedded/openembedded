@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
-PR = "r19"
+PR = "r20"
 
 SRC_URI = "\
   file://Xdefaults \
@@ -52,5 +52,4 @@ do_install() {
 }
 
 PACKAGE_ARCH = "all"
-PACKAGE_ARCH_openmoko = "openmoko"
 
