@@ -4,7 +4,7 @@ HOMEPAGE = "https://www.redhat.com/promo/fonts/"
 
 require ttf.inc
 
-SRC_URI = "https://www.redhat.com/f/fonts/liberation-fonts-ttf-3.tar.gz"
+SRC_URI = "http://www.redhat.com/f/fonts/liberation-fonts-ttf-3.tar.gz"
 S = "${WORKDIR}/liberation-fonts-${PV}"
 
 PACKAGES = "ttf-liberation-mono ttf-liberation-sans ttf-liberation-serif"

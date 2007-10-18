@@ -1,9 +1,9 @@
 PV = "2.10.2"
-PR = "r0"
+PR = "r1"
 SDIRVER = "210"
 SEXT = "bz2"
 
-inherit mono
+inherit mono pkgconfig
 require gtk-sharp.inc
 
 FILES_libgtk2.0-cil = "/usr/lib/libgtksharpglue-2.so \

@@ -5,11 +5,11 @@ SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 PV = "1.2.0+git${SRCDATE}+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRCREV_FORMAT = "patches"
 
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2 gta02v3 gta02v4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -18,6 +18,7 @@ SRC_URI = "\
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
+  file://makefile-no-dirafter.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 

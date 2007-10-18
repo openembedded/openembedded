@@ -35,7 +35,7 @@ export ac_cv_prog_HOST_CC="${BUILD_CC}"
 export ac_cv_prog_HOST_CFLAGS="${BUILD_CFLAGS}"
 export ac_cv_prog_HOST_CXX="${BUILD_CXX}"
 export ac_cv_prog_HOST_CXXFLAGS="${BUILD_CXXFLAGS}"
-export HOST_LIBIDL_CONFIG = "libIDL-config-2"
+export HOST_LIBIDL_CONFIG = "${STAGING_DIR}/${BUILD_SYS}/bin/libIDL-config-2"
 
 mozdir="${libdir}/mozilla-minimo"
 

@@ -2,7 +2,7 @@ require dfu-util_${PV}.bb
 
 inherit native
 
-DEPENDS = "libusb-native"
+DEPENDS = "libusb-native usbpath-native"
 
 do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}

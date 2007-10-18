@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 PR = "r1"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
 
 SRC_URI_append_avr32 = " file://libmad-0.15.1b-avr32-optimization.patch;patch=1"

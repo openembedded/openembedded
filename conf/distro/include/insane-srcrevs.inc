@@ -79,5 +79,7 @@ SRCREV_pn-sphyrna ?= "${AUTOREV}"
 SRCREV_pn-webkit-gtk ?= "${AUTOREV}"
 SRCREV_pn-xoo ?= "${AUTOREV}"
 SRCREV_pn-mplayer ?= "${AUTOREV}"
+SRCREV_pn-usbpath ?= "${AUTOREV}"
+SRCREV_pn-usbpath-native ?= "${AUTOREV}"
 
 SRCREV ?= "${AUTOREV}"

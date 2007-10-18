@@ -1,12 +1,14 @@
 DESCRIPTION = "Packages that are compatible with FooNAS"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 CONFLICTS = "db3"
 PROVIDES += "${FOONAS_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
+
+inherit meta
 
 FOONAS_PACKAGES = "\
 	adns \

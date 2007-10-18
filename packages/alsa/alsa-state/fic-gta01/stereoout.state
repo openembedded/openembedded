@@ -6,8 +6,8 @@ state.neo1973 {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'PCM Volume'
-		value.0 255
-		value.1 255
+		value.0 230
+		value.1 230
 	}
 	control.2 {
 		comment.access 'read write'
@@ -159,7 +159,7 @@ state.neo1973 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
-		comment.range '0 - 7'
+		comment.range '0 - 15'
 		iface MIXER
 		name 'Bass Volume'
 		value 0
@@ -168,7 +168,7 @@ state.neo1973 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
-		comment.range '0 - 7'
+		comment.range '0 - 15'
 		iface MIXER
 		name 'Treble Volume'
 		value 7
@@ -815,7 +815,7 @@ state.neo1973 {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Amp Left Playback Volume'
-		value 21
+		value 22
 	}
 	control.87 {
 		comment.access 'read write'
@@ -824,7 +824,7 @@ state.neo1973 {
 		comment.range '0 - 31'
 		iface MIXER
 		name 'Amp Right Playback Volume'
-		value 21
+		value 22
 	}
 	control.88 {
 		comment.access 'read write'
@@ -858,6 +858,9 @@ state.neo1973 {
 		comment.item.3 'GSM Bluetooth'
 		comment.item.4 Speakers
 		comment.item.5 Headphones
+		comment.item.6 'Capture Handset'
+		comment.item.7 'Capture Headset'
+		comment.item.8 'Capture Bluetooth'
 		iface MIXER
 		name 'Neo Mode'
 		value Headphones
@@ -868,7 +871,7 @@ state.neo1973 {
 		comment.count 1
 		iface MIXER
 		name 'Amp Spk 3D Playback Switch'
-		value false
+		value true
 	}
 	control.92 {
 		comment.access 'read write'

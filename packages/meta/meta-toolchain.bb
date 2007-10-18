@@ -100,6 +100,9 @@ do_populate_sdk() {
 		done
 	done
 
+	# add missing link to libgcc_s.so.1
+	# libgcc-dev should be responsible for that, but it's not getting built
+	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
 	# remove unwanted executables
 	rm -rf ${SDK_OUTPUT}/${prefix}/sbin ${SDK_OUTPUT}/${prefix}/etc
@@ -108,17 +111,20 @@ do_populate_sdk() {
 	rm -f ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/*.la
 
 	# fix pkgconfig data files
-	cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig
-	for f in *.pc ; do
-		sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
-	done
-	for f in *.pc ; do
-		sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
-	done
-
-        mkdir -p ${SDK_DEPLOY}
+	if [ -e ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig ]; then
+		cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig
+		for f in *.pc ; do
+			sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
+		done
+		for f in *.pc ; do
+			sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
+		done
+	fi
+	
+	# package it up
+	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-toolchain.tar.bz2 .
+	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-${TARGET_OS}-toolchain.tar.bz2 .
 }
 
 do_populate_sdk[nostamp] = "1"
