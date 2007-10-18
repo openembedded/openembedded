@@ -1,6 +1,6 @@
 require yaffs2-utils_cvs.bb
 inherit native
-DEPENDS = ""
+DEPENDS = "mtd-utils-native"
 
 CFLAGS += "-I.. -DCONFIG_YAFFS_UTIL"
 

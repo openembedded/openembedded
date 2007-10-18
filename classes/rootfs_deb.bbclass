@@ -10,8 +10,8 @@ fakeroot rootfs_deb_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
 
-	rm -f ${STAGING_DIR}/etc/apt/sources.list.rev
-	rm -f ${STAGING_DIR}/etc/apt/preferences
+	rm -f ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev
+	rm -f ${STAGING_DIR}${sysconfdir}/apt/preferences
 	> ${IMAGE_ROOTFS}/var/dpkg/status
 	> ${IMAGE_ROOTFS}/var/dpkg/available
 	# > ${STAGING_DIR}/var/dpkg/status
@@ -28,21 +28,21 @@ fakeroot rootfs_deb_do_rootfs () {
 		apt-ftparchive packages . | bzip2 > Packages.bz2
 		echo "Label: $arch" > Release
 
-		echo "deb file:${DEPLOY_DIR_DEB}/$arch/ ./" >> ${STAGING_DIR}/etc/apt/sources.list.rev
+		echo "deb file:${DEPLOY_DIR_DEB}/$arch/ ./" >> ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev
 		(echo "Package: *"
 		echo "Pin: release l=$arch"
 		echo "Pin-Priority: $((800 + $priority))"
-		echo) >> ${STAGING_DIR}/etc/apt/preferences
+		echo) >> ${STAGING_DIR}${sysconfdir}/apt/preferences
 		priority=$(expr $priority + 5)
 	done
 
-	tac ${STAGING_DIR}/etc/apt/sources.list.rev > ${STAGING_DIR}/etc/apt/sources.list
+	tac ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev > ${STAGING_DIR}${sysconfdir}/apt/sources.list
 
-	cat "${STAGING_DIR}/etc/apt/apt.conf.sample" \
+	cat "${STAGING_DIR}${sysconfdir}/apt/apt.conf.sample" \
 		| sed -e 's#Architecture ".*";#Architecture "${TARGET_ARCH}";#' \
-		> "${STAGING_DIR}/etc/apt/apt-rootfs.conf"
+		> "${STAGING_DIR}${sysconfdir}/apt/apt-rootfs.conf"
 
-	export APT_CONFIG="${STAGING_DIR}/etc/apt/apt-rootfs.conf"
+	export APT_CONFIG="${STAGING_DIR}${sysconfdir}/apt/apt-rootfs.conf"
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
@@ -112,17 +112,17 @@ fakeroot rootfs_deb_do_rootfs () {
 	if [ -e ${IMAGE_ROOTFS}/usr/dpkg/alternatives ]; then
 		rmdir ${IMAGE_ROOTFS}/usr/dpkg/alternatives
 	fi
-        if [ ! -e ${IMAGE_ROOTFS}/usr/lib/ipkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}/usr/lib/ipkg
+        if [ ! -e ${IMAGE_ROOTFS}${libdir}/ipkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}${libdir}/ipkg
         fi
 
-        if [ ! -e ${IMAGE_ROOTFS}/etc/ipkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}/etc/ipkg
+        if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/ipkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/ipkg
         fi
  
-	ln -sf /usr/lib/ipkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
-	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}/usr/lib/ipkg/info
-	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}/usr/lib/ipkg/status
+	ln -sf ${libdir}/ipkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
+	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}${libdir}/ipkg/info
+	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}${libdir}/ipkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
@@ -150,6 +150,6 @@ rootfs_deb_log_check() {
 }
 
 remove_packaging_data_files() {
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/ipkg/
+	rm -rf ${IMAGE_ROOTFS}${libdir}/ipkg/
 	rm -rf ${IMAGE_ROOTFS}/usr/dpkg/
 }

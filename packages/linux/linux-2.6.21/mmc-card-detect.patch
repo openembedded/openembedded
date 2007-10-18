@@ -2,7 +2,7 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
 ===================================================================
 --- linux-2.6.21gum.orig/arch/arm/mach-pxa/gumstix.c
 +++ linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
-@@ -29,19 +29,51 @@
+@@ -29,19 +29,55 @@
  
  #include "generic.h"
  
@@ -38,9 +38,13 @@ Index: linux-2.6.21gum/arch/arm/mach-pxa/gumstix.c
  
 +static int gumstix_mci_get_ro(struct device *dev)
 +{
++#ifdef CONFIG_ARCH_GUMSTIX_VERDEX
++	return 0;	// microSD is always writable on verdex
++#else
 +	int ro;
 +	ro = GPLR(GUMSTIX_GPIO_nSD_WP) & GPIO_bit(GUMSTIX_GPIO_nSD_WP);
 +	return ro;
++#endif
 +}
 +
 +static void gumstix_mci_exit(struct device *dev, void *data)

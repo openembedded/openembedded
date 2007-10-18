@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libmad-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
 
 inherit autotools

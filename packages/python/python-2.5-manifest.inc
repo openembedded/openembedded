@@ -50,7 +50,7 @@ FILES_python-datetime="${libdir}/python2.5/_strptime.* ${libdir}/python2.5/calen
 DESCRIPTION_python-core="Python Interpreter and core modules (needed!)"
 PR_python-core="ml3"
 RDEPENDS_python-core=""
-FILES_python-core="/usr/lib/python2.5/__future__.* /usr/lib/python2.5/copy.* /usr/lib/python2.5/copy_reg.* /usr/lib/python2.5/ConfigParser.* /usr/lib/python2.5/getopt.* /usr/lib/python2.5/linecache.* /usr/lib/python2.5/new.* /usr/lib/python2.5/os.* /usr/lib/python2.5/posixpath.* /usr/lib/python2.5/warnings.* /usr/lib/python2.5/site.* /usr/lib/python2.5/stat.* /usr/lib/python2.5/UserDict.* /usr/lib/python2.5/UserList.* /usr/lib/python2.5/UserString.* /usr/lib/python2.5/lib-dynload/binascii.so /usr/lib/python2.5/lib-dynload/struct.so /usr/lib/python2.5/lib-dynload/time.so /usr/lib/python2.5/lib-dynload/xreadlines.so /usr/lib/python2.5/types.* /usr/bin/python* "
+FILES_python-core="${libdir}/python2.5/__future__.* ${libdir}/python2.5/copy.* ${libdir}/python2.5/copy_reg.* ${libdir}/python2.5/ConfigParser.* ${libdir}/python2.5/getopt.* ${libdir}/python2.5/linecache.* ${libdir}/python2.5/new.* ${libdir}/python2.5/os.* ${libdir}/python2.5/posixpath.* ${libdir}/python2.5/warnings.* ${libdir}/python2.5/site.* ${libdir}/python2.5/stat.* ${libdir}/python2.5/UserDict.* ${libdir}/python2.5/UserList.* ${libdir}/python2.5/UserString.* ${libdir}/python2.5/lib-dynload/binascii.so ${libdir}/python2.5/lib-dynload/struct.so ${libdir}/python2.5/lib-dynload/time.so ${libdir}/python2.5/lib-dynload/xreadlines.so ${libdir}/python2.5/types.* ${bindir}/python* "
 
 DESCRIPTION_python-io="Python Low-Level I/O"
 PR_python-io="ml1"
@@ -95,7 +95,7 @@ FILES_python-image="${libdir}/python2.5/colorsys.* ${libdir}/python2.5/imghdr.* 
 DESCRIPTION_python-core-dbg="Python core module debug information"
 PR_python-core-dbg="ml1"
 RDEPENDS_python-core-dbg="python-core"
-FILES_python-core-dbg="/usr/lib/python2.5/lib-dynload/.debug /usr/bin/.debug /usr/lib/.debug "
+FILES_python-core-dbg="${libdir}/python2.5/lib-dynload/.debug ${bindir}/.debug ${libdir}/.debug "
 
 DESCRIPTION_python-resource="Python Resource Control Interface"
 PR_python-resource="ml1"
@@ -105,7 +105,7 @@ FILES_python-resource="${libdir}/python2.5/lib-dynload/resource.so "
 DESCRIPTION_python-devel="Python Development Package"
 PR_python-devel="ml1"
 RDEPENDS_python-devel="python-core"
-FILES_python-devel="/usr/include /usr/lib/python2.5/config "
+FILES_python-devel="${includedir} ${libdir}/python2.5/config "
 
 DESCRIPTION_python-math="Python Math Support"
 PR_python-math="ml1"
@@ -165,7 +165,7 @@ FILES_python-curses="${libdir}/python2.5/curses ${libdir}/python2.5/lib-dynload/
 DESCRIPTION_python-smtpd="Python Simple Mail Transport Daemon"
 PR_python-smtpd="ml1"
 RDEPENDS_python-smtpd="python-core python-netserver python-email python-mime"
-FILES_python-smtpd="/usr/bin/smtpd.* "
+FILES_python-smtpd="${bindir}/smtpd.* "
 
 DESCRIPTION_python-html="Python HTML Processing"
 PR_python-html="ml1"
@@ -185,7 +185,7 @@ FILES_python-subprocess="${libdir}/python2.5/subprocess.* "
 DESCRIPTION_python-pydoc="Python Interactive Help Support"
 PR_python-pydoc="ml1"
 RDEPENDS_python-pydoc="python-core python-lang python-stringold python-re"
-FILES_python-pydoc="/usr/bin/pydoc /usr/lib/python2.5/pydoc.* "
+FILES_python-pydoc="${bindir}/pydoc ${libdir}/python2.5/pydoc.* "
 
 DESCRIPTION_python-logging="Python Logging Support"
 PR_python-logging="ml1"
@@ -280,7 +280,7 @@ FILES_python-crypt="${libdir}/python2.5/lib-dynload/crypt.so ${libdir}/python2.5
 DESCRIPTION_python-idle="Python Integrated Development Environment"
 PR_python-idle="ml1"
 RDEPENDS_python-idle="python-core python-tkinter"
-FILES_python-idle="/usr/bin/idle /usr/lib/python2.5/idlelib "
+FILES_python-idle="${bindir}/idle ${libdir}/python2.5/idlelib "
 
 DESCRIPTION_python-lang="Python Low-Level Language Support"
 PR_python-lang="ml1"

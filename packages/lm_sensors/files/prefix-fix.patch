@@ -1,0 +1,14 @@
+Index: lm_sensors-2.10.1/Makefile
+===================================================================
+--- lm_sensors-2.10.1.orig/Makefile	2007-10-07 19:22:51.000000000 +0200
++++ lm_sensors-2.10.1/Makefile	2007-10-07 19:23:13.000000000 +0200
+@@ -74,9 +74,6 @@
+ # everything, set DESTDIR to the extra prefix.
+ DESTDIR :=
+ 
+-# This is the prefix that will be used for almost all directories below.
+-PREFIX := /usr/local
+-
+ # Your C compiler
+ CC := gcc
+ 

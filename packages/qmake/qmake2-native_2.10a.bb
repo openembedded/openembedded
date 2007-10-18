@@ -9,6 +9,7 @@ QTVER = "qtopia-core-opensource-src-4.3.1"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
+           file://use-lflags-last.patch;patch=1 \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
 

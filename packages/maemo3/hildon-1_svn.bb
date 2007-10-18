@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 
 DEPENDS = "gconf-dbus esound gtk+"
 
-PV = "1.0.12+svnr${SRCREV}"
+PV = "1.0.17+svnr${SRCREV}"
 
 SRC_URI = "svn://stage.maemo.org/svn/maemo/projects/haf/trunk;module=hildon-1;proto=https \
            file://buttonbox.patch;patch=1 "

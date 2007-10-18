@@ -161,3 +161,6 @@ PREFERRED_PROVIDER_gdk-pixbuf-loader-tga  ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-wbmp ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-xbm  ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm  ?= "gtk+"
+
+require conf/distro/include/sane-srcdates.inc
+require conf/distro/include/sane-srcrevs.inc

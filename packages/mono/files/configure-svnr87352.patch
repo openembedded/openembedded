@@ -1,0 +1,21 @@
+--- mono/configure.in.orig	2007-10-11 21:05:59.000000000 +0200
++++ mono/configure.in	2007-10-11 23:44:23.000000000 +0200
+@@ -1148,6 +1148,8 @@
+ 		], [
+ 				AC_MSG_RESULT(no)
+ 				with_tls=pthread
++		], [
++				AC_MSG_RESULT(yes)
+ 		])
+ 	fi
+ 
+@@ -1250,6 +1252,9 @@
+ 		], [
+ 				with_sigaltstack=no
+ 				AC_MSG_RESULT(no)
++		], [
++				AC_MSG_RESULT(yes)
++				AC_DEFINE(HAVE_WORKING_SIGALTSTACK)
+ 		])
+ 	fi
+ 

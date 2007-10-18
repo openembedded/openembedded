@@ -42,16 +42,10 @@ start_it_up()
   # We need to sleep here because opening the mux devices takes some time
   sleep 15
   echo "$NAME."
-  if [ -d $EVENTDIR ]; then
-      run-parts --arg=start $EVENTDIR
-  fi
 }
 
 shut_it_down()
 {
-  if [ -d "$EVENTDIR" ]; then
-      run-parts --arg=stop $EVENTDIR
-  fi
   echo -n "Stopping $DESC: "
   start-stop-daemon --stop  --quiet --pidfile $PIDFILE 
    

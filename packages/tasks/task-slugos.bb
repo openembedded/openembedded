@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r14"
+PR = "r15"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -76,6 +76,7 @@ ${SLUGOS_RNG_TOOLS_PACKAGE} \
 
 # Add modules required for usb support
 SLUGOS_STANDARD_RRECOMMENDS += "\
+kernel-module-ehci-hcd \
 kernel-module-ohci-hcd \
 kernel-module-uhci-hcd \
 "

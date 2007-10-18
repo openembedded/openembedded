@@ -26,6 +26,7 @@ EXTRA_OECONF = "-prefix ${STAGING_DIR}/${BUILD_SYS}/qt4 \
 EXTRA_OEMAKE = " "
 
 do_configure() {
+	sed -i 's:^QT += xml qt3support$:QT += xml qt3support network:' "${S}"/src/tools/uic3/uic3.pro
 	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
