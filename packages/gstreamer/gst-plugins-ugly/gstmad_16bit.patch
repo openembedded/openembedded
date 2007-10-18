@@ -1,0 +1,109 @@
+--- gst-plugins-ugly-0.10.6/ext/mad/gstmad.c.orig	2007-06-13 11:21:25.000000000 +0200
++++ gst-plugins-ugly-0.10.6/ext/mad/gstmad.c	2007-09-16 22:45:04.000000000 +0200
+@@ -119,8 +119,8 @@
+     GST_STATIC_CAPS ("audio/x-raw-int, "
+         "endianness = (int) " G_STRINGIFY (G_BYTE_ORDER) ", "
+         "signed = (boolean) true, "
+-        "width = (int) 32, "
+-        "depth = (int) 32, "
++        "width = (int) 16, "
++        "depth = (int) 16, "
+         "rate = (int) { 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000 }, "
+         "channels = (int) [ 1, 2 ]")
+     );
+@@ -458,7 +458,7 @@
+ 
+   mad = GST_MAD (GST_PAD_PARENT (pad));
+ 
+-  bytes_per_sample = MAD_NCHANNELS (&mad->frame.header) * 4;
++  bytes_per_sample = MAD_NCHANNELS (&mad->frame.header) << 1;
+ 
+   switch (src_format) {
+     case GST_FORMAT_BYTES:
+@@ -870,13 +870,11 @@
+   return res;
+ }
+ 
+-static inline gint32
++static inline gint16
+ scale (mad_fixed_t sample)
+ {
+-#if MAD_F_FRACBITS < 28
+   /* round */
+-  sample += (1L << (28 - MAD_F_FRACBITS - 1));
+-#endif
++  sample += (1L << (MAD_F_FRACBITS - 16));
+ 
+   /* clip */
+   if (sample >= MAD_F_ONE)
+@@ -884,13 +882,8 @@
+   else if (sample < -MAD_F_ONE)
+     sample = -MAD_F_ONE;
+ 
+-#if MAD_F_FRACBITS < 28
+   /* quantize */
+-  sample >>= (28 - MAD_F_FRACBITS);
+-#endif
+-
+-  /* convert from 29 bits to 32 bits */
+-  return (gint32) (sample << 3);
++  return sample >> (MAD_F_FRACBITS + 1 - 16);
+ }
+ 
+ /* do we need this function? */
+@@ -1277,8 +1270,8 @@
+     caps = gst_caps_new_simple ("audio/x-raw-int",
+         "endianness", G_TYPE_INT, G_BYTE_ORDER,
+         "signed", G_TYPE_BOOLEAN, TRUE,
+-        "width", G_TYPE_INT, 32,
+-        "depth", G_TYPE_INT, 32,
++        "width", G_TYPE_INT, 16,
++        "depth", G_TYPE_INT, 16,
+         "rate", G_TYPE_INT, rate, "channels", G_TYPE_INT, nchannels, NULL);
+ 
+     gst_pad_set_caps (mad->srcpad, caps);
+@@ -1576,7 +1569,7 @@
+            to skip and send the remaining pcm samples */
+ 
+         GstBuffer *outbuffer = NULL;
+-        gint32 *outdata;
++        gint16 *outdata;
+         mad_fixed_t const *left_ch, *right_ch;
+ 
+         if (mad->need_newsegment) {
+@@ -1594,7 +1587,7 @@
+         /* will attach the caps to the buffer */
+         result =
+             gst_pad_alloc_buffer_and_set_caps (mad->srcpad, 0,
+-            nsamples * mad->channels * 4, GST_PAD_CAPS (mad->srcpad),
++            nsamples * mad->channels * 2, GST_PAD_CAPS (mad->srcpad),
+             &outbuffer);
+         if (result != GST_FLOW_OK) {
+           /* Head for the exit, dropping samples as we go */
+@@ -1607,7 +1600,7 @@
+         left_ch = mad->synth.pcm.samples[0];
+         right_ch = mad->synth.pcm.samples[1];
+ 
+-        outdata = (gint32 *) GST_BUFFER_DATA (outbuffer);
++        outdata = (gint16 *) GST_BUFFER_DATA (outbuffer);
+ 
+         GST_DEBUG ("mad out timestamp %" GST_TIME_FORMAT,
+             GST_TIME_ARGS (time_offset));
+@@ -1621,14 +1614,14 @@
+           gint count = nsamples;
+ 
+           while (count--) {
+-            *outdata++ = scale (*left_ch++) & 0xffffffff;
++            *outdata++ = scale (*left_ch++) & 0xffff;
+           }
+         } else {
+           gint count = nsamples;
+ 
+           while (count--) {
+-            *outdata++ = scale (*left_ch++) & 0xffffffff;
+-            *outdata++ = scale (*right_ch++) & 0xffffffff;
++            *outdata++ = scale (*left_ch++) & 0xffff;
++            *outdata++ = scale (*right_ch++) & 0xffff;
+           }
+         }
+ 

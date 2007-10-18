@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r7"
+PR = "r8"
 
 PACKAGES = "\
     gst-meta-base \
@@ -12,16 +12,21 @@ PACKAGES = "\
 
 ALLOW_EMPTY = "1"
 
-RDEPENDS_gst-meta-base = "\
+REPENDS_gst-meta-base = "\
     gstreamer \
     gst-plugin-playbin \
     gst-plugin-decodebin \
-#    gst-plugin-gnomevfs \
-    gst-plugin-alsa \
     gst-plugin-volume \
-    gst-plugin-ximagesink \
     gst-plugin-audioconvert \
     gst-plugin-audioresample \
+    gst-plugin-typefindfunctions \
+    gst-plugin-videoscale \
+    gst-plugin-autodetect"
+
+RRECOMMENDS_gst-meta-base = "\
+    gst-plugin-gnomevfs \
+    gst-plugin-alsa \
+    gst-plugin-ximagesink \
     gst-plugin-typefindfunctions \
     gst-plugin-videoscale \
     gst-plugin-ffmpegcolorspace \
