@@ -1,4 +1,4 @@
-PR = "r7"
+PR = "r8"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
@@ -7,6 +7,8 @@ SRC_URI = \
      file://signed_char_fix.patch;patch=1 \
      file://binutils-2.16-objcopy-rename-errorcode.patch;patch=1 \
      file://binutils-100_cflags_for_build.patch;patch=1"
+
+SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;patch=1"
 
 # uclibc patches
 SRC_URI += "file://binutils-2.16-linux-uclibc.patch;patch=1"
