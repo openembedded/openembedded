@@ -1,10 +1,12 @@
 DESCRIPTION = "Packages that are compatible with the Unslung firmware"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 COMPATIBLE_MACHINE = "nslu2"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
+
+inherit meta
 
 UNSLUNG_PACKAGES = "\
 	"

@@ -1,10 +1,33 @@
-Mono in OE is still very much a work in progress.
-1.2.4 
-  - is reported to work on MIPS.  
-  - has floating point problems on ARM
+Notes on Mono support in OE.
 
-1.2.5
-  - tested on ARM EABI.  Floating point issues have been worked around.
+===============================
+Cross Compiling Mono
 
-There is still a lot of packaging work that needs done to package the mono dll's for installation.
+Cross compiling mono requires a two stage build because the mono mcs directory
+cannot be built while cross compiling (http://www.mono-project.com/Mono:ARM).
+The recommended way to cross compile mono is to 
 
+ 1. do a complete build on the host system, and install.  
+ 2. cross compile mono which will only build the native target code and 
+    overlay the target binaries on the host install.  
+
+The MCS build (step 1) is implemented by the mono-mcs-intermediate* recipe.
+This recipe is very similiar to the native build, except it uses standard
+install prefixes and the install directory is tar'd up, and placed in staging
+for use by the cross build.
+
+During the mono cross build, the first step during the install is to untar
+the install results of the mcs-intermediate build.  The cross build install
+then proceeds to overlay the native binaries in the install directory.
+
+================================
+mono.bbclass
+
+Has a function mono_do_clilibs and inserts that function into PACKAGEFUNCS.
+This function calls mono_find_provides_and_requires which finds out (through
+calls to monodis --assembly and monodis --assemblyref) which assemblies are
+provided and required by a particular package. mono_do_clilibs then
+puts the information about provided assemblies into
+${STAGING_DIR}/clilibs/${packagename}.list and information about the
+required packages into ${PKGDEST}/{packagename}.clilibdeps where it
+will later be picked up by read_shlibdeps.

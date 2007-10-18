@@ -1,13 +1,16 @@
 TEMPLATE = subdirs
 CONFIG += ordered
-!gdk-port:CONFIG += qt-port
-qt-port:SUBDIRS += WebKitQt/Plugins
+!gtk-port:CONFIG += qt-port
+qt-port:!win32-*:SUBDIRS += WebKit/qt/Plugins
 SUBDIRS += \
         WebCore \
         JavaScriptCore/kjs/testkjs.pro
 
-qt-port:SUBDIRS += \
-        WebKitQt/QtLauncher \
-        WebKitTools/DumpRenderTree/DumpRenderTree.qtproj/DumpRenderTree.pro
-gdk-port:SUBDIRS += \
-        WebKitTools/GdkLauncher
+qt-port {
+    SUBDIRS += WebKit/qt/QtLauncher
+
+    !win32-*: SUBDIRS += WebKitTools/DumpRenderTree/qt/DumpRenderTree.pro
+}
+
+gtk-port:SUBDIRS += \
+        WebKitTools/GtkLauncher

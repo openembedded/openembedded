@@ -39,7 +39,7 @@ Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
 Machines:   compulab-pxa270, logicpd-pxa270, 
-Recipes:    mono
+Recipes:    mono argtable
 
 Person:     Erik Hovland
 Mail:       erik@hovland.org

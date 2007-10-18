@@ -5,9 +5,9 @@
 
 Index: trunk/configure
 ===================================================================
---- trunk.orig/configure
-+++ trunk/configure
-@@ -519,6 +519,7 @@ _svga=auto
+--- trunk.orig/configure	2007-10-07 20:31:56.000000000 +0100
++++ trunk/configure	2007-10-07 20:34:38.000000000 +0100
+@@ -545,6 +545,7 @@
  _vesa=auto
  _fbdev=auto
  _w100=no
@@ -15,7 +15,7 @@ Index: trunk/configure
  _dvb=auto
  _dvbhead=auto
  _dxr2=auto
-@@ -820,6 +821,8 @@ for ac_option do
+@@ -860,6 +861,8 @@
    --disable-fbdev)	_fbdev=no	;;
    --enable-w100)        _w100=yes       ;;
    --disable-w100)       _w100=no        ;;
@@ -24,7 +24,7 @@ Index: trunk/configure
    --enable-dvb)		_dvb=yes	;;
    --disable-dvb)        _dvb=no		;;
    --enable-dvbhead)	_dvbhead=yes	;;
-@@ -4329,6 +4332,18 @@ else
+@@ -4447,6 +4450,19 @@
  fi
  echores "$_w100"
  
@@ -32,6 +32,7 @@ Index: trunk/configure
 +if test "$_imageon" = yes ; then
 +  _def_imageon='#define HAVE_IMAGEON 1'
 +  _ld_imageon='-lw100'
++  _libs_mplayer="$_libs_mplayer $_ld_imageon"
 +  _vosrc="$_vosrc vo_imageon.c"
 +  _vomodules="imageon $_vomodules"
 +else
@@ -43,8 +44,8 @@ Index: trunk/configure
  
  echocheck "DVB"
  if test "$_dvb" = auto ; then
-@@ -8355,6 +8370,7 @@ $_def_xmga
- $_def_syncfb
+@@ -8453,6 +8469,7 @@
+ $_def_xmga
  $_def_fbdev
  $_def_w100
 +$_def_imageon
@@ -53,8 +54,8 @@ Index: trunk/configure
  $_def_ivtv
 Index: trunk/libvo/vo_imageon.c
 ===================================================================
---- /dev/null
-+++ trunk/libvo/vo_imageon.c
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ trunk/libvo/vo_imageon.c	2007-10-07 20:31:57.000000000 +0100
 @@ -0,0 +1,308 @@
 +#include <stdio.h>
 +#include <stdlib.h>

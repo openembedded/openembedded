@@ -18,6 +18,8 @@ DEPENDS_append_fic-gta01      = " u-boot-mkimage-openmoko-native "
 DEPENDS_append_fic-gta02      = " u-boot-mkimage-openmoko-native "
 
 
+RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
+
 # Specify the commandline for your device
 
 #boot from mmc
@@ -40,7 +42,7 @@ do_configure_prepend() {
         #
         # oabi / eabi support
         #
-        if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
+        if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
                 echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
         else
@@ -104,11 +106,16 @@ do_install_prepend() {
         if test -e arch/${ARCH}/boot/images/uImage ; then
              ln -f arch/${ARCH}/boot/images/uImage arch/${ARCH}/boot/uImage
         fi
+
+        if test -e arch/${ARCH}/kernel/vmlinux.lds ; then
+             ln -f arch/${ARCH}/kernel/vmlinux.lds arch/${ARCH}/boot/vmlinux
+        fi
 }
 
 UBOOT_ENTRYPOINT ?= "20008000"
 
-KERNEL_IMAGE_BASE_NAME = ${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}"
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
@@ -128,6 +135,10 @@ do_deploy() {
                 rm -f linux.bin.gz
             fi
         fi
+
+		cd ${DEPLOY_DIR_IMAGE}
+		rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+		ln -sf ${KERNEL_IMAGE_BASE_NAME}.bin ${KERNEL_IMAGE_SYMLINK_NAME}.bin
 }
 
 do_deploy[dirs] = "${S}"

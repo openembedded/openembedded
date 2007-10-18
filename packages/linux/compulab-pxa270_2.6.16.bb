@@ -68,5 +68,5 @@ do_deploy[dirs] = "${S}"
 addtask deploy before do_install after do_compile
 addtask compulab_image before do_install after do_deploy
 
-COMPATIBLE_MACHINE = "compulab-pxa270"
+COMPATIBLE_MACHINE = "cm-x270"
 

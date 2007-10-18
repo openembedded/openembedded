@@ -4,13 +4,13 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 
 DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client libxrandr"
-RDEPENDS_${PN} = "xst xset ntpdate gpe-login gpe-icons tzdata xrandr"
+RDEPENDS_${PN} = "xst gpe-confd xset ntpdate gpe-icons tzdata xrandr"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 RPROVIDES_${PN} += " bl"
 RCONFLICTS_${PN} = "bl"
 
-PR = "r0"
+PR = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

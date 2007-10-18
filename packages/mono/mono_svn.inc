@@ -1,0 +1,15 @@
+DESCRIPTION = "Mono Programming Language"
+SECTION = "devel/mono"
+LICENSE = "GPL LGPL X11"
+
+SRCREV = "87352"
+SRC_URI = "svn://anonsvn.mono-project.com/source/trunk/;module=mcs;rev=${SRCREV} \
+	svn://anonsvn.mono-project.com/source/trunk/;module=mono;rev=${SRCREV} "
+
+PV = "1.2.5.1+svnr${SRCREV}"
+S = "${WORKDIR}/mono"
+
+inherit autotools
+EXTRA_OECONF_arm = "--without-tls"
+EXTRA_OECONF_mipsel = "--without-tls"
+

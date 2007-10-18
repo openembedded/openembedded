@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.22.1
-# Thu Jul 26 22:01:38 2007
+# Linux kernel version: 2.6.22.5
+# Wed Oct  3 13:55:25 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -200,11 +200,12 @@ CONFIG_ARCH_S3C2440=y
 CONFIG_SMDK2440_CPU2440=y
 CONFIG_MACH_HXD8=y
 CONFIG_MACH_NEO1973_GTA02=y
+CONFIG_CPU_S3C2442=y
 
 #
 # S3C2442 Machines
 #
-# CONFIG_SMDK2440_CPU2442 is not set
+CONFIG_SMDK2440_CPU2442=y
 
 #
 # S3C2443 Machines
@@ -282,6 +283,7 @@ CONFIG_KEXEC=y
 # At least one emulation must be selected
 #
 CONFIG_FPE_NWFPE=y
+# CONFIG_FPE_NWFPE_XP is not set
 # CONFIG_FPE_FASTFPE is not set
 
 #
@@ -1196,9 +1198,6 @@ CONFIG_FONT_6x11=y
 # CONFIG_FONT_SUN12x22 is not set
 # CONFIG_FONT_10x18 is not set
 # CONFIG_LOGO is not set
-# CONFIG_LOGO_LINUX_MONO is not set
-# CONFIG_LOGO_LINUX_VGA16 is not set
-# CONFIG_LOGO_LINUX_CLUT224 is not set
 
 #
 # Sound
@@ -1586,7 +1585,7 @@ CONFIG_CONFIGFS_FS=m
 # CONFIG_EFS_FS is not set
 CONFIG_YAFFS_FS=y
 CONFIG_YAFFS_YAFFS1=y
-# CONFIG_YAFFS_DOES_ECC is not set
+CONFIG_YAFFS_9BYTE_TAGS=y
 CONFIG_YAFFS_YAFFS2=y
 CONFIG_YAFFS_AUTO_YAFFS2=y
 # CONFIG_YAFFS_DISABLE_LAZY_LOAD is not set
