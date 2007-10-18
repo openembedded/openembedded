@@ -58,7 +58,7 @@ item = 1;
 files_total   = len(checksums_parser.sections())
 files_checked = 0
 files_good    = 0
-files_wrong   = 0
+files_wrong   = []
 
 for source in checksums_parser.sections():
     archive = source.split("/")[-1]
@@ -86,7 +86,6 @@ for source in checksums_parser.sections():
 
         if md5 != md5data:
             file_ok = False
-            print "\n%s has wrong md5: %s instead of %s url: %s" % (archive, md5data, md5, source) 
 
         shapipe = os.popen("oe_sha256sum " + localpath)
         shadata = (shapipe.readline().split() or [ "" ])[0]
@@ -94,13 +93,21 @@ for source in checksums_parser.sections():
 
         if shadata != "" and sha != shadata:
             file_ok = False
-            print "\n%s has wrong sha: %s instead of %s url: %s" % (archive, shadata, sha, source) 
 
         if file_ok:
             files_good += 1
         else:
-            files_wrong += 1
+            files_wrong += [ [md5, md5data, sha, shadata, archive, source] ]
     except:
         pass
 
-print "\nChecked %d files. %d was OK and %d had wrong checksums." % (files_checked, files_good, files_wrong)
+print "\nChecked %d files. %d was OK and %d had wrong checksums." % (files_checked, files_good, len(files_wrong))
+
+if len(files_wrong) > 0:
+
+    print "\n"
+
+    for wrong_file in files_wrong:
+        print "%s [%s] is wrong" % ( wrong_file[4], wrong_file[5])
+        print "md5: %s instead of %s" % (wrong_file[1], wrong_file[0])
+        print "sha: %s instead of %s" % (wrong_file[3], wrong_file[2])
