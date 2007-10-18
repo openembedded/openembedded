@@ -116,7 +116,11 @@ Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
-Interests:  SquashFS, LZMA
+Website:    http://www.sidebranch.com/
+Interests:  Real-time embedded Linux for highly available applications.
+Interests:  Small read-only Linux based firmware, deterministic builds.
+Recipes:    lighttpd, fastcgi
+Machines:   mpc8313e-rdb, efika, ixp4xxbe, x86, davinci-dvevm
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com
