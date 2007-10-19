@@ -3,7 +3,7 @@ DESCRIPTION = "SIP-based IP phone"
 HOMEPAGE = "http://www.linphone.org/?lang=us"
 LICENSE = "GPLv2"
 DEPENDS = "libosip2 speex libogg alsa-lib readline"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.5.x/source/linphone-${PV}.tar.gz \
            file://linphone-1.5.0.patch;patch=1 \
@@ -18,7 +18,7 @@ EXTRA_OECONF = "--disable-gnome_ui --disable-gtk-doc --without-ffmpeg \
                 --with-osip=${STAGING_DIR}/${HOST_SYS} \
                 --with-readline=${STAGING_DIR}/${HOST_SYS} \
                 --disable-truespeech --disable-manual \
-                --disable-glibtest --disable-glib"
+                --disable-glibtest --disable-glib --disable-strict"
 
 do_configure () {
 	export LIBTOOL="${STAGING_BINDIR_NATIVE}/${TARGET_PREFIX}libtool"
