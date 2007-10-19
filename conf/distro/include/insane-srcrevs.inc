@@ -82,5 +82,6 @@ SRCREV_pn-xoo ?= "${AUTOREV}"
 SRCREV_pn-mplayer ?= "${AUTOREV}"
 SRCREV_pn-usbpath ?= "${AUTOREV}"
 SRCREV_pn-usbpath-native ?= "${AUTOREV}"
+SRCREV_pn-libfakekey ?= "${AUTOREV}"
 
 SRCREV ?= "${AUTOREV}"

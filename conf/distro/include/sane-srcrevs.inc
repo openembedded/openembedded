@@ -107,4 +107,5 @@ SRCREV_pn-networkmanager-applet ?= "200"
 SRCREV_pn-libw100 ?= "47"
 SRCREV_pn-usbpath ?= "3108"
 SRCREV_pn-usbpath-native ?= "3108"
+SRCREV_pn-libfakekey ?= "1455"
 
