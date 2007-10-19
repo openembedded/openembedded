@@ -3,12 +3,12 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "devel"
 
-PR="r1"
+PR="r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/check/check-${PV}.tar.gz"
 S = "${WORKDIR}/check-${PV}"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF += "--enable-plain-docdir"
 
