@@ -1,6 +1,3 @@
-# NOTE! This is an update file and will go away when upstream updates
-# TODO: send this to upstream
-
 DESCRIPTION = "GNOME XML Parser library"
 SECTION = "libs"
 PRIORITY = "optional"
