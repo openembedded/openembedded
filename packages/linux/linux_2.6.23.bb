@@ -3,8 +3,9 @@ require linux.inc
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
+DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
