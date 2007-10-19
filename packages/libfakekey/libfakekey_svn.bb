@@ -1,9 +1,8 @@
-DESCRIPTION = "Library to generate fake keys for Matchbox keyboard"
+DESCRIPTION = "Matchbox keyboard"
 LICENSE = "GPL"
 DEPENDS = "libxtst"
 SECTION = "x11/wm"
-PR="r2"
-PV = "0.2+svn${SRCDATE}"
+PV = "0.2+svnr${SRCREV}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 
@@ -12,8 +11,7 @@ S = "${WORKDIR}/${PN}"
 inherit autotools pkgconfig gettext
 
 do_stage () {
-	   install -d ${STAGING_INCDIR}/fakekey
-           install -m 0644 ${S}/fakekey/fakekey.h ${STAGING_INCDIR}/fakekey
-	    oe_libinstall -so -C src libfakekey ${STAGING_LIBDIR}
+        install -d ${STAGING_INCDIR}/fakekey	
+        install -m 0644 ${S}/fakekey/fakekey.h ${STAGING_INCDIR}/fakekey
+        oe_libinstall -so -C src libfakekey ${STAGING_LIBDIR}
 }
-
