@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r8"
+PR = "r9"
 
 PACKAGES = "\
     gst-meta-base \
@@ -12,7 +12,7 @@ PACKAGES = "\
 
 ALLOW_EMPTY = "1"
 
-REPENDS_gst-meta-base = "\
+RDEPENDS_gst-meta-base = "\
     gstreamer \
     gst-plugin-playbin \
     gst-plugin-decodebin \
@@ -32,7 +32,6 @@ RRECOMMENDS_gst-meta-base = "\
     gst-plugin-ffmpegcolorspace \
     gst-plugin-autodetect"
 
-
 RDEPENDS_gst-meta-audio = "\
     gst-meta-base \
     gst-plugin-ivorbis \
@@ -40,13 +39,11 @@ RDEPENDS_gst-meta-audio = "\
     gst-plugin-mad \
     gst-plugin-id3demux"
 
-
 RDEPENDS_gst-meta-debug = "\
     gst-meta-base \
     gst-plugin-debug \
     gst-plugin-audiotestsrc \
     gst-plugin-videotestsrc"
-
 
 RDEPENDS_gst-meta-video = "\
     gst-meta-base \
