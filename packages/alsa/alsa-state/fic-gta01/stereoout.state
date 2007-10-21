@@ -871,7 +871,7 @@ state.neo1973 {
 		comment.count 1
 		iface MIXER
 		name 'Amp Spk 3D Playback Switch'
-		value true
+		value false
 	}
 	control.92 {
 		comment.access 'read write'
