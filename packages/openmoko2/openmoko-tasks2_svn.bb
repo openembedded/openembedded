@@ -2,7 +2,7 @@ DESCRIPTION = "The OpenMoko Agenda"
 SECTION = "openmoko/pim"
 DEPENDS = "dbus-glib eds-dbus libmokoui2"
 RDEPENDS = "libedata-cal"
-PV = "0.1.0+svn${SVNREV}"
+PV = "0.1.0+svnr${SRCREV}"
 PR = "r0"
 
 inherit openmoko2

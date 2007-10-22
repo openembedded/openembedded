@@ -1,7 +1,7 @@
 DESCRIPTION = "The OpenMoko Webbrowser"
 SECTION = "openmoko/apps"
 DEPENDS += "intltool libmokoui2 check webkit-gtk"
-PV = "0.0.1+svn${SVNREV}"
+PV = "0.0.1+svnr${SRCREV}"
 PR = "r0"
 
 inherit openmoko2

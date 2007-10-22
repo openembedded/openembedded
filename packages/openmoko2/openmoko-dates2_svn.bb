@@ -2,7 +2,7 @@ DESCRIPTION = "The OpenMoko Calendar"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus"
 RDEPENDS = "libedata-cal"
-PV = "0.1.0+svn${SVNREV}"
+PV = "0.1.0+svnr${SRCREV}"
 
 inherit openmoko2
 

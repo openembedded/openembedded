@@ -1,6 +1,6 @@
 DESCRIPTION = "Standard Gtk+ icon theme for the OpenMoko framework, QVGA edition"
 SECTION = "openmoko/base"
-PV = "0.1.0+svn${SVNREV}"
+PV = "0.1.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit openmoko2
