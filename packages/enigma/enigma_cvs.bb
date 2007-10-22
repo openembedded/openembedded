@@ -6,7 +6,7 @@ LICENSE = "GPL"
 SRCDATE = "20070615"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;method=ext \
            file://enigma.sh \
@@ -16,11 +16,15 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;met
            file://enigma_enter_standby.sh \
            file://enigma_leave_standby.sh \
            file://rotor_fix.diff;patch=1;pnum=1 \
-           file://disable_boot.diff;patch=1;pnum=1"
+           file://disable_boot.diff;patch=1;pnum=1 \
+	   file://epgfix_backport.diff;patch=1;pnum=1 \
+	   file://timeshiftfix_backport.diff;patch=1;pnum=1 \
+	   file://subtitlefix_backport.diff;patch=1;pnum=1"
 
 # dm600pvr and dm500plus don't have a FP, so they can't really switch of. Show a shutdown pic instead.
 SRC_URI_append_dm600pvr = " http://sources.dreamboxupdate.com/download/opendreambox/enigma/showshutdownpic-${MACHINE} \
-	   file://add_blindscan_to_menu.diff;patch=1;pnum=1"
+	   file://add_blindscan_to_menu.diff;patch=1;pnum=1 \
+	   http://sources.dreamboxupdate.com/download/patches/enigma_add_cable_blindscan.diff;patch=1;pnum=1"
 SRC_URI_append_dm500plus = " http://sources.dreamboxupdate.com/download/opendreambox/enigma/showshutdownpic-${MACHINE} \
 	   file://add_blindscan_to_menu.diff;patch=1;pnum=1"
 

@@ -1,0 +1,75 @@
+diff -Naur enigma_org/lib/dvb/decoder.cpp enigma/lib/dvb/decoder.cpp
+--- enigma_org/lib/dvb/decoder.cpp	2006-11-12 22:35:31.000000000 +0100
++++ enigma/lib/dvb/decoder.cpp	2007-10-19 01:10:21.000000000 +0200
+@@ -817,7 +817,7 @@
+ {
+ 	int wasOpen = fd.mpeg != -1;
+ 	if ( !wasOpen )
+-		fd.mpeg = ::open("/dev/video", O_WRONLY);
++		fd.mpeg = ::open("/dev/video", O_RDONLY);
+ 	{
+ 		if (::ioctl(fd.mpeg, VIDEO_FLUSH_CLIP_BUFFER) < 0)
+ 			eDebug("VIDEO_FLUSH_BUFFER failed (%m)");
+@@ -833,7 +833,7 @@
+ {
+ 	int wasOpen = fd.mpeg != -1;
+ 	if ( !wasOpen )
+-		fd.mpeg=::open("/dev/video", O_WRONLY);
++		fd.mpeg=::open("/dev/video", O_RDONLY);
+ 	if ( fd.mpeg > -1 )
+ 	{
+ 		if ( ::ioctl(fd.mpeg, VIDEO_CLEAR_SCREEN) < 0 )
+@@ -878,7 +878,7 @@
+ {
+ 	int wasOpen = fd.mpeg != -1;
+ 	if ( !wasOpen )
+-		fd.mpeg = ::open("/dev/video", O_WRONLY);
++		fd.mpeg = ::open("/dev/video", O_RDONLY);
+ 	if ( fd.mpeg > -1 )
+ 	{
+ 		if ( ::ioctl(fd.mpeg, VIDEO_SET_FASTZAP, val) < 0 )
+@@ -895,7 +895,7 @@
+ {
+ 	int wasOpen = fd.mpeg != -1;
+ 	if ( !wasOpen )
+-		fd.mpeg = ::open("/dev/video", O_WRONLY);
++		fd.mpeg = ::open("/dev/video", O_RDONLY);
+ 	if ( fd.mpeg > -1 )
+ 	{
+ 		if ( ::ioctl(fd.mpeg, VIDEO_SET_AUTOFLUSH, on) < 0 )
+diff -Naur enigma_org/src/enigma_main.cpp enigma/src/enigma_main.cpp
+--- enigma_org/src/enigma_main.cpp	2007-07-03 11:10:12.000000000 +0200
++++ enigma/src/enigma_main.cpp	2007-10-19 11:48:20.000000000 +0200
+@@ -3038,17 +3038,25 @@
+ 	{
+ 		if ( ref.type == eServiceReference::idDVB && !ref.path && !timeshift )
+ 		{
+-			if (eSystemInfo::getInstance()->canTimeshift() &&
+-				eSystemInfo::getInstance()->getHwType() != eSystemInfo::DM600PVR &&
+-				eSystemInfo::getInstance()->getHwType() != eSystemInfo::DM500PLUS
+-				)
++			if (eSystemInfo::getInstance()->canTimeshift())
+ 			{
+ 				if (!eDVB::getInstance()->recorder)
+ 				{
+-					record();
++					switch(eSystemInfo::getInstance()->getHwType())
++					{
++					case eSystemInfo::DM600PVR:
++					case eSystemInfo::DM500PLUS:
++						Decoder::setAutoFlushScreen(0);
++						Decoder::Pause(2);  // freeze frame
++						record();
++						break;
++					default:
++						record();
++						Decoder::setAutoFlushScreen(0);
++						Decoder::Pause(2);  // freeze frame
++						break;
++					}
+ 					timeshift=1;
+-					Decoder::Pause(2);  // freeze frame
+-					Decoder::setAutoFlushScreen(0);
+ 					handler->serviceCommand(eServiceCommand(eServiceCommand::cmdSetSpeed, -1));
+ 					Decoder::setAutoFlushScreen(1);
+ 				}

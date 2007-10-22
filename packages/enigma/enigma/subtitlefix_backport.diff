@@ -1,0 +1,171 @@
+diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
+--- enigma_org/lib/dvb/subtitle.cpp	2005-08-02 22:35:36.000000000 +0200
++++ enigma/lib/dvb/subtitle.cpp	2007-10-19 11:55:36.000000000 +0200
+@@ -337,6 +337,12 @@
+ 				delete page->page_regions;
+ 				page->page_regions = p;
+ 			}
++			while (page->regions)
++			{
++				struct subtitle_region *p = page->regions->next;
++				delete page->regions;
++				page->regions = p;
++			}
+ 		}
+ 
+ //		eDebug("new page.. (%d)", page_state);
+@@ -352,7 +358,14 @@
+ 			// go to last entry
+ 		while (*r)
+ 			r = &(*r)->next;
+-		
++
++		if (processed_length == segment_length && !page->page_regions)
++		{
++//			eDebug("no regions in page.. clear screen!!");
++			if (sub->screen_enabled)
++				subtitle_redraw_all(sub);
++		}
++
+ 		while (processed_length < segment_length)
+ 		{
+ 			struct subtitle_page_region *pr;
+@@ -763,20 +776,16 @@
+ #if 1
+ 	struct subtitle_page *page = sub->pages;
+ 	if ( page )
+-	{
+-		struct subtitle_page_region *region = page->page_regions;
+-		if ( region )
+-			subtitle_clear_screen(sub);
+-	}
++		subtitle_clear_screen(sub);
+ 	while(page)
+ 	{
+ 		subtitle_redraw(sub, page->page_id);
+ 		page = page->next;
+ 	}
+ #else
+-	subtitle_clear_screen(sub);
+-
+ 	struct subtitle_page *page = sub->pages;
++	if ( page )
++		subtitle_clear_screen(sub);
+ 	//eDebug("----------- end of display set");
+ 	//eDebug("active pages:");
+ 	while (page)
+@@ -878,7 +887,6 @@
+ 		return;
+ 	}
+ 	
+-	
+ 	//eDebug("iterating regions..");
+ 		/* iterate all regions in this pcs */
+ 	struct subtitle_page_region *region = page->page_regions;
+@@ -902,20 +910,19 @@
+ 			{
+ 				if (main_clut_id != clut_id)
+ 				{
+-//					eDebug("MULTIPLE CLUTS IN USE! prepare for pixelmuell!");
++					eDebug("MULTIPLE CLUTS IN USE! prepare for pixelmuell!");
+ //					exit(0);
+ 				}
+ 			}
+ 			main_clut_id = clut_id;
+ 				
+-				
+-			//eDebug("copy region %d to %d, %d", region->region_id, region->region_horizontal_address, region->region_vertical_address);
+-				
+ 			int x0 = region->region_horizontal_address;
+ 			int y0 = region->region_vertical_address;
+ 			int x1 = x0 + reg->region_width;
+ 			int y1 = y0 + reg->region_height;
+-				
++
++			//eDebug("copy region %d to %d, %d, size %d %d", region->region_id, x0, y0, x1, y1);
++
+ 			if ((x0 < 0) || (y0 < 0) || (x0 > sub->screen_width) || (x0 > sub->screen_height))
+ 				continue;
+ 
+diff -Naur enigma_org/lib/dvb/subtitling.cpp enigma/lib/dvb/subtitling.cpp
+--- enigma_org/lib/dvb/subtitling.cpp	2005-08-02 22:35:36.000000000 +0200
++++ enigma/lib/dvb/subtitling.cpp	2007-10-19 11:57:24.000000000 +0200
+@@ -67,26 +67,26 @@
+ 	unsigned long long current = 0;
+ 	if (Decoder::getSTC(current))
+ 		eDebug("bloed, going unsyced");
+-	eDebug("DEMUX STC: %08llx\n", current);
++	eDebug("DEMUX STC: %08llx", current);
+ 	
+ 	unsigned long long pts = 0;
+ 	
+-	int enqueue = 0;
+-	
+-	if (!queue.empty())
+-		enqueue = 1;
+-	else if (!extractPTS(pts, pkt))
++	int enqueue = !queue.empty();
++
++	if (!extractPTS(pts, pkt))
+ 	{
+-		eDebug("PES   STC: %08llx\n", pts);
++		eDebug("PES   STC: %08llx", pts);
+ 		signed long long int diff = pts - current;
+-		eDebug("      STC: %lld\n", diff);
+-		if (diff > 900000) // 10s
+-		{
+-			eDebug("rediculous high delay! showing now");
+-		} else if (diff > 2000)
++		eDebug("     diff: %lld(%lldms)", diff, diff/90);
++		if (diff > 1800)
+ 			enqueue = 1;
++		else if (enqueue) // this should not happen !!
++		{
++			eDebug("showing instantly, diff small enough... but queue not empy!!!!");
++			enqueue = 0;
++		}
+ 		else
+-			eDebug("showing instantly, diff small enough!");
++			eDebug("showing instantly, diff small enough...!");
+ 	}
+ 
+ 	if (enqueue)
+@@ -98,11 +98,15 @@
+ 		memcpy(pes.pkt, pkt, len);
+ 		pes.len = len;
+ 		queue.push(pes);
++		eDebug("enqueue");
+ 		if (wasempty)
+ 		{
+-			eDebug("setting timer to %d ms!\n", (pes.pts - current) / 90);
++			eDebug("setting timer to %lld ms!\n", (pes.pts - current) / 90);
+ 			timer.start((pes.pts - current) / 90, 1);
+ 		}
++		else
++			eDebug("");
++
+ 		return;
+ 	}
+ 	subtitle_process_pes(subtitle, pesbuffer, peslen);
+@@ -155,13 +159,15 @@
+ 		return;
+ 	}
+ 	
+-	eDebug("by the way, actual delay was %lld(%lld msek)\n", current - fpts, (current-fpts)/90 );
++	eDebug("by the way, actual delay was %lld(%lld msek)", current - fpts, (current-fpts)/90 );
+ 
+-	if (queue.empty())
+-		return;
+-	
+-	signed long long int diff = queue.front().pts - current;
+-	timer.start(diff / 90, 1);
++	if (!queue.empty()) {
++		signed long long int diff = queue.front().pts - current;
++		timer.start(diff / 90, 1);
++		eDebug("setting timer to %lld ms!\n", diff / 90);
++	}
++	else
++		eDebug("");
+ }
+ 
+ void eSubtitleWidget::gotData(int what)
