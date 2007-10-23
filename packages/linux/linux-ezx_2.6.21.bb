@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-PR = "${EZX}-r23"
+PR = "${EZX}-r24"
 
 require linux.inc
 
@@ -92,8 +92,8 @@ COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
 #CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
 CMDLINE_CON = "console=tty1 "
 
-CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=5"
-CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=5 "
+CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=1"
+CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=1 "
 # Uncomment to enable dyntick
 #CMDLINE_OTHER = "dyntick=enable"
 CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
