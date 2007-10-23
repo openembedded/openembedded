@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r9"
+PR = "r10"
 
 PACKAGES = "\
     gst-meta-base \
@@ -20,17 +20,15 @@ RDEPENDS_gst-meta-base = "\
     gst-plugin-audioconvert \
     gst-plugin-audioresample \
     gst-plugin-typefindfunctions \
-    gst-plugin-videoscale \
     gst-plugin-autodetect"
 
 RRECOMMENDS_gst-meta-base = "\
     gst-plugin-gnomevfs \
     gst-plugin-alsa \
     gst-plugin-ximagesink \
-    gst-plugin-typefindfunctions \
     gst-plugin-videoscale \
-    gst-plugin-ffmpegcolorspace \
-    gst-plugin-autodetect"
+    gst-plugin-videorate \
+    gst-plugin-ffmpegcolorspace"
 
 RDEPENDS_gst-meta-audio = "\
     gst-meta-base \
@@ -49,6 +47,9 @@ RDEPENDS_gst-meta-video = "\
     gst-meta-base \
     gst-plugin-avi \
     gst-plugin-matroska \
+    gst-plugin-mpegstream \
+    gst-plugin-mpegaudioparse \
+    gst-plugin-mpegvideoparse \
     gst-plugin-mpeg2dec"
 
 RRECOMMENDS_gst-meta-video = "\
