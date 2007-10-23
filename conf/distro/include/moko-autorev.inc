@@ -7,6 +7,7 @@ SRCREV_pn-linux-openmoko ?= "${AUTOREV}"
 SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
+SRCREV_pn-neod ?= "${AUTOREV}"
 
 SRCREV_pn-openmoko-appmanager ?= "${AUTOREV}"
 SRCREV_pn-openmoko-appmanager2 ?= "${AUTOREV}"
