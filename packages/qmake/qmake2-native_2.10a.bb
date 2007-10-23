@@ -3,9 +3,9 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
-QTVER = "qtopia-core-opensource-src-4.3.1"
+QTVER = "qtopia-core-opensource-src-4.3.2"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
