@@ -1,5 +1,5 @@
 DESCRIPTION = "Jana Calendar lib"
-DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus 
+DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus" 
 PV = "0.1.0+svnr${SRCREV}"
 
 inherit  autotools pkgconfig lib_package
