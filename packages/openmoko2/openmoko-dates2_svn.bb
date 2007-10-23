@@ -1,6 +1,6 @@
 DESCRIPTION = "The OpenMoko Calendar"
 SECTION = "openmoko/pim"
-DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus"
+DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus libjana"
 RDEPENDS = "libedata-cal"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r1"
