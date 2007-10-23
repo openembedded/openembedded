@@ -1,0 +1,11 @@
+--- /help/C/orig-Makefile.am	2004-03-30 16:56:57.000000000 +0300
++++ /help/C/Makefile.am	2007-10-23 12:22:10.000000000 +0300
+@@ -40,7 +40,7 @@
+ install-data-hook-omf:
+ 	$(mkinstalldirs) $(DESTDIR)$(omf_dest_dir)
+ 	for file in $(extraomf); do \
+-		$(INSTALL_DATA) $$file.out $(DESTDIR)$(omf_dest_dir)/$$file; \
++		$(INSTALL_DATA) $$file $(DESTDIR)$(omf_dest_dir)/$$file; \
+ 	done
+ 	-scrollkeeper-update -p $(scrollkeeper_localstate_dir) -o $(DESTDIR)$(omf_dest_dir)
+ 
