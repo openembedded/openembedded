@@ -1,6 +1,6 @@
 DESCRIPTION = "Default display timings and resolutions for fbset"
 PV = "0.1.0"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://fb.modes"
 
@@ -10,4 +10,5 @@ do_install() {
 }
 
 PACKAGE_ARCH = "all"
+CONFFILES_${PN} = "${sysconfdir}/fb.modes"
 
