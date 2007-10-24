@@ -3,14 +3,17 @@ HOMEPAGE = "http://www.kismetwireless.net/"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2"
-PR = "r2"
-
-SRC_URI = "http://www.kismetwireless.net/code/kismet-${PV}.tar.gz"
+PV = "2007-10-R1+svnr${SRCREV}"
+PR = "r1"
+DEFAULT_PREFERENCE = "-1"
+SRC_URI = "svn://svn.kismetwireless.net/code/;module=trunk;proto=http"
 
 EXTRA_OECONF = "--enable-wsp100 --with-pcap=linux \
                 --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
 
 inherit autotools
+
+S = "${WORKDIR}/trunk"
 
 fakeroot do_install() {
      oe_runmake "DESTDIR=${D}" suidinstall

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.kismetwireless.net/"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "http://www.kismetwireless.net/code/kismet-${PV}.tar.gz"
 
