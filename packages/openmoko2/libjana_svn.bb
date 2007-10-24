@@ -6,7 +6,7 @@ PR = "r3"
 inherit autotools pkgconfig lib_package
 
 SRC_URI = "svn://svn.o-hand.com/repos/dates/branches;module=jana;proto=http \
-           file://clockpatch.patch;patch=1"
+           file://clockpatch.patch;patch=1;maxrev=651"
 S = "${WORKDIR}/jana/"
 
 do_configure_prepend() {
