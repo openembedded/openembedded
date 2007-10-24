@@ -1,4 +1,5 @@
 SRCREV_pn-libgsmd ?= "${AUTOREV}"
+SRCREV_pn-libjana ?= "${AUTOREV}"
 SRCREV_pn-libmokogsmd2 ?= "${AUTOREV}"
 SRCREV_pn-libmokojournal2 ?= "${AUTOREV}"
 SRCREV_pn-libmokopanelui2 ?= "${AUTOREV}"
