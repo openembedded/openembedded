@@ -5,9 +5,8 @@ PR = "r3"
 
 inherit autotools pkgconfig lib_package
 
-SRC_URI = "svn://svn.o-hand.com/repos/dates/branches;module=jana;proto=http \
-           file://clockpatch.patch;patch=1;maxrev=651"
-S = "${WORKDIR}/jana/"
+SRC_URI = "svn://svn.o-hand.com/repos/jana/;module=trunk;proto=http"
+S = "${WORKDIR}/trunk/"
 
 do_configure_prepend() {
 	touch gtk-doc.make
@@ -24,7 +23,7 @@ PACKAGES = "libjana-ecal libjana-ecal-dbg \
 
 FILES_libjana-ecal = "${libdir}/libjana.so.*"
 FILES_libjana-ecal-dbg = "${libdir}/.debug/libjana-ecal*"
-FILES_libjana-gtk = "${libdir}/libjana-gtk.so.*"
+FILES_libjana-gtk = "${libdir}/libjana-gtk.so.* ${datadir}/jana/landwater.vmf"
 FILES_libjana-gtk-dbg = "${libdir}/.debug/libjana-gtk.so.*"
 FILES_libjana = "${libdir}/libjana.so.*"
 FILES_libjana-dbg = "${libdir}/.debug/libjana.so.*"
