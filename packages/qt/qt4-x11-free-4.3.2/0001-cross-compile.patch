@@ -7,11 +7,11 @@ Subject: [PATCH] cross compile
  configure |  137 ++----------------------------------------------------------
  1 files changed, 5 insertions(+), 132 deletions(-)
 
-diff --git a/configure b/configure
-index 6b3ccd2..b3c2a52 100755
---- a/configure
-+++ b/configure
-@@ -733,7 +733,7 @@ while [ "$#" -gt 0 ]; do
+Index: qt-x11-opensource-src-4.3.2/configure
+===================================================================
+--- qt-x11-opensource-src-4.3.2.orig/configure	2007-10-01 15:06:03.000000000 +0200
++++ qt-x11-opensource-src-4.3.2/configure	2007-10-23 09:32:25.000000000 +0200
+@@ -735,7 +735,7 @@
              UNKNOWN_ARG=yes
          fi
          ;;
@@ -20,7 +20,7 @@ index 6b3ccd2..b3c2a52 100755
          VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
          shift
          VAL="$1"
-@@ -1109,6 +1109,9 @@ while [ "$#" -gt 0 ]; do
+@@ -1124,6 +1124,9 @@
      xplatform)
          XPLATFORM="$VAL"
          ;;
@@ -30,7 +30,7 @@ index 6b3ccd2..b3c2a52 100755
      debug-and-release)
          if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
              CFG_DEBUG_RELEASE="$VAL"
-@@ -2092,137 +2095,7 @@ if [ "$OPT_VERBOSE" = "yes" ]; then
+@@ -2119,149 +2122,7 @@
      echo "Determining system architecture... ($UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE)"
  fi
  
@@ -116,7 +116,7 @@ index 6b3ccd2..b3c2a52 100755
 -        ARCH=i386
 -        ;;
 -    *:*:x86_64|*:*:amd64)
--        if [ "$PLATFORM" = "linux-g++-32" ]; then
+-        if [ "$PLATFORM" = "linux-g++-32" -o "$PLATFORM" = "linux-icc-32" ]; then
 -            if [ "$OPT_VERBOSE" = "yes" ]; then
 -                echo "    32 bit on 64-bit AMD 80x86 (i386)"
 -            fi
@@ -146,6 +146,18 @@ index 6b3ccd2..b3c2a52 100755
 -    	fi
 -    	ARCH=s390
 -    	;;
+-    *:*:arm*)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    ARM (arm)"
+-        fi
+-        ARCH=arm
+-        ;;
+-    Linux:*:sparc*) 
+-        if [ "$OPT_VERBOSE" = "yes" ]; then 
+-            echo "    Linux on SPARC" 
+-        fi 
+-        ARCH=sparc 
+-        ;; 
 -    *:*:*)
 -        if [ "$OPT_VERBOSE" = "yes" ]; then
 -            echo "    Trying '$UNAME_MACHINE'..."
@@ -169,6 +181,3 @@ index 6b3ccd2..b3c2a52 100755
  
  if [ "$OPT_VERBOSE" = "yes" ]; then
          echo "System architecture: '$ARCH'"
--- 
-1.5.0.7
-

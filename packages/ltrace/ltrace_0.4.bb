@@ -1,13 +1,14 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
 HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
-DEPENDS = "libelf"
+DEPENDS = "binutils libelf"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/l/ltrace/ltrace_0.4.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_0.4-1.diff.gz;patch=1 \
            file://no-usr-include.patch;patch=1"
+
 inherit autotools
 
 PARALLEL_MAKE = ""

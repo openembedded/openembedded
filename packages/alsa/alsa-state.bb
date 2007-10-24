@@ -8,7 +8,7 @@ DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
 PV = "0.1.0"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = " \
   file://asoundrc \
@@ -41,7 +41,7 @@ PACKAGES += "alsa-states"
 FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asoundrc"
 FILES_alsa-states = "${sysconfdir}/*.state"
 PACKAGE_ARCH_${PN} = "all"
-PACKAGE_ARCH_alsa-states = "${MACHINE}"
+PACKAGE_ARCH_alsa-states = "${MACHINE_ARCH}"
 
 pkg_postinst_${PN}() {
 	if test -z "$D"
