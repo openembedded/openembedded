@@ -1,5 +1,5 @@
 DESCRIPTION = "O-Hand Jana Library"
-DEPENDS = "libmokojournal2 gtk+ eds-dbus" 
+DEPENDS = "libmokojournal2 gtk+ eds-dbus gconf" 
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r3"
 
