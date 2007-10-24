@@ -1,0 +1,13 @@
+Index: ImageMagick-6.3.5/Makefile.am
+===================================================================
+--- ImageMagick-6.3.5.orig/Makefile.am	2007-10-24 08:03:09.000000000 +0100
++++ ImageMagick-6.3.5/Makefile.am	2007-10-24 08:03:21.000000000 +0100
+@@ -18,7 +18,7 @@
+ 
+ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
+ 
+-ACLOCAL_AMFLAGS = -Iltdl/m4 -I m4
++ACLOCAL_AMFLAGS = -I m4
+ 
+ MODULECOMMONFLAGS = -no-undefined -export-symbols-regex ".*" -module -avoid-version
+ 
