@@ -1,3 +1,4 @@
+SRCREV_pn-aircrack-ng ?= "${AUTOREV}"
 SRCREV_pn-dfu-util ?= "${AUTOREV}"
 SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
 SRCREV_pn-eglibc ?= "${AUTOREV}"
