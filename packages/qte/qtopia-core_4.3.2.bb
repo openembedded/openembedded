@@ -5,7 +5,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "freetype tslib"
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
            file://linux-oe-qmake.conf"

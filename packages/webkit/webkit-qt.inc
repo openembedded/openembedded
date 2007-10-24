@@ -1,9 +1,9 @@
 WEBKIT_PORT = "qt"
 WEBKIT_EXTRA_OPTIONS = ""
-PACKAGES =+ "webkit-qtlauncher-dbg webkit-qtlauncher"
+PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
 
-FILES_webkit-qtlauncher = "${bindir}/QtLauncher"
-FILES_webkit-qtlauncher-dbg = "${bindir}/.debug/*"
+FILES_${PN}launcher = "${bindir}/QtLauncher"
+FILES_${PN}launcher-dbg = "${bindir}/.debug/*"
 
 require webkit.inc
 
