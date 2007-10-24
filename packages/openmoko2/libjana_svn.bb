@@ -1,7 +1,7 @@
 DESCRIPTION = "O-Hand Jana Library"
 DEPENDS = "libmokojournal2 gtk+ eds-dbus" 
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit autotools pkgconfig lib_package
 
