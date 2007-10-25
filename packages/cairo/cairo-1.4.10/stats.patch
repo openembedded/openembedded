@@ -1,0 +1,33 @@
+See cairo mailing list 15-10-2007 patch by Soeren Sandmann.
+Fixes unreliable results for cairo-perf.
+
+diff --git a/perf/cairo-perf.c b/perf/cairo-perf.c
+index 360f2dd..a8d7abc 100644
+--- a/perf/cairo-perf.c
++++ b/perf/cairo-perf.c
+@@ -166,22 +166,11 @@ cairo_perf_run (cairo_perf_t		*perf,
+ 			cairo_perf_ticks_per_second () / 1000.0);
+ 	    printf (" %lld", times[i]);
+ 	} else {
+-	    if (i > 0) {
+-		_cairo_stats_compute (&stats, times, i+1);
+-
+-		if (stats.std_dev <= CAIRO_PERF_LOW_STD_DEV &&
+-		    ! perf->exact_iterations)
+-		{
+-		    low_std_dev_count++;
+-		    if (low_std_dev_count >= CAIRO_PERF_STABLE_STD_DEV_COUNT)
+-			break;
+-		} else {
+-		    low_std_dev_count = 0;
+-		}
+-	    }
+ 	}
+     }
+ 
++    _cairo_stats_compute (&stats, times, i+1);
++	    
+     if (perf->raw) {
+ 	printf ("\n");
+     } else {
+diff --git a/perf/cairo-stats.c b/perf/cairo-stats.c
