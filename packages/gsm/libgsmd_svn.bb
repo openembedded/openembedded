@@ -16,7 +16,7 @@ SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://0003-Correctly-segment-incoming-usock-data-into-packets.patch;patch=1;minrev=2957 \
            file://0004-Handle-read-and-write-return-values.patch;patch=1;minrev=2957 \ 
            file://0005-Add-ask-ds-option-forSMS.patch;patch=1;minrev=2957;maxrev=3201 \ 
-           file://lgsm_send_fix_return_value.patch;patch=1 \
+           file://lgsm_send_fix_return_value.patch;patch=1;maxrev=3266 \
            file://gsmd \
            file://default"
 S = "${WORKDIR}/gsm"
