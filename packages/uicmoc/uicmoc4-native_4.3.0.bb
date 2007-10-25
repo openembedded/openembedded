@@ -1,5 +1,5 @@
 DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "libx11-native libxext-native"
+DEPENDS = "libx11-native libxext-native zlib-native"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
