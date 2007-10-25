@@ -1,0 +1,20 @@
+--- src/callbacks.c~	2007-10-23 18:43:04.000000000 +0200
++++ src/callbacks.c	2007-10-23 18:43:04.000000000 +0200
+@@ -5609,8 +5609,6 @@
+ 
+ #if defined (HAVE_LIBASPELL) || defined (ENCHANT_SUPPORTED)
+   GList *l = get_suggestions_list (p->prefix);
+-#endif
+-
+   if (l)
+      {
+       build_menu_wudata_from_glist (l, mni_suggestions, on_mni_suggestion_select, temp_text_part);
+@@ -5620,6 +5618,8 @@
+      }
+ 
+   glist_strings_free (l);
++#endif
++
+ }
+ 
+ 
