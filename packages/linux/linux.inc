@@ -4,21 +4,9 @@ LICENSE = "GPL"
 
 inherit kernel
 
-# These devices need mkimage to generate a kernel image 
-DEPENDS_append_kb9202         = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_at32stk1000    = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_atngw100       = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_at91sam9263ek  = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_at91sam9261ek  = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_at91sam9260ek  = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_sarge-at91     = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_gumstix-connex = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_gumstix-verdex = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_fic-gta01      = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_fic-gta02      = " u-boot-mkimage-openmoko-native "
-DEPENDS_append_mpc8313e-rdb   = " u-boot "
-DEPENDS_append_mpc8323e-rdb   = " u-boot "
-DEPENDS_append_bd-neon        = " u-boot-mkimage-openmoko-native "
+# Not every device needs mkimage to generate a kernel image, but lets make OE a bit more
+# friendly and increase the "Just Works(TM) factor. Building uboot takes only a minute.
+DEPENDS += " u-boot-mkimage-openmoko-native "
 
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
@@ -47,7 +35,7 @@ do_configure_prepend() {
         #
         if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
-                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+                echo "# CONFIG_OABI_COMPAT is not set"             >> ${S}/.config
         else
                 echo "# CONFIG_AEABI is not set"        >> ${S}/.config
                 echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
