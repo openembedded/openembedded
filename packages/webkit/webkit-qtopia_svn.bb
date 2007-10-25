@@ -1,4 +1,6 @@
 require webkit-qt.inc
 inherit qtopia4core
 
-PR = "r1"
+WEBKIT_EXTRA_OPTIONS += "QT+=xml QT+=network"
+
+PR = "r5"

@@ -1,13 +1,15 @@
 DEPENDS = "curl icu libxml2 cairo libxslt libidn gnutls gtk+"
 
+
 WEBKIT_PORT = "gtk-port"
 WEBKIT_EXTRA_OPTIONS = "CONFIG-=qt"
-PACKAGES =+ "webkit-gtklauncher-dbg webkit-gtklauncher"
 
 FILES_webkit-gtklauncher = "${bindir}/GtkLauncher"
 FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"
 
 require webkit.inc
+
+PR = "r3"
 
 do_install() {
 	install -d ${D}${bindir}

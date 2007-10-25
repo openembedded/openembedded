@@ -1,9 +1,10 @@
 DEPENDS += "flex-native gperf-native perl-native sqlite3"
 SRCREV_FORMAT = "webcore-rwebkit"
 
+PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
+
 # Yes, this is wrong...
 PV = "0.1+svnr${SRCREV}"
-PR = "r1"
 
 inherit qmake2 pkgconfig
 
@@ -46,3 +47,11 @@ do_stage() {
 	oe_runmake install
 }
 
+python populate_packages_prepend() {
+    print "foooo"
+    print bb.data.getVar("DEBIAN_NAMES", d, True)
+    if bb.data.getVar("DEBIAN_NAMES", d, True):
+        base = bb.data.expand("${PN}launcher", d, True)
+        bb.data.setVar("PKG_%s" % base, base, d)
+        bb.data.setVar("PKG_%s-dbg" % base, "%s-dbg" % base, d)
+}
