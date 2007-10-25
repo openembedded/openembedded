@@ -1,4 +1,5 @@
 require linux.inc
+require linux-openmoko.inc
 
 DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ OpenMoko"
 VANILLA_VERSION = "2.6.23"
@@ -10,7 +11,7 @@ KERNEL_RELEASE = "2.6.23.1"
 
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
