@@ -6,6 +6,8 @@ PR = "${EZX}-r0"
 
 # unstable branch, use 2.6.21 if you want something working
 DEFAULT_PREFERENCE = "-99"
+DEFAULT_PREFERENCE_a780 = "99"
+
 
 # last sync: svn revision 2068
 
