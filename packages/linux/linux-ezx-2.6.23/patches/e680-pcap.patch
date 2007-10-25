@@ -1,0 +1,90 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:41:38.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-e680.c	2007-09-06 00:44:56.000000000 -0300
+@@ -19,6 +19,7 @@
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/pxafb.h>
+ #include <asm/arch/ezx.h>
++#include <asm/arch/ezx-pcap.h>
+ 
+ #include "generic.h"
+ 
+@@ -48,7 +49,77 @@
+ 	.pxafb_lcd_power = &ezx_lcd_power,
+ };
+ 
++/* PCAP */
++static int __init e680_pcap_init(void)
++{
++	/* initialize PCAP registers */
++	/* set SW1 sleep to keep SW1 1.3v in sync mode */
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW1_MODE10, 0);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW1_MODE11, 0);
++
++	/*  SW1 active in sync mode */
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW1_MODE00, 1);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW1_MODE01, 0);
++
++	/*  at SW1 -core voltage to 1.30V   */
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW10_DVS, 1);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW11_DVS, 1);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW12_DVS, 1);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_SW13_DVS, 0);
++
++	/* when STANDY2 PIN ACTIVE (high) set V3-- sram V8 -- pll off  */
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V3_STBY, 1);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V3_LOWPWR, 0);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V8_STBY, 1);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V8_LOWPWR, 0);
++
++	/*
++	 * when STANDY2 PIN ACTIVE (high) set V4-- lcd only for e680 V6 ---
++	 * camera for e680
++	 */
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V4_STBY, 1);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V4_LOWPWR, 1);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V6_STBY, 1);
++	ezx_pcap_bit_set(PCAP_BIT_VREG2_V6_LOWPWR, 0);
++
++	/* set Vc to low power mode when AP sleep */
++//	SSP_PCAP_bit_set( PCAP_BIT_LOWPWR_CTRL_VC_STBY);
++
++	/* set VAUX2 to low power mode when AP sleep */
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_VAUX2_STBY, 1);
++	ezx_pcap_bit_set(PCAP_BIT_LOWPWR_VAUX2_LOWPWR, 1);
++
++	return 0;
++}
++
++static struct pcap_platform_data e680_pcap_platform_data = {
++	.port		= 1,
++	.cs		= GPIO_SPI_CE,
++	.flags		= PCAP_MCI_SD,
++	.clk		= 1,
++	.init		= e680_pcap_init,
++};
++
++static struct resource e680_pcap_resources[] = {
++	[0] = {
++		.start		= IRQ_GPIO1,
++		.end		= IRQ_GPIO1,
++		.flags		= IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device e680_pcap_device = {
++	.name		= "ezx-pcap",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(e680_pcap_resources),
++	.resource	= e680_pcap_resources,
++	.dev		= {
++		.platform_data = &e680_pcap_platform_data,
++	},
++};
++
+ static struct platform_device *devices[] __initdata = {
++	&e680_pcap_device,
+ };
+ 
+ static void __init e680_init(void)
