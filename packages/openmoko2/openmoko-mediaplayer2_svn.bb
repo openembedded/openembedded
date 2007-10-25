@@ -1,9 +1,9 @@
 DESCRIPTION = "A media player for OpenMoko"
 SECTION = "openmoko/tools"
 DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
-RDEPENDS = "gst-meta-audio"
+RDEPENDS = "gst-meta-audio gconf"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 inherit openmoko2
 
@@ -20,5 +20,6 @@ if [ "x$D" != "x" ]; then
     exit 1
 fi
 
-gconftool-2 --makefile-install-rule ${D}${sysconfdir}/gconf/schemas/openmoko-mediaplayer.schemas > /dev/null
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+gconftool-2 --makefile-install-rule ${sysconfdir}/gconf/schemas/openmoko-mediaplayer.schemas > /dev/null
 }
