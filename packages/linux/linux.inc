@@ -18,6 +18,7 @@ DEPENDS_append_fic-gta01      = " u-boot-mkimage-openmoko-native "
 DEPENDS_append_fic-gta02      = " u-boot-mkimage-openmoko-native "
 DEPENDS_append_mpc8313e-rdb   = " u-boot "
 DEPENDS_append_mpc8323e-rdb   = " u-boot "
+DEPENDS_append_bd-neon        = " u-boot-mkimage-openmoko-native "
 
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
