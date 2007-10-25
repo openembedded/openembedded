@@ -2,8 +2,9 @@ DESCRIPTION = "PCMCIA-cs configuration files for Hermes (Orinoco) wireless LAN c
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
+RDEPENDS = "update-modules"
 PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://spectrum.conf \
            file://hermes.conf \
