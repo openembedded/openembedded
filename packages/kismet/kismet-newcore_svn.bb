@@ -4,11 +4,11 @@ SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2"
 PV = "0.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 SRC_URI = "svn://svn.kismetwireless.net/code/branch/;module=kismet-newcore;proto=http"
 
-EXTRA_OECONF = "--enable-wsp100 --with-pcap=linux \
+EXTRA_OECONF = "--disable-gpsmap --enable-wsp100 --with-pcap=linux \
                 --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
 
 inherit autotools
@@ -19,13 +19,10 @@ fakeroot do_install() {
      oe_runmake "DESTDIR=${D}" suidinstall
 }
 
-PACKAGES =+ "${PN}-sounds ${PN}-gpsmap"
+PACKAGES =+ "${PN}-sounds"
 
 FILES_${PN}-sounds = "${datadir}/kismet/wav"
 RDEPENDS_${PN}-sounds = "sox"
-
-FILES_${PN}-gpsmap = "${bindir}/gpsmap*"
-RDEPENDS_${PN}-gpsmap = "gpsd"
 
 CONFFILES_${PN} = "${sysconfdir}/kismet.conf ${sysconfdir}/kismet_ui.conf ${sysconfdir}/kismet_drone.conf"
 
