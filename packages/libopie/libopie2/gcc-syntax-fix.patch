@@ -1,0 +1,13 @@
+diff --git a/opiedb/osqldriver.h b/opiedb/osqldriver.h
+index 492b8dd..29fbfd6 100644
+--- a/opiedb/osqldriver.h
++++ b/opiedb/osqldriver.h
+@@ -77,7 +77,7 @@ public:
+     /**
+      * Get a list of tables
+      */
+-    virtual OSQLTable::ValueList tables() const = 0l;
++    virtual OSQLTable::ValueList tables() const = 0;
+     virtual bool sync();
+ 
+ 
