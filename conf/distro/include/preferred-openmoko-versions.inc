@@ -6,5 +6,5 @@
 # Bootloader and Kernel
 #
 
-SRCREV_pn-linux-openmoko = "2937"
+SRCREV_pn-linux-openmoko ?= "2937"
 
