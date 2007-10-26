@@ -11,10 +11,10 @@ DESCRIPTION = "OpenedHand Widget Library"
 HOMEPAGE = "http://www.o-hand.com"
 LICENSE = "LGPL"
 SECTION = "libs"
-PR = "r3"
+DEPENDS = "gtk+"
 PV = "0.0+svnr${SRCREV}"
+PR = "r3"
 
-DEPENDS = "gtk+ glib-2.0"
 PACKAGES = ""
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=${PN};proto=http"
@@ -36,13 +36,4 @@ do_stage() {
 		install -m 644 $header ${STAGING_INCDIR}/$hdr_base
 	done
 	install -m 644 libowl/.libs/libowl.a ${STAGING_LIBDIR}/
-}
-
-do_install() {
-}
-
-do_package() {
-}
-
-do_package_write() {
 }

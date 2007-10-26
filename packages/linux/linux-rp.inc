@@ -13,7 +13,6 @@ BASRC = "http://www.orca.cx/zaurus/patches"
 CHSRC = "http://oz.drigon.com/patches"
 TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 
-EXTRA_OEMAKE = "OPENZAURUS_RELEASE=-${DISTRO_VERSION}"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
 COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86|htcuniversal)'
 
@@ -45,16 +44,13 @@ CMDLINE_ROTATE_poodle = "fbcon=rotate:1"
 CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"
 
 ###############################################################
-# Enable or disable ELPP via local.conf - default is "no"
-#
-ENABLE_ELPP = '${@bb.data.getVar("OZ_KERNEL_ENABLE_ELPP",d,1) or "no"}'
-
-###############################################################
 # module configs specific to this kernel
 #
-module_autoload_ohci-hcd_tosa = "ohci-hcd"
 module_autoload_pxaficp_ir = "pxaficp_ir"
 module_autoload_snd-pcm-oss = "snd-pcm-oss"
+module_autoload_pcmcia_core = "pcmcia_core"
+module_autoload_pxa2xx_cs = "pxa2xx_cs"
+module_autoload_ohci-hcd_tosa = "ohci-hcd"
 module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
 module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
 module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
@@ -96,15 +92,6 @@ do_configure() {
 
 	echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
-	#if [ "${ENABLE_ELPP}" = "yes" ]; then
-        #        echo "# Enhanced Linux Progress Patch"  >> ${S}/.config
-        #        echo "CONFIG_FB_ELPP=y"                 >> ${S}/.config
-        #        echo "CONFIG_LOGO=y"                    >> ${S}/.config
-        #        echo "CONFIG_LOGO_LINUX_CLUT224=y"      >> ${S}/.config
-	#else
-	#	echo "# CONFIG_FB_ELPP is not set"	>> ${S}/.config
-	#fi
-
 	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
 		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
@@ -113,28 +100,7 @@ do_configure() {
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
 
-	if [ "${DISTRO}" = "openzaurus" -a "${MACHINE}" != "collie" ]; then
-		case ${MACHINE} in
-			c7x0 | akita | spitz )
-				echo "CONFIG_LOGO_OZ640_CLUT224=y"            >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
-				;;
-			tosa )
-				echo "CONFIG_LOGO_OZ480_CLUT224=y"            >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
-				;;
-			poodle | collie )
-				echo "CONFIG_LOGO_OZ240_CLUT224=y"            >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ640_CLUT224 is not set" >> ${S}/.config
-				echo "# CONFIG_LOGO_OZ480_CLUT224 is not set" >> ${S}/.config
-				;;
-		esac 
-		echo "CONFIG_LOGO=y"                          >> ${S}/.config
-		echo "# CONFIG_LOGO_LINUX_CLUT224 is not set" >> ${S}/.config
-		echo "# CONFIG_LOGO_OHAND_CLUT224 is not set" >> ${S}/.config
-	elif [ "${DISTRO}" = "poky" -a "${MACHINE}" != "collie" ]; then
+	if [ "${DISTRO}" = "poky" -a "${MACHINE}" != "collie" ]; then
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
 		echo "CONFIG_LOGO_OHAND_CLUT224=y"            >> ${S}/.config
 		echo "# CONFIG_LOGO_OZ240_CLUT224 is not set" >> ${S}/.config
@@ -196,8 +162,7 @@ do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_DEPLOY_NAME}
 	cd ${DEPLOY_DIR_IMAGE}
-	rm -f ${KERNEL_SYMLINK_NAME}
-	ln -s ${KERNEL_DEPLOY_NAME} ${KERNEL_SYMLINK_NAME}
+	ln -sf ${KERNEL_DEPLOY_NAME} ${KERNEL_SYMLINK_NAME}
 	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib	
 }
 
