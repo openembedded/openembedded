@@ -1,0 +1,13 @@
+diff --git a/kabc/secrecy.h b/kabc/secrecy.h
+index 21e22f2..3011ae9 100644
+--- a/kabc/secrecy.h
++++ b/kabc/secrecy.h
+@@ -98,5 +98,8 @@ private:
+   int mType;
+ };
+ 
++QDataStream& operator<<(QDataStream& s,const Secrecy &secrecy);
++QDataStream& operator>>(QDataStream& s,Secrecy &secrecy);
++
+ }
+ #endif
