@@ -45,10 +45,10 @@ FILES_libmono-webserver2.0-cil = " \
 	/usr/lib/mono/gac/Mono.WebServer2/0.2.*/ \
 	/usr/lib/mono/2.0/Mono.WebServer2.dll \
 	"
-FILES_mono-xsp-dbg = " \
+FILES_${PN}-dbg = " \
 	/usr/lib/mono/gac/xsp/1.2.*/*.mdb \
 	"
-FILES_mono-xsp = " \
+FILES_${PN} = " \
 	/usr/lib/mono/gac/xsp/1.2.*/ \
 	/usr/lib/mono/1.0/xsp.exe \
 	/usr/bin/xsp \
