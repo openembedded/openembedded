@@ -35,7 +35,7 @@ do_configure_prepend() {
         #
         if [ "${TARGET_OS}" = "linux-gnueabi" -o  "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
                 echo "CONFIG_AEABI=y"                   >> ${S}/.config
-                echo "# CONFIG_OABI_COMPAT is not set"             >> ${S}/.config
+                echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
         else
                 echo "# CONFIG_AEABI is not set"        >> ${S}/.config
                 echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
