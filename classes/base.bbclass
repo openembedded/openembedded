@@ -387,9 +387,6 @@ oe_machinstall() {
 	fi
 }
 
-# Remove and re-create ${D} so that is it guaranteed to be empty
-do_install[cleandirs] = "${D}"
-
 addtask listtasks
 do_listtasks[nostamp] = "1"
 python do_listtasks() {
@@ -703,6 +700,8 @@ python do_populate_staging () {
 
 addtask install after do_compile
 do_install[dirs] = "${D} ${S} ${B}"
+# Remove and re-create ${D} so that is it guaranteed to be empty
+do_install[cleandirs] = "${D}"
 
 base_do_install() {
 	:
