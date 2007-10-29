@@ -2,7 +2,7 @@ DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
-	libfribidi gstreamer"
+	libfribidi gstreamer libxmlccwrap"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
