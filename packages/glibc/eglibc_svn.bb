@@ -15,7 +15,7 @@ RPROVIDES_${PN}-dev = "libc6-dev"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
-TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"
+TARGET_CPPFLAGS = "-I${STAGING_DIR_TARGET}${layout_includedir}"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 
