@@ -8,7 +8,7 @@ RPROVIDES_${PN}-dev = "libc6-dev"
 PR = "r7"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
-BUILD_CPPFLAGS = "-I${STAGING_DIR}/${BUILD_SYS}/include"
+BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
 TARGET_CPPFLAGS = "-I${STAGING_DIR}/${TARGET_SYS}/include"
 
 

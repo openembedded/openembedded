@@ -41,7 +41,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
 HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 
 # Where to find .so files - use the -native versions not those from the target build
-export PERLHOSTLIB = "${STAGING_DIR}/${BUILD_SYS}/lib/perl/${PV}/"
+export PERLHOSTLIB = "${STAGING_LIBDIR_NATIVE}/perl/${PV}/"
 
 do_configure() {
         # Make hostperl in build directory be the native perl
@@ -138,12 +138,12 @@ do_install() {
 }
 do_stage() {
         install -d ${STAGING_DIR}/${HOST_SYS}/perl \
-                   ${STAGING_DIR}/${BUILD_SYS}/lib/perl/${PV} \
+                   ${STAGING_LIBDIR_NATIVE}/perl/${PV} \
                    ${STAGING_LIBDIR}/perl/${PV}/CORE
         # target config, used by cpan.bbclass to extract version information
         install config.sh ${STAGING_DIR}/${HOST_SYS}/perl/
         # target configuration, used by native perl when cross-compiling
-        install lib/Config_heavy.pl ${STAGING_DIR}/${BUILD_SYS}/lib/perl/${PV}/Config_heavy-target.pl
+        install lib/Config_heavy.pl ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy-target.pl
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
                  uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \

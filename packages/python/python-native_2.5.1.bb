@@ -30,5 +30,5 @@ EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 #}
 
 do_stage_append() {
-	install -m 0755 Parser/pgen ${STAGING_DIR}/${BUILD_SYS}/bin/
+	install -m 0755 Parser/pgen ${STAGING_BINDIR_NATIVE}/
 }

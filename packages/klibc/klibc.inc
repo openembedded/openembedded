@@ -54,13 +54,13 @@ do_configure () {
 	ln -sf ${STAGING_KERNEL_DIR} linux
 }
 
-STAGING_KLIBC_DIR = "${STAGING_DIR}/${HOST_SYS}/klibc"
+STAGING_KLIBC_DIR = "${STAGING_DIR_HOST}/klibc"
 
 do_stage() {
 	rm -rf "${STAGING_KLIBC_DIR}"
 	oe_runmake	'prefix=${STAGING_KLIBC_DIR}' \
 			'bindir=${STAGING_BINDIR}' \
-			'mandir=${STAGING_DIR}/${BUILD_SYS}/share/man' \
+			'mandir=${STAGING_DATADIR}/man' \
 			install
 	# The following is sufficient, at least in klibc 1.1.1 to make klcc
 	# use the staged libraries and include files.

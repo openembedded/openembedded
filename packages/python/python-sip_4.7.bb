@@ -30,7 +30,7 @@ do_configure_prepend() {
 }
 
 do_stage() {
-	install -d ${STAGING_DIR}/${BUILD_SYS}/lib/${PYTHON_DIR}/site-packages/
+	install -d ${STAGING_LIBDIR_NATIVE}/${PYTHON_DIR}/site-packages/
 	# sipconfig.py sipdistutils.py
 	install -m 0644 sip.h ${STAGING_INCDIR}/sip.h
 }
