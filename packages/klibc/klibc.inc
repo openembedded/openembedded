@@ -60,7 +60,7 @@ do_stage() {
 	rm -rf "${STAGING_KLIBC_DIR}"
 	oe_runmake	'prefix=${STAGING_KLIBC_DIR}' \
 			'bindir=${STAGING_BINDIR}' \
-			'mandir=${STAGING_DATADIR}/man' \
+			'mandir=${STAGING_DIR_HOST}${layout_mandir}' \
 			install
 	# The following is sufficient, at least in klibc 1.1.1 to make klcc
 	# use the staged libraries and include files.

@@ -15,4 +15,4 @@ require gcc3-build-cross.inc
 # cross packaging
 require gcc-package-cross.inc
 
-EXTRA_OECONF += "--with-mpfr=${STAGING_DIR}/${BUILD_SYS}"
+EXTRA_OECONF += "--with-mpfr=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
