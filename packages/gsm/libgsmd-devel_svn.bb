@@ -15,6 +15,7 @@ SRC_URI += " file://024_sms-text-in-bracket.patch;patch=1;minrev=2957;maxrev=319
            file://0004-Handle-read-and-write-return-values.patch;patch=1;minrev=2957 \ 
            file://0005-Add-ask-ds-option-forSMS.patch;patch=1;minrev=2957;maxrev=3201 \ 
            file://lgsm_send_fix_return_value.patch;patch=1;maxrev=3266 \
+           file://install-ts-headers.patch;patch=1 \
            file://gsmd \
            file://default"
 
