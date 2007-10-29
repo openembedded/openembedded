@@ -12,7 +12,7 @@ SRC_URI = "http://luaforge.net/frs/download.php/989/${P}.tar.gz \
 
 FILES_${PN} =  "${datadir}/lua   ${libdir}/lua50"
 
-CFLAGS_append = " -I '${S}/build-linux' -I src -DLINUX -I${STAGING_INCDIR} -L${STAGING_LIBDIR} -L${STAGING_LIBDIR}/../../${BUILD_SYS}/lib"
+CFLAGS_append = " -I '${S}/build-linux' -I src -DLINUX -I${STAGING_INCDIR} -L${STAGING_LIBDIR} -L${STAGING_LIBDIR_NATIVE}"
 
 do_compile () {
 	oe_runmake PREFIX='${prefix}' HGCC='${BUILD_CC}' LIBDIR='${STAGING_LIBDIR}' ODIR='build-linux/' CFLAGS='${CFLAGS}'
