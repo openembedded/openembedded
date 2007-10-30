@@ -1,0 +1,19 @@
+--- configure.ac~	2007-10-30 14:56:46.000000000 +0100
++++ configure.ac	2007-10-30 14:56:46.000000000 +0100
+@@ -20,7 +20,7 @@
+ 	libtinymail-camel-1.0 
+ 	libtinymailui-1.0 
+ 	libtinymailui-gtk-1.0
+-	libtinymail-gnome-desktop-1.0
++	libtinymail-gpe-1.0
+ ) 
+ 
+ AC_SUBST(TMUT_CFLAGS)
+--- src/Makefile.am~	2007-10-30 14:57:00.000000000 +0100
++++ src/Makefile.am	2007-10-30 14:57:00.000000000 +0100
+@@ -1,4 +1,4 @@
+-INCLUDES = $(TMUT_CFLAGS) -DGNOMEDESKTOP
++INCLUDES = $(TMUT_CFLAGS) -DGPE
+ 
+ bin_PROGRAMS = tmut
+ 
