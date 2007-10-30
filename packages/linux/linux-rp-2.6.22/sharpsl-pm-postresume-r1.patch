@@ -1,0 +1,30 @@
+ arch/arm/common/sharpsl_pm.c          |    3 +++
+ include/asm-arm/hardware/sharpsl_pm.h |    1 +
+ 2 files changed, 4 insertions(+)
+
+Index: git/include/asm-arm/hardware/sharpsl_pm.h
+===================================================================
+--- git.orig/include/asm-arm/hardware/sharpsl_pm.h	2006-10-31 16:09:33.000000000 +0000
++++ git/include/asm-arm/hardware/sharpsl_pm.h	2006-11-07 22:08:41.000000000 +0000
+@@ -26,6 +26,7 @@ struct sharpsl_charger_machinfo {
+ 	void (*presuspend)(void);
+ 	void (*postsuspend)(void);
+ 	void (*earlyresume)(void);
++	void (*postresume)(void);
+ 	unsigned long (*read_devdata)(int);
+ #define SHARPSL_BATT_VOLT       1
+ #define SHARPSL_BATT_TEMP       2
+Index: git/arch/arm/common/sharpsl_pm.c
+===================================================================
+--- git.orig/arch/arm/common/sharpsl_pm.c	2006-11-07 22:03:48.000000000 +0000
++++ git/arch/arm/common/sharpsl_pm.c	2006-11-07 22:04:20.000000000 +0000
+@@ -584,6 +584,9 @@ static int corgi_pxa_pm_enter(suspend_st
+ 	if (sharpsl_pm.machinfo->earlyresume)
+ 		sharpsl_pm.machinfo->earlyresume();
+ 
++	if (sharpsl_pm.machinfo->postresume)
++		sharpsl_pm.machinfo->postresume();
++	
+ 	dev_dbg(sharpsl_pm.dev, "SharpSL resuming...\n");
+ 
+ 	return 0;
