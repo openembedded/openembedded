@@ -2,7 +2,7 @@ DESCRIPTION = "Skin for opie-mediaplayer2"
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PV = "${OPIE_CVS_PV}"
+PV = "1.2.2+cvs${SRCDATE}"
 APPNAME = "opieplayer2"
 
 RPROVIDES = "opie-mediaplayer2-skin"
