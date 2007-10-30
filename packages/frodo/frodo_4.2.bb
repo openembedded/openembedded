@@ -17,7 +17,7 @@ S = "${WORKDIR}/Frodo4/Src"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-sdltest --enable-qtopia --with-sdl-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
+EXTRA_OECONF = "--disable-sdltest --enable-qtopia --with-sdl-exec-prefix=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
 
 do_install() {
         install -d ${D}${palmtopdir}/bin \

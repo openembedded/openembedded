@@ -14,7 +14,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-i18n --without-imlib --with-xpm --with-gnome-menus \
 	--x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR} \
-	--with-mkfontdir=${STAGING_DIR}/${BUILD_SYS}/bin/mkfontdir"
+	--with-mkfontdir=${STAGING_BINDIR_NATIVE}/mkfontdir"
 
 pkg_postinst() {
 update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/icewm-session 10
