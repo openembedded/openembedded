@@ -48,7 +48,7 @@ do_install () {
         elif [  -f ${D}${prefix}/*/lib/nof/libgcc_s.so.? ]; then
                 mv -f ${D}${prefix}/*/lib/nof/libgcc_s.so* ${D}${target_base_libdir}
         else
-                mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
+                mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir} || true 
         fi
 
 
@@ -58,12 +58,12 @@ do_install () {
 
         if [ -f ${D}${prefix}/*/lib/nof/libstdc++.so ]; then
 
-           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir}
+           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/nof/libg2c.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/nof/libgfortran*.so* ${D}${target_libdir} || true
 
         else
-           mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
+           mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
         fi
