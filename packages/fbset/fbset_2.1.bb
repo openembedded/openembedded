@@ -7,6 +7,7 @@
 
 DESCRIPTION = "The fbset console tool"
 LICENSE = "GPL"
+RRECOMMENDS = "fbset-modes"
 
 PR = "r2"
 

@@ -1,0 +1,187 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+Index: linux-2.6.23/drivers/leds/Kconfig
+===================================================================
+--- linux-2.6.23.orig/drivers/leds/Kconfig	2007-10-23 19:35:34.000000000 +0200
++++ linux-2.6.23/drivers/leds/Kconfig	2007-10-23 19:38:13.000000000 +0200
+@@ -110,6 +110,13 @@
+ 	  These triggers allow kernel events to drive the LEDs and can
+ 	  be configured via sysfs. If unsure, say Y.
+ 
++config LEDS_A780
++	tristate "LED Support for the Motorola A780 GSM Phone"
++	depends LEDS_CLASS && PXA_EZX_A780
++	help
++	  This option enables support for the LEDs on the
++	  Motorola A780 GSM Phone.
++
+ config LEDS_TRIGGER_TIMER
+ 	tristate "LED Timer Trigger"
+ 	depends on LEDS_TRIGGERS
+Index: linux-2.6.23/drivers/leds/Makefile
+===================================================================
+--- linux-2.6.23.orig/drivers/leds/Makefile	2007-10-23 19:35:34.000000000 +0200
++++ linux-2.6.23/drivers/leds/Makefile	2007-10-23 19:38:13.000000000 +0200
+@@ -17,6 +17,7 @@
+ obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
+ obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o
+ obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
++obj-$(CONFIG_LEDS_A780)		+= leds-a780.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+Index: linux-2.6.23/drivers/leds/leds-a780.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.23/drivers/leds/leds-a780.c	2007-10-23 19:38:09.000000000 +0200
+@@ -0,0 +1,122 @@
++/*
++ * EZX Platform LED Driver for the Motorola A780 GSM Phone
++ *
++ * Copyright 2006 Vanille-Media
++ *
++ * Author: Michael Lauer <mickey@Vanille.de>
++ *
++ * Based on keylight.c by Motorola and leds-corgi.c by Richard Purdie
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <asm/arch/ezx-pcap.h>
++
++static void a780led_main_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	if ( value > 31 ) value = 31;
++	printk( KERN_DEBUG "a780led_main_set: %d\n", value );
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL0, value & 0x01);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL1, value & 0x02);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL2, value & 0x04);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL3, value & 0x08);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL_CTRL4, value & 0x10);
++}
++
++static void a780led_aux_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	if ( value > 31 ) value = 31;
++	printk( KERN_DEBUG "a780led_aux_set: %d\n", value );
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL0, value & 0x01);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL1, value & 0x02);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL2, value & 0x04);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL3, value & 0x08);
++	ezx_pcap_bit_set(PCAP_BIT_PERIPH_BL2_CTRL4, value & 0x10);
++}
++
++static struct led_classdev a780_main_led = {
++	.name			= "a780:main",
++	.default_trigger	= "none",
++	.brightness_set		= a780led_main_set,
++};
++
++static struct led_classdev a780_aux_led = {
++	.name			= "a780:aux",
++	.default_trigger	= "none",
++	.brightness_set		= a780led_aux_set,
++};
++
++#ifdef CONFIG_PM
++static int a780led_suspend(struct platform_device *dev, pm_message_t state)
++{
++	led_classdev_suspend(&a780_main_led);
++	led_classdev_suspend(&a780_aux_led);
++	return 0;
++}
++
++static int a780led_resume(struct platform_device *dev)
++{
++	led_classdev_resume(&a780_main_led);
++	led_classdev_resume(&a780_aux_led);
++	return 0;
++}
++#endif
++
++static int a780led_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = led_classdev_register(&pdev->dev, &a780_main_led);
++	if (ret < 0)
++		return ret;
++
++	ret = led_classdev_register(&pdev->dev, &a780_aux_led);
++	if (ret < 0)
++		led_classdev_unregister(&a780_main_led);
++
++	return ret;
++}
++
++static int a780led_remove(struct platform_device *pdev)
++{
++	led_classdev_unregister(&a780_main_led);
++	led_classdev_unregister(&a780_aux_led);
++	return 0;
++}
++
++static struct platform_driver a780led_driver = {
++	.probe		= a780led_probe,
++	.remove		= a780led_remove,
++#ifdef CONFIG_PM
++	.suspend	= a780led_suspend,
++	.resume		= a780led_resume,
++#endif
++	.driver		= {
++		.name		= "a780-led",
++	},
++};
++
++static int __init a780led_init(void)
++{
++	return platform_driver_register(&a780led_driver);
++}
++
++static void __exit a780led_exit(void)
++{
++	a780led_main_set( &a780_main_led, 0 );
++	a780led_aux_set( &a780_aux_led, 0 );
++	platform_driver_unregister(&a780led_driver);
++}
++
++module_init(a780led_init);
++module_exit(a780led_exit);
++
++MODULE_AUTHOR("Michael Lauer <mickey@Vanille.de>");
++MODULE_DESCRIPTION("Motorola A780 LED driver");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-a780.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-a780.c	2007-10-23 19:38:04.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-a780.c	2007-10-23 19:38:09.000000000 +0200
+@@ -334,12 +334,20 @@
+        },
+ };
+ 
++static struct platform_device a780led_device = {
++	.name		= "a780-led",
++	.id		= -1,
++	.dev		= {
++		.parent = &a780_pcap_device.dev,
++	},
++};
+ 
+ static struct platform_device *devices[] __initdata = {
+ 	&a780_pcap_device,
+ 	&a780_emu_device,
+ 	&pcap_ts_device,
+ 	&a780flip_device,
++	&a780led_device,
+ };
+ 
+ static void __init a780_init(void)

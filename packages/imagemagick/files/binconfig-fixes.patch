@@ -1,0 +1,81 @@
+Index: ImageMagick-6.3.5/Magick++/bin/Magick++-config.in
+===================================================================
+--- ImageMagick-6.3.5.orig/Magick++/bin/Magick++-config.in	2007-10-24 08:04:49.000000000 +0100
++++ ImageMagick-6.3.5/Magick++/bin/Magick++-config.in	2007-10-24 08:07:51.000000000 +0100
+@@ -4,6 +4,9 @@
+ # required to use the Magick++ library.
+ #
+ #
++prefix=@PREFIX_DIR@
++exec_prefix=@EXEC_PREFIX_DIR@
++
+ usage='Usage: Magick++-config [--cppflags] [--cxxflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]
+ 
+  For example, "magick.cpp" may be compiled to produce "magick" as follows:
+@@ -18,10 +21,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo $prefix
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo $exec_prefix
+       ;;
+     --version)
+       echo @PACKAGE_VERSION@
+Index: ImageMagick-6.3.5/magick/Magick-config.in
+===================================================================
+--- ImageMagick-6.3.5.orig/magick/Magick-config.in	2007-10-24 08:04:49.000000000 +0100
++++ ImageMagick-6.3.5/magick/Magick-config.in	2007-10-24 08:07:19.000000000 +0100
+@@ -3,6 +3,9 @@
+ # Configure options script for re-calling MagickCore compilation options
+ # required to use the MagickCore library.
+ #
++prefix=@PREFIX_DIR@
++exec_prefix=@EXEC_PREFIX_DIR@
++
+ usage="\
+ Usage: Magick-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
+ 
+@@ -15,10 +18,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo $prefix
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo $exec_prefix
+       ;;
+     --version)
+       echo '@PACKAGE_VERSION@ Q@QuantumDepth@ @MAGICK_HDRI@'
+Index: ImageMagick-6.3.5/wand/Wand-config.in
+===================================================================
+--- ImageMagick-6.3.5.orig/wand/Wand-config.in	2007-10-24 08:04:49.000000000 +0100
++++ ImageMagick-6.3.5/wand/Wand-config.in	2007-10-24 08:06:38.000000000 +0100
+@@ -3,6 +3,9 @@
+ # Configure options script for re-calling MagickWand compilation options
+ # required to use the MagickWand library.
+ #
++prefix=@PREFIX_DIR@
++exec_prefix=@EXEC_PREFIX_DIR@
++
+ usage="\
+ Usage: Wand-config [--cflags] [--cppflags] [--exec-prefix] [--ldflags] [--libs] [--prefix] [--version]"
+ 
+@@ -15,10 +18,10 @@
+ while test $# -gt 0; do
+   case $1 in
+     --prefix)
+-      echo @PREFIX_DIR@
++      echo $prefix
+       ;;
+     --exec-prefix)
+-      echo @EXEC_PREFIX_DIR@
++      echo $exec_prefix
+       ;;
+     --version)
+       echo '@PACKAGE_VERSION@ Q@QuantumDepth@ @MAGICK_HDRI@'

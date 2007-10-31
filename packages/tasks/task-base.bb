@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r42"
+PR = "r44"
 
 inherit task
 
@@ -137,6 +137,7 @@ python __anonymous () {
 #
 # packages added by distribution
 #
+DEPENDS_task-distro-base = "${DISTRO_EXTRA_DEPENDS}"
 RDEPENDS_task-distro-base = "${DISTRO_EXTRA_RDEPENDS}"
 RRECOMMENDS_task-distro-base = "${DISTRO_EXTRA_RRECOMMENDS}"
 

@@ -1,0 +1,800 @@
+ arch/arm/common/Kconfig         |    3 
+ arch/arm/common/Makefile        |    1 
+ arch/arm/common/tc6393xb.c      |  668 ++++++++++++++++++++++++++++++++++++++++
+ arch/arm/mach-pxa/Kconfig       |    1 
+ include/asm-arm/arch-pxa/irqs.h |   10 
+ include/asm-arm/hardware/tmio.h |   44 ++
+ 6 files changed, 727 insertions(+)
+
+Index: git/arch/arm/common/tc6393xb.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/arch/arm/common/tc6393xb.c	2006-11-07 22:14:49.000000000 +0000
+@@ -0,0 +1,668 @@
++/*
++ * Toshiba TC6393XB SoC support
++ *
++ * Maintainer: Chris Humbert <mahadri-kernel@drigon.com>
++ *
++ * Copyright (c) 2005-2006 Chris Humbert
++ * Copyright (c) 2005 Dirk Opfer
++ *
++ * Based on code written by Sharp/Lineo for 2.4 kernels
++ * Based on locomo.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/errno.h>
++#include <linux/ioport.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/spinlock.h>
++#include <linux/fb.h>
++
++#include <asm/hardware.h>
++#include <asm/mach-types.h>
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <asm/mach/irq.h>
++#include <asm/arch/irqs.h>
++#include <asm/hardware/tmio.h>
++
++#ifndef TMIO_SOC_TC6393XB
++#error "TC6393XB SoC not configured"
++#endif
++
++/*--------------------------------------------------------------------------*/
++
++/* cell ids must be 0-based because they are used as array indexes. */
++#define	TC6393_CELL_NAND	0
++#define TC6393_CELL_SD		1
++#define	TC6393_CELL_OHCI	2
++#define TC6393_CELL_SERIAL	3
++#define TC6393_CELL_LCD		4
++#define TC6393_NUM_CELLS	5
++
++#define TC6393_RESOURCE(_name, _start, _end, _flags)	\
++	{						\
++		.name		= _name,		\
++		.start		= _start,		\
++		.end		= _end,			\
++		.flags		= _flags,		\
++	}
++
++#define TC6393_MEM(name, start, size)	\
++	TC6393_RESOURCE(name, start, (start) + (size) - 1, IORESOURCE_MEM)
++
++#define TC6393_IRQ(name, irq)	\
++	TC6393_RESOURCE(name, irq, irq, IORESOURCE_IRQ)
++
++const static struct resource tc6393_NAND_resource[] = {
++	TC6393_MEM (TMIO_NAME_NAND,	0x000100,	0x100),
++	TC6393_MEM (TMIO_NAME_NAND,	0x001000,	0x008),
++	TC6393_MEM (TMIO_NAME_NAND,	0,		0),
++	TC6393_IRQ (TMIO_NAME_NAND,	IRQ_TC6393_NAND),
++};
++
++const static struct resource tc6393_SD_resource[] = {
++	TC6393_MEM (TMIO_NAME_SD,	0x000200,	0x100),
++	TC6393_MEM (TMIO_NAME_SD,	0x002000,	0x200),
++	TC6393_MEM (TMIO_NAME_SD,	0,		0),
++	TC6393_IRQ (TMIO_NAME_SD,	IRQ_TC6393_SD),
++};
++
++const static struct resource tc6393_OHCI_resource[] = {
++	TC6393_MEM (TMIO_NAME_OHCI,	0x000300,	0x100),
++	TC6393_MEM (TMIO_NAME_OHCI,	0x003000,	0x100),
++	TC6393_MEM (TMIO_NAME_OHCI,	0x010000,	32 * 1024),
++	TC6393_IRQ (TMIO_NAME_OHCI,	IRQ_TC6393_OHCI),
++};
++
++const static struct resource tc6393_SERIAL_resource[] = {
++	TC6393_MEM (TMIO_NAME_SERIAL,	0x000400,	0x100),
++	TC6393_MEM (TMIO_NAME_SERIAL,	0x004000,	0x100),
++	TC6393_MEM (TMIO_NAME_SERIAL,	0,		0),
++	TC6393_IRQ (TMIO_NAME_SERIAL,	IRQ_TC6393_SERIAL),
++};
++
++const static struct resource tc6393_LCD_resource[] = {
++	TC6393_MEM (TMIO_NAME_LCD,	0x000500,	0x100),
++	TC6393_MEM (TMIO_NAME_LCD,	0x005000,	0x200),
++	TC6393_MEM (TMIO_NAME_LCD,	0x100000,	1024 * 1024),
++	TC6393_IRQ (TMIO_NAME_LCD,	IRQ_TC6393_LCD),
++};
++
++#define TC6393_CELL(_NAME)						\
++	[TC6393_CELL_##_NAME] = {					\
++		.name		= TMIO_NAME_##_NAME,			\
++		.id		= TC6393_CELL_##_NAME,			\
++		.resource	= tc6393_##_NAME##_resource,		\
++		.num_resources	= ARRAY_SIZE (tc6393_##_NAME##_resource), \
++	}
++
++struct tc6393_cell {
++	const char*		name;
++	unsigned int		id;
++	const struct resource*	resource;
++	unsigned int		num_resources;
++};
++
++const static struct tc6393_cell tc6393_cell [TC6393_NUM_CELLS] = {
++	TC6393_CELL (NAND	),
++	TC6393_CELL (SD		),
++	TC6393_CELL (OHCI	),
++	TC6393_CELL (SERIAL	),
++	TC6393_CELL (LCD	),
++};
++
++/*--------------------------------------------------------------------------*/
++
++/*
++ * TC6393 System Configuration Register
++ */
++struct tc6393_scr {
++	u8 x00[8];
++	u8	revid;		/* 0x08 Revision ID			*/
++	u8 x01[0x47];
++	u8	isr;		/* 0x50 Interrupt Status		*/
++	u8 x02;
++	u8	imr;		/* 0x52 Interrupt Mask			*/
++	u8 x03;
++	u8	irr;		/* 0x54 Interrupt Routing		*/
++	u8 x04[0x0b];
++	u16	gper;		/* 0x60 GP Enable			*/
++	u8 x05[2];
++	u16	gpi_sr[2];	/* 0x64 GPI Status			*/
++	u16	gpi_imr[2];	/* 0x68 GPI INT Mask			*/
++	u16	gpi_eder[2];	/* 0x6c GPI Edge Detect Enable		*/
++	u16	gpi_lir[4];	/* 0x70 GPI Level Invert		*/
++	u16	gpo_dsr[2];	/* 0x78 GPO Data Set			*/
++	u16	gpo_doecr[2];	/* 0x7c GPO Data OE Control		*/
++	u16	gp_iarcr[2];	/* 0x80 GP Internal Active Reg Control	*/
++	u16	gp_iarlcr[2];	/* 0x84 GP Internal Active Reg Level Con*/
++	u8	gpi_bcr[4];	/* 0x88 GPI Buffer Control		*/
++	u16	gpa_iarcr;	/* 0x8c GPa Internal Active Reg Control	*/
++	u8 x06[2];
++	u16	gpa_iarlcr;	/* 0x90 GPa Internal Active Reg Level Co*/
++	u8 x07[2];
++	u16	gpa_bcr;	/* 0x94 GPa Buffer Control		*/
++	u8 x08[2];
++	u16	ccr;		/* 0x98 Clock Control			*/
++	u16	pll2cr;		/* 0x9a PLL2 Control			*/
++	u16	pll1cr[2];	/* 0x9c PLL1 Control			*/
++	u8	diarcr;		/* 0xa0 Device Internal Active Reg Contr*/
++	u8	dbocr;		/* 0xa1 Device Buffer Off Control	*/
++	u8 x09[0x3e];
++	u8	fer;		/* 0xe0 Function Enable			*/
++	u8 x10[3];
++	u16	mcr;		/* 0xe4 Mode Control			*/
++	u8 x11[0x14];
++	u8	config;		/* 0xfc Configuration Control		*/
++	u8 x12[2];
++	u8	debug;		/* 0xff Debug				*/
++} __attribute__ ((packed));
++
++union tc6393_scr_fer {
++	u8		raw;
++struct {
++	unsigned	usben:1;	/* D0	USB enable		*/
++	unsigned	lcdcven:1;	/* D1	polysylicon TFT enable	*/
++	unsigned	slcden:1;	/* D2	SLCD enable		*/
++} __attribute__ ((packed));
++} __attribute__ ((packed));
++
++union tc6393_scr_ccr {
++	u16		raw;
++struct {
++	unsigned	ck32ken:1;	/* D0	SD host clock enable	*/
++	unsigned	usbcken:1;	/* D1	USB host clock enable	*/
++	unsigned	x00:2;
++	unsigned	sharp:1;	/* D4	??? set in Sharp's code	*/
++	unsigned	x01:3;
++	enum {				disable	= 0,
++					m12MHz	= 1,
++					m24MHz	= 2,
++					m48MHz	= 3,
++	}		mclksel:3;	/* D10-D8  LCD controller clock	*/
++	unsigned	x02:1;
++	enum {				h24MHz	= 0,
++					h48MHz	= 1,
++	}		hclksel:2;	/* D13-D12 host bus clock	*/
++	unsigned	x03:2;
++} __attribute__ ((packed));
++} __attribute__ ((packed));
++
++/*--------------------------------------------------------------------------*/
++
++struct tc6393 {
++	spinlock_t		lock;	/* read-modify-write lock	*/
++	struct device*		dev;	/* TC6393 device		*/
++	struct tc6393_scr __iomem *scr;	/* system configuration reg	*/
++
++	struct resource		rscr;	/* system config reg resource	*/
++	struct resource*	iomem;	/* entire TC6393 iomem resource	*/
++	unsigned int		irq;	/* hardware cascade irq		*/
++
++	struct tmio_device	tdev [TC6393_NUM_CELLS];
++};
++
++/*--------------------------------------------------------------------------*/
++
++static u32 tc6393_ioread32 (const void __iomem *addr)
++{
++	return ((u32) ioread16 (addr)) | (((u32) ioread16 (addr + 2)) << 16);
++}
++
++static u32 tc6393_iowrite32 (u32 val, const void __iomem *addr)
++{
++	iowrite16 (val,		addr);
++	iowrite16 (val >> 16,	addr + 2);
++	return val;
++}
++
++u32 get_tc6393_gpio (struct device *dev)
++{
++	struct tc6393*			tc6393	= dev_get_drvdata (dev);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++
++	return tc6393_ioread32 (scr->gpo_dsr);
++}
++EXPORT_SYMBOL (get_tc6393_gpio);
++
++u32 set_tc6393_gpio (struct device *dev, u32 bits)
++{
++	struct tc6393*			tc6393	= dev_get_drvdata (dev);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	unsigned long			flags;
++	u32				dsr;
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	dsr = tc6393_ioread32 (scr->gpo_dsr) | bits;
++	tc6393_iowrite32 (dsr, scr->gpo_dsr);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++
++	return dsr;
++}
++EXPORT_SYMBOL (set_tc6393_gpio);
++
++u32 reset_tc6393_gpio (struct device *dev, u32 bits)
++{
++	struct tc6393*			tc6393	= dev_get_drvdata (dev);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	unsigned long			flags;
++	u32				dsr;
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	dsr = tc6393_ioread32 (scr->gpo_dsr) & ~bits;
++	tc6393_iowrite32 (dsr, scr->gpo_dsr);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++
++	return dsr;
++}
++EXPORT_SYMBOL (reset_tc6393_gpio);
++
++/*--------------------------------------------------------------------------*/
++
++static void
++tc6393_irq (unsigned int irq, struct irq_desc *desc)
++{
++	struct tc6393*			tc6393	= get_irq_chip_data (irq);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	unsigned int			isr;
++	unsigned int			bit;
++	unsigned int			i;
++
++	desc->chip->ack (irq);
++
++	while ((isr = ioread8(&scr->isr) & ~ioread8(&scr->imr)))
++		for (bit = 1, i = IRQ_TC6393_START; i <= IRQ_TC6393_LCD;
++								bit <<= 1, i++)
++			if (isr & bit)
++				desc_handle_irq (i, irq_desc + i);
++}
++
++static void tc6393_irq_ack (unsigned int irq)
++{
++}
++
++static void tc6393_irq_mask (unsigned int irq)
++{
++	struct tc6393*			tc6393	= get_irq_chip_data (irq);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	unsigned long			flags;
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	iowrite8 (ioread8 (&scr->imr) | (1 << (irq - IRQ_TC6393_START)),
++								&scr->imr);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++}
++
++static void tc6393_irq_unmask (unsigned int irq)
++{
++	struct tc6393*			tc6393	= get_irq_chip_data (irq);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	unsigned long			flags;
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	iowrite8 (ioread8 (&scr->imr) & ~(1 << (irq - IRQ_TC6393_START)),
++								&scr->imr);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++}
++
++static struct irq_chip tc6393_chip = {
++	.ack	= tc6393_irq_ack,
++	.mask	= tc6393_irq_mask,
++	.unmask	= tc6393_irq_unmask,
++};
++
++static void tc6393_attach_irq (struct tc6393 *tc6393)
++{
++	unsigned int		irq;
++
++	for (irq = IRQ_TC6393_START; irq <= IRQ_TC6393_LCD; irq++) {
++		set_irq_chip	(irq, &tc6393_chip);
++		set_irq_chip_data(irq, tc6393);
++		set_irq_handler	(irq, handle_edge_irq);
++		set_irq_flags	(irq, IRQF_VALID | IRQF_PROBE);
++	}
++
++	set_irq_type		(tc6393->irq, IRQT_FALLING);
++	set_irq_chip_data	(tc6393->irq, tc6393);
++	set_irq_chained_handler	(tc6393->irq, tc6393_irq);
++}
++
++static void tc6393_detach_irq (struct tc6393 *tc6393)
++{
++	unsigned int		irq;
++
++	set_irq_chained_handler	(tc6393->irq, NULL);
++	set_irq_chip_data	(tc6393->irq, NULL);
++
++	for (irq = IRQ_TC6393_START; irq <= IRQ_TC6393_LCD; irq++) {
++		set_irq_flags	(irq, 0);
++		set_irq_chip	(irq, NULL);
++		set_irq_chip_data(irq, NULL);
++	}
++}
++
++/*--------------------------------------------------------------------------*/
++
++static int tc6393_bus_match (struct device *dev, struct device_driver *drv)
++{
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	const struct tc6393_cell*	cell	= tdev->soc_data;
++
++	return !strcmp (cell->name, drv->name);
++}
++
++static int tc6393_bus_suspend (struct device *dev, pm_message_t state)
++{
++	struct device_driver*	drv	= dev->driver;
++	return drv && drv->suspend ? drv->suspend (dev, state) : 0;
++}
++
++static int tc6393_bus_resume (struct device *dev)
++{
++	struct device_driver*	drv	= dev->driver;
++	return drv && drv->resume ? drv->resume (dev) : 0;
++}
++
++struct bus_type tc6393_bus_type = {
++	.name		= TMIO_NAME_BUS,
++	.match		= tc6393_bus_match,
++	.suspend	= tc6393_bus_suspend,
++	.resume		= tc6393_bus_resume,
++};
++EXPORT_SYMBOL (tc6393_bus_type);
++
++/*--------------------------------------------------------------------------*/
++
++static void tc6393_cell_clock (struct device *dev, int enable)
++{
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	const struct tc6393_cell*	cell	= tdev->soc_data;
++	struct tc6393*			tc6393	= dev_get_drvdata (dev->parent);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	union tc6393_scr_ccr		ccr;
++	unsigned long			flags;
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	ccr.raw = ioread16 (&scr->ccr);
++
++	switch (cell->id) {
++		case TC6393_CELL_SD:	ccr.ck32ken	= enable;	break;
++		case TC6393_CELL_OHCI:	ccr.usbcken	= enable;	break;
++		case TC6393_CELL_LCD:
++			ccr.mclksel = enable ? m48MHz : disable;
++			break;
++	}
++
++	printk (KERN_DEBUG TMIO_NAME_CORE ": scr->ccr = %04x\n", ccr.raw);
++
++	iowrite16(ccr.raw, &scr->ccr);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++}
++
++static void tc6393_cell_function (struct device *dev, int enable)
++{
++	struct tmio_device*		tdev	= dev_to_tdev (dev);
++	const struct tc6393_cell*	cell	= tdev->soc_data;
++	struct tc6393*			tc6393	= dev_get_drvdata (dev->parent);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	union tc6393_scr_fer		fer;
++	unsigned long			flags;
++
++	if (cell->id == TC6393_CELL_NAND) {
++		if (enable) {
++			/* SMD buffer on */
++			printk (KERN_DEBUG TMIO_NAME_CORE ": SMD buffer on\n");
++			iowrite8 (0xff, scr->gpi_bcr + 1);
++		}
++		return;
++	}
++
++	spin_lock_irqsave (&tc6393->lock, flags);
++	fer.raw = ioread16 (&scr->fer);
++
++	switch (cell->id) {
++		case TC6393_CELL_OHCI:	fer.usben	= enable;	break;
++		case TC6393_CELL_LCD:	fer.slcden	= enable;	break;
++	}
++
++	printk (KERN_DEBUG TMIO_NAME_CORE ": scr->fer = %02x\n", fer.raw);
++
++	iowrite8 (fer.raw, &scr->fer);
++	spin_unlock_irqrestore (&tc6393->lock, flags);
++}
++
++static void
++tc6393_lcd_mode (struct device *dev, const struct fb_videomode *mode)
++{
++	struct tc6393*			tc6393	= dev_get_drvdata (dev->parent);
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++
++	iowrite16 (mode->pixclock,		scr->pll1cr + 0);
++	iowrite16 (mode->pixclock >> 16,	scr->pll1cr + 1);
++}
++
++static struct tmio_cell_ops tc6393_cell_ops = {
++	.clock		= tc6393_cell_clock,
++	.function	= tc6393_cell_function,
++	.lcd_mode	= tc6393_lcd_mode,
++};
++
++static void tc6393_device_release (struct device *dev)
++{
++}
++
++static int
++tc6393_device_register (struct tc6393 *tc6393, struct tmio_cell *tcell)
++{
++	const struct tc6393_cell*	cell;
++	struct tmio_device*		tdev;
++	struct device*			dev;
++	int				i;
++
++	for (i = 0; strcmp (tcell->name, tc6393_cell [i].name); )
++		if (++i >= ARRAY_SIZE(tc6393_cell))
++			return -EINVAL;
++
++	cell			= tc6393_cell  + i;
++	tdev			= tc6393->tdev + i;
++	dev			= &tdev->dev;
++
++	tdev->ops		= &tc6393_cell_ops;
++	tdev->iomem		= tc6393->iomem;
++	tdev->soc_data		= (void*) cell;
++
++	dev->parent		= tc6393->dev;
++	strncpy (dev->bus_id, cell->name, sizeof dev->bus_id);
++	dev->bus		= &tc6393_bus_type;
++	dev->dma_mask		= tc6393->dev->dma_mask;
++	dev->coherent_dma_mask	= tc6393->dev->coherent_dma_mask;
++	dev->release		= tc6393_device_release;
++	dev->platform_data	= tcell->platform_data;
++
++	for (i=0; i < cell->num_resources; i++) {
++		const struct resource*	cr	= cell->resource + i;
++		struct resource*	dr	= tdev->resource + i;
++
++		dr->name	= cr->name;
++		dr->start	= cr->start;
++		dr->end		= cr->end;
++		dr->flags	= cr->flags;
++
++		/* convert memory offsets to absolutes */
++		if (cr->flags & IORESOURCE_MEM) {
++			dr->start	+= tc6393->iomem->start;
++			dr->end		+= tc6393->iomem->start;
++		}
++	}
++
++	return device_register (dev);
++}
++
++/*--------------------------------------------------------------------------*/
++
++static void tc6393_hw_init (struct tc6393 *tc6393)
++{
++	struct tc6393_scr __iomem *	scr	= tc6393->scr;
++	struct tc6393_platform_data*	tcpd	= tc6393->dev->platform_data;
++
++	tcpd->enable (tc6393->dev);
++
++	iowrite8 (0,				&scr->fer);
++	iowrite16(tcpd->scr_pll2cr,		&scr->pll2cr);
++	iowrite16(tcpd->scr_ccr,		&scr->ccr);
++	iowrite16(tcpd->scr_mcr,		&scr->mcr);
++	iowrite16(tcpd->scr_gper,		&scr->gper);
++	iowrite8 (0,				&scr->irr);
++	iowrite8 (0xbf,				&scr->imr);
++	iowrite16(tcpd->scr_gpo_dsr,		scr->gpo_dsr + 0);
++	iowrite16(tcpd->scr_gpo_dsr >> 16,	scr->gpo_dsr + 1);
++	iowrite16(tcpd->scr_gpo_doecr,		scr->gpo_doecr + 0);
++	iowrite16(tcpd->scr_gpo_doecr >> 16,	scr->gpo_doecr + 1);
++}
++
++static int tc6393_probe (struct device *dev)
++{
++	struct platform_device*		pdev	= to_platform_device (dev);
++	struct tc6393_platform_data*	tcpd	= dev->platform_data;
++	struct tc6393*			tc6393;
++	struct resource*		iomem;
++	struct resource*		rscr;
++	int				retval;
++	int				i;
++
++	iomem = platform_get_resource (pdev, IORESOURCE_MEM, 0);
++	if (!iomem)
++		return -EINVAL;
++
++	tc6393 = kzalloc (sizeof *tc6393, GFP_KERNEL);
++	if (!tc6393) {
++		retval = -ENOMEM;
++		goto err_kzalloc;
++	}
++
++	dev_set_drvdata (dev, tc6393);
++	spin_lock_init (&tc6393->lock);
++	tc6393->dev	= dev;
++	tc6393->iomem	= iomem;
++	tc6393->irq	= platform_get_irq (pdev, 0);
++
++	rscr		= &tc6393->rscr;
++	rscr->name	= TMIO_NAME_CORE;
++	rscr->start	= iomem->start;
++	rscr->end	= iomem->start + 0xff;
++	rscr->flags	= IORESOURCE_MEM;
++
++	retval = request_resource (iomem, rscr);
++	if (retval)
++		goto err_request_scr;
++
++	tc6393->scr	= ioremap (rscr->start, rscr->end - rscr->start + 1);
++	if (!tc6393->scr) {
++		retval = -ENOMEM;
++		goto err_ioremap;
++	}
++
++	tc6393_hw_init (tc6393);
++
++	printk (KERN_INFO "Toshiba %s revision %d at 0x%08lx, irq %d\n",
++			TMIO_SOC_NAME, ioread8 (&tc6393->scr->revid),
++			iomem->start, tc6393->irq);
++
++	if (tc6393->irq)
++		tc6393_attach_irq (tc6393);
++
++	for (i = 0; i < tcpd->num_cells; i++)
++		tc6393_device_register (tc6393, tcpd->cell + i);
++
++	return 0;
++
++err_ioremap:
++	release_resource (rscr);
++err_request_scr:
++	kfree(tc6393);
++err_kzalloc:
++	release_resource (iomem);
++	return retval;
++}
++
++static int tc6393_dev_remove (struct device *dev, void *data)
++{
++	device_unregister (dev);
++	return 0;
++}
++
++static int tc6393_remove (struct device *dev)
++{
++	struct tc6393*		tc6393	= dev_get_drvdata (dev);
++
++	device_for_each_child (dev, tc6393, tc6393_dev_remove);
++
++	if (tc6393->irq)
++		tc6393_detach_irq (tc6393);
++
++	iounmap (tc6393->scr);
++	release_resource (&tc6393->rscr);
++	release_resource (tc6393->iomem);
++	kfree (tc6393);
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int tc6393_suspend (struct device *dev, pm_message_t state)
++{
++	struct tc6393_platform_data*	tcpd	= dev->platform_data;
++	tcpd->disable (dev);
++	return 0;
++}
++
++static int tc6393_resume (struct device *dev)
++{
++	struct tc6393*			tc6393	= dev_get_drvdata (dev);
++	tc6393_hw_init (tc6393);
++	return 0;
++}
++#endif
++
++static struct device_driver tc6393_device_driver = {
++	.name		= TMIO_SOC_NAME,
++	.bus		= &platform_bus_type,
++	.probe		= tc6393_probe,
++	.remove		= tc6393_remove,
++#ifdef CONFIG_PM
++	.suspend	= tc6393_suspend,
++	.resume		= tc6393_resume,
++#endif
++};
++
++/*--------------------------------------------------------------------------*/
++
++static int __init tc6393_init (void)
++{
++	int retval = bus_register (&tc6393_bus_type);
++	if (retval)
++		return retval;
++
++	return driver_register (&tc6393_device_driver);
++}
++
++static void __exit tc6393_exit (void)
++{
++	driver_unregister (&tc6393_device_driver);
++	bus_unregister (&tc6393_bus_type);
++}
++
++module_init (tc6393_init);
++module_exit (tc6393_exit);
++
++MODULE_DESCRIPTION ("TC6393 SoC bus driver");
++MODULE_AUTHOR ("Chris Humbert, Dirk Opfer");
++MODULE_LICENSE ("GPL");
+Index: git/arch/arm/common/Kconfig
+===================================================================
+--- git.orig/arch/arm/common/Kconfig	2006-10-31 16:08:28.000000000 +0000
++++ git/arch/arm/common/Kconfig	2006-11-07 22:13:09.000000000 +0000
+@@ -31,3 +31,6 @@ config SHARPSL_PM
+ 
+ config SHARP_SCOOP
+ 	bool
++
++config TOSHIBA_TC6393XB
++	bool
+Index: git/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- git.orig/arch/arm/mach-pxa/Kconfig	2006-11-07 22:13:06.000000000 +0000
++++ git/arch/arm/mach-pxa/	2006-11-07 23:30:34.000000000 +0000
+@@ -128,6 +128,7 @@ config MACH_BORZOI
+ config MACH_TOSA
+ 	bool "Enable Sharp SL-6000x (Tosa) Support"
+ 	depends on PXA_SHARPSL_25x
++	select TOSHIBA_TC6393XB
+ 
+ config PXA25x
+ 	bool
+Index: git/arch/arm/common/Makefile
+===================================================================
+--- git.orig/arch/arm/common/Makefile	2006-10-31 16:08:28.000000000 +0000
++++ git/arch/arm/common/Makefile	2006-11-07 22:13:09.000000000 +0000
+@@ -17,3 +17,4 @@ obj-$(CONFIG_SHARPSL_PM)	+= sharpsl_pm.o
+ obj-$(CONFIG_SHARP_SCOOP)	+= scoop.o
+ obj-$(CONFIG_ARCH_IXP2000)	+= uengine.o
+ obj-$(CONFIG_ARCH_IXP23XX)	+= uengine.o
++obj-$(CONFIG_TOSHIBA_TC6393XB)	+= tc6393xb.o
+Index: git/include/asm-arm/hardware/tmio.h
+===================================================================
+--- git.orig/include/asm-arm/hardware/tmio.h	2006-11-07 22:13:09.000000000 +0000
++++ git/include/asm-arm/hardware/tmio.h	2006-11-07 22:13:09.000000000 +0000
+@@ -91,6 +91,50 @@ struct tmio_device {
+ 
+ /*--------------------------------------------------------------------------*/
+ 
++/*
++ * TC6393XB SoC
++ */
++#ifdef CONFIG_TOSHIBA_TC6393XB
++#define TMIO_SOC_TC6393XB
++#define TMIO_SOC_NAME			"TC6393XB"
++#define TMIO_NAME_BUS			"tc6393-bus"
++#define TMIO_NAME_CORE			"tc6393-core"
++#define TMIO_NAME_NAND			"tc6393-nand"
++#define TMIO_NAME_SD			"tc6393-sd"
++#define TMIO_NAME_OHCI			"tc6393-ohci"
++#define TMIO_NAME_SERIAL		"tc6393-serial"
++#define TMIO_NAME_LCD			"tc6393-lcd"
++#define tmio_bus_type			tc6393_bus_type
++
++#define TC6393_GPIO(x)			(1 << (x))
++
++extern struct bus_type tc6393_bus_type;
++
++struct tc6393_platform_data {
++	u16	scr_pll2cr;		/* PLL2 Control			*/
++	u16	scr_ccr;		/* Clock Control		*/
++	u16	scr_mcr;		/* Mode Control			*/
++	u16	scr_gper;		/* GP Enable			*/
++	u32	scr_gpo_doecr;		/* GPO Data OE Control		*/
++	u32	scr_gpo_dsr;		/* GPO Data Set			*/
++
++	/* cells to register as devices */
++	struct tmio_cell*		cell;
++	unsigned int			num_cells;
++
++	/* callbacks to enable and disable the TC6393XB's power and clock */
++	void (*enable)	(struct device *dev);
++	void (*disable)	(struct device *dev);
++};
++
++u32	get_tc6393_gpio		(struct device *dev);
++u32	set_tc6393_gpio		(struct device *dev, u32 bits);
++u32	reset_tc6393_gpio	(struct device *dev, u32 bits);
++
++/*--------------------------------------------------------------------------*/
++
++#else
+ #error "no TMIO SoC configured"
++#endif
+ 
+ #endif
+Index: git/include/asm-arm/arch-pxa/irqs.h
+===================================================================
+--- git.orig/include/asm-arm/arch-pxa/irqs.h	2006-10-31 16:09:33.000000000 +0000
++++ git/include/asm-arm/arch-pxa/irqs.h	2006-11-07 22:13:09.000000000 +0000
+@@ -163,17 +163,27 @@
+ #define IRQ_LOCOMO_SPI_OVRN	(IRQ_BOARD_END + 20)
+ #define IRQ_LOCOMO_SPI_TEND	(IRQ_BOARD_END + 21)
+ 
++#define IRQ_TC6393_START	(IRQ_BOARD_END)
++#define IRQ_TC6393_NAND		(IRQ_BOARD_END + 0)
++#define IRQ_TC6393_SD		(IRQ_BOARD_END + 1)
++#define IRQ_TC6393_OHCI		(IRQ_BOARD_END + 2)
++#define IRQ_TC6393_SERIAL	(IRQ_BOARD_END + 3)
++#define IRQ_TC6393_LCD		(IRQ_BOARD_END + 4)
++
+ /*
+  * Figure out the MAX IRQ number.
+  *
+  * If we have an SA1111, the max IRQ is S1_BVD1_STSCHG+1.
+  * If we have an LoCoMo, the max IRQ is IRQ_LOCOMO_SPI_TEND+1
++ * If we have an TC6393XB, the max IRQ is IRQ_TC6393_LCD+1
+  * Otherwise, we have the standard IRQs only.
+  */
+ #ifdef CONFIG_SA1111
+ #define NR_IRQS			(IRQ_S1_BVD1_STSCHG + 1)
+ #elif defined(CONFIG_SHARP_LOCOMO)
+ #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
++#elif defined(CONFIG_TOSHIBA_TC6393XB)
++#define NR_IRQS			(IRQ_TC6393_LCD + 1)
+ #elif defined(CONFIG_ARCH_LUBBOCK) || \
+       defined(CONFIG_MACH_LOGICPD_PXA270) || \
+       defined(CONFIG_MACH_MAINSTONE)

@@ -11,4 +11,3 @@ do_stage() {
 
 
 DEPENDS = "libtool-native"
-FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/zlib-${PV}', '${FILE_DIRNAME}/zlib', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"

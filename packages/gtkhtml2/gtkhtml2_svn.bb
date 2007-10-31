@@ -2,8 +2,7 @@ SECTION = "libs"
 DEPENDS = "gtk+ glib-2.0 libxml2"
 DESCRIPTION = "A GTK+ HTML rendering library."
 LICENSE = "GPL"
-PV = "2.11.0+svn${SRCDATE}"
-PR = "r4"
+PV = "2.11.0+svnr${SRCREV}"
 
 SRC_URI = "svn://anonymous@svn.gnome.org/svn/gtkhtml2/;module=trunk \
 	http://svn.o-hand.com/repos/web/trunk/patches/at-import_box-pos.patch;patch=1;pnum=0 \

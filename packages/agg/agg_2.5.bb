@@ -13,7 +13,7 @@ S = "${WORKDIR}/${P}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-sdl-exec-prefix=${STAGING_DIR}/${BUILD_SYS}"
+EXTRA_OECONF = "--with-sdl-exec-prefix=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
 CFLAGS += " -I{$STAGING_INCDIR} "
 
 PACKAGES =+ "${PN}-sdl ${PN}-x11"

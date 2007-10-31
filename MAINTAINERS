@@ -51,14 +51,15 @@ Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
 Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
 Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
-Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado
+Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado, bd-neon
 Distros:  
 Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite, Palm TX,
 interests:  phone devices
 Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
-Recipes:    gomunicator, mbmerlin, prismstumbler gkdial, fbreader, networkmanager
+Recipes:    gomunicator, mbmerlin, prismstumbler, gkdial, fbreader, networkmanager
 Recipes:    minimix, minilite, miniclipboard, gpephone*
 Recipes:    task-sdk-sbox, meta-sdk-sbox
+Recipes:    tmut, tea
 
 Person:     Graeme Gregory
 Mail:       dp@xora.org.uk
@@ -116,7 +117,11 @@ Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
 Mail:       leonw@mailcan.com
-Interests:  SquashFS, LZMA
+Website:    http://www.sidebranch.com/
+Interests:  Real-time embedded Linux for highly available applications.
+Interests:  Small read-only Linux based firmware, deterministic builds.
+Recipes:    lighttpd, fastcgi
+Machines:   mpc8313e-rdb, efika, ixp4xxbe, x86, davinci-dvevm
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com

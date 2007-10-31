@@ -7,7 +7,7 @@ RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
 
 PV = "2.16.0+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://developer.imendio.com/svn/gconf-dbus;module=trunk;proto=http \
 	   file://69gconfd-dbus"
@@ -35,6 +35,4 @@ do_stage() {
 do_install_append () {
 	install -d ${D}/${sysconfdir}/X11/Xsession.d
 	install -m 755 ${WORKDIR}/69gconfd-dbus ${D}/${sysconfdir}/X11/Xsession.d/
-        install -d ${D}/${datadir}/dbus-1.0/services/
-        install -m 644  gconf/gconf.service ${D}${datadir}/dbus-1.0/services/
 }

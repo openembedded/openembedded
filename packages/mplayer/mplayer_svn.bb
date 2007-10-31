@@ -39,7 +39,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc1+svnr${SRCREV}"
+PV = "0.0+1.0rc2+svnr${SRCREV}"
 PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 

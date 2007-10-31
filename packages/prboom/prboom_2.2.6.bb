@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = " --without-x --disable-sdltest --with-sdl-exec-prefix=${STAGING_DIR}/${BUILD_SYS} "
+EXTRA_OECONF = "--without-x --disable-sdltest --with-sdl-exec-prefix=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
 
 do_configure() {
 	gnu-configize

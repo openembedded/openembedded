@@ -37,6 +37,8 @@ RDEPENDS_task-openmoko-linux = "\
   rsync \
   screen \
   psplash \
+  fbset \
+  fbset-modes \
 #  update-alternatives \
 "
 

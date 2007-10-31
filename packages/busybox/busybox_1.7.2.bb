@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -14,7 +14,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog \
            file://syslog.conf \
            file://udhcpscript.patch;patch=1 \
-           file://umount.busybox"
+           file://umount.busybox \
+	   file://run_parts.c"
 
 
 SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1 \
@@ -26,6 +27,7 @@ SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;pat
 EXTRA_OEMAKE_append = " V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
 do_configure () {
+	cp ${WORKDIR}/run_parts.c ${S}/debianutils/
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
 	cml1_do_configure
 }

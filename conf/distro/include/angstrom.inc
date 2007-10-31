@@ -1,6 +1,6 @@
 #@TYPE: Distribution
 #@NAME: Angstrom 
-#@DESCRIPTION: Distribution configuration for Angstrom
+#@DESCRIPTION: Release independent distribution configuration for Angstrom
 
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"

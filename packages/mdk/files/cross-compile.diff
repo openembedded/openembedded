@@ -1,0 +1,14 @@
+diff -ur mdk3-v1-orig/osdep/common.mak mdk3-v1-xcompile/osdep/common.mak
+--- mdk3-v1-orig/osdep/common.mak	2007-04-23 03:25:15.000000000 -0400
++++ mdk3-v1-xcompile/osdep/common.mak	2007-05-22 14:43:51.000000000 -0400
+@@ -9,10 +9,6 @@
+ PIC		= -fPIC
+ endif
+ 
+-CC		= $(TOOL_PREFIX)gcc
+-RANLIB		= $(TOOL_PREFIX)ranlib
+-AR		= $(TOOL_PREFIX)ar
+-
+ REVISION	= mdk3
+ REVFLAGS	= -D_REVISION=$(REVISION)
+ 

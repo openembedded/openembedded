@@ -3,7 +3,7 @@ SECTION = "base"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r14"
+PR = "r15"
 
 inherit update-rc.d
 
@@ -20,7 +20,7 @@ SRC_URI_append_h2200        = " file://keymap-*.map"
 SRC_URI_append_htcuniversal = " file://keymap-*.map"
 
 INITSCRIPT_NAME = "keymap"
-INITSCRIPT_PARAMS = "start 00 S ."
+INITSCRIPT_PARAMS = "start 01 S ."
 
 do_install () {
     install -d ${D}${sysconfdir}/init.d/

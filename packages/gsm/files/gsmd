@@ -1,4 +1,4 @@
-##!/bin/sh
+#! /bin/sh
 #
 # gsmd  This shell script starts and stops gsmd.
 #
@@ -37,13 +37,11 @@ case "$1" in
     restart|force-reload)
         $0 stop
         $0 start
-        exit
         ;;
     *)
-        echo "Usage: /etc/init.d/apmd {start|stop|restart|force-reload}"
+        echo "Usage: /etc/init.d/gsmd {start|stop|restart|force-reload}"
         exit 1
         ;;
 esac
 
 exit 0
-

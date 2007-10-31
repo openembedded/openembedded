@@ -1,0 +1,125 @@
+Index: linux-2.6.20.7/drivers/char/ts0710_mux.c
+===================================================================
+--- linux-2.6.20.7.orig/drivers/char/ts0710_mux.c	2007-04-22 10:51:31.000000000 +0200
++++ linux-2.6.20.7/drivers/char/ts0710_mux.c	2007-04-22 10:53:05.000000000 +0200
+@@ -241,7 +241,8 @@
+ static volatile __u8 mux_recv_info_flags[NR_MUXS];
+ static mux_recv_struct *mux_recv_queue = NULL;
+ 
+-static struct tty_driver mux_driver;
++// Local for 2.6?
++static struct tty_driver *mux_driver;
+ 
+ #ifdef USB_FOR_MUX
+ #define COMM_FOR_MUX_DRIVER usb_for_mux_driver
+@@ -3007,6 +3008,7 @@
+ #else
+ 	mux_tty[line]++;
+ 	dlci = tty2dlci[line];
++	mux_table[line] = tty;
+ 
+ /*  if( dlci == 1 ) { */
+ 	/* Open server channel 0 first */
+@@ -3087,6 +3089,7 @@
+ 		}
+ 	}
+ 
++
+ 	retval = 0;
+ #endif
+       out:
+@@ -3894,43 +3897,50 @@
+ 	INIT_WORK(&receive_tqueue, receive_worker, NULL);
+ 	INIT_WORK(&post_recv_tqueue, post_recv_worker, NULL);
+ 
+-	memset(&mux_driver, 0, sizeof(struct tty_driver));
+-	memset(&mux_tty, 0, sizeof(mux_tty));
+-	mux_driver.magic = TTY_DRIVER_MAGIC;
+-	mux_driver.driver_name = "ts0710mux";
+-	mux_driver.name = "ts0710mux";
+-	mux_driver.major = TS0710MUX_MAJOR;
+-	mux_driver.minor_start = TS0710MUX_MINOR_START;
+-	mux_driver.num = NR_MUXS;
+-	mux_driver.type = TTY_DRIVER_TYPE_SERIAL;
+-	mux_driver.subtype = SERIAL_TYPE_NORMAL;
+-	mux_driver.init_termios = tty_std_termios;
+-	mux_driver.init_termios.c_iflag = 0;
+-	mux_driver.init_termios.c_oflag = 0;
+-	mux_driver.init_termios.c_cflag = B38400 | CS8 | CREAD;
+-	mux_driver.init_termios.c_lflag = 0;
+-	mux_driver.flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW;
+-
+-	mux_driver.ttys = mux_table;
+-	mux_driver.termios = mux_termios;
+-	mux_driver.termios_locked = mux_termios_locked;
++	mux_driver = alloc_tty_driver(NR_MUXS);
++	if (!mux_driver)
++		return -ENOMEM;
++
++	mux_driver->owner = THIS_MODULE;
++	mux_driver->driver_name = "ts0710mux";
++	mux_driver->name = "mux";
++	mux_driver->devfs_name = "mux";
++	mux_driver->major = TS0710MUX_MAJOR;
++	mux_driver->minor_start = TS0710MUX_MINOR_START;
++	mux_driver->type = TTY_DRIVER_TYPE_SERIAL;
++	mux_driver->subtype = SERIAL_TYPE_NORMAL;
++	mux_driver->flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW;
++
++	mux_driver->init_termios = tty_std_termios;
++	mux_driver->init_termios.c_iflag = 0;
++	mux_driver->init_termios.c_oflag = 0;
++	mux_driver->init_termios.c_cflag = B38400 | CS8 | CREAD;
++	mux_driver->init_termios.c_lflag = 0;
++
++//	mux_driver.ttys = mux_table;
++	mux_driver->termios = mux_termios;
++	mux_driver->termios_locked = mux_termios_locked;
+ //  mux_driver.driver_state = mux_state;
+-	mux_driver.other = NULL;
++	mux_driver->other = NULL;
+ 
+-	mux_driver.open = mux_open;
+-	mux_driver.close = mux_close;
+-	mux_driver.write = mux_write;
+-	mux_driver.write_room = mux_write_room;
+-	mux_driver.flush_buffer = mux_flush_buffer;
+-	mux_driver.chars_in_buffer = mux_chars_in_buffer;
+-	mux_driver.throttle = mux_throttle;
+-	mux_driver.unthrottle = mux_unthrottle;
+-	mux_driver.ioctl = mux_ioctl;
+-	mux_driver.owner = THIS_MODULE;
++	mux_driver->open = mux_open;
++	mux_driver->close = mux_close;
++	mux_driver->write = mux_write;
++	mux_driver->write_room = mux_write_room;
++	mux_driver->flush_buffer = mux_flush_buffer;
++	mux_driver->chars_in_buffer = mux_chars_in_buffer;
++	mux_driver->throttle = mux_throttle;
++	mux_driver->unthrottle = mux_unthrottle;
++	mux_driver->ioctl = mux_ioctl;
+ 
+-	if (tty_register_driver(&mux_driver))
++	// FIXME: No panic() here
++	if (tty_register_driver(mux_driver))
+ 		panic("Couldn't register mux driver");
+ 
++	for (j=0; j<NR_MUXS; j++)
++		tty_register_device(mux_driver, j, NULL);
++
++
+ 	COMM_MUX_DISPATCHER = mux_dispatcher;
+ 	COMM_MUX_SENDER = mux_sender;
+ 
+@@ -3964,7 +3974,10 @@
+ 		mux_recv_info[j] = 0;
+ 	}
+ 
+-	if (tty_unregister_driver(&mux_driver))
++	for (j=0; j<NR_MUXS; j++)
++		tty_unregister_device(mux_driver, j);
++
++	if (tty_unregister_driver(mux_driver))
+ 		panic("Couldn't unregister mux driver");
+ }
+ 

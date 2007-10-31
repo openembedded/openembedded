@@ -1,0 +1,183 @@
+From 64210fec17ab819f21769e3e82bb26e9f2ccfdb4 Mon Sep 17 00:00:00 2001
+From: Michael Krelin <hacker@klever.net>
+Date: Sun, 3 Jun 2007 18:30:37 +0200
+Subject: [PATCH] cross compile
+
+---
+ configure |  137 ++----------------------------------------------------------
+ 1 files changed, 5 insertions(+), 132 deletions(-)
+
+Index: qt-x11-opensource-src-4.3.2/configure
+===================================================================
+--- qt-x11-opensource-src-4.3.2.orig/configure	2007-10-01 15:06:03.000000000 +0200
++++ qt-x11-opensource-src-4.3.2/configure	2007-10-23 09:32:25.000000000 +0200
+@@ -735,7 +735,7 @@
+             UNKNOWN_ARG=yes
+         fi
+         ;;
+-    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk|-arch|-mysql_config)
++    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk|-arch|-mysql_config|-crossarch)
+         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
+         shift
+         VAL="$1"
+@@ -1124,6 +1124,9 @@
+     xplatform)
+         XPLATFORM="$VAL"
+         ;;
++    crossarch)
++        CROSSARCH="$VAL"
++        ;;
+     debug-and-release)
+         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+             CFG_DEBUG_RELEASE="$VAL"
+@@ -2119,149 +2122,7 @@
+     echo "Determining system architecture... ($UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE)"
+ fi
+ 
+-if [ "$PLATFORM" != "$XPLATFORM" -a "$CFG_EMBEDDED" != "no" ]; then
+-    case "$CFG_EMBEDDED" in
+-    x86)
+-        ARCH=i386
+-        ;;
+-    x86_64)
+-        ARCH=x86_64
+-        ;;
+-    ipaq|sharp)
+-        ARCH=arm
+-        ;;
+-    *)
+-        ARCH="$CFG_EMBEDDED"
+-        ;;
+-    esac
+-else
+-    case "$UNAME_SYSTEM:$UNAME_RELEASE:$UNAME_MACHINE" in
+-    IRIX*:*:*)
+-        ARCH=`uname -p`
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    SGI ($ARCH)"
+-        fi
+-        ;;
+-    SunOS:5*:*)
+-        case "$UNAME_MACHINE" in
+-	sun4u*|sun4v*)
+-            if [ "$OPT_VERBOSE" = "yes" ]; then
+-                echo "    Sun SPARC (sparc)"
+-            fi
+-            ARCH=sparc
+-            ;;
+-        i86pc)
+-	    case "$PLATFORM" in
+-	    *-64)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-	            echo "    64-bit AMD 80x86 (x86_64)"
+-                fi
+-                ARCH=x86_64
+-                ;;
+-	    *)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-	            echo "    32-bit Intel 80x86 (i386)"
+-                fi
+-                ARCH=i386
+-                ;;
+-            esac
+-        esac
+-        ;;
+-    Darwin:*:*)
+-        case "$UNAME_MACHINE" in
+-            Power?Macintosh)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-                    echo "    32-bit Apple PowerPC (powerpc)"
+-                fi
+-                ;;
+-            x86)
+-                if [ "$OPT_VERBOSE" = "yes" ]; then
+-                    echo "    32-bit Intel 80x86 (i386)"
+-                fi
+-                ;;
+-        esac
+-        ARCH=macosx
+-        ;;
+-    AIX:*:00????????00)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-        echo "    64-bit IBM PowerPC (powerpc)"
+-        fi
+-        ARCH=powerpc
+-        ;;
+-    HP-UX:*:9000*)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    HP PA-RISC (parisc)"
+-        fi
+-        ARCH=parisc
+-        ;;
+-    *:*:i?86)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    32-bit Intel 80x86 (i386)"
+-        fi
+-        ARCH=i386
+-        ;;
+-    *:*:x86_64|*:*:amd64)
+-        if [ "$PLATFORM" = "linux-g++-32" -o "$PLATFORM" = "linux-icc-32" ]; then
+-            if [ "$OPT_VERBOSE" = "yes" ]; then
+-                echo "    32 bit on 64-bit AMD 80x86 (i386)"
+-            fi
+-            ARCH=i386
+-        else
+-            if [ "$OPT_VERBOSE" = "yes" ]; then
+-                echo "    64-bit AMD 80x86 (x86_64)"
+-            fi
+-            ARCH=x86_64
+-        fi
+-        ;;
+-    *:*:ppc)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    32-bit PowerPC (powerpc)"
+-        fi
+-        ARCH=powerpc
+-        ;;
+-    *:*:ppc64)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    64-bit PowerPC (powerpc)"
+-        fi
+-        ARCH=powerpc
+-        ;;
+-    *:*:s390*)
+-    	if [ "$OPT_VERBOSE" = "yes" ]; then
+-    	    echo "    IBM S/390 (s390)"
+-    	fi
+-    	ARCH=s390
+-    	;;
+-    *:*:arm*)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    ARM (arm)"
+-        fi
+-        ARCH=arm
+-        ;;
+-    Linux:*:sparc*) 
+-        if [ "$OPT_VERBOSE" = "yes" ]; then 
+-            echo "    Linux on SPARC" 
+-        fi 
+-        ARCH=sparc 
+-        ;; 
+-    *:*:*)
+-        if [ "$OPT_VERBOSE" = "yes" ]; then
+-            echo "    Trying '$UNAME_MACHINE'..."
+-        fi
+-        ARCH="$UNAME_MACHINE"
+-        ;;
+-    esac
+-fi
+-
+-if [ -d "$relpath/src/corelib/arch/$ARCH" ]; then
+-    if [ "$OPT_VERBOSE" = "yes" ]; then
+-        echo "    '$ARCH' is supported"
+-    fi
+-else
+-    if [ "$OPT_VERBOSE" = "yes" ]; then
+-        echo "    '$ARCH' is unsupported, using 'generic'"
+-    fi
+-    ARCH=generic
+-fi
++ARCH="$CROSSARCH"
+ 
+ if [ "$OPT_VERBOSE" = "yes" ]; then
+         echo "System architecture: '$ARCH'"

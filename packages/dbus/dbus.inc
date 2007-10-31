@@ -36,6 +36,9 @@ MESSAGEHOME=/var/run/dbus
 mkdir -p $MESSAGEHOME || true
 chgrp "$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || addgroup "$MESSAGEUSER"
 chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
+
+grep -q netdev: /etc/group || addgroup netdev
+
 }
 
 EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \

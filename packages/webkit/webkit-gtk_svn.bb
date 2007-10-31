@@ -1,42 +1,15 @@
-DEPENDS = "flex-native gperf-native gperf perl-native curl icu libxml2 sqlite3 cairo libxslt libidn gnutls gtk+"
-SRCREV_FORMAT = "webcore-rwebkit"
+DEPENDS = "curl icu libxml2 cairo libxslt libidn gnutls gtk+"
 
-# Yes, this is wrong...
-PV = "0.0+svnr${SRCREV}"
-PR = "r1"
 
-inherit qmake2 pkgconfig
+WEBKIT_PORT = "gtk-port"
+WEBKIT_EXTRA_OPTIONS = "CONFIG-=qt"
 
-SRC_URI = "\
-  svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptGlue;proto=http \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebCore;proto=http;name=webcore \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http;name=webkit \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitLibraries;proto=http \
-#  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitQt;proto=http \
-  svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitTools;proto=http \
-  file://Makefile \
-  file://Makefile.shared \
-  file://WebKit.pri \
-  file://WebKit.pro \
-"
-S = "${WORKDIR}/"
+FILES_webkit-gtklauncher = "${bindir}/GtkLauncher"
+FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"
 
-do_configure() {
-	qmake2 -spec ${QMAKESPEC} CONFIG+=gtk-port CONFIG-=qt CONFIG-=release CONFIG+=debug
-	mkdir -p WebKitBuilds/Debug
-	cd WebKitBuilds/Debug
-	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gtk-port $PWD/../../WebKit.pro \
-      WEBKIT_INC_DIR=${prefix}/include WEBKIT_LIB_DIR=${libdir}
-}
+require webkit.inc
 
-do_compile_prepend() {
-	mkdir -p ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
-	cd ${S}/JavaScriptCore/pcre 
-	${BUILD_CC} dftables.c -o dftables -I. -I../wtf
-	cp dftables ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
-	cd ${S}/WebKitBuilds/Debug
-}
+PR = "r3"
 
 do_install() {
 	install -d ${D}${bindir}
@@ -45,22 +18,7 @@ do_install() {
 
 	install -m 0755 ${S}/WebKitBuilds/Debug/WebKitTools/GtkLauncher/GtkLauncher ${D}${bindir}
 	cd ${S}/WebKitBuilds/Debug
-	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gtk-port $PWD/../../WebKit.pro \
-      WEBKIT_INC_DIR=${D}${prefix}/include WEBKIT_LIB_DIR=${D}${libdir}
+	PWD=`pwd` ${WEBKIT_QMAKE} WEBKIT_INC_DIR=${D}${prefix}/include WEBKIT_LIB_DIR=${D}${libdir} $PWD/../../WebKit.pro
 	oe_runmake install
 }
 
-do_stage() {
-	install -d ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}
-	cd ${S}/WebKitBuilds/Debug
-	PWD=`pwd` qmake2 -spec ${QMAKESPEC} -r OUTPUT_DIR=$PWD/ CONFIG-=qt CONFIG+=gtk-port $PWD/../../WebKit.pro \
-      WEBKIT_INC_DIR=${STAGING_INCDIR} WEBKIT_LIB_DIR=${STAGING_LIBDIR}
-	oe_runmake install
-}
-
-
-PACKAGES =+ "webkit-gtklauncher-dbg webkit-gtklauncher"
-
-FILES_webkit-gtklauncher = "${bindir}/GtkLauncher"
-FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"

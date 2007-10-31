@@ -47,10 +47,18 @@ if len(sys.argv) < 3:
     """
     sys.exit(0)
 
-import ConfigParser, os
+import ConfigParser, os, itertools
 
 checksums_parser = ConfigParser.ConfigParser()
 checksums_parser.read(sys.argv[1])
+
+parsespin = itertools.cycle( r'|/-\\' )
+
+item = 1;
+files_total   = len(checksums_parser.sections())
+files_checked = 0
+files_good    = 0
+files_wrong   = []
 
 for source in checksums_parser.sections():
     archive = source.split("/")[-1]
@@ -58,10 +66,18 @@ for source in checksums_parser.sections():
     md5 = checksums_parser.get(source, "md5")
     sha = checksums_parser.get(source, "sha256")
 
+    if os.isatty(sys.stdout.fileno()):
+        sys.stdout.write("\rChecking files: %s (%04d/%04d) [%2d %%]" % ( parsespin.next(), item, files_total, item*100/files_total ) )
+        sys.stdout.flush()
+        item += 1
+
     try:
         os.stat(localpath)
     except:
         continue
+
+    files_checked += 1
+    file_ok = True
 
     try:
         md5pipe = os.popen('md5sum ' + localpath)
@@ -69,13 +85,29 @@ for source in checksums_parser.sections():
         md5pipe.close()
 
         if md5 != md5data:
-            print "%s has wrong md5: %s instead of %s url: %s" % (archive, md5data, md5, source) 
+            file_ok = False
 
         shapipe = os.popen("oe_sha256sum " + localpath)
         shadata = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
 
         if shadata != "" and sha != shadata:
-            print "%s has wrong sha: %s instead of %s url: %s" % (archive, shadata, sha, source) 
+            file_ok = False
+
+        if file_ok:
+            files_good += 1
+        else:
+            files_wrong += [ [md5, md5data, sha, shadata, archive, source] ]
     except:
         pass
+
+print "\nChecked %d files. %d was OK and %d had wrong checksums." % (files_checked, files_good, len(files_wrong))
+
+if len(files_wrong) > 0:
+
+    print "\n"
+
+    for wrong_file in files_wrong:
+        print "%s [%s] is wrong" % ( wrong_file[4], wrong_file[5])
+        print "md5: %s instead of %s" % (wrong_file[1], wrong_file[0])
+        print "sha: %s instead of %s" % (wrong_file[3], wrong_file[2])
