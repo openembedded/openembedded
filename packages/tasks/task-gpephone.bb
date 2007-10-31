@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r9"
+PR = "r10"
 LICENSE = "MIT"
 
 inherit task
@@ -88,5 +88,4 @@ RDEPENDS_gpephone-task-apps = "\
     gpe-windowlist"
 
 RDEPENDS_gpephone-task-connectivity = "\
-    email \
 "
