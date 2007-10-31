@@ -1,3 +1,7 @@
+# This is a lock-down file for stability purposes
+# If you change anything, send a mail to angstrom-distro-devel@linuxtogo.org 
+# stating the change and the reason.
+
 # bitbake -s | awk '{print "PREFERRED_VERSION_" $1 "=" $2}' |   sed -e s:\+:\=:g | awk -F "=" '{print $1 " ?= \" "$2}' |  awk -F "-r" '{print $1"\""}' | sed -e s,0:,,g -e s,1:,,g | sed s:\"\ :\":g> /tmp/angstrom-2007-preferred-versions.inc
  
 PREFERRED_VERSION_0xffff ?= "0.2"
