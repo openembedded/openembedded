@@ -11,7 +11,7 @@ KERNEL_RELEASE = "2.6.23.1"
 
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -29,6 +29,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.ta
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
 #           file://printascii-2.6.23.patch;patch=1 \
            file://hack-gta02-cpu.patch;patch=1 \
+           file://fix-gta01-flowcontrol2-2.6.23.patch;patch=1 \
            file://defconfig-2.6.23.1 \
            file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
