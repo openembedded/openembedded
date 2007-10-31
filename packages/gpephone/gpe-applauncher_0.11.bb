@@ -2,7 +2,7 @@ LICENSE     = "GPL"
 DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
-PR          = "r2"
+PR          = "r1"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
