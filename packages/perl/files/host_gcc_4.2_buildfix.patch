@@ -1,0 +1,11 @@
+diff -Naur perl-5.8.7-org/makedepend.SH perl-5.8.7/makedepend.SH
+--- perl-5.8.7-org/makedepend.SH	2003-06-05 20:11:10.000000000 +0200
++++ perl-5.8.7/makedepend.SH	2007-11-01 00:30:22.000000000 +0100
+@@ -167,6 +167,7 @@
+             -e '/^#.*<builtin>/d' \
+             -e '/^#.*<built-in>/d' \
+             -e '/^#.*<command line>/d' \
++	    -e '/^#.*<command-line>/d' \
+ 	    -e '/^#.*"-"/d' \
+ 	    -e '/: file path prefix .* never used$/d' \
+ 	    -e 's#\.[0-9][0-9]*\.c#'"$file.c#" \
