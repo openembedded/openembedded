@@ -4,7 +4,7 @@ SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=ezxd;proto=http \
            file://ezxd.init \
@@ -16,6 +16,8 @@ INITSCRIPT_NAME = "ezxd"
 INITSCRIPT_PARAMS = "start 00 S ."
 
 S = "${WORKDIR}/${PN}"
+
+CFLAGS_append = " -DDEBUG " 
 
 do_configure() {
         sed -i -e s:CROSS:CC:g Makefile
