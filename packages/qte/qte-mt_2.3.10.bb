@@ -4,3 +4,5 @@ PR = "r24"
 EXTRA_OECONF += "-thread"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+DEFAULT_PREFERENCE = "1"
