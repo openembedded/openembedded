@@ -8,7 +8,7 @@ DEPENDS_append_hx4700 = " libw100 "
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
-SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
+SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
            file://vo_w100.c \
            file://vo_w100_api.h \
            file://vo_w100_fb.h \
@@ -39,13 +39,11 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PV = "0.0+1.0rc2+svnr${SRCREV}"
 PR = "r5"
-DEFAULT_PREFERENCE = "-1"
 
 PARALLEL_MAKE = ""
 
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/MPlayer-1.0rc2"
 
 PACKAGES =+ "mencoder"
 
