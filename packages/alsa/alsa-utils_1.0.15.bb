@@ -3,15 +3,11 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
+PR = "r1"
 
-SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
-
-# lazy hack. needs proper fixing in gettext.m4, see
-# http://bugs.openembedded.org/show_bug.cgi?id=2348
-# please close bug and remove this comment when properly fixed
-#
-EXTRA_OECONF_linux-uclibc = "--disable-nls"
-EXTRA_OECONF_linux-uclibcgnueabi = "--disable-nls"
+SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
+           file://alsa-utils-automake.patch;patch=1 \
+	  "
 
 inherit autotools
 
