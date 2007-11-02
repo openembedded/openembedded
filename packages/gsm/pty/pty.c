@@ -22,6 +22,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <poll.h>
 
 #define CHECK(val, name)	\
 	if (val == -1) {	\
@@ -32,7 +33,8 @@
 #define min(a, b)	((a) < (b) ? (a) : (b))
 #define max(a, b)	((a) > (b) ? (a) : (b))
 
-static int forward2(int in0, int out0, int in1, int out1) {
+static int forward2(int in0, int out0, int in1, int out1,
+		int (*closed)(int fd)) {
 	int inpos = 0, inlen = 0, outpos = 0, outlen = 0, ret, n;
 	fd_set rfds, wfds;
 	char in[0x100], out[0x100];
@@ -66,6 +68,13 @@ static int forward2(int in0, int out0, int in1, int out1) {
 					sizeof(out) - max(ret, outlen));
 			if (ret > 0)
 				outlen += ret;
+			if (ret < 0 && errno == EIO && closed) {
+				in1 = out0 = closed(in1);
+				if (in1 < 0)
+					return in1;
+				n = max(max(in0, in1), max(out0, out1)) + 1;
+				continue;
+			}
 		}
 		if (FD_ISSET(out0, &wfds)) {
 			ret = write(out0, in + inpos,
@@ -88,6 +97,19 @@ static int forward2(int in0, int out0, int in1, int out1) {
 	return pause();
 }
 
+static int reopen(int fd) {
+	const char *name = ttyname(fd);
+
+	CHECK(close(fd), close(pty));
+	fd = open(name, O_RDWR | O_NOCTTY);
+	CHECK(fd, open);
+	CHECK(grantpt(fd), grantpt);
+	CHECK(unlockpt(fd), unlockpt);
+
+	fprintf(stderr, "%s\n", ptsname(fd));
+	return fd;
+}
+
 int main(int argc, char *argv[], char **envp) {
 	int sock, fd;
 	struct sockaddr_in sa;
@@ -108,7 +130,7 @@ int main(int argc, char *argv[], char **envp) {
 	return pause();
 #endif
 	if (argc != 3)
-		return forward2(0, fd, fd, 1);
+		return forward2(0, fd, fd, 1, reopen);
 
 #if 0
 	/* Connect a sub-process with a pty */
@@ -121,7 +143,7 @@ int main(int argc, char *argv[], char **envp) {
 	i = fileno(popen(param, O_RDWR));
 	CHECK(i, popen);
 	free(param);
-	return forward2(i, fd, fd, i);
+	return forward2(i, fd, fd, i, reopen);
 #endif
 
 	/* Connect a TCP socket with a pty */
@@ -137,5 +159,5 @@ int main(int argc, char *argv[], char **envp) {
 
 	CHECK(sock, socket);
 	CHECK(connect(sock, (struct sockaddr *) &sa, sizeof(sa)), connect);
-	return forward2(sock, fd, fd, sock);
+	return forward2(sock, fd, fd, sock, reopen);
 }
