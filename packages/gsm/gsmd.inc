@@ -5,7 +5,7 @@ SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 RPROVIDES_${PN} = "libgsmd0 gsmd gsmd-devel"
 PV = "0.1+svnr${SRCREV}"
-PR = "r35"
+PR = "r36"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \

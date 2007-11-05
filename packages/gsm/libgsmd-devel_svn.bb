@@ -4,6 +4,7 @@ CONFLICTNAME = "gsmd"
 require gsmd.inc
 
 PROVIDES += "libgsmd"
+RPROVIDES_${PN}-tools = "lib${CONFLICTNAME}-tools"
 
 SRC_URI += " file://024_sms-text-in-bracket.patch;patch=1;minrev=2957;maxrev=3199 \
            file://025_sms-status-report.patch;patch=1;minrev=2957;maxrev=3200 \
