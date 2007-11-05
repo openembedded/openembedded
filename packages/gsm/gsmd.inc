@@ -3,9 +3,9 @@ HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
-RPROVIDES_${PN} = "libgsmd0 gsmd gsmd-devel"
+RPROVIDES_${PN} = "libgsmd0 libgsmd gsmd gsmd-devel"
 PV = "0.1+svnr${SRCREV}"
-PR = "r36"
+PR = "r37"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
