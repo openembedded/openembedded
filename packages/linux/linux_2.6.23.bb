@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
+DEFAULT_PREFERENCE_avr32 = "1"
 
 PR = "r2"
 
@@ -12,6 +13,10 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
            file://defconfig \
 	   "
+
+SRC_URI_append_avr32 = " \
+                       http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
+                       "
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \
