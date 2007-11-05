@@ -3,9 +3,9 @@ HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
-RPROVIDES_${PN} = "libgsmd0 gsmd"
+RPROVIDES_${PN} = "libgsmd0 libgsmd gsmd gsmd-devel"
 PV = "0.1+svnr${SRCREV}"
-PR = "r34"
+PR = "r37"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -49,8 +49,8 @@ RDEPENDS_${BASEPN}-plugins = "${BASEPN}-plugin-machine-generic \
                          ${BASEPN}-plugin-vendor-tihtc \
                          "
 
-RDEPENDS_${BASEPN} = "update-rc.d initscripts"
-RRECOMMENDS_${BASEPN} = "${BASEPN}-plugins"
+RDEPENDS_${PN} += "update-rc.d initscripts"
+RRECOMMENDS_${PN} += "${BASEPN}-plugins"
 
 FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
 FILES_${PN}-tools = "${bindir}/*"

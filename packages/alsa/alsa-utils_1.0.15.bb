@@ -6,8 +6,9 @@ DEPENDS = "alsa-lib ncurses"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
-	   file://alsa-utils-automake.patch;patch=1 \
+           file://alsa-utils-automake.patch;patch=1 \
 	  "
+
 inherit autotools
 
 # This are all packages that we need to make. Also, the now empty alsa-utils
