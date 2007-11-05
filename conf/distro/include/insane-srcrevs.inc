@@ -1,6 +1,7 @@
 SRCREV_pn-aircrack-ng ?= "${AUTOREV}"
 SRCREV_pn-dfu-util ?= "${AUTOREV}"
 SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
+SRCREV_pn-eds-dbus ?= "${AUTOREV}"
 SRCREV_pn-eglibc ?= "${AUTOREV}"
 SRCREV_pn-eglibc-initial ?= "${AUTOREV}"
 SRCREV_pn-eglibc-intermediate ?= "${AUTOREV}"
