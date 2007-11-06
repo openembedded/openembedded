@@ -1,0 +1,300 @@
+
+#
+# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
+#
+
+Index: linux-2.6.23/drivers/leds/Kconfig
+===================================================================
+--- linux-2.6.23.orig/drivers/leds/Kconfig	2007-10-24 20:02:07.000000000 +0200
++++ linux-2.6.23/drivers/leds/Kconfig	2007-10-24 20:02:07.000000000 +0200
+@@ -117,6 +117,13 @@
+ 	  This option enables support for the LEDs on the
+ 	  Motorola A780 GSM Phone.
+ 
++config LEDS_E680
++	tristate "LED Support for the Motorola E680(i) GSM Phone"
++	depends LEDS_CLASS && PXA_EZX_E680
++	help
++	  This options enables support for the LEDs on the
++	  Motorola E680(i) GSM Phone.
++
+ config LEDS_TRIGGER_TIMER
+ 	tristate "LED Timer Trigger"
+ 	depends on LEDS_TRIGGERS
+Index: linux-2.6.23/drivers/leds/Makefile
+===================================================================
+--- linux-2.6.23.orig/drivers/leds/Makefile	2007-10-24 20:02:07.000000000 +0200
++++ linux-2.6.23/drivers/leds/Makefile	2007-10-24 20:02:07.000000000 +0200
+@@ -18,6 +18,7 @@
+ obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o
+ obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
+ obj-$(CONFIG_LEDS_A780)		+= leds-a780.o
++obj-$(CONFIG_LEDS_E680)		+= leds-e680.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
+Index: linux-2.6.23/drivers/leds/leds-e680.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.23/drivers/leds/leds-e680.c	2007-10-24 20:02:07.000000000 +0200
+@@ -0,0 +1,235 @@
++/*
++ * EZX Platform LED Driver for the Motorola E680(i) GSM Phone
++ *
++ * Copyright 2006 Vanille-Media
++ *
++ * Author: Michael Lauer <mickey@Vanille.de>
++ *
++ * Based on the Motorola 2.4 leds-e680.c and leds-corgi.c by Richard Purdie
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/delay.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <asm/mach-types.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx-pcap.h>
++
++//FIXME move defines to a common header file
++#define IND_CNTL_R_BUL     46
++#define IND_CNTL_G_BUL     47
++#define SSP_PCAP_LED_MASK  0x000fffe0
++#define SSP_PCAP_LED_SHIFT 5
++#define GPIO_TC_MM_EN      99
++
++extern int ezx_pcap_read(u_int8_t, u_int32_t *);
++extern int ezx_pcap_write(u_int8_t, u_int32_t);
++
++typedef struct {
++	u_int8_t ind_GPIO_red;    /*Indicator Red control GPIO 46: 0 active, 1 inactive */
++	u_int8_t ind_GPIO_green;  /*Indicator Green control GPIO 47: 0 inactive, 1 active */
++	u_int8_t pcap_LEDR_en;    /*pcap LEDR_EN bit value: 1 =Red LED(&Green) sink circuit enabled*/
++	u_int8_t pcap_LEDG_en;    /*pcap LEDG_EN bit value:1 =Green(->Blue)LED sink circuit enabled*/
++	u_int8_t pcap_LEDR_CTRL; /* 4bits Sets the timing for the red(&Green) LED sink circuit*/
++	u_int8_t pcap_LEDG_CTRL; /* 4bits Sets the timing for the GREEN (->Blue) LED sink circuit*/
++	u_int8_t pcap_LEDR_I;   /* 2 bits 00 3mA,01 4mA, 10 5mA, 11 9mA, sets the pulsed current level for LEDR*/
++	u_int8_t pcap_LEDG_I;   /* 2 bits 00 3mA,01 4mA, 10 5mA, 11 9mA, sets the pulsed current level for LEDG*/
++//	u_int8_t pcap_SKIP_on;  /*1=The ON timing sequence defined by LEDx_CTRL is executed on every other cycle*/
++} PCAP2_LED_REGISTER_VALUE;
++
++const PCAP2_LED_REGISTER_VALUE led_register_value[]=
++{
++	{0x1,0x0, 0x0,0x0, 0x0,0x0, 0x1,0x0}, /* 0 OFF */
++
++	{0x0,0x0, 0x1,0x0, 0xf,0x0, 0x1,0x0}, /* 1 RED */
++	{0x1,0x1, 0x1,0x0, 0xf,0x0, 0x1,0x0}, /* 2 GREEN */
++	{0x0,0x1, 0x1,0x0, 0xf,0x0, 0x1,0x0}, /* 3 ORANGE */
++	{0x1,0x0, 0x0,0x1, 0x0,0xf, 0x0,0x0}, /* 4 BLUE */
++	{0x0,0x0, 0x1,0x1, 0xf,0xf, 0x1,0x0}, /* 5 MAGENTA */
++	{0x1,0x1, 0x1,0x1, 0xf,0xf, 0x1,0x0}, /* 6 CYAN */
++	{0x0,0x1, 0x1,0x1, 0xf,0xf, 0x1,0x0}, /* 7 WHITE */
++};
++
++static void e680led_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	unsigned int tempValue;
++	unsigned char gpio_red, gpio_green, ledr_en, ledg_en, ledr_ctrl,
++			ledg_ctrl, ledr_i, ledg_i, skip, t, color;
++	unsigned char t_mask[2] = { 0xc, 0xc };
++
++	skip = 0;
++	if (value & 128) {
++		value &= (~128);
++		skip = 1;
++	}
++
++	/* 7 colors - simple on */
++	if (value <= 7)
++		color = value;
++	/* 4 colors - 11 timed on */
++	else if (value <= 51) {
++		value -= 7;
++		color = ((value-1)%4)+1;
++		t = ((value-1)/4)+1;
++		t_mask[0] = t;
++		t_mask[1] = t;
++	}
++	/* 3 colors - 22 change color */
++	else if (value <= 84) {
++		value -= 51;
++		color = ((value-1)%3)+5;
++		t = ((value-1)/3)+1;
++		t_mask[1] = t;
++	}
++	else if (value <= 117) {
++		value -= 84;
++		color = ((value-1)%3)+5;
++		t = ((value-1)/3)+1;
++		t_mask[0] = t;
++	}
++	/* 3 colors - alternate with blue */
++	else if (value <= 120) {
++		color = value-113;
++		t_mask[0] = 0xa;
++		t_mask[1] = 0xb;
++	}
++	/* invalid value */
++	else
++		color = 1;
++
++	gpio_red   = led_register_value[color].ind_GPIO_red;
++	gpio_green = led_register_value[color].ind_GPIO_green;
++	ledr_en    = led_register_value[color].pcap_LEDR_en;
++	ledg_en    = led_register_value[color].pcap_LEDG_en;
++	ledr_ctrl  = led_register_value[color].pcap_LEDR_CTRL & t_mask[0];
++	ledg_ctrl  = led_register_value[color].pcap_LEDG_CTRL & t_mask[1];
++	ledr_i     = led_register_value[color].pcap_LEDR_I;
++	ledg_i     = led_register_value[color].pcap_LEDG_I;
++
++	ezx_pcap_read(PCAP_REG_PERIPH,&tempValue);
++
++	tempValue &= (~SSP_PCAP_LED_MASK);
++
++	pxa_gpio_set_value(IND_CNTL_R_BUL, gpio_red);
++	pxa_gpio_set_value(IND_CNTL_G_BUL, gpio_green);
++
++	/* Write PCAP LED Peripheral Control Register*/
++	tempValue = ((ledr_en | (ledg_en << 1) | (ledr_ctrl << 2) |
++		(ledg_ctrl << 6) | (ledr_i << 10) | (ledg_i << 12) |
++		(skip << 14)) & 0x7fff) << SSP_PCAP_LED_SHIFT;
++
++	ezx_pcap_write(PCAP_REG_PERIPH,tempValue);
++}
++
++static void e680led_keypad_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	/* this is not working yet, as there is something else missing */
++#if 0
++	printk( KERN_DEBUG "e680led_keypad_set: %d\n", value );
++
++	pxa_gpio_mode(GPIO_TC_MM_EN);
++	GPDR(GPIO_TC_MM_EN)   |= GPIO_bit(GPIO_TC_MM_EN);
++	GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++
++	udelay( 100 );
++
++    if ( value ) {
++		GPCR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++		PGSR3 &= ~GPIO_bit(GPIO_TC_MM_EN);
++    } else {
++		GPSR(GPIO_TC_MM_EN)   = GPIO_bit(GPIO_TC_MM_EN);
++		PGSR3 |= GPIO_bit(GPIO_TC_MM_EN);
++    }
++#endif
++}
++
++static struct led_classdev e680_led = {
++	.name			= "e680:led",
++	.default_trigger	= "none",
++	.brightness_set		= e680led_set,
++};
++
++static struct led_classdev e680_keypad = {
++	.name			= "e680:keypad",
++	.default_trigger	= "none",
++	.brightness_set		= e680led_keypad_set,
++};
++
++#ifdef CONFIG_PM
++static int e680led_suspend(struct platform_device *dev, pm_message_t state)
++{
++	led_classdev_suspend(&e680_led);
++	led_classdev_suspend(&e680_keypad);
++	return 0;
++}
++
++static int e680led_resume(struct platform_device *dev)
++{
++	led_classdev_resume(&e680_led);
++	led_classdev_resume(&e680_keypad);
++	return 0;
++}
++#endif
++
++static int e680led_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	/* configure GPIOs as output */
++	pxa_gpio_mode(IND_CNTL_R_BUL | GPIO_OUT);
++	pxa_gpio_mode(IND_CNTL_G_BUL | GPIO_OUT);
++
++	ret = led_classdev_register(&pdev->dev, &e680_led);
++	if (ret < 0)
++		return ret;
++
++	ret = led_classdev_register(&pdev->dev, &e680_keypad);
++	if (ret < 0) {
++		led_classdev_unregister(&e680_led);
++	}
++	return ret;
++}
++
++static int e680led_remove(struct platform_device *pdev)
++{
++	led_classdev_unregister(&e680_led);
++	led_classdev_unregister(&e680_keypad);
++	return 0;
++}
++
++static struct platform_driver e680led_driver = {
++	.probe		= e680led_probe,
++	.remove		= e680led_remove,
++#ifdef CONFIG_PM
++	.suspend	= e680led_suspend,
++	.resume		= e680led_resume,
++#endif
++	.driver		= {
++		.name		= "e680-led",
++	},
++};
++
++static int __init e680led_init(void)
++{
++	return platform_driver_register(&e680led_driver);
++}
++
++static void __exit e680led_exit(void)
++{
++	platform_driver_unregister(&e680led_driver);
++}
++
++module_init(e680led_init);
++module_exit(e680led_exit);
++
++MODULE_AUTHOR("Michael Lauer <mickey@Vanille.de>");
++MODULE_DESCRIPTION("Motorola E680 LED driver");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-e680.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-e680.c	2007-10-24 20:02:05.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-e680.c	2007-10-24 20:02:07.000000000 +0200
+@@ -337,11 +337,20 @@
+        },
+ };
+ 
++static struct platform_device e680led_device = {
++	.name		= "e680-led",
++	.id		= -1,
++	.dev		= {
++		.parent = &e680_pcap_device.dev,
++	},
++};
++
+ static struct platform_device *devices[] __initdata = {
+ 	&e680_pcap_device,
+ 	&e680_emu_device,
+ 	&pcap_ts_device,
+ 	&e680locksw_device,
++	&e680led_device,
+ };
+ 
+ static void __init e680_init(void)

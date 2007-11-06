@@ -12,41 +12,48 @@
 # ${APPEND} - an override list of append strings for each label
 # ${SYSLINUX_OPTS} - additional options to add to the syslinux file ';' delimited 
 
-DEPENDS_append=" dosfstools-native syslinux-native mtools-native cdrtools-native"
+do_bootimg[depends] += "dosfstools-native:do_populate_staging \
+                       syslinux-native:do_populate_staging \
+		       mtools-native:do_populate_staging \
+		       cdrtools-native:do_populate_staging"
 
-BDIR="${WORKDIR}/boot"
-ISODIR="${IMAGE_ROOTFS}/isolinux/"
+PACKAGES = " "
 
-BOOTIMG_VOLUME_ID ?= "oe"
+HDDDIR = "${S}/hdd/boot"
+ISODIR = "${S}/cd/isolinux"
+
+BOOTIMG_VOLUME_ID   ?= "oe"
 BOOTIMG_EXTRA_SPACE ?= "64"
 
 # Get the build_syslinux_cfg() function from the syslinux class
 
-SYSLINUXCFG="${BDIR}/syslinux.cfg"
-SYSLINUXMENU="${BDIR}/menu"
+SYSLINUXCFG  = "${HDDDIR}/syslinux.cfg"
+SYSLINUXMENU = "${HDDDIR}/menu"
+
 inherit syslinux
 		
 build_boot_bin() {
-	install -d ${BDIR}
-	install -m 0644 ${STAGING_KERNEL_DIR}/bzImage \
-	${BDIR}/vmlinuz
+	install -d ${HDDDIR}
+	install -m 0644 ${STAGING_DIR}/${MACHINE}${HOST_VENDOR}-${HOST_OS}/kernel/bzImage \
+	${HDDDIR}/vmlinuz
 
 	if [ -n "${INITRD}" ] && [ -s "${INITRD}" ]; then 
-    		install -m 0644 ${INITRD} ${BDIR}/initrd
+    		install -m 0644 ${INITRD} ${HDDDIR}/initrd
 	fi
 
-	install -m 444 ${STAGING_DIR}/${BUILD_SYS}/share/syslinux/ldlinux.sys \
-	${BDIR}/ldlinux.sys
+	install -m 444 ${STAGING_DATADIR_NATIVE}/syslinux/ldlinux.sys \
+	${HDDDIR}/ldlinux.sys
 
 	# Do a little math, bash style
-	#BLOCKS=`du -s ${BDIR} | cut -f 1`
-	BLOCKS=`du -bks ${BDIR} | cut -f 1`
+	#BLOCKS=`du -s ${HDDDIR} | cut -f 1`
+	BLOCKS=`du -bks ${HDDDIR} | cut -f 1`
 	SIZE=`expr $BLOCKS + ${BOOTIMG_EXTRA_SPACE}`	
 
-	mkdosfs -F 12 -n ${BOOTIMG_VOLUME_ID} -d ${BDIR} \
-	-C ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-boot.bin $SIZE 
+	mkdosfs -F 12 -n ${BOOTIMG_VOLUME_ID} -d ${HDDDIR} \
+	-C ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg $SIZE 
 
-	syslinux ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-boot.bin
+	syslinux ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg
+	chmod 644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg
 
 	#Create an ISO if we have an INITRD
 	if [ -n "${INITRD}" ] && [ -s "${INITRD}" ] && [ "${NOISO}" != "1" ] ; then
@@ -54,12 +61,12 @@ build_boot_bin() {
 
 		# Install the kernel
 
-		install -m 0644 ${STAGING_KERNEL_DIR}/bzImage \
+		install -m 0644 ${STAGING_DIR}/${MACHINE}${HOST_VENDOR}-${HOST_OS}/kernel/bzImage \
 		        ${ISODIR}/vmlinuz
 
 		# Install the configuration files
 
-		cp ${BDIR}/syslinux.cfg ${ISODIR}/isolinux.cfg
+		cp ${HDDDIR}/syslinux.cfg ${ISODIR}/isolinux.cfg
 
 		if [ -f ${SYSLINUXMENU} ]; then
 			cp ${SYSLINUXMENU} ${ISODIR}
@@ -68,21 +75,19 @@ build_boot_bin() {
 		install -m 0644 ${INITRD} ${ISODIR}/initrd
 
 		# And install the syslinux stuff 
-		cp ${STAGING_DIR}/${BUILD_SYS}/share/syslinux/isolinux.bin \
+		cp ${STAGING_DATADIR_NATIVE}/syslinux/isolinux.bin \
 		${ISODIR}
 
 		mkisofs -V ${BOOTIMG_VOLUME_ID} \
 		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.iso \
 		-b isolinux/isolinux.bin -c isolinux/boot.cat -r \
 		-no-emul-boot -boot-load-size 4 -boot-info-table \
-		${IMAGE_ROOTFS}
+		${S}/cd/
 	fi
 } 
 
 python do_bootimg() {
-	docfg = bb.data.getVar('AUTO_SYSLINUXCFG', d, 1)
-	if docfg:
-		bb.build.exec_func('build_syslinux_cfg', d)
+	bb.build.exec_func('build_syslinux_cfg', d)
 	bb.build.exec_func('build_boot_bin', d)
 }
 

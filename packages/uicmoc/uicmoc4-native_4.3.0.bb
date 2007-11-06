@@ -1,5 +1,5 @@
 DESCRIPTION = "User-Interface-, Meta-Object-, and Resource Compiler for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "libx11-native libxext-native"
+DEPENDS = "libx11-native libxext-native zlib-native"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
@@ -11,7 +11,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 inherit native
 
-EXTRA_OECONF = "-prefix ${STAGING_DIR}/${BUILD_SYS}/qt4 \
+EXTRA_OECONF = "-prefix ${STAGING_DIR_NATIVE}/qt4 \
 		-qt-libjpeg -qt-gif -system-zlib \
 		-no-nis -no-cups -no-exceptions  \
 		-no-accessibility -no-libjpeg    \
@@ -48,6 +48,6 @@ do_stage() {
         install -m 0755 bin/uic ${STAGING_BINDIR}/uic4
         install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
         install -m 0755 bin/rcc ${STAGING_BINDIR}/rcc4
-        install -d ${STAGING_DIR}/${BUILD_SYS}/qt4/
-        install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR}/${BUILD_SYS}/qt4/
+        install -d ${STAGING_DIR_NATIVE}/qt4/
+        install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR_NATIVE}/qt4/
 }

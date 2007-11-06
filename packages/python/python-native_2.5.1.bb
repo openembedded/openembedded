@@ -17,8 +17,8 @@ S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools native
 
-prefix = "${STAGING_DIR}/${BUILD_SYS}"
-exec_prefix = "${STAGING_DIR}/${BUILD_SYS}"
+prefix = "${STAGING_DIR_NATIVE}/${layout_prefix}"
+exec_prefix = "${STAGING_DIR_NATIVE}/${layout_exec_prefix}"
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc \
                 --without-cxx --with-signal-module --with-wctype-functions"
@@ -30,5 +30,5 @@ EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS=""'
 #}
 
 do_stage_append() {
-	install -m 0755 Parser/pgen ${STAGING_DIR}/${BUILD_SYS}/bin/
+	install -m 0755 Parser/pgen ${STAGING_BINDIR_NATIVE}/
 }

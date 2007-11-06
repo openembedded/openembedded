@@ -6,9 +6,11 @@ SECTION = "x11/utils"
 LICENSE = "GPLv2"
 
 DEPENDS = "gtk+ libgnomeui"
-RDEPENDS ="rdesktop"
+           
+RDEPENDS ="rdesktop gail orbit2 gnome-vfs gnome-keyring libbonobo libbonoboui \ 
+            libart-lgpl libgnome libidl libglade libgnomecanvas "
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/grdesktop/grdesktop-${PV}.tar.gz \
            file://fr.po.patch;patch=1 \

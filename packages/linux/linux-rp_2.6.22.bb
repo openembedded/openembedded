@@ -87,29 +87,33 @@ SRC_URI_append_collie = "\
 #          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
 "
 
+#-           ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
+#-           file://tmio-ohci-r6.patch;patch=1 \
+#           wm97xx-lg13-r0.patch;patch=1 was adapted from $(DOSRC) to apply cleanly
 SRC_URI_append_tosa = "\
-           ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r8.patch;patch=1 \
-           file://tmio-nand-r7.patch;patch=1 \
-           file://tmio-ohci-r6.patch;patch=1 \
+           file://tmio-nand-r8.patch;patch=1 \
            ${CHSRC}/tmio-fb-r6.patch;patch=1 \
-           file://tosa-keyboard-r18.patch;patch=1 \
+	   file://tmio-fb-r6-fix-r0.patch;patch=1 \
+           file://tosa-keyboard-r19.patch;patch=1 \
            ${DOSRC}/tosa-pxaac97-r6.patch;patch=1 \
+           file://tosa-pxaac97-r6-fix-r0.patch;patch=1 \
            ${DOSRC}/tosa-tmio-r6.patch;patch=1 \
-           ${DOSRC}/tosa-power-r17.patch;patch=1 \
+           ${DOSRC}/tosa-power-r18.patch;patch=1 \
+	   file://tosa-power-r18-fix-r0.patch;patch=1 \
            file://tosa-tmio-lcd-r10.patch;patch=1 \
+           file://tosa-tmio-lcd-r10-fix-r0.patch;patch=1 \
            ${DOSRC}/tosa-bluetooth-r8.patch;patch=1 \
-           ${DOSRC}/wm97xx-lg7-r0.patch;patch=1 \
+           file://wm97xx-lg13-r0.patch;patch=1 \
+           file://wm97xx-lg13-r0-fix-r0.patch;patch=1 \
            file://wm9712-suspend-cold-res-r2.patch;patch=1 \
            file://sharpsl-pm-postresume-r1.patch;patch=1 \
-           ${DOSRC}/wm97xx-dig-restore-r0.patch;patch=1 \
-           ${DOSRC}/wm97xx-miscdevs-resume-r0.patch;patch=1 \
            file://wm9712-reset-loop-r2.patch;patch=1 \
            file://tosa-lcdnoise-r1.patch;patch=1 \
-           file://wm97xx-lcdnoise-r0.patch;patch=1 "
+           file://tosa-lcdnoise-r1-fix-r0.patch;patch=1 "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
-SRC_URI_append_htcuniversal ="file://htcuni-acx.patch;patch=1;status=external"
+SRC_URI_append_htcuniversal = "file://htcuni-acx.patch;patch=1;status=external"
 
 S = "${WORKDIR}/linux-2.6.22"

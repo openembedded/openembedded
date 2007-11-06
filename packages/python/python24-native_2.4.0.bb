@@ -16,8 +16,8 @@ S = "${WORKDIR}/Python-2.4"
 
 inherit autotools native
 
-prefix = "${STAGING_DIR}/${BUILD_SYS}"
-exec_prefix = "${STAGING_DIR}/${BUILD_SYS}"
+prefix = "${STAGING_DIR_NATIVE}${layout_prefix}"
+exec_prefix = "${STAGING_DIR_NATIVE}${layout_exec_prefix}"
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc \
                 --without-cxx --with-signal-module --with-wctype-functions"
@@ -30,6 +30,6 @@ do_configure() {
 
 do_stage_append() {
 	# install pgen for later usage with non-native builds
-	install Parser/pgen ${STAGING_DIR}/${BUILD_SYS}/bin/
+	install Parser/pgen ${STAGING_BINDIR_NATIVE}/
 }
 

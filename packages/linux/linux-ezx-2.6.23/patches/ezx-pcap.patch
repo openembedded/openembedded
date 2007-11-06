@@ -1,0 +1,849 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-pcap.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-pcap.c	2007-10-23 15:41:22.000000000 +0200
+@@ -0,0 +1,513 @@
++/* Driver for Motorola PCAP2 as present in EZX phones
++ *
++ * This is both a SPI device driver for PCAP itself, as well as
++ * an IRQ demultiplexer for handling PCAP generated events such as
++ * headphone jack sense by downstream drivers.
++ *
++ * Copyright (C) 2006 Harald Welte <laforge@openezx.org>
++ * Copyright (C) 2007 Daniel Ribeiro <drwyrm@gmail.com>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/interrupt.h>
++#include <linux/kernel_stat.h>
++#include <linux/proc_fs.h>
++
++#include <asm/hardware.h>
++#include <asm/mach-types.h>
++
++#include <asm/arch/ezx.h>
++#include <asm/arch/ssp.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/ezx-pcap.h>
++#include <asm/arch/irqs.h>
++#include <asm/mach/irq.h>
++
++#if 0
++#define DEBUGP(x, args...) printk(x, ## args)
++#else
++#define DEBUGP(x, args...)
++#endif
++
++static DEFINE_SPINLOCK(ezx_ssp_lock);
++static struct ssp_dev ezx_ssp_dev;
++static struct ssp_state ezx_ssp_state;
++static struct pcap_platform_data *pcap_data;
++static int pcap_irq;
++
++static unsigned long ezx_ssp_pcap_putget(ulong data)
++{
++	unsigned long flag;
++	u32 ret = 0;
++
++	spin_lock_irqsave(&ezx_ssp_lock, flag);
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH)
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		else
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++	}
++
++	ssp_write_word(&ezx_ssp_dev,data);
++ 	ssp_read_word(&ezx_ssp_dev, &ret);
++
++	if (pcap_data->cs >= 0) {
++		if(pcap_data->flags & PCAP_CS_AH)
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		else
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++	}
++
++	spin_unlock_irqrestore(&ezx_ssp_lock, flag);
++
++	return ret;
++}
++
++int ezx_pcap_write(u_int8_t reg_num, u_int32_t value)
++{
++	value &= PCAP_REGISTER_VALUE_MASK;
++	value |= PCAP_REGISTER_WRITE_OP_BIT
++		| (reg_num<<PCAP_REGISTER_ADDRESS_SHIFT);
++
++	ezx_ssp_pcap_putget(value);
++
++	DEBUGP("pcap write r%x: 0x%08x\n", reg_num, value);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_write);
++
++int ezx_pcap_read(u_int8_t reg_num, u_int32_t *value)
++{
++	u_int32_t frame = PCAP_REGISTER_READ_OP_BIT
++		| (reg_num<<PCAP_REGISTER_ADDRESS_SHIFT);
++
++	*value = ezx_ssp_pcap_putget(frame);
++
++	DEBUGP("pcap read r%x:  0x%08x\n", reg_num, *value);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_read);
++
++int ezx_pcap_bit_set(u_int32_t sspPcapBit, u_int8_t to)
++{
++        int ret;
++        u_int32_t tmp;
++        u_int32_t bit = (sspPcapBit & PCAP_REGISTER_VALUE_MASK);
++        u_int8_t reg_num = (sspPcapBit & PCAP_REGISTER_ADDRESS_MASK)
++                                        >> PCAP_REGISTER_ADDRESS_SHIFT;
++
++        ret = ezx_pcap_read(reg_num, &tmp);
++        if (ret < 0)
++                return ret;
++
++        if (to == 0)
++                tmp &= ~bit;
++        else
++                tmp |= bit;
++
++        return ezx_pcap_write(reg_num, tmp);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_bit_set);
++
++int ezx_pcap_read_bit(u_int32_t bit)
++{
++        int ret;
++        u_int32_t tmp;
++        u_int8_t reg_num = (bit & PCAP_REGISTER_ADDRESS_MASK)
++                                        >> PCAP_REGISTER_ADDRESS_SHIFT;
++
++        ret = ezx_pcap_read(reg_num, &tmp);
++        if (ret < 0)
++                return ret;
++
++        return tmp & (bit & PCAP_REGISTER_VALUE_MASK);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_read_bit);
++
++/* /proc/pcap support */
++#ifdef CONFIG_PROC_FS
++
++static struct proc_dir_entry *proc_pcap;
++
++char *pcap_registers[] = {
++	"ISR\t", "MSR\t", "PSTAT\t", "INT_SEL\t", "SWCTRL\t", "VREG1\t",
++	"VREG2\t", "VREG\t", "BATT_DAC", "ADC1\t", "ADC2\t", "AUD_CODEC",
++	"RX_AUD_AMPS", "ST_DAC\t", "RTC_TOD\t", "RTC_TODA", "RTC_DAY\t",
++	"RTC_DAYA", "MTRTMR\t", "PWRCTRL\t", "BUSCTRL\t", "PERIPH\t",
++	"AUXVREG_MASK", "VENDOR_REV", "LOWPWR_CTRL", "PERIPH_MASK",
++	"TX_AUD_AMPS", "GP\t",
++	NULL, NULL, NULL, NULL
++};
++
++static int pcap_read_proc(char *page, char **start, off_t off, int count,
++				int *eof, void *data_unused)
++{
++	int len = 0;
++	u_int8_t r;
++	u_int32_t v;
++	off_t begin = 0;
++
++	for(r=0;r<32;r++) {
++		if (pcap_registers[r] == NULL)
++			continue;
++		ezx_pcap_read(r, &v);
++		len += sprintf(page+len, "%s\t%08X\n", pcap_registers[r], v);
++		if(len + begin > off + count)
++			goto done;
++		if(len + begin < off) {
++			begin += len;
++			len = 0;
++		}
++	}
++	*eof = 1;
++done:
++	if (off >= len+begin)
++		return 0;
++	*start = page + (off-begin);
++	return ((count < begin+len-off) ? count : begin+len-off);
++}
++#endif
++
++void ezx_pcap_vibrator_level(u_int32_t value)
++{
++       u_int32_t tmp;
++
++       ezx_pcap_read(PCAP_REG_AUXVREG, &tmp);
++
++       tmp &= ~PCAP_AUXVREG_V_VIB_MASK;
++       tmp |= ((value << PCAP_AUXVREG_V_VIB_SHIFT) & PCAP_AUXVREG_V_VIB_MASK);
++
++       ezx_pcap_write(PCAP_REG_AUXVREG, tmp);
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_vibrator_level);
++
++/* MMC/SD specific functions */
++
++void ezx_pcap_mmcsd_voltage(u_int32_t bits)
++{
++        unsigned int tmp;
++        ezx_pcap_read(PCAP_REG_AUXVREG, &tmp);
++	if (pcap_data->flags & PCAP_MCI_SD) {
++		tmp &= ~PCAP_AUXVREG_VAUX2_MASK;
++		tmp |= ((bits << PCAP_AUXVREG_VAUX2_SHIFT) &
++					PCAP_AUXVREG_VAUX2_MASK);
++	}
++	else if (pcap_data->flags & PCAP_MCI_TF) {
++		tmp &= ~PCAP_AUXVREG_VAUX3_MASK;
++		tmp |= ((bits << PCAP_AUXVREG_VAUX3_SHIFT) &
++					PCAP_AUXVREG_VAUX3_MASK);
++	}
++        ezx_pcap_write(PCAP_REG_AUXVREG, tmp);
++}
++EXPORT_SYMBOL(ezx_pcap_mmcsd_voltage);
++
++int ezx_pcap_mmcsd_power(int on)
++{
++	if (on > 0) on = 1;
++	else on = 0;
++
++	if (pcap_data->flags & PCAP_MCI_SD)
++		return ezx_pcap_bit_set(PCAP_BIT_AUXVREG_VAUX2_EN, on);
++	else if (pcap_data->flags & PCAP_MCI_TF)
++		return ezx_pcap_bit_set(PCAP_BIT_AUXVREG_VAUX3_EN, on);
++	else
++		return -ENODEV;
++}
++EXPORT_SYMBOL_GPL(ezx_pcap_mmcsd_power);
++
++/* IRQ Handling */
++
++/* Array indexed by BIT POSITION of PCAP register, returns IRQ number */
++static unsigned int pcap2irq[] = {
++        [0]     = EZX_IRQ_ADCDONE,
++        [1]     = EZX_IRQ_TS,
++        [2]     = EZX_IRQ_1HZ, /* 1HZ */
++        [3]     = EZX_IRQ_WH, /* WH */
++        [4]     = EZX_IRQ_WL, /* WL */
++        [5]     = EZX_IRQ_TODA, /* TODA */
++        [6]     = EZX_IRQ_USB4V,
++        [7]     = EZX_IRQ_ONOFF, /* ONOFF */
++        [8]     = EZX_IRQ_ONOFF2, /* ONOFF2 */
++        [9]     = EZX_IRQ_USB1V,
++        [10]    = EZX_IRQ_MOBPORT, /* MOBPORT */
++        [11]    = EZX_IRQ_MIC,
++        [12]    = EZX_IRQ_HEADJACK,
++        [13]    = EZX_IRQ_ST, /* ST */
++        [14]    = EZX_IRQ_PC, /* PC */
++        [15]    = EZX_IRQ_WARM, /* WARM */
++        [16]    = EZX_IRQ_EOL, /* EOL */
++        [17]    = EZX_IRQ_CLK, /* CLK */
++        [18]    = EZX_IRQ_SYSRST, /* SYSRST */
++        [19]    = 0,
++        [20]    = EZX_IRQ_ADCDONE2,
++        [21]    = EZX_IRQ_SOFTRESET, /* SOFTRESET */
++        [22]    = EZX_IRQ_MNEXB, /* MNEXB */
++};
++
++/* Array indexed by IRQ NUMBER, returns PCAP absolute value */
++static unsigned int irq2pcap[] = {
++	[EZX_IRQ_MNEXB]		= PCAP_IRQ_MNEXB,
++	[EZX_IRQ_SOFTRESET]	= PCAP_IRQ_SOFTRESET,
++	[EZX_IRQ_SYSRST]	= PCAP_IRQ_SYSRST,
++	[EZX_IRQ_CLK]		= PCAP_IRQ_CLK,
++	[EZX_IRQ_EOL]		= PCAP_IRQ_EOL,
++	[EZX_IRQ_WARM]		= PCAP_IRQ_WARM,
++	[EZX_IRQ_PC]		= PCAP_IRQ_PC,
++	[EZX_IRQ_ST]		= PCAP_IRQ_ST,
++	[EZX_IRQ_MOBPORT]	= PCAP_IRQ_MOBPORT,
++	[EZX_IRQ_ONOFF2]	= PCAP_IRQ_ONOFF2,
++	[EZX_IRQ_ONOFF]		= PCAP_IRQ_ONOFF,
++	[EZX_IRQ_TODA]		= PCAP_IRQ_TODA,
++	[EZX_IRQ_WL]		= PCAP_IRQ_WL,
++	[EZX_IRQ_WH]		= PCAP_IRQ_WH,
++	[EZX_IRQ_1HZ]		= PCAP_IRQ_1HZ,
++        [EZX_IRQ_USB4V]         = PCAP_IRQ_USB4V,
++        [EZX_IRQ_USB1V]         = PCAP_IRQ_USB1V,
++        [EZX_IRQ_HEADJACK]      = PCAP_IRQ_A1,
++        [EZX_IRQ_MIC]           = PCAP_IRQ_MB2,
++        [EZX_IRQ_TS]            = PCAP_IRQ_TS,
++        [EZX_IRQ_ADCDONE]       = PCAP_IRQ_ADCDONE,
++        [EZX_IRQ_ADCDONE2]      = PCAP_IRQ_ADCDONE2,
++};
++
++static void pcap_ack_irq(unsigned int irq)
++{
++        DEBUGP("pcap_ack_irq: %u\n", irq);
++        ezx_pcap_write(PCAP_REG_ISR, irq2pcap[irq]);
++}
++
++static void pcap_mask_irq(unsigned int irq)
++{
++        u_int32_t reg;
++	unsigned long flag;
++
++	spin_lock_irqsave(&ezx_ssp_lock, flag);
++        DEBUGP("pcap_mask_irq: %u\n", irq);
++        ezx_pcap_read(PCAP_REG_MSR, &reg);
++        reg |= irq2pcap[irq];
++        ezx_pcap_write(PCAP_REG_MSR, reg);
++	spin_unlock_irqrestore(&ezx_ssp_lock, flag);
++}
++
++static void pcap_unmask_irq(unsigned int irq)
++{
++        u_int32_t tmp;
++	unsigned long flag;
++
++	spin_lock_irqsave(&ezx_ssp_lock, flag);
++        DEBUGP("pcap_unmask_irq: %u\n", irq);
++        ezx_pcap_read(PCAP_REG_MSR, &tmp);
++        tmp &= ~irq2pcap[irq];
++        ezx_pcap_write(PCAP_REG_MSR, tmp);
++	spin_unlock_irqrestore(&ezx_ssp_lock, flag);
++}
++
++static struct irq_chip pcap_chip = {
++        .ack    = pcap_ack_irq,
++        .mask   = pcap_mask_irq,
++        .unmask = pcap_unmask_irq,
++};
++
++/* handler for interrupt received from PCAP via GPIO */
++static void pcap_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
++{
++	const unsigned int cpu = smp_processor_id();
++        int i;
++        u_int32_t isr, msr;
++
++	spin_lock(&desc->lock);
++	desc->status &= ~(IRQ_REPLAY | IRQ_WAITING);
++	if (unlikely(desc->status & (IRQ_INPROGRESS | IRQ_DISABLED))) {
++		desc->status |= (IRQ_PENDING | IRQ_MASKED);
++		desc->chip->mask(irq);
++		desc->chip->ack(irq);
++		goto out_unlock;
++	}
++	kstat_cpu(cpu).irqs[irq]++;
++	desc->chip->ack(irq);
++	desc->status |= IRQ_INPROGRESS;
++	do {
++		if (unlikely((desc->status &
++			       (IRQ_PENDING | IRQ_MASKED | IRQ_DISABLED)) ==
++			      (IRQ_PENDING | IRQ_MASKED))) {
++			desc->chip->unmask(irq);
++			desc->status &= ~IRQ_MASKED;
++		}
++		desc->status &= ~IRQ_PENDING;
++
++		ezx_pcap_read(PCAP_REG_ISR, &isr);
++		ezx_pcap_read(PCAP_REG_MSR, &msr);
++		for (i = ARRAY_SIZE(pcap2irq)-1; i >= 0; i--) {
++			unsigned int pirq = pcap2irq[i];
++			struct irq_desc *subdesc;
++			if (pirq == 0 || !(isr & irq2pcap[pirq]))
++				continue;
++			subdesc = irq_desc + pirq;
++			if (msr & irq2pcap[pirq])
++				continue;
++			DEBUGP("found irq %u\n", pirq);
++			spin_unlock(&desc->lock);
++			desc_handle_irq(pirq, subdesc);
++			spin_lock(&desc->lock);
++		}
++
++	} while ((desc->status & (IRQ_PENDING | IRQ_DISABLED)) == IRQ_PENDING);
++
++	desc->status &= ~IRQ_INPROGRESS;
++out_unlock:
++	spin_unlock(&desc->lock);
++}
++
++static int ezx_pcap_remove(struct platform_device *pdev)
++{
++	int irq;
++	DEBUGP("exz_pcap_remove entered\n");
++
++	set_irq_chained_handler(pcap_irq, NULL);
++
++	for (irq = EZX_IRQ(0); irq <= EZX_IRQ(21); irq++) {
++		set_irq_chip(irq, NULL);
++		set_irq_handler(irq, NULL);
++		set_irq_flags(irq, 0);
++	}
++
++	ssp_exit(&ezx_ssp_dev);
++
++	return 0;
++}
++
++static int __init ezx_pcap_probe(struct platform_device *pdev)
++{
++	unsigned int ret, irq;
++	DEBUGP("ezx_pcap_probe entered\n");
++
++	pcap_data = pdev->dev.platform_data;
++
++	/* configure ssp port */
++	pxa_gpio_mode(29|GPIO_ALT_FN_3_OUT);
++	pxa_gpio_mode(GPIO24_SFRM_MD);
++	pxa_gpio_mode(GPIO25_STXD_MD);
++	pxa_gpio_mode(GPIO26_SRXD_MD);
++
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH)
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT);
++		else
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT
++						| GPIO_DFLT_HIGH);
++	}
++	pcap_irq = platform_get_irq(pdev, 0);
++	if(pcap_irq < 0) {
++		printk(KERN_ERR "Unable to get IRQ for pcap!\n");
++		return pcap_irq;
++	}
++
++	ret = ssp_init(&ezx_ssp_dev, pcap_data->port, 0);
++	if (ret) {
++		printk(KERN_ERR "Unable to register SSP handler!\n");
++		return ret;
++	}
++
++	ssp_disable(&ezx_ssp_dev);
++	ssp_config(&ezx_ssp_dev,
++		(SSCR0_Motorola | SSCR0_DataSize(16) | SSCR0_EDSS),
++		(SSCR1_TxTresh(1) | SSCR1_RxTresh(1)),
++		0, SSCR0_SerClkDiv(pcap_data->clk));
++	ssp_enable(&ezx_ssp_dev);
++
++	/* mask/ack all PCAP interrupts */
++	ezx_pcap_write(PCAP_REG_MSR, PCAP_MASK_ALL_INTERRUPT);
++	ezx_pcap_write(PCAP_REG_ISR, PCAP_CLEAR_INTERRUPT_REGISTER);
++
++	if (pcap_data->init)
++		pcap_data->init();
++
++        /* set up interrupt demultiplexing code for PCAP2 irqs */
++	set_irq_type(pcap_irq, IRQT_RISING);
++        for (irq = EZX_IRQ(0); irq <= EZX_IRQ(21); irq++) {
++                set_irq_chip(irq, &pcap_chip);
++                set_irq_handler(irq, handle_level_irq);
++                set_irq_flags(irq, IRQF_VALID);
++        }
++        set_irq_chained_handler(pcap_irq, pcap_irq_demux_handler);
++	set_irq_wake(pcap_irq, 1);
++
++	printk("ezx-pcap: ssp driver registered\n");
++        return ret;
++}
++
++static int ezx_pcap_suspend(struct platform_device *dev, pm_message_t state)
++{
++	DEBUGP("pcap suspend!\n");
++	ssp_flush(&ezx_ssp_dev);
++	ssp_save_state(&ezx_ssp_dev, &ezx_ssp_state);
++	if (pcap_data->cs >= 0)
++			pxa_gpio_mode(pcap_data->cs | GPIO_IN);
++        return 0;
++}
++
++static int ezx_pcap_resume(struct platform_device *dev)
++{
++	DEBUGP("pcap resume!\n");
++
++	if (pcap_data->cs >= 0) {
++		if (pcap_data->flags & PCAP_CS_AH) {
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT);
++			GPCR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		}
++		else {
++			pxa_gpio_mode(pcap_data->cs | GPIO_OUT | GPIO_DFLT_HIGH);
++			GPSR(pcap_data->cs) = GPIO_bit(pcap_data->cs);
++		}
++	}
++	ssp_restore_state(&ezx_ssp_dev,&ezx_ssp_state);
++	ssp_enable(&ezx_ssp_dev);
++
++	ezx_pcap_write(PCAP_REG_ISR, PCAP_CLEAR_INTERRUPT_REGISTER);
++
++        return 0;
++}
++
++static struct platform_driver ezxpcap_driver = {
++	.probe          = ezx_pcap_probe,
++	.remove         = ezx_pcap_remove,
++	.suspend	= ezx_pcap_suspend,
++	.resume		= ezx_pcap_resume,
++	.driver         = {
++		.name   = "ezx-pcap",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init ezx_pcap_init(void)
++{
++	DEBUGP("ezx_pcap_init entered\n");
++
++#ifdef CONFIG_PROC_FS
++	if((proc_pcap = create_proc_entry("pcap", 0, NULL)))
++		proc_pcap->read_proc = pcap_read_proc;
++#endif
++
++	return platform_driver_register(&ezxpcap_driver);
++}
++
++static void __exit ezx_pcap_exit(void)
++{
++#ifdef CONFIG_PROC_FS
++	if (proc_pcap)
++		remove_proc_entry("pcap", NULL);
++#endif
++
++	return platform_driver_unregister(&ezxpcap_driver);
++}
++
++module_init(ezx_pcap_init);
++module_exit(ezx_pcap_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Harald Welte");
++MODULE_DESCRIPTION("SPI Driver for Motorola PCAP2");
++
+Index: linux-2.6.23/include/asm-arm/arch-pxa/ezx-pcap.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.23/include/asm-arm/arch-pxa/ezx-pcap.h	2007-10-23 15:41:20.000000000 +0200
+@@ -0,0 +1,248 @@
++/*
++ * Copyright 2007 Daniel Ribeiro <drwyrm@gmail.com>
++ */
++
++#ifndef EZX_PCAP_H
++#define EZX_PCAP_H
++
++struct pcap_platform_data {
++	int port;		/* SSP port */
++	int cs;			/* CS gpio */
++	int clk;
++	int flags;		/* driver flags */
++	int (*init)(void);	/* board specific driver init */
++};
++
++/* driver configuration */
++#define PCAP_CS_AH		(1 << 0) /* CS pin is active high */
++#define PCAP_MCI_SD		(1 << 1) /* SD card slot */
++#define PCAP_MCI_TF		(1 << 2) /* TF card slot */
++
++#define PCAP_REGISTER_WRITE_OP_BIT	0x80000000
++#define PCAP_REGISTER_READ_OP_BIT	0x00000000
++
++#define PCAP_REGISTER_VALUE_MASK	0x01ffffff
++#define PCAP_REGISTER_ADDRESS_MASK	0x7c000000
++#define PCAP_REGISTER_ADDRESS_SHIFT	26
++#define PCAP_REGISTER_NUMBER		32
++#define PCAP_CLEAR_INTERRUPT_REGISTER	0x01ffffff
++#define PCAP_MASK_ALL_INTERRUPT		0x01ffffff
++
++
++#define pbit(reg, bit)	((reg << PCAP_REGISTER_ADDRESS_SHIFT) | bit)
++
++/* registers acessible by both pcap ports */
++#define PCAP_REG_ISR		0x0	/* Interrupt Status */
++#define PCAP_REG_MSR		0x1	/* Interrupt Mask */
++#define PCAP_REG_PSTAT		0x2	/* Processor Status */
++#define PCAP_REG_VREG2		0x6	/* Regulator Bank 2 Control */
++#define PCAP_REG_AUXVREG	0x7	/* Auxiliary Regulator Control */
++#define PCAP_REG_BATT		0x8	/* Battery Control */
++#define PCAP_REG_ADC1		0x9	/* AD Control */
++#define PCAP_REG_ADC2		0xa	/* AD Result */
++#define PCAP_REG_CODEC		0xb	/* Audio Codec Control */
++#define PCAP_REG_RX_AMPS	0xc	/* RX Audio Amplifiers Control */
++#define PCAP_REG_ST_DAC		0xd	/* Stereo DAC Control */
++#define PCAP_REG_BUSCTRL	0x14	/* Connectivity Control */
++#define PCAP_REG_PERIPH		0x15	/* Peripheral Control */
++#define PCAP_REG_LOWPWR		0x18	/* Regulator Low Power Control */
++#define PCAP_REG_TX_AMPS	0x1a	/* TX Audio Amplifiers Control */
++#define PCAP_REG_GP		0x1b	/* General Purpose */
++
++/* registers acessible by pcap port 1 only (a1200, e2 & e6) */
++#define PCAP_REG_INT_SEL	0x3	/* Interrupt Select */
++#define PCAP_REG_SWCTRL		0x4	/* Switching Regulator Control */
++#define PCAP_REG_VREG1		0x5	/* Regulator Bank 1 Control */
++#define PCAP_REG_RTC_TOD	0xe	/* RTC Time of Day */
++#define PCAP_REG_RTC_TODA	0xf	/* RTC Time of Day Alarm */
++#define PCAP_REG_RTC_DAY	0x10	/* RTC Day */
++#define PCAP_REG_RTC_DAYA	0x11	/* RTC Day Alarm */
++#define PCAP_REG_MTRTMR		0x12	/* AD Monitor Timer */
++#define PCAP_REG_PWR		0x13	/* Power Control */
++#define PCAP_REG_AUXVREG_MASK	0x16	/* Auxiliary Regulator Mask */
++#define PCAP_REG_VENDOR_REV	0x17
++#define PCAP_REG_PERIPH_MASK	0x19	/* Peripheral Mask */
++
++/* interrupts - registers 0, 1, 2, 3 */
++#define PCAP_IRQ_ADCDONE	(1 << 0)	/* AD Conversion Done Port 1 */
++#define PCAP_IRQ_TS		(1 << 1)	/* Touch Screen */
++#define PCAP_IRQ_1HZ		(1 << 2)	/* 1HZ Timer */
++#define PCAP_IRQ_WH		(1 << 3)
++#define PCAP_IRQ_WL		(1 << 4)
++#define PCAP_IRQ_TODA		(1 << 5)
++#define PCAP_IRQ_USB4V		(1 << 6)
++#define PCAP_IRQ_ONOFF		(1 << 7)
++#define PCAP_IRQ_ONOFF2		(1 << 8)
++#define PCAP_IRQ_USB1V		(1 << 9)
++#define PCAP_IRQ_MOBPORT	(1 << 10)
++#define PCAP_IRQ_MB2		(1 << 11)	/* Mic */
++#define PCAP_IRQ_A1		(1 << 12)	/* Audio jack */
++#define PCAP_IRQ_ST		(1 << 13)
++#define PCAP_IRQ_PC		(1 << 14)
++#define PCAP_IRQ_WARM		(1 << 15)
++#define PCAP_IRQ_EOL		(1 << 16)
++#define PCAP_IRQ_CLK		(1 << 17)
++#define PCAP_IRQ_SYSRST		(1 << 18)
++#define PCAP_IRQ_ADCDONE2	(1 << 20)	/* AD Conversion Done Port 2 */
++#define PCAP_IRQ_SOFTRESET	(1 << 21)
++#define PCAP_IRQ_MNEXB		(1 << 22)
++
++#define PCAP_BIT_VREG2_V1_STBY			pbit(PCAP_REG_VREG2, (1 << 0))
++#define PCAP_BIT_VREG2_V2_STBY			pbit(PCAP_REG_VREG2, (1 << 1))
++#define PCAP_BIT_VREG2_V3_STBY			pbit(PCAP_REG_VREG2, (1 << 2))
++#define PCAP_BIT_VREG2_V4_STBY			pbit(PCAP_REG_VREG2, (1 << 3))
++#define PCAP_BIT_VREG2_V5_STBY			pbit(PCAP_REG_VREG2, (1 << 4))
++#define PCAP_BIT_VREG2_V6_STBY			pbit(PCAP_REG_VREG2, (1 << 5))
++#define PCAP_BIT_VREG2_V7_STBY			pbit(PCAP_REG_VREG2, (1 << 6))
++#define PCAP_BIT_VREG2_V8_STBY			pbit(PCAP_REG_VREG2, (1 << 7))
++#define PCAP_BIT_VREG2_V9_STBY			pbit(PCAP_REG_VREG2, (1 << 8))
++#define PCAP_BIT_VREG2_V10_STBY			pbit(PCAP_REG_VREG2, (1 << 9))
++#define PCAP_BIT_VREG2_V1_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 10))
++#define PCAP_BIT_VREG2_V2_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 11))
++#define PCAP_BIT_VREG2_V3_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 12))
++#define PCAP_BIT_VREG2_V4_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 13))
++#define PCAP_BIT_VREG2_V5_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 14))
++#define PCAP_BIT_VREG2_V6_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 15))
++#define PCAP_BIT_VREG2_V7_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 16))
++#define PCAP_BIT_VREG2_V8_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 17))
++#define PCAP_BIT_VREG2_V9_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 18))
++#define PCAP_BIT_VREG2_V10_LOWPWR		pbit(PCAP_REG_VREG2, (1 << 19))
++
++#define PCAP_BIT_AUXVREG_VAUX1_EN		pbit(PCAP_REG_AUXVREG, (1 << 1))
++#define PCAP_AUXVREG_VAUX1_MASK			0x0000000c
++#define PCAP_AUXVREG_VAUX1_SHIFT		2
++#define PCAP_BIT_AUXVREG_VAUX2_EN		pbit(PCAP_REG_AUXVREG, (1 << 4))
++#define PCAP_AUXVREG_VAUX2_MASK			0x00000060
++#define PCAP_AUXVREG_VAUX2_SHIFT		5
++#define PCAP_BIT_AUXVREG_VAUX3_EN		pbit(PCAP_REG_AUXVREG, (1 << 7))
++#define PCAP_AUXVREG_VAUX3_MASK			0x00000f00
++#define PCAP_AUXVREG_VAUX3_SHIFT		8
++#define PCAP_BIT_AUXVREG_VAUX4_EN		pbit(PCAP_REG_AUXVREG, (1 << 12))
++#define PCAP_AUXVREG_VAUX4_MASK			0x00006000
++#define PCAP_AUXVREG_VAUX4_SHIFT		13
++#define PCAP_BIT_AUXVREG_VSIM2_EN		pbit(PCAP_REG_AUXVREG, (1 << 16))
++#define PCAP_BIT_AUXVREG_VSIM_EN		pbit(PCAP_REG_AUXVREG, (1 << 17))
++#define PCAP_BIT_AUXVREG_VSIM_0			pbit(PCAP_REG_AUXVREG, (1 << 18))
++#define PCAP_BIT_AUXVREG_V_VIB_EN		pbit(PCAP_REG_AUXVREG, (1 << 19))
++#define PCAP_AUXVREG_V_VIB_MASK			0x00300000
++#define PCAP_AUXVREG_V_VIB_SHIFT		20
++#define PCAP_BIT_AUXVREG_VAUX1_STBY		pbit(PCAP_REG_AUXVREG, (1 << 22))
++#define PCAP_BIT_AUXVREG_VAUX1_LOWPWR		pbit(PCAP_REG_AUXVREG, (1 << 23))
++#define PCAP_BIT_AUXVREG_SW3_STBY		pbit(PCAP_REG_AUXVREG, (1 << 24))
++
++#define PCAP_BATT_DAC_MASK			0x000000ff
++#define PCAP_BATT_DAC_SHIFT			0
++#define PCAP_BIT_BATT_B_FDBK			pbit(PCAP_REG_BATT, (1 << 8))
++#define PCAP_BIT_BATT_EXT_ISENSE		pbit(PCAP_REG_BATT, (1 << 9))
++#define PCAP_BATT_V_COIN_MASK			0x00003c00
++#define PCAP_BATT_V_COIN_SHIFT			10
++#define PCAP_BIT_BATT_I_COIN			pbit(PCAP_REG_BATT, (1 << 14))
++#define PCAP_BIT_BATT_COIN_CH_EN		pbit(PCAP_REG_BATT, (1 << 15))
++#define PCAP_BATT_EOL_SEL_MASK			0x000e0000
++#define PCAP_BATT_EOL_SEL_SHIFT			17
++#define PCAP_BIT_BATT_EOL_CMP_EN		pbit(PCAP_REG_BATT, (1 << 20))
++#define PCAP_BIT_BATT_BATT_DET_EN		pbit(PCAP_REG_BATT, (1 << 21))
++#define PCAP_BIT_BATT_THERMBIAS_CTRL		pbit(PCAP_REG_BATT, (1 << 22))
++
++#define PCAP_BIT_ADC1_ADEN			pbit(PCAP_REG_ADC1, (1 << 0))
++#define PCAP_BIT_ADC1_RAND			pbit(PCAP_REG_ADC1, (1 << 1))
++#define PCAP_BIT_ADC1_AD_SEL1			pbit(PCAP_REG_ADC1, (1 << 2))
++#define PCAP_BIT_ADC1_AD_SEL2			pbit(PCAP_REG_ADC1, (1 << 3))
++#define PCAP_ADC1_ADA1_MASK			0x00000070
++#define PCAP_ADC1_ADA1_SHIFT			4
++#define PCAP_ADC1_ADA2_MASK			0x00000380
++#define PCAP_ADC1_ADA2_SHIFT			7
++#define PCAP_ADC1_ATO_MASK			0x00003c00
++#define PCAP_ADC1_ATO_SHIFT			10
++#define PCAP_BIT_ADC1_ATOX			pbit(PCAP_REG_ADC1, (1 << 14))
++#define PCAP_BIT_ADC1_MTR1			pbit(PCAP_REG_ADC1, (1 << 15))
++#define PCAP_BIT_ADC1_MTR2			pbit(PCAP_REG_ADC1, (1 << 16))
++#define PCAP_ADC1_TS_M_MASK			0x000e0000
++#define PCAP_ADC1_TS_M_SHIFT			17
++#define PCAP_BIT_ADC1_TS_REF_LOWPWR		pbit(PCAP_REG_ADC1, (1 << 20))
++#define PCAP_BIT_ADC1_TS_REFENB			pbit(PCAP_REG_ADC1, (1 << 21))
++#define PCAP_BIT_ADC1_BATT_I_POLARITY		pbit(PCAP_REG_ADC1, (1 << 22))
++#define PCAP_BIT_ADC1_BATT_I_ADC		pbit(PCAP_REG_ADC1, (1 << 23))
++
++#define PCAP_ADC2_ADD1_MASK			0x000003ff
++#define PCAP_ADC2_ADD1_SHIFT			0
++#define PCAP_ADC2_ADD2_MASK			0x000ffc00
++#define PCAP_ADC2_ADD2_SHIFT			10
++#define PCAP_BIT_ADC2_ADINC1			pbit(PCAP_REG_ADC2, (1 << 20))
++#define PCAP_BIT_ADC2_ADINC2			pbit(PCAP_REG_ADC2, (1 << 21))
++#define PCAP_BIT_ADC2_ASC			pbit(PCAP_REG_ADC2, (1 << 22))
++
++#define PCAP_BIT_BUSCTRL_FSENB			0x50000001
++#define PCAP_BIT_BUSCTRL_USB_SUSPEND		0x50000002
++#define PCAP_BIT_BUSCTRL_USB_PU			0x50000004
++#define PCAP_BIT_BUSCTRL_USB_PD			0x50000008
++#define PCAP_BIT_BUSCTRL_VUSB_EN		0x50000010
++#define PCAP_BIT_BUSCTRL_USB_PS			0x50000020
++#define PCAP_BIT_BUSCTRL_VUSB_MSTR_EN		0x50000040
++#define PCAP_BIT_BUSCTRL_VBUS_PD_ENB		0x50000080
++#define PCAP_BIT_BUSCTRL_CURRLIM		0x50000100
++#define PCAP_BIT_BUSCTRL_RS232ENB		0x50000200
++#define PCAP_BIT_BUSCTRL_RS232_DIR		0x50000400
++#define PCAP_BIT_BUSCTRL_SE0_CONN		0x50000800
++#define PCAP_BIT_BUSCTRL_USB_PDM		0x50001000
++#define PCAP_BIT_BUSCTRL_BUS_PRI_ADJ		0x51000000
++
++#define PCAP_BIT_PERIPH_BL_CTRL0		0x54000001
++#define PCAP_BIT_PERIPH_BL_CTRL1		0x54000002
++#define PCAP_BIT_PERIPH_BL_CTRL2		0x54000004
++#define PCAP_BIT_PERIPH_BL_CTRL3		0x54000008
++#define PCAP_BIT_PERIPH_BL_CTRL4		0x54000010
++#define PCAP_BIT_PERIPH_LEDR_EN			0x54000020
++#define PCAP_BIT_PERIPH_LEDG_EN			0x54000040
++#define PCAP_BIT_PERIPH_LEDR_CTRL0		0x54000080
++#define PCAP_BIT_PERIPH_LEDR_CTRL1		0x54000100
++#define PCAP_BIT_PERIPH_LEDR_CTRL2		0x54000200
++#define PCAP_BIT_PERIPH_LEDR_CTRL3		0x54000400
++#define PCAP_BIT_PERIPH_LEDG_CTRL0		0x54000800
++#define PCAP_BIT_PERIPH_LEDG_CTRL1		0x54001000
++#define PCAP_BIT_PERIPH_LEDG_CTRL2		0x54002000
++#define PCAP_BIT_PERIPH_LEDG_CTRL3		0x54004000
++#define PCAP_BIT_PERIPH_LEDR_I0			0x54008000
++#define PCAP_BIT_PERIPH_LEDR_I1			0x54010000
++#define PCAP_BIT_PERIPH_LEDG_I0			0x54020000
++#define PCAP_BIT_PERIPH_LEDG_I1			0x54040000
++#define PCAP_BIT_PERIPH_SKIP			0x54080000
++#define PCAP_BIT_PERIPH_BL2_CTRL0		0x54100000
++#define PCAP_BIT_PERIPH_BL2_CTRL1		0x54200000
++#define PCAP_BIT_PERIPH_BL2_CTRL2		0x54400000
++#define PCAP_BIT_PERIPH_BL2_CTRL3		0x54800000
++#define PCAP_BIT_PERIPH_BL2_CTRL4		0x55000000
++
++#define PCAP_BIT_LOWPWR_VAUX2_STBY		0x60000001
++#define PCAP_BIT_LOWPWR_VAUX2_LOWPWR		0x60000002
++#define PCAP_BIT_LOWPWR_VAUX3_STBY		0x60000004
++#define PCAP_BIT_LOWPWR_VAUX3_LOWPWR		0x60000008
++#define PCAP_BIT_LOWPWR_VAUX4_STBY		0x60000010
++#define PCAP_BIT_LOWPWR_VAUX4_LOWPWR		0x60000020
++#define PCAP_BIT_LOWPWR_VSIM_LOWPWR		0x60000040
++#define PCAP_BIT_LOWPWR_VSIM2_LOWPWR		0x60000080
++#define PCAP_BIT_LOWPWR_SW1_MODE00		0x60000100
++#define PCAP_BIT_LOWPWR_SW1_MODE01		0x60000200
++#define PCAP_BIT_LOWPWR_SW1_MODE10		0x60000400
++#define PCAP_BIT_LOWPWR_SW1_MODE11		0x60000800
++#define PCAP_BIT_LOWPWR_SW10_DVS		0x60001000
++#define PCAP_BIT_LOWPWR_SW11_DVS		0x60002000
++#define PCAP_BIT_LOWPWR_SW12_DVS		0x60004000
++#define PCAP_BIT_LOWPWR_SW13_DVS		0x60008000
++#define PCAP_BIT_LOWPWR_SW2_MODE00		0x60010000
++#define PCAP_BIT_LOWPWR_SW2_MODE01		0x60020000
++#define PCAP_BIT_LOWPWR_SW2_MODE10		0x60040000
++#define PCAP_BIT_LOWPWR_SW2_MODE11		0x60080000
++#define PCAP_BIT_LOWPWR_SW20_DVS		0x60100000
++#define PCAP_BIT_LOWPWR_SW21_DVS		0x60200000
++#define PCAP_BIT_LOWPWR_SW22_DVS		0x60400000
++#define PCAP_BIT_LOWPWR_SW23_DVS		0x60800000
++#define PCAP_BIT_LOWPWR_VC_STBY			0x61000000
++
++extern int ezx_pcap_write(u_int8_t, u_int32_t);
++extern int ezx_pcap_read(u_int8_t, u_int32_t *);
++extern int ezx_pcap_bit_set(u_int32_t, u_int8_t);
++extern int ezx_pcap_bit_get(u_int32_t);
++extern int ezx_pcap_read_bit(u_int32_t);
++extern void ezx_pcap_vibrator_level(u_int32_t);
++#endif
+Index: linux-2.6.23/include/asm-arm/arch-pxa/irqs.h
+===================================================================
+--- linux-2.6.23.orig/include/asm-arm/arch-pxa/irqs.h	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/include/asm-arm/arch-pxa/irqs.h	2007-10-23 15:18:28.000000000 +0200
+@@ -79,7 +79,7 @@
+  * within sensible limits.
+  */
+ #define IRQ_BOARD_START		(PXA_GPIO_IRQ_BASE + PXA_GPIO_IRQ_NUM)
+-#define IRQ_BOARD_END		(IRQ_BOARD_START + 16)
++#define IRQ_BOARD_END		(IRQ_BOARD_START + 22)
+ 
+ #define IRQ_SA1111_START	(IRQ_BOARD_END)
+ #define IRQ_GPAIN0		(IRQ_BOARD_END + 0)
+@@ -170,7 +170,8 @@
+ #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
+ #elif defined(CONFIG_ARCH_LUBBOCK) || \
+       defined(CONFIG_MACH_LOGICPD_PXA270) || \
+-      defined(CONFIG_MACH_MAINSTONE)
++      defined(CONFIG_MACH_MAINSTONE) || \
++      defined(CONFIG_PXA_EZX)
+ #define NR_IRQS			(IRQ_BOARD_END)
+ #else
+ #define NR_IRQS			(IRQ_BOARD_START)
+@@ -216,3 +217,28 @@
+ #define IRQ_LOCOMO_GPIO_BASE	(IRQ_BOARD_START + 1)
+ #define IRQ_LOCOMO_LT_BASE	(IRQ_BOARD_START + 2)
+ #define IRQ_LOCOMO_SPI_BASE	(IRQ_BOARD_START + 3)
++
++/* EZX Interrupts (CONFIG_EZX) */
++#define EZX_IRQ(x)             (IRQ_BOARD_START + (x))
++#define EZX_IRQ_USB4V          EZX_IRQ(0) /* EMU */
++#define EZX_IRQ_USB1V          EZX_IRQ(1) /* EMU */
++#define EZX_IRQ_HEADJACK       EZX_IRQ(2) /* Audio connector */
++#define EZX_IRQ_MIC            EZX_IRQ(3) /* Audio connector */
++#define EZX_IRQ_ADCDONE        EZX_IRQ(4)
++#define EZX_IRQ_TS             EZX_IRQ(5) /* TS touch */
++#define EZX_IRQ_ADCDONE2       EZX_IRQ(6) /* TS x/y ADC ready */
++#define EZX_IRQ_WH	       EZX_IRQ(7)
++#define EZX_IRQ_WL	       EZX_IRQ(8)
++#define EZX_IRQ_ONOFF	       EZX_IRQ(9)
++#define EZX_IRQ_ONOFF2	       EZX_IRQ(10)
++#define EZX_IRQ_MOBPORT	       EZX_IRQ(11)
++#define EZX_IRQ_TODA	       EZX_IRQ(12)
++#define EZX_IRQ_1HZ	       EZX_IRQ(13)
++#define EZX_IRQ_MNEXB	       EZX_IRQ(14)
++#define EZX_IRQ_ST	       EZX_IRQ(15)
++#define EZX_IRQ_PC	       EZX_IRQ(16)
++#define EZX_IRQ_SYSRST	       EZX_IRQ(17)
++#define EZX_IRQ_SOFTRESET      EZX_IRQ(18)
++#define EZX_IRQ_EOL	       EZX_IRQ(19)
++#define EZX_IRQ_CLK	       EZX_IRQ(20)
++#define EZX_IRQ_WARM	       EZX_IRQ(21)
+Index: linux-2.6.23/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/Kconfig	2007-10-23 15:18:28.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/Kconfig	2007-10-23 15:38:53.000000000 +0200
+@@ -109,6 +109,9 @@
+ config EZX_BP
+ 	bool "BP Control code for EZX Platform"
+ 
++config EZX_PCAP
++	bool "PCAP Support"
++
+ endif
+ 
+ endmenu
+Index: linux-2.6.23/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/Makefile	2007-10-23 15:18:28.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/Makefile	2007-10-23 15:38:53.000000000 +0200
+@@ -26,6 +26,7 @@
+ obj-$(CONFIG_PXA_EZX_A1200)	+= ezx-a1200.o
+ obj-$(CONFIG_PXA_EZX_E6)	+= ezx-e6.o
+ obj-$(CONFIG_EZX_BP)		+= ezx-bp.o
++obj-$(CONFIG_EZX_PCAP)		+= ezx-pcap.o
+ 
+ # Support for blinky lights
+ led-y := leds.o

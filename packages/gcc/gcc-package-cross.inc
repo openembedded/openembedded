@@ -37,22 +37,38 @@ python do_package() {
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
-	# Move libgcc_s into /lib
-	mkdir -p ${D}${target_base_libdir}
-	if [ -f ${D}${target_base_libdir}/libgcc_s.so.? ]; then
-		# Already in the right location
-		:
-	elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
-		mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
-	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
-	fi
+  # Move libgcc_s into /lib
+        mkdir -p ${D}${target_base_libdir}
+        if [ -f ${D}${target_base_libdir}/libgcc_s.so.? ]; then
+                # Already in the right location
+                :
+        elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
+                mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
 
-	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
-	mkdir -p ${D}${target_libdir}
-	mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
-	mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
-	mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
+        elif [  -f ${D}${prefix}/*/lib/nof/libgcc_s.so.? ]; then
+                mv -f ${D}${prefix}/*/lib/nof/libgcc_s.so* ${D}${target_base_libdir}
+        else
+                mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
+        fi
+
+
+
+   # Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
+        mkdir -p ${D}${target_libdir}
+
+        if [ -f ${D}${prefix}/*/lib/nof/libstdc++.so ]; then
+
+           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir}
+           mv -f ${D}${prefix}/*/lib/nof/libg2c.so* ${D}${target_libdir} || true
+           mv -f ${D}${prefix}/*/lib/nof/libgfortran*.so* ${D}${target_libdir} || true
+
+        else
+           mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
+           mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
+           mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
+        fi
+
+
 
        # Manually run the target stripper since we won't get it run by
        # the packaging.

@@ -1,8 +1,11 @@
 DESCRIPTION = "Replacement syslog API"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.balabit.com/downloads/syslog-ng/2.0/src/${P}.tar.gz"
+SRC_URI = "http://www.balabit.com/downloads/files/eventlog/0.2/${P}.tar.gz"
 
-inherit autotools
+inherit autotools pkgconfig
 
+do_stage () {
+	autotools_stage_all
+}

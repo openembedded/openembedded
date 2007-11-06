@@ -1,0 +1,180 @@
+Index: linux-2.6.15/drivers/usb/host/ohci.h
+===================================================================
+--- linux-2.6.15.orig/drivers/usb/host/ohci.h
++++ linux-2.6.15/drivers/usb/host/ohci.h
+@@ -336,6 +336,23 @@ typedef struct urb_priv {
+ // sizeof (struct td) ~= 64 == 2^6 ... 
+ #define TD_HASH_FUNC(td_dma) ((td_dma ^ (td_dma >> 6)) % TD_HASH_SIZE)
+ 
++struct ohci_hcd;
++
++/*
++ * Hooks to support controllers that must resort to a PIO-ish
++ * implementation because they only dma with on-chip memory.
++ */
++struct ohci_ops {
++	void*	(*dma_pool_alloc) (struct dma_pool *pool, gfp_t mem_flags,
++					dma_addr_t *handle);
++	void	(*dma_pool_free)  (struct dma_pool *pool, void *vaddr,
++					dma_addr_t addr);
++
++	void	(*td_fill) (struct ohci_hcd *ohci, u32 info, dma_addr_t data,
++					int len, struct urb *urb, int index);
++	void	(*td_done) (struct ohci_hcd *ohci, struct urb *urb,
++					struct td *td);
++};
+ 
+ /*
+  * This is the full ohci controller description
+@@ -346,6 +363,7 @@ typedef struct urb_priv {
+ 
+ struct ohci_hcd {
+ 	spinlock_t		lock;
++	const struct ohci_ops	*ops;
+ 
+ 	/*
+ 	 * I/O memory used to communicate with the HC (dma-consistent)
+Index: linux-2.6.15/drivers/usb/host/ohci-mem.c
+===================================================================
+--- linux-2.6.15.orig/drivers/usb/host/ohci-mem.c
++++ linux-2.6.15/drivers/usb/host/ohci-mem.c
+@@ -21,10 +21,13 @@
+  * No memory seen by this driver is pagable.
+  */
+ 
++static const struct ohci_ops ohci_ops;
++
+ /*-------------------------------------------------------------------------*/
+ 
+ static void ohci_hcd_init (struct ohci_hcd *ohci)
+ {
++	ohci->ops = &ohci_ops;
+ 	ohci->next_statechange = jiffies;
+ 	spin_lock_init (&ohci->lock);
+ 	INIT_LIST_HEAD (&ohci->pending);
+@@ -88,7 +91,7 @@ td_alloc (struct ohci_hcd *hc, gfp_t mem
+ 	dma_addr_t	dma;
+ 	struct td	*td;
+ 
+-	td = dma_pool_alloc (hc->td_cache, mem_flags, &dma);
++	td = hc->ops->dma_pool_alloc (hc->td_cache, mem_flags, &dma);
+ 	if (td) {
+ 		/* in case hc fetches it, make it look dead */
+ 		memset (td, 0, sizeof *td);
+@@ -110,7 +113,7 @@ td_free (struct ohci_hcd *hc, struct td 
+ 		*prev = td->td_hash;
+ 	else if ((td->hwINFO & cpu_to_hc32(hc, TD_DONE)) != 0)
+ 		ohci_dbg (hc, "no hash for td %p\n", td);
+-	dma_pool_free (hc->td_cache, td, td->td_dma);
++	hc->ops->dma_pool_free (hc->td_cache, td, td->td_dma);
+ }
+ 
+ /*-------------------------------------------------------------------------*/
+@@ -122,7 +125,7 @@ ed_alloc (struct ohci_hcd *hc, gfp_t mem
+ 	dma_addr_t	dma;
+ 	struct ed	*ed;
+ 
+-	ed = dma_pool_alloc (hc->ed_cache, mem_flags, &dma);
++	ed = hc->ops->dma_pool_alloc (hc->ed_cache, mem_flags, &dma);
+ 	if (ed) {
+ 		memset (ed, 0, sizeof (*ed));
+ 		INIT_LIST_HEAD (&ed->td_list);
+@@ -134,6 +137,6 @@ ed_alloc (struct ohci_hcd *hc, gfp_t mem
+ static void
+ ed_free (struct ohci_hcd *hc, struct ed *ed)
+ {
+-	dma_pool_free (hc->ed_cache, ed, ed->dma);
++	hc->ops->dma_pool_free (hc->ed_cache, ed, ed->dma);
+ }
+ 
+Index: linux-2.6.15/drivers/usb/host/ohci-q.c
+===================================================================
+--- linux-2.6.15.orig/drivers/usb/host/ohci-q.c
++++ linux-2.6.15/drivers/usb/host/ohci-q.c
+@@ -629,7 +629,7 @@ static void td_submit_urb (
+ 			: TD_T_TOGGLE | TD_CC | TD_DP_IN;
+ 		/* TDs _could_ transfer up to 8K each */
+ 		while (data_len > 4096) {
+-			td_fill (ohci, info, data, 4096, urb, cnt);
++			ohci->ops->td_fill (ohci, info, data, 4096, urb, cnt);
+ 			data += 4096;
+ 			data_len -= 4096;
+ 			cnt++;
+@@ -637,11 +637,11 @@ static void td_submit_urb (
+ 		/* maybe avoid ED halt on final TD short read */
+ 		if (!(urb->transfer_flags & URB_SHORT_NOT_OK))
+ 			info |= TD_R;
+-		td_fill (ohci, info, data, data_len, urb, cnt);
++		ohci->ops->td_fill (ohci, info, data, data_len, urb, cnt);
+ 		cnt++;
+ 		if ((urb->transfer_flags & URB_ZERO_PACKET)
+ 				&& cnt < urb_priv->length) {
+-			td_fill (ohci, info, 0, 0, urb, cnt);
++			ohci->ops->td_fill (ohci, info, 0, 0, urb, cnt);
+ 			cnt++;
+ 		}
+ 		/* maybe kickstart bulk list */
+@@ -656,17 +656,18 @@ static void td_submit_urb (
+ 	 */
+ 	case PIPE_CONTROL:
+ 		info = TD_CC | TD_DP_SETUP | TD_T_DATA0;
+-		td_fill (ohci, info, urb->setup_dma, 8, urb, cnt++);
++		ohci->ops->td_fill (ohci, info, urb->setup_dma, 8, urb, cnt++);
+ 		if (data_len > 0) {
+ 			info = TD_CC | TD_R | TD_T_DATA1;
+ 			info |= is_out ? TD_DP_OUT : TD_DP_IN;
+ 			/* NOTE:  mishandles transfers >8K, some >4K */
+-			td_fill (ohci, info, data, data_len, urb, cnt++);
++			ohci->ops->td_fill (ohci, info, data, data_len,
++								urb, cnt++);
+ 		}
+ 		info = (is_out || data_len == 0)
+ 			? TD_CC | TD_DP_IN | TD_T_DATA1
+ 			: TD_CC | TD_DP_OUT | TD_T_DATA1;
+-		td_fill (ohci, info, data, 0, urb, cnt++);
++		ohci->ops->td_fill (ohci, info, data, 0, urb, cnt++);
+ 		/* maybe kickstart control list */
+ 		wmb ();
+ 		ohci_writel (ohci, OHCI_CLF, &ohci->regs->cmdstatus);
+@@ -685,7 +686,7 @@ static void td_submit_urb (
+ 			// a 2^16 iso range, vs other HCs max of 2^10)
+ 			frame += cnt * urb->interval;
+ 			frame &= 0xffff;
+-			td_fill (ohci, TD_CC | TD_ISO | frame,
++			ohci->ops->td_fill (ohci, TD_CC | TD_ISO | frame,
+ 				data + urb->iso_frame_desc [cnt].offset,
+ 				urb->iso_frame_desc [cnt].length, urb, cnt);
+ 		}
+@@ -788,6 +789,14 @@ static void td_done (struct ohci_hcd *oh
+   	}
+ }
+ 
++/* default operations for most HCs */
++static const struct ohci_ops ohci_ops = {
++	.dma_pool_alloc	= dma_pool_alloc,
++	.dma_pool_free	= dma_pool_free,
++	.td_fill	= td_fill,
++	.td_done	= td_done,
++};
++
+ /*-------------------------------------------------------------------------*/
+ 
+ static inline struct td *
+@@ -984,7 +993,7 @@ rescan_this:
+ 			*prev = td->hwNextTD | savebits;
+ 
+ 			/* HC may have partly processed this TD */
+-			td_done (ohci, urb, td);
++			ohci->ops->td_done (ohci, urb, td);
+ 			urb_priv->td_cnt++;
+ 
+ 			/* if URB is done, clean up */
+@@ -1079,7 +1088,7 @@ dl_done_list (struct ohci_hcd *ohci, str
+ 		struct ed	*ed = td->ed;
+ 
+ 		/* update URB's length and status from TD */
+-		td_done (ohci, urb, td);
++		ohci->ops->td_done (ohci, urb, td);
+ 		urb_priv->td_cnt++;
+ 
+ 		/* If all this urb's TDs are done, call complete() */

@@ -1,0 +1,691 @@
+Index: linux-2.6.17/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/Makefile	2006-09-19 20:51:33.984424500 +0200
++++ linux-2.6.17/arch/arm/mach-pxa/Makefile	2006-09-19 21:08:04.922354250 +0200
+@@ -16,7 +16,7 @@ obj-$(CONFIG_PXA_SHARP_C7xx)	+= corgi.o 
+ obj-$(CONFIG_PXA_SHARP_Cxx00)	+= spitz.o corgi_ssp.o corgi_lcd.o sharpsl_pm.o spitz_pm.o
+ obj-$(CONFIG_MACH_AKITA)	+= akita-ioexp.o
+ obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o sharpsl_pm.o poodle_pm.o
+-obj-$(CONFIG_MACH_TOSA)         += tosa.o
++obj-$(CONFIG_MACH_TOSA)         += tosa.o sharpsl_pm.o tosa_pm.o
+ obj-$(CONFIG_MACH_EM_X270) += em-x270.o
+ obj-$(CONFIG_MACH_HX2750)	+= hx2750.o hx2750_test.o
+ 
+Index: linux-2.6.17/arch/arm/mach-pxa/tosa_pm.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/arch/arm/mach-pxa/tosa_pm.c	2006-09-19 21:08:34.476201250 +0200
+@@ -0,0 +1,661 @@
++/*
++ * Battery and Power Management code for the Sharp SL-6000x
++ *
++ * Copyright (c) 2005 Dirk Opfer
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/stat.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/pm.h>
++#include <linux/wm97xx.h>
++
++#include <asm/apm.h>
++#include <asm/irq.h>
++#include <asm/mach-types.h>
++#include <asm/hardware.h>
++#include <asm/hardware/scoop.h>
++#include <asm/hardware/tmio.h>
++
++#include <asm/arch/sharpsl.h>
++#include <asm/arch/tosa.h>
++#include <asm/arch/pxa-regs.h>
++#include <sound/soc.h>
++#include <sound/ac97_codec.h>
++#include "sharpsl.h"
++
++extern int tosa_bl_intensity(void);
++volatile static int ad_polling;
++static int tosa_pm_driver_probe(struct device *dev);
++static int tosa_pm_driver_remove(struct device *dev);
++static struct wm97xx *wm9712;
++
++/************************************************************
++ * AC97 functions
++ ************************************************************/
++#define AC97_TIMEOUT_VAL	0x1000000
++
++#define AC97_MISC_MODEM_STAT	0x0056
++#define AC97_GPIO_CONFIG	0x004C
++
++static u16 tosa_ac97_read(unsigned short reg)
++{
++	volatile u32 *reg_addr;
++	volatile int timeout;
++	unsigned short data;
++
++	if (CAR & CAR_CAIP) {
++		printk(KERN_CRIT ": CAR_CAIP already set\n");
++		return 0;	
++	}
++
++	if (reg == AC97_GPIO_STATUS)
++		reg_addr = &PMC_REG_BASE;
++	else
++		reg_addr = &PAC_REG_BASE;
++
++	reg_addr += (reg >> 1);
++
++	data=0;
++	GSR = GSR_CDONE | GSR_SDONE;
++
++	data = *reg_addr;
++	timeout = 0;
++
++	while(((GSR & GSR_SDONE)) == 0 && (timeout++ < AC97_TIMEOUT_VAL));
++
++	if ((timeout >= AC97_TIMEOUT_VAL)) {
++		GSR = GSR;
++		printk(KERN_CRIT ": AC97 is busy1.\n");
++		return data;
++	}
++
++	// actual read
++	GSR = GSR_CDONE | GSR_SDONE;
++	data = *reg_addr;
++
++	timeout = 0;
++	while(((GSR & GSR_SDONE) == 0) && (timeout++<AC97_TIMEOUT_VAL));
++	if ((timeout >= AC97_TIMEOUT_VAL)) {
++		GSR = GSR;
++		printk(KERN_CRIT ": AC97 is busy2.\n");
++		return data;
++	}
++
++	return data;
++}
++
++static void tosa_ac97_write(unsigned short reg, unsigned short val)
++{
++	volatile u32 *reg_addr;
++	volatile int timeout=0;
++
++	if (CAR & CAR_CAIP) {
++		printk(KERN_CRIT ": CAR_CAIP already set\n");
++		return;	
++	}
++
++	GSR = GSR_CDONE | GSR_SDONE;
++	if (reg == AC97_GPIO_STATUS)
++		reg_addr = &PMC_REG_BASE;
++	else
++		reg_addr = &PAC_REG_BASE;
++
++	reg_addr += (reg >> 1);
++
++	*reg_addr = val;
++	while(((GSR & GSR_CDONE) == 0) && (timeout++ < AC97_TIMEOUT_VAL));
++	if (timeout >= AC97_TIMEOUT_VAL) {
++		printk(KERN_CRIT ": AC97 is busy.\n");
++	}
++}
++
++static void tosa_ac97_bit_clear(u8 reg, u16 val)
++{
++	unsigned short dat = tosa_ac97_read(reg);
++	dat &= ~val;
++	tosa_ac97_write(reg, dat);
++}
++
++static void tosa_ac97_bit_set(u8 reg, u16 val)
++{
++	unsigned short dat = tosa_ac97_read(reg);
++	dat |= val;
++	tosa_ac97_write(reg, dat);
++}
++
++
++static int tosa_ac97_init(void)
++{
++	int timeo;
++	
++	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
++	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
++	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
++	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
++	pxa_gpio_mode(GPIO20_DREQ0_MD);
++	
++	pxa_set_cken(CKEN2_AC97, 1);
++	/* AC97 power on sequense */
++	while ( 1 ) {
++		GCR = 0;
++		udelay(100);
++		GCR |= GCR_COLD_RST;
++		udelay(5);
++		GCR |= GCR_WARM_RST;
++		udelay(5);
++		for ( timeo = 0x10000; timeo > 0; timeo-- ) {
++			if ( GSR & GSR_PCR ) break;
++			mdelay(5);
++		}
++		if( timeo > 0 ) break;
++		printk(KERN_WARNING "AC97 power on retry!!\n");
++	}
++
++	tosa_ac97_write(AC97_EXTENDED_STATUS, 1);
++	/*
++	* Setting AC97 GPIO
++	*	i/o     function
++	*	GPIO1:   input   EAR_IN signal
++	*	GPIO2:   output  IRQ signal
++	*	GPIO3:   output  PENDOWN signal
++	*	GPIO4:   input   MASK signal
++	*	GPIO5:   input   DETECT MIC signal
++	*/			
++	//     AC97_GPIO_FUNC AC97_MISC_MODEM_STAT
++
++	tosa_ac97_bit_clear(AC97_MISC_MODEM_STAT,
++			((1<<2)|(1<<3)|(1<<4)|(1<<5)));
++	tosa_ac97_bit_clear(AC97_GPIO_CONFIG,(1<<2)|(1<<3));
++	tosa_ac97_bit_set(AC97_GPIO_CONFIG, (1<<1)|(1<<4)|(1<<5));
++
++	tosa_ac97_write(AC97_WM97XX_DIGITISER2, 0xc009);
++	tosa_ac97_write(AC97_WM97XX_DIGITISER1, 0x0030 | WM97XX_DELAY(4));
++
++	pxa_gpio_mode(GPIO32_SDATA_IN1_AC97_MD);
++	ad_polling = 1;
++	printk("tosa_ac97_init\n");
++}
++
++void tosa_ac97_exit(void)
++{
++	if (!(CKEN & CKEN2_AC97))
++		return;
++	
++	// power down the whole chip
++	tosa_ac97_write(AC97_POWERDOWN, 0x7fff);
++
++//       GCR &= ~(GCR_CDONE_IE | GCR_SDONE_IE | GCR_SECRDY_IEN | GCR_PRIRDY_IEN | GCR_SECRES_IEN | GCR_PRIRES_IEN);
++//        GSR = GSR;
++//	GCR = GCR_ACLINK_OFF;
++	pxa_set_cken(CKEN2_AC97, 0);
++	/* switch back to irq driver */
++	ad_polling = 0;
++	printk("tosa_ac97_exit\n");
++}
++
++int ac97_ad_input(u16 adcsel)
++{
++	unsigned short val = 0;
++	unsigned long timeout;
++
++	// prepare
++	tosa_ac97_read(AC97_WM97XX_DIGITISER_RD);
++	
++	if (adcsel & 0x8000)
++		adcsel = ((adcsel & 0x7fff) + 3) << 12;
++		
++	/* Conversion start */
++	tosa_ac97_write(AC97_WM97XX_DIGITISER1, (adcsel | WM97XX_POLL |  WM97XX_DELAY(4)));
++	timeout = 0x1000;
++	/* wait for POLL to go low */
++	while ((tosa_ac97_read(AC97_WM97XX_DIGITISER1) & WM97XX_POLL) && timeout) {
++		udelay(100);
++		timeout--;
++	}
++
++	val = tosa_ac97_read(AC97_WM97XX_DIGITISER_RD);
++	
++	val &= 0xFFF ;
++  
++	return val;
++}
++
++
++int tosa_read_aux_adc(u16 adcsel)  
++{
++	if (ad_polling)
++		return (ac97_ad_input(adcsel));
++	else
++		return (wm97xx_read_aux_adc(wm9712, adcsel));
++}
++
++static struct device_driver tosa_pm_driver = {
++    .name = "wm97xx-battery",
++    .bus = &wm97xx_bus_type,
++    .owner = THIS_MODULE,
++    .probe = tosa_pm_driver_probe,
++    .remove = tosa_pm_driver_remove,
++};
++
++#if 0
++#define TOSA_TEMP_READ_WAIT_TIME		(5)    // 5msec [Fix]
++int tosa_read_battery(struct wm97xx* wm, int channel)
++{
++	//return sprintf(buf, "%d\n", wm97xx_read_aux_adc(wm, input));
++
++	int wm_aux,i;
++	int value = 0;
++	int clear_mux;
++
++	switch(channel) {
++
++		case 0:	// Main
++
++			set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_V_ON);
++			reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT1_V_ON | TOSA_TC6393_BAT_SW_ON);
++			wm_aux = WM97XX_AUX_ID3;
++			break;
++
++		case 1: // Jacket
++
++			set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT1_V_ON);
++			reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_V_ON | TOSA_TC6393_BAT_SW_ON);
++			wm_aux = WM97XX_AUX_ID3;
++			break;
++
++		case 2:  // BU
++			set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BU_CHRG_ON);
++			wm_aux = WM97XX_AUX_ID4;
++			break;
++
++		case 3:  // Main Temp
++			set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT1_TH_ON);
++			reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_TH_ON);
++			wm_aux = WM97XX_AUX_ID2;
++			break;
++
++		case 4:  // Jacket Temp
++			set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_TH_ON);
++			reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT1_TH_ON);
++			wm_aux = WM97XX_AUX_ID2;
++			break;
++
++		default:
++			return -1;
++	}
++	
++	mdelay(TOSA_TEMP_READ_WAIT_TIME);
++	for(i=0;i<4;i++)
++	{
++		if (wm9712)
++			value += wm97xx_read_aux_adc(wm, wm_aux);
++		else
++			value += ac97_ad_input(wm, wm_aux);
++	}
++
++	value>>=2;
++	// reset the multiplexer
++	clear_mux = TOSA_TC6393_BAT0_V_ON  | TOSA_TC6393_BAT1_V_ON | TOSA_TC6393_BAT_SW_ON | TOSA_TC6393_BAT0_TH_ON | TOSA_TC6393_BAT1_TH_ON | TOSA_TC6393_BU_CHRG_ON;
++
++	return value;
++
++}
++#endif
++
++/* BL 5-3 */
++struct battery_thresh tosa_battery_levels_bl[] = {
++	{ 1663, 100 },
++	{ 1605,  75 },
++	{ 1564,  50 },
++	{ 1510,  25 },
++	{ 1435,   5 },
++	{   0,    0 },
++};
++
++/* BL 2-0 */
++struct battery_thresh tosa_battery_levels[] = {
++	{ 1679, 100 },
++	{ 1617,  75 },
++	{ 1576,  50 },
++	{ 1530,  25 },
++	{ 1448,   5 },
++	{   0,    0 },
++};
++
++struct pm_devices {
++	const char * name;
++	struct bus_type *bus;
++	struct device_driver *driver;
++	struct device * dev;
++	int (*resume)(struct device *dev, void * data);	//	int (*resume)(struct device *dev);
++	int (*suspend)(struct device *dev, void * data);//	int (*suspend)(struct device *dev, pm_message_t state);
++};
++
++/* Ugly
++   We need the following devices to measure the battery and control the charger:
++   Also we need access to these before we sleep and immediatly after we resume so we can't
++   control their pm via the kernel device manager. To access their pm functions we will backup
++   the suspend and resume handler and clear these pointers.
++   After that we can suspend and resume these devices.
++
++   Don't change the order of this table!!!!!
++*/
++static struct pm_devices dev_table[] = {
++	[0] = {
++		.name	= TMIO_SOC_NAME,
++		.bus	= &platform_bus_type,
++	},
++};
++
++static int tosa_pm_driver_probe(struct device *dev)
++{
++	wm9712 = dev->driver_data;
++	ad_polling = 0;
++	return 0;
++}
++
++static int tosa_pm_driver_remove(struct device *dev)
++{
++    wm9712 = NULL;
++    return 0;
++}
++
++
++static void tosa_charger_init(void)
++{
++    int i;
++
++    /* If this driver doesn't register, bad things will happen, Tosa won't boot,
++       and the world will possibly explode */
++    i = driver_register(&tosa_pm_driver);
++    if (i < 0)
++        panic("Cannot register the tosa_pm driver on the wm97xx bus. Halting.");
++
++	for(i=0;i<ARRAY_SIZE(dev_table);i++)
++	{
++		dev_table[i].driver = driver_find(dev_table[i].name, dev_table[i].bus);
++		if (dev_table[i].driver)
++		{
++			dev_table[i].resume = dev_table[i].driver->resume;
++			dev_table[i].suspend = dev_table[i].driver->suspend;
++			dev_table[i].driver->resume = NULL;
++			dev_table[i].driver->suspend = NULL;
++		}
++	}
++	
++	pxa_gpio_mode(TOSA_GPIO_AC_IN | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_BAT0_CRG | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_BAT1_CRG | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_BAT0_LOW | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_BAT1_LOW | GPIO_IN);
++
++	pxa_gpio_mode(TOSA_GPIO_JACKET_DETECT | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_POWERON | GPIO_IN);
++	sharpsl_pm_pxa_init();
++}
++
++
++static void tosa_measure_temp(int on)
++{
++	reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_TH_ON | TOSA_TC6393_BAT1_TH_ON);
++
++	if (on)
++		set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT1_TH_ON);
++
++}
++
++static void tosa_charge(int on)
++{
++	if(on)
++		reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_CHARGE_OFF);
++	else
++		set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_CHARGE_OFF);
++}
++
++static void tosa_discharge1(int on)
++{
++}
++
++static void tosa_discharge(int on)
++{
++}
++
++
++static void tosa_presuspend(void)
++{
++	int i;
++	unsigned long wakeup_mask;
++	
++	// put remaining devices into sleep
++	for(i=0;i<ARRAY_SIZE(dev_table);i++)
++	{
++		if(dev_table[i].suspend)
++			driver_for_each_device(dev_table[i].driver, NULL, 
++			   (void*)&PMSG_SUSPEND, dev_table[i].suspend);
++	}
++	
++	tosa_ac97_exit();
++	
++	wakeup_mask = GPIO_bit(TOSA_GPIO_POWERON) | GPIO_bit(TOSA_GPIO_ON_KEY) | GPIO_bit(TOSA_GPIO_AC_IN);
++
++	wakeup_mask |= GPIO_bit(TOSA_GPIO_BAT0_LOW);
++	PWER = wakeup_mask | PWER_RTC;
++
++	PRER = wakeup_mask;
++	PFER = wakeup_mask;
++
++	for (i = 0; i <=15; i++) {
++		if (PRER & PFER & GPIO_bit(i)) {
++			if (GPLR0 & GPIO_bit(i) )
++				PRER &= ~GPIO_bit(i);
++			else
++				PFER &= ~GPIO_bit(i);
++		}
++	}
++	
++	/* Clear reset status */
++	RCSR = RCSR_HWR | RCSR_WDR | RCSR_SMR | RCSR_GPR;
++
++	/* Stop 3.6MHz and drive HIGH to PCMCIA and CS */
++	PCFR = PCFR_OPDE;
++	
++	/* Resume on keyboard power key */
++	PGSR1 = (PGSR1 & ~TOSA_GPIO_LOW_STROBE_BIT);
++	PGSR2 = (PGSR2 & ~TOSA_GPIO_HIGH_STROBE_BIT); 
++	
++	GPDR0 = 0xC3810940;
++	GPDR1 = 0xFCFFAB82;
++	GPDR2 = 0x000F501f;
++//	write_scoop_reg(&tosascoop_device.dev,SCOOP_GPWR,0);
++// only debug
++reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_NOTE_LED);
++}
++
++void tosa_postsuspend(void)
++{
++	int i;
++// only debug
++set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_NOTE_LED);
++
++	for(i=ARRAY_SIZE(dev_table);i;i--)
++	{
++		if(dev_table[i-1].resume)
++			driver_for_each_device(dev_table[i-1].driver, NULL, 
++			   NULL, dev_table[i-1].resume);
++	}
++	tosa_ac97_init();
++	PMCR = 0x01;
++}
++
++void tosa_postresume(void)
++{
++	tosa_ac97_exit();
++}
++
++/*
++ * Check what brought us out of the suspend.
++ * Return: 0 to sleep, otherwise wake
++ */
++static int tosa_should_wakeup(unsigned int resume_on_alarm)
++{
++	int is_resume = 0;
++
++	dev_dbg(sharpsl_pm.dev, "GPLR0 = %x,%x\n", GPLR0, PEDR);
++
++	if ((PEDR & GPIO_bit(TOSA_GPIO_AC_IN))) {
++		if (sharpsl_pm.machinfo->read_devdata(SHARPSL_STATUS_ACIN)) {
++			/* charge on */
++			dev_dbg(sharpsl_pm.dev, "ac insert\n");
++			sharpsl_pm.flags |= SHARPSL_DO_OFFLINE_CHRG;
++		} else {
++			/* charge off */
++			dev_dbg(sharpsl_pm.dev, "ac remove\n");
++			sharpsl_pm_led(SHARPSL_LED_OFF);
++			sharpsl_pm.machinfo->charge(0);
++			sharpsl_pm.charge_mode = CHRG_OFF;
++		}
++	}
++
++	if ((PEDR & GPIO_bit(GPIO_bit(TOSA_GPIO_BAT0_CRG))))
++		dev_dbg(sharpsl_pm.dev, "Charge full interrupt\n");
++
++	if (PEDR & GPIO_bit(TOSA_GPIO_POWERON))
++		is_resume |= GPIO_bit(TOSA_GPIO_POWERON);
++
++	if (PEDR & GPIO_bit(TOSA_GPIO_ON_KEY))
++		is_resume |= GPIO_bit(TOSA_GPIO_ON_KEY);
++
++	if (resume_on_alarm && (PEDR & PWER_RTC))
++		is_resume |= PWER_RTC;
++
++	return is_resume;
++}
++
++static unsigned long tosa_charger_wakeup(void)
++{
++//	return ~GPLR0 & ( GPIO_bit(TOSA_GPIO_AC_IN) | GPIO_bit(TOSA_GPIO_POWERON) | GPIO_bit(TOSA_GPIO_ON_KEY) );
++	return (~GPLR0 & ( GPIO_bit(TOSA_GPIO_POWERON) | GPIO_bit(TOSA_GPIO_ON_KEY) )) | (GPLR0 & GPIO_bit(TOSA_GPIO_AC_IN));
++}
++
++unsigned long tosa_read_bat(void)
++{
++	unsigned long value;
++	reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_V_ON | TOSA_TC6393_BAT1_V_ON | TOSA_TC6393_BAT_SW_ON);
++	mdelay(5);
++	value = tosa_read_aux_adc(WM97XX_AUX_ID3);
++	set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_BAT0_V_ON);
++	return value;
++}
++
++unsigned long tosapm_read_devdata(int type)
++{
++	switch(type) {
++	case SHARPSL_STATUS_ACIN:
++		return ((GPLR(TOSA_GPIO_AC_IN) & GPIO_bit(TOSA_GPIO_AC_IN)) == 0);		
++	case SHARPSL_STATUS_LOCK:
++		return READ_GPIO_BIT(sharpsl_pm.machinfo->gpio_batlock);
++	case SHARPSL_STATUS_CHRGFULL:
++		return READ_GPIO_BIT(sharpsl_pm.machinfo->gpio_batfull);
++	case SHARPSL_STATUS_FATAL:
++		return READ_GPIO_BIT(sharpsl_pm.machinfo->gpio_fatal);
++	case SHARPSL_ACIN_VOLT:
++		return 1000;	// not used on tosa
++	case SHARPSL_BATT_TEMP:
++		return tosa_read_aux_adc(WM97XX_AUX_ID2);
++	case SHARPSL_BATT_VOLT:
++		return tosa_read_bat();
++	default:
++		return tosa_read_bat();
++	}
++}
++
++static struct sharpsl_charger_machinfo tosa_pm_machinfo = {
++	.init            = tosa_charger_init,
++	.exit            = sharpsl_pm_pxa_remove,
++	.gpio_batlock    = TOSA_GPIO_BAT_LOCKED,
++	.gpio_acin       = TOSA_GPIO_AC_IN,
++	.gpio_batfull    = TOSA_GPIO_BAT0_CRG,
++	.batfull_irq	 = 0,
++	.discharge       = tosa_discharge,
++	.discharge1      = tosa_discharge1,
++	.charge          = tosa_charge,
++	.measure_temp    = tosa_measure_temp,
++	.presuspend      = tosa_presuspend,
++	.postsuspend     = tosa_postsuspend,
++	.postresume	 = tosa_postresume,
++	.read_devdata    = tosapm_read_devdata,
++	.charger_wakeup  = tosa_charger_wakeup,
++	.should_wakeup   = tosa_should_wakeup,
++        .backlight_limit = corgibl_limit_intensity,
++	.backlight_get_status= tosa_bl_intensity,
++	.bat_levels      = 6,
++	.bat_levels_noac = tosa_battery_levels,
++	.bat_levels_acin = tosa_battery_levels,
++	.bat_levels_noac_bl = tosa_battery_levels_bl,
++	.bat_levels_acin_bl = tosa_battery_levels_bl,
++	.charge_on_volt	  = 1200,	// 2.9V TOSA_MAIN_BATTERY_ERR_THRESH voltage < 1200 -> error
++	.charge_on_temp	  = 3600,	// --   TOSA_MAIN_BATTERY_EXIST_THRESH temp > 3600 -> error, no battery
++	.charge_acin_high = 1500,	// not used default value
++	.charge_acin_low  = 500,	// not used default value
++	.fatal_acin_volt  = 1572,	// 3.8V
++	.fatal_noacin_volt= 1551,	// 3.75V
++	.status_high_acin = 1564,	// 3.78V
++	.status_low_acin  = 1510,	// 3.65V
++	.status_high_noac = 1564,	// 3.78V
++	.status_low_noac  = 1510,	// 3.65V
++};
++
++static struct platform_device *tosapm_device;
++
++static int __devinit tosapm_init(void)
++{
++	int ret;
++
++	tosapm_device = platform_device_alloc("sharpsl-pm", -1);
++	if (!tosapm_device)
++		return -ENOMEM;
++
++	tosapm_device->dev.platform_data = &tosa_pm_machinfo;
++	ret = platform_device_add(tosapm_device);
++
++	if (ret)
++		platform_device_put(tosapm_device);
++
++	return ret;
++}
++
++static void tosapm_exit(void)
++{
++	int i;
++
++	// restore the resume / suspend handler
++	for(i=0;i<ARRAY_SIZE(dev_table);i++)
++	{
++		if (dev_table[i].driver)
++		{
++			dev_table[i].driver->resume = dev_table[i].resume;
++			dev_table[i].driver->suspend = dev_table[i].suspend;
++			dev_table[i].resume = NULL;
++			dev_table[i].suspend = NULL;
++			put_driver(dev_table[i].driver);
++		}
++	}
++
++	if (wm9712)
++		driver_unregister(&tosa_pm_driver);
++
++	platform_device_unregister(tosapm_device);
++}
++
++module_init(tosapm_init);
++module_exit(tosapm_exit);
+Index: linux-2.6.17/arch/arm/mach-pxa/Kconfig
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/Kconfig	2006-09-19 20:51:40.160810500 +0200
++++ linux-2.6.17/arch/arm/mach-pxa/Kconfig	2006-09-19 21:08:04.926354500 +0200
+@@ -110,6 +110,7 @@ config MACH_TOSA
+ 	bool "Enable Sharp SL-6000x (Tosa) Support"
+ 	depends PXA_SHARPSL_25x
+ 	select TOSHIBA_TC6393XB
++	select SHARPSL_PM	
+ 
+ config PXA25x
+ 	bool

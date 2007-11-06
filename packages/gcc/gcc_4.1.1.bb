@@ -1,4 +1,4 @@
-PR = "r14"
+PR = "r15"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -33,6 +33,7 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
         file://gcc-4.1.1-pr13685-1.patch;patch=1 \
         file://gcc-ignore-cache.patch;patch=1 \
+        file://gcc-4.1.1-e300cx.patch;patch=1 \
 	"
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "

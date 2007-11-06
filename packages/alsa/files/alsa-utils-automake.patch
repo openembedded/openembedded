@@ -1,0 +1,10 @@
+Index: alsa-utils-1.0.14/seq/aseqnet/Makefile.am
+===================================================================
+--- alsa-utils-1.0.14.orig/seq/aseqnet/Makefile.am	2007-05-31 10:07:21.000000000 +0200
++++ alsa-utils-1.0.14/seq/aseqnet/Makefile.am	2007-10-31 21:11:41.000000000 +0100
+@@ -3,4 +3,5 @@
+ 
+ bin_PROGRAMS = aseqnet
+ aseqnet_SOURCES = aseqnet.c
++aseqnet_LDADD = $(INTLLIBS)
+ man_MANS = aseqnet.1

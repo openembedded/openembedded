@@ -9,6 +9,6 @@ FILES_${PN} += "${bindir}/dbus-daemon"
 FILES_${PN}-dev += "${bindir}/dbus-binding-tool"
 
 do_configure_prepend() {
-	install -m 0644 ${STAGING_DIR}/${BUILD_SYS}/share/dbus/dbus-bus-introspect.xml ${S}/tools/
-	install -m 0644 ${STAGING_DIR}/${BUILD_SYS}/share/dbus/dbus-glib-bindings.h ${S}/tools/
+	install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-bus-introspect.xml ${S}/tools/
+	install -m 0644 ${STAGING_DATADIR_NATIVE}/dbus/dbus-glib-bindings.h ${S}/tools/
 }

@@ -1,5 +1,4 @@
 FILESPATH =. "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qemu-${PV}:"
-# prefix = "${STAGING_DIR}/${BUILD_SYS}"
 DEPENDS = "libsdl-native zlib-native"
 
 require qemu-gcc3-check.inc

@@ -1,0 +1,98 @@
+Index: linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c
+===================================================================
+--- linux-2.6.21.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 00:03:01.000000000 -0300
++++ linux-2.6.21/arch/arm/mach-pxa/ezx-a1200.c	2007-09-25 02:00:40.000000000 -0300
+@@ -15,6 +15,7 @@
+ #include <linux/fb.h>
+ #include <linux/mmc/host.h>
+ #include <linux/irq.h>
++#include <linux/input.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -23,11 +24,13 @@
+ #include <asm/arch/ezx.h>
+ #include <asm/arch/ezx-pcap.h>
+ #include <asm/arch/mmc.h>
++#include <asm/arch/kbd.h>
+ 
+ #include "generic.h"
+ 
+ extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
+ extern void ezx_backlight_power(int);
++extern void __init pxa_set_kbd_info(struct pxakbd_platform_data *);
+ 
+ #ifdef CONFIG_EZX_PCAP
+ extern int ezx_pcap_mmcsd_power(int);
+@@ -209,6 +212,63 @@
+ 	.id		= -1,
+ };
+ 
++/* Keypad */
++static unsigned char a1200_keycode[] = {
++	/* row 0 */
++	KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED,
++	/* row 1 */
++	KEY_RIGHT, KEY_DOWN, KEY_KPENTER, KEY_UP, KEY_LEFT,
++	/* row 2 */
++	KEY_PAGEDOWN, KEY_CAMERA, KEY_RECORD, KEY_HOME, KEY_PAGEUP,
++	/* row 3 */
++	KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED,
++	/* row 4 */
++	KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED, KEY_RESERVED,
++	/* row 5 */
++	KEY_RESERVED, KEY_RESERVED, KEY_MENU, KEY_RESERVED, KEY_RESERVED,
++};
++/*
++static unsigned char a1200_direct_keycode[] = {
++	KEY_CAMERA,
++};
++*/
++
++static int a1200_kbd_init(void)
++{
++	pxa_gpio_mode(100 | GPIO_ALT_FN_1_IN); /* KP_MKIN<0> */
++	pxa_gpio_mode(101 | GPIO_ALT_FN_1_IN); /* KP_MKIN<1> */
++	pxa_gpio_mode(102 | GPIO_ALT_FN_1_IN); /* KP_MKIN<2> */
++	pxa_gpio_mode(97  | GPIO_ALT_FN_3_IN); /* KP_MKIN<3> */
++	pxa_gpio_mode(98  | GPIO_ALT_FN_3_IN); /* KP_MKIN<4> */
++	pxa_gpio_mode(103 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<0> */
++	pxa_gpio_mode(104 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<1> */
++	pxa_gpio_mode(105 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<2> */
++	pxa_gpio_mode(106 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<3> */
++	pxa_gpio_mode(107 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<4> */
++	pxa_gpio_mode(108 | GPIO_ALT_FN_2_OUT); /* KP_MKOUT<5> */
++
++	PKWR   = 0xEC000;
++	PGSR3 |= 0x1F80;
++	return 0;
++}
++
++static struct pxakbd_platform_data a1200_kbd_platform_data = {
++	.init           = &a1200_kbd_init,
++	.scan_interval  = HZ/40,
++	.matrix         = {
++		.keycode = a1200_keycode,
++		.cols   = 6,
++		.rows   = 5,
++	},
++/*
++	.direct         = {
++		.keycode = a1200_direct_keycode,
++		.num    = 1,
++	},
++*/
++};
++
++
+ static struct platform_device *devices[] __initdata = {
+ 	&a1200_pcap_device,
+ 	&a1200_eoc_device,
+@@ -218,6 +278,7 @@
+ {
+ 	set_pxa_fb_info(&a1200_fb_info);
+ 	pxa_set_mci_info(&a1200_mci_platform_data);
++	pxa_set_kbd_info(&a1200_kbd_platform_data);
+ 
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ }

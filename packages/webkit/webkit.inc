@@ -1,9 +1,10 @@
 DEPENDS += "flex-native gperf-native perl-native sqlite3"
 SRCREV_FORMAT = "webcore-rwebkit"
 
+PACKAGES =+ "${PN}launcher-dbg ${PN}launcher"
+
 # Yes, this is wrong...
-PV = "0.0+svnr${SRCREV}"
-PR = "r1"
+PV = "0.1+svnr${SRCREV}"
 
 inherit qmake2 pkgconfig
 

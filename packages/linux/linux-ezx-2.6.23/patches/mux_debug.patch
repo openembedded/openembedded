@@ -1,0 +1,551 @@
+Index: linux-2.6.20.7/drivers/char/ts0710_mux.c
+===================================================================
+--- linux-2.6.20.7.orig/drivers/char/ts0710_mux.c	2007-04-22 12:24:18.000000000 +0200
++++ linux-2.6.20.7/drivers/char/ts0710_mux.c	2007-04-22 12:26:47.000000000 +0200
+@@ -85,6 +85,9 @@
+ #include "ts0710.h"
+ #include "ts0710_mux.h"
+ 
++#define TS0710DEBUG
++#define PRINT_OUTPUT_PRINTK
++
+ #define TS0710MUX_GPRS_SESSION_MAX 2
+ #define TS0710MUX_MAJOR 250
+ #define TS0710MUX_MINOR_START 0
+@@ -316,7 +319,7 @@
+ #ifdef TS0710DEBUG
+ 
+ #ifdef PRINT_OUTPUT_PRINTK
+-#define TS0710_DEBUG(fmt, arg...) printk(KERN_INFO "MUX " __FUNCTION__ ": " fmt "\n" , ## arg)
++#define TS0710_DEBUG(fmt, arg...) printk(KERN_INFO "MUX %s: " fmt "\n" , __func__, ## arg)
+ #else
+ #include "ezxlog.h"
+ static __u8 strDebug[256];
+@@ -530,10 +533,10 @@
+ 		if (strncmp(p->comm, "aplogd", 6) == 0) {
+ 			sig = 1;
+ 			if (send_sig(SIGUSR2, p, 1) == 0) {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX: success to send SIGUSR2 to aplogd!\n");
+ 			} else {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX: failure to send SIGUSR2 to aplogd!\n");
+ 			}
+ 			break;
+@@ -542,7 +545,7 @@
+ 	read_unlock(&tasklist_lock);
+ 
+ 	if (!sig) {
+-		TS0710_PRINTK("MUX: not found aplogd!\n");
++		TS0710_DEBUG("MUX: not found aplogd!\n");
+ 	}
+ }
+ #else
+@@ -559,11 +562,11 @@
+ 	buf[len + 1] = TS0710_BASIC_FLAG;
+ 
+ 	if ((COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)) {
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX basic_write: (COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)\n");
+ 
+ #ifndef USB_FOR_MUX
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX basic_write: tapisrv might be down!!! (serial_for_mux_driver == 0) || (serial_for_mux_tty == 0)\n");
+ 		TS0710_SIG2APLOGD();
+ #endif
+@@ -577,7 +580,7 @@
+ 	res = COMM_FOR_MUX_DRIVER->write(COMM_FOR_MUX_TTY, buf, len + 2);
+ 
+ 	if (res != len + 2) {
+-		TS0710_PRINTK("MUX basic_write: Write Error!\n");
++		TS0710_DEBUG("MUX basic_write: Write Error!\n");
+ 		return -1;
+ 	}
+ 
+@@ -601,7 +604,7 @@
+ 		TS0710_DEBUG("crc_check: CRC check OK\n");
+ 		return 0;
+ 	} else {
+-		TS0710_PRINTK("MUX crc_check: CRC check failed\n");
++		TS0710_DEBUG("MUX crc_check: CRC check failed\n");
+ 		return 1;
+ 	}
+ }
+@@ -1266,7 +1269,7 @@
+ 		break;
+ 
+ 	case FCON:		/*Flow control on command */
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX Received Flow control(all channels) on command\n");
+ 		if (mcc_short_pkt->h.type.cr == MCC_CMD) {
+ 			ts0710->dlci[0].state = CONNECTED;
+@@ -1276,7 +1279,7 @@
+ 		break;
+ 
+ 	case FCOFF:		/*Flow control off command */
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX Received Flow control(all channels) off command\n");
+ 		if (mcc_short_pkt->h.type.cr == MCC_CMD) {
+ 			for (j = 0; j < TS0710_MAX_CHN; j++) {
+@@ -1823,7 +1826,7 @@
+ 			TS0710_DEBUG("UIH on channel %d\n", dlci);
+ 
+ 			if (uih_len > ts0710->dlci[dlci].mtu) {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX Error:  DLCI:%d, uih_len:%d is bigger than mtu:%d, discard data!\n",
+ 				     dlci, uih_len, ts0710->dlci[dlci].mtu);
+ 				break;
+@@ -1844,7 +1847,7 @@
+ 					     dlci, tty_idx);
+ 				TS0710_DEBUGSTR(uih_data_start, uih_len);
+ 				if (!(iscmdtty[tty_idx])) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX Error: %s: Wrong CMDTAG on DLCI:%d, /dev/mux%d\n",
+ 					     __FUNCTION__, dlci, tty_idx);
+ 				}
+@@ -1856,7 +1859,7 @@
+ 				    ("NON-CMDTAG on DLCI:%d, /dev/mux%d\n",
+ 				     dlci, tty_idx);
+ 				if (iscmdtty[tty_idx]) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX Error: %s: Wrong NON-CMDTAG on DLCI:%d, /dev/mux%d\n",
+ 					     __FUNCTION__, dlci, tty_idx);
+ 				}
+@@ -1864,13 +1867,14 @@
+ 			}
+ 			tty = mux_table[tty_idx];
+ 			if ((!mux_tty[tty_idx]) || (!tty)) {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX: No application waiting for, discard it! /dev/mux%d\n",
+ 				     tty_idx);
++				TS0710_DEBUG("MUX: mux_tty[%d] = %d, tty is at %i", tty_idx, mux_tty[tty_idx], tty);
+ 			} else {	/* Begin processing received data */
+ 				if ((!mux_recv_info_flags[tty_idx])
+ 				    || (!mux_recv_info[tty_idx])) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX Error: No mux_recv_info, discard it! /dev/mux%d\n",
+ 					     tty_idx);
+ 					break;
+@@ -1878,7 +1882,7 @@
+ 
+ 				recv_info = mux_recv_info[tty_idx];
+ 				if (recv_info->total > 8192) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX : discard data for tty_idx:%d, recv_info->total > 8192 \n",
+ 					     tty_idx);
+ 					break;
+@@ -1949,7 +1953,7 @@
+ 						    get_mux_recv_packet
+ 						    (uih_len);
+ 						if (!recv_packet) {
+-							TS0710_PRINTK
++							TS0710_DEBUG
+ 							    ("MUX %s: no memory\n",
+ 							     __FUNCTION__);
+ 							break;
+@@ -1980,7 +1984,7 @@
+ 					} else {	/* recv_info->total == 0 */
+ 						if (uih_len >
+ 						    TS0710MUX_RECV_BUF_SIZE) {
+-							TS0710_PRINTK
++							TS0710_DEBUG
+ 							    ("MUX Error:  tty_idx:%d, uih_len == %d is too big\n",
+ 							     tty_idx, uih_len);
+ 							uih_len =
+@@ -2120,12 +2124,12 @@
+ 			if (ts0710->dlci[dlci].state == DISCONNECTED) {
+ 				break;
+ 			} else if (signal_pending(current)) {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX DLCI %d Send DISC got signal!\n",
+ 				     dlci);
+ 				break;
+ 			} else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
+-				TS0710_PRINTK
++				TS0710_DEBUG
+ 				    ("MUX DLCI %d Send DISC timeout!\n", dlci);
+ 				continue;
+ 			}
+@@ -2158,7 +2162,7 @@
+ 			return 0;
+ 		} else if (ts0710->dlci[0].state == CONNECTING) {
+ 			/* Reentry */
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX DLCI: 0, reentry to open DLCI 0, pid: %d, %s !\n",
+ 			     current->pid, current->comm);
+ 			try = 11;
+@@ -2179,13 +2183,13 @@
+ 					   DISCONNECTED) {
+ 					break;
+ 				} else if (signal_pending(current)) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Wait for connecting got signal!\n",
+ 					     dlci);
+ 					retval = -EAGAIN;
+ 					break;
+ 				} else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Wait for connecting timeout!\n",
+ 					     dlci);
+ 					continue;
+@@ -2199,7 +2203,7 @@
+ 			}
+ 		} else if ((ts0710->dlci[0].state != DISCONNECTED)
+ 			   && (ts0710->dlci[0].state != REJECTED)) {
+-			TS0710_PRINTK("MUX DLCI:%d state is invalid!\n", dlci);
++			TS0710_DEBUG("MUX DLCI:%d state is invalid!\n", dlci);
+ 			return retval;
+ 		} else {
+ 			ts0710->initiator = 1;
+@@ -2218,19 +2222,19 @@
+ 					retval = 0;
+ 					break;
+ 				} else if (ts0710->dlci[0].state == REJECTED) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Send SABM got rejected!\n",
+ 					     dlci);
+ 					retval = -EREJECTED;
+ 					break;
+ 				} else if (signal_pending(current)) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Send SABM got signal!\n",
+ 					     dlci);
+ 					retval = -EAGAIN;
+ 					break;
+ 				} else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Send SABM timeout!\n",
+ 					     dlci);
+ 					continue;
+@@ -2271,13 +2275,13 @@
+ 					   DISCONNECTED) {
+ 					break;
+ 				} else if (signal_pending(current)) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Wait for connecting got signal!\n",
+ 					     dlci);
+ 					retval = -EAGAIN;
+ 					break;
+ 				} else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Wait for connecting timeout!\n",
+ 					     dlci);
+ 					continue;
+@@ -2296,7 +2300,7 @@
+ 			}
+ 		} else if ((ts0710->dlci[dlci].state != DISCONNECTED)
+ 			   && (ts0710->dlci[dlci].state != REJECTED)) {
+-			TS0710_PRINTK("MUX DLCI:%d state is invalid!\n", dlci);
++			TS0710_DEBUG("MUX DLCI:%d state is invalid!\n", dlci);
+ 			return retval;
+ 		} else {
+ 			ts0710->dlci[dlci].state = NEGOTIATING;
+@@ -2313,13 +2317,13 @@
+ 				if (ts0710->dlci[dlci].state == CONNECTING) {
+ 					break;
+ 				} else if (signal_pending(current)) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Send pn_msg got signal!\n",
+ 					     dlci);
+ 					retval = -EAGAIN;
+ 					break;
+ 				} else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX DLCI:%d Send pn_msg timeout!\n",
+ 					     dlci);
+ 					continue;
+@@ -2344,20 +2348,20 @@
+ 						break;
+ 					} else if (ts0710->dlci[dlci].state ==
+ 						   REJECTED) {
+-						TS0710_PRINTK
++						TS0710_DEBUG
+ 						    ("MUX DLCI:%d Send SABM got rejected!\n",
+ 						     dlci);
+ 						retval = -EREJECTED;
+ 						break;
+ 					} else if (signal_pending(current)) {
+-						TS0710_PRINTK
++						TS0710_DEBUG
+ 						    ("MUX DLCI:%d Send SABM got signal!\n",
+ 						     dlci);
+ 						retval = -EAGAIN;
+ 						break;
+ 					} else if ((jiffies - t) >=
+ 						   TS0710MUX_TIME_OUT) {
+-						TS0710_PRINTK
++						TS0710_DEBUG
+ 						    ("MUX DLCI:%d Send SABM timeout!\n",
+ 						     dlci);
+ 						continue;
+@@ -2468,7 +2472,7 @@
+ 	schedule_work(&send_tqueue);
+ #else
+ 	if (!tq_serial_for_mux) {
+-		TS0710_PRINTK("MUX Error: %s: tq_serial_for_mux == 0\n",
++		TS0710_DEBUG("MUX Error: %s: tq_serial_for_mux == 0\n",
+ 			      __FUNCTION__);
+ 		return;
+ 	}
+@@ -2508,7 +2512,7 @@
+ 	if ((mux_tty[cmdtty] == 0) && (mux_tty[datatty] == 0)) {
+ 		if (dlci == 1) {
+ 			ts0710_close_channel(0);
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX mux_close: tapisrv might be down!!! Close DLCI 1\n");
+ 			TS0710_SIG2APLOGD();
+ 		}
+@@ -2673,12 +2677,12 @@
+ 	UNUSED_PARAM(tty);
+ 
+ 	if ((COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)) {
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX %s: (COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)\n",
+ 		     __FUNCTION__);
+ 
+ #ifndef USB_FOR_MUX
+-		TS0710_PRINTK
++		TS0710_DEBUG
+ 		    ("MUX %s: tapisrv might be down!!! (serial_for_mux_driver == 0) || (serial_for_mux_tty == 0)\n",
+ 		     __FUNCTION__);
+ 		TS0710_SIG2APLOGD();
+@@ -2724,14 +2728,14 @@
+ 	} else if (ts0710->dlci[dlci].state == CONNECTED) {
+ 
+ 		if (!(mux_send_info_flags[line])) {
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX Error: mux_write: mux_send_info_flags[%d] == 0\n",
+ 			     line);
+ 			return -ENODEV;
+ 		}
+ 		send_info = mux_send_info[line];
+ 		if (!send_info) {
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX Error: mux_write: mux_send_info[%d] == 0\n",
+ 			     line);
+ 			return -ENODEV;
+@@ -2800,7 +2804,7 @@
+ 		}
+ 		return c;
+ 	} else {
+-		TS0710_PRINTK("MUX mux_write: DLCI %d not connected\n", dlci);
++		TS0710_DEBUG("MUX mux_write: DLCI %d not connected\n", dlci);
+ 		return -EDISCONNECTED;
+ 	}
+ }
+@@ -2940,7 +2944,7 @@
+ 		return;
+ 	}
+ 
+-	TS0710_PRINTK("MUX %s: line is:%d\n", __FUNCTION__, line);
++	TS0710_DEBUG("MUX %s: line is:%d\n", __FUNCTION__, line);
+ 
+ 	if ((mux_send_info_flags[line])
+ 	    && (mux_send_info[line])
+@@ -2960,10 +2964,10 @@
+ 
+ /*
+   if( (COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0) ) {
+-    TS0710_PRINTK("MUX %s: (COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)\n", __FUNCTION__);
++    TS0710_DEBUG("MUX %s: (COMM_FOR_MUX_DRIVER == 0) || (COMM_FOR_MUX_TTY == 0)\n", __FUNCTION__);
+ 
+ #ifndef USB_FOR_MUX
+-    TS0710_PRINTK("MUX %s: tapisrv might be down!!! (serial_for_mux_driver == 0) || (serial_for_mux_tty == 0)\n", __FUNCTION__);
++    TS0710_DEBUG("MUX %s: tapisrv might be down!!! (serial_for_mux_driver == 0) || (serial_for_mux_tty == 0)\n", __FUNCTION__);
+     TS0710_SIG2APLOGD();
+ #endif
+ 
+@@ -2989,9 +2993,9 @@
+ 	if ((COMM_FOR_MUX_DRIVER == NULL) || (COMM_FOR_MUX_TTY == NULL)) {
+ 
+ #ifdef USB_FOR_MUX
+-		TS0710_PRINTK("MUX: please install and open IPC-USB first\n");
++		TS0710_DEBUG("MUX: please install and open IPC-USB first\n");
+ #else
+-		TS0710_PRINTK("MUX: please install and open ttyS0 first\n");
++		TS0710_DEBUG("MUX: please install and open ttyS0 first\n");
+ #endif
+ 
+ 		goto out;
+@@ -3016,7 +3020,7 @@
+ /*  if( dlci == 1 ) { */
+ 	/* Open server channel 0 first */
+ 	if ((retval = ts0710_open_channel(0)) != 0) {
+-		TS0710_PRINTK("MUX: Can't connect server channel 0!\n");
++		TS0710_DEBUG("MUX: Can't connect server channel 0!\n");
+ 		ts0710_init();
+ 
+ 		mux_tty[line]--;
+@@ -3073,7 +3077,7 @@
+ 	datatty = dlci2tty[dlci].datatty;
+ 	if ((mux_tty[cmdtty] > 0) || (mux_tty[datatty] > 0)) {
+ 		if ((retval = ts0710_open_channel(dlci)) != 0) {
+-			TS0710_PRINTK("MUX: Can't connected channel %d!\n",
++			TS0710_DEBUG("MUX: Can't connected channel %d!\n",
+ 				      dlci);
+ 			ts0710_reset_dlci(dlci);
+ 
+@@ -3096,6 +3100,7 @@
+ 	retval = 0;
+ #endif
+       out:
++	TS0710_DEBUG("returning %d for open of /dev/mux%d (mux_tty[%d] = %d", retval, line, line, mux_tty[line]);
+ 	return retval;
+ }
+ 
+@@ -3178,12 +3183,12 @@
+ 
+  	while (1) {
+  		tbuf_free = TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf);
+- 		TS0710_PRINTK("Reading max %i bytes from ts0710_mux_usb inbuf.\n", tbuf_free);
++ 		TS0710_DEBUG("Reading max %i bytes from ts0710_mux_usb inbuf.\n", tbuf_free);
+  		tbuf_read = get_from_inbuf_list(tbuf_ptr, tbuf_free);
+  		if (tbuf_read == 0) {
+  			break;
+  		} else {
+- 			TS0710_PRINTK("Read %i bytes.\n", tbuf_read);
++ 			TS0710_DEBUG("Read %i bytes.\n", tbuf_read);
+  		};
+  		tbuf_ptr += tbuf_read;
+  	};
+@@ -3192,7 +3197,7 @@
+ 
+  	// Should be impossible?
+  	//if (count > (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf))) {
+- 	//	TS0710_PRINTK
++ 	//	TS0710_DEBUG
+  	//	    ("MUX receive_worker: !!!!! Exceed buffer boundary !!!!!\n");
+  	//	count = (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf));
+  	//}
+@@ -3264,7 +3269,7 @@
+ 					TS0710_LOGSTR_FRAME(0, start_flag,
+ 							    (tbuf_ptr -
+ 							     start_flag));
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX Error: %s: frame length:%d is bigger than Max total frame size:%d\n",
+ 		 /*__FUNCTION__, framelen, TS0710MUX_MAX_TOTAL_FRAME_SIZE);*/
+ 					     __FUNCTION__, framelen, (TS0710MUX_MAX_TOTAL_FRAME_SIZE + SEQ_FIELD_SIZE));	/*For BP UART problem */
+@@ -3389,7 +3394,7 @@
+ 								*(uih_data_start
+ 								  + uih_len) =
+ 						     0;
+-								TS0710_PRINTK
++								TS0710_DEBUG
+ 								    ("MUX bp log: %s\n",
+ 								     uih_data_start);
+ 							}
+@@ -3415,7 +3420,7 @@
+ 					TS0710_LOGSTR_FRAME(0, start_flag,
+ 							    framelen);
+ 					TS0710_DEBUGHEX(start_flag, framelen);
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX: Lost synchronization!\n");
+ 					search = start_flag + 1;
+ 				}
+@@ -3476,7 +3481,7 @@
+ 		recv_info2 = recv_info->next;
+ 
+ 		if (!(recv_info->total)) {
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX Error: %s: Should not get here, recv_info->total == 0 \n",
+ 			     __FUNCTION__);
+ 			continue;
+@@ -3486,7 +3491,7 @@
+ 		dlci = tty2dlci[tty_idx];
+ 		tty = mux_table[tty_idx];
+ 		if ((!mux_tty[tty_idx]) || (!tty)) {
+-			TS0710_PRINTK
++			TS0710_DEBUG
+ 			    ("MUX: No application waiting for, free recv_info! tty_idx:%d\n",
+ 			     tty_idx);
+ 			mux_recv_info_flags[tty_idx] = 0;
+@@ -3560,7 +3565,7 @@
+ 					recv_info->total -= recv_packet->length;
+ 					free_mux_recv_packet(recv_packet);
+ 				} else {
+-					TS0710_PRINTK
++					TS0710_DEBUG
+ 					    ("MUX Error: %s: Should not get here, recv_info->total is:%u \n",
+ 					     __FUNCTION__, recv_info->total);
+ 				}
+@@ -3760,7 +3765,7 @@
+ 	int ret;
+ 
+ 	if (idx > TS0710MUX_COUNT_MAX_IDX) {
+-		TS0710_PRINTK("MUX get_count: invalid idx: %d!\n", idx);
++		TS0710_DEBUG("MUX get_count: invalid idx: %d!\n", idx);
+ 		return -1;
+ 	}
+ 
+@@ -3774,11 +3779,11 @@
+ static int set_count(__u8 idx, int count)
+ {
+ 	if (idx > TS0710MUX_COUNT_MAX_IDX) {
+-		TS0710_PRINTK("MUX set_count: invalid idx: %d!\n", idx);
++		TS0710_DEBUG("MUX set_count: invalid idx: %d!\n", idx);
+ 		return -1;
+ 	}
+ 	if (count < 0) {
+-		TS0710_PRINTK("MUX set_count: invalid count: %d!\n", count);
++		TS0710_DEBUG("MUX set_count: invalid count: %d!\n", count);
+ 		return -1;
+ 	}
+ 
+@@ -3792,11 +3797,11 @@
+ static int add_count(__u8 idx, int count)
+ {
+ 	if (idx > TS0710MUX_COUNT_MAX_IDX) {
+-		TS0710_PRINTK("MUX add_count: invalid idx: %d!\n", idx);
++		TS0710_DEBUG("MUX add_count: invalid idx: %d!\n", idx);
+ 		return -1;
+ 	}
+ 	if (count <= 0) {
+-		TS0710_PRINTK("MUX add_count: invalid count: %d!\n", count);
++		TS0710_DEBUG("MUX add_count: invalid count: %d!\n", count);
+ 		return -1;
+ 	}
+ 
+Index: linux-2.6.20.7/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.20.7.orig/drivers/char/ts0710_mux_usb.c	2007-04-22 12:26:47.000000000 +0200
++++ linux-2.6.20.7/drivers/char/ts0710_mux_usb.c	2007-04-22 12:26:47.000000000 +0200
+@@ -72,7 +72,8 @@
+ #define IPC_USB_PROBE_NOT_READY	4
+ #define DBG_MAX_BUF_SIZE	1024
+ #define ICL_EVENT_INTERVAL	(HZ)
+-#undef BVD_DEBUG
++
++#define BVD_DEBUG
+ 
+ #define IS_EP_BULK(ep)  ((ep).bmAttributes == USB_ENDPOINT_XFER_BULK ? 1 : 0)
+ #define IS_EP_BULK_IN(ep) (IS_EP_BULK(ep) && ((ep).bEndpointAddress & USB_ENDPOINT_DIR_MASK) == USB_DIR_IN)

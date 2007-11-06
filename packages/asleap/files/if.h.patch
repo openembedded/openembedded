@@ -1,0 +1,11 @@
+diff -ur asleap/asleap.c asleap-10/asleap.c
+--- asleap/asleap.c	2007-05-10 15:29:06.000000000 -0400
++++ asleap-10/asleap.c	2007-06-22 22:05:20.000000000 -0400
+@@ -43,6 +43,7 @@
+ #include <sys/types.h>
+ #include <pcap.h>
+ #include <netpacket/packet.h>
++#include <linux/if.h>
+ #include <linux/wireless.h>
+ 
+ #include "asleap.h"

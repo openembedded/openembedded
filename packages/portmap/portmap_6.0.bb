@@ -11,8 +11,7 @@ S = "${WORKDIR}/${PN}_${PV}/"
 CPPFLAGS += "-DFACILITY=LOG_DAEMON -DENABLE_DNS"
 
 fakeroot do_install() {
-        install -d ${D}${sysconfdir}/init.d
-        install -m 0755 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
-        install -d ${D}${mandir}/man8/ ${D}${base_sbindir}
-        oe_runmake install DESTDIR=${D}
+    install -d ${D}${mandir}/man8/ ${D}${base_sbindir} ${D}${sysconfdir}/init.d
+    install -m 0757 ${WORKDIR}/portmap.init ${D}${sysconfdir}/init.d/portmap
+    oe_runmake install DESTDIR=${D}
 }

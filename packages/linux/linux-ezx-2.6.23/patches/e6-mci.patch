@@ -1,0 +1,124 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-e6.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-e6.c	2007-10-24 19:35:51.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-e6.c	2007-10-24 19:58:02.000000000 +0200
+@@ -13,6 +13,8 @@
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+ #include <linux/fb.h>
++#include <linux/mmc/host.h>
++#include <linux/irq.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -20,12 +22,102 @@
+ #include <asm/arch/pxafb.h>
+ #include <asm/arch/ezx.h>
+ #include <asm/arch/ezx-pcap.h>
++#include <asm/arch/mmc.h>
+ 
+ #include "generic.h"
+ 
+ extern void ezx_lcd_power(int, struct fb_var_screeninfo *);
+ extern void ezx_backlight_power(int);
+ 
++#ifdef CONFIG_EZX_PCAP
++extern int ezx_pcap_mmcsd_power(int);
++extern void ezx_pcap_mmcsd_voltage(u_int32_t);
++#else
++#define ezx_pcap_mmcsd_voltage(x) {}
++#define ezx_pcap_mmcsd_power(x) {}
++#endif
++
++static struct pxamci_platform_data e6_mci_platform_data;
++
++static u_int8_t mmc_voltage[] = {
++	[ilog2(MMC_VDD_165_195)] = 6,
++	[ilog2(MMC_VDD_20_21)] = 7,
++	[ilog2(MMC_VDD_21_22)] = 8,
++	[ilog2(MMC_VDD_22_23)] = 8,
++	[ilog2(MMC_VDD_23_24)] = 9,
++	[ilog2(MMC_VDD_24_25)] = 9,
++	[ilog2(MMC_VDD_25_26)] = 10,
++	[ilog2(MMC_VDD_26_27)] = 10,
++	[ilog2(MMC_VDD_27_28)] = 11,
++	[ilog2(MMC_VDD_28_29)] = 11,
++	[ilog2(MMC_VDD_29_30)] = 12,
++	[ilog2(MMC_VDD_30_31)] = 12,
++	[ilog2(MMC_VDD_31_32)] = 13,
++	[ilog2(MMC_VDD_32_33)] = 13,
++	[ilog2(MMC_VDD_33_34)] = 14,
++	[ilog2(MMC_VDD_34_35)] = 14,
++	[ilog2(MMC_VDD_35_36)] = 15,
++};
++
++static int e6_mci_init(struct device *dev,
++                       irqreturn_t (*ezx_detect_int)(int, void *),
++                       void *data)
++{
++       int err;
++
++       /* Setup GPIO for PXA27x MMC/SD controller */
++       pxa_gpio_mode(GPIO32_MMCCLK_MD);
++       pxa_gpio_mode(GPIO112_MMCCMD_MD);
++       pxa_gpio_mode(GPIO92_MMCDAT0_MD);
++       pxa_gpio_mode(GPIO109_MMCDAT1_MD);
++       pxa_gpio_mode(GPIO110_MMCDAT2_MD);
++       pxa_gpio_mode(GPIO111_MMCDAT3_MD);
++
++       ezx_pcap_mmcsd_power(1);
++
++       e6_mci_platform_data.detect_delay = msecs_to_jiffies(250);
++
++       err = request_irq(0x49, ezx_detect_int, IRQF_DISABLED,
++                       "MMC card detect", data);
++       if (err) {
++               printk(KERN_ERR "ezx_mci_detect: MMC/SD: can't request "
++                       "MMC card detect IRQ\n");
++               return -1;
++       }
++
++       set_irq_type(0x0b, IRQT_BOTHEDGE);
++
++       return 0;
++}
++
++static void e6_mci_setpower(struct device *dev, unsigned int vdd)
++{
++	struct pxamci_platform_data* p_d = dev->platform_data;
++
++	if (( 1 << vdd) & p_d->ocr_mask)
++		ezx_pcap_mmcsd_voltage(mmc_voltage[vdd]);
++
++	ezx_pcap_mmcsd_power(1);
++}
++
++static void e6_mci_exit(struct device *dev, void *data)
++{
++	ezx_pcap_mmcsd_power(0);
++	free_irq(0x49, data);
++}
++
++static struct pxamci_platform_data e6_mci_platform_data = {
++	.ocr_mask       = MMC_VDD_165_195|MMC_VDD_20_21|MMC_VDD_21_22
++			  |MMC_VDD_22_23|MMC_VDD_23_24|MMC_VDD_24_25
++			  |MMC_VDD_25_26|MMC_VDD_26_27|MMC_VDD_27_28
++			  |MMC_VDD_28_29|MMC_VDD_29_30|MMC_VDD_30_31
++			  |MMC_VDD_31_32|MMC_VDD_32_33|MMC_VDD_33_34
++			  |MMC_VDD_34_35|MMC_VDD_35_36,
++	.init           = e6_mci_init,
++	.setpower       = e6_mci_setpower,
++	.exit           = e6_mci_exit,
++};
++
+ static struct pxafb_mode_info mode_e6 = {
+        .pixclock = 192308,
+        .xres = 240,
+@@ -118,6 +210,7 @@
+ static void __init e6_init(void)
+ {
+ 	set_pxa_fb_info(&e6_fb_info);
++	pxa_set_mci_info(&e6_mci_platform_data);
+ 
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ }

@@ -1,19 +1,19 @@
-SECTION = "console/network"
 DESCRIPTION = "Kismet is an 802.11 layer2 wireless network detector, sniffer, and intrusion detection system"
 HOMEPAGE = "http://www.kismetwireless.net/"
+SECTION = "console/network"
 LICENSE = "GPLv2"
-DEPENDS = "expat gmp"
+DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2"
+PR = "r2"
 
-SRC_URI = "http://www.kismetwireless.net/code/kismet-2007-01-R1b.tar.gz \
-           file://no-chmod.patch;patch=1"
+SRC_URI = "http://www.kismetwireless.net/code/kismet-${PV}.tar.gz"
 
-
-EXTRA_OECONF = "--with-pcap=linux --disable-setuid --with-linuxheaders=${STAGING_KERNEL_DIR}/include --disable-gpsmap"
+EXTRA_OECONF = "--enable-wsp100 --with-pcap=linux \
+                --with-linuxheaders=${STAGING_KERNEL_DIR}/include"
 
 inherit autotools
 
-do_configure() {
-        oe_runconf
+fakeroot do_install() {
+     oe_runmake "DESTDIR=${D}" suidinstall
 }
 
 do_install_append() {
@@ -22,7 +22,13 @@ do_install_append() {
 	fi
 }
 
-PACKAGES =+ "kismet-sounds"
-FILES_kismet-sounds = "/usr/share/kismet/wav"
+PACKAGES =+ "${PN}-sounds ${PN}-gpsmap"
 
-CONFFILES_${PN}_nylon = "${sysconfdir}/kismet.conf"
+FILES_${PN}-sounds = "${datadir}/kismet/wav"
+RDEPENDS_${PN}-sounds = "sox"
+
+FILES_${PN}-gpsmap = "${bindir}/gpsmap*"
+RDEPENDS_${PN}-gpsmap = "gpsd"
+
+CONFFILES_${PN} = "${sysconfdir}/kismet.conf ${sysconfdir}/kismet_ui.conf ${sysconfdir}/kismet_drone.conf"
+
