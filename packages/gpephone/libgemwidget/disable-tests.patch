@@ -1,0 +1,8 @@
+--- libgemwidget-1.0/Makefile.am~	2007-11-08 00:12:10.000000000 +0100
++++ libgemwidget-1.0/Makefile.am	2007-11-08 00:12:10.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS			= src include pixmaps test po
++SUBDIRS			= src include pixmaps po
+ 
+ pkgconfigdir		= $(libdir)/pkgconfig
+ pkgconfig_DATA	= libgemwidget.pc
