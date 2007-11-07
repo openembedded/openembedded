@@ -31,6 +31,7 @@ SRC_URI = "cvs://anoncvs@sources.redhat.com/cvs/glibc;module=libc;date=${@bb.dat
 	   file://arm-longlong.patch;patch=1;pnum=0 \
 	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
 	   file://glibc-fp-byteorder.patch;patch=1 \
+     file://glibc-remove-bashism.patch;patch=1;pnum=0 \
 	   \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"

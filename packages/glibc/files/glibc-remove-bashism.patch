@@ -1,0 +1,21 @@
+--- csu/Makefile	8 Mar 2004 21:28:15 -0000	1.73
++++ csu/Makefile	6 Nov 2007 21:50:58 -0000
+@@ -231,14 +231,14 @@
+ 		   if [ -z "$$os" ]; then \
+ 		     os=Linux; \
+ 		   fi; \
+-		   echo "\"Compiled on a $$os $$version system" \
+-			"on `date +%Y-%m-%d`.\\n\"" ;; \
++		   printf '"Compiled on a %s %s system on %s.\\n"\n' \
++			"$$os" "$$version" "`date +%Y-%m-%d`" ;; \
+ 	   *) ;; \
+ 	 esac; \
+ 	 files="$(all-Banner-files)";				\
+ 	 if test -n "$$files"; then				\
+-	   echo "\"Available extensions:\\n\"";			\
++	   printf '"Available extensions:\\n"\n';		\
+ 	   sed -e '/^#/d' -e 's/^[[:space:]]*/	/'		\
+-	       -e 's/^\(.*\)$$/\"\1\\n\"/' $$files;		\
++	       -e 's/\(^.*$$\)/\"\1\\n\"/' $$files;		\
+ 	 fi) > $@T
+ 	mv -f $@T $@
