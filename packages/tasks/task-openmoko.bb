@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r67"
+PR = "r68"
 
 inherit task
 
@@ -54,7 +54,6 @@ RDEPENDS_task-openmoko-ui = "\
   pango-module-basic-x \
   pango-module-basic-fc \
   gtk+ \
-  matchbox-common \
   matchbox-wm \
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
