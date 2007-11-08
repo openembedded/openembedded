@@ -1,8 +1,9 @@
 SECTION = "x11/wm"
 DESCRIPTION = "Matchbox window manager common files"
+SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
            file://no-utilities-category.patch;patch=1 \
@@ -15,3 +16,6 @@ EXTRA_OECONF = "--enable-pda-folders"
 FILES_${PN} = "${bindir} \
 	       ${datadir}/matchbox/vfolders \
 	       ${datadir}/pixmaps"
+
+PACKAGE_ARCH = "all"
+
