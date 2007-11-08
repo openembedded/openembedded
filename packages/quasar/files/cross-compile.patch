@@ -1,0 +1,31 @@
+--- tmp/quasar-qt.pro	2007-10-29 00:18:03.000000000 +0100
++++ quasar-qt.pro	2007-11-04 09:11:58.000000000 +0100
+@@ -3,13 +3,13 @@
+ TARGET		= quasar
+ TEMPLATE	= app
+ 
+-#CONFIG		= qt warn_on
+-CONFIG		= qt warn_on debug
++CONFIG		= qt warn_on release
++#CONFIG		= qt warn_on debug
+ 
+ # for native compilation with ccache:
+-TMAKE_CC	= ccache gcc
+-TMAKE_CXX	= ccache g++
+-TMAKE_LINK	= ccache g++
++#TMAKE_CC	= ccache gcc
++#TMAKE_CXX	= ccache g++
++#TMAKE_LINK	= ccache g++
+ 
+ # for native compilation with pdaxii13's zgcc:
+ #TMAKE_CC	= gcc
+@@ -26,7 +26,8 @@
+ TMAKE_CFLAGS	= $$TMAKE_CFLAGS $$SQLITE_FLAGS -DQUASAR -O3
+ TMAKE_CXXFLAGS  = $$TMAKE_CXXFLAGS $$SQLITE_FLAGS -DQUASAR -O3
+ 
+-LIBS		= -liconv -lz -lstdc++
++#LIBS		= -liconv -lz -lstdc++
++LIBS           = -lz
+ 
+ INCLUDEPATH	= \
+ 		. \
