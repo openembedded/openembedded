@@ -1,0 +1,101 @@
+# 
+# old_revision [d336ecfbafd630f83489624d1ed72c11c20ef24f]
+# 
+# add_dir "packages/notecase/notecase-1.6.9"
+# 
+# add_file "packages/notecase/notecase-1.6.9/no-hardcoded-cxx.patch"
+#  content [51ab9f2f39f13a1affed9594ed4bf1b08d5924ed]
+# 
+# add_file "packages/notecase/notecase_1.6.9.bb"
+#  content [d3beaa2a4e039c882b80573bc5cd7a42771bdc7c]
+# 
+# patch "packages/notecase/notecase_1.2.6.bb"
+#  from [9e3c4c5c2c985e5e91939b9b36f848b9da20aba9]
+#    to [1fd0ae48a08312344f8542bab69d04c5d1d73db7]
+# 
+============================================================
+--- packages/notecase/notecase-1.6.9/no-hardcoded-cxx.patch	51ab9f2f39f13a1affed9594ed4bf1b08d5924ed
++++ packages/notecase/notecase-1.6.9/no-hardcoded-cxx.patch	51ab9f2f39f13a1affed9594ed4bf1b08d5924ed
+@@ -0,0 +1,38 @@
++--- tmp/Makefile	2007-05-08 12:25:10.000000000 +0200
+++++ Makefile	2007-11-03 10:46:51.000000000 +0100
++@@ -131,7 +131,7 @@
++ ifdef WINDIR
++  LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LDFLAGS) -L$(OBJ) -lz 
++ else
++- LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LDFLAGS) -ldl
+++ NLD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LOPTIMIZE) -ldl -export-dynamic $(LOPTIMIZE)
++ endif 
++ 
++ #
++@@ -190,7 +190,7 @@
++  LIBS += hildon-libs hildon-fm libosso
++ endif
++ 
++-GTKCFLAGS=`pkg-config --cflags $(LIBS)` -I/target/include  -I/sw/include 
+++GTKCFLAGS=`pkg-config --cflags $(LIBS)` 
++ GTKLIBS=`pkg-config --libs $(LIBS)`
++ 
++ #
++@@ -201,7 +201,7 @@
++ 	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
++ else
++ notecase$(EXE): updatesrc $(OBJS)
++-	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS) > /dev/null
+++	$(NLD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
++ endif	
++ 
++ #
++@@ -421,7 +421,7 @@
++ 	$(CC) $(FLAGS) -c $(GUIPATH)/DocActionFinishDel.cpp -o $(OBJ)/DocActionFinishDel.o $(GTKCFLAGS)
++ 	
++ $(OBJ)/libz.a:
++-	@cd ./src/lib/zlib/; $(MAKE); cp ./libz.a ../../../$(OBJ)/
+++	@cd ./src/lib/zlib/; cp ./libz.a ../../../$(OBJ)/
++ 
++ $(OBJ)/ShortcutsList.o: $(GUIPATH)/ShortcutsList.cpp $(GUIPATH)/ShortcutsList.h
++ 	$(CC) $(FLAGS) -c $(GUIPATH)/ShortcutsList.cpp -o $(OBJ)/ShortcutsList.o  $(GTKCFLAGS)
+============================================================
+--- packages/notecase/notecase_1.6.9.bb	d3beaa2a4e039c882b80573bc5cd7a42771bdc7c
++++ packages/notecase/notecase_1.6.9.bb	d3beaa2a4e039c882b80573bc5cd7a42771bdc7c
+@@ -0,0 +1,29 @@
++DESCRIPTION = "NoteCase is a hierarchical note manager (aka. outliner)." "
++AUTHOR = "Mioslav Rajcic"
++HOMEPAGE = "notecase.sf.net"
++SECTION = "x11/utils"
++LICENSE = "BSD"
++
++DEPENDS = "zlib gtk+ gnome-vfs"
++
++SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}_src.tar.gz\
++	  file://no-hardcoded-cxx.patch;patch=1"
++
++inherit pkgconfig
++
++do_compile_prepend() {
++	cp ${STAGING_LIBDIR}/libz.a ${S}/src/lib/zlib/
++}
++
++
++do_install() {
++	install -d ${D}${bindir}
++	install -d ${D}${datadir}/applications
++	install -d ${D}${datadir}/doc
++	install -d ${D}${datadir}/doc/notecase
++	install -d ${D}${datadir}/icons
++	install -m 644 ${S}/docs/notecase.desktop ${D}${datadir}/applications
++        install -m 644 ${S}/docs/help.ncd ${D}${datadir}/doc/notecase/help.ncd
++        install -m 644 ${S}/res/notecase.xpm ${D}${datadir}/icons/notecase.xpm
++	install -m 755 ${S}/bin/notecase ${D}${bindir}/
++}
+============================================================
+--- packages/notecase/notecase_1.2.6.bb	9e3c4c5c2c985e5e91939b9b36f848b9da20aba9
++++ packages/notecase/notecase_1.2.6.bb	1fd0ae48a08312344f8542bab69d04c5d1d73db7
+@@ -1,4 +1,7 @@ DESCRIPTION = "NoteCase is a hierarchica
+ DESCRIPTION = "NoteCase is a hierarchical note manager (aka. outliner)." "
++AUTHOR = "Miroslav Rajcic"
++HOMEPAGE = "notecase.sf.net"
++SECTION = "x11/utils"
+ LICENSE = "BSD"
+ 
+ DEPENDS = "zlib gtk+ gnome-vfs"
