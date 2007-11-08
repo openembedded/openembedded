@@ -3,8 +3,9 @@ HOMEPAGE = "http://www.openmoko.org"
 LICENSE = "GPL LGPL"
 SECTION = "libs/gsm"
 PROVIDES += "gsmd"
+RPROVIDES_${PN} = "libgsmd0 libgsmd gsmd gsmd-devel"
 PV = "0.1+svnr${SRCREV}"
-PR = "r32"
+PR = "r37"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -30,7 +31,7 @@ do_install_append() {
 	install ${WORKDIR}/default ${D}/${sysconfdir}/default/gsmd
 }
 
-PACKAGES =+ "${PN}-tools ${BASEPN} \
+PACKAGES =+ "${PN}-tools \
              ${BASEPN}-plugins \
              ${BASEPN}-plugin-machine-generic \
              ${BASEPN}-plugin-machine-tihtc \
@@ -40,7 +41,6 @@ PACKAGES =+ "${PN}-tools ${BASEPN} \
              ${BASEPN}-plugin-vendor-tihtc \
              "
 
-RDEPENDS_${PN} = "${BASEPN}"
 RDEPENDS_${BASEPN}-plugins = "${BASEPN}-plugin-machine-generic \
                          ${BASEPN}-plugin-machine-tihtc \
                          ${BASEPN}-plugin-vendor-bcm \
@@ -49,12 +49,11 @@ RDEPENDS_${BASEPN}-plugins = "${BASEPN}-plugin-machine-generic \
                          ${BASEPN}-plugin-vendor-tihtc \
                          "
 
-RDEPENDS_${BASEPN} = "update-rc.d initscripts"
-RRECOMMENDS_${BASEPN} = "${BASEPN}-plugins"
+RDEPENDS_${PN} += "update-rc.d initscripts"
+RRECOMMENDS_${PN} += "${BASEPN}-plugins"
 
 FILES_${PN}-dbg += "${libdir}/gsmd/.debug/*"
 FILES_${PN}-tools = "${bindir}/*"
-FILES_${BASEPN} = "${sbindir}/gsmd ${sysconfdir}"
 FILES_${BASEPN}-plugins = ""
 FILES_${BASEPN}-plugin-machine-generic = "${libdir}/gsmd/libgsmd-machine_generic.so*"
 FILES_${BASEPN}-plugin-machine-tihtc = "${libdir}/gsmd/libgsmd-machine_tihtc.so*"
@@ -77,17 +76,7 @@ RCONFLICTS_${BASEPN}-plugin-vendor-bcm = "${CONFLICTNAME}-plugin-vendor-bcm"
 RCONFLICTS_${BASEPN}-plugin-vendor-ti = "${CONFLICTNAME}-plugin-vendor-ti"
 RCONFLICTS_${BASEPN}-plugin-vendor-tihtc = "${CONFLICTNAME}-plugin-vendor-tihtc"
 
-RREPLACES_lib${BASEPN} = "lib${CONFLICTNAME}"
-RREPLACES_${BASEPN} = "${CONFLICTNAME}"
-RREPLACES_${BASEPN}-plugins = "${CONFLICTNAME}-plugins"
-RREPLACES_${BASEPN}-plugin-machine-generic = "${CONFLICTNAME}-plugin-machine-generic"
-RREPLACES_${BASEPN}-plugin-machine-tihtc = "${CONFLICTNAME}-plugin-machine-tihtc"
-RREPLACES_${BASEPN}-plugin-vendor-qc = "${CONFLICTNAME}-plugin-vendor-qc"
-RREPLACES_${BASEPN}-plugin-vendor-bcm = "${CONFLICTNAME}-plugin-vendor-bcm"
-RREPLACES_${BASEPN}-plugin-vendor-ti = "${CONFLICTNAME}-plugin-vendor-ti"
-RREPLACES_${BASEPN}-plugin-vendor-tihtc = "${CONFLICTNAME}-plugin-vendor-tihtc"
-
-RPROVIDES_lib${BASEPN} = "lib${CONFLICTNAME}"
+RPROVIDES_lib${BASEPN} += "lib${CONFLICTNAME}"
 RPROVIDES_${BASEPN} = "${CONFLICTNAME}"
 RPROVIDES_${BASEPN}-plugins = "${CONFLICTNAME}-plugins"
 RPROVIDES_${BASEPN}-plugin-machine-generic = "${CONFLICTNAME}-plugin-machine-generic"

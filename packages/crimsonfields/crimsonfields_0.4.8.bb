@@ -17,9 +17,9 @@ do_configure() {
 	oe_runconf
 	for binary in ${HOST_TOOLS}
 	do
-		install -m 0755 ${STAGING_DIR}/${BUILD_SYS}/bin/$binary	tools/
+		install -m 0755 ${STAGING_BINDIR_NATIVE}/$binary tools/
 	done
-	install -m 0644 ${STAGING_DIR}/${BUILD_SYS}/share/default.* tools/
+	install -m 0644 ${STAGING_DATADIR_NATIVE}/default.* tools/
 }
 
 do_install() {

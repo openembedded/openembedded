@@ -4,6 +4,7 @@ DEPENDS = "gcc binutils make patch patchutils diffstat diffutils automake flex b
 RDEPENDS = "gcc-symlinks g++-symlinks binutils-symlinks make libc6-dev \
 	    flex flex-dev bison gawk sed grep autoconf automake make \
 	    patch patchutils diffstat diffutils libgcc-s-dev libstdc++-dev"
+PR = "r1"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"

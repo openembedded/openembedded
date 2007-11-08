@@ -29,14 +29,14 @@ EXTRA_OECONF = "--with-apxs2=${STAGING_BINDIR_NATIVE}/apxs \
 		--disable-simplexml \
 		--disable-libxml \
 		--disable-dom \
-                --with-zlib --with-zlib-dir=${STAGING_LIBDIR}/.. \
+                --with-zlib --with-zlib-dir=${STAGING_DIR_NATIVE}${layout_exec_prefix} \
                 --with-config-file-path=/etc/php/apache2-php5"
 
-#		--with-libxml-dir=${STAGING_DIR}/${BUILD_SYS}/ \
+#		--with-libxml-dir=${STAGING_DIR_NATIVE}${layout_exec_prefix} \
 
 # to get postgres support, add it to the DEPENDS above
 # and uncomment this line.  similar for mysql
-#EXTRA_OECONF += " --with-pgsql=${STAGING_LIBDIR}/.."
+#EXTRA_OECONF += " --with-pgsql=${STAGING_DIR_HOST}${layout_exec_prefix}"
 
 acpaths = ""
 
@@ -45,7 +45,7 @@ acpaths = ""
 # which breaks everything...
 #
 do_configure() {
-	export PHP_LIBXML_DIR=${STAGING_DIR}/${BUILD_SYS}
+	export PHP_LIBXML_DIR=${STAGING_DIR_NATIVE}${layout_exec_prefix} 
 	oe_runconf
 }
 

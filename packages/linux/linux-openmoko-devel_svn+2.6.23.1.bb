@@ -11,7 +11,7 @@ KERNEL_RELEASE = "2.6.23.1"
 
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -29,6 +29,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.ta
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
 #           file://printascii-2.6.23.patch;patch=1 \
            file://hack-gta02-cpu.patch;patch=1 \
+           file://fix-gta01-flowcontrol2-2.6.23.patch;patch=1 \
            file://defconfig-2.6.23.1 \
            file://logo_linux_clut224.ppm"
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
@@ -61,24 +62,7 @@ do_prepatch() {
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openmoko
         mv .pc .pc.old
-	mv ${WORKDIR}/defconfig-${KERNEL_VERSION} ${WORKDIR}/defconfig
+        mv ${WORKDIR}/defconfig-${KERNEL_VERSION} ${WORKDIR}/defconfig
 }
 
 addtask prepatch after do_unpack before do_patch
-
-###############################################################
-# put into deploy directory and append u-boot header
-#
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
-        ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
-        rm -f linux.bin.gz
-        gzip -9 linux.bin
-        ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm -O linux -T kernel -C gzip -a 30008000 -e 30008000 -n "OpenMoko Kernel Image Neo1973" \
-                                               -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
-        ln -sf ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin ${DEPLOY_DIR_IMAGE}/uImage-${MACHINE}-latest.bin
-        rm -f linux.bin.gz
-}
-

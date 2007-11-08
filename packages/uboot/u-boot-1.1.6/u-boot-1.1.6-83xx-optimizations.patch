@@ -1,0 +1,89 @@
+diff --exclude CVS -uNr u-boot-1.1.6/cpu/mpc83xx/cpu_init.c u-boot-1.1.6.modified/cpu/mpc83xx/cpu_init.c
+--- u-boot-1.1.6/cpu/mpc83xx/cpu_init.c	2007-04-10 17:43:16.000000000 -0400
++++ u-boot-1.1.6.modified/cpu/mpc83xx/cpu_init.c	2007-04-10 17:31:51.000000000 -0400
+@@ -66,10 +66,30 @@
+ 	memset ((void *) gd, 0, sizeof (gd_t));
+ 
+ 	/* system performance tweaking */
++	/* System Priority Configuration Register (SPCR) */
++#ifdef CFG_SPCR_PCIHPE
++	/* PCI highest priority enable */
++	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_PCIHPE) | (CFG_SPCR_PCIHPE << SPCR_PCIHPE_SHIFT);
++#endif
+ 
+-#ifdef CFG_ACR_PIPE_DEP
+-	/* Arbiter pipeline depth */
+-	im->arbiter.acr = (im->arbiter.acr & ~ACR_PIPE_DEP) | (3 << ACR_PIPE_DEP_SHIFT);
++#ifdef CFG_SPCR_PCIPR
++	/* PCI bridge CSB request priority  */
++	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_PCIPR) | (CFG_SPCR_PCIPR << SPCR_PCIPR_SHIFT);
++#endif
++
++#ifdef CFG_SPCR_OPT
++	/* Optimize transactions between CSB and other devices */
++	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_OPT) | (CFG_SPCR_OPT << SPCR_OPT_SHIFT);
++#endif
++
++#ifdef CFG_SPCR_TBEN
++	/* e300 time base unit enable */
++	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_TBEN) | (CFG_SPCR_TBEN << SPCR_TBEN_SHIFT);
++#endif
++
++#ifdef CFG_SPCR_COREPR
++	/* e300 core CSB request priority */
++	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_COREPR) | (CFG_SPCR_COREPR << SPCR_COREPR_SHIFT);
+ #endif
+ 
+ #ifdef CFG_SPCR_TSEC1EP
+@@ -82,6 +102,7 @@
+ 	im->sysconf.spcr = (im->sysconf.spcr & ~SPCR_TSEC2EP) | (3 << SPCR_TSEC2EP_SHIFT);
+ #endif
+ 
++	/* System Clock Control Register (SCCR) */
+ #ifdef CFG_SCCR_TSEC1CM
+ 	/* TSEC1 clock mode */
+ 	im->clk.sccr = (im->clk.sccr & ~SCCR_TSEC1CM) | (1 << SCCR_TSEC1CM_SHIFT);
+@@ -91,6 +112,12 @@
+ 	im->clk.sccr = (im->clk.sccr & ~SCCR_TSEC2CM) | (1 << SCCR_TSEC2CM_SHIFT);
+ #endif
+ 
++	/* Arbiter Control Register (ACR) */
++#ifdef CFG_ACR_PIPE_DEP
++	/* Arbiter pipeline depth */
++	im->arbiter.acr = (im->arbiter.acr & ~ACR_PIPE_DEP) | (3 << ACR_PIPE_DEP_SHIFT);
++#endif
++
+ #ifdef CFG_ACR_RPTCNT
+ 	/* Arbiter repeat count */
+ 	im->arbiter.acr = ((im->arbiter.acr & ~(ACR_RPTCNT)) | (3 << ACR_RPTCNT_SHIFT));
+diff --exclude CVS -uNr u-boot-1.1.6/include/configs/MPC8323ERDB.h u-boot-1.1.6.modified/include/configs/MPC8323ERDB.h
+--- u-boot-1.1.6/include/configs/MPC8323ERDB.h	2007-04-10 17:43:16.000000000 -0400
++++ u-boot-1.1.6.modified/include/configs/MPC8323ERDB.h	2007-04-10 17:32:03.000000000 -0400
+@@ -63,6 +63,16 @@
+ 	HRCWH_BIG_ENDIAN |\
+ 	HRCWH_LALE_NORMAL)
+ 
++/* System performance */
++#define CFG_ACR_PIPE_DEP	3	/* Arbiter pipeline depth (0-3) */
++#define CFG_ACR_RPTCNT		3	/* Arbiter repeat count (0-7) */
++#define CFG_SPCR_PCIHPE		0	/* (0-1) PCI highest priority enable */
++#define CFG_SPCR_PCIPR		0	/* (0-3) PCI bridge CSB request priority */
++#define CFG_SPCR_OPT		1	/* (0-1) Optimize transactions between CSB and the SEC and QUICC Engine block */
++#define CFG_SPCR_TBEN		1	/* (0-1) e300 time base unit enable */
++#define CFG_SPCR_COREPR		0	/* (0-3) e300 core CSB request priority */
++
++
+ /*
+  * System IO Config
+  */
+diff --exclude CVS -uNr u-boot-1.1.6/include/mpc83xx.h u-boot-1.1.6.modified/include/mpc83xx.h
+--- u-boot-1.1.6/include/mpc83xx.h	2007-04-10 17:43:16.000000000 -0400
++++ u-boot-1.1.6.modified/include/mpc83xx.h	2007-04-10 17:32:15.000000000 -0400
+@@ -91,6 +91,7 @@
+ #define SPCR_PCIPR			0x03000000	/* PCI bridge system bus request priority */
+ #define SPCR_PCIPR_SHIFT		(31-7)
+ #define SPCR_OPT			0x00800000	/* Optimize */
++#define SPCR_OPT_SHIFT			(31-8)
+ #define SPCR_TBEN			0x00400000	/* E300 PowerPC core time base unit enable */
+ #define SPCR_TBEN_SHIFT			(31-9)
+ #define SPCR_COREPR			0x00300000	/* E300 PowerPC Core system bus request priority */

@@ -36,7 +36,7 @@ do_configure() {
 
 do_install_append() {
         install -d ${D}${datadir}/cups/model/
-	install -m 644 ${STAGING_DIR}/${BUILD_SYS}/share/cups/model/* ${D}${datadir}/cups/model/
+	install -m 644 ${STAGING_DATADIR_NATIVE}/cups/model/* ${D}${datadir}/cups/model/
         cp -pPr ${D}${STAGING_LIBDIR}/* ${D}${libdir}/
 	cp -pPr ${D}${STAGING_DATADIR}/* ${D}${datadir}/
 }

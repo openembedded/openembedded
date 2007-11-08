@@ -1,3 +1,7 @@
+# This is a lock-down file for stability purposes
+# If you change anything, send a mail to angstrom-distro-devel@linuxtogo.org 
+# stating the change and the reason.
+
 # bitbake -s | awk '{print "PREFERRED_VERSION_" $1 "=" $2}' |   sed -e s:\+:\=:g | awk -F "=" '{print $1 " ?= \" "$2}' |  awk -F "-r" '{print $1"\""}' | sed -e s,0:,,g -e s,1:,,g | sed s:\"\ :\":g> /tmp/angstrom-2007-preferred-versions.inc
  
 PREFERRED_VERSION_0xffff ?= "0.2"
@@ -616,6 +620,7 @@ PREFERRED_VERSION_gst-plugins-good ?= "0.10.6"
 PREFERRED_VERSION_gst-plugins-ugly ?= "0.10.6"
 PREFERRED_VERSION_gstreamer ?= "0.10.14"
 PREFERRED_VERSION_gthumb ?= "2.6.9"
+PREFERRED_VERSION_gtk+ ?= "2.10.14"
 PREFERRED_VERSION_gtk-clearlooks-engine ?= "0.6.2"
 PREFERRED_VERSION_gtk-doc ?= "1.0"
 PREFERRED_VERSION_gtk-doc-native ?= "1.0"
@@ -1044,7 +1049,7 @@ PREFERRED_VERSION_libtext-diff-perl-native ?= "0.35"
 PREFERRED_VERSION_libticables ?= "3.9.2"
 PREFERRED_VERSION_libticalcs ?= "4.5.9"
 PREFERRED_VERSION_libtifiles ?= "0.6.5"
-PREFERRED_VERSION_libtinymail ?= "0.0.1"
+PREFERRED_VERSION_libtinymail ?= "0.0.3"
 PREFERRED_VERSION_libtododb ?= "0.11"
 PREFERRED_VERSION_libtomcrypt ?= "0.97b"
 PREFERRED_VERSION_libtomoe-gtk ?= "0.1.0"
@@ -2082,7 +2087,7 @@ PREFERRED_VERSION_xrdb ?= "1.0.4"
 PREFERRED_VERSION_xscreensaver ?= "4.22"
 PREFERRED_VERSION_xscrnsaverh ?= "1.0"
 PREFERRED_VERSION_xserver-common ?= "1.18"
-PREFERRED_VERSION_xserver-kdrive ?= "1.4"
+PREFERRED_VERSION_xserver-kdrive    ?= "1.3.0.0"
 PREFERRED_VERSION_xserver-kdrive-common ?= "0.1"
 PREFERRED_VERSION_xserver-nodm-init ?= "1.0"
 PREFERRED_VERSION_xserver-xorg ?= "1.3.0.0"

@@ -6,6 +6,6 @@ PR = "r1"
 PE = "1"
 
 S = "${WORKDIR}/mkfontdir-${PV}"
-SRC_URI = "${XORG_MIRROR}/X11R7.1/src/app/mkfontdir-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/app/mkfontdir-${PV}.tar.bz2"
 
 inherit native autotools pkgconfig

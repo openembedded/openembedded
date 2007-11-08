@@ -9,7 +9,7 @@ KERNEL_RELEASE = "2.6.22.5"
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -23,6 +23,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.ta
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \
 	       svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http \
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
+           file://fix-gta01-flowcontrol2-2.6.22.5.patch;patch=1 \
            file://defconfig-${KERNEL_RELEASE}"
 
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"

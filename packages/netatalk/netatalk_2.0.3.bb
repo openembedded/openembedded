@@ -1,4 +1,3 @@
-DESCRIPTION = "Appletalk protocol suite"
 SECTION = "net"
 PR = "r0"
 LICENSE = "GPL"
@@ -31,7 +30,7 @@ do_configure () {
 		--disable-static \
 		--with-pam \
 		--mandir=${mandir}
-	cp ${STAGING_DIR}/${BUILD_SYS}/bin/${TARGET_SYS}-libtool ./${TARGET_SYS}-libtool
+	cp ${STAGING_BINDIR_NATIVE}/${TARGET_SYS}-libtool ./${TARGET_SYS}-libtool
 }
 
 do_install_append() {

@@ -1,0 +1,59 @@
+From 24813da9b0aac0e92635d7307837d89a9f4a1ee7 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 19 Oct 2007 16:47:15 +0400
+Subject: [PATCH] tosa-power-r18.patch fixes
+
+---
+ arch/arm/mach-pxa/tosa_pm.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa_pm.c b/arch/arm/mach-pxa/tosa_pm.c
+index 1eab1af..2df75f0 100644
+--- a/arch/arm/mach-pxa/tosa_pm.c
++++ b/arch/arm/mach-pxa/tosa_pm.c
+@@ -17,9 +17,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
++#include <linux/apm-emulation.h>
+ #include <linux/wm97xx.h>
+ 
+-#include <asm/apm.h>
+ #include <asm/irq.h>
+ #include <asm/mach-types.h>
+ #include <asm/hardware.h>
+@@ -144,7 +144,7 @@ static int tosa_ac97_init(void)
+ 	pxa_gpio_mode(GPIO29_SDATA_IN_AC97_MD);
+ 	pxa_gpio_mode(GPIO20_DREQ0_MD);
+ 	
+-	pxa_set_cken(CKEN2_AC97, 1);
++	pxa_set_cken(CKEN_AC97, 1);
+ 	/* AC97 power on sequense */
+ 	while ( 1 ) {
+ 		GCR = 0;
+@@ -184,11 +184,12 @@ static int tosa_ac97_init(void)
+ 	pxa_gpio_mode(GPIO32_SDATA_IN1_AC97_MD);
+ 	ad_polling = 1;
+ 	printk("tosa_ac97_init\n");
++	return 0;
+ }
+ 
+ void tosa_ac97_exit(void)
+ {
+-	if (!(CKEN & CKEN2_AC97))
++	if (!(CKEN & CKEN_AC97))
+ 		return;
+ 	
+ 	// power down the whole chip
+@@ -197,7 +198,7 @@ void tosa_ac97_exit(void)
+ //       GCR &= ~(GCR_CDONE_IE | GCR_SDONE_IE | GCR_SECRDY_IEN | GCR_PRIRDY_IEN | GCR_SECRES_IEN | GCR_PRIRES_IEN);
+ //        GSR = GSR;
+ //	GCR = GCR_ACLINK_OFF;
+-	pxa_set_cken(CKEN2_AC97, 0);
++	pxa_set_cken(CKEN_AC97, 0);
+ 	/* switch back to irq driver */
+ 	ad_polling = 0;
+ 	printk("tosa_ac97_exit\n");
+-- 
+1.4.4.4
+

@@ -1,5 +1,6 @@
 DESCRIPTION = "vte is a virtual terminal emulator"
 LICENSE = "LGPL"
+DEPENDS += " glib-2.0 gtk+"
 RDEPENDS = "termcap"
 PR = "r3"
 

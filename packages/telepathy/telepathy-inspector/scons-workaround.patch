@@ -1,0 +1,12 @@
+Index: telepathy-inspector-0.5.0/SConstruct
+===================================================================
+--- telepathy-inspector-0.5.0.orig/SConstruct	2007-10-31 10:49:00.000000000 +0100
++++ telepathy-inspector-0.5.0/SConstruct	2007-10-31 10:49:10.000000000 +0100
+@@ -4,6 +4,7 @@
+ SConsignFile()
+ 
+ env = Environment(ENV = os.environ)
++env['CC'] = os.environ['CC']
+ 
+ # Variables
+ 

@@ -24,7 +24,7 @@ do_compile() {
   # generate classes
   # javac -> jikes
   ${STAGING_BINDIR_NATIVE}/find {de,javax,com} -iname *.java > file.list
-  ${STAGING_BINDIR_NATIVE}/jikes -verbose --bootclasspath ${STAGING_DIR}/${BUILD_SYS}/share/kaffeh/rt.jar -d build @file.list
+  ${STAGING_BINDIR_NATIVE}/jikes -verbose --bootclasspath ${STAGING_DATADIR_NATIVE}/kaffeh/rt.jar -d build @file.list
 
   # create own version.xml (add version information available at runtime)
   head -n 4 version.xml >> build/version.xml
@@ -37,7 +37,7 @@ do_compile() {
 
   # JNI generated header file - de_avetana_bluetooth_stack_BlueZ.h
   # javah -> kaffeh
-  ${STAGING_BINDIR_NATIVE}/kaffeh -jni -classpath avetanaBT.jar:${STAGING_DIR}/${BUILD_SYS}/share/kaffeh/rt.jar -d c de.avetana.bluetooth.stack.BlueZ
+  ${STAGING_BINDIR_NATIVE}/kaffeh -jni -classpath avetanaBT.jar:${STAGING_DATADIR_NATIVE}/kaffeh/rt.jar -d c de.avetana.bluetooth.stack.BlueZ
 
   # Native language (C) library - libavetanaBT.so
   ${CXX} ${CXXFLAGS}  -shared -lbluetooth -I${STAGING_INCDIR}/classpath c/BlueZ.cpp -o libavetanaBT.so ${LDFLAGS}
@@ -46,8 +46,8 @@ do_compile() {
 
 do_stage() {
 
-  install -d ${STAGING_DIR}/${BUILD_SYS}/share/avetanabt
-  install avetanaBT.jar ${STAGING_DIR}/${BUILD_SYS}/share/avetanabt/
+  install -d ${STAGING_DATADIR_NATIVE}/avetanabt
+  install avetanaBT.jar ${STAGING_DATADIR_NATIVE}/avetanabt/
 
 }
 

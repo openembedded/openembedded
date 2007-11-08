@@ -1,9 +1,10 @@
 require altboot.inc
 
-PR = "r0"
+PR = "r1"
 
 SVN_REV = "66"
-SRC_URI = "svn://hentges.net/public/altboot;module=trunk;rev=${SVN_REV}"
+SRC_URI = "svn://hentges.net/public/altboot;module=trunk;rev=${SVN_REV} \
+           file://sd-dynamic-fix.patch;patch=1"
 
 do_install() {
 	install -d ${D}/sbin
