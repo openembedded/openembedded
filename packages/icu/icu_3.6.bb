@@ -2,7 +2,7 @@ require icu-3.6.inc
 
 DEPENDS += "icu-native"
 
-PR = "r1"
+PR = "r2"
 
 do_configure_append() {
         for i in */Makefile */*.inc */*/Makefile */*/*.inc ; do
@@ -13,6 +13,9 @@ do_configure_append() {
 	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc.in || true
 }
 
+do_install_append() {
+        chmod +x ${D}${libdir}/lib*
+}
 
 PACKAGES =+ "libicudata libicuuc libicui18n libicule libiculx libicutu libicuio"
 

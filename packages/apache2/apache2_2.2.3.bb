@@ -10,7 +10,8 @@ SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-2.2.3.tar.bz2 \
 	   file://apr-sockets-patch;patch=1 \
 	   file://configure-patch;patch=1 \
 	   file://server-makefile-patch;patch=1 \
-           file://configure-fix-cross-compile-ptr-check.patch;patch=1"
+           file://configure-fix-cross-compile-ptr-check.patch;patch=1 \
+           file://init"
 
 #
 # over-ride needed since apache unpacks into httpd
@@ -93,7 +94,7 @@ do_configure() {
 
 do_install_append() {
 	install -d ${D}/${sysconfdir}/init.d
-	cat ${FILESDIR}/../files/init | \
+	cat ${WORKDIR}/init | \
 		sed -e 's,/usr/sbin/,${sbindir}/,g' \
 		    -e 's,/usr/bin/,${bindir}/,g' \
 		    -e 's,/usr/lib,${libdir}/,g' \
