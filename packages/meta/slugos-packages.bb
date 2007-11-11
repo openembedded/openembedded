@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r37"
+PR = "r38"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -51,6 +51,7 @@ SLUGOS_PACKAGES = "\
 	coreutils \
 	cron \
 	ctorrent \
+	ctrlproxy \
 	cvs \
 	cyrus-imapd \
 	cyrus-sasl \
@@ -81,6 +82,7 @@ SLUGOS_PACKAGES = "\
 	gdbm \
 	glib-2.0 \
 	gnu-config \
+	gphoto2 \
 	grep \
 	groff \
 	gspcav1 \
@@ -116,6 +118,7 @@ SLUGOS_PACKAGES = "\
 	libxml2 \
 	linphone \
 	litestream \
+	logrotate \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -146,7 +149,6 @@ SLUGOS_PACKAGES = "\
 	net-tools \
 	netcat \
 	netpbm \
-	nfs-utils \
 	nmap \
 	ntfs-3g \
 	ntp \
@@ -175,6 +177,7 @@ SLUGOS_PACKAGES = "\
 	rng-tools \
 	rsync \
 	samba \
+	sane-backends \
 	screen \
 	sed \
 	setpwc \
@@ -188,7 +191,6 @@ SLUGOS_PACKAGES = "\
 	sudo \
 	sysfsutils \
 	tar \
-	task-mokogateway-everything \
 	thttpd \
 	tiff \
 	timezones \
@@ -209,7 +211,9 @@ SLUGOS_PACKAGES = "\
 	wireless-tools \
 	wireshark \
 	wpa-supplicant \
-        wview-sim wview-vpro wview-wxt510 \
+        wview-sim wview-sim-mysql \
+	wview-vpro wview-vpro-mysql \
+	wview-wxt510 wview-wxt510-mysql \
 	xinetd \
 	yeaphone \
 	yp-tools ypbind ypserv \
@@ -221,23 +225,19 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
-	ctrlproxy \
 	dsniff \
 	fetchmail \
-	libgphoto2 gphoto2 sane-backends \\
 	lirc-modules lirc \
-	logrotate \
 	madfu \
+	portmap nfs-utils \
 	openldap \
 	pvrusb2-mci \
 	pwc \
 	qc-usb-messenger \
 	syslog-ng \
+	openocd task-mokogateway-everything \
 	task-native-sdk \
-	unionfs-modules \
-	unionfs-utils \
-        wview-sim-mysql wview-vpro-mysql \
-        wview-wxt510-mysql \
+	unionfs-modules unionfs-utils \
 	zd1211 \
 	"
 
