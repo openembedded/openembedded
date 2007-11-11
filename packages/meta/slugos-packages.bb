@@ -5,15 +5,13 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r38"
+PR = "r39"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
-
-inherit meta
 
 # The list of packages to build for the slugos DISTRO.
 # KEEP IN ALPHABETICAL ORDER
@@ -252,3 +250,8 @@ DEPENDS = "\
 	${SLUGOS_EXTRA_PACKAGES} \
 	package-index \
 	"
+
+inherit meta
+
+do_package_write_ipk() {
+}
