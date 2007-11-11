@@ -93,7 +93,7 @@ set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty
 
 ## Choice 4 - Boot via NFS over USB networking (must be kernel-builtin)
 # 192.168.x.x - Server address (the other side)
-# 192.168.x.x - Handheld's address
+# 192.168.y.y - Handheld's address
 #set cmdline "root=/dev/nfs nfsroot=192.168.x.x:<nfs_path> ip=192.168.y.y:192.168.x.x:192.168.x.x:255.255.255.0:pda:usb0 console=ttyS0,115200n8 console=tty0"
 
 bootlinux
