@@ -58,7 +58,7 @@ W100_ACCEL_PATCHES = "file://c7x0-w100-accel.patch;patch=1 \
                       file://c7x0-w100-gcc4.patch;patch=1 \
 		      file://suspend-resume-hooks.patch;patch=1"
 
-SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
+#SRC_URI_append_c7x0         = "${W100_ACCEL_PATCHES} "
 SRC_URI_append_spitz        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
 SRC_URI_append_akita        = "file://spitz-adhoc-keypad-rotate.patch;patch=1 "
 
