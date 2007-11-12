@@ -1,0 +1,20 @@
+--- /tmp/maemo-mapper.c	2007-10-02 12:15:04.000000000 +0200
++++ maemo-mapper/src/maemo-mapper.c	2007-10-02 12:18:06.622045000 +0200
+@@ -52,7 +52,7 @@
+ #include <hildon-widgets/hildon-controlbar.h>
+ #include <hildon-widgets/hildon-note.h>
+ #include <hildon-widgets/hildon-color-button.h>
+-#include <hildon-widgets/hildon-file-chooser-dialog.h>
++#include <hildon-fm-2/hildon/hildon-file-chooser-dialog.h>
+ #include <hildon-widgets/hildon-number-editor.h>
+ #include <hildon-widgets/hildon-banner.h>
+ #include <hildon-widgets/hildon-system-sound.h>
+@@ -6532,8 +6532,6 @@
+ 
+     gtk_widget_show_all(GTK_WIDGET(menu));
+ 
+-    gtk_widget_tap_and_hold_setup(_map_widget, GTK_WIDGET(menu), NULL, 0);
+-
+     vprintf("%s(): return\n", __PRETTY_FUNCTION__);
+ }
+ 
