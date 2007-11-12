@@ -33,3 +33,10 @@ mono_cv_uscore=${mono_cv_uscore=no}
 # guile
 ac_cv_func_pthread_attr_getstack=${ac_cv_func_pthread_attr_getstack=yes}
 
+# squid
+ac_cv_af_unix_large_dgram=${ac_cv_af_unix_large_dgram=yes}
+ac_cv_func_setresuid=${ac_cv_func_setresuid=yes}
+ac_cv_func_va_copy=${ac_cv_func_va_copy=yes}
+ac_cv_func___va_copy=${ac_cv_func___va_copy=yes}
+ac_cv_epoll_works=${ac_cv_epoll_works=yes}
+
