@@ -5,7 +5,7 @@ DEPENDS = "expat freetype freetype-native zlib"
 
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h"
-PR = "r1"
+PR = "r2"
 
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
 FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
@@ -43,6 +43,7 @@ do_stage () {
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/fontconfig
 	for i in ${S}/fontconfig/*.h; do install -m 0644 $i ${STAGING_INCDIR}/fontconfig/; done
+        ln -sf ${STAGING_INCDIR}/fontconfig/device_symbols.h ${STAGING_INCDIR}
 }
 
 BUILD_CFLAGS += " -I${STAGING_INCDIR_NATIVE}/freetype2"
