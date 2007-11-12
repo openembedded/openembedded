@@ -21,18 +21,13 @@ do_configure_prepend() {
     install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 }
 
-
-FILES_${PN}-dev += "${libdir}/pygtk/2.0 ${bindir}/pygtk-*"
-FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/.debug"
-
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 }
 
 require fix-path.inc
+
 FILES_${PN}-dev += "${libdir}/pygtk/2.0 ${bindir}/pygtk-*"
-FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/*/.debug"
-FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/gtk-2.0/.debug"
 
 do_stage() {
 	autotools_stage_includes
