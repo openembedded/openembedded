@@ -4,7 +4,7 @@
          PROTO=bcsp
  	PROBE=yes
  	;;
-+    "HP iPAQ H4000")
++    "HP iPAQ H4100" | "HP iPAQ H4300")
 +	BLUETOOTH=yes
 +	PORT=/dev/ttyS1
 +	SPEED=115200
