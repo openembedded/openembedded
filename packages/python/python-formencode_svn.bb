@@ -4,12 +4,11 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "sqlite3"
 SRCNAME = "FormEncode"
-PV = "0.4+svn${SRCDATE}"
+PV = "0.4+svnr${SRCREV}"
 PR = "ml0"
 
 inherit distutils
 
-SRC_URI = "svn://svn.colorstudy.com/FormEncode;module=trunk;proto=http \
-           file://setup.py.diff;patch=1"
+SRC_URI = "svn://svn.colorstudy.com/FormEncode;module=trunk;proto=http"
 
 S = "${WORKDIR}/trunk"
