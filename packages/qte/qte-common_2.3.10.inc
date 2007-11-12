@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL"
 DEPENDS = "zlib libpng jpeg tslib uicmoc-native"
-DEPENDS_append_c7x0 = " sharp-aticore-oss"
+#DEPENDS_append_c7x0 = " sharp-aticore-oss"
 PROVIDES = "virtual/libqte2"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qte-${PV}"
@@ -78,8 +78,9 @@ QTE_ARCH := "${@qte_arch(d)}"
 # add device configuration here
 #
 EXTRA_OECONF_CONFIG = "-qconfig qpe"
-EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
+#EXTRA_OECONF_CONFIG_c7x0 = "-qconfig qpe -accel-w100"
 EXTRA_OECONF_CONFIG_native = "-qconfig qpe -qvfb"
+
 EXTRA_OECONF = "-system-jpeg -system-libpng -system-zlib -no-qvfb -no-xft -no-vnc -gif \
 		-xplatform ${TARGET_OS}-${QTE_ARCH}-g++ ${EXTRA_OECONF_CONFIG} -depths 8,16,32"
 EXTRA_OEMAKE = "-e"
@@ -88,8 +89,8 @@ EXTRA_OEMAKE = "-e"
 # add device flags here
 #
 EXTRA_DEFINES 			= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ"
-EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
-EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
+#EXTRA_DEFINES_spitz		= "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
+#EXTRA_DEFINES_akita             = "-DQT_QWS_TSLIB -DQT_QWS_CUSTOM -DQT_QWS_IPAQ -DQT_QWS_SLCXK"
 
 #
 # don't touch anything below here
