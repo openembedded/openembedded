@@ -1,0 +1,11 @@
+--- /tmp/Makefile.am	2007-11-12 14:43:17.000000000 +0100
++++ monotone-0.37/Makefile.am	2007-11-12 14:43:35.633234000 +0100
+@@ -692,7 +692,7 @@
+ CLEANFILES = $(BUILT_SOURCES) $(CLEAN_SOURCES) $(EPS_FIGURES)
+ 
+ txt2c: txt2c.cc
+-	$(CXX) $(CXXFLAGS) -o $@ $<
++	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $<
+ 	chmod 0755 $@$(EXEEXT)
+ 
+ # FIXME: should use stamp files.
