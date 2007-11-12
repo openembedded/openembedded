@@ -28,3 +28,4 @@
 /dev/console	c	662	0	5	5	1	-	-	-
 /dev/random	c	644	0	0	1	8	-	-	-
 /dev/urandom	c	644	0	0	1	9	-	-	-
+/dev/ptmx	c	644	0	0	5	2	-	-	-
