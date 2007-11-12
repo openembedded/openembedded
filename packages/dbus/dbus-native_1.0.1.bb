@@ -1,4 +1,4 @@
-DESCRIPTION = "message bus system for applications to talk to one another"
+DESCRIPTION = "Message bus system for applications to talk to one another"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "GPL"
 SECTION = "base"

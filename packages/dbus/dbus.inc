@@ -1,6 +1,6 @@
 SECTION = "base"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
-DESCRIPTION = "message bus system for applications to talk to one another"
+DESCRIPTION = "Message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 

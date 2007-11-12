@@ -1,7 +1,7 @@
 SECTION = "base"
 PR = "r0"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
-DESCRIPTION = "message bus system for applications to talk to one another"
+DESCRIPTION = "Message bus system for applications to talk to one another"
 LICENSE = "GPL"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-glib/dbus-glib-${PV}.tar.gz \
