@@ -21,4 +21,6 @@ do_stage() {
 	autotools_stage_all
 }
 
-FILES_${PN}-dbg = "${libdir}/python2.5/site-packages/gst-0.10/gst/.debug/"
+FILES_${PN} += "${datadir}/gst-python"
+FILES_${PN}-dev += "${datadir}/gst-python/0.10/defs"
+FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/gst-0.10/gst/.debug/"

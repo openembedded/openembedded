@@ -11,8 +11,8 @@ RDEPENDS = "\
 		python-dialog		\
 		python-evas			\
 		python-ecore		\
-		python-emotion		\
-		python-edje			\
+#		python-emotion		\
+#		python-edje			\
 		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
