@@ -1,0 +1,19 @@
+--- /tmp/conicconnection.c	2007-11-12 12:45:37.000000000 +0100
++++ libconic-0.13/conic/conicconnection.c	2007-11-12 12:46:04.663234000 +0100
+@@ -473,7 +473,7 @@
+ 							  ICD_DBUS_PATH,
+ 							  &icd_vtable,
+ 							  NULL)) {
+-			dbus_connection_disconnect(dbus_connection);
++			dbus_connection_close(dbus_connection);
+ 			dbus_connection_unref(dbus_connection);
+ 			dbus_connection = NULL;
+ 		}
+--- /tmp/Makefile.am	2007-11-12 12:47:22.000000000 +0100
++++ libconic-0.13/Makefile.am	2007-11-12 12:47:29.773234000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS = conic tests
++SUBDIRS = conic 
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = conic.pc
