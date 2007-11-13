@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r68"
+PR = "r69"
 
 inherit task
 
@@ -58,7 +58,6 @@ RDEPENDS_task-openmoko-ui = "\
   xserver-kdrive-fbdev \
   xserver-kdrive-common \
   xserver-nodm-init \
-  ttf-bitstream-vera \
   xauth \
   xhost \
   xset \
