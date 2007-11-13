@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r6"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -96,9 +96,6 @@ SRC_URI_append_collie = "\
 
 #		wm97xx-lg13-r0.patch, tosa-power-r18.patch and tosa-bluetooth-r8.patch
 #		were adapted from $(DOSRC) to apply cleanly
-# FIXME:
-#-           ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
-#-           file://tmio-ohci-r6.patch;patch=1 \
 SRC_URI_append_tosa = "\
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r8.patch;patch=1 \
@@ -121,6 +118,9 @@ SRC_URI_append_tosa = "\
            file://wm9712-reset-loop-r2.patch;patch=1 \
            file://tosa-lcdnoise-r1.patch;patch=1 \
            file://tosa-lcdnoise-r1-fix-r0.patch;patch=1 \
+	   file://arm-dma-coherent.patch;patch=1 \
+           file://usb-ohci-hooks-r3.patch;patch=1 \
+           file://tmio-ohci-r8.patch;patch=1 \
 	    "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 

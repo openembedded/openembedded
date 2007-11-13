@@ -1,0 +1,361 @@
+Patch largely based on the work of Ian Molton (spyro@f2s.com).
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Index: linux-2.6.23/arch/arm/mm/consistent.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mm/consistent.c	2007-10-10 00:31:38.000000000 +0400
++++ linux-2.6.23/arch/arm/mm/consistent.c	2007-11-13 01:20:58.281143408 +0300
+@@ -3,6 +3,8 @@
+  *
+  *  Copyright (C) 2000-2004 Russell King
+  *
++ *  Device local coherent memory support added by Ian Molton (spyro@f2s.com)
++ *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+@@ -20,6 +22,7 @@
+ 
+ #include <asm/memory.h>
+ #include <asm/cacheflush.h>
++#include <asm/io.h>
+ #include <asm/tlbflush.h>
+ #include <asm/sizes.h>
+ 
+@@ -35,6 +38,13 @@
+ #define CONSISTENT_PTE_INDEX(x) (((unsigned long)(x) - CONSISTENT_BASE) >> PGDIR_SHIFT)
+ #define NUM_CONSISTENT_PTES (CONSISTENT_DMA_SIZE >> PGDIR_SHIFT)
+ 
++struct dma_coherent_mem {
++	void		*virt_base;
++	u32		device_base;
++	int		size;
++	int		flags;
++	unsigned long	*bitmap;
++};
+ 
+ /*
+  * These are the page tables (2MB each) covering uncached, DMA consistent allocations
+@@ -153,6 +163,13 @@
+ 	unsigned long order;
+ 	u64 mask = ISA_DMA_THRESHOLD, limit;
+ 
++	/* Following is a work-around (a.k.a. hack) to prevent pages
++	 * with __GFP_COMP being passed to split_page() which cannot
++	 * handle them.  The real problem is that this flag probably
++	 * should be 0 on ARM as it is not supported on this
++	 * platform--see CONFIG_HUGETLB_PAGE. */
++	gfp &= ~(__GFP_COMP);
++
+ 	if (!consistent_pte[0]) {
+ 		printk(KERN_ERR "%s: not initialised\n", __func__);
+ 		dump_stack();
+@@ -160,6 +177,26 @@
+ 	}
+ 
+ 	if (dev) {
++
++		if (dev->dma_mem) {
++			unsigned long flags;
++			int page;
++			void *ret;
++
++			spin_lock_irqsave(&consistent_lock, flags);
++			page = bitmap_find_free_region(dev->dma_mem->bitmap,
++						       dev->dma_mem->size,
++						       get_order(size));
++			spin_unlock_irqrestore(&consistent_lock, flags);
++
++			if (page >= 0) {
++				*handle = dev->dma_mem->device_base + (page << PAGE_SHIFT);
++				ret = dev->dma_mem->virt_base + (page << PAGE_SHIFT);
++				memset(ret, 0, size);
++				return ret;
++			}
++		}
++
+ 		mask = dev->coherent_dma_mask;
+ 
+ 		/*
+@@ -177,6 +214,9 @@
+ 				 mask, (unsigned long long)ISA_DMA_THRESHOLD);
+ 			goto no_page;
+ 		}
++
++		if (dev->dma_mem && dev->dma_mem->flags & DMA_MEMORY_EXCLUSIVE)
++			return NULL;
+ 	}
+ 
+ 	/*
+@@ -360,6 +400,8 @@
+ 	pte_t *ptep;
+ 	int idx;
+ 	u32 off;
++	struct dma_coherent_mem *mem = dev ? dev->dma_mem : NULL;
++	unsigned long order;
+ 
+ 	WARN_ON(irqs_disabled());
+ 
+@@ -369,6 +411,15 @@
+ 	}
+ 
+ 	size = PAGE_ALIGN(size);
++	order = get_order(size);
++
++	/* What if mem is valid and the range is not? */
++	if (mem && cpu_addr >= mem->virt_base && cpu_addr < (mem->virt_base + (mem->size << PAGE_SHIFT))) {
++		int page = (cpu_addr - mem->virt_base) >> PAGE_SHIFT;
++
++		bitmap_release_region(mem->bitmap, page, order);
++		return;
++	}
+ 
+ 	spin_lock_irqsave(&consistent_lock, flags);
+ 	c = vm_region_find(&consistent_head, (unsigned long)cpu_addr);
+@@ -438,6 +489,81 @@
+ }
+ EXPORT_SYMBOL(dma_free_coherent);
+ 
++int dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
++				dma_addr_t device_addr, size_t size, int flags)
++{
++	void *mem_base;
++	int pages = size >> PAGE_SHIFT;
++	int bitmap_size = (pages + 31)/32;
++
++	if ((flags & (DMA_MEMORY_MAP | DMA_MEMORY_IO)) == 0)
++		goto out;
++	if (!size)
++		goto out;
++	if (dev->dma_mem)
++		goto out;
++
++	/* FIXME: this routine just ignores DMA_MEMORY_INCLUDES_CHILDREN */
++	mem_base = ioremap_nocache(bus_addr, size);
++	if (!mem_base)
++		goto out;
++
++	dev->dma_mem = kmalloc(GFP_KERNEL, sizeof(struct dma_coherent_mem));
++	if (!dev->dma_mem)
++		goto out;
++	memset(dev->dma_mem, 0, sizeof(struct dma_coherent_mem));
++	dev->dma_mem->bitmap = kmalloc(GFP_KERNEL, bitmap_size);
++	if (!dev->dma_mem->bitmap)
++		goto free1_out;
++	memset(dev->dma_mem->bitmap, 0, bitmap_size);
++
++	dev->dma_mem->virt_base = mem_base;
++	dev->dma_mem->device_base = device_addr;
++	dev->dma_mem->size = pages;
++	dev->dma_mem->flags = flags;
++
++	if (flags & DMA_MEMORY_MAP)
++		return DMA_MEMORY_MAP;
++
++	return DMA_MEMORY_IO;
++
++ free1_out:
++	kfree(dev->dma_mem->bitmap);
++ out:
++	return 0;
++}
++EXPORT_SYMBOL(dma_declare_coherent_memory);
++
++void dma_release_declared_memory(struct device *dev)
++{
++	struct dma_coherent_mem *mem = dev->dma_mem;
++
++	if (!mem)
++		return;
++	dev->dma_mem = NULL;
++	kfree(mem->bitmap);
++	kfree(mem);
++}
++EXPORT_SYMBOL(dma_release_declared_memory);
++
++void *dma_mark_declared_memory_occupied(struct device *dev,
++					dma_addr_t device_addr, size_t size)
++{
++	struct dma_coherent_mem *mem = dev->dma_mem;
++	int pages = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
++	int pos, err;
++
++	if (!mem)
++		return ERR_PTR(-EINVAL);
++
++	pos = (device_addr - mem->device_base) >> PAGE_SHIFT;
++	err = bitmap_allocate_region(mem->bitmap, pos, get_order(pages));
++	if (err != 0)
++		return ERR_PTR(err);
++	return mem->virt_base + (pos << PAGE_SHIFT);
++}
++EXPORT_SYMBOL(dma_mark_declared_memory_occupied);
++
+ /*
+  * Initialise the consistent memory allocation.
+  */
+Index: linux-2.6.23/arch/arm/common/dmabounce.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/common/dmabounce.c	2007-10-10 00:31:38.000000000 +0400
++++ linux-2.6.23/arch/arm/common/dmabounce.c	2007-11-13 01:23:17.452501736 +0300
+@@ -16,6 +16,7 @@
+  *
+  *  Copyright (C) 2002 Hewlett Packard Company.
+  *  Copyright (C) 2004 MontaVista Software, Inc.
++ *  Copyright (C) 2007 Dmitry Baryshkov <dbaryshkov@gmail.com>
+  *
+  *  This program is free software; you can redistribute it and/or
+  *  modify it under the terms of the GNU General Public License
+@@ -29,6 +30,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/dmapool.h>
+ #include <linux/list.h>
++#include <linux/rwsem.h>
+ 
+ #include <asm/cacheflush.h>
+ 
+@@ -79,6 +81,75 @@
+ 	rwlock_t lock;
+ };
+ 
++struct dmabounce_check_entry {
++	struct list_head	list;
++	dmabounce_check		checker;
++	void			*data;
++};
++
++static struct list_head checkers = LIST_HEAD_INIT(checkers);
++static rwlock_t checkers_lock = RW_LOCK_UNLOCKED;
++
++int
++dmabounce_register_checker(dmabounce_check function, void *data)
++{
++	unsigned long flags;
++	struct dmabounce_check_entry *entry =
++		kzalloc(sizeof(struct dmabounce_check_entry), GFP_ATOMIC);
++
++	if (!entry)
++		return ENOMEM;
++
++	INIT_LIST_HEAD(&entry->list);
++	entry->checker = function;
++	entry->data = data;
++
++	write_lock_irqsave(checkers_lock, flags);
++	list_add(&entry->list, &checkers);
++	write_unlock_irqrestore(checkers_lock, flags);
++
++	return 0;
++}
++
++void
++dmabounce_remove_checker(dmabounce_check function, void *data)
++{
++	unsigned long flags;
++	struct list_head *pos;
++
++	write_lock_irqsave(checkers_lock, flags);
++	__list_for_each(pos, &checkers) {
++		struct dmabounce_check_entry *entry = container_of(pos,
++				struct dmabounce_check_entry, list);
++		if (entry->checker == function && entry->data == data) {
++			list_del(pos);
++			write_unlock_irqrestore(checkers_lock, flags);
++			kfree(entry);
++			return;
++		}
++	}
++
++	printk(KERN_WARNING "dmabounce checker not found: %p\n", function);
++}
++
++int dma_needs_bounce(struct device *dev, dma_addr_t dma, size_t size)
++{
++	unsigned long flags;
++	struct list_head *pos;
++
++	read_lock_irqsave(checkers_lock, flags);
++	__list_for_each(pos, &checkers) {
++		struct dmabounce_check_entry *entry = container_of(pos,
++				struct dmabounce_check_entry, list);
++		if (entry->checker(dev, dma, size, entry->data)) {
++			read_unlock_irqrestore(checkers_lock, flags);
++			return 1;
++		}
++	}
++
++	read_unlock_irqrestore(checkers_lock, flags);
++	return 0;
++}
+ #ifdef STATS
+ static ssize_t dmabounce_show(struct device *dev, struct device_attribute *attr,
+ 			      char *buf)
+@@ -642,7 +713,6 @@
+ 		dev->bus_id, dev->bus->name);
+ }
+ 
+-
+ EXPORT_SYMBOL(dma_map_single);
+ EXPORT_SYMBOL(dma_unmap_single);
+ EXPORT_SYMBOL(dma_map_sg);
+@@ -652,6 +722,9 @@
+ EXPORT_SYMBOL(dma_sync_sg);
+ EXPORT_SYMBOL(dmabounce_register_dev);
+ EXPORT_SYMBOL(dmabounce_unregister_dev);
++EXPORT_SYMBOL(dmabounce_register_checker);
++EXPORT_SYMBOL(dmabounce_remove_checker);
++
+ 
+ MODULE_AUTHOR("Christopher Hoover <ch@hpl.hp.com>, Deepak Saxena <dsaxena@plexity.net>");
+ MODULE_DESCRIPTION("Special dma_{map/unmap/dma_sync}_* routines for systems with limited DMA windows");
+Index: linux-2.6.23/include/asm-arm/dma-mapping.h
+===================================================================
+--- linux-2.6.23.orig/include/asm-arm/dma-mapping.h	2007-10-10 00:31:38.000000000 +0400
++++ linux-2.6.23/include/asm-arm/dma-mapping.h	2007-11-13 01:24:05.588500474 +0300
+@@ -7,6 +7,18 @@
+ 
+ #include <asm/scatterlist.h>
+ 
++#define ARCH_HAS_DMA_DECLARE_COHERENT_MEMORY
++extern int
++dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
++			    dma_addr_t device_addr, size_t size, int flags);
++
++extern void
++dma_release_declared_memory(struct device *dev);
++
++extern void *
++dma_mark_declared_memory_occupied(struct device *dev,
++				  dma_addr_t device_addr, size_t size);
++
+ /*
+  * DMA-consistent mapping functions.  These allocate/free a region of
+  * uncached, unwrite-buffered mapped memory space for use with DMA
+@@ -433,23 +445,10 @@
+  */
+ extern void dmabounce_unregister_dev(struct device *);
+ 
+-/**
+- * dma_needs_bounce
+- *
+- * @dev: valid struct device pointer
+- * @dma_handle: dma_handle of unbounced buffer
+- * @size: size of region being mapped
+- *
+- * Platforms that utilize the dmabounce mechanism must implement
+- * this function.
+- *
+- * The dmabounce routines call this function whenever a dma-mapping
+- * is requested to determine whether a given buffer needs to be bounced
+- * or not. The function must return 0 if the buffer is OK for
+- * DMA access and 1 if the buffer needs to be bounced.
+- *
+- */
+-extern int dma_needs_bounce(struct device*, dma_addr_t, size_t);
++typedef int (*dmabounce_check)(struct device *dev, dma_addr_t dma, size_t size, void *data);
++extern int dmabounce_register_checker(dmabounce_check, void *data);
++extern void dmabounce_remove_checker(dmabounce_check, void *data);
++
+ #endif /* CONFIG_DMABOUNCE */
+ 
+ #endif /* __KERNEL__ */
