@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r6"
+PR = "r7"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -120,7 +120,7 @@ SRC_URI_append_tosa = "\
            file://tosa-lcdnoise-r1-fix-r0.patch;patch=1 \
 	   file://arm-dma-coherent.patch;patch=1 \
            file://usb-ohci-hooks-r3.patch;patch=1 \
-           file://tmio-ohci-r8.patch;patch=1 \
+           file://tmio-ohci-r9.patch;patch=1 \
 	    "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
