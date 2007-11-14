@@ -21,7 +21,7 @@
 
 # We play a special package function
 inherit package
-PACKAGE_DEPENDS += "pax-utils-native"
+PACKAGE_DEPENDS += "pax-utils-native desktop-file-utils-native"
 #PACKAGE_DEPENDS += chrpath-native"
 PACKAGEFUNCS += " do_package_qa "
 
@@ -308,7 +308,21 @@ def package_qa_check_pcla(path,name,d):
     .pc and .la files should not point to the WORKDIR
     """
     sane = True
+    # TODO
     return sane
+
+def package_qa_check_desktop(path, name, d):
+    """
+    Run all desktop files through desktop-file-validate.
+    """
+    import bb, os
+    if path.endswith(".desktop"):
+        validate = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True), 'desktop-file-validate')
+        output = os.popen("%s %s" % (validate, path))
+        # This only produces output on errors
+        for l in output:
+            bb.error(l.strip())
+    return True
 
 def package_qa_check_staged(path,d):
     """
@@ -416,9 +430,13 @@ python do_package_qa () {
     walk_sane = True
     rdepends_sane = True
     for package in packages.split():
+        if bb.data.getVar('INSANE_SKIP_' + package, d, True):
+            bb.note("Package: %s (skipped)" % package)
+            continue
+
         bb.note("Checking Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
-        if not package_qa_walk(path, [package_qa_check_rpath, package_qa_check_devdbg, package_qa_check_perm, package_qa_check_arch], package, d):
+        if not package_qa_walk(path, [package_qa_check_rpath, package_qa_check_devdbg, package_qa_check_perm, package_qa_check_arch, package_qa_check_desktop], package, d):
             walk_sane  = False
         if not package_qa_check_rdepends(package, workdir, d):
             rdepends_sane = False
