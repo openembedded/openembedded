@@ -1,7 +1,7 @@
 DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+"
-PR = "r2"
+PR = "r0"
 
 inherit autotools 
 
