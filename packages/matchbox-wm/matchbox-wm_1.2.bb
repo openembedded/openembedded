@@ -1,9 +1,9 @@
 require matchbox-wm.inc
 
-DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native matchbox-common"
-RDEPENDS = "matchbox-common"
+DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native "
+RDEPENDS = ""
 
-PR="r1"
+PR="r2"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
            file://gconf-2.m4 \
