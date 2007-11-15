@@ -8,12 +8,12 @@ tmpfs		/media/ram	tmpfs	defaults	0  0
 tmpfs                /dev/shm             tmpfs      mode=0777             0  0
 
 # SD/MMC in kernel 2.4
-/dev/mmcda1	/media/card	auto	defaults,sync,noauto	0  0
+#/dev/mmcda1	/media/card	auto	defaults,sync,noauto	0  0
 # SD/MMC in kernel 2.6
 /dev/mmcblk0p1	/media/card	auto	defaults,sync,noauto	0  0
 
 # USB Storage
 /dev/sda1 /media/usbhdd		vfat	noauto,umask=000,noatime,iocharset=utf8,codepage=932	0	0
-usbfs     /proc/bus/usb   	usbf    defaults                0  0
+usbfs     /proc/bus/usb   	usbfs    defaults                0  0
 
 

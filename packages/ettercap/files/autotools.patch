@@ -1,0 +1,173 @@
+diff -ur ettercap-NG-0.7.3/configure.in ettercap-NG-0.7.3-changed/configure.in
+--- ettercap-NG-0.7.3/configure.in	2005-01-13 10:24:28.000000000 +0100
++++ ettercap-NG-0.7.3-changed/configure.in	2007-11-07 11:42:25.000000000 +0100
+@@ -178,6 +178,7 @@
+ 
+ AC_PROG_CC
+ AM_PROG_CC_STDC
++AM_PROG_CC_C_O
+ AC_PROG_INSTALL
+ AC_PROG_MAKE_SET
+ AC_PROG_GCC_TRADITIONAL
+@@ -236,7 +237,7 @@
+ AC_CHECK_HEADERS(sys/poll.h poll.h sys/select.h)
+ AC_CHECK_HEADERS(sys/cdefs.h)
+ dnl nameser NS_GET32 and so on...
+-EC_NS_GET()
++dnl EC_NS_GET()
+ 
+ dnl ==================================================================
+ dnl   Checks for typedefs, structures, and compiler characteristics.
+@@ -379,129 +380,6 @@
+ dnl ==================
+ 
+ 
+-dnl ---------
+-dnl  libpcap
+-dnl ---------
+-ac_ec_libpcap=default
+-
+-AC_MSG_CHECKING(for libpcap)
+-AC_ARG_WITH(libpcap, AC_HELP_STRING(--with-libpcap=DIR,use libpcap in DIR),
+-[ case "$withval" in
+-  no)
+-     AC_MSG_RESULT(no)
+-     AC_MSG_ERROR(["*** ettercap cannot operate without libpcap. ***"])
+-     ;;
+-  *)
+-     if test -f $withval/pcap.h; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-        PCAPINC="-I$withval"
+-        if test "$OS" = "WINDOWS"; then
+-           PCAPLIB="-L$withval -lwpcap -lpacket"
+-        else
+-           PCAPLIB="-L$withval -lpcap"
+-        fi
+-        ac_ec_libpcap=$withval
+-        AC_MSG_RESULT($withval)
+-     elif test -f $withval/include/pcap.h; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-        PCAPINC="-I$withval/include"
+-        if test "$OS" = "WINDOWS"; then
+-           PCAPLIB="-L$withval/lib -lwpcap -lpacket"
+-        else
+-           PCAPLIB="-L$withval/lib -lpcap"
+-        fi
+-        ac_ec_libpcap=$withval
+-        AC_MSG_RESULT($withval)
+-     else
+-        AC_MSG_RESULT(no)
+-        AC_MSG_ERROR([pcap.h not found in $withval])
+-     fi
+-     ;;
+-  esac ],
+-[ if test -f /usr/include/pcap/pcap.h; then
+-     PCAPINC="-I/usr/include/pcap"
+-     if test "$OS" = "WINDOWS"; then
+-        PCAPLIB="-lwpcap -lpacket"
+-     else
+-        PCAPLIB="-lpcap"
+-     fi
+-  elif test -f /usr/include/pcap.h; then
+-     if test "$OS" = "WINDOWS"; then
+-        PCAPLIB="-lwpcap -lpacket"
+-     else
+-        PCAPLIB="-lpcap"
+-     fi
+-  elif test -f /usr/local/include/pcap.h; then
+-     PCAPINC="-I/usr/local/include"
+-     if test "$OS" = "WINDOWS"; then
+-        PCAPLIB="-lwpcap -lpacket"
+-     else
+-        PCAPLIB="-lpcap"
+-     fi
+-  else
+-     AC_MSG_RESULT(no)
+-     AC_MSG_ERROR([libpcap not found])
+-  fi
+-  AC_MSG_RESULT(yes) ]
+-)
+-
+-if test "$OS" = "WINDOWS"; then
+-   EC_CHECK_FUNC(wpcap, pcap_datalink_val_to_description, $PCAPLIB, $LIBS,, AC_MSG_ERROR([Incorrect libpcap version. libpcap >= 0.8.1 required]))
+-   EC_CHECK_FUNC(packet, PacketInitPacket, $PCAPLIB, $LIBS,, AC_MSG_ERROR([Incorrect libpcap version. libpcap >= 0.8.1 required]))
+-   AC_CHECK_LIB(ws2_32, ntohs,, AC_MSG_ERROR([Incorrect ws2_32 version.]))
+-   AC_CHECK_LIB(iphlpapi, main)
+-else
+-   EC_CHECK_FUNC(pcap, pcap_datalink_val_to_description, $PCAPLIB, $LIBS,, AC_MSG_ERROR([Incorrect libpcap version. libpcap >= 0.8.1 required]))
+-fi
+-
+-dnl ---------
+-dnl  libnet
+-dnl ---------
+-ac_ec_libnet=default
+-
+-AC_MSG_CHECKING(for libnet)
+-AC_ARG_WITH(libnet, AC_HELP_STRING(--with-libnet=DIR,use libnet in DIR),
+-[ case "$withval" in
+-  no)
+-     AC_MSG_RESULT(no)
+-     AC_MSG_ERROR(["*** ettercap cannot operate without libnet. ***"])
+-     ;;
+-  *)
+-     if test -f $withval/lnet.h; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-        LNETINC="-I$withval"
+-        LNETLIB="-L$withval -lnet"
+-        ac_ec_libnet=$withval
+-        AC_MSG_RESULT($withval)
+-     elif test -f $withval/include/libnet.h; then
+-        owd=`pwd`
+-        if cd $withval; then withval=`pwd`; cd $owd; fi
+-        LNETINC="-I$withval/include"
+-        LNETLIB="-L$withval/lib -L$withval/src -lnet"
+-        ac_ec_libnet=$withval
+-        AC_MSG_RESULT($withval)
+-     else
+-        AC_MSG_RESULT(no)
+-        AC_MSG_ERROR([libnet.h not found in $withval])
+-     fi
+-     ;;
+-  esac ],
+-[ if test -f /usr/include/libnet.h; then
+-     AC_MSG_RESULT(yes)
+-     LNETINC=""
+-     LNETLIB="-lnet"
+-  else
+-     AC_MSG_RESULT(no)
+-     AC_MSG_ERROR([libnet >= 1.1.2.1 not found])
+-  fi
+-]
+-)
+-
+-EC_CHECK_FUNC(net, libnet_adv_free_packet, $LNETLIB, $LIBS,, AC_MSG_ERROR([Incorrect libnet version. libnet >= 1.1.2.1 required]))
+-
+ dnl ------------------
+ dnl Checks for openssl
+ dnl ------------------
+@@ -794,7 +672,8 @@
+ dnl  set up the final vars
+ dnl -----------------------
+ EC_CFLAGS="$DEBUG_FLAGS $PCAPINC $LNETINC $SSLINC $PCREINC $ICONVINC"
+-EC_LIBS="$LIBS $PCAPLIB $LNETLIB $SSLLIB $PCRELIB $NCURSLIB $GTK_LIBS $ICONVLIB"
++dnl EC_LIBS="$LIBS $PCAPLIB $LNETLIB $SSLLIB $PCRELIB $NCURSLIB $GTK_LIBS $ICONVLIB"
++EC_LIBS="$LIBS $PCAPLIB $LNETLIB $SSLLIB $PCRELIB $NCURSLIB $GTK_LIBS $ICONVLIB -lpcap -lnet"
+ 
+ AC_SUBST(EC_CFLAGS)
+ AC_SUBST(EC_LIBS)
+diff -ur ettercap-NG-0.7.3/src/Makefile.am ettercap-NG-0.7.3-changed/src/Makefile.am
+--- ettercap-NG-0.7.3/src/Makefile.am	2005-01-13 10:18:48.000000000 +0100
++++ ettercap-NG-0.7.3-changed/src/Makefile.am	2007-11-06 20:15:12.000000000 +0100
+@@ -127,8 +127,7 @@
+ 
+ ettercap_CFLAGS = @EC_CFLAGS@
+ 
+-ettercap_LDADD = @LIBOBJS@ \
+-                 os/libec_os.a \
++ettercap_LDADD = missing/strlcpy.o os/libec_os.a \
+                  interfaces/daemon/libec_daemon.a \
+                  interfaces/text/libec_text.a 
+
