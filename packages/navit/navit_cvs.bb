@@ -8,7 +8,6 @@ inherit autotools
 S = "${WORKDIR}/navit"
 
 SRC_URI = "cvs://anonymous@navit.cvs.sourceforge.net/cvsroot/navit;module=navit \
-#          file://compile-fix.patch;patch=1"
           "
 
 EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned"
