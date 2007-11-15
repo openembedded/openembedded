@@ -3,7 +3,7 @@ require matchbox-wm.inc
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native "
 RDEPENDS = ""
 
-PR="r2"
+PR="r3"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
            file://gconf-2.m4 \
@@ -23,7 +23,7 @@ FILES_${PN} = "${bindir}/* \
 
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
-ALTERNATIVE_PATH = "${bindir}/matchbox-session"
+ALTERNATIVE_PATH = "${bindir}/matchbox-window-manager"
 ALTERNATIVE_PRIORITY = "10"
 
 EXTRA_OECONF = " \
