@@ -3,7 +3,6 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "unknown"
 DEPENDS="zlib openssl boost-asio"
-RDEPENDS = "libstdc++5 libgcc1"
 
 # the SOURCE_URI requires authentication via web browser and cookie (gasp)
 # all we can do right now is download the file and save it under sources/
