@@ -1,4 +1,5 @@
 require squashfs-tools.inc
+PR = "r0"
 
 # some release have .tgz, some have .tar.gz, so keep that outside the .inc file
 
