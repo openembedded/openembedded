@@ -2,7 +2,7 @@
 Name=Gnuplot
 Comment=Plot data and function graphs
 Exec=x-terminal-emulator -e gnuplot
-Terminal=0
+Terminal=false
 Type=Application
-Icon=gnuplot.png
-Categories=Scientific
+Icon=gnuplot
+Categories=Science;
