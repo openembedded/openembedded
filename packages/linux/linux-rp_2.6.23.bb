@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r7"
+PR = "r8"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -50,6 +50,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://uvesafb-0.1-rc3-2.6.22.patch;patch=1;status=external \
            file://htcuni.patch;patch=1 \
