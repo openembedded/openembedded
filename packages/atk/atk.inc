@@ -1,4 +1,4 @@
-DEPENDS = "glib-2.0 gtk-doc"
+DEPENDS = "glib-2.0 gtk-doc-native"
 DESCRIPTION = "An accessibility toolkit for GNOME."
 SECTION = "x11/libs"
 PRIORITY = "optional"
