@@ -1,0 +1,150 @@
+diff -urN linux-2.6.23.orig/drivers/leds/Kconfig linux-2.6.23/drivers/leds/Kconfig
+--- linux-2.6.23.orig/drivers/leds/Kconfig	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/drivers/leds/Kconfig	2007-11-09 18:15:03.000000000 +0100
+@@ -101,6 +101,12 @@
+ 	  outputs. To be useful the particular board must have LEDs
+ 	  and they must be connected to the GPIO lines.
+ 
++config LEDS_MPC832X
++	tristate "LED Support for MPC832x LEDs"
++	depends on LEDS_CLASS && PPC_83xx
++	help
++	  This option enables support for the LEDs on MPC832x boards.
++
+ comment "LED Triggers"
+ 
+ config LEDS_TRIGGERS
+diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc832x.c linux-2.6.23/drivers/leds/leds-mpc832x.c
+--- linux-2.6.23.orig/drivers/leds/leds-mpc832x.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.23/drivers/leds/leds-mpc832x.c	2007-11-09 18:15:19.000000000 +0100
+@@ -0,0 +1,119 @@
++/*
++ * drivers/leds/leds-mpc832x.c
++ * Copyright (c) Jeremy Laine <jeremy.laine@bolloretelecom.eu>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ * MPC832x leds driver
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/leds.h>
++#include <linux/err.h>
++#include <asm/io.h>
++#include <asm/qe.h>
++
++int par_io_config_pin(u8 port, u8 pin, int dir, int open_drain,
++                      int assignment, int has_irq);
++int par_io_data_set(u8 port, u8 pin, u8 val);
++
++static struct platform_dev *leds_pdev = NULL;
++
++#define LED_PORT    3
++#define GREEN_PIN   18
++#define YELLOW_PIN  17
++#define RED_PIN     16
++
++static void mpc832xleds_green_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	par_io_data_set(LED_PORT, GREEN_PIN, !value);
++}
++
++static struct led_classdev mpc832x_green_led = {
++	.name                   = "mpc832x:green",
++	.brightness_set         = mpc832xleds_green_set,
++};
++
++static void mpc832xleds_yellow_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	par_io_data_set(LED_PORT, YELLOW_PIN, !value);
++}
++
++static struct led_classdev mpc832x_yellow_led = {
++	.name                   = "mpc832x:yellow",
++	.brightness_set         = mpc832xleds_yellow_set,
++};
++
++static void mpc832xleds_red_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	par_io_data_set(LED_PORT, RED_PIN, !value);
++}
++
++static struct led_classdev mpc832x_red_led = {
++	.name                   = "mpc832x:red",
++	.brightness_set         = mpc832xleds_red_set,
++};
++
++static int mpc832xleds_probe(struct platform_device *pdev)
++{
++	int ret;
++        
++	ret = led_classdev_register(&pdev->dev, &mpc832x_green_led);
++	if (ret < 0)
++		return ret;
++	par_io_config_pin(LED_PORT, GREEN_PIN, 1, 0, 0, 0);
++
++	ret = led_classdev_register(&pdev->dev, &mpc832x_yellow_led);
++	if (ret < 0)
++		return ret;
++	par_io_config_pin(LED_PORT, YELLOW_PIN, 1, 0, 0, 0);
++	
++	ret = led_classdev_register(&pdev->dev, &mpc832x_red_led);
++	if (ret < 0)
++		return ret;
++	par_io_config_pin(LED_PORT, RED_PIN, 1, 0, 0, 0);
++	
++	return ret;
++}
++
++static int mpc832xleds_remove(struct platform_device *pdev)
++{
++	led_classdev_unregister(&mpc832x_green_led);
++	led_classdev_unregister(&mpc832x_yellow_led);
++	led_classdev_unregister(&mpc832x_red_led);
++	return 0;
++}
++
++static struct platform_driver mpc832xleds_driver = {
++      .driver         = {
++		.name   = "mpc832x-leds",
++		.owner  = THIS_MODULE,
++	},
++	.probe          = mpc832xleds_probe,
++	.remove         = mpc832xleds_remove,
++};
++
++static int __init mpc832xleds_init(void)
++{
++	leds_pdev = platform_device_register_simple("mpc832x-leds", -1, NULL, 0);
++
++	return platform_driver_register(&mpc832xleds_driver);
++}
++
++static void __exit mpc832xleds_exit(void)
++{
++	platform_driver_unregister(&mpc832xleds_driver);
++
++	platform_device_unregister(leds_pdev);
++}
++
++module_init(mpc832xleds_init);
++module_exit(mpc832xleds_exit);
++
++MODULE_AUTHOR("Jeremy Laine <jeremy.laine@bolloretelecom.eu>");
++MODULE_DESCRIPTION("MPC832X GPIO LED driver");
++MODULE_LICENSE("GPL");
+diff -urN linux-2.6.23.orig/drivers/leds/Makefile linux-2.6.23/drivers/leds/Makefile
+--- linux-2.6.23.orig/drivers/leds/Makefile	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/drivers/leds/Makefile	2007-11-09 18:15:03.000000000 +0100
+@@ -17,6 +17,7 @@
+ obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
+ obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o
+ obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
++obj-$(CONFIG_LEDS_MPC832X)		+= leds-mpc832x.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
