@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox window manager common files"
 SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
            file://no-utilities-category.patch;patch=1 \
@@ -19,7 +19,7 @@ FILES_${PN} = "\
 
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
-ALTERNATIVE_PATH = "${bindir}/matchbox-window-manager"
+ALTERNATIVE_PATH = "${bindir}/matchbox-session"
 ALTERNATIVE_PRIORITY = "11"
 
 
