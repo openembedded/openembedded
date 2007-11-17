@@ -10,8 +10,8 @@ fakeroot rootfs_deb_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
 
-	rm -f ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev
-	rm -f ${STAGING_DIR}${sysconfdir}/apt/preferences
+	rm -f ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
+	rm -f ${STAGING_ETCDIR_NATIVE}/apt/preferences
 	> ${IMAGE_ROOTFS}/var/dpkg/status
 	> ${IMAGE_ROOTFS}/var/dpkg/available
 	# > ${STAGING_DIR}/var/dpkg/status
@@ -28,24 +28,26 @@ fakeroot rootfs_deb_do_rootfs () {
 		apt-ftparchive packages . | bzip2 > Packages.bz2
 		echo "Label: $arch" > Release
 
-		echo "deb file:${DEPLOY_DIR_DEB}/$arch/ ./" >> ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev
+		echo "deb file:${DEPLOY_DIR_DEB}/$arch/ ./" >> ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
 		(echo "Package: *"
 		echo "Pin: release l=$arch"
 		echo "Pin-Priority: $((800 + $priority))"
-		echo) >> ${STAGING_DIR}${sysconfdir}/apt/preferences
+		echo) >> ${STAGING_ETCDIR_NATIVE}/apt/preferences
 		priority=$(expr $priority + 5)
 	done
 
-	tac ${STAGING_DIR}${sysconfdir}/apt/sources.list.rev > ${STAGING_DIR}${sysconfdir}/apt/sources.list
+	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_ETCDIR_NATIVE}/apt/sources.list
 
-	cat "${STAGING_DIR}${sysconfdir}/apt/apt.conf.sample" \
+	cat "${STAGING_ETCDIR_NATIVE}/apt/apt.conf.sample" \
 		| sed -e 's#Architecture ".*";#Architecture "${TARGET_ARCH}";#' \
-		> "${STAGING_DIR}${sysconfdir}/apt/apt-rootfs.conf"
+		> "${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 
-	export APT_CONFIG="${STAGING_DIR}${sysconfdir}/apt/apt-rootfs.conf"
+	export APT_CONFIG="${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
+
+	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
 
 	apt-get update
 
