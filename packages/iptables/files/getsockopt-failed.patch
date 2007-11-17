@@ -1,0 +1,28 @@
+This patch fixes an issue where iptables throws the following error:
+"getsockopt failed strangely". This patch is taken from the netfilter
+svn (and it's included in iptable 1.4.0rc1):
+
+http://svn.netfilter.org/cgi-bin/viewcvs.cgi?rev=6890&view=rev
+
+--- iptables/iptables.c	2007/04/30 00:01:39	6815
++++ iptables/iptables.c	2007/06/26 15:29:45	6890
+@@ -1158,7 +1158,7 @@
+ 	max_rev = getsockopt(sockfd, IPPROTO_IP, opt, &rev, &s);
+ 	if (max_rev < 0) {
+ 		/* Definitely don't support this? */
+-		if (errno == EPROTONOSUPPORT) {
++		if (errno == ENOENT || errno == EPROTONOSUPPORT) {
+ 			close(sockfd);
+ 			return 0;
+ 		} else if (errno == ENOPROTOOPT) {
+--- iptables/ip6tables.c	2007/06/25 14:55:18	6889
++++ iptables/ip6tables.c	2007/06/26 15:29:45	6890
+@@ -1130,7 +1130,7 @@
+ 	max_rev = getsockopt(sockfd, IPPROTO_IPV6, opt, &rev, &s);
+ 	if (max_rev < 0) {
+ 		/* Definitely don't support this? */
+-		if (errno == EPROTONOSUPPORT) {
++		if (errno == ENOENT || errno == EPROTONOSUPPORT) {
+ 			close(sockfd);
+ 			return 0;
+ 		} else if (errno == ENOPROTOOPT) {
