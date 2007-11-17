@@ -485,8 +485,9 @@ python populate_packages () {
 			if file in seen:
 				continue
 			seen.append(file)
-			if os.path.isdir(file):
+			if os.path.isdir(file) and not os.path.islink(file):
 				bb.mkdirhier(os.path.join(root,file))
+				os.chmod(os.path.join(root,file), os.stat(file).st_mode)
 				continue
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
