@@ -22,7 +22,7 @@ do_compile() {
 }
 
 do_stage() {
-#	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
+#	oe_libinstall -C gdk-pixbuf -so libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
 	cd gdk-pixbuf && oe_runmake install DESTDIR=${STAGING_DIR}/usr
 	autotools_stage_includes
 #	install -d -m 0755 ${STAGING_LIBDIR}/gtk-2.0/include
@@ -30,7 +30,7 @@ do_stage() {
 }
 
 do_install() {
-	cd gdk-pixbuf
+	:
 }
 
 # override the function in gtk-*.inc (included by gtk+*.bb)
