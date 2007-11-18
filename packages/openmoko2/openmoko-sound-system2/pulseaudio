@@ -13,17 +13,21 @@ RETVAL=0
 prog="pulseaudio"
 
 start() {
-    echo -n "Starting the audio server..."
+    echo -n "Starting audio server: "
     # FIXME once alsa/shm permissions have been fixed, supply --system
-	pulseaudio --resample-method=trivial -D -nF /etc/pulse/session
-	echo $prog
+    start-stop-daemon -S -x /usr/bin/pulseaudio -- --no-cpu-limit --resample-method=trivial -D -nF /etc/pulse/session
+
+    if [ $? = 0 ]; then
+        echo "$prog (warning ignores)." # FIXME remove comment on warning
+    else
+        echo "(failed.)"
+    fi
 }
 
 stop() {
-	# Stop daemons.
-	echo -n "Shutting down $prog: "
-	killall pulseaudio
-    echo "done"
+    echo -n "Stopping audio server: "
+    start-stop-daemon -K -x /usr/bin/pulseaudio
+    echo "pulseaudio."
 }
 
 # See how we were called.
