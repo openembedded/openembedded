@@ -11,5 +11,5 @@ DEPENDS="gtk+ libgnomeui gnome-common gnome-vfs libglade libbonoboui"
 inherit autotools
 
 do_configure_prepend () {
-	cp ${STAGING_DIR}/${HOST_SYS}/share/gnome-common/data/omf.make ${S}
+	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}
 }

@@ -12,7 +12,7 @@ SRC_URI += "file://scrollkeeper.patch;patch=1 \
 EXTRA_OECONF = "--disable-scrollkeeper"
 
 do_configure_prepend () {
-	cp ${STAGING_DIR}/${HOST_SYS}/share/gnome-common/data/omf.make ${S}
+	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}
 }
 
 FILES_${PN} += "${datadir}/gnome-about"

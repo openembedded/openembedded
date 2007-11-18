@@ -12,7 +12,7 @@ EXTRA_OECONF = "-e"
 
 do_configure () {
 	oe_runmake createconf
-	qemu-${TARGET_ARCH} -L ${STAGING_DIR}/${HOST_SYS} ./createconf
+	qemu-${TARGET_ARCH} -L ${STAGING_DIR_HOST} ./createconf
 }
 
 do_compile () {

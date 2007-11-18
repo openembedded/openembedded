@@ -6,10 +6,10 @@ inherit gnome
 
 DEPENDS = "gnome-common libgnomeui"
 
-EXTRA_AUTORECONF = "-I ${STAGING_DIR}/${HOST_SYS}/share/aclocal/gnome2-macros"
+EXTRA_AUTORECONF = "-I ${STAGING_DATADIR}/aclocal/gnome2-macros"
 
 do_configure_prepend () {
-	cp ${STAGING_DIR}/${HOST_SYS}/share/gnome-common/data/omf.make ${S}
+	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}
 }
 
 do_stage () {

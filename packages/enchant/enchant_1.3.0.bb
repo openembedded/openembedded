@@ -13,7 +13,7 @@ S = "${WORKDIR}/enchant-${PV}"
 
 SRC_URI = "http://www.abisource.com/downloads/enchant/${PV}/enchant-${PV}.tar.gz"
 
-EXTRA_OECONF = "--with-aspell-prefix=${STAGING_DIR}/${HOST_SYS} --enable-aspell --disable-binreloc"
+EXTRA_OECONF = "--with-aspell-prefix=${STAGING_DIR_HOST}${layout_prefix} --enable-aspell --disable-binreloc"
 
 FILES_${PN} = "/usr/bin/* /usr/lib/enchant/*.so /usr/share/enchant /usr/lib/libenchant*.so.*"
 

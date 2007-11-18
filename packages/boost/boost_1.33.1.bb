@@ -63,7 +63,7 @@ FILES_boost-wserialization = "${libdir}/libboost_wserialization.so.${PV}"
 #PYTHON_ROOT = "/dev/null"
 # to remove the python build
 DEPENDS += "python"
-PYTHON_ROOT = "${STAGING_DIR}/${HOST_SYS}"
+PYTHON_ROOT = "${STAGING_DIR_HOST}"
 PYTHON_VERSION = "2.4"
 
 PACKAGES += "boost-python"
