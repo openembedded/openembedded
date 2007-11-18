@@ -51,19 +51,14 @@ do_populate_sdk() {
 		fi
 	done
 
-	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc* ${SDK_OUTPUT}/${prefix}/lib
-
-	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-        cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-	chmod -R a+r ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-	find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/ -type d | xargs chmod +x
+	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc ${SDK_OUTPUT}/${prefix}/lib
 
 	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}${libdir}/../${TARGET_SYS}/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
-	rm -Rf ${SDK_OUTPUT}${libdir}/ipkg
+	mv ${SDK_OUTPUT}${prefix}/${TARGET_SYS}/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	rm -Rf ${SDK_OUTPUT}${prefix}/${TARGET_SYS}/lib/ipkg
 	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
@@ -75,10 +70,10 @@ do_populate_sdk() {
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 	for pkg in $target_pkgs ; do
 		for arch in $revipkgarchs; do
-			if [ -e ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk ]; then
-				echo "Found ${DEPLOY_DIR_IPK}/${pkg}_$arch.ipk"
-				cp ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk ${SDK_OUTPUT}/${prefix}/ipk/
-				orig_pkg=`ipkg-list-fields ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk | grep OE: | cut -d ' ' -f2`
+			if [ -e ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk ]; then
+				echo "Found ${DEPLOY_DIR_IPK}/$arch/${pkg}_$arch.ipk"
+				cp ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk ${SDK_OUTPUT}/${prefix}/ipk/
+				orig_pkg=`ipkg-list-fields ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk | grep OE: | cut -d ' ' -f2`
 				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
 				mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime
 				cp ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/
@@ -91,8 +86,8 @@ do_populate_sdk() {
 					if [ -e ${STAGING_DIR}/pkgmaps/debian/$subpkg ]; then
 						cp ${STAGING_DIR}/pkgmaps/debian/$subpkg ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 					fi
-					if [ -e ${STAGING_DIR}/${TARGET_SYS}/shlibs/$subpkg.list ]; then
-						cp ${STAGING_DIR}/${TARGET_SYS}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
+					if [ -e ${STAGING_DIR_TARGET}/shlibs/$subpkg.list ]; then
+						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 					fi
 				done
 				break
