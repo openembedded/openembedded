@@ -5,7 +5,7 @@ SECTION = "libs/gsm"
 PROVIDES += "gsmd"
 RPROVIDES_${PN} = "libgsmd0 libgsmd gsmd gsmd-devel"
 PV = "0.1+svnr${SRCREV}"
-PR = "r38"
+PR = "r39"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gsm;proto=http \
            file://gsmd \
@@ -42,6 +42,8 @@ PACKAGES =+ "\
   ${BASEPN}-plugin-vendor-ti \
   ${BASEPN}-plugin-vendor-tihtc \
 "
+
+ALLOW_EMPTY_${BASEPN}-plugin-machine-gta01 = "1"
 
 RDEPENDS_${BASEPN}-plugins = "\
   ${BASEPN}-plugin-machine-generic \
