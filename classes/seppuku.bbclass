@@ -140,11 +140,11 @@ def seppuku_find_bug_report(debug_file, opener, query, product, component, bugna
     if len(scanner.result()) == 0:
         print >> debug_file, "Scanner failed to scan the html site"
         print >> debug_file, "%(query)sproduct=%(product)s&component=%(component)s&short_desc_type=substring&short_desc=%(bugname)s" % vars()
-        print >> debug_file, txt
+        #print >> debug_file, txt
         return (False,None)
     else: # silently pick the first result
         print >> debug_file, "Result of bug search is "
-        print >> debug_file, txt
+        #print >> debug_file, txt
         (number,status) = scanner.result()[0]
         return (not status in ["CLOS", "RESO", "VERI"],number)
 
@@ -237,7 +237,8 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
     if not bug_number:
         import bb
         bb.note("Can't create an attachment, no bugnumber passed to method")
-        return False
+        print >> debug, "Can't create an attachment, no bugnumber passed to method"
+	return False
 
     import urllib2
     param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : "Build log", "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
@@ -250,12 +251,15 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
         return False
     except Exception, e:
         print e
-        return False
+        print >> debug, "Got exception in poster.open( attach_query, param )"
+	return False
 
-    print >> debug, result.read()
+    txt = result.read()
     if result.code != 200:
+        print >> debug, "Got bad return code (%s)" % result.code
         return False
     else:
+        print >> debug, "Got good return code (200)" 
         return True
 
 
@@ -361,11 +365,11 @@ python seppuku_eventhandler() {
 
         if bug_number and file:
             if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
-                print >> debug_file, "Failed to attach the build log for bug #%" % bug_number
+                print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
             else:
                 print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
         else:
-            print >> debug_file, "Not trying to create an attachment for bug #%" % bug_number
+            print >> debug_file, "Not trying to create an attachment for bug #%s" % bug_number
 
     return NotHandled
 }
