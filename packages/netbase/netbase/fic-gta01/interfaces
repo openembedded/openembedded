@@ -22,6 +22,7 @@ iface usb0 inet static
 	netmask 255.255.255.0
 	network 192.168.0.0
 	gateway 192.168.0.200
+	up echo nameserver 192.168.0.200 >/etc/resolv.conf
 
 # Bluetooth networking
 iface bnep0 inet dhcp
