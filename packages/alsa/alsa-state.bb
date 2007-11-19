@@ -8,7 +8,7 @@ DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
 PV = "0.1.0"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = " \
   file://asoundrc \
@@ -22,7 +22,9 @@ SRC_URI_append_fic-gta01 = " \
   file://gsmhandset.state \
   file://gsmheadset.state \
   file://gsmspeakerout.state \
-  file://stereoout.state"
+  file://stereoout.state \
+  file://voip-handset.state \
+  file://voip-headset.state"
 
 inherit update-rc.d
 
