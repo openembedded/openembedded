@@ -240,6 +240,13 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
         print >> debug, "Can't create an attachment, no bugnumber passed to method"
 	return False
 
+    if not attach_query:
+        import bb
+        bb.note("Can't create an attachment, no attach_query passed to method")
+        print >> debug, "Can't create an attachment, no attach_query passed to method"
+        return False
+
+
     import urllib2
     param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : "Build log", "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
 
@@ -252,6 +259,7 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
     except Exception, e:
         print e
         print >> debug, "Got exception in poster.open( attach_query, param )"
+	print >> debug, "attach_query: %s  param: %s" % (attach_query, param )
 	return False
 
     txt = result.read()
