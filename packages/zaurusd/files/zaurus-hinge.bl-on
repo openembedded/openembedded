@@ -8,3 +8,21 @@
 
 test -z "${ZD_BINDIR}" && ZD_BINDIR="/usr/bin"
 ${ZD_BINDIR}/bl on
+
+# If the backlight does not come back on after a suspend, the driver is 
+# still "on" (hence "bl on" does nothing) with a brightness of "0"
+
+if test "`bl | awk '{print $2}'`" = "0"
+then
+	x=0
+	while test "$x" != 4
+	do
+		bl 10
+		usleep 10
+		bl 50
+		usleep 10
+		
+		let x=$x+1
+	done
+fi
+
