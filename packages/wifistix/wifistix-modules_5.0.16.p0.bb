@@ -9,12 +9,14 @@ PR = "r0"
 
 SRC_URI = "http://files.gumstix.com/cf8385-5.0.16.p0-26306.tbz \
 			file://wifistix.conf \
+			file://mcf25 \
 			file://marvell-devicename.patch;patch=1 \
 			file://marvell-devicetable.patch;patch=1 \
 			file://marvell-gumstix.patch;patch=1 \
 			file://sbi-no-inline.patch;patch=1 \
 			file://2.6.17-new-pcmcia-layer.patch;patch=1 \
 			file://bad-cast.patch;patch=1 \
+			file://sk_buff.patch;patch=1 \
 			file://struct-changes.patch;patch=1 \
 			file://no-more-config-h.patch;patch=1 \
 			file://realtime-kernel.patch;patch=1 \
@@ -41,10 +43,14 @@ do_install() {
 
 	install -m 0755 -d ${D}${sysconfdir}/modprobe.d
 	install -m 0644 ${WORKDIR}/wifistix.conf ${D}${sysconfdir}/modprobe.d/wifistix.conf
+ 	install -m 0755 -d ${D}${sysconfdir}/modutils
+ 	install -m 0644 ${WORKDIR}/mcf25 ${D}${sysconfdir}/modutils/mcf25
 }
 
 PACKAGES = "${PN}"
 FILES_${PN} = "${base_libdir}/modules/"
 FILES_${PN} += "${sysconfdir}/modprobe.d/"
+FILES_${PN} += "${sysconfdir}/modutils/"
 CONFFILES_${PN} = "${sysconfdir}/modprobe.d/wifistix.conf"
+CONFFILES_${PN} += "${sysconfdir}/modutils/mcf25"
 
