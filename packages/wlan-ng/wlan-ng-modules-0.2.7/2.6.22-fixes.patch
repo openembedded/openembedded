@@ -37,7 +37,7 @@ Index: linux-wlan-ng-0.2.7/src/prism2/driver/prism2sta.c
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
 +void prism2sta_commsqual_defer(struct work_struct *work)
 +{
-+	hfa384x_t		*hw = container_of(work, hfa384x_t, usb_work);
++	hfa384x_t		*hw = container_of(work, hfa384x_t, commsqual_bh);
 +#else
  void prism2sta_commsqual_defer(void *data)
  {
