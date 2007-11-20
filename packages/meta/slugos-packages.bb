@@ -211,9 +211,9 @@ SLUGOS_PACKAGES = "\
 	wireless-tools \
 	wireshark \
 	wpa-supplicant \
-        wview-sim wview-sim-mysql \
-	wview-vpro wview-vpro-mysql \
-	wview-wxt510 wview-wxt510-mysql \
+        wview-sim \
+	wview-vpro \
+	wview-wxt510 \
 	xinetd \
 	yeaphone \
 	yp-tools ypbind ypserv \
@@ -238,6 +238,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	openocd task-mokogateway-everything \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
+	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \
 	zd1211 \
 	"
 
