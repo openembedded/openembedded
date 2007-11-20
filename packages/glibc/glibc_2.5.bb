@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
 
-PR = "r7"
+PR = "r8"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -74,7 +74,8 @@ SRC_URI_append_powerpc= " file://ppc-sfp-machine.patch;patch=1 \
                           file://ppc-soft-fp-20070115.patch;patch=1 \
                           file://ppc-ld-nofpu-20070104.patch;patch=1 \
                           file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
-                          file://powerpc-sqrt-hack.diff;patch=1""
+                          file://powerpc-sqrt-hack.diff;patch=1 \
+                          file://glibc-2.5-soft-fp-separate-strong-alias.patch;patch=1"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
