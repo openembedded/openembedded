@@ -1,6 +1,6 @@
 SUMMARY="Basic networking tools"
 LICENSE="GPL"
-
+PR = "r1"
 
 #
 # NOTE:
@@ -73,8 +73,8 @@ do_configure() {
 }
 
 do_compile() {
-    export COPTS=$CFLAGS
-    export LOPTS=$LDFLAGS
+    export COPTS="$CFLAGS"
+    export LOPTS="$LDFLAGS"
     unset CFLAGS
     unset LDFLAGS
 
