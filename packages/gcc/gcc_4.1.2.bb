@@ -1,4 +1,4 @@
-PR = "r7"
+PR = "r8"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -32,6 +32,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://cache-amnesia.patch;patch=1 \
 	file://gfortran.patch;patch=1 \
         file://gcc-4.0.2-e300c2c3.patch;patch=1 \
+        file://pr34130.patch;patch=1 \
        "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
