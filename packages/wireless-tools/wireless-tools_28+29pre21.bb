@@ -1,5 +1,7 @@
 require wireless-tools.inc
 
+PR = "r1"
+
 SRC_URI += "http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.29.pre21.tar.gz \
 	   file://zzz-wireless.if-pre-up"
 S = "${WORKDIR}/wireless_tools.29"
