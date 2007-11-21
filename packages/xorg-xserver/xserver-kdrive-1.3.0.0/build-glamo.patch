@@ -1,0 +1,76 @@
+diff --git a/configure.ac b/configure.ac
+index 76d33f0..2807c50 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1824,6 +1824,7 @@ hw/kdrive/ati/Makefile
+ hw/kdrive/chips/Makefile
+ hw/kdrive/ephyr/Makefile
+ hw/kdrive/epson/Makefile
++hw/kdrive/glamo/Makefile
+ hw/kdrive/fake/Makefile
+ hw/kdrive/fbdev/Makefile
+ hw/kdrive/w100/Makefile
+diff --git a/hw/kdrive/Makefile.am b/hw/kdrive/Makefile.am
+index 8075a56..b97912d 100644
+--- a/hw/kdrive/Makefile.am
++++ b/hw/kdrive/Makefile.am
+@@ -4,7 +4,7 @@ VESA_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
+ endif
+ 
+ if KDRIVEFBDEV
+-FBDEV_SUBDIRS = fbdev epson
++FBDEV_SUBDIRS = fbdev epson glamo
+ endif
+ 
+ if KDRIVEW100
+@@ -34,4 +34,4 @@ SUBDIRS =			\
+ 	fake
+ 
+ DIST_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
+-               smi via fbdev sdl ephyr src linux fake sis300
++               smi via fbdev sdl ephyr src linux fake sis300 glamo
+diff --git a/hw/kdrive/glamo/Makefile.am b/hw/kdrive/glamo/Makefile.am
+index e8c48a4..ffb7a30 100644
+--- a/hw/kdrive/glamo/Makefile.am
++++ b/hw/kdrive/glamo/Makefile.am
+@@ -41,11 +41,14 @@ GLAMO_LIBS =				\
+ 
+ Xglamo_LDADD = \
+ 	$(GLAMO_LIBS)			\
+-	@KDRIVE_LIBS@
++	@KDRIVE_LIBS@			\
++	@XSERVER_LIBS@
+ 
+ Xglamo_DEPENDENCIES =	\
+ 	libglamo.a 			\
+-	@KDRIVE_LOCAL_LIBS@
++        $(FBDEV_LIBS)                   \
++        $(VESA_LIBS)                    \
++        $(DRI_LIBS)
+ 
+ relink:
+ 	rm -f $(bin_PROGRAMS) && make $(bin_PROGRAMS)
+diff --git a/hw/kdrive/glamo/glamo_stub.c b/hw/kdrive/glamo/glamo_stub.c
+index d772671..df43455 100644
+--- a/hw/kdrive/glamo/glamo_stub.c
++++ b/hw/kdrive/glamo/glamo_stub.c
+@@ -49,16 +49,10 @@ InitOutput(ScreenInfo *pScreenInfo, int argc, char **argv)
+ void
+ InitInput(int argc, char **argv)
+ {
+-	KdKeyboardInfo *ki;
+-
+-	KdAddKeyboardDriver(&LinuxKeyboardDriver);
+-	KdAddPointerDriver(&LinuxMouseDriver);
+-#ifdef TSLIB
+-	KdAddPointerDriver(&TsDriver);
++	KdInitInput (&LinuxEvdevMouseFuncs, &LinuxEvdevKeyboardFuncs);
++#ifdef TOUCHSCREEN
++	KdAddMouseDriver (&TsFuncs);
+ #endif
+-
+-	ki = KdParseKeyboard("keybd");
+-	KdAddKeyboard(ki);
+ }
+ 
+ void
