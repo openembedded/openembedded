@@ -28,6 +28,7 @@ d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
 f root root 0664 /var/log/wtmp none
+f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
 
 INRAM_NFS="\
@@ -50,6 +51,7 @@ d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
 d root root 0755 /var/lib/ipkg none
 f root root 0664 /var/log/wtmp none
+f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
 
 INRAM_DISK="\
@@ -68,6 +70,7 @@ d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
 d root root 0755 /var/lib/ipkg none
 f root root 0664 /var/log/wtmp none
+f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
 
 INRAM_HEADER="\
