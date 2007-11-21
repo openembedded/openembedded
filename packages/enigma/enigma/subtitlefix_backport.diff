@@ -1,20 +1,26 @@
-diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
---- enigma_org/lib/dvb/subtitle.cpp	2005-08-02 22:35:36.000000000 +0200
-+++ enigma/lib/dvb/subtitle.cpp	2007-10-19 11:55:36.000000000 +0200
-@@ -337,6 +337,12 @@
+--- enigma_org/lib/dvb/subtitle.cpp	2 Aug 2005 20:35:36 -0000	1.13
++++ enigma/lib/dvb/subtitle.cpp	21 Nov 2007 11:52:51 -0000
+@@ -337,6 +337,19 @@
  				delete page->page_regions;
  				page->page_regions = p;
  			}
 +			while (page->regions)
 +			{
 +				struct subtitle_region *p = page->regions->next;
++				while(page->regions->region_objects)
++				{
++					subtitle_region_object *ob = page->regions->region_objects->next;
++					delete page->regions->region_objects;
++					page->regions->region_objects = ob;
++				}
++				delete [] page->regions->region_buffer;
 +				delete page->regions;
 +				page->regions = p;
 +			}
  		}
  
  //		eDebug("new page.. (%d)", page_state);
-@@ -352,7 +358,14 @@
+@@ -352,7 +365,14 @@
  			// go to last entry
  		while (*r)
  			r = &(*r)->next;
@@ -30,7 +36,7 @@ diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
  		while (processed_length < segment_length)
  		{
  			struct subtitle_page_region *pr;
-@@ -763,20 +776,16 @@
+@@ -763,20 +783,16 @@
  #if 1
  	struct subtitle_page *page = sub->pages;
  	if ( page )
@@ -54,7 +60,7 @@ diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
  	//eDebug("----------- end of display set");
  	//eDebug("active pages:");
  	while (page)
-@@ -878,7 +887,6 @@
+@@ -878,7 +894,6 @@
  		return;
  	}
  	
@@ -62,7 +68,7 @@ diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
  	//eDebug("iterating regions..");
  		/* iterate all regions in this pcs */
  	struct subtitle_page_region *region = page->page_regions;
-@@ -902,20 +910,19 @@
+@@ -902,20 +917,19 @@
  			{
  				if (main_clut_id != clut_id)
  				{
@@ -87,9 +93,8 @@ diff -Naur enigma_org/lib/dvb/subtitle.cpp enigma/lib/dvb/subtitle.cpp
  			if ((x0 < 0) || (y0 < 0) || (x0 > sub->screen_width) || (x0 > sub->screen_height))
  				continue;
  
-diff -Naur enigma_org/lib/dvb/subtitling.cpp enigma/lib/dvb/subtitling.cpp
---- enigma_org/lib/dvb/subtitling.cpp	2005-08-02 22:35:36.000000000 +0200
-+++ enigma/lib/dvb/subtitling.cpp	2007-10-19 11:57:24.000000000 +0200
+--- enigma_org/lib/dvb/subtitling.cpp	2 Aug 2005 20:35:36 -0000	1.12
++++ enigma/lib/dvb/subtitling.cpp	21 Nov 2007 11:52:51 -0000
 @@ -67,26 +67,26 @@
  	unsigned long long current = 0;
  	if (Decoder::getSTC(current))
@@ -169,3 +174,12 @@ diff -Naur enigma_org/lib/dvb/subtitling.cpp enigma/lib/dvb/subtitling.cpp
  }
  
  void eSubtitleWidget::gotData(int what)
+@@ -377,7 +383,7 @@
+ 	while (!queue.empty())
+ 	{
+ 		pes_packet_s pkt = queue.front();
+-		queue.front();
++		queue.pop();
+ 		delete [] pkt.pkt;
+ 	}
+ 	delete subtitle;
