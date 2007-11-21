@@ -1,8 +1,10 @@
-PR = "r8"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
+# NOTE: split PR.  If the main .bb changes something that affects its *build*
+# remember to increment the -cross .bb PR too.
+PR = "r8"
 
 inherit autotools gettext
 
