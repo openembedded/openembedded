@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r40"
+PR = "r41"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -149,6 +149,7 @@ SLUGOS_PACKAGES = "\
 	net-tools \
 	netcat \
 	netpbm \
+	nfs-utils \
 	nmap \
 	ntfs-3g \
 	ntp \
@@ -166,6 +167,7 @@ SLUGOS_PACKAGES = "\
 	picocom \
 	pkgconfig \
 	popt \
+	portmap \
 	postfix \
 	ppp \
 	procps \
@@ -229,7 +231,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	fetchmail \
 	lirc-modules lirc \
 	madfu \
-	portmap nfs-utils \
 	openldap \
 	pvrusb2-mci \
 	pwc \
