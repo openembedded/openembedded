@@ -11,17 +11,18 @@ DESCRIPTION = "cryptsetup with luks support creates and manages encrypted contai
 SECTION = "console"
 LICENSE = "GPL"
 HOMEPAGE = "http://luks.endorphin.org/"
-DEPENDS = "e2fsprogs-libs device-mapper"
+DEPENDS = "e2fsprogs-libs device-mapper libgcrypt popt"
 
 RRECOMMENDS = "kernel-module-aes \
 	       kernel-module-dm-crypt \
 	       kernel-module-md5 \
 	       kernel-module-cbc \
+	       kernel-module-sha256 \
 	      "
 	     
 ######################################################################################
 
-PR = "r0"
+PR = "r1"
 
 ######################################################################################
 
