@@ -2,7 +2,7 @@
 
 MODULE_DIR=/initrd.d
 BOOT_ROOT=
-ROOT_DEVICE=/dev/null
+ROOT_DEVICE=
 
 early_setup() {
     mkdir /proc
