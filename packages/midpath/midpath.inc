@@ -3,7 +3,7 @@ HOMEPAGE = "http://midpath.thenesis.org/"
 LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://downloads.sourceforge.net/midpath/midpath-${PV}.tar.gz"
 

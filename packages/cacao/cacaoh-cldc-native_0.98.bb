@@ -9,7 +9,7 @@ EXTRA_OECONF += "--with-classpath-includedir=${STAGING_INCDIR}/classpath-minimal
 		 --enable-jni \
                  --enable-java=cldc1.1 \
                  --with-classpath=cldc1.1 \
-		 --with-classpath-classes=${STAGING_LIBDIR}/java/cldc1.1.jar \
+		 --with-classpath-classes=${STAGING_DATADIR}/java/cldc1.1.jar \
                 "
 do_stage() {
 	install -m 0755 src/cacaoh/.libs/cacaoh ${STAGING_BINDIR}/

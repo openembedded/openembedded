@@ -4,6 +4,7 @@ LICENSE = "GPL"
 
 inherit kernel
 
+DEPENDS_collie += "bc-native"
 RPROVIDES_kernel-base += "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
