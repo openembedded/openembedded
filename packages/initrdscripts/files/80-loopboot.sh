@@ -35,7 +35,6 @@ if [ "$ROOT_DEVICE" = "/dev/loop" ]; then
         loop_num=`expr "$loop_num" + 1`
     }
 
-    modprobe vfat
     modprobe loop
     
     loop_num=0
