@@ -50,10 +50,16 @@ gen_keys() {
 for t in $DROPBEAR_KEYTYPES; do
   case $t in
     rsa)
-        test -f $DROPBEAR_RSAKEY || dropbearkey -t rsa -f $DROPBEAR_RSAKEY
+	if [ ! -f $DROPBEAR_RSAKEY ]; then
+	    echo "Creating $DESC RSA host key."
+	    dropbearkey -t rsa -f $DROPBEAR_RSAKEY
+	fi
 	;;
     dsa)
-        test -f $DROPBEAR_DSSKEY || dropbearkey -t dss -f $DROPBEAR_DSSKEY
+	if [ ! -f $DROPBEAR_DSSKEY ]; then
+	    echo "Creating $DESC DSA host key."
+	    dropbearkey -t dss -f $DROPBEAR_DSSKEY
+	fi
 	;;
   esac
 done
@@ -61,8 +67,8 @@ done
 
 case "$1" in
   start)
-	echo -n "Starting $DESC: "
 	gen_keys
+	echo -n "Starting $DESC: "
 	KEY_ARGS=""
 	test -f $DROPBEAR_DSSKEY && KEY_ARGS="$KEY_ARGS -d $DROPBEAR_DSSKEY"
 	test -f $DROPBEAR_RSAKEY && KEY_ARGS="$KEY_ARGS -r $DROPBEAR_RSAKEY"
