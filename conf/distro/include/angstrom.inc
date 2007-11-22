@@ -185,6 +185,8 @@ FEED_ARCH_lsppchd 	= "ppc603e"
 FEED_ARCH_lsppchg 	= "ppc603e"
 FEED_ARCH_storcenter 	= "ppc603e"
 FEED_ARCH_turbostation 	= "ppc603e"
+FEED_ARCH_mpc8313e-rdb 	= "ppce300c3"
+FEED_ARCH_mpc8323e-rdb 	= "ppce300c2"
 
 
 #strongarm machines, no EABI
