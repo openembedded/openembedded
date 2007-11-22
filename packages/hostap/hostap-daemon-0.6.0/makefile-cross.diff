@@ -1,0 +1,25 @@
+diff -urN hostapd.orig/Makefile hostapd/Makefile
+--- hostapd.orig/Makefile	2007-05-28 19:26:55.000000000 +0200
++++ hostapd/Makefile	2007-11-22 16:28:44.000000000 +0100
+@@ -6,6 +6,8 @@
+ CFLAGS = -MMD -O2 -Wall -g
+ endif
+ 
++TARGET_PREFIX ?= /usr/local/bin/
++
+ # define HOSTAPD_DUMP_STATE to include SIGUSR1 handler for dumping state to
+ # a file (undefine it, if you want to save in binary size)
+ CFLAGS += -DHOSTAPD_DUMP_STATE
+@@ -361,10 +363,10 @@
+ 	fi
+ 
+ install: all
+-	for i in $(ALL); do cp $$i /usr/local/bin/$$i; done
++	for i in $(ALL); do cp $$i $(TARGET_PREFIX)/$$i; done
+ 
+ hostapd: $(OBJS)
+-	$(CC) -o hostapd $(OBJS) $(LIBS)
++	$(CC) $(LDFLAGS) -o hostapd $(OBJS) $(LIBS)
+ 
+ OBJS_c = hostapd_cli.o ../src/common/wpa_ctrl.o ../src/utils/os_$(CONFIG_OS).o
+ hostapd_cli: $(OBJS_c)
