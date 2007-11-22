@@ -181,53 +181,53 @@ do
 		/sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MODULESIZE > /dev/null 2>&1
 		/sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MODULESIZE > /dev/null 2>&1
 
-                if [ "$MODEL" = "SL-C1000" ] && [ $TARGETTYPE = Kernel ]; then 
-                    echo $TARGETFILE':'$DATASIZE'bytes'
-	            echo '                ' > /tmp/data
-		    /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
-                    /sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
-		    /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1
-		#loop
-                else
-		while [ $DATAPOS -lt $DATASIZE ]
-		do
-			#data create
-			bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
-			TMPSIZE=`wc -c $TMPDATA`
-			TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
-			DATAPOS=`expr $DATAPOS + $TMPSIZE`
-
-			#handle data file
-			#echo 'ADDR='$ADDR
-			#echo 'SIZE='$TMPSIZE
-			#echo 'TMPDATA='$TMPDATA
-			if [ $ISLOGICAL = 0 ]
-			then
-				next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
-				if [ "$next_addr" = "" ]; then
-					echo "ERROR:flash write"
-					rm $TMPDATA > /dev/null 2>&1
-					RESULT=3
-					break;
-				fi
-				ADDR=$next_addr
-			else
-				/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
-				ADDR=`expr $ADDR + $TMPSIZE`
-			fi
-
-			rm $TMPDATA > /dev/null 2>&1
-
-			#progress
-			SPNUM=0
-			while [ $SPNUM -lt $PROGSTEP ]
+		if [ "$MODEL" = "SL-C1000" ] && [ $TARGETTYPE = Kernel ]; then 
+			echo $TARGETFILE':'$DATASIZE'bytes'
+			echo '                ' > /tmp/data
+			/sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
+			/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
+			/sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1
+			#loop
+		else
+			while [ $DATAPOS -lt $DATASIZE ]
 			do
-				echo -n '.'
-				SPNUM=`expr $SPNUM + 1`
-			done
-		done
+				#data create
+				bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
+				TMPSIZE=`wc -c $TMPDATA`
+				TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
+				DATAPOS=`expr $DATAPOS + $TMPSIZE`
 
-                fi
+				#handle data file
+				#echo 'ADDR='$ADDR
+				#echo 'SIZE='$TMPSIZE
+				#echo 'TMPDATA='$TMPDATA
+				if [ $ISLOGICAL = 0 ]
+				then
+					next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
+					if [ "$next_addr" = "" ]; then
+						echo "ERROR:flash write"
+						rm $TMPDATA > /dev/null 2>&1
+						RESULT=3
+						break;
+					fi
+					ADDR=$next_addr
+				else
+					/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+					ADDR=`expr $ADDR + $TMPSIZE`
+				fi
+
+				rm $TMPDATA > /dev/null 2>&1
+
+				#progress
+				SPNUM=0
+				while [ $SPNUM -lt $PROGSTEP ]
+				do
+					echo -n '.'
+					SPNUM=`expr $SPNUM + 1`
+				done
+			done
+
+		fi
 
 		echo ''
 

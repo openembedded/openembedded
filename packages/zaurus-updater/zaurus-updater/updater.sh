@@ -21,6 +21,12 @@
 # - c760/c860 has bigger rootfs - use it
 #
 
+date_log() 
+{
+	echo "$LOG: `date`"
+}
+LOG="updater start"; date_log
+
 DATAPATH=$1
 TMPPATH=/tmp/update
 TMPDATA=$TMPPATH/tmpdata.bin
@@ -37,6 +43,8 @@ fi
 RO_MTD_NO=`echo $RO_MTD_LINE | cut -d: -f1 | cut -dd -f2`
 RO_MTD_SIZE_HEX=`echo $RO_MTD_LINE | cut -d" " -f2`
 RO_MTD=/dev/mtd$RO_MTD_NO
+
+echo "RO_MTD = $RO_MTD"
 
 LOGOCAL_MTD=/dev/mtd1
 
@@ -159,9 +167,9 @@ do_flashing()
 
     if [ $ISFORMATTED = 0 ]
     then
-        echo -n 'Flash erasing...'
+		LOG="flash erasing ($TARGET_MTD) start"; date_log
         /sbin/eraseall $TARGET_MTD > /dev/null 2>&1
-        echo 'done'
+		LOG="flash erasing ($TARGET_MTD) end"; date_log
         ISFORMATTED=1
     fi
 
@@ -176,6 +184,7 @@ do_flashing()
 
     if [ -e $TMPHEAD ]
     then
+		LOG="nandlogical read start"; date_log
         VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
         MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
         /sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
@@ -183,43 +192,44 @@ do_flashing()
 
         /sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
         /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
+		LOG="nandlogical read end"; date_log
     fi
 
-    #loop
-    while [ $DATAPOS -lt $DATASIZE ]
-    do
-        #data create
-        bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
-        TMPSIZE=`wc -c $TMPDATA`
-        TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
-        DATAPOS=`expr $DATAPOS + $TMPSIZE`
+	#loop
+	while [ $DATAPOS -lt $DATASIZE ]
+	do
+		#data create
+		bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
+		TMPSIZE=`wc -c $TMPDATA`
+		TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
+		DATAPOS=`expr $DATAPOS + $TMPSIZE`
 
-        #handle data file
-        if [ $ISLOGICAL = 0 ]
-        then
-            next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
-            if [ "$next_addr" = "" ]; then
-                echo "ERROR: flash write"
-                rm $TMPDATA > /dev/null 2>&1
-                RESULT=3
-                break;
-            fi
-            ADDR=$next_addr
-        else
-            /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
-            ADDR=`expr $ADDR + $TMPSIZE`
-        fi
+		#handle data file
+		if [ $ISLOGICAL = 0 ]
+		then
+			next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
+			if [ "$next_addr" = "" ]; then
+				echo "ERROR: flash write"
+				rm $TMPDATA > /dev/null 2>&1
+				RESULT=3
+				break;
+			fi
+			ADDR=$next_addr
+		else
+			/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+			ADDR=`expr $ADDR + $TMPSIZE`
+		fi
 
-        rm $TMPDATA > /dev/null 2>&1
+		rm $TMPDATA > /dev/null 2>&1
 
-        #progress
-        SPNUM=0
-        while [ $SPNUM -lt $PROGSTEP ]
-        do
-            echo -n '.'
-            SPNUM=`expr $SPNUM + 1`
-        done
-    done
+		#progress
+		SPNUM=0
+		while [ $SPNUM -lt $PROGSTEP ]
+		do
+			echo -n '.'
+			SPNUM=`expr $SPNUM + 1`
+		done
+	done
 
     echo ''
 
@@ -230,12 +240,16 @@ do_flashing()
     then
         if [ -e $VTMPNAME ]
         then
+			LOG="nandlogical write2 start"; date_log
             /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
+			LOG="nandlogical write2 end"; date_log
             rm -f $VTMPNAME > /dev/null 2>&1
         fi
         if [ -e $MTMPNAME ]
         then
+			LOG="nandlogical write3 start"; date_log
             /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
+			LOG="nandlogical write3 end"; date_log
             rm -f $MTMPNAME > /dev/null 2>&1
         fi
         echo 'Done.'
@@ -288,6 +302,8 @@ echo 'MODEL: '$MODEL' ('$ZAURUS')'
 
 mkdir -p $TMPPATH > /dev/null 2>&1
 
+LOG="updater after model"; date_log
+
 cd $DATAPATH/
 
 for TARGETFILE in zimage zImage zImage.bin zimage.bin ZIMAGE ZIMAGE.BIN initrd.bin INITRD.BIN hdimage1.tgz HDIMAGE1.TGZ
@@ -311,7 +327,6 @@ do
         then
             continue
         fi
-        echo 'kernel'
         FLASHED_KERNEL=1
         ISLOGICAL=1
         MODULEID=5
@@ -322,7 +337,12 @@ do
         ONESIZE=524288
         HDTOP=`expr $DATASIZE - 16`
         /sbin/bcut -a $HDTOP -s 16 -o $TMPHEAD $TARGETFILE
+		echo "HDTOP=$HDTOP"
+		LOG="updater flashing kernel start"; date_log
+		FLASH_TYPE="kernel"
         do_flashing
+		FLASH_TYPE=""
+		LOG="updater flashing kernel end"; date_log
         ;;
 
     initrd.bin)
@@ -341,7 +361,11 @@ do
         DATAPOS=16
         ONESIZE=1048576
         /sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
+		LOG="updater flashing rootfs start"; date_log
+		FLASH_TYPE="rootfs"
         do_flashing
+		FLASH_TYPE=""
+		LOG="updater flashing rootfs end"; date_log
         ;;
 
     hdimage1.tgz)
@@ -355,6 +379,8 @@ do
         ;;
     esac
 done
+
+/bin/sh
 
 # reboot
 exit 0
