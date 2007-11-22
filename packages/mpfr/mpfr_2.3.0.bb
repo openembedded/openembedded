@@ -2,11 +2,10 @@ require mpfr.inc
 
 DEPENDS = "gmp"
 
-PV = "0.0+cvs${SRCDATE}"
-PR = "r2"
+PR = "r0"
 
-SRC_URI = "cvs://cvs:@cvs-sop.inria.fr/CVS/spaces;module=mpfr;method=pserver"
-S = "${WORKDIR}/mpfr"
+SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2"
+S = "${WORKDIR}/mpfr-${PV}"
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
