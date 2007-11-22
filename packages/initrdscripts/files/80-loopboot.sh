@@ -21,11 +21,10 @@ if [ "$ROOT_DEVICE" = "/dev/loop" ]; then
             echo "Mounting $dev on $hostpt"
             mkdir $hostpt
             mount $dev $hostpt
-            cd $hostpt
         fi
     
         echo "Loopback setup of $path (offset $offset)"
-        losetup -o "$offset" "$loopdev" "$path"
+        losetup -o "$offset" "$loopdev" "$hostpt/$path"
 
         echo "Mounting $loopdev on $mountpt"
         mkdir "$mountpt"
