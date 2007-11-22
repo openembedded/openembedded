@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r41"
+PR = "r42"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -48,6 +48,7 @@ SLUGOS_PACKAGES = "\
 	cherokee \
 	coreutils \
 	cron \
+	cryptsetup \
 	ctorrent \
 	ctrlproxy \
 	cups \
