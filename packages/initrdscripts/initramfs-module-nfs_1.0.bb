@@ -1,5 +1,5 @@
-SRC_URI = "file://nfsboot.sh"
-PR = "r5"
+SRC_URI = "file://80-nfsboot.sh"
+PR = "r0"
 DESCRIPTION = "An initramfs module for booting via NFS."
 RDEPENDS = "initramfs-uniboot"
 RRECOMMENDS = "kernel-module-g-ether kernel-module-nfs"

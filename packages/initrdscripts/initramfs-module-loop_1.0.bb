@@ -1,5 +1,5 @@
-SRC_URI = "file://loopboot.sh"
-PR = "r4"
+SRC_URI = "file://80-loopboot.sh"
+PR = "r0"
 DESCRIPTION = "An initramfs module for booting a filesystem image by loopback \
                mounting it."
 RDEPENDS = "initramfs-uniboot"
@@ -10,4 +10,4 @@ do_install() {
         install -m 0755 ${WORKDIR}/80-loopboot.sh ${D}/initrd.d/
 }
 
-FILES_${PN} += " /initrd.d/loop "
+FILES_${PN} += " /initrd.d/* "
