@@ -1,5 +1,5 @@
 SRC_URI = "file://init.sh"
-PR = "r1"
+PR = "r0"
 DESCRIPTON = "A modular initramfs init script system."
 RDEPENDS = "busybox-static"
 RRECOMMENDS = "kernel-module-uinput"
