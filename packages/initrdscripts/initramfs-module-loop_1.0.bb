@@ -1,8 +1,8 @@
 SRC_URI = "file://80-loopboot.sh"
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "An initramfs module for booting a filesystem image by loopback \
                mounting it."
-RDEPENDS = "initramfs-uniboot"
+RDEPENDS = "initramfs-uniboot initramfs-module-initfs"
 RRECOMMENDS = "kernel-module-loop kernel-module-vfat"
 
 do_install() {
