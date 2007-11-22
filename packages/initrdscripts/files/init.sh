@@ -8,8 +8,11 @@ early_setup() {
     mkdir /proc
     mount -t proc proc /proc
     mkdir /mnt
+}
 
-    echo -n "creating device nodes: "
+dev_setup()
+{
+    echo -n "initramfs: Creating device nodes: "
     grep '^ *[0-9]' /proc/partitions | while read major minor blocks dev
     do
         if [ ! -e /dev/$dev ]; then
@@ -35,6 +38,7 @@ read_args() {
 
 load_modules() {
     for module in $MODULE_DIR/*; do
+        echo "initramfs: Loading $module module"
         source $module
     done
 }
@@ -59,6 +63,8 @@ if [ -n "$rootdelay" ]; then
     echo "Waiting $rootdelay seconds for devices to settle..."
     sleep $rootdelay
 fi
+
+dev_setup
 
 load_modules
 [ -n "$BOOT_ROOT" ] && boot_root
