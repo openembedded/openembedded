@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.cacaojvm.org/"
 LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
+PR = "r1"
 
 inherit autotools
 
