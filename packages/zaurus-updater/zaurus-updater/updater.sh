@@ -116,7 +116,7 @@ do_rootfs_extraction()
     mke2fs $MKE2FSOPT /dev/${IDE1}1 > /dev/null 2>&1
     e2fsck -p /dev/${IDE1}1 > /dev/null
     if [ "$?" != "0" ]; then
-        echo "Error Unable to create filesystem on microdrive!"
+        echo "Error: Unable to create filesystem on microdrive!"
         exit "$?"
     fi
 
