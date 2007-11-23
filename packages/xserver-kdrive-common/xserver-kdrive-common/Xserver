@@ -2,7 +2,6 @@
 #
 
 # note xinit needs full server path
-XSERVER=/usr/bin/Xipaq
 if [ -f /usr/bin/Xfbdev ]; then
   XSERVER=/usr/bin/Xfbdev
 fi
@@ -11,9 +10,6 @@ if [ -f /usr/bin/Xepson ]; then
 fi
 if [ -f /usr/bin/Xorg ]; then
   XSERVER=/usr/bin/Xorg
-fi
-if [ -f /usr/bin/Xomap ]; then
-  XSERVER=/usr/bin/Xomap
 fi
 
 . /etc/profile
@@ -104,15 +100,27 @@ case `module_id` in
         "Compulab CM-x270")
                 modprobe mbxfb
                 ARGS="$ARGS -fb /dev/fb1" ;;
-        "GTA01" | "GTA02")
+        "GTA01")
                 if [ `screen_width` -gt 330 ] ; then
                      DPI=285
                 else
                      DPI=140
                 fi 
                 ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE}" ;;
+       "GTA02")
+                if [ `screen_width` -gt 330 ] ; then
+                     DPI=285
+                else 
+                     DPI=140
+                fi 
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE}" 
+                XSERVER=/usr/bin/Xglamo ;;
+	"Nokia N770")
+                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
+                XSERVER=/usr/bin/Xomap ;;
         "Nokia N800")
-                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
+                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
+                XSERVER=/usr/bin/Xomap ;;
         "Motorola Ezx Platform")
                 ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE}" ;;
         *)
