@@ -22,6 +22,7 @@
 #
 # 2007.11.23 Koen Kooi
 # - consistent error messages
+# - fix flashing from case sensitive filesystem (e.g. ext2)
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -293,9 +294,9 @@ do
     DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
 
     # make TARGETFILE lowercase
-    TARGETFILE=`echo $TARGETFILE|tr A-Z a-z`
+    TARGETFILE_LC=`echo $TARGETFILE|tr A-Z a-z`
 
-    case "$TARGETFILE" in
+    case "$TARGETFILE_LC" in
 
     zimage|zimage.bin)
         if [ $FLASHED_KERNEL != 0 ]
