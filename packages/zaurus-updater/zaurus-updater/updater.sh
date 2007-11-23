@@ -20,6 +20,8 @@
 # - size check unbreak
 # - c760/c860 has bigger rootfs - use it
 #
+# 2007.11.23 Koen Kooi
+# - consistent error messages
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -72,7 +74,7 @@ check_for_hdd()
 {
     IDE1=`get_dev_pcmcia_slot 1`
     if [ "$IDE1" = "" ]; then
-        echo "Error!! There is no microdrive. Retrying..."
+        echo "Error: There is no microdrive. Retrying..."
         while [ "$IDE1" = "" ]; do
             IDE1=`get_dev_pcmcia_slot 1`
         done
@@ -95,7 +97,7 @@ check_for_tar()
     done
 
     if [ ! -e $TARBIN ]; then
-        echo 'ERRROR: Please place a valid copy of tar as "gnu-tar" on your card.'
+        echo 'Error: Please place a valid copy of tar as "gnu-tar" on your card.'
         echo 'Please reset'
         while true
         do
@@ -114,13 +116,13 @@ do_rootfs_extraction()
     mke2fs $MKE2FSOPT /dev/${IDE1}1 > /dev/null 2>&1
     e2fsck -p /dev/${IDE1}1 > /dev/null
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to create filesystem on microdrive!"
+        echo "Error Unable to create filesystem on microdrive!"
         exit "$?"
     fi
 
     mount -t $LINUXFMT -o noatime /dev/${IDE1}1 /hdd1
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to mount microdrive!"
+        echo "Error: Unable to mount microdrive!"
         exit "$?"
     fi
 
@@ -128,7 +130,7 @@ do_rootfs_extraction()
     echo 'Now extracting...'
     gzip -dc $DATAPATH/$TARGETFILE | $TARBIN xf -
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to extract root filesystem archive!"
+        echo "Error: Unable to extract root filesystem archive!"
         exit "$?"
     fi
 
@@ -144,7 +146,7 @@ do_flashing()
 {
     if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
     then
-        echo "ERROR: File is too big to flash!"
+        echo "Error: File is too big to flash!"
         return
     fi
 
@@ -197,7 +199,7 @@ do_flashing()
 		then
 			next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
 			if [ "$next_addr" = "" ]; then
-				echo "ERROR: flash write"
+				echo "Error: flash write"
 				rm $TMPDATA > /dev/null 2>&1
 				RESULT=3
 				break;
