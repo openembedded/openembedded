@@ -22,6 +22,10 @@
 #
 # 2007.11.23 Koen Kooi
 # - consistent error messages
+#
+# 2007.11.23 Matthias 'CoreDump' Hentges
+# - Always treat MTD_PART_SIZE as HEX when comparing sizes
+# - Thanks to ZeroChaos for debugging
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -147,6 +151,7 @@ do_flashing()
     if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
     then
         echo "Error: File is too big to flash!"
+	echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"	
         return
     fi
 
@@ -327,7 +332,7 @@ do
         FLASHED_ROOTFS=1
         ISLOGICAL=0
         MODULEID=6
-        MTD_PART_SIZE=$ROOTFS_SIZE
+        MTD_PART_SIZE="0x$ROOTFS_SIZE"
         ADDR=0
         ISFORMATTED=0
         TARGET_MTD=$RO_MTD
