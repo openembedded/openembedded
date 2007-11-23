@@ -83,7 +83,7 @@ set kernel "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
 # 2nd - EXT2 with rootfs tarball extracted
 set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
 
-## Choice 2 - Boot from CD card, setup like above
+## Choice 2 - Boot from CF card, setup like above
 #set cmdline "root=/dev/hda2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
 
 ## Choice 3 - Boot rootfs image as initramfs (works only for smaller images)
