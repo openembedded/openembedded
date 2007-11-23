@@ -35,10 +35,8 @@ if [ "$RO_MTD_LINE" = "" ]; then
     RO_MTD_LINE=`cat /proc/mtd | grep "\<NAND\>.*\<2\>" | tail -n 1`
 fi
 RO_MTD_NO=`echo $RO_MTD_LINE | cut -d: -f1 | cut -dd -f2`
-RO_MTD_SIZE_HEX=`echo $RO_MTD_LINE | cut -d" " -f2`
 RO_MTD=/dev/mtd$RO_MTD_NO
-
-echo "RO_MTD = $RO_MTD"
+ROOTFS_SIZE=`echo $RO_MTD_LINE | cut -d" " -f2`
 
 LOGOCAL_MTD=/dev/mtd1
 
@@ -250,27 +248,18 @@ MODEL=`cat /proc/deviceinfo/product`
 case "$MODEL" in
     SL-B500|SL-5600) 
         ZAURUS='poodle'
-        ROOTFS_SIZE=0x1600000
         ;;
     SL-6000)
         ZAURUS='tosa'
-        ROOTFS_SIZE=0x1E00000
         ;;
     SL-C1000) 
         ZAURUS='akita'
-        ROOTFS_SIZE=0x1900000
         ;;
-    SL-C700|SL-C750|SL-7500)
+    SL-C700|SL-C750|SL-7500|SL-C760|SL-C860)
         ZAURUS='c7x0'
-        ROOTFS_SIZE=0x1900000
-        ;;
-    SL-C760|SL-C860)
-        ZAURUS='c7x0'
-        ROOTFS_SIZE=0x3500000
         ;;
     SL-C3000|SL-C3100|SL-C3200)
         ZAURUS='c3x00'
-        ROOTFS_SIZE=0x0500000
         check_for_hdd
         check_for_tar
         ;;
