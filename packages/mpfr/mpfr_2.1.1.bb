@@ -1,11 +1,13 @@
-require mpfr.inc
-
+DESCRIPTION = "A C library for multiple-precision floating-point computations with exact rounding"
+LICENSE = "LGPL"
+SECTION = "libs"
 DEPENDS = "gmp"
-
-PR = "r3"
+PR = "r2"
 
 SRC_URI = "http://www.mpfr.org/mpfr-${PV}/mpfr-${PV}.tar.bz2"
 S = "${WORKDIR}/mpfr-${PV}"
+
+inherit autotools
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
