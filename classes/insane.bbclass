@@ -57,8 +57,12 @@ def package_qa_get_machine_dict():
                         "arm" :       (  40,    97,    0,          True,          True),
                         "armeb":      (  40,    97,    0,          False,         True),
                         "powerpc":    (  20,     0,    0,          False,         True),
+                        "i386":       (   3,     0,    0,          True,          True),
+                        "i486":       (   3,     0,    0,          True,          True),
+                        "i586":       (   3,     0,    0,          True,          True),
+                        "i686":       (   3,     0,    0,          True,          True),
                         "mipsel":     (   8,     0,    0,          True,          True),
-			"avr32":      (6317,     0,    0,          False,         True),
+                        "avr32":      (6317,     0,    0,          False,         True),
                       },
             "uclinux-uclibc" : {
                         "bfin":       ( 106,     0,    0,          True,         True),
