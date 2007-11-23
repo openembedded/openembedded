@@ -5,6 +5,7 @@ PACKAGES = "libgcc ${PN} ${PN}-symlinks \
             g++ g++-symlinks \
 	    cpp cpp-symlinks \
             g77 g77-symlinks \
+            gfortran gfortran-symlinks \
 	    gcov gcov-symlinks \
             libmudflap libmudflap-dev \
 	    libstdc++ libg2c \
@@ -27,6 +28,11 @@ FILES_g77 = "${bindir}/${TARGET_PREFIX}g77 \
 		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771"
 FILES_g77-symlinks = "${bindir}/g77 \
 			    ${bindir}/f77"
+
+FILES_gfortran = "${bindir}/${TARGET_PREFIX}gfortran \
+		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f951"
+FILES_gfortran-symlinks = "${bindir}/gfortran \
+			    ${bindir}/f95"
 
 FILES_cpp = "${bindir}/${TARGET_PREFIX}cpp \
 	     ${base_libdir}/cpp"
@@ -115,9 +121,11 @@ do_install () {
 
 	# Symlinks so we can use these trivially on the target
 	ln -sf ${TARGET_SYS}-g77 g77
+	ln -sf ${TARGET_SYS}-gfortran gfortran
 	ln -sf ${TARGET_SYS}-g++ g++
 	ln -sf ${TARGET_SYS}-gcc gcc
 	ln -sf g77 f77
+	ln -sf gfortran f95
 	ln -sf g++ c++
 	ln -sf gcc cc
 	ln -sf ${bindir}/${TARGET_SYS}-cpp ${D}${base_libdir}/cpp

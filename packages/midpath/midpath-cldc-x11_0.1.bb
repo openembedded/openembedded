@@ -12,8 +12,6 @@ do_configure() {
 
 do_compile() {
 
-mkdir -p ${S}/dist
-
 # Build Escher X11 library
 cd ${S}/external/escher-cldc/core
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath ${CLDC_PATH} -sourcepath ${S}/external/escher-cldc/core -source 1.3 -target 1.1" || exit 1

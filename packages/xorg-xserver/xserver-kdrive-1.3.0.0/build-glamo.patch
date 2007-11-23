@@ -1,8 +1,16 @@
-diff --git a/configure.ac b/configure.ac
-index 76d33f0..2807c50 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1824,6 +1824,7 @@ hw/kdrive/ati/Makefile
+Index: xorg-server-1.3.0.0/configure.ac
+===================================================================
+--- xorg-server-1.3.0.0.orig/configure.ac	2007-11-22 17:40:34.000000000 +0800
++++ xorg-server-1.3.0.0/configure.ac	2007-11-22 17:59:56.000000000 +0800
+@@ -1576,6 +1576,7 @@
+ AM_CONDITIONAL(H3600_TS, false)
+ AM_CONDITIONAL(KDRIVEVESA, [test x"$ac_cv_header_sys_vm86_h" = xyes])
+ AM_CONDITIONAL(KDRIVEFBDEV, [test x"$ac_cv_header_linux_fb_h" = xyes])
++AM_CONDITIONAL(KDRIVEGLAMO, [test x"$ac_cv_header_sys_vm86_h" = xyes -o x"$ac_cv_header_linux_fb_h" = xyes])
+ 
+ # Xephyr needs nanosleep() which is in librt on Solaris
+ AC_CHECK_FUNC([nanosleep], [],
+@@ -1824,6 +1825,7 @@
  hw/kdrive/chips/Makefile
  hw/kdrive/ephyr/Makefile
  hw/kdrive/epson/Makefile
@@ -10,30 +18,37 @@ index 76d33f0..2807c50 100644
  hw/kdrive/fake/Makefile
  hw/kdrive/fbdev/Makefile
  hw/kdrive/w100/Makefile
-diff --git a/hw/kdrive/Makefile.am b/hw/kdrive/Makefile.am
-index 8075a56..b97912d 100644
---- a/hw/kdrive/Makefile.am
-+++ b/hw/kdrive/Makefile.am
-@@ -4,7 +4,7 @@ VESA_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
+Index: xorg-server-1.3.0.0/hw/kdrive/Makefile.am
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/Makefile.am	2007-11-22 17:40:34.000000000 +0800
++++ xorg-server-1.3.0.0/hw/kdrive/Makefile.am	2007-11-22 17:54:54.000000000 +0800
+@@ -7,6 +7,10 @@
+ FBDEV_SUBDIRS = fbdev epson
  endif
  
- if KDRIVEFBDEV
--FBDEV_SUBDIRS = fbdev epson
-+FBDEV_SUBDIRS = fbdev epson glamo
- endif
- 
++if KDRIVEGLAMO
++GLAMO_SUBDIRS = glamo
++endif
++
  if KDRIVEW100
-@@ -34,4 +34,4 @@ SUBDIRS =			\
+ W100_SUBDIRS = w100
+ endif
+@@ -30,8 +34,9 @@
+ 	$(FBDEV_SUBDIRS)	\
+ 	$(W100_SUBDIRS)		\
+ 	$(VESA_SUBDIRS)		\
++	$(GLAMO_SUBDIRS)	\
+ 	$(XEPHYR_SUBDIRS)       \
  	fake
  
  DIST_SUBDIRS = vesa ati chips epson i810 mach64 mga neomagic nvidia pm2 r128 \
 -               smi via fbdev sdl ephyr src linux fake sis300
 +               smi via fbdev sdl ephyr src linux fake sis300 glamo
-diff --git a/hw/kdrive/glamo/Makefile.am b/hw/kdrive/glamo/Makefile.am
-index e8c48a4..ffb7a30 100644
---- a/hw/kdrive/glamo/Makefile.am
-+++ b/hw/kdrive/glamo/Makefile.am
-@@ -41,11 +41,14 @@ GLAMO_LIBS =				\
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/Makefile.am
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/Makefile.am	2007-11-22 17:40:34.000000000 +0800
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/Makefile.am	2007-11-22 17:40:35.000000000 +0800
+@@ -41,11 +41,14 @@
  
  Xglamo_LDADD = \
  	$(GLAMO_LIBS)			\
@@ -50,11 +65,11 @@ index e8c48a4..ffb7a30 100644
  
  relink:
  	rm -f $(bin_PROGRAMS) && make $(bin_PROGRAMS)
-diff --git a/hw/kdrive/glamo/glamo_stub.c b/hw/kdrive/glamo/glamo_stub.c
-index d772671..df43455 100644
---- a/hw/kdrive/glamo/glamo_stub.c
-+++ b/hw/kdrive/glamo/glamo_stub.c
-@@ -49,16 +49,10 @@ InitOutput(ScreenInfo *pScreenInfo, int argc, char **argv)
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_stub.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/glamo_stub.c	2007-11-22 17:40:34.000000000 +0800
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_stub.c	2007-11-22 17:40:35.000000000 +0800
+@@ -49,16 +49,10 @@
  void
  InitInput(int argc, char **argv)
  {

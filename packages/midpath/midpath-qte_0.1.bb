@@ -18,8 +18,6 @@ do_configure() {
 
 do_compile() {
 
-mkdir -p ${S}/dist
-
 # Build the QT native part
 cd ${S}/native/qt
 make || exit 1

@@ -13,8 +13,6 @@ do_configure() {
 
 do_compile() {
 
-mkdir -p ${S}/dist
-
 # Build SDLJava for CLDC
 cd ${S}/external/sdljava-cldc
 make JAVAC=${JAVAC_CMD} JAVAC_FLAGS="-bootclasspath ${CLDC_PATH}:${GNU_CLASSPATH_PATH} -sourcepath ${S}/external/sdljava-cldc -source 1.3 -target 1.1" || exit 1
