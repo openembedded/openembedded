@@ -22,7 +22,10 @@
 #
 # 2007.11.23 Koen Kooi
 # - consistent error messages
-# - fix flashing from case sensitive filesystem (e.g. ext2)
+## - fix flashing from case sensitive filesystem (e.g. ext2)
+# 2007.11.23 Matthias 'CoreDump' Hentges
+# - Always treat MTD_PART_SIZE as HEX when comparing sizes
+# - Thanks to ZeroChaos for debugging
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -148,6 +151,7 @@ do_flashing()
     if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
     then
         echo "Error: File is too big to flash!"
+	echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"	
         return
     fi
 
@@ -294,9 +298,9 @@ do
     DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
 
     # make TARGETFILE lowercase
-    TARGETFILE_LC=`echo $TARGETFILE|tr A-Z a-z`
+    TARGETFILE=`echo $TARGETFILE|tr A-Z a-z`
 
-    case "$TARGETFILE_LC" in
+    case "$TARGETFILE" in
 
     zimage|zimage.bin)
         if [ $FLASHED_KERNEL != 0 ]
@@ -328,7 +332,7 @@ do
         FLASHED_ROOTFS=1
         ISLOGICAL=0
         MODULEID=6
-        MTD_PART_SIZE=$ROOTFS_SIZE
+        MTD_PART_SIZE="0x$ROOTFS_SIZE"
         ADDR=0
         ISFORMATTED=0
         TARGET_MTD=$RO_MTD
