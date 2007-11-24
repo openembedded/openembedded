@@ -120,12 +120,12 @@ do_install () {
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
 	# Symlinks so we can use these trivially on the target
-	ln -sf ${TARGET_SYS}-g77 g77
-	ln -sf ${TARGET_SYS}-gfortran gfortran
+	ln -sf ${TARGET_SYS}-g77 g77 || true
+	ln -sf ${TARGET_SYS}-gfortran gfortran || true
 	ln -sf ${TARGET_SYS}-g++ g++
 	ln -sf ${TARGET_SYS}-gcc gcc
-	ln -sf g77 f77
-	ln -sf gfortran f95
+	ln -sf g77 f77 || true
+	ln -sf gfortran f95 || true
 	ln -sf g++ c++
 	ln -sf gcc cc
 	ln -sf ${bindir}/${TARGET_SYS}-cpp ${D}${base_libdir}/cpp
