@@ -1,3 +1,7 @@
+#
+# (c) 2007 Paul Sokolovsky
+#
+
 # If root is explicitly specified, skip interactive selection
 if [ -z "$ROOT_DEVICE" ]; then
 ##############################
@@ -52,7 +56,9 @@ get_menu_selection()
 
 get_partition_type()
 {
-    fstype=`mount -f --guess-fstype /dev/$dev $MOUNTLOC`
+#    fstype=`mount -f --guess-fstype /dev/$dev $MOUNTLOC`
+    fstype=`fstype </dev/$dev`
+    fstype=`expr "$fstype" : 'FSTYPE=\([A-Za-z0-9]*\).*'`
 }
 
 scan_for_loopimgs()
