@@ -114,7 +114,8 @@ case `module_id` in
                      DPI=140
                 fi 
                 ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE}" 
-                XSERVER=/usr/bin/Xglamo ;;
+                # uncomment the line below if you want to test Xglamo
+		#XSERVER=/usr/bin/Xglamo ;;
 	"Nokia N770")
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
                 XSERVER=/usr/bin/Xomap ;;
