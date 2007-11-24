@@ -1,14 +1,11 @@
-DESCRIPTION = "A C library for multiple-precision floating-point computations with exact rounding"
-LICENSE = "LGPL"
-SECTION = "libs"
+require mpfr.inc
+
 DEPENDS = "gmp"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "cvs://cvs:@cvs-sop.inria.fr/CVS/spaces;module=mpfr;method=pserver"
 S = "${WORKDIR}/mpfr"
-
-inherit autotools
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
