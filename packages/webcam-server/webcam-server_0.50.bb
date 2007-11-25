@@ -11,7 +11,11 @@ DESCRIPTION = "webcam_server is a program that allows others to view your webcam
 HOMEPAGE = "http://webcamserver.sourceforge.net/"
 LICENSE = "GPL"
 
+PR = "r1"
+
 ######################################################################################
+
+DEPENDS = "jpeg"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/webcamserver/webcam_server-${PV}.tar.gz"
 
