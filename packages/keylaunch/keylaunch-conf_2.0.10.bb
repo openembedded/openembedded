@@ -6,7 +6,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 DESCRIPTION = "Device-specific keylaunch configuration"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = " file://keylaunchrc"
 SRC_URI += " file://80chvt-SUID"
@@ -14,7 +14,7 @@ SRC_URI += " file://80chvt-SUID"
 do_install () {
 	install -d ${D}${sysconfdir}
 	install -d ${D}${sysconfdir}/X11/Xinit.d
-	install ${WORKDIR}/keylaunchrc ${D}${sysconfdir}/keylaunchrc.matchbox
+	install -m 0644 ${WORKDIR}/keylaunchrc ${D}${sysconfdir}/keylaunchrc.matchbox
 	install ${WORKDIR}/80chvt-SUID ${D}${sysconfdir}/X11/Xinit.d
 }
 
