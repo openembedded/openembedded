@@ -7,6 +7,7 @@ LICENSE = "BSD-ADV"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2"
 SRC_URI += "file://install.patch;patch=1"
 S = "${WORKDIR}/klibc-${PV}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 # for the correct kernel staging path
 # inherit module-base

@@ -1,0 +1,14 @@
+Lock screen when device goes to suspend, not after some time has passed
+since resume and they stole your data from the unprotected screen.
+
+--- gpe-login-0.90/Makefile.am.org	2007-04-02 15:46:52.000000000 +0300
++++ gpe-login-0.90/Makefile.am	2007-11-24 22:41:24.000000000 +0200
+@@ -17,7 +17,7 @@
+ x11_SCRIPTS = gpe-login.setup X11/gpe-login.pre-session
+ x11_DATA = gpe-login.keylaunchrc X11/gpe-login.gtkrc
+ 
+-apmdir = $(sysconfdir)/apm/resume.d
++apmdir = $(sysconfdir)/apm/suspend.d
+ apm_SCRIPTS = gpe-login.suspend 
+ 	
+ xsessiondir = $(sysconfdir)/X11/Xsession.d

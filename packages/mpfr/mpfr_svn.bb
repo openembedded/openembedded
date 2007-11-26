@@ -1,11 +1,11 @@
 require mpfr.inc
 
 DEPENDS = "gmp"
-PV = "0.0+cvs${SRCDATE}"
-PR = "r2"
+PV = "0.0+svn${SRCDATE}"
+PR = "r3"
 
-SRC_URI = "cvs://cvs:@cvs-sop.inria.fr/CVS/spaces;module=mpfr;method=pserver"
-S = "${WORKDIR}/mpfr"
+SRC_URI = "svn://scm.gforge.inria.fr/svn/mpfr;module=trunk"
+S = "${WORKDIR}/trunk"
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \

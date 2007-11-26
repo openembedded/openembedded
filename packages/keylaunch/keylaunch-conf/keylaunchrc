@@ -1,0 +1,31 @@
+# Format:
+# "key=" <ModState> [<Event>] <Keysym>+ ":" [ <Window> ":" ] <Command>
+# ModState: 
+#   "????" - any modifier (don't care)
+#   "...." - no modifer
+#   "*..." - Shift
+#   ".*.." - Control
+#   "..*." - Alt
+#   "...*" - AltGr
+#   Shift/Control/Alt/AltGr can be combined (e.g. ".**." == Control+Alt)
+# Event:
+#   <empty> - Normal keytouch (short keypress followed by release)
+#   Held - Long keytouch (pressed and held for some time)
+#   Special Events (use with care):
+#   Pressed - Key was just pressed (note: other events may match too, e.g. 
+#   normal/Held)
+#   Released - Key was just released (note: other events may match too)
+#   Combine - Several keys pressed together (note: other events may match too)
+# Keysym: One or more (for Combine only) X keysyms
+# Window: Ignored, do not use
+# Command: Command line to execute, if starts with ~, suppress X startup notification 
+#   (use for non-X apps).
+#
+key=????XF86AudioRecord:gpe-soundbite record --autogenerate-filename $HOME_VOLATILE
+key=????XF86Calendar:gpe-calendar
+key=????telephone:gpe-contacts
+key=????XF86Mail:gpe-taskmanager
+key=????XF86Start:~matchbox-remote -desktop
+key=????XF86PowerDown:~apm --suspend
+key=????Held XF86PowerDown:~bl toggle
+key=????Combine XF86Calendar XF86Start:gpe-keylock
