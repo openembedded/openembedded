@@ -19,6 +19,7 @@ EXTRA_OECONF_rokre2    = "--with-platform=ezx"
 EXTRA_OECONF_rokre6    = "--with-platform=ezx"
 EXTRA_OECONF_magician  = "--with-platform=htc"
 EXTRA_OECONF_hx4700    = "--with-platform=ipaq"
+EXTRA_OECONF_htcuniversal = "--with-platform=htc"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 

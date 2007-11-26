@@ -15,8 +15,6 @@ do_configure() {
 
 do_compile() {
 
-mkdir -p ${S}/dist
-
 # Build the GTK native part
 cd ${S}/native/gtk
 make || exit 1

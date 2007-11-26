@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://defconfig"
 

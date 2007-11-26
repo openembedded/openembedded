@@ -2,11 +2,11 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r11"
+PR = "r12"
 
 COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
-SRC_URI = "svn://hackndev.svn.sourceforge.net/svnroot/hackndev/linux4palm/linux;module=trunk;proto=https \
+SRC_URI = "git://git.hackndev.com/git/linux-hnd;protocol=http \
 	   file://defconfig"
 
 SRC_URI_append_palmtx += "http://www.busybox.net/downloads/busybox-1.1.0.tar.bz2 \
@@ -19,7 +19,7 @@ S = "${WORKDIR}/trunk"
 K_MAJOR = "2"
 K_MINOR = "6"
 K_MICRO = "21"
-HHV="hnd2"
+HHV="hnd3"
 PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 
 inherit kernel
@@ -82,3 +82,4 @@ do_deploy() {
 do_deploy[dirs] = "${S}"
 
 addtask deploy before do_build after do_compile
+

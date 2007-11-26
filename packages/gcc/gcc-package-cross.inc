@@ -78,4 +78,9 @@ do_install () {
                ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true
 	fi
+     
+       # Link gfortran to g77 to satisfy not-so-smart configure or hard coded g77
+       # gfortran is fully backwards compatible. This is a safe and practical solution. 
+       ln -sf ${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ${CROSS_DIR}/bin/${TARGET_PREFIX}g77 || true
+       ln -sf ${CROSS_DIR}/${TARGET_SYS}/bin/gfortran ${CROSS_DIR}/${TARGET_SYS}/bin/g77 || true
 }

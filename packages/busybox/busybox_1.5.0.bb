@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

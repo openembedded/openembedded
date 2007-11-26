@@ -20,12 +20,12 @@
 # - size check unbreak
 # - c760/c860 has bigger rootfs - use it
 #
-
-date_log() 
-{
-	echo "$LOG: `date`"
-}
-LOG="updater start"; date_log
+# 2007.11.23 Koen Kooi
+# - consistent error messages
+## - fix flashing from case sensitive filesystem (e.g. ext2)
+# 2007.11.23 Matthias 'CoreDump' Hentges
+# - Always treat MTD_PART_SIZE as HEX when comparing sizes
+# - Thanks to ZeroChaos for debugging
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -41,10 +41,8 @@ if [ "$RO_MTD_LINE" = "" ]; then
     RO_MTD_LINE=`cat /proc/mtd | grep "\<NAND\>.*\<2\>" | tail -n 1`
 fi
 RO_MTD_NO=`echo $RO_MTD_LINE | cut -d: -f1 | cut -dd -f2`
-RO_MTD_SIZE_HEX=`echo $RO_MTD_LINE | cut -d" " -f2`
 RO_MTD=/dev/mtd$RO_MTD_NO
-
-echo "RO_MTD = $RO_MTD"
+ROOTFS_SIZE=`echo $RO_MTD_LINE | cut -d" " -f2`
 
 LOGOCAL_MTD=/dev/mtd1
 
@@ -80,7 +78,7 @@ check_for_hdd()
 {
     IDE1=`get_dev_pcmcia_slot 1`
     if [ "$IDE1" = "" ]; then
-        echo "Error!! There is no microdrive. Retrying..."
+        echo "Error: There is no microdrive. Retrying..."
         while [ "$IDE1" = "" ]; do
             IDE1=`get_dev_pcmcia_slot 1`
         done
@@ -103,7 +101,7 @@ check_for_tar()
     done
 
     if [ ! -e $TARBIN ]; then
-        echo 'ERRROR: Please place a valid copy of tar as "gnu-tar" on your card.'
+        echo 'Error: Please place a valid copy of tar as "gnu-tar" on your card.'
         echo 'Please reset'
         while true
         do
@@ -122,13 +120,13 @@ do_rootfs_extraction()
     mke2fs $MKE2FSOPT /dev/${IDE1}1 > /dev/null 2>&1
     e2fsck -p /dev/${IDE1}1 > /dev/null
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to create filesystem on microdrive!"
+        echo "Error: Unable to create filesystem on microdrive!"
         exit "$?"
     fi
 
     mount -t $LINUXFMT -o noatime /dev/${IDE1}1 /hdd1
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to mount microdrive!"
+        echo "Error: Unable to mount microdrive!"
         exit "$?"
     fi
 
@@ -136,7 +134,7 @@ do_rootfs_extraction()
     echo 'Now extracting...'
     gzip -dc $DATAPATH/$TARGETFILE | $TARBIN xf -
     if [ "$?" != "0" ]; then
-        echo "ERROR: Unable to extract root filesystem archive!"
+        echo "Error: Unable to extract root filesystem archive!"
         exit "$?"
     fi
 
@@ -152,7 +150,8 @@ do_flashing()
 {
     if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
     then
-        echo "ERROR: File is too big to flash!"
+        echo "Error: File is too big to flash!"
+	echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"	
         return
     fi
 
@@ -167,9 +166,7 @@ do_flashing()
 
     if [ $ISFORMATTED = 0 ]
     then
-		LOG="flash erasing ($TARGET_MTD) start"; date_log
         /sbin/eraseall $TARGET_MTD > /dev/null 2>&1
-		LOG="flash erasing ($TARGET_MTD) end"; date_log
         ISFORMATTED=1
     fi
 
@@ -184,7 +181,6 @@ do_flashing()
 
     if [ -e $TMPHEAD ]
     then
-		LOG="nandlogical read start"; date_log
         VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
         MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
         /sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
@@ -192,7 +188,6 @@ do_flashing()
 
         /sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
         /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
-		LOG="nandlogical read end"; date_log
     fi
 
 	#loop
@@ -209,7 +204,7 @@ do_flashing()
 		then
 			next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
 			if [ "$next_addr" = "" ]; then
-				echo "ERROR: flash write"
+				echo "Error: flash write"
 				rm $TMPDATA > /dev/null 2>&1
 				RESULT=3
 				break;
@@ -240,16 +235,12 @@ do_flashing()
     then
         if [ -e $VTMPNAME ]
         then
-			LOG="nandlogical write2 start"; date_log
             /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
-			LOG="nandlogical write2 end"; date_log
             rm -f $VTMPNAME > /dev/null 2>&1
         fi
         if [ -e $MTMPNAME ]
         then
-			LOG="nandlogical write3 start"; date_log
             /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-			LOG="nandlogical write3 end"; date_log
             rm -f $MTMPNAME > /dev/null 2>&1
         fi
         echo 'Done.'
@@ -264,27 +255,18 @@ MODEL=`cat /proc/deviceinfo/product`
 case "$MODEL" in
     SL-B500|SL-5600) 
         ZAURUS='poodle'
-        ROOTFS_SIZE=0x1600000
         ;;
     SL-6000)
         ZAURUS='tosa'
-        ROOTFS_SIZE=0x1E00000
         ;;
     SL-C1000) 
         ZAURUS='akita'
-        ROOTFS_SIZE=0x1900000
         ;;
-    SL-C700|SL-C750|SL-7500)
+    SL-C700|SL-C750|SL-7500|SL-C760|SL-C860)
         ZAURUS='c7x0'
-        ROOTFS_SIZE=0x1900000
-        ;;
-    SL-C760|SL-C860)
-        ZAURUS='c7x0'
-        ROOTFS_SIZE=0x3500000
         ;;
     SL-C3000|SL-C3100|SL-C3200)
         ZAURUS='c3x00'
-        ROOTFS_SIZE=0x0500000
         check_for_hdd
         check_for_tar
         ;;
@@ -301,8 +283,6 @@ esac
 echo 'MODEL: '$MODEL' ('$ZAURUS')'
 
 mkdir -p $TMPPATH > /dev/null 2>&1
-
-LOG="updater after model"; date_log
 
 cd $DATAPATH/
 
@@ -338,11 +318,9 @@ do
         HDTOP=`expr $DATASIZE - 16`
         /sbin/bcut -a $HDTOP -s 16 -o $TMPHEAD $TARGETFILE
 		echo "HDTOP=$HDTOP"
-		LOG="updater flashing kernel start"; date_log
 		FLASH_TYPE="kernel"
         do_flashing
 		FLASH_TYPE=""
-		LOG="updater flashing kernel end"; date_log
         ;;
 
     initrd.bin)
@@ -354,18 +332,16 @@ do
         FLASHED_ROOTFS=1
         ISLOGICAL=0
         MODULEID=6
-        MTD_PART_SIZE=$ROOTFS_SIZE
+        MTD_PART_SIZE="0x$ROOTFS_SIZE"
         ADDR=0
         ISFORMATTED=0
         TARGET_MTD=$RO_MTD
         DATAPOS=16
         ONESIZE=1048576
         /sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
-		LOG="updater flashing rootfs start"; date_log
 		FLASH_TYPE="rootfs"
         do_flashing
 		FLASH_TYPE=""
-		LOG="updater flashing rootfs end"; date_log
         ;;
 
     hdimage1.tgz)

@@ -2,16 +2,28 @@ DESCRIPTION = "GNU Octave is a high-level language, primarily intended for numer
 It provides a convenient command line interface for solving linear and nonlinear problems numerically, \
 and for performing other numerical experiments using a language that is mostly compatible with Matlab. \
 It may also be used as a batch-oriented language."
-SECTION = "console/utils"
+HOMEPAGE = "http://www.gnu.org/software/octave/"
+SECTION = "console/scientific"
 LICENSE = "GPL"
-DEPENDS = "readline ncurses"
-SRC_URI = "ftp://ftp.octave.org/pub/octave/bleeding-edge/octave-${PV}.tar.gz"
+DEPENDS = "readline ncurses fftw"
+RDEPENDS = "libfftw3"
+# fftw compiled with --disable-fortran
 
 inherit autotools
 
-FILES_${PN}-dev += "${libdir}/octave-${PV}/*.la ${libdir}/octave-${PV}/*.a"
+EXTRA_OECONF = "--without-hdf5"
 
 do_configure() {
 	gnu-configize
 	oe_runconf
 }
+
+PACKAGES =+ "octave-m"
+
+# octave-m provides matlab routines in .m file format
+FILES_${PN}-m = "${datadir}/${PN}/*"
+
+do_stage() {
+        autotools_stage_all
+}
+

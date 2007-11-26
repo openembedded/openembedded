@@ -1,5 +1,7 @@
 require busybox.inc
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "file://wget-long-options.patch;patch=1 \
