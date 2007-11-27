@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DESCRIPTION = "Nokia hildon librares"
 
-DEPENDS = "gtk-doc-native libosso"
+DEPENDS = "gtk-doc-native libosso libmatchbox"
 
 PR = "r0"
 
