@@ -1,0 +1,18 @@
+--- libabenabler2-1.0/Makefile.am~	2007-11-27 16:51:42.000000000 +0100
++++ libabenabler2-1.0/Makefile.am	2007-11-27 16:51:42.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS	= src include plugins test 
++SUBDIRS	= src include plugins test po
+ 
+ EXTRA_DIST			= libabenabler2.pc.in
+ 
+--- libabenabler2-1.0/configure.ac~	2007-11-27 16:51:18.000000000 +0100
++++ libabenabler2-1.0/configure.ac	2007-11-27 16:51:18.000000000 +0100
+@@ -31,6 +31,7 @@
+ plugins/Makefile
+ test/Makefile
+ libabenabler2.pc
++po/Makefile.in
+ ])
+ AC_OUTPUT
+ 
