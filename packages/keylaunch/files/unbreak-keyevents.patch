@@ -1,0 +1,22 @@
+# HG changeset patch
+# User "Paul Sokolovsky <pfalcon@users.sourceforge.net>"
+# Date 1196027570 -7200
+# Node ID 282176e5c55dba673756b4707716f06a5c8b37e2
+# Parent  833c989472a7987681ea3b8cbd6f9eb77293177a
+We of course still want to receive key events even after subscribing to
+property events. This fixes when keylaunch doesn't receive forwarded
+power buttons events from gpe-login --autolock in its locked state.
+In plain words: now power button works with autolock screen.
+
+diff -r 833c989472a7 -r 282176e5c55d keylaunch.c
+--- a/keylaunch.c	Sun Nov 25 22:04:29 2007 +0200
++++ b/keylaunch.c	Sun Nov 25 23:52:50 2007 +0200
+@@ -682,7 +682,7 @@ main (int argc, char *argv[])
+ {
+   initialize (argc, argv);
+ 
+-  XSelectInput (dpy, DefaultRootWindow (dpy), PropertyChangeMask);
++  XSelectInput (dpy, DefaultRootWindow (dpy), PropertyChangeMask | KeyPressMask | KeyReleaseMask);
+   gpe_launch_monitor_display (dpy);
+ 
+   signal (SIGCHLD, SIG_IGN);

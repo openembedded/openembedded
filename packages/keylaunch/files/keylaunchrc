@@ -1,8 +1,0 @@
-key=????Pressed XF86AudioRecord:gpe-soundbite record --autogenerate-filename $HOME_VOLATILE
-key=????Pressed XF86Calendar:gpe-calendar
-key=????Pressed telephone:gpe-contacts
-key=????Pressed XF86Mail:gpe-taskmanager
-key=????Pressed XF86Start:~matchbox-remote -desktop
-key=????Pressed XF86PowerDown:~apm --suspend
-key=????Held XF86PowerDown:~bl toggle
-key=????Combine XF86Calendar XF86Start:gpe-keylock
