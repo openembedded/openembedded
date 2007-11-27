@@ -19,6 +19,7 @@ SRC_URI = "\
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
+  file://glamo-ram-init.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 
