@@ -1,0 +1,11 @@
+--- libical-0.27.orig/src/libical/Makefile.am	2007-02-27 23:27:56.000000000 +0100
++++ libical-0.27/src/libical/Makefile.am	2007-11-27 15:08:38.000000000 +0100
+@@ -47,7 +47,7 @@
+ 	-I$(top_builddir)/src	\
+ 	-I$(srcdir)
+ 
+-libical_la_LDFLAGS = -version-info 27:6:27
++libical_la_LDFLAGS = -version-info 27:6:27 $(PTHREAD_LIBS)
+ 
+ 
+ libical_la_SOURCES =		\
