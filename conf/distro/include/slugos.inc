@@ -16,7 +16,7 @@
 #TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.6"
+SLUGOS_VERSION = "4.7"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -89,28 +89,32 @@ DISTRO_EXTRA_RRECOMMENDS ?= ""
 # necessary to define which gets generated first, glibc or the kernel, and
 # this is done by selecting the provider of libc (in this case it needs the
 # kernel, so there has to be a non-libc gcc to build the kernel!)
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}gcc:gcc-cross"
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}g++:gcc-cross"
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
-# Select 2.6 versions of the depmod support
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}depmod:module-init-tools-cross"
-PREFERRED_PROVIDERS += "virtual/${TARGET_PREFIX}libc-for-gcc:glibc"
+
+# Virtuals:
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial = "gcc-cross-initial"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc = "gcc-cross"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++ = "gcc-cross"
+
+#Set preferred provider for the C library that is used to build the crosscompiler (NPTL voodoo)
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc-intermediate"
+PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc       = "glibc-intermediate"
+PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc     = "glibc-intermediate"
 
 # compiler/binary/library versions
-PREFERRED_VERSION_binutils ?= "2.16"
-PREFERRED_VERSION_binutils-cross ?= "2.16"
-PREFERRED_VERSION_gcc-cross-initial ?= "4.1.1"
-PREFERRED_VERSION_gcc-cross ?= "4.1.1"
-PREFERRED_VERSION_gcc ?= "4.1.1"
-PREFERRED_VERSION_glibc ?= "2.3.5+cvs20050627"
-#For SVN uclibc:
-#SRCDATE_uclibc ?= "20060120"
-#PREFERRED_VERSION_uclibc ?= "0.9.28+svn${SRCDATE_uclibc}"
+PREFERRED_VERSION_binutils           ?= "2.18"
+PREFERRED_VERSION_binutils-cross     ?= "2.18"
+PREFERRED_VERSION_binutils-cross-sdk ?= "2.18"
+PREFERRED_VERSION_gcc                ?= "4.1.2"
+PREFERRED_VERSION_gcc-cross          ?= "4.1.2"
+PREFERRED_VERSION_gcc-cross-sdk      ?= "4.1.2"
+PREFERRED_VERSION_gcc-cross-initial  ?= "4.1.2"
+PREFERRED_VERSION_glibc              ?= "2.5"
+PREFERRED_VERSION_glibc-intermediate ?= "2.5"
+PREFERRED_VERSION_glibc-initial      ?= "2.5"
 
 # Select the correct versions of the kernel and modules (these are the
 # defaults, override in the conf/distro top-level distro file).
-PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
 PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.21.6"
 
 # Select the smallest provider of x11 libraries
@@ -139,12 +143,7 @@ PREFERRED_VERSION_ipkg-native ?= "0.99.163"
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
 
-# Due to upstream instability, and another OE project with conflicting
-# needs, nail down a specific, known-working version of madwifi-ng.
-# Remove this once the madwifi-ng stuff seems to stabilize once again.
-#PREFERRED_VERSION_madwifi-ng ?= "r2156-20070225"
-
-PREFERRED_VERSION_linux-libc-headers = "2.6.18"
+PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
 
 # we don't ship gtk-directfb by default
 PREFERRED_PROVIDER_gtk+                   ?= "gtk+"

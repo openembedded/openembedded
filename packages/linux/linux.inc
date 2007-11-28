@@ -41,11 +41,19 @@ do_configure_prepend() {
                 echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
         fi
 
+	#
+	# endian support
+	#
+        if [ "${SITEINFO_ENDIANESS}" = "be" ]; then
+                echo "CONFIG_CPU_BIG_ENDIAN=y"          >> ${S}/.config
+        fi
+
         echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 
         sed -e '/CONFIG_AEABI/d' \
             -e '/CONFIG_OABI_COMPAT=/d' \
             -e '/CONFIG_CMDLINE=/d' \
+            -e '/CONFIG_CPU_BIG_ENDIAN/d' \
             -e '/CONFIG_LOGO=/d' \
             -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
             < '${WORKDIR}/defconfig' >>'${S}/.config'
