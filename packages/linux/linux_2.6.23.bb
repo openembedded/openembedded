@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
@@ -22,6 +22,9 @@ SRC_URI_append_cm-x270 = "\
 	file://0006-ramdisk_load.patch;patch=1 \
 	file://0007-mmcsd_large_cards-r0.patch;patch=1 \
 	file://0008-cm-x270-nand-simplify-name.patch;patch=1"
+
+SRC_URI_append_mpc8313e-rdb = "\
+	file://mpc831x-nand.patch;patch=1" 
 
 SRC_URI_append_mpc8323e-rdb = "\
 	file://mpc832x-leds.patch;patch=1" 
