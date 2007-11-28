@@ -8,7 +8,7 @@ ROOT_FLASH_SIZE ?= "12"
 
 EXTRA_IMAGECMD_jffs2 = "--pad --eraseblock=0x20000 -n"
 
-PREFERRED_PROVIDER_virtual/kernel ?= "ixp4xx-kernel"
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
 
 require conf/machine/include/tune-xscale.inc
 require conf/machine/include/tune-thumb.inc
