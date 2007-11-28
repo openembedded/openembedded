@@ -112,7 +112,7 @@ do_populate_sdk() {
 			sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
 		done
 		for f in *.pc ; do
-			sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
+			sed -i 's%${STAGING_DIR}%${prefix}%g' "$f"
 		done
 	fi
 	
