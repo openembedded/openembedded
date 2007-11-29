@@ -1,0 +1,33 @@
+From 00424e00aeeecfd17ee71918b183e50d07641c5e Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Wed, 10 Jan 2007 18:55:18 +0100
+Subject: [PATCH] MTD: Don't include map.h from physmap.h
+
+Replace inclusion of <linux/mtd/map.h> with a forward-declaration of
+struct map_info. This is necessary because physmap.h may be included
+in platform code and map.h will give errors if MTD isn't enabled.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ include/linux/mtd/physmap.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+index 86831e3..0dc07d5 100644
+--- a/include/linux/mtd/physmap.h
++++ b/include/linux/mtd/physmap.h
+@@ -18,9 +18,10 @@
+ #define __LINUX_MTD_PHYSMAP__
+ 
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+ #include <linux/mtd/partitions.h>
+ 
++struct map_info;
++
+ struct physmap_flash_data {
+ 	unsigned int		width;
+ 	void			(*set_vpp)(struct map_info *, int);
+-- 
+1.4.4.1
+

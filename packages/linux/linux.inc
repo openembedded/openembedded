@@ -85,6 +85,11 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+
+do_configure_append_avr32() {
+        sed -i -e s:-mno-pic::g arch/avr32/Makefile
+}
+
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
@@ -125,6 +130,10 @@ do_deploy() {
             if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
                 ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
                 uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+                rm -f linux.bin
+            elif test -e arch/${ARCH}/boot/images/vmlinux.gz ; then
+                ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/images/vmlinux.gz linux.bin
+                uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
                 rm -f linux.bin
             else
                 ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
