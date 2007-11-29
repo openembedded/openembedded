@@ -145,7 +145,7 @@ diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.23/driver
 +
 +MODULE_AUTHOR("Leon Woestenberg <leon@sidebranch.com>");
 +MODULE_DESCRIPTION("MPC8313E-RDB LED driver");
-+
++MODULE_LICENSE("GPL");
 diff -urN linux-2.6.23.orig/drivers/leds/Makefile linux-2.6.23/drivers/leds/Makefile
 --- linux-2.6.23.orig/drivers/leds/Makefile	2007-10-09 22:31:38.000000000 +0200
 +++ linux-2.6.23/drivers/leds/Makefile	2007-11-29 09:03:09.000000000 +0100
