@@ -1,10 +1,10 @@
 DESCRIPTION = "Daemon to handle device specifc features."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "tslib gpe-conf"
-RDEPENDS = "procps gpe-conf"
+DEPENDS = "tslib"
+RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
