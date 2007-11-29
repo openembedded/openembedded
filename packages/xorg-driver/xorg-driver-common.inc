@@ -2,7 +2,7 @@ DESCRIPTION = "X driver"
 HOMEPAGE = "http://www.x.org"
 SECTION = "x11/drivers"
 LICENSE = "MIT-X"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "randrproto xorg-server xproto"
 
@@ -27,7 +27,7 @@ do_stage() {
 
 do_configure_prepend() {
 	incdir=${STAGING_INCDIR}/xorg
-	for f in dri.h sarea.h dristruct.h exa.h; do
+	for f in dri.h sarea.h dristruct.h exa.h damage.h; do
 		path="$incdir/$f"
 		if [ -f "$path" ]; then
 			p=`echo "$path" | sed 'y%*+%pp%;s%[^_[:alnum:]]%_%g'`
