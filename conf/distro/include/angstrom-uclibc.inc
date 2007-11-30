@@ -14,5 +14,10 @@ TARGET_OS = "${@['${TARGET_OS_UC}', 'uclinux-uclibc'][bb.data.getVar('TARGET_ARC
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
 BUILD_OPTIMIZATION = "-Os"
+
+#Gcc will die with 'internal consistency error when using the above optimizations
+FULL_OPTIMIZATION_avr32 = ""
+BUILD_OPTIMIZATION_avr32 = ""
+
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
