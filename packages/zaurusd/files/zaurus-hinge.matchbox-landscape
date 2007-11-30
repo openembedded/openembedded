@@ -16,6 +16,10 @@
   # urg mbinputmgr should kill below
   killproc ${ZD_BINDIR}/matchbox-keyboard
   killproc ${ZD_BINDIR}/matchbox-stroke
+  
   if [ -x ${ZD_BINDIR}/xrandr ]; then
-    xrandr -o normal
+  	if ! ( xrandr | awk '{print $4}' | grep -q normal )
+	then
+		${ZD_BINDIR}/xrandr -o normal 
+	fi
   fi

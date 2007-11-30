@@ -1,0 +1,17 @@
+--- libiac-0.1/Makefile.am~	2007-11-07 22:33:46.000000000 +0100
++++ libiac-0.1/Makefile.am	2007-11-07 22:33:46.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS=src 
++SUBDIRS = src po
+ 
+ EXTRA_DIST = libiac.pc.in
+ 
+--- libiac-0.1/configure.ac~	2007-11-07 22:34:12.000000000 +0100
++++ libiac-0.1/configure.ac	2007-11-07 22:34:12.000000000 +0100
+@@ -22,5 +22,5 @@
+ 
+ PKG_CHECK_MODULES(IAC, glib-2.0 dbus-1 dbus-glib-1)
+ 
+-AC_CONFIG_FILES([Makefile src/Makefile libiac.pc ])
++AC_CONFIG_FILES([Makefile src/Makefile libiac.pc po/Makefile.in])
+ AC_OUTPUT
