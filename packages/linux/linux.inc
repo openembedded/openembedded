@@ -74,7 +74,7 @@ do_configure_prepend() {
                     -e '/CONFIG_CMDLINE=/d' \
                     -i ${S}/.config
                 echo "CONFIG_INET=y"                     >> ${S}/.config
-				echo "CONFIG_IP_PNP=y"                   >> ${S}/.config
+                echo "CONFIG_IP_PNP=y"                   >> ${S}/.config
                 echo "CONFIG_USB_GADGET=y"               >> ${S}/.config
                 echo "CONFIG_USB_GADGET_SELECTED=y"      >> ${S}/.config
                 echo "CONFIG_USB_ETH=y"                  >> ${S}/.config
@@ -85,8 +85,7 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
-
-do_configure_append_avr32() {
+fdo_configure_append_avr32() {
         sed -i -e s:-mno-pic::g arch/avr32/Makefile
 }
 
@@ -98,25 +97,27 @@ do_sizecheck() {
             if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
                     rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
                     die  "This kernel (size=$size) is too big for your device. Please reduce the size of the kernel by making more of it modular."
-            fi
-        fi
-}
-
-do_install_prepend() {
-        if test -e arch/${ARCH}/boot/Image ; then
-             ln -f arch/${ARCH}/boot/Image arch/${ARCH}/boot/uImage
-        fi
-
-        if test -e arch/${ARCH}/boot/images/uImage ; then
-             ln -f arch/${ARCH}/boot/images/uImage arch/${ARCH}/boot/uImage
-        fi
-
-        if test -e arch/${ARCH}/kernel/vmlinux.lds ; then
-             ln -f arch/${ARCH}/kernel/vmlinux.lds arch/${ARCH}/boot/vmlinux
+a
         fi
 }
 
 UBOOT_ENTRYPOINT ?= "20008000"
+
+do_compile_append() {
+    if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
+        if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
+            ${OBJCOPY} -O binary -R .naote -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
+            uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
+            rm -f linux.bin
+        else
+            ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+            rm -f linux.bin.gz
+            gzip -9 linux.bin
+            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
+            rm -f linux.bin.gz
+        fi
+    fi
+}
 
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}"
@@ -125,28 +126,10 @@ do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
         tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
-        
-        if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
-            if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
-                ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
-                uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
-                rm -f linux.bin
-            elif test -e arch/${ARCH}/boot/images/vmlinux.gz ; then
-                ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/images/vmlinux.gz linux.bin
-                uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
-                rm -f linux.bin
-            else
-                ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
-                rm -f linux.bin.gz
-                gzip -9 linux.bin
-                uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
-                rm -f linux.bin.gz
-            fi
-        fi
 
-		cd ${DEPLOY_DIR_IMAGE}
-		rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
-		ln -sf ${KERNEL_IMAGE_BASE_NAME}.bin ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+        cd ${DEPLOY_DIR_IMAGE}
+        rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+        ln -sf ${KERNEL_IMAGE_BASE_NAME}.bin ${KERNEL_IMAGE_SYMLINK_NAME}.bin
 }
 
 do_deploy[dirs] = "${S}"
