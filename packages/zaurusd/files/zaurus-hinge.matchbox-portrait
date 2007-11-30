@@ -1,7 +1,10 @@
 #!/bin/sh
 
   if [ -x ${ZD_BINDIR}/xrandr ]; then
-    ${ZD_BINDIR}/xrandr -o left 
+  	if ! ( xrandr | awk '{print $4}' | grep -q left )
+	then
+		${ZD_BINDIR}/xrandr -o left 
+	fi
   fi
   # just to be extra safe
   sleep 1
