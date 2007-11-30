@@ -1,7 +1,8 @@
 DESCRIPTION = "Packages for a standalone OpenMoko SDK or external toolchain"
-PR = "r1"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
+
+PR = "r2"
 
 PACKAGES = "${PN}"
 
@@ -25,4 +26,6 @@ RDEPENDS_${PN} = "\
     libmokoui2-dev \
     libmokopanelui2-dev \
     libmokojournal2-dev \
+    \
+    openmoko-sample2-src \
 "
