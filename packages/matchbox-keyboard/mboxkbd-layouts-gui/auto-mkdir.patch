@@ -1,0 +1,16 @@
+diff -r cccb513c808c src/interface.c
+--- a/src/interface.c	Wed Nov 28 01:22:54 2007 +0200
++++ b/src/interface.c	Wed Nov 28 01:43:12 2007 +0200
+@@ -93,8 +93,12 @@ static void fill_user_list(GtkListStore 
+  strcpy(linkpath, home_dir);
+  strcat(linkpath, "/");
+  strcat(linkpath, USR_LAYOUT_SUFFIX);
++ if (access(linkpath, X_OK)) {
++    mkdir(linkpath, 0711);
++ }
+  dir = opendir(linkpath);
+  if(!dir) {
++    fprintf(stderr, "Cannot read %s directory: ", linkpath);
+     perror("opendir");
+     exit(1);
+  }
