@@ -62,11 +62,10 @@ do_populate_sdk() {
 	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
-	# extract and store ipks, pkgdata, pkgmaps and shlibs data
+	# extract and store ipks, pkgdata and shlibs data
 	target_pkgs=`cat ${SDK_OUTPUT}/${prefix}/package-status | grep Package: | cut -f 2 -d ' '`
 	mkdir -p ${SDK_OUTPUT}/${prefix}/ipk/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/runtime/
-	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 	for pkg in $target_pkgs ; do
 		for arch in $revipkgarchs; do
@@ -83,9 +82,6 @@ do_populate_sdk() {
 					cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime/
 					if [ -e ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ];then
 						cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime/
-					fi
-					if [ -e ${STAGING_DIR}/pkgmaps/debian/$subpkg ]; then
-						cp ${STAGING_DIR}/pkgmaps/debian/$subpkg ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 					fi
 					if [ -e ${STAGING_DIR_TARGET}/shlibs/$subpkg.list ]; then
 						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
