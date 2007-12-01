@@ -604,6 +604,8 @@ python emit_pkgdata() {
 		sf.close()
 
 		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, 1)
+		if not allow_empty:
+			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, 1)
 		root = "%s/install/%s" % (workdir, pkg)
 		os.chdir(root)
 		g = glob('*')
