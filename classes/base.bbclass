@@ -315,7 +315,9 @@ oe_libinstall() {
 			# stop libtool using the final directory name for libraries
 			# in staging:
 			__runcmd rm -f $destpath/$libname.la
-			__runcmd sed -e 's/^installed=yes$/installed=no/' -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' $dotlai >$destpath/$libname.la
+			__runcmd sed -e 's/^installed=yes$/installed=no/' \
+				     -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
+				     $dotlai >$destpath/$libname.la
 		else
 			__runcmd install -m 0644 $dotlai $destpath/$libname.la
 		fi
@@ -702,7 +704,7 @@ do_populate_staging[dirs] = "${STAGING_DIR_TARGET}/${layout_bindir} ${STAGING_DI
 addtask populate_staging after do_install
 
 python do_populate_staging () {
-	bb.build.exec_func('do_stage', d)
+    bb.build.exec_func('do_stage', d)
 }
 
 addtask install after do_compile
@@ -744,7 +746,7 @@ def explode_deps(s):
 
 def packaged(pkg, d):
 	import os, bb
-	return os.access(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), os.R_OK)
+	return os.access(get_subpkgedata_fn(pkg, d) + '.packaged', os.R_OK)
 
 def read_pkgdatafile(fn):
 	pkgdata = {}
@@ -768,16 +770,23 @@ def read_pkgdatafile(fn):
 
 	return pkgdata
 
+def get_subpkgedata_fn(pkg, d):
+	import bb, os
+	archs = bb.data.expand("${PACKAGE_ARCHS}", d).split(" ")
+	archs.reverse()
+	for arch in archs:
+		fn = bb.data.expand('${STAGING_DIR}/pkgdata/' + arch + '${TARGET_VENDOR}-${TARGET_OS}/runtime/%s' % pkg, d)
+		if os.path.exists(fn):
+			return fn
+	return bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
+
 def has_subpkgdata(pkg, d):
 	import bb, os
-	fn = bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
-	return os.access(fn, os.R_OK)
+	return os.access(get_subpkgedata_fn(pkg, d), os.R_OK)
 
 def read_subpkgdata(pkg, d):
 	import bb, os
-	fn = bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
-	return read_pkgdatafile(fn)
-
+	return read_pkgdatafile(get_subpkgedata_fn(pkg, d))
 
 def has_pkgdata(pn, d):
 	import bb, os
