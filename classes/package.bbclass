@@ -34,9 +34,6 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 		return
 
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
-	if not packages:
-		# nothing to do
-		return
 
 	if postinst:
 		postinst = '#!/bin/sh\n' + postinst + '\n'
@@ -410,9 +407,6 @@ python populate_packages () {
 	bb.mkdirhier(dvar)
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "PACKAGES not defined, nothing to package")
-		return
 
 	pn = bb.data.getVar('PN', d, 1)
 	if not pn:
@@ -905,10 +899,7 @@ python package_depchains() {
 	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
 
 	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
-		def packaged(pkg, d):
-			return os.access(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), os.R_OK)
-
-                #bb.note('rdepends for %s is %s' % (base, rdepends))
+        #bb.note('rdepends for %s is %s' % (base, rdepends))
 
 		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
 
