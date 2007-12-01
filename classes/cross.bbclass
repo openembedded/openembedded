@@ -20,6 +20,8 @@ CXXFLAGS = "${BUILD_CFLAGS}"
 LDFLAGS = "${BUILD_LDFLAGS}"
 LDFLAGS_build-darwin = "-L${STAGING_LIBDIR_NATIVE}"
 
+TOOLCHAIN_OPTIONS = ""
+
 # Overrides for paths
 
 # Path prefixes
