@@ -6,7 +6,10 @@ DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 
-PR = "r6"
+DEPENDS_append_mpc8313e-rdb = "dtc-native"
+DEPENDS_append_mpc8323e-rdb = "dtc-native"
+
+PR = "r7"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
@@ -32,6 +35,9 @@ SRC_URI_append_mpc8323e-rdb = "\
 	file://mpc832x-leds.patch;patch=1" 
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
+
+DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
+DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
 
 FILES_kernel-image_cm-x270 = ""
 
@@ -70,4 +76,15 @@ python do_compulab_image() {
 	    os.symlink(img_file, link_file)
 }
 
+do_devicetree_image() {
+        if test -n "${DEVICETREE}" ; then
+            dtc -I dts -O dtb -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${DEVICETREE}
+
+            cd ${DEPLOY_DIR_IMAGE}
+            rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+            ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+        fi
+}
+
 addtask compulab_image after do_deploy before do_package
+addtask devicetree_image after do_deploy before do_package
