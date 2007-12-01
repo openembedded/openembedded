@@ -5,17 +5,27 @@
 # Set default for nslu2 - can be overridden for machines with other features.
 MACHINE_FEATURES ?= "kernel26 usbhost ext2"
 
-# Set defaults for nslu2 - can be overridden for machines with other requirements.
-MACHINE_ESSENTIAL_EXTRA_RDEPENDS    ?= "ixp4xx-npe"
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= ""
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
+PREFERRED_VERSION_linux-ixp4xx ?= "2.6.21.6+svnr${SRCREV}"
+
+# Add modules required for basic networking support
+
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= " \
+	ixp4xx-npe \
+	"
+
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= " \
+	kernel-module-mii \
+	kernel-module-ixp4xx-mac \
+	kernel-module-ixp4xx-qmgr \
+	kernel-module-via-velocity \
+	"
 
 # Set default for nslu2 - can be overridden for machines with more flash.
 ROOT_FLASH_SIZE ?= "12"
 
 # Set default for nslu2, nas100d, dsmg600
 EXTRA_IMAGECMD_jffs2 = "--pad --eraseblock=0x20000 -n"
-
-PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
 
 require conf/machine/include/tune-xscale.inc
 require conf/machine/include/tune-thumb.inc
