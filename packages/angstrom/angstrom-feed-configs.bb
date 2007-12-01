@@ -1,6 +1,7 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
-PR = "1"
+#PV = "${DISTRO_VERSION}"
+PR = "r2"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
@@ -11,7 +12,7 @@ do_compile() {
           echo "src/gz ${feed} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/${feed}" > ${S}/${sysconfdir}/ipkg/${feed}-feed.conf
 	done
 
-        echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/ipkg/${MACHINE_ARCH}-feed.conf
+        echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/machine/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/ipkg/${MACHINE_ARCH}-feed.conf
 	echo "src/gz no-arch ${ANGSTROM_URI}/${FEED_BASEPATH}/all" > ${S}/${sysconfdir}/ipkg/noarch-feed.conf
 }
 
