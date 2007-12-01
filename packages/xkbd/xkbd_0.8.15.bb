@@ -2,9 +2,10 @@ SRC_URI = "http://handhelds.org/~mallum/xkbd/xkbd-${PV}-CVS.tar.gz \
            file://libtool-lossage.patch;patch=1;pnum=1 \
 	   file://fix-equalsign.patch;patch=1 \
 	   file://fix-circumkey.patch;patch=1 \
+	   file://add-default-common-slides.patch;patch=1 \
 	   file://xkbd.png"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SECTION = "x11"
 DEPENDS = "libxpm libxtst libxft"
