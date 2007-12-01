@@ -1,3 +1,3 @@
 require minimal-image.bb
 
-INHERIT += nslu2-image
+inherit nslu2-image
