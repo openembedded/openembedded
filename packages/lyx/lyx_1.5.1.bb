@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://lyx.cybermirror.org/stable/lyx-${PV}.tar.bz2"
 
-inherit autotools qt4x11
+inherit qt4x11 autotools
 
 EXTRA_OECONF = " --with-qt4-dir=${QTDIR} -enable-pch"
 EXTRA_QMAKEVARS_POST = "DEFINES+=_LIBC"

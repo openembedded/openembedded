@@ -10,7 +10,7 @@ PR = "r1"
 SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags;module=lyx-1_4_1;rev=13847"
 S = "${WORKDIR}/lyx-1_4_1"
 
-inherit autotools qt3x11
+inherit qt3x11 autotools
 
 EXTRA_OECONF = "--with-frontend=qt --with-qt-dir=${QTDIR}"
 PARALLEL_MAKE = ""
