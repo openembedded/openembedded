@@ -19,3 +19,5 @@ export TMPDIR=/mnt/.psplash
 mount tmpfs -t tmpfs $TMPDIR -o,size=40k
 
 /usr/bin/psplash $psplash_args &
+
+(sleep 120; psplash-write "QUIT") &
