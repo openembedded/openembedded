@@ -3,11 +3,9 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost qt4-x11-free"
-RRECOMMENDS = "tetex"
+RSUGGESTS = "tetex"
 RDEPENDS = "python-shell python-textutils"
 PR = "r0"
-
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://lyx.cybermirror.org/stable/lyx-${PV}.tar.bz2"
 
