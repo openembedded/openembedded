@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r45"
+PR = "r46"
 
 inherit task
 
@@ -27,6 +27,9 @@ PACKAGES = ' \
             task-base-usbgadget \
             task-base-usbhost \
             task-base-wifi \
+            task-base-uboot \
+            task-base-redboot \
+            task-base-apex \
             \
             task-base-cramfs \
             task-base-ipsec \
@@ -34,6 +37,7 @@ PACKAGES = ' \
             task-base-nfs \
             task-base-ppp \
             task-base-smbfs \
+            task-base-raid \
 	    \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
 	    '
@@ -96,6 +100,7 @@ RDEPENDS_task-base = "\
     ${@base_contains('COMBINED_FEATURES', 'wifi', 'task-base-wifi', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'uboot', 'task-base-uboot', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'redboot', 'task-base-redboot', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'apex', 'task-base-apex', '',d)} \
     \
     ${@base_contains('DISTRO_FEATURES', 'nfs', 'task-base-nfs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'cramfs', 'task-base-cramfs', '',d)} \
@@ -297,6 +302,9 @@ RDEPENDS_task-base-uboot = "\
 
 RDEPENDS_task-base-redboot = "\
     fis"
+
+RDEPENDS_task-base-apex = "\
+    apex-env"
 
 RDEPENDS_task-base-ppp = "\
     ppp \

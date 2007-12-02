@@ -62,18 +62,18 @@ do_populate_sdk() {
 	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
-	# extract and store ipks, pkgdata, pkgmaps and shlibs data
+	# extract and store ipks, pkgdata and shlibs data
 	target_pkgs=`cat ${SDK_OUTPUT}/${prefix}/package-status | grep Package: | cut -f 2 -d ' '`
 	mkdir -p ${SDK_OUTPUT}/${prefix}/ipk/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/runtime/
-	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 	for pkg in $target_pkgs ; do
 		for arch in $revipkgarchs; do
-			if [ -e ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk ]; then
-				echo "Found ${DEPLOY_DIR_IPK}/$arch/${pkg}_$arch.ipk"
-				cp ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk ${SDK_OUTPUT}/${prefix}/ipk/
-				orig_pkg=`ipkg-list-fields ${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk | grep OE: | cut -d ' ' -f2`
+			pkgnames=${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk
+			if [ -e $pkgnames ]; then
+				echo "Found $pkgnames"
+				cp $pkgnames ${SDK_OUTPUT}/${prefix}/ipk/
+				orig_pkg=`ipkg-list-fields $pkgnames | grep OE: | cut -d ' ' -f2`
 				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
 				mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime
 				cp ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/
@@ -82,9 +82,6 @@ do_populate_sdk() {
 					cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime/
 					if [ -e ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ];then
 						cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime/
-					fi
-					if [ -e ${STAGING_DIR}/pkgmaps/debian/$subpkg ]; then
-						cp ${STAGING_DIR}/pkgmaps/debian/$subpkg ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 					fi
 					if [ -e ${STAGING_DIR_TARGET}/shlibs/$subpkg.list ]; then
 						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
@@ -97,6 +94,8 @@ do_populate_sdk() {
 
 	# add missing link to libgcc_s.so.1
 	# libgcc-dev should be responsible for that, but it's not getting built
+	# RP: it gets smashed up depending on the order that gcc, gcc-cross and 
+	# gcc-cross-sdk get built :( (30/11/07)
 	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
 	# remove unwanted executables
