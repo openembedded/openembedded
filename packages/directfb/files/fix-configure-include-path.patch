@@ -1,0 +1,13 @@
+--- DirectFB-1.1.0/configure.in-orig	2007-08-27 00:07:00.000000000 -0700
++++ DirectFB-1.1.0/configure.in	2007-11-26 12:05:52.000000000 -0800
+@@ -1380,8 +1380,8 @@
+ 
+ MODULEDIR=$libdir/$MODULEDIRNAME
+ DATADIR=$datadir/directfb-$VERSION
+-INCLUDEDIR=$includedir/directfb
+-INTERNALINCLUDEDIR=$includedir/directfb-internal
++INCLUDEDIR=$includedir/
++INTERNALINCLUDEDIR=$includedir/
+ 
+ SOPATH=$libdir/libdirectfb-$LT_RELEASE.so.$LT_CURRENT
+ AC_SUBST(SOPATH)
