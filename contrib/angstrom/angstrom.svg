@@ -34,7 +34,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.5"
      inkscape:cx="305.99401"
-     inkscape:cy="190.18075"
+     inkscape:cy="-129.81925"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      width="300px"
@@ -126,8 +126,8 @@
        id="g1927"
        transform="matrix(2.146701,0,0,2.146701,-398.0853,376.2692)"
        inkscape:export-filename="/home/pfalcon/linux-ppc/org.openembedded.dev/contrib/angstrom/angstrom.png"
-       inkscape:export-xdpi="98.410004"
-       inkscape:export-ydpi="98.410004">
+       inkscape:export-xdpi="95.910004"
+       inkscape:export-ydpi="95.910004">
       <text
          transform="matrix(0,-1,1,0,0,0)"
          sodipodi:linespacing="100%"
@@ -149,8 +149,8 @@
        id="g1936"
        transform="matrix(2.052686,0,0,2.052686,-404.4489,380.2516)"
        inkscape:export-filename="/home/pfalcon/linux-ppc/org.openembedded.dev/contrib/angstrom/angstrom.png"
-       inkscape:export-xdpi="98.410004"
-       inkscape:export-ydpi="98.410004">
+       inkscape:export-xdpi="95.910004"
+       inkscape:export-ydpi="95.910004">
       <path
          sodipodi:nodetypes="cc"
          id="path1938"
