@@ -44,7 +44,7 @@ EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
 EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-__cxa_atexit"
-EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
+EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
 CPPFLAGS = ""
 
 # Used by configure to define additional values for FLAGS_FOR_TARGET -
