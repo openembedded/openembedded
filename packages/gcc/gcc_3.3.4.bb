@@ -1,5 +1,5 @@
 SECTION = "devel"
-PR = "r2"
+PR = "r3"
 inherit autotools gettext
 
 DESCRIPTION = "The GNU cc and gcc C compilers."

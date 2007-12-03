@@ -2,24 +2,15 @@
 #@NAME: ixp4xx
 #@DESCRIPTION: genric machine configuration for ixp4xx platforms
 
-# Set default for nslu2 - can be overridden for machines with other features.
+# Set default for common ixp4xx-based machines
 MACHINE_FEATURES ?= "kernel26 usbhost ext2 redboot apex"
 
+# Select an appropriate default kernel
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
 PREFERRED_VERSION_linux-ixp4xx ?= "2.6.21.6+svnr${SRCREV}"
 
-# Add modules required for basic networking support
-
-MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= " \
-	ixp4xx-npe \
-	"
-
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= " \
-	kernel-module-mii \
-	kernel-module-ixp4xx-mac \
-	kernel-module-ixp4xx-qmgr \
-	kernel-module-via-velocity \
-	"
+# Add packages required for basic networking support
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= "ixp4xx-npe"
 
 # Set default for 16MB machines - can be overridden for more or less flash.
 ROOT_FLASH_SIZE ?= "12"
@@ -27,7 +18,7 @@ ROOT_FLASH_SIZE ?= "12"
 # Allow for rootfs loaded direct from internal hard disk
 IMAGE_FSTYPES ?= "jffs2 tar.gz"
 
-# Set default for nslu2, nas100d, dsmg600
+# Set default for common ixp4xx-based machines
 EXTRA_IMAGECMD_jffs2 = "--pad --eraseblock=0x20000 -n"
 
 require conf/machine/include/tune-xscale.inc

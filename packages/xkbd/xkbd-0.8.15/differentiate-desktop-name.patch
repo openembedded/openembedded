@@ -1,0 +1,12 @@
+diff -r 1eb4100bbe39 xkbd.desktop
+--- a/xkbd.desktop	Wed Nov 28 02:14:35 2007 +0200
++++ b/xkbd.desktop	Wed Nov 28 02:15:01 2007 +0200
+@@ -1,6 +1,6 @@
+ [Desktop Entry]
+-Name=Keyboard
+-Comment=Virtual Keyboard
++Name=Ol' Good Keyboard
++Comment=xkbd the Virtual Keyboard
+ Exec=xkbd
+ Type=Application
+ Icon=xkbd.png

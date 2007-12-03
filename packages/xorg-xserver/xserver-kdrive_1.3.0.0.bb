@@ -23,6 +23,10 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
         file://gumstix-kmode.patch;patch=1 \
         file://smedia-glamo.patch;patch=1 \
         file://build-glamo.patch;patch=1 \
+        file://00-xglamo-logs.patch;patch=1 \
+        file://01-xglamo-scrolling-artifact-fix.patch;patch=1 \
+        file://02-xglamo-no-dri.patch;patch=1 \
+        file://03-xglamo-no-vesa.patch;patch=1 \
 "
 
 S = "${WORKDIR}/xorg-server-${PV}"
