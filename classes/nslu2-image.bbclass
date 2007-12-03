@@ -19,5 +19,5 @@ nslu2_pack_image () {
 		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nslu2-16mb.bin
 }
 
-EXTRA_IMAGEDEPENDS += 'slugimage-native nslu2-linksys-firmware ixp4xx-npe upslug2-native apex-nslu2 apex-nslu2-16mb'
+EXTRA_IMAGEDEPENDS += 'slugimage-native nslu2-linksys-firmware ixp4xx-npe apex-nslu2 apex-nslu2-16mb'
 IMAGE_POSTPROCESS_COMMAND += "nslu2_pack_image; "

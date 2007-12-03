@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r32"
+PR = "r33"
 
 inherit task
 
@@ -12,6 +12,8 @@ RDEPENDS_${PN} = "\
     rxvt-unicode \
     gpe-terminal \
     matchbox-keyboard \
+    xkbd \
+    xkbd-layout-ru \
     gpe-theme-clearlooks \
     xst \
     xhost \

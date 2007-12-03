@@ -1,3 +1,4 @@
+DESCRIPTION = "Simple program to read/write from/to any location in memory."
 SRC_URI = "http://www.abcsinc.com/small-linux/devmem2.c"
 LICENSE = "GPL"
 
