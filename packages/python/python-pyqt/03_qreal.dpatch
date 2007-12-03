@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03_qreal.dpatch by Torsten Marek <shlomme@debian.org>
+##
+## DP: On ARM, ARMEL, Mips and Mipsel, qreal is a float, not a double.
+
+@DPATCH@
+diff -urNad python-qt4-4.3~/sip/QtCore/qglobal.sip python-qt4-4.3/sip/QtCore/qglobal.sip
+--- python-qt4-4.3~/sip/QtCore/qglobal.sip	2007-08-07 21:52:15.000000000 +0200
++++ python-qt4-4.3/sip/QtCore/qglobal.sip	2007-08-07 22:10:14.000000000 +0200
+@@ -46,7 +46,7 @@
+ typedef unsigned long long quint64;
+ typedef qint64 qlonglong;
+ typedef quint64 qulonglong;
+-typedef double qreal;
++typedef float qreal;
+ typedef unsigned char uchar;
+ typedef unsigned short ushort;
+ typedef unsigned int uint;

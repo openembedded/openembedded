@@ -2,7 +2,6 @@ DESCRIPTION = "Sofia-SIP is an open-source SIP User-Agent library, compliant wit
 HOMEPAGE = "http://sofia-sip.sourceforge.net/"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 openssl"
-PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 

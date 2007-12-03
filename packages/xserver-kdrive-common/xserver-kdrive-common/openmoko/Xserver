@@ -15,6 +15,9 @@ fi
 if [ -f /usr/bin/Xomap ]; then
   XSERVER=/usr/bin/Xomap
 fi
+if [ -f /usr/bin/Xglamo ]; then
+  XSERVER=/usr/bin/Xglamo
+fi
 
 . /etc/profile
 

@@ -8,7 +8,7 @@ LICENSE = "GPL"
 SRC_URI = "http://www.riverbankcomputing.com/Downloads/sip4/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/sipgen"
 
-inherit qmake qt4x11 native
+inherit qt4x11 native
 
 EXTRA_QMAKEVARS_POST += "DESTDIR=${S} CONFIG=console"
 
@@ -17,7 +17,7 @@ do_configure_prepend() {
 }
 
 do_stage() {
-	install -m 0755 sip ${STAGING_BINDIR}/sip4
+	install -m 0755 sip ${STAGING_BINDIR_NATIVE}/sip
 	cd ${WORKDIR}/sip-${PV} && python configure.py
 	install -d ${STAGING_PYDIR}/site-packages
 	install -m 0755 sip*.py ${STAGING_PYDIR}/site-packages
