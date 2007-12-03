@@ -1,57 +1,54 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r46"
+PR = "r47"
 
 inherit task
 
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
 PACKAGES = ' \
-            task-base \
-            task-base-extended \
-            task-distro-base \
-            task-machine-base \
+            task-base task-base-dev task-base-dbg\
+            task-base-extended task-base-extended-dev task-base-extended-dbg \
+            task-distro-base task-distro-base-dev task-distro-base-dbg \
+            task-machine-base task-machine-base-dev task-machine-base-dbg \
             \
-            task-base-acpi \
-            task-base-alsa \
-            task-base-apm \
-            task-base-bluetooth \
-            task-base-ext2 \
-            task-base-irda \
-            task-base-keyboard \
-            task-base-pci \
-            task-base-pcmcia \
-            task-base-phone \
-            task-base-screen \
-            task-base-serial \
-            task-base-touchscreen \
-            task-base-usbgadget \
-            task-base-usbhost \
-            task-base-wifi \
-            task-base-uboot \
-            task-base-redboot \
-            task-base-apex \
+            ${@base_contains("MACHINE_FEATURES", "acpi", "task-base-acpi task-base-acpi-dev task-base-acpi-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa task-base-alsa-dev task-base-alsa-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm task-base-apm-dev task-base-apm-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2 task-base-ext2-dev task-base-ext2-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda task-base-irda-dev task-base-irda-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard task-base-keyboard-dev task-base-keyboard-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci task-base-pci-dev task-base-pci-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "pcmcia", "task-base-pcmcia task-base-pcmcia-dev task-base-pcmcia-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "phone", "task-base-phone task-base-phone-dev task-base-phone-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "screen", "task-base-screen task-base-screen-dev task-base-screen-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "serial", "task-base-serial task-base-serial-dev task-base-serial-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "touchscreen", "task-base-touchscreen task-base-touchscreen-dev task-base-touchscreen-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbgadget", "task-base-usbgadget task-base-usbgadget-dev task-base-usbgadget-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbhost", "task-base-usbhost task-base-usbhost-dev task-base-usbhost-dbg", "", d)} \
             \
-            task-base-cramfs \
-            task-base-ipsec \
-            task-base-ipv6 \
-            task-base-nfs \
-            task-base-ppp \
-            task-base-smbfs \
-            task-base-raid \
-	    \
+            ${@base_contains("MACHINE_FEATURES", "uboot", "task-base-uboot task-base-uboot-dev task-base-uboot-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "redboot", "task-base-redboot task-base-redboot-dev task-base-redboot-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "apex", "task-base-apex task-base-apex-dev task-base-apex-dbg", "",d)} \
+            \
+            task-base-bluetooth task-base-bluetooth-dev task-base-bluetooth-dbg \
+            task-base-wifi task-base-wifi-dev task-base-wifi-dbg \
+            \
+            \
+            ${@base_contains("DISTRO_FEATURES", "cramfs", "task-base-cramfs task-base-cramfs-dev task-base-cramfs-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipsec", "task-base-ipsec task-base-ipsec-dev task-base-ipsec-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipv6", "task-base-ipv6 task-base-ipv6-dev task-base-ipv6-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "nfs", "task-base-nfs task-base-nfs-dev task-base-nfs-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ppp", "task-base-ppp task-base-ppp-dev task-base-ppp-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "smbfs", "task-base-smbfs task-base-smbfs-dev task-base-smbfs-dbg", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "raid", "task-base-raid task-base-raid-dev task-base-raid-dbg", "",d)} \
+            \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
-	    '
+            '
 
 #
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #
-PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-bluetooth = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-irda = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-wifi = "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #
 # linux-hotplug or none
