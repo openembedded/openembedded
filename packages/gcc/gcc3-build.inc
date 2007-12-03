@@ -39,10 +39,12 @@ EXTRA_OECONF_PATHS = " \
                       --with-local-prefix=${prefix}/local \
                       --with-gxx-include-dir=${includedir}/c++/${BINV}"
 
-EXTRA_OECONF_DEP = ""
-EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
-EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
-EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
+# Build uclibc compilers without cxa_atexit support
+EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
+EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-__cxa_atexit"
+EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
 CPPFLAGS = ""
 
 # Used by configure to define additional values for FLAGS_FOR_TARGET -
@@ -55,19 +57,6 @@ ARCH_FLAGS_FOR_TARGET_unslung = "${TARGET_CC_ARCH}"
 EXTRA_OEMAKE += "ARCH_FLAGS_FOR_TARGET='${ARCH_FLAGS_FOR_TARGET}'"
 
 require gcc-fpu.inc
-
-python __anonymous () {
-    import bb, re
-    if (re.match('linux-uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None):
-        bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
-    elif (re.match('linux-uclibcgnueabi$', bb.data.getVar('TARGET_OS', d, 1)) != None):
-        bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_uclibc}', d)
-    elif (re.match('linux-gnueabi$', bb.data.getVar('TARGET_OS', d, 1)) != None):
-           bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
-    elif (re.match('linux$', bb.data.getVar('TARGET_OS', d, 1)) != None):
-        bb.data.setVar('EXTRA_OECONF_DEP', '${EXTRA_OECONF_glibc}', d)
-
-}
 
 do_configure () {
 	# Setup these vars for cross building only
