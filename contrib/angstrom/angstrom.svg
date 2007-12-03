@@ -12,18 +12,19 @@
    height="300"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44.1"
+   inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/mnt/MultimediaA"
-   sodipodi:docname="passer.svg"
+   sodipodi:docbase="/home/pfalcon/linux-ppc/org.openembedded.dev/contrib/angstrom"
+   sodipodi:docname="angstrom.svg"
    inkscape:export-filename="/mnt/MultimediaA/passer_s.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#dbe3e2"
+     pagecolor="#ecece1"
      bordercolor="#666666"
      borderopacity="1.0"
      gridtolerance="10000"
@@ -33,7 +34,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.5"
      inkscape:cx="305.99401"
-     inkscape:cy="190.18075"
+     inkscape:cy="-129.81925"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      width="300px"
@@ -46,9 +47,9 @@
      gridoriginy="0px"
      gridoriginx="0px"
      inkscape:window-width="1590"
-     inkscape:window-height="1122"
+     inkscape:window-height="961"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="0"
      inkscape:object-points="true" />
   <metadata
      id="metadata7">
@@ -123,7 +124,10 @@
        rx="11.246277" />
     <g
        id="g1927"
-       transform="matrix(2.146701,0,0,2.146701,-398.0853,376.2692)">
+       transform="matrix(2.146701,0,0,2.146701,-398.0853,376.2692)"
+       inkscape:export-filename="/home/pfalcon/linux-ppc/org.openembedded.dev/contrib/angstrom/angstrom.png"
+       inkscape:export-xdpi="95.910004"
+       inkscape:export-ydpi="95.910004">
       <text
          transform="matrix(0,-1,1,0,0,0)"
          sodipodi:linespacing="100%"
@@ -143,7 +147,10 @@
     </g>
     <g
        id="g1936"
-       transform="matrix(2.052686,0,0,2.052686,-404.4489,380.2516)">
+       transform="matrix(2.052686,0,0,2.052686,-404.4489,380.2516)"
+       inkscape:export-filename="/home/pfalcon/linux-ppc/org.openembedded.dev/contrib/angstrom/angstrom.png"
+       inkscape:export-xdpi="95.910004"
+       inkscape:export-ydpi="95.910004">
       <path
          sodipodi:nodetypes="cc"
          id="path1938"
