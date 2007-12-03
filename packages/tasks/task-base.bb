@@ -6,41 +6,40 @@ inherit task
 DEPENDS = "task-boot"
 PROVIDES = "${PACKAGES}"
 PACKAGES = ' \
-            task-base task-base-dev task-base-dbg\
-            task-base-extended task-base-extended-dev task-base-extended-dbg \
-            task-distro-base task-distro-base-dev task-distro-base-dbg \
-            task-machine-base task-machine-base-dev task-machine-base-dbg \
+            task-base \
+            task-base-extended \
+            task-distro-base \
+            task-machine-base \
             \
-            ${@base_contains("MACHINE_FEATURES", "acpi", "task-base-acpi task-base-acpi-dev task-base-acpi-dbg", "",d)} \
-            ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa task-base-alsa-dev task-base-alsa-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm task-base-apm-dev task-base-apm-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2 task-base-ext2-dev task-base-ext2-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda task-base-irda-dev task-base-irda-dbg", "",d)} \
-            ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard task-base-keyboard-dev task-base-keyboard-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci task-base-pci-dev task-base-pci-dbg", "",d)} \
-            ${@base_contains("MACHINE_FEATURES", "pcmcia", "task-base-pcmcia task-base-pcmcia-dev task-base-pcmcia-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "phone", "task-base-phone task-base-phone-dev task-base-phone-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "screen", "task-base-screen task-base-screen-dev task-base-screen-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "serial", "task-base-serial task-base-serial-dev task-base-serial-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "touchscreen", "task-base-touchscreen task-base-touchscreen-dev task-base-touchscreen-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "usbgadget", "task-base-usbgadget task-base-usbgadget-dev task-base-usbgadget-dbg", "", d)} \
-            ${@base_contains("MACHINE_FEATURES", "usbhost", "task-base-usbhost task-base-usbhost-dev task-base-usbhost-dbg", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "acpi", "task-base-acpi", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "pcmcia", "task-base-pcmcia", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "phone", "task-base-phone", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "screen", "task-base-screen", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "serial", "task-base-serial", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "touchscreen", "task-base-touchscreen", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbgadget", "task-base-usbgadget", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbhost", "task-base-usbhost", "", d)} \
             \
-            ${@base_contains("MACHINE_FEATURES", "uboot", "task-base-uboot task-base-uboot-dev task-base-uboot-dbg", "",d)} \
-            ${@base_contains("MACHINE_FEATURES", "redboot", "task-base-redboot task-base-redboot-dev task-base-redboot-dbg", "",d)} \
-            ${@base_contains("MACHINE_FEATURES", "apex", "task-base-apex task-base-apex-dev task-base-apex-dbg", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "uboot", "task-base-uboot", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "redboot", "task-base-redboot", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "apex", "task-base-apex", "",d)} \
             \
-            task-base-bluetooth task-base-bluetooth-dev task-base-bluetooth-dbg \
-            task-base-wifi task-base-wifi-dev task-base-wifi-dbg \
+            task-base-bluetooth \
+            task-base-wifi \
             \
-            \
-            ${@base_contains("DISTRO_FEATURES", "cramfs", "task-base-cramfs task-base-cramfs-dev task-base-cramfs-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "ipsec", "task-base-ipsec task-base-ipsec-dev task-base-ipsec-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "ipv6", "task-base-ipv6 task-base-ipv6-dev task-base-ipv6-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "nfs", "task-base-nfs task-base-nfs-dev task-base-nfs-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "ppp", "task-base-ppp task-base-ppp-dev task-base-ppp-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "smbfs", "task-base-smbfs task-base-smbfs-dev task-base-smbfs-dbg", "", d)} \
-            ${@base_contains("DISTRO_FEATURES", "raid", "task-base-raid task-base-raid-dev task-base-raid-dbg", "",d)} \
+            ${@base_contains("DISTRO_FEATURES", "cramfs", "task-base-cramfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipsec", "task-base-ipsec", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipv6", "task-base-ipv6", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "nfs", "task-base-nfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ppp", "task-base-ppp", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "smbfs", "task-base-smbfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "raid", "task-base-raid", "",d)} \
             \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
             '
