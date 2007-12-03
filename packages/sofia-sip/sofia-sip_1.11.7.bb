@@ -7,3 +7,7 @@ PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 
 inherit autotools pkgconfig
+
+do_stage () {
+	autotools_stage_all
+}
