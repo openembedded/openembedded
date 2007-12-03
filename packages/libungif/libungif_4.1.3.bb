@@ -1,6 +1,6 @@
 SECTION = "libs"
 DESCRIPTION = "shared library for GIF images"
-SRC_URI = "${SOURCEFORGE_MIRROR}/libungif/libungif-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/giflib/libungif-${PV}.tar.bz2"
 LICENSE = "MIT"
 PR = "r1"
 
