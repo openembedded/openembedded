@@ -37,7 +37,7 @@ FILES_${PN}-demo = "\
   ${bindir}/pygtk-demo \
   ${libdir}/pygtk \
 "
-RDEPENDS_${PN}-demo = "python-pygtk python-stringold python-tokenize"
+RDEPENDS_${PN}-demo = "python-pygtk python-stringold python-lang"
 
 # todo: revamp packaging, package demo seperatly
 FILES_${PN}-dev += "\
