@@ -25,4 +25,5 @@ RDEPENDS_${PN} = "\
     libmokoui2-dev \
     libmokopanelui2-dev \
     libmokojournal2-dev \
+    openmoko-toolchain-scripts \
 "
