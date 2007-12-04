@@ -6,7 +6,7 @@ RDEPENDS = "python-shell python-pycairo python-pygobject"
 PROVIDES = "python-pygtk2"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml4"
+PR = "ml5"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \
@@ -31,6 +31,13 @@ do_install_append() {
 
 # dirty fix #2: fix build system paths leaking in
 require fix-path.inc
+
+PACKAGES =+ "${PN}-demo"
+FILES_${PN}-demo = "\
+  ${bindir}/pygtk-demo \
+  ${libdir}/pygtk \
+"
+RDEPENDS_${PN}-demo = "python-pygtk python-stringold python-tokenize"
 
 # todo: revamp packaging, package demo seperatly
 FILES_${PN}-dev += "\
