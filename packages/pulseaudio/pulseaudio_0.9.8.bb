@@ -1,5 +1,7 @@
 require pulse.inc
 
+DEPENDS += "dbus"
+
 # this is not correct (see below)
 SRC_URI += "file://disable-using-glibc-tls.patch;patch=1"
 
