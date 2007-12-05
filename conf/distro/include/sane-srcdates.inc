@@ -53,7 +53,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE = "20070819"
+EFL_SRCDATE = "20071206"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"
@@ -89,6 +89,7 @@ SRCDATE_python-evas ?= "${EFL_SRCDATE}"
 SRCDATE_python-ecore ?= "${EFL_SRCDATE}"
 SRCDATE_python-edje ?= "${EFL_SRCDATE}"
 SRCDATE_python-emotion ?= "${EFL_SRCDATE}"
+SRCDATE_python-epsilon ?= "${EFL_SRCDATE}"
 SRCDATE_python-ewl ?= "${EFL_SRCDATE}"
 SRCDATE_python-etk ?= "${EFL_SRCDATE}"
 
@@ -102,8 +103,11 @@ SRCDATE_exhibit ?= "${EFL_SRCDATE}"
 SRCDATE_expedite ?= "${EFL_SRCDATE}"
 SRCDATE_elitaire ?= "${EFL_SRCDATE}"
 SRCDATE_entice ?= "${EFL_SRCDATE}"
+SRCDATE_entrance ?= "${EFL_SRCDATE}"
 SRCDATE_e-utils ?= "${EFL_SRCDATE}"
+SRCDATE_e-wm ?= "${EFL_SRCDATE}"
 SRCDATE_enna ?= "${EFL_SRCDATE}"
+SRCDATE_exquisite ?= "${EFL_SRCDATE}"
 
 # Misc packages, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"
