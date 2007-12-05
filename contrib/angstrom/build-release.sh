@@ -33,7 +33,7 @@ do_report_success() {
 }
 
 # No graphics
-for machine in ep93xx ixp4xxle ixp4xxbe gumstix-connex efika omap5912osk
+for machine in ep93xx gumstix-connex efika omap5912osk
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-image console-image"
