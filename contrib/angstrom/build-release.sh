@@ -1,50 +1,82 @@
 #!/bin/bash
 
-# No graphics
-for i in ep93xx ixp4xxle ixp4xxbe gumstix-connex efika 
-        do
-          echo "MACHINE = \"$i\"" > conf/auto.conf
-      	  bitbake minimal-image ; bitbake console-image
-        done
+DO_UCLIBC=0
 
-for i in ixp4xxle ixp4xxbe 
-       do
-         echo "MACHINE = \"$i\"" > conf/auto.conf
-         bitbake nslu2-minimal-image
-       done	 
+do_build() {
+	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
+
+	BUILD_MODE="glibc"
+	if [ "$BUILD_CLEAN" != "" ]
+	then
+		bitbake -c clean $BUILD_CLEAN
+	fi
+
+	for target in $BUILD_TARGETS
+	do
+		bitbake $target && do_report_success
+	done
+
+	if [ $DO_UCLIBC = 1 ]
+	then
+		BUILD_MODE="uclibc"
+		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+		for target in $BUILD_TARGETS
+		do
+			bitbake $target && do_report_success
+		done
+	fi
+}
+
+do_report_success() {
+
+	echo "$target ($BUILD_MODE) built for $machine" >> autobuilder.log
+}
+
+# No graphics
+for machine in ep93xx ixp4xxle ixp4xxbe gumstix-connex efika 
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="minimal-image console-image"
+	do_build
+done
+
+for machine in ixp4xxle ixp4xxbe 
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="nslu2-minimal-image"
+	do_build
+done	 
 
 # build altboot images for zaurus
-for i in c7x0 poodle tosa akita spitz collie
-        do
-	  echo "MACHINE = \"$i\"" > conf/auto.conf
-	  bitbake altboot-console-image
-#	  echo ANGSTROM_MODE = \"uclibc\" >> conf/auto.conf
-#	  bitbake altboot-console-image
-	done  
+for machine in c7x0 poodle tosa akita spitz collie
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="altboot-console-image"
+	do_build
+done  
 
 # graphics, flash storage
-for i in fic-gta01 a780 at91sam9263ek qemuarm h2200 h4000 omap5912osk poodle tosa hx4700 c7x0 spitz akita collie 
-        do
-	  echo "MACHINE = \"$i\"" > conf/auto.conf
-	  bitbake minimal-image ; bitbake console-image ; bitbake x11-image 
-        done
+for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h4000 omap5912osk poodle tosa hx4700 c7x0 spitz akita collie 
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="minimal-image console-image x11-image"
+	do_build
+done
 
 # graphics, disk storage	
-for i in spitz 
-       do
-         echo "MACHINE = \"$i\"" > conf/auto.conf
-	 bitbake -c clean qmake2-native ; bitbake x11-gpe-image ; bitbake x11-pimlico-image ; bitbake x11-office-image
-#         echo ANGSTROM_MODE = \"uclibc\" >> conf/auto.conf
-#	 bitbake x11-gpe-mage ; bitbake x11-pimlico-image ; bitbake x11-office-image
-       done 
-
+for machine in spitz 
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="x11-gpe-image x11-pimlico-image x11-office-image"
+	BUILD_CLEAN="qmake2-native"
+	do_build
+done 
 
 #phones
-for i in fic-gta01 a780 
-        do
-         echo "MACHINE = \"$i\"" > conf/auto.conf
-	 bitbake -c clean qmake2-native ;bitbake openmoko-image
-#	 echo ANGSTROM_MODE = \"uclibc\" >> conf/auto.conf
-#	 bitbake openmoko-image
-       done	 
-
+for machine in fic-gta01 a780 
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="openmoko-image"
+	BUILD_CLEAN="qmake2-native"
+	do_build
+done	 
