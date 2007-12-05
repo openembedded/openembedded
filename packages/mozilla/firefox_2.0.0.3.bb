@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://xptcstubs.patch;patch=1 \
 	file://no-xmb.patch;patch=1 \
@@ -10,7 +10,10 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
     file://eabi-fix.patch;patch=1 \
     file://eabi-fix2.patch;patch=1 \
     file://eabi-fix3.patch;patch=1 \
+    file://linkage-problem.patch;patch=1 \
        "
+DEPENDS += cairo
+
 S = "${WORKDIR}/mozilla"
 DEFAULT_PREFERENCE = "-1"
 
@@ -36,4 +39,3 @@ do_stage() {
         # removes 2 lines that call absent headers
         sed -e '178,179d' ${STAGING_INCDIR}/${P}/nsIServiceManager.h
 }
-
