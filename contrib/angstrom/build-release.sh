@@ -33,7 +33,7 @@ do_report_success() {
 }
 
 # No graphics
-for machine in ep93xx ixp4xxle ixp4xxbe gumstix-connex efika 
+for machine in ep93xx ixp4xxle ixp4xxbe gumstix-connex efika omap5912osk
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-image console-image"
@@ -56,7 +56,7 @@ do
 done  
 
 # graphics, flash storage
-for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h4000 omap5912osk poodle tosa hx4700 c7x0 spitz akita collie 
+for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h4000 poodle tosa hx4700 c7x0 spitz akita collie 
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-image console-image x11-image"
