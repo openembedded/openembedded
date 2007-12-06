@@ -1,5 +1,5 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for evas"
-DEPENDS = "evas"
+DEPENDS = "eet evas"
 LICENSE = "MIT"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
