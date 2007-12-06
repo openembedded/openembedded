@@ -6,7 +6,8 @@ PR = "r0"
 
 inherit e
 
-SRC_URI = "${E_CVS};module=e17/apps/expedite"
+SRC_URI = "${E_CVS};module=e17/apps/expedite \
+           file://hack-disable-opengl.patch;patch=1"
 S = "${WORKDIR}/${PN}"
 
 do_configure_append() {
