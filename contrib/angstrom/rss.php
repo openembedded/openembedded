@@ -1,8 +1,8 @@
 <? print('<?xml version="1.0" encoding="utf-8"?>');?>
-<rss version="2.0" xml:base="http://www.anstrom-distribution.org/unstable/autobuild/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rss version="2.0" xml:base="http://www.angstrom-distribution.org/unstable/autobuild/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <channel>
  <title>Ångstrom autobuilder updates </title>
- <link>http://www.anstrom-distribution.org/unstable/autobuild</link>
+ <link>http://www.angstrom-distribution.org/unstable/autobuild</link>
  <description></description>
  <language>en</language>
 <?php
@@ -20,9 +20,9 @@ if ($handle = opendir("$base_path")) {
 
 print("<item>\n");
 print("<title>$file/$file2 uploaded</title>\n");
-print(" <link>http://www.anstrom-distribution.org/unstable/autobuild/$file/$file2</link>\n");
+print(" <link>http://www.angstrom-distribution.org/unstable/autobuild/$file/$file2</link>\n");
 
-$rsstime = strftime("%a, %d %b %Y %T +0000", $fmtime);
+$rsstime = strftime("%a, %d %b %Y %T +0100", $fmtime);
 
 print("<pubDate>$rsstime</pubDate>\n");
 print("<dc:creator>Angstrom autobuilder</dc:creator>");
