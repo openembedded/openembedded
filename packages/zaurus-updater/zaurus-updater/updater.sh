@@ -312,9 +312,9 @@ do
     DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
 
     # make TARGETFILE lowercase
-    TARGETFILE=`echo $TARGETFILE|tr A-Z a-z`
+    TARGETFILE_LC=`echo $TARGETFILE|tr A-Z a-z`
 
-    case "$TARGETFILE" in
+    case "$TARGETFILE_LC" in
 
     zimage|zimage.bin)
         if [ $FLASHED_KERNEL != 0 ]
