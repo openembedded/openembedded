@@ -12,7 +12,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
     file://eabi-fix3.patch;patch=1 \
     file://linkage-problem.patch;patch=1 \
        "
-DEPENDS += cairo
+DEPENDS += "cairo"
 
 S = "${WORKDIR}/mozilla"
 DEFAULT_PREFERENCE = "-1"
