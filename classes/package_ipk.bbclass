@@ -162,7 +162,7 @@ python do_package_ipk () {
 		pkgdest = bb.data.getVar('PKGDEST', d, 1)
 		root = "%s/%s" % (pkgdest, pkg)
 
-		lf = bb.utils.lockfile(root + ".lock")
+		lf = lockfile(root + ".lock")
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
