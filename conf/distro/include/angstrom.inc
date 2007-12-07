@@ -35,6 +35,9 @@ require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
 ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 
+# We only want to build UTF8 locales
+LOCALE_UTF8_ONLY = "1"
+
 #qemu doesn't like armv6/eabi/vfp
 ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
 ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"

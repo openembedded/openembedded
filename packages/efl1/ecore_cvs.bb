@@ -6,8 +6,8 @@ EXTRA_OECONF = "\
 		--disable-ecore-x-xcb \
 		--enable-ecore-x \
 		--enable-ecore-job \
-		--enable-ecore-directfb \
-		--enable-ecore-sdl \
+		--disable-ecore-directfb \
+		--disable-ecore-sdl \
 		--enable-ecore-fb \
 		--enable-ecore-evas \
 		--disable-ecore-evas-gl \

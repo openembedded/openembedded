@@ -2,7 +2,8 @@
 
 # generate Python Manifest for the OpenEmbedded build system
 # (C) 2002-2007 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
-# MIT license
+# (C) 2007 Jeremy Laine
+# licensed under MIT, see COPYING.MIT
 
 import os
 import sys
@@ -10,10 +11,10 @@ import time
 
 VERSION = "2.5.1"
 # increase when touching python-core, this should be the same ml version as in python_2.5.1.bb
-BASEREV = 2
+BASEREV = 3
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-__version__ = "20070823"
+__version__ = "20071205"
 
 class MakefileMaker:
 
@@ -194,7 +195,10 @@ if __name__ == "__main__":
     "lib-dynload/_csv.so csv.* optparse.* textwrap.*" )
 
     m.addPackage( 0, "python-curses", "Python Curses Support", "python-core",
-    "curses lib-dynload/_curses.so lib-dynload/_curses_panel.so" ) # package
+    "curses lib-dynload/_curses.so lib-dynload/_curses_panel.so" ) # directory + low level module
+
+    m.addPackage( 0, "python-ctypes", "Python C Types Support", "python-core",
+    "ctypes lib-dynload/_ctypes.so" ) # directory + low level module
 
     m.addPackage( 0, "python-datetime", "Python Calendar and Time support", "python-core python-codecs",
     "_strptime.* calendar.* lib-dynload/datetime.so" )

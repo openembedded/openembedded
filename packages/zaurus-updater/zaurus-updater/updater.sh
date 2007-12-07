@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #
 # One updater.sh to rule them all
 #
@@ -22,10 +21,14 @@
 #
 # 2007.11.23 Koen Kooi
 # - consistent error messages
-## - fix flashing from case sensitive filesystem (e.g. ext2)
+# - fix flashing from case sensitive filesystem (e.g. ext2)
+#
 # 2007.11.23 Matthias 'CoreDump' Hentges
 # - Always treat MTD_PART_SIZE as HEX when comparing sizes
 # - Thanks to ZeroChaos for debugging
+#
+# 2007.12.04 Matthias 'CoreDump' Hentges
+# - Unb0rk flashing of Akita kernels
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -190,42 +193,53 @@ do_flashing()
         /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
     fi
 
-	#loop
-	while [ $DATAPOS -lt $DATASIZE ]
-	do
-		#data create
-		bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
-		TMPSIZE=`wc -c $TMPDATA`
-		TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
-		DATAPOS=`expr $DATAPOS + $TMPSIZE`
-
-		#handle data file
-		if [ $ISLOGICAL = 0 ]
-		then
-			next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
-			if [ "$next_addr" = "" ]; then
-				echo "Error: flash write"
-				rm $TMPDATA > /dev/null 2>&1
-				RESULT=3
-				break;
-			fi
-			ADDR=$next_addr
-		else
-			/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
-			ADDR=`expr $ADDR + $TMPSIZE`
-		fi
-
-		rm $TMPDATA > /dev/null 2>&1
-
-		#progress
-		SPNUM=0
-		while [ $SPNUM -lt $PROGSTEP ]
+	# Looks like Akita is quite unique when it comes to kernel flashing
+	
+	if [ "$ZAURUS" = "akita" ] && [ $FLASH_TYPE = kernel ]; then 
+		echo "Note: Flashing Akita kernel"
+		echo $TARGETFILE':'$DATASIZE'bytes'
+		echo '                ' > /tmp/data
+		/sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
+		/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
+		/sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1	
+		echo "Kernel: Finished"
+	else
+		#loop
+		while [ $DATAPOS -lt $DATASIZE ]
 		do
-			echo -n '.'
-			SPNUM=`expr $SPNUM + 1`
-		done
-	done
+			#data create
+			bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
+			TMPSIZE=`wc -c $TMPDATA`
+			TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
+			DATAPOS=`expr $DATAPOS + $TMPSIZE`
 
+			#handle data file
+			if [ $ISLOGICAL = 0 ]
+			then
+				next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
+				if [ "$next_addr" = "" ]; then
+					echo "Error: flash write"
+					rm $TMPDATA > /dev/null 2>&1
+					RESULT=3
+					break;
+				fi
+				ADDR=$next_addr
+			else
+				/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+				ADDR=`expr $ADDR + $TMPSIZE`
+			fi
+
+			rm $TMPDATA > /dev/null 2>&1
+
+			#progress
+			SPNUM=0
+			while [ $SPNUM -lt $PROGSTEP ]
+			do
+				echo -n '.'
+				SPNUM=`expr $SPNUM + 1`
+			done
+		done
+	fi
     echo ''
 
     #finish
@@ -298,9 +312,9 @@ do
     DATASIZE=`echo $DATASIZE | cut -d' ' -f1`
 
     # make TARGETFILE lowercase
-    TARGETFILE=`echo $TARGETFILE|tr A-Z a-z`
+    TARGETFILE_LC=`echo $TARGETFILE|tr A-Z a-z`
 
-    case "$TARGETFILE" in
+    case "$TARGETFILE_LC" in
 
     zimage|zimage.bin)
         if [ $FLASHED_KERNEL != 0 ]
