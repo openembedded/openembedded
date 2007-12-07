@@ -7,7 +7,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-PR = "r1"
+PR = "r2"
 RV = "1.1-0"
 
 SRC_URI = " \
@@ -37,6 +37,8 @@ EXTRA_OECONF = " \
 
 do_stage() {
         autotools_stage_all
+        # fix breakage introduced with the fix-includes patch, it seems that directfb examples is the only app that looks in the wrong location :/
+        ln -sf ${STAGING_LIBDIR} ${STAGING_LIBDIR}/directfb
 }
 
 do_install() {

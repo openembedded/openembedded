@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "efika"
 
