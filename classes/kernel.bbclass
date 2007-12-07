@@ -349,6 +349,9 @@ python populate_packages_prepend () {
 		# If autoloading is requested, output /etc/modutils/<name> and append
 		# appropriate modprobe commands to the postinst
 		autoload = bb.data.getVar('module_autoload_%s' % basename, d, 1)
+		if not autoload:
+		    # Also, try canonical name with dashes
+		    autoload = bb.data.getVar('module_autoload_%s' % basename.replace('_', '-'), d, 1)
 		if autoload:
 			name = '%s/etc/modutils/%s' % (dvar, basename)
 			f = open(name, 'w')
