@@ -11,7 +11,7 @@ import time
 
 VERSION = "2.5.1"
 # increase when touching python-core, this should be the same ml version as in python_2.5.1.bb
-BASEREV = 3
+BASEREV = 5
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 __version__ = "20071205"
@@ -146,7 +146,7 @@ if __name__ == "__main__":
     # Parameters: revision, name, description, dependencies, filenames
     #
 
-    m.addPackage( 2, "python-core", "Python Interpreter and core modules (needed!)", "",
+    m.addPackage( 0, "python-core", "Python Interpreter and core modules (needed!)", "",
     "__future__.* copy.* copy_reg.* ConfigParser.* " +
     "getopt.* linecache.* new.* " +
     "os.* posixpath.* struct.* " +
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
     "bsddb" ) # package
 
-    m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core",
+    m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core python-lang",
     "codecs.* encodings gettext.* locale.* lib-dynload/_locale.so lib-dynload/unicodedata.so stringprep.* xdrlib.*" )
 
     m.addPackage( 0, "python-compile", "Python Bytecode Compilation Support", "python-core",
@@ -261,7 +261,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-unixadmin", "Python Unix Administration Support", "python-core",
     "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
 
-    m.addPackage( 0, "python-netclient", "Python Internet Protocol Clients", "python-core python-datetime python-io python-lang python-logging python-mime",
+    m.addPackage( 0, "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
     "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.*" )
 
