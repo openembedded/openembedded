@@ -32,7 +32,7 @@ python package_ipk_install () {
 
 	# Generate ipk.conf if it or the stamp doesnt exist
 	conffile = os.path.join(stagingdir,"ipkg.conf")
-	if not  os.access(conffile, os.R_OK):
+	if not os.access(conffile, os.R_OK):
 		ipkg_archs = bb.data.getVar('PACKAGE_ARCHS',d)
 		if ipkg_archs is None:
 			bb.error("PACKAGE_ARCHS missing")
@@ -114,7 +114,7 @@ package_generate_ipkg_conf () {
 }
 
 python do_package_ipk () {
-	import sys, re, fcntl, copy
+	import sys, re, copy
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -126,10 +126,6 @@ python do_package_ipk () {
 	if not outdir:
 		bb.error("DEPLOY_DIR_IPK not defined, unable to package")
 		return
-
-	arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
-	outdir = "%s/%s" % (outdir, arch)
-	bb.mkdirhier(outdir)
 
 	dvar = bb.data.getVar('D', d, 1)
 	if not dvar:
@@ -151,20 +147,12 @@ python do_package_ipk () {
 		bb.debug(1, "No packages; nothing to do")
 		return
 
-	def lockfile(name):
-		lf = open(name, "a+")
-		fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
-		return lf
-
-	def unlockfile(lf):
-		fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
-		lf.close
-
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
-		root = "%s/install/%s" % (workdir, pkg)
+		pkgdest = bb.data.getVar('PKGDEST', d, 1)
+		root = "%s/%s" % (pkgdest, pkg)
 
-		lf = lockfile(root + ".lock")
+		lf = bb.utils.lockfile(root + ".lock")
 
 		bb.data.setVar('ROOT', '', localdata)
 		bb.data.setVar('ROOT_%s' % pkg, root, localdata)
@@ -181,7 +169,8 @@ python do_package_ipk () {
 
 		bb.data.update_data(localdata)
 		basedir = os.path.join(os.path.dirname(root))
-		pkgoutdir = outdir
+		arch = bb.data.getVar('PACKAGE_ARCH', localdata, 1)
+		pkgoutdir = "%s/%s" % (outdir, arch)
 		bb.mkdirhier(pkgoutdir)
 		os.chdir(root)
 		from glob import glob
@@ -194,7 +183,7 @@ python do_package_ipk () {
 		if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
 			from bb import note
 			note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
-			unlockfile(lf)
+			bb.utils.unlockfile(lf)
 			continue
 
 		controldir = os.path.join(root, 'CONTROL')
@@ -202,6 +191,7 @@ python do_package_ipk () {
 		try:
 			ctrlfile = file(os.path.join(controldir, 'control'), 'w')
 		except OSError:
+			bb.utils.unlockfile(lf)
 			raise bb.build.FuncFailed("unable to open control file for writing.")
 
 		fields = []
@@ -235,6 +225,7 @@ python do_package_ipk () {
 		except KeyError:
 			(type, value, traceback) = sys.exc_info()
 			ctrlfile.close()
+			bb.utils.unlockfile(lf)
 			raise bb.build.FuncFailed("Missing field for ipk generation: %s" % value)
 		# more fields
 
@@ -271,6 +262,7 @@ python do_package_ipk () {
 			try:
 				scriptfile = file(os.path.join(controldir, script), 'w')
 			except OSError:
+				bb.utils.unlockfile(lf)
 				raise bb.build.FuncFailed("unable to open %s script file for writing." % script)
 			scriptfile.write(scriptvar)
 			scriptfile.close()
@@ -281,6 +273,7 @@ python do_package_ipk () {
 			try:
 				conffiles = file(os.path.join(controldir, 'conffiles'), 'w')
 			except OSError:
+				bb.utils.unlockfile(lf)
 				raise bb.build.FuncFailed("unable to open conffiles for writing.")
 			for f in conffiles_str.split():
 				conffiles.write('%s\n' % f)
@@ -290,6 +283,7 @@ python do_package_ipk () {
 		ret = os.system("PATH=\"%s\" %s %s %s" % (bb.data.getVar("PATH", localdata, 1), 
                                                           bb.data.getVar("IPKGBUILDCMD",d,1), pkg, pkgoutdir))
 		if ret != 0:
+			bb.utils.unlockfile(lf)
 			raise bb.build.FuncFailed("ipkg-build execution failed")
 
 		for script in ["preinst", "postinst", "prerm", "postrm", "control" ]:
@@ -302,13 +296,16 @@ python do_package_ipk () {
 			os.rmdir(controldir)
 		except OSError:
 			pass
-		unlockfile(lf)
+		bb.utils.unlockfile(lf)
 }
 
 python () {
     import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
-        bb.data.setVarFlag('do_package_write_ipk', 'depends', 'ipkg-utils-native:do_populate_staging fakeroot-native:do_populate_staging', d)
+        deps = (bb.data.getVarFlag('do_package_write_ipk', 'depends', d) or "").split()
+        deps.append('ipkg-utils-native:do_populate_staging')
+        deps.append('fakeroot-native:do_populate_staging')
+        bb.data.setVarFlag('do_package_write_ipk', 'depends', " ".join(deps), d)
 }
 
 python do_package_write_ipk () {
