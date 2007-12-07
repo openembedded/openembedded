@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r9"
+PR = "r10"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -123,7 +123,9 @@ SRC_URI_append_tosa = "\
 	   file://arm-dma-coherent.patch;patch=1 \
            file://usb-ohci-hooks-r3.patch;patch=1 \
            file://tmio-ohci-r9.patch;patch=1 \
-	    "
+           file://pxa2xx_udc_support_inverse_vbus.patch;patch=1 \
+           file://tosa_udc_use_gpio_vbus.patch;patch=1 \
+           "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 SRC_URI_append_htcuniversal ="\
