@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r48"
+PR = "r49"
 
 inherit task
 
@@ -160,6 +160,7 @@ RRECOMMENDS_task-base-kernel24 = "\
     kernel-module-uinput"
 
 RRECOMMENDS_task-base-kernel26 = "\
+    kernel-module-nls-utf8 \
     kernel-module-input \
     kernel-module-uinput \
     kernel-module-rtc-dev \
