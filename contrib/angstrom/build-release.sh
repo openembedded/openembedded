@@ -29,7 +29,7 @@ do_build() {
 
 do_report_success() {
 
-	echo "$(date -u +%Y%M%d%H%M) $target ($BUILD_MODE) built for $machine" >> autobuilder.log
+	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder.log
 }
 
 # No graphics
