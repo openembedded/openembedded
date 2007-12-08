@@ -24,7 +24,7 @@ def get_pkgconfig_mangle(d):
 
 do_install_append () {
         for pc in `find ${D} -name '*.pc' -type f | grep -v -- '-uninstalled.pc$'`; do
-                sed -i ${@get_pkgconfig_mangle(d)} -e 's:${D}::g' ${pc}
+                sed -i ${@get_pkgconfig_mangle(d)} -e 's:${D}::g' -e 's:${STAGING_LIBDIR}:${libdir}:g' -e 's:${STAGING_INCDIR}:${includedir}:g'  ${pc}
         done
 }
 
