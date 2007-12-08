@@ -12,7 +12,6 @@ RV = "1.1-0"
 
 SRC_URI = " \
     http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
-    file://fix-configure-include-path.patch;patch=1 \
     file://fix-pkgconfig-cflags.patch;patch=1 \
     file://fix-font-missing-char.patch;patch=1 \
     file://getpagesize.patch;patch=1 \
@@ -37,8 +36,6 @@ EXTRA_OECONF = " \
 
 do_stage() {
         autotools_stage_all
-        # fix breakage introduced with the fix-includes patch, it seems that directfb examples is the only app that looks in the wrong location :/
-        ln -sf ${STAGING_LIBDIR} ${STAGING_LIBDIR}/directfb
 }
 
 do_install() {
