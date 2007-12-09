@@ -101,6 +101,12 @@ PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc-intermediate"
 PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc       = "glibc-intermediate"
 PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc     = "glibc-intermediate"
 
+# Set the preferred provider for a few toolchain-related items, otherwise
+# these may be selected from the external-toolchain instead.
+PREFERRED_PROVIDER_virtual/arm-linux-binutils       = "binutils-cross"
+PREFERRED_PROVIDER_virtual/armeb-linux-binutils     = "binutils-cross"
+PREFERRED_PROVIDER_linux-libc-headers               = "linux-libc-headers"
+
 # compiler/binary/library versions
 PREFERRED_VERSION_binutils           ?= "2.18"
 PREFERRED_VERSION_binutils-cross     ?= "2.18"
