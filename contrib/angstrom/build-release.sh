@@ -33,7 +33,7 @@ do_report_success() {
 }
 
 # No graphics
-for machine in ep93xx gumstix-connex efika omap5912osk
+for machine in ep93xx gumstix-connex gumstix-verdex efika omap5912osk
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-image console-image"
@@ -79,4 +79,13 @@ do
 	BUILD_TARGETS="openmoko-image"
 	BUILD_CLEAN="qmake2-native"
 	do_build
-done	 
+done	
+
+#native toolchain
+for machine in ep93xx a780 efika collie ixp4xxbe
+do
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="gcc binutils pkgconfig make automake autoconf libtool m4 perl python gdb strace screen"
+        do_build
+done
+
