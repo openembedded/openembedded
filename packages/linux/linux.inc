@@ -13,10 +13,15 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 # Specify the commandline for your device
 
-#boot from mmc
+# Boot from mmc
 CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfstype=ext2 rootdelay=5"
-#boot from nfs
+# Boot from nfs
 #CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=301 root=/dev/nfs nfsroot=172.20.3.1:/data/at91 ip=172.20.0.5:::255.255.0.0"
+
+# Set the verbosity of kernel messages during runtime
+# You can define CMDLINE_DEBUG in your local.conf or distro.conf to override this behaviour  
+CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
+CMDLINE_append = " ${CMDLINE_DEBUG} "
 
 do_configure_prepend() {
         echo "" > ${S}/.config
