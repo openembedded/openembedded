@@ -164,6 +164,7 @@ do_flashing()
     fi
 
     if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
+    then
         #check version
         /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
         if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
