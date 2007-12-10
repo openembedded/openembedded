@@ -29,6 +29,11 @@
 #
 # 2007.12.04 Matthias 'CoreDump' Hentges
 # - Unb0rk flashing of Akita kernels
+#
+# 2007.12.10 Marcin 'Hrw' Juszkiewicz
+# - Reformatted file - please use spaces not tabs
+# - "version check" is only on Tosa and Poodle - breaks other machines
+#
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -154,17 +159,19 @@ do_flashing()
     if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
     then
         echo "Error: File is too big to flash!"
-	echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"	
+        echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"
         return
     fi
 
-    #check version
-    /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
-    if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
-    then
-        #no version info...
-        rm -f $TMPHEAD > /dev/null 2>&1
-        DATAPOS=0
+    if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
+        #check version
+        /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
+        if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
+        then
+            #no version info...
+            rm -f $TMPHEAD > /dev/null 2>&1
+            DATAPOS=0
+        fi
     fi
 
     if [ $ISFORMATTED = 0 ]
@@ -193,53 +200,51 @@ do_flashing()
         /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
     fi
 
-	# Looks like Akita is quite unique when it comes to kernel flashing
-	
-	if [ "$ZAURUS" = "akita" ] && [ $FLASH_TYPE = kernel ]; then 
-		echo "Note: Flashing Akita kernel"
-		echo $TARGETFILE':'$DATASIZE'bytes'
-		echo '                ' > /tmp/data
-		/sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
-		/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
-		/sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1	
-		echo "Kernel: Finished"
-	else
-		#loop
-		while [ $DATAPOS -lt $DATASIZE ]
-		do
-			#data create
-			bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
-			TMPSIZE=`wc -c $TMPDATA`
-			TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
-			DATAPOS=`expr $DATAPOS + $TMPSIZE`
+        # Looks like Akita is quite unique when it comes to kernel flashing
+        
+        if [ "$ZAURUS" = "akita" ] && [ $FLASH_TYPE = kernel ]; then 
+                echo $TARGETFILE':'$DATASIZE'bytes'
+                echo '                ' > /tmp/data
+                /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
+                /sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
+                /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1     
+        else
+                #loop
+                while [ $DATAPOS -lt $DATASIZE ]
+                do
+                        #data create
+                        bcut -a $DATAPOS -s $ONESIZE -o $TMPDATA $TARGETFILE
+                        TMPSIZE=`wc -c $TMPDATA`
+                        TMPSIZE=`echo $TMPSIZE | cut -d' ' -f1`
+                        DATAPOS=`expr $DATAPOS + $TMPSIZE`
 
-			#handle data file
-			if [ $ISLOGICAL = 0 ]
-			then
-				next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
-				if [ "$next_addr" = "" ]; then
-					echo "Error: flash write"
-					rm $TMPDATA > /dev/null 2>&1
-					RESULT=3
-					break;
-				fi
-				ADDR=$next_addr
-			else
-				/sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
-				ADDR=`expr $ADDR + $TMPSIZE`
-			fi
+                        #handle data file
+                        if [ $ISLOGICAL = 0 ]
+                        then
+                                next_addr=`/sbin/nandcp -a $ADDR $TMPDATA $TARGET_MTD  2>/dev/null | fgrep "mtd address" | cut -d- -f2 | cut -d\( -f1`
+                                if [ "$next_addr" = "" ]; then
+                echo "Error: flash write"
+                                        rm $TMPDATA > /dev/null 2>&1
+                                        RESULT=3
+                                        break;
+                                fi
+                                ADDR=$next_addr
+                        else
+                                /sbin/nandlogical $LOGOCAL_MTD WRITE $ADDR $DATASIZE $TMPDATA > /dev/null 2>&1
+                                ADDR=`expr $ADDR + $TMPSIZE`
+                        fi
 
-			rm $TMPDATA > /dev/null 2>&1
+                        rm $TMPDATA > /dev/null 2>&1
 
-			#progress
-			SPNUM=0
-			while [ $SPNUM -lt $PROGSTEP ]
-			do
-				echo -n '.'
-				SPNUM=`expr $SPNUM + 1`
-			done
-		done
-	fi
+                        #progress
+                        SPNUM=0
+                        while [ $SPNUM -lt $PROGSTEP ]
+                        do
+                                echo -n '.'
+                                SPNUM=`expr $SPNUM + 1`
+                        done
+                done
+        fi
     echo ''
 
     #finish
@@ -331,10 +336,9 @@ do
         ONESIZE=524288
         HDTOP=`expr $DATASIZE - 16`
         /sbin/bcut -a $HDTOP -s 16 -o $TMPHEAD $TARGETFILE
-		echo "HDTOP=$HDTOP"
-		FLASH_TYPE="kernel"
+        FLASH_TYPE="kernel"
         do_flashing
-		FLASH_TYPE=""
+        FLASH_TYPE=""
         ;;
 
     initrd.bin)
@@ -353,9 +357,9 @@ do
         DATAPOS=16
         ONESIZE=1048576
         /sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
-		FLASH_TYPE="rootfs"
+        FLASH_TYPE="rootfs"
         do_flashing
-		FLASH_TYPE=""
+        FLASH_TYPE=""
         ;;
 
     hdimage1.tgz)
@@ -370,6 +374,7 @@ do
     esac
 done
 
+# starting shell to test -- remove this from final release
 /bin/sh
 
 # reboot
