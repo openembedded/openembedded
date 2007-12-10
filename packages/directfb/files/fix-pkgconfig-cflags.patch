@@ -6,7 +6,7 @@ diff -ur DirectFB-1.0.0~org/directfb-internal.pc.in DirectFB-1.0.0/directfb-inte
  Version: @VERSION@
  Requires: directfb = @VERSION@
 -Cflags: @DFB_INTERNAL_CFLAGS@ -I@INTERNALINCLUDEDIR@
-+Cflags: @DFB_INTERNAL_CFLAGS@ -I${includedir}
++Cflags: @DFB_INTERNAL_CFLAGS@ -I${includedir}/directfb -I${includedir}
 diff -ur DirectFB-1.0.0~org/directfb.pc.in DirectFB-1.0.0/directfb.pc.in
 --- DirectFB-1.0.0~org/directfb.pc.in	2004-08-04 12:28:20.000000000 -0400
 +++ DirectFB-1.0.0/directfb.pc.in	2007-03-16 22:31:33.000000000 -0400
@@ -15,7 +15,7 @@ diff -ur DirectFB-1.0.0~org/directfb.pc.in DirectFB-1.0.0/directfb.pc.in
  Requires: fusion direct
  Libs: -L${libdir} -ldirectfb @THREADLIB@ @DYNLIB@ @ZLIB_LIBS@ @OSX_LIBS@
 -Cflags: @THREADFLAGS@ -I@INCLUDEDIR@
-+Cflags: @THREADFLAGS@ -I${includedir}
++Cflags: @THREADFLAGS@ -I${includedir}/directfb -I${includedir}
 diff -ur DirectFB-1.0.0~org/lib/direct/direct.pc.in DirectFB-1.0.0/lib/direct/direct.pc.in
 --- DirectFB-1.0.0~org/lib/direct/direct.pc.in	2005-11-23 09:18:59.000000000 -0500
 +++ DirectFB-1.0.0/lib/direct/direct.pc.in	2007-03-16 22:32:13.000000000 -0400
@@ -24,7 +24,7 @@ diff -ur DirectFB-1.0.0~org/lib/direct/direct.pc.in DirectFB-1.0.0/lib/direct/di
  Version: @VERSION@
  Libs: -L${libdir} -ldirect @THREADLIB@ @DYNLIB@
 -Cflags: @THREADFLAGS@ -I@INCLUDEDIR@
-+Cflags: @THREADFLAGS@ -I${includedir}
++Cflags: @THREADFLAGS@ -I${includedir}/directfb -I${includedir}
 diff -ur DirectFB-1.0.0~org/lib/fusion/fusion.pc.in DirectFB-1.0.0/lib/fusion/fusion.pc.in
 --- DirectFB-1.0.0~org/lib/fusion/fusion.pc.in	2004-05-19 07:30:56.000000000 -0400
 +++ DirectFB-1.0.0/lib/fusion/fusion.pc.in	2007-03-16 22:32:34.000000000 -0400
@@ -33,7 +33,7 @@ diff -ur DirectFB-1.0.0~org/lib/fusion/fusion.pc.in DirectFB-1.0.0/lib/fusion/fu
  Requires: direct
  Libs: -L${libdir} -lfusion
 -Cflags: -I@INCLUDEDIR@
-+Cflags: -I${includedir}
++Cflags: -I${includedir}/directfb -I${includedir}
 diff -ur DirectFB-1.0.0~org/lib/voodoo/voodoo.pc.in DirectFB-1.0.0/lib/voodoo/voodoo.pc.in
 --- DirectFB-1.0.0~org/lib/voodoo/voodoo.pc.in	2004-05-19 07:31:28.000000000 -0400
 +++ DirectFB-1.0.0/lib/voodoo/voodoo.pc.in	2007-03-16 22:32:55.000000000 -0400
@@ -42,4 +42,4 @@ diff -ur DirectFB-1.0.0~org/lib/voodoo/voodoo.pc.in DirectFB-1.0.0/lib/voodoo/vo
  Requires: direct
  Libs: -L${libdir} -lvoodoo
 -Cflags: -I@INCLUDEDIR@
-+Cflags: -I${includedir}
++Cflags: -I${includedir}/directfb -I${includedir}
