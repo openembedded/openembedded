@@ -8,12 +8,12 @@ DEPENDS = "virtual/libx11 virtual/libsdl freetype"
 PR = "r0"
 
 SRC_URI = "http://www.antigrain.com/${P}.tar.gz"
-
 S = "${WORKDIR}/${P}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-sdl-exec-prefix=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
+export SDL_CONFIG=${STAGING_BINDIR_CROSS}/sdl-config
+
 CFLAGS += " -I{$STAGING_INCDIR} "
 
 PACKAGES =+ "${PN}-sdl ${PN}-x11"
@@ -26,14 +26,18 @@ FILES_${PN} = "${libdir}/libagg.so.* \
 LEAD_SONAME = "libagg.so"
 
 do_stage() {
-        install -m 0644 libagg.m4 ${STAGING_DATADIR}/aclocal/
-        install -d ${STAGING_INCDIR}/agg2
-        cd include
-        headers=`find . -name "*.h"`
-        for f in $headers
-        do
-                install -m 0644 $f ${STAGING_INCDIR}/agg2/
-        done
+    oe_libinstall -a -so libagg ${STAGING_LIBDIR}
+    oe_libinstall -a -so libaggfontfreetype ${STAGING_LIBDIR}
+    oe_libinstall -a -so libaggplatformX11 ${STAGING_LIBDIR}
+    oe_libinstall -a -so libaggplatformsdl ${STAGING_LIBDIR}
+    install -m 0644 libagg.m4 ${STAGING_DATADIR}/aclocal/
+    install -d ${STAGING_INCDIR}/agg2
+    cd include
+    headers=`find . -name "*.h"`
+    for f in $headers
+    do
+            install -D -m 0644 $f ${STAGING_INCDIR}/agg2/$f
+    done
 }
 
 
