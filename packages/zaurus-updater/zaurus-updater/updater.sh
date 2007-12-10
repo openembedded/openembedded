@@ -32,6 +32,8 @@
 #
 # 2007.12.10 Marcin 'Hrw' Juszkiewicz
 # - Reformatted file - please use spaces not tabs
+# - "version check" is only on Tosa and Poodle - breaks other machines
+#
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -161,13 +163,15 @@ do_flashing()
         return
     fi
 
-    #check version
-    /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
-    if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
-    then
-        #no version info...
-        rm -f $TMPHEAD > /dev/null 2>&1
-        DATAPOS=0
+    if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
+        #check version
+        /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
+        if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
+        then
+            #no version info...
+            rm -f $TMPHEAD > /dev/null 2>&1
+            DATAPOS=0
+        fi
     fi
 
     if [ $ISFORMATTED = 0 ]
