@@ -4,8 +4,9 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
-PV = "1.2.0+git${SRCDATE}+svnr${SRCREV}"
-PR = "r2"
+LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
+PV = "1.3.0${LOCALVERSION}"
+PR = "r0"
 
 SRCREV_FORMAT = "patches"
 
