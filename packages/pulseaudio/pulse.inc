@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.pulseaudio.org"
 AUTHOR = "Lennart Poettering"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-DEPENDS = "libatomics-ops liboil avahi libsamplerate0 libsndfile1 libtool"
+DEPENDS = "libatomics-ops liboil avahi libsamplerate0 libsndfile1 libtool hal"
 # optional
 DEPENDS += "alsa-lib glib-2.0"
 
@@ -20,6 +20,7 @@ EXTRA_OECONF = "\
 		--with-glib \
 		--with-alsa \
 		--with-oss \
+                --with-hal \
 		"
 
 PARALLEL_MAKE = ""
