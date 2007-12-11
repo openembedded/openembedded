@@ -1,0 +1,288 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_configure.dpatch by Torsten Marek <shlomme@debian.org>
+##
+## DP: Make PyQt4 objectdir-buildable
+
+@DPATCH@
+diff -urNad python-qt4-4.2+snapshot20070727~/configure.py python-qt4-4.2+snapshot20070727/configure.py
+--- python-qt4-4.2+snapshot20070727~/configure.py	2007-07-29 23:58:48.000000000 +0200
++++ python-qt4-4.2+snapshot20070727/configure.py	2007-07-30 00:00:17.000000000 +0200
+@@ -20,6 +20,8 @@
+ # Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ 
+ 
++# Modified for Debian by Torsten Marek <shlomme@gmx.net>
++
+ import sys
+ import os
+ import string
+@@ -29,6 +31,23 @@
+ 
+ import sipconfig
+ 
++topsrcdir = os.path.dirname(os.path.abspath(__file__))
++has_objdir = topsrcdir != os.path.abspath(os.path.curdir)
++if not has_objdir:
++    topsrcdir = None
++
++
++def makeDir(dirname):
++    try:
++        os.mkdir(dirname)
++    except OSError, e:
++        if e.errno != 17:
++            raise
++        
++def srcPath(filename):
++    if topsrcdir is not None:
++        return os.path.join(topsrcdir, filename)
++    return filename
+ 
+ # Initialise the globals.
+ pyqt_version = 0x040200
+@@ -134,6 +153,8 @@
+     p.add_option("-g", "--consolidate", action="store_true", default=False,
+             dest="bigqt", help="create a single module which links against "
+             "all the Qt libraries")
++    p.add_option("--disable-designer-plugin", action="store_true", default=False,
++                 help="do not build the Qt Designer plugin")
+ 
+     # These are internal options used to build the mega Windows GPL package.
+     p.add_option("--mwg-openssl", action="callback", default=None,
+@@ -282,6 +303,7 @@
+         check_module("QAxContainer", "qaxobject.h", "new QAxObject()",
+                 extra_libs=["QAxContainer"])
+ 
++        makeDir("dbus")
+         if os.path.isdir("dbus"):
+             check_dbus()
+ 
+@@ -354,7 +376,7 @@
+             generate_code("QtAssistant")
+ 
+         if "QtDesigner" in pyqt_modules:
+-            qpy_dir = os.path.abspath(os.path.join("qpy", "QtDesigner"))
++            qpy_dir = os.path.abspath(srcPath(os.path.join("qpy", "QtDesigner")))
+ 
+             if sys.platform == "win32":
+                 if opts.debug:
+@@ -380,10 +402,10 @@
+ 
+         # Generate the composite module.
+         qtmod_sipdir = os.path.join("sip", "Qt")
+-        mk_clean_dir(qtmod_sipdir)
++        mk_clean_dir(srcPath(qtmod_sipdir))
+ 
+         qtmod_sipfile = os.path.join(qtmod_sipdir, "Qtmod.sip")
+-        f = open(qtmod_sipfile, "w")
++        f = open(srcPath(qtmod_sipfile), "w")
+ 
+         f.write("""%CompositeModule PyQt4.Qt
+ 
+@@ -555,7 +577,7 @@
+         return libs, libdirs
+ 
+     def module_installs(self):
+-        return ["__init__.py", "pyqtconfig.py"]
++        return [srcPath("__init__.py"), "pyqtconfig.py"]
+ 
+     def qpylibs(self):
+         # See which QPy libraries to build.
+@@ -571,8 +593,8 @@
+         for qpy, pro in qpylibs.iteritems():
+             sipconfig.inform("Creating QPy library for %s Makefile..." % qpy)
+ 
+-            os.chdir(os.path.join("qpy", qpy))
+-
++            os.chdir(srcPath(os.path.join("qpy", qpy)))
++            
+             if sipcfg.universal:
+                 upro = "u_" + pro
+ 
+@@ -596,6 +618,8 @@
+ 
+         sipconfig.inform("Creating QPy libraries Makefile...")
+ 
++        makeDir("qpy")
++        os.system("ln -s %s qpy/QtDesigner" % (srcPath("qpy/QtDesigner"),))
+         sipconfig.ParentMakefile(
+             configuration=sipcfg,
+             dir="qpy",
+@@ -617,6 +641,7 @@
+                 install_dir=pydbusmoddir,
+                 qt=["QtCore"],
+                 debug=opts.debug,
++                topsrcdir=topsrcdir,
+                 universal=sipcfg.universal
+             )
+ 
+@@ -625,18 +650,19 @@
+             makefile.generate()
+             tool.append("dbus")
+ 
+-        # Only include ElementTree for older versions of Python.
+-        if sipcfg.py_version < 0x020500:
+-            sipconfig.inform("Creating elementtree Makefile...")
++        # Don't include elementtree on Debian
++##         # Only include ElementTree for older versions of Python.
++##         if sipcfg.py_version < 0x020500:
++##             sipconfig.inform("Creating elementtree Makefile...")
+ 
+-            makefile = sipconfig.PythonModuleMakefile(
+-                configuration=sipcfg,
+-                dstdir=os.path.join(pyqt_modroot, "elementtree"),
+-                dir="elementtree"
+-            )
++##             makefile = sipconfig.PythonModuleMakefile(
++##                 configuration=sipcfg,
++##                 dstdir=os.path.join(pyqt_modroot, "elementtree"),
++##                 dir="elementtree"
++##             )
+ 
+-            makefile.generate()
+-            tool.append("elementtree")
++##             makefile.generate()
++##             tool.append("elementtree")
+ 
+         # Create the pyuic4 wrapper.  Use the GUI version on MacOS (so that
+         # previews work properly and normal console use will work anyway), but
+@@ -644,16 +670,18 @@
+         sipconfig.inform("Creating pyuic4 wrapper...")
+ 
+         uicdir=os.path.join(pyqt_modroot, "uic")
+-        wrapper = sipconfig.create_wrapper(os.path.join(uicdir, "pyuic.py"), os.path.join("pyuic", "pyuic4"), (sys.platform == "darwin"))
++        makeDir("pyuic")
++        # Wrapper script is not needed on Debian
++        #wrapper = sipconfig.create_wrapper(os.path.join(uicdir, "pyuic.py"), os.path.join("pyuic", "pyuic4"), (sys.platform == "darwin"))
+ 
+         sipconfig.inform("Creating pyuic4 Makefile...")
+ 
+         makefile = sipconfig.PythonModuleMakefile(
+             configuration=sipcfg,
+             dstdir=uicdir,
+-            srcdir="uic",
++            srcdir=srcPath(os.path.join("pyuic", "uic")),
+             dir="pyuic",
+-            installs=[[os.path.basename(wrapper), opts.pyqtbindir]]
++            #installs=[[os.path.basename(wrapper), opts.pyqtbindir]]
+         )
+ 
+         makefile.generate()
+@@ -661,7 +689,7 @@
+ 
+         if "QtXml" in pyqt_modules:
+             sipconfig.inform("Creating pylupdate4 Makefile...")
+-
++            makeDir("pylupdate")
+             makefile = sipconfig.ProgramMakefile(
+                 configuration=sipcfg,
+                 build_file="pylupdate.sbf",
+@@ -671,14 +699,15 @@
+                 qt=["QtCore", "QtGui", "QtXml"],
+                 debug=opts.debug,
+                 warnings=1,
++                topsrcdir=topsrcdir,
+                 universal=sipcfg.universal
+             )
+-
++            makefile.extra_include_dirs.append(srcPath("pylupdate"))
+             makefile.generate()
+             tool.append("pylupdate")
+ 
+             sipconfig.inform("Creating pyrcc4 Makefile...")
+-
++            makeDir("pyrcc")
+             makefile = sipconfig.ProgramMakefile(
+                 configuration=sipcfg,
+                 build_file="pyrcc.sbf",
+@@ -688,6 +717,7 @@
+                 qt=["QtCore", "QtXml"],
+                 debug=opts.debug,
+                 warnings=1,
++                topsrcdir=topsrcdir,
+                 universal=sipcfg.universal
+             )
+ 
+@@ -697,7 +727,7 @@
+             sipconfig.inform("pylupdate4 and pyrcc4 will not be built because the Qt XML module is missing.")
+ 
+         if "QtDesigner" in pyqt_modules:
+-            enabled = True
++            enabled = not opts.disable_designer_plugin
+ 
+             py_major = sipcfg.py_version >> 16
+             py_minor = (sipcfg.py_version >> 8) & 0x0ff
+@@ -731,7 +761,7 @@
+                 # Run qmake to generate the Makefile.
+                 qmake_args = fix_qmake_args()
+                 cwd = os.getcwd()
+-                os.chdir("designer")
++                os.chdir(srcPath("designer"))
+ 
+                 # Create the qmake project file.
+                 fin = open("python.pro-in")
+@@ -755,7 +785,7 @@
+                 run_command("%s %s" % (opts.qmake, qmake_args))
+                 os.chdir(cwd)
+ 
+-                tool.append("designer")
++                tool.append(srcPath("designer"))
+ 
+         return tool
+ 
+@@ -899,7 +929,6 @@
+     add_makefile_extras(makefile, extra_include_dirs, extra_lib_dirs, extra_libs)
+ 
+     exe, build = makefile.build_command(name)
+-
+     # Make sure the executable file doesn't exist.
+     remove_file(exe)
+     run_command(build)
+@@ -1025,7 +1054,7 @@
+         return
+ 
+     # Check the module's main .sip file exists.
+-    if os.access(os.path.join("sip", mname, mname + "mod.sip"), os.F_OK):
++    if os.access(srcPath(os.path.join("sip", mname, mname + "mod.sip")), os.F_OK):
+         sipconfig.inform("Checking to see if the %s module should be built..." % mname)
+ 
+         if check_api(incfile, test, mname, extra_include_dirs=extra_include_dirs, extra_lib_dirs=extra_lib_dirs, extra_libs=extra_libs):
+@@ -1226,10 +1255,14 @@
+     argv.append(buildfile)
+ 
+     argv.append("-I")
+-    argv.append("sip")
++    argv.append(srcPath("sip"))
+ 
+     # SIP assumes POSIX style path separators.
+-    argv.append(string.join(["sip", mname, mname + "mod.sip"], "/"))
++    if topsrcdir is not None:
++        argv.append(string.join([topsrcdir, "sip", mname, mname + "mod.sip"], "/"))
++    else:
++        argv.append(string.join(["sip", mname, mname + "mod.sip"], "/"))
++
+ 
+     cmd = string.join(argv)
+ 
+@@ -1251,7 +1284,11 @@
+         sipfiles = []
+ 
+         for s in glob.glob("sip/" + mname + "/*.sip"):
+-            sipfiles.append(os.path.join("..", "sip", mname, os.path.basename(s)))
++            if has_objdir:
++                topdir = topsrcdir
++            else:
++                topdir = ".."
++            sipfiles.append(os.path.join(topdir, "sip", mname, os.path.basename(s)))
+ 
+         installs.append([sipfiles, os.path.join(opts.pyqtsipdir, mname)])
+ 
+@@ -1835,7 +1872,7 @@
+     ).generate()
+ 
+     # Install the configuration module.
+-    create_config("pyqtconfig.py", "pyqtconfig.py.in", macros)
++    create_config("pyqtconfig.py", srcPath("pyqtconfig.py.in"), macros)
+ 
+ 
+ ###############################################################################

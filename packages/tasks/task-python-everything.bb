@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml20"
+PR = "ml21"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -9,10 +9,7 @@ RDEPENDS = "\
 		python-constraint	\
 		python-dbus			\
 		python-dialog		\
-		python-evas			\
-		python-ecore		\
-		python-emotion		\
-		python-edje			\
+		python-efl			\
 		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
@@ -52,6 +49,7 @@ RDEPENDS = "\
 		python-pyiw		\
 		python-pylinda		\
 		python-pylint		\
+		python-pyqt			\
 		python-pyraf		\
 		python-pyreverse	\
 		python-pyrex		\
@@ -74,6 +72,7 @@ RDEPENDS = "\
 		python-spydi		\
 		python-spyro		\
 		python-sqlobject	\
+		python-sword		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\
@@ -88,9 +87,7 @@ BROKEN_PACKAGES = "\
 		python-egenix-mx-base \
 		python-gammu \
 		python-m2crypto \
-		python-sword \
 		python-mysqldb \
-        python-pyqt     \
         python-pyqwt        \
 "
 

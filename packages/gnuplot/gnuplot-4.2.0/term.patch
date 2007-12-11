@@ -1,0 +1,20 @@
+--- gnuplot-4.2.0/src/term.h.old	2007-11-16 01:21:09.000000000 -0600
++++ gnuplot-4.2.0/src/term.h	2007-11-16 01:22:45.000000000 -0600
+@@ -70,6 +70,7 @@
+  */
+ #ifdef SHORT_TERMLIST
+ # include "dumb.trm"		/* dumb terminal */
++# include "qtopia.trm"         /* QTopia terminal */
+ 
+ # ifdef GP_ENH_EST
+ #  include "estimate.trm"	/* used for enhanced text processing */
+@@ -436,6 +437,9 @@
+ /* TeXDraw drawing package for LaTeX */
+ #include "texdraw.trm"
+ 
++/* Qtopia */
++#include "qtopia.trm"
++
+ /* METAFONT */
+ #include "metafont.trm"
+ 

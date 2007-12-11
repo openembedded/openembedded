@@ -24,7 +24,8 @@ SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
            file://mplayer-imageon-svn.patch;patch=1 \
            file://imageon-video_out.patch;patch=1 \
            file://pxa_configure.patch;patch=1 \
-           file://pxa-video_out.patch;patch=1 "
+           file://pxa-video_out.patch;patch=1 \
+           file://motion-comp-pld.patch;patch=1 "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -39,7 +40,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r5"
+PR = "r6"
 
 PARALLEL_MAKE = ""
 

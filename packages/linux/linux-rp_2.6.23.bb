@@ -1,9 +1,10 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r10"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
+DEFAULT_PREFERENCE_poodle = "-99"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -50,6 +51,7 @@ SRC_URI = "http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
+           file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            file://uvesafb-0.1-rc3-2.6.22.patch;patch=1;status=external \
            file://htcuni.patch;patch=1 \
@@ -96,9 +98,6 @@ SRC_URI_append_collie = "\
 
 #		wm97xx-lg13-r0.patch, tosa-power-r18.patch and tosa-bluetooth-r8.patch
 #		were adapted from $(DOSRC) to apply cleanly
-# FIXME:
-#-           ${CHSRC}/usb-ohci-hooks-r1.patch;patch=1 \
-#-           file://tmio-ohci-r6.patch;patch=1 \
 SRC_URI_append_tosa = "\
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r8.patch;patch=1 \
@@ -121,7 +120,12 @@ SRC_URI_append_tosa = "\
            file://wm9712-reset-loop-r2.patch;patch=1 \
            file://tosa-lcdnoise-r1.patch;patch=1 \
            file://tosa-lcdnoise-r1-fix-r0.patch;patch=1 \
-	    "
+	   file://arm-dma-coherent.patch;patch=1 \
+           file://usb-ohci-hooks-r3.patch;patch=1 \
+           file://tmio-ohci-r9.patch;patch=1 \
+           file://pxa2xx_udc_support_inverse_vbus.patch;patch=1 \
+           file://tosa_udc_use_gpio_vbus.patch;patch=1 \
+           "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
 
 SRC_URI_append_htcuniversal ="\

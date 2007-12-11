@@ -60,6 +60,12 @@ do_compile () {
 	linux-powerpc)
 		target=linux-ppc
 		;;
+	linux-supersparc)
+		target=linux-sparcv8
+		;;
+	linux-sparc)
+		target=linux-sparcv8
+		;;
 	esac
 	perl ./Configure shared --prefix=${prefix} --openssldir=${libdir}/ssl $target
 	oe_runmake

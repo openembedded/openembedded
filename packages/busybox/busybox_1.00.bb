@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r37"
+PR = "r38"
 
 SRC_URI += "file://add-getkey-applet.patch;patch=1 \
            file://below.patch;patch=1 \

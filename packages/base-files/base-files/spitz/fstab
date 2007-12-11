@@ -12,7 +12,7 @@ tmpfs                /dev/shm             tmpfs      mode=0777             0  0
 # Compact Flash memory cards
 /dev/hdc1       /media/cf       auto    defaults,sync,noauto    0  0
 # SD/MMC in kernel 2.4
-/dev/mmcda1     /media/card     auto    defaults,sync,noauto    0  0
+#/dev/mmcda1     /media/card     auto    defaults,sync,noauto    0  0
 # SD/MMC in kernel 2.6
 /dev/mmcblk0p1  /media/card     auto    defaults,sync,noauto    0  0
 

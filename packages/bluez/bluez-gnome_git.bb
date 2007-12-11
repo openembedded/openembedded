@@ -1,4 +1,4 @@
-DESCRIPTION = "BLuetooth configuration applet"
+DESCRIPTION = "Bluetooth configuration applet"
 LICENSE = "GPL+LGPL"
 
 DEFAULT_PREFERENCE = "-2"

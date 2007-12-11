@@ -14,6 +14,3 @@ do_stage() {
 	install -d ${STAGING_INCDIR}
 	install -m 0644 cairo/pycairo.h ${STAGING_INCDIR}
 }
-
-
-FILES_${PN}-dbg += "${libdir}/python2.4/site-packages/cairo/.debug"

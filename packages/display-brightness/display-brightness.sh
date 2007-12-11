@@ -38,7 +38,7 @@ if [ "$1" = "up" ]; then
 fi
 
 if [ "$1" = "down" ]; then
-    if [ $ACTUAL_BRIGHTNESS -eq 0 ]; then
+    if [ $ACTUAL_BRIGHTNESS -lt 2 ]; then
         exit 0
     elif [ $ACTUAL_BRIGHTNESS -lt $STEP ]; then
         STEP=1

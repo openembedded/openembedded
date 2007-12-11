@@ -1,0 +1,38 @@
+--- tmp/Makefile	2007-05-08 12:25:10.000000000 +0200
++++ Makefile	2007-11-03 10:46:51.000000000 +0100
+@@ -131,7 +131,7 @@
+ ifdef WINDIR
+  LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LDFLAGS) -L$(OBJ) -lz 
+ else
+- LD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LDFLAGS) -ldl
++ NLD=$(QL) $(CXX) $(DEBUG) $(PROFILE) $(LOPTIMIZE) -ldl -export-dynamic $(LOPTIMIZE)
+ endif 
+ 
+ #
+@@ -190,7 +190,7 @@
+  LIBS += hildon-libs hildon-fm libosso
+ endif
+ 
+-GTKCFLAGS=`pkg-config --cflags $(LIBS)` -I/target/include  -I/sw/include 
++GTKCFLAGS=`pkg-config --cflags $(LIBS)` 
+ GTKLIBS=`pkg-config --libs $(LIBS)`
+ 
+ #
+@@ -201,7 +201,7 @@
+ 	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
+ else
+ notecase$(EXE): updatesrc $(OBJS)
+-	$(LD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS) > /dev/null
++	$(NLD) $(OBJS) -o $(BIN)/notecase$(EXE) $(FLAGS) $(LDFLAGS) $(GTKLIBS)
+ endif	
+ 
+ #
+@@ -421,7 +421,7 @@
+ 	$(CC) $(FLAGS) -c $(GUIPATH)/DocActionFinishDel.cpp -o $(OBJ)/DocActionFinishDel.o $(GTKCFLAGS)
+ 	
+ $(OBJ)/libz.a:
+-	@cd ./src/lib/zlib/; $(MAKE); cp ./libz.a ../../../$(OBJ)/
++	@cd ./src/lib/zlib/; cp ./libz.a ../../../$(OBJ)/
+ 
+ $(OBJ)/ShortcutsList.o: $(GUIPATH)/ShortcutsList.cpp $(GUIPATH)/ShortcutsList.h
+ 	$(CC) $(FLAGS) -c $(GUIPATH)/ShortcutsList.cpp -o $(OBJ)/ShortcutsList.o  $(GTKCFLAGS)

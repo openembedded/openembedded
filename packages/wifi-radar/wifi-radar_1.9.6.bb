@@ -3,11 +3,11 @@ DESCRIPTION="WiFi Radar is a Python/PyGTK2  utility for managing WiFi profiles."
 HOMEPAGE="http://www.bitbuilder.com/wifi_radar/"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 PACKAGE_ARCH = "all"
 
-RDEPENDS = "python-core python-pygtk2 python-re python-io python-pygobject python-pycairo"
+RDEPENDS = "python-core python-pygtk python-re python-io python-pygobject python-pycairo"
 
 SRC_URI="http://wifi-radar.systemimager.org/pub/${PN}-${PV}.tar.bz2 \
         file://wifi-radar.patch;patch=1 \

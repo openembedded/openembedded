@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r40"
+PR = "r42"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -48,6 +48,7 @@ SLUGOS_PACKAGES = "\
 	cherokee \
 	coreutils \
 	cron \
+	cryptsetup \
 	ctorrent \
 	ctrlproxy \
 	cups \
@@ -149,6 +150,7 @@ SLUGOS_PACKAGES = "\
 	net-tools \
 	netcat \
 	netpbm \
+	nfs-utils \
 	nmap \
 	ntfs-3g \
 	ntp \
@@ -166,6 +168,7 @@ SLUGOS_PACKAGES = "\
 	picocom \
 	pkgconfig \
 	popt \
+	portmap \
 	postfix \
 	ppp \
 	procps \
@@ -211,9 +214,9 @@ SLUGOS_PACKAGES = "\
 	wireless-tools \
 	wireshark \
 	wpa-supplicant \
-        wview-sim wview-sim-mysql \
-	wview-vpro wview-vpro-mysql \
-	wview-wxt510 wview-wxt510-mysql \
+        wview-sim \
+	wview-vpro \
+	wview-wxt510 \
 	xinetd \
 	yeaphone \
 	yp-tools ypbind ypserv \
@@ -229,7 +232,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	fetchmail \
 	lirc-modules lirc \
 	madfu \
-	portmap nfs-utils \
 	openldap \
 	pvrusb2-mci \
 	pwc \
@@ -238,6 +240,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	openocd task-mokogateway-everything \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
+	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \
 	zd1211 \
 	"
 

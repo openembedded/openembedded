@@ -12,5 +12,5 @@ DEPENDS = "gtk+ libgnomeui libbonoboui gnome-vfs gconf gettext libglade \
 EXTRA_OECONF = "--disable-schemas-install"
 
 do_configure_prepend () {
-	cp ${STAGING_DIR}/${HOST_SYS}/share/gnome-common/data/omf.make ${S}/help
+	cp ${STAGING_DATADIR}/gnome-common/data/omf.make ${S}/help
 }

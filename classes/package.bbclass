@@ -34,9 +34,6 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 		return
 
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
-	if not packages:
-		# nothing to do
-		return
 
 	if postinst:
 		postinst = '#!/bin/sh\n' + postinst + '\n'
@@ -189,42 +186,15 @@ def runstrip(file, d):
 # Package data handling routines
 #
 
-STAGING_PKGMAPS_DIR ?= "${STAGING_DIR}/pkgmaps"
-
-def add_package_mapping (pkg, new_name, d):
-	import bb, os
-
-	def encode(str):
-		import codecs
-		c = codecs.getencoder("string_escape")
-		return c(str)[0]
-
-	pmap_dir = bb.data.getVar('STAGING_PKGMAPS_DIR', d, 1)
-
-	bb.mkdirhier(pmap_dir)
-
-	data_file = os.path.join(pmap_dir, pkg)
-
-	f = open(data_file, 'w')
-	f.write("%s\n" % encode(new_name))
-	f.close()
-
 def get_package_mapping (pkg, d):
 	import bb, os
 
-	def decode(str):
-		import codecs
-		c = codecs.getdecoder("string_escape")
-		return c(str)[0]
+	data = read_subpkgdata(pkg, d)
+	key = "PKG_%s" % pkg
 
-	data_file = bb.data.expand("${STAGING_PKGMAPS_DIR}/%s" % pkg, d)
+	if key in data:
+		return data[key]
 
-	if os.access(data_file, os.R_OK):
-		f = file(data_file, 'r')
-		lines = f.readlines()
-		f.close()
-		for l in lines:
-			return decode(l).strip()
 	return pkg
 
 def runtime_mapping_rename (varname, d):
@@ -258,9 +228,6 @@ python package_do_split_locales() {
 		return
 
 	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
-	if not packages:
-		bb.debug(1, "no packages to build; not splitting locales")
-		return
 
 	datadir = bb.data.getVar('datadir', d, 1)
 	if not datadir:
@@ -318,6 +285,76 @@ python package_do_split_locales() {
 	#bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
+def copyfile(src,dest,newmtime=None,sstat=None):
+    """
+    Copies a file from src to dest, preserving all permissions and
+    attributes; mtime will be preserved even when moving across
+    filesystems.  Returns true on success and false on failure.
+    """
+    import os, stat, shutil, commands
+
+    #print "copyfile("+src+","+dest+","+str(newmtime)+","+str(sstat)+")"
+    try:
+        if not sstat:
+            sstat=os.lstat(src)
+    except Exception, e:
+        print "copyfile: Stating source file failed...", e
+        return False
+
+    destexists=1
+    try:
+        dstat=os.lstat(dest)
+    except:
+        dstat=os.lstat(os.path.dirname(dest))
+        destexists=0
+
+    if destexists:
+        if stat.S_ISLNK(dstat[stat.ST_MODE]):
+            try:
+                os.unlink(dest)
+                destexists=0
+            except Exception, e:
+                pass
+
+    if stat.S_ISLNK(sstat[stat.ST_MODE]):
+        try:
+            target=os.readlink(src)
+            if destexists and not stat.S_ISDIR(dstat[stat.ST_MODE]):
+                os.unlink(dest)
+            os.symlink(target,dest)
+            #os.lchown(dest,sstat[stat.ST_UID],sstat[stat.ST_GID])
+            return os.lstat(dest)
+        except Exception, e:
+            print "copyfile: failed to properly create symlink:", dest, "->", target, e
+            return False
+
+    if stat.S_ISREG(sstat[stat.ST_MODE]):
+            try: # For safety copy then move it over.
+                shutil.copyfile(src,dest+"#new")
+                os.rename(dest+"#new",dest)
+            except Exception, e:
+                print 'copyfile: copy', src, '->', dest, 'failed.', e
+                return False
+    else:
+            #we don't yet handle special, so we need to fall back to /bin/mv
+            a=commands.getstatusoutput("/bin/cp -f "+"'"+src+"' '"+dest+"'")
+            if a[0]!=0:
+                print "copyfile: Failed to copy special file:" + src + "' to '" + dest + "'", a
+                return False # failure
+    try:
+        os.lchown(dest,sstat[stat.ST_UID],sstat[stat.ST_GID])
+        os.chmod(dest, stat.S_IMODE(sstat[stat.ST_MODE])) # Sticky is reset on chown
+    except Exception, e:
+        print "copyfile: Failed to chown/chmod/unlink", dest, e
+        return False
+
+    if newmtime:
+        os.utime(dest,(newmtime,newmtime))
+    else:
+        os.utime(dest, (sstat[stat.ST_ATIME], sstat[stat.ST_MTIME]))
+        newmtime=sstat[stat.ST_MTIME]
+    return newmtime
+
 python populate_packages () {
 	import glob, stat, errno, re
 
@@ -340,9 +377,6 @@ python populate_packages () {
 	bb.mkdirhier(dvar)
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "PACKAGES not defined, nothing to package")
-		return
 
 	pn = bb.data.getVar('PN', d, 1)
 	if not pn:
@@ -380,6 +414,8 @@ python populate_packages () {
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 	os.system('rm -rf %s' % pkgdest)
 
+	seen = []
+
 	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
 		root = os.path.join(pkgdest, pkg)
@@ -410,11 +446,18 @@ python populate_packages () {
 					continue
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
+			if file in seen:
+				continue
+			seen.append(file)
+			if os.path.isdir(file) and not os.path.islink(file):
+				bb.mkdirhier(os.path.join(root,file))
+				os.chmod(os.path.join(root,file), os.stat(file).st_mode)
+				continue
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
-			ret = bb.movefile(file,fpath)
-			if ret is None or ret == 0:
+			ret = copyfile(file, fpath)
+			if ret is False or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
 		del localdata
 	os.chdir(workdir)
@@ -423,7 +466,8 @@ python populate_packages () {
 	for root, dirs, files in os.walk(dvar):
 		for f in files:
 			path = os.path.join(root[len(dvar):], f)
-			unshipped.append(path)
+			if ('.' + path) not in seen:
+				unshipped.append(path)
 
 	if unshipped != []:
 		bb.note("the following files were installed but not shipped in any package:")
@@ -436,8 +480,6 @@ python populate_packages () {
 		pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
 		if pkgname is None:
 			bb.data.setVar('PKG_%s' % pkg, pkg, d)
-		else:
-			add_package_mapping(pkg, pkgname, d)
 
 	dangling_links = {}
 	pkg_files = {}
@@ -524,6 +566,8 @@ python emit_pkgdata() {
 		sf.close()
 
 		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, 1)
+		if not allow_empty:
+			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, 1)
 		root = "%s/install/%s" % (workdir, pkg)
 		os.chdir(root)
 		g = glob('*')
@@ -823,10 +867,7 @@ python package_depchains() {
 	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
 
 	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
-		def packaged(pkg, d):
-			return os.access(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), os.R_OK)
-
-                #bb.note('rdepends for %s is %s' % (base, rdepends))
+        #bb.note('rdepends for %s is %s' % (base, rdepends))
 
 		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
 

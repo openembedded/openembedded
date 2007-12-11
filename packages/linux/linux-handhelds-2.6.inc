@@ -23,6 +23,8 @@ HHV     ?= "${@bb.data.getVar('PV',d,1).split('-')[1].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
 
+KERNEL_FILENAME = "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
+
 do_configure() {
 
 	if [ `grep EXTRAVERSION Makefile | grep hh | awk '{print $3}' | sed s/-hh//` != ${HHV} ]; then
@@ -54,12 +56,12 @@ do_configure() {
 
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME}
 
 	#reflash.ctl is required to reflash using bootldr
 	# format:
 	# name file md5sumfile destination
-	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
+	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_FILENAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
 }   
    
@@ -73,7 +75,7 @@ gen_haret_startup() {
 # This is startup file for HaRET, Linux bootloader for WinCE
 # http://handhelds.org/wiki/HaRET
 
-set kernel "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
+set kernel "${KERNEL_FILENAME}"
 
 # Boot choices. Uncomment 'set' statements in exactly one section
 
@@ -83,7 +85,7 @@ set kernel "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
 # 2nd - EXT2 with rootfs tarball extracted
 set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
 
-## Choice 2 - Boot from CD card, setup like above
+## Choice 2 - Boot from CF card, setup like above
 #set cmdline "root=/dev/hda2 rootdelay=10 console=ttyS0,115200n8 console=tty0"
 
 ## Choice 3 - Boot rootfs image as initramfs (works only for smaller images)
@@ -93,7 +95,7 @@ set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty
 
 ## Choice 4 - Boot via NFS over USB networking (must be kernel-builtin)
 # 192.168.x.x - Server address (the other side)
-# 192.168.x.x - Handheld's address
+# 192.168.y.y - Handheld's address
 #set cmdline "root=/dev/nfs nfsroot=192.168.x.x:<nfs_path> ip=192.168.y.y:192.168.x.x:192.168.x.x:255.255.255.0:pda:usb0 console=ttyS0,115200n8 console=tty0"
 
 bootlinux

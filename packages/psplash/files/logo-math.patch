@@ -1,0 +1,13 @@
+Do better math when showing logo vs progressbar.
+
+--- psplash/psplash.c.org	2007-09-22 20:33:36.000000000 +0300
++++ psplash/psplash.c	2007-12-01 21:27:08.000000000 +0200
+@@ -258,7 +258,7 @@
+   /* Draw the OH logo  */
+   psplash_fb_draw_image (fb, 
+ 			 (fb->width  - HAND_IMG_WIDTH)/2, 
+-			 (fb->height - HAND_IMG_HEIGHT)/2, 
++			 ((fb->height * 5) / 6 - HAND_IMG_HEIGHT)/2, 
+ 			 HAND_IMG_WIDTH,
+ 			 HAND_IMG_HEIGHT,
+ 			 HAND_IMG_BYTES_PER_PIXEL,

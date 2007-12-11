@@ -2,7 +2,7 @@
 SHOWCURSOR="no"
 
 openmoko-today &
-openmoko-dialer &
+phone-kit &
 
 matchbox-window-manager -use_titlebar yes -use_desktop_mode decorated -theme openmoko-standard-2 -use_cursor $SHOWCURSOR $@ &
 

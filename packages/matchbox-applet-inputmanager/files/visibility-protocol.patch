@@ -1,0 +1,33 @@
+# HG changeset patch
+# User "Paul Sokolovsky <pfalcon@users.sourceforge.net>"
+# Date 1196333272 -7200
+# Node ID 4ec785864bbe896eda3b933e65a5f2d71864b9b3
+# Parent  375f9e4a30d3de9852b00cd1decb259f4f04446e
+Implement an IM [Unix-]signal-based visibility protocol, as supported
+by xkbd. By receiving SISUSR1, IM implementation toggles its visibility.
+The most valuable, default action for SIGUSR1 is process termination, so
+we can send SIGUSR1 unconditionally, replacing old method of sending
+SIGTERM (and there's also check for process existence before sending
+signal, so if process is dead, it will be just restarted).
+
+diff -r 375f9e4a30d3 -r 4ec785864bbe mbinputmgr.c
+--- a/mbinputmgr.c	Wed Nov 28 03:41:20 2007 +0200
++++ b/mbinputmgr.c	Thu Nov 29 12:47:52 2007 +0200
+@@ -1,3 +1,4 @@
++#include <signal.h>
+ #include "mbinputmgr.h"
+ 
+ static void 
+@@ -233,8 +234,10 @@ mbinputmgr_toggle_selected_method (MBInp
+   if ( (inpmgr->PidCurrent != -1) /* Something running */
+        &&  (kill(inpmgr->PidCurrent, 0) != -1) )
+     {
+-      kill(inpmgr->PidCurrent, 15); /* kill it */
+-      inpmgr->PidCurrent = -1;
++      /* Send a SIGUSR1. Smart IMs will toggle their visibility.
++         Dumb, which don't handle it at all, will just die
++	 per default action for SIGUSR1, termination. */
++      kill(inpmgr->PidCurrent, SIGUSR1);
+     }
+   else fork_exec(inpmgr, inpmgr->MethodSelected->exec);
+ }

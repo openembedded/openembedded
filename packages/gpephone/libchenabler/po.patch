@@ -1,0 +1,9 @@
+--- libchenabler-0.1/configure.ac~	2007-11-08 12:01:26.000000000 +0100
++++ libchenabler-0.1/configure.ac	2007-11-08 12:01:26.000000000 +0100
+@@ -31,5 +31,6 @@
+ src/Makefile 
+ database/Makefile
+ libvochenabler.pc
++po/Makefile.in
+ ])
+ AC_OUTPUT

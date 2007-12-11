@@ -1,0 +1,9 @@
+diff -urN pysqlite-2.4.0.orig/setup.cfg pysqlite-2.4.0/setup.cfg
+--- pysqlite-2.4.0.orig/setup.cfg	2007-11-25 17:56:17.000000000 +0100
++++ pysqlite-2.4.0/setup.cfg	2007-12-07 09:59:36.000000000 +0100
+@@ -1,5 +1,3 @@
+ [build_ext]
+ define=
+-include_dirs=/usr/include
+-library_dirs=/usr/lib
+ libraries=sqlite3

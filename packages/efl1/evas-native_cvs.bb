@@ -6,7 +6,7 @@ PR = "r0"
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
-		--disable-fb				\
+		--enable-fb				\
 		--disable-directfb			\
 		--disable-sdl				\
 		--enable-buffer				\

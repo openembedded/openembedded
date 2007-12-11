@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
+DEPENDS = "qmake-native"
 PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \

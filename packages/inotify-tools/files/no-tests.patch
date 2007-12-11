@@ -1,0 +1,31 @@
+Index: inotify-tools-3.12/configure.ac
+===================================================================
+--- inotify-tools-3.12.orig/configure.ac	2007-11-26 22:23:15.000000000 +0100
++++ inotify-tools-3.12/configure.ac	2007-11-26 22:23:29.000000000 +0100
+@@ -42,16 +42,16 @@
+ 
+ 
+ # Checks for header files.
+-AC_CHECK_HEADERS([sys/inotify.h mcheck.h])
+-AC_LANG(C)
+-AC_MSG_CHECKING([whether sys/inotify.h actually works])
+-AC_RUN_IFELSE(
+-  AC_LANG_PROGRAM([[#include <sys/inotify.h>]],
+-                  [[return (-1 == inotify_init());]]
+-  ),
+-  [AC_MSG_RESULT([yup]); AC_DEFINE([SYS_INOTIFY_H_EXISTS_AND_WORKS],[1],[sys/inotify.h exists and works correctly])],
+-  [AC_MSG_RESULT([nope, using own inotify headers])]
+-)
++#AC_CHECK_HEADERS([sys/inotify.h mcheck.h])
++#AC_LANG(C)
++#AC_MSG_CHECKING([whether sys/inotify.h actually works])
++#AC_RUN_IFELSE(
++#  AC_LANG_PROGRAM([[#include <sys/inotify.h>]],
++#                  [[return (-1 == inotify_init());]]
++#  ),
++#  [AC_MSG_RESULT([yup]); AC_DEFINE([SYS_INOTIFY_H_EXISTS_AND_WORKS],[1],[sys/inotify.h exists and works correctly])],
++#  [AC_MSG_RESULT([nope, using own inotify headers])]
++#)
+ 
+ 
+ 

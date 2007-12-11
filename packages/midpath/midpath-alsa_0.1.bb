@@ -13,10 +13,6 @@ do_configure() {
 
 do_compile() {
 
-mkdir -p ${S}/dist
-
-# Build native code
-
 # Build the ALSA native part
 cd ${S}/native/alsa
 make || exit 1

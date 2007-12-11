@@ -5,7 +5,7 @@ libraries) behind a consistent interface."
 HOMEPAGE = "http://www.gnu.org/software/libtool/libtool.html"
 LICENSE = "GPL"
 SECTION = "devel"
-PR = "r3"
+PR = "r5"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \
@@ -13,10 +13,11 @@ SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
 	   file://3figures.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
-PACKAGES = "libltdl libltdl-dev ${PN}"
+PACKAGES =+ "libltdl libltdl-dev libltdl-dbg"
 FILES_${PN} += "${datadir}/aclocal*"
 FILES_libltdl = "${libdir}/libltdl.so.*"
 FILES_libltdl-dev = "${libdir}/libltdl.* ${includedir}/ltdl.h"
+FILES_libltdl-dbg = "${libdir}/.debug/"
 
 inherit autotools
 

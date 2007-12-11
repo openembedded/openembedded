@@ -1,7 +1,8 @@
 require linux-rp.inc
 
-PR = "r10"
+PR = "r12"
 
+DEFAULT_PREFERENCE_poodle = "-99"
 DEFAULT_PREFERENCE_collie = "1"
 
 # Handy URLs

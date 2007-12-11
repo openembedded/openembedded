@@ -1,0 +1,221 @@
+Index: linux-wlan-ng-0.2.7/src/prism2/driver/prism2sta.c
+===================================================================
+--- linux-wlan-ng-0.2.7.orig/src/prism2/driver/prism2sta.c	2007-11-13 15:09:52.686428934 +0300
++++ linux-wlan-ng-0.2.7/src/prism2/driver/prism2sta.c	2007-11-13 16:44:19.386567678 +0300
+@@ -1438,9 +1438,15 @@
+ 	return;
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++void prism2sta_processing_defer(struct work_struct *work)
++{
++	hfa384x_t		*hw = container_of(work, hfa384x_t, link_bh);
++#else
+ void prism2sta_processing_defer(void *data)
+ {
+ 	hfa384x_t		*hw = (hfa384x_t *) data;
++#endif
+ 	wlandevice_t            *wlandev = hw->wlandev;
+ 	hfa384x_bytestr32_t ssid;
+ 	int			result;
+@@ -1540,7 +1546,11 @@
+ 				WLAN_MACMODE_IBSS_STA : WLAN_MACMODE_ESS_STA;
+ 
+ 			/* Get the ball rolling on the comms quality stuff */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++			prism2sta_commsqual_defer(&hw->commsqual_bh);
++#else
+ 			prism2sta_commsqual_defer(hw);
++#endif
+ 		}
+ 		break;
+ 
+@@ -2413,9 +2423,15 @@
+ }
+ #endif
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++void prism2sta_commsqual_defer(struct work_struct *work)
++{
++	hfa384x_t		*hw = container_of(work, hfa384x_t, commsqual_bh);
++#else
+ void prism2sta_commsqual_defer(void *data)
+ {
+         hfa384x_t               *hw = (hfa384x_t *) data;
++#endif
+         wlandevice_t            *wlandev = hw->wlandev;
+ 	hfa384x_bytestr32_t ssid;
+ 	int result = 0;
+Index: linux-wlan-ng-0.2.7/src/p80211/p80211conv.c
+===================================================================
+--- linux-wlan-ng-0.2.7.orig/src/p80211/p80211conv.c	2007-11-13 14:33:27.646440199 +0300
++++ linux-wlan-ng-0.2.7/src/p80211/p80211conv.c	2007-11-13 14:56:45.678436613 +0300
+@@ -497,7 +497,11 @@
+ 	}
+ 
+ 	skb->protocol = eth_type_trans(skb, netdev);
++#if ( LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22) )
+ 	skb->mac.raw = (unsigned char *) e_hdr; /* new MAC header */
++#else
++	skb->mac_header = (unsigned char *) e_hdr;
++#endif
+ 
+         /* jkriegl: process signal and noise as set in hfa384x_int_rx() */
+ 	/* jkriegl: only process signal/noise if requested by iwspy */
+Index: linux-wlan-ng-0.2.7/src/p80211/p80211netdev.c
+===================================================================
+--- linux-wlan-ng-0.2.7.orig/src/p80211/p80211netdev.c	2007-11-13 14:56:08.098439975 +0300
++++ linux-wlan-ng-0.2.7/src/p80211/p80211netdev.c	2007-11-13 14:57:22.326437672 +0300
+@@ -389,7 +389,11 @@
+ 
+ 				/* set up various data fields */
+ 				skb->dev = dev;
++#if ( LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22) )
+ 				skb->mac.raw = skb->data ;
++#else
++				skb_reset_mac_header(skb);
++#endif
+ 				skb->ip_summed = CHECKSUM_NONE;
+ 				skb->pkt_type = PACKET_OTHERHOST;
+ 				skb->protocol = htons(ETH_P_80211_RAW); 
+Index: linux-wlan-ng-0.2.7/src/prism2/driver/hfa384x_usb.c
+===================================================================
+--- linux-wlan-ng-0.2.7.orig/src/prism2/driver/hfa384x_usb.c	2007-11-13 14:58:29.000000000 +0300
++++ linux-wlan-ng-0.2.7/src/prism2/driver/hfa384x_usb.c	2007-11-13 16:41:35.914446535 +0300
+@@ -128,6 +128,9 @@
+ #include <linux/netdevice.h>
+ #include <linux/timer.h>
+ #include <asm/io.h>
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20))
++#include <linux/workqueue.h>
++#endif
+ #include <linux/delay.h>
+ #include <asm/byteorder.h>
+ #include <asm/bitops.h>
+@@ -246,8 +249,13 @@
+ 	wlandevice_t *wlandev, 
+ 	hfa384x_usb_rxfrm_t *rxfrm);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++static void
++hfa384x_usb_defer(struct work_struct *work);
++#else
+ static void
+ hfa384x_usb_defer(void *hw);
++#endif
+ 
+ static int
+ submit_rx_urb(hfa384x_t *hw, int flags);
+@@ -257,7 +265,7 @@
+ 
+ /*---------------------------------------------------*/
+ /* Callbacks */
+-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0))
++#if ( (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)) || (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)) )
+ static void 
+ hfa384x_usbout_callback(struct urb *urb);
+ static void
+@@ -578,10 +586,17 @@
+ * Call context:
+ *	process (by design)
+ ----------------------------------------------------------------*/
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
+ static void
+-hfa384x_usb_defer(void *data)
++hfa384x_usb_defer(struct work_struct *work)
++{
++	hfa384x_t *hw = container_of(work, hfa384x_t, usb_work);
++#else
++static void
++hfa384x_usb_defer(void *hw)
+ {
+ 	hfa384x_t *hw = data;
++#endif
+ 	struct net_device *netdev = hw->wlandev->netdev;
+ 
+ 	DBFENTER;
+@@ -711,8 +726,13 @@
+ 	tasklet_init(&hw->completion_bh,
+ 	             hfa384x_usbctlx_completion_task,
+ 	             (unsigned long)hw);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++	INIT_WORK(&hw->link_bh, prism2sta_processing_defer);
++	INIT_WORK(&hw->usb_work, hfa384x_usb_defer);
++#else
+ 	INIT_WORK(&hw->link_bh, prism2sta_processing_defer, hw);
+ 	INIT_WORK(&hw->usb_work, hfa384x_usb_defer, hw);
++#endif
+ 
+ 	init_timer(&hw->throttle);
+ 	hw->throttle.function = hfa384x_usb_throttlefn;
+@@ -733,7 +753,11 @@
+ 	hw->link_status = HFA384x_LINK_NOTCONNECTED;
+ 	hw->state = HFA384x_STATE_INIT;
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20))
++        INIT_WORK(&hw->commsqual_bh, prism2sta_commsqual_defer);
++#else
+         INIT_WORK(&hw->commsqual_bh, prism2sta_commsqual_defer, hw);
++#endif
+ 	init_timer(&hw->commsqual_timer);
+ 	hw->commsqual_timer.data = (unsigned long) hw;
+ 	hw->commsqual_timer.function = prism2sta_commsqual_timer;
+@@ -3847,7 +3871,7 @@
+ * Call context:
+ *	interrupt
+ ----------------------------------------------------------------*/
+-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0))
++#if ( (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)) || (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)) )
+ void hfa384x_usbin_callback(struct urb *urb)
+ #else
+ void hfa384x_usbin_callback(struct urb *urb, struct pt_regs *regs)
+@@ -4253,7 +4277,11 @@
+ 		/* The prism2 series does not return the CRC */
+ 		memset(skb_put(skb, WLAN_CRC_LEN), 0xff, WLAN_CRC_LEN);
+ 
++#if ( LINUX_VERSION_CODE < KERNEL_VERSION(2,6,22) )
+ 		skb->mac.raw = skb->data;
++#else
++		skb_reset_mac_header(skb);
++#endif
+ 
+ 		/* Attach the rxmeta, set some stuff */
+ 		p80211skb_rxmeta_attach(wlandev, skb);
+@@ -4506,7 +4534,7 @@
+ * Call context:
+ *	interrupt
+ ----------------------------------------------------------------*/
+-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0))
++#if ( (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)) || (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)) )
+ void hfa384x_usbout_callback(struct urb *urb)
+ #else
+ void hfa384x_usbout_callback(struct urb *urb, struct pt_regs *regs)
+@@ -4587,7 +4615,7 @@
+ * Call context:
+ * interrupt
+ ----------------------------------------------------------------*/
+-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0))
++#if ( (LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)) || (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,19)) )
+ void hfa384x_ctlxout_callback(struct urb *urb)
+ #else
+ void hfa384x_ctlxout_callback(struct urb *urb, struct pt_regs *regs)
+Index: linux-wlan-ng-0.2.7/src/prism2/include/prism2/prism2mgmt.h
+===================================================================
+--- linux-wlan-ng-0.2.7.orig/src/prism2/include/prism2/prism2mgmt.h	2007-11-13 15:08:28.000000000 +0300
++++ linux-wlan-ng-0.2.7/src/prism2/include/prism2/prism2mgmt.h	2007-11-13 15:09:37.469456438 +0300
+@@ -168,9 +168,14 @@
+ 	UINT8 *prism2buf, p80211pstrd_t *pstr, hfa384x_t *priv );
+ int prism2mgmt_get_grpaddr_index( UINT32 did );
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 20)
++void prism2sta_processing_defer(struct work_struct *work);
++void prism2sta_commsqual_defer(struct work_struct *work);
++#else
+ void prism2sta_processing_defer(void *data);
+-
+ void prism2sta_commsqual_defer(void *data);
++#endif
++
+ void prism2sta_commsqual_timer(unsigned long data);
+ 
+ /*=============================================================*/

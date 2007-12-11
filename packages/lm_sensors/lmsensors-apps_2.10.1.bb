@@ -1,6 +1,6 @@
 DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://secure.netroedge.com/~lm78/"
-DEPENDS = "libsysfs virtual/libiconv"
+DEPENDS = "sysfsutils virtual/libiconv"
 LICENSE = "GPL"
 PR = "r2"
 

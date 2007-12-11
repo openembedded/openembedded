@@ -7,7 +7,7 @@ DEPENDS =		"gtk-engines"
 RDEPENDS =		"gtk-engine-industrial"
 
 FILES_${PN} =	"${datadir}/themes/"
-SRC_URI =		"http://dominion.kabel.utwente.nl/koen/pda/files/${P}.tar.gz"
+SRC_URI =		"http://dominion.thruhere.net/koen/pda/files/${P}.tar.gz"
 
 do_install() {
 install -d ${D}${datadir}/themes/

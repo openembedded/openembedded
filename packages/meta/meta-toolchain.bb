@@ -8,6 +8,8 @@ SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 
+FEED_ARCH ?= "${TARGET_ARCH}"
+
 IPKG_HOST = "ipkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
 IPKG_TARGET = "ipkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${prefix}"
 
@@ -51,34 +53,29 @@ do_populate_sdk() {
 		fi
 	done
 
-	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc* ${SDK_OUTPUT}/${prefix}/lib
-
-	cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/linux/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-        cp -pPR ${TMPDIR}/cross/${TARGET_SYS}/include/asm/ ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-	chmod -R a+r ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-	find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/ -type d | xargs chmod +x
+	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/gcc ${SDK_OUTPUT}/${prefix}/lib
 
 	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}${libdir}/../${TARGET_SYS}/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
-	rm -Rf ${SDK_OUTPUT}${libdir}/ipkg
+	mv ${SDK_OUTPUT}${prefix}/${TARGET_SYS}/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	rm -Rf ${SDK_OUTPUT}${prefix}/${TARGET_SYS}/lib/ipkg
 	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
-	# extract and store ipks, pkgdata, pkgmaps and shlibs data
+	# extract and store ipks, pkgdata and shlibs data
 	target_pkgs=`cat ${SDK_OUTPUT}/${prefix}/package-status | grep Package: | cut -f 2 -d ' '`
 	mkdir -p ${SDK_OUTPUT}/${prefix}/ipk/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/runtime/
-	mkdir -p ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 	for pkg in $target_pkgs ; do
 		for arch in $revipkgarchs; do
-			if [ -e ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk ]; then
-				echo "Found ${DEPLOY_DIR_IPK}/${pkg}_$arch.ipk"
-				cp ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk ${SDK_OUTPUT}/${prefix}/ipk/
-				orig_pkg=`ipkg-list-fields ${DEPLOY_DIR_IPK}/${pkg}_*_$arch.ipk | grep OE: | cut -d ' ' -f2`
+			pkgnames=${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk
+			if [ -e $pkgnames ]; then
+				echo "Found $pkgnames"
+				cp $pkgnames ${SDK_OUTPUT}/${prefix}/ipk/
+				orig_pkg=`ipkg-list-fields $pkgnames | grep OE: | cut -d ' ' -f2`
 				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
 				mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime
 				cp ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/
@@ -88,11 +85,8 @@ do_populate_sdk() {
 					if [ -e ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ];then
 						cp ${STAGING_DIR}/pkgdata/$pkg_subdir/runtime/$subpkg.packaged ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime/
 					fi
-					if [ -e ${STAGING_DIR}/pkgmaps/debian/$subpkg ]; then
-						cp ${STAGING_DIR}/pkgmaps/debian/$subpkg ${SDK_OUTPUT}/${prefix}/pkgmaps/debian/
-					fi
-					if [ -e ${STAGING_DIR}/${TARGET_SYS}/shlibs/$subpkg.list ]; then
-						cp ${STAGING_DIR}/${TARGET_SYS}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
+					if [ -e ${STAGING_DIR_TARGET}/shlibs/$subpkg.list ]; then
+						cp ${STAGING_DIR_TARGET}/shlibs/$subpkg.* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/shlibs/
 					fi
 				done
 				break
@@ -102,6 +96,8 @@ do_populate_sdk() {
 
 	# add missing link to libgcc_s.so.1
 	# libgcc-dev should be responsible for that, but it's not getting built
+	# RP: it gets smashed up depending on the order that gcc, gcc-cross and 
+	# gcc-cross-sdk get built :( (30/11/07)
 	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
 	# remove unwanted executables
@@ -117,14 +113,14 @@ do_populate_sdk() {
 			sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
 		done
 		for f in *.pc ; do
-			sed -i 's%${STAGING_DIR}%/usr/local/${TARGET_ARCH}/oe%g' "$f"
+			sed -i 's%${STAGING_DIR}%${prefix}%g' "$f"
 		done
 	fi
 	
 	# package it up
 	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${TARGET_ARCH}-${TARGET_OS}-toolchain.tar.bz2 .
+	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-toolchain.tar.bz2 .
 }
 
 do_populate_sdk[nostamp] = "1"

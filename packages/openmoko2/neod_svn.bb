@@ -1,14 +1,14 @@
 DESCRIPTION = "Simple Neo1973 Daemon for Button Handling and Power Management"
 SECTION = "openmoko/daemons"
 DEPENDS = "gtk+ pulseaudio"
-RDEPENDS = "gpe-scap xrandr alsa-utils-amixer apm"
+RDEPENDS = "gpe-scap xrandr alsa-utils-amixer apm dbus"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 inherit openmoko2 gconf
 
-SRC_URI += "file://htc.patch;patch=1 \
-            file://ipaq.patch;patch=1"
+SRC_URI += "file://htc.patch;patch=1;maxrev=3348 \
+            file://ipaq.patch;patch=1;maxrev=3348"
 
 EXTRA_OECONF_fic-gta01 = "--with-platform=neo1973"
 EXTRA_OECONF_fic-gta02 = "--with-platform=neo1973"
@@ -19,6 +19,7 @@ EXTRA_OECONF_rokre2    = "--with-platform=ezx"
 EXTRA_OECONF_rokre6    = "--with-platform=ezx"
 EXTRA_OECONF_magician  = "--with-platform=htc"
 EXTRA_OECONF_hx4700    = "--with-platform=ipaq"
+EXTRA_OECONF_htcuniversal = "--with-platform=htc"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 

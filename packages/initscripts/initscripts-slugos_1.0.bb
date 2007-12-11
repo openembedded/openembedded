@@ -10,7 +10,7 @@ RCONFLICTS = "initscripts"
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.11"
+PR := "${PR}.12"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -19,6 +19,7 @@ PACKAGES = "${PN}"
 SRC_URI += "file://alignment.sh"
 SRC_URI += "file://domainname.sh"
 SRC_URI += "file://devices.patch;patch=1"
+SRC_URI += "file://bootclean.sh"
 
 # Without this it is not possible to patch checkroot.sh
 S = "${WORKDIR}"
@@ -30,6 +31,7 @@ do_install_append() {
 	# slugos specific scripts
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/domainname.sh ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/bootclean.sh ${D}${sysconfdir}/init.d
 
 	# Remove the do install links (this detects a change to the
 	# initscripts .bb file - it will cause a build failure here.)
@@ -103,6 +105,8 @@ do_install_append() {
 	# checkfs.sh is currently disabled from S 30 (and won't work on SlugOS)
 	# ramdisk is not used on SlugOS, would run at S 30
 	update-rc.d -r ${D} mountall.sh		start 35 S .
+	# bootclean must run after mountall but before populate-volatile
+	update-rc.d -r ${D} bootclean.sh	start 36 S .
 	# base-files populate-volatile.sh runs at S37
 	update-rc.d -r ${D} devpts.sh		start 38 S .
 	# slugos file syslog starts here (39)

@@ -15,8 +15,8 @@ def get_pkgconfig_mangle(d):
 		s += " -e 's:OELIBDIR:${STAGING_LIBDIR}:;'"
 		s += " -e 's:OEINCDIR:${STAGING_INCDIR}:;'"
 		s += " -e 's:OEDATADIR:${STAGING_DATADIR}:'"
-		s += " -e 's:OEPREFIX:${STAGING_LIBDIR}/..:'"
-		s += " -e 's:OEEXECPREFIX:${STAGING_LIBDIR}/..:'"
+		s += " -e 's:OEPREFIX:${STAGING_DIR_HOST}${layout_prefix}:'"
+		s += " -e 's:OEEXECPREFIX:${STAGING_DIR_HOST}${layout_exec_prefix}:'"
 		s += " -e 's:-L${WORKDIR}\S*: :g'"
 		s += " -e 's:-I${WORKDIR}\S*: :g'"
 
@@ -24,7 +24,7 @@ def get_pkgconfig_mangle(d):
 
 do_install_append () {
         for pc in `find ${D} -name '*.pc' -type f | grep -v -- '-uninstalled.pc$'`; do
-                sed -i ${@get_pkgconfig_mangle(d)} -e 's:${D}::g' ${pc}
+                sed -i ${@get_pkgconfig_mangle(d)} -e 's:${D}::g' -e 's:${STAGING_LIBDIR}:${libdir}:g' -e 's:${STAGING_INCDIR}:${includedir}:g' -e 's:${STAGING_DIR_TARGET}:${prefix}:g' ${pc}
         done
 }
 

@@ -1,5 +1,11 @@
 inherit distutils-base
 
+DISTUTILS_STAGE_HEADERS_ARGS ?= "--install-dir=${STAGING_INCDIR}/${PYTHON_DIR}"
+DISTUTILS_STAGE_ALL_ARGS ?= "--prefix=${STAGING_DIR_HOST}${layout_prefix} \
+    --install-data=${STAGING_DATADIR}"
+DISTUTILS_INSTALL_ARGS ?= "--prefix=${D}/${prefix} \
+    --install-data=${D}/${datadir}"
+
 distutils_do_compile() {
          BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
          ${STAGING_BINDIR_NATIVE}/python setup.py build || \
@@ -7,16 +13,18 @@ distutils_do_compile() {
 }
 
 distutils_stage_headers() {
+        install -d ${STAGING_DIR_HOST}${layout_prefix}/lib/${PYTHON_DIR}/site-packages
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-        ${STAGING_BINDIR_NATIVE}/python setup.py install_headers --install-dir=${STAGING_INCDIR}/${PYTHON_DIR} || \
+        ${STAGING_BINDIR_NATIVE}/python setup.py install_headers ${DISTUTILS_STAGE_HEADERS_ARGS} || \
         oefatal "python setup.py install_headers execution failed."
 }
 
 distutils_stage_all() {
-        install -d ${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages
-        PYTHONPATH=${STAGING_INCDIR}/../${PYTHON_DIR}/site-packages \
+        install -d ${STAGING_DIR_HOST}${layout_prefix}/lib/${PYTHON_DIR}/site-packages
+        # is this missing a lib below?
+        PYTHONPATH=${STAGING_DIR_HOST}${layout_prefix}/${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-        ${STAGING_BINDIR_NATIVE}/python setup.py install --prefix=${STAGING_INCDIR}/.. --install-data=${STAGING_INCDIR}/../share || \
+        ${STAGING_BINDIR_NATIVE}/python setup.py install ${DISTUTILS_STAGE_ALL_ARGS} || \
         oefatal "python setup.py install (stage) execution failed."
 }
 
@@ -24,7 +32,7 @@ distutils_do_install() {
         install -d ${D}${libdir}/${PYTHON_DIR}/site-packages
         PYTHONPATH=${D}/${libdir}/${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-        ${STAGING_BINDIR_NATIVE}/python setup.py install --prefix=${D}/${prefix} --install-data=${D}/${datadir} || \
+        ${STAGING_BINDIR_NATIVE}/python setup.py install ${DISTUTILS_INSTALL_ARGS} || \
         oefatal "python setup.py install execution failed."
 
         for i in `find ${D} -name "*.py"` ; do \
@@ -43,7 +51,7 @@ distutils_do_install() {
             done
         fi
 
-	rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/easy-install.pth
+        rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/easy-install.pth
 }
 
 EXPORT_FUNCTIONS do_compile do_install

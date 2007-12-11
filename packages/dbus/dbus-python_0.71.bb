@@ -1,4 +1,4 @@
-DESCRIPTION = "message bus system for applications to talk to one another - python bindings"
+DESCRIPTION = "Message bus system for applications to talk to one another - python bindings"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "GPL"
 SECTION = "devel/python"

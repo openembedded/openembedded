@@ -55,7 +55,7 @@ zaurus_make_installkit () {
         cp gnu-tar ${IMAGE_NAME}-installkit/
         cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/hdimage1.tgz
     else
-        cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/initrd.bin
+        [ -f ${IMAGE_NAME}.rootfs.jffs2 ] && cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/initrd.bin
     fi
 
     # All zaurus machines except collie need updater.sh

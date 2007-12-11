@@ -90,6 +90,12 @@ Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
 
+Person:     Junqian Gordon Xu 'xjqian'
+Mail:       xjqian@gmail.com
+Machines:   tosa, borzoi, nokia770
+Distros:    Ångström
+Recipes:    gnuplot octave
+
 Person:     Justin Patrin
 Mail:       papercrane@reversefold.com
 Website:    http://www.reversefold.com

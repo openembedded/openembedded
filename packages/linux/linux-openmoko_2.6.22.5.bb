@@ -9,7 +9,7 @@ KERNEL_RELEASE = "2.6.22.5"
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
-PR = "r6"
+PR = "r10"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -24,6 +24,12 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.ta
 	       svn://svn.openmoko.org/trunk/src/target/kernel;module=patches;proto=http \
            file://fix-EVIOCGRAB-semantics-2.6.22.5.patch;patch=1 \
            file://fix-gta01-flowcontrol2-2.6.22.5.patch;patch=1 \
+           file://gta02-sound.patch;patch=1 \
+           file://soc-core-suspend.patch;patch=1 \
+           file://iis-suspend.patch;patch=1 \
+           file://s3c24xx-pcm-suspend.patch;patch=1 \
+           file://gta-vibro-pwm-suspend.patch;patch=1 \
+           file://glamo-report-vram-size-to-userspace.patch;patch=1 \
            file://defconfig-${KERNEL_RELEASE}"
 
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
@@ -49,6 +55,10 @@ module_autoload_hci_usb = "hci_usb"
 module_autoload_g_ether = "g_ether"
 # audio
 module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
+module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
+module_autoload_snd-pcm-oss = "snd-pcm-oss"
+module_autoload_snd-mixer-oss = "snd-mixer-oss"
+
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 

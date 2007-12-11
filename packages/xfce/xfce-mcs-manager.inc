@@ -3,7 +3,7 @@
 # Released under the MIT license (see packages/COPYING)
 
 DESCRIPTION="XFCE4 Settings manager."
-DEPENDS="libxfcegui4 libxfce4mcs"
+DEPENDS="libxfcegui4 libxfce4mcs intltool-native"
 SECTION = "x11"
 PR = "r1"
 

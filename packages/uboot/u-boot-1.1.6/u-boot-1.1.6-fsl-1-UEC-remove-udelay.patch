@@ -1,0 +1,15 @@
+123b7d94ab4fa50a62aa9c0c0202d4e2c99a14c8
+diff --git a/drivers/qe/uec.c b/drivers/qe/uec.c
+index aea455b..a327a34 100644
+--- a/drivers/qe/uec.c
++++ b/drivers/qe/uec.c
+@@ -567,9 +567,6 @@ static void phy_change(struct eth_device *dev)
+ 
+ 	uec_regs = uec->uec_regs;
+ 
+-	/* Delay 5s to give the PHY a chance to change the register state */
+-	udelay(5000000);
+-
+ 	/* Update the link, speed, duplex */
+ 	result = uec->mii_info->phyinfo->read_status(uec->mii_info);
+ 

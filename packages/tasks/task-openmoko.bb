@@ -2,9 +2,11 @@ DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"
-PR = "r66"
+PR = "r71"
 
 inherit task
+
+XSERVER ?= "xserver-kdrive-fbdev"
 
 PACKAGES = "\
   task-openmoko-linux \
@@ -46,6 +48,7 @@ RDEPENDS_task-openmoko-linux = "\
 # task-openmoko-ui
 #
 DESCRIPTION_task-openmoko-ui = "OpenMoko: The X11/Gtk+2 based native User Interface"
+PACKAGE_ARCH_task-openmoko-ui = "${MACHINE_ARCH}"
 RDEPENDS_task-openmoko-ui = "\
   gdk-pixbuf-loader-png \
   gdk-pixbuf-loader-gif \
@@ -54,12 +57,10 @@ RDEPENDS_task-openmoko-ui = "\
   pango-module-basic-x \
   pango-module-basic-fc \
   gtk+ \
-  matchbox-common \
   matchbox-wm \
-  xserver-kdrive-fbdev \
+  ${XSERVER} \
   xserver-kdrive-common \
   xserver-nodm-init \
-  ttf-bitstream-vera \
   xauth \
   xhost \
   xset \
@@ -141,7 +142,7 @@ RDEPENDS_task-openmoko-pim = "\
   openmoko-appmanager2 \
   openmoko-tasks2 \
   openmoko-mediaplayer2 \
-#  openmoko-messages \
+  openmoko-messages2 \
 "
 
 #

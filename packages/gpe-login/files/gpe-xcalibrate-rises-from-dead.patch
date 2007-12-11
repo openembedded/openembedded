@@ -1,0 +1,8 @@
+diff -r 976c01632fea gpe-login.keylaunchrc
+--- a/gpe-login.keylaunchrc	Sun Nov 25 22:39:23 2007 +0200
++++ b/gpe-login.keylaunchrc	Mon Nov 26 01:12:14 2007 +0200
+@@ -1,3 +1,3 @@ key=????XF86AudioRecord:xcalibrate:/usr/
+-key=????XF86AudioRecord:xcalibrate:/usr/bin/gpe-xcalibrate.sh
++key=????XF86AudioRecord:xcalibrate:/usr/bin/xtscal
+ key=????XF86PowerDown:-:/usr/bin/apm --suspend
+ key=????Held XF86PowerDown:-:bl toggle

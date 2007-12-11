@@ -33,7 +33,7 @@ inherit autotools update-rc.d binconfig
 # Don't check for clamav uid/gid - they don't exist on the host
 # Put virus definitions in /var/lib not /usr/lib
 EXTRA_OECONF = "--disable-clamav \
-                --with-zlib=${STAGING_DIR}/${HOST_SYS} \
+                --with-zlib=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-libcurl \
                 --with-dbdir=${localstatedir}/lib/clamav"
 

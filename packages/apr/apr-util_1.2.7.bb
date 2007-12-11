@@ -9,10 +9,10 @@ PR = "r2"
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz"
 
 EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm \
-		--with-gdbm=${STAGING_DIR}/${HOST_SYS} \
+		--with-gdbm=${STAGING_DIR_HOST}${layout_prefix} \
 		--without-sqlite2 \
 		--without-sqlite3 \
-		--with-expat=${STAGING_DIR}/${HOST_SYS}"
+		--with-expat=${STAGING_DIR_HOST}${layout_prefix}"
 
 inherit autotools lib_package binconfig
 

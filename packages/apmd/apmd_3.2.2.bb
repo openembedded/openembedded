@@ -5,7 +5,7 @@ DEPENDS = "libtool-cross"
 LICENSE = "GPL"
 PR = "r8"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz; \
+SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
            file://debian.patch;patch=1 \
            file://workaround.patch;patch=1 \
            file://zaurus24.patch;patch=1 \

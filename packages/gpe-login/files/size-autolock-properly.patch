@@ -1,0 +1,26 @@
+# HG changeset patch
+# User "Paul Sokolovsky <pfalcon@users.sourceforge.net>"
+# Date 1196345352 -7200
+# Node ID ebe625e21708cb9257201a4dd6e536b99f1f0220
+# Parent  976c01632feacbcce2058a061a0b1f6faed2275a
+When configuring autolock window, make sure to set not only the minimal
+("requested") size, but also the actual one. This fixes issue that after
+autolock screen have been shown in landscape mode, it no longer fits the
+screen in portrait mode.
+
+Also, gtk_widget_set_usize() marked as deprecated, replace with
+gtk_widget_set_size_request().
+
+diff -r 976c01632fea -r ebe625e21708 gpe-login.c
+--- a/gpe-login.c	Sun Nov 25 22:39:23 2007 +0200
++++ b/gpe-login.c	Thu Nov 29 16:09:12 2007 +0200
+@@ -558,7 +558,8 @@ filter (GdkXEvent *xevp, GdkEvent *ev, g
+ 	{
+ 	  spawn_xkbd ();
+ 	  gtk_label_set_markup (GTK_LABEL (label_result), "");
+-	  gtk_widget_set_usize (window, gdk_screen_width (), gdk_screen_height ());
++	  gtk_widget_set_size_request (window, gdk_screen_width (), gdk_screen_height ());
++	  gtk_window_resize (window, gdk_screen_width (), gdk_screen_height ());
+ 	  gtk_widget_show_all (window);
+       if (ownerinfo)
+         {  

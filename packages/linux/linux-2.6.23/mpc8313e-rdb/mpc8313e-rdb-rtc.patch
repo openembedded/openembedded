@@ -1,0 +1,40 @@
+diff -urN linux-2.6.23.orig/arch/powerpc/boot/dts/mpc8313erdb.dts linux-2.6.23/arch/powerpc/boot/dts/mpc8313erdb.dts
+--- linux-2.6.23.orig/arch/powerpc/boot/dts/mpc8313erdb.dts	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/arch/powerpc/boot/dts/mpc8313erdb.dts	2007-12-01 13:16:55.000000000 +0100
+@@ -54,12 +54,20 @@
+ 		};
+ 
+ 		i2c@3000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
+ 			device_type = "i2c";
+ 			compatible = "fsl-i2c";
+ 			reg = <3000 100>;
+ 			interrupts = <e 8>;
+ 			interrupt-parent = < &ipic >;
+ 			dfsrr;
++
++			rtc@68 {
++				device_type = "rtc";
++				compatible = "dallas,ds1339";
++				reg = <68>;
++			};
+ 		};
+ 
+ 		i2c@3100 {
+diff -urN linux-2.6.23.orig/arch/powerpc/sysdev/fsl_soc.c linux-2.6.23/arch/powerpc/sysdev/fsl_soc.c
+--- linux-2.6.23.orig/arch/powerpc/sysdev/fsl_soc.c	2007-10-09 22:31:38.000000000 +0200
++++ linux-2.6.23/arch/powerpc/sysdev/fsl_soc.c	2007-12-01 13:08:30.000000000 +0100
+@@ -319,6 +319,12 @@
+ 	{"ricoh,rs5c372b", "rtc-rs5c372", "rs5c372b",},
+ 	{"ricoh,rv5c386",  "rtc-rs5c372", "rv5c386",},
+ 	{"ricoh,rv5c387a", "rtc-rs5c372", "rv5c387a",},
++	{"dallas,ds1307",  "rtc-ds1307",  "ds1307",},
++	{"dallas,ds1337",  "rtc-ds1307",  "ds1337",},
++	{"dallas,ds1338",  "rtc-ds1307",  "ds1338",},
++	{"dallas,ds1339",  "rtc-ds1307",  "ds1339",},
++	{"dallas,ds1340",  "rtc-ds1307",  "ds1340",},
++	{"stm,m41t00",     "rtc-ds1307",  "m41t00"},
+ };
+ 
+ static int __init of_find_i2c_driver(struct device_node *node, struct i2c_board_info *info)

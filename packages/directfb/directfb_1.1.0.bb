@@ -7,15 +7,17 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-PR = "r1"
+PR = "r2"
 RV = "1.1-0"
 
-SRC_URI = "http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
-           file://fix-pkgconfig-cflags.patch;patch=1 \
-	   file://fix-font-missing-char.patch;patch=1 \
-           file://getpagesize.patch;patch=1 \
-           file://fix-includes.patch;patch=1 \
-	   file://mkdfiff.patch;patch=1"
+SRC_URI = " \
+    http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
+    file://fix-pkgconfig-cflags.patch;patch=1 \
+    file://fix-font-missing-char.patch;patch=1 \
+    file://getpagesize.patch;patch=1 \
+    file://fix-includes.patch;patch=1 \
+    file://mkdfiff.patch;patch=1 \
+   "
 
 S = "${WORKDIR}/DirectFB-${PV}"
 
@@ -23,11 +25,12 @@ LDFLAGS_append =" -lts -lm"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--with-gfxdrivers=none \
+EXTRA_OECONF = " \
+    --with-gfxdrivers=none \
 		--enable-libmpeg3=no \
 		--enable-freetype=yes \
 		--enable-sdl=no \
-	        --enable-vnc=no \
+		--enable-vnc=no \
 		--disable-x11 \
 		"
 

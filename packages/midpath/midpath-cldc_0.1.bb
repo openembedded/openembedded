@@ -2,6 +2,7 @@
 require midpath.inc
 
 PROVIDES  = "virtual/cldc-api-1.1"
+RPROVIDES = "virtual/cldc-api-1.1"
 
 do_compile() {
 

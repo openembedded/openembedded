@@ -1,8 +1,9 @@
 DESCRIPTION = "The OpenMoko Dialer"
 SECTION = "openmoko/pim"
-DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 pulseaudio"
+DEPENDS = "libjana libmokogsmd2 libmokoui2 libmokojournal2 pulseaudio"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r5"
+PE = "1"
 
 inherit openmoko2
 

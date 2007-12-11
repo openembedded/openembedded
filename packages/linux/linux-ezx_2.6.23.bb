@@ -90,7 +90,7 @@ COMPATIBLE_MACHINE = '(a780|e680|a1200|rorkre2|rokre6)'
 #CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
 CMDLINE_CON = "console=tty1 "
 
-CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootdelay=1"
+CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootwait=1"
 CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=1 "
 # Uncomment to enable dyntick
 #CMDLINE_OTHER = "dyntick=enable"
