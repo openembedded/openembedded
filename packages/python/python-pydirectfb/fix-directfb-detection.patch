@@ -1,0 +1,16 @@
+Index: pydirectfb/setup.py
+===================================================================
+--- pydirectfb.orig/setup.py
++++ pydirectfb/setup.py
+@@ -11,9 +11,10 @@
+     Check dependencies add add the flags to include_dirs, library_dirs and
+     libraries. The basic logic is taken from pygame.
+     """
+-    command = name + '-config --version --cflags --libs 2>/dev/null'
++    command = 'pkg-config %s --modversion --cflags --libs 2>/dev/null' % name
+     try:
+         config = os.popen(command).readlines()
++        print config
+         if len(config) == 0:
+             raise ValueError, 'command not found'
+         flags  = (' '.join(config[1:]) + ' ').split()
