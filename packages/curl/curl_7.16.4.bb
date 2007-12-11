@@ -2,7 +2,7 @@ DESCRIPTION = "Command line tool and library for client-side URL transfers."
 LICENSE = "MIT"
 DEPENDS = "zlib gnutls"
 SECTION = "console/network"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2"
 S = "${WORKDIR}/curl-${PV}"
@@ -13,7 +13,7 @@ EXTRA_OECONF = "--with-zlib=${STAGING_LIBDIR}/../ \
                 --with-gnutls=${STAGING_BINDIR_CROSS}/ \
                 --without-ssl \
 		--with-random=/dev/urandom \
-		--without-idn \
+		--without-libidn \
 		--enable-crypto-auth \
 		"
 
