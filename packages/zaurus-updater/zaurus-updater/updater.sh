@@ -375,9 +375,6 @@ do
     esac
 done
 
-# starting shell to test -- remove this from final release
-/bin/sh
-
 # reboot
 exit 0
 
