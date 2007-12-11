@@ -6,8 +6,8 @@ DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 
-DEPENDS_append_mpc8313e-rdb = "dtc-native"
-DEPENDS_append_mpc8323e-rdb = "dtc-native"
+DEPENDS_append_mpc8313e-rdb = " dtc-native"
+DEPENDS_append_mpc8323e-rdb = " dtc-native"
 
 PR = "r7"
 
