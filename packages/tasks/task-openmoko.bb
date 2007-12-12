@@ -7,7 +7,7 @@ PR = "r71"
 inherit task
 
 PACKAGES += "\
-        task-openmoko-everything
+        task-openmoko-everything \
 "
 
 RDEPENDS_task-openmoko-everything := "\
