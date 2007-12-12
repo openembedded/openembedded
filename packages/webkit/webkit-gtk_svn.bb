@@ -9,7 +9,7 @@ FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"
 
 require webkit.inc
 
-PR = "r3"
+PR = "r4"
 
 do_install() {
 	install -d ${D}${bindir}

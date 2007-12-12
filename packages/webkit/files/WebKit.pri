@@ -16,7 +16,7 @@ gtk-port:CONFIG += link_pkgconfig
 gtk-port:PKGCONFIG += cairo cairo-ft gdk-2.0 gtk+-2.0 libcurl
 gtk-port:DEFINES += BUILDING_GTK__=1 BUILDING_CAIRO__
 gtk-port:LIBS += -L$$OUTPUT_DIR/lib -lWebKitGtk $$system(icu-config --ldflags) -ljpeg -lpng
-gtk-port:QMAKE_CXXFLAGS += $$system(icu-config --cppflags)
+gtk-port:QMAKE_CXXFLAGS += $$system(icu-config --cppflags) -fno-exceptions -fno-rtti 
 
 DEFINES += USE_SYSTEM_MALLOC
 CONFIG(release) {
