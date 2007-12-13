@@ -106,6 +106,6 @@ EXPORT_FUNCTIONS do_create_orig_tgz do_archive_bb do_dumpdata do_create_diff_gz
 
 addtask create_orig_tgz after do_unpack before do_patch
 addtask archive_bb after do_patch before do_dumpdata
-addtask dumpdata after archive_bb before do_create_diff_gz
+addtask dumpdata after do_archive_bb before do_create_diff_gz
 addtask create_diff_gz after do_dump_data before do_configure
 
