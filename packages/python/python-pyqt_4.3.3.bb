@@ -22,7 +22,7 @@ inherit qt4x11 sip distutils-base
 PARALLEL_MAKE = ""
 
 QMAKE_PROFILES = "pyqt.pro"
-EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_1 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
+EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_3 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
 SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml"
