@@ -2,7 +2,7 @@ DESCRIPTION = "Mono Programming Language"
 SECTION = "devel/mono"
 LICENSE = "GPL LGPL X11"
 
-SRC_URI = "http://mono.ximian.com/monobuild/preview/sources/mono/mono-1.2.6.tar.bz2 \
+SRC_URI = "http://go-mono.com/sources/mono/mono-1.2.6.tar.bz2 \
 	   file://mono-libgc-configure.patch;patch=1"
 
 S = "${WORKDIR}/mono-1.2.6"
