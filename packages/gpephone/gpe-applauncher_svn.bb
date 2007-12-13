@@ -2,7 +2,7 @@ LICENSE     = "GPL"
 DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
-PR          = "r0"
+PR          = "r1"
 PV          = "0.11+svn-${SRCREV}"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
@@ -24,7 +24,7 @@ RDEPENDS_${PN} += "gpe-applauncher-config"
 SRC_URI += "file://hotkeys.conf \
             file://softkeys.conf"
 
-EXTRA_OECONF = "--disable-gridlayout"
+EXTRA_OECONF = "--enable-gridlayout"
 
 FILES_${PN} = '${datadir} ${bindir}'
 FILES_gpe-applauncher-config = '${sysconfdir}/gpe/'
