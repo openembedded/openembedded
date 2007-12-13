@@ -7,7 +7,7 @@ DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
 
 # NOTE: Keep the digit in sync with BASEREV in contrib/generate-manifest-2.5.py
-PR = "ml2"
+PR = "ml5"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -17,6 +17,7 @@ SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://fix-tkinter-detection.patch;patch=1 \
            file://autohell.patch;patch=1 \
            file://sitebranding.patch;patch=1 \
+           file://enable-ctypes-module.patch;patch=1 \
            file://default-is-optimized.patch;patch=1"
 S = "${WORKDIR}/Python-${PV}"
 

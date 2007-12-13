@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r45"
+PR = "r50"
 
 inherit task
 
@@ -11,43 +11,43 @@ PACKAGES = ' \
             task-distro-base \
             task-machine-base \
             \
-            task-base-acpi \
-            task-base-alsa \
-            task-base-apm \
+            ${@base_contains("MACHINE_FEATURES", "acpi", "task-base-acpi", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "pcmcia", "task-base-pcmcia", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "phone", "task-base-phone", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "screen", "task-base-screen", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "serial", "task-base-serial", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "touchscreen", "task-base-touchscreen", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbgadget", "task-base-usbgadget", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "usbhost", "task-base-usbhost", "", d)} \
+            \
+            ${@base_contains("MACHINE_FEATURES", "uboot", "task-base-uboot", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "redboot", "task-base-redboot", "",d)} \
+            ${@base_contains("MACHINE_FEATURES", "apex", "task-base-apex", "",d)} \
+            \
             task-base-bluetooth \
-            task-base-ext2 \
-            task-base-irda \
-            task-base-keyboard \
-            task-base-pci \
-            task-base-pcmcia \
-            task-base-phone \
-            task-base-screen \
-            task-base-serial \
-            task-base-touchscreen \
-            task-base-usbgadget \
-            task-base-usbhost \
             task-base-wifi \
             \
-            task-base-cramfs \
-            task-base-ipsec \
-            task-base-ipv6 \
-            task-base-nfs \
-            task-base-ppp \
-            task-base-smbfs \
-	    \
+            ${@base_contains("DISTRO_FEATURES", "cramfs", "task-base-cramfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipsec", "task-base-ipsec", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ipv6", "task-base-ipv6", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "nfs", "task-base-nfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "ppp", "task-base-ppp", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "smbfs", "task-base-smbfs", "", d)} \
+            ${@base_contains("DISTRO_FEATURES", "raid", "task-base-raid", "",d)} \
+            \
             ${@base_contains("MACHINE_FEATURES","kernel26","task-base-kernel26","task-base-kernel24",d)} \
-	    '
+            '
 
 #
 # packages which content depend on MACHINE_FEATURES need to be MACHINE_ARCH
 #
-PACKAGE_ARCH_task-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-machine-base = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-apm = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-bluetooth = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-irda = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-pcmcia = "${MACHINE_ARCH}"
-PACKAGE_ARCH_task-base-wifi = "${MACHINE_ARCH}"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #
 # linux-hotplug or none
@@ -96,6 +96,7 @@ RDEPENDS_task-base = "\
     ${@base_contains('COMBINED_FEATURES', 'wifi', 'task-base-wifi', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'uboot', 'task-base-uboot', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'redboot', 'task-base-redboot', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'apex', 'task-base-apex', '',d)} \
     \
     ${@base_contains('DISTRO_FEATURES', 'nfs', 'task-base-nfs', '',d)} \
     ${@base_contains('DISTRO_FEATURES', 'cramfs', 'task-base-cramfs', '',d)} \
@@ -159,6 +160,7 @@ RRECOMMENDS_task-base-kernel24 = "\
     kernel-module-uinput"
 
 RRECOMMENDS_task-base-kernel26 = "\
+    kernel-module-nls-utf8 \
     kernel-module-input \
     kernel-module-uinput \
     kernel-module-rtc-dev \
@@ -297,6 +299,9 @@ RDEPENDS_task-base-uboot = "\
 
 RDEPENDS_task-base-redboot = "\
     fis"
+
+RDEPENDS_task-base-apex = "\
+    apex-env"
 
 RDEPENDS_task-base-ppp = "\
     ppp \

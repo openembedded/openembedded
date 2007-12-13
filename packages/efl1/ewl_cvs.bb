@@ -1,13 +1,25 @@
 DESCRIPTION = "The Enlightened Widget Library, \
 a simple-to-use general purpose widget library \
 based on the enlightenment foundation libraries."
-DEPENDS = "evas ecore edje emotion efreet"
+DEPENDS = "evas ecore edje emotion efreet epsilon"
 RSUGGESTS_${PN} += "ewl-themes"
 LICENSE = "MIT"
 PV = "0.5.1+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit efl_library
+
+EXTRA_OECONF = "\
+  --enable-software-x11 \
+  --enable-software-16-x11 \
+  --enable-xrender-x11 \
+  --disable-opengl-x11 \
+  --disable-software-xcb \
+  --disable-software-sdl \
+  --enable-framebuffer \
+  --enable-software-buffer \
+  --disable-opengl-glew \
+"
 
 # TODO package engines more granular
 PACKAGES += "${PN}-plugins ${PN}-engines"

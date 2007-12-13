@@ -1,0 +1,44 @@
+diff -r 6b20ef8fbdee src/kb.c
+--- a/src/kb.c	Tue Nov 27 21:28:21 2007 +0200
++++ b/src/kb.c	Tue Nov 27 22:27:09 2007 +0200
+@@ -954,6 +954,13 @@ void kb_send_keypress(button *b)
+   int slide_flag = 0;
+ 
+   struct keycodeEntry vk_keycodes[10];
++  
++  static KeySym ksSpace, ksBackSpace, ksReturn;
++  if (!ksSpace) {
++    ksSpace = XStringToKeysym("space");
++    ksBackSpace = XStringToKeysym("BackSpace");
++    ksReturn = XStringToKeysym("Return");
++  }
+ 
+   if (b->kb->state & KB_STATE_SHIFT || b->kb->state & KB_STATE_CAPS)
+   {
+@@ -981,20 +988,17 @@ void kb_send_keypress(button *b)
+ 	    ks = b->slide_up_ks;
+ 	    if (ks == 0) ks = b->shift_ks;
+ 	    break;
+-	  case down : /* hold ctrl */
++	  case down :
+ 	    ks = b->slide_down_ks;
+-	    if (ks == 0) slide_flag = KB_STATE_CTRL;
++	    if (ks == 0) ks = ksReturn;
+ 	    break;
+-	  case left : /* hold alt */
++	  case left :
+ 	    ks = b->slide_left_ks;
+-	    if (ks == 0) 
+-	      {
+-		ks = b->mod_ks;
+-		slide_flag = KB_STATE_MOD;
+-	      }
++	    if (ks == 0) ks = ksBackSpace;
+ 	    break;
+-	  case right : /* hold alt */
++	  case right :
+ 	    ks = b->slide_right_ks;
++	    if (ks == 0) ks = ksSpace;
+ 	    break;
+ 	  case none:
+ 	    break;

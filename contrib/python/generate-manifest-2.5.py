@@ -2,7 +2,8 @@
 
 # generate Python Manifest for the OpenEmbedded build system
 # (C) 2002-2007 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
-# MIT license
+# (C) 2007 Jeremy Laine
+# licensed under MIT, see COPYING.MIT
 
 import os
 import sys
@@ -10,10 +11,10 @@ import time
 
 VERSION = "2.5.1"
 # increase when touching python-core, this should be the same ml version as in python_2.5.1.bb
-BASEREV = 2
+BASEREV = 5
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
-__version__ = "20070823"
+__version__ = "20071205"
 
 class MakefileMaker:
 
@@ -145,7 +146,7 @@ if __name__ == "__main__":
     # Parameters: revision, name, description, dependencies, filenames
     #
 
-    m.addPackage( 2, "python-core", "Python Interpreter and core modules (needed!)", "",
+    m.addPackage( 0, "python-core", "Python Interpreter and core modules (needed!)", "",
     "__future__.* copy.* copy_reg.* ConfigParser.* " +
     "getopt.* linecache.* new.* " +
     "os.* posixpath.* struct.* " +
@@ -175,7 +176,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
     "bsddb" ) # package
 
-    m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core",
+    m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core python-lang",
     "codecs.* encodings gettext.* locale.* lib-dynload/_locale.so lib-dynload/unicodedata.so stringprep.* xdrlib.*" )
 
     m.addPackage( 0, "python-compile", "Python Bytecode Compilation Support", "python-core",
@@ -194,7 +195,10 @@ if __name__ == "__main__":
     "lib-dynload/_csv.so csv.* optparse.* textwrap.*" )
 
     m.addPackage( 0, "python-curses", "Python Curses Support", "python-core",
-    "curses lib-dynload/_curses.so lib-dynload/_curses_panel.so" ) # package
+    "curses lib-dynload/_curses.so lib-dynload/_curses_panel.so" ) # directory + low level module
+
+    m.addPackage( 0, "python-ctypes", "Python C Types Support", "python-core",
+    "ctypes lib-dynload/_ctypes.so" ) # directory + low level module
 
     m.addPackage( 0, "python-datetime", "Python Calendar and Time support", "python-core python-codecs",
     "_strptime.* calendar.* lib-dynload/datetime.so" )
@@ -257,7 +261,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-unixadmin", "Python Unix Administration Support", "python-core",
     "lib-dynload/nis.so lib-dynload/grp.so lib-dynload/pwd.so getpass.*" )
 
-    m.addPackage( 0, "python-netclient", "Python Internet Protocol Clients", "python-core python-datetime python-io python-lang python-logging python-mime",
+    m.addPackage( 0, "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
     "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.*" )
 

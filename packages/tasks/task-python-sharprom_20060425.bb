@@ -20,7 +20,6 @@ RDEPENDS = "\
 		python-ao 		\
 		python-constraint	\
 		python-dialog		\
-		python-egenix-mx-base   \
 		python-fnorb		\
 		python-fpconst		\
 		python-gnosis		\
@@ -28,7 +27,7 @@ RDEPENDS = "\
 		python-irclib		\
 		python-itools		\
 		python-libgmail		\
-		python-logilab		\
+		python-logilab-common	\
 		python-lxml		\
 		python-mad		\
 		python-native		\
@@ -53,7 +52,6 @@ RDEPENDS = "\
 		python-pyweather	\
 		python-pyxml		\
 		python-pyxmlrpc		\
-		python-quicklauncher    \
 		python-scapy		\
 		python-scons		\
 		python-sip		\
@@ -70,6 +68,7 @@ RDEPENDS = "\
 		twisted			\
 		zope"
 
+#fixme add python-egenix-mx-base if brought in from nonworking
 #fixme add python-pycap once libdnet is in again
 #fixme add python-pyx once kpathwhich-native is there
 #fixme add packages dynamically

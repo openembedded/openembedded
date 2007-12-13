@@ -1,17 +1,17 @@
 require evas.inc
-PR = "r0"
+PR = "r3"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
 		--enable-fb					\
-		--enable-directfb			\
-		--enable-sdl				\
+		--disable-directfb			\
+		--disable-sdl				\
 		--enable-buffer				\
 		--disable-software-ddraw	\
 		--disable-software-qtopia	\
 		--enable-software-x11		\
-		--disable-software-16-x11	\
+		--enable-software-16-x11	\
 		--disable-software-xcb		\
 		--disable-gl-x11			\
 		--enable-xrender-x11		\

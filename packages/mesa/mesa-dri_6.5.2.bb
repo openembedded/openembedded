@@ -4,9 +4,11 @@ FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS += "libdrm"
+# DRI is useless without the kernel drivers
+RRECOMMENDS += " kernel-module-drm kernel-module-radeon "
 
 do_configure() {
 	cd configs
