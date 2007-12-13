@@ -1,7 +1,7 @@
 DESCRIPTION = "Enca is an Extremely Naive Charset Analyser"
-LICENSE = "GPL2"
 SECTION = "libs"
 PRIORITY = "optional"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://trific.ath.cx/software/enca/"
 PR = "r2"
 
