@@ -3,8 +3,6 @@ CONFLICTNAME = "gsmd"
 
 require gsmd.inc
 
-PR = "r40"
-
 PROVIDES += "libgsmd"
 RPROVIDES_${PN}-tools = "lib${CONFLICTNAME}-tools"
 
