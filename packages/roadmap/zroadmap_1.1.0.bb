@@ -1,23 +1,21 @@
 require zroadmap.inc
 
 DEPENDS += "expat"
-SRCDATE = "20071212"
-PV = "1.1.0+cvs-${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous:@roadmap.cvs.sf.net/cvsroot/roadmap;module=roadmap \
+SRC_URI = "${SOURCEFORGE_MIRROR}/roadmap/roadmap-${PV}-src.tar.gz \
            file://cross.patch;patch=1;pnum=2 \
            file://qt/qt2-fixes.patch;patch=1 \
            file://qt/qt_canvas.patch;patch=1 \
-#upstream  file://qt/qt_main.patch;patch=1 \
+           file://qt/qt_main.patch;patch=1 \
            file://qt/roadmap_main.patch;patch=1 \
-#upstream  file://qt/roadmap.desktop.patch;patch=1 \
+           file://qt/roadmap.desktop.patch;patch=1 \
            http://roadmap.digitalomaha.net/maps/usdir.rdm.tar.gz \
            file://zroadgps.png"
-S = "${WORKDIR}/roadmap/src"
+S = "${WORKDIR}/roadmap-${PV}/src"
 
-EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} QTDIR=${QTDIR} \
-                CFLAGS="-DQWS -DQT_NO_ROTATE -I${S} ${OE_QMAKE_CFLAGS} -I${OE_QMAKE_INCDIR_QT}" \
+EXTRA_OEMAKE = 'DESKTOP=QPE MOC=${OE_QMAKE_MOC} UIC=${OE_QMAKE_UIC} QTDIR=${QTDIR} POPT=NO \
+                CFLAGS="-DQWS -I${S} ${OE_QMAKE_CFLAGS} -I${OE_QMAKE_INCDIR_QT}" \
                 LDFLAGS="${OE_QMAKE_LDFLAGS} -L${OE_QMAKE_LIBDIR_QT} -Wl,-rpath-link,${OE_QMAKE_LIBDIR_QT}" '
 
 do_compile() {

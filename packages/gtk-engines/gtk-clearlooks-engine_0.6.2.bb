@@ -1,6 +1,6 @@
 SECTION = "x11/base"
 DESCRIPTION = "Clearlooks theme engine for GTK"
-LICENSE = "GPL2"
+LICENSE = "GPLv2"
 DEPENDS = "gtk+"
 PR = "r1"
 
