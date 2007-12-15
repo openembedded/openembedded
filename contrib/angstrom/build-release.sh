@@ -69,7 +69,6 @@ for machine in spitz
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="x11-gpe-image x11-pimlico-image x11-office-image"
-	BUILD_CLEAN="qmake2-native"
 	do_build
 done 
 
@@ -78,7 +77,6 @@ for machine in fic-gta01 a780
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-openmoko-image openmoko-image"
-	BUILD_CLEAN="qmake2-native"
 	do_build
 done	
 
@@ -87,7 +85,7 @@ for machine in ep93xx a780 efika collie ixp4xxbe
 do
         BUILD_MACHINE=$machine
         BUILD_TARGETS="meta-angstrom-2007"
-        do_build
+	do_build
 done
 
 #cross toolchain
