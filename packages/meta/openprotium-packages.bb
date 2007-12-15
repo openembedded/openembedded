@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the Openprotium on the iomega Storcenter"
 HOMEPAGE = "http://www.openprotium.org"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 CONFLICTS = "db3"
 PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 
@@ -234,7 +234,7 @@ SLUGOS_PACKAGES_append_linux = "\
 	man man-pages \
 	psmisc \
 	screen \
-	timezones \
+	tzdata \
         wview-sim wview-vpro wview-wxt510 \
         wview-sim-mysql wview-vpro-mysql \
         wview-wxt510-mysql \
