@@ -70,8 +70,9 @@ def check_sanity(e):
 	if "diffstat-native" not in assume_provided:
 		messages = messages + 'Please use ASSUME_PROVIDED +=, not ASSUME_PROVIDED = in your local.conf\n'
 	
-	# Check that the MACHINE is valid
-	if not check_conf_exists("conf/machine/${MACHINE}.conf", e.data):
+	# Check that the MACHINE is valid, if it is set
+	if data.getVar('MACHINE', e.data, True):
+	    if not check_conf_exists("conf/machine/${MACHINE}.conf", e.data):
 		messages = messages + 'Please set a valid MACHINE in your local.conf\n'
 	
 	# Check that the DISTRO is valid
