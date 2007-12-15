@@ -455,7 +455,7 @@ NOTE: Couldn't find shared library provider for libm.so.6
                 <para>OpenEmbedded tries to automatically add run-time dependencies (RDEPENDS) to the package. It uses the
 <emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able 
 to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just
-created package. The result can be fatal. If you use OpenEmbedded to create images you will end up with a image without a libc being
+created package. The result can cause various issues. If you use OpenEmbedded to create images you will end up with a image without a libc being
 installed. This will lead to a fatal failure. To workaround this issue you could create a package for the metadata to install every
 needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is installed when creating images.</para>
             </section>
