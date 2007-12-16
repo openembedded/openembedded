@@ -36,6 +36,7 @@ do_report_success() {
 for machine in ep93xx gumstix-connex gumstix-verdex efika omap5912osk
 do
 	BUILD_MACHINE=$machine
+	BUILD_CLEAN="libtool-cross"
 	BUILD_TARGETS="minimal-image console-image"
 	do_build
 done
@@ -43,7 +44,7 @@ done
 for machine in ixp4xxle ixp4xxbe 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="nslu2-minimal-image"
+	BUILD_TARGETS="minimal-image nslu2-base-image"
 	do_build
 done	 
 
@@ -59,7 +60,7 @@ done
 for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 poodle tosa hx4700 c7x0 spitz akita collie 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="minimal-image console-image x11-image"
+	BUILD_TARGETS="minimal-image console-image minimal-gpe-image x11-image"
 	do_build
 done
 
@@ -68,7 +69,6 @@ for machine in spitz
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="x11-gpe-image x11-pimlico-image x11-office-image"
-	BUILD_CLEAN="qmake2-native"
 	do_build
 done 
 
@@ -76,16 +76,24 @@ done
 for machine in fic-gta01 a780 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="openmoko-image"
-	BUILD_CLEAN="qmake2-native"
+	BUILD_TARGETS="minimal-openmoko-image openmoko-image"
 	do_build
 done	
 
-#native toolchain
+# populate feeds
 for machine in ep93xx a780 efika collie ixp4xxbe
 do
         BUILD_MACHINE=$machine
-        BUILD_TARGETS="gcc binutils pkgconfig make automake autoconf libtool m4 perl python gdb strace screen"
-        do_build
+        BUILD_TARGETS="meta-angstrom-2007"
+	do_build
 done
+
+#cross toolchain
+#for machine in ep93xx a780 efika collie ixp4xxbe
+#do
+#        BUILD_MACHINE=$machine
+#        BUILD_TARGETS="meta-toolchain"
+#	BUILD_CLEAN="meta-toolchain"
+#        do_build
+#done
 
