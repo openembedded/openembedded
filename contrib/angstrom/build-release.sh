@@ -44,7 +44,7 @@ done
 for machine in ixp4xxle ixp4xxbe 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="nslu2-minimal-image"
+	BUILD_TARGETS="minimal-image nslu2-base-image"
 	do_build
 done	 
 
