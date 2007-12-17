@@ -37,14 +37,14 @@ for machine in ep93xx gumstix-connex gumstix-verdex efika omap5912osk
 do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross"
-	BUILD_TARGETS="minimal-image console-image"
+	BUILD_TARGETS="base-image console-image"
 	do_build
 done
 
 for machine in ixp4xxle ixp4xxbe 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="minimal-image nslu2-base-image"
+	BUILD_TARGETS="base-image nslu2-base-image"
 	do_build
 done	 
 
@@ -60,7 +60,7 @@ done
 for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 poodle tosa hx4700 c7x0 spitz akita collie 
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="minimal-image console-image minimal-gpe-image x11-image"
+	BUILD_TARGETS="base-image console-image minimal-gpe-image x11-image"
 	do_build
 done
 

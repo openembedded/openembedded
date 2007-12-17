@@ -22,7 +22,6 @@ do_compile () {
 
 # install mkimage for the kernel makefile
 do_stage() {
-	install -d ${STAGING_BINDIR_NATIVE}
-	install -m 755 ${S}/tools/mkimage ${STAGING_BINDIR_NATIVE}/
+	install -m 0755 tools/mkimage ${STAGING_BINDIR_NATIVE}/
 }
 

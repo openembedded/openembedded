@@ -2,42 +2,24 @@ require linux.inc
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_cm-x270 = "1"
-DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
-DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 
-DEPENDS_append_mpc8313e-rdb = " dtc-native"
-DEPENDS_append_mpc8323e-rdb = " dtc-native"
-
-PR = "r8"
+PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
-	   file://binutils-buildid-arm.patch;patch=1 \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.24-rc5.bz2;patch=1 \
            file://defconfig \
 	   "
 
+S = "${WORKDIR}/linux-2.6.23"
+
 SRC_URI_append_cm-x270 = "\
-	file://0001-cm-x270-base2.patch;patch=1 \
-	file://0002-cm-x270-match-type.patch;patch=1 \
-	file://0003-cm-x270-ide.patch;patch=1 \
-	file://0004-cm-x270-it8152.patch;patch=1 \
-	file://0005-cm-x270-pcmcia.patch;patch=1 \
-	file://0006-ramdisk_load.patch;patch=1 \
-	file://0007-mmcsd_large_cards-r0.patch;patch=1 \
-	file://0008-cm-x270-nand-simplify-name.patch;patch=1"
-
-SRC_URI_append_mpc8313e-rdb = "\
-	file://mpc831x-nand.patch;patch=1 \
-	file://mpc8313e-rdb-leds.patch;patch=1 \
-	file://mpc8313e-rdb-rtc.patch;patch=1"
-
-SRC_URI_append_mpc8323e-rdb = "\
-	file://mpc832x-leds.patch;patch=1" 
+	file://0001-cm-x270-match-type.patch;patch=1 \
+	file://0002-ramdisk_load.patch;patch=1 \
+	file://0003-mmcsd_large_cards-r0.patch;patch=1 \
+	file://0004-cm-x270-nand-simplify-name.patch;patch=1 \
+	file://0005-cmx270-pci.patch;patch=1"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
-
-DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
-DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
 
 FILES_kernel-image_cm-x270 = ""
 
