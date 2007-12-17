@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r50"
+PR = "r51"
 
 inherit task
 
@@ -159,8 +159,14 @@ RRECOMMENDS_task-base-kernel24 = "\
     kernel-module-input \
     kernel-module-uinput"
 
+# utf8 - Standard FS encoding
+# iso8859-1, cp437 - These 2 are default encodings used by VFAT
+# If you don't need VFAT support - don't enable them in defconfig. 
+# If you build them, you want VFAT support and they're included by default.
 RRECOMMENDS_task-base-kernel26 = "\
     kernel-module-nls-utf8 \
+    kernel-module-nls-iso8859-1 \
+    kernel-module-nls-cp437 \
     kernel-module-input \
     kernel-module-uinput \
     kernel-module-rtc-dev \
