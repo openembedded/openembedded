@@ -12,6 +12,7 @@ inherit autotools pkgconfig binconfig
 EXTRA_OECONF = "--with-zlib=${STAGING_LIBDIR}/../ \
                 --with-gnutls=${STAGING_BINDIR_CROSS}/ \
                 --without-ssl \
+                --without-libssh2 \
 		--with-random=/dev/urandom \
 		--without-libidn \
 		--enable-crypto-auth \

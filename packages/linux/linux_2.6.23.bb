@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 DEPENDS_append_mpc8323e-rdb = " dtc-native"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
