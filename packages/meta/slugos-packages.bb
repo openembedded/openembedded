@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r42"
+PR = "r43"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -196,7 +196,6 @@ SLUGOS_PACKAGES = "\
 	tar \
 	thttpd \
 	tiff \
-	timezones \
 	tzdata \
 	unzip \
 	upslug2 \

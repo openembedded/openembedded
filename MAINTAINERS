@@ -146,6 +146,7 @@ Recipes:    ttf-fonts/*
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net
+Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    altboot, webcam-server
 
@@ -197,7 +198,7 @@ Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
 Interests:  Japanese on the Zaurus
-Distros:    Ångström
+Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten

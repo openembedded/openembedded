@@ -4,7 +4,7 @@
 DESCRIPTION = "Packages that are compatible with the OPLinux distro"
 HOMEPAGE = "http://www.digital-opsis/oplinux"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 PROVIDES += "${OPLINUX_IMAGENAME}-packages"
 
 EXCLUDE_FROM_WORLD = "1"
@@ -359,7 +359,7 @@ PACKAGES_LIST = "\
 	man man-pages \
 	psmisc \
 	screen \
-	timezones \
+	tzdata \
         wview-sim wview-vpro wview-wxt510 \
         wview-sim-mysql wview-vpro-mysql \
         wview-wxt510-mysql \
