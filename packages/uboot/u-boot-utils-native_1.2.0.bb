@@ -1,12 +1,15 @@
-DESCRIPTION = "U-boot bootloader OS env. access tools for PPC"
+DESCRIPTION = "U-boot bootloader mkimage utility"
 SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r6"
+ALLOW_EMPTY = "1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
 S = "${WORKDIR}/u-boot-${PV}"
+
+inherit native
 
 do_configure() {
 	:
