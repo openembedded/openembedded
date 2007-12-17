@@ -295,7 +295,7 @@ RRECOMMENDS_task-base-usbhost = "\
     kernel-module-usb-storage "
 
 RDEPENDS_task-base-uboot = "\
-    u-boot-utils-native"
+    u-boot"
 
 RDEPENDS_task-base-redboot = "\
     fis"
