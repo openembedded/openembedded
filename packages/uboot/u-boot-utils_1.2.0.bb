@@ -2,11 +2,10 @@ DESCRIPTION = "U-boot bootloader OS env. access tools"
 SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS_openprotium = "mtd-utils"
+DEPENDS = "mtd-utils"
 PR = "r7"
 
-SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
-SRC_URI_append_openprotium = " \
+SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
         file://fw_env.c.patch;patch=1 \
         file://tools-Makefile.patch;patch=1 \
         file://env-Makefile.patch;patch=1 \
@@ -15,8 +14,6 @@ SRC_URI_append_openprotium = " \
 S = "${WORKDIR}/u-boot-${PV}"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-${PV}"
-
-EXTRA_OEMAKE_openprotium = "CROSS_COMPILE=${TARGET_PREFIX}"
 
 do_configure() {
         :
