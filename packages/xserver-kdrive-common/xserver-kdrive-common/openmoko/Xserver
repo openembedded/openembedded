@@ -118,4 +118,4 @@ fi
 
 DISPLAY=':0'
 
-exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $*
+exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1

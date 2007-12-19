@@ -2,8 +2,8 @@ require glibc.inc
 
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
-PV = "2.6+svnr${SRCREV}"
-PR = "r1"
+PV = "2.7+svnr${SRCREV}"
+PR = "r2"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://etc/ld.so.conf \
            file://generate-supported.mk"

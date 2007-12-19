@@ -1,0 +1,41 @@
+See http://sources.redhat.com/ml/crossgcc/2003-11/msg00111.html
+Might fix error
+... gcc-3.2.3-glibc-2.3.2/build-glibc/csu/version-info.h:8: too many decimal points in floating constant
+make[2]: ***
+when building on Solaris.  I haven't seen this be needed yet, but what the heck,
+here it is in case someone needs it.
+
+Retrieved with http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/csu/Makefile.diff?r1=1.70&r2=1.71&cvsroot=glibc
+
+Revision 1.71, Thu Sep 25 20:29:39 2003 UTC (8 months, 2 weeks ago) by drepper
+Branch: MAIN
+CVS Tags: glibc-2_3_3
+
+($(objpfx)version-info.h): Fix sed script to handle banners.
+
+===================================================================
+RCS file: /cvs/glibc/libc/csu/Makefile,v
+retrieving revision 1.70
+retrieving revision 1.71
+diff -u -r1.70 -r1.71
+--- libc/csu/Makefile	2003/06/26 07:27:39	1.70
++++ libc/csu/Makefile	2003/09/25 20:29:39	1.71
+@@ -222,14 +222,14 @@
+ 		   if [ -z "$$os" ]; then \
+ 		     os=Linux; \
+ 		   fi; \
+-		   echo "\"Compiled on a $$os $$version system" \
+-			"on `date +%Y-%m-%d`.\\n\"" ;; \
++		   printf '"Compiled on a %s %s system on %s.\\n"\n' \
++			"$os" "$version" "`date +%Y-%m-%d`" ;; \
+ 	   *) ;; \
+ 	 esac; \
+ 	 files="$(all-Banner-files)";				\
+ 	 if test -n "$$files"; then				\
+-	   echo "\"Available extensions:\\n\"";			\
++	   printf '"Available extensions:\\n"\n';		\
+ 	   sed -e '/^#/d' -e 's/^[[:space:]]*/	/'		\
+-	       -e 's/\(^.*$$\)/\"\1\\n\"/' $$files;		\
++	       -e 's/^\(.*\)$$/\"\1\\n\"/' $$files;		\
+ 	 fi) > $@T
+ 	mv -f $@T $@

@@ -4,9 +4,18 @@ LICENSE = "GPL"
 
 inherit kernel
 
-# Not every device needs mkimage to generate a kernel image, but lets make OE a bit more
-# friendly and increase the "Just Works(TM) factor. Building uboot takes only a minute.
-DEPENDS += " u-boot-mkimage-openmoko-native "
+# Add dependency on mkimage for kernels that build a uImage
+
+python __anonymous () {
+
+    import bb
+
+    kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
+    if kerneltype == 'uImage':
+        depends = bb.data.getVar("DEPENDS", d, 1)
+        depends = "%s u-boot-mkimage-openmoko-native" % depends
+        bb.data.setVar("DEPENDS", depends, d)
+}
 
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"

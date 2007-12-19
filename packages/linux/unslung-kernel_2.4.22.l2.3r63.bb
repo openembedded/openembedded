@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Vendor-compatible Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
-PR = "r20"
+PR = "r21"
 
 COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "nslu2"
@@ -38,7 +38,7 @@ S = "${WORKDIR}/linux-2.4.22"
 inherit kernel
 
 ARCH = "arm"
-KERNEL_SUFFIX = "ixp4xxbe"
+KERNEL_SUFFIX = "nslu2be"
 CMDLINE_CONSOLE ?= "ttyS0,115200"
 CMDLINE_ROOT = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc mem=32M@0x00000000"
 CMDLINE = "${CMDLINE_CONSOLE} ${CMDLINE_ROOT}"
@@ -52,7 +52,7 @@ do_configure_prepend() {
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}
+        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}.bin
 }
 
 do_deploy[dirs] = "${S}"

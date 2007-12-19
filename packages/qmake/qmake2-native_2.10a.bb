@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 QTVER = "qtopia-core-opensource-src-4.3.2"
 
@@ -15,7 +15,7 @@ S = "${WORKDIR}/${QTVER}"
 
 # we need the real target system here
 CROSS_SYS := "${TARGET_SYS}"
-inherit autotools native
+inherit autotools cross 
 
 export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"

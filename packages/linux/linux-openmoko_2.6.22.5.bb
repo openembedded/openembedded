@@ -37,7 +37,6 @@ S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 ##############################################################
 # kernel image resides on a seperate flash partition (for now)
 #
-FILES_kernel-image = ""
 ALLOW_EMPTY = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"

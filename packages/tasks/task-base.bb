@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r50"
+PR = "r53"
 
 inherit task
 
@@ -15,6 +15,7 @@ PACKAGES = ' \
             ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "vfat", "task-base-vfat", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda", "",d)} \
             ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci", "",d)} \
@@ -87,6 +88,7 @@ RDEPENDS_task-base = "\
     \
     ${@base_contains('COMBINED_FEATURES', 'alsa', 'task-base-alsa', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'ext2', 'task-base-ext2', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'vfat', 'task-base-vfat', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'irda', 'task-base-irda', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pci', 'task-base-pci', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'task-base-pcmcia', '',d)} \
@@ -187,6 +189,12 @@ RDEPENDS_task-base-ext2 = "\
     e2fsprogs \
     e2fsprogs-e2fsck \
     e2fsprogs-mke2fs"
+
+RRECOMMENDS_task-base-vfat = "\
+    kernel-module-msdos \
+    kernel-module-vfat \
+    kernel-module-nls-iso8859-1 \
+    kernel-module-nls-cp437"
 
 RDEPENDS_task-base-alsa = "\
     alsa-utils-alsactl \
@@ -295,7 +303,7 @@ RRECOMMENDS_task-base-usbhost = "\
     kernel-module-usb-storage "
 
 RDEPENDS_task-base-uboot = "\
-    uboot-utils"
+    u-boot"
 
 RDEPENDS_task-base-redboot = "\
     fis"
