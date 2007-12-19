@@ -201,6 +201,7 @@ require glibc-package.bbclass
 
 PACKAGES_unslung = "libc6-unslung"
 PACKAGE_ARCH_unslung = "nslu2"
+PACKAGE_NO_GCONV_unslung = "1"
 RDEPENDS_libc6-unslung = "nslu2-linksys-libs"
 RPROVIDES_libc6-unslung = "libc6"
 
