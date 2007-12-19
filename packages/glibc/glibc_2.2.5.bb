@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r12"
+PR = "r13"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -163,7 +163,7 @@ do_stage() {
 	rm -f ${STAGING_DIR_HOST}${layout_base_libdir}/libc.so.6
 	oe_runmake 'install_root=${STAGING_DIR_HOST}' \
 		   'includedir=${layout_includedir}' 'libdir=${layout_libdir}' 'slibdir=${layout_base_libdir}' \
-		   '${STAGING_DIR_HOST}${layout_base_libdir}libc.so.6' \
+		   '${STAGING_DIR_HOST}${layout_base_libdir}/libc.so.6' \
 		   '${STAGING_INCDIR}/bits/errno.h' \
 		   '${STAGING_INCDIR}/bits/libc-lock.h' \
 		   '${STAGING_INCDIR}/gnu/stubs.h' \
