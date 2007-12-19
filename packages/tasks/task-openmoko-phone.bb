@@ -1,8 +1,7 @@
 DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PROVIDES = "task-openmoko-everything"
-PR = "r71"
+PR = "r72"
 
 inherit task
 
