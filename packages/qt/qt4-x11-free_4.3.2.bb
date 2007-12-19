@@ -62,7 +62,7 @@ do_configure() {
 
 # FIXME: Might want to compile the cross tools for the -dev packages as well...
 do_compile() {
-	unset CFLAGS CXXFLAGS
+	unset CFLAGS CXXFLAGSi
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${S}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${S}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${S}/bin/uic
@@ -74,6 +74,7 @@ PARTS = "3Support AssistantClient Core DBus Designer DesignerComponents Gui Netw
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
+	install -d ${STAGING_QT_DIR}
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic
