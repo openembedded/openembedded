@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r2"
+PR = "r1"
 COMPATIBLE_MACHINE = "nslu2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -14,7 +14,6 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://lazy_umount.patch;patch=1 \
            file://halt.patch;patch=1 \
            file://fdisk-readhex.patch;patch=1 \
-           file://trylink-bash.patch;patch=1 \
            file://slingbox_name.patch;patch=1 \
            file://slingbox.patch;patch=1"
 
