@@ -24,7 +24,8 @@ DEPENDS = "\
 	task-distro-base task-machine-base \
 	${DISTRO_SSH_DAEMON} \
 	${DISTRO_PACKAGE_MANAGER} \
-	task-base-usbhost task-base-ext2 \
+	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
+	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
 
 IMAGE_INSTALL = "\
@@ -32,7 +33,8 @@ IMAGE_INSTALL = "\
 	task-distro-base task-machine-base \
 	${DISTRO_SSH_DAEMON} \
 	${DISTRO_PACKAGE_MANAGER} \
-	task-base-usbhost task-base-ext2 \
+	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
+	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
 
 export IMAGE_BASENAME = "base-image"
