@@ -1,13 +1,19 @@
 DESCRIPTION = "Fluendo Streaming Server"
 LICENSE = "GPL"
-DEPENDS = "gstreamer python-imaging python-gst twisted python-pygtk2"
-RDEPENDS = " python-resource python-pprint python-threading  python-imaging python-xml python-curses python-compression python-fcntl  python-pygobject python-pickle python-netclient python-datetime python-crypt python-twisted-core python-twisted-web python-lang python-zopeinterface  python-textutils python-core python-gst python-misc"
-RDEPENDS_${PN}-gui = "${PN} python-pygtk2 python-pycairo "
-PR = "r7"
+DEPENDS = "gstreamer python-imaging python-gst twisted python-pygtk"
+RDEPENDS = "python-resource python-pprint python-threading \
+            python-imaging python-xml python-curses \
+            python-compression python-fcntl python-pygobject \
+            python-pickle python-netclient python-datetime \
+            python-crypt python-twisted-core python-twisted-web \
+            python-lang python-zopeinterface  python-textutils \
+            python-gst python-misc"
+RDEPENDS_${PN}-gui = "${PN} python-pygtk python-pycairo"
+PR = "r9"
 
 SRC_URI = "http://www.flumotion.net/src/flumotion/flumotion-${PV}.tar.bz2 \
            file://python-path.patch;patch=1 \
-	   file://no-check-for-python-stuff.patch;patch=1"
+           file://no-check-for-python-stuff.patch;patch=1"
 
 inherit autotools distutils-base pkgconfig
 
