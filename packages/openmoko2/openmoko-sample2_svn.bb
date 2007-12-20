@@ -9,7 +9,7 @@ inherit openmoko2
 PACKAGES += "${PN}-src"
 # path should match the toolchain path
 FILES_${PN}-src = "/usr/local/openmoko"
-PACKAGE_ARCH_${PN}-src = "all"
+PACKAGE_ARCH_${PN}-src = "${BUILD_ARCH}-all-sdk"
 
 do_configure_prepend() {
 	install -d ${WORKDIR}/source

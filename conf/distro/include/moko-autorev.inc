@@ -39,6 +39,7 @@ SRCREV_pn-openmoko-theme-standard2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-theme-standard2-qvga ?= "${AUTOREV}"
 SRCREV_pn-openmoko-today2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-today2-folders ?= "${AUTOREV}"
+SRCREV_pn-openmoko-toolchain-scripts ?= "${AUTOREV}"
 SRCREV_pn-openmoko-worldclock2 ?= "${AUTOREV}"
 
 SRCREV_pn-openocd ?= "${AUTOREV}"
