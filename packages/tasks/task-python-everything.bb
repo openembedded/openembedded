@@ -9,7 +9,7 @@ RDEPENDS = "\
 		python-constraint	\
 		python-dbus			\
 		python-dialog		\
-		python-directfb		\
+		python-pydirectfb		\
 		python-efl			\
 		python-pycurl		\
 		python-fam			\
