@@ -22,7 +22,7 @@ IMAGE_INSTALL = "\
 	settings-daemon \
 "
 
-export IMAGE_BASENAME = "poky-base-image"
+export IMAGE_BASENAME = "${PN}"
 IMAGE_LINGUAS = ""
 
 inherit image

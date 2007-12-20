@@ -5,7 +5,7 @@ SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
-PV = "1.3.0${LOCALVERSION}"
+PV = "1.3.1${LOCALVERSION}"
 PR = "r1"
 
 SRCREV_FORMAT = "patches"

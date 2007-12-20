@@ -95,10 +95,10 @@ do
 done	
 
 # populate feeds
-for machine in ep93xx a780 efika collie ixp4xxbe
-do
-        BUILD_MACHINE=$machine
-        BUILD_TARGETS="meta-angstrom-2007"
-	do_build
-done
+#for machine in ep93xx a780 efika collie ixp4xxbe
+#do
+#        BUILD_MACHINE=$machine
+#        BUILD_TARGETS="meta-angstrom-2007"
+#	do_build
+#done
 
