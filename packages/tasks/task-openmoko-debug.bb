@@ -15,6 +15,7 @@ RDEPENDS_task-openmoko-debug = "\
   cu \
   dbench \
   fbgrab \
+  fbset \
   fstests \
   gdb \
   gdbserver \
