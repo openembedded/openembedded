@@ -8,7 +8,7 @@ inherit native
 # Avoid circular dependencies from package_ipk.bbclass
 PACKAGES = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ipkg-utils"
-INSTALL += "ipkg-list-fields arfile.py"
+INSTALL += "arfile.py"
 
 do_stage() {
         for i in ${INSTALL}; do
