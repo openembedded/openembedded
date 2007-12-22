@@ -368,6 +368,15 @@ NOTE: Couldn't find shared library provider for libm.so.6
       you could create a package for the metadata to install every needed
       library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is
       installed when creating images.</para>
+      
+      <para>However, the correct way to resolve this is to provide explicit 
+      mapping using ASSUME_SHLIBS variable. For example, for the libraries 
+      above (partial):
+      <screen>
+ASSUME_SHLIBS = "libqtopia2.so.2:qtopia2_2.4 libc.so.6:libc"
+</screen>
+      The format is shlib_file_name:package[_version]. If a version is specified it will be
+      used as the minimal (>=) version for the dependency.</para>
     </section>
   </section>
 
