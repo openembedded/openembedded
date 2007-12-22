@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.21-hh19
-# Thu Dec 13 13:04:47 2007
+# Linux kernel version: 2.6.21-hh20
+# Sat Dec 22 20:05:07 2007
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -164,6 +164,7 @@ CONFIG_ARCH_H5400=y
 CONFIG_IPAQ_H5400_BT=m
 CONFIG_IPAQ_H5400_LCD=y
 CONFIG_IPAQ_H5400_BL=y
+CONFIG_IPAQ_H5400_AUDIO=m
 # CONFIG_MACH_HIMALAYA is not set
 # CONFIG_MACH_HTCUNIVERSAL is not set
 # CONFIG_MACH_HTCALPINE is not set
@@ -829,7 +830,42 @@ CONFIG_LEGACY_PTY_COUNT=32
 #
 # I2C support
 #
-# CONFIG_I2C is not set
+CONFIG_I2C=m
+# CONFIG_I2C_CHARDEV is not set
+
+#
+# I2C Algorithms
+#
+# CONFIG_I2C_ALGOBIT is not set
+# CONFIG_I2C_ALGOPCF is not set
+# CONFIG_I2C_ALGOPCA is not set
+
+#
+# I2C Hardware Bus support
+#
+CONFIG_I2C_PXA=m
+# CONFIG_I2C_PXA_SLAVE is not set
+# CONFIG_I2C_OCORES is not set
+# CONFIG_I2C_PARPORT_LIGHT is not set
+# CONFIG_I2C_STUB is not set
+# CONFIG_I2C_PCA_ISA is not set
+
+#
+# Miscellaneous I2C Chip support
+#
+# CONFIG_SENSORS_DS1337 is not set
+# CONFIG_SENSORS_DS1374 is not set
+# CONFIG_SENSORS_EEPROM is not set
+# CONFIG_SENSORS_PCF8574 is not set
+# CONFIG_SENSORS_PCA9539 is not set
+# CONFIG_SENSORS_PCA9535 is not set
+# CONFIG_SENSORS_PCF8591 is not set
+# CONFIG_SENSORS_RTC8564 is not set
+# CONFIG_SENSORS_MAX6875 is not set
+# CONFIG_I2C_DEBUG_CORE is not set
+# CONFIG_I2C_DEBUG_ALGO is not set
+# CONFIG_I2C_DEBUG_BUS is not set
+# CONFIG_I2C_DEBUG_CHIP is not set
 
 #
 # SPI support
@@ -845,6 +881,7 @@ CONFIG_W1=y
 #
 # 1-wire Bus Masters
 #
+# CONFIG_W1_MASTER_DS2482 is not set
 CONFIG_W1_MASTER_DS1WM=y
 
 #
@@ -1011,7 +1048,39 @@ CONFIG_SOUND=y
 #
 # Advanced Linux Sound Architecture
 #
-# CONFIG_SND is not set
+CONFIG_SND=m
+CONFIG_SND_TIMER=m
+CONFIG_SND_PCM=m
+# CONFIG_SND_SEQUENCER is not set
+CONFIG_SND_OSSEMUL=y
+CONFIG_SND_MIXER_OSS=m
+CONFIG_SND_PCM_OSS=m
+CONFIG_SND_PCM_OSS_PLUGINS=y
+# CONFIG_SND_DYNAMIC_MINORS is not set
+CONFIG_SND_SUPPORT_OLD_API=y
+CONFIG_SND_VERBOSE_PROCFS=y
+# CONFIG_SND_VERBOSE_PRINTK is not set
+# CONFIG_SND_DEBUG is not set
+
+#
+# Generic devices
+#
+# CONFIG_SND_DUMMY is not set
+# CONFIG_SND_MTPAV is not set
+# CONFIG_SND_SERIAL_U16550 is not set
+# CONFIG_SND_MPU401 is not set
+
+#
+# ALSA ARM devices
+#
+CONFIG_SND_H5XXX_AK4535=m
+# CONFIG_SND_PXA2XX_AC97 is not set
+# CONFIG_SND_RECON is not set
+
+#
+# SoC audio support
+#
+# CONFIG_SND_SOC is not set
 
 #
 # Open Sound System
@@ -1096,8 +1165,14 @@ CONFIG_RTC_INTF_DEV=y
 # RTC drivers
 #
 # CONFIG_RTC_DRV_CMOS is not set
+# CONFIG_RTC_DRV_X1205 is not set
+# CONFIG_RTC_DRV_DS1307 is not set
 # CONFIG_RTC_DRV_DS1553 is not set
+# CONFIG_RTC_DRV_ISL1208 is not set
+# CONFIG_RTC_DRV_DS1672 is not set
 # CONFIG_RTC_DRV_DS1742 is not set
+# CONFIG_RTC_DRV_PCF8563 is not set
+# CONFIG_RTC_DRV_RS5C372 is not set
 # CONFIG_RTC_DRV_M48T86 is not set
 CONFIG_RTC_DRV_SA1100=y
 # CONFIG_RTC_DRV_TEST is not set
