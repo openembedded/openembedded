@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_getting_oe">
+  <title>Getting OpenEmbedded</title>
+
+  <section id="gettingoe_getting_bitbake">
+    <title>Getting <application>BitBake</application></title>
+
+    <para>The required version of <application>BitBake</application> is
+    changing rapidly. At the time of writing (30th of June 2007)
+    <application>BitBake</application> 1.8.2 was required.</para>
+
+    <para>A safe method is to get the <application>BitBake</application> from
+    a stable Subversion branch (those with an even minor number). <screen>
+<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.8
+...
+A   bitbake-1.8/classes/base.bbclass
+U   bitbake-1.8
+At revision 827.
+            </screen> <application>BitBake</application> is checked out now;
+    this completes the first and most critical dependency of OpenEmbedded.
+    Issuing <command>svn</command> <command>up</command> in the
+    <emphasis>bitbake-1.8</emphasis> directory will update
+    <application>BitBake</application> to the latest stable version, but
+    generally it is a good idea to stick with a specific known working version
+    of <application>BitBake</application> until OpenEmbedded asks you to
+    upgrade.</para>
+  </section>
+
+  <section id="gettingoe_getting_oe">
+    <title>Getting OpenEmbedded</title>
+
+    <para>The OpenEmbedded metadata has a high rate of development, so it's a
+    good idea to stay up to date. You'll need monotone 0.28 to get the
+    metadata and stay up to date. Monotone is available in most distributions
+    and has binaries at <ulink url="http://venge.net/monotone/">Monotone
+    homepage</ulink>.</para>
+
+    <para>Next step is getting snapshot of database. <screen>
+wget http://openembedded.org/snapshots/OE.mtn.bz2 http://openembedded.org/snapshots/OE.mtn.bz2.md5
+</screen> Or if you have monotone 0.30 or later: <screen>
+wget http://www.openembedded.org/snapshots/OE-this-is-for-mtn-0.30.mtn.bz2 
+wget http://www.openembedded.org/snapshots/OE-this-is-for-mtn-0.30.mtn.bz2.md5
+</screen> Then verify integrity of snapshot by checking md5sum. <screen>
+md5sum -c OE.mtn.bz2.md5sum
+</screen> Then unpack database. <screen>
+bunzip OE.mtn.bz2
+</screen> Finally checkout the development branch. <screen>
+mtn --db=OE.mtn co -b org.openembedded.dev
+</screen></para>
+  </section>
+
+  <section id="gettingoe_configuring_oe">
+    <title>Configuring OpenEmbedded</title>
+
+    <para>This section is a stub, help us by expanding it</para>
+  </section>
+
+  <section id="gettingoe_building_software">
+    <title>Building Software</title>
+
+    <para>This section is a stub, help us by expanding it</para>
+  </section>
+</chapter>

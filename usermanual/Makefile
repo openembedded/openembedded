@@ -2,8 +2,9 @@ topdir = .
 manual = $(topdir)/usermanual.xml
 # types = pdf txt rtf ps xhtml html man tex texi dvi
 # types = pdf txt
-types = $(xmltotypes) $(htmltypes)
-xmltotypes = pdf txt
+types = $(xmltotypes) $(htmltypes) $(docbooktotypes)
+xmltotypes = 
+docbooktotypes = dvi pdf ps rtf tex texi txt
 htmltypes = html xhtml
 htmlxsl = $(if $(filter $@,$(foreach type,$(htmltypes),$(type)-nochunks)),docbook-utf8.xsl,http://docbook.sourceforge.net/release/xsl/current/$@/chunk.xsl)
 htmlcssfile = docbook.css
@@ -42,10 +43,13 @@ $(htmltypes): $(if $(htmlcss),$(htmlcss)) $(manual)
 ifdef htmlcss
 	$(call command,install -m 0644 $(htmlcss) $@/$(htmlcssfile),CP $(htmlcss) $@/$(htmlcssfile))
 endif
-	$(call command,xsltproc --stringparam base.dir $@/ $(if $(htmlcssfile),--stringparam html.stylesheet $(htmlcssfile)) $(htmlxsl) $(manual),XSLTPROC $@ $(manual))
+	$(call command,xsltproc --param use.id.as.filename 1 --stringparam base.dir $@/ $(if $(htmlcssfile),--stringparam html.stylesheet $(htmlcssfile)) $(htmlxsl) $(manual),XSLTPROC $@ $(manual))
 
 $(xmltotypes): $(manual)
 	$(call command,xmlto --extensions -o $(topdir)/$@ $@ $(manual),XMLTO $@ $(manual))
+
+$(docbooktotypes): $(manual)
+	$(call command,docbook2$@ $(manual),DOCBOOK2 $@ $(manual))
 
 clean:
 	rm -rf $(cleanfiles)

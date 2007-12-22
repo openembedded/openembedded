@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="update-rc-d_class" xreflabel="update-rc.d class">
+  <title>update-rc.d class</title>
+
+  <para>Services which need to be started during boot need to be registered
+  using the update-rc.d command. These services are required to have an init
+  script which is installed into <command>/etc/init.d</command> that can be
+  used to start and stop the service.</para>
+
+  <para>The following examples show a service being manually stopped and
+  started using it's init script:<screen>root@titan:/etc# /etc/init.d/syslog stop
+Stopping syslogd/klogd: stopped syslogd (pid 1551).
+stopped klogd (pid 1553).
+done
+root@titan:/etc# /etc/init.d/syslog start
+Starting syslogd/klogd: done
+root@titan:/etc#</screen>The update-rc.d class takes care of the following
+  automatically:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Registers the service with the system during postinst so it will
+      be automatically started on boot;</para>
+    </listitem>
+
+    <listitem>
+      <para>Stops the service during prerm so it will no longer be running
+      after being removed;</para>
+    </listitem>
+
+    <listitem>
+      <para>Unregisters the service during prerm so there will be no attempts
+      to start the removed service during boot;</para>
+    </listitem>
+
+    <listitem>
+      <para>Adds a build and run time dependency on the update-rc.d package
+      which it uses to register and unregister the services.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>Usage is very simple, as shown by this example from dropbear:<screen>INITSCRIPT_NAME = "dropbear"
+INITSCRIPT_PARAMS = "defaults 10"
+
+inherit autotools update-rc.d</screen></para>
+
+  <para>where the variables are:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>INITSCRIPT_NAME</term>
+
+      <listitem>
+        <para>The name of the init script, which the package will have
+        installed into /etc/init.d</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>INITSCRIPT_PARAMS</term>
+
+      <listitem>
+        <para>The parameters to pass to the update-rc.d call during
+        installation. Typically this will be the work default followed by
+        either single number or a pair of numbers representing the start/stop
+        sequence number (both are set to the same if only one number is
+        supplied.)</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>The help from update-rc.d shows show the required parameters:<screen>root@titan:/etc# update-rc.d -h
+usage: update-rc.d [-n] [-f] [-r &lt;root&gt;] &lt;basename&gt; remove
+       update-rc.d [-n] [-r &lt;root&gt;] [-s] &lt;basename&gt; defaults [NN | sNN kNN]
+       update-rc.d [-n] [-r &lt;root&gt;] [-s] &lt;basename&gt; start|stop NN runlvl [runlvl] [...] .
+                -n: not really
+                -f: force
+                -r: alternate root path (default is /)
+                -s: invoke start methods if appropriate to current runlevel
+root@titan:/etc#</screen>The start and stop sequence numbers need to ensure
+  that the the service is started at the appropriate time relative to other
+  services, such as waiting for any service that it depends on before starting
+  (networking for example). Unless the service is a system or security related
+  service it's better to be started as late as possible.</para>
+
+  <section>
+    <title>Multiple update-rc.d packages</title>
+
+    <para>Defining multiple init scripts within the one recipe is also
+    supported. Note that each init script must be in it's own package. The
+    following example is from the quagga recipe:<screen># Main init script starts all deamons
+# Seperate init script for watchquagga
+INITSCRIPT_PACKAGES                 = "${PN} ${PN}-watchquagga"
+INITSCRIPT_NAME_${PN}               = "quagga"
+INITSCRIPT_PARAMS_${PN}             = "defaults 15 85"
+INITSCRIPT_NAME_${PN}-watchquagga   = "watchquagga"
+INITSCRIPT_PARAMS_${PN}-watchquagga = "defaults 90 10"
+
+inherit autotools update-rc.d</screen> The variables that need to be declared
+    are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>INITSCRIPT_PACKAGES</term>
+
+        <listitem>
+          <para>The names of each package which includes an init
+          script.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>INITSCRIPT_NAME_x</term>
+
+        <listitem>
+          <para>The same meaning as INITSCRIPT_NAME, but for the package x.
+          This would be repeated for each package that includes an init
+          script.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>INITSCRIPT_PARAMS_x</term>
+
+        <listitem>
+          <para>The same meaning as INITSCRIPT_PARAMS, but for the package x.
+          This would be repeated for each package that includes an init
+          script.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</section>

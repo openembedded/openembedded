@@ -1,579 +1,120 @@
-<?xml version='1.0'   encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ex:ts=4:sw=4:sts=4:et
   -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
 -->
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
-                      "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY chapter-introduction SYSTEM "chapters/introduction.xml">
+<!ENTITY chapter-metadata SYSTEM "chapters/metadata.xml">
+<!ENTITY chapter-gettingoe SYSTEM "chapters/getting_oe.xml">
+<!ENTITY chapter-features SYSTEM "chapters/features.xml">
+<!ENTITY chapter-commonusecases SYSTEM "chapters/common_use_cases.xml">
+<!ENTITY chapter-comparing SYSTEM "chapters/comparing.xml">
+<!ENTITY chapter-usage SYSTEM "chapters/usage.xml">
+<!ENTITY chapter-recipes SYSTEM "chapters/recipes.xml">
+<!ENTITY class-autotools SYSTEM "reference/class_autotools.xml">
+<!ENTITY class-binconfig SYSTEM "reference/class_binconfig.xml">
+<!ENTITY dirs-install SYSTEM "reference/dirs_install.xml">
+<!ENTITY dirs-staging SYSTEM "reference/dirs_staging.xml">
+<!ENTITY class-distutils SYSTEM "reference/class_distutils.xml">
+<!ENTITY fakeroot SYSTEM "reference/fakeroot.xml">
+<!ENTITY class-image SYSTEM "reference/class_image.xml">
+<!ENTITY image-types SYSTEM "reference/image_types.xml">
+<!ENTITY class-pkgconfig SYSTEM "reference/class_pkgconfig.xml">
+<!ENTITY class-rootfs_ipkg SYSTEM "reference/class_rootfs_ipkg.xml">
+<!ENTITY var-section SYSTEM "reference/var_section.xml">
+<!ENTITY class-siteinfo SYSTEM "reference/class_siteinfo.xml">
+<!ENTITY var-src-uri SYSTEM "reference/var_src_uri.xml">
+<!ENTITY class-update-alternatives SYSTEM "reference/class_update-alternatives.xml">
+<!ENTITY class-update-rcd SYSTEM "reference/class_update-rc.d.xml">
+]>
 <book>
-    <bookinfo>
-        <title>OpenEmbedded User Manual</title>
-        <authorgroup>
-            <corpauthor>OpenEmbedded Team</corpauthor>
-        </authorgroup>
-        <copyright>
-            <year>2006</year>
-            <holder>Holger Hans Peter Freyther</holder>
-            <holder>Koen Kooi</holder>
-            <holder>Detlef Vollmann</holder>                
-        </copyright>
-
-        <legalnotice>
-            <para>This work is licensed under the Creative Commons Attribution License. To view a copy of this license, visit <ulink url="http://creativecommons.org/licenses/by/2.0/">http://creativecommons.org/licenses/by/2.0/</ulink> or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.</para>
-        </legalnotice>
-    </bookinfo>
-
-
-    <chapter>
-        <title>Introduction</title>
-        <section>
-            <title>Overview</title>
-                <para> Like any build tool (make, ant, jam), the OpenEmbedded build tool BitBake controls how to build things and the build dependencies. But unlike single project tools like <command>make</command> it is not based on one makefile or a closed set of inter-dependent makefiles, but collects and manages an open set of largely independent build descriptions (package recipes) and builds them in proper order. </para>
-            <para>To be more precise:<ulink url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink> is a set of metadata used to cross-compile, package and install software packages. <application>OpenEmbedded</application> is being used to build and maintain a number of embedded Linux distributions, including OpenZaurus, Angström, Familiar and SlugOS.</para>
-        <para>The primary use-case of <application>OpenEmbedded</application> are:
-            <itemizedlist>
-                <listitem><para>Handle cross-compilation.</para></listitem>
-                <listitem><para>Handle inter-package dependencies</para></listitem>
-                <listitem><para>Must be able to emit packages (tar, rpm, ipk)</para></listitem>
-                <listitem><para>Must be able to create images and feeds from packages</para></listitem>
-                <listitem><para>Must be highly configurable to support many machines, distributions and architectures.</para></listitem>
-                <listitem><para>Writing of metadata must be easy and reusable</para></listitem>
-            </itemizedlist>
-        </para>
-        <para>Together with <ulink url="http://bitbake.berlios.de/manual"><application>BitBake</application></ulink>, OpenEmbedded satisfies all these and many more. Flexibility and power have always been the priorities.</para>
-        </section>
-
-
-       <section>
-            <title>History</title>
-            <para>OpenEmbedded was invented and founded by the creators of the OpenZaurus project. 
-At that time the project had pushed <emphasis>buildroot</emphasis> to its limits. It supported the creation of
-<emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible
-to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
-OpenEmbedded was created.</para>
-            <para>After a few months other projects started using OpenEmbedded and contributing back. On 7 December 2004 Chris Larson split the project into two parts: BitBake, a generic task executor and OpenEmbedded, the metadata for BitBake.</para>   
-       </section>
-    </chapter>
-
-
-    <chapter>
-        <title>Getting Started</title>
-        <section>
-            <title>Getting <application>BitBake</application></title>
-            <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (end of 2007) <application>BitBake</application> 1.8.latest was required.</para>
-            <para>A good method is to get <application>BitBake</application> from the stable Subversion branch.
-            <screen>
-<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.8
-...
-A   bitbake-1.8/classes/base.bbclass
-U   bitbake-1.8
-At revision 986.
-            </screen>
-            <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>update</command> in the <emphasis>bitbake-1.8</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
-            </para>
-        </section>
-
-        <section>
-            <title>Getting OpenEmbedded</title>
-            <para>
-The OpenEmbedded metadate has a high rate of development, so it's a good idea to stay up to date.
-You'll need monotone 0.29 or later to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
-
-<screen>	    
-#get the snapshot
-wget http://openembedded.org/snapshots/OE.db.bz2 http://openembedded.org/snapshots/OE.db.bz2.md5
-
-#verify the integrity
-cat OE.db.bz2.md5sum
-md5sum OE.db.bz2
-
-#extract the tarball
-bunzip OE.db.bz2
-
-#check the development branch
-monotone --db=OE.db co -b org.openembedded.dev
-</screen>
-
-           </para>
-        </section>
-
-        <section>
-            <title>Configuring OpenEmbedded</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Building Software</title>
-            <para>Once you set up and configured BitBake and OpenEmbedded, you can build software and images like this:
-<screen>
-bitbake &lt;recipe_name&gt;
-</screen>
-	    </para>
-	    
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-    </chapter>
+  <bookinfo>
+    <title>OpenEmbedded User Manual</title>
 
+    <authorgroup>
+      <corpauthor>OpenEmbedded Team</corpauthor>
+    </authorgroup>
 
-    <chapter>
-        <title>Metadata</title>
-        <section>
-            <title>File Layout</title>
-            <para>OpenEmbedded has six directories three of them hold <application>BitBake</application> metadata.</para>
+    <copyright>
+      <year>2006</year>
 
-            <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf, machine and distribution configuration. bitbake.conf is read when <application>BitBake</application> is started and this will include among others a local.conf the machine and distribution configuration files. These files will be searched in the <command>BBPATH</command> environment variable.</para>
+      <year>2007</year>
 
-            <para><emphasis>classes</emphasis> is the directory holding <application>BitBake</application> bbclass. These classes can be inherited by the <application>BitBake</application> files. BitBake automatically inherits the base.bbclass on every parsed file. <command>BBPATH</command> is used to  find the class.</para>
+      <holder>Holger Hans Peter Freyther</holder>
 
-            <para>In <emphasis>packages</emphasis> the <application>BitBake</application> files are stored. For each task or application we have a directory. These directories store the real <application>BitBake</application> files. They are the ones ending with <emphasis>.bb</emphasis>. And for each application and version we have one.</para>
+      <holder>Koen Kooi</holder>
 
-        </section>
-        <section>
-            <title>Syntax</title>
-            <para>OpenEmbedded has files ending with <emphasis>.conf</emphasis>, <emphasis>.inc</emphasis>,
-<emphasis>.bb</emphasis> and<emphasis>.bbclass</emphasis>. The syntax and semantic of these files are best
-described in the <ulink url="http://bitbake.berlios.de/manual"><application>BitBake</application> manual</ulink>. </para>
-        </section>
-        <section>
-            <title>Classes</title>
-            <para>OpenEmbedded provides special <application>BitBake</application> classes to ease compiling, packaging and other things. FIXME.</para>
-        </section>
-        <section>
-            <title>Writing Meta Data (Adding packages)</title>
-           <para>This page will guide you trough the effort of writing a .bb file or <emphasis>recipe</emphasis> in BitBake speak.</para>
-
-            <para>Let's start with the easy stuff, like the package description, license, etc:
-
-                <screen>
-DESCRIPTION = "My first application, a really cool app containing lots of foo and bar"
-LICENSE = "GPLv2"
-HOMEPAGE = "http://www.host.com/foo/"
-MAINTAINER = "Joe N. User &lt;joe@user.net&gt;"
-                </screen>
-
-The maintainer field needs to have a real name and a working email-address to be useful, the description and license fields are mandatory, so better check them twice.
-            </para>
-
-            <para>The next step is to specify what the package needs to build and run, the so called <emphasis>dependencies</emphasis>:
-
-                <screen>
-DEPENDS = "gtk+"
-RDEPENDS = "cool-ttf-fonts"
-                </screen>
-
-The package needs gtk+ to build ('DEPENDS') and requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add run-time dependencies on libraries on its own via the so called <emphasis>shlibs</emphasis>-code, but you need to specify everything by yourself, which in this case is the 'cool-ttf-fonts' package.
-            </para>
-
-            <para>After entering all this OE will know what to build before trying to build your application, but it doesn't know where to get it yet. So let's add the source location:
-
-                <screen>
-SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
-                </screen>
-
-This will tell the fetcher to where to download the sources from and it will check the integrity using md5sum if you provided the appropriate <emphasis>yoursum</emphasis>. You can make one by doing <screen>md5sum foo-1.9.tar.bz2</screen> and replacing <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8db </screen>Notice the <emphasis>${P}</emphasis> variable, that one holds the package name, <emphasis>${PN}</emphasis> in BitBake speak and the package version, <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy the recipe when a new version is released without having to alter the contents. You do need to check if everything is still correct, because new versions mean new bugs.
-            </para>
-
-            <para>Before we can move to the actual building we need to find out which build system the package is using. If we're lucky, we see a <emphasis>configure</emphasis> file in the build tree this is an indicator that we can <emphasis>inherit autotools</emphasis> if we see a <emphasis>.pro</emphasis> file, it might be qmake, which needs <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
-
-                <screen>
-inherit autotools pkgconfig
-                </screen>
-
-We are in luck! The package is a well-behaved application using autotools and pkgconfig to configure and build it self.
-            </para>
-
-            <para>Lets start the build:
-
-                <screen>
-<command>bitbake</command> foo
-                </screen>
-
-Depending on what you have built before and the speed of your computer this can take a few seconds to a few hours, so be prepared.
-            </para>
-
-            <para>
-.... some time goes by .....
-            </para>
-
-            <para>Your screen should now have something like this on it:
-
-                <screen>
-NOTE: package foo-1.9-r0: task do_build: completed
-NOTE: package foo-1.9: completed
-NOTE: build 200605052219: completed
-                </screen>
-            </para>
-
-            <para>All looks well, but wait, let's scroll up:
-
-
-                <screen>
-NOTE: the following files where installed but not shipped:
-    /usr/weirdpath/importantfile.foo
-                </screen>
-
-OE has a standard list of paths which need to be included, but it can't know everything, so we have to tell OE to include that file as well:
-
-                <screen>
-FILES_${PN} += "/usr/weirdpath/importantfile.foo"
-                </screen>
-
-It's important to use <emphasis>+=</emphasis> so it will get appended to the standard file-list, not replace the standard one.
-            </para>
-        </section>
-    </chapter>
-
-
-    <chapter>
-        <title>Special features</title>
-        <section>
-            <title>Debian package naming <anchor id="debian" /></title>
-            <screen>INHERIT += "debian"</screen>
-            <para>Placing the above line into your <emphasis>${DISTRO}.conf</emphasis> or <emphasis>local.conf</emphasis> will
-trigger renaming of packages if they only ship one library. Imagine a package where the package name (<command>PN</command>) is foo and
-this packages ships a file named <command>libfoo.so.1.2.3</command>. Now this package will be renamed to <command>libfoo1</command> to
-follow the Debian package naming policy.</para>
-        </section>
-
-        <section>
-            <title>Shared Library handling (shlibs) <anchor id="shlibs" /></title>
-            <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added when packaging the software. They should only contain
-the minimal dependencies to run the program. OpenEmbedded will analyze each packaged binary and search for <command>SO_NEEDED</command> libraries. The libraries are absolutely required by the program then OpenEmbedded is searching for packages that installs these libraries. these
-packages are automatically added to the <command>RDEPENDS</command>. As a packager you don't need to worry about shared libraries anymore
-they will be added automatically.</para>
-            <remark>NOTE: This does not apply to plug-ins used by the program.</remark>
-        </section>
-
-        <section>
-            <title>BitBake Collections <anchor id="collections" /></title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Overrides <anchor id="overrides" /></title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Package Feed Support <anchor id="feeds" /></title>
-            <para>"Package feed", or feed for short, is a term used by <command>ipkg</command> package manager, commonly used in embedded
-systems, to name a package repository holding packages. Structurally, a feed is a directory on HTTP of FTP server,
-holding packages and package descriptor file, named <command>Packages</command> or <command>Packages.gz</command>
-if compressed.
-	    </para>
-	    <para>OpenEmbedded has support to pre-configure feeds within generated images, so once images are
-installed on devices, users can immediately install new software, without the need to manually edit config files.
-There are several ways to pre-configure feed support, described below.
-	    </para>
-        <section>
-	    <title>Method 1: Using existing feed</title>
-	    <para>If you already have a feed(s) set up and available via specific URL, you can
-add them to the image using FEED_URIS variable:
-<screen>
-FEED_URIS = "\
-        feed1##http://some-server.org/feed \
-        feed2##http://some-server.org/feed-another"
-</screen>
-FEED_URIS contains list of feed descriptors, separated by spaces, per OE conventions. Each descriptor
-consists of feed tag and feed URL, joined with "##". Feed tag is an identifier used by ipkg to distinguish
-among the feeds. It can be arbitrary, just useful to the users to understood which feed is used for one
-or another action.
-	    </para>
-        </section>
-
-        <section>
-	    <title>Method 2: Using OE deploy dir as a feed (development only)</title>
-	    <para>OE internally maintains a feed-like collection of directories to create
-images from packages. This package deployment directory structure however has OE-internal
-structure and subject to change at any time. So, using it as feed directly is not recommended
-(distributions which ignored this recommendation are known to have their feeds broken when
-OE upgraded its internal mechanisms).
-	    </para>
-	    <para>However, using deploy directory as feed directly may be beneficial during
-development and testing, as it allows developers to easily install newly built packages
-without many manual actions. To facilitate this, OE offers a way to prepare feed configs 
-for deploy dir usage. To start with this, you first need to configure local HTTP server
-to export a package deployment directory via HTTP. 
-Suppose you will
-export it via URL "http://192.168.2.200/bogofeed" (where 192.168.2.200 is the address
-which will be reachable from the device). Add following to your local.conf:
-<screen>
-FEED_DEPLOYDIR_BASE_URI = "http://192.168.2.200/bogofeed"
-</screen>
-Now you need to setup local HTTP server to actually export that directory. For Apache it will be:
-<screen>
-<![CDATA[
-Alias /bogofeed ${DEPLOY_DIR}
-
-<Directory ${DEPLOY_DIR}>
-    Options Indexes FollowSymLinks
-    Order deny,allow
-    Allow from 192.168.2.0/24
-</Directory>
-]]>
-</screen>
-Replace ${DEPLOY_DIR} with the full path of deploy directory (last components of its path will be 
-<command>deploy/ipk</command>).
-	    </para>
-	    <para>Now, when you will build an image, it will automatically contain feed configs
-for the deploy directory (as of time of writing, deploy directory was internally structured with
-per-arch subdirectories; so, there are generated several feed configs, one for each subdirectory).
-	    </para>
-	    
-        </section>
-
-        </section>
-    </chapter>
-
-    <chapter>
-        <title>Common Use-cases/tasks</title>
-
-        <section>
-            <title>Creating a new Distribution</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Adding a new Machine</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Adding a new Package</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Creating your own image</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Using a prebuilt toolchain to create your packages</title>
-            <para>It might be necessary to integrate a prebuilt toolchain and other libraries but still be use
-OpenEmbedded to build packages. One of many approaches is shown and discussed here.</para>
-
-            <section>
-                <title>The toolchain</title>
-                <para>We assume the toolchain provides a C and C++ compiler, an assembler and other tools to build packages.
-The list below shows a gcc 3.4.4 toolchain for ARM architectures using glibc. We assume that the toolchain is in your <command>PATH</command>.</para>
-<screen>
-<command>ls</command> pre-built/cross/bin
-
-arm-linux-g++
-arm-linux-ld
-arm-linux-ranlib
-arm-linux-ar
-arm-linux-g77
-arm-linux-readelf
-arm-linux-as
-arm-linux-gcc
-arm-linux-gcc-3.4.4
-arm-linux-c++
-arm-linux-size
-arm-linux-c++filt
-arm-linux-nm
-arm-linux-strings
-arm-linux-cpp
-arm-linux-objcopy
-arm-linux-strip
-arm-linux-objdump
-</screen>
-            </section>
-            <section>
-                <title>The prebuilt libraries</title>
-                <para>We need the header files and the libraries itself. The following directory layout is assume.
-<command>PRE_BUILT</command> has two subdirectories one is called <emphasis>include</emphasis> and holds the header files and
-the other directory is called <emphasis>lib</emphasis> and holds the shared and static libraries. Additionally a Qt2 directory
-is present having a <emphasis>include</emphasis> and <emphasis>lib</emphasis> sub-directory.</para>
-                <screen>
-<command>ls</command> $PRE_BUILT
-include
-lib
-qt2
-</screen>
-            </section>
-
-            <section>
-                <title>Setting up OpenEmbedded</title>
-                <para>OpenEmbedded will be setup here. We assume that your machine and distribution is not part
-of OpenEmbedded and they will be created ad-hoc in the <emphasis>local.conf</emphasis> file. You will need to have
-<application>BitBake</application> and a current OpenEmbedded version available.
-                </para>
-
-                <section>
-                    <title>Sourcable script</title>
-                    <para>To ease the usage of OpenEmbedded we start by creating a source-able script. This is actually a small
-variation from the already seen script. We will name it <emphasis>build_source</emphasis> and you will need to source it.</para>
-                    <screen>
-BITBAKE_PATH=/where/is/bitbake/bin
-TOOLCHAIN=/where/is/toolchain/bin
-HOST_TOOLS=/where/is/hosttools/bin
-export PRE_BUILT=/where/is/pre-built
-
-export PATH=$BITBAKE_PATH:$TOOLCHAIN:$HOST_TOOLS:$PATH
-export OEDIR=$PWD
-export LOCALDIR=$PWD/secret-isv
-                    </screen>
-                    <para>Use <command>source build_source</command> to source the script, use <command>env</command> to check
-that the variable where exported.</para>
-                </section>
-
-                <section>
-                    <title>Creating the local.conf</title>
-                    <para>We will configure OpenEmbedded now, it is very similar to what we have done above.</para>
-
-                    <screen>
-DL_DIR = "${OEDIR}/sources"
-BBFILES := "${OEDIR}/openembedded/packages/*/*.bb ${LOCALDIR}/packages/*/*.bb"
-BBFILE_COLLECTIONS = "upstream local"
-BBFILE_PATTERN_upstream = "^${OEDIR}/openembedded/packages/"
-BBFILE_PATTERN_local = "^${LOCALDIR}/packages/"
-BBFILE_PRIORITY_upstream = "5"
-BBFILE_PRIORITY_local = "10"
-BBMASK = ""
-                    </screen>
-                    <para>${OEDIR}/openembedded will be a upstream release of OpenEmbedded. Above we have assumed it is in the
-current working directory. Additionally we have a ${LOCALDIR}, we combine these two directories as a special <link linkend="collections">BitBake Collection</link>.</para>
-
-                <screen>
-#
-# machine stuff
-#
-MACHINE = "secret-killer"
-IPKG_ARCHS = "all arm armv4 armv5te iwmmxt xscale ${MACHINE}"
-TARGET_CC_ARCH = "-mcpu=xscale -mtune=iwmmxt"
-TARGET_ARCH = "arm"
-PACKAGE_ARCH="xscale"
-                </screen>
-                <para>We tell OpenEmbedded that we build for the ARM platform and optimize for xscale and iwmmxt.</para>
-
-                <screen>
-INHERIT += " package_ipk debian"
-TARGET_OS  = "linux"
-TARGET_FPU = "soft"
-DISTRO = "secret-disro"
-DISTRO_NAME = "secret-distro"
-DISTRO_VERSION = "x.y.z"
-DISTRO_TYPE = "release"
-                </screen>
-                <para>Create a distribution ad-hoc as well. We tell OpenEmbedded that we build for linux and glibc using
-soft float as fpu. If your toolchain is a uclibc toolchain you will need to set <command>TARGET_OS</command> to linux-uclibc.</para>
-
-                <screen>
-export CC  = "${CCACHE}arm-linux-gcc-3.4.4 ${HOST_CC_ARCH}"
-export CXX = "${CCACHE}arm-linux-g++ ${HOST_CC_ARCH}"
-export CPP = "arm-linux-gcc-3.4.4 -E"
-export LD = "arm-linux-ld"
-export AR  = "arm-linux-ar"
-export AS  = "arm-linux-as"
-export RANLIB  = "arm-linux-ranlib"
-export STRIP  = "arm-linux-strip"
-                </screen>
-                <para>The above variables replace the ones from <emphasis>bitbake.conf</emphasis>. This will make OpenEmbedded
-use the prebuilt toolchain.</para>
-
-                <screen>
-#
-# point OE to the lib and include directory
-#
-TARGET_CPPFLAGS_append = " -I${PRE_BUILT}/include "
-TARGET_LDFLAGS_prepend = " -L${PRE_BUILT}/qt2/lib -L${PRE_BUILT}/lib \
--Wl,-rpath-link,${PRE_BUILT}/lib -Wl,-rpath-link,${PRE_BUILT}/qt2/lib "
-
-# special to Qt/Qtopia
-QTDIR  = "${PRE_BUILT}/qt2"
-QPEDIR = "${PRE_BUILT}"
-palmtopdir = "/opt/Qtopia"
-palmqtdir  = "/opt/Qtopia"
-                </screen>
-                <para>We will add the <command>PRE_BUILT</command> libraries to the include and library paths. And the same is done for the special version of Qt we have in your <command>PRE_BUILT</command> directory.</para>
-
-                <screen>
-ASSUME_PROVIDED += " virtual/${TARGET_PREFIX}gcc "
-ASSUME_PROVIDED += " virtual/libc "
-ASSUME_PROVIDED += " virtual/qte "
-ASSUME_PROVIDED += " virtual/libqpe "
-ASSUME_PROVIDED += " libqpe-opie "
-                </screen>
-                <para>Now we have told <application>BitBake</application> that the C library, compiler and Qtopia is already provided.
-These lines will avoid building binutils, gcc initial, glibc, gcc.</para>
-
-
-                <screen>
-<command>source</command> build_source
-<command>bitbake</command> your-killer-app
-                </screen>
-                <para>You should be able to create the packages you want to using the prebuilt toolchain now.</para>
-
-                </section>
-            </section>
-
-            <section>
-                <title>Useful hints</title>
-                <para>If you have more prebuilt libraries you need to add additional <command>ASSUME_PROVIDED</command>
-lines to your <emphasis>local.conf</emphasis>. Using <command>bitbake -vvv PACKAGE</command> you can easily see the package names
-you could <command>ASSUME_PROVIDED</command> if you have some prebuilt.</para> 
-            </section>
-
-            <section>
-                <title>Issues with this approach</title>
-<screen>
-NOTE: Couldn't find shared library provider for libqtopia.so.1
-NOTE: Couldn't find shared library provider for libqtopia2.so.2
-NOTE: Couldn't find shared library provider for libqpe.so.1
-NOTE: Couldn't find shared library provider for libpthread.so.0
-NOTE: Couldn't find shared library provider for libstdc++.so.6
-NOTE: Couldn't find shared library provider for libqte.so.2
-NOTE: Couldn't find shared library provider for libgcc_s.so.1
-NOTE: Couldn't find shared library provider for libc.so.6
-NOTE: Couldn't find shared library provider for libm.so.6
-</screen>
-                <para>OpenEmbedded tries to automatically add run-time dependencies (RDEPENDS) to the package. It uses the
-<emphasis><link linkend="shlibs">shlibs</link></emphasis> system to do add them, in this case it was not able 
-to find packages providing these libraries as they are prebuilt. This means they will not be added to the RDEPENDS of the just
-created package. The result can cause various issues. If you use OpenEmbedded to create images you will end up with a image without a libc being
-installed. This will lead to a fatal failure. As a quick workaround, you could create a package for the metadata to install every
-needed library and use ${BOOTSTRAP_EXTRA_RDEPENDS} to make sure this package is installed when creating images.</para>
-<para>However, the correct way to resolve this is to provide explicit mapping using ASSUME_SHLIBS variable. For example, for 
-the libraries above (partial):
-<screen>
-ASSUME_SHLIBS = "libqtopia2.so.2:qtopia2_2.4 libc.so.6:libc"
-</screen>
-The format is shlib_file_name:package[_version]. If a version is specified it will be
-used as the minimal (>=) version for the dependency.
-</para>
-            </section>
-
-        </section>
-
-        <section>
-            <title>Using a new package format</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-    </chapter>
-
-    <chapter>
-        <title>Comparing</title>
-
-        <section>
-            <title>buildroot</title>
-            <para>Writing of <application>BitBake</application> recipes is more easy and more intuitive than writing Makefiles while providing higher flexibility. This allows you to tweak specific recipes for your very special needs and to add new recipes very fast. You can build toolchains, Software Distribution Kits (SDKs), complete Distributions or just single packages. The flexibility of OpenEmbedded allows you to reuse the once written recipes for many different purposes. OpenEmbedded provides everything buildroot will be able to provide. But in contrast to buildroot OpenEmbedded will allow you to achieve what you really want to achieve. You can add new package formats, new filesystems, new output formats easily. OpenEmbedded will suit your need.</para>
-        </section>
-
-        <section>
-            <title>crosstool</title>
-            <para>Crosstool allows to create toolchains for you. It can only create the initial toolchain for you. It will not compile other needed libraries or applications for you, it will not be able to track dependencies or to package them properly. OpenEmbedded supports all configurations crosstool supports. You can start to create toolchains with OpenEmbedded, then as your needs grow create a more complete SDK from already present base libraries and applications and if you recognize you need to have packages for the target you have them almost built already.</para>
-        </section>
-
-        <section>
-            <title>handmade</title>
-            <para>Cross-compilation is a tough business. It is not that cross-compiling is hard itself but many people misuse
-the buildsystem they use to build their software. This will lead to a variety of issues you can run into. This can be failing
-tests on configuration because of executing cross compiled binaries or crashes at run-time due wrong sizes of basic types. 
-When utilizing OpenEmbedded you avoid searching for patches at many different places and will be able to get things done more quickly.
-<application>OpenEmbedded</application> allows you to choose from a pool of ready to use software packages.</para>
-            <para>OpenEmbedded will create complete flashable images using different output formats and filesystems. This allows you to create complete and specialized distributions easily.</para>
-        </section>
-    </chapter>
+      <holder>Detlef Vollmann</holder>
+
+      <holder>Jamie Lenehan</holder>
+
+      <holder>Marcin Juszkiewicz</holder>
+
+      <holder>Rolf Leggewie</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>This work is licensed under the Creative Commons Attribution
+      License. To view a copy of this license, visit <ulink
+      url="http://creativecommons.org/licenses/by/2.0/">http://creativecommons.org/licenses/by/2.0/</ulink>
+      or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford,
+      California 94305, USA.</para>
+    </legalnotice>
+  </bookinfo>
+
+  <!-- Main chapters-->
+
+  &chapter-introduction;
+
+  &chapter-metadata;
+
+  &chapter-gettingoe;
+
+  &chapter-features;
+
+  &chapter-commonusecases;
+
+  &chapter-comparing;
+
+  &chapter-usage;
+
+  &chapter-recipes;
+
+  <!-- Reference manual. Sorted alphabetically. -->
+
+  <chapter id="chapter_reference">
+    <title>Reference</title>
+
+    &class-autotools;
+
+    &class-binconfig;
+
+    &dirs-install;
+
+    &dirs-staging;
+
+    &class-distutils;
+
+    &fakeroot;
+
+    &class-image;
+
+    &image-types;
+
+    &class-pkgconfig;
+
+    &class-rootfs_ipkg;
+
+    &var-section;
+
+    &class-siteinfo;
+
+    &var-src-uri;
+
+    &class-update-alternatives;
+
+    &class-update-rcd;
+  </chapter>
 </book>

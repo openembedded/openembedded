@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="distutils_class" xreflabel="distutils class">
+  <title>distutils class</title>
+
+  <para>Distutils is a standard python system for building and installing
+  modules. The <emphasis>distutils</emphasis> class is used to automate the
+  building of python modules that use the distutils system.</para>
+
+  <para>Any python package that requires the standard python commands to build
+  and install is using the distutils system and should be able to use this
+  class:<screen>python setup.py build
+python setup.py install</screen></para>
+
+  <para>The <emphasis>distutils</emphasis> class will perform the build and
+  install actions on the <command>setup.py</command> provided by the package,
+  as required for building distutils packages, including setting all the
+  required parameters for cross compiling. It willl also perform the following
+  actions:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Adds python-native to <command>DEPENDS</command> to ensure that
+      python is built and installed on the build host. This also ensure that
+      the version of python that is used during package creation matches the
+      version of python that will be installed on the target.</para>
+    </listitem>
+
+    <listitem>
+      <para>Adds python-core to <command>RDEPENDS</command> to ensure that the
+      python-core is installed when this module is installed. Note that you
+      need to manually add any other python module dependencies to
+      <command>RDEPENDS</command>.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>The following example from the <emphasis>moin</emphasis> recipe shows
+  how simple this can make a python package:<screen>DESCRIPTION = "A full fledged WikiWiki system written in Python"
+LICENSE = "GPL"
+SECTION = "base"
+PRIORITY = "optional"
+MAINTAINER = "Your name &lt;yname@example.com&gt;"
+PR = "r1"
+
+SRC_URI = "${SOURCEFORGE_MIRROR}/moin/moin-${PV}.tar.gz"
+
+inherit distutils</screen>The header, source location and the inherit are all
+  that is required.</para>
+</section>

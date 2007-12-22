@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="directories_staging" xreflabel="Staging directories">
+  <title>Directories: Staging variables</title>
+
+  <para>The following table provides a list of the variables that are used to
+  control the directories into which files are staged.</para>
+
+  <para>Staging is used for headers, libraries and binaries that are generated
+  by packages and are to be used in the generation of other packages. For
+  example the libpcre recipe needs to make the include files and libraries for
+  the target available on the host for other applications that depend on
+  libpcre. So in addition to packaging these files up for use in the binary
+  package they are need to be installed in the staging are for use by other
+  packages.</para>
+
+  <para>There are two common situations in which you will need to directly
+  refer to the staging directories:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>To specify where headers and libraries are to be found for
+      libraries that your package depends on. In some cases these will be
+      found automatically due to the default compiler settings used by OE, but
+      in other cases you will need to explicitly tell your package to look in
+      the staging area. This is more commonly needed with autoconf based
+      packages that check for the presence of a specific package during the
+      <emphasis>configure</emphasis> task.</para>
+    </listitem>
+
+    <listitem>
+      <para>In the <emphasis>stage</emphasis> task for libraries to specify
+      where to install the headers and libraries.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>The following example from libpcre shows the installation of the
+  libraries and headers from the package into the staging area. Note the use
+  of the <emphasis>oe_libinstall</emphasis> helper function for installation
+  of the libraries:<screen>do_stage () {
+    oe_libinstall -a -so libpcre ${STAGING_LIBDIR}
+    oe_libinstall -a -so libpcreposix ${STAGING_LIBDIR}
+    install -m 0644 pcre.h ${STAGING_INCDIR}/
+    install -m 0644 pcreposix.h ${STAGING_INCDIR}/
+}</screen></para>
+
+  <para>The following example from the flac recipe shows the location of the
+  ogg libraries and included before explicitly passed to the configured script
+  via EXTRA_OECONF so that it will correctly find ogg and enable support for
+  it:<screen>EXTRA_OECONF = "--disable-oggtest --disable-id3libtest \
+        --with-ogg-libraries=${STAGING_LIBDIR} \
+        --with-ogg-includes=${STAGING_INCDIR} \
+        --without-xmms-prefix \
+        --without-xmms-exec-prefix \
+        --without-libiconv-prefix \
+        --without-id3lib"</screen>The following table lists the available
+  variables for referring to the staging area:</para>
+
+  <informaltable>
+    <tgroup cols="2">
+      <colspec colnum="0" colwidth="1*" />
+
+      <colspec colnum="1" colwidth="1*" />
+
+      <thead>
+        <row>
+          <entry>Directory</entry>
+
+          <entry>Definition</entry>
+        </row>
+      </thead>
+
+      <tbody>
+        <row>
+          <entry>STAGING_DIR</entry>
+
+          <entry>${TMPDIR}/staging</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_BINDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/bin</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_BINDIR_CROSS</entry>
+
+          <entry>${STAGING_DIR}/${BUILD_SYS}/bin/${HOST_SYS}</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_BINDIR_NATIVE</entry>
+
+          <entry>${STAGING_DIR}/${BUILD_SYS}/bin</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_LIBDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/lib</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_INCDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/include</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_DATADIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/share</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_LOADER_DIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/loader</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_FIRMWARE_DIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/firmware</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_PYDIR</entry>
+
+          <entry>${STAGING_DIR}/lib/python2.4</entry>
+        </row>
+
+        <row>
+          <entry>STAGING_KERNEL_DIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/kernel</entry>
+        </row>
+
+        <row>
+          <entry>PKG_CONFIG_PATH</entry>
+
+          <entry>${STAGING_LIBDIR}/pkgconfig</entry>
+        </row>
+
+        <row>
+          <entry>QTDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}/qt2</entry>
+        </row>
+
+        <row>
+          <entry>QPEDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}</entry>
+        </row>
+
+        <row>
+          <entry>OPIEDIR</entry>
+
+          <entry>${STAGING_DIR}/${HOST_SYS}</entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </informaltable>
+
+  <para></para>
+
+  <para></para>
+</section>
