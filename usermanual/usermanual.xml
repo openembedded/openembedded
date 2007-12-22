@@ -186,7 +186,7 @@ At revision 986.
             <title>Getting OpenEmbedded</title>
             <para>
 The OpenEmbedded metadate has a high rate of development, so it's a good idea to stay up to date.
-You'll need monotone 0.25 to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
+You'll need monotone 0.29 or later to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
 
 <screen>	    
 #get the snapshot
