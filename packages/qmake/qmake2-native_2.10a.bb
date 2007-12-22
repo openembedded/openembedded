@@ -5,7 +5,7 @@ SECTION = "devel"
 LICENSE = "GPL"
 PR = "r2"
 
-QTVER = "qtopia-core-opensource-src-4.3.2"
+QTVER = "qtopia-core-opensource-src-4.3.3"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
