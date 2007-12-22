@@ -57,6 +57,65 @@ OpenEmbedded was created.</para>
 
 
     <chapter>
+        <title>Getting Started</title>
+        <section>
+            <title>Getting <application>BitBake</application></title>
+            <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (end of 2007) <application>BitBake</application> 1.8.latest was required.</para>
+            <para>A good method is to get <application>BitBake</application> from the stable Subversion branch.
+            <screen>
+<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.8
+...
+A   bitbake-1.8/classes/base.bbclass
+U   bitbake-1.8
+At revision 986.
+            </screen>
+            <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>update</command> in the <emphasis>bitbake-1.8</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
+            </para>
+        </section>
+
+        <section>
+            <title>Getting OpenEmbedded</title>
+            <para>
+The OpenEmbedded metadate has a high rate of development, so it's a good idea to stay up to date.
+You'll need monotone 0.29 or later to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
+
+<screen>	    
+#get the snapshot
+wget http://openembedded.org/snapshots/OE.db.bz2 http://openembedded.org/snapshots/OE.db.bz2.md5
+
+#verify the integrity
+cat OE.db.bz2.md5sum
+md5sum OE.db.bz2
+
+#extract the tarball
+bunzip OE.db.bz2
+
+#check the development branch
+monotone --db=OE.db co -b org.openembedded.dev
+</screen>
+
+           </para>
+        </section>
+
+        <section>
+            <title>Configuring OpenEmbedded</title>
+            <para>This section is a stub, help us by expanding it</para>
+        </section>
+
+        <section>
+            <title>Building Software</title>
+            <para>Once you set up and configured BitBake and OpenEmbedded, you can build software and images like this:
+<screen>
+bitbake &lt;recipe_name&gt;
+</screen>
+	    </para>
+	    
+            <para>This section is a stub, help us by expanding it</para>
+        </section>
+    </chapter>
+
+
+    <chapter>
         <title>Metadata</title>
         <section>
             <title>File Layout</title>
@@ -164,64 +223,6 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
         </section>
     </chapter>
 
-
-    <chapter>
-        <title>Getting Started with OpenEmbedded</title>
-        <section>
-            <title>Getting <application>BitBake</application></title>
-            <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (end of 2007) <application>BitBake</application> 1.8.latest was required.</para>
-            <para>A good method is to get <application>BitBake</application> from the stable Subversion branch.
-            <screen>
-<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.8
-...
-A   bitbake-1.8/classes/base.bbclass
-U   bitbake-1.8
-At revision 986.
-            </screen>
-            <application>BitBake</application> is checked out now; this completes the first and most critical dependency of OpenEmbedded. Issuing <command>svn</command> <command>update</command> in the <emphasis>bitbake-1.8</emphasis> directory will update <application>BitBake</application> to the latest stable version, but generally it is a good idea to stick with a specific known working version of <application>BitBake</application> until OpenEmbedded asks you to upgrade.
-            </para>
-        </section>
-
-        <section>
-            <title>Getting OpenEmbedded</title>
-            <para>
-The OpenEmbedded metadate has a high rate of development, so it's a good idea to stay up to date.
-You'll need monotone 0.29 or later to get the metadata and stay up to date. Monotone is available in most distributions and has binaries at http://venge.net/monotone/
-
-<screen>	    
-#get the snapshot
-wget http://openembedded.org/snapshots/OE.db.bz2 http://openembedded.org/snapshots/OE.db.bz2.md5
-
-#verify the integrity
-cat OE.db.bz2.md5sum
-md5sum OE.db.bz2
-
-#extract the tarball
-bunzip OE.db.bz2
-
-#check the development branch
-monotone --db=OE.db co -b org.openembedded.dev
-</screen>
-
-           </para>
-        </section>
-
-        <section>
-            <title>Configuring OpenEmbedded</title>
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-
-        <section>
-            <title>Building Software</title>
-            <para>Once you set up and configured BitBake and OpenEmbedded, you can build software and images like this:
-<screen>
-bitbake &lt;recipe_name&gt;
-</screen>
-	    </para>
-	    
-            <para>This section is a stub, help us by expanding it</para>
-        </section>
-    </chapter>
 
     <chapter>
         <title>Special features</title>
