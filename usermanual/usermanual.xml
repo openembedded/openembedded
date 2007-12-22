@@ -213,6 +213,12 @@ monotone --db=OE.db co -b org.openembedded.dev
 
         <section>
             <title>Building Software</title>
+            <para>Once you set up and configured BitBake and OpenEmbedded, you can build software and images like this:
+<screen>
+bitbake &lt;recipe_name&gt;
+</screen>
+	    </para>
+	    
             <para>This section is a stub, help us by expanding it</para>
         </section>
     </chapter>
