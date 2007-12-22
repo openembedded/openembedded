@@ -166,7 +166,7 @@ It's important to use <emphasis>+=</emphasis> so it will get appended to the sta
 
 
     <chapter>
-        <title>Getting OpenEmbedded</title>
+        <title>Getting Started with OpenEmbedded</title>
         <section>
             <title>Getting <application>BitBake</application></title>
             <para>The required version of <application>BitBake</application> is changing rapidly. At the time of writing (end of 2007) <application>BitBake</application> 1.8.latest was required.</para>
