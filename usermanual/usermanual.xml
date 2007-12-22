@@ -36,7 +36,7 @@
                 <listitem><para>Handle inter-package dependencies</para></listitem>
                 <listitem><para>Must be able to emit packages (tar, rpm, ipk)</para></listitem>
                 <listitem><para>Must be able to create images and feeds from packages</para></listitem>
-                <listitem><para>Must be highly configurable to support many machines, distribution and architectures.</para></listitem>
+                <listitem><para>Must be highly configurable to support many machines, distributions and architectures.</para></listitem>
                 <listitem><para>Writing of metadata must be easy and reusable</para></listitem>
             </itemizedlist>
         </para>
@@ -47,7 +47,7 @@
        <section>
             <title>History</title>
             <para>OpenEmbedded was invented and founded by the creators of the OpenZaurus project. 
-At this time the project had pushed <emphasis>buildroot</emphasis> to its limits. It supported the creation of
+At that time the project had pushed <emphasis>buildroot</emphasis> to its limits. It supported the creation of
 <emphasis>ipk</emphasis> packages, feeds and images and had support for more than one machine. But it was impossible
 to use different patches, files for different architectures, machines or distributions. To overcome this shortcoming
 OpenEmbedded was created.</para>
