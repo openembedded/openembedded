@@ -58,6 +58,13 @@ mtn --db=OE.mtn co -b org.openembedded.dev
   <section id="gettingoe_building_software">
     <title>Building Software</title>
 
+    <para>Once BitBake and OpenEmbedded are set up and configured, one can build 
+    software and images like this:
+<screen>
+bitbake &lt;recipe_name&gt;
+</screen>
+            </para>
+
     <para>This section is a stub, help us by expanding it</para>
   </section>
 </chapter>
