@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="chapter_getting_oe">
-  <title>Getting OpenEmbedded</title>
+  <title>Getting Started</title>
 
   <section id="gettingoe_getting_bitbake">
     <title>Getting <application>BitBake</application></title>
 
     <para>The required version of <application>BitBake</application> is
-    changing rapidly. At the time of writing (30th of June 2007)
-    <application>BitBake</application> 1.8.2 was required.</para>
+    changing rapidly. At the time of writing (end 2007)
+    <application>BitBake</application> 1.8.latest was required.</para>
 
     <para>A safe method is to get the <application>BitBake</application> from
     a stable Subversion branch (those with an even minor number). <screen>
