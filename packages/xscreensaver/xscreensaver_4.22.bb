@@ -8,9 +8,12 @@ SECTION = "x11-misc"
 LICENSE = "BSD"
 DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
 
+PR = "r1"
+
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
            file://fixes.patch;patch=1 \
            file://configure.in.patch;patch=1 \
+	   file://configure.in-includedir.patch;patch=1 \
            file://XScreenSaver"
 
 # xscreensaver-demo is a glade app
@@ -35,6 +38,8 @@ FILES_xscreensaver-extra="${bindir}/xscreensaver-getimage*"
 
 do_configure_prepend() {
 	sed -i 's:GTK_DATADIR="$GTK_DATADIR/share":GTK_DATADIR="${datadir}":' ${S}/configure.in
+	
+	export includedir="/lib"
 }
 
 do_compile() {

@@ -1,0 +1,72 @@
+--- xscreensaver-4.22/configure.in.orig	2007-12-23 18:33:43.000000000 +0000
++++ xscreensaver-4.22/configure.in	2007-12-23 18:35:33.000000000 +0000
+@@ -944,9 +944,6 @@
+ #
+ AC_DEFUN(AC_CHECK_X_HEADER, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   AC_CHECK_HEADER([$1],[$2],[$3],[$4])
+   CPPFLAGS="$ac_save_CPPFLAGS"])
+@@ -955,9 +952,6 @@
+ #
+ AC_DEFUN(AC_EGREP_X_HEADER, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   AC_EGREP_HEADER([$1], [$2], [$3], [$4])
+   CPPFLAGS="$ac_save_CPPFLAGS"])
+@@ -966,9 +960,6 @@
+ #
+ AC_DEFUN(AC_TRY_X_COMPILE, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   AC_TRY_COMPILE([$1], [$2], [$3], [$4])
+   CPPFLAGS="$ac_save_CPPFLAGS"])
+@@ -982,9 +973,6 @@
+   ac_save_LDFLAGS="$LDFLAGS"
+ #  ac_save_LIBS="$LIBS"
+ 
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   # note: $X_CFLAGS includes $x_includes
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+ 
+@@ -1005,9 +993,6 @@
+ #
+ AC_DEFUN(AC_TRY_X_RUN, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   AC_TRY_RUN([$1], [$2], [$3], [$4])
+   CPPFLAGS="$ac_save_CPPFLAGS"])
+@@ -2763,9 +2748,6 @@
+ EOF
+ 
+          ac_save_CPPFLAGS="$CPPFLAGS"
+-         if test \! -z "$includedir" ; then 
+-           CPPFLAGS="$CPPFLAGS -I$includedir"
+-         fi
+          CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+ 
+          mglv=`(eval "$ac_cpp conftest.$ac_ext") 2>&AC_FD_CC | grep configure:`
+@@ -3395,9 +3377,6 @@
+ DEPEND_DEFINES=
+ 
+ 
+-if test \! -z "$includedir" ; then 
+-  INCLUDES="$INCLUDES -I$includedir"
+-fi
+ 
+ if test \! -z "$libdir" ; then
+   LDFLAGS="$LDFLAGS -L$libdir"
