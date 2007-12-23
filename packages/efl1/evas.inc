@@ -35,3 +35,17 @@ FILES_${PN}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
 FILES_${PN} = "${libdir}/libevas*.so*"
 
 PACKAGES_DYNAMIC = "libevas-engine-* libevas-loader-* libevas-saver-*"
+
+RRECOMMENDS_${PN} = "\
+  libevas-engine-buffer \
+  libevas-engine-fb \
+  libevas-engine-software-generic \
+  libevas-engine-software-x11 \
+  libevas-engine-software-16 \
+  libevas-engine-xrender-x11 \
+  \
+  libevas-loader-png \
+  libevas-loader-jpeg \
+  libevas-loader-eet \
+  libevas-loader-svg \
+"
