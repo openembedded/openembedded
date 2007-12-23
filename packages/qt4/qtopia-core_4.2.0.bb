@@ -55,7 +55,7 @@ export OE_QMAKE_LIBDIR_QT="${QTDIR}/lib"
 export OE_QMAKE_INCDIR_QTOPIA="${QTOPIADIR}/include"
 export OE_QMAKE_LIBDIR_QTOPIA="${QTOPIADIR}/lib"
 
-require qte-functions.inc
+require qt4_arch.inc
 QT_ARCH := "${@qte_arch(d)}"
 
 # FIXME use info.bbclass once it has been commited
