@@ -12,8 +12,7 @@ SRC_URI = "file://updater.sh \
 S = "${WORKDIR}"
 
 do_configure() {
-	cat "${S}/updater.sh" | sed "s/ZAURUS_UPDATER_VERSION/${PR}/" > "${S}/updater.sh_"
-	mv "${S}/updater.sh_" "${S}/updater.sh"
+	sed -i "s/ZAURUS_UPDATER_VERSION/${PR}/" "${S}/updater.sh"
 }
 
 do_compile() {
