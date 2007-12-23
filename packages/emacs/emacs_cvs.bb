@@ -9,7 +9,7 @@ DEPENDS += "qemu-native"
 
 PV = "22.0.50+cvs${SRCDATE}" 
 PE = "1"
-PR = "r8"
+PR = "r9"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -19,7 +19,7 @@ S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-PACKAGES += "${PN}-el"
+PACKAGES =+ "${PN}-el"
 
 FILES_${PN}-el = "${datadir}/emacs/*/*/*.el.gz \
                   ${datadir}/emacs/*/*/*/*.el.gz"
