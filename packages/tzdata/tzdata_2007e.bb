@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r0"
+PR = "r1"
 
 PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
             tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
@@ -126,6 +126,9 @@ FILES_${PN} += "${datadir}/zoneinfo/Pacific/Honolulu     \
                 ${datadir}/zoneinfo/Asia/Bankok          \
                 ${datadir}/zoneinfo/Asia/Hong_Kong       \
                 ${datadir}/zoneinfo/Asia/Tokyo           \
+                ${datadir}/zoneinfo/Australia/Darwin     \
+                ${datadir}/zoneinfo/Australia/Adelaide   \
+                ${datadir}/zoneinfo/Australia/Brisbane   \
                 ${datadir}/zoneinfo/Australia/Sydney     \
                 ${datadir}/zoneinfo/Pacific/Noumea       \
                 ${datadir}/zoneinfo/CET                  \
