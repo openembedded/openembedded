@@ -47,12 +47,12 @@ do_stage_append () {
 #need ppc platforms includes + friends in order for external kernel modules to compile as headers as still split
 
        install -d ${STAGING_KERNEL_DIR}/arch/
-       cp -a arch/ppc ${STAGING_KERNEL_DIR}/arch/
-       cp -a arch/powerpc ${STAGING_KERNEL_DIR}/arch/
+       cp -pPR arch/ppc ${STAGING_KERNEL_DIR}/arch/
+       cp -pPR arch/powerpc ${STAGING_KERNEL_DIR}/arch/
 
        install -d ${STAGING_KERNEL_DIR}/include/asm
-       cp -a include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
-       cp -a include/asm-ppc ${STAGING_KERNEL_DIR}/include/
+       cp -pPR include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
+       cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
 
 do_deploy() {

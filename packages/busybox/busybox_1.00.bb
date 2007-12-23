@@ -94,7 +94,7 @@ pkg_prerm_${PN} () {
 	# providing its files, this will make update-alternatives work, but the update-rc.d part
 	# for syslog, httpd and/or udhcpd will fail if there is no other package providing sh
 	tmpdir=`mktemp -d /tmp/busyboxrm-XXXXXX`
-	cp -a /bin/busybox $tmpdir/
+	cp -pPR /bin/busybox $tmpdir/
 	ln -s /bin/busybox $tmpdir/[
 	ln -s /bin/busybox $tmpdir/test
 	ln -s /bin/busybox $tmpdir/head
