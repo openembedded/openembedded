@@ -22,24 +22,30 @@
 DISTRO_SSH_DAEMON ?= "dropbear"
 DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"
 
-DEPENDS = "task-boot task-base-apex \
-            task-distro-base task-machine-base \
-            ${DISTRO_SSH_DAEMON} \
-            ${DISTRO_PACKAGE_MANAGER} \
-            task-base-usbhost task-base-ext2 \
-	    task-nas-server-everything \
-           "
+DEPENDS = "\
+	task-boot \
+	${@base_contains('MACHINE_FEATURES', 'apex', 'task-base-apex', '', d)} \
+	task-distro-base task-machine-base \
+	${DISTRO_SSH_DAEMON} \
+	${DISTRO_PACKAGE_MANAGER} \
+	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
+	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
+	task-nas-server-everything \
+	"
 
 IMAGE_INSTALL_TASKS = "\
-            task-nas-server-everything \
-           "
+	task-nas-server-everything \
+	"
 
-IMAGE_INSTALL = "task-boot task-base-apex \
-            ${DISTRO_SSH_DAEMON} \
-            ${DISTRO_PACKAGE_MANAGER} \
-            task-base-usbhost task-base-ext2 \
-            ${IMAGE_INSTALL_TASKS} \
-	   "
+IMAGE_INSTALL = "\
+	task-boot \
+	${@base_contains('MACHINE_FEATURES', 'apex', 'task-base-apex', '', d)} \
+	${DISTRO_SSH_DAEMON} \
+	${DISTRO_PACKAGE_MANAGER} \
+	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
+	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
+	${IMAGE_INSTALL_TASKS} \
+	"
 
 export IMAGE_BASENAME = "nas-server-image"
 IMAGE_LINGUAS = ""
