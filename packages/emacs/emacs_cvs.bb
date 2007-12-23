@@ -7,7 +7,9 @@ DEPENDS += "qemu-native"
 #NOTE: I have found that this only works with qemu-0.8.0. If I use 0.8.1 or 0.8.2
 # the build gets hung up on compiling certain .el files
 
-PR = "r7"
+PV = "22.0.50+cvs${SRCDATE}" 
+PE = "1"
+PR = "r9"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -17,14 +19,14 @@ S = "${WORKDIR}/emacs"
 
 inherit autotools
 
-PACKAGES = "${PN}-el ${PN}-dbg ${PN} ${PN}-doc ${PN}-dev ${PN}-locale"
+PACKAGES =+ "${PN}-el"
 
-FILES_${PN}-el = "${datadir}/emacs/22.0.50/*/*.el.gz \
-                  ${datadir}/emacs/22.0.50/*/*/*.el.gz"
+FILES_${PN}-el = "${datadir}/emacs/*/*/*.el.gz \
+                  ${datadir}/emacs/*/*/*/*.el.gz"
 
 FILES_${PN} += "${datadir}/emacs"
 
-QEMU = "qemu-arm -L ${STAGING_DIR}/${TARGET_SYS}"
+QEMU = "qemu-${TARGET_ARCH} -L ${STAGING_DIR}/${TARGET_SYS}"
 LDFLAGS += "-L${CROSS_DIR}/${TARGET_SYS}/lib"
 
 EXTRA_OECONF = "--without-sound --without-x"

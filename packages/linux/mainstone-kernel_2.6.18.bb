@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Mainstone (PXA270 ref design)"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            file://mainstone_defconfig"
