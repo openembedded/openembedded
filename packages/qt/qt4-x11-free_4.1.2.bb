@@ -70,6 +70,7 @@ PARTS = "3Support Core Designer DesignerComponents Gui Network Sql Svg Test Xml"
 
 do_stage() {
 	oe_runmake install INSTALL_ROOT=/
+	install -d ${STAGING_QT_DIR}
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/rcc4 ${STAGING_QT_DIR}/bin/rcc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/moc4 ${STAGING_QT_DIR}/bin/moc
 	install -m 0755 ${STAGING_BINDIR_NATIVE}/uic4 ${STAGING_QT_DIR}/bin/uic

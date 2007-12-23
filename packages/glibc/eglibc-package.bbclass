@@ -27,7 +27,7 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 BINARY_LOCALE_ARCHES ?= "arm.*"
 
 PACKAGES = "eglibc-dbg eglibc catchsegv sln nscd ldd localedef eglibc-utils eglibc-dev eglibc-doc eglibc-locale libsegfault eglibc-extra-nss eglibc-thread-db eglibc-pcprofile"
-PACKAGES_DYNAMIC = "eglibc-gconv-* eglibc-charmap-* eglibc-localedata-*"
+PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* eglibc-gconv-* eglibc-charmap-* eglibc-localedata-*"
 
 RPROVIDES_eglibc = "glibc"
 RPROVIDES_eglibc-utils = "glibc-utils"
@@ -210,6 +210,7 @@ python package_do_split_gconvs () {
 		f.close()
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-localedata-%s' % group, d)
 
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='eglibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' eglibc-gconv', d)
@@ -261,6 +262,7 @@ python package_do_split_gconvs () {
 		else:
 			eglibc_name = name
 		bb.data.setVar('RDEPENDS_%s' % pkgname, legitimize_package_name('eglibc-binary-localedata-%s' % eglibc_name), d)
+		bb.data.setVar('RPROVIDES_%s' % pkgname, 'glibc-binary-localedata-%s' % group, d)
 		rprovides = 'virtual-locale-%s' % legitimize_package_name(name)
 		m = re.match("(.*)_(.*)", name)
 		if m:

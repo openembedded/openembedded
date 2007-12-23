@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r15"
+PR = "r17"
 
 inherit task
 
@@ -29,7 +29,6 @@ RDEPENDS_task-openmoko-feed = "\
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   synergy \
   tzdata \
-  timezones \
   tor \
   vnc \
   wxwidgets \

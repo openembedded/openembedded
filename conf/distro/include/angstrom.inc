@@ -256,7 +256,7 @@ TINDER_REPORT     = "1"
 # seppuku bbclass
 SEPPUKU_LOGIN        = "http://bugs.openembedded.org/query.cgi?"
 SEPPUKU_QUERY        = "http://bugs.openembedded.org/buglist.cgi?"
-SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%20unstable&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.org/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.org/attachment.cgi?"
 SEPPUKU_AUTOBUILD    = "1"
@@ -269,5 +269,4 @@ SEPPUKU_COMPONENT    = "build"
 
 
 # We want images supporting the following features (for task-base)
-DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
-DISTRO_FEATURES_nslu2 = "nfs smbfs alsa bluetooth ext2 usbhost pci"
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"

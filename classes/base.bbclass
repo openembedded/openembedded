@@ -848,6 +848,12 @@ def base_after_parse(d):
     bb.data.delVarFlag('MACHINE', 'export', d)
     bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
     
+    # Make sure TARGET_ARCH isn't exported
+    # (breaks Makefiles using implicit rules, e.g. quilt, as GNU make has this 
+    # in them, undocumented)
+    bb.data.delVarFlag('TARGET_ARCH', 'export', d)
+    bb.data.setVarFlag('TARGET_ARCH', 'unexport', 1, d)
+    
     # Make sure DISTRO isn't exported
     # (breaks sysvinit at least)
     bb.data.delVarFlag('DISTRO', 'export', d)

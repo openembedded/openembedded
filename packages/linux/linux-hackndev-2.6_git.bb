@@ -2,11 +2,11 @@ DESCRIPTION = "Hack&Dev's Linux kernel for Palm devices."
 HOMEPAGE = "http://www.hackndev.com/"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r12"
+PR = "r13"
 
 COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
-SRC_URI = "git://git.hackndev.com/git/linux-hnd;protocol=http \
+SRC_URI = "git://git.hackndev.com/git/linux-hnd;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append_palmtx += "http://www.busybox.net/downloads/busybox-1.1.0.tar.bz2 \

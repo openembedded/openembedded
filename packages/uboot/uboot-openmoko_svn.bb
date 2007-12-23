@@ -5,8 +5,8 @@ SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
-PV = "1.3.0${LOCALVERSION}"
-PR = "r0"
+PV = "1.3.1${LOCALVERSION}"
+PR = "r1"
 
 SRCREV_FORMAT = "patches"
 
@@ -20,7 +20,6 @@ SRC_URI = "\
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
-  file://glamo-ram-init.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 

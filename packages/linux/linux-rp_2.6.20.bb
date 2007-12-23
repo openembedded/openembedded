@@ -3,6 +3,7 @@ require linux-rp.inc
 PR = "r19"
 
 DEFAULT_PREFERENCE_poodle = "-99"
+DEFAULT_PREFERENCE_collie = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046

@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml21"
+PR = "ml22"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -9,6 +9,7 @@ RDEPENDS = "\
 		python-constraint	\
 		python-dbus			\
 		python-dialog		\
+		python-pydirectfb		\
 		python-efl			\
 		python-pycurl		\
 		python-fam			\

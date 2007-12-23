@@ -3,8 +3,8 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab EM-X270 system"
 LICENSE = "GPL"
-DEPENDS = "uboot-utils"
-PR = "r0"
+DEPENDS = "u-boot-utils-native"
+PR = "r1"
 
 KERNEL_IMAGETYPE = "uImage"
 

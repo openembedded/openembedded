@@ -1,7 +1,7 @@
 SECTION = "console/network"
 require mysql_${PV}.bb
 inherit native
-PR="r3"
+PR="r4"
 
 RDEPENDS_${PN} = ""
 
@@ -16,4 +16,10 @@ do_stage_append() {
 
 do_install() {
 	:
+}
+
+
+# Mysql tries to access the ${WORKDIR} from this build..
+do_rm_work() {
+       :
 }

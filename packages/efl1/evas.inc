@@ -33,3 +33,5 @@ do_install_append() {
 FILES_${PN}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"
 FILES_${PN}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
 FILES_${PN} = "${libdir}/libevas*.so*"
+
+PACKAGES_DYNAMIC = "libevas-engine-* libevas-loader-* libevas-saver-*"

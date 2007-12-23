@@ -112,6 +112,7 @@ SRCDATE_exquisite ?= "${EFL_SRCDATE}"
 # Misc packages, sorted by alphabet
 SRCDATE_avetanabt ?= "20060814"
 SRCDATE_bl ?= "20060814"
+SRCDATE_python-pydirectfb = "20071210"
 SRCDATE_dvbstream ?= "20060814"
 SRCDATE_dvbtraffic ?= "20060814"
 SRCDATE_dvbtune ?= "20060814"
