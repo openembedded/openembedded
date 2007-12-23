@@ -30,21 +30,21 @@ do_stage() {
 	install -d ${STAGING_DIR}/pkgdata/
 	install -d ${STAGING_DIR_TARGET}/shlibs/
 
-	cp -ar ${prefix}/pkgdata/* ${STAGING_DIR}/pkgdata/
-	cp -ar ${prefix}/${TARGET_SYS}/shlibs/* ${STAGING_DIR_TARGET}/shlibs/
+	cp -pPRr ${prefix}/pkgdata/* ${STAGING_DIR}/pkgdata/
+	cp -pPRr ${prefix}/${TARGET_SYS}/shlibs/* ${STAGING_DIR_TARGET}/shlibs/
 
 	if [ -d ${prefix}/ipk ]; then
 		install -d ${DEPLOY_DIR_IPK}/
-		cp -ar ${prefix}/ipk/* ${DEPLOY_DIR_IPK}/
+		cp -pPRr ${prefix}/ipk/* ${DEPLOY_DIR_IPK}/
 	fi
 
 	if [ -d ${prefix}/deb ]; then
 		install -d ${DEPLOY_DIR_DEB}/
-		cp -ar ${prefix}/deb/* ${DEPLOY_DIR_DEB}/
+		cp -pPRr ${prefix}/deb/* ${DEPLOY_DIR_DEB}/
 	fi
 
 	if [ -d ${prefix}/pstage -a "x${DEPLOY_DIR_PSTAGE}" != "x" ]; then
 		install -d ${DEPLOY_DIR_PSTAGE}/
-		cp -ar ${prefix}/pstage/* ${DEPLOY_DIR_PSTAGE}/
+		cp -pPRr ${prefix}/pstage/* ${DEPLOY_DIR_PSTAGE}/
 	fi
 }

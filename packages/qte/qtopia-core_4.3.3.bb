@@ -210,7 +210,7 @@ do_stage() {
 
     install -d ${STAGING_INCDIR}/qtopiacore4
     install -d ${STAGING_LIBDIR}/qtopiacore4
-    cp -af ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}/qtopiacore4/
+    cp -pPRf ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}/qtopiacore4/
 
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do

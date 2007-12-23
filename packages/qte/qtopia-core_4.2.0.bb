@@ -198,7 +198,7 @@ do_stage() {
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake install INSTALL_ROOT=${STAGE_TEMP}
 
-	cp -af ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}
+	cp -pPRf ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}
 
 	for i in ${STAGE_TEMP}/${libdir}/*.la
 	do

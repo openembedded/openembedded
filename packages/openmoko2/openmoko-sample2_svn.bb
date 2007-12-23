@@ -13,12 +13,12 @@ PACKAGE_ARCH_${PN}-src = "all"
 
 do_configure_prepend() {
 	install -d ${WORKDIR}/source
-	cp -a ${S} ${WORKDIR}/source/
+	cp -pPR ${S} ${WORKDIR}/source/
 	find ${WORKDIR}/source -name ".svn"|xargs rm -rf
 }
 
 do_install_append() {
 	install -d ${D}/usr/local/openmoko/source/
-	cp -a ${WORKDIR}/source/* ${D}/usr/local/openmoko/source/
+	cp -pPR ${WORKDIR}/source/* ${D}/usr/local/openmoko/source/
 }
 
