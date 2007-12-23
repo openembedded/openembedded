@@ -3,7 +3,7 @@ HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r9"
+PR = "r11"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND
@@ -17,6 +17,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-init"
 S = "${WORKDIR}/psplash"
 
+# This really should be default, but due yo openmoko hack below, can't be easily
+SRC_URI_append_angstrom = " file://logo-math.patch;patch=1 "
 SRC_URI_append_openmoko = " file://configurability.patch;patch=1 "
 
 inherit autotools pkgconfig update-rc.d

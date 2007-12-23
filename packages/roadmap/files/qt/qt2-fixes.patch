@@ -1,0 +1,10 @@
+--- src/qt/Makefile~qt2-fixes.patch
++++ src/qt/Makefile
+@@ -19,7 +19,7 @@
+ 
+ ifeq ($(DESKTOP),QPE)
+    CFLAGS += -I$(QTDIR)/include -DQWS
+-   LIBS += -lqte -lqpe
++   LIBS += -lqpe
+    INSTALLDIR=$(QTDIR)
+ endif

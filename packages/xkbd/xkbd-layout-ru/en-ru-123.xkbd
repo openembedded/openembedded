@@ -1,0 +1,1353 @@
+#Птн, 01 Апр 2005 01:56:58 +0300 
+#It was downloaded from http://whitenoise.ssrlab.com/pda/xkbd
+#Copyright:
+#This software is copyright (c) 2005 by Dmitry Zhadinets
+#You are free to distribute this keyboard file under the terms of
+#the GNU General Public License.
+#Version: 0.1.1
+#For posting bugreports use this way <whitenoise at ssrlab dot com>
+<global>
+	render xft
+	font Verdana-6|fixed
+	col  200:255:200
+	down_col  100:100:200
+	txt_col  0:0:0
+	border_col 128:128:128
+	button_style rounded
+</global>
+<layout>
+	<row>
+		<key>
+			key_span_width	1
+			bg		196:216:248
+			default		Esc
+			default_ks	Escape
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		`
+			default_ks	quoteleft
+			shift		~
+			shift_ks	asciitilde
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		1
+			default_ks	1
+			shift		!
+			shift_ks	exclam
+		</key>
+		<key>
+			key_span_width	1
+			bg		248:216:196
+			default		2
+			default_ks	2
+			shift		@
+			shift_ks	at
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		3
+			default_ks	3
+			shift		#
+			shift_ks	numbersign
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		4
+			default_ks	4
+			shift		$
+			shift_ks	dollar
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		5
+			default_ks	5
+			shift		%
+			shift_ks	percent
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		6
+			default_ks	6
+			shift		^
+			shift_ks	asciicircum
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		7
+			default_ks	7
+			shift		&
+			shift_ks	ampersand
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		8
+			default_ks	8
+			shift		*
+			shift_ks	asterisk
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		9
+			default_ks	9
+			shift		(
+			shift_ks	parenleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		0
+			default_ks	0
+			shift		)
+			shift_ks	parenright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		-
+			default_ks	minus
+			shift		_
+			shift_ks	underscore
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		= 
+			default_ks	equal
+			shift		+
+			shift_ks	plus
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+#			img		/usr/share/xkbd/img/backspace.xpm
+			default		<-
+			default_ks	BackSpace
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		Tab
+			default_ks	Tab
+		</key>
+		<key>
+			key_span_width	1
+			default		q
+			default_ks	q
+			shift		Q
+			shift_ks	Q
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		w
+			default_ks	w
+			shift		W
+			shift_ks	W
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		e
+			default_ks	e
+			shift		E
+			shift_ks	E
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		r
+			default_ks	r
+			shift		R
+			shift_ks	R
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		t
+			default_ks	t
+			shift		T
+			shift_ks	T
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		y
+			default_ks	y
+			shift		Y
+			shift_ks	Y
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		u
+			default_ks	u
+			shift		U
+			shift_ks	U
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		i
+			default_ks	i
+			shift		I
+			shift_ks	I
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		o
+			default_ks	o
+			shift		O
+			shift_ks	O
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		p
+			default_ks	p
+			shift		P
+			shift_ks	P
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		[
+			default_ks	bracketleft
+			shift		{
+			shift_ks	braceleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		]
+			default_ks	bracketright
+			shift		}
+			shift_ks	braceright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		\
+			default_ks	backslash
+			shift		|
+			shift_ks	bar
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		CAP
+			default_ks	Caps_Lock
+		</key>
+		<key>
+			key_span_width	1
+			default		a
+			default_ks	a
+			shift		A
+			shift_ks	A
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		s
+			default_ks	s
+			shift		S
+			shift_ks	S
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		d
+			default_ks	d
+			shift		D
+			shift_ks	D
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		f
+			default_ks	f
+			shift		F
+			shift_ks	F
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		g
+			default_ks	g
+			shift		G
+			shift_ks	G
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		h
+			default_ks	h
+			shift		H
+			shift_ks	H
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		j
+			default_ks	j
+			shift		J
+			shift_ks	J
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		k
+			default_ks	k
+			shift		K
+			shift_ks	K
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		l
+			default_ks	l
+			shift		L
+			shift_ks	L
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		;
+			default_ks	semicolon
+			shift		:
+			shift_ks	colon
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		'
+			default_ks	quoteright
+			shift		"
+			shift_ks	quotedbl
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		Ret
+			default_ks	Return
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		SH
+			default_ks	Shift_L
+		</key>
+		<key>
+			key_span_width	1
+			default		z
+			default_ks	z
+			shift		Z
+			shift_ks	Z
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		x
+			default_ks	x
+			shift		X
+			shift_ks	X
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		c
+			default_ks	c
+			shift		C
+			shift_ks	C
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		v
+			default_ks	v
+			shift		V
+			shift_ks	V
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		b
+			default_ks	b
+			shift		B
+			shift_ks	B
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		n
+			default_ks	n
+			shift		N
+			shift_ks	N
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		m
+			default_ks	m
+			shift		M
+			shift_ks	M
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		,
+			default_ks	comma
+			shift		<
+			shift_ks	less
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		.
+			default_ks	period
+			shift		>
+			shift_ks	greater
+
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		/
+			default_ks	slash
+			shift		?
+			shift_ks	question
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		SH
+			default_ks	Shift_R
+		</key>
+	</row>
+	<row>
+		<key>
+			bg 		196:216:248
+			default		Ctrl
+			default_ks	Control_L
+		</key>
+		<key>
+			bg		255:255:255
+			default		RU
+			switch		1
+		</key>
+		<key>
+			bg		255:255:255
+			default		123
+			switch		2
+		</key>
+		<key>
+			bg		200:200:200
+			default_ks	space
+			width		60
+		</key>
+		<key>
+			bg 		196:216:248
+			default		Alt
+			default_ks	Alt_L
+		</key>
+		<key>
+			bg 		255:255:255
+	    		default		<
+	    		default_ks	Left
+		</key>
+		<key>
+			bg 		255:255:255
+			default		>
+			default_ks	Right
+		</key>
+		<key>
+			bg 		255:255:255
+			default		^
+			default_ks	Up
+		</key>
+		<key>
+			bg 		255:255:255
+			default		v
+			default_ks	Down
+		</key>		
+	</row>
+</layout>
+<layout>
+	<row>
+		<key>
+			key_span_width	1
+			bg		196:216:248
+			default		Esc
+			default_ks	Escape
+		</key>
+		<key>
+			key_span_width	1
+			default		ё
+			default_ks	Cyrillic_io
+			shift		Ё
+			shift_ks	Cyrillic_IO
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		1
+			default_ks	1
+			shift		!
+			shift_ks	exclam
+		</key>
+		<key>
+			key_span_width	1
+			bg		248:216:196
+			default		2
+			default_ks	2
+			shift		"
+			shift_ks	quotedbl
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		3
+			default_ks	3
+			shift		№
+			shift_ks	numerosign
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		4
+			default_ks	4
+			shift		;
+			shift_ks	semicolon
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		5
+			default_ks	5
+			shift		%
+			shift_ks	percent
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		6
+			default_ks	6
+			shift		:
+			shift_ks	colon
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		7
+			default_ks	7
+			shift		?
+			shift_ks	question
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		8
+			default_ks	8
+			shift		*
+			shift_ks	asterisk
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		9
+			default_ks	9
+			shift		(
+			shift_ks	parenleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:216:196
+			default		0
+			default_ks	0
+			shift		)
+			shift_ks	parenright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		-
+			default_ks	minus
+			shift		_
+			shift_ks	underscore
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		= 
+			default_ks	equal
+			shift		+
+			shift_ks	plus
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+#			img		/usr/share/xkbd/img/backspace.xpm
+			default		<-
+			default_ks	BackSpace
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		Tab
+			default_ks	Tab
+		</key>
+		<key>
+			key_span_width	1
+			default		й
+			default_ks	Cyrillic_shorti
+			shift		Й
+			shift_ks	Cyrillic_SHORTI
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ц
+			default_ks	Cyrillic_tse
+			shift		Ц
+			shift_ks	Cyrillic_TSE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		у
+			default_ks	Cyrillic_u
+			shift		У
+			shift_ks	Cyrillic_U
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		к
+			default_ks	Cyrillic_ka
+			shift		К
+			shift_ks	Cyrillic_KA
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		е
+			default_ks	Cyrillic_ie
+			shift		Е
+			shift_ks	Cyrillic_IE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		н
+			default_ks	Cyrillic_en
+			shift		Н
+			shift_ks	Cyrillic_EN
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		г
+			default_ks	Cyrillic_ghe
+			shift		Г
+			shift_ks	Cyrillic_GHE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ш
+			default_ks	Cyrillic_sha
+			shift		Ш
+			shift_ks	Cyrillic_SHA
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		щ
+			default_ks	Cyrillic_shcha
+			shift		Щ
+			shift_ks	Cyrillic_SHCHA
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		з
+			default_ks	Cyrillic_ze
+			shift		З
+			shift_ks	Cyrillic_ZE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		х
+			default_ks	Cyrillic_ha
+			shift		Х
+			shift_ks	Cyrillic_HA
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ъ
+			default_ks	Cyrillic_hardsign
+			shift		Ъ
+			shift_ks	Cyrillic_HARDSIGN
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		\
+			default_ks	backslash
+			shift		|
+			shift_ks	bar
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		CAP
+			default_ks	Caps_Lock
+		</key>
+		<key>
+			key_span_width	1
+			default		ф
+			default_ks	Cyrillic_ef
+			shift		Ф
+			shift_ks	Cyrillic_EF
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ы
+			default_ks	Cyrillic_yeru
+			shift		Ы
+			shift_ks	Cyrillic_YERU
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		в
+			default_ks	Cyrillic_ve
+			shift		В
+			shift_ks	Cyrillic_VE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		а
+			default_ks	Cyrillic_a
+			shift		А
+			shift_ks	Cyrillic_A
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		п
+			default_ks	Cyrillic_pe
+			shift		П
+			shift_ks	Cyrillic_PE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		р
+			default_ks	Cyrillic_er
+			shift		Р
+			shift_ks	Cyrillic_ER
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		о
+			default_ks	Cyrillic_o
+			shift		О
+			shift_ks	Cyrillic_O
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		л
+			default_ks	Cyrillic_el
+			shift		Л
+			shift_ks	Cyrillic_EL
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		д
+			default_ks	Cyrillic_de
+			shift		Д
+			shift_ks	Cyrillic_DE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ж
+			default_ks	Cyrillic_zhe
+			shift		Ж
+			shift_ks	Cyrillic_ZHE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		э
+			default_ks	Cyrillic_e
+			shift		Э
+			shift_ks	Cyrillic_E
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		Ret
+			default_ks	Return
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		SH
+			default_ks	Shift_L
+		</key>
+		<key>
+			key_span_width	1
+			default		я
+			default_ks	Cyrillic_ya
+			shift		Я
+			shift_ks	Cyrillic_YA
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ч
+			default_ks	Cyrillic_che
+			shift		Ч
+			shift_ks	Cyrillic_CHE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		с
+			default_ks	Cyrillic_es
+			shift		С
+			shift_ks	Cyrillic_ES
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		м
+			default_ks	Cyrillic_em
+			shift		М
+			shift_ks	Cyrillic_EM
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		и
+			default_ks	Cyrillic_i
+			shift		И
+			shift_ks	Cyrillic_I
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		т
+			default_ks	Cyrillic_te
+			shift		Т
+			shift_ks	Cyrillic_TE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ь
+			default_ks	Cyrillic_softsign
+			shift		Ь
+			shift_ks	Cyrillic_SOFTSIGN
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		б
+			default_ks	Cyrillic_be
+			shift		Б
+			shift_ks	Cyrillic_BE
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			default		ю
+			default_ks	Cyrillic_yu
+			shift		Ю
+			shift_ks	Cyrillic_YU
+			obey_capslock	yes
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		.
+			default_ks	period
+			shift		,
+			shift_ks	comma
+		</key>
+		<key>
+			key_span_width	1
+			bg 		196:216:248
+			default		SH
+			default_ks	Shift_R
+		</key>
+	</row>
+	<row>
+		<key>
+			bg 		196:216:248
+			default		Ctrl
+			default_ks	Control_L
+		</key>
+		<key>
+			bg		255:255:255
+			default		EN
+			switch		0
+		</key>
+		<key>
+			bg		255:255:255
+			default		123
+			switch		2
+		</key>
+		<key>
+			bg		200:200:200
+			default_ks	space
+			width		60
+		</key>
+		<key>
+			bg 		196:216:248
+			default		Alt
+			default_ks	Alt_L
+		</key>
+		<key>
+			bg 		255:255:255
+	    		default		<
+	    		default_ks	Left
+		</key>
+		<key>
+			bg 		255:255:255
+			default		>
+			default_ks	Right
+		</key>
+		<key>
+			bg 		255:255:255
+			default		^
+			default_ks	Up
+		</key>
+		<key>
+			bg 		255:255:255
+			default		v
+			default_ks	Down
+		</key>		
+	</row>
+</layout>
+#[ ] ; :  1 2 3  + @ ± $ <-
+#{ } , .  4 5 6  - # _ € Tab
+#( ) ' "  7 8 9  * % ° ₤ Space
+#< > \ |  ^ 0 =  / & № ₣ Reurn
+#  English    Russian  <>^v
+<layout>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		[
+			default_ks	bracketleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		]
+			default_ks	bracketright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		;
+			default_ks	semicolon
+		</key>
+		<key>
+			key_span_width	1
+			bg		248:255:196
+			default		:
+			default_ks	colon
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		$
+			default_ks	dollar
+		</key>
+
+		<key>
+			width		1
+		</key>
+
+		<key>
+			key_span_width	1
+			default		1
+			default_ks	1
+		</key>
+		<key>
+			key_span_width	1
+			default		2
+			default_ks	2
+		</key>
+		<key>
+			key_span_width	1
+			default		3
+			default_ks	3
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		+
+			default_ks	plus
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		@
+			default_ks	at
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		±
+			default_ks	plusminus
+		</key>
+		
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		®
+			default_ks	registered
+		</key>
+		<key>
+			bg		196:216:248
+			key_span_width	1
+#			img		/usr/share/xkbd/img/backspace.xpm
+			default 	<-
+			default_ks	BackSpace
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		{
+			default_ks	braceleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		}
+			default_ks	braceright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		,
+			default_ks	comma
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		.
+			default_ks	period
+			default_ks	period
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		€
+			default_ks	EuroSign
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			key_span_width	1
+			default		4
+			default_ks	4
+		</key>
+		<key>
+			key_span_width	1
+			default		5
+			default_ks	5
+		</key>
+		<key>
+			key_span_width	1
+			default		6
+			default_ks	6
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		-
+			default_ks	minus
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		#
+			default_ks	numbersign
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		_
+			default_ks	underscore
+		</key>
+		
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		©
+			default_ks	copyright
+		</key>
+		<key>
+			bg		196:216:248
+			key_span_width	1
+			default		Esc
+			default_ks	Escape
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		(
+			default_ks	parenleft
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		)
+			default_ks	parenright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		'
+			default_ks	quoteright
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		"
+			default_ks	quotedbl
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		₤
+			default_ks	sterling
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			key_span_width	1
+			default		7
+			default_ks	7
+		</key>
+		<key>
+			key_span_width	1
+			default		8
+			default_ks	8
+		</key>
+		<key>
+			key_span_width	1
+			default		9
+			default_ks	9
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		*
+			default_ks	asterisk
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		%
+			default_ks	percent
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		°
+			default_ks	degree
+		</key>
+				
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		¤
+			default_ks	currency
+		</key>
+		<key>
+			bg		196:216:248
+			key_span_width	1
+			default		Ret
+			default_ks	Return
+		</key>
+	</row>
+	<row>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		<
+			default_ks	less
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		>
+			default_ks	greater
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		\
+			default_ks	backslash
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		|
+			default_ks	bar
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		¥
+			default_ks	yen
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		^
+			default_ks	asciicircum
+		</key>
+		<key>
+			key_span_width	1
+			default		0
+			default_ks	0
+		</key>
+		<key>
+			key_span_width	1
+			bg 		248:255:196
+			default		=
+			default_ks	equal
+		</key>
+		<key>
+			width		1
+		</key>
+		<key>
+			bg 		248:216:196
+			key_span_width	1
+			default		/
+			default_ks	slash
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		&
+			default_ks	ampersand
+		</key>		
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		№
+			default_ks	numerosign
+		</key>
+		<key>
+			bg 		248:255:196
+			key_span_width	1
+			default		™
+			default_ks	trademark
+		</key>
+
+
+
+		<key>
+			bg		200:200:200
+			key_span_width	1
+			default		Spc
+			default_ks	space
+		</key>
+	</row>
+	<row>
+		<key>
+			bg 		255:255:255
+			default     English
+			switch	    0
+		</key>
+		<key>
+			bg 		255:255:255
+			default     Russian
+			switch	    1
+		</key>
+		<key>
+			bg 		255:255:255
+			default		<
+			default_ks	Left
+		</key>
+		<key>
+			bg 		255:255:255
+			default		>
+			default_ks	Right
+		</key>
+		<key>
+			bg 		255:255:255
+			default		^
+			default_ks	Up
+		</key>
+		<key>
+			bg 		255:255:255
+			default		v
+			default_ks	Down
+		</key>		
+	</row>
+</layout>

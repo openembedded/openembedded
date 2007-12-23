@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r0"
 
-DEPENDS = "dtc-native"
+DEPENDS = "dtc-native u-boot-utils-native"
 COMPATIBLE_MACHINE = "(lsppchd|lsppchg)"
 
 SRC_URI = "http://kernel.org/pub/linux/kernel/v2.6/linux-2.6.20.tar.bz2 \

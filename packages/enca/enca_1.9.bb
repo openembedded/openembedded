@@ -1,11 +1,11 @@
 DESCRIPTION = "Enca is an Extremely Naive Charset Analyser"
-LICENSE = "GPL2"
 SECTION = "libs"
 PRIORITY = "optional"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://trific.ath.cx/software/enca/"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "http://trific.ath.cx/Ftp//enca/enca-${PV}.tar.bz2 \
+SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/enca-${PV}.tar.bz2 \
 	file://configure-hack.patch;patch=1 \
 	file://dont-run-tests.patch;patch=1 \
 	file://configure-remove-dumbness.patch;patch=1 \

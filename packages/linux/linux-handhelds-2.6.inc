@@ -23,7 +23,7 @@ HHV     ?= "${@bb.data.getVar('PV',d,1).split('-')[1].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
 
-KERNEL_FILENAME = "${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}"
+KERNEL_FILENAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}.bin"
 
 do_configure() {
 

@@ -1,0 +1,18 @@
+diff -r a6959d06b0fb mk-layouts-gui.desktop
+--- a/mk-layouts-gui.desktop	Wed Nov 28 02:07:06 2007 +0200
++++ b/mk-layouts-gui.desktop	Wed Nov 28 02:08:49 2007 +0200
+@@ -1,9 +1,9 @@
+ [Desktop Entry]
+ Name=MK Layout Manager
+ Comment=Manage matchbox-keyboard layouts
+-Exec=mk-layouts-gui
++Exec=mboxkbd-layouts-gui
+ Type=Application
+-Icon=mk-layouts-gui.png
+-Categories=Application;SystemSettings;MB
+-StartupNotify=True
+-SingleInstance=True
++Icon=mboxkbd-layouts-gui
++Categories=Application;SystemSettings;MB;
++StartupNotify=true
++SingleInstance=true

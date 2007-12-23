@@ -3,15 +3,13 @@ SECTION = "x11/office"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost qt4-x11-free"
-RRECOMMENDS = "tetex"
+RSUGGESTS = "tetex"
 RDEPENDS = "python-shell python-textutils"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://lyx.cybermirror.org/stable/lyx-${PV}.tar.bz2"
 
-inherit autotools qt4x11
+inherit qt4x11 autotools
 
 EXTRA_OECONF = " --with-qt4-dir=${QTDIR} -enable-pch"
 EXTRA_QMAKEVARS_POST = "DEFINES+=_LIBC"

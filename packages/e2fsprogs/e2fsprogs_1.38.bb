@@ -1,6 +1,6 @@
 require e2fsprogs.inc
 
-PR = "r8"
+PR = "r10"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1"
 

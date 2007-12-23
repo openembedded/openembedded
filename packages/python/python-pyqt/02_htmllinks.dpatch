@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 02_htmllinks.dpatch by Torsten Marek <shlomme@debian.org>
+
+## DP: Fix the links in the documentation HTML files.
+
+@DPATCH@
+diff -urNad python-qt4-4.1~/doc/pyqt4ref.html python-qt4-4.1/doc/pyqt4ref.html
+--- python-qt4-4.1~/doc/pyqt4ref.html	2006-11-05 00:51:19.000000000 +0100
++++ python-qt4-4.1/doc/pyqt4ref.html	2006-11-21 23:35:52.000000000 +0100
+@@ -85,7 +85,7 @@
+ <p>This is the reference guide for PyQt 4.1.  PyQt v4 is a set of
+ <a class="reference" href="http://www.python.org">Python</a> bindings for v4 of the Qt application
+ framework from <a class="reference" href="http://www.trolltech.com">Trolltech</a>.</p>
+-<p>There is a separate <a class="reference" href="html/classes.html">PyQt API Reference</a>.</p>
++<p>There is a separate <a class="reference" href="classes.html">PyQt API Reference</a>.</p>
+ <p>Qt is a set of C++ libraries and development tools that includes platform
+ independent abstractions for graphical user interfaces, networking, threads,
+ Unicode, regular expressions, SQL databases, SVG, OpenGL, XML, and user and

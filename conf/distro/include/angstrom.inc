@@ -35,6 +35,9 @@ require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
 ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 
+# We only want to build UTF8 locales
+LOCALE_UTF8_ONLY = "1"
+
 #qemu doesn't like armv6/eabi/vfp
 ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
 ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
@@ -255,7 +258,7 @@ TINDER_REPORT     = "1"
 # seppuku bbclass
 SEPPUKU_LOGIN        = "http://bugs.openembedded.org/query.cgi?"
 SEPPUKU_QUERY        = "http://bugs.openembedded.org/buglist.cgi?"
-SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%20unstable&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.org/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.org/attachment.cgi?"
 SEPPUKU_AUTOBUILD    = "1"
@@ -268,5 +271,4 @@ SEPPUKU_COMPONENT    = "build"
 
 
 # We want images supporting the following features (for task-base)
-DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
-DISTRO_FEATURES_nslu2 = "nfs smbfs alsa bluetooth ext2 usbhost pci"
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"

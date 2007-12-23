@@ -1,8 +1,10 @@
 # Build Class for Sip based Python Bindings
 # (C) Michael 'Mickey' Lauer <mickey@Vanille.de>
 #
-DEPENDS  =+ "sip-native"
-RDEPENDS += "python-sip"
+
+# yes, python-sip is actually a build-time dependency, since
+# the recipe installs sip.h
+DEPENDS += "sip-native python-sip"
 
 # default stuff, do not uncomment
 # EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_0"
@@ -34,8 +36,8 @@ sip_do_generate() {
 	for module in $MODULES
 	do
 		install -d ${module}/
-		echo "calling 'sip4 -I sip -I ${STAGING_SIPDIR} ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.pro.in sip/${module}/${module}mod.sip'"
-		sip4 -I ${STAGING_SIPDIR} -I sip ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.sbf \
+		echo "calling 'sip -I sip -I ${STAGING_SIPDIR} ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.pro.in sip/${module}/${module}mod.sip'"
+		sip -I ${STAGING_SIPDIR} -I sip ${SIPTAGS} ${FEATURES} -c ${module} -b ${module}/${module}.sbf \
 			sip/${module}/${module}mod.sip || die "Error calling sip on ${module}"
 		cat ${module}/${module}.sbf 	| sed s,target,TARGET, \
 						| sed s,sources,SOURCES, \

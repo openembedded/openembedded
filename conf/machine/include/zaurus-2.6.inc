@@ -26,7 +26,7 @@ PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
-MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen"
+MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat"
 MACHINE_FEATURES_append_tosa  = " usbhost wifi "
 MACHINE_FEATURES_append_akita = " usbhost "
 MACHINE_FEATURES_append_spitz = " usbhost ext2 "

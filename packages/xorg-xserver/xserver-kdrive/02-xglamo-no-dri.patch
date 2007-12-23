@@ -1,0 +1,438 @@
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/glamo.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/glamo.c	2007-11-28 18:44:27.000000000 +0100
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/glamo.c	2007-11-30 10:18:43.000000000 +0100
+@@ -27,9 +27,6 @@
+ #include <kdrive-config.h>
+ #endif
+ #include "glamo.h"
+-#if defined(USE_DRI) && defined(GLXEXT)
+-#include "glamo_sarea.h"
+-#endif
+ 
+ static Bool
+ GLAMOCardInit(KdCardInfo *card)
+@@ -89,13 +86,6 @@
+ 		return FALSE;
+ 	}
+ 
+-#ifdef USE_DRI
+-	/* We demand identification by busid, not driver name */
+-	glamoc->drmFd = drmOpen(NULL, glamoc->busid);
+-	if (glamoc->drmFd < 0)
+-		ErrorF("Failed to open DRM, DRI disabled.\n");
+-#endif /* USE_DRI */
+-
+ 	card->driver = glamoc;
+ 
+ 	glamoc->is_3362 = TRUE;
+@@ -122,10 +112,6 @@
+ GLAMOSetOffscreen (KdScreenInfo *screen)
+ {
+ 	GLAMOCardInfo(screen);
+-#if defined(USE_DRI) && defined(GLXEXT)
+-	GLAMOScreenInfo *glamos = (GLAMOScreenInfo *)screen->driver;
+-	int l;
+-#endif
+ 	int screen_size;
+ 	char *mmio = glamoc->reg_base;
+ 
+@@ -152,57 +138,7 @@
+ 	}
+ 
+ 	screen_size = screen->fb[0].byteStride * screen->height;
+-
+ 	screen->off_screen_base = screen_size;
+-
+-#if defined(USE_DRI) && defined(GLXEXT)
+-	/* Reserve a static area for the back buffer the same size as the
+-	 * visible screen.  XXX: This would be better initialized in glamo_dri.c
+-	 * when GLX is set up, but the offscreen memory manager's allocations
+-	 * don't last through VT switches, while the kernel's understanding of
+-	 * offscreen locations does.
+-	 */
+-	glamos->frontOffset = 0;
+-	glamos->frontPitch = screen->fb[0].byteStride;
+-
+-	if (screen->off_screen_base + screen_size <= screen->memory_size) {
+-		glamos->backOffset = screen->off_screen_base;
+-		glamos->backPitch = screen->fb[0].byteStride;
+-		screen->off_screen_base += screen_size;
+-	}
+-
+-	/* Reserve the depth span for Rage 128 */
+-	if (!glamoc->is_3362 && screen->off_screen_base +
+-	    screen->fb[0].byteStride <= screen->memory_size) {
+-		glamos->spanOffset = screen->off_screen_base;
+-		screen->off_screen_base += screen->fb[0].byteStride;
+-	}
+-
+-	/* Reserve the static depth buffer, which happens to be the same
+-	 * bitsPerPixel as the screen.
+-	 */
+-	if (screen->off_screen_base + screen_size <= screen->memory_size) {
+-		glamos->depthOffset = screen->off_screen_base;
+-		glamos->depthPitch = screen->fb[0].byteStride;
+-		screen->off_screen_base += screen_size;
+-	}
+-
+-	/* Reserve approx. half of remaining offscreen memory for local
+-	 * textures.  Round down to a whole number of texture regions.
+-	 */
+-	glamos->textureSize = (screen->memory_size - screen->off_screen_base) / 2;
+-	l = GLAMOLog2(glamos->textureSize / GLAMO_NR_TEX_REGIONS);
+-	if (l < GLAMO_LOG_TEX_GRANULARITY)
+-		l = GLAMO_LOG_TEX_GRANULARITY;
+-	glamos->textureSize = (glamos->textureSize >> l) << l;
+-	if (glamos->textureSize >= 512 * 1024) {
+-		glamos->textureOffset = screen->off_screen_base;
+-		screen->off_screen_base += glamos->textureSize;
+-	} else {
+-		/* Minimum texture size is for 2 256x256x32bpp textures */
+-		glamos->textureSize = 0;
+-	}
+-#endif /* USE_DRI && GLXEXT */
+ }
+ 
+ static Bool
+@@ -413,9 +349,6 @@
+ GLAMODisable(ScreenPtr pScreen)
+ {
+ 	KdScreenPriv(pScreen);
+-#if defined(USE_DRI) && defined(GLXEXT)
+-	GLAMOScreenInfo(pScreenPriv);
+-#endif /* USE_DRI && GLXEXT */
+ 	GLAMOCardInfo(pScreenPriv);
+ 
+ 	GLAMOUnmapReg(pScreenPriv->card, glamoc);
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_dma.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/glamo_dma.c	2007-11-28 22:13:23.000000000 +0100
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_dma.c	2007-11-30 10:25:49.000000000 +0100
+@@ -31,11 +31,6 @@
+ #include "glamo_dma.h"
+ #include "glamo_draw.h"
+ 
+-#ifdef USE_DRI
+-#include "radeon_common.h"
+-#include "glamo_sarea.h"
+-#endif /* USE_DRI */
+-
+ #ifndef NDEBUG
+ static void
+ GLAMODebugFifo(GLAMOScreenInfo *glamos)
+@@ -168,26 +163,6 @@
+ 	if (glamos->indirectBuffer != NULL)
+ 		GLAMOFlushIndirect(glamos, 0);
+ 
+-#ifdef USE_DRI
+-	if (glamos->using_dri) {
+-		int ret = 0;
+-		int cmd = (glamoc->is_3362 ? DRM_RADEON_CP_IDLE :
+-		    DRM_R128_CCE_IDLE);
+-		WHILE_NOT_TIMEOUT(2) {
+-			ret = drmCommandNone(glamoc->drmFd, cmd);
+-			if (ret != -EBUSY)
+-				break;
+-		}
+-		if (TIMEDOUT()) {
+-			GLAMODebugFifo(glamos);
+-			FatalError("Timed out idling CCE (card hung)\n");
+-		}
+-		if (ret != 0)
+-			ErrorF("Failed to idle DMA, returned %d\n", ret);
+-		return;
+-	}
+-#endif
+-
+ 	WHILE_NOT_TIMEOUT(.5) {
+ 		status = MMIO_IN16(mmio, GLAMO_REG_CQ_STATUS);
+ 		if ((status & (1 << 2)) && !(status & (1 << 8)))
+@@ -214,20 +189,6 @@
+ 	if (buf == NULL)
+ 		return NULL;
+ 
+-#ifdef USE_DRI
+-	if (glamos->using_dri) {
+-		buf->drmBuf = GLAMODRIGetBuffer(glamos);
+-		if (buf->drmBuf == NULL) {
+-			xfree(buf);
+-			return NULL;
+-		}
+-		buf->size = buf->drmBuf->total;
+-		buf->used = buf->drmBuf->used;
+-		buf->address = buf->drmBuf->address;
+-		return buf;
+-	}
+-#endif /* USE_DRI */
+-
+ 	buf->size = glamos->ring_len / 2;
+ 	buf->address = xalloc(buf->size);
+ 	if (buf->address == NULL) {
+@@ -290,25 +251,6 @@
+ 
+ 	if ((glamos->indirectStart == buf->used) && !discard)
+ 		return;
+-
+-#ifdef USE_DRI
+-	if (glamos->using_dri) {
+-		buf->drmBuf->used = buf->used;
+-		GLAMODRIDispatchIndirect(glamos, discard);
+-		if (discard) {
+-			buf->drmBuf = GLAMODRIGetBuffer(glamos);
+-			buf->size = buf->drmBuf->total;
+-			buf->used = buf->drmBuf->used;
+-			buf->address = buf->drmBuf->address;
+-			glamos->indirectStart = 0;
+-		} else {
+-			/* Start on a double word boundary */
+-			glamos->indirectStart = buf->used = (buf->used + 7) & ~7;
+-		}
+-		return;
+-	}
+-#endif /* USE_DRI */
+-
+ 	GLAMODispatchIndirectDMA(glamos);
+ 
+ 	buf->used = 0;
+@@ -367,13 +309,7 @@
+ 	KdScreenPriv(pScreen);
+ 	GLAMOScreenInfo(pScreenPriv);
+ 
+-#ifdef USE_DRI
+-	if (glamos->using_dri)
+-		GLAMODRIDMAStart(glamos);
+-#endif /* USE_DRI */
+-
+-	if (!glamos->using_dri)
+-		GLAMODMAInit(pScreen);
++	GLAMODMAInit(pScreen);
+ 
+ 	glamos->indirectBuffer = GLAMOGetDMABuffer(glamos);
+ 	if (glamos->indirectBuffer == FALSE)
+@@ -388,11 +324,6 @@
+ 
+ 	GLAMOWaitIdle(glamos);
+ 
+-#ifdef USE_DRI
+-	if (glamos->using_dri)
+-		GLAMODRIDMAStop(glamos);
+-#endif /* USE_DRI */
+-
+ 	xfree(glamos->indirectBuffer->address);
+ 	xfree(glamos->indirectBuffer);
+ 	glamos->indirectBuffer = NULL;
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/glamo.h
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/glamo.h	2007-11-30 10:24:13.000000000 +0100
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/glamo.h	2007-11-30 10:25:06.000000000 +0100
+@@ -39,18 +39,6 @@
+ 
+ #include "kxv.h"
+ 
+-#undef XF86DRI
+-#ifdef XF86DRI
+-#define USE_DRI
+-#include "xf86drm.h"
+-#include "dri.h"
+-#ifdef GLXEXT
+-#include "GL/glxint.h"
+-#include "GL/glxtokens.h"
+-#include "glamo_dripriv.h"
+-#endif
+-#endif
+-
+ #define GLAMO_REG_BASE(c)		((c)->attr.address[0])
+ #define GLAMO_REG_SIZE(c)		(0x2400)
+ 
+@@ -124,9 +112,6 @@
+ 	Bool is_3362;
+ 	CARD32 crtc_pitch;
+ 	CARD32 crtc2_pitch;
+-#ifdef USE_DRI
+-	int drmFd;
+-#endif /* USE_DRI */
+ 	Bool use_fbdev, use_vesa;
+ } GLAMOCardInfo;
+ 
+@@ -166,9 +151,6 @@
+ 	int size;
+ 	int used;
+ 	void *address;
+-#ifdef USE_DRI
+-	drmBufPtr drmBuf;
+-#endif
+ } dmaBuf;
+ 
+ typedef struct _GLAMOScreenInfo {
+@@ -194,8 +176,6 @@
+ 	KdVideoAdaptorPtr pAdaptor;
+ 	int		num_texture_ports;
+ 
+-	Bool		using_dri;	/* If we use the DRM for DMA. */
+-
+ 	KdOffscreenArea *dma_space;	/* For "DMA" from framebuffer. */
+ 	CARD16		*ring_addr;	/* Beginning of ring buffer. */
+ 	int		ring_write;	/* Index of write ptr in ring. */
+@@ -204,76 +184,6 @@
+ 
+ 	dmaBuf		*indirectBuffer;
+ 	int		indirectStart;
+-
+-#ifdef USE_DRI
+-	Bool		dma_started;
+-
+-	drmSize         registerSize;
+-	drmHandle       registerHandle;
+-	drmHandle       fbHandle;
+-
+-	drmSize		gartSize;
+-	drmHandle	agpMemHandle;		/* Handle from drmAgpAlloc */
+-	unsigned long	gartOffset;
+-	unsigned char	*AGP;			/* Map */
+-	int		agpMode;
+-	drmSize         pciSize;
+-	drmHandle       pciMemHandle;
+-
+-	/* ring buffer data */
+-	unsigned long	ringStart;		/* Offset into AGP space */
+-	drmHandle	ringHandle;		/* Handle from drmAddMap */
+-	drmSize		ringMapSize;		/* Size of map */
+-	int		ringSize;		/* Size of ring (MB) */
+-	unsigned char	*ring;			/* Map */
+-
+-	unsigned long	ringReadOffset;		/* Offset into AGP space */
+-	drmHandle	ringReadPtrHandle;	/* Handle from drmAddMap */
+-	drmSize		ringReadMapSize;	/* Size of map */
+-	unsigned char	*ringReadPtr;		/* Map */
+-
+-	/* vertex/indirect buffer data */
+-	unsigned long	bufStart;		/* Offset into AGP space */
+-	drmHandle	bufHandle;		/* Handle from drmAddMap */
+-	drmSize		bufMapSize;		/* Size of map */
+-	int		bufSize;		/* Size of buffers (MB) */
+-	unsigned char	*buf;			/* Map */
+-	int		bufNumBufs;		/* Number of buffers */
+-	drmBufMapPtr	buffers;		/* Buffer map */
+-
+-	/* AGP Texture data */
+-	unsigned long	gartTexStart;		/* Offset into AGP space */
+-	drmHandle	gartTexHandle;		/* Handle from drmAddMap */
+-	drmSize		gartTexMapSize;		/* Size of map */
+-	int		gartTexSize;		/* Size of AGP tex space (MB) */
+-	unsigned char	*gartTex;		/* Map */
+-	int		log2GARTTexGran;
+-
+-	int		DMAusecTimeout;   /* CCE timeout in usecs */
+-
+-	/* DRI screen private data */
+-	int		frontOffset;
+-	int		frontPitch;
+-	int		backOffset;
+-	int		backPitch;
+-	int		depthOffset;
+-	int		depthPitch;
+-	int		spanOffset;
+-	int		textureOffset;
+-	int		textureSize;
+-	int		log2TexGran;
+-
+-	int		irqEnabled;
+-
+-	int		serverContext;
+-
+-	DRIInfoPtr	pDRIInfo;
+-#ifdef GLXEXT
+-	int		numVisualConfigs;
+-	__GLXvisualConfig *pVisualConfigs;
+-	GLAMOConfigPrivPtr pVisualConfigsPriv;
+-#endif /* GLXEXT */
+-#endif /* USE_DRI */
+ } GLAMOScreenInfo;
+ 
+ #define getGLAMOScreenInfo(kd)	((GLAMOScreenInfo *) ((kd)->screen->driver))
+@@ -330,31 +240,6 @@
+ void
+ GLAMODrawFini(ScreenPtr pScreen);
+ 
+-/* glamo_dri.c */
+-#ifdef USE_DRI
+-Bool
+-GLAMODRIScreenInit(ScreenPtr pScreen);
+-
+-void
+-GLAMODRICloseScreen(ScreenPtr pScreen);
+-
+-void
+-GLAMODRIDMAStart(GLAMOScreenInfo *glamos);
+-
+-void
+-GLAMODRIDMAStop(GLAMOScreenInfo *glamos);
+-
+-void
+-GLAMODRIDMAReset(GLAMOScreenInfo *glamos);
+-
+-void
+-GLAMODRIDispatchIndirect(GLAMOScreenInfo *glamos, Bool discard);
+-
+-drmBufPtr
+-GLAMODRIGetBuffer(GLAMOScreenInfo *glamos);
+-
+-#endif /* USE_DRI */
+-
+ /* glamo_cursor.c */
+ Bool
+ GLAMOCursorInit(ScreenPtr pScreen);
+Index: xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_draw.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/glamo/glamo_draw.c	2007-11-30 09:55:05.000000000 +0100
++++ xorg-server-1.3.0.0/hw/kdrive/glamo/glamo_draw.c	2007-11-30 10:26:02.000000000 +0100
+@@ -296,11 +296,6 @@
+ 	RegisterBlockAndWakeupHandlers(GLAMOBlockHandler, GLAMOWakeupHandler,
+ 	    pScreen);
+ 
+-	glamos->using_dri = FALSE;
+-#ifdef USE_DRI
+-	glamos->using_dri = GLAMODRIScreenInit(pScreen);
+-#endif /* USE_DRI */
+-
+ 	memset(&glamos->kaa, 0, sizeof(KaaScreenInfoRec));
+ 	glamos->kaa.waitMarker = GLAMOWaitMarker;
+ 	glamos->kaa.PrepareSolid = GLAMOPrepareSolid;
+@@ -357,20 +352,6 @@
+ 	glamos->kaa.UploadToScreen = NULL;
+     	glamos->kaa.UploadToScratch = NULL;
+ 
+-#ifdef USE_DRI
+-	if (glamos->using_dri) {
+-		if (!glamoc->is_3362) {
+-			/*glamos->kaa.PrepareTrapezoids = R128PrepareTrapezoids;
+-			glamos->kaa.Trapezoids = R128Trapezoids;
+-			glamos->kaa.DoneTrapezoids = R128DoneTrapezoids;*/
+-		} else if (glamoc->is_r100 || glamoc->is_r200) {
+-			glamos->kaa.PrepareTrapezoids = RadeonPrepareTrapezoids;
+-			glamos->kaa.Trapezoids = RadeonTrapezoids;
+-			glamos->kaa.DoneTrapezoids = RadeonDoneTrapezoids;
+-		}
+-	}
+-#endif /* USE_DRI */
+-
+ 	glamos->kaa.UploadToScreen = GLAMOUploadToScreen;
+ 
+ 	/* Reserve a scratch area.  It'll be used for storing glyph data during
+@@ -399,15 +380,6 @@
+ void
+ GLAMODrawFini(ScreenPtr pScreen)
+ {
+-#ifdef USE_DRI
+-	KdScreenPriv(pScreen);
+-	GLAMOScreenInfo(pScreenPriv);
+-	if (glamos->using_dri) {
+-		GLAMODRICloseScreen(pScreen);
+-		glamos->using_dri = FALSE;
+-	}
+-#endif /* USE_DRI */
+-
+ 	RemoveBlockAndWakeupHandlers(GLAMOBlockHandler, GLAMOWakeupHandler,
+ 	    pScreen);
+ 

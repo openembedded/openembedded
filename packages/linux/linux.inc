@@ -4,19 +4,33 @@ LICENSE = "GPL"
 
 inherit kernel
 
-# Not every device needs mkimage to generate a kernel image, but lets make OE a bit more
-# friendly and increase the "Just Works(TM) factor. Building uboot takes only a minute.
-DEPENDS += " u-boot-mkimage-openmoko-native "
+# Add dependency on mkimage for kernels that build a uImage
+
+python __anonymous () {
+
+    import bb
+
+    kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
+    if kerneltype == 'uImage':
+        depends = bb.data.getVar("DEPENDS", d, 1)
+        depends = "%s u-boot-mkimage-openmoko-native" % depends
+        bb.data.setVar("DEPENDS", depends, d)
+}
 
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 # Specify the commandline for your device
 
-#boot from mmc
+# Boot from mmc
 CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfstype=ext2 rootdelay=5"
-#boot from nfs
+# Boot from nfs
 #CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=301 root=/dev/nfs nfsroot=172.20.3.1:/data/at91 ip=172.20.0.5:::255.255.0.0"
+
+# Set the verbosity of kernel messages during runtime
+# You can define CMDLINE_DEBUG in your local.conf or distro.conf to override this behaviour  
+CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
+CMDLINE_append = " ${CMDLINE_DEBUG} "
 
 do_configure_prepend() {
         echo "" > ${S}/.config
@@ -107,7 +121,7 @@ UBOOT_ENTRYPOINT ?= "20008000"
 do_compile_append() {
     if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
         if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
-            ${OBJCOPY} -O binary -R .naote -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
+            ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
             uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
             rm -f linux.bin
         else
@@ -120,13 +134,13 @@ do_compile_append() {
     fi
 }
 
-KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}"
 
 do_deploy() {
         install -d ${DEPLOY_DIR_IMAGE}
         install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
+        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
 
         cd ${DEPLOY_DIR_IMAGE}
         rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
