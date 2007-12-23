@@ -7,24 +7,39 @@
 # Date: 04-Jun-06
 
 test -z "${ZD_BINDIR}" && ZD_BINDIR="/usr/bin"
-${ZD_BINDIR}/bl on
+test -x ${ZD_BINDIR}/bl && ${ZD_BINDIR}/bl on
 
-# If the backlight does not come back on after a suspend, the driver is 
-# still "on" (hence "bl on" does nothing) with a brightness of "0"
 
-( if test "`bl | awk '{print $2}'`" = "0"
-then
-	x=0
-	while test "$x" != 4
-	do
-		bl 10
-		usleep 10
-		bl 50
-		usleep 10
-		
-		let x=$x+1
-	done
+BL="fakeBl"
+
+fakeBl() {
+
 	
+	case "$1" in
+	on)	test -n "$2" && echo "$2" > "$BL_DRIVER" ;;
+	"")	echo "on `cat "$BL_DRIVER"`";;	
+	*)	echo "$1" > "$BL_DRIVER" ;;
+	esac
+	
+}
+
+for dir in `ls -1 /sys/class/backlight/`
+do
+	if test -e /sys/class/backlight/$dir/brightness
+	then
+		echo "Using [$dir] backlight driver"
+		BL_DRIVER="/sys/class/backlight/$dir/brightness"
+		break
+	fi
+done
+
+
+echo "### `$BL` ###"
+( if test "`$BL | awk '{print $2}'`" = "0"
+then
+
+	$BL 20
+
 	if mkdir /var/run/display_brightness.lock
 	then
 		if test -e /var/run/display_brightness.tmp
@@ -34,12 +49,8 @@ then
 
 			if test "$OLD_VALUE" -gt 1
 			then
-				STEP=5
-				DRIVER="`ls /sys/class/backlight/|head -n 1`"
-				BRIGHTNESS_FILE="/sys/class/backlight/$DRIVER/brightness"
-
 				echo "SETTING $OLD_VALUE!"
-				echo "$OLD_VALUE" > "$BRIGHTNESS_FILE"
+				$BL "$OLD_VALUE"
 				rm /var/run/display_brightness.tmp
 				echo "FINISH!"
 			fi

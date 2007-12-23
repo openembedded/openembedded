@@ -34,6 +34,11 @@
 # - Reformatted file - please use spaces not tabs
 # - "version check" is only on Tosa and Poodle - breaks other machines
 #
+# 2007.12.23 Matthias 'CoreDump' Hentges
+# - Fix kernel install on spitz machines
+# - Unify format of do_flashing()...
+# - Display ${PR} of zaurus-updater.bb to the user
+# - Polish HDD installer messages
 
 DATAPATH=$1
 TMPPATH=/tmp/update
@@ -120,16 +125,19 @@ check_for_tar()
 do_rootfs_extraction()
 {
     UNPACKED_ROOTFS=1
-    echo 'HDD root file system'
+    echo 'Installing HDD root file system'
     if [ ! -f /hdd1/NotAvailable ]; then
         umount /hdd1
     fi
-    echo 'Now formatting...'
+    echo -n '* Now formatting...'
     mke2fs $MKE2FSOPT /dev/${IDE1}1 > /dev/null 2>&1
     e2fsck -p /dev/${IDE1}1 > /dev/null
     if [ "$?" != "0" ]; then
+    	echo "FAILED"
         echo "Error: Unable to create filesystem on microdrive!"
         exit "$?"
+    else 
+    	echo "Done"
     fi
 
     mount -t $LINUXFMT -o noatime /dev/${IDE1}1 /hdd1
@@ -139,14 +147,17 @@ do_rootfs_extraction()
     fi
 
     cd /hdd1
-    echo 'Now extracting...'
+    echo -n '* Now extracting (this can take over 5m)...'
     gzip -dc $DATAPATH/$TARGETFILE | $TARBIN xf -
     if [ "$?" != "0" ]; then
+    	echo "FAILED"
         echo "Error: Unable to extract root filesystem archive!"
         exit "$?"
+    else
+    	echo "Done"
     fi
 
-    echo 'Done.'
+    echo 'HDD Installation Finished.'
 
     # remount as RO
     cd /
@@ -156,60 +167,67 @@ do_rootfs_extraction()
 
 do_flashing()
 {
-    if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
-    then
-        echo "Error: File is too big to flash!"
-        echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"
-        return
-    fi
+	if [ $DATASIZE -gt `printf "%d" $MTD_PART_SIZE` ]
+	then
+		echo "Error: File is too big to flash!"
+		echo "$FLASH_TYPE: [$DATASIZE] > [`printf "%d" ${MTD_PART_SIZE}`]"
+		return
+	fi
 
-    if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
-    then
-        #check version
-        /sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
-        if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
-        then
-            #no version info...
-            rm -f $TMPHEAD > /dev/null 2>&1
-            DATAPOS=0
-        fi
-    fi
+	if [ "$ZAURUS" = "tosa" ] || [ "$ZAURUS" = "poodle" ]
+	then
+		#check version
+		/sbin/bcut -s 6 -o $TMPDATA $TMPHEAD
+		
+		if [ `cat $TMPDATA` != "SHARP!" ] > /dev/null 2>&1
+		then
+		    #no version info...
+		    rm -f $TMPHEAD > /dev/null 2>&1
+		    DATAPOS=0
+		fi
+	fi
 
-    if [ $ISFORMATTED = 0 ]
-    then
-        /sbin/eraseall $TARGET_MTD > /dev/null 2>&1
-        ISFORMATTED=1
-    fi
+	if [ $ISFORMATTED = 0 ]
+	then
+		/sbin/eraseall $TARGET_MTD > /dev/null 2>&1
+		ISFORMATTED=1
+	fi
 
-    echo ''
-    echo '0%                   100%'
-    PROGSTEP=`expr $DATASIZE / $ONESIZE + 1`
-    PROGSTEP=`expr 25 / $PROGSTEP`
-    if [ $PROGSTEP = 0 ]
-    then
-        PROGSTEP=1
-    fi
+	if [ -e $TMPHEAD ]
+	then
+		VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
+		MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
+		/sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
+		/sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
 
-    if [ -e $TMPHEAD ]
-    then
-        VTMPNAME=$TMPPATH'/vtmp'`date '+%s'`'.tmp'
-        MTMPNAME=$TMPPATH'/mtmp'`date '+%s'`'.tmp'
-        /sbin/nandlogical $LOGOCAL_MTD READ $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
-        /sbin/nandlogical $LOGOCAL_MTD READ $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
+		/sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
+		/sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
+	fi
 
-        /sbin/verchg -v $VTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
-        /sbin/verchg -m $MTMPNAME $TMPHEAD $MODULEID $MTD_PART_SIZE > /dev/null 2>&1
-    fi
-
-        # Looks like Akita is quite unique when it comes to kernel flashing
+        # Looks like Akita and Spitz are unique when it comes to kernel flashing
         
-        if [ "$ZAURUS" = "akita" ] && [ $FLASH_TYPE = kernel ]; then 
-                echo $TARGETFILE':'$DATASIZE'bytes'
-                echo '                ' > /tmp/data
-                /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
-                /sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
-                /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1     
-        else
+       	if [ "$ZAURUS" = "akita" -o "$ZAURUS" = "c3x00" ] && [ "$FLASH_TYPE" = "kernel" ]
+	then 
+#               	echo $TARGETFILE':'$DATASIZE'bytes'
+		echo ""
+		echo -n "Installing SL-Cxx00 kernel..."
+               	echo '                ' > /tmp/data
+               	 test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x60100 16 /tmp/data > /dev/null 2>&1
+               	/sbin/nandlogical $LOGOCAL_MTD WRITE 0xe0000 $DATASIZE $TARGETFILE > /dev/null 2>&1
+               	 test "$ZAURUS" = "akita" && /sbin/nandlogical $LOGOCAL_MTD WRITE 0x21bff0 16 /tmp/data > /dev/null 2>&1     
+		 echo "Done"
+	else	
+	
+		echo ''
+		echo '0%                   100%'
+		PROGSTEP=`expr $DATASIZE / $ONESIZE + 1`
+		PROGSTEP=`expr 25 / $PROGSTEP`
+		
+		if [ $PROGSTEP = 0 ]
+		then
+			PROGSTEP=1
+		fi	
+			
                 #loop
                 while [ $DATAPOS -lt $DATASIZE ]
                 do
@@ -246,27 +264,29 @@ do_flashing()
                         done
                 done
         fi
-    echo ''
+	echo ''
 
-    #finish
-    rm -f $TMPPATH/*.bin > /dev/null 2>&1
+	#finish
+	rm -f $TMPPATH/*.bin > /dev/null 2>&1
 
-    if [ $RESULT = 0 ]
-    then
-        if [ -e $VTMPNAME ]
-        then
-            /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
-            rm -f $VTMPNAME > /dev/null 2>&1
-        fi
-        if [ -e $MTMPNAME ]
-        then
-            /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
-            rm -f $MTMPNAME > /dev/null 2>&1
-        fi
-        echo 'Done.'
-    else
-        echo 'Error!'
-    fi
+	if [ $RESULT = 0 ]
+	then
+		if [ -e $VTMPNAME ]
+		then
+		    /sbin/nandlogical $LOGOCAL_MTD WRITE $VERBLOCK 0x4000 $VTMPNAME > /dev/null 2>&1
+		    rm -f $VTMPNAME > /dev/null 2>&1
+		fi
+
+		if [ -e $MTMPNAME ]
+		then
+		    /sbin/nandlogical $LOGOCAL_MTD WRITE $MVRBLOCK 0x4000 $MTMPNAME > /dev/null 2>&1
+		    rm -f $MTMPNAME > /dev/null 2>&1
+		fi
+	
+		[ "$FLASH_TYPE" != "kernel" ] && echo 'Done.'
+	else
+		echo 'Error!'
+	fi
 }
 
 ### Check model ###
@@ -300,6 +320,8 @@ case "$MODEL" in
         ;;
 esac
 
+clear
+echo "---- Universal Zaurus Updater ZAURUS_UPDATER_VERSION ----"
 echo 'MODEL: '$MODEL' ('$ZAURUS')'
 
 mkdir -p $TMPPATH > /dev/null 2>&1
