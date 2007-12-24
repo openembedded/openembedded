@@ -109,3 +109,15 @@ python populate_packages_prepend() {
 	translationdir = bb.data.expand('${datadir}/qtopia/translations/', d)
 	do_split_packages(d, translationdir, '^qt_(.*)\.qm$', 'qtopia-translation-%s', 'Qtopia translation for %s', extra_depends='' )
 }
+
+
+do_install() {
+    oe_runmake install INSTALL_ROOT=${D}
+
+    # These are host binaries, we should only use them in staging
+    rm -rf ${D}/${bindir}
+    rm -rf ${D}/${datadir}/mkspecs
+
+    install -d ${D}/${libdir}/fonts
+    touch ${D}/${libdir}/fonts/fontdir
+}
