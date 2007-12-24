@@ -13,6 +13,7 @@ S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 QT_BASE_NAME = "qtopiacore"
 QT_BASE_LIB  = "libqtopiacore"
 QT_LIBRARY_NAME = "libQt"
+QT_DIR_NAME = "qtopia"
 require qt_packaging.inc
 require qt_depends.inc
 

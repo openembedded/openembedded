@@ -1,3 +1,5 @@
+inherit siteinfo
+
 def qt_arch(d):
     import bb, re
     arch = bb.data.getVar('TARGET_ARCH', d, 1)
@@ -11,3 +13,11 @@ def qt_arch(d):
         arch = "mips"
     return arch
 
+def qt_endian(d):
+    import bb
+    if bb.data.getVar('SITEINFO_ENDIANESS', d, True) == "le":
+        return "-little-endian"
+    elif bb.data.getVar('SITEINFO_ENDIANESS', d, True) == "be":
+        return "-big-endian"
+    else:
+        assert False

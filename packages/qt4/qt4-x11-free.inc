@@ -18,6 +18,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_LIBRARY_NAME = "libQt"
+QT_DIR_NAME = "qt4"
 require qt_packaging.inc
 require qt_depends.inc
 

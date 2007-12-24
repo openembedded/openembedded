@@ -81,16 +81,13 @@ FILES_${QT_BASE_LIB}dbus4                   = "${libdir}/${QT_LIBRARY_NAME}DBus.
 FILES_${QT_BASE_LIB}dbus4-dev               = "${libdir}/${QT_LIBRARY_NAME}DBus.so"
 FILES_${QT_BASE_LIB}dbus4-dbg               = "${libdir}/.debug/${QT_LIBRARY_NAME}DBus*"
 
-FILES_${QT_BASE_NAME}-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
-FILES_${QT_BASE_NAME}-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
-FILES_${QT_BASE_NAME}-plugins-designer     = "${libdir}/plugins/designer/*.so"
-FILES_${QT_BASE_NAME}-plugins-imageformats = "${libdir}/plugins/imageformats/*.so"
-FILES_${QT_BASE_NAME}-plugins-sqldrivers   = "${libdir}/plugins/sqldrivers/*.so"
-FILES_${QT_BASE_NAME}-plugins-inputmethods = "${libdir}/plugins/inputmethods/*.so"
-FILES_${QT_BASE_NAME}-plugins-iconengines  = "${libdir}/plugins/iconengines/*.so"
-
-FILES_${QT_BASE_NAME}-plugins += "${datadir}/qtopia/plugins/*/*.so"
-FILES_${QT_BASE_NAME}-plugins-dbg += "${datadir}/qtopia/plugins/*/.debug/*.so"
+FILES_${QT_BASE_NAME}-plugins-accessible   = "${libdir}/${QT_DIR_NAME}/plugins/accessible/*.so"
+FILES_${QT_BASE_NAME}-plugins-codecs       = "${libdir}/${QT_DIR_NAME}/plugins/codecs/*.so"
+FILES_${QT_BASE_NAME}-plugins-designer     = "${libdir}/${QT_DIR_NAME}/plugins/designer/*.so"
+FILES_${QT_BASE_NAME}-plugins-imageformats = "${libdir}/${QT_DIR_NAME}/plugins/imageformats/*.so"
+FILES_${QT_BASE_NAME}-plugins-sqldrivers   = "${libdir}/${QT_DIR_NAME}/plugins/sqldrivers/*.so"
+FILES_${QT_BASE_NAME}-plugins-inputmethods = "${libdir}/${QT_DIR_NAME}/plugins/inputmethods/*.so"
+FILES_${QT_BASE_NAME}-plugins-iconengines  = "${libdir}/${QT_DIR_NAME}/plugins/iconengines/*.so"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
