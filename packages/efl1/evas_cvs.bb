@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r3"
+PR = "r4"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \

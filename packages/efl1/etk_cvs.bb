@@ -2,7 +2,7 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit efl_library
 
@@ -15,3 +15,4 @@ FILES_${PN}-engines = "${libdir}/etk/engines/*.so ${datadir}"
 FILES_${PN}-dev += "${libdir}/etk/engines/*.a ${libdir}/etk/engines/*.la"
 FILES_${PN}-dbg += "${libdir}/etk/engines/.debug/"
 
+RRECOMMENDS_${PN} = "${PN}-engines"
