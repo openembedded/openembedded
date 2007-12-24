@@ -3,8 +3,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 \
-           xft libxext libxrender libxrandr libxcursor dbus openssl"
+DEPENDS += "virtual/libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
 PR = "r6"
 
@@ -15,9 +14,11 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            file://0005-fix-mkspecs.patch;patch=1"
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
-inherit qmake_base qt4x11
 
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_LIBRARY_NAME = "libQt"
 require qt_packaging.inc
+require qt_depends.inc
+
+inherit qt4x11
