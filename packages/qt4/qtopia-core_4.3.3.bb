@@ -1,19 +1,3 @@
-SUMMARY = "QtopiaCore"
-SECTION = "libs"
-LICENSE = "GPL"
-PRIORITY = "optional"
-HOMEPAGE = "http://www.trolltech.com"
-DEPENDS = "freetype tslib"
-
-PR = "r0"
-
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
-           file://linux-oe-qmake.conf"
-
-S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
-
-inherit pkgconfig
-
 # Qmake gets confused by environment variables, as it builds both HOST
 # and TARGET objects. The correct compiler settings come from the mkspec
 # and are set with the OE_QMAKE_ variables
@@ -148,8 +132,4 @@ do_stage() {
     rm -rf ${STAGE_TEMP}
 }
 
-
-QT_BASE_NAME = "qtopiacore"
-QT_BASE_LIB  = "libqtopiacore"
-QT_LIBRARY_NAME = "libQt"
-require qt_packaging.inc
+require qtopia-core.inc
