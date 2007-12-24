@@ -5,7 +5,7 @@ inherit qmake_base
 
 DEPENDS_prepend = "qmake2-native uicmoc4-native "
 
-export QMAKESPEC = "${QTDIR}/mkspecs/${TARGET_OS}-oe-g++"
+export QMAKESPEC = "${CROSS_DATADIR}/qt4/mkspecs/${TARGET_OS}-oe-g++"
 export OE_QMAKE_UIC = "${STAGING_BINDIR_NATIVE}/uic4"
 export OE_QMAKE_UIC3 = "${STAGING_BINDIR_NATIVE}/uic34"
 export OE_QMAKE_MOC = "${STAGING_BINDIR_NATIVE}/moc4"
