@@ -17,22 +17,28 @@
 # image is intended to be distro-agnostic.
 
 DISTRO_SSH_DAEMON ?= "dropbear"
+
 DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"
+
+# FIXME: We need a distro-indendent way of specifying feed configs.
+# Once the RFC for the DISTRO_FEED_CONFIGS variable name is approved,
+# we can remove this default definition and set it in the distro config.
+DISTRO_FEED_CONFIGS ?= "${ANGSTROM_FEED_CONFIGS}"
 
 DEPENDS = "\
 	task-boot \
-	task-distro-base task-machine-base \
 	${DISTRO_SSH_DAEMON} \
 	${DISTRO_PACKAGE_MANAGER} \
+	${DISTRO_FEED_CONFIGS} \
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
 
 IMAGE_INSTALL = "\
 	task-boot \
-	task-distro-base task-machine-base \
 	${DISTRO_SSH_DAEMON} \
 	${DISTRO_PACKAGE_MANAGER} \
+	${DISTRO_FEED_CONFIGS} \
 	${@base_contains('MACHINE_FEATURES', 'ext2', 'task-base-ext2', '', d)} \
 	${@base_contains('MACHINE_FEATURES', 'usbhost', 'task-base-usbhost', '', d)} \
 	"
