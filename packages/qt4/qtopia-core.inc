@@ -20,6 +20,7 @@ QT_BASE_LIB  = "libqtopiacore"
 QT_LIBRARY_NAME = "libQt"
 QT_DIR_NAME = "qtopia"
 require qt_depends.inc
+require qt_configuration.inc
 require qt_packaging.inc
 require qt_staging.inc
 

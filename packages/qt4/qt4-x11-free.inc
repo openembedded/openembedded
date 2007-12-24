@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS += "virtual/libx11 xft libxext libxrender libxrandr libxcursor"
+DEPENDS += "virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
 PR = "r6"
 
@@ -21,6 +21,7 @@ QT_BASE_LIB  = "libqt"
 QT_LIBRARY_NAME = "libQt"
 QT_DIR_NAME = "qt4"
 require qt_depends.inc
+require qt_configuration.inc
 require qt_packaging.inc
 require qt_staging.inc
 
