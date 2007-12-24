@@ -5,7 +5,6 @@ HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS = "pkgconfig-native uicmoc4-native qmake2-native freetype jpeg virtual/libx11 \
            xft libxext libxrender libxrandr libxcursor dbus openssl"
-RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
 PROVIDES = "qt4x11"
 PR = "r6"
 
@@ -117,71 +116,7 @@ do_install() {
 	rm ${D}${bindir}/rcc ${D}${bindir}/uic ${D}${bindir}/moc
 }
 
-NONDEV_PACKAGES = "libqtcore4 libqtgui4 libqtnetwork4  \
-             libqtsql4 libqtsvg4 libqttest4 \
-             libqtxml4 \
-             libqtdesigner4 libqtdesignercomponents4 \
-             libqt3support4 \
-             libqtassistantclient4 libqtscript4 \
-             libqtdbus4 \
-             qt4-assistant qt4-common qt4-designer qt4-demos qt4-examples qt4-linguist \
-             qt4-pixeltool qt4-dbus \
-             qt4-plugins-accessible qt4-plugins-codecs qt4-plugins-designer qt4-plugins-imageformats qt4-plugins-sqldrivers \
-             qt4-plugins-inputmethods qt4-plugins-iconengines"
-
-PACKAGES += "libqtcore4-dev libqtgui4-dev libqtnetwork4-dev libqtsql4-dev libqtsvg4-dev libqttest4-dev \
-             libqtxml4-dev libqtdesigner4-dev libqtdesignercomponents4-dev libqt3support4-dev \
-             libqtassistantclient4-dev libqtscript4-dev libqtdbus4-dev \
-	     ${NONDEV_PACKAGES}"
-
-ALLOW_EMPTY = "1"
-FILES_${PN} = ""
-
-FILES_libqtcore4                   = "${libdir}/libQtCore.so.*"
-FILES_libqtcore4-dev               = "${libdir}/libQtCore.so"
-FILES_libqtgui4                    = "${libdir}/libQtGui.so.*"
-FILES_libqtgui4-dev                = "${libdir}/libQtGui.so"
-FILES_libqtnetwork4                = "${libdir}/libQtNetwork.so.*"
-FILES_libqtnetwork4-dev            = "${libdir}/libQtNetwork.so"
-FILES_libqtsql4                    = "${libdir}/libQtSql.so.*"
-FILES_libqtsql4-dev                = "${libdir}/libQtSql.so"
-FILES_libqtsvg4                    = "${libdir}/libQtSvg.so.*"
-FILES_libqtsvg4-dev                = "${libdir}/libQtSvg.so"
-FILES_libqttest4                   = "${libdir}/libQtTest.so.*"
-FILES_libqttest4-dev               = "${libdir}/libQtTest.so"
-FILES_libqtxml4                    = "${libdir}/libQtXml.so.*"
-FILES_libqtxml4-dev                = "${libdir}/libQtXml.so"
-FILES_libqtdesigner4               = "${libdir}/libQtDesigner.so.*"
-FILES_libqtdesigner4-dev           = "${libdir}/libQtDesigner.so"
-FILES_libqtdesignercomponents4     = "${libdir}/libQtDesignerComponents.so.*"
-FILES_libqtdesignercomponents4-dev = "${libdir}/libQtDesignerComponents.so"
-FILES_libqt3support4               = "${libdir}/libQt3Support.so.*"
-FILES_libqt3support4-dev           = "${libdir}/libQt3Support.so"
-FILES_libqtassistantclient4        = "${libdir}/libQtAssistantClient.so.*"
-FILES_libqtassistantclient4-dev    = "${libdir}/libQtAssistantClient.so"
-FILES_libqtscript4                 = "${libdir}/libQtScript.so.*"
-FILES_libqtscript4-dev             = "${libdir}/libQtScript.so"
-FILES_libqtdbus4                   = "${libdir}/libQtDBus.so.*"
-FILES_libqtdbus4-dev               = "${libdir}/libQtDBus.so"
-
-FILES_qt4-plugins-accessible   = "${libdir}/plugins/accessible/*.so"
-FILES_qt4-plugins-codecs       = "${libdir}/plugins/codecs/*.so"
-FILES_qt4-plugins-designer     = "${libdir}/plugins/designer/*.so"
-FILES_qt4-plugins-imageformats = "${libdir}/plugins/imageformats/*.so"
-FILES_qt4-plugins-sqldrivers   = "${libdir}/plugins/sqldrivers/*.so"
-FILES_qt4-plugins-inputmethods = "${libdir}/plugins/inputmethods/*.so"
-FILES_qt4-plugins-iconengines  = "${libdir}/plugins/iconengines/*.so"
-
-FILES_qt4-assistant            = "${bindir}/*assistant*"
-FILES_qt4-designer             = "${bindir}/*designer*"
-FILES_qt4-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
-FILES_qt4-pixeltool            = "${bindir}/pixeltool"
-FILES_qt4-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
-
-FILES_qt4-common               = "${bindir}/qtconfig"
-FILES_qt4-examples             = "${bindir}/qt4-examples/*"
-FILES_qt4-demos                = "${bindir}/qtdemo ${bindir}/qt4-demos/*"
-
-FILES_${PN}-dev               += "${bindir}/rcc ${bindir}/uic* ${bindir}/moc ${bindir}/qmake ${bindir}/syncqt \
-                                  ${bindir}/qt3to4 ${bindir}/findtr"
-FILES_${PN}-dbg                += "${bindir}/*/.debug ${plugindir}/.debug"
+QT_BASE_NAME = "qt4"
+QT_BASE_LIB  = "libqt"
+QT_LIBRARY_NAME = "libQt"
+require qt_packaging.inc
