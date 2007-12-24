@@ -1,5 +1,5 @@
 require bluez-utils3.inc
-PR = "1"
+PR = "r1"
 
 # see bluez-utils3.inc for the explanation of these option
 EXTRA_OECONF = " \
