@@ -29,7 +29,7 @@ do_configure() {
             -datadir ${datadir} \
             -sysconfdir ${sysconfdir} \
             -docdir ${docdir}/${QT_DIR_NAME} \
-            -headerdir ${includedir} \
+            -headerdir ${includedir}/${QT_DIR_NAME} \
             -plugindir ${libdir}/${QT_DIR_NAME}/plugins \
             -translationdir ${datadir}/${QT_DIR_NAME}/translations \
             -examplesdir ${bindir}/${QT_DIR_NAME}/examples \
