@@ -15,11 +15,12 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 
+QT_CONFIG_FLAGS += "-no-xinerama -no-tablet -no-xkb -no-opengl"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_LIBRARY_NAME = "libQt"
 QT_DIR_NAME = "qt4"
-require qt_packaging.inc
 require qt_depends.inc
+require qt_packaging.inc
 
 inherit qt4x11
