@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Wonder what the heck is /srv ? Read Filesystem Hierarchy Standard,
+# http://www.pathname.com/fhs/pub/fhs-2.3.html#SRVDATAFORSERVICESPROVIDEDBYSYSTEM
+# So, /srv/nfs is root of all NFS exports your system offers, and /srv/nfs/oe is
+# OpenEmbedded's subset (think security).
+NFS_ROOT=/srv/nfs/oe
+
+if [ -z "$1" ]; then
+    echo "$0 - Deploy OpenEmbedded-generated image for device NFS boot"
+    echo "Usage: $0 <image> | -l"
+    exit
+fi
+
+if [ "$1" == "-l" ]; then
+    if [ -n "$2" ]; then
+	extra="-name *$2*"
+    fi
+    find tmp/deploy/ -regextype posix-extended -wholename '*/images/*' -regex '.+\.(tar\.bz2|tar\.gz|cpio\.gz)$' $extra | xargs ls -l
+    exit
+fi
+
+if [ ! -f $1 ]; then
+    echo "Cannot find image $1"
+    exit
+fi
+
+ext=`echo $1 | sed -r -e 's/.+\.([^.]+\.[^.]+)/\1/'`
+basename=`basename $1 .$ext`
+
+if [ -z "$basename" ]; then
+    echo "Assertion failed"
+    exit 100
+fi
+
+echo "Deploying to: $NFS_ROOT/$basename"
+
+rm -rf $NFS_ROOT/$basename
+
+mkdir -p $NFS_ROOT/$basename
+
+if [ "$ext" == "tar.bz2" ]; then
+    tar -xj -f $1 -C $NFS_ROOT/$basename
+elif [ "$ext" == "tar.gz" ]; then
+    tar -xz -f $1 -C $NFS_ROOT/$basename
+else
+    FPATH=`pwd`
+    cd $NFS_ROOT/$basename 
+    bash -c "gzip -d -c $FPATH/$1 | cpio -i --no-absolute-filenames"
+    cd $FPATH
+fi
