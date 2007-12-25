@@ -94,7 +94,7 @@ while read maj min nblk dev; do
     add_menu_item "$dev ($fstype)"
 done < /proc/partitions
 
-add_menu_item "NFS (nfsroot=192.168.2.200:/nfs/image)"
+add_menu_item "NFS (nfsroot=192.168.2.200:/srv/nfs/oe/image)"
 
 total=`echo -e $list | wc -l`
 num=0
@@ -145,7 +145,7 @@ path=`expr "$sel" : '[^/]*\([^ ]*\).*'`
 
 if [ "$dev" == "NFS" ]; then
     ROOT_DEVICE="/dev/nfs"
-    CMDLINE="$CMDLINE nfsroot=192.168.2.200:/nfs/image"
+    CMDLINE="$CMDLINE nfsroot=192.168.2.200:/srv/nfs/oe/image"
 elif [ -n "$path" ]; then
     ROOT_DEVICE="/dev/loop"
     CMDLINE="looproot=/dev/$dev:$path"
