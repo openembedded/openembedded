@@ -10,6 +10,7 @@ QTVER = "qtopia-core-opensource-src-${QTVERSION}"
 FILESDIR += "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qmake2-native"
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
+           file://qt-config.patch;patch=1 \
            file://use-lflags-last.patch;patch=1 \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
@@ -57,10 +58,8 @@ do_compile() {
 do_stage() {
     install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake2
     install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake-qt4
-    install -d ${STAGING_DIR}/${CROSS_SYS}/qt4/
-    cp -PfR mkspecs ${STAGING_DIR}/${CROSS_SYS}/qt4/
-    install -d ${STAGING_DIR}/${HOST_SYS}/qt4/
-    cp -PfR mkspecs ${STAGING_DIR}/${HOST_SYS}/qt4/
+    install -d ${CROSS_DATADIR}/qt4
+    cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
 }
 
 do_install() {

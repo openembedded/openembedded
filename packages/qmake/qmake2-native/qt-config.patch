@@ -1,0 +1,27 @@
+Allow to set a qt.conf from the outside using the environment. This allows
+to inject new prefixes and other paths into qmake. This is needed when using
+the same qmake binary to build qt/x11 and qt/embedded
+
+Index: qtopia-core-opensource-src-4.3.3/src/corelib/global/qlibraryinfo.cpp
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/src/corelib/global/qlibraryinfo.cpp	2007-12-25 00:55:32.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/src/corelib/global/qlibraryinfo.cpp	2007-12-25 01:20:18.000000000 +0100
+@@ -42,6 +42,7 @@
+ #include "qpointer.h"
+ #ifdef QT_BUILD_QMAKE
+ extern QString qmake_libraryInfoFile();
++#include <stdlib.h>
+ #else
+ # include "qcoreapplication.h"
+ #endif
+@@ -107,6 +108,10 @@
+ #ifdef QT_BUILD_QMAKE
+     if(!QFile::exists(qtconfig))
+         qtconfig = qmake_libraryInfoFile();
++    if (!QFile::exists(qtconfig)) {
++        QByteArray config = getenv("QT_CONF_PATH");
++        qtconfig = config;
++    }
+ #else
+     if (!QFile::exists(qtconfig) && QCoreApplication::instance()) {
+ #ifdef Q_OS_MAC
