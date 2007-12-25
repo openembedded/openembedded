@@ -106,8 +106,11 @@ FILES_${PN}-dev               += "${bindir}/rcc ${bindir}/uic* ${bindir}/moc ${b
 FILES_${PN}-dbg                += "${bindir}/*/.debug ${plugindir}/.debug"
 
 python populate_packages_prepend() {
-	translationdir = bb.data.expand('${datadir}/qtopia/translations/', d)
-	do_split_packages(d, translationdir, '^qt_(.*)\.qm$', 'qtopia-translation-%s', 'Qtopia translation for %s', extra_depends='' )
+	import os
+	if os.path.exists(bb.data.expand('${D}/${datadir}/qtopia/translationdir', d)):
+
+	    translationdir = bb.data.expand('${datadir}/qtopia/translations/', d)
+	    do_split_packages(d, translationdir, '^qt_(.*)\.qm$', 'qtopia-translation-%s', 'Qtopia translation for %s', extra_depends='' )
 }
 
 
