@@ -148,7 +148,6 @@ SRCDATE_xcompmgr ?= "20060814"
 SRCDATE_xirssi ?= "20060814"
 SRCDATE_xsvg ?= "20060814"
 SRCDATE_yamonenv ?= "20060814"
-SRCDATE_zroadmap ?= "20060814"
 
 # Freedesktop.org
 SRCDATE_poppler0.6 = "20070708"
