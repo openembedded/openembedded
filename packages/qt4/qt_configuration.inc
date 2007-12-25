@@ -8,7 +8,6 @@ QT_CONFIG_FLAGS = "-release -no-cups -no-accessibility -reduce-relocations \
                     -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
                    -pch -qdbus -stl -glib"
 
-PARALLEL_MAKE = ""
 EXTRA_OEMAKE = "-e"
 
 EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after \
