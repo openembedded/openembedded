@@ -18,7 +18,7 @@ S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 QT_CONFIG_FLAGS += "-no-xinerama -no-tablet -no-xkb -no-opengl"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
-QT_LIBRARY_NAME = "libQt"
+QT_LIBRARY_NAME = "Qt"
 QT_DIR_NAME = "qt4"
 require qt_depends.inc
 require qt_configuration.inc
