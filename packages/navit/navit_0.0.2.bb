@@ -1,13 +1,7 @@
-DESCRIPTION = "Navit is a car navigation system with routing engine."
-LICENSE = "GPL"
-DEPENDS = "glib-2.0 gtk+"
-PR = "r0"
+require navit.inc
 
-inherit autotools 
+PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/navit/navit-${PV}.tar.gz \
-           file://compile-fix.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/navit/navit-${PV}.tar.gz" 
 
-EXTRA_OECONF = "--disable-gui-sdl --disable-binding-python --enable-avoid-unaligned --enable-avoid-float"
-
-FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
+EXTRA_OECONF = "--disable-gui-sdl --disable-binding-python --disable-samplemap --enable-avoid-unaligned --enable-avoid-float"

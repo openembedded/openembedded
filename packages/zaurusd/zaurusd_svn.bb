@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \

@@ -6,7 +6,7 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "minimalist-gpe-image"
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "task-boot"
 IMAGE_INSTALL = "\
@@ -14,6 +14,7 @@ IMAGE_INSTALL = "\
     task-boot \
     gpe-dm gpe-session-scripts gpe-login \
     matchbox-wm \
+    gpe-terminal \
     angstrom-feed-configs \
     ipkg \
     "

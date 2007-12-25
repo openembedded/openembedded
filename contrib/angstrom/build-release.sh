@@ -55,7 +55,7 @@ for machine in ixp4xxle ixp4xxbe
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="base-image nslu2-base-image"
+	BUILD_TARGETS="base-image nslu2-base-image nas-server-image"
 	do_build
 done	 
 
@@ -69,7 +69,7 @@ do
 done  
 
 # graphics, flash storage
-for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 poodle tosa hx4700 c7x0 spitz akita collie 
+for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine

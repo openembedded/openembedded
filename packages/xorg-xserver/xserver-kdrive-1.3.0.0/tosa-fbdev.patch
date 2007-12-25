@@ -1,0 +1,13 @@
+--- xorg-server-1.3.0.0/hw/kdrive/fbdev/fbdev.c.old	2007-12-24 04:54:13.000000000 -0600
++++ xorg-server-1.3.0.0/hw/kdrive/fbdev/fbdev.c	2007-12-25 01:13:27.000000000 -0600
+@@ -357,10 +357,7 @@ fbdevMapFramebuffer (KdScreenInfo *scree
+     KdMouseMatrix	m;
+     FbdevPriv		*priv = screen->card->driver;
+ 
+-    if (scrpriv->randr != RR_Rotate_0 || priv->Have18Bpp)
+ 	scrpriv->shadow = TRUE;
+-    else
+-	scrpriv->shadow = FALSE;
+     
+     KdComputeMouseMatrix (&m, scrpriv->randr, screen->width, screen->height);
+     
