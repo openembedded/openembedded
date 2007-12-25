@@ -6,7 +6,7 @@ QT_CONFIG_FLAGS = "-release -no-cups -no-accessibility -reduce-relocations \
                    -shared -no-nas-sound -no-sm -no-nis \
                    -qt-gif -system-libjpeg -system-libpng -system-zlib \
                     -no-sql-ibase -no-sql-mysql -no-sql-odbc -no-sql-psql -no-sql-sqlite -no-sql-sqlite2 \
-                   -pch -qdbus -stl -glib"
+                   -no-pch -qdbus -stl -glib"
 
 EXTRA_OEMAKE = "-e"
 
