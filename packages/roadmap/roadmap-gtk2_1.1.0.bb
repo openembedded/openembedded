@@ -1,17 +1,18 @@
 require roadmap.inc
 
 DEPENDS = "agg expat gtk+"
-PV = "1.1.0+cvs${SRCDATE}"
 PR = "r0"
 
-SRC_URI = "cvs://anonymous:@roadmap.cvs.sf.net/cvsroot/roadmap;module=roadmap \
+SRC_URI = "${SOURCEFORGE_MIRROR}/roadmap/roadmap-${PV}-src.tar.gz \
            file://cross.patch;patch=1;pnum=2 \
+           file://roadmap.desktop.patch;patch=1 \
 	   http://roadmap.digitalomaha.net/maps/usdir.rdm.tgz \
            file://zroadgps.png"
 
-S = "${WORKDIR}/roadmap/src"
+S = "${WORKDIR}/roadmap-${PV}/src"
 
 DESKTOP = "GTK2"
+POPT = "NO"
 AGG = "rgba32"
 CFLAGS += " -I${STAGING_INCDIR}/atk-1.0 -I${STAGING_INCDIR}/cairo  -I${STAGING_INCDIR}/pango-1.0 \
             -I${STAGING_INCDIR}/glib-2.0 -I${STAGING_INCDIR}/gtk-2.0 -I${STAGING_LIBDIR}/gtk-2.0/include -I${S} "
