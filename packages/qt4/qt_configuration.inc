@@ -17,17 +17,33 @@ EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after \
              AR="${TARGET_PREFIX}ar cqs" \
              MOC="${STAGING_BINDIR_NATIVE}/moc4" UIC="${STAGING_BINDIR_NATIVE}/uic4" MAKE="make -e"'
 
+export QT_CONF_PATH="${WORKDIR}/qt.conf"
+
 do_configure() {
     unset QMAKESPEC
+    unset QTDIR
     ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
     ln -s linux-g++ mkspecs/${TARGET_OS}-oe-g++
+
+    echo "[Paths]"                                 > $QT_CONF_PATH
+    echo "Prefix=${prefix}"                       >> $QT_CONF_PATH
+    echo "Documentation=${docdir}/${QT_DIR_NAME}" >> $QT_CONF_PATH
+    echo "Headers=${includedir}/${QT_DIR_NAME}"   >> $QT_CONF_PATH
+    echo "Libraries=${libdir}"                    >> $QT_CONF_PATH
+    echo "Binaries=${bindir}"                     >> $QT_CONF_PATH
+    echo "Plugins=${libdir}/${QT_DIR_NAME}/plugins" >> $QT_CONF_PATH
+    echo "Data=${datadir}/${QT_DIR_NAME}"         >> $QT_CONF_PATH
+    echo "Translations=${datadir}/${QT_DIR_NAME}/translations" >> $QT_CONF_PATH
+    echo "Settings=${sysconfdir}/${QT_DIR_NAME}"  >> $QT_CONF_PATH
+    echo "Examples=${bindir}/${QT_DIR_NAME}/examples" >> $QT_CONF_PATH
+    echo "Demos=${bindir}/${QT_DIR_NAME}/demos"   >> $QT_CONF_PATH
 
     echo yes | ./configure -v \
             -prefix ${prefix} \
             -bindir ${bindir} \
             -libdir ${libdir} \
-            -datadir ${datadir} \
-            -sysconfdir ${sysconfdir} \
+            -datadir ${datadir}/${QT_DIR_NAME} \
+            -sysconfdir ${sysconfdir}/${QT_DIR_NAME} \
             -docdir ${docdir}/${QT_DIR_NAME} \
             -headerdir ${includedir}/${QT_DIR_NAME} \
             -plugindir ${libdir}/${QT_DIR_NAME}/plugins \
@@ -37,9 +53,9 @@ do_configure() {
             -platform ${TARGET_OS}-oe-g++ \
             -xplatform ${TARGET_OS}-oe-g++ \
             -embedded ${QT_ARCH} ${QT_ENDIAN} -fast \
-            -crossarch ${QT_ARCH}
+            -crossarch ${QT_ARCH} \
             ${QT_CONFIG_FLAGS} -fast \
-            -L${STAGING_LIBDIR} -I${STAGING_INCDIR}
+            -L${STAGING_LIBDIR} -I${STAGING_INCDIR} \
             -I${STAGING_INCDIR}/freetype2
 }
 
