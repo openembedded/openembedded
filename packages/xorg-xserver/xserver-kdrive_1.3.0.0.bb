@@ -3,7 +3,7 @@ require xserver-kdrive-common.inc
 DEPENDS += "libxkbfile libxcalibrate"
 
 PE = "1"
-PR = "r22"
+PR = "r23"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -30,6 +30,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 "
 
 SRC_URI_append_tosa = "file://tosa-fbdev.patch;patch=1"
+PACKAGE_ARCH_xserver-kdrive-fbdev_tosa = "${MACHINE_ARCH}"
 
 S = "${WORKDIR}/xorg-server-${PV}"
 
