@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python-core"
 SRCNAME = "pyqt"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "\
   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-x11-gpl-${PV}.tar.gz \
@@ -39,13 +39,13 @@ FIX_QREAL = "\
 "
 
 do_generate_prepend() {
-	for i in ${FIX_QREAL}; do
-		sed -i -e s,qreal,float,g sip/$i
-	done
+    for i in ${FIX_QREAL}; do
+        sed -i -e s,qreal,float,g sip/$i
+    done
 }
 
 do_configure_prepend() {
-    echo "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
+    echo -e "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
 }
 
 do_stage() {
