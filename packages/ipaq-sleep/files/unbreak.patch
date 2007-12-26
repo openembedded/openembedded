@@ -1,15 +1,5 @@
-If there's something to unbreak... Do following:
-1. Support logging. Software without logging is now software,
-but a random wreck.
-2. Don't do off-by-one errors.
-3. Don't bug on system every 2 seconds. Instead, do a select
-on X connection to catch touchscreen events ASAP. This doesn't
-work for keys though, there's larger latency. As for other checks,
-do them once in 5s.
-4. The whole thing must die. Soon.
-
 --- a/ipaq-sleep.c.org	2006-01-20 19:43:14.000000000 +0200
-+++ a/ipaq-sleep.c	2007-12-26 02:50:06.000000000 +0200
++++ a/ipaq-sleep.c	2007-12-26 03:59:28.000000000 +0200
 @@ -27,14 +27,14 @@
  #include <X11/Xlib.h>
  #include <X11/extensions/scrnsaver.h>
@@ -31,7 +21,7 @@ do them once in 5s.
  Window root;		    /* The root window (which holds MIT_SCREEN_SAVER
  			       info). */
  XScreenSaverInfo *info;	    /* The MIT_SCREEN_SAVER info object. */
-+int xfd;
++int xfd = -1;
  
  int init() { 
  	int first_event, first_error;
@@ -53,16 +43,20 @@ do them once in 5s.
  	  else
  	    r = -1;
  	}
-@@ -488,7 +491,7 @@
+@@ -487,8 +490,11 @@
+ 		return(1);
  	}
  
++	if (info.ac_line_status == AC_LINE_STATUS_UNKNOWN || info.battery_status == BATTERY_STATUS_UNKNOWN)
++		return(1);
++
  #ifdef DEBUG
 -	if (debug) fprintf(dgfp,"You are NOT on external power. Its all good.....\n");
 +	if (debug) fprintf(dgfp,"You are NOT on external power. Line status: %d, battery status: %d.\n", info.ac_line_status, info.battery_status);
  #endif
  	runtime = info.battery_time;
  	if (apm && runtime >= 0 && runtime < battery_level)
-@@ -587,12 +590,17 @@
+@@ -587,12 +593,17 @@
  	
  }		
  
@@ -80,7 +74,7 @@ do them once in 5s.
    	
  	Time idleTime; /* milliseconds */
          FILE *f;
-@@ -656,6 +664,7 @@
+@@ -656,6 +667,7 @@
  			if (dimming  && !dimmed && !apm_active) {
  				if ((newIdle-oldIdle)>=dim_idle) {
  					current_bl = read_backlight ();
@@ -88,7 +82,7 @@ do them once in 5s.
  					set_backlight (dim_level);
  					dimmed=1;
  				}
-@@ -664,6 +673,11 @@
+@@ -664,6 +676,11 @@
  			lastIdle=newIdle;
  	
  		}
@@ -100,7 +94,7 @@ do them once in 5s.
  
  		apm_active=check_apm();
  		if (apm_active) {
-@@ -724,16 +738,26 @@
+@@ -724,16 +741,27 @@
  			
  		}
  
@@ -113,7 +107,8 @@ do them once in 5s.
 +		struct timeval tv;
 +		fd_set readset;
 +		FD_ZERO(&readset);
-+		FD_SET(xfd, &readset);
++		if (xfd != -1)
++		    FD_SET(xfd, &readset);
 +		tv.tv_sec = 1;
 +		tv.tv_usec = 0;
 +		if (debug) fprintf(dgfp, "select=%d, tv_sec=%d, tv_usec=%d\n", select(xfd+1, &readset, NULL, NULL, &tv), tv.tv_sec, tv.tv_usec);
@@ -130,7 +125,7 @@ do them once in 5s.
  #endif
  			total_unused=0;
  			
-@@ -764,7 +788,7 @@
+@@ -764,7 +792,7 @@
  
  #ifdef DEBUG
  	if (debug) {

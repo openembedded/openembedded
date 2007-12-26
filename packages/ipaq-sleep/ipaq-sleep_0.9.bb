@@ -10,7 +10,7 @@ SRC_URI_append = " file://init-script-busybox.patch;patch=1"
 SRC_URI_append = " file://install-fix.patch;patch=1"
 SRC_URI_append = " file://unbreak.patch;patch=1"
 
-PR = "r2"
+PR = "r3"
 
 DESCRIPTION = "Automatic sleep/suspend control daemon"
 
