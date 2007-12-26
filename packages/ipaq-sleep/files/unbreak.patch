@@ -1,5 +1,5 @@
 --- a/ipaq-sleep.c.org	2006-01-20 19:43:14.000000000 +0200
-+++ a/ipaq-sleep.c	2007-12-26 03:59:28.000000000 +0200
++++ a/ipaq-sleep.c	2007-12-26 06:26:32.000000000 +0200
 @@ -27,14 +27,14 @@
  #include <X11/Xlib.h>
  #include <X11/extensions/scrnsaver.h>
@@ -43,12 +43,34 @@
  	  else
  	    r = -1;
  	}
-@@ -487,8 +490,11 @@
+@@ -189,7 +192,7 @@
+ 				if (strcmp(func, Lflag)==0) {
+ 					dim_level=atoi(value);
+ #ifdef DEBUG
+-					if (debug) fprintf(dgfp, "dim_idle=%d\n", dim_idle);
++					if (debug) fprintf(dgfp, "dim_level=%d\n", dim_idle);
+ #endif
+ 				}
+ 				if (strcmp(func, aflag)==0) {
+@@ -282,6 +285,12 @@
+ 						dimming=0;
+ 					}
+ 				}
++				if (strcmp(func, Lflag)==0) {
++					dim_level=atoi(value);
++#ifdef DEBUG
++					if (debug) fprintf(dgfp, "dim_level=%d\n", dim_idle);
++#endif
++				}
+ 				if (strcmp(func, aflag)==0) {
+ 					apm=atoi(value);
+ #ifdef DEBUG
+@@ -487,8 +496,11 @@
  		return(1);
  	}
  
 +	if (info.ac_line_status == AC_LINE_STATUS_UNKNOWN || info.battery_status == BATTERY_STATUS_UNKNOWN)
-+		return(1);
++		return(0);
 +
  #ifdef DEBUG
 -	if (debug) fprintf(dgfp,"You are NOT on external power. Its all good.....\n");
@@ -56,7 +78,7 @@
  #endif
  	runtime = info.battery_time;
  	if (apm && runtime >= 0 && runtime < battery_level)
-@@ -587,12 +593,17 @@
+@@ -587,12 +599,17 @@
  	
  }		
  
@@ -66,7 +88,8 @@
 +
  /* Keep checking the interrupts. As long as there is activity, do nothing. */
  void main_loop (void) {
- 	int activity, i, total_unused=0, apm_active=0, old_apm=0;
+-	int activity, i, total_unused=0, apm_active=0, old_apm=0;
++	int activity, i, apm_active=0, old_apm=0, last_active = time(NULL);
  	int dimmed=0, current_bl=32;
  	int newIdle, oldIdle, lastIdle, oldTime, newTime;
  	char iline[64];
@@ -74,15 +97,17 @@
    	
  	Time idleTime; /* milliseconds */
          FILE *f;
-@@ -656,6 +667,7 @@
+@@ -656,6 +673,9 @@
  			if (dimming  && !dimmed && !apm_active) {
  				if ((newIdle-oldIdle)>=dim_idle) {
  					current_bl = read_backlight ();
++#ifdef DEBUG
 +					if (debug) fprintf(dgfp, "Dim timeout. Current bl value=%d, setting to=%d\n", current_bl, dim_level);
++#endif
  					set_backlight (dim_level);
  					dimmed=1;
  				}
-@@ -664,6 +676,11 @@
+@@ -664,6 +684,11 @@
  			lastIdle=newIdle;
  	
  		}
@@ -94,7 +119,34 @@
  
  		apm_active=check_apm();
  		if (apm_active) {
-@@ -724,16 +741,27 @@
+@@ -698,17 +723,15 @@
+ 		}
+ 
+ 		if (activity) {
+-			total_unused = 0;
++			last_active = time(NULL);
+ 		}
+ 		else {
+-			total_unused += sleep_time;
+-			if (total_unused >= sleep_idle && sleeping) {
++			if (time(NULL) - last_active >= sleep_idle && sleeping) {
+ 				
+ 				if (check_cpu() || check_PID() || probe_IRQs()) {
+ #ifdef DEBUG
+ 					if (debug) fprintf(dgfp,"You cannot sleep at this time! Not going to sleep....\n");
+ #endif
+-					total_unused=0;
+ 					oldIdle=newIdle;
+ 				}
+ 				else {
+@@ -718,24 +741,37 @@
+ 					do_sleep ();
+ 					set_backlight (current_bl);
+ 					dimmed=0;					
+-					total_unused=0;
++					last_active = time(NULL);
+ 				}
+ 			}
  			
  		}
  
@@ -111,7 +163,9 @@
 +		    FD_SET(xfd, &readset);
 +		tv.tv_sec = 1;
 +		tv.tv_usec = 0;
++#ifdef DEBUG		
 +		if (debug) fprintf(dgfp, "select=%d, tv_sec=%d, tv_usec=%d\n", select(xfd+1, &readset, NULL, NULL, &tv), tv.tv_sec, tv.tv_usec);
++#endif
 +		}
 +		
  		
@@ -123,14 +177,8 @@
 -			  fprintf(stderr, "%i sec sleep; resetting timer and resetting dimmer...", (int)(newTime - oldTime));
 +			  fprintf(dgfp, "%i sec sleep, apparently, was suspended; resetting timer and resetting dimmer...", (int)(newTime - oldTime));
  #endif
- 			total_unused=0;
+-			total_unused=0;
++			last_active = time(NULL);
  			
-@@ -764,7 +792,7 @@
- 
- #ifdef DEBUG
- 	if (debug) {
--		dgfp=fopen("/tmp/ipaq-sleep.log", "a");
-+		dgfp=fopen("/var/log/ipaq-sleep.log", "a");
- 		if (! dgfp) {
- 			fprintf(stderr, "problem opening ipaq-sleep.log\n");
- 			exit(1);
+ 			query_idle(&idleTime);
+ 			lastIdle=oldIdle=(int)idleTime;
