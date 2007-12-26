@@ -178,7 +178,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    if error_class == 0:
+    if error_class == 0 or error_class == 5:
         return False
     else:
         return True
@@ -339,14 +339,21 @@ def package_qa_check_staged(path,d):
             path = os.path.join(root,file)
             if file[-2:] == "la":
                 file_content = open(path).read()
-                if installed in file_content or workdir in file_content:
-                    bb.error("QA issue: %s failed sanity test (reference to workdir or installed)" % file )
+                if installed in file_content:
+                    bb.error("QA issue: %s failed sanity test (installed) in path %s" % \
+                             (file,root))
                     if package_qa_make_fatal_error( 5, "staging", path, d):
-                        sane = True
+                        sane = False
+                if workdir in file_content:
+                    bb.error("QA issue: %s failed sanity test (workdir) in path %s" % \
+                             (file,root))
+                    if package_qa_make_fatal_error( 5, "staging", path, d):
+                        sane = False
             elif file[-2:] == "pc":
                 file_content = open(path).read()
                 if workdir in file_content:
-                    bb.error("QA issue: %s failed sanity test (reference to workdir)" % file )
+                    bb.error("QA issue: %s failed sanity test (workdir) in path %s" % \
+                            (file,root))
                     if package_qa_make_fatal_error( 6, "staging", path, d):
                         sane = False
 
