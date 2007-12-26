@@ -7,9 +7,15 @@ SECTION = "network"
 DEPENDS = "apr-util subversion"
 PR = "r0"
 
-SRC_URI = "http://download2.berlios.de/qsvn/qsvn-${PV}-src.tar.gz \
+def vars_from_file(filename):
+    import os
+    return os.path.splitext(os.path.basename(filename))[0]
+
+FN := "${@vars_from_file(bb.data.getVar('FILE',d))}"
+
+SRC_URI = "http://download2.berlios.de/${FN}/${FN}-${PV}-src.tar.gz \
         file://build.patch;patch=1"
-S = "${WORKDIR}/qsvn-${PV}"
+S = "${WORKDIR}/${FN}-${PV}"
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/subversion-1"
 
