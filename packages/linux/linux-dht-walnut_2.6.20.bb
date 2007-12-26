@@ -18,7 +18,6 @@ FILES_kernel-image = "/boot/zImage.elf"
 
 export OS = "Linux"
 ARCH = "ppc"
-KERNEL_OUTPUT = "arch/ppc/boot/images/zImage.elf"
 
 do_stage_append () {
 #need ppc platforms includes + friends in order for external kernel modules to compile as headers as still split
@@ -33,8 +32,11 @@ do_stage_append () {
 
 do_install_append () {
         install -d  ${DEPLOY_DIR_IMAGE}
-        install -m 0755 arch/ppc/boot/images/zImage.elf \ 
+	if [ -e arch/ppc/boot/images/zImage.elf ] ; then
+	    cp -a arch/ppc/boot/images/zImage.elf arch/ppc/boot/images/zImage
+            install -m 0755 arch/ppc/boot/images/zImage.elf \ 
                 ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.elf
+	fi	
         install -m 0755 vmlinux ${DEPLOY_DIR_IMAGE}/
 }
 
