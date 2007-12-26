@@ -225,7 +225,8 @@ def package_qa_check_rpath(file,name,d):
     for line in txt:
         if bad_dir in line:
             package_qa_write_error( 1, name, file, d)
-            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % (name, line, file))
+            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % \
+                      (name, line, file))
     return True
 
 def package_qa_check_devdbg(path, name,d):
@@ -240,14 +241,16 @@ def package_qa_check_devdbg(path, name,d):
     if not "-dev" in name:
         if path[-3:] == ".so" and os.path.islink(path):
             package_qa_write_error( 0, name, path, d )
-            bb.error("QA Issue: non -dev package contains symlink .so: %s path '%s'" % (name, package_qa_clean_path(path,d)))
+            bb.error("QA Issue: non -dev package contains symlink .so: %s path '%s'" % \
+                     (name, package_qa_clean_path(path,d)))
             if package_qa_make_fatal_error( 0, name, path, d ):
                 sane = False
 
     if not "-dbg" in name:
         if '.debug' in path:
             package_qa_write_error( 3, name, path, d )
-            bb.error("QA Issue: non debug package contains .debug directory: %s path %s" % (name, package_qa_clean_path(path,d)))
+            bb.error("QA Issue: non debug package contains .debug directory: %s path %s" % \
+                     (name, package_qa_clean_path(path,d)))
             if package_qa_make_fatal_error( 3, name, path, d ):
                 sane = False
 
@@ -301,7 +304,8 @@ def package_qa_check_desktop(path, name, d):
     """
     import bb, os
     if path.endswith(".desktop"):
-        validate = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True), 'desktop-file-validate')
+        validate = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True), \
+                                'desktop-file-validate')
         output = os.popen("%s %s" % (validate, path))
         for l in output:
             bb.error(l.strip())
@@ -411,6 +415,9 @@ python do_package_qa () {
     if not packages:
         return
 
+    checks = [package_qa_check_rpath, package_qa_check_devdbg,
+              package_qa_check_perm, package_qa_check_arch,
+              package_qa_check_desktop]
     walk_sane = True
     rdepends_sane = True
     for package in packages.split():
@@ -420,7 +427,7 @@ python do_package_qa () {
 
         bb.note("Checking Package: %s" % package)
         path = "%s/install/%s" % (workdir, package)
-        if not package_qa_walk(path, [package_qa_check_rpath, package_qa_check_devdbg, package_qa_check_perm, package_qa_check_arch, package_qa_check_desktop], package, d):
+        if not package_qa_walk(path, checks, package, d):
             walk_sane  = False
         if not package_qa_check_rdepends(package, workdir, d):
             rdepends_sane = False
@@ -446,7 +453,11 @@ python do_qa_configure() {
     bb.note("Checking sanity of the config.log file")
     import os
     for root, dirs, files in os.walk(bb.data.getVar('WORKDIR', d, True)):
+        statement = "grep 'CROSS COMPILE Badness:' %s > /dev/null" % \
+                    os.path.join(root,"config.log")
         if "config.log" in files:
-            if os.system("grep 'CROSS COMPILE Badness:' %s > /dev/null" % (os.path.join(root,"config.log"))) == 0:
-                bb.fatal("This autoconf log indicates errors, it looked at host includes. Rerun configure task after fixing this. Path was '%s'" % root)
+            if os.system(statement) == 0:
+                bb.fatal("This autoconf log indicates errors, it looked at \
+                          host includes. Rerun configure task after fixing this. \
+                          Path was '%s'" % root)
 }
