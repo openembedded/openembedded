@@ -1,0 +1,141 @@
+If there's something to unbreak... Do following:
+1. Support logging. Software without logging is now software,
+but a random wreck.
+2. Don't do off-by-one errors.
+3. Don't bug on system every 2 seconds. Instead, do a select
+on X connection to catch touchscreen events ASAP. This doesn't
+work for keys though, there's larger latency. As for other checks,
+do them once in 5s.
+4. The whole thing must die. Soon.
+
+--- a/ipaq-sleep.c.org	2006-01-20 19:43:14.000000000 +0200
++++ a/ipaq-sleep.c	2007-12-26 02:50:06.000000000 +0200
+@@ -27,14 +27,14 @@
+ #include <X11/Xlib.h>
+ #include <X11/extensions/scrnsaver.h>
+ 
+-#undef DEBUG
++#define DEBUG
+ 
+ int irqs[MAX_IRQS]; /* irqs to examine have a value of 1 */
+ long v, irq_count[MAX_IRQS]; /* holds previous counters of the irq's */
+ int sleep_idle=3 * 60; /* in seconds */
+ int dim_idle=1 * 60; /* in seconds */
+ int daemonize=1;
+-int sleep_time = DEFAULT_SLEEP_TIME;
++int sleep_time = 1; //DEFAULT_SLEEP_TIME;
+ int cpu=1;
+ int apm=1;
+ int dimming=1;
+@@ -57,6 +57,7 @@
+ Window root;		    /* The root window (which holds MIT_SCREEN_SAVER
+ 			       info). */
+ XScreenSaverInfo *info;	    /* The MIT_SCREEN_SAVER info object. */
++int xfd;
+ 
+ int init() { 
+ 	int first_event, first_error;
+@@ -69,6 +70,8 @@
+ 	else {
+   		XScreenSaverQueryExtension(dpy, &first_event, &first_error);
+   		root = DefaultRootWindow(dpy);
++		XSelectInput(dpy, root, KeyPressMask | KeyReleaseMask | PointerMotionMask);
++		xfd = ConnectionNumber(dpy);
+   		info = XScreenSaverAllocInfo();
+ #ifdef DEBUG
+   		if (debug) 
+@@ -108,7 +111,7 @@
+       if (fgets (buf, 32, input))
+ 	{
+ 	  if (!strncmp (buf, "on ", 3))
+-	    r = atoi (buf + 4);
++	    r = atoi (buf + 3);
+ 	  else
+ 	    r = -1;
+ 	}
+@@ -488,7 +491,7 @@
+ 	}
+ 
+ #ifdef DEBUG
+-	if (debug) fprintf(dgfp,"You are NOT on external power. Its all good.....\n");
++	if (debug) fprintf(dgfp,"You are NOT on external power. Line status: %d, battery status: %d.\n", info.ac_line_status, info.battery_status);
+ #endif
+ 	runtime = info.battery_time;
+ 	if (apm && runtime >= 0 && runtime < battery_level)
+@@ -587,12 +590,17 @@
+ 	
+ }		
+ 
++/* X idle status checked every sleep_time,
++  other boring and expensive stuff - sleep_time * CYCLE_INTERLEAVE */
++#define CYCLE_INTERLEAVE 10
++
+ /* Keep checking the interrupts. As long as there is activity, do nothing. */
+ void main_loop (void) {
+ 	int activity, i, total_unused=0, apm_active=0, old_apm=0;
+ 	int dimmed=0, current_bl=32;
+ 	int newIdle, oldIdle, lastIdle, oldTime, newTime;
+ 	char iline[64];
++	int cycle = 0;
+   	
+ 	Time idleTime; /* milliseconds */
+         FILE *f;
+@@ -656,6 +664,7 @@
+ 			if (dimming  && !dimmed && !apm_active) {
+ 				if ((newIdle-oldIdle)>=dim_idle) {
+ 					current_bl = read_backlight ();
++					if (debug) fprintf(dgfp, "Dim timeout. Current bl value=%d, setting to=%d\n", current_bl, dim_level);
+ 					set_backlight (dim_level);
+ 					dimmed=1;
+ 				}
+@@ -664,6 +673,11 @@
+ 			lastIdle=newIdle;
+ 	
+ 		}
++		
++		cycle++;
++		cycle %= CYCLE_INTERLEAVE;
++		if (cycle)
++			goto sleep;
+ 
+ 		apm_active=check_apm();
+ 		if (apm_active) {
+@@ -724,16 +738,26 @@
+ 			
+ 		}
+ 
++sleep:
+ #ifdef DEBUG		
+ 		if (debug) fflush(dgfp);
+ #endif
+-		sleep(sleep_time);
++		{
++		struct timeval tv;
++		fd_set readset;
++		FD_ZERO(&readset);
++		FD_SET(xfd, &readset);
++		tv.tv_sec = 1;
++		tv.tv_usec = 0;
++		if (debug) fprintf(dgfp, "select=%d, tv_sec=%d, tv_usec=%d\n", select(xfd+1, &readset, NULL, NULL, &tv), tv.tv_sec, tv.tv_usec);
++		}
++		
+ 		
+ 		newTime=time(NULL);
+-		if (oldTime && newTime-sleep_time > oldTime +1) {
++		if (oldTime && newTime-sleep_time > oldTime +2) {
+ #ifdef DEBUG
+ 			if (debug)
+-			  fprintf(stderr, "%i sec sleep; resetting timer and resetting dimmer...", (int)(newTime - oldTime));
++			  fprintf(dgfp, "%i sec sleep, apparently, was suspended; resetting timer and resetting dimmer...", (int)(newTime - oldTime));
+ #endif
+ 			total_unused=0;
+ 			
+@@ -764,7 +788,7 @@
+ 
+ #ifdef DEBUG
+ 	if (debug) {
+-		dgfp=fopen("/tmp/ipaq-sleep.log", "a");
++		dgfp=fopen("/var/log/ipaq-sleep.log", "a");
+ 		if (! dgfp) {
+ 			fprintf(stderr, "problem opening ipaq-sleep.log\n");
+ 			exit(1);
