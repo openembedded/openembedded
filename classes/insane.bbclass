@@ -178,7 +178,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    if error_class == 0 or error_class == 5:
+    if error_class in [0, 5, 8]:
         return False
     else:
         return True
