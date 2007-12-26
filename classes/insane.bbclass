@@ -99,11 +99,10 @@ def package_qa_get_elf(path, bits32):
         ELFDATA2LSB  = 1
         ELFDATA2MSB  = 2
 
-        def my_assert(expectation, result):
+        def my_assert(self, expectation, result):
             if not expectation == result:
-                #print "'%x','%x'" % (ord(expectation), ord(result))
+                #print "'%x','%x' %s" % (ord(expectation), ord(result), self.name)
                 raise Exception("This does not work as expected")
-        my_assert = staticmethod(my_assert)
 
         def __init__(self, name):
             self.name = name
@@ -112,16 +111,16 @@ def package_qa_get_elf(path, bits32):
             self.file = file(self.name, "r")
             self.data = self.file.read(ELFFile.EI_NIDENT+4)
 
-            ELFFile.my_assert(len(self.data), ELFFile.EI_NIDENT+4)
-            ELFFile.my_assert(self.data[0], chr(0x7f) )
-            ELFFile.my_assert(self.data[1], 'E')
-            ELFFile.my_assert(self.data[2], 'L')
-            ELFFile.my_assert(self.data[3], 'F')
+            self.my_assert(len(self.data), ELFFile.EI_NIDENT+4)
+            self.my_assert(self.data[0], chr(0x7f) )
+            self.my_assert(self.data[1], 'E')
+            self.my_assert(self.data[2], 'L')
+            self.my_assert(self.data[3], 'F')
             if bits32 :
-                ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32))
+                self.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS32))
             else:
-                ELFFile.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS64))
-            ELFFile.my_assert(self.data[ELFFile.EI_VERSION], chr(ELFFile.EV_CURRENT) )
+                self.my_assert(self.data[ELFFile.EI_CLASS], chr(ELFFile.ELFCLASS64))
+            self.my_assert(self.data[ELFFile.EI_VERSION], chr(ELFFile.EV_CURRENT) )
 
             self.sex = self.data[ELFFile.EI_DATA]
             if self.sex == chr(ELFFile.ELFDATANONE):
@@ -285,7 +284,10 @@ def package_qa_check_arch(path,name,d):
     (machine, osabi, abiversion, littleendian, bits32) \
         = package_qa_get_machine_dict()[target_os][target_arch]
     elf = package_qa_get_elf(path, bits32)
-    elf.open()
+    try:
+        elf.open()
+    except:
+        return True
 
     # Check the architecture and endiannes of the binary
     if not machine == elf.machine():
