@@ -163,9 +163,10 @@ def package_qa_get_elf(path, bits32):
 # 2 - package depends on debug package
 # 3 - non dbg contains .so
 # 4 - wrong architecture
-# 5 - .la contains installed=yes or reference to the workdir
+# 5 - .la contains installed=yes
 # 6 - .pc contains reference to /usr/include or workdir
 # 7 - the desktop file is not valid
+# 8 - .la contains reference to the workdir
 
 def package_qa_clean_path(path,d):
     """ Remove the common prefix from the path. In this case it is the TMPDIR"""
@@ -347,7 +348,7 @@ def package_qa_check_staged(path,d):
                 if workdir in file_content:
                     bb.error("QA issue: %s failed sanity test (workdir) in path %s" % \
                              (file,root))
-                    if package_qa_make_fatal_error( 5, "staging", path, d):
+                    if package_qa_make_fatal_error(8, "staging", path, d):
                         sane = False
             elif file[-2:] == "pc":
                 file_content = open(path).read()
