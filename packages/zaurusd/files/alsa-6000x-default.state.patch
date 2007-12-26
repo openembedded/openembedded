@@ -1,0 +1,750 @@
+--- zaurusd/config/alsa/6000x-default.state.old	2007-12-22 04:31:38.000000000 -0600
++++ zaurusd/config/alsa/6000x-default.state	2007-12-26 00:06:02.000000000 -0600
+@@ -37,13 +37,23 @@ state.Tosa {
+ 	}
+ 	control.5 {
+ 		comment.access 'read write'
++		comment.type INTEGER
++		comment.count 2
++		comment.range '0 - 31'
++		iface MIXER
++		name 'PCM Playback Volume'
++		value.0 23
++		value.1 23
++	}
++	control.6 {
++		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+ 		name 'Speaker Playback ZC Switch'
+ 		value true
+ 	}
+-	control.6 {
++	control.7 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -51,7 +61,7 @@ state.Tosa {
+ 		name 'Speaker Playback Invert Switch'
+ 		value true
+ 	}
+-	control.7 {
++	control.8 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -59,7 +69,7 @@ state.Tosa {
+ 		name 'Headphone Playback ZC Switch'
+ 		value true
+ 	}
+-	control.8 {
++	control.9 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -67,7 +77,7 @@ state.Tosa {
+ 		name 'Mono Playback ZC Switch'
+ 		value false
+ 	}
+-	control.9 {
++	control.10 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -76,7 +86,7 @@ state.Tosa {
+ 		name 'Mono Playback Volume'
+ 		value 0
+ 	}
+-	control.10 {
++	control.11 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -85,16 +95,16 @@ state.Tosa {
+ 		name 'ALC Target Volume'
+ 		value 11
+ 	}
+-	control.11 {
++	control.12 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+ 		comment.range '0 - 15'
+ 		iface MIXER
+ 		name 'ALC Hold Time'
+-		value 0
++		value 2
+ 	}
+-	control.12 {
++	control.13 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -103,7 +113,7 @@ state.Tosa {
+ 		name 'ALC Decay Time'
+ 		value 3
+ 	}
+-	control.13 {
++	control.14 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -112,7 +122,7 @@ state.Tosa {
+ 		name 'ALC Attack Time'
+ 		value 2
+ 	}
+-	control.14 {
++	control.15 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -124,7 +134,7 @@ state.Tosa {
+ 		name 'ALC Function'
+ 		value None
+ 	}
+-	control.15 {
++	control.16 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -133,7 +143,7 @@ state.Tosa {
+ 		name 'ALC Max Volume'
+ 		value 7
+ 	}
+-	control.16 {
++	control.17 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -142,7 +152,7 @@ state.Tosa {
+ 		name 'ALC ZC Timeout'
+ 		value 0
+ 	}
+-	control.17 {
++	control.18 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -150,7 +160,7 @@ state.Tosa {
+ 		name 'ALC ZC Switch'
+ 		value false
+ 	}
+-	control.18 {
++	control.19 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -158,7 +168,7 @@ state.Tosa {
+ 		name 'ALC NG Switch'
+ 		value false
+ 	}
+-	control.19 {
++	control.20 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -168,7 +178,7 @@ state.Tosa {
+ 		name 'ALC NG Type'
+ 		value 'Constant Gain'
+ 	}
+-	control.20 {
++	control.21 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -177,16 +187,16 @@ state.Tosa {
+ 		name 'ALC NG Threshold'
+ 		value 31
+ 	}
+-	control.21 {
++	control.22 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+ 		comment.range '0 - 7'
+ 		iface MIXER
+ 		name 'Mic Headphone  Volume'
+-		value 3
++		value 7
+ 	}
+-	control.22 {
++	control.23 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -195,7 +205,7 @@ state.Tosa {
+ 		name 'ALC Headphone Volume'
+ 		value 5
+ 	}
+-	control.23 {
++	control.24 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -203,7 +213,7 @@ state.Tosa {
+ 		name 'Out3 Switch'
+ 		value false
+ 	}
+-	control.24 {
++	control.25 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -211,7 +221,7 @@ state.Tosa {
+ 		name 'Out3 ZC Switch'
+ 		value true
+ 	}
+-	control.25 {
++	control.26 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -220,7 +230,7 @@ state.Tosa {
+ 		name 'Out3 Volume'
+ 		value 0
+ 	}
+-	control.26 {
++	control.27 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -229,7 +239,7 @@ state.Tosa {
+ 		name 'PCBeep Bypass Headphone Volume'
+ 		value 0
+ 	}
+-	control.27 {
++	control.28 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -238,7 +248,7 @@ state.Tosa {
+ 		name 'PCBeep Bypass Speaker Volume'
+ 		value 0
+ 	}
+-	control.28 {
++	control.29 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -247,16 +257,16 @@ state.Tosa {
+ 		name 'PCBeep Bypass Phone Volume'
+ 		value 0
+ 	}
+-	control.29 {
++	control.30 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+ 		comment.range '0 - 7'
+ 		iface MIXER
+ 		name 'Aux Playback Headphone Volume'
+-		value 6
++		value 5
+ 	}
+-	control.30 {
++	control.31 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -265,7 +275,7 @@ state.Tosa {
+ 		name 'Aux Playback Speaker Volume'
+ 		value 0
+ 	}
+-	control.31 {
++	control.32 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -274,7 +284,7 @@ state.Tosa {
+ 		name 'Aux Playback Phone Volume'
+ 		value 0
+ 	}
+-	control.32 {
++	control.33 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -283,7 +293,7 @@ state.Tosa {
+ 		name 'Phone Volume'
+ 		value 0
+ 	}
+-	control.33 {
++	control.34 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 2
+@@ -293,7 +303,7 @@ state.Tosa {
+ 		value.0 23
+ 		value.1 23
+ 	}
+-	control.34 {
++	control.35 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -301,7 +311,7 @@ state.Tosa {
+ 		name 'Capture 20dB Boost Switch'
+ 		value true
+ 	}
+-	control.35 {
++	control.36 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -309,7 +319,7 @@ state.Tosa {
+ 		name 'Capture to Phone 20dB Boost Switch'
+ 		value true
+ 	}
+-	control.36 {
++	control.37 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -317,7 +327,7 @@ state.Tosa {
+ 		name '3D Upper Cut-off Switch'
+ 		value false
+ 	}
+-	control.37 {
++	control.38 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -325,7 +335,7 @@ state.Tosa {
+ 		name '3D Lower Cut-off Switch'
+ 		value false
+ 	}
+-	control.38 {
++	control.39 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -334,7 +344,7 @@ state.Tosa {
+ 		name '3D Playback Volume'
+ 		value 0
+ 	}
+-	control.39 {
++	control.40 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -344,7 +354,7 @@ state.Tosa {
+ 		name 'Bass Control'
+ 		value 'Adaptive Boost'
+ 	}
+-	control.40 {
++	control.41 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -352,7 +362,7 @@ state.Tosa {
+ 		name 'Bass Cut-off Switch'
+ 		value true
+ 	}
+-	control.41 {
++	control.42 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -360,7 +370,7 @@ state.Tosa {
+ 		name 'Tone Cut-off Switch'
+ 		value false
+ 	}
+-	control.42 {
++	control.43 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -368,7 +378,7 @@ state.Tosa {
+ 		name 'Playback Attenuate (-6dB) Switch'
+ 		value false
+ 	}
+-	control.43 {
++	control.44 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -377,7 +387,7 @@ state.Tosa {
+ 		name 'Bass Volume'
+ 		value 8
+ 	}
+-	control.44 {
++	control.45 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -386,7 +396,7 @@ state.Tosa {
+ 		name 'Treble Volume'
+ 		value 5
+ 	}
+-	control.45 {
++	control.46 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -394,7 +404,7 @@ state.Tosa {
+ 		name 'Capture ADC Switch'
+ 		value false
+ 	}
+-	control.46 {
++	control.47 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 2
+@@ -405,17 +415,17 @@ state.Tosa {
+ 		value.0 '+0.75dB Steps'
+ 		value.1 '+0.75dB Steps'
+ 	}
+-	control.47 {
++	control.48 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 2
+ 		comment.range '0 - 63'
+ 		iface MIXER
+ 		name 'Capture Volume'
+-		value.0 63
+-		value.1 63
++		value.0 0
++		value.1 0
+ 	}
+-	control.48 {
++	control.49 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -423,7 +433,7 @@ state.Tosa {
+ 		name 'Capture ZC Switch'
+ 		value false
+ 	}
+-	control.49 {
++	control.50 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -432,7 +442,7 @@ state.Tosa {
+ 		name 'Mic 1 Volume'
+ 		value 23
+ 	}
+-	control.50 {
++	control.51 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+ 		comment.count 1
+@@ -441,7 +451,7 @@ state.Tosa {
+ 		name 'Mic 2 Volume'
+ 		value 23
+ 	}
+-	control.51 {
++	control.52 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -449,7 +459,7 @@ state.Tosa {
+ 		name 'Mic 20dB Boost Switch'
+ 		value false
+ 	}
+-	control.52 {
++	control.53 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -457,7 +467,7 @@ state.Tosa {
+ 		name 'Speaker Mixer PCBeep Bypass Swi'
+ 		value false
+ 	}
+-	control.53 {
++	control.54 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -465,7 +475,7 @@ state.Tosa {
+ 		name 'Speaker Mixer Aux Playback Swit'
+ 		value false
+ 	}
+-	control.54 {
++	control.55 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -473,7 +483,7 @@ state.Tosa {
+ 		name 'Speaker Mixer Phone Bypass Swit'
+ 		value false
+ 	}
+-	control.55 {
++	control.56 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -481,7 +491,7 @@ state.Tosa {
+ 		name 'Speaker Mixer Line Bypass Switc'
+ 		value false
+ 	}
+-	control.56 {
++	control.57 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -489,7 +499,7 @@ state.Tosa {
+ 		name 'Speaker Mixer PCM Playback Swit'
+ 		value true
+ 	}
+-	control.57 {
++	control.58 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -497,7 +507,7 @@ state.Tosa {
+ 		name 'Phone Mixer PCBeep Bypass Switc'
+ 		value false
+ 	}
+-	control.58 {
++	control.59 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -505,7 +515,7 @@ state.Tosa {
+ 		name 'Phone Mixer Aux Playback Switch'
+ 		value false
+ 	}
+-	control.59 {
++	control.60 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -513,7 +523,7 @@ state.Tosa {
+ 		name 'Phone Mixer Line Bypass Switch'
+ 		value false
+ 	}
+-	control.60 {
++	control.61 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -521,7 +531,7 @@ state.Tosa {
+ 		name 'Phone Mixer PCM Playback Switch'
+ 		value false
+ 	}
+-	control.61 {
++	control.62 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -529,7 +539,7 @@ state.Tosa {
+ 		name 'Phone Mixer Mic 1 Sidetone Swit'
+ 		value false
+ 	}
+-	control.62 {
++	control.63 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -537,55 +547,103 @@ state.Tosa {
+ 		name 'Phone Mixer Mic 2 Sidetone Swit'
+ 		value false
+ 	}
+-	control.63 {
++	control.64 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer PCBeep Bypass Switch'
++		name 'Right HP Mixer PCBeep Bypass Sw'
+ 		value false
+ 	}
+-	control.64 {
++	control.65 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer Aux Playback Switch'
++		name 'Right HP Mixer Aux Playback Swi'
+ 		value false
+ 	}
+-	control.65 {
++	control.66 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer Phone Bypass Switch'
++		name 'Right HP Mixer Phone Bypass Swi'
+ 		value false
+ 	}
+-	control.66 {
++	control.67 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer Line Bypass Switch'
++		name 'Right HP Mixer Line Bypass Swit'
+ 		value false
+ 	}
+-	control.67 {
++	control.68 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer PCM Playback Switch'
++		name 'Right HP Mixer PCM Playback Swi'
+ 		value true
+ 	}
+-	control.68 {
++	control.69 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+ 		iface MIXER
+-		name 'HP Mixer Mic Sidetone Switch'
++		name 'Right HP Mixer Mic Sidetone Swi'
+ 		value false
+ 	}
+-	control.69 {
++	control.70 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer PCBeep Bypass Swi'
++		value false
++	}
++	control.71 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer Aux Playback Swit'
++		value false
++	}
++	control.72 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer Phone Bypass Swit'
++		value false
++	}
++	control.73 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer Line Bypass Switc'
++		value false
++	}
++	control.74 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer PCM Playback Swit'
++		value true
++	}
++	control.75 {
++		comment.access 'read write'
++		comment.type BOOLEAN
++		comment.count 1
++		iface MIXER
++		name 'Left HP Mixer Mic Sidetone Swit'
++		value false
++	}
++	control.76 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -595,7 +653,7 @@ state.Tosa {
+ 		name 'Differential Source'
+ 		value Mic
+ 	}
+-	control.70 {
++	control.77 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -607,7 +665,7 @@ state.Tosa {
+ 		name 'Mic Select Source'
+ 		value Differential
+ 	}
+-	control.71 {
++	control.78 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -623,7 +681,7 @@ state.Tosa {
+ 		name 'Right Capture Select'
+ 		value Mic
+ 	}
+-	control.72 {
++	control.79 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -639,7 +697,7 @@ state.Tosa {
+ 		name 'Left Capture Select'
+ 		value Mic
+ 	}
+-	control.73 {
++	control.80 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -651,7 +709,7 @@ state.Tosa {
+ 		name 'Capture Phone Mux'
+ 		value Mute
+ 	}
+-	control.74 {
++	control.81 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -661,7 +719,7 @@ state.Tosa {
+ 		name 'Speaker Mux'
+ 		value 'Headphone Mix'
+ 	}
+-	control.75 {
++	control.82 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -673,7 +731,7 @@ state.Tosa {
+ 		name 'Out3 Mux'
+ 		value Left
+ 	}
+-	control.76 {
++	control.83 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -685,7 +743,7 @@ state.Tosa {
+ 		name 'ALC Sidetone Mux'
+ 		value Stereo
+ 	}
+-	control.77 {
++	control.84 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+@@ -698,15 +756,14 @@ state.Tosa {
+ 		name 'Jack Function'
+ 		value Headphone
+ 	}
+-	control.78 {
++	control.85 {
+ 		comment.access 'read write'
+ 		comment.type ENUMERATED
+ 		comment.count 1
+-		comment.item.0 Auto
+-		comment.item.1 On
+-		comment.item.2 Off
++		comment.item.0 On
++		comment.item.1 Off
+ 		iface MIXER
+ 		name 'Speaker Function'
+-		value Auto
++		value On
+ 	}
+ }
