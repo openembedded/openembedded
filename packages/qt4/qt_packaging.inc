@@ -31,8 +31,7 @@ DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
              ${QT_BASE_LIB}script4-dev \
              ${QT_BASE_LIB}dbus4-dev \
              ${QT_BASE_LIB}opengl4-dev \
-             ${QT_BASE_LIB}uitools4-dev \
-             ${QT_BASE_LIB}-documentation"
+             ${QT_BASE_LIB}uitools4-dev"
 
 DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}gui4-dbg \
@@ -128,13 +127,10 @@ FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
 FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
-FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_BASE_NAME}-examples/*"
-FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_BASE_NAME}-demos/*"
+FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_BASE_NAME}/examples/*"
+FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_BASE_NAME}/demos/*"
 
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
-
-
-FILES_${QT_BASE_NAME}-documentation = "${docdir}/${QT_DIR_NAME}/html/*"
 
 python populate_packages_prepend() {
 	translationdir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
@@ -146,7 +142,7 @@ do_install() {
     oe_runmake install INSTALL_ROOT=${D}
 
     # These are host binaries, we should only use them in staging
-    rm -rf ${D}/${bindir}
+    rm -rf ${D}/${bindir}/qmake
     rm -rf ${D}/${datadir}/${QT_DIR_NAME}/mkspecs
 
     install -d ${D}/${libdir}/fonts
