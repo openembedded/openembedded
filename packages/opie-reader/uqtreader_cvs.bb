@@ -17,7 +17,7 @@ S = "${WORKDIR}/opie-reader"
 
 export OPIEDIR="${S}/opiedir"
 
-inherit qmake_base qt4x11
+inherit qt4x11
 
 do_configure() {
 	${OE_QMAKE_QMAKE} -recursive opie-reader.pro UQT_DATADIR="${datadir}/${PN}" UQT_LIBDIR="${libdir}/${PN}"

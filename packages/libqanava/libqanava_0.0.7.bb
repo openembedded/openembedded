@@ -8,7 +8,7 @@ PR = "r0"
 SRC_URI = "http://www.libqanava.org/dl/qanava-${PV}.tar.gz"
 S = "${WORKDIR}/qanava-${PV}"
 
-inherit qmake qt4x11
+inherit qt4x11
 
 PARALLEL_MAKE = ""
 
