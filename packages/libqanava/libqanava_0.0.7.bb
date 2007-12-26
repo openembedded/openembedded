@@ -1,4 +1,4 @@
-DESCRIPTION = "Qanava is a gtaph library based on the Qt4 Arthur framework."
+DESCRIPTION = "Qanava is a graph library based on the Qt4 Arthur framework."
 SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 # LGPL after 0.0.7
