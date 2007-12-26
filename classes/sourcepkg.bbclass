@@ -18,14 +18,20 @@ def get_src_tree(d):
 		bb.error("S not defined, unable to find source tree.")
 		return
 
-	s_tree_raw = s.split('/')[1]
+	try:
+		s_tree_raw = s.split('/')[1]
+	except IndexError:
+		return
+
 	s_tree = bb.data.expand(s_tree_raw, d)
 
 	src_tree_path = os.path.join(workdir, s_tree)
 	try:
 		os.listdir(src_tree_path)
 	except OSError:
-		bb.fatal("Expected to find source tree in '%s' which doesn't exist." % src_tree_path)
+		bb.error("Expected to find source tree in '%s' which doesn't exist." % src_tree_path, s)
+		return
+
 	bb.debug("Assuming source tree is '%s'" % src_tree_path)
 
 	return s_tree
@@ -39,11 +45,14 @@ sourcepkg_do_create_orig_tgz(){
 	done
 
 	src_tree=${@get_src_tree(d)}
-	
-	echo $src_tree
+	if test x${src_tree} = x; then
+		oenote "Skipping empty source tree"
+		return
+	fi
+
 	oenote "Creating .orig.tar.gz in ${DEPLOY_DIR_SRC}/${P}.orig.tar.gz"
 	tar cvzf ${DEPLOY_DIR_SRC}/${P}.orig.tar.gz --exclude-from temp/exclude-from-file $src_tree
-	cp -pPR $src_tree $src_tree.orig
+	cp -av $src_tree $src_tree.orig
 }
 
 sourcepkg_do_archive_bb() {
@@ -74,7 +83,14 @@ python sourcepkg_do_dumpdata() {
 	bb.note("Dumping metadata into '%s'" % dumpfile)
 	f = open(dumpfile, "w")
 	# emit variables and shell functions
-        bb.data.emit_env(f, d, True)
+
+	# FIXME: if we emit all, bitbake will get error while
+	# evaluating AUTOREV since we have AUTOREV =
+	# "${@bb.fetch.get_srcrev(d)}" in bitbake.conf, but get_srcrev
+	# without a valid SRC_URI will cause problem.
+
+	bb.data.emit_env(f, d, True)
+
 	# emit the metadata which isnt valid shell
 	for e in d.keys():
 		if bb.data.getVarFlag(e, 'python', d):
@@ -89,8 +105,11 @@ sourcepkg_do_create_diff_gz(){
 		echo $i >> temp/exclude-from-file
 	done
 
-
 	src_tree=${@get_src_tree(d)}
+	if test x${src_tree} = x; then
+		oenote "Skipping empty source tree"
+		return
+	fi
 
 	for i in `find . -maxdepth 1 -type f`; do
 		mkdir -p $src_tree/${DISTRO}/files
@@ -102,10 +121,10 @@ sourcepkg_do_create_diff_gz(){
 	rm -rf $src_tree.orig
 }
 
-EXPORT_FUNCTIONS do_create_orig_tgz do_archive_bb do_dumpdata do_create_diff_gz
+#EXPORT_FUNCTIONS do_create_orig_tgz do_archive_bb do_dumpdata do_create_diff_gz
+EXPORT_FUNCTIONS do_create_orig_tgz do_archive_bb do_create_diff_gz
 
 addtask create_orig_tgz after do_unpack before do_patch
-addtask archive_bb after do_patch before do_dumpdata
-addtask dumpdata after do_archive_bb before do_create_diff_gz
-addtask create_diff_gz after do_dump_data before do_configure
-
+addtask archive_bb after do_patch before do_configure
+#addtask dumpdata after do_archive_bb before do_configure
+addtask create_diff_gz after do_archive_bb before do_configure
