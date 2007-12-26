@@ -6,6 +6,7 @@ HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "tslib"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
+           file://0001-cross-compile.patch;patch=1 \
            file://0003-no-tools.patch;patch=1 \
            file://0004-no-qmake.patch;patch=1 \
            file://0005-fix-mkspecs.patch;patch=1"
