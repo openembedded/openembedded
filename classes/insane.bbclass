@@ -29,7 +29,7 @@ PACKAGEFUNCS += " do_package_qa "
 #
 # dictionary for elf headers
 #
-# feel free to add and correct. 
+# feel free to add and correct.
 #
 #           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian, 32bit?
 def package_qa_get_machine_dict():
@@ -75,7 +75,7 @@ def package_qa_get_machine_dict():
                         "arm" :       (40,     0,    0,          True,          True),
                         "armeb" :     (40,     0,    0,          False,         True),
                       },
- 
+
        }
 
 # factory for a class, embedded in a method
@@ -279,7 +279,7 @@ def package_qa_check_arch(path,name,d):
     import bb, os
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
-  
+
     # FIXME: Cross package confuse this check, so just skip them
     if bb.data.inherits_class('cross', d) or bb.data.inherits_class('sdk', d):
         return True
