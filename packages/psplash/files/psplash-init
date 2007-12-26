@@ -9,10 +9,14 @@ for x in $(cat /proc/cmdline); do
         esac
 done
 
+. /etc/init.d/functions
+
 psplash_args=''
-case "`grep ^Hardware /proc/cpuinfo|cut -d: -f2 |tr A-Z a-z`" in
- "hp ipaq h3100"|"hp ipaq h3800") pspash_args='-a 90' ;;
- "hp ipaq 3600"|"hp ipaq 3700"|"hp ipaq h3900"|"htc universal"|*collie|*poodle|*akita|*spitz|*borzoi) psplash_args='-a 270' ;;
+case `machine_id` in
+    "hp_ipaq_h3100"|"hp_ipaq_h3800") 
+	pspash_args='-a 90' ;;
+    "hp_ipaq_3600"|"hp_ipaq_3700"|"hp_ipaq_h3900"|"htc_universal"|*collie|*poodle|*akita|*spitz|*borzoi)
+	psplash_args='-a 270' ;;
 esac
 
 export TMPDIR=/mnt/.psplash
@@ -20,4 +24,5 @@ mount tmpfs -t tmpfs $TMPDIR -o,size=40k
 
 /usr/bin/psplash $psplash_args &
 
+# Timetrap against hanging with splash hiding console messages.
 (sleep 120; psplash-write "QUIT") &
