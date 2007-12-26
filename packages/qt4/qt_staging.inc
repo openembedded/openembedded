@@ -12,13 +12,13 @@ do_stage() {
     mkdir -p ${STAGE_TEMP}
     oe_runmake install INSTALL_ROOT=${STAGE_TEMP}
 
-    install -d ${STAGING_INCDIR}/${QT_DIR_NAME}
+    install -d ${STAGING_INCDIR}/
     install -d ${STAGING_LIBDIR}/${QT_DIR_NAME}
-    cp -pPRf ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}/${QT_DIR_NAME}/
+    cp -pPRf ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}/
 
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}/qtopiacore4
+        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}/${QT_DIR_NAME}
     done
 
     rm -rf ${STAGE_TEMP}
