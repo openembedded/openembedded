@@ -77,11 +77,11 @@ do_stage_append () {
 #need ppc platforms includes + friends in order for external kernel modules to compile as headers as still split
 
        install -d ${STAGING_KERNEL_DIR}/arch/
-       cp -a arch/ppc ${STAGING_KERNEL_DIR}/arch/
-       cp -a arch/powerpc ${STAGING_KERNEL_DIR}/arch/
+       cp -pPR arch/ppc ${STAGING_KERNEL_DIR}/arch/
+       cp -pPR arch/powerpc ${STAGING_KERNEL_DIR}/arch/
 
-       cp -a include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
-       cp -a include/asm-ppc ${STAGING_KERNEL_DIR}/include/
+       cp -pPR include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
+       cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
 
 
@@ -93,7 +93,7 @@ do_install_append () {
         powerpc${TARGET_VENDOR}-${TARGET_OS}-objcopy -O binary -R .note -R .comment -S ${DEPLOY_DIR_IMAGE}/vmlinux \ 
                  ${DEPLOY_DIR_IMAGE}/linux.bin
         gzip -f -9 ${DEPLOY_DIR_IMAGE}/linux.bin
-        cp -a ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/linux-${PV}-${MACHINE}-${DATETIME}.bin.gz        
+        cp -pPR ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/linux-${PV}-${MACHINE}-${DATETIME}.bin.gz        
         mkimage -A ppc -O linux -T kernel -C gzip -a 00000000 -e 00000000 -n "magicbox"-${PV} \
                 -d ${DEPLOY_DIR_IMAGE}/linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${MACHINE}-${DATETIME}.bin        
         rm ${DEPLOY_DIR_IMAGE}/vmlinux
