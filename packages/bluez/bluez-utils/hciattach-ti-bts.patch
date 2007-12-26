@@ -1,6 +1,6 @@
 --- bluez-utils-3.1/tools/hciattach.c.orig	2006-07-23 14:02:14.000000000 +0200
 +++ bluez-utils-3.1/tools/hciattach.c	2006-07-23 14:06:29.000000000 +0200
-@@ -58,6 +58,8 @@
+@@ -60,6 +60,8 @@
  #define HCI_UART_3WIRE	2
  #define HCI_UART_H4DS	3
  
@@ -9,15 +9,15 @@
  struct uart_t {
  	char *type;
  	int  m_id;
-@@ -67,6 +69,7 @@
- 	int  speed;
+@@ -70,6 +72,7 @@
  	int  flags;
+ 	char *bdaddr;
  	int  (*init) (int fd, struct uart_t *u, struct termios *ti);
 +	char *bts;	/* bluetooth script */
  };
  
  #define FLOW_CTL	0x0001
-@@ -256,6 +259,114 @@
+@@ -279,6 +282,114 @@
  	return 0;
  }
  
@@ -132,29 +132,17 @@
  static int texas(int fd, struct uart_t *u, struct termios *ti)
  {
  	struct timespec tm = {0, 50000};
-@@ -296,15 +407,26 @@
- 	} while (resp[4] != cmd[1] && resp[5] != cmd[2]);
- 
- 	/* Verify manufacturer */
--	if ((resp[11] & 0xFF) != 0x0d)
-+	if (resp[11] != 0x0d)
- 		fprintf(stderr,"WARNING : module's manufacturer is not Texas Instrument\n");
- 
- 	/* Print LMP version */
--	fprintf(stderr, "Texas module LMP version : 0x%02x\n", resp[10] & 0xFF);
-+	fprintf(stderr, "TI module LMP version : 0x%02x\n", resp[10]);
- 
+@@ -328,6 +439,17 @@
  	/* Print LMP subversion */
--	fprintf(stderr, "Texas module LMP sub-version : 0x%02x%02x\n", resp[14] & 0xFF, resp[13] & 0xFF);
-+	fprintf(stderr, "TI module LMP sub-version : 0x%02x%02x\n", resp[14], resp[13]);
-+	if ((resp[14] >> 2) == 3) {
-+		int err;
-+		nanosleep(&tm, NULL);
+ 	fprintf(stderr, "Texas module LMP sub-version : 0x%02x%02x\n", resp[14] & 0xFF, resp[13] & 0xFF);
  
++	if ((resp[14] >> 2) == 3) {
 +		/* BRF6150 */
-+		if ((err=brf6150( fd, u, ti )) != 0) {
-+			fprintf( stderr, "TI script failed (err=%d)\n",
-+				err );
++		int err;
++
++		nanosleep(&tm, NULL);
++		if ((err = brf6150(fd, u, ti)) != 0) {
++			fprintf(stderr, "Texas module script failed (err=%d)\n", err);
 +			return -1;
 +		}
 +	}
@@ -162,16 +150,16 @@
  	nanosleep(&tm, NULL);
  	return 0;
  }
-@@ -1103,7 +1225,7 @@
+@@ -1204,7 +1326,7 @@
  {
  	printf("hciattach - HCI UART driver initialization utility\n");
  	printf("Usage:\n");
--	printf("\thciattach [-n] [-p] [-b] [-t timeout] [-s initial_speed] <tty> <type | id> [speed] [flow|noflow]\n");
-+	printf("\thciattach [-n] [-p] [-b] [-t timeout] [-s initial_speed] [-S bts-script] <tty> <type | id> [speed] [flow|noflow]\n");
+-	printf("\thciattach [-n] [-p] [-b] [-t timeout] [-s initial_speed] <tty> <type | id> [speed] [flow|noflow] [bdaddr]\n");
++	printf("\thciattach [-n] [-p] [-b] [-t timeout] [-s initial_speed] [-S bts-script] <tty> <type | id> [speed] [flow|noflow] [bdaddr]\n");
  	printf("\thciattach -l\n");
  }
  
-@@ -1118,11 +1240,12 @@
+@@ -1219,11 +1341,12 @@
  	struct sigaction sa;
  	struct pollfd p;
  	char dev[PATH_MAX];
@@ -185,7 +173,7 @@
  		switch(opt) {
  		case 'b':
  			send_break = 1;
-@@ -1144,6 +1267,10 @@
+@@ -1245,6 +1368,10 @@
  			init_speed = atoi(optarg);
  			break;
  
@@ -196,7 +184,7 @@
  		case 'l':
  			for (i = 0; uart[i].type; i++) {
  				printf("%-10s0x%04x,0x%04x\n", uart[i].type,
-@@ -1215,6 +1342,8 @@
+@@ -1320,6 +1447,8 @@
  	if (init_speed)
  		u->init_speed = init_speed;
  
@@ -205,17 +193,6 @@
  	memset(&sa, 0, sizeof(sa));
  	sa.sa_flags   = SA_NOCLDSTOP;
  	sa.sa_handler = sig_alarm;
---- bluez-utils-3.1/tools/Makefile.am.orig	2006-07-23 14:06:59.000000000 +0200
-+++ bluez-utils-3.1/tools/Makefile.am	2006-07-23 14:07:18.000000000 +0200
-@@ -37,7 +37,7 @@
- 
- noinst_PROGRAMS = hcisecfilter ppporc
- 
--hciattach_SOURCES = hciattach.c hciattach_st.c
-+hciattach_SOURCES = hciattach.c hciattach_st.c ti_bts.h ti_bts.c
- 
- hciconfig_SOURCES = hciconfig.c csr.h csr.c
- hciconfig_LDADD = @BLUEZ_LIBS@ $(top_builddir)/common/libhelper.a
 --- bluez-utils-3.1/tools/ti_bts.h.orig	2006-07-23 14:07:26.000000000 +0200
 +++ bluez-utils-3.1/tools/ti_bts.h	2006-07-23 14:07:46.000000000 +0200
 @@ -0,0 +1,116 @@
@@ -487,3 +464,14 @@
 +    }
 +}
 +
+--- bluez-utils-3.1/tools/Makefile.am.orig	2006-07-23 14:06:59.000000000 +0200
++++ bluez-utils-3.1/tools/Makefile.am	2006-07-23 14:07:18.000000000 +0200
+@@ -45,7 +45,7 @@
+ 
+ noinst_PROGRAMS = hcisecfilter ppporc
+ 
+-hciattach_SOURCES = hciattach.c hciattach_st.c
++hciattach_SOURCES = hciattach.c hciattach_st.c ti_bts.h ti_bts.c
+ hciattach_LDADD = @BLUEZ_LIBS@
+ 
+ hciconfig_SOURCES = hciconfig.c csr.h csr.c

@@ -36,8 +36,8 @@ for machine in ep93xx gumstix-connex gumstix-verdex efika omap5912osk ixp4xxle i
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
-        BUILD_TARGETS="texinfo flex bison gcc binutils automake autoconf m4 pkgconfig \
-	               task-proper-tools mc screen emacs \
+        BUILD_TARGETS="texinfo flex bison gperf gcc binutils automake autoconf m4 pkgconfig \
+	               task-proper-tools mc screen \
 	               mono perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
@@ -52,7 +52,7 @@ do
 		       abiword gnumeric evince epdfview gimp \
 		       flite \
 		       ctorrent \
-		       gnuplot octave fftw fftwf fftwl \
+		       gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
 		       tzdata \
 		      "

@@ -55,7 +55,7 @@ for machine in ixp4xxle ixp4xxbe
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="base-image nslu2-base-image"
+	BUILD_TARGETS="base-image nslu2-base-image nas-server-image"
 	do_build
 done	 
 

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Startup Monitor
+Comment=Panel based startup monitor
+Exec=mb-applet-startup-monitor
+Type=PanelApp
+Icon=hourglass-1.png
+Categories=Panel;Utility;MB;
