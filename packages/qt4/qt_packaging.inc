@@ -127,8 +127,8 @@ FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
 FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
 
 FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
-FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_BASE_NAME}/examples/*"
-FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_BASE_NAME}/demos/*"
+FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
+FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
 
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 
@@ -143,6 +143,9 @@ do_install() {
 
     # These are host binaries, we should only use them in staging
     rm -rf ${D}/${bindir}/qmake
+
+    # XXX, FIXME, TODO: package the demos and examples properly
+    rm -rf ${D}/${bindir}/${QT_DIR_NAME}
     rm -rf ${D}/${datadir}/${QT_DIR_NAME}/mkspecs
 
     install -d ${D}/${libdir}/fonts
