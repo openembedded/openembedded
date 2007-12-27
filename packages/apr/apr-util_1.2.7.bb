@@ -20,6 +20,7 @@ inherit autotools lib_package binconfig
 OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
 
 do_configure() {
+  cp ${STAGING_DATADIR}/apr_rules.mk ${S}/build/rules.mk
   oe_runconf
 }
 

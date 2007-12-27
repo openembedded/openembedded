@@ -17,4 +17,5 @@ do_configure() {
 
 do_stage() {
   autotools_stage_all
+  cp ${S}/build/apr_rules.mk ${STAGING_DATADIR}
 }
