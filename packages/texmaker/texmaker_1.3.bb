@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.xm1math.net/texmaker/texmaker-${PV}.tar.bz2"
 
-inherit qmake qt4x11
+inherit qt4x11
 
 do_install() {
 	install -d ${D}${bindir}

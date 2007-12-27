@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r55"
+PR = "r56"
 
 inherit task
 
@@ -226,8 +226,6 @@ RRECOMMENDS_task-base-pcmcia = "\
     "
 
 task-base-pcmcia24 = "\
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-modules-cs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-modules-cs', '',d)} \
     "
 
 task-base-pcmcia26 = "\

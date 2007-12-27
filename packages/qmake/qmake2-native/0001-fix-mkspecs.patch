@@ -10,8 +10,8 @@ Subject: [PATCH] fix mkspecs
 
 Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf
 ===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/g++.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf	2007-12-26 02:58:21.000000000 +0100
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/g++.conf	2007-12-04 18:07:53.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf	2007-12-26 19:47:02.000000000 +0100
 @@ -2,12 +2,12 @@
  # qmake configuration for common gcc
  #
@@ -63,8 +63,8 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf
  
 Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
 ===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/linux.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf	2007-12-26 02:58:21.000000000 +0100
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/linux.conf	2007-12-04 18:07:53.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf	2007-12-26 19:47:02.000000000 +0100
 @@ -7,26 +7,26 @@
  
  QMAKE_INCDIR          =
@@ -120,8 +120,8 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
 +include(unix.conf)
 Index: qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf
 ===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/linux-g++/qmake.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf	2007-12-26 03:00:49.000000000 +0100
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/linux-g++/qmake.conf	2007-12-04 18:07:53.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf	2007-12-26 19:47:02.000000000 +0100
 @@ -5,7 +5,7 @@
  MAKEFILE_GENERATOR	= UNIX
  TEMPLATE		= app
@@ -131,3 +131,16 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf
  QMAKE_INCREMENTAL_STYLE = sublib
  
  include(../common/g++.conf)
+Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/unix.conf
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/unix.conf	2007-12-26 19:48:20.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/common/unix.conf	2007-12-26 19:49:50.000000000 +0100
+@@ -10,6 +10,8 @@
+ QMAKE_YACC_HEADER       = $base.tab.h
+ QMAKE_YACC_SOURCE       = $base.tab.c
+ 
++QMAKE_RCC               = $$(OE_QMAKE_RCC)
++
+ QMAKE_SEPARATE_DEBUG_INFO = (test -z \"$(DESTDIR)\" || cd \"$(DESTDIR)\" ; targ=`basename $(TARGET)`; objcopy --only-keep-debug \"\$\$targ\" \"\$\$targ.debug\" && objcopy --strip-debug \"\$\$targ\" && objcopy --add-gnu-debuglink=\"\$\$targ.debug\" \"\$\$targ\" && chmod -x \"\$\$targ.debug\" ) ;
+ 
+ QMAKE_INSTALL_SEPARATE_DEBUG_INFO = test -z "$(DESTDIR)" || cd \"$(DESTDIR)\" ; $(INSTALL_FILE) `basename $(TARGET)`.debug $(INSTALL_ROOT)/\$\$target_path/

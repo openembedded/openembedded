@@ -18,7 +18,18 @@ do_stage() {
 
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do
+        sed -i s,installed=yes,installed=no, $i
+        cp -fpPR $i ${STAGING_LIBDIR}/${QT_DIR_NAME}/
+        cp -fpPR ${STAGE_TEMP}/${libdir}/$(basename $i .la).prl ${STAGING_LIBDIR}/${QT_DIR_NAME}
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}/${QT_DIR_NAME}
+    done
+
+    for i in libQtAssistantClient${QT_LIBINFIX} libQtDesignerComponents${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtDesigner${QT_LIBINFIX}
+    do
+        cp ${STAGE_TEMP}/${libdir}/$i.prl ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
+        cp ${STAGE_TEMP}/${libdir}/$i.la  ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
+        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $i ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
+        oe_libinstall -C ${STAGE_TEMP}/${libdir} -a $i ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
     done
 
     rm -rf ${STAGE_TEMP}

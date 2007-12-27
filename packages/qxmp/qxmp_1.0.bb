@@ -6,7 +6,7 @@ RDEPENDS = "mplayer"
 
 SRC_URI = "http://www.xm1math.net/qxmp/qxmp-${PV}.tar.bz2"
 
-inherit qmake qt4x11
+inherit qt4x11
 
 do_install() {
 	install -d ${D}${bindir}
