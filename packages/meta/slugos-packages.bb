@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r43"
+PR = "r44"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -250,6 +250,8 @@ SLUGOS_EXTRA_PACKAGES ?= ""
 DEPENDS = "\
 	slugos-image \
 	slugos-native \
+	task-nas-server-everything \
+	task-proper-tools \
 	${SLUGOS_PACKAGES} \
 	${SLUGOS_EXTRA_PACKAGES} \
 	package-index \
