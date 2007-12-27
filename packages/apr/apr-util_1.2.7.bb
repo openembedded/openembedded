@@ -14,7 +14,10 @@ EXTRA_OECONF = "--with-apr=${STAGING_BINDIR_CROSS} --with-dbm=gdbm \
 		--without-sqlite3 \
 		--with-expat=${STAGING_DIR_HOST}${layout_prefix}"
 
+
 inherit autotools lib_package binconfig
+
+OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
 
 do_configure() {
   oe_runconf
