@@ -25,5 +25,8 @@ do_configure() {
 }
 
 do_stage() {
-	autotools_stage_all
+  autotools_stage_all
+  sed -i s,/usr/lib/libgdbm.la,-lgdbm,g   ${STAGING_LIBDIR}/libaprutil-1.la
+  sed -i s,/usr/lib/libexpat.la,-lexpat,g ${STAGING_LIBDIR}/libaprutil-1.la
+  sed -i s,/usr/lib/libapr-1.la,-lapr-1,g ${STAGING_LIBDIR}/libaprutil-1.la
 }
