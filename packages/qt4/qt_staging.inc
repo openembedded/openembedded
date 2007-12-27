@@ -18,6 +18,7 @@ do_stage() {
 
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do
+        sed -i s,installed=yes,installed=no, $i
         cp -fpPR $i ${STAGING_LIBDIR}/${QT_DIR_NAME}/
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}/${QT_DIR_NAME}
     done
