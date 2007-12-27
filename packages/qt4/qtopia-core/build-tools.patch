@@ -1,0 +1,28 @@
+Do not disable tools, examples and demos for the QWS build. Use brute-force
+to do this.
+
+Index: qtopia-core-opensource-src-4.3.3/configure
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/configure	2007-12-27 16:30:36.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/configure	2007-12-27 16:30:52.000000000 +0100
+@@ -2265,13 +2265,13 @@
+     CFG_BUILD_PARTS="$QT_DEFAULT_BUILD_PARTS"
+ 
+     # don't build tools by default when cross-compiling
+-    if [ "$PLATFORM" != "$XPLATFORM" ]; then
+-	CFG_BUILD_PARTS=`echo "$CFG_BUILD_PARTS" | sed "s, tools,,g"`
+-    fi
+-fi
+-for nobuild in $CFG_NOBUILD_PARTS; do
+-    CFG_BUILD_PARTS=`echo "$CFG_BUILD_PARTS" | sed "s, $nobuild,,g"`
+-done
++    #if [ "$PLATFORM" != "$XPLATFORM" ]; then
++    #	CFG_BUILD_PARTS=`echo "$CFG_BUILD_PARTS" | sed "s, tools,,g"`
++    #fi
++fi
++#for nobuild in $CFG_NOBUILD_PARTS; do
++#    CFG_BUILD_PARTS=`echo "$CFG_BUILD_PARTS" | sed "s, $nobuild,,g"`
++#done
+ if echo $CFG_BUILD_PARTS | grep -v libs >/dev/null 2>&1; then
+ #    echo
+ #    echo "WARNING: libs is a required part of the build."
