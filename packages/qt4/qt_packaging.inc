@@ -109,7 +109,7 @@ FILES_${QT_BASE_LIB}dbus4-dbg               = "${libdir}/.debug/libQtDBus*"
 FILES_${QT_BASE_LIB}opengl4                 = "${libdir}/libQtOpenGL${QT_LIBINFIX}.so.*"
 FILES_${QT_BASE_LIB}opengl4-dev             = "${@qt_default_dev('OpenGL')}"
 FILES_${QT_BASE_LIB}opengl4-dbg             = "${libdir}/.debug/libQtOpenGL*"
-FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/${QT_LIBRARY_NAME}UiTools.pc"
+FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/QtUiTools${QT_LIBINFIX}.pc"
 
 
 FILES_${QT_BASE_NAME}-plugins-accessible   = "${libdir}/${QT_DIR_NAME}/plugins/accessible/*.so"
