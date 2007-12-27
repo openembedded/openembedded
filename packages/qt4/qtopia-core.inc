@@ -15,12 +15,12 @@ S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 
 
 QT_CONFIG_FLAGS += " \
-    -nomake demos -nomake examples -nomake tools \
+    -nomake demos -nomake examples -nomake tools -qtlibinfix E\
     -qt-mouse-tslib -qt-gfx-transformed -embedded ${QT_ARCH}"
 QT_BASE_NAME = "qtopiacore"
 QT_BASE_LIB  = "libqtopiacore"
-QT_LIBRARY_NAME = "Qt"
 QT_DIR_NAME = "qtopia"
+QT_LIBINFIX="E"
 require qt_depends.inc
 require qt_configuration.inc
 require qt_packaging.inc

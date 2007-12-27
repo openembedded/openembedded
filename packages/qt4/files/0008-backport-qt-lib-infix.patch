@@ -1,0 +1,137 @@
+diff --git a/configure b/configure
+index c5bdc34..a52607f 100755
+--- a/configure
++++ b/configure
+@@ -782,6 +782,11 @@ while [ "$#" -gt 0 ]; do
+         VAR=endian
+         VAL=`echo $1 | sed "s,^-\(.*\)-.*,\1,"`
+         ;;
++    -qtlibinfix)
++        VAR="qtlibinfix"
++        shift
++        VAL="$1"
++        ;;
+     -D?*|-D)
+         VAR="add_define"
+         if [ "$1" = "-D" ]; then
+@@ -903,6 +908,9 @@ while [ "$#" -gt 0 ]; do
+     libdir)
+         QT_INSTALL_LIBS="$VAL"
+         ;;
++    qtlibinfix)
++        QT_LIBINFIX="$VAL"
++        ;;
+     translationdir)
+         QT_INSTALL_TRANSLATIONS="$VAL"
+         ;;
+@@ -2606,6 +2614,8 @@ fi
+     -no-sse ............ Do not compile with use of SSE instructions.
+     -no-sse2 ........... Do not compile with use of SSE2 instructions.
+ 
++    -qtlibinfix <infix>  Renames all libQt*.so to libQt<infix>.so.
++
+     -D <string> ........ Add an explicit define to the preprocessor.
+     -I <string> ........ Add an explicit include path.
+     -L <string> ........ Add an explicit library path.
+@@ -5273,6 +5283,8 @@ QT_MAJOR_VERSION = $QT_MAJOR_VERSION
+ QT_MINOR_VERSION = $QT_MINOR_VERSION
+ QT_PATCH_VERSION = $QT_PATCH_VERSION
+ 
++QT_LIBINFIX = $QT_LIBINFIX
++
+ EOF
+ if [ "$CFG_RPATH" = "yes" ]; then
+     echo "QMAKE_RPATHDIR += \"$QT_INSTALL_LIBS\"" >> "$QTCONFIG.tmp"
+diff --git a/mkspecs/features/qt_functions.prf b/mkspecs/features/qt_functions.prf
+index 32a7fd5..48d584f 100644
+--- a/mkspecs/features/qt_functions.prf
++++ b/mkspecs/features/qt_functions.prf
+@@ -28,7 +28,7 @@ defineTest(qtAddLibrary) {
+              INCLUDEPATH -= $$FRAMEWORK_INCLUDE
+              INCLUDEPATH = $$FRAMEWORK_INCLUDE $$INCLUDEPATH
+            }
+-           LINKAGE = -framework $${LIB_NAME}
++           LINKAGE = -framework $${LIB_NAME}$${QT_LIBINFIX}
+         } else:!qt_no_framework { #detection
+            for(frmwrk_dir, $$list($$QMAKE_LIBDIR_QT $$QMAKE_LIBDIR $$(DYLD_FRAMEWORK_PATH) /Library/Frameworks)) {
+        	      exists($${frmwrk_dir}/$${LIB_NAME}.framework) {
+@@ -46,15 +46,15 @@ defineTest(qtAddLibrary) {
+     }
+     isEmpty(LINKAGE) {
+        CONFIG(debug, debug|release) {
+-           win32:LINKAGE = -l$${LIB_NAME}d
+-           mac:LINKAGE = -l$${LIB_NAME}_debug
++           win32:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}d
++           mac:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}_debug
+        }
+-       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}
++       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}
+     }
+     !isEmpty(QMAKE_LSB) {
+         QMAKE_LFLAGS *= --lsb-libpath=$$$$QMAKE_LIBDIR_QT
+         QMAKE_LFLAGS *= -L/opt/lsb/lib
+-        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}
++        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}${QT_LIBINFIX}
+     }
+     LIBS += $$LINKAGE
+     export(LIBS)
+diff --git a/src/qbase.pri b/src/qbase.pri
+index 4db7e70..278e011 100644
+--- a/src/qbase.pri
++++ b/src/qbase.pri
+@@ -138,7 +138,7 @@ DEFINES += QT_NO_CAST_TO_ASCII QT_ASCII_CAST_WARNINGS QT_44_API_QSQLQUERY_FINISH
+ contains(QT_CONFIG, qt3support):DEFINES *= QT3_SUPPORT
+ DEFINES *= QT_MOC_COMPAT #we don't need warnings from calling moc code in our generated code
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #do this towards the end
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #do this towards the end
+ 
+ moc_dir.name = moc_location
+ moc_dir.variable = QMAKE_MOC
+diff --git a/tools/assistant/lib/lib.pro b/tools/assistant/lib/lib.pro
+index c121f28..83c3ed7 100644
+--- a/tools/assistant/lib/lib.pro
++++ b/tools/assistant/lib/lib.pro
+@@ -52,7 +52,7 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end
+ 
+ target.path=$$[QT_INSTALL_LIBS]
+ INSTALLS        += target
+diff --git a/tools/designer/src/components/component.pri b/tools/designer/src/components/component.pri
+index 15c0cf2..78b075d 100644
+--- a/tools/designer/src/components/component.pri
++++ b/tools/designer/src/components/component.pri
+@@ -1,2 +1,2 @@
+ 
+-TARGET = $$qtLibraryTarget($$TARGET)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX)
+diff --git a/tools/qdbus/src/src.pro b/tools/qdbus/src/src.pro
+index 47ef100..0669a46 100644
+--- a/tools/qdbus/src/src.pro
++++ b/tools/qdbus/src/src.pro
+@@ -70,7 +70,7 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end (after framework)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end (after framework)
+ 
+ # Input
+ 
+diff --git a/tools/qtestlib/src/src.pro b/tools/qtestlib/src/src.pro
+index 5120a29..7d2082e 100644
+--- a/tools/qtestlib/src/src.pro
++++ b/tools/qtestlib/src/src.pro
+@@ -61,7 +61,7 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end (after framework)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end (after framework)
+ 
+ # Input
+ HEADERS = qtest_global.h qtestcase.h qtestdata.h qtesteventloop.h

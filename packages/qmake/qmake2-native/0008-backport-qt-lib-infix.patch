@@ -1,0 +1,33 @@
+diff --git a/mkspecs/features/qt_functions.prf b/mkspecs/features/qt_functions.prf
+index 32a7fd5..48d584f 100644
+--- a/mkspecs/features/qt_functions.prf
++++ b/mkspecs/features/qt_functions.prf
+@@ -28,7 +28,7 @@ defineTest(qtAddLibrary) {
+              INCLUDEPATH -= $$FRAMEWORK_INCLUDE
+              INCLUDEPATH = $$FRAMEWORK_INCLUDE $$INCLUDEPATH
+            }
+-           LINKAGE = -framework $${LIB_NAME}
++           LINKAGE = -framework $${LIB_NAME}$${QT_LIBINFIX}
+         } else:!qt_no_framework { #detection
+            for(frmwrk_dir, $$list($$QMAKE_LIBDIR_QT $$QMAKE_LIBDIR $$(DYLD_FRAMEWORK_PATH) /Library/Frameworks)) {
+        	      exists($${frmwrk_dir}/$${LIB_NAME}.framework) {
+@@ -46,15 +46,15 @@ defineTest(qtAddLibrary) {
+     }
+     isEmpty(LINKAGE) {
+        CONFIG(debug, debug|release) {
+-           win32:LINKAGE = -l$${LIB_NAME}d
+-           mac:LINKAGE = -l$${LIB_NAME}_debug
++           win32:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}d
++           mac:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}_debug
+        }
+-       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}
++       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}
+     }
+     !isEmpty(QMAKE_LSB) {
+         QMAKE_LFLAGS *= --lsb-libpath=$$$$QMAKE_LIBDIR_QT
+         QMAKE_LFLAGS *= -L/opt/lsb/lib
+-        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}
++        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}${QT_LIBINFIX}
+     }
+     LIBS += $$LINKAGE
+     export(LIBS)
