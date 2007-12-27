@@ -9,12 +9,19 @@ DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 DEPENDS_append_mpc8323e-rdb = " dtc-native"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \
            file://defconfig \
 	   "
+
+# Bug fixes on the 2.6.23.x stable branch
+SRC_URI += "http://www.kernel.org/pub/linux/kernel/v2.6/patch-2.6.23.12.bz2;patch=1"
+# Add support for squashfs-lzma (a highly compressed read-only filesystem)
+SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1"
+# Completely fair scheduler
+SRC_URI += "http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \
@@ -88,3 +95,4 @@ do_devicetree_image() {
 
 addtask compulab_image after do_deploy before do_package
 addtask devicetree_image after do_deploy before do_package
+
