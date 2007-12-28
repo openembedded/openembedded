@@ -7,11 +7,11 @@ Pending review:
 <no rev> insane.bbclass .desktop (Koen)
 
 Acked:
-3806d8894babdfee7e759b27b83e75430c119343 linux-rp 2.6.23 25x resume  (Koen, Marcin)
 
 Applied:
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
 58fc861e7d3a6d55876c4974fd3778a4d7452c03 binconfig.bbclass custom glob (Koen, Marcin)
+3806d8894babdfee7e759b27b83e75430c119343 linux-rp 2.6.23 25x resume  (Koen, Marcin)
 
 
 
