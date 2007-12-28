@@ -41,9 +41,13 @@ if ( ! [ -f /.nodisk ] ) ; then
     [ -e /.sdb1root -a -f /proc/hdd_sdb ] && cnt=0
     cnt=`expr $cnt - 1`
   done
-  echo
+  /bin/echo
 
-  /bin/sleep 5
+  if [ -e /.fastdisk ] ; then
+    /bin/sleep 5
+  else
+    /bin/sleep 15
+  fi
 
   mounted=
 
