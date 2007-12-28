@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r14"
+PR = "r15"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
