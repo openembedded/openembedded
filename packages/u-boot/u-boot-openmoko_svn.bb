@@ -6,7 +6,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r1"
+PR = "r2"
 
 SRCREV_FORMAT = "patches"
 
@@ -20,6 +20,7 @@ SRC_URI = "\
   file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
+  file://boot-menu-gfx-fix-openmoko-bug-1140.patch;patch=1 \
 "
 S = "${WORKDIR}/git"
 
@@ -27,14 +28,13 @@ EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 TARGET_LDFLAGS = ""
 
 do_quilt() {
-        mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
-        rm -Rf patches .pc
+	mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
+	rm -Rf patches .pc
 }
 
 do_svnrev() {
 	mv -f tools/setlocalversion tools/setlocalversion.old
-        echo -n "echo " >>tools/setlocalversion
-	echo ${PV}      >>tools/setlocalversion
+	echo "echo ${LOCALVERSION}" >>tools/setlocalversion
 }
 
 do_configure_prepend() {
@@ -44,27 +44,25 @@ do_configure_prepend() {
 }
 
 do_compile () {
-        chmod +x board/neo1973/gta*/split_by_variant.sh
-        for mach in ${UBOOT_MACHINES}
-        do
-                oe_runmake ${mach}_config
-                oe_runmake clean
-                find board -name lowlevel_foo.bin -exec rm '{}' \;
-                oe_runmake all
-                oe_runmake u-boot.udfu
-                if [ -f u-boot.udfu ]; then
-                        mv u-boot.udfu u-boot_${mach}.bin
-                else
-                        mv u-boot.bin u-boot_${mach}.bin
-                fi
-                if [ -f board/${mach}/lowlevel_foo.bin ]; then
-                        mv board/${mach}/lowlevel_foo.bin \
-                            lowlevel_foo_${mach}.bin
-                else
-                        find board -name lowlevel_foo.bin \
-                            -exec mv '{}' lowlevel_foo_${mach}.bin \;
-                fi
-        done
+	chmod +x board/neo1973/gta*/split_by_variant.sh
+	for mach in ${UBOOT_MACHINES}
+	do
+		oe_runmake ${mach}_config
+		oe_runmake clean
+		find board -name lowlevel_foo.bin -exec rm '{}' \;
+		oe_runmake all
+		oe_runmake u-boot.udfu
+		if [ -f u-boot.udfu ]; then
+			mv u-boot.udfu u-boot_${mach}.bin
+		else
+			mv u-boot.bin u-boot_${mach}.bin
+		fi
+		if [ -f board/${mach}/lowlevel_foo.bin ]; then
+			mv board/${mach}/lowlevel_foo.bin lowlevel_foo_${mach}.bin
+		else
+			find board -name lowlevel_foo.bin -exec mv '{}' lowlevel_foo_${mach}.bin \;
+		fi
+	done
 }
 
 do_deploy () {

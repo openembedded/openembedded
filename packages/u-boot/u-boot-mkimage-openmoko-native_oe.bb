@@ -1,4 +1,4 @@
-require uboot-openmoko_svn.bb
+require u-boot-openmoko_svn.bb
 
 inherit native
 
