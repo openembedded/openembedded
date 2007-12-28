@@ -20,6 +20,8 @@ def get_binconfig_mangle(d):
 		s += " -e 's:OEEXECPREFIX:${STAGING_DIR_HOST}${layout_exec_prefix}:'"
 		s += " -e 's:-I${WORKDIR}:-I${STAGING_INCDIR}:'"
 		s += " -e 's:-L${WORKDIR}:-L${STAGING_LIBDIR}:'"
+		if bb.data.getVar("OE_BINCONFIG_EXTRA_MANGLE", d):
+		    s += bb.data.getVar("OE_BINCONFIG_EXTRA_MANGLE", d)
 	return s
 
 BINCONFIG_GLOB ?= "*-config"
