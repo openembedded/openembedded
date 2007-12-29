@@ -1,7 +1,7 @@
 SECTION = "base"
 COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r20"
+PR = "r21"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
