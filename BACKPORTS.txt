@@ -4,9 +4,9 @@ Patches are sent to the angstrom-distro-devel mailinglist with the [Review] pref
 # <revid> <terse description> (<reviewers>)
 
 Pending review:
-<no rev> insane.bbclass .desktop (Koen)
 
 Acked:
+968e6781dca5ee420f8b36434c88d54cafe77f35 insane.bbclass .desktop (Koen, Cyril)
 
 Applied:
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
