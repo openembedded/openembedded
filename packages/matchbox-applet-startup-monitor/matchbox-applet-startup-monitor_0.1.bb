@@ -3,17 +3,15 @@ LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 SECTION = "x11/wm"
 
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/mb-applet-startup-monitor/${PV}/mb-applet-startup-monitor-${PV}.tar.gz \
-    file://mb-applet-startup-monitor.desktop"
+    file://85mb-applet-startup-monitor"
 S = "${WORKDIR}/mb-applet-startup-monitor-${PV}"
 
 inherit autotools pkgconfig
 
-FILES_${PN} = "${bindir}/* ${datadir}/applications ${datadir}/pixmaps"
-
 do_install_append() {
-        install -d ${D}${datadir}/applications
-        install -m 0644 ${WORKDIR}/mb-applet-startup-monitor.desktop ${D}${datadir}/applications/
+        install -d ${D}${sysconfdir}/X11/Xsession.d
+        install -m 0755 ${WORKDIR}/10mb-applet-startup-monitor ${D}${sysconfdir}/X11/Xsession.d/
 }
