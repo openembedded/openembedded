@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r17"
+PR = "r18"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -17,6 +17,7 @@ DEFAULT_PREFERENCE_qemux86 = "-1"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
+           file://hrw-add-wcf11-to-hostap.patch;patch=1;status=pending \
            ${RPSRC}/lzo_jffs2-r3.patch;patch=1 \
            ${RPSRC}/lzo_crypto-r2.patch;patch=1 \
            ${RPSRC}/lzo_jffs2_lzomode-r1.patch;patch=1 \
