@@ -1,0 +1,610 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Wed Jan 4 17:26:23 2006 +0100
+Subject: [PATCH] AVR32 oprofile implementation
+
+This adds support for oprofile on the AVR32 architecture.
+---
+
+ arch/avr32/Kconfig                   |    2 
+ arch/avr32/Makefile                  |    1 
+ arch/avr32/oprofile/Kconfig          |   23 +++
+ arch/avr32/oprofile/Makefile         |   10 +
+ arch/avr32/oprofile/common.c         |  169 +++++++++++++++++++++++++++
+ arch/avr32/oprofile/init.c           |   29 ++++
+ arch/avr32/oprofile/op_avr32_model.h |   25 +++
+ arch/avr32/oprofile/op_counter.h     |   29 ++++
+ arch/avr32/oprofile/op_model_avr32.c |  219 +++++++++++++++++++++++++++++++++++
+ arch/avr32/oprofile/op_model_avr32.h |   21 +++
+ 10 files changed, 528 insertions(+)
+
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/Kconfig
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/Kconfig	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,23 @@
++
++menu "Profiling support"
++	depends on EXPERIMENTAL
++
++config PROFILING
++	bool "Profiling support (EXPERIMENTAL)"
++	help
++	  Say Y here to enable the extended profiling support mechanisms used
++	  by profilers such as OProfile.
++
++
++config OPROFILE
++	tristate "OProfile system profiling (EXPERIMENTAL)"
++	depends on PROFILING
++	help
++	  OProfile is a profiling system capable of profiling the
++	  whole system, including the kernel, kernel modules, libraries,
++	  and applications.
++
++	  If unsure, say N.
++
++endmenu
++
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/Makefile	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,10 @@
++obj-$(CONFIG_OPROFILE) += oprofile.o
++
++DRIVER_OBJS = $(addprefix ../../../drivers/oprofile/, \
++		oprof.o cpu_buffer.o buffer_sync.o \
++		event_buffer.o oprofile_files.o \
++		oprofilefs.o oprofile_stats.o \
++		timer_int.o )
++
++oprofile-y				:= $(DRIVER_OBJS) init.o common.o
++oprofile-y				+= op_model_avr32.o
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/common.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/common.c	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,169 @@
++/*
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++
++#define DEBUG
++#include <linux/init.h>
++#include <linux/oprofile.h>
++#include <linux/errno.h>
++#include <asm/semaphore.h>
++#include <linux/sysdev.h>
++
++#include "op_avr32_model.h"
++#include "op_counter.h"
++
++static struct op_avr32_model_spec *pc_model;
++static int pc_enabled = 0;
++static struct semaphore pc_sem;
++
++
++static int pc_start(void);
++static int pc_setup(void);
++static void pc_stop(void);
++static int pc_create_files(struct super_block *, struct dentry *);
++
++
++struct op_counter_config counter_config[OP_MAX_COUNTER];
++
++static int pc_suspend(struct sys_device *dev, u32 state)
++{
++	if (pc_enabled)
++		pc_stop();
++	return 0;
++}
++
++static int pc_resume(struct sys_device *dev)
++{
++	if (pc_enabled)
++		pc_start();
++	return 0;
++}
++
++static struct sysdev_class oprofile_sysclass = {
++	set_kset_name("oprofile"),
++	.resume		= pc_resume,
++	.suspend	= pc_suspend,
++};
++
++static struct sys_device device_oprofile = {
++	.id		= 0,
++	.cls		= &oprofile_sysclass,
++};
++
++static int __init init_driverfs(void)
++{
++	int ret;
++
++	if (!(ret = sysdev_class_register(&oprofile_sysclass)))
++		ret = sysdev_register(&device_oprofile);
++
++	return ret;
++}
++
++static void  exit_driverfs(void)
++{
++	sysdev_unregister(&device_oprofile);
++	sysdev_class_unregister(&oprofile_sysclass);
++}
++
++static int pc_create_files(struct super_block *sb, struct dentry *root)
++{
++	unsigned int i;
++
++	pr_debug("AVR32 Peformance Counters: create files\n");
++	for (i = 0; i < pc_model->num_counters; i++) {
++		struct dentry *dir;
++		char buf[2];
++
++		snprintf(buf, sizeof buf, "%d", i);
++		dir = oprofilefs_mkdir(sb, root, buf);
++		oprofilefs_create_ulong(sb, dir, "enabled",
++					&counter_config[i].enabled);
++		oprofilefs_create_ulong(sb, dir, "event",
++					&counter_config[i].event);
++		oprofilefs_create_ulong(sb, dir, "count",
++					&counter_config[i].count);
++		oprofilefs_create_ulong(sb, dir, "unit_mask",
++					&counter_config[i].unit_mask);
++		oprofilefs_create_ulong(sb, dir, "kernel",
++					&counter_config[i].kernel);
++		oprofilefs_create_ulong(sb, dir, "user",
++					&counter_config[i].user);
++	}
++
++	return 0;
++}
++
++static int pc_setup(void)
++{
++	int ret;
++
++	spin_lock(&oprofilefs_lock);
++	pr_debug("AVR32 Peformance Counters: setup\n");
++	ret = pc_model->setup_ctrs();
++	spin_unlock(&oprofilefs_lock);
++	return ret;
++}
++
++static int pc_start(void)
++{
++	int ret = -EBUSY;
++
++	down(&pc_sem);
++	if (!pc_enabled) {
++		pr_debug("AVR32 Peformance Counters: start\n");
++		ret = pc_model->start();
++		pc_enabled = !ret;
++	}
++	up(&pc_sem);
++	return ret;
++}
++
++static void pc_stop(void)
++{
++	down(&pc_sem);
++	pr_debug("AVR32 Peformance Counters: stop\n");
++	if (pc_enabled)
++		pc_model->stop();
++	pc_enabled = 0;
++	up(&pc_sem);
++}
++
++int __init pc_init(struct oprofile_operations *ops,
++		   struct op_avr32_model_spec *spec)
++{
++	init_MUTEX(&pc_sem);
++
++	if ( spec->init )
++		if (spec->init() < 0)
++			return -ENODEV;
++
++	pc_model = spec;
++	init_driverfs();
++	ops->create_files = pc_create_files;
++	ops->setup = pc_setup;
++	ops->shutdown = pc_stop;
++	ops->start = pc_start;
++	ops->stop = pc_stop;
++	ops->cpu_type = pc_model->name;
++	printk(KERN_INFO "oprofile: using %s Performance Counters\n",
++	       spec->name);
++	pr_debug("AVR32 Peformance Counters: pc_init\n");
++
++	return 0;
++}
++
++void pc_exit(void)
++{
++	if (pc_model) {
++		pr_debug("AVR32 Peformance Counters: exit\n");
++		exit_driverfs();
++		pc_model = NULL;
++	}
++}
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/init.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/init.c	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,29 @@
++/*
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++
++#include <linux/oprofile.h>
++#include <linux/init.h>
++#include <linux/errno.h>
++#include "op_avr32_model.h"
++#include "op_model_avr32.h"
++
++int __init oprofile_arch_init(struct oprofile_operations *ops)
++{
++	int ret = -ENODEV;
++
++	ret = pc_init(ops, &op_avr32_spec);
++
++	return ret;
++}
++
++void oprofile_arch_exit(void)
++{
++	pc_exit();
++}
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/op_avr32_model.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/op_avr32_model.h	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,25 @@
++/*
++ * interface to AVR32 machine specific operations
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++
++#ifndef OP_AVR32_MODEL_H
++#define OP_AVR32_MODEL_H
++
++struct op_avr32_model_spec {
++	int (*init)(void);
++	unsigned int num_counters;
++	int (*setup_ctrs)(void);
++	int (*start)(void);
++	void (*stop)(void);
++	char *name;
++};
++
++#endif /* OP_AVR32_MODEL_H */
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/op_counter.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/op_counter.h	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,29 @@
++/*
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++#ifndef OP_COUNTER_H
++#define OP_COUNTER_H
++
++#define OP_MAX_COUNTER 3
++
++/* Per performance monitor configuration as set via
++ * oprofilefs.
++ */
++struct op_counter_config {
++	unsigned long count;
++	unsigned long enabled;
++	unsigned long event;
++	unsigned long unit_mask;
++	unsigned long kernel;
++	unsigned long user;
++};
++
++extern struct op_counter_config counter_config[];
++
++#endif /* OP_COUNTER_H */
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/op_model_avr32.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/op_model_avr32.c	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,219 @@
++/*
++ * AVR32 Performance Counter Driver
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++
++#define DEBUG
++
++#include <linux/types.h>
++#include <linux/errno.h>
++#include <linux/sched.h>
++#include <linux/oprofile.h>
++#include <linux/interrupt.h>
++#include <asm/irq.h>
++#include <asm/system.h>
++#include <asm/sysreg.h>
++
++#include "op_counter.h"
++#include "op_avr32_model.h"
++
++
++#define	PC_ENABLE	0x001	/* Enable counters */
++#define PCNT_RESET	0x002	/* Reset event counters */
++#define	CCNT_RESET	0x004	/* Reset clock counter */
++#define	PC_RESET	(CCNT_RESET | PCNT_RESET)
++#define PC_CNT64	0x008	/* Make CCNT count every 64th cycle */
++
++
++#define EVT_UNUSED			0xFF
++
++struct pc_counter {
++	volatile unsigned long ovf;
++	unsigned long reset_counter;
++};
++
++enum { PCCNT, PCNT0, PCNT1, MAX_COUNTERS };
++
++#define PCCNT_IE  (1 << 4)
++#define PCNT0_IE  (1 << 5)
++#define PCNT1_IE  (1 << 6)
++
++#define PCCNT_F  (1 << 8)
++#define PCNT0_F  (1 << 9)
++#define PCNT1_F  (1 << 10)
++
++#define AVR32_PC_IRQ 1
++
++static const u32 int_mask[MAX_COUNTERS] = { PCCNT_IE, PCNT0_IE, PCNT1_IE };
++static const u32 ovf_mask[MAX_COUNTERS] = { PCCNT_F, PCNT0_F, PCNT1_F };
++
++static struct pc_counter results[MAX_COUNTERS];
++
++static void write_pccr(u32 val)
++{
++	__builtin_mtsr(SYSREG_PCCR, val);
++}
++
++static u32 read_pccr(void)
++{
++	return __builtin_mfsr(SYSREG_PCCR);
++}
++
++static u32 read_counter(int counter)
++{
++	switch (counter) {
++	case PCCNT:
++		return __builtin_mfsr(SYSREG_PCCNT);
++	case PCNT0:
++		return __builtin_mfsr(SYSREG_PCNT0);
++	case PCNT1:
++		return __builtin_mfsr(SYSREG_PCNT0);
++	default:
++		return 0;
++	}
++}
++
++
++static void write_counter(int counter, u32 val)
++{
++	switch (counter) {
++	case PCCNT:
++		__builtin_mtsr(SYSREG_PCCNT, val);
++	case PCNT0:
++		__builtin_mtsr(SYSREG_PCNT0, val);
++	case PCNT1:
++		__builtin_mtsr(SYSREG_PCNT0, val);
++	default:
++		break;
++	}
++}
++
++static int avr32_setup_ctrs(void)
++{
++	u32  pccr;
++	int i;
++
++	for (i = PCCNT; i < MAX_COUNTERS; i++) {
++		if (counter_config[i].enabled)
++			continue;
++
++		counter_config[i].event = EVT_UNUSED;
++	}
++
++	pccr = ((counter_config[PCNT1].event << 18)
++		| (counter_config[PCNT0].event << 12));
++	pr_debug("avr32_setup_ctrs: pccr: %#08x\n", pccr);
++	write_pccr(pccr);
++
++	for (i = PCCNT; i < MAX_COUNTERS; i++) {
++		if (counter_config[i].event == EVT_UNUSED) {
++			counter_config[i].event = 0;
++			continue;
++		}
++
++		results[i].reset_counter = counter_config[i].count;
++		write_counter(i, -(u32)counter_config[i].count);
++		pr_debug("avr32_setup_ctrs: counter%d %#08x from %#08lx\n",
++			 i, read_counter(i), counter_config[i].count);
++	}
++
++	return 0;
++}
++
++static void inline check_ctrs(void)
++{
++	int i;
++	u32 pccr = read_pccr();
++
++	/* Writeback clears overflow flag */
++	write_pccr(pccr & ~PC_ENABLE);
++
++	for (i = PCCNT; i < MAX_COUNTERS; i++) {
++		if (!(int_mask[i] & pccr))
++			continue;
++
++		if (pccr & ovf_mask[i])
++			results[i].ovf++;
++	}
++}
++
++
++static irqreturn_t avr32_pc_interrupt(int irq, void *arg,
++				      struct pt_regs *regs)
++{
++	int i;
++
++	check_ctrs();
++
++	for (i = PCCNT; i < MAX_COUNTERS; i++) {
++		if (!results[i].ovf)
++			continue;
++
++		write_counter(i, -(u32)results[i].reset_counter);
++		oprofile_add_sample(regs, i);
++		results[i].ovf--;
++	}
++
++	/* Enable Performance Counter */
++	write_pccr(read_pccr() | PC_ENABLE);
++
++	return IRQ_HANDLED;
++}
++
++static void avr32_pc_stop(void)
++{
++	write_pccr(read_pccr() & ~PC_ENABLE);
++
++	free_irq(AVR32_PC_IRQ, results);
++}
++
++static int avr32_pc_start(void)
++{
++	int i, ret;
++	u32 pccr = read_pccr();
++
++	ret = request_irq(AVR32_PC_IRQ, avr32_pc_interrupt, SA_INTERRUPT,
++			  "AVR32 Performance Counter", (void *)results);
++
++	if (ret < 0) {
++		printk(KERN_ERR
++		       "oprofile: unable to request IRQ%d for AVR32"
++		       " Performance Counter\n",
++		       AVR32_PC_IRQ);
++		return ret;
++	}
++
++	/* Enable interrupts */
++	for (i = PCCNT; i < MAX_COUNTERS; i++) {
++		if (counter_config[i].enabled)
++			pccr |= int_mask[i];
++	}
++
++	/* Disable scaler */
++	pccr &= ~PC_CNT64;
++
++	/* Enable Performance Counter */
++	pccr |= PC_ENABLE;
++
++	write_pccr(pccr);
++	pr_debug("avr32_pc_start: pc: %#08x\n", pccr);
++	return 0;
++}
++
++
++struct op_avr32_model_spec op_avr32_spec = {
++	.init		= 0,
++	.setup_ctrs	= avr32_setup_ctrs,
++	.start		= avr32_pc_start,
++	.stop		= avr32_pc_stop,
++	.num_counters	= MAX_COUNTERS,
++	.name		= "avr32",
++};
++
+Index: linux-2.6.18-avr32/arch/avr32/oprofile/op_model_avr32.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/oprofile/op_model_avr32.h	2006-10-20 14:08:20.000000000 +0200
+@@ -0,0 +1,21 @@
++/**
++ * AVR32 Machine Specific Operations
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Author: Ronny Pedersen
++ */
++#ifndef OP_MODEL_AVR32_H
++#define OP_MODEL_AVR32_H
++
++extern struct op_avr32_model_spec op_avr32_spec;
++extern int pc_init(struct oprofile_operations *ops,
++		   struct op_avr32_model_spec *spec);
++extern void pc_exit(void);
++
++
++#endif
+Index: linux-2.6.18-avr32/arch/avr32/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/Kconfig	2006-10-20 14:04:43.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/Kconfig	2006-10-20 14:08:20.000000000 +0200
+@@ -190,6 +190,8 @@ source "drivers/Kconfig"
+ 
+ source "fs/Kconfig"
+ 
++source "arch/avr32/oprofile/Kconfig"
++
+ source "arch/avr32/Kconfig.debug"
+ 
+ source "security/Kconfig"
+Index: linux-2.6.18-avr32/arch/avr32/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/Makefile	2006-10-20 14:04:54.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/Makefile	2006-10-20 14:09:10.000000000 +0200
+@@ -30,6 +30,7 @@ core-$(CONFIG_BOARD_ATSTK1000)		+= arch/
+ core-$(CONFIG_LOADER_U_BOOT)		+= arch/avr32/boot/u-boot/
+ core-y					+= arch/avr32/kernel/
+ core-y					+= arch/avr32/mm/
++drivers-$(CONFIG_OPROFILE)		+= arch/avr32/oprofile/
+ libs-y					+= arch/avr32/lib/
+ 
+ archincdir-$(CONFIG_PLATFORM_AT32AP)	:= arch-at32ap

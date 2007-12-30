@@ -1,0 +1,30 @@
+--- linux-2.6.18.orig/arch/avr32/kernel/time.c	2006-11-06 14:36:50.000000000 +0100
++++ linux-2.6.18/arch/avr32/kernel/time.c	2006-11-06 14:57:03.000000000 +0100
+@@ -21,6 +21,7 @@
+ #include <linux/profile.h>
+ #include <linux/sysdev.h>
+ 
++#include <asm/intc.h>
+ #include <asm/div64.h>
+ #include <asm/sysreg.h>
+ #include <asm/io.h>
+@@ -136,6 +137,10 @@
+ {
+ 	unsigned int count;
+ 
++	/* Check if interrupt is timer or performance counters */
++	if (!(intc_get_pending(irq) & 1))
++		return IRQ_NONE;
++
+ 	/* ack timer interrupt and try to set next interrupt */
+ 	count = avr32_hpt_read();
+ 	avr32_timer_ack();
+@@ -164,7 +169,7 @@
+ 
+ static struct irqaction timer_irqaction = {
+ 	.handler	= timer_interrupt,
+-	.flags		= IRQF_DISABLED,
++	.flags		= IRQF_DISABLED|IRQF_SHARED,
+ 	.name		= "timer",
+ };
+ 
