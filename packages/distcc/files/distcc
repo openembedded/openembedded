@@ -16,7 +16,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/distccd
 NAME=distcc
 DESC="Distributed Compiler Daemon"
-DAEMON_ARGS="--pid-file=/var/run/$NAME.pid --daemon"
+DAEMON_ARGS="--pid-file=/var/run/$NAME.pid --daemon --zeroconf"
 # please change those variables by overriding them in /etc/defaults/distcc
 ALLOWEDNETS="127.0.0.1"
 

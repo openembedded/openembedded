@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r16"
+PR = "r17"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -42,6 +42,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/export_atags-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
+           ${RPSRC}/poodle_asoc_fix-r0.patch;patch=1 \
            file://w100fb-unused-var.patch;patch=1 \
            file://hostap-monitor-mode.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
@@ -75,7 +76,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
 
-
 # Add this to enable pm debug code (useful with a serial lead)
 #  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
 
@@ -98,9 +98,10 @@ SRC_URI_append_collie = "\
 #          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
 "
 
+SRC_URI_append_poodle = "\
+           ${RPSRC}/poodle_serial_vcc.patch;patch=1 \
+"
 
-#		wm97xx-lg13-r0.patch, tosa-power-r18.patch and tosa-bluetooth-r8.patch
-#		were adapted from $(DOSRC) to apply cleanly
 SRC_URI_append_tosa = "\
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r8.patch;patch=1 \
