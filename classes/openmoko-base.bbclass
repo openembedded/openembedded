@@ -1,6 +1,6 @@
 HOMEPAGE = "http://www.openmoko.org"
 LICENSE ?= "GPL"
-OPENMOKO_RELEASE ?= "OM-2007"
+OPENMOKO_RELEASE ?= "OM-2007.2"
 OPENMOKO_MIRROR ?= "svn://svn.openmoko.org/trunk"
 
 def openmoko_base_get_subdir(d):
