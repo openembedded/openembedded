@@ -1,6 +1,6 @@
 DESCRIPTION = "The OpenMoko Command Line Terminal"
 SECTION = "openmoko/applications"
-DEPENDS = "vala vte libmokoui2"
+DEPENDS = "vala-native vte libmokoui2"
 RDEPENDS = "ttf-liberation-mono"
 PV = "3.0.0+svnr${SRCREV}"
 PR = "r0"
