@@ -12,6 +12,11 @@ FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"
 
 require webkit.inc
 
+SRC_URI += "file://autogen.sh \
+            file://configure.ac \
+            file://GNUmakefile.am \
+	   "
+
 PR = "r4"
 
 do_install() {
