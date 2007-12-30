@@ -1,5 +1,5 @@
 DESCRIPTION = "GPE audio player"
-SECTION = "gpe"
+SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins"
