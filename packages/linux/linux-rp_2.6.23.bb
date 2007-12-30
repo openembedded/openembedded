@@ -100,7 +100,7 @@ SRC_URI_append_collie = "\
 "
 
 SRC_URI_append_poodle = "\
-           ${RPSRC}/poodle_serial_vcc.patch;patch=1 \
+           ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\
