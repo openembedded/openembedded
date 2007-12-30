@@ -1,6 +1,6 @@
 DESCRIPTION = "NPE firmware for the IXP4xx line of devices"
-LICENSE = "Intel Software Licence Agreement"
-PR = "r0"
+LICENSE = "Intel"
+PR = "r1"
 DEPENDS = "ixp4xx-npe-native"
 
 # You need to download the IPL_ixp400NpeLibrary-2_4.zip file (without crypto) from:
@@ -9,7 +9,8 @@ DEPENDS = "ixp4xx-npe-native"
 # and put it in your downloads directory so bitbake will find it.
 # Make sure you *read* and accept the license - it is not a standard one.
 
-SRC_URI = "http://You-Have-To-Download-The-Microcode-Manually-So-Please-Read-ixp4xx-npe_2.4.bb-For-Instructions/IPL_ixp400NpeLibrary-2_4.zip"
+SRC_URI = "http://You-Have-To-Download-The-Microcode-Manually-So-Please-Read-ixp4xx-npe_2.4.bb-For-Instructions/IPL_ixp400NpeLibrary-2_4.zip \
+           file://Intel"
 S = "${WORKDIR}/ixp400_xscale_sw/src/npeDl"
 
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
@@ -28,6 +29,8 @@ do_install() {
 	rm ${S}/NPE-C
 	mv ${S}/NPE-C.* ${S}/NPE-C
 	install ${S}/NPE-C ${D}/${base_libdir}/firmware/
+	install -d ${D}/${datadir}/common-licenses/
+	install -m 0644 ${WORKDIR}/Intel ${D}${datadir}/common-licenses/
 }
 
 do_populate_staging() {
