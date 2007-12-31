@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r18"
+PR = "r19"
 
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
@@ -44,6 +44,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r0.patch;patch=1 \
+           ${RPSRC}/locomo_led_fix-r0.patch;patch=1 \
            file://w100fb-unused-var.patch;patch=1 \
            file://hostap-monitor-mode.patch;patch=1 \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
