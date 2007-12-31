@@ -5,6 +5,7 @@ Patches are sent to the angstrom-distro-devel mailinglist with the [Review] pref
 
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
+744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen)
 
 Acked:
 968e6781dca5ee420f8b36434c88d54cafe77f35 insane.bbclass .desktop (Koen, Cyril)
