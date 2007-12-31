@@ -1136,11 +1136,14 @@ CONFIG_SND_VERBOSE_PROCFS=y
 # System on Chip audio support
 #
 CONFIG_SND_SOC=m
-# CONFIG_SND_PXA2XX_SOC is not set
+CONFIG_SND_PXA2XX_SOC=m
+CONFIG_SND_PXA2XX_SOC_I2S=m
+CONFIG_SND_PXA2XX_SOC_POODLE=m
 
 #
 # SoC Audio support for SuperH
 #
+CONFIG_SND_SOC_WM8731=m
 
 #
 # Open Sound System
