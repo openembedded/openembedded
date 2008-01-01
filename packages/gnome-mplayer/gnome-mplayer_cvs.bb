@@ -2,9 +2,10 @@ DESCRIPTION = "Simple MPlayer frontend with lite Gnome integration"
 HOMEPAGE = "http://dekorte.homeip.net/download/gnome-mplayer/"
 LICENSE = "GPL"
 DEPENDS = "gtk+ gconf dbus-glib"
+RDEPENDS = "mplayer"
 SRCDATE = "20080101"
 PV = "0.5.3+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gconf
 
