@@ -14,3 +14,29 @@ SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/sgml-co
 	   file://autohell.patch;patch=1"
 
 inherit autotools
+
+do_compile_append() {
+    # install-catalog script contains hardcoded reference to /etc/sgml.
+    sed -i -e "s|/etc/sgml|${sysconfdir}/sgml|g" bin/install-catalog
+}
+
+pkg_postinst() {
+	install-catalog \
+	    --add ${sysconfdir}/sgml/sgml-ent.cat \
+			${datadir}/sgml/sgml-iso-entities-8879.1986/catalog
+	    
+	install-catalog \
+	    --add ${sysconfdir}/sgml/sgml-docbook.cat \
+			${sysconfdir}/sgml/sgml-ent.cat
+}
+
+pkg_postrm() {
+	install-catalog \
+	    --remove ${sysconfdir}/sgml/sgml-ent.cat \
+			${datadir}/sgml/sgml-iso-entities-8879.1986/catalog
+	    
+	install-catalog \
+	    --remove ${sysconfdir}/sgml/sgml-docbook.cat \
+			${sysconfdir}/sgml/sgml-ent.cat
+}
+

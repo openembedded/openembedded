@@ -567,3 +567,7 @@ on the HDD mountpoints are scanned for a special directory structure
 containing startup script, which are executed.  This facilitates easy
 customization of the boot for debugging purposes, or even automated
 installation and configuration processes.
+
+6.10:
+
+Second beta release.
