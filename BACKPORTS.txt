@@ -5,6 +5,7 @@ Patches are sent to the angstrom-distro-devel mailinglist with the [Review] pref
 
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
+744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen)
 b1eb3466dafc9eb0908b3c6a5749e44c83d43bb7 ipaq-sleep 0.9: Remove supposed fixes for all bugs except the most prominent one. (Paul)
 
 Acked:
