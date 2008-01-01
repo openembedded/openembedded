@@ -1,9 +1,6 @@
 require linux-rp.inc
 
-PR = "r19"
-
-DEFAULT_PREFERENCE_qemuarm = "-1"
-DEFAULT_PREFERENCE_qemux86 = "-1"
+PR = "r20"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -43,7 +40,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/export_atags-r0.patch;patch=1 \
            ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
-           ${RPSRC}/poodle_asoc_fix-r0.patch;patch=1 \
+           ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
            ${RPSRC}/locomo_led_fix-r0.patch;patch=1 \
            file://w100fb-unused-var.patch;patch=1 \
            file://hostap-monitor-mode.patch;patch=1 \
