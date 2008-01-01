@@ -1,0 +1,37 @@
+# HG changeset patch
+# User "Paul Sokolovsky <pfalcon@users.sourceforge.net>"
+# Date 1199174323 -7200
+# Node ID d630a2e72d3fa094a330f5bd6351b0cf7c9690a6
+# Parent  4b4820fa6fff9dbb8c6c8e1bd23eed54faf10982
+gui.c: Add vertical pane layout for main i/f vs playlist.
+Decision which layout to use is based on screen aspect.
+This change will allow sane layout on PDA devices, many
+of which have vertical layout by default. Possible
+improvements:
+1. Add menu check item for users to be able to select layout
+as they see fit.
+
+diff -r 4b4820fa6fff -r d630a2e72d3f src/gui.c
+--- a/src/gui.c	Tue Jan 01 09:29:28 2008 +0200
++++ b/src/gui.c	Tue Jan 01 09:58:43 2008 +0200
+@@ -3071,8 +3071,20 @@ GtkWidget *create_window(gint windowid)
+ 
+     gtk_widget_show(menubar);
+     gtk_widget_show(drawing_area);
++    if (gdk_screen_width() > gdk_screen_height()) {
+ 	pane = gtk_hpaned_new();
+ 	gtk_paned_pack1(GTK_PANED(pane),vbox,TRUE,TRUE);
++    } else {
++        GtkRequisition menu_size;
++        GtkRequisition vbox_size;
++        pane = gtk_vpaned_new();
++        gtk_paned_pack1(GTK_PANED(pane),vbox,TRUE,FALSE); /* No shrink beyond size request*/
++
++        gtk_widget_size_request(menubar, &menu_size);
++        gtk_widget_size_request(vbox, &vbox_size);
++        /* 5 is adhox compensation for layout issues ;-( */
++        gtk_widget_set_size_request(vbox, -1, menu_size.height + vbox_size.height - 5);
++    }
+ 	
+     gtk_container_add(GTK_CONTAINER(window), pane);
+ 
