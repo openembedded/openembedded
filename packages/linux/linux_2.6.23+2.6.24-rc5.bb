@@ -4,7 +4,7 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_alix = "1"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.24-rc5.bz2;patch=1 \
@@ -20,9 +20,14 @@ SRC_URI_append_cm-x270 = "\
 	file://0004-cm-x270-nand-simplify-name.patch;patch=1 \
 	file://0005-cmx270-pci.patch;patch=1"
 
+SRC_URI_append_gesbc-9302 = "file://0001-gesbc-nand.patch;patch=1"
+
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
+CMDLINE_gesbc-9302 = "console=ttyAM0 root=/dev/ram"
+
 FILES_kernel-image_cm-x270 = ""
+FILES_kernel-image_gesbc-9302 = ""
 
 python do_compulab_image() {
 	import os
