@@ -1,0 +1,9 @@
+--- dotconf-1.0.13/src/Makefile.am.orig	2008-01-02 11:48:16.000000000 +0000
++++ dotconf-1.0.13/src/Makefile.am	2008-01-02 11:48:22.000000000 +0000
+@@ -1,5 +1,5 @@
+ 
+-INCLUDES = -I. -I$(includedir)
++INCLUDES = -I.
+ 
+ include_HEADERS = dotconf.h
+ noinst_HEADERS = readdir.h
