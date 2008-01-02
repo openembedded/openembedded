@@ -178,14 +178,15 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    if error_class in [0, 5, 8]:
-        return False
-    else:
-        return True
+    return not error_class in [0, 5, 7, 8]
 
 def package_qa_write_error(error_class, name, path, d):
+    """
+    Log the error
+    """
     import bb, os
     if not bb.data.getVar('QA_LOG', d):
+        bb.note("a QA error occured but will not be logged because QA_LOG is not set")
         return
 
     ERROR_NAMES =[
@@ -196,8 +197,9 @@ def package_qa_write_error(error_class, name, path, d):
         "wrong architecture",
         "evil hides inside the .la",
         "evil hides inside the .pc",
+        "the desktop file is not valid",
+        ".la contains reference to the workdir",
     ]
-
 
     log_path = os.path.join( bb.data.getVar('T', d, True), "log.qa_package" )
     f = file( log_path, "a+")
@@ -205,12 +207,18 @@ def package_qa_write_error(error_class, name, path, d):
              (ERROR_NAMES[error_class], name, package_qa_clean_path(path,d))
     f.close()
 
+def package_qa_handle_error(error_class, error_msg, name, path, d):
+    import bb
+    bb.error("QA Issue: %s" % error_msg)
+    package_qa_write_error(error_class, name, path, d)
+    return not package_qa_make_fatal_error(error_class, name, path, d)
 
 def package_qa_check_rpath(file,name,d):
     """
     Check for dangerous RPATHs
     """
     import bb, os
+    sane = True
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
     bad_dir = bb.data.getVar('TMPDIR', d, True) + "/work"
     bad_dir_test = bb.data.getVar('TMPDIR', d, True)
@@ -224,10 +232,10 @@ def package_qa_check_rpath(file,name,d):
     txt    = output.readline().split()
     for line in txt:
         if bad_dir in line:
-            package_qa_write_error( 1, name, file, d)
-            bb.error("QA Issue package %s contains bad RPATH %s in file %s" % \
-                      (name, line, file))
-    return True
+            error_msg = "package %s contains bad RPATH %s in file %s" % (name, line, file)
+            sane = package_qa_handle_error(1, error_msg, name, file, d)
+
+    return sane
 
 def package_qa_check_devdbg(path, name,d):
     """
@@ -240,19 +248,15 @@ def package_qa_check_devdbg(path, name,d):
 
     if not "-dev" in name:
         if path[-3:] == ".so" and os.path.islink(path):
-            package_qa_write_error( 0, name, path, d )
-            bb.error("QA Issue: non -dev package contains symlink .so: %s path '%s'" % \
-                     (name, package_qa_clean_path(path,d)))
-            if package_qa_make_fatal_error( 0, name, path, d ):
-                sane = False
+            error_msg = "non -dev package contains symlink .so: %s path '%s'" % \
+                     (name, package_qa_clean_path(path,d))
+            sane = package_qa_handle_error(0, error_msg, name, path, d)
 
     if not "-dbg" in name:
         if '.debug' in path:
-            package_qa_write_error( 3, name, path, d )
-            bb.error("QA Issue: non debug package contains .debug directory: %s path %s" % \
-                     (name, package_qa_clean_path(path,d)))
-            if package_qa_make_fatal_error( 3, name, path, d ):
-                sane = False
+            error_msg = "non debug package contains .debug directory: %s path %s" % \
+                     (name, package_qa_clean_path(path,d))
+            sane = package_qa_handle_error(3, error_msg, name, path, d)
 
     return sane
 
@@ -268,6 +272,7 @@ def package_qa_check_arch(path,name,d):
     Check if archs are compatible
     """
     import bb, os
+    sane = True
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
 
@@ -291,29 +296,30 @@ def package_qa_check_arch(path,name,d):
 
     # Check the architecture and endiannes of the binary
     if not machine == elf.machine():
-        bb.error("Architecture did not match (%d to %d) on %s" % \
-                 (machine, elf.machine(), package_qa_clean_path(path,d)))
-        return not package_qa_make_fatal_error( 4, name, path, d )
+        error_msg = "Architecture did not match (%d to %d) on %s" % \
+                 (machine, elf.machine(), package_qa_clean_path(path,d))
+        sane = package_qa_handle_error(4, error_msg, name, path, d)
     elif not littleendian == elf.isLittleEndian():
-        bb.error("Endiannes did not match (%d to %d) on %s" % \
-                 (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d)))
-        return not package_qa_make_fatal_error( 4, name, path, d )
+        error_msg = "Endiannes did not match (%d to %d) on %s" % \
+                 (littleendian, elf.isLittleEndian(), package_qa_clean_path(path,d))
+        sane = package_qa_handle_error(4, error_msg, name, path, d)
 
-    return True
+    return sane
 
 def package_qa_check_desktop(path, name, d):
     """
     Run all desktop files through desktop-file-validate.
     """
     import bb, os
+    sane = True
     if path.endswith(".desktop"):
         validate = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True), \
                                 'desktop-file-validate')
         output = os.popen("%s %s" % (validate, path))
         for l in output:
-            bb.error(l.strip())
-        return not package_qa_make_fatal_error(7, name, path, d)
-    return True
+            sane = package_qa_handle_error(7, l.strip(), name, path, d)
+
+    return sane
 
 def package_qa_check_staged(path,d):
     """
@@ -343,22 +349,16 @@ def package_qa_check_staged(path,d):
             if file[-2:] == "la":
                 file_content = open(path).read()
                 if installed in file_content:
-                    bb.error("QA issue: %s failed sanity test (installed) in path %s" % \
-                             (file,root))
-                    if package_qa_make_fatal_error( 5, "staging", path, d):
-                        sane = False
+                    error_msg = "%s failed sanity test (installed) in path %s" % (file,root)
+                    sane = package_qa_handle_error(5, error_msg, "staging", path, d)
                 if workdir in file_content:
-                    bb.error("QA issue: %s failed sanity test (workdir) in path %s" % \
-                             (file,root))
-                    if package_qa_make_fatal_error(8, "staging", path, d):
-                        sane = False
+                    error_msg = "%s failed sanity test (workdir) in path %s" % (file,root)
+                    sane = package_qa_handle_error(8, error_msg, "staging", path, d)
             elif file[-2:] == "pc":
                 file_content = open(path).read()
                 if workdir in file_content:
-                    bb.error("QA issue: %s failed sanity test (workdir) in path %s" % \
-                            (file,root))
-                    if package_qa_make_fatal_error( 6, "staging", path, d):
-                        sane = False
+                    error_msg = "%s failed sanity test (workdir) in path %s" % (file,root)
+                    sane = package_qa_handle_error(6, error_msg, "staging", path, d)
 
     return sane
 
@@ -375,7 +375,6 @@ def package_qa_walk(path, funcs, package,d):
                     sane = False
 
     return sane
-
 
 def package_qa_check_rdepends(pkg, workdir, d):
     import bb
@@ -408,10 +407,8 @@ def package_qa_check_rdepends(pkg, workdir, d):
         # Now do the sanity check!!!
         for rdepend in rdepends:
             if "-dbg" in rdepend:
-                package_qa_write_error( 2, pkgname, rdepend, d )
-                bb.error("QA issue: %s rdepends on %s" % (pkgname,rdepend))
-                if package_qa_make_fatal_error( 2, pkgname, rdepend, d ):
-                    sane = False
+                error_msg = "%s rdepends on %s" % (pkgname,rdepend)
+                sane = package_qa_handle_error(2, error_msg, pkgname, rdepend, d)
 
     return sane
 
