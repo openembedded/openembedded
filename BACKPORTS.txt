@@ -1,11 +1,15 @@
 This file holds all the revision from .dev we want in this stable branch.
 Patches are sent to the angstrom-distro-devel mailinglist with the [Review] prefix in the subject
+To quickly lookup any revision from below, use
+http://www.openembedded.org/viewmtn/revision/info/<rev>
 
 # <revid> <terse description> (<reviewers>)
 
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
 744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen)
+37765fd148c82c032b7e299f6c0d658b98fcb18e gpe-nmf: Fix SECTION to "gpe/multimedia". (Paul)
+f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (Paul)
 
 Acked:
 968e6781dca5ee420f8b36434c88d54cafe77f35 insane.bbclass .desktop (Koen, Cyril)
