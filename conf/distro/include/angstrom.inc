@@ -50,6 +50,8 @@ TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
 
+TARGET_FPU_dht-walnut ?= "soft"
+
 #Set the right arch for the feeds
 #Alphabetically sorted
 

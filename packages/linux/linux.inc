@@ -99,6 +99,11 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+do_configure_append_avr32() {
+        sed -i -e s:-mno-pic::g arch/avr32/Makefile
+}
+
+
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {

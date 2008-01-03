@@ -1,0 +1,171 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Tue Feb 28 08:51:18 2006 +0100
+Subject: [PATCH] USB Ethernet: Align all descriptors on a word boundary
+
+Seems like gcc has problems with packed structs, so we'll just align
+them explicitly.
+
+---
+
+ drivers/usb/gadget/ether.c |   35 ++++++++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 17 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/ether.c	2006-09-11 14:36:02.000000000 +0200
++++ linux-2.6.18-avr32/drivers/usb/gadget/ether.c	2006-09-12 10:14:19.000000000 +0200
+@@ -428,7 +428,7 @@ static inline int BITRATE(struct usb_gad
+ #define DEV_RNDIS_CONFIG_VALUE	2	/* rndis; optional */
+ 
+ static struct usb_device_descriptor
+-device_desc = {
++device_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof device_desc,
+ 	.bDescriptorType =	USB_DT_DEVICE,
+ 
+@@ -454,7 +454,7 @@ otg_descriptor = {
+ };
+ 
+ static struct usb_config_descriptor
+-eth_config = {
++eth_config __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof eth_config,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 
+@@ -468,7 +468,7 @@ eth_config = {
+ 
+ #ifdef	CONFIG_USB_ETH_RNDIS
+ static struct usb_config_descriptor
+-rndis_config = {
++rndis_config __attribute__((aligned(2))) = {
+ 	.bLength =              sizeof rndis_config,
+ 	.bDescriptorType =      USB_DT_CONFIG,
+ 
+@@ -493,7 +493,7 @@ rndis_config = {
+ 
+ #ifdef	DEV_CONFIG_CDC
+ static struct usb_interface_descriptor
+-control_intf = {
++control_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof control_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -509,7 +509,7 @@ control_intf = {
+ 
+ #ifdef	CONFIG_USB_ETH_RNDIS
+ static const struct usb_interface_descriptor
+-rndis_control_intf = {
++rndis_control_intf __attribute__((aligned(2))) = {
+ 	.bLength =              sizeof rndis_control_intf,
+ 	.bDescriptorType =      USB_DT_INTERFACE,
+ 
+@@ -524,7 +524,7 @@ rndis_control_intf = {
+ 
+ #if defined(DEV_CONFIG_CDC) || defined(CONFIG_USB_ETH_RNDIS)
+ 
+-static const struct usb_cdc_header_desc header_desc = {
++static const struct usb_cdc_header_desc __attribute__((aligned(2))) header_desc = {
+ 	.bLength =		sizeof header_desc,
+ 	.bDescriptorType =	USB_DT_CS_INTERFACE,
+ 	.bDescriptorSubType =	USB_CDC_HEADER_TYPE,
+@@ -566,7 +566,8 @@ static const struct usb_cdc_acm_descript
+ 
+ #ifdef	DEV_CONFIG_CDC
+ 
+-static const struct usb_cdc_ether_desc ether_desc = {
++static const struct usb_cdc_ether_desc
++ether_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof ether_desc,
+ 	.bDescriptorType =	USB_DT_CS_INTERFACE,
+ 	.bDescriptorSubType =	USB_CDC_ETHERNET_TYPE,
+@@ -601,7 +602,7 @@ static const struct usb_cdc_ether_desc e
+ #define STATUS_BYTECOUNT		16	/* 8 byte header + data */
+ 
+ static struct usb_endpoint_descriptor
+-fs_status_desc = {
++fs_status_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -632,7 +633,7 @@ data_nop_intf = {
+ /* ... but the "real" data interface has two bulk endpoints */
+ 
+ static const struct usb_interface_descriptor
+-data_intf = {
++data_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof data_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -652,7 +653,7 @@ data_intf = {
+ /* RNDIS doesn't activate by changing to the "real" altsetting */
+ 
+ static const struct usb_interface_descriptor
+-rndis_data_intf = {
++rndis_data_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof rndis_data_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -675,7 +676,7 @@ rndis_data_intf = {
+  */
+ 
+ static const struct usb_interface_descriptor
+-subset_data_intf = {
++subset_data_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof subset_data_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -692,7 +693,7 @@ subset_data_intf = {
+ 
+ 
+ static struct usb_endpoint_descriptor
+-fs_source_desc = {
++fs_source_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -701,7 +702,7 @@ fs_source_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-fs_sink_desc = {
++fs_sink_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -767,7 +768,7 @@ static const struct usb_descriptor_heade
+ 
+ #if defined(DEV_CONFIG_CDC) || defined(CONFIG_USB_ETH_RNDIS)
+ static struct usb_endpoint_descriptor
+-hs_status_desc = {
++hs_status_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -778,7 +779,7 @@ hs_status_desc = {
+ #endif /* DEV_CONFIG_CDC */
+ 
+ static struct usb_endpoint_descriptor
+-hs_source_desc = {
++hs_source_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -787,7 +788,7 @@ hs_source_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-hs_sink_desc = {
++hs_sink_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -796,7 +797,7 @@ hs_sink_desc = {
+ };
+ 
+ static struct usb_qualifier_descriptor
+-dev_qualifier = {
++dev_qualifier __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof dev_qualifier,
+ 	.bDescriptorType =	USB_DT_DEVICE_QUALIFIER,
+ 
