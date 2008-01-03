@@ -1,0 +1,11 @@
+--- gpsd-2.35/gpsd_dbus.h.old	2008-01-02 20:54:33.000000000 -0600
++++ gpsd-2.35/gpsd_dbus.h	2008-01-02 20:55:35.000000000 -0600
+@@ -6,6 +6,8 @@
+ 
+ #include <dbus/dbus.h>
+ 
++#include "gpsd.h"
++
+ int initialize_dbus_connection (void);
+ void send_dbus_fix (struct gps_device_t* channel);
+ 
