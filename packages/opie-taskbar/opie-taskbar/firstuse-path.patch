@@ -1,0 +1,11 @@
+--- launcher/firstuse.cpp	2007-10-14 12:47:55.000000000 +1300
++++ launcher/firstuse.cpp	2007-10-14 13:58:54.000000000 +1300
+@@ -124,7 +124,7 @@
+ #endif
+ 
+     for ( int i = 0; settingsTable[i].app; i++ ) {
+-	QString file = QPEApplication::qpeDir() + "bin/";
++	QString file = OPIE_BINDIR + QString("/");
+ 	file += settingsTable[i].app;
+ 	file += exeSuffix;
+ 	if ( QFile::exists(file) )
