@@ -1,0 +1,60 @@
+diff -aurp speech-dispatcher-0.6.5/src.old/audio/Makefile.am speech-dispatcher-0.6.5/src/audio/Makefile.am
+--- speech-dispatcher-0.6.5/src.old/audio/Makefile.am	2008-01-02 17:06:47.000000000 -0600
++++ speech-dispatcher-0.6.5/src/audio/Makefile.am	2008-01-02 17:07:16.000000000 -0600
+@@ -2,7 +2,7 @@
+ localedir = $(datadir)/locale
+ inc_local = "-I$(top_srcdir)/intl/"
+ 
+-am_cflags = -DLOCALEDIR=\"$(localedir)\" -I/usr/include/ $(inc_local) @glib_include@ -DWITH_OSS
++am_cflags = -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -DWITH_OSS
+ 
+ if nas_support
+ NAS_FLAGS = -DWITH_NAS
+diff -aurp speech-dispatcher-0.6.5/src.old/c/api/Makefile.am speech-dispatcher-0.6.5/src/c/api/Makefile.am
+--- speech-dispatcher-0.6.5/src.old/c/api/Makefile.am	2008-01-02 17:06:47.000000000 -0600
++++ speech-dispatcher-0.6.5/src/c/api/Makefile.am	2008-01-02 17:07:39.000000000 -0600
+@@ -2,7 +2,7 @@
+ localedir = $(datadir)/locale
+ inc_local = "-I$(top_srcdir)/intl/"
+ 
+-AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" -I/usr/include/ $(inc_local) @glib_include@
++AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@
+ 
+ lib_LTLIBRARIES = libspeechd.la
+ libspeechd_la_SOURCES = libspeechd.c
+diff -aurp speech-dispatcher-0.6.5/src.old/c/clients/say/Makefile.am speech-dispatcher-0.6.5/src/c/clients/say/Makefile.am
+--- speech-dispatcher-0.6.5/src.old/c/clients/say/Makefile.am	2008-01-02 17:06:47.000000000 -0600
++++ speech-dispatcher-0.6.5/src/c/clients/say/Makefile.am	2008-01-02 17:08:09.000000000 -0600
+@@ -3,7 +3,7 @@ localedir = $(datadir)/locale
+ inc_local = "-I$(top_srcdir)/intl/"
+ c_api = $(top_srcdir)/src/c/api
+ 
+-AM_CFLAGS = -DLOCALEDIR=\"$(localedir)\" -I/usr/include/ $(inc_local) @glib_include@ -I$(c_api)
++AM_CFLAGS = -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -I$(c_api)
+ 
+ bin_PROGRAMS = spd-say
+ spd_say_SOURCES = say.c options.c options.h $(c_api)/libspeechd.h
+diff -aurp speech-dispatcher-0.6.5/src.old/modules/Makefile.am speech-dispatcher-0.6.5/src/modules/Makefile.am
+--- speech-dispatcher-0.6.5/src.old/modules/Makefile.am	2008-01-02 17:06:47.000000000 -0600
++++ speech-dispatcher-0.6.5/src/modules/Makefile.am	2008-01-02 17:12:41.000000000 -0600
+@@ -7,7 +7,7 @@ SNDFILE_LIBS = @SNDFILE_LIBS@
+ 
+ EXTRA_DIST = module_main.c module_utils_addvoice.c festival_client.c festival_client.h
+ 
+-AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" -I/usr/include/ $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir)
++AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir)
+ 
+ if flite_support
+ if ibmtts_support
+diff -aurp speech-dispatcher-0.6.5/src.old/tests/Makefile.am speech-dispatcher-0.6.5/src/tests/Makefile.am
+--- speech-dispatcher-0.6.5/src.old/tests/Makefile.am	2008-01-02 17:06:47.000000000 -0600
++++ speech-dispatcher-0.6.5/src/tests/Makefile.am	2008-01-02 17:13:55.000000000 -0600
+@@ -3,7 +3,7 @@ localedir = $(datadir)/locale
+ inc_local = "-I$(top_srcdir)/intl/"
+ c_api = $(top_srcdir)/src/c/api
+ 
+-AM_CFLAGS = -I$(c_api) -DLOCALEDIR=\"$(localedir)\" -I/usr/include/ $(inc_local) @glib_include@ -I../audio/
++AM_CFLAGS = -I$(c_api) -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -I../audio/
+ 
+ bin_PROGRAMS = long_message clibrary run_test
+ 
