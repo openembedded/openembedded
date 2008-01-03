@@ -1,1 +1,0 @@
-require qpegps.inc
