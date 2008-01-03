@@ -32,10 +32,9 @@ do_install_prepend() {
 }
 
 do_stage() {
-        oe_libinstall -so -C ${S}/.libs libgps ${STAGING_LIBDIR}
-        install -m 0655 ${S}/libgps.la ${STAGING_LIBDIR}
-        install -m 0655 ${S}/gps.h ${STAGING_INCDIR}
-        install -m 0655 ${S}/gpsd.h ${STAGING_INCDIR}
+        oe_libinstall -so libgps ${STAGING_LIBDIR}
+        install -m 0644 ${S}/gps.h ${STAGING_INCDIR}
+        install -m 0644 ${S}/gpsd.h ${STAGING_INCDIR}
 }
 
 do_install_append() {
