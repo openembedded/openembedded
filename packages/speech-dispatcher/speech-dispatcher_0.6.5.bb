@@ -5,6 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "flite dotconf glib-2.0"
 RPROVIDES += "speechd"
 
+PR = "r0"
+
 inherit autotools
 
 SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
