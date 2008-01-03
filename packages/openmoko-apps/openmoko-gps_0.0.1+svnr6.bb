@@ -14,7 +14,7 @@ LICENSE = "GPL"
 
 RDEPENDS = "python-pygtk"
 
-PR = "r0" 
+PR = "r1" 
 
 ######################################################################################
 
@@ -30,5 +30,5 @@ do_install() {
 	
 	install -m 0755 ${S}/gps_reader.py ${D}/usr/bin
 	install -m 0644 ${WORKDIR}/openmoko-gps.desktop ${D}/usr/share/applications/
-	install -m 0644 ${S}/icon.png ${D}/usr/share/pixmaps/openmoko-gps.png
+	install -m 0644 ${S}/icon.png ${D}/usr/share/pixmaps/openmoko-gps2.png
 }
