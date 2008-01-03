@@ -6,8 +6,9 @@ DEPENDS = "zlib ncurses e2fsprogs-libs"
 inherit autotools
 
 # I'm finishing this recipe during the 2.13.1 candidate release cycle
-# @todo Remove $RC later. See if patches are needed. File locations.
+# @todo Remove $RC later. See if patches are needed. Move files from /usr/*.
 # --  Leon 'likewise' Woestenberg
+
 RC="-rc2"
 DEFAULT_PREFERENCE = "-1"
 
@@ -36,7 +37,9 @@ FILES_util-linux-readprofile = "/usr/sbin/readprofile"
 RRECOMMENDS_${PN} = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-mount util-linux-readprofile "
 RDEPENDS_${PN} = "util-linux-umount util-linux-swaponoff util-linux-losetup"
 
-EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown"
+EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
+--enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
+--enable-arch --enable-init"
 
 S = "${WORKDIR}/util-linux-ng-${PV}${RC}"
 
@@ -81,30 +84,38 @@ do_install () {
 	oe_runmake ARCH=${TARGET_ARCH} CPU= CPUOPT= \
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
-        return 0
-	test -f ${D}${base_sbindir}/pivot_root && \
-	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
-	mv ${D}${base_bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
-	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
-	mv ${D}${base_bindir}/more ${D}${base_bindir}/more.${PN}
-	mv ${D}${base_sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
-	mv ${D}${base_sbindir}/mkswap ${D}${base_sbindir}/mkswap.${PN}
-	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
-	mv ${D}${base_sbindir}/sln ${D}${base_sbindir}/sln.${PN}
-	mv ${D}${base_sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
-	mv ${D}${base_sbindir}/fsck.minix ${D}${base_sbindir}/fsck.minix.${PN}
+	mkdir ${D}${base_bindir}
+	mkdir ${D}${base_sbindir}
+	test -f ${D}${sbindir}/pivot_root && \
+	mv ${D}${sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
+	mv ${D}${bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
+	mv ${D}${bindir}/kill ${D}${base_bindir}/kill.${PN}
+	mv ${D}${bindir}/more ${D}${base_bindir}/more.${PN}
+	mv ${D}${sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
+	mv ${D}${sbindir}/mkswap ${D}${base_sbindir}/mkswap.${PN}
+	mv ${D}${sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
+#	mv ${D}${sbindir}/sln ${D}${base_sbindir}/sln.${PN}
+	mv ${D}${sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
+	mv ${D}${sbindir}/fsck.minix ${D}${base_sbindir}/fsck.minix.${PN}
 	mv ${D}${bindir}/hexdump ${D}${bindir}/hexdump.${PN}
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
 	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
 	mv ${D}${bindir}/renice ${D}${bindir}/renice.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
+        return 0
 
-	mv ${D}${base_sbindir}/losetup ${D}${base_sbindir}/losetup.${PN}
-	mv ${D}${base_sbindir}/swapon ${D}${base_sbindir}/swapon.${PN}
-	mv ${D}${base_bindir}/umount ${D}${base_bindir}/umount.${PN}
-	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
-	mv ${D}${base_sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
+	mv ${D}${sbindir}/losetup ${D}${base_sbindir}/losetup.${PN}
+	mv ${D}${sbindir}/swapon ${D}${base_sbindir}/swapon.${PN}
+	mv ${D}${bindir}/umount ${D}${base_bindir}/umount.${PN}
+	mv ${D}${bindir}/mount ${D}${base_bindir}/mount.${PN}
+	mv ${D}${sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
+
+	mv ${D}${bindir}/agetty ${D}${base_sbindir}/ 
+	mv ${D}${bindir}/blockdev ${D}${base_sbindir}/
+	mv ${D}${bindir}/cfdisk ${D}${base_sbindir}/
+	mv ${D}${bindir}/ctrlaltdel ${D}${base_sbindir}/
+
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
@@ -132,7 +143,7 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${bindir}/renice renice renice.${PN} 100
 	update-alternatives --install ${bindir}/wall wall wall.${PN} 100
 	
-	# There seems to be problem, atleast on nslu2, with these, untill they are
+	# There seems to be problem, atleast on nslu2, with these, until they are
 	# fixed the busybox ones have higher priority
 	update-alternatives --install ${base_sbindir}/hwclock hwclock hwclock.${PN} 10
 	update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 10
