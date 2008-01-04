@@ -1,0 +1,26 @@
+--- speech-dispatcher-0.6.5/config/speechd.conf.in.orig	2008-01-04 13:45:43.000000000 +0000
++++ speech-dispatcher-0.6.5/config/speechd.conf.in	2008-01-04 13:47:31.000000000 +0000
+@@ -129,10 +129,10 @@
+ #  - configuration is the path to the config file of this module,
+ #    either relative (to etc/speechd/modules/) or absolute
+ 
+-AddModule "espeak"       "sd_espeak"   "espeak.conf"
+-AddModule "festival"     "sd_festival"  "festival.conf"
+-AddModule "flite"        "sd_flite"     "flite.conf"
+-#AddModule "espeak-generic" "sd_generic" "espeak-generic.conf"
++#AddModule "espeak"       "sd_espeak"   "espeak.conf"
++#AddModule "festival"     "sd_festival"  "festival.conf"
++#AddModule "flite"        "sd_flite"     "flite.conf"
++AddModule "espeak-generic" "sd_generic" "espeak-generic.conf"
+ #AddModule "epos-generic" "sd_generic"   "epos-generic.conf"
+ #AddModule "dtk-generic"  "sd_generic"   "dtk-generic.conf"
+ #AddModule "ibmtts"       "sd_ibmtts"    "ibmtts.conf"
+@@ -172,6 +172,6 @@
+ 
+ # There are some sample client settings
+ 
+-Include "clients/emacs.conf"
+-Include "clients/gnome-speech.conf"
++#Include "clients/emacs.conf"
++#Include "clients/gnome-speech.conf"
+ 
