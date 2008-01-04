@@ -29,9 +29,18 @@ start() {
 	# 2. We don't need all the logging crud that daemon/initlog sets
 	# up -- gpsd does its own syslog calls.
 	#
+	
+	if test -x /etc/init.d/gps-hardware
+	then
+		if ! ( /etc/init.d/gps-hardware status | grep -q "ready" )
+		then
+			/etc/init.d/gps-hardware start
+		fi
+	fi
+	
 	if [ -e "${GPS_DEV}" ]
 	then
-	    gpsd ${GPSD_OPTS} -p ${GPS_DEV}
+	    gpsd ${GPSD_OPTS} ${GPS_DEV}
 	     echo "success"
 	else
 	    # User needs to symlink ${GPS_DEV} to the right thing
