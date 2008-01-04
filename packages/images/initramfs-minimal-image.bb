@@ -1,7 +1,6 @@
 # Sample initramfs image
 
-#IMAGE_INSTALL = "initramfs-boot busybox kernel-module-uinput uclibc libgcc1"
-IMAGE_INSTALL = "initramfs-nfsboot busybox-static kernel-module-uinput"
+IMAGE_INSTALL = "initramfs-module-nfs busybox-static"
 
 export IMAGE_BASENAME = "initramfs-image"
 IMAGE_LINGUAS = ""
