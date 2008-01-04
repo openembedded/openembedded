@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r5"
 
-DEPENDS = "expat libdaemon dbus glib-2.0"
+DEPENDS = "expat virtual/libintl libdaemon dbus glib-2.0"
 
 # uclibc has no nss
 RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
@@ -22,7 +22,7 @@ inherit autotools pkgconfig update-rc.d
 RDEPENDS_append = ""
 
 # TODO: build and enable all the extra stuff avahi offers
-EXTRA_OECONF = "--with-distro=debian --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
+EXTRA_OECONF = "--with-distro=debian  --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
 AVAHI_PYTHON = "--disable-python"
 AVAHI_GTK = "--disable-gtk"
 
