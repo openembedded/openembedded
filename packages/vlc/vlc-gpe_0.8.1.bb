@@ -2,8 +2,8 @@ DESCRIPTION = "Video player and streamer - GPE edition"
 HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
-SECTION = "gpe"
-PR = "r4"
+SECTION = "x11/multimedia"
+PR = "r5"
 
 DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
