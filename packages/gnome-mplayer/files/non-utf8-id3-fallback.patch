@@ -1,0 +1,22 @@
+I found that on ARM/glibc 2.5/glib 2.12.something test in strip_unicode() doesn't
+really catch invalid utf-8 chars. Also, let's tell user where problem lies straight.
+
+Paul Sokolovsky <pmiscml@gmail.com>
+--- a/src/thread.c.org	2007-12-24 00:10:15.000000000 +0200
++++ a/src/thread.c	2008-01-04 22:04:30.000000000 +0200
+@@ -349,13 +349,11 @@
+ 					//g_idle_add(set_media_info, idledata);
+ 					utf8name = g_locale_to_utf8(parse[name],-1, NULL, NULL,NULL);
+ 					if (utf8name == NULL) {
+-						strip_unicode(parse[name],strlen(parse[name]));
+-						utf8name = g_strdup(parse[name]);
++						utf8name = g_strdup("<cannot convert to utf-8>");
+ 					}
+ 					utf8artist = g_locale_to_utf8(parse[artist],-1, NULL, NULL,NULL);
+ 					if (utf8artist == NULL) {
+-						strip_unicode(parse[artist],strlen(parse[artist]));
+-						utf8artist = g_strdup(parse[artist]);
++						utf8artist = g_strdup("<cannot convert to utf-8>");
+ 					}
+ 					
+ 					message = g_markup_printf_escaped(_("<small>\n<b>Title:</b>\t%s\n<b>Artist:</b>\t%s\n<b>File:</b>\t%s\n</small>"),utf8name,utf8artist,idledata->info);
