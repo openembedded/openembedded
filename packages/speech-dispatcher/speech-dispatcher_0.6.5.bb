@@ -2,7 +2,7 @@ DESCRIPTION = " Speech Dispatcher is a high-level device independent layer \
 for speech synthesis through a simple, stable and well documented interface."
 HOMEPAGE = "http://www.freebsoft.org/speechd/"
 LICENSE = "GPLv2"
-DEPENDS = "flite dotconf glib-2.0"
+DEPENDS = "flite libdotconf glib-2.0"
 RPROVIDES += "speechd"
 
 PR = "r0"
