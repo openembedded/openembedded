@@ -7,8 +7,6 @@ http://www.openembedded.org/viewmtn/revision/info/<rev>
 
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
-37765fd148c82c032b7e299f6c0d658b98fcb18e gpe-nmf: Fix SECTION to "gpe/multimedia". (Paul)
-f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (Paul)
 
 Acked:
 
@@ -22,4 +20,6 @@ b1eb3466dafc9eb0908b3c6a5749e44c83d43bb7 ipaq-sleep 0.9: Remove supposed fixes f
 968e6781dca5ee420f8b36434c88d54cafe77f35 insane.bbclass .desktop (Koen, Cyril)
 744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen, Marcin, Paul)
 97df34dbfe924823e092b0d579539be286af6cea gpe-login 0.90: Call "C" locale what it is. (Paul, Marcin)
+37765fd148c82c032b7e299f6c0d658b98fcb18e gpe-nmf: Fix SECTION to "gpe/multimedia". (Paul, Marcin)
+f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (Paul, Marcin)
 
