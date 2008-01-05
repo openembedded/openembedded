@@ -46,7 +46,7 @@ do
 		       gpe-gallery gpe-scap notecase \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
-		       xmms mplayer quasar \
+		       xmms mplayer quasar gmome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
 		       iptables iperf \
 		       gpe-bluetooth bluez-gnome python-pybluez \
