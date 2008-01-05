@@ -15,7 +15,7 @@ DEPENDS = "portaudio-v19"
 
 ######################################################################################
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://kent.dl.sourceforge.net/sourceforge/espeak/espeak-${PV}-source.zip"
 
@@ -43,4 +43,10 @@ do_install() {
 	oe_libinstall -so -C src libespeak ${D}${libdir}
 	
 	cp -prf ${S}/espeak-data/* ${D}/usr/share/espeak-data
+}
+
+do_stage() {
+	install -d ${STAGING_INCDIR}/espeak
+	install -m 0644 ${S}/src/speak_lib.h ${STAGING_INCDIR}/espeak/
+        oe_libinstall -so -C src libespeak ${STAGING_LIBDIR}
 }
