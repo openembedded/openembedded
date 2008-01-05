@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml22"
+PR = "ml23"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -19,6 +19,7 @@ RDEPENDS = "\
 		python-fuse			\
 		python-gmpy		\
 		python-gnosis		\
+		python-gsmd			\
 		python-gst		\
 		python-hmm		\
 		python-imaging		\
