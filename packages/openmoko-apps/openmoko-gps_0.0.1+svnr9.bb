@@ -14,12 +14,11 @@ LICENSE = "GPL"
 
 RDEPENDS = "python-pygtk"
 
-PR = "r1" 
+PR = "r0" 
 
 ######################################################################################
 
-SRC_URI = "svn://forge.bearstech.com/bearforge/openmoko;module=gps;rev=6 \
-	   file://openmoko-gps.desktop"
+SRC_URI = "svn://forge.bearstech.com/bearforge/openmoko;module=gps;rev=9"
 
 S = "${WORKDIR}/gps"
 
@@ -29,6 +28,6 @@ do_install() {
 	install -d ${D}/usr/share/pixmaps/
 	
 	install -m 0755 ${S}/gps_reader.py ${D}/usr/bin
-	install -m 0644 ${WORKDIR}/openmoko-gps.desktop ${D}/usr/share/applications/
-	install -m 0644 ${S}/icon.png ${D}/usr/share/pixmaps/openmoko-gps2.png
+	install -m 0644 ${S}/openmoko-gps.desktop ${D}/usr/share/applications/
+	install -m 0644 ${S}/*.png ${D}/usr/share/pixmaps/
 }
