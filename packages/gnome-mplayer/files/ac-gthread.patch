@@ -1,0 +1,12 @@
+diff -r d630a2e72d3f configure.in
+--- a/configure.in	Tue Jan 01 09:58:43 2008 +0200
++++ b/configure.in	Tue Jan 01 10:16:44 2008 +0200
+@@ -32,7 +32,7 @@ AM_PROG_LIBTOOL
+ #AC_SUBST(GNOME_CFLAGS)
+ #AC_SUBST(GNOME_LIBS)
+ 
+-PKG_CHECK_MODULES(GTK, [gtk+-2.0 glib-2.0])
++PKG_CHECK_MODULES(GTK, [gtk+-2.0 glib-2.0 gthread-2.0])
+ AC_SUBST(GTK_CFLAGS)
+ AC_SUBST(GTK_LIBS)
+ 
