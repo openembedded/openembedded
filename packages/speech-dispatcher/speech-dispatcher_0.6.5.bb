@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "flite libdotconf glib-2.0"
 RPROVIDES_${PN} += "speechd"
 
-PR = "r4"
+PR = "r5"
 
 inherit autotools update-rc.d
 
@@ -24,9 +24,10 @@ do_install() {
         install -d ${D}${bindir}
         install -d ${D}${includedir}
         install -d ${D}${libdir}/${PN}-modules
-	install -d ${D}${sysconfdir}
-	install -d ${D}${sysconfdir}/modules
+	install -d ${D}${sysconfdir}	
 	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/speech-dispatcher
+	install -d ${D}${sysconfdir}/speech-dispatcher/modules
 
         oe_libinstall -so -C src/audio libsdaudio ${D}${libdir}
         oe_libinstall -so -C src/c/api libspeechd ${D}${libdir}
@@ -37,8 +38,8 @@ do_install() {
         install -m 0755 ${S}/src/server/.libs/speech-dispatcher  ${D}${bindir}
         install -m 0755 ${S}/src/modules/.libs/sd_*   ${D}${libdir}/${PN}-modules/
 	
-	install -m 0644 ${S}/config/speechd.conf ${D}${sysconfdir}
-	install -m 0644 ${S}/config/modules/*.conf ${D}${sysconfdir}/modules
+	install -m 0644 ${S}/config/speechd.conf ${D}${sysconfdir}/speech-dispatcher
+	install -m 0644 ${S}/config/modules/*.conf ${D}${sysconfdir}/speech-dispatcher/modules
 	install -m 0755 ${WORKDIR}/speech-dispatcher.init ${D}${sysconfdir}/init.d/speech-dispatcher
 }
 
