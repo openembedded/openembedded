@@ -14,12 +14,12 @@ Applied:
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
 58fc861e7d3a6d55876c4974fd3778a4d7452c03 binconfig.bbclass custom glob (Koen, Marcin)
 3806d8894babdfee7e759b27b83e75430c119343 linux-rp 2.6.23 25x resume  (Koen, Marcin)
-6cde30c201c07026e4889c1df2852bb29eed037e matchbox-applet-startup-monitor 0.1: Start from Xsession. (Paul, Koen)
-f75a9fcd060f03cadb8d0c99ad2649c5fb05293e matchbox-applet-startup-monitor 0.1: Fix reference to renamed file. (Paul, Koen) [part of the above]
-b1eb3466dafc9eb0908b3c6a5749e44c83d43bb7 ipaq-sleep 0.9: Remove supposed fixes for all bugs except the most prominent one. (Paul)
+6cde30c201c07026e4889c1df2852bb29eed037e matchbox-applet-startup-monitor 0.1: Start from Xsession. (PaulS, Koen)
+f75a9fcd060f03cadb8d0c99ad2649c5fb05293e matchbox-applet-startup-monitor 0.1: Fix reference to renamed file. (PaulS, Koen) [part of the above]
+b1eb3466dafc9eb0908b3c6a5749e44c83d43bb7 ipaq-sleep 0.9: Remove supposed fixes for all bugs except the most prominent one. (PaulS)
 968e6781dca5ee420f8b36434c88d54cafe77f35 insane.bbclass .desktop (Koen, Cyril)
-744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen, Marcin, Paul)
-97df34dbfe924823e092b0d579539be286af6cea gpe-login 0.90: Call "C" locale what it is. (Paul, Marcin)
-37765fd148c82c032b7e299f6c0d658b98fcb18e gpe-nmf: Fix SECTION to "gpe/multimedia". (Paul, Marcin)
-f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (Paul, Marcin)
-
+744cf977fa353b9dedb30f35cd9ba988ade94e8d mirror fix (Koen, Marcin, PaulS)
+97df34dbfe924823e092b0d579539be286af6cea gpe-login 0.90: Call "C" locale what it is. (PaulS, Marcin)
+37765fd148c82c032b7e299f6c0d658b98fcb18e gpe-nmf: Fix SECTION to "gpe/multimedia". (PaulS, Marcin)
+f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (PaulS, Marcin)
+n/a					 angstrom-2007.1.conf: Include preferred-opie-versions-1.2.3.inc to get OPIE support. (PaulE, Koen, Marcin)
