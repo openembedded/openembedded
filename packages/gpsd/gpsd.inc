@@ -15,6 +15,10 @@ SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
 	   file://gps-hardware \
            file://gpsd"
 
+SRC_URI_append_fic-gta01 = " \
+			    file://restart_gllin.sh \
+			   "
+			   
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "gpsd"
@@ -46,6 +50,11 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/gps-hardware ${D}/${sysconfdir}/init.d/gps-hardware.default
         install -d ${D}/${sysconfdir}/default
         install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd.default
+}
+
+do_install_append_fic-gta01() {
+	install -d ${D}/${sysconfdir}/apm/resume.d
+	install -m 755 ${WORKDIR}/restart_gllin.sh ${D}/${sysconfdir}/apm/resume.d
 }
 
 pkg_postinst_${PN}-conf() {
