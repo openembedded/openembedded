@@ -1,0 +1,42 @@
+#! /bin/sh
+
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/bin/speech-dispatcher
+PIDFILE=/var/run/speech-dispatcher.pid
+NAME=speech-dispatcher
+DESC='Speech Dispatcher'
+USER=speech-dispatcher
+
+test -f $DAEMON || exit 0
+
+set -e
+
+case "$1" in
+  start)
+	echo "Starting $NAME"
+	start-stop-daemon --start --quiet --pidfile $PIDFILE \
+          --exec $DAEMON
+
+	;;
+  stop)
+  	echo "Stopping $NAME"
+	start-stop-daemon --oknodo --stop --quiet \
+          --pidfile $PIDFILE --exec $DAEMON
+	;;
+  restart)
+	echo "Restarting $NAME"
+	start-stop-daemon --oknodo --stop --quiet \
+          --pidfile $PIDFILE --exec $DAEMON
+	sleep 3
+	start-stop-daemon --start --quiet --pidfile $PIDFILE \
+          --exec $DAEMON
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
