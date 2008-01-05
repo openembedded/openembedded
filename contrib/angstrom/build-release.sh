@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DO_UCLIBC=0
+DO_UCLIBC=1
 
 do_build() {
 	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
@@ -20,6 +20,12 @@ do_build() {
 	then
 		BUILD_MODE="uclibc"
 		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+		
+		if [ "$BUILD_CLEAN" != "" ]
+        	then
+                	bitbake -c clean $BUILD_CLEAN
+        	fi
+
 		for target in $BUILD_TARGETS
 		do
 			bitbake $target && do_report_success
@@ -43,7 +49,7 @@ do_report_success() {
 
 
 # No graphics
-for machine in ep93xx gumstix-connex gumstix-verdex efika omap5912osk
+for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
 do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross base-files"
