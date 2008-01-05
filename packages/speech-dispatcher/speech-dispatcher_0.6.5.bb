@@ -1,19 +1,24 @@
-DESCRIPTION = " Speech Dispatcher is a high-level device independent layer \
+DESCRIPTION = "Speech Dispatcher is a high-level device independent layer \
 for speech synthesis through a simple, stable and well documented interface."
 HOMEPAGE = "http://www.freebsoft.org/speechd/"
 LICENSE = "GPLv2"
 DEPENDS = "flite libdotconf glib-2.0"
-RPROVIDES += "speechd"
+RPROVIDES_${PN} += "speechd"
 
-PR = "r1"
+PR = "r4"
 
-inherit autotools
+inherit autotools update-rc.d
 
 SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
+	   file://speech-dispatcher.init \
            file://srcMakefile.am.patch;patch=1 \
-	   file://confSpeechd.conf_00.patch;patch=1"
+	   file://configSpeechd.conf.in_00.patch;patch=1"
 
 LEAD_SONAME = "libspeechd.so"
+EXTRA_OECONF = " --with-espeak=yes --with-flite=no --with-ibmtts=no --with-nas=no --with-alsa=yes --with-pulse=yes "
+
+INITSCRIPT_NAME = "speech-dispatcher"
+INITSCRIPT_PARAMS = "defaults 45"
 
 do_install() {
         install -d ${D}${bindir}
@@ -21,6 +26,7 @@ do_install() {
         install -d ${D}${libdir}/${PN}-modules
 	install -d ${D}${sysconfdir}
 	install -d ${D}${sysconfdir}/modules
+	install -d ${D}${sysconfdir}/init.d
 
         oe_libinstall -so -C src/audio libsdaudio ${D}${libdir}
         oe_libinstall -so -C src/c/api libspeechd ${D}${libdir}
@@ -33,6 +39,7 @@ do_install() {
 	
 	install -m 0644 ${S}/config/speechd.conf ${D}${sysconfdir}
 	install -m 0644 ${S}/config/modules/*.conf ${D}${sysconfdir}/modules
+	install -m 0755 ${WORKDIR}/speech-dispatcher.init ${D}${sysconfdir}/init.d/speech-dispatcher
 }
 
 do_stage() {
