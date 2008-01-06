@@ -1,0 +1,11 @@
+--- /tmp/Makefile.in	2008-01-06 16:44:45.696595605 +0100
++++ distcc-2.18.3/Makefile.in	2008-01-06 16:44:56.879181132 +0100
+@@ -556,7 +556,7 @@
+ # install-sh can't handle multiple arguments, but we don't need any
+ # tricky features so mkinstalldirs and cp will do
+ 
+-install: showpaths install-doc install-man install-programs install-example @INSTALL_GNOME@
++install: showpaths install-doc install-programs install-example @INSTALL_GNOME@
+ 
+ install-programs: $(bin_PROGRAMS)
+ 	$(mkinstalldirs) $(DESTDIR)$(bindir)
