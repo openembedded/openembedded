@@ -11,8 +11,6 @@ S = "${WORKDIR}/flite-${PV}-release"
 
 inherit autotools
 
-EXTRA_OECONF = "--with-audio=alsa --enable-shared"
-
 PACKAGES += "lib${PN} lib${PN}-vox8 lib${PN}-vox16"
 
 FILES_${PN} = "${bindir}"
