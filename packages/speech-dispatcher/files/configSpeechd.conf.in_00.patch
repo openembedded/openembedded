@@ -9,19 +9,17 @@
  #LogDir  "/var/log/speech-dispatcher/"
  #LogDir  "stdout"
  
-@@ -129,9 +129,9 @@
+@@ -129,8 +129,8 @@
  #  - configuration is the path to the config file of this module,
  #    either relative (to etc/speechd/modules/) or absolute
  
 -AddModule "espeak"       "sd_espeak"   "espeak.conf"
 -AddModule "festival"     "sd_festival"  "festival.conf"
--AddModule "flite"        "sd_flite"     "flite.conf"
 +AddModule "espeak"       "sd_espeak"   "/etc/speech-dispatcher/modules/espeak.conf"
 +#AddModule "festival"     "sd_festival"  "festival.conf"
-+#AddModule "flite"        "sd_flite"     "flite.conf"
+ AddModule "flite"        "sd_flite"     "flite.conf"
  #AddModule "espeak-generic" "sd_generic" "espeak-generic.conf"
  #AddModule "epos-generic" "sd_generic"   "epos-generic.conf"
- #AddModule "dtk-generic"  "sd_generic"   "dtk-generic.conf"
 @@ -172,6 +172,6 @@
  
  # There are some sample client settings
