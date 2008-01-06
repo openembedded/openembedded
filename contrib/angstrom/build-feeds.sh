@@ -36,8 +36,9 @@ for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
-        BUILD_TARGETS="texinfo flex bison gperf gcc binutils automake autoconf m4 pkgconfig \
-	               task-proper-tools mc screen \
+        BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig \
+                       usbutils pciutils mtd-utils usbview hal \
+                       task-proper-tools mc screen findutils \
 	               mono perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
@@ -46,17 +47,22 @@ do
 		       gpe-gallery gpe-scap notecase \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
-		       xmms mplayer quasar gmome-mplayer \
+		       xmms mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
-		       iptables iperf \
+		       nmap iptables iperf \
+		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
 		       abiword gnumeric evince epdfview gimp \
+		       scummvm \
 		       flite \
 		       ctorrent \
 		       asterisk \
-		       gnuplot mpfr gmp fftw fftwf fftwl \
+		       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
 		       tzdata \
+		       xserver-kdrive xserver-xorg \
+		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
+		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
 		      "
 	do_build
 done
