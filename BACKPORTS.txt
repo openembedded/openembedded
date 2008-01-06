@@ -7,6 +7,9 @@ http://www.openembedded.org/viewmtn/revision/info/<rev>
 
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
+728b58626c50e060bf71960029afce111427d6a0 distcc ahavi autoconfiguration 
+b86387e484a9b94c2752d8ce5dcfb79742677efc     "
+
 
 Acked:
 
