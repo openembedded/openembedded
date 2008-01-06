@@ -1,5 +1,7 @@
 require bluez-utils3.inc
 
+PR = "r1"
+
 DEPENDS += "gstreamer gst-plugins-base "
 
 # see bluez-utils3.inc for the explanation of these option
