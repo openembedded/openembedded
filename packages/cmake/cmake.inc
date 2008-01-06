@@ -7,13 +7,11 @@ HOMEPAGE = "http://www.cmake.org/"
 LICENSE = "Berkely-style license"
 SECTION = "console/utils"
 
-SRC_URI = "http://www.cmake.org/files/v2.2/cmake-${PV}.tar.gz"
+SRC_URI = "http://www.cmake.org/files/v${CMAKE_MAJOR_VERSION}/cmake-${PV}.tar.gz"
 
 inherit autotools
 
 S = "${WORKDIR}/cmake-${PV}"
-
-inherit native
 
 do_configure () {
 	./configure --prefix=${base_prefix} || die "./bootstrap failed"
