@@ -9,6 +9,8 @@ PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/flite-${PV}-release"
 
+CFLAGS += " -lasound "
+
 inherit autotools
 
 PACKAGES += "lib${PN} lib${PN}-vox8 lib${PN}-vox16"

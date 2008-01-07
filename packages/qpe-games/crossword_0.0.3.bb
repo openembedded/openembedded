@@ -26,7 +26,7 @@ pkg_postinst() {
 
 MIMEFILE=/opt/QtPalmtop/etc/mime.types
 
-grep -q application/puz $MIMEFILE 2>/dev/null || echo -e "application/crossword\t\tpuz tpz" >> $MIMEFILE
+grep -q application/puz $MIMEFILE 2>/dev/null || printf "application/crossword\t\tpuz tpz\n" >> $MIMEFILE
 }
 
 inherit opie

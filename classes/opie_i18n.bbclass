@@ -13,7 +13,7 @@ SRC_URI += "${HANDHELDS_CVS};module=opie/i18n"
 DEPENDS += "opie-i18n"
 	
 die () {
-	echo -e "opie_18n: ERROR: $1"
+	printf "opie_18n: ERROR: $1\n"
 	exit 1
 }	
 
@@ -60,21 +60,21 @@ do_build_opie_i18n () {
 		package_name2="`echo "${PN}"| sed "s/^opie\-//;s/\-//"`"
 		test "$package_name" != "$package_name2" && I18N_FILES="${package_name}.ts lib${package_name}.ts opie-${package_name}.ts ${package_name2}.ts lib${package_name2}.ts opie-${package_name2}.ts"
 		test "$package_name" = "$package_name2" && I18N_FILES="${package_name}.ts lib${package_name}.ts opie-${package_name}.ts"
-		echo -e "I18N Datafiles: ${I18N_FILES} (auto-detected)\nYou can overide the auto-detection by setting I18N_FILES in your .oe file"
+		printf "I18N Datafiles: ${I18N_FILES} (auto-detected)\nYou can overide the auto-detection by setting I18N_FILES in your .oe file\n"
 	else
 		echo "I18N Datafiles: ${I18N_FILES} (provided by .bb)"
 	fi	
 	
 	rm -f "${WORKDIR}/FILES.tmp" "${WORKDIR}/PACKAGES.tmp"
 	
-	echo -e "\nFILES is set to [${FILES}]\n"
+	printf "\nFILES is set to [${FILES}]\n\n"
 	
 	for file in ${I18N_FILES}
 	do
 		echo "Working on [$file]"
 		for ts_file in `ls -1 */*.ts | egrep "/$file"`
 		do
-			echo -e "\tCompiling [$ts_file]"
+			printf "\tCompiling [$ts_file]\n"
 			cd "${WORKDIR}/i18n/`dirname $ts_file`" || die "[${WORKDIR}/i18n/`dirname $ts_file`] not found"
 			opie-lrelease "`basename $ts_file`" || die "lrelease failed! Make sure that <inherit opie_i18n> or <inherit opie> is *below* <DEPENDS =>!"							
 			
@@ -82,7 +82,7 @@ do_build_opie_i18n () {
 			# to allow packaging as "_" is not allowed in a package name
 			lang="`echo "$ts_file" | sed -n "s#\(.*\)/\(.*\)#\1#p"`"
 			lang_sane="`echo "$ts_file" | sed -n "s#\(.*\)/\(.*\)#\1#p"|sed s/\_/\-/`"
-			echo -e "\tPackaging [`basename $ts_file`] for language [$lang]"
+			printf "\tPackaging [`basename $ts_file`] for language [$lang]\n"
 			
 			install -d ${D}${palmtopdir}/i18n/$lang			
 			install -m 0644 ${WORKDIR}/i18n/$lang/.directory ${D}${palmtopdir}/i18n/$lang/
@@ -93,14 +93,14 @@ do_build_opie_i18n () {
 			# function do_build_opie_i18n_data() which sets the variables FILES_* and
 			# PACKAGES as needed. 
 			echo -n "${PN}-${lang_sane} " >> "${WORKDIR}/PACKAGES.tmp"						
-			echo -e "${PN}-${lang_sane}#${palmtopdir}/i18n/$lang" >> "${WORKDIR}/FILES.tmp"								
+			printf "${PN}-${lang_sane}#${palmtopdir}/i18n/$lang" >> "${WORKDIR}/FILES.tmp\n"
 			
 			ts_found_something=1
 		done
 		
 		if test "$ts_found_something" != 1
 		then
-			echo -e "\tNo translations found"
+			printf "\tNo translations found\n"
 		else
 			ts_found_something=""
 			ts_found="$ts_found $file"
@@ -109,7 +109,7 @@ do_build_opie_i18n () {
 		# Only used for debugging purposes
 		test "${I18N_STATS}" = 1 && cd "${WORKDIR}/i18n"	
 
-		echo -e "Completed [$file]\n\n"
+		printf "Completed [$file]\n\n\n"
 	done	
 
 	qt_dirs="apps  bin  etc  lib  pics  plugins  share  sounds"
@@ -125,7 +125,7 @@ do_build_opie_i18n () {
 	if (echo "${FILES}" | egrep "${palmtopdir}/? |${palmtopdir}/?$") &>/dev/null
 	then
 		echo "NOTE: FILES was set to ${palmtopdir} which would include the i18n directory"
-		echo -e "\n\nI'll remove ${palmtopdir} from FILES and replace it with all directories"
+		printf "\n\nI'll remove ${palmtopdir} from FILES and replace it with all directories\n"
 		echo "below QtPalmtop, except i18n ($qt_dirs). See classes/opie_i18n.oeclass for details"
 
 		# Removes /opt/QtPalmtop from FILES but keeps /opt/QtPalmtop/$some_dir
@@ -138,7 +138,7 @@ do_build_opie_i18n () {
 	if test -z "${FILES}"
 	then
 		echo "NOTE:"
-		echo -e "Since FILES is empty, i'll add all directories below ${palmtopdir} to it,\nexcluding i18n: ( $qt_dirs )"
+		printf "Since FILES is empty, i'll add all directories below ${palmtopdir} to it,\nexcluding i18n: ( $qt_dirs )\n"
 		echo "${PN}#$FILES $dir_" >> "${WORKDIR}/FILES.tmp"
 	fi	
 	
