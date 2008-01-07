@@ -84,7 +84,7 @@ def check_sanity(e):
 		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
         if not check_app_exists('${BUILD_PREFIX}gfortran', e.data):
-                missing = mising + "GNU Fortran Compiler"
+                missing = missing + "GNU Fortran Compiler"
 
 	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
 
