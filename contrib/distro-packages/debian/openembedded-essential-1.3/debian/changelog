@@ -1,3 +1,10 @@
+
+openembedded-essential (1.3) unstable; urgency=low
+
+  * add gfortran as dependency to complement a5c7b007eaa675cc904f5285291d2f8a597efc84
+
+ -- Rolf Leggewie <oe-devel@rolf.leggewie.biz>  Mon, 7 Jan 2008 20:25:00 +0100
+
 openembedded-essential (1.2) unstable; urgency=low
 
   * fixed packaging to make lintian happy
