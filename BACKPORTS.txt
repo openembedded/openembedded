@@ -27,8 +27,8 @@ b1eb3466dafc9eb0908b3c6a5749e44c83d43bb7 ipaq-sleep 0.9: Remove supposed fixes f
 f40fbad1e6982e38f51d808b8b514d94877e573b vlc-gpe: SECTION = "x11/multimedia" (PaulS, Marcin)
 n/a					 angstrom-2007.1.conf: Include preferred-opie-versions-1.2.3.inc to get OPIE support. (PaulE, Koen, Marcin)
 cbd73e4685a6b456be3670606d5020189741092e gnome-mplayer: Add a decent, clean GTK+ frontend for MPlayer. (PaulS, Koen)
-b342639828f6049e03634372396237442063157a gnome-mplayer: Of course, we need MPlayer itself.
-153dd9902a8fbbcd4a4140f991a8e938f1af29f5 gnome-mplayer: Fix segfaults decoding non-utf8 tags in media.
-n/a					 build-feeds.sh: Add gnome-mplayer per RFC.
-560f1294e1ef2699d2b80c98d99386c3030b8c0b task-opie*: "apm" is MACHINE_FEATURE, not COMBINED.
-4a6e894ff08f0d4e0d6af803eec158fb40198ad7 opie-taskbar 1.2.3: Fix first-run wizard after install path revamp.
+b342639828f6049e03634372396237442063157a gnome-mplayer: Of course, we need MPlayer itself. (PaulS, Koen)
+153dd9902a8fbbcd4a4140f991a8e938f1af29f5 gnome-mplayer: Fix segfaults decoding non-utf8 tags in media. (PaulS, Koen)
+n/a					 build-feeds.sh: Add gnome-mplayer per RFC. (PaulS, Koen)
+560f1294e1ef2699d2b80c98d99386c3030b8c0b task-opie*: "apm" is MACHINE_FEATURE, not COMBINED. (PaulE, PaulS)
+4a6e894ff08f0d4e0d6af803eec158fb40198ad7 opie-taskbar 1.2.3: Fix first-run wizard after install path revamp. (PaulE, PaulS)
