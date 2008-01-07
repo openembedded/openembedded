@@ -30,3 +30,5 @@ cbd73e4685a6b456be3670606d5020189741092e gnome-mplayer: Add a decent, clean GTK+
 b342639828f6049e03634372396237442063157a gnome-mplayer: Of course, we need MPlayer itself.
 153dd9902a8fbbcd4a4140f991a8e938f1af29f5 gnome-mplayer: Fix segfaults decoding non-utf8 tags in media.
 n/a					 build-feeds.sh: Add gnome-mplayer per RFC.
+560f1294e1ef2699d2b80c98d99386c3030b8c0b task-opie*: "apm" is MACHINE_FEATURE, not COMBINED.
+4a6e894ff08f0d4e0d6af803eec158fb40198ad7 opie-taskbar 1.2.3: Fix first-run wizard after install path revamp.
