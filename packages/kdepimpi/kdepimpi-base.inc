@@ -53,7 +53,7 @@ inherit palmtop
 
 do_configure_prepend() {
         mv ${S}/kabc/formats/binary/kabcformat_binaryE.pro ${S}/kabc/formats/binary/binaryE.pro
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
+        printf "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
         for d in ${SUBDIRS}
         do
             if [ -f ${d}/`basename ${d}`E.pro ]; 

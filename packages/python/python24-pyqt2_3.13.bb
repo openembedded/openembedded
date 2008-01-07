@@ -35,7 +35,7 @@ EXTRA_QMAKEVARS_POST += "QMAKE_UIC=${STAGING_BINDIR_NATIVE}/uic \
                          LIBS+=-L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages"
 
 do_configure_prepend() {
-    echo -e "TEMPLATE=subdirs\nSUBDIRS=qt qtcanvas qttable qtpe\n" >pyqt.pro
+    printf "TEMPLATE=subdirs\nSUBDIRS=qt qtcanvas qttable qtpe\n" >pyqt.pro
 }
 
 do_stage() {

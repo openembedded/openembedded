@@ -45,7 +45,7 @@ do_generate_prepend() {
 }
 
 do_configure_prepend() {
-    echo -e "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
+    printf "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
 }
 
 do_stage() {

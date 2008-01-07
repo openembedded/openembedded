@@ -15,7 +15,7 @@ inherit opie
 do_configure_prepend() {
 	mv -f FreeNote subdir1
 	mv -f FreeNoteSetup subdir2
-	echo -e "TEMPLATE=subdirs\nSUBDIRS=subdir1 subdir2\n" >> freenote.pro
+	printf "TEMPLATE=subdirs\nSUBDIRS=subdir1 subdir2\n" >> freenote.pro
 	pushd ${S}/subdir1 && rm *.pro && qmake -project && echo "TARGET=FreeNote" >> subdir1.pro && popd
 	pushd ${S}/subdir2 && rm *.pro && qmake -project && echo "TARGET=FreeNoteSetup" >> subdir2.pro && popd
 }

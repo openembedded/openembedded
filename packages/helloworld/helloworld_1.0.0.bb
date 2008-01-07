@@ -7,7 +7,7 @@ S = "${WORKDIR}/${P}"
 do_fetch () {
 	mkdir -p ${WORKDIR}/${P}
 	cd ${WORKDIR}/${P}
-	echo -e "#include <stdio.h>\nint main(void)\n{\n\tprintf(\"Hello world!\\\n\");\twhile(1);\n\treturn 0;\n}\n" >helloworld.c
+	printf "#include <stdio.h>\nint main(void)\n{\n\tprintf(\"Hello world!\\\n\");\twhile(1);\n\treturn 0;\n}\n" >helloworld.c
 }
 
 do_compile () {

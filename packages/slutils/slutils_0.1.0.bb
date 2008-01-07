@@ -26,7 +26,7 @@ do_fetch() {
 
 do_configure_prepend() {
 	cd ${S}/
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=${UTILS}\n" >slutils.pro
+        printf "TEMPLATE=subdirs\nSUBDIRS=${UTILS}\n" >slutils.pro
 }
 
 do_install() {
