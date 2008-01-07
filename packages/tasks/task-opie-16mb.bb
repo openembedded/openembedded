@@ -28,7 +28,7 @@ RDEPENDS_task-opie-16mb-applets = "opie-aboutapplet opie-clockapplet opie-suspen
 		                   opie-brightnessapplet opie-volumeapplet \
                                    opie-screenshotapplet \
     ${@base_contains("COMBINED_FEATURES", "irda", "opie-irdaapplet", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "apm", "opie-batteryapplet", "",d)} \
+    ${@base_contains("MACHINE_FEATURES", "apm", "opie-batteryapplet", "",d)} \
     ${@base_contains("COMBINED_FEATURES", "pcmcia", "opie-pcmciaapplet", "",d)} \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "opie-vtapplet opie-logoutapplet", "",d)}"
 
