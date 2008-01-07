@@ -680,14 +680,14 @@ DISTRO_TYPE = "release"
           <command>TARGET_OS</command> to linux-uclibc.</para>
 
           <screen>
-export CC="${CCACHE}arm-linux-gcc-3.4.4 ${HOST_CC_ARCH}"
-export CXX="${CCACHE}arm-linux-g++ ${HOST_CC_ARCH}"
-export CPP="arm-linux-gcc-3.4.4 -E"
-export LD="arm-linux-ld"
-export AR="arm-linux-ar"
-export AS="arm-linux-as"
-export RANLIB="arm-linux-ranlib"
-export STRIP="arm-linux-strip"
+export CC  = "${CCACHE}arm-linux-gcc-3.4.4 ${HOST_CC_ARCH}"
+export CXX = "${CCACHE}arm-linux-g++ ${HOST_CC_ARCH}"
+export CPP = "arm-linux-gcc-3.4.4 -E"
+export LD = "arm-linux-ld"
+export AR  = "arm-linux-ar"
+export AS  = "arm-linux-as"
+export RANLIB  = "arm-linux-ranlib"
+export STRIP  = "arm-linux-strip"
                 </screen>
 
           <para>The above variables replace the ones from
