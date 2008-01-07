@@ -68,6 +68,8 @@ EXTRA_OECONF = " \
 #disable it:
 #	--disable-hid2hci
 
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export]="1"
 
 do_install_append() {
 	install -d ${D}${base_sbindir} ${D}${base_bindir}/  ${D}${sysconfdir}/apm/event.d/

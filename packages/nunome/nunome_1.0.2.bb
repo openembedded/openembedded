@@ -20,11 +20,11 @@ PARALLEL_MAKE = ""
 do_configure_prepend() {
 	sed -i -e 's,/opt/QtPalmtop/bin/,${bindir}/,g' "${S}/ui/nunome.h"
 	sed -i -e 's,/opt/QtPalmtop/,${palmtopdir}/,g' "${S}/ui/nunome.h"
-	echo -e "TEMPLATE=subdirs\nSUBDIRS=Nnmlib server ui dicman ui" >nunome.pro
+	printf "TEMPLATE=subdirs\nSUBDIRS=Nnmlib server ui dicman ui\n" >nunome.pro
 	pushd Nnmlib && qmake -project -t lib && popd
-	pushd server && qmake -project && echo -e "LIBS+=-lNnmlib\nTARGET=server.bin" >> server.pro && popd
-	pushd dicman && qmake -project && echo -e "LIBS+=-lnunome -lNnmlib\nTARGET=dicman.bin" >> dicman.pro && popd
-	pushd ui && qmake -project -t lib && echo -e "LIBS+=-lNnmlib\nTARGET=nunome" >> ui.pro && popd
+	pushd server && qmake -project && printf "LIBS+=-lNnmlib\nTARGET=server.bin\n" >> server.pro && popd
+	pushd dicman && qmake -project && printf "LIBS+=-lnunome -lNnmlib\nTARGET=dicman.bin\n" >> dicman.pro && popd
+	pushd ui && qmake -project -t lib && printf "LIBS+=-lNnmlib\nTARGET=nunome\n" >> ui.pro && popd
 	find . -name "moc*"|xargs rm -f
 	find . -name "Makefile"|xargs rm -f
 }

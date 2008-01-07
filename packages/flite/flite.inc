@@ -9,9 +9,9 @@ PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/flite-${PV}-release"
 
-inherit autotools
+CFLAGS += " -lasound "
 
-EXTRA_OECONF = "--with-audio=alsa --enable-shared"
+inherit autotools
 
 PACKAGES += "lib${PN} lib${PN}-vox8 lib${PN}-vox16"
 
@@ -32,9 +32,10 @@ do_install() {
         oe_runmake INSTALLBINDIR="${D}${bindir}" INSTALLLIBDIR="${D}${libdir}" INSTALLINCDIR="${D}${includedir}" install
 }
 
-
 do_stage () {
-        install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/
+        install -d ${STAGING_INCDIR}/flite
+        install -m 0644 ${S}/include/*.h ${STAGING_INCDIR}/flite/
+
         oe_libinstall -C lib -a -so libflite ${STAGING_LIBDIR}
         oe_libinstall -C lib -a -so libflite_cmu_time_awb ${STAGING_LIBDIR}
         oe_libinstall -C lib -a -so libflite_cmulex ${STAGING_LIBDIR}

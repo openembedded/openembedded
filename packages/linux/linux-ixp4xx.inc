@@ -3,7 +3,7 @@
 DESCRIPTION = "Linux 2.6.x kernel for IXP4xx devices"
 
 COMPATIBLE_HOST = 'arm.*-linux.*'
-COMPATIBLE_MACHINE = '(ixp4xx|nslu2)'
+COMPATIBLE_MACHINE = '(ixp4xx|nslu2|syhl1)'
 
 # To specify the console set KERNEL_CONSOLE in the .bb file.
 

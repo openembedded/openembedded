@@ -5,11 +5,13 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://99_hal \
             file://20hal \
 	   "
+
+LEAD_SONAME = "libhal.so"
 
 # machines with pci and acpi get a machine dependant hal
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \

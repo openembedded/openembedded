@@ -44,6 +44,8 @@ SRCREV_pn-openmoko-worldclock2 ?= "${AUTOREV}"
 SRCREV_pn-openocd ?= "${AUTOREV}"
 SRCREV_pn-openocd-native ?= "${AUTOREV}"
 
+SRCREV_pn-python-gsmd ?= "${AUTOREV}"
+
 SRCREV_pn-u-boot-openmoko ?= "${AUTOREV}"
 SRCREV_pn-dfu-util ?= "${AUTOREV}"
 SRCREV_pn-dfu-util-native ?= "${AUTOREV}"

@@ -20,7 +20,7 @@
   THE SOFTWARE.
 """
 
-import pickle
+import os, pickle
 
 marks = {}
 last_mark = 0
@@ -39,9 +39,16 @@ def load(status_name):
 
 def store(status_name):
     global marks, last_mark, mark_file, former_heads, same_revisions
-    file = open(status_name, "wb")
+    file = open("%s.tmp-foo" % status_name, "wb")
     pickle.dump(marks, file)
     pickle.dump(last_mark, file)
     pickle.dump(former_heads, file)
     pickle.dump(same_revisions, file)
     file.close()
+
+    # Almost atomic rename, without the risk to destroy something
+    try:
+        os.remove(status_name)
+    except:
+        pass
+    os.rename("%s.tmp-foo" % status_name, status_name)

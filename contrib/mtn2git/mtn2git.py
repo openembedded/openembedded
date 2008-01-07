@@ -519,7 +519,7 @@ def parse_revision(operations, revision):
                 revision_description["committer"] = cert[1]
         else:
             print >> sys.stderr, "Unknown Cert: Ignoring", cert[5], cert[7]
-            assert(False)
+            #assert(False)
 
     return revision_description
                 
@@ -565,24 +565,37 @@ def main(mtn_cli, db, rev):
     ops.automate.stop()
 
     all_revs = []
+    branch_heads = {}
     for branch in branches:
         heads = [head for head in ops.heads(branch)]
+        if len(heads) != 1:
+            print >> sys.stderr, "Skipping branch '%s' due multiple heads" % (branch)
+            continue
+
         if branch in status.former_heads:
             old_heads = status.former_heads[branch]
         else:
             old_heads = []
 
         for head in heads:
+            print >> sys.stderr, old_heads, head
             all_revs += ops.ancestry_difference(head, old_heads)
-        status.former_heads[branch] = heads
+            for rev in all_revs:
+                if not rev in branch_heads:
+                    branch_heads[rev] = []
+                branch_heads[rev].append(branch)
+
     
     sorted_revs = [rev for rev in ops.toposort(all_revs)]
     for rev in sorted_revs:
         if has_mark(rev):
-            print >> sys.stderr, "Already having commit '%s'" % rev
+            print >> sys.stderr, "B: Already having commit '%s'" % rev
         else:
             print >> sys.stderr, "Going to import revision ", rev
             fast_import(ops, parse_revision(ops, rev))
+        branches = branch_heads[rev]
+        for branch in branches:
+            status.former_heads[branch] = [rev]
         
 
 if __name__ == "__main__":

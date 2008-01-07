@@ -1,0 +1,31 @@
+--- speech-dispatcher-0.6.5/config/speechd.conf.in.orig	2008-01-05 16:38:53.000000000 +0000
++++ speech-dispatcher-0.6.5/config/speechd.conf.in	2008-01-05 16:40:45.000000000 +0000
+@@ -36,7 +36,7 @@
+ # DO NOT COMMENT OUT THIS OPTION, SET IT TO "default" if you do not
+ # want to influence it.
+ 
+-LogDir  "default"
++LogDir  "/var/log/"
+ #LogDir  "/var/log/speech-dispatcher/"
+ #LogDir  "stdout"
+ 
+@@ -129,8 +129,8 @@
+ #  - configuration is the path to the config file of this module,
+ #    either relative (to etc/speechd/modules/) or absolute
+ 
+-AddModule "espeak"       "sd_espeak"   "espeak.conf"
+-AddModule "festival"     "sd_festival"  "festival.conf"
++AddModule "espeak"       "sd_espeak"   "/etc/speech-dispatcher/modules/espeak.conf"
++#AddModule "festival"     "sd_festival"  "festival.conf"
+ AddModule "flite"        "sd_flite"     "flite.conf"
+ #AddModule "espeak-generic" "sd_generic" "espeak-generic.conf"
+ #AddModule "epos-generic" "sd_generic"   "epos-generic.conf"
+@@ -172,6 +172,6 @@
+ 
+ # There are some sample client settings
+ 
+-Include "clients/emacs.conf"
+-Include "clients/gnome-speech.conf"
++#Include "clients/emacs.conf"
++#Include "clients/gnome-speech.conf"
+ 

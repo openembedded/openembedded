@@ -33,7 +33,7 @@ EXTRA_QMAKEVARS_POST += "TARGET=qwt \
                          LIBS+=-L${STAGING_LIBDIR}/${PYTHON_DIR}/site-packages"
 
 do_generate_prepend() {
-    echo -e "TEMPLATE=subdirs\nSUBDIRS=qwt\n" >pyqwt.pro
+    printf "TEMPLATE=subdirs\nSUBDIRS=qwt\n" >pyqwt.pro
 
     echo "%Makefile qwt.pro.in" >>sip/qwtmod.sip
     echo "TEMPLATE=lib" >>sip/qwtmod.sip

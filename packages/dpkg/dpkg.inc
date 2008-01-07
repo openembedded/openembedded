@@ -22,9 +22,9 @@ pkg_postinst_dpkg () {
 if [ "x$D" != "x" ]; then
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d
 	# this happens at S98 where our good 'ole packages script used to run
-	echo -e "#!/bin/sh
+	printf "#!/bin/sh
 	dpkg --configure -a
-" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
+\n" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
 	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
 fi
 }

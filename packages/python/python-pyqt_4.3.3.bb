@@ -14,7 +14,8 @@ SRC_URI = "\
   file://01_configure.dpatch;patch=1 \
   file://02_htmllinks.dpatch;patch=1 \
   file://03_qreal.dpatch;patch=1 \
-  file://04_qreal_api_fixes.dpatch;patch=1"
+  file://04_qreal_api_fixes.dpatch;patch=1 \
+  file://assistantclient-fix.patch;patch=1"
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
 
 inherit qt4x11 sip distutils-base
@@ -23,11 +24,10 @@ PARALLEL_MAKE = ""
 
 QMAKE_PROFILES = "pyqt.pro"
 # NOTE: match with qt version we have in OE
-EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_2 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
+EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_3 -xVendorID -xPyQt_SessionManager -xPyQt_Accessibility"
 EXTRA_OEMAKE = " MAKEFLAGS= "
 
-SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml"
-# SIP_MODULES += "QtAssistant"
+SIP_MODULES = "QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant"
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${OE_QMAKE_INCDIR_QT}/Qt \
                          INCLUDEPATH+=${STAGING_INCDIR}/${PYTHON_DIR} \
                          DEFINES+=QT_NO_FPU"
@@ -45,7 +45,7 @@ do_generate_prepend() {
 }
 
 do_configure_prepend() {
-    echo -e "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
+    printf "TEMPLATE=subdirs\nSUBDIRS=${SIP_MODULES}\n" >pyqt.pro
 }
 
 do_stage() {
