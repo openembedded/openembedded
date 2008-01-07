@@ -1,6 +1,6 @@
 require ${PN}.inc
 PV = "${OPIE_CVS_PV}"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            ${HANDHELDS_CVS};module=opie/noncore/settings/mediummount \
@@ -14,4 +14,5 @@ SRC_URI = "${HANDHELDS_CVS};module=opie/core/apps/calibrate \
            file://kbdlocks-runtime.patch;patch=1 \
 	   file://restart-from-bindir.patch;patch=1 \
            file://server.pro \
+	   file://firstuse-path.patch;patch=1 \
           "

@@ -1,6 +1,6 @@
 require xserver-kdrive-common.inc
 
-DEPENDS += "libxkbfile libxcalibrate pixman"
+DEPENDS += "hal libxkbfile libxcalibrate pixman"
 
 PE = "1"
 PR = "r1"

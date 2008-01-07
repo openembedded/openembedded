@@ -6,7 +6,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r2"
+PR = "r3"
 
 SRCREV_FORMAT = "patches"
 
@@ -17,7 +17,7 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI = "\
   git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
-  file://uboot-eabi-fix-HACK.patch \
+  file://uboot-eabi-fix-HACK.patch;patch=1;maxrev=3773 \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
   file://boot-menu-gfx-fix-openmoko-bug-1140.patch;patch=1 \

@@ -1,0 +1,14 @@
+--- drivers/mtd/maps/mainstone-flash.c~	2008-01-05 01:15:54.000000000 +0100
++++ drivers/mtd/maps/mainstone-flash.c	2008-01-05 01:15:54.000000000 +0100
+@@ -125,6 +125,11 @@
+ 			continue;
+ 		}
+ 		mymtds[i]->owner = THIS_MODULE;
++		
++		/* Unlock the flash device. */
++                if (mymtds[i]->unlock)
++                        mymtds[i]->unlock(mymtds[i], 0, mymtds[i]->size);
++		                                        
+ 
+ 		ret = parse_mtd_partitions(mymtds[i], probes,
+ 					   &parsed_parts[i], 0);

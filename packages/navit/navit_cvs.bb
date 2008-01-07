@@ -1,7 +1,7 @@
 require navit.inc
 
 PV = "0.0.3+cvs${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/navit"
 
@@ -13,8 +13,3 @@ EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap -
 
 EXTRA_AUTORECONF = " -I m4"
 
-do_install_append() {
-	install -d ${D}/usr/share/applications/
-	
-	install -m 0644 ${WORKDIR}/navit.desktop ${D}/usr/share/applications/
-}
