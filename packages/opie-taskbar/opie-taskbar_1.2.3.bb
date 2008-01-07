@@ -13,4 +13,5 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/apps/calibrate \
            file://kbdlocks-runtime.patch;patch=1 \
 	   file://restart-from-bindir.patch;patch=1 \
            file://server.pro \
+	   file://firstuse-path.patch;patch=1 \
           "
