@@ -204,10 +204,10 @@ def fast_import(ops, revision):
     # will simply add it to the modified list and ask to retrieve the status from the manifest
     for (file, attribute, value, rev) in revision["set_attributes"]:
         if attribute == "mtn:execute":
-            revision["modified"].append((file, None, rev))
+            all_modifications.add( (file, None, rev) )
     for (file, attribute, rev) in revision["clear_attributes"]:
         if attribute == "mtn:execute":
-            revision["modified"].append((file, None, rev))
+            all_modifications.add( (file, None, rev) )
 
 
 
@@ -260,6 +260,9 @@ def get_file_and_mode(operations, file_tree, file_name, _file_revision, rev = No
     assert file_name in file_tree.files, "get_file_and_mode: Revision '%s', file_name='%s' " % (rev, file_name)
 
     (file_revision, executable) = file_tree.files[file_name]
+    if _file_revision:
+        assert _file_revision == file_revision, "Same filerevision for file_name='%s' in rev='%s' (%s,%s)" % (file_name, rev, file_revision, _file_revision)
+
     if executable:
         mode = 755
     else:
