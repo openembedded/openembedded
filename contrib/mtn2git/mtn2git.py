@@ -157,6 +157,13 @@ def get_and_cache_tree(ops, revision):
         cached_fifo = cached_fifo[1:]
         del cached_tree[old_name]
     
+def diff_manifest(old_tree, new_tree):
+    """Find additions, modifications and deletions"""
+    added = set()
+    modified = set()
+    deleted = set()
+
+    return (added, modified, deleted)
 
 
 def fast_import(ops, revision):
@@ -209,7 +216,12 @@ def fast_import(ops, revision):
         if attribute == "mtn:execute":
             all_modifications.add( (file, None, rev) )
 
-
+    # Now diff the manifests
+    for parent in revision["parent"]:
+        (added, modified, deleted) = diff_manifest(get_and_cache_tree(ops, parent), current_tree)
+        all_added = all_added.union(added)
+        all_modifications = all_modifications.union(modified)
+        all_deleted = all_modifications.union(deleted) 
 
     cmd = []
     cmd += ["commit refs/heads/%s" % branch]
