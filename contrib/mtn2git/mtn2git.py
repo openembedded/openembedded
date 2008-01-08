@@ -223,6 +223,10 @@ def fast_import(ops, revision):
         all_modifications = all_modifications.union(modified)
         all_deleted = all_modifications.union(deleted) 
 
+    # TODO:
+    # Readd the sanity check to see if we deleted and modified an entry. This
+    # could probably happen if we have more than one parent (on a merge)?
+
     cmd = []
     cmd += ["commit refs/heads/%s" % branch]
     cmd += ["mark :%s" % get_mark(revision["revision"])]
