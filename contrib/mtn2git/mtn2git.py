@@ -36,6 +36,13 @@ import email.Utils
 
 import status
 
+# Interesting revisions:
+# Rename with dest==src: 24cba5923360fef7c5cc81d51000e30b90355eb9
+# Recursive rename: fca159c5c00ae4158c289f5aabce995378d4e41b
+# Delete+Rename: 91da98265a39c93946e00adf5d7bf92b341de847
+#
+#
+#
 
 def get_mark(revision):
     """
@@ -92,21 +99,6 @@ def reset_git(ops, revision):
     cmd += [""]
     print "\n".join(cmd)
 
-def filter_renamed(manifest, renamed):
-    """
-    If we base from a revision that has already done
-    the move, git-fast-import will complain that the file
-    has been already moved
-    """
-    if len(renamed) == 0:
-        return renamed
-
-    for line in manifest:
-        if line[0] == "file":
-            renamed = filter(lambda (to,from_,manifest): to != line[1], renamed)
-            
-    return renamed
-
 def get_git_date(revision):
     """
     Convert the "date" cert of monotone to a time understandable by git. No timezone
@@ -115,107 +107,9 @@ def get_git_date(revision):
     dt = datetime.datetime.strptime(revision["date"], "%Y-%m-%dT%H:%M:%S").strftime("%a, %d %b %Y %H:%M:%S +0000")
     return dt
 
-def recursively_delete(ops, manifest, revision, dir_name, to_delete):
-    """
-    Recursively delete all files that dir_name inside the name
-    """
-    for line in manifest:
-        if line[0] == "dir" or line[0] == "file":
-            if line[1].startswith(dir_name):
-                print >> sys.stderr, "Deleting '%s'" % line[1]
-                to_delete.add((line[1], revision))
-        elif line[0] in ["format_version"]:
-            assert(line[1] == "1")
-        else:
-            print >> sys.stderr, line[0]
-            assert(False)
-
-    return to_delete
-
-def recursively_rename(ops, manifest, revision, old_name, new_name, to_add_dirs, to_add_files, to_remove_items, files_deleted, files_sticky):
-    """
-    mtn has a rename command and can rename entrie directories. For git we will have to do the recursive renaming
-    ourselves. Basicly we will get all files and replace old_name with new_name but only:
-
-        If the file of the old_manifest is not in our to be deleted list
-    """
-    old_dir = old_name + "/"
-    for line in manifest:
-        if line[1].startswith(old_dir) or line[1] == old_name:
-            already_handled = False
-            for (deleted,_) in files_deleted:
-                if line[1] == deleted:
-                    already_handled = True
-                    break 
-
-            # Don't rename files that should be in the same directory
-            if line[1] in files_sticky:
-                already_handled = True
-
-            if already_handled:
-                pass
-            elif line[0] == "file":
-                print >> sys.stderr, "Will add '%s' old: '%s' new: '%s' => result: '%s'" % (line[1], old_name, new_name, line[1].replace(old_name, new_name, 1))
-                to_add_files.add((line[1].replace(old_name, new_name, 1), None, revision))
-            elif line[0] == "dir":
-                to_add_dirs.add((line[1].replace(old_name, new_name, 1), revision))
-            elif line[0] in ["format_version"]:
-                assert(line[1] == "1")
-            else:
-                print >> sys.stderr, line[0]
-                assert(False)
-
-    return (to_add_files, to_add_dirs)
-
-#
-#    We need to recursively rename the directories. Now the difficult part is to undo certain operations.
-#    
-#    e.g we rename the whole dir and then rename a file back. We could revive a directory that was marked
-#    for deletion.
-#
-#    rename "weird/two/three"
-#    to "unweird/four"
-#
-#    rename "weird/two/three/four"
-#    to "weird/two/three"
-#
-#    Here we would schedule weird/two/three for deletion but then revive it again. So three does not
-#    get copied to unweird/four/three
-#    """
-def recursively_rename_directories(ops, manifests, rename_commands, files_deleted, files_moved_sticky):
-    to_add_directories = set()
-    to_add_files = set()
-    to_remove_items = set()
-
-    for (old_name, new_name, old_revision) in rename_commands:
-        # Check if we have the above case and rename a more specific directory
-        # and then we will alter the result...
-        inner_rename = False
-        for (other_old_name, other_new_name, other_rev) in rename_commands:
-            if old_name.startswith(other_old_name + "/") and other_old_name != old_name:
-                inner_rename = True
-                print >> sys.stderr, "Inner rename detected", old_name, other_old_name
-                # Fixup the renaming
-                def rename(filename, filerev, rev, would_be_new_name):
-                    if filename.startswith(would_be_new_name + "/"):
-                        return filename.replace(would_be_new_name, new_name, 1), filerev, rev
-                    return filename, filerev, rev
-                    
-                would_be_new_name = other_new_name + "/" + old_name[len(other_old_name)+1:]
-                to_remove_items = set(filter(lambda (item,_): item != new_name, to_remove_items))
-                to_add_directories = set(filter(lambda (item,_): item != would_be_new_name, to_add_directories))
-                to_add_directories.add((new_name, old_revision))
-                to_add_files = set(map(lambda (fn, fr, r): rename(fn, fr, r, would_be_new_name), to_add_files))
-
-        if not inner_rename:
-            to_remove_items.add((old_name, old_revision))
-            recursively_delete(ops, manifests[old_revision], old_revision, old_name + "/", to_remove_items)
-            recursively_rename(ops, manifests[old_revision], old_revision, old_name, new_name, to_add_directories, to_add_files, to_remove_items, files_deleted, files_moved_sticky)
-
-    return (to_add_directories, to_add_files, to_remove_items)
-
-
 def build_tree(manifest):
+    """Assemble a filesystem tree from a given manifest"""
+
     dirs = {}
     files = {}
     for line in manifest:
@@ -228,22 +122,6 @@ def build_tree(manifest):
             assert(False)
     return (dirs,files)
 
-def compare_with_manifest(all_added, all_modified, all_deleted, new_manifest, old_manifests):
-    """
-    Sanity check that the difference between the old and the new manifest is the one
-    we have in all_added, all_modified, all_deleted
-    """
-    old_trees = {}
-    really_added = {}
-    really_modified = {}
-    really_removed = {}
-
-    current_dirs, current_files = build_tree(new_manifest)
-
-    for parent in old_manifests.keys():
-        old_trees[parent] = build_tree(old_manifests[parent])
-
-    print >> sys.stderr, len(old_manifests)
 
 def fast_import(ops, revision):
     """Import a revision into git using git-fast-import.
@@ -310,81 +188,16 @@ def fast_import(ops, revision):
     cmd += ["data  %d" % len(revision["changelog"])]
     cmd += ["%s" % revision["changelog"]]
 
-    # Emulation for renaming. We will split them into two lists
-    file_renamed_del = set()
-    file_renamed_new = set()
-    file_moved_sticky = set()
-
     if len(revision["parent"]) != 0:
         cmd += ["from :%s" % get_mark(revision["parent"][0])]
-    renamed = revision["renamed"]
-
-    to_rename_directories = []
-    for (new_name, old_name, old_revision) in renamed:
-        # 24cba5923360fef7c5cc81d51000e30b90355eb9 is a rev where src == dest but the
-        # directory got renamed, so this means this file got added to the new directory
-        # TODO, XXX, FIXME check if this can be done for directories as well
-        if new_name == old_name and not old_name in dirs[old_revision]:
-            print >> sys.stderr, "Bogus rename in %s (%s, %s)?" % (revision["revision"], new_name, old_name)
-            file_moved_sticky.add(old_name)
-
-        # Check if the old_name was a directory in the old manifest
-        # If we rename a directory we will need to recursively remove and recursively
-        # add...
-        # Add the '/' otherwise we might rename the wrong directory which shares the
-        # same prefix.
-        # fca159c5c00ae4158c289f5aabce995378d4e41b is quite funny. It renames a directory
-        # and then renames another directory within the renamed one and in the worse case
-        # we will revive a deleted directory, file...
-        elif old_name in dirs[old_revision]:
-            print >> sys.stderr, "Detected directory rename '%s' => '%s'" %  (old_name, new_name)
-            assert(old_revision in manifests)
-            to_rename_directories.append((old_name, new_name, old_revision))
-        else: 
-            print >> sys.stderr, "Renaming %s => %s" % (old_name, new_name)
-            file_renamed_new.add((new_name, None, revision["revision"]))
-            file_renamed_del.add((old_name, old_revision))
 
     # The first parent is our from.
     for parent in revision["parent"][1:]:
         cmd += ["merge :%s" % get_mark(parent)]
 
-    # Do the renaming now
-    (renamed_dirs, renamed_new, renamed_old) = recursively_rename_directories(ops, manifests, to_rename_directories, file_renamed_del.union(set(revision["removed"])), file_moved_sticky)
-
-    # Sanity check, don't remove anything we modify
-    all_added = set(revision["added_dirs"]).union(renamed_dirs)
-    all_modifications = set(revision["modified"]).union(set(revision["added_files"])).union(renamed_new).union(file_renamed_new)
-    all_deleted = set(revision["removed"]).union(renamed_old).union(file_renamed_del)
-    all_deleted_new = all_deleted
-
-    # Check if we delete and add at the same time
-    for (deleted,rev) in all_deleted:
-        for (added,_) in all_added:
-            if added == deleted:
-                print >> sys.stderr, "Added and Deleted", added, deleted
-                all_deleted_new = set(filter(lambda (dele,_): dele != added, all_deleted_new))
-                assert((added,rev) not in all_deleted_new)
-                
-        for (modified,_,_) in all_modifications:
-            if modified == deleted:
-                print >> sys.stderr, "Modified and Deleted", modified, deleted
-                all_deleted_new = set(filter(lambda (dele,_): dele != modified, all_deleted_new))
-                assert((modified,rev) not in all_deleted_new)
-
-    # Filtered list of to be deleted items
-    all_deleted = all_deleted_new
-
-    # Check if we delete but the manifest has a file like this
-    for line in manifest:
-        if line[0] == "dir" or line[0] == "file":
-            for (deleted,rev) in all_deleted:
-                if line[1] == deleted:
-                    # 91da98265a39c93946e00adf5d7bf92b341de847 of mtn has a delete + rename
-                    print >> sys.stderr, "Trying to delete a file which is in the new manifest", line[1], deleted
-                    assert(False)
-
-    compare_with_manifest(all_added, all_modifications, all_deleted, manifest, manifests)
+    all_added = set()
+    all_modifications = set()
+    all_deleted = set()
 
     for (dir_name, rev) in all_added:
         cmd += ["M 644 inline %s" % os.path.join(dir_name, ".mtn2git_empty")]
@@ -398,9 +211,8 @@ def fast_import(ops, revision):
         cmd += ["data %d" % len(file)]
         cmd += ["%s" % file]
 
-    for (path, rev) in all_deleted:
-        assert(rev in dirs)
-        if path in dirs[rev]:
+    for (path, rev, is_dir) in all_deleted:
+        if is_dir:
             cmd += ["D %s" % os.path.join(path, ".mtn2git_empty")]
         else:
             cmd += ["D %s" % path]
