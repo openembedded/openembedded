@@ -291,20 +291,12 @@ def parse_revision(operations, revision):
             old_rev = line[1]
         elif line[0] == "new_manifest":
             revision_description["manifest"] = line[1]
-        elif line[0] == "rename":
-            revision_description["renamed"].append((line[3], line[1], old_rev))
-        elif line[0] == "patch":
-            revision_description["modified"].append((line[1], line[5], old_rev))
-        elif line[0] == "delete":
-            revision_description["removed"].append((line[1], old_rev))
-        elif line[0] == "add_dir":
-            revision_description["added_dirs"].append((line[1], old_rev))
-        elif line[0] == "add_file":
-            revision_description["added_files"].append((line[1], line[3], old_rev))
         elif line[0] == "clear":
             revision_description["clear_attributes"].append((line[1], line[3], old_rev))
         elif line[0] == "set":
             revision_description["set_attributes"].append((line[1], line[3], line[5], old_rev))
+        elif line[0] in ["rename", "patch", "delete", "add_dir", "add_file"]:
+            pass
         else:
             print >> sys.stderr, line
             assert(False)
