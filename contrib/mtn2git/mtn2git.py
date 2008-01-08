@@ -156,6 +156,8 @@ def get_and_cache_tree(ops, revision):
         old_name = cached_fifo[0]
         cached_fifo = cached_fifo[1:]
         del cached_tree[old_name]
+
+    return tree
     
 def diff_manifest(old_tree, new_tree):
     """Find additions, modifications and deletions"""
