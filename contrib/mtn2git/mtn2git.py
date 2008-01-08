@@ -107,20 +107,34 @@ def get_git_date(revision):
     dt = datetime.datetime.strptime(revision["date"], "%Y-%m-%dT%H:%M:%S").strftime("%a, %d %b %Y %H:%M:%S +0000")
     return dt
 
-def build_tree(manifest):
+def is_executable_attribute_set(attributes, rev):
+    assert(len(attributes) % 3 == 0), rev
+
+    if len(attributes) >= 3:
+        for i in range(0, len(attributes)%3+1):
+            if attributes[i] == "attr" and attributes[i+1] == "mtn:execute" and attributes[i+2] == "true":
+                return True
+    return False
+
+
+def build_tree(manifest, rev):
     """Assemble a filesystem tree from a given manifest"""
 
-    dirs = {}
-    files = {}
+    class tree:
+        def __init__(self):
+            self.dirs = {}
+            self.files= {}
+
+    tree = tree()
     for line in manifest:
         if line[0] == "file":
-            files[line[1]] = (line[3],line[4:])
+            tree.files[line[1]] = (line[3], is_executable_attribute_set(line[4:], rev))
         elif line[0] == "dir":
-            dirs[line[1]] = 1
+            tree.dirs[line[1]] = 1
         elif line[0] != "format_version":
-            print >> sys.stderr, line[0]
-            assert(False)
-    return (dirs,files)
+            assert(False), "Rev: %s: Line[0]: '%s'" % (rev, line[0])
+
+    return tree
 
 
 def fast_import(ops, revision):
@@ -158,16 +172,11 @@ def fast_import(ops, revision):
             return
         
     # Use the manifest to find dirs and files
-    manifest = [line for line in ops.get_manifest_of(revision["revision"])]
-    manifests = {}
-    dirs = {}
-    for parent in revision["parent"]:
-        manifests[parent] = [line for line in ops.get_manifest_of(parent)]
-        for line in manifests[parent]:
-            if line[0] == "dir":
-                if not parent in dirs:
-                    dirs[parent] = {}
-                dirs[parent][line[1]] = 1
+    current_tree = build_tree([line for line in ops.get_manifest_of(revision["revision"])], revision["revision"])
+
+    all_added = set()
+    all_modifications = set()
+    all_deleted = set()
 
     # We can not just change the mode of a file but we need to modifiy the whole file. We
     # will simply add it to the modified list and ask to retrieve the status from the manifest
@@ -195,9 +204,6 @@ def fast_import(ops, revision):
     for parent in revision["parent"][1:]:
         cmd += ["merge :%s" % get_mark(parent)]
 
-    all_added = set()
-    all_modifications = set()
-    all_deleted = set()
 
     for (dir_name, rev) in all_added:
         cmd += ["M 644 inline %s" % os.path.join(dir_name, ".mtn2git_empty")]
@@ -206,7 +212,7 @@ def fast_import(ops, revision):
         cmd += [""]
 
     for (file_name, file_revision, rev) in all_modifications:
-        (mode, file) = get_file_and_mode(ops, manifest, file_name, file_revision, revision["revision"])
+        (mode, file) = get_file_and_mode(ops, current_tree, file_name, file_revision, revision["revision"])
         cmd += ["M %d inline %s" % (mode, file_name)]
         cmd += ["data %d" % len(file)]
         cmd += ["%s" % file]
@@ -228,33 +234,17 @@ def is_trusted(operations, revision):
             return False
     return True
 
-def get_file_and_mode(operations, manifest, file_name, _file_revision, rev = None):
-    mode = 644
+def get_file_and_mode(operations, file_tree, file_name, _file_revision, rev = None):
+    assert file_name in file_tree.files, "get_file_and_mode: Revision '%s', file_name='%s' " % (rev, file_name)
 
-    file_revision = None
-    for line in manifest:
-        if line[0] == "file" and line[1] == file_name:
-            assert(line[1] == file_name)
-            assert(line[2] == "content")
-            
-            if _file_revision:
-                assert(line[3] == _file_revision)
-            file_revision = line[3]
+    (file_revision, executable) = file_tree.files[file_name]
+    if executable:
+        mode = 755
+    else:
+        mode = 644
 
-            attributes = line[4:]
-            assert(len(attributes) % 3 == 0)
-            if len(attributes) >= 3:
-                for i in range(0, len(attributes)%3+1):
-                    if attributes[i] == "attr" and attributes[i+1] == "mtn:execute" and attributes[i+2] == "true":
-                        mode = 755
-                        break
-
-            assert(file_revision)
-            file = "".join([file for file in operations.get_file(file_revision)])
-            return (mode, file)
-
-    print >> sys.stderr, file_name, rev
-    assert(False)
+    file = "".join([file for file in operations.get_file(file_revision)])
+    return (mode, file)
 
 
 def parse_revision(operations, revision):
