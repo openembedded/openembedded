@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-  Copyright (C) 2006, 2007 Holger Hans Peter Freyther
+  Copyright (C) 2006, 2007, 2008 Holger Hans Peter Freyther
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,6 @@
 # TODO:
 #   -tag handling
 #   -work with n-merges
-#
-# DISCUSSION:
-#   -For some reason the get_revision information might be inaccurate
-#    and I should consider just comparing the manifests.
-#    I would use the manifests of the parents and consider all files deleted
-#    and then remove every dir/file that is inside the new manifest from this
-#    list.
-#      Benefits:
-#         - 1:1 match of the manifest regardles of get_revision information
-#         - Renaming is handled by git anyway
-#      Downsides:
-#         - The size of the import will grow.
 #
 
 import mtn
