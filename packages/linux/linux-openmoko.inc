@@ -15,8 +15,11 @@ else
 	echo "Upgrading Kernel in Flash"
 	echo "DO NOT stop this process"
 
-	${bindir}/flash_eraseall ${MTD_KERNEL_PARTITION}
-	${bindir}/nandwrite -p ${MTD_KERNEL_PARTITION} /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
+	MTD_KERNEL_PARTITION=`cat /proc/mtd | grep kernel | cut -d':' -f1`
+	MTD_KERNEL_PARTITION=/dev/$MTD_KERNEL_PARTITION
+
+	${bindir}/flash_eraseall $MTD_KERNEL_PARTITION
+	${bindir}/nandwrite -p $MTD_KERNEL_PARTITION /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
 fi
 }
 
