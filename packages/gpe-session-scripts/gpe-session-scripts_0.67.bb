@@ -35,7 +35,7 @@ do_install_append() {
 	fi
 	install -d ${D}${sysconfdir}/matchbox
 	install ${WORKDIR}/matchbox-session ${D}${sysconfdir}/matchbox/session
-        echo -e "exec matchbox-window-manager ${CURSOR_HIDE} \$@ \n" >> ${D}${sysconfdir}/matchbox/session	
+        printf "exec matchbox-window-manager ${CURSOR_HIDE} \$@ \n" >> ${D}${sysconfdir}/matchbox/session	
 
 
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d

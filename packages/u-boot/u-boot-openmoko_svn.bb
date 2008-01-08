@@ -6,7 +6,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r3"
+PR = "r0"
 
 SRCREV_FORMAT = "patches"
 
@@ -20,7 +20,7 @@ SRC_URI = "\
   file://uboot-eabi-fix-HACK.patch;patch=1;maxrev=3773 \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
-  file://boot-menu-gfx-fix-openmoko-bug-1140.patch;patch=1 \
+  file://boot-menu-gfx-fix-openmoko-bug-1140.patch;patch=1;maxrev=3775 \
 "
 S = "${WORKDIR}/git"
 

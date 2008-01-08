@@ -17,7 +17,7 @@ inherit palmtop
 QMAKE_PROFILES = "knights.pro"
 
 do_configure_prepend() {
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=qtcompat microkde knights\n" >knights.pro
+        printf "TEMPLATE=subdirs\nSUBDIRS=qtcompat microkde knights\n" >knights.pro
 }
 
 do_install() {
