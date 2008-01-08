@@ -5,7 +5,7 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI += "file://99_hal \
             file://20hal \
@@ -38,10 +38,12 @@ do_install_append() {
 }
 
 do_stage() {
-        autotools_stage_all
-        install -d ${STAGING_LIBDIR}
-        install -m 755 libhal/.libs/libhal.so.1.0.0 ${STAGING_LIBDIR}/libhal.so
-        install -m 755 libhal-storage/.libs/libhal-storage.so.1.0.0 ${STAGING_LIBDIR}/libhal-storage.so
+        oe_libinstall -C libhal -a -so libhal ${STAGING_LIBDIR}
+        oe_libinstall -C libhal-storage -a -so libhal-storage ${STAGING_LIBDIR}
+
+        install -d ${STAGING_INCDIR}/hal
+        install -m 0644 libhal/libhal.h ${STAGING_INCDIR}/hal
+        install -m 0644 libhal-storage/libhal-storage.h ${STAGING_INCDIR}/hal
 }
 
 # At the time the postinst runs, dbus might not be setup so only restart if running
