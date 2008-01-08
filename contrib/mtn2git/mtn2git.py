@@ -165,6 +165,34 @@ def diff_manifest(old_tree, new_tree):
     modified = set()
     deleted = set()
 
+    # Removed dirs
+    for dir in old_tree.dirs.keys():
+        if not dir in new_tree.dirs:
+            deleted.add((dir,True))
+
+    # New dirs
+    for dir in new_tree.dirs.keys():
+        if not dir in old_tree.dirs:
+            added.add(dir)
+
+    # Deleted files
+    for file in old_tree.files.keys():
+        if not file in new_tree.files:
+            deleted.add((file,False))
+
+    # Added files, goes to modifications
+    for file in new_tree.files.keys():
+        if not file in old_tree.files:
+            modified.add((file, new_tree.files[file][0]))
+            continue
+
+        # The file changed, either contents or executable attribute
+        old = old_tree.files[file]
+        new = new_tree.files[file]
+        if old != new:
+            modified.add((file, new_tree.files[file][0]))
+            
+
     return (added, modified, deleted)
 
 
@@ -209,21 +237,12 @@ def fast_import(ops, revision):
     all_modifications = set()
     all_deleted = set()
 
-    # We can not just change the mode of a file but we need to modifiy the whole file. We
-    # will simply add it to the modified list and ask to retrieve the status from the manifest
-    for (file, attribute, value, rev) in revision["set_attributes"]:
-        if attribute == "mtn:execute":
-            all_modifications.add( (file, None, rev) )
-    for (file, attribute, rev) in revision["clear_attributes"]:
-        if attribute == "mtn:execute":
-            all_modifications.add( (file, None, rev) )
-
     # Now diff the manifests
     for parent in revision["parent"]:
         (added, modified, deleted) = diff_manifest(get_and_cache_tree(ops, parent), current_tree)
         all_added = all_added.union(added)
         all_modifications = all_modifications.union(modified)
-        all_deleted = all_modifications.union(deleted) 
+        all_deleted = all_deleted.union(deleted) 
 
     # TODO:
     # Readd the sanity check to see if we deleted and modified an entry. This
@@ -245,19 +264,19 @@ def fast_import(ops, revision):
         cmd += ["merge :%s" % get_mark(parent)]
 
 
-    for (dir_name, rev) in all_added:
+    for dir_name in all_added:
         cmd += ["M 644 inline %s" % os.path.join(dir_name, ".mtn2git_empty")]
         cmd += ["data <<EOF"]
         cmd += ["EOF"]
         cmd += [""]
 
-    for (file_name, file_revision, rev) in all_modifications:
+    for (file_name, file_revision) in all_modifications:
         (mode, file) = get_file_and_mode(ops, current_tree, file_name, file_revision, revision["revision"])
         cmd += ["M %d inline %s" % (mode, file_name)]
         cmd += ["data %d" % len(file)]
         cmd += ["%s" % file]
 
-    for (path, rev, is_dir) in all_deleted:
+    for (path, is_dir) in all_deleted:
         if is_dir:
             cmd += ["D %s" % os.path.join(path, ".mtn2git_empty")]
         else:
