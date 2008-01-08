@@ -44,6 +44,10 @@ import status
 #
 #
 
+# Our manifest/tree fifo construct
+cached_tree = {}
+cached_fifo = []
+
 def get_mark(revision):
     """
     Get a mark for a specific revision. If the revision is known the former
@@ -136,6 +140,24 @@ def build_tree(manifest, rev):
 
     return tree
 
+def get_and_cache_tree(ops, revision):
+    """Simple FIFO to cache a number of trees"""
+    global cached_tree, cached_fifo
+
+    if revision in cached_tree:
+        return cached_tree[revision]
+
+    tree = build_tree([line for line in ops.get_manifest_of(revision)], revision)
+    cached_tree[revision] = tree
+    cached_fifo.append(revision)
+
+    # Shrink
+    if len(cached_fifo) > 100:
+        old_name = cached_fifo[0]
+        cached_fifo = cached_fifo[1:]
+        del cached_tree[old_name]
+    
+
 
 def fast_import(ops, revision):
     """Import a revision into git using git-fast-import.
@@ -172,7 +194,7 @@ def fast_import(ops, revision):
             return
         
     # Use the manifest to find dirs and files
-    current_tree = build_tree([line for line in ops.get_manifest_of(revision["revision"])], revision["revision"])
+    current_tree = get_and_cache_tree(ops, revision["revision"])
 
     all_added = set()
     all_modifications = set()
