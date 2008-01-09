@@ -162,7 +162,7 @@ Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
 Interests:  PocketPC and Palm devices support, Win32 support
 Interests:  Cross-machine unification
-Recipes:    linux-handhelds-2.6, opie-*
+Recipes:    linux-handhelds-2.6, opie-*, initramfs-*, gnome-mplayer
 
 Person:     Philip Balister
 Mail:       Crofton@balister.org
