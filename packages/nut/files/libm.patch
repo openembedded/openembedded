@@ -1,0 +1,21 @@
+--- a/drivers/Makefile.am.org	2007-10-01 16:06:24.000000000 +0300
++++ a/drivers/Makefile.am	2008-01-09 02:13:09.000000000 +0200
+@@ -125,7 +125,7 @@
+ tripplite_usb_LDADD = $(LDADD_DRIVERS) $(LIBUSB_LDFLAGS) -lm
+ 
+ bcmxcp_usb_SOURCES = bcmxcp_usb.c bcmxcp.c nut_usb.c
+-bcmxcp_usb_LDADD = $(LDADD_DRIVERS) $(LIBUSB_LDFLAGS)
++bcmxcp_usb_LDADD = $(LDADD_DRIVERS) $(LIBUSB_LDFLAGS) -lm
+ 
+ megatec_usb_SOURCES = megatec.c megatec_usb.c libusb.c
+ megatec_usb_CFLAGS = $(AM_CFLAGS) -DMEGATEC_SUBDRV
+--- a/drivers/Makefile.am.org	2008-01-09 02:14:32.000000000 +0200
++++ a/drivers/Makefile.am	2008-01-09 02:17:37.000000000 +0200
+@@ -67,6 +67,7 @@
+ al175_SOURCES = al175.c
+ apcsmart_SOURCES = apcsmart.c
+ bcmxcp_SOURCES = bcmxcp.c bcmxcp_ser.c
++bcmxcp_LDADD = $(LDADD) -lm
+ belkin_SOURCES = belkin.c
+ belkinunv_SOURCES = belkinunv.c
+ bestfcom_SOURCES = bestfcom.c
