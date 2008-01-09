@@ -24,11 +24,8 @@ SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;tag=master \
         file://gumstix-kmode.patch;patch=1 \
 "
 
-S = "${WORKDIR}/xorg-server-${PV}"
-
-#S = "${WORKDIR}/git"
-
-#CFLAGS=-g
+#S = "${WORKDIR}/xorg-server-${PV}"
+S = "${WORKDIR}/git"
 
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
