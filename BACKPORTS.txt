@@ -32,3 +32,4 @@ b342639828f6049e03634372396237442063157a gnome-mplayer: Of course, we need MPlay
 n/a					 build-feeds.sh: Add gnome-mplayer per RFC. (PaulS, Koen)
 560f1294e1ef2699d2b80c98d99386c3030b8c0b task-opie*: "apm" is MACHINE_FEATURE, not COMBINED. (PaulE, PaulS)
 4a6e894ff08f0d4e0d6af803eec158fb40198ad7 opie-taskbar 1.2.3: Fix first-run wizard after install path revamp. (PaulE, PaulS)
+07699fa4e98276cd15fb353046904408fce6f65c conf/machine/*: Add "phone" MACHINE_FEATURE for phone devices. (Koen, PaulS)
