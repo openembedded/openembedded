@@ -11,7 +11,7 @@ EXTRA_OECONF = "\
 		--disable-ecore-sdl \
 		--enable-ecore-fb \
 		--enable-ecore-evas \
-		--disable-ecore-evas-gl \
+                --disable-ecore-evas-x11-gl \
 		--enable-ecore-evas-xrender \
 		--enable-ecore-evas-dfb \
 		--disable-openssl \
