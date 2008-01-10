@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r4"
+PR = "r0"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
@@ -10,6 +10,7 @@ EXTRA_OECONF = "\
 		--enable-buffer				\
 		--disable-software-ddraw	\
 		--disable-software-qtopia	\
+		--enable-simple-x11		\
 		--enable-software-x11		\
 		--enable-software-16-x11	\
 		--disable-software-xcb		\
