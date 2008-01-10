@@ -1,9 +1,10 @@
 require ecore.inc
-PR = "r5"
+PR = "r0"
 
 EXTRA_OECONF = "\
 		--enable-ecore-txt \
 		--disable-ecore-x-xcb \
+		--enable-simple-x11 \
 		--enable-ecore-x \
 		--enable-ecore-job \
 		--disable-ecore-directfb \

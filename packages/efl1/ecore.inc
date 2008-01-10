@@ -2,16 +2,12 @@ DESCRIPTION = "Ecore is the core event abstraction layer for the enlightenment \
 foundation libraries. It makes makes doing selections, drag and drop, event loops, \
 timeouts and idle handlers fast, optimized, and convenient."
 LICENSE = "MIT"
-DEPENDS = "curl directfb eet evas tslib"
+DEPENDS = "curl eet evas tslib"
 # optional
-# DEPENDS += "openssl virtual/libiconv"
+# DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.041+cvs${SRCDATE}"
 
 inherit efl_library
-
-# SRC_URI += "file://configure.patch;patch=1 \
-#           file://fix-tslib-configure.patch;patch=1 \
-#           file://fix-directfb-include.patch;patch=1"
 
 SRC_URI += "file://fix-directfb-include.patch;patch=1"
 
