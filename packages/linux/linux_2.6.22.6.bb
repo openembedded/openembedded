@@ -2,6 +2,7 @@ require linux.inc
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_ts72xx = "1"
+DEFAULT_PREFERENCE_mx31moboard = "1"
 
 PR = "r1"
 
@@ -24,5 +25,7 @@ SRC_URI_append_ts72xx = "\
            file://ts72xx-watchdog.patch;patch=1 \
            file://ts72xx-use-cpld-reset.patch;patch=1 \
            "
+
+SRC_URI_append_mx31moboard = "http://mobots.epfl.ch/mx31moboard/linux-2.6.22-moboard.patch.bz2;patch=1"
 
 S = "${WORKDIR}/linux-2.6.22"
