@@ -1,0 +1,14 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Ethernet/RNDIS gadget (g_ether)
+auto usb0
+iface usb0 inet static
+        address 192.168.0.202
+        netmask 255.255.255.0
+        network 192.168.0.0
+        gateway 192.168.0.200
+
