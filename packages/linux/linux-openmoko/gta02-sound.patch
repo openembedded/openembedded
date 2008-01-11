@@ -280,7 +280,7 @@ Index: linux-2.6.22/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
 +static int lm4853_get_spk(struct snd_kcontrol *kcontrol,
 +	struct snd_ctl_elem_value *ucontrol)
 +{
-+	ucontrol->value.integer.value[0] = (lm4853_state & LM4853_AMP) >> 1;
++	ucontrol->value.integer.value[0] = (lm4853_state & LM4853_SPK) >> 1;
 +
 +	return 0;
 +}
