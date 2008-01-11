@@ -1,0 +1,222 @@
+diff -ur gtk+-2.10.14.org/gtk/gtkfilechooserdefault.c gtk+-2.10.14/gtk/gtkfilechooserdefault.c
+--- gtk+-2.10.14.org/gtk/gtkfilechooserdefault.c	2007-07-16 22:44:17.000000000 +0300
++++ gtk+-2.10.14/gtk/gtkfilechooserdefault.c	2008-01-05 01:32:58.000000000 +0200
+@@ -243,7 +243,9 @@
+ /* Icon size for if we can't get it from the theme */
+ #define FALLBACK_ICON_SIZE 16
+ 
+-#define PREVIEW_HBOX_SPACING 12
++#define PREVIEW_HBOX_SPACING 2
++#define NORMAL_SPACING 2
++#define DOUBLE_SPACING 2
+ #define NUM_LINES 45
+ #define NUM_CHARS 60
+ 
+@@ -425,6 +427,17 @@
+ static void location_switch_to_path_bar (GtkFileChooserDefault *impl);
+ static void settings_load               (GtkFileChooserDefault *impl);
+ 
++int 
++_gtk_is_pda_mode()
++{
++  /* PDA mode is when we have small screen width, plus small overall screen area 
++     too. What we want to do when it is active is to prefer vertical packing over
++     horizontal (so we can show user filenames of as long length as possible), yet
++     still layout vertical space in such way so user can be able to see as many
++     files as possible. And of course, we save space overall - no big spacings and
++     borders. */
++  return gdk_screen_width() < 490;
++}
+ 
+ 
+ /* Drag and drop interface declarations */
+@@ -689,7 +702,7 @@
+   impl->pending_select_paths = NULL;
+   impl->location_mode = LOCATION_MODE_PATH_BAR;
+ 
+-  gtk_box_set_spacing (GTK_BOX (impl), 12);
++  gtk_box_set_spacing (GTK_BOX (impl), DOUBLE_SPACING);
+ 
+   impl->tooltips = gtk_tooltips_new ();
+   g_object_ref_sink (impl->tooltips);
+@@ -3603,8 +3616,9 @@
+   GtkWidget *vbox;
+   GtkWidget *hbox;
+   GtkWidget *widget;
++  gboolean is_pda = _gtk_is_pda_mode();
+ 
+-  vbox = gtk_vbox_new (FALSE, 6);
++  vbox = (is_pda?gtk_hbox_new:gtk_vbox_new) (FALSE, NORMAL_SPACING);
+   gtk_widget_show (vbox);
+ 
+   /* Shortcuts tree */
+@@ -3614,7 +3628,7 @@
+ 
+   /* Box for buttons */
+ 
+-  hbox = gtk_hbox_new (TRUE, 6);
++  hbox = (is_pda?gtk_vbox_new:gtk_hbox_new) (TRUE, NORMAL_SPACING);
+   gtk_size_group_add_widget (size_group, hbox);
+   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+   gtk_widget_show (hbox);
+@@ -3622,7 +3636,7 @@
+   /* Add bookmark button */
+ 
+   impl->browse_shortcuts_add_button = button_new (impl,
+-						  _("_Add"),
++						  "",
+ 						  GTK_STOCK_ADD,
+ 						  FALSE,
+ 						  TRUE,
+@@ -3634,14 +3648,22 @@
+   /* Remove bookmark button */
+ 
+   impl->browse_shortcuts_remove_button = button_new (impl,
+-						     _("_Remove"),
++						     "",
+ 						     GTK_STOCK_REMOVE,
+ 						     FALSE,
+ 						     TRUE,
+ 						     G_CALLBACK (remove_bookmark_button_clicked_cb));
++  if (!is_pda) {
++  /* Remove button is pretty reduntant, as that choice is available from popup menu (and would
++     be intuitively expected to be there; compare that with the "Add to shortucts" in popup
++     in files pane - most users would never try that and never new what shortcuts are).
++     If we suspect we can be short of screen space (PDA device is what often has portrait
++     layout), don't pack it, to allow more visually pleasing layout when minimizing location
++     pane. Note that we still instantiate it, as it is referenced thruout the code. */
+   gtk_box_pack_start (GTK_BOX (hbox), impl->browse_shortcuts_remove_button, TRUE, TRUE, 0);
+   gtk_tooltips_set_tip (impl->tooltips, impl->browse_shortcuts_remove_button,
+                         _("Remove the selected bookmark"), NULL);
++  }
+ 
+   return vbox;
+ }
+@@ -4221,7 +4243,7 @@
+   GtkWidget *hbox;
+   GtkWidget *widget;
+ 
+-  vbox = gtk_vbox_new (FALSE, 6);
++  vbox = gtk_vbox_new (FALSE, NORMAL_SPACING);
+   gtk_widget_show (vbox);
+ 
+   /* Box for lists and preview */
+@@ -4237,13 +4259,13 @@
+ 
+   /* Preview */
+ 
+-  impl->preview_box = gtk_vbox_new (FALSE, 12);
++  impl->preview_box = gtk_vbox_new (FALSE, DOUBLE_SPACING);
+   gtk_box_pack_start (GTK_BOX (hbox), impl->preview_box, FALSE, FALSE, 0);
+   /* Don't show preview box initially */
+ 
+   /* Filter combo */
+ 
+-  impl->filter_combo_hbox = gtk_hbox_new (FALSE, 12);
++  impl->filter_combo_hbox = gtk_hbox_new (FALSE, DOUBLE_SPACING);
+ 
+   widget = filter_create (impl);
+ 
+@@ -4336,13 +4358,13 @@
+ 
+   location_switch_to_path_bar (impl);
+ 
+-  vbox = gtk_vbox_new (FALSE, 12);
++  vbox = gtk_vbox_new (FALSE, DOUBLE_SPACING);
+ 
+   table = gtk_table_new (2, 2, FALSE);
+   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+   gtk_widget_show (table);
+-  gtk_table_set_row_spacings (GTK_TABLE (table), 12);
+-  gtk_table_set_col_spacings (GTK_TABLE (table), 12);
++  gtk_table_set_row_spacings (GTK_TABLE (table), DOUBLE_SPACING);
++  gtk_table_set_col_spacings (GTK_TABLE (table), DOUBLE_SPACING);
+ 
+   /* Label */
+ 
+@@ -4653,10 +4675,10 @@
+ 
+   /* size group is used by the [+][-] buttons and the filter combo */
+   size_group = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+-  vbox = gtk_vbox_new (FALSE, 12);
++  vbox = gtk_vbox_new (FALSE, DOUBLE_SPACING);
+ 
+   /* Location widgets */
+-  hbox = gtk_hbox_new (FALSE, 12);
++  hbox = gtk_hbox_new (FALSE, DOUBLE_SPACING);
+   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+   gtk_widget_show (hbox);
+ 
+@@ -4678,7 +4700,7 @@
+ 
+   /* Box for the location label and entry */
+ 
+-  impl->location_entry_box = gtk_hbox_new (FALSE, 12);
++  impl->location_entry_box = gtk_hbox_new (FALSE, DOUBLE_SPACING);
+   gtk_box_pack_start (GTK_BOX (vbox), impl->location_entry_box, FALSE, FALSE, 0);
+ 
+   impl->location_label = gtk_label_new_with_mnemonic (_("_Location:"));
+@@ -4686,12 +4708,16 @@
+   gtk_box_pack_start (GTK_BOX (impl->location_entry_box), impl->location_label, FALSE, FALSE, 0);
+ 
+   /* Paned widget */
+-  hpaned = gtk_hpaned_new ();
++  if (_gtk_is_pda_mode())
++    hpaned = gtk_vpaned_new ();
++  else
++    hpaned = gtk_hpaned_new ();
++
+   gtk_widget_show (hpaned);
+   gtk_box_pack_start (GTK_BOX (vbox), hpaned, TRUE, TRUE, 0);
+ 
+   widget = shortcuts_pane_create (impl, size_group);
+-  gtk_paned_pack1 (GTK_PANED (hpaned), widget, FALSE, FALSE);
++  gtk_paned_pack1 (GTK_PANED (hpaned), widget, FALSE, TRUE); /* Shortcuts can shrink beyond requested size */
+   widget = file_pane_create (impl, size_group);
+   gtk_paned_pack2 (GTK_PANED (hpaned), widget, TRUE, FALSE);
+ 
+diff -ur gtk+-2.10.14.org/gtk/gtkfilechooserdialog.c gtk+-2.10.14/gtk/gtkfilechooserdialog.c
+--- gtk+-2.10.14.org/gtk/gtkfilechooserdialog.c	2007-07-16 22:44:16.000000000 +0300
++++ gtk+-2.10.14/gtk/gtkfilechooserdialog.c	2008-01-05 01:28:35.000000000 +0200
+@@ -32,8 +32,12 @@
+ 
+ #include <stdarg.h>
+ 
++#define NORMAL_SPACING 2 
++#define DOUBLE_SPACING 2 
++
+ #define GTK_FILE_CHOOSER_DIALOG_GET_PRIVATE(o)  (GTK_FILE_CHOOSER_DIALOG (o)->priv)
+ 
++extern int _gtk_is_pda_mode(void);
+ static void gtk_file_chooser_dialog_finalize   (GObject                   *object);
+ 
+ static GObject* gtk_file_chooser_dialog_constructor  (GType                  type,
+@@ -162,8 +166,13 @@
+ 
+   gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
+ 
+-  if (width)
+-    *width = MIN (*width, (monitor.width * 3) / 4);
++  if (width) {
++    if (_gtk_is_pda_mode())
++      /* If width is physically small, use it all */
++      *width = monitor.width;
++    else
++      *width = MIN (*width, (monitor.width * 3) / 4);
++  }
+ 
+   if (height)
+     *height = MIN (*height, (monitor.height * 3) / 4);
+@@ -430,8 +439,8 @@
+    * http://developer.gnome.org/projects/gup/hig/1.0/windows.html#alert-spacing
+    */
+ 
+-  gtk_container_set_border_width (GTK_CONTAINER (dialog->vbox), 12);
+-  gtk_box_set_spacing (GTK_BOX (dialog->vbox), 24);
++  gtk_container_set_border_width (GTK_CONTAINER (dialog->vbox), DOUBLE_SPACING);
++  gtk_box_set_spacing (GTK_BOX (dialog->vbox), DOUBLE_SPACING * 2);
+ 
+   gtk_container_set_border_width (GTK_CONTAINER (dialog->action_area), 0);
+   gtk_box_set_spacing (GTK_BOX (dialog->action_area), 6);
+Only in gtk+-2.10.14/.pc/migration.patch/gtk: gtkmigration.c
+Only in gtk+-2.10.14: small-gtkfilechooser.patch
