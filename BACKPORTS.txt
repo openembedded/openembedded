@@ -10,7 +10,6 @@ Pending review:
 728b58626c50e060bf71960029afce111427d6a0 distcc ahavi autoconfiguration 
 b86387e484a9b94c2752d8ce5dcfb79742677efc     "
 c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
-a6a229a30536ec1d025937b05457059b0bf4b55d echo -e fix (Koen)
 
 Acked:
 
@@ -34,3 +33,5 @@ n/a					 build-feeds.sh: Add gnome-mplayer per RFC. (PaulS, Koen)
 560f1294e1ef2699d2b80c98d99386c3030b8c0b task-opie*: "apm" is MACHINE_FEATURE, not COMBINED. (PaulE, PaulS)
 4a6e894ff08f0d4e0d6af803eec158fb40198ad7 opie-taskbar 1.2.3: Fix first-run wizard after install path revamp. (PaulE, PaulS)
 07699fa4e98276cd15fb353046904408fce6f65c conf/machine/*: Add "phone" MACHINE_FEATURE for phone devices. (Koen, PaulS)
+a6a229a30536ec1d025937b05457059b0bf4b55d echo -e fix (Koen, Marcin)
+
