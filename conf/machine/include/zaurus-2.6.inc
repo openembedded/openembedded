@@ -49,7 +49,7 @@ zaurus_make_installkit () {
     mkdir ${IMAGE_NAME}-installkit/
 
     # Get the latest kernel using the zImage-<machine>.bin symlink
-    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
+    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage.bin
 
     if [ "${MACHINE}" = "spitz" ]; then
         cp gnu-tar ${IMAGE_NAME}-installkit/
