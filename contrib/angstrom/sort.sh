@@ -12,9 +12,12 @@ echo "Moving packages to the top level directory"
 find */ -name  "*.ipk" -exec mv  '{}'  ./ \;
 
 # Make a list of ipkg files already present in feeds and in unsorted
-echo "Making a list of storted and unsorted packages"
-for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
+echo "Making a list of unsorted packages"
 for i in $(find . -name "*.ipk") ; do basename $i ; done > files-unsorted
+if [ "$1" != "--skip-sorted-list" ]; then
+    echo "Making a list of sorted packages (takes long)"
+    for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
+fi
 
 # Make a list of duplicates and delete those
 echo "Finding duplicate packages in unsorted"
