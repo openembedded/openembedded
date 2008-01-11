@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Angstrom feed sorting script
-
+# This must be run in unstable/ directory 
 
 rm Packages* >& /dev/null
 
@@ -12,13 +12,14 @@ echo "Moving packages to the top level directory"
 find */ -name  "*.ipk" -exec mv  '{}'  ./ \;
 
 # Make a list of ipkg files already present in feeds and in unsorted
-echo "Making a list"
+echo "Making a list of storted and unsorted packages"
 for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
 for i in $(find . -name "*.ipk") ; do basename $i ; done > files-unsorted
 
 # Make a list of duplicates and delete those
-echo "Checking it twice"
+echo "Finding duplicate packages in unsorted"
 cat files-sorted files-unsorted | sort | uniq -d > files-duplicate
+echo "Removing duplicate packages in unsorted"
 cat files-duplicate | xargs rm -f
 
 do_sort() {
@@ -120,14 +121,10 @@ for i in `find . -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip
 echo " DONE"
 }
 
+echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
  (cd ../all && ipkg-make-index -p Packages -m . >& /dev/null)
 
 for arch in arm-oabi armv4t armv5teb armv5te armv6 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort
 done
-
-
-
-
-
