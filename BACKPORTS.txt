@@ -10,6 +10,7 @@ Pending review:
 728b58626c50e060bf71960029afce111427d6a0 distcc ahavi autoconfiguration 
 b86387e484a9b94c2752d8ce5dcfb79742677efc     "
 c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
+a6a229a30536ec1d025937b05457059b0bf4b55d echo -e fix (Koen)
 
 Acked:
 
