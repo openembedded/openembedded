@@ -94,6 +94,15 @@ do
 	do_build
 done	
 
+# Opie
+for machine in h2200 h3900 h4000 h5000 hx4700 htcuniversal akita c7x0 collie poodle spitz tosa simpad
+do
+	BUILD_CLEAN="base-files"
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="opie-image"
+        do_build
+done
+
 # populate feeds
 #for machine in ep93xx a780 efika collie ixp4xxbe
 #do
