@@ -1,15 +1,11 @@
 require navit.inc
 
 PV = "0.0.3+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/navit"
 
-SRC_URI = "cvs://anonymous@navit.cvs.sourceforge.net/cvsroot/navit;module=navit \
-           file://navit.xml-so.patch;patch=1 \
-	   file://navit.desktop"
-
-EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap --enable-avoid-float --enable-avoid-unaligned"
+SRC_URI = "cvs://anonymous@navit.cvs.sourceforge.net/cvsroot/navit;module=navit"
 
 EXTRA_AUTORECONF = " -I m4"
 

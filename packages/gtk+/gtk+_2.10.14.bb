@@ -1,6 +1,6 @@
 require gtk-2.10.inc
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://no-xwc.patch;patch=1 \
@@ -11,6 +11,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://xsettings.patch;patch=1 \
            file://scroll-timings.patch;patch=1 \
            file://small-gtkfilesel.patch;patch=1 \
+           file://small-gtkfilechooser.patch;patch=1 \
            file://migration.patch;patch=1;pnum=0 \
            file://run-iconcache.patch;patch=1 \
            file://hardcoded_libtool.patch;patch=1 \

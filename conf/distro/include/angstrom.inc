@@ -151,6 +151,7 @@ FEED_ARCH_nslu2be 	= "armv5teb"
 # armv6
 
 FEED_ARCH_mx31ads 	= "armv6"
+FEED_ARCH_mx31moboard	= "armv6"
 FEED_ARCH_nokia800	= "armv6"  
 FEED_ARCH_omap2420h4	= "armv6"
 FEED_ARCH_omap2430sdp   = "armv6"
