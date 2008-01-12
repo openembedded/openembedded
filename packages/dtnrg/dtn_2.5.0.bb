@@ -52,7 +52,9 @@ do_install_append() {
 	INCDIR=../.. LIBDIR=.. VERSION=${PV} python setup.py install --prefix=${D}/${prefix} --install-data=${D}/${datadir}
 }
 
-PACKAGES += "${PN}-python"
-FILES_${PN}-python = "${libdir}/${PYTHON_DIR}"
-RDEPENDS_${PN}-python = "python-core"
+PACKAGES += "python-dtn"
+DESCRIPTION_python-dtn = "Python bindings to the DTN API"
+PR_python-dtn = "ml1"
+FILES_python-dtn = "${libdir}/${PYTHON_DIR}"
+RDEPENDS_python-dtn = "python-core"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/.debug"
