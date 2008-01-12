@@ -3,7 +3,7 @@ DESCRIPTION = "LiPS address book"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
-PV = "0.1+svn-${SRCDATE}"
+PV = "0.1+svnr-${SRCREV}"
 
 DEFAULT_PREFERENCE = "-1"
 

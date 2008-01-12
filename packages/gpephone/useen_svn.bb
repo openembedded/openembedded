@@ -5,8 +5,6 @@ PRIORITY    = "optional"
 PR          = "r0"
 PV = "0.0+svnr-${SRCREV}"
 
-SRCREV_pn-${PN} ?= "1400"
-
 DEFAULT_PREFERENCE = "-1"
 
 DEPENDS = "glib-2.0"
