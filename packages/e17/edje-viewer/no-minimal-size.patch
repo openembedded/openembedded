@@ -1,0 +1,11 @@
+--- edje_viewer/src/bin/etk_gui.c	2008-01-13 20:08:45.000000000 +0100
++++ edje_viewer/src/bin/etk_gui.c.patched	2008-01-13 20:09:18.000000000 +0100
+@@ -147,7 +147,7 @@
+    etk_tree_col_model_add(col2, etk_tree_model_checkbox_new());
+    etk_tree_build(ETK_TREE(gui->tree));
+    etk_tree_col_sort_set(col2, gui_visibility_col_sort_cb, NULL);
+-   etk_widget_size_request_set(gui->tree, 300, 0);
++   etk_widget_size_request_set(gui->tree, 0, 0);
+    etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL,
+ 			      ETK_OBJECT(gui->tree),
+ 			      ETK_CALLBACK(_gui_tree_key_down_cb), gui);
