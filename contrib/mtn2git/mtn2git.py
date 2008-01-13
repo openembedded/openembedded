@@ -244,6 +244,12 @@ def fast_import(ops, revision):
         all_modifications = all_modifications.union(modified)
         all_deleted = all_deleted.union(deleted) 
 
+    if len(revision["parent"]) == 0:
+        (added, modified, deleted) = diff_manifest(build_tree([],""), current_tree)
+        all_added = all_added.union(added)
+        all_modifications = all_modifications.union(modified)
+        all_deleted = all_deleted.union(deleted) 
+
     # TODO:
     # Readd the sanity check to see if we deleted and modified an entry. This
     # could probably happen if we have more than one parent (on a merge)?
