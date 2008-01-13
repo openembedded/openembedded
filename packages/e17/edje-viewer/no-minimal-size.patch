@@ -1,6 +1,6 @@
---- edje_viewer/src/bin/etk_gui.c	2008-01-13 20:08:45.000000000 +0100
-+++ edje_viewer/src/bin/etk_gui.c.patched	2008-01-13 20:09:18.000000000 +0100
-@@ -147,7 +147,7 @@
+--- A/src/bin/etk_gui.c	2008-01-13 20:08:45.000000000 +0100
++++ B/src/bin/etk_gui.c.patched	2008-01-13 20:50:06.000000000 +0100
+@@ -147,21 +147,21 @@
     etk_tree_col_model_add(col2, etk_tree_model_checkbox_new());
     etk_tree_build(ETK_TREE(gui->tree));
     etk_tree_col_sort_set(col2, gui_visibility_col_sort_cb, NULL);
@@ -9,3 +9,19 @@
     etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL,
  			      ETK_OBJECT(gui->tree),
  			      ETK_CALLBACK(_gui_tree_key_down_cb), gui);
+    etk_paned_child1_set(ETK_PANED(paned), gui->tree, ETK_FALSE);
+ 
+    gui->canvas = etk_canvas_new();
+-   etk_widget_size_request_set(gui->canvas, 500, 500);
++   etk_widget_size_request_set(gui->canvas, 50, 50);
+    etk_object_notification_callback_add(ETK_OBJECT(gui->canvas), "geometry",
+ 	 canvas_resize_cb, NULL);
+    etk_paned_child2_set(ETK_PANED(paned), gui->canvas, ETK_TRUE);
+ 
+    gui->output = etk_tree_new();
+    etk_tree_headers_visible_set(ETK_TREE(gui->output), ETK_TRUE);
+-   col = etk_tree_col_new(ETK_TREE(gui->output), _("Output"), 200, 0.0);
++   col = etk_tree_col_new(ETK_TREE(gui->output), _("Output"), 100, 0.0);
+    etk_tree_col_model_add(col, etk_tree_model_text_new());
+    etk_tree_col_expand_set(col, ETK_TRUE);
+    etk_tree_build(ETK_TREE(gui->output));
