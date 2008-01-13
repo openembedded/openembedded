@@ -15,7 +15,7 @@ UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v1 gta02v2 gta02v3 gta02v4"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
-  git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream \
+  git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream;tag=3afac79ec27b91df185f090b31dad9620779f440 \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
   file://uboot-eabi-fix-HACK.patch;patch=1;maxrev=3773 \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
@@ -35,12 +35,6 @@ do_quilt() {
 do_svnrev() {
 	mv -f tools/setlocalversion tools/setlocalversion.old
 	echo "echo ${LOCALVERSION}" >>tools/setlocalversion
-}
-
-do_configure_prepend() {
-	find . -name "*.mk" -exec sed -i 's,-mabi=apcs-gnu,,' {} \;
-	find . -name "Makefile" -exec sed -i 's,-mabi=apcs-gnu,,' {} \;
-	cat ${WORKDIR}/uboot-eabi-fix-HACK.patch |patch -p1
 }
 
 do_compile () {
