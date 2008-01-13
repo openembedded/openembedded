@@ -7,7 +7,7 @@ DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
 
 # NOTE: Keep the digit in sync with BASEREV in contrib/generate-manifest-2.5.py
-PR = "ml5"
+PR = "ml6"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -79,7 +79,7 @@ do_install() {
 require python-${PYTHON_MAJMIN}-manifest.inc
 
 RPROVIDES_python-core = "python"
-RPROVIDES_python-curses = "python"
+RRECOMMEND_python-core = "python-readline"
 
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"
