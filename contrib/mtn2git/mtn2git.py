@@ -244,6 +244,12 @@ def fast_import(ops, revision):
         all_modifications = all_modifications.union(modified)
         all_deleted = all_deleted.union(deleted) 
 
+    if len(revision["parent"]) == 0:
+        (added, modified, deleted) = diff_manifest(build_tree([],""), current_tree)
+        all_added = all_added.union(added)
+        all_modifications = all_modifications.union(modified)
+        all_deleted = all_deleted.union(deleted) 
+
     # TODO:
     # Readd the sanity check to see if we deleted and modified an entry. This
     # could probably happen if we have more than one parent (on a merge)?
@@ -424,10 +430,7 @@ def main(mtn_cli, db, rev):
         for head in heads:
             print >> sys.stderr, old_heads, head
             all_revs += ops.ancestry_difference(head, old_heads)
-            for rev in all_revs:
-                if not rev in branch_heads:
-                    branch_heads[rev] = []
-                branch_heads[rev].append(branch)
+        status.former_heads[branch] = heads
 
     
     sorted_revs = [rev for rev in ops.toposort(all_revs)]
@@ -437,10 +440,6 @@ def main(mtn_cli, db, rev):
         else:
             print >> sys.stderr, "Going to import revision ", rev
             fast_import(ops, parse_revision(ops, rev))
-        branches = branch_heads[rev]
-        for branch in branches:
-            status.former_heads[branch] = [rev]
-        
 
 if __name__ == "__main__":
     import optparse
@@ -465,3 +464,4 @@ if __name__ == "__main__":
         print >> sys.stderr, "Failed to open the status file"
     main(options.mtn, options.database, options.rev)
     status.store(options.status)
+
