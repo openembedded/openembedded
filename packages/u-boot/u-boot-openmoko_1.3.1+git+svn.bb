@@ -1,14 +1,14 @@
-DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) support"
-AUTHOR = "Harald Welte <laforge@openmoko.org>"
+DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) and Neo FreeRunner (GTA02) support"
+AUTHOR = "Harald Welte <laforge@openmoko.org>, OpenMoko <openmoko-kernel@lists.openmoko.org>"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 
-UBOOT_UPSTREAM_REV = "f34024d4a328e6edd906456da98d2c537155c4f7"
-UBOOT_OPENMOKO_REV = "2943"
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4"
-
-PV = "1.2.0+git${UBOOT_UPSTREAM_REV}+svn${UBOOT_OPENMOKO_REV}"
+UBOOT_UPSTREAM_REV = "0ec595243dc99edcd248bbcfbfd5a1dc860bde89"
+UBOOT_OPENMOKO_REV = "3817"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4"
+LOCALVERSION = "+git${UBOOT_UPSTREAM_REV}+svn${UBOOT_OPENMOKO_REV}"
+PV = "1.3.1${LOCALVERSION}"
 PR = "r1"
 
 PROVIDES = "virtual/bootloader"
@@ -17,9 +17,9 @@ S = "${WORKDIR}/git"
 SRC_URI = "\
   git://www.denx.de/git/u-boot.git;protocol=git;tag=${UBOOT_UPSTREAM_REV} \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;rev=${UBOOT_OPENMOKO_REV};proto=http \
-  file://uboot-eabi-fix-HACK.patch \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
   file://makefile-no-dirafter.patch;patch=1 \
+  file://fix-data-abort-from-sd-ombug799.patch;patch=1 \
 "
 
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
@@ -31,9 +31,8 @@ do_quilt() {
 }
 
 do_svnrev() {
-        mv -f tools/setlocalversion tools/setlocalversion.old
-        echo -n "echo " >>tools/setlocalversion
-        echo ${PV}      >>tools/setlocalversion
+	mv -f tools/setlocalversion tools/setlocalversion.old
+	echo "echo ${LOCALVERSION}" >>tools/setlocalversion
 }
 
 do_configure_prepend() {
