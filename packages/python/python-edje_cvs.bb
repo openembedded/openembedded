@@ -1,5 +1,5 @@
 require python-efl.inc
 DEPENDS += "edje python-evas"
 
-PR = "r2"
+PR = "r4"
 

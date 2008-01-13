@@ -13,5 +13,17 @@ inherit setuptools
 SRC_URI = "${E_CVS};module=e17/proto/python-efl/${PN}"
 S = "${WORKDIR}/${PN}"
 
+do_install_append() {
+	if [ -e examples ]; then
+		install -d ${D}${datadir}/${PN}/
+		cp -a examples ${D}${datadir}/${PN}/
+		find ${D}${datadir}/${PN}/examples -name "CVS" | xargs rm -rf
+		find ${D}${datadir}/${PN}/examples -name ".cvsignore" | xargs rm -f
+	fi
+}
+
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/*.egg/*/*/.debug"
+
+PACKAGES += "${PN}-examples"
+FILES_${PN}-examples = "${datadir}/${PN}/examples"
 
