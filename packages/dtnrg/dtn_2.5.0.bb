@@ -4,6 +4,7 @@ SECTION = "libs"
 DEPENDS = "db openssl python-native xerces-c"
 LICENSE = "Apache"
 SRC_URI = "http://www.dtnrg.org/docs/code/dtn_${PV}.tgz"
+PR = "r1"
 
 inherit autotools
 
@@ -27,7 +28,7 @@ EXTRA_OECONF = "\
   --with-openssl=${STAGING_DIR} \
 "
 
-def python_dir(d):
+def dtn_python_dir(d):
         import os, bb
         staging_incdir = bb.data.getVar( "STAGING_INCDIR", d, 1 )
         if os.path.exists( "%s/python2.5" % staging_incdir ): return "python2.5"
@@ -35,10 +36,14 @@ def python_dir(d):
         if os.path.exists( "%s/python2.3" % staging_incdir ): return "python2.3"
         raise "No Python in STAGING_INCDIR. Forgot to build python-native ?"
 
-PYTHON_DIR = "${@python_dir(d)}"
+PYTHON_DIR = "${@dtn_python_dir(d)}"
 
-export BUILD_SYS
-export HOST_SYS
+# use this syntax once everyone has at least bitbake 1.8.9
+#export BUILD_SYS
+#export HOST_SYS
+
+export BUILD_SYS:="${BUILD_SYS}"
+export HOST_SYS:="${HOST_SYS}"
 
 do_configure_prepend() {
 	for i in aclocal/*.ac oasys/aclocal/*.ac; do
@@ -54,7 +59,7 @@ do_install_append() {
 
 PACKAGES += "python-dtn"
 DESCRIPTION_python-dtn = "Python bindings to the DTN API"
-PR_python-dtn = "ml1"
+PR_python-dtn = "ml2"
 FILES_python-dtn = "${libdir}/${PYTHON_DIR}"
 RDEPENDS_python-dtn = "python-core"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/.debug"
