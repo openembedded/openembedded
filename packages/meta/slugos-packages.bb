@@ -148,6 +148,7 @@ SLUGOS_PACKAGES = "\
 	miau \
 	microcom \
 	minicom \
+	monit \
 	motion \
 	mpd \
 	mt-daapd \
