@@ -22,6 +22,8 @@ PACKAGES += "\
     ${PN}-evas \
     ${PN}-fb \
     ${PN}-file \
+    ${PN}-imf \
+    ${PN}-imf-evas \
     ${PN}-ipc \
     ${PN}-job \
     ${PN}-txt \
@@ -36,6 +38,8 @@ FILES_${PN}-sdl = "${libdir}/libecore_sdl.so.*"
 FILES_${PN}-evas = "${libdir}/libecore_evas.so.*"
 FILES_${PN}-fb = "${libdir}/libecore_fb.so.*"
 FILES_${PN}-file = "${libdir}/libecore_file.so.*"
+FILES_${PN}-imf = "${libdir}/libecore_imf.so.*"
+FILES_${PN}-imf-evas = "${libdir}/libecore_imf_evas.so.*"
 FILES_${PN}-ipc = "${libdir}/libecore_ipc.so.*"
 FILES_${PN}-job = "${libdir}/libecore_job.so.*"
 FILES_${PN}-txt = "${libdir}/libecore_txt.so.*"
