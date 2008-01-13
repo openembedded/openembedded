@@ -1,4 +1,4 @@
-DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) support"
+DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) and Neo FreeRunner (GTA02) support"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 SECTION = "bootloader"
@@ -10,7 +10,7 @@ PR = "r0"
 
 SRCREV_FORMAT = "patches"
 
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 smdk2440 hxd8 qt2410 gta02v1 gta02v2 gta02v3 gta02v4"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v1 gta02v2 gta02v3 gta02v4"
 
 DEFAULT_PREFERENCE = "-1"
 
