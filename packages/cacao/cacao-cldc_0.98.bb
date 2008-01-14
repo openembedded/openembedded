@@ -9,7 +9,7 @@ SRC_URI +="file://midpath.patch;patch=1 \
           "
 SRC_URI_append_arm = "file://offset.h_arm.patch;patch=1"
 
-DEPENDS = "cacaoh-cldc-native ecj-native classpath-minimal-native virtual/cldc-api-1.1 libtool zlib"
+DEPENDS = "cacaoh-cldc-native virtual/javac-native classpath-minimal-native virtual/cldc-api-1.1 libtool zlib"
 RDEPENDS = "virtual/cldc-api-1.1 libltdl"
 RPROVIDES = "virtual/java"
 

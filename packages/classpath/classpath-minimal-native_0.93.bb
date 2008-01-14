@@ -1,6 +1,6 @@
 require classpath.inc
 
-DEPENDS = "glib-2.0 libart-lgpl pango libxtst jikes-native zip-native"
+DEPENDS = "glib-2.0 libart-lgpl pango libxtst virtual/javac-native zip-native"
 PR = "r1"
 
 SRC_URI += "file://disable-automake-checks-v2.patch;patch=1"

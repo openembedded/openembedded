@@ -9,9 +9,9 @@ SRC_URI = "http://downloads.sourceforge.net/midpath/midpath-${PV}.tar.gz"
 
 S = "${WORKDIR}/midpath-${PV}"
 
-DEPENDS = "ecj-native fastjar-native classpath-minimal"
+DEPENDS = "virtual/javac-native fastjar-native classpath-minimal"
 
-JAVAC_CMD = "${STAGING_BINDIR_NATIVE}/ecj"
+JAVAC_CMD = "${STAGING_BINDIR_NATIVE}/javac"
 
 FASTJAR_CMD = "${STAGING_BINDIR_NATIVE}/fastjar"
 

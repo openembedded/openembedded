@@ -11,13 +11,13 @@ S = "${WORKDIR}/classpath-${PV}"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
-DEPENDS = "ecj-native zip-native"
+DEPENDS = "virtual/javac-native zip-native"
 
 inherit autotools
 
 
 EXTRA_OECONF = "--with-glibj \
-                --with-ecj=${STAGING_BINDIR_NATIVE}/ecj \
+                --with-javac=${STAGING_BINDIR_NATIVE}/javac \
                 --disable-alsa \
                 --disable-gconf-peer \
                 --disable-gtk-peer \

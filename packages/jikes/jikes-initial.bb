@@ -1,6 +1,6 @@
 SUMMARY = "Initial Java 1.4-compatible (and not higher) compiler"
 
-DEPENDS = "jikes-native classpath-initial"
+DEPENDS = "virtual/javac-native classpath-initial"
 
 SRC_URI = ""
 
