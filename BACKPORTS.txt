@@ -48,4 +48,4 @@ b51d4243259f513da30624d712741d40c55e7a83   "
 ed94d35280e9dbc28ff90a5b175dc47c752bf347   "
 a187890b5224af772da71b35cf822fe014826a92   "
 986ab26afb8364d7b6c5fe4af2fcef9ebf72d5a1   "
-
+n/a                                      build-feeds.sh: Add python-pygtk (PaulS, Koen)
