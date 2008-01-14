@@ -1,7 +1,7 @@
 
 require cacao.inc
 
-DEPENDS = "ecj-native classpath-minimal-native virtual/cldc-api-1.1-native libtool-native zlib-native"
+DEPENDS = "virtual/javac-native classpath-minimal-native virtual/cldc-api-1.1-native libtool-native zlib-native"
 
 inherit native
 
