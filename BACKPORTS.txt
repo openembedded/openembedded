@@ -37,4 +37,11 @@ n/a					 build-release.sh: Add opie-image build (PaulE, Koen)
 d9c08e4fa1d5e137c28a0835802abcbcadeb294a gtk+ 2.10.14: Add smallscreen mod for GtkFileChooser. (PaulS, Mickey)
 728b58626c50e060bf71960029afce111427d6a0 distcc ahavi autoconfiguration (Koen, Marcin, PaulS) 
 b86387e484a9b94c2752d8ce5dcfb79742677efc     "
+37503acf69411b447655a4711ed7b553120c14df Python fixes (Koen,Marcin)
+24916a17282e2ffabf89c2a0b3983b8f9bb9149b   "
+9d3729dac5d6623cd0b583777f2a35f6003a4446   "
+b51d4243259f513da30624d712741d40c55e7a83   "
+ed94d35280e9dbc28ff90a5b175dc47c752bf347   "
+a187890b5224af772da71b35cf822fe014826a92   "
+986ab26afb8364d7b6c5fe4af2fcef9ebf72d5a1   "
 
