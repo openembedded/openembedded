@@ -1,6 +1,6 @@
 require classpath.inc
 
-DEPENDS = "jikes-native zip-native"
+DEPENDS = "virtual/javac-native zip-native"
 RDEPENDS_${PBN}-minimal = "${PBN}-common (>= ${PV})"
 RCONFLICTS_${PBN}-minimal = "${PBN}-gtk"
 

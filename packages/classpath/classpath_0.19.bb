@@ -1,6 +1,6 @@
 require classpath.inc
 
-DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"
+DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native zip-native"
 RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 PR = "r1"
 

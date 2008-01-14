@@ -7,7 +7,7 @@ PV = "0.20+cvs${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"
 
-DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"
+DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native zip-native"
 RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 
 SRC_URI = "cvs://anoncvs@cvs.gnu.org/cvsroot/classpath;method=pserver;rsh=ssh;module=classpath \
