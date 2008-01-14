@@ -1,0 +1,68 @@
+# This is generic pppd config for GPRS connection
+# To connect to specific provider, one
+# more provider-specific config
+# file is required, which will 
+# usually just set chat utility params 
+# to make connection and call this one. 
+# (And in most cases that will be symlink 
+# to a file with well-known settings).
+#
+# Usage:
+#   pppd <modem_device> call gprs call <country>-<provider>
+#   where /etc/ppp/peers/<country>-<provider> ends with line
+#   "call _gprs"
+# Example:
+#   pppd /dev/rfcomm0 call ua-life
+# Debugging PPP protocol problems:
+#   pppd /dev/rfcomm0 call ua-life debug nodetach
+#
+# By default, pppd will go to 
+# background once connection is 
+# established. 'nodetach' option will 
+# prevent this. If you want pppd to
+# even establish connection in 
+# background, comment 'updetach' below.
+# 
+# To finish connection, use Ctrl+C if
+# 'nodetach' was used, or
+#   kill `head -1 /var/run/ppp-gprs.pid`
+# otherwise. If you are sure there is
+# only one pppd connection, you can use
+#   killall pppd
+
+##
+## pppd options
+##
+
+# create /var/run/ppp-gprs.pid 
+# with pid for this connection
+linkname gprs
+# Connect in foreground, but go 
+# to background after that
+updetach
+
+# Treat port as a modem and use 
+# reasonable speed
+modem
+crtscts
+115200
+
+# Don't do CCP (compression) 
+# negotiation, some  providers are 
+# rumored to be buggy with this, and 
+# most of the rest simply don't support.
+noccp
+# We don't request provider to auth 
+# to us
+noauth
+# Don't try to make up our IP address
+noipdefault 
+# We want provider to supply us with 
+# IP addresses
+ipcp-accept-remote
+ipcp-accept-local
+# Ask provider for DNS and use it
+usepeerdns
+# Route all Internet traffic thru 
+# this connection
+defaultroute
