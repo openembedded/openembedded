@@ -8,6 +8,10 @@ http://www.openembedded.org/viewmtn/revision/info/<rev>
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
 c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
+2c1b6fa0891e86d61e015c51b2b0fc0690789b70 QT4 fixes (koen)
+16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
+334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
+c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
 
 Acked:
 
