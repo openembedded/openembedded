@@ -9,7 +9,7 @@ KERNEL_RELEASE = "2.6.22.5"
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}-moko11+svnr${SRCREV}"
-PR = "r10"
+PR = "r13"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -29,7 +29,6 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.ta
            file://iis-suspend.patch;patch=1 \
            file://s3c24xx-pcm-suspend.patch;patch=1 \
            file://gta-vibro-pwm-suspend.patch;patch=1 \
-           file://glamo-report-vram-size-to-userspace.patch;patch=1 \
            file://defconfig-${KERNEL_RELEASE}"
 
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"

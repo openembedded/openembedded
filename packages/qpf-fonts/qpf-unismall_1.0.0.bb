@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.jp/projects/zaurus-ja/"
 RPROVIDES = "virtual/japanese-font"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://osdn.dl.sourceforge.jp/zaurus-ja/773/unismall-${PV}.tar.gz"
 
@@ -22,3 +22,5 @@ do_install () {
 }
 
 inherit qpf
+
+PACKAGE_ARCH = "all"

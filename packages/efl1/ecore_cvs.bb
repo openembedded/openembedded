@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r0"
+PR = "r1"
 
 EXTRA_OECONF = "\
 		--enable-ecore-txt \

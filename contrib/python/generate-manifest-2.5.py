@@ -11,7 +11,7 @@ import time
 
 VERSION = "2.5.1"
 # increase when touching python-core, this should be the same ml version as in python_2.5.1.bb
-BASEREV = 5
+BASEREV = 6
 
 __author__ = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 __version__ = "20071205"

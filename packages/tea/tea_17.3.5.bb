@@ -1,7 +1,8 @@
-DESCRIPTION = "Tea - a GTK based text editor tith highlighting and a lot of processing features"
+DESCRIPTION = "Tea - a GTK based text editor with highlighting and a lot of processing features"
 SECTION = "gpe"
 LICENSE = "GPL"
 DEPENDS = "gtk+ gtksourceview"
+PR = "r1"
 
 inherit autotools
 
