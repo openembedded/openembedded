@@ -194,6 +194,7 @@ SLUGOS_PACKAGES = "\
 	sudo \
 	sysfsutils \
 	tar \
+	tcpdump \
 	thttpd \
 	tiff \
 	tzdata \

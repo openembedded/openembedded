@@ -464,7 +464,6 @@ python do_qa_configure() {
                     os.path.join(root,"config.log")
         if "config.log" in files:
             if os.system(statement) == 0:
-                bb.fatal("This autoconf log indicates errors, it looked at \
-                          host includes. Rerun configure task after fixing this. \
-                          Path was '%s'" % root)
+                bb.fatal("""This autoconf log indicates errors, it looked at host includes.
+Rerun configure task after fixing this. The path was '%s'""" % root)
 }

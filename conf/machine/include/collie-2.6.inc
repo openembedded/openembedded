@@ -12,7 +12,7 @@ zaurus_make_installkit () {
     rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/
     mkdir ${IMAGE_NAME}-installkit/
     # Get the latest kernel using the zImage-<machine>.bin symlink
-    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage.bin
+    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
     if [ "${MACHINE}" = "spitz" ]; then
         cp gnu-tar ${IMAGE_NAME}-installkit/
         cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/hdimage1.tgz

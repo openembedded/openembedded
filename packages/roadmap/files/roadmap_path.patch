@@ -1,0 +1,57 @@
+--- src/unix/roadmap_path.c.old	2008-01-12 21:08:03.000000000 -0600
++++ src/unix/roadmap_path.c	2008-01-12 21:29:40.000000000 -0600
+@@ -93,23 +93,18 @@ static const char *RoadMapPathConfig[] =
+    "/opt/QtPalmtop/share/roadmap",
+    "/mnt/cf/QtPalmtop/share/roadmap",
+    "/mnt/card/QtPalmtop/share/roadmap",
+-#else
++#endif
+    /* This is for standard Unix configurations. */
+    "/etc/roadmap",
+    "/usr/local/share/roadmap",
+    "/usr/share/roadmap",
+-#endif
+    NULL
+ };
+ static const char *RoadMapPathConfigPreferred =
+ #ifdef ROADMAP_CONFIG_DIR
+                         ROADMAP_CONFIG_DIR;
+ #else
+-#ifdef QWS
+-                      "/mnt/cf/QtPalmtop/share/roadmap";
+-#else
+-                      "/usr/local/share/roadmap";
+-#endif
++                      "/usr/share/roadmap";
+ #endif
+ 
+ 
+@@ -123,7 +118,7 @@ static const char *RoadMapPathMaps[] = {
+    "/opt/QtPalmtop/share/roadmap/...",
+    "/mnt/cf/QtPalmtop/share/roadmap/...",
+    "/mnt/card/QtPalmtop/share/roadmap/...",
+-#else
++#endif
+    /* This is for standard Unix configurations. */
+    "&/maps/...",
+    "/var/lib/roadmap/...",
+@@ -134,19 +129,14 @@ static const char *RoadMapPathMaps[] = {
+     */
+    "/usr/local/share/roadmap/...",
+    "/usr/share/roadmap/...",
+-#endif
+    NULL
+ };
+ static const char *RoadMapPathMapsPreferred =
+ #ifdef ROADMAP_MAP_DIR
+                         ROADMAP_MAP_DIR;
+ #else
+-#ifdef QWS
+-                      "/mnt/cf/QtPalmtop/share/roadmap";
+-#else
+                       "/var/lib/roadmap";
+ #endif
+-#endif
+ 
+ /* The default path for the icon files (the "icons" path): */
+ static const char *RoadMapPathIcons[] = {
