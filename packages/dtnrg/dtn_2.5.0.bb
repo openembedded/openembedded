@@ -4,7 +4,7 @@ SECTION = "libs"
 DEPENDS = "db openssl python-native xerces-c"
 LICENSE = "Apache"
 SRC_URI = "http://www.dtnrg.org/docs/code/dtn_${PV}.tgz"
-PR = "r1"
+PR = "r2"
 
 inherit autotools
 
@@ -57,9 +57,11 @@ do_install_append() {
 	INCDIR=../.. LIBDIR=.. VERSION=${PV} python setup.py install --prefix=${D}/${prefix} --install-data=${D}/${datadir}
 }
 
+PACKAGES =+ "${PN}-lib"
+FILES_${PN}-lib = "${libdir}/*.so*"
 PACKAGES += "python-dtn"
 DESCRIPTION_python-dtn = "Python bindings to the DTN API"
 PR_python-dtn = "ml2"
 FILES_python-dtn = "${libdir}/${PYTHON_DIR}"
-RDEPENDS_python-dtn = "python-core dtn"
+RDEPENDS_python-dtn = "python-core dtn-lib"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/.debug"
