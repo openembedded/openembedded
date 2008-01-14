@@ -1,0 +1,12 @@
+diff -r d8fe2c3ba284 src/threads/native/threads.c
+--- a/src/threads/native/threads.c	Sun Dec 30 17:43:35 2007 +0100
++++ b/src/threads/native/threads.c	Wed Jan 02 16:41:57 2008 +0100
+@@ -1432,6 +1432,8 @@ bool threads_attach_current_thread(JavaV
+ 
+ 	threads_thread_set_object(thread, (java_handle_t *) t);
+ 
++  threads_set_current_threadobject(thread);
++
+ 	/* thread is completely initialized */
+ 
+ 	threads_thread_state_runnable(thread);
