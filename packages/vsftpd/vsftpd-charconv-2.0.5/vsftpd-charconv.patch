@@ -1,0 +1,4365 @@
+This patch is extracted and cleaned up version of filename character
+set conversion patches for vsftpd by Dmitriy Balashov, 
+http://vsftpd.devnet.ru/eng/ . It provides dirty-pragmatics approach
+towards serving Windows codepages encoded filenames to Windows clients
+out of normal utf-8 filesystem.
+
+These patches will never be accepted upstream, they should never be merged
+to main vsftpd package, and they for sure void "vs" in "vsftpd". So again,
+they are for users to prefer stone-dead pragmatics. Use at you own risk.
+
+- Paul Sokolovsky, pmiscml@gmail.com
+
+diff -urN vsftpd-2.0.5.org/charconv.c vsftpd-2.0.5/charconv.c
+--- vsftpd-2.0.5.org/charconv.c	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/charconv.c	2008-01-13 20:39:49.000000000 +0200
+@@ -0,0 +1,462 @@
++/*
++ * Part of Very Secure FTPd
++ * Licence: GPL v2
++ * Author: Dmitriy Balashov
++ * charconv.c
++ */
++
++#include "charconv.h"
++#include "tunables.h"
++#include "session.h"
++#include "str.h"
++#include "sysutil.h"
++
++#include "char_maps/utf8.map"
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++#include "char_maps/cyrillic.map"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++#include "char_maps/western.map"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++#include "char_maps/central.map"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++#include "char_maps/soutern.map"
++#endif
++
++/* Tables mapping supported codepage names to runtime variables */
++static struct available_charsets
++{
++  const char* p_charset_name;
++  int p_variable;
++}
++available_charsets_array[] =
++{
++  { VSFTP_CP_NONE      , VSFTP_C_NONE      },
++  // Cyrillic
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++  { VSFTP_CP_UTF_8     , VSFTP_C_UTF8      },
++  { VSFTP_CP_UTF8      , VSFTP_C_UTF8      },
++  { VSFTP_CP_WIN_1251  , VSFTP_C_1251      },
++  { VSFTP_CP_WIN1251   , VSFTP_C_1251      },
++  { VSFTP_CP_CP1251    , VSFTP_C_1251      },
++  { VSFTP_CP_1251      , VSFTP_C_1251      },
++  { VSFTP_CP_KOI8_R    , VSFTP_C_878R      },
++  { VSFTP_CP_KOI8R     , VSFTP_C_878R      },
++  { VSFTP_CP_CP878     , VSFTP_C_878R      },
++  { VSFTP_CP_878       , VSFTP_C_878R      },
++  { VSFTP_CP_CP878R    , VSFTP_C_878R      },
++  { VSFTP_CP_878R      , VSFTP_C_878R      },
++  { VSFTP_CP_KOI8_U    , VSFTP_C_878U      },
++  { VSFTP_CP_KOI8U     , VSFTP_C_878U      },
++  { VSFTP_CP_CP878U    , VSFTP_C_878U      },
++  { VSFTP_CP_878U      , VSFTP_C_878U      },
++  { VSFTP_CP_IBM866    , VSFTP_C_866       },
++  { VSFTP_CP_CP866     , VSFTP_C_866       },
++  { VSFTP_CP_866       , VSFTP_C_866       },
++  { VSFTP_CP_ISO8859_5 , VSFTP_C_ISO5      },
++  { VSFTP_CP_ISO5      , VSFTP_C_ISO5      },
++#endif
++  // Western European
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++  { VSFTP_CP_ISO8859_1 , VSFTP_C_ISO1      },
++  { VSFTP_CP_ISO1      , VSFTP_C_ISO1      },
++  { VSFTP_CP_LATIN1    , VSFTP_C_ISO1      },
++  { VSFTP_CP_ISO8859_15, VSFTP_C_ISO15     },
++  { VSFTP_CP_ISO15     , VSFTP_C_ISO15     },
++  { VSFTP_CP_LATIN9    , VSFTP_C_ISO15     },
++  { VSFTP_CP_WIN_1252  , VSFTP_C_1252      },
++  { VSFTP_CP_WIN1252   , VSFTP_C_1252      },
++  { VSFTP_CP_CP1252    , VSFTP_C_1252      },
++  { VSFTP_CP_1252      , VSFTP_C_1252      },
++#endif
++  // Central European
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++  { VSFTP_CP_ISO8859_2 , VSFTP_C_ISO2      },
++  { VSFTP_CP_ISO2      , VSFTP_C_ISO2      },
++  { VSFTP_CP_LATIN2    , VSFTP_C_ISO2      },
++  { VSFTP_CP_ISO8859_16, VSFTP_C_ISO16     },
++  { VSFTP_CP_ISO16     , VSFTP_C_ISO16     },
++  { VSFTP_CP_WIN_1250  , VSFTP_C_1250      },
++  { VSFTP_CP_WIN1250   , VSFTP_C_1250      },
++  { VSFTP_CP_CP1250    , VSFTP_C_1250      },
++  { VSFTP_CP_1250      , VSFTP_C_1250      },
++#endif
++  // Soutern European
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++  { VSFTP_CP_ISO8859_3 , VSFTP_C_ISO3      },
++  { VSFTP_CP_ISO3      , VSFTP_C_ISO3      },
++  { VSFTP_CP_LATIN3    , VSFTP_C_ISO3      },
++#endif
++  { 0, 0 }
++};
++
++/* Available convertions */
++static struct available_convertions
++{
++  int local;
++  int remote;
++  int localCharset;
++  int remoteCharset;
++}
++available_convertions_array[] =
++{ // Cyrillic
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++  { VSFTP_C_UTF8      , VSFTP_C_1251      , VSFTP_CS_UTF8CYR   , VSFTP_CS_1251      },
++  { VSFTP_C_UTF8      , VSFTP_C_878R      , VSFTP_CS_UTF8CYR   , VSFTP_CS_878R      },
++  { VSFTP_C_UTF8      , VSFTP_C_878U      , VSFTP_CS_UTF8CYR   , VSFTP_CS_878U      },
++  { VSFTP_C_UTF8      , VSFTP_C_866       , VSFTP_CS_UTF8CYR   , VSFTP_CS_866       },
++  { VSFTP_C_UTF8      , VSFTP_C_ISO5      , VSFTP_CS_UTF8CYR   , VSFTP_CS_ISO5      },
++  { VSFTP_C_1251      , VSFTP_C_UTF8      , VSFTP_CS_1251      , VSFTP_CS_UTF8CYR   },
++  { VSFTP_C_1251      , VSFTP_C_878R      , VSFTP_CS_1251      , VSFTP_CS_878R      },
++  { VSFTP_C_1251      , VSFTP_C_878U      , VSFTP_CS_1251      , VSFTP_CS_878U      },
++  { VSFTP_C_1251      , VSFTP_C_866       , VSFTP_CS_1251      , VSFTP_CS_866       },
++  { VSFTP_C_1251      , VSFTP_C_ISO5      , VSFTP_CS_1251      , VSFTP_CS_ISO5      },
++  { VSFTP_C_878R      , VSFTP_C_UTF8      , VSFTP_CS_878R      , VSFTP_CS_UTF8CYR   },
++  { VSFTP_C_878R      , VSFTP_C_1251      , VSFTP_CS_878R      , VSFTP_CS_1251      },
++  { VSFTP_C_878R      , VSFTP_C_878U      , VSFTP_CS_878R      , VSFTP_CS_878U      },
++  { VSFTP_C_878R      , VSFTP_C_866       , VSFTP_CS_878R      , VSFTP_CS_866       },
++  { VSFTP_C_878R      , VSFTP_C_ISO5      , VSFTP_CS_878R      , VSFTP_CS_ISO5      },
++  { VSFTP_C_866       , VSFTP_C_UTF8      , VSFTP_CS_866       , VSFTP_CS_UTF8CYR   },
++  { VSFTP_C_866       , VSFTP_C_1251      , VSFTP_CS_866       , VSFTP_CS_1251      },
++  { VSFTP_C_866       , VSFTP_C_878R      , VSFTP_CS_866       , VSFTP_CS_878R      },
++  { VSFTP_C_866       , VSFTP_C_878U      , VSFTP_CS_866       , VSFTP_CS_878U      },
++  { VSFTP_C_866       , VSFTP_C_ISO5      , VSFTP_CS_866       , VSFTP_CS_ISO5      },
++  { VSFTP_C_ISO5      , VSFTP_C_UTF8      , VSFTP_CS_ISO5      , VSFTP_CS_UTF8CYR   },
++  { VSFTP_C_ISO5      , VSFTP_C_1251      , VSFTP_CS_ISO5      , VSFTP_CS_1251      },
++  { VSFTP_C_ISO5      , VSFTP_C_878R      , VSFTP_CS_ISO5      , VSFTP_CS_878R      },
++  { VSFTP_C_ISO5      , VSFTP_C_878U      , VSFTP_CS_ISO5      , VSFTP_CS_878U      },
++  { VSFTP_C_ISO5      , VSFTP_C_866       , VSFTP_CS_ISO5      , VSFTP_CS_866       },
++#endif
++  // Western European
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++  { VSFTP_C_UTF8      , VSFTP_C_ISO1      , VSFTP_CS_UTF8WEST  , VSFTP_CS_ISO1      },
++  { VSFTP_C_UTF8      , VSFTP_C_ISO15     , VSFTP_CS_UTF8WEST  , VSFTP_CS_ISO15     },
++  { VSFTP_C_UTF8      , VSFTP_C_1252      , VSFTP_CS_UTF8WEST  , VSFTP_CS_1252      },
++  { VSFTP_C_ISO1      , VSFTP_C_UTF8      , VSFTP_CS_ISO1      , VSFTP_CS_UTF8WEST  },
++  { VSFTP_C_ISO1      , VSFTP_C_ISO15     , VSFTP_CS_ISO1      , VSFTP_CS_ISO15     },
++  { VSFTP_C_ISO1      , VSFTP_C_1252      , VSFTP_CS_ISO1      , VSFTP_CS_1252      },
++  { VSFTP_C_ISO15     , VSFTP_C_UTF8      , VSFTP_CS_ISO15     , VSFTP_CS_UTF8WEST  },
++  { VSFTP_C_ISO15     , VSFTP_C_ISO1      , VSFTP_CS_ISO15     , VSFTP_CS_ISO1      },
++  { VSFTP_C_ISO15     , VSFTP_C_1252      , VSFTP_CS_ISO15     , VSFTP_CS_1252      },
++  { VSFTP_C_1252      , VSFTP_C_UTF8      , VSFTP_CS_1252      , VSFTP_CS_UTF8WEST  },
++  { VSFTP_C_1252      , VSFTP_C_ISO1      , VSFTP_CS_1252      , VSFTP_CS_ISO1      },
++  { VSFTP_C_1252      , VSFTP_C_ISO15     , VSFTP_CS_1252      , VSFTP_CS_ISO15     },
++#endif
++  // Central European
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++  { VSFTP_C_UTF8      , VSFTP_C_ISO2      , VSFTP_CS_UTF8CENT  , VSFTP_CS_ISO2      },
++  { VSFTP_C_UTF8      , VSFTP_C_ISO16     , VSFTP_CS_UTF8CENT  , VSFTP_CS_ISO16     },
++  { VSFTP_C_UTF8      , VSFTP_C_1250      , VSFTP_CS_UTF8CENT  , VSFTP_CS_1250      },
++  { VSFTP_C_ISO2      , VSFTP_C_UTF8      , VSFTP_CS_ISO2      , VSFTP_CS_UTF8CENT  },
++  { VSFTP_C_ISO2      , VSFTP_C_ISO16     , VSFTP_CS_ISO2      , VSFTP_CS_ISO16     },
++  { VSFTP_C_ISO2      , VSFTP_C_1250      , VSFTP_CS_ISO2      , VSFTP_CS_1250      },
++  { VSFTP_C_ISO16     , VSFTP_C_UTF8      , VSFTP_CS_ISO16     , VSFTP_CS_UTF8CENT  },
++  { VSFTP_C_ISO16     , VSFTP_C_ISO2      , VSFTP_CS_ISO16     , VSFTP_CS_ISO2      },
++  { VSFTP_C_ISO16     , VSFTP_C_1250      , VSFTP_CS_ISO16     , VSFTP_CS_1250      },
++  { VSFTP_C_1250      , VSFTP_C_UTF8      , VSFTP_CS_1250      , VSFTP_CS_UTF8CENT  },
++  { VSFTP_C_1250      , VSFTP_C_ISO2      , VSFTP_CS_1250      , VSFTP_CS_ISO2      },
++  { VSFTP_C_1250      , VSFTP_C_ISO16     , VSFTP_CS_1250      , VSFTP_CS_ISO16     },
++#endif
++  // Soutern European
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++  { VSFTP_C_UTF8      , VSFTP_C_ISO3      , VSFTP_CS_UTF8SOUT  , VSFTP_CS_ISO3      },
++  { VSFTP_C_ISO3      , VSFTP_C_UTF8      , VSFTP_CS_ISO3      , VSFTP_CS_UTF8SOUT  },
++#endif
++
++  { 0, 0, 0, 0 }
++};
++
++map_ptr map_array[] =
++{
++  0,
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++  codepage_utf8cyr_array, codepage_win1251_array, codepage_koi8r_array,
++  codepage_ibm866_array, codepage_iso5_array, codepage_koi8u_array,
++#else
++  0, 0, 0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++  codepage_utf8west_array, codepage_iso1_array, codepage_iso15_array,
++  codepage_win1252_array,
++#else
++  0, 0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++  codepage_utf8cent_array, codepage_iso2_array, codepage_iso16_array,
++  codepage_win1250_array,
++#else
++  0, 0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++  codepage_utf8sout_array, codepage_iso3_array,
++#else
++  0, 0,
++#endif
++
++  0
++};
++
++/* Initial table for work with unprintable chars */
++map_ptr init_array[] =
++{
++  0,
++  codepage_utf8_array,
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++  codepage_win1251_array, codepage_koi8r_array, codepage_ibm866_array,
++  codepage_iso5_array, codepage_koi8u_array, 
++#else
++  0, 0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++  codepage_iso1_array, codepage_iso15_array, codepage_win1252_array,
++#else
++  0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++  codepage_iso2_array, codepage_iso16_array, codepage_win1250_array,
++#else
++  0, 0, 0,
++#endif
++
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++  codepage_iso3_array,
++#else
++  0,
++#endif
++
++  0
++};
++  
++map_ptr localMap = 0, remoteMap = 0;
++map_ptr localTbl = 0, remoteTbl = 0;
++
++void char_convertion(struct mystr* p_str, int direction, char unprintable);
++void InitTables(map_ptr* map, map_ptr* table, int indexx);
++static int char_len(unsigned int s);
++static unsigned int bsearch_index(map_ptr map, unsigned int low, unsigned int high, unsigned int char_code);
++
++const char* vsf_charconv_charset_name(int code)
++{
++  int i = 0;
++  while (available_charsets_array [i].p_charset_name && available_charsets_array [i].p_variable != code) i++;
++  return available_charsets_array [i].p_charset_name;
++}
++
++int vsf_charconv_codepage(const char* p_str)
++{
++  const struct available_charsets* charsets = available_charsets_array;
++  
++  while (charsets->p_charset_name != 0)
++  {
++    if (!vsf_sysutil_strcmp(charsets->p_charset_name, p_str))
++    {
++      return charsets->p_variable;
++    }
++    charsets++;
++  }
++  
++  return 0;
++}
++
++int vsf_charconv_avail_convertion(int localCode, int remoteCode)
++{
++  const struct available_convertions* aconv = available_convertions_array;
++
++  while (aconv->local != 0)
++  {
++    if (localCode == aconv->local && remoteCode == aconv->remote)
++    {
++      InitTables(&localMap, &localTbl, aconv->localCharset);
++      InitTables(&remoteMap, &remoteTbl, aconv->remoteCharset);
++      return 1;
++    }
++    aconv++; 
++  }
++
++  return 0;
++}
++
++void vsf_charconv_init_local_codepage(int localCode)
++{
++  if (!localCode) 
++  {
++    return;
++  }
++
++  localTbl = init_array [localCode];
++  localMap =  vsf_sysutil_malloc((localTbl [0].order + 1) * sizeof(_codepage_map));
++  localMap [0].char_code = localTbl [0].char_code;
++  localMap [0].order     = localTbl [0].order;
++
++  int indexx = 1;
++  while (localTbl [indexx].char_code)
++  {
++    if (localTbl [indexx].order)
++    {
++      localMap [localTbl [indexx].order].char_code = localTbl [indexx].char_code;
++      localMap [localTbl [indexx].order].order     = indexx;
++    }
++    indexx++;
++  }
++
++  return;
++}
++
++void vsf_charconv_convert(struct vsf_session* p_sess, struct mystr* p_str, int direction)
++{
++  if (!p_sess->enable_conversion || !p_sess->remote_charset || !tunable_local_codepage) return;
++
++  char_convertion(p_str, direction, '?');
++}
++
++void vsf_charconv_replace_unprintable(struct mystr* p_str, char new_char)
++{
++  if (localMap) char_convertion(p_str, VSFTP_CONVDIRECT_UNPRINTABLE, new_char);
++}
++
++void InitTables(map_ptr* map, map_ptr* table, int indexx)
++{
++  *table = map_array [indexx];
++
++  if (*map) vsf_sysutil_free(*map);
++
++  *map = vsf_sysutil_malloc(((*table) [0].order + 1) * sizeof(_codepage_map));
++  (*map) [0].char_code = (*table) [0].char_code;
++  (*map) [0].order     = (*table) [0].order;
++
++  indexx = 1;
++  while ((*table) [indexx].char_code)
++  {
++    if ((*table) [indexx].order)
++    {
++      (*map) [(*table) [indexx].order].char_code = (*table) [indexx].char_code;
++      (*map) [(*table) [indexx].order].order     = indexx;
++    }
++    indexx++;
++  }
++
++  return;
++}
++
++static int char_len(unsigned int s)
++{
++  int len = 1;
++       if ((s & 0x80) == 0x00) len = 1;
++  else if ((s & 0xe0) == 0xc0) len = 2;
++  else if ((s & 0xf0) == 0xe0) len = 3;
++  else if ((s & 0xf8) == 0xf0) len = 4;
++//  else if ((s & 0xfc) == 0xf8) len = 5;
++//  else if ((s & 0xfe) == 0xce) len = 6;
++  return (len);
++}
++
++static unsigned int bsearch_index(map_ptr map, unsigned int low, unsigned int high, unsigned int char_code)
++{
++  unsigned int m, l = low, r = high;
++
++  m = (l + r) >> 1;
++  while ((m != 0) && (map [m].char_code != char_code))
++  {
++    if (map [m].char_code < char_code) l = m + 1;
++    else
++    if (map [m].char_code > char_code) r = m - 1;
++    if (l > r)
++      return 0;
++    else
++      m = (l + r) >> 1;
++  }
++
++  if (m) m = map [m].order;
++  return m;
++}
++
++void char_convertion(struct mystr* p_str, int direction, char unprintable)
++{
++  const char* srcbuf;
++  unsigned int srclen;
++  char* dstbuf;
++  map_ptr src, dst;
++  unsigned int sl;
++  unsigned int srcpos = 0, dstpos = 0;
++  unsigned int char_code = 0;
++
++  srclen = str_getlen(p_str);     // Len of source string
++  srcbuf = str_getbuf(p_str);
++
++  if (direction == VSFTP_CONVDIRECT_FORWARD)
++  {
++    src = localMap;
++    dst = remoteTbl;
++  }
++  else
++  if (direction == VSFTP_CONVDIRECT_BACKWARD)
++  {
++    src = remoteMap;
++    dst = localTbl;
++  }
++  else
++  {
++    src = localMap;
++    dst = localTbl;
++  }
++
++  if (!src || !dst) 
++  {
++    return;
++  }
++
++  dstbuf = vsf_sysutil_malloc(srclen * dst [0].char_code + dst [0].char_code);
++
++  while (srcpos < srclen)
++  {
++    char_code = (unsigned char)srcbuf [srcpos++];
++    if (src [0].char_code > 1)
++    {
++      sl = char_len (char_code);
++      while (sl-- > 1)
++      {
++        char_code = (char_code << 8) | (unsigned char)srcbuf [srcpos++];
++      }	
++    }
++
++    if (char_code > 127)
++    {
++      sl = bsearch_index (src, 1, src [0].order, char_code);
++      char_code = 0;
++      if (sl) char_code = dst [sl].char_code;
++    }
++
++    if (char_code == 13 || char_code == 10)
++    {
++      char_code = 0;
++    }
++    else 
++    if (char_code < 32 && char_code != 9) 
++    {
++      char_code = (unsigned int)unprintable;
++    }
++
++    if (char_code > 0 || direction != VSFTP_CONVDIRECT_UNPRINTABLE) 
++    {
++      if (char_code & 0xff000000) dstbuf [dstpos++] = (char)((char_code >> 24) & 0xff);
++      if (char_code & 0x00ff0000) dstbuf [dstpos++] = (char)((char_code >> 16) & 0xff);
++      if (char_code & 0x0000ff00) dstbuf [dstpos++] = (char)((char_code >>  8) & 0xff);
++      if (char_code & 0x000000ff) dstbuf [dstpos++] = (char)((char_code      ) & 0xff);
++    }
++  }
++
++  dstbuf [dstpos] = '\0';
++
++  str_empty(p_str);
++  str_append_text(p_str, dstbuf);
++
++  vsf_sysutil_free(dstbuf);
++}
++
+diff -urN vsftpd-2.0.5.org/charconv.h vsftpd-2.0.5/charconv.h
+--- vsftpd-2.0.5.org/charconv.h	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/charconv.h	2008-01-13 19:32:11.000000000 +0200
+@@ -0,0 +1,182 @@
++#ifndef VSF_CHARCONV_H
++#define VSF_CHARCONV_H
++
++struct mystr;
++struct vsf_session;
++
++#define VSFTP_CHARCONV_SUPPORT_CYRILLIC
++#define VSFTP_CHARCONV_SUPPORT_WESTERN
++#define VSFTP_CHARCONV_SUPPORT_CENTRAL
++#define VSFTP_CHARCONV_SUPPORT_SOUTERN
++
++#define VSFTP_CONVDIRECT_FORWARD      1
++#define VSFTP_CONVDIRECT_UNPRINTABLE  0
++#define VSFTP_CONVDIRECT_BACKWARD    -1
++
++/* Supported charset for convertion */
++#define VSFTP_CP_NONE       "NONE"
++#define VSFTP_CP_UTF_8      "UTF-8"
++#define VSFTP_CP_UTF8       "UTF8"
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++#define VSFTP_CP_WIN_1251   "Win-1251"
++#define VSFTP_CP_WIN1251    "WIN1251"
++#define VSFTP_CP_CP1251     "CP1251"
++#define VSFTP_CP_1251       "1251"
++#define VSFTP_CP_KOI8_R     "Koi8-R"
++#define VSFTP_CP_KOI8R      "KOI8R"
++#define VSFTP_CP_KOI8_U     "Koi8-U"
++#define VSFTP_CP_KOI8U      "KOI8U"
++#define VSFTP_CP_CP878      "CP878"
++#define VSFTP_CP_878        "878"
++#define VSFTP_CP_CP878R     "CP878R"
++#define VSFTP_CP_878R       "878R"
++#define VSFTP_CP_CP878U     "CP878U"
++#define VSFTP_CP_878U       "878U"
++#define VSFTP_CP_IBM866     "IBM866"
++#define VSFTP_CP_CP866      "CP866"
++#define VSFTP_CP_866        "866"
++#define VSFTP_CP_ISO8859_5  "ISO-8859-5"
++#define VSFTP_CP_ISO5       "ISO5"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++#define VSFTP_CP_ISO8859_1  "ISO-8859-1"
++#define VSFTP_CP_ISO1       "ISO1"
++#define VSFTP_CP_LATIN1     "LATIN1"
++#define VSFTP_CP_ISO8859_15 "ISO-8859-15"
++#define VSFTP_CP_ISO15      "ISO15"
++#define VSFTP_CP_LATIN9     "LATIN9"
++#define VSFTP_CP_WIN_1252   "Win-1252"
++#define VSFTP_CP_WIN1252    "WIN1252"
++#define VSFTP_CP_CP1252     "CP1252"
++#define VSFTP_CP_1252       "1252"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++#define VSFTP_CP_ISO8859_2  "ISO-8859-2"
++#define VSFTP_CP_ISO2       "ISO2"
++#define VSFTP_CP_LATIN2     "LATIN2"
++#define VSFTP_CP_ISO8859_16 "ISO-8859-16"
++#define VSFTP_CP_ISO16      "ISO16"
++#define VSFTP_CP_WIN_1250   "Win-1250"
++#define VSFTP_CP_WIN1250    "WIN1250"
++#define VSFTP_CP_CP1250     "CP1250"
++#define VSFTP_CP_1250       "1250"
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++#define VSFTP_CP_ISO8859_3  "ISO-8859-3"
++#define VSFTP_CP_ISO3       "ISO3"
++#define VSFTP_CP_LATIN3     "LATIN3"
++#endif
++
++#define VSFTP_C_NONE       0
++#define VSFTP_C_UTF8       1
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++#define VSFTP_C_1251       2
++#define VSFTP_C_878R       3
++#define VSFTP_C_866        4
++#define VSFTP_C_ISO5       5
++#define VSFTP_C_878U       6
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++#define VSFTP_C_ISO1       7
++#define VSFTP_C_ISO15      8
++#define VSFTP_C_1252       9
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++#define VSFTP_C_ISO2      10
++#define VSFTP_C_ISO16     11
++#define VSFTP_C_1250      12
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++#define VSFTP_C_ISO3      13
++#endif
++
++#define VSFTP_CS_NONE      0
++#ifdef VSFTP_CHARCONV_SUPPORT_CYRILLIC
++#define VSFTP_CS_UTF8CYR   1
++#define VSFTP_CS_1251      2
++#define VSFTP_CS_878R      3
++#define VSFTP_CS_866       4
++#define VSFTP_CS_ISO5      5
++#define VSFTP_CS_878U      6
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_WESTERN
++#define VSFTP_CS_UTF8WEST  7
++#define VSFTP_CS_ISO1      8
++#define VSFTP_CS_ISO15     9
++#define VSFTP_CS_1252     10
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_CENTRAL
++#define VSFTP_CS_UTF8CENT 11
++#define VSFTP_CS_ISO2     12
++#define VSFTP_CS_ISO16    13
++#define VSFTP_CS_1250     14
++#endif
++#ifdef VSFTP_CHARCONV_SUPPORT_SOUTERN
++#define VSFTP_CS_UTF8SOUT 15
++#define VSFTP_CS_ISO3     16
++#endif
++
++struct codepage_map
++{
++  unsigned int char_code; // The first element is count bytes of char.
++  unsigned int order;
++} _codepage_map;
++
++typedef struct codepage_map * map_ptr;
++
++extern map_ptr localMap;
++
++/* vsf_charconv_charset_name()
++ * PURPOSE
++ * Get charset name by code;
++ * PARAMETERS
++ * code         - Internal charset code
++ * RETURNS
++ * Charset name
++ */
++const char* vsf_charconv_charset_name(int code);
++
++/* vsf_charconv_codepage()
++ * PURPOSE
++ * Get internal charset code
++ * PARAMETERS
++ * p_str        - String value with code page
++ * RETURNS
++ * Internal charset code
++ */
++int vsf_charconv_codepage(const char* p_str);
++
++/* vsf_charconv_init_local_codepage(int localCode)
++ * PURPOSE
++ * Init local codepage for work with unprintable chars
++ * PARAMETERS
++ * localCode    - source internal code page
++ */
++void vsf_charconv_init_local_codepage(int localCode);
++
++/* vsf_charconv_avail_convertion()
++ * PURPOS
++ * Checking for available convertion characters
++ * PARAMETERS
++ * localCode    - source internal code page
++ * remoteCode   - destination internal code page
++ * RETURNS
++ * Available ot not converion
++ */
++int vsf_charconv_avail_convertion(int localCode, int remoteCode);
++
++/* vsf_charconv_convert()
++ * PURPOSE
++ * Converting string via charsets
++ * PARAMETERS
++ * p_sess       - the current session object
++ * p_str        - string for convertin
++ * direction    - converting from host to remoute charsetr or otherwise
++ */
++void vsf_charconv_convert(struct vsf_session* p_sess, struct mystr* p_str, int direction);
++
++/* vsf_charconv_replace_unprintable
++ */
++void vsf_charconv_replace_unprintable(struct mystr* p_str, char new_char);
++
++#endif
+diff -urN vsftpd-2.0.5.org/char_maps/central.map vsftpd-2.0.5/char_maps/central.map
+--- vsftpd-2.0.5.org/char_maps/central.map	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/char_maps/central.map	2008-01-13 20:09:59.000000000 +0200
+@@ -0,0 +1,738 @@
++/*
++ !!! WARNING !!!
++ DON'T CHANGE ORDER OF CHARS
++*/
++
++struct codepage_map codepage_utf8cent_array[] =
++  {
++    { 0x000003, 178 },  // max size , char count
++    { 0x00003f,   0 },
++    { 0x00003f,   0 },
++    { 0x00003f,   0 },
++    { 0x00003f,   0 },
++    { 0x00003f,   0 },
++    { 0x00c280,   1 },
++    { 0x00c281,   2 },
++    { 0x00c282,   3 },
++    { 0x00c283,   4 },
++    { 0x00c284,   5 },
++    { 0x00c285,   6 },
++    { 0x00c286,   7 },
++    { 0x00c287,   8 },
++    { 0x00c288,   9 },
++    { 0x00c289,  10 },
++    { 0x00c28a,  11 },
++    { 0x00c28b,  12 },
++    { 0x00c28c,  13 },
++    { 0x00c28d,  14 },
++    { 0x00c28e,  15 },
++    { 0x00c28f,  16 },
++    { 0x00c290,  17 },
++    { 0x00c291,  18 },
++    { 0x00c292,  19 },
++    { 0x00c293,  20 },
++    { 0x00c294,  21 },
++    { 0x00c295,  22 },
++    { 0x00c296,  23 },
++    { 0x00c297,  24 },
++    { 0x00c298,  25 },
++    { 0x00c299,  26 },
++    { 0x00c29a,  27 },
++    { 0x00c29b,  28 },
++    { 0x00c29c,  29 },
++    { 0x00c29d,  30 },
++    { 0x00c29e,  31 },
++    { 0x00c29f,  32 },
++    { 0x00c2a0,  33 },
++    { 0x00c2a4,  34 },
++    { 0x00c2a6,  35 },
++    { 0x00c2a7,  36 },
++    { 0x00c2a8,  37 },
++    { 0x00c2a9,  38 },
++    { 0x00c2ab,  39 },
++    { 0x00c2ad,  40 },
++    { 0x00c2ad,  41 },
++    { 0x00c2ae,  42 },
++    { 0x00c2b0,  43 },
++    { 0x00c2b1,  44 },
++    { 0x00c2b4,  45 },
++    { 0x00c2b5,  46 },
++    { 0x00c2b6,  47 },
++    { 0x00c2b7,  48 },
++    { 0x00c2b8,  49 },
++    { 0x00c2bb,  50 },
++    { 0x00c380,  51 },
++    { 0x00c381,  52 },
++    { 0x00c382,  53 },
++    { 0x00c384,  54 },
++    { 0x00c386,  55 },
++    { 0x00c387,  56 },
++    { 0x00c388,  57 },
++    { 0x00c389,  58 },
++    { 0x00c38a,  59 },
++    { 0x00c38b,  60 },
++    { 0x00c38c,  61 },
++    { 0x00c38d,  62 },
++    { 0x00c38e,  63 },
++    { 0x00c38f,  64 },
++    { 0x00c392,  65 },
++    { 0x00c393,  66 },
++    { 0x00c394,  67 },
++    { 0x00c396,  68 },
++    { 0x00c397,  69 },
++    { 0x00c399,  70 },
++    { 0x00c39a,  71 },
++    { 0x00c39b,  72 },
++    { 0x00c39c,  73 },
++    { 0x00c39d,  74 },
++    { 0x00c39f,  75 },
++    { 0x00c3a0,  76 },
++    { 0x00c3a1,  77 },
++    { 0x00c3a2,  78 },
++    { 0x00c3a4,  79 },
++    { 0x00c3a6,  80 },
++    { 0x00c3a7,  81 },
++    { 0x00c3a8,  82 },
++    { 0x00c3a9,  83 },
++    { 0x00c3aa,  84 },
++    { 0x00c3ab,  85 },
++    { 0x00c3ac,  86 },
++    { 0x00c3ad,  87 },
++    { 0x00c3ae,  88 },
++    { 0x00c3af,  89 },
++    { 0x00c3b2,  90 },
++    { 0x00c3b3,  91 },
++    { 0x00c3b4,  92 },
++    { 0x00c3b6,  93 },
++    { 0x00c3b7,  94 },
++    { 0x00c3b9,  95 },
++    { 0x00c3ba,  96 },
++    { 0x00c3bb,  97 },
++    { 0x00c3bc,  98 },
++    { 0x00c3bd,  99 },
++    { 0x00c3bf, 100 },
++    { 0x00c482, 101 },
++    { 0x00c483, 102 },
++    { 0x00c484, 103 },
++    { 0x00c485, 104 },
++    { 0x00c486, 105 },
++    { 0x00c487, 106 },
++    { 0x00c48c, 107 },
++    { 0x00c48d, 108 },
++    { 0x00c48e, 109 },
++    { 0x00c48f, 110 },
++    { 0x00c490, 111 },
++    { 0x00c491, 112 },
++    { 0x00c498, 113 },
++    { 0x00c499, 114 },
++    { 0x00c49a, 115 },
++    { 0x00c49b, 116 },
++    { 0x00c4b9, 117 },
++    { 0x00c4ba, 118 },
++    { 0x00c4bd, 119 },
++    { 0x00c4be, 120 },
++    { 0x00c581, 121 },
++    { 0x00c582, 122 },
++    { 0x00c583, 123 },
++    { 0x00c584, 124 },
++    { 0x00c587, 125 },
++    { 0x00c588, 126 },
++    { 0x00c590, 127 },
++    { 0x00c591, 128 },
++    { 0x00c592, 129 },
++    { 0x00c593, 130 },
++    { 0x00c594, 131 },
++    { 0x00c595, 132 },
++    { 0x00c598, 133 },
++    { 0x00c599, 134 },
++    { 0x00c59a, 135 },
++    { 0x00c59b, 136 },
++    { 0x00c59e, 137 },
++    { 0x00c59f, 138 },
++    { 0x00c5a0, 139 },
++    { 0x00c5a1, 140 },
++    { 0x00c5a2, 141 },
++    { 0x00c5a3, 142 },
++    { 0x00c5a4, 143 },
++    { 0x00c5a5, 144 },
++    { 0x00c5ae, 145 },
++    { 0x00c5af, 146 },
++    { 0x00c5b0, 147 },
++    { 0x00c5b1, 148 },
++    { 0x00c5b8, 149 },
++    { 0x00c5b9, 150 },
++    { 0x00c5ba, 151 },
++    { 0x00c5bb, 152 },
++    { 0x00c5bc, 153 },
++    { 0x00c5bd, 154 },
++    { 0x00c5be, 155 },
++    { 0x00cb87, 156 },
++    { 0x00cb98, 157 },
++    { 0x00cb99, 158 },
++    { 0x00c89a, 159 },
++    { 0x00cb9b, 160 },
++    { 0x00cb9d, 161 },
++    { 0xe28093, 162 },
++    { 0xe28094, 163 },
++    { 0xe28098, 164 },
++    { 0xe28099, 165 },
++    { 0xe2809a, 166 },
++    { 0xe2809c, 167 },
++    { 0xe2809d, 168 },
++    { 0xe2809e, 169 },
++    { 0xe280a0, 170 },
++    { 0xe280a1, 171 },
++    { 0xe280a2, 172 },
++    { 0xe280a6, 173 },
++    { 0xe280b0, 174 },
++    { 0xe280b9, 175 },
++    { 0xe280ba, 176 },
++    { 0xe282ac, 177 },
++    { 0xe284a2, 178 },
++    { 0x000000,   0 }
++  };
++
++struct codepage_map codepage_iso2_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b3,  52 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x0000,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_iso16_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a7,  40 },
++    { 0x003f,   0 },
++    { 0x00a9,  42 },
++    { 0x00ab,  44 },
++    { 0x00ad,  46 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x003f,   0 },
++    { 0x00bb,  60 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c4,  69 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d6,  87 },
++    { 0x003f,   0 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x003f,   0 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e4, 101 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f6, 119 },
++    { 0x003f,   0 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x003f,   0 },
++    { 0x00ff, 128 },
++    { 0x00c3,  68 },
++    { 0x00e3, 100 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00c5,  70 },
++    { 0x00e5, 102 },
++    { 0x00b2,  51 },
++    { 0x00b9,  58 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00d0,  81 },
++    { 0x00f0, 113 },
++    { 0x00dd,  94 },
++    { 0x00fd, 126 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a3,  36 },
++    { 0x00b3,  52 },
++    { 0x00d1,  82 },
++    { 0x00f1, 114 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00d5,  86 },
++    { 0x00f5, 118 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00d7,  88 },
++    { 0x00f7, 120 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a6,  39 },
++    { 0x00a8,  41 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00d8,  89 },
++    { 0x00f8, 121 },
++    { 0x00be,  63 },
++    { 0x00ac,  45 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00bf,  64 },
++    { 0x00b4,  53 },
++    { 0x00b8,  57 },
++    { 0x003f,   0 },
++    { 0x00aa,  43 },
++    { 0x00ba,  59 },
++    { 0x00de,  95 },
++    { 0x00fe, 127 },
++    { 0x00b5,  54 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a5,  38 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a4,  37 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_win1250_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x0081,   2 },
++    { 0x0083,   4 },
++    { 0x0088,   9 },
++    { 0x0090,  17 },
++    { 0x0098,  25 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a0,  33 },
++    { 0x00a4,  37 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00bb,  60 },
++    { 0x003f,   0 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c4,  69 },
++    { 0x003f,   0 },
++    { 0x00c7,  72 },
++    { 0x003f,   0 },
++    { 0x00c9,  74 },
++    { 0x003f,   0 },
++    { 0x00cb,  76 },
++    { 0x003f,   0 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x003f,   0 },
++    { 0x00da,  91 },
++    { 0x003f,   0 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00df,  96 },
++    { 0x003f,   0 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e4, 101 },
++    { 0x003f,   0 },
++    { 0x00e7, 104 },
++    { 0x003f,   0 },
++    { 0x00e9, 106 },
++    { 0x003f,   0 },
++    { 0x00eb, 108 },
++    { 0x003f,   0 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x003f,   0 },
++    { 0x00fa, 123 },
++    { 0x003f,   0 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x003f,   0 },
++    { 0x00c3,  68 },
++    { 0x00e3, 100 },
++    { 0x00a5,  38 },
++    { 0x00b9,  58 },
++    { 0x00c6,  71 },
++    { 0x00e6, 103 },
++    { 0x00c8,  73 },
++    { 0x00e8, 105 },
++    { 0x00cf,  80 },
++    { 0x00ef, 112 },
++    { 0x00d0,  81 },
++    { 0x00f0, 113 },
++    { 0x00ca,  75 },
++    { 0x00ea, 107 },
++    { 0x00cc,  77 },
++    { 0x00ec, 109 },
++    { 0x00c5,  70 },
++    { 0x00e5, 102 },
++    { 0x00bc,  61 },
++    { 0x00be,  63 },
++    { 0x00a3,  36 },
++    { 0x00b3,  52 },
++    { 0x00d1,  82 },
++    { 0x00f1, 114 },
++    { 0x00d2,  83 },
++    { 0x00f2, 115 },
++    { 0x00d5,  86 },
++    { 0x00f5, 118 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00c0,  65 },
++    { 0x00e0,  97 },
++    { 0x00d8,  89 },
++    { 0x00f8, 121 },
++    { 0x008c,  13 },
++    { 0x009c,  29 },
++    { 0x00aa,  43 },
++    { 0x00ba,  59 },
++    { 0x008a,  11 },
++    { 0x009a,  27 },
++    { 0x00de,  95 },
++    { 0x00fe, 127 },
++    { 0x008d,  14 },
++    { 0x009d,  30 },
++    { 0x00d9,  90 },
++    { 0x00f9, 122 },
++    { 0x00db,  92 },
++    { 0x00fb, 124 },
++    { 0x003f,   0 },
++    { 0x008f,  16 },
++    { 0x009f,  32 },
++    { 0x00af,  48 },
++    { 0x00bf,  64 },
++    { 0x008e,  15 },
++    { 0x009e,  31 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00ff, 128 },
++    { 0x003f,   0 },
++    { 0x00b2,  51 },
++    { 0x00bd,  62 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0082,   3 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0084,   5 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0095,  22 },
++    { 0x0085,   6 },
++    { 0x0089,  10 },
++    { 0x008b,  12 },
++    { 0x009b,  28 },
++    { 0x0080,   1 },
++    { 0x0099,  26 },
++    { 0x0000,   0 }
++  };
++
+diff -urN vsftpd-2.0.5.org/char_maps/cyrillic.map vsftpd-2.0.5/char_maps/cyrillic.map
+--- vsftpd-2.0.5.org/char_maps/cyrillic.map	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/char_maps/cyrillic.map	2008-01-13 20:09:59.000000000 +0200
+@@ -0,0 +1,1349 @@
++/*
++ !!! WARNING !!!
++ DON'T CHANGE ORDER OF CHARS
++*/
++
++struct codepage_map codepage_utf8cyr_array[] =
++  {
++    { 0x000003, 216 },  // max size , char count
++    { 0x00003f,   0 },
++    { 0x00003f,   0 },
++    { 0x00c280,   1 },
++    { 0x00c281,   2 },
++    { 0x00c282,   3 },
++    { 0x00c283,   4 },
++    { 0x00c284,   5 },
++    { 0x00c285,   6 },
++    { 0x00c286,   7 },
++    { 0x00c287,   8 },
++    { 0x00c288,   9 },
++    { 0x00c289,  10 },
++    { 0x00c28a,  11 },
++    { 0x00c28b,  12 },
++    { 0x00c28c,  13 },
++    { 0x00c28d,  14 },
++    { 0x00c28e,  15 },
++    { 0x00c28f,  16 },
++    { 0x00c290,  17 },
++    { 0x00c291,  18 },
++    { 0x00c292,  19 },
++    { 0x00c293,  20 },
++    { 0x00c294,  21 },
++    { 0x00c295,  22 },
++    { 0x00c296,  23 },
++    { 0x00c297,  24 },
++    { 0x00c298,  25 },
++    { 0x00c299,  26 },
++    { 0x00c29a,  27 },
++    { 0x00c29b,  28 },
++    { 0x00c29c,  29 },
++    { 0x00c29d,  30 },
++    { 0x00c29e,  31 },
++    { 0x00c29f,  32 },
++    { 0x00c2a0,  33 },
++    { 0x00c2a4,  34 },
++    { 0x00c2a6,  35 },
++    { 0x00c2a7,  36 },
++    { 0x00c2a9,  37 },
++    { 0x00c2ab,  38 },
++    { 0x00c2ac,  39 },
++    { 0x00c2ad,  40 },
++    { 0x00c2ae,  41 },
++    { 0x00c2b0,  42 },
++    { 0x00c2b1,  43 },
++    { 0x00c2b2,  44 },
++    { 0x00c2b5,  45 },
++    { 0x00c2b6,  46 },
++    { 0x00c2b7,  47 },
++    { 0x00c2bb,  48 },
++    { 0x00c3b7,  49 },
++    { 0x00d081,  50 },
++    { 0x00d082,  51 },
++    { 0x00d083,  52 },
++    { 0x00d084,  53 },
++    { 0x00d085,  54 },
++    { 0x00d086,  55 },
++    { 0x00d087,  56 },
++    { 0x00d088,  57 },
++    { 0x00d089,  58 },
++    { 0x00d08a,  59 },
++    { 0x00d08b,  60 },
++    { 0x00d08c,  61 },
++    { 0x00d08e,  62 },
++    { 0x00d08f,  63 },
++    { 0x00d090,  64 },
++    { 0x00d091,  65 },
++    { 0x00d092,  66 },
++    { 0x00d093,  67 },
++    { 0x00d094,  68 },
++    { 0x00d095,  69 },
++    { 0x00d096,  70 },
++    { 0x00d097,  71 },
++    { 0x00d098,  72 },
++    { 0x00d099,  73 },
++    { 0x00d09a,  74 },
++    { 0x00d09b,  75 },
++    { 0x00d09c,  76 },
++    { 0x00d09d,  77 },
++    { 0x00d09e,  78 },
++    { 0x00d09f,  79 },
++    { 0x00d0a0,  80 },
++    { 0x00d0a1,  81 },
++    { 0x00d0a2,  82 },
++    { 0x00d0a3,  83 },
++    { 0x00d0a4,  84 },
++    { 0x00d0a5,  85 },
++    { 0x00d0a6,  86 },
++    { 0x00d0a7,  87 },
++    { 0x00d0a8,  88 },
++    { 0x00d0a9,  89 },
++    { 0x00d0aa,  90 },
++    { 0x00d0ab,  91 },
++    { 0x00d0ac,  92 },
++    { 0x00d0ad,  93 },
++    { 0x00d0ae,  94 },
++    { 0x00d0af,  95 },
++    { 0x00d0b0,  96 },
++    { 0x00d0b1,  97 },
++    { 0x00d0b2,  98 },
++    { 0x00d0b3,  99 },
++    { 0x00d0b4, 100 },
++    { 0x00d0b5, 101 },
++    { 0x00d0b6, 102 },
++    { 0x00d0b7, 103 },
++    { 0x00d0b8, 104 },
++    { 0x00d0b9, 105 },
++    { 0x00d0ba, 106 },
++    { 0x00d0bb, 107 },
++    { 0x00d0bc, 108 },
++    { 0x00d0bd, 109 },
++    { 0x00d0be, 110 },
++    { 0x00d0bf, 111 },
++    { 0x00d180, 112 },
++    { 0x00d181, 113 },
++    { 0x00d182, 114 },
++    { 0x00d183, 115 },
++    { 0x00d184, 116 },
++    { 0x00d185, 117 },
++    { 0x00d186, 118 },
++    { 0x00d187, 119 },
++    { 0x00d188, 120 },
++    { 0x00d189, 121 },
++    { 0x00d18a, 122 },
++    { 0x00d18b, 123 },
++    { 0x00d18c, 124 },
++    { 0x00d18d, 125 },
++    { 0x00d18e, 126 },
++    { 0x00d18f, 127 },
++    { 0x00d191, 128 },
++    { 0x00d192, 129 },
++    { 0x00d193, 130 },
++    { 0x00d194, 131 },
++    { 0x00d195, 132 },
++    { 0x00d196, 133 },
++    { 0x00d197, 134 },
++    { 0x00d198, 135 },
++    { 0x00d199, 136 },
++    { 0x00d19a, 137 },
++    { 0x00d19b, 138 },
++    { 0x00d19c, 139 },
++    { 0x00d19e, 140 },
++    { 0x00d19f, 141 },
++    { 0x00d290, 142 },
++    { 0x00d291, 143 },
++    { 0xe28093, 144 },
++    { 0xe28094, 145 },
++    { 0xe28098, 146 },
++    { 0xe28099, 147 },
++    { 0xe2809a, 148 },
++    { 0xe2809c, 149 },
++    { 0xe2809d, 150 },
++    { 0xe2809e, 151 },
++    { 0xe280a0, 152 },
++    { 0xe280a1, 153 },
++    { 0xe280a2, 154 },
++    { 0xe280a6, 155 },
++    { 0xe280b0, 156 },
++    { 0xe280b9, 157 },
++    { 0xe280ba, 158 },
++    { 0xe28496, 159 },
++    { 0xe284a2, 160 },
++    { 0xe28899, 161 },
++    { 0xe2889a, 162 },
++    { 0xe28988, 163 },
++    { 0xe289a4, 164 },
++    { 0xe289a5, 165 },
++    { 0xe28ca0, 166 },
++    { 0xe28ca1, 167 },
++    { 0xe29480, 168 },
++    { 0xe29482, 169 },
++    { 0xe2948c, 170 },
++    { 0xe29490, 171 },
++    { 0xe29494, 172 },
++    { 0xe29498, 173 },
++    { 0xe2949c, 174 },
++    { 0xe294a4, 175 },
++    { 0xe294ac, 176 },
++    { 0xe294b4, 177 },
++    { 0xe294bc, 178 },
++    { 0xe29590, 179 },
++    { 0xe29591, 180 },
++    { 0xe29592, 181 },
++    { 0xe29593, 182 },
++    { 0xe29594, 183 },
++    { 0xe29595, 184 },
++    { 0xe29596, 185 },
++    { 0xe29597, 186 },
++    { 0xe29598, 187 },
++    { 0xe29599, 188 },
++    { 0xe2959a, 189 },
++    { 0xe2959b, 190 },
++    { 0xe2959c, 191 },
++    { 0xe2959d, 192 },
++    { 0xe2959e, 193 },
++    { 0xe2959f, 194 },
++    { 0xe295a0, 195 },
++    { 0xe295a1, 196 },
++    { 0xe295a2, 197 },
++    { 0xe295a3, 198 },
++    { 0xe295a4, 199 },
++    { 0xe295a5, 200 },
++    { 0xe295a6, 201 },
++    { 0xe295a7, 202 },
++    { 0xe295a8, 203 },
++    { 0xe295a9, 204 },
++    { 0xe295aa, 205 },
++    { 0xe295ab, 206 },
++    { 0xe295ac, 207 },
++    { 0xe29680, 208 },
++    { 0xe29684, 209 },
++    { 0xe29688, 210 },
++    { 0xe2968c, 211 },
++    { 0xe29690, 212 },
++    { 0xe29691, 213 },
++    { 0xe29692, 214 },
++    { 0xe29693, 215 },
++    { 0xe296a0, 216 },
++    { 0x000000,   0 }
++  };
++
++struct codepage_map codepage_win1251_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x0088,   9 },
++    { 0x0098,  25 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a0,  33 },
++    { 0x00a4,  37 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a9,  42 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x003f,   0 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00bb,  60 },
++    { 0x003f,   0 },
++    { 0x00a8,  41 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x00aa,  43 },
++    { 0x00bd,  62 },
++    { 0x00b2,  51 },
++    { 0x00af,  48 },
++    { 0x00a3,  36 },
++    { 0x008a,  11 },
++    { 0x008c,  13 },
++    { 0x008e,  15 },
++    { 0x008d,  14 },
++    { 0x00a1,  34 },
++    { 0x008f,  16 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x00b8,  57 },
++    { 0x0090,  17 },
++    { 0x0083,   4 },
++    { 0x00ba,  59 },
++    { 0x00be,  63 },
++    { 0x00b3,  52 },
++    { 0x00bf,  64 },
++    { 0x00bc,  61 },
++    { 0x009a,  27 },
++    { 0x009c,  29 },
++    { 0x009e,  31 },
++    { 0x009d,  30 },
++    { 0x00a2,  35 },
++    { 0x009f,  32 },
++    { 0x00a5,  38 },
++    { 0x00b4,  53 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0082,   3 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0084,   5 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0095,  22 },
++    { 0x0085,   6 },
++    { 0x0089,  10 },
++    { 0x008b,  12 },
++    { 0x009b,  28 },
++    { 0x00b9,  58 },
++    { 0x0099,  26 },
++    { 0x0000,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_koi8u_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x009a,  27 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00bf,  64 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x009c,  29 },
++    { 0x003f,   0 },
++    { 0x009d,  30 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x009e,  31 },
++    { 0x003f,   0 },
++    { 0x009f,  32 },
++    { 0x00b3,  52 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00b4,  53 },
++    { 0x003f,   0 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00f7, 120 },
++    { 0x00e7, 104 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00f6, 119 },
++    { 0x00fa, 123 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00e6, 103 },
++    { 0x00e8, 105 },
++    { 0x00e3, 100 },
++    { 0x00fe, 127 },
++    { 0x00fb, 124 },
++    { 0x00fd, 126 },
++    { 0x00ff, 128 },
++    { 0x00f9, 122 },
++    { 0x00f8, 121 },
++    { 0x00fc, 125 },
++    { 0x00e0,  97 },
++    { 0x00f1, 114 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00d7,  88 },
++    { 0x00c7,  72 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00d6,  87 },
++    { 0x00da,  91 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00c6,  71 },
++    { 0x00c8,  73 },
++    { 0x00c3,  68 },
++    { 0x00de,  95 },
++    { 0x00db,  92 },
++    { 0x00dd,  94 },
++    { 0x00df,  96 },
++    { 0x00d9,  90 },
++    { 0x00d8,  89 },
++    { 0x00dc,  93 },
++    { 0x00c0,  65 },
++    { 0x00d1,  82 },
++    { 0x00a3,  36 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a4,  37 },
++    { 0x003f,   0 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00bd,  62 },
++    { 0x00ad,  46 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x0093,  20 },
++    { 0x009b,  28 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x003f,   0 },
++    { 0x00a5,  38 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x003f,   0 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x003f,   0 },
++    { 0x00b5,  54 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x003f,   0 },
++    { 0x00be,  63 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0094,  21 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_ibm866_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00ff, 128 },
++    { 0x00fd, 126 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f8, 121 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00fa, 123 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f0, 113 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f2, 115 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f4, 117 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f6, 119 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f1, 114 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f3, 116 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f5, 118 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f7, 120 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00fc, 125 },
++    { 0x003f,   0 },
++    { 0x00f9, 122 },
++    { 0x00fb, 124 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00c4,  69 },
++    { 0x00b3,  52 },
++    { 0x00da,  91 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00d9,  90 },
++    { 0x00c3,  68 },
++    { 0x00b4,  53 },
++    { 0x00c2,  67 },
++    { 0x00c1,  66 },
++    { 0x00c5,  70 },
++    { 0x00cd,  78 },
++    { 0x00ba,  59 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00c9,  74 },
++    { 0x00b8,  57 },
++    { 0x00b7,  56 },
++    { 0x00bb,  60 },
++    { 0x00d4,  85 },
++    { 0x00d3,  84 },
++    { 0x00c8,  73 },
++    { 0x00be,  63 },
++    { 0x00bd,  62 },
++    { 0x00bc,  61 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00cc,  77 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b9,  58 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00cb,  76 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00ca,  75 },
++    { 0x00d8,  89 },
++    { 0x00d7,  88 },
++    { 0x00ce,  79 },
++    { 0x00df,  96 },
++    { 0x00dc,  93 },
++    { 0x00db,  92 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00fe, 127 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_iso5_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00fd, 126 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00ad,  46 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b3,  52 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00f0, 113 },
++    { 0x0000,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_koi8r_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x009a,  27 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x00bf,  64 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x009c,  29 },
++    { 0x005f,   0 },
++    { 0x009d,  30 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x009e,  31 },
++    { 0x005f,   0 },
++    { 0x009f,  32 },
++    { 0x00b3,  52 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00f7, 120 },
++    { 0x00e7, 104 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00f6, 119 },
++    { 0x00fa, 123 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00e6, 103 },
++    { 0x00e8, 105 },
++    { 0x00e3, 100 },
++    { 0x00fe, 127 },
++    { 0x00fb, 124 },
++    { 0x00fd, 126 },
++    { 0x00ff, 128 },
++    { 0x00f9, 122 },
++    { 0x00f8, 121 },
++    { 0x00fc, 125 },
++    { 0x00e0,  97 },
++    { 0x00f1, 114 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00d7,  88 },
++    { 0x00c7,  72 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00d6,  87 },
++    { 0x00da,  91 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00c6,  71 },
++    { 0x00c8,  73 },
++    { 0x00c3,  68 },
++    { 0x00de,  95 },
++    { 0x00db,  92 },
++    { 0x00dd,  94 },
++    { 0x00df,  96 },
++    { 0x00d9,  90 },
++    { 0x00d8,  89 },
++    { 0x00dc,  93 },
++    { 0x00c0,  65 },
++    { 0x00d1,  82 },
++    { 0x00a3,  36 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x005f,   0 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x0093,  20 },
++    { 0x009b,  28 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0094,  21 },
++    { 0x0000,   0 }
++  };
++
+diff -urN vsftpd-2.0.5.org/char_maps/soutern.map vsftpd-2.0.5/char_maps/soutern.map
+--- vsftpd-2.0.5.org/char_maps/soutern.map	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/char_maps/soutern.map	2008-01-13 20:09:59.000000000 +0200
+@@ -0,0 +1,259 @@
++/*
++ !!! WARNING !!!
++ DON'T CHANGE ORDER OF CHARS
++*/
++
++struct codepage_map codepage_utf8sout_array[] =
++  {
++    { 0x000003, 121 },  // max size , char count
++    { 0x00c280,   1 },
++    { 0x00c281,   2 },
++    { 0x00c282,   3 },
++    { 0x00c283,   4 },
++    { 0x00c284,   5 },
++    { 0x00c285,   6 },
++    { 0x00c286,   7 },
++    { 0x00c287,   8 },
++    { 0x00c288,   9 },
++    { 0x00c289,  10 },
++    { 0x00c28a,  11 },
++    { 0x00c28b,  12 },
++    { 0x00c28c,  13 },
++    { 0x00c28d,  14 },
++    { 0x00c28e,  15 },
++    { 0x00c28f,  16 },
++    { 0x00c290,  17 },
++    { 0x00c291,  18 },
++    { 0x00c292,  19 },
++    { 0x00c293,  20 },
++    { 0x00c294,  21 },
++    { 0x00c295,  22 },
++    { 0x00c296,  23 },
++    { 0x00c297,  24 },
++    { 0x00c298,  25 },
++    { 0x00c299,  26 },
++    { 0x00c29a,  27 },
++    { 0x00c29b,  28 },
++    { 0x00c29c,  29 },
++    { 0x00c29d,  30 },
++    { 0x00c29e,  31 },
++    { 0x00c29f,  32 },
++    { 0x00c2a0,  33 },
++    { 0x00c2a3,  34 },
++    { 0x00c2a4,  35 },
++    { 0x00c2a7,  36 },
++    { 0x00c2a8,  37 },
++    { 0x00c2ad,  38 },
++    { 0x00c2b0,  39 },
++    { 0x00c2b2,  40 },
++    { 0x00c2b3,  41 },
++    { 0x00c2b4,  42 },
++    { 0x00c2b5,  43 },
++    { 0x00c2b7,  44 },
++    { 0x00c2b8,  45 },
++    { 0x00c2bd,  46 },
++    { 0x00c380,  47 },
++    { 0x00c381,  48 },
++    { 0x00c382,  49 },
++    { 0x00c384,  50 },
++    { 0x00c387,  51 },
++    { 0x00c388,  52 },
++    { 0x00c389,  53 },
++    { 0x00c38a,  54 },
++    { 0x00c38b,  55 },
++    { 0x00c38c,  56 },
++    { 0x00c38d,  57 },
++    { 0x00c38e,  58 },
++    { 0x00c38f,  59 },
++    { 0x00c391,  60 },
++    { 0x00c392,  61 },
++    { 0x00c393,  62 },
++    { 0x00c394,  63 },
++    { 0x00c396,  64 },
++    { 0x00c397,  65 },
++    { 0x00c399,  66 },
++    { 0x00c39a,  67 },
++    { 0x00c39b,  68 },
++    { 0x00c39c,  69 },
++    { 0x00c39f,  70 },
++    { 0x00c3a0,  71 },
++    { 0x00c3a1,  72 },
++    { 0x00c3a2,  73 },
++    { 0x00c3a4,  74 },
++    { 0x00c3a7,  75 },
++    { 0x00c3a8,  76 },
++    { 0x00c3a9,  77 },
++    { 0x00c3aa,  78 },
++    { 0x00c3ab,  79 },
++    { 0x00c3ac,  80 },
++    { 0x00c3ad,  81 },
++    { 0x00c3ae,  82 },
++    { 0x00c3af,  83 },
++    { 0x00c3b1,  84 },
++    { 0x00c3b2,  85 },
++    { 0x00c3b3,  86 },
++    { 0x00c3b4,  87 },
++    { 0x00c3b6,  88 },
++    { 0x00c3b7,  89 },
++    { 0x00c3b9,  90 },
++    { 0x00c3ba,  91 },
++    { 0x00c3bb,  92 },
++    { 0x00c3bc,  93 },
++    { 0x00c488,  94 },
++    { 0x00c489,  95 },
++    { 0x00c48a,  96 },
++    { 0x00c48b,  97 },
++    { 0x00c49c,  98 },
++    { 0x00c49d,  99 },
++    { 0x00c49e, 100 },
++    { 0x00c49f, 101 },
++    { 0x00c4a0, 102 },
++    { 0x00c4a1, 103 },
++    { 0x00c4a4, 104 },
++    { 0x00c4a5, 105 },
++    { 0x00c4a6, 106 },
++    { 0x00c4a7, 107 },
++    { 0x00c4b0, 108 },
++    { 0x00c4b1, 109 },
++    { 0x00c4b4, 110 },
++    { 0x00c4b5, 111 },
++    { 0x00c59c, 112 },
++    { 0x00c59d, 113 },
++    { 0x00c59e, 114 },
++    { 0x00c59f, 115 },
++    { 0x00c5ac, 116 },
++    { 0x00c5ad, 117 },
++    { 0x00c5bb, 118 },
++    { 0x00c5bc, 119 },
++    { 0x00cb98, 120 },
++    { 0x00cb99, 121 },
++    { 0x000000,   0 }
++  };
++
++struct codepage_map codepage_iso3_array[] =
++  {
++    { 0x0001, 121 },  // max size , char count for control
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a7,  39 },
++    { 0x00a8,  40 },
++    { 0x00ad,  45 },
++    { 0x00b0,  47 },
++    { 0x00b2,  49 },
++    { 0x00b3,  50 },
++    { 0x00b4,  51 },
++    { 0x00b5,  52 },
++    { 0x00b7,  54 },
++    { 0x00b8,  55 },
++    { 0x00bd,  60 },
++    { 0x00c0,  62 },
++    { 0x00c1,  63 },
++    { 0x00c2,  64 },
++    { 0x00c4,  65 },
++    { 0x00c7,  68 },
++    { 0x00c8,  69 },
++    { 0x00c9,  70 },
++    { 0x00ca,  71 },
++    { 0x00cb,  72 },
++    { 0x00cc,  73 },
++    { 0x00cd,  74 },
++    { 0x00ce,  75 },
++    { 0x00cf,  76 },
++    { 0x00d1,  77 },
++    { 0x00d2,  78 },
++    { 0x00d3,  79 },
++    { 0x00d4,  80 },
++    { 0x00d6,  82 },
++    { 0x00d7,  83 },
++    { 0x00d9,  85 },
++    { 0x00da,  86 },
++    { 0x00db,  87 },
++    { 0x00dc,  88 },
++    { 0x00df,  91 },
++    { 0x00e0,  92 },
++    { 0x00e1,  93 },
++    { 0x00e2,  94 },
++    { 0x00e4,  95 },
++    { 0x00e7,  98 },
++    { 0x00e8,  99 },
++    { 0x00e9, 100 },
++    { 0x00ea, 101 },
++    { 0x00eb, 102 },
++    { 0x00ec, 103 },
++    { 0x00ed, 104 },
++    { 0x00ee, 105 },
++    { 0x00ef, 106 },
++    { 0x00f1, 107 },
++    { 0x00f2, 108 },
++    { 0x00f3, 109 },
++    { 0x00f4, 110 },
++    { 0x00f6, 112 },
++    { 0x00f7, 113 },
++    { 0x00f9, 115 },
++    { 0x00fa, 116 },
++    { 0x00fb, 117 },
++    { 0x00fc, 118 },
++    { 0x00c6,  67 },
++    { 0x00e6,  97 },
++    { 0x00c5,  66 },
++    { 0x00e5,  96 },
++    { 0x00d8,  84 },
++    { 0x00f8, 114 },
++    { 0x00ab,  43 },
++    { 0x00bb,  58 },
++    { 0x00d5,  81 },
++    { 0x00f5, 111 },
++    { 0x00a6,  38 },
++    { 0x00b6,  53 },
++    { 0x00a1,  34 },
++    { 0x00b1,  48 },
++    { 0x00a9,  41 },
++    { 0x00b9,  56 },
++    { 0x00ac,  44 },
++    { 0x00bc,  59 },
++    { 0x00de,  90 },
++    { 0x00fe, 120 },
++    { 0x00aa,  42 },
++    { 0x00ba,  57 },
++    { 0x00dd,  89 },
++    { 0x00fd, 119 },
++    { 0x00af,  46 },
++    { 0x00bf,  61 },
++    { 0x00a2,  35 },
++    { 0x00ff, 121 },
++    { 0x0000,   0 }
++  };
++
+diff -urN vsftpd-2.0.5.org/char_maps/utf8.map vsftpd-2.0.5/char_maps/utf8.map
+--- vsftpd-2.0.5.org/char_maps/utf8.map	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/char_maps/utf8.map	2008-01-13 20:09:59.000000000 +0200
+@@ -0,0 +1,393 @@
++/*
++ !!! WARNING !!!
++ DON'T CHANGE ORDER OF CHARS
++*/
++
++struct codepage_map codepage_utf8_array[] =
++  {
++    { 0x000003, 382 },  // max size , char count
++    { 0x00c280,   1 },
++    { 0x00c281,   2 },
++    { 0x00c282,   3 },
++    { 0x00c283,   4 },
++    { 0x00c284,   5 },
++    { 0x00c285,   6 },
++    { 0x00c286,   7 },
++    { 0x00c287,   8 },
++    { 0x00c288,   9 },
++    { 0x00c289,  10 },
++    { 0x00c28a,  11 },
++    { 0x00c28b,  12 },
++    { 0x00c28c,  13 },
++    { 0x00c28d,  14 },
++    { 0x00c28e,  15 },
++    { 0x00c28f,  16 },
++    { 0x00c290,  17 },
++    { 0x00c291,  18 },
++    { 0x00c292,  19 },
++    { 0x00c293,  20 },
++    { 0x00c294,  21 },
++    { 0x00c295,  22 },
++    { 0x00c296,  23 },
++    { 0x00c297,  24 },
++    { 0x00c298,  25 },
++    { 0x00c299,  26 },
++    { 0x00c29a,  27 },
++    { 0x00c29b,  28 },
++    { 0x00c29c,  29 },
++    { 0x00c29d,  30 },
++    { 0x00c29e,  31 },
++    { 0x00c29f,  32 },
++    { 0x00c2a0,  33 },
++    { 0x00c2a1,  34 },
++    { 0x00c2a2,  35 },
++    { 0x00c2a3,  36 },
++    { 0x00c2a4,  37 },
++    { 0x00c2a5,  38 },
++    { 0x00c2a6,  39 },
++    { 0x00c2a7,  40 },
++    { 0x00c2a8,  41 },
++    { 0x00c2a9,  42 },
++    { 0x00c2aa,  43 },
++    { 0x00c2ab,  44 },
++    { 0x00c2ac,  45 },
++    { 0x00c2ad,  46 },
++    { 0x00c2ae,  47 },
++    { 0x00c2af,  48 },
++    { 0x00c2b0,  49 },
++    { 0x00c2b1,  50 },
++    { 0x00c2b2,  51 },
++    { 0x00c2b3,  52 },
++    { 0x00c2b4,  53 },
++    { 0x00c2b5,  54 },
++    { 0x00c2b6,  55 },
++    { 0x00c2b7,  56 },
++    { 0x00c2b8,  57 },
++    { 0x00c2b9,  58 },
++    { 0x00c2ba,  59 },
++    { 0x00c2bb,  60 },
++    { 0x00c2bc,  61 },
++    { 0x00c2bd,  62 },
++    { 0x00c2be,  63 },
++    { 0x00c2bf,  64 },
++    { 0x00c380,  65 },
++    { 0x00c381,  66 },
++    { 0x00c382,  67 },
++    { 0x00c383,  68 },
++    { 0x00c384,  69 },
++    { 0x00c385,  70 },
++    { 0x00c386,  71 },
++    { 0x00c387,  72 },
++    { 0x00c388,  73 },
++    { 0x00c389,  74 },
++    { 0x00c38a,  75 },
++    { 0x00c38b,  76 },
++    { 0x00c38c,  77 },
++    { 0x00c38d,  78 },
++    { 0x00c38e,  79 },
++    { 0x00c38f,  80 },
++    { 0x00c390,  81 },
++    { 0x00c391,  82 },
++    { 0x00c392,  83 },
++    { 0x00c393,  84 },
++    { 0x00c394,  85 },
++    { 0x00c395,  86 },
++    { 0x00c396,  87 },
++    { 0x00c397,  88 },
++    { 0x00c398,  89 },
++    { 0x00c399,  90 },
++    { 0x00c39a,  91 },
++    { 0x00c39b,  92 },
++    { 0x00c39c,  93 },
++    { 0x00c39d,  94 },
++    { 0x00c39e,  95 },
++    { 0x00c39f,  96 },
++    { 0x00c3a0,  97 },
++    { 0x00c3a1,  98 },
++    { 0x00c3a2,  99 },
++    { 0x00c3a3, 100 },
++    { 0x00c3a4, 101 },
++    { 0x00c3a5, 102 },
++    { 0x00c3a6, 103 },
++    { 0x00c3a7, 104 },
++    { 0x00c3a8, 105 },
++    { 0x00c3a9, 106 },
++    { 0x00c3aa, 107 },
++    { 0x00c3ab, 108 },
++    { 0x00c3ac, 109 },
++    { 0x00c3ad, 110 },
++    { 0x00c3ae, 111 },
++    { 0x00c3af, 112 },
++    { 0x00c3b0, 113 },
++    { 0x00c3b1, 114 },
++    { 0x00c3b2, 115 },
++    { 0x00c3b3, 116 },
++    { 0x00c3b4, 117 },
++    { 0x00c3b5, 118 },
++    { 0x00c3b6, 119 },
++    { 0x00c3b7, 120 },
++    { 0x00c3b8, 121 },
++    { 0x00c3b9, 122 },
++    { 0x00c3ba, 123 },
++    { 0x00c3bb, 124 },
++    { 0x00c3bc, 125 },
++    { 0x00c3bd, 126 },
++    { 0x00c3be, 127 },
++    { 0x00c3bf, 128 },
++    { 0x00c482, 129 },
++    { 0x00c483, 130 },
++    { 0x00c484, 131 },
++    { 0x00c485, 132 },
++    { 0x00c486, 133 },
++    { 0x00c487, 134 },
++    { 0x00c488, 135 },
++    { 0x00c489, 136 },
++    { 0x00c48a, 137 },
++    { 0x00c48b, 138 },
++    { 0x00c48c, 139 },
++    { 0x00c48d, 140 },
++    { 0x00c48e, 141 },
++    { 0x00c48f, 142 },
++    { 0x00c490, 143 },
++    { 0x00c491, 144 },
++    { 0x00c498, 145 },
++    { 0x00c499, 146 },
++    { 0x00c49a, 147 },
++    { 0x00c49b, 148 },
++    { 0x00c49c, 149 },
++    { 0x00c49d, 150 },
++    { 0x00c49e, 151 },
++    { 0x00c49f, 152 },
++    { 0x00c4a0, 153 },
++    { 0x00c4a1, 154 },
++    { 0x00c4a4, 155 },
++    { 0x00c4a5, 156 },
++    { 0x00c4a6, 157 },
++    { 0x00c4a7, 158 },
++    { 0x00c4b0, 159 },
++    { 0x00c4b1, 160 },
++    { 0x00c4b4, 161 },
++    { 0x00c4b5, 162 },
++    { 0x00c4b9, 163 },
++    { 0x00c4ba, 164 },
++    { 0x00c4bd, 165 },
++    { 0x00c4be, 166 },
++    { 0x00c581, 167 },
++    { 0x00c582, 168 },
++    { 0x00c583, 169 },
++    { 0x00c584, 170 },
++    { 0x00c587, 171 },
++    { 0x00c588, 172 },
++    { 0x00c590, 173 },
++    { 0x00c591, 174 },
++    { 0x00c592, 175 },
++    { 0x00c593, 176 },
++    { 0x00c594, 177 },
++    { 0x00c595, 178 },
++    { 0x00c598, 179 },
++    { 0x00c599, 180 },
++    { 0x00c59a, 181 },
++    { 0x00c59b, 182 },
++    { 0x00c59c, 183 },
++    { 0x00c59d, 184 },
++    { 0x00c59e, 185 },
++    { 0x00c59f, 186 },
++    { 0x00c5a0, 187 },
++    { 0x00c5a1, 188 },
++    { 0x00c5a2, 189 },
++    { 0x00c5a3, 190 },
++    { 0x00c5a4, 191 },
++    { 0x00c5a5, 192 },
++    { 0x00c5ac, 193 },
++    { 0x00c5ad, 194 },
++    { 0x00c5ae, 195 },
++    { 0x00c5af, 196 },
++    { 0x00c5b0, 197 },
++    { 0x00c5b1, 198 },
++    { 0x00c5b8, 199 },
++    { 0x00c5b9, 200 },
++    { 0x00c5ba, 201 },
++    { 0x00c5bb, 202 },
++    { 0x00c5bc, 203 },
++    { 0x00c5bd, 204 },
++    { 0x00c5be, 205 },
++    { 0x00c692, 206 },
++    { 0x00c89a, 207 },
++    { 0x00cb86, 208 },
++    { 0x00cb87, 209 },
++    { 0x00cb98, 210 },
++    { 0x00cb99, 211 },
++    { 0x00cb9b, 212 },
++    { 0x00cb9c, 213 },
++    { 0x00cb9d, 214 },
++    { 0x00d081, 215 },
++    { 0x00d082, 216 },
++    { 0x00d083, 217 },
++    { 0x00d084, 218 },
++    { 0x00d085, 219 },
++    { 0x00d086, 220 },
++    { 0x00d087, 221 },
++    { 0x00d088, 222 },
++    { 0x00d089, 223 },
++    { 0x00d08a, 224 },
++    { 0x00d08b, 225 },
++    { 0x00d08c, 226 },
++    { 0x00d08e, 227 },
++    { 0x00d08f, 228 },
++    { 0x00d090, 229 },
++    { 0x00d091, 230 },
++    { 0x00d092, 231 },
++    { 0x00d093, 232 },
++    { 0x00d094, 233 },
++    { 0x00d095, 234 },
++    { 0x00d096, 235 },
++    { 0x00d097, 236 },
++    { 0x00d098, 237 },
++    { 0x00d099, 238 },
++    { 0x00d09a, 239 },
++    { 0x00d09b, 240 },
++    { 0x00d09c, 241 },
++    { 0x00d09d, 242 },
++    { 0x00d09e, 243 },
++    { 0x00d09f, 244 },
++    { 0x00d0a0, 245 },
++    { 0x00d0a1, 246 },
++    { 0x00d0a2, 247 },
++    { 0x00d0a3, 248 },
++    { 0x00d0a4, 249 },
++    { 0x00d0a5, 250 },
++    { 0x00d0a6, 251 },
++    { 0x00d0a7, 252 },
++    { 0x00d0a8, 253 },
++    { 0x00d0a9, 254 },
++    { 0x00d0aa, 255 },
++    { 0x00d0ab, 256 },
++    { 0x00d0ac, 257 },
++    { 0x00d0ad, 258 },
++    { 0x00d0ae, 259 },
++    { 0x00d0af, 260 },
++    { 0x00d0b0, 261 },
++    { 0x00d0b1, 262 },
++    { 0x00d0b2, 263 },
++    { 0x00d0b3, 264 },
++    { 0x00d0b4, 265 },
++    { 0x00d0b5, 266 },
++    { 0x00d0b6, 267 },
++    { 0x00d0b7, 268 },
++    { 0x00d0b8, 269 },
++    { 0x00d0b9, 270 },
++    { 0x00d0ba, 271 },
++    { 0x00d0bb, 272 },
++    { 0x00d0bc, 273 },
++    { 0x00d0bd, 274 },
++    { 0x00d0be, 275 },
++    { 0x00d0bf, 276 },
++    { 0x00d180, 277 },
++    { 0x00d181, 278 },
++    { 0x00d182, 279 },
++    { 0x00d183, 280 },
++    { 0x00d184, 281 },
++    { 0x00d185, 282 },
++    { 0x00d186, 283 },
++    { 0x00d187, 284 },
++    { 0x00d188, 285 },
++    { 0x00d189, 286 },
++    { 0x00d18a, 287 },
++    { 0x00d18b, 288 },
++    { 0x00d18c, 289 },
++    { 0x00d18d, 290 },
++    { 0x00d18e, 291 },
++    { 0x00d18f, 292 },
++    { 0x00d191, 293 },
++    { 0x00d192, 294 },
++    { 0x00d193, 295 },
++    { 0x00d194, 296 },
++    { 0x00d195, 297 },
++    { 0x00d196, 298 },
++    { 0x00d197, 299 },
++    { 0x00d198, 300 },
++    { 0x00d199, 301 },
++    { 0x00d19a, 302 },
++    { 0x00d19b, 303 },
++    { 0x00d19c, 304 },
++    { 0x00d19e, 305 },
++    { 0x00d19f, 306 },
++    { 0x00d290, 307 },
++    { 0x00d291, 308 },
++    { 0xe28093, 309 },
++    { 0xe28094, 310 },
++    { 0xe28098, 311 },
++    { 0xe28099, 312 },
++    { 0xe2809a, 313 },
++    { 0xe2809c, 314 },
++    { 0xe2809d, 315 },
++    { 0xe2809e, 316 },
++    { 0xe280a0, 317 },
++    { 0xe280a1, 318 },
++    { 0xe280a2, 319 },
++    { 0xe280a6, 320 },
++    { 0xe280b0, 321 },
++    { 0xe280b9, 322 },
++    { 0xe280ba, 323 },
++    { 0xe282ac, 324 },
++    { 0xe28496, 325 },
++    { 0xe284a2, 326 },
++    { 0xe28899, 327 },
++    { 0xe2889a, 328 },
++    { 0xe28988, 329 },
++    { 0xe289a4, 330 },
++    { 0xe289a5, 331 },
++    { 0xe28ca0, 332 },
++    { 0xe28ca1, 333 },
++    { 0xe29480, 334 },
++    { 0xe29482, 335 },
++    { 0xe2948c, 336 },
++    { 0xe29490, 337 },
++    { 0xe29494, 338 },
++    { 0xe29498, 339 },
++    { 0xe2949c, 340 },
++    { 0xe294a4, 341 },
++    { 0xe294ac, 342 },
++    { 0xe294b4, 343 },
++    { 0xe294bc, 344 },
++    { 0xe29590, 345 },
++    { 0xe29591, 346 },
++    { 0xe29592, 347 },
++    { 0xe29593, 348 },
++    { 0xe29594, 349 },
++    { 0xe29595, 350 },
++    { 0xe29596, 351 },
++    { 0xe29597, 352 },
++    { 0xe29598, 353 },
++    { 0xe29599, 354 },
++    { 0xe2959a, 355 },
++    { 0xe2959b, 356 },
++    { 0xe2959c, 357 },
++    { 0xe2959d, 358 },
++    { 0xe2959e, 359 },
++    { 0xe2959f, 360 },
++    { 0xe295a0, 361 },
++    { 0xe295a1, 362 },
++    { 0xe295a2, 363 },
++    { 0xe295a3, 364 },
++    { 0xe295a4, 365 },
++    { 0xe295a5, 366 },
++    { 0xe295a6, 367 },
++    { 0xe295a7, 368 },
++    { 0xe295a8, 369 },
++    { 0xe295a9, 370 },
++    { 0xe295aa, 371 },
++    { 0xe295ab, 372 },
++    { 0xe295ac, 373 },
++    { 0xe29680, 374 },
++    { 0xe29684, 375 },
++    { 0xe29688, 376 },
++    { 0xe2968c, 377 },
++    { 0xe29690, 378 },
++    { 0xe29691, 379 },
++    { 0xe29692, 380 },
++    { 0xe29693, 381 },
++    { 0xe296a0, 382 },
++    { 0x000000,   0 }
++  };
++
+diff -urN vsftpd-2.0.5.org/char_maps/western.map vsftpd-2.0.5/char_maps/western.map
+--- vsftpd-2.0.5.org/char_maps/western.map	1970-01-01 03:00:00.000000000 +0300
++++ vsftpd-2.0.5/char_maps/western.map	2008-01-13 20:09:59.000000000 +0200
+@@ -0,0 +1,669 @@
++/*
++ !!! WARNING !!!
++ DON'T CHANGE ORDER OF CHARS
++*/
++
++struct codepage_map codepage_utf8west_array[] =
++  {
++    { 0x000003, 155 },  // max size , char count
++    { 0x00003f,   0 }, 
++    { 0x00003f,   0 }, 
++    { 0x00003f,   0 }, 
++    { 0x00003f,   0 }, 
++    { 0x00003f,   0 }, 
++    { 0x00c280,   1 },
++    { 0x00c281,   2 },
++    { 0x00c282,   3 },
++    { 0x00c283,   4 },
++    { 0x00c284,   5 },
++    { 0x00c285,   6 },
++    { 0x00c286,   7 },
++    { 0x00c287,   8 },
++    { 0x00c288,   9 },
++    { 0x00c289,  10 },
++    { 0x00c28a,  11 },
++    { 0x00c28b,  12 },
++    { 0x00c28c,  13 },
++    { 0x00c28d,  14 },
++    { 0x00c28e,  15 },
++    { 0x00c28f,  16 },
++    { 0x00c290,  17 },
++    { 0x00c291,  18 },
++    { 0x00c292,  19 },
++    { 0x00c293,  20 },
++    { 0x00c294,  21 },
++    { 0x00c295,  22 },
++    { 0x00c296,  23 },
++    { 0x00c297,  24 },
++    { 0x00c298,  25 },
++    { 0x00c299,  26 },
++    { 0x00c29a,  27 },
++    { 0x00c29b,  28 },
++    { 0x00c29c,  29 },
++    { 0x00c29d,  30 },
++    { 0x00c29e,  31 },
++    { 0x00c29f,  32 },
++    { 0x00c2a0,  33 },
++    { 0x00c2a1,  34 },
++    { 0x00c2a2,  35 },
++    { 0x00c2a3,  36 },
++    { 0x00c2a4,  37 },
++    { 0x00c2a5,  38 },
++    { 0x00c2a6,  39 },
++    { 0x00c2a7,  40 },
++    { 0x00c2a8,  41 },
++    { 0x00c2a9,  42 },
++    { 0x00c2aa,  43 },
++    { 0x00c2ab,  44 },
++    { 0x00c2ac,  45 },
++    { 0x00c2ad,  46 },
++    { 0x00c2ae,  47 },
++    { 0x00c2af,  48 },
++    { 0x00c2b0,  49 },
++    { 0x00c2b1,  50 },
++    { 0x00c2b2,  51 },
++    { 0x00c2b3,  52 },
++    { 0x00c2b4,  53 },
++    { 0x00c2b5,  54 },
++    { 0x00c2b6,  55 },
++    { 0x00c2b7,  56 },
++    { 0x00c2b8,  57 },
++    { 0x00c2b9,  58 },
++    { 0x00c2ba,  59 },
++    { 0x00c2bb,  60 },
++    { 0x00c2bc,  61 },
++    { 0x00c2bd,  62 },
++    { 0x00c2be,  63 },
++    { 0x00c2bf,  64 },
++    { 0x00c380,  65 },
++    { 0x00c381,  66 },
++    { 0x00c382,  67 },
++    { 0x00c383,  68 },
++    { 0x00c384,  69 },
++    { 0x00c385,  70 },
++    { 0x00c386,  71 },
++    { 0x00c387,  72 },
++    { 0x00c388,  73 },
++    { 0x00c389,  74 },
++    { 0x00c38a,  75 },
++    { 0x00c38b,  76 },
++    { 0x00c38c,  77 },
++    { 0x00c38d,  78 },
++    { 0x00c38e,  79 },
++    { 0x00c38f,  80 },
++    { 0x00c390,  81 },
++    { 0x00c391,  82 },
++    { 0x00c392,  83 },
++    { 0x00c393,  84 },
++    { 0x00c394,  85 },
++    { 0x00c395,  86 },
++    { 0x00c396,  87 },
++    { 0x00c397,  88 },
++    { 0x00c398,  89 },
++    { 0x00c399,  90 },
++    { 0x00c39a,  91 },
++    { 0x00c39b,  92 },
++    { 0x00c39c,  93 },
++    { 0x00c39d,  94 },
++    { 0x00c39e,  95 },
++    { 0x00c39f,  96 },
++    { 0x00c3a0,  97 },
++    { 0x00c3a1,  98 },
++    { 0x00c3a2,  99 },
++    { 0x00c3a3, 100 },
++    { 0x00c3a4, 101 },
++    { 0x00c3a5, 102 },
++    { 0x00c3a6, 103 },
++    { 0x00c3a7, 104 },
++    { 0x00c3a8, 105 },
++    { 0x00c3a9, 106 },
++    { 0x00c3aa, 107 },
++    { 0x00c3ab, 108 },
++    { 0x00c3ac, 109 },
++    { 0x00c3ad, 110 },
++    { 0x00c3ae, 111 },
++    { 0x00c3af, 112 },
++    { 0x00c3b0, 113 },
++    { 0x00c3b1, 114 },
++    { 0x00c3b2, 115 },
++    { 0x00c3b3, 116 },
++    { 0x00c3b4, 117 },
++    { 0x00c3b5, 118 },
++    { 0x00c3b6, 119 },
++    { 0x00c3b7, 120 },
++    { 0x00c3b8, 121 },
++    { 0x00c3b9, 122 },
++    { 0x00c3ba, 123 },
++    { 0x00c3bb, 124 },
++    { 0x00c3bc, 125 },
++    { 0x00c3bd, 126 },
++    { 0x00c3be, 127 },
++    { 0x00c3bf, 128 },
++    { 0x00c592, 129 },
++    { 0x00c593, 130 },
++    { 0x00c5a0, 131 },
++    { 0x00c5a1, 132 },
++    { 0x00c5b8, 133 },
++    { 0x00c5bd, 134 },
++    { 0x00c5be, 135 },
++    { 0x00c692, 136 },
++    { 0x00cb86, 137 },
++    { 0x00cb9c, 138 },
++    { 0xe28093, 139 },
++    { 0xe28094, 140 },
++    { 0xe28098, 141 },
++    { 0xe28099, 142 },
++    { 0xe2809a, 143 },
++    { 0xe2809c, 144 },
++    { 0xe2809d, 145 },
++    { 0xe2809e, 146 },
++    { 0xe280a0, 147 },
++    { 0xe280a1, 148 },
++    { 0xe280a2, 149 },
++    { 0xe280a6, 150 },
++    { 0xe280b0, 151 },
++    { 0xe280b9, 152 },
++    { 0xe280ba, 153 },
++    { 0xe282ac, 154 },
++    { 0xe284a2, 155 },
++    { 0x000000,   0 }
++  };
++
++struct codepage_map codepage_iso1_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b3,  52 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x0000,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_iso15_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x0080,   1 },
++    { 0x0081,   2 },
++    { 0x0082,   3 },
++    { 0x0083,   4 },
++    { 0x0084,   5 },
++    { 0x0085,   6 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0088,   9 },
++    { 0x0089,  10 },
++    { 0x008a,  11 },
++    { 0x008b,  12 },
++    { 0x008c,  13 },
++    { 0x008d,  14 },
++    { 0x008e,  15 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0095,  22 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0098,  25 },
++    { 0x0099,  26 },
++    { 0x009a,  27 },
++    { 0x009b,  28 },
++    { 0x009c,  29 },
++    { 0x009d,  30 },
++    { 0x009e,  31 },
++    { 0x009f,  32 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x003f,   0 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b3,  52 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a4,  37 },
++    { 0x003f,   0 },
++    { 0x0000,   0 }
++  };
++
++struct codepage_map codepage_win1252_array[] =
++  {
++    { 0x0001, 128 },  // max size , char count for control
++    { 0x0081,   2 },
++    { 0x008d,  14 },
++    { 0x008f,  16 },
++    { 0x0090,  17 },
++    { 0x009d,  30 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x003f,   0 },
++    { 0x00a0,  33 },
++    { 0x00a1,  34 },
++    { 0x00a2,  35 },
++    { 0x00a3,  36 },
++    { 0x00a4,  37 },
++    { 0x00a5,  38 },
++    { 0x00a6,  39 },
++    { 0x00a7,  40 },
++    { 0x00a8,  41 },
++    { 0x00a9,  42 },
++    { 0x00aa,  43 },
++    { 0x00ab,  44 },
++    { 0x00ac,  45 },
++    { 0x00ad,  46 },
++    { 0x00ae,  47 },
++    { 0x00af,  48 },
++    { 0x00b0,  49 },
++    { 0x00b1,  50 },
++    { 0x00b2,  51 },
++    { 0x00b3,  52 },
++    { 0x00b4,  53 },
++    { 0x00b5,  54 },
++    { 0x00b6,  55 },
++    { 0x00b7,  56 },
++    { 0x00b8,  57 },
++    { 0x00b9,  58 },
++    { 0x00ba,  59 },
++    { 0x00bb,  60 },
++    { 0x00bc,  61 },
++    { 0x00bd,  62 },
++    { 0x00be,  63 },
++    { 0x00bf,  64 },
++    { 0x00c0,  65 },
++    { 0x00c1,  66 },
++    { 0x00c2,  67 },
++    { 0x00c3,  68 },
++    { 0x00c4,  69 },
++    { 0x00c5,  70 },
++    { 0x00c6,  71 },
++    { 0x00c7,  72 },
++    { 0x00c8,  73 },
++    { 0x00c9,  74 },
++    { 0x00ca,  75 },
++    { 0x00cb,  76 },
++    { 0x00cc,  77 },
++    { 0x00cd,  78 },
++    { 0x00ce,  79 },
++    { 0x00cf,  80 },
++    { 0x00d0,  81 },
++    { 0x00d1,  82 },
++    { 0x00d2,  83 },
++    { 0x00d3,  84 },
++    { 0x00d4,  85 },
++    { 0x00d5,  86 },
++    { 0x00d6,  87 },
++    { 0x00d7,  88 },
++    { 0x00d8,  89 },
++    { 0x00d9,  90 },
++    { 0x00da,  91 },
++    { 0x00db,  92 },
++    { 0x00dc,  93 },
++    { 0x00dd,  94 },
++    { 0x00de,  95 },
++    { 0x00df,  96 },
++    { 0x00e0,  97 },
++    { 0x00e1,  98 },
++    { 0x00e2,  99 },
++    { 0x00e3, 100 },
++    { 0x00e4, 101 },
++    { 0x00e5, 102 },
++    { 0x00e6, 103 },
++    { 0x00e7, 104 },
++    { 0x00e8, 105 },
++    { 0x00e9, 106 },
++    { 0x00ea, 107 },
++    { 0x00eb, 108 },
++    { 0x00ec, 109 },
++    { 0x00ed, 110 },
++    { 0x00ee, 111 },
++    { 0x00ef, 112 },
++    { 0x00f0, 113 },
++    { 0x00f1, 114 },
++    { 0x00f2, 115 },
++    { 0x00f3, 116 },
++    { 0x00f4, 117 },
++    { 0x00f5, 118 },
++    { 0x00f6, 119 },
++    { 0x00f7, 120 },
++    { 0x00f8, 121 },
++    { 0x00f9, 122 },
++    { 0x00fa, 123 },
++    { 0x00fb, 124 },
++    { 0x00fc, 125 },
++    { 0x00fd, 126 },
++    { 0x00fe, 127 },
++    { 0x00ff, 128 },
++    { 0x008c,  13 },
++    { 0x009c,  29 },
++    { 0x008a,  11 },
++    { 0x009a,  27 },
++    { 0x009f,  32 },
++    { 0x008e,  15 },
++    { 0x009e,  31 },
++    { 0x0083,   4 },
++    { 0x0088,   9 },
++    { 0x0098,  25 },
++    { 0x0096,  23 },
++    { 0x0097,  24 },
++    { 0x0091,  18 },
++    { 0x0092,  19 },
++    { 0x0082,   3 },
++    { 0x0093,  20 },
++    { 0x0094,  21 },
++    { 0x0084,   5 },
++    { 0x0086,   7 },
++    { 0x0087,   8 },
++    { 0x0095,  22 },
++    { 0x0085,   6 },
++    { 0x0089,  10 },
++    { 0x008b,  12 },
++    { 0x009b,  28 },
++    { 0x0080,   1 },
++    { 0x0099,  26 },
++    { 0x0000,   0 }
++  };
++
+diff -urN vsftpd-2.0.5.org/ftpcmdio.c vsftpd-2.0.5/ftpcmdio.c
+--- vsftpd-2.0.5.org/ftpcmdio.c	2005-03-04 02:42:34.000000000 +0200
++++ vsftpd-2.0.5/ftpcmdio.c	2008-01-13 19:34:50.000000000 +0200
+@@ -19,6 +19,7 @@
+ #include "logging.h"
+ #include "session.h"
+ #include "readwrite.h"
++#include "charconv.h"
+ 
+ /* Internal functions */
+ static void control_getline(struct mystr* p_str, struct vsf_session* p_sess);
+@@ -125,9 +126,13 @@
+     vsf_log_line(p_sess, kVSFLogEntryFTPOutput, &s_write_buf_str);
+   }
+   str_copy(&s_text_mangle_str, p_str);
++  vsf_charconv_convert(p_sess, &s_text_mangle_str, VSFTP_CONVDIRECT_FORWARD);
+   /* Process the output response according to the specifications.. */
+   /* Escape telnet characters properly */
+-  str_replace_text(&s_text_mangle_str, "\377", "\377\377");
++//  if (tunable_double_377)
++  {
++    str_replace_text(&s_text_mangle_str, "\377", "\377\377");
++  }
+   /* Change \n for \0 in response */
+   str_replace_char(&s_text_mangle_str, '\n', '\0');
+   /* Build string to squirt down network */
+@@ -213,5 +218,6 @@
+       --len;
+     }
+   }
++  vsf_charconv_convert(p_sess, p_str, VSFTP_CONVDIRECT_BACKWARD);
+ }
+ 
+diff -urN vsftpd-2.0.5.org/ftpdataio.c vsftpd-2.0.5/ftpdataio.c
+--- vsftpd-2.0.5.org/ftpdataio.c	2005-03-12 04:00:00.000000000 +0200
++++ vsftpd-2.0.5/ftpdataio.c	2008-01-13 19:35:59.000000000 +0200
+@@ -296,7 +296,7 @@
+   {
+     p_subdir_list = &subdir_list;
+   }
+-  vsf_ls_populate_dir_list(&dir_list, p_subdir_list, p_dir, p_base_dir_str,
++  vsf_ls_populate_dir_list(p_sess, &dir_list, p_subdir_list, p_dir, p_base_dir_str,
+                            p_option_str, p_filter_str, is_verbose);
+   if (p_subdir_list)
+   {
+diff -urN vsftpd-2.0.5.org/ls.c vsftpd-2.0.5/ls.c
+--- vsftpd-2.0.5.org/ls.c	2005-05-24 00:55:00.000000000 +0300
++++ vsftpd-2.0.5/ls.c	2008-01-13 19:32:28.000000000 +0200
+@@ -14,13 +14,16 @@
+ #include "sysstr.h"
+ #include "sysutil.h"
+ #include "tunables.h"
++#include "charconv.h"
+ 
+-static void build_dir_line(struct mystr* p_str,
++static void build_dir_line(struct vsf_session* p_sess, 
++                           struct mystr* p_str,
+                            const struct mystr* p_filename_str,
+                            const struct vsf_sysutil_statbuf* p_stat);
+ 
+ void
+-vsf_ls_populate_dir_list(struct mystr_list* p_list,
++vsf_ls_populate_dir_list(struct vsf_session* p_sess, 
++                         struct mystr_list* p_list,
+                          struct mystr_list* p_subdir_list,
+                          struct vsf_sysutil_dir* p_dir,
+                          const struct mystr* p_base_dir_str,
+@@ -157,7 +160,7 @@
+       {
+         str_append_char(&s_final_file_str, '/');
+       }
+-      build_dir_line(&dirline_str, &s_final_file_str, s_p_statbuf);
++      build_dir_line(p_sess, &dirline_str, &s_final_file_str, s_p_statbuf);
+     }
+     else
+     {
+@@ -176,6 +179,7 @@
+           str_append_char(&dirline_str, '@');
+         }
+       }
++      vsf_charconv_convert(p_sess, &dirline_str, VSFTP_CONVDIRECT_FORWARD);
+       str_append_text(&dirline_str, "\r\n");
+     }
+     /* Add filename into our sorted list - sorting by filename or time. Also,
+@@ -357,7 +361,7 @@
+ }
+ 
+ static void
+-build_dir_line(struct mystr* p_str, const struct mystr* p_filename_str,
++build_dir_line(struct vsf_session* p_sess, struct mystr* p_str, const struct mystr* p_filename_str,
+                const struct vsf_sysutil_statbuf* p_stat)
+ {
+   static struct mystr s_tmp_str;
+@@ -431,6 +435,7 @@
+   str_append_char(p_str, ' ');
+   /* Filename */
+   str_append_str(p_str, p_filename_str);
++  vsf_charconv_convert(p_sess, p_str, VSFTP_CONVDIRECT_FORWARD);
+   str_append_text(p_str, "\r\n");
+ }
+ 
+diff -urN vsftpd-2.0.5.org/ls.h vsftpd-2.0.5/ls.h
+--- vsftpd-2.0.5.org/ls.h	2003-09-15 13:43:40.000000000 +0300
++++ vsftpd-2.0.5/ls.h	2008-01-13 19:32:30.000000000 +0200
+@@ -4,12 +4,14 @@
+ struct mystr;
+ struct mystr_list;
+ struct vsf_sysutil_dir;
++struct vsf_session;
+ 
+ /* vsf_ls_populate_dir_list()
+  * PURPOSE
+  * Given a directory handle, populate a formatted directory entry list (/bin/ls
+  * format). Also optionally populate a list of subdirectories.
+  * PARAMETERS
++ * p_sess         - the current FTP session object
+  * p_list         - the string list object for the result list of entries
+  * p_subdir_list  - the string list object for the result list of
+  *                  subdirectories. May be 0 if client is not interested.
+@@ -19,7 +21,8 @@
+  * p_filter_str   - the filter string given to LIST/NLST - e.g. "*.mp3"
+  * is_verbose     - set to 1 for LIST, 0 for NLST
+  */
+-void vsf_ls_populate_dir_list(struct mystr_list* p_list,
++void vsf_ls_populate_dir_list(struct vsf_session* p_sess,
++                              struct mystr_list* p_list,
+                               struct mystr_list* p_subdir_list,
+                               struct vsf_sysutil_dir* p_dir,
+                               const struct mystr* p_base_dir_str,
+diff -urN vsftpd-2.0.5.org/main.c vsftpd-2.0.5/main.c
+--- vsftpd-2.0.5.org/main.c	2006-07-03 15:26:08.000000000 +0300
++++ vsftpd-2.0.5/main.c	2008-01-13 20:51:11.000000000 +0200
+@@ -63,7 +63,9 @@
+     /* Secure connection state */
+     0, 0, 0, 0, 0, 0, -1, -1,
+     /* Login fails */
+-    0
++    0,
++    /* Filename charset conv */
++    0, 0,
+   };
+   int config_specified = 0;
+   const char* p_config_name = VSFTP_DEFAULT_CONFIG;
+@@ -106,6 +108,12 @@
+     }
+     vsf_sysutil_free(p_statbuf);
+   }
++  /* Init local codepage */
++  if (tunable_convert_charset_enable) 
++  {    
++    tunable_local_codepage = vsf_charconv_codepage(tunable_local_charset); 
++    tunable_convert_charset_enable = (tunable_local_codepage) ? 1 : 0; 
++  } 
+   /* Resolve pasv_address if required */
+   if (tunable_pasv_address && tunable_pasv_addr_resolve)
+   {
+diff -urN vsftpd-2.0.5.org/Makefile vsftpd-2.0.5/Makefile
+--- vsftpd-2.0.5.org/Makefile	2006-07-03 15:25:41.000000000 +0300
++++ vsftpd-2.0.5/Makefile	2008-01-13 19:39:58.000000000 +0200
+@@ -14,7 +14,7 @@
+     banner.o filestr.o parseconf.o secutil.o \
+     ascii.o oneprocess.o twoprocess.o privops.o standalone.o hash.o \
+     tcpwrap.o ipaddrparse.o access.o features.o readwrite.o \
+-    ssl.o sysutil.o sysdeputil.o
++    ssl.o sysutil.o sysdeputil.o charconv.o
+ 
+ 
+ .c.o:
+diff -urN vsftpd-2.0.5.org/parseconf.c vsftpd-2.0.5/parseconf.c
+--- vsftpd-2.0.5.org/parseconf.c	2006-07-02 02:05:10.000000000 +0300
++++ vsftpd-2.0.5/parseconf.c	2008-01-13 20:21:57.000000000 +0200
+@@ -99,6 +99,7 @@
+   { "mdtm_write", &tunable_mdtm_write },
+   { "lock_upload_files", &tunable_lock_upload_files },
+   { "pasv_addr_resolve", &tunable_pasv_addr_resolve },
++  { "convert_charset_enable", &tunable_convert_charset_enable },
+   { 0, 0 }
+ };
+ 
+@@ -168,6 +169,8 @@
+   { "ssl_ciphers", &tunable_ssl_ciphers },
+   { "rsa_private_key_file", &tunable_rsa_private_key_file },
+   { "dsa_private_key_file", &tunable_dsa_private_key_file },
++  { "local_charset", &tunable_local_charset }, 
++  { "remote_charset", &tunable_remote_charset }, 
+   { 0, 0 }
+ };
+ 
+diff -urN vsftpd-2.0.5.org/postlogin.c vsftpd-2.0.5/postlogin.c
+--- vsftpd-2.0.5.org/postlogin.c	2006-06-12 01:45:25.000000000 +0300
++++ vsftpd-2.0.5/postlogin.c	2008-01-13 20:58:37.000000000 +0200
+@@ -25,6 +25,7 @@
+ #include "access.h"
+ #include "features.h"
+ #include "ssl.h"
++#include "charconv.h"
+ #include "vsftpver.h"
+ 
+ /* Private local functions */
+@@ -98,6 +99,17 @@
+   /* Handle any login message */
+   vsf_banner_dir_changed(p_sess, FTP_LOGINOK);
+   vsf_cmdio_write(p_sess, FTP_LOGINOK, "Login successful.");
++  if (tunable_convert_charset_enable) 
++  { 
++    vsf_charconv_init_local_codepage(tunable_local_codepage); 
++    tunable_remote_codepage = vsf_charconv_codepage(tunable_remote_charset); 
++    p_sess->remote_charset = tunable_remote_codepage;
++    p_sess->enable_conversion = vsf_charconv_avail_convertion(tunable_local_codepage, p_sess->remote_charset); 
++  } 
++  else 
++  { 
++    p_sess->enable_conversion = 0; 
++  } 
+   while(1)
+   {
+     int cmd_ok = 1;
+diff -urN vsftpd-2.0.5.org/session.h vsftpd-2.0.5/session.h
+--- vsftpd-2.0.5.org/session.h	2006-07-02 03:34:48.000000000 +0300
++++ vsftpd-2.0.5/session.h	2008-01-13 20:39:41.000000000 +0200
+@@ -91,6 +91,10 @@
+   int ssl_slave_fd;
+   int ssl_consumer_fd;
+   unsigned int login_fails;
++
++  /* Filename charset conv */
++  int enable_conversion; 
++  int remote_charset; 
+ };
+ 
+ #endif /* VSF_SESSION_H */
+diff -urN vsftpd-2.0.5.org/tunables.c vsftpd-2.0.5/tunables.c
+--- vsftpd-2.0.5.org/tunables.c	2006-07-02 02:06:56.000000000 +0300
++++ vsftpd-2.0.5/tunables.c	2008-01-13 20:24:57.000000000 +0200
+@@ -71,6 +71,9 @@
+ int tunable_mdtm_write = 1;
+ int tunable_lock_upload_files = 1;
+ int tunable_pasv_addr_resolve = 0;
++int tunable_convert_charset_enable = 0; 
++int tunable_local_codepage = 0; 
++int tunable_remote_codepage = 0; 
+ 
+ unsigned int tunable_accept_timeout = 60;
+ unsigned int tunable_connect_timeout = 60;
+@@ -125,4 +128,6 @@
+ const char* tunable_ssl_ciphers = "DES-CBC3-SHA";
+ const char* tunable_rsa_private_key_file = 0;
+ const char* tunable_dsa_private_key_file = 0;
++const char* tunable_local_charset = "NONE"; 
++const char* tunable_remote_charset = "NONE"; 
+ 
+diff -urN vsftpd-2.0.5.org/tunables.h vsftpd-2.0.5/tunables.h
+--- vsftpd-2.0.5.org/tunables.h	2006-07-02 02:07:00.000000000 +0300
++++ vsftpd-2.0.5/tunables.h	2008-01-13 20:28:11.000000000 +0200
+@@ -67,6 +67,9 @@
+ extern int tunable_mdtm_write;                /* Allow MDTM to set timestamps */
+ extern int tunable_lock_upload_files;         /* Lock uploading files */
+ extern int tunable_pasv_addr_resolve;         /* DNS resolve pasv_addr */
++extern int tunable_convert_charset_enable;    /* Allow converting charsets for file names */ 
++extern int tunable_local_codepage;            /* Code of local charset */ 
++extern int tunable_remote_codepage;           /* Code of remote charset */ 
+ 
+ /* Integer/numeric defines */
+ extern unsigned int tunable_accept_timeout;
+@@ -120,6 +123,8 @@
+ extern const char* tunable_ssl_ciphers;
+ extern const char* tunable_rsa_private_key_file;
+ extern const char* tunable_dsa_private_key_file;
++extern const char* tunable_local_charset; 
++extern const char* tunable_remote_charset; 
+ 
+ #endif /* VSF_TUNABLES_H */
+ 
