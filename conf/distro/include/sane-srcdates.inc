@@ -107,7 +107,8 @@ SRCDATE_entice ?= "${EFL_SRCDATE}"
 SRCDATE_entrance ?= "${EFL_SRCDATE}"
 SRCDATE_e-utils ?= "${EFL_SRCDATE}"
 SRCDATE_e-wm ?= "${EFL_SRCDATE}"
-SRCDATE_enna ?= "${EFL_SRCDATE}"
+SRCDATE_enna = "20080116"
+#SRCDATE_enna ?= "${EFL_SRCDATE}"
 SRCDATE_exquisite ?= "${EFL_SRCDATE}"
 
 # Misc packages, sorted by alphabet
