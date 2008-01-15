@@ -1,23 +1,15 @@
 DESCRIPTION = "Ncurses library"
 HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
-LICENSE = "MIT"
 SECTION = "libs"
+LICENSE = "MIT"
 DEPENDS = "ncurses-native"
-PACKAGES_prepend = "ncurses-tools "
-PACKAGES_append = " ncurses-terminfo"
-FILES_ncurses_append = " ${datadir}/tabset"
 RSUGGESTS_${PN} = "ncurses-terminfo"
 RPROVIDES = "libncurses5"
+PR = "r1"
 
 inherit autotools
 
-# This keeps only tput/tset in ncurses
-# clear/reset are in already busybox
-FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear.${PN} ${bindir}/reset.${PN} ${bindir}/tack "
-FILES_ncurses-terminfo = "${datadir}/terminfo"
-FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* usr/share/tabset etc/terminfo"
-
-PARALLEL_MAKE=""
+PARALLEL_MAKE = ""
 
 EXTRA_OECONF = "--with-shared \
 	        --without-profile \
@@ -88,3 +80,12 @@ pkg_prerm_ncurses-tools () {
 	update-alternatives --remove clear clear.${PN}
 	update-alternatives --remove reset reset.${PN}
 }
+
+PACKAGES_prepend = "ncurses-tools "
+PACKAGES_append = " ncurses-terminfo"
+FILES_ncurses_append = " ${datadir}/tabset"
+# This keeps only tput/tset in ncurses
+# clear/reset are in already busybox
+FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear.${PN} ${bindir}/reset.${PN} ${bindir}/tack "
+FILES_ncurses-terminfo = "${datadir}/terminfo"
+FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* §{datadir}/tabset ${sysconfdir/terminfo}"
