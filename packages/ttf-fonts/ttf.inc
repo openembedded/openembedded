@@ -1,4 +1,4 @@
-SECTION = "x11/fonts"
+SECTION = "fonts"
 PRIORITY = "optional"
 PACKAGE_ARCH = "all"
 #DEPENDS = "fontconfig opie-ttf-support"

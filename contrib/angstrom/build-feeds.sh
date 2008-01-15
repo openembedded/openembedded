@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DO_UCLIBC=0
+DO_UCLIBC=1
 
 do_build() {
 	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
@@ -20,6 +20,12 @@ do_build() {
 	then
 		BUILD_MODE="uclibc"
 		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+		
+		if [ "$BUILD_CLEAN" != "" ]
+        	then
+                	bitbake -c clean $BUILD_CLEAN
+        	fi
+		
 		for target in $BUILD_TARGETS
 		do
 			bitbake $target && do_report_success
@@ -36,8 +42,9 @@ for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
-        BUILD_TARGETS="texinfo flex bison gperf gcc binutils automake autoconf m4 pkgconfig \
-	               task-proper-tools mc screen \
+        BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
+                       usbutils pciutils mtd-utils usbview hal \
+                       task-proper-tools mc screen findutils \
 	               mono perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
@@ -46,17 +53,24 @@ do
 		       gpe-gallery gpe-scap notecase \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
-		       xmms mplayer quasar \
+		       xmms mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
-		       iptables iperf \
+		       nmap iptables iperf \
+		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
 		       abiword gnumeric evince epdfview gimp \
+		       scummvm \
 		       flite \
 		       ctorrent \
 		       asterisk \
-		       gnuplot mpfr gmp fftw fftwf fftwl \
+		       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
 		       tzdata \
+		       xserver-kdrive xserver-xorg \
+		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
+		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
+		       task-opie \
+		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		      "
 	do_build
 done

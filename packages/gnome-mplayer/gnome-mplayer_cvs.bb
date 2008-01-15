@@ -5,7 +5,7 @@ DEPENDS = "gtk+ gconf dbus-glib"
 RDEPENDS = "mplayer"
 SRCDATE = "20080101"
 PV = "0.5.3+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 inherit autotools pkgconfig gconf
 

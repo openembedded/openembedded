@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 inherit kernel
 
-DEPENDS_collie += "bc-native"
+DEPENDS_append_collie = " bc-native"
 RPROVIDES_kernel-base += "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
@@ -34,8 +34,8 @@ CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",
 ##############################################################
 # Configure memory/ramdisk split for collie
 #
-export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}'
-export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}'
+export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "64"}'
+export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "0"}'
 
 CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"

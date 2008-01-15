@@ -1,0 +1,9 @@
+# GPRS AP (Access Point) name should be passed via -T switch
+
+'' ATZ
+OK AT+CGDCONT=1,"IP","\T" 
+# We setup profile #1 in the above command, and then use it to call
+# GPRS. This is correct, but some buggy phone may parse only "ATD*99#"
+OK "ATD*99***1#"
+# OK "ATD*99#"
+CONNECT ''

@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "AGG License"
 DEPENDS = "virtual/libx11 virtual/libsdl freetype"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.antigrain.com/${P}.tar.gz"
 S = "${WORKDIR}/${P}"
@@ -32,6 +32,12 @@ do_stage() {
     oe_libinstall -a -so libaggplatformsdl ${STAGING_LIBDIR}
     install -m 0644 libagg.m4 ${STAGING_DATADIR}/aclocal/
     install -d ${STAGING_INCDIR}/agg2
+
+    for f in font_freetype font_win32_tt gpc
+    do
+            install -m 0644 ${S}/$f/*.h ${STAGING_INCDIR}/agg2/
+    done
+
     cd include
     headers=`find . -name "*.h"`
     for f in $headers
@@ -39,6 +45,3 @@ do_stage() {
             install -D -m 0644 $f ${STAGING_INCDIR}/agg2/$f
     done
 }
-
-
-

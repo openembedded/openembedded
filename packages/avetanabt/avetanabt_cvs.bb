@@ -1,6 +1,6 @@
 DESCRIPTION = "avetanaBT: Bluetooth API implementation for Java (JSR-82)"
 SECTION = "devel"
-DEPENDS = "findutils-native jikes-native kaffeh-native fastjar-native bluez-libs classpath"
+DEPENDS = "findutils-native virtual/javac-native kaffeh-native fastjar-native bluez-libs classpath"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
@@ -25,9 +25,8 @@ do_compile() {
   rm -fr build/*
 
   # generate classes
-  # javac -> jikes
   ${STAGING_BINDIR_NATIVE}/find {de,javax,com} -iname *.java > file.list
-  ${STAGING_BINDIR_NATIVE}/jikes -verbose --bootclasspath ${STAGING_DATADIR_NATIVE}/kaffeh/rt.jar -d build @file.list
+  ${STAGING_BINDIR_NATIVE}/javac -verbose -bootclasspath ${STAGING_DATADIR_NATIVE}/kaffeh/rt.jar -d build @file.list
 
   # create own version.xml (add version information available at runtime)
   head -n 4 version.xml >> build/version.xml

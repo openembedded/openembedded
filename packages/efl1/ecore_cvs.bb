@@ -1,16 +1,17 @@
 require ecore.inc
-PR = "r5"
+PR = "r1"
 
 EXTRA_OECONF = "\
 		--enable-ecore-txt \
 		--disable-ecore-x-xcb \
+		--enable-simple-x11 \
 		--enable-ecore-x \
 		--enable-ecore-job \
 		--disable-ecore-directfb \
 		--disable-ecore-sdl \
 		--enable-ecore-fb \
 		--enable-ecore-evas \
-		--disable-ecore-evas-gl \
+                --disable-ecore-evas-x11-gl \
 		--enable-ecore-evas-xrender \
 		--enable-ecore-evas-dfb \
 		--disable-openssl \

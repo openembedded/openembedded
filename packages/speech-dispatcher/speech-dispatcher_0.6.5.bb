@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "espeak flite pulseaudio libdotconf glib-2.0"
 RPROVIDES_${PN} += "speechd"
 
-PR = "r6"
+PR = "r7"
 
 inherit autotools update-rc.d
 
@@ -47,4 +47,10 @@ do_stage() {
         oe_libinstall -so -C src/c/api libspeechd ${STAGING_LIBDIR}
 }
 
+PACKAGES =+ "libspeechd-dbg libspeechd libspeechd-dev"
+
 FILES_${PN} += "${libdir}/${PN}-modules/*" 
+FILES_${PN}-dbg += "${libdir}/${PN}-modules/.debug" 
+FILES_libspeechd += "${libdir}/libspeechd.so.*"
+FILES_libspeechd-dev += "${libdir}/libspeechd* ${includedir}"
+FILES_libspeechd-dbg += "${libdir}/.debug/libspeechd*"

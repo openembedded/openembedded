@@ -1,6 +1,6 @@
 DESCRIPTION = "The OpenMoko Dialer"
 SECTION = "openmoko/pim"
-DEPENDS = "libjana libmokoui2 libmokojournal2 pulseaudio libnotify"
+DEPENDS = "libgsmd libjana libmokoui2 libmokojournal2 pulseaudio libnotify"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r6"
 PE = "1"

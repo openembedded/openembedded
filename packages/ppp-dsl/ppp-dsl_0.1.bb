@@ -4,7 +4,7 @@ LICENSE = "PD"
 DEPENDS = "ppp rp-pppoe"
 RDEPENDS = "ppp rp-pppoe"
 RRECOMMENDS = "kernel-module-ppp-async kernel-module-ppp-generic kernel-module-slhc"
-PR = "r2"
+PR = "r5"
 
 SRC_URI = "file://dsl-provider \
 	file://ppp_on_boot.dsl"
@@ -25,4 +25,6 @@ else
 fi
 }
 
-CONFFILES_${PN}_nylon = "${sysconfdir}/ppp/peers/dsl-provider"
+PACKAGE_ARCH = "all"
+
+CONFFILES_${PN} = "${sysconfdir}/ppp/peers/dsl-provider"
