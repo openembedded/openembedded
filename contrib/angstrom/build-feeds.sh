@@ -45,7 +45,7 @@ do
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
                        usbutils pciutils mtd-utils usbview hal \
                        task-proper-tools mc screen findutils \
-	               mono perl \
+		       mono perl \
 		       python python-pygtk \
 		       ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
@@ -56,7 +56,7 @@ do
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
 		       xmms mplayer quasar vlc-gpe gnome-mplayer \
-		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
+		       wpa-gui wifi-radar kismet aircrack-ng dsniff rfakeap driftnet \
 		       nmap iptables iperf \
 		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
@@ -67,12 +67,15 @@ do
 		       asterisk \
 		       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
+		       rdesktop \
 		       tzdata \
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
 		       task-opie \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
+		       kbdd \
+		       nano pine \
 		      "
 	do_build
 done
