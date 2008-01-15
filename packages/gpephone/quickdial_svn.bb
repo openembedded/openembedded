@@ -5,11 +5,9 @@ PRIORITY    = "optional"
 PR          = "r0"
 PV = "0.0+svnr-${SRCREV}"
 
-SRCREV_pn-${PN} ?= "1393"
-
 DEFAULT_PREFERENCE = "-1"
 
-DEPENDS = "gtk+ librecord2 libgpephone hiker"
+DEPENDS = "gtk+ librecord2 libgpephone"
 
 inherit gpephone autotools pkgconfig
 
@@ -17,5 +15,6 @@ SRC_URI = "${GPEPHONE_SVN}"
 
 S = "${WORKDIR}/${PN}"
 
+EXTRA_OECONF = "--disable-hiker"
 
 FILES_${PN} += "${datadir}/qdial/database"

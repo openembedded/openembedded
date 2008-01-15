@@ -3,7 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ libgpephone dbus-glib libabenabler2 librecord2 libgemwidget"
-PV = "0.0+svn-${SRCREV}"
+PV = "0.0+svnr-${SRCREV}"
 PR = "r0"
 
 inherit gpephone autotools

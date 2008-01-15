@@ -2,17 +2,16 @@ DESCRIPTION = "LiPS calendar API."
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LiPS"
-DEPENDS = "glib-2.0 sqlite3 libical"
-PV = "0.0+svn-${SRCREV}"
+DEPENDS = "glib-2.0 sqlite3 libical libalmmgr"
+PV = "0.0+svnr-${SRCREV}"
 PR = "r0"
+
+
+inherit gpephone pkgconfig autotools
 
 SRC_URI = "${GPEPHONE_SVN}"
 
 S = "${WORKDIR}/${PN}"
-
-GPE_TARBALL_SUFFIX = "bz2"
-
-inherit gpephone pkgconfig autotools
 
 do_stage () {
     autotools_stage_all
