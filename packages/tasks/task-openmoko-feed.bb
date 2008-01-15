@@ -9,7 +9,7 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   bluez-hcidump \
   bootchart \
-  eet evas ecore embryo epsilon edje efreet emotion epdf \
+  eet evas ecore embryo epsilon edje efreet emotion \
   exhibit edje-viewer \
   free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
