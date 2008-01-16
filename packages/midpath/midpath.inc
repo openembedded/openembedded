@@ -9,14 +9,14 @@ SRC_URI = "http://downloads.sourceforge.net/midpath/midpath-${PV}.tar.gz"
 
 S = "${WORKDIR}/midpath-${PV}"
 
-DEPENDS = "ecj-native fastjar-native classpath-minimal"
+DEPENDS = "virtual/javac-native fastjar-native classpath"
 
-JAVAC_CMD = "${STAGING_BINDIR_NATIVE}/ecj"
+JAVAC_CMD = "${STAGING_BINDIR_NATIVE}/javac"
 
 FASTJAR_CMD = "${STAGING_BINDIR_NATIVE}/fastjar"
 
 JAVA_PATH = "${STAGING_DATADIR}/java"
 
-GNU_CLASSPATH_PATH = "${JAVA_PATH}/classpath-minimal/glibj.zip"
+GNU_CLASSPATH_PATH = "${JAVA_PATH}/classpath/glibj.zip"
 
-CLDC_PATH = ${JAVA_PATH}/cldc1.1.jar
+CLDC_PATH = ${STAGING_DATADIR}/midpath-cldc/midpath-cldc1.1.jar

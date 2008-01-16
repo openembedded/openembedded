@@ -152,10 +152,10 @@ Recipes:    altboot, webcam-server
 
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
-Distros:    Ångström, generic
-Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
-Interests:  Core OE infrastructure, Python, GUI-Toolkits
-Recipes:    python*, qt*, qte*, sip*
+Distros:    OpenMoko, Ångström, Generic
+Machines:   fic-gta01, fic-gta02, nokia810, x86, qemuarm, qemux86
+Interests:  Core OE infrastructure, everything Python, EFL, E17, Qt4
+Recipes:    *python*, efl/*, e17*
 
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com

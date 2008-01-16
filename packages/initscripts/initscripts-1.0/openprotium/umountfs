@@ -1,0 +1,27 @@
+#! /bin/sh
+#
+# umountfs	Turn off swap and unmount all local filesystems.
+#
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+echo "Deactivating swap..."
+swapoff -a
+
+# We leave /proc mounted.
+echo "Unmounting local filesystems..."
+# umount anything not a pseudo file system, and not root
+# doesn't work for nested mounts at a non-root mount point
+while read device mountpt fstype options
+do
+	echo "$device" | grep -q "^/" 
+	if [ $? -eq 0 ]; then
+		if [ "$mountpt" != "/" ] && [ "$mountpt" != "/dev/" ]; then
+			umount $mountpt
+		fi
+	fi
+done</proc/mounts
+
+mount -o remount,ro /
+
+: exit 0

@@ -4,7 +4,7 @@ LICENSE = "Classpath"
 PRIORITY = "optional"
 SECTION = "libs"
 
-DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst jikes-native zip-native"
+DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native zip-native"
 RDEPENDS_${PN} = "${PN}-native (>= ${PV})"
 
 SRC_URI = "http://sablevm.org/download/release/${PV}/${PN}-${PV}.tar.gz \

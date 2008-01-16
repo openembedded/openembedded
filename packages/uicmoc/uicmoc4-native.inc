@@ -6,7 +6,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
+           file://configure-fix.patch;patch=1"
 S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 
 inherit native
@@ -25,6 +26,8 @@ EXTRA_OECONF = "-prefix ${STAGING_DIR_NATIVE}/qt4 \
                 -qt3support "
 # yank default -e
 EXTRA_OEMAKE = " "
+
+export LFLAGS="${LDFLAGS}"
 
 do_configure() {
     sed -i 's:^QT += xml qt3support$:QT += xml qt3support network:' "${S}"/src/tools/uic3/uic3.pro

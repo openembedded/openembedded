@@ -42,6 +42,7 @@ RRECOMMENDS_${PN} = "\
   libevas-engine-software-generic \
   libevas-engine-software-x11 \
   libevas-engine-software-16 \
+  libevas-engine-software-16-x11 \
   libevas-engine-xrender-x11 \
   \
   libevas-loader-png \
@@ -49,3 +50,4 @@ RRECOMMENDS_${PN} = "\
   libevas-loader-eet \
   libevas-loader-svg \
 "
+

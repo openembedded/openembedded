@@ -9,7 +9,8 @@ module_do_compile() {
 		   KERNEL_SRC=${STAGING_KERNEL_DIR}    \
 		   KERNEL_VERSION=${KERNEL_VERSION}    \
 		   CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-		   ${MAKE_TARGETS}
+		   AR="${KERNEL_AR}" \
+                   ${MAKE_TARGETS}
 }
 
 module_do_install() {

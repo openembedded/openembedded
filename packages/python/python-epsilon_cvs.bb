@@ -1,4 +1,3 @@
 require python-efl.inc
 DEPENDS += "epsilon python-ecore"
-
-PR = "r1"
+PR = "r4"

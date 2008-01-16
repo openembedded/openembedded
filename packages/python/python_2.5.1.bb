@@ -79,7 +79,7 @@ do_install() {
 require python-${PYTHON_MAJMIN}-manifest.inc
 
 RPROVIDES_python-core = "python"
-RRECOMMEND_python-core = "python-readline"
+RRECOMMENDS_python-core = "python-readline"
 
 PACKAGES =+ "libpython2"
 FILES_libpython2 = "${libdir}/libpython*"

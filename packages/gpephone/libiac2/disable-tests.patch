@@ -1,0 +1,25 @@
+--- Makefile.am~	2008-01-10 17:43:18.000000000 +0100
++++ Makefile.am	2008-01-10 17:43:18.000000000 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS			= src include test po
++SUBDIRS			= src include po
+ 
+ if BUILD_DAEMON
+ SUBDIRS += daemon
+--- configure.ac~	2008-01-10 17:50:03.000000000 +0100
++++ configure.ac	2008-01-10 17:50:03.000000000 +0100
+@@ -40,14 +40,11 @@
+ AM_CONDITIONAL(BUILD_DAEMON,
+ 							 test x$enable_daemon = xyes)
+ 
+-AM_PATH_CUNIT
+-
+ AC_CONFIG_FILES([
+ Makefile
+ daemon/Makefile
+ src/Makefile
+ include/Makefile
+-test/Makefile
+ po/Makefile.in
+ libiac2.pc
+ ])
