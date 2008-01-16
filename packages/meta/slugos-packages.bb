@@ -212,6 +212,7 @@ SLUGOS_PACKAGES = "\
 	thttpd \
 	tiff \
 	tzdata \
+	unrar \
 	unzip \
 	upslug2 \
 	usbutils \
