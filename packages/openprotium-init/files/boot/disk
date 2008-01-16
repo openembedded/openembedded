@@ -25,9 +25,6 @@ then
 		sleep=6
 		test "$sleep" -gt 0 && sleep "$sleep"
 	else
-		# make the device links so turnup can use short disk names.
-		# probably only necessary on devfs based systems.
-		/etc/init.d/devices start
 		scc -l redflash -f auto
 	fi
 	#

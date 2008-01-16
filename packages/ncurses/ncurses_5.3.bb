@@ -1,7 +1,7 @@
 BaseV := "${PV}"
 SnapV := "20030906"
 PV = "${BaseV}.${SnapV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${BaseV}.tar.gz \
 	   file://${SnapV}.patch;patch=1 \

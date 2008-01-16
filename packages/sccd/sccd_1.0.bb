@@ -1,7 +1,7 @@
-DECSCRIPTION = "StorCenter Control Daemon - controls the leds, fans, softpower"
+DECSCRIPTION = "StorCenter Control Daemon controls leds, fans, softpower"
 SECTION = "utils"
 LICENSE = "BSD"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://scc.h \
 	   file://scc.c \
@@ -14,7 +14,7 @@ SRC_URI = "file://scc.h \
 
 inherit autotools update-rc.d
 
-INITSCRIPT_PARAMS = "defaults 91 20"
+INITSCRIPT_PARAMS = "defaults 9 9"
 INITSCRIPT_NAME = "sccd"
 
 do_unpack() {
