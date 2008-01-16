@@ -4,7 +4,7 @@ SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 dbus-glib librecord2 liblipsevent2 telepathy-mission-control libgsmd-lips"
 PV = "0.0+svnr-${SRCREV}"
-PR          = "r1"
+PR          = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -14,7 +14,8 @@ SRC_URI = "${GPEPHONE_SVN}"
 
 S = ${WORKDIR}/${PN}
 
-FILES_${PN} += "$(datadir)/libmsgenabler2"
+FILES_${PN} += "${datadir}/libmsgenabler2 ${libdir}/msg-providers/*.so.0"
+FILES_${PN}-dev += "${libdir}/msg-providers/*.so ${libdir}/msg-providers/*a"
 
 do_stage () {
 	autotools_stage_all
