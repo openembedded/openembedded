@@ -1,7 +1,7 @@
 DESCRIPTION = "gsm.07.10 muxer userspace daemon"
 AUTHOR = "M. Dietrich"
 SECTION = "console/network"
-PRIORITY = "optional"
+DEPENDS = "intltool-native dbus"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
 
