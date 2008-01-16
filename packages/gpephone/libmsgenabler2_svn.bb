@@ -14,8 +14,9 @@ SRC_URI = "${GPEPHONE_SVN}"
 
 S = ${WORKDIR}/${PN}
 
-FILES_${PN} += "${datadir}/libmsgenabler2 ${libdir}/msg-providers/*.so.0"
+FILES_${PN} += "${datadir}/libmsgenabler2 ${libdir}/msg-providers/*.0"
 FILES_${PN}-dev += "${libdir}/msg-providers/*.so ${libdir}/msg-providers/*a"
+FILES_${PN}-dbg += "${libdir}/msg-providers/.debug"
 
 do_stage () {
 	autotools_stage_all
