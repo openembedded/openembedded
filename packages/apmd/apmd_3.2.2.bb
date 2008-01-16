@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 LICENSE = "GPL"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
            file://debian.patch;patch=1 \
@@ -12,6 +12,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
 	   file://unlinux.patch;patch=1 \
            file://init \
            file://default \
+           file://90-wifi-off \
            file://apmd_proxy \
            file://apmd_proxy.conf"
 
@@ -49,6 +50,7 @@ do_install() {
 
 	install -m 4755 ${S}/.libs/apm ${D}${bindir}/apm
 	install -m 0755 ${S}/.libs/apmd ${D}${sbindir}/apmd
+	install -m 0755 ${WORKDIR}/90-wifi-off ${D}${sysconfdir}/apm/suspend.d
 	install -m 0755 ${WORKDIR}/apmd_proxy ${D}${sysconfdir}/apm/
 	install -m 0644 ${WORKDIR}/apmd_proxy.conf ${D}${datadir}/apmd/
 	install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/apmd
