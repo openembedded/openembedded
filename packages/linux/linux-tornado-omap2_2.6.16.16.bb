@@ -1,6 +1,7 @@
 DESCRIPTION = "Linux kernel for HTC Tornado/Typhoon/Hurricane phones."
 SECTION = "kernel"
 LICENSE = "GPL"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.16.tar.bz2 \
 	   http://www.muru.com/linux/omap/patches/old/patch-2.6.16-omap2.bz2;patch=1 \
