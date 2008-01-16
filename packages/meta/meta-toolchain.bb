@@ -1,12 +1,14 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
+PR = "r1"
 
 inherit sdk meta
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
+SDK_SUFFIX = "toolchain"
 
 FEED_ARCH ?= "${TARGET_ARCH}"
 
@@ -120,7 +122,7 @@ do_populate_sdk() {
 	# package it up
 	mkdir -p ${SDK_DEPLOY}
 	cd ${SDK_OUTPUT}
-	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-toolchain.tar.bz2 .
+	fakeroot tar cfj ${SDK_DEPLOY}/${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-${SDK_SUFFIX}.tar.bz2 .
 }
 
 do_populate_sdk[nostamp] = "1"
