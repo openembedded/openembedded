@@ -33,7 +33,7 @@
  */
 
 #define SCC_PIDFILE		"/var/run/sccd.pid"
-#define SCC_DEVICE		"/dev/tts/1"
+#define SCC_DEVICE		"/dev/ttyS1"
 #define SCC_SOCKET		"/dev/sccd"
 
 #define SCC_PACKETLEN		8
