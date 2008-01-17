@@ -15,7 +15,6 @@ require gcc3-build-cross.inc
 # cross packaging
 require gcc-package-cross.inc
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
-SRC_URI_append = " file://fortran-libs-rpath-to-staging-hack.patch;patch=1 "
 # Do not build libssp libmudflap and libgomp
 # We might need them for some beefy targets 
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \
