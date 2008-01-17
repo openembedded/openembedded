@@ -1,12 +1,8 @@
-# The new ethernet driver included in the 2.6.23 version of the nslu2-linux.org kernel patches
-# has problems with providing the correct MAC address on the initial DHCP request.
-DEFAULT_PREFERENCE = "-1"
-
 require linux.inc
 require linux-ixp4xx.inc
 
 VANILLA_VERSION = "2.6.23"
-KERNEL_RELEASE = "2.6.23.12"
+KERNEL_RELEASE = "2.6.23.14"
 
 # If you use a rc, you will need to use this:
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"

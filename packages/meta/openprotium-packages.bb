@@ -30,13 +30,14 @@ inherit meta
 #	flac \
 #	gphoto2 \
 #	gdb \
-#	glib-2.0 \
 #	lirc \
 #	masqmail \
 #	wakelan \
 #	wireless-tools \
 #	wpa-supplicant \
+#	openldap \
 #	bluez-utils-nodbus \
+#	lcdproc \
 #	libxml2 \
 #	libdvb \
 #	madwifi-ng \
@@ -53,7 +54,13 @@ inherit meta
 #	samba \
 #	sane-backends \
 #	vsftpd \
+#	syslog-ng \
 #	zd1211 \
+#	cdparanoia \
+#	litestream \
+#	pvrusb2-mci \
+#	pwc \
+#	fetchmail \
 
 OPENPROTIUM_PACKAGES = "\
 	alsa-lib \
@@ -70,7 +77,6 @@ OPENPROTIUM_PACKAGES = "\
 	bridge-utils \
 	bzip2 \
 	ccxstream \
-	cdparanoia \
 	cdstatus \
 	coreutils \
 	cron \
@@ -85,7 +91,6 @@ OPENPROTIUM_PACKAGES = "\
 	e2fsprogs-libs \
 	expat \
 	ez-ipupdate \
-	fetchmail \
 	file \
 	findutils \
 	flex \
@@ -94,6 +99,7 @@ OPENPROTIUM_PACKAGES = "\
 	gawk \
 	gcc \
 	gdbm \
+	glib-2.0 \
 	gnu-config \
 	grep \
 	gtk-doc \
@@ -105,8 +111,6 @@ OPENPROTIUM_PACKAGES = "\
 	ircp \
 	joe \
 	jpeg \
-	lcdproc \
-	less \
 	libao \
 	libid3tag \
 	liblockfile \
@@ -119,7 +123,6 @@ OPENPROTIUM_PACKAGES = "\
 	libupnp \
 	libusb \
 	libvorbis \
-	litestream \
 	lrzsz \
 	lsof \
 	lvm2 \
@@ -144,7 +147,6 @@ OPENPROTIUM_PACKAGES = "\
 	nmap \
 	ntp \
 	openobex-apps \
-	openldap \
 	openntpd \
 	openobex \
 	openssh \
@@ -156,8 +158,6 @@ OPENPROTIUM_PACKAGES = "\
 	pkgconfig \
 	ppp \
 	procps \
-	pvrusb2-mci \
-	pwc \
 	quilt \
 	rng-tools \
 	rsync \
@@ -169,7 +169,6 @@ OPENPROTIUM_PACKAGES = "\
 	strace \
 	streamripper \
 	sysfsutils \
-	syslog-ng \
 	tar \
 	thttpd \
 	tiff \
@@ -178,7 +177,6 @@ OPENPROTIUM_PACKAGES = "\
 	util-linux \
 	vim \
 	vlan \
-	watchdog \
 	wget \
 	zip \
 	zlib \

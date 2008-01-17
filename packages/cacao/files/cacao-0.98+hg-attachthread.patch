@@ -1,12 +1,89 @@
-diff -r d8fe2c3ba284 src/threads/native/threads.c
---- a/src/threads/native/threads.c	Sun Dec 30 17:43:35 2007 +0100
-+++ b/src/threads/native/threads.c	Wed Jan 02 16:41:57 2008 +0100
-@@ -1432,6 +1432,8 @@ bool threads_attach_current_thread(JavaV
+# Makes the JNI function AttachCurrentThread work properly.
+
+Index: cacao-0.98+hg20071001/src/mm/boehm-gc/include/gc.h
+===================================================================
+--- cacao-0.98+hg20071001.orig/src/mm/boehm-gc/include/gc.h	2008-01-15 14:45:41.000000000 +0100
++++ cacao-0.98+hg20071001/src/mm/boehm-gc/include/gc.h	2008-01-15 14:46:30.000000000 +0100
+@@ -905,6 +905,8 @@
+ 					/* in returned list.		*/
+ extern void GC_thr_init GC_PROTO((void));/* Needed for Solaris/X86	*/
  
- 	threads_thread_set_object(thread, (java_handle_t *) t);
- 
-+  threads_set_current_threadobject(thread);
++extern void GC_thr_init_foreign GC_PROTO((void));/* Needed for Solaris/X86	*/
 +
+ #endif /* THREADS && !SRC_M3 */
+ 
+ #if defined(GC_WIN32_THREADS) && !defined(__CYGWIN32__) && !defined(__CYGWIN__)
+Index: cacao-0.98+hg20071001/src/mm/boehm-gc/pthread_support.c
+===================================================================
+--- cacao-0.98+hg20071001.orig/src/mm/boehm-gc/pthread_support.c	2008-01-15 14:45:41.000000000 +0100
++++ cacao-0.98+hg20071001/src/mm/boehm-gc/pthread_support.c	2008-01-15 14:46:30.000000000 +0100
+@@ -864,6 +864,27 @@
+ }
+ #endif	/* GC_NETBSD_THREADS */
+ 
++void GC_thr_init_foreign()
++{
++#   ifndef GC_DARWIN_THREADS
++  int dummy;
++#   endif
++	GC_thread t;
++	LOCK();
++
++  /* Add the initial thread, so we can stop it.	*/
++  t = GC_new_thread(pthread_self());
++#     ifdef GC_DARWIN_THREADS
++  t -> stop_info.mach_thread = mach_thread_self();
++#     else
++  t -> stop_info.stack_ptr = (ptr_t)(&dummy);
++#     endif
++  t -> flags = DETACHED;
++
++	UNLOCK();
++
++}
++
+ /* We hold the allocation lock.	*/
+ void GC_thr_init()
+ {
+Index: cacao-0.98+hg20071001/src/mm/boehm.c
+===================================================================
+--- cacao-0.98+hg20071001.orig/src/mm/boehm.c	2008-01-15 14:45:41.000000000 +0100
++++ cacao-0.98+hg20071001/src/mm/boehm.c	2008-01-15 14:46:30.000000000 +0100
+@@ -108,6 +108,10 @@
+ 		GC_expand_hp(heapstartsize - heapcurrentsize);
+ }
+ 
++void gc_init_foreign()
++{
++	GC_thr_init_foreign();
++}
+ 
+ static void gc_ignore_warnings(char *msg, GC_word arg)
+ {
+Index: cacao-0.98+hg20071001/src/mm/gc-common.h
+===================================================================
+--- cacao-0.98+hg20071001.orig/src/mm/gc-common.h	2008-01-15 14:45:41.000000000 +0100
++++ cacao-0.98+hg20071001/src/mm/gc-common.h	2008-01-15 14:46:30.000000000 +0100
+@@ -74,6 +74,7 @@
+ void  gc_finalize_all(void);
+ void *gc_out_of_memory(size_t bytes_requested);
+ 
++void	gc_init_foreign();
+ 
+ /* inlined functions **********************************************************/
+ 
+Index: cacao-0.98+hg20071001/src/threads/native/threads.c
+===================================================================
+--- cacao-0.98+hg20071001.orig/src/threads/native/threads.c	2008-01-15 14:45:41.000000000 +0100
++++ cacao-0.98+hg20071001/src/threads/native/threads.c	2008-01-15 16:01:22.000000000 +0100
+@@ -1392,7 +1392,10 @@
+ 
  	/* thread is completely initialized */
  
++	gc_init_foreign();
++
  	threads_thread_state_runnable(thread);
++	threads_set_current_threadobject(thread);
+ 
+ 	DEBUGTHREADS("attaching", thread);
+ 
