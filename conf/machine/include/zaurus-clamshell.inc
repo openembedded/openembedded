@@ -1,3 +1,6 @@
+# Use tune-xscale per default. Machine independent feeds should be built with tune-strongarm.
+include conf/machine/include/tune-xscale.inc
+
 EXTRA_IMAGEDEPENDS += "sharp-flash-header-c700"
 
 IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
