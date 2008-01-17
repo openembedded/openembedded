@@ -24,16 +24,16 @@ SRC_URI += "file://openprotium/halt"
 SRC_URI += "file://openprotium/reboot"
 SRC_URI += "file://openprotium/flashclean"
 SRC_URI += "file://openprotium/checkroot.sh"
+SRC_URI += "file://openprotium/mountall.sh"
+SRC_URI += "file://openprotium/umountinitrd.sh"
+SRC_URI += "file://openprotium/umountfs"
 
 # Without this it is not possible to patch checkroot.sh
 S = "${WORKDIR}"
 
 do_install_append() {
-	# the image build command now installs this for slugos
-	# except that mine doesn't.   we don't need it, but we turnup
-	# expects it to at least exist
-	rm	${D}${sysconfdir}/device_table
-	touch 	${D}${sysconfdir}/device_table
+	#rm	${D}${sysconfdir}/device_table
+	#touch 	${D}${sysconfdir}/device_table
 
 	# openprotium specific scripts
 	# install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
@@ -44,6 +44,8 @@ do_install_append() {
 	install -m 0755 ${WORKDIR}/openprotium/devices  ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openprotium/flashclean  ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/openprotium/checkroot.sh  ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/openprotium/mountall.sh  ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/openprotium/umountinitrd.sh  ${D}${sysconfdir}/init.d
 
 	# Remove the do install links (this detects a change to the
 	# initscripts .bb file - it will cause a build failure here.)
@@ -130,7 +132,7 @@ do_install_append() {
 	# slugos network syslog starts here (44)
 	update-rc.d -r ${D} mountnfs.sh		start 45 S .
 
-	update-rc.d -r ${D} bootmisc.sh		start 55 S .
+	# update-rc.d -r ${D} bootmisc.sh		start 55 S .
 	# urandom is currently disabled from S 55 (and won't work with tmpfs /var)
 
 	# ipkg-cl configure runs at S 98
@@ -158,7 +160,7 @@ do_install_append() {
 	# This is the special, correct, slugos umountnfs.sh (it looks in
 	# the /proc/mounts information, not /etc/fstab)
 	update-rc.d -r ${D} umountnfs.sh	start 31 0 6 .
-	update-rc.d -r ${D} save-rtc.sh		start 25 0 6 .
+	# update-rc.d -r ${D} save-rtc.sh		start 25 0 6 .
 	# portmap stops at 32
 	# slugos network syslog stops here (39)
 	# networking stops at 40 (nothing else does, believe me.)

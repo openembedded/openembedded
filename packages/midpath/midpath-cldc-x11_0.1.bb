@@ -1,7 +1,7 @@
 
 require midpath.inc
 
-DEPENDS += " virtual/libx11 virtual/cldc-api-1.1"
+DEPENDS += "virtual/libx11 midpath-cldc"
 
 do_configure() {
 	

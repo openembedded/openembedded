@@ -1,35 +1,17 @@
+# Compatible with GNU Classpath 0.95 only!
 
-require cacao.inc
+require cacao-cldc.inc
 
-SRC_URI +="file://midpath.patch;patch=1 \
-           file://offsets_make.patch;patch=1 \
-	   file://classpath_var.patch;patch=1 \
-	   file://libmath.patch;patch=1 \
-	   file://arm_mmap.patch;patch=1 \
-          "
+PR = "r1"
+
+SRC_URI += "\
+  http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2;md5sum=8b8907c8b925761c9410bcadb9705346 \
+	file://midpath.patch;patch=1 \
+	file://offsets_make.patch;patch=1 \
+	file://classpath_var.patch;patch=1 \
+	file://libmath.patch;patch=1 \
+	file://arm_mmap.patch;patch=1 \
+	"
+
 SRC_URI_append_arm = "file://offset.h_arm.patch;patch=1"
 
-DEPENDS = "cacaoh-cldc-native virtual/javac-native classpath-minimal-native virtual/cldc-api-1.1 libtool zlib"
-RDEPENDS = "virtual/cldc-api-1.1 libltdl"
-RPROVIDES = "virtual/java"
-
-EXTRA_OECONF += "--with-classpath-libdir=${STAGING_DATADIR}/classpath-minimal \
-                 --with-classpath-includedir=${STAGING_INCDIR}/classpath-minimal \
-		 --enable-jni \
-                 --enable-java=cldc1.1 \
-                 --with-classpath=cldc1.1 \
-                 --with-classpath-classes=${STAGING_DATADIR}/java/cldc1.1.jar \
-		 --with-target-classpath-classes=${datadir}/java/cldc1.1.jar \
-		 --with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh \
-		 --disable-libjvm \
-                "
-
-PACKAGES = "${PN} ${PN}-doc ${PN}-dbg" 
-
-FILES_${PN} = "${bindir}/cacao"
-FILES_${PN}-doc = "${datadir}/man"
-FILES_${PN}-dbg = "${bindir}/.debug"
-
-ALTERNATIVE_NAME = "java"
-ALTERNATIVE_PATH = "${bindir}/cacao"
-ALTERNATIVE_PRIORITY = "10"
