@@ -5,7 +5,6 @@ LICENSE = "MIT"
 DEPENDS = "ncurses-native"
 RSUGGESTS_${PN} = "ncurses-terminfo"
 RPROVIDES = "libncurses5"
-PR = "r1"
 
 inherit autotools
 
@@ -88,4 +87,4 @@ FILES_ncurses_append = " ${datadir}/tabset"
 # clear/reset are in already busybox
 FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear.${PN} ${bindir}/reset.${PN} ${bindir}/tack "
 FILES_ncurses-terminfo = "${datadir}/terminfo"
-FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* §{datadir}/tabset ${sysconfdir/terminfo}"
+FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* §{datadir}/tabset ${sysconfdir}/terminfo"

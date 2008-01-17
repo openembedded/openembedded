@@ -8,8 +8,7 @@ S = "${WORKDIR}/cacao-${PV}"
 
 PR = "r1"
 
-inherit autotools
-inherit native
+inherit autotools native
 
 EXTRA_OECONF = " \
     --with-classpath-includedir=${STAGING_INCDIR}/classpath \

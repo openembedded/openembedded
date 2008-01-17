@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -39,6 +39,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
         file://gfortran.patch;patch=1 \
+        file://gcc-4.0.2-e300c2c3.patch;patch=1 \
         file://pr34130.patch;patch=1 \
 "
 

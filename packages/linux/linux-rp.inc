@@ -58,6 +58,7 @@ module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
 module_autoload_locomo-spi_collie = "locomo-spi"
 module_autoload_mmc_block_collie = "mmc_block"
+module_autoload_locomo-kbd_collie = "locomo-kbd"
 
 do_configure() {
 	rm -f ${S}/.config
