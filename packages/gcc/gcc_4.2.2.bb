@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -39,7 +39,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
         file://gfortran.patch;patch=1 \
+        file://gcc-4.0.2-e300c2c3.patch;patch=1 \
         file://pr34130.patch;patch=1 \
+        file://fortran-static-linking.patch;patch=1 \
 "
 
 SRC_URI_append_ep93xx = " \
@@ -71,6 +73,8 @@ SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"
 
+DEPENDS += " gmp mpfr "
+
 #Set the java bits
 JAVA = ""
 JAVA_arm = ""
@@ -82,3 +86,9 @@ ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
 
 EXTRA_OECONF += " --disable-libssp --disable-bootstrap "
 
+# We know some one is including us, but we only want to apply this fortran hack for the real gcc
+python __anonymous () {
+    import bb
+    if bb.data.getVar('PN', d, True) == "gcc":
+        bb.data.setVar('SRC_URI_append', ' file://fortran-cross-compile-hack.patch;patch=1', d)
+}

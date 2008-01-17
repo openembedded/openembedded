@@ -1,0 +1,11 @@
+--- git.orig/fs/ext2/ext2fs.c	2007-12-13 23:16:13.000000000 -0800
++++ git/fs/ext2/ext2fs.c	2007-12-13 23:16:41.000000000 -0800
+@@ -472,7 +472,7 @@
+ 			return (0);
+ 		}
+ 		if (dirent.namelen != 0) {
+-			char filename[dirent.namelen + 1];
++			char filename[256];
+ 			ext2fs_node_t fdiro;
+ 			int type = FILETYPE_UNKNOWN;
+ 

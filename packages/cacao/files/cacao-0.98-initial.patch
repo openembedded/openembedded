@@ -1,0 +1,45 @@
+Index: cacao-0.98/configure.ac
+===================================================================
+--- cacao-0.98.orig/configure.ac	2007-12-19 22:07:55.000000000 +0100
++++ cacao-0.98/configure.ac	2007-12-19 22:08:02.000000000 +0100
+@@ -27,7 +27,7 @@
+ dnl Process this file with autoconf to produce a configure script.
+ 
+ 
+-AC_INIT(cacao, 0.98, cacao@cacaojvm.org)
++AC_INIT(cacao-initial, 0.98, cacao@cacaojvm.org)
+ AC_CONFIG_SRCDIR(src/cacao/cacao.c)
+ AC_CANONICAL_HOST
+ AC_PREREQ(2.59)
+Index: cacao-0.98/src/vm/vm.c
+===================================================================
+--- cacao-0.98.orig/src/vm/vm.c	2007-12-19 22:31:19.000000000 +0100
++++ cacao-0.98/src/vm/vm.c	2007-12-19 22:32:36.000000000 +0100
+@@ -623,7 +623,7 @@
+ #else
+ 	puts("  java.boot.class.path           : "CLASSPATH_CLASSES"");
+ #endif
+-	puts("  gnu.classpath.boot.library.path: "CLASSPATH_LIBDIR"/classpath\n");
++	puts("  gnu.classpath.boot.library.path: "CLASSPATH_LIBDIR"/classpath-initial\n");
+ 
+ 	puts("Runtime variables:\n");
+ 	printf("  maximum heap size              : %d\n", opt_heapmaxsize);
+@@ -828,15 +828,15 @@
+ 
+ 	/* and finally set the path to GNU Classpath libraries */
+ 
+-	len = strlen(cacao_prefix) + strlen("/lib/classpath") + strlen("0");
++	len = strlen(cacao_prefix) + strlen("/lib/classpath-initial") + strlen("0");
+ 
+ 	classpath_libdir = MNEW(char, len);
+ 	strcpy(classpath_libdir, cacao_prefix);
+-	strcat(classpath_libdir, "/lib/classpath");
++	strcat(classpath_libdir, "/lib/classpath-initial");
+ #else
+ 	cacao_prefix     = CACAO_PREFIX;
+ 	cacao_libjvm     = CACAO_LIBDIR"/libjvm";
+-	classpath_libdir = CLASSPATH_LIBDIR"/classpath";
++	classpath_libdir = CLASSPATH_LIBDIR"/classpath-initial";
+ #endif
+ 
+ 	/* set the bootclasspath */

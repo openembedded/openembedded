@@ -34,8 +34,8 @@ CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",
 ##############################################################
 # Configure memory/ramdisk split for collie
 #
-export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}'
-export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}'
+export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "64"}'
+export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "0"}'
 
 CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
@@ -58,6 +58,7 @@ module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
 module_autoload_locomo-spi_collie = "locomo-spi"
 module_autoload_mmc_block_collie = "mmc_block"
+module_autoload_locomo-kbd_collie = "locomo-kbd"
 
 do_configure() {
 	rm -f ${S}/.config

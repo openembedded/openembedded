@@ -3,7 +3,7 @@ SECTION = "gpephone"
 PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 dbus-glib gtk+"
-PV = "0.1+svn-${SRCDATE}"
+PV = "0.1+svnr-${SRCREV}"
 PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"

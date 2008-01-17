@@ -1,0 +1,19 @@
+A missing include in kallsyms.h.
+
+Upstream this is fixed in the 2.6.24 rc series:
+
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=5a75983eef1193c43caebde6643a218bd8d8390e
+
+Leon Woestenberg <leon.woestenberg@gmail.com>
+
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@ -6,6 +6,7 @@
+ #define _LINUX_KALLSYMS_H
+ 
+ #include <linux/errno.h>
++#include <linux/stddef.h>
+ 
+ #define KSYM_NAME_LEN 128
+ #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
+

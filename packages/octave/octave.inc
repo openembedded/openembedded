@@ -1,7 +1,4 @@
-DESCRIPTION = "GNU Octave is a high-level language, primarily intended for numerical computations. \
-It provides a convenient command line interface for solving linear and nonlinear problems numerically, \
-and for performing other numerical experiments using a language that is mostly compatible with Matlab. \
-It may also be used as a batch-oriented language."
+DESCRIPTION = "Matlab alternative for numerical computations"
 HOMEPAGE = "http://www.gnu.org/software/octave/"
 SECTION = "console/scientific"
 LICENSE = "GPL"
@@ -11,7 +8,11 @@ RDEPENDS = "libfftw3"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-hdf5"
+EXTRA_OECONF = "--without-hdf5 --without-glpk -without-umfpack \
+                --without-colamd --without-ccolamd --without-cholmod \
+                --without-cxsparse"
+
+# additional missing dependency/functionality: Qhull gperf
 
 do_configure() {
 	gnu-configize
@@ -26,4 +27,3 @@ FILES_${PN}-m = "${datadir}/${PN}/*"
 do_stage() {
         autotools_stage_all
 }
-

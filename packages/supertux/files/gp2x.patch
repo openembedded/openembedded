@@ -1,0 +1,2614 @@
+Only in supertux-0.1.3: aclocal.m4
+diff -ur supertux-0.1.3/AUTHORS supertux-0.1.3-gp2x/AUTHORS
+--- supertux-0.1.3/AUTHORS	2005-07-02 14:37:30.000000000 +0300
++++ supertux-0.1.3-gp2x/AUTHORS	2006-04-13 06:11:02.000000000 +0300
+@@ -91,6 +91,12 @@
+ 
+     Royalty free CDROMs and FTP sites sounds
+ 
++Port to GP2X
++-----------
++    Ingo Arndt
++    scachi@gmx.de
++    http://www.bitmage.de
++
+ More information and contacts
+ =============================
+ 
+Only in supertux-0.1.3: autom4te.cache
+Only in supertux-0.1.3-gp2x: autoscan.log
+Only in supertux-0.1.3-gp2x: COMPILE4GP2X
+Only in supertux-0.1.3: config.guess
+Only in supertux-0.1.3: config.log
+Only in supertux-0.1.3: config.status
+Only in supertux-0.1.3: config.sub
+Only in supertux-0.1.3: configure
+diff -ur supertux-0.1.3/configure.ac supertux-0.1.3-gp2x/configure.ac
+--- supertux-0.1.3/configure.ac	2005-07-06 12:26:15.000000000 +0300
++++ supertux-0.1.3-gp2x/configure.ac	2006-04-19 22:29:05.000000000 +0300
+@@ -76,13 +76,33 @@
+ CFLAGS="$CFLAGS $SDL_CFLAGS"
+ LIBS="$LIBS $SDL_LIBS"
+ 
++AM_PATH_LIBMIKMOD(,
++            :,
++	    AC_MSG_ERROR([*** mikmod not found!]))
++CXXFLAGS="$CXXFLAGS $LIBMIKMOD_CFLAGS"
++CFLAGS="$CFLAGS $LIBMIKMOD_CFLAGS"
++LIBS="$LIBS $LIBMIKMOD_LIBS"
++
+ dnl Checks for additional libraries.
++AC_CHECK_LIB(smpeg, SMPEG_status)
++
++AC_CHECK_LIB(mikmod, MikMod_Init)
++
+ AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio,,
+ 	AC_MSG_ERROR([SDL_mixer library required]))
+ 
++AC_CHECK_LIB(jpeg,jpeg_abort)
++
++AC_CHECK_LIB(z,compress)
++
++AC_CHECK_LIB(png,png_free)
++
+ AC_CHECK_LIB(SDL_image, IMG_Load,,
+ 	AC_MSG_ERROR([SDL_image library required]))
+ 
++AC_CHECK_LIB(SDL_gfx, rotozoomSurface,,
++	AC_MSG_ERROR([SDL_gfx library required]))
++
+ if test "x${enable_opengl}" != "xno"; then
+   AX_CHECK_GL
+ fi
+@@ -95,7 +115,30 @@
+   LIBS="$LIBS $GL_LIBS"
+ fi
+ 
+-AC_CHECK_LIB(z, gzopen,, AC_MSG_ERROR([*** zlib is missing]))
++# compile for the testing the 320x240 resolution
++# compile for the gp2x
++AC_ARG_ENABLE(gp2x,
++[  --enable-gp2x          Build the gp2x version [default=no]],
++              , enable_gp2x=no)
++if test x$enable_gp2x = xyes; then
++    CXXFLAGS="$CXXFLAGS -DGP2X"
++fi
++
++AC_ARG_ENABLE(320x240,
++[  --enable-320x240          Test the 320x240 resolution [default=no]],
++              , enable_320x240=no)
++if test x$enable_320x240 = xyes; then
++    CXXFLAGS="$CXXFLAGS -DRES320X240"
++fi
++
++# compile static
++AC_ARG_ENABLE(static,
++[  --enable-static          Build the static version [default=no]],
++              , enable_static=no)
++if test x$enable_static = xyes; then
++    CXXFLAGS="$CXXFLAGS -static"
++fi
++
+ 
+ CXXFLAGS="$CXXFLAGS -DDATA_PREFIX='\"$datadir/supertux\"'" 
+ 
+@@ -110,6 +153,9 @@
+ echo " Profile Mode:   $enable_gprof"
+ echo " Debug Mode:     $enable_debug"
+ echo " OpenGL Support: $enable_opengl"
++echo " 320x240 Resolution:    $enable_320x240"
++echo " GP2X Build (+320x240): $enable_gp2x"
++echo " Static Build:          $enable_static"
+ echo ""
+ 
+ # EOF #
+Only in supertux-0.1.3/data: CREDITS
+Only in supertux-0.1.3/data: extro-bonus2.txt
+Only in supertux-0.1.3/data: extro-bonus.txt
+Only in supertux-0.1.3/data: extro.txt
+Only in supertux-0.1.3/data: images
+Only in supertux-0.1.3/data: intro.txt
+Only in supertux-0.1.3/data: levels
+Only in supertux-0.1.3/data: Makefile
+Only in supertux-0.1.3/data: Makefile.in
+Only in supertux-0.1.3/data: music
+Only in supertux-0.1.3/data: sounds
+Only in supertux-0.1.3/data: supertux.strf
+Only in supertux-0.1.3: depcomp
+Only in supertux-0.1.3: install-sh
+Only in supertux-0.1.3: m4
+Only in supertux-0.1.3: Makefile
+Only in supertux-0.1.3: Makefile.in
+Only in supertux-0.1.3: missing
+Only in supertux-0.1.3: mkinstalldirs
+Only in supertux-0.1.3: patches
+diff -ur supertux-0.1.3/src/badguy.cpp supertux-0.1.3-gp2x/src/badguy.cpp
+--- supertux-0.1.3/src/badguy.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/badguy.cpp	2006-04-20 21:32:23.000000000 +0300
+@@ -250,7 +250,11 @@
+           tux.kick_timer.start(KICKING_TIME);
+           set_sprite(img_mriceblock_flat_left, img_mriceblock_flat_right);
+           physic.set_velocity_x((dir == LEFT) ? -3.5 : 3.5);
++#ifndef GP2X
+           play_sound(sounds[SND_KICK],SOUND_CENTER_SPEAKER);
++#else
++          play_chunk(SND_KICK);
++#endif
+         }
+     }
+ 
+@@ -260,6 +264,7 @@
+       check_horizontal_bump();
+       if(mode == KICK && changed != dir)
+         {
++#ifndef GP2X
+           /* handle stereo sound (number 10 should be tweaked...)*/
+           if (base.x < scroll_x + screen->w/2 - 10)
+             play_sound(sounds[SND_RICOCHET], SOUND_LEFT_SPEAKER);
+@@ -267,6 +272,9 @@
+             play_sound(sounds[SND_RICOCHET], SOUND_RIGHT_SPEAKER);
+           else
+             play_sound(sounds[SND_RICOCHET], SOUND_CENTER_SPEAKER);
++#else
++          play_chunk(SND_RICOCHET);
++#endif
+         }
+     }
+ 
+@@ -455,11 +463,15 @@
+ 
+       /* play explosion sound */  // FIXME: is the stereo all right? maybe we should use player cordinates...
+       if (base.x < scroll_x + screen->w/2 - 10)
++#ifndef GP2X
+         play_sound(sounds[SND_EXPLODE], SOUND_LEFT_SPEAKER);
+       else if (base.x > scroll_x + screen->w/2 + 10)
+         play_sound(sounds[SND_EXPLODE], SOUND_RIGHT_SPEAKER);
+       else
+         play_sound(sounds[SND_EXPLODE], SOUND_CENTER_SPEAKER);
++#else
++	play_chunk(SND_EXPLODE);
++#endif
+ 
+     } else if(mode == BOMB_EXPLODE) {
+       remove_me();
+@@ -677,13 +689,21 @@
+     }
+ 
+   // BadGuy fall below the ground
++#ifndef RES320X240
+   if (base.y > screen->h) {
++#else
++  if (base.y > 640) {
++#endif
+     remove_me();
+     return;
+   }
+ 
+   // Once it's on screen, it's activated!
++#ifndef RES320X240
+   if (base.x <= scroll_x + screen->w + OFFSCREEN_DISTANCE)
++#else
++  if (base.x <= scroll_x + 640 + OFFSCREEN_DISTANCE)
++#endif
+     seen = true;
+ 
+   if(!seen)
+@@ -743,7 +763,11 @@
+ BadGuy::draw()
+ {
+   // Don't try to draw stuff that is outside of the screen
++#ifndef RES320X240
+   if(base.x <= scroll_x - base.width || base.x >= scroll_x + screen->w)
++#else
++  if(base.x <= scroll_x - base.width || base.x >= scroll_x + 640)
++#endif
+     return;
+   
+   if(sprite_left == 0 || sprite_right == 0)
+@@ -811,7 +835,11 @@
+     
+   World::current()->add_score(base.x - scroll_x,
+                               base.y, 50 * player_status.score_multiplier);
++#ifndef GP2X
+   play_sound(sounds[SND_SQUISH], SOUND_CENTER_SPEAKER);
++#else
++  play_chunk(SND_SQUISH);
++#endif
+   player_status.score_multiplier++;
+ 
+   dying = DYING_SQUISHED;
+@@ -830,7 +858,11 @@
+    
+     player->jump_of_badguy(this);
+     World::current()->add_score(base.x - scroll_x, base.y, 50 * player_status.score_multiplier);
++#ifndef GP2X
+     play_sound(sounds[SND_SQUISH], SOUND_CENTER_SPEAKER);
++#else
++    play_chunk(SND_SQUISH);
++#endif
+     player_status.score_multiplier++;
+     remove_me();
+     return;
+@@ -839,7 +871,11 @@
+     if (mode == NORMAL || mode == KICK)
+       {
+         /* Flatten! */
++#ifndef GP2X
+         play_sound(sounds[SND_STOMP], SOUND_CENTER_SPEAKER);
++#else
++	play_chunk(SND_STOMP);
++#endif
+         mode = FLAT;
+         set_sprite(img_mriceblock_flat_left, img_mriceblock_flat_right);
+         physic.set_velocity_x(0);
+@@ -847,7 +883,11 @@
+         timer.start(4000);
+       } else if (mode == FLAT) {
+         /* Kick! */
++#ifndef GP2X
+         play_sound(sounds[SND_KICK], SOUND_CENTER_SPEAKER);
++#else
++	play_chunk(SND_KICK);
++#endif
+ 
+         if (player->base.x < base.x + (base.width/2)) {
+           physic.set_velocity_x(5);
+@@ -925,7 +965,11 @@
+                     score * player_status.score_multiplier);
+ 
+   /* Play death sound: */
++#ifndef GP2X
+   play_sound(sounds[SND_FALL], SOUND_CENTER_SPEAKER);
++#else
++	play_chunk(SND_FALL);
++#endif
+ }
+ 
+ void BadGuy::explode(BadGuy *badguy)
+@@ -1053,7 +1097,11 @@
+       /* Get kicked if were flat */
+       if (mode == FLAT && !dying)
+       {
++#ifndef GP2X
+         play_sound(sounds[SND_KICK], SOUND_CENTER_SPEAKER);
++#else
++	play_chunk(SND_KICK);
++#endif
+ 
+         // Hit from left side
+         if (player->base.x < base.x) {
+diff -ur supertux-0.1.3/src/configfile.cpp supertux-0.1.3-gp2x/src/configfile.cpp
+--- supertux-0.1.3/src/configfile.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/configfile.cpp	2006-04-10 13:32:19.000000000 +0300
+@@ -92,12 +92,22 @@
+   else
+     use_joystick = true;
+ 
++#ifndef GP2X
+   reader.read_int ("joystick-x", &joystick_keymap.x_axis);
+   reader.read_int ("joystick-y", &joystick_keymap.y_axis);
+   reader.read_int ("joystick-a", &joystick_keymap.a_button);
+   reader.read_int ("joystick-b", &joystick_keymap.b_button);
+   reader.read_int ("joystick-start", &joystick_keymap.start_button);
+   reader.read_int ("joystick-deadzone", &joystick_keymap.dead_zone);
++#else
++  reader.read_int ("joystick-up", &joystick_keymap.up_button);
++  reader.read_int ("joystick-down", &joystick_keymap.down_button);
++  reader.read_int ("joystick-right", &joystick_keymap.right_button);
++  reader.read_int ("joystick-left", &joystick_keymap.left_button);
++  reader.read_int ("joystick-a", &joystick_keymap.a_button);
++  reader.read_int ("joystick-b", &joystick_keymap.b_button);
++  reader.read_int ("joystick-start", &joystick_keymap.start_button);
++#endif
+ 
+   reader.read_int ("keyboard-jump", &keymap.jump);
+   reader.read_int ("keyboard-duck", &keymap.duck);
+@@ -130,12 +140,22 @@
+       fprintf(config, "\n\t;; joystick number (-1 means no joystick):\n");
+       fprintf(config, "\t(joystick   %d)\n", use_joystick ? joystick_num : -1);
+ 
++#ifndef GP2X
+       fprintf(config, "\t(joystick-x   %d)\n", joystick_keymap.x_axis);
+       fprintf(config, "\t(joystick-y   %d)\n", joystick_keymap.y_axis);
+       fprintf(config, "\t(joystick-a   %d)\n", joystick_keymap.a_button);
+       fprintf(config, "\t(joystick-b   %d)\n", joystick_keymap.b_button);
+       fprintf(config, "\t(joystick-start  %d)\n", joystick_keymap.start_button);
+       fprintf(config, "\t(joystick-deadzone  %d)\n", joystick_keymap.dead_zone);
++#else
++      fprintf(config, "\t(joystick-up   %d)\n", joystick_keymap.up_button);
++      fprintf(config, "\t(joystick-down   %d)\n", joystick_keymap.down_button);
++      fprintf(config, "\t(joystick-right   %d)\n", joystick_keymap.right_button);
++      fprintf(config, "\t(joystick-left   %d)\n", joystick_keymap.left_button);
++      fprintf(config, "\t(joystick-a   %d)\n", joystick_keymap.a_button);
++      fprintf(config, "\t(joystick-b   %d)\n", joystick_keymap.b_button);
++      fprintf(config, "\t(joystick-start  %d)\n", joystick_keymap.start_button);
++#endif
+ 
+       fprintf(config, "\t(keyboard-jump  %d)\n", keymap.jump);
+       fprintf(config, "\t(keyboard-duck  %d)\n", keymap.duck);
+diff -ur supertux-0.1.3/src/defines.h supertux-0.1.3-gp2x/src/defines.h
+--- supertux-0.1.3/src/defines.h	2005-07-07 02:05:03.000000000 +0300
++++ supertux-0.1.3-gp2x/src/defines.h	2006-04-11 22:02:05.000000000 +0300
+@@ -91,7 +91,11 @@
+ 
+ /* Scrolling text speed */
+ 
++#ifndef RES320X240
+ #define SCROLL_SPEED_CREDITS 1.2
++#else
++#define SCROLL_SPEED_CREDITS 2.4
++#endif
+ #define SCROLL_SPEED_MESSAGE 1.0
+ 
+ /* Debugging */
+Only in supertux-0.1.3/src: .deps
+diff -ur supertux-0.1.3/src/gameloop.cpp supertux-0.1.3-gp2x/src/gameloop.cpp
+--- supertux-0.1.3/src/gameloop.cpp	2005-07-02 15:16:08.000000000 +0300
++++ supertux-0.1.3-gp2x/src/gameloop.cpp	2006-05-05 23:22:58.000000000 +0300
+@@ -288,6 +288,7 @@
+   
+               switch(event.type)
+                 {
++#ifndef GP2X
+                 case SDL_QUIT:        /* Quit event - quit: */
+                   st_abort("Received window close", "");
+                   break;
+@@ -434,22 +435,60 @@
+                         tux.input.down = UP;
+                     }
+                   break;
+-            
++#endif            
+                 case SDL_JOYBUTTONDOWN:
++#ifndef GP2X
++                  if (event.jbutton.button == joystick_keymap.a_button)
++                    tux.input.up = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.b_button)
++                    tux.input.fire = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.start_button)
++                    on_escape_press();
++                  break;
++#else
+                   if (event.jbutton.button == joystick_keymap.a_button)
+                     tux.input.up = DOWN;
+                   else if (event.jbutton.button == joystick_keymap.b_button)
+                     tux.input.fire = DOWN;
+                   else if (event.jbutton.button == joystick_keymap.start_button)
+                     on_escape_press();
++                  else if (event.jbutton.button == joystick_keymap.up_button)
++                    tux.input.up = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.down_button)
++                    tux.input.down = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.right_button)
++                    tux.input.right = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.left_button)
++                    tux.input.left = DOWN;
++                  else if (event.jbutton.button == joystick_keymap.voldown_button)
++		    decreaseSoundVolume();
++                  else if (event.jbutton.button == joystick_keymap.volup_button)
++		    increaseSoundVolume();
+                   break;
++#endif
++
+                 case SDL_JOYBUTTONUP:
++#ifndef GP2X
+                   if (event.jbutton.button == joystick_keymap.a_button)
+                     tux.input.up = UP;
+                   else if (event.jbutton.button == joystick_keymap.b_button)
+                     tux.input.fire = UP;
+                   break;
+-
++#else
++                  if (event.jbutton.button == joystick_keymap.a_button)
++                    tux.input.up = UP;
++                  else if (event.jbutton.button == joystick_keymap.b_button)
++                    tux.input.fire = UP;
++                  else if (event.jbutton.button == joystick_keymap.up_button)
++                    tux.input.up = UP;
++                  else if (event.jbutton.button == joystick_keymap.down_button)
++                    tux.input.down = UP;
++                  else if (event.jbutton.button == joystick_keymap.right_button)
++                    tux.input.right = UP;
++                  else if (event.jbutton.button == joystick_keymap.left_button)
++                    tux.input.left = UP;
++                  break;
++#endif
+                 default:
+                   break;
+                 }  /* switch */
+@@ -464,7 +503,7 @@
+   Player* tux = world->get_tux();
+ 
+   /* End of level? */
+-  int endpos = (World::current()->get_level()->width-5) * 32;
++  int endpos = (World::current()->get_level()->width-5) * (32);
+   Tile* endtile = collision_goal(tux->base);
+ 
+   // fallback in case the other endpositions don't trigger
+@@ -545,7 +584,7 @@
+       Menu::current()->draw();
+       mouse_cursor->draw();
+     }
+-
++  //updateSound();
+   updatescreen();
+ }
+ 
+@@ -599,6 +638,7 @@
+ 
+   while (exit_status == ES_NONE)
+     {
++      SDL_Delay(10);
+       /* Calculate the movement-factor */
+       double frame_ratio = ((double)(update_time-last_update_time))/((double)FRAME_RATE);
+ 
+@@ -686,6 +726,7 @@
+               fps_cnt = 0;
+             }
+         }
++	//updateSound();
+     }
+   
+   return exit_status;
+@@ -694,21 +735,32 @@
+ /* Bounce a brick: */
+ void bumpbrick(float x, float y)
+ {
+-  World::current()->add_bouncy_brick(((int)(x + 1) / 32) * 32,
+-                         (int)(y / 32) * 32);
++  World::current()->add_bouncy_brick(((int)(x + 1) / (32)) * (32),
++                         (int)(y / (32)) * (32));
+ 
++#ifndef GP2X
+   play_sound(sounds[SND_BRICK], SOUND_CENTER_SPEAKER);
++#else
++  play_chunk(SND_BRICK);
++#endif
+ }
+ 
+ /* (Status): */
+ void
+ GameSession::drawstatus()
+ {
++ int xdiv;
++#ifdef RES320X240
++ xdiv=2;
++#else
++ xdiv=1;
++#endif
++
+   char str[60];
+ 
+   sprintf(str, "%d", player_status.score);
+   white_text->draw("SCORE", 0, 0, 1);
+-  gold_text->draw(str, 96, 0, 1);
++  gold_text->draw(str, 96/xdiv, 0, 1);
+ 
+   if(st_gl_mode == ST_GL_TEST)
+     {
+@@ -716,28 +768,33 @@
+     }
+ 
+   if(!time_left.check()) {
+-    white_text->draw("TIME'S UP", 224, 0, 1);
++    white_text->draw("TIME'S UP", 224/xdiv, 0, 1);
+   } else if (time_left.get_left() > TIME_WARNING || (global_frame_counter % 10) < 5) {
+     sprintf(str, "%d", time_left.get_left() / 1000 );
+-    white_text->draw("TIME", 224, 0, 1);
+-    gold_text->draw(str, 304, 0, 1);
++    white_text->draw("TIME", 224/xdiv, 0, 1);
++    gold_text->draw(str, 304/xdiv, 0, 1);
+   }
+ 
+   sprintf(str, "%d", player_status.distros);
+   white_text->draw("COINS", screen->h, 0, 1);
+-  gold_text->draw(str, 608, 0, 1);
++  gold_text->draw(str, 608/xdiv, 0, 1);
+ 
+-  white_text->draw("LIVES", 480, 20);
++  white_text->draw("LIVES", 480/xdiv, 20);
+   if (player_status.lives >= 5)
+     {
+       sprintf(str, "%dx", player_status.lives);
++#ifdef RES320X240
++      gold_text->draw_align(str, 617/xdiv-5, 20, A_RIGHT, A_TOP);
++      tux_life->draw(565+(18*3)/xdiv+10, 20);
++#else
+       gold_text->draw_align(str, 617, 20, A_RIGHT, A_TOP);
+       tux_life->draw(565+(18*3), 20);
++#endif
+     }
+   else
+     {
+       for(int i= 0; i < player_status.lives; ++i)
+-        tux_life->draw(565+(18*i),20);
++        tux_life->draw(565+(18*i)/xdiv,20);
+     }
+ 
+   if(show_fps)
+@@ -746,6 +803,7 @@
+       white_text->draw("FPS", screen->h, 40, 1);
+       gold_text->draw(str, screen->h + 60, 40, 1);
+     }
++//    updateSound();
+ }
+ 
+ void
+@@ -824,4 +882,3 @@
+   return tmp;
+ }
+ 
+-
+diff -ur supertux-0.1.3/src/gameobjs.cpp supertux-0.1.3-gp2x/src/gameobjs.cpp
+--- supertux-0.1.3/src/gameobjs.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/gameobjs.cpp	2006-04-11 21:52:52.000000000 +0300
+@@ -98,6 +98,9 @@
+   src.h = 16;
+ 
+   dest.x = (int)(base.x - scroll_x);
++#ifdef RES320X240
++  dest.x=dest.x/2;
++#endif
+   dest.y = (int)base.y;
+   dest.w = 16;
+   dest.h = 16;
+@@ -143,8 +146,13 @@
+ {
+   SDL_Rect dest;
+   
++#ifndef RES320X240
+   if (base.x >= scroll_x - 32 &&
+       base.x <= scroll_x + screen->w)
++#else
++  if (base.x >= scroll_x - 32 &&
++      base.x <= scroll_x + 640)
++#endif
+     {
+       dest.x = (int)(base.x - scroll_x);
+       dest.y = (int)base.y;
+@@ -165,8 +173,14 @@
+       else
+         {
+           int s = ((int)scroll_x / 2)%640;
++
++#ifdef RES320X240
++          plevel->img_bkgd->draw_part(dest.x/2 + s/2, dest.y/2, 
++                                      dest.x/2, dest.y,dest.w/2,dest.h/2);
++#else
+           plevel->img_bkgd->draw_part(dest.x + s, dest.y, 
+                                       dest.x, dest.y,dest.w,dest.h);
++#endif
+         }
+ 
+       Tile::draw(base.x - scroll_x,
+diff -ur supertux-0.1.3/src/globals.cpp supertux-0.1.3-gp2x/src/globals.cpp
+--- supertux-0.1.3/src/globals.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/globals.cpp	2006-04-11 22:39:03.000000000 +0300
+@@ -25,6 +25,7 @@
+ 
+ JoystickKeymap::JoystickKeymap()
+ {
++#ifndef GP2X
+   a_button     = 0;
+   b_button     = 1;
+   start_button = 2;
+@@ -33,6 +34,17 @@
+   y_axis = 1;
+     
+   dead_zone = 4096;
++#else
++  a_button     = GP2X_BUTTON_A;
++  b_button     = GP2X_BUTTON_X;
++  start_button = GP2X_BUTTON_START;
++  up_button    = GP2X_BUTTON_UP;
++  down_button  = GP2X_BUTTON_DOWN;
++  left_button  = GP2X_BUTTON_LEFT;
++  right_button = GP2X_BUTTON_RIGHT;
++  volup_button  = GP2X_BUTTON_VOLUP;
++  voldown_button = GP2X_BUTTON_VOLDOWN;
++#endif
+ }
+ 
+ JoystickKeymap joystick_keymap;
+diff -ur supertux-0.1.3/src/globals.h supertux-0.1.3-gp2x/src/globals.h
+--- supertux-0.1.3/src/globals.h	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/globals.h	2006-04-11 23:45:27.000000000 +0300
+@@ -28,10 +28,33 @@
+ #include "menu.h"
+ #include "mousecursor.h"
+ 
++#ifdef GP2X
++#define GP2X_BUTTON_UP              (0)
++#define GP2X_BUTTON_DOWN            (4)
++#define GP2X_BUTTON_LEFT            (2)
++#define GP2X_BUTTON_RIGHT           (6)
++#define GP2X_BUTTON_UPLEFT          (1)
++#define GP2X_BUTTON_UPRIGHT         (7)
++#define GP2X_BUTTON_DOWNLEFT        (3)
++#define GP2X_BUTTON_DOWNRIGHT       (5)
++#define GP2X_BUTTON_CLICK           (18)
++#define GP2X_BUTTON_A               (12)
++#define GP2X_BUTTON_B               (13)
++#define GP2X_BUTTON_X               (15)
++#define GP2X_BUTTON_Y               (14)
++#define GP2X_BUTTON_L               (10)
++#define GP2X_BUTTON_R               (11)
++#define GP2X_BUTTON_START           (8)
++#define GP2X_BUTTON_SELECT          (9)
++#define GP2X_BUTTON_VOLUP           (16)
++#define GP2X_BUTTON_VOLDOWN         (17)
++#endif
++
+ extern std::string datadir;
+ 
+ struct JoystickKeymap
+ {
++#ifndef GP2X
+   int a_button;
+   int b_button;
+   int start_button;
+@@ -42,6 +65,19 @@
+   int dead_zone;
+ 
+   JoystickKeymap();
++#else
++  int a_button;
++  int b_button;
++  int start_button;
++  int up_button;
++  int down_button;
++  int left_button;
++  int right_button;
++  int volup_button;
++  int voldown_button;
++
++  JoystickKeymap();
++#endif
+ };
+ 
+ extern JoystickKeymap joystick_keymap;
+diff -ur supertux-0.1.3/src/lispreader.h supertux-0.1.3-gp2x/src/lispreader.h
+Only in supertux-0.1.3/src: Makefile
+diff -ur supertux-0.1.3/src/Makefile.am supertux-0.1.3-gp2x/src/Makefile.am
+--- supertux-0.1.3/src/Makefile.am	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/Makefile.am	2006-04-19 21:55:54.000000000 +0300
+@@ -77,3 +77,5 @@
+ musicref.h
+ 
+ # EOF #
++
++#supertux_LDADD = libmikmod
+Only in supertux-0.1.3/src: Makefile.in
+diff -ur supertux-0.1.3/src/menu.cpp supertux-0.1.3-gp2x/src/menu.cpp
+--- supertux-0.1.3/src/menu.cpp	2005-06-29 15:44:13.000000000 +0300
++++ supertux-0.1.3-gp2x/src/menu.cpp	2006-05-04 23:59:29.000000000 +0300
+@@ -53,6 +53,8 @@
+ Menu* options_menu   = 0;
+ Menu* options_keys_menu     = 0;
+ Menu* options_joystick_menu = 0;
++Menu* options_joystick_axis_menu = 0;
++Menu* options_joystick_button_menu = 0;
+ Menu* highscore_menu = 0;
+ Menu* load_game_menu = 0;
+ Menu* save_game_menu = 0;
+@@ -240,8 +242,10 @@
+ }
+ 
+ /* Set ControlField a key */
++//TODO: get joystick in here somehow
+ void Menu::get_controlfield_key_into_input(MenuItem *item)
+ {
++#ifndef GP2X
+   switch(*item->int_p)
+   {
+   case SDLK_UP:
+@@ -288,6 +292,11 @@
+     }
+     break;
+   }
++#else
++      char tmp[64];
++      snprintf(tmp, 64, "%d", *item->int_p);
++      item->change_input(tmp);    
++#endif
+ }
+ 
+ /* Free a menu and all its items */
+@@ -497,8 +506,13 @@
+                 int menu_height)
+ {
+   MenuItem& pitem = item[index];
+-
++  
++#ifndef RES320X240
+   int font_width  = 16;
++#else
++  int font_width  = 16/2;
++#endif
++  
+   int effect_offset = 0;
+   {
+     int effect_time = 0;
+@@ -510,7 +524,7 @@
+   }
+ 
+   int x_pos       = pos_x;
+-  int y_pos       = pos_y + 24*index - menu_height/2 + 12 + effect_offset;
++  int y_pos       = pos_y + (int)(24)*index - menu_height/2 + 12 + effect_offset;
+   int shadow_size = 2;
+   int text_width  = strlen(pitem.text) * font_width;
+   int input_width = (strlen(pitem.input)+ 1) * font_width;
+@@ -518,7 +532,7 @@
+   Text* text_font = white_text;
+ 
+   if (arrange_left)
+-    x_pos += 24 - menu_width/2 + (text_width + input_width + list_width)/2;
++    x_pos += (int)(24) - menu_width/2 + (text_width + input_width + list_width)/2;
+ 
+   if(index == active_item)
+   {
+@@ -538,7 +552,11 @@
+ 
+   case MN_HL:
+     {
++#ifndef RES320X240
+       int x = pos_x - menu_width/2;
++#else
++      int x = pos_x - menu_width/4;
++#endif
+       int y = y_pos - 12 - effect_offset;
+       /* Draw a horizontal line with a little 3d effect */
+       fillrect(x, y + 6,
+@@ -551,9 +569,15 @@
+     }
+   case MN_LABEL:
+     {
++#ifndef RES320X240
+       white_big_text->draw_align(pitem.text,
+                                  x_pos, y_pos,
+                                  A_HMIDDLE, A_VMIDDLE, 2);
++#else
++      white_text->draw_align(pitem.text,
++                                 x_pos, y_pos,
++                                 A_HMIDDLE, A_VMIDDLE, 2);
++#endif
+       break;
+     }
+   case MN_TEXTFIELD:
+@@ -570,8 +594,9 @@
+                input_width + font_width, 18,
+                0,0,0,128);
+ 
+-      if(pitem.kind == MN_CONTROLFIELD)
++      if(pitem.kind == MN_CONTROLFIELD) {
+         get_controlfield_key_into_input(&pitem);
++      }
+ 
+       if(pitem.kind == MN_TEXTFIELD || pitem.kind == MN_NUMFIELD)
+       {
+@@ -663,7 +688,7 @@
+         menu_width += 2;
+     }
+   }
+-
++  
+   return (menu_width * 16 + 24);
+ }
+ 
+@@ -680,10 +705,17 @@
+   int menu_width  = get_width();
+ 
+   /* Draw a transparent background */
++#ifndef RES320X240
+   fillrect(pos_x - menu_width/2,
+            pos_y - 24*item.size()/2 - 10,
+            menu_width,menu_height + 20,
+            150,180,200,125);
++#else
++  fillrect(pos_x - menu_width/4,
++           pos_y - 24*item.size()/2 - 10,
++           menu_width,menu_height + 20,
++           150,180,200,125);
++#endif
+ 
+   for(unsigned int i = 0; i < item.size(); ++i)
+   {
+@@ -723,6 +755,8 @@
+   SDLKey key;
+   switch(event.type)
+   {
++
++#ifndef GP2X
+   case SDL_KEYDOWN:
+     key = event.key.keysym.sym;
+     SDLMod keymod;
+@@ -754,7 +788,6 @@
+       return;
+     }
+ 
+-
+     switch(key)
+     {
+     case SDLK_UP:		/* Menu Up */
+@@ -800,12 +833,14 @@
+       break;
+     }
+     break;
++    
+   case  SDL_JOYHATMOTION:
+       if(event.jhat.value == SDL_HAT_UP)
+            menuaction = MENU_ACTION_UP;
+       if(event.jhat.value == SDL_HAT_DOWN)
+            menuaction = MENU_ACTION_DOWN;
+        break;
++       
+   case  SDL_JOYAXISMOTION:
+     if(event.jaxis.axis == joystick_keymap.y_axis)
+     {
+@@ -815,9 +850,88 @@
+         menuaction = MENU_ACTION_UP;
+     }
+     break;
++#endif
++
+   case  SDL_JOYBUTTONDOWN:
++#ifndef GP2X
+     menuaction = MENU_ACTION_HIT;
+     break;
++#else
++
++    if(item[active_item].kind == MN_CONTROLFIELD)
++    {
++      if( event.jbutton.button == joystick_keymap.start_button )
++      {
++        Menu::pop_current();
++        return;
++      }
++
++       static int save[8]={-1,-1,-1,-1,-1,-1,-1,-1};
++       int itemid=get_active_item_id();
++       int inputkey;
++       switch ( itemid ) {
++    	    case 11 : inputkey=joystick_keymap.up_button;
++		      break;
++    	    case 12 : inputkey=joystick_keymap.down_button;
++		      break;
++    	    case 13 : inputkey=joystick_keymap.left_button;
++		      break;
++    	    case 14 : inputkey=joystick_keymap.right_button;
++		      break;
++    	    case 15 : inputkey=joystick_keymap.a_button;
++		      break;
++    	    case 16 : inputkey=joystick_keymap.b_button;
++		      break;
++	    default : break;
++       }
++
++        *item[active_item].int_p = event.jbutton.button;
++	
++	bool okay=true;
++	
++	save[itemid-11]=event.jbutton.button;
++	
++	int i;
++	for ( i=0;i<itemid-11;i++ ) {
++	    if ( save[i] == event.jbutton.button ) okay=false;
++	}
++	if ( okay == true ) menuaction = MENU_ACTION_DOWN;
++	else menuaction = MENU_ACTION_NONE;
++
++      return;
++    } 
++    
++      if (event.jbutton.button == joystick_keymap.a_button)
++        menuaction = MENU_ACTION_HIT;
++      else if (event.jbutton.button == joystick_keymap.b_button)
++        menuaction = MENU_ACTION_HIT;
++      else if (event.jbutton.button == joystick_keymap.start_button)
++        menuaction = MENU_ACTION_HIT;
++      else if (event.jbutton.button == joystick_keymap.up_button)
++        menuaction = MENU_ACTION_UP;
++      else if (event.jbutton.button == joystick_keymap.down_button)
++        menuaction = MENU_ACTION_DOWN;
++      else if (event.jbutton.button == joystick_keymap.right_button)
++        menuaction = MENU_ACTION_RIGHT;
++      else if (event.jbutton.button == joystick_keymap.left_button)
++        menuaction = MENU_ACTION_LEFT;
++      else if (event.jbutton.button == joystick_keymap.volup_button)
++#ifdef GP2X
++	increaseSoundVolume();
++#else
++        sound_volume(2);
++#endif
++      else if (event.jbutton.button == joystick_keymap.voldown_button)
++#ifdef GP2X
++	decreaseSoundVolume();
++#else
++        sound_volume(1);
++#endif
++    break;
++    
++#endif
++
++#ifndef GP2X
+   case SDL_MOUSEBUTTONDOWN:
+     x = event.motion.x;
+     y = event.motion.y;
+@@ -847,6 +961,7 @@
+     break;
+   default:
+     break;
++#endif
+   }
+ }
+ 
+diff -ur supertux-0.1.3/src/menu.h supertux-0.1.3-gp2x/src/menu.h
+--- supertux-0.1.3/src/menu.h	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/menu.h	2006-05-04 23:48:30.000000000 +0300
+@@ -236,6 +236,8 @@
+ extern Menu* options_menu;
+ extern Menu* options_keys_menu;
+ extern Menu* options_joystick_menu;
++extern Menu* options_joystick_axis_menu;
++extern Menu* options_joystick_button_menu;
+ extern Menu* highscore_menu;
+ extern Menu* load_game_menu;
+ extern Menu* save_game_menu;
+diff -ur supertux-0.1.3/src/music_manager.cpp supertux-0.1.3-gp2x/src/music_manager.cpp
+--- supertux-0.1.3/src/music_manager.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/music_manager.cpp	2006-04-22 13:16:32.000000000 +0300
+@@ -59,7 +59,14 @@
+     return true;                                      
+   }
+   
++#ifndef GP2X
+   Mix_Music* song = Mix_LoadMUS(file.c_str());
++#else
++  char mfile[100];
++  snprintf(mfile,sizeof(mfile),"%s",file.c_str());
++  MODULE *song=Player_Load(mfile, 64, 0);
++#endif
++        
+   if(song == 0)
+     return false;
+ 
+@@ -84,6 +91,8 @@
+ void
+ MusicManager::play_music(const MusicRef& musicref, int loops)
+ {
++// printf("loop: %d, musicref: %d\n",loops,musicref.music);
++  
+   if(!audio_device)
+     return;
+ 
+@@ -97,7 +106,16 @@
+   current_music->refcount++;
+   
+   if(music_enabled)
++#ifndef GP2X
+     Mix_PlayMusic(current_music->music, loops);
++#else
++  {
++    if ( loops == -1 ) current_music->music->wrap=1;
++    Player_Stop();
++    Player_Start(current_music->music);
++    Player_SetPosition(0);
++  }
++#endif
+ }
+ 
+ void
+@@ -106,13 +124,17 @@
+   if(!audio_device)
+     return;
+   
++#ifndef GP2X
+   Mix_HaltMusic();
++#else
++  Player_Stop();
++#endif
+   
+   if(current_music) {
+     current_music->refcount--;
+     if(current_music->refcount == 0)
+       free_music(current_music);
+-    current_music = 0;
++      current_music = 0;
+   }
+ }
+ 
+@@ -127,9 +149,17 @@
+   
+   music_enabled = enable;
+   if(music_enabled == false) {
++#ifndef GP2X
+     Mix_HaltMusic();
++#else
++    Player_Stop();
++#endif
+   } else {
++#ifndef GP2X
+     Mix_PlayMusic(current_music->music, -1);
++#else
++    Player_Start(current_music->music);
++#endif
+   }
+ }
+ 
+diff -ur supertux-0.1.3/src/music_manager.h supertux-0.1.3-gp2x/src/music_manager.h
+--- supertux-0.1.3/src/music_manager.h	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/music_manager.h	2006-04-22 04:51:32.000000000 +0300
+@@ -20,6 +20,10 @@
+ #ifndef HEADER_MUSIC_MANAGER_H
+ #define HEADER_MUSIC_MANAGER_H
+ 
++#ifdef GP2X
++#include "mikmod.h"
++#endif
++
+ #include <SDL_mixer.h>
+ #include <string>
+ #include <map>
+@@ -51,7 +55,12 @@
+     ~MusicResource();
+ 
+     MusicManager* manager;
++#ifndef GP2X
+     Mix_Music* music;
++#else
++    MODULE *music;
++#endif
++    
+     int refcount;
+   };
+ 
+diff -ur supertux-0.1.3/src/particlesystem.cpp supertux-0.1.3-gp2x/src/particlesystem.cpp
+--- supertux-0.1.3/src/particlesystem.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/particlesystem.cpp	2006-04-12 22:20:41.000000000 +0300
+@@ -28,8 +28,13 @@
+ 
+ ParticleSystem::ParticleSystem()
+ {
++#ifndef RES320X240
+     virtual_width = screen->w;
+     virtual_height = screen->h;
++#else
++    virtual_width = 640;
++    virtual_height = 480;
++#endif
+ }
+ 
+ ParticleSystem::~ParticleSystem()
+@@ -57,13 +62,24 @@
+         float ymax = fmodf(y + particle->texture->h, virtual_height);
+ 
+         // particle on screen
++#ifndef RES320X240
+         if(x >= screen->w && xmax >= screen->w)
+             continue;
+         if(y >= screen->h && ymax >= screen->h)
+             continue;
+-        
++
+         if(x > screen->w) x -= virtual_width;
+         if(y > screen->h) y -= virtual_height;
++#else
++        if(x >= 640 && xmax >= 640)
++            continue;
++        if(y >= 480 && ymax >= 480)
++            continue;
++
++        if(x > 640) x -= virtual_width;
++        if(y > 480) y -= virtual_height;
++#endif
++        
+         particle->texture->draw(x, y);
+     }
+ }
+@@ -74,14 +90,21 @@
+     snowimages[1] = new Surface(datadir+"/images/shared/snow1.png", USE_ALPHA);
+     snowimages[2] = new Surface(datadir+"/images/shared/snow2.png", USE_ALPHA);
+ 
++#ifndef RES320X240
+     virtual_width = screen->w * 2;
+-
++#else
++    virtual_width = 640 * 2;
++#endif
+     // create some random snowflakes
+     size_t snowflakecount = size_t(virtual_width/10.0);
+     for(size_t i=0; i<snowflakecount; ++i) {
+         SnowParticle* particle = new SnowParticle;
+         particle->x = rand() % int(virtual_width);
++#ifndef RES320X240
+         particle->y = rand() % screen->h;
++#else
++        particle->y = rand() % 480;
++#endif
+         particle->layer = i % 2;
+         int snowsize = rand() % 3;
+         particle->texture = snowimages[snowsize];
+@@ -106,7 +129,11 @@
+     for(i = particles.begin(); i != particles.end(); ++i) {
+         SnowParticle* particle = (SnowParticle*) *i;
+         particle->y += particle->speed * elapsed_time;
++#ifndef RES320X240
+         if(particle->y > screen->h) {
++#else
++        if(particle->y > 480) {
++#endif
+             particle->y = fmodf(particle->y , virtual_height);
+             particle->x = rand() % int(virtual_width);
+         }
+diff -ur supertux-0.1.3/src/player.cpp supertux-0.1.3-gp2x/src/player.cpp
+--- supertux-0.1.3/src/player.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/player.cpp	2006-05-05 22:59:52.000000000 +0300
+@@ -261,6 +261,7 @@
+             }
+         }
+     }
++//	updateSound();
+ 
+   /* ---- DONE HANDLING TUX! --- */
+ 
+@@ -337,7 +338,11 @@
+   if(on_ground() && ((vx < 0 && dirsign >0) || (vx>0 && dirsign<0))) {
+       if(fabs(vx)>SKID_XM && !skidding_timer.check()) {
+           skidding_timer.start(SKID_TIME);
++#ifndef GP2X
+           play_sound(sounds[SND_SKID], SOUND_CENTER_SPEAKER);
++#else
++	  play_chunk(SND_SKID);
++#endif
+           ax *= 2.5;
+       } else {
+           ax *= 2;
+@@ -391,9 +396,17 @@
+           jumping = true;
+           can_jump = false;
+           if (size == SMALL)
++#ifndef GP2X
+             play_sound(sounds[SND_JUMP], SOUND_CENTER_SPEAKER);
++#else
++	    play_chunk(SND_JUMP);
++#endif
+           else
++#ifndef GP2X
+             play_sound(sounds[SND_BIGJUMP], SOUND_CENTER_SPEAKER);
++#else
++	    play_chunk(SND_BIGJUMP);
++#endif
+         }
+     }
+   // Let go of jump key
+@@ -533,7 +546,11 @@
+       if(player_status.lives < MAX_LIVES)
+         ++player_status.lives;
+       /*We want to hear the sound even, if MAX_LIVES is reached*/
++#ifndef GP2X
+       play_sound(sounds[SND_LIFEUP], SOUND_CENTER_SPEAKER);
++#else
++      play_chunk(SND_LIFEUP);
++#endif
+     }
+ }
+ 
+@@ -665,7 +682,11 @@
+               else
+                 {
+                    pbad_c->dying = DYING_FALLING;
++#ifndef GP2X
+                    play_sound(sounds[SND_FALL], SOUND_CENTER_SPEAKER);
++#else
++		   play_chunk(SND_FALL);
++#endif
+                    World::current()->add_score(pbad_c->base.x - scroll_x,
+                                                pbad_c->base.y,
+                                                25 * player_status.score_multiplier);
+@@ -696,7 +717,12 @@
+ void
+ Player::kill(HurtMode mode)
+ {
++#ifndef GP2X
+   play_sound(sounds[SND_HURT], SOUND_CENTER_SPEAKER);
++#else
++  play_chunk(SND_HURT);
++  updateSound();
++#endif
+ 
+   physic.set_velocity_x(0);
+ 
+@@ -734,7 +760,11 @@
+ 
+ bool Player::is_dead()
+ {
++#ifndef RES320X240
+   if(base.y > screen->h || base.x < scroll_x - AUTOSCROLL_DEAD_INTERVAL)  // last condition can happen in auto-scrolling
++#else
++  if(base.y > 640 || base.x < scroll_x - AUTOSCROLL_DEAD_INTERVAL)  // last condition can happen in auto-scrolling
++#endif
+     return true;
+   else
+     return false;
+@@ -760,9 +790,20 @@
+     }
+ 
+   /* Keep in-bounds, vertically: */
++#ifndef RES320X240
+   if (base.y > screen->h)
++#else
++  if (base.y > 640)
++#endif
+     {
+       kill(KILL);
++#ifdef GP2X    
++      float wait=SDL_GetTicks()+800;
++      while ( wait > SDL_GetTicks()) {
++         updateSound();
++      }
++#endif
++
+     }
+ 
+   if(base.x < scroll_x && (!back_scrolling || hor_autoscroll))  // can happen if back scrolling is disabled
+@@ -777,7 +818,6 @@
+     if(base.x + base.width > scroll_x + screen->w)
+       base.x = scroll_x + screen->w - base.width;
+     }
+-    
+ }
+ 
+ // EOF //
+diff -ur supertux-0.1.3/src/resources.cpp supertux-0.1.3-gp2x/src/resources.cpp
+--- supertux-0.1.3/src/resources.cpp	2005-07-02 15:20:14.000000000 +0300
++++ supertux-0.1.3-gp2x/src/resources.cpp	2006-04-22 13:14:01.000000000 +0300
+@@ -18,6 +18,7 @@
+ //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ 
+ #include "globals.h"
++#include "sound.h"
+ #include "scene.h"
+ #include "player.h"
+ #include "badguy.h"
+@@ -187,11 +188,13 @@
+                     // This is also true with if (use_music)
+                     Send a mail to me: neoneurone@users.sf.net, if you have another opinion. :)
+   */
++#ifndef GP2X
+   for (i = 0; i < NUM_SOUNDS; i++)
+     sounds[i] = load_sound(datadir + soundfilenames[i]);
++#endif
+ 
+   /* Herring song */
+-  herring_song = music_manager->load_music(datadir + "/music/SALCON.MOD");
++  herring_song = music_manager->load_music(datadir + "/music/SALCON.MOD");
+   level_end_song = music_manager->load_music(datadir + "/music/leveldone.mod");
+ }
+ 
+@@ -223,8 +226,10 @@
+ 
+   delete tux_life;
+ 
++#ifndef GP2X
+   for (i = 0; i < NUM_SOUNDS; i++)
+     free_chunk(sounds[i]);
++#endif
+ 
+   delete sprite_manager;
+   sprite_manager = 0;
+diff -ur supertux-0.1.3/src/screen.cpp supertux-0.1.3-gp2x/src/screen.cpp
+--- supertux-0.1.3/src/screen.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/screen.cpp	2006-04-14 18:18:47.000000000 +0300
+@@ -81,7 +81,6 @@
+   else
+   {
+ #endif
+-
+     for(float y = 0; y < 480; y += 2)
+       fillrect(0, (int)y, 640, 2,
+                      (int)(((float)(top_clr.red-bot_clr.red)/(0-480)) * y + top_clr.red),
+@@ -199,11 +198,23 @@
+       SDL_UnlockSurface(screen);
+     }
+   /* Update just the part of the display that we've changed */
++#ifndef RES320X240
+   SDL_UpdateRect(screen, x, y, 1, 1);
++#else
++  SDL_UpdateRect(screen, x/2, y/2, 1, 1);
++#endif
+ }
+ 
+ void drawline(int x1, int y1, int x2, int y2, int r, int g, int b, int a)
+ {
++
++#ifdef RES320X240
++ x1=x1/2;
++ x2=x2/2;
++ y1=y1/2;
++ y2=y2/2;
++#endif
++
+ #ifndef NOOPENGL
+   if(use_gl)
+     {
+@@ -280,6 +291,13 @@
+ 	y += h;
+ 	h = -h;
+ 	}
++	
++#ifdef RES320X240
++    x=x;
++    y=y/2;
++    w=w/2;
++    h=h/2;
++#endif
+ 
+ #ifndef NOOPENGL
+   if(use_gl)
+@@ -367,6 +385,9 @@
+ void update_rect(SDL_Surface *scr, Sint32 x, Sint32 y, Sint32 w, Sint32 h)
+ {
+   if(!use_gl)
++#ifndef RES320X240
++    SDL_UpdateRect(scr, x, y, w, h);
++#else
+     SDL_UpdateRect(scr, x, y, w, h);
++#endif
+ }
+-
+diff -ur supertux-0.1.3/src/setup.cpp supertux-0.1.3-gp2x/src/setup.cpp
+--- supertux-0.1.3/src/setup.cpp	2005-07-08 15:19:17.000000000 +0300
++++ supertux-0.1.3-gp2x/src/setup.cpp	2006-05-03 23:32:49.000000000 +0300
+@@ -62,10 +62,19 @@
+ #define DATA_PREFIX "./data/"
+ #endif
+ 
+-/* Screen proprities: */
++/* Screen properties: */
+ /* Don't use this to test for the actual screen sizes. Use screen->w/h instead! */
++#ifndef RES320X240
+ #define SCREEN_W 640
+ #define SCREEN_H 480
++#else
++#define SCREEN_W 320
++#define SCREEN_H 240
++#endif
++
++#ifdef GP2X
++#define DATA_PREFIX "data/"
++#endif
+ 
+ /* Local function prototypes: */
+ 
+@@ -308,10 +317,14 @@
+   char str[1024];
+   /* Get home directory (from $HOME variable)... if we can't determine it,
+      use the current directory ("."): */
++#ifndef GP2X
+   if (getenv("HOME") != NULL)
+     home = getenv("HOME");
+   else
+     home = ".";
++#else
++    home = ".";
++#endif
+ 
+   st_dir = (char *) malloc(sizeof(char) * (strlen(home) +
+                                            strlen("/.supertux") + 1));
+@@ -340,9 +353,10 @@
+   // User has not that a datadir, so we try some magic
+   if (datadir.empty())
+     {
+-#ifndef WIN32
+       // Detect datadir
+       char exe_file[PATH_MAX];
++
++#ifndef WIN32
+       if (readlink("/proc/self/exe", exe_file, PATH_MAX) < 0)
+         {
+           puts("Couldn't read /proc/self/exe, using default path: " DATA_PREFIX);
+@@ -358,7 +372,12 @@
+               datadir = exedir + "../share/supertux"; // SuperTux run from PATH
+               if (access(datadir.c_str(), F_OK) != 0) 
+                 { // If all fails, fall back to compiled path
+-                  datadir = DATA_PREFIX; 
++        	  datadir = exedir + "./data"; // SuperTux run with data in same path as executable
++        	    if (access(datadir.c_str(), F_OK) != 0)
++        	    {
++			 // If all fails, fall back to compiled path
++                	datadir = DATA_PREFIX; 
++		    }
+                 }
+             }
+         }
+@@ -375,7 +394,8 @@
+   main_menu      = new Menu();
+   options_menu   = new Menu();
+   options_keys_menu     = new Menu();
+-  options_joystick_menu = new Menu();
++  options_joystick_axis_menu = new Menu();
++  options_joystick_button_menu = new Menu();
+   load_game_menu = new Menu();
+   save_game_menu = new Menu();
+   game_menu      = new Menu();
+@@ -384,22 +404,27 @@
+   contrib_subset_menu   = new Menu();
+   worldmap_menu  = new Menu();
+ 
+-  main_menu->set_pos(screen->w/2, 335);
++  main_menu->set_pos(screen->w/2, (int)(335)+20);
+   main_menu->additem(MN_GOTO, "Start Game",0,load_game_menu, MNID_STARTGAME);
+   main_menu->additem(MN_GOTO, "Bonus Levels",0,contrib_menu, MNID_CONTRIB);
+   main_menu->additem(MN_GOTO, "Options",0,options_menu, MNID_OPTIONMENU);
++  
++#ifndef GP2X
+   main_menu->additem(MN_ACTION,"Level Editor",0,0, MNID_LEVELEDITOR);
++#endif
+   main_menu->additem(MN_ACTION,"Credits",0,0, MNID_CREDITS);
+   main_menu->additem(MN_ACTION,"Quit",0,0, MNID_QUITMAINMENU);
+ 
+   options_menu->additem(MN_LABEL,"Options",0,0);
+   options_menu->additem(MN_HL,"",0,0);
++#ifndef GP2X
+ #ifndef NOOPENGL
+   options_menu->additem(MN_TOGGLE,"OpenGL",use_gl,0, MNID_OPENGL);
+ #else
+   options_menu->additem(MN_DEACTIVE,"OpenGL (not supported)",use_gl, 0, MNID_OPENGL);
+ #endif
+   options_menu->additem(MN_TOGGLE,"Fullscreen",use_fullscreen,0, MNID_FULLSCREEN);
++#endif
+   if(audio_device)
+     {
+       options_menu->additem(MN_TOGGLE,"Sound     ", use_sound,0, MNID_SOUND);
+@@ -411,10 +436,15 @@
+       options_menu->additem(MN_DEACTIVE,"Music     ", false,0, MNID_MUSIC);
+     }
+   options_menu->additem(MN_TOGGLE,"Show FPS  ",show_fps,0, MNID_SHOWFPS);
++#ifndef GP2X
+   options_menu->additem(MN_GOTO,"Keyboard Setup",0,options_keys_menu);
++#endif
+ 
+   //if(use_joystick)
+-  //  options_menu->additem(MN_GOTO,"Joystick Setup",0,options_joystick_menu);
++#ifdef GP2X
++  options_menu->additem(MN_GOTO,"Joystick Move Setup",0,options_joystick_axis_menu);
++  options_menu->additem(MN_GOTO,"Joystick Action Setup",0,options_joystick_button_menu);
++#endif
+ 
+   options_menu->additem(MN_HL,"",0,0);
+   options_menu->additem(MN_BACK,"Back",0,0);
+@@ -429,6 +459,7 @@
+   options_keys_menu->additem(MN_HL,"",0,0);
+   options_keys_menu->additem(MN_BACK,"Back",0,0);
+ 
++#ifndef GP2X
+   if(use_joystick)
+     {
+     options_joystick_menu->additem(MN_LABEL,"Joystick Setup",0,0);
+@@ -442,6 +473,20 @@
+     options_joystick_menu->additem(MN_HL,"",0,0);
+     options_joystick_menu->additem(MN_BACK,"Back",0,0);
+     }
++#else
++    options_joystick_axis_menu->additem(MN_LABEL,"Joystick Move Setup",0,0);
++    options_joystick_axis_menu->additem(MN_CONTROLFIELD,"Up", 0,0, 11,&joystick_keymap.up_button);
++    options_joystick_axis_menu->additem(MN_CONTROLFIELD,"Down", 0,0, 12,&joystick_keymap.down_button);
++    options_joystick_axis_menu->additem(MN_CONTROLFIELD,"Left", 0,0, 13,&joystick_keymap.left_button);
++    options_joystick_axis_menu->additem(MN_CONTROLFIELD,"Right", 0,0, 14,&joystick_keymap.right_button);
++    options_joystick_axis_menu->additem(MN_BACK,"Back",0,0);
++
++    options_joystick_button_menu->additem(MN_LABEL,"Joystick Action Setup",0,0);
++    options_joystick_button_menu->additem(MN_CONTROLFIELD,"Jump", 0,0, 15,&joystick_keymap.a_button);
++    options_joystick_button_menu->additem(MN_CONTROLFIELD,"Shoot/Run", 0,0, 16,&joystick_keymap.b_button);
++    options_joystick_button_menu->additem(MN_BACK,"Back",0,0);
++#endif
++
+   
+   load_game_menu->additem(MN_LABEL,"Start Game",0,0);
+   load_game_menu->additem(MN_HL,"",0,0);
+@@ -576,9 +621,10 @@
+ 
+   srand(SDL_GetTicks());
+ 
++#ifndef GP2X
+   /* Set icon image: */
+-
+   seticon();
++#endif
+ 
+   /* Unicode needed for input handling: */
+ 
+@@ -586,13 +632,32 @@
+ 
+   /* Load global images: */
+ 
++#ifndef RES320X240
++  white_text  = new Text(datadir + "/images/status/letters-white.png", TEXT_TEXT, 16,18);
++#else
++  white_text  = new Text(datadir + "/images/status/letters-white-small.png", TEXT_TEXT, 8,9);
++  fadeout();
++#endif
++
++
++#ifndef RES320X240
+   black_text  = new Text(datadir + "/images/status/letters-black.png", TEXT_TEXT, 16,18);
++#else
++  black_text  = new Text(datadir + "/images/status/letters-black.png", TEXT_TEXT, 8,9);
++#endif
++#ifndef RES320X240
+   gold_text   = new Text(datadir + "/images/status/letters-gold.png", TEXT_TEXT, 16,18);
++#else
++  gold_text   = new Text(datadir + "/images/status/letters-gold.png", TEXT_TEXT, 8,9);
++#endif
+   silver_text = new Text(datadir + "/images/status/letters-silver.png", TEXT_TEXT, 16,18);
++#ifndef RES320X240
+   blue_text   = new Text(datadir + "/images/status/letters-blue.png", TEXT_TEXT, 16,18);
++#else
++  blue_text   = new Text(datadir + "/images/status/letters-blue.png", TEXT_TEXT, 8,9);
++#endif
+   red_text    = new Text(datadir + "/images/status/letters-red.png", TEXT_TEXT, 16,18);
+   green_text  = new Text(datadir + "/images/status/letters-green.png", TEXT_TEXT, 16,18);
+-  white_text  = new Text(datadir + "/images/status/letters-white.png", TEXT_TEXT, 16,18);
+   white_small_text = new Text(datadir + "/images/status/letters-white-small.png", TEXT_TEXT, 8,9);
+   white_big_text   = new Text(datadir + "/images/status/letters-white-big.png", TEXT_TEXT, 20,22);
+   yellow_nums = new Text(datadir + "/images/status/numbers.png", TEXT_NUM, 32,32);
+@@ -665,14 +736,22 @@
+   Surface::reload_all();
+ 
+   /* Set window manager stuff: */
++#ifndef GP2X_VERSION
+   SDL_WM_SetCaption("SuperTux " VERSION, "SuperTux");
++#endif
+ }
+ 
+ void st_video_setup_sdl(void)
+ {
+   if (use_fullscreen)
+     {
++#ifndef GP2X
+       screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 0, SDL_FULLSCREEN ) ; /* | SDL_HWSURFACE); */
++#else
++//      screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 16, SDL_HWSURFACE | SDL_DOUBLEBUF ) ; /* GP2X */
++      printf("screen width: %d, height: %d\n",SCREEN_W, SCREEN_H);
++      screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 16, SDL_SWSURFACE ) ; /* GP2X */
++#endif
+       if (screen == NULL)
+         {
+           fprintf(stderr,
+@@ -685,14 +764,22 @@
+     }
+   else
+     {
++#ifndef GP2X
+       screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 0, SDL_HWSURFACE | SDL_DOUBLEBUF );
+-
++#else
++//      screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 16, SDL_HWSURFACE | SDL_DOUBLEBUF ) ; /* GP2X */
++      screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, 16, SDL_SWSURFACE ) ; /* GP2X */
++#endif
+       if (screen == NULL)
+         {
+           fprintf(stderr,
+                   "\nError: I could not set up video for 640x480 mode.\n"
+                   "The Simple DirectMedia error that occured was:\n"
+                   "%s\n\n", SDL_GetError());
++#ifdef GP2X_VERSION
++    chdir("/usr/gp2x");
++    execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);    
++#endif
+           exit(1);
+         }
+     }
+@@ -790,6 +877,7 @@
+ 
+               use_joystick = false;
+             }
++#ifndef GP2X
+           else
+             {
+               if (SDL_JoystickNumAxes(js) < 2)
+@@ -811,6 +899,7 @@
+                     }
+                 }
+             }
++#endif
+         }
+     }
+ }
+@@ -844,12 +933,17 @@
+         }
+     }
+ 
+-
++    audio_device = true;
++    
+   /* Open sound silently regarless the value of "use_sound": */
+ 
+   if (audio_device)
+     {
++#ifndef GP2X    
+       if (open_audio(44100, AUDIO_S16, 2, 2048) < 0)
++#else
++      if (open_audio(44100, AUDIO_S16, 1, 1024) < 0)
++#endif      
+         {
+           /* only print out message if sound or music
+              was not disabled at command-line
+@@ -878,6 +972,12 @@
+   close_audio();
+   SDL_Quit();
+   saveconfig();
++
++#ifdef GP2X
++    chdir("/usr/gp2x");
++    execl("/usr/gp2x/gp2xmenu", "/usr/gp2x/gp2xmenu", NULL);    
++#endif
++
+ }
+ 
+ /* --- ABORT! --- */
+@@ -893,6 +993,7 @@
+ 
+ void seticon(void)
+ {
++#ifndef GP2X
+ //  int masklen;
+ //  Uint8 * mask;
+   SDL_Surface * icon;
+@@ -927,6 +1028,7 @@
+ 
+ //  free(mask);
+   SDL_FreeSurface(icon);
++#endif
+ }
+ 
+ 
+@@ -956,6 +1058,7 @@
+         }
+       else if (strcmp(argv[i], "--joymap") == 0)
+         {
++#ifndef GP2X
+           assert(i+1 < argc);
+           if (sscanf(argv[++i],
+                      "%d:%d:%d:%d:%d", 
+@@ -976,6 +1079,7 @@
+                         << "  B-Button:     " << joystick_keymap.b_button << "\n"
+                         << "  Start-Button: " << joystick_keymap.start_button << std::endl;
+             }
++#endif
+         }
+       else if (strcmp(argv[i], "--leveleditor") == 0)
+         {
+diff -ur supertux-0.1.3/src/sound.cpp supertux-0.1.3-gp2x/src/sound.cpp
+--- supertux-0.1.3/src/sound.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/sound.cpp	2006-04-22 02:07:57.000000000 +0300
+@@ -22,6 +22,9 @@
+ #include "globals.h"
+ #include "sound.h"
+ #include "setup.h"
++#ifdef GP2X
++#include <string.h>
++#endif
+ 
+ /*global variable*/
+ bool use_sound = true;    /* handle sound on/off menu and command-line option */
+@@ -54,12 +57,21 @@
+ 
+ #include <SDL_mixer.h>
+ 
++#ifndef GP2X
+ Mix_Chunk * sounds[NUM_SOUNDS];
++#else
+ 
+-/* --- OPEN THE AUDIO DEVICE --- */
++#include <mikmod.h>
++static MODULE *music=NULL;
++static SAMPLE *chunk[NUM_SOUNDS];
++static int chunkFlag[NUM_SOUNDS];
++#endif
+ 
++/* --- OPEN THE AUDIO DEVICE --- */
+ int open_audio (int frequency, Uint16 format, int channels, int chunksize)
+ {
++//  close_audio();
++#ifndef GP2X
+   if (Mix_OpenAudio( frequency, format, channels, chunksize ) < 0)
+     return -1;
+ 
+@@ -74,20 +86,93 @@
+   /* prepare the spanning effects */
+   Mix_SetPanning( SOUND_LEFT_SPEAKER, 230, 24 );
+   Mix_SetPanning( SOUND_RIGHT_SPEAKER, 24, 230 );
++#else
++  if (drv_oss.Name)  // Valid OSS driver
++  {
++    if (drv_oss.CommandLine)  // Valid Commandline
++    {
++      drv_oss.CommandLine("buffer=14,count=2");
++    }
++    MikMod_RegisterDriver(&drv_oss);
++  }
++  if (drv_alsa.Name)  // Valid ALSA driver
++  {
++    if (drv_alsa.CommandLine)  // Valid Commandline
++    {
++      drv_alsa.CommandLine("buffer=14");
++    }
++    MikMod_RegisterDriver(&drv_alsa);
++  }
++  MikMod_RegisterDriver(&drv_nos);
++
++  // register standard tracker
++  MikMod_RegisterAllLoaders();
++
++  // Note, the md_mode flags are already set by default
++  md_mode |= DMODE_SOFT_SNDFX | DMODE_SOFT_MUSIC;
++
++   if (MikMod_Init(""))  // Command paramenters are ignored as all drivers are registered
++  {
++    printf("mikmod init war fürn arsch\n");
++    return 1;
++  }
++
++  load_sounds();
++
++  // get ready to play
++  MikMod_EnableOutput();
++  md_volume =64;
++  md_sndfxvolume = 64;
++  //md_musicvolume = md_sndfxvolume = 64;
++
++  use_sound = true;
++  audio_device=true;
++
++#endif
+   return 0;
+-}
+ 
++}
+ 
+ /* --- CLOSE THE AUDIO DEVICE --- */
+ 
+ void close_audio( void )
+ {
++#ifndef GP2X
+   if (audio_device) {
+     Mix_UnregisterAllEffects( SOUND_LEFT_SPEAKER );
+     Mix_UnregisterAllEffects( SOUND_RIGHT_SPEAKER );
+     Mix_CloseAudio();
+   }
++#else
++  int i;
++  if (! audio_device) return;
++
++  MikMod_DisableOutput();
++  Player_Stop();
++  MikMod_Update();
++
++  if (music) {
++	  Player_Free(music);
++	  music = NULL;
++  }
++
++  for ( i=0 ; i<NUM_SOUNDS ; i++ ) {
++    if ( chunk[i] ) {
++      Sample_Free(chunk[i]);
++	}
++  }
++
++  MikMod_Update();
++  MikMod_Exit();
++#endif
++}
++
++#ifdef GP2X
++void updateSound ( void ) {
++  if (! audio_device) return;
++  MikMod_Update();
+ }
++#endif
+ 
+ 
+ /* --- LOAD A SOUND --- */
+@@ -105,6 +190,30 @@
+   return(snd);
+ }
+ 
++#ifdef GP2X
++static void load_sounds() {
++  int i;
++  std::string name;
++  char file[100];
++
++  for ( i=0 ; i<NUM_SOUNDS ; i++ ) {
++    name = datadir + soundfilenames[i];
++    printf("loading: %s\n",name.c_str());
++    snprintf(file,sizeof(file),"%s",name.c_str());
++    if ( NULL == (chunk[i] = Sample_Load(file)) ) {
++      fprintf(stderr, "Couldn't load: %s\n", file);
++      use_sound = 0;
++      return;
++    }
++    chunkFlag[i] = 0;
++  }
++
++  // reserve voices for sound effects
++  MikMod_SetNumVoices(-1, 4);
++}
++#endif
++
++
+ /* --- PLAY A SOUND ON LEFT OR RIGHT OR CENTER SPEAKER --- */
+ 
+ void play_sound(Mix_Chunk * snd, enum Sound_Speaker whichSpeaker)
+@@ -130,8 +239,45 @@
+   }
+ }
+ 
++
++#ifdef GP2X
++void play_chunk(int idx) 
++{
++    int cid;
++//  if (use_sound) return;
++     cid = Sample_Play (chunk[idx], 0, 0);
++  Voice_SetPanning(cid, PAN_CENTER);
++  Voice_SetVolume(cid, 1000);
++}
++#endif
++
++
+ void free_chunk(Mix_Chunk *chunk)
+ {
+   Mix_FreeChunk( chunk );
+ }
+ 
++void sound_volume ( int vol )
++{
++#ifndef GP2X
++    static int volume = 10;
++    
++    if ( vol == 1 ) volume-=5;
++    else if ( vol == 2 ) volume+=5;
++    Mix_Volume(-1,volume);
++#endif
++}
++
++#ifdef GP2X
++void increaseSoundVolume(void)
++{
++	if (md_volume > (256 - 13)) md_volume =  256;
++	else md_volume += 13;
++}
++
++void decreaseSoundVolume(void)
++{
++	if (md_volume < 13) md_volume = 0;
++	else md_volume -= 13;
++}
++#endif
+diff -ur supertux-0.1.3/src/sound.h supertux-0.1.3-gp2x/src/sound.h
+--- supertux-0.1.3/src/sound.h	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/sound.h	2006-04-21 00:17:09.000000000 +0300
+@@ -75,14 +75,27 @@
+ #include <SDL_mixer.h>
+ 
+ /* variables for stocking the sound and music */
++#ifndef GP2X
+ extern Mix_Chunk* sounds[NUM_SOUNDS];
++#endif
+ 
+ /* functions handling the sound and music */
+ int open_audio(int frequency, Uint16 format, int channels, int chunksize);
+ void close_audio( void );
+ 
++#ifndef GP2X
+ Mix_Chunk * load_sound(const std::string& file);
++#endif
+ void free_chunk(Mix_Chunk*chunk);
+ void play_sound(Mix_Chunk * snd, enum Sound_Speaker whichSpeaker);
++void sound_volume ( int vol );
+ 
+ #endif /*SUPERTUX_SOUND_H*/
++
++#ifdef GP2X
++void play_chunk(int idx);
++static void load_sounds();
++void updateSound ( void );
++void increaseSoundVolume(void);
++void decreaseSoundVolume(void);
++#endif
+diff -ur supertux-0.1.3/src/special.cpp supertux-0.1.3-gp2x/src/special.cpp
+--- supertux-0.1.3/src/special.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/special.cpp	2006-04-20 21:39:41.000000000 +0300
+@@ -105,12 +105,21 @@
+ 
+   base.ym = base.ym + 0.5 * frame_ratio;
+ 
++#ifndef RES320X240  
+   if (base.x < scroll_x ||
+       base.x > scroll_x + screen->w ||
+       base.y > screen->h ||
+       issolid(base.x + 4, base.y + 2) ||
+       issolid(base.x, base.y + 2) ||
+       life_count <= 0)
++#else
++  if (base.x < scroll_x ||
++      base.x > scroll_x + 640 ||
++      base.y > 480 ||
++      issolid(base.x + 4, base.y + 2) ||
++      issolid(base.x, base.y + 2) ||
++      life_count <= 0)
++#endif
+     {
+       remove_me();
+     }
+@@ -120,8 +129,13 @@
+ void 
+ Bullet::draw()
+ {
++#ifndef RES320X240
+   if (base.x >= scroll_x - base.width &&
+       base.x <= scroll_x + screen->w)
++#else
++  if (base.x >= scroll_x - base.width &&
++      base.x <= scroll_x + 640)
++#endif
+     {
+       img_bullet->draw(base.x - scroll_x, base.y);
+     }
+@@ -140,7 +154,7 @@
+ {
+   kind = kind_;
+   dir = dir_;
+-
++  
+   base.width = 32;
+   base.height = 0;
+   base.x = x_;
+@@ -197,7 +211,11 @@
+       remove_me();
+       return;
+   }
++#ifndef RES320X240
+   if(base.y > screen->h) {
++#else
++  if(base.y > 640) {
++#endif
+     remove_me();
+     return;
+   }
+@@ -252,7 +270,12 @@
+     {
+       /* Rising up... */
+ 
++
++#ifndef RES320X240
+       dest.x = (int)(base.x - scroll_x);
++#else
++      dest.x = (int)(base.x - scroll_x)/2;
++#endif
+       dest.y = (int)(base.y + 32 - base.height);
+       dest.w = 32;
+       dest.h = (int)base.height;
+@@ -297,7 +320,11 @@
+   if(kind != UPGRADE_GROWUP)
+     return;
+ 
++#ifndef GP2X
+   play_sound(sounds[SND_BUMP_UPGRADE], SOUND_CENTER_SPEAKER);
++#else
++    play_chunk(SND_BUMP_UPGRADE);
++#endif
+   
+   // do a little jump and change direction
+   physic.set_velocity(-physic.get_velocity_x(), 3);
+@@ -329,18 +356,30 @@
+ 
+       if (kind == UPGRADE_GROWUP)
+         {
++#ifndef GP2X
+           play_sound(sounds[SND_EXCELLENT], SOUND_CENTER_SPEAKER);
++#else
++	    play_chunk(SND_EXCELLENT);
++#endif
+           pplayer->grow();
+         }
+       else if (kind == UPGRADE_ICEFLOWER)
+         {
++#ifndef GP2X
+           play_sound(sounds[SND_COFFEE], SOUND_CENTER_SPEAKER);
++#else
++	  play_chunk(SND_COFFEE);
++#endif
+           pplayer->grow();
+           pplayer->got_coffee = true;
+         }
+       else if (kind == UPGRADE_HERRING)
+         {
++#ifndef GP2X
+           play_sound(sounds[SND_HERRING], SOUND_CENTER_SPEAKER);
++#else
++	  play_chunk(SND_HERRING);
++#endif
+           pplayer->invincible_timer.start(TUX_INVINCIBLE_TIME);
+           World::current()->play_music(HERRING_MUSIC);
+         }
+@@ -348,7 +387,11 @@
+         {
+           if(player_status.lives < MAX_LIVES) {
+             player_status.lives++;
++#ifndef GP2X
+             play_sound(sounds[SND_LIFEUP], SOUND_CENTER_SPEAKER);
++#else
++	    play_chunk(SND_LIFEUP);
++#endif
+           }
+         }
+ 
+diff -ur supertux-0.1.3/src/text.cpp supertux-0.1.3-gp2x/src/text.cpp
+--- supertux-0.1.3/src/text.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/text.cpp	2006-04-22 01:59:36.000000000 +0300
+@@ -24,6 +24,7 @@
+ #include "defines.h"
+ #include "screen.h"
+ #include "text.h"
++#include "sound.h"
+ 
+ Text::Text(const std::string& file, int kind_, int w_, int h_)
+ {
+@@ -79,6 +80,7 @@
+ void
+ Text::draw(const  char* text, int x, int y, int shadowsize, int update)
+ {
++
+   if(text != NULL)
+     {
+       if(shadowsize != 0)
+@@ -116,6 +118,9 @@
+           else if ( text[i] == '\n')
+             {
+               y += h + 2;
++#ifdef RES320X240
++	    y+=6;
++#endif
+               j = 0;
+             }
+         }
+@@ -129,6 +134,9 @@
+           else if ( text[i] == '\n')
+             {
+               y += h + 2;
++#ifdef RES320X240
++	    y+=6;
++#endif
+               j = 0;
+             }
+         }
+@@ -306,6 +314,24 @@
+                 break;
+               }
+             break;
++
++#ifdef GP2X
++	  case SDL_JOYBUTTONDOWN:
++	    if ( event.jbutton.button == joystick_keymap.down_button ) {
++            	    speed += SPEED_INC;
++	    }
++	    if ( event.jbutton.button == joystick_keymap.up_button ) {
++            	    speed -= SPEED_INC;
++	    }	    
++	    if ( event.jbutton.button == joystick_keymap.b_button ) {
++            	    done = 1;
++	    }	    
++	    if ( event.jbutton.button == joystick_keymap.a_button ) {
++            	    scroll += SCROLL;
++	    }
++	  break;
++#endif
++
+           case SDL_QUIT:
+             done = 1;
+             break;
+@@ -330,21 +356,36 @@
+             white_small_text->drawf(names.item[i]+1, 0, screen->h+y-int(scroll),
+                 A_HMIDDLE, A_TOP, 1);
+             y += white_small_text->h+ITEMS_SPACE;
++#ifdef RES320X240
++	    y += 6;
++#endif
+             break;
+           case '	':
+             white_text->drawf(names.item[i]+1, 0, screen->h+y-int(scroll),
+                 A_HMIDDLE, A_TOP, 1);
+             y += white_text->h+ITEMS_SPACE;
++#ifdef RES320X240
++	    y += 6;
++#endif
+             break;
+           case '-':
+-            white_big_text->drawf(names.item[i]+1, 0, screen->h+y-int(scroll),
+-                A_HMIDDLE, A_TOP, 3);
++#ifdef RES320X240
++            white_text->drawf(names.item[i]+1, 0, screen->h+y-int(scroll), A_HMIDDLE, A_TOP, 3);
++#else
++            white_big_text->drawf(names.item[i]+1, 0, screen->h+y-int(scroll), A_HMIDDLE, A_TOP, 3);
++#endif
+             y += white_big_text->h+ITEMS_SPACE;
++#ifdef RES320X240
++	    y += 6;
++#endif
+             break;
+           default:
+             blue_text->drawf(names.item[i], 0, screen->h+y-int(scroll),
+                 A_HMIDDLE, A_TOP, 1);
+             y += blue_text->h+ITEMS_SPACE;
++#ifdef RES320X240
++	    y += 6;
++#endif
+             break;
+           }
+         }
+@@ -360,7 +401,13 @@
+       if(scroll < 0)
+         scroll = 0;
+ 
+-      SDL_Delay(10);
++#ifndef GP2X
++    SDL_Delay(10);
++#else
++    SDL_Delay(2);
++    updateSound();
++#endif
++
+     }
+   string_list_free(&names);
+ 
+diff -ur supertux-0.1.3/src/texture.cpp supertux-0.1.3-gp2x/src/texture.cpp
+--- supertux-0.1.3/src/texture.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/texture.cpp	2006-04-10 14:29:03.000000000 +0300
+@@ -211,7 +211,8 @@
+ {
+   if (impl)
+   {
+-    if (impl->draw(x, y, alpha, update) == -2)
++//    if (impl->draw(x, y, alpha, update) == -2)
++    if (impl->draw(x/2, y/2, alpha, update) == -2)
+       reload();
+   }
+ }
+@@ -231,7 +232,8 @@
+ {
+   if (impl)
+   {
+-    if (impl->draw_part(sx, sy, x, y, w, h, alpha, update) == -2)
++//    if (impl->draw_part(sx, sy, x, y, w, h, alpha, update) == -2)
++    if (impl->draw_part(sx, sy, x, y/2, w, h, alpha, update) == -2)
+       reload();
+   }
+ }
+@@ -241,7 +243,8 @@
+ {
+   if (impl)
+   {
+-    if (impl->draw_stretched(x, y, w, h, alpha, update) == -2)
++//    if (impl->draw_stretched(x, y, w, h, alpha, update) == -2)
++    if (impl->draw_stretched(x/2, y/2, w, h, alpha, update) == -2)
+       reload();
+   }
+ }
+diff -ur supertux-0.1.3/src/title.cpp supertux-0.1.3-gp2x/src/title.cpp
+--- supertux-0.1.3/src/title.cpp	2005-07-08 15:19:17.000000000 +0300
++++ supertux-0.1.3-gp2x/src/title.cpp	2006-04-22 01:29:08.000000000 +0300
+@@ -51,6 +51,7 @@
+ #include "tile.h"
+ #include "resources.h"
+ #include "worldmap.h"
++#include "sound.h"
+ 
+ static Surface* bkg_title;
+ static Surface* logo;
+@@ -80,6 +81,10 @@
+ 
+ void generate_contrib_menu()
+ {
++#ifdef RES320X240
++  fadeout();
++#endif
++
+   string_list_type level_subsets = dsubdirs("/levels", "info");
+ 
+   free_contrib_menu();
+@@ -208,7 +213,7 @@
+     }
+ 
+   // Wrap around at the end of the level back to the beginnig
+-  if(plevel->width * 32 - 320 < tux->base.x)
++  if((plevel->width * 32) - 320 < tux->base.x)
+     {
+       tux->level_begin();
+       scroll_x = 0;
+@@ -226,7 +231,6 @@
+     {
+       walking = false;
+     }
+-
+   world->draw();
+ }
+ 
+@@ -301,13 +305,26 @@
+       
+       if (Menu::current() == main_menu)
+         logo->draw( 160, 30);
+-
++	
++#ifndef RES320X240
+       white_small_text->draw(" SuperTux " VERSION "\n"
+                              "Copyright (c) 2003 SuperTux Devel Team\n"
+                              "This game comes with ABSOLUTELY NO WARRANTY. This is free software, and you\n"
+                              "are welcome to redistribute it under certain conditions; see the file COPYING\n"
+                              "for details.\n",
+                              0, 420, 0);
++#else
++      white_small_text->draw(" SuperTux " VERSION "\n"
++                             "Copyright (c) 2003 SuperTux Devel Team\n"
++                             "This game comes with ABSOLUTELY NO \n"
++			     "WARRANTY. This is free software, and\n"
++                             "you are welcome to redistribute it\n"
++			     "under certain conditions; see the file\n"
++			     "COPYING for details.\n",
++                             0, 360, 0);
++#endif
++
++    //updateSound();
+ 
+       /* Don't draw menu, if quit is true */
+       Menu* menu = Menu::current();
+@@ -337,10 +354,10 @@
+                   break;
+                 case MNID_CREDITS:
+                   music_manager = new MusicManager();
+-                  menu_song  = music_manager->load_music(datadir + "/music/credits.ogg");
++                  menu_song  = music_manager->load_music(datadir + "/music/credits.mod");
+                   music_manager->halt_music();
+                   music_manager->play_music(menu_song,0);
+-                  display_text_file("CREDITS", bkg_title, SCROLL_SPEED_CREDITS);
++                  display_text_file("CREDITS", bkg_title, SCROLL_SPEED_CREDITS);
+                   music_manager->halt_music();
+                   menu_song = music_manager->load_music(datadir + "/music/theme.mod");
+                   music_manager->play_music(menu_song);
+diff -ur supertux-0.1.3/src/world.cpp supertux-0.1.3-gp2x/src/world.cpp
+--- supertux-0.1.3/src/world.cpp	2005-06-22 00:16:07.000000000 +0300
++++ supertux-0.1.3-gp2x/src/world.cpp	2006-05-05 23:16:47.000000000 +0300
+@@ -206,6 +206,7 @@
+         }
+     }
+ 
++
+   /* Draw interactive tiles: */
+   for (y = 0; y < 15; ++y)
+     {
+@@ -255,6 +256,8 @@
+     {
+       (*p)->draw(scroll_x, 0, 1);
+     }
++    
++    //updateSound();
+ }
+ 
+ void
+@@ -312,7 +315,12 @@
+ 
+ // the space that it takes for the screen to start scrolling, regarding
+ // screen bounds (in pixels)
++#ifndef RES320X240
+ #define X_SPACE (400-16)
++#else
++#define X_SPACE (80-16)
++#endif
++
+ // the time it takes to move the camera (in ms)
+ #define CHANGE_DIR_SCROLL_SPEED 2000
+ 
+@@ -388,8 +396,13 @@
+   // this code prevent the screen to scroll before the start or after the level's end
+   if(scroll_x < 0)
+     scroll_x = 0;
++#ifndef RES320X240
+   if(scroll_x > level->width * 32 - screen->w)
+     scroll_x = level->width * 32 - screen->w;
++#else
++  if(scroll_x > level->width * 32 - 640)
++    scroll_x = level->width * 32 - 640;
++#endif
+ }
+ 
+ void
+@@ -481,6 +494,10 @@
+ void
+ World::add_score(float x, float y, int s)
+ {
++#ifdef RES320X240
++  x=x/2;
++#endif
++
+   player_status.score += s;
+ 
+   FloatingScore* new_floating_score = new FloatingScore();
+@@ -547,8 +564,11 @@
+   Bullet new_bullet;
+   new_bullet.init(x,y,xm,dir);
+   bullets.push_back(new_bullet);
+-  
++#ifndef GP2X  
+   play_sound(sounds[SND_SHOOT], SOUND_CENTER_SPEAKER);
++#else
++  play_chunk(SND_SHOOT);
++#endif
+ }
+ 
+ void
+@@ -608,8 +628,11 @@
+               counting_distros = false;
+               plevel->change(x, y, TM_IA, tile->next_tile);
+             }
+-
++#ifndef GP2X
+           play_sound(sounds[SND_DISTRO], SOUND_CENTER_SPEAKER);
++#else
++	  play_chunk(SND_DISTRO);
++#endif
+           player_status.score = player_status.score + SCORE_DISTRO;
+           player_status.distros++;
+         }
+@@ -622,9 +645,13 @@
+           add_broken_brick(tile, 
+                                  ((int)(x + 1) / 32) * 32,
+                                  (int)(y / 32) * 32);
+-          
++
+           /* Get some score: */
++#ifndef GP2X
+           play_sound(sounds[SND_BRICK], SOUND_CENTER_SPEAKER);
++#else
++	  play_chunk(SND_BRICK);
++#endif
+           player_status.score = player_status.score + SCORE_BRICK;
+         }
+     }
+@@ -652,7 +679,11 @@
+     {
+     case 1: // Box with a distro!
+       add_bouncy_distro(posx, posy);
++#ifndef GP2X
+       play_sound(sounds[SND_DISTRO], SOUND_CENTER_SPEAKER);
++#else
++      play_chunk(SND_DISTRO);
++#endif
+       player_status.score = player_status.score + SCORE_DISTRO;
+       player_status.distros++;
+       break;
+@@ -662,7 +693,11 @@
+         add_upgrade(posx, posy, col_side, UPGRADE_GROWUP);
+       else     /* Tux is big, add an iceflower: */
+         add_upgrade(posx, posy, col_side, UPGRADE_ICEFLOWER);
++#ifndef GP2X
+       play_sound(sounds[SND_UPGRADE], SOUND_CENTER_SPEAKER);
++#else
++      play_chunk(SND_UPGRADE);
++#endif
+       break;
+ 
+     case 3: // Add a golden herring
+@@ -688,7 +723,11 @@
+   if (tile && tile->distro)
+     {
+       level->change(x, y, TM_IA, tile->next_tile);
++#ifndef GP2X
+       play_sound(sounds[SND_DISTRO], SOUND_CENTER_SPEAKER);
++#else
++      play_chunk(SND_DISTRO);
++#endif
+ 
+       if (bounciness == BOUNCE)
+         {
+diff -ur supertux-0.1.3/src/worldmap.cpp supertux-0.1.3-gp2x/src/worldmap.cpp
+--- supertux-0.1.3/src/worldmap.cpp	2005-07-08 15:19:17.000000000 +0300
++++ supertux-0.1.3-gp2x/src/worldmap.cpp	2006-05-05 22:54:04.000000000 +0300
+@@ -376,11 +376,11 @@
+ {
+   tile_manager = new TileManager();
+ 
+-  width  = 20;
+-  height = 15;
++  width  = (int)(20);
++  height = (int)(15);
+   
+-  start_x = 4;
+-  start_y = 5;
++  start_x = int(4);
++  start_y = int(5);
+ 
+   passive_message_timer.init(true);
+ 
+@@ -395,7 +395,7 @@
+   enter_level = false;
+ 
+   name = "<no file>";
+-  music = "SALCON.MOD";
++  music = "salcon.mod";
+ }
+ 
+ WorldMap::~WorldMap()
+@@ -589,7 +589,8 @@
+                   break;
+                 }
+               break;
+-          
++
++#ifndef GP2X      
+             case SDL_JOYAXISMOTION:
+               if (event.jaxis.axis == joystick_keymap.x_axis)
+                 {
+@@ -617,13 +618,29 @@
+ 	      if (event.jhat.value == SDL_HAT_RIGHT)
+                     input_direction = D_EAST;
+ 	      break;
+-
++#endif
+             case SDL_JOYBUTTONDOWN:
++#ifndef GP2X
+               if (event.jbutton.button == joystick_keymap.b_button)
+                 enter_level = true;
+               else if (event.jbutton.button == joystick_keymap.start_button)
+                 on_escape_press();
+               break;
++#else
++              if (event.jbutton.button == joystick_keymap.a_button)
++                enter_level = true;
++              else if (event.jbutton.button == joystick_keymap.start_button)
++                on_escape_press();
++              else if (event.jbutton.button == joystick_keymap.up_button)
++                input_direction = D_NORTH;
++              else if (event.jbutton.button == joystick_keymap.down_button)
++                input_direction = D_SOUTH;
++              else if (event.jbutton.button == joystick_keymap.right_button)
++                input_direction = D_EAST;
++              else if (event.jbutton.button == joystick_keymap.left_button)
++                input_direction = D_WEST;
++              break;
++#endif
+ 
+             default:
+               break;
+@@ -769,13 +786,13 @@
+                       { 
+                         MusicRef theme =
+                           music_manager->load_music(datadir + "/music/theme.mod");
+-                        MusicRef credits = music_manager->load_music(datadir + "/music/credits.ogg");
++                        MusicRef credits = music_manager->load_music(datadir + "/music/credits.xm");
+                         music_manager->play_music(theme);
+                         // Display final credits and go back to the main menu
+                         display_text_file(level->extro_filename,
+                                           "/images/background/extro.jpg", SCROLL_SPEED_MESSAGE);
+ 			music_manager->play_music(credits,0);
+-			display_text_file("CREDITS",
++			display_text_file("CREDITS",
+                                           "/images/background/oiltux.jpg", SCROLL_SPEED_CREDITS);
+                         music_manager->play_music(theme);
+                         quit = true;
+@@ -812,7 +829,12 @@
+ 			if (level->x == tux->get_tile_pos().x && 
+               level->y == tux->get_tile_pos().y)
+ 				{
++#ifndef GP2X
+ 					play_sound(sounds[SND_TELEPORT], SOUND_CENTER_SPEAKER);
++#else
++					play_chunk(SND_TELEPORT);
++					updateSound();
++#endif
+ 					tux->back_direction = D_NONE;
+ 					tux->set_tile_pos(Point(level->teleport_dest_x, level->teleport_dest_y));
+ 					SDL_Delay(1000);
+@@ -914,26 +936,39 @@
+ void
+ WorldMap::draw_status()
+ {
++  int xdiv;
++  
++#ifdef RES320X240
++  xdiv=2;
++#else
++  xdiv=1;
++#endif
++
+   char str[80];
+   sprintf(str, "%d", player_status.score);
+   white_text->draw("SCORE", 0, 0);
+-  gold_text->draw(str, 96, 0);
++  gold_text->draw(str, (int)(96)/xdiv, 0);
+ 
+   sprintf(str, "%d", player_status.distros);
+-  white_text->draw_align("COINS", 320-64, 0,  A_LEFT, A_TOP);
+-  gold_text->draw_align(str, 320+64, 0, A_RIGHT, A_TOP);
++  white_text->draw_align("COINS", (int)(320-64)/xdiv, 0,  A_LEFT, A_TOP);
++  gold_text->draw_align(str, (int)(320+64)/xdiv, 0, A_RIGHT, A_TOP);
+ 
+-  white_text->draw("LIVES", 480, 0);
++  white_text->draw("LIVES", (int)(480)/xdiv, 0);
+   if (player_status.lives >= 5)
+     {
+       sprintf(str, "%dx", player_status.lives);
+-      gold_text->draw_align(str, 617, 0, A_RIGHT, A_TOP);
+-      tux_life->draw(565+(18*3), 0);
++#ifdef RES320X240
++      gold_text->draw_align(str, (int)(617)/xdiv-5, 0, A_RIGHT, A_TOP);
++      tux_life->draw((int)((565-12+(18*3))), 0);
++#else
++      gold_text->draw_align(str, (int)(617), 0, A_RIGHT, A_TOP);
++      tux_life->draw((int)((565+(18*3))), 0);
++#endif
+     }
+   else
+     {
+       for(int i= 0; i < player_status.lives; ++i)
+-        tux_life->draw(565+(18*i),0);
++        tux_life->draw((565+(18/xdiv*i)),0);
+     }
+ 
+   if (!tux->is_moving())
+@@ -945,7 +980,11 @@
+             {
+               if(!i->name.empty())
+                 {
++#ifndef RES320X240
+               white_text->draw_align(i->title.c_str(), screen->w/2, screen->h,  A_HMIDDLE, A_BOTTOM);
++#else
++              white_text->draw_align(i->title.c_str(), screen->w/2, 470,  A_HMIDDLE, A_BOTTOM);
++#endif
+                 }
+ 				  else if (i->teleport_dest_x != -1) {
+ 				  	if(!i->teleport_message.empty())
+@@ -955,7 +994,7 @@
+               /* Display a message in the map, if any as been selected */
+               if(!i->display_map_message.empty() && !i->passive_message)
+                 gold_text->draw_align(i->display_map_message.c_str(),
+-                     screen->w/2, screen->h - 30,A_HMIDDLE, A_BOTTOM);
++                     screen->w/2, screen->h - (int)(30),A_HMIDDLE, A_BOTTOM);
+               break;
+             }
+         }
+@@ -964,7 +1003,7 @@
+   /* Display a passive message in the map, if needed */
+   if(passive_message_timer.check())
+     gold_text->draw_align(passive_message.c_str(),
+-                          screen->w/2, screen->h - 30,A_HMIDDLE, A_BOTTOM);
++                          screen->w/2, screen->h - (int)(30),A_HMIDDLE, A_BOTTOM);
+ }
+ 
+ void
+@@ -997,6 +1036,7 @@
+       Point tux_pos = tux->get_pos();
+       if (1)
+         {
++#ifndef GP2X
+           offset.x = -tux_pos.x + screen->w/2;
+           offset.y = -tux_pos.y + screen->h/2;
+ 
+@@ -1005,6 +1045,16 @@
+ 
+           if (offset.x < screen->w - width*32) offset.x = screen->w - width*32;
+           if (offset.y < screen->h - height*32) offset.y = screen->h - height*32;
++#else
++          offset.x = -tux_pos.x + 640/2;
++          offset.y = -tux_pos.y + 480/2;
++
++          if (offset.x > 0) offset.x = 0;
++          if (offset.y > 0) offset.y = 0;
++
++          if (offset.x < 640 - width*32) offset.x = 640 - width*32;
++          if (offset.y < 480 - height*32) offset.y = 480 - height*32;
++#endif
+         } 
+ 
+       draw(offset);

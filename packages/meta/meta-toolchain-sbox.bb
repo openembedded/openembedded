@@ -4,3 +4,5 @@ TOOLCHAIN_TARGET_TASK = "\
 
 require meta-toolchain.bb
 
+SDK_SUFFIX = "toolchain-sbox"
+
