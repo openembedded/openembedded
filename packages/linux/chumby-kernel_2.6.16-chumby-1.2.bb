@@ -17,12 +17,11 @@ COMPATIBLE_HOST = 'arm.*-linux'
 
 ARCH = "arm"
 
-#CMDLINE_CONSOLE ?= "ttyS0,115200n8"
-#CMDLINE_ROOT = "root=/dev/slug rootfstype=ext2,jffs2 initrd=0x01000000,10M mem=32M@0x00000000"
-#CMDLINE_ROOT = "root=/dev/ram0 rw rootfstype=ext2,jffs2 initrd=0x01000000,10M init=/linuxrc mem=32M@0x00000000"
-#CMDLINE_ROOT = "root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200 mem=64M"
-#CMDLINE = "${CMDLINE_ROOT} ${CMDLINE_CONSOLE}"
+# Use this CMDLINE for booting from RootFS 1 on the internal flash (22MB)
 CMDLINE = "console=ttyS0,38400 root=/dev/mtdblock5 rootfstype=jffs2 psplash=false"
+
+# Use this CMDLINE for booting from the first partition of an USB disk
+#CMDLINE = "console=ttyS0,38400 root=/dev/sda1 rootfstype=ext2 rootdelay=8 psplash=false"
 
 COMPATIBLE_MACHINE = "chumby"
 
