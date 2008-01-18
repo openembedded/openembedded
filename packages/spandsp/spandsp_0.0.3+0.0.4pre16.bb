@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 PR = "r0"
 
-SRC_URI = "http://www.soft-switch.org/downloads/spandsp/spandsp-0.0.4pre3.tgz"
+SRC_URI = "http://www.soft-switch.org/downloads/spandsp/spandsp-0.0.4pre16.tgz"
 
 S = "${WORKDIR}/spandsp-0.0.4"
 
