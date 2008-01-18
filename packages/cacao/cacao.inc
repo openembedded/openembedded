@@ -19,7 +19,6 @@ EXTRA_OECONF = "\
 	${@['','--enable-softfloat'][bb.data.getVar('TARGET_FPU',d,1) == 'soft']} \
 	--enable-debug \
 	--with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh-${PV} \
-	--with-classpath-libdir=${STAGING_LIBDIR}/classpath \
 	--with-classpath-includedir=${STAGING_INCDIR}/classpath \
 	--with-classpath-classes=${STAGING_DATADIR}/classpath/glibj.zip \
 	--with-target-classpath-classes=${datadir}/classpath/glibj.zip \
