@@ -1,8 +1,9 @@
 require orinoco-modules.inc
 
 DEPENDS = "orinoco-conf spectrum-fw"
-RDEPENDS = "orinoco-conf"
-PR = "r7"
+RDEPENDS += "orinoco-conf"
+RDEPENDS_orinoco-modules-cs += "orinoco-modules spectrum-fw"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/orinoco/orinoco-${PV}.tar.gz \
            file://makefile_fix.patch;patch=1 \
@@ -17,4 +18,3 @@ do_install() {
 }
 
 FILES_orinoco-modules-cs = "/lib/modules/${KERNEL_VERSION}/net/*_cs${KERNEL_OBJECT_SUFFIX}"
-RDEPENDS_orinoco-modules-cs = "orinoco-modules spectrum-fw"

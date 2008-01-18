@@ -1,6 +1,7 @@
 require orinoco-modules.inc
 
-PR = "r4"
+RDEPENDS_orinoco-modules-cs += "orinoco-modules"
+PR = "r5"
 
 SRC_URI += "\
            file://crosscompile.patch;patch=1 \
@@ -26,4 +27,3 @@ do_install() {
 }
 
 FILES_orinoco-modules-cs = "/lib/modules/${KERNEL_VERSION}/net/*_cs${KERNEL_OBJECT_SUFFIX} /${sysconfdir}"
-RDEPENDS_orinoco-modules-cs = "orinoco-modules"
