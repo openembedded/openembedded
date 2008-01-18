@@ -1,0 +1,13 @@
+Index: linux-2.6.16/arch/arm/kernel/setup.c
+===================================================================
+--- linux-2.6.16.orig/arch/arm/kernel/setup.c	2008-01-17 21:49:50.000000000 +0100
++++ linux-2.6.16/arch/arm/kernel/setup.c	2008-01-17 22:20:40.000000000 +0100
+@@ -660,7 +660,7 @@
+ 
+ static int __init parse_tag_cmdline(const struct tag *tag)
+ {
+-	strlcpy(default_command_line, tag->u.cmdline.cmdline, COMMAND_LINE_SIZE);
++	//strlcpy(default_command_line, tag->u.cmdline.cmdline, COMMAND_LINE_SIZE);
+ 	return 0;
+ }
+ 
