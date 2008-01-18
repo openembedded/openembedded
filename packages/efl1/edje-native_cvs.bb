@@ -3,7 +3,6 @@ inherit native
 PR = "r0"
 
 DEPENDS = "evas-native ecore-native eet-native embryo-native"
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/edje"
 
 do_configure_prepend() {
 	sed -i 's:EMBRYO_PREFIX"/bin:"${STAGING_BINDIR}:' ${S}/src/bin/edje_cc_out.c
