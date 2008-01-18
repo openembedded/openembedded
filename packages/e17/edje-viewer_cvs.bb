@@ -1,6 +1,6 @@
 DESCRIPTION = "Edje_Viewer is just that."
 DEPENDS = "etk"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r3"
 

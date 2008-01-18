@@ -1,7 +1,9 @@
 DESCRIPTION = "E17 - the Enlightenment Window Mananger"
 DEPENDS = "eet evas ecore edje efreet"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PR = "r0"
+
+DEFAULT_PREFERENCE = "-1"
 
 inherit e update-alternatives
 

@@ -1,6 +1,6 @@
 DESCRIPTION = "Enlightenment Window Manager Utilities"
 DEPENDS = "eet evas ecore edje esmart ewl engrave"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 
