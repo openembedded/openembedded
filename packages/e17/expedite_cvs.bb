@@ -1,7 +1,7 @@
 DESCRIPTION = "Expedite is a comprehensive benchmarking suite for Evas"
 DEPENDS = "eet evas"
 RDEPENDS = "libevas-engine-buffer libevas-engine-fb libevas-engine-software-generic libevas-engine-software-x11 libevas-loader-png"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PV = "0.6.0+cvs${SRCDATE}"
 PR = "r0"
 
@@ -11,9 +11,25 @@ SRC_URI = "${E_CVS};module=e17/apps/expedite \
            file://hack-disable-opengl.patch;patch=1"
 S = "${WORKDIR}/${PN}"
 
+EXTRA_OECONF = "\
+  --x-includes=${STAGING_INCDIR}/X11 \
+  --x-libraries=${STAGING_LIBDIR} \
+  --enable-simple-x11 \
+\
+  --disable-opengl-glew \
+  --disable-opengl-x11 \
+  --enable-software-x11 \
+  --enable-xrender-x11 \
+  --enable-software-16-x11 \
+  --enable-fb \
+  --disable-software-ddraw \
+  --disable-software-16-ddraw \
+  --disable-direct3d \
+  --disable-software-sdl \
+"
+
 do_configure_append() {
         find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
 }
 
 FILES_${PN} += "${datadir}"
-

@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
-PR = "r1"
+PR = "r2"
 
 inherit sdk meta
 
@@ -75,10 +75,17 @@ do_populate_sdk() {
 		for arch in $revipkgarchs; do
 			pkgnames=${DEPLOY_DIR_IPK}/$arch/${pkg}_*_$arch.ipk
 			if [ -e $pkgnames ]; then
-				echo "Found $pkgnames"
+				oenote "Found $pkgnames"
 				cp $pkgnames ${SDK_OUTPUT}/${prefix}/ipk/
 				orig_pkg=`ipkg-list-fields $pkgnames | grep OE: | cut -d ' ' -f2`
-				pkg_subdir=$arch${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
+				pkg_subdir_postfix=${TARGET_VENDOR}${@['-' + bb.data.getVar('TARGET_OS', d, 1), ''][bb.data.getVar('TARGET_OS', d, 1) == ('' or 'custom')]}
+				for aarch in $revipkgarchs; do
+					if [ -e "${STAGING_DIR}/pkgdata/${aarch}${pkg_subdir_postfix}/${orig_pkg}" ]; then
+						pkg_subdir="${aarch}${pkg_subdir_postfix}"
+						break
+					fi
+				done
+				oenote "Original package in ${pkg_subdir}"
 				mkdir -p ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/runtime
 				cp ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg ${SDK_OUTPUT}/${prefix}/pkgdata/$pkg_subdir/
 				subpkgs=`cat ${STAGING_DIR}/pkgdata/$pkg_subdir/$orig_pkg | grep PACKAGES: | cut -b 10-`

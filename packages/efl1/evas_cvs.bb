@@ -1,5 +1,5 @@
 require evas.inc
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
@@ -46,15 +46,15 @@ EXTRA_OECONF = "\
 		--disable-convert-16-rgb-444	\
 		--disable-convert-16-rgb-ipq	\
 		--enable-convert-16-rgb-rot-0	\
-		--disable-convert-16-rgb-rot-90	\
+		--enable-convert-16-rgb-rot-90	\
 		--enable-convert-16-rgb-rot-270	\
-		--disable-convert-24-rgb-888	\
-		--disable-convert-24-bgr-888	\
-		--disable-convert-32-rgb-8888	\
-		--disable-convert-32-rgbx-8888	\
-		--disable-convert-32-bgr-8888	\
-		--disable-convert-32-bgrx-8888	\
-		--disable-convert-32-rgb-rot-0	\
-		--disable-convert-32-rgb-rot-90	\
-		--disable-convert-32-rgb-rot-270"
+		--enable-convert-24-rgb-888	\
+		--enable-convert-24-bgr-888	\
+		--enable-convert-32-rgb-8888	\
+		--enable-convert-32-rgbx-8888	\
+		--enable-convert-32-bgr-8888	\
+		--enable-convert-32-bgrx-8888	\
+		--enable-convert-32-rgb-rot-0	\
+		--enable-convert-32-rgb-rot-90	\
+		--enable-convert-32-rgb-rot-270"
 

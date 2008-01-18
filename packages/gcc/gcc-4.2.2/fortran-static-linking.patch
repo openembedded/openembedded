@@ -13,7 +13,7 @@ Index: gcc-4.2.2/configure
  
  if test "x$with_mpfr" != x; then
 -  gmplibs="-L$with_mpfr/lib $gmplibs"
-+  gmplibs="-Wl,-rpath,$with_mpfr/lib -L$with_mpfr/lib $gmplibs"
++  gmplibs="-static -L$with_mpfr/lib $gmplibs"
    gmpinc="-I$with_mpfr/include"
  fi
  if test "x$with_mpfr_include" != x; then
@@ -21,7 +21,7 @@ Index: gcc-4.2.2/configure
  fi
  if test "x$with_mpfr_lib" != x; then
 -  gmplibs="-L$with_mpfr_lib $gmplibs"
-+  gmplibs="-Wl,-rpath,$with_mpfr_lib -L$with_mpfr_lib $gmplibs"
++  gmplibs="-static -L$with_mpfr_lib $gmplibs"
  fi
  
  # Specify a location for gmp
@@ -34,7 +34,7 @@ Index: gcc-4.2.2/configure.in
  
  if test "x$with_mpfr" != x; then
 -  gmplibs="-L$with_mpfr/lib $gmplibs"
-+  gmplibs="-Wl,-rpath,$with_mpfr/lib -L$with_mpfr/lib $gmplibs"
++  gmplibs="-static -L$with_mpfr/lib $gmplibs"
    gmpinc="-I$with_mpfr/include"
  fi
  if test "x$with_mpfr_include" != x; then
@@ -42,7 +42,7 @@ Index: gcc-4.2.2/configure.in
  fi
  if test "x$with_mpfr_lib" != x; then
 -  gmplibs="-L$with_mpfr_lib $gmplibs"
-+  gmplibs="-Wl,-rpath,$with_mpfr_lib -L$with_mpfr_lib $gmplibs"
++  gmplibs="-static -L$with_mpfr_lib $gmplibs"
  fi
  
  # Specify a location for gmp

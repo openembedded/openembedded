@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Debugging and Benchmarking Tools"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r58"
+PR = "r59"
 
 inherit task
 
@@ -15,6 +15,7 @@ RDEPENDS_task-openmoko-debug = "\
   cu \
   dbench \
   fbgrab \
+  fbset \
   fstests \
   gdb \
   gdbserver \

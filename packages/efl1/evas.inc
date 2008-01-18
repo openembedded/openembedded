@@ -2,9 +2,9 @@ DESCRIPTION = "Evas is a hardware-accelerated canvas API that can draw \
 anti-aliased text, smooth super and sub-images, alpha-blend, as well as drop \
 down to using normal X11 primitives such as pixmaps, lines and rectangles if \
 your CPU or graphics hardware are too slow."
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
-DEPENDS = "eet freetype jpeg virtual/libx11 libxext libxrender"
+DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender"
 PV = "0.9.9.041+cvs${SRCDATE}"
 
 inherit efl_library

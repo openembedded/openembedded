@@ -1,7 +1,7 @@
 DESCRIPTION = "An implementation of freedesktop.org specs for the \
 Enlightenment Foundation Libraries"
 DEPENDS = "ecore"
-LICENSE = "BSD"
+LICENSE = "MIT BSD"
 PV = "0.0.3.003+cvs${SRCDATE}"
 PR = "r0"
 

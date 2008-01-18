@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r3"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -86,13 +86,17 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 # These patches are extracted from Pavel Machek's git tree
 # (diff against vanilla kernel)
 SRC_URI_append_collie = "\
-           ${DOSRC}/collie/mtd-sharp-flash-hack-r0.patch;patch=1 \
-           ${DOSRC}/collie/collie-r0.patch;patch=1 \
-           ${DOSRC}/collie/locomolcd-backlight-r0.patch;patch=1 \
-           ${DOSRC}/collie/ucb1x00-touch-audio-r0.patch;patch=1 \
-           file://collie-mcp-r1.patch;patch=1 \
-           ${DOSRC}/collie/sa1100-udc-r0.patch;patch=1 \
-#          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
+	${TKSRC}/mtd-sharp-flash-hack-r3.patch;patch=1 \
+	${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
+	${TKSRC}/locomo-r0.patch;patch=1 \
+#	${TKSRC}/locomo_spi-4.patch;patch=1 \
+	${TKSRC}/collie-kexec.patch;patch=1 \
+	${TKSRC}/sharpsl_pm-3.patch;patch=1 \
+	${TKSRC}/collie_pm-2.patch;patch=1 \
+	${TKSRC}/locomokeyb_suspendkey-2.patch;patch=1 \
+	${TKSRC}/ucb1x00_suspend.patch;patch=1 \
+	${TKSRC}/collie-ts.patch;patch=1 \
+	${TKSRC}/pcmcia_suspend.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\
