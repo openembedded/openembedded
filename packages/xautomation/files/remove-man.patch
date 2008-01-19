@@ -1,0 +1,8 @@
+--- xautomation-1.00/Makefile.am~	2008-01-18 15:12:30.000000000 -0600
++++ xautomation-1.00/Makefile.am	2008-01-18 15:12:30.000000000 -0600
+@@ -1,5 +1,4 @@
+ bin_PROGRAMS = xte rgb2pat png2pat visgrep pat2ppm patextract xmousepos
+-man_MANS = pat2ppm.1 patextract.1 png2pat.1 rgb2pat.1 visgrep.1 xautomation.7 xmousepos.1 xte.1
+ xte_SOURCES = xte.c debug.c kbd.h
+ xte_LDADD = $(X_LIBS) $(X_EXTRALIBS) -lXtst
+ rgb2pat_SOURCES = rgb2pat.c image.c image.h debug.c debug.h
