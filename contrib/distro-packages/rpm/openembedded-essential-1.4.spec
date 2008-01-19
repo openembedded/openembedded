@@ -1,12 +1,12 @@
 Summary: Metapackage to install all needed packages to start using OpenEmbedded
 Name: openembedded-essential
-Version: 1.1
+Version: 1.4
 Release: 1
 License: MIT
 Group: Devel
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}
-Requires: python, ccache, quilt, sed, bison, wget, cvs, subversion, git-core, monotone, coreutils, unzip, texi2html, texinfo, docbook-utils, gawk
+Requires: python, ccache, quilt, sed, bison, wget, cvs, subversion, git-core, monotone, coreutils, unzip, texi2html, texinfo, docbook-utils, gawk, bc, python-pysqlite2
 
 %description
 OpenEmbedded is a full-featured development environment allowing users to
@@ -19,6 +19,12 @@ This metapackage depends on all software required by OpenEmbedded.
 
 
 %changelog
+* Sun Jan 19 16 2007 Rolf 'Laibsch' Leggewie
+
+openembedded-essential (1.4) unstable; urgency=low
+
+  * added bc and python-pysqlite2
+
 * Tue Nov 19 2006 Marcin Juszkiewicz <hrw@openembedded.org> 
 
 openembedded-essential (1.1-1) unstable; urgency=low
