@@ -3,6 +3,7 @@ openembedded-essential (1.4) unstable; urgency=low
   * remove gfortran from dependency after a5c7b007eaa675cc904f5285291d2f8a597efc84 caused controversy.
     Ultimately it was decided that OE should not depend on gfortran and that another solution ought
     to be found.  The gfortran check in sanity.bbclass was dropped in 63c7ad87655c2781ad8b9c81af430596f48a24a6
+*   add bc and python-pysqlite2
 
  -- Rolf Leggewie <oe-devel@rolf.leggewie.biz>  Mon, 19 Jan 2008 14:25:00 +0100
 
