@@ -1,7 +1,7 @@
 #! /bin/sh 
 #
 # This is an init script for openembedded
-# Copy it to /etc/init.d/openpbx and type
+# Copy it to /etc/init.d/callweaver and type
 # > update-rc.d asterisk defaults 60
 #
 asterisk=/usr/sbin/asterisk
