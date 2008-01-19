@@ -48,6 +48,7 @@ SRCREV_pn-openocd-native ?= "${AUTOREV}"
 SRCREV_pn-python-gsmd ?= "${AUTOREV}"
 
 SRCREV_pn-u-boot-openmoko ?= "${AUTOREV}"
+SRCREV_pn-u-boot-openmoko-devel ?= "${AUTOREV}"
 SRCREV_pn-dfu-util ?= "${AUTOREV}"
 SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
 SRCREV_pn-usbpath ?= "${AUTOREV}"
