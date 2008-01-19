@@ -1,0 +1,13 @@
+Index: callweaver-1.2-rc5/bootstrap.sh
+===================================================================
+--- callweaver-1.2-rc5.orig/bootstrap.sh	2008-01-18 10:47:41.000000000 +0100
++++ callweaver-1.2-rc5/bootstrap.sh	2008-01-18 10:48:02.000000000 +0100
+@@ -36,7 +36,7 @@
+ 		debug "Found $COMMAND"
+ 	fi
+ 
+-	INS_VER=`$COMMAND --version | head -1 | sed 's/[^0-9]*//' | cut -d' ' -f1`
++	INS_VER=`$COMMAND --version | head -n 1 | sed 's/[^0-9]*//' | cut -d' ' -f1`
+ 	INS_MAJOR=`echo $INS_VER | cut -d. -f1 | sed s/[a-zA-Z\-].*//g`
+ 	INS_MINOR=`echo $INS_VER | cut -d. -f2 | sed s/[a-zA-Z\-].*//g`
+ 	INS_MICRO=`echo $INS_VER | cut -d. -f3 | sed s/[a-zA-Z\-].*//g`

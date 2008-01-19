@@ -1,0 +1,13 @@
+/var/log/callweaver/cdr-csv/Master.csv /var/log/callweaver/queue_log /var/log/callweaver/event_log /var/log/callweaver/messages 
+/var/log/callweaver/full {
+    daily
+    missingok
+    compress
+    delaycompress
+    rotate 30
+    sharedscripts
+    postrotate
+      /etc/init.d/callweaver logger-reload
+    endscript
+}
+

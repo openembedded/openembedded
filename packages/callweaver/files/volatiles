@@ -1,0 +1,6 @@
+d callweaver callweaver 0775 /var/run/callweaver none
+d callweaver callweaver 0775 /var/lib/callweaver none
+d callweaver callweaver 0775 /var/log/callweaver/cdr-csv none
+d callweaver callweaver 0775 /var/log/callweaver/cdr-custom none
+d callweaver callweaver 0775 /var/spool/callweaver/outgoing none
+d callweaver callweaver 0775 /var/spool/callweaver/voicemail none
