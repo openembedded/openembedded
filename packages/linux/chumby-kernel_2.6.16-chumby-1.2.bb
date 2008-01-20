@@ -3,11 +3,12 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Chumby"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://files.chumby.com/source/ironforge/build396/linux-2.6.16-chumby-1.2.tar.gz \
            http://files.chumby.com/source/ironforge/build396/align.pl \
            file://chumby-override-cmdline.patch;patch=1 \
+           file://disable-fbchanging.patch;patch=1 \
            file://defconfig \
            "
 
@@ -18,10 +19,10 @@ COMPATIBLE_HOST = 'arm.*-linux'
 ARCH = "arm"
 
 # Use this CMDLINE for booting from RootFS 1 on the internal flash (22MB)
-CMDLINE = "console=ttyS0,38400 root=/dev/mtdblock5 rootfstype=jffs2 psplash=false"
+#CMDLINE = "console=ttyS0,38400 console=tty0 root=/dev/mtdblock5 rootfstype=jffs2 psplash=false"
 
-# Use this CMDLINE for booting from the first partition of an USB disk
-#CMDLINE = "console=ttyS0,38400 root=/dev/sda1 rootfstype=ext2 rootdelay=8 psplash=false"
+# Use this CMDLINE for booting from the second partition of an USB disk
+CMDLINE = "console=ttyS0,38400 console=tty0 root=/dev/sda2 rootfstype=ext2 rootdelay=8 psplash=false"
 
 COMPATIBLE_MACHINE = "chumby"
 
