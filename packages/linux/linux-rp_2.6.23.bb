@@ -21,7 +21,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            file://uvesafb-0.1-rc3-2.6.22.patch;patch=1;status=merged \
            ${RPSRC}/locomo_led_fix-r0.patch;patch=1;status=merged \
            file://hrw-add-wcf11-to-hostap.patch;patch=1;status=merged \
-           ${RPSRC}/export_atags-r0.patch;patch=1;status=pending \
+           ${RPSRC}/export_atags-r0a.patch;patch=1;status=pending \
            ${RPSRC}/lzo_crypto-r2.patch;patch=1;status=pending \
            ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r29.patch;patch=1 \
