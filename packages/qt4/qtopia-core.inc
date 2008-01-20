@@ -7,6 +7,7 @@ DEPENDS += "tslib"
 PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
+           file://qconfig-oe.h \
            file://0001-cross-compile.patch;patch=1 \
            file://0003-no-tools.patch;patch=1 \
            file://0004-no-qmake.patch;patch=1 \
@@ -24,6 +25,10 @@ QT_CONFIG_FLAGS += " \
     -qt-kbd-tty -qt-kbd-usb -qt-kbd-qvfb\
     ${QT_QCONFIG} \
     "
+
+do_configure_prepend() {
+    cp ${WORKDIR}/qconfig-oe.h ${S}/src/corelib/global
+}
 
 QT_QCONFIG = ""
 QT_BASE_NAME = "qtopiacore"
