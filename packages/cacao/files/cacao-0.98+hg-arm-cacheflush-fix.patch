@@ -1,0 +1,18 @@
+diff -r df1b780317c3 src/vm/jit/arm/asmpart.S
+--- a/src/vm/jit/arm/asmpart.S	Thu Jan 17 01:01:35 2008 +0100
++++ b/src/vm/jit/arm/asmpart.S	Mon Jan 21 00:14:41 2008 +0100
+@@ -323,10 +323,11 @@ asm_cacheflush:
+ 	mov   a1, #0xff000000
+ #endif
+ 
++#if defined(__ARM_EABI__)
++	swi   0x0
++	ldmfd sp!, {r7}
++#else
+ 	swi   sys_cacheflush
+-
+-#if defined(__ARM_EABI__)
+-	ldmfd sp!, {r7}
+ #endif
+ 
+ 	mov   pc, lr
