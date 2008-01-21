@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: GUI for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r71"
+PR = "r72"
 
 inherit task
 
@@ -52,5 +52,6 @@ THEMES_a1200    = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-q
 THEMES_rokre2   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_rokre6   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_magician = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_chumby   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 
 RDEPENDS_task-openmoko-ui += "${THEMES}"

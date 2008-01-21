@@ -1,0 +1,75 @@
+#! /bin/sh 
+#
+# This is an init script for openembedded
+# Copy it to /etc/init.d/callweaver and type
+# > update-rc.d callweaver defaults 60
+#
+callweaver=/usr/sbin/callweaver
+pidfile=/var/run/callweaver/callweaver.pid
+
+test -x "$callweaver" || exit 0
+
+case "$1" in
+  start)
+    echo -n "Starting Callweaver"
+    start-stop-daemon --start --quiet --exec $callweaver -- -npq
+    echo "."
+    ;;
+  stop)
+    echo -n "Stopping Callweaver"
+    $callweaver -rx "stop gracefully"
+    sleep 4
+    if [ -f $pidfile ]; then
+      start-stop-daemon --stop --quiet --pidfile $pidfile
+    fi
+    echo "."
+    ;;
+  force-stop)
+    echo -n "Stopping Callweaver"
+    $callweaver -rx "stop now"
+    sleep 2
+    if [ -f $pidfile ]; then
+      start-stop-daemon --stop --quiet --pidfile $pidfile
+    fi
+    echo "."
+    ;;
+  restart)
+    echo -n "Restarting Callweaver"
+    if [ -f $pidfile ]; then
+      $callweaver -rx "restart gracefully"
+      sleep 2
+    else
+      start-stop-daemon --start --quiet --exec $callweaver -- -npq
+    fi
+    ;;
+  force-restart)
+    echo -n "Forcibly Restarting Callweaver"
+    if [ -f $pidfile ]; then
+      $callweaver -rx "restart now"
+      sleep 2
+    else
+      start-stop-daemon --start --quiet --exec $callweaver -- -npq
+    fi
+    ;;
+  reload)
+    echo -n "Reloading Callweaver Configuration"
+    if [ -f $pidfile ]; then
+      $callweaver -rx "reload"
+    else
+      start-stop-daemon --start --quiet --exec $callweaver -- -npq
+    fi
+    echo "."
+    ;;
+  logger-reload)
+#    echo -n "Restating Callweaver Logger"
+    if [ -f $pidfile ]; then
+      $callweaver -rx "logger reload"
+    fi
+#    echo "."
+    ;;
+  *)
+    echo "Usage: /etc/init.d/callweaver {start|stop|force-stop|restart|force-restart|reload|logger-reload}"
+    exit 1
+esac
+
+exit 0

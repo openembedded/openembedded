@@ -4,6 +4,10 @@ do_stage_append() {
     sed -i s#"-L${S}/lib"##g Qt*.pc
     sed -i s#"moc_location=${S}/bin/moc"#moc_location=${STAGING_BINDIR}/moc4# Qt*.pc
     sed -i s#"uic_location=${S}/bin/uic"#uic_location=${STAGING_BINDIR}/uic4# Qt*.pc
+    sed -i s#libdir=\$\{prefix\}/lib#libdir=\$\{prefix\}/lib/${QT_DIR_NAME}#g Qt*.pc 
+
+    cd ${STAGING_LIBDIR}/${QT_DIR_NAME}
+    sed -i s#"-L${S}/lib"##g libQt*.la
 }
 
 STAGE_TEMP = "${WORKDIR}/temp-staging"

@@ -99,6 +99,9 @@ case `module_id` in
                 ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm" ;;
         "Nokia N800")
                 ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
+	"Freescale MX21ADS")
+		# That's what /proc/cpuinfo shows as hardware on the chumby
+		ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm" ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise

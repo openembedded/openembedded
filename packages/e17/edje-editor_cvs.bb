@@ -1,5 +1,5 @@
 DESCRIPTION = "Edje-Editor is just that."
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 DEPENDS = "etk"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"

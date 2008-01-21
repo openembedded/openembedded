@@ -1,6 +1,6 @@
 DESCRIPTION = "Exhibit is the ETK picture viewer"
 DEPENDS = "evas ecore epsilon edje eet etk efreet"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 

@@ -19,6 +19,7 @@ QT_CONFIG_FLAGS += "-no-xinerama -no-tablet -no-xkb -no-opengl"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_DIR_NAME = "qt4"
+QT_LIBINFIX = ""
 require qt_depends.inc
 require qt_configuration.inc
 require qt_packaging.inc

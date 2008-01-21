@@ -2,7 +2,7 @@ DESCRIPTION = "Kaffe is a clean room implementation of the Java Virtual Machine"
 HOMEPAGE = "http://www.kaffe.org/"
 LICENSE  = "GPL LGPL W3C Classpath BSD"
 
-DEPENDS = "virtual/javac-native fastjar-native libffi zip-native"
+DEPENDS = "virtual/javac-native fastjar-native libffi zip-native libart-lgpl"
 RDEPENDS_${PN} = "${PN}-common (>= ${PV})"
 
 SRC_URI += "file://disable-automake-checks.patch;patch=1"
@@ -44,10 +44,6 @@ oe_runconf () {
 	fi
 }
 
-PACKAGES =+ "${PN}-common"
-FILES_${PN} += "${libdir}/${PN}"
-FILES_${PN}-common = "${libdir}/${PN}/jre/lib/*.jar"
-
 do_install () {
 	autotools_do_install
 
@@ -84,3 +80,7 @@ pkg_postrm_${PN} () {
 		update-alternatives --remove $name ${libdir}/${PN}/jre/bin/$name
 	done
 }
+
+PACKAGES =+ "${PN}-common"
+FILES_${PN} += "${libdir}/${PN}"
+FILES_${PN}-common = "${libdir}/${PN}/jre/lib/*.jar"
