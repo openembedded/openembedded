@@ -1,0 +1,39 @@
+diff -r abc014466432 import-vcard.c
+--- a/import-vcard.c	Mon Jan 21 01:55:53 2008 +0200
++++ b/import-vcard.c	Mon Jan 21 02:31:28 2008 +0200
+@@ -77,6 +77,35 @@ do_import_vcard (MIMEDirVCard *card)
+     {
+       gpe_tag_pair *t = i->data;
+ 
++      if (!strcasecmp(t->tag, "CATEGORY"))
++        {
++	  char *p, *e;
++	  int cat_id;
++	  
++          for (p = t->value; p; p = e)
++	    {
++              while (*p == ' ')
++	        p++;
++	      e = strchr(p, ',');
++	      if (e)
++	        *e++ = 0;
++	      cat_id = gpe_pim_category_id(p);
++	      if (!cat_id)
++	        {
++	          if (!gpe_pim_category_new (p, &cat_id))
++	            {
++                      gpe_error_box ("Unable to create category for imported item");
++                      sqlite_close (db);
++                      return -2;
++		    }
++	        }
++              sqlite_exec_printf (db, "insert into contacts values ('%d', 'CATEGORY', '%d')", NULL, NULL, NULL,
++                          id, cat_id);
++	    }
++	    
++	}
++      
++
+       sqlite_exec_printf (db, "insert into contacts values ('%d', '%q', '%q')", NULL, NULL, NULL,
+                           id, t->tag, t->value);
+     
