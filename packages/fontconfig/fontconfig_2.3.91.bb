@@ -1,46 +1,13 @@
-SECTION = "libs"
-LICENSE = "BSD"
-DESCRIPTION = "A library for configuring and customizing font access."
-DEPENDS = "expat freetype freetype-native zlib fontconfig-native"
+require fontconfig.inc
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
-           file://fc-glyphname.patch;patch=1 \
+DEPENDS += "fontconfig-native"
+
+SRC_URI += "file://fc-glyphname.patch;patch=1 \
            file://fc-lang.patch;patch=1 \
            file://one-j-too-many.patch;patch=1 \
            file://local.conf"
 
 PR = "r3"
-
-PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
-FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
-FILES_fontconfig-utils = "${bindir}/*"
-
-# Work around past breakage in debian.bbclass
-RPROVIDES_fontconfig-utils = "libfontconfig-utils"
-RREPLACES_fontconfig-utils = "libfontconfig-utils"
-RCONFLICTS_fontconfig-utils = "libfontconfig-utils"
-DEBIAN_NOAUTONAME_fontconfig-utils = "1"
-
-S = "${WORKDIR}/fontconfig-${PV}"
-
-inherit autotools pkgconfig
-
-export HASDOCBOOK="no"
-
-EXTRA_OECONF = " --disable-docs "
-EXTRA_OEMAKE = "FC_LANG=fc-lang FC_GLYPHNAME=fc-glyphname"
-
-# The tarball has some of the patched files as read only, which
-# patch doesn't like at all
-
-fontconfig_do_unpack() {
-       chmod -R u+rw ${S}
-}
-
-python do_unpack () {
-       bb.build.exec_func('base_do_unpack', d)
-       bb.build.exec_func('fontconfig_do_unpack', d)
-}
 
 do_stage () {
 	oe_libinstall -so -a -C src libfontconfig ${STAGING_LIBDIR}
