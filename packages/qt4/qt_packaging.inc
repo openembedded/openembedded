@@ -136,6 +136,11 @@ python populate_packages_prepend() {
 	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
 	translation_name = bb.data.expand('${QT_DIR_NAME}-translation-%s', d)
 	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '{PN} translation for %s', extra_depends='' )
+
+	phrasebook_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/phrasebooks/', d)
+	phrasebook_name = bb.data.expand('${QT_DIR_NAME}-phrasebook-%s', d)
+	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '{PN} phrasebook for %s', extra_depends='' )
+
 }
 
 
