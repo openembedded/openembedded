@@ -1,3 +1,4 @@
+# We want the staging and installing functions from autotools
 inherit autotools
 
 cmake_do_configure() {
