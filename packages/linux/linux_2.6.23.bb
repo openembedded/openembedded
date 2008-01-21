@@ -39,9 +39,7 @@ SRC_URI_append_cm-x270 = "\
 SRC_URI_append_mpc8313e-rdb = "\
 	file://mpc831x-nand.patch;patch=1 \
 	file://mpc8313e-rdb-leds.patch;patch=1 \
-	file://mpc8313e-rdb-rtc.patch;patch=1 \
-        file://defconfig-rt"
-
+	file://mpc8313e-rdb-rtc.patch;patch=1"
 
 SRC_URI_append_mpc8323e-rdb = "\
 	file://mpc832x-leds.patch;patch=1" 
