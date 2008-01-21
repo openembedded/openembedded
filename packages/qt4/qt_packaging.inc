@@ -133,8 +133,9 @@ FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DI
 FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 
 python populate_packages_prepend() {
-	translationdir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
-	do_split_packages(d, translationdir, '^qt_(.*)\.qm$', '${QT_DIR_NAME}-translation-%s', '{PN} translation for %s', extra_depends='' )
+	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
+	translation_name = bb.data.expand('${QT_DIR_NAME}-translation-%s', d)
+	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '{PN} translation for %s', extra_depends='' )
 }
 
 
