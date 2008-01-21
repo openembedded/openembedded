@@ -1,3 +1,5 @@
+DEPENDS += " cmake-native "
+
 # We want the staging and installing functions from autotools
 inherit autotools
 
