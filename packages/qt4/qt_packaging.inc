@@ -10,11 +10,15 @@ NONDEV_PACKAGES += "${QT_BASE_LIB}core4 ${QT_BASE_LIB}gui4 ${QT_BASE_LIB}network
              ${QT_BASE_NAME}-pixeltool ${QT_BASE_NAME}-dbus \
              ${QT_BASE_NAME}-plugins-accessible \
              ${QT_BASE_NAME}-plugins-codecs \
+             ${QT_BASE_NAME}-plugins-decorations \
              ${QT_BASE_NAME}-plugins-designer \
-             ${QT_BASE_NAME}-plugins-imageformats \
-             ${QT_BASE_NAME}-plugins-sqldrivers \
-             ${QT_BASE_NAME}-plugins-inputmethods \
+             ${QT_BASE_NAME}-plugins-gfxdrivers \
+             ${QT_BASE_NAME}-plugins-mousedrivers \
              ${QT_BASE_NAME}-plugins-iconengines \
+             ${QT_BASE_NAME}-plugins-imageformats \
+             ${QT_BASE_NAME}-plugins-inputmethods \
+             ${QT_BASE_NAME}-plugins-sqldrivers \
+             ${QT_BASE_NAME}-plugins-styles \
              ${QT_BASE_NAME}-fonts "
 
 DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
@@ -46,7 +50,18 @@ DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}assistantclient4-dbg \
              ${QT_BASE_LIB}script4-dbg \
              ${QT_BASE_LIB}dbus4-dbg \
-             ${QT_BASE_LIB}opengl4-dbg "
+             ${QT_BASE_LIB}opengl4-dbg \
+             ${QT_BASE_NAME}-plugins-accessible-dbg \
+             ${QT_BASE_NAME}-plugins-codecs-dbg \
+             ${QT_BASE_NAME}-plugins-decorations-dbg \
+             ${QT_BASE_NAME}-plugins-designer-dbg \
+             ${QT_BASE_NAME}-plugins-gfxdrivers-dbg \
+             ${QT_BASE_NAME}-plugins-mousedrivers-dbg \
+             ${QT_BASE_NAME}-plugins-iconengines-dbg \
+             ${QT_BASE_NAME}-plugins-imageformats-dbg \
+             ${QT_BASE_NAME}-plugins-inputmethods-dbg \
+             ${QT_BASE_NAME}-plugins-sqldrivers-dbg \
+             ${QT_BASE_NAME}-plugins-styles-dbg"
 
 
 PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
@@ -54,7 +69,7 @@ PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
-FILES_${PN}-dbg = "${bindir}/*/.debug ${libdir}/${QT_DIR_NAME}/plugins/*/.debug/*.so"
+FILES_${PN}-dbg = "${bindir}/*/.debug "
 RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
 RDEPENDS_${PN}-dev = "${DEV_PACKAGES}"
 RDEPENDS_${PN}-dbg = "${DBG_PACKAGES}"
@@ -111,14 +126,29 @@ FILES_${QT_BASE_LIB}opengl4-dev             = "${@qt_default_dev('OpenGL')}"
 FILES_${QT_BASE_LIB}opengl4-dbg             = "${libdir}/.debug/libQtOpenGL*"
 FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/QtUiTools${QT_LIBINFIX}.pc"
 
-
-FILES_${QT_BASE_NAME}-plugins-accessible   = "${libdir}/${QT_DIR_NAME}/plugins/accessible/*.so"
-FILES_${QT_BASE_NAME}-plugins-codecs       = "${libdir}/${QT_DIR_NAME}/plugins/codecs/*.so"
-FILES_${QT_BASE_NAME}-plugins-designer     = "${libdir}/${QT_DIR_NAME}/plugins/designer/*.so"
-FILES_${QT_BASE_NAME}-plugins-imageformats = "${libdir}/${QT_DIR_NAME}/plugins/imageformats/*.so"
-FILES_${QT_BASE_NAME}-plugins-sqldrivers   = "${libdir}/${QT_DIR_NAME}/plugins/sqldrivers/*.so"
-FILES_${QT_BASE_NAME}-plugins-inputmethods = "${libdir}/${QT_DIR_NAME}/plugins/inputmethods/*.so"
-FILES_${QT_BASE_NAME}-plugins-iconengines  = "${libdir}/${QT_DIR_NAME}/plugins/iconengines/*.so"
+# meta packages for the plugins
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-accessible       = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-accessible-dbg   = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-codecs           = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-codecs-dbg       = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-decorations      = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-decorations-dbg  = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-designer         = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-designer-dbg     = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-gfxdrivers       = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-gfxdrivers-dbg   = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-mousedrivers     = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-mousedrivers-dbg = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-iconengines      = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-iconengines-dbg  = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-imageformats     = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-imageformats-dbg = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-inputmethods     = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-inputmethods-dbg = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-sqldrivers       = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-sqldrivers-dbg   = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-styles           = "1"
+ALLOW_EMPTY_${QT_BASE_NAME}-plugins-styles-dbg       = "1"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
@@ -134,13 +164,52 @@ FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 
 python populate_packages_prepend() {
 	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
-	translation_name = bb.data.expand('${QT_DIR_NAME}-translation-%s', d)
+	translation_name = bb.data.expand('${QT_BASE_NAME}-translation-%s', d)
 	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '{PN} translation for %s', extra_depends='' )
 
 	phrasebook_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/phrasebooks/', d)
-	phrasebook_name = bb.data.expand('${QT_DIR_NAME}-phrasebook-%s', d)
+	phrasebook_name = bb.data.expand('${QT_BASE_NAME}-phrasebook-%s', d)
 	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '{PN} phrasebook for %s', extra_depends='' )
 
+	# Package all the plugins and their -dbg version and create a meta package
+	import os
+	def qtopia_split(path, name, glob, meta_name):
+	    """
+	    Split the package into a normal and -dbg package and then add the
+	    new packages to the meta package.
+	    """
+	    plugin_dir     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/' % path, d)
+	    plugin_dir_dbg = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug/' % path, d)
+	    if not os.path.exists("%s%s" % (bb.data.expand('${D}',d), plugin_dir)):
+		bb.note("The path does not exist:", bb.data.expand('${D}', d), plugin_dir)
+		return
+
+	    plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
+	    plugin_name_dbg= bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s-dbg' % name, d)
+	    print plugin_name, plugin_name_dbg, glob
+
+	    dev_packages = []
+	    dev_hook = lambda a,pkg,b,c,d:dev_packages.append(pkg)
+	    dbg_packages = []
+	    dbg_hook = lambda a,pkg,b,c,d:dbg_packages.append(pkg)
+	    do_split_packages(d, plugin_dir,     glob, plugin_name,     '{PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
+	    do_split_packages(d, plugin_dir_dbg, glob, plugin_name_dbg, '{PN} %s for %%s' % name, extra_depends='', hook=dbg_hook)
+
+	    print meta_name, dev_packages, dbg_packages
+	    bb.data.setVar("RDEPENDS_%s" % meta_name, " ".join(dev_packages), d)
+	    bb.data.setVar("RDEPENDS_%s-dbg" % meta_name, " ".join(dbg_packages), d)
+
+	qtopia_split('accessible',  'accessible',  '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-accessible")
+	qtopia_split('codecs',      'codec',       '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-codecs")
+	qtopia_split('decorations', 'decoration',  '^libqdecoration(.*)\.so$', "${QT_BASE_NAME}-plugins-decorations")
+	qtopia_split('designer',    'designer',    '^lib(.*)\.so$', "${QT_BASE_NAME}-plugins-designer")
+	qtopia_split('gfxdrivers',  'gfxdriver',   '^libqgfx(.*)\.so$', "${QT_BASE_NAME}-plugins-gfxdrivers")
+	qtopia_split('mousedrivers','mousedriver', '^libq(.*)mousedriver\.so$', "${QT_BASE_NAME}-plugins-mousedrivers")
+	qtopia_split('iconengines', 'iconengine',  '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-iconengines")
+	qtopia_split('imageformats','imageformat', '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-imageformats")
+	qtopia_split('inputmethods','inputmethod', '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-inputmethods")
+	qtopia_split('sqldrivers',  'sqldriver',   '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-sqldrivers")
+	qtopia_split('styles',      'style',       '^libq(.*)\.so$', "${QT_BASE_NAME}-plugins-styles")
 }
 
 
