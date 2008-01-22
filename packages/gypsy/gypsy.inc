@@ -5,6 +5,10 @@ DEPENDS = "glib-2.0 dbus bluez-libs"
 
 inherit autotools pkgconfig
 
+do_stage () {
+	autotools_stage_all
+}
+
 do_configure_prepend () {
 	touch ${S}/gtk-doc.make
 }

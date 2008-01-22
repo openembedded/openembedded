@@ -20,6 +20,10 @@ EXTRA_OECONF = " --enable-applet=no \
                  --enable-gpsd \
 		 --enable-system-bus"
 
+do_stage() {
+	autotools_stage_all
+}
+
 do_install_append() {
 	mkdir -p ${D}/usr/share/
 	cp -pPr ${D}${STAGING_DATADIR}/* ${D}/usr/share
