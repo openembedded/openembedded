@@ -4,7 +4,7 @@ DESCRIPTION = " The prelink package contains a utility which modifies ELF shared
 and executables, so that far fewer relocations need to be resolved at \
 runtime and thus programs come up faster."
 LICENSE = "GPL"
-PR = "r2"
+PR = "r5"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/p/prelink/prelink_0.0.${PV}.orig.tar.gz \
            file://prelink.conf \
@@ -19,7 +19,7 @@ S = "${WORKDIR}/prelink-0.0.${PV}"
 
 EXTRA_OECONF = "--disable-64bit"
 
-inherit autotools
+inherit autotools 
 
 do_install_append () {
 	install -d ${D}${sysconfdir}/cron.daily ${D}${sysconfdir}/default
