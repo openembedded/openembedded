@@ -134,22 +134,24 @@ python populate_packages_prepend() {
 	    new packages to the meta package.
 	    """
 	    plugin_dir     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/' % path, d)
-	    plugin_dir_dbg = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug/' % path, d)
 	    if not os.path.exists("%s%s" % (bb.data.expand('${D}',d), plugin_dir)):
 		bb.note("The path does not exist:", bb.data.expand('${D}', d), plugin_dir)
 		return
 
-	    plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
-	    plugin_name_dbg= bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s-dbg' % name, d)
-	    print plugin_name, plugin_name_dbg, glob
+            plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
+            dev_packages = []
+            dev_hook = lambda file,pkg,b,c,d:dev_packages.append((file,pkg))
+            do_split_packages(d, plugin_dir,     glob, plugin_name,     '{PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
+            # Create a -dbg package as well
+            plugin_dir_dbg     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug' % path, d)
+            packages = bb.data.getVar('PACKAGES',d)
+            for (file,package) in dev_packages:
+                packages = "%s %s-dbg" % (packages, package)
+                file_name = os.path.join(plugin_dir_dbg, os.path.basename(file))
+                bb.data.setVar("FILES_%s-dbg" % package, file_name, d)
+                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "{PN} %s for %s" % (name, package), d) 
 
-	    dev_packages = []
-	    dev_hook = lambda a,pkg,b,c,d:dev_packages.append(pkg)
-	    dbg_packages = []
-	    dbg_hook = lambda a,pkg,b,c,d:dbg_packages.append(pkg)
-	    do_split_packages(d, plugin_dir,     glob, plugin_name,     '{PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
-	    do_split_packages(d, plugin_dir_dbg, glob, plugin_name_dbg, '{PN} %s for %%s' % name, extra_depends='', hook=dbg_hook)
-
+            bb.data.setVar('PACKAGES', packages, d)
 
 	qtopia_split('accessible',  'accessible',  '^libq(.*)\.so$')
 	qtopia_split('codecs',      'codec',       '^libq(.*)\.so$')
