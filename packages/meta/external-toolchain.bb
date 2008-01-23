@@ -15,7 +15,7 @@ PROVIDES = "\
     virtual/linux-libc-headers \
     "
 
-#RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
+RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
 PACKAGES_DYNAMIC = "glibc-gconv-*"
 PR = "r1"
 
