@@ -9,7 +9,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.gpsdrive.de/${PN}-${PV}.tar.gz \
+SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive.desktop"
 
 CFLAGS += "-D_GNU_SOURCE"
