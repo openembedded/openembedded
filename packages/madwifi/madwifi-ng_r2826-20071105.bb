@@ -1,6 +1,7 @@
 # Bitbake recipe for the madwifi-ng driver
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_alix = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 
 # Disable stripping of kernel modules, since this action strips too
