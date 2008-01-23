@@ -5,7 +5,7 @@
 #
 
 valid_archs = "alpha cris ia64 \
-               x86_64,i386 \
+               x86_64,i386 x86 \
                m68knommu m68k ppc powerpc ppc64  \
 	       sparc sparc64 \
                arm  arm26 \

@@ -2,8 +2,6 @@
 
 # Don't use this unless you know what you're doing -- this version does
 # *NOT* build on BE kernels.
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_alix = "1"
 
 # Disable stripping of kernel modules, since this action strips too
 # much out, and the resulting module won't load.
