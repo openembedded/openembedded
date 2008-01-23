@@ -60,12 +60,18 @@ module_autoload_snd-mixer-oss = "snd-mixer-oss"
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 
-do_prepatch() {
-        mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
-        mv patches patches.openmoko
-        mv .pc .pc.old
-        mv ${WORKDIR}/defconfig-${KERNEL_RELEASE} ${WORKDIR}/defconfig
+python do_patch_prepend() {
+	def runcmd(cmd):
+		import commands
+		(status, output) = commands.getstatusoutput(cmd)
+		if status != 0:
+			raise Exception, "Status %i: %s" % (status >> 8, output)
+		return output
+	runcmd('mv %(WORKDIR)s/patches %(S)s/patches && cd %(S)s && '
+	       'quilt push -av && mv patches patches.openmoko && '
+	       'mv .pc .pc.old && mv %(WORKDIR)s/defconfig-%(KERNEL_RELEASE)s %(WORKDIR)s/defconfig' %
+	       {'WORKDIR': bb.data.getVar('WORKDIR', d, 1),
+		'S': bb.data.getVar('S', d, 1),
+		'KERNEL_RELEASE': bb.data.getVar('KERNEL_RELEASE', d, 1)})
+	del runcmd
 }
-
-addtask prepatch after do_unpack before do_patch
-
