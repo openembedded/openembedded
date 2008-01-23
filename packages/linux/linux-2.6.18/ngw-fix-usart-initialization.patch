@@ -1,0 +1,32 @@
+---
+ arch/avr32/boards/atngw/setup.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/boards/atngw/setup.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atngw/setup.c	2006-11-02 14:22:05.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/boards/atngw/setup.c	2006-11-02 14:42:53.000000000 +0100
+@@ -50,18 +50,19 @@ static int __init parse_tag_ethernet(str
+ }
+ __tagtable(ATAG_ETHERNET, parse_tag_ethernet);
+ 
++struct platform_device *at32_usart_map[1];
++unsigned int at32_nr_usarts = 1;
++
+ void __init setup_board(void)
+ {
+-	at32_map_usart(1, 0);	/* /dev/ttyS0 */
+-
+-	at32_setup_serial_console(0);
++	at32_usart_map[0] = at32_get_usart(1);
+ }
+ 
+ static int __init atngw_init(void)
+ {
+ 	at32_add_system_devices();
+ 
+-	at32_add_device_usart(0);
++	at32_add_device_usart(1);
+ 
+ 	if (eth_data[0].valid)
+ 		at32_add_device_eth(0, &eth_data[0]);

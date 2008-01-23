@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
+DEFAULT_PREFERENCE_avr32 = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 DEPENDS_append_mpc8323e-rdb = " dtc-native"
@@ -25,6 +26,12 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.23.12.bz2;patch=
 SRC_URI += "http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 # Add support for squashfs-lzma (a highly compressed read-only filesystem)
 SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squashfs-lzma-2.6.23.patch;patch=1"
+# Completely fair scheduler
+SRC_URI += "http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
+
+SRC_URI_append_avr32 = " \
+                       http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
+                       "
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \

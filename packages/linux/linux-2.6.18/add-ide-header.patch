@@ -1,0 +1,41 @@
+Index: linux-2.6.18/include/asm-avr32/ide.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18/include/asm-avr32/ide.h	2006-10-24 15:12:02.000000000 +0200
+@@ -0,0 +1,36 @@
++/*
++ *  linux/include/asm-arm/ide.h
++ *
++ *  Copyright (C) 1994-1996  Linus Torvalds & authors
++ */
++
++/*
++ *  This file contains the ARM architecture specific IDE code.
++ */
++
++#ifndef __ASMAVR32_IDE_H
++#define __ASMAVR32_IDE_H
++
++#ifdef __KERNEL__
++
++#ifndef MAX_HWIFS
++#define MAX_HWIFS	4
++#endif
++
++#if !defined(CONFIG_ARCH_L7200)
++# define IDE_ARCH_OBSOLETE_INIT
++# ifdef CONFIG_ARCH_CLPS7500
++#  define ide_default_io_ctl(base)	((base) + 0x206) /* obsolete */
++# else
++#  define ide_default_io_ctl(base)	(0)
++# endif
++#endif /* !ARCH_L7200 */
++
++#define __ide_mm_insw(port,addr,len)	readsw(port,addr,len)
++#define __ide_mm_insl(port,addr,len)	readsl(port,addr,len)
++#define __ide_mm_outsw(port,addr,len)	writesw(port,addr,len)
++#define __ide_mm_outsl(port,addr,len)	writesl(port,addr,len)
++
++#endif /* __KERNEL__ */
++
++#endif /* __ASMAVR32_IDE_H */

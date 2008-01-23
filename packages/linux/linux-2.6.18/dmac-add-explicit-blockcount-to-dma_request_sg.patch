@@ -1,0 +1,66 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Sun, 14 Jan 2007 19:07:06 +0100
+Subject: [DW DMAC] Add nr_blocks field to struct dma_request_sg
+
+Allow drivers to specify how many blocks to transfer in a sg request.
+The number of blocks will no longer be automatically calculated based
+on the scatterlist because this doesn't always correspond with the
+desired amount of data to be transferred.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ arch/avr32/drivers/dw-dmac.c       |   13 ++++++-------
+ include/asm-avr32/dma-controller.h |    1 +
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+Index: linux-2.6.18-avr32/include/asm-avr32/dma-controller.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/dma-controller.h	2007-01-15 15:34:32.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/dma-controller.h	2007-01-15 15:34:50.000000000 +0100
+@@ -36,6 +36,7 @@ struct dma_request_sg {
+ 	int nr_sg;
+ 	struct scatterlist *sg;
+ 	unsigned long block_size;
++	unsigned int nr_blocks;
+ 
+ 	dma_addr_t data_reg;
+ 	unsigned short periph_id;
+Index: linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/drivers/dw-dmac.c	2007-01-15 15:35:00.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c	2007-01-15 15:35:03.000000000 +0100
+@@ -176,7 +176,8 @@ static int dmac_prepare_request_sg(struc
+ 	struct dw_dma_channel *chan;
+ 	unsigned long ctlhi, ctllo, cfghi, cfglo;
+ 	unsigned long block_size;
+-	int ret, i, nr_blocks, direction;
++	unsigned int nr_blocks;
++	int ret, i, direction;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&dmac->lock, flags);
+@@ -215,12 +216,9 @@ static int dmac_prepare_request_sg(struc
+ 	 * Each block will get its own Linked List Item (LLI) below.
+ 	 */
+ 	block_size = req->block_size;
+-	pr_debug("block_size = %lu, nr_sg = %u\n", block_size, req->nr_sg);
+-	for (i = 0, nr_blocks = 0; i < req->nr_sg; i++) {
+-		pr_debug("sg[i].length = %u\n", req->sg[i].length);
+-		BUG_ON(req->sg[i].length % block_size);
+-		nr_blocks += req->sg[i].length / block_size;
+-	}
++	nr_blocks = req->nr_blocks;
++	pr_debug("block_size %lu, nr_blocks %u nr_sg = %u\n",
++		 block_size, nr_blocks, req->nr_sg);
+ 
+ 	BUG_ON(nr_blocks == 0);
+ 	chan->nr_blocks = nr_blocks;
+@@ -269,6 +267,7 @@ static int dmac_prepare_request_sg(struc
+ 		}
+ 		dmac_chan_writel_lo(dmac, req->req.channel, CTL, ctllo);
+ 		dmac_chan_writel_hi(dmac, req->req.channel, CTL, ctlhi);
++		pr_debug("ctl hi:lo 0x%lx:%lx\n", ctlhi, ctllo);
+ 	} else {
+ 		struct dw_dma_lli *lli, *lli_prev = NULL;
+ 		int j = 0, offset = 0;

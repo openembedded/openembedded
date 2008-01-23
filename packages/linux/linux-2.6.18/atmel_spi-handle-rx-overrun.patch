@@ -1,0 +1,200 @@
+---
+ drivers/spi/atmel_spi.c |  140 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 100 insertions(+), 40 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/spi/atmel_spi.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/spi/atmel_spi.c	2007-01-15 15:35:38.000000000 +0100
++++ linux-2.6.18-avr32/drivers/spi/atmel_spi.c	2007-01-16 13:26:32.000000000 +0100
+@@ -156,7 +156,7 @@ static void atmel_spi_next_xfer(struct s
+ 	 */
+ 	spi_writel(as, TNCR, 0);
+ 	spi_writel(as, RNCR, 0);
+-	imr = SPI_BIT(ENDRX);
++	imr = SPI_BIT(ENDRX) | SPI_BIT(OVRES);
+ 
+ 	dev_dbg(&msg->spi->dev,
+ 		"start xfer %p: len %u tx %p/%08x rx %p/%08x imr %08x\n",
+@@ -209,6 +209,43 @@ static void atmel_spi_dma_map_xfer(struc
+ 	}
+ }
+ 
++static void atmel_spi_dma_unmap_xfer(struct spi_master *master,
++				     struct spi_transfer *xfer)
++{
++	if (xfer->tx_dma != INVALID_DMA_ADDRESS)
++		dma_unmap_single(master->cdev.dev, xfer->tx_dma,
++				 xfer->len, DMA_TO_DEVICE);
++	if (xfer->rx_dma != INVALID_DMA_ADDRESS)
++		dma_unmap_single(master->cdev.dev, xfer->rx_dma,
++				 xfer->len, DMA_FROM_DEVICE);
++}
++
++static void atmel_spi_msg_done(struct spi_master *master,
++			       struct atmel_spi *as,
++			       struct spi_message *msg,
++			       int status)
++{
++	cs_deactivate(msg->spi);
++	list_del(&msg->queue);
++	msg->status = status;
++
++	dev_dbg(master->cdev.dev,
++		"xfer complete: %u bytes transferred\n",
++		msg->actual_length);
++
++	spin_unlock(&as->lock);
++	msg->complete(msg->context);
++	spin_lock(&as->lock);
++
++	as->current_transfer = NULL;
++
++	/* continue; complete() may have queued requests */
++	if (list_empty(&as->queue) || as->stopping)
++		spi_writel(as, PTCR, SPI_BIT(RXTDIS) | SPI_BIT(TXTDIS));
++	else
++		atmel_spi_next_message(master);
++}
++
+ static irqreturn_t
+ atmel_spi_interrupt(int irq, void *dev_id, struct pt_regs *regs)
+ {
+@@ -219,19 +256,71 @@ atmel_spi_interrupt(int irq, void *dev_i
+ 	u32			status, pending, imr;
+ 	int			ret = IRQ_NONE;
+ 
++	spin_lock(&as->lock);
++
++	xfer = as->current_transfer;
++	msg = list_entry(as->queue.next, struct spi_message, queue);
++
+ 	imr = spi_readl(as, IMR);
+ 	status = spi_readl(as, SR);
+ 	pending = status & imr;
+ pr_debug("spi irq: stat %05x imr %05x pend %05x\n", status, imr, pending);
+ 
+-	if (pending & (SPI_BIT(ENDTX) | SPI_BIT(ENDRX))) {
++	if (pending & SPI_BIT(OVRES)) {
++		int timeout;
++
+ 		ret = IRQ_HANDLED;
+ 
+-		spi_writel(as, IDR, pending);
+-		spin_lock(&as->lock);
++		spi_writel(as, IDR, (SPI_BIT(ENDTX) | SPI_BIT(ENDRX)
++				     | SPI_BIT(OVRES)));
++
++		/*
++		 * When we get an overrun, we disregard the current
++		 * transfer. Data will not be copied back from any
++		 * bounce buffer and msg->actual_len will not be
++		 * updated with the last xfer.
++		 *
++		 * We will also not process any remaning transfers in
++		 * the message.
++		 *
++		 * First, stop the transfer and unmap the DMA buffers.
++		 */
++		spi_writel(as, PTCR, SPI_BIT(RXTDIS) | SPI_BIT(TXTDIS));
++		if (!msg->is_dma_mapped)
++			atmel_spi_dma_unmap_xfer(master, xfer);
++
++		/* REVISIT: udelay in irq is unfriendly */
++		if (xfer->delay_usecs)
++			udelay(xfer->delay_usecs);
+ 
+-		xfer = as->current_transfer;
+-		msg = list_entry(as->queue.next, struct spi_message, queue);
++		dev_warn(master->cdev.dev, "fifo overrun (%u/%u remaining)\n",
++			 spi_readl(as, TCR), spi_readl(as, RCR));
++
++		/*
++		 * Clean up DMA registers and make sure the data
++		 * registers are empty.
++		 */
++		spi_writel(as, RNCR, 0);
++		spi_writel(as, TNCR, 0);
++		spi_writel(as, RCR, 0);
++		spi_writel(as, TCR, 0);
++		for (timeout = 1000; timeout; timeout--)
++			if (spi_readl(as, SR) & SPI_BIT(TXEMPTY))
++				break;
++		if (!timeout)
++			dev_warn(master->cdev.dev,
++				 "timeout waiting for TXEMPTY");
++		while (spi_readl(as, SR) & SPI_BIT(RDRF))
++			spi_readl(as, RDR);
++
++		/* Clear any overrun happening while cleaning up */
++		spi_readl(as, SR);
++
++		atmel_spi_msg_done(master, as, msg, -EIO);
++	} else if (pending & (SPI_BIT(ENDTX) | SPI_BIT(ENDRX))) {
++		ret = IRQ_HANDLED;
++
++		spi_writel(as, IDR, pending);
+ 
+ 		/*
+ 		 * If the rx buffer wasn't aligned, we used a bounce
+@@ -254,46 +343,16 @@ pr_debug("spi irq: stat %05x imr %05x pe
+ 		if (as->remaining_bytes == 0) {
+ 			msg->actual_length += xfer->len;
+ 
+-			if (!msg->is_dma_mapped) {
+-				if (xfer->tx_dma != INVALID_DMA_ADDRESS)
+-					dma_unmap_single(master->cdev.dev,
+-							 xfer->tx_dma,
+-							 xfer->len,
+-							 DMA_TO_DEVICE);
+-				if (xfer->rx_dma != INVALID_DMA_ADDRESS)
+-					dma_unmap_single(master->cdev.dev,
+-							 xfer->rx_dma,
+-							 xfer->len,
+-							 DMA_FROM_DEVICE);
+-			}
++			if (!msg->is_dma_mapped)
++				atmel_spi_dma_unmap_xfer(master, xfer);
+ 
+ 			/* REVISIT: udelay in irq is unfriendly */
+ 			if (xfer->delay_usecs)
+ 				udelay(xfer->delay_usecs);
+ 
+ 			if (msg->transfers.prev == &xfer->transfer_list) {
+-
+ 				/* report completed message */
+-				cs_deactivate(msg->spi);
+-				list_del(&msg->queue);
+-				msg->status = 0;
+-
+-				dev_dbg(master->cdev.dev,
+-					"xfer complete: %u bytes transferred\n",
+-					msg->actual_length);
+-
+-				spin_unlock(&as->lock);
+-				msg->complete(msg->context);
+-				spin_lock(&as->lock);
+-
+-				as->current_transfer = NULL;
+-
+-				/* continue; complete() may have queued requests */
+-				if (list_empty(&as->queue) || as->stopping)
+-					spi_writel(as, PTCR, SPI_BIT(RXTDIS)
+-						   | SPI_BIT(TXTDIS));
+-				else
+-					atmel_spi_next_message(master);
++				atmel_spi_msg_done(master, as, msg, 0);
+ 			} else {
+ 				if (xfer->cs_change) {
+ 					cs_deactivate(msg->spi);
+@@ -315,9 +374,10 @@ pr_debug("spi irq: stat %05x imr %05x pe
+ 			 */
+ 			atmel_spi_next_xfer(master, msg);
+ 		}
+-		spin_unlock(&as->lock);
+ 	}
+ 
++	spin_unlock(&as->lock);
++
+ 	return ret;
+ }
+ 

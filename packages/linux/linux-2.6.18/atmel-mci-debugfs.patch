@@ -1,0 +1,278 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Sun, 14 Jan 2007 19:07:06 +0100
+Subject: [ATMEL MCI] Add debugfs support
+
+Export some of the atmel-mci driver state through debugfs. More
+specifically:
+  * The MCI hardware registers
+  * The request currently being processed
+  * Pending and processed event masks
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ drivers/mmc/atmel-mci.c |  230 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 230 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/mmc/atmel-mci.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/atmel-mci.c	2007-01-15 15:35:45.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/atmel-mci.c	2007-01-15 15:38:05.000000000 +0100
+@@ -79,6 +79,14 @@ struct atmel_mci {
+ 	struct clk		*mck;
+ 	struct mmci_platform_data *board;
+ 	struct platform_device	*pdev;
++
++#ifdef CONFIG_DEBUG_FS
++	struct dentry		*debugfs_root;
++	struct dentry		*debugfs_regs;
++	struct dentry		*debugfs_req;
++	struct dentry		*debugfs_pending_events;
++	struct dentry		*debugfs_completed_events;
++#endif
+ };
+ 
+ /* Those printks take an awful lot of time... */
+@@ -90,6 +98,224 @@ static unsigned int fmax = 1000000U;
+ module_param(fmax, uint, 0444);
+ MODULE_PARM_DESC(fmax, "Max frequency in Hz of the MMC bus clock");
+ 
++#ifdef CONFIG_DEBUG_FS
++#include <linux/debugfs.h>
++
++#define DBG_REQ_BUF_SIZE	(4096 - sizeof(unsigned int))
++
++struct req_dbg_data {
++	unsigned int nbytes;
++	char str[DBG_REQ_BUF_SIZE];
++};
++
++static int req_dbg_open(struct inode *inode, struct file *file)
++{
++	struct atmel_mci *host;
++	struct mmc_request *mrq;
++	struct mmc_command *cmd, *stop;
++	struct mmc_data *data;
++	struct req_dbg_data *priv;
++	char *str;
++	unsigned long n = 0;
++
++	priv = kzalloc(DBG_REQ_BUF_SIZE, GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	str = priv->str;
++
++	mutex_lock(&inode->i_mutex);
++	host = inode->u.generic_ip;
++
++	spin_lock_irq(&host->mmc->lock);
++	mrq = host->mrq;
++	if (mrq) {
++		cmd = mrq->cmd;
++		data = mrq->data;
++		stop = mrq->stop;
++		n = snprintf(str, DBG_REQ_BUF_SIZE,
++			     "CMD%u(0x%x) %x %x %x %x %x (err %u)\n",
++			     cmd->opcode, cmd->arg, cmd->flags,
++			     cmd->resp[0], cmd->resp[1], cmd->resp[2],
++			     cmd->resp[3], cmd->error);
++		if (n < DBG_REQ_BUF_SIZE && data)
++			n += snprintf(str + n, DBG_REQ_BUF_SIZE - n,
++				      "DATA %u * %u (%u) %x (err %u)\n",
++				      data->blocks, data->blksz,
++				      data->bytes_xfered, data->flags,
++				      data->error);
++		if (n < DBG_REQ_BUF_SIZE && stop)
++			n += snprintf(str + n, DBG_REQ_BUF_SIZE - n,
++				      "CMD%u(0x%x) %x %x %x %x %x (err %u)\n",
++				      stop->opcode, stop->arg, stop->flags,
++				      stop->resp[0], stop->resp[1],
++				      stop->resp[2], stop->resp[3],
++				      stop->error);
++	}
++	spin_unlock_irq(&host->mmc->lock);
++	mutex_unlock(&inode->i_mutex);
++
++	priv->nbytes = min(n, DBG_REQ_BUF_SIZE);
++	file->private_data = priv;
++
++	return 0;
++}
++
++static int req_dbg_read(struct file *file, char __user *buf,
++			size_t nbytes, loff_t *ppos)
++{
++	struct req_dbg_data *priv = file->private_data;
++
++	return simple_read_from_buffer(buf, nbytes, ppos,
++				       priv->str, priv->nbytes);
++}
++
++static int req_dbg_release(struct inode *inode, struct file *file)
++{
++	kfree(file->private_data);
++	return 0;
++}
++
++static const struct file_operations req_dbg_fops = {
++	.owner		= THIS_MODULE,
++	.open		= req_dbg_open,
++	.llseek		= no_llseek,
++	.read		= req_dbg_read,
++	.release	= req_dbg_release,
++};
++
++static int regs_dbg_open(struct inode *inode, struct file *file)
++{
++	struct atmel_mci *host;
++	unsigned int i;
++	u32 *data;
++	int ret = -ENOMEM;
++
++	mutex_lock(&inode->i_mutex);
++	host = inode->u.generic_ip;
++	data = kmalloc(inode->i_size, GFP_KERNEL);
++	if (!data)
++		goto out;
++
++	spin_lock_irq(&host->mmc->lock);
++	for (i = 0; i < inode->i_size / 4; i++)
++		data[i] = __raw_readl(host->regs + i * 4);
++	spin_unlock_irq(&host->mmc->lock);
++
++	file->private_data = data;
++	ret = 0;
++
++out:
++	mutex_unlock(&inode->i_mutex);
++
++	return ret;
++}
++
++static ssize_t regs_dbg_read(struct file *file, char __user *buf,
++			     size_t nbytes, loff_t *ppos)
++{
++	struct inode *inode = file->f_dentry->d_inode;
++	int ret;
++
++	mutex_lock(&inode->i_mutex);
++	ret = simple_read_from_buffer(buf, nbytes, ppos,
++				      file->private_data,
++				      file->f_dentry->d_inode->i_size);
++	mutex_unlock(&inode->i_mutex);
++
++	return ret;
++}
++
++static int regs_dbg_release(struct inode *inode, struct file *file)
++{
++	kfree(file->private_data);
++	return 0;
++}
++
++static const struct file_operations regs_dbg_fops = {
++	.owner		= THIS_MODULE,
++	.open		= regs_dbg_open,
++	.llseek		= generic_file_llseek,
++	.read		= regs_dbg_read,
++	.release	= regs_dbg_release,
++};
++
++static void atmci_init_debugfs(struct atmel_mci *host)
++{
++	struct mmc_host *mmc;
++	struct dentry *root, *regs;
++	struct resource *res;
++
++	mmc = host->mmc;
++	root = debugfs_create_dir(mmc_hostname(mmc), NULL);
++	if (IS_ERR(root) || !root)
++		goto err_root;
++	host->debugfs_root = root;
++
++	regs = debugfs_create_file("regs", 0400, root, host, &regs_dbg_fops);
++	if (!regs)
++		goto err_regs;
++
++	res = platform_get_resource(host->pdev, IORESOURCE_MEM, 0);
++	regs->d_inode->i_size = res->end - res->start + 1;
++	host->debugfs_regs = regs;
++
++	host->debugfs_req = debugfs_create_file("req", 0400, root,
++						host, &req_dbg_fops);
++	if (!host->debugfs_req)
++		goto err_req;
++
++	host->debugfs_pending_events
++		= debugfs_create_u32("pending_events", 0400, root,
++				     (u32 *)&host->pending_events);
++	if (!host->debugfs_pending_events)
++		goto err_pending_events;
++
++	host->debugfs_completed_events
++		= debugfs_create_u32("completed_events", 0400, root,
++				     (u32 *)&host->completed_events);
++	if (!host->debugfs_completed_events)
++		goto err_completed_events;
++
++	return;
++
++err_completed_events:
++	debugfs_remove(host->debugfs_pending_events);
++err_pending_events:
++	debugfs_remove(host->debugfs_req);
++err_req:
++	debugfs_remove(host->debugfs_regs);
++err_regs:
++	debugfs_remove(host->debugfs_root);
++err_root:
++	host->debugfs_root = NULL;
++	dev_err(&host->pdev->dev,
++		"failed to initialize debugfs for %s\n",
++		mmc_hostname(mmc));
++}
++
++static void atmci_cleanup_debugfs(struct atmel_mci *host)
++{
++	if (host->debugfs_root) {
++		debugfs_remove(host->debugfs_completed_events);
++		debugfs_remove(host->debugfs_pending_events);
++		debugfs_remove(host->debugfs_req);
++		debugfs_remove(host->debugfs_regs);
++		debugfs_remove(host->debugfs_root);
++		host->debugfs_root = NULL;
++	}
++}
++#else
++static inline void atmci_init_debugfs(struct atmel_mci *host)
++{
++
++}
++
++static inline void atmci_cleanup_debugfs(struct atmel_mci *host)
++{
++
++}
++#endif /* CONFIG_DEBUG_FS */
++
+ static inline unsigned int ns_to_clocks(struct atmel_mci *host,
+ 					unsigned int ns)
+ {
+@@ -709,6 +935,8 @@ static int __devinit atmci_probe(struct 
+ 	printk(KERN_INFO "%s: Atmel MCI controller at 0x%08lx irq %d\n",
+ 	       mmc_hostname(mmc), host->mapbase, irq);
+ 
++	atmci_init_debugfs(host);
++
+ 	return 0;
+ 
+ out_free_irq:
+@@ -734,6 +962,8 @@ static int __devexit atmci_remove(struct
+ 	platform_set_drvdata(pdev, NULL);
+ 
+ 	if (host) {
++		atmci_cleanup_debugfs(host);
++
+ 		mmc_remove_host(host->mmc);
+ 
+ 		mci_writel(host, IDR, ~0UL);
