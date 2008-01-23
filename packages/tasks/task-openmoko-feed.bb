@@ -34,5 +34,6 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
+  swt3.4-gtk \
+  cacao \
 "
-
