@@ -29,9 +29,11 @@ SRC_URI += "http://kamikaze.waninkoko.info/patches/2.6.23/klight1/broken-out/squ
 # Completely fair scheduler
 SRC_URI += "http://people.redhat.com/mingo/cfs-scheduler/sched-cfs-v2.6.23.12-v24.1.patch;patch=1"
 
-SRC_URI_append_avr32 = " \
-                       http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
-                       "
+# The Atmel patch doesn't apply against 2.6.23.12  :( 
+SRC_URI_avr32 = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
+                 file://defconfig \
+                 http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.23.atmel.3.patch.bz2;patch=1 \
+                "
 
 SRC_URI_append_cm-x270 = "\
 	file://0001-cm-x270-base2.patch;patch=1 \
