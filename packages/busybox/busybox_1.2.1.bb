@@ -5,7 +5,6 @@ PR = "r15"
 SRC_URI += "file://wget-long-options.patch;patch=1 \
 	   file://df_rootfs.patch;patch=1 \
            file://defconfig"
-SRC_URI_append_avr32 = " file://install-should-unlink-dest-if-it-exists.patch;patch=1"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config.oe

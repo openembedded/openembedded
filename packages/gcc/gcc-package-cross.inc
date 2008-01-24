@@ -43,12 +43,12 @@ do_install () {
                 # Already in the right location
                 :
         elif [ -f ${D}${prefix}/lib/libgcc_s.so.? ]; then
-                mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir} || true
+                mv -f ${D}${prefix}/lib/libgcc_s.so* ${D}${target_base_libdir}
 
         elif [  -f ${D}${prefix}/*/lib/nof/libgcc_s.so.? ]; then
                 mv -f ${D}${prefix}/*/lib/nof/libgcc_s.so* ${D}${target_base_libdir}
         else
-                mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir} || true 
+                mv -f ${D}${prefix}/*/lib/libgcc_s.so* ${D}${target_base_libdir}
         fi
 
 
@@ -58,12 +58,12 @@ do_install () {
 
         if [ -f ${D}${prefix}/*/lib/nof/libstdc++.so ]; then
 
-           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir} || true
+           mv -f ${D}${prefix}/*/lib/nof/libstdc++.so* ${D}${target_libdir}
            mv -f ${D}${prefix}/*/lib/nof/libg2c.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/nof/libgfortran*.so* ${D}${target_libdir} || true
 
         else
-           mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir} || true
+           mv -f ${D}${prefix}/*/lib/libstdc++.so* ${D}${target_libdir}
            mv -f ${D}${prefix}/*/lib/libg2c.so* ${D}${target_libdir} || true
            mv -f ${D}${prefix}/*/lib/libgfortran*.so* ${D}${target_libdir} || true
         fi
@@ -75,7 +75,7 @@ do_install () {
        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libstdc++.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libg2c.so.* || true
-               ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.* || true
+               ${TARGET_PREFIX}strip ${D}${target_base_libdir}/libgcc_s.so.*
                ${TARGET_PREFIX}strip ${D}${target_libdir}/libgfortran*.so* || true
 	fi
      

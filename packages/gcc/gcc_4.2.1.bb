@@ -39,34 +39,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
         file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
         file://gfortran.patch;patch=1 \
-	file://pr34130.patch;patch=1 \
-"
-
-
-SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.1.tar.gz \
-        file://100-uclibc-conf.patch;patch=1 \
-        file://103-uclibc-conf-noupstream.patch;patch=1 \
-        file://200-uclibc-locale.patch;patch=1 \
-        file://203-uclibc-locale-no__x.patch;patch=1 \
-        file://204-uclibc-locale-wchar_fix.patch;patch=1 \
-        file://205-uclibc-locale-update.patch;patch=1 \
-        file://300-libstdc++-pic.patch;patch=1 \
-        file://301-missing-execinfo_h.patch;patch=1 \
-        file://302-c99-snprintf.patch;patch=1 \
-        file://303-c99-complex-ugly-hack.patch;patch=1 \
-        file://304-index_macro.patch;patch=1 \
-        file://305-libmudflap-susv3-legacy.patch;patch=1 \
-        file://306-libstdc++-namespace.patch;patch=1 \
-        file://307-locale_facets.patch;patch=1 \
-        file://402-libbackend_dep_gcov-iov.h.patch;patch=1 \
-        file://602-sdk-libstdc++-includes.patch;patch=1 \
-        file://740-sh-pr24836.patch;patch=1 \
-        file://904-flatten-switch-stmt-00.patch;patch=1 \
-        file://gcc41-configure.in.patch;patch=1 \
-        file://ldflags.patch;patch=1 \
-        file://zecke-xgcc-cpp.patch;patch=1 \
-        file://cache-amnesia.patch;patch=1 \
-        file://gfortran.patch;patch=1 \
+        file://pr34130.patch;patch=1 \
 "
 
 SRC_URI_append_ep93xx = " \
@@ -107,5 +80,5 @@ require gcc3-build.inc
 ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
 
 
-EXTRA_OECONF += " --disable-libgomp --disable-libssp --disable-bootstrap "
+EXTRA_OECONF += " --disable-libssp --disable-bootstrap "
 

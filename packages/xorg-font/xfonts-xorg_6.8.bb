@@ -3,10 +3,9 @@ PR = "r1"
 # XXX Is this true?  These fonts are from X.org.
 LICENSE = "XFree86"
 
-SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc;tag=XORG-6_8_0;method=pserver"
+SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
+	file://lexer.patch;patch=1"
 
-# not necessary, breaks things:
-#file://lexer.patch;patch=1"
 
 PACKAGES = "${PN}-75dpi ${PN}-100dpi ${PN}-type1 ${PN}-cyrillic ${PN}-ttf ${PN}"
 FILES_${PN}-75dpi = "${libdir}/X11/fonts/75dpi"

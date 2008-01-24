@@ -1,6 +1,6 @@
 require binutils.inc
 
-PR = "r2"
+PR = "r1"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
@@ -21,7 +21,6 @@ SRC_URI += "\
         http://avr32linux.org/twiki/pub/Main/DevelopmentTools/500-avr32.patch.gz;patch=1 \
         http://avr32linux.org/twiki/pub/Main/DevelopmentTools/501-avr32-sreldyn-fix.patch.gz;patch=1 \
 	http://avr32linux.org/twiki/pub/Main/DevelopmentTools/502-avr32-bfd-dont-allow-direct-refs-to-bss.patch.gz;patch=1 \
-        file://503-avr32-fix-got-offset-init.patch;patch=1 \
 "
 
 # Zecke's OSX fixes

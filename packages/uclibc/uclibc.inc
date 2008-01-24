@@ -141,7 +141,7 @@ do_configure() {
 		echo "# CONFIG_ARM_EABI is not set"     >> ${S}/.config
 	fi
 
-	yes '' | oe_runmake oldconfig
+	oe_runmake oldconfig
 }
 
 do_stage() {
@@ -151,6 +151,7 @@ do_stage() {
 		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
 		install_dev install_runtime
 
+	oe_runmake utils
 	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
 		install_utils
@@ -188,14 +189,8 @@ do_stage() {
 }
 
 do_install() {
-        # Install into the cross dir (this MUST be done first because we
-        # will install crt1.o in the install_dev stage and gcc needs it)
-        oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_PREFIX}/ \
-                RUNTIME_PREFIX=${UCLIBC_PREFIX}/ \
-                install_dev install_runtime
-
 	oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
-		install_dev install_runtime 
+		install_dev install_runtime install_utils
 
 	# We don't really need this in ${includedir}
 	rm -f ${D}${prefix}/include/.cvsignore
@@ -221,9 +216,5 @@ do_install() {
 		mv ${D}/usr/bin/* ${D}${bindir}/
 		rmdir ${D}/usr/bin
 	fi
-
-        oe_runmake utils
-        oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
-                install_utils
 }
 

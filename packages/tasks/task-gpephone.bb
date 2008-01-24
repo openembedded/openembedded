@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-PR = "r13"
+PR = "r10"
 LICENSE = "MIT"
 
 inherit task
@@ -23,16 +23,18 @@ RDEPENDS_gpephone-task-development = "\
     minicom"
 
 RDEPENDS_gpephone-task-base = "\
+    cms92init \
+    gsmmux \
     connect \
-    gsmd \
+    phoneserver \
     soundserver \
     voicecall \
-    dialer \
-    quickdial \
     vochistory \
     sms \
     audioplayer \
     videoplayer \
+    addressbook \
+    calendar \
     gpe-applauncher \
     gpe-phonepanel \
     gpe-bootsplash \
@@ -52,6 +54,7 @@ RDEPENDS_gpephone-task-base = "\
     gpe-dm \
     gpe-login \
     gpe-session-scripts-phone \
+    gpe-icons \
     gpe-confd \
     gpe-autostarter \
     xauth \
@@ -69,10 +72,7 @@ RDEPENDS_gpephone-task-base = "\
 "
 
 RDEPENDS_gpephone-task-pim = "\
-    contact \
-    calendar2 \
-    useen \
-     "
+     gpesyncd"
 
 RDEPENDS_gpephone-task-settings = "\
     gpe-su \
@@ -80,11 +80,10 @@ RDEPENDS_gpephone-task-settings = "\
     gpe-mixer \
     gpe-taskmanager \
     minilite \
-    firewall \
-    almmgrd \
     machined"
 
 RDEPENDS_gpephone-task-apps = "\
+    gpe-what \
     gpe-scap \
     gpe-windowlist"
 

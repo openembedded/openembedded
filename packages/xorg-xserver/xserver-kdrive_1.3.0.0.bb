@@ -29,10 +29,6 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
         file://03-xglamo-no-vesa.patch;patch=1 \
 "
 
-SRC_URI_append_avr32 = " \
-        file://xorg-avr32-support.diff;patch=1 \
-"
-
 SRC_URI_append_tosa = "file://tosa-fbdev.patch;patch=1"
 PACKAGE_ARCH_xserver-kdrive-fbdev_tosa = "${MACHINE_ARCH}"
 
