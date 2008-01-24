@@ -128,6 +128,14 @@ def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+    import bb
+    result = bb.vercmp(bb.data.getVar(variable,d,True), checkvalue)
+    if result <= 0:
+        return truevalue
+    else:
+        return falsevalue
+
 def base_contains(variable, checkvalues, truevalue, falsevalue, d):
 	import bb
 	matches = 0
