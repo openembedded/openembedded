@@ -25,6 +25,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
            file://scrolled-placement.patch;patch=1;pnum=0 \
            file://treeview-checkbox-size.patch;patch=1;pnum=0 \
            file://cell-renderer-edit-focus.patch;patch=1;pnum=0 \
+           file://iconview-touchscreen.patch;patch=1 \
            "
 
 # check for TARGET_FPU=soft and inform configure of the result so it can disable some floating points

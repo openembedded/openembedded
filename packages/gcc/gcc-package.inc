@@ -92,11 +92,7 @@ do_install () {
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}${base_libdir}
-	if [ -f ${D}${libdir}/nof/libgcc_s.so ]; then
-		mv ${D}${libdir}/nof/libgcc_s.so.* ${D}${base_libdir}
-	else
-		mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
-	fi
+	mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
 	rm -f ${D}${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
 		| tr -s / \

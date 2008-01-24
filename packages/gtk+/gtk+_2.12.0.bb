@@ -1,6 +1,6 @@
 require gtk+.inc
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS += "cairo"
 
@@ -16,7 +16,8 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/2.12/gtk+-${PV}.tar.bz2 \
            file://cellrenderer-cairo.patch;patch=1;pnum=0 \
            file://entry-cairo.patch;patch=1;pnum=0 \
            file://toggle-font.diff;patch=1;pnum=0 \
-           file://scrolled-placement.patch;patch=1;pnum=0"
+           file://scrolled-placement.patch;patch=1;pnum=0 \
+           file://iconview-touchscreen.patch;patch=1"
 # temporary
 #           file://gtklabel-resize-patch;patch=1 \
 #           file://menu-deactivate.patch;patch=1 \

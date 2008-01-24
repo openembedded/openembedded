@@ -11,6 +11,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
 
 S = "${WORKDIR}/linux-2.6.18"
 
+
 COMPATIBLE_HOST = 'arm.*-linux'
 
 ARCH = "arm"

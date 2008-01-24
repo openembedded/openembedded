@@ -1,0 +1,23 @@
+Subject: [PATCH] ldso: AVR32 needs CONSTANT_STRING_GOT_FIXUP
+
+Add AVR32 to the list of architectures needing CONSTANT_STRING_GOT_FIXUP.
+
+---
+
+ ldso/include/dl-string.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+Index: uClibc-0.9.28/ldso/include/dl-string.h
+===================================================================
+--- uClibc-0.9.28.orig/ldso/include/dl-string.h	2006-02-07 16:58:58.000000000 +0100
++++ uClibc-0.9.28/ldso/include/dl-string.h	2006-02-07 16:59:28.000000000 +0100
+@@ -271,7 +271,8 @@ static __always_inline char * _dl_simple
+ /* On some arches constant strings are referenced through the GOT.
+  * This requires that load_addr must already be defined... */
+ #if defined(mc68000) || defined(__arm__) || defined(__mips__)	\
+-                     || defined(__sh__) ||  defined(__powerpc__)
++                     || defined(__sh__) ||  defined(__powerpc__) \
++		     || defined(__avr32__)
+ # define CONSTANT_STRING_GOT_FIXUP(X) \
+ 	if ((X) < (const char *) load_addr) (X) += load_addr
+ # define NO_EARLY_SEND_STDERR

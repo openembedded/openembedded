@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic SDK development packages"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -31,7 +31,6 @@ RDEPENDS = "\
     gnutls-dev \
     libgpg-error-dev \
     libidl-dev \
-    libiw-dev \
     libmimedir-dev \
     libpcap-dev \
     libpixman-dev \

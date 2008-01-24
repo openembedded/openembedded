@@ -1,0 +1,24 @@
+Subject: [PATCH] ldso: Always inline _dl_memcpy()
+
+On some gcc versions, inline is merely a hint. AVR32 depends on this
+function actually getting inlined, so we need to use __always_inline
+instead of just inline.
+
+---
+
+ ldso/include/dl-string.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: uClibc-0.9.28/ldso/include/dl-string.h
+===================================================================
+--- uClibc-0.9.28.orig/ldso/include/dl-string.h	2006-02-07 17:01:28.000000000 +0100
++++ uClibc-0.9.28/ldso/include/dl-string.h	2006-02-07 17:03:02.000000000 +0100
+@@ -134,7 +134,7 @@ static inline char * _dl_strstr(const ch
+     } while (1);
+ }
+ 
+-static inline void * _dl_memcpy(void * dst, const void * src, size_t len)
++static __always_inline void * _dl_memcpy(void * dst, const void * src, size_t len)
+ {
+ 	register char *a = dst-1;
+ 	register const char *b = src-1;

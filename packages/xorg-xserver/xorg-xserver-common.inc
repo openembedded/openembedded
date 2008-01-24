@@ -24,6 +24,7 @@ S = "${WORKDIR}/${XORG_PN}-${PV}"
 inherit autotools pkgconfig
 
 PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils"
+#PACKAGES =+ "${PN}-xvfb ${PN}-utils"
 
 FILES_${PN}-xprint = "${libdir}/X11/xserver/*/print"
 FILES_${PN}-xvfb = "${bindir}/Xvfb"

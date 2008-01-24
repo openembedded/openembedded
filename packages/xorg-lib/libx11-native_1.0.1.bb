@@ -3,6 +3,7 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "XFree86"
 PE = "1"
+PR = "r1"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libx11"
 
@@ -11,7 +12,7 @@ PROVIDES = "x11-native"
 
 XORG_PN = "libX11"
 
-SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-1.1.1.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/lib/${XORG_PN}-1.0.1.tar.bz2"
 S = "${WORKDIR}/libX11-${PV}"
 
 inherit native autotools pkgconfig
