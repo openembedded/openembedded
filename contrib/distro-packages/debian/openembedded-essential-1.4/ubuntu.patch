@@ -1,0 +1,22 @@
+#
+# old_revision [63896b37ec0e055133c2e295f7c89e4677091511]
+#
+# patch "contrib/distro-packages/debian/openembedded-essential-1.4/debian/changelog"
+#  from [b1e7c5d0ed3dddbab736f23b57df2386b6937e4d]
+#    to [bb02f8caa6f5eaa903b4d65150392583072c7bea]
+#
+============================================================
+--- contrib/distro-packages/debian/openembedded-essential-1.4/debian/changelog  
+b1e7c5d0ed3dddbab736f23b57df2386b6937e4d
++++ contrib/distro-packages/debian/openembedded-essential-1.4/debian/changelog  
+bb02f8caa6f5eaa903b4d65150392583072c7bea
+@@ -1,3 +1,9 @@
++openembedded-essential (1.4ubuntu1) gutsy; urgency=low
++
++  * prepare ubuntu package
++
++ -- Rolf Leggewie <oe-devel@rolf.leggewie.biz>  Thu, 24 Jan 2008 13:49:26 +0100
++
+ openembedded-essential (1.4) unstable; urgency=low
+ 
+   * remove gfortran from dependency after a5c7b007eaa675cc904f5285291d2f8a597efc84 caused controversy.

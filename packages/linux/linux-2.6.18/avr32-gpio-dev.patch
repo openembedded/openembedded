@@ -1,0 +1,548 @@
+---
+ arch/avr32/mach-at32ap/Kconfig |    8 
+ arch/avr32/mach-at32ap/pio.c   |  499 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 506 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-29 16:22:14.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-29 16:29:20.000000000 +0100
+@@ -22,7 +22,7 @@
+ 
+ struct pio_device {
+ 	void __iomem *regs;
+-	const struct platform_device *pdev;
++	struct platform_device *pdev;
+ 	struct clk *clk;
+ 	u32 pinmux_mask;
+ 	u32 gpio_mask;
+@@ -119,6 +119,34 @@ fail:
+ 	dump_stack();
+ }
+ 
++static unsigned int pio_id(struct pio_device *pio)
++{
++	return pio - pio_dev;
++}
++
++static void __enable_gpio(struct pio_device *pio, u32 mask)
++{
++	pio_writel(pio, PUER, mask);
++	pio_writel(pio, ODR, mask);
++	pio_writel(pio, PER, mask);
++}
++
++static void __disable_gpio(struct pio_device *pio, u32 mask)
++{
++	pio_writel(pio, PUER, mask);
++	pio_writel(pio, ODR, mask);
++}
++
++static void pio_dealloc_mask(struct pio_device *pio, u32 mask)
++{
++	u32 old, new;
++
++	do {
++		old = pio->pinmux_mask;
++		new = old & ~mask;
++	} while (cmpxchg(&pio->pinmux_mask, old, new) != old);
++}
++
+ /* GPIO API */
+ 
+ int gpio_request(unsigned int gpio, const char *label)
+@@ -210,6 +238,475 @@ void gpio_set_value(unsigned int gpio, i
+ }
+ EXPORT_SYMBOL(gpio_set_value);
+ 
++#ifdef CONFIG_PIO_DEV
++#include <linux/configfs.h>
++#include <linux/cdev.h>
++#include <linux/uaccess.h>
++
++#define GPIO_DEV_MAX			8
++
++static struct class *gpio_dev_class;
++static dev_t gpio_devt;
++
++struct gpio_item {
++	spinlock_t lock;
++
++	/* Too bad we don't have committable items... */
++	int enabled;
++
++	struct pio_device *pio;
++	u32 pin_mask;
++
++	int id;
++	struct class_device *gpio_dev;
++	struct cdev char_dev;
++	struct config_item item;
++};
++
++struct gpio_attribute {
++	struct configfs_attribute attr;
++	ssize_t (*show)(struct gpio_item *, char *);
++	ssize_t (*store)(struct gpio_item *, const char *, size_t);
++};
++
++static int gpio_dev_open(struct inode *inode, struct file *file)
++{
++	struct gpio_item *gpio = container_of(inode->i_cdev,
++					      struct gpio_item,
++					      char_dev);
++
++	config_item_get(&gpio->item);
++	file->private_data = gpio;
++	return 0;
++}
++
++static int gpio_dev_release(struct inode *inode, struct file *file)
++{
++	struct gpio_item *gpio = file->private_data;
++
++	config_item_put(&gpio->item);
++	return 0;
++}
++
++static ssize_t gpio_dev_read(struct file *file, char __user *buf,
++			     size_t count, loff_t *offset)
++{
++	struct gpio_item *gpio = file->private_data;
++	u32 value;
++
++	value = pio_readl(gpio->pio, PDSR) & gpio->pin_mask;
++
++	count = min(count, (size_t)4);
++	if (copy_to_user(buf, &value, count))
++		return -EFAULT;
++	return count;
++}
++
++static ssize_t gpio_dev_write(struct file *file, const char __user *buf,
++			      size_t count, loff_t *offset)
++{
++	struct gpio_item *gpio = file->private_data;
++	u32 value = 0;
++	u32 mask = ~0UL;
++
++	count = min(count, (size_t)4);
++	if (copy_from_user(&value, buf, count))
++		return -EFAULT;
++
++	/* Assuming big endian */
++	mask <<= (4 - count) * 8;
++	mask &= gpio->pin_mask;
++
++	pio_writel(gpio->pio, CODR, ~value & mask);
++	pio_writel(gpio->pio, SODR, value & mask);
++
++	return count;
++}
++
++static struct file_operations gpio_dev_fops = {
++	.owner		= THIS_MODULE,
++	.llseek		= no_llseek,
++	.open		= gpio_dev_open,
++	.release	= gpio_dev_release,
++	.read		= gpio_dev_read,
++	.write		= gpio_dev_write,
++};
++
++static struct gpio_item *to_gpio_item(struct config_item *item)
++{
++	return item ? container_of(item, struct gpio_item, item) : NULL;
++}
++
++static ssize_t gpio_show_gpio_id(struct gpio_item *gpio, char *page)
++{
++	if (gpio->pio)
++		return sprintf(page, "%u\n", pio_id(gpio->pio));
++	else
++		return sprintf(page, "-1\n");
++}
++
++static ssize_t gpio_store_gpio_id(struct gpio_item *gpio,
++				  const char *page, size_t count)
++{
++	unsigned long id;
++	char *p = (char *)page;
++	ssize_t ret = -EINVAL;
++
++	id = simple_strtoul(p, &p, 0);
++	if (!p || (*p && (*p != '\n')))
++		return -EINVAL;
++
++	/* Switching PIO is not allowed when live... */
++	spin_lock(&gpio->lock);
++	if (!gpio->enabled) {
++		ret = -ENXIO;
++		if ((id < MAX_NR_PIO_DEVICES) && pio_dev[id].regs) {
++			gpio->pio = &pio_dev[id];
++			ret = count;
++		}
++	}
++	spin_unlock(&gpio->lock);
++
++	return ret;
++}
++
++static ssize_t gpio_show_pin_mask(struct gpio_item *gpio, char *page)
++{
++	return sprintf(page, "0x%08x\n", gpio->pin_mask);
++}
++
++static ssize_t gpio_store_pin_mask(struct gpio_item *gpio,
++				   const char *page, size_t count)
++{
++	struct pio_device *pio;
++	u32 old_mask, new_mask;
++	u32 old, new;
++	char *p = (char *)page;
++	ssize_t ret = -EINVAL;
++
++	new_mask = simple_strtoul(p, &p, 0);
++	if (!p || (*p && (*p != '\n')))
++		return -EINVAL;
++
++	/*
++	 * Must have a PIO before we can start allocating pins, but we
++	 * must not be live.
++	 */
++	spin_lock(&gpio->lock);
++	pio = gpio->pio;
++	if (!pio || gpio->enabled)
++		goto out;
++
++	ret = -EBUSY;
++	old_mask = gpio->pin_mask;
++	do {
++		old = pio->pinmux_mask;
++		if ((old & ~old_mask) & new_mask)
++			goto out;
++
++		new = (old & ~old_mask) | new_mask;
++	} while (cmpxchg(&pio->pinmux_mask, old, new) != old);
++
++	gpio->pin_mask = new_mask;
++	__disable_gpio(pio, old_mask);
++	__enable_gpio(pio, new_mask);
++	ret = count;
++
++out:
++	spin_unlock(&gpio->lock);
++	return ret;
++}
++
++static ssize_t gpio_show_oe_mask(struct gpio_item *gpio, char *page)
++{
++	u32 mask = 0;
++
++	spin_lock(&gpio->lock);
++	if (gpio->pio) {
++		mask = pio_readl(gpio->pio, OSR);
++		mask &= gpio->pin_mask;
++	}
++	spin_unlock(&gpio->lock);
++
++	return sprintf(page, "0x%08x\n", mask);
++}
++
++static ssize_t gpio_store_oe_mask(struct gpio_item *gpio,
++				  const char *page, size_t count)
++{
++	u32 mask;
++	char *p = (char *)page;
++	ssize_t ret = -EINVAL;
++
++	mask = simple_strtoul(p, &p, 0);
++	if (!p || (*p && (*p != '\n')))
++		return -EINVAL;
++
++	spin_lock(&gpio->lock);
++	if (gpio->pio) {
++		mask &= gpio->pin_mask;
++		pio_writel(gpio->pio, ODR, mask ^ gpio->pin_mask);
++		pio_writel(gpio->pio, OER, mask);
++		ret = count;
++	}
++	spin_unlock(&gpio->lock);
++
++	return ret;
++}
++
++static ssize_t gpio_show_enabled(struct gpio_item *gpio, char *page)
++{
++	return sprintf(page, "%d\n", gpio->enabled);
++}
++
++static ssize_t gpio_store_enabled(struct gpio_item *gpio,
++				  const char *page, size_t count)
++{
++	char *p = (char *)page;
++	int enabled;
++	int ret;
++
++	enabled = simple_strtoul(p, &p, 0);
++	if (!p || (*p && (*p != '\n')))
++		return -EINVAL;
++
++	/* make it a boolean value */
++	enabled = !!enabled;
++
++	if (gpio->enabled == enabled)
++		/* Already enabled; do nothing. */
++		return count;
++
++	BUG_ON(gpio->id >= GPIO_DEV_MAX);
++
++	if (!enabled) {
++		class_device_unregister(gpio->gpio_dev);
++		cdev_del(&gpio->char_dev);
++	}
++
++	/* Disallow any updates to gpio_id or pin_mask */
++	spin_lock(&gpio->lock);
++	gpio->enabled = enabled;
++	spin_unlock(&gpio->lock);
++
++	if (!enabled)
++		return count;
++
++	cdev_init(&gpio->char_dev, &gpio_dev_fops);
++	gpio->char_dev.owner = THIS_MODULE;
++	ret = cdev_add(&gpio->char_dev, MKDEV(MAJOR(gpio_devt), gpio->id), 1);
++	if (ret < 0)
++		goto err_cdev_add;
++	gpio->gpio_dev = class_device_create(gpio_dev_class, NULL,
++					     MKDEV(MAJOR(gpio_devt), gpio->id),
++					     &gpio->pio->pdev->dev,
++					     "gpio%d", gpio->id);
++	if (IS_ERR(gpio->gpio_dev)) {
++		printk(KERN_ERR "failed to create gpio%d\n", gpio->id);
++		ret = PTR_ERR(gpio->gpio_dev);
++		goto err_class_dev;
++	}
++
++	printk(KERN_INFO "created gpio%d (pio%d/0x%08x) as (%d:%d)\n",
++	       gpio->id, pio_id(gpio->pio), gpio->pin_mask,
++	       MAJOR(gpio->gpio_dev->devt), MINOR(gpio->gpio_dev->devt));
++
++	return 0;
++
++err_class_dev:
++	cdev_del(&gpio->char_dev);
++err_cdev_add:
++	spin_lock(&gpio->lock);
++	gpio->enabled = 0;
++	spin_unlock(&gpio->lock);
++
++	return ret;
++}
++
++static struct gpio_attribute gpio_item_attr_gpio_id = {
++	.attr = {
++		.ca_owner = THIS_MODULE,
++		.ca_name = "gpio_id",
++		.ca_mode = S_IRUGO | S_IWUSR,
++	},
++	.show = gpio_show_gpio_id,
++	.store = gpio_store_gpio_id,
++};
++static struct gpio_attribute gpio_item_attr_pin_mask = {
++	.attr = {
++		.ca_owner = THIS_MODULE,
++		.ca_name = "pin_mask",
++		.ca_mode = S_IRUGO | S_IWUSR,
++	},
++	.show = gpio_show_pin_mask,
++	.store = gpio_store_pin_mask,
++};
++static struct gpio_attribute gpio_item_attr_oe_mask = {
++	.attr = {
++		.ca_owner = THIS_MODULE,
++		.ca_name = "oe_mask",
++		.ca_mode = S_IRUGO | S_IWUSR,
++	},
++	.show = gpio_show_oe_mask,
++	.store = gpio_store_oe_mask,
++};
++static struct gpio_attribute gpio_item_attr_enabled = {
++	.attr = {
++		.ca_owner = THIS_MODULE,
++		.ca_name = "enabled",
++		.ca_mode = S_IRUGO | S_IWUSR,
++	},
++	.show = gpio_show_enabled,
++	.store = gpio_store_enabled,
++};
++
++static struct configfs_attribute *gpio_item_attrs[] = {
++	&gpio_item_attr_gpio_id.attr,
++	&gpio_item_attr_pin_mask.attr,
++	&gpio_item_attr_oe_mask.attr,
++	&gpio_item_attr_enabled.attr,
++	NULL,
++};
++
++static ssize_t gpio_show_attr(struct config_item *item,
++			      struct configfs_attribute *attr,
++			      char *page)
++{
++	struct gpio_item *gpio_item = to_gpio_item(item);
++	struct gpio_attribute *gpio_attr
++		= container_of(attr, struct gpio_attribute, attr);
++	ssize_t ret = 0;
++
++	if (gpio_attr->show)
++		ret = gpio_attr->show(gpio_item, page);
++	return ret;
++}
++
++static ssize_t gpio_store_attr(struct config_item *item,
++			       struct configfs_attribute *attr,
++			       const char *page, size_t count)
++{
++	struct gpio_item *gpio_item = to_gpio_item(item);
++	struct gpio_attribute *gpio_attr
++		= container_of(attr, struct gpio_attribute, attr);
++	ssize_t ret = -EINVAL;
++
++	if (gpio_attr->store)
++		ret = gpio_attr->store(gpio_item, page, count);
++	return ret;
++}
++
++static void gpio_release(struct config_item *item)
++{
++	kfree(to_gpio_item(item));
++}
++
++static struct configfs_item_operations gpio_item_ops = {
++	.release		= gpio_release,
++	.show_attribute		= gpio_show_attr,
++	.store_attribute	= gpio_store_attr,
++};
++
++static struct config_item_type gpio_item_type = {
++	.ct_item_ops	= &gpio_item_ops,
++	.ct_attrs	= gpio_item_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
++static struct config_item *gpio_make_item(struct config_group *group,
++					  const char *name)
++{
++	static int next_id;
++	struct gpio_item *gpio;
++
++	if (next_id >= GPIO_DEV_MAX)
++		return NULL;
++
++	gpio = kzalloc(sizeof(struct gpio_item), GFP_KERNEL);
++	if (!gpio)
++		return NULL;
++
++	gpio->id = next_id++;
++	config_item_init_type_name(&gpio->item, name, &gpio_item_type);
++	spin_lock_init(&gpio->lock);
++
++	return &gpio->item;
++}
++
++static void gpio_drop_item(struct config_group *group,
++			   struct config_item *item)
++{
++	struct gpio_item *gpio = to_gpio_item(item);
++	struct pio_device *pio;
++
++	spin_lock(&gpio->lock);
++	if (gpio->enabled) {
++		class_device_unregister(gpio->gpio_dev);
++		cdev_del(&gpio->char_dev);
++	}
++
++	pio = gpio->pio;
++	if (pio) {
++		__disable_gpio(pio, gpio->pin_mask);
++		pio_dealloc_mask(pio, gpio->pin_mask);
++		gpio->pio = NULL;
++	}
++	spin_unlock(&gpio->lock);
++}
++
++static struct configfs_group_operations gpio_group_ops = {
++	.make_item	= gpio_make_item,
++	.drop_item	= gpio_drop_item,
++};
++
++static struct config_item_type gpio_group_type = {
++	.ct_group_ops	= &gpio_group_ops,
++	.ct_owner	= THIS_MODULE,
++};
++
++static struct configfs_subsystem gpio_subsys = {
++	.su_group = {
++		.cg_item = {
++			 .ci_namebuf = "gpio",
++			 .ci_type = &gpio_group_type,
++		 },
++	},
++};
++
++static int __init pio_init_dev(void)
++{
++	int err;
++
++	gpio_dev_class = class_create(THIS_MODULE, "gpio-dev");
++	if (IS_ERR(gpio_dev_class)) {
++		err = PTR_ERR(gpio_dev_class);
++		goto err_class_create;
++	}
++
++	err = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, "gpio");
++	if (err < 0)
++		goto err_alloc_chrdev;
++
++	/* Configfs initialization */
++	config_group_init(&gpio_subsys.su_group);
++	init_MUTEX(&gpio_subsys.su_sem);
++	err = configfs_register_subsystem(&gpio_subsys);
++	if (err)
++		goto err_register_subsys;
++
++	return 0;
++
++err_register_subsys:
++	unregister_chrdev_region(gpio_devt, GPIO_DEV_MAX);
++err_alloc_chrdev:
++	class_destroy(gpio_dev_class);
++err_class_create:
++	printk(KERN_WARNING "Failed to initialize gpio /dev interface\n");
++	return err;
++}
++late_initcall(pio_init_dev);
++#endif /* CONFIG_PIO_DEV */
++
+ static int __init pio_probe(struct platform_device *pdev)
+ {
+ 	struct pio_device *pio = NULL;
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/Kconfig	2006-11-29 16:23:31.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/Kconfig	2006-11-29 16:24:35.000000000 +0100
+@@ -2,6 +2,14 @@ if PLATFORM_AT32AP
+ 
+ menu "Atmel AVR32 AP options"
+ 
++config PIO_DEV
++	bool "PIO /dev interface"
++	select CONFIGFS_FS
++	default y
++	help
++	  Say `Y' to enable a /dev interface to the Parallel I/O
++	  Controller.
++
+ endmenu
+ 
+ endif

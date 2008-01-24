@@ -1,0 +1,39 @@
+---
+ include/asm-avr32/unistd.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+Index: linux-2.6.18-avr32/include/asm-avr32/unistd.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/unistd.h	2006-11-29 16:49:54.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/unistd.h	2006-11-29 16:50:32.000000000 +0100
+@@ -281,6 +281,7 @@
+ #define __NR_tee		263
+ #define __NR_vmsplice		264
+ 
++#ifdef __KERNEL__
+ #define NR_syscalls		265
+ 
+ 
+@@ -304,7 +305,6 @@
+ 		return (type) (res);					\
+ 	} while (0)
+ 
+-#ifdef __KERNEL__
+ #define __ARCH_WANT_IPC_PARSE_VERSION
+ #define __ARCH_WANT_STAT64
+ #define __ARCH_WANT_SYS_ALARM
+@@ -319,7 +319,6 @@
+ #define __ARCH_WANT_SYS_GETPGRP
+ #define __ARCH_WANT_SYS_RT_SIGACTION
+ #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+-#endif
+ 
+ #if defined(__KERNEL_SYSCALLS__) || defined(__CHECKER__)
+ 
+@@ -384,4 +383,6 @@ asmlinkage int sys_execve(char __user *u
+  */
+ #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall");
+ 
++#endif /* __KERNEL__ */
++
+ #endif /* __ASM_AVR32_UNISTD_H */

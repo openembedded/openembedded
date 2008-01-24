@@ -1,0 +1,14 @@
+--- uClibc-0.9.28/Rules.mak.orig	2006-03-30 10:23:05.000000000 +0200
++++ uClibc-0.9.28/Rules.mak	2006-03-30 10:23:07.000000000 +0200
+@@ -272,7 +272,11 @@
+ # If -msoft-float isn't supported, we want an error anyway.
+ # Hmm... might need to revisit this for arm since it has 2 different
+ # soft float encodings.
++ifeq ($(strip $(TARGET_ARCH)),avr32)
++# GCC on avr32 doesn't support -msoft-float, it's the default.
++else
+     CPU_CFLAGS += -msoft-float
++endif
+ ifeq ($(strip $(TARGET_ARCH)),arm)
+ # No longer needed with current toolchains, but leave it here for now.
+ # If anyone is actually still using gcc 2.95 (say), they can uncomment it.

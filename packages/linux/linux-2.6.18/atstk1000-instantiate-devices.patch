@@ -1,0 +1,103 @@
+---
+ arch/avr32/boards/atstk1000/Makefile    |    2 +-
+ arch/avr32/boards/atstk1000/atstk1002.c |   24 +++++++++++++++++++++++-
+ arch/avr32/boards/atstk1000/spi.c       |   27 ---------------------------
+ 3 files changed, 24 insertions(+), 29 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/boards/atstk1000/atstk1002.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atstk1000/atstk1002.c	2006-11-29 16:31:03.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/boards/atstk1000/atstk1002.c	2006-11-29 16:45:43.000000000 +0100
+@@ -7,12 +7,15 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  */
++#include <linux/device.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/types.h>
++#include <linux/spi/spi.h>
+ 
+ #include <asm/setup.h>
++#include <asm/arch/at32ap7000.h>
+ #include <asm/arch/board.h>
+ #include <asm/arch/init.h>
+ 
+@@ -20,6 +23,16 @@ static struct eth_platform_data __initda
+ 
+ extern struct lcdc_platform_data atstk1000_fb0_data;
+ 
++static struct spi_board_info spi_board_info[] __initdata = {
++	{
++		.modalias       = "ltv350qv",
++		.controller_data = (void *)GPIO_PIN_PA(4),
++		.max_speed_hz   = 16000000,
++		.bus_num        = 0,
++		.chip_select    = 1,
++	},
++};
++
+ static int __init parse_tag_ethernet(struct tag *tag)
+ {
+ 	int i;
+@@ -54,9 +67,18 @@ static int __init atstk1002_init(void)
+ 	at32_add_device_usart(2);	/* /dev/ttyS1 */
+ 	at32_add_device_usart(3);	/* /dev/ttyS2 */
+ 
+-	at32_add_device_eth(0, &eth0_data);
++	if (eth_data[0].valid)
++		at32_add_device_eth(0, &eth_data[0]);
++
++	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
++
++	at32_add_device_mmci(0);
+ 	at32_add_device_spi(0);
++	at32_add_device_twi(0);
++	at32_add_device_usb(0);
+ 	at32_add_device_lcdc(0, &atstk1000_fb0_data);
++	at32_add_device_dac(0);
++	at32_add_device_at73c213(0);
+ 
+ 	return 0;
+ }
+Index: linux-2.6.18-avr32/arch/avr32/boards/atstk1000/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atstk1000/Makefile	2006-11-29 16:21:05.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/boards/atstk1000/Makefile	2006-11-29 16:45:07.000000000 +0100
+@@ -1,2 +1,2 @@
+-obj-y				+= setup.o spi.o flash.o
++obj-y				+= setup.o flash.o
+ obj-$(CONFIG_BOARD_ATSTK1002)	+= atstk1002.o
+Index: linux-2.6.18-avr32/arch/avr32/boards/atstk1000/spi.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atstk1000/spi.c	2006-11-29 16:21:05.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,27 +0,0 @@
+-/*
+- * ATSTK1000 SPI devices
+- *
+- * Copyright (C) 2005 Atmel Norway
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-#include <linux/device.h>
+-#include <linux/spi/spi.h>
+-
+-static struct spi_board_info spi_board_info[] __initdata = {
+-	{
+-		.modalias	= "ltv350qv",
+-		.max_speed_hz	= 16000000,
+-		.bus_num	= 0,
+-		.chip_select	= 1,
+-	},
+-};
+-
+-static int board_init_spi(void)
+-{
+-	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
+-	return 0;
+-}
+-arch_initcall(board_init_spi);

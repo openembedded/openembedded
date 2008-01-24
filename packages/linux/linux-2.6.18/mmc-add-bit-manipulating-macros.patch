@@ -1,0 +1,321 @@
+Index: linux-2.6.18/drivers/mmc/atmel-mci.c
+===================================================================
+--- linux-2.6.18.orig/drivers/mmc/atmel-mci.c	2007-01-15 16:36:59.000000000 +0100
++++ linux-2.6.18/drivers/mmc/atmel-mci.c	2007-01-16 13:18:40.000000000 +0100
+@@ -45,6 +45,7 @@
+ 	EVENT_STOP_COMPLETE,
+ 	EVENT_STOP_ERROR,
+ 	EVENT_DMA_ERROR,
++	EVENT_CARD_DETECT,
+ };
+ 
+ struct atmel_mci_dma {
+@@ -572,9 +589,8 @@
+ 	 * Data might complete before command for very short transfers
+ 	 * (like READ_SCR)
+ 	 */
+-	if (test_bit(EVENT_CMD_COMPLETE, &host->completed_events)
+-	    && (!data->stop
+-		|| test_bit(EVENT_STOP_COMPLETE, &host->completed_events)))
++	if (mci_cmd_is_complete(host)
++			&& (!data->stop || mci_stop_is_complete(host)))
+ 		atmci_request_end(host->mmc, data->mrq);
+ }
+ 
+@@ -604,11 +620,11 @@
+ 		 host->pending_events, host->completed_events,
+ 		 mci_readl(host, IMR));
+ 
+-	if (test_and_clear_bit(EVENT_CMD_ERROR, &host->pending_events)) {
++	if (mci_clear_cmd_error_is_pending(host)) {
+ 		struct mmc_command *cmd;
+ 
+-		set_bit(EVENT_CMD_ERROR, &host->completed_events);
+-		clear_bit(EVENT_CMD_COMPLETE, &host->pending_events);
++		mci_set_cmd_error_complete(host);
++		mci_clear_cmd_pending(host);
+ 		cmd = host->mrq->cmd;
+ 
+ 		if (cmd->data) {
+@@ -620,28 +636,27 @@
+ 		atmci_command_error(mmc, cmd, host->error_status);
+ 		atmci_request_end(mmc, cmd->mrq);
+ 	}
+-	if (test_and_clear_bit(EVENT_STOP_ERROR, &host->pending_events)) {
+-		set_bit(EVENT_STOP_ERROR, &host->completed_events);
+-		clear_bit(EVENT_STOP_COMPLETE, &host->pending_events);
++	if (mci_clear_stop_error_is_pending(host)) {
++		mci_set_stop_error_complete(host);
++		mci_clear_stop_pending(host);
+ 		atmci_command_error(mmc, host->mrq->stop,
+ 				    host->error_status);
+ 		if (!host->data)
+ 			atmci_request_end(mmc, host->mrq);
+ 	}
+-	if (test_and_clear_bit(EVENT_CMD_COMPLETE, &host->pending_events)) {
+-		set_bit(EVENT_CMD_COMPLETE, &host->completed_events);
+-		if (!mrq->data
+-		    || test_bit(EVENT_DATA_COMPLETE, &host->completed_events))
++	if (mci_clear_cmd_is_pending(host)) {
++		mci_set_cmd_complete(host);
++		if (!mrq->data || mci_data_is_complete(host))
+ 			atmci_request_end(mmc, mrq);
+ 	}
+-	if (test_and_clear_bit(EVENT_STOP_COMPLETE, &host->pending_events)) {
+-		set_bit(EVENT_STOP_COMPLETE, &host->completed_events);
+-		if (test_bit(EVENT_DATA_COMPLETE, &host->completed_events))
++	if (mci_clear_stop_is_pending(host)) {
++		mci_set_stop_complete(host);
++		if (mci_data_is_complete(host))
+ 			atmci_request_end(mmc, mrq);
+ 	}
+-	if (test_and_clear_bit(EVENT_DMA_ERROR, &host->pending_events)) {
+-		set_bit(EVENT_DMA_ERROR, &host->completed_events);
+-		clear_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++	if (mci_clear_dma_error_is_pending(host)) {
++		mci_set_dma_error_complete(host);
++		mci_clear_data_pending(host);
+ 
+ 		/* DMA controller got bus error => invalid address */
+ 		data->error = MMC_ERR_INVALID;
+@@ -650,18 +665,17 @@
+ 		       mmc_hostname(mmc), host->data->bytes_xfered);
+ 
+ 		if (data->stop
+-		    && !test_and_set_bit(EVENT_STOP_SENT,
+-					 &host->completed_events))
++		    && !mci_set_stop_sent_is_completed(host))
+ 			/* TODO: Check if card is still present */
+ 			send_stop_cmd(host->mmc, data, 0);
+ 
+ 		atmci_data_complete(host, data);
+ 	}
+-	if (test_and_clear_bit(EVENT_DATA_ERROR, &host->pending_events)) {
++	if (mci_clear_data_error_is_pending(host)) {
+ 		u32 status = host->error_status;
+ 
+-		set_bit(EVENT_DATA_ERROR, &host->completed_events);
+-		clear_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++		mci_set_data_error_complete(host);
++		mci_clear_data_pending(host);
+ 
+ 		dma_stop_request(host->dma.req.req.dmac,
+ 				 host->dma.req.req.channel);
+@@ -686,14 +700,14 @@
+ 		       mmc_hostname(host->mmc), data->bytes_xfered);
+ 
+ 		if (data->stop
+-		    && !test_and_set_bit(EVENT_STOP_SENT, &host->completed_events))
++		    && !mci_set_stop_sent_is_completed(host))
+ 			/* TODO: Check if card is still present */
+ 			send_stop_cmd(host->mmc, data, 0);
+ 
+ 		atmci_data_complete(host, data);
+ 	}
+-	if (test_and_clear_bit(EVENT_DATA_COMPLETE, &host->pending_events)) {
+-		set_bit(EVENT_DATA_COMPLETE, &host->completed_events);
++	if (mci_clear_data_is_pending(host)) {
++		mci_set_data_complete(host);
+ 		data->bytes_xfered = data->blocks * data->blksz;
+ 		atmci_data_complete(host, data);
+ 	}
+@@ -716,10 +761,10 @@
+ 	mci_writel(host, IDR, MCI_BIT(CMDRDY) | MCI_CMD_ERROR_FLAGS);
+ 	host->cmd = NULL;
+ 
+-	if (test_bit(EVENT_STOP_SENT, &host->completed_events))
+-		set_bit(EVENT_STOP_COMPLETE, &host->pending_events);
++	if (mci_stop_sent_is_complete(host))
++		mci_set_stop_pending(host);
+ 	else
+-		set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
++		mci_set_cmd_pending(host);
+ 
+ 	tasklet_schedule(&host->tasklet);
+ }
+@@ -735,13 +780,12 @@
+ 	host = container_of(dma, struct atmel_mci, dma);
+ 	data = host->data;
+ 
+-	if (data->stop && !test_and_set_bit(EVENT_STOP_SENT,
+-					    &host->completed_events))
++	if (data->stop && !mci_set_stop_sent_is_completed(host))
+ 		send_stop_cmd(host->mmc, data, 0);
+ 
+ 	if (data->flags & MMC_DATA_READ) {
+ 		mci_writel(host, IDR, MCI_DATA_ERROR_FLAGS);
+-		set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++		mci_set_data_pending(host);
+ 		tasklet_schedule(&host->tasklet);
+ 	} else {
+ 		/*
+@@ -765,7 +809,7 @@
+ 	mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
+ 			       | MCI_DATA_ERROR_FLAGS));
+ 
+-	set_bit(EVENT_DMA_ERROR, &host->pending_events);
++	mci_set_dma_error_pending(host);
+ 	tasklet_schedule(&host->tasklet);
+ }
+ 
+@@ -790,10 +834,10 @@
+ 					       | MCI_DATA_ERROR_FLAGS));
+ 			host->error_status = status;
+ 			host->cmd = NULL;
+-			if (test_bit(EVENT_STOP_SENT, &host->completed_events))
+-				set_bit(EVENT_STOP_ERROR, &host->pending_events);
++			if (mci_stop_sent_is_complete(host))
++				mci_set_stop_error_pending(host);
+ 			else
+-				set_bit(EVENT_CMD_ERROR, &host->pending_events);
++				mci_set_cmd_error_pending(host);
+ 			tasklet_schedule(&host->tasklet);
+ 			break;
+ 		}
+@@ -801,7 +845,7 @@
+ 			mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
+ 					       | MCI_DATA_ERROR_FLAGS));
+ 			host->error_status = status;
+-			set_bit(EVENT_DATA_ERROR, &host->pending_events);
++			mci_set_data_error_pending(host);
+ 			tasklet_schedule(&host->tasklet);
+ 			break;
+ 		}
+@@ -810,7 +854,7 @@
+ 		if (pending & MCI_BIT(NOTBUSY)) {
+ 			mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
+ 					       | MCI_DATA_ERROR_FLAGS));
+-			set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++			mci_set_data_pending(host);
+ 			tasklet_schedule(&host->tasklet);
+ 		}
+ 
+Index: linux-2.6.18/drivers/mmc/atmel-mci.h
+===================================================================
+--- linux-2.6.18.orig/drivers/mmc/atmel-mci.h	2007-01-16 13:22:59.000000000 +0100
++++ linux-2.6.18/drivers/mmc/atmel-mci.h	2007-01-16 13:24:33.000000000 +0100
+@@ -189,4 +189,124 @@
+ #define mci_writel(port,reg,value)			\
+ 	__raw_writel((value), (port)->regs + MCI_##reg)
+ 
++/* Test bit macros for completed events */
++#define mci_cmd_is_complete(host)			\
++	test_bit(EVENT_CMD_COMPLETE, &host->completed_events)
++#define mci_cmd_error_is_complete(host)			\
++	test_bit(EVENT_CMD_ERROR, &host->completed_events)
++#define mci_data_is_complete(host)			\
++	test_bit(EVENT_DATA_COMPLETE, &host->completed_events)
++#define mci_data_error_is_complete(host)		\
++	test_bit(EVENT_DATA_ERROR, &host->completed_events)
++#define mci_stop_sent_is_complete(host)			\
++	test_bit(EVENT_STOP_SENT, &host->completed_events)
++#define mci_stop_is_complete(host)			\
++	test_bit(EVENT_STOP_COMPLETE, &host->completed_events)
++#define mci_stop_error_is_complete(host)		\
++	test_bit(EVENT_STOP_ERROR, &host->completed_events)
++#define mci_dma_error_is_complete(host)			\
++	test_bit(EVENT_DMA_ERROR, &host->completed_events)
++#define mci_card_detect_is_complete(host)			\
++	test_bit(EVENT_CARD_DETECT, &host->completed_events)
++
++/* Test and clear bit macros for pending events */
++#define mci_clear_cmd_is_pending(host)			\
++	test_and_clear_bit(EVENT_CMD_COMPLETE, &host->pending_events)
++#define mci_clear_cmd_error_is_pending(host)		\
++	test_and_clear_bit(EVENT_CMD_ERROR, &host->pending_events)
++#define mci_clear_data_is_pending(host)			\
++	test_and_clear_bit(EVENT_DATA_COMPLETE, &host->pending_events)
++#define mci_clear_data_error_is_pending(host)		\
++	test_and_clear_bit(EVENT_DATA_ERROR, &host->pending_events)
++#define mci_clear_stop_sent_is_pending(host)		\
++	test_and_clear_bit(EVENT_STOP_SENT, &host->pending_events)
++#define mci_clear_stop_is_pending(host)			\
++	test_and_clear_bit(EVENT_STOP_COMPLETE, &host->pending_events)
++#define mci_clear_stop_error_is_pending(host)		\
++	test_and_clear_bit(EVENT_STOP_ERROR, &host->pending_events)
++#define mci_clear_dma_error_is_pending(host)		\
++	test_and_clear_bit(EVENT_DMA_ERROR, &host->pending_events)
++#define mci_clear_card_detect_is_pending(host)		\
++	test_and_clear_bit(EVENT_CARD_DETECT, &host->pending_events)
++
++/* Test and set bit macros for completed events */
++#define mci_set_cmd_is_completed(host)			\
++	test_and_set_bit(EVENT_CMD_COMPLETE, &host->completed_events)
++#define mci_set_cmd_error_is_completed(host)		\
++	test_and_set_bit(EVENT_CMD_ERROR, &host->completed_events)
++#define mci_set_data_is_completed(host)			\
++	test_and_set_bit(EVENT_DATA_COMPLETE, &host->completed_events)
++#define mci_set_data_error_is_completed(host)		\
++	test_and_set_bit(EVENT_DATA_ERROR, &host->completed_events)
++#define mci_set_stop_sent_is_completed(host)		\
++	test_and_set_bit(EVENT_STOP_SENT, &host->completed_events)
++#define mci_set_stop_is_completed(host)			\
++	test_and_set_bit(EVENT_STOP_COMPLETE, &host->completed_events)
++#define mci_set_stop_error_is_completed(host)		\
++	test_and_set_bit(EVENT_STOP_ERROR, &host->completed_events)
++#define mci_set_dma_error_is_completed(host)		\
++	test_and_set_bit(EVENT_DMA_ERROR, &host->completed_events)
++#define mci_set_card_detect_is_completed(host)		\
++	test_and_set_bit(EVENT_CARD_DETECT, &host->completed_events)
++
++/* Set bit macros for completed events */
++#define mci_set_cmd_complete(host)			\
++	set_bit(EVENT_CMD_COMPLETE, &host->completed_events)
++#define mci_set_cmd_error_complete(host)		\
++	set_bit(EVENT_CMD_ERROR, &host->completed_events)
++#define mci_set_data_complete(host)			\
++	set_bit(EVENT_DATA_COMPLETE, &host->completed_events)
++#define mci_set_data_error_complete(host)		\
++	set_bit(EVENT_DATA_ERROR, &host->completed_events)
++#define mci_set_stop_sent_complete(host)		\
++	set_bit(EVENT_STOP_SENT, &host->completed_events)
++#define mci_set_stop_complete(host)			\
++	set_bit(EVENT_STOP_COMPLETE, &host->completed_events)
++#define mci_set_stop_error_complete(host)		\
++	set_bit(EVENT_STOP_ERROR, &host->completed_events)
++#define mci_set_dma_error_complete(host)		\
++	set_bit(EVENT_DMA_ERROR, &host->completed_events)
++#define mci_set_card_detect_complete(host)		\
++	set_bit(EVENT_CARD_DETECT, &host->completed_events)
++
++/* Set bit macros for pending events */
++#define mci_set_cmd_pending(host)			\
++	set_bit(EVENT_CMD_COMPLETE, &host->pending_events)
++#define mci_set_cmd_error_pending(host)			\
++	set_bit(EVENT_CMD_ERROR, &host->pending_events)
++#define mci_set_data_pending(host)			\
++	set_bit(EVENT_DATA_COMPLETE, &host->pending_events)
++#define mci_set_data_error_pending(host)		\
++	set_bit(EVENT_DATA_ERROR, &host->pending_events)
++#define mci_set_stop_sent_pending(host)			\
++	set_bit(EVENT_STOP_SENT, &host->pending_events)
++#define mci_set_stop_pending(host)			\
++	set_bit(EVENT_STOP_COMPLETE, &host->pending_events)
++#define mci_set_stop_error_pending(host)		\
++	set_bit(EVENT_STOP_ERROR, &host->pending_events)
++#define mci_set_dma_error_pending(host)			\
++	set_bit(EVENT_DMA_ERROR, &host->pending_events)
++#define mci_set_card_detect_pending(host)		\
++	set_bit(EVENT_CARD_DETECT, &host->pending_events)
++
++/* Clear bit macros for pending events */
++#define mci_clear_cmd_pending(host)			\
++	clear_bit(EVENT_CMD_COMPLETE, &host->pending_events)
++#define mci_clear_cmd_error_pending(host)		\
++	clear_bit(EVENT_CMD_ERROR, &host->pending_events)
++#define mci_clear_data_pending(host)			\
++	clear_bit(EVENT_DATA_COMPLETE, &host->pending_events)
++#define mci_clear_data_error_pending(host)		\
++	clear_bit(EVENT_DATA_ERROR, &host->pending_events)
++#define mci_clear_stop_sent_pending(host)		\
++	clear_bit(EVENT_STOP_SENT, &host->pending_events)
++#define mci_clear_stop_pending(host)			\
++	clear_bit(EVENT_STOP_COMPLETE, &host->pending_events)
++#define mci_clear_stop_error_pending(host)		\
++	clear_bit(EVENT_STOP_ERROR, &host->pending_events)
++#define mci_clear_dma_error_pending(host)		\
++	clear_bit(EVENT_DMA_ERROR, &host->pending_events)
++#define mci_clear_card_detect_pending(host)		\
++	clear_bit(EVENT_CARD_DETECT, &host->pending_events)
++
+ #endif /* __DRIVERS_MMC_ATMEL_MCI_H__ */

@@ -1,0 +1,855 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Fri Dec 2 13:24:24 2005 +0100
+Subject: [PATCH] AVR32: DesignWare DMA Controller
+
+This patch adds a driver for the Synopsys DesignWare DMA Controller.
+
+---
+
+ arch/avr32/Kconfig           |    4 
+ arch/avr32/Makefile          |    1 
+ arch/avr32/drivers/Makefile  |    1 
+ arch/avr32/drivers/dw-dmac.c |  754 +++++++++++++++++++++++++++++++++++++++++++
+ arch/avr32/drivers/dw-dmac.h |   42 ++
+ 5 files changed, 802 insertions(+)
+
+Index: linux-2.6.18-avr32/arch/avr32/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/Makefile	2006-11-02 14:17:29.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/Makefile	2006-11-02 15:53:13.000000000 +0100
+@@ -30,6 +30,7 @@ core-$(CONFIG_BOARD_ATSTK1000)		+= arch/
+ core-$(CONFIG_LOADER_U_BOOT)		+= arch/avr32/boot/u-boot/
+ core-y					+= arch/avr32/kernel/
+ core-y					+= arch/avr32/mm/
++drivers-y				+= arch/avr32/drivers/
+ drivers-$(CONFIG_OPROFILE)		+= arch/avr32/oprofile/
+ libs-y					+= arch/avr32/lib/
+ 
+Index: linux-2.6.18-avr32/arch/avr32/drivers/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/drivers/Makefile	2006-11-02 14:17:29.000000000 +0100
+@@ -0,0 +1 @@
++obj-$(CONFIG_DW_DMAC)			+= dw-dmac.o
+Index: linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.c	2006-11-02 15:55:35.000000000 +0100
+@@ -0,0 +1,754 @@
++/*
++ * Driver for the Synopsys DesignWare DMA Controller
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/dma-mapping.h>
++#include <linux/dmapool.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include <asm/dma-controller.h>
++#include <asm/io.h>
++
++#include "dw-dmac.h"
++
++#define DMAC_NR_CHANNELS 3
++#define DMAC_MAX_BLOCKSIZE 4095
++
++enum {
++	CH_STATE_FREE = 0,
++	CH_STATE_ALLOCATED,
++	CH_STATE_BUSY,
++};
++
++struct dw_dma_lli {
++	dma_addr_t	sar;
++	dma_addr_t	dar;
++	dma_addr_t	llp;
++	u32		ctllo;
++	u32		ctlhi;
++	u32		sstat;
++	u32		dstat;
++};
++
++struct dw_dma_block {
++	struct dw_dma_lli *lli_vaddr;
++	dma_addr_t lli_dma_addr;
++};
++
++struct dw_dma_channel {
++	unsigned int state;
++        int is_cyclic;
++	struct dma_request_sg *req_sg;
++	struct dma_request_cyclic *req_cyclic;
++	unsigned int nr_blocks;
++	int direction;
++	struct dw_dma_block *block;
++};
++
++struct dw_dma_controller {
++	spinlock_t lock;
++	void * __iomem	regs;
++	struct dma_pool *lli_pool;
++	struct clk *hclk;
++	struct dma_controller dma;
++	struct dw_dma_channel channel[DMAC_NR_CHANNELS];
++};
++#define to_dw_dmac(dmac) container_of(dmac, struct dw_dma_controller, dma)
++
++#define dmac_writel_hi(dmac, reg, value) \
++	__raw_writel((value), (dmac)->regs + DW_DMAC_##reg + 4)
++#define dmac_readl_hi(dmac, reg) \
++	__raw_readl((dmac)->regs + DW_DMAC_##reg + 4)
++#define dmac_writel_lo(dmac, reg, value) \
++	__raw_writel((value), (dmac)->regs + DW_DMAC_##reg)
++#define dmac_readl_lo(dmac, reg) \
++	__raw_readl((dmac)->regs + DW_DMAC_##reg)
++#define dmac_chan_writel_hi(dmac, chan, reg, value) \
++	__raw_writel((value), ((dmac)->regs + 0x58 * (chan) \
++			       + DW_DMAC_CHAN_##reg + 4))
++#define dmac_chan_readl_hi(dmac, chan, reg) \
++	__raw_readl((dmac)->regs + 0x58 * (chan) + DW_DMAC_CHAN_##reg + 4)
++#define dmac_chan_writel_lo(dmac, chan, reg, value) \
++	__raw_writel((value), (dmac)->regs + 0x58 * (chan) + DW_DMAC_CHAN_##reg)
++#define dmac_chan_readl_lo(dmac, chan, reg) \
++	__raw_readl((dmac)->regs + 0x58 * (chan) + DW_DMAC_CHAN_##reg)
++#define set_channel_bit(dmac, reg, chan) \
++	dmac_writel_lo(dmac, reg, (1 << (chan)) | (1 << ((chan) + 8)))
++#define clear_channel_bit(dmac, reg, chan) \
++	dmac_writel_lo(dmac, reg, (0 << (chan)) | (1 << ((chan) + 8)))
++
++static int dmac_alloc_channel(struct dma_controller *_dmac)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++	struct dw_dma_channel *chan;
++	unsigned long flags;
++	int i;
++
++	spin_lock_irqsave(&dmac->lock, flags);
++	for (i = 0; i < DMAC_NR_CHANNELS; i++)
++		if (dmac->channel[i].state == CH_STATE_FREE)
++			break;
++
++	if (i < DMAC_NR_CHANNELS) {
++		chan = &dmac->channel[i];
++		chan->state = CH_STATE_ALLOCATED;
++	} else {
++		i = -EBUSY;
++	}
++
++	spin_unlock_irqrestore(&dmac->lock, flags);
++
++	return i;
++}
++
++static void dmac_release_channel(struct dma_controller *_dmac, int channel)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++
++	BUG_ON(channel >= DMAC_NR_CHANNELS
++	       || dmac->channel[channel].state != CH_STATE_ALLOCATED);
++
++	dmac->channel[channel].state = CH_STATE_FREE;
++}
++
++static struct dw_dma_block *allocate_blocks(struct dw_dma_controller *dmac,
++					    unsigned int nr_blocks)
++{
++	struct dw_dma_block *block;
++	void *p;
++	unsigned int i;
++
++	block = kmalloc(nr_blocks * sizeof(*block),
++			GFP_KERNEL);
++	if (unlikely(!block))
++		return NULL;
++
++	for (i = 0; i < nr_blocks; i++) {
++		p = dma_pool_alloc(dmac->lli_pool, GFP_KERNEL,
++				   &block[i].lli_dma_addr);
++		block[i].lli_vaddr = p;
++		if (unlikely(!p))
++			goto fail;
++	}
++
++	return block;
++
++fail:
++	for (i = 0; i < nr_blocks; i++) {
++		if (!block[i].lli_vaddr)
++			break;
++		dma_pool_free(dmac->lli_pool, block[i].lli_vaddr,
++			      block[i].lli_dma_addr);
++	}
++	kfree(block);
++	return NULL;
++}
++
++static int dmac_prepare_request_sg(struct dma_controller *_dmac,
++				   struct dma_request_sg *req)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++	struct dw_dma_channel *chan;
++	unsigned long ctlhi, ctllo, cfghi, cfglo;
++	unsigned long block_size;
++	int ret, i, nr_blocks, direction;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dmac->lock, flags);
++
++	ret = -EINVAL;
++	if (req->req.channel >= DMAC_NR_CHANNELS
++	    || dmac->channel[req->req.channel].state != CH_STATE_ALLOCATED
++	    || req->block_size > DMAC_MAX_BLOCKSIZE) {
++		spin_unlock_irqrestore(&dmac->lock, flags);
++		return -EINVAL;
++	}
++
++	chan = &dmac->channel[req->req.channel];
++	chan->state = CH_STATE_BUSY;
++	chan->req_sg = req;
++	chan->is_cyclic = 0;
++
++	/*
++	 * We have marked the channel as busy, so no need to keep the
++	 * lock as long as we only touch the channel-specific
++	 * registers
++	 */
++	spin_unlock_irqrestore(&dmac->lock, flags);
++
++	/*
++	 * There may be limitations in the driver and/or the DMA
++	 * controller that prevents us from sending a whole
++	 * scatterlist item in one go.  Taking this into account,
++	 * calculate the number of block transfers we need to set up.
++	 *
++	 * FIXME: Let the peripheral driver know about the maximum
++	 * block size we support. We really don't want to use a
++	 * different block size than what was suggested by the
++	 * peripheral.
++	 *
++	 * Each block will get its own Linked List Item (LLI) below.
++	 */
++	block_size = req->block_size;
++	pr_debug("block_size = %lu, nr_sg = %u\n", block_size, req->nr_sg);
++	for (i = 0, nr_blocks = 0; i < req->nr_sg; i++) {
++		pr_debug("sg[i].length = %u\n", req->sg[i].length);
++		BUG_ON(req->sg[i].length % block_size);
++		nr_blocks += req->sg[i].length / block_size;
++	}
++
++	BUG_ON(nr_blocks == 0);
++	chan->nr_blocks = nr_blocks;
++
++	ret = -EINVAL;
++	cfglo = cfghi = 0;
++	switch (req->direction) {
++	case DMA_DIR_MEM_TO_PERIPH:
++		direction = DMA_TO_DEVICE;
++		cfghi = req->periph_id << (43 - 32);
++		break;
++
++	case DMA_DIR_PERIPH_TO_MEM:
++		direction = DMA_FROM_DEVICE;
++		cfghi = req->periph_id << (39 - 32);
++		break;
++	default:
++		goto out_unclaim_channel;
++	}
++
++        chan->direction = direction;
++
++	dmac_chan_writel_hi(dmac, req->req.channel, CFG, cfghi);
++	dmac_chan_writel_lo(dmac, req->req.channel, CFG, cfglo);
++
++	ctlhi = block_size >> req->width;
++	ctllo = ((req->direction << 20)
++		 // | (1 << 14) | (1 << 11) // source/dest burst trans len
++		 | (req->width << 4) | (req->width << 1)
++		 | (1 << 0));		 // interrupt enable
++
++	if (nr_blocks == 1) {
++		/* Only one block: No need to use block chaining */
++		if (direction == DMA_TO_DEVICE) {
++			dmac_chan_writel_lo(dmac, req->req.channel, SAR,
++					    req->sg->dma_address);
++			dmac_chan_writel_lo(dmac, req->req.channel, DAR,
++					    req->data_reg);
++			ctllo |= 2 << 7; // no dst increment
++		} else {
++			dmac_chan_writel_lo(dmac, req->req.channel, SAR,
++					    req->data_reg);
++			dmac_chan_writel_lo(dmac, req->req.channel, DAR,
++					    req->sg->dma_address);
++			ctllo |= 2 << 9; // no src increment
++		}
++		dmac_chan_writel_lo(dmac, req->req.channel, CTL, ctllo);
++		dmac_chan_writel_hi(dmac, req->req.channel, CTL, ctlhi);
++	} else {
++		struct dw_dma_lli *lli, *lli_prev = NULL;
++		int j = 0, offset = 0;
++
++		ret = -ENOMEM;
++		chan->block = allocate_blocks(dmac, nr_blocks);
++		if (!chan->block)
++			goto out_unclaim_channel;
++
++		if (direction == DMA_TO_DEVICE)
++			ctllo |= 1 << 28 | 1 << 27 | 2 << 7;
++		else
++			ctllo |= 1 << 28 | 1 << 27 | 2 << 9;
++
++		/*
++		 * Map scatterlist items to blocks. One scatterlist
++		 * item may need more than one block for the reasons
++		 * mentioned above.
++		 */
++		for (i = 0; i < nr_blocks; i++) {
++			lli = chan->block[i].lli_vaddr;
++			if (lli_prev) {
++				lli_prev->llp = chan->block[i].lli_dma_addr;
++				pr_debug("lli[%d] (0x%p/0x%x): 0x%x 0x%x 0x%x 0x%x 0x%x\n",
++					 i - 1, chan->block[i - 1].lli_vaddr,
++					 chan->block[i - 1].lli_dma_addr,
++					 lli_prev->sar, lli_prev->dar, lli_prev->llp,
++					 lli_prev->ctllo, lli_prev->ctlhi);
++			}
++			lli->llp = 0;
++			lli->ctllo = ctllo;
++			lli->ctlhi = ctlhi;
++			if (direction == DMA_TO_DEVICE) {
++				lli->sar = req->sg[j].dma_address + offset;
++				lli->dar = req->data_reg;
++			} else {
++				lli->sar = req->data_reg;
++				lli->dar = req->sg[j].dma_address + offset;
++			}
++			lli_prev = lli;
++
++			offset += block_size;
++			if (offset > req->sg[j].length) {
++				j++;
++				offset = 0;
++			}
++		}
++
++		pr_debug("lli[%d] (0x%p/0x%x): 0x%x 0x%x 0x%x 0x%x 0x%x\n",
++			 i - 1, chan->block[i - 1].lli_vaddr,
++			 chan->block[i - 1].lli_dma_addr, lli_prev->sar,
++			 lli_prev->dar, lli_prev->llp,
++			 lli_prev->ctllo, lli_prev->ctlhi);
++
++		/*
++		 * SAR, DAR and CTL are initialized from the LLI. We
++		 * only have to enable the LLI bits in CTL.
++		 */
++		dmac_chan_writel_lo(dmac, req->req.channel, LLP,
++				    chan->block[0].lli_dma_addr);
++		dmac_chan_writel_lo(dmac, req->req.channel, CTL, 1 << 28 | 1 << 27);
++	}
++
++	set_channel_bit(dmac, MASK_XFER, req->req.channel);
++	set_channel_bit(dmac, MASK_ERROR, req->req.channel);
++	if (req->req.block_complete)
++		set_channel_bit(dmac, MASK_BLOCK, req->req.channel);
++	else
++		clear_channel_bit(dmac, MASK_BLOCK, req->req.channel);
++
++	return 0;
++
++out_unclaim_channel:
++	chan->state = CH_STATE_ALLOCATED;
++	return ret;
++}
++
++static int dmac_prepare_request_cyclic(struct dma_controller *_dmac,
++                                       struct dma_request_cyclic *req)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++	struct dw_dma_channel *chan;
++	unsigned long ctlhi, ctllo, cfghi, cfglo;
++	unsigned long block_size;
++	int ret, i, direction;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dmac->lock, flags);
++
++        block_size = (req->buffer_size/req->periods) >> req->width;
++
++	ret = -EINVAL;
++	if (req->req.channel >= DMAC_NR_CHANNELS
++	    || dmac->channel[req->req.channel].state != CH_STATE_ALLOCATED
++            || (req->periods == 0)
++	    || block_size > DMAC_MAX_BLOCKSIZE) {
++		spin_unlock_irqrestore(&dmac->lock, flags);
++		return -EINVAL;
++	}
++
++	chan = &dmac->channel[req->req.channel];
++	chan->state = CH_STATE_BUSY;
++	chan->is_cyclic = 1;
++        chan->req_cyclic = req;
++
++	/*
++	 * We have marked the channel as busy, so no need to keep the
++	 * lock as long as we only touch the channel-specific
++	 * registers
++	 */
++	spin_unlock_irqrestore(&dmac->lock, flags);
++
++	/*
++          Setup
++	 */
++	BUG_ON(req->buffer_size % req->periods);
++	/* printk(KERN_INFO "block_size = %lu, periods = %u\n", block_size, req->periods); */
++
++	chan->nr_blocks = req->periods;
++
++	ret = -EINVAL;
++	cfglo = cfghi = 0;
++	switch (req->direction) {
++	case DMA_DIR_MEM_TO_PERIPH:
++		direction = DMA_TO_DEVICE;
++		cfghi = req->periph_id << (43 - 32);
++		break;
++
++	case DMA_DIR_PERIPH_TO_MEM:
++		direction = DMA_FROM_DEVICE;
++		cfghi = req->periph_id << (39 - 32);
++		break;
++	default:
++		goto out_unclaim_channel;
++	}
++
++        chan->direction = direction;
++
++	dmac_chan_writel_hi(dmac, req->req.channel, CFG, cfghi);
++	dmac_chan_writel_lo(dmac, req->req.channel, CFG, cfglo);
++
++	ctlhi = block_size;
++	ctllo = ((req->direction << 20)
++		 | (req->width << 4) | (req->width << 1)
++		 | (1 << 0));		 // interrupt enable
++
++        {
++		struct dw_dma_lli *lli = NULL, *lli_prev = NULL;
++
++		ret = -ENOMEM;
++		chan->block = allocate_blocks(dmac, req->periods);
++		if (!chan->block)
++			goto out_unclaim_channel;
++
++		if (direction == DMA_TO_DEVICE)
++			ctllo |= 1 << 28 | 1 << 27 | 2 << 7;
++		else
++			ctllo |= 1 << 28 | 1 << 27 | 2 << 9;
++
++		/*
++		 * Set up a linked list items where each period gets
++		 * an item. The linked list item for the last period
++		 * points back to the star of the buffer making a
++		 * cyclic buffer.
++		 */
++		for (i = 0; i < req->periods; i++) {
++			lli = chan->block[i].lli_vaddr;
++			if (lli_prev) {
++				lli_prev->llp = chan->block[i].lli_dma_addr;
++				/* printk(KERN_INFO "lli[%d] (0x%p/0x%x): 0x%x 0x%x 0x%x 0x%x 0x%x\n",
++				   i - 1, chan->block[i - 1].lli_vaddr,
++				   chan->block[i - 1].lli_dma_addr,
++				   lli_prev->sar, lli_prev->dar, lli_prev->llp,
++				   lli_prev->ctllo, lli_prev->ctlhi);*/
++			}
++			lli->llp = 0;
++			lli->ctllo = ctllo;
++			lli->ctlhi = ctlhi;
++			if (direction == DMA_TO_DEVICE) {
++				lli->sar = req->buffer_start + i*(block_size << req->width);
++				lli->dar = req->data_reg;
++			} else {
++				lli->sar = req->data_reg;
++				lli->dar = req->buffer_start + i*(block_size << req->width);
++			}
++			lli_prev = lli;
++		}
++		lli->llp = chan->block[0].lli_dma_addr;
++
++		/*printk(KERN_INFO "lli[%d] (0x%p/0x%x): 0x%x 0x%x 0x%x 0x%x 0x%x\n",
++		  i - 1, chan->block[i - 1].lli_vaddr,
++		  chan->block[i - 1].lli_dma_addr, lli_prev->sar,
++		  lli_prev->dar, lli_prev->llp,
++		  lli_prev->ctllo, lli_prev->ctlhi); */
++
++		/*
++		 * SAR, DAR and CTL are initialized from the LLI. We
++		 * only have to enable the LLI bits in CTL.
++		 */
++		dmac_chan_writel_lo(dmac, req->req.channel, LLP,
++				    chan->block[0].lli_dma_addr);
++		dmac_chan_writel_lo(dmac, req->req.channel, CTL, 1 << 28 | 1 << 27);
++	}
++
++	clear_channel_bit(dmac, MASK_XFER, req->req.channel);
++	set_channel_bit(dmac, MASK_ERROR, req->req.channel);
++	if (req->req.block_complete)
++		set_channel_bit(dmac, MASK_BLOCK, req->req.channel);
++	else
++		clear_channel_bit(dmac, MASK_BLOCK, req->req.channel);
++
++	return 0;
++
++out_unclaim_channel:
++	chan->state = CH_STATE_ALLOCATED;
++	return ret;
++}
++
++static int dmac_start_request(struct dma_controller *_dmac,
++			      unsigned int channel)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++
++	BUG_ON(channel >= DMAC_NR_CHANNELS);
++
++	set_channel_bit(dmac, CH_EN, channel);
++
++	return 0;
++}
++
++static dma_addr_t dmac_get_current_pos(struct dma_controller *_dmac,
++                                       unsigned int channel)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++	struct dw_dma_channel *chan;
++        dma_addr_t current_pos;
++
++	BUG_ON(channel >= DMAC_NR_CHANNELS);
++
++        chan = &dmac->channel[channel];
++
++	switch (chan->direction) {
++	case DMA_TO_DEVICE:
++		current_pos = dmac_chan_readl_lo(dmac, channel, SAR);
++		break;
++	case DMA_FROM_DEVICE:
++		current_pos = dmac_chan_readl_lo(dmac, channel, DAR);
++		break;
++	default:
++		return 0;
++	}
++
++
++        if (!current_pos) {
++		if (chan->is_cyclic) {
++			current_pos = chan->req_cyclic->buffer_start;
++		} else {
++			current_pos = chan->req_sg->sg->dma_address;
++		}
++	}
++
++	return current_pos;
++}
++
++
++static void cleanup_channel(struct dw_dma_controller *dmac,
++			    struct dw_dma_channel *chan)
++{
++	unsigned int i;
++
++	if (chan->nr_blocks > 1) {
++		for (i = 0; i < chan->nr_blocks; i++)
++			dma_pool_free(dmac->lli_pool, chan->block[i].lli_vaddr,
++				      chan->block[i].lli_dma_addr);
++		kfree(chan->block);
++	}
++
++	chan->state = CH_STATE_ALLOCATED;
++}
++
++static int dmac_stop_request(struct dma_controller *_dmac,
++                             unsigned int channel)
++{
++	struct dw_dma_controller *dmac = to_dw_dmac(_dmac);
++
++	BUG_ON(channel >= DMAC_NR_CHANNELS);
++
++	BUG_ON(dmac->channel[channel].state != CH_STATE_BUSY);
++
++	clear_channel_bit(dmac, CH_EN, channel);
++
++        cleanup_channel(dmac, &dmac->channel[channel]);
++
++	return 0;
++}
++
++
++static void dmac_block_complete(struct dw_dma_controller *dmac)
++{
++	struct dw_dma_channel *chan;
++	unsigned long status, chanid;
++
++	status = dmac_readl_lo(dmac, STATUS_BLOCK);
++
++	while (status) {
++		struct dma_request *req;
++		chanid = __ffs(status);
++		chan = &dmac->channel[chanid];
++
++                if (chan->is_cyclic) {
++			BUG_ON(!chan->req_cyclic
++			       || !chan->req_cyclic->req.block_complete);
++			req = &chan->req_cyclic->req;
++                } else {
++			BUG_ON(!chan->req_sg || !chan->req_sg->req.block_complete);
++			req = &chan->req_sg->req;
++                }
++		dmac_writel_lo(dmac, CLEAR_BLOCK, 1 << chanid);
++		req->block_complete(req);
++		status = dmac_readl_lo(dmac, STATUS_BLOCK);
++	}
++}
++
++static void dmac_xfer_complete(struct dw_dma_controller *dmac)
++{
++	struct dw_dma_channel *chan;
++	struct dma_request *req;
++	unsigned long status, chanid;
++
++	status = dmac_readl_lo(dmac, STATUS_XFER);
++
++	while (status) {
++		chanid = __ffs(status);
++		chan = &dmac->channel[chanid];
++
++		dmac_writel_lo(dmac, CLEAR_XFER, 1 << chanid);
++
++                req = &chan->req_sg->req;
++                BUG_ON(!req);
++                cleanup_channel(dmac, chan);
++                if (req->xfer_complete)
++			req->xfer_complete(req);
++
++		status = dmac_readl_lo(dmac, STATUS_XFER);
++	}
++}
++
++static void dmac_error(struct dw_dma_controller *dmac)
++{
++	struct dw_dma_channel *chan;
++	unsigned long status, chanid;
++
++	status = dmac_readl_lo(dmac, STATUS_ERROR);
++
++	while (status) {
++		struct dma_request *req;
++
++		chanid = __ffs(status);
++		chan = &dmac->channel[chanid];
++
++		dmac_writel_lo(dmac, CLEAR_ERROR, 1 << chanid);
++		clear_channel_bit(dmac, CH_EN, chanid);
++
++                if (chan->is_cyclic) {
++			BUG_ON(!chan->req_cyclic);
++			req = &chan->req_cyclic->req;
++                } else {
++			BUG_ON(!chan->req_sg);
++			req = &chan->req_sg->req;
++                }
++
++		cleanup_channel(dmac, chan);
++		if (req->error)
++			req->error(req);
++
++		status = dmac_readl_lo(dmac, STATUS_XFER);
++	}
++}
++
++static irqreturn_t dmac_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct dw_dma_controller *dmac = dev_id;
++	unsigned long status;
++	int ret = IRQ_NONE;
++
++	spin_lock(&dmac->lock);
++
++	status = dmac_readl_lo(dmac, STATUS_INT);
++
++	while (status) {
++		ret = IRQ_HANDLED;
++		if (status & 0x10)
++			dmac_error(dmac);
++		if (status & 0x02)
++			dmac_block_complete(dmac);
++		if (status & 0x01)
++			dmac_xfer_complete(dmac);
++
++		status = dmac_readl_lo(dmac, STATUS_INT);
++	}
++
++	spin_unlock(&dmac->lock);
++	return ret;
++}
++
++static int __devinit dmac_probe(struct platform_device *pdev)
++{
++	struct dw_dma_controller *dmac;
++	struct resource *regs;
++	int ret;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs)
++		return -ENXIO;
++
++	dmac = kmalloc(sizeof(*dmac), GFP_KERNEL);
++	if (!dmac)
++		return -ENOMEM;
++	memset(dmac, 0, sizeof(*dmac));
++
++	dmac->hclk = clk_get(&pdev->dev, "hclk");
++	if (IS_ERR(dmac->hclk)) {
++		ret = PTR_ERR(dmac->hclk);
++		goto out_free_dmac;
++	}
++	clk_enable(dmac->hclk);
++
++	ret = -ENOMEM;
++	dmac->lli_pool = dma_pool_create("dmac", &pdev->dev,
++					 sizeof(struct dw_dma_lli), 4, 0);
++	if (!dmac->lli_pool)
++		goto out_disable_clk;
++
++	spin_lock_init(&dmac->lock);
++	dmac->dma.dev = &pdev->dev;
++	dmac->dma.alloc_channel = dmac_alloc_channel;
++	dmac->dma.release_channel = dmac_release_channel;
++	dmac->dma.prepare_request_sg = dmac_prepare_request_sg;
++	dmac->dma.prepare_request_cyclic = dmac_prepare_request_cyclic;
++	dmac->dma.start_request = dmac_start_request;
++	dmac->dma.stop_request = dmac_stop_request;
++	dmac->dma.get_current_pos = dmac_get_current_pos;
++
++	dmac->regs = ioremap(regs->start, regs->end - regs->start + 1);
++	if (!dmac->regs)
++		goto out_free_pool;
++
++	ret = request_irq(platform_get_irq(pdev, 0), dmac_interrupt,
++			  SA_SAMPLE_RANDOM, pdev->name, dmac);
++	if (ret)
++		goto out_unmap_regs;
++
++	/* Enable the DMA controller */
++	dmac_writel_lo(dmac, CFG, 1);
++
++	register_dma_controller(&dmac->dma);
++
++	printk(KERN_INFO
++	       "dmac%d: DesignWare DMA controller at 0x%p irq %d\n",
++	       dmac->dma.id, dmac->regs, platform_get_irq(pdev, 0));
++
++	return 0;
++
++out_unmap_regs:
++	iounmap(dmac->regs);
++out_free_pool:
++	dma_pool_destroy(dmac->lli_pool);
++out_disable_clk:
++	clk_disable(dmac->hclk);
++	clk_put(dmac->hclk);
++out_free_dmac:
++	kfree(dmac);
++	return ret;
++}
++
++static struct platform_driver dmac_driver = {
++	.probe		= dmac_probe,
++	.driver		= {
++		.name		= "dmac",
++	},
++};
++
++static int __init dmac_init(void)
++{
++	return platform_driver_register(&dmac_driver);
++}
++subsys_initcall(dmac_init);
++
++static void __exit dmac_exit(void)
++{
++	platform_driver_unregister(&dmac_driver);
++}
++module_exit(dmac_exit);
++
++MODULE_DESCRIPTION("Synopsys DesignWare DMA Controller driver");
++MODULE_AUTHOR("Haavard Skinnemoen <hskinnemoen@atmel.com>");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/arch/avr32/drivers/dw-dmac.h	2006-11-02 14:17:29.000000000 +0100
+@@ -0,0 +1,42 @@
++/*
++ * Driver for the Synopsys DesignWare DMA Controller
++ *
++ * Copyright (C) 2005-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __AVR32_DW_DMAC_H__
++#define __AVR32_DW_DMAC_H__
++
++#define DW_DMAC_CFG		0x398
++#define DW_DMAC_CH_EN		0x3a0
++
++#define DW_DMAC_STATUS_XFER	0x2e8
++#define DW_DMAC_STATUS_BLOCK	0x2f0
++#define DW_DMAC_STATUS_ERROR	0x308
++
++#define DW_DMAC_MASK_XFER	0x310
++#define DW_DMAC_MASK_BLOCK	0x318
++#define DW_DMAC_MASK_ERROR	0x330
++
++#define DW_DMAC_CLEAR_XFER	0x338
++#define DW_DMAC_CLEAR_BLOCK	0x340
++#define DW_DMAC_CLEAR_ERROR	0x358
++
++#define DW_DMAC_STATUS_INT	0x360
++
++#define DW_DMAC_CHAN_SAR	0x000
++#define DW_DMAC_CHAN_DAR	0x008
++#define DW_DMAC_CHAN_LLP	0x010
++#define DW_DMAC_CHAN_CTL	0x018
++#define DW_DMAC_CHAN_SSTAT	0x020
++#define DW_DMAC_CHAN_DSTAT	0x028
++#define DW_DMAC_CHAN_SSTATAR	0x030
++#define DW_DMAC_CHAN_DSTATAR	0x038
++#define DW_DMAC_CHAN_CFG	0x040
++#define DW_DMAC_CHAN_SGR	0x048
++#define DW_DMAC_CHAN_DSR	0x050
++
++#endif /* __AVR32_DW_DMAC_H__ */
+Index: linux-2.6.18-avr32/arch/avr32/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/Kconfig	2006-11-02 14:17:29.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/Kconfig	2006-11-02 15:53:13.000000000 +0100
+@@ -157,6 +157,10 @@ config OWNERSHIP_TRACE
+ 	  enabling Nexus-compliant debuggers to keep track of the PID of the
+ 	  currently executing task.
+ 
++config DW_DMAC
++	tristate "Synopsys DesignWare DMA Controller support"
++	default y if CPU_AT32AP7000
++
+ # FPU emulation goes here
+ 
+ source "kernel/Kconfig.hz"

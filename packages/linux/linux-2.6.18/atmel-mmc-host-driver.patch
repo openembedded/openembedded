@@ -1,0 +1,986 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Fri Nov 18 17:20:29 2005 +0100
+Subject: [PATCH] AVR32: MMC Host Driver
+
+---
+
+ drivers/mmc/Kconfig     |   10 
+ drivers/mmc/Makefile    |    1 
+ drivers/mmc/atmel-mci.c |  738 ++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mmc/atmel-mci.h |  192 ++++++++++++
+ 4 files changed, 941 insertions(+)
+
+Index: linux-2.6.18-avr32/drivers/mmc/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/Kconfig	2007-01-15 10:14:40.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/Kconfig	2007-01-15 10:14:46.000000000 +0100
+@@ -71,6 +71,16 @@ config MMC_OMAP
+ 
+ 	  If unsure, say N.
+ 
++config MMC_ATMELMCI
++	tristate "Atmel Multimedia Card Interface support"
++	depends on AVR32 && MMC
++	help
++	  This selects the Atmel Multimedia Card Interface. If you have
++	  a AT91 (ARM) or AT32 (AVR32) platform with a Multimedia Card
++	  slot, say Y or M here.
++
++	  If unsure, say N.
++
+ config MMC_WBSD
+ 	tristate "Winbond W83L51xD SD/MMC Card Interface support"
+ 	depends on MMC && ISA_DMA_API
+Index: linux-2.6.18-avr32/drivers/mmc/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/Makefile	2007-01-15 10:14:40.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/Makefile	2007-01-15 10:14:46.000000000 +0100
+@@ -23,6 +23,7 @@ obj-$(CONFIG_MMC_WBSD)		+= wbsd.o
+ obj-$(CONFIG_MMC_AU1X)		+= au1xmmc.o
+ obj-$(CONFIG_MMC_OMAP)		+= omap.o
+ obj-$(CONFIG_MMC_AT91RM9200)	+= at91_mci.o
++obj-$(CONFIG_MMC_ATMELMCI)	+= atmel-mci.o
+ 
+ mmc_core-y := mmc.o mmc_queue.o mmc_sysfs.o
+ 
+Index: linux-2.6.18-avr32/drivers/mmc/atmel-mci.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/mmc/atmel-mci.c	2007-01-15 10:31:55.000000000 +0100
+@@ -0,0 +1,738 @@
++/*
++ * Atmel MultiMedia Card Interface driver
++ *
++ * Copyright (C) 2004-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/blkdev.h>
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/dma-mapping.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include <linux/mmc/host.h>
++#include <linux/mmc/protocol.h>
++
++#include <asm/dma-controller.h>
++#include <asm/io.h>
++
++#include "atmel-mci.h"
++
++#define DRIVER_NAME "mmci"
++
++#define MCI_CMD_ERROR_FLAGS	(MCI_BIT(RINDE)	| MCI_BIT(RDIRE) |	\
++				 MCI_BIT(RCRCE) | MCI_BIT(RENDE) |	\
++				 MCI_BIT(RTOE))
++#define MCI_DATA_ERROR_FLAGS	(MCI_BIT(DCRCE) | MCI_BIT(DTOE) |	\
++				 MCI_BIT(OVRE) | MCI_BIT(UNRE))
++
++enum {
++	EVENT_CMD_COMPLETE = 0,
++	EVENT_CMD_ERROR,
++	EVENT_DATA_COMPLETE,
++	EVENT_DATA_ERROR,
++	EVENT_STOP_SENT,
++	EVENT_STOP_COMPLETE,
++	EVENT_STOP_ERROR,
++	EVENT_DMA_ERROR,
++};
++
++struct atmel_mci_dma {
++	struct dma_request_sg	req;
++	unsigned short		rx_periph_id;
++	unsigned short		tx_periph_id;
++	int			blocks_left;
++};
++
++struct atmel_mci {
++	struct mmc_host		*mmc;
++	void __iomem		*regs;
++	struct atmel_mci_dma	dma;
++
++	struct mmc_request	*mrq;
++	struct mmc_command	*cmd;
++	struct mmc_data		*data;
++
++	u32			stop_cmdr;
++	u32			stop_iflags;
++
++	struct tasklet_struct	tasklet;
++	unsigned long		pending_events;
++	unsigned long		completed_events;
++	u32			error_status;
++
++	unsigned long		bus_hz;
++	unsigned long		mapbase;
++	struct clk		*mck;
++	struct platform_device	*pdev;
++};
++
++/* Those printks take an awful lot of time... */
++#ifndef DEBUG
++static unsigned int fmax = 15000000U;
++#else
++static unsigned int fmax = 1000000U;
++#endif
++module_param(fmax, uint, 0444);
++MODULE_PARM_DESC(fmax, "Max frequency in Hz of the MMC bus clock");
++
++static inline unsigned int ns_to_clocks(struct atmel_mci *host,
++					unsigned int ns)
++{
++	return (ns * (host->bus_hz / 1000000) + 999) / 1000;
++}
++
++static void atmci_set_timeout(struct atmel_mci *host,
++			      struct mmc_data *data)
++{
++	static unsigned dtomul_to_shift[] = {
++		0, 4, 7, 8, 10, 12, 16, 20
++	};
++	unsigned timeout;
++	unsigned dtocyc, dtomul;
++
++	timeout = ns_to_clocks(host, data->timeout_ns) + data->timeout_clks;
++
++	for (dtomul = 0; dtomul < 8; dtomul++) {
++		unsigned shift = dtomul_to_shift[dtomul];
++		dtocyc = (timeout + (1 << shift) - 1) >> shift;
++		if (dtocyc < 15)
++			break;
++	}
++
++	if (dtomul >= 8) {
++		dtomul = 7;
++		dtocyc = 15;
++	}
++
++	pr_debug("%s: setting timeout to %u cycles\n",
++		 mmc_hostname(host->mmc),
++		 dtocyc << dtomul_to_shift[dtomul]);
++	mci_writel(host, DTOR, (MCI_BF(DTOMUL, dtomul)
++				| MCI_BF(DTOCYC, dtocyc)));
++}
++
++/*
++ * Return mask with interrupt flags to be handled for this command.
++ */
++static u32 atmci_prepare_command(struct mmc_host *mmc,
++				 struct mmc_command *cmd,
++				 u32 *cmd_flags)
++{
++	u32 cmdr;
++	u32 iflags;
++
++	cmd->error = MMC_ERR_NONE;
++
++	cmdr = 0;
++	BUG_ON(MCI_BFEXT(CMDNB, cmdr) != 0);
++	cmdr = MCI_BFINS(CMDNB, cmd->opcode, cmdr);
++
++	if (cmd->flags & MMC_RSP_PRESENT) {
++		if (cmd->flags & MMC_RSP_136)
++			cmdr |= MCI_BF(RSPTYP, MCI_RSPTYP_136_BIT);
++		else
++			cmdr |= MCI_BF(RSPTYP, MCI_RSPTYP_48_BIT);
++	}
++
++	/*
++	 * This should really be MAXLAT_5 for CMD2 and ACMD41, but
++	 * it's too difficult to determine whether this is an ACMD or
++	 * not. Better make it 64.
++	 */
++	cmdr |= MCI_BIT(MAXLAT);
++
++	if (mmc->ios.bus_mode == MMC_BUSMODE_OPENDRAIN)
++		cmdr |= MCI_BIT(OPDCMD);
++
++	iflags = MCI_BIT(CMDRDY) | MCI_CMD_ERROR_FLAGS;
++	if (!(cmd->flags & MMC_RSP_CRC))
++		iflags &= ~MCI_BIT(RCRCE);
++
++	pr_debug("%s: cmd: op %02x arg %08x flags %08x, cmdflags %08lx\n",
++		 mmc_hostname(mmc), cmd->opcode, cmd->arg, cmd->flags,
++		 (unsigned long)cmdr);
++
++	*cmd_flags = cmdr;
++	return iflags;
++}
++
++static void atmci_start_command(struct atmel_mci *host,
++				struct mmc_command *cmd,
++				u32 cmd_flags)
++{
++	WARN_ON(host->cmd);
++	host->cmd = cmd;
++
++	mci_writel(host, ARGR, cmd->arg);
++	mci_writel(host, CMDR, cmd_flags);
++
++	if (cmd->data)
++		dma_start_request(host->dma.req.req.dmac,
++				  host->dma.req.req.channel);
++}
++
++/*
++ * Returns a mask of flags to be set in the command register when the
++ * command to start the transfer is to be sent.
++ */
++static u32 atmci_prepare_data(struct mmc_host *mmc, struct mmc_data *data)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++	u32 cmd_flags;
++
++	WARN_ON(host->data);
++	host->data = data;
++
++	atmci_set_timeout(host, data);
++	mci_writel(host, BLKR, (MCI_BF(BCNT, data->blocks)
++				| MCI_BF(BLKLEN, data->blksz)));
++	host->dma.req.block_size = data->blksz;
++
++	cmd_flags = MCI_BF(TRCMD, MCI_TRCMD_START_TRANS);
++	if (data->flags & MMC_DATA_STREAM)
++		cmd_flags |= MCI_BF(TRTYP, MCI_TRTYP_STREAM);
++	else if (data->blocks > 1)
++		cmd_flags |= MCI_BF(TRTYP, MCI_TRTYP_MULTI_BLOCK);
++	else
++		cmd_flags |= MCI_BF(TRTYP, MCI_TRTYP_BLOCK);
++
++	if (data->flags & MMC_DATA_READ) {
++		cmd_flags |= MCI_BIT(TRDIR);
++		host->dma.req.nr_sg
++			= dma_map_sg(&host->pdev->dev, data->sg,
++				     data->sg_len, DMA_FROM_DEVICE);
++		host->dma.req.periph_id = host->dma.rx_periph_id;
++		host->dma.req.direction = DMA_DIR_PERIPH_TO_MEM;
++		host->dma.req.data_reg = host->mapbase + MCI_RDR;
++	} else {
++		host->dma.req.nr_sg
++			= dma_map_sg(&host->pdev->dev, data->sg,
++				     data->sg_len, DMA_TO_DEVICE);
++		host->dma.req.periph_id = host->dma.tx_periph_id;
++		host->dma.req.direction = DMA_DIR_MEM_TO_PERIPH;
++		host->dma.req.data_reg = host->mapbase + MCI_TDR;
++	}
++	host->dma.req.sg = data->sg;
++	host->dma.blocks_left = data->blocks;
++
++	dma_prepare_request_sg(host->dma.req.req.dmac, &host->dma.req);
++
++	return cmd_flags;
++}
++
++static void atmci_request(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++	struct mmc_data *data = mrq->data;
++	u32 iflags;
++	u32 cmdflags = 0;
++
++	iflags = mci_readl(host, IMR);
++	if (iflags)
++		printk("WARNING: IMR=0x%08x\n", mci_readl(host, IMR));
++
++	WARN_ON(host->mrq != NULL);
++	host->mrq = mrq;
++	host->pending_events = 0;
++	host->completed_events = 0;
++
++	iflags = atmci_prepare_command(mmc, mrq->cmd, &cmdflags);
++
++	if (mrq->stop) {
++		BUG_ON(!data);
++
++		host->stop_iflags = atmci_prepare_command(mmc, mrq->stop,
++							  &host->stop_cmdr);
++		host->stop_cmdr |= MCI_BF(TRCMD, MCI_TRCMD_STOP_TRANS);
++		if (!(data->flags & MMC_DATA_WRITE))
++			host->stop_cmdr |= MCI_BIT(TRDIR);
++		if (data->flags & MMC_DATA_STREAM)
++			host->stop_cmdr |= MCI_BF(TRTYP, MCI_TRTYP_STREAM);
++		else
++			host->stop_cmdr |= MCI_BF(TRTYP, MCI_TRTYP_MULTI_BLOCK);
++	}
++	if (data) {
++		cmdflags |= atmci_prepare_data(mmc, data);
++		iflags |= MCI_DATA_ERROR_FLAGS;
++	}
++
++	atmci_start_command(host, mrq->cmd, cmdflags);
++	mci_writel(host, IER, iflags);
++}
++
++static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++
++	if (ios->clock) {
++		u32 clkdiv;
++
++		clkdiv = host->bus_hz / (2 * ios->clock) - 1;
++		if (clkdiv > 255)
++			clkdiv = 255;
++		mci_writel(host, MR, (clkdiv
++				      | MCI_BIT(WRPROOF)
++				      | MCI_BIT(RDPROOF)));
++	}
++
++	switch (ios->bus_width) {
++	case MMC_BUS_WIDTH_1:
++		mci_writel(host, SDCR, 0);
++		break;
++	case MMC_BUS_WIDTH_4:
++		mci_writel(host, SDCR, MCI_BIT(SDCBUS));
++		break;
++	}
++
++	switch (ios->power_mode) {
++	case MMC_POWER_OFF:
++		mci_writel(host, CR, MCI_BIT(MCIDIS));
++		break;
++	case MMC_POWER_UP:
++		mci_writel(host, CR, MCI_BIT(SWRST));
++		break;
++	case MMC_POWER_ON:
++		mci_writel(host, CR, MCI_BIT(MCIEN));
++		break;
++	}
++}
++
++static struct mmc_host_ops atmci_ops = {
++	.request	= atmci_request,
++	.set_ios	= atmci_set_ios,
++};
++
++static void atmci_request_end(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++
++	WARN_ON(host->cmd || host->data);
++	host->mrq = NULL;
++
++	mmc_request_done(mmc, mrq);
++}
++
++static void send_stop_cmd(struct mmc_host *mmc, struct mmc_data *data,
++			  u32 flags)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++
++	atmci_start_command(host, data->stop, host->stop_cmdr | flags);
++	mci_writel(host, IER, host->stop_iflags);
++}
++
++static void atmci_data_complete(struct atmel_mci *host, struct mmc_data *data)
++{
++	host->data = NULL;
++	dma_unmap_sg(&host->pdev->dev, data->sg, host->dma.req.nr_sg,
++		     ((data->flags & MMC_DATA_WRITE)
++		      ? DMA_TO_DEVICE : DMA_FROM_DEVICE));
++
++	/*
++	 * Data might complete before command for very short transfers
++	 * (like READ_SCR)
++	 */
++	if (test_bit(EVENT_CMD_COMPLETE, &host->completed_events)
++	    && (!data->stop
++		|| test_bit(EVENT_STOP_COMPLETE, &host->completed_events)))
++		atmci_request_end(host->mmc, data->mrq);
++}
++
++static void atmci_command_error(struct mmc_host *mmc,
++				struct mmc_command *cmd,
++				u32 status)
++{
++	pr_debug("%s: command error: status=0x%08x\n",
++		 mmc_hostname(mmc), status);
++
++	if (status & MCI_BIT(RTOE))
++		cmd->error = MMC_ERR_TIMEOUT;
++	else if (status & MCI_BIT(RCRCE))
++		cmd->error = MMC_ERR_BADCRC;
++	else
++		cmd->error = MMC_ERR_FAILED;
++}
++
++static void atmci_tasklet_func(unsigned long priv)
++{
++	struct mmc_host *mmc = (struct mmc_host *)priv;
++	struct atmel_mci *host = mmc_priv(mmc);
++	struct mmc_request *mrq = host->mrq;
++	struct mmc_data *data = host->data;
++
++	pr_debug("atmci_tasklet: pending/completed/mask %lx/%lx/%x\n",
++		 host->pending_events, host->completed_events,
++		 mci_readl(host, IMR));
++
++	if (test_and_clear_bit(EVENT_CMD_ERROR, &host->pending_events)) {
++		struct mmc_command *cmd;
++
++		set_bit(EVENT_CMD_ERROR, &host->completed_events);
++		clear_bit(EVENT_CMD_COMPLETE, &host->pending_events);
++		cmd = host->mrq->cmd;
++
++		if (cmd->data) {
++			dma_stop_request(host->dma.req.req.dmac,
++					 host->dma.req.req.channel);
++			host->data = NULL;
++		}
++
++		atmci_command_error(mmc, cmd, host->error_status);
++		atmci_request_end(mmc, cmd->mrq);
++	}
++	if (test_and_clear_bit(EVENT_STOP_ERROR, &host->pending_events)) {
++		set_bit(EVENT_STOP_ERROR, &host->completed_events);
++		clear_bit(EVENT_STOP_COMPLETE, &host->pending_events);
++		atmci_command_error(mmc, host->mrq->stop,
++				    host->error_status);
++		if (!host->data)
++			atmci_request_end(mmc, host->mrq);
++	}
++	if (test_and_clear_bit(EVENT_CMD_COMPLETE, &host->pending_events)) {
++		set_bit(EVENT_CMD_COMPLETE, &host->completed_events);
++		if (!mrq->data
++		    || test_bit(EVENT_DATA_COMPLETE, &host->completed_events))
++			atmci_request_end(mmc, mrq);
++	}
++	if (test_and_clear_bit(EVENT_STOP_COMPLETE, &host->pending_events)) {
++		set_bit(EVENT_STOP_COMPLETE, &host->completed_events);
++		if (test_bit(EVENT_DATA_COMPLETE, &host->completed_events))
++			atmci_request_end(mmc, mrq);
++	}
++	if (test_and_clear_bit(EVENT_DMA_ERROR, &host->pending_events)) {
++		set_bit(EVENT_DMA_ERROR, &host->completed_events);
++		clear_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++
++		/* DMA controller got bus error => invalid address */
++		data->error = MMC_ERR_INVALID;
++
++		printk(KERN_DEBUG "%s: dma error after %u bytes xfered\n",
++		       mmc_hostname(mmc), host->data->bytes_xfered);
++
++		if (data->stop
++		    && !test_and_set_bit(EVENT_STOP_SENT,
++					 &host->completed_events))
++			/* TODO: Check if card is still present */
++			send_stop_cmd(host->mmc, data, 0);
++
++		atmci_data_complete(host, data);
++	}
++	if (test_and_clear_bit(EVENT_DATA_ERROR, &host->pending_events)) {
++		u32 status = host->error_status;
++
++		set_bit(EVENT_DATA_ERROR, &host->completed_events);
++		clear_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++
++		dma_stop_request(host->dma.req.req.dmac,
++				 host->dma.req.req.channel);
++
++		printk(KERN_DEBUG "%s: data error: status=0x%08x\n",
++		       mmc_hostname(host->mmc), status);
++
++		if (status & MCI_BIT(DCRCE)) {
++			printk(KERN_DEBUG "%s: Data CRC error\n",
++			       mmc_hostname(host->mmc));
++			data->error = MMC_ERR_BADCRC;
++		} else if (status & MCI_BIT(DTOE)) {
++			printk(KERN_DEBUG "%s: Data Timeout error\n",
++			       mmc_hostname(host->mmc));
++			data->error = MMC_ERR_TIMEOUT;
++		} else {
++			printk(KERN_DEBUG "%s: Data FIFO error\n",
++			       mmc_hostname(host->mmc));
++			data->error = MMC_ERR_FIFO;
++		}
++		printk(KERN_DEBUG "%s: Bytes xfered: %u\n",
++		       mmc_hostname(host->mmc), data->bytes_xfered);
++
++		if (data->stop
++		    && !test_and_set_bit(EVENT_STOP_SENT, &host->completed_events))
++			/* TODO: Check if card is still present */
++			send_stop_cmd(host->mmc, data, 0);
++
++		atmci_data_complete(host, data);
++	}
++	if (test_and_clear_bit(EVENT_DATA_COMPLETE, &host->pending_events)) {
++		set_bit(EVENT_DATA_COMPLETE, &host->completed_events);
++		data->bytes_xfered = data->blocks * data->blksz;
++		atmci_data_complete(host, data);
++	}
++}
++
++static void atmci_cmd_interrupt(struct mmc_host *mmc, u32 status)
++{
++	struct atmel_mci *host = mmc_priv(mmc);
++	struct mmc_command *cmd = host->cmd;
++
++	/*
++	 * Read the response now so that we're free to send a new
++	 * command immediately.
++	 */
++	cmd->resp[0] = mci_readl(host, RSPR);
++	cmd->resp[1] = mci_readl(host, RSPR);
++	cmd->resp[2] = mci_readl(host, RSPR);
++	cmd->resp[3] = mci_readl(host, RSPR);
++
++	mci_writel(host, IDR, MCI_BIT(CMDRDY) | MCI_CMD_ERROR_FLAGS);
++	host->cmd = NULL;
++
++	if (test_bit(EVENT_STOP_SENT, &host->completed_events))
++		set_bit(EVENT_STOP_COMPLETE, &host->pending_events);
++	else
++		set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
++
++	tasklet_schedule(&host->tasklet);
++}
++
++static void atmci_xfer_complete(struct dma_request *_req)
++{
++	struct dma_request_sg *req = to_dma_request_sg(_req);
++	struct atmel_mci_dma *dma;
++	struct atmel_mci *host;
++	struct mmc_data *data;
++
++	dma = container_of(req, struct atmel_mci_dma, req);
++	host = container_of(dma, struct atmel_mci, dma);
++	data = host->data;
++
++	if (data->stop && !test_and_set_bit(EVENT_STOP_SENT,
++					    &host->completed_events))
++		send_stop_cmd(host->mmc, data, 0);
++
++	if (data->flags & MMC_DATA_READ) {
++		mci_writel(host, IDR, MCI_DATA_ERROR_FLAGS);
++		set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++		tasklet_schedule(&host->tasklet);
++	} else {
++		/*
++		 * For the WRITE case, wait for NOTBUSY. This function
++		 * is called when everything has been written to the
++		 * controller, not when the card is done programming.
++		 */
++		mci_writel(host, IER, MCI_BIT(NOTBUSY));
++	}
++}
++
++static void atmci_dma_error(struct dma_request *_req)
++{
++	struct dma_request_sg *req = to_dma_request_sg(_req);
++	struct atmel_mci_dma *dma;
++	struct atmel_mci *host;
++
++	dma = container_of(req, struct atmel_mci_dma, req);
++	host = container_of(dma, struct atmel_mci, dma);
++
++	mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
++			       | MCI_DATA_ERROR_FLAGS));
++
++	set_bit(EVENT_DMA_ERROR, &host->pending_events);
++	tasklet_schedule(&host->tasklet);
++}
++
++static irqreturn_t atmci_interrupt(int irq, void *dev_id,
++				   struct pt_regs *regs)
++{
++	struct mmc_host *mmc = dev_id;
++	struct atmel_mci *host = mmc_priv(mmc);
++	u32 status, mask, pending;
++
++	spin_lock(&mmc->lock);
++
++	status = mci_readl(host, SR);
++	mask = mci_readl(host, IMR);
++	pending = status & mask;
++
++	do {
++		if (pending & MCI_CMD_ERROR_FLAGS) {
++			mci_writel(host, IDR, (MCI_BIT(CMDRDY)
++					       | MCI_BIT(NOTBUSY)
++					       | MCI_CMD_ERROR_FLAGS
++					       | MCI_DATA_ERROR_FLAGS));
++			host->error_status = status;
++			host->cmd = NULL;
++			if (test_bit(EVENT_STOP_SENT, &host->completed_events))
++				set_bit(EVENT_STOP_ERROR, &host->pending_events);
++			else
++				set_bit(EVENT_CMD_ERROR, &host->pending_events);
++			tasklet_schedule(&host->tasklet);
++			break;
++		}
++		if (pending & MCI_DATA_ERROR_FLAGS) {
++			mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
++					       | MCI_DATA_ERROR_FLAGS));
++			host->error_status = status;
++			set_bit(EVENT_DATA_ERROR, &host->pending_events);
++			tasklet_schedule(&host->tasklet);
++			break;
++		}
++		if (pending & MCI_BIT(CMDRDY))
++			atmci_cmd_interrupt(mmc, status);
++		if (pending & MCI_BIT(NOTBUSY)) {
++			mci_writel(host, IDR, (MCI_BIT(NOTBUSY)
++					       | MCI_DATA_ERROR_FLAGS));
++			set_bit(EVENT_DATA_COMPLETE, &host->pending_events);
++			tasklet_schedule(&host->tasklet);
++		}
++
++		status = mci_readl(host, SR);
++		mask = mci_readl(host, IMR);
++		pending = status & mask;
++	} while (pending);
++
++	spin_unlock(&mmc->lock);
++
++	return IRQ_HANDLED;
++}
++
++static int __devinit atmci_probe(struct platform_device *pdev)
++{
++	struct atmel_mci *host;
++	struct mmc_host *mmc;
++	struct resource *regs;
++	int irq;
++	int ret;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs)
++		return -ENXIO;
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
++
++	mmc = mmc_alloc_host(sizeof(struct atmel_mci), &pdev->dev);
++	if (!mmc)
++		return -ENOMEM;
++
++	host = mmc_priv(mmc);
++	host->pdev = pdev;
++	host->mmc = mmc;
++
++	host->mck = clk_get(&pdev->dev, "mck");
++	if (IS_ERR(host->mck)) {
++		ret = PTR_ERR(host->mck);
++		goto out_free_host;
++	}
++	clk_enable(host->mck);
++
++	ret = -ENOMEM;
++	host->regs = ioremap(regs->start, regs->end - regs->start + 1);
++	if (!host->regs)
++		goto out_disable_clk;
++
++	host->bus_hz = clk_get_rate(host->mck);
++	host->mapbase = regs->start;
++
++	mmc->ops = &atmci_ops;
++	mmc->f_min = (host->bus_hz + 511) / 512;
++	mmc->f_max = min((unsigned int)(host->bus_hz / 2), fmax);
++	mmc->ocr_avail	= 0x00100000;
++	mmc->caps |= MMC_CAP_4_BIT_DATA;
++
++	tasklet_init(&host->tasklet, atmci_tasklet_func, (unsigned long)mmc);
++
++	ret = request_irq(irq, atmci_interrupt, 0, "mmci", mmc);
++	if (ret)
++		goto out_unmap;
++
++	/* TODO: Get this information from platform data */
++	ret = -ENOMEM;
++	host->dma.req.req.dmac = find_dma_controller(0);
++	if (!host->dma.req.req.dmac) {
++		printk(KERN_ERR
++		       "mmci: No DMA controller available, aborting\n");
++		goto out_free_irq;
++	}
++	ret = dma_alloc_channel(host->dma.req.req.dmac);
++	if (ret < 0) {
++		printk(KERN_ERR
++		       "mmci: Unable to allocate DMA channel, aborting\n");
++		goto out_free_irq;
++	}
++	host->dma.req.req.channel = ret;
++	host->dma.req.width = DMA_WIDTH_32BIT;
++	host->dma.req.req.xfer_complete = atmci_xfer_complete;
++	host->dma.req.req.block_complete = NULL; // atmci_block_complete;
++	host->dma.req.req.error = atmci_dma_error;
++	host->dma.rx_periph_id = 0;
++	host->dma.tx_periph_id = 1;
++
++	mci_writel(host, CR, MCI_BIT(SWRST));
++	mci_writel(host, IDR, ~0UL);
++	mci_writel(host, CR, MCI_BIT(MCIEN));
++
++	platform_set_drvdata(pdev, host);
++
++	mmc_add_host(mmc);
++
++	printk(KERN_INFO "%s: Atmel MCI controller at 0x%08lx irq %d\n",
++	       mmc_hostname(mmc), host->mapbase, irq);
++
++	return 0;
++
++out_free_irq:
++	free_irq(irq, mmc);
++out_unmap:
++	iounmap(host->regs);
++out_disable_clk:
++	clk_disable(host->mck);
++	clk_put(host->mck);
++out_free_host:
++	mmc_free_host(mmc);
++	return ret;
++}
++
++static int __devexit atmci_remove(struct platform_device *pdev)
++{
++	struct atmel_mci *host = platform_get_drvdata(pdev);
++
++	platform_set_drvdata(pdev, NULL);
++
++	if (host) {
++		mmc_remove_host(host->mmc);
++
++		mci_writel(host, IDR, ~0UL);
++		mci_writel(host, CR, MCI_BIT(MCIDIS));
++		mci_readl(host, SR);
++
++		free_irq(platform_get_irq(pdev, 0), host->mmc);
++		iounmap(host->regs);
++
++		clk_disable(host->mck);
++		clk_put(host->mck);
++
++		mmc_free_host(host->mmc);
++	}
++	return 0;
++}
++
++static struct platform_driver atmci_driver = {
++	.probe		= atmci_probe,
++	.remove		= __devexit_p(atmci_remove),
++	.driver		= {
++		.name		= DRIVER_NAME,
++	},
++};
++
++static int __init atmci_init(void)
++{
++	return platform_driver_register(&atmci_driver);
++}
++
++static void __exit atmci_exit(void)
++{
++	platform_driver_unregister(&atmci_driver);
++}
++
++module_init(atmci_init);
++module_exit(atmci_exit);
++
++MODULE_DESCRIPTION("Atmel Multimedia Card Interface driver");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.18-avr32/drivers/mmc/atmel-mci.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/drivers/mmc/atmel-mci.h	2007-01-15 10:31:36.000000000 +0100
+@@ -0,0 +1,192 @@
++/*
++ * Atmel MultiMedia Card Interface driver
++ *
++ * Copyright (C) 2004-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __DRIVERS_MMC_ATMEL_MCI_H__
++#define __DRIVERS_MMC_ATMEL_MCI_H__
++
++/* MCI register offsets */
++#define MCI_CR					0x0000
++#define MCI_MR					0x0004
++#define MCI_DTOR				0x0008
++#define MCI_SDCR				0x000c
++#define MCI_ARGR				0x0010
++#define MCI_CMDR				0x0014
++#define MCI_BLKR				0x0018
++#define MCI_RSPR				0x0020
++#define MCI_RSPR1				0x0024
++#define MCI_RSPR2				0x0028
++#define MCI_RSPR3				0x002c
++#define MCI_RDR					0x0030
++#define MCI_TDR					0x0034
++#define MCI_SR					0x0040
++#define MCI_IER					0x0044
++#define MCI_IDR					0x0048
++#define MCI_IMR					0x004c
++
++/* Bitfields in CR */
++#define MCI_MCIEN_OFFSET			0
++#define MCI_MCIEN_SIZE				1
++#define MCI_MCIDIS_OFFSET			1
++#define MCI_MCIDIS_SIZE				1
++#define MCI_PWSEN_OFFSET			2
++#define MCI_PWSEN_SIZE				1
++#define MCI_PWSDIS_OFFSET			3
++#define MCI_PWSDIS_SIZE				1
++#define MCI_SWRST_OFFSET			7
++#define MCI_SWRST_SIZE				1
++
++/* Bitfields in MR */
++#define MCI_CLKDIV_OFFSET			0
++#define MCI_CLKDIV_SIZE				8
++#define MCI_PWSDIV_OFFSET			8
++#define MCI_PWSDIV_SIZE				3
++#define MCI_RDPROOF_OFFSET			11
++#define MCI_RDPROOF_SIZE			1
++#define MCI_WRPROOF_OFFSET			12
++#define MCI_WRPROOF_SIZE			1
++#define MCI_DMAPADV_OFFSET			14
++#define MCI_DMAPADV_SIZE			1
++#define MCI_BLKLEN_OFFSET			16
++#define MCI_BLKLEN_SIZE				16
++
++/* Bitfields in DTOR */
++#define MCI_DTOCYC_OFFSET			0
++#define MCI_DTOCYC_SIZE				4
++#define MCI_DTOMUL_OFFSET			4
++#define MCI_DTOMUL_SIZE				3
++
++/* Bitfields in SDCR */
++#define MCI_SDCSEL_OFFSET			0
++#define MCI_SDCSEL_SIZE				4
++#define MCI_SDCBUS_OFFSET			7
++#define MCI_SDCBUS_SIZE				1
++
++/* Bitfields in ARGR */
++#define MCI_ARG_OFFSET				0
++#define MCI_ARG_SIZE				32
++
++/* Bitfields in CMDR */
++#define MCI_CMDNB_OFFSET			0
++#define MCI_CMDNB_SIZE				6
++#define MCI_RSPTYP_OFFSET			6
++#define MCI_RSPTYP_SIZE				2
++#define MCI_SPCMD_OFFSET			8
++#define MCI_SPCMD_SIZE				3
++#define MCI_OPDCMD_OFFSET			11
++#define MCI_OPDCMD_SIZE				1
++#define MCI_MAXLAT_OFFSET			12
++#define MCI_MAXLAT_SIZE				1
++#define MCI_TRCMD_OFFSET			16
++#define MCI_TRCMD_SIZE				2
++#define MCI_TRDIR_OFFSET			18
++#define MCI_TRDIR_SIZE				1
++#define MCI_TRTYP_OFFSET			19
++#define MCI_TRTYP_SIZE				2
++
++/* Bitfields in BLKR */
++#define MCI_BCNT_OFFSET				0
++#define MCI_BCNT_SIZE				16
++
++/* Bitfields in RSPRn */
++#define MCI_RSP_OFFSET				0
++#define MCI_RSP_SIZE				32
++
++/* Bitfields in SR/IER/IDR/IMR */
++#define MCI_CMDRDY_OFFSET			0
++#define MCI_CMDRDY_SIZE				1
++#define MCI_RXRDY_OFFSET			1
++#define MCI_RXRDY_SIZE				1
++#define MCI_TXRDY_OFFSET			2
++#define MCI_TXRDY_SIZE				1
++#define MCI_BLKE_OFFSET				3
++#define MCI_BLKE_SIZE				1
++#define MCI_DTIP_OFFSET				4
++#define MCI_DTIP_SIZE				1
++#define MCI_NOTBUSY_OFFSET			5
++#define MCI_NOTBUSY_SIZE			1
++#define MCI_ENDRX_OFFSET			6
++#define MCI_ENDRX_SIZE				1
++#define MCI_ENDTX_OFFSET			7
++#define MCI_ENDTX_SIZE				1
++#define MCI_RXBUFF_OFFSET			14
++#define MCI_RXBUFF_SIZE				1
++#define MCI_TXBUFE_OFFSET			15
++#define MCI_TXBUFE_SIZE				1
++#define MCI_RINDE_OFFSET			16
++#define MCI_RINDE_SIZE				1
++#define MCI_RDIRE_OFFSET			17
++#define MCI_RDIRE_SIZE				1
++#define MCI_RCRCE_OFFSET			18
++#define MCI_RCRCE_SIZE				1
++#define MCI_RENDE_OFFSET			19
++#define MCI_RENDE_SIZE				1
++#define MCI_RTOE_OFFSET				20
++#define MCI_RTOE_SIZE				1
++#define MCI_DCRCE_OFFSET			21
++#define MCI_DCRCE_SIZE				1
++#define MCI_DTOE_OFFSET				22
++#define MCI_DTOE_SIZE				1
++#define MCI_OVRE_OFFSET				30
++#define MCI_OVRE_SIZE				1
++#define MCI_UNRE_OFFSET				31
++#define MCI_UNRE_SIZE				1
++
++/* Constants for DTOMUL */
++#define MCI_DTOMUL_1_CYCLE			0
++#define MCI_DTOMUL_16_CYCLES			1
++#define MCI_DTOMUL_128_CYCLES			2
++#define MCI_DTOMUL_256_CYCLES			3
++#define MCI_DTOMUL_1024_CYCLES			4
++#define MCI_DTOMUL_4096_CYCLES			5
++#define MCI_DTOMUL_65536_CYCLES			6
++#define MCI_DTOMUL_1048576_CYCLES		7
++
++/* Constants for RSPTYP */
++#define MCI_RSPTYP_NO_RESP			0
++#define MCI_RSPTYP_48_BIT			1
++#define MCI_RSPTYP_136_BIT			2
++
++/* Constants for SPCMD */
++#define MCI_SPCMD_NO_SPEC_CMD			0
++#define MCI_SPCMD_INIT_CMD			1
++#define MCI_SPCMD_SYNC_CMD			2
++#define MCI_SPCMD_INT_CMD			4
++#define MCI_SPCMD_INT_RESP			5
++
++/* Constants for TRCMD */
++#define MCI_TRCMD_NO_TRANS			0
++#define MCI_TRCMD_START_TRANS			1
++#define MCI_TRCMD_STOP_TRANS			2
++
++/* Constants for TRTYP */
++#define MCI_TRTYP_BLOCK				0
++#define MCI_TRTYP_MULTI_BLOCK			1
++#define MCI_TRTYP_STREAM			2
++
++/* Bit manipulation macros */
++#define MCI_BIT(name)					\
++	(1 << MCI_##name##_OFFSET)
++#define MCI_BF(name,value)				\
++	(((value) & ((1 << MCI_##name##_SIZE) - 1))	\
++	 << MCI_##name##_OFFSET)
++#define MCI_BFEXT(name,value)				\
++	(((value) >> MCI_##name##_OFFSET)		\
++	 & ((1 << MCI_##name##_SIZE) - 1))
++#define MCI_BFINS(name,value,old)			\
++	(((old) & ~(((1 << MCI_##name##_SIZE) - 1)	\
++		    << MCI_##name##_OFFSET))		\
++	 | MCI_BF(name,value))
++
++/* Register access macros */
++#define mci_readl(port,reg)				\
++	__raw_readl((port)->regs + MCI_##reg)
++#define mci_writel(port,reg,value)			\
++	__raw_writel((value), (port)->regs + MCI_##reg)
++
++#endif /* __DRIVERS_MMC_ATMEL_MCI_H__ */
