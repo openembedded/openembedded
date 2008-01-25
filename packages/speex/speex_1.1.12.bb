@@ -34,4 +34,5 @@ do_stage() {
 	oe_libinstall -C libspeex -so libspeex ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/*.h ${STAGING_INCDIR}/speex
+	install -m 0644 speex.m4 ${STAGING_DATADIR}/aclocal/
 }
