@@ -7,6 +7,8 @@ APPNAME = "qpe"
 
 S = "${WORKDIR}/pics"
 
+inherit opie
+
 # Wallpaper and welcome splash
 PIXMAP_SIZE 		= ""
 PIXMAP_SIZE_c7x0 	= "-640x480"
@@ -17,8 +19,6 @@ PIXMAP_SIZE_simpad 	= "-800x600"
 PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
-
-PACKAGES = "${PN}-dbg ${PN}-320x480 ${PN}-480x320 ${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-600x800 ${PN}-320x240 ${PN}-240x320 ${PN}-320x320"
 
 do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
@@ -54,3 +54,4 @@ python do_package_prepend () {
 }
 
 PACKAGE_ARCH = "all"
+PACKAGES =+ "${PN}-dbg ${PN}-320x480 ${PN}-480x320 ${PN}-480x640 ${PN}-640x480 ${PN}-800x600 ${PN}-600x800 ${PN}-320x240 ${PN}-240x320 ${PN}-320x320"
