@@ -10,7 +10,7 @@ SRC_URI  = "http://johnath.com/beep/beep-${PV}.tar.gz"
 SRC_URI += "file://linux-input.patch;patch=1"
 
 S = "${WORKDIR}/beep-${PV}"
-PACKAGES = "${PN} ${PN}-doc"
+PACKAGES += "${PN} ${PN}-doc"
 
 inherit autotools
 
