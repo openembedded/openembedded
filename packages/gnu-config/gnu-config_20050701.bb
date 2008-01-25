@@ -29,5 +29,4 @@ do_install () {
 	install -m 0644 config.guess config.sub ${D}${datadir}/gnu-config/
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${bindir} ${datadir}/gnu-config"

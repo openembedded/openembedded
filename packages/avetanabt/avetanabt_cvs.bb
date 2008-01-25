@@ -13,7 +13,6 @@ SRC_URI = "cvs://anonymous@avetanabt.cvs.sourceforge.net/cvsroot/avetanabt;modul
 
 S = "${WORKDIR}/avetanabt"
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/libavetanaBT.so ${datadir}/avetanabt/avetanaBT.jar"
 
 do_compile() {

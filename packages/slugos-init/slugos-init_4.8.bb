@@ -141,7 +141,6 @@ pkg_postrm_slugos-init() {
 	done
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 
 # It is bad to overwrite /linuxrc as it puts the system back to

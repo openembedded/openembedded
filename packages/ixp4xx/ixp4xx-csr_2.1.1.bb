@@ -113,7 +113,6 @@ do_stage () {
 	fi
 }
 
-PACKAGES = "${PN}"
 
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/ixp400

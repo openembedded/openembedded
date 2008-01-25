@@ -17,7 +17,6 @@ INITSCRIPT_NAME = "ftpd-topfield"
 INITSCRIPT_PARAMS = "defaults"
 
 # Just the one package at present
-PACKAGES = "${PN}"
 
 inherit autotools
 

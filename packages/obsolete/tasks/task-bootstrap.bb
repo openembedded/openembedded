@@ -6,7 +6,6 @@ PR = "r25"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 ALLOW_EMPTY = "1"
-PACKAGES = "${PN}"
 
 MODUTILS ?= "24 26"
 

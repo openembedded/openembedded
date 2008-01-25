@@ -28,6 +28,5 @@ install -m 0644 ${DL_DIR}/${JAR} ${STAGING_DATADIR}/java
 
 }
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = "${datadir}/java/${JAR}"
