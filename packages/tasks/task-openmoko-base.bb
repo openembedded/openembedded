@@ -13,8 +13,8 @@ RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
   matchbox-panel-2-applets \
 #  matchbox-keyboard-inputmethod \
-  matchbox-keyboard-im \
-  matchbox-keyboard-applet \
+#  matchbox-keyboard-im \
+#  matchbox-keyboard-applet \
   matchbox-stroke \
   multitap-pad \
   openmoko-terminal2 \
