@@ -34,4 +34,5 @@ do_stage() {
 	install -m 0644 include/speex/speex_callbacks.h ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/speex_header.h ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/speex_stereo.h ${STAGING_INCDIR}/speex
+	install -m 0644 speex.m4 ${STAGING_DATADIR}/aclocal/
 }
