@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r72"
+PR = "r73"
 
 inherit task
 
@@ -14,5 +14,6 @@ RDEPENDS_task-openmoko-phone = "\
   libgsmd-tools \
   openmoko-dialer2 \
   openmoko-panel-gsm \
+  openmoko-panel-memory \
 #  ppp \
 "
