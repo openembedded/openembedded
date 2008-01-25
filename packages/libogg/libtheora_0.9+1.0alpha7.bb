@@ -1,5 +1,5 @@
 
-DEPENDS = "libogg libsdl-x11"
+DEPENDS = "libogg libvorbis libsdl-x11"
 
 SRC_URI = "http://downloads.xiph.org/releases/theora/libtheora-1.0alpha7.tar.gz"
 
