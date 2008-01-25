@@ -18,4 +18,4 @@ do_stage() {
   oe_runmake install_vendor
 }
 
-PACKAGES = " "
+PACKAGES = "${PN}-dbg  "

@@ -4,7 +4,7 @@ DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
 PR = "r10"
 
-PACKAGES = "\
+PACKAGES = "${PN}-dbg \
     gst-meta-base \
     gst-meta-audio \
     gst-meta-debug \

@@ -35,7 +35,7 @@ do_install() {
 	done
 }
 
-PACKAGES = "opie-i18n-cz  opie-i18n-da  opie-i18n-de  opie-i18n-dk  opie-i18n-en  opie-i18n-es \
+PACKAGES = "${PN}-dbg opie-i18n-cz  opie-i18n-da  opie-i18n-de  opie-i18n-dk  opie-i18n-en  opie-i18n-es \
 opie-i18n-fr  opie-i18n-hu opie-i18n-it  opie-i18n-ja  opie-i18n-ko  opie-i18n-lv  opie-i18n-mk \
 opie-i18n-nl  opie-i18n-no  opie-i18n-pl opie-i18n-pt  opie-i18n-pt-br  opie-i18n-ru  opie-i18n-sl \
 opie-i18n-xx  opie-i18n-zh-cn  opie-i18n-zh-tw \

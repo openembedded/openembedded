@@ -32,5 +32,5 @@ do_stage() {
 	cp -dpR boost ${STAGING_INCDIR}
 }
 
-PACKAGES = "${PN}-dev"
+PACKAGES = "${PN}-dbg ${PN}-dev"
 FILES_${PN}-dev = "/usr/include"

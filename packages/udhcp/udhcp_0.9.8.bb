@@ -19,7 +19,7 @@ EXTRA_OEMAKE = "'CC=${CC}' 'LD=${CCLD}' \
 		'usrbindir=${bindir}' \
 		'datadir=${datadir}'"
 
-PACKAGES = "udhcpc udhcpc-doc udhcpd udhcpd-doc"
+PACKAGES = "${PN}-dbg udhcpc udhcpc-doc udhcpd udhcpd-doc"
 FILES_udhcpc = "/sbin/udhcpc ${datadir}/udhcpc"
 FILES_udhcpc-doc = "${mandir}/man8/udhcpc.8"
 FILES_udhcpd = "${sbindir}/udhcpd \

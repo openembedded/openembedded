@@ -55,6 +55,6 @@ else
 fi
 }
 
-PACKAGES = "${PN}-modules ${PN}-tools"
+PACKAGES = "${PN}-dbg ${PN}-modules ${PN}-tools"
 FILES_${PN}-modules = "/lib/modules/"
 FILES_${PN}-tools = "/usr/"

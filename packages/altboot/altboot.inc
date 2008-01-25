@@ -11,7 +11,7 @@ S = "${WORKDIR}/trunk/"
 PACKAGE_ARCH_${PN} = "${MACHINE}"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
-PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-conf ${PN}-doc ${PN}"
 
 FILES_${PN}-conf = "/etc/altboot*cfg"
 

@@ -21,7 +21,7 @@ do_install_append() {
 }
 
 
-PACKAGES = "${PN} ${PN}-alt"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-alt"
 
 FILES_ttf-gentium-alt = "${datadir}/fonts/truetype/GenAI*.ttf \
                          ${datadir}/fonts/truetype/GenAR*.ttf \

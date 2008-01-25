@@ -53,6 +53,6 @@ do_install() {
        done
 }
 
-PACKAGES = "pico pine"
+PACKAGES = "${PN}-dbg pico pine"
 FILES_pico = "${bindir}/pico ${bindir}/pilot"
 

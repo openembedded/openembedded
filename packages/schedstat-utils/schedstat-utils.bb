@@ -15,7 +15,7 @@ do_install () {
 	install -m 0755 stats-10.pl ${D}${sbindir}/
 }
 
-PACKAGES = "schedstat-utils \
+PACKAGES = "${PN}-dbg schedstat-utils \
 	    schedstat-utils-latency \
 	    schedstat-utils-perl"
 RDEPENDS_${PN} = "schedstat-utils-latency schedstat-utils-perl"
