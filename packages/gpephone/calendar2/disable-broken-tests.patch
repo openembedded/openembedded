@@ -1,0 +1,9 @@
+--- calendar2/Makefile.am~	2008-01-24 16:54:38.000000000 +0100
++++ calendar2/Makefile.am	2008-01-24 16:54:38.000000000 +0100
+@@ -1,5 +1,5 @@
+ #SUBDIRS			= src announce atd schedule test res po
+-SUBDIRS			= src test res po
++SUBDIRS			= src res po
+ 
+ desktopdir				= $(GPE_DIR)/share/applications
+ desktop_in_files	= cal.desktop.in

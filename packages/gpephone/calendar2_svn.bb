@@ -3,13 +3,14 @@ LICENSE     = "LiPS"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PV = "0.0+svnr-${SRCREV}"
-PR          = "r0"
+PR          = "r1"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgemwidget dbus-glib libcalenabler2 libiac"
 
 inherit gpephone autotools
 
-SRC_URI = "${GPEPHONE_SVN}"
+SRC_URI = "${GPEPHONE_SVN} \
+           file://disable-broken-tests.patch;patch=1"
 
 S = ${WORKDIR}/${PN}
 
