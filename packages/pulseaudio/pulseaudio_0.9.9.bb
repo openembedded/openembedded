@@ -10,8 +10,9 @@ SRC_URI += "\
 
 PR = "r0"
 
-# problems w/ pulseaudio 0.9.8 atm:
+# problems w/ pulseaudio 0.9.9 atm:
 # 1.) needs libltdl >= 1.5.24 (yes, any older version will NOT work at runtime)
 # 2.) doesn't build w/ glibc TLS support (hence patched out)
+# 3.) hangs, if used with gst-pulse 0.9.7
 DEFAULT_PREFERENCE = "-1"
 
