@@ -30,7 +30,6 @@ do_stage() {
 	:
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${libdir}/libmidpathalsa.so \
                 ${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

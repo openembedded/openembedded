@@ -35,7 +35,6 @@ do_stage() {
 	:
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${libdir}/libmidpathqt.so \
 		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

@@ -1,7 +1,7 @@
 
 require midpath.inc
 
-DEPENDS += " virtual/libx11 virtual/cldc-api-1.1"
+DEPENDS += "virtual/libx11 midpath-cldc"
 
 do_configure() {
 	
@@ -31,7 +31,6 @@ do_stage() {
         install -m 0644 ${S}/external/escher-cldc/core/escher-x11-cldc.jar ${STAGING_DATADIR}/java
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/java/escher-x11-cldc.jar \
 		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

@@ -1,0 +1,128 @@
+Index: swt-hildon/swt-source/make_linux.mak
+===================================================================
+--- swt-hildon.orig/swt-source/make_linux.mak	2008-01-08 09:35:29.000000000 +0100
++++ swt-hildon/swt-source/make_linux.mak	2008-01-08 11:35:01.000000000 +0100
+@@ -45,8 +45,8 @@
+ CAIROLIBS = `pkg-config --libs-only-L cairo` -lcairo
+ 
+ # Do not use pkg-config to get libs because it includes unnecessary dependencies (i.e. pangoxft-1.0)
+-GTKCFLAGS = `pkg-config --cflags gtk+-2.0`
+-GTKLIBS = `pkg-config --libs-only-L gtk+-2.0 gthread-2.0` -lgtk-x11-2.0 -lgthread-2.0 -L/usr/X11R6/lib $(XLIB64) -lXtst
++GTKCFLAGS = `pkg-config --cflags gtk+-2.0 hildon-1`
++GTKLIBS = -lhildon-1 `pkg-config --libs-only-L gtk+-2.0 gthread-2.0` -lgtk-x11-2.0 -lgthread-2.0 -L/usr/X11R6/lib $(XLIB64) -lXtst
+ 
+ CDE_LIBS = -L$(CDE_HOME)/lib -R$(CDE_HOME)/lib -lXt -lX11 -lDtSvc
+ 
+@@ -74,8 +74,6 @@
+ 	-Wno-non-virtual-dtor \
+ 	-fPIC \
+ 	-I. \
+-	-I$(JAVA_HOME)/include \
+-	-I$(JAVA_HOME)/include/linux \
+ 	${SWT_PTR_CFLAGS}
+ MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic
+ MOZILLAEXCLUDES = -DNO_XPCOMGlueShutdown -DNO_XPCOMGlueStartup
+@@ -96,8 +94,6 @@
+ 		-DSWT_VERSION=$(SWT_VERSION) \
+ 		$(NATIVE_STATS) \
+ 		-DLINUX -DGTK \
+-		-I$(JAVA_HOME)/include \
+-		-I$(JAVA_HOME)/include/linux \
+ 		-fPIC \
+ 		${SWT_PTR_CFLAGS}
+ LIBS = -shared -fPIC
+Index: swt-hildon/swt-source/os.c
+===================================================================
+--- swt-hildon.orig/swt-source/os.c	2008-01-08 09:35:29.000000000 +0100
++++ swt-hildon/swt-source/os.c	2008-01-08 09:37:00.000000000 +0100
+@@ -17,6 +17,9 @@
+ #include "os_structs.h"
+ #include "os_stats.h"
+ 
++#include <hildon/hildon-program.h>
++#include <hildon/hildon-window.h>
++
+ #define OS_NATIVE(func) Java_org_eclipse_swt_internal_gtk_OS_##func
+ 
+ #ifndef NO_Call
+@@ -7015,9 +7018,18 @@
+ JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1container_1add)
+ 	(JNIEnv *env, jclass that, jint arg0, jint arg1)
+ {
++  GtkContainer *container = (GtkContainer *) arg0;
++  GtkWidget *widget = (GtkWidget *) arg1;
+ 	OS_NATIVE_ENTER(env, that, _1gtk_1container_1add_FUNC);
+-	gtk_container_add((GtkContainer *)arg0, (GtkWidget *)arg1);
+-	OS_NATIVE_EXIT(env, that, _1gtk_1container_1add_FUNC);
++  if (GTK_CHECK_TYPE (widget, GTK_TYPE_MENU)
++      && !strcmp(gtk_menu_get_title(GTK_MENU(widget)), "__main_menu__"))
++  {
++    hildon_window_set_menu(HILDON_WINDOW(container), GTK_MENU(widget));
++  }
++  else
++   gtk_container_add((GtkContainer *)arg0, (GtkWidget *)arg1);
++
++   OS_NATIVE_EXIT(env, that, _1gtk_1container_1add_FUNC);
+ }
+ #endif
+ 
+@@ -9121,9 +9133,12 @@
+ JNIEXPORT jint JNICALL OS_NATIVE(_1gtk_1menu_1bar_1new)
+ 	(JNIEnv *env, jclass that)
+ {
++  GtkWidget *menu;
+ 	jint rc = 0;
+ 	OS_NATIVE_ENTER(env, that, _1gtk_1menu_1bar_1new_FUNC);
+-	rc = (jint)gtk_menu_bar_new();
++	menu = gtk_menu_new();
++  gtk_menu_set_title(menu, "__main_menu__");
++	rc = (jint) menu;
+ 	OS_NATIVE_EXIT(env, that, _1gtk_1menu_1bar_1new_FUNC);
+ 	return rc;
+ }
+@@ -15464,8 +15479,22 @@
+ 	(JNIEnv *env, jclass that, jint arg0)
+ {
+ 	jint rc = 0;
++  HildonProgram *p;
++  GtkWidget *w;
+ 	OS_NATIVE_ENTER(env, that, _1gtk_1window_1new_FUNC);
+-	rc = (jint)gtk_window_new((GtkWindowType)arg0);
++/*
++  if (GTK_WINDOW_TOPLEVEL == (GtkWindowType) arg0)
++  {
++*/
++    p = hildon_program_get_instance();
++    w = hildon_window_new();
++    hildon_program_add_window(p, HILDON_WINDOW(w));
++/*
++  }
++  else
++    w = gtk_window_new(GTK_WINDOW_POPUP);
++*/
++	rc = (jint) w;
+ 	OS_NATIVE_EXIT(env, that, _1gtk_1window_1new_FUNC);
+ 	return rc;
+ }
+Index: swt-hildon/swt-source/org/eclipse/swt/widgets/Menu.java
+===================================================================
+--- swt-hildon.orig/swt-source/org/eclipse/swt/widgets/Menu.java	2008-01-08 09:34:55.000000000 +0100
++++ swt-hildon/swt-source/org/eclipse/swt/widgets/Menu.java	2008-01-08 09:36:01.000000000 +0100
+@@ -259,9 +259,17 @@
+ 	if ((style & SWT.BAR) != 0) {
+ 		handle = OS.gtk_menu_bar_new ();
+ 		if (handle == 0) error (SWT.ERROR_NO_HANDLES);
++		if (parent instanceof Shell)
++		{
++		int /*long*/ shellHandle = ((Shell) parent).shellHandle;
++		OS.gtk_container_add (shellHandle, handle);
++		}
++		else
++		{
+ 		int /*long*/ vboxHandle = parent.vboxHandle;
+ 		OS.gtk_container_add (vboxHandle, handle);
+ 		OS.gtk_box_set_child_packing (vboxHandle, handle, false, true, 0, OS.GTK_PACK_START);
++		}
+ 	} else {
+ 		handle = OS.gtk_menu_new ();
+ 		if (handle == 0) error (SWT.ERROR_NO_HANDLES);
