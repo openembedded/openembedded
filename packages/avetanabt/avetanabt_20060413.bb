@@ -10,7 +10,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/avetanabt/avetanaBluetooth-${PV}.tgz"
 
 S = "${WORKDIR}/avetanabt"
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/libavetanaBT.so ${datadir}/avetanabt/avetanaBT.jar"
 
 do_compile() {

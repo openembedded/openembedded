@@ -17,7 +17,7 @@ do_install_append () {
 	install -m 0644 ${WORKDIR}/30-dejavu-aliases.conf ${D}${sysconfdir}/fonts/conf.d/
 }
 
-PACKAGES = "ttf-dejavu-sans ttf-dejavu-sans-mono ttf-dejavu-sans-condensed \
+PACKAGES = "${PN}-dbg ttf-dejavu-sans ttf-dejavu-sans-mono ttf-dejavu-sans-condensed \
 	    ttf-dejavu-serif ttf-dejavu-serif-condensed ttf-dejavu-common"
 
 FILES_ttf-dejavu-sans            = "${datadir}/fonts/truetype/DejaVuSans.ttf ${datadir}/fonts/truetype/DejaVuSans-*.ttf"

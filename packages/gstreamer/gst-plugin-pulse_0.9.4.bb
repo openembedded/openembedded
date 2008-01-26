@@ -24,5 +24,5 @@ FILES_${PN}-dev = "\
   ${libdir}/gstreamer-0.10/libgstpulse.a \
   ${libdir}/gstreamer-0.10/libgstpulse.la \
   ${libdir}/gstreamer-0.10/libgstpulse.so*"
-FILES_${PN}-dbg = "${libdir}/gstreamer-0.10/.debug"
+FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
 

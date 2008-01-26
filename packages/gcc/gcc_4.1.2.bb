@@ -39,6 +39,25 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
+SRC_URI_avr32 = "http://www.angstrom-distribution.org/unstable/sources/gcc-4.1.2-atmel.1.1.0.tar.gz \
+#           file://100-uclibc-conf.patch;patch=1 \
+#           file://200-uclibc-locale.patch;patch=1 \
+#           file://300-libstdc++-pic.patch;patch=1 \
+           file://301-missing-execinfo_h.patch;patch=1 \
+           file://302-c99-snprintf.patch;patch=1 \
+           file://303-c99-complex-ugly-hack.patch;patch=1 \
+           file://304-index_macro.patch;patch=1 \
+           file://602-sdk-libstdc++-includes.patch;patch=1 \
+           file://gcc41-configure.in.patch;patch=1 \
+           file://ldflags.patch;patch=1 \
+           file://zecke-xgcc-cpp.patch;patch=1 \
+           file://cache-amnesia.patch;patch=1 \
+           "
+
+do_compile_prepend_avr32() {
+       ln -sf ${S}/libstdc++-v3/config/os/uclibc/ ${S}/libstdc++-v3/config/os/uclibc-linux
+}
+
 #Set the fortran bits
 # ',fortran' or '', not 'f77' like gcc3 had
 FORTRAN = ""

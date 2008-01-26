@@ -1,0 +1,109 @@
+--- linux-2.6.18.orig/arch/avr32/oprofile/op_model_avr32.c	2006-11-06 14:36:51.000000000 +0100
++++ linux-2.6.18/arch/avr32/oprofile/op_model_avr32.c	2006-11-07 10:05:46.000000000 +0100
+@@ -7,7 +7,7 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+  *
+- * Author: Ronny Pedersen
++ * Authors: Sondre Garsjoe, Ronny Pedersen
+  */
+ 
+ #define DEBUG
+@@ -17,6 +17,7 @@
+ #include <linux/sched.h>
+ #include <linux/oprofile.h>
+ #include <linux/interrupt.h>
++#include <asm/intc.h>
+ #include <asm/irq.h>
+ #include <asm/system.h>
+ #include <asm/sysreg.h>
+@@ -49,7 +50,7 @@
+ #define PCNT0_F  (1 << 9)
+ #define PCNT1_F  (1 << 10)
+ 
+-#define AVR32_PC_IRQ 1
++#define AVR32_PC_IRQ 0
+ 
+ static const u32 int_mask[MAX_COUNTERS] = { PCCNT_IE, PCNT0_IE, PCNT1_IE };
+ static const u32 ovf_mask[MAX_COUNTERS] = { PCCNT_F, PCNT0_F, PCNT1_F };
+@@ -58,38 +59,37 @@
+ 
+ static void write_pccr(u32 val)
+ {
+-	__builtin_mtsr(SYSREG_PCCR, val);
++	sysreg_write(PCCR, val);
+ }
+ 
+ static u32 read_pccr(void)
+ {
+-	return __builtin_mfsr(SYSREG_PCCR);
++	return sysreg_read(PCCR);
+ }
+ 
+ static u32 read_counter(int counter)
+ {
+ 	switch (counter) {
+ 	case PCCNT:
+-		return __builtin_mfsr(SYSREG_PCCNT);
++		return sysreg_read(PCCNT);
+ 	case PCNT0:
+-		return __builtin_mfsr(SYSREG_PCNT0);
++		return sysreg_read(PCNT0);
+ 	case PCNT1:
+-		return __builtin_mfsr(SYSREG_PCNT0);
++		return sysreg_read(PCNT1);
+ 	default:
+ 		return 0;
+ 	}
+ }
+ 
+-
+ static void write_counter(int counter, u32 val)
+ {
+ 	switch (counter) {
+ 	case PCCNT:
+-		__builtin_mtsr(SYSREG_PCCNT, val);
++		sysreg_write(PCCNT, val);
+ 	case PCNT0:
+-		__builtin_mtsr(SYSREG_PCNT0, val);
++		sysreg_write(PCNT0, val);
+ 	case PCNT1:
+-		__builtin_mtsr(SYSREG_PCNT0, val);
++		sysreg_write(PCNT1, val);
+ 	default:
+ 		break;
+ 	}
+@@ -144,12 +144,15 @@
+ 	}
+ }
+ 
+-
+ static irqreturn_t avr32_pc_interrupt(int irq, void *arg,
+ 				      struct pt_regs *regs)
+ {
+ 	int i;
+ 
++	/* Check if this is a performance counter interrupt */
++	if (!(intc_get_pending(irq) & 2))
++		return IRQ_NONE;
++
+ 	check_ctrs();
+ 
+ 	for (i = PCCNT; i < MAX_COUNTERS; i++) {
+@@ -179,7 +182,7 @@
+ 	int i, ret;
+ 	u32 pccr = read_pccr();
+ 
+-	ret = request_irq(AVR32_PC_IRQ, avr32_pc_interrupt, SA_INTERRUPT,
++	ret = request_irq(AVR32_PC_IRQ, avr32_pc_interrupt, IRQF_SHARED | IRQF_DISABLED,
+ 			  "AVR32 Performance Counter", (void *)results);
+ 
+ 	if (ret < 0) {
+@@ -214,6 +217,6 @@
+ 	.start		= avr32_pc_start,
+ 	.stop		= avr32_pc_stop,
+ 	.num_counters	= MAX_COUNTERS,
+-	.name		= "avr32",
++	.name		= "avr32/at32ap7000",
+ };
+ 

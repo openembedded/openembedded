@@ -12,5 +12,4 @@ do_install () {
 	oe_runmake 'prefix=${D}' install
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "*"

@@ -1,0 +1,75 @@
+From 187ef15268e638603dea55a91fdfa29feaed6d13 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?H=C3=A5vard_Skinnemoen?= <hskinnemoen@atmel.com>
+Date: Fri, 22 Sep 2006 10:07:08 +0100
+Subject: [PATCH] [MTD] Unlock NOR flash automatically where necessary
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Introduce the MTD_STUPID_LOCK flag which indicates that the flash chip is
+always locked after power-up, so all sectors need to be unlocked before it
+is usable.
+
+If this flag is set, and the chip provides an unlock() operation,
+mtd_add_device will unlock the whole MTD device if it's writeable.  This
+means that non-writeable partitions will stay locked.
+
+Set MTD_STUPID_LOCK in fixup_use_atmel_lock() so that these chips will work
+as expected.
+
+Signed-off-by: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    1 +
+ drivers/mtd/mtdcore.c               |   10 ++++++++++
+ include/mtd/mtd-abi.h               |    1 +
+ 3 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index a482e89..702ae4c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -212,6 +212,7 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
+ {
+ 	mtd->lock = cfi_atmel_lock;
+ 	mtd->unlock = cfi_atmel_unlock;
++	mtd->flags |= MTD_STUPID_LOCK;
+ }
+ 
+ static struct cfi_fixup cfi_fixup_table[] = {
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 168d3ba..c4d26de 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -57,6 +57,16 @@ int add_mtd_device(struct mtd_info *mtd)
+ 			mtd->index = i;
+ 			mtd->usecount = 0;
+ 
++			/* Some chips always power up locked. Unlock them now */
++			if ((mtd->flags & MTD_WRITEABLE)
++			    && (mtd->flags & MTD_STUPID_LOCK) && mtd->unlock) {
++				if (mtd->unlock(mtd, 0, mtd->size))
++					printk(KERN_WARNING
++					       "%s: unlock failed, "
++					       "writes may not work\n",
++					       mtd->name);
++			}
++
+ 			DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->name);
+ 			/* No need to get a refcount on the module containing
+ 			   the notifier, since we hold the mtd_table_mutex */
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 1da3f7f..b0a67b7 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -34,6 +34,7 @@ struct mtd_oob_buf {
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
++#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
+ 
+ // Some common devices / combinations of capabilities
+ #define MTD_CAP_ROM		0
+-- 
+1.4.4.1
+

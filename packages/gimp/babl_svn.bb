@@ -16,6 +16,6 @@ do_stage() {
 
 
 FILES_${PN} += "${libdir}/babl-0.0/"
-FILES_${PN}-dbg = "${libdir}/babl-0.0/.debug/"
+FILES_${PN}-dbg += "${libdir}/babl-0.0/.debug/"
 
 

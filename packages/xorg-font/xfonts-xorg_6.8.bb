@@ -7,7 +7,7 @@ SRC_URI = "${FREEDESKTOP_CVS}/xorg;module=xc;tag=XORG-6_8_0;method=pserver \
 	file://lexer.patch;patch=1"
 
 
-PACKAGES = "${PN}-75dpi ${PN}-100dpi ${PN}-type1 ${PN}-cyrillic ${PN}-ttf ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-75dpi ${PN}-100dpi ${PN}-type1 ${PN}-cyrillic ${PN}-ttf ${PN}"
 FILES_${PN}-75dpi = "${libdir}/X11/fonts/75dpi"
 FILES_${PN}-100dpi = "${libdir}/X11/fonts/100dpi"
 FILES_${PN}-type1 = "${libdir}/X11/fonts/Type1"

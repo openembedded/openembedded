@@ -29,7 +29,7 @@ LEAD_SONAME = "libpurple.so.0"
 FILES_libpurple     = "${libdir}/libpurple*.so.* /usr/bin/purple-* /etc/gconf/schemas/purple*"
 FILES_libpurple-dev = "${libdir}/libpurple* \
                        ${libdir}/purple-2/*.la " 
-FILES_libpurple-dbg = "${libdir}/.debug/libpurple* \
+FILES_libpurple-dbg += "${libdir}/.debug/libpurple* \
                        ${libdir}/purple-2/.debug"
 FILES_libpurple-liboscar = "${libdir}/purple-2/liboscar.so.*"
 FILES_libpurple-libjabber = "${libdir}/purple-2/libjabber.so.*"

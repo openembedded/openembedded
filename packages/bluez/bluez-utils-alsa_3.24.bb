@@ -22,5 +22,4 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/alsa-lib/libasound*"

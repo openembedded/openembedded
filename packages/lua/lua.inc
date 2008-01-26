@@ -6,9 +6,7 @@ HOMEPAGE = "http://www.lua.org/"
 PACKAGES = "liblua-dbg liblualib-dbg ${PN}-dbg \
 liblua-dev liblua liblualib-dev liblualib ${PN}-doc ${PN}"
 
-FILES_${PN}-dbg = "${bindir}/.debug"
-FILES_liblua-dbg = "${libdir}/.debug/liblua.so.*"
-FILES_liblualib-dbg = "${libdir}/.debug/liblualib.so.*"
+FILES_${PN}-dbg += "${bindir}/.debug ${libdir}/.debug/liblua.so.* ${libdir}/.debug/liblualib.so.*"
 
 FILES_${PN} = "${bindir}"
 FILES_${PN}-doc = "${mandir}"

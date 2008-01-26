@@ -1,0 +1,83 @@
+---
+ drivers/serial/atmel_usart.c |   33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/atmel_usart.c	2006-12-18 14:59:00.000000000 +0100
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.c	2006-12-18 16:51:33.000000000 +0100
+@@ -76,6 +76,14 @@ struct usart3_port {
+ 	struct clk *mck;
+ 	unsigned long mapsize;
+ 	struct uart_port uart;
++
++	/*
++	 * If no data is received within rx_timeout_us microseconds or
++	 * rx_timeout_cycles cycles, whichever is longest, we get an
++	 * interrupt.
++	 */
++	unsigned int rx_timeout_us;
++	unsigned int rx_timeout_cycles;
+ };
+ #define to_usart3_port(port) container_of(port, struct usart3_port, uart)
+ 
+@@ -582,12 +590,6 @@ static int usart3_startup(struct uart_po
+ 	usart3_writel(up, TCR, 0);
+ 	up->tx_dma_head = port->info->xmit.tail;
+ 
+-	/*
+-	 * Set a suitable timeout. 2000 bit periods corresponds to
+-	 * about 17 ms at 115200 bps
+-	 */
+-	usart3_writel(up, RTOR, 2000);
+-
+ 	/* Reset and enable receiver and transmitter */
+ 	usart3_writel(up, CR, (USART3_BIT(RSTRX)
+ 				  | USART3_BIT(RSTTX)
+@@ -633,6 +635,7 @@ static void usart3_set_termios(struct ua
+ 	struct usart3_port *up = to_usart3_port(port);
+ 	unsigned int baud, quot, mode = 0;
+ 	unsigned int imr, flags;
++	unsigned long long timeout_cycles;
+ 
+ 	pr_debug("usart3: set_termios\n");
+ 
+@@ -692,6 +695,13 @@ static void usart3_set_termios(struct ua
+ 					  | USART3_BIT(RSTRX)));
+ 	}
+ 
++	timeout_cycles = up->rx_timeout_us;
++	timeout_cycles *= baud;
++	do_div(timeout_cycles, 1000000);
++	if (timeout_cycles < up->rx_timeout_cycles)
++		timeout_cycles = up->rx_timeout_cycles;
++
++	pr_debug("usart3: Setting RTOR to %llu...\n", timeout_cycles);
+ 	pr_debug("usart3: Setting BRGR to %u (baud rate %u)...\n", quot, baud);
+ 
+ 	/* Disable receiver and transmitter */
+@@ -701,7 +711,12 @@ static void usart3_set_termios(struct ua
+ 	/* Set the parity, stop bits and data size */
+ 	usart3_writel(up, MR, mode);
+ 
+-	/* Set the baud rate and enable receiver and transmitter */
++	/*
++	 * Set the baud rate and RX timeout, and enable receiver and
++	 * transmitter.
++	 */
++	usart3_writel(up, RTOR, timeout_cycles);
++
+ 	usart3_writel(up, BRGR, quot);
+ 	usart3_writel(up, CR, (USART3_BIT(TXEN)
+ 				  | USART3_BIT(RXEN)));
+@@ -805,6 +820,10 @@ static int __devinit initialize_port(str
+ 		return PTR_ERR(up->mck);
+ 	clk_enable(up->mck);
+ 
++	/* Default RX timeout after 10 ms, but no less than 10 cycles */
++	up->rx_timeout_us = 10000;
++	up->rx_timeout_cycles = 10;
++
+ 	port->mapbase = regs->start;
+ 	up->mapsize = regs->end - regs->start + 1;
+ 	port->irq = platform_get_irq(pdev, 0);

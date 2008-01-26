@@ -52,6 +52,6 @@ else
 fi
 }
 
-PACKAGES = "madwifi-tools ${PN}"
+PACKAGES = "${PN}-dbg madwifi-tools ${PN}"
 FILES_${PN} = "/lib/modules/"
 FILES_madwifi-tools = "/usr/sbin/"

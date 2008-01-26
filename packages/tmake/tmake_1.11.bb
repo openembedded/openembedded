@@ -23,6 +23,6 @@ do_install() {
 	cp -R lib/* ${D}${datadir}/tmake/
 }
 
-PACKAGES = "tmake"
+PACKAGES = "${PN}-dbg tmake"
 FILES = ""
 FILES_tmake="${bindir} ${datadir}/tmake"

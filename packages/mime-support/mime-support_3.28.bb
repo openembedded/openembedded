@@ -10,7 +10,7 @@ PR = "r2"
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"
 
-PACKAGES = "${PN} ${PN}-doc"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-doc"
 FILES_${PN} += " ${libdir}/mime"
 
 docdir_append = "/${PN}"

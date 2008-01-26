@@ -82,6 +82,6 @@ do_install() {
 	install -m 0755 bin/* ${D}${bindir}/
 }
 
-PACKAGES = "libportaudio0 portaudio-dev portaudio-examples"
+PACKAGES = "${PN}-dbg libportaudio0 portaudio-dev portaudio-examples"
 FILES_libportaudio0 = "${libdir}"
 FILES_portaudio-examples = "${bindir}"

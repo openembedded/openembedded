@@ -19,7 +19,7 @@ PACKAGES = "libltdl libltdl-dbg libltdl-dev ${PN} ${PN}-doc"
 FILES_${PN} += "${datadir}/aclocal*"
 FILES_libltdl = "${libdir}/libltdl.so.*"
 FILES_libltdl-dev = "${libdir}/libltdl.* ${includedir}/ltdl.h"
-FILES_libltdl-dbg = "${libdir}/.debug/"
+FILES_libltdl-dbg += "${libdir}/.debug/"
 
 inherit autotools
 

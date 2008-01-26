@@ -11,7 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
 
 inherit autotools
 
-PACKAGES = "lib5250-0 tn5250-dev tn5250-doc tn5250"
+PACKAGES = "${PN}-dbg lib5250-0 tn5250-dev tn5250-doc tn5250"
 FILES_${PN} = "${bindir}/tn5250"
 FILES_lib5250-0 = "${libdir}/lib*.so.*"
 AUTO_LIBNAME_PKGS = "lib5250"

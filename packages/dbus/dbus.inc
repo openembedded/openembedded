@@ -19,7 +19,12 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
+DEBIANNAME_${PN} = "dbus-1"
+
+PACKAGES += "${PN}-lib"
+
+FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services"
+FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
 pkg_postinst_dbus() {
@@ -60,7 +65,3 @@ do_install_append () {
 	install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
 }
 
-python populate_packages_prepend () {
-	if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
-		bb.data.setVar('PKG_dbus', 'dbus-1', d)
-}

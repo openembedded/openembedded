@@ -33,7 +33,7 @@ ${sbindir}/update-qtfontdir
 }
 
 
-PACKAGES = "\
+PACKAGES = "${PN}-dbg \
 qpf-bitstream-vera-sans-mono-small \
 qpf-bitstream-vera-sans-mono-large \
 qpf-bitstream-vera-sans-mono-larger \

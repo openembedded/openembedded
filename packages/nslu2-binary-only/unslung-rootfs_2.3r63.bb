@@ -177,6 +177,5 @@ do_install () {
 	( cd ${S} ; tar -c -v -f - --exclude '.pc' . ) | ( cd ${D} ; tar xvf - )
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 RDEPENDS_${PN} = "nslu2-linksys-libs"

@@ -11,7 +11,7 @@ inherit efl
 SRC_URI = "${E_URI}/embryo-${PV}.tar.gz"
 S = "${WORKDIR}/embryo-${PV}"
 
-PACKAGES = "embryo-utils"
+PACKAGES = "${PN}-dbg embryo-utils"
 FILES_${PN} = "${bindir}/embryo ${bindir}/embryo_* ${datadir}/embryo/include"
 
 libraries = ""

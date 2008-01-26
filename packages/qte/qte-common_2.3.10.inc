@@ -152,4 +152,4 @@ do_install() {
 
 FILES_${PN} = "${libdir}/lib${PN}.so.*"
 FILES_${PN}-dev = "${includedir}/* ${libdir}/lib${PN}.so"
-FILES_${PN}-dbg = "${libdir}/.debug/"
+FILES_${PN}-dbg += "${libdir}/.debug/"

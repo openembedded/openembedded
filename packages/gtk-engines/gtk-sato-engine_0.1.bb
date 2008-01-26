@@ -18,7 +18,7 @@ do_configure_prepend() {
 PACKAGES += "gtk-theme-sato"
 FILES_${PN} = "${libdir}/gtk-2.0/*/engines/*.so "
 FILES_${PN}-dev = "${libdir}/gtk-2.0/*/engines/*"
-FILES_${PN}-dbg = "${libdir}/gtk-2.0/*/engines/.debug"
+FILES_${PN}-dbg += "${libdir}/gtk-2.0/*/engines/.debug"
 FILES_gtk-theme-sato = "${datadir}/icons ${datadir}/themes"
 
 RDEPENDS_gtk-theme-sato = "${PN}"

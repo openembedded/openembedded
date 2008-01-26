@@ -11,7 +11,7 @@ S = "${WORKDIR}/php-${PV}"
 inherit autotools
 
 FILES_${PN} = "${libdir}/apache2 /etc"
-FILES_${PN}-dbg = "${libdir}/apache2/modules/.debug"
+FILES_${PN}-dbg += "${libdir}/apache2/modules/.debug"
 
 CFLAGS += " -g -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
 EXTRA_OECONF = "--with-apxs2=${STAGING_BINDIR_NATIVE}/apxs \

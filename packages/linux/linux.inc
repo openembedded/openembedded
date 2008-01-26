@@ -99,6 +99,11 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+do_configure_append_avr32() {
+        sed -i -e s:-mno-pic::g arch/avr32/Makefile
+}
+
+
 UBOOT_ENTRYPOINT ?= "20008000"
 
 do_compile_append() {

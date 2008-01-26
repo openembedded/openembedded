@@ -22,7 +22,6 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = "${libdir}/cups/backend/bluetooth"
 RDEPENDS_${PN} = "cups"

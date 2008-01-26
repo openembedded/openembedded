@@ -23,7 +23,6 @@ S = "${WORKDIR}/busybox-${PV}"
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " V=1 ARCH=arm CROSS_COMPILE=${TARGET_PREFIX}"
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 FILES_${PN}-doc = ""
 FILES_${PN}-dev = ""

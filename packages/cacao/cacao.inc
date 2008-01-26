@@ -30,7 +30,7 @@ PACKAGES = "${PN} ${PN}-doc ${PN}-dbg"
 
 FILES_${PN} = "${bindir}/${PN} ${libdir}/lib*.so* ${datadir}/${PN}"
 FILES_${PN}-doc = "${datadir}/man"
-FILES_${PN}-dbg = "${bindir}/.debug ${libdir}/.debug/lib*.so*"
+FILES_${PN}-dbg += "${bindir}/.debug ${libdir}/.debug/lib*.so*"
 
 ALTERNATIVE_NAME = "java"
 ALTERNATIVE_LINK = "${bindir}/${ALTERNATIVE_NAME}"

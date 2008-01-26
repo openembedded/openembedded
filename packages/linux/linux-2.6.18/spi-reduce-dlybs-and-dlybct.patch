@@ -1,0 +1,19 @@
+---
+ drivers/spi/atmel_spi.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/spi/atmel_spi.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/spi/atmel_spi.c	2006-12-18 12:31:32.000000000 +0100
++++ linux-2.6.18-avr32/drivers/spi/atmel_spi.c	2006-12-18 12:31:37.000000000 +0100
+@@ -380,8 +380,8 @@ static int atmel_spi_setup(struct spi_de
+ 		csr |= SPI_BIT(NCPHA);
+ 
+ 	/* TODO: DLYBS and DLYBCT */
+-	csr |= SPI_BF(DLYBS, 10);
+-	csr |= SPI_BF(DLYBCT, 10);
++	csr |= SPI_BF(DLYBS, 0);
++	csr |= SPI_BF(DLYBCT, 0);
+ 
+ 	npcs_pin = (unsigned int)spi->controller_data;
+ 	if (!spi->controller_state) {

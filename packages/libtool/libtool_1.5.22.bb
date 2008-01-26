@@ -15,7 +15,7 @@ SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
 #	   file://3figures.patch;patch=1"
 S = "${WORKDIR}/libtool-${PV}"
 
-PACKAGES = "libltdl libltdl-dev ${PN}"
+PACKAGES = "${PN}-dbg libltdl libltdl-dev ${PN}"
 FILES_${PN} += "${datadir}/aclocal*"
 FILES_libltdl = "${libdir}/libltdl.so.*"
 FILES_libltdl-dev = "${libdir}/libltdl.* ${includedir}/ltdl.h"

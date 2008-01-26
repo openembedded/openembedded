@@ -36,7 +36,7 @@ FILES_libgtk2.0-cil-dev = "/usr/lib/pkgconfig/gtk-sharp-2.0.pc \
 	/usr/share/gapi-2.0/atk-api.xml \
         /usr/share/gapi-2.0/gdk-api.xml \
         /usr/share/gapi-2.0/gtk-api.xml"
-FILES_libgtk2.0-cil-dbg = "/usr/lib/.debug/libgtksharpglue-2.so \
+FILES_libgtk2.0-cil-dbg += "/usr/lib/.debug/libgtksharpglue-2.so \
 	/usr/lib/.debug/libgdksharpglue-2.so \
 	/usr/lib/.debug/libpangosharpglue-2.so"
 
@@ -46,7 +46,7 @@ FILES_libglib2.0-cil = "/usr/lib/mono/gac/glib-sharp \
 	/usr/lib/mono/gac/policy.2.*.glib-sharp/ \
 	/usr/lib/mono/gtk-sharp-2.0/policy.2.*.glib-sharp.dll"
 FILES_libglib2.0-cil-dev = "/usr/lib/pkgconfig/glib-sharp-2.0.pc"
-FILES_libglib2.0-cil-dbg = "/usr/lib/.debug/libglibsharpglue-2.so"
+FILES_libglib2.0-cil-dbg += "/usr/lib/.debug/libglibsharpglue-2.so"
 
 FILES_libglade2.0-cil = "/usr/lib/mono/gac/glade-sharp \
 	/usr/lib/libgladesharpglue-2.so \
@@ -55,7 +55,7 @@ FILES_libglade2.0-cil = "/usr/lib/mono/gac/glade-sharp \
 	/usr/lib/mono/gtk-sharp-2.0/policy.2.*.glade-sharp.dll"
 FILES_libglade2.0-cil-dev = "/usr/lib/pkgconfig/glade-sharp-2.0.pc \
 	/usr/share/gapi-2.0/glade-api.xml"
-FILES_libglade2.0-cil-dbg = "/usr/lib/.debug/libgladesharpglue-2.so"
+FILES_libglade2.0-cil-dbg += "/usr/lib/.debug/libgladesharpglue-2.so"
 
 FILES_gtk-sharp-gapi2 = " \
 	/usr/bin/gapi2-* \

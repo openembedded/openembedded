@@ -28,5 +28,4 @@ do_install() {
 	install -m 0644 ${WORKDIR}/hostap.rules ${D}${sysconfdir}/udev/rules.d/
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} += "${base_libdir}"
