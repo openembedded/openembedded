@@ -31,21 +31,21 @@ PACKAGES = "${PN}-dbg \
 	mono-xsp-dev \
 	"
 
-FILES_libmono-webserver1.0-cil-dbg = " \
+FILES_libmono-webserver1.0-cil-dbg += " \
 	/usr/lib/mono/gac/Mono.WebServer/0.1.*/*.mdb \
 	"
 FILES_libmono-webserver1.0-cil = " \
 	/usr/lib/mono/gac/Mono.WebServer/0.1.*/ \
 	/usr/lib/mono/1.0/Mono.WebServer.dll \
 	"
-FILES_libmono-webserver2.0-cil-dbg = " \
+FILES_libmono-webserver2.0-cil-dbg += " \
 	/usr/lib/mono/gac/Mono.WebServer2/0.2.*/*.mdb \
 	"
 FILES_libmono-webserver2.0-cil = " \
 	/usr/lib/mono/gac/Mono.WebServer2/0.2.*/ \
 	/usr/lib/mono/2.0/Mono.WebServer2.dll \
 	"
-FILES_${PN}-dbg = " \
+FILES_${PN}-dbg += " \
 	/usr/lib/mono/gac/xsp/1.2.*/*.mdb \
 	"
 FILES_${PN} = " \
@@ -59,7 +59,7 @@ FILES_${PN} = " \
 	/usr/lib/xsp/1.0/dbsessmgr.exe.config \
 	/usr/lib/xsp/1.0/dbsessmgr.exe \
 	"
-FILES_mono-xsp2-dbg = " \
+FILES_mono-xsp2-dbg += " \
 	/usr/lib/mono/gac/xsp2/1.2.*/*.dbg \
 	"
 FILES_mono-xsp2 = " \
@@ -73,7 +73,7 @@ FILES_mono-xsp2 = " \
 	/usr/lib/xsp/2.0/dbsessmgr2.exe.config \
 	/usr/lib/xsp/2.0/dbsessmgr2.exe \
 	"
-FILES_mono-mod-mono-server-dbg = "\
+FILES_mono-mod-mono-server-dbg += "\
 	/usr/lib/mono/gac/mod-mono-server/1.2.*/*.mdb \
 	"
 FILES_mono-mod-mono-server = "\
@@ -81,7 +81,7 @@ FILES_mono-mod-mono-server = "\
 	/usr/lib/mono/1.0/mod-mono-server.exe \
 	/usr/bin/mod-mono-server \
 	"
-FILES_mono-mod-mono-server2-dbg = "\
+FILES_mono-mod-mono-server2-dbg += "\
 	/usr/lib/mono/gac/mod-mono-server2/1.2.*/*.mdb \
 	"
 FILES_mono-mod-mono-server2 = "\

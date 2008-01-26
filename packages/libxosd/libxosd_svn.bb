@@ -19,6 +19,6 @@ do_stage() {
 
 PACKAGES =+ "${PN}-examples-dbg ${PN}-examples"
 FILES_${PN}-examples = "${bindir}/osd_cat"
-FILES_${PN}-examples-dbg = "${bindir}/.debug/"
+FILES_${PN}-examples-dbg += "${bindir}/.debug/"
 FILES_${PN}-dev += "${bindir}/xosd-config"
 FILES_${PN} = "${libdir}/libxosd.so.*"

@@ -25,7 +25,7 @@ FILES_${PN}-doc += "${datadir}/examples/conserver"
 
 # Make sure .debug files end up in the correct place
 FILES_${PN} = "${sysconfdir} ${bindir}/* ${libdir}/${PN}/* ${sbindir}/*"
-FILES_${PN}-dbg = "${bindir}/.debug ${sbindir}/.debug ${libdir}/${PN}/.debug"
+FILES_${PN}-dbg += "${bindir}/.debug ${sbindir}/.debug ${libdir}/${PN}/.debug"
 
 # Indicate that the default file is a configuation file
 CONFFILES_${PN} = "${sysconfdir}/default/conserver"

@@ -17,4 +17,4 @@ do_configure() {
 }
 
 FILES_${PN} = "${libdir}/claws-mail/plugins/*.so"
-FILES_${PN}-dbg = "${libdir}/claws-mail/plugins/.debug"
+FILES_${PN}-dbg += "${libdir}/claws-mail/plugins/.debug"

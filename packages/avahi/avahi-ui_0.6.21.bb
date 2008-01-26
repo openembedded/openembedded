@@ -17,4 +17,4 @@ do_stage() {
 PACKAGES = "${PN} ${PN}-dbg"
 
 FILES_${PN} = "${libdir}/libavahi-ui*.so.*"
-FILES_${PN}-dbg = "${libdir}/.debug/libavah-ui*"
+FILES_${PN}-dbg += "${libdir}/.debug/libavah-ui*"
