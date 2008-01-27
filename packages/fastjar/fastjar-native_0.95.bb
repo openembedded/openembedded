@@ -4,6 +4,8 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
+PR = "r1"
+
 DEPENDS = "zlib-native"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/fastjar/fastjar-${PV}.tar.gz"
@@ -20,7 +22,8 @@ do_configure () {
 }
 
 do_stage() {
+	#we should teach autotools.bbclass:autotools_stage_all() about ${STAGING_BINDIR}
 	install -d ${STAGING_BINDIR}
-	install -m 755 fastjar ${STAGING_BINDIR}/fastjar
-	install -m 755 grepjar ${STAGING_BINDIR}
+	install -m 755 .libs/fastjar ${STAGING_BINDIR}/fastjar
+	install -m 755 .libs/grepjar ${STAGING_BINDIR}
 }
