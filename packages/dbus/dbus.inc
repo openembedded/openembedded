@@ -1,16 +1,18 @@
-SECTION = "base"
-HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
+HOMEPAGE = "http://dbus.freedesktop.org"
 DESCRIPTION = "Message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
-	   file://cross.patch;patch=1 \
-	   file://tmpdir.patch;patch=1 \
-	   file://dbus-1.init \
-          "
+SRC_URI = "\
+  http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+  file://cross.patch;patch=1 \
+  file://tmpdir.patch;patch=1 \
+  file://fix-install-daemon.patch;patch=1 \
+  file://dbus-1.init \
+"
+S = "${WORKDIR}/dbus-${PV}"
 
 inherit autotools pkgconfig update-rc.d gettext
 
@@ -51,7 +53,7 @@ EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \
 		--with-xml=expat --without-x"
 
 
-do_stage () {
+do_stage() {
 	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}
 
 	autotools_stage_includes
@@ -60,8 +62,7 @@ do_stage () {
 	install -m 0644 dbus/dbus-arch-deps.h ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
 }
 
-do_install_append () {
+do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
 }
-
