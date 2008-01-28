@@ -20,6 +20,10 @@ PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
 
+do_configure() {
+        :
+}
+
 do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
 	
