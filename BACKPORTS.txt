@@ -73,3 +73,4 @@ f7a565e7e910cea46808ec61590556a6b97dff74         "
 396d43c9459edaab2f04c5dd3825de0391fc1b73         "
 9005ec7475f13738f08b14c023c457704df3f4af         "
 137c597e5635e94070a8b4e425094f828c7ad56a libmimedir 0.3.1: Remove DEFAULT_PREFERENCE=1, set -1 due to known bugs. (PaulS, Koen, Marcin)
+33c44c7c7ce5fce5da6c869be191126d5fca6f96 bluez-utils 3.23 and friends: Set FILESPATH explicitly and correctly. (PaulS, Koen)
