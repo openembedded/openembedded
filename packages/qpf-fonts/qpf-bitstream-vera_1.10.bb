@@ -26,7 +26,7 @@ ${sbindir}/update-qtfontdir
 }
 
 
-PACKAGES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
+PACKAGES = "${PN}-dbg qpf-bitstream-vera-small qpf-bitstream-vera-large"
 
 FILES_qpf-bitstream-vera-small = "${palmqtdir}/lib/fonts/vera_80_50* 						\
 ${palmqtdir}/lib/fonts/vera_80_50i* ${palmqtdir}/lib/fonts/vera_80_75* ${palmqtdir}/lib/fonts/vera_80_75i*	\

@@ -8,7 +8,7 @@ WEBKIT_PORT = "gtk-port"
 WEBKIT_EXTRA_OPTIONS = "CONFIG-=qt"
 
 FILES_webkit-gtklauncher = "${bindir}/GtkLauncher"
-FILES_webkit-gtklauncher-dbg = "${bindir}/.debug/GtkLauncher"
+FILES_webkit-gtklauncher-dbg += "${bindir}/.debug/GtkLauncher"
 
 require webkit.inc
 

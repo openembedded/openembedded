@@ -20,6 +20,6 @@ do_stage() {
 	oe_libinstall -so -C src libao ${STAGING_LIBDIR}
 }
 
-PACKAGES = "libao-alsa-plugin libao-alsa-plugin-dev"
+PACKAGES = "${PN}-dbg libao-alsa-plugin libao-alsa-plugin-dev"
 FILES_libao-alsa-plugin= "${libdir}/ao/plugins-2/libalsa*.so"
 FILES_libao-alsa-plugin-dev += "${libdir}/ao/plugins-2/libalsa*.la"

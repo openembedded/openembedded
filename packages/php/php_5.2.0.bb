@@ -59,7 +59,7 @@ PACKAGES = "${PN}-dbg \
 "
 
 
-FILES_${PN}-dbg            ="/usr/bin/.debug"
+FILES_${PN}-dbg            =+"/usr/bin/.debug"
 
 FILES_${PN}-cli            ="/usr/bin/php"
 

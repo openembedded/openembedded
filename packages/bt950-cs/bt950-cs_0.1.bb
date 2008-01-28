@@ -11,7 +11,7 @@ file://makefile.patch;patch=1"
 
 S = "${WORKDIR}/bt950-${PV}"
 
-PACKAGES = "kernel-module-bt950-cs"
+PACKAGES = "${PN}-dbg kernel-module-bt950-cs"
 FILES_kernel-module-bt950-cs = "/etc/pcmcia/bt950.conf /lib/modules/${KERNEL_VERSION}/kernel/drivers/bluetooth/bt950_cs.o"
 
 inherit module

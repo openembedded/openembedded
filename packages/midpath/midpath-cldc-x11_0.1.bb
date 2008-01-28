@@ -31,7 +31,6 @@ do_stage() {
         install -m 0644 ${S}/external/escher-cldc/core/escher-x11-cldc.jar ${STAGING_DATADIR}/java
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/java/escher-x11-cldc.jar \
 		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

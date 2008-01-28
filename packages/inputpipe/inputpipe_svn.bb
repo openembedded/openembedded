@@ -18,7 +18,7 @@ do_install() {
 	install	inputpipe-client ${D}${bindir}
 }
 
-PACKAGES = "inputpipe-server inputpipe-client"
+PACKAGES = "${PN}-dbg inputpipe-server inputpipe-client"
 
 FILES_inputpipe-client = "${bindir}/inputpipe-client"
 FILES_inputpipe-server = "${bindir}/inputpipe-server"

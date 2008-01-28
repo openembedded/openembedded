@@ -1,0 +1,108 @@
+---
+ arch/avr32/mach-at32ap/pio.c |   73 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 72 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-29 18:17:15.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-30 11:50:27.000000000 +0100
+@@ -11,6 +11,7 @@
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
+ #include <linux/fs.h>
++#include <linux/irq.h>
+ #include <linux/platform_device.h>
+ 
+ #include <asm/gpio.h>
+@@ -709,20 +710,90 @@ err_class_create:
+ late_initcall(pio_init_dev);
+ #endif /* CONFIG_PIO_DEV */
+ 
++/* Interrupt controller implementation */
++static void pio_mask_irq(unsigned int irq)
++{
++	struct pio_device *pio = get_irq_chip_data(irq);
++
++	pio_writel(pio, IDR, 1 << (irq & 0x1f));
++}
++
++static void pio_unmask_irq(unsigned int irq)
++{
++	struct pio_device *pio = get_irq_chip_data(irq);
++
++	pio_writel(pio, IER, 1 << (irq & 0x1f));
++}
++
++static int pio_set_irq_type(unsigned int irq, unsigned int flow_type)
++{
++	if (flow_type != IRQ_TYPE_NONE && flow_type != IRQ_TYPE_EDGE_BOTH)
++		return -EINVAL;
++
++	return 0;
++}
++
++static struct irq_chip pio_irq_chip = {
++	.name		= "pio",
++	.mask		= pio_mask_irq,
++	.unmask		= pio_unmask_irq,
++	.set_type	= pio_set_irq_type,
++};
++
++static void demux_pio_irq(unsigned int irq, struct irq_desc *desc,
++			  struct pt_regs *regs)
++{
++	struct pio_device *pio = desc->handler_data;
++	struct irq_desc *ext_desc;
++	u32 status, pending;
++	unsigned int ext_irq;
++	unsigned int i;
++
++	status = pio_readl(pio, ISR);
++	pending = status & pio_readl(pio, IMR);
++
++	while (pending) {
++		i = fls(pending) - 1;
++		pending &= ~(1 << i);
++
++		ext_irq = gpio_to_irq(32 * pio_id(pio) + i);
++		ext_desc = irq_desc + ext_irq;
++		ext_desc->handle_irq(ext_irq, ext_desc, regs);
++	}
++}
++
+ static int __init pio_probe(struct platform_device *pdev)
+ {
+ 	struct pio_device *pio = NULL;
++	unsigned int i;
++	int int_irq, ext_irq;
+ 
+ 	BUG_ON(pdev->id >= MAX_NR_PIO_DEVICES);
+ 	pio = &pio_dev[pdev->id];
+ 	BUG_ON(!pio->regs);
+ 
+-	/* TODO: Interrupts */
++	/* Set up interrupts */
++	pio_writel(pio, IDR, ~0UL);
++	pio_readl(pio, ISR);
++
++	ext_irq = gpio_to_irq(32 * pdev->id);
++	for (i = 0; i < 32; i++, ext_irq++) {
++		set_irq_chip_and_handler(ext_irq, &pio_irq_chip,
++					 handle_simple_irq);
++		set_irq_chip_data(ext_irq, pio);
++	}
++
++	int_irq = platform_get_irq(pdev, 0);
++	set_irq_chained_handler(int_irq, demux_pio_irq);
++	set_irq_data(int_irq, pio);
+ 
+ 	platform_set_drvdata(pdev, pio);
+ 
+ 	printk(KERN_INFO "%s: Atmel Port Multiplexer at 0x%p (irq %d)\n",
+ 	       pio->name, pio->regs, platform_get_irq(pdev, 0));
++	printk(KERN_INFO
++	       "%s: Handling 32 external IRQs, starting with IRQ %d\n",
++	       pio->name, ext_irq - 32);
+ 
+ 	return 0;
+ }

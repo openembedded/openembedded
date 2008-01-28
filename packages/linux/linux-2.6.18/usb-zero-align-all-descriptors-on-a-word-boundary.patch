@@ -1,0 +1,107 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Tue Feb 28 08:51:18 2006 +0100
+Subject: [PATCH] USB Zero: Align all descriptors on a word boundary
+
+Seems like gcc has problems with packed structs, so we'll just align
+them explicitly.
+
+---
+
+ drivers/usb/gadget/zero.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/usb/gadget/zero.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/usb/gadget/zero.c	2006-09-11 14:36:02.000000000 +0200
++++ linux-2.6.18-avr32/drivers/usb/gadget/zero.c	2006-09-12 10:19:02.000000000 +0200
+@@ -221,7 +221,7 @@ module_param (loopdefault, bool, S_IRUGO
+ #define	CONFIG_LOOPBACK		2
+ 
+ static struct usb_device_descriptor
+-device_desc = {
++device_desc __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof device_desc,
+ 	.bDescriptorType =	USB_DT_DEVICE,
+ 
+@@ -237,7 +237,7 @@ device_desc = {
+ };
+ 
+ static struct usb_config_descriptor
+-source_sink_config = {
++source_sink_config __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof source_sink_config,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 
+@@ -250,7 +250,7 @@ source_sink_config = {
+ };
+ 
+ static struct usb_config_descriptor
+-loopback_config = {
++loopback_config __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof loopback_config,
+ 	.bDescriptorType =	USB_DT_CONFIG,
+ 
+@@ -273,7 +273,7 @@ otg_descriptor = {
+ /* one interface in each configuration */
+ 
+ static const struct usb_interface_descriptor
+-source_sink_intf = {
++source_sink_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof source_sink_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -283,7 +283,7 @@ source_sink_intf = {
+ };
+ 
+ static const struct usb_interface_descriptor
+-loopback_intf = {
++loopback_intf __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof loopback_intf,
+ 	.bDescriptorType =	USB_DT_INTERFACE,
+ 
+@@ -295,7 +295,7 @@ loopback_intf = {
+ /* two full speed bulk endpoints; their use is config-dependent */
+ 
+ static struct usb_endpoint_descriptor
+-fs_source_desc = {
++fs_source_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -304,7 +304,7 @@ fs_source_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-fs_sink_desc = {
++fs_sink_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -340,7 +340,7 @@ static const struct usb_descriptor_heade
+  */
+ 
+ static struct usb_endpoint_descriptor
+-hs_source_desc = {
++hs_source_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -349,7 +349,7 @@ hs_source_desc = {
+ };
+ 
+ static struct usb_endpoint_descriptor
+-hs_sink_desc = {
++hs_sink_desc __attribute__((aligned(2))) = {
+ 	.bLength =		USB_DT_ENDPOINT_SIZE,
+ 	.bDescriptorType =	USB_DT_ENDPOINT,
+ 
+@@ -358,7 +358,7 @@ hs_sink_desc = {
+ };
+ 
+ static struct usb_qualifier_descriptor
+-dev_qualifier = {
++dev_qualifier __attribute__((aligned(2))) = {
+ 	.bLength =		sizeof dev_qualifier,
+ 	.bDescriptorType =	USB_DT_DEVICE_QUALIFIER,
+ 

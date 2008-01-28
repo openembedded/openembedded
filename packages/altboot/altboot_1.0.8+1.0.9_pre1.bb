@@ -71,6 +71,6 @@ do_rm_work() {
 PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
-PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-conf ${PN}-doc ${PN}"
 
 FILES_${PN}-conf = "/etc/altboot*.cfg"

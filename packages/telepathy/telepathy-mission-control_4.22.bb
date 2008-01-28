@@ -33,9 +33,9 @@ FILES_libmissioncontrol-dev = "${libdir}/libmissioncontrol.* \
 FILES_libmissioncontrol-config-dev = "${libdir}/libmissioncontrol-config.*"
 FILES_libmissioncontrol-server-dev = "${libdir}/libmissioncontrol-server.*"
 
-FILES_libmissioncontrol-dbg = "${libdir}/.debug/libmissioncontrol.so.*"
-FILES_libmissioncontrol-config-dbg = "${libdir}/.debug/libmissioncontrol-config.so.*"
-FILES_libmissioncontrol-server-dbg = "${libdir}/.debug/libmissioncontrol-server.so.*"
+FILES_libmissioncontrol-dbg += "${libdir}/.debug/libmissioncontrol.so.*"
+FILES_libmissioncontrol-config-dbg += "${libdir}/.debug/libmissioncontrol-config.so.*"
+FILES_libmissioncontrol-server-dbg += "${libdir}/.debug/libmissioncontrol-server.so.*"
 
 do_stage() {
         autotools_stage_all

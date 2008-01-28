@@ -175,6 +175,6 @@ ${libdir}/python2.4/site-packages/twisted/plugins/twisted_words.py \
 ${libdir}/python2.4/site-packages/twisted/words\
 "
 
-FILES_python-twisted-runner-dbg = " \
+FILES_python-twisted-runner-dbg += " \
 ${libdir}/python2.4/site-packages/twisted/runner/.debug"
 

@@ -25,7 +25,7 @@ PACKAGES =+ "libjana-ecal libjana-ecal-dbg \
 LEAD_SONAME = "libjana.so"
 
 FILES_libjana-ecal = "${libdir}/libjana-ecal.so.*"
-FILES_libjana-ecal-dbg = "${libdir}/.debug/libjana-ecal*"
+FILES_libjana-ecal-dbg += "${libdir}/.debug/libjana-ecal*"
 FILES_libjana-gtk = "${libdir}/libjana-gtk.so.* ${datadir}/jana/landwater.vmf"
-FILES_libjana-gtk-dbg = "${libdir}/.debug/libjana-gtk.so.*"
+FILES_libjana-gtk-dbg += "${libdir}/.debug/libjana-gtk.so.*"
 FILES_libjana-bin_append = " ${datadir}/jana/flag-uk.png "

@@ -12,17 +12,9 @@ leds)	;;
 esac
 
 #
-# led_set led-dir off|on|slow|fast|panic|blink|flash|user|*
+# led_set led-dir off|on|slow|fast|panic|blink|flash|*
 #  set the given LED (expressed as a directory) to the 
-#  given status.  USER_LED may be set to indicate how to
-#  handle the 'user' setting.
-led_user_default(){
-	case "$(machine)" in
-	    nslu2)	echo -n "cpu-idle";;
-	    nas100d)	echo -n "on";;
-	    *)		echo -n "cpu";;
-	esac
-}
+#  given status.
 #
 led_set(){
 	local setting
@@ -30,15 +22,6 @@ led_set(){
 	if test -d "$1"
 	then
 		setting="$2"
-		case "$setting" in
-		user)	if test -n "$USER_LED"
-			then
-				setting="$USER_LED"
-			else
-				setting="$(led_user_default)"
-			fi;;
-		esac
-
 		case "$setting" in
 		off|on)		echo -n none
 
@@ -65,11 +48,6 @@ led_set(){
 				fast)	echo -n 1500;;
 				panic)	echo -n 3000;;
 				esac >"$1/delay_off";;
-
-		cpu-idle)	echo -n cpu
-				# these settings work well on NSLU2
-				echo -n on >"$1/idle"
-				echo -n flash >"$1/active";;
 
 		*)		echo -n "$setting";;
 		esac >"$1/trigger"
@@ -129,6 +107,28 @@ sysled_ready(){
 	led_set "$1/ready" "$ready"
 }
 #
+# the cases for one blue flashing LED (just power)
+sysled_power(){
+	local power
+	# expect dir [boot](system|user) [error|panic]
+	case "$3" in
+	error)	power=off;;
+	panic)	power=off;;
+	*)	case "$2" in
+		bootsystem)	power=off;; # blinking
+		system)		power=off;; # blinking
+		bootuser)	power=on;;
+		user)		power=on;;
+		bootsingleuser)	power=off;; # blinking
+		singleuser)	power=off;; # blinking
+		bootshutdown)	power=off;; # blinking
+		shutdown)	power=off;; # blinking
+		esac;;
+	esac
+
+	led_set "$1/power" "$power"
+}
+#
 sysled(){
 	local mp st boot isst
 	mp=/sys
@@ -153,7 +153,7 @@ sysled(){
 		mp=/mnt
 	fi
 	#
-	# check for the 'ready' LED - otherwise do nothing
+	# check for the 'ready' LED - otherwise check for a 'power' LED
 	if test -d "$mp/class/leds/ready"
 	then
 		if test -d "$mp/class/leds/status"
@@ -161,6 +161,11 @@ sysled(){
 			sysled_readystatus "$mp/class/leds" $boot"$@"
 		else
 			sysled_ready "$mp/class/leds" $boot"$@"
+		fi
+	else
+		if test -d "$mp/class/leds/power"
+		then
+			sysled_power "$mp/class/leds" $boot"$@"
 		fi
 	fi
 	#
@@ -200,11 +205,8 @@ leds_help(){
 	echo "    the new state.  'error' or 'panic' means a (potentially)" >&2
 	echo "    recoverable error or an unrecoverable error ('panic') has" >&2
 	echo "    occured." >&2
-	echo "  <led> off|on|slow|fast|panic|blink|flash|user|cpu|cpu-idle" >&2
-	echo "    set the named led to the given display, an arbitrary led" >&2
-	echo "    trigger may be given.  'user' will use the default specified" >&2
-	echo "    in USER_LED from /etc/default/rcS, if not specified a cpu" >&2
-	echo "    activity setting appropriate to the machine is selected" >&2
+	echo "  <led> off|on|slow|fast|panic|blink|flash" >&2
+	echo "    set the named led to the given display." >&2
 	echo "  beep {args}" >&2
 	echo "    if possible cause the machine to emit a beep" >&2
 }

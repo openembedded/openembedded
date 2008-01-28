@@ -1,0 +1,56 @@
+From 07aea3a71fc6b07744691eec2dfea705a7b30280 Mon Sep 17 00:00:00 2001
+From: Sam Ravnborg <sam@mars.ravnborg.org>
+Date: Sun, 23 Jul 2006 20:47:50 +0200
+Subject: [PATCH] kbuild: use in-kernel unifdef
+
+Let headers_install use in-kernel unifdef
+
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+---
+ Makefile                     |    4 ++--
+ scripts/Makefile             |    3 +++
+ scripts/Makefile.headersinst |    2 +-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+Index: linux-2.6.18-avr32/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/Makefile	2006-10-26 10:20:21.000000000 +0200
++++ linux-2.6.18-avr32/Makefile	2006-10-30 15:59:06.000000000 +0100
+@@ -893,8 +893,8 @@ INSTALL_HDR_PATH=$(objtree)/usr
+ export INSTALL_HDR_PATH
+ 
+ PHONY += headers_install
+-headers_install: include/linux/version.h
+-	$(Q)unifdef -Ux /dev/null
++headers_install: include/linux/version.h scripts_basic FORCE
++	$(Q)$(MAKE) $(build)=scripts scripts/unifdef
+ 	$(Q)rm -rf $(INSTALL_HDR_PATH)/include
+ 	$(Q)$(MAKE) -rR -f $(srctree)/scripts/Makefile.headersinst obj=include
+ 
+Index: linux-2.6.18-avr32/scripts/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/scripts/Makefile	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18-avr32/scripts/Makefile	2006-10-30 15:59:06.000000000 +0100
+@@ -15,6 +15,9 @@ hostprogs-$(CONFIG_IKCONFIG)     += bin2
+ 
+ always		:= $(hostprogs-y)
+ 
++# The following hostprogs-y programs are only build on demand
++hostprogs-y += unifdef
++
+ subdir-$(CONFIG_MODVERSIONS) += genksyms
+ subdir-$(CONFIG_MODULES)     += mod
+ 
+Index: linux-2.6.18-avr32/scripts/Makefile.headersinst
+===================================================================
+--- linux-2.6.18-avr32.orig/scripts/Makefile.headersinst	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18-avr32/scripts/Makefile.headersinst	2006-10-30 15:59:06.000000000 +0100
+@@ -7,7 +7,7 @@
+ #
+ # ==========================================================================
+ 
+-UNIFDEF := unifdef -U__KERNEL__
++UNIFDEF := scripts/unifdef -U__KERNEL__
+ 
+ # Eliminate the contents of (and inclusions of) compiler.h
+ HDRSED  := sed 	-e "s/ inline / __inline__ /g" \

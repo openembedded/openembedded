@@ -15,9 +15,9 @@ PACKAGES =+ "a52dec a52dec-dbg a52dec-doc"
 
 FILES_${PN} = " ${libdir}/liba52.so.0 ${libdir}/liba52.so.0.0.0 " 
 FILES_${PN}-dev = " ${includedir}/a52dec/*.h ${libdir}/liba52.so ${libdir}/liba52.la ${libdir}/liba52.a "
-FILES_${PN}-dbg = " ${libdir}/.debug/*"
+FILES_${PN}-dbg += " ${libdir}/.debug/*"
 FILES_a52dec = " ${bindir}/* "
-FILES_a52dec-dbg = " ${bindir}/.debug/* "
+FILES_a52dec-dbg += " ${bindir}/.debug/* "
 FILES_a52dec-doc = " ${mandir}/man1/* "
 
 do_stage() {

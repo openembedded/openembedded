@@ -1,0 +1,37 @@
+From 686ee9491d8566eff95cf728eb5d6c9921f92bd2 Mon Sep 17 00:00:00 2001
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Date: Tue, 28 Nov 2006 12:56:51 +0100
+Subject: [PATCH] MTD: jffs2_can_mark_obsolete() should return 0 for dataflash
+
+Attempting to write something to a file on a jffs2 filesystem using
+mtd_dataflash often results in the following BUG:
+
+jffs2_flash_writev(): Non-contiguous write to 00825720
+wbuf was previously 00825300-0082530c
+kernel BUG at /home/hskinnemoen/git/linux-devel/fs/jffs2/wbuf.c:786!
+
+Fix this by returning 0 from jffs2_can_mark_obsolete() when running
+on top of dataflash.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ fs/jffs2/os-linux.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 9f41fc0..a037fa4 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -106,7 +106,8 @@ static inline void jffs2_init_inode_info
+ #ifdef CONFIG_JFFS2_SUMMARY
+ #define jffs2_can_mark_obsolete(c) (0)
+ #else
+-#define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE))
++#define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE)	\
++				    && !jffs2_dataflash(c))
+ #endif
+ 
+ #define jffs2_cleanmarker_oob(c) (c->mtd->type == MTD_NANDFLASH)
+-- 
+1.4.3.3
+

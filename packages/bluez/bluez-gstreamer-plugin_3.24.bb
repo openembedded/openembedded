@@ -23,6 +23,5 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = "${libdir}/gstreamer-0.10/libgstbluetooth.so"

@@ -1,4 +1,5 @@
 require bluez-utils3.inc
+PR = "r1"
 
 DEPENDS += "alsa-lib"
 
@@ -20,5 +21,4 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/alsa-lib/libasound*"

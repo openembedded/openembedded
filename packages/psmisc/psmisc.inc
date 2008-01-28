@@ -12,7 +12,7 @@ inherit autotools gettext
 
 ALLOW_EMPTY = "1"
 
-PACKAGES = "${PN} fuser fuser-doc \
+PACKAGES = "${PN}-dbg ${PN} fuser fuser-doc \
 	    killall killall-doc \
 	    pstree pstree-doc"
 

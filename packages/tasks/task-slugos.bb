@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r15"
+PR = "r16"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -84,8 +84,10 @@ kernel-module-uhci-hcd \
 "
 
 # Add modules required for IDE support
-# SLUGOS_STANDARD_RRECOMMENDS += "\
-# "
+SLUGOS_STANDARD_RRECOMMENDS += "\
+kernel-module-libata \
+kernel-module-pata-artop \
+"
 
 # Add modules required for Network support
 SLUGOS_STANDARD_RRECOMMENDS += "\
@@ -104,8 +106,6 @@ kernel-module-via-velocity \
 # kernel-module-isofs \
 # kernel-module-udf \
 # kernel-module-loop \
-# kernel-module-libata \
-# kernel-module-pata-artop \
 # kernel-module-netconsole \
 # wpa-supplicant \
 # zd1211-firmware kernel-module-zd1211rw \

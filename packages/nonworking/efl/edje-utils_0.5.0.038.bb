@@ -5,7 +5,7 @@ PR = "r6"
 
 inherit efl
 
-PACKAGES = "edje-utils"
+PACKAGES = "${PN}-dbg edje-utils"
 FILES_${PN} = "${bindir}/edje ${bindir}/edje_* ${datadir}/edje/data/template ${datadir}/edje/include"
 RDEPENDS_${PN} += "embryo-utils cpp cpp-symlinks gcc gcc-symlinks"
 

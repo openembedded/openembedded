@@ -26,7 +26,7 @@ CONFFILES_${PN} = "${sysconfdir}/apache/httpd.conf \
 		   ${datadir}/apache/htdocs/apache_pb.gif \
 		  "
 
-PACKAGES = "libaprutil libapr apache-dev apache-doc apache"
+PACKAGES = "${PN}-dbg libaprutil libapr apache-dev apache-doc apache"
 FILES_libapr = "${libdir}/libapr*.so.0* ${libdir}/apr.exp"
 FILES_libaprutil = "${libdir}/libaprutil*.so.0* ${libdir}/aprutil.exp"
 

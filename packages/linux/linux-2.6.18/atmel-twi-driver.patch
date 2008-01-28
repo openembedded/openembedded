@@ -1,0 +1,521 @@
+rom: Espen Krangnes <ekrangnes at atmel.com>
+
+This patch will add support for Atmel TWI for the AVR32 architecture. Atmel's TWI is compatible with Philips' I2C protocol. It supports Master read and write, and has support for different baudrates that can be set by the user. It uses the Linux I2C framework. The driver is based on the main principles of the TWI driver for the Atmel AT91 series.
+
+Signed-off-by: Espen Krangnes <ekrangnes at atmel.com>
+
+
+diff -Naur linux-2.6.18.orig/drivers/i2c/busses/atmeltwi.h linux-2.6.18/drivers/i2c/busses/atmeltwi.h
+--- linux-2.6.18.orig/drivers/i2c/busses/atmeltwi.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.18/drivers/i2c/busses/atmeltwi.h	2006-12-20 12:42:48.000000000 +0100
+@@ -0,0 +1,117 @@
++/*
++ * Register definitions for the Atmel Two-Wire Interface
++ */
++
++#ifndef __ASM_AVR32_TWI_H__
++#define __ASM_AVR32_TWI_H__
++
++/* TWI register offsets */
++#define TWI_CR					0x0000
++#define TWI_MMR					0x0004
++#define TWI_SMR					0x0008
++#define TWI_IADR				0x000c
++#define TWI_CWGR				0x0010
++#define TWI_SR					0x0020
++#define TWI_IER					0x0024
++#define TWI_IDR					0x0028
++#define TWI_IMR					0x002c
++#define TWI_RHR					0x0030
++#define TWI_THR					0x0034
++
++/* Bitfields in CR */
++#define TWI_START_OFFSET			0
++#define TWI_START_SIZE				1
++#define TWI_STOP_OFFSET				1
++#define TWI_STOP_SIZE				1
++#define TWI_MSEN_OFFSET				2
++#define TWI_MSEN_SIZE				1
++#define TWI_MSDIS_OFFSET			3
++#define TWI_MSDIS_SIZE				1
++#define TWI_SVEN_OFFSET				4
++#define TWI_SVEN_SIZE				1
++#define TWI_SVDIS_OFFSET			5
++#define TWI_SVDIS_SIZE				1
++#define TWI_SWRST_OFFSET			7
++#define TWI_SWRST_SIZE				1
++
++/* Bitfields in MMR */
++#define TWI_IADRSZ_OFFSET			8
++#define TWI_IADRSZ_SIZE				2
++#define TWI_MREAD_OFFSET			12
++#define TWI_MREAD_SIZE				1
++#define TWI_DADR_OFFSET				16
++#define TWI_DADR_SIZE				7
++
++/* Bitfields in SMR */
++#define TWI_SADR_OFFSET				16
++#define TWI_SADR_SIZE				7
++
++/* Bitfields in IADR */
++#define TWI_IADR_OFFSET				0
++#define TWI_IADR_SIZE				24
++
++/* Bitfields in CWGR */
++#define TWI_CLDIV_OFFSET			0
++#define TWI_CLDIV_SIZE				8
++#define TWI_CHDIV_OFFSET			8
++#define TWI_CHDIV_SIZE				8
++#define TWI_CKDIV_OFFSET			16
++#define TWI_CKDIV_SIZE				3
++
++/* Bitfields in SR */
++#define TWI_TXCOMP_OFFSET			0
++#define TWI_TXCOMP_SIZE				1
++#define TWI_RXRDY_OFFSET			1
++#define TWI_RXRDY_SIZE				1
++#define TWI_TXRDY_OFFSET			2
++#define TWI_TXRDY_SIZE				1
++#define TWI_SVDIR_OFFSET			3
++#define TWI_SVDIR_SIZE				1
++#define TWI_SVACC_OFFSET			4
++#define TWI_SVACC_SIZE				1
++#define TWI_GCACC_OFFSET			5
++#define TWI_GCACC_SIZE				1
++#define TWI_OVRE_OFFSET				6
++#define TWI_OVRE_SIZE				1
++#define TWI_UNRE_OFFSET				7
++#define TWI_UNRE_SIZE				1
++#define TWI_NACK_OFFSET				8
++#define TWI_NACK_SIZE				1
++#define TWI_ARBLST_OFFSET			9
++#define TWI_ARBLST_SIZE				1
++
++/* Bitfields in RHR */
++#define TWI_RXDATA_OFFSET			0
++#define TWI_RXDATA_SIZE				8
++
++/* Bitfields in THR */
++#define TWI_TXDATA_OFFSET			0
++#define TWI_TXDATA_SIZE				8
++
++/* Constants for IADRSZ */
++#define TWI_IADRSZ_NO_ADDR			0
++#define TWI_IADRSZ_ONE_BYTE			1
++#define TWI_IADRSZ_TWO_BYTES			2
++#define TWI_IADRSZ_THREE_BYTES			3
++
++/* Bit manipulation macros */
++#define TWI_BIT(name)					\
++	(1 << TWI_##name##_OFFSET)
++#define TWI_BF(name,value)				\
++	(((value) & ((1 << TWI_##name##_SIZE) - 1))	\
++	 << TWI_##name##_OFFSET)
++#define TWI_BFEXT(name,value)				\
++	(((value) >> TWI_##name##_OFFSET)		\
++	 & ((1 << TWI_##name##_SIZE) - 1))
++#define TWI_BFINS(name,value,old)			\
++	(((old) & ~(((1 << TWI_##name##_SIZE) - 1)	\
++		    << TWI_##name##_OFFSET))		\
++	 | TWI_BF(name,value))
++
++/* Register access macros */
++#define twi_readl(port,reg)				\
++	__raw_readl((port)->regs + TWI_##reg)
++#define twi_writel(port,reg,value)			\
++	__raw_writel((value), (port)->regs + TWI_##reg)
++
++#endif /* __ASM_AVR32_TWI_H__ */
+diff -Naur linux-2.6.18.orig/drivers/i2c/busses/i2c-atmeltwi.c linux-2.6.18/drivers/i2c/busses/i2c-atmeltwi.c
+--- linux-2.6.18.orig/drivers/i2c/busses/i2c-atmeltwi.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.18/drivers/i2c/busses/i2c-atmeltwi.c	2006-12-20 13:30:49.000000000 +0100
+@@ -0,0 +1,348 @@
++/*
++ * i2c Support for Atmel's Two-Wire Interface (TWI)
++ *
++ * Based on the work of Copyright (C) 2004 Rick Bronson
++ * Converted to 2.6 by Andrew Victor <andrew at sanpeople.com>
++ * Ported to AVR32 and heavily modified by Espen Krangnes <ekrangnes at atmel.com>
++ *
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * Borrowed heavily from the original work by:
++ * Copyright (C) 2000 Philip Edelbrock <phil at stimpy.netroedge.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/types.h>
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <linux/init.h>
++#include <linux/clk.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/platform_device.h>
++#include <linux/completion.h>
++#include <asm/io.h>
++#include <linux/time.h>
++#include "atmeltwi.h"
++
++static unsigned int baudrate = CONFIG_I2C_ATMELTWI_BAUDRATE;
++module_param(baudrate, uint, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
++MODULE_PARM_DESC(baudrate, "The TWI baudrate");
++
++
++struct atmel_twi {
++	void __iomem *regs;
++	struct i2c_adapter adapter;
++	struct clk *pclk;
++	spinlock_t lock;
++	struct completion comp;
++	u32 intmask;
++	u8 *buf;
++	u8 len;
++	u8 acks_left;
++	unsigned int irq;
++
++};
++#define to_atmel_twi(adap) container_of(adap, struct atmel_twi, adapter)
++
++/*
++ * Initialize the TWI hardware registers.
++ */
++static int __devinit twi_hwinit(struct atmel_twi *twi)
++{
++	unsigned long cdiv, ckdiv=0;
++
++	twi_writel(twi, IDR, ~0UL);
++	twi_writel(twi, CR, TWI_BIT(SWRST));	/*Reset peripheral*/
++	twi_readl(twi, SR);
++
++	cdiv = (clk_get_rate(twi->pclk) / (2 * baudrate)) - 4;
++
++	while (cdiv > 255) {
++		ckdiv++;
++		cdiv = cdiv >> 1;
++	}
++
++	if (ckdiv > 7)
++		return -EINVAL;
++	else
++		twi_writel(twi, CWGR, (TWI_BF(CKDIV, ckdiv)
++			       | TWI_BF(CHDIV, cdiv)
++			       | TWI_BF(CLDIV, cdiv)));
++	return 0;
++}
++
++/*
++ * Waits for the i2c status register to set the specified bitmask
++ * Returns 0 if timed out (~100ms).
++ */
++static short twi_wait_for_completion(struct atmel_twi *twi,
++		u32 mask)
++{
++	int timeout = msecs_to_jiffies(100);
++
++	twi->intmask = mask;
++	init_completion(&twi->comp);
++
++	twi_writel(twi, IER, mask);
++
++	if(!wait_for_completion_timeout(&twi->comp, timeout))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
++/*
++ * Generic i2c master transfer entrypoint.
++ */
++static int twi_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
++{
++	struct atmel_twi *twi = to_atmel_twi(adap);
++	struct i2c_msg *pmsg;
++	int i;
++
++	/* get first message */
++	pmsg = msgs;
++
++	dev_dbg(&adap->dev, "twi_xfer: processing %d messages:\n", num);
++
++	for (i = 0; i < num; i++, pmsg++) {
++
++		twi->len = pmsg->len;
++		twi->buf = pmsg->buf;
++		twi->acks_left = pmsg->len;
++		twi_writel(twi, MMR, TWI_BF(DADR, pmsg->addr) |
++			(pmsg->flags & I2C_M_RD ? TWI_BIT(MREAD) : 0));
++		twi_writel(twi, IADR, TWI_BF(IADR, pmsg->addr));
++
++		dev_dbg(&adap->dev,"#%d: internal addr %d %s byte%s %s 0x%02x\n",
++			i,pmsg->len, pmsg->flags & I2C_M_RD ? "reading" : "writing",
++			pmsg->len > 1 ? "s" : "",
++			pmsg->flags & I2C_M_RD ? "from" : "to", pmsg->addr);
++
++		/* enable */
++		twi_writel(twi, CR, TWI_BIT(MSEN));
++
++		if (pmsg->flags & I2C_M_RD) {
++			twi_writel(twi, CR, TWI_BIT(START));
++			if ( twi_wait_for_completion(twi,TWI_BIT(RXRDY))==-ETIMEDOUT ) {
++				dev_dbg(&adap->dev, "RXRDY timeout. Stopped with %d bytes left\n",
++					twi->acks_left);
++				return -ETIMEDOUT;
++			}
++
++			/* Send Stop, and Wait until transfer is finished */
++			if ( twi_wait_for_completion(twi,TWI_BIT(TXCOMP))==-ETIMEDOUT ) {
++				dev_dbg(&adap->dev, "TXCOMP timeout\n");
++				return -ETIMEDOUT;
++			}
++
++		} else {
++			twi_writel(twi, THR, twi->buf[0]);
++			if ( twi_wait_for_completion(twi,TWI_BIT(TXRDY))==-ETIMEDOUT ) {
++				dev_dbg(&adap->dev, "TXRDY timeout. Stopped with %d bytes left\n",
++				twi->acks_left);
++				return -ETIMEDOUT;
++			}
++		}
++
++		/* Disable TWI interface */
++		twi_writel(twi, CR, TWI_BIT(MSDIS));
++
++	} /* end cur msg */
++
++	return i;
++}
++
++
++static irqreturn_t twi_interrupt(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct atmel_twi *twi = dev_id;
++	int status = twi_readl(twi, SR);
++
++	if (twi->intmask & status){
++		if (twi->intmask & TWI_BIT(NACK)) {
++			goto nack;
++		} else if (twi->intmask & TWI_BIT(RXRDY)){
++			twi->buf[twi->len - twi->acks_left] = twi_readl(twi,RHR);
++			if(--twi->acks_left==1)
++				twi_writel(twi, CR, TWI_BIT(STOP));
++			if (twi->acks_left==0)
++				goto complete;
++		} else if (twi->intmask & TWI_BIT(TXRDY)) {
++			twi->acks_left--;
++			if (twi->acks_left==0) {
++				twi->intmask = TWI_BIT(TXCOMP);
++				twi_writel(twi, IER, TWI_BIT(TXCOMP));
++			} else
++				twi_writel(twi, THR, twi->buf[twi->len - twi->acks_left]);
++		} else if (twi->intmask & TWI_BIT(TXCOMP)) {
++			goto complete;
++		}
++	}
++
++	return IRQ_HANDLED;
++
++nack:
++	printk(KERN_INFO "NACK received!\n");
++
++complete:
++	twi_writel(twi, IDR, ~0UL);
++	complete(&twi->comp);
++
++	return IRQ_HANDLED;
++
++}
++
++
++/*
++ * Return list of supported functionality.
++ */
++static u32 twi_func(struct i2c_adapter *adapter)
++{
++	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
++}
++
++/* For now, we only handle combined mode (smbus) */
++static struct i2c_algorithm twi_algorithm = {
++	.master_xfer	= twi_xfer,
++	.functionality	= twi_func,
++};
++
++/*
++ * Main initialization routine.
++ */
++static int __devinit twi_probe(struct platform_device *pdev)
++{
++	struct atmel_twi *twi;
++	struct resource *regs;
++	struct clk *pclk;
++	struct i2c_adapter *adapter;
++	int rc, irq;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs)
++		return -ENXIO;
++
++	pclk = clk_get(&pdev->dev, "pclk");
++	if (IS_ERR(pclk))
++		return PTR_ERR(pclk);
++	clk_enable(pclk);
++
++	rc = -ENOMEM;
++	twi = kzalloc(sizeof(struct atmel_twi), GFP_KERNEL);
++	if (!twi) {
++		dev_err(&pdev->dev, "can't allocate interface!\n");
++		goto err_alloc_twi;
++	}
++
++	twi->pclk = pclk;
++	twi->regs = ioremap(regs->start, regs->end - regs->start + 1);
++	if (!twi->regs)
++		goto err_ioremap;
++
++	irq = platform_get_irq(pdev,0);
++	rc = request_irq(irq, twi_interrupt, 0, "twi", twi);
++	if (rc) {
++		dev_err(&pdev->dev, "can't bind irq!\n");
++		goto err_irq;
++	}
++	twi->irq = irq;
++
++	rc = twi_hwinit(twi);
++	if (rc) {
++		dev_err(&pdev->dev, "Unable to set baudrate\n");
++		goto err_hw_init;
++	}
++
++	adapter = &twi->adapter;
++	sprintf(adapter->name, "TWI");
++	adapter->algo = &twi_algorithm;
++	adapter->class = I2C_CLASS_HWMON;
++	adapter->dev.parent = &pdev->dev;
++
++	platform_set_drvdata(pdev, twi);
++
++	rc = i2c_add_adapter(adapter);
++	if (rc) {
++		dev_err(&pdev->dev, "Adapter %s registration failed\n",
++			adapter->name);
++		goto err_register;
++	}
++
++	dev_info(&pdev->dev, "Atmel TWI i2c bus device (baudrate %dk) at 0x%08lx.\n",
++		 baudrate/1000, (unsigned long)regs->start);
++
++	return 0;
++
++
++err_register:
++	platform_set_drvdata(pdev, NULL);
++
++err_hw_init:
++	free_irq(irq, twi);
++
++err_irq:
++	iounmap(twi->regs);
++
++err_ioremap:
++	kfree(twi);
++
++err_alloc_twi:
++	clk_disable(pclk);
++	clk_put(pclk);
++
++	return rc;
++}
++
++static int __devexit twi_remove(struct platform_device *pdev)
++{
++	struct atmel_twi *twi = platform_get_drvdata(pdev);
++	int res;
++
++	platform_set_drvdata(pdev, NULL);
++	res = i2c_del_adapter(&twi->adapter);
++	twi_writel(twi, CR, TWI_BIT(MSDIS));
++	iounmap(twi->regs);
++	clk_disable(twi->pclk);
++	clk_put(twi->pclk);
++	free_irq(twi->irq, twi);
++	kfree(twi);
++
++	return res;
++}
++
++static struct platform_driver twi_driver = {
++	.probe		= twi_probe,
++	.remove		= __devexit_p(twi_remove),
++	.driver		= {
++		.name	= "atmel_twi",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init atmel_twi_init(void)
++{
++	return platform_driver_register(&twi_driver);
++}
++
++static void __exit atmel_twi_exit(void)
++{
++	platform_driver_unregister(&twi_driver);
++}
++
++module_init(atmel_twi_init);
++module_exit(atmel_twi_exit);
++
++MODULE_AUTHOR("Espen Krangnes");
++MODULE_DESCRIPTION("I2C driver for Atmel TWI");
++MODULE_LICENSE("GPL");
+diff -Naur linux-2.6.18.orig/drivers/i2c/busses/Kconfig linux-2.6.18/drivers/i2c/busses/Kconfig
+--- linux-2.6.18.orig/drivers/i2c/busses/Kconfig	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18/drivers/i2c/busses/Kconfig	2006-12-18 22:41:58.000000000 +0100
+@@ -5,6 +5,26 @@
+ menu "I2C Hardware Bus support"
+ 	depends on I2C
+ 
++config I2C_ATMELTWI
++	tristate "Atmel TWI/I2C"
++	depends on I2C
++	help
++	  Atmel on-chip TWI controller. Say Y if you have an AT32 or
++	  AT91-based device and want to use its built-in TWI
++	  functionality. Atmel's TWI is compatible with Philips' I2C
++	  protocol. If in doubt, say NO
++
++config I2C_ATMELTWI_BAUDRATE
++	prompt "Atmel TWI baudrate"
++	depends on I2C_ATMELTWI
++	int
++	default 100000
++	help
++	  Set the TWI/I2C baudrate. This will alter the default value. A
++	  different baudrate can be set by using a module parameter as well. If
++	  no parameter is provided when loading, this is the value that will be
++	  used.
++
+ config I2C_ALI1535
+ 	tristate "ALI 1535"
+ 	depends on I2C && PCI
+diff -Naur linux-2.6.18.orig/drivers/i2c/busses/Makefile linux-2.6.18/drivers/i2c/busses/Makefile
+--- linux-2.6.18.orig/drivers/i2c/busses/Makefile	2006-09-20 05:42:06.000000000 +0200
++++ linux-2.6.18/drivers/i2c/busses/Makefile	2006-12-18 22:42:14.000000000 +0100
+@@ -43,6 +43,7 @@
+ obj-$(CONFIG_I2C_VOODOO3)	+= i2c-voodoo3.o
+ obj-$(CONFIG_SCx200_ACB)	+= scx200_acb.o
+ obj-$(CONFIG_SCx200_I2C)	+= scx200_i2c.o
++obj-$(CONFIG_I2C_ATMELTWI)	+= i2c-atmeltwi.o
+ 
+ ifeq ($(CONFIG_I2C_DEBUG_BUS),y)
+ EXTRA_CFLAGS += -DDEBUG

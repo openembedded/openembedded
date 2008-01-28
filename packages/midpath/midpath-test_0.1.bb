@@ -37,7 +37,6 @@ do_stage() {
 	:
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/java/midpath-tests.jar \
 #		${bindir}/graphical_launcher-j2se.sh \
