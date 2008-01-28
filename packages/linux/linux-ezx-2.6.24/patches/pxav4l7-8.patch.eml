@@ -1,0 +1,113 @@
+Path: news.gmane.org!not-for-mail
+From: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+Newsgroups: gmane.comp.video.video4linux
+Subject: [RFC PATCH 7/8] Add two new fourcc codes for 16bpp formats
+Date: Wed, 23 Jan 2008 18:42:09 +0100 (CET)
+Lines: 42
+Approved: news@gmane.org
+Message-ID: <Pine.LNX.4.64.0801231830490.4932@axis700.grange>
+References: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Trace: ger.gmane.org 1201110167 28919 80.91.229.12 (23 Jan 2008 17:42:47 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 23 Jan 2008 17:42:47 +0000 (UTC)
+To: video4linux-list@redhat.com
+Original-X-From: video4linux-list-bounces@redhat.com Wed Jan 23 18:43:06 2008
+Return-path: <video4linux-list-bounces@redhat.com>
+Envelope-to: rh-video4linux-list@gmane.org
+Original-Received: from hormel.redhat.com ([209.132.177.30])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1JHjci-0003Dp-8K
+	for rh-video4linux-list@gmane.org; Wed, 23 Jan 2008 18:42:52 +0100
+Original-Received: from listman.util.phx.redhat.com (listman.util.phx.redhat.com [10.8.4.110])
+	by hormel.redhat.com (Postfix) with ESMTP
+	id 6BF2372FF8; Wed, 23 Jan 2008 12:42:25 -0500 (EST)
+Original-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by listman.util.phx.redhat.com (8.13.1/8.13.1) with ESMTP id
+	m0NHgO9P017291 for <video4linux-list@listman.util.phx.redhat.com>;
+	Wed, 23 Jan 2008 12:42:24 -0500
+Original-Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m0NHgNmZ028352
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:42:23 -0500
+Original-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by mx3.redhat.com (8.13.1/8.13.1) with SMTP id m0NHfucU001324
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:56 -0500
+Original-Received: (qmail invoked by alias); 23 Jan 2008 17:41:50 -0000
+Original-Received: from p57BD2F1F.dip0.t-ipconnect.de (EHLO axis700.grange)
+	[87.189.47.31]
+	by mail.gmx.net (mp009) with SMTP; 23 Jan 2008 18:41:50 +0100
+X-Authenticated: #20450766
+X-Provags-ID: V01U2FsdGVkX19aKoUhVR5aPjFgx0HR7/IruYd7urwvhZz+IuYK4j
+	/KvctzVVJXbtdS
+Original-Received: from lyakh (helo=localhost)
+	by axis700.grange with local-esmtp (Exim 4.63)
+	(envelope-from <g.liakhovetski@gmx.de>) id 1JHjc1-0002A6-Re
+	for video4linux-list@redhat.com; Wed, 23 Jan 2008 18:42:09 +0100
+X-X-Sender: lyakh@axis700.grange
+In-Reply-To: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+X-Y-GMX-Trusted: 0
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.58 on 172.16.48.32
+X-loop: video4linux-list@redhat.com
+X-BeenThere: video4linux-list@redhat.com
+X-Mailman-Version: 2.1.5
+Precedence: junk
+List-Id: Linux and Kernel Video <video4linux-list.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>, 
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Original-Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+Xref: news.gmane.org gmane.comp.video.video4linux:36475
+Archived-At: <http://permalink.gmane.org/gmane.comp.video.video4linux/36475>
+
+This adds two new fourcc codes (as per info at fourcc.org)
+for 16bpp mono and 16bpp Bayer formats.
+
+Signed-off-by: Steven Whitehouse <steve@chygwyn.com>
+---
+This is a resend of the patch earlier sent by Steven Whitehouse. For some 
+reason, I didn't see the patch in both his emails sent to the list, only 
+in copies I got directly by cc. So, strictly speaking this patch doesn't 
+belong to this series, but I need these 2 codes, and I'm giving the full 
+credit to the original author:-)
+
+ include/linux/videodev2.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/videodev2.h b/include/linux/videodev2.h
+index 05b8c22..b2c47c4 100644
+--- a/include/linux/videodev2.h
++++ b/include/linux/videodev2.h
+@@ -280,6 +280,7 @@ struct v4l2_pix_format
+ #define V4L2_PIX_FMT_BGR32   v4l2_fourcc('B','G','R','4') /* 32  BGR-8-8-8-8   */
+ #define V4L2_PIX_FMT_RGB32   v4l2_fourcc('R','G','B','4') /* 32  RGB-8-8-8-8   */
+ #define V4L2_PIX_FMT_GREY    v4l2_fourcc('G','R','E','Y') /*  8  Greyscale     */
++#define V4L2_PIX_FMT_Y16     v4l2_fourcc('Y','1','6',' ') /* 16  Greyscale     */
+ #define V4L2_PIX_FMT_YVU410  v4l2_fourcc('Y','V','U','9') /*  9  YVU 4:1:0     */
+ #define V4L2_PIX_FMT_YVU420  v4l2_fourcc('Y','V','1','2') /* 12  YVU 4:2:0     */
+ #define V4L2_PIX_FMT_YUYV    v4l2_fourcc('Y','U','Y','V') /* 16  YUV 4:2:2     */
+@@ -302,6 +303,7 @@ struct v4l2_pix_format
+ 
+ /* see http://www.siliconimaging.com/RGB%20Bayer.htm */
+ #define V4L2_PIX_FMT_SBGGR8  v4l2_fourcc('B','A','8','1') /*  8  BGBG.. GRGR.. */
++#define V4L2_PIX_FMT_SBGGR16 v4l2_fourcc('B','Y','R','2') /* 16  BGBG.. GRGR.. */
+ 
+ /* compressed formats */
+ #define V4L2_PIX_FMT_MJPEG    v4l2_fourcc('M','J','P','G') /* Motion-JPEG   */
+-- 
+1.5.3.4
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
+

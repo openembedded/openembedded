@@ -1,0 +1,66 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-e6.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-e6.c
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-e6.c
+@@ -19,6 +19,7 @@
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/pxafb.h>
+ #include <asm/arch/ezx.h>
++#include <asm/arch/ezx-pcap.h>
+ 
+ #include "generic.h"
+ 
+@@ -48,7 +49,53 @@
+ 	.pxafb_lcd_power = &ezx_lcd_power,
+ };
+ 
++/* PCAP */
++static int e6_pcap_init(void)
++{
++	/* FIXME */
++	ezx_pcap_write(PCAP_REG_INT_SEL, 0x0); /* wrong */
++	ezx_pcap_write(PCAP_REG_SWCTRL, 0x2ee6); /* partially wrong */
++	ezx_pcap_write(PCAP_REG_VREG1, 0x15778e3); /* wrong */
++	ezx_pcap_write(PCAP_REG_VREG2, 0x810234); /* partially wrong */
++	ezx_pcap_write(PCAP_REG_AUXVREG, 0x1024bec); /* wrong */
++	ezx_pcap_write(PCAP_REG_PWR, 0x94108); /* partially wrong */
++	ezx_pcap_write(PCAP_REG_AUXVREG_MASK, 0x214d48); /* wrong */
++	ezx_pcap_write(PCAP_REG_BUSCTRL, 0x2a0); /* wrong */
++	ezx_pcap_write(PCAP_REG_LOWPWR, 0x1d9610c);
++	ezx_pcap_write(PCAP_REG_PERIPH, 0x0); /* wrong */
++	ezx_pcap_write(PCAP_REG_GP, 0x107); /* probably unnecessary */
++
++	return 0;
++}
++
++static struct pcap_platform_data e6_pcap_platform_data = {
++	.port		= 1,
++	.cs		= GPIO_SPI_CE,
++	.flags		= PCAP_CS_AH | PCAP_MCI_SD,
++	.clk		= 1,
++	.init		= e6_pcap_init,
++};
++
++static struct resource e6_pcap_resources[] = {
++	[0] = {
++		.start		= IRQ_GPIO1,
++		.end		= IRQ_GPIO1,
++		.flags		= IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device e6_pcap_device = {
++	.name		= "ezx-pcap",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(e6_pcap_resources),
++	.resource	= e6_pcap_resources,
++	.dev		= {
++		.platform_data = &e6_pcap_platform_data,
++	},
++};
++
+ static struct platform_device *devices[] __initdata = {
++	&e6_pcap_device,
+ };
+ 
+ static void __init e6_init(void)

@@ -1,0 +1,1330 @@
+Path: news.gmane.org!not-for-mail
+From: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+Newsgroups: gmane.comp.video.video4linux
+Subject: [RFC PATCH 2/8] V4L2 soc_camera driver for PXA27x processors
+Date: Wed, 23 Jan 2008 18:41:30 +0100 (CET)
+Lines: 1259
+Approved: news@gmane.org
+Message-ID: <Pine.LNX.4.64.0801231816430.4932@axis700.grange>
+References: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Trace: ger.gmane.org 1201110136 28805 80.91.229.12 (23 Jan 2008 17:42:16 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 23 Jan 2008 17:42:16 +0000 (UTC)
+To: video4linux-list@redhat.com
+Original-X-From: video4linux-list-bounces@redhat.com Wed Jan 23 18:42:35 2008
+Return-path: <video4linux-list-bounces@redhat.com>
+Envelope-to: rh-video4linux-list@gmane.org
+Original-Received: from hormel.redhat.com ([209.132.177.30])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1JHjc5-0002rt-JS
+	for rh-video4linux-list@gmane.org; Wed, 23 Jan 2008 18:42:14 +0100
+Original-Received: from listman.util.phx.redhat.com (listman.util.phx.redhat.com [10.8.4.110])
+	by hormel.redhat.com (Postfix) with ESMTP
+	id 2A84F730D3; Wed, 23 Jan 2008 12:41:44 -0500 (EST)
+Original-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by listman.util.phx.redhat.com (8.13.1/8.13.1) with ESMTP id
+	m0NHffgW017091 for <video4linux-list@listman.util.phx.redhat.com>;
+	Wed, 23 Jan 2008 12:41:41 -0500
+Original-Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m0NHffAN027831
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:41 -0500
+Original-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by mx3.redhat.com (8.13.1/8.13.1) with SMTP id m0NHfHEp000673
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:18 -0500
+Original-Received: (qmail invoked by alias); 23 Jan 2008 17:41:10 -0000
+Original-Received: from p57BD2F1F.dip0.t-ipconnect.de (EHLO axis700.grange)
+	[87.189.47.31]
+	by mail.gmx.net (mp032) with SMTP; 23 Jan 2008 18:41:10 +0100
+X-Authenticated: #20450766
+X-Provags-ID: V01U2FsdGVkX1+0is8xDaK0Koc8XTQH0vhXxt8dgUbjrW8SVR/i+1
+	dGRci20BqQXyog
+Original-Received: from lyakh (helo=localhost)
+	by axis700.grange with local-esmtp (Exim 4.63)
+	(envelope-from <g.liakhovetski@gmx.de>) id 1JHjbO-00029q-7k
+	for video4linux-list@redhat.com; Wed, 23 Jan 2008 18:41:30 +0100
+X-X-Sender: lyakh@axis700.grange
+In-Reply-To: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+X-Y-GMX-Trusted: 0
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.58 on 172.16.48.32
+X-loop: video4linux-list@redhat.com
+X-BeenThere: video4linux-list@redhat.com
+X-Mailman-Version: 2.1.5
+Precedence: junk
+List-Id: Linux and Kernel Video <video4linux-list.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>, 
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Original-Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+Xref: news.gmane.org gmane.comp.video.video4linux:36472
+Archived-At: <http://permalink.gmane.org/gmane.comp.video.video4linux/36472>
+
+This patch adds a driver for the Quick Capture Interface on the PXA270. It 
+is based on the original driver from Intel, but has been re-worked 
+multiple times since then, this time with the V4L2 API support.
+
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+---
+ drivers/media/video/Kconfig         |    8 +
+ drivers/media/video/Makefile        |    1 +
+ drivers/media/video/pxa_camera.c    |  895 +++++++++++++++++++++++++++++++++++
+ include/asm-arm/arch-pxa/pxa-regs.h |   94 ++++
+ include/asm-arm/arch-pxa/pxa_cif.h  |   48 ++
+ 5 files changed, 1046 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/media/video/pxa_camera.c
+ create mode 100644 include/asm-arm/arch-pxa/pxa_cif.h
+
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index be54183..dc0dfec 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -803,4 +803,12 @@ config SOC_CAMERA
+ 	  over a bus like PCI or USB. For example some i2c camera hanging
+ 	  directly on the data bus of an SoC.
+ 
++config VIDEO_PXA27X
++	tristate "PXA27x Quick Capture Interface driver"
++	depends on VIDEO_DEV && PXA27x
++	select VIDEO_BUF
++	select SOC_CAMERA
++	---help---
++	  This is a v4l2 driver for the PXA27x Quick Capture Interface
++
+ endif # VIDEO_CAPTURE_DRIVERS
+diff --git a/drivers/media/video/Makefile b/drivers/media/video/Makefile
+index 97a9135..81b7cd6 100644
+--- a/drivers/media/video/Makefile
++++ b/drivers/media/video/Makefile
+@@ -116,6 +116,7 @@ obj-$(CONFIG_USB_QUICKCAM_MESSENGER)	+= usbvideo/
+ 
+ obj-$(CONFIG_VIDEO_VIVI) += vivi.o
+ 
++obj-$(CONFIG_VIDEO_PXA27X)	+= pxa_camera.o
+ obj-$(CONFIG_SOC_CAMERA)	+= soc_camera.o
+ 
+ EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
+diff --git a/drivers/media/video/pxa_camera.c b/drivers/media/video/pxa_camera.c
+new file mode 100644
+index 0000000..78927fb
+--- /dev/null
++++ b/drivers/media/video/pxa_camera.c
+@@ -0,0 +1,895 @@
++/*
++ * V4L2 Driver for PXA camera host
++ *
++ * Copyright (C) 2006, Sascha Hauer, Pengutronix
++ * Copyright (C) 2008, Guennadi Liakhovetski <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#include <asm/io.h>
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/dma-mapping.h>
++#include <linux/errno.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/mm.h>
++#include <linux/moduleparam.h>
++#include <linux/time.h>
++#include <linux/version.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/mutex.h>
++
++#include <media/v4l2-common.h>
++#include <media/v4l2-dev.h>
++#include <media/soc_camera.h>
++
++#include <linux/videodev.h>
++#include <linux/video_decoder.h>
++
++#include <asm/dma.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/pxa_cif.h>
++
++#define PXA_CAM_VERSION_CODE KERNEL_VERSION(0, 0, 5)
++#define PXA_CAM_DRV_NAME "pxa2xx-camera"
++
++#define CICR0_IRQ_MASK (CICR0_TOM | CICR0_RDAVM | CICR0_FEM | CICR0_EOLM |	\
++			CICR0_PERRM | CICR0_QDM | CICR0_CDM | CICR0_SOFM |	\
++			CICR0_EOFM | CICR0_FOM)
++
++/*
++ * Structures
++ */
++
++/* buffer for one video frame */
++struct pxa_buffer {
++	/* common v4l buffer stuff -- must be first */
++	struct videobuf_buffer vb;
++
++	const struct soc_camera_data_format        *fmt;
++
++	/* our descriptor list needed for the PXA DMA engine */
++	dma_addr_t		sg_dma;
++	struct pxa_dma_desc	*sg_cpu;
++	size_t			sg_size;
++	int			inwork;
++};
++
++struct pxa_framebuffer_queue {
++	dma_addr_t		sg_last_dma;
++	struct pxa_dma_desc	*sg_last_cpu;
++};
++
++struct pxa_camera_dev {
++	struct device		*dev;
++
++	unsigned int		irq;
++	void __iomem		*base;
++	unsigned int		dma_chan_y;
++
++	enum v4l2_buf_type	type;
++
++	struct pxacamera_platform_data *pdata;
++	struct resource		*res;
++	unsigned long		platform_flags;
++	unsigned long		platform_mclk_10khz;
++
++	struct list_head	capture;
++
++	spinlock_t		lock;
++
++	int			dma_running;
++
++	struct pxa_buffer	*active;
++};
++
++static const char *pxa_cam_driver_description = "PXA_Camera";
++
++static unsigned int vid_limit = 16;	/* Video memory limit, in Mb */
++
++/*
++ *  Videobuf operations
++ */
++static int
++pxa_videobuf_setup(struct videobuf_queue *vq, unsigned int *count, unsigned int *size)
++{
++	struct soc_camera_device *icd = vq->priv_data;
++
++	pr_debug("%s: count=%d, size=%d\n", __FUNCTION__, *count, *size);
++
++	*size = icd->width * icd->height * ((icd->current_fmt->depth + 7) >> 3);
++
++	if (0 == *count)
++		*count = 32;
++	while (*size * *count > vid_limit * 1024 * 1024)
++		(*count)--;
++
++	return 0;
++}
++
++static void free_buffer(struct videobuf_queue *vq, struct pxa_buffer *buf)
++{
++	struct soc_camera_device *icd = vq->priv_data;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++
++	BUG_ON(in_interrupt());
++
++	pr_debug("%s (vb=0x%p) 0x%08lx %d\n",__FUNCTION__, &buf->vb, buf->vb.baddr, buf->vb.bsize);
++
++	/* This waits until this buffer is out of danger, i.e., until it is no longer
++	 * in STATE_QUEUED or STATE_ACTIVE */
++	videobuf_waiton(&buf->vb, 0, 0);
++	videobuf_dma_unmap(vq, &buf->vb.dma);
++	videobuf_dma_free(&buf->vb.dma);
++
++	if (buf->sg_cpu)
++		dma_free_coherent(pcdev->dev, buf->sg_size, buf->sg_cpu, buf->sg_dma);
++	buf->sg_cpu = NULL;
++
++	buf->vb.state = STATE_NEEDS_INIT;
++}
++
++static int
++pxa_videobuf_prepare(struct videobuf_queue *vq, struct videobuf_buffer *vb,
++						enum v4l2_field field)
++{
++	struct soc_camera_device *icd = vq->priv_data;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++	struct pxa_buffer *buf = container_of(vb, struct pxa_buffer, vb);
++//	unsigned long flags;
++	int i, ret;
++
++	pr_debug("%s (vb=0x%p) 0x%08lx %d\n",__FUNCTION__, vb, vb->baddr, vb->bsize);
++
++	/* Added list head initialization on alloc */
++	WARN_ON(!list_empty(&vb->queue));
++
++#ifdef DEBUG
++	/* This can be useful if you want to see if we actually fill
++	 * the buffer with something */
++	memset((void *)vb->baddr, 0xaa, vb->bsize);
++#endif
++
++	BUG_ON(NULL == icd->current_fmt);
++
++	/* I think, in buf_prepare you only have to protect global data,
++	 * the actual buffer is yours */
++//	spin_lock_irqsave(&pcdev->lock, flags);
++	buf->inwork = 1;
++
++	if (buf->fmt	!= icd->current_fmt ||
++	    vb->width	!= icd->width ||
++	    vb->height	!= icd->height ||
++	    vb->field	!= field) {
++		buf->fmt	= icd->current_fmt;
++		vb->width	= icd->width;
++		vb->height	= icd->height;
++		vb->field	= field;
++		vb->state	= STATE_NEEDS_INIT;
++	}
++
++	vb->size = vb->width * vb->height * ((buf->fmt->depth + 7) >> 3);
++	if (0 != vb->baddr && vb->bsize < vb->size) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (vb->state == STATE_NEEDS_INIT) {
++		unsigned int size = vb->size;
++
++		if (0 != (ret = videobuf_iolock(vq, vb, NULL)))
++			goto fail;
++
++		if (buf->sg_cpu)
++			dma_free_coherent(pcdev->dev, buf->sg_size, buf->sg_cpu, buf->sg_dma);
++
++		buf->sg_size = (vb->dma.sglen + 1) * sizeof(struct pxa_dma_desc);
++		buf->sg_cpu = dma_alloc_coherent(pcdev->dev,
++			buf->sg_size,
++			&buf->sg_dma, GFP_KERNEL);
++		if (!buf->sg_cpu) {
++			ret = -ENOMEM;
++			goto fail;
++		}
++
++		pr_debug("%s nents=%d size: %d sg=0x%p\n", __FUNCTION__, vb->dma.sglen, size, vb->dma.sglist);
++		for (i = 0; i < vb->dma.sglen; i++ ) {
++			struct scatterlist *sg = vb->dma.sglist;
++			unsigned int dma_len = sg_dma_len(&sg[i]), xfer_len;
++
++			BUG_ON(!sg[i].page);
++
++			sg[i].dma_address = page_to_phys(sg[i].page) + sg[i].offset;
++
++			buf->sg_cpu[i].dsadr = pcdev->res->start + 0x28; /* CIBR0 */
++			buf->sg_cpu[i].dtadr = sg_dma_address(&sg[i]);
++			/* PXA27x Developer's Manual 27.4.4.1: round up to 8 bytes */
++//			xfer_len = (min(dma_len, size) + 7) & ~7;
++			xfer_len = min(dma_len, size);
++			if (xfer_len & 7)
++				dev_err(&icd->dev, "Unaligned buffer: dma_len %u, size %u\n",
++					dma_len, size);
++			buf->sg_cpu[i].dcmd = DCMD_FLOWSRC | DCMD_BURST8 | DCMD_INCTRGADDR |
++				xfer_len;
++			size -= dma_len;
++			buf->sg_cpu[i].ddadr = buf->sg_dma + (i + 1) *
++					sizeof(struct pxa_dma_desc);
++		}
++		buf->sg_cpu[vb->dma.sglen - 1].ddadr = DDADR_STOP;
++		buf->sg_cpu[vb->dma.sglen - 1].dcmd |= DCMD_ENDIRQEN;
++
++		vb->state = STATE_PREPARED;
++	}
++
++	buf->inwork = 0;
++//	spin_unlock_irqrestore(&pcdev->lock, flags);
++
++	return 0;
++
++fail:
++	free_buffer(vq,buf);
++out:
++	buf->inwork = 0;
++//	spin_unlock_irqrestore(&pcdev->lock, flags);
++	return ret;
++}
++
++static void
++pxa_videobuf_queue(struct videobuf_queue *vq, struct videobuf_buffer *vb)
++{
++	struct soc_camera_device *icd = vq->priv_data;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++	struct pxa_buffer *buf = container_of(vb,struct pxa_buffer,vb);
++	struct pxa_buffer *active = pcdev->active;
++	int nents = vb->dma.sglen;
++	unsigned long flags;
++
++	pr_debug("%s (vb=0x%p) 0x%08lx %d\n",__FUNCTION__, vb, vb->baddr, vb->bsize);
++	spin_lock_irqsave(&pcdev->lock, flags);
++
++	list_add_tail(&vb->queue, &pcdev->capture);
++
++	vb->state = STATE_ACTIVE;
++
++	if (!pcdev->active) {
++		CIFR |= CIFR_RESET_F;
++		DDADR(pcdev->dma_chan_y) = buf->sg_dma;
++		DCSR(pcdev->dma_chan_y) = DCSR_RUN;
++		pcdev->active = buf;
++		CICR0 |= CICR0_ENB;
++	} else {
++		/* Stop DMA engine */
++		DCSR(pcdev->dma_chan_y) = 0;
++
++		/* Add the descriptors we just initialized to the currently
++		 * running chain
++		 */
++		pcdev->active->sg_cpu[active->vb.dma.sglen - 1].ddadr = buf->sg_dma;
++
++		/* Setup a dummy descriptor with the DMA engines current
++		 * state
++		 */
++		buf->sg_cpu[nents].dsadr = pcdev->res->start + 0x28; /* CIBR0 */
++		buf->sg_cpu[nents].dtadr = DTADR(pcdev->dma_chan_y);
++		buf->sg_cpu[nents].dcmd = DCMD(pcdev->dma_chan_y);
++
++		if (DDADR(pcdev->dma_chan_y) == DDADR_STOP) {
++			/* The DMA engine is on the last descriptor, set the
++			 * next descriptors address to the descriptors
++			 * we just initialized
++			 */
++			buf->sg_cpu[nents].ddadr = buf->sg_dma;
++		} else {
++			buf->sg_cpu[nents].ddadr = DDADR(pcdev->dma_chan_y);
++		}
++
++		/* The next descriptor is the dummy descriptor */
++		DDADR(pcdev->dma_chan_y) = buf->sg_dma + nents *
++			sizeof(struct pxa_dma_desc);
++
++		DCSR(pcdev->dma_chan_y) = DCSR_RUN;
++#if 0
++		if(CISR & CISR_IFO_0) {
++			printk("%s: fifo ovl. repeat last\n",__FUNCTION__);
++			DDADR(pcdev->dma_chan_y) = pcdev->active->sg_dma;
++
++			CICR0 &= ~CICR0_ENB;
++			CIFR |= CIFR_RESET_F;
++			DCSR(pcdev->dma_chan_y) = DCSR_RUN;
++			CICR0 |= CICR0_ENB;
++		} else {
++			DCSR(pcdev->dma_chan_y) = DCSR_RUN;
++//			printk("no fifo ovl\n");
++		}
++#endif
++	}
++
++	spin_unlock_irqrestore(&pcdev->lock, flags);
++
++}
++
++static void pxa_videobuf_release(struct videobuf_queue *vq, struct videobuf_buffer *vb)
++{
++	struct pxa_buffer *buf = container_of(vb, struct pxa_buffer, vb);
++
++	pr_debug("%s (vb=0x%p) 0x%08lx %d\n",__FUNCTION__,vb, vb->baddr, vb->bsize);
++
++#ifdef DEBUG
++	switch(vb->state) {
++	case STATE_ACTIVE:
++		printk("%s (active)\n",__FUNCTION__);
++		break;
++	case STATE_QUEUED:
++		printk("%s (queued)\n",__FUNCTION__);
++		break;
++	case STATE_PREPARED:
++		printk("%s (prepared)\n",__FUNCTION__);
++		break;
++	default:
++		printk("%s (unknown)\n",__FUNCTION__);
++		break;
++	}
++#endif
++
++	free_buffer(vq, buf);
++}
++
++static int pxa_videobuf_map_sg(void *dev, struct scatterlist *sg, int nents,
++		       int direction)
++{
++	pr_debug("%s, number of pages=%d\n", __FUNCTION__,nents);
++	BUG_ON(direction == DMA_NONE);
++
++	dma_map_sg(dev, sg, nents, DMA_FROM_DEVICE);
++
++	return nents;
++}
++
++static int pxa_videobuf_unmap_sg(void *dev, struct scatterlist *sg, int nents,
++			 int direction)
++{
++	pr_debug("%s\n", __FUNCTION__);
++	dma_unmap_sg(dev, sg, nents, DMA_FROM_DEVICE);
++	return 0;
++}
++
++static int pxa_videobuf_dma_sync_sg(void *dev, struct scatterlist *sg, int nents,
++			    int direction)
++{
++	return 0;
++}
++
++static void pxa_camera_dma_irq_y(int channel, void *data)
++{
++	struct pxa_camera_dev *pcdev = data;
++	struct pxa_buffer *buf;
++	unsigned long flags;
++	unsigned int status;
++	struct videobuf_buffer *vb;
++
++	spin_lock_irqsave(&pcdev->lock, flags);
++
++	status = DCSR(pcdev->dma_chan_y);
++	if (status & DCSR_BUSERR) {
++		printk("%s: Bus Error\n",__FUNCTION__);
++		DCSR(pcdev->dma_chan_y) |= DCSR_BUSERR;
++		goto out;
++	}
++
++	if (!(status & DCSR_ENDINTR)) {
++		printk("%s: unknown dma interrupt source. status: 0x%08x\n",
++				__FUNCTION__, status);
++		goto out;
++	}
++
++	DCSR(pcdev->dma_chan_y) |= DCSR_ENDINTR;
++
++	if (!pcdev->active) {
++		printk("%s: no active buf\n",__FUNCTION__);
++		goto out;
++	}
++
++	vb = &pcdev->active->vb;
++	buf = container_of(vb, struct pxa_buffer, vb);
++	WARN_ON(buf->inwork || list_empty(&vb->queue));
++	pr_debug("%s (vb=0x%p) 0x%08lx %d\n",__FUNCTION__,vb, vb->baddr, vb->bsize);
++
++	/* _init is used to debug races, see comment in pxa_is_reqbufs() */
++	list_del_init(&vb->queue);
++	vb->state = STATE_DONE;
++	do_gettimeofday(&vb->ts);
++	vb->field_count++;
++	wake_up(&vb->done);
++
++	if (list_empty(&pcdev->capture)) {
++		pcdev->active = NULL;
++		DCSR(pcdev->dma_chan_y) = 0;
++		CICR0 &= ~CICR0_ENB;
++		goto out;
++	}
++
++	pcdev->active = list_entry(pcdev->capture.next, struct pxa_buffer, vb.queue);
++
++out:
++	spin_unlock_irqrestore(&pcdev->lock, flags);
++}
++
++static struct videobuf_queue_ops pxa_video_ops = {
++	.buf_setup      = pxa_videobuf_setup,
++	.buf_prepare    = pxa_videobuf_prepare,
++	.buf_queue      = pxa_videobuf_queue,
++	.buf_release    = pxa_videobuf_release,
++
++	/* Non-pci handling routines */
++	.vb_map_sg      = pxa_videobuf_map_sg,
++	.vb_dma_sync_sg = pxa_videobuf_dma_sync_sg,
++	.vb_unmap_sg    = pxa_videobuf_unmap_sg,
++};
++
++static int mclk_get_divisor(unsigned int mclk_10khz)
++{
++	unsigned long div;
++	unsigned long lcdclk;
++
++	lcdclk = get_lcdclk_frequency_10khz();
++
++	/* We verify platform_mclk_10khz != 0, so this is only against future bugs */
++	if (unlikely(!mclk_10khz))
++		return 0;
++
++	div = (lcdclk + 2 * mclk_10khz - 1) / (2 * mclk_10khz) - 1;
++
++	pr_debug("pxa_camera: LCD clock %lukHz, platform target freq %dkHz, divisor %lu\n",
++		 lcdclk * 10, mclk_10khz * 10, div);
++
++	return div;
++}
++
++static void pxa_is_activate(struct pxa_camera_dev *pcdev)
++{
++	struct pxacamera_platform_data *pdata = pcdev->pdata;
++
++	printk("Registered platform device at %p data %p\n", pcdev, pdata);
++
++	if (pdata && pdata->init) {
++		dev_dbg(pcdev->dev, "%s: Init gpios\n", __FUNCTION__);
++		pdata->init(pcdev->dev);
++	}
++
++	if (pdata && pdata->power) {
++		dev_dbg(pcdev->dev, "%s: Power on camera\n", __FUNCTION__);
++		pdata->power(pcdev->dev, 1);
++	}
++
++	if (pdata && pdata->reset) {
++		dev_dbg(pcdev->dev, "%s: Releasing camera reset\n", __FUNCTION__);
++		pdata->reset(pcdev->dev, 1);
++	}
++
++	CICR0 = 0x3FF;   /* disable all interrupts */
++	pxa_set_cken(CKEN_CAMERA, 1);
++}
++
++static void pxa_is_deactivate(struct pxa_camera_dev *pdev)
++{
++	struct pxacamera_platform_data *board = pdev->pdata;
++
++	pxa_set_cken(CKEN_CAMERA, 0);
++/*
++	dev_dbg(&pdev->dev, "%s: Asserting camera reset\n", __FUNCTION__);
++	if (board && board->reset) {
++		board->reset(&pdev->dev, 0);
++	}
++*/
++	dev_dbg(pdev->dev, "%s: Power off camera\n", __FUNCTION__);
++	if (board && board->power)
++		board->power(pdev->dev, 0);
++}
++
++static irqreturn_t pxa_camera_irq(int irq, void *data)
++{
++//	struct pxa_camera_dev *pcdev = (struct pxa_camera_dev *)data;
++//	printk("%s: 0x%08x\n",__FUNCTION__,CISR);
++	unsigned int status = CISR;
++//	if(status & CISR_SOF) printk("Start of frame\n");
++//	if(status & CISR_EOF) printk("End of frame\n");
++//	printk("%s 0x%08x\n",__FUNCTION__,status);
++	CISR = status;
++
++	return IRQ_HANDLED;
++}
++
++/* The following two functions absolutely depend on the fact, that
++ * there can be only one camera on PXA quick capture interface */
++static int pxa_is_add_device(struct soc_camera_device *icd)
++{
++	struct soc_camera_host *ici = to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++
++	dev_info(&icd->dev, "PXA Camera driver loaded for host %d\n",
++		 icd->iface);
++
++	pxa_is_activate(pcdev);
++//	udelay(200);
++	return icd->ops->init(icd);
++}
++
++static void pxa_is_remove_device(struct soc_camera_device *icd)
++{
++	struct soc_camera_host *ici = to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++
++	dev_dbg(pcdev->dev, "%s\n", __FUNCTION__);
++
++	/* disable capture, disable interrupts */
++	CICR0 = 0x3ff;
++	/* Stop DMA engine */
++	DCSR(pcdev->dma_chan_y) = 0;
++
++	icd->ops->release(icd);
++
++	pxa_is_deactivate(pcdev);
++}
++
++static int pxa_is_set_capture_format(struct soc_camera_device *icd,
++				     __u32 pixfmt, struct v4l2_rect *rect)
++{
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	struct pxa_camera_dev *pcdev = ici->priv;
++	unsigned int datawidth = 0, dw, bpp;
++	u32 cicr0, cicr4 = 0;
++	int ret;
++
++	/* If requested data width is supported by the platform, use it */
++	switch (icd->cached_datawidth) {
++	case 10:
++		if (pcdev->platform_flags & PXACIF_DATAWIDTH_10)
++			datawidth = IS_DATAWIDTH_10;
++		break;
++	case 9:
++		if (pcdev->platform_flags & PXACIF_DATAWIDTH_9)
++			datawidth = IS_DATAWIDTH_9;
++		break;
++	case 8:
++		if (pcdev->platform_flags & PXACIF_DATAWIDTH_8)
++			datawidth = IS_DATAWIDTH_8;
++	}
++	if (!datawidth)
++		return -EINVAL;
++
++	ret = icd->ops->set_capture_format(icd, pixfmt, rect,
++			datawidth |
++			(pcdev->platform_flags & PXACIF_MASTER ?
++			 IS_MASTER : 0) |
++			(pcdev->platform_flags & PXACIF_HSP ?
++			 0 : IS_HSYNC_ACTIVE_HIGH) |
++			(pcdev->platform_flags & PXACIF_VSP ?
++			 0 : IS_VSYNC_ACTIVE_HIGH) |
++			(pcdev->platform_flags & PXACIF_PCP ?
++			 0 : IS_PCLK_SAMPLE_RISING));
++	if (ret < 0)
++		return ret;
++
++	/* Datawidth is now guaranteed to be equal to one of the three values.
++	 * We fix bit-per-pixel equal to data-width... */
++	switch (datawidth) {
++	case IS_DATAWIDTH_10:
++		icd->cached_datawidth = 10;
++		dw = 4;
++		bpp = 0x40;
++		break;
++	case IS_DATAWIDTH_9:
++		icd->cached_datawidth = 9;
++		dw = 3;
++		bpp = 0x20;
++		break;
++	case IS_DATAWIDTH_8:
++		icd->cached_datawidth = 8;
++		dw = 2;
++		bpp = 0;
++	}
++
++	if (pcdev->platform_flags & PXACIF_PCLK_EN)
++		cicr4 |= CICR4_PCLK_EN;
++	if (pcdev->platform_flags & PXACIF_MCLK_EN)
++		cicr4 |= CICR4_MCLK_EN;
++	if (pcdev->platform_flags & PXACIF_PCP)
++		cicr4 |= CICR4_PCP;
++	if (pcdev->platform_flags & PXACIF_HSP)
++		cicr4 |= CICR4_HSP;
++	if (pcdev->platform_flags & PXACIF_VSP)
++		cicr4 |= CICR4_VSP;
++
++	cicr0 = CICR0;
++	if (cicr0 & CICR0_ENB)
++		CICR0 = cicr0 & ~CICR0_ENB;
++	CICR1 = CICR1_PPL_VAL(rect->width - 1) | bpp | dw;
++	CICR2 = 0;
++	CICR3 = CICR3_LPF_VAL(rect->height - 1) |
++		CICR3_BFW_VAL(min((unsigned short)255, icd->y_skip_top));
++	CICR4 = mclk_get_divisor(pcdev->platform_mclk_10khz) | cicr4;
++
++	/* CIF interrupts are not used, only DMA */
++	CICR0 = (pcdev->platform_flags & PXACIF_MASTER ?
++			0 : (CICR0_SL_CAP_EN | CICR0_SIM_SP)) |
++		CICR0_DMAEN | CICR0_IRQ_MASK | (cicr0 & CICR0_ENB);
++
++	return 0;
++}
++
++static int pxa_is_try_fmt_cap(struct soc_camera_host *ici, struct v4l2_format *f)
++{
++	/* limit to pxa hardware capabilities */
++	if (f->fmt.pix.height < 32)
++		f->fmt.pix.height = 32;
++	if (f->fmt.pix.height > 2048)
++		f->fmt.pix.height = 2048;
++	if (f->fmt.pix.width < 48)
++		f->fmt.pix.width = 48;
++	if (f->fmt.pix.width > 2048)
++		f->fmt.pix.width = 2048;
++	f->fmt.pix.width &= ~0x01;
++
++	return 0;
++}
++
++static int pxa_is_reqbufs(struct soc_camera_file *icf, struct v4l2_requestbuffers *p)
++{
++	int i;
++
++	/* This is for locking debugging only. I removed spinlocks and now I
++	 * check whether .prepare is ever called on a linked buffer, or whether
++	 * a dma IRQ can occur for an in-work or unlinked buffer. Until now
++	 * it hadn't triggered */
++	for (i = 0; i < p->count; i++) {
++		struct pxa_buffer *buf = container_of(icf->vb_vidq.bufs[i],
++						      struct pxa_buffer, vb);
++		buf->inwork = 0;
++		INIT_LIST_HEAD(&buf->vb.queue);
++	}
++
++	return 0;
++}
++
++static unsigned int pxa_is_poll(struct file *file, poll_table *pt)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct pxa_buffer *buf;
++
++	buf = list_entry(icf->vb_vidq.stream.next, struct pxa_buffer, vb.stream);
++
++	poll_wait(file, &buf->vb.done, pt);
++
++	if (buf->vb.state == STATE_DONE ||
++	    buf->vb.state == STATE_ERROR)
++		return POLLIN|POLLRDNORM;
++
++	return 0;
++}
++
++static int pxa_is_querycap(struct soc_camera_host *ici,
++			   struct v4l2_capability *cap)
++{
++	/* cap->name is set by the firendly caller:-> */
++	strlcpy(cap->card, pxa_cam_driver_description, sizeof(cap->card));
++	cap->version = PXA_CAM_VERSION_CODE;
++	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_STREAMING;
++
++	return 0;
++}
++
++/* Should beallocated dynamically too, but we have only one. */
++static struct soc_camera_host pxa_soc_camera_host = {
++	.drv_name		= PXA_CAM_DRV_NAME,
++	.vbq_ops		= &pxa_video_ops,
++	.add			= pxa_is_add_device,
++	.remove			= pxa_is_remove_device,
++	.msize			= sizeof(struct pxa_buffer),
++	.set_capture_format	= pxa_is_set_capture_format,
++	.try_fmt_cap		= pxa_is_try_fmt_cap,
++	.reqbufs		= pxa_is_reqbufs,
++	.poll			= pxa_is_poll,
++	.querycap		= pxa_is_querycap,
++};
++
++static int pxa_camera_probe(struct platform_device *pdev)
++{
++	struct pxa_camera_dev *pcdev;
++	struct resource *res;
++	void __iomem *base;
++	unsigned int irq;
++	int err = 0;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	irq = platform_get_irq(pdev, 0);
++	if (!res || !irq) {
++		err = -ENODEV;
++		goto exit;
++	}
++
++	pcdev = kzalloc(sizeof(*pcdev), GFP_KERNEL);
++	if (!pcdev) {
++		dev_err(&pdev->dev, "%s: Could not allocate pcdev\n", __FUNCTION__);
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	dev_set_drvdata(&pdev->dev, pcdev);
++	pcdev->res = res;
++
++	pcdev->pdata = pdev->dev.platform_data;
++	pcdev->platform_flags = pcdev->pdata->flags;
++	if (! pcdev->platform_flags & (PXACIF_DATAWIDTH_8 | PXACIF_DATAWIDTH_9 |
++				       PXACIF_DATAWIDTH_10)) {
++		/* Platform hasn't set available data widths. This is bad.
++		 * Warn and use a default. */
++		dev_warn(&pdev->dev, "WARNING! Platform hasn't set available "
++			 "data widths, using default 10 bit\n");
++		pcdev->platform_flags |= PXACIF_DATAWIDTH_10;
++	}
++	pcdev->platform_mclk_10khz = pcdev->pdata->mclk_10khz;
++	if (!pcdev->platform_mclk_10khz) {
++		dev_warn(&pdev->dev,
++			 "mclk_10khz == 0! Please, fix your platform data. "
++			 "Using default 20MHz\n");
++		pcdev->platform_mclk_10khz = 2000;
++	}
++
++	INIT_LIST_HEAD(&pcdev->capture);
++	spin_lock_init(&pcdev->lock);
++
++	/*
++	 * Request the regions.
++	 */
++	if (!request_mem_region(res->start, res->end - res->start + 1, PXA_CAM_DRV_NAME)) {
++		err = -EBUSY;
++		goto exit_kfree;
++	}
++
++	base = ioremap(res->start, res->end - res->start + 1);
++	if (!base) {
++		err = -ENOMEM;
++		goto exit_release;
++	}
++	pcdev->irq = irq;
++	pcdev->base = base;
++	pcdev->dev = &pdev->dev;
++
++	/* request dma */
++	pcdev->dma_chan_y = pxa_request_dma("CI_Y", DMA_PRIO_HIGH, pxa_camera_dma_irq_y, pcdev);
++	if (pcdev->dma_chan_y < 0) {
++		printk(KERN_ERR "Can't request DMA for Y\n");
++		err = -ENOMEM;
++		goto exit_iounmap;
++	}
++	pr_debug("got DMA channel %d\n", pcdev->dma_chan_y);
++
++	DRCMR68 = pcdev->dma_chan_y  | DRCMR_MAPVLD;
++
++	/* request irq */
++	err = request_irq(pcdev->irq, pxa_camera_irq, 0, PXA_CAM_DRV_NAME, pcdev);
++	if (err) {
++		printk ("Camera interrupt register failed \n");
++		goto exit_free_dma;
++	}
++
++	pxa_soc_camera_host.priv		= pcdev;
++	pxa_soc_camera_host.dev.parent	= &pdev->dev;
++	pxa_soc_camera_host.nr		= pdev->id;
++	err = soc_camera_host_register(&pxa_soc_camera_host, THIS_MODULE);
++	if (err)
++		goto exit_free_irq;
++
++	return 0;
++
++ exit_free_irq:
++	free_irq(pcdev->irq, pcdev);
++ exit_free_dma:
++	pxa_free_dma(pcdev->dma_chan_y);
++ exit_iounmap:
++	iounmap(base);
++ exit_release:
++	release_mem_region(res->start, res->end - res->start + 1);
++ exit_kfree:
++	kfree(pcdev);
++ exit:
++	return err;
++}
++
++static int __devexit pxa_camera_remove(struct platform_device *pdev)
++{
++	struct pxa_camera_dev *pcdev = platform_get_drvdata(pdev);
++	struct resource *res;
++
++	pxa_free_dma(pcdev->dma_chan_y);
++	free_irq(pcdev->irq, pcdev);
++
++ 	soc_camera_host_unregister(&pxa_soc_camera_host);
++
++	iounmap(pcdev->base);
++
++	res = pcdev->res;
++	release_mem_region(res->start, res->end - res->start + 1);
++
++	kfree(pcdev);
++
++	dev_info(&pdev->dev, "%s: PXA Camera driver unloaded\n", __FUNCTION__);
++
++	return 0;
++}
++
++/*
++ * Suspend the Camera Module.
++ */
++static int pxa_camera_suspend(struct platform_device *pdev, pm_message_t level)
++{
++	struct pxa_camera_dev *pcdev = platform_get_drvdata(pdev);
++
++	dev_info(&pdev->dev, "camera suspend\n");
++	disable_irq(pcdev->irq);
++	return 0;
++}
++
++/*
++ * Resume the Camera Module.
++ */
++static int pxa_camera_resume(struct platform_device *pdev)
++{
++	struct pxa_camera_dev *pcdev = platform_get_drvdata(pdev);
++
++	dev_info(&pdev->dev, "camera resume\n");
++	enable_irq(pcdev->irq);
++
++	/* 	if (pcdev) {	*/ /* FIXME: dev in use? */
++/* 		DRCMR68 = pcdev->dma_chan_y  | DRCMR_MAPVLD; */
++/* 		DRCMR69 = pcdev->dma_chan_cb | DRCMR_MAPVLD; */
++/* 		DRCMR70 = pcdev->dma_chan_cr | DRCMR_MAPVLD; */
++/* 	} */
++
++	return 0;
++}
++
++
++static struct platform_driver pxa_camera_driver = {
++	.driver 	= {
++		.name	= PXA_CAM_DRV_NAME,
++	},
++	.probe		= pxa_camera_probe,
++	.remove		= __exit_p(pxa_camera_remove),
++	.suspend	= pxa_camera_suspend,
++	.resume		= pxa_camera_resume,
++};
++
++
++static int __devinit pxa_camera_init(void)
++{
++	return platform_driver_register(&pxa_camera_driver);
++}
++
++static void __exit pxa_camera_exit(void)
++{
++	return platform_driver_unregister(&pxa_camera_driver);
++}
++
++module_init(pxa_camera_init);
++module_exit(pxa_camera_exit);
++
++MODULE_DESCRIPTION("PXA27x SoC Camera Host driver");
++MODULE_AUTHOR("Guennadi Liakhovetski <kernel@pengutronix.de>");
++MODULE_LICENSE("GPL");
+diff --git a/include/asm-arm/arch-pxa/pxa-regs.h b/include/asm-arm/arch-pxa/pxa-regs.h
+index e68b593..f587c83 100644
+--- a/include/asm-arm/arch-pxa/pxa-regs.h
++++ b/include/asm-arm/arch-pxa/pxa-regs.h
+@@ -1229,19 +1229,26 @@
+ #define GPIO10_RTCCLK		10	/* real time clock (1 Hz) */
+ #define GPIO11_3_6MHz		11	/* 3.6 MHz oscillator out */
+ #define GPIO12_32KHz		12	/* 32 kHz out */
++#define GPIO12_CIF_DD7		12	/* Capture Interface D7 (PXA27x) */
+ #define GPIO13_MBGNT		13	/* memory controller grant */
+ #define GPIO14_MBREQ		14	/* alternate bus master request */
+ #define GPIO15_nCS_1		15	/* chip select 1 */
+ #define GPIO16_PWM0		16	/* PWM0 output */
+ #define GPIO17_PWM1		17	/* PWM1 output */
++#define GPIO17_CIF_DD6		17	/* Capture Interface D6 (PXA27x) */
+ #define GPIO18_RDY		18	/* Ext. Bus Ready */
+ #define GPIO19_DREQ1		19	/* External DMA Request */
+ #define GPIO20_DREQ0		20	/* External DMA Request */
+ #define GPIO23_SCLK		23	/* SSP clock */
++#define GPIO23_CIF_MCLK		23	/* Capture Interface MCLK (PXA27x) */
+ #define GPIO24_SFRM		24	/* SSP Frame */
++#define GPIO24_CIF_FV		24	/* Capture Interface FV (PXA27x) */
+ #define GPIO25_STXD		25	/* SSP transmit */
++#define GPIO25_CIF_LV		25	/* Capture Interface LV (PXA27x) */
+ #define GPIO26_SRXD		26	/* SSP receive */
++#define GPIO26_CIF_PCLK		26	/* Capture Interface PCLK (PXA27x) */
+ #define GPIO27_SEXTCLK		27	/* SSP ext_clk */
++#define GPIO27_CIF_DD0		27	/* Capture Interface D0 (PXA27x) */
+ #define GPIO28_BITCLK		28	/* AC97/I2S bit_clk */
+ #define GPIO29_SDATA_IN		29	/* AC97 Sdata_in0 / I2S Sdata_in */
+ #define GPIO30_SDATA_OUT	30	/* AC97/I2S Sdata_out */
+@@ -1262,28 +1269,40 @@
+ #define GPIO41_FFRTS		41	/* FFUART request to send */
+ #define GPIO42_BTRXD		42	/* BTUART receive data */
+ #define GPIO42_HWRXD		42	/* HWUART receive data */
++#define GPIO42_CIF_MCLK		42	/* Capture interface MCLK (PXA27x) */
+ #define GPIO43_BTTXD		43	/* BTUART transmit data */
+ #define GPIO43_HWTXD		43	/* HWUART transmit data */
++#define GPIO43_CIF_FV		43	/* Capture interface FV (PXA27x) */
+ #define GPIO44_BTCTS		44	/* BTUART clear to send */
+ #define GPIO44_HWCTS		44	/* HWUART clear to send */
++#define GPIO44_CIF_LV		44	/* Capture interface LV (PXA27x) */
+ #define GPIO45_BTRTS		45	/* BTUART request to send */
+ #define GPIO45_HWRTS		45	/* HWUART request to send */
+ #define GPIO45_AC97_SYSCLK	45	/* AC97 System Clock */
++#define GPIO45_CIF_PCLK		45	/* Capture interface PCLK (PXA27x) */
+ #define GPIO46_ICPRXD		46	/* ICP receive data */
+ #define GPIO46_STRXD		46	/* STD_UART receive data */
+ #define GPIO47_ICPTXD		47	/* ICP transmit data */
+ #define GPIO47_STTXD		47	/* STD_UART transmit data */
++#define GPIO47_CIF_DD0		47	/* Capture interface D0 (PXA27x) */
+ #define GPIO48_nPOE		48	/* Output Enable for Card Space */
++#define GPIO48_CIF_DD5		48	/* Capture interface D5 (PXA27x) */
+ #define GPIO49_nPWE		49	/* Write Enable for Card Space */
+ #define GPIO50_nPIOR		50	/* I/O Read for Card Space */
++#define GPIO50_CIF_DD3		50	/* Capture interface D3 (PXA27x) */
+ #define GPIO51_nPIOW		51	/* I/O Write for Card Space */
++#define GPIO51_CIF_DD2		51	/* Capture interface D2 (PXA27x) */
+ #define GPIO52_nPCE_1		52	/* Card Enable for Card Space */
++#define GPIO52_CIF_DD4		52	/* Capture interface D4 (PXA27x) */
+ #define GPIO53_nPCE_2		53	/* Card Enable for Card Space */
+ #define GPIO53_MMCCLK		53	/* MMC Clock */
++#define GPIO53_CIF_MCLK		53	/* Capture interface MCLK (PXA27x) */
+ #define GPIO54_MMCCLK		54	/* MMC Clock */
+ #define GPIO54_pSKTSEL		54	/* Socket Select for Card Space */
+ #define GPIO54_nPCE_2		54	/* Card Enable for Card Space (PXA27x) */
++#define GPIO54_CIF_PCLK		54	/* Capture interface PCLK (PXA27x) */
+ #define GPIO55_nPREG		55	/* Card Address bit 26 */
++#define GPIO55_CIF_DD1		55	/* Capture interface D1 (PXA27x) */
+ #define GPIO56_nPWAIT		56	/* Wait signal for Card Space */
+ #define GPIO57_nIOIS16		57	/* Bus Width select for I/O Card Space */
+ #define GPIO58_LDD_0		58	/* LCD data pin 0 */
+@@ -1318,11 +1337,28 @@
+ #define GPIO79_nCS_3		79	/* chip select 3 */
+ #define GPIO80_nCS_4		80	/* chip select 4 */
+ #define GPIO81_NSCLK		81	/* NSSP clock */
++#define GPIO81_CIF_DD0		81	/* Capture Interface D0 (PXA27x) */
+ #define GPIO82_NSFRM		82	/* NSSP Frame */
++#define GPIO82_CIF_DD5		82	/* Capture Interface D5 (PXA27x) */
+ #define GPIO83_NSTXD		83	/* NSSP transmit */
++#define GPIO83_CIF_DD4		83	/* Capture Interface D4 (PXA27x) */
+ #define GPIO84_NSRXD		84	/* NSSP receive */
++#define GPIO84_CIF_FV		84	/* Capture Interface FV (PXA27x) */
+ #define GPIO85_nPCE_1		85	/* Card Enable for Card Space (PXA27x) */
++#define GPIO85_CIF_LV		85	/* Capture Interface LV (PXA27x) */
++#define GPIO90_CIF_DD4		90	/* Capture Interface DD4 (PXA27x) */
++#define GPIO91_CIF_DD5		91	/* Capture Interface DD5 (PXA27x) */
+ #define GPIO92_MMCDAT0		92	/* MMC DAT0 (PXA27x) */
++#define GPIO93_CIF_DD6		93	/* Capture interface D6 (PXA27x) */
++#define GPIO94_CIF_DD5		94	/* Capture interface D5 (PXA27x) */
++#define GPIO95_CIF_DD4		95	/* Capture interface D4 (PXA27x) */
++#define GPIO98_CIF_DD0		98	/* Capture interface D0 (PXA27x) */
++#define GPIO103_CIF_DD3		103	/* Capture interface D3 (PXA27x) */
++#define GPIO104_CIF_DD2		104	/* Capture interface D2 (PXA27x) */
++#define GPIO105_CIF_DD1		105	/* Capture interface D1 (PXA27x) */
++#define GPIO106_CIF_DD9		106	/* Capture interface D9 (PXA27x) */
++#define GPIO107_CIF_DD8		107	/* Capture interface D8 (PXA27x) */
++#define GPIO108_CIF_DD7		108	/* Capture interface D7 (PXA27x) */
+ #define GPIO102_nPCE_1		102	/* PCMCIA (PXA27x) */
+ #define GPIO109_MMCDAT1		109	/* MMC DAT1 (PXA27x) */
+ #define GPIO110_MMCDAT2		110	/* MMC DAT2 (PXA27x) */
+@@ -1332,6 +1368,9 @@
+ #define GPIO112_MMCCMD		112	/* MMC CMD (PXA27x) */
+ #define GPIO113_I2S_SYSCLK	113	/* I2S System Clock (PXA27x) */
+ #define GPIO113_AC97_RESET_N	113	/* AC97 NRESET on (PXA27x) */
++#define GPIO114_CIF_DD1		114	/* Capture interface D1 (PXA27x) */
++#define GPIO115_CIF_DD3		115	/* Capture interface D3 (PXA27x) */
++#define GPIO116_CIF_DD2		116	/* Capture interface D2 (PXA27x) */
+ 
+ /* GPIO alternate function mode & direction */
+ 
+@@ -1357,19 +1396,26 @@
+ #define GPIO10_RTCCLK_MD	(10 | GPIO_ALT_FN_1_OUT)
+ #define GPIO11_3_6MHz_MD	(11 | GPIO_ALT_FN_1_OUT)
+ #define GPIO12_32KHz_MD		(12 | GPIO_ALT_FN_1_OUT)
++#define GPIO12_CIF_DD7_MD	(12 | GPIO_ALT_FN_2_IN)
+ #define GPIO13_MBGNT_MD		(13 | GPIO_ALT_FN_2_OUT)
+ #define GPIO14_MBREQ_MD		(14 | GPIO_ALT_FN_1_IN)
+ #define GPIO15_nCS_1_MD		(15 | GPIO_ALT_FN_2_OUT)
+ #define GPIO16_PWM0_MD		(16 | GPIO_ALT_FN_2_OUT)
+ #define GPIO17_PWM1_MD		(17 | GPIO_ALT_FN_2_OUT)
++#define GPIO17_CIF_DD6_MD	(17 | GPIO_ALT_FN_2_IN)
+ #define GPIO18_RDY_MD		(18 | GPIO_ALT_FN_1_IN)
+ #define GPIO19_DREQ1_MD		(19 | GPIO_ALT_FN_1_IN)
+ #define GPIO20_DREQ0_MD		(20 | GPIO_ALT_FN_1_IN)
++#define GPIO23_CIF_MCLK_MD	(23 | GPIO_ALT_FN_1_OUT)
+ #define GPIO23_SCLK_MD		(23 | GPIO_ALT_FN_2_OUT)
++#define GPIO24_CIF_FV_MD	(24 | GPIO_ALT_FN_1_OUT)
+ #define GPIO24_SFRM_MD		(24 | GPIO_ALT_FN_2_OUT)
++#define GPIO25_CIF_LV_MD	(25 | GPIO_ALT_FN_1_OUT)
+ #define GPIO25_STXD_MD		(25 | GPIO_ALT_FN_2_OUT)
+ #define GPIO26_SRXD_MD		(26 | GPIO_ALT_FN_1_IN)
++#define GPIO26_CIF_PCLK_MD	(26 | GPIO_ALT_FN_2_IN)
+ #define GPIO27_SEXTCLK_MD	(27 | GPIO_ALT_FN_1_IN)
++#define GPIO27_CIF_DD0_MD	(27 | GPIO_ALT_FN_3_IN)
+ #define GPIO28_BITCLK_AC97_MD	(28 | GPIO_ALT_FN_1_IN)
+ #define GPIO28_BITCLK_IN_I2S_MD	(28 | GPIO_ALT_FN_2_IN)
+ #define GPIO28_BITCLK_OUT_I2S_MD	(28 | GPIO_ALT_FN_1_OUT)
+@@ -1394,34 +1440,46 @@
+ #define GPIO40_FFDTR_MD		(40 | GPIO_ALT_FN_2_OUT)
+ #define GPIO41_FFRTS_MD		(41 | GPIO_ALT_FN_2_OUT)
+ #define GPIO42_BTRXD_MD		(42 | GPIO_ALT_FN_1_IN)
++#define GPIO42_CIF_MCLK_MD	(42 | GPIO_ALT_FN_3_OUT)
+ #define GPIO42_HWRXD_MD		(42 | GPIO_ALT_FN_3_IN)
+ #define GPIO43_BTTXD_MD		(43 | GPIO_ALT_FN_2_OUT)
++#define GPIO43_CIF_FV_MD	(43 | GPIO_ALT_FN_3_OUT)
+ #define GPIO43_HWTXD_MD		(43 | GPIO_ALT_FN_3_OUT)
+ #define GPIO44_BTCTS_MD		(44 | GPIO_ALT_FN_1_IN)
+ #define GPIO44_HWCTS_MD		(44 | GPIO_ALT_FN_3_IN)
++#define GPIO44_CIF_LV_MD	(44 | GPIO_ALT_FN_3_OUT)
+ #define GPIO45_BTRTS_MD		(45 | GPIO_ALT_FN_2_OUT)
+ #define GPIO45_HWRTS_MD		(45 | GPIO_ALT_FN_3_OUT)
+ #define GPIO45_SYSCLK_AC97_MD		(45 | GPIO_ALT_FN_1_OUT)
++#define GPIO45_CIF_PCLK_MD	(45 | GPIO_ALT_FN_3_IN)
+ #define GPIO46_ICPRXD_MD	(46 | GPIO_ALT_FN_1_IN)
+ #define GPIO46_STRXD_MD		(46 | GPIO_ALT_FN_2_IN)
+ #define GPIO47_ICPTXD_MD	(47 | GPIO_ALT_FN_2_OUT)
+ #define GPIO47_STTXD_MD		(47 | GPIO_ALT_FN_1_OUT)
++#define GPIO47_CIF_DD0_MD	(47 | GPIO_ALT_FN_1_IN)
+ #define GPIO48_nPOE_MD		(48 | GPIO_ALT_FN_2_OUT)
++#define GPIO48_CIF_DD5_MD	(48 | GPIO_ALT_FN_1_IN)
+ #define GPIO48_HWTXD_MD         (48 | GPIO_ALT_FN_1_OUT)
+ #define GPIO48_nPOE_MD          (48 | GPIO_ALT_FN_2_OUT)
+ #define GPIO49_HWRXD_MD		(49 | GPIO_ALT_FN_1_IN)
+ #define GPIO49_nPWE_MD		(49 | GPIO_ALT_FN_2_OUT)
+ #define GPIO50_nPIOR_MD		(50 | GPIO_ALT_FN_2_OUT)
++#define GPIO50_CIF_DD3_MD	(50 | GPIO_ALT_FN_1_IN)
+ #define GPIO50_HWCTS_MD         (50 | GPIO_ALT_FN_1_IN)
+ #define GPIO51_HWRTS_MD         (51 | GPIO_ALT_FN_1_OUT)
+ #define GPIO51_nPIOW_MD		(51 | GPIO_ALT_FN_2_OUT)
++#define GPIO51_CIF_DD2_MD	(51 | GPIO_ALT_FN_1_IN)
+ #define GPIO52_nPCE_1_MD	(52 | GPIO_ALT_FN_2_OUT)
++#define GPIO52_CIF_DD4_MD	(52 | GPIO_ALT_FN_1_IN)
+ #define GPIO53_nPCE_2_MD	(53 | GPIO_ALT_FN_2_OUT)
+ #define GPIO53_MMCCLK_MD	(53 | GPIO_ALT_FN_1_OUT)
++#define GPIO53_CIF_MCLK_MD	(53 | GPIO_ALT_FN_2_OUT)
+ #define GPIO54_MMCCLK_MD	(54 | GPIO_ALT_FN_1_OUT)
+ #define GPIO54_nPCE_2_MD	(54 | GPIO_ALT_FN_2_OUT)
+ #define GPIO54_pSKTSEL_MD	(54 | GPIO_ALT_FN_2_OUT)
++#define GPIO54_CIF_PCLK_MD	(54 | GPIO_ALT_FN_3_IN)
+ #define GPIO55_nPREG_MD		(55 | GPIO_ALT_FN_2_OUT)
++#define GPIO55_CIF_DD1_MD	(55 | GPIO_ALT_FN_1_IN)
+ #define GPIO56_nPWAIT_MD	(56 | GPIO_ALT_FN_1_IN)
+ #define GPIO57_nIOIS16_MD	(57 | GPIO_ALT_FN_1_IN)
+ #define GPIO58_LDD_0_MD		(58 | GPIO_ALT_FN_2_OUT)
+@@ -1458,16 +1516,33 @@
+ #define GPIO80_nCS_4_MD		(80 | GPIO_ALT_FN_2_OUT)
+ #define GPIO81_NSSP_CLK_OUT 	(81 | GPIO_ALT_FN_1_OUT)
+ #define GPIO81_NSSP_CLK_IN  	(81 | GPIO_ALT_FN_1_IN)
++#define GPIO81_CIF_DD0_MD	(81 | GPIO_ALT_FN_2_IN)
+ #define GPIO82_NSSP_FRM_OUT 	(82 | GPIO_ALT_FN_1_OUT)
+ #define GPIO82_NSSP_FRM_IN  	(82 | GPIO_ALT_FN_1_IN)
++#define GPIO82_CIF_DD5_MD	(82 | GPIO_ALT_FN_3_IN)
+ #define GPIO83_NSSP_TX      	(83 | GPIO_ALT_FN_1_OUT)
+ #define GPIO83_NSSP_RX      	(83 | GPIO_ALT_FN_2_IN)
++#define GPIO83_CIF_DD4_MD	(83 | GPIO_ALT_FN_3_IN)
+ #define GPIO84_NSSP_TX      	(84 | GPIO_ALT_FN_1_OUT)
+ #define GPIO84_NSSP_RX      	(84 | GPIO_ALT_FN_2_IN)
++#define GPIO84_CIF_FV_MD	(84 | GPIO_ALT_FN_3_OUT)
+ #define GPIO85_nPCE_1_MD	(85 | GPIO_ALT_FN_1_OUT)
++#define GPIO85_CIF_LV_MD	(85 | GPIO_ALT_FN_3_OUT)
++#define GPIO90_CIF_DD4_MD	(90 | GPIO_ALT_FN_3_IN)
++#define GPIO91_CIF_DD5_MD	(91 | GPIO_ALT_FN_3_IN)
+ #define GPIO92_MMCDAT0_MD	(92 | GPIO_ALT_FN_1_OUT)
++#define GPIO93_CIF_DD6_MD	(93 | GPIO_ALT_FN_2_IN)
++#define GPIO94_CIF_DD5_MD	(94 | GPIO_ALT_FN_2_IN)
++#define GPIO95_CIF_DD4_MD	(95 | GPIO_ALT_FN_2_IN)
++#define GPIO98_CIF_DD0_MD	(98 | GPIO_ALT_FN_2_IN)
+ #define GPIO102_nPCE_1_MD	(102 | GPIO_ALT_FN_1_OUT)
++#define GPIO103_CIF_DD3_MD	(103 | GPIO_ALT_FN_1_IN)
+ #define GPIO104_pSKTSEL_MD	(104 | GPIO_ALT_FN_1_OUT)
++#define GPIO104_CIF_DD2_MD	(104 | GPIO_ALT_FN_1_IN)
++#define GPIO105_CIF_DD1_MD	(105 | GPIO_ALT_FN_1_IN)
++#define GPIO106_CIF_DD9_MD	(106 | GPIO_ALT_FN_1_IN)
++#define GPIO107_CIF_DD8_MD	(107 | GPIO_ALT_FN_1_IN)
++#define GPIO108_CIF_DD7_MD	(108 | GPIO_ALT_FN_1_IN)
+ #define GPIO109_MMCDAT1_MD	(109 | GPIO_ALT_FN_1_OUT)
+ #define GPIO110_MMCDAT2_MD	(110 | GPIO_ALT_FN_1_OUT)
+ #define GPIO110_MMCCS0_MD	(110 | GPIO_ALT_FN_1_OUT)
+@@ -2207,6 +2282,11 @@
+ #define CICR0_ENB	(1 << 28)	/* Camera interface enable */
+ #define CICR0_DIS	(1 << 27)	/* Camera interface disable */
+ #define CICR0_SIM	(0x7 << 24)	/* Sensor interface mode mask */
++#define CICR0_SIM_MP	(0 << 24)
++#define CICR0_SIM_SP	(1 << 24)
++#define CICR0_SIM_MS	(2 << 24)
++#define CICR0_SIM_EP	(3 << 24)
++#define CICR0_SIM_ES	(4 << 24)
+ #define CICR0_TOM	(1 << 9)	/* Time-out mask */
+ #define CICR0_RDAVM	(1 << 8)	/* Receive-data-available mask */
+ #define CICR0_FEM	(1 << 7)	/* FIFO-empty mask */
+@@ -2257,6 +2337,20 @@
+ #define CICR4_FR_RATE	(0x7 << 8)	/* Frame rate mask */
+ #define CICR4_DIV	(0xff << 0)	/* Clock divisor mask */
+ 
++#define CICR1_DW_VAL(x)		((x) & CICR1_DW)		/* Data bus width */
++#define CICR1_PPL_VAL(x)	(((x) << 15) & CICR1_PPL)	/* Pixels per line */
++
++#define CICR2_BLW_VAL(x)	(((x) << 24) & CICR2_BLW)	/* Beginning-of-line pixel clock wait count */
++#define CICR2_ELW_VAL(x)	(((x) << 16) & CICR2_ELW)	/* End-of-line pixel clock wait count */
++#define CICR2_HSW_VAL(x)	(((x) << 10) & CICR2_HSW)	/* Horizontal sync pulse width */
++#define CICR2_BFPW_VAL(x)	(((x) << 3) & CICR2_BFPW)	/* Beginning-of-frame pixel clock wait count */
++#define CICR2_FSW_VAL(x)	(((x) << 0) & CICR2_FSW)	/* Frame stabilization wait count */
++
++#define CICR3_BFW_VAL(x)	(((x) << 24) & CICR3_BFW)	/* Beginning-of-frame line clock wait count  */
++#define CICR3_EFW_VAL(x)	(((x) << 16) & CICR3_EFW)	/* End-of-frame line clock wait count */
++#define CICR3_VSW_VAL(x)	(((x) << 11) & CICR3_VSW)	/* Vertical sync pulse width */
++#define CICR3_LPF_VAL(x)	(((x) << 0) & CICR3_LPF)	/* Lines per frame */
++
+ #define CISR_FTO	(1 << 15)	/* FIFO time-out */
+ #define CISR_RDAV_2	(1 << 14)	/* Channel 2 receive data available */
+ #define CISR_RDAV_1	(1 << 13)	/* Channel 1 receive data available */
+diff --git a/include/asm-arm/arch-pxa/pxa_cif.h b/include/asm-arm/arch-pxa/pxa_cif.h
+new file mode 100644
+index 0000000..ca1e5a2
+--- /dev/null
++++ b/include/asm-arm/arch-pxa/pxa_cif.h
+@@ -0,0 +1,48 @@
++/*
++    pxa_camera - PXA camera driver header file
++
++    Copyright (C) 2003, Intel Corporation
++    Copyright (C) 2008, Guennadi Liakhovetski <kernel@pengutronix.de>
++
++    This program is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    This program is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with this program; if not, write to the Free Software
++    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++*/
++
++#ifndef __PXA_CIF_H_
++#define __PXA_CIF_H_
++
++#define PXACIF_MASTER		1
++#define PXACIF_DATAWIDTH_4	2
++#define PXACIF_DATAWIDTH_5	4
++#define PXACIF_DATAWIDTH_8	8
++#define PXACIF_DATAWIDTH_9	0x10
++#define PXACIF_DATAWIDTH_10	0x20
++#define PXACIF_PCLK_EN		0x40
++#define PXACIF_MCLK_EN		0x80
++#define PXACIF_PCP		0x100
++#define PXACIF_HSP		0x200
++#define PXACIF_VSP		0x400
++
++struct pxacamera_platform_data {
++	int (*init)(struct device *);
++	int (*power)(struct device *, int on);
++	int (*reset)(struct device *, int set);
++
++	unsigned long flags;
++	unsigned long mclk_10khz;
++};
++
++extern void pxa_set_cif_info(struct pxacamera_platform_data *info);
++
++#endif /* __PXA_CIF_H_ */
+-- 
+1.5.3.4
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
+
