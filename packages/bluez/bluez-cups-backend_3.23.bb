@@ -1,5 +1,5 @@
 require bluez-utils3.inc
-
+PR = "r1"
 DEPENDS += "cups"
 
 # see bluez-utils3.inc for the explanation of these option
