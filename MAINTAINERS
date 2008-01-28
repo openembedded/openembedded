@@ -157,6 +157,10 @@ Machines:   fic-gta01, fic-gta02, nokia810, x86, qemuarm, qemux86
 Interests:  Core OE infrastructure, everything Python, EFL, E17, Qt4
 Recipes:    *python*, efl/*, e17*
 
+Person:     Patrick Gfeller
+Mail:       gfellerpatrik@gmx.net
+Recipes:    libvncserver, fbvncserver
+
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
