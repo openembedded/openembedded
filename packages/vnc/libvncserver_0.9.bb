@@ -1,14 +1,14 @@
 DESCRIPTION = "A library to support implementations of RDP/VNC servers"
-LICENSE = "GPLv2"
-HOMEPAGE = "http://sourceforge.net/projects/libvncserver"
 AUTHOR = "Johannes Schindelin <dscho@users.sourceforge.net>"
+HOMEPAGE = "http://sourceforge.net/projects/libvncserver"
 SECTION = "libs"
 PRIORITY = "optional"
-PROVIDES = "x11vnc"
+LICENSE = "GPLv2"
 DEPENDS = "virtual/libsdl virtual/libx11 zlib jpeg libxext"
+PROVIDES = "x11vnc"
 PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz;md5sum=17a18e398af6c1730f72068022a152aa"
+SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz"
 S = "${WORKDIR}/LibVNCServer-${PV}"
 
 inherit autotools
