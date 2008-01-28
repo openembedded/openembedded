@@ -1,0 +1,100 @@
+Path: news.gmane.org!not-for-mail
+From: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+Newsgroups: gmane.comp.video.video4linux
+Subject: [RFC PATCH 6/8] Add V4L2_CID_AUTOEXPOSURE control
+Date: Wed, 23 Jan 2008 18:42:01 +0100 (CET)
+Lines: 29
+Approved: news@gmane.org
+Message-ID: <Pine.LNX.4.64.0801231827200.4932@axis700.grange>
+References: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Trace: ger.gmane.org 1201110161 28894 80.91.229.12 (23 Jan 2008 17:42:41 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 23 Jan 2008 17:42:41 +0000 (UTC)
+To: video4linux-list@redhat.com
+Original-X-From: video4linux-list-bounces@redhat.com Wed Jan 23 18:43:01 2008
+Return-path: <video4linux-list-bounces@redhat.com>
+Envelope-to: rh-video4linux-list@gmane.org
+Original-Received: from hormel.redhat.com ([209.132.177.30])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1JHjcY-000394-S3
+	for rh-video4linux-list@gmane.org; Wed, 23 Jan 2008 18:42:43 +0100
+Original-Received: from listman.util.phx.redhat.com (listman.util.phx.redhat.com [10.8.4.110])
+	by hormel.redhat.com (Postfix) with ESMTP
+	id 3B00D730EB; Wed, 23 Jan 2008 12:42:16 -0500 (EST)
+Original-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by listman.util.phx.redhat.com (8.13.1/8.13.1) with ESMTP id
+	m0NHgEoZ017266 for <video4linux-list@listman.util.phx.redhat.com>;
+	Wed, 23 Jan 2008 12:42:14 -0500
+Original-Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m0NHgDXf028250
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:42:13 -0500
+Original-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by mx3.redhat.com (8.13.1/8.13.1) with SMTP id m0NHfl3q001210
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:48 -0500
+Original-Received: (qmail invoked by alias); 23 Jan 2008 17:41:42 -0000
+Original-Received: from p57BD2F1F.dip0.t-ipconnect.de (EHLO axis700.grange)
+	[87.189.47.31]
+	by mail.gmx.net (mp003) with SMTP; 23 Jan 2008 18:41:42 +0100
+X-Authenticated: #20450766
+X-Provags-ID: V01U2FsdGVkX19s1mA+rThsOt7hg+tJ7j4mHAPKhlRXDzhjWNVMNr
+	iM1Yi7GSzlRBY8
+Original-Received: from lyakh (helo=localhost)
+	by axis700.grange with local-esmtp (Exim 4.63)
+	(envelope-from <g.liakhovetski@gmx.de>) id 1JHjbt-0002A2-Vj
+	for video4linux-list@redhat.com; Wed, 23 Jan 2008 18:42:01 +0100
+X-X-Sender: lyakh@axis700.grange
+In-Reply-To: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+X-Y-GMX-Trusted: 0
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.58 on 172.16.48.32
+X-loop: video4linux-list@redhat.com
+X-BeenThere: video4linux-list@redhat.com
+X-Mailman-Version: 2.1.5
+Precedence: junk
+List-Id: Linux and Kernel Video <video4linux-list.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>, 
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Original-Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+Xref: news.gmane.org gmane.comp.video.video4linux:36474
+Archived-At: <http://permalink.gmane.org/gmane.comp.video.video4linux/36474>
+
+The MT9V022 camera has hardware AEC support, that can be switched on and 
+off in software. MT9M001 emulates Autoexposure control in software. Add a 
+V4L2 control, similar to already present Autogain.
+
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+---
+ include/linux/videodev2.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/videodev2.h b/include/linux/videodev2.h
+index ae9b24c..05b8c22 100644
+--- a/include/linux/videodev2.h
++++ b/include/linux/videodev2.h
+@@ -946,6 +946,7 @@ struct v4l2_querymenu
+ #define V4L2_CID_HCENTER		(V4L2_CID_BASE+22)
+ #define V4L2_CID_VCENTER		(V4L2_CID_BASE+23)
+ #define V4L2_CID_LASTP1			(V4L2_CID_BASE+24) /* last CID + 1 */
++#define V4L2_CID_AUTOEXPOSURE		(V4L2_CID_BASE+25)
+ 
+ /*  MPEG-class control IDs defined by V4L2 */
+ #define V4L2_CID_MPEG_BASE 			(V4L2_CTRL_CLASS_MPEG | 0x900)
+-- 
+1.5.3.4
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
+

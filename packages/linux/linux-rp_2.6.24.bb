@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r0"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -102,6 +102,8 @@ SRC_URI_append_collie = "\
 
 SRC_URI_append_poodle = "\
            ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1 \
+           file://poodle_ts.patch;patch=1 \
+           file://pxafb.patch;patch=1 \
 "
 
 SRC_URI_append_tosa = "\

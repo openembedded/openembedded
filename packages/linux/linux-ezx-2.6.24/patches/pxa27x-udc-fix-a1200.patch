@@ -1,0 +1,45 @@
+This hack hardcodes pxa27x-udc to ether_gadget. This is just a temp workaround.
+Index: linux-2.6.24/drivers/usb/gadget/ether.c
+===================================================================
+--- linux-2.6.24.orig/drivers/usb/gadget/ether.c
++++ linux-2.6.24/drivers/usb/gadget/ether.c
+@@ -2687,10 +2687,16 @@
+ MODULE_LICENSE ("GPL");
+ 
+ 
+-static int __init init (void)
++// Alex add FIXME
++int usb_ether_init (void)
+ {
+ 	return usb_gadget_register_driver (&eth_driver);
+ }
++
++static int __init init (void)
++{
++//	return usb_gadget_register_driver (&eth_driver);
++}
+ module_init (init);
+ 
+ static void __exit cleanup (void)
+Index: linux-2.6.24/drivers/usb/gadget/pxa27x_udc.c
+===================================================================
+--- linux-2.6.24.orig/drivers/usb/gadget/pxa27x_udc.c
++++ linux-2.6.24/drivers/usb/gadget/pxa27x_udc.c
+@@ -65,6 +65,8 @@
+ //#include <asm/arch/udc.h>
+ #include <asm/mach/udc_pxa2xx.h>
+ 
++extern int usb_ether_init(void);
++
+ /*
+  * This driver handles the USB Device Controller (UDC) in Intel's PXA 27x
+  * series processors.
+@@ -2277,6 +2279,8 @@
+ 	udc_init_ep(udc);
+ 	udc_reinit(udc);
+ 
++	usb_ether_init();  // Alex add FIXME
++
+ 	/* irq setup after old hardware state is cleaned up */
+ 	retval = request_irq(irq, pxa27x_udc_irq, 0, driver_name, udc);
+ 	if (retval != 0) {

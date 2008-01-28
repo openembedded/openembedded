@@ -1,0 +1,77 @@
+# Makefile used to build binary images of OpenEZX kernels
+#
+# If you are currently in the linux kernel toplevel dir,
+# you can call this Makefile with:
+#   $ make -f path_to/Makefile.OpenEZX
+#
+# Note that you can set the CROSS_COMPILE and QUILT_PATCHES variable
+# in your environment.
+#
+
+PHONES = a780 e680 a1200 e6 e2
+
+CROSS_COMPILE ?= /home/wyrm/ezx/dev/cross/bin/arm-angstrom-linux-gnueabi-
+QUILT_PATCHES ?= patches
+
+LV ?= ezxdev# replace LOCALVERSION string
+J ?= 2		# simultaneous jobs
+SIG ?= 0	# BOOL sign md5sums file
+
+DATE = $(shell date +%Y%m%d)
+DEPLOY_SERVER ?= people.openezx.org
+DEPLOY_DIR ?= public_html/images/$(DATE)/
+
+all: $(foreach p, $(PHONES), zImage-$(p) modules-$(p).tar.gz)
+
+zImages: $(foreach p, $(PHONES), zImage-$(p))
+
+modules: $(foreach p, $(PHONES), modules-$(p).tar.gz)
+
+config: $(foreach p, $(PHONES), config-$(p))
+
+config-%: $(QUILT_PATCHES)/defconfig-%
+	cp $<  .config
+	make ARCH=arm oldconfig
+	cp .config $<
+
+deploy: release
+	ssh $(DEPLOY_SERVER) \
+		mkdir -p $(DEPLOY_DIR)
+	scp ezxrelease-$(DATE).tar $(DEPLOY_SERVER):$(DEPLOY_DIR)
+	ssh $(DEPLOY_SERVER) \
+		cd $(DEPLOY_DIR)\; \
+		tar -xf ezxrelease-$(DATE).tar\; \
+		rm -f ezxrelease-$(DATE).tar
+
+release: $(foreach p, $(PHONES), tag-$(p))
+	cp md5sums.tmp md5sums
+	test "$(SIG)" = "1" && \
+		cat md5sums.tmp | gpg --clearsign > md5sums \
+	; echo
+	tar -rf ezxrelease.tar md5sums
+	rm -f md5sums.tmp md5sums
+	mv ezxrelease.tar ezxrelease-$(DATE).tar
+
+tag-%: zImage-% modules-%.tar.gz
+	p=$(patsubst tag-%,%,$@) && \
+	tag=$(shell cat include/config/kernel.release)-$(DATE) && \
+	mv zImage-$$p zImage-$$tag-$$p && \
+	mv modules-$$p.tar.gz modules-$$tag-$$p.tar.gz && \
+	tar -rf ezxrelease.tar zImage-$$tag-$$p modules-$$tag-$$p.tar.gz && \
+	md5sum zImage-$$tag-$$p modules-$$tag-$$p.tar.gz >> md5sums.tmp && \
+	rm -f zImage-$$tag-$$p modules-$$tag-$$p.tar.gz
+
+zImage-%: $(QUILT_PATCHES)/defconfig-%
+	cat $< | sed 's/LOCALVERSION=".*"$$/LOCALVERSION="-$(LV)"/' > .config
+	make -j$(J) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zImage
+	mv arch/arm/boot/zImage $@
+
+modules-%.tar.gz: $(QUILT_PATCHES)/defconfig-%
+	cat $< | sed 's/LOCALVERSION=".*"$$/LOCALVERSION="-$(LV)"/' > .config
+	-find . -name "*.ko" -print0 | xargs -r0 rm
+	mkdir -p Makefile.OpenEZX-tmp/$@
+	make -j$(J) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) modules
+	make -j1 ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) \
+		INSTALL_MOD_PATH=Makefile.OpenEZX-tmp/$@ modules_install
+	tar -C Makefile.OpenEZX-tmp/$@ -czf $@ .
+	rm -rf Makefile.OpenEZX-tmp/
