@@ -1,13 +1,10 @@
 DESCRIPTION = "Framebuffer VNC server"
-LICENSE = "GPL"
 SECTION = "console/utils"
-#DEPENDS = "libvncserver jpeg zlib"
-# using older version due of error with libvncserver-0.7.1
-# fbvncserver.c:577: error: structure has no member named `rfbAlwaysShared'
-# fbvncserver.c:602: error: structure has no member named `rfbClientHead'
-DEPENDS = "libvncserver-0.6 jpeg zlib"
+PRIORITY = "optional"
+LICENSE = "GPL"
+DEPENDS = "libvncserver jpeg zlib"
 RDEPENDS = "fbvncserver-kmodule libvncserver-storepasswd libvncserver-javaapplet"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
            file://libvncs0.6.patch;patch=1 \
@@ -20,7 +17,6 @@ SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
 S = "${WORKDIR}/fbvncserver-${PV}"
 
 export INCLUDES = "-I${STAGING_INCDIR}"
-
 export LIBS = "-L${STAGING_LIBDIR} -lpthread"
 export VNCSERVER_DIR = "${STAGING_LIBDIR}"
 export ZAURUS_ZLIB_LIBS = "${STAGING_LIBDIR}"
