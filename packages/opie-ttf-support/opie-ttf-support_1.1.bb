@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie TTF support"
-DEPENDS = "freetype"
 SECTION = "opie/fonts"
-PR = "r2"
+DEPENDS = "freetype"
+PR = "r3"
 
 SRC_URI = "file://update-qtttffontdir.c"
 S = "${WORKDIR}"
@@ -12,12 +12,12 @@ do_compile() {
 
 do_install() {
 	install -d ${D}${sbindir}
+	install -d ${D}${sysconfdir}/update-fonts-common.d/
 	install -m 0755 update-qtttffontdir ${D}${sbindir}
-}
-
-pkg_postinst() {
+        echo "
 #!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-mkdir -p ${palmtopdir}/lib/fonts/
-${sbindir}/update-qtttffontdir ${datadir}/fonts/truetype >${palmtopdir}/lib/fonts/fontdir
+# Author: Rolf Leggewie
+
+${sbindir}/update-qtttffontdir ${datadir}/fonts/truetype > ${palmtopdir}/lib/fonts/fontdir
+" > ${D}${sysconfdir}/update-fonts-common.d/02qtttffont-update
 }
