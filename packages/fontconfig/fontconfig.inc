@@ -9,7 +9,8 @@ RREPLACES_fontconfig-utils = "libfontconfig-utils"
 RCONFLICTS_fontconfig-utils = "libfontconfig-utils"
 DEBIAN_NOAUTONAME_fontconfig-utils = "1"
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz"
+SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
+           file://01fc-cache"
 
 S = "${WORKDIR}/fontconfig-${PV}"
 
@@ -32,6 +33,10 @@ python do_unpack () {
        bb.build.exec_func('fontconfig_do_unpack', d)
 }
 
+fontconfig-utils_do_install_prepend() {
+        install -m 0755 ${WORKDIR}/01fc-cache ${D}${sysconfdir}/update-fonts-common.d/
+}
+
 PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
-FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
+FILES_fontconfig-utils-dbg += "${bindir}/*.dbg"
 FILES_fontconfig-utils = "${bindir}/*"
