@@ -179,12 +179,17 @@ CONFFILES_${PN}-watchquagga = "${sysconfdir}/default/watchquagga"</screen></para
         </row>
 
         <row>
-          <entry></entry>
-
-          <entry></entry>
-
-          <entry></entry>
+          <entry>palmtopdir</entry>
+          <entry>${libdir}/opie</entry>
+          <entry>/usr/lib/opie</entry>
         </row>
+
+        <row>
+          <entry>palmqtdir</entry>
+          <entry>${palmtopdir}</entry>
+          <entry>/usr/lib/opie</entry>
+        </row>
+
       </tbody>
     </tgroup>
   </informaltable>
