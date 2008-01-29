@@ -1,12 +1,10 @@
 DESCRIPTION = "Epdf is the glue between EFL and libpoppler"
-LICENSE = "BSD"
-DEPENDS = "poppler evas ecore etk"
+LICENSE = "MIT BSD"
+DEPENDS = "poppler evas ecore etk ewl"
 PV = "0.1.0+cvs${SRCDATE}"
-PR = "r2"
+PR = "r0"
 
 inherit efl_library
-
-EXTRA_OECONF = "--disable-ewl"
 
 SRC_URI = "${E_CVS};module=e17/proto/${SRCNAME} \
            file://fix-plugin-path-check.patch;HACK=1;patch=1"

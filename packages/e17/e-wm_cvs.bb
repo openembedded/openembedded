@@ -1,7 +1,7 @@
-DESCRIPTION = "E17 - the Enlightenment Window Mananger"
+DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT BSD"
-PV = "0.16.999.041+cvs${SRCDATE}"
+PV = "0.16.999.042+cvs${SRCDATE}"
 PR = "r0"
 
 inherit e update-alternatives

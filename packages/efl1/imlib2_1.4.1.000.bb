@@ -2,7 +2,7 @@ DESCRIPTION = "A graphic library for file loading, saving, rendering, and manipu
 LICENSE = "BSD"
 # can also depend on tiff34, ungif or gif, z, bz2, id3tag
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
-PR = "r2"
+PR = "r0"
 
 inherit efl_library
 

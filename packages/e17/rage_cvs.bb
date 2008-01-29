@@ -4,7 +4,10 @@ HOMEPAGE = "http://www.rasterman.com"
 LICENSE = "MIT BSD"
 DEPENDS = "evas ecore edje"
 SECTION = "x11/multimedia"
-
-SRC_URI = "http://download.enlightenment.org/snapshots/2007-08-26/rage-${PV}.tar.gz"
+PV = "0.3.0.042+cvs${SRCDATE}"
 
 inherit autotools
+
+SRC_URI = "${E_CVS};module=misc/rage"
+S = "${WORKDIR}/rage"
+
