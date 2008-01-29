@@ -1,4 +1,4 @@
-RDEPENDS = "font-update-common qte-fonts-common"
+RDEPENDS = "font-update-common qpf-font-common"
 
 do_configure() {
 	:

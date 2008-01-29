@@ -1,8 +1,8 @@
+require qpf.inc
+
 DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
-SECTION = "opie/fonts"
 LICENSE = "Bitstream Vera"
-PACKAGE_ARCH = "all"
-PR = "r3"
+PR = "r4"
 
 PROVIDES += "qpf-bitstream-vera-sans-mono-small"
 PROVIDES += "qpf-bitstream-vera-sans-mono-larger"
@@ -12,26 +12,7 @@ PROVIDES += "qpf-bitstream-vera-sans-mono-huge"
 SRC_URI = "http://openzaurus.org/mirror/fonts-bitstream-vera-sans-mono.tar.gz"
 S = "${WORKDIR}/verasansmono"
 
-FILES_${PN} += "/opt"
-
-do_install () {
-        install -d ${D}${palmqtdir}/lib/fonts/
-
-	cd ${WORKDIR}
-	files=`find . -name "*.qpf"`
-        for i in $files; do
-                install -m 644 $i ${D}${palmqtdir}/lib/fonts/
-        done
-}
-
-pkg_postinst () {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
+FILES_${PN} += "${palmtopdir}"
 
 PACKAGES = "${PN}-dbg \
 qpf-bitstream-vera-sans-mono-small \

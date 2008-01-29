@@ -1,30 +1,13 @@
+require qpf.inc
+
 DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
-SECTION = "opie/fonts"
-PRIORITY = "optional"
 LICENSE = "Bitstream Vera"
-PACKAGE_ARCH = "all"
-PR = "r2"
+PR = "r3"
 
 PROVIDES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
 
 SRC_URI = "http://openzaurus.org/mirror/vera-qpf_1.10-3.tar.gz"
 S = "${WORKDIR}/vera-qpf"
-
-do_install () {
-        install -d ${D}${palmqtdir}/lib/fonts/
-        for i in *.qpf; do
-                install -m 644 $i ${D}${palmqtdir}/lib/fonts/${i}
-        done
-}
-
-pkg_postinst () {
-#!/bin/sh
-if [ -n "$D" ]; then exit 1; fi
-set -e
-. /etc/profile
-${sbindir}/update-qtfontdir
-}
-
 
 PACKAGES = "${PN}-dbg qpf-bitstream-vera-small qpf-bitstream-vera-large"
 
