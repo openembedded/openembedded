@@ -1,4 +1,4 @@
-PACKAGE_ARCH = "all"
+RDEPENDS = "font-update-common qte-fonts-common"
 
 do_configure() {
 	:
@@ -9,13 +9,11 @@ do_compile() {
 }
 
 pkg_postinst_fonts() {
-. /etc/profile
-${sbindir}/update-qtfontdir
+        update-fonts
 }
 
 pkg_postrm_fonts() {
-. /etc/profile
-${sbindir}/update-qtfontdir -f
+        update-fonts
 }
 
 python populate_packages_prepend() {
@@ -30,3 +28,5 @@ python populate_packages_prepend() {
 			  description=pkgdescription, postinst=postinst, postrm=postrm, recursive=True, hook=None, 
 			  extra_depends='qpf-font-common')
 }
+
+PACKAGE_ARCH = "all"

@@ -1,12 +1,14 @@
 DESCRIPTION= "Tools to update the Qt fontdir"
+HOMEPAGE = "http://www.trolltech.com"
 SECTION = "opie/base"
 LICENSE = "GPL QPL"
-PACKAGE_ARCH = "all"
-HOMEPAGE = "http://www.trolltech.com"
-PR = "r3"
+RDEPENDS = "font-update-common"
+RDEPENDS_qte-font-common = ""
+PR = "r4"
 
-SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
-SRC_URI += "file://update-qtfontdir"
+SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2 \
+          file://update-qtfontdir"
+
 S = "${WORKDIR}/qt-embedded-free-${PV}"
 
 do_compile() {
@@ -30,7 +32,6 @@ do_install() {
 
 PACKAGES = "qte-fonts-common"
 FILES_${PN} = "${sbindir}"
-
 
 PACKAGES += "qte-font-fixed"
 PROVIDES += "qte-font-fixed"
@@ -226,3 +227,5 @@ ${sbindir}/update-qtfontdir -f
 #. /etc/profile
 #${sbindir}/update-qtfontdir -f
 #}
+
+PACKAGE_ARCH = "all"
