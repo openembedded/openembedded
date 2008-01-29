@@ -26,7 +26,7 @@ RPROVIDES_qte-font-japanese += "virtual/japanese-font"
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz"
 S = "${WORKDIR}/qt-${PV}"
 
-inherit qpf
+require qpf.inc
 
 QPF_PKGPATTERN = "qte-font-%s"
 QPF_DESCRIPTION = "Qt/E font %s"

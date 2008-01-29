@@ -15,4 +15,4 @@ do_install() {
 	cp *.qpf ${D}${palmqtdir}/lib/fonts
 }
 
-inherit qpf
+require qpf.inc

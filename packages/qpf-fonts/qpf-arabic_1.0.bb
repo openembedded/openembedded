@@ -15,4 +15,4 @@ do_install () {
         done
 }
 
-inherit qpf
+require qpf.inc

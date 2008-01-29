@@ -21,6 +21,6 @@ do_install () {
 	done
 }
 
-inherit qpf
+require qpf.inc
 
 PACKAGE_ARCH = "all"
