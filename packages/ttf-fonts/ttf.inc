@@ -1,6 +1,6 @@
 SECTION = "fonts"
 PRIORITY = "optional"
-RDEPENDS += "font-update-common"
+RRECOMMENDS += "font-update-common"
 
 do_install() {
     install -d ${D}${datadir}/fonts/truetype/

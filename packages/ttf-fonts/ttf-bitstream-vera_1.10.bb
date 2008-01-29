@@ -1,10 +1,8 @@
+require ttf.inc
+
 DESCRIPTION = "The Bitstream Vera fonts - TTF Edition"
-SECTION = "x11/fonts"
-PRIORITY = "optional"
 LICENSE = "Bitstream Vera"
-PACKAGE_ARCH = "all"
-PR = "r3"
-RDEPENDS = "fontconfig-utils"
+PR = "r4"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-${PV}.tar.bz2"
 
@@ -24,11 +22,5 @@ do_install () {
                 install -m 644 $i ${D}${prefix}/share/doc/${PN}/$i
         done
 }
-
-pkg_postinst () {
-#!/bin/sh
-fc-cache
-}
-
 
 FILES_${PN} = "/etc ${datadir}/fonts"

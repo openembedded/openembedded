@@ -1,14 +1,14 @@
+require ttf.inc
+
 DESCRIPTION = "DejaVu font - TTF Edition"
+HOMEPAGE = "http://dejavu.sourceforge.net/wiki/"
 LICENSE = "Bitstream Vera"
-HOMEPAGE = "http://dejavu.sourceforge.net/wiki/index.php/Main_Page"
 RDEPENDS = "ttf-dejavu-common"
 RDEPENDS_ttf-dejavu-common = ""
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.bz2 \
            file://30-dejavu-aliases.conf"
-
-require ttf.inc
 
 S = "${WORKDIR}/dejavu-ttf-${PV}"
 

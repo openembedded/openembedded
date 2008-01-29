@@ -1,12 +1,13 @@
+require ttf.inc
+
 DESCRIPTION = "Gentium fonts - TTF Version"
-LICENSE = "SIL Open Font License"
 HOMEPAGE = "http://scripts.sil.org/gentium"
+LICENSE = "SIL Open Font License"
 LICENSE_URL = "http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&item_id=OFL"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/t/ttf-gentium/ttf-gentium_${PV}.orig.tar.gz \
            file://OFL.gz"
-
-require ttf.inc
 
 S = "${WORKDIR}/ttf-sil-gentium-${PV}"
 
@@ -19,7 +20,6 @@ do_install_append() {
     install -m 0644 ${WORKDIR}/OFL ${D}${datadir}/doc/ttf-gentium-alt/
 
 }
-
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-alt"
 
