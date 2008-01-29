@@ -136,7 +136,7 @@ RDEPENDS_task-qpe-fonts = "\
     qpf-helvetica \
     qpf-unifont \
     qpf-utopia \
-    terminus"
+    qpf-terminus"
 
 RDEPENDS_task-qpe-settings += "\
     qclockchange"
