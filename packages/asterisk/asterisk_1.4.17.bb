@@ -78,7 +78,7 @@ do_configure () {
 do_compile() {
         (
          #make sure that menuselect gets build using host toolchain
-         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
+         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS RANLIB
          cd menuselect 
          ./configure
          oe_runmake
