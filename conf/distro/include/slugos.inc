@@ -119,11 +119,6 @@ PREFERRED_VERSION_glibc              ?= "2.5"
 PREFERRED_VERSION_glibc-intermediate ?= "2.5"
 PREFERRED_VERSION_glibc-initial      ?= "2.5"
 
-# Select the correct versions of the kernel and modules (these are the
-# defaults, override in the conf/distro top-level distro file).
-PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.21.6"
-
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"
 SRCDATE_diet-x11 ?= "20060106"
