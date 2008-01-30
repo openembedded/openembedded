@@ -1,4 +1,4 @@
-OpenEmbedded Maintainers List 
+OpenEmbedded Maintainers List
 
 Please put you full name and email-address here for the areas of OE you want to support.
 
@@ -85,6 +85,12 @@ Machines:   titan, wrap
 Recipes:    quagga, iputils, ndic6, hping2, lilo-sh, conserver, ipsec-tools,
 Recipes:    lilo-sh, clamav, havp, p3scan, clamsmtp, librsync, rdiff-backup,
 Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
+
+Person:     Jan Luebbe
+Mail:       jluebbe@lasnet.de
+Website:    http://sicherheitsschwankung.de
+Machines:   chumby
+Recipes:    chumby-*, initramfs-chumby
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
