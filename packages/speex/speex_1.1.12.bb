@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${PV}.tar.gz"
 
@@ -25,8 +25,6 @@ EXTRA_OECONF_append_arm = " --enable-fixed-point "
 do_configure_append() {
 	sed -i s/"^OGG_CFLAGS.*$"/"OGG_CFLAGS = "/g Makefile */Makefile */*/Makefile
 	sed -i s/"^OGG_LIBS.*$"/"OGG_LIBS = -logg"/g Makefile */Makefile */*/Makefile
-	perl -pi -e 's:^includedir.*$:includedir = ${STAGING_INCDIR}:g' Makefile */Makefile */*/Makefile
-	perl -pi -e 's:^oldincludedir.*$:includedir = ${STAGING_INCDIR}:g' Makefile */Makefile */*/Makefile
 	perl -pi -e 's:\s*-I/usr/include$::g' Makefile */Makefile */*/Makefile
 }
 
