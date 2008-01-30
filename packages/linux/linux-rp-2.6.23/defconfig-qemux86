@@ -484,7 +484,7 @@ CONFIG_NET_CLS_ROUTE=y
 # Wireless
 #
 # CONFIG_CFG80211 is not set
-# CONFIG_WIRELESS_EXT is not set
+CONFIG_WIRELESS_EXT=y
 # CONFIG_MAC80211 is not set
 # CONFIG_IEEE80211 is not set
 # CONFIG_RFKILL is not set
