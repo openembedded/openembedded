@@ -6,4 +6,4 @@ export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
 
 FILESPATH = "${FILE_DIRNAME}/php-${PV}:${FILE_DIRNAME}/php:${FILE_DIRNAME}/files"
 DEPENDS = "zlib-native libxml2-native"
-
+PR = "r1"
