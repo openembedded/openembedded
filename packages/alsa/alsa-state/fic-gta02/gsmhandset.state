@@ -26,8 +26,8 @@ state.neo1973gta02 {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Headphone Playback Volume'
-		value.0 127
-		value.1 127
+		value.0 121
+		value.1 121
 	}
 	control.4 {
 		comment.access 'read write'
@@ -36,8 +36,8 @@ state.neo1973gta02 {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Speaker Playback Volume'
-		value.0 0
-		value.1 0
+		value.0 127
+		value.1 127
 	}
 	control.5 {
 		comment.access 'read write'
@@ -46,7 +46,7 @@ state.neo1973gta02 {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Mono Playback Volume'
-		value 121
+		value 115
 	}
 	control.6 {
 		comment.access 'read write'
@@ -85,7 +85,7 @@ state.neo1973gta02 {
 		iface MIXER
 		name 'Headphone Playback ZC Switch'
 		value.0 false
-		value.1 false
+		value.1 true
 	}
 	control.10 {
 		comment.access 'read write'
@@ -94,7 +94,7 @@ state.neo1973gta02 {
 		iface MIXER
 		name 'Speaker Playback ZC Switch'
 		value.0 false
-		value.1 false
+		value.1 true
 	}
 	control.11 {
 		comment.access 'read write'
@@ -103,7 +103,7 @@ state.neo1973gta02 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Bypass Playback Volume'
-		value 2
+		value 3
 	}
 	control.12 {
 		comment.access 'read write'
@@ -112,7 +112,7 @@ state.neo1973gta02 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Sidetone Playback Volume'
-		value 2
+		value 1
 	}
 	control.13 {
 		comment.access 'read write'
@@ -121,7 +121,7 @@ state.neo1973gta02 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'Mono Voice Playback Volume'
-		value 2
+		value 1
 	}
 	control.14 {
 		comment.access 'read write'
@@ -171,7 +171,7 @@ state.neo1973gta02 {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'Treble Volume'
-		value 0
+		value 7
 	}
 	control.19 {
 		comment.access 'read write'
@@ -209,8 +209,8 @@ state.neo1973gta02 {
 		comment.range '0 - 63'
 		iface MIXER
 		name 'Capture Volume'
-		value.0 23
-		value.1 23
+		value.0 24
+		value.1 24
 	}
 	control.23 {
 		comment.access 'read write'
@@ -227,8 +227,8 @@ state.neo1973gta02 {
 		comment.count 2
 		iface MIXER
 		name 'Capture Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.25 {
 		comment.access 'read write'
@@ -258,7 +258,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Capture Filter Switch'
-		value true
+		value false
 	}
 	control.28 {
 		comment.access 'read write'
@@ -276,7 +276,7 @@ state.neo1973gta02 {
 		comment.range '0 - 7'
 		iface MIXER
 		name 'ALC Capture Max Volume'
-		value 7
+		value 1
 	}
 	control.30 {
 		comment.access 'read write'
@@ -288,7 +288,7 @@ state.neo1973gta02 {
 		comment.item.3 Stereo
 		iface MIXER
 		name 'ALC Capture Function'
-		value Off
+		value Stereo
 	}
 	control.31 {
 		comment.access 'read write'
@@ -305,7 +305,7 @@ state.neo1973gta02 {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Hold Time'
-		value 15
+		value 7
 	}
 	control.33 {
 		comment.access 'read write'
@@ -544,7 +544,7 @@ state.neo1973gta02 {
 		comment.item.1 'Rx Mix'
 		iface MIXER
 		name 'Line Right Mux'
-		value 'Line 2'
+		value 'Rx Mix'
 	}
 	control.57 {
 		comment.access 'read write'
@@ -554,7 +554,7 @@ state.neo1973gta02 {
 		comment.item.1 'Rx Mix'
 		iface MIXER
 		name 'Line Left Mux'
-		value 'Line 1'
+		value 'Rx Mix'
 	}
 	control.58 {
 		comment.access 'read write'
@@ -570,7 +570,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'ALC Mixer Mic2 Capture Switch'
-		value false
+		value true
 	}
 	control.60 {
 		comment.access 'read write'
@@ -734,7 +734,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Mono Mixer Sidetone Playback Sw'
-		value false
+		value true
 	}
 	control.77 {
 		comment.access 'read write'
@@ -758,7 +758,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Right Mixer Sidetone Playback S'
-		value false
+		value true
 	}
 	control.80 {
 		comment.access 'read write'
@@ -766,7 +766,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Right Mixer Right Playback Swit'
-		value true
+		value false
 	}
 	control.81 {
 		comment.access 'read write'
@@ -798,7 +798,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Left Mixer Left Playback Switch'
-		value true
+		value false
 	}
 	control.85 {
 		comment.access 'read write'
@@ -806,7 +806,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'Left Mixer Bypass Playback Swit'
-		value false
+		value true
 	}
 	control.86 {
 		comment.access 'read write'
@@ -822,7 +822,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'DAPM GSM Line Out Switch'
-		value false
+		value true
 	}
 	control.88 {
 		comment.access 'read write'
@@ -846,7 +846,7 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'DAPM Handset Mic Switch'
-		value false
+		value true
 	}
 	control.91 {
 		comment.access 'read write'
