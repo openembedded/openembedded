@@ -193,7 +193,7 @@ Mail:       rpurdie@rpsys.net
 Distros:    poky, openzaurus, Ångström
 Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
-Recipes:    linux-rp, udev, zaurusd, task-base
+Recipes:    linux-rp, udev, zaurusd, task-base, qemu
 
 Person:     Rick Farina
 Mail:       sidhayn@gmail.com
