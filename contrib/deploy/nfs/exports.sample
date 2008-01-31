@@ -1,0 +1,2 @@
+# /etc/exports: NFS file systems being exported.  See exports(5).
+/srv/nfs/oe	192.168.0.0/16(rw,insecure,no_root_squash)

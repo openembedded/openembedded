@@ -1,0 +1,1 @@
+PREFERRED_VERSION_vte = "0.16.10"

@@ -12,7 +12,6 @@ EXTRA_OECONF = "--disable-binreloc"
 
 inherit autotools pkgconfig
 
-PACKAGES = "${PN}"
 FILES_${PN} = "\
   ${libexecdir}/notification-daemon \
   ${datadir}/dbus-1/services \

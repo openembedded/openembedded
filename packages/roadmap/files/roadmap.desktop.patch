@@ -1,0 +1,16 @@
+--- src/roadmap.desktop.old	2007-12-08 23:15:45.000000000 -0600
++++ src/roadmap.desktop	2007-12-08 23:17:48.000000000 -0600
+@@ -1,11 +1,8 @@
+ [Desktop Entry]
+-Comment=RoadMap
+ Comment=Car Navigation System
+ Exec=roadmap
+-Icon=roadmap.png
++Icon=roadmap
+ Type=Application
+ Name=RoadMap
+ GenericName=Map Viewer
+-Categories=Application;Other;VectorGraphics;Graphics;Viewer;GTK;
+-FilePattern=*roadmap;*.rdm
+-
++Categories=VectorGraphics;Graphics;Viewer;GTK;

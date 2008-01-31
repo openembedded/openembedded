@@ -1,9 +1,9 @@
-DESCRIPTION = "Emotion is a multimedia library with backends: gstreamer and libxine"
-LICENSE = "MIT"
+DESCRIPTION = "The Enlightenment multimedia library"
+LICENSE = "MIT BSD"
 # we no longer build the libxine backend, since the gstreamer backend seems more promising
 DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
 RRECOMMENDS_${PN} = "emotion-backend-gstreamer"
-PV = "0.0.1+cvs${SRCDATE}"
+PV = "0.1.0+cvs${SRCDATE}"
 PR = "r0"
 
 inherit efl_library

@@ -20,5 +20,5 @@ do_stage () {
 PACKAGES_prepend = "libsysfs libsysfs-dbg libsysfs-dev "
 FILES_libsysfs = "${libdir}/*.so.*"
 FILES_libsysfs-dev = "${libdir}/* ${includedir}"
-FILES_libsysfs-dbg = "${libdir}/.debug"
-FILES_${PN}-dbg = "${bindir}/.debug"
+FILES_libsysfs-dbg += "${libdir}/.debug"
+FILES_${PN}-dbg += "${bindir}/.debug"

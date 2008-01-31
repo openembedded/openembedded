@@ -1,10 +1,12 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
 #PV = "${DISTRO_VERSION}"
-PR = "r2"
+PR = "r3"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
+
+IWMMXT_FEED = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', 'iwmmxt', '',d)}"
 
 do_compile() {
         mkdir -p ${S}/${sysconfdir}/ipkg
@@ -14,6 +16,11 @@ do_compile() {
 
         echo "src/gz ${MACHINE_ARCH} ${ANGSTROM_URI}/${FEED_BASEPATH}${FEED_ARCH}/machine/${MACHINE_ARCH}" >  ${S}/${sysconfdir}/ipkg/${MACHINE_ARCH}-feed.conf
 	echo "src/gz no-arch ${ANGSTROM_URI}/${FEED_BASEPATH}/all" > ${S}/${sysconfdir}/ipkg/noarch-feed.conf
+        
+	# iwmmxt is a special case, add the iwmmxt feed for machine that have 'iwmmxt' in MACHINE_FEATURES
+        if [ "${IWMMXT_FEED}" = "iwmmxt" ] ; then
+	  echo "src/gz iwmmxt ${ANGSTROM_URI}/${FEED_BASEPATH}iwmmxt/base" > ${S}/${sysconfdir}/ipkg/iwmmxt-feed.conf
+	fi  
 }
 
 

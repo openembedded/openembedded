@@ -1,0 +1,11 @@
+--- libim2/Makefile.am~	2008-01-12 01:24:42.000000000 +0100
++++ libim2/Makefile.am	2008-01-12 01:24:42.000000000 +0100
+@@ -2,7 +2,7 @@
+ # have all needed files, that a GNU package needs
+ AUTOMAKE_OPTIONS = foreign 1.4
+ 
+-SUBDIRS = src include test
++SUBDIRS = src include
+ 
+ #servicesdir = @DBUS_SERVICES_DIR@
+ #services_DATA = improxy.service

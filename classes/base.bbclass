@@ -128,6 +128,14 @@ def base_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
 	else:
 		return falsevalue
 
+def base_version_less_or_equal(variable, checkvalue, truevalue, falsevalue, d):
+    import bb
+    result = bb.vercmp(bb.data.getVar(variable,d,True), checkvalue)
+    if result <= 0:
+        return truevalue
+    else:
+        return falsevalue
+
 def base_contains(variable, checkvalues, truevalue, falsevalue, d):
 	import bb
 	matches = 0
@@ -848,6 +856,12 @@ def base_after_parse(d):
     bb.data.delVarFlag('MACHINE', 'export', d)
     bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
     
+    # Make sure TARGET_ARCH isn't exported
+    # (breaks Makefiles using implicit rules, e.g. quilt, as GNU make has this 
+    # in them, undocumented)
+    bb.data.delVarFlag('TARGET_ARCH', 'export', d)
+    bb.data.setVarFlag('TARGET_ARCH', 'unexport', 1, d)
+    
     # Make sure DISTRO isn't exported
     # (breaks sysvinit at least)
     bb.data.delVarFlag('DISTRO', 'export', d)
@@ -895,6 +909,23 @@ def base_after_parse(d):
 python () {
     base_after_parse(d)
 }
+
+def check_app_exists(app, d):
+	from bb import which, data
+
+	app = data.expand(app, d)
+	path = data.getVar('PATH', d, 1)
+	return len(which(path, app)) != 0
+
+def check_gcc3(data):
+
+	gcc3_versions = 'gcc-3.4 gcc34 gcc-3.4.4 gcc-3.4.6 gcc-3.4.7 gcc-3.3 gcc33 gcc-3.3.6 gcc-3.2 gcc32'
+
+	for gcc3 in gcc3_versions.split():
+		if check_app_exists(gcc3, data):
+			return gcc3
+	
+	return False
 
 # Patch handling
 inherit patch

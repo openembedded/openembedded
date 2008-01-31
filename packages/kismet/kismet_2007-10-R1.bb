@@ -2,8 +2,8 @@ DESCRIPTION = "Kismet is an 802.11 layer2 wireless network detector, sniffer, an
 HOMEPAGE = "http://www.kismetwireless.net/"
 SECTION = "console/network"
 LICENSE = "GPLv2"
-DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2"
-PR = "r1"
+DEPENDS = "expat gmp imagemagick tiff fakeroot-native zlib bzip2 libpcap"
+PR = "r2"
 
 SRC_URI = "http://www.kismetwireless.net/code/kismet-${PV}.tar.gz"
 

@@ -1,18 +1,23 @@
 DESCRIPTION = "Matchbox virtual keyboard for X11"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft gtk+ matchbox-panel-2"
-RCONFLICTS = matchbox-keyboard
-RPROVIDES_${PN} = matchbox-keyboard
-#DEFAULT_PREFERENCE = "-1"
+RCONFLICTS_${PN} = "matchbox-keyboard"
+RPROVIDES_${PN} = "matchbox-keyboard"
 SECTION = "x11"
 PV = "0.0+svnr${SRCREV}"
-PR = "r7"
+PR = "r10"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;proto=http \
-	file://smallscreen-fontsize.patch;patch=1 \
-	file://80matchboxkeyboard"
+	    file://smallscreen-fontsize.patch;patch=1 \
+        file://2-Add-new-modifier--layout--Used-to-cycle-thru-all-available-layouts.patch;patch=1 \
+        file://3-Changes-to-improve-layout-rendering--especially-after-adding-support-for.patch;patch=1 \
+        file://4-Add-rendering-debug-logging.patch;patch=1 \
+        file://5-Add-support-for-loading-multiple-independent-layouts.patch;patch=1 \
+        file://6-Add-layout-switch-key-to-all-layouts.patch;patch=1 \
+	    file://80matchboxkeyboard"
 
 SRC_URI_append_fic-gta01 = " file://fic-gta01-font-size.patch;patch=1"
+SRC_URI_append_fic-gta02 = " file://fic-gta01-font-size.patch;patch=1"
 
 S = "${WORKDIR}/matchbox-keyboard"
 

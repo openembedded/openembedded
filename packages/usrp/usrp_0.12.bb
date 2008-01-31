@@ -37,5 +37,5 @@ do_stage () {
 }
 
 PACKAGES += "python-pyusrp-dbg python-pyusrp"
-FILES_python-pyusrp-dbg = "${libdir}/python*/site-packages/.debug"
+FILES_python-pyusrp-dbg += "${libdir}/python*/site-packages/.debug"
 FILES_python-pyusrp = "${libdir}/python*"

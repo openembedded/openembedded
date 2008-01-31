@@ -87,3 +87,17 @@ unslung_clean_image () {
 #	#### End of Hack!
 
 }
+
+
+# Override this function for unslung, since we don't need Apex.
+
+nslu2_pack_image () {
+	slugimage -p \
+		-b ${STAGING_LIBDIR}/nslu2-binaries/RedBoot \
+		-s ${STAGING_LIBDIR}/nslu2-binaries/SysConf \
+		-k ${DEPLOY_DIR_IMAGE}/zImage-${MACHINE}.bin \
+		-r Ramdisk:1,Flashdisk:${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+		-m ${STAGING_FIRMWARE_DIR}/NPE-B \
+		-t ${STAGING_LIBDIR}/nslu2-binaries/Trailer \
+		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-nslu2.bin
+}

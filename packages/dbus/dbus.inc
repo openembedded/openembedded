@@ -1,16 +1,18 @@
-SECTION = "base"
-HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
+HOMEPAGE = "http://dbus.freedesktop.org"
 DESCRIPTION = "Message bus system for applications to talk to one another"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
-	   file://cross.patch;patch=1 \
-	   file://tmpdir.patch;patch=1 \
-	   file://dbus-1.init \
-          "
+SRC_URI = "\
+  http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+  file://cross.patch;patch=1 \
+  file://tmpdir.patch;patch=1 \
+  file://fix-install-daemon.patch;patch=1 \
+  file://dbus-1.init \
+"
+S = "${WORKDIR}/dbus-${PV}"
 
 inherit autotools pkgconfig update-rc.d gettext
 
@@ -19,7 +21,12 @@ INITSCRIPT_PARAMS = "defaults"
 
 CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session.conf"
 
-FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services ${libdir}/lib*.so.*"
+DEBIANNAME_${PN} = "dbus-1"
+
+PACKAGES += "${PN}-lib"
+
+FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services"
+FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
 pkg_postinst_dbus() {
@@ -46,7 +53,7 @@ EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \
 		--with-xml=expat --without-x"
 
 
-do_stage () {
+do_stage() {
 	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}
 
 	autotools_stage_includes
@@ -55,12 +62,7 @@ do_stage () {
 	install -m 0644 dbus/dbus-arch-deps.h ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
 }
 
-do_install_append () {
+do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
-}
-
-python populate_packages_prepend () {
-	if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
-		bb.data.setVar('PKG_dbus', 'dbus-1', d)
 }

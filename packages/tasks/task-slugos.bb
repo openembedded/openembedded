@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r15"
+PR = "r16"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -20,20 +20,23 @@ ALLOW_EMPTY = "1"
 SLUGOS_STANDARD_RDEPENDS = ""
 SLUGOS_STANDARD_RRECOMMENDS = ""
 
-# diff, cpio and find are required for reflash and turnup ram.
-# Removing these probably leaves the system bootable, but standard
-# openslug and ucslugc stuff won't work, so only take these out in
-# very non-standard turnkey slugos builds.
-#
-# udev is the default way of handling devices, there is no guarantee
-# that the static device table is completely correct (it is just
-# known to be sufficient for boot.)
-SLUGOS_STANDARD_RRECOMMENDS += "diffutils cpio findutils"
+# diff, cpio and find are required for turnup and ipkg.
+SLUGOS_STANDARD_RRECOMMENDS += "\
+diffutils \
+cpio \
+findutils \
+"
 
 # These lines add support for formatting ext2 and ext3 file systems
 # on a hard disk attached to the NSLU2.  ext3 is the standard Linux
 # file system.
-SLUGOS_STANDARD_RRECOMMENDS += "e2fsprogs-mke2fs e2fsprogs-fsck e2fsprogs-e2fsck e2fsprogs-badblocks"
+SLUGOS_STANDARD_RRECOMMENDS += "\
+e2fsprogs-mke2fs \
+e2fsprogs-fsck \
+e2fsprogs-e2fsck \
+e2fsprogs-badblocks \
+e2fsprogs-blkid \
+"
 
 # These lines add support for an X/Y/ZModem package called lrzsz
 # (this is of use for people with modified NSLU2 hardware which
@@ -66,7 +69,6 @@ kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
 "
 
-
 # Add daemon required for HW RNG support
 SLUGOS_RNG_TOOLS_PACKAGE = "rng-tools"
 SLUGOS_RNG_TOOLS_PACKAGE_linux-uclibc = ""
@@ -82,8 +84,10 @@ kernel-module-uhci-hcd \
 "
 
 # Add modules required for IDE support
-# SLUGOS_STANDARD_RRECOMMENDS += "\
-# "
+SLUGOS_STANDARD_RRECOMMENDS += "\
+kernel-module-libata \
+kernel-module-pata-artop \
+"
 
 # Add modules required for Network support
 SLUGOS_STANDARD_RRECOMMENDS += "\
@@ -93,14 +97,15 @@ kernel-module-ixp4xx-qmgr \
 kernel-module-via-velocity \
 "
 
+# Other candidate packages that have been considered and
+# are intentionally excluded from the base flash image.
+#
 # portmap \
 # kexec-tools \
 # kernel-module-nfs \
 # kernel-module-isofs \
 # kernel-module-udf \
 # kernel-module-loop \
-# kernel-module-libata \
-# kernel-module-pata-artop \
 # kernel-module-netconsole \
 # wpa-supplicant \
 # zd1211-firmware kernel-module-zd1211rw \
@@ -118,7 +123,6 @@ RDEPENDS += "\
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
 	beep \
-	e2fsprogs-blkid \
 	util-linux-mount \
 	util-linux-umount \
 	util-linux-swaponoff \
@@ -126,6 +130,7 @@ RDEPENDS += "\
 	${SLUGOS_STANDARD_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS}"
 
+DISTRO_EXTRA_RRECOMMENDS ?= ""
 RRECOMMENDS += "\
 	openssh \
 	${SLUGOS_STANDARD_RRECOMMENDS} \

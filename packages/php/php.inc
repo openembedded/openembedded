@@ -1,10 +1,12 @@
-SECTION = "console/network"
 DESCRIPTION = "A server-side, HTML-embedded scripting language. This package provides the CGI."
+HOMEPAGE = "http://www.php.net"
+SECTION = "console/network"
 LICENSE = "PHP"
-SRC_URI = "http://de3.php.net/distributions/php-${PV}.tar.bz2 \
-           file://${FILESDIR}/autotools.patch;patch=1 \
-           file://${FILESDIR}/pear.patch;patch=1"
-S = "${WORKDIR}/php-${PV}"
+DEPENDS = "zlib libxml2 mysql virtual/libiconv php-native"
+
+SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2\
+               file://autotools.patch;patch=1 \
+               file://acinclude-xml2-config.patch;patch=1"
 
 inherit autotools
 

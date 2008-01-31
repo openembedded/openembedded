@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r50"
+PR = "r58"
 
 inherit task
 
@@ -15,6 +15,7 @@ PACKAGES = ' \
             ${@base_contains("MACHINE_FEATURES", "alsa", "task-base-alsa", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "apm", "task-base-apm", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "ext2", "task-base-ext2", "", d)} \
+            ${@base_contains("MACHINE_FEATURES", "vfat", "task-base-vfat", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "irda", "task-base-irda", "",d)} \
             ${@base_contains("MACHINE_FEATURES", "keyboard", "task-base-keyboard", "", d)} \
             ${@base_contains("MACHINE_FEATURES", "pci", "task-base-pci", "",d)} \
@@ -87,6 +88,7 @@ RDEPENDS_task-base = "\
     \
     ${@base_contains('COMBINED_FEATURES', 'alsa', 'task-base-alsa', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'ext2', 'task-base-ext2', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'vfat', 'task-base-vfat', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'irda', 'task-base-irda', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pci', 'task-base-pci', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'task-base-pcmcia', '',d)} \
@@ -166,7 +168,8 @@ RRECOMMENDS_task-base-kernel26 = "\
     kernel-module-rtc-dev \
     kernel-module-rtc-proc \
     kernel-module-rtc-sysfs \
-    kernel-module-rtc-sa1100"
+    kernel-module-rtc-sa1100 \
+    kernel-module-unix"
 
 RDEPENDS_task-base-keyboard = "\
     keymaps"
@@ -187,6 +190,12 @@ RDEPENDS_task-base-ext2 = "\
     e2fsprogs \
     e2fsprogs-e2fsck \
     e2fsprogs-mke2fs"
+
+RRECOMMENDS_task-base-vfat = "\
+    kernel-module-msdos \
+    kernel-module-vfat \
+    kernel-module-nls-iso8859-1 \
+    kernel-module-nls-cp437"
 
 RDEPENDS_task-base-alsa = "\
     alsa-utils-alsactl \
@@ -218,8 +227,6 @@ RRECOMMENDS_task-base-pcmcia = "\
     "
 
 task-base-pcmcia24 = "\
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'hostap-modules-cs', '',d)} \
-    ${@base_contains('DISTRO_FEATURES', 'wifi', 'orinoco-modules-cs', '',d)} \
     "
 
 task-base-pcmcia26 = "\
@@ -295,7 +302,7 @@ RRECOMMENDS_task-base-usbhost = "\
     kernel-module-usb-storage "
 
 RDEPENDS_task-base-uboot = "\
-    uboot-utils"
+    u-boot"
 
 RDEPENDS_task-base-redboot = "\
     fis"

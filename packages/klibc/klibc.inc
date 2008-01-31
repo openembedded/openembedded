@@ -46,7 +46,7 @@ INSTALLBINDIR = "${INSTALLPREFIX}bin"
 INSTALLLIBDIR = "${INSTALLPREFIX}lib"
 INSTALLINCDIR = "${INSTALLPREFIX}include"
 
-PACKAGES = "${PN} ${PN}-dev ${PN}-doc"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-doc"
 
 FILES_${PN} = "/lib/*.so* ${INSTALLBINDIR}"
 FILES_${PN}-dev = "/usr/bin ${INSTALLINCDIR} ${INSTALLLIBDIR}"

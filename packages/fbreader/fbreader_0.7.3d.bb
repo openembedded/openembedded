@@ -1,5 +1,5 @@
 DESCRIPTION = "FBreader is an ebook reader"
-LICENSE = "GPL2"
+LICENSE = "GPLv2"
 HOMEPAGE = "http://only.mawhrin.net/fbreader/"
 SECTION = "x11/utils"
 PRIORITY = "optional"

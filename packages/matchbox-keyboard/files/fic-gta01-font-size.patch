@@ -1,12 +1,12 @@
 Index: matchbox-keyboard/src/matchbox-keyboard.c
 ===================================================================
---- matchbox-keyboard.orig/src/matchbox-keyboard.c	2007-08-19 17:26:59.000000000 +0200
-+++ matchbox-keyboard/src/matchbox-keyboard.c	2007-08-19 17:27:06.000000000 +0200
-@@ -52,7 +52,7 @@
+--- matchbox-keyboard.orig/src/matchbox-keyboard.c
++++ matchbox-keyboard/src/matchbox-keyboard.c
+@@ -54,7 +54,7 @@
    kb->row_spacing = 5;
  
    kb->font_family  = strdup("sans");
--  kb->font_pt_size = 5;
+-  kb->font_pt_size = 6;
 +  kb->font_pt_size = 3;
    kb->font_variant = strdup("bold");
  

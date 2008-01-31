@@ -1,0 +1,34 @@
+openembedded-essential (1.4) unstable; urgency=low
+
+  * remove gfortran from dependency after a5c7b007eaa675cc904f5285291d2f8a597efc84 caused controversy.
+    Ultimately it was decided that OE should not depend on gfortran and that another solution ought
+    to be found.  The gfortran check in sanity.bbclass was dropped in 63c7ad87655c2781ad8b9c81af430596f48a24a6
+  * add bc and python-pysqlite2 for rpm
+
+ -- Rolf Leggewie <oe-devel@rolf.leggewie.biz>  Mon, 19 Jan 2008 14:25:00 +0100
+
+openembedded-essential (1.3) unstable; urgency=low
+
+  * add gfortran as dependency to complement a5c7b007eaa675cc904f5285291d2f8a597efc84
+
+ -- Rolf Leggewie <oe-devel@rolf.leggewie.biz>  Mon, 7 Jan 2008 20:25:00 +0100
+
+openembedded-essential (1.2) unstable; urgency=low
+
+  * fixed packaging to make lintian happy
+  * switched to native numbering
+
+ -- Marcin Juszkiewicz <hrw@openembedded.org>  Wed,  8 Nov 2006 11:17:42 +0100
+
+openembedded-essential (1.1) unstable; urgency=low
+
+  * added gawk
+
+ -- Marcin Juszkiewicz <hrw@openembedded.org>  Wed,  8 Nov 2006 11:17:42 +0100
+
+openembedded-essential (1.0-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Marcin Juszkiewicz <hrw@openembedded.org>  Tue, 17 Oct 2006 12:05:35 +0200
+

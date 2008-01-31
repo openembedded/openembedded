@@ -6,7 +6,8 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r0"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
+           file://configure-fix.patch;patch=1"
 S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 
 inherit native
@@ -26,9 +27,11 @@ EXTRA_OECONF = "-prefix ${STAGING_DIR_NATIVE}/qt4 \
 # yank default -e
 EXTRA_OEMAKE = " "
 
+export LFLAGS="${LDFLAGS}"
+
 do_configure() {
-	sed -i 's:^QT += xml qt3support$:QT += xml qt3support network:' "${S}"/src/tools/uic3/uic3.pro
-	echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+    sed -i 's:^QT += xml qt3support$:QT += xml qt3support network:' "${S}"/src/tools/uic3/uic3.pro
+    echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 TOBUILD = "\
@@ -45,17 +48,18 @@ TOBUILD = "\
 "
 
 do_compile() {
-	unset CC CXX CFLAGS LFLAGS CXXFLAGS CPPFLAGS
-	for i in ${TOBUILD}; do
-		cd ${S}/$i && oe_runmake CC="${CC}" CXX="${CXX}"
-	done
+    unset CC CXX CFLAGS LFLAGS CXXFLAGS CPPFLAGS
+    for i in ${TOBUILD};
+    do
+        cd ${S}/$i && oe_runmake CC="${CC}" CXX="${CXX}"
+    done
 }
 
 do_stage() {
-        install -m 0755 bin/moc ${STAGING_BINDIR}/moc4
-        install -m 0755 bin/uic ${STAGING_BINDIR}/uic4
-        install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
-        install -m 0755 bin/rcc ${STAGING_BINDIR}/rcc4
-        install -d ${STAGING_DIR_NATIVE}/qt4/
-        install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR_NATIVE}/qt4/
+    install -m 0755 bin/moc ${STAGING_BINDIR}/moc4
+    install -m 0755 bin/uic ${STAGING_BINDIR}/uic4
+    install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
+    install -m 0755 bin/rcc ${STAGING_BINDIR}/rcc4
+    install -d ${STAGING_DIR_NATIVE}/qt4/
+    install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR_NATIVE}/qt4/
 }

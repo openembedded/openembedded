@@ -1,0 +1,11 @@
+--- fmtools-1.0.2/Makefile	2002-08-17 06:05:09.000000000 +0200
++++ fmtools-1.0.2p/Makefile	2007-12-22 21:45:28.000000000 +0100
+@@ -1,8 +1,5 @@
+ # fmtools Makefile - just the basics for now
+ 
+-CC	= gcc
+-CFLAGS	= -Wall -O2
+-
+ INSTALL	= /usr/bin/install
+ 
+ # Since fmtools doesn't use configure, these paths are provided here

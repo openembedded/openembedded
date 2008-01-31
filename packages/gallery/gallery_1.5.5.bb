@@ -32,7 +32,7 @@ do_compile() {
 #
 do_install() {
 	mkdir -p ${D}/${DEST_DIR} ${D}/etc/apache2/modules.d
-	cp -a ${S} ${D}/${DEST_DIR}
+	cp -pPR ${S} ${D}/${DEST_DIR}
 	cp ${FILESDIR}/gallery.conf  ${D}/etc/apache2/modules.d/95_gallery.conf
 }
 

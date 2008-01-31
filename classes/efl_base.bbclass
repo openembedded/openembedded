@@ -3,7 +3,7 @@ inherit autotools pkgconfig
 SECTION = "e/libs"
 HOMEPAGE = "http://www.enlightenment.org"
 SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-native', '')}"
-SRC_URI = "http://download.enlightenment.org/snapshots/2007-07-10/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "http://download.enlightenment.org/snapshots/2008-01-25/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 do_stage() {

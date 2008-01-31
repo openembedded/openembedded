@@ -1,9 +1,8 @@
 DESCRIPTION = "Epdf is the glue between EFL and libpoppler"
-LICENSE = "BSD"
-DEPENDS = "poppler0.6 evas ecore etk ewl"
+LICENSE = "MIT BSD"
+DEPENDS = "poppler evas ecore etk ewl"
 PV = "0.1.0+cvs${SRCDATE}"
-
-PR = "r1"
+PR = "r0"
 
 inherit efl_library
 

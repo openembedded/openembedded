@@ -22,7 +22,7 @@ CONFFILES_${PN} = "${sysconfdir}/ipupdate.conf"
 
 inherit autotools update-rc.d
 
-PACKAGES = "ez-ipupdate"
+PACKAGES += "ez-ipupdate"
 
 do_install_append() {
 	install -d "${D}${sysconfdir}/init.d"

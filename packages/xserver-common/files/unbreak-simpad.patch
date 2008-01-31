@@ -1,0 +1,18 @@
+--- xserver-common-1.18/X11/Xinit.d/12keymap.org	2007-08-24 14:14:31.000000000 +0300
++++ xserver-common-1.18/X11/Xinit.d/12keymap	2007-12-22 15:06:52.000000000 +0200
+@@ -15,14 +15,11 @@
+         "Sharp-Collie")
+                 xmodmap - < /etc/X11/collie.xmodmap
+                 ;;
+-	"Simpad")
+-		xmodmap - < /etc/X11/simpad.xmodmap
+-		;;
+ 	"HP iPAQ h6300")
+ 		xmodmap - < /etc/X11/h6300.xmodmap
+ 		;;
+ 	# All the rest of keyboardless PDA machines use common buttonmap
+-	"HP iPAQ"* | "Asus MyPal"*)
++	"Simpad" | "HP iPAQ"* | "Asus MyPal"*)
+ 		xmodmap - < /etc/X11/keyboardless.xmodmap
+ 		;;
+ esac

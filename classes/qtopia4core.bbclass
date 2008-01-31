@@ -4,8 +4,9 @@ inherit qmake2
 #
 # override variables set by qmake-base to compile QtopiaCore apps
 #
-export OE_QMAKE_INCDIR_QT = "${STAGING_INCDIR}/qtopiacore4"
-export OE_QMAKE_LIBDIR_QT = "${STAGING_LIBDIR}/qtopiacore4/"
+export OE_QMAKE_INCDIR_QT = "${STAGING_INCDIR}/qtopia"
+export OE_QMAKE_LIBDIR_QT = "${STAGING_LIBDIR}/qtopia"
 export OE_QMAKE_LIBS_QT = "qt"
 export OE_QMAKE_LIBS_X11 = ""
-EXTRA_QMAKEVARS_POST += "LIBS+=-lQtNetwork "
+export OE_QMAKE_EXTRA_MODULES = "network"
+EXTRA_QMAKEVARS_PRE += " QT_LIBINFIX=E "

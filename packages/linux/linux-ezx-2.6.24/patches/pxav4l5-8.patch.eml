@@ -1,0 +1,882 @@
+Path: news.gmane.org!not-for-mail
+From: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+Newsgroups: gmane.comp.video.video4linux
+Subject: [RFC PATCH 5/8] Add support for the MT9V022 camera
+Date: Wed, 23 Jan 2008 18:41:55 +0100 (CET)
+Lines: 811
+Approved: news@gmane.org
+Message-ID: <Pine.LNX.4.64.0801231826270.4932@axis700.grange>
+References: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Trace: ger.gmane.org 1201110170 28931 80.91.229.12 (23 Jan 2008 17:42:50 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 23 Jan 2008 17:42:50 +0000 (UTC)
+To: video4linux-list@redhat.com
+Original-X-From: video4linux-list-bounces@redhat.com Wed Jan 23 18:43:08 2008
+Return-path: <video4linux-list-bounces@redhat.com>
+Envelope-to: rh-video4linux-list@gmane.org
+Original-Received: from hormel.redhat.com ([209.132.177.30])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1JHjcd-0003BV-40
+	for rh-video4linux-list@gmane.org; Wed, 23 Jan 2008 18:42:47 +0100
+Original-Received: from listman.util.phx.redhat.com (listman.util.phx.redhat.com [10.8.4.110])
+	by hormel.redhat.com (Postfix) with ESMTP
+	id C4D7773103; Wed, 23 Jan 2008 12:42:17 -0500 (EST)
+Original-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by listman.util.phx.redhat.com (8.13.1/8.13.1) with ESMTP id
+	m0NHgEOS017265 for <video4linux-list@listman.util.phx.redhat.com>;
+	Wed, 23 Jan 2008 12:42:14 -0500
+Original-Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m0NHgDux028248
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:42:13 -0500
+Original-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by mx3.redhat.com (8.13.1/8.13.1) with SMTP id m0NHfhB0001132
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:43 -0500
+Original-Received: (qmail invoked by alias); 23 Jan 2008 17:41:36 -0000
+Original-Received: from p57BD2F1F.dip0.t-ipconnect.de (EHLO axis700.grange)
+	[87.189.47.31]
+	by mail.gmx.net (mp007) with SMTP; 23 Jan 2008 18:41:36 +0100
+X-Authenticated: #20450766
+X-Provags-ID: V01U2FsdGVkX195mwEUb8x5N9fm4LtKVLZ+GalahBZqOqI6J/GHUG
+	kn7bBfBiSjX3u4
+Original-Received: from lyakh (helo=localhost)
+	by axis700.grange with local-esmtp (Exim 4.63)
+	(envelope-from <g.liakhovetski@gmx.de>) id 1JHjbn-00029z-Tk
+	for video4linux-list@redhat.com; Wed, 23 Jan 2008 18:41:55 +0100
+X-X-Sender: lyakh@axis700.grange
+In-Reply-To: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+X-Y-GMX-Trusted: 0
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.58 on 172.16.48.32
+X-loop: video4linux-list@redhat.com
+X-BeenThere: video4linux-list@redhat.com
+X-Mailman-Version: 2.1.5
+Precedence: junk
+List-Id: Linux and Kernel Video <video4linux-list.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>, 
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Original-Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+Xref: news.gmane.org gmane.comp.video.video4linux:36476
+Archived-At: <http://permalink.gmane.org/gmane.comp.video.video4linux/36476>
+
+This driver supports Micron MT9V022 colour camera.
+
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+---
+ drivers/media/video/Kconfig   |   14 +
+ drivers/media/video/Makefile  |    1 +
+ drivers/media/video/mt9v022.c |  751 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 766 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/media/video/mt9v022.c
+
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index def5246..1359f8f 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -818,6 +818,20 @@ config MT9M001_PCA9536_SWITCH
+ 	  Select this if your MT9M001 camera uses a PCA9536 I2C GPIO
+ 	  extender to switch between 8 and 10 bit datawidth modes
+ 
++config SOC_CAMERA_MT9V022
++	tristate "mt9v022 support"
++	depends on SOC_CAMERA
++	select SENSORS_PCA9536 if MT9V022_PCA9536_SWITCH
++	help
++	  This driver supports MT9V022 cameras from Micron
++
++config MT9V022_PCA9536_SWITCH
++	bool "pca9536 datawidth switch for mt9v022"
++	depends on SOC_CAMERA_MT9V022
++	help
++	  Select this if your MT9V022 camera uses a PCA9536 I2C GPIO
++	  extender to switch between 8 and 10 bit datawidth modes
++
+ config VIDEO_PXA27X
+ 	tristate "PXA27x Quick Capture Interface driver"
+ 	depends on VIDEO_DEV && PXA27x
+diff --git a/drivers/media/video/Makefile b/drivers/media/video/Makefile
+index c56bfdb..6eaf0ad 100644
+--- a/drivers/media/video/Makefile
++++ b/drivers/media/video/Makefile
+@@ -119,5 +119,6 @@ obj-$(CONFIG_VIDEO_VIVI) += vivi.o
+ obj-$(CONFIG_VIDEO_PXA27X)	+= pxa_camera.o
+ obj-$(CONFIG_SOC_CAMERA)	+= soc_camera.o
+ obj-$(CONFIG_SOC_CAMERA_MT9M001)	+= mt9m001.o
++obj-$(CONFIG_SOC_CAMERA_MT9V022)	+= mt9v022.o
+ 
+ EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
+diff --git a/drivers/media/video/mt9v022.c b/drivers/media/video/mt9v022.c
+new file mode 100644
+index 0000000..d13b965
+--- /dev/null
++++ b/drivers/media/video/mt9v022.c
+@@ -0,0 +1,751 @@
++/*
++ * Driver for MT9V022 CMOS Image Sensor from Micron
++ *
++ * Copyright (C) 2008, Guennadi Liakhovetski <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/videodev.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/delay.h>
++#include <linux/log2.h>
++
++#include <media/v4l2-common.h>
++#include <media/v4l2-chip-ident.h>
++#include <media/soc_camera.h>
++
++/* mt9v022 i2c address 0x48, 0x4c, 0x58, 0x5c
++ * The platform has to define i2c_board_info
++ * and call i2c_register_board_info() */
++
++static char *sensor_type;
++module_param(sensor_type, charp, S_IRUGO);
++MODULE_PARM_DESC(sensor_type, "Sensor type: \"colour\" or \"monochrome\"\n");
++
++/* mt9v022 selected register addresses */
++#define MT9V022_CHIP_VERSION		0x00
++#define MT9V022_COLUMN_START		0x01
++#define MT9V022_ROW_START		0x02
++#define MT9V022_WINDOW_HEIGHT		0x03
++#define MT9V022_WINDOW_WIDTH		0x04
++#define MT9V022_HORIZONTAL_BLANKING	0x05
++#define MT9V022_VERTICAL_BLANKING	0x06
++#define MT9V022_CHIP_CONTROL		0x07
++#define MT9V022_SHUTTER_WIDTH1		0x08
++#define MT9V022_SHUTTER_WIDTH2		0x09
++#define MT9V022_SHUTTER_WIDTH_CTRL	0x0a
++#define MT9V022_TOTAL_SHUTTER_WIDTH	0x0b
++#define MT9V022_RESET			0x0c
++#define MT9V022_READ_MODE		0x0d
++#define MT9V022_MONITOR_MODE		0x0e
++#define MT9V022_PIXEL_OPERATION_MODE	0x0f
++#define MT9V022_LED_OUT_CONTROL		0x1b
++#define MT9V022_ADC_MODE_CONTROL	0x1c
++#define MT9V022_ANALOG_GAIN		0x34
++#define MT9V022_BLACK_LEVEL_CALIB_CTRL	0x47
++#define MT9V022_PIXCLK_FV_LV		0x74
++#define MT9V022_DIGITAL_TEST_PATTERN	0x7f
++#define MT9V022_AEC_AGC_ENABLE		0xAF
++#define MT9V022_MAX_TOTAL_SHUTTER_WIDTH	0xBD
++
++/* Progressive scan, master, defaults */
++#define MT9V022_CHIP_CONTROL_DEFAULT	0x188
++
++/* must be 32 bit, bitwise coded by reg_to_int and int_to_reg below */
++struct reg_access {
++	u16	value;
++	u8	address;
++	u8	rw;
++} __attribute__ ((packed));
++
++union reg_access_32 {
++	struct reg_access	reg;
++	u32			ctrl;
++};
++
++enum reg_rw { REG_READ = 0, REG_WRITE = 1, };
++
++/*
++#define reg_to_int(rw, address, value) ({			\
++	union reg_access_32 u = {.reg = {value, address, rw}};	\
++	u.i32;							\
++})
++*/
++
++/* rw has to be numerically most significant, because
++ * maximum, minimum and value are signed */
++#ifdef __LITTLE_ENDIAN
++#define reg_to_int(rw, address, value) (((value) & 0xffff) | (((address) & 0xff) << 16) | (((rw) & 0x7f) << 24))
++#else
++#define reg_to_int(rw, address, value) ((((value) & 0xffff) << 16) | (((address) & 0xff) << 8) | ((rw) & 0x7f))
++#endif
++
++static const struct soc_camera_data_format mt9v022_formats[]= {
++	{
++		.name		= "RGB Bayer (sRGB)",
++		.depth		= 8,
++		.fourcc		= V4L2_PIX_FMT_SBGGR8,
++		.colorspace	= V4L2_COLORSPACE_SRGB,
++	}, {
++		.name		= "RGB Bayer (sRGB)",
++		.depth		= 10,
++		.fourcc		= V4L2_PIX_FMT_SBGGR16,
++		.colorspace	= V4L2_COLORSPACE_SRGB,
++	}, {
++		.name		= "Monochrome 10 bit",
++		.depth		= 10,
++		.fourcc		= V4L2_PIX_FMT_Y16,
++	}, {
++		.name		= "Monochrome 8 bit",
++		.depth		= 8,
++		.fourcc		= V4L2_PIX_FMT_GREY,
++	},
++};
++
++enum mt9v022_sensor {
++	MT9V022_SENSOR_MONOCHROME,
++	MT9V022_SENSOR_COLOUR,
++};
++
++struct mt9v022 {
++	struct i2c_client *client;
++	struct soc_camera_device icd;
++	enum mt9v022_sensor sensor;
++	struct i2c_client *data_switch;
++	u16 chip_control;
++	unsigned char datawidth;
++};
++
++static int reg_read(struct soc_camera_device *icd, const u8 reg)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	struct i2c_client *client = mt9v022->client;
++	s32 data = i2c_smbus_read_word_data(client, reg);
++	return data < 0 ? data : swab16(data);
++}
++
++static int reg_write(struct soc_camera_device *icd, const u8 reg,
++		     const u16 data)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	return i2c_smbus_write_word_data(mt9v022->client, reg, swab16(data));
++}
++
++static int reg_set(struct soc_camera_device *icd, const u8 reg,
++		   const u16 data)
++{
++	int ret;
++
++	if ((ret = reg_read(icd, reg)) < 0)
++		return ret;
++	return reg_write(icd, reg, ret | data);
++}
++
++static int reg_clear(struct soc_camera_device *icd, const u8 reg,
++		     const u16 data)
++{
++	int ret;
++
++	if ((ret = reg_read(icd, reg)) < 0)
++		return ret;
++	return reg_write(icd, reg, ret & ~data);
++}
++
++static int mt9v022_init(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	int ret;
++
++	/* Almost the default mode: master, parallel, simultaneous, and an
++	 * undocumented bit 0x200, which is present in table 7, but not in 8,
++	 * plus snapshot mode to disable scan for now */
++//	mt9v022->chip_control |= 0x10;
++	ret = reg_write(icd, MT9V022_CHIP_CONTROL, mt9v022->chip_control);
++	if (ret >= 0)
++		reg_write(icd, MT9V022_READ_MODE, 0x300);
++
++	/* All defaults */
++	if (ret >= 0)
++		ret = reg_set(icd, MT9V022_AEC_AGC_ENABLE, 0x3); /* AEC, AGC on */
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_MAX_TOTAL_SHUTTER_WIDTH, 480);
++	if (ret >= 0)
++		ret = reg_clear(icd, MT9V022_BLACK_LEVEL_CALIB_CTRL, 1); /* default - auto */
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_DIGITAL_TEST_PATTERN, 0);
++
++	return ret < 0 ? ret :0;
++}
++
++static int mt9v022_release(struct soc_camera_device *icd)
++{
++	/* Nothing? */
++	return 0;
++}
++
++static int mt9v022_start_capture(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	/* Switch to master "normal" mode */
++	mt9v022->chip_control &= ~0x10;
++	if (reg_write(icd, MT9V022_CHIP_CONTROL,
++		      mt9v022->chip_control) < 0)
++		return -EIO;
++	return 0;
++}
++
++static int mt9v022_stop_capture(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	/* Switch to snapshot mode */
++//	mt9v022->chip_control |= 0x10;
++	if (reg_write(icd, MT9V022_CHIP_CONTROL,
++		      mt9v022->chip_control) < 0)
++		return -EIO;
++	return 0;
++}
++
++extern int pca9536_set_level(struct i2c_client *client, u8 pin, u8 level);
++
++static int external_bus_switch(struct i2c_client *extender, int go8bit)
++{
++	if (! extender)
++		return -ENODEV;
++
++#ifdef CONFIG_MT9V022_PCA9536_SWITCH
++	return pca9536_set_level(extender, 0, go8bit);
++#else
++	return -ENODEV;
++#endif
++}
++
++static int mt9v022_set_capture_format(struct soc_camera_device *icd, __u32 pixfmt,
++				      struct v4l2_rect *rect, unsigned int flags)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	unsigned int width_flag = flags & (IS_DATAWIDTH_10 | IS_DATAWIDTH_9 |
++					   IS_DATAWIDTH_8);
++	u16 pixclk = 0;
++	int ret;
++
++	/* Only one width bit may be set */
++	if (!is_power_of_2(width_flag))
++		return -EINVAL;
++
++	/* The caller provides a supported format, as verified per call to
++	 * icd->try_fmt_cap(), datawidth is from our supported format list */
++	switch (pixfmt) {
++	case V4L2_PIX_FMT_GREY:
++	case V4L2_PIX_FMT_Y16:
++		if (mt9v022->sensor != MT9V022_SENSOR_MONOCHROME)
++			return -EINVAL;
++		break;
++	case V4L2_PIX_FMT_SBGGR8:
++	case V4L2_PIX_FMT_SBGGR16:
++		if (mt9v022->sensor != MT9V022_SENSOR_COLOUR)
++			return -EINVAL;
++		break;
++	case 0:
++		/* No format change, only geometry */
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* Like in example app. Contradicts the datasheet though */
++	ret = reg_read(icd, MT9V022_AEC_AGC_ENABLE);
++	if (ret >= 0) {
++		if (ret & 1) /* Autoexposure */
++			ret = reg_write(icd, MT9V022_MAX_TOTAL_SHUTTER_WIDTH,
++					rect->height + icd->y_skip_top + 43);
++		else
++			ret = reg_write(icd, MT9V022_TOTAL_SHUTTER_WIDTH,
++					rect->height + icd->y_skip_top + 43);
++	}
++	/* Setup frame format: defaults apart from width and height */
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_COLUMN_START, rect->left);
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_ROW_START, rect->top);
++	if (ret >= 0)
++		/* Default 94, Phytec driver says: "width + horizontal blank >= 660" */
++		ret = reg_write(icd, MT9V022_HORIZONTAL_BLANKING,
++				rect->width > 660 - 43 ? 43 : 660 - rect->width);
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_VERTICAL_BLANKING, 45);
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_WINDOW_WIDTH, rect->width);
++	if (ret >= 0)
++		ret = reg_write(icd, MT9V022_WINDOW_HEIGHT, rect->height + icd->y_skip_top);
++
++	if (ret < 0)
++		return ret;
++
++	dev_dbg(&icd->dev, "Frame %ux%u pixel\n", rect->width, rect->height);
++
++	if ((mt9v022->datawidth != 10 && (width_flag == IS_DATAWIDTH_10)) ||
++	    (mt9v022->datawidth != 9  && (width_flag == IS_DATAWIDTH_9)) ||
++	    (mt9v022->datawidth != 8  && (width_flag == IS_DATAWIDTH_8))) {
++		/* data width switch requested */
++		if (! mt9v022->data_switch)
++			return -EINVAL;
++
++		/* Well, we actually only can do 10 or 8 bits... */
++		if (width_flag == IS_DATAWIDTH_9)
++			return -EINVAL;
++
++		ret = external_bus_switch(mt9v022->data_switch,
++					  width_flag == IS_DATAWIDTH_8);
++		if (ret < 0)
++			return ret;
++
++		mt9v022->datawidth = width_flag == IS_DATAWIDTH_8 ? 8 : 10;
++	}
++
++	if (flags & IS_PCLK_SAMPLE_RISING)
++		pixclk |= 0x10;
++
++	if (! (flags & IS_HSYNC_ACTIVE_HIGH))
++		pixclk |= 0x1;
++
++	if (! (flags & IS_VSYNC_ACTIVE_HIGH))
++		pixclk |= 0x2;
++
++	if ((ret = reg_write(icd, MT9V022_PIXCLK_FV_LV, pixclk)) < 0)
++		return ret;
++
++	if (! (flags & IS_MASTER))
++		mt9v022->chip_control &= ~0x8;
++
++	if ((ret = reg_write(icd, MT9V022_CHIP_CONTROL, mt9v022->chip_control)) < 0)
++		return ret;
++
++	dev_dbg(&icd->dev, "Calculated pixclk 0x%x, chip control 0x%x\n",
++		pixclk, mt9v022->chip_control);
++
++	return 0;
++}
++
++static int mt9v022_try_fmt_cap(struct soc_camera_device *icd,
++			       struct v4l2_format *f)
++{
++	if (f->fmt.pix.height < 32 + icd->y_skip_top)
++		f->fmt.pix.height = 32 + icd->y_skip_top;
++	if (f->fmt.pix.height > 480 + icd->y_skip_top)
++		f->fmt.pix.height = 480 + icd->y_skip_top;
++	if (f->fmt.pix.width < 48)
++		f->fmt.pix.width = 48;
++	if (f->fmt.pix.width > 752)
++		f->fmt.pix.width = 752;
++	f->fmt.pix.width &= ~0x03; /* ? */
++
++	return 0;
++}
++
++static unsigned int mt9v022_get_datawidth(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	return mt9v022->datawidth;
++}
++
++const struct v4l2_queryctrl mt9v022_controls[] = {
++	{
++		.id		= V4L2_CID_VFLIP,
++		.type		= V4L2_CTRL_TYPE_BOOLEAN,
++		.name		= "Flip Vertically",
++		.minimum	= 0,
++		.maximum	= 1,
++		.step		= 1,
++		.default_value	= 0,
++	}, {
++		.id		= V4L2_CID_HFLIP,
++		.type		= V4L2_CTRL_TYPE_BOOLEAN,
++		.name		= "Flip Horizontally",
++		.minimum	= 0,
++		.maximum	= 1,
++		.step		= 1,
++		.default_value	= 0,
++	}, {
++		.id		= V4L2_CID_GAIN,
++		.type		= V4L2_CTRL_TYPE_INTEGER,
++		.name		= "Analog Gain",
++		.minimum	= 64,
++		.maximum	= 127,
++		.step		= 1,
++		.default_value	= 64,
++		.flags		= V4L2_CTRL_FLAG_SLIDER,
++	}, {
++		.id		= V4L2_CID_EXPOSURE,
++		.type		= V4L2_CTRL_TYPE_INTEGER,
++		.name		= "Exposure",
++		.minimum	= 1,
++		.maximum	= 255,
++		.step		= 1,
++		.default_value	= 255,
++		.flags		= V4L2_CTRL_FLAG_SLIDER,
++	}, {
++		.id		= V4L2_CID_AUTOGAIN,
++		.type		= V4L2_CTRL_TYPE_BOOLEAN,
++		.name		= "Automatic Gain",
++		.minimum	= 0,
++		.maximum	= 1,
++		.step		= 1,
++		.default_value	= 1,
++	}, {
++		.id		= V4L2_CID_AUTOEXPOSURE,
++		.type		= V4L2_CTRL_TYPE_BOOLEAN,
++		.name		= "Automatic Exposure",
++		.minimum	= 0,
++		.maximum	= 1,
++		.step		= 1,
++		.default_value	= 1,
++	}, {
++		.id		= V4L2_CID_PRIVATE_BASE,
++		.type		= V4L2_CTRL_TYPE_INTEGER,
++		.name		= "Register access",
++		.minimum	= reg_to_int(REG_READ, 0, 0),
++		.maximum	= reg_to_int(REG_WRITE, 0xff, (1 << 16) - 1),
++		.step		= 1,
++		.default_value	= 1,
++	}
++};
++
++static int mt9v022_get_control(struct soc_camera_device *icd, struct v4l2_control *ctrl);
++static int mt9v022_set_control(struct soc_camera_device *icd, struct v4l2_control *ctrl);
++
++static struct soc_camera_ops mt9v022_ops = {
++	.owner			= THIS_MODULE,
++	.init			= mt9v022_init,
++	.release		= mt9v022_release,
++	.start_capture		= mt9v022_start_capture,
++	.stop_capture		= mt9v022_stop_capture,
++	.set_capture_format	= mt9v022_set_capture_format,
++	.try_fmt_cap		= mt9v022_try_fmt_cap,
++	.formats		= mt9v022_formats,
++	.num_formats		= ARRAY_SIZE(mt9v022_formats),
++	.get_datawidth		= mt9v022_get_datawidth,
++	.controls		= mt9v022_controls,
++	.num_controls		= ARRAY_SIZE(mt9v022_controls),
++	.get_control		= mt9v022_get_control,
++	.set_control		= mt9v022_set_control,
++};
++
++static int mt9v022_get_control(struct soc_camera_device *icd, struct v4l2_control *ctrl)
++{
++	int data;
++
++	switch (ctrl->id) {
++	case V4L2_CID_VFLIP:
++		data = reg_read(icd, MT9V022_READ_MODE);
++		if (data < 0)
++			return -EIO;
++		ctrl->value = !!(data & 0x10);
++		break;
++	case V4L2_CID_HFLIP:
++		data = reg_read(icd, MT9V022_READ_MODE);
++		if (data < 0)
++			return -EIO;
++		ctrl->value = !!(data & 0x20);
++		break;
++	case V4L2_CID_AUTOEXPOSURE:
++		data = reg_read(icd, MT9V022_AEC_AGC_ENABLE);
++		if (data < 0)
++			return -EIO;
++		ctrl->value = !!(data & 0x1);
++		break;
++	case V4L2_CID_AUTOGAIN:
++		data = reg_read(icd, MT9V022_AEC_AGC_ENABLE);
++		if (data < 0)
++			return -EIO;
++		ctrl->value = !!(data & 0x2);
++		break;
++	case V4L2_CID_PRIVATE_BASE:
++		if (1) {
++			union reg_access_32 u;
++
++			u.ctrl = ctrl->value;
++			if (u.reg.rw != REG_READ)
++				return -EINVAL;
++			data = reg_read(icd, u.reg.address);
++			if (data < 0)
++				return -EIO;
++			u.reg.value = data;
++			ctrl->value = u.ctrl;
++		}
++	}
++	return 0;
++}
++
++static int mt9v022_set_control(struct soc_camera_device *icd, struct v4l2_control *ctrl)
++{
++	int data;
++	const struct v4l2_queryctrl *qctrl;
++
++	qctrl = soc_camera_find_qctrl(&mt9v022_ops, ctrl->id);
++
++	if (!qctrl)
++		return -EINVAL;
++
++	switch (ctrl->id) {
++	case V4L2_CID_VFLIP:
++		if (ctrl->value)
++			data = reg_set(icd, MT9V022_READ_MODE, 0x10);
++		else
++			data = reg_clear(icd, MT9V022_READ_MODE, 0x10);
++		if (data < 0)
++			return -EIO;
++		break;
++	case V4L2_CID_HFLIP:
++		if (ctrl->value)
++			data = reg_set(icd, MT9V022_READ_MODE, 0x20);
++		else
++			data = reg_clear(icd, MT9V022_READ_MODE, 0x20);
++		if (data < 0)
++			return -EIO;
++		break;
++	case V4L2_CID_GAIN:
++		/* mt9v022 has minimum == default */
++		if (ctrl->value > qctrl->maximum || ctrl->value < qctrl->minimum)
++			return -EINVAL;
++		else {
++			unsigned long range = qctrl->maximum - qctrl->minimum;
++			/* Datasheet says 16 to 64. autogain only works properly
++			 * after setting gain to maximum 14. Larger values
++			 * produce "white fly" noise effect. On the whole,
++			 * manually setting analog gain does no good. */
++			unsigned long gain = ((ctrl->value - qctrl->minimum) * 10 +
++					      range / 2) / range + 4;
++			if (gain >= 32)
++				gain &= ~1;
++			/* The user wants to set gain manually, hope, she
++			 * knows, what she's doing... Switch AGC off. */
++
++			if (reg_clear(icd, MT9V022_AEC_AGC_ENABLE, 0x2) < 0)
++				return -EIO;
++
++			dev_info(&icd->dev, "Setting gain from %d to %lu\n",
++				 reg_read(icd, MT9V022_ANALOG_GAIN), gain);
++			if (reg_write(icd, MT9V022_ANALOG_GAIN, gain) < 0)
++				return -EIO;
++			icd->gain = ctrl->value;
++		}
++		break;
++	case V4L2_CID_EXPOSURE:
++		/* mt9v022 has maximum == default */
++		if (ctrl->value > qctrl->maximum || ctrl->value < qctrl->minimum)
++			return -EINVAL;
++		else {
++			unsigned long range = qctrl->maximum - qctrl->minimum;
++			unsigned long shutter = ((ctrl->value - qctrl->minimum) * 479 +
++						 range / 2) / range + 1;
++			/* The user wants to set shutter width manually, hope, she
++			 * knows, what she's doing... Switch AEC off. */
++
++			if (reg_clear(icd, MT9V022_AEC_AGC_ENABLE, 0x1) < 0)
++				return -EIO;
++
++			dev_info(&icd->dev, "Setting shutter width from %d to %lu\n",
++				 reg_read(icd, MT9V022_TOTAL_SHUTTER_WIDTH), shutter);
++			if (reg_write(icd, MT9V022_TOTAL_SHUTTER_WIDTH, shutter) < 0)
++				return -EIO;
++			icd->exposure = ctrl->value;
++		}
++		break;
++	case V4L2_CID_AUTOGAIN:
++		if (ctrl->value)
++			data = reg_set(icd, MT9V022_AEC_AGC_ENABLE, 0x2);
++		else
++			data = reg_clear(icd, MT9V022_AEC_AGC_ENABLE, 0x2);
++		if (data < 0)
++			return -EIO;
++		break;
++	case V4L2_CID_AUTOEXPOSURE:
++		if (ctrl->value)
++			data = reg_set(icd, MT9V022_AEC_AGC_ENABLE, 0x1);
++		else
++			data = reg_clear(icd, MT9V022_AEC_AGC_ENABLE, 0x1);
++		if (data < 0)
++			return -EIO;
++		break;
++	case V4L2_CID_PRIVATE_BASE:
++		if (1) {
++			union reg_access_32 u;
++
++			u.ctrl = ctrl->value;
++			if (u.reg.rw != REG_WRITE)
++				return -EINVAL;
++			data = reg_write(icd, u.reg.address, u.reg.value);
++			if (data < 0)
++				return -EIO;
++		}
++	}
++	return 0;
++}
++
++/* Interface active, can use i2c. If it fails, it can indeed mean, that
++ * this wasn't our capture interface, so, we wait for the right one */
++static int mt9v022_video_probe(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++	s32 data;
++	int ret;
++
++	if (!icd->dev.parent ||
++	    to_soc_camera_host(icd->dev.parent)->nr != icd->iface)
++		return -ENODEV;
++
++	/* Read out the chip version register */
++	data = reg_read(icd, MT9V022_CHIP_VERSION);
++
++	/* must be 0x1311 or 0x1313 */
++	if (data != 0x1311 && data != 0x1313) {
++		ret = -ENODEV;
++		dev_info(&icd->dev, "No MT9V022 detected, ID register 0x%x\n",
++			 data);
++		goto ei2c;
++	}
++
++	/* Soft reset */
++	ret = reg_write(icd, MT9V022_RESET, 1);
++	if (ret < 0)
++		goto ei2c;
++	/* 15 clock cycles */
++	udelay(200);
++	if (reg_read(icd, MT9V022_RESET)) {
++		dev_err(&icd->dev, "Resetting MT9V022 failed!\n");
++		goto ei2c;
++	}
++
++	/* Set monochrome or colour sensor type */
++	if (sensor_type && (!strcmp("colour", sensor_type) ||
++			    !strcmp("color", sensor_type))) {
++		ret = reg_write(icd, MT9V022_PIXEL_OPERATION_MODE, 4 | 0x11);
++		mt9v022->sensor = MT9V022_SENSOR_COLOUR;
++	} else {
++		ret = reg_write(icd, MT9V022_PIXEL_OPERATION_MODE, 0x11);
++		mt9v022->sensor = MT9V022_SENSOR_MONOCHROME;
++	}
++
++	if (ret >= 0)
++		ret = soc_camera_video_start(icd);
++	if (ret < 0)
++		goto eisis;
++
++	dev_info(&icd->dev, "Detected a MT9V022 chip ID %x, %s sensor\n",
++		 data, mt9v022->sensor == MT9V022_SENSOR_MONOCHROME ?
++		 "monochrome" : "colour");
++
++	return 0;
++
++eisis:
++ei2c:
++	return ret;
++}
++
++static void mt9v022_video_remove(struct soc_camera_device *icd)
++{
++	struct mt9v022 *mt9v022 = container_of(icd, struct mt9v022, icd);
++
++	dev_dbg(&icd->dev, "Video %x removed: %p, %p\n", mt9v022->client->addr,
++		mt9v022->icd.dev.parent, mt9v022->icd.vdev);
++	soc_camera_video_stop(&mt9v022->icd);
++}
++
++static int mt9v022_probe(struct i2c_client *client)
++{
++	struct mt9v022		*mt9v022;
++	struct i2c_adapter	*adapter = to_i2c_adapter(client->dev.parent);
++	int ret;
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_WORD_DATA)) {
++		pr_debug("%s: I2C-Adapter doesn't support I2C_FUNC_SMBUS_WORD\n", __FUNCTION__);
++		return -EIO;
++	}
++
++	if (!(mt9v022 = kzalloc(sizeof(struct mt9v022), GFP_KERNEL)))
++		return -ENOMEM;
++
++	mt9v022->chip_control = MT9V022_CHIP_CONTROL_DEFAULT;
++	mt9v022->client = client;
++	i2c_set_clientdata(client, mt9v022);
++
++	mt9v022->icd.probe	= mt9v022_video_probe;
++	mt9v022->icd.remove	= mt9v022_video_remove;
++	mt9v022->icd.ops	= &mt9v022_ops;
++	mt9v022->icd.control	= &client->dev;
++	mt9v022->icd.x_min	= 1;
++	mt9v022->icd.y_min	= 4;
++	mt9v022->icd.x_current	= 1;
++	mt9v022->icd.y_current	= 4;
++	mt9v022->icd.width_min	= 48;
++	mt9v022->icd.width_max	= 752;
++	mt9v022->icd.height_min	= 32;
++	mt9v022->icd.height_max	= 480;
++	mt9v022->icd.y_skip_top	= 1;
++	/* Default datawidth - this is the only width this camera (normally)
++	 * supports. It is only with extra logic that it can support
++	 * other widths. Therefore it seems to be a sensible default. */
++	mt9v022->datawidth = 10;
++
++	if (client->dev.platform_data) {
++		struct soc_camera_link *icl = client->dev.platform_data;
++		/* We have a data bus switch. We call pca9536 functions
++		 * explicitly by name so the driver will not be unloaded,
++		 * and we'll check mt9v022->data_switch anyway every time
++		 * before calling. The only concern is that the driver
++		 * doesn't detach itself from the device, but so far it is
++		 * not supported by the I2C layer */
++		if (icl->extender)
++			mt9v022->data_switch	= *icl->extender;
++		mt9v022->icd.iface	= icl->bus_id;
++	}
++
++	ret = soc_camera_device_register(&mt9v022->icd);
++	if (ret)
++		goto eisdr;
++
++	return 0;
++
++eisdr:
++	kfree(mt9v022);
++	return ret;
++}
++
++static int mt9v022_remove(struct i2c_client *client)
++{
++	struct mt9v022 *mt9v022 = i2c_get_clientdata(client);
++
++	soc_camera_device_unregister(&mt9v022->icd);
++	kfree(mt9v022);
++
++	return 0;
++}
++
++static struct i2c_driver mt9v022_i2c_driver = {
++	.driver = {
++		.name = "mt9v022",
++	},
++	.probe		= mt9v022_probe,
++	.remove		= mt9v022_remove,
++};
++
++static int __init mt9v022_mod_init(void)
++{
++	return i2c_add_driver(&mt9v022_i2c_driver);
++}
++
++static void __exit mt9v022_mod_exit(void)
++{
++	i2c_del_driver(&mt9v022_i2c_driver);
++}
++
++module_init(mt9v022_mod_init);
++module_exit(mt9v022_mod_exit);
++
++MODULE_DESCRIPTION("Micron MT9V022 Camera driver");
++MODULE_AUTHOR("Guennadi Liakhovetski <kernel@pengutronix.de>");
++MODULE_LICENSE("GPL");
+-- 
+1.5.3.4
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
+

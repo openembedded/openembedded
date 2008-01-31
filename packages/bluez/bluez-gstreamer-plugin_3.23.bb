@@ -1,5 +1,5 @@
 require bluez-utils3.inc
-
+PR = "r1"
 DEPENDS += "gstreamer gst-plugins-base "
 
 # see bluez-utils3.inc for the explanation of these option
@@ -21,6 +21,5 @@ EXTRA_OECONF = " \
 		 --enable-test \
 		" 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = "${libdir}/gstreamer-0.10/libgstbluetooth.so"

@@ -11,7 +11,6 @@ SRC_URI = "http://www.minisip.org/snapshots/libmsip-${PV}.tar.gz"
 S="${WORKDIR}/libmsip-${PV}"
 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = " ${libdir}/libmsip.so.0 ${libdir}/libmsip.so.0.0.0 "
 

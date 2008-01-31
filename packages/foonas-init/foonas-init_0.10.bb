@@ -118,5 +118,4 @@ pkg_postrm_foonas-init() {
 	done
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"

@@ -8,6 +8,6 @@ SECTION = "network"
 SRC_URI = "http://files.fredemmott.co.uk/mkbot-${PV}.tar.bz2"
 S = "${WORKDIR}/MKbot-0.3"
 
-inherit qmake qt4x11
+inherit qt4x11
 
 #FIXME: lacks packaging

@@ -10,7 +10,6 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/devio/devio-${PV}.tar.gz"
 S = "${WORKDIR}/devio-${PV}"
 
 # Just the one package at present
-PACKAGES = "${PN}"
 
 # Set the install dir to /sbin, not /usr/sbin, because devio is used
 # during bootstrap (we want it to be posible to mount /usr separately)

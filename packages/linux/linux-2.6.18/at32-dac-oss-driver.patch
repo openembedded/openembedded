@@ -1,0 +1,819 @@
+From nobody Mon Sep 17 00:00:00 2001
+From: Håvard Skinnemoen <hskinnemoen@atmel.com>
+Date: Mon Apr 3 17:38:29 2006 +0200
+Subject: [PATCH] OSS driver for the AT32 on-chip digital DAC
+
+---
+
+ sound/oss/Kconfig   |    4 
+ sound/oss/Makefile  |    1 
+ sound/oss/at32dac.c |  707 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ sound/oss/at32dac.h |   65 ++++
+ 4 files changed, 777 insertions(+)
+
+Index: linux-2.6.18-avr32/sound/oss/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/sound/oss/Kconfig	2006-11-02 15:54:18.000000000 +0100
++++ linux-2.6.18-avr32/sound/oss/Kconfig	2006-11-02 15:56:20.000000000 +0100
+@@ -869,3 +869,7 @@ config SOUND_SH_DAC_AUDIO_CHANNEL
+ 	int "DAC channel"
+ 	default "1"
+ 	depends on SOUND_SH_DAC_AUDIO
++
++config SOUND_AT32_DAC
++	tristate "Atmel AT32 On-chip DAC support"
++	depends on SOUND_PRIME && AVR32
+Index: linux-2.6.18-avr32/sound/oss/Makefile
+===================================================================
+--- linux-2.6.18-avr32.orig/sound/oss/Makefile	2006-11-02 15:54:18.000000000 +0100
++++ linux-2.6.18-avr32/sound/oss/Makefile	2006-11-02 15:56:20.000000000 +0100
+@@ -10,6 +10,7 @@ obj-$(CONFIG_SOUND_CS4232)	+= cs4232.o a
+ 
+ # Please leave it as is, cause the link order is significant !
+ 
++obj-$(CONFIG_SOUND_AT32_DAC)	+= at32dac.o
+ obj-$(CONFIG_SOUND_SH_DAC_AUDIO)	+= sh_dac_audio.o
+ obj-$(CONFIG_SOUND_HAL2)	+= hal2.o
+ obj-$(CONFIG_SOUND_AEDSP16)	+= aedsp16.o
+Index: linux-2.6.18-avr32/sound/oss/at32dac.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/sound/oss/at32dac.c	2006-11-02 15:56:20.000000000 +0100
+@@ -0,0 +1,707 @@
++/*
++ * OSS Sound Driver for the Atmel AT32 on-chip DAC.
++ *
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/clk.h>
++#include <linux/dma-mapping.h>
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/sound.h>
++#include <linux/soundcard.h>
++
++#include <asm/byteorder.h>
++#include <asm/dma-controller.h>
++#include <asm/io.h>
++#include <asm/uaccess.h>
++
++/* We want to use the "bizarre" swap-bytes-in-each-halfword macro */
++#include <linux/byteorder/swabb.h>
++
++#include "at32dac.h"
++
++#define DMA_BUFFER_SIZE	32768
++#define DMA_PERIOD_SHIFT 10
++#define DMA_PERIOD_SIZE (1 << DMA_PERIOD_SHIFT)
++#define DMA_WRITE_THRESHOLD DMA_PERIOD_SIZE
++
++struct sound_settings {
++	unsigned int format;
++	unsigned int channels;
++	unsigned int sample_rate;
++	/* log2(bytes per sample) */
++	unsigned int input_order;
++};
++
++struct at32_dac {
++	spinlock_t lock;
++	void __iomem *regs;
++
++	/* head and tail refer to number of words */
++	struct {
++		u32 *buf;
++		int head;
++		int tail;
++	} dma;
++
++	struct semaphore sem;
++	wait_queue_head_t write_wait;
++
++	/*
++	 * Read at most ucount bytes from ubuf, translate to 2-channel
++	 * signed 16-bit big endian format and write to the DMA buffer
++	 * as long as there is room left.  Return the number of bytes
++	 * successfully copied from ubuf, or -EFAULT if the first
++	 * sample from ubuf couldn't be read.  This function is not
++	 * called unless there is room for at least one sample (4
++	 * bytes) in the DMA buffer.
++	 */
++	int (*trans)(struct at32_dac *dac, const char __user *ubuf,
++		     size_t ucount);
++
++	struct sound_settings dsp_settings;
++	struct dma_request_cyclic req;
++
++	struct clk *mck;
++	struct platform_device *pdev;
++	int busy;
++	int playing;
++	int dev_dsp;
++};
++static struct at32_dac *the_dac;
++
++static inline unsigned int at32dac_get_head(struct at32_dac *dac)
++{
++	return dac->dma.head & ((DMA_BUFFER_SIZE / 4) - 1);
++}
++
++static inline unsigned int at32dac_get_tail(struct at32_dac *dac)
++{
++	return dac->dma.tail & ((DMA_BUFFER_SIZE / 4) - 1);
++}
++
++static inline unsigned int at32dac_dma_space(struct at32_dac *dac)
++{
++	unsigned int space;
++
++	space = ((dac->dma.tail - dac->dma.head - 1)
++		 & ((DMA_BUFFER_SIZE / 4) - 1));
++	return space;
++}
++
++static void at32dac_update_dma_tail(struct at32_dac *dac)
++{
++	dma_addr_t dma_addr;
++	unsigned int new_tail;
++
++	if (dac->playing) {
++		dma_addr = dma_get_current_pos(dac->req.req.dmac,
++					       dac->req.req.channel);
++		new_tail = (dma_addr - dac->req.buffer_start) / 4;
++		if (new_tail >= dac->dma.head
++		    && (dac->dma.tail < dac->dma.head
++			|| dac->dma.tail > new_tail))
++			printk(KERN_NOTICE "at32dac: underrun\n");
++		dac->dma.tail = new_tail;
++		pr_debug("update tail: 0x%x - 0x%x = %u\n",
++			 dma_addr, dac->req.buffer_start, dac->dma.tail);
++	}
++}
++
++static int at32dac_start_genclock(struct at32_dac *dac)
++{
++	unsigned int div;
++
++	div = ((clk_get_rate(boot_cpu_data.clk) + 256 * dac->dsp_settings.sample_rate)
++	       / (512 * dac->dsp_settings.sample_rate) - 1);
++	pr_debug("Real sample rate: %llu (div=%u)\n",
++		 boot_cpu_data.cpu_hz / (512 * (div + 1)), div);
++	writel((div << 8) | 0x16, (void __iomem *)(0xfff00060 + 4 * 6));
++
++	return 0;
++}
++
++static void at32dac_stop_genclock(struct at32_dac *dac)
++{
++	writel(0, (void __iomem *)(0xfff00060 + 4 * 6));
++}
++
++static int at32dac_start(struct at32_dac *dac)
++{
++	int ret;
++
++	if (dac->playing)
++		return 0;
++
++	memset(dac->dma.buf, 0, DMA_BUFFER_SIZE);
++
++	ret = at32dac_start_genclock(dac);
++	if (ret)
++		return ret;
++
++	ret = dma_prepare_request_cyclic(dac->req.req.dmac, &dac->req);
++	if (ret)
++		goto out_stop_genclock;
++
++	pr_debug("Starting DMA...\n");
++	ret = dma_start_request(dac->req.req.dmac, dac->req.req.channel);
++	if (ret)
++		goto out_stop_request;
++
++	dac_writel(dac, CTRL, DAC_BIT(EN));
++	dac->playing = 1;
++
++	return 0;
++
++out_stop_request:
++	dma_stop_request(dac->req.req.dmac,
++			 dac->req.req.channel);
++out_stop_genclock:
++	at32dac_stop_genclock(dac);
++	return ret;
++}
++
++static int at32dac_stop(struct at32_dac *dac)
++{
++	if (dac->playing) {
++		dma_stop_request(dac->req.req.dmac, dac->req.req.channel);
++		dac_writel(dac, DATA, 0);
++		dac_writel(dac, CTRL, 0);
++		dac->playing = 0;
++		at32dac_stop_genclock(dac);
++	}
++
++	return 0;
++}
++
++static int at32dac_dma_prepare(struct at32_dac *dac)
++{
++	dac->dma.buf = dma_alloc_coherent(&dac->pdev->dev, DMA_BUFFER_SIZE,
++					  &dac->req.buffer_start, GFP_KERNEL);
++	if (!dac->dma.buf)
++		return -ENOMEM;
++
++	dac->dma.head = dac->dma.tail = 0;
++	dac->req.periods = DMA_BUFFER_SIZE / DMA_PERIOD_SIZE;
++	dac->req.buffer_size = DMA_BUFFER_SIZE;
++
++	return 0;
++}
++
++static void at32dac_dma_cleanup(struct at32_dac *dac)
++{
++	if (dac->dma.buf)
++		dma_free_coherent(&dac->pdev->dev, DMA_BUFFER_SIZE,
++				  dac->dma.buf, dac->req.buffer_start);
++	dac->dma.buf = NULL;
++}
++
++static void at32dac_dma_block_complete(struct dma_request *req)
++{
++	struct dma_request_cyclic *creq = to_dma_request_cyclic(req);
++	struct at32_dac *dac = container_of(creq, struct at32_dac, req);
++
++	wake_up(&dac->write_wait);
++}
++
++static void at32dac_dma_error(struct dma_request *req)
++{
++	printk(KERN_ERR "at32dac: DMA error\n");
++}
++
++static irqreturn_t at32dac_interrupt(int irq, void *dev_id,
++				     struct pt_regs *regs)
++{
++	struct at32_dac *dac = dev_id;
++	u32 status;
++
++	status = dac_readl(dac, INT_STATUS);
++	if (status & DAC_BIT(UNDERRUN)) {
++		printk(KERN_ERR "at32dac: Underrun detected\n");
++		dac_writel(dac, INT_CLR, DAC_BIT(UNDERRUN));
++	} else {
++		printk(KERN_ERR "at32dac: Spurious interrupt: status=0x%x\n",
++		       status);
++		dac_writel(dac, INT_CLR, status);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static ssize_t trans_s16be(struct at32_dac *dac, const char __user *ubuf,
++			   size_t ucount)
++{
++	ssize_t ret;
++
++	if (dac->dsp_settings.channels == 2) {
++		const u32 __user *up = (const u32 __user *)ubuf;
++		u32 sample;
++
++		for (ret = 0; ret < (ssize_t)(ucount - 3); ret += 4) {
++			if (!at32dac_dma_space(dac))
++				break;
++
++			if (unlikely(__get_user(sample, up++))) {
++				if (ret == 0)
++					ret = -EFAULT;
++				break;
++			}
++			dac->dma.buf[at32dac_get_head(dac)] = sample;
++			dac->dma.head++;
++		}
++	} else {
++		const u16 __user *up = (const u16 __user *)ubuf;
++		u16 sample;
++
++		for (ret = 0; ret < (ssize_t)(ucount - 1); ret += 2) {
++			if (!at32dac_dma_space(dac))
++				break;
++
++			if (unlikely(__get_user(sample, up++))) {
++				if (ret == 0)
++					ret = -EFAULT;
++				break;
++			}
++			dac->dma.buf[at32dac_get_head(dac)]
++				= (sample << 16) | sample;
++			dac->dma.head++;
++		}
++	}
++
++	return ret;
++}
++
++static ssize_t trans_s16le(struct at32_dac *dac, const char __user *ubuf,
++			   size_t ucount)
++{
++	ssize_t ret;
++
++	if (dac->dsp_settings.channels == 2) {
++		const u32 __user *up = (const u32 __user *)ubuf;
++		u32 sample;
++
++		for (ret = 0; ret < (ssize_t)(ucount - 3); ret += 4) {
++			if (!at32dac_dma_space(dac))
++				break;
++
++			if (unlikely(__get_user(sample, up++))) {
++				if (ret == 0)
++					ret = -EFAULT;
++				break;
++			}
++			/* Swap bytes in each halfword */
++			dac->dma.buf[at32dac_get_head(dac)] = swahb32(sample);
++			dac->dma.head++;
++		}
++	} else {
++		const u16 __user *up = (const u16 __user *)ubuf;
++		u16 sample;
++
++		for (ret = 0; ret < (ssize_t)(ucount - 1); ret += 2) {
++			if (!at32dac_dma_space(dac))
++				break;
++
++			if (unlikely(__get_user(sample, up++))) {
++				if (ret == 0)
++					ret = -EFAULT;
++				break;
++			}
++			sample = swab16(sample);
++			dac->dma.buf[at32dac_get_head(dac)]
++				= (sample << 16) | sample;
++			dac->dma.head++;
++		}
++	}
++
++	return ret;
++}
++
++static ssize_t at32dac_dma_translate_from_user(struct at32_dac *dac,
++					       const char __user *buffer,
++					       size_t count)
++{
++	/* At least one buffer must be available at this point */
++	pr_debug("at32dac: Copying %zu bytes from user...\n", count);
++
++	return dac->trans(dac, buffer, count);
++}
++
++static int at32dac_set_format(struct at32_dac *dac, int format)
++{
++	unsigned int order;
++
++	switch (format) {
++	case AFMT_S16_BE:
++		order = 1;
++		dac->trans = trans_s16be;
++		break;
++	case AFMT_S16_LE:
++		order = 1;
++		dac->trans = trans_s16le;
++		break;
++	default:
++		printk("at32dac: Unsupported format: %d\n", format);
++		return -EINVAL;
++	}
++
++	if (dac->dsp_settings.channels == 2)
++		order++;
++
++	dac->dsp_settings.input_order = order;
++	dac->dsp_settings.format = format;
++	return 0;
++}
++
++static ssize_t at32dac_dsp_write(struct file *file,
++				 const char __user *buffer,
++				 size_t count, loff_t *ppos)
++{
++	struct at32_dac *dac = file->private_data;
++	DECLARE_WAITQUEUE(wait, current);
++	unsigned int avail;
++	ssize_t copied;
++	ssize_t ret;
++
++	/* Avoid address space checking in the translation functions */
++	if (!access_ok(buffer, count, VERIFY_READ))
++		return -EFAULT;
++
++	down(&dac->sem);
++
++	if (!dac->dma.buf) {
++		ret = at32dac_dma_prepare(dac);
++		if (ret)
++			goto out;
++	}
++
++	add_wait_queue(&dac->write_wait, &wait);
++	ret = 0;
++	while (count > 0) {
++		do {
++			at32dac_update_dma_tail(dac);
++			avail = at32dac_dma_space(dac);
++			set_current_state(TASK_INTERRUPTIBLE);
++			if (avail >= DMA_WRITE_THRESHOLD)
++				break;
++
++			if (file->f_flags & O_NONBLOCK) {
++				if (!ret)
++					ret = -EAGAIN;
++				goto out;
++			}
++
++			pr_debug("Going to wait (avail = %u, count = %zu)\n",
++				 avail, count);
++
++			up(&dac->sem);
++			schedule();
++			if (signal_pending(current)) {
++				if (!ret)
++					ret = -ERESTARTSYS;
++				goto out_nosem;
++			}
++			down(&dac->sem);
++		} while (1);
++
++		copied = at32dac_dma_translate_from_user(dac, buffer, count);
++		if (copied < 0) {
++			if (!ret)
++				ret = -EFAULT;
++			goto out;
++		}
++
++		at32dac_start(dac);
++
++		count -= copied;
++		ret += copied;
++	}
++
++out:
++	up(&dac->sem);
++out_nosem:
++	remove_wait_queue(&dac->write_wait, &wait);
++	set_current_state(TASK_RUNNING);
++	return ret;
++}
++
++static int at32dac_dsp_ioctl(struct inode *inode, struct file *file,
++			     unsigned int cmd, unsigned long arg)
++{
++	struct at32_dac *dac = file->private_data;
++	int __user *up = (int __user *)arg;
++	struct audio_buf_info abinfo;
++	int val, ret;
++
++	switch (cmd) {
++	case OSS_GETVERSION:
++		return put_user(SOUND_VERSION, up);
++
++	case SNDCTL_DSP_SPEED:
++		if (get_user(val, up))
++			return -EFAULT;
++		if (val >= 0) {
++			at32dac_stop(dac);
++			dac->dsp_settings.sample_rate = val;
++		}
++		return put_user(dac->dsp_settings.sample_rate, up);
++
++	case SNDCTL_DSP_STEREO:
++		if (get_user(val, up))
++			return -EFAULT;
++		at32dac_stop(dac);
++		if (val && dac->dsp_settings.channels == 1)
++			dac->dsp_settings.input_order++;
++		else if (!val && dac->dsp_settings.channels != 1)
++			dac->dsp_settings.input_order--;
++		dac->dsp_settings.channels = val ? 2 : 1;
++		return 0;
++
++	case SNDCTL_DSP_CHANNELS:
++		if (get_user(val, up))
++			return -EFAULT;
++
++		if (val) {
++			if (val < 0 || val > 2)
++				return -EINVAL;
++
++			at32dac_stop(dac);
++			dac->dsp_settings.input_order
++				+= val - dac->dsp_settings.channels;
++			dac->dsp_settings.channels = val;
++		}
++		return put_user(val, (int *)arg);
++
++	case SNDCTL_DSP_GETFMTS:
++		return put_user(AFMT_S16_BE | AFMT_S16_BE, up);
++
++	case SNDCTL_DSP_SETFMT:
++		if (get_user(val, up))
++			return -EFAULT;
++
++		if (val == AFMT_QUERY) {
++			val = dac->dsp_settings.format;
++		} else {
++			ret = at32dac_set_format(dac, val);
++			if (ret)
++				return ret;
++		}
++		return put_user(val, up);
++
++	case SNDCTL_DSP_GETOSPACE:
++		at32dac_update_dma_tail(dac);
++		abinfo.fragsize = ((1 << dac->dsp_settings.input_order)
++				   * (DMA_PERIOD_SIZE / 4));
++		abinfo.bytes = (at32dac_dma_space(dac)
++				<< dac->dsp_settings.input_order);
++		abinfo.fragstotal = ((DMA_BUFFER_SIZE * 4)
++				     >> (DMA_PERIOD_SHIFT
++					 + dac->dsp_settings.input_order));
++		abinfo.fragments = ((abinfo.bytes
++				     >> dac->dsp_settings.input_order)
++				    / (DMA_PERIOD_SIZE / 4));
++		pr_debug("fragments=%d  fragstotal=%d  fragsize=%d bytes=%d\n",
++			 abinfo.fragments, abinfo.fragstotal, abinfo.fragsize,
++			 abinfo.bytes);
++		return copy_to_user(up, &abinfo, sizeof(abinfo)) ? -EFAULT : 0;
++
++	default:
++		printk("at32dac: Unimplemented ioctl cmd: 0x%x\n", cmd);
++		return -EINVAL;
++	}
++}
++
++static int at32dac_dsp_open(struct inode *inode, struct file *file)
++{
++	struct at32_dac *dac = the_dac;
++	int ret;
++
++	if (file->f_mode & FMODE_READ)
++		return -ENXIO;
++
++	down(&dac->sem);
++	ret = -EBUSY;
++	if (dac->busy)
++		goto out;
++
++	dac->dma.head = dac->dma.tail = 0;
++
++	/* FIXME: What are the correct defaults?  */
++	dac->dsp_settings.format = AFMT_S16_BE;
++	dac->dsp_settings.channels = 2;
++	dac->dsp_settings.sample_rate = 8000;
++	dac->dsp_settings.input_order = 2;
++
++	file->private_data = dac;
++	dac->busy = 1;
++
++	ret = 0;
++
++out:
++	up(&dac->sem);
++	return ret;
++}
++
++static int at32dac_dsp_release(struct inode *inode, struct file *file)
++{
++	struct at32_dac *dac = file->private_data;
++
++	down(&dac->sem);
++
++	at32dac_stop(dac);
++	at32dac_dma_cleanup(dac);
++	dac->busy = 0;
++
++	up(&dac->sem);
++
++	return 0;
++}
++
++static struct file_operations at32dac_dsp_fops = {
++	.owner		= THIS_MODULE,
++	.llseek		= no_llseek,
++	.write		= at32dac_dsp_write,
++	.ioctl		= at32dac_dsp_ioctl,
++	.open		= at32dac_dsp_open,
++	.release	= at32dac_dsp_release,
++};
++
++static int __devinit at32dac_probe(struct platform_device *pdev)
++{
++	struct at32_dac *dac;
++	struct resource *regs;
++	struct clk *mck;
++	int irq;
++	int ret;
++
++	if (the_dac)
++		return -EBUSY;
++
++	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!regs)
++		return -ENXIO;
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0)
++		return irq;
++
++	mck = clk_get(&pdev->dev, "mck");
++	if (IS_ERR(mck))
++		return PTR_ERR(mck);
++	clk_enable(mck);
++
++	ret = -ENOMEM;
++	dac = kzalloc(sizeof(struct at32_dac), GFP_KERNEL);
++	if (!dac)
++		goto out_disable_clk;
++
++	spin_lock_init(&dac->lock);
++	init_MUTEX(&dac->sem);
++	init_waitqueue_head(&dac->write_wait);
++	dac->pdev = pdev;
++	dac->mck = mck;
++
++	dac->regs = ioremap(regs->start, regs->end - regs->start + 1);
++	if (!dac->regs)
++		goto out_free_dac;
++
++	ret = request_irq(irq, at32dac_interrupt, 0, "dac", dac);
++	if (ret)
++		goto out_unmap_regs;
++
++	/* FIXME */
++	dac->req.req.dmac = find_dma_controller(0);
++	if (!dac->req.req.dmac)
++		goto out_free_irq;
++
++	ret = dma_alloc_channel(dac->req.req.dmac);
++	if (ret < 0)
++		goto out_free_irq;
++
++	dac->req.req.channel = ret;
++	dac->req.req.block_complete = at32dac_dma_block_complete;
++	dac->req.req.error = at32dac_dma_error;
++	dac->req.data_reg = regs->start + DAC_DATA;
++	dac->req.periph_id = 2; /* FIXME */
++	dac->req.direction = DMA_DIR_MEM_TO_PERIPH;
++	dac->req.width = DMA_WIDTH_32BIT;
++
++	/* Make sure the DAC is silent and disabled */
++	dac_writel(dac, DATA, 0);
++	dac_writel(dac, CTRL, 0);
++
++	ret = register_sound_dsp(&at32dac_dsp_fops, -1);
++	if (ret < 0)
++		goto out_free_dma;
++	dac->dev_dsp = ret;
++
++	/* TODO: Register mixer */
++
++	the_dac = dac;
++	platform_set_drvdata(pdev, dac);
++
++	return 0;
++
++out_free_dma:
++	dma_release_channel(dac->req.req.dmac, dac->req.req.channel);
++out_free_irq:
++	free_irq(irq, dac);
++out_unmap_regs:
++	iounmap(dac->regs);
++out_free_dac:
++	kfree(dac);
++out_disable_clk:
++	clk_disable(mck);
++	clk_put(mck);
++	return ret;
++}
++
++static int __devexit at32dac_remove(struct platform_device *pdev)
++{
++	struct at32_dac *dac;
++
++	dac = platform_get_drvdata(pdev);
++	if (dac) {
++		unregister_sound_dsp(dac->dev_dsp);
++		dma_release_channel(dac->req.req.dmac, dac->req.req.channel);
++		free_irq(platform_get_irq(pdev, 0), dac);
++		iounmap(dac->regs);
++		clk_disable(dac->mck);
++		clk_put(dac->mck);
++		kfree(dac);
++		platform_set_drvdata(pdev, NULL);
++		the_dac = NULL;
++	}
++
++	return 0;
++}
++
++static struct platform_driver at32dac_driver = {
++	.probe		= at32dac_probe,
++	.remove		= __devexit_p(at32dac_remove),
++	.driver		= {
++		.name	= "dac",
++	},
++};
++
++static int __init at32dac_init(void)
++{
++	return platform_driver_register(&at32dac_driver);
++}
++module_init(at32dac_init);
++
++static void __exit at32dac_exit(void)
++{
++	platform_driver_unregister(&at32dac_driver);
++}
++module_exit(at32dac_exit);
++
++MODULE_AUTHOR("Haavard Skinnemoen <hskinnemoen@atmel.com>");
++MODULE_DESCRIPTION("DMA Sound Driver for the Atmel AT32 on-chip DAC");
++MODULE_LICENSE("GPL");
+Index: linux-2.6.18-avr32/sound/oss/at32dac.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.18-avr32/sound/oss/at32dac.h	2006-11-02 15:57:01.000000000 +0100
+@@ -0,0 +1,65 @@
++/*
++ * Register definitions for the Atmel AT32 on-chip DAC.
++ *
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __ASM_AVR32_DAC_H__
++#define __ASM_AVR32_DAC_H__
++
++/* DAC register offsets */
++#define DAC_DATA                                0x0000
++#define DAC_CTRL                                0x0008
++#define DAC_INT_MASK                            0x000c
++#define DAC_INT_EN                              0x0010
++#define DAC_INT_DIS                             0x0014
++#define DAC_INT_CLR                             0x0018
++#define DAC_INT_STATUS                          0x001c
++#define DAC_PDC_DATA                            0x0020
++
++/* Bitfields in DATA */
++#define DAC_DATA_OFFSET                         0
++#define DAC_DATA_SIZE                           32
++
++/* Bitfields in CTRL */
++#define DAC_SWAP_OFFSET                         30
++#define DAC_SWAP_SIZE                           1
++#define DAC_EN_OFFSET                           31
++#define DAC_EN_SIZE                             1
++
++/* Bitfields in INT_MASK */
++
++/* Bitfields in INT_EN */
++
++/* Bitfields in INT_DIS */
++#define DAC_TX_READY_OFFSET                     29
++#define DAC_TX_READY_SIZE                       1
++#define DAC_TX_BUFFER_EMPTY_OFFSET              30
++#define DAC_TX_BUFFER_EMPTY_SIZE                1
++#define DAC_CHANNEL_TX_END_OFFSET               31
++#define DAC_CHANNEL_TX_END_SIZE                 1
++
++/* Bitfields in INT_CLR */
++#define DAC_UNDERRUN_OFFSET                     28
++#define DAC_UNDERRUN_SIZE                       1
++
++/* Bitfields in INT_STATUS */
++
++/* Bitfields in PDC_DATA */
++
++/* Bit manipulation macros */
++#define DAC_BIT(name)                           (1 << DAC_##name##_OFFSET)
++#define DAC_BF(name,value)                      (((value) & ((1 << DAC_##name##_SIZE) - 1)) << DAC_##name##_OFFSET)
++#define DAC_BFEXT(name,value)                   (((value) >> DAC_##name##_OFFSET) & ((1 << DAC_##name##_SIZE) - 1))
++#define DAC_BFINS(name,value,old)               (((old) & ~(((1 << DAC_##name##_SIZE) - 1) << DAC_##name##_OFFSET)) | DAC_BF(name,value))
++
++/* Register access macros */
++#define dac_readl(port,reg)				\
++	__raw_readl((port)->regs + DAC_##reg)
++#define dac_writel(port,reg,value)			\
++	__raw_writel((value), (port)->regs + DAC_##reg)
++
++#endif /* __ASM_AVR32_DAC_H__ */

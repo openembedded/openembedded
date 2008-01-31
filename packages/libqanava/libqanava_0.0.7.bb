@@ -1,4 +1,4 @@
-DESCRIPTION = "Qanava is a gtaph library based on the Qt4 Arthur framework."
+DESCRIPTION = "Qanava is a graph library based on the Qt4 Arthur framework."
 SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 # LGPL after 0.0.7
@@ -8,7 +8,7 @@ PR = "r0"
 SRC_URI = "http://www.libqanava.org/dl/qanava-${PV}.tar.gz"
 S = "${WORKDIR}/qanava-${PV}"
 
-inherit qmake qt4x11
+inherit qt4x11
 
 PARALLEL_MAKE = ""
 
@@ -41,7 +41,7 @@ do_install() {
 	done
 }
 
-PACKAGES = "libqanava-can libqanava-la libqanava-utl qanava-examples"
+PACKAGES = "${PN}-dbg libqanava-can libqanava-la libqanava-utl qanava-examples"
 FILES_libqanava-can = "${libdir}/libqanava_can*.so*"
 FILES_libqanava-la = "${libdir}/libqanava_la*.so*"
 FILES_libqanava-utl = "${libdir}/libqanava_utl*.so*"

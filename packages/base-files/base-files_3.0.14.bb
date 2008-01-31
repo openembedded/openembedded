@@ -142,7 +142,7 @@ do_install_append_netbook-pro () {
 	mkdir -p ${D}/initrd
 }
 
-PACKAGES = "${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-doc ${PN}"
 FILES_${PN} = "/*"
 FILES_${PN}-doc = "${docdir} ${datadir}/common-licenses"
 

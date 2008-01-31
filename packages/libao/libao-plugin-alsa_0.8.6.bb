@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "alsa-lib libao"
 PROVIDES = "libao-alsa"
-PACKAGES = "libao-alsa libao-alsa-dev"
+PACKAGES = "${PN}-dbg libao-alsa libao-alsa-dev"
 PR = "r3"
 
 SRC_URI = "http://downloads.xiph.org/releases/ao/libao-${PV}.tar.gz"

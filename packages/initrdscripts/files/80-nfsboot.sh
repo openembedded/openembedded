@@ -31,10 +31,12 @@ if [ "$ROOT_DEVICE" = "/dev/nfs" ]; then
         usb*)
     	echo "USB"
     	modprobe g_ether
+	sleep 5
     	;;
     esac
     
     ifconfig $device $client_ip
+    ping -c 2 $server_ip
     )
 
     echo "booting from NFS: $nfsroot"

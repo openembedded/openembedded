@@ -1,6 +1,6 @@
 DESCRIPTION = "Entice is the E17 picture viewer"
 # can also depend on GIMP for editing
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 DEPENDS = "edb evas ecore edje epsilon esmart"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"

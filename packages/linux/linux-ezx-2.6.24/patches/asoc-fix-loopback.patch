@@ -1,0 +1,14 @@
+Index: linux-2.6.21/sound/soc/pxa/pxa2xx-pcm.c
+===================================================================
+--- linux-2.6.21.orig/sound/soc/pxa/pxa2xx-pcm.c	2007-09-02 22:30:56.000000000 -0300
++++ linux-2.6.21/sound/soc/pxa/pxa2xx-pcm.c	2007-09-02 22:36:26.000000000 -0300
+@@ -153,7 +153,8 @@
+ static int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct pxa2xx_runtime_data *prtd = substream->runtime->private_data;
+-
++	/* no dma if on loopback */
++	if (!prtd->params) return 0;
+ 	DCSR(prtd->dma_ch) &= ~DCSR_RUN;
+ 	DCSR(prtd->dma_ch) = 0;
+ 	DCMD(prtd->dma_ch) = 0;

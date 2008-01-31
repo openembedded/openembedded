@@ -1,0 +1,45 @@
+diff -r 90e7a26811fe db.c
+--- a/db.c	Mon Jan 21 02:03:38 2008 +0200
++++ b/db.c	Mon Jan 21 02:08:31 2008 +0200
+@@ -182,6 +182,30 @@ gpe_pim_category_name (gint id)
+ }
+ 
+ /**
++ * gpe_pim_category_id:
++ * @name: Category name
++ *
++ * Get the category ID by name.
++ *
++ * Returns: Category ID or 0 if doesn't exist.
++ */
++gint 
++gpe_pim_category_id (const gchar *name)
++{
++  GSList *iter;
++
++  for (iter = categories; iter; iter = iter->next)
++    {
++      struct gpe_pim_category *c = iter->data;
++
++      if (!strcasecmp(c->name, name))
++        return c->id;
++    }
++
++  return 0;
++}
++
++/**
+  * gpe_pim_category_colour:
+  * @id: Category id
+  *
+diff -r 90e7a26811fe gpe/pim-categories.h
+--- a/gpe/pim-categories.h	Mon Jan 21 02:03:38 2008 +0200
++++ b/gpe/pim-categories.h	Mon Jan 21 02:08:31 2008 +0200
+@@ -36,6 +36,7 @@ extern GSList *gpe_pim_categories_list (
+ 
+ extern gboolean gpe_pim_category_new (const gchar *title, gint *id);
+ extern const gchar *gpe_pim_category_name (gint id);
++extern gint gpe_pim_category_id (const gchar *name);
+ extern gboolean gpe_pim_category_rename (gint id, gchar *new_name);
+ 
+ /* colour functions */

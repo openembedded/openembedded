@@ -16,7 +16,7 @@
 #TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "4.7"
+SLUGOS_VERSION = "4.9"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -118,11 +118,6 @@ PREFERRED_VERSION_gcc-cross-initial  ?= "4.1.2"
 PREFERRED_VERSION_glibc              ?= "2.5"
 PREFERRED_VERSION_glibc-intermediate ?= "2.5"
 PREFERRED_VERSION_glibc-initial      ?= "2.5"
-
-# Select the correct versions of the kernel and modules (these are the
-# defaults, override in the conf/distro top-level distro file).
-PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
-PREFERRED_VERSION_ixp4xx-kernel ?= "2.6.21.6"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"

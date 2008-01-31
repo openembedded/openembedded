@@ -22,7 +22,7 @@
     </CENTER>
     <HR>
     <P>NOTICE: The telnet service is inherently not secure.  Among other security concerns, the login id and passwords you enter will be sent in plaintext across the network.  In order to provide a slightly higher degree of security, the service will not be automatically restarted upon reboot.  However, if you do not intend to reboot soon, it is recommended that you use this page to disable the service as soon as it is no longer needed.</P>
-    <P>A better solution than telnet for network terminal access to the NSLU2 is to use an SSH package, such as "openssh" or "dropbear".  These packages are secure, and will not require any special steps to enable once installed.  Openssh can be installed using the standard "ipkg" mechanism: "ipkg install openssh".</P>
+    <P>A better solution than telnet for network terminal access to the NSLU2 is to use an SSH package, such as "openssh".  This package is secure, will remove the need to use a web browser to enable access, and is less prone to inadvertent disabling than telnet.  Openssh can be installed using the standard "ipkg" mechanism: "ipkg install openssh".  No additional configuration is required; the installer will perform all the necessary configuration to setup openssh as a telnet replacement.  <B>You are strongly encouraged to install openssh as soon as possible.</B></P>
     <HR>
     <CENTER>
       <P><A HREF="/index.cgi">Back</A></P>

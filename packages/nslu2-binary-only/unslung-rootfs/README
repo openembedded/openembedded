@@ -1,370 +1,177 @@
-Unslung-6.x Family Release README INSTALLATION
-
-You must follow the steps in this README *exactly*.  Do not skip any steps, and
-do not skip ahead thinking you know what you are doing and that therefore you
-don't need to follow instructions step by step.
+                          Unslung-6.10 README
 
 If at any time you have any questions concerning the installation or operation
 of Unslung firmware, your first port of call should be the NSLU2-Linux wiki at:
 
-     http://www.nslu2-linux.org
+ http://www.nslu2-linux.org
 
-If you are looking for further Unslung notes - including ipkg usage, diversion
-script details, or ChangeLog information, please consult the associated Unslung
-NOTES file.
+Additional information, including ChangeLog information can be found in the
+associated Unslung NOTES file as well as on the NSLU2-Linux wiki.
 
 -------------------------------------------------------------------------------
 
 There are three parts to completing the installation of the Unslung firmware:
 
-     1 - PRE-INSTALLATION CONSIDERATIONS
-     2 - FIRMWARE INSTALLATION DETAILS
-     3 - UNSLINGING DETAILS
-
-
-PRE-INSTALLATION CONSIDERATIONS
-
-1) You *must* test telnet Redboot access first before you flash the Unslung
-     firmware.  Failure to do so will mean you get no sympathy at all if you
-     can't access Redboot when you need to recover from a bad flash.  See
-
-     http://www.nslu2-linux.org/wiki/HowTo/TelnetIntoRedBoot
-
-     - Redboot is the bootloader that runs when the device is first started,
-          loading things into memory and starting Linux.  By testing your
-          ability to telnet into Redboot, you are ensuring that if you injure
-          your NSLU2 with a bad flash you should be able to follow the "How
-          To Recover From A Bad Flash" instructions at
-
-          http://www.nslu2-linux.org/wiki/HowTo/RecoverFromABadFlash
-
-2) If you want to install any packages, then you must have an external USB
-     disk drive or an external USB flash disk. It is possible to make changes
-     to the root filesystem in the internal flash storage, but the space is
-     very limited.  In fact, just running the "ipkg update" operation on an
-     NSLU2 which does not have an external storage device of some sort attached
-     will most likely render the NSLU2 unusable due to filling up its internal
-     flash memory (if this happens then you will need to follow the recovery
-     instructions in the previous step.)  So unless you are an expert, use
-     an external storage device.  The remainder of these instructions assume
-     that you have a suitable external disk or flash disk that you will be
-     using for this purpose.
-
-     A few words on selecting which port to use:
-
-     Completely contrary to previous versions of Unslung, the preferred port
-     for the Unslung external disk as of Unslung 6.x is often port 2.  This
-     will free up the far-more-flexible port number 1 for other uses.
-
-     However, this "feature" (part of the Linksys R63 firmware) may cause some
-     small consternation for users upgrading from earlier versions of Unslung.
-     But in general, swapping the drives between the two ports  will likely be
-     the least painful solution.  The basic challenge faced by upgraders is
-     that *something* must change: if the drive remains in port 1, then it will
-     remain mounted at "/share/hdd/..." but the drive nomenclature will change
-     from "/dev/sda" to "/dev/sdb".  On the other hand, if the drive is moved
-     to port 2, then it will remain "/dev/sda" but it will then be mounted at
-     "/share/flash/...".  What difference this might make depends on each
-     individual configuration; check the wiki for possible assistance for your
-     particular configuration.
-
-     For new users, the following guidelines can help:
-       - if you have only a single drive that will be formatted by the NSLU2,
-         use port 2.
-       - if you have a single drive that will be formatted by the NSLU2, and
-         all other drives or flash devices will be either FAT or NTFS, use
-         port 2.
-       - if you have two drives, and both will be formatted by the NSLU2, then
-         unsling to the drive in port 1.
-
-     If you unsling to port 2, and later add a drive in port 1 that will
-     be formatted by the NSLU2, it will work as expected -- however, the
-     drive to be added MUST be formatted by the unslung NSLU2 in question,
-     and once formatted, the drive must NOT be removed.  (The Linksys code
-     will move it's "conf" datafiles to the drive in port 1 during the
-     format operation, and thus will become dependent upon the presence of
-     both drives for proper operation.)
-
-3) The external disk that you use as the target for package installation must
-     be (or have previously been) formatted by the NSLU2.
-
-     Since this point qualifies as a "frequently asked question", it is
-     worth some clarification here.  It is only possible to unsling to
-     a disk that has been formatted by the NSLU2 - you cannot unsling to a
-     FAT or NTFS disk.  In fact, it is not sufficient to format the disk
-     using another UNIX system -- in order to be recognized as a "Formatted
-     (ext3)" disk by the NSLU2, and hence be suitable for unslinging, the
-     disk must be specifically partitioned, formatted, and the partitions
-     must contain a specific set of configuration files created by the
-     NSLU2.  So the simple rule is that if the NSLU2 web interface "Disk"
-     page does not list the disk as "Formatted (ext3)", you will be unable
-     to unsling to that disk.
-
-     For upgrading users, it is possible to upgrade from all previous Unslung
-     versions without reformatting your disk -- but not necessarily recommended.
-     See the wiki article for recommended upgrade strategies:
-
-     http://www.nslu2-linux.org/wiki/Unslung/UpgradingToUnslung6
-
-     The unsling script will not touch anything in /unslung or /opt on your
-     disk, so make sure all your file modifications are in those directories,
-     as you were warned in the README file in all previous Unslung versions :-)
-
-4) If you want to use a flash disk as the target for package installation,
-     ensure that it is at least 256MB, and formatted as above via the
-     Linksys web interface.
-
-5) Please verify that any disks you are going to connect to the NSLU2 are
-     recognized and working properly *before* updating your firmware (including
-     any shares and data you had previously stored.)  If not, DO NOT CONTINUE.
-     You may want to check out "How To Troubleshoot A Drive Missing Condition"
-     at:
+ 1 - PRE-INSTALLATION CONSIDERATIONS
+ 2 - FIRMWARE INSTALLATION DETAILS
+ 3 - UNSLINGING DETAILS
 
-     http://www.nslu2-linux.org/wiki/HowTo/TroubleshootADriveMissingCondition
+1) PRE-INSTALLATION CONSIDERATIONS
 
-     - The only exception to this, of course, are those enclosures that the
-          stock firmware does not support, but the Unslung firmware does
-          support.
+a) You *must* confirm that you can enter "upgrade mode" using the Reset Button
+method.  This is necessary because once you install Unslung, you will be unable
+to use the web GUI to reflash the device; the Reset Button technique will be
+required to install new firmware, upgrade, or recover from a bad flash:
 
-6) If you are upgrading your firmware, you should make a configuration backup
-     via the Linksys web interface.  The configuration backup can be found
-     under "Administration", "Advanced", and then "Backup."  The top section of
-     that webpage is titled "Config Backup" and "Download" should be used to
-     save your NSLU2 Users, Groups and Shares setup to a disk file.
+ http://www.nslu2-linux.org/wiki/HowTo/UseTheResetButtonToEnterUpgradeMode
 
+To upload the firmware, use either the Sercomm Update Utility (for Windows
+users) or the UpSlug2 Utility (for Linux and MacOS X users):
 
-FIRMWARE INSTALLATION DETAILS
+ http://www.nslu2-linux.org/wiki/Main/SercommFirmwareUpdater
+ http://www.nslu2-linux.org/wiki/Main/UpSlug2
+ http://www.nslu2-linux.org/wiki/Main/UpSlug2onOSX
 
-1) Shutdown the NSLU2, and remove any disks that you may have plugged into the
-     NSLU2.  Power back up the NSLU2.
+b) You must have an external USB disk drive or an external USB flash device.
+There are a number of considerations to take into account in selecting the size
+and type of external device as well as which of the two USB ports to use:
 
-     - Firmware upgrades must always be performed with *no* hard disks or flash
-          disks attached.  This CANNOT be emphasized enough.  Are you sure you
-          unplugged the disks before powering up?  If so, you may continue.
+ http://www.nslu2-linux.org/wiki/Unslung/StorageBasics
+ http://www.nslu2-linux.org/wiki/Unslung/WhichUSBPortforUnslung6
 
-2) Access the Web interface.  Note that you should use the username "admin" and
-     password "admin" for the web interface at this point (as no disks are
-     attached, the default username and password is the only way to access the 
-     Management web pages).
+It is important to make sure that the device you intend to use is functional
+with the standard Linksys firmware before you attempt to use it with Unslung.
 
-     2-a) If you are installing Unslung 6.x onto an NSLU2 unit with Linksys
-          standard firmware already installed, flash unslung-6.x.bin as you
-          normally would flash new firmware (using the web interface
-          "Upgrade Firmware" page).  See your NSLU2 user manual for details
-          if you don't know how to do this.
+c) Review any known issues and errata:
 
-          - During firmware flashing, the top LED - Ready/Status - flashes
-            red and green (approximately 5 minutes, but can be much longer).  
+ http://www.nslu2-linux.org/wiki/Unslung/KnownProblems
 
-          - The NSLU2 will reboot after the flashing is complete.
+(Hint: read the wiki pages carefully to determine the firmware release to which
+they apply; many of the pages contain information pertaining to older versions
+of Unslung, or even to other firmware entirely.)
 
-     2-b) If you are installing Unslung 6.x onto an NSLU2 unit with an
-	  existing version of nslu2-linux.org firmware already installed,
-          you must first put the NSLU2 into RedBoot Upgrade Mode.
+2) FIRMWARE INSTALLATION DETAILS
 
-          - The NSLU2 should still be powered off at this point.  If not,
-            shut it down again before proceeding.
+The installation process is simple, but each step is important.  The most
+common problems reported are a result of skipping one of the steps in this
+process, so be careful.  In particular, having a disk or flash device plugged
+in when it shouldn't be can mean the difference between success and failure.
 
-          - Using a paper clip, push and hold in the reset button which is
-            located on the back of the NSLU2 near the power socket.
+a) Preparation
 
-          - While holding in the reset button, press and release the power
-            button.
+- Install either the Sercomm (Windows) or the UpSlug2 (Linux and MacOS X)
+  utilities on the system you'll be using to upload the firmware.
 
-          - Watch the Ready/Status LED, and as soon as it turns red quickly
-            release the reset button.
+- Access the Linksys web GUI, and record your network settings.
 
-          - You should now be in upgrade mode which is indicated by the
-            Ready/Status LED alternating between red and green. 
+- Shutdown the NSLU2 and unplug all USB cables and devices.
 
-          - Use either the Linux UpSlug2 tool or the Windows SerComm Upgrade
-            tool to upload the new firmware - you can find download links at
-	    http://www.nslu2-linux.org/wiki/HowTo/InstallUnslungFirmware
+b) Flashing the New Firmware
 
-          - During firmware flashing, the top LED - Ready/Status - flashes
-            red and green (approximately 5 minutes, but can be much longer).  
+- Enter upgrade mode, using the Reset Button technique.
 
-          - The NSLU2 will reboot after the flashing is complete.
+- Use either the Sercomm or UpSlug2 Utility to upload the new firmware.
 
-3) Shutdown the NSLU2 (again), attach disk(s), and power it back up.
+c) Verifying the New Firmware
 
-4) Verify your NSLU2 is working normally again at this point in the web
-     interface.  In  particular, you should ensure that all your disks are still
-     recognized as they were before you updated the firmware (including any
-     shares and data you had previously stored.)  If not, DO NOT CONTINUE.
-     You may want to check out "How To Troubleshoot A Drive Missing Condition"
-     at:
+- The NSLU2 will restart itself after the firmware in installed.
 
-     http://www.nslu2-linux.org/wiki/HowTo/TroubleshootADriveMissingCondition
+- Access the Linksys web GUI.  The new firmware version will be displayed on
+  the "Home" screen.
 
-     - If you are not "unslinging", you can stop at this point.  *HOWEVER!*,   
-          the only reason for not unslinging would be in the case of a re-flash
-          of the SAME firmware.  Even if this is a point firmware upgrade, you
-          will need to unsling.
+3) 'UNSLINGING' DETAILS
 
-     ***** If you do not choose to do the unslinging procedure described below,
-          DO NOT install packages unless you are SURE you know what you are
-          doing!  "Bricking" your NSLU2 by not unslinging and then running ipkg
-          is not just a possibility, it is a certainty.
+"Unslinging" is the process of copying the firmware to an external disk, and
+configuring that external disk for installation of packages.  In order to
+perform this operation, you need to log in to the NSLU2 using telnet, and you
+need a suitable external disk or flash device.
 
-5) Shutdown the NSLU2 and unplug *ALL* attached disks.
+This procedure is made a bit more complicated because the behavior of the NSLU2
+can change depending on the presence of an external disk.  Specifically, when
+an external storage device is plugged in, the NSLU2 will switch over to using
+the passwords and configuration information stored on that external disk, if
+possible.  Since we don't know the root password originally written to that
+device, you must be very careful to perform the following steps in precisely
+the specified order, or you'll lock yourself out of your own device.
 
-     - You must NOT have any disk plugged into the NSLU2 when you reboot to
-          perform the next part of installation - the "Unslinging".
+a) Gain Telnet Access
 
+- Power up the NSLU2 without any disks connected.
 
-'UNSLINGING' DETAILS
+- Enable telnet by going to the NSLU2's web GUI and clicking on the "Manage
+  Telnet" link (right-hand side), then on the "Enable" button to turn on the
+  telnet service.
 
-"Unslinging" is the process of copying the root filesystem of your NSLU2 onto
-an external disk, and configuring that external disk for installation of
-packages. Basically it's a script (stored in /sbin/unsling) which copies all
-the files from the internal jffs2 filesystem onto the external disk and tells
-the internal firmware to load the root filesystem from the external disk when
-booting in the future.
+- Use your telnet utility to telnet into the NSLU2, and log in using the
+  username root and password uNSLUng (upper/lower case is significant).
 
-To run the unsling-script you have to be logged in as root (with a telnet
-session).
+- Do not logout before you go to the next step, or you'll have to start this
+  step over again.
 
-NOTE:  There are two root passwords.  One is saved in an internal database file
-called /usr/local/passwd (we know this one - it's "uNSLUng" and used when you
-boot without a attached harddisk) the other is stored in an external file called
-/share/hdd/conf/passwd (we don't know this one - it's used when you boot with a
-external harddisk attached).  Later in the process you can change both of
-them. That means:  Everytime you boot WITHOUT an attached harddisk you gain
-root-access with the "uNSLUng" password.  If you boot WITH an attached harddisk,
-you won't have access until you change the file /share/hdd/conf/passwd.
+b) Gain Access to the External Storage
 
-NOTE about the NOTE: New in Unslung 6.x is that by default the "unsling"
-script will prompt for a new password.  This new password will become the
-new password used whenever the NSLU2 is booted without it's disk (replacing
-the "uNSLUng" password), and it will also be the new root password used when
-the NSLU2 boots up with it's disk.  If you are upgrading, or wish to preserve
-your passwords just the way they are, use the "-nopw" option with the unsling
-script.
+- Identify the drive or flash device to which you will be unslinging, and plug
+  it in to the desired USB port.
 
-1) Power up the NSLU2 without any disks connected.
+- Wait for a minute or two while the disk is mounted.
 
-     - This only has to be done when you update the firmware.
+- Check the web GUI to make sure that the disk has been recognized by the
+  Linksys software
 
-     ***** To reiterate, you should not have a disk plugged in at this stage.
-          If you powered up your NSLU2 with a disk attached, shutdown the
-          NSLU2, unplug the disks, and power up again.
+- If the disk has not been previously formatted on the NSLU2, then now is the
+  time to do that.
 
-2) Enable telnet by going to the NSLU2's web interface and clicking on the
-     "Manage Telnet" link (right-hand side), then on the "Enable/Disable
-     NSLU2 telnet Service" page, click on the "Enable" button to turn on
-     the telnet service.
+- Be patient - it might take several minutes for the NSLU2 to recognize the
+  hardware, mount the partitions, and verify that the drive is correctly
+  configured to be considered "Formatted".
 
-     (You can browse directly to the enable/disable telnet page in your
-     browser: "http://192.168.1.77/Management/telnet.cgi".)
+- Do not continue if the drive is not marked as "Formatted (ext3)" in the
+  NSLU2 web GUI.
 
-     - Note that you should use the username "admin" and password "admin" for
-          the web interface at this point (as no disks are attached, the
-          default username and password is the only way to access the
-          Management web pages).
+c) Unsling
 
-     - Make sure you have **** NO DISKS ATTACHED AT THIS TIME ****
+- In the telnet session, run "unsling disk2" if your device is on the USB port
+  labeled "DISK 2", or "unsling disk1" if it's on the port marked "DISK 1".
 
-     - If you plug a disk in before you complete the telnet connection, then
-          the NSLU2 will pick up the Linksys password from the disk, and you
-          will not be able to telnet into it.  So don't have any disks attached
-          at this point.
+- When prompted, enter a new root password - this password will replace the
+  uNSLUng password.
 
-     - Make sure you have **** NO DISKS ATTACHED AT THIS TIME ****
+- When the unsling is complete, reboot the NSLU2.
 
-3) OK, now that you don't have any disks attached, you can proceed and telnet
-     into the NSLU2 using the username root and password uNSLUng.
+d) Confirm That Your NSLU2 is Unslung:
 
-4) Identify which drive you wish you "unsling", and plug it in.  Wait a minute
-     or two while the disk is mounted.  Check the web interface to make sure
-     that the disk has been recognized by the Linksys software.
+- Once rebooted, open the NSLU2 web GUI in your browser.
 
-     - If the disk has not been previously formatted on the NSLU2, then now is
-          the time to do that.  Make sure that the drive is recognized in the
-          web interface.
+- Confirm that the text at the bottom of the page reads "uNSLUng status:
+  Unslung to disk2, /dev/sda1" (your devices may vary, of course).
 
-     Be patient - it might take several minutes for the NSLU2 to recognize
-     the hardware, mount the partitions, and verify that the drive is correctly
-     configured to be considered "Formatted".  Do not continue if the drive
-     is not marked as "Formatted (ext3)" in the NSLU2 web interface.
+- Click the "Manage Telnet" link, and enable telnet as before.
 
-5) In the telnet session, run "/sbin/unsling disk2".
-     (If you've decided to unsling to a device connected to port 1, you'll run
-     "/sbin/unsling disk1", of course.)
+- Telnet to the NSLU2, and login using the root user and the new password you
+  gave when unslinging.
 
-     - Once you "unsling" to an external disk on a particular port (Disk 1 or
-          Disk 2), it is important that you keep that disk continually plugged
-          into that same port whenever the NSLU2 is turned on.
+- Confirm that the login message states that you are running in Unslung mode.
 
-     ***** By default, unsling WILL prompt you for a new root password, and it
-          will change the password on your disk as well.  If this is NOT what
-          you wish it to do, use the "-nopw" flag with the "unsling" command:
-          "/sbin/unsling -nopw disk2" for example.
-         
-          For more information on changing passwords and all the places where
-          the NSLU2 stores passwords, please see the following wiki article:
+e) Updating Package Lists and Installing Optware Packages
 
-     http://www.nslu2-linux.org/wiki/HowTo/ChangePasswordsFromTheCommandLine
+(This is, strictly speaking, optional - but we expect that you installed this
+firmware so that you could add additional software.)
 
-6) (For those upgrading from Unslung 3.x only)
-     If you wish to migrate your packages from the old Unslung 3.x location in
-     the /share/hdd/conf (disk1) or /share/flash/conf (disk2) partitions to the
-     new Unslung 4.x, 5.x and 6.x location on the data partition, then run:  
-     "/sbin/slingover disk1" (if your packages were previously on disk1 and you
-     ran "/sbin/unsling disk1" in step 5) or "/sbin/slingover disk2" (if your
-     packages were previously on disk2 and you ran "/sbin/unsling disk2" in
-     step 5).
+- Telnet into the NSLU2.
 
-     - If your packages were not stored in /share/hdd/conf or /share/flash/conf
-          (e.g. you had previously moved your packages from the conf partition
-          to the data partition), then all bets are off and you will need to
-          read the /sbin/slingover script and perform the appropriate steps
-          manually.
+- Check that your NSLU2 can reach the internet by pinging www.nslu2-linux.org.
+  (if it fails, check your NSLU2 network settings (on the web GUI pages), or
+  check your router or network configuration to correct this problem.)
 
-7) Reboot.
+- Enter the command "ipkg update" to update the list of software packages
+  ("optware") available for Unslung.
 
-     ***** DO NOT RUN ipkg BEFORE YOU REBOOT AND CONFIRM EXTERNAL ROOTFS *****
+- Install the "openssh" package with the command "ipkg install openssh".
 
-     - If you were to run ipkg when the root filesystem is loaded from the
-          internal jffs2 filesystem, then you would fill the flash and cause
-          your NSLU2 to no longer boot and require reflashing to recover.
+-------------------------------------------------------------------------------
 
-8) Confirm that your NSLU2 is unslung:
+Congratulations!  Your NSLU2 is unslung, and ready to do more than you'd
+imagine such a small device could ever do.  Enjoy!  If you find the Unslung
+firmware useful, you may wish to make a donation to help support the project:
 
-     You can verify that your NSLU2 is unslung by checking the NSLU2 web admin
-     GUI - you are unslung if the text at the bottom reads something like:
-     "uNSLUng status: Unslung to disk2, /dev/sda1"
-
-     Also, when you login to the NSLU2, the login message printed will clearly
-     indicate if you are unslung, or if something went awry and you are still
-     running on the internal flash.
-
-     If your NSLU2 does not indicate that it is Unslung, rather it says that it
-     is running from internal flash, then the first thing to check is:
-         - Did you miss step 7 above (reboot)?
-
-9) Verify that you can log into the NSLU2 by going to the web GUI "Manage Telnet"
-     page, enable the telnet service, then telnet in as the root user, with the
-     password you entered when you performed the "unsling" operation.
-
-Make sure you add an entry to the "The Unslung 6.x" table in the Yahoo group.
-Just use the next free integer for your Unslung number.
-
-http://groups.yahoo.com/group/nslu2-linux/database?method=reportRows&tbl=12
-
-
-If you make no further changes, your NSLU2 will continue to operate normally.
-But to customize things, you'll be downloading packages and adding stuff to the
-/unslung directory using diversion scripts.
-
-http://www.nslu2-linux.org/wiki/Unslung/Packages
-http://www.nslu2-linux.org/wiki/Unslung/DiversionScripts
-
-(One of the first packages you should consider installing is the OpenSSH
-package, which will provide you a secure and more usable replacement for the
-standard telnet service on the NSLU2.)
-
-Read the NOTES file (normally in /opt/doc/NOTES on your unslung NSLU2) to expand
-the capabilities of your Unslung NSLU2!
-
-Enjoy!
+ http://www.nslu2-linux.org/wiki/Main/Donate

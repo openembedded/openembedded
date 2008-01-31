@@ -82,7 +82,7 @@ pkg_prerm_modutils-modinfo() {
 update-alternatives --remove modinfo /sbin/modinfo.24
 }
 
-PACKAGES = "modutils-depmod modutils-modinfo modutils-doc modutils"
+PACKAGES = "${PN}-dbg modutils-depmod modutils-modinfo modutils-doc modutils"
 
 FILES_modutils-depmod = "sbin/depmod.24"
 FILES_modutils-modinfo = "sbin/modinfo.24"

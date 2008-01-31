@@ -9,7 +9,7 @@ inherit autotools
 SRC_URI = "${SOURCEFORGE_MIRROR}/faac/${PN}-${PV}.tar.gz"
 S="${WORKDIR}/${PN}"
 
-PACKAGES = "${PN} lib${PN} lib${PN}-dev"
+PACKAGES = "${PN}-dbg ${PN} lib${PN} lib${PN}-dev"
 
 FILES_${PN} = " ${bindir}/faac "
 FILES_lib${PN} = " ${libdir}/libfaac.so.0 ${libdir}/libfaac.so.0.0.0 "

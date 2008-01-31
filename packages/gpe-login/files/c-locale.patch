@@ -1,0 +1,11 @@
+--- a/gpe-login.c.org	2007-11-29 16:11:53.000000000 +0200
++++ a/gpe-login.c	2008-01-02 20:13:27.000000000 +0200
+@@ -1180,7 +1180,7 @@
+   language_menu = gtk_option_menu_new ();
+ 
+   c_locale = g_malloc (sizeof (locale_item_t));
+-  c_locale->name = "English";
++  c_locale->name = "English(C locale)";
+   c_locale->locale = "C";
+   locale_system_list = g_slist_append (NULL, c_locale);
+ 

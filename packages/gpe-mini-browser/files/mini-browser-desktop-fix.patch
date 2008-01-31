@@ -1,0 +1,16 @@
+--- gpe-mini-browser-0.21.old/gpe-mini-browser-0.21//gpe-mini-browser.desktop.in.in	2007-01-09 14:53:31.000000000 +0200
++++ gpe-mini-browser-0.21/gpe-mini-browser.desktop.in.in	2007-12-11 20:45:04.749584640 +0200
+@@ -2,9 +2,8 @@
+ _Name=Mini Web Browser
+ _Comment=Browse the web
+ Exec=gpe-mini-browser
+-Terminal=0
++Terminal=false
+ Type=Application
+-Icon=gpe-mini-browser.png
+-Categories=Application;PIM;GPE
+-StartupNotify=True
+-
++Icon=gpe-mini-browser
++Categories=X-GPE;X-PIM;X-Internet;X-Browser;
++StartupNotify=true

@@ -1,0 +1,1181 @@
+--- linux-2.6.15.orig/arch/ppc/platforms/iomega8241.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.15/arch/ppc/platforms/iomega8241.c	2008-01-07 16:56:45.628534603 -0800
+@@ -0,0 +1,603 @@
++/*
++ * arch/ppc/platforms/iomega8241.c
++ *
++ * The Iomega StorCenter Network Hard Drive platform is based on the
++ * original sandpoint test platform.  That GNU copyright information
++ * is reproduced below:
++ * 
++ * Board setup routines for the Motorola SPS Sandpoint Test Platform.
++ *
++ * Author: Mark A. Greer
++ *	 mgreer@mvista.com
++ *
++ * 2000-2003 (c) MontaVista Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++/*
++ * Iomega StorCenter Network Hard Drive.
++ * 
++ * Maintainer (Iomega Port): Anthony Russello
++ *   russello@iomega.com
++ * Much of the below code was taken from the original sandpoint.c/.h port
++ * done my Mark A. Greer (see above copyright information).  It was adapted
++ * to support a custom board.
++ */
++
++#include <linux/config.h>
++#include <linux/stddef.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/errno.h>
++#include <linux/reboot.h>
++#include <linux/pci.h>
++#include <linux/kdev_t.h>
++#include <linux/major.h>
++#include <linux/initrd.h>
++#include <linux/console.h>
++#include <linux/delay.h>
++#include <linux/irq.h>
++#include <linux/ide.h>
++#include <linux/seq_file.h>
++#include <linux/root_dev.h>
++#include <linux/serial.h>
++#include <linux/tty.h>	/* for linux/serial_core.h */
++#include <linux/serial_8250.h>
++
++#include <asm/system.h>
++#include <asm/pgtable.h>
++#include <asm/page.h>
++#include <asm/time.h>
++#include <asm/dma.h>
++#include <asm/io.h>
++#include <asm/machdep.h>
++#include <asm/prom.h>
++#include <asm/smp.h>
++#include <asm/vga.h>
++#include <asm/open_pic.h>
++#include <asm/todc.h>
++#include <asm/bootinfo.h>
++#include <asm/mpc10x.h>
++#include <asm/pci-bridge.h>
++#include <asm/kgdb.h>
++
++#include "iomega8241.h"
++
++/* Real Time Clock */
++extern spinlock_t rtc_lock;
++extern int ds1337_do_command(int id, int cmd, void *arg);
++#define DS1337_GET_DATE         0
++#define DS1337_SET_DATE         1
++
++unsigned char __res[sizeof(bd_t)];
++
++static void iomega8241_halt(void);
++
++/*
++ * Define all of the IRQ senses and polarities.  
++ */
++static u_char iomega8241_openpic_initsenses[] __initdata = {
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 0: AN983B */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 1: IDE VIA DS6410 */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 2: USB */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 3: USB */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 4: USB */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 5: UART0 */
++	(IRQ_SENSE_LEVEL | IRQ_POLARITY_NEGATIVE),	/* 6: UART1 */
++};
++
++/*
++ * Define all of the PCI IRQ Mappings
++ */
++static inline int
++iomega8241_map_irq(struct pci_dev *dev, unsigned char idsel, unsigned char pin)
++{
++	static char pci_irq_table[][4] =
++	/*
++	 *	PCI IDSEL/INTPIN->INTLINE
++	 * 	   A   B   C   D
++	 */
++	{
++		{  1,  1,  0,  0 },	
++		{  2,  3,  4,  1 },	
++		{  0,  0,  4,  4 },	
++		{  3,  3,  4,  4 },	
++		{  3,  3,  4,  4 },	
++	};
++
++	const long min_idsel = 13, max_idsel = 17, irqs_per_slot = 4;
++	return PCI_IRQ_TABLE_LOOKUP;
++}
++
++static int                     
++iomega8241_exclude_device(u_char bus, u_char devfn)
++{
++	if ((bus == 0) && (PCI_SLOT(devfn) == IOMEGA8241_HOST_BRIDGE_IDSEL))
++		return PCIBIOS_DEVICE_NOT_FOUND;
++	else
++		return PCIBIOS_SUCCESSFUL;
++}
++
++static void __init
++iomega8241_find_bridges(void)
++{
++	struct pci_controller	*hose;
++
++	hose = pcibios_alloc_controller();
++
++	if (!hose)
++		return;
++
++	hose->first_busno = 0;
++	hose->last_busno = 0x1;
++
++	if (mpc10x_bridge_init(hose,
++			       MPC10X_MEM_MAP_B,
++			       MPC10X_MEM_MAP_B,
++			       MPC10X_MAPB_EUMB_BASE) == 0) {
++					   
++		ppc_md.pci_exclude_device = iomega8241_exclude_device;
++		hose->last_busno = pciauto_bus_scan(hose, hose->first_busno);
++		ppc_md.pcibios_fixup = NULL;
++		ppc_md.pcibios_fixup_bus = NULL;
++		ppc_md.pci_swizzle = common_swizzle;
++		ppc_md.pci_map_irq = iomega8241_map_irq;	
++	}
++	else {
++		if (ppc_md.progress)
++			ppc_md.progress("Bridge init failed", 0x100);
++		printk("Host bridge init failed\n");
++	}
++	return;
++}
++
++
++static ulong
++get_bus_frequency(void)
++{
++	bd_t *bp = (bd_t *)__res;
++	ulong freq;
++	if (133333332 == bp->bi_busfreq)
++		freq = 132000000;
++	if (99999999 == bp->bi_busfreq)
++		freq = 100000000;
++	return(freq);
++}
++
++
++static void
++iomega8241_early_serial_map(void) 
++{
++#if defined(CONFIG_SERIAL_8250) 
++	struct plat_serial8250_port *pdata;
++	bd_t *binfo = (bd_t *) __res;
++
++        pdata = (struct plat_serial8250_port *) ppc_sys_get_pdata(MPC10X_UART0);
++	pdata[0].uartclk = get_bus_frequency();
++	pdata[0].membase = (unsigned char __iomem *) IOMEGA8241_SERIAL_0;
++
++        pdata = (struct plat_serial8250_port *) ppc_sys_get_pdata(MPC10X_UART1);
++	pdata[0].uartclk = get_bus_frequency();
++	pdata[0].membase = (unsigned char __iomem *) IOMEGA8241_SERIAL_1;
++#endif
++}
++
++static void __init
++iomega8241_setup_arch(void)
++{
++	int i = 0;
++
++	loops_per_jiffy = 100000000 / HZ;
++
++#ifdef CONFIG_BLK_DEV_INITRD
++	if (initrd_start)
++		ROOT_DEV = Root_RAM0;
++	else
++#endif
++#ifdef	CONFIG_ROOT_NFS
++		ROOT_DEV = Root_NFS;
++#else
++		ROOT_DEV = Root_HDA1;
++#endif
++
++	/* Lookup PCI host bridges */
++	iomega8241_find_bridges();
++
++	iomega8241_early_serial_map();
++
++	printk(KERN_INFO "Iomega StorCenter Network Hard Drive\n");
++	printk(KERN_INFO "Linux Kernel by Protium Computing\n");
++
++	/* DINK32 12.3 and below do not correctly enable any caches.
++	 * We will do this now with good known values.  Future versions
++	 * of DINK32 are supposed to get this correct.
++	 */
++	if (cpu_has_feature(CPU_FTR_SPEC7450))
++		/* 745x is different.  We only want to pass along enable. */
++		_set_L2CR(L2CR_L2E);
++	else if (cpu_has_feature(CPU_FTR_L2CR))
++		/* All modules have 1MB of L2.  We also assume that an
++		 * L2 divisor of 3 will work.
++		 */
++		_set_L2CR(L2CR_L2E | L2CR_L2SIZ_1MB | L2CR_L2CLK_DIV3
++				| L2CR_L2RAM_PIPE | L2CR_L2OH_1_0 | L2CR_L2DF);
++#if 0
++	/* Untested right now. */
++	if (cpu_has_feature(CPU_FTR_L3CR)) {
++		/* Magic value. */
++		_set_L3CR(0x8f032000);
++	}
++#endif
++}
++
++#define	IOMEGA8241_87308_CFG_ADDR		0x15c
++#define	IOMEGA8241_87308_CFG_DATA		0x15d
++
++#define	IOMEGA8241_87308_CFG_INB(addr, byte) {				\
++	outb((addr), IOMEGA8241_87308_CFG_ADDR);				\
++	(byte) = inb(IOMEGA8241_87308_CFG_DATA);				\
++}
++
++#define	IOMEGA8241_87308_CFG_OUTB(addr, byte) {				\
++	outb((addr), IOMEGA8241_87308_CFG_ADDR);				\
++	outb((byte), IOMEGA8241_87308_CFG_DATA);				\
++}
++
++#define IOMEGA8241_87308_SELECT_DEV(dev_num) {				\
++	IOMEGA8241_87308_CFG_OUTB(0x07, (dev_num));			\
++}
++
++#define	IOMEGA8241_87308_DEV_ENABLE(dev_num) {				\
++	IOMEGA8241_87308_SELECT_DEV(dev_num);				\
++	IOMEGA8241_87308_CFG_OUTB(0x30, 0x01);				\
++}
++
++static int __init
++iomega8241_request_io(void)
++{
++	request_region(0x00,0x20,"dma1");
++	request_region(0x20,0x20,"pic1");
++	request_region(0x40,0x20,"timer");
++	request_region(0x80,0x10,"dma page reg");
++	request_region(0xa0,0x20,"pic2");
++	request_region(0xc0,0x20,"dma2");
++
++	return 0;
++}
++
++arch_initcall(iomega8241_request_io);
++
++/*
++ * Interrupt setup and service.  Interrrupts on the Sandpoint come
++ * from the four PCI slots plus the 8259 in the Winbond Super I/O (SIO).
++ * The 8259 is cascaded from EPIC IRQ0, IRQ1-4 map to PCI slots 1-4,
++ * IDE is on EPIC 7 and 8.
++ */
++static void __init
++iomega8241_init_IRQ(void)
++{
++	OpenPIC_InitSenses = iomega8241_openpic_initsenses;
++	OpenPIC_NumInitSenses = sizeof(iomega8241_openpic_initsenses);
++
++	/*
++	 * We need to tell openpic_set_sources where things actually are.
++	 * mpc10x_common will set up OpenPIC_Addr at ioremap(EUMB phys base +
++	 * EPIC offset (0x40000)); The EPIC IRQ register address map - 
++	 * Interrupt Source Configuration Registers gives these numbers as
++	 * offsets starting at 0x50200, we need to adjust accordingly
++	 */
++	mpc10x_set_openpic();
++}
++
++static int
++iomega8241_get_irq(struct pt_regs *regs)
++{
++	int irq;
++	
++	irq = openpic_irq();
++	if (irq == OPENPIC_VEC_SPURIOUS)
++		irq = -1;
++	
++	return irq;
++}
++
++static u32
++iomega8241_irq_canonicalize(u32 irq)
++{
++	return irq;
++}
++
++static unsigned long __init
++iomega8241_find_end_of_memory(void)
++{
++	bd_t *bp = (bd_t *)__res;
++
++	if (bp->bi_memsize)
++		return bp->bi_memsize;
++
++	return 64*1024*1024;
++}
++
++static void __init
++iomega8241_map_io(void)
++{
++	/* changes suggested by Freescale: */
++	io_block_mapping(0xfc000000, 0xfc000000, 0x04000000, _PAGE_IO);
++}
++
++static void
++iomega8241_restart(char *cmd)
++{
++	local_irq_disable();
++
++	/* Set exception prefix high - to the firmware */
++	_nmask_and_or_msr(0, MSR_IP);
++
++	for(;;);	/* Spin until reset happens */
++}
++
++static void
++iomega8241_power_off(void)
++{
++	local_irq_disable();
++	for(;;);	/* No way to shut power off with software */
++	/* NOTREACHED */
++}
++
++static void
++iomega8241_halt(void)
++{
++	iomega8241_power_off();
++	/* NOTREACHED */
++}
++
++static int
++iomega8241_show_cpuinfo(struct seq_file *m)
++{
++	seq_printf(m, "vendor\t\t: Iomega Corporation\n");
++	seq_printf(m, "machine\t\t: Iomega StorCenter Network Hard Drive\n");
++
++	return 0;
++}
++
++#if defined(CONFIG_BLK_DEV_IDE) || defined(CONFIG_BLK_DEV_IDE_MODULE)
++/*
++ * IDE support.
++ */
++static int		iomega8241_ide_ports_known = 0;
++static unsigned long	iomega8241_ide_regbase[MAX_HWIFS];
++static unsigned long	iomega8241_ide_ctl_regbase[MAX_HWIFS];
++static unsigned long	iomega8241_idedma_regbase;
++
++static void
++iomega8241_ide_probe(void)
++{
++	struct pci_dev *pdev = pci_get_device(PCI_VENDOR_ID_VIA,
++			PCI_DEVICE_ID_VIA_6410, NULL);
++
++	if (pdev) {
++		iomega8241_ide_regbase[0]=pdev->resource[0].start;
++		iomega8241_ide_regbase[1]=pdev->resource[2].start;
++		iomega8241_ide_ctl_regbase[0]=pdev->resource[1].start;
++		iomega8241_ide_ctl_regbase[1]=pdev->resource[3].start;
++		iomega8241_idedma_regbase=pdev->resource[4].start;
++		
++		printk("Found: VIA VT6410 based IDE\n");
++	}
++
++	iomega8241_ide_ports_known = 1;
++}
++
++static int
++iomega8241_ide_default_irq(unsigned long base)
++{
++	if (iomega8241_ide_ports_known == 0)
++		iomega8241_ide_probe();
++
++	if (base == iomega8241_ide_regbase[0])
++		return IDE_INTRUPT;
++	else if (base == iomega8241_ide_regbase[1])
++		return IDE_INTRUPT;
++	else
++		return 0;
++}
++
++static unsigned long
++iomega8241_ide_default_io_base(int index)
++{
++	if (iomega8241_ide_ports_known == 0)
++		iomega8241_ide_probe();
++
++	return iomega8241_ide_regbase[index];
++}
++
++static void __init
++iomega8241_ide_init_hwif_ports(hw_regs_t *hw, unsigned long data_port,
++		unsigned long ctrl_port, int *irq)
++{
++	unsigned long reg = data_port;
++	uint	alt_status_base;
++	int	i;
++
++	for (i = IDE_DATA_OFFSET; i <= IDE_STATUS_OFFSET; i++) {
++		hw->io_ports[i] = reg++;
++	}
++
++	if (data_port == iomega8241_ide_regbase[0]) {
++		alt_status_base = iomega8241_ide_ctl_regbase[0] + 2;
++		hw->irq = IDE_INTRUPT;
++	} else if (data_port == iomega8241_ide_regbase[1]) {
++		alt_status_base = iomega8241_ide_ctl_regbase[1] + 2;
++		hw->irq = IDE_INTRUPT;
++	} else {
++		alt_status_base = 0;
++		hw->irq = 0;
++	}
++
++	if (ctrl_port) {
++		hw->io_ports[IDE_CONTROL_OFFSET] = ctrl_port;
++	} else {
++		hw->io_ports[IDE_CONTROL_OFFSET] = alt_status_base;
++	}
++
++	if (irq != NULL) {
++		*irq = hw->irq;
++	}
++}
++#endif
++
++/*
++ * Set BAT 3 to map 0xf8000000 to end of physical memory space 1-to-1.
++ */
++static __inline__ void
++iomega8241_set_bat(void)
++{
++	unsigned long bat3u, bat3l;
++
++	__asm__ __volatile__(
++			" lis %0,0xf800\n	\
++			ori %1,%0,0x002a\n	\
++			ori %0,%0,0x0ffe\n	\
++			mtspr 0x21e,%0\n	\
++			mtspr 0x21f,%1\n	\
++			isync\n			\
++			sync "
++			: "=r" (bat3u), "=r" (bat3l));
++}
++
++TODC_ALLOC();
++
++/* Real Time Clock support.
++ * StorCenter has a DS1337 accessed by I2C.
++ */
++static void __init 
++iomega8241_calibrate_decr(void)
++{
++	ulong freq = get_bus_frequency() / 4;
++	printk("time_init: decrementer frequency = %lu.%.6lu MHz\n",
++		freq/1000000, freq%1000000);
++       if (freq == 33000000)
++               freq += 332550;
++
++	tb_ticks_per_jiffy = freq / HZ;
++	tb_to_us = mulhwu_scale_factor(freq, 1000000);
++
++	return;
++}
++
++
++static ulong iomega8241_get_rtc_time(void)
++{
++	struct rtc_time tm;
++	int result;
++
++        spin_lock(&rtc_lock);
++	result = ds1337_do_command(0, DS1337_GET_DATE, &tm);
++        spin_unlock(&rtc_lock);
++
++	if (result == 0)
++		result = mktime(tm.tm_year+1900, tm.tm_mon, tm.tm_mday,
++	tm.tm_hour, tm.tm_min, tm.tm_sec);
++
++	return result;
++}
++
++
++static int iomega8241_set_rtc_time(unsigned long nowtime)
++{
++	struct rtc_time tm;
++	int result;
++
++	to_tm(nowtime, &tm);
++	tm.tm_year -= 1900;
++        spin_lock(&rtc_lock);
++	result = ds1337_do_command(0, DS1337_SET_DATE, &tm);
++        spin_unlock(&rtc_lock);
++
++	return result;
++}
++
++
++static void __init 
++iomega8241_init2(void)
++{
++  	ppc_md.set_rtc_time = iomega8241_set_rtc_time;
++  	ppc_md.get_rtc_time = iomega8241_get_rtc_time;
++}
++
++
++void __init
++platform_init(unsigned long r3, unsigned long r4, unsigned long r5,
++		unsigned long r6, unsigned long r7)
++{
++	parse_bootinfo(find_bootinfo());
++
++	/* ASSUMPTION:  If both r3 (bd_t pointer) and r6 (cmdline pointer)
++	 * are non-zero, then we should use the board info from the bd_t
++	 * structure and the cmdline pointed to by r6 instead of the
++	 * information from birecs, if any.  Otherwise, use the information
++	 * from birecs as discovered by the preceeding call to
++	 * parse_bootinfo().  This rule should work with both PPCBoot, which
++	 * uses a bd_t board info structure, and the kernel boot wrapper,
++	 * which uses birecs.
++	 */
++	if (r3 && r6) {
++		/* copy board info structure */
++		memcpy( (void *)__res,(void *)(r3+KERNELBASE), sizeof(bd_t) );
++		/* copy command line */
++		*(char *)(r7+KERNELBASE) = 0;
++		strcpy(cmd_line, (char *)(r6+KERNELBASE));
++	}
++
++#ifdef CONFIG_BLK_DEV_INITRD
++	/* take care of initrd if we have one */
++	if (r4) {
++		initrd_start = r4 + KERNELBASE;
++		initrd_end = r5 + KERNELBASE;
++	}
++#endif /* CONFIG_BLK_DEV_INITRD */
++
++	/* Map in board regs, etc. */
++	iomega8241_set_bat();
++
++	isa_io_base = MPC10X_MAPB_ISA_IO_BASE;
++	isa_mem_base = MPC10X_MAPB_ISA_MEM_BASE;
++	pci_dram_offset = MPC10X_MAPB_DRAM_OFFSET;
++	ISA_DMA_THRESHOLD = 0x00ffffff;
++	DMA_MODE_READ = 0x44;
++	DMA_MODE_WRITE = 0x48;
++
++	ppc_md.setup_arch = iomega8241_setup_arch;
++	ppc_md.show_cpuinfo = iomega8241_show_cpuinfo;
++	ppc_md.irq_canonicalize = iomega8241_irq_canonicalize;
++	ppc_md.init_IRQ = iomega8241_init_IRQ;
++	ppc_md.get_irq = iomega8241_get_irq;
++	ppc_md.init = iomega8241_init2;
++
++	ppc_md.restart = iomega8241_restart;
++	ppc_md.power_off = iomega8241_power_off;
++	ppc_md.halt = iomega8241_halt;
++
++	ppc_md.find_end_of_memory = iomega8241_find_end_of_memory;
++	ppc_md.setup_io_mappings = iomega8241_map_io;
++
++        ppc_md.time_init = NULL;
++  	ppc_md.set_rtc_time = NULL;
++  	ppc_md.get_rtc_time = NULL;
++	ppc_md.calibrate_decr = iomega8241_calibrate_decr;
++
++/*
++ * extra credit:
++ *
++ *         ppc_md.nvram_read_val = todc_mc146818_read_val;
++ *         ppc_md.nvram_write_val = todc_mc146818_write_val;
++ */
++#if defined(CONFIG_BLK_DEV_IDE) || defined(CONFIG_BLK_DEV_IDE_MODULE)
++	ppc_ide_md.default_irq = iomega8241_ide_default_irq;
++	ppc_ide_md.default_io_base = iomega8241_ide_default_io_base;
++	ppc_ide_md.ide_init_hwif = iomega8241_ide_init_hwif_ports;
++#endif
++
++}
+--- linux-2.6.15.orig/arch/ppc/Kconfig	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/Kconfig	2008-01-01 22:12:32.365126129 -0800
+@@ -649,6 +649,15 @@
+ 	  End of Life: -
+ 	  URL: <http://www.windriver.com/>
+ 
++config IOMEGA8241
++	bool "IOMEGA8241"
++	---help---
++	  Iomega StorCenter Network Hard Drive
++	  Manufacturer: Iomega Corporation
++	  Date of Release: May 2005
++	  End of Life: -
++	  URL: <http://www.iomega.com/>
++
+ config SBS8260
+ 	bool "SBS8260"
+ 
+@@ -801,7 +810,7 @@
+ 	depends on SANDPOINT || SPRUCE || PPLUS || \
+ 		PRPMC750 || PRPMC800 || LOPEC || \
+ 		(EV64260 && !SERIAL_MPSC) || CHESTNUT || RADSTONE_PPC7D || \
+-		83xx
++		83xx || IOMEGA8241
+ 	default y
+ 
+ config FORCE
+@@ -870,13 +879,13 @@
+ 
+ config MPC10X_BRIDGE
+ 	bool
+-	depends on POWERPMC250 || LOPEC || SANDPOINT
++	depends on POWERPMC250 || LOPEC || SANDPOINT || IOMEGA8241
+ 	select PPC_INDIRECT_PCI
+ 	default y
+ 
+ config MPC10X_OPENPIC
+ 	bool
+-	depends on POWERPMC250 || LOPEC || SANDPOINT
++	depends on POWERPMC250 || LOPEC || SANDPOINT || IOMEGA8241
+ 	default y
+ 
+ config MPC10X_STORE_GATHERING
+--- linux-2.6.15.orig/arch/ppc/boot/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/boot/Makefile	2008-01-01 22:12:32.365126129 -0800
+@@ -13,7 +13,7 @@
+ CFLAGS	 	+= -fno-builtin -D__BOOTER__ -Iarch/$(ARCH)/boot/include
+ HOSTCFLAGS	+= -Iarch/$(ARCH)/boot/include
+ 
+-BOOT_TARGETS	= zImage zImage.initrd znetboot znetboot.initrd
++BOOT_TARGETS	= zImage zImage.initrd znetboot znetboot.initrd uImage
+ 
+ bootdir-y			:= simple
+ bootdir-$(CONFIG_PPC_OF)	+= openfirmware
+--- linux-2.6.15.orig/arch/ppc/boot/simple/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/boot/simple/Makefile	2008-01-01 22:12:32.365126129 -0800
+@@ -158,6 +158,10 @@
+          end-$(CONFIG_SANDPOINT)	:= sandpoint
+    cacheflag-$(CONFIG_SANDPOINT)	:= -include $(clear_L2_L3)
+ 
++         end-$(CONFIG_IOMEGA8241)      := iomega8241
++   cacheflag-$(CONFIG_IOMEGA8241)      := -include $(clear_L2_L3)
++
++
+       zimage-$(CONFIG_SPRUCE)		:= zImage-TREE
+ zimageinitrd-$(CONFIG_SPRUCE)		:= zImage.initrd-TREE
+          end-$(CONFIG_SPRUCE)		:= spruce
+--- linux-2.6.15.orig/arch/ppc/platforms/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/platforms/Makefile	2008-01-01 22:12:32.365126129 -0800
+@@ -42,6 +42,7 @@
+ obj-$(CONFIG_RADSTONE_PPC7D)	+= radstone_ppc7d.o
+ obj-$(CONFIG_SANDPOINT)		+= sandpoint.o
+ obj-$(CONFIG_SBC82xx)		+= sbc82xx.o
++obj-$(CONFIG_IOMEGA8241)	+= iomega8241.o
+ obj-$(CONFIG_SPRUCE)		+= spruce.o
+ obj-$(CONFIG_LITE5200)		+= lite5200.o
+ obj-$(CONFIG_EV64360)		+= ev64360.o
+--- linux-2.6.15.orig/arch/ppc/platforms/iomega8241.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.15/arch/ppc/platforms/iomega8241.h	2008-01-01 22:12:32.365126129 -0800
+@@ -0,0 +1,66 @@
++/*
++ * arch/ppc/platforms/iomega8241.h
++ *
++ * The Iomega StorCenter Network Hard Drive platform is based on the
++ * original sandpoint test platform.  That GNU copyright information
++ * is reproduced below:
++ *
++ * Board setup routines for the Motorola SPS Sandpoint Test Platform.
++ *
++ * Author: Mark A. Greer
++ *	 mgreer@mvista.com
++ *
++ * 2000-2003 (c) MontaVista Software, Inc.  This file is licensed under
++ * the terms of the GNU General Public License version 2.  This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++
++#ifndef __PPC_PLATFORMS_IOMEGA8241_H
++#define __PPC_PLATFORMS_IOMEGA8241_H
++
++#include <asm/ppcboot.h>
++#include <linux/config.h>
++
++/*
++ * G2 Configuration:
++ * 
++ * DEVICE				IDSEL				INTERRUPT NUMBER
++ * AN983B				AD12				IRQ0
++ * IDE Via DS6410		AD13				IRQ1
++ * NEC USB uPD720101	AD14				IRQ2,3,4
++ */
++
++#define IDE_INTRUPT		1
++
++/*
++ * The sandpoint boards have processor modules that either have an 8240 or
++ * an MPC107 host bridge on them.  These bridges have an IDSEL line that allows
++ * them to respond to PCI transactions as if they were a normal PCI devices.
++ * However, the processor on the processor side of the bridge can not reach
++ * out onto the PCI bus and then select the bridge or bad things will happen
++ * (documented in the 8240 and 107 manuals).
++ * Because of this, we always skip the bridge PCI device when accessing the
++ * PCI bus.  The PCI slot that the bridge occupies is defined by the macro
++ * below.
++ */
++#define IOMEGA8241_HOST_BRIDGE_IDSEL     12
++
++void board_find_bridges(void);
++void iomega8241_fix_uart(void);
++/*
++ * Serial defines.
++ */
++#define IOMEGA8241_SERIAL_0		0xFDF04500
++#define IOMEGA8241_SERIAL_1		0xFDF04600
++
++#define RS_TABLE_SIZE  4
++
++/* Rate for the 1.8432 Mhz clock for the onboard serial chip */
++#define BASE_BAUD			( 100000000 / 16 ) /* 100Mhz speed, divided by 16 
++												to make the output freqency*/
++#define UART_CLK			1843200
++
++#define STD_COM_FLAGS (ASYNC_BOOT_AUTOCONF|ASYNC_SKIP_TEST)
++
++#endif /* __PPC_PLATFORMS_IOMEGA8241_H */
+--- linux-2.6.15.orig/arch/ppc/syslib/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/syslib/Makefile	2008-01-01 22:12:32.365126129 -0800
+@@ -71,6 +71,7 @@
+ obj-$(CONFIG_PRPMC800)		+= open_pic.o pci_auto.o
+ obj-$(CONFIG_RADSTONE_PPC7D)	+= pci_auto.o
+ obj-$(CONFIG_SANDPOINT)		+= pci_auto.o todc_time.o
++obj-$(CONFIG_IOMEGA8241)		+= pci_auto.o
+ obj-$(CONFIG_SBC82xx)		+= todc_time.o
+ obj-$(CONFIG_SPRUCE)		+= cpc700_pic.o pci_auto.o \
+ 				   todc_time.o
+--- linux-2.6.15.orig/arch/ppc/syslib/mpc10x_common.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/arch/ppc/syslib/mpc10x_common.c	2008-01-01 22:12:32.365126129 -0800
+@@ -35,6 +35,10 @@
+ #include <asm/mpc10x.h>
+ #include <asm/ppc_sys.h>
+ 
++#ifdef CONFIG_IOMEGA8241
++#define                                NUM_8259_INTERRUPTS 0
++#endif
++
+ #ifdef CONFIG_MPC10X_OPENPIC
+ #ifdef CONFIG_EPIC_SERIAL_MODE
+ #define EPIC_IRQ_BASE (epic_serial_mode ? 16 : 5)
+--- linux-2.6.15.orig/drivers/char/Kconfig	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/char/Kconfig	2008-01-01 22:12:32.369126358 -0800
+@@ -999,6 +999,25 @@
+ 	  The mmtimer device allows direct userspace access to the
+ 	  Altix system timer.
+ 
++config 8241EMI
++	tristate "EMI fixes for the 8241 processor"
++	depends on IOMEGA8241
++	default y
++	help
++	  By changing the ODCR value from 0xAB to 0x95, we are able to reduce
++	  the EMI along the PCI and MEMORY buses.
++
++	  msb 7   1       Controls the drive strength of DRV_PCI (40ohm)
++	  6       0       reserved
++	  5-4     01      Controls the drive strength of SDRAM_CLK (40ohm)
++	  3-2     01      Controls the drive strength of PCI_CLK and
++	                  PCI_CLK_SYNC_OUT (40ohm)
++	  1-0     01      Controls the drive strength of SDRAM_CLK and
++	                  SDRAM_SYNC_OUT (40ohm)
++
++	  See table 4-19 on page 4-22 of the MPC8245 Integrated Processor
++	  User's Manual for details on these registers.
++
+ source "drivers/char/tpm/Kconfig"
+ 
+ config TELCLOCK
+--- linux-2.6.15.orig/drivers/char/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/char/Makefile	2008-01-01 22:12:32.369126358 -0800
+@@ -48,6 +48,7 @@
+ obj-$(CONFIG_VIOTAPE)		+= viotape.o
+ obj-$(CONFIG_HVCS)		+= hvcs.o
+ obj-$(CONFIG_SGI_MBCS)		+= mbcs.o
++obj-$(CONFIG_8241EMI)		+= emiregs.o
+ 
+ obj-$(CONFIG_PRINTER) += lp.o
+ obj-$(CONFIG_TIPAR) += tipar.o
+--- linux-2.6.15.orig/drivers/char/emiregs.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.15/drivers/char/emiregs.c	2008-01-01 22:12:32.369126358 -0800
+@@ -0,0 +1,68 @@
++#include <linux/init.h>
++#include <linux/module.h>
++
++MODULE_LICENSE ("GPL");
++
++/* 
++	The following CONFIG_READ_BYTE and CONFIG_WRITE_BYTE
++	functions were taken from u-boot
++	
++	By changing the ODCR value from 0xAB to 0x95, we are able to reduce
++	the EMI along the PCI and MEMORY buses.
++
++	msb 7   1       Controls the drive strength of DRV_PCI (40ohm)
++	6       0       reserved
++	5-4     01      Controls the drive strength of SDRAM_CLK (40ohm)
++	3-2     01      Controls the drive strength of PCI_CLK and
++	                PCI_CLK_SYNC_OUT (40ohm)
++	1-0     01      Controls the drive strength of SDRAM_CLK and
++	                SDRAM_SYNC_OUT (40ohm)
++
++	See table 4-19 on page 4-22 of the MPC8245 Integrated Processor
++	User's Manual for details on these registers.
++*/
++#define CONFIG_ADDR 0xfec00000
++#define CONFIG_DATA 0xfee00000
++
++#define CONFIG_READ_BYTE( addr, reg ) \
++  __asm__ ( \
++  " stwbrx %1, 0, %2\n \
++    sync\n \
++    lbz   %0, %4(%3)\n \
++    sync " \
++  : "=r" (reg) \
++  : "r" ((addr) & ~3), "r" (CONFIG_ADDR), \
++    "b" (CONFIG_DATA), "n" ((addr) & 3));
++
++#define CONFIG_WRITE_BYTE( addr, data ) \
++  __asm__ __volatile__( \
++  " stwbrx %1, 0, %0\n \
++    sync\n \
++    stb %3, %4(%2)\n \
++    sync " \
++  : /* no output */ \
++  : "r" (CONFIG_ADDR), "r" ((addr) & ~3), \
++    "b" (CONFIG_DATA), "r" (data), \
++    "n" ((addr) & 3));
++
++
++static int emiregs_init (void)
++	{
++	u_long val, val2;			
++	CONFIG_READ_BYTE (0x80000073, val);
++	CONFIG_WRITE_BYTE (0x80000073, 0x95);		
++	CONFIG_READ_BYTE (0x80000073, val2);
++
++	printk (KERN_INFO "8241 ODCR: changed from 0x%02lx, to 0x%02lx\n", val, val2);
++		
++	return 0;
++	}
++		
++static void emiregs_exit (void)
++	{
++	printk (KERN_INFO "emiregs module exitting\n");
++	return;
++	}
++		
++module_init (emiregs_init);
++module_exit (emiregs_exit);
+--- linux-2.6.15.orig/drivers/char/rtc.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/char/rtc.c	2008-01-01 22:12:32.369126358 -0800
+@@ -514,9 +514,16 @@
+ 	}
+ 	case RTC_RD_TIME:	/* Read the time/date from RTC	*/
+ 	{
++#ifdef CONFIG_IOMEGA8241
++		unsigned long usi_time;
++		usi_time = ds1337_get_time();
++		to_tm(usi_time,wtime);
++		break;
++#else		
+ 		memset(&wtime, 0, sizeof(struct rtc_time));
+ 		rtc_get_rtc_time(&wtime);
+ 		break;
++#endif /* CONFIG_IOMEGA8241 */
+ 	}
+ 	case RTC_SET_TIME:	/* Set the RTC */
+ 	{
+@@ -558,7 +565,7 @@
+ 
+ 		if ((yrs -= epoch) > 255)    /* They are unsigned */
+ 			return -EINVAL;
+-
++#ifndef CONFIG_IOMEGA8241
+ 		spin_lock_irq(&rtc_lock);
+ #ifdef CONFIG_MACH_DECSTATION
+ 		real_yrs = yrs;
+@@ -614,6 +621,11 @@
+ 
+ 		spin_unlock_irq(&rtc_lock);
+ 		return 0;
++#else /* CONFIG_IOMEGA8241 */
++                /* next is the forth API provided by ds1337.c 	USI-SS */
++                ds1337_usi_set_time(yrs,mon,day,hrs,min,sec);
++                break;
++#endif /* CONFIG_IOMEGA8241 */
+ 	}
+ #ifdef RTC_IRQ
+ 	case RTC_IRQP_READ:	/* Read the periodic IRQ rate.	*/
+--- linux-2.6.15.orig/drivers/i2c/busses/i2c-mpc.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/i2c/busses/i2c-mpc.c	2008-01-01 22:12:32.369126358 -0800
+@@ -285,7 +285,11 @@
+ 	.algo = &mpc_algo,
+ 	.class = I2C_CLASS_HWMON,
+ 	.timeout = 1,
++#ifdef CONFIG_IOMEGA8241
++	.retries = 400
++#else
+ 	.retries = 1
++#endif /* CONFIG_IOMEGA8241 */
+ };
+ 
+ static int fsl_i2c_probe(struct platform_device *pdev)
+--- linux-2.6.15.orig/drivers/ide/pci/via82cxxx.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/ide/pci/via82cxxx.c	2008-01-02 08:21:42.876113109 -0800
+@@ -305,6 +305,12 @@
+ 	 */
+ 
+ 	pci_read_config_byte(dev, VIA_IDE_ENABLE, &v);
++#ifdef CONFIG_IOMEGA8241
++	if(via_config->id == PCI_DEVICE_ID_VIA_6410) {
++		pci_write_config_byte(dev, VIA_IDE_ENABLE, v | 0x3);
++	}
++#endif
++		
+ 
+ 	/*
+ 	 * Set up FIFO sizes and thresholds.
+@@ -485,7 +492,11 @@
+ 		.channels	= 2,
+ 		.autodma	= AUTODMA,
+ 		.enablebits	= {{0x00,0x00,0x00}, {0x00,0x00,0x00}},
++#ifdef CONFIG_IOMEGA8241
++		.bootable	= NEVER_BOARD,
++#else
+ 		.bootable	= ON_BOARD,
++#endif
+ 	}
+ };
+ 
+--- linux-2.6.15.orig/drivers/mtd/maps/Kconfig	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/mtd/maps/Kconfig	2008-01-01 22:12:32.369126358 -0800
+@@ -639,5 +639,10 @@
+ 
+ 	  This selection automatically selects the map_ram driver.
+ 
+-endmenu
++config MTD_IOMEGA8241
++	tristate "Map driver for the Iomega 8241 StorCenter board"
++	depends on IOMEGA8241
++	help
++	  Map driver for the Iomega StorCenter Network Hard Drive.
+ 
++endmenu
+--- linux-2.6.15.orig/drivers/mtd/maps/Makefile	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/mtd/maps/Makefile	2008-01-01 22:12:32.369126358 -0800
+@@ -68,6 +68,7 @@
+ obj-$(CONFIG_MTD_WRSBC8260)	+= wr_sbc82xx_flash.o
+ obj-$(CONFIG_MTD_DMV182)	+= dmv182.o
+ obj-$(CONFIG_MTD_SHARP_SL)	+= sharpsl-flash.o
++obj-$(CONFIG_MTD_IOMEGA8241)    += iomega8241_mtd.o
+ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
+--- linux-2.6.15.orig/drivers/mtd/maps/iomega8241_mtd.c	1969-12-31 16:00:00.000000000 -0800
++++ linux-2.6.15/drivers/mtd/maps/iomega8241_mtd.c	2008-01-01 22:12:32.369126358 -0800
+@@ -0,0 +1,102 @@
++/*
++ * drivers/mtd/maps/iomega8241_mtd.c
++ *
++ * Iomega Corporation
++ * 
++ * Flash mapping for the Iomega StorCenter Network Hard Drive
++ *
++ * This module is based on the mpc1211.c file created by 
++ * Saito.K & Jeanne <ksaito@interface.co.jp>
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <asm/io.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/config.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/immap_cpm2.h>
++
++static struct mtd_info *iomegamtd;
++static struct mtd_partition *parsed_parts;
++
++struct map_info iomega8241_flash_map = {
++	.name 		= "Flash",
++	.phys		= 0xFF800000,
++	.size		= 0x800000,
++	.bankwidth	= 1,
++};
++
++static struct mtd_partition iomega8241_partitions[] = {
++	{
++		.name =		"kernel",
++		/* 1507328 bytes: kernel space */
++		.size =		0x00170000, 
++		.offset =	0,
++	}, {
++		.name =		"filesystem",
++		/* 5832704 bytes: root partition */
++		.size =		0x00590000, 
++		/* start is FF970000 */
++		.offset =	MTDPART_OFS_APPEND, 
++	}, {
++		.name =		"bootloader",
++		/* 262144 bytes for u-boot */
++		.size =		0x00040000, 
++		/* start is FFF00000 */
++		.offset =	MTDPART_OFS_APPEND, 
++	}, {
++		.name =		"sysconfig",
++		/* 786432 bytes: sysconf partition */
++		.size =		0x000C0000, 
++		/* start is FFF40000 */
++		.offset =	MTDPART_OFS_APPEND, 
++	} 
++};
++
++static int __init 
++init_iomega8241_flash(void)			
++{
++	int nr_parts;
++		
++	iomega8241_flash_map.virt = ioremap(iomega8241_flash_map.phys, iomega8241_flash_map.size);
++
++	simple_map_init(&iomega8241_flash_map);
++
++	printk("Iomega8241: Probing for flash...\n");
++	iomegamtd = do_map_probe("cfi_probe", &iomega8241_flash_map);
++	if (!iomegamtd) {
++		printk(KERN_NOTICE "Flash chips not detected at either possible location.\n");
++		return -ENXIO;
++	}
++	printk("Iomega8241: Flash found at location 0x%x\n", iomega8241_flash_map.phys);
++	iomegamtd->owner = THIS_MODULE;
++
++	parsed_parts = iomega8241_partitions;
++	nr_parts = ARRAY_SIZE(iomega8241_partitions);
++
++	add_mtd_partitions(iomegamtd, parsed_parts, nr_parts);
++	return 0;
++}
++
++static void __exit 
++cleanup_iomega8241_flash(void)
++{
++	if (parsed_parts)
++		del_mtd_partitions(iomegamtd);
++	else
++		del_mtd_device(iomegamtd);
++	map_destroy(iomegamtd);
++}
++
++module_init(init_iomega8241_flash);
++module_exit(cleanup_iomega8241_flash);
++
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Anthony Russello <russello@iomega.com>");
++MODULE_DESCRIPTION("Flash mapping for the Iomega StorCenter Network Hard Drive");
+--- linux-2.6.15.orig/drivers/net/wireless/prism54/islpci_dev.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/net/wireless/prism54/islpci_dev.c	2008-01-01 22:12:32.369126358 -0800
+@@ -874,6 +874,7 @@
+ 
+ 	/* select the firmware file depending on the device id */
+ 	switch (pdev->device) {
++	case 0x3873:
+ 	case 0x3877:
+ 		strcpy(priv->firmware, ISL3877_IMAGE_FILE);
+ 		break;
+--- linux-2.6.15.orig/drivers/net/wireless/prism54/islpci_hotplug.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/net/wireless/prism54/islpci_hotplug.c	2008-01-01 22:12:32.373126589 -0800
+@@ -70,6 +70,13 @@
+ 	 PCI_ANY_ID, PCI_ANY_ID,
+ 	 0, 0, 0
+ 	},
++	/* Intersil PRISM NetGate 2511 MP PLUS 100mW */
++	{
++	 0x1260, 0x3873,
++	 PCI_ANY_ID, PCI_ANY_ID,
++	 0, 0, 0
++	},
++	
+ 
+ 	/* End of list */
+ 	{0,0,0,0,0,0,0}
+--- linux-2.6.15.orig/drivers/pci/probe.c	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/drivers/pci/probe.c	2008-01-01 22:12:32.373126589 -0800
+@@ -596,6 +596,20 @@
+ 	pci_read_config_dword(dev, PCI_CLASS_REVISION, &class);
+ 	class >>= 8;				    /* upper 3 bytes */
+ 	dev->class = class;
++#ifdef CONFIG_IOMEGA8241	
++	/*
++	 * The VIA VT6410 used on the Iomega StorCenter Network Hard Drive reports
++	 * with a class of 0x01040 (PCI_CLASS_STORAGE_RAID).
++	 *
++	 * The following correction allows it to be used as a standard PCI IDE
++	 * controller (0x0101)
++	 */
++	if((dev->vendor==PCI_VENDOR_ID_VIA)&&(dev->device==PCI_DEVICE_ID_VIA_6410)) {
++		dev->class=0x01018f;
++		printk("PCI: Adjustments for the VIA VT6410 controller have been made\n");
++	}
++#endif /* CONFIG_IOMEGA8241 */
++
+ 	class >>= 8;
+ 
+ 	pr_debug("PCI: Found %s [%04x/%04x] %06x %02x\n", pci_name(dev),
+--- linux-2.6.15.orig/include/asm-ppc/mpc10x.h	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/include/asm-ppc/mpc10x.h	2008-01-01 22:12:32.373126589 -0800
+@@ -76,7 +76,11 @@
+ 
+ #define	MPC10X_MAPB_PCI_INTACK_ADDR	0xfef00000
+ #define	MPC10X_MAPB_PCI_IO_START	0x00000000
++#ifdef CONFIG_IOMEGA8241
++#define	MPC10X_MAPB_PCI_IO_END	    0xFFFF
++#else
+ #define	MPC10X_MAPB_PCI_IO_END	       (0x00c00000 - 1)
++#endif /* CONFIG_IOMEGA8241 */
+ #define	MPC10X_MAPB_PCI_MEM_START	0x80000000
+ #define	MPC10X_MAPB_PCI_MEM_END	       (0xc0000000 - 1)
+ 
+@@ -157,7 +161,12 @@
+  */
+ extern unsigned long			ioremap_base;
+ #define	MPC10X_MAPA_EUMB_BASE		(ioremap_base - MPC10X_EUMB_SIZE)
++
++#ifdef CONFIG_IOMEGA8241
++#define        MPC10X_MAPB_EUMB_BASE           0xFDF00000
++#else
+ #define	MPC10X_MAPB_EUMB_BASE		MPC10X_MAPA_EUMB_BASE
++#endif
+ 
+ enum ppc_sys_devices {
+ 	MPC10X_IIC1,
+--- linux-2.6.15.orig/include/asm-ppc/serial.h	2006-01-02 19:21:10.000000000 -0800
++++ linux-2.6.15/include/asm-ppc/serial.h	2008-01-01 22:12:32.373126589 -0800
+@@ -38,6 +38,8 @@
+ #include <asm/mpc85xx.h>
+ #elif defined(CONFIG_RADSTONE_PPC7D)
+ #include <platforms/radstone_ppc7d.h>
++#elif defined(CONFIG_IOMEGA8241)
++#include <platforms/iomega8241.h>
+ #else
+ 
+ /*

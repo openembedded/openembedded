@@ -1,8 +1,7 @@
-DESCRIPTION = "An implementation of freedesktop.org specs for the \
-Enlightenment Foundation Libraries"
+DESCRIPTION = "The Enlightenment freedesktop.org library"
 DEPENDS = "ecore"
-LICENSE = "BSD"
-PV = "0.0.3.003+cvs${SRCDATE}"
+LICENSE = "MIT BSD"
+PV = "0.0.3.042+cvs${SRCDATE}"
 PR = "r0"
 
 inherit efl_library

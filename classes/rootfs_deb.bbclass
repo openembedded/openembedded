@@ -10,8 +10,12 @@ fakeroot rootfs_deb_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
 
+	mkdir -p ${STAGING_ETCDIR_NATIVE}/apt/
+
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/preferences
+	> ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
+	> ${STAGING_ETCDIR_NATIVE}/apt/preferences
 	> ${IMAGE_ROOTFS}/var/dpkg/status
 	> ${IMAGE_ROOTFS}/var/dpkg/available
 	# > ${STAGING_DIR}/var/dpkg/status
@@ -36,9 +40,9 @@ fakeroot rootfs_deb_do_rootfs () {
 		priority=$(expr $priority + 5)
 	done
 
-	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_ETCDIR_NATIVE}/apt/sources.list
+	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_DIR}/etc/apt/sources.list
 
-	cat "${STAGING_ETCDIR_NATIVE}/apt/apt.conf.sample" \
+	cat "${STAGING_DIR}/etc/apt/apt.conf.sample" \
 		| sed -e 's#Architecture ".*";#Architecture "${TARGET_ARCH}";#' \
 		> "${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 
@@ -141,7 +145,7 @@ rootfs_deb_log_check() {
 		if (echo "$lf_txt" | grep -v log_check | grep "$keyword_die") >/dev/null 2>&1
 		then
 			echo "log_check: There were error messages in the logfile"
-			echo -e "log_check: Matched keyword: [$keyword_die]\n"
+			printf "log_check: Matched keyword: [$keyword_die]\n"
 			echo "$lf_txt" | grep -v log_check | grep -C 5 -i "$keyword_die"
 			echo ""
 			do_exit=1

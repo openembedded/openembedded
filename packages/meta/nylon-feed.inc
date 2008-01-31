@@ -54,7 +54,7 @@ sysvinit \
 tcl \
 tcpdump \
 tinc \
-timezones \
+tzdata \
 usbutils \
 vtun \
 wireless-tools \

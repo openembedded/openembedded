@@ -1,4 +1,4 @@
-OpenEmbedded Maintainers List 
+OpenEmbedded Maintainers List
 
 Please put you full name and email-address here for the areas of OE you want to support.
 
@@ -38,7 +38,7 @@ Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
-Machines:   compulab-pxa270, logicpd-pxa270, 
+Machines:   cm-x270, logicpd-pxa270, em-x270, gesbc-9302
 Recipes:    mono argtable
 
 Person:     Erik Hovland
@@ -74,7 +74,7 @@ Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
 Website:    http://www.openembedded.org/~zecke
 Interests:  icecream, insanity, QA
-Recipes:    qtopia*, sqlite3, xine
+Recipes:    qtopia*, qt*, qmake*, sqlite3, xine
 
 Person:     Jamie Lenehan
 Mail:       lenehan@twibble.org
@@ -85,6 +85,12 @@ Machines:   titan, wrap
 Recipes:    quagga, iputils, ndic6, hping2, lilo-sh, conserver, ipsec-tools,
 Recipes:    lilo-sh, clamav, havp, p3scan, clamsmtp, librsync, rdiff-backup,
 Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
+
+Person:     Jan Luebbe
+Mail:       jluebbe@lasnet.de
+Website:    http://sicherheitsschwankung.de
+Machines:   chumby
+Recipes:    chumby-*, initramfs-chumby
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
@@ -146,22 +152,27 @@ Recipes:    ttf-fonts/*
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net
+Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    altboot, webcam-server
 
 Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
-Distros:    Ångström, generic
-Machines:   poodle, c7x0, spitz, nokia770, x86, qemuarm, qemux86
-Interests:  Core OE infrastructure, Python, GUI-Toolkits
-Recipes:    python*, qt*, qte*, sip*
+Distros:    OpenMoko, Ångström, Generic
+Machines:   fic-gta01, fic-gta02, nokia810, x86, qemuarm, qemux86
+Interests:  Core OE infrastructure, everything Python, EFL, E17, Qt4
+Recipes:    *python*, efl/*, e17*
+
+Person:     Patrick Gfeller
+Mail:       gfellerpatrik@gmx.net
+Recipes:    libvncserver, fbvncserver
 
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
 Interests:  PocketPC and Palm devices support, Win32 support
 Interests:  Cross-machine unification
-Recipes:    linux-handhelds-2.6, opie-*
+Recipes:    linux-handhelds-2.6, opie-*, initramfs-*, gnome-mplayer
 
 Person:     Philip Balister
 Mail:       Crofton@balister.org
@@ -197,7 +208,7 @@ Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
 Interests:  Japanese on the Zaurus
-Distros:    Ångström
+Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten

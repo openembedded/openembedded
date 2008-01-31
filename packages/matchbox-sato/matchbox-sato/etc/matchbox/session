@@ -1,0 +1,15 @@
+#!/bin/sh
+
+. /etc/formfactor/config
+
+if [ -e /dev/touchscreen/touchscreen0 ]; then
+    SHOWCURSOR="no"
+else
+    SHOWCURSOR="yes"
+fi
+
+matchbox-desktop &
+
+matchbox-panel --titlebar --start-applets showdesktop,windowselector --end-applets clock,battery,systray,startup &
+
+exec matchbox-window-manager -theme Sato -use_desktop_mode decorated -use_cursor $SHOWCURSOR $@

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 require gcc_${PV}.bb
-PR = "r1"
+PR = "r2"
 
 inherit sdk
 

@@ -149,6 +149,12 @@ def runstrip(file, d):
         bb.debug(1, "runstrip: skip %s" % file)
         return 0
 
+    # If the file is in a .debug directory it was already stripped,
+    # don't do it again...
+    if os.path.dirname(file).endswith(".debug"):
+        bb.note("Already run strip")
+        return 0
+
     strip = bb.data.getVar("STRIP", d, 1)
     objcopy = bb.data.getVar("OBJCOPY", d, 1)
 
@@ -694,6 +700,16 @@ python package_do_shlibs() {
 				for l in lines:
 					shlib_provider[l.rstrip()] = (dep_pkg, lib_ver)
 
+	assumed_libs = bb.data.getVar('ASSUME_SHLIBS', d, 1)
+	if assumed_libs:
+	    for e in assumed_libs.split():
+		l, dep_pkg = e.split(":")
+		lib_ver = None
+		dep_pkg = dep_pkg.rsplit("_", 1)
+		if len(dep_pkg) == 2:
+		    lib_ver = dep_pkg[1]
+		dep_pkg = dep_pkg[0]
+		shlib_provider[l] = (dep_pkg, lib_ver)
 
 	for pkg in packages.split():
 		bb.debug(2, "calculating shlib requirements for %s" % pkg)

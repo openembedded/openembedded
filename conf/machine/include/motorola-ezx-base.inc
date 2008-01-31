@@ -11,8 +11,8 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-ezx"
 #mtd2: 00580000 00020000 "VFM_Filesystem"
 #mtd3: 00020000 00020000 "Logo"
 
-MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost keyboard screen"
-MACHINE_FEATURES += "iwmmxt"
+MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost keyboard screen phone"
+MACHINE_FEATURES += " iwmmxt"
 
 
 MACHINE_DISPLAY_WIDTH_PIXELS = "240"

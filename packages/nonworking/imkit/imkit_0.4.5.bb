@@ -16,5 +16,5 @@ PARALLEL_MAKE = ""
 QMAKE_PROFILES = "imkit.pro"
 
 do_configure_prepend() {
-	echo -e "TEMPLATE=subdirs\nSUBDIRS=libimkit impls/anthy\n" > imkit.pro
+	printf "TEMPLATE=subdirs\nSUBDIRS=libimkit impls/anthy\n" > imkit.pro
 }

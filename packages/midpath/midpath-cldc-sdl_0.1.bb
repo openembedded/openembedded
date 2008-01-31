@@ -32,7 +32,6 @@ do_stage() {
 	install -m 0644 ${S}/external/sdljava-cldc/sdljava-cldc.jar ${STAGING_DATADIR}/java
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/java/sdljava-cldc.jar \
 		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

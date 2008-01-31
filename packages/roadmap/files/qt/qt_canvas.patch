@@ -1,0 +1,20 @@
+--- src/qt/qt_canvas.cc.old	2007-12-08 20:29:52.000000000 -0600
++++ src/qt/qt_canvas.cc	2007-12-13 02:34:22.000000000 -0600
+@@ -122,7 +122,7 @@ void RMapCanvas::getTextExtents(const ch
+    *w = r.width();
+    *ascent = fm.ascent();
+    *descent = fm.descent();
+-#ifdef QT_NO_ROTATE
++#ifdef QT_NO_TRANSFORMATIONS
+    if (can_tilt) *can_tilt = 0;
+ #else
+    if (can_tilt) *can_tilt = 1;
+@@ -169,7 +169,7 @@ void RMapCanvas::drawString(RoadMapGuiPo
+ 
+ void RMapCanvas::drawStringAngle(RoadMapGuiPoint* position,
+       int center, const char* text, int angle) {
+-#ifndef QT_NO_ROTATE
++#ifndef QT_NO_TRANSFORMATIONS
+    if (!pixmap) {
+       return;
+    }

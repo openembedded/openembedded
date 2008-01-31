@@ -50,6 +50,8 @@ TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
 
+TARGET_FPU_dht-walnut ?= "soft"
+
 #Set the right arch for the feeds
 #Alphabetically sorted
 
@@ -151,6 +153,7 @@ FEED_ARCH_nslu2be 	= "armv5teb"
 # armv6
 
 FEED_ARCH_mx31ads 	= "armv6"
+FEED_ARCH_mx31moboard	= "armv6"
 FEED_ARCH_nokia800	= "armv6"  
 FEED_ARCH_omap2420h4	= "armv6"
 FEED_ARCH_omap2430sdp   = "armv6"
@@ -256,7 +259,7 @@ TINDER_REPORT     = "1"
 # seppuku bbclass
 SEPPUKU_LOGIN        = "http://bugs.openembedded.org/query.cgi?"
 SEPPUKU_QUERY        = "http://bugs.openembedded.org/buglist.cgi?"
-SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%20unstable&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.org/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.org/attachment.cgi?"
 SEPPUKU_AUTOBUILD    = "1"
@@ -269,5 +272,4 @@ SEPPUKU_COMPONENT    = "build"
 
 
 # We want images supporting the following features (for task-base)
-DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost pci"
-DISTRO_FEATURES_nslu2 = "nfs smbfs alsa bluetooth ext2 usbhost pci"
+DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"

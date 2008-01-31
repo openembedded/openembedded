@@ -1,0 +1,11 @@
+--- a/ipaq-sleep.c.org	2006-01-20 19:43:14.000000000 +0200
++++ a/ipaq-sleep.c	2007-12-26 06:26:32.000000000 +0200
+@@ -108,7 +111,7 @@
+       if (fgets (buf, 32, input))
+ 	{
+ 	  if (!strncmp (buf, "on ", 3))
+-	    r = atoi (buf + 4);
++	    r = atoi (buf + 3);
+ 	  else
+ 	    r = -1;
+ 	}

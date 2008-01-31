@@ -4,9 +4,9 @@ require contacts.inc
 #RDEPENDS += "gnome-vfs-plugin-file"
 #RRECOMMENDS += "gnome-vfs-plugin-http"
 
-PV = "0.5+svnr${SRCREV}"
+PV = "0.8+svnr${SRCREV}"
 
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
 	   file://stock_contact.png \

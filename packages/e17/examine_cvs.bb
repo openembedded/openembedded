@@ -1,6 +1,6 @@
 DESCRIPTION = "Examine, the program configurator"
 DEPENDS = "ewl"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 PV = "0.0.0+cvs${SRCDATE}"
 PR = "r0"
 

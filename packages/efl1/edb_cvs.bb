@@ -1,5 +1,6 @@
-DESCRIPTION = "Edb is a database library"
-LICENSE = "MIT"
-PV = "0.0.0+cvs${SRCDATE}"
+DESCRIPTION = "Edb is the Enlightenment database library"
+LICENSE = "MIT BSD"
+DEPENDS = "zlib"
+PV = "1.0.5.042+cvs${SRCDATE}"
 
 inherit efl_library

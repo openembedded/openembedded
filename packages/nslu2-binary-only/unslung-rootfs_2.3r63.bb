@@ -1,7 +1,7 @@
 SECTION = "base"
 COMPATIBLE_MACHINE = "nslu2"
 
-PR = "r19"
+PR = "r22"
 
 DEPENDS = "nslu2-linksys-libs nslu2-linksys-sambacodepages"
 
@@ -177,6 +177,5 @@ do_install () {
 	( cd ${S} ; tar -c -v -f - --exclude '.pc' . ) | ( cd ${D} ; tar xvf - )
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 RDEPENDS_${PN} = "nslu2-linksys-libs"

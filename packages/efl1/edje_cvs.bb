@@ -1,11 +1,10 @@
-DESCRIPTION = "Edje is a complex graphical design & layout library."
-# can also install vim data files
+DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
 DEPENDS = "eet evas ecore embryo edje-native"
-LICENSE = "MIT"
-PV = "0.5.0.41+cvs${SRCDATE}"
+LICENSE = "MIT BSD"
+PV = "0.5.0.042+cvs${SRCDATE}"
 PR = "r0"
 
 inherit efl_library
 
-# NOTE: Packaging needs work. edje_cc should actually be in the -dev package etc.
-
+PACKAGES =+ "${PN}-tools"
+FILES_${PN}-tools = "${bindir}/edje_*"

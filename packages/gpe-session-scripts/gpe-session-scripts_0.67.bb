@@ -11,7 +11,7 @@ DEPENDS = "matchbox-wm matchbox-panel xtscal gpe-question matchbox-applet-inputm
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 
-PR = "r10"
+PR = "r11"
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_hx4700 = " file://highdpifontfix.patch;patch=1"
@@ -35,7 +35,7 @@ do_install_append() {
 	fi
 	install -d ${D}${sysconfdir}/matchbox
 	install ${WORKDIR}/matchbox-session ${D}${sysconfdir}/matchbox/session
-        echo -e "exec matchbox-window-manager ${CURSOR_HIDE} \$@ \n" >> ${D}${sysconfdir}/matchbox/session	
+        printf "exec matchbox-window-manager ${CURSOR_HIDE} \$@ \n" >> ${D}${sysconfdir}/matchbox/session	
 
 
 	install -d ${D}${sysconfdir}/gpe/xsettings-default.d

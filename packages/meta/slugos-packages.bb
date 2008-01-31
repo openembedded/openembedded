@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r42"
+PR = "r44"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -24,7 +24,18 @@ SLUGOS_PACKAGES = "\
 	apex-env \
 	apr \
 	asterisk \
-	asterisk-sounds \
+	asterisk-core-sounds-en-alaw \
+	asterisk-core-sounds-en-g729 \
+	asterisk-core-sounds-en-gsm \
+	asterisk-core-sounds-en-ulaw \
+	asterisk-extra-sounds-en-alaw \
+	asterisk-extra-sounds-en-g729 \
+	asterisk-extra-sounds-en-gsm \
+	asterisk-extra-sounds-en-ulaw \
+	asterisk-moh-freeplay-alaw \
+	asterisk-moh-freeplay-g729 \
+	asterisk-moh-freeplay-gsm \
+	asterisk-moh-freeplay-ulaw \
 	atftp \
 	audiofile \
 	aumix \
@@ -137,6 +148,7 @@ SLUGOS_PACKAGES = "\
 	miau \
 	microcom \
 	minicom \
+	monit \
 	motion \
 	mpd \
 	mt-daapd \
@@ -148,9 +160,11 @@ SLUGOS_PACKAGES = "\
 	ncftp \
 	ncurses \
 	net-tools \
+	netatalk \
 	netcat \
 	netpbm \
 	nfs-utils \
+	ngrep \
 	nmap \
 	ntfs-3g \
 	ntp \
@@ -191,13 +205,15 @@ SLUGOS_PACKAGES = "\
 	ssmtp \
 	strace \
 	streamripper \
+	stunnel \
 	sudo \
 	sysfsutils \
 	tar \
+	tcpdump \
 	thttpd \
 	tiff \
-	timezones \
 	tzdata \
+	unrar \
 	unzip \
 	upslug2 \
 	usbutils \
@@ -251,6 +267,8 @@ SLUGOS_EXTRA_PACKAGES ?= ""
 DEPENDS = "\
 	slugos-image \
 	slugos-native \
+	task-nas-server-everything \
+	task-proper-tools \
 	${SLUGOS_PACKAGES} \
 	${SLUGOS_EXTRA_PACKAGES} \
 	package-index \

@@ -6,10 +6,14 @@ PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 
+# Override where to look for defconfigs and patches,
+# we have per-kernel-release sets.
+FILESPATH = "${FILE_DIRNAME}/linux-handhelds-2.6-2.6.21/${MACHINE}:${FILE_DIRNAME}/linux-handhelds-2.6-2.6.21"
+
 K_MAJOR = "2"
 K_MINOR = "6"
 K_MICRO = "21"
-HHV     = "14"
+HHV     = "20"
 
 SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26  \
            file://defconfig"

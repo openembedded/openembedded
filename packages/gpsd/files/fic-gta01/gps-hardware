@@ -1,0 +1,41 @@
+#! /bin/sh
+#
+# Copyright Matthias Hentges <devel@hentges.net> (c) 2008
+# License: GPL (see http://www.gnu.org/licenses/gpl.txt for a copy of the license)
+#
+# Filename: gps-hardware
+# Date: 20080103 (YMD)
+#
+#################################################################################
+#
+# 20080103 - v0.0.1	- Initial release
+
+if ! test -e /home/root/gllin/gllin
+then
+	echo -e "\n\ngllin GPS driver for Neo1973 not found,"
+	echo "please install the gllin package from"
+	echo "http://3rdparty.downloads.openmoko.org/gllin/"
+	echo ""
+	exit 1
+fi
+
+
+do_start() {
+	/home/root/gllin/gllin >/var/log/gllin.log 2>&1 &
+	sleep 1
+}
+
+do_stop() {
+	gllin_PIDs="`ps ax | grep "/home/root/gllin" | grep -v grep | awk '{print $1}'`"	
+	test -n "$gllin_PIDs" && kill $gllin_PIDs
+}
+
+do_status() {
+	ps ax | grep -v grep | grep -q gllin && echo "ready" || echo "unknown"
+}
+
+case "$1" in
+	start)		do_start ;;
+	stop)		do_stop ;;
+	status)		do_status ;;
+esac

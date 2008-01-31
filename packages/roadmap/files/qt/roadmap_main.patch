@@ -1,0 +1,16 @@
+--- src/qt/roadmap_main.cc.old	2007-12-08 15:47:05.000000000 -0600
++++ src/qt/roadmap_main.cc	2007-12-07 20:39:15.000000000 -0600
+@@ -195,11 +195,11 @@ void roadmap_main_set_cursor (int newcur
+          break;
+ 
+       case ROADMAP_CURSOR_WAIT:
+-         mainWindow->setCursor (QCursor(Qt::WaitCursor));
++         mainWindow->setCursor (QCursor(Qt::waitCursor));
+          break;
+ 
+       case ROADMAP_CURSOR_CROSS:
+-         mainWindow->setCursor (QCursor(Qt::CrossCursor));
++         mainWindow->setCursor (QCursor(Qt::crossCursor));
+          break;
+       }
+    }

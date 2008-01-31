@@ -61,7 +61,7 @@ do_compile () {
         -DVARRUNDIR=\"/var/run\" \
         -DAWK=\"awk\" \
         -DPERL=\""${bindir}/perl -w"\" -DTKPERL=\"${bindir}/tkperl\" \
-        -DECHO=\""echo -e"\" \
+        -DECHO=\""printf"\" \
         -DSHELL=\"/bin/bash\" \
 	-o mksed mksed.c
 	./mksed >sedscript

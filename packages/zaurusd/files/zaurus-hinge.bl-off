@@ -6,13 +6,14 @@
 # Filename: zaurus-hinge.bl-off
 # Date: 04-Jun-06
 
-#test -z "${ZD_BINDIR}" && ZD_BINDIR="/usr/bin"
-#${ZD_BINDIR}/bl off
-
-
-STEP=5
 DRIVER="`ls /sys/class/backlight/|head -n 1`"
 BRIGHTNESS_FILE="/sys/class/backlight/$DRIVER/brightness"
 
-cat "$BRIGHTNESS_FILE" > /var/run/display_brightness.tmp
-echo 0 > "$BRIGHTNESS_FILE"
+if mkdir /var/run/display_brightness.lock
+then
+	cat "$BRIGHTNESS_FILE" > /var/run/display_brightness.tmp
+	echo 0 > "$BRIGHTNESS_FILE"
+	rm -rf /var/run/display_brightness.lock
+else
+	echo "BRIGHTNESS IS LOCKED"
+fi

@@ -1,8 +1,13 @@
 require ecore.inc
-PR = "r5"
+PR = "r0"
 
 EXTRA_OECONF = "\
+        --x-includes=${STAGING_INCDIR}/X11 \
+        --x-libraries=${STAGING_LIBDIR} \
+        --enable-simple-x11 \
+\
 		--enable-ecore-txt \
+        --enable-ecore-config \
 		--disable-ecore-x-xcb \
 		--enable-ecore-x \
 		--enable-ecore-job \
@@ -10,9 +15,10 @@ EXTRA_OECONF = "\
 		--disable-ecore-sdl \
 		--enable-ecore-fb \
 		--enable-ecore-evas \
-		--disable-ecore-evas-gl \
+		--enable-ecore-evas-x11-16 \
+        --disable-ecore-evas-x11-gl \
 		--enable-ecore-evas-xrender \
-		--enable-ecore-evas-dfb \
+		--disable-ecore-evas-dfb \
 		--disable-openssl \
 		--enable-abstract-sockets \
 		--enable-ecore-con \
@@ -21,6 +27,5 @@ EXTRA_OECONF = "\
 		--enable-inotify \
 		--disable-poll \
 		--enable-curl \
-		--enable-ecore-desktop \
-		--x-includes=${STAGING_INCDIR}/X11 \
-		--x-libraries=${STAGING_LIBDIR}	"
+		--disable-ecore-desktop \
+"

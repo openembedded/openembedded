@@ -1,6 +1,6 @@
 SECTION = "x11/base"
 DESCRIPTION = "Industrial theme engine for GTK"
-LICENSE = "GPL2"
+LICENSE = "GPLv2"
 DEPENDS = "gtk+"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/gtk-industrial-engine/gtk-industrial-engine_${PV}.tar.gz \

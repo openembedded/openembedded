@@ -1,0 +1,45 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-e680.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-e680.c	2007-10-24 18:58:55.000000000 +0200
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-e680.c	2007-10-24 18:59:23.000000000 +0200
+@@ -16,6 +16,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/irq.h>
+ #include <linux/input.h>
++#include <linux/gpio_keys.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -315,10 +316,32 @@
+ 	.resource       = pcap_ts_resources,
+ };
+ 
++static struct gpio_keys_button e680locksw_buttons[] = {
++       [0] = {
++               .code        = KEY_SLEEP,
++               .gpio           = GPIO_LOCK_SCREEN_PIN,
++               .desc           = "E680 lockscreen sw",
++       },
++};
++
++static struct gpio_keys_platform_data e680locksw_platform_data = {
++       .buttons        = e680locksw_buttons,
++       .nbuttons       = 1,
++};
++
++static struct platform_device e680locksw_device = {
++       .name           = "gpio-keys",
++       .id             = -1,
++       .dev            = {
++               .platform_data  = &e680locksw_platform_data,
++       },
++};
++
+ static struct platform_device *devices[] __initdata = {
+ 	&e680_pcap_device,
+ 	&e680_emu_device,
+ 	&pcap_ts_device,
++	&e680locksw_device,
+ };
+ 
+ static void __init e680_init(void)

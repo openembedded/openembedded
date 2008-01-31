@@ -1,42 +1,10 @@
-SECTION = "libs"
-LICENSE = "BSD"
-DESCRIPTION = "A library for configuring and customizing font access."
-DEPENDS = "expat freetype freetype-native zlib"
+require fontconfig.inc
 
-SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
-           https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h"
 PR = "r2"
 
-PACKAGES =+ "fontconfig-utils-dbg fontconfig-utils "
-FILES_fontconfig-utils-dbg = "${bindir}/*.dbg"
-FILES_fontconfig-utils = "${bindir}/*"
+SRC_URI += "https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h"
 
-# Work around past breakage in debian.bbclass
-RPROVIDES_fontconfig-utils = "libfontconfig-utils"
-RREPLACES_fontconfig-utils = "libfontconfig-utils"
-RCONFLICTS_fontconfig-utils = "libfontconfig-utils"
-DEBIAN_NOAUTONAME_fontconfig-utils = "1"
-
-S = "${WORKDIR}/fontconfig-${PV}"
-
-inherit autotools pkgconfig
-
-export HASDOCBOOK="no"
-
-EXTRA_OECONF = " --disable-docs --with-arch=${HOST_ARCH}"
-EXTRA_OEMAKE = "FC_LANG=fc-lang FC_GLYPHNAME=fc-glyphname"
-
-# The tarball has some of the patched files as read only, which
-# patch doesn't like at all
-
-fontconfig_do_unpack() {
-       chmod -R u+rw ${S}
-}
-
-python do_unpack () {
-       bb.build.exec_func('base_do_unpack', d)
-       bb.build.exec_func('fontconfig_do_unpack', d)
-}
+EXTRA_OECONF += " --with-arch=${HOST_ARCH}"
 
 do_stage () {
 	cp ${WORKDIR}/device_symbols.h ${S}/fontconfig/

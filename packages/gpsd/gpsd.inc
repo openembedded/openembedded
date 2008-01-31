@@ -3,6 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
+RDEPENDS = "gpsd-conf"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR} \
@@ -11,8 +12,13 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
            file://gpsd-default \
+	   file://gps-hardware \
            file://gpsd"
 
+SRC_URI_append_fic-gta01 = " \
+			    file://restart_gllin.sh \
+			   "
+			   
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "gpsd"
@@ -32,25 +38,43 @@ do_install_prepend() {
 }
 
 do_stage() {
-        oe_libinstall -so -C ${S}/.libs libgps ${STAGING_LIBDIR}
-        install -m 0655 ${S}/libgps.la ${STAGING_LIBDIR}
-        install -m 0655 ${S}/gps.h ${STAGING_INCDIR}
-        install -m 0655 ${S}/gpsd.h ${STAGING_INCDIR}
+        oe_libinstall -so libgps ${STAGING_LIBDIR}
+        install -m 0644 ${S}/gps.h ${STAGING_INCDIR}
+        install -m 0644 ${S}/gpsd.h ${STAGING_INCDIR}
 }
 
 do_install_append() {
         install -d ${D}/${sysconfdir}/init.d
         install -d ${D}/dev
         install -m 0755 ${WORKDIR}/gpsd ${D}/${sysconfdir}/init.d/
+	install -m 0755 ${WORKDIR}/gps-hardware ${D}/${sysconfdir}/init.d/gps-hardware.default
         install -d ${D}/${sysconfdir}/default
-        install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd
+        install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd.default
 }
 
-PACKAGES =+ "libgps python-pygps"
+do_install_append_fic-gta01() {
+	install -d ${D}/${sysconfdir}/apm/resume.d
+	install -m 755 ${WORKDIR}/restart_gllin.sh ${D}/${sysconfdir}/apm/resume.d
+}
 
-FILES_${PN} += "${sysconfdir}"
+pkg_postinst_${PN}-conf() {
+	update-alternatives --install ${sysconfdir}/default/gpsd gpsd-defaults ${sysconfdir}/default/gpsd.default 10
+	update-alternatives --install ${sysconfdir}/init.d/gps-hardware gps-hardware ${sysconfdir}/init.d/gps-hardware.default 10
+}
+
+pkg_postrm_${PN}-conf() {	
+	update-alternatives --remove gpsd-defaults ${sysconfdir}/default/gpsd.default
+	update-alternatives --remove gps-hardware ${sysconfdir}/init.d/gps-hardware.default		
+}
+
+SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
+
+PACKAGES =+ "libgps python-pygps gpsd-conf"
+
+PACKAGE_ARCH_gpsd-conf = "${MACHINE_ARCH}"
+
 FILES_libgps = "${libdir}/*.so.*"
-CONFFILES_${PN} = "${sysconfdir}/default/gpsd"
+FILES_gpsd-conf = "${sysconfdir}"
 
 DESCRIPTION_python-pygps = "Python bindings to gpsd"
 FILES_python-pygps = "${libdir}/*/site-packages/*"

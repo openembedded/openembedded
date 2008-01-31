@@ -16,5 +16,4 @@ do_install_append() {
 	sed -i -e "s/^set\(.*lptype.*\)/\"set\1/" ${D}/etc/elvis/elvis.ini
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/usr/bin/elvis /etc/elvis"

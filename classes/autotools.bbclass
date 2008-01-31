@@ -174,6 +174,8 @@ autotools_stage_all() {
 	fi
 	if [ -d ${STAGE_TEMP}/${libdir} ]
 	then
+		find ${STAGE_TEMP}/${libdir} -name '*.la' -exec sed -i s,installed=yes,installed=no, {} \;
+
 		for i in ${STAGE_TEMP}/${libdir}/*.la
 		do
 			if [ ! -f "$i" ]; then

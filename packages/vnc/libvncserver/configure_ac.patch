@@ -1,0 +1,15 @@
+--- LibVNCServer-0.9.1-org/configure.ac		2007-06-02 21:36:29.000000000 +0200
++++ LibVNCServer-0.9.1-org-org/configure.ac	2007-05-27 17:14:22.000000000 +0200
+@@ -676,9 +676,9 @@
+ 	libvncserver-config
+ 	LibVNCServer.spec])
+ # x11vnc only:
+-if test "$build_x11vnc" = "yes"; then
+-	AC_CONFIG_FILES([x11vnc/Makefile x11vnc/misc/Makefile])
+-fi
++# if test "$build_x11vnc" = "yes"; then
++#	AC_CONFIG_FILES([x11vnc/Makefile x11vnc/misc/Makefile])
++# fi
+ 
+ AC_CONFIG_COMMANDS([chmod-libvncserver-config],[chmod a+x libvncserver-config])
+ AC_OUTPUT

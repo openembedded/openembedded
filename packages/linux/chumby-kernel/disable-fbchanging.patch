@@ -1,0 +1,10 @@
+--- linux/drivers/video/imxfb.c.old	2008-01-20 08:21:57.000000000 +0100
++++ linux/drivers/video/imxfb.c	2008-01-20 08:40:12.000000000 +0100
+@@ -291,6 +291,7 @@
+ 
+ static int imxfb_set_par(struct fb_info *info)
+ {
++	return 0; //FIXME: Repair modesetting code!!
+ 	struct imxfb_info *fbi = info->par;
+ 	struct fb_var_screeninfo *var = &info->var;
+ 

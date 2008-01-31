@@ -1,0 +1,13 @@
+diff --git a/configure.ac b/configure.ac
+index 52fc51d..e93fc52 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -179,7 +179,7 @@ eval shout_includedir="$includedir"
+ prefix="$save_prefix"
+ 
+ SHOUT_VERSION="$VERSION"
+-SHOUT_CPPFLAGS="-I$shout_includedir $VORBIS_CFLAGS $PTHREAD_CPPFLAGS"
++SHOUT_CPPFLAGS="$VORBIS_CFLAGS $PTHREAD_CPPFLAGS"
+ SHOUT_CFLAGS="$PTHREAD_CFLAGS"
+ SHOUT_LIBS="-lshout"
+ 

@@ -1,0 +1,22 @@
+--- a/src/support.c.org	2007-12-18 20:39:09.000000000 +0200
++++ a/src/support.c	2008-01-04 22:12:32.000000000 +0200
+@@ -24,7 +24,7 @@
+ 
+ #include "support.h"
+ 
+-void strip_unicode(gchar * data, gsize len)
++void strip_unicode(guchar * data, gsize len)
+ {
+     gsize i = 0;
+ 
+--- a/src/support.h.org	2007-12-17 18:21:46.000000000 +0200
++++ a/src/support.h	2008-01-04 22:24:15.000000000 +0200
+@@ -31,7 +31,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ 
+-void strip_unicode(gchar * data, gsize len);
++void strip_unicode(guchar * data, gsize len);
+ gint play_file(gchar * filename, gint playlist);
+ gint detect_playlist(gchar * filename);
+ gint parse_playlist(gchar * filename);

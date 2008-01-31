@@ -1,0 +1,19 @@
+--- u-boot-1.2.0/tools/env/Makefile.orig	2007-12-12 12:52:51.508745236 -0800
++++ u-boot-1.2.0/tools/env/Makefile	2007-12-12 12:54:09.997218038 -0800
+@@ -31,7 +31,7 @@
+ all:	$(obj)fw_printenv
+ 
+ $(obj)fw_printenv:	$(SRCS) $(HEADERS)
+-	$(CROSS_COMPILE)gcc $(CPPFLAGS) $(SRCS) -o $(obj)fw_printenv
++	$(CROSS_COMPILE)gcc $(TARGET_CFLAGS) -idirafter ../../include -DUSE_HOSTCC $(SRCS) -o $(obj)fw_printenv
+ 
+ clean:
+ 	rm -f $(obj)fw_printenv $(obj)crc32.c
+@@ -43,6 +43,6 @@
+ 
+ include $(TOPDIR)/rules.mk
+ 
+-sinclude $(obj).depend
++#sinclude $(obj).depend
+ 
+ #########################################################################

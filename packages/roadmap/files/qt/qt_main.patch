@@ -1,0 +1,61 @@
+--- src/qt/qt_main.cc.old	2007-12-08 20:32:34.000000000 -0600
++++ src/qt/qt_main.cc	2007-12-08 20:34:38.000000000 -0600
+@@ -27,6 +27,7 @@
+ #include <signal.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#include <unistd.h>
+ #include "qt_main.h"
+ 
+ static int signalFd[2];
+@@ -168,12 +169,6 @@ void RMapMainWindow::addTool(const char*
+                              const char* tip,
+                              RoadMapCallback callback) {
+ 
+-#ifndef QWS
+-   // For some unknown reason, this toolbar crashes RoadMap
+-   // on the Sharp Zaurus.
+-   // This should be fixed and the ifndef removed.
+-   // Pascal: I believe this has been fixed now.
+-
+    if (toolBar == 0) {
+       addToolbar("");
+    }
+@@ -193,20 +188,13 @@ void RMapMainWindow::addTool(const char*
+ 
+       connect(b, SIGNAL(clicked()), cb, SLOT(fire()));
+    }
+-#endif
+ }  
+ 
+ void RMapMainWindow::addToolSpace(void) {
+ 
+-#ifndef QWS
+-   // For some unknown reason, this toolbar crashes RoadMap
+-   // on the Sharp Zaurus. This should be fixed and the ifndef
+-   // removed.
+-
+    addTool (NULL, NULL, NULL, NULL);
+ 
+    toolBar->addSeparator();
+-#endif
+ }
+ 
+ 
+@@ -299,14 +287,14 @@ void RMapMainWindow::closeEvent(QCloseEv
+ 
+ void RMapMainWindow::signalHandler(int sig)
+ {
+-  ::write(signalFd[0], &sig, sizeof(sig));
++  write(signalFd[0], &sig, sizeof(sig));
+ }
+ 
+ void RMapMainWindow::handleSignal()
+ {
+   snSignal->setEnabled(false);
+   int tmp;
+-  ::read(signalFd[1], &tmp, sizeof(tmp));
++  read(signalFd[1], &tmp, sizeof(tmp));
+   QString action;
+   switch (tmp) {
+     case SIGTERM: action="SIGTERM"; break;

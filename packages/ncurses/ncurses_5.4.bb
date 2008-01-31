@@ -1,4 +1,4 @@
-PR = "r9"
+PR = "r11"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
 	   file://visibility.patch;patch=1"

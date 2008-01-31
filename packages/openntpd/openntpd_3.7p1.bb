@@ -3,9 +3,8 @@ Network Time Protocol."
 HOMEPAGE = "http://www.openntpd.org/"
 SECTION = "console/network"
 LICENSE = "BSD"
-DEPENDS += "openssl"
-DEPENDS = "timezones"
-PR = "r13"
+DEPENDS += "openssl tzdata"
+PR = "r14"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \

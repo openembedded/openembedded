@@ -1,0 +1,1204 @@
+Path: news.gmane.org!not-for-mail
+From: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+Newsgroups: gmane.comp.video.video4linux
+Subject: [RFC PATCH 1/8] soc_camera V4L2 driver for directly-connected
+ SoC-based cameras
+Date: Wed, 23 Jan 2008 18:41:18 +0100 (CET)
+Lines: 1132
+Approved: news@gmane.org
+Message-ID: <Pine.LNX.4.64.0801231654540.4932@axis700.grange>
+References: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Trace: ger.gmane.org 1201110130 28779 80.91.229.12 (23 Jan 2008 17:42:10 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Wed, 23 Jan 2008 17:42:10 +0000 (UTC)
+To: video4linux-list@redhat.com
+Original-X-From: video4linux-list-bounces@redhat.com Wed Jan 23 18:42:28 2008
+Return-path: <video4linux-list-bounces@redhat.com>
+Envelope-to: rh-video4linux-list@gmane.org
+Original-Received: from hormel.redhat.com ([209.132.177.30])
+	by lo.gmane.org with esmtp (Exim 4.50)
+	id 1JHjbz-0002oq-Us
+	for rh-video4linux-list@gmane.org; Wed, 23 Jan 2008 18:42:09 +0100
+Original-Received: from listman.util.phx.redhat.com (listman.util.phx.redhat.com [10.8.4.110])
+	by hormel.redhat.com (Postfix) with ESMTP
+	id 7B895730A6; Wed, 23 Jan 2008 12:41:41 -0500 (EST)
+Original-Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+	[172.16.52.254])
+	by listman.util.phx.redhat.com (8.13.1/8.13.1) with ESMTP id
+	m0NHfdRS017082 for <video4linux-list@listman.util.phx.redhat.com>;
+	Wed, 23 Jan 2008 12:41:39 -0500
+Original-Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id m0NHfcrF027810
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:38 -0500
+Original-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by mx3.redhat.com (8.13.1/8.13.1) with SMTP id m0NHf62e000540
+	for <video4linux-list@redhat.com>; Wed, 23 Jan 2008 12:41:06 -0500
+Original-Received: (qmail invoked by alias); 23 Jan 2008 17:40:59 -0000
+Original-Received: from p57BD2F1F.dip0.t-ipconnect.de (EHLO axis700.grange)
+	[87.189.47.31]
+	by mail.gmx.net (mp048) with SMTP; 23 Jan 2008 18:40:59 +0100
+X-Authenticated: #20450766
+X-Provags-ID: V01U2FsdGVkX19NlXt5RoZNpQ4LqFuDqiXHZ3kHYCmxz52UMExHFC
+	yqWM+gBlp24/e9
+Original-Received: from lyakh (helo=localhost)
+	by axis700.grange with local-esmtp (Exim 4.63)
+	(envelope-from <g.liakhovetski@gmx.de>) id 1JHjbC-00029n-Kf
+	for video4linux-list@redhat.com; Wed, 23 Jan 2008 18:41:18 +0100
+X-X-Sender: lyakh@axis700.grange
+In-Reply-To: <Pine.LNX.4.64.0801231646090.4932@axis700.grange>
+X-Y-GMX-Trusted: 0
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.58 on 172.16.48.32
+X-loop: video4linux-list@redhat.com
+X-BeenThere: video4linux-list@redhat.com
+X-Mailman-Version: 2.1.5
+Precedence: junk
+List-Id: Linux and Kernel Video <video4linux-list.redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>, 
+	<mailto:video4linux-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/mailman/private/video4linux-list>
+List-Post: <mailto:video4linux-list@redhat.com>
+List-Help: <mailto:video4linux-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/video4linux-list>,
+	<mailto:video4linux-list-request@redhat.com?subject=subscribe>
+Original-Sender: video4linux-list-bounces@redhat.com
+Errors-To: video4linux-list-bounces@redhat.com
+Xref: news.gmane.org gmane.comp.video.video4linux:36470
+Archived-At: <http://permalink.gmane.org/gmane.comp.video.video4linux/36470>
+
+This driver provides an interface between platform-specific camera
+busses and camera devices. It should be used if the camera is connected
+not over a "proper" bus like PCI or USB, but over a special bus, like,
+for example, the Quick Capture interface on PXA270 SoCs. Later it should
+also be used for i.MX31 SoCs from Freescale.  It can handle multiple
+cameras and / or multiple busses, which can be used, e.g., in
+stereo-vision applications.
+
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@pengutronix.de>
+---
+ drivers/media/video/Kconfig      |    8 +
+ drivers/media/video/Makefile     |    2 +
+ drivers/media/video/soc_camera.c |  928 ++++++++++++++++++++++++++++++++++++++
+ include/media/soc_camera.h       |  138 ++++++
+ 4 files changed, 1076 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/media/video/soc_camera.c
+ create mode 100644 include/media/soc_camera.h
+
+diff --git a/drivers/media/video/Kconfig b/drivers/media/video/Kconfig
+index e204e7b..be54183 100644
+--- a/drivers/media/video/Kconfig
++++ b/drivers/media/video/Kconfig
+@@ -795,4 +795,12 @@ config USB_ZR364XX
+ 
+ endif # V4L_USB_DRIVERS
+ 
++config SOC_CAMERA
++	tristate "SoC camera support"
++	depends on VIDEO_V4L2
++	help
++	  SoC Camera is a common API to several cameras, not connecting
++	  over a bus like PCI or USB. For example some i2c camera hanging
++	  directly on the data bus of an SoC.
++
+ endif # VIDEO_CAPTURE_DRIVERS
+diff --git a/drivers/media/video/Makefile b/drivers/media/video/Makefile
+index 10b4d44..97a9135 100644
+--- a/drivers/media/video/Makefile
++++ b/drivers/media/video/Makefile
+@@ -116,4 +116,6 @@ obj-$(CONFIG_USB_QUICKCAM_MESSENGER)	+= usbvideo/
+ 
+ obj-$(CONFIG_VIDEO_VIVI) += vivi.o
+ 
++obj-$(CONFIG_SOC_CAMERA)	+= soc_camera.o
++
+ EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
+diff --git a/drivers/media/video/soc_camera.c b/drivers/media/video/soc_camera.c
+new file mode 100644
+index 0000000..5ec652e
+--- /dev/null
++++ b/drivers/media/video/soc_camera.c
+@@ -0,0 +1,928 @@
++/*
++ * camera image capture (abstract) bus driver
++ *
++ * Copyright (C) 2008, Guennadi Liakhovetski <kernel@pengutronix.de>
++ *
++ * This driver provides an interface between platform-specific camera
++ * busses and camera devices. It should be used if the camera is
++ * connected not over a "proper" bus like PCI or USB, but over a
++ * special bus, like, for example, the Quick Capture interface on PXA270
++ * SoCs. Later it should also be used for i.MX31 SoCs from Freescale.
++ * It can handle multiple cameras and / or multiple busses, which can
++ * be used, e.g., in stereo-vision applications.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/list.h>
++#include <linux/err.h>
++#include <linux/mutex.h>
++#include <linux/vmalloc.h>
++
++#include <media/v4l2-common.h>
++#include <media/v4l2-dev.h>
++#include <media/soc_camera.h>
++
++static LIST_HEAD(hosts);
++static LIST_HEAD(devices);
++static DEFINE_MUTEX(list_lock);
++static DEFINE_MUTEX(video_lock);
++
++const static struct soc_camera_data_format*
++format_by_fourcc(struct soc_camera_device *icd, unsigned int fourcc)
++{
++	unsigned int i;
++
++	for (i = 0; i < icd->ops->num_formats; i++)
++		if (icd->ops->formats[i].fourcc == fourcc)
++			return icd->ops->formats + i;
++	return NULL;
++}
++
++static int soc_camera_try_fmt_cap(struct file *file, void *priv,
++			      struct v4l2_format *f)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	enum v4l2_field field;
++	const struct soc_camera_data_format *fmt;
++	int ret;
++
++	WARN_ON(priv != file->private_data);
++
++	fmt = format_by_fourcc(icd, f->fmt.pix.pixelformat);
++	if (!fmt) {
++		pr_debug("%s: invalid format 0x%08x\n", __FUNCTION__,
++			 f->fmt.pix.pixelformat);
++		return -EINVAL;
++	}
++
++	pr_debug("%s: fmt: 0x%08x\n", __FUNCTION__, fmt->fourcc);
++
++	field = f->fmt.pix.field;
++
++	if (field == V4L2_FIELD_ANY) {
++		field = V4L2_FIELD_NONE;
++	} else if (V4L2_FIELD_NONE != field) {
++		printk("Field type invalid.\n");
++		return -EINVAL;
++	}
++
++	/* limit to host capabilities */
++	ret = ici->try_fmt_cap(ici, f);
++
++	/* limit to sensor capabilities */
++	if (!ret)
++		ret = icd->ops->try_fmt_cap(icd, f);
++
++	/* calculate missing fields */
++	f->fmt.pix.field = field;
++	f->fmt.pix.bytesperline =
++		(f->fmt.pix.width * fmt->depth) >> 3;
++	f->fmt.pix.sizeimage =
++		f->fmt.pix.height * f->fmt.pix.bytesperline;
++
++	return ret;
++}
++
++static int soc_camera_enum_input(struct file *file, void *priv,
++			      struct v4l2_input *inp)
++{
++	if (inp->index != 0)
++		return -EINVAL;
++
++	inp->type = V4L2_INPUT_TYPE_CAMERA;
++	inp->std = V4L2_STD_UNKNOWN;
++	strcpy(inp->name, "Camera");
++
++	return 0;
++}
++
++static int soc_camera_g_input(struct file *file, void *priv, unsigned int *i)
++{
++	*i = 0;
++
++	return 0;
++}
++
++static int soc_camera_s_input(struct file *file, void *priv, unsigned int i)
++{
++	if (i > 0)
++		return -EINVAL;
++
++	return 0;
++}
++
++static int soc_camera_s_std(struct file *file, void *priv, v4l2_std_id *a)
++{
++	return 0;
++}
++
++static int soc_camera_reqbufs(struct file *file, void *priv, struct v4l2_requestbuffers *p)
++{
++	int ret;
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++
++	WARN_ON(priv != file->private_data);
++
++	pr_debug("%s: %d\n", __FUNCTION__, p->memory);
++
++	ret = videobuf_reqbufs(&icf->vb_vidq, p);
++	if (ret < 0)
++		return ret;
++
++	return ici->reqbufs(icf, p);
++
++	return ret;
++}
++
++static int soc_camera_querybuf(struct file *file, void *priv, struct v4l2_buffer *p)
++{
++	struct soc_camera_file *icf = file->private_data;
++
++	WARN_ON(priv != file->private_data);
++
++	return videobuf_querybuf(&icf->vb_vidq, p);
++}
++
++static int soc_camera_qbuf(struct file *file, void *priv, struct v4l2_buffer *p)
++{
++	struct soc_camera_file *icf = file->private_data;
++
++	WARN_ON(priv != file->private_data);
++
++	return videobuf_qbuf(&icf->vb_vidq, p);
++}
++
++static int soc_camera_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
++{
++	struct soc_camera_file *icf = file->private_data;
++
++	WARN_ON(priv != file->private_data);
++
++	return videobuf_dqbuf(&icf->vb_vidq, p, file->f_flags & O_NONBLOCK);
++}
++
++static int soc_camera_open(struct inode *inode, struct file *file)
++{
++	struct soc_camera_host *ici;
++	struct soc_camera_device *icd;
++	struct video_device *vdev;
++	struct soc_camera_file *icf;
++	int ret;
++
++	mutex_lock(&video_lock);
++	list_for_each_entry(icd, &devices, list) {
++		if (icd->vdev && icd->vdev->minor == iminor(inode))
++			break;
++	}
++	mutex_unlock(&video_lock);
++
++	if (&icd->list == &devices)
++		return -ENODEV;
++
++	icf = vmalloc(sizeof(*icf));
++	if (!icf)
++		return -ENOMEM;
++
++	icf->icd = icd;
++
++	if (!try_module_get(icd->ops->owner)) {
++		printk(KERN_INFO "Couldn't lock sensor driver.\n");
++		ret = -EINVAL;
++		goto emgd;
++	}
++
++	ici = to_soc_camera_host(icd->dev.parent);
++
++	if (!try_module_get(ici->owner)) {
++		printk(KERN_INFO "Couldn't lock capture bus driver.\n");
++		ret = -EINVAL;
++		goto emgi;
++	}
++
++	vdev = icd->vdev;
++
++	file->private_data = icf;
++	dev_dbg(vdev->dev, "camera device open\n");
++
++	vdev = icd->vdev;
++
++	videobuf_queue_init(&icf->vb_vidq, ici->vbq_ops,
++			icd, NULL,
++			V4L2_BUF_TYPE_VIDEO_CAPTURE,
++			V4L2_FIELD_NONE,
++			ici->msize, icd);
++
++	return 0;
++
++emgi:
++	module_put(icd->ops->owner);
++emgd:
++	vfree(icf);
++	return ret;
++}
++
++static int soc_camera_close(struct inode *inode, struct file *file)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici = to_soc_camera_host(icd->dev.parent);
++	struct video_device *vdev = icd->vdev;
++
++	module_put(icd->ops->owner);
++	module_put(ici->owner);
++	vfree(file->private_data);
++
++	dev_dbg(vdev->dev, "camera device close\n");
++
++	return 0;
++}
++
++static int soc_camera_read(struct file *file, char __user *buf,
++			       size_t count, loff_t *ppos)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct video_device *vdev = icd->vdev;
++	int err = -EINVAL;
++
++	dev_err(vdev->dev, "camera device read not implemented\n");
++
++	return err;
++}
++
++static int soc_camera_mmap(struct file *file, struct vm_area_struct *vma)
++{
++	struct soc_camera_file *icf = file->private_data;
++	int err;
++
++	pr_debug("mmap called, vma=0x%08lx\n",(unsigned long)vma);
++
++	err = videobuf_mmap_mapper(&icf->vb_vidq, vma);
++
++	pr_debug ("vma start=0x%08lx, size=%ld, ret=%d\n",
++		(unsigned long)vma->vm_start,
++		(unsigned long)vma->vm_end-(unsigned long)vma->vm_start,
++		err);
++
++	return err;
++}
++
++static unsigned int soc_camera_poll(struct file *file, poll_table *pt)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++
++	if (list_empty(&icf->vb_vidq.stream)) {
++		printk("----------       urgs\n");
++		return POLLERR;
++	}
++
++	return ici->poll(file, pt);
++}
++
++
++static struct file_operations soc_camera_fops = {
++	.owner		= THIS_MODULE,
++	.open		= soc_camera_open,
++	.release	= soc_camera_close,
++	.ioctl		= video_ioctl2,
++	.read		= soc_camera_read,
++	.mmap		= soc_camera_mmap,
++	.poll		= soc_camera_poll,
++	.llseek		= no_llseek,
++};
++
++
++static int soc_camera_s_fmt_cap(struct file *file, void *priv,
++				   struct v4l2_format *f)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	int ret;
++	struct v4l2_rect rect;
++	const static struct soc_camera_data_format *data_fmt;
++
++	WARN_ON(priv != file->private_data);
++
++	data_fmt = format_by_fourcc(icd, f->fmt.pix.pixelformat);
++	if (!data_fmt)
++		return -EINVAL;
++
++	/* cached_datawidth may be further adjusted by the ici */
++	icd->cached_datawidth = data_fmt->depth;
++
++	ret = soc_camera_try_fmt_cap(file, icf, f);
++	if (ret < 0)
++		return ret;
++
++	rect.left	= icd->x_current;
++	rect.top	= icd->y_current;
++	rect.width	= f->fmt.pix.width;
++	rect.height	= f->fmt.pix.height;
++	ret = ici->set_capture_format(icd, f->fmt.pix.pixelformat, &rect);
++
++	if (!ret) {
++		icd->current_fmt	= data_fmt;
++		icd->width		= rect.width;
++		icd->height		= rect.height;
++		icf->vb_vidq.field	= f->fmt.pix.field;
++		if (V4L2_BUF_TYPE_VIDEO_CAPTURE != f->type)
++			printk("Attention! Wrong buf-type %d\n", f->type);
++
++		dev_dbg(&icd->dev, "set width: %d height: %d\n",
++		       icd->width, icd->height);
++	}
++
++	return ret;
++}
++
++static int soc_camera_enum_fmt_cap(struct file *file, void  *priv,
++				      struct v4l2_fmtdesc *f)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	const struct soc_camera_data_format *format;
++
++	WARN_ON(priv != file->private_data);
++
++	if (f->index >= icd->ops->num_formats)
++		return -EINVAL;
++
++	format = &icd->ops->formats[f->index];
++
++	strlcpy(f->description, format->name, sizeof(f->description));
++	f->pixelformat = format->fourcc;
++	return 0;
++}
++
++static int soc_camera_g_fmt_cap(struct file *file, void *priv,
++				   struct v4l2_format *f)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++
++	WARN_ON(priv != file->private_data);
++
++	f->fmt.pix.width	= icd->width;
++	f->fmt.pix.height	= icd->height;
++	f->fmt.pix.field	= icf->vb_vidq.field;
++	f->fmt.pix.pixelformat	= icd->current_fmt->fourcc;
++	f->fmt.pix.bytesperline	=
++		(f->fmt.pix.width * icd->current_fmt->depth) >> 3;
++	f->fmt.pix.sizeimage	=
++		f->fmt.pix.height * f->fmt.pix.bytesperline;
++	printk("%s: current_fmt->fourcc: 0x%08x\n",
++	       __FUNCTION__, icd->current_fmt->fourcc);
++	return 0;
++}
++
++static int soc_camera_querycap(struct file *file, void  *priv,
++				  struct v4l2_capability *cap)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++
++	WARN_ON(priv != file->private_data);
++
++	strlcpy(cap->driver, ici->drv_name, sizeof(cap->driver));
++	return ici->querycap(ici, cap);
++}
++
++static int soc_camera_streamon(struct file *file, void *priv, enum v4l2_buf_type i)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++//	struct vivi_dev *dev    = fh->dev;
++
++	WARN_ON(priv != file->private_data);
++
++	pr_debug("%s\n",__FUNCTION__);
++
++	if (i != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;
++
++//	if (!res_get(dev,fh))
++//		return -EBUSY;
++//	CIFR = CIFR_RESET_F | CIFR_FEN0;
++
++	icd->ops->start_capture(icd);
++
++	/* This calls buf_queue from host driver's videobuf_queue_ops */
++	return videobuf_streamon(&icf->vb_vidq);
++}
++
++static int soc_camera_streamoff(struct file *file, void *priv,
++				   enum v4l2_buf_type i)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++//	struct vivi_dev *dev    = fh->dev;
++
++	WARN_ON(priv != file->private_data);
++
++	pr_debug("%s\n",__FUNCTION__);
++
++	if (i != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;
++
++//	CICR0 |= CICR0_DIS;
++//	while(CICR0 & CICR0_ENB);
++
++	/* This calls buf_release from host driver's videobuf_queue_ops for all
++	 * remaining buffers. When the last buffer is freed, stop capture */
++	videobuf_streamoff(&icf->vb_vidq);
++
++	icd->ops->stop_capture(icd);
++
++//	res_free(dev,fh);
++
++	return 0;
++}
++
++static int soc_camera_queryctrl(struct file *file, void *priv,
++				   struct v4l2_queryctrl *qc)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	int i;
++
++	WARN_ON(priv != file->private_data);
++
++	for (i = 0; i < icd->ops->num_controls; i++)
++		if (qc->id && qc->id == icd->ops->controls[i].id) {
++			memcpy(qc, &(icd->ops->controls[i]),
++				sizeof(*qc));
++			return 0;
++		}
++
++	return -EINVAL;
++}
++
++static int soc_camera_g_ctrl(struct file *file, void *priv,
++				struct v4l2_control *ctrl)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++
++	WARN_ON(priv != file->private_data);
++
++	switch (ctrl->id) {
++	case V4L2_CID_GAIN:
++		if (icd->gain == (unsigned short)~0)
++			return -EINVAL;
++		ctrl->value = icd->gain;
++		return 0;
++	case V4L2_CID_EXPOSURE:
++		if (icd->exposure == (unsigned short)~0)
++			return -EINVAL;
++		ctrl->value = icd->exposure;
++		return 0;
++	}
++
++	if (icd->ops->get_control)
++		return icd->ops->get_control(icd, ctrl);
++	return -EINVAL;
++}
++
++static int soc_camera_s_ctrl(struct file *file, void *priv,
++				struct v4l2_control *ctrl)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++
++	WARN_ON(priv != file->private_data);
++
++	if (icd->ops->set_control)
++		return icd->ops->set_control(icd, ctrl);
++	return -EINVAL;
++}
++
++static int soc_camera_cropcap(struct file *file, void *fh,
++					struct v4l2_cropcap *a)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++
++	a->type				= V4L2_BUF_TYPE_VIDEO_CAPTURE;
++	a->bounds.left			= icd->x_min;
++	a->bounds.top			= icd->y_min;
++	a->bounds.width			= icd->width_max;
++	a->bounds.height		= icd->height_max;
++	a->defrect.left			= icd->x_min;
++	a->defrect.top			= icd->y_min;
++	a->defrect.width		= 640;
++	a->defrect.height		= 480;
++	a->pixelaspect.numerator	= 1;
++	a->pixelaspect.denominator	= 1;
++
++	return 0;
++}
++
++static int soc_camera_g_crop(struct file *file, void *fh,
++				       struct v4l2_crop *a)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++
++	a->type		= V4L2_BUF_TYPE_VIDEO_CAPTURE;
++	a->c.left	= icd->x_current;
++	a->c.top	= icd->y_current;
++	a->c.width	= icd->width;
++	a->c.height	= icd->height;
++
++	return 0;
++}
++
++static int soc_camera_s_crop(struct file *file, void *fh,
++				       struct v4l2_crop *a)
++{
++	struct soc_camera_file *icf = file->private_data;
++	struct soc_camera_device *icd = icf->icd;
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	int ret;
++
++	if (a->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
++		return -EINVAL;
++
++	ret = ici->set_capture_format(icd, 0, &a->c);
++	if (!ret) {
++		icd->width	= a->c.width;
++		icd->height	= a->c.height;
++		icd->x_current	= a->c.left;
++		icd->y_current	= a->c.top;
++	}
++
++	return ret;
++}
++
++static int device_register_link(struct soc_camera_device *icd)
++{
++	int ret = device_register(&icd->dev);
++	if (!ret && icd->control)
++		if (sysfs_create_link(&icd->dev.kobj, &icd->control->kobj, "control"))
++			dev_warn(&icd->dev,
++				 "Couldn't create a symlink to the control device\n");
++	return ret;
++}
++
++/* The two functions below return: 0 if no match found or a match found and
++ * device_register() successful, error code otherwise */
++static int scan_add_host(struct soc_camera_host *ici)
++{
++	struct soc_camera_device *icd;
++	int ret = 0;
++
++	mutex_lock(&list_lock);
++
++	list_for_each_entry(icd, &devices, list) {
++		if (icd->iface == ici->nr) {
++			ret = 1;
++			icd->dev.parent = &ici->dev;
++			break;
++		}
++	}
++
++	mutex_unlock(&list_lock);
++
++	if (ret)
++		ret = device_register_link(icd);
++
++	return ret;
++}
++
++static int scan_add_device(struct soc_camera_device *icd)
++{
++	struct soc_camera_host *ici;
++	int ret = 0;
++
++	mutex_lock(&list_lock);
++
++	list_add_tail(&icd->list, &devices);
++
++	/* Watch out for class_for_each_device / class_find_device API by
++	 * Dave Young <hidave.darkstar@gmail.com> */
++	list_for_each_entry(ici, &hosts, list) {
++		if (icd->iface == ici->nr) {
++			ret = 1;
++			icd->dev.parent = &ici->dev;
++			break;
++		}
++	}
++
++	mutex_unlock(&list_lock);
++
++	if (ret)
++		ret = device_register_link(icd);
++
++	return ret;
++}
++
++static int soc_camera_probe(struct device *dev)
++{
++	struct soc_camera_device *icd = to_soc_camera_dev(dev);
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++	int ret;
++
++	if (!icd->probe)
++		return -ENODEV;
++
++	if (!(ret = ici->add(icd)))
++		ret = icd->probe(icd);
++
++	if (!ret) {
++		const struct v4l2_queryctrl *qctrl =
++			soc_camera_find_qctrl(icd->ops, V4L2_CID_GAIN);
++		icd->gain = qctrl ? qctrl->default_value : (unsigned short)~0;
++		qctrl = soc_camera_find_qctrl(icd->ops, V4L2_CID_EXPOSURE);
++		icd->exposure = qctrl ? qctrl->default_value : (unsigned short)~0;
++
++	}
++
++	return ret;
++}
++
++/* This is called on device_unregister, which only means we have to disconnect
++ * from the host, but not remove ourselves from the device list */
++static int soc_camera_remove(struct device *dev)
++{
++	struct soc_camera_device *icd = to_soc_camera_dev(dev);
++	struct soc_camera_host *ici =
++		to_soc_camera_host(icd->dev.parent);
++
++	if (icd->remove)
++		icd->remove(icd);
++
++	ici->remove(icd);
++
++	return 0;
++}
++
++static struct bus_type soc_camera_bus_type = {
++	.name		= "soc-camera",
++	.probe		= soc_camera_probe,
++	.remove		= soc_camera_remove,
++};
++
++static struct device_driver ic_drv = {
++	.name	= "camera",
++	.bus	= &soc_camera_bus_type,
++	.owner	= THIS_MODULE,
++};
++
++/*
++ * Image capture host - this is a host device, not a bus device, so,
++ * no bus reference, no probing.
++ */
++static struct class soc_camera_host_class = {
++	.owner		= THIS_MODULE,
++	.name		= "camera_host",
++};
++
++static void dummy_release(struct device *dev)
++{
++}
++
++int soc_camera_host_register(struct soc_camera_host *ici, struct module *owner)
++{
++	int ret;
++
++	if (!ici->vbq_ops || !ici->add || !ici->remove || !owner)
++		return -EINVAL;
++
++	/* Number might be equal to the platform device ID,
++	 * hopefully, device core will fail nicely if we try
++	 * to register a second device with the same bus_id */
++#warning "verify whether device_register will fail, or scan the list yourself for duplicate IDs"
++	sprintf(ici->dev.bus_id, "camera_host%d", ici->nr);
++	ici->dev.class = &soc_camera_host_class;
++
++	mutex_lock(&list_lock);
++	list_add_tail(&ici->list, &hosts);
++	mutex_unlock(&list_lock);
++
++	ici->owner = owner;
++	ici->dev.release = dummy_release;
++
++	ret = device_register(&ici->dev);
++
++	if (ret)
++		goto edevr;
++
++	return scan_add_host(ici);
++
++edevr:
++	mutex_lock(&list_lock);
++	list_del(&ici->list);
++	mutex_unlock(&list_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL(soc_camera_host_register);
++
++/* Unregister all clients! */
++void soc_camera_host_unregister(struct soc_camera_host *ici)
++{
++	struct soc_camera_device *icd;
++
++	mutex_lock(&list_lock);
++
++	list_del(&ici->list);
++
++	list_for_each_entry(icd, &devices, list) {
++		printk("list: %p %p\n", icd->dev.parent, &ici->dev);
++		if (icd->dev.parent == &ici->dev) {
++			device_unregister(&icd->dev);
++			/* Not before device_unregister(), .remove
++			 * needs parent to call ici->remove() */
++			icd->dev.parent = NULL;
++		}
++	}
++
++	mutex_unlock(&list_lock);
++
++	device_unregister(&ici->dev);
++}
++EXPORT_SYMBOL(soc_camera_host_unregister);
++
++/* Image capture device */
++int soc_camera_device_register(struct soc_camera_device *icd)
++{
++	struct soc_camera_device *ix;
++	int num = -1, i;
++
++	if (!icd)
++		return -EINVAL;
++
++	for (i = 0; i < 256 && num < 0; i++) {
++		num = i;
++		list_for_each_entry(ix, &devices, list) {
++			if (ix->iface == icd->iface && ix->devnum == i) {
++				num = -1;
++				break;
++			}
++		}
++	}
++
++	if (num < 0)
++		/* ok, we have 256 cameras on this host... man, stay reasonable... */
++		return -ENOMEM;
++
++	icd->devnum = num;
++	icd->dev.bus = &soc_camera_bus_type;
++//	icd->dev.driver = &ic_drv;
++	snprintf(icd->dev.bus_id, sizeof(icd->dev.bus_id),
++		"%u-%u", icd->iface, icd->devnum);
++
++	icd->dev.release = dummy_release;
++
++	if (icd->ops->get_datawidth)
++		icd->cached_datawidth = icd->ops->get_datawidth(icd);
++
++	return scan_add_device(icd);
++}
++EXPORT_SYMBOL(soc_camera_device_register);
++
++void soc_camera_device_unregister(struct soc_camera_device *icd)
++{
++	mutex_lock(&list_lock);
++	list_del(&icd->list);
++
++	/* The bus->remove will be eventually called */
++	if (icd->dev.parent)
++		device_unregister(&icd->dev);
++	mutex_unlock(&list_lock);
++}
++EXPORT_SYMBOL(soc_camera_device_unregister);
++
++int soc_camera_video_start(struct soc_camera_device *icd)
++{
++	struct soc_camera_host *ici = to_soc_camera_host(icd->dev.parent);
++	int err = -ENOMEM;
++	struct video_device *vdev;
++
++	if (!icd->dev.parent)
++		return -ENODEV;
++
++	if (!(vdev = video_device_alloc()))
++		goto evidallocd;
++	dev_dbg(&ici->dev, "%s: Allocated video_device %p\n", __FUNCTION__, vdev);
++
++	strlcpy(vdev->name, ici->drv_name, sizeof(vdev->name));
++	/* Maybe better &ici->dev */
++	vdev->dev		= &icd->dev;
++	vdev->type		= VID_TYPE_CAPTURE;
++	vdev->current_norm	= V4L2_STD_UNKNOWN;
++	vdev->fops		= &soc_camera_fops;
++	vdev->release		= video_device_release;
++	vdev->minor		= -1;
++	vdev->tvnorms		= V4L2_STD_UNKNOWN,
++	vdev->vidioc_querycap	= soc_camera_querycap;
++	vdev->vidioc_g_fmt_cap	= soc_camera_g_fmt_cap;
++	vdev->vidioc_enum_fmt_cap = soc_camera_enum_fmt_cap;
++	vdev->vidioc_s_fmt_cap	= soc_camera_s_fmt_cap;
++	vdev->vidioc_enum_input	= soc_camera_enum_input;
++	vdev->vidioc_g_input	= soc_camera_g_input;
++	vdev->vidioc_s_input	= soc_camera_s_input;
++	vdev->vidioc_s_std	= soc_camera_s_std;
++	vdev->vidioc_reqbufs	= soc_camera_reqbufs;
++	vdev->vidioc_try_fmt_cap = soc_camera_try_fmt_cap;
++	vdev->vidioc_querybuf	= soc_camera_querybuf;
++	vdev->vidioc_qbuf	= soc_camera_qbuf;
++	vdev->vidioc_dqbuf	= soc_camera_dqbuf;
++	vdev->vidioc_streamon	= soc_camera_streamon;
++	vdev->vidioc_streamoff	= soc_camera_streamoff;
++	vdev->vidioc_queryctrl	= soc_camera_queryctrl;
++	vdev->vidioc_g_ctrl	= soc_camera_g_ctrl;
++	vdev->vidioc_s_ctrl	= soc_camera_s_ctrl;
++	vdev->vidioc_cropcap	= soc_camera_cropcap;
++	vdev->vidioc_g_crop	= soc_camera_g_crop;
++	vdev->vidioc_s_crop	= soc_camera_s_crop;
++
++	icd->current_fmt = &icd->ops->formats[0];
++
++	err = video_register_device(vdev, VFL_TYPE_GRABBER, vdev->minor);
++	if (err < 0) {
++		dev_err(vdev->dev, "%s: video_register_device failed\n", __FUNCTION__);
++		goto evidregd;
++	}
++	icd->vdev = vdev;
++
++	return 0;
++
++evidregd:
++	video_device_release(vdev);
++evidallocd:
++	return err;
++}
++EXPORT_SYMBOL(soc_camera_video_start);
++
++void soc_camera_video_stop(struct soc_camera_device *icd)
++{
++	struct video_device *vdev = icd->vdev;
++
++	dev_dbg(&icd->dev, "%s\n", __FUNCTION__);
++
++	if (!icd->dev.parent || !vdev)
++		return;
++
++	mutex_lock(&video_lock);
++	video_unregister_device(vdev);
++	icd->vdev = NULL;
++	mutex_unlock(&video_lock);
++}
++EXPORT_SYMBOL(soc_camera_video_stop);
++
++static int __init soc_camera_init(void)
++{
++	int ret = bus_register(&soc_camera_bus_type);
++	if (ret)
++		return ret;
++	ret = driver_register(&ic_drv);
++	if (ret)
++		goto edrvr;
++	ret = class_register(&soc_camera_host_class);
++	if (ret)
++		goto eclr;
++
++	return 0;
++
++eclr:
++	driver_unregister(&ic_drv);
++edrvr:
++	bus_unregister(&soc_camera_bus_type);
++	return ret;
++}
++
++static void __exit soc_camera_exit(void)
++{
++	class_unregister(&soc_camera_host_class);
++	driver_unregister(&ic_drv);
++	bus_unregister(&soc_camera_bus_type);
++}
++
++module_init(soc_camera_init);
++module_exit(soc_camera_exit);
++
++MODULE_DESCRIPTION("Image capture bus driver");
++MODULE_AUTHOR("Guennadi Liakhovetski <kernel@pengutronix.de>");
++MODULE_LICENSE("GPL");
+diff --git a/include/media/soc_camera.h b/include/media/soc_camera.h
+new file mode 100644
+index 0000000..f416959
+--- /dev/null
++++ b/include/media/soc_camera.h
+@@ -0,0 +1,138 @@
++/*
++ * camera image capture (abstract) bus driver header
++ *
++ * Copyright (C) 2006, Sascha Hauer, Pengutronix
++ * Copyright (C) 2008, Guennadi Liakhovetski <kernel@pengutronix.de>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef SOC_CAMERA_H
++#define SOC_CAMERA_H
++
++#include <media/video-buf.h>
++#include <linux/videodev2.h>
++
++struct soc_camera_device {
++	struct list_head list;
++	struct device dev;
++	struct device *control;
++	unsigned short width;		/* Current window */
++	unsigned short height;		/* sizes */
++	unsigned short x_min;		/* Camera capabilities */
++	unsigned short y_min;
++	unsigned short x_current;	/* Current window location */
++	unsigned short y_current;
++	unsigned short width_min;
++	unsigned short width_max;
++	unsigned short height_min;
++	unsigned short height_max;
++	unsigned short y_skip_top;	/* Lines to skip at the top */
++	unsigned short gain;
++	unsigned short exposure;
++	unsigned char iface;		/* Host number */
++	unsigned char devnum;		/* Device number per host */
++	unsigned char cached_datawidth;	/* See comment in .c */
++	struct soc_camera_ops *ops;
++	struct video_device *vdev;
++	const struct soc_camera_data_format *current_fmt;
++	int (*probe)(struct soc_camera_device *icd);
++	void (*remove)(struct soc_camera_device *icd);
++	struct module *owner;
++};
++
++struct soc_camera_file {
++	struct soc_camera_device *icd;
++	struct videobuf_queue vb_vidq;
++};
++
++struct soc_camera_host {
++	struct list_head list;
++	struct device dev;
++	unsigned char nr;				/* Host number */
++	size_t msize;
++	struct videobuf_queue_ops *vbq_ops;
++	struct module *owner;
++	void *priv;
++	char *drv_name;
++	int (*add)(struct soc_camera_device *);
++	void (*remove)(struct soc_camera_device *);
++	int (*set_capture_format)(struct soc_camera_device *, __u32,
++				  struct v4l2_rect *);
++	int (*try_fmt_cap)(struct soc_camera_host *, struct v4l2_format *);
++	int (*reqbufs)(struct soc_camera_file *, struct v4l2_requestbuffers *);
++	int (*querycap)(struct soc_camera_host *, struct v4l2_capability *);
++	unsigned int (*poll)(struct file *, poll_table *);
++};
++
++struct soc_camera_link {
++	int bus_id;
++	struct i2c_client **extender;
++};
++
++static inline struct soc_camera_device *to_soc_camera_dev(struct device *dev)
++{
++	return container_of(dev, struct soc_camera_device, dev);
++}
++
++static inline struct soc_camera_host *to_soc_camera_host(struct device *dev)
++{
++	return container_of(dev, struct soc_camera_host, dev);
++}
++
++extern int soc_camera_host_register(struct soc_camera_host *ici, struct module *owner);
++extern void soc_camera_host_unregister(struct soc_camera_host *ici);
++extern int soc_camera_device_register(struct soc_camera_device *icd);
++extern void soc_camera_device_unregister(struct soc_camera_device *icd);
++
++extern int soc_camera_video_start(struct soc_camera_device *icd);
++extern void soc_camera_video_stop(struct soc_camera_device *icd);
++
++struct soc_camera_data_format {
++	char *name;
++	unsigned int depth;
++	__u32 fourcc;
++	enum v4l2_colorspace colorspace;
++};
++
++struct soc_camera_ops {
++	struct module *owner;
++	int (*init)(struct soc_camera_device *);
++	int (*release)(struct soc_camera_device *);
++	int (*start_capture)(struct soc_camera_device *);
++	int (*stop_capture)(struct soc_camera_device *);
++	int (*set_capture_format)(struct soc_camera_device *, __u32,
++				  struct v4l2_rect *, unsigned int);
++	int (*try_fmt_cap)(struct soc_camera_device *, struct v4l2_format *);
++	const struct soc_camera_data_format *formats;
++	int num_formats;
++	int (*get_control)(struct soc_camera_device *, struct v4l2_control *);
++	int (*set_control)(struct soc_camera_device *, struct v4l2_control *);
++	const struct v4l2_queryctrl *controls;
++	int num_controls;
++	unsigned int(*get_datawidth)(struct soc_camera_device *icd);
++};
++
++static inline struct v4l2_queryctrl const *soc_camera_find_qctrl(
++	struct soc_camera_ops *ops, int id)
++{
++	int i;
++
++	for (i = 0; i < ops->num_controls; i++)
++		if (ops->controls[i].id == id)
++			return &ops->controls[i];
++
++	return NULL;
++}
++
++#define IS_MASTER		(1<<0)
++#define IS_HSYNC_ACTIVE_HIGH	(1<<1)
++#define IS_VSYNC_ACTIVE_HIGH	(1<<2)
++#define IS_DATAWIDTH_8		(1<<3)
++#define IS_DATAWIDTH_9		(1<<4)
++#define IS_DATAWIDTH_10		(1<<5)
++#define IS_PCLK_SAMPLE_RISING	(1<<6)
++
++#endif
+-- 
+1.5.3.4
+
+--
+video4linux-list mailing list
+Unsubscribe mailto:video4linux-list-request@redhat.com?subject=unsubscribe
+https://www.redhat.com/mailman/listinfo/video4linux-list
+

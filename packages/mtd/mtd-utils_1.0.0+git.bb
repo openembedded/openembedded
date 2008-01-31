@@ -3,7 +3,7 @@ SECTION = "base"
 DEPENDS = "zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r6"
+PR = "r7"
 
 # This is the default package, thus we lock to a specific git version so 
 # upstream changes will not break builds.
@@ -40,3 +40,7 @@ do_install () {
 		install -m 0755 $binary ${D}${bindir}
 	done
 }
+
+PACKAGES =+ "mkfs-jffs mkfs-jffs2"
+FILES_mkfs-jffs = "${bindir}/mkfs.jffs"
+FILES_mkfs-jffs2 = "${bindir}/mkfs.jffs2"

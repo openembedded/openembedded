@@ -5,6 +5,9 @@ DESCRIPTION = "docbook-utils contains scripts for easy conversion \
 from DocBook SGML files to other formats (for example, HTML, RTF, \
 and PostScript), and for comparing SGML files."
 
+# Not tested.
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-${PV}.tar.gz"
 
 inherit autotools

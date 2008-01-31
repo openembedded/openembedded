@@ -1,0 +1,3 @@
+# -T options sets value of GPRS AP name. Change this for your cell provider
+connect '/usr/sbin/chat -V -f /etc/ppp/chats/chat-gprs -T internet'
+call gprs

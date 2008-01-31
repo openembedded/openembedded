@@ -40,7 +40,7 @@ python do_package() {
 
 PACKAGES =+ "${PN}12-dbg ${PN}12 ${PN}12-dev"
 
-FILES_${PN}12-dbg = "${libdir}/libpng12*.dbg"
+FILES_${PN}12-dbg += "${libdir}/libpng12*.dbg"
 FILES_${PN}12 = "${libdir}/libpng12.so.*"
 FILES_${PN}12-dev = "${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc"
 FILES_${PN} = "${libdir}/lib*.so.*"

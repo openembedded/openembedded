@@ -80,25 +80,12 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
-	if [ -d drivers/crypto ]; then
-		mkdir -p ${STAGING_KERNEL_DIR}/drivers/crypto
-		cp -fR drivers/crypto/* ${STAGING_KERNEL_DIR}/drivers/crypto/
-	fi
-
-        if [ -d include/media ]; then
-                mkdir -p ${STAGING_KERNEL_DIR}/include/media
-                cp -fR include/media/* ${STAGING_KERNEL_DIR}/include/media/
-        fi
-
-	if [ -d include/acpi ]; then
-		mkdir -p ${STAGING_KERNEL_DIR}/include/acpi
-		cp -fR include/acpi/* ${STAGING_KERNEL_DIR}/include/acpi/
-	fi
-
-	if [ -d include/sound ]; then
-		mkdir -p ${STAGING_KERNEL_DIR}/include/sound
-		cp -fR include/sound/* ${STAGING_KERNEL_DIR}/include/sound/
-	fi
+	for entry in drivers/crypto include/media include/acpi include/sound include/video; do
+		if [ -d $entry ]; then
+			mkdir -p ${STAGING_KERNEL_DIR}/$entry
+			cp -fR $entry/* ${STAGING_KERNEL_DIR}/$entry/
+		fi
+	done
 
 	if [ -d drivers/sound ]; then
 		# 2.4 alsa needs some headers from this directory
@@ -193,6 +180,8 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 FILES_kernel-dev = "/boot/System.map* /boot/config*"
 FILES_kernel-vmlinux = "/boot/vmlinux*"
 RDEPENDS_kernel = "kernel-base"
+RRECOMMENDS_kernel-module-hostap-cs += '${@base_version_less_or_equal("KERNEL_VERSION", "2.6.17", "", "apm-wifi-suspendfix", d)}'
+RRECOMMENDS_kernel-module-orinoco-cs += '${@base_version_less_or_equal("KERNEL_VERSION", "2.6.17", "", "apm-wifi-suspendfix", d)}'
 # Allow machines to override this dependency if kernel image files are 
 # not wanted in images as standard
 RDEPENDS_kernel-base ?= "kernel-image"
@@ -244,6 +233,8 @@ module_autoload_ipsec = "ipsec"
 module_autoload_ircomm-tty = "ircomm-tty"
 module_autoload_rfcomm = "rfcomm"
 module_autoload_sa1100-rtc = "sa1100-rtc"
+# sa1100-rtc was renamed in 2.6.23 onwards
+module_autoload_rtc-sa1100 = "rtc-sa1100"
 
 # alias defaults (alphabetically sorted)
 module_conf_af_packet = "alias net-pf-17 af_packet"
@@ -418,3 +409,17 @@ python populate_packages_prepend () {
 	packages.append(metapkg)
 	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
+
+# Support checking the kernel size since some kernels need to reside in partitions
+# with a fixed length or there is a limit in transferring the kernel to memory
+do_sizecheck() {
+        if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
+            size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
+            if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
+                    rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+                    die  "This kernel (size=$size > ${KERNEL_IMAGE_MAXSIZE}) is too big for your device. Please reduce the size of the kernel by making more of it modular."
+            fi
+        fi
+}
+
+addtask sizecheck before do_install after do_compile

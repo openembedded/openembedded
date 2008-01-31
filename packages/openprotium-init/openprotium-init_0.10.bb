@@ -19,6 +19,7 @@ SRC_URI = "file://boot/flash \
 	   file://initscripts/sysconfsetup \
 	   file://initscripts/umountinitrd.sh \
 	   file://initscripts/loadmodules.sh \
+	   file://initscripts/zleds \
 	   file://functions \
 	   file://modulefunctions \
 	   file://conffiles \
@@ -35,7 +36,7 @@ SCRIPTS = "turnup reflash sysconf"
 BOOTSCRIPTS = "flash disk nfs network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network \
 	rmrecovery sysconfsetup umountinitrd.sh \
-	fixfstab loadmodules.sh"
+	fixfstab loadmodules.sh zleds"
 
 # This just makes things easier...
 
@@ -129,6 +130,8 @@ pkg_postinst_openprotium-init() {
 	update-rc.d $opt syslog.file		start 39 S . start 47 0 6 .
 	update-rc.d $opt syslog.network		start 44 S . start 39 0 6 .
 	update-rc.d $opt rmrecovery             start 99 1 2 3 4 5 .
+	update-rc.d $opt zleds                  start 99 1 2 3 4 5 . stop 5 0 1 2 3 4 5 6 .
+
 }
 
 pkg_postrm_openprotium-init() {
@@ -140,7 +143,6 @@ pkg_postrm_openprotium-init() {
 	done
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 
 # It is bad to overwrite /linuxrc as it puts the system back to

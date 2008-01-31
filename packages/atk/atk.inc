@@ -1,13 +1,14 @@
-DEPENDS = "glib-2.0 gtk-doc-native"
 DESCRIPTION = "An accessibility toolkit for GNOME."
 SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
+DEPENDS = "glib-2.0 gtk-doc-native"
+
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-glibtest"
 
-CFLAGS_append = " -I${STAGING_INCDIR}/glib-2.0 \
-		  -I${STAGING_INCDIR}/glib-2.0/glib \
-		  -I${STAGING_INCDIR}/glib-2.0/gobject"
+do_stage () {
+	autotools_stage_all
+}

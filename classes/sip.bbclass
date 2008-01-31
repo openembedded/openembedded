@@ -4,7 +4,7 @@
 
 # yes, python-sip is actually a build-time dependency, since
 # the recipe installs sip.h
-DEPENDS =+ "sip-native python-sip"
+DEPENDS += "sip-native python-sip"
 
 # default stuff, do not uncomment
 # EXTRA_SIPTAGS = "-tWS_X11 -tQt_4_3_0"

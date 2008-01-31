@@ -11,7 +11,7 @@ else
     export OLD_REV="l:\"1 week ago\""
 fi
 
-for i in `mtn log --brief --no-graph --no-merges --to ${OLD_REV} --from ${REV_NOW}| awk '{print $2 ":" $1}'` ; do \
+for i in `mtn log --brief --no-graph --no-merges --to "${OLD_REV}" --from "${REV_NOW}"| awk '{print $2 ":" $1}'` ; do \
         export REV=`echo $i | awk -F: '{print $2}'`
         export AUTHOR=`echo $i | awk -F: '{print $1}'`
         export CL=`mtn ls certs ${REV} | grep -A 1 changelog | grep -v changelog | gawk -F'Value : '  '{ print $2 }'`

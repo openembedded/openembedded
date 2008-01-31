@@ -41,7 +41,7 @@ do_install_append() {
         cp -pPR tests ${D}${tsd}/tests
 }
 
-PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
 RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"

@@ -1,6 +1,6 @@
 diff -urN linux-2.6.23.orig/drivers/leds/Kconfig linux-2.6.23/drivers/leds/Kconfig
 --- linux-2.6.23.orig/drivers/leds/Kconfig	2007-10-09 22:31:38.000000000 +0200
-+++ linux-2.6.23/drivers/leds/Kconfig	2007-12-03 11:08:06.000000000 +0100
++++ linux-2.6.23/drivers/leds/Kconfig	2007-12-14 15:32:37.000000000 +0100
 @@ -101,6 +101,12 @@
  	  outputs. To be useful the particular board must have LEDs
  	  and they must be connected to the GPIO lines.
@@ -16,8 +16,8 @@ diff -urN linux-2.6.23.orig/drivers/leds/Kconfig linux-2.6.23/drivers/leds/Kconf
  config LEDS_TRIGGERS
 diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.23/drivers/leds/leds-mpc8313e-rdb.c
 --- linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.23/drivers/leds/leds-mpc8313e-rdb.c	2007-12-03 11:08:36.000000000 +0100
-@@ -0,0 +1,127 @@
++++ linux-2.6.23/drivers/leds/leds-mpc8313e-rdb.c	2007-12-14 15:32:55.000000000 +0100
+@@ -0,0 +1,171 @@
 +/*
 + * drivers/leds/leds-mpc8313e-rdb.c
 + * Copyright (C) 2007 Leon Woestenberg <leon@sidebranch.com>
@@ -41,73 +41,115 @@ diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.23/driver
 +#define LEDS_BASE 0xfa000000
 +#define LEDS_SIZE 0x2
 +
-+static struct platform_dev *leds_pdev = NULL;
++static struct platform_device *leds_pdev = NULL;
 +static struct resource *led_mem = NULL;
 +static void *led_io = NULL;
-+static u8 led_state = 0;
++static u8 led_state = 0xff;
 +
-+static void mpc8313leds_green_set(struct led_classdev *led_cdev, enum led_brightness value)
-+{
-+	led_state = value ? led_state&~32 : led_state|32;
-+	iowrite8(led_state, led_io);
-+}
-+
-+static struct led_classdev mpc8313_green_led = {
-+	.name                   = "mpc8313:green",
-+	.brightness_set         = mpc8313leds_green_set,
++struct mpc8313_led {
++	struct led_classdev cdev;
++	u8 bitmask;
 +};
 +
-+static void mpc8313leds_yellow_set(struct led_classdev *led_cdev, enum led_brightness value)
++static void mpc8313leds_set(struct led_classdev *led_cdev, enum led_brightness value)
 +{
-+	led_state = value ? led_state&~64 : led_state|64;
++	struct mpc8313_led *led_dev = container_of(led_cdev, struct mpc8313_led, cdev);
++	if (value)
++		led_state &= ~led_dev->bitmask;
++	else
++		led_state |= led_dev->bitmask;
 +	iowrite8(led_state, led_io);
 +}
 +
-+static struct led_classdev mpc8313_yellow_led = {
-+	.name                   = "mpc8313:yellow",
-+	.brightness_set         = mpc8313leds_yellow_set,
-+};
-+
-+static void mpc8313leds_red_set(struct led_classdev *led_cdev, enum led_brightness value)
-+{
-+	led_state = value ? led_state&~128 : led_state|128;
-+	iowrite8(led_state, led_io);
-+}
-+
-+static struct led_classdev mpc8313_red_led = {
-+	.name                   = "mpc8313:red",
-+	.brightness_set         = mpc8313leds_red_set,
++static struct mpc8313_led mpc8313_leds[] = {
++	{
++		.cdev = {
++			.name		= "mpc8313:led0",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 1,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led1",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 2,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led2",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 4,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led3",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 8,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led4",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 16,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:green",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 32,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:yellow",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 64,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:red",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 128,
++	},
 +};
 +
 +static int mpc8313leds_probe(struct platform_device *pdev)
 +{
++	int i;
 +	int ret;
-+        
-+	ret = led_classdev_register(&pdev->dev, &mpc8313_green_led);
-+	if (ret < 0)
-+		return ret;
++       
++	for (i = ret = 0; ret >= 0 && i < ARRAY_SIZE(mpc8313_leds); i++) {
++		ret = led_classdev_register(&pdev->dev,
++			&mpc8313_leds[i].cdev);
++	}
 +
-+	ret = led_classdev_register(&pdev->dev, &mpc8313_yellow_led);
-+	if (ret < 0)
-+		return ret;
-+	
-+	ret = led_classdev_register(&pdev->dev, &mpc8313_red_led);
-+	if (ret < 0)
-+		return ret;
++	if (ret < 0 && i > 1) {
++		for (i = i - 2; i >= 0; i--)
++			led_classdev_unregister(&mpc8313_leds[i].cdev);
++	}
 +	
 +	return ret;
 +}
 +
 +static int mpc8313leds_remove(struct platform_device *pdev)
 +{
-+	led_classdev_unregister(&mpc8313_green_led);
-+	led_classdev_unregister(&mpc8313_yellow_led);
-+	led_classdev_unregister(&mpc8313_red_led);
++	int i;
++
++	for (i = ARRAY_SIZE(mpc8313_leds) - 1; i >= 0; i--)
++		led_classdev_unregister(&mpc8313_leds[i].cdev);
++	
 +	return 0;
 +}
 +
 +static struct platform_driver mpc8313leds_driver = {
-+      .driver         = {
++	.driver         = {
 +		.name   = "mpc8313-leds",
 +		.owner  = THIS_MODULE,
 +	},
@@ -125,6 +167,8 @@ diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.23/driver
 +		led_mem = NULL;
 +		return -ENOMEM;
 +	}
++	iowrite8(led_state, led_io);
++
 +	leds_pdev = platform_device_register_simple("mpc8313-leds", -1, NULL, 0);
 +
 +	return platform_driver_register(&mpc8313leds_driver);
@@ -147,7 +191,7 @@ diff -urN linux-2.6.23.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.23/driver
 +MODULE_LICENSE("GPL");
 diff -urN linux-2.6.23.orig/drivers/leds/Makefile linux-2.6.23/drivers/leds/Makefile
 --- linux-2.6.23.orig/drivers/leds/Makefile	2007-10-09 22:31:38.000000000 +0200
-+++ linux-2.6.23/drivers/leds/Makefile	2007-12-03 11:08:06.000000000 +0100
++++ linux-2.6.23/drivers/leds/Makefile	2007-12-14 15:32:37.000000000 +0100
 @@ -17,6 +17,7 @@
  obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
  obj-$(CONFIG_LEDS_COBALT)		+= leds-cobalt.o

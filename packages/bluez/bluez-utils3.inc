@@ -8,10 +8,13 @@ RREPLACES = "bluez-utils-dbus"
 RCONFLICTS_${PN} = "bluez-utils-nodbus"
 LICENSE = "GPL"
 
-# ti patch doesn't apply, people using it should rediff it and send it upstream
+FILESPATH = "${FILE_DIRNAME}/bluez-utils-${PV}:${FILE_DIRNAME}/bluez-utils"
+
+# ti patch should be sent it upstream!
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
-           file://hcid.conf "
-#           file://hciattach-ti-bts.patch;patch=1 \
+           file://hcid.conf \
+           file://hciattach-ti-bts.patch;patch=1"
+
 
 S = "${WORKDIR}/bluez-utils-${PV}"
 
@@ -68,6 +71,8 @@ EXTRA_OECONF = " \
 #disable it:
 #	--disable-hid2hci
 
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export]="1"
 
 do_install_append() {
 	install -d ${D}${base_sbindir} ${D}${base_bindir}/  ${D}${sysconfdir}/apm/event.d/

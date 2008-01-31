@@ -1,0 +1,75 @@
+---
+ arch/avr32/mach-at32ap/pio.c         |   15 +++++++++------
+ include/asm-avr32/arch-at32ap/gpio.h |    6 +++---
+ 2 files changed, 12 insertions(+), 9 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-29 18:14:54.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-29 18:17:15.000000000 +0100
+@@ -49,7 +49,7 @@ static struct pio_device *gpio_to_pio(un
+ /* Pin multiplexing API */
+ 
+ void __init at32_select_periph(unsigned int pin, unsigned int periph,
+-			       int use_pullup)
++			       unsigned long flags)
+ {
+ 	struct pio_device *pio;
+ 	unsigned int pin_index = pin & 0x1f;
+@@ -73,7 +73,7 @@ void __init at32_select_periph(unsigned 
+ 		pio_writel(pio, ASR, mask);
+ 
+ 	pio_writel(pio, PDR, mask);
+-	if (!use_pullup)
++	if (!(flags & AT32_GPIOF_PULLUP))
+ 		pio_writel(pio, PUDR, mask);
+ 
+ 	return;
+@@ -82,8 +82,7 @@ fail:
+ 	dump_stack();
+ }
+ 
+-void __init at32_select_gpio(unsigned int pin, int enable_output,
+-			     int use_pullup)
++void __init at32_select_gpio(unsigned int pin, unsigned long flags)
+ {
+ 	struct pio_device *pio;
+ 	unsigned int pin_index = pin & 0x1f;
+@@ -101,13 +100,17 @@ void __init at32_select_gpio(unsigned in
+ 	}
+ 
+ 	pio_writel(pio, PUER, mask);
+-	if (enable_output)
++	if (flags & AT32_GPIOF_HIGH)
++		pio_writel(pio, SODR, mask);
++	else
++		pio_writel(pio, CODR, mask);
++	if (flags & AT32_GPIOF_OUTPUT)
+ 		pio_writel(pio, OER, mask);
+ 	else
+ 		pio_writel(pio, ODR, mask);
+ 
+ 	pio_writel(pio, PER, mask);
+-	if (!use_pullup)
++	if (!(flags & AT32_GPIOF_PULLUP))
+ 		pio_writel(pio, PUDR, mask);
+ 
+ 	/* It's now allowed to use request_gpio on this pin */
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/gpio.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/gpio.h	2006-11-29 18:14:37.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/gpio.h	2006-11-29 18:15:06.000000000 +0100
+@@ -1,5 +1,5 @@
+-#ifndef __ASM_AVR32_GPIO_H
+-#define __ASM_AVR32_GPIO_H
++#ifndef __ASM_AVR32_ARCH_GPIO_H
++#define __ASM_AVR32_ARCH_GPIO_H
+ 
+ #include <linux/compiler.h>
+ #include <asm/irq.h>
+@@ -36,4 +36,4 @@ static inline int irq_to_gpio(unsigned i
+ 	return irq - GPIO_IRQ_BASE;
+ }
+ 
+-#endif /* __ASM_AVR32_GPIO_H */
++#endif /* __ASM_AVR32_ARCH_GPIO_H */

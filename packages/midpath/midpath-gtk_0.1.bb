@@ -32,7 +32,6 @@ do_stage() {
 	:
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${libdir}/libmidpathgtk.so \
 		${datadir}/java/resources-embedded/com/sun/midp/configuration/configuration.cfg \

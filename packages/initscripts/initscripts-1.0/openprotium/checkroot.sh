@@ -205,7 +205,7 @@ then
 		: > /etc/mtab
 	fi
 	mount -f -o remount /
-	mount -f /proc
+	grep -q '^proc /proc' /etc/mtab || mount -f /proc
 	test "$devfs" && grep -q '^devfs /dev' /proc/mounts && mount -f "$devfs"
 fi
 

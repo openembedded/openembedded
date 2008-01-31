@@ -20,6 +20,6 @@ do_stage() {
 PACKAGES =+ "tiffxx tiffxx-dbg tiffxx-dev tiff-utils tiff-utils-dbg"
 FILES_tiffxx = "${libdir}/libtiffxx.so.*"
 FILES_tiffxx-dev = "${libdir}/libtiffxx.so ${libdir}/libtiffxx.*a"
-FILES_tiffxx-dbg = "${libdir}/.debug/libtiffxx.so*"
+FILES_tiffxx-dbg += "${libdir}/.debug/libtiffxx.so*"
 FILES_tiff-utils = "${bindir}/*"
-FILES_tiff-utils-dbg = "${bindir}/.debug/"
+FILES_tiff-utils-dbg += "${bindir}/.debug/"

@@ -553,3 +553,21 @@ Replaced Linksys busybox with slingbox entirely.
 
 Modified "unsling" script to use tar instead of find and cpio; removed
 obsolete and untested unsling utilities (eg: resling).
+
+Replace mkfs.ext3 with a script in order to fix an obscure formatting bug
+with the Linksys GUI.
+
+Increased the bootup delay from 5 seconds to 15 seconds in linuxrc;
+required by some large disks which require additional time to become ready.
+Touching "/.fastdisk" on the flash filesystem will revert to the original
+5 second delay, which is useful to retain reasonably boot times.
+
+Added the bootdisk mechanism: at initial boot time, partitions mounted
+on the HDD mountpoints are scanned for a special directory structure
+containing startup script, which are executed.  This facilitates easy
+customization of the boot for debugging purposes, or even automated
+installation and configuration processes.
+
+6.10:
+
+Second beta release.

@@ -47,7 +47,6 @@ do_install() {
  	install -m 0644 ${WORKDIR}/mcf25 ${D}${sysconfdir}/modutils/mcf25
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "${base_libdir}/modules/"
 FILES_${PN} += "${sysconfdir}/modprobe.d/"
 FILES_${PN} += "${sysconfdir}/modutils/"

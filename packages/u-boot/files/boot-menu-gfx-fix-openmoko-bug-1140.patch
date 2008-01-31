@@ -1,0 +1,29 @@
+--- git.orig/drivers/video/cfb_console.c	2007-12-27 00:59:35.000000000 -0800
++++ git/drivers/video/cfb_console.c	2007-12-27 08:23:42.000000000 -0800
+@@ -141,6 +141,14 @@
+ #endif
+ 
+ /*****************************************************************************/
++/* Defines for the S3C2410 driver					     */
++/*****************************************************************************/
++#ifdef CONFIG_VIDEO_S3C2410
++/* it actually is little-endian, but the host CPU, too ! */
++//#define VIDEO_FB_LITTLE_ENDIAN
++#endif
++
++/*****************************************************************************/
+ /* Include video_fb.h after definitions of VIDEO_HW_RECTFILL etc	     */
+ /*****************************************************************************/
+ #include <video_fb.h>
+@@ -309,6 +317,11 @@
+ #define SHORTSWAP32(x)	 (x)
+ #endif
+ 
++#ifdef CONFIG_VIDEO_S3C2410
++#undef SHORTSWAP32
++#define	SHORTSWAP32(x)	((((x) & 0xffff) << 16) | (((x) >> 16) & 0xffff))
++#endif
++
+ #if defined(DEBUG) || defined(DEBUG_CFB_CONSOLE)
+ #define PRINTD(x)	  printf(x)
+ #else

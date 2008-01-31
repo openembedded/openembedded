@@ -46,9 +46,15 @@ if(!check_database())
 
 $feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds");
 
-if($argc > 1 AND $argv[1] == 'upgrades')
+if($argc == 2)
 {
-	$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds WHERE f_type = 'upgrades'");
+	$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds WHERE f_uri = '${argv[1]}'");
+} else if ($argc == 3 && $argv[1] == "--type") {
+	$feeds = db_query("SELECT f_id, f_name, f_uri FROM feeds WHERE f_type = '${argv[2]}'");
+}
+
+if (!$feeds) {
+    die("Cannot find feed(s) in the DB\n");
 }
 
 $start = time();

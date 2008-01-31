@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 inherit kernel
 
-DEPENDS_collie += "bc-native"
+DEPENDS_append_collie = " bc-native"
 RPROVIDES_kernel-base += "hostap-modules"
 
 DOSRC = "http://www.do13.de/openzaurus/patches"
@@ -34,8 +34,8 @@ CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",
 ##############################################################
 # Configure memory/ramdisk split for collie
 #
-export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "32"}'
-export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "32"}'
+export mem = '${@bb.data.getVar("COLLIE_MEMORY_SIZE",d,1) or "64"}'
+export rd  = '${@bb.data.getVar("COLLIE_RAMDISK_SIZE",d,1) or "0"}'
 
 CMDLINE_MEM_collie = "mem=${mem}M"
 CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
@@ -56,8 +56,15 @@ module_autoload_snd-soc-corgi_c7x0 = "snd-soc-corgi"
 module_autoload_snd-soc-spitz_akita = "snd-soc-spitz"
 module_autoload_snd-soc-spitz_spitz = "snd-soc-spitz"
 module_autoload_snd-soc-poodle_poodle = "snd-soc-poodle"
+
 module_autoload_locomo-spi_collie = "locomo-spi"
 module_autoload_mmc_block_collie = "mmc_block"
+module_autoload_locomokbd_collie = "locomokbd"
+module_autoload_sa1100-cs_collie = "sa1100_cs"
+module_autoload_collie-ts_collie = "collie-ts"
+module_autoload_leds-locomo_collie = "leds-locomo"
+module_autoload_unix_collie = "unix"
+
 
 do_configure() {
 	rm -f ${S}/.config
@@ -133,30 +140,6 @@ do_configure() {
 	    '${WORKDIR}/${KERNEL_DEFCONFIG}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
-}
-
-# Check the kernel is below the 1264*1024 byte limit for the PXA Zaurii
-do_compile_append() {
-	case ${MACHINE} in
-		c7x0 | akita | poodle | spitz | tosa )
-			size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
-			if [ $size -ge 1294336 ]; then	
-				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
-				echo "Size is $size"
-				die "This kernel is too big for your PXA Zaurus and will destroy data if you flash it. Please reduce the size of the kernel by making more of it modular."
-			fi
-			;;
-		collie )
-			size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
-			if [ $size -ge 1048576 ]; then	
-				rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
-				echo "Size is $size"
-				die "This kernel is too big for your Collie and will not be flashed. Please reduce the size of the kernel by making more of it modular."
-			fi
-			;;
-        	*)
-			;;
-	esac
 }
 
 do_deploy() {

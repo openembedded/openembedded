@@ -8,7 +8,7 @@ NYLON_BASE = "base-files base-passwd bash busybox \
 	mtd-utils \
 	nano ncurses netbase \
 	openssh sysvinit \
-	timezones tinylogin udev"
+	tzdata tinylogin udev"
 
 DEPENDS += "virtual/kernel less nano"
 IMAGE_INSTALL = "kernel less nano elvis-tiny \

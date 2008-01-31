@@ -1,5 +1,5 @@
 DESCRIPTION = "Entrance is the Enlightenment login manager"
-LICENSE = "MIT"
+LICENSE = "MIT BSD"
 # can also use pam and crypt
 DEPENDS = "evas ecore edje esmart bash keylaunch xserver-common login-manager"
 RDEPENDS += "glibc-gconv-iso8859-1 entrance-themes"

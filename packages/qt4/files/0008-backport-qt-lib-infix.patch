@@ -1,0 +1,166 @@
+Index: qtopia-core-opensource-src-4.3.3/configure
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/configure	2007-12-27 17:26:19.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/configure	2007-12-27 17:26:19.000000000 +0100
+@@ -782,6 +782,11 @@
+         VAR=endian
+         VAL=`echo $1 | sed "s,^-\(.*\)-.*,\1,"`
+         ;;
++    -qtlibinfix)
++        VAR="qtlibinfix"
++        shift
++        VAL="$1"
++        ;;
+     -D?*|-D)
+         VAR="add_define"
+         if [ "$1" = "-D" ]; then
+@@ -903,6 +908,9 @@
+     libdir)
+         QT_INSTALL_LIBS="$VAL"
+         ;;
++    qtlibinfix)
++        QT_LIBINFIX="$VAL"
++        ;;
+     translationdir)
+         QT_INSTALL_TRANSLATIONS="$VAL"
+         ;;
+@@ -2606,6 +2614,8 @@
+     -no-sse ............ Do not compile with use of SSE instructions.
+     -no-sse2 ........... Do not compile with use of SSE2 instructions.
+ 
++    -qtlibinfix <infix>  Renames all libQt*.so to libQt<infix>.so.
++
+     -D <string> ........ Add an explicit define to the preprocessor.
+     -I <string> ........ Add an explicit include path.
+     -L <string> ........ Add an explicit library path.
+@@ -5273,6 +5283,8 @@
+ QT_MINOR_VERSION = $QT_MINOR_VERSION
+ QT_PATCH_VERSION = $QT_PATCH_VERSION
+ 
++QT_LIBINFIX = $QT_LIBINFIX
++
+ EOF
+ if [ "$CFG_RPATH" = "yes" ]; then
+     echo "QMAKE_RPATHDIR += \"$QT_INSTALL_LIBS\"" >> "$QTCONFIG.tmp"
+Index: qtopia-core-opensource-src-4.3.3/mkspecs/features/qt_functions.prf
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/features/qt_functions.prf	2007-12-04 18:07:53.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/features/qt_functions.prf	2007-12-27 17:26:19.000000000 +0100
+@@ -28,7 +28,7 @@
+              INCLUDEPATH -= $$FRAMEWORK_INCLUDE
+              INCLUDEPATH = $$FRAMEWORK_INCLUDE $$INCLUDEPATH
+            }
+-           LINKAGE = -framework $${LIB_NAME}
++           LINKAGE = -framework $${LIB_NAME}$${QT_LIBINFIX}
+         } else:!qt_no_framework { #detection
+            for(frmwrk_dir, $$list($$QMAKE_LIBDIR_QT $$QMAKE_LIBDIR $$(DYLD_FRAMEWORK_PATH) /Library/Frameworks)) {
+        	      exists($${frmwrk_dir}/$${LIB_NAME}.framework) {
+@@ -46,15 +46,15 @@
+     }
+     isEmpty(LINKAGE) {
+        CONFIG(debug, debug|release) {
+-           win32:LINKAGE = -l$${LIB_NAME}d
+-           mac:LINKAGE = -l$${LIB_NAME}_debug
++           win32:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}d
++           mac:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}_debug
+        }
+-       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}
++       isEmpty(LINKAGE):LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}
+     }
+     !isEmpty(QMAKE_LSB) {
+         QMAKE_LFLAGS *= --lsb-libpath=$$$$QMAKE_LIBDIR_QT
+         QMAKE_LFLAGS *= -L/opt/lsb/lib
+-        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}
++        QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}${QT_LIBINFIX}
+     }
+     LIBS += $$LINKAGE
+     export(LIBS)
+Index: qtopia-core-opensource-src-4.3.3/src/qbase.pri
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/src/qbase.pri	2007-12-04 18:08:13.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/src/qbase.pri	2007-12-27 17:26:19.000000000 +0100
+@@ -138,7 +138,7 @@
+ contains(QT_CONFIG, qt3support):DEFINES *= QT3_SUPPORT
+ DEFINES *= QT_MOC_COMPAT #we don't need warnings from calling moc code in our generated code
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #do this towards the end
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #do this towards the end
+ 
+ moc_dir.name = moc_location
+ moc_dir.variable = QMAKE_MOC
+Index: qtopia-core-opensource-src-4.3.3/tools/assistant/lib/lib.pro
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/tools/assistant/lib/lib.pro	2007-12-04 18:08:19.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/tools/assistant/lib/lib.pro	2007-12-27 17:26:19.000000000 +0100
+@@ -52,7 +52,7 @@
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end
+ 
+ target.path=$$[QT_INSTALL_LIBS]
+ INSTALLS        += target
+Index: qtopia-core-opensource-src-4.3.3/tools/designer/src/components/component.pri
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/tools/designer/src/components/component.pri	2007-12-04 18:08:43.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/tools/designer/src/components/component.pri	2007-12-27 17:26:19.000000000 +0100
+@@ -1,2 +1,2 @@
+ 
+-TARGET = $$qtLibraryTarget($$TARGET)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX)
+Index: qtopia-core-opensource-src-4.3.3/tools/qdbus/src/src.pro
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/tools/qdbus/src/src.pro	2007-12-04 18:08:18.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/tools/qdbus/src/src.pro	2007-12-27 17:26:19.000000000 +0100
+@@ -70,7 +70,7 @@
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end (after framework)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end (after framework)
+ 
+ # Input
+ 
+Index: qtopia-core-opensource-src-4.3.3/tools/qtestlib/src/src.pro
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/tools/qtestlib/src/src.pro	2007-12-04 18:08:18.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/tools/qtestlib/src/src.pro	2007-12-27 17:26:19.000000000 +0100
+@@ -61,7 +61,7 @@
+    }
+ }
+ 
+-TARGET = $$qtLibraryTarget($$TARGET) #done towards the end (after framework)
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #done towards the end (after framework)
+ 
+ # Input
+ HEADERS = qtest_global.h qtestcase.h qtestdata.h qtesteventloop.h
+Index: qtopia-core-opensource-src-4.3.3/tools/designer/src/uitools/uitools.pro
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/tools/designer/src/uitools/uitools.pro	2007-12-04 18:08:43.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/tools/designer/src/uitools/uitools.pro	2007-12-27 17:26:19.000000000 +0100
+@@ -1,5 +1,5 @@
+ TEMPLATE = lib
+-TARGET = $$qtLibraryTarget(QtUiTools)
++TARGET = $$qtLibraryTarget(QtUiTools$$QT_LIBINFIX)
+ QT += xml
+ CONFIG += qt staticlib
+ DESTDIR = ../../../../lib
+Index: qtopia-core-opensource-src-4.3.3/mkspecs/features/uitools.prf
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/mkspecs/features/uitools.prf	2007-12-27 17:32:57.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/mkspecs/features/uitools.prf	2007-12-27 17:33:56.000000000 +0100
+@@ -2,10 +2,10 @@
+ qt:load(qt)
+ 
+ # Include the correct version of the UiLoader library
+-QTUITOOLS_LINKAGE = -lQtUiTools
++QTUITOOLS_LINKAGE = -lQtUiTools$${QT_LIBINFIX}
+ CONFIG(debug, debug|release) {
+-    mac: QTUITOOLS_LINKAGE = -lQtUiTools_debug
+-    win32: QTUITOOLS_LINKAGE = -lQtUiToolsd
++    mac: QTUITOOLS_LINKAGE = -lQtUiTools$${QT_LIBINFIX}_debug
++    win32: QTUITOOLS_LINKAGE = -lQtUiTools$${QT_LIBINFIX}d
+ }
+ LIBS += $$QTUITOOLS_LINKAGE
+ 

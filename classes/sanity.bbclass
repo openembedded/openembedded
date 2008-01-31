@@ -24,14 +24,6 @@ def check_conf_exists(fn, data):
 			return True
 	return False
 
-def check_app_exists(app, d):
-	from bb import which, data
-
-	app = data.expand(app, d)
-	path = data.getVar('PATH', d)
-	return len(which(path, app)) != 0
-
-
 def check_sanity(e):
 	from bb import note, error, data, __version__
 	from bb.event import Handled, NotHandled, getName
@@ -70,8 +62,9 @@ def check_sanity(e):
 	if "diffstat-native" not in assume_provided:
 		messages = messages + 'Please use ASSUME_PROVIDED +=, not ASSUME_PROVIDED = in your local.conf\n'
 	
-	# Check that the MACHINE is valid
-	if not check_conf_exists("conf/machine/${MACHINE}.conf", e.data):
+	# Check that the MACHINE is valid, if it is set
+	if data.getVar('MACHINE', e.data, True):
+	    if not check_conf_exists("conf/machine/${MACHINE}.conf", e.data):
 		messages = messages + 'Please set a valid MACHINE in your local.conf\n'
 	
 	# Check that the DISTRO is valid

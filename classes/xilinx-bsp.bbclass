@@ -34,7 +34,7 @@ fi
 case "${XILINX_BOARD}" in
      ML403)
         oenote "ML403 board setup"
-        cp -a ${XILINX_BSP_PATH}/ppc405_0/libsrc/linux_2_6_v1_00_a/linux/arch/ppc/platforms/4xx/xparameters/xparameters_ml40x.h \
+        cp -pPR ${XILINX_BSP_PATH}/ppc405_0/libsrc/linux_2_6_v1_00_a/linux/arch/ppc/platforms/4xx/xparameters/xparameters_ml40x.h \
                 ${S}/arch/ppc/platforms/4xx/xparameters/xparameters_ml403.h
      ;;
 

@@ -65,21 +65,13 @@ load_functions(){
 #  use this rather than hard-wiring the device because the partition
 #  table can change - looking in /proc/mtd is more reliable.
 mtdev(){
-	if test $(machine) = storcenter ; then                               
-	sed -n 's!^mtd\([0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/mtd/\1!p' /proc/mtd
-	else
 	sed -n 's!^\(mtd[0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/\1!p' /proc/mtd
-	fi
 }
 #
 # mtblockdev "name"
 #  as mtdev but output the name of the block (not character) device
 mtblockdev(){
-	if test "$(machine)" = storcenter ; then
-	sed -n 's!^mtd\([0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/mtdblock/\1!p' /proc/mtd
-	else
 	sed -n 's!^mtd\([0-9][0-9]*\):[^"]*"'"$1"'"$!/dev/mtdblock\1!p' /proc/mtd
-	fi
 }
 #
 # mtsize "name"

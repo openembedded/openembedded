@@ -1,8 +1,8 @@
 require portmap.inc
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://neil.brown.name/portmap/portmap-6.0.tgz \
+SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.0.tgz \
            file://destdir-no-strip.patch;patch=1 \
 	   file://no-tcpd-support.patch;patch=1 \
            file://no-libwrap.patch;patch=1;pnum=0 \

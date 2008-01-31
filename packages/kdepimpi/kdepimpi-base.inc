@@ -53,7 +53,7 @@ inherit palmtop
 
 do_configure_prepend() {
         mv ${S}/kabc/formats/binary/kabcformat_binaryE.pro ${S}/kabc/formats/binary/binaryE.pro
-        echo -e "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
+        printf "TEMPLATE=subdirs\nSUBDIRS=${SUBDIRS}\n" >all.pro
         for d in ${SUBDIRS}
         do
             if [ -f ${d}/`basename ${d}`E.pro ]; 
@@ -150,7 +150,7 @@ do_install() {
 }
 
 
-PACKAGES = "libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs kammu libmicrokammu"
+PACKAGES = "${PN}-dbg libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs kammu libmicrokammu"
 
 FILES_kopi = "${bindir}/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
 FILES_kapi = "${bindir}/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"
