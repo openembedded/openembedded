@@ -42,8 +42,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
            file://squashfs3.3.patch;patch=1;status=external \
-           file://mtd-module.patch;patch=1;status=external \
-           file://wm8750-treble.patch;patch=1;status=external \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
@@ -56,7 +54,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
            file://htcuni.patch;patch=1 \
-           file://sharpsl-rc-r1.patch;patch=1 \
            file://binutils-buildid-arm.patch;patch=1 \
            file://versatile-armv6.patch;patch=1 \
            file://defconfig-c7x0 \
@@ -138,6 +135,18 @@ SRC_URI_append_tosa = "\
            file://tosa_udc_use_gpio_vbus.patch;patch=1 \
            "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
+
+SRC_URI_append_akita = "\
+           file://mtd-module.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://sharpsl-rc-r1.patch;patch=1 \
+           "
+
+SRC_URI_append_spitz = "\
+           file://mtd-module.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://sharpsl-rc-r1.patch;patch=1 \
+           "
 
 SRC_URI_append_htcuniversal ="\
 	file://htcuni-acx.patch;patch=1;status=external \
