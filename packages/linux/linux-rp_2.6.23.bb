@@ -44,6 +44,9 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
            file://squashfs3.0-2.6.15.patch;patch=1;status=external \
+           file://mtd-module.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://sharpsl-rc-r1.patch;patch=1 \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
