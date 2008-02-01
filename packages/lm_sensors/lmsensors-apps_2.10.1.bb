@@ -1,8 +1,8 @@
 DESCRIPTION = "Hardware health monitoring applications"
-HOMEPAGE = "http://secure.netroedge.com/~lm78/"
+HOMEPAGE = "http://www.lm-sensors.org/"
 DEPENDS = "sysfsutils virtual/libiconv"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
            file://prefix-fix.patch;patch=1 \
@@ -13,7 +13,7 @@ SRC_URI_append_uclibc = "file://iconv.patch;patch=1"
 S = "${WORKDIR}/lm_sensors-${PV}"
 
 do_compile() {
-	oe_runmake LINUX=${STAGING_KERNEL_DIR} EXLDFLAGS="${LDFLAGS}" user PROG_EXTRA=sensors 
+	oe_runmake user LINUX=${STAGING_KERNEL_DIR} EXLDFLAGS="${LDFLAGS}" PROG_EXTRA=sensors MACHINE=${TARGET_ARCH}
 }
 
 do_install() {
