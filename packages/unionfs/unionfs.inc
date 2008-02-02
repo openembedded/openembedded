@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.fsl.cs.sunysb.edu/project-unionfs.html"
 MAINTAINER = "Chris Larson <kergoth@handhelds.org>"
 LICENSE = "GPL"
 
-SRC_URI = "ftp://ftp.filesystems.org/pub/unionfs/unionfs-1.x/unionfs-${PV}.tar.gz "
+SRC_URI = "ftp://ftp.filesystems.org/pub/unionfs/OLD/unionfs-1.x/unionfs-${PV}.tar.gz "
 SRC_URI += ${@bb.data.getVar('PV', d, 1) != "1.1.5" and "file://make.patch;patch=1" or " "}
 
 S = "${WORKDIR}/unionfs-${PV}"
