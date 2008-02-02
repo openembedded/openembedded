@@ -1,13 +1,8 @@
-DESCRIPTION = "Native bdftopdf utility"
-SECTION = "x11/fonts"
-LICENSE = "MIT-X"
+inherit native
+require xorg-app-common.inc
 PE = "1"
 
-S="${WORKDIR}/bdftopcf-${PV}"
+XORG_PN = "bdftopcf"
 
 DEPENDS = "libxfont-native"
-
-SRC_URI = "${XORG_MIRROR}/X11R7.0/src/app/bdftopcf-X11R7.0-1.0.0.tar.gz"
-
-inherit native autotools pkgconfig
 
