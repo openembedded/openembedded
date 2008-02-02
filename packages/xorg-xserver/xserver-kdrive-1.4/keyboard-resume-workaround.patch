@@ -2,7 +2,7 @@ Index: xorg-server-1.4/hw/kdrive/linux/keyboard.c
 ===================================================================
 --- xorg-server-1.4.orig/hw/kdrive/linux/keyboard.c	2007-09-29 18:31:15.000000000 +0200
 +++ xorg-server-1.4/hw/kdrive/linux/keyboard.c	2007-09-29 18:33:02.000000000 +0200
-@@ -743,11 +743,8 @@
+@@ -743,11 +743,6 @@
      cfsetispeed(&nTty, 9600);
      cfsetospeed(&nTty, 9600);
      tcsetattr(fd, TCSANOW, &nTty);
@@ -11,8 +11,6 @@ Index: xorg-server-1.4/hw/kdrive/linux/keyboard.c
 -     */
 -    while ((n = read (fd, buf, sizeof (buf))) > 0)
 -	;
-+    n = fcntl(fd, F_GETFL);
-+    fprintf(stderr, "LinuxConsoleFd status flags: %x (O_NONBLOCK = %x)\n", n, O_NONBLOCK);
      KdRegisterFd (fd, LinuxKeyboardRead, ki);
      return Success;
  }
