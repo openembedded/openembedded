@@ -1,7 +1,7 @@
 require navit.inc
 
-PV = "0.0.3+cvs${SRCDATE}"
-PR = "r4"
+PV = "0.0.4+cvs${SRCDATE}"
+PR = "r5"
 
 S = "${WORKDIR}/navit"
 

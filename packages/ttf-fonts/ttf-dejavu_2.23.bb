@@ -5,12 +5,11 @@ HOMEPAGE = "http://dejavu.sourceforge.net/wiki/"
 LICENSE = "Bitstream Vera"
 RDEPENDS = "ttf-dejavu-common"
 RDEPENDS_ttf-dejavu-common = ""
-PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-ttf-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-fonts-ttf-${PV}.tar.bz2 \
            file://30-dejavu-aliases.conf"
 
-S = "${WORKDIR}/dejavu-ttf-${PV}"
+S = "${WORKDIR}/dejavu-fonts-ttf-${PV}/ttf"
 
 do_install_append () { 
 	install -d ${D}${sysconfdir}/fonts/conf.d/
