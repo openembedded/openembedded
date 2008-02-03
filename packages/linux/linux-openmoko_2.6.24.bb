@@ -5,10 +5,10 @@ DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ 
 VANILLA_VERSION = "2.6.24"
 KERNEL_RELEASE = "2.6.24"
 
-KERNEL_VERSION = "${KERNEL_RELEASE}"
+KERNEL_VERSION = "${KERNEL_RELEASE}-moko11"
 
 PV = "${VANILLA_VERSION}+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -54,7 +54,7 @@ do_prepatch() {
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openmoko
         mv .pc .pc.old
-        mv ${WORKDIR}/config/defconfig-${KERNEL_VERSION} ${WORKDIR}/defconfig
+        mv ${WORKDIR}/config/defconfig-${KERNEL_RELEASE} ${WORKDIR}/defconfig
 }
 
 addtask prepatch after do_unpack before do_patch
