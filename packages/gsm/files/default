@@ -5,8 +5,13 @@
 case `machine_id` in
 	"gta01"|"gta02")
 		GSMD_OPTS="-s 115200 -F"
+		if [ -d '/sys/bus/platform/devices/gta01-pm-gsm.0' ] ; then
 		GSM_POW="/sys/bus/platform/devices/gta01-pm-gsm.0/power_on"
 		GSM_RES="/sys/bus/platform/devices/gta01-pm-gsm.0/reset"
+		else
+		GSM_POW="/sys/bus/platform/devices/neo1973-pm-gsm.0/power_on"
+		GSM_RES="/sys/bus/platform/devices/neo1973-pm-gsm.0/reset"
+		fi
 		GSM_DEV="/dev/ttySAC0"
 		;;
 	"htc_apache"|"htc_blueangel"|"htc_universal")
