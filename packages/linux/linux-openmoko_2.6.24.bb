@@ -5,10 +5,11 @@ DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ 
 VANILLA_VERSION = "2.6.24"
 KERNEL_RELEASE = "2.6.24"
 
-KERNEL_VERSION = "${KERNEL_RELEASE}-moko11"
+# need to synchronize with LOCALVERSION, if set
+KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 PV = "${VANILLA_VERSION}+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
