@@ -106,6 +106,7 @@ do_configure_append_avr32() {
 
 
 UBOOT_ENTRYPOINT ?= "20008000"
+UBOOT_LOADADRESS ?= "${UBOOT_ENTRYPOINT}"
 
 do_compile_append() {
     if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
@@ -116,13 +117,13 @@ do_compile_append() {
 	fi
         if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
             ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
-            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
             rm -f linux.bin
         else
             ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
             rm -f linux.bin.gz
             gzip -9 linux.bin
-            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_LOADADRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
             rm -f linux.bin.gz
         fi
     fi
