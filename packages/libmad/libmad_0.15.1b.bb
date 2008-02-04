@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"

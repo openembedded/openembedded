@@ -10,8 +10,6 @@ SRC_URI="http://downloads.digium.com/pub/telephony/sounds/releases/asterisk-extr
 do_install() {
 	install -d ${D}${localstatedir}/lib/asterisk/sounds
 	# HACK: moving the files in chunks (too many files)
-	rm ${WORKDIR}/conf-thereare.g729
-	rm ${WORKDIR}/invalid.g729
 	mv ${WORKDIR}/[a-d]*.g729 ${D}${localstatedir}/lib/asterisk/sounds/
 	mv ${WORKDIR}/[e-l]*.g729 ${D}${localstatedir}/lib/asterisk/sounds/
 	mv ${WORKDIR}/*.g729 ${D}${localstatedir}/lib/asterisk/sounds/
@@ -20,10 +18,6 @@ do_install() {
 	#install -d ${D}${localstatedir}/lib/asterisk/sounds/ha
 	#install -m 644 ${WORKDIR}/ha/* ${D}${localstatedir}/lib/asterisk/sounds/ha/
 	mv ${WORKDIR}/ha ${D}${localstatedir}/lib/asterisk/sounds
-
-	#install -d ${D}${localstatedir}/lib/asterisk/sounds/phonetic
-	#install -m 644 ${WORKDIR}/phonetic/* ${D}${localstatedir}/lib/asterisk/sounds/phonetic/
-	mv ${WORKDIR}/phonetic ${D}${localstatedir}/lib/asterisk/sounds
 
 	#install -d ${D}${localstatedir}/lib/asterisk/sounds/wx
 	#install -m 644 ${WORKDIR}/wx/* ${D}${localstatedir}/lib/asterisk/sounds/wx/
