@@ -1,0 +1,306 @@
+From 30026f5e13ac18daeeea1a3fd4ab06aa2961ef23 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@happy.(none)>
+Date: Mon, 17 Dec 2007 16:45:47 -0500
+Subject: [PATCH] gesbc-nand
+
+---
+ drivers/mtd/nand/Kconfig  |    7 ++
+ drivers/mtd/nand/Makefile |    1 +
+ drivers/mtd/nand/gesbc.c  |  255 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 263 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/gesbc.c
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 246d451..cde3146 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -51,6 +51,13 @@ config MTD_NAND_EDB7312
+ 	  This enables the driver for the Cirrus Logic EBD7312 evaluation
+ 	  board to access the onboard NAND Flash.
+ 
++config MTD_NAND_GESBC
++	tristate "Support for Glomation GESBC-93xx board"
++	depends on MTD_NAND && MACH_EDB9302
++	help
++	  This enables the driver for the Glomation GESBC-93xx
++	  board to access the onboard NAND Flash.
++
+ config MTD_NAND_H1900
+ 	tristate "iPAQ H1900 flash"
+ 	depends on ARCH_PXA && MTD_PARTITIONS
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 3ad6c01..58c1961 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
+ obj-$(CONFIG_MTD_NAND_TOTO)		+= toto.o
+ obj-$(CONFIG_MTD_NAND_AUTCPU12)		+= autcpu12.o
+ obj-$(CONFIG_MTD_NAND_EDB7312)		+= edb7312.o
++obj-$(CONFIG_MTD_NAND_GESBC)		+= gesbc.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+ obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
+ obj-$(CONFIG_MTD_NAND_PPCHAMELEONEVB)	+= ppchameleonevb.o
+diff --git a/drivers/mtd/nand/gesbc.c b/drivers/mtd/nand/gesbc.c
+new file mode 100644
+index 0000000..a5844b1
+--- /dev/null
++++ b/drivers/mtd/nand/gesbc.c
+@@ -0,0 +1,255 @@
++/*
++ *  drivers/mtd/nand/gesbc-9302.c
++ *
++ *  Copyright (C) 2004 Glomation (support@glomationinc.com)
++ *
++ *  Derived from drivers/mtd/nand/edb7312.c
++ *       Copyright (C) 2004 Marius Grer (mag@sysgo.de)
++ *
++ *  Derived from drivers/mtd/nand/autcpu12.c
++ *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  Overview:
++ *   This is a device driver for the NAND flash device found on the
++ *   GESBC-93xx board with Samsung 128/256/512 Mbyte part.
++ */
++
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <asm/io.h>
++#include <asm/arch/hardware.h>
++#include <asm/sizes.h>
++
++#define GESBC_NAND_FLASH_DATA 0x10000000
++
++#define GPIO_PADR	EP93XX_GPIO_REG(0x0)
++#define GPIO_PADDR	EP93XX_GPIO_REG(0x10)
++#define SMCBCR1		(EP93XX_AHB_VIRT_BASE + 0x00082000 + 0x04)
++
++/*
++ * MTD structure for GESBC-93xx board
++ */
++static struct mtd_info *gesbc_mtd = NULL;
++
++
++/*
++ * Module stuff
++ */
++static unsigned long gesbc_fio_pbase = GESBC_NAND_FLASH_DATA;
++
++#ifdef CONFIG_MTD_PARTITIONS
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info32[] = {
++	{ .name= "GESBC NAND FLASH",
++		  .offset= 0,
++		  .size= 128*1024*1024 },
++};
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info128[] = {
++	{ .name= "GESBC NAND FLASH",
++		  .offset= 0,
++		  .size= 128*1024*1024 },
++};
++
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info256[] = {
++	{ .name= "GESBC NAND FLASH",
++		  .offset= 0,
++		  .size= 256*1024*1024 },
++};
++
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info512[] = {
++	{ .name= "GESBC NAND FLASH",
++		  .offset= 0,
++		  .size= 512*1024*1024 },
++};
++
++#define NUM_PARTITIONS 1
++#endif
++
++
++/* 
++ *	hardware specific access to control-lines
++ *      NAND_NCE: bit 0 -> bit 3
++ *      NAND_CLE: bit 1 -> bit 4
++ *      NAND_ALE: bit 2 -> bit 6
++ */
++static void gesbc_hwcontrol(struct mtd_info *mtd, int cmd, int ctrl) 
++{
++	unsigned long flags;
++        struct nand_chip *chip = mtd->priv;
++
++	/* Disbale interrupt to avoid race condition */
++	local_irq_save(flags);
++
++        if (ctrl & NAND_CTRL_CHANGE) {
++                unsigned char bits;
++
++                bits = (ctrl & NAND_CLE) << 3;
++                bits |= (ctrl & NAND_ALE) << 4;
++		if (ctrl & NAND_NCE)
++			bits &= ~0x08;
++		else
++			bits |= 0x08;
++
++		__raw_writel( (__raw_readl(GPIO_PADR) & ~0x58 )| bits, GPIO_PADR);
++        }
++        if (cmd != NAND_CMD_NONE)
++                writeb(cmd, chip->IO_ADDR_W);
++	/* Restore interrupt state */
++	local_irq_restore(flags);
++}
++
++/*
++ *	read device ready pin
++ */
++static int gesbc_device_ready(struct mtd_info *mtd)
++{
++	return  (__raw_readl(GPIO_PADR) & 0x80) >> 7;
++}
++
++#define MTDID      "s3c2440-nand"
++
++static const char *probes[] = { "cmdlinepart", NULL };
++
++
++
++/*
++ * Main initialization routine
++ */
++static int __init gesbc_nand_init (void)
++{
++	struct nand_chip *this;
++	const char *part_type = 0;
++	int mtd_parts_nb = 0;
++	struct mtd_partition *mtd_parts = 0;
++	unsigned long flags;
++	void * gesbc_fio_base;
++
++	/* Allocate memory for MTD device structure and private data */
++	gesbc_mtd = kmalloc(sizeof(struct mtd_info) + 
++			     sizeof(struct nand_chip),
++			     GFP_KERNEL);
++	if (!gesbc_mtd) {
++		printk("Unable to allocate GESBC NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	/* map physical adress */
++	gesbc_fio_base = ioremap(gesbc_fio_pbase, SZ_1K);
++	if(!gesbc_fio_base) {
++		printk("ioremap GESBC-93xx NAND flash failed\n");
++		kfree(gesbc_mtd);
++		return -EIO;
++	}
++
++	
++	/* Get pointer to private data */
++	this = (struct nand_chip *) (&gesbc_mtd[1]);
++	
++	/* Initialize structures */
++	memset((char *) gesbc_mtd, 0, sizeof(struct mtd_info));
++	memset((char *) this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	gesbc_mtd->priv = this;
++
++	/* Disbale interrupt to avoid race condition */
++	local_irq_save(flags);
++
++	/*
++	 * Set GPIO Port A control register so that the pins are configured
++	 * to be outputs for controlling the NAND flash.
++	 */
++	__raw_writel((__raw_readl(GPIO_PADDR) | 0x58) & ~0x80, GPIO_PADDR);
++	/* Clear NCE, clear CLE, clear ALE */
++	__raw_writel( (__raw_readl(GPIO_PADR) | 0x08 ) & ~0x50, GPIO_PADR);
++	/* Set SRAM controller to 32 bit (8 bit just doesn't work, don't know why) bus width and 7 CLK wait state */
++	__raw_writel(0x10003ce0, SMCBCR1);
++	local_irq_restore(flags);
++
++	
++	/* insert callbacks */
++	this->IO_ADDR_R = (void *) gesbc_fio_base;
++	this->IO_ADDR_W = (void *) gesbc_fio_base;
++	this->cmd_ctrl = (void *) gesbc_hwcontrol;
++	this->dev_ready = gesbc_device_ready;
++	this->chip_delay = 25;
++	this->ecc.mode = NAND_ECC_SOFT;
++	
++	__raw_writel(0xffffffff, gesbc_fio_base);
++	printk("Searching for NAND flash...\n");
++	/* Scan to find existence of the device */
++	if (nand_scan (gesbc_mtd, 1)) {
++		iounmap((void *)gesbc_fio_base);
++		kfree (gesbc_mtd);
++		return -ENXIO;
++	}
++
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++        gesbc_mtd->name="GESBC-NAND";
++        mtd_parts_nb = parse_mtd_partitions(gesbc_mtd,  probes, &mtd_parts, 0);
++        if (mtd_parts_nb > 0)
++                part_type = "command line";
++        else
++                mtd_parts_nb = 0;
++#endif
++
++	if (mtd_parts_nb == 0)
++	{
++		mtd_parts_nb = NUM_PARTITIONS;
++		mtd_parts = partition_info32;
++		if (gesbc_mtd->size >= (128 * 0x100000))
++			mtd_parts = partition_info128;
++		if (gesbc_mtd->size >= (256 * 0x100000))
++			mtd_parts = partition_info256;
++		if (gesbc_mtd->size >= (512 * 0x100000))
++			mtd_parts = partition_info512;
++		part_type = "static";
++	}
++	
++	/* Register the partitions */
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
++	add_mtd_partitions(gesbc_mtd, mtd_parts, mtd_parts_nb);
++	
++	/* Return happy */
++	return 0;
++}
++module_init(gesbc_nand_init);
++
++/*
++ * Clean up routine
++ */
++static void __exit gesbc_nand_cleanup (void)
++{
++/*	struct nand_chip *this = (struct nand_chip *) &gesbc_mtd[1]; */
++	
++	/* Unregister the device */
++	del_mtd_device (gesbc_mtd);
++	
++	/* Free the MTD device structure */
++	kfree (gesbc_mtd);
++}
++module_exit(gesbc_nand_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("zql@glomationinc.com");
++MODULE_DESCRIPTION("MTD map driver for Glomation GESBC-93xx board");
++
+-- 
+1.5.4.rc4
+
