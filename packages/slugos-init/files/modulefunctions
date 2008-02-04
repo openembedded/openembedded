@@ -1,5 +1,6 @@
 #!/bin/sh
 # . this file to load the functions for automatically loading modules
+# NB: /proc must be mounted for correct evaluation of "$(machine)".
 
 . /etc/default/functions
 
@@ -32,6 +33,10 @@ loadnetmods(){
 		true
 		;;
 	esac
+}
+
+loadnfsmods(){
+	modprobe nfs
 }
 
 loadmiscmods(){
