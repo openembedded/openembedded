@@ -70,7 +70,8 @@ do_configure_prepend() {
             -e '/CONFIG_CPU_BIG_ENDIAN/d' \
             -e '/CONFIG_LOGO=/d' \
             -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
-            < '${WORKDIR}/defconfig' >>'${S}/.config'
+            -e '/CONFIG_LOCALVERSION/d' \
+	    < '${WORKDIR}/defconfig' >>'${S}/.config'
 
         #
         # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
