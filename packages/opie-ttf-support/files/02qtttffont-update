@@ -1,0 +1,6 @@
+#!/bin/sh
+# Author: Rolf Leggewie
+
+mkdir -p @@PALMTOPDIR@@/lib/fonts
+
+@@SBINDIR@@/update-qtttffontdir @@DATADIR@@/fonts/truetype > @@PALMTOPDIR@@/lib/fonts/fontdir
