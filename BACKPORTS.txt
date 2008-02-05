@@ -12,6 +12,8 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
+4f0260db452e1d17accce2d4d5bdb2c928659a73 h5000.conf: Ship kernel-module-i2c-pxa.
+647847c7187d536c71adab58568757d34b048ac2 h5000.conf: Ship BT module.
 
 Acked:
 
