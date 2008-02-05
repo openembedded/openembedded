@@ -146,7 +146,7 @@ PREFERRED_VERSION_glibc-initial ?= "2.5"
 
 #Loads preferred versions from files, these have weak assigments (?=), so put them at the bottom
 require conf/distro/include/preferred-xorg-versions.inc
-require conf/distro/include/angstrom-2007-preferred-versions.inc
+require conf/distro/include/angstrom-2007-for-openmoko-versions.inc
 require conf/distro/include/preferred-gpe-versions-2.8.inc
 require conf/distro/include/preferred-e-versions.inc
 
