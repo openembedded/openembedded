@@ -1,0 +1,12 @@
+diff -ur kexec-tools-1.101.bak/configure.ac kexec-tools-1.101/configure.ac
+--- kexec-tools-1.101.bak/configure.ac	2008-02-03 00:05:59.577094746 +0100
++++ kexec-tools-1.101/configure.ac	2008-02-03 00:06:35.579146386 +0100
+@@ -96,7 +96,7 @@
+ 
+ dnl ---Hard codes
+ 
+-CFLAGS='-Wall -g -fno-strict-aliasing $(CPPFLAGS)'
++CFLAGS='-Wall -g -static -fno-strict-aliasing $(CPPFLAGS)'
+ BUILD_CFLAGS='-O2 -Wall $(CPPFLAGS)'
+ 
+ dnl ---Sanity checks
