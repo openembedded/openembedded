@@ -2,7 +2,7 @@ DESCRIPTION = "Open Package Manager"
 DESCRIPTION_libipkg = "Open Package Manager Library"
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "curl"
+DEPENDS = "curl gpgme pth"
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/;module=opkg;proto=http"
 
 S = "${WORKDIR}/opkg"
