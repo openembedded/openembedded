@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-${PV}.tar.bz2"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "libgpg-error pth libassuan"
 
@@ -19,4 +19,9 @@ do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal
 	install -m 0644 gpgme/gpgme.m4 ${STAGING_DATADIR}/aclocal/
 }
+
+FILES_${PN} = "${libdir}/libgpgme*.so.*"
+FILES_${PN}-dev += "${bindir}/gpgme-config"
+
+LEAD_SONAME = "libgpgme"
 
