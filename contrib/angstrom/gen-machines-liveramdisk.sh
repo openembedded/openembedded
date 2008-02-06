@@ -26,15 +26,22 @@ for m in $MACHINES; do
 	image_name=`expr "$base" : '\(.\+\)-glibc.*'`
 	image_ver=`expr "$base" : '.\+-glibc-ipk-\(.*\)\.rootfs'`
 	liveramdisk_name="$image_name-liveramdisk-$image_ver.exe"
+	# Use the latest kernel version
+	kernel_name=`ls -1 -t $dir/zImage* | head -n1`
 
         if [ ! -f "$dir/$liveramdisk_name" ]; then
     	    echo $f - need gen
+	    
+	    # Generate complete LiveRamdisk initramfs by putting jffs2 rootfs into liveramdisk-image cpio
     	    gzip -d -c $LIVERAMDISK_FILE | $HARET_PATH/tools/cpio-append.py $f initrd.jffs2 | gzip -c > $dir/$base.liveramdisk.cpio.gz
-    	    $HARET_PATH/tools/make-bootbundle.py $HARET_EXE \
-        	`ls -1 -t $dir/zImage* | head -n1` \
+	    # Now create executable bundle from all 4 parts
+    	    $HARET_PATH/tools/make-bootbundle.py \
+		$HARET_EXE \
+        	$kernel_name \
         	$dir/$base.liveramdisk.cpio.gz \
         	$LIVERAMDISK_SCRIPT \
 		-o "$dir/$liveramdisk_name"
+	    # Remove temporary file
 	    rm $dir/$base.liveramdisk.cpio.gz
 	else
     	    echo $dir/$liveramdisk_name - already there
