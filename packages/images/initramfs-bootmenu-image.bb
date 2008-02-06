@@ -1,6 +1,6 @@
 # Sample initramfs image
 
-IMAGE_INSTALL = "busybox-static initramfs-module-bootmenu"
+IMAGE_INSTALL = "busybox-static initramfs-module-bootmenu initramfs-module-check-modules"
 IMAGE_LINGUAS = ""
 
 # Remove any kernel-image that the kernel-module-* packages may have pulled in.
