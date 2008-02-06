@@ -13,9 +13,13 @@ MACHINES="h2200 h3900 h4000 h5000 hx4700 htcapache htcblueangel htcuniversal"
 
 EXT="jffs2"
 
+# This is what has been built with:
+# ANGSTROM_MODE=uclibc MACHINE=h4000 IMAGE_FSTYPES="cpio.gz" bitbake liveramdisk-image
 LIVERAMDISK_FILE=~/pfalcon/Angstrom-liveramdisk-uclibc-ipk-2007.11RC1.3-h4000.rootfs.cpio.gz
+# Directory where HaRET source has been checked out
 HARET_PATH=~/pfalcon/haret
 
+# HaRET executable
 HARET_EXE=$HARET_PATH/haret-0.5.0.exe
 LIVERAMDISK_SCRIPT=$HARET_PATH/tools/safeboot-initramfs.txt
 
