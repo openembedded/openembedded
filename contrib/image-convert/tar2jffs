@@ -1,0 +1,8 @@
+#!/bin/sh
+
+STAGING= #~/linux-ppc/build-oe-angstrom/tmp/staging/i686-linux/bin/
+
+${STAGING}fakeroot bash -c " \
+rm -rf scratch; mkdir scratch; \
+tar -xj -f $1 -C scratch; \
+${STAGING}mkfs.jffs2 -x lzo --root=scratch --faketime --output=$(dirname $1)/$(basename $1 .tar.bz2).jffs2"
