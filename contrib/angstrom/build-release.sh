@@ -1,25 +1,32 @@
 #!/bin/bash
 
+DO_GLIBC=1
 DO_UCLIBC=0
 
 do_build() {
 	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
 
-	BUILD_MODE="glibc"
-	if [ "$BUILD_CLEAN" != "" ]
+	if [ $DO_GLIBC = 1 ]
 	then
-		bitbake -c clean $BUILD_CLEAN
+		BUILD_MODE="glibc"
+		if [ "$BUILD_CLEAN" != "" ]
+		then
+			bitbake -c clean $BUILD_CLEAN
+		fi
+		for target in $BUILD_TARGETS
+		do
+			bitbake $target && do_report_success
+		done
 	fi
-
-	for target in $BUILD_TARGETS
-	do
-		bitbake $target && do_report_success
-	done
 
 	if [ $DO_UCLIBC = 1 ]
 	then
 		BUILD_MODE="uclibc"
 		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+		if [ "$BUILD_CLEAN" != "" ]
+		then
+			bitbake -c clean $BUILD_CLEAN
+		fi
 		for target in $BUILD_TARGETS
 		do
 			bitbake $target && do_report_success
@@ -111,3 +118,28 @@ done
 #	do_build
 #done
 
+#
+# Special uclibc targets
+#
+DO_GLIBC=0
+DO_UCLIBC=1
+
+# Bootmenu image
+# As of now, not machine-dependent, so we build random armv5 machine
+# Better to build armv4, but that's what I actually tested ;-). So, on TODO.
+for machine in h4000
+do
+	BUILD_CLEAN=""
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="initramfs-bootmenu-image"
+	do_build
+done
+
+# LiveRamdisk core. Same note applies.
+for machine in h4000
+do
+	BUILD_CLEAN=""
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="liveramdisk-image"
+	do_build
+done
