@@ -14,7 +14,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
 4f0260db452e1d17accce2d4d5bdb2c928659a73 h5000.conf: Ship kernel-module-i2c-pxa. (Koen)
 647847c7187d536c71adab58568757d34b048ac2 h5000.conf: Ship BT module. (Koen)
-02945aaeb0e67e273a58bf42b1a0a7988a413f92 cups tweak (Koen)
 
 Acked:
 
@@ -78,3 +77,6 @@ f7a565e7e910cea46808ec61590556a6b97dff74         "
 137c597e5635e94070a8b4e425094f828c7ad56a libmimedir 0.3.1: Remove DEFAULT_PREFERENCE=1, set -1 due to known bugs. (PaulS, Koen, Marcin)
 40ab8178005b44226c94200bdcb19bca0262e49c simpad kernel update (PaulS, Koen)
 33c44c7c7ce5fce5da6c869be191126d5fca6f96 bluez-utils 3.23 and friends: Set FILESPATH explicitly and correctly. (PaulS, Koen)
+02945aaeb0e67e273a58bf42b1a0a7988a413f92 cups tweak (Koen, PaulS)
+
+

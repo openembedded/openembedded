@@ -64,6 +64,12 @@ python do_package_append() {
 	os.system('chmod 0511 %s/install/cups/var/run/cups/certs' % workdir)
 }
 
+PACKAGES =+ "${PN}-lib ${PN}-libimage"
+
+FILES_${PN}-lib = "${libdir}/libcups.so.*"
+
+FILES_${PN}-libimage = "${libdir}/libcupsimage.so.*"
+
 FILES_${PN}-dbg += "${libdir}/cups/backend/.debug \
                     ${libdir}/cups/cgi-bin/.debug \
 		    ${libdir}/cups/filter/.debug \
@@ -78,6 +84,4 @@ FILES_${PN} += "${datadir}/doc/cups/images \
 		${datadir}/doc/cups/*.css \
                 ${datadir}/icons/ \
 	       "
-
-LEAD_SONAME = "libcups.so.*"
 
