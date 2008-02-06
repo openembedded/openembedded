@@ -1,4 +1,4 @@
-# Sample initramfs image
+# Sample initramfs image, very minimal
 
 IMAGE_INSTALL = "initramfs-module-nfs busybox-static"
 
