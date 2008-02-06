@@ -1,4 +1,4 @@
-require klibc.inc
+require klibc-common.inc
 
 PR = "r3"
 
