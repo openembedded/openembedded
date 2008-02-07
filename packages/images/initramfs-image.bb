@@ -1,4 +1,6 @@
-# Sample initramfs image
+# initramfs image allowing to boot from location as specified on kernel
+# command line, from teh choices of block device, loop back images (including
+# recursive) and NFS.
 
 IMAGE_INSTALL = "initramfs-module-block initramfs-module-loop initramfs-module-nfs"
 IMAGE_LINGUAS = ""

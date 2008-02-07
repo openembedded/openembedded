@@ -1,20 +1,5 @@
-LICENSE = "LGPL"
-DESCRIPTION = "Database access library for GPE calendar"
-SECTION = "gpe/libs"
-PRIORITY = "optional"
-DEPENDS = "libgpewidget libgpepimc sqlite"
+require libeventdb.inc
 
-GPE_TARBALL_SUFFIX = "bz2"
-
-inherit pkgconfig gpe autotools
+PR = "r1"
 
 headers = "event-db.h"
-
-do_stage () {
-	oe_libinstall -so libeventdb ${STAGING_LIBDIR}
-
-	mkdir -p ${STAGING_INCDIR}/gpe
-	for h in ${headers}; do
-		install -m 0644 ${S}/gpe/$h ${STAGING_INCDIR}/gpe/$h
-	done
-}

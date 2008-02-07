@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <tarball> <ext2 size>"
+    exit
+fi
+
+ext=`echo $1 | sed -r -e 's/.+\.([^.]+\.[^.]+)/\1/'`
+base=$(basename $1 .$ext)
+if [ "$ext" == "tar.bz2" ]; then
+    uncompress=j
+else
+    uncompress=z
+fi
+
+dd if=/dev/zero of=$base.img bs=1M count=$2
+mkfs.ext2 -F -m1 $base.img
+
+mkdir -p mnt
+mount -o loop $base.img mnt
+
+tar -x$uncompress -f $1 -C mnt
+
+umount mnt
+rm -rf mnt

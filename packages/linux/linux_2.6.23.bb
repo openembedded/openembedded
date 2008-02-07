@@ -55,6 +55,7 @@ CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 
 
 DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
 DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
+DEVICETREE_FLAGS_mpc8313e-rdb = "-R 8 -S 0x3000"
 
 FILES_kernel-image_cm-x270 = ""
 
@@ -95,7 +96,7 @@ python do_compulab_image() {
 
 do_devicetree_image() {
         if test -n "${DEVICETREE}" ; then
-            dtc -I dts -O dtb -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${DEVICETREE}
+            dtc -I dts -O dtb ${DEVICETREE_FLAGS} -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${DEVICETREE}
 
             cd ${DEPLOY_DIR_IMAGE}
             rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb

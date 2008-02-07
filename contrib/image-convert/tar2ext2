@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <tarball> <ext2 size>"
+    exit
+fi
+
+ext=`echo $1 | sed -r -e 's/.+\.([^.]+\.[^.]+)/\1/'`
+base=$(basename $1 .$ext)
+dir=$(dirname $1)
+
+if [ "$ext" == "tar.bz2" ]; then
+    uncompress=j
+else
+    uncompress=z
+fi
+
+rm -rf mnt
+mkdir -p mnt
+
+fakeroot bash -c "\
+tar -x$uncompress -f $1 -C mnt; \
+genext2fs -d mnt -b $(($2 * 1024)) $dir/$base.img; \
+rm -rf mnt; \
+"

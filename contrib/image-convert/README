@@ -1,0 +1,5 @@
+This directory contains scripts to convert (root) filesystem images from one
+format to another. While OpenEmbedded has extensive support for generating
+images in various formats, sometimes it may be useful/needed to convert
+already existing image.
+
