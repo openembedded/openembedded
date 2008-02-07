@@ -1,0 +1,54 @@
+From b537e497d5490e7e8d94a49b7fbf2200c13ef200 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Sat, 19 Jan 2008 17:56:56 -0500
+Subject: [PATCH] gesbc-eth-platform
+
+---
+ arch/arm/mach-ep93xx/edb9302.c |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-ep93xx/edb9302.c b/arch/arm/mach-ep93xx/edb9302.c
+index 0315615..8dbeb7c 100644
+--- a/arch/arm/mach-ep93xx/edb9302.c
++++ b/arch/arm/mach-ep93xx/edb9302.c
+@@ -43,10 +43,37 @@ static struct platform_device edb9302_flash = {
+ 	.resource	= &edb9302_flash_resource,
+ };
+ 
++static struct ep93xx_eth_data ep93xx_eth_data = {
++        .phy_id                 = 1,
++};
++
++static struct resource ep93xx_eth_resource[] = {
++        {
++                .start  = EP93XX_ETHERNET_PHYS_BASE,
++                .end    = EP93XX_ETHERNET_PHYS_BASE + 0xffff,
++                .flags  = IORESOURCE_MEM,
++        }, {
++                .start  = IRQ_EP93XX_ETHERNET,
++                .end    = IRQ_EP93XX_ETHERNET,
++                .flags  = IORESOURCE_IRQ,
++        }
++};
++
++static struct platform_device ep93xx_eth_device = {
++        .name           = "ep93xx-eth",
++        .id             = -1,
++        .dev            = {
++                .platform_data  = &ep93xx_eth_data,
++        },
++        .num_resources  = 2,
++        .resource       = ep93xx_eth_resource,
++};
++
+ static void __init edb9302_init_machine(void)
+ {
+ 	ep93xx_init_devices();
+ 	platform_device_register(&edb9302_flash);
++  platform_device_register(&ep93xx_eth_device);
+ }
+ 
+ MACHINE_START(EDB9302, "Cirrus Logic EDB9302 Evaluation Board")
+-- 
+1.5.4.rc4
+
