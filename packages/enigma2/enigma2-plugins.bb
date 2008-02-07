@@ -18,7 +18,10 @@ python populate_packages_prepend () {
 
 	def getControlLines(mydir, d, package):
 		import os
-		src = open(mydir + package + "/CONTROL/control").read()
+		try:
+			src = open(mydir + package + "/CONTROL/control").read()
+		except IOError:
+			return
 		for line in src.split("\n"):
 			if line.startswith('Package: '):
 				full_package = line[9:]
@@ -27,16 +30,7 @@ python populate_packages_prepend () {
 			if line.startswith('Description: '):
 				bb.data.setVar('DESCRIPTION_' + full_package, line[13:], d)
 
-	def getPackageNames(mydir,d):
-		import os
-		packages =[]
-		ignore = ['CVS','autom4te.cache','m4', 'patches']
-		for packetname in os.listdir(mydir):
-			if os.path.isdir(mydir + packetname) and packetname not in ignore:
-				packages.append(packetname)
-		return packages
-	
-	mydir = bb.data.getVar('D', d, 1).replace("image","enigma2-plugins/")
-	for package in getPackageNames(mydir, d):
-		getControlLines(mydir, d, package)	
+	mydir = bb.data.getVar('D', d, 1) + "/../enigma2-plugins/"
+	for package in bb.data.getVar('PACKAGES', d, 1).split():
+		getControlLines(mydir, d, package.split('-')[-1])
 }
