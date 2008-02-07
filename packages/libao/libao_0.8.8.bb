@@ -14,7 +14,7 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "--disable-esd --disable-esdtest \
 		--disable-alsa --enable-alsa09 \
 		--disable-arts --disable-nas \
-                --enable-pulse --enable-alsa09-mmap"
+                --enable-pulse"
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/ao
