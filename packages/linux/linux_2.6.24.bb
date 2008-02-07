@@ -4,7 +4,7 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_gesbc-9302 = "1"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://defconfig \
@@ -15,6 +15,7 @@ S = "${WORKDIR}/linux-2.6.24"
 SRC_URI_append_gesbc-9302 = " \
 	file://0001-gesbc-nand.patch;patch=1 \
 	file://0002-gesbc-eth-platform.patch;patch=1 \
+	file://0005-ep93xx-reboot.patch;patch=1 \
 	"
 
 CMDLINE_gesbc-9302 = "console=ttyAM0 root=mtd5 rootfstype=jffs2 mtdparts=GESBC-NAND:64m(app),-(data)"
