@@ -2,47 +2,43 @@
 #@Name: Gumstix pxa2xx boards
 #@DESCRIPTION:  Gumstix pxa2xx boards
 
+# Don't edit this file unless you *really* know what you are doing!
+
 TARGET_ARCH = "arm"
 PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5e armv5te "
 
-PREFERRED_PROVIDER_virtual/kernel = "linux"
+PREFERRED_PROVIDER_virtual/kernel = "gumstix-kernel"
 KERNEL_IMAGETYPE = "uImage"
-
-module_autoload_pxamci = "pxamci"
-module_autoload_mmc_block = "mmc_block"
-module_autoload_gumstix_gadget = "gumstix_gadget"
-module_autoload_g_ether = "g_ether"
-module_autoload_smc91x = "smc91x"
-module_autoload_smc911x = "smc911x"
+RDEPENDS_kernel-base = ""
+KERNEL_IMAGE_MAXSIZE = "1048577"
 
 UBOOT_ENTRYPOINT = "a0008000"
 
-#Assume people have some gumstix extension boards 
-MACHINE_FEATURES = "kernel26 alsa ext2 bluetooth"
+MACHINE_FEATURES += "kernel26 "
+COMBINED_FEATURES ?= ""
 
-EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=0x20000 --squash"
+IMAGE_FSTYPES = "jffs2"
+EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=0x20000 --squash-uids"
 
-# Install all kernel modules
-#MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-modules"
-
-# Install only selected kernel modules, comment out line above also
-MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS = "kernel-module-unix \
-                             kernel-module-rtc-core \
-                             kernel-module-rtc-dev \
-                             kernel-module-rtc-proc \
-                             kernel-module-rtc-sa1100 \
-                             kernel-module-rtc-sysfs \
-                             kernel-module-smc91x \
-                             kernel-module-gumstix-smc91x \
-                             kernel-module-smc911x \
-                             kernel-module-gumstix-smc911x \
-                             "
-
-# used by sysvinit_2
 SERIAL_CONSOLE = "115200 ttyS0 vt100"
 
-#don't try to access tty1
-USE_VT = "0"
+MACHINE_ESSENTIAL_EXTRA_RDEPENDS =     " \
+                                       "
 
-require conf/machine/include/tune-xscale.inc
+MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS ?= " \
+                                       "
+#
+# The following *should* be in a distro.conf file
+# We include them here to avoid creating a new distro
+
+PREFERRED_VERSION_gumstix-kernel = "2.6.21"
+PREFERRED_VERSION_udev = "115"
+PREFERRED_VERSION_gnuplot = "4.0.0"
+PREFERRED_VERSION_dropbear = "0.47"
+PREFERRED_VERSION_wpa-supplicant = "0.5.8"
+PREFERRED_VERSION_bluez-utils = "3.24"
+PREFERRED_VERSION_bluez-utils-alsa = "3.24"
+PREFERRED_VERSION_bluez-libs = "3.24"
+PREFERRED_VERSION_bluez-gstreamer-plugin = "3.24"
+PREFERRED_VERSION_bluez-hcidump = "1.40"
 
