@@ -165,7 +165,9 @@ Recipes:    *python*, efl/*, e17*
 
 Person:     Patrick Gfeller
 Mail:       gfellerpatrik@gmx.net
-Recipes:    libvncserver, fbvncserver
+Website:    www.codeomega.info
+Interests:  text-to-speech, vnc
+Recipes:    libvncserver, fbvncserver2
 
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
