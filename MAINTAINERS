@@ -229,6 +229,10 @@ Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
 Interest:   Cross-machine development
 Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
 
+Person:     Takashi Nemoto
+Mail:       tnemoto@sourceforge.jp
+Recipes:    mkbold-mkitalic
+
 Person:     Tim Sander
 Mail:       oe@iss.tu-darmstadt.de
 Receipes:   fxload
