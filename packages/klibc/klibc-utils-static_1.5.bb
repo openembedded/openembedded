@@ -4,6 +4,9 @@ PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2"
 
+SRC_URI_append_linux-gnueabi = "\
+			       	file://klibc-config-eabi.patch;patch=1"
+
 EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
                 'CROSS_COMPILE=${TARGET_PREFIX}' \
                 "
@@ -36,7 +39,6 @@ do_install() {
         install -m 755 usr/utils/static/uname ${D}${base_bindir}
 }
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = "klibc-utils-static-sh klibc-utils-static-gzip \
         klibc-utils-static-cat klibc-utils-static-chroot \
         klibc-utils-static-cpio klibc-utils-static-dd \
@@ -71,11 +73,3 @@ FILES_klibc-utils-static-sleep = "${base_bindir}/sleep"
 FILES_klibc-utils-static-true = "${base_bindir}/true"
 FILES_klibc-utils-static-umount = "${base_bindir}/umount"
 FILES_klibc-utils-static-uname = "${base_bindir}/uname"
-
-# the klibc code contains ARM instructions (for ARM), this
-# could be fixed, but for the moment:
-ARM_INSTRUCTION_SET = "arm"
-
-KLIBC_ARCH = "'${TARGET_ARCH}'"
-KLIBC_ARCH_armeb = "'arm'"
-KLIBC_ARCH_mipsel = "'mips'"
