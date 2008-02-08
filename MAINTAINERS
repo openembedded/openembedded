@@ -92,6 +92,12 @@ Website:    http://sicherheitsschwankung.de
 Machines:   chumby
 Recipes:    chumby-*, initramfs-chumby
 
+Person:     Jeremy Lainé
+Mail:       jeremy.laine@bolloretelecom.eu
+Website:    http://www.jerryweb.org/
+Machines:   mpc8313e-rdb
+Recipes:    libexosip2, python-cheetah, python-django, python-pyopenssl
+
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
