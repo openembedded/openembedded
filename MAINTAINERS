@@ -214,7 +214,7 @@ Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
-Recipes:    eb, eblook, tomoe
+Recipes:    eb*, tomoe, offline-wikipedia
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
