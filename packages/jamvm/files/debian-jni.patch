@@ -1,0 +1,19 @@
+--- src/dll.c.orig	2004-09-09 15:48:45.000000000 +0000
++++ src/dll.c	2004-09-09 15:50:32.000000000 +0000
+@@ -189,6 +189,16 @@
+ #ifndef NO_JNI
+     /* Init hash table, and create lock */
+     initHashTable(hash_table, HASHTABSZE, TRUE);
++
++    /* XXX: Add Debian JNI directory.  */
++    char* path = getenv("LD_LIBRARY_PATH");
++
++    if (path != NULL)
++      path = strcat(path, ":OE_LIBDIR_JNI");
++    else
++      path = "OE_LIBDIR_JNI";
++    
++    setenv("LD_LIBRARY_PATH", path, 1);
+ #endif
+ }
+ 
