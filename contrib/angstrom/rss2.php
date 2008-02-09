@@ -47,7 +47,7 @@ foreach($builder_log_date as $build)
 	$data = explode(' ', $build);
 
 	$rss_xml->startElement('item');
-	$rss_xml->writeElement('title', "{$data[1]} ({$data[2]}) built for {$data[3]}");
+	$rss_xml->writeElement('title', "{$data[1]} ({$data[2]}) built for {$data[3]} (" . date('c', $data[0]) . ")");
 	$rss_xml->writeElement('link', "{$build_link_base}{$data[3]}/");
 	$rss_xml->writeElement('pubDate', date('r', $data[0]));
 
