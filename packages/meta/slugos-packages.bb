@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r44"
+PR = "r45"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -76,7 +76,6 @@ SLUGOS_PACKAGES = "\
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
-	eciadsl \
 	expat \
 	ez-ipupdate \
 	fconfig \
@@ -245,6 +244,7 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
 	dsniff \
+	eciadsl \
 	fetchmail \
 	lirc-modules lirc \
 	madfu \
