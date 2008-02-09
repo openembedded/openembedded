@@ -1,0 +1,235 @@
+Index: rxtx-2.1-7r2/configure
+===================================================================
+--- rxtx-2.1-7r2.orig/configure	2008-02-09 02:08:40.000000000 +0100
++++ rxtx-2.1-7r2/configure	2008-02-09 02:09:02.000000000 +0100
+@@ -21501,7 +21501,7 @@
+ 	case $JAVA_VENDOR in
+ 	Tran*)
+ 		find_java_native_include jni.h
+-		JAVAH="\$(JPATH)/bin/kaffeh -classpath \$(CLASSPATH) -d \$(DEST) -jni"
++		JAVAH="\$(JPATH)/bin/kaffeh -classpath \$(JPATH)/jre/lib/rt.jar:\$(CLASSPATH) -d \$(DEST) -jni"
+ 		JAVAC="\$(JPATH)/bin/javac -classpath \$(CLASSPATH) -d \$(TOP)/ -O -source 1.3 -target 1.3"
+ 		JAR="\$(JPATH)/bin/jar"
+ 		JAVADOC="\$(JPATH)/bin/javadoc -classpath \$(CLASSPATH)"
+@@ -21513,7 +21513,7 @@
+ 		;;
+ 	*)
+ 		find_java_native_include jni_md.h
+-		JAVAH="\$(JPATH)/bin/javah -classpath \$(CLASSPATH) -d \$(DEST) -jni"
++		JAVAH="\$(JPATH)/bin/javah -classpath \$(JPATH)/jre/lib/rt.jar:\$(CLASSPATH) -d \$(DEST) -jni"
+ 		JAVAC="\$(JPATH)/bin/javac -classpath \$(CLASSPATH) -d \$(TOP)/ -O -source 1.3 -target 1.3"
+ 		JAR="\$(JPATH)/bin/jar"
+ 		JAVADOC="\$(JPATH)/bin/javadoc"
+@@ -21541,7 +21541,7 @@
+ 	CFLAGS=$CFLAGS" -D__need_timespec"
+ 	case $JAVA_VERSION in
+ 
+-	1.2*|1.3*|1.4*|1.5*)
++	1.2*|1.3*|1.4*|1.5*|1.6*)
+ 		#fix_parameters $JPATH/jre/lib/javax.comm.properties
+ 		CLASSPATH=".:\$(TOP):\$(TOP)/src:"`find $JPATH/ -name RXTXcomm.jar |head -n1`
+ 		JHOME=$JPATH"/jre/lib/ext"
+@@ -21611,7 +21611,7 @@
+ 	TARGETLIB="\$(target_triplet)/librxtxSerial.la \
+ 			\$(target_triplet)/librxtxParallel.la"
+ 	case $JAVA_VERSION in
+-	1.2*|1.3*|1.4*|1.5*)
++	1.2*|1.3*|1.4*|1.5*|1.6*)
+ 		#fix_parameters $JPATH/jre/lib/javax.comm.properties
+ 		CLASSPATH=".:\$(TOP):\$(TOP)/src:"`find $JPATH/ -name RXTXcomm.jar |head -n1`
+ 		RXTX_PATH="\$(JPATH)/jre/lib/\$(OS_ARCH)"
+@@ -21747,7 +21747,7 @@
+ 
+ WIN32)
+ 	case $JAVA_VERSION in
+-	1.2*|1.3*|1.4*|1.5*)
++	1.2*|1.3*|1.4*|1.5*|1.6*)
+ 		CLASSPATH=".:\$(TOP):\$(TOP)/src:`find $JPATH/ -name RXTXcomm.jar |head -n1`:$CLASSPATH"
+ 		JHOME=$JPATH"/jre/lib/ext"
+ 	;;
+@@ -21799,7 +21799,7 @@
+ 	CLASSPATH=".:\$(TOP):\$(TOP)/src:\$(JPATH)/lib/classes.zip:\$(JPATH)/lib/RXTXcomm.jar:$CLASSPATH"
+ 
+ 	case $JAVA_VERSION in
+-	1.2*|1.3*|1.4*|1.5*)
++	1.2*|1.3*|1.4*|1.5*|1.6*)
+ 		RXTX_PATH="\$(JPATH)/jre/lib/\$(OS_ARCH)"
+ 	;;
+ 	1.1*)
+Index: rxtx-2.1-7r2/src/I2CImp.c
+===================================================================
+--- rxtx-2.1-7r2.orig/src/I2CImp.c	2004-10-17 16:23:02.000000000 +0200
++++ rxtx-2.1-7r2/src/I2CImp.c	2008-02-09 02:09:02.000000000 +0100
+@@ -22,8 +22,8 @@
+ #include "config.h"
+ #include "gnu_io_I2C.h"
+ #endif /* dima */
+-#include <time.h>
+ #include <unistd.h>
++#include <time.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -88,6 +88,7 @@
+ #endif /* !__FreeBSD__ */
+ #if defined(__linux__) 
+ 	/* Lets let people who upgraded kernels know they may have problems */
++	/*
+ 	if (uname (&name) == -1)
+ 	{
+ 		fprintf(stderr,"RXTX WARNING:  cannot get system name\n");
+@@ -98,6 +99,7 @@
+ 		fprintf(stderr, "\n\n\nRXTX WARNING:  This library was compiled to run with OS release %s and you are currently running OS release %s.  In some cases this can be a problem.  Try recompiling RXTX if you notice strange behavior.  If you just compiled RXTX make sure /usr/include/linux is a symbolic link to the include files that came with the kernel source and not an older copy.\n\n\npress enter to continue\n",UTS_RELEASE,name.release);
+ 		getchar();
+ 	}
++	*/
+ #endif /* __linux__ */
+ #endif /* WIN32 */
+ }
+Index: rxtx-2.1-7r2/Makefile.in
+===================================================================
+--- rxtx-2.1-7r2.orig/Makefile.in	2008-02-09 02:08:40.000000000 +0100
++++ rxtx-2.1-7r2/Makefile.in	2008-02-09 02:09:02.000000000 +0100
+@@ -556,6 +556,7 @@
+ $(CLASSES): $(javafiles) $(TOP)/Makefile
+ 	$(JAVAH_FIX)
+ 	$(JAVAC) $(javafiles)
++	mkdir $(DEST)
+ 	$(JAVAH) `(for i in $(javahfiles);do \
+ 		if grep > /dev/null native.*\( $(SPATH)/$$i.java; then \
+ 			echo $(CLASSDIR).$$i; \
+@@ -572,7 +573,7 @@
+ 			echo $$i; \
+ 		fi; \
+ 	done` $(RXTX_PATH)
+-	$(INSTALL_PROGRAM) $(JARTARGET) $(JHOME)/
++	$(INSTALL_DATA) $(JARTARGET) $(JHOME)/
+ 
+ clean-generic:
+ 	rm -rf $(DEST) $(TOP)/$(CLASSTOP)
+Index: rxtx-2.1-7r2/src/ParallelImp.c
+===================================================================
+--- rxtx-2.1-7r2.orig/src/ParallelImp.c	2005-06-10 21:50:31.000000000 +0200
++++ rxtx-2.1-7r2/src/ParallelImp.c	2008-02-09 02:09:02.000000000 +0100
+@@ -38,8 +38,8 @@
+ /*#include <typedefs_md.h>*/
+ #include "gnu_io_LPRPort.h"
+ #endif /* dima */
+-#include <time.h>
+ #include <unistd.h>
++#include <time.h>
+ #include <stdio.h>
+ #include <string.h>
+ #ifndef WIN32
+Index: rxtx-2.1-7r2/src/RawImp.c
+===================================================================
+--- rxtx-2.1-7r2.orig/src/RawImp.c	2008-02-09 02:08:40.000000000 +0100
++++ rxtx-2.1-7r2/src/RawImp.c	2008-02-09 02:09:02.000000000 +0100
+@@ -31,8 +31,8 @@
+ #include "config.h"
+ #include "gnu_io_Raw.h"
+ #endif /* dima */
+-#include <time.h>
+ #include <unistd.h>
++#include <time.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -232,6 +232,7 @@
+ #endif /* !__FreeBSD__ */
+ #if defined(__linux__) 
+ 	/* Lets let people who upgraded kernels know they may have problems */
++	/*
+ 	if (uname (&name) == -1)
+ 	{
+ 		fprintf(stderr,"RXTX WARNING:  cannot get system name\n");
+@@ -242,6 +243,7 @@
+ 		fprintf(stderr, "\n\n\nRXTX WARNING:  This library was compiled to run with OS release %s and you are currently running OS release %s.  In some cases this can be a problem.  Try recompiling RXTX if you notice strange behavior.  If you just compiled RXTX make sure /usr/include/linux is a symbolic link to the include files that came with the kernel source and not an older copy.\n\n\npress enter to continue\n",UTS_RELEASE,name.release);
+ 		getchar();
+ 	}
++	*/
+ #endif /* __linux__ */
+ #endif /* WIN32 */
+ }
+Index: rxtx-2.1-7r2/src/RS485Imp.c
+===================================================================
+--- rxtx-2.1-7r2.orig/src/RS485Imp.c	2004-10-16 18:20:35.000000000 +0200
++++ rxtx-2.1-7r2/src/RS485Imp.c	2008-02-09 02:09:02.000000000 +0100
+@@ -22,8 +22,8 @@
+ #include "config.h"
+ #include "gnu_io_RS485.h"
+ #endif /* dima */
+-#include <time.h>
+ #include <unistd.h>
++#include <time.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
+@@ -88,6 +88,7 @@
+ #endif /* !__FreeBSD__ */
+ #if defined(__linux__) 
+ 	/* Lets let people who upgraded kernels know they may have problems */
++	/*
+ 	if (uname (&name) == -1)
+ 	{
+ 		fprintf(stderr,"RXTX WARNING:  cannot get system name\n");
+@@ -98,6 +99,7 @@
+ 		fprintf(stderr, "\n\n\nRXTX WARNING:  This library was compiled to run with OS release %s and you are currently running OS release %s.  In some cases this can be a problem.  Try recompiling RXTX if you notice strange behavior.  If you just compiled RXTX make sure /usr/include/linux is a symbolic link to the include files that came with the kernel source and not an older copy.\n\n\npress enter to continue\n",UTS_RELEASE,name.release);
+ 		getchar();
+ 	}
++	*/
+ #endif /* __linux__ */
+ #endif /* WIN32 */
+ }
+Index: rxtx-2.1-7r2/src/SerialImp.c
+===================================================================
+--- rxtx-2.1-7r2.orig/src/SerialImp.c	2008-02-09 02:08:40.000000000 +0100
++++ rxtx-2.1-7r2/src/SerialImp.c	2008-02-09 02:09:02.000000000 +0100
+@@ -27,10 +27,10 @@
+ #ifdef __LCC__ /* windows lcc compiler for fd_set. probably wrong */
+ #   include<winsock.h>
+ #endif /* __LCC__ */
+-#include <time.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
++#include <time.h>
+ #include <errno.h>
+ #include <limits.h>
+ #include <sys/stat.h>
+@@ -281,6 +281,7 @@
+ #endif /* DEBUG_TIMING */
+ #if defined(DEBUG) && defined(__linux__)
+ 	/* Lets let people who upgraded kernels know they may have problems */
++	/*
+ 	if (uname (&name) == -1)
+ 	{
+ 		report( "RXTX WARNING:  cannot get system name\n" );
+@@ -294,6 +295,7 @@
+ 		report( message );
+ 		getchar();
+ 	}
++	*/
+ 	LEAVE( "RXTXPort:Initialize" );
+ #endif /* DEBUG && __linux__ */
+ }
+Index: rxtx-2.1-7r2/src/SerialImp.cpp
+===================================================================
+--- rxtx-2.1-7r2.orig/src/SerialImp.cpp	2004-10-12 10:59:27.000000000 +0200
++++ rxtx-2.1-7r2/src/SerialImp.cpp	2008-02-09 02:09:02.000000000 +0100
+@@ -103,6 +103,7 @@
+ #endif /* !__FreeBSD__ */
+ #ifdef DEBUG
+ 	/* Lets let people who upgraded kernels know they may have problems */
++	/*
+ 	if (uname (&name) == -1)
+ 	{
+ 		report("RXTX WARNING:  cannot get system name\n");
+@@ -114,6 +115,7 @@
+ 			name.release);
+ 		getchar();
+ 	}
++	*/
+ #endif /* DEBUG */
+ #endif /* __BEOS__ */
+ #endif /* WIN32 */
