@@ -1,0 +1,26 @@
+Index: LogicAnalyzer/client/org/sump/analyzer/Loader.java
+===================================================================
+--- LogicAnalyzer.orig/client/org/sump/analyzer/Loader.java	2008-02-08 23:34:14.000000000 +0100
++++ LogicAnalyzer/client/org/sump/analyzer/Loader.java	2008-02-08 23:46:40.000000000 +0100
+@@ -90,12 +90,19 @@
+ 			}
+ 		}
+ 		
+-		try {
+-			SwingUtilities.invokeAndWait(w);
++//		try {
++
++      /* Constructing and running the GUI from withing the Swing thread
++      is right and nice but does not work in Classpath (yet):
++      */
++//			SwingUtilities.invokeAndWait(w);
++			w.run();
++/*
+ 		} catch (Exception e) {
+ 			System.out.println("Error while invoking application: " + e.getMessage() + "\n");
+ 			e.printStackTrace();
+ 			System.exit(-1);
+ 		}
++*/
+ 	}
+ }
