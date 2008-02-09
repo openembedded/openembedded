@@ -22,6 +22,7 @@ MACHINE_DISPLAY_PPI = "180"
 
 ROOT_FLASH_SIZE = "24"
 
+IMAGE_FSTYPES ?= "jffs2"
 EXTRA_IMAGECMD_jffs2 = "--pad=14680064 --little-endian --eraseblock=0x20000 -n"
 
 EXTRA_IMAGEDEPENDS += "ezx-boot-usb-native"
