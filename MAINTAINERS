@@ -92,6 +92,12 @@ Website:    http://sicherheitsschwankung.de
 Machines:   chumby
 Recipes:    chumby-*, initramfs-chumby
 
+Person:     Jeremy Lainé
+Mail:       jeremy.laine@bolloretelecom.eu
+Website:    http://www.jerryweb.org/
+Machines:   mpc8313e-rdb
+Recipes:    libexosip2, python-cheetah, python-django, python-pyopenssl
+
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
@@ -165,7 +171,9 @@ Recipes:    *python*, efl/*, e17*
 
 Person:     Patrick Gfeller
 Mail:       gfellerpatrik@gmx.net
-Recipes:    libvncserver, fbvncserver
+Website:    www.codeomega.info
+Interests:  text-to-speech, vnc
+Recipes:    libvncserver, fbvncserver2
 
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
@@ -212,7 +220,7 @@ Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
-Recipes:    eb, eblook, tomoe
+Recipes:    eb*, tomoe, offline-wikipedia
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
@@ -226,6 +234,10 @@ Distros:    OPLinux, Angstrom
 Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
 Interest:   Cross-machine development
 Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
+
+Person:     Takashi Nemoto
+Mail:       tnemoto@sourceforge.jp
+Recipes:    mkbold-mkitalic
 
 Person:     Tim Sander
 Mail:       oe@iss.tu-darmstadt.de

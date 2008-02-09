@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ glibmm"
 
 inherit gnome pkgconfig
 
