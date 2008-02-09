@@ -1,16 +1,14 @@
 require glibc.inc
+PR = "r9"
 
 ARM_INSTRUCTION_SET = "arm"
 
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
 
-PR = "r8"
-
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
 TARGET_CPPFLAGS = "-I${STAGING_DIR_TARGET}${layout_includedir}"
-
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
@@ -36,57 +34,52 @@ python __anonymous () {
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
-#	   file://noinfo.patch;patch=1
-#	   file://ldconfig.patch;patch=1;pnum=0
-#	   file://arm-machine-gmon.patch;patch=1;pnum=0 \
-#	   \
-#	   file://arm-ioperm.patch;patch=1;pnum=0 \
-#	   file://ldd.patch;patch=1;pnum=0 \
-SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2 \
-	   ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
-           file://arm-memcpy.patch;patch=1 \
-           file://arm-longlong.patch;patch=1 \
-           file://fhs-linux-paths.patch;patch=1 \
-           file://dl-cache-libcmp.patch;patch=1 \
-           file://ldsocache-varrun.patch;patch=1 \
-           file://nptl-crosscompile.patch;patch=1 \
-	   file://glibc-check_pf.patch;patch=1;pnum=0 \
-#	   file://glibc-2.4-compile.patch;patch=1 \
-#	   file://glibc-2.4-openat-3.patch;patch=1 \
-#	   file://fixup-aeabi-syscalls.patch;patch=1 \
-	   file://zecke-sane-readelf.patch;patch=1 \
-           file://ldd-unbash.patch;patch=1 \
-	   file://generic-bits_select.h \
-	   file://generic-bits_types.h \
-	   file://generic-bits_typesizes.h \
-	   file://generic-bits_time.h \
-           file://etc/ld.so.conf \
-           file://generate-supported.mk"
-
+SRC_URI = "\
+  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
+  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-ports-${PV}.tar.bz2 \
+  ftp://ftp.gnu.org/pub/gnu/glibc/glibc-libidn-${PV}.tar.bz2 \
+  file://arm-memcpy.patch;patch=1 \
+  file://arm-longlong.patch;patch=1 \
+  file://fhs-linux-paths.patch;patch=1 \
+  file://dl-cache-libcmp.patch;patch=1 \
+  file://ldsocache-varrun.patch;patch=1 \
+  file://nptl-crosscompile.patch;patch=1 \
+  file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1 \
+  file://glibc-check_pf.patch;patch=1;pnum=0 \
+  file://zecke-sane-readelf.patch;patch=1 \
+  file://ldd-unbash.patch;patch=1 \
+  file://generic-bits_select.h \
+  file://generic-bits_types.h \
+  file://generic-bits_typesizes.h \
+  file://generic-bits_time.h \
+  file://etc/ld.so.conf \
+  file://generate-supported.mk \
+"
 
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
-#powerpc patches to add support for soft-float
-SRC_URI_append_powerpc= " file://ppc-sfp-machine.patch;patch=1 \
-                          file://ppc-soft-fp-20070115.patch;patch=1 \
-                          file://ppc-ld-nofpu-20070104.patch;patch=1 \
-                          file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
-                          file://powerpc-sqrt-hack.diff;patch=1 \
-                          file://glibc-2.5-soft-fp-separate-strong-alias.patch;patch=1"
+# Powerpc patches to add support for soft-float
+SRC_URI_append_powerpc = " file://ppc-sfp-machine.patch;patch=1 \
+                           file://ppc-soft-fp-20070115.patch;patch=1 \
+                           file://ppc-ld-nofpu-20070104.patch;patch=1 \
+                           file://ppc-ports-ld-nofpu-20070114.patch;patch=1 \
+                           file://powerpc-sqrt-hack.diff;patch=1 \
+                           file://glibc-2.5-soft-fp-separate-strong-alias.patch;patch=1"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
-EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
-	        --without-cvs --disable-profile --disable-debug --without-gd \
-		--enable-clocale=gnu \
-	        --enable-add-ons=${GLIBC_ADDONS} \
-		--with-headers=${STAGING_INCDIR} \
-		--without-selinux \
-		${GLIBC_EXTRA_OECONF}"
+EXTRA_OECONF = "\
+  --enable-kernel=${OLDEST_KERNEL} \
+  --without-cvs --disable-profile --disable-debug --without-gd \
+  --enable-clocale=gnu \
+  --enable-add-ons=${GLIBC_ADDONS} \
+  --with-headers=${STAGING_INCDIR} \
+  --without-selinux \
+  ${GLIBC_EXTRA_OECONF} \
+"
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 

@@ -78,5 +78,6 @@ f7a565e7e910cea46808ec61590556a6b97dff74         "
 02945aaeb0e67e273a58bf42b1a0a7988a413f92 cups tweak (Koen, PaulS)
 4f0260db452e1d17accce2d4d5bdb2c928659a73 h5000.conf: Ship kernel-module-i2c-pxa. (PaulS, Koen)
 647847c7187d536c71adab58568757d34b048ac2 h5000.conf: Ship BT module. (PaulS, Koen)
+013b42d9a596e92a85b2c13b49e8ce89c99c1b14 glibc fix (Koen, PaulS)
 
 
