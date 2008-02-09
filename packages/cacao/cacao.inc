@@ -13,7 +13,7 @@ RDEPENDS = "classpath"
 PROVIDES = "cacao virtual/java"
 RPROVIDES_cacao = "java2-runtime"
 
-inherit autotools update-alternatives
+inherit java autotools update-alternatives
 
 EXTRA_OECONF = "\
 	${@['','--enable-softfloat'][bb.data.getVar('TARGET_FPU',d,1) == 'soft']} \
@@ -41,11 +41,11 @@ do_configure_prepend() {
   # Replaces the placeholder OE_LIBDIR_JNI with the JNI library directory
   # configured in OE.
   if [ -e src/vm/properties.c ]; then
-    sed -i -e "s|OE_LIBDIR_JNI|${libdir}/jni|" src/vm/properties.c
+    sed -i -e "s|OE_LIBDIR_JNI|${libdir_jni}|" src/vm/properties.c
   fi
 
   if [ -e src/vm/properties.c ]; then
-    sed -i -e "s|OE_LIBDIR_JNI|${libdir}/jni|" src/vm/vm.c
+    sed -i -e "s|OE_LIBDIR_JNI|${libdir_jni}|" src/vm/vm.c
   fi
 }
 
