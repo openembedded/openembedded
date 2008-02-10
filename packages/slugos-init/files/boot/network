@@ -25,7 +25,7 @@ iface="$(config iface)"
 test -z "$iface" && exit 1 
 #
 # Fire up a process in the background to load the firmware if necessary
-sysf="/sys/class/firmware/$iface"
+sysf="/sys/class/firmware/firmware-$iface"
 (
 	# Wait for the firware to be requested, if required
 	[ -f $sysf/loading ] || sleep 1
