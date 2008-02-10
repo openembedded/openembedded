@@ -5,10 +5,10 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r46"
+PR = "r47"
 CONFLICTS = "db3"
 
-COMPATIBLE_MACHINE = "nslu2"
+COMPATIBLE_MACHINE = "nslu2|ixp4xx"
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
@@ -96,7 +96,6 @@ SLUGOS_PACKAGES = "\
 	gphoto2 \
 	grep \
 	groff \
-	gspcav1 \
 	gtk-doc \
 	gzip \
 	hdparm \
@@ -249,6 +248,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	dsniff \
 	eciadsl \
 	fetchmail \
+	gspcav1 \
 	lirc-modules lirc \
 	madfu \
 	openldap \
