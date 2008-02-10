@@ -3,12 +3,10 @@ HOMEPAGE = "http://www.sqlalchemy.org/"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"          
-DEPENDS = "python-setuptools"
-#RDEPENDS = ""
-SRCNAME = "sqlalchemy"
+SRCNAME = "SQLAlchemy"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/SQLAlchemy-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sqlalchemy/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-#inherit distutils
+inherit setuptools
