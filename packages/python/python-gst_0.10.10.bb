@@ -2,7 +2,7 @@ DESCRIPTION = "Python Gstreamer bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gstreamer gst-plugins-base python-pygobject"
-PR = "ml1"
+PR = "ml0"
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
            file://python-path.patch;patch=1"
