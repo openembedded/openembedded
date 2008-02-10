@@ -5,7 +5,7 @@ LICENSE = "GPL"
 AUTHOR = "David Olofson <david@olofson.net>"
 HOMEPAGE = "http://olofson.net/kobodl"
 
-PR = "1"
+PR = "r1"
 
 DEPENDS = "libsdl-image virtual/libsdl"
 
