@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r45"
+PR = "r46"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2"
@@ -101,6 +101,7 @@ SLUGOS_PACKAGES = "\
 	gzip \
 	hdparm \
 	ifupdown \
+	inetutils \
 	iperf \
 	ipkg-utils \
 	iptables \
@@ -108,6 +109,7 @@ SLUGOS_PACKAGES = "\
 	irssi \
 	joe \
 	jpeg \
+	kexec-tools \
 	lcdproc \
 	less \
 	libao \
@@ -192,6 +194,7 @@ SLUGOS_PACKAGES = "\
 	reiserfsprogs reiser4progs \
 	rng-tools \
 	rsync \
+	rtorrent \
 	samba \
 	sane-backends \
 	screen \
