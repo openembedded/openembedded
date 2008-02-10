@@ -1,7 +1,6 @@
 DESCRIPTION = "Unix socket, debug and hexdump libraries"
 LICENSE = "LGPL"
 SECTION = "libs"
-MAINTAINER = "Fabian Koester, tarent GmbH Bonn <f.koester@tarent.de>"
 HOMEPAGE = "http://jalimo.org"
 AUTHOR = "Matthew Johnson <web@matthew.ath.cx>"
 
