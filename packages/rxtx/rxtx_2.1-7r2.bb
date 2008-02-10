@@ -1,7 +1,6 @@
 DESCRIPTION = "RXTX provides serial and parallel communication for Java applications"
 LICENSE = "LGPL"
 SECTION = "libs"
-MAINTAINER = "Robert Schuster, tarent GmbH Bonn <robert.schuster@tarent.de>"
 HOMEPAGE = "http://rxtx.org"
 
 inherit autotools java-library

@@ -1,6 +1,5 @@
 DESCRIPTION = "A Java-based logical analyzer for home use."
 LICENSE = "GPL"
-MAINTAINER = "Robert Schuster, tarent GmbH Bonn <robert.schuster@tarent.de>"
 HOMEPAGE = "http://sump.org/projects/analyzer/"
 
 inherit java

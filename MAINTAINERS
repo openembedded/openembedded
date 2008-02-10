@@ -264,3 +264,14 @@ Interests:  Kernels, PXA, GTK+, gsmd
 Distros:    Ångström
 Machines:   hx4700, magician
 Recipes:    avahi, libgsmd
+
+Person:     Robert Schuster 'thebohemian'
+Mail:       robert.schuster@tarent.de, thebohemian@gmx.net
+Website:    http://fsfe.org/en/fellows/robertschuster/weblog
+Interests:  free software, java, games
+Distros:    chinook-compat
+Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
+Recipes:    classpath*, cacao*, jamvm*
+Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
+Recipes:    midpath*, logic-analyze
+Recipes:    kobodeluxe
