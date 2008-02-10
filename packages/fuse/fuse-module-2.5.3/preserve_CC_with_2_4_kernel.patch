@@ -1,0 +1,11 @@
+--- fuse-2.5.3/kernel/Makefile.in.orig	2008-01-05 20:43:00.000000000 -0600
++++ fuse-2.5.3/kernel/Makefile.in	2008-01-05 20:43:25.000000000 -0600
+@@ -54,8 +54,6 @@
+ 
+ ifeq ($(majver), 2.4)
+ 
+-CC = gcc
+-LD = ld
+ CFLAGS = -O2 -Wall -Wstrict-prototypes -fno-strict-aliasing -pipe @KERNELCFLAGS@
+ CPPFLAGS = -I@kernelsrc@/include -I. -D__KERNEL__ -DMODULE -D_LOOSE_KERNEL_NAMES -DFUSE_VERSION=\"$(VERSION)\" @KERNELCPPFLAGS@
+ 
