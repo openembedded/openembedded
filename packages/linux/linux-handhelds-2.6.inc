@@ -98,6 +98,11 @@ set cmdline "root=/dev/mmcblk0p2 rootdelay=10 console=ttyS0,115200n8 console=tty
 # 192.168.y.y - Handheld's address
 #set cmdline "root=/dev/nfs nfsroot=192.168.x.x:<nfs_path> ip=192.168.y.y:192.168.x.x:192.168.x.x:255.255.255.0:pda:usb0 console=ttyS0,115200n8 console=tty0"
 
+## Choice 5 - Boot from MTD partition, for devices with lots of flash
+#  to have both WinCE and Linux there. Note the value of root param,
+#  that's how it should be, not "/dev/mtdblockN".
+# set cmdline "root=mtdN console=ttyS0,115200n8 console=tty0"
+
 bootlinux
 EOF
 }
