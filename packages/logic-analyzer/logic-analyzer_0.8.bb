@@ -2,15 +2,18 @@ DESCRIPTION = "A Java-based logical analyzer for home use."
 LICENSE = "GPL"
 HOMEPAGE = "http://sump.org/projects/analyzer/"
 
+PR = "r1"
+
 inherit java
 
 DEPENDS = "rxtx"
-RDEPENDS = "librxtx-java"
+RDEPENDS = "java2-runtime classpath-awt librxtx-java"
 
 SRC_URI = "\
     http://sump.org/projects/analyzer/downloads/la-src-${PV}.tar.bz2 \
     file://cp-run-fix.patch;patch=1 \
     file://client-makefile.patch;patch=1 \
+    file://scrolling-capture-dialog.patch;patch=1 \
     "
 
 S = "${WORKDIR}/LogicAnalyzer"
