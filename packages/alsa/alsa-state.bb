@@ -28,6 +28,7 @@ SRC_URI_append_fic-gta01 = " \
 
 SRC_URI_append_fic-gta02 = "\
   file://stereoout.state \
+  file://gsmhandset.state \
   "
 
 inherit update-rc.d
