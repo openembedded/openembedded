@@ -1,0 +1,15 @@
+DESCRIPTION = "Anki is a program designed to help you remember facts \
+(such as words and phrases in a foreign language) \
+as easily, quickly and efficiently as possible"
+HOMEPAGE = "http://ichi2.net/anki/"
+AUTHOR = "Damien Elmes"
+PRIORITY = "optional"
+LICENSE = "GPLv2"
+DEPENDS = "qt4-x11-free python python-pyqt python-native"
+RRECOMMENDS = "kakasi virtual/japanese-font"
+
+SRC_URI = "http://ichi2.net/anki/download/anki-${PV}.tgz"
+
+inherit autotools setuptools
+
+PACKAGE_ARCH = "all"
