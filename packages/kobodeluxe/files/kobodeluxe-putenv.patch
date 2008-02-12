@@ -1,0 +1,69 @@
+Index: KoboDeluxe-0.5.1/configure.in
+===================================================================
+--- KoboDeluxe-0.5.1.orig/configure.in	2008-02-10 12:27:11.000000000 +0100
++++ KoboDeluxe-0.5.1/configure.in	2008-02-10 15:50:11.000000000 +0100
+@@ -159,7 +159,6 @@
+ )
+ LIBS="$LIBS -lSDL_image"
+ 
+-
+ dnl-------------------------------------------------------
+ dnl Checks for OpenGL
+ dnl-------------------------------------------------------
+@@ -214,13 +213,18 @@
+ dnl-------------------------------------------------------
+ dnl Checks for library functions.
+ dnl-------------------------------------------------------
++dnl SDL_putenv may not be available in all SDL ports
++AC_CHECK_DECLS(SDL_putenv,,,[#include <SDL.h>])
++
+ AC_CHECK_FUNCS(strdup strstr strchr strrchr)
+ AC_CHECK_FUNCS(snprintf _snprintf vsnprintf _vsnprintf)
+ AC_CHECK_FUNCS(pow sqrt)
+ AC_CHECK_FUNCS(munmap mkdir select stat)
+ AC_CHECK_FUNCS(atexit floor memmove memset memcmp)
+-AC_CHECK_FUNCS(gettimeofday)
++AC_CHECK_FUNCS(gettimeofday putenv)
+ AC_CHECK_FUNCS(getegid setgid)
++
++
+ AC_FUNC_MEMCMP
+ AC_FUNC_STRTOD
+ AC_FUNC_VPRINTF
+Index: KoboDeluxe-0.5.1/graphics/gfxengine.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/graphics/gfxengine.cpp	2008-02-10 12:41:31.000000000 +0100
++++ KoboDeluxe-0.5.1/graphics/gfxengine.cpp	2008-02-10 15:58:06.000000000 +0100
+@@ -21,10 +21,15 @@
+ 
+ #define	DBG(x)	x
+ 
++#include <aconfig.h>
++
+ #include "logger.h"
+ 
+ #include <string.h>
+ #include <math.h>
++#if not (HAVE_DECL_SDL_PUTENV) and defined (HAVE_PUTENV)
++#include <stdlib.h>
++#endif
+ 
+ #include "gfxengine.h"
+ #include "filters.h"
+@@ -764,8 +769,14 @@
+ 	if(is_showing)
+ 		return 0;
+ 
+-	if(_centered && !_fullscreen)
+-		SDL_putenv((char *)"SDL_VIDEO_CENTERED=1");
++  if(_centered && !_fullscreen)
++#if HAVE_DECL_SDL_PUTENV
++    SDL_putenv("SDL_VIDEO_CENTERED=1");
++#elif defined(HAVE_PUTENV)
++    putenv("SDL_VIDEO_CENTERED=1");
++#else
++    #error Neither SDL_putenv() nor putenv() are available. Fix it!
++#endif
+ 
+ 	log_printf(DLOG, "Opening screen...\n");
+ 	if(!SDL_WasInit(SDL_INIT_VIDEO))

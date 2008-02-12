@@ -1,0 +1,84 @@
+Index: KoboDeluxe-0.5.1/configure.in
+===================================================================
+--- KoboDeluxe-0.5.1.orig/configure.in	2008-02-10 20:51:37.000000000 +0100
++++ KoboDeluxe-0.5.1/configure.in	2008-02-10 21:40:09.000000000 +0100
+@@ -36,6 +36,7 @@
+ SCOREDIR='$(sharedstatedir)/kobo-deluxe/scores'
+ CONFIGDIR='HOME>>'
+ CONFIGFILE='.kobodlrc'
++USE_SYSCONF=1
+ EXEFILE=kobodl
+ case "$target_os" in
+ 	linux*)
+@@ -57,6 +58,7 @@
+ 		SCOREDIR='EXE>>scores'
+ 		CONFIGDIR='EXE>>'
+ 		CONFIGFILE='kobodl.cfg'
++    USE_SYSCONF=0
+ 		EXEFILE=kobodl.exe
+ 		MATHLIB=""
+ 		;;
+@@ -68,6 +70,7 @@
+ 		SCOREDIR='EXE>>scores'
+ 		CONFIGDIR='EXE>>'
+ 		CONFIGFILE='kobodl.cfg'
++    USE_SYSCONF=0
+ 		EXEFILE=kobodl.exe
+ 		MATHLIB=""
+ 		;;
+@@ -105,10 +108,12 @@
+ AM_CONDITIONAL(BUILD_MACOSX_BUNDLE, test x$build_macosx_bundle = xyes)
+ AM_CONDITIONAL(BUILD_SIMPLE_BUNDLE, test x$build_simple_bundle = xyes)
+ AM_CONDITIONAL(UNIX_SCOREDIR, test x$unix_scoredir = xyes)
++AC_DEFINE_UNQUOTED([USE_SYSCONF], [$USE_SYSCONF], [Define to 1 to use Unix-style sysconf dir for default configuration.])
+ AC_SUBST(DATADIR)
+ AC_SUBST(SCOREDIR)
+ AC_SUBST(CONFIGDIR)
+ AC_SUBST(CONFIGFILE)
++AC_SUBST(KOBO_SYSCONF)
+ AC_SUBST(EXEFILE)
+ AC_SUBST(MATHLIB)
+ 
+Index: KoboDeluxe-0.5.1/kobo.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/kobo.cpp	2008-02-10 20:57:32.000000000 +0100
++++ KoboDeluxe-0.5.1/kobo.cpp	2008-02-10 21:27:22.000000000 +0100
+@@ -1293,9 +1293,38 @@
+ 	FILE *f = fmap->fopen(KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE, "r");
+ 	if(f)
+ 	{
++    log_puts(VLOG, "Loading personal configuration from: "\
++                   KOBO_CONFIG_DIR "/" KOBO_CONFIG_FILE "\n");
+ 		p->read(f);
+ 		fclose(f);
+ 	}
++#if USE_SYSCONF
++  /* On Unixen, where they have SYSCONF_DIR (usually /etc) try to get
++   * the default configuration from a file stored there before
++   * giving up.
++   *
++   * This gives packagers a chance to provide a proper default
++   * (playable) configuration for all those little Linux-based
++   * gadgets that are flying around.
++   */
++  else
++  {
++  	f = fmap->fopen(SYSCONF_DIR "/kobo-deluxe/default-config", "r");
++	  if(f)
++  	{
++      log_puts(VLOG, "Loading configuration defaults from: "\
++                     SYSCONF_DIR "/kobo-deluxe/default-config\n");
++
++  		p->read(f);
++	  	fclose(f);
++  	}
++    else
++      log_puts(VLOG, "Using built-in configuration defaults.\n");
++
++  }
++#else
++  log_puts(VLOG, "Using built-in configuration defaults.\n");
++#endif
+ }
+ 
+ 

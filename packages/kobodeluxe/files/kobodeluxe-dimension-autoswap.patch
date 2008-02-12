@@ -1,0 +1,236 @@
+Index: KoboDeluxe-0.5.1/graphics/gfxengine.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/graphics/gfxengine.cpp	2008-02-11 13:17:27.000000000 +0100
++++ KoboDeluxe-0.5.1/graphics/gfxengine.cpp	2008-02-11 15:27:57.000000000 +0100
+@@ -135,11 +135,13 @@
+ 
+ 	_width = w;
+ 	_height = h;
++
+ 	if(csengine)
+ 		cs_engine_set_size(csengine, w, h);
+ 
+ 	if(was_showing)
+ 		show();
++
+ }
+ 
+ void gfxengine_t::centered(int c)
+@@ -759,33 +761,13 @@
+ 	Display show/hide
+ ----------------------------------------------------------*/
+ 
+-int gfxengine_t::show()
++/** Helper method that returns the flags value needed for
++ * SDL_SetVideoMode() and SDL_VideoModeOK().
++ */
++int gfxengine_t::video_flags()
+ {
+ 	int flags = 0;
+ 
+-	if(!is_open)
+-		return -1;
+-
+-	if(is_showing)
+-		return 0;
+-
+-  if(_centered && !_fullscreen)
+-#if HAVE_DECL_SDL_PUTENV
+-    SDL_putenv("SDL_VIDEO_CENTERED=1");
+-#elif defined(HAVE_PUTENV)
+-    putenv("SDL_VIDEO_CENTERED=1");
+-#else
+-    #error Neither SDL_putenv() nor putenv() are available. Fix it!
+-#endif
+-
+-	log_printf(DLOG, "Opening screen...\n");
+-	if(!SDL_WasInit(SDL_INIT_VIDEO))
+-		if(SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
+-		{
+-			log_printf(ELOG, "Failed to initialize SDL!\n");
+-			return -2;
+-		}
+-
+ 	switch(_driver)
+ 	{
+ 	  case GFX_DRIVER_SDL2D:
+@@ -830,11 +812,72 @@
+ 	glSDL_VSync(_vsync);
+ 	flags |= xflags;
+ 
++	return flags;
++}
++
++bool gfxengine_t::check_mode_autoswap(int *w, int *h)
++{
++	log_printf(VLOG, "Trying display modes %dx%d and %dx%d if the first fails.\n", *w, *h, *h, *w);
++
++	int flags = video_flags();
++
++	SDL_Surface *test_surface = NULL;
++
++	// On some platforms SDL_VideoModeOK() cannot be trusted unfortunately.
++	if(!(test_surface = SDL_SetVideoMode(*w, *h, _depth, flags)))
++	{
++		if(!(test_surface = SDL_SetVideoMode(*h, *w, _depth, flags)))
++		{
++			log_printf(ELOG, "Failed with both display mode. Giving up!\n");
++			return false;
++		}
++
++		int temp = *w;
++		*w = *h;
++		*h = temp;
++
++		log_printf(VLOG, "Display dimensions swapped. Using %dx%d!\n", *w, *h);
++	}
++	else
++		log_printf(VLOG, "Stored display dimension worked. Using %dx%d!\n", *w, *h);
++
++	SDL_FreeSurface(test_surface);
++
++	return true;
++}
++
++int gfxengine_t::show()
++{
++	if(!is_open)
++		return -1;
++
++	if(is_showing)
++		return 0;
++
++  if(_centered && !_fullscreen)
++#if HAVE_DECL_SDL_PUTENV
++    SDL_putenv("SDL_VIDEO_CENTERED=1");
++#elif defined(HAVE_PUTENV)
++    putenv("SDL_VIDEO_CENTERED=1");
++#else
++    #error Neither SDL_putenv() nor putenv() are available. Fix it!
++#endif
++
++	log_printf(DLOG, "Opening screen...\n");
++	if(!SDL_WasInit(SDL_INIT_VIDEO))
++		if(SDL_InitSubSystem(SDL_INIT_VIDEO) == -1)
++		{
++			log_printf(ELOG, "Failed to initialize SDL!\n");
++			return -2;
++		}
++
++	int flags = video_flags();
++
+ 	screen_surface = SDL_SetVideoMode(_width, _height, _depth, flags);
+ 	if(!screen_surface)
+ 	{
+-		log_printf(ELOG, "Failed to open display!\n");
+-		return -3;
++		log_printf(ELOG, "Failed to open display with %dx%d! Giving up.\n", _width, _height);
++    return -3;
+ 	}
+ 
+ 	if(_driver != GFX_DRIVER_GLSDL)
+Index: KoboDeluxe-0.5.1/graphics/gfxengine.h
+===================================================================
+--- KoboDeluxe-0.5.1.orig/graphics/gfxengine.h	2008-02-11 13:24:51.000000000 +0100
++++ KoboDeluxe-0.5.1/graphics/gfxengine.h	2008-02-11 15:15:50.000000000 +0100
+@@ -54,6 +54,9 @@
+ class gfxengine_t
+ {
+ 	friend class window_t;
++
++	int video_flags();
++
+   public:
+ 	gfxengine_t();
+ 	virtual ~gfxengine_t();
+@@ -135,6 +138,7 @@
+ 	void title(const char *win, const char *icon);
+ 
+ 	/* Display show/hide */
++	bool check_mode_autoswap(int *, int *);
+ 	int show();
+ 	void hide();
+ 
+Index: KoboDeluxe-0.5.1/kobo.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/kobo.cpp	2008-02-11 13:16:24.000000000 +0100
++++ KoboDeluxe-0.5.1/kobo.cpp	2008-02-11 14:57:29.000000000 +0100
+@@ -641,8 +641,27 @@
+ 	gengine->title("Kobo Deluxe " VERSION, "kobodl");
+ 	gengine->driver((gfx_drivers_t)p->videodriver);
+ 
++	// Initializes gfxengine with all kinds of display properties.
++	// We need this at this point to make the autoswap check work
++	// properly. Since these properties are independent of other
++	// values that is no problem.
++	gengine->mode(0, p->fullscreen);
++	gengine->doublebuffer(p->doublebuf);
++	gengine->pages(p->pages);
++	gengine->vsync(p->vsync);
++	gengine->shadow(p->shadow);
++	gengine->cursor(0);
++
++	// Do the auto swap dance only if configured so.
++	if (prefs->autoswap)
++	{
++		if (!gengine->check_mode_autoswap(&p->width, &p->height))
++			return -1;
++	}
++	
+ 	dw = p->width;
+ 	dh = p->height;
++
+ 	if(p->fullscreen)
+ 	{
+ 		// This game assumes 1:1 pixel aspect ratio, or 4:3
+@@ -696,13 +715,6 @@
+ 	yoffs = (int)((dh - gh) / 2 / gengine->yscale());
+ 	gengine->size(dw, dh);
+ 
+-	gengine->mode(0, p->fullscreen);
+-	gengine->doublebuffer(p->doublebuf);
+-	gengine->pages(p->pages);
+-	gengine->vsync(p->vsync);
+-	gengine->shadow(p->shadow);
+-	gengine->cursor(0);
+-
+ 	gengine->period(game.speed);
+ 	sound.period(game.speed);
+ 	gengine->timefilter(p->timefilter * 0.01f);
+Index: KoboDeluxe-0.5.1/prefs.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/prefs.cpp	2008-02-11 14:28:01.000000000 +0100
++++ KoboDeluxe-0.5.1/prefs.cpp	2008-02-11 14:30:15.000000000 +0100
+@@ -86,6 +86,7 @@
+ 			desc("Display Driver");
+ 	key("width", width, 640); desc("Horizontal Resolution");
+ 	key("height", height, 480); desc("Vertical Resolution");
++	yesno("autoswap", autoswap, 0); desc("Automatically swap display dimension");
+ 	key("aspect", aspect, 1000); desc("Pixel Aspect Ratio");
+ 	key("depth", depth, 0); desc("Display Depth");
+ 	key("maxfps", max_fps, 100); desc("Maximum fps");
+Index: KoboDeluxe-0.5.1/prefs.h
+===================================================================
+--- KoboDeluxe-0.5.1.orig/prefs.h	2008-02-11 14:28:01.000000000 +0100
++++ KoboDeluxe-0.5.1/prefs.h	2008-02-11 14:31:24.000000000 +0100
+@@ -76,6 +76,7 @@
+ 	int	videodriver;	//Internal video driver
+ 	int	width;		//Screen/window width
+ 	int	height;		//Screen/window height
++	int autoswap; // Automatically swap dimensions if initialization fails
+ 	int	aspect;		//Pixel aspect ratio * 1000
+ 	int	depth;		//Bits per pixel
+ 	int	max_fps;	//Maximum fps
+Index: KoboDeluxe-0.5.1/states.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/states.cpp	2008-02-11 14:32:13.000000000 +0100
++++ KoboDeluxe-0.5.1/states.cpp	2008-02-11 15:00:13.000000000 +0100
+@@ -117,6 +117,8 @@
+ 	switch (button)
+ 	{
+ 	  case BTN_EXIT:
++		gsm.push(&st_ask_exit);
++		break;
+ 	  case BTN_CLOSE:
+ 		gsm.push(&st_main_menu);
+ 		break;
