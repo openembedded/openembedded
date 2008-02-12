@@ -11,7 +11,7 @@ KERNEL_RELEASE = "2.6.24"
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 # ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \
 

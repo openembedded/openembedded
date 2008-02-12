@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r16"
+PR = "r17"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -67,6 +67,7 @@ kernel-module-ext3 \
 kernel-module-vfat \
 kernel-module-nls-cp437 \
 kernel-module-nls-utf8 \
+kernel-module-nfs \
 "
 
 # Add daemon required for HW RNG support
@@ -102,7 +103,6 @@ kernel-module-via-velocity \
 #
 # portmap \
 # kexec-tools \
-# kernel-module-nfs \
 # kernel-module-isofs \
 # kernel-module-udf \
 # kernel-module-loop \

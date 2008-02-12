@@ -1,0 +1,21 @@
+Index: LogicAnalyzer/client/org/sump/analyzer/DeviceController.java
+===================================================================
+--- LogicAnalyzer.orig/client/org/sump/analyzer/DeviceController.java	2008-02-11 23:34:01.000000000 +0100
++++ LogicAnalyzer/client/org/sump/analyzer/DeviceController.java	2008-02-11 23:35:17.000000000 +0100
+@@ -43,6 +43,7 @@
+ import javax.swing.JProgressBar;
+ import javax.swing.JTabbedPane;
+ import javax.swing.JTextField;
++import javax.swing.JScrollPane;
+ import javax.swing.Timer;
+ 
+ import org.sump.util.Properties;
+@@ -312,7 +313,7 @@
+ 		// if no valid dialog exists, create one
+ 		if (dialog == null) {
+ 			dialog = new JDialog(frame, "Capture", true);
+-			dialog.getContentPane().add(this);
++			dialog.getContentPane().add(new JScrollPane(this));
+ 			dialog.setResizable(false);
+ 			dialog.setSize(this.getPreferredSize());
+ 			// dialog.pack();
