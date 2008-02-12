@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r22"
+PR = "r23"
 
 inherit task
 
@@ -38,4 +38,5 @@ RDEPENDS_task-openmoko-feed = "\
   cacao \
   gpsdrive \
   asterisk \
+  qtopia-phone \
 "
