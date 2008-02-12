@@ -128,6 +128,7 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
+	lighttpd \
 	linphone \
 	litestream \
 	logrotate \
@@ -203,6 +204,7 @@ SLUGOS_PACKAGES = "\
 	sipsak \
 	slugimage \
 	smartmontools \
+	sqlite \
 	ssmtp \
 	strace \
 	streamripper \
