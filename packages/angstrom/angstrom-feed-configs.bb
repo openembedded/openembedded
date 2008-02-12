@@ -1,7 +1,7 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
 #PV = "${DISTRO_VERSION}"
-PR = "r3"
+PR = "r4"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"
@@ -27,6 +27,11 @@ do_compile() {
 do_install () {
         install -d ${D}${sysconfdir}/ipkg
 	install -m 0644  ${S}/${sysconfdir}/ipkg/* ${D}${sysconfdir}/ipkg/
+        # opkg compat symlinks
+        install -d ${D}${sysconfdir}/opkg
+        for feed in ${D}${sysconfdir}/ipkg/* ; do
+           ln -sf ${sysconfdir}/ipkg/$(basename $feed) ${D}${sysconfdir}/opkg/$(basename $feed)
+        done
 }
 
 CONFFILES_${PN} += "${sysconfdir}/ipkg/base-feed.conf \

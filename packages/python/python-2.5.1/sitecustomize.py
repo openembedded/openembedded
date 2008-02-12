@@ -7,11 +7,11 @@
 # * load command line history on startup
 # * save command line history on exit 
 
-HISTORY_FILENAME = "/tmp/python-history-file.txt"
+import os
 
 def __exithandler():
     try:
-        readline.write_history_file( HISTORY_FILENAME )
+        readline.write_history_file( "%s/.python-history" % os.getenv( "HOME", "/tmp" ) )
     except IOError:
         pass
 
@@ -22,7 +22,7 @@ def __registerExitHandler():
 def __enableReadlineSupport():
     readline.parse_and_bind("tab: complete")
     try:
-        readline.read_history_file( "/tmp/python-history-file.txt" )
+        readline.read_history_file( "%s/.python-history" % os.getenv( "HOME", "/tmp" ) )
     except IOError:
         pass
 

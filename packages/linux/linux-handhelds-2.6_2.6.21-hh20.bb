@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer handheld devices."
 LICENSE = "GPL"
-PR = "r6"
+PR = "r8"
 
 DEFAULT_PREFERENCE = "-1"
 

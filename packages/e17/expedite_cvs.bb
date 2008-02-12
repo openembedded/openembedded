@@ -3,12 +3,11 @@ DEPENDS = "eet evas"
 RDEPENDS = "libevas-engine-buffer libevas-engine-fb libevas-engine-software-generic libevas-engine-software-x11 libevas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
-SRC_URI = "${E_CVS};module=e17/apps/expedite \
-           file://hack-disable-opengl.patch;patch=1"
+SRC_URI = "${E_CVS};module=e17/apps/expedite"
 S = "${WORKDIR}/${PN}"
 
 EXTRA_OECONF = "\

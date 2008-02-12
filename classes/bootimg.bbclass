@@ -13,9 +13,9 @@
 # ${SYSLINUX_OPTS} - additional options to add to the syslinux file ';' delimited 
 
 do_bootimg[depends] += "dosfstools-native:do_populate_staging \
-                       syslinux-native:do_populate_staging \
-		       mtools-native:do_populate_staging \
-		       cdrtools-native:do_populate_staging"
+                        syslinux-native:do_populate_staging \
+                        mtools-native:do_populate_staging \
+                        cdrtools-native:do_populate_staging"
 
 PACKAGES = " "
 
@@ -31,6 +31,8 @@ SYSLINUXCFG  = "${HDDDIR}/syslinux.cfg"
 SYSLINUXMENU = "${HDDDIR}/menu"
 
 inherit syslinux
+
+IMAGE_POSTPROCESS_COMMAND ?= ""
 		
 build_boot_bin() {
 	install -d ${HDDDIR}
@@ -49,13 +51,15 @@ build_boot_bin() {
 	BLOCKS=`du -bks ${HDDDIR} | cut -f 1`
 	SIZE=`expr $BLOCKS + ${BOOTIMG_EXTRA_SPACE}`	
 
+	install -d ${DEPLOY_DIR_IMAGE}
+
 	mkdosfs -F 12 -n ${BOOTIMG_VOLUME_ID} -d ${HDDDIR} \
 	-C ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg $SIZE 
 
 	syslinux ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg
 	chmod 644 ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.hddimg
 
-	#Create an ISO if we have an INITRD
+	# Create an ISO if we have an INITRD
 	if [ -n "${INITRD}" ] && [ -s "${INITRD}" ] && [ "${NOISO}" != "1" ] ; then
 		install -d ${ISODIR}
 
@@ -77,6 +81,8 @@ build_boot_bin() {
 		# And install the syslinux stuff 
 		cp ${STAGING_DATADIR_NATIVE}/syslinux/isolinux.bin \
 		${ISODIR}
+
+		${IMAGE_POSTPROCESS_COMMAND}
 
 		mkisofs -V ${BOOTIMG_VOLUME_ID} \
 		-o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.iso \

@@ -2,11 +2,12 @@ DESCRIPTION = "mtPaint is a simple painting program"
 SECTION = "x11/graphics"
 DEPENDS = "gtk+ jpeg"
 HOMEPAGE = "http://mtpaint.sf.net"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mtpaint/mtpaint-3.02.tar.bz2"
 
 do_configure() {
-	./configure gtk2
+	/bin/bash ./configure gtk2
 	cat > _conf.txt <<EOF
 CC = ${CC}
 MT_VERSION=mtPaint 3.02

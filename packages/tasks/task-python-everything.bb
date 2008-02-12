@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml24"
+PR = "ml26"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -30,6 +30,7 @@ RDEPENDS = "\
 		python-itools		\
 		python-logilab-common		\
 		python-libgmail		\
+		python-lightmediascanner \
 		python-lxml		\
 		python-mad		\
 		python-numarray		\
@@ -74,6 +75,7 @@ RDEPENDS = "\
 		python-soappy		\
 		python-spydi		\
 		python-spyro		\
+		python-sqlalchemy	\
 		python-sqlobject	\
 		python-sword		\
 		python-tlslite		\

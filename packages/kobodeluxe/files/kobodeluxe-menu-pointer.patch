@@ -1,0 +1,266 @@
+Index: KoboDeluxe-0.5.1/README
+===================================================================
+--- KoboDeluxe-0.5.1.orig/README	2008-02-11 01:10:23.000000000 +0100
++++ KoboDeluxe-0.5.1/README	2008-02-11 01:17:30.000000000 +0100
+@@ -39,6 +39,12 @@
+        key  diagonals.  Escape enters the meny system, from where it is possi-
+        ble to change settings, start a new game or exit the game.
+ 
++       In case the touchscreen support has been compiled in the  menu  can  be
++       controlled by clicking the frame borders. Touching the  inner  part  of
++       the  screen is like a button  press. In the game  mode a  click in  the
++       upper right corner activates pause mode and the lower right  corner es-
++       capes to the menu.
++
+ OPTIONS
+        Note that all relevant options can be also  configured  in  the  config
+        file,  which  can be edited directly, or using the options menus in the
+Index: KoboDeluxe-0.5.1/config.h
+===================================================================
+--- KoboDeluxe-0.5.1.orig/config.h	2008-02-11 00:23:20.000000000 +0100
++++ KoboDeluxe-0.5.1/config.h	2008-02-11 02:01:17.000000000 +0100
+@@ -95,6 +95,15 @@
+ #define MARGIN	8
+ 
+ /*
++ * Fraction of the screen size in which clicks are not considered
++ * clicks but movements in that direction (as regarded from the
++ * center of the screen) or other special things (pause & exit).
++ *
++ * Used only in touchscreen mode.
++ */
++#define POINTER_MARGIN_PERCENT 10
++
++/*
+  * (In XKobo, WSIZE was used where this is
+  * used now; in the game logic code.)
+  *
+Index: KoboDeluxe-0.5.1/configure.in
+===================================================================
+--- KoboDeluxe-0.5.1.orig/configure.in	2008-02-11 00:37:18.000000000 +0100
++++ KoboDeluxe-0.5.1/configure.in	2008-02-11 00:48:59.000000000 +0100
+@@ -195,6 +195,16 @@
+ 	CXXFLAGS="$CXXFLAGS -DHAVE_OPENGL"
+ fi
+ 
++AC_ARG_ENABLE(
++  touchscreen,
++  [AS_HELP_STRING(
++    [--enable-touchscreen],
++    [Compile menu control support suitable for touchscreens (default is no)])],
++  AC_DEFINE(
++    [ENABLE_TOUCHSCREEN],
++    [1],
++    [Set to 1 if the menusystem should support touchscreen input]),
++    [])
+ 
+ dnl-------------------------------------------------------
+ dnl Checks for header files.
+Index: KoboDeluxe-0.5.1/kobo.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/kobo.cpp	2008-02-11 00:24:57.000000000 +0100
++++ KoboDeluxe-0.5.1/kobo.cpp	2008-02-11 16:02:23.000000000 +0100
+@@ -28,6 +28,8 @@
+ // Use this to benchmark and create a new percentage table!
+ #undef	TIME_PROGRESS
+ 
++#include <aconfig.h>
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+@@ -671,6 +673,10 @@
+ 		gh = dh;
+ 	}
+ 
++#if ENABLE_TOUCHSCREEN
++	gengine->setup_pointer_margin(dw, dh);
++#endif
++
+ 	// Scaling has 16ths granularity, so tiles scale properly!
+ 	gengine->scale((int)((gw * 16 + 8) / SCREEN_WIDTH) / 16.f,
+ 			(int)((gh * 16 + 8) / SCREEN_HEIGHT) / 16.f);
+@@ -1599,6 +1605,23 @@
+ {
+ }
+ 
++#ifdef ENABLE_TOUCHSCREEN
++void kobo_gfxengine_t::setup_pointer_margin(int dw, int dh)
++{
++	// Precalculates the border ranges. Mouse clicks outside these are handled
++  // specially.
++	pointer_margin_width_min = dw * POINTER_MARGIN_PERCENT / 100;
++	pointer_margin_width_max = dw - dw * POINTER_MARGIN_PERCENT / 100;
++	pointer_margin_height_min = dh * POINTER_MARGIN_PERCENT / 100;
++	pointer_margin_height_max = dh - dh * POINTER_MARGIN_PERCENT / 100;
++
++	log_printf(VLOG, "Pointer margin range [%d, %d, %d, %d]\n",
++						 pointer_margin_width_min,
++						 pointer_margin_width_max,
++						 pointer_margin_height_min,
++						 pointer_margin_height_max);
++}
++#endif
+ 
+ void kobo_gfxengine_t::frame()
+ {
+@@ -1800,11 +1823,57 @@
+ 						mouse_y - MARGIN - WSIZE/2);
+ 			break;
+ 		  case SDL_MOUSEBUTTONDOWN:
+-			mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
+-			mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
+-			gsm.press(BTN_FIRE);
++			mouse_x = (int)(ev.button.x / gengine->xscale()) - km.xoffs;
++			mouse_y = (int)(ev.button.y / gengine->yscale()) - km.yoffs;
+ 			if(prefs->use_mouse)
+ 			{
++#if ENABLE_TOUCHSCREEN
++				if (ev.motion.x <= pointer_margin_width_min)
++				{
++					gsm.press(BTN_LEFT);
++					pointer_margin_used = true;
++				} else if (ev.motion.x >= pointer_margin_width_max)
++				{
++					// Upper right corner invokes pause.
++          // Lower right corner invokes exit.
++          // Otherwise it is just 'right'. :)
++					if (ev.motion.y <= pointer_margin_height_min)
++					{
++						gsm.press(BTN_PAUSE);
++						gamecontrol.press(BTN_PAUSE);
++					}
++					else
++						gsm.press((ev.motion.y >= pointer_margin_height_max
++                       ? BTN_EXIT
++                       : BTN_RIGHT));
++
++					pointer_margin_used = true;
++
++				}
++
++				if (ev.motion.y <= pointer_margin_height_min)
++				{
++					// Handle as 'up' only if it was not in the 'pause' area.
++					// Still handle as clicked, so 'fire' will not kick in.
++					if (ev.motion.x < pointer_margin_width_max)
++						gsm.press(BTN_UP);
++					pointer_margin_used = true;
++				} else if (ev.motion.y >= pointer_margin_height_max)
++				{
++					// Handle as 'down' only if it was not in the 'exit' area.
++					// Still handle as clicked, so 'fire' will not kick in.
++					if (ev.motion.x < pointer_margin_width_max)
++						gsm.press(BTN_DOWN);
++
++					pointer_margin_used = true;
++				}
++
++				if (!pointer_margin_used)
++					gsm.press(BTN_FIRE);
++#else
++				gsm.press(BTN_FIRE);
++#endif
++
+ 				gamecontrol.mouse_position(
+ 						mouse_x - 8 - MARGIN - WSIZE/2,
+ 						mouse_y - MARGIN - WSIZE/2);
+@@ -1824,10 +1893,24 @@
+ 			}
+ 			break;
+ 		  case SDL_MOUSEBUTTONUP:
+-			mouse_x = (int)(ev.motion.x / gengine->xscale()) - km.xoffs;
+-			mouse_y = (int)(ev.motion.y / gengine->yscale()) - km.yoffs;
++			mouse_x = (int)(ev.button.x / gengine->xscale()) - km.xoffs;
++			mouse_y = (int)(ev.button.y / gengine->yscale()) - km.yoffs;
+ 			if(prefs->use_mouse)
+ 			{
++#if ENABLE_TOUCHSCREEN
++				// Resets all kinds of buttons that might have been activated by
++				// clicking in the pointer margin.
++				if (pointer_margin_used)
++				{
++					gsm.release(BTN_EXIT);
++					gsm.release(BTN_LEFT);
++					gsm.release(BTN_RIGHT);
++					gsm.release(BTN_UP);
++					gsm.release(BTN_DOWN);
++					pointer_margin_used = false;
++				}
++#endif
++
+ 				gamecontrol.mouse_position(
+ 						mouse_x - 8 - MARGIN - WSIZE/2,
+ 						mouse_y - MARGIN - WSIZE/2);
+@@ -2078,6 +2161,19 @@
+ int main(int argc, char *argv[])
+ {
+ 	int cmd_exit = 0;
++
++	printf(PACKAGE " - " VERSION " (touchscreen support: %s)\n",
++				(ENABLE_TOUCHSCREEN ? "yes" : "no"));
++	puts("Copyright (c) 1995, 1996 Akira Higuchi\n"
++       "Copyright (C) 1997 Masanao Izumo\n"
++       "Copyright (C) 1999-2001 Simon Peter\n"
++       "Copyright (C) 2002 Florian Schulze\n"
++       "Copyright (C) 2002 Jeremy Sheeley\n"
++       "Copyright (C) 2005 Erik Auerswald\n"
++       "Copyright (c) 1999-2007 David Olofson\n"
++       "This is free software; see the source for copying conditions. There is NO\n"
++       "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n");
++
+ 	atexit(emergency_close);
+ 	signal(SIGTERM, breakhandler);
+ 	signal(SIGINT, breakhandler);
+Index: KoboDeluxe-0.5.1/kobo.h
+===================================================================
+--- KoboDeluxe-0.5.1.orig/kobo.h	2008-02-11 00:31:23.000000000 +0100
++++ KoboDeluxe-0.5.1/kobo.h	2008-02-11 02:19:29.000000000 +0100
+@@ -23,6 +23,8 @@
+ #ifndef _KOBO_H_
+ #define _KOBO_H_
+ 
++#include <aconfig.h>
++
+ #include "gfxengine.h"
+ #include "window.h"
+ #include "display.h"
+@@ -45,11 +47,25 @@
+ 
+ class kobo_gfxengine_t : public gfxengine_t
+ {
++#if ENABLE_TOUCHSCREEN
++	bool pointer_margin_used;
++
++	int pointer_margin_width_min;
++	int pointer_margin_width_max;
++	int pointer_margin_height_min;
++	int pointer_margin_height_max;
++#endif
++
+ 	void frame();
+ 	void pre_render();
+ 	void post_render();
+   public:
+ 	kobo_gfxengine_t();
++
++#if ENABLE_TOUCHSCREEN
++	void setup_pointer_margin(int, int);
++#endif
++
+ };
+ 
+ extern kobo_gfxengine_t		*gengine;
+Index: KoboDeluxe-0.5.1/states.cpp
+===================================================================
+--- KoboDeluxe-0.5.1.orig/states.cpp	2008-02-11 03:06:41.000000000 +0100
++++ KoboDeluxe-0.5.1/states.cpp	2008-02-11 15:42:55.000000000 +0100
+@@ -963,8 +963,6 @@
+ 			break;
+ 
+ 		  case BTN_FIRE:
+-			if(!prefs->use_joystick)
+-				break;
+ 		  case BTN_START:
+ 		  case BTN_SELECT:
+ 			sound.ui_ok();

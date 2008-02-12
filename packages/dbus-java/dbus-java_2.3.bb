@@ -4,7 +4,6 @@ DESCRIPTION_dbus-java-bin = "${DESCRIPTION} (Binaries)"
 
 LICENSE = "GPLv2 AFL"
 SECTION = "libs"
-MAINTAINER = "Fabian Koester, tarent GmbH Bonn <f.koester@tarent.de>"
 HOMEPAGE = "http://jalimo.org"
 AUTHOR = "Matthew Johnson <dbus@matthew.ath.cx>"
 

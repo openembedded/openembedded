@@ -243,6 +243,7 @@ CONFIG_ZBOOT_ROM_BSS=0x0
 CONFIG_CMDLINE=" noirqdebug console=ttyS0,115200n8"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
+CONFIG_ATAGS_PROC=y
 
 #
 # Floating point emulation
@@ -1228,6 +1229,7 @@ CONFIG_LEDS_CLASS=y
 # LED drivers
 #
 # CONFIG_LEDS_IXP4XX is not set
+CONFIG_LEDS_FSG=y
 CONFIG_LEDS_GPIO=y
 
 #

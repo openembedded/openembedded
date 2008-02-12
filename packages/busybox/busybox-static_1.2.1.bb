@@ -1,5 +1,5 @@
 require busybox_${PV}.bb
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/busybox-1.2.1"
 
