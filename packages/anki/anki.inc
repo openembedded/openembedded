@@ -5,11 +5,11 @@ HOMEPAGE = "http://ichi2.net/anki/"
 AUTHOR = "Damien Elmes"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-DEPENDS = "qt4-x11-free python python-pyqt python-native"
+RDEPENDS = "python-pyqt"
 RRECOMMENDS = "kakasi virtual/japanese-font"
 
 SRC_URI = "http://ichi2.net/anki/download/anki-${PV}.tgz"
 
-inherit autotools setuptools
+inherit setuptools
 
 PACKAGE_ARCH = "all"
