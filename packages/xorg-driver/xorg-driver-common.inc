@@ -7,7 +7,7 @@ PR = "r2"
 DEPENDS = "randrproto xorg-server xproto"
 
 XORG_PN = "${PN}"
-SRC_URI = "${XORG_MIRROR}/individual/data/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/driver/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
