@@ -1,5 +1,5 @@
 PREFERRED_VERSION_dbus = "1.1.4"
-PREFERRED_VERSION_busybox = "1.7.2"
+PREFERRED_VERSION_busybox = "1.9.1"
 PREFERRED_VERSION_gst-pulse = "0.9.7"
 PREFERRED_VERSION_libtool = "1.2.14"
 PREFERRED_VERSION_pulseaudio = "0.9.9"
