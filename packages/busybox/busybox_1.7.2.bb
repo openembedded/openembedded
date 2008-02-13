@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r6"
+PR = "r8"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
