@@ -1,3 +1,5 @@
+upstream: http://bugs.linuxtogo.org/show_bug.cgi?id=124
+
 diff -r 976c01632fea gpe-login.keylaunchrc
 --- a/gpe-login.keylaunchrc	Sun Nov 25 22:39:23 2007 +0200
 +++ b/gpe-login.keylaunchrc	Mon Nov 26 01:12:14 2007 +0200
