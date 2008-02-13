@@ -3,12 +3,25 @@ LICENSE = "LGPL"
 SECTION = "libs"
 HOMEPAGE = "http://rxtx.org"
 
+PR = "r1"
+
+DEPENDS = "classpath classpath-native virtual/javac-native"
+
 inherit autotools java-library
 
 SRC_URI = "\
     http://rxtx.qbang.org/pub/rxtx/${PN}-${PV}.zip \
     file://rxtx-fixes-from-debian.patch;patch=1 \
     "
+
+do_compile() {
+  # Whatever configure detected it is completely unusable. So we override heavily.
+  oe_runmake \
+    JAVAH="gjavah -classpath \$(CLASSPATH) -d \$(DEST) -jni" \
+    JAR=gjar \
+    JAVAC="javac -classpath \$(CLASSPATH) -d \$(TOP)/ -O -source 1.3 -target 1.3" \
+    JAVAINCLUDEDIR=${STAGING_INCDIR}/classpath
+}
 
 do_install() {
   install -d ${D}/${libdir_jni}

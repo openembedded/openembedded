@@ -1,3 +1,5 @@
+upstream: http://bugs.linuxtogo.org/show_bug.cgi?id=152
+
 # HG changeset patch
 # User "Paul Sokolovsky <pfalcon@users.sourceforge.net>"
 # Date 1196345352 -7200
