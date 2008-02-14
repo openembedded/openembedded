@@ -19060,55 +19060,6 @@ diff -u -r --new-file u-boot-1.1.2/patches/arm_flags.patch u-boot-1.1.2-neon/pat
 ++	-msoft-float
 + 
 + PLATFORM_CPPFLAGS += -mapcs-32 -march=armv4 -mtune=strongarm1100
-diff -u -r --new-file u-boot-1.1.2/patches/series u-boot-1.1.2-neon/patches/series
---- u-boot-1.1.2/patches/series	1970-01-01 01:00:00.000000000 +0100
-+++ u-boot-1.1.2-neon/patches/series	2007-08-11 21:01:36.000000000 +0200
-@@ -0,0 +1,2 @@
-+arm_flags.patch -p1
-+u-boot-2006-06-03.patch.gz -p1
-Binary files u-boot-1.1.2/patches/u-boot-2006-06-03.patch.gz and u-boot-1.1.2-neon/patches/u-boot-2006-06-03.patch.gz differ
-diff -u -r --new-file u-boot-1.1.2/.pc/applied-patches u-boot-1.1.2-neon/.pc/applied-patches
---- u-boot-1.1.2/.pc/applied-patches	1970-01-01 01:00:00.000000000 +0100
-+++ u-boot-1.1.2-neon/.pc/applied-patches	2007-08-11 21:01:36.000000000 +0200
-@@ -0,0 +1 @@
-+arm_flags.patch
-diff -u -r --new-file u-boot-1.1.2/.pc/arm_flags.patch/cpu/pxa/config.mk u-boot-1.1.2-neon/.pc/arm_flags.patch/cpu/pxa/config.mk
---- u-boot-1.1.2/.pc/arm_flags.patch/cpu/pxa/config.mk	1970-01-01 01:00:00.000000000 +0100
-+++ u-boot-1.1.2-neon/.pc/arm_flags.patch/cpu/pxa/config.mk	2003-05-23 14:36:21.000000000 +0200
-@@ -0,0 +1,28 @@
-+#
-+# (C) Copyright 2002
-+# Sysgo Real-Time Solutions, GmbH <www.elinos.com>
-+# Marius Groeger <mgroeger@sysgo.de>
-+#
-+# See file CREDITS for list of people who contributed to this
-+# project.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write to the Free Software
-+# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-+# MA 02111-1307 USA
-+#
-+
-+PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 \
-+	-mshort-load-bytes -msoft-float
-+
-+PLATFORM_CPPFLAGS += -mapcs-32 -march=armv4 -mtune=strongarm1100
-diff -u -r --new-file u-boot-1.1.2/.pc/.version u-boot-1.1.2-neon/.pc/.version
---- u-boot-1.1.2/.pc/.version	1970-01-01 01:00:00.000000000 +0100
-+++ u-boot-1.1.2-neon/.pc/.version	2007-08-11 21:01:36.000000000 +0200
-@@ -0,0 +1 @@
-+2
 diff -u -r --new-file u-boot-1.1.2/README u-boot-1.1.2-neon/README
 --- u-boot-1.1.2/README	2004-12-16 22:44:03.000000000 +0100
 +++ u-boot-1.1.2-neon/README	2007-08-11 21:07:19.000000000 +0200

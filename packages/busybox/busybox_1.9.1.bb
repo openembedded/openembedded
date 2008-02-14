@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r8"
+PR = "r0"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
@@ -12,13 +12,8 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog.conf \
            file://udhcpscript.patch;patch=1 \
            file://umount.busybox \
-           file://run_parts.c"
-
-SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1 \
-            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1 \
-            file://defconfig"
+           file://run_parts.c \
+           file://defconfig"
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 

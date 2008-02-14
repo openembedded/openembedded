@@ -1,3 +1,5 @@
+upstream: http://bugs.linuxtogo.org/show_bug.cgi?id=125
+
 Lock screen when device goes to suspend, not after some time has passed
 since resume and they stole your data from the unprotected screen.
 
