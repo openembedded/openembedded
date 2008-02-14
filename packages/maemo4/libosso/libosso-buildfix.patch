@@ -1,0 +1,64 @@
+Index: libosso-2.13/src/osso-hw.c
+===================================================================
+--- libosso-2.13.orig/src/osso-hw.c	2008-02-13 12:55:17.000000000 +0100
++++ libosso-2.13/src/osso-hw.c	2008-02-13 13:02:55.000000000 +0100
+@@ -23,6 +23,9 @@
+  * 02110-1301 USA
+  */
+ 
++#define _GNU_SOURCE
++#include <string.h>
++
+ #include "osso-internal.h"
+ #include "osso-hw.h"
+ #include "osso-mem.h"
+@@ -635,7 +638,7 @@
+     (*cb)((muali_context_t*)osso, &info, data->user_data);
+ 
+     if (info.args != NULL) {
+-            free(info.args);
++            free((void *) info.args);
+             info.args = NULL;
+     }
+ }
+@@ -762,7 +765,7 @@
+         (*cb)((muali_context_t*)osso, &info, data->user_data);
+ 
+         if (info.args != NULL) {
+-                free(info.args);
++                free((void *) info.args);
+                 info.args = NULL;
+         }
+ }
+Index: libosso-2.13/src/osso-rpc.c
+===================================================================
+--- libosso-2.13.orig/src/osso-rpc.c	2008-02-13 13:03:13.000000000 +0100
++++ libosso-2.13/src/osso-rpc.c	2008-02-13 13:06:05.000000000 +0100
+@@ -997,7 +997,8 @@
+                 int *serial)
+ {
+         int i;
+-        char buf[20], *p;
++        char buf[20];
++        const char *p;
+ 
+         /* get bus type */
+         for (i = 0, p = id; *p != ','; ++p, ++i) {
+@@ -1101,7 +1102,7 @@
+         (*cb)((muali_context_t*)osso, &info, cb_data->user_data);
+ 
+         if (info.args != NULL) {
+-                free(info.args);
++                free((void *) info.args);
+                 info.args = NULL;
+         }
+ }
+@@ -1410,7 +1411,7 @@
+         cb_data->message_id = (long)msg_serial;
+ 
+         cb_data->user_cb = reply_handler;
+-        cb_data->user_data = user_data;
++        cb_data->user_data = (void *) user_data;
+         cb_data->match_rule = NULL;
+         cb_data->event_type = 0;
+         cb_data->bus_type = bus_type;
