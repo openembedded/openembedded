@@ -7,13 +7,14 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://defconfig \
 	   "
 
-S = "${WORKDIR}/linux-2.6.24"
+# Real-time preemption. This is experimental and requires a different defconfig.
+#SRC_URI += " http://www.kernel.org/pub/linux/kernel/projects/rt/patch-2.6.24-rt1.bz2;patch=1"
 
 SRC_URI_append_gesbc-9302 = " \
 	file://0001-gesbc-nand.patch;patch=1 \
@@ -21,16 +22,11 @@ SRC_URI_append_gesbc-9302 = " \
 	file://0005-ep93xx-reboot.patch;patch=1 \
 	"
 
+SRC_URI_append_mpc8313e-rdb = "\
+	file://mpc8313e-rdb-leds.patch;patch=1 \
+	file://mpc8313e-rdb-rtc.patch;patch=1"
+
 CMDLINE_gesbc-9302 = "console=ttyAM0 root=mtd5 rootfstype=jffs2 mtdparts=GESBC-NAND:64m(app),-(data)"
-
-# work in progress
-#SRC_URI_append_mpc8313e-rdb = "\
-#	file://mpc8313e-rdb-leds.patch;patch=1"
-#	file://mpc831x-nand.patch;patch=1 \
-#	file://mpc8313e-rdb-rtc.patch;patch=1 "
-
-# real-time preemption patch
-SRC_URI_append_mpc8313e-rdb = " http://www.kernel.org/pub/linux/kernel/projects/rt/patch-2.6.24-rt1.bz2;patch=1 file://defconfig-rt "
 
 FILES_kernel-image_gesbc-9302 = ""
 
