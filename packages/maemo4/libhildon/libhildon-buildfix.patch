@@ -1,0 +1,16 @@
+Index: libhildon-1.99.0/src/hildon-code-dialog.c
+===================================================================
+--- libhildon-1.99.0.orig/src/hildon-code-dialog.c	2007-10-10 15:03:09.000000000 +0200
++++ libhildon-1.99.0/src/hildon-code-dialog.c	2008-02-13 13:54:47.000000000 +0100
+@@ -302,7 +302,11 @@
+     gtk_container_add (GTK_CONTAINER (priv->buttons[3][2]), image1);
+     dialog_action_area1 = GTK_DIALOG (dialog)->action_area;
+     gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area1),
++#if defined (MAEMO_GTK)
+             GTK_BUTTONBOX_CENTER);
++#else
++            GTK_BUTTONBOX_DEFAULT_STYLE);
++#endif
+ 
+     okButton = gtk_dialog_add_button (GTK_DIALOG (dialog) ,DEVICELOCK_OK,
+             GTK_RESPONSE_OK);
