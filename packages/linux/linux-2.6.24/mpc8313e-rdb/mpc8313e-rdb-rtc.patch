@@ -1,0 +1,24 @@
+diff -urN linux-2.6.24.orig/arch/powerpc/boot/dts/mpc8313erdb.dts linux-2.6.24/arch/powerpc/boot/dts/mpc8313erdb.dts
+--- linux-2.6.24.orig/arch/powerpc/boot/dts/mpc8313erdb.dts	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/arch/powerpc/boot/dts/mpc8313erdb.dts	2008-02-08 08:09:07.000000000 +0100
+@@ -52,12 +52,20 @@
+ 		};
+ 
+ 		i2c@3000 {
++			#address-cells = <1>;
++			#size-cells = <0>;
+ 			device_type = "i2c";
+ 			compatible = "fsl-i2c";
+ 			reg = <3000 100>;
+ 			interrupts = <e 8>;
+ 			interrupt-parent = < &ipic >;
+ 			dfsrr;
++
++			rtc@68 {
++				device_type = "rtc";
++				compatible = "dallas,ds1339";
++				reg = <68>;
++			};
+ 		};
+ 
+ 		i2c@3100 {
