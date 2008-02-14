@@ -59,6 +59,6 @@
      _negdf2 _addsubdf3 _muldivdf3 _cmpdf2 _unorddf2 _fixdfsi _fixunsdfsi \
      _truncdfsf2 _negsf2 _addsubsf3 _muldivsf3 _cmpsf2 _unordsf2 \
 +    _call_via_rX \
-     _fixsfsi _fixunssfsi _floatdidf _floatdisf
+     _fixsfsi _fixunssfsi _floatdidf _floatdisf _floatundisf _floatundidf
  
  # MULTILIB_OPTIONS = mhard-float/msoft-float

@@ -7,13 +7,13 @@ PR = "r0"
 
 DEFAULT_PREFERENCE = "-115"
 
-SRC_URI = "http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
-	   file://noasmlinkage.patch;patch=1 \
-	   file://flags.patch;patch=1 \
-	   file://vol_id_ld.patch;patch=1 \
-	   file://udevtrigger_add_devname_filtering.patch;patch=1 \
-	   file://mount.blacklist \
-	   "
+SRC_URI = "\
+ http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
+ file://flags.patch;patch=1 \
+ file://vol_id_ld.patch;patch=1 \
+ file://udevtrigger_add_devname_filtering.patch;patch=1 \
+ file://mount.blacklist \
+"
 
 require udev.inc
 
@@ -23,6 +23,10 @@ FILES_${PN} += "${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/"
 EXTRA_OEMAKE += "libudevdir=/lib/udev libdir=${base_libdir} prefix="
+
+do_compile_prepend() {
+	sed -i s,asmlinkage,, *.c
+}
 
 do_install () {
 	install -d ${D}${usrsbindir} \
