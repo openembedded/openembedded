@@ -81,7 +81,7 @@ while read maj min nblk dev; do
     fi
 
     get_partition_type
-    if [ "$fstype" != "ext2" -a "$fstype" != "ext3" -a "$fstype" != "vfat" ]; then
+    if [ "$fstype" != "ext2" -a "$fstype" != "ext3" -a "$fstype" != "vfat" -a "$fstype" != "jffs2" ]; then
 #	continue
 	true
     fi
