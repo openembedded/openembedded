@@ -2,7 +2,7 @@ DESCRIPTION = "A Java-based logical analyzer for home use."
 LICENSE = "GPL"
 HOMEPAGE = "http://sump.org/projects/analyzer/"
 
-PR = "r1"
+PR = "r2"
 
 inherit java
 
@@ -21,8 +21,12 @@ S = "${WORKDIR}/LogicAnalyzer"
 do_compile() {
 
   oe_runmake -C client all jar \
+    JAR=gjar \
+    JAVAH="gjavah -classpath \$(CLASSPATH) -d \$(DEST) -jni" \
+    JAVAINCLUDEDIR=${STAGING_INCDIR}/classpath \
+    JAVAC="javac -d \$(TOP)/ -O -source 1.3 -target 1.3" \
     JAVAC_FLAGS="-sourcepath . -bootclasspath ${STAGING_DATADIR_NATIVE}/classpath/glibj.zip -classpath ${STAGING_DATADIR}/java/RXTXcomm.jar"
-
+    
   oe_java_simple_wrapper org.sump.analyzer.Loader analyzer.jar RXTXcomm.jar
 }
 
