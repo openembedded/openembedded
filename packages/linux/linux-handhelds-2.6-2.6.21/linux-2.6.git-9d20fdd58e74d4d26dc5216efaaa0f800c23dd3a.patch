@@ -1,0 +1,144 @@
+From: Bill Gatliff <bgat@billgatliff.com>
+Date: Thu, 31 May 2007 21:02:22 +0000 (+0100)
+Subject: [ARM] 4423/1: add ATAGS support
+X-Git-Tag: v2.6.23-rc1~1101^2^7~5
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Ftorvalds%2Flinux-2.6.git;a=commitdiff_plain;h=9d20fdd58e74d4d26dc5216efaaa0f800c23dd3a
+
+[ARM] 4423/1: add ATAGS support
+
+Examines the ATAGS pointer (r2) at boot, and interprets
+a nonzero value as a reference to an ATAGS structure. A
+suitable ATAGS structure replaces the kernel's command line.
+
+Signed-off-by: Bill Gatliff <bgat@billgatliff.com>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+
+diff --git a/arch/arm/kernel/head-common.S b/arch/arm/kernel/head-common.S
+index a52da0d..024a9cf 100644
+--- a/arch/arm/kernel/head-common.S
++++ b/arch/arm/kernel/head-common.S
+@@ -20,7 +20,8 @@ __switch_data:
+ 	.long	_end				@ r7
+ 	.long	processor_id			@ r4
+ 	.long	__machine_arch_type		@ r5
+-	.long	cr_alignment			@ r6
++	.long	__atags_pointer			@ r6
++	.long	cr_alignment			@ r7
+ 	.long	init_thread_union + THREAD_START_SP @ sp
+ 
+ /*
+@@ -29,6 +30,7 @@ __switch_data:
+  *
+  *  r0  = cp#15 control register
+  *  r1  = machine ID
++ *  r2  = atags pointer
+  *  r9  = processor ID
+  */
+ 	.type	__mmap_switched, %function
+@@ -47,11 +49,12 @@ __mmap_switched:
+ 	strcc	fp, [r6],#4
+ 	bcc	1b
+ 
+-	ldmia	r3, {r4, r5, r6, sp}
++	ldmia	r3, {r4, r5, r6, r7, sp}
+ 	str	r9, [r4]			@ Save processor ID
+ 	str	r1, [r5]			@ Save machine type
++	str	r2, [r6]			@ Save atags pointer
+ 	bic	r4, r0, #CR_A			@ Clear 'A' bit
+-	stmia	r6, {r0, r4}			@ Save control register values
++	stmia	r7, {r0, r4}			@ Save control register values
+ 	b	start_kernel
+ 
+ /*
+@@ -215,3 +218,34 @@ ENTRY(lookup_machine_type)
+ 	bl	__lookup_machine_type
+ 	mov	r0, r5
+ 	ldmfd	sp!, {r4 - r6, pc}
++
++/* Determine validity of the r2 atags pointer.  The heuristic requires
++ * that the pointer be aligned, in the first 16k of physical RAM and
++ * that the ATAG_CORE marker is first and present.  Future revisions
++ * of this function may be more lenient with the physical address and
++ * may also be able to move the ATAGS block if necessary.
++ *
++ * r8  = machinfo
++ *
++ * Returns:
++ *  r2 either valid atags pointer, or zero
++ *  r5, r6 corrupted
++ */
++
++	.type	__vet_atags, %function
++__vet_atags:
++	tst	r2, #0x3			@ aligned?
++	bne	1f
++
++	ldr	r5, [r2, #0]			@ is first tag ATAG_CORE?
++	subs	r5, r5, #ATAG_CORE_SIZE
++	bne	1f
++	ldr	r5, [r2, #4]
++	ldr	r6, =ATAG_CORE
++	cmp	r5, r6
++	bne	1f
++
++	mov	pc, lr				@ atag pointer is ok
++
++1:	mov	r2, #0
++	mov	pc, lr
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index 41f98b4..7898cbc 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -29,6 +29,10 @@
+ #define KERNEL_RAM_VADDR	(PAGE_OFFSET + TEXT_OFFSET)
+ #define KERNEL_RAM_PADDR	(PHYS_OFFSET + TEXT_OFFSET)
+ 
++#define ATAG_CORE 0x54410001
++#define ATAG_CORE_SIZE ((2*4 + 3*4) >> 2)
++
++
+ /*
+  * swapper_pg_dir is the virtual address of the initial page table.
+  * We place the page tables 16K below KERNEL_RAM_VADDR.  Therefore, we must
+@@ -61,7 +65,7 @@
+  *
+  * This is normally called from the decompressor code.  The requirements
+  * are: MMU = off, D-cache = off, I-cache = dont care, r0 = 0,
+- * r1 = machine nr.
++ * r1 = machine nr, r2 = atags pointer.
+  *
+  * This code is mostly position independent, so if you link the kernel at
+  * 0xc0008000, you call this at __pa(0xc0008000).
+@@ -85,6 +89,7 @@ ENTRY(stext)
+ 	bl	__lookup_machine_type		@ r5=machinfo
+ 	movs	r8, r5				@ invalid machine (r5=0)?
+ 	beq	__error_a			@ yes, error 'a'
++	bl	__vet_atags
+ 	bl	__create_page_tables
+ 
+ 	/*
+diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+index 650eac1..5be2e98 100644
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -63,6 +63,8 @@ unsigned int processor_id;
+ unsigned int __machine_arch_type;
+ EXPORT_SYMBOL(__machine_arch_type);
+ 
++unsigned int __atags_pointer __initdata;
++
+ unsigned int system_rev;
+ EXPORT_SYMBOL(system_rev);
+ 
+@@ -780,7 +782,9 @@ void __init setup_arch(char **cmdline_p)
+ 	if (mdesc->soft_reboot)
+ 		reboot_setup("s");
+ 
+-	if (mdesc->boot_params)
++	if (__atags_pointer)
++		tags = phys_to_virt(__atags_pointer);
++	else if (mdesc->boot_params)
+ 		tags = phys_to_virt(mdesc->boot_params);
+ 
+ 	/*
