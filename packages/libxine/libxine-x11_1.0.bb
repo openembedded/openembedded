@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound virtual/libx11 libxext libpng"
 PROVIDES = "virtual/libxine"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig gettext binconfig
 
@@ -17,7 +17,7 @@ SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/xine/xine-lib-${PV}.tar.
 	file://libxine-ffmpeg-enable-arm.patch;patch=1 \
 	file://no-caca-no-aalib.patch;patch=1 \
 	file://dont-have-xv.patch;patch=1 \
-	file://restore-esd.patch;patch=1 \
+#	file://restore-esd.patch;patch=1 \
 	file://fix-syntax-xine-vorbis-decoder.patch;patch=1 \
 	file://libxine-cut-memusage.patch;patch=1 \
 	file://mpegvideo-static-inlinine.patch;patch=1 \
