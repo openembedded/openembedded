@@ -11,6 +11,10 @@ PACKAGES_DYNAMIC += "kernel-image-*"
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 KERNEL_IMAGETYPE ?= "zImage"
+# Base filename under which users see built kernel (i.e. deploy name)
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}"
+# Symlink  basename pointing to the most recently built kernel for a machine
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}" 
 
 KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
@@ -30,6 +34,7 @@ HOST_LD_KERNEL_ARCH ?= "${TARGET_LD_KERNEL_ARCH}"
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX} ${HOST_CC_KERNEL_ARCH}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX} ${HOST_LD_KERNEL_ARCH}"
 
+# Where built kernel lies in the kernel tree
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 KERNEL_IMAGEDEST = "boot"
 
@@ -59,6 +64,22 @@ kernel_do_compile() {
 		oenote "no modules to compile"
 	fi
 }
+
+do_builtin_initramfs() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
+	cp "${INITRAMFS_LOC}" usr/initramfs_data.cpio.gz
+	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	install -d ${DEPLOY_DIR_IMAGE}
+	mv ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.no-initramfs.bin
+	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
+	rm usr/initramfs_data.cpio.gz
+
+	[ -n "${DEPLOY_TO}" ] && install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_TO}
+}
+addtask builtin_initramfs after do_compile
+# As it accepts external parameter(s), better make it unstamped
+do_builtin_initramfs[nostamp] = "1"
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
