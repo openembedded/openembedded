@@ -110,6 +110,14 @@ fakeroot do_rootfs () {
 	${MACHINE_POSTPROCESS_COMMAND}
 }
 
+do_deploy_to[nostamp] = "1"
+do_deploy_to () {
+	# A standalone task to deploy built image to the location specified
+	# by DEPLOY_TO variable (likely passed via environment).
+	# Assumes ${IMAGE_FSTYPES} is a single value!
+	cp "${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.${IMAGE_FSTYPES}" ${DEPLOY_TO}
+}
+
 insert_feed_uris () {
 	
 	echo "Building feeds for [${DISTRO}].."
@@ -202,3 +210,4 @@ rootfs_update_timestamp () {
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
 
 addtask rootfs before do_build after do_install
+addtask deploy_to after do_rootfs
