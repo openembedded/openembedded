@@ -84,7 +84,7 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # openzaurus-unstable is a so called "versioned"  distro, i.e. they 
 # explicitely select specific versions of various packages.
 # Stay away from unversioned distros unless you really know what you are doing
-# DISTRO = "angstrom-2007.1"
+# DISTRO = "angstrom-2008.1"
 
 # So far, angstrom.conf sets ENABLE_BINARY_LOCALE_GENERATION
 # to generate binary locale packages at build time using qemu-native and

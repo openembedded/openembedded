@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh20
-# Thu Feb 14 00:33:49 2008
+# Fri Feb 15 01:08:06 2008
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -265,6 +265,7 @@ CONFIG_CMDLINE="keepinitrd"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
 # CONFIG_TXTOFFSET_DELTA is not set
+CONFIG_ATAGS_PROC=y
 
 #
 # Floating point emulation

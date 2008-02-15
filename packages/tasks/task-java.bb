@@ -1,5 +1,5 @@
 DESCRIPTION = "Base task package for Java"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 
 inherit task
@@ -9,5 +9,4 @@ RDEPENDS_${PN} = "\
     classpath-awt \
     java2-runtime \
     librxtx-java \
-    logic-analyzer \
  "
