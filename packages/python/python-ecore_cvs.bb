@@ -1,6 +1,7 @@
 require python-efl.inc
-DEPENDS += "ecore"
-PR = "r5"
+DEPENDS += "python-evas ecore"
+PV = "0.2.1+cvs${SRCDATE}"
+PR = "r0"
 
 do_stage() {
     distutils_stage_all

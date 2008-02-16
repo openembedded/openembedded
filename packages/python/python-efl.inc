@@ -6,7 +6,6 @@ HOMEPAGE = "http://www.enlightenment.org"
 # does not compile unless pyrex has been built
 DEPENDS = "python-cython-native python-pyrex-native python-numeric"
 RDEPENDS += "python-lang"
-PV = "0.1.1+cvs${SRCDATE}"
 
 inherit setuptools
 
