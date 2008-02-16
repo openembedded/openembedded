@@ -6,11 +6,12 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24-rt1.bz2;patch=1 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
+           file://powerpc-clockres.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.24"
