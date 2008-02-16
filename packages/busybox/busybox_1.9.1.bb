@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
@@ -11,6 +11,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog \
            file://syslog.conf \
            file://udhcpscript.patch;patch=1 \
+           file://adduser-longops.patch;patch=1 \
            file://umount.busybox \
            file://run_parts.c \
            file://defconfig"
