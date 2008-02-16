@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh20
-# Wed Dec 26 16:55:35 2007
+# Fri Feb 15 01:08:09 2008
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -96,14 +96,14 @@ CONFIG_BLOCK=y
 # IO Schedulers
 #
 CONFIG_IOSCHED_NOOP=y
-CONFIG_IOSCHED_AS=y
-CONFIG_IOSCHED_DEADLINE=y
-# CONFIG_IOSCHED_CFQ is not set
-CONFIG_DEFAULT_AS=y
+CONFIG_IOSCHED_AS=m
+CONFIG_IOSCHED_DEADLINE=m
+CONFIG_IOSCHED_CFQ=m
+# CONFIG_DEFAULT_AS is not set
 # CONFIG_DEFAULT_DEADLINE is not set
 # CONFIG_DEFAULT_CFQ is not set
-# CONFIG_DEFAULT_NOOP is not set
-CONFIG_DEFAULT_IOSCHED="anticipatory"
+CONFIG_DEFAULT_NOOP=y
+CONFIG_DEFAULT_IOSCHED="noop"
 
 #
 # System Type
@@ -164,6 +164,7 @@ CONFIG_ARCH_H5400=y
 CONFIG_IPAQ_H5400_BT=m
 CONFIG_IPAQ_H5400_LCD=y
 CONFIG_IPAQ_H5400_BL=y
+CONFIG_IPAQ_H5400_WIFI=m
 # CONFIG_MACH_HIMALAYA is not set
 # CONFIG_MACH_HTCUNIVERSAL is not set
 # CONFIG_MACH_HTCALPINE is not set
@@ -257,6 +258,7 @@ CONFIG_CMDLINE="keepinitrd"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
 # CONFIG_TXTOFFSET_DELTA is not set
+CONFIG_ATAGS_PROC=y
 
 #
 # CPU Frequency scaling
@@ -269,7 +271,7 @@ CONFIG_CPU_FREQ_STAT_DETAILS=y
 CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=y
 # CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE is not set
 CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
-CONFIG_CPU_FREQ_GOV_POWERSAVE=y
+CONFIG_CPU_FREQ_GOV_POWERSAVE=m
 CONFIG_CPU_FREQ_GOV_USERSPACE=m
 CONFIG_CPU_FREQ_GOV_ONDEMAND=m
 CONFIG_CPU_FREQ_GOV_CONSERVATIVE=m
@@ -524,7 +526,10 @@ CONFIG_IRTTY_SIR=m
 #
 # FIR device drivers
 #
+# CONFIG_USB_IRDA is not set
+# CONFIG_SIGMATEL_FIR is not set
 CONFIG_PXA_FICP=m
+# CONFIG_MCS_FIR is not set
 CONFIG_BT=m
 CONFIG_BT_L2CAP=m
 CONFIG_BT_SCO=m
@@ -538,9 +543,21 @@ CONFIG_BT_HIDP=m
 #
 # Bluetooth device drivers
 #
-# CONFIG_BT_HCIUART is not set
+# CONFIG_BT_HCIUSB is not set
+CONFIG_BT_HCIUART=m
+CONFIG_BT_HCIUART_H4=y
+CONFIG_BT_HCIUART_BCSP=y
+# CONFIG_BT_HCIBCM203X is not set
+# CONFIG_BT_HCIBPA10X is not set
+# CONFIG_BT_HCIBFUSB is not set
 # CONFIG_BT_HCIVHCI is not set
-# CONFIG_IEEE80211 is not set
+CONFIG_IEEE80211=m
+# CONFIG_IEEE80211_DEBUG is not set
+# CONFIG_IEEE80211_CRYPT_WEP is not set
+CONFIG_IEEE80211_CRYPT_CCMP=m
+CONFIG_IEEE80211_CRYPT_TKIP=m
+# CONFIG_IEEE80211_SOFTMAC is not set
+CONFIG_WIRELESS_EXT=y
 
 #
 # Device Drivers
@@ -577,8 +594,9 @@ CONFIG_MTD_PARTITIONS=y
 # User Modules And Translation Layers
 #
 CONFIG_MTD_CHAR=m
-CONFIG_MTD_BLKDEVS=y
-CONFIG_MTD_BLOCK=y
+CONFIG_MTD_BLKDEVS=m
+CONFIG_MTD_BLOCK=m
+# CONFIG_MTD_BLOCK_RO is not set
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
 # CONFIG_INFTL is not set
@@ -673,7 +691,8 @@ CONFIG_MTDRAM_ERASE_SIZE=256
 # CONFIG_BLK_DEV_COW_COMMON is not set
 CONFIG_BLK_DEV_LOOP=m
 # CONFIG_BLK_DEV_CRYPTOLOOP is not set
-# CONFIG_BLK_DEV_NBD is not set
+CONFIG_BLK_DEV_NBD=m
+# CONFIG_BLK_DEV_UB is not set
 # CONFIG_BLK_DEV_RAM is not set
 # CONFIG_CDROM_PKTCDVD is not set
 # CONFIG_ATA_OVER_ETH is not set
@@ -746,7 +765,16 @@ CONFIG_TUN=m
 #
 # Wireless LAN (non-hamradio)
 #
-# CONFIG_NET_RADIO is not set
+CONFIG_NET_RADIO=y
+CONFIG_NET_WIRELESS_RTNETLINK=y
+
+#
+# Obsolete Wireless cards support (pre-802.11)
+#
+# CONFIG_STRIP is not set
+# CONFIG_USB_ZD1201 is not set
+# CONFIG_HOSTAP is not set
+# CONFIG_ACX is not set
 
 #
 # Wan interfaces
@@ -933,6 +961,7 @@ CONFIG_W1=y
 #
 # 1-wire Bus Masters
 #
+# CONFIG_W1_MASTER_DS2490 is not set
 # CONFIG_W1_MASTER_DS2482 is not set
 CONFIG_W1_MASTER_DS1WM=y
 
@@ -1037,6 +1066,7 @@ CONFIG_LEDS_TRIGGER_SHARED=y
 # Digital Video Broadcasting Devices
 #
 # CONFIG_DVB is not set
+# CONFIG_USB_DABUSB is not set
 
 #
 # Graphics support
@@ -1125,9 +1155,13 @@ CONFIG_SND_VERBOSE_PROCFS=y
 #
 # ALSA ARM devices
 #
-# CONFIG_SND_H5XXX_AK4535 is not set
 # CONFIG_SND_PXA2XX_AC97 is not set
 # CONFIG_SND_RECON is not set
+
+#
+# USB devices
+#
+# CONFIG_SND_USB_AUDIO is not set
 
 #
 # SoC audio support
@@ -1194,10 +1228,118 @@ CONFIG_HID=m
 CONFIG_USB_ARCH_HAS_HCD=y
 CONFIG_USB_ARCH_HAS_OHCI=y
 # CONFIG_USB_ARCH_HAS_EHCI is not set
-# CONFIG_USB is not set
+CONFIG_USB=m
+# CONFIG_USB_DEBUG is not set
+
+#
+# Miscellaneous USB options
+#
+# CONFIG_USB_DEVICEFS is not set
+# CONFIG_USB_DYNAMIC_MINORS is not set
+# CONFIG_USB_SUSPEND is not set
+# CONFIG_USB_OTG is not set
+
+#
+# USB Host Controller Drivers
+#
+# CONFIG_USB_ISP116X_HCD is not set
+CONFIG_USB_OHCI_HCD=m
+# CONFIG_USB_OHCI_BIG_ENDIAN_DESC is not set
+# CONFIG_USB_OHCI_BIG_ENDIAN_MMIO is not set
+CONFIG_USB_OHCI_LITTLE_ENDIAN=y
+# CONFIG_USB_SL811_HCD is not set
+
+#
+# USB Device Class drivers
+#
+# CONFIG_USB_ACM is not set
+# CONFIG_USB_PRINTER is not set
 
 #
 # NOTE: USB_STORAGE enables SCSI, and 'SCSI disk support'
+#
+
+#
+# may also be needed; see USB_STORAGE Help for more information
+#
+# CONFIG_USB_LIBUSUAL is not set
+
+#
+# USB Input Devices
+#
+CONFIG_USB_HID=m
+# CONFIG_USB_HIDINPUT_POWERBOOK is not set
+# CONFIG_HID_FF is not set
+# CONFIG_USB_HIDDEV is not set
+
+#
+# USB HID Boot Protocol drivers
+#
+# CONFIG_USB_KBD is not set
+# CONFIG_USB_MOUSE is not set
+# CONFIG_USB_AIPTEK is not set
+# CONFIG_USB_WACOM is not set
+# CONFIG_USB_ACECAD is not set
+# CONFIG_USB_KBTAB is not set
+# CONFIG_USB_POWERMATE is not set
+# CONFIG_USB_TOUCHSCREEN is not set
+# CONFIG_USB_YEALINK is not set
+# CONFIG_USB_XPAD is not set
+# CONFIG_USB_ATI_REMOTE is not set
+# CONFIG_USB_ATI_REMOTE2 is not set
+# CONFIG_USB_KEYSPAN_REMOTE is not set
+# CONFIG_USB_APPLETOUCH is not set
+# CONFIG_USB_GTCO is not set
+
+#
+# USB Imaging devices
+#
+# CONFIG_USB_MDC800 is not set
+
+#
+# USB Network Adapters
+#
+# CONFIG_USB_CATC is not set
+# CONFIG_USB_KAWETH is not set
+# CONFIG_USB_PEGASUS is not set
+# CONFIG_USB_RTL8150 is not set
+# CONFIG_USB_USBNET_MII is not set
+# CONFIG_USB_USBNET is not set
+CONFIG_USB_MON=y
+
+#
+# USB port drivers
+#
+
+#
+# USB Serial Converter support
+#
+# CONFIG_USB_SERIAL is not set
+
+#
+# USB Miscellaneous drivers
+#
+# CONFIG_USB_EMI62 is not set
+# CONFIG_USB_EMI26 is not set
+# CONFIG_USB_ADUTUX is not set
+# CONFIG_USB_AUERSWALD is not set
+# CONFIG_USB_RIO500 is not set
+# CONFIG_USB_LEGOTOWER is not set
+# CONFIG_USB_LCD is not set
+# CONFIG_USB_BERRY_CHARGE is not set
+# CONFIG_USB_LED is not set
+# CONFIG_USB_CYPRESS_CY7C63 is not set
+# CONFIG_USB_CYTHERM is not set
+# CONFIG_USB_PHIDGET is not set
+# CONFIG_USB_IDMOUSE is not set
+# CONFIG_USB_FTDI_ELAN is not set
+# CONFIG_USB_APPLEDISPLAY is not set
+# CONFIG_USB_LD is not set
+# CONFIG_USB_TRANCEVIBRATOR is not set
+# CONFIG_USB_IOWARRIOR is not set
+
+#
+# USB DSL modem support
 #
 
 #
@@ -1301,13 +1443,15 @@ CONFIG_INOTIFY_USER=y
 # CONFIG_QUOTA is not set
 CONFIG_DNOTIFY=y
 # CONFIG_AUTOFS_FS is not set
-# CONFIG_AUTOFS4_FS is not set
-# CONFIG_FUSE_FS is not set
+CONFIG_AUTOFS4_FS=m
+CONFIG_FUSE_FS=m
 
 #
 # CD-ROM/DVD Filesystems
 #
-# CONFIG_ISO9660_FS is not set
+CONFIG_ISO9660_FS=m
+CONFIG_JOLIET=y
+# CONFIG_ZISOFS is not set
 # CONFIG_UDF_FS is not set
 
 #
@@ -1330,7 +1474,7 @@ CONFIG_TMPFS=y
 # CONFIG_TMPFS_POSIX_ACL is not set
 # CONFIG_HUGETLB_PAGE is not set
 CONFIG_RAMFS=y
-# CONFIG_CONFIGFS_FS is not set
+CONFIG_CONFIGFS_FS=m
 
 #
 # Miscellaneous filesystems
@@ -1376,8 +1520,14 @@ CONFIG_NFS_COMMON=y
 CONFIG_SUNRPC=m
 # CONFIG_RPCSEC_GSS_KRB5 is not set
 # CONFIG_RPCSEC_GSS_SPKM3 is not set
-# CONFIG_SMB_FS is not set
-# CONFIG_CIFS is not set
+CONFIG_SMB_FS=m
+# CONFIG_SMB_NLS_DEFAULT is not set
+CONFIG_CIFS=m
+# CONFIG_CIFS_STATS is not set
+CONFIG_CIFS_WEAK_PW_HASH=y
+# CONFIG_CIFS_XATTR is not set
+# CONFIG_CIFS_DEBUG2 is not set
+# CONFIG_CIFS_EXPERIMENTAL is not set
 # CONFIG_NCP_FS is not set
 # CONFIG_CODA_FS is not set
 # CONFIG_AFS_FS is not set
@@ -1450,14 +1600,14 @@ CONFIG_PRINTK_TIME=y
 CONFIG_ENABLE_MUST_CHECK=y
 # CONFIG_MAGIC_SYSRQ is not set
 # CONFIG_UNUSED_SYMBOLS is not set
-# CONFIG_DEBUG_FS is not set
+CONFIG_DEBUG_FS=y
 # CONFIG_HEADERS_CHECK is not set
 CONFIG_DEBUG_KERNEL=y
 # CONFIG_DEBUG_SHIRQ is not set
 CONFIG_LOG_BUF_SHIFT=16
 CONFIG_DETECT_SOFTLOCKUP=y
 # CONFIG_SCHEDSTATS is not set
-# CONFIG_TIMER_STATS is not set
+CONFIG_TIMER_STATS=y
 # CONFIG_DEBUG_SLAB is not set
 CONFIG_DEBUG_PREEMPT=y
 # CONFIG_DEBUG_RT_MUTEXES is not set
@@ -1513,7 +1663,7 @@ CONFIG_CRYPTO_PCBC=m
 # CONFIG_CRYPTO_BLOWFISH is not set
 # CONFIG_CRYPTO_TWOFISH is not set
 # CONFIG_CRYPTO_SERPENT is not set
-# CONFIG_CRYPTO_AES is not set
+CONFIG_CRYPTO_AES=m
 # CONFIG_CRYPTO_CAST5 is not set
 # CONFIG_CRYPTO_CAST6 is not set
 # CONFIG_CRYPTO_TEA is not set
@@ -1521,7 +1671,7 @@ CONFIG_CRYPTO_ARC4=m
 # CONFIG_CRYPTO_KHAZAD is not set
 # CONFIG_CRYPTO_ANUBIS is not set
 # CONFIG_CRYPTO_DEFLATE is not set
-# CONFIG_CRYPTO_MICHAEL_MIC is not set
+CONFIG_CRYPTO_MICHAEL_MIC=m
 # CONFIG_CRYPTO_CRC32C is not set
 # CONFIG_CRYPTO_CAMELLIA is not set
 # CONFIG_CRYPTO_TEST is not set
