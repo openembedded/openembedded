@@ -1,5 +1,5 @@
 DESCRIPTION = "Image for development testing"
-PR = "r2"
+PR = "r4"
 LICENSE = "MIT"
 
 inherit task
@@ -19,8 +19,10 @@ RDEPENDS = "\
     "
 
 RRECOMMENDS = "\
+    kernel-image \
     kernel-module-msdos \
     kernel-module-vfat \
     kernel-modules \
     ${DEVIMAGE_EXTRA_RRECOMMENDS} \
     "
+PACKAGE_ARCH = "${MACHINE_ARCH}"
