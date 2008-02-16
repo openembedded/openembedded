@@ -145,12 +145,13 @@ path=`expr "$sel" : '[^/]*\([^ ]*\).*'`
 
 if [ "$dev" == "NFS" ]; then
     ROOT_DEVICE="/dev/nfs"
-    CMDLINE="$CMDLINE nfsroot=192.168.2.200:/srv/nfs/oe/image"
+    CMDLINE="$CMDLINE root=/dev/nfs nfsroot=192.168.2.200:/srv/nfs/oe/image"
 elif [ -n "$path" ]; then
     ROOT_DEVICE="/dev/loop"
-    CMDLINE="looproot=/dev/$dev:$path"
+    CMDLINE="$CMDLINE root=/dev/loop looproot=/dev/$dev:$path"
 else
     ROOT_DEVICE="/dev/$dev"
+    CMDLINE="$CMDLINE root=$ROOT_DEVICE"
 fi
 
 echo ROOT_DEVICE=$ROOT_DEVICE
