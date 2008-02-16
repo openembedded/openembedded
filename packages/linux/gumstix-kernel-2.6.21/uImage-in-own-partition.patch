@@ -1,0 +1,56 @@
+Index: linux-2.6.21gum/drivers/mtd/maps/gumstix-flash.c
+===================================================================
+--- linux-2.6.21gum.orig/drivers/mtd/maps/gumstix-flash.c
++++ linux-2.6.21gum/drivers/mtd/maps/gumstix-flash.c
+@@ -39,8 +39,12 @@ static struct mtd_partition gumstix_flas
+ 		.offset =	FLASH_ADDR
+ 	},{
+ 		.name =		"RootFS",
+-		.size =		MTDPART_SIZ_FULL,
+-		.offset =	MTDPART_OFS_APPEND
++		.size =		MTDPART_SIZ_REMAINDER,
++		.offset =	MTDPART_OFS_NXTBLK
++	},{
++		.name =		"Kernel",
++		.size =		0x00100000,
++		.offset =	MTDPART_OFS_NXTBLK
+ 	}
+ };
+ 
+Index: linux-2.6.21gum/drivers/mtd/mtdpart.c
+===================================================================
+--- linux-2.6.21gum.orig/drivers/mtd/mtdpart.c
++++ linux-2.6.21gum/drivers/mtd/mtdpart.c
+@@ -321,7 +321,7 @@ int add_mtd_partitions(struct mtd_info *
+ {
+ 	struct mtd_part *slave;
+ 	u_int32_t cur_offset = 0;
+-	int i;
++	int i,j;
+ 
+ 	printk (KERN_NOTICE "Creating %d MTD partitions on \"%s\":\n", nbparts, master->name);
+ 
+@@ -409,6 +409,11 @@ int add_mtd_partitions(struct mtd_info *
+ 		}
+ 		if (slave->mtd.size == MTDPART_SIZ_FULL)
+ 			slave->mtd.size = master->size - slave->offset;
++		if (slave->mtd.size == MTDPART_SIZ_REMAINDER)
++		{
++			slave->mtd.size = master->size - slave->offset;
++			for(j=i+1; j<nbparts; j++) slave->mtd.size -= parts[j].size;
++		}
+ 		cur_offset = slave->offset + slave->mtd.size;
+ 
+ 		printk (KERN_NOTICE "0x%08x-0x%08x : \"%s\"\n", slave->offset,
+Index: linux-2.6.21gum/include/linux/mtd/partitions.h
+===================================================================
+--- linux-2.6.21gum.orig/include/linux/mtd/partitions.h
++++ linux-2.6.21gum/include/linux/mtd/partitions.h
+@@ -47,6 +47,7 @@ struct mtd_partition {
+ 
+ #define MTDPART_OFS_NXTBLK	(-2)
+ #define MTDPART_OFS_APPEND	(-1)
++#define MTDPART_SIZ_REMAINDER	(-1)
+ #define MTDPART_SIZ_FULL	(0)
+ 
+ 
