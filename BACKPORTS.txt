@@ -12,6 +12,15 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
+0d376af69d870f4d7e004a35b9ce9adbb7bb1600 linux-handhelds-2.6 2.6.21-hh20: Enable CONFIG_ATAGS_PROC consistently. (Paul)
+5e355cb98cf1742f5a79dfe4777b01a20d63e782 linux-handhelds-2.6 2.6.21-hh20: Add support for passing kexec command line. (Paul)
+da903ce92b8f5d3cb42f9ffd3e15c6b4b8563dc4 linux-handhelds-2.6 2.6.21-hh20: Enable NBD and CONFIGFS as modules. (Paul)
+1e069dfafed0f72201d0b9415a94299ff9638e96 linux-handhelds-2.6 2.6.21-hh20: Use noop iosched by default, make other modular. (Paul)
+eeedd7c12d801248e236e657abdb9f0938952b09 linux-handhelds-2.6 2.6.21-hh20: Enable few more FSes and introspection options. (Paul)
+046b893ab8fe9a75380cca2843abba168e1dc148 linux-handhelds-2.6 2.6.21-hh20: Make cpufreq powersave governor modular. (Paul)
+c4ae7614802ca8ab8260cc888ee0e61c67315615 linux-handhelds-2.6 2.6.21: Enable BT for h5000. (Paul)
+9814a7ac8b5ebeadd190ad216196e5efd3a70ff3 linux-handhelds-2.6 2.6.21: Update to latest defconfigman. Includes: (Paul)
+cce3c198ae25e83079d8b75e58237de185e5149c linux-handhelds-2.6 2.6.21: Enable USB WiFi support for h5000. (Paul)
 
 Acked:
 
