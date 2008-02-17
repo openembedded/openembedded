@@ -1,3 +1,10 @@
+upstream: bakunin_at_autistici_dot_org
+status: API addition not proposed upstream
+comment: API addition to not manually setup the CURL connection and still
+be able to get the transfered feed and save it to secondary storage. done
+by zecke for the OpenMoko RSS reader.
+
+
 Index: libmrss-0.17.2/src/mrss.h
 ===================================================================
 --- libmrss-0.17.2.orig/src/mrss.h	2007-04-02 14:42:55.000000000 +0200
