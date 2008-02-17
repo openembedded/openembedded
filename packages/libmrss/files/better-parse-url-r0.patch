@@ -1,5 +1,5 @@
-upstream: bakunin_at_autistici_dot_org
-status: API addition not proposed upstream
+upstream: mailed to bakunin_at_autistici_dot_org by Laibsch
+status: pending
 comment: API addition to not manually setup the CURL connection and still
 be able to get the transfered feed and save it to secondary storage. done
 by zecke for the OpenMoko RSS reader.
