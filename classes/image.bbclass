@@ -90,6 +90,7 @@ fakeroot do_rootfs () {
 	${IMAGE_PREPROCESS_COMMAND}
 		
 	export TOPDIR=${TOPDIR}
+	export DISTRO=${USERDISTRO}
 	export MACHINE=${MACHINE}
 
 	for type in ${IMAGE_FSTYPES}; do

@@ -2,6 +2,8 @@
 #@NAME: Angstrom 
 #@DESCRIPTION: Release independent distribution configuration for Angstrom
 
+# Preserve original DISTRO value
+USERDISTRO := "${DISTRO}"
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
