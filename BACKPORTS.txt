@@ -12,8 +12,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
-242687582dbdcc1fdca2fc9af1f32a2b5c591f3c bitbake.conf, image.bbclass: Add and use USERDISTRO var to preserve original DISTRO value. (PaulS)
-465f9c73626153a7e195a5b8c08ae66282c3722f bitbake.conf: Set default IMAGE_FSTYPES to "tar.gz". (PaulS)
 
 Acked:
 
@@ -92,3 +90,6 @@ c4ae7614802ca8ab8260cc888ee0e61c67315615 linux-handhelds-2.6 2.6.21: Enable BT f
 cce3c198ae25e83079d8b75e58237de185e5149c linux-handhelds-2.6 2.6.21: Enable USB WiFi support for h5000. (PaulS, Koen)
 98f85bb96baab42bb0d213a35c2cd9f1c06a3f47 linux-handhelds-2.6: More elaboration to HaRET's sample startup.txt. (PaulS, Koen)
 9a8a930122d29384549135ea3382884efdb4000e linux-handhelds-2.6: Record teh fact that flash booting should be done with root=mtdN (PaulS, Koen)
+242687582dbdcc1fdca2fc9af1f32a2b5c591f3c bitbake.conf, image.bbclass: Add and use USERDISTRO var to preserve original DISTRO value. (PaulS, Koen)
+8707d2256d87ca3844a2e60a4e054ffec5b09af7 conf/machine/: Add jffs2 as default image for embedded boards and vendor machines. (PaulS, Koen)
+465f9c73626153a7e195a5b8c08ae66282c3722f bitbake.conf: Set default IMAGE_FSTYPES to "tar.gz". (PaulS, Koen)
