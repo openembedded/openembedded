@@ -4,8 +4,6 @@ LICENSE = "GPL"
 DEPENDS = "gstreamer pulseaudio"
 PR = "r1"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "http://0pointer.de/lennart/projects/gst-pulse/gst-pulse-${PV}.tar.gz \
 	file://dont-overload-pulseaudio.patch;patch=1"
 S = "${WORKDIR}/gst-pulse-${PV}"
