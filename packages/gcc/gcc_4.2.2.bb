@@ -27,6 +27,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
         file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
 	file://800-arm-bigendian.patch;patch=1 \
+	file://801-arm-bigendian-eabi.patch;patch=1 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
