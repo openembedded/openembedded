@@ -1,4 +1,5 @@
 DESCRIPTION = "EB*/EPWING dictionary browser for Linux Zaurus"
+AUTHOR = "Yuuichi Teranishi <teranisi@gohome.org>"
 HOMEPAGE = "http://www.gohome.org/zten"
 SECTION = "opie/applications"
 PRIORITY = "optional"
