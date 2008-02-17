@@ -157,7 +157,7 @@ else
     ROOT_DEVICE="/dev/$dev"
     # jffs2 is not recognized by mount automagically
     if [ "$fstype" == "(jffs2)" ]; then
-	FSTYPE="jffs2"
+	ROOT_FSTYPE="jffs2"
     fi
     CMDLINE="$CMDLINE root=$ROOT_DEVICE"
 fi
