@@ -31,7 +31,7 @@ MACHINE_EXTRA_RDEPENDS = "zaurusd"
 MACHINE_EXTRA_RRECOMMENDS_c7x0   = "kernel-module-snd-soc-corgi kernel-module-pxa2xx-cs kernel-module-pcmcia"
 MACHINE_EXTRA_RRECOMMENDS_akita  = "kernel-module-snd-soc-spitz kernel-module-pxa2xx-cs kernel-module-pcmcia"
 MACHINE_EXTRA_RRECOMMENDS_spitz  = "kernel-module-snd-soc-spitz"
-MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle"
+MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-pxa2xx-cs kernel-module-pcmcia"
 MACHINE_EXTRA_RRECOMMENDS_collie = "kernel-module-locomo-spi kernel-module-sa1100-cs kernel-module-mmc-block \
 	kernel-module-collie-ts kernel-module-leds-locomo kernel-module-locomokbd"
 
