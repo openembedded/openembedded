@@ -31,6 +31,8 @@ read_args() {
         case $arg in
             root=*)
                 ROOT_DEVICE=$optarg ;;
+            rootfstype=*)
+                ROOT_FSTYPE=$optarg ;;
             rootdelay=*)
                 rootdelay=$optarg ;;
         esac
