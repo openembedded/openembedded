@@ -35,9 +35,9 @@ python () {
 }
 
 #
-# Get a list of files containing device tables to create.
+# Get a list of files containing tables of devices to be created.
 # * IMAGE_DEVICE_TABLE is the old name to an absolute path to a device table file
-# * IMAGE_DEVICE_TABLES is a new name for a file, or list of files, seached
+# * IMAGE_DEVICE_TABLES is a new name for a file, or list of files, searched
 #   for in the BBPATH
 # If neither are specified then the default name of files/device_table-minimal.txt
 # is searched for in the BBPATH (same as the old version.)
