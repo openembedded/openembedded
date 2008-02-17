@@ -8,6 +8,7 @@ early_setup() {
     mkdir /proc
     mount -t proc proc /proc
     mkdir /mnt
+    modprobe -q mtdblock
 }
 
 dev_setup()
@@ -48,12 +49,12 @@ boot_root() {
     exec switch_root -c /dev/console $BOOT_ROOT /sbin/init
 }
 
-boot_failed() {
-    echo "No valid root device was specified.  Please add root=/dev/something to"
-    echo "the kernel command-line and try again."
+fatal() {
+    echo $1
     echo
     exec sh
 }
+
 
 echo "Starting initramfs boot..."
 early_setup
@@ -68,4 +69,5 @@ dev_setup
 
 load_modules
 [ -n "$BOOT_ROOT" ] && boot_root
-boot_failed
+
+fatal "No valid root device was specified.  Please add root=/dev/something to the kernel command-line and try again."
