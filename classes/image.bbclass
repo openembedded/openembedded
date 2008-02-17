@@ -90,6 +90,7 @@ fakeroot do_rootfs () {
 	${IMAGE_PREPROCESS_COMMAND}
 		
 	export TOPDIR=${TOPDIR}
+	export DISTRO=${USERDISTRO}
 	export MACHINE=${MACHINE}
 
 	for type in ${IMAGE_FSTYPES}; do
@@ -201,3 +202,4 @@ rootfs_update_timestamp () {
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
 
 addtask rootfs before do_build after do_install
+addtask deploy_to after do_rootfs
