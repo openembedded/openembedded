@@ -7,5 +7,3 @@ DEPENDS += "gnome-doc-utils"
 
 SRC_URI += "file://scrollkeeper.patch;patch=1 \
             file://no-desktop-docs.patch;patch=1;pnum=0"
-
-EXTRA_AUTORECONF = "-I ${STAGING_DATADIR}/aclocal/gnome2-macros"
