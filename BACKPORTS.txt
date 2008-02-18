@@ -93,3 +93,6 @@ cce3c198ae25e83079d8b75e58237de185e5149c linux-handhelds-2.6 2.6.21: Enable USB 
 242687582dbdcc1fdca2fc9af1f32a2b5c591f3c bitbake.conf, image.bbclass: Add and use USERDISTRO var to preserve original DISTRO value. (PaulS, Koen)
 8707d2256d87ca3844a2e60a4e054ffec5b09af7 conf/machine/: Add jffs2 as default image for embedded boards and vendor machines. (PaulS, Koen)
 465f9c73626153a7e195a5b8c08ae66282c3722f bitbake.conf: Set default IMAGE_FSTYPES to "tar.gz". (PaulS, Koen)
+28e2872ee9420efa1c6785b37d88314496a12175 kexec-tools: Add support for ARM atags allowing the commandline to be set (PaulS, Koen)
+af267d79107d9258fec25067e3ac6765f2ba9cc6 kexec-tools: unify (PaulS, Koen)
+f5ac91666271607b6fb0d8186495c57e9a4c5b01 kexec-tools: add static version.  partly closes 3739. (PaulS, Koen)
