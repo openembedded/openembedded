@@ -4,7 +4,7 @@ SECTION = "network"
 LICENSE = "GPL"
 DEPENDS = "perl-native gnutls libpcap pcre expat"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2 \
            file://use-our-lemon.patch;patch=1 \
 	   file://no-host-includes.patch;patch=1"
 
