@@ -9,6 +9,9 @@ LEAD_SONAME = "libnrcore.so"
 
 inherit autotools pkgconfig
 
+#/khtml/css/cssproperties.h failes to generate properly with high parallel makes
+PARALLEL_MAKE = ""
+
 do_configure () {
 	autotools_do_configure
 	cd ${S}

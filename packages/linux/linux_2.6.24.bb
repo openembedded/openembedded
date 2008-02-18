@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -24,6 +24,7 @@ SRC_URI_append_gesbc-9302 = " \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
+	file://mpc831x-nand.patch;patch=1 \
 	file://mpc8313e-rdb-leds.patch;patch=1 \
 	file://mpc8313e-rdb-rtc.patch;patch=1"
 

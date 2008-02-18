@@ -1,3 +1,5 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=14546
+
 Index: libXpm-3.5.1/configure.ac
 ===================================================================
 --- libXpm-3.5.1.orig/configure.ac	2004-05-11 02:00:35.000000000 -0400
