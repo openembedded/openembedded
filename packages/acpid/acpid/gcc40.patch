@@ -1,3 +1,5 @@
+upstream: https://sourceforge.net/tracker/index.php?func=detail&aid=1895615&group_id=33140&atid=407341
+
 Index: acpid-1.0.3/ud_socket.c
 ===================================================================
 --- acpid-1.0.3.orig/ud_socket.c	2003-11-17 14:24:58.000000000 -0700
