@@ -48,19 +48,21 @@ do
 		       mono perl \
 		       python python-pygtk \
 		       ruby \
+		       cacao-cldc jamvm swt3.4-gtk classpath classpath-gtk midpath-cldc-x11 midpath-gtk  midpath-pulseaudio \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
-		       gpe-gallery gpe-scap notecase \
+		       rox-filer gpe-gallery gpe-scap notecase \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
 		       xmms mplayer quasar vlc-gpe gnome-mplayer \
-		       wpa-gui wifi-radar kismet aircrack-ng dsniff rfakeap driftnet \
+		       wpa-gui wifi-radar kismet aircrack-ng dsniff rfakeap driftnet rt73-k2wrlz rt2570 rt2570-k2wrlz \
 		       nmap iptables iperf \
 		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
 		       abiword gnumeric evince epdfview gimp \
+		       fbreader uqtreader \
 		       scummvm \
 		       flite \
 		       ctorrent \
@@ -74,6 +76,7 @@ do
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
 		       task-opie \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
+		       hildon-1 hildon-base-lib hildon-lgpl hildon-libs hildon-thumbnail libconic libgpsbt libgpsmgr libhildonfm libhildonhelp libhildonmime libosso-gsf libosso-help libosso mce-dev osso-gwconnect osso-ic-oss osso-thumbnail outo \
 		       kbdd \
 		       nano pine \
 		      "
