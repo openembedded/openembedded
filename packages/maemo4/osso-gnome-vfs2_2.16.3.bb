@@ -6,12 +6,13 @@ DESCRIPTION = "gnomevfs - osso variant"
 
 PR = "r0"
 
+inherit gnome
+
 SRC_URI = "\
   http://repository.maemo.org/pool/maemo4.0/free/source/o/${PN}/${PN}_${PV}-1osso31.tar.gz \
   file://gnome-vfs-no-kerberos.patch;patch=1;pnum=0 \
   "
 
-inherit gnome
 
 EXTRA_OECONF = " \
 	--disable-openssl \
