@@ -1,3 +1,4 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=14544
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html

@@ -1,3 +1,4 @@
+upstream: https://bugs.freedesktop.org/show_bug.cgi?id=14545
 
 #
 # Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
