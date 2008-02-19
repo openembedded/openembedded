@@ -313,5 +313,4 @@ python do_package_write_ipk () {
 	bb.build.exec_func("do_package_ipk", d)
 }
 do_package_write_ipk[dirs] = "${D}"
-do_package_write_ipk[depends] = "ipkg-utils-native:do_populate_staging"
 addtask package_write_ipk before do_package_write after do_package
