@@ -1,0 +1,15 @@
+Remove obsolete non-portable macro.
+
+Index: SDL-1.2.9/src/video/fbcon/SDL_fbvideo.c
+===================================================================
+--- SDL-1.2.9.orig/src/video/fbcon/SDL_fbvideo.c
++++ SDL-1.2.9/src/video/fbcon/SDL_fbvideo.c
+@@ -405,7 +405,7 @@ static int FB_VideoInit(_THIS, SDL_Pixel
+ 
+ 	/* Memory map the device, compensating for buggy PPC mmap() */
+ 	mapped_offset = (((long)finfo.smem_start) -
+-	                (((long)finfo.smem_start)&~(PAGE_SIZE-1)));
++	                (((long)finfo.smem_start)&~(getpagesize()-1)));
+ 	mapped_memlen = finfo.smem_len+mapped_offset;
+ 	mapped_mem = mmap(NULL, mapped_memlen,
+ 	                  PROT_READ|PROT_WRITE, MAP_SHARED, console_fd, 0);

@@ -86,12 +86,3 @@ Index: ipkg-utils/ipkg-make-index
  if opt_s:
       sys.exit(0)
  
-@@ -154,7 +177,7 @@ if packages_filename:
-      os.rename(tmp_packages_filename, packages_filename)
-      os.rename(tmp_gzip_filename, gzip_filename)
- 
--if verbose:	
-+if verbose:
-      sys.stderr.write("Generate Packages.filelist file\n")
- files = {}
- names = packages.packages.keys()
