@@ -1,6 +1,6 @@
 require hildon-thumbnail.inc
 
-DEPENDS = "libhildon libosso"
+DEPENDS = "libhildon libosso osso-gnome-vfs2"
 
 PR = "r0"
 
