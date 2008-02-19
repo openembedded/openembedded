@@ -1,0 +1,19 @@
+Index: blackbox-0.70.1/configure.ac
+===================================================================
+--- blackbox-0.70.1.orig/configure.ac
++++ blackbox-0.70.1/configure.ac
+@@ -8,14 +8,6 @@ AC_CONFIG_SRCDIR([src/blackbox.cc])
+ dnl Determine default prefix
+ test "x$prefix" = "xNONE" && prefix="$ac_default_prefix"
+ 
+-dnl Look in the most logical places for external libraries
+-CPPFLAGS="$CPPFLAGS -I$prefix/include"
+-LDFLAGS="$LDFLAGS -L$prefix/lib"
+-if test "x$prefix" != "x/usr/local"; then
+-  CPPFLAGS="$CPPFLAGS -I/usr/local/include"
+-  LDFLAGS="$LDFLAGS -L/usr/local/lib"
+-fi
+-
+ dnl Locate required external software
+ AC_PROG_CC
+ 
