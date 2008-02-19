@@ -3,6 +3,7 @@ SECTION = "console/network"
 DEPENDS = "bluez-libs cmake-native"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gammu.org/"
+PR = "r1"
 
 SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2 "
 
@@ -25,6 +26,7 @@ do_stage() {
         install -m 0644 build-configure/include/*.h ${STAGING_INCDIR}/gammu/
 
         oe_libinstall -so -C build-configure/common libGammu ${STAGING_LIBDIR}
+        rm -f ./build-configure/pkgconfig/gammu.pc
 }
 
 PACKAGES =+ "libgammu"
