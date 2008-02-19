@@ -25,7 +25,18 @@ DEBIANNAME_${PN} = "dbus-1"
 
 PACKAGES += "${PN}-lib"
 
-FILES_${PN} = "${bindir}/dbus-daemon* ${bindir}/dbus-uuidgen ${bindir}/dbus-launch ${bindir}/dbus-cleanup-sockets ${bindir}/dbus-send ${bindir}/dbus-monitor ${sysconfdir} ${datadir}/dbus-1/services"
+FILES_${PN} = "\
+${bindir}/dbus-daemon* \
+${bindir}/dbus-uuidgen \
+${bindir}/dbus-launch \
+${bindir}/dbus-cleanup-sockets \
+${bindir}/dbus-send \
+${bindir}/dbus-monitor \
+${libexecdir}/dbus* \
+${sysconfdir} \
+${datadir}/dbus-1/services \
+${datadir}/dbus-1/system-services \
+"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"
 FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
 
