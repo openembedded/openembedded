@@ -6,8 +6,8 @@ state.Spitz {
 		comment.range '0 - 63'
 		iface MIXER
 		name 'Capture Volume'
-		value.0 23
-		value.1 23
+		value.0 48
+		value.1 48
 	}
 	control.2 {
 		comment.access 'read write'
@@ -15,8 +15,8 @@ state.Spitz {
 		comment.count 2
 		iface MIXER
 		name 'Capture ZC Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.3 {
 		comment.access 'read write'
@@ -24,8 +24,8 @@ state.Spitz {
 		comment.count 2
 		iface MIXER
 		name 'Capture Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.4 {
 		comment.access 'read write'
@@ -33,8 +33,8 @@ state.Spitz {
 		comment.count 2
 		iface MIXER
 		name 'Headphone Playback ZC Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.5 {
 		comment.access 'read write'
@@ -42,8 +42,8 @@ state.Spitz {
 		comment.count 2
 		iface MIXER
 		name 'Speaker Playback ZC Switch'
-		value.0 false
-		value.1 false
+		value.0 true
+		value.1 true
 	}
 	control.6 {
 		comment.access 'read write'
@@ -92,8 +92,8 @@ state.Spitz {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'PCM Volume'
-		value.0 255
-		value.1 255
+		value.0 220
+		value.1 220
 	}
 	control.11 {
 		comment.access 'read write'
@@ -122,7 +122,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'Bass Volume'
-		value 11
+		value 0
 	}
 	control.14 {
 		comment.access 'read write'
@@ -131,7 +131,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'Treble Volume'
-		value 11
+		value 0
 	}
 	control.15 {
 		comment.access 'read write'
@@ -158,7 +158,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name '3D Volume'
-		value 9
+		value 0
 	}
 	control.18 {
 		comment.access 'read write'
@@ -226,7 +226,7 @@ state.Spitz {
 		comment.count 1
 		iface MIXER
 		name 'ALC Capture ZC Switch'
-		value false
+		value true
 	}
 	control.25 {
 		comment.access 'read write'
@@ -235,7 +235,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Hold Time'
-		value 0
+		value 9
 	}
 	control.26 {
 		comment.access 'read write'
@@ -244,7 +244,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Decay Time'
-		value 3
+		value 9
 	}
 	control.27 {
 		comment.access 'read write'
@@ -253,7 +253,7 @@ state.Spitz {
 		comment.range '0 - 15'
 		iface MIXER
 		name 'ALC Capture Attack Time'
-		value 2
+		value 3
 	}
 	control.28 {
 		comment.access 'read write'
@@ -298,7 +298,7 @@ state.Spitz {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'Right ADC Capture Volume'
-		value 0
+		value 195
 	}
 	control.33 {
 		comment.access 'read write'
@@ -306,7 +306,7 @@ state.Spitz {
 		comment.count 1
 		iface MIXER
 		name 'ZC Timeout Switch'
-		value false
+		value true
 	}
 	control.34 {
 		comment.access 'read write'
@@ -331,8 +331,8 @@ state.Spitz {
 		comment.range '0 - 3'
 		iface MIXER
 		name 'Mic Boost'
-		value.0 0
-		value.1 0
+		value.0 3
+		value.1 3
 	}
 	control.37 {
 		comment.access 'read write'
@@ -379,8 +379,8 @@ state.Spitz {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Headphone Playback Volume'
-		value.0 121
-		value.1 121
+		value.0 105
+		value.1 105
 	}
 	control.42 {
 		comment.access 'read write'
@@ -389,8 +389,8 @@ state.Spitz {
 		comment.range '0 - 127'
 		iface MIXER
 		name 'Speaker Playback Volume'
-		value.0 121
-		value.1 121
+		value.0 127
+		value.1 127
 	}
 	control.43 {
 		comment.access 'read write'
@@ -411,7 +411,7 @@ state.Spitz {
 		comment.item.3 'Digital Mono'
 		iface MIXER
 		name 'Right ADC Mux'
-		value 'Mono (Left)'
+		value 'Digital Mono'
 	}
 	control.45 {
 		comment.access 'read write'
@@ -423,7 +423,7 @@ state.Spitz {
 		comment.item.3 'Digital Mono'
 		iface MIXER
 		name 'Left ADC Mux'
-		value 'Mono (Left)'
+		value 'Digital Mono'
 	}
 	control.46 {
 		comment.access 'read write'
@@ -458,7 +458,7 @@ state.Spitz {
 		comment.item.4 Differential
 		iface MIXER
 		name 'Right Line Mux'
-		value 'Line 2'
+		value Differential
 	}
 	control.49 {
 		comment.access 'read write'
@@ -471,7 +471,7 @@ state.Spitz {
 		comment.item.4 Differential
 		iface MIXER
 		name 'Left Line Mux'
-		value 'Line 1'
+		value Differential
 	}
 	control.50 {
 		comment.access 'read write'
@@ -483,7 +483,7 @@ state.Spitz {
 		comment.item.3 Differential
 		iface MIXER
 		name 'Right PGA Mux'
-		value 'Line 2'
+		value Differential
 	}
 	control.51 {
 		comment.access 'read write'
@@ -495,7 +495,7 @@ state.Spitz {
 		comment.item.3 Differential
 		iface MIXER
 		name 'Left PGA Mux'
-		value 'Line 1'
+		value Differential
 	}
 	control.52 {
 		comment.access 'read write'
