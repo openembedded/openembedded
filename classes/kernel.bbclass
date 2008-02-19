@@ -128,6 +128,10 @@ kernel_do_stage() {
 	if [ -e arch/${ARCH}/Makefile ]; then
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
 		install -m 0644 arch/${ARCH}/Makefile* ${STAGING_KERNEL_DIR}/arch/${ARCH}
+	# Otherwise check arch/x86/Makefile for i386 and x86_64 on kernels >= 2.6.24
+	elif [ -e arch/x86/Makefile ]; then
+		install -d ${STAGING_KERNEL_DIR}/arch/x86
+		install -m 0644 arch/x86/Makefile* ${STAGING_KERNEL_DIR}/arch/x86
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
