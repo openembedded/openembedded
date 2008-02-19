@@ -508,7 +508,8 @@ python emit_pkgdata() {
 		os.chdir(root)
 		g = glob('*')
 		if g or allow_empty == "1":
-			file(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), 'w').close()
+			packagedfile = bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d)
+			file(packagedfile, 'w').close()
 }
 emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
@@ -517,6 +518,8 @@ if [ x"$D" = "x" ]; then
 	ldconfig
 fi
 }
+
+SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
 
 python package_do_shlibs() {
 	import os, re, os.path
@@ -536,25 +539,14 @@ python package_do_shlibs() {
 		bb.error("WORKDIR not defined")
 		return
 
-	staging = bb.data.getVar('STAGING_DIR', d, 1)
-	if not staging:
-		bb.error("STAGING_DIR not defined")
-		return
-
 	ver = bb.data.getVar('PV', d, 1)
 	if not ver:
 		bb.error("PV not defined")
 		return
 
-	target_sys = bb.data.getVar('TARGET_SYS', d, 1)
-	if not target_sys:
-		bb.error("TARGET_SYS not defined")
-		return
-
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 
-	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
-	old_shlibs_dir = os.path.join(staging, "shlibs")
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
 	bb.mkdirhier(shlibs_dir)
 
 	needed = {}
@@ -611,7 +603,7 @@ python package_do_shlibs() {
 
 	shlib_provider = {}
 	list_re = re.compile('^(.*)\.list$')
-	for dir in [old_shlibs_dir, shlibs_dir]: 
+	for dir in [shlibs_dir]: 
 		if not os.path.exists(dir):
 			continue
 		for file in os.listdir(dir):
@@ -681,20 +673,9 @@ python package_do_pkgconfig () {
 		bb.error("WORKDIR not defined")
 		return
 
-	staging = bb.data.getVar('STAGING_DIR', d, 1)
-	if not staging:
-		bb.error("STAGING_DIR not defined")
-		return
-
-	target_sys = bb.data.getVar('TARGET_SYS', d, 1)
-	if not target_sys:
-		bb.error("TARGET_SYS not defined")
-		return
-
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 
-	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
-	old_shlibs_dir = os.path.join(staging, "shlibs")
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
 	bb.mkdirhier(shlibs_dir)
 
 	pc_re = re.compile('(.*)\.pc$')
@@ -744,7 +725,7 @@ python package_do_pkgconfig () {
 				f.write('%s\n' % p)
 			f.close()
 
-	for dir in [old_shlibs_dir, shlibs_dir]:
+	for dir in [shlibs_dir]:
 		if not os.path.exists(dir):
 			continue
 		for file in os.listdir(dir):
