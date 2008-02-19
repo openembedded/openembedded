@@ -1,5 +1,6 @@
+DESCRIPTION = "A message bus system for inter-process communication"
 HOMEPAGE = "http://dbus.freedesktop.org"
-DESCRIPTION = "Message bus system for applications to talk to one another"
+SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 
@@ -56,13 +57,20 @@ chgrp "$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || addgroup "$MESSAGEUSER"
 chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
 
 grep -q netdev: /etc/group || addgroup netdev
-
+chmod u+s /usr/libexec/dbus-daemon-launch-helper
 }
 
-EXTRA_OECONF = "--disable-qt --disable-qt3  --disable-gtk --disable-tests \
-		--disable-checks --disable-xml-docs --disable-doxygen-docs \
-		--with-xml=expat --without-x"
-
+EXTRA_OECONF = "\
+  --disable-qt \
+  --disable-qt3 \
+  --disable-gtk \
+  --disable-tests \
+  --disable-checks \
+  --disable-xml-docs \
+  --disable-doxygen-docs \
+  --with-xml=expat \
+  --without-x \
+"
 
 do_stage() {
 	oe_libinstall -so -C dbus libdbus-1 ${STAGING_LIBDIR}
@@ -76,4 +84,6 @@ do_stage() {
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/dbus-1.init ${D}${sysconfdir}/init.d/dbus-1
+	# the stock install seems to install the libtool wrapper script, so we have to copy this manually :M:
+	install -m 0755 bus/.libs/dbus-daemon-launch-helper ${D}${libexecdir}/
 }
