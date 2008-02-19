@@ -793,14 +793,39 @@ python package_depchains() {
 	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
 	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
 
-	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
-        #bb.note('rdepends for %s is %s' % (base, rdepends))
+	def pkg_adddeprrecs(pkg, base, suffix, getname, depends, d):
 
+		#bb.note('depends for %s is %s' % (base, depends))
+		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
+
+		for depend in depends:
+			if depend.find('-native') != -1 or depend.find('-cross') != -1 or depend.startswith('virtual/'):
+				#bb.note("Skipping %s" % depend)
+				continue
+			if depend.endswith('-dev'):
+				depend = depend.replace('-dev', '')
+			if depend.endswith('-dbg'):
+				depend = depend.replace('-dbg', '')
+			pkgname = getname(depend, suffix)
+			#bb.note("Adding %s for %s" % (pkgname, depend))
+			if not pkgname in rreclist:
+				rreclist.append(pkgname)
+
+		#bb.note('setting: RRECOMMENDS_%s=%s' % (pkg, ' '.join(rreclist)))
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, ' '.join(rreclist), d)
+
+	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
+
+		#bb.note('rdepends for %s is %s' % (base, rdepends))
 		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
 
 		for depend in rdepends:
+			if depend.endswith('-dev'):
+				depend = depend.replace('-dev', '')
+			if depend.endswith('-dbg'):
+				depend = depend.replace('-dbg', '')
 			pkgname = getname(depend, suffix)
-			if not pkgname in rreclist and packaged(pkgname, d):
+			if not pkgname in rreclist:
 				rreclist.append(pkgname)
 
 		#bb.note('setting: RRECOMMENDS_%s=%s' % (pkg, ' '.join(rreclist)))
@@ -810,6 +835,10 @@ python package_depchains() {
 		dep = dep.split(' (')[0].strip()
 		if dep not in list:
 			list.append(dep)
+
+	depends = []
+	for dep in explode_deps(bb.data.getVar('DEPENDS', d, 1) or ""):
+		add_dep(depends, dep)
 
 	rdepends = []
 	for dep in explode_deps(bb.data.getVar('RDEPENDS', d, 1) or ""):
@@ -843,6 +872,8 @@ python package_depchains() {
 	for suffix in pkgs:
 		for pkg in pkgs[suffix]:
 			(base, func) = pkgs[suffix][pkg]
+			if suffix == "-dev":
+				pkg_adddeprrecs(pkg, base, suffix, func, depends, d)
 			if len(pkgs[suffix]) == 1:
 				pkg_addrrecs(pkg, base, suffix, func, rdepends, d)
 			else:
