@@ -412,7 +412,6 @@ python do_listtasks() {
 addtask clean
 do_clean[dirs] = "${TOPDIR}"
 do_clean[nostamp] = "1"
-do_clean[bbdepcmd] = ""
 python base_do_clean() {
 	"""clear the build and temp directories"""
 	dir = bb.data.expand("${WORKDIR}", d)
@@ -428,7 +427,6 @@ python base_do_clean() {
 addtask rebuild
 do_rebuild[dirs] = "${TOPDIR}"
 do_rebuild[nostamp] = "1"
-do_rebuild[bbdepcmd] = ""
 python base_do_rebuild() {
 	"""rebuild a package"""
 	bb.build.exec_task('do_clean', d)
@@ -438,7 +436,6 @@ python base_do_rebuild() {
 addtask mrproper
 do_mrproper[dirs] = "${TOPDIR}"
 do_mrproper[nostamp] = "1"
-do_mrproper[bbdepcmd] = ""
 python base_do_mrproper() {
 	"""clear downloaded sources, build and temp directories"""
 	dir = bb.data.expand("${DL_DIR}", d)
@@ -680,7 +677,6 @@ python base_eventhandler() {
 
 addtask configure after do_unpack do_patch
 do_configure[dirs] = "${S} ${B}"
-do_configure[bbdepcmd] = "do_populate_staging"
 do_configure[deptask] = "do_populate_staging"
 base_do_configure() {
 	:
@@ -688,7 +684,6 @@ base_do_configure() {
 
 addtask compile after do_configure
 do_compile[dirs] = "${S} ${B}"
-do_compile[bbdepcmd] = "do_populate_staging"
 base_do_compile() {
 	if [ -e Makefile -o -e makefile ]; then
 		oe_runmake || die "make failed"
