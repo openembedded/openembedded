@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Try to determine and ignore false rotation signals caused by
+# headphones removal or remote removal remembering the old state.
+# OE#3390
+if test "`cat /var/run/last-screen-rotation`" = landscape ; then
+    exit
+fi
+echo landscape > /var/run/last-screen-rotation
