@@ -54,7 +54,7 @@ python do_package_deb_install () {
     # env of the fork+execve'd processs
 
     # Set up environment
-    apt_config = os.getenv('APT_CONFIG')
+    apt_config_backup = os.getenv('APT_CONFIG')
     os.putenv('APT_CONFIG', os.path.join(stagingdir, 'etc', 'apt', 'apt.conf'))
     path = os.getenv('PATH')
     os.putenv('PATH', '%s:%s' % (stagingbindir, os.getenv('PATH')))
@@ -64,7 +64,7 @@ python do_package_deb_install () {
     commands.getstatusoutput('apt-get install -y %s' % pkgfn)
 
     # revert environment
-    os.putenv('APT_CONFIG', apt_config)
+    os.putenv('APT_CONFIG', apt_config_backup)
     os.putenv('PATH', path)
 }
 
@@ -104,7 +104,8 @@ python do_package_deb () {
 
     for pkg in packages.split():
         localdata = bb.data.createCopy(d)
-        root = "%s/install/%s" % (workdir, pkg)
+        pkgdest = bb.data.getVar('PKGDEST', d, 1)
+        root = "%s/%s" % (pkgdest, pkg)
 
         lf = bb.utils.lockfile(root + ".lock")
 
@@ -265,7 +266,10 @@ python do_package_deb () {
 python () {
     import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
-        bb.data.setVarFlag('do_package_write_deb', 'depends', 'dpkg-native:do_populate_staging fakeroot-native:do_populate_staging', d)
+        deps = (bb.data.getVarFlag('do_package_write_deb', 'depends', d) or "").split()
+        deps.append('dpkg-native:do_populate_staging')
+        deps.append('fakeroot-native:do_populate_staging')
+        bb.data.setVarFlag('do_package_write_deb', 'depends', " ".join(deps), d)
 }
 
 python do_package_write_deb () {
