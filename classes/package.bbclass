@@ -519,7 +519,7 @@ if [ x"$D" = "x" ]; then
 fi
 }
 
-SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
+SHLIBSDIR = "${STAGING_DIR}/${HOST_SYS}/shlibs"
 
 python package_do_shlibs() {
 	import os, re, os.path
