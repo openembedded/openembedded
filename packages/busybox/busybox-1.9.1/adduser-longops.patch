@@ -1,3 +1,7 @@
+upstream: http://bugs.busybox.net/view.php?id=2134
+status: accepted in rev. 21031 on Feb 15 2008
+comment: fixes OE bug 3781, applied by mickeyl
+
 diff -Nuar busybox-1.9.1.old/loginutils/Config.in busybox-1.9.1/loginutils/Config.in
 --- busybox-1.9.1.old/loginutils/Config.in	Tue Feb 12 10:03:11 2008
 +++ busybox-1.9.1/loginutils/Config.in	Thu Feb 14 11:48:31 2008

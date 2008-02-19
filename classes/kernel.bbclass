@@ -65,21 +65,21 @@ kernel_do_compile() {
 	fi
 }
 
+INITRAMFS_SYMLINK_NAME ?= "initramfs-${MACHINE}"
+INITRAMFS_IMAGE_TARGET ?= "initramfs-image"
+
 do_builtin_initramfs() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
-	cp "${INITRAMFS_LOC}" usr/initramfs_data.cpio.gz
+	cp "${DEPLOY_DIR_IMAME}/${INITRAMFS_SYMLINK_NAME}" usr/initramfs_data.cpio.gz
 	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 	install -d ${DEPLOY_DIR_IMAGE}
-	mv ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.no-initramfs.bin
-	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-initramfs.bin
 	# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
 	rm usr/initramfs_data.cpio.gz
-
-	[ -n "${DEPLOY_TO}" ] && install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_TO}
 }
 addtask builtin_initramfs after do_compile
-# As it accepts external parameter(s), better make it unstamped
 do_builtin_initramfs[nostamp] = "1"
+do_builtin_initramfs[depends] = "${INITRAMFS_IMAGE_TARGET}:do_rootfs"
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
@@ -128,6 +128,10 @@ kernel_do_stage() {
 	if [ -e arch/${ARCH}/Makefile ]; then
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
 		install -m 0644 arch/${ARCH}/Makefile* ${STAGING_KERNEL_DIR}/arch/${ARCH}
+	# Otherwise check arch/x86/Makefile for i386 and x86_64 on kernels >= 2.6.24
+	elif [ -e arch/x86/Makefile ]; then
+		install -d ${STAGING_KERNEL_DIR}/arch/x86
+		install -m 0644 arch/x86/Makefile* ${STAGING_KERNEL_DIR}/arch/x86
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}

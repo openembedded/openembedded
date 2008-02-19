@@ -95,6 +95,7 @@ while read maj min nblk dev; do
 done < /proc/partitions
 
 add_menu_item "NFS (nfsroot=192.168.2.200:/srv/nfs/oe/image)"
+add_menu_item "Shell"
 
 total=`echo -e $list | wc -l`
 num=0
@@ -142,8 +143,11 @@ echo Selected: $sel
 
 dev=`expr "$sel" : '\([^ /]*\)'`
 path=`expr "$sel" : '[^/]*\([^ ]*\).*'`
+fstype=`expr "$sel" : '[^ ]* *\(.*\)'`
 
-if [ "$dev" == "NFS" ]; then
+if [ "$dev" == "Shell" ]; then
+    exec /bin/sh
+elif [ "$dev" == "NFS" ]; then
     ROOT_DEVICE="/dev/nfs"
     CMDLINE="$CMDLINE root=/dev/nfs nfsroot=192.168.2.200:/srv/nfs/oe/image"
 elif [ -n "$path" ]; then
@@ -151,6 +155,10 @@ elif [ -n "$path" ]; then
     CMDLINE="$CMDLINE root=/dev/loop looproot=/dev/$dev:$path"
 else
     ROOT_DEVICE="/dev/$dev"
+    # jffs2 is not recognized by mount automagically
+    if [ "$fstype" == "(jffs2)" ]; then
+	ROOT_FSTYPE="jffs2"
+    fi
     CMDLINE="$CMDLINE root=$ROOT_DEVICE"
 fi
 
