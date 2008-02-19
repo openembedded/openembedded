@@ -21,9 +21,7 @@ EXTRA_OECONF = "\
 "
 
 do_configure_prepend() {
-	install -m 0644 ${WORKDIR}/Makefile.in.in po/
-	echo "install -d $*" >./mkinstalldirs
-	chmod a+rx ./mkinstalldirs
+	autopoint
 }
 
 do_stage() {
