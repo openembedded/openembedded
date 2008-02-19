@@ -4,7 +4,6 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_gesbc-9302 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
-DEFAULT_PREFERENCE_qemux86 = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
