@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "mpfr gmp"
-PR = "r6"
+PR = "r7"
 
 inherit autotools gettext
 
