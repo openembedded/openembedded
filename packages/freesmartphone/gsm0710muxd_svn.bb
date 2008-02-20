@@ -5,12 +5,17 @@ SECTION = "console/network"
 DEPENDS = "intltool-native dbus"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=gsm0710muxd"
 S = "${WORKDIR}/gsm0710muxd"
 
 inherit autotools
+
+do_install_append() {
+	# temp hack
+	mv -f ${D}${datadir}/dbus-1/system-services/org.freesmartphone.GSM.MUX.service ${D}${datadir}/dbus-1/system-services/org.mobile.mux.service
+}
 
 pkg_postinst_${PN}() {
 	# can't do this offline
