@@ -1,1 +1,1 @@
-set linuxargs "root=/dev/mtdblock1 noinitrd console=tty0 console=ttyS0,115200"
+set linuxargs "root=mtd1 noinitrd console=ttyS0,115200 console=tty0"
