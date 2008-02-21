@@ -1,0 +1,16 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdepim/kdepim-desktop.pro~nomail
++++ kdepim/kdepim-desktop.pro
+@@ -15,7 +15,7 @@
+ }
+ unix:{ 
+ !staticlib: {
+-SUBDIRS += libetpan kmicromail/libmailwrapper kmicromail pwmanager/libcrypt/cipher  pwmanager/libcrypt/error  pwmanager/libcrypt/mpi  pwmanager/libcrypt/zlib pwmanager/pwmanager
++SUBDIRS += pwmanager/libcrypt/cipher  pwmanager/libcrypt/error  pwmanager/libcrypt/mpi  pwmanager/libcrypt/zlib pwmanager/pwmanager
+ }
+ }
+ 

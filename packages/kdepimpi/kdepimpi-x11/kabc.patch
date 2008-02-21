@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdepim/kaddressbook/kaddressbook.pro~kabc
++++ kdepim/kaddressbook/kaddressbook.pro
+@@ -31,10 +31,10 @@
+ LIBS += ../libical/lib/libicalss.a
+ 
+ } else {
+-LIBS += ../bin/libmicrokdepim.so
+-LIBS += ../bin/libmicrokde.so
+-LIBS += ../bin/libmicrokabc.so
+-LIBS += ../bin/libmicrokcal.so
++LIBS += $(DESTDIR)/libmicrokdepim.so
++LIBS += $(DESTDIR)/libmicrokde.so
++LIBS += $(DESTDIR)/libmicrokabc.so
++LIBS += $(DESTDIR)/libmicrokcal.so
+ #LIBS += -lldap
+ }
+ OBJECTS_DIR = obj/unix

@@ -1,0 +1,22 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdepim/korganizer/korganizer.pro~korganizer
++++ kdepim/korganizer/korganizer.pro
+@@ -34,10 +34,10 @@
+ LIBS += ../libical/lib/libical.a
+ LIBS += ../libical/lib/libicalss.a
+ } else {
+-LIBS += ../bin/libmicrokdepim.so
+-LIBS += ../bin/libmicrokcal.so
+-LIBS += ../bin/libmicrokde.so
+-LIBS += ../bin/libmicrokabc.so
++LIBS += $(DESTDIR)/libmicrokdepim.so
++LIBS += $(DESTDIR)/libmicrokcal.so
++LIBS += $(DESTDIR)/libmicrokde.so
++LIBS += $(DESTDIR)/libmicrokabc.so
+ #LIBS += -lbluetooth
+ #LIBS += -lsdp
+ 
