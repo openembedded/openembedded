@@ -43,7 +43,8 @@ do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
-                       usbutils pciutils mtd-utils usbview hal \
+                       man \
+		       usbutils pciutils mtd-utils usbview hal \
                        task-proper-tools mc screen findutils \
 		       mono perl \
 		       python python-pygtk \
