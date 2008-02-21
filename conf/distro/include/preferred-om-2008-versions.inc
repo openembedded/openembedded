@@ -1,1 +1,7 @@
 PREFERRED_VERSION_vte = "0.16.10"
+PREFERRED_VERSION_dbus = "1.1.1"
+PREFERRED_VERSION_gpsdrive = "2.10pre4"
+PREFERRED_VERSION_asterisk = "1.4.17"
+PREFERRED_VERSION_gnash = "0.8.1"
+PREFERRED_VERSION_mono = "1.2.6"
+PREFERRED_VERSION_mono-mcs-intermediate = "1.2.6"
