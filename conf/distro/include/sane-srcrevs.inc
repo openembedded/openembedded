@@ -7,6 +7,10 @@
 
 # this is alphabetical!
 
+# yes, really!
+
+# you know what that means? like... a, b, c, d, e, f, g...
+
 SRCREV_pn-aircrack-ng ?= "802"
 SRCREV_pn-bfin-uclibc ?= "1857"
 SRCREV_pn-contact ?= "1410"
@@ -41,6 +45,7 @@ SRCREV_pn-libmokogsmd2 ?= "3663"
 SRCREV_pn-libmokojournal2 ?= "3217"
 SRCREV_pn-libmokopanelui2 ?= "3349"
 SRCREV_pn-libmokoui2 ?= "3688"
+SRCREV_pn-libw100 ?= "47"
 SRCREV_pn-libowl ?= "277"
 SRCREV_pn-libxosd ?= "627"
 SRCREV_pn-lightmediascanner ?= "68"
@@ -57,7 +62,10 @@ SRCREV_pn-matchbox-keyboard-inputmethod ?= "1739"
 SRCREV_pn-matchbox-panel-2 ?= "1626"
 SRCREV_pn-moko-gtk-engine ?= "3405"
 SRCREV_pn-mpd-alsa ?= "6952"
+SRCREV_pn-mplayer ?= "24587"
 SRCREV_pn-neod ?= "3421"
+SRCREV_pn-networkmanager ?= "2887"
+SRCREV_pn-networkmanager-applet ?= "200"
 SRCREV_pn-oh-puzzles ?= "22"
 SRCREV_pn-osb-browser ?= "125"
 SRCREV_pn-osb-jscore ?= "117"
@@ -132,14 +140,12 @@ SRCREV_pn-settings-daemon ?= "1755"
 SRCREV_pn-sjf2410-linux-native ?= "933"
 SRCREV_pn-sphyrna ?= "45"
 SRCREV_pn-tmut ?= "60"
+SRCREV_pn-u-boot-openmoko ?= "4100"
+SRCREV_pn-usbpath ?= "3108"
+SRCREV_pn-usbpath-native ?= "3108"
 SRCREV_pn-webkit-gtk ?= "28656"
 SRCREV_pn-webkit-qt ?= "28656"
 SRCREV_pn-webkit-qtopia ?= "28656"
 SRCREV_pn-wesnoth ?= "22021"
 SRCREV_pn-xoo ?= "1623"
-SRCREV_pn-mplayer ?= "24587"
-SRCREV_pn-networkmanager ?= "2887"
-SRCREV_pn-networkmanager-applet ?= "200"
-SRCREV_pn-libw100 ?= "47"
-SRCREV_pn-usbpath ?= "3108"
-SRCREV_pn-usbpath-native ?= "3108"
+
