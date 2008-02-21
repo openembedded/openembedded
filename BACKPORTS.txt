@@ -12,15 +12,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
-cbea743aa6a8217f9ac26291c4cc58b2716d5000 klibc-utils-fstype 1.1.1: Add rudimentary jffs2 detection. (PaulS)
-de1d4506659e4a712c794b322f19ea295057d8c0 initramfs-module-check-modules: An initramfs module to check modules consistency. (PaulS)
-72649b856ad1fa4e391eeee4bff017f81ce286e5 initramfs-module-bootmenu 1.0: Add jffs2 to list of recoginized FSes. (PaulS)
-e8991301f05699cb60606be403c8f4897f904025 initramfs-module-kexecboot: Initramfs module to kexec to kernel in rootfs. (PaulS)
-6453c1938bbcd0ab830b8bc186e501a3ec4ebb10 initramfs-module-bootmenu, initramfs-module-kexecboot: Fixes for kexecing. (PaulS)
-766dada8a567205427a8c1eefb0fbe5923190602 initramfs-uniboot: Modprobe mtdblock and factor out fatal(). (PaulS)
-461df56d5cc4fa62e620c9efe56f3253258ee0f5 initramfs-module-block: Accept additional FSTYPE param, handle mount failure. (PaulS)
-f6ab5be390e4400fb993f0e449049b62daece68e initramfs-module-bootmenu: Add support for jffs2 booting and "drop to shell" option. (PaulS)
-bfa62d5baf96a6142cf2f6eb0833399d79630633 initramfs-uniboot: FSTYPE -> ROOT_FSTYPE, set from rootfstype= command line param. (PaulS)
 
 
 Acked:
@@ -106,3 +97,15 @@ cce3c198ae25e83079d8b75e58237de185e5149c linux-handhelds-2.6 2.6.21: Enable USB 
 28e2872ee9420efa1c6785b37d88314496a12175 kexec-tools: Add support for ARM atags allowing the commandline to be set (PaulS, Koen)
 af267d79107d9258fec25067e3ac6765f2ba9cc6 kexec-tools: unify (PaulS, Koen)
 f5ac91666271607b6fb0d8186495c57e9a4c5b01 kexec-tools: add static version.  partly closes 3739. (PaulS, Koen)
+cbea743aa6a8217f9ac26291c4cc58b2716d5000 klibc-utils-fstype 1.1.1: Add rudimentary jffs2 detection. (PaulS, Koen)
+de1d4506659e4a712c794b322f19ea295057d8c0 initramfs-module-check-modules: An initramfs module to check modules consistency. (PaulS, Koen)
+72649b856ad1fa4e391eeee4bff017f81ce286e5 initramfs-module-bootmenu 1.0: Add jffs2 to list of recoginized FSes. (PaulS, Koen)
+e8991301f05699cb60606be403c8f4897f904025 initramfs-module-kexecboot: Initramfs module to kexec to kernel in rootfs. (PaulS, Koen)
+6453c1938bbcd0ab830b8bc186e501a3ec4ebb10 initramfs-module-bootmenu, initramfs-module-kexecboot: Fixes for kexecing. (PaulS, Koen)
+766dada8a567205427a8c1eefb0fbe5923190602 initramfs-uniboot: Modprobe mtdblock and factor out fatal(). (PaulS, Koen)
+461df56d5cc4fa62e620c9efe56f3253258ee0f5 initramfs-module-block: Accept additional FSTYPE param, handle mount failure. (PaulS, Koen)
+f6ab5be390e4400fb993f0e449049b62daece68e initramfs-module-bootmenu: Add support for jffs2 booting and "drop to shell" option. (PaulS, Koen)
+bfa62d5baf96a6142cf2f6eb0833399d79630633 initramfs-uniboot: FSTYPE -> ROOT_FSTYPE, set from rootfstype= command line param. (PaulS, Koen)
+a7d8d33ac7c9103154c98fde0a758a23c99ed439 initramfs-bootmenu-image: Add initramfs-module-check-modules. (PaulS, Koen)
+e3a0b976e81e239f3e4c4df1b80d11e5c10e367f initramfs-*-image.bb: Add better comments what each image does. (PaulS, Koen)
+975cc3ff5c8f648df66275a44ffa3c3a4f09daec initramfs-bootmenu-image: Add initramfs-module-kexecboot. (PaulS, Koen)
