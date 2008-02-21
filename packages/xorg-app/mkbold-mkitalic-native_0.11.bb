@@ -12,10 +12,10 @@ S = "${WORKDIR}/mkbold-mkitalic-${PV}"
 inherit native
 
 do_stage() {
-	install -d ${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}/bin
-	install -m 755 mkbold ${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}/bin/
-	install -m 755 mkitalic ${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}/bin/
-	install -m 755 mkbolditalic ${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}/bin/
-	install -m 755 ${WORKDIR}/makebifonts ${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}/bin/
+	install -d ${STAGING_BINDIR_NATIVE}
+	install -m 755 mkbold ${STAGING_BINDIR_NATIVE}/
+	install -m 755 mkitalic ${STAGING_BINDIR_NATIVE}/
+	install -m 755 mkbolditalic ${STAGING_BINDIR_NATIVE}/
+	install -m 755 ${WORKDIR}/makebifonts ${STAGING_BINDIR_NATIVE}/
 }
 
