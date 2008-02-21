@@ -1,6 +1,6 @@
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2" 
-SRC_URI += "file://fstype-sane-and-vfat.patch;patch=1" 
-PR = "r0"
+SRC_URI += "file://fstype-sane-and-vfat-jffs2.patch;patch=1" 
+PR = "r1"
 
 S = "${WORKDIR}/klibc-${PV}"
 
