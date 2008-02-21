@@ -20,8 +20,8 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 @@ -0,0 +1,171 @@
 +/*
 + * drivers/leds/leds-mpc8313e-rdb.c
-+ * Copyright (C) 2007 Leon Woestenberg <leon@sidebranch.com>
 + * Copyright (C) 2007 Jeremy Laine <jeremy.laine@bolloretelecom.eu>
++ * Copyright (C) 2007 Leon Woestenberg <leon@sidebranch.com>
 + *
 + * This file is subject to the terms and conditions of the GNU General Public
 + * License.  See the file COPYING in the main directory of this archive for
@@ -99,21 +99,21 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 +	},
 +	{
 +		.cdev = {
-+			.name		= "mpc8313:green",
++			.name		= "mpc8313:led5",
 +			.brightness_set	= mpc8313leds_set,
 +		},
 +		.bitmask	= 32,
 +	},
 +	{
 +		.cdev = {
-+			.name		= "mpc8313:yellow",
++			.name		= "mpc8313:led6",
 +			.brightness_set	= mpc8313leds_set,
 +		},
 +		.bitmask	= 64,
 +	},
 +	{
 +		.cdev = {
-+			.name		= "mpc8313:red",
++			.name		= "mpc8313:led7",
 +			.brightness_set	= mpc8313leds_set,
 +		},
 +		.bitmask	= 128,
@@ -186,7 +186,7 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 +module_init(mpc8313leds_init);
 +module_exit(mpc8313leds_exit);
 +
-+MODULE_AUTHOR("Leon Woestenberg <leon@sidebranch.com>");
++MODULE_AUTHOR("Jeremy Laine <jeremy.laine@bolloretelecom.eu>");
 +MODULE_DESCRIPTION("MPC8313E-RDB LED driver");
 +MODULE_LICENSE("GPL");
 diff -urN linux-2.6.24.orig/drivers/leds/Makefile linux-2.6.24/drivers/leds/Makefile

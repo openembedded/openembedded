@@ -1,7 +1,7 @@
 require ecore.inc
 inherit native
 DEPENDS = "eet-native evas-native"
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF = "\
                 --x-includes=${STAGING_INCDIR}/X11 \
@@ -19,6 +19,7 @@ EXTRA_OECONF = "\
                 --disable-ecore-evas-x11-gl \
                 --disable-ecore-evas-xrender \
                 --disable-ecore-evas-dfb \
+                --disable-ecore-evas-sdl \
                 --disable-openssl \
                 --enable-abstract-sockets \
                 --enable-ecore-con \

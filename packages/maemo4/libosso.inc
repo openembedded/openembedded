@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
-DESCRIPTION = "Nokia osso library"
+DESCRIPTION = "Nokia OSSO IPC library"
 
-DEPENDS = "dbus-glib glib-2.0"
+DEPENDS = "dbus-glib glib-2.0 mce-dev"
 
 inherit autotools pkgconfig lib_package
 

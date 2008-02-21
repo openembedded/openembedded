@@ -1,0 +1,13 @@
+--- 1/Makefile.in.org	2001-12-25 15:37:37.000000000 +0200
++++ 1/Makefile.in	2008-02-20 02:54:56.000000000 +0200
+@@ -63,8 +63,8 @@
+ install: all installdirs
+ 	@echo "Installing bvi"
+ 	@$(INSTALL_DATA) bvi.1 bmore.1 $(man1dir)
+-	@$(INSTALL_PROGRAM) -s bvi $(bindir)
+-	@$(INSTALL_PROGRAM) -s bmore $(bindir)
++	@$(INSTALL_PROGRAM) bvi $(bindir)
++	@$(INSTALL_PROGRAM) bmore $(bindir)
+ 	@$(INSTALL_DATA) bmore.help $(datadir)
+ 	@if [ -f $(bindir)/bview ]; then rm $(bindir)/bview; fi
+ 	@if [ -f $(bindir)/bvedit ]; then rm $(bindir)/bvedit; fi
