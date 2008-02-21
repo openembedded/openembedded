@@ -32,7 +32,7 @@ PREFERRED_VERSION_libxsettings-client ?= "0.17"
 
 PREFERRED_VERSION_gpe-icons ?= "0.25"
 
-PREFERRED_VERSION_gpe-login ?= "0.90"
+PREFERRED_VERSION_gpe-login ?= "0.91"
 PREFERRED_VERSION_gpe-session-scripts ?= "0.67"
 PREFERRED_VERSION_gpe-su ?= "0.19"
 PREFERRED_VERSION_keylaunch ?= "2.0.10"
