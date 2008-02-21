@@ -12,6 +12,10 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
+ccc35c09fb2bb9251875a596eeda86438143de28 ipaq-boot-params: Add DESCRIPTION. (PaulS)
+8173bd390c2d8b35940c27c8d74d2d0acad96781 ipaq-boot-params: Add sensible boot params regarding consoles. (PaulS)
+4eb5b005a1da43a766a4d6f77af48d3ba0a994a4 ipaq-boot-params: Fix to actually enable flash booting with the recent kernels. (PaulS)
+1821f6eadefc14ad7ce51d5ab026da139608f557 h3900.conf: Ship ipaq-boot-params
 
 
 Acked:
