@@ -5,13 +5,14 @@ LICENSE = "GPL"
 AUTHOR = "David Olofson <david@olofson.net>"
 HOMEPAGE = "http://olofson.net/kobodl"
 
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "libsdl-image virtual/libsdl"
 
 RDEPENDS_${PN} = "${PN}-data"
 
 SRC_URI = "http://olofson.net/kobodl/download/KoboDeluxe-${PV}.tar.bz2 \
+           file://fighter-48.xpm \
 					 file://debian-kobo.patch;patch=1 \
 					 file://kobodeluxe-putenv.patch;patch=1 \
 					 file://kobodeluxe-sysconf-support.patch;patch=1 \
@@ -22,11 +23,13 @@ SRC_URI = "http://olofson.net/kobodl/download/KoboDeluxe-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/KoboDeluxe-${PV}"
 
-inherit autotools
+inherit autotools sdl
 
-export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
+APPIMAGE = "${WORKDIR}/fighter-48.xpm"
 
 EXTRA_OECONF = "--disable-opengl --disable-sdltest --enable-touchscreen"
+
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 do_configure_prepend() {
   sed -i \
