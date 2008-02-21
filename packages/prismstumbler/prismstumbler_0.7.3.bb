@@ -17,7 +17,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--x-libraries=${STAGING_LIBDIR} \
-		--with-libpcap=${STAGING_DIR}/${HOST_SYS} \
+		--with-libpcap=${STAGING_EXECPREFIXDIR} \
 		--with-sqlite-includes=${STAGING_INCDIR} \
 		--with-sqlite-libs=${STAGING_LIBDIR} \
 		--without-athena \

@@ -1,4 +1,5 @@
 SRC_URI += "file://mozilla-firefox.png file://mozilla-firefox.desktop"
+
 PACKAGES =+ "firefox-inspector"
 
 FILES_firefox-inspector = "	${libdir}/firefox-${PV}/chrome/inspector* \
@@ -27,3 +28,11 @@ pkg_postinst_firefox() {
 	# work around requirement for root access on first startup
 	chmod -R a+w ${libdir}/firefox*
 }
+
+do_stage() {
+	autotools_stage_all
+
+
+
+}
+
