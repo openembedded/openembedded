@@ -1,3 +1,5 @@
+upstream: is basically dead
+
 --- kdepim/libkcal/libkcal.pro~paths	2005-01-30 00:23:34.000000000 +0100
 +++ kdepim/libkcal/libkcal.pro	2005-10-03 11:09:49.000000000 +0200
 @@ -11,8 +11,8 @@
