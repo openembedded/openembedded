@@ -26,6 +26,7 @@ S = "${WORKDIR}/KoboDeluxe-${PV}"
 inherit autotools sdl
 
 APPIMAGE = "${WORKDIR}/fighter-48.xpm"
+APPNAME = "kobodl"
 
 EXTRA_OECONF = "--disable-opengl --disable-sdltest --enable-touchscreen"
 
