@@ -1,8 +1,6 @@
 #!/bin/bash
 
-DO_GLIBC=1
-DO_UCLIBC=0
-
+# Worker functions
 do_build() {
 	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
 
@@ -38,6 +36,41 @@ do_report_success() {
 
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder.log
 }
+
+##
+## Special uclibc targets
+## Start with them, as some of them may be used as builtin kernel initramfs
+## for the following glibc images.
+##
+DO_GLIBC=0
+DO_UCLIBC=1
+
+# Bootmenu image
+# As of now, not machine-dependent, so we build random armv5 machine
+# Better to build armv4, but that's what I actually tested ;-). So, on TODO.
+for machine in h4000
+do
+	BUILD_CLEAN=""
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="initramfs-bootmenu-image"
+	do_build
+done
+
+# LiveRamdisk core. Same note applies.
+for machine in h4000
+do
+	BUILD_CLEAN=""
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="liveramdisk-image"
+	do_build
+done
+
+
+##
+## Main glibc targets
+##
+DO_GLIBC=1
+DO_UCLIBC=0
 
 #cross toolchain
 #for machine in ep93xx a780 efika collie ixp4xxbe
@@ -118,28 +151,3 @@ done
 #	do_build
 #done
 
-#
-# Special uclibc targets
-#
-DO_GLIBC=0
-DO_UCLIBC=1
-
-# Bootmenu image
-# As of now, not machine-dependent, so we build random armv5 machine
-# Better to build armv4, but that's what I actually tested ;-). So, on TODO.
-for machine in h4000
-do
-	BUILD_CLEAN=""
-	BUILD_MACHINE=$machine
-	BUILD_TARGETS="initramfs-bootmenu-image"
-	do_build
-done
-
-# LiveRamdisk core. Same note applies.
-for machine in h4000
-do
-	BUILD_CLEAN=""
-	BUILD_MACHINE=$machine
-	BUILD_TARGETS="liveramdisk-image"
-	do_build
-done
