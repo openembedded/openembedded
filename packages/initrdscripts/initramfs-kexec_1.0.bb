@@ -1,11 +1,11 @@
 DESCRIPTON = "A init script that mounts a device and kexecs a new kernel from it."
-PR = "r3"
+PR = "r4"
 
 do_compile() {
         cat > init.sh << EOF
 #!/bin/sh
 /bin/mount -t proc proc /proc
-/bin/mount -t ${ROOTFS} /dev/${ROOTDEV} /mnt
+/bin/mount -t ${ROOTFS} ${ROOTDEV} /mnt
 /usr/sbin/kexec -l /mnt/zImage
 /usr/sbin/kexec -e
 EOF
@@ -21,5 +21,5 @@ PACKAGE_ARCH = "all"
 
 FILES_${PN} = "/init /proc /mnt"
 
-ROOTDEV = "mtdblock2"
+ROOTDEV = "mtd2"
 ROOTFS = "jffs2"
