@@ -1,0 +1,12 @@
+#/bim/sh
+
+#
+# This scripts converts output of mtn log --no-graph --no-files into format 
+# suitable for BACKPORTS.txt
+#
+
+/usr/bin/awk '
+/^Revi/	{ rev = $2 }
+/^$/	{on=1; next}
+/^----/ {on=0; next;}
+on == 1	{print rev " " $0 " (<approved by>)"; on=0; next}' $1 | tac
