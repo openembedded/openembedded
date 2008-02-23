@@ -94,6 +94,7 @@ SLUGOS_PACKAGES = "\
 	glib-2.0 \
 	gnu-config \
 	gphoto2 \
+	gpsd \
 	grep \
 	groff \
 	gtk-doc \
