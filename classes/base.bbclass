@@ -777,8 +777,10 @@ def get_subpkgedata_fn(pkg, d):
 	import bb, os
 	archs = bb.data.expand("${PACKAGE_ARCHS}", d).split(" ")
 	archs.reverse()
+	pkgdata = bb.data.expand('${STAGING_DIR}/pkgdata/', d)
+	targetdir = bb.data.expand('${TARGET_VENDOR}-${TARGET_OS}/runtime/', d)
 	for arch in archs:
-		fn = bb.data.expand('${STAGING_DIR}/pkgdata/' + arch + '${TARGET_VENDOR}-${TARGET_OS}/runtime/%s' % pkg, d)
+		fn = pkgdata + arch + targetdir + pkg
 		if os.path.exists(fn):
 			return fn
 	return bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
