@@ -2,15 +2,6 @@
 # Sanity check the users setup for common misconfigurations
 #
 
-#
-# SANITY_ABI allows us to notify users when the format of TMPDIR changes in 
-# an incompatible way. Such changes should usually be detailed in the commit
-# that breaks the format and have been previously discussed on the mailing list 
-# with general agreement from the core team.
-#
-SANITY_ABI = "0"
-SANITY_ABIFILE = "${TMPDIR}/abi_version"
-
 def raise_sanity_error(msg):
 	import bb
 	bb.fatal(""" Openembedded's config sanity checker detected a potential misconfiguration.
