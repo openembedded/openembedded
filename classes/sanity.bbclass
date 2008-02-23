@@ -137,7 +137,10 @@ def check_sanity(e):
 	if os.path.exists(abifile):
 		f = file(abifile, "r")
 		abi = f.read().strip()
-		if (abi != current_abi):
+		if not abi.isdigit():
+			f = file(abifile, "w")
+			f.write(current_abi)
+		elif (abi != current_abi):
 			# Code to convert from one ABI to another could go here if possible.
 			messages = messages + "Error, TMPDIR has changed ABI (%s to %s) and you need to either rebuild, revert or adjust it at your own risk.\n" % (abi, current_abi)
 	else:
