@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r59"
+PR = "r61"
 
 inherit task
 
@@ -168,7 +168,8 @@ RRECOMMENDS_task-base-kernel26 = "\
     kernel-module-rtc-dev \
     kernel-module-rtc-proc \
     kernel-module-rtc-sysfs \
-    kernel-module-rtc-sa1100"
+    kernel-module-rtc-sa1100 \
+    kernel-module-unix"
 
 RDEPENDS_task-base-keyboard = "\
     keymaps"
