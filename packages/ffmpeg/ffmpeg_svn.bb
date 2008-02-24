@@ -1,10 +1,9 @@
-DESCRIPTION = "ffmpeg"
-SECTION = "libs"
-PRIORITY = "optional"
-LICENSE = "GPL"
-DEPENDS = "libogg zlib libvorbis faac liba52 lame"
+require ffmpeg.inc
+
+DEPENDS += "libogg"
+
 PV = "0.4.9+svnr${SRCREV}" 
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -12,44 +11,21 @@ SRC_URI = "svn://svn.mplayerhq.hu/ffmpeg/;module=trunk"
 
 S = "${WORKDIR}/trunk"
 
-inherit autotools pkgconfig
-
-TARGET_LDFLAGS_append = " -lm -la52 "
-
-EXTRA_OECONF = " \
-	--enable-libmp3lame \
+EXTRA_OECONF += " \
+        --enable-libmp3lame \
         --enable-libvorbis \
         --disable-libfaad \
         --enable-liba52 \
         --enable-liba52bin \
         --enable-libogg \
-	--enable-pp \
-        --enable-shared \
-        --enable-pthreads \
         --enable-gpl \
         \
-        --disable-audio-beos \
-        --disable-v4l \
-        --disable-dv1394 \
-        --disable-debug \
-        --disable-ffserver \
-        --disable-ffplay \
-	--disable-strip \
+        --disable-strip \
         \
-        --cross-prefix=${TARGET_PREFIX} \
         \
         --cpu=${PACKAGE_ARCH} \
-	--arch=${PACKAGE_ARCH} \
+        --arch=${PACKAGE_ARCH} \
 "
-
-
-# We do this because the install program is called with -s
-# which causes it to call "strip" and it then mangles cross compiled stuff..
-PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
-
-do_configure_prepend() {
-        export CC="${CC}"
-}
 
 oe_runconf () {
         # make ffmpeg detect arm targets that don't end in 'l'
@@ -70,6 +46,7 @@ oe_runconf () {
 
 do_stage() {
         oe_libinstall -a -so -C libavcodec libavcodec ${STAGING_LIBDIR}
+        oe_libinstall -a -so -C libavdevice libavdevice ${STAGING_LIBDIR}
         oe_libinstall -a -so -C libavformat libavformat ${STAGING_LIBDIR}
         oe_libinstall -a -so -C libavutil libavutil ${STAGING_LIBDIR}
         oe_libinstall -a -so -C libpostproc libpostproc ${STAGING_LIBDIR}
@@ -77,7 +54,8 @@ do_stage() {
         install -d ${STAGING_INCDIR}/ffmpeg
         install -m 0644 ${S}/libavcodec/avcodec.h \
                 ${STAGING_INCDIR}/ffmpeg/avcodec.h
-
+        install -m 0644 ${S}/libavdevice/avdevice.h \
+                ${STAGING_INCDIR}/ffmpeg/avdevice.h
         install -m 0644 ${S}/libavformat/avformat.h \
                 ${STAGING_INCDIR}/ffmpeg/avformat.h
         install -m 0644 ${S}/libavformat/avio.h \
@@ -116,26 +94,36 @@ do_stage() {
 }
 
 PACKAGES += "libavcodec libavcodec-dev \
+        libavdevice libavdevice-dev \
         libavformat libavformat-dev \
         libavutil libavutil-dev \
         libpostproc libpostproc-dev"
 
-FILES_${PN} = "${bindir}"
-FILES_${PN}-dev = "${includedir}"
+FILES_${PN} = "${bindir} ${libdir}/vhook"
+FILES_${PN}-dev += "${bindir} ${libdir}/pkgconfig/libswscale.pc"
 FILES_${PN}-doc = "${mandir}"
 
 FILES_libavcodec = "${libdir}/libavcodec*.so.*"
 FILES_libavcodec-dev = "${libdir}/libavcodec*.so \
+        ${libdir}/pkgconfig/libavcodec.pc \
         ${libdir}/libavcodec*.la ${libdir}/libavcodec*.a"
+
+FILES_libavdevice = "${libdir}/libavdevice*.so.*"
+FILES_libavdevice-dev = "${libdir}/libavdevice*.so \
+        ${libdir}/pkgconfig/libavdevice.pc \
+        ${libdir}/libavdevice*.la ${libdir}/libavdevice*.a"
 
 FILES_libavformat = "${libdir}/libavformat*.so.*"
 FILES_libavformat-dev = "${libdir}/libavformat*.so \
+        ${libdir}/pkgconfig/libavformat.pc \
         ${libdir}/libavformat*.la ${libdir}/libavformat*.a"
 
 FILES_libavutil = "${libdir}/libavutil*.so.*"
 FILES_libavutil-dev = "${libdir}/libavutil*.so \
+        ${libdir}/pkgconfig/libavutil.pc \
         ${libdir}/libavutil*.la ${libdir}/libavutil*.a"
 
 FILES_libpostproc = "${libdir}/libpostproc*.so.*"
 FILES_libpostproc-dev = "${libdir}/libpostproc*.so \
+        ${libdir}/pkgconfig/libpostproc.pc \
         ${libdir}/libpostproc*.la ${libdir}/libpostproc*.a"
