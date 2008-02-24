@@ -1,9 +1,9 @@
 require ffmpeg.inc
 
-DEPENDS += "libogg"
+DEPENDS += "libgsm"
 
-PV = "0.4.9+svnr${SRCREV}" 
-PR = "r2"
+PV = "0.4.9+svn${SRCDATE}" 
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -12,118 +12,94 @@ SRC_URI = "svn://svn.mplayerhq.hu/ffmpeg/;module=trunk"
 S = "${WORKDIR}/trunk"
 
 EXTRA_OECONF += " \
-        --enable-libmp3lame \
-        --enable-libvorbis \
-        --disable-libfaad \
+        --prefix=/usr \
+        \
+        --enable-nonfree \
+        --enable-swscaler \
+        --enable-x11grab \
+        \
         --enable-liba52 \
         --enable-liba52bin \
-        --enable-libogg \
-        --enable-gpl \
+        --enable-libfaac \
+        --enable-libfaad \
+        --enable-libfaadbin \
+        --enable-libgsm \
+        --enable-libmp3lame \
+        --enable-libvorbis \
         \
-        --disable-strip \
-        \
-        \
-        --cpu=${PACKAGE_ARCH} \
-        --arch=${PACKAGE_ARCH} \
+        --arch=${TARGET_ARCH} \
+        --cross-compile \
+        --cc="gcc ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
+        --extra-cflags="${TARGET_CFLAGS}" \
+        --extra-ldflags="${TARGET_LDFLAGS}" \
+        --enable-hardcoded-tables \
 "
 
-oe_runconf () {
-        # make ffmpeg detect arm targets that don't end in 'l'
-        sed -i -e s:'armv\[4567\]\*l':'armv\[4567\]\*':g ${S}/configure
-        if [ -x ${S}/configure ] ; then
-                cfgcmd="${S}/configure \
-                        --prefix=${prefix} \
-                        --mandir=${mandir} \
-                        ${EXTRA_OECONF} \
-                    $@"
-                oenote "Running $cfgcmd..."
-                $cfgcmd || oefatal "oe_runconf failed"
-        else
-                oefatal "no configure script found"
-        fi
-
+do_configure() {
+         ${S}/configure ${EXTRA_OECONF}
 }
 
 do_stage() {
-        oe_libinstall -a -so -C libavcodec libavcodec ${STAGING_LIBDIR}
-        oe_libinstall -a -so -C libavdevice libavdevice ${STAGING_LIBDIR}
-        oe_libinstall -a -so -C libavformat libavformat ${STAGING_LIBDIR}
-        oe_libinstall -a -so -C libavutil libavutil ${STAGING_LIBDIR}
-        oe_libinstall -a -so -C libpostproc libpostproc ${STAGING_LIBDIR}
+        for lib in libavcodec libavdevice libavformat \
+                   libavutil libpostproc libswscale
+        do
+            oe_libinstall -a -so -C $lib $lib ${STAGING_LIBDIR}
+        done 
 
         install -d ${STAGING_INCDIR}/ffmpeg
-        install -m 0644 ${S}/libavcodec/avcodec.h \
-                ${STAGING_INCDIR}/ffmpeg/avcodec.h
-        install -m 0644 ${S}/libavdevice/avdevice.h \
-                ${STAGING_INCDIR}/ffmpeg/avdevice.h
-        install -m 0644 ${S}/libavformat/avformat.h \
-                ${STAGING_INCDIR}/ffmpeg/avformat.h
-        install -m 0644 ${S}/libavformat/avio.h \
-                ${STAGING_INCDIR}/ffmpeg/avio.h
-        install -m 0644 ${S}/libavformat/rtp.h \
-                ${STAGING_INCDIR}/ffmpeg/rtp.h
-        install -m 0644 ${S}/libavformat/rtsp.h \
-                ${STAGING_INCDIR}/ffmpeg/rtsp.h
-        install -m 0644 ${S}/libavformat/rtspcodes.h \
-                ${STAGING_INCDIR}/ffmpeg/rtspcodes.h
 
-        install -m 0644 ${S}/libavutil/avutil.h \
-                ${STAGING_INCDIR}/ffmpeg/avutil.h
-        install -m 0644 ${S}/libavutil/bswap.h \
-                ${STAGING_INCDIR}/ffmpeg/bswap.h
-        install -m 0644 ${S}/libavutil/common.h \
-                ${STAGING_INCDIR}/ffmpeg/common.h
-        install -m 0644 ${S}/libavutil/crc.h \
-                ${STAGING_INCDIR}/ffmpeg/crc.h
-        install -m 0644 ${S}/libavutil/integer.h \
-                ${STAGING_INCDIR}/ffmpeg/integer.h
-        install -m 0644 ${S}/libavutil/intfloat_readwrite.h \
-                ${STAGING_INCDIR}/ffmpeg/intfloat_readwrite.h
-        install -m 0644 ${S}/libavutil/mathematics.h \
-                ${STAGING_INCDIR}/ffmpeg/mathematics.h
-        install -m 0644 ${S}/libavutil/rational.h \
-                ${STAGING_INCDIR}/ffmpeg/rational.h
-        install -m 0644 ${S}/libavutil/mem.h \
-                ${STAGING_INCDIR}/ffmpeg/mem.h
-        install -m 0644 ${S}/libavutil/log.h \
-                ${STAGING_INCDIR}/ffmpeg/log.h
+        install -m 0644 ${S}/libavcodec/avcodec.h ${STAGING_INCDIR}/ffmpeg/avcodec.h
+        install -m 0644 ${S}/libavcodec/opt.h ${STAGING_INCDIR}/ffmpeg/opt.h
+
+        install -m 0644 ${S}/libavdevice/avdevice.h  ${STAGING_INCDIR}/ffmpeg/avdevice.h
+        
+        for h in avformat.h avio.h rtp.h rtsp.h rtspcodes.h
+        do
+           install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/ffmpeg/$h
+        done
+
+        for h in adler32.h avstring.h avutil.h base64.h bswap.h \
+                 common.h crc.h fifo.h integer.h intfloat_readwrite.h \
+                 log.h lzo.h mathematics.h md5.h mem.h random.h \
+                 rational.h sha1.h
+        do
+           install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/ffmpeg/$h
+        done
+
+        install -m 0644 ${S}/libswscale/swscale.h ${STAGING_INCDIR}/ffmpeg/swscale.h
+        install -m 0644 ${S}/libswscale/rgb2rgb.h ${STAGING_INCDIR}/ffmpeg/rgb2rgb.h
 
         install -d ${STAGING_INCDIR}/libpostproc
-        install -m 0644 ${S}/libpostproc/postprocess.h \
-                ${STAGING_INCDIR}/libpostproc/postprocess.h
+        install -m 0644 ${S}/libpostproc/postprocess.h ${STAGING_INCDIR}/libpostproc/postprocess.h
 }
 
-PACKAGES += "libavcodec libavcodec-dev \
-        libavdevice libavdevice-dev \
-        libavformat libavformat-dev \
-        libavutil libavutil-dev \
-        libpostproc libpostproc-dev"
-
-FILES_${PN} = "${bindir} ${libdir}/vhook"
-FILES_${PN}-dev += "${bindir} ${libdir}/pkgconfig/libswscale.pc"
-FILES_${PN}-doc = "${mandir}"
+PACKAGES += "libavcodec  libavcodec-dev  libavcodec-dbg \
+             libavdevice libavdevice-dev libavdevice-dbg \
+             libavformat libavformat-dev libavformat-dbg \
+             libavutil   libavutil-dev   libavutil-dbg \
+             libpostproc libpostproc-dev libpostproc-dbg \
+             libswscale  libswscale-dev  libswscale-dbg"
 
 FILES_libavcodec = "${libdir}/libavcodec*.so.*"
-FILES_libavcodec-dev = "${libdir}/libavcodec*.so \
-        ${libdir}/pkgconfig/libavcodec.pc \
-        ${libdir}/libavcodec*.la ${libdir}/libavcodec*.a"
+FILES_libavcodec-dev = "${libdir}/libavcodec*.so ${libdir}/pkgconfig/libavcodec.pc ${libdir}/libavcodec*.a"
+FILES_libavcodec-dbg += "${libdir}/.debug/libavcodec*"
 
 FILES_libavdevice = "${libdir}/libavdevice*.so.*"
-FILES_libavdevice-dev = "${libdir}/libavdevice*.so \
-        ${libdir}/pkgconfig/libavdevice.pc \
-        ${libdir}/libavdevice*.la ${libdir}/libavdevice*.a"
+FILES_libavdevice-dev = "${libdir}/libavdevice*.so ${libdir}/pkgconfig/libavdevice.pc ${libdir}/libavdevice*.a"
+FILES_libavdevice-dbg += "${libdir}/.debug/libavdevice*"
 
 FILES_libavformat = "${libdir}/libavformat*.so.*"
-FILES_libavformat-dev = "${libdir}/libavformat*.so \
-        ${libdir}/pkgconfig/libavformat.pc \
-        ${libdir}/libavformat*.la ${libdir}/libavformat*.a"
+FILES_libavformat-dev = "${libdir}/libavformat*.so ${libdir}/pkgconfig/libavformat.pc ${libdir}/libavformat*.a"
+FILES_libavformat-dbg += "${libdir}/.debug/libavformat*"
 
 FILES_libavutil = "${libdir}/libavutil*.so.*"
-FILES_libavutil-dev = "${libdir}/libavutil*.so \
-        ${libdir}/pkgconfig/libavutil.pc \
-        ${libdir}/libavutil*.la ${libdir}/libavutil*.a"
+FILES_libavutil-dev = "${libdir}/libavutil*.so ${libdir}/pkgconfig/libavutil.pc ${libdir}/libavutil*.a"
+FILES_libavutil-dbg += "${libdir}/.debug/libavutil*"
 
 FILES_libpostproc = "${libdir}/libpostproc*.so.*"
-FILES_libpostproc-dev = "${libdir}/libpostproc*.so \
-        ${libdir}/pkgconfig/libpostproc.pc \
-        ${libdir}/libpostproc*.la ${libdir}/libpostproc*.a"
+FILES_libpostproc-dev = "${libdir}/libpostproc*.so  ${libdir}/pkgconfig/libpostproc.pc ${libdir}/libpostproc*.a ${includedir}/postproc"
+FILES_libpostproc-dbg += "${libdir}/.debug/libpostproc*"
+
+FILES_libswscale = "${libdir}/libswscale*.so.*"
+FILES_libswscale-dev = "${libdir}/libswscale*.so ${libdir}/pkgconfig/libswscale.pc ${libdir}/libswscale*.a"
+FILES_libswscale-dbg += "${libdir}/.debug/libswscale*"
