@@ -1,39 +1,35 @@
-DESCRIPTION = "ffmpeg"
+DESCRIPTION = "FFmpeg is a complete solution to record, convert and stream audio and video"
 HOMEPAGE = "http://ffmpeg.mplayerhq.hu/"
 AUTHOR = "Fabrice Bellard ffmpeg-devel@mplayerhq.hu"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-DEPENDS = "zlib libvorbis faac liba52 lame"
+DEPENDS = "zlib libogg libvorbis faac faad2 liba52 lame"
 RSUGGESTS = "mplayer"
 
 inherit autotools pkgconfig
 
-TARGET_LDFLAGS_append = " -lm -la52 "
+LEAD_SONAME = "libavcodec.so"
 
 EXTRA_OECONF = "\
+        \
         --enable-pp \
         --enable-shared \
         --enable-pthreads \
         --enable-gpl \
         \
-        --disable-audio-beos \
-        --disable-v4l \
-        --disable-dv1394 \
+        --cross-prefix=${TARGET_PREFIX} \
         --disable-debug \
         --disable-ffserver \
         --disable-ffplay \
         \
-        --cross-prefix=${TARGET_PREFIX} \
-        \
-        --cpu=${PACKAGE_ARCH} \
-        \
 "
 
-# We do this because the install program is called with -s which causes it to call "strip" and it then mangles cross compiled stuff..
-PATH_prepend="${CROSS_DIR}/${TARGET_SYS}/bin:"
+PACKAGES += "${PN}-vhook-dbg ${PN}-vhook"
 
-do_configure_prepend() {
-        export CC="${CC}"
-}
+FILES_${PN} = "${bindir}"
+FILES_${PN}-dev = "${includedir}/${PN}"
+
+FILES_${PN}-vhook = "${libdir}/vhook"
+FILES_${PN}-vhook-dbg += "${libdir}/vhook/.debug"
