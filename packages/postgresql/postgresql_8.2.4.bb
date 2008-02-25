@@ -1,6 +1,6 @@
 require postgresql.inc
 
-PR = "r1"
+PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://ftp.de.postgresql.org/mirror/postgresql/source/v${PV}/${P}.tar.bz2 \
