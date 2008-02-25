@@ -7,8 +7,6 @@ DEPENDS = "virtual/kernel zlib"
 
 inherit autotools
 
-export LDFLAGS = "-L${STAGING_LIBDIR}"
-EXTRA_OECONF = " --with-zlib=yes"
 
 SRC_URI = "http://www.xmission.com/~ebiederm/files/kexec/kexec-tools-${PV}.tar.gz \
            file://kexec-tools-arm.patch;patch=1 \

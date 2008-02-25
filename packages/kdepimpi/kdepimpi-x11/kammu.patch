@@ -1,0 +1,18 @@
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1898924&group_id=104103&atid=636951
+status: upstream is pretty dead
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdepim/gammu/emb/gammu/gammu.pro~kammu
++++ kdepim/gammu/emb/gammu/gammu.pro
+@@ -47,7 +47,7 @@
+            depend/nokia/dct3trac/wmx-util.c \
+            depend/nokia/dct3trac/wmx.c
+ unix : {
+-LIBS +=      ../../../bin/libmicrogammu.so /usr/lib/libpthread.so
++LIBS +=      $(DESTDIR)/libmicrogammu.so 
+ # bluetooth disabled for now
+ #/usr/lib/libbluetooth.so  /usr/lib/libsdp.so 
+ OBJECTS_DIR = obj/unix

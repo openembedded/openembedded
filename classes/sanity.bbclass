@@ -2,15 +2,6 @@
 # Sanity check the users setup for common misconfigurations
 #
 
-#
-# SANITY_ABI allows us to notify users when the format of TMPDIR changes in 
-# an incompatible way. Such changes should usually be detailed in the commit
-# that breaks the format and have been previously discussed on the mailing list 
-# with general agreement from the core team.
-#
-SANITY_ABI = "0"
-SANITY_ABIFILE = "${TMPDIR}/abi_version"
-
 def raise_sanity_error(msg):
 	import bb
 	bb.fatal(""" Openembedded's config sanity checker detected a potential misconfiguration.
@@ -146,7 +137,10 @@ def check_sanity(e):
 	if os.path.exists(abifile):
 		f = file(abifile, "r")
 		abi = f.read().strip()
-		if (abi != current_abi):
+		if not abi.isdigit():
+			f = file(abifile, "w")
+			f.write(current_abi)
+		elif (abi != current_abi):
 			# Code to convert from one ABI to another could go here if possible.
 			messages = messages + "Error, TMPDIR has changed ABI (%s to %s) and you need to either rebuild, revert or adjust it at your own risk.\n" % (abi, current_abi)
 	else:
@@ -161,11 +155,6 @@ addhandler check_sanity_eventhandler
 python check_sanity_eventhandler() {
     from bb import note, error, data, __version__
     from bb.event import getName
-
-    try:
-        from distutils.version import LooseVersion
-    except ImportError:
-        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
 
     if getName(e) == "ConfigParsed":
         check_sanity(e)

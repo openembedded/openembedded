@@ -31,10 +31,10 @@ S = "${WORKDIR}/xine-lib-${PV}"
 
 SOV = "1.0.7"
 
-EXTRA_OECONF="-with-zlib-path=${STAGING_DIR}/${HOST_SYS} \
-	--with-vorbis-prefix=${STAGING_DIR}/${HOST_SYS} \
+EXTRA_OECONF="-with-zlib-path=${STAGING_EXECPREFIXDIR} \
+	--with-vorbis-prefix=${STAGING_EXECPREFIXDIR} \
 	--disable-oggtest \
-	--with-ogg-prefix=${STAGING_DIR}/${HOST_SYS} \
+	--with-ogg-prefix=${STAGING_EXECPREFIXDIR} \
 	--disable-altivec --disable-vis --disable-mlib \
 	--disable-fb --disable-alsa --disable-vcd \
 	--disable-asf --disable-faad --disable-iconv \

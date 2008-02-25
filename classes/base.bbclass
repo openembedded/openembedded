@@ -85,7 +85,7 @@ def base_chk_file(parser, pn, pv, src_uri, localpath, data):
 
 
 def base_dep_prepend(d):
-	import bb;
+	import bb
 	#
 	# Ideally this will check a flag so we will operate properly in
 	# the case where host == build == target, for now we don't work in
@@ -777,8 +777,10 @@ def get_subpkgedata_fn(pkg, d):
 	import bb, os
 	archs = bb.data.expand("${PACKAGE_ARCHS}", d).split(" ")
 	archs.reverse()
+	pkgdata = bb.data.expand('${STAGING_DIR}/pkgdata/', d)
+	targetdir = bb.data.expand('${TARGET_VENDOR}-${TARGET_OS}/runtime/', d)
 	for arch in archs:
-		fn = bb.data.expand('${STAGING_DIR}/pkgdata/' + arch + '${TARGET_VENDOR}-${TARGET_OS}/runtime/%s' % pkg, d)
+		fn = pkgdata + arch + targetdir + pkg
 		if os.path.exists(fn):
 			return fn
 	return bb.data.expand('${PKGDATA_DIR}/runtime/%s' % pkg, d)
@@ -814,6 +816,20 @@ python read_subpackage_metadata () {
 			bb.data.setVar(key, sdata[key], d)
 }
 
+# Make sure MACHINE isn't exported
+# (breaks binutils at least)
+MACHINE[unexport] = "1"
+
+# Make sure TARGET_ARCH isn't exported
+# (breaks Makefiles using implicit rules, e.g. quilt, as GNU make has this 
+# in them, undocumented)
+TARGET_ARCH[unexport] = "1"
+
+# Make sure DISTRO isn't exported
+# (breaks sysvinit at least)
+DISTRO[unexport] = "1"
+
+
 def base_after_parse(d):
     import bb, os, exceptions
 
@@ -833,8 +849,6 @@ def base_after_parse(d):
             if this_machine and not re.match(need_machine, this_machine):
                 raise bb.parse.SkipPackage("incompatible with machine %s" % this_machine)
 
-
-
     pn = bb.data.getVar('PN', d, 1)
 
     # OBSOLETE in bitbake 1.7.4
@@ -845,22 +859,6 @@ def base_after_parse(d):
     use_nls = bb.data.getVar('USE_NLS_%s' % pn, d, 1)
     if use_nls != None:
         bb.data.setVar('USE_NLS', use_nls, d)
-
-    # Make sure MACHINE isn't exported
-    # (breaks binutils at least)
-    bb.data.delVarFlag('MACHINE', 'export', d)
-    bb.data.setVarFlag('MACHINE', 'unexport', 1, d)
-    
-    # Make sure TARGET_ARCH isn't exported
-    # (breaks Makefiles using implicit rules, e.g. quilt, as GNU make has this 
-    # in them, undocumented)
-    bb.data.delVarFlag('TARGET_ARCH', 'export', d)
-    bb.data.setVarFlag('TARGET_ARCH', 'unexport', 1, d)
-    
-    # Make sure DISTRO isn't exported
-    # (breaks sysvinit at least)
-    bb.data.delVarFlag('DISTRO', 'export', d)
-    bb.data.setVarFlag('DISTRO', 'unexport', 1, d)
 
     # Git packages should DEPEND on git-native
     srcuri = bb.data.getVar('SRC_URI', d, 1)
@@ -891,7 +889,7 @@ def base_after_parse(d):
     if len(paths) == 0:
         return
 
-    for s in bb.data.getVar('SRC_URI', d, 1).split():
+    for s in srcuri.split():
         if not s.startswith("file://"):
             continue
         local = bb.data.expand(bb.fetch.localpath(s, d), d)
