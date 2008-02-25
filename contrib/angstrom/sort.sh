@@ -25,6 +25,12 @@ cat files-sorted files-unsorted | sort | uniq -d > files-duplicate
 echo "Removing duplicate packages in unsorted"
 cat files-duplicate | xargs rm -f
 
+# Log remaining packages to a file 
+find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v locale > new-files.txt
+for newfile in $(cat new-files.txt | sed s:./::g) ; do
+    echo "$(date -u +%s) $newfile $(basename ${PWD})" >> ../upload.txt
+done    
+
 do_sort() {
 archdir=$arch
 
@@ -34,7 +40,7 @@ case "$arch" in
 	"armv4t")
 			machines="ep93xx h6300 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="davinci-dvevm gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 qemuarm omap5912osk poodle spitz tosa" ;;
+			machines="davinci-dvevm gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6")	
