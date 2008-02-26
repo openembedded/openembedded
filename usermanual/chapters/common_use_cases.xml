@@ -99,7 +99,28 @@ SRCDATE = "20061014"
   <section id="commonuse_new_package">
     <title>Adding a new Package</title>
 
-    <para>This section is a stub, help us by expanding it</para>
+    <para>This section is a stub, help us by expanding it.  Learn by example, go through the
+    recipes that are already there and mimic them to do what you want.</para>
+
+    <section>
+        <title>building from unstable source code</title>
+        <para>Building against the latest, bleeding-edge source has some intricacies of its own.
+        For one, it is desirable to pin down a souce code revision that is known to build to 
+        prevent random breakage in OE at the most inopportune time for all OE users.  Here is
+        how to do that properly.
+          <itemizedlist>
+            <listitem>for svn: add 'PV = "1.1+svnr${SRCREV}"' to your bb file.</listitem>
+            <listitem>for cvs: add 'PV = "1.1+cvs${SRCREV}"' to your bb file.</listitem>
+          </itemizedlist>
+        Accompany either with an entry to conf/sane-srcrevs.inc for a revision that you know
+        builds successfully.
+        </para>
+        <para>
+        If you really absolutely have to follow the latest commits, you can do that by adding
+        'SRCREV_pn-linux-davinci ?= ${AUTOREV}' to your local.conf, for example.  In this case,
+        you'd build against the most recent and unstable source for the pn-linux-davinci package.
+        </para>
+    </section>
   </section>
 
   <section id="commonuse_new_image">
