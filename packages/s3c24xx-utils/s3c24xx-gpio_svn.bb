@@ -2,16 +2,16 @@ DESCRIPTION = "A user-space tool to show and modify the state of GPIOs on the S3
 SECTION = "console/utils"
 LICENSE = "GPL"
 PV = "1.0+svn${SRCDATE}"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gpio;proto=http"
 S = "${WORKDIR}/gpio"
 
 do_compile() {
-	${CC} ${CFLAGS} ${LDFLAGS} -static -o gpio gpio.c
+	${CC} ${CFLAGS} ${LDFLAGS} -static -o ${PN} gpio.c
 }
 
 do_install() {
 	install -d ${D}${sbindir}
-	install -m 0755 gpio ${D}${sbindir}
+	install -m 0755 ${PN} ${D}${sbindir}
 }
