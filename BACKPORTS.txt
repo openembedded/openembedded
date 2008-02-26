@@ -44,7 +44,9 @@ fe4e349c9f99ffcc18a5abe8041cd3379219c456   "
 d0b06899d617a3084a4389de34679546c1615411   "   
 6570be85097c98af0508238f19359b4f5aeb0b02   "   
 bcbcd3dbc13dded1680b2ed90f51f44cb4557b95   "   
-
+4b30415f5d28ab66598f7324bc7a1a3f91781ed2 Meta-toolchain updates (Koen)     
+7b5a121460a4867fa930ed58cc8df78a6b2ba234   "   
+bac6bab8aea0d3ae63ff99ef44f37a08bd4f381e   "   
 
 Acked:
 
