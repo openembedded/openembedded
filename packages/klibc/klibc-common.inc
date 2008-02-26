@@ -16,8 +16,8 @@ KLIBC_ARCH_mipsel = 'mips'
 # could be fixed, but for the moment:
 ARM_INSTRUCTION_SET = "arm"
 
-SRC_URI_append_linux-gnueabi = "\
-			       	file://klibc-config-eabi.patch;patch=1"
+SRC_URI_append_linux-gnueabi = "file://klibc-config-eabi.patch;patch=1"
+SRC_URI_append_linux-uclibcgnueabi = "file://klibc-config-eabi.patch;patch=1"
 
 EXTRA_OEMAKE = "'KLIBCARCH=${KLIBC_ARCH}' \
                 'CROSS_COMPILE=${TARGET_PREFIX}' \
