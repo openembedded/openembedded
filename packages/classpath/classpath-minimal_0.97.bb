@@ -1,8 +1,6 @@
 require classpath.inc
 
-PR = "r5"
-
-SRC_URI += "file://gjar-prefix-patch.diff;patch=1;pnum=0"
+PR = "r0"
 
 PROVIDES = "${PN} classpath"
 

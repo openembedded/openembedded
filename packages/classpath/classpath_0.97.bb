@@ -1,8 +1,6 @@
 require classpath.inc
 
-SRC_URI += "file://gjar-prefix-patch.diff;patch=1;pnum=0 \
-          "
-PR = "r4"
+PR = "r0"
 
 DEPENDS += "gtk+ gconf libxtst"
 
