@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME XML library"
 MAINTAINER = "Phil Blundell <pb@handhelds.org>"
 
-SRC_URI = "http://xmlsoft.org/sources/libxml2-${PV}.tar.gz"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libxml2-${PV}"
 S = "${WORKDIR}/libxml2-${PV}"
