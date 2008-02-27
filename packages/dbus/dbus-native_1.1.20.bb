@@ -5,9 +5,10 @@ DEPENDS = "glib-2.0-native libxml2-native expat-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dbus-${PV}"
 
 SRC_URI = "\
-  http://freedesktop.org/software/dbus/releases/dbus-${PV}.tar.gz \
+  http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
+  file://fix-dbus-launch-x11.patch;patch=1 \
   file://dbus-1.init \
 "
 
