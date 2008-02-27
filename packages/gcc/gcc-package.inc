@@ -1,41 +1,58 @@
 gcclibdir ?= "${libdir}/gcc"
 BINV ?= "${PV}"
 
-PACKAGES = "libgcc ${PN} ${PN}-symlinks \
-            g++ g++-symlinks \
-	    cpp cpp-symlinks \
-            g77 g77-symlinks \
-            gfortran gfortran-symlinks \
-	    gcov gcov-symlinks \
-            libmudflap libmudflap-dev \
-	    libstdc++ libg2c \
-	    libstdc++-dev libg2c-dev \
-            ${PN}-doc"
+PACKAGES = "\
+  libgcc ${PN} ${PN}-symlinks \
+  g++ g++-symlinks \
+  cpp cpp-symlinks \
+  g77 g77-symlinks \
+  gfortran gfortran-symlinks \
+  gcov gcov-symlinks \
+  libmudflap libmudflap-dev \
+  libstdc++ libg2c \
+  libstdc++-dev libg2c-dev \
+  ${PN}-doc \
+"
 
-FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
-	       ${bindir}/${TARGET_PREFIX}gccbug \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1 \
-	       ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2 \
-	       ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
-	       ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
-	       ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
-	       ${gcclibdir}/${TARGET_SYS}/${BINV}/include"
-FILES_${PN}-symlinks = "${bindir}/cc \
-			${bindir}/gcc \
-			${bindir}/gccbug"
+# We really need HOST_SYS here for some packages and TARGET_SYS for others.
+# For now, libgcc is most important so we fix for that - RP.
+SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
 
-FILES_g77 = "${bindir}/${TARGET_PREFIX}g77 \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771"
-FILES_g77-symlinks = "${bindir}/g77 \
-			    ${bindir}/f77"
+FILES_${PN} = "\
+  ${bindir}/${TARGET_PREFIX}gcc \
+  ${bindir}/${TARGET_PREFIX}gccbug \
+  ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2 \
+  ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
+  ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
+  ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
+  ${gcclibdir}/${TARGET_SYS}/${BINV}/include \
+"
+FILES_${PN}-symlinks = "\
+  ${bindir}/cc \
+  ${bindir}/gcc \
+  ${bindir}/gccbug \
+"
 
-FILES_gfortran = "${bindir}/${TARGET_PREFIX}gfortran \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f951"
-FILES_gfortran-symlinks = "${bindir}/gfortran \
-			    ${bindir}/f95"
+FILES_g77 = "\
+  ${bindir}/${TARGET_PREFIX}g77 \
+  ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771 \
+"
+FILES_g77-symlinks = "\
+  ${bindir}/g77 \
+  ${bindir}/f77 \
+"
+FILES_gfortran = "\
+  ${bindir}/${TARGET_PREFIX}gfortran \
+  ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f951 \
+"
+FILES_gfortran-symlinks = "\
+  ${bindir}/gfortran \
+  ${bindir}/f95"
 
-FILES_cpp = "${bindir}/${TARGET_PREFIX}cpp \
-	     ${base_libdir}/cpp"
+FILES_cpp = "\
+  ${bindir}/${TARGET_PREFIX}cpp \
+  ${base_libdir}/cpp \
+  ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1"
 FILES_cpp-symlinks = "${bindir}/cpp"
 
 FILES_gcov = "${bindir}/${TARGET_PREFIX}gcov"
@@ -46,37 +63,48 @@ FILES_libgcc-dev = "${base_libdir}/libgcc*.so"
 
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "${target_libdir}/libg2c.so.*"
-FILES_libg2c-dev = "${libdir}/libg2c.so \
-		    ${libdir}/libg2c.a \
-		    ${libdir}/libfrtbegin.a"
+FILES_libg2c-dev = "\
+  ${libdir}/libg2c.so \
+  ${libdir}/libg2c.a \
+  ${libdir}/libfrtbegin.a \
+"
 
-FILES_g++ = "${bindir}/${TARGET_PREFIX}g++ \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus"
-FILES_g++-symlinks = "${bindir}/c++ \
-			    ${bindir}/g++"
+FILES_g++ = "\
+  ${bindir}/${TARGET_PREFIX}g++ \
+  ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus \
+"
+FILES_g++-symlinks = "\
+  ${bindir}/c++ \
+  ${bindir}/g++ \
+"
 
 FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-FILES_libstdc++-dev = "${includedir}/c++/${BINV} \
-		       ${libdir}/libstdc++.so \
-		       ${libdir}/libstdc++.la \
-		       ${libdir}/libstdc++.a \
-		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
+FILES_libstdc++-dev = "\
+  ${includedir}/c++/${BINV} \
+  ${libdir}/libstdc++.so \
+  ${libdir}/libstdc++.la \
+  ${libdir}/libstdc++.a \
+  ${libdir}/libsupc++.la \
+  ${libdir}/libsupc++.a \
+"
 
 FILES_libmudflap = "${libdir}/libmudflap*.so.*"
-FILES_libmudflap-dev = "${libdir}/libmudflap*.so \
-                        ${libdir}/libmudflap*.a \
-                        ${libdir}/libmudflap*.a"
+FILES_libmudflap-dev = "\
+  ${libdir}/libmudflap*.so \
+  ${libdir}/libmudflap*.a \
+  ${libdir}/libmudflap*.a \
+"
 
-
-FILES_${PN}-doc = "${infodir} \
-		   ${mandir} \
-		   ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README"
+FILES_${PN}-doc = "\
+  ${infodir} \
+  ${mandir} \
+  ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README \
+"
 
 python do_package() {
-        if bb.data.getVar('DEBIAN_NAMES', d, 1):
-                bb.data.setVar('PKG_libgcc', 'libgcc1', d)
-        bb.build.exec_func('package_do_package', d)
+    if bb.data.getVar('DEBIAN_NAMES', d, 1):
+        bb.data.setVar('PKG_libgcc', 'libgcc1', d)
+    bb.build.exec_func('package_do_package', d)
 }
 
 
@@ -92,7 +120,11 @@ do_install () {
 
 	# Move libgcc_s into /lib
 	mkdir -p ${D}${base_libdir}
-	mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
+	if [ -f ${D}${libdir}/nof/libgcc_s.so ]; then
+		mv ${D}${libdir}/nof/libgcc_s.so.* ${D}${base_libdir}
+	else
+		mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
+	fi
 	rm -f ${D}${libdir}/libgcc_s.so
 	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
 		| tr -s / \
