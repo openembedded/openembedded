@@ -1,4 +1,4 @@
-require pvrusb2-mci.inc
+require pvrusb2-mci2.inc
 
 PR = "r1"
 RRECOMMENDS = "kernel-module-tveeprom kernel-module-tuner kernel-module-msp3400 kernel-module-saa7115 kernel-module-tda9887"
@@ -21,9 +21,6 @@ EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
                 'CC=${KERNEL_CC}' \
                 'LD=${KERNEL_LD}' \
                 'KDIR=${STAGING_KERNEL_DIR}'"
-
-export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
-                         -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
 
 do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/media

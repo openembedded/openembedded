@@ -1,4 +1,4 @@
-require pvrusb2-mci.inc
+require pvrusb2-mci2.inc
 
 PR = "r1"
 # It in fact requires these modules, but for now is using the local ones.
@@ -18,10 +18,6 @@ EXTRA_OEMAKE = "'CFLAGS=${CFLAGS}' \
                 'CC=${KERNEL_CC}' \
                 'LD=${KERNEL_LD}' \
                 'KDIR=${STAGING_KERNEL_DIR}'"
-
-export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
-                         -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
-
 
 do_compile() {
 	cd ivtv; oe_runmake
