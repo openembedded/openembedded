@@ -2,7 +2,7 @@ WEBKIT_PORT = "qt"
 WEBKIT_EXTRA_OPTIONS = ""
 
 FILES_${PN}launcher = "${bindir}/QtLauncher"
-FILES_${PN}launcher-dbg = "${bindir}/.debug/*"
+FILES_${PN}launcher-dbg += "${bindir}/.debug/*"
 
 RDEPENDS += "openssl"
 

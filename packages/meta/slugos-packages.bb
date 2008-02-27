@@ -5,10 +5,10 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r44"
+PR = "r47"
 CONFLICTS = "db3"
 
-COMPATIBLE_MACHINE = "nslu2"
+COMPATIBLE_MACHINE = "nslu2|ixp4xx"
 EXCLUDE_FROM_WORLD = "1"
 INHIBIT_DEFAULT_DEPS = "1"
 ALLOW_EMPTY = "1"
@@ -76,7 +76,6 @@ SLUGOS_PACKAGES = "\
 	dnsmasq \
 	e2fsprogs \
 	e2fsprogs-libs \
-	eciadsl \
 	expat \
 	ez-ipupdate \
 	fconfig \
@@ -95,13 +94,14 @@ SLUGOS_PACKAGES = "\
 	glib-2.0 \
 	gnu-config \
 	gphoto2 \
+	gpsd \
 	grep \
 	groff \
-	gspcav1 \
 	gtk-doc \
 	gzip \
 	hdparm \
 	ifupdown \
+	inetutils \
 	iperf \
 	ipkg-utils \
 	iptables \
@@ -109,6 +109,7 @@ SLUGOS_PACKAGES = "\
 	irssi \
 	joe \
 	jpeg \
+	kexec-tools \
 	lcdproc \
 	less \
 	libao \
@@ -128,6 +129,7 @@ SLUGOS_PACKAGES = "\
 	libusb \
 	libvorbis \
 	libxml2 \
+	lighttpd \
 	linphone \
 	litestream \
 	logrotate \
@@ -193,6 +195,7 @@ SLUGOS_PACKAGES = "\
 	reiserfsprogs reiser4progs \
 	rng-tools \
 	rsync \
+	rtorrent \
 	samba \
 	sane-backends \
 	screen \
@@ -202,9 +205,11 @@ SLUGOS_PACKAGES = "\
 	sipsak \
 	slugimage \
 	smartmontools \
+	sqlite \
 	ssmtp \
 	strace \
 	streamripper \
+	stunnel \
 	sudo \
 	sysfsutils \
 	tar \
@@ -244,7 +249,9 @@ SLUGOS_PACKAGES = "\
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
 	dsniff \
+	eciadsl \
 	fetchmail \
+	gspcav1 \
 	lirc-modules lirc \
 	madfu \
 	openldap \

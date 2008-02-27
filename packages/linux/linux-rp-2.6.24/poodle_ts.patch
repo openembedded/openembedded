@@ -1,0 +1,22 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/poodle.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/poodle.c	2008-01-25 12:10:10.000000000 -0800
++++ linux-2.6.23/arch/arm/mach-pxa/poodle.c	2008-01-25 12:11:58.000000000 -0800
+@@ -166,7 +166,7 @@
+ 	},
+ };
+ 
+-static unsigned long poodle_get_hsync_len(void)
++static unsigned long poodle_get_hsync_invperiod(void)
+ {
+ 	return 0;
+ }
+@@ -176,7 +176,7 @@
+ }
+ 
+ static struct corgits_machinfo  poodle_ts_machinfo = {
+-	.get_hsync_len   = poodle_get_hsync_len,
++	.get_hsync_invperiod   = poodle_get_hsync_invperiod,
+ 	.put_hsync       = poodle_null_hsync,
+ 	.wait_hsync      = poodle_null_hsync,
+ };

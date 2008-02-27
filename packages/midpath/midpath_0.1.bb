@@ -48,7 +48,6 @@ do_stage() {
 	install -m 0644 dist/midpath.jar ${STAGING_DATADIR}/java
 }
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = "${datadir}/java/midpath.jar \
 	       ${datadir}/java/resources-embedded/com/sun/midp/configuration/ \

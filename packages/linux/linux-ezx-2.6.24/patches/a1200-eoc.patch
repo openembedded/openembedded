@@ -1,0 +1,20 @@
+Index: linux-2.6.23/arch/arm/mach-pxa/ezx-a1200.c
+===================================================================
+--- linux-2.6.23.orig/arch/arm/mach-pxa/ezx-a1200.c	2007-11-24 20:12:08.000000000 -0200
++++ linux-2.6.23/arch/arm/mach-pxa/ezx-a1200.c	2007-11-24 20:12:24.000000000 -0200
+@@ -186,8 +186,15 @@
+ 	},
+ };
+ 
++
++struct platform_device a1200_eoc_device = {
++	.name		= "ezx-eoc",
++	.id		= -1,
++};
++
+ static struct platform_device *devices[] __initdata = {
+ 	&a1200_pcap_device,
++	&a1200_eoc_device,
+ };
+ 
+ static void __init a1200_init(void)

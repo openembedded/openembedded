@@ -1,33 +1,38 @@
-DESCRIPTION = "kxml2 is a small XML pull parser"
-HOMEPAGE = "http://kxml.sourceforge.net/"
-LICENSE  = "BSD"
+DESCRIPTION = "A small XML pull parser, specially designed for constrained environments such as Applets, Personal Java or MIDP devices"
+HOMEPAGE = "http://kxml.sourceforge.net"
 PRIORITY = "optional"
-PR = "r0"
+SECTION = "libs"
+LICENSE = "BSD CPL LGPL"
+PR = "r1"
 
+inherit java-library
 
-JAR = ${PN}-${PV}.jar
+DEPENDS = "xmlpull"
+RDEPENDS = "libxmlpull-java"
 
-SRC_URI = "http://downloads.sourceforge.net/kxml/${JAR}"
+S = "${WORKDIR}"
 
+JAR = "${PN}-${PV}.jar"
 
-do_unpack() {
-	:
-}
+SRC_URI = "\
+    http://belnet.dl.sourceforge.net/sourceforge/kxml/${PN}-src-${PV}.zip \
+    file://makefile.patch;patch=1 \
+    "
 
-do_install() {
+do_compile() {
+ oe_runmake -C src \
+    JAVAC_FLAGS="-sourcepath . -cp ${STAGING_DATADIR}/java/xmlpull.jar" \
+    JAR="oefatal \"No jar invocation expected here.\"" \
 
-install -d ${D}${datadir}/java
-install -m 0644 ${DL_DIR}/${JAR} ${D}${datadir}/java
-
+ oe_runmake -C src \
+    JAVAC="oefatal \"No Java compilation expected here.\"" \
+    jar
 }
 
 do_stage() {
-
-install -d ${STAGING_DATADIR}/java
-install -m 0644 ${DL_DIR}/${JAR} ${STAGING_DATADIR}/java
-
+  oe_jarinstall -s src/${JAR} ${PN}.jar
 }
 
-PACKAGES = "${PN}"
-
-FILES_${PN} = "${datadir}/java/${JAR}"
+do_install() {
+  oe_jarinstall src/${JAR} ${PN}.jar
+}

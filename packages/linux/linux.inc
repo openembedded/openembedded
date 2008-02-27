@@ -70,7 +70,8 @@ do_configure_prepend() {
             -e '/CONFIG_CPU_BIG_ENDIAN/d' \
             -e '/CONFIG_LOGO=/d' \
             -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
-            < '${WORKDIR}/defconfig' >>'${S}/.config'
+            -e '/CONFIG_LOCALVERSION/d' \
+	    < '${WORKDIR}/defconfig' >>'${S}/.config'
 
         #
         # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
@@ -99,19 +100,30 @@ do_configure_prepend() {
         yes '' | oe_runmake oldconfig
 }
 
+do_configure_append_avr32() {
+        sed -i -e s:-mno-pic::g arch/avr32/Makefile
+}
+
+
 UBOOT_ENTRYPOINT ?= "20008000"
+UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
 
 do_compile_append() {
     if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
+	if test "x${ARCH}" = "xpowerpc" ; then
+		UBOOT_ARCH=ppc
+	else
+		UBOOT_ARCH=$ARCH
+	fi
         if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
             ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
-            uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage
             rm -f linux.bin
         else
             ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
             rm -f linux.bin.gz
             gzip -9 linux.bin
-            uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
+            uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C gzip -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz arch/${ARCH}/boot/uImage
             rm -f linux.bin.gz
         fi
     fi

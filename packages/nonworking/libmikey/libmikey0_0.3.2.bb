@@ -11,7 +11,6 @@ SRC_URI = "http://www.minisip.org/snapshots/libmikey-${PV}.tar.gz"
 S="${WORKDIR}/libmikey-${PV}"
 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = " ${libdir}/libmikey.so.0 ${libdir}/libmikey.so.0.0.0 "
 

@@ -7,9 +7,9 @@ DEPENDS += "libxkbfile libxcalibrate"
 PROVIDES = "virtual/xserver"
 
 PE = "1"
-PR = "r3"
+PR = "r4"
 
-FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.2.0:${FILE_DIRNAME}/xserver-kdrive"
+FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-${PV}:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
 	file://kdrive-evdev.patch;patch=1  \
@@ -21,6 +21,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
         file://kdrive-imageon.patch;patch=1 \
         file://xcalibrate_coords.patch;patch=1 \
         file://enable-builtin-fonts.patch;patch=1 \
+	file://fix-picturestr-include-order.patch;patch=1 \
         "
        
 S = "${WORKDIR}/xorg-server-${PV}"

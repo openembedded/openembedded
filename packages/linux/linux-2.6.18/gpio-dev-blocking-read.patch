@@ -1,0 +1,187 @@
+---
+ arch/avr32/mach-at32ap/pio.c |  113 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 113 insertions(+)
+
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/pio.c	2006-11-30 13:16:43.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/pio.c	2006-11-30 17:15:24.000000000 +0100
+@@ -250,7 +250,11 @@ EXPORT_SYMBOL(gpio_set_value);
+ #ifdef CONFIG_PIO_DEV
+ #include <linux/configfs.h>
+ #include <linux/cdev.h>
++#include <linux/fs.h>
++#include <linux/interrupt.h>
++#include <linux/poll.h>
+ #include <linux/uaccess.h>
++#include <linux/wait.h>
+ 
+ #define GPIO_DEV_MAX			8
+ 
+@@ -267,6 +271,13 @@ struct gpio_item {
+ 	u32 pin_mask;
+ 	u32 oe_mask;
+ 
++	/* Pin state last time we read it (for blocking reads) */
++	u32 pin_state;
++	int changed;
++
++	wait_queue_head_t change_wq;
++	struct fasync_struct *async_queue;
++
+ 	int id;
+ 	struct class_device *gpio_dev;
+ 	struct cdev char_dev;
+@@ -279,36 +290,135 @@ struct gpio_attribute {
+ 	ssize_t (*store)(struct gpio_item *, const char *, size_t);
+ };
+ 
++static irqreturn_t gpio_dev_interrupt(int irq, void *dev_id,
++				      struct pt_regs *regs)
++{
++	struct gpio_item *gpio = dev_id;
++	u32 old_state, new_state;
++
++	old_state = gpio->pin_state;
++	new_state = pio_readl(gpio->pio, PDSR);
++	gpio->pin_state = new_state;
++
++	if (new_state != old_state) {
++		gpio->changed = 1;
++		wake_up_interruptible(&gpio->change_wq);
++
++		if (gpio->async_queue)
++			kill_fasync(&gpio->async_queue, SIGIO, POLL_IN);
++	}
++
++	return IRQ_HANDLED;
++}
++
+ static int gpio_dev_open(struct inode *inode, struct file *file)
+ {
+ 	struct gpio_item *gpio = container_of(inode->i_cdev,
+ 					      struct gpio_item,
+ 					      char_dev);
++	unsigned int irq;
++	unsigned int i;
++	int ret;
+ 
++	nonseekable_open(inode, file);
+ 	config_item_get(&gpio->item);
+ 	file->private_data = gpio;
++
++	gpio->pin_state = pio_readl(gpio->pio, PDSR) & gpio->pin_mask;
++	gpio->changed = 1;
++
++	for (i = 0; i < 32; i++) {
++		if (gpio->pin_mask & (1 << i)) {
++			irq = gpio_to_irq(32 * pio_id(gpio->pio) + i);
++			ret = request_irq(irq, gpio_dev_interrupt, 0,
++					  "gpio-dev", gpio);
++			if (ret)
++				goto err_irq;
++		}
++	}
++
+ 	return 0;
++
++err_irq:
++	while (i--) {
++		if (gpio->pin_mask & (1 << i)) {
++			irq = gpio_to_irq(32 * pio_id(gpio->pio) + i);
++			free_irq(irq, gpio);
++		}
++	}
++
++	config_item_put(&gpio->item);
++
++	return ret;
++}
++
++static int gpio_dev_fasync(int fd, struct file *file, int mode)
++{
++	struct gpio_item *gpio = file->private_data;
++
++	return fasync_helper(fd, file, mode, &gpio->async_queue);
+ }
+ 
+ static int gpio_dev_release(struct inode *inode, struct file *file)
+ {
+ 	struct gpio_item *gpio = file->private_data;
++	unsigned int irq;
++	unsigned int i;
++
++	gpio_dev_fasync(-1, file, 0);
++
++	for (i = 0; i < 32; i++) {
++		if (gpio->pin_mask & (1 << i)) {
++			irq = gpio_to_irq(32 * pio_id(gpio->pio) + i);
++			free_irq(irq, gpio);
++		}
++	}
+ 
+ 	config_item_put(&gpio->item);
++
+ 	return 0;
+ }
+ 
++static unsigned int gpio_dev_poll(struct file *file, poll_table *wait)
++{
++	struct gpio_item *gpio = file->private_data;
++	unsigned int mask = 0;
++
++	poll_wait(file, &gpio->change_wq, wait);
++	if (gpio->changed)
++		mask |= POLLIN | POLLRDNORM;
++
++	return mask;
++}
++
+ static ssize_t gpio_dev_read(struct file *file, char __user *buf,
+ 			     size_t count, loff_t *offset)
+ {
+ 	struct gpio_item *gpio = file->private_data;
+ 	u32 value;
+ 
++	spin_lock_irq(&gpio->lock);
++	while (!gpio->changed) {
++		spin_unlock_irq(&gpio->lock);
++
++		if (file->f_flags & O_NONBLOCK)
++			return -EAGAIN;
++
++		if (wait_event_interruptible(gpio->change_wq, gpio->changed))
++			return -ERESTARTSYS;
++
++		spin_lock_irq(&gpio->lock);
++	}
++
++	gpio->changed = 0;
+ 	value = pio_readl(gpio->pio, PDSR) & gpio->pin_mask;
+ 
++	spin_unlock_irq(&gpio->lock);
++
+ 	count = min(count, (size_t)4);
+ 	if (copy_to_user(buf, &value, count))
+ 		return -EFAULT;
++
+ 	return count;
+ }
+ 
+@@ -338,6 +448,8 @@ static struct file_operations gpio_dev_f
+ 	.llseek		= no_llseek,
+ 	.open		= gpio_dev_open,
+ 	.release	= gpio_dev_release,
++	.fasync		= gpio_dev_fasync,
++	.poll		= gpio_dev_poll,
+ 	.read		= gpio_dev_read,
+ 	.write		= gpio_dev_write,
+ };
+@@ -632,6 +744,7 @@ static struct config_item *gpio_make_ite
+ 	gpio->id = next_id++;
+ 	config_item_init_type_name(&gpio->item, name, &gpio_item_type);
+ 	spin_lock_init(&gpio->lock);
++	init_waitqueue_head(&gpio->change_wq);
+ 
+ 	return &gpio->item;
+ }

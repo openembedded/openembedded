@@ -11,7 +11,7 @@ S = "${WORKDIR}/${PN}"
 
 inherit autotools
 
-PACKAGES = "sphyrna-console sphyrna-python"
+PACKAGES = "${PN}-dbg sphyrna-console sphyrna-python"
 
 FILES_sphyrna-console = "${bindir}/hhconsole"
 FILES_sphyrna-python = "${bindir}/decode.py ${libdir}/python2.4/site-packages/sphyrna/*"

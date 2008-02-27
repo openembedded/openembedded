@@ -49,9 +49,9 @@ export STRIP = "${HOST_PREFIX}strip"
 
 
 # Path prefixes
-base_prefix = "${exec_prefix}"
-prefix = "${STAGING_DIR}"
-exec_prefix = "${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}"
+base_prefix = "${STAGING_DIR}/${BUILD_ARCH}-${BUILD_OS}"
+prefix = "${base_prefix}"
+exec_prefix = "${base_prefix}"
 
 # Base paths
 base_bindir = "${base_prefix}/bin"

@@ -1,5 +1,6 @@
 DESCRIPTION = "Navit is a car navigation system with routing engine."
 LICENSE = "GPL"
+SECTION = "x11/applications"
 DEPENDS = "glib-2.0 gtk+"
 RRECOMMENDS = "gpsd speechd flite"
 
@@ -10,7 +11,7 @@ EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap -
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 
 FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
-FILES_${PN}-dev += "${libdir}/${PN}/*/*.so"
+FILES_${PN}-dev += "${libdir}/${PN}/*/*.so ${libdir}/${PN}/*/*.la"
 
 SRC_URI_append = " \
                   file://navit.xml-so.patch;patch=1 \
@@ -19,9 +20,9 @@ SRC_URI_append = " \
 	  	 "
 
 do_install_append() {
-        install -d ${D}/usr/share/applications/
-        install -m 0644 ${WORKDIR}/navit.desktop ${D}/usr/share/applications/
+        install -d ${D}${datadir}/applications/
+        install -m 0644 ${WORKDIR}/navit.desktop ${D}${datadir}/applications/
 
-        mv ${D}/usr/bin/navit ${D}/usr/bin/navit.real
-        install -m 0755 ${WORKDIR}/navit.launcher ${D}/usr/bin/navit
+        mv ${D}${bindir}/navit ${D}${bindir}/navit.real
+        install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
 }

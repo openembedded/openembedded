@@ -7,8 +7,7 @@ PR = "r2"
 DEPENDS = "randrproto xorg-server xproto"
 
 XORG_PN = "${PN}"
-XORG_RELEASE = "${@["individual",bb.data.getVar('PV', d, 1)[0:7]+"/src"][bb.data.getVar('PV', d, 1)[0:4] == "X11R"]}"
-SRC_URI = "${XORG_MIRROR}/${XORG_RELEASE}/driver/${XORG_PN}-${PV}.tar.bz2"
+SRC_URI = "${XORG_MIRROR}/individual/driver/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 

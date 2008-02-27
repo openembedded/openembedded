@@ -8,6 +8,8 @@ APPDESKTOP ?= "${WORKDIR}/${PN}.desktop"
 APPNAME ?= "${PN}"
 APPIMAGE ?= "${WORKDIR}/${PN}.png"
 
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
+
 sdl_do_sdl_install() {
 	install -d ${D}${datadir}/applications
 	install -d ${D}${datadir}/pixmaps

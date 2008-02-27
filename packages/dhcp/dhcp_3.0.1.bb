@@ -35,7 +35,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/dhcpd.conf ${D}${sysconfdir}/dhcp/dhcpd.conf
 }
 
-PACKAGES = "dhcp-server dhcp-client dhcp-relay dhcp-omshell dhcp-dev dhcp-doc"
+PACKAGES = "${PN}-dbg dhcp-server dhcp-client dhcp-relay dhcp-omshell dhcp-dev dhcp-doc"
 FILES_dhcp-server = "${sbindir}/dhcpd /etc/init.d/dhcp-server /etc/default/dhcp-server /etc/dhcp/dhcpd.conf"
 FILES_dhcp-relay = "${sbindir}/dhcrelay /etc/init.d/dhcp-relay /etc/default/dhcp-relay"
 FILES_dhcp-client = "/sbin/ /etc/dhcp/dhclient.conf"

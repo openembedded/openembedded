@@ -45,7 +45,7 @@ do_install_append() {
 	rm ${D}/home/monotone/monotone-6/tests/diff_a_binary_file/binary
 }
 
-PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
 RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"

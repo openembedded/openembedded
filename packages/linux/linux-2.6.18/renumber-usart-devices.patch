@@ -1,0 +1,228 @@
+---
+ arch/avr32/boards/atstk1000/atstk1002.c |   12 ++++++++++++
+ arch/avr32/kernel/setup.c               |    1 +
+ arch/avr32/mach-at32ap/at32ap.c         |    3 ---
+ arch/avr32/mach-at32ap/at32ap7000.c     |   31 ++++++++++++++++++++++++-------
+ drivers/serial/atmel_usart.c            |   24 ++++++++++++++++++------
+ include/asm-avr32/arch-at32ap/board.h   |    7 ++++---
+ include/asm-avr32/arch-at32ap/init.h    |    3 +--
+ 7 files changed, 60 insertions(+), 21 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/boards/atstk1000/atstk1002.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atstk1000/atstk1002.c	2006-09-13 14:30:31.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/boards/atstk1000/atstk1002.c	2006-09-13 14:50:59.000000000 +0200
+@@ -14,6 +14,7 @@
+ 
+ #include <asm/setup.h>
+ #include <asm/arch/board.h>
++#include <asm/arch/init.h>
+ 
+ static struct eth_platform_data __initdata eth_data[2];
+ 
+@@ -34,6 +34,17 @@ struct platform_device flash_device = {
+ }
+ __tagtable(ATAG_ETHERNET, parse_tag_ethernet);
+ 
++struct platform_device *at32_usart_map[3];
++unsigned int at32_nr_usarts = 3;
++
++void __init setup_board(void)
++{
++	/* These need to be in place before initializing the console */
++	at32_usart_map[0] = at32_get_usart(1);
++	at32_usart_map[1] = at32_get_usart(2);
++	at32_usart_map[2] = at32_get_usart(3);
++}
++
+ static int __init atstk1002_init(void)
+ {
+ 	at32_add_system_devices();
+Index: linux-2.6.18-avr32/arch/avr32/kernel/setup.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/kernel/setup.c	2006-09-13 14:42:11.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/kernel/setup.c	2006-09-13 14:43:36.000000000 +0200
+@@ -268,6 +268,7 @@ void __init setup_arch (char **cmdline_p
+ 
+ 	setup_processor();
+ 	setup_platform();
++	setup_board();
+ 
+ 	cpu_clk = clk_get(NULL, "cpu");
+ 	if (IS_ERR(cpu_clk)) {
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/at32ap.c	2006-09-13 14:38:24.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap.c	2006-09-13 14:38:28.000000000 +0200
+@@ -48,9 +48,6 @@ void __init setup_platform(void)
+ 	at32_sm_init();
+ 	at32_clock_init();
+ 	at32_portmux_init();
+-
+-	/* FIXME: This doesn't belong here */
+-	at32_setup_serial_console(1);
+ }
+ 
+ static int __init pdc_probe(struct platform_device *pdev)
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/at32ap7000.c	2006-09-13 13:40:02.000000000 +0200
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c	2006-09-13 14:39:08.000000000 +0200
+@@ -543,6 +543,30 @@ static struct resource usart3_resource[]
+ DEFINE_DEV(usart, 3);
+ DEV_CLK(usart, usart3, pba, 6);
+ 
++struct platform_device *at32_get_usart(unsigned int id)
++{
++	struct platform_device *pdev;
++
++	switch (id) {
++	case 0:
++		pdev = &usart0_device;
++		break;
++	case 1:
++		pdev = &usart1_device;
++		break;
++	case 2:
++		pdev = &usart2_device;
++		break;
++	case 3:
++		pdev = &usart3_device;
++		break;
++	default:
++		return NULL;
++	}
++
++	return pdev;
++}
++
+ static inline void configure_usart0_pins(void)
+ {
+ 	select_peripheral(PA(8), PERIPH_B, 0);	/* RXD	*/
+@@ -607,13 +607,6 @@ struct platform_device *__init at32_add_
+ 	return pdev;
+ }
+ 
+-struct platform_device *at91_default_console_device;
+-
+-void __init at32_setup_serial_console(unsigned int usart_id)
+-{
+-	at91_default_console_device = setup_usart(usart_id);
+-}
+-
+ /* --------------------------------------------------------------------
+  *  Ethernet
+  * -------------------------------------------------------------------- */
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/atmel_usart.c	2006-09-13 14:30:42.000000000 +0200
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.c	2006-09-13 14:48:47.000000000 +0200
+@@ -773,7 +773,8 @@ static struct uart_ops usart3_pops = {
+ };
+ 
+ static int __devinit initialize_port(struct usart3_port *up,
+-				      struct platform_device *pdev)
++				     struct platform_device *pdev,
++				     unsigned int line)
+ {
+ 	struct uart_port *port = &up->uart;
+ 	struct resource *regs;
+@@ -797,7 +798,7 @@ static int __devinit initialize_port(str
+ 	port->iotype = SERIAL_IO_MEM;
+ 	port->flags = UPF_BOOT_AUTOCONF | UPF_IOREMAP;
+ 	port->ops = &usart3_pops;
+-	port->line = pdev->id;
++	port->line = line;
+ 	port->dev = &pdev->dev;
+ 
+ 	return 0;
+@@ -877,15 +878,17 @@ static int __init usart3_console_setup(s
+ 		       console->index);
+ 		return -ENODEV;
+ 	}
++	if (console->index >= at32_nr_usarts)
++		return -ENXIO;
+ 
+-	pdev = at91_default_console_device;
++	pdev = at32_usart_map[console->index];
+ 	if (!pdev)
+ 		return -ENXIO;
+ 
+ 	up = &usart3_ports[console->index];
+ 	port = &up->uart;
+ 
+-	ret = initialize_port(up, pdev);
++	ret = initialize_port(up, pdev, console->index);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -978,6 +981,7 @@ static int usart3_serial_resume(struct p
+ static int __devinit usart3_serial_probe(struct platform_device *pdev)
+ {
+ 	struct usart3_port *up;
++	int line;
+ 	int ret;
+ 
+ 	if (pdev->id >= NR_PORTS) {
+@@ -987,14 +991,22 @@ static int __devinit usart3_serial_probe
+ 		return -ENOMEM;
+ 	}
+ 
+-	up = &usart3_ports[pdev->id];
++	for (line = 0; line < at32_nr_usarts; line++) {
++		if (at32_usart_map[line]->id == pdev->id)
++			break;
++	}
++
++	if (line >= at32_nr_usarts)
++		return -ENXIO;
++
++	up = &usart3_ports[line];
+ 
+ 	/*
+ 	 * If the port has already been set up as a console, we
+ 	 * shouldn't enable it again.
+ 	 */
+ 	if (!up->uart.uartclk) {
+-		ret = initialize_port(up, pdev);
++		ret = initialize_port(up, pdev, line);
+ 		if (ret)
+ 			goto out;
+ 	}
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/board.h	2006-09-13 14:30:13.000000000 +0200
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h	2006-09-13 15:19:56.000000000 +0200
+@@ -9,11 +9,12 @@ struct flash_platform_data {
+ /* Add basic devices: system manager, interrupt controller, portmuxes, etc. */
+ void at32_add_system_devices(void);
+ 
+-#define AT91_NR_UART	4
+-extern struct platform_device *at91_default_console_device;
+-
++struct platform_device *at32_get_usart(unsigned int id);
+ struct platform_device *at32_add_device_usart(unsigned int id);
+ 
++extern struct platform_device *at32_usart_map[];
++extern unsigned int at32_nr_usarts;
++
+ struct eth_platform_data {
+ 	u8	valid;
+ 	u8	mii_phy_addr;
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/init.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/init.h	2006-09-13 13:43:20.000000000 +0200
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/init.h	2006-09-13 14:50:26.000000000 +0200
+@@ -11,11 +11,10 @@
+ #define __ASM_AVR32_AT32AP_INIT_H__
+ 
+ void setup_platform(void);
++void setup_board(void);
+ 
+ /* Called by setup_platform */
+ void at32_clock_init(void);
+ void at32_portmux_init(void);
+ 
+-void at32_setup_serial_console(unsigned int usart_id);
+-
+ #endif /* __ASM_AVR32_AT32AP_INIT_H__ */

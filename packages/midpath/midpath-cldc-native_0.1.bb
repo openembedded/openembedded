@@ -4,7 +4,7 @@ inherit native
 require midpath-cldc_${PV}.bb
 
 
-PACKAGES = " "
+PACKAGES = "${PN}-dbg  "
 
 do_install() {
 	:

@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.speex.org/download/speex-${PV}.tar.gz"
 
@@ -21,8 +21,6 @@ EXTRA_OECONF_append_openmn = " --enable-arm5e-asm --enable-fixed-point"
 do_configure_append() {
 	sed -i s/"^OGG_CFLAGS.*$"/"OGG_CFLAGS = "/g Makefile */Makefile */*/Makefile
 	sed -i s/"^OGG_LIBS.*$"/"OGG_LIBS = -logg"/g Makefile */Makefile */*/Makefile
-	perl -pi -e 's:^includedir.*$:includedir = ${STAGING_INCDIR}:g' Makefile */Makefile */*/Makefile
-	perl -pi -e 's:^oldincludedir.*$:includedir = ${STAGING_INCDIR}:g' Makefile */Makefile */*/Makefile
 	perl -pi -e 's:\s*-I/usr/include$::g' Makefile */Makefile */*/Makefile
 }
 
@@ -34,4 +32,5 @@ do_stage() {
 	install -m 0644 include/speex/speex_callbacks.h ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/speex_header.h ${STAGING_INCDIR}/speex
 	install -m 0644 include/speex/speex_stereo.h ${STAGING_INCDIR}/speex
+	install -m 0644 speex.m4 ${STAGING_DATADIR}/aclocal/
 }

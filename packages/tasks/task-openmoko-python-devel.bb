@@ -1,11 +1,12 @@
 DESCRIPTION = "OpenMoko: Python Development Tools"
 SECTION = "openmoko/devel"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r3"
 
 inherit task
 
 RDEPENDS_task-openmoko-python-devel = "\
-  python-efl \
+  task-python-efl \
   python-pygtk \
+  python-lightmediascanner \
 "

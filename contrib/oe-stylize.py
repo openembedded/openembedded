@@ -42,6 +42,7 @@ OE_vars = [
     'RPROVIDES',
     'RCONFLICTS',
     'SRCDATE',
+    'PE',
     'PV',
     'PR',
     'SRC_URI',

@@ -1,20 +1,3 @@
-DESCRIPTION = "PostgreSQL is a powerful, open source relational database system."
-HOMEPAGE = "http://www.postgresql.com"
-LICENSE = "BSD"
-DEPENDS = "zlib readline"
+require postgresql.inc
 
-#WARNING: this recipe assumes you have the timezone compiler present in /usr/sbin/zic
-
-SRC_URI = "ftp://ftp-archives.postgresql.org/pub/source/v${PV}/${P}.tar.bz2"
-
-
-inherit autotools pkgconfig
-
-FILES_${PN}-doc += "${prefix}/doc/"
-
-do_compile_append() {
-cp /usr/sbin/zic ${S}/src/timezone/
-}
-
-
-
+PR = "r2"

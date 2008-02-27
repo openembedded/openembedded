@@ -2,6 +2,8 @@
 #@NAME: Angstrom 
 #@DESCRIPTION: Release independent distribution configuration for Angstrom
 
+# Preserve original DISTRO value
+USERDISTRO := "${DISTRO}"
 DISTRO = "angstrom"
 DISTRO_NAME = "Angstrom"
 
@@ -10,6 +12,7 @@ TARGET_VENDOR = "-angstrom"
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
+CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
@@ -49,6 +52,8 @@ ENABLE_BINARY_LOCALE_GENERATION_omap2430sdp = "0"
 TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
+
+TARGET_FPU_dht-walnut ?= "soft"
 
 #Set the right arch for the feeds
 #Alphabetically sorted

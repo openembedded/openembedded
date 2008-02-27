@@ -1,15 +1,15 @@
-Index: swt-hildon/swt-source/make_linux.mak
+Index: swt/swt-source/make_linux.mak
 ===================================================================
---- swt-hildon.orig/swt-source/make_linux.mak	2008-01-08 09:35:29.000000000 +0100
-+++ swt-hildon/swt-source/make_linux.mak	2008-01-08 11:35:01.000000000 +0100
+--- swt.orig/swt-source/make_linux.mak	2007-06-20 12:01:22.000000000 +0200
++++ swt/swt-source/make_linux.mak	2008-02-14 11:32:49.000000000 +0100
 @@ -45,8 +45,8 @@
  CAIROLIBS = `pkg-config --libs-only-L cairo` -lcairo
  
  # Do not use pkg-config to get libs because it includes unnecessary dependencies (i.e. pangoxft-1.0)
 -GTKCFLAGS = `pkg-config --cflags gtk+-2.0`
 -GTKLIBS = `pkg-config --libs-only-L gtk+-2.0 gthread-2.0` -lgtk-x11-2.0 -lgthread-2.0 -L/usr/X11R6/lib $(XLIB64) -lXtst
-+GTKCFLAGS = `pkg-config --cflags gtk+-2.0 hildon-1`
-+GTKLIBS = -lhildon-1 `pkg-config --libs-only-L gtk+-2.0 gthread-2.0` -lgtk-x11-2.0 -lgthread-2.0 -L/usr/X11R6/lib $(XLIB64) -lXtst
++GTKCFLAGS = `pkg-config --cflags gtk+-2.0 hildon-1 hildon-fm-2`
++GTKLIBS = -lhildon-1 -lhildonfm `pkg-config --libs-only-L gtk+-2.0 gthread-2.0` -lgtk-x11-2.0 -lgthread-2.0 -L/usr/X11R6/lib $(XLIB64) -lXtst
  
  CDE_LIBS = -L$(CDE_HOME)/lib -R$(CDE_HOME)/lib -lXt -lX11 -lDtSvc
  
@@ -31,10 +31,10 @@ Index: swt-hildon/swt-source/make_linux.mak
  		-fPIC \
  		${SWT_PTR_CFLAGS}
  LIBS = -shared -fPIC
-Index: swt-hildon/swt-source/os.c
+Index: swt/swt-source/os.c
 ===================================================================
---- swt-hildon.orig/swt-source/os.c	2008-01-08 09:35:29.000000000 +0100
-+++ swt-hildon/swt-source/os.c	2008-01-08 09:37:00.000000000 +0100
+--- swt.orig/swt-source/os.c	2007-10-30 16:24:28.000000000 +0100
++++ swt/swt-source/os.c	2008-02-14 09:32:49.000000000 +0100
 @@ -17,6 +17,9 @@
  #include "os_structs.h"
  #include "os_stats.h"
@@ -80,7 +80,7 @@ Index: swt-hildon/swt-source/os.c
  	OS_NATIVE_EXIT(env, that, _1gtk_1menu_1bar_1new_FUNC);
  	return rc;
  }
-@@ -15464,8 +15479,22 @@
+@@ -15464,8 +15479,23 @@
  	(JNIEnv *env, jclass that, jint arg0)
  {
  	jint rc = 0;
@@ -95,6 +95,7 @@ Index: swt-hildon/swt-source/os.c
 +    p = hildon_program_get_instance();
 +    w = hildon_window_new();
 +    hildon_program_add_window(p, HILDON_WINDOW(w));
++/*    gtk_window_fullscreen(GTK_WINDOW(w));*/
 +/*
 +  }
 +  else
@@ -104,10 +105,10 @@ Index: swt-hildon/swt-source/os.c
  	OS_NATIVE_EXIT(env, that, _1gtk_1window_1new_FUNC);
  	return rc;
  }
-Index: swt-hildon/swt-source/org/eclipse/swt/widgets/Menu.java
+Index: swt/swt-source/org/eclipse/swt/widgets/Menu.java
 ===================================================================
---- swt-hildon.orig/swt-source/org/eclipse/swt/widgets/Menu.java	2008-01-08 09:34:55.000000000 +0100
-+++ swt-hildon/swt-source/org/eclipse/swt/widgets/Menu.java	2008-01-08 09:36:01.000000000 +0100
+--- swt.orig/swt-source/org/eclipse/swt/widgets/Menu.java	2007-05-31 18:03:50.000000000 +0200
++++ swt/swt-source/org/eclipse/swt/widgets/Menu.java	2008-02-14 09:05:04.000000000 +0100
 @@ -259,9 +259,17 @@
  	if ((style & SWT.BAR) != 0) {
  		handle = OS.gtk_menu_bar_new ();
@@ -126,3 +127,137 @@ Index: swt-hildon/swt-source/org/eclipse/swt/widgets/Menu.java
  	} else {
  		handle = OS.gtk_menu_new ();
  		if (handle == 0) error (SWT.ERROR_NO_HANDLES);
+Index: swt/swt-source/org/eclipse/swt/internal/gtk/OS.java
+===================================================================
+--- swt.orig/swt-source/org/eclipse/swt/internal/gtk/OS.java	2007-10-30 16:06:36.000000000 +0100
++++ swt/swt-source/org/eclipse/swt/internal/gtk/OS.java	2008-02-14 09:05:04.000000000 +0100
+@@ -471,6 +471,11 @@
+ 	public static final byte[] window_state_event = ascii("window-state-event");
+ 	
+ 	/** Properties */
++  /* Maemo hildon specific - border added due to toolbar */
++  public static final byte[] toolbar_borders = ascii("toolbar-borders");
++  /* Maemo hildon specific - border added due to skin graphics area */
++  public static final byte[] borders = ascii("borders");
++
+ 	public static final byte[] active = ascii("active");
+ 	public static final byte[] background_gdk = ascii("background-gdk");
+ 	public static final byte[] button_relief = ascii("button-relief");
+Index: swt/swt-source/org/eclipse/swt/widgets/Shell.java
+===================================================================
+--- swt.orig/swt-source/org/eclipse/swt/widgets/Shell.java	2007-11-01 11:31:12.000000000 +0100
++++ swt/swt-source/org/eclipse/swt/widgets/Shell.java	2008-02-14 10:51:37.000000000 +0100
+@@ -1028,6 +1028,14 @@
+ int /*long*/ gtk_size_allocate (int /*long*/ widget, int /*long*/ allocation) {
+ 	int width = OS.GTK_WIDGET_WIDTH (shellHandle);
+ 	int height = OS.GTK_WIDGET_HEIGHT (shellHandle);
++
++	if (!fullScreen)
++	{
++		GtkBorder b = getMaemoBorder(false);
++		width -= (b.left + b.right);
++		height -= (b.top + b.bottom);
++	}
++
+ 	if (!resized || oldWidth != width || oldHeight != height) {
+ 		oldWidth = width;
+ 		oldHeight = height;
+@@ -1384,14 +1392,53 @@
+ 	if ((state & FOREIGN_HANDLE) != 0) return;
+ 	Monitor monitor = getMonitor ();
+ 	Rectangle rect = monitor.getClientArea ();
++/*
+ 	int width = rect.width * 5 / 8;
+ 	int height = rect.height * 5 / 8;
++*/
++
++	int width = rect.width;
++	int height = rect.height;
++
++  // Instead of some arbitrary defaults we can use the complete "application
++  // area" on the maemo platform.
++	if (!fullScreen)
++	{
++		GtkBorder b = getMaemoBorder(false);
++		width -= (b.left + b.right);
++		height -= (b.top + b.bottom);
++	}
++
+ 	if ((style & SWT.RESIZE) != 0) {
+ 		OS.gtk_window_resize (shellHandle, width, height);
+ 	}
+ 	resizeBounds (width, height, false);
+ }
+ 
++/**
++ * Retrieves the "borders" or "toolbar-borders" property
++ * from the Shell.
++ *
++ * That is neccessary to calculate correct Shell sizes on
++ * the Maemo platform.
++ *
++ */
++private GtkBorder getMaemoBorder(boolean wantToolbarBorder)
++{
++  GtkBorder b = new GtkBorder();
++
++  int /*long*/ [] result = new int /*long*/[1];
++  OS.gtk_widget_style_get(shellHandle,
++                          (wantToolbarBorder ? OS.toolbar_borders
++                                             : OS.borders),
++                          result, 0);
++
++  if (result[0] != 0)
++    OS.memmove(b, result[0], GtkBorder.sizeof);
++
++  return b;
++}
++
+ public void setMaximized (boolean maximized) {
+ 	checkWidget();
+ 	super.setMaximized (maximized);
+Index: swt/swt-source/os_custom.c
+===================================================================
+--- swt.orig/swt-source/os_custom.c	2007-05-31 18:04:22.000000000 +0200
++++ swt/swt-source/os_custom.c	2008-02-14 13:55:49.000000000 +0100
+@@ -13,6 +13,8 @@
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ 
++#include <hildon/hildon-file-chooser-dialog.h>
++
+ #include "swt.h"
+ #include "os_structs.h"
+ #include "os_stats.h"
+@@ -41,11 +43,22 @@
+ {
+ 	jbyte *lparg0=NULL;
+ 	SWT_PTR rc = 0;
++	GtkWidget *widget = NULL;
+ 	OS_NATIVE_ENTER(env, that, _1gtk_1file_1chooser_1dialog_1new_FUNC);
+ 	if (arg0) if ((lparg0 = (*env)->GetByteArrayElements(env, arg0, NULL)) == NULL) goto fail;
+ /*
+ 	rc = (SWT_PTR)gtk_file_chooser_dialog_new(lparg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+ */
++	/* Remaining arguments are thrown away as they cannot be used for the
++	 * HildonFileChooserDialog anyways.
++	 */
++	widget = (SWT_PTR) hildon_file_chooser_dialog_new(arg1, (GtkFileChooserAction) arg2);
++  gtk_window_set_title(GTK_WINDOW(widget), (const gchar *) lparg0);
++
++  rc = (SWT_PTR) widget;
++#if 0
++// The code is not supposed to run on AMD64.
++
+ 	{
+ 		static int initialized = 0;
+ 		static void *handle = NULL;
+@@ -70,6 +83,8 @@
+ 			rc = (SWT_PTR)(*fptr)(lparg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+ 		}
+ 	}
++#endif
++
+ fail:
+ 	if (arg0 && lparg0) (*env)->ReleaseByteArrayElements(env, arg0, lparg0, 0);
+ 	OS_NATIVE_EXIT(env, that, _1gtk_1file_1chooser_1dialog_1new_FUNC);

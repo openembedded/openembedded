@@ -1,8 +1,5 @@
 require busybox.inc
-
-PR = "r4"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "r8"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
@@ -15,16 +12,15 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog.conf \
            file://udhcpscript.patch;patch=1 \
            file://umount.busybox \
-	   file://run_parts.c"
-
+           file://run_parts.c"
 
 SRC_URI += "http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-ash.patch;patch=1 \
             http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-iptun.patch;patch=1 \
-	    http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1 \
-	    http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-logger.patch;patch=1 \
+            http://busybox.net/downloads/fixes-1.7.2/busybox-1.7.2-tail.patch;patch=1 \
             file://defconfig"
 
-EXTRA_OEMAKE_append = " V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
+EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
 do_configure () {
 	cp ${WORKDIR}/run_parts.c ${S}/debianutils/
@@ -33,12 +29,12 @@ do_configure () {
 }
 
 do_compile () {
-        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-        base_do_compile
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	base_do_compile
 }
 
 do_install () {
-        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 	install -d ${D}${sysconfdir}/init.d
 	oe_runmake "PREFIX=${D}" install
 	cp -pPR ${S}/_install/* ${D}/

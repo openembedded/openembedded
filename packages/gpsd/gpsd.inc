@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
-RDEPENDS = "gpsd-conf"
+RDEPENDS_${PN} = "gpsd-conf gpsd-gpsctl"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR} \
@@ -12,12 +12,12 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 
 SRC_URI = "http://download.berlios.de/gpsd/gpsd-${PV}.tar.gz \
            file://gpsd-default \
-	   file://gps-hardware \
+           file://gps-hardware \
            file://gpsd"
 
 SRC_URI_append_fic-gta01 = " \
-			    file://restart_gllin.sh \
-			   "
+           file://restart_gllin.sh \
+"
 			   
 inherit autotools update-rc.d
 
@@ -47,7 +47,7 @@ do_install_append() {
         install -d ${D}/${sysconfdir}/init.d
         install -d ${D}/dev
         install -m 0755 ${WORKDIR}/gpsd ${D}/${sysconfdir}/init.d/
-	install -m 0755 ${WORKDIR}/gps-hardware ${D}/${sysconfdir}/init.d/gps-hardware.default
+        install -m 0755 ${WORKDIR}/gps-hardware ${D}/${sysconfdir}/init.d/gps-hardware.default
         install -d ${D}/${sysconfdir}/default
         install -m 0644 ${WORKDIR}/gpsd-default ${D}/${sysconfdir}/default/gpsd.default
 }
@@ -69,14 +69,18 @@ pkg_postrm_${PN}-conf() {
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 
-PACKAGES =+ "libgps python-pygps gpsd-conf"
+PACKAGES =+ "libgps python-pygps gpsd-conf gpsd-gpsctl gps-utils"
 
 PACKAGE_ARCH_gpsd-conf = "${MACHINE_ARCH}"
 
 FILES_libgps = "${libdir}/*.so.*"
 FILES_gpsd-conf = "${sysconfdir}"
+FILES_gpsd-gpsctl = "${bindir}/gpsctl"
+FILES_gps-utils = "${bindir}/*"
+# might split them up even more fine granular
+RDEPENDS_gps-utils = "python-pygps"
 
 DESCRIPTION_python-pygps = "Python bindings to gpsd"
 FILES_python-pygps = "${libdir}/*/site-packages/*"
-RDEPENDS_python-pygps = "python-core gpsd"
+RDEPENDS_python-pygps = "python-core python-curses gpsd"
 

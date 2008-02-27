@@ -1,9 +1,9 @@
-DESCRIPTION = "Qt/Embedded Fonts Version ${PV}"
-SECTION = "opie/fonts"
-PRIORITY = "optional"
-LICENSE = "GPL QPL"
+require qpf.inc
+
+DESCRIPTION = "Qt/Embedded fonts version ${PV}"
 HOMEPAGE = "http://www.trolltech.com"
-PR = "r1"
+LICENSE = "GPL QPL"
+PR = "r2"
 
 PROVIDES  = "qte-font-helvetica-100 qte-font-helvetica-120"
 PROVIDES += "qte-font-fixed-70 qte-font-fixed-120"
@@ -25,8 +25,6 @@ RPROVIDES_qte-font-japanese += "virtual/japanese-font"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-${PV}-free.tar.gz"
 S = "${WORKDIR}/qt-${PV}"
-
-inherit qpf
 
 QPF_PKGPATTERN = "qte-font-%s"
 QPF_DESCRIPTION = "Qt/E font %s"

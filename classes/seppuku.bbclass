@@ -303,7 +303,7 @@ python seppuku_eventhandler() {
 
     if name == "PkgFailed":
         if not bb.data.getVar('SEPPUKU_AUTOBUILD', data, True) == "0":
-            build.exec_task('do_clean', data)
+            build.exec_func('do_clean', data)
     elif name == "TaskFailed":
         cj = cookielib.CookieJar()
         opener  = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))

@@ -1,7 +1,7 @@
 SECTION = "x11/network"
 PR = "r1"
 
-PACKAGES = "prismstumbler prismstumbler-frontend"
+PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 LICENSE = "GPL"
 DEPENDS = "libpcap gtk+ wireless-tools sqlite"

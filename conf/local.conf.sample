@@ -33,12 +33,19 @@ BBMASK = ""
 # Uncomment this if you want to use a prebuilt toolchain. You will need to
 # provide packages for toolchain and additional libraries yourself. You also
 # have to set PATH in your environment to make sure BitBake finds additional binaries.
-# Note: You will definitely need to say:
-#     ASSUME_PROVIDED += "virtual/arm-linux-gcc-2.95"
-# to build any of two Linux 2.4 Embedix kernels,
+# ASSUME_PROVIDED += "virtual/${TARGET_PREFIX}gcc virtual/libc"
+
+# Uncomment this if you're building for an arch that uses emulated locale 
+# generation under qemu (mainly arm glibc) and have an external gcc 3.x compiler
+# that OE recognises. This will mean the gcc-native build is skipped, speeding 
+# builds up.
+# ASSUME_PROVIDED += "gcc3-native"
+
+# Uncomment this if you are building Linux 2.4 Embedix kernels.
 # i.e. openzaurus-sa-2.4.18 and openzaurus-pxa-2.4.18 - and don't forget
 # to rename the binaries as instructed in the Wiki.
-# ASSUME_PROVIDED += "virtual/${TARGET_PREFIX}gcc virtual/libc"
+# Most users do not need this anymore thankfully!
+# ASSUME_PROVIDED += "virtual/arm-linux-gcc-2.95"
 
 # Select between multiple alternative providers, if more than one is eligible.
 PREFERRED_PROVIDERS = "virtual/qte:qte virtual/libqpe:libqpe-opie"
@@ -77,7 +84,7 @@ PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 # openzaurus-unstable is a so called "versioned"  distro, i.e. they 
 # explicitely select specific versions of various packages.
 # Stay away from unversioned distros unless you really know what you are doing
-# DISTRO = "angstrom-2007.1"
+# DISTRO = "angstrom-2008.1"
 
 # So far, angstrom.conf sets ENABLE_BINARY_LOCALE_GENERATION
 # to generate binary locale packages at build time using qemu-native and

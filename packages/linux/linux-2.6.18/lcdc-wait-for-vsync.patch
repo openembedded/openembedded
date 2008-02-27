@@ -1,0 +1,152 @@
+---
+ drivers/video/sidsafb.c |   68 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 61 insertions(+), 7 deletions(-)
+
+Index: linux-2.6.18-rc6-mm1/drivers/video/sidsafb.c
+===================================================================
+--- linux-2.6.18-rc6-mm1.orig/drivers/video/sidsafb.c	2006-09-11 13:03:46.000000000 +0200
++++ linux-2.6.18-rc6-mm1/drivers/video/sidsafb.c	2006-09-11 13:38:52.000000000 +0200
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/config.h>
+ #include <linux/clk.h>
++#include <linux/completion.h>
+ #include <linux/kernel.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/interrupt.h>
+@@ -38,7 +39,8 @@ struct sidsafb_info {
+ 	struct fb_info *	info;
+ 	void __iomem *		regs;
+ 	unsigned long		irq_base;
+-	wait_queue_head_t	vsync_wait;
++	int			wait_for_vsync;
++	struct completion	vsync_complete;
+ 	unsigned int		guard_time;
+ 	struct clk		*hclk;
+ 	struct clk		*pixclk;
+@@ -169,6 +171,38 @@ static struct fb_fix_screeninfo sidsafb_
+ 	.accel		= FB_ACCEL_NONE,
+ };
+ 
++/*
++ * Let the user decide whether FBIOPAN_DISPLAY waits for the next
++ * vsync or not.
++ */
++static ssize_t
++vsync_pan_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct fb_info *info = dev_get_drvdata(dev);
++	struct sidsafb_info *sinfo = info->par;
++
++	return sprintf(buf, "%d\n", sinfo->wait_for_vsync);
++}
++
++static ssize_t
++vsync_pan_store(struct device *dev, struct device_attribute *attr,
++		const char *buf, size_t count)
++{
++	struct fb_info *info = dev_get_drvdata(dev);
++	struct sidsafb_info *sinfo = info->par;
++	unsigned long val;
++
++	val = simple_strtoul(buf, NULL, 0);
++	if (val)
++		sinfo->wait_for_vsync = 1;
++	else
++		sinfo->wait_for_vsync = 0;
++
++	return count;
++}
++
++static DEVICE_ATTR(vsync_pan, 0644, vsync_pan_show, vsync_pan_store);
++
+ static void sidsafb_update_dma(struct fb_info *info,
+ 			       struct fb_var_screeninfo *var)
+ {
+@@ -513,10 +547,25 @@ static int sidsafb_setcolreg(unsigned in
+ static int sidsafb_pan_display(struct fb_var_screeninfo *var,
+ 			       struct fb_info *info)
+ {
++	struct sidsafb_info *sinfo = info->par;
++
+ 	pr_debug("sidsafb_pan_display\n");
+ 
+ 	sidsafb_update_dma(info, var);
+ 
++	if (sinfo->wait_for_vsync) {
++		spin_lock_irq(&sinfo->lock);
++		lcdc_writel(sinfo, LCD_ICR, LCDC_BIT(LCD_ICR_EOFIC));
++		lcdc_writel(sinfo, LCD_IER, LCDC_BIT(LCD_IER_EOFIE));
++		init_completion(&sinfo->vsync_complete);
++		lcdc_readl(sinfo, LCD_IMR);
++		spin_unlock_irq(&sinfo->lock);
++
++		wait_for_completion(&sinfo->vsync_complete);
++
++		lcdc_writel(sinfo, LCD_IDR, LCDC_BIT(LCD_IDR_EOFID));
++	}
++
+ 	return 0;
+ }
+ 
+@@ -545,7 +594,7 @@ static irqreturn_t sidsafb_interrupt(int
+ 
+ 			lcdc_writel(sinfo, LCD_ICR, LCDC_BIT(LCD_ICR_EOFIC));
+ 			status &= ~LCDC_BIT(LCD_ISR_EOFIS);
+-			wake_up(&sinfo->vsync_wait);
++			complete(&sinfo->vsync_complete);
+ 		}
+ 
+ 		if (status) {
+@@ -600,8 +649,6 @@ static int __devinit sidsafb_set_fbinfo(
+ 	info->fbops		= &sidsafb_ops;
+ 	info->pseudo_palette	= sinfo->pseudo_palette;
+ 
+-	init_waitqueue_head(&sinfo->vsync_wait);
+-
+ 	return 0;
+ }
+ 
+@@ -700,18 +747,21 @@ static int __devinit sidsafb_probe(struc
+ 		goto unregister_irqs;
+ 	}
+ 
++	platform_set_drvdata(pdev, info);
++	ret = device_create_file(&pdev->dev, &dev_attr_vsync_pan);
++	if (ret)
++		goto free_cmap;
++
+ 	/*
+ 	 * Tell the world that we're ready to go
+ 	 */
+ 	ret = register_framebuffer(info);
+ 	if (ret)
+-		goto free_cmap;
++		goto remove_attrs;
+ 
+ 	printk("fb%d: Atmel LCDC at 0x%08lx (mapped at %p), irq %lu\n",
+ 	       info->node, info->fix.mmio_start, sinfo->regs, sinfo->irq_base);
+ 
+-	platform_set_drvdata(pdev, info);
+-
+ 	memset_io(info->screen_base, 0, info->fix.smem_len);
+ 	info->var.activate |= FB_ACTIVATE_FORCE | FB_ACTIVATE_NOW;
+ 	ret = fb_set_var(info, &info->var);
+@@ -724,6 +774,8 @@ static int __devinit sidsafb_probe(struc
+ 	return 0;
+ 
+ 
++remove_attrs:
++	device_remove_file(&pdev->dev, &dev_attr_vsync_pan);
+ free_cmap:
+ 	fb_dealloc_cmap(&info->cmap);
+ unregister_irqs:
+@@ -761,6 +813,8 @@ static int __devexit sidsafb_remove(stru
+ 	/* TODO: Restore original state */
+ 	unregister_framebuffer(info);
+ 
++	device_remove_file(&pdev->dev, &dev_attr_vsync_pan);
++
+ 	fb_dealloc_cmap(&info->cmap);
+ 	free_irq(sinfo->irq_base, info);
+ 	iounmap(sinfo->regs);

@@ -1,0 +1,25 @@
+---
+ drivers/serial/atmel_usart.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/atmel_usart.c	2006-11-24 15:59:38.000000000 +0100
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.c	2006-11-24 15:59:46.000000000 +0100
+@@ -194,8 +194,14 @@ static inline int rx_dma_update_tail(str
+ 		usart3_writel(up, RNCR, RX_BUFFER_SIZE);
+ 
+ 		again = 1;
+-	} else
+-		BUG_ON(usart3_readl(up, CSR) & USART3_BIT(ENDRX));
++	} else if(usart3_readl(up, CSR) & USART3_BIT(ENDRX)) {
++		/*
++		 * The USART hit the end of the buffer after head was
++		 * updated.  Let's do another pass so that we can
++		 * avoid taking another interrupt immediately.
++		 */
++		again = 1;
++	}
+ 
+ 	up->rx_tail = tail;
+ 

@@ -1,0 +1,74 @@
+---
+ drivers/serial/Kconfig       |   18 ++++++++++++++++++
+ drivers/serial/atmel_usart.c |   13 +++++++++++--
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+
+Index: linux-2.6.18-avr32/drivers/serial/Kconfig
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/Kconfig	2006-09-14 12:51:15.000000000 +0200
++++ linux-2.6.18-avr32/drivers/serial/Kconfig	2006-09-14 13:07:37.000000000 +0200
+@@ -267,6 +267,24 @@ config SERIAL_ATMEL_CONSOLE
+ 	  receives all kernel messages and warnings and which allows
+ 	  logins in single user mode).
+ 
++config SERIAL_ATMEL_TTYAT
++	bool "Install as device ttyAT0-N instead of ttyS0-N"
++	depends on SERIAL_ATMEL=y
++	help
++	  Say Y here if you wish to have the internal UARTs appear as
++	  /dev/ttyAT0-N (major 204, minor 154-169) instead of the
++	  normal /dev/ttyS0-4 (major 4, minor 64-255). This is
++	  necessary if you also want other UARTs, such as external
++	  8250/16C550 compatible UARTs.
++
++	  The ttySn nodes are legally reserved for the 8250 serial driver
++	  but are often misused by other serial drivers.
++
++	  To use this, you should create suitable ttyATn device nodes in
++	  /dev/, and pass "console=ttyATn" to the kernel.
++
++	  Say Y if you have an external 8250/16C550 UART.  If unsure, say N.
++
+ config SERIAL_AMBA_PL010
+ 	tristate "ARM AMBA PL010 serial port support"
+ 	depends on ARM_AMBA && (BROKEN || !ARCH_VERSATILE)
+Index: linux-2.6.18-avr32/drivers/serial/atmel_usart.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/serial/atmel_usart.c	2006-09-14 12:51:15.000000000 +0200
++++ linux-2.6.18-avr32/drivers/serial/atmel_usart.c	2006-09-14 12:51:16.000000000 +0200
+@@ -46,8 +46,17 @@
+  * Use the same major/minor numbers as the AT91 USART, which is
+  * actually the same chip
+  */
++
++#ifdef CONFIG_SERIAL_ATMEL_TTYAT
++#define SERIAL_USART3_MAJOR	204
++#define MINOR_START		154
++#define DEVICE_NAME		"ttyAT"
++#else
+ #define SERIAL_USART3_MAJOR	TTY_MAJOR
+ #define MINOR_START		64
++#define DEVICE_NAME		"ttyS"
++#endif
++
+ #define NR_PORTS		4
+ 
+ #define ERROR_FLAGS		(USART3_BIT(CSR_PARE)		\
+@@ -923,7 +932,7 @@ out_disable_clk:
+ 
+ static struct uart_driver usart3_reg;
+ static struct console usart3_console = {
+-	.name		= "ttyUS",
++	.name		= DEVICE_NAME,
+ 	.write		= usart3_console_write,
+ 	.device		= uart_console_device,
+ 	.setup		= usart3_console_setup,
+@@ -948,7 +957,7 @@ console_initcall(usart3_console_init);
+ static struct uart_driver usart3_reg = {
+ 	.owner		= THIS_MODULE,
+ 	.driver_name	= "serial",
+-	.dev_name	= "ttyUS",
++	.dev_name	= DEVICE_NAME,
+ 	.major		= SERIAL_USART3_MAJOR,
+ 	.minor		= MINOR_START,
+ 	.nr		= NR_PORTS,

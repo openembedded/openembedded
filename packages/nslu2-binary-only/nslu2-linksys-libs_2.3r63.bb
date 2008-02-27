@@ -13,7 +13,6 @@ do_install () {
 	( cd ${S} ; tar cvf - . ) | ( cd ${D} ; tar xvf - )
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/lib"
 
 COMPATIBLE_MACHINE = "nslu2"

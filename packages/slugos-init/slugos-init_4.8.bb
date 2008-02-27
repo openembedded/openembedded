@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -141,7 +141,6 @@ pkg_postrm_slugos-init() {
 	done
 }
 
-PACKAGES = "${PN}"
 FILES_${PN} = "/"
 
 # It is bad to overwrite /linuxrc as it puts the system back to

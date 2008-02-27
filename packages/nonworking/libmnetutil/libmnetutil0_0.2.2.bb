@@ -11,7 +11,6 @@ SRC_URI = "http://www.minisip.org/snapshots/libmnetutil-${PV}.tar.gz"
 S="${WORKDIR}/libmnetutil-${PV}"
 
 
-PACKAGES = "${PN}"
 
 FILES_${PN} = " ${libdir}/libmnetutil.so.0 ${libdir}/libmnetutil.so.0.0.0 "
 

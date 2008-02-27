@@ -1,10 +1,8 @@
-DESCRIPTION = "The Enlightened Widget Library, \
-a simple-to-use general purpose widget library \
-based on the enlightenment foundation libraries."
+DESCRIPTION = "The Enlightened Widget Library"
 DEPENDS = "evas ecore edje emotion efreet epsilon"
-LICENSE = "MIT"
-PV = "0.5.1+cvs${SRCDATE}"
-PR = "r2"
+LICENSE = "MIT BSD"
+PV = "0.5.2.042+cvs${SRCDATE}"
+PR = "r0"
 
 inherit efl_library
 

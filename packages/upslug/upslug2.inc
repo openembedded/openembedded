@@ -27,5 +27,4 @@ inherit autotools
 
 S = "${WORKDIR}/upslug2-${PV}"
 
-PACKAGES = "${PN}"
 EXTRA_OECONF += "${LIBPCAP_OECONF}"

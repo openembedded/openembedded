@@ -57,7 +57,7 @@ do_install() {
         rm -f ${KERNEL_SOURCE}/../../config.mk	
 }
 
-PACKAGES = "wlan-ng-modules-usb wlan-ng-modules-cs wlan-ng-modules-pci wlan-ng-modules-p80211"
+PACKAGES = "${PN}-dbg wlan-ng-modules-usb wlan-ng-modules-cs wlan-ng-modules-pci wlan-ng-modules-p80211"
 FILES_wlan-ng-modules-p80211 = "/lib/modules/${KERNEL_VERSION}/wlan-ng/p80211${KERNEL_OBJECT_SUFFIX}"
 FILES_wlan-ng-modules-usb = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_usb${KERNEL_OBJECT_SUFFIX}"
 FILES_wlan-ng-modules-cs  = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_cs${KERNEL_OBJECT_SUFFIX}"

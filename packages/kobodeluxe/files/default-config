@@ -1,0 +1,70 @@
+#--------------------------------------------
+# Kobo Deluxe 0.5.1 Configuration File
+#--------------------------------------------
+# Switches - [no]<switch>
+# Values - <key> [<value>|"<string>"]
+#--------------------------------------------
+#--- System options --------------------------
+nologfile
+logformat 0
+logverbosity 2
+#--- Input options --------------------------
+nojoystick
+joystick_no 0
+mouse
+mousemode 1
+nobroken_numdia
+dia_emphasis 0
+noalways_fire
+mousecapture
+#--- Game options ---------------------------
+scrollradar 2
+filter
+timefilter 50
+countdown 5
+starfield 2
+stars 250
+overheatloud 100
+cannonloud 100
+#--- Sound settings -------------------------
+nosound
+music
+nocached_sounds
+samplerate 8000
+latency 50
+mixquality 1
+vol 100
+intro_vol 100
+sfx_vol 100
+music_vol 30
+reverb 100
+vol_boost 0
+#--- Video settings -------------------------
+fullscreen
+videodriver 0
+width WIDTH_HERE
+height HEIGHT_HERE
+autoswap
+aspect 1
+depth 0
+maxfps 100
+maxfpsstrict 0
+buffer 0
+shadow
+videomode -1
+vsync
+videopages -1
+#--- Graphics settings ----------------------
+scalemode 0
+nodither
+dither_type 2
+nobroken_rgba8
+alpha
+brightness 100
+contrast 100
+#--- File paths -----------------------------
+files ""
+gfx ""
+sfx ""
+scores ""
+wait 30

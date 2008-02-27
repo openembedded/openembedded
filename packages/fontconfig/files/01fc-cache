@@ -1,0 +1,4 @@
+#!/bin/sh
+# Author: Rolf Leggewie
+
+fc-cache

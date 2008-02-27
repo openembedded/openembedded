@@ -3,7 +3,7 @@ LICENSE = "CPL MPL LGPL"
 
 inherit java-library
 
-DEPENDS = "cairo gtk+ atk libxtst classpath"
+DEPENDS = "classpath-native cairo gtk+ atk libxtst"
 
 S = "${WORKDIR}/swt-source"
 
@@ -36,7 +36,6 @@ do_install() {
   oe_jarinstall swt.jar
   oe_jarinstall swt-gtk-${PV}.jar swt-gtk.jar
 
-  install -d ${D}${libdir_jni}
   oe_libinstall -so libswt-atk-gtk-${SWTVERSION} ${D}/${libdir_jni}
   oe_libinstall -so libswt-cairo-gtk-${SWTVERSION} ${D}/${libdir_jni}  
   oe_libinstall -so libswt-pi-gtk-${SWTVERSION} ${D}/${libdir_jni}

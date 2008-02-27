@@ -1,0 +1,11 @@
+Index: linux-2.6.18/include/asm-avr32/arch-at32ap/at32ap7000.h
+===================================================================
+--- linux-2.6.18.orig/include/asm-avr32/arch-at32ap/at32ap7000.h	2006-12-11 14:53:54.000000000 +0100
++++ linux-2.6.18/include/asm-avr32/arch-at32ap/at32ap7000.h	2006-12-11 14:56:54.000000000 +0100
+@@ -23,4 +23,6 @@
+ #define GPIO_PIN_PD(N)	(GPIO_PIOD_BASE + (N))
+ #define GPIO_PIN_PE(N)	(GPIO_PIOE_BASE + (N))
+ 
++#define GPIO_PIO_NONE	(0xFFFFffff)
++
+ #endif /* __ASM_ARCH_AT32AP7000_H */

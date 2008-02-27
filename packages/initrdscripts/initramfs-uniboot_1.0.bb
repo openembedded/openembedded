@@ -1,6 +1,7 @@
 SRC_URI = "file://init.sh"
-PR = "r2"
+PR = "r4"
 DESCRIPTON = "A modular initramfs init script system."
+RRECOMMENDS = "kernel-module-mtdblock"
 
 do_install() {
         install -m 0755 ${WORKDIR}/init.sh ${D}/init

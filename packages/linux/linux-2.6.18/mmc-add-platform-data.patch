@@ -1,0 +1,185 @@
+---
+ arch/avr32/boards/atngw/setup.c       |    7 ++++
+ arch/avr32/mach-at32ap/at32ap7000.c   |   13 +++++++--
+ drivers/mmc/atmel-mci.c               |   49 ++++++++++++++++++++++++++++++++++
+ include/asm-avr32/arch-at32ap/board.h |    7 ++++
+ 4 files changed, 72 insertions(+), 4 deletions(-)
+
+Index: linux-2.6.18-avr32/arch/avr32/boards/atngw/setup.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/boards/atngw/setup.c	2007-01-15 10:24:38.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/boards/atngw/setup.c	2007-01-15 10:25:04.000000000 +0100
+@@ -35,6 +35,11 @@ static struct spi_board_info spi_board_i
+ 	},
+ };
+ 
++static struct mmci_platform_data __initdata mmci0_data = {
++		.detect_pin	= GPIO_PIN_PC(25),
++		.wp_pin		= GPIO_PIN_PE(0),
++};
++
+ static int __init parse_tag_ethernet(struct tag *tag)
+ {
+ 	int i;
+@@ -72,7 +77,7 @@ static int __init atngw_init(void)
+ 	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
+ 
+ 	at32_add_device_spi(0);
+-	at32_add_device_mmci(0);
++	at32_add_device_mmci(0, &mmci0_data);
+ 	at32_add_device_usb(0);
+ 
+ 	return 0;
+Index: linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c
+===================================================================
+--- linux-2.6.18-avr32.orig/arch/avr32/mach-at32ap/at32ap7000.c	2007-01-15 10:24:38.000000000 +0100
++++ linux-2.6.18-avr32/arch/avr32/mach-at32ap/at32ap7000.c	2007-01-15 10:25:04.000000000 +0100
+@@ -749,14 +749,16 @@ at32_add_device_eth(unsigned int id, str
+ /* --------------------------------------------------------------------
+  * MMC
+  * -------------------------------------------------------------------- */
++static struct mmci_platform_data mmci0_data;
+ static struct resource mmci0_resource[] = {
+ 	PBMEM(0xfff02400),
+ 	IRQ(28),
+ };
+-DEFINE_DEV(mmci, 0);
++DEFINE_DEV_DATA(mmci, 0);
+ DEV_CLK(mck, mmci0, pbb, 9);
+ 
+-struct platform_device *__init at32_add_device_mmci(unsigned int id)
++struct platform_device *__init
++at32_add_device_mmci(unsigned int id, struct mmci_platform_data *data)
+ {
+ 	struct platform_device *pdev;
+ 
+@@ -774,6 +776,13 @@ struct platform_device *__init at32_add_
+ 		return NULL;
+ 	}
+ 
++	if (data && data->detect_pin != GPIO_PIO_NONE)
++		at32_select_gpio(data->detect_pin, 0);
++	if (data && data->wp_pin != GPIO_PIO_NONE)
++		at32_select_gpio(data->wp_pin, 0);
++
++	memcpy(pdev->dev.platform_data, data,
++			sizeof(struct mmci_platform_data));
+ 	platform_device_register(pdev);
+ 	return pdev;
+ }
+Index: linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h
+===================================================================
+--- linux-2.6.18-avr32.orig/include/asm-avr32/arch-at32ap/board.h	2007-01-15 10:24:38.000000000 +0100
++++ linux-2.6.18-avr32/include/asm-avr32/arch-at32ap/board.h	2007-01-15 10:25:04.000000000 +0100
+@@ -24,7 +24,12 @@ struct eth_platform_data {
+ struct platform_device *
+ at32_add_device_eth(unsigned int id, struct eth_platform_data *data);
+ 
+-struct platform_device *at32_add_device_mmci(unsigned int id);
++struct mmci_platform_data {
++	unsigned int detect_pin;
++	unsigned int wp_pin;
++};
++struct platform_device *
++at32_add_device_mmci(unsigned int id, struct mmci_platform_data *data);
+ struct platform_device *at32_add_device_spi(unsigned int id);
+ struct platform_device *at32_add_device_twi(unsigned int id);
+ 
+Index: linux-2.6.18-avr32/drivers/mmc/atmel-mci.c
+===================================================================
+--- linux-2.6.18-avr32.orig/drivers/mmc/atmel-mci.c	2007-01-15 10:23:19.000000000 +0100
++++ linux-2.6.18-avr32/drivers/mmc/atmel-mci.c	2007-01-15 10:27:37.000000000 +0100
+@@ -22,6 +22,9 @@
+ 
+ #include <asm/dma-controller.h>
+ #include <asm/io.h>
++#include <asm/arch/at32ap7000.h>
++#include <asm/arch/board.h>
++#include <asm/arch/gpio.h>
+ 
+ #include "atmel-mci.h"
+ 
+@@ -68,9 +71,13 @@ struct atmel_mci {
+ 	unsigned long		completed_events;
+ 	u32			error_status;
+ 
++	int			present;
++	unsigned int		wp_present:1;
++
+ 	unsigned long		bus_hz;
+ 	unsigned long		mapbase;
+ 	struct clk		*mck;
++	struct mmci_platform_data *board;
+ 	struct platform_device	*pdev;
+ };
+ 
+@@ -626,6 +633,7 @@ static int __devinit atmci_probe(struct 
+ 	if (!host->regs)
+ 		goto out_disable_clk;
+ 
++	host->board = pdev->dev.platform_data;
+ 	host->bus_hz = clk_get_rate(host->mck);
+ 	host->mapbase = regs->start;
+ 
+@@ -641,6 +649,32 @@ static int __devinit atmci_probe(struct 
+ 	if (ret)
+ 		goto out_unmap;
+ 
++	if (host->board && host->board->detect_pin != GPIO_PIO_NONE) {
++		ret = gpio_request(host->board->detect_pin, "mmc_detect");
++		if (ret) {
++			printk(KERN_WARNING "%s: no detect pin available (%d)\n",
++					mmc_hostname(host->mmc), ret);
++			host->present = -1;
++		} else {
++			host->present = !gpio_get_value(host->board->detect_pin);
++		}
++	} else {
++		host->present = -1;
++	}
++
++	if (host->board && host->board->wp_pin != GPIO_PIO_NONE) {
++		ret = gpio_request(host->board->wp_pin, "mmc_wp");
++		if (ret) {
++			printk(KERN_WARNING "%s: no WP pin available (%d)\n",
++					mmc_hostname(host->mmc), ret);
++			host->wp_present = 0;
++		} else {
++			host->wp_present = 1;
++		}
++	} else {
++		host->wp_present = 0;
++	}
++
+ 	/* TODO: Get this information from platform data */
+ 	ret = -ENOMEM;
+ 	host->dma.req.req.dmac = find_dma_controller(0);
+@@ -677,6 +711,10 @@ static int __devinit atmci_probe(struct 
+ 	return 0;
+ 
+ out_free_irq:
++	if (host->present != -1)
++		gpio_free(host->board->detect_pin);
++	if (host->board->wp_pin != GPIO_PIO_NONE)
++		gpio_free(host->board->wp_pin);
+ 	free_irq(irq, mmc);
+ out_unmap:
+ 	iounmap(host->regs);
+@@ -701,6 +739,17 @@ static int __devexit atmci_remove(struct
+ 		mci_writel(host, CR, MCI_BIT(MCIDIS));
+ 		mci_readl(host, SR);
+ 
++		if (host->dma.req.req.channel)
++			dma_release_channel(host->dma.req.req.dmac,
++					host->dma.req.req.channel);
++
++		if (host->present != -1) {
++			cancel_delayed_work(&host->mmc->detect);
++			gpio_free(host->board->detect_pin);
++		}
++		if (host->board->wp_pin != GPIO_PIO_NONE)
++			gpio_free(host->board->wp_pin);
++
+ 		free_irq(platform_get_irq(pdev, 0), host->mmc);
+ 		iounmap(host->regs);
+ 

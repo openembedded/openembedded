@@ -11,6 +11,10 @@ PACKAGES_DYNAMIC += "kernel-image-*"
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 KERNEL_IMAGETYPE ?= "zImage"
+# Base filename under which users see built kernel (i.e. deploy name)
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}"
+# Symlink  basename pointing to the most recently built kernel for a machine
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}" 
 
 KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
@@ -30,6 +34,7 @@ HOST_LD_KERNEL_ARCH ?= "${TARGET_LD_KERNEL_ARCH}"
 KERNEL_CC = "${CCACHE}${HOST_PREFIX}gcc${KERNEL_CCSUFFIX} ${HOST_CC_KERNEL_ARCH}"
 KERNEL_LD = "${LD}${KERNEL_LDSUFFIX} ${HOST_LD_KERNEL_ARCH}"
 
+# Where built kernel lies in the kernel tree
 KERNEL_OUTPUT = "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
 KERNEL_IMAGEDEST = "boot"
 
@@ -59,6 +64,22 @@ kernel_do_compile() {
 		oenote "no modules to compile"
 	fi
 }
+
+INITRAMFS_SYMLINK_NAME ?= "initramfs-${MACHINE}"
+INITRAMFS_IMAGE_TARGET ?= "initramfs-image"
+
+do_builtin_initramfs() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
+	cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_SYMLINK_NAME}" usr/initramfs_data.cpio.gz
+	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-initramfs.bin
+	# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
+	rm usr/initramfs_data.cpio.gz
+}
+addtask builtin_initramfs after do_compile
+do_builtin_initramfs[nostamp] = "1"
+do_builtin_initramfs[depends] = "${INITRAMFS_IMAGE_TARGET}:do_rootfs"
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
@@ -107,6 +128,10 @@ kernel_do_stage() {
 	if [ -e arch/${ARCH}/Makefile ]; then
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}
 		install -m 0644 arch/${ARCH}/Makefile* ${STAGING_KERNEL_DIR}/arch/${ARCH}
+	# Otherwise check arch/x86/Makefile for i386 and x86_64 on kernels >= 2.6.24
+	elif [ -e arch/x86/Makefile ]; then
+		install -d ${STAGING_KERNEL_DIR}/arch/x86
+		install -m 0644 arch/x86/Makefile* ${STAGING_KERNEL_DIR}/arch/x86
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
@@ -180,6 +205,8 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 FILES_kernel-dev = "/boot/System.map* /boot/config*"
 FILES_kernel-vmlinux = "/boot/vmlinux*"
 RDEPENDS_kernel = "kernel-base"
+RRECOMMENDS_kernel-module-hostap-cs += '${@base_version_less_or_equal("KERNEL_VERSION", "2.6.17", "", "apm-wifi-suspendfix", d)}'
+RRECOMMENDS_kernel-module-orinoco-cs += '${@base_version_less_or_equal("KERNEL_VERSION", "2.6.17", "", "apm-wifi-suspendfix", d)}'
 # Allow machines to override this dependency if kernel image files are 
 # not wanted in images as standard
 RDEPENDS_kernel-base ?= "kernel-image"

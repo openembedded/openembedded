@@ -1,0 +1,5 @@
+#!/bin/sh
+cat $1.bdf | bdftopcf | gzip -c -3 > $2/$3.pcf.gz
+cat $1.bdf | mkbold | bdftopcf | gzip -c -3 > $2/$3_b.pcf.gz
+cat $1.bdf | mkitalic | bdftopcf | gzip -c -3 > $2/$3_i.pcf.gz
+cat $1.bdf | mkbolditalic | bdftopcf | gzip -c -3 > $2/$3_bi.pcf.gz

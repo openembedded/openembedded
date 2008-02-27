@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r57"
+PR = "r62"
 
 inherit task
 
@@ -168,7 +168,8 @@ RRECOMMENDS_task-base-kernel26 = "\
     kernel-module-rtc-dev \
     kernel-module-rtc-proc \
     kernel-module-rtc-sysfs \
-    kernel-module-rtc-sa1100"
+    kernel-module-rtc-sa1100 \
+    kernel-module-unix"
 
 RDEPENDS_task-base-keyboard = "\
     keymaps"
@@ -344,6 +345,8 @@ RRECOMMENDS_task-base-wifi = "\
     kernel-module-ieee80211-crypt-wep \
     kernel-module-ecb \
     kernel-module-arc4 \
+    kernel-module-crypto_algapi \
+    kernel-module-cryptomgr \
     kernel-module-michael-mic \
     kernel-module-aes"
 

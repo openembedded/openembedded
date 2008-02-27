@@ -1,0 +1,12 @@
+diff -Naur xserver-common-1.18-orig/X11/Xserver xserver-common-1.18/X11/Xserver
+--- xserver-common-1.18-orig/X11/Xserver	2007-08-24 06:15:25.000000000 -0500
++++ xserver-common-1.18/X11/Xserver	2008-01-12 19:59:59.000000000 -0600
+@@ -76,6 +76,8 @@
+ 		ARGS="$ARGS -dpi 100 -rgba rgb" ;;
+ 	"Generic OMAP1510/1610/1710")
+ 		ARGS="$ARGS -dpi 220 -mouse /dev/input/event0" ;;
++	"TI-OSK")
++		ARGS="$ARGS -dpi 100 -mouse tslib" ;;
+ 	"Cellon C8000 Board")
+ 		ARGS="$ARGS -dpi 100 -screen 240x320,10,1" ;;
+ 	"HTC Universal")

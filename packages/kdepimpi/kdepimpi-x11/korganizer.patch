@@ -1,0 +1,24 @@
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1898924&group_id=104103&atid=636951
+status: upstream is pretty dead
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- kdepim/korganizer/korganizer.pro~korganizer
++++ kdepim/korganizer/korganizer.pro
+@@ -34,10 +34,10 @@
+ LIBS += ../libical/lib/libical.a
+ LIBS += ../libical/lib/libicalss.a
+ } else {
+-LIBS += ../bin/libmicrokdepim.so
+-LIBS += ../bin/libmicrokcal.so
+-LIBS += ../bin/libmicrokde.so
+-LIBS += ../bin/libmicrokabc.so
++LIBS += $(DESTDIR)/libmicrokdepim.so
++LIBS += $(DESTDIR)/libmicrokcal.so
++LIBS += $(DESTDIR)/libmicrokde.so
++LIBS += $(DESTDIR)/libmicrokabc.so
+ #LIBS += -lbluetooth
+ #LIBS += -lsdp
+ 

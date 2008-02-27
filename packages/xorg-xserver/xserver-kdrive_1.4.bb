@@ -3,7 +3,7 @@ require xserver-kdrive-common.inc
 DEPENDS += "hal libxkbfile libxcalibrate pixman"
 
 PE = "1"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -16,10 +16,13 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://w100-autofoo.patch;patch=1 \
 	file://w100-fix-offscreen-bmp.patch;patch=1 \
 	file://w100-new-input-world-order.patch;patch=1 \
+	file://linux-keyboard-mediumraw.patch;patch=1 \
 	file://xcalibrate-new-input-world-order.patch;patch=1 \
 	file://tslib-default-device.patch;patch=1 \
 	file://fbdev-evdev.patch;patch=1 \
-	"
+	file://keyboard-resume-workaround.patch;patch=1 \
+	file://xorg-avr32-support.diff;patch=1 \
+        "
 
 S = "${WORKDIR}/xorg-server-${PV}"
 

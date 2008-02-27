@@ -1,0 +1,9 @@
+#!/bin/sh
+
+STAGING= #~/linux-ppc/build-oe-angstrom/tmp/staging/i686-linux/bin/
+
+${STAGING}fakeroot bash -c " \
+rm -rf scratch; mkdir scratch; \
+cd scratch; gzip -d -c ../$1 | cpio -i --make-directories; \
+cd ..; \
+tar -cj -C scratch -f $(basename $1 .cpio.gz).tar.bz2 ."

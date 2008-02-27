@@ -1,11 +1,9 @@
-DESCRIPTION = "Ecore is the core event abstraction layer for the enlightenment \
-foundation libraries. It makes makes doing selections, drag and drop, event loops, \
-timeouts and idle handlers fast, optimized, and convenient."
-LICENSE = "MIT"
+DESCRIPTION = "Ecore is the Enlightenment application framework library"
+LICENSE = "MIT BSD"
 DEPENDS = "curl eet evas tslib"
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
-PV = "0.9.9.041+cvs${SRCDATE}"
+PV = "0.9.9.042+cvs${SRCDATE}"
 
 inherit efl_library
 

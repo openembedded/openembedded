@@ -1,9 +1,9 @@
 DESCRIPTION = "The MySQL Open Source Database System"
-SECTION = "libs"
 HOMEPAGE = "http://www.mysql.com/"
-DEPENDS += "ncurses mysql-native"
+SECTION = "libs"
 LICENSE = "GPL"
-PR="r2"
+DEPENDS += "ncurses mysql-native"
+PR = "r3"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -63,7 +63,7 @@ pkg_postrm_mysql-server () {
 	grep mysql /etc/passwd && deluser mysql
 }
 
-PACKAGES = "${PN} libmysqlclient libmysqlclient-dev mysql-client mysql-server"
+PACKAGES = "${PN}-dbg ${PN} libmysqlclient libmysqlclient-dev mysql-client mysql-server ${PN}-leftovers"
 
 FILES_${PN} = " "
 RDEPENDS_${PN} = "mysql-client mysql-server"
@@ -138,3 +138,6 @@ ${datadir}/mysql/ \
 ${localstatedir}/mysql/ \
 ${sysconfdir}/init.d \
 ${sysconfdir}/my.cnf"
+
+DESCRIPTION_${PN}-leftovers = "unpackaged and probably unneeded files for ${PN}"
+FILES_${PN}-leftovers = "/"

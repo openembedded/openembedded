@@ -1,0 +1,269 @@
+Index: linux-2.6.16/drivers/char/ts0710_mux_usb.c
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux_usb.c	2007-01-17 00:52:25.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux_usb.c	2007-01-17 00:52:26.000000000 +0100
+@@ -133,6 +133,7 @@
+
+ 	struct circ_buf		xmit;		/* write cric bufffer */
+   	struct list_head 	in_buf_list;
++	spinlock_t		in_buf_lock;
+ 	char 			bulk_in_ep_mux,
+ 				bulk_out_ep_mux,
+ 				bulk_in_ep_dsplog;
+@@ -204,9 +205,39 @@
+ 		return;
+ 	}
+ 	memcpy(inbuf->body, (unsigned char*)urb->transfer_buffer, count);
++	spin_lock(&bvd_ipc->in_buf_lock);
+ 	list_add_tail(&inbuf->list, &bvd_ipc->in_buf_list);
++	spin_unlock(&bvd_ipc->in_buf_lock);
+ }
+
++int get_from_inbuf_list(const unsigned char *buf, int dst_count)
++{
++	int ret = 0;
++	spin_lock(&bvd_ipc->in_buf_lock);
++	if (!(list_empty(&bvd_ipc->in_buf_list))) {
++		int src_count;
++		buf_list_t *inbuf;
++		struct list_head *ptr;
++
++		ptr = bvd_ipc->in_buf_list.next;
++		inbuf = list_entry(ptr, buf_list_t, list);
++		src_count = inbuf->size;
++		if (dst_count >= src_count) {
++			memcpy(buf, inbuf->body, src_count);
++			ret = src_count;
++			list_del(ptr);
++			kfree(inbuf->body);
++			kfree(inbuf);
++		} else {
++			bvd_dbg("get_from_inbuf_list: not enough space in destination buffer");
++		}
++	}
++	spin_unlock(&bvd_ipc->in_buf_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL(get_from_inbuf_list);
++
+ static void ipcusb_timeout(unsigned long data)
+ {
+ 	struct tty_struct *tty = &ipcusb_tty;
+@@ -214,13 +245,14 @@
+
+ 	bvd_dbg("ipcusb_timeout***");
+
++	spin_lock(&bvd_ipc->in_buf_lock);
+ 	while (!(list_empty(&bvd_ipc->in_buf_list))) {
+ 		int count;
+ 		buf_list_t *inbuf;
+ 		struct list_head *ptr = NULL;
+
+ 		ptr = bvd_ipc->in_buf_list.next;
+-		inbuf = list_entry (ptr, buf_list_t, list);
++		inbuf = list_entry(ptr, buf_list_t, list);
+ 		count = inbuf->size;
+ 		if (tty_insert_flip_string(tty, inbuf->body, count) >= count) {
+ 			list_del(ptr);
+@@ -232,10 +264,12 @@
+ 			break;
+ 		}
+ 	}
++	spin_unlock(&bvd_ipc->in_buf_lock);
+
+ 	if (usb_mux_dispatcher)
+ 		usb_mux_dispatcher(tty);	/**call Liu changhui's func.**/
+
++	spin_lock(&bvd_ipc->in_buf_lock);
+ 	if (list_empty(&bvd_ipc->in_buf_list)) {
+ 		urb->actual_length = 0;
+ 		urb->dev = bvd_ipc->ipc_dev;
+@@ -246,6 +280,7 @@
+ 		ipcusb_timer.data = (unsigned long)urb;
+ 		mod_timer(&ipcusb_timer, jiffies+(10*HZ/1000));
+ 	}
++	spin_unlock(&bvd_ipc->in_buf_lock);
+ }
+
+ static void usb_ipc_read_bulk(struct urb *urb, struct pt_regs *regs)
+@@ -266,69 +301,11 @@
+ 	if (count > 0 && ((*ipcusb_bp_to_ap) != NULL))
+ 		(*ipcusb_bp_to_ap)(urb->transfer_buffer, urb->actual_length);
+
+- 	if (!(list_empty(&bvd_ipc->in_buf_list))) {
+-		int need_mux = 0;
+-
+- 		bvd_dbg("usb_ipc_read_bulk: some urbs in_buf_list");
+-		if (count > 0) {
+-			bvd_ipc->suspend_flag = 1;
+-			append_to_inbuf_list(urb); /* append the current received urb */
+-#if 0
+-			if(jiffies - last_jiff > ICL_EVENT_INTERVAL)
+-			{
+-				last_jiff = jiffies;
+-				queue_apm_event(KRNL_ICL, NULL);
+-			}
+-#endif
+-		}
+-
+-		while (!(list_empty(&bvd_ipc->in_buf_list))) {
+-			struct list_head* ptr = NULL;
+-			ptr = bvd_ipc->in_buf_list.next;
+-			inbuf = list_entry(ptr, buf_list_t, list);
+-			count = inbuf->size;
+-			need_mux = 1;
+-
+-			tty_insert_flip_string(tty, inbuf->body, count);
+-
+-			list_del(ptr);
+-			kfree(inbuf->body);
+-			inbuf->body = NULL;
+-			kfree(inbuf);
+-		}
+-
+-		if (usb_mux_dispatcher && need_mux)
+-			usb_mux_dispatcher(tty); /* call Liu changhui's func. */
+-
+-		if (list_empty(&bvd_ipc->in_buf_list)) {
+-			urb->actual_length = 0;
+-			urb->dev = bvd_ipc->ipc_dev;
+-			if (usb_submit_urb(urb, GFP_ATOMIC))
+-				bvd_dbg("usb_ipc_read_bulk: "
+-					"failed resubmitting read urb");
+-			bvd_dbg("usb_ipc_read_bulk: resubmited read urb");
+-		} else {
+-			ipcusb_timer.data = (unsigned long)urb;
+-			mod_timer(&ipcusb_timer, jiffies+(10*HZ/1000));
+-		}
+-	} else if (count > 0) {
+- 		bvd_dbg("usb_ipc_read_bulk: no urbs in_buf_list");
++ 	if (count > 0) {
++ 		bvd_dbg("usb_ipc_read_bulk: inserting buffer into in_buf_list");
+ 		bvd_ipc->suspend_flag = 1;
+
+-		if (tty_insert_flip_string(tty, urb->transfer_buffer,
+-					   count) < count) {
+-			bvd_ipc->suspend_flag = 1;
+-			append_to_inbuf_list(urb);
+-			ipcusb_timer.data = (unsigned long)urb;
+-			mod_timer(&ipcusb_timer, jiffies+(10*HZ/1000));
+-#if 0
+-			if(jiffies - last_jiff > ICL_EVENT_INTERVAL)
+-			{
+-				last_jiff = jiffies;
+-				queue_apm_event(KRNL_ICL, NULL);
+-			}
+-#endif
+-		}
++		append_to_inbuf_list(urb);
+
+ 		if (usb_mux_dispatcher)
+ 			usb_mux_dispatcher(tty); /* call Liu changhui's func. */
+@@ -337,13 +314,6 @@
+ 		urb->dev = bvd_ipc->ipc_dev;
+ 		if (usb_submit_urb(urb, GFP_ATOMIC))
+ 			bvd_dbg("failed resubmitting read urb");
+-#if 0
+-		if(jiffies - last_jiff > ICL_EVENT_INTERVAL)
+-		{
+-			last_jiff = jiffies;
+-			queue_apm_event(KRNL_ICL, NULL);
+-		}
+-#endif
+ 		bvd_dbg("usb_ipc_read_bulk: resubmited read urb");
+ 	}
+
+@@ -705,7 +675,8 @@
+ 	bvd_ipc->bulk_out_ep_mux= have_bulk_out_mux;
+ 	bvd_ipc->ipc_dev = usbdev;
+ 	bvd_ipc->writesize = writesize;
+-	INIT_LIST_HEAD (&bvd_ipc->in_buf_list);
++	INIT_LIST_HEAD(&bvd_ipc->in_buf_list);
++	bvd_ipc->in_buf_lock = SPIN_LOCK_UNLOCKED;
+
+ 	bvd_ipc->bh.func = usbipc_bh_func;
+ 	bvd_ipc->bh.data = (unsigned long) bvd_ipc;
+Index: linux-2.6.16/drivers/char/ts0710_mux.c
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux.c	2007-01-17 00:52:23.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux.c	2007-01-17 00:52:26.000000000 +0100
+@@ -3149,7 +3149,7 @@
+ static void receive_worker(void *private_)
+ {
+ 	struct tty_struct *tty = COMM_FOR_MUX_TTY;
+-	int i, count;
++	int i, count, tbuf_free, tbuf_read;
+ 	static unsigned char tbuf[TS0710MUX_MAX_BUF_SIZE];
+ 	static unsigned char *tbuf_ptr = &tbuf[0];
+ 	static unsigned char *start_flag = 0;
+@@ -3167,29 +3167,39 @@
+
+ 	UNUSED_PARAM(private_);
+
+-	if (!tty)
+-		return;
++  	if (!tty)
++  		return;
++
++ 	while (1) {
++ 		tbuf_free = TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf);
++ 		TS0710_PRINTK("Reading max %i bytes from ts0710_mux_usb inbuf.\n", tbuf_free);
++ 		tbuf_read = get_from_inbuf_list(tbuf_ptr, tbuf_free);
++ 		if (tbuf_read == 0) {
++ 			break;
++ 		} else {
++ 			TS0710_PRINTK("Read %i bytes.\n", tbuf_read);
++ 		};
++ 		tbuf_ptr += tbuf_read;
++ 	};
++
++ 	count = (tbuf_ptr - tbuf);
++
++ 	// Should be impossible?
++ 	//if (count > (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf))) {
++ 	//	TS0710_PRINTK
++ 	//	    ("MUX receive_worker: !!!!! Exceed buffer boundary !!!!!\n");
++ 	//	count = (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf));
++ 	//}
+
+ #ifdef USB_FOR_MUX
+-	TS0710_DEBUG("Receive following bytes from IPC-USB");
++ 	TS0710_DEBUG("Received following bytes from IPC-USB");
+ #else
+-	TS0710_DEBUG("Receive following bytes from UART");
++ 	TS0710_DEBUG("Received following bytes from UART");
+ #endif
+-
+-	TS0710_DEBUGHEX(cp, count);
+-
+-	if (count > (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf))) {
+-		TS0710_PRINTK
+-		    ("MUX receive_worker: !!!!! Exceed buffer boundary !!!!!\n");
+-		count = (TS0710MUX_MAX_BUF_SIZE - (tbuf_ptr - tbuf));
+-	}
+-
+-	count = tty_buffer_request_room(tty, count);
+-
+-	for (i = 0; i < count; i++)
+-		tty_insert_flip_char(tty, tbuf_ptr[i], TTY_NORMAL);
+-
+-	tbuf_ptr += count;
++  	TS0710_DEBUGHEX(tbuf, count);
++
++ 	//gets updated above
++ 	//tbuf_ptr += count;
+ 	search = &tbuf[0];
+
+ 	if (test_and_set_bit(RECV_RUNNING, &mux_recv_flags)) {
+Index: linux-2.6.16/drivers/char/ts0710_mux_usb.h
+===================================================================
+--- linux-2.6.16.orig/drivers/char/ts0710_mux_usb.h	2007-01-17 00:52:23.000000000 +0100
++++ linux-2.6.16/drivers/char/ts0710_mux_usb.h	2007-01-17 00:52:26.000000000 +0100
+@@ -27,3 +27,6 @@
+ extern struct tty_struct *usb_for_mux_tty;
+ extern void (*usb_mux_dispatcher)(struct tty_struct *tty);
+ extern void (*usb_mux_sender)(void);
++
++extern int get_from_inbuf_list(const unsigned char *buf, int dst_count);
++

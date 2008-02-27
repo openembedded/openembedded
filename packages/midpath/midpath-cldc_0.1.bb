@@ -30,6 +30,5 @@ do_stage() {
 	install -m 0644 dist/midpath-cldc1.1.jar ${STAGING_DATADIR}/midpath-cldc
 }
 	
-PACKAGES = "${PN}"
 
 FILES_${PN}  = "${datadir}/midpath-cldc/midpath-cldc1.1.jar"

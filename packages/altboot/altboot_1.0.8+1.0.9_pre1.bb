@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE = "-1"
 #RDEPENDS_${PN}_append_poodle = " kexec-tools"
 #RDEPENDS_${PN}-conf = "${PN}"
 
-PR = "r0"
+PR = "r2"
 
 SVN_REV="65"
 #TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
@@ -71,6 +71,6 @@ do_rm_work() {
 PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_${PN}-doc = "all"
 PACKAGE_ARCH_${PN}-conf = "${MACHINE}"
-PACKAGES = "${PN}-conf ${PN}-doc ${PN}"
+PACKAGES = "${PN}-dbg ${PN}-conf ${PN}-doc ${PN}"
 
 FILES_${PN}-conf = "/etc/altboot*.cfg"

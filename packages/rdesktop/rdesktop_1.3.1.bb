@@ -22,8 +22,8 @@ do_configure() {
 	--bindir=${bindir} \
 	--mandir=${mandir} \
 	--sharedir=${datadir} \
-	--with-x=${STAGING_DIR}/${HOST_SYS} \
-	--with-openssl=${STAGING_DIR}/${HOST_SYS} \
+	--with-x=${STAGING_EXECPREFIXDIR} \
+	--with-openssl=${STAGING_EXECPREFIXDIR} \
 	--with-oss \
 	--without-debug
 }

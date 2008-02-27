@@ -5,11 +5,11 @@ SECTION = "bootloader"
 PRIORITY = "optional"
 
 UBOOT_UPSTREAM_REV = "10bbb38a402a2faf18858c451bcdc63d45888e6e"
-UBOOT_OPENMOKO_REV = "4047"
+UBOOT_OPENMOKO_REV = "4118"
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4 gta02v5"
 LOCALVERSION = "+git${UBOOT_UPSTREAM_REV}+svn${UBOOT_OPENMOKO_REV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r2"
+PR = "r3"
 
 PROVIDES = "virtual/bootloader"
 S = "${WORKDIR}/git"

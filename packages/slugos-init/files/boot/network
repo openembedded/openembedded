@@ -8,6 +8,11 @@
 # function!
 . /etc/default/functions
 #
+# /proc is needed for the module loading, and /sys is
+# necessary to load firmware (if required).
+mount -t proc  proc  /proc
+mount -t sysfs sysfs /sys
+#
 # We may need to load the network driver modules here
 . /etc/default/modulefunctions
 loadnetmods
@@ -17,5 +22,22 @@ loadnetmods
 # file.  Config the loopback and network interfaces.
 ifconfig lo 127.0.0.1 up
 iface="$(config iface)"
-test -n "$iface" && ifup "$iface"
+test -z "$iface" && exit 1 
+#
+# Fire up a process in the background to load the firmware if necessary
+sysf="/sys/class/firmware/firmware-$iface"
+(
+	# Wait for the firware to be requested, if required
+	[ -f $sysf/loading ] || sleep 1
+	[ -f $sysf/loading ] || sleep 1
+	if [ -f $sysf/loading ] ; then
+		echo "1" >$sysf/loading
+		cat /lib/firmware/NPE-B >$sysf/data
+		echo "0" >$sysf/loading
+	fi
+) &
+# Trigger the firmware load proactively
+ifconfig "$iface" up
+#
+ifup "$iface"
 # exit code is true only if the interface config has succeeded

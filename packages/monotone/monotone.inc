@@ -36,7 +36,7 @@ do_install_append() {
 	mv ${D}${bindir}/monotone ${D}${bindir}/${PN}
 }
 
-PACKAGES = "${PN} ${PN}-doc ${PN}-testsuite"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-doc ${PN}-testsuite"
 tsd = "/home/monotone/${PN}"
 FILES_${PN}-testsuite = "${tsd}/testsuite ${tsd}/tests"
 RDEPENDS_${PN}-testsuite += "bash sed grep cvs patch perl perl-modules"

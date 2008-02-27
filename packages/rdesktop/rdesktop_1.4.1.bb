@@ -11,4 +11,4 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/rdesktop/rdesktop-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = "--with-openssl=${STAGING_LIBDIR}/.. "
+EXTRA_OECONF = "--with-openssl=${STAGING_EXECPREFIXDIR} "

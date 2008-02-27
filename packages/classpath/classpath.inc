@@ -9,6 +9,8 @@ DEPENDS = "virtual/javac-native fastjar-native zip-native"
 RPROVIDES = ""
 
 RDEPENDS_${PN} = "${PBN}-common (>= ${PV})"
+RDEPENDS_${PN}-examples = "java2-runtime ${PN}-awt"
+RDEPENDS_${PN}-tools = "java2-runtime"
 
 RPROVIDES_${PN} = "${PBN}"
 RPROVIDES_${PN}-gtk = "${PBN}-awt"

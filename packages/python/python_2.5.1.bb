@@ -7,7 +7,7 @@ DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
 
 # NOTE: Keep the digit in sync with BASEREV in contrib/generate-manifest-2.5.py
-PR = "ml7"
+PR = "ml10"
 
 PYTHON_MAJMIN = "2.5"
 

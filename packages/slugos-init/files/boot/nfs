@@ -7,10 +7,15 @@
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 #
 . /etc/default/functions
+. /etc/default/modulefunctions
+#
 leds boot system
 #
 if /boot/network
 then
+	# load the nfs kernel module
+	loadnfsmods
+
 	# network is up and running, the NFS mount will
 	# now succeed (possibly), use /boot/disk
 	exec /boot/disk "$@"

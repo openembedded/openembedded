@@ -1,4 +1,4 @@
-OpenEmbedded Maintainers List 
+OpenEmbedded Maintainers List
 
 Please put you full name and email-address here for the areas of OE you want to support.
 
@@ -86,6 +86,18 @@ Recipes:    quagga, iputils, ndic6, hping2, lilo-sh, conserver, ipsec-tools,
 Recipes:    lilo-sh, clamav, havp, p3scan, clamsmtp, librsync, rdiff-backup,
 Recipes:    net-snmp, ebtables, ethtool, arpwatch, lib*-perl
 
+Person:     Jan Luebbe
+Mail:       jluebbe@lasnet.de
+Website:    http://sicherheitsschwankung.de
+Machines:   chumby
+Recipes:    chumby-*, initramfs-chumby
+
+Person:     Jeremy Lainé
+Mail:       jeremy.laine@bolloretelecom.eu
+Website:    http://www.jerryweb.org/
+Machines:   mpc8313e-rdb
+Recipes:    libexosip2, python-cheetah, python-django, python-pyopenssl
+
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
 Recipes:    gtk+, gtkmm
@@ -157,6 +169,12 @@ Machines:   fic-gta01, fic-gta02, nokia810, x86, qemuarm, qemux86
 Interests:  Core OE infrastructure, everything Python, EFL, E17, Qt4
 Recipes:    *python*, efl/*, e17*
 
+Person:     Patrick Gfeller
+Mail:       gfellerpatrik@gmx.net
+Website:    www.codeomega.info
+Interests:  text-to-speech, vnc
+Recipes:    libvncserver, fbvncserver2
+
 Person:     Paul Sokolovsky
 Mail:       pmiscml@gmail.com
 Machines:   h3900, h4000, hx4700
@@ -183,7 +201,7 @@ Mail:       rpurdie@rpsys.net
 Distros:    poky, openzaurus, Ångström
 Machines:   poodle, c7x0, spitz, nokia770, qemuarm, qemux86, hx2xxx
 Interests:  Kernels, Bitbake, Core OE infrastructure, Zaurus 2.6
-Recipes:    linux-rp, udev, zaurusd, task-base
+Recipes:    linux-rp, udev, zaurusd, task-base, qemu
 
 Person:     Rick Farina
 Mail:       sidhayn@gmail.com
@@ -202,7 +220,7 @@ Distros:    Sonkei
 Machines:   collie, spitz
 Recipes:    anthy, nunome, uim*, granule, qpobox*, qte-font-unifont*
 Recipes:    qpf-unismall, qpobox, poboxserver, imkit*, scim, zten
-Recipes:    eb, eblook, tomoe
+Recipes:    eb*, tomoe, offline-wikipedia
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
@@ -216,6 +234,10 @@ Distros:    OPLinux, Angstrom
 Machines:   Dht-walnut, Efika, Magicbox,Sequoia,Xilinx-ML403,RB5XX
 Interest:   Cross-machine development
 Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
+
+Person:     Takashi Nemoto
+Mail:       tnemoto@sourceforge.jp
+Recipes:    mkbold-mkitalic
 
 Person:     Tim Sander
 Mail:       oe@iss.tu-darmstadt.de
@@ -242,3 +264,17 @@ Interests:  Kernels, PXA, GTK+, gsmd
 Distros:    Ångström
 Machines:   hx4700, magician
 Recipes:    avahi, libgsmd
+
+Person:     Robert Schuster 'thebohemian'
+Mail:       robert.schuster@tarent.de, thebohemian@gmx.net
+Website:    http://fsfe.org/en/fellows/robertschuster/weblog
+Interests:  free software, java, games, packages/maemo4/*
+Distros:    chinook-compat
+Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
+Recipes:    classpath*, cacao*, jamvm*
+Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
+Recipes:    midpath*, logic-analyze
+Recipes:    kobodeluxe
+Recipes:    hildon-thumbnail, libhildon*, libosso*, mce-dev, libconic
+Recipes:    libgpsbt, libgpsmgr, osso-gnome-vfs2, osso-gwconnect, osso-ic-oss
+

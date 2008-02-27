@@ -1,0 +1,159 @@
+Index: linux-2.6.18/drivers/mmc/atmel-mci.c
+===================================================================
+--- linux-2.6.18.orig/drivers/mmc/atmel-mci.c	2007-01-16 14:01:56.000000000 +0100
++++ linux-2.6.18/drivers/mmc/atmel-mci.c	2007-01-16 14:20:23.000000000 +0100
+@@ -72,7 +72,6 @@
+ 	u32			error_status;
+ 
+ 	int			present;
+-	unsigned int		wp_present:1;
+ 
+ 	unsigned long		bus_hz;
+ 	unsigned long		mapbase;
+@@ -538,9 +537,26 @@
+ 	}
+ }
+ 
++int atmci_get_ro(struct mmc_host *mmc)
++{
++	int read_only = 0;
++	struct atmel_mci *host = mmc_priv(mmc);
++
++	if (host->board->wp_pin != GPIO_PIO_NONE) {
++		read_only = gpio_get_value(host->board->wp_pin);
++		pr_debug("%s: card is %s\n", mmc_hostname(mmc),
++				(read_only ? "read-only" : "read-write") );
++	} else {
++		pr_debug("%s: host does not support reading read-only switch."
++				" Assuming write-enable.\n", mmc_hostname(mmc));
++	}
++	return read_only;
++}
++
+ static struct mmc_host_ops atmci_ops = {
+ 	.request	= atmci_request,
+ 	.set_ios	= atmci_set_ios,
++	.get_ro		= atmci_get_ro,
+ };
+ 
+ static void atmci_request_end(struct mmc_host *mmc, struct mmc_request *mrq)
+@@ -695,6 +711,37 @@
+ 		data->bytes_xfered = data->blocks * data->blksz;
+ 		atmci_data_complete(host, data);
+ 	}
++	if (mci_clear_card_detect_is_pending(host)) {
++		/* Reset controller if card is gone */
++		if (!host->present) {
++			mci_writel(host, CR, MCI_BIT(SWRST));
++			mci_writel(host, IDR, ~0UL);
++			mci_writel(host, CR, MCI_BIT(MCIEN));
++		}
++
++		/* Clean up queue if present */
++		if (mrq) {
++			if (!mci_cmd_is_complete(host)
++					&& !mci_cmd_error_is_complete(host)) {
++				mrq->cmd->error = MMC_ERR_TIMEOUT;
++			}
++			if (mrq->data && !mci_data_is_complete(host)
++					&& !mci_data_error_is_complete(host)) {
++				dma_stop_request(host->dma.req.req.dmac,
++						host->dma.req.req.channel);
++				host->data->error = MMC_ERR_TIMEOUT;
++				atmci_data_complete(host, data);
++			}
++			if (mrq->stop && !mci_stop_is_complete(host)
++					&& !mci_stop_error_is_complete(host)) {
++				mrq->stop->error = MMC_ERR_TIMEOUT;
++			}
++
++			host->cmd = NULL;
++			atmci_request_end(mmc, mrq);
++		}
++		mmc_detect_change(host->mmc, msecs_to_jiffies(100));
++	}
+ }
+ 
+ static void atmci_cmd_interrupt(struct mmc_host *mmc, u32 status)
+@@ -821,6 +868,23 @@
+ 	return IRQ_HANDLED;
+ }
+ 
++static irqreturn_t atmci_detect_int(int irq, void *dev_id, struct pt_regs *regs)
++{
++	struct mmc_host *mmc = dev_id;
++	struct atmel_mci *host = mmc_priv(mmc);
++
++	int present = !gpio_get_value(irq_to_gpio(irq));
++
++	if (present != host->present) {
++		pr_debug("%s: card %s\n", mmc_hostname(host->mmc),
++				present ? "inserted" : "removed");
++		host->present = present;
++		mci_set_card_detect_pending(host);
++		tasklet_schedule(&host->tasklet);
++	}
++	return IRQ_HANDLED;
++}
++
+ static int __devinit atmci_probe(struct platform_device *pdev)
+ {
+ 	struct atmel_mci *host;
+@@ -887,15 +951,9 @@
+ 
+ 	if (host->board && host->board->wp_pin != GPIO_PIO_NONE) {
+ 		ret = gpio_request(host->board->wp_pin, "mmc_wp");
+-		if (ret) {
++		if (ret)
+ 			printk(KERN_WARNING "%s: no WP pin available (%d)\n",
+ 					mmc_hostname(host->mmc), ret);
+-			host->wp_present = 0;
+-		} else {
+-			host->wp_present = 1;
+-		}
+-	} else {
+-		host->wp_present = 0;
+ 	}
+ 
+ 	/* TODO: Get this information from platform data */
+@@ -928,6 +986,19 @@
+ 
+ 	mmc_add_host(mmc);
+ 
++	if (host->present != -1) {
++		ret = request_irq(gpio_to_irq(host->board->detect_pin),
++				atmci_detect_int,
++				IRQF_TRIGGER_FALLING|IRQF_TRIGGER_RISING,
++				"mmci", mmc);
++		if (ret) {
++			printk(KERN_ERR "%s: could not request IRQ %d "
++					"for detect pin\n",
++					mmc_hostname(mmc),
++					gpio_to_irq(host->board->detect_pin));
++		}
++	}
++
+ 	printk(KERN_INFO "%s: Atmel MCI controller at 0x%08lx irq %d\n",
+ 	       mmc_hostname(mmc), host->mapbase, irq);
+ 
+@@ -936,8 +1007,11 @@
+ 	return 0;
+ 
+ out_free_irq:
+-	if (host->present != -1)
++	if (host->present != -1) {
++		free_irq(gpio_to_irq(host->board->detect_pin), host->mmc);
++		cancel_delayed_work(&host->mmc->detect);
+ 		gpio_free(host->board->detect_pin);
++	}
+ 	if (host->board->wp_pin != GPIO_PIO_NONE)
+ 		gpio_free(host->board->wp_pin);
+ 	free_irq(irq, mmc);
+@@ -971,6 +1045,7 @@
+ 					host->dma.req.req.channel);
+ 
+ 		if (host->present != -1) {
++			free_irq(gpio_to_irq(host->board->detect_pin), host->mmc);
+ 			cancel_delayed_work(&host->mmc->detect);
+ 			gpio_free(host->board->detect_pin);
+ 		}

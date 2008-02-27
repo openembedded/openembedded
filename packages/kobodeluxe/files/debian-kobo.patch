@@ -1,0 +1,72 @@
+--- kobodeluxe-0.5.1.orig/kobo.cpp
++++ kobodeluxe-0.5.1/kobo.cpp
+@@ -141,21 +141,21 @@
+ 	 * Graphics data
+ 	 */
+ 	/* Current dir; from within the build tree */
+-	fmap->addpath("GFX", "./data/gfx");
++	//fmap->addpath("GFX", "./data/gfx");
+ 	/* Real data dir */
+ 	fmap->addpath("GFX", "DATA>>gfx");
+ 	/* Current dir */
+-	fmap->addpath("GFX", "./gfx");
++	//fmap->addpath("GFX", "./gfx");
+ 
+ 	/*
+ 	 * Sound data
+ 	 */
+ 	/* Current dir; from within the build tree */
+-	fmap->addpath("SFX", "./data/sfx");
++	//fmap->addpath("SFX", "./data/sfx");
+ 	/* Real data dir */
+ 	fmap->addpath("SFX", "DATA>>sfx");
+ 	/* Current dir */
+-	fmap->addpath("SFX", "./sfx");
++	//fmap->addpath("SFX", "./sfx");
+ 
+ 	/*
+ 	 * Score files (user and global)
+@@ -173,7 +173,7 @@
+ 	/* System local */
+ 	fmap->addpath("CONFIG", SYSCONF_DIR);
+ 	/* In current dir (last resort) */
+-	fmap->addpath("CONFIG", "./");
++	//fmap->addpath("CONFIG", "./");
+ }
+ 
+ 
+--- kobodeluxe-0.5.1.orig/graphics/window.cpp
++++ kobodeluxe-0.5.1/graphics/window.cpp
+@@ -331,7 +331,7 @@
+ }
+ 
+ 
+-void window_t::center_token(int _x, int _y, const char *txt, char token)
++void window_t::center_token(int _x, int _y, const char *txt, signed char token)
+ {
+ 	center_token_fxp(PIXEL2CS(_x), PIXEL2CS(_y), txt, token);
+ }
+@@ -374,7 +374,7 @@
+ }
+ 
+ 
+-void window_t::center_token_fxp(int _x, int _y, const char *txt, char token)
++void window_t::center_token_fxp(int _x, int _y, const char *txt, signed char token)
+ {
+ 	_x = CS2PIXEL((_x * xs + 128) >> 8);
+ 	_y = CS2PIXEL((_y * ys + 128) >> 8);
+--- kobodeluxe-0.5.1.orig/graphics/window.h
++++ kobodeluxe-0.5.1/graphics/window.h
+@@ -265,10 +265,10 @@
+ 	void font(int fnt);
+ 	void string(int _x, int _y, const char *txt);
+ 	void center(int _y, const char *txt);
+-	void center_token(int _x, int _y, const char *txt, char token = 0);
++	void center_token(int _x, int _y, const char *txt, signed char token = 0);
+ 	void string_fxp(int _x, int _y, const char *txt);
+ 	void center_fxp(int _y, const char *txt);
+-	void center_token_fxp(int _x, int _y, const char *txt, char token = 0);
++	void center_token_fxp(int _x, int _y, const char *txt, signed char token = 0);
+ 	int textwidth(const char *txt, int min = 0, int max = 255);
+ 	int textwidth_fxp(const char *txt, int min = 0, int max = 255);
+ 	int fontheight();

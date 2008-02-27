@@ -7,7 +7,7 @@ MACHINE_FEATURES ?= "kernel26 usbhost ext2 vfat redboot apex"
 
 # Select an appropriate default kernel
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
-PREFERRED_VERSION_linux-ixp4xx ?= "2.6.23.14+svnr${SRCREV}"
+PREFERRED_VERSION_linux-ixp4xx ?= "2.6.24+svnr${SRCREV}"
 
 # Add packages required for basic networking support
 MACHINE_ESSENTIAL_EXTRA_RDEPENDS ?= "ixp4xx-npe"

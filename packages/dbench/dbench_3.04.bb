@@ -13,4 +13,4 @@ inherit autotools
 PACKAGES =+ "tbench tbench-dbg"
 
 FILES_tbench = "${bindir}/tbench*"
-FILES_tbench-dbg = "${bindir}/.debug/tbench*"
+FILES_tbench-dbg += "${bindir}/.debug/tbench*"

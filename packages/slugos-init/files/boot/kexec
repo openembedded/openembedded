@@ -91,6 +91,7 @@ if [ -n "$1" -a -n "$2" ] ; then
 			t=`basename "$kpath"`
 			kexec_image="/mnt/$t"
 		    fi
+		    umount /sys
 		fi
 		;;
 
@@ -98,11 +99,13 @@ if [ -n "$1" -a -n "$2" ] ; then
 		if /boot/network ; then
 		    echo "Loading kexec kernel using nfs \"$kpath\"..."
 		    echo "mounting nfs partition..."
+		    loadnfsmods
 		    if mount -o ro,nolock -t nfs `dirname "$kpath"` /mnt ; then
 			need_umount=1
 			t=`basename "$kpath"`
 			kexec_image="/mnt/$t"
 		    fi
+		    umount /sys
 		fi
 		;;
 
@@ -140,6 +143,7 @@ if [ -n "$1" -a -n "$2" ] ; then
 			echo "Loading kexec kernel using tftp \"$kpath\"..."
 			tftp -g -l "$kexec_image" -r "${kpath#*:}" "${kpath%%:*}"
 		    fi
+		    umount /sys
 		fi
 		;;
 

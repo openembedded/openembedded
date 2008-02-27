@@ -1,18 +1,12 @@
-DESCRIPTION = "Evas is a hardware-accelerated canvas API that can draw \
-anti-aliased text, smooth super and sub-images, alpha-blend, as well as drop \
-down to using normal X11 primitives such as pixmaps, lines and rectangles if \
-your CPU or graphics hardware are too slow."
+DESCRIPTION = "Evas is the Enlightenment canvas API"
 LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
 DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender"
-PV = "0.9.9.041+cvs${SRCDATE}"
+PV = "0.9.9.042+cvs${SRCDATE}"
 
 inherit efl_library
 
-# SRC_URI += "file://fix-configure.patch;patch=1"
-
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
-
 EXTRA_OECONF = "<override me>"
 
 python populate_packages_prepend () {

@@ -1,0 +1,3 @@
+# Uncomment and set value below to one of modes from /etc/fb.modes
+# or alternatively to "-xres <width> -yres <height>"
+#FBSET_MODE="vga"

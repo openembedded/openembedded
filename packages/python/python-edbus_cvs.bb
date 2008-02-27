@@ -1,7 +1,6 @@
 require python-efl.inc
-# broken until someone adds dbus 1.1.x
-DEPENDS += "edbus dbus-1.1"
-
+DEPENDS += "edbus python-dbus"
+PV = "0.1.1+cvs${SRCDATE}"
 PR = "r0"
 
 SRC_URI = "${E_CVS};module=e17/proto/python-efl/python-e_dbus"
