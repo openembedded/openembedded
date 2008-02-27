@@ -1,0 +1,11 @@
+diff -Naur 2.6.12-5.0-org/arch/mips/Makefile 2.6.12-5.0-patched/arch/mips/Makefile
+--- 2.6.12-5.0-org/arch/mips/Makefile	2007-07-26 00:50:51.000000000 +0200
++++ 2.6.12-5.0-patched/arch/mips/Makefile	2007-12-11 15:27:14.000000000 +0100
+@@ -947,6 +947,7 @@
+    load-$(CONFIG_MIPS_BCM97455C0) := 0x80001000
+ 
+    else
++   cflags-$(CONFIG_MIPS_BCM7401C0) += -Iinclude/asm-mips/mach-brcmstb
+    # THT: Changed to 7401C0 from 7401CX to also pick up the NAND version
+    core-$(CONFIG_MIPS_BCM7401C0) += arch/mips/brcmstb/common/
+    core-$(CONFIG_MIPS_BCM7401C0) += arch/mips/brcmstb/brcm97401c0/

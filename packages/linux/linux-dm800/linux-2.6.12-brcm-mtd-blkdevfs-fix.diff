@@ -1,0 +1,109 @@
+Index: stblinux-2.6.12/drivers/mtd/mtd_blkdevs.c
+===================================================================
+--- stblinux-2.6.12.orig/drivers/mtd/mtd_blkdevs.c	2007-07-26 00:55:00.000000000 +0200
++++ stblinux-2.6.12/drivers/mtd/mtd_blkdevs.c	2008-01-16 23:58:30.000000000 +0100
+@@ -21,6 +21,7 @@
+ #include <linux/init.h>
+ #include <asm/semaphore.h>
+ #include <asm/uaccess.h>
++#include <linux/devfs_fs_kernel.h>
+ 
+ static LIST_HEAD(blktrans_majors);
+ 
+@@ -302,6 +303,9 @@
+ 		snprintf(gd->disk_name, sizeof(gd->disk_name),
+ 			 "%s%d", tr->name, new->devnum);
+ 
++	snprintf(gd->devfs_name, sizeof(gd->devfs_name),
++		 "%s/%c", tr->name, (tr->part_bits?'a':'0') + new->devnum);
++
+ 	/* 2.5 has capacity in units of 512 bytes while still
+ 	   having BLOCK_SIZE_BITS set to 10. Just to keep us amused. */
+ 	set_capacity(gd, (new->size * new->blksize) >> 9);
+@@ -418,6 +422,8 @@
+ 		return ret;
+ 	}
+ 
++	devfs_mk_dir(tr->name);
++
+ 	INIT_LIST_HEAD(&tr->devs);
+ 	list_add(&tr->list, &blktrans_majors);
+ 
+@@ -450,6 +456,7 @@
+ 		tr->remove_dev(dev);
+ 	}
+ 
++	devfs_remove(tr->name);
+ 	blk_cleanup_queue(tr->blkcore_priv->rq);
+ 	unregister_blkdev(tr->major, tr->name);
+ 
+Index: stblinux-2.6.12/drivers/mtd/mtdchar.c
+===================================================================
+--- stblinux-2.6.12.orig/drivers/mtd/mtdchar.c	2008-01-21 01:37:38.000000000 +0100
++++ stblinux-2.6.12/drivers/mtd/mtdchar.c	2008-01-21 01:37:40.000000000 +0100
+@@ -26,6 +26,8 @@
+ 
+ static struct class *mtd_class;
+ 
++#include <linux/devfs_fs_kernel.h>
++
+ static void mtd_notify_add(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+@@ -50,6 +52,12 @@
+ 			    MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
+ 			    NULL, "mtd%dro", mtd->index);
+ #endif
++
++	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
++		      S_IFCHR | S_IRUGO | S_IWUGO, "mtd/%d", mtd->index);
++
++	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
++		      S_IFCHR | S_IRUGO, "mtd/%dro", mtd->index);
+ }
+ 
+ static void mtd_notify_remove(struct mtd_info* mtd)
+@@ -59,6 +67,9 @@
+ 
+ 	class_device_destroy(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2));
+ 	class_device_destroy(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1));
++
++	devfs_remove("mtd/%d", mtd->index);
++	devfs_remove("mtd/%dro", mtd->index);
+ }
+ 
+ static struct mtd_notifier notifier = {
+@@ -66,6 +77,17 @@
+ 	.remove	= mtd_notify_remove,
+ };
+ 
++static inline void mtdchar_devfs_init(void)
++{
++	devfs_mk_dir("mtd");
++}
++
++static inline void mtdchar_devfs_exit(void)
++{
++	devfs_remove("mtd");
++}
++
++
+ /*
+  * We use file->private_data to store a pointer to the MTDdevice.
+  * Since alighment is at least 32 bits, we have 2 bits free for OTP
+@@ -807,6 +829,7 @@
+ 		return PTR_ERR(mtd_class);
+ 	}
+ 
++	mtdchar_devfs_init();
+ 	register_mtd_user(&notifier);
+ 	return 0;
+ }
+@@ -815,6 +838,7 @@
+ {
+ 	unregister_mtd_user(&notifier);
+ 	class_destroy(mtd_class);
++	mtdchar_devfs_exit();
+ 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
+ 

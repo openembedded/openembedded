@@ -1,0 +1,511 @@
+diff -Naur linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dmxdev.c linux-2.6.12.6/drivers/media/dvb/dvb-core/dmxdev.c
+--- linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dmxdev.c	2006-04-21 02:34:40.000000000 +0200
++++ linux-2.6.12.6/drivers/media/dvb/dvb-core/dmxdev.c	2006-04-21 02:25:54.000000000 +0200
+@@ -416,11 +416,18 @@
+ 	switch (dmxdevfilter->type) {
+ 	case DMXDEV_TYPE_SEC:
+ 		del_timer(&dmxdevfilter->timer);
+-		dmxdevfilter->feed.sec->stop_filtering(dmxdevfilter->feed.sec);
++		dmxdevfilter->feed_sec->stop_filtering(dmxdevfilter->feed_sec);
+ 		break;
+ 	case DMXDEV_TYPE_PES:
+-		dmxdevfilter->feed.ts->stop_filtering(dmxdevfilter->feed.ts);
++	{
++		struct dmxdev_feed *feed=dmxdevfilter->feeds;
++			/* stop all feeds */
++		while (feed) {
++			feed->ts->stop_filtering(feed->ts);
++			feed=feed->next;
++		}
+ 		break;
++	}
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -436,11 +443,18 @@
+ 
+ 	switch (filter->type) {
+ 	case DMXDEV_TYPE_SEC:
+-		return filter->feed.sec->start_filtering(filter->feed.sec);
++		return filter->feed_sec->start_filtering(filter->feed_sec);
+ 		break;
+ 	case DMXDEV_TYPE_PES:
+-		return filter->feed.ts->start_filtering(filter->feed.ts);
++	{
++		struct dmxdev_feed *feed=filter->feeds;
++			/* start all feeds */
++		while (feed) {
++			feed->ts->start_filtering(feed->ts);
++			feed=feed->next;
++		}
+ 		break;
++	}
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -466,7 +480,8 @@
+ 			return 0;
+ 		}
+ 
+-	filter->dev->demux->release_section_feed(dmxdev->demux, filter->feed.sec);
++	filter->dev->demux->release_section_feed(dmxdev->demux, 
++						filter->feed_sec);
+ 
+ 	return 0;
+ }
+@@ -478,25 +493,32 @@
+ 
+ 	switch (dmxdevfilter->type) {
+ 	case DMXDEV_TYPE_SEC:
+-		if (!dmxdevfilter->feed.sec)
++		if (!dmxdevfilter->feed_sec)
+ 			break;
+ 		dvb_dmxdev_feed_stop(dmxdevfilter);
+ 		if (dmxdevfilter->filter.sec)
+-			dmxdevfilter->feed.sec->
+-				release_filter(dmxdevfilter->feed.sec,
++			dmxdevfilter->feed_sec->
++				release_filter(dmxdevfilter->feed_sec,
+ 					       dmxdevfilter->filter.sec);
+ 		dvb_dmxdev_feed_restart(dmxdevfilter);
+-		dmxdevfilter->feed.sec=NULL;
++		dmxdevfilter->feed_sec=NULL;
+ 		break;
+ 	case DMXDEV_TYPE_PES:
+-		if (!dmxdevfilter->feed.ts)
+-			break;
++	{
++		struct dmxdev_feed *feed=dmxdevfilter->feeds;
++		
+ 		dvb_dmxdev_feed_stop(dmxdevfilter);
+-		dmxdevfilter->dev->demux->
+-			release_ts_feed(dmxdevfilter->dev->demux,
+-					dmxdevfilter->feed.ts);
+-		dmxdevfilter->feed.ts=NULL;
++			
++			/* remove all feeds */
++		while (feed) {
++			dmxdevfilter->dev->demux->
++				release_ts_feed(dmxdevfilter->dev->demux,
++					feed->ts);
++			feed->ts=NULL;
++			feed=feed->next;
++		}
+ 		break;
++	}
+ 	default:
+ 		if (dmxdevfilter->state==DMXDEV_STATE_ALLOCATED)
+ 			return 0;
+@@ -508,15 +530,88 @@
+ 
+ static inline int dvb_dmxdev_filter_reset(struct dmxdev_filter *dmxdevfilter)
+ {
++	struct dmxdev_feed *feed=dmxdevfilter->feeds;
++
+ 	if (dmxdevfilter->state<DMXDEV_STATE_SET)
+ 		return 0;
+ 
++		/* free all */
++	while (feed) {
++		struct dmxdev_feed *n=feed;
++		if (feed->ts)
++			printk("!!! ts still allocated\n");
++		feed=feed->next;
++		vfree(n);
++	}
++	
++	dmxdevfilter->feeds=NULL;
+ 	dmxdevfilter->type=DMXDEV_TYPE_NONE;
+ 	dmxdevfilter->pid=0xffff;
+ 	dvb_dmxdev_filter_state_set(dmxdevfilter, DMXDEV_STATE_ALLOCATED);
+ 	return 0;
+ }
+ 
++static int dvb_dmxdev_start_feed(struct dmxdev *dmxdev, struct dmxdev_filter *filter, 
++				struct dmxdev_feed *feed)
++{                                                                             
++	struct dmx_pes_filter_params *para = &filter->params.pes;
++	struct timespec timeout = { 0 };
++	struct dmx_ts_feed **tsfeed = &feed->ts;
++	int ret;
++	int ts_type;
++	enum dmx_ts_pes ts_pes;
++	dmx_output_t otype;
++	
++	*tsfeed = 0;
++
++		/* determine which format to output */                          
++	otype = para->output;
++	
++	ts_pes = (enum dmx_ts_pes)para->pes_type;
++	
++	if (otype == DMX_OUT_DECODER)
++		ts_type = TS_DECODER;
++	else
++		ts_type = 0;                                                              
++
++	/* DMX_OUT_TS_TAP expects TS headers */
++	if (otype == DMX_OUT_TS_TAP)
++		ts_type |= TS_PACKET;
++	
++	/* DMX_OUT_TAP used to expect PES packets. */
++	if (otype == DMX_OUT_TAP) {
++		ts_type |= TS_PACKET;
++		
++		/*now, if somebody specified something else than DMX_PES_OTHER, we assume TS filtering. */
++		if (ts_pes == DMX_PES_OTHER) /* i.e. DMX_PES_OTHER for backward compat. */
++			ts_type |= TS_PAYLOAD_ONLY;
++	}
++	
++	ret = dmxdev->demux->allocate_ts_feed(dmxdev->demux, tsfeed,
++						dvb_dmxdev_ts_callback);
++
++	if (ret < 0)
++		return ret;
++
++	(*tsfeed)->priv=filter;
++
++	ret = (*tsfeed)->set(*tsfeed, feed->pid, ts_type, ts_pes, 32768, 
++				timeout);
++	
++	if (ret < 0) {                                                              
++		dmxdev->demux->release_ts_feed(dmxdev->demux, *tsfeed);
++		return ret;
++	}
++	
++	ret = feed->ts->start_filtering(feed->ts);
++	if (ret < 0) {
++		dmxdev->demux->release_ts_feed(dmxdev->demux, *tsfeed);
++		return ret;
++	}                                        
++
++	return 0;
++}
++
+ static int dvb_dmxdev_filter_start(struct dmxdev_filter *filter)
+ {
+ 	struct dmxdev *dmxdev = filter->dev;
+@@ -545,7 +640,7 @@
+ 	{
+ 		struct dmx_sct_filter_params *para=&filter->params.sec;
+ 		struct dmx_section_filter **secfilter=&filter->filter.sec;
+-		struct dmx_section_feed **secfeed=&filter->feed.sec;
++		struct dmx_section_feed **secfeed=&filter->feed_sec;
+ 
+ 		*secfilter=NULL;
+ 		*secfeed=NULL;
+@@ -555,7 +650,7 @@
+ 			if (dmxdev->filter[i].state >= DMXDEV_STATE_GO &&
+ 			    dmxdev->filter[i].pid == para->pid &&
+ 			    dmxdev->filter[i].type == DMXDEV_TYPE_SEC) {
+-				*secfeed = dmxdev->filter[i].feed.sec;
++				*secfeed = dmxdev->filter[i].feed_sec;
+ 				break;
+ 			}
+ 		}
+@@ -588,7 +683,7 @@
+ 
+ 		if (ret < 0) {
+ 			dvb_dmxdev_feed_restart(filter);
+-			filter->feed.sec->start_filtering(*secfeed);
++			filter->feed_sec->start_filtering(*secfeed);
+ 			dprintk ("could not get filter\n");
+ 			return ret;
+ 		}
+@@ -610,7 +705,7 @@
+ 
+ 		filter->todo = 0;
+ 
+-		ret = filter->feed.sec->start_filtering (filter->feed.sec);
++		ret = filter->feed_sec->start_filtering (filter->feed_sec);
+ 
+ 		if (ret < 0)
+ 			return ret;
+@@ -621,57 +716,16 @@
+ 
+ 	case DMXDEV_TYPE_PES:
+ 	{
+-		struct timespec timeout = { 0 };
+-		struct dmx_pes_filter_params *para = &filter->params.pes;
+-		dmx_output_t otype;
+-		int ret;
+-		int ts_type;
+-		enum dmx_ts_pes ts_pes;
+-		struct dmx_ts_feed **tsfeed = &filter->feed.ts;
+-
+-		filter->feed.ts = NULL;
+-		otype=para->output;
+-
+-		ts_pes=(enum dmx_ts_pes) para->pes_type;
+-
+-		if (otype == DMX_OUT_DECODER)
+-			ts_type=TS_DECODER;
+-		else
+-			ts_type=0;
+-
+-		if (otype == DMX_OUT_TS_TAP)
+-			ts_type |= TS_PACKET;
+-
+-		if (otype == DMX_OUT_TAP)
+-		{
+-			ts_type |= TS_PACKET;
+-			if (ts_pes == DMX_PES_OTHER)
+-				ts_type |= TS_PAYLOAD_ONLY;
+-		}
+-
+-		ret=dmxdev->demux->allocate_ts_feed(dmxdev->demux,
+-						    tsfeed,
+-						    dvb_dmxdev_ts_callback);
+-		if (ret<0)
+-			return ret;
+-
+-		(*tsfeed)->priv = (void *) filter;
+-
+-		ret = (*tsfeed)->set(*tsfeed, para->pid, ts_type, ts_pes,
+-				     32768, timeout);
+-
+-		if (ret < 0) {
+-			dmxdev->demux->release_ts_feed(dmxdev->demux, *tsfeed);
+-			return ret;
+-		}
+-
+-		ret = filter->feed.ts->start_filtering(filter->feed.ts);
+-
+-		if (ret < 0) {
+-			dmxdev->demux->release_ts_feed(dmxdev->demux, *tsfeed);
+-			return ret;
++		struct dmxdev_feed *feed=filter->feeds;
++		
++			/* start all feeds */		
++		while (feed) {
++			if (dvb_dmxdev_start_feed(dmxdev, filter, feed)) {
++				printk(".. feed start failed. we should unroll now.\n");
++			}
++			feed=feed->next;
+ 		}
+-
++		
+ 		break;
+ 	}
+ 	default:
+@@ -712,7 +766,7 @@
+ 	dvb_dmxdev_buffer_init(&dmxdevfilter->buffer);
+ 	dmxdevfilter->type=DMXDEV_TYPE_NONE;
+ 	dvb_dmxdev_filter_state_set(dmxdevfilter, DMXDEV_STATE_ALLOCATED);
+-	dmxdevfilter->feed.ts=NULL;
++	dmxdevfilter->feeds=NULL;
+ 	init_timer(&dmxdevfilter->timer);
+ 
+ 	up(&dmxdev->mutex);
+@@ -757,6 +811,58 @@
+ 		filter->mode[i]^=0xff;
+ }
+ 
++static int dvb_dmxdev_add_pid(struct dmxdev *dmxdev,
++				struct dmxdev_filter *dmxdevfilter,
++				__u16 pid)
++{
++	struct dmxdev_feed *feed=vmalloc(sizeof(struct dmxdev_feed));
++
++	if (feed == NULL)
++		return -ENOMEM;
++
++	memset(feed, 0, sizeof(struct dmxdev_feed));
++
++	feed->pid=pid;
++
++	feed->next=dmxdevfilter->feeds;
++	dmxdevfilter->feeds=feed;
++
++	if (dmxdevfilter->state >= DMXDEV_STATE_GO) {
++		int ret = dvb_dmxdev_start_feed(dmxdev, dmxdevfilter, feed);
++		if (ret) {
++			printk("add_pid: start feed failed..\n");
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int dvb_dmxdev_remove_pid(struct dmxdev *dmxdev,
++		struct dmxdev_filter *dmxdevfilter,
++		__u16 pid)
++{
++	struct dmxdev_feed **feed=&dmxdevfilter->feeds;
++
++	while (*feed) {
++		if ((*feed)->pid == pid) {
++			struct dmxdev_feed *f=*feed;
++			if (f->ts) {  // feed active
++				f->ts->stop_filtering(f->ts);
++				dmxdevfilter->dev->demux->release_ts_feed(
++					dmxdevfilter->dev->demux,
++					f->ts);
++				f->ts=NULL;
++			}
++			*feed=(*feed)->next;
++			vfree(f);
++			continue;
++		}
++		feed=&(*feed)->next;
++	}
++
++	return 0;
++}
+ 
+ static int dvb_dmxdev_filter_set(struct dmxdev *dmxdev,
+ 		struct dmxdev_filter *dmxdevfilter,
+@@ -784,6 +890,7 @@
+ 		   struct dmx_pes_filter_params *params)
+ {
+ 	dvb_dmxdev_filter_stop(dmxdevfilter);
++	dvb_dmxdev_filter_reset(dmxdevfilter);
+ 
+ 	if (params->pes_type>DMX_PES_OTHER || params->pes_type<0)
+ 		return -EINVAL;
+@@ -794,6 +901,12 @@
+ 
+ 	dvb_dmxdev_filter_state_set(dmxdevfilter, DMXDEV_STATE_SET);
+ 
++	if (dmxdevfilter->params.pes.pid <= 0x2000) {
++		int result = dvb_dmxdev_add_pid(dmxdev, dmxdevfilter, dmxdevfilter->params.pes.pid);
++		if (result)
++			return result;
++	}
++
+ 	if (params->flags&DMX_IMMEDIATE_START)
+ 		return dvb_dmxdev_filter_start(dmxdevfilter);
+ 
+@@ -845,17 +958,19 @@
+ 	struct dmxdev_filter *dmxdevfilter= file->private_data;
+ 	int ret=0;
+ 
+-	if (down_interruptible(&dmxdevfilter->mutex))
+-		return -ERESTARTSYS;
+-
+-	if (dmxdevfilter->type==DMXDEV_TYPE_SEC)
++	if (dmxdevfilter->type==DMXDEV_TYPE_SEC) {
++		if (down_interruptible(&dmxdevfilter->mutex))
++			return -ERESTARTSYS;
++			
+ 		ret=dvb_dmxdev_read_sec(dmxdevfilter, file, buf, count, ppos);
++	
++		up(&dmxdevfilter->mutex);
++	}
+ 	else
+ 		ret=dvb_dmxdev_buffer_read(&dmxdevfilter->buffer,
+ 				     file->f_flags&O_NONBLOCK,
+ 				     buf, count, ppos);
+ 
+-	up(&dmxdevfilter->mutex);
+ 	return ret;
+ }
+ 
+@@ -940,6 +1055,23 @@
+ 		}
+ 		ret = dmxdev->demux->get_caps(dmxdev->demux, parg);
+ 		break;
++	case DMX_ADD_PID:
++		if (down_interruptible(&dmxdevfilter->mutex)) {
++			up(&dmxdev->mutex);
++			return -ERESTARTSYS;
++		}
++		ret = dvb_dmxdev_add_pid(dmxdev, dmxdevfilter, arg);
++		up(&dmxdevfilter->mutex);
++		break;
++		
++	case DMX_REMOVE_PID:
++		if (down_interruptible(&dmxdevfilter->mutex)) {
++			up(&dmxdev->mutex);
++			return -ERESTARTSYS;
++		}
++		ret = dvb_dmxdev_remove_pid(dmxdev, dmxdevfilter, arg);
++		up(&dmxdevfilter->mutex);
++		break;
+ 
+ 	case DMX_SET_SOURCE:
+ 		if (!dmxdev->demux->set_source) {
+diff -Naur linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dmxdev.h linux-2.6.12.6/drivers/media/dvb/dvb-core/dmxdev.h
+--- linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dmxdev.h	2006-04-21 02:34:40.000000000 +0200
++++ linux-2.6.12.6/drivers/media/dvb/dvb-core/dmxdev.h	2006-04-11 15:40:47.000000000 +0200
+@@ -69,15 +69,20 @@
+ 	} filter;
+ 
+         union {
+-                struct dmx_ts_feed *ts;
+-                struct dmx_section_feed *sec;
+-	} feed;
+-
+-        union {
+ 	        struct dmx_sct_filter_params sec;
+ 	        struct dmx_pes_filter_params pes;
+ 	} params;
+-
++	
++	struct dmx_section_feed *feed_sec;
++	
++	struct dmxdev_feed {
++		int pid;
++		
++		struct dmx_ts_feed *ts;
++		
++		struct dmxdev_feed *next;
++	} *feeds;
++	
+         int type;
+         enum dmxdev_state state;
+         struct dmxdev *dev;
+diff -Naur linux-2.6.12.6-org/include/linux/dvb/dmx.h linux-2.6.12.6/include/linux/dvb/dmx.h
+--- linux-2.6.12.6-org/include/linux/dvb/dmx.h	2006-04-21 02:34:40.000000000 +0200
++++ linux-2.6.12.6/include/linux/dvb/dmx.h	2006-04-11 15:40:47.000000000 +0200
+@@ -176,5 +176,7 @@
+ #define DMX_GET_CAPS             _IOR('o', 48, dmx_caps_t)
+ #define DMX_SET_SOURCE           _IOW('o', 49, dmx_source_t)
+ #define DMX_GET_STC              _IOWR('o', 50, struct dmx_stc)
++#define DMX_ADD_PID		 _IO('o', 51)
++#define DMX_REMOVE_PID	   	 _IO('o', 52)
+ 
+ #endif /*_DVBDMX_H_*/
+diff -Naur linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dvb_demux.c linux-2.6.12.6/drivers/media/dvb/dvb-core/dvb_demux.c
+--- linux-2.6.12.6-org/drivers/media/dvb/dvb-core/dvb_demux.c	2006-06-19 18:21:24.000000000 +0200
++++ linux-2.6.12.6/drivers/media/dvb/dvb-core/dvb_demux.c	2006-06-21 18:32:52.000000000 +0200
+@@ -365,36 +365,18 @@
+ 	}
+ }
+ 
+-#define DVR_FEED(f)							\
+-	(((f)->type == DMX_TYPE_TS) &&					\
+-	((f)->feed.ts.is_filtering) &&					\
+-	(((f)->ts_type & (TS_PACKET|TS_PAYLOAD_ONLY)) == TS_PACKET))
+-
+ static void dvb_dmx_swfilter_packet(struct dvb_demux *demux, const u8 *buf)
+ {
+ 	struct dvb_demux_feed *feed;
+ 	struct list_head *pos, *head = &demux->feed_list;
+ 	u16 pid = ts_pid(buf);
+-	int dvr_done = 0;
+ 
+ 	list_for_each(pos, head) {
+ 		feed = list_entry(pos, struct dvb_demux_feed, list_head);
+ 
+-		if ((feed->pid != pid) && (feed->pid != 0x2000))
+-			continue;
+-
+-		/* copy each packet only once to the dvr device, even
+-		 * if a PID is in multiple filters (e.g. video + PCR) */
+-		if ((DVR_FEED(feed)) && (dvr_done++))
+-			continue;
+-
+-		if (feed->pid == pid) {
++		if (feed->pid == pid)
+ 			dvb_dmx_swfilter_packet_type(feed, buf);
+-			if (DVR_FEED(feed))
+-				continue;
+-		}
+-
+-		if (feed->pid == 0x2000)
++		else if (feed->pid == 0x2000)
+ 			feed->cb.ts(buf, 188, NULL, 0, &feed->feed.ts, DMX_OK);
+ 	}
+ }

@@ -1,0 +1,141 @@
+Index: stblinux-2.6.12/arch/mips/kernel/vmlinux.lds.S
+===================================================================
+--- stblinux-2.6.12.orig/arch/mips/kernel/vmlinux.lds.S	2008-01-16 23:52:20.000000000 +0100
++++ stblinux-2.6.12/arch/mips/kernel/vmlinux.lds.S	2008-01-16 23:52:22.000000000 +0100
+@@ -145,8 +145,8 @@
+     . = ALIGN(4096);
+   __initramfs_start = .;
+   .init.ramfs : { *(.init.ramfs) }
+-    . = ALIGN(4096);
+   __initramfs_end = .;
++    . = ALIGN(4096);
+ 
+   __bss_start = .;		/* BSS */
+   .sbss      : {
+Index: stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.c
+===================================================================
+--- stblinux-2.6.12.orig/drivers/net/brcmint7038/bcmemac.c	2008-01-16 23:52:20.000000000 +0100
++++ stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.c	2008-01-16 23:52:13.000000000 +0100
+@@ -2978,99 +2978,10 @@
+ 
+ static void bcmemac_getMacAddr(struct net_device* dev)
+ {
+-	uint8 flash_eaddr[ETH_ALEN];
+-	void *virtAddr;
+-	uint16 word;
+-	int i;
+-
+-#if !defined( CONFIG_BRCM_PCI_SLAVE) && !defined( CONFIG_MTD_BRCMNAND )
+-#if 1
+-	virtAddr = (void*)FLASH_MACADDR_ADDR;
+-#else
+-	//virtAddr = (void*) 0xBDFFF824; /* BCM97110 in-flash Ethernet MAC address */
+-	virtAddr = (void*) KSEG1ADDR(getPhysFlashBase() + FLASH_MACADDR_OFFSET); 
+-#endif
+-
+-          /* It is a common problem that the flash and/or Chip Select are
+-	 * not initialized properly, so leave this printk on
+-	 */
+-	printk("%s: Reading MAC address from %08lX, FLASH_BASE=%08lx\n", 
+-		dev->name,(uint32) virtAddr, (unsigned long) 0xA0000000L|getPhysFlashBase());
+-
+-	word=0;
+-	word=readw(virtAddr);
+-	flash_eaddr[0]=(uint8) (word & 0x00FF);
+-	flash_eaddr[1]=(uint8) ((word & 0xFF00) >> 8);
+-	word=readw(virtAddr+2);
+-	flash_eaddr[2]=(uint8) (word & 0x00FF);
+-	flash_eaddr[3]=(uint8) ((word & 0xFF00) >> 8);
+-	word=readw(virtAddr+4);
+-	flash_eaddr[4]=(uint8) (word & 0x00FF);
+-	flash_eaddr[5]=(uint8) ((word & 0xFF00) >> 8);
+-
+-	printk("%s: MAC address %02X:%02X:%02X:%02X:%02X:%02X fetched from addr %lX\n",
+-		dev->name,
+-		flash_eaddr[0],flash_eaddr[1],flash_eaddr[2],
+-		flash_eaddr[3],flash_eaddr[4],flash_eaddr[5],
+-		(uint32) virtAddr);
+-
+-#elif defined( CONFIG_MTD_BRCMNAND )
+-{
+-	extern int gNumHwAddrs;
+-	extern unsigned char* gHwAddrs[];
+-	
+-   	if (gNumHwAddrs >= 1) {
+-		for (i=0; i < 6; i++) {
+-			flash_eaddr[i] = (uint8) gHwAddrs[0][i];
+-		}
+-
+-		printk("%s: MAC address %02X:%02X:%02X:%02X:%02X:%02X fetched from bootloader\n",
+-			dev->name,
+-			flash_eaddr[0],flash_eaddr[1],flash_eaddr[2],
+-			flash_eaddr[3],flash_eaddr[4],flash_eaddr[5]
+-			);
+-   	}
+-	else {
+-		printk(KERN_ERR "%s: No MAC addresses defined\n", __FUNCTION__);
+-	}
+-}
++		/* we rip the address set by the bootloader */
++	unsigned long addr[2] = { be32_to_cpu(*(unsigned int*)0xB008005C), be32_to_cpu(*(unsigned int*)0xB0080058)};
+ 
+-#else 
+-/* PCI slave cannot access the EBI bus, 
+- * and for now, same for NAND flash, until CFE supports it
+- */
+-/* Use hard coded value if Flash not properly initialized */
+-	//if ((*flash_eaddr & 0xff) == 0xff)
+-	{
+-//#ifdef USE_HARDCODED_MACADDR
+-		flash_eaddr[0] = 0x00;
+-		flash_eaddr[1] = 0xc0;
+-		flash_eaddr[2] = 0xa8;
+-		flash_eaddr[3] = 0x74;
+-		flash_eaddr[4] = 0x3b;
+-		flash_eaddr[5] = 0x51;
+-		printk("%s: Default MAC address %02X:%02X:%02X:%02X:%02X:%02X used\n",
+-			dev->name,
+-			flash_eaddr[0],flash_eaddr[1],flash_eaddr[2],
+-			flash_eaddr[3],flash_eaddr[4],flash_eaddr[5]);
+-//#else
+-//			printk("%s: Cannot read EMAC address from flash.  Please run EVAL codes\n", CARDNAME);
+-//			return -ENODEV;
+-//#endif
+-	}
+-#endif
+-
+-        /* fill in the MAC address */
+-        for (i = 0; i < 6; i++) {
+-            dev->dev_addr[i] = flash_eaddr[i];
+-        }
+-
+-        /* print the Ethenet address */
+-        printk("%s: MAC Address: ", dev->name);
+-        for (i = 0; i < 5; i++) {
+-            printk("%2.2X:", dev->dev_addr[i]);
+-        }
+-        printk("%2.2X\n", dev->dev_addr[i]);
++	memcpy(dev->dev_addr, ((unsigned char*)addr)+2, 6);
+ }
+ 
+ 
+Index: stblinux-2.6.12/arch/mips/brcmstb/common/setup.c
+===================================================================
+--- stblinux-2.6.12.orig/arch/mips/brcmstb/common/setup.c	2008-01-16 23:53:24.000000000 +0100
++++ stblinux-2.6.12/arch/mips/brcmstb/common/setup.c	2008-01-16 23:54:06.000000000 +0100
+@@ -136,13 +136,13 @@
+ 
+ static void brcm_machine_halt(void)
+ {
+-	printk("Broadcom eval board halted.\n");
++	printk("Halted.\n");
+ 	while (1);
+ }
+ 
+ static void brcm_machine_power_off(void)
+ {
+-	printk("Broadcom eval board halted. Please turn off power.\n");
++	printk("Halted. Please turn off power.\n");
+ 	while (1);
+ }
+ 
