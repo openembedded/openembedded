@@ -1,4 +1,4 @@
-DESCRIPTION = "Hardware drivers for DM702x"
+DESCRIPTION = "Hardware drivers for Dreambox"
 SECTION = "base"
 PRIORITY = "required"
 LICENSE = "proprietary"
@@ -20,6 +20,9 @@ PV_dm600pvr = "${KV}-20071026"
 
 KV_dm500plus = "2.6.12"
 PV_dm500plus = "${KV}-20071026"
+
+KV_dm800 = "2.6.12-5.0-brcmstb-dm800"
+PV_dm800 = "2.6.12-20080219"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"
@@ -57,6 +60,22 @@ do_install_dm7025() {
 	done
 	install -d ${D}${sbindir}
 	install -m 0755 ${WORKDIR}/fpupgrade-${MACHINE}-v7 ${D}${sbindir}/fpupgrade
+}
+
+do_install_dm8000() {
+	install -d ${D}/lib/modules/${KV}/extra
+	for f in *.ko LICENSE; do
+		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
+	done
+	install -d ${D}${sbindir}
+}
+
+do_install_dm800() {
+	install -d ${D}/lib/modules/${KV}/extra
+	for f in *.ko LICENSE; do
+		install -m 0644 ${WORKDIR}/$f ${D}/lib/modules/${KV}/extra/$f;
+	done
+	install -d ${D}${sbindir}
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
