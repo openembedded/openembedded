@@ -15,7 +15,9 @@ UTILS = "grabpic showiframe dvbnet test_tbl test_dmx"
 
 do_configure_prepend() {
 	cd ${S}/
-	echo -e "TEMPLATE=subdirs\nSUBDIRS=${UTILS}\n" >dmutils.pro
+	echo "TEMPLATE=subdirs" > dmutils.pro
+	echo "CONFIG=console" >> dmutils.pro
+	echo "SUBDIRS=${UTILS}" >> dmutils.pro
 }
 
 do_install() {
