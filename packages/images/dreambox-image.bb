@@ -22,6 +22,7 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-cutlisteditor \
 	enigma2-plugin-systemplugins-configurationbackup \
 	enigma2-plugin-systemplugins-satfinder \
+	enigma2-plugin-systemplugins-videotune \
 	enigma2-plugin-extensions-webinterface \
 	enigma2-plugin-systemplugins-skinselector \
 	enigma2-plugin-extensions-pictureplayer \
@@ -97,6 +98,10 @@ OPENDREAMBOX_COMMON_MACHINE_D_dm7020 += "${OPENDREAMBOX_TUXBOX_D}"
 OPENDREAMBOX_COMMON_MACHINE_dm7025 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm7025 += "${OPENDREAMBOX_EXPERIMENTAL_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm7025 += ""
+
+OPENDREAMBOX_COMMON_MACHINE_dm800 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm800 += "${OPENDREAMBOX_EXPERIMENTAL_R} enigma2-plugin-systemplugins-videotune"
+OPENDREAMBOX_COMMON_MACHINE_D_dm800 += ""
 
 # collect the stuff into OPENDREAMBOX_COMMON
 OPENDREAMBOX_COMMON += " ${OPENDREAMBOX_COMMON_MACHINE}"
