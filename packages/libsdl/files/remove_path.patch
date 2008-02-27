@@ -1,0 +1,18 @@
+OE goes to great lengths to set PATH correctly and this just breaks
+things since local sdl-config binaries will suddenly be preferred
+rather than those in staging.
+
+RP - 27/02/2008
+
+Index: SDL-1.2.9/sdl.m4
+===================================================================
+--- SDL-1.2.9.orig/sdl.m4	2008-02-27 10:08:38.000000000 +0000
++++ SDL-1.2.9/sdl.m4	2008-02-27 10:08:51.000000000 +0000
+@@ -33,7 +33,6 @@
+   fi
+ 
+   AC_REQUIRE([AC_CANONICAL_TARGET])
+-  PATH="$prefix/bin:$prefix/usr/bin:$PATH"
+   AC_PATH_PROG(SDL_CONFIG, sdl-config, no, [$PATH])
+   min_sdl_version=ifelse([$1], ,0.11.0,$1)
+   AC_MSG_CHECKING(for SDL - version >= $min_sdl_version)
