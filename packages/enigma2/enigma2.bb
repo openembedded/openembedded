@@ -11,6 +11,8 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf"
+RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
@@ -27,6 +29,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-positionersetup = "helps you ins
 DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "allows you to fine-tune DiSEqC-settings."
 DESCRIPTION_append_enigma2-plugin-systemplugins-satfinder = "helps you to align your dish."
 DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu with selectable skins."
+DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 
 PN = "enigma2"
 PR = "r0"
