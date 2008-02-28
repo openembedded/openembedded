@@ -5,10 +5,9 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "EGENIX"
 SRCNAME = "egenix-mx-base"
-PR = "r1"
+PR = "r0"
 
-SRC_URI = "http://www.egenix.com/files/python/egenix-mx-base-${PV}.tar.gz \
-           file://gcc4.patch;patch=1"
+SRC_URI = "http://downloads.egenix.com/python/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
@@ -17,3 +16,4 @@ export INCLUDE = "${STAGING_INCDIR}/${PYTHON_DIR}"
 export LIB = "${STAGING_LIBDIR}"
 
 FILES_${PN} += "${datadir}"
+FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/mx/*/*/.debug"
