@@ -39,7 +39,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/xine/${PN}-0.4.1.tar.gz \
 EXTRA_OECONF = " --includedir=${STAGING_INCDIR} \
 		--libdir=${STAGING_LIBDIR} \
 		--disable-xinetest \
-		--with-xine-prefix=${STAGING_DIR}/${HOST_SYS}"
+		--with-xine-prefix=${STAGING_DIR_HOST}${layout_exec_prefix}"
 
 LDFLAGS += "-lxine"
 
