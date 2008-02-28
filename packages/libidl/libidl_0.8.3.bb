@@ -13,13 +13,7 @@ inherit autotools pkgconfig
 # strange reason - so we do some sed fu to fix the path there
 
 do_stage() {
-	oe_runmake install \
-		prefix=${STAGING_DIR} \
-		bindir=${STAGING_BINDIR} \
-		includedir=${STAGING_INCDIR} \
-		libdir=${STAGING_LIBDIR} \
-		datadir=${STAGING_DATADIR} \
-		infodir=${STAGING_INFODIR}
+	autotools_stage_all
 
 	cp ${STAGING_BINDIR}/libIDL-config-2 ${STAGING_BINDIR}/libIDL-config-2.orig
 	cat ${STAGING_BINDIR}/libIDL-config-2.orig | sed -e 's:${includedir}:${STAGING_INCDIR}:' > ${STAGING_BINDIR}/libIDL-config-2
