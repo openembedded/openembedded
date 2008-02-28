@@ -6,7 +6,8 @@ LICENSE = "LGPL"
 DEPENDS = "ode"
 SRCNAME = "PyODE"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/pyode/${SRCNAME}-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pyode/${SRCNAME}-${PV}.tar.bz2 \
+           file://install.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
