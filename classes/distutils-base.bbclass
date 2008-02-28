@@ -11,8 +11,17 @@ def python_dir(d):
 	raise "No Python in STAGING_INCDIR. Forgot to build python-native ?"
 
 PYTHON_DIR = "${@python_dir(d)}"
-FILES_${PN} = "${bindir}/* ${libdir}/* ${libdir}/${PYTHON_DIR}/*"
-FILES_${PN}-dbg = "${libdir}/${PYTHON_DIR}/site-packages/.debug \
-                   ${libdir}/${PYTHON_DIR}/site-packages/*/.debug \
-                   ${libdir}/${PYTHON_DIR}/site-packages/*/*/.debug"
 
+PACKAGES = "${PN}-dev ${PN}-dbg ${PN}-doc ${PN}"
+
+FILES_${PN} = "${bindir}/* ${libdir}/* ${libdir}/${PYTHON_DIR}/*"
+
+FILES_${PN}-dev += "\
+  ${libdir}/pkgconfig \
+  ${libdir}/${PYTHON_DIR}/site-packages/*.la \
+"
+FILES_${PN}-dbg = "\
+  ${libdir}/${PYTHON_DIR}/site-packages/.debug \
+  ${libdir}/${PYTHON_DIR}/site-packages/*/.debug \
+  ${libdir}/${PYTHON_DIR}/site-packages/*/*/.debug \
+"
