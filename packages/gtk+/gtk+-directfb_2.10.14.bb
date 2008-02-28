@@ -44,7 +44,7 @@ SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-${PV}.tar.bz2 \
 #	   file://gtk-doc.patch;patch=1 \
 "
 EXTRA_OECONF =" \
-                --prefix=${STAGING_DIR} \
+                --prefix=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-gdktarget=directfb \
                 --without-x \
                 --without-libtiff \
