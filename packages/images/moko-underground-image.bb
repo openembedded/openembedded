@@ -24,7 +24,11 @@ IMAGE_INSTALL = "\
   xhost \
   xset \
   xrandr \
-  "
+  \
+  gsm0710muxd \
+  pyneod \
+  pyneog \
+"
 
 DEPENDS = "\
   ${MACHINE_TASK_PROVIDER} \
