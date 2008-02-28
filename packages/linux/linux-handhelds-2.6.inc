@@ -54,6 +54,16 @@ do_configure() {
 
 }
 
+do_compile_prepend() {
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+	    if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
+		echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
+		exit 1
+	    fi
+	    cp ${KERNEL_INITRAMFS_PATH} usr/initramfs_data.cpio.gz
+	fi
+}
+
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME}
