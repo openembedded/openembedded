@@ -21,11 +21,7 @@ do_configure() {
 }
 
 do_install () {
-        oe_runmake prefix="${D}${prefix}" \
-                bindir="${D}${bindir}" \
-                libdir="${D}${libdir}" \
-                includedir="${D}${includedir}" \
-                install
+	autotools_stage_all
 }
 
 do_stage() {

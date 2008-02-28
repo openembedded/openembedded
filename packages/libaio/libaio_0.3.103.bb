@@ -26,8 +26,8 @@ do_unpack() {
 }
 
 do_stage () {
-	#make install prefix='${STAGING_DIR}/${TARGET_SYS}'
-        install -D -m 644 src/libaio.h ${STAGING_DIR}/${TARGET_SYS}/include/libaio.h
+	#make install prefix='${STAGING_DIR_TARGET}${layout_prefix}'
+        install -D -m 644 src/libaio.h ${STAGING_INCDIR}/libaio.h
 	oe_libinstall -so -C src libaio ${STAGING_LIBDIR}
 
 }

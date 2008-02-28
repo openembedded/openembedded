@@ -13,7 +13,7 @@ SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/enca-${PV}
 
 inherit autotools
 
-EXTRA_OECONF="--with-libiconv-prefix=${STAGING_DIR}"
+EXTRA_OECONF="--with-libiconv-prefix=${STAGING_DIR_HOST}${layout_exec_prefix}"
 
 do_configure_append() {
 	sed -i s:-I/usr/include::g Makefile
