@@ -3,29 +3,30 @@ HOMEPAGE = "http://www.dtnrg.org/wiki"
 SECTION = "libs"
 DEPENDS = "db openssl python-native xerces-c"
 LICENSE = "Apache"
-SRC_URI = "http://www.dtnrg.org/docs/code/dtn_${PV}.tgz"
-PR = "r2"
+SRC_URI = "http://www.dtnrg.org/docs/code/dtn_${PV}.tgz \
+           file://configure_fix.patch;patch=1"
+PR = "r3"
 
 inherit autotools
 
 EXTRA_OECONF = "\
   --with-python=${STAGING_BINDIR_NATIVE}/python \
-  --with-db=${STAGING_DIR} \
-  --with-tcl=${STAGING_DIR} \
+  --with-db=${STAGING_DIR_HOST}${layout_exec_prefix} \
+  --with-tcl=${STAGING_DIR_HOST}${layout_exec_prefix} \
   --without-google-perftools \
   --without-bluez \
   --without-bonjour \
-  --with-expat=${STAGING_DIR} \
-  --with-xerces-c=${STAGING_DIR} \
+  --with-expat=${STAGING_DIR_HOST}${layout_exec_prefix} \
+  --with-xerces-c=${STAGING_DIR_HOST}${layout_exec_prefix} \
   --without-tclreadline \
-  --with-zlib=${STAGING_DIR} \
+  --with-zlib=${STAGING_DIR_HOST}${layout_exec_prefix} \
   --without-xsd-tool \
-  --with-db=${STAGING_DIR} \
+  --with-db=${STAGING_DIR_HOST}${layout_exec_prefix} \
   --enable-ecl \
   --enable-edp \
   --without-mysql \
   --without-postgres \
-  --with-openssl=${STAGING_DIR} \
+  --with-openssl=${STAGING_DIR_HOST}${layout_exec_prefix} \
 "
 
 def dtn_python_dir(d):
