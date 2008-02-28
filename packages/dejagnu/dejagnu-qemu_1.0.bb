@@ -13,7 +13,7 @@ do_stage() {
 	install -m 0644 ${WORKDIR}/arm-qemu.exp ${STAGING_DATADIR}/dejagnu/baseboards/
 	cat <<EOF >${STAGING_BINDIR_NATIVE}/${QEMU}-test-wrapper
 #!/bin/sh
-exec ${QEMU} ${CROSS_DIR}/${TARGET_SYS}/${LD_SO} --library-path ${CROSS_DIR}/${TARGET_SYS}/lib:${STAGING_DIR}/${TARGET_SYS}/lib \$1
+exec ${QEMU} ${CROSS_DIR}/${TARGET_SYS}/${LD_SO} --library-path ${CROSS_DIR}/${TARGET_SYS}/lib:${STAGING_DIR_TARGET}${layout_libdir} \$1
 EOF
 	chmod 755 ${STAGING_BINDIR_NATIVE}/arm-qemu-test-wrapper
 }

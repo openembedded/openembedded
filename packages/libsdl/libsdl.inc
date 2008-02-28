@@ -4,12 +4,13 @@ PRIORITY = "optional"
 DEPENDS = "alsa-lib mesa virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
   file://extra-keys.patch;patch=1 \
   file://pagesize.patch;patch=1 \
+  file://remove_path.patch;patch=1 \
   file://acinclude.m4"
 S = "${WORKDIR}/SDL-${PV}"
 

@@ -12,6 +12,10 @@ python package_ipk_fn () {
 }
 
 python package_ipk_install () {
+	#
+	# Warning - this function is not multimachine safe (see stagingdir reference)!
+	#
+
 	import os, sys
 	pkg = bb.data.getVar('PKG', d, 1)
 	pkgfn = bb.data.getVar('PKGFN', d, 1)

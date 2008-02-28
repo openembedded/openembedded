@@ -5,7 +5,7 @@ DEPENDS = "libgpg-error pth libassuan"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-${PV}.tar.gz"
 
-EXTRA_OECONF = "--with-pth=${STAGING_DIR}/${HOST_SYS} --without-pth-test --with-gpg=${bindir}/gpg --without-gpgsm"
+EXTRA_OECONF = "--with-pth=${STAGING_DIR_HOST}${layout_exec_prefix} --without-pth-test --with-gpg=${bindir}/gpg --without-gpgsm"
 
 LEAD_SONAME = "libgpgme.so"
 

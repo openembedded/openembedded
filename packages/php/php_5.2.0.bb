@@ -15,7 +15,7 @@ EXTRA_OECONF = "    --without-iconv \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
     		    --with-zlib \
-                    --with-mysql="${STAGING_DIR}/${TARGET_SYS}" \
+                    --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
                     --with-mysqli="${STAGING_BINDIR_NATIVE}/mysql_config" \
 "
 

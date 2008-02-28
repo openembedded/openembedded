@@ -11,7 +11,7 @@ SRC_URI += "file://erts-configure.in.patch;patch=1 \
 
 EXTRA_OEMAKE = "BUILD_CC='${BUILD_CC}'"
 
-EXTRA_OECONF = "--with-ssl=${STAGING_DIR}/${HOST_SYS}"
+EXTRA_OECONF = "--with-ssl=${STAGING_DIR_HOST}${layout_exec_prefix}"
 
 EXTRA_OECONF_append_arm = " --disable-smp-support --disable-hipe"
 EXTRA_OECONF_append_armeb = " --disable-smp-support --disable-hipe"

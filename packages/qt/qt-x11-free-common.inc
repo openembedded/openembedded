@@ -9,7 +9,7 @@ S = "${WORKDIR}/qt-x11-free-${PV}"
 inherit qmake_base qt3x11
 
 export QTDIR = "${S}"
-STAGING_QT_DIR = "${STAGING_DIR}/${HOST_SYS}/qt3"
+STAGING_QT_DIR = "${STAGING_DIR_HOST}/qt3"
 ARCH_i686 = "x86"
 EXTRA_OEMAKE = "-e"
 

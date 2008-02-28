@@ -5,17 +5,16 @@ HOMEPAGE = "http://zapping.sourceforge.net/ZVBI/index.html"
 LICENSE = "GPL"
 SECTION = "libs/multimedia"
 DEPENDS = "libpng"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zapping/zvbi-${PV}.tar.bz2"
 S = "${WORKDIR}/zvbi-${PV}"
 
 EXTRA_OECONF = "--without-x"
 
-inherit autotools
+inherit autotools pkgconfig 
 
 do_stage() {
 	autotools_stage_all
 }
-
 

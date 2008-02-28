@@ -11,4 +11,4 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
 
-export STAGING=${STAGING_DIR}
+#export STAGING=${STAGING_DIR}
