@@ -215,9 +215,9 @@ void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 
 int main(int argc, char **argv)
 {
-	if ((argc != 4) && (argc != 5))
+	if ((argc != 4) && (argc != 5) && (argc != 6))
 	{
-		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> [<arch>] > image.nfi\n", *argv);
+		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> [<arch> [<size-in-MB>]] > image.nfi\n", *argv);
 		return 1;
 	}
 	
@@ -228,11 +228,15 @@ int main(int argc, char **argv)
 	file_open(&f_boot, &size_boot, argv[2]);
 	file_open(&f_root, &size_root, argv[3]);
 
+	int flashsize = 32*1024*1024;
+	if (argc >= 6)
+		flashsize = atoi(argv[5]) * 1024 * 1024;
+
 		// pre-35 have old layout
 #ifdef OLD_LAYOUT
-	int partition[] = {0x20000, 0x200000, 0x2000000};
+	int partition[] = {0x20000, 0x200000, flashsize};
 #else
-	int partition[] = {0x40000, 0x400000, 0x2000000};
+	int partition[] = {0x40000, 0x400000, flashsize};
 #endif
 	
 	if (size_2nd > BADBLOCK_SAFE(partition[0]))
@@ -249,7 +253,7 @@ int main(int argc, char **argv)
 	int total_size = 4 + num_partitions * 4 + 4 + sectors_2nd * 528 + 4 + sectors_boot * 528 + 4 + sectors_root * 528;
 
 		/* in case an architecture is given, write NFI1 header */	
-	if (argc == 5)
+	if (argc >= 5)
 	{
 		char header[32] = "NFI1";
 		strncpy(header + 4, argv[4], 28);
