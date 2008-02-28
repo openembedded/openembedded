@@ -2,7 +2,7 @@ DESCRIPTION = "create Dreambox NAND boot images"
 SECTION = "console/utils"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 PV = "1.0"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "file://buildimage.c"
 
