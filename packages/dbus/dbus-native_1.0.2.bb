@@ -1,5 +1,6 @@
 require dbus.inc
-DEFAULT_PREFERENCE = "1"
+
+DEFAULT_PREFERENCE = "-1"
 
 inherit native
 
@@ -25,4 +26,3 @@ do_stage() {
 do_install() {
 	:
 }
-

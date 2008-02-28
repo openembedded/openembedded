@@ -424,13 +424,21 @@ python base_do_clean() {
 	os.system('rm -f '+ dir)
 }
 
+#Uncomment this for bitbake 1.8.12
+#addtask rebuild after do_${BB_DEFAULT_TASK}
 addtask rebuild
 do_rebuild[dirs] = "${TOPDIR}"
 do_rebuild[nostamp] = "1"
 python base_do_rebuild() {
 	"""rebuild a package"""
-	bb.build.exec_task('do_clean', d)
-	bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
+	from bb import __version__
+	try:
+		from distutils.version import LooseVersion
+	except ImportError:
+		def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
+	if (LooseVersion(__version__) < LooseVersion('1.8.11')):
+		bb.build.exec_func('do_clean', d)
+		bb.build.exec_task('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1), d)
 }
 
 addtask mrproper
@@ -442,7 +450,7 @@ python base_do_mrproper() {
 	if dir == '/': bb.build.FuncFailed("wrong DATADIR")
 	bb.debug(2, "removing " + dir)
 	os.system('rm -rf ' + dir)
-	bb.build.exec_task('do_clean', d)
+	bb.build.exec_func('do_clean', d)
 }
 
 addtask fetch
@@ -662,6 +670,17 @@ python base_eventhandler() {
 				pesteruser.append(v)
 		if pesteruser:
 			bb.fatal('The following variable(s) were not set: %s\nPlease set them directly, or choose a MACHINE or DISTRO that sets them.' % ', '.join(pesteruser))
+
+	#
+	# Handle removing stamps for 'rebuild' task
+	#
+	if name.startswith("StampUpdate"):
+		for (fn, task) in e.targets:
+			#print "%s %s" % (task, fn)         
+			if task == "do_rebuild":
+				dir = "%s.*" % e.stampPrefix[fn]
+				bb.note("Removing stamps: " + dir)
+				os.system('rm -f '+ dir)
 
 	if not data in e.__dict__:
 		return NotHandled
@@ -900,7 +919,19 @@ def base_after_parse(d):
                 return
 
 python () {
+    import bb
+    from bb import __version__
     base_after_parse(d)
+
+    # Remove this for bitbake 1.8.12
+    try:
+        from distutils.version import LooseVersion
+    except ImportError:
+        def LooseVersion(v): print "WARNING: sanity.bbclass can't compare versions without python-distutils"; return 1
+    if (LooseVersion(__version__) >= LooseVersion('1.8.11')):
+        deps = bb.data.getVarFlag('do_rebuild', 'deps', d) or []
+        deps.append('do_' + bb.data.getVar('BB_DEFAULT_TASK', d, 1))
+        bb.data.setVarFlag('do_rebuild', 'deps', deps, d)
 }
 
 def check_app_exists(app, d):

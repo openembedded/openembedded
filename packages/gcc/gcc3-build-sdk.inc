@@ -2,8 +2,8 @@ USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 
 SRC_URI += 'file://sdk-libstdc++-includes.patch;patch=1'
 
-STAGING_TARGET_INCDIR = "${STAGING_DIR}/${TARGET_SYS}/include"
-STAGING_TARGET_LIBDIR = "${STAGING_DIR}/${TARGET_SYS}/lib"
+STAGING_TARGET_INCDIR = "${STAGING_DIR_TARGET}${layout_includedir}"
+STAGING_TARGET_LIBDIR = "${STAGING_DIR_TARGET}${layout_libdir}"
 
 do_configure () {
        (cd ${S} && gnu-configize) || die "failure running gnu-configize"

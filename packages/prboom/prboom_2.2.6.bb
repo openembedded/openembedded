@@ -6,17 +6,11 @@ LICENSE = "GPL"
 
 PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
-           file://m4.patch;patch=1"
+SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz"
 
 inherit autotools
 
-EXTRA_OECONF = "--without-x --disable-sdltest --with-sdl-exec-prefix=${STAGING_DIR_NATIVE}${layout_exec_prefix}"
-
-do_configure() {
-	gnu-configize
-	oe_runconf
-}
+EXTRA_OECONF = "--without-x --disable-sdltest"
 
 do_install() {
         install -d ${D}${bindir} \

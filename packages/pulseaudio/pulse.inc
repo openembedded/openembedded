@@ -84,7 +84,7 @@ pkg_postinst_${PN}-server() {
         grep -q pulse: /etc/passwd || \
             adduser --disabled-password --home=/var/run/pulse --system \
                     --ingroup pulse --no-create-home -g "Pulse audio daemon" pulse
-        adduser pulse audio
+        addgroup pulse audio
         /etc/init.d/populate-volatile.sh update
 }
 

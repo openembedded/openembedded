@@ -9,7 +9,6 @@ PACKAGES =+ "xserver-kdrive-fbdev \
              xserver-kdrive-xephyr \
              xserver-kdrive-epson \
              xserver-kdrive-ati \
-             xserver-kdrive-glamo \
              xserver-kdrive-chips \
              xserver-kdrive-i810 \
              xserver-kdrive-mach64 \
@@ -33,7 +32,6 @@ DESCRIPTION_xserver-kdrive-epson = "X server from freedesktop.org, supporting Ep
 DESCRIPTION_xserver-kdrive-sdl = "X server from freedesktop.org, SDL version"
 DESCRIPTION_xserver-kdrive-w100 = "X server from freedesktop.org, supporting the ATI imageon w100 chipset"
 DESCRIPTION_xserver-kdrive-ati = "X server from freedesktop.org, supporting ATI devices"
-DESCRIPTION_xserver-kdrive-glamo = "X server from freedesktop.org, supporting Smedia Glamo chipset"
 DESCRIPTION_xserver-kdrive-chips = "X server from freedesktop.org, supporting Chips chipsets"
 DESCRIPTION_xserver-kdrive-i810 = "X server from freedesktop.org, supporting Intel chipsets"
 DESCRIPTION_xserver-kdrive-imageon = "X server from freedesktop.org, supporting the ATI imageon 100 chipset"
@@ -56,7 +54,6 @@ FILES_xserver-kdrive-epson = "${bindir}/Xepson"
 FILES_xserver-kdrive-sdl = "${bindir}/Xsdl"
 FILES_xserver-kdrive-w100 = "${bindir}/Xw100"
 FILES_xserver-kdrive-ati = "${bindir}/Xati"
-FILES_xserver-kdrive-glamo = "${bindir}/Xglamo"
 FILES_xserver-kdrive-chips = "${bindir}/Xchips"
 FILES_xserver-kdrive-i810 = "${bindir}/Xi810"
 FILES_xserver-kdrive-imageon = "${bindir}/Ximageon"
@@ -77,7 +74,6 @@ RDEPENDS_xserver-kdrive-epson = "${PN}"
 RDEPENDS_xserver-kdrive-sdl = "${PN}"
 RDEPENDS_xserver-kdrive-w100 = "${PN}"
 RDEPENDS_xserver-kdrive-ati = "${PN}"
-RDEPENDS_xserver-kdrive-glamo = "${PN}"
 RDEPENDS_xserver-kdrive-chips = "${PN}"
 RDEPENDS_xserver-kdrive-i810 = "${PN}"
 RDEPENDS_xserver-kdrive-mach64 = "${PN}"

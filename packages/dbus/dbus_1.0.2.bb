@@ -1,6 +1,4 @@
 require dbus.inc
-DEFAULT_PREFERENCE = "1"
+PR = "r10"
 
-PR = "r9"
-
-
+DEFAULT_PREFERENCE = "-1"

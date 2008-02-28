@@ -4,12 +4,12 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 
-UBOOT_UPSTREAM_REV = "0ec595243dc99edcd248bbcfbfd5a1dc860bde89"
-UBOOT_OPENMOKO_REV = "3817"
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4"
+UBOOT_UPSTREAM_REV = "10bbb38a402a2faf18858c451bcdc63d45888e6e"
+UBOOT_OPENMOKO_REV = "4118"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4 gta02v5"
 LOCALVERSION = "+git${UBOOT_UPSTREAM_REV}+svn${UBOOT_OPENMOKO_REV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r1"
+PR = "r3"
 
 PROVIDES = "virtual/bootloader"
 S = "${WORKDIR}/git"
@@ -18,11 +18,11 @@ SRC_URI = "\
   git://www.denx.de/git/u-boot.git;protocol=git;tag=${UBOOT_UPSTREAM_REV} \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;rev=${UBOOT_OPENMOKO_REV};proto=http \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
-  file://makefile-no-dirafter.patch;patch=1 \
-  file://fix-data-abort-from-sd-ombug799.patch;patch=1 \
+#  file://makefile-no-dirafter.patch;patch=1 \
+#  file://fix-data-abort-from-sd-ombug799.patch;patch=1 \
 "
 
-EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
+EXTRA_OEMAKE = "ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 TARGET_LDFLAGS = ""
 
 do_quilt() {
