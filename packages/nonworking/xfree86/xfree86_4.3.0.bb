@@ -38,7 +38,7 @@ XCURSORGEN=/usr/local/X11R6/bin/xcursorgen
 EXTRA_OEMAKE="-C ${S} CC='${BUILD_CC}' \
 	      CROSSCOMPILEDIR='${WORKDIR}/XXcompiler' \
 	      EXTRA_LDOPTIONS='${LDFLAGS}' \
-	      EXTRA_INCLUDES='-I${STAGING_DIR}/target/include' "
+	      EXTRA_INCLUDES='-I${STAGING_INCDIR}' "
 do_compile() {
     sed -e "s/^\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension.*/\#define KdriveServerExtraDefines -DITSY -DMAXSCREENS=2 -DXResExtension ${FULL_OPTIMIZATION}/" < ${FILESDIR}/host.def > ${S}/config/cf/host.def;
 

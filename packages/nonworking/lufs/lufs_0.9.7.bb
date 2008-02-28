@@ -6,11 +6,10 @@ LICENSE = "GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/lufs/lufs-${PV}.tar.gz"
 S = "${WORKDIR}/lufs-${PV}"
 
-inherit autotools
+inherit autotools module
 
-KERNEL_VERSION = "`cat ${STAGING_DIR}/target/kernel/kernel-version`"
-KERNEL_SOURCE = "`cat ${STAGING_DIR}/target/kernel/kernel-source`"
-KERNEL_PATH = "${STAGING_DIR}/target/kernel"
+KERNEL_SOURCE = "${STAGING_KERNEL_DIR}"
+KERNEL_PATH = "${STAGING_KERNEL_DIR}"
 
-EXTRA_OECONF = " --with-kernel=${KERNEL_VERSION} --with-kheaders=${STAGING_DIR}/target/kernel/include"
+EXTRA_OECONF = " --with-kernel=${KERNEL_VERSION} --with-kheaders=${STAGING_KERNEL_DIR}/include"
 
