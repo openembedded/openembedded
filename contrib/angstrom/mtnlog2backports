@@ -1,4 +1,4 @@
-#/bim/sh
+#!/bin/sh
 
 #
 # This scripts converts output of mtn log --no-graph --no-files into format 
