@@ -112,7 +112,7 @@ SRCDATE = "20061014"
             <listitem>for svn: add 'PV = "1.1+svnr${SRCREV}"' to your bb file.</listitem>
             <listitem>for cvs: add 'PV = "1.1+cvs${SRCREV}"' to your bb file.</listitem>
           </itemizedlist>
-        Accompany either with an entry to conf/sane-srcrevs.inc for a revision that you know
+        Accompany either with an entry to conf/distro/include/sane-srcrevs.inc for a revision that you know
         builds successfully.
         </para>
         <para>
