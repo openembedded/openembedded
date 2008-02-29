@@ -15,8 +15,8 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-gnome_ui --disable-gtk-doc --without-ffmpeg \
                 --without-sdl --disable-video --enable-alsa \
-                --with-osip=${STAGING_DIR}/${HOST_SYS} \
-                --with-readline=${STAGING_DIR}/${HOST_SYS} \
+                --with-osip=${STAGING_DIR_HOST}${layout_exec_prefix} \
+                --with-readline=${STAGING_DIR_HOST}${layout_exec_prefix} \
                 --disable-truespeech --disable-manual \
                 --disable-glibtest --disable-glib --disable-strict"
 

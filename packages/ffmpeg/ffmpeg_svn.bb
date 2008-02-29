@@ -2,8 +2,8 @@ require ffmpeg.inc
 
 DEPENDS += "libgsm"
 
-PV = "0.4.9+svn${SRCDATE}" 
-PR = "r3"
+PV = "0.4.9+svnr${SRCREV}" 
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

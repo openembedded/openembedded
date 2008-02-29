@@ -3,10 +3,9 @@ require xserver-kdrive-common.inc
 DEPENDS += "libxkbfile libxcalibrate"
 
 PE = "1"
-PR = "r22"
+PR = "r25"
 
-#SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
-SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;tag=master \
+SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
 	file://enable-epson.patch;patch=1 \
 	file://enable-builtin-fonts.patch;patch=1 \
@@ -21,11 +20,19 @@ SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;tag=master \
 	file://w100-autofoo.patch;patch=1 \
 	file://w100-fix-offscreen-bmp.patch;patch=1 \
         file://kdrive-1.3-18bpp.patch;patch=1 \
+        file://linux-keyboard-mediumraw.patch;patch=1 \
         file://gumstix-kmode.patch;patch=1 \
+        file://fix-picturestr-include-order.patch;patch=1 \
 "
 
-#S = "${WORKDIR}/xorg-server-${PV}"
-S = "${WORKDIR}/git"
+SRC_URI_append_avr32 = " \
+        file://xorg-avr32-support.diff;patch=1 \
+"
+
+SRC_URI_append_tosa = "file://tosa-fbdev.patch;patch=1"
+PACKAGE_ARCH_xserver-kdrive-fbdev_tosa = "${MACHINE_ARCH}"
+
+S = "${WORKDIR}/xorg-server-${PV}"
 
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"

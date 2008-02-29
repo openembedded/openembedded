@@ -41,16 +41,16 @@ do_compile() {
 }
 
 do_stage() {
-	install -d ${STAGING_DIR}/${HOST_SYS}/qt3/lib
-	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_DIR}/${HOST_SYS}/qt3/lib
-	install -d ${STAGING_DIR}/${HOST_SYS}/qt3/include/private
+	install -d ${STAGING_DIR_HOST}/qt3/lib
+	oe_soinstall lib/libqt-mt.so.${PV} ${STAGING_DIR_HOST}/qt3/lib
+	install -d ${STAGING_DIR_HOST}/qt3/include/private
 	for f in include/*.h
 	do
-		install -m 0644 $f ${STAGING_DIR}/${HOST_SYS}/qt3/include/
+		install -m 0644 $f ${STAGING_DIR_HOST}/qt3/include/
 	done
 	for f in include/private/*.h
 	do
-	        install -m 0644 $f ${STAGING_DIR}/${HOST_SYS}/qt3/include/private
+	        install -m 0644 $f ${STAGING_DIR_HOST}/qt3/include/private
 	done
 }
 

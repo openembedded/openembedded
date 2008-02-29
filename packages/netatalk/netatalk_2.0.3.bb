@@ -17,13 +17,13 @@ inherit autotools update-rc.d
 
 do_configure () {
 	autoreconf
-	ac_cv_header_rpcsvc_rquota_h=no LDFLAGS="-lpthread -L${STAGING_DIR}/${TARGET_SYS}/lib" ./configure \
+	ac_cv_header_rpcsvc_rquota_h=no LDFLAGS="-lpthread -L${STAGING_LIBDIR}" ./configure \
 		--build=${BUILD_SYS} \
 		--host=${HOST_SYS} \
 		--target=${TARGET_SYS} \
 		--prefix=${prefix} \
-		--with-bdb=${STAGING_DIR}/${TARGET_SYS} \
-		--with-ssl-dir=${STAGING_DIR}/${TARGET_SYS} \
+		--with-bdb=${STAGING_DIR_TARGET}${layout_exec_prefix} \
+		--with-ssl-dir=${STAGING_DIR_TARGET}${layout_exec_prefix} \
 		--without-shadow \
 		--sysconfdir=${sysconfdir} \
 		--disable-nls \

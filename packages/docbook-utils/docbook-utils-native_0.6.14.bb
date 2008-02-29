@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "openjade-native sgmlspl-native docbook-dsssl-stylesheets-native docbook-sgml-dtd-3.1-native"
 
@@ -25,6 +25,7 @@ do_stage () {
 	for doctype in html ps dvi man pdf rtf tex texi txt
 	do
 		install -m 0755 ${S}/bin/docbook2$doctype ${STAGING_BINDIR_NATIVE}/
+    ln -sf docbook2x-$doctype ${STAGING_BINDIR_NATIVE}/db2$doctype
     ln -sf docbook2$doctype ${STAGING_BINDIR_NATIVE}/db2$doctype
     ln -sf docbook2$doctype ${STAGING_BINDIR_NATIVE}/docbook-to-$doctype
 	done
