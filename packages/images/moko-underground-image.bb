@@ -4,6 +4,15 @@
 
 IMAGE_LINGUAS = ""
 
+ADD_INSTALL = "\
+  fontconfig \
+  \
+  ttf-dejavu-common \
+  ttf-dejavu-sans \
+  ttf-dejavu-serif \
+  \
+"  
+
 IMAGE_INSTALL = "\
   ${MACHINE_TASK_PROVIDER} \
   task-base \
@@ -28,6 +37,8 @@ IMAGE_INSTALL = "\
   gsm0710muxd \
   pyneod \
   pyneog \
+  \
+  ${ADD_INSTALL} \
 "
 
 DEPENDS = "\
