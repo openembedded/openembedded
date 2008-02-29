@@ -3,20 +3,17 @@ SECTION = "base"
 DEPENDS = "zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r8"
+PR = "r1"
 
-# This is the default package, thus we lock to a specific git version so 
-# upstream changes will not break builds.
+# scheduled to enable 15-03-2008
+DEFAULT_PREFERENCE = "-1"
 
-TAG = "9845d92440bd87739c89edd000fd6e0c47fab185"
-# As of 2007/27/07, see http://git.infradead.org/?p=mtd-utils.git;a=shortlog
-
-SRC_URI = "git://git.infradead.org/mtd-utils.git;protocol=git;tag=${TAG} \
+SRC_URI = "ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.1.0.tar.bz2 \
            file://add-exclusion-to-mkfs-jffs2-git.patch;patch=1 \
 	   file://fix-ignoreerrors-git.patch;patch=1 \
 	   file://lzo_1x.patch;patch=1"
 
-S = "${WORKDIR}/git/"
+S = "${WORKDIR}/mtd-utils-${PV}/"
 
 EXTRA_OEMAKE = "'CC=${CC}' 'CFLAGS=${CFLAGS} -I${S}/include -DWITHOUT_XATTR'"
 
