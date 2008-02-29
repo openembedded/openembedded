@@ -9,6 +9,8 @@ SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
 SRCREV_pn-neod ?= "${AUTOREV}"
+SRCREV_pn-opkg ?= "${AUTOREV}"
+SRCREV_pn-opkg-native ?= "${AUTOREV}"
 
 SRCREV_pn-multitap-pad ?= "${AUTOREV}"
 
