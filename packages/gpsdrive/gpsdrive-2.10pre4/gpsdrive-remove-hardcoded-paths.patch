@@ -1,0 +1,96 @@
+diff -ur gpsdrive-2.10pre4.orig/src/Makefile.am gpsdrive-2.10pre4/src/Makefile.am
+--- gpsdrive-2.10pre4.orig/src/Makefile.am	2007-12-28 18:49:44.000000000 +0100
++++ gpsdrive-2.10pre4/src/Makefile.am	2007-12-28 18:50:29.000000000 +0100
+@@ -14,14 +14,14 @@
+ 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
+ 	-DLIBDIR=\"${libdir}\" \
+ 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
+-	${NOGARMIN} ${NOPLUGINS} ${AMAPNIK}\
+-	-I/usr/include/ \
+-	-I/usr/local/include \
+-	-I/opt/boost_1_35/include/boost-1_35 \
+-	-I/usr/local/include/freetype2 \
+-	-I/usr/include/freetype2 \
++	${NOGARMIN} ${NOPLUGINS} ${AMAPNIK}
++#	-I/usr/include/ \
++#	-I/usr/local/include \
++#	-I/opt/boost_1_35/include/boost-1_35 \
++#	-I/usr/local/include/freetype2 \
++#	-I/usr/include/freetype2 \
+ 	-I. \
+-	-L/usr/local/lib
++#	-L/usr/local/lib
+ 
+ #	-I/usr/include/dbus-1.0/ 
+ 
+diff -ur gpsdrive-2.10pre4.orig/configure gpsdrive-2.10pre4/configure
+--- gpsdrive-2.10pre4.orig/configure	2007-12-28 18:49:44.000000000 +0100
++++ gpsdrive-2.10pre4/configure	2008-01-06 14:49:11.000000000 +0100
+@@ -35950,10 +35950,13 @@
+ #  Yep, its ebil, but I does not know better...
+ #PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
+ # default on debian should be: /usr/share/perl5/
+-PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
++#PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
+ #PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr,-${prefix}-,"`
+-PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
++#PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
+ 
++# hard code path for OpenEmbedded environment as I don't know a way
++# to detect it automatically
++PERL_PACKAGE_DIR="/usr/share/perl5"
+ 
+ ac_perl_modules="File::Basename "
+ # Make sure we have perl
+@@ -37840,11 +37843,11 @@
+ #    AC_SUBST(DLSYM_CFLAGS,'-Ddlsym=dlsym_prepend_underscore')
+ #fi
+ 
+-if test -f /usr/include/mysql/mysql.h; then
+- CFLAGS="$CFLAGS -I/usr/include/mysql"
+-else
+- CFLAGS="$CFLAGS -Imysql"
+-fi
++#if test -f /usr/include/mysql/mysql.h; then
++# CFLAGS="$CFLAGS -I/usr/include/mysql"
++#else
++# CFLAGS="$CFLAGS -Imysql"
++#fi
+ 
+ CFLAGS="$CFLAGS $OPT_CFLAGS"
+ CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
+diff -ur gpsdrive-2.10pre4.orig/configure.ac gpsdrive-2.10pre4/configure.ac
+--- gpsdrive-2.10pre4.orig/configure.ac	2007-12-28 18:49:44.000000000 +0100
++++ gpsdrive-2.10pre4/configure.ac	2008-01-06 14:48:50.000000000 +0100
+@@ -662,9 +662,12 @@
+ #  Yep, its ebil, but I does not know better...
+ #PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
+ # default on debian should be: /usr/share/perl5/
+-PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
++#PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
+ #PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr,-${prefix}-,"`
+-PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
++#PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
++# hard code path for OpenEmbedded environment as I don't know a way
++# to detect it automatically
++PERL_PACKAGE_DIR="/usr/share/perl5"
+ AC_SUBST(PERL_PACKAGE_DIR)
+ 
+ AC_PROG_PERL_MODULES(File::Basename , ,  AC_MSG_ERROR(Need Perl module File::Basename))
+@@ -719,11 +722,11 @@
+ #    AC_SUBST(DLSYM_CFLAGS,'-Ddlsym=dlsym_prepend_underscore') 
+ #fi
+ 
+-if test -f /usr/include/mysql/mysql.h; then
+- CFLAGS="$CFLAGS -I/usr/include/mysql"
+-else
+- CFLAGS="$CFLAGS -Imysql"
+-fi
++#if test -f /usr/include/mysql/mysql.h; then
++# CFLAGS="$CFLAGS -I/usr/include/mysql"
++#else
++# CFLAGS="$CFLAGS -Imysql"
++#fi
+ 
+ CFLAGS="$CFLAGS $OPT_CFLAGS"
+ CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
