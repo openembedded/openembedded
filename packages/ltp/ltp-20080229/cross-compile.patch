@@ -1,0 +1,31 @@
+Index: ltp-full-20080229/Makefile
+===================================================================
+--- ltp-full-20080229.orig/Makefile	2008-02-29 08:55:41.000000000 +0100
++++ ltp-full-20080229/Makefile	2008-03-01 00:27:33.000000000 +0100
+@@ -33,11 +33,12 @@
+ endif
+ ifdef CROSS_COMPILER
+ CC=$(CROSS_COMPILER)gcc
++CPP=$(CROSS_COMPILER)g++
+ AR=$(CROSS_COMPILER)ar
+ endif
+ 
+ export CFLAGS += -Wall $(CROSS_CFLAGS)
+-export CC AR LDFLAGS
++export CC AR LDFLAGS CPP
+ 
+ -include config.mk
+ 
+Index: ltp-full-20080229/testcases/ballista/ballista/Makefile
+===================================================================
+--- ltp-full-20080229.orig/testcases/ballista/ballista/Makefile	2008-02-29 08:55:46.000000000 +0100
++++ ltp-full-20080229/testcases/ballista/ballista/Makefile	2008-03-01 00:27:33.000000000 +0100
+@@ -24,7 +24,7 @@
+ ########################
+ 
+ # compiler info for the host
+-CC = g++ -Wno-deprecated
++CC = $(CPP) -Wno-deprecated
+ CFLAGS = -w -O ${TARGET_DEF}
+ CLIBS = -lpthread -ldl -lnsl -rdynamic
+ TEST_MAN_FILE = selfHost
