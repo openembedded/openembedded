@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.24.3-rt3
-# Fri Feb 29 00:48:47 2008
+# Fri Feb 29 13:59:05 2008
 #
 # CONFIG_PPC64 is not set
 
@@ -1356,6 +1356,7 @@ CONFIG_LEDS_MPC8313E_RDB=m
 #
 CONFIG_LEDS_TRIGGERS=y
 CONFIG_LEDS_TRIGGER_TIMER=m
+CONFIG_LEDS_TRIGGER_CPU_ACTIVITY=m
 CONFIG_LEDS_TRIGGER_HEARTBEAT=m
 # CONFIG_INFINIBAND is not set
 # CONFIG_EDAC is not set
