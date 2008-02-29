@@ -9,7 +9,8 @@ inherit autotools
 # @todo Remove $RC later. See if patches are needed. Move files from /usr/*.
 # --  Leon 'likewise' Woestenberg
 
-RC="-rc2"
+#RC="-rc2"
+RC=""
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v2.13/util-linux-ng-${PV}${RC}.tar.bz2"
