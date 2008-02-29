@@ -1,0 +1,82 @@
+From fb2f97500aa492ed9b2d6a3a665bac13d14e44b4 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Wed, 27 Feb 2008 16:44:42 -0500
+Subject: [PATCH] add-display-set-default-16bpp
+
+---
+ arch/arm/mach-pxa/cm-x270.c |   31 +++++++++++++++++++++++++++++--
+ 1 files changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/cm-x270.c b/arch/arm/mach-pxa/cm-x270.c
+index fb607e9..915412a 100644
+--- a/arch/arm/mach-pxa/cm-x270.c
++++ b/arch/arm/mach-pxa/cm-x270.c
+@@ -258,6 +258,7 @@ static struct map_desc cmx270_io_desc[] __initdata = {
+ #define MTYPE_CRT800x600	3
+ #define MTYPE_TFT320x240	6
+ #define MTYPE_STN640x480	7
++#define MTYPE_TFT640x480_SHARP	8
+ 
+ static struct pxafb_mode_info generic_stn_320x240_mode = {
+ 	.pixclock	= 76923,
+@@ -288,7 +289,7 @@ static struct pxafb_mach_info generic_stn_320x240 = {
+ 
+ static struct pxafb_mode_info generic_tft_640x480_mode = {
+ 	.pixclock	= 38461,
+-	.bpp		= 8,
++	.bpp		= 16,
+ 	.xres		= 640,
+ 	.yres		= 480,
+ 	.hsync_len	= 60,
+@@ -314,7 +315,7 @@ static struct pxafb_mach_info generic_tft_640x480 = {
+ 
+ static struct pxafb_mode_info generic_crt_640x480_mode = {
+ 	.pixclock	= 38461,
+-	.bpp		= 8,
++	.bpp		= 16,
+ 	.xres		= 640,
+ 	.yres		= 480,
+ 	.hsync_len	= 63,
+@@ -416,6 +417,29 @@ static struct pxafb_mach_info generic_stn_640x480 = {
+ 	.cmap_static	= 0,
+ };
+ 
++
++static struct pxafb_mode_info sharp_vga_tft_mode = {
++	.pixclock		= 38461,
++	.bpp			= 16,
++	.xres			= 640,
++	.yres			= 480,
++	.hsync_len		= 60,
++	.vsync_len		= 2,
++	.left_margin		= 72,
++	.upper_margin		= 32,
++	.right_margin		= 72,
++	.lower_margin		= 10,
++	.sync			= 0,
++};
++
++static struct pxafb_mach_info sharp_vga_tft = {
++	.modes 			= &sharp_vga_tft_mode,
++	.num_modes		= 1,
++	.lccr0			= (LCCR0_PAS),
++	.lccr3			= (LCCR3_PixClkDiv(0x01) |
++			           LCCR3_Acb(0xff)),
++};
++
+ static struct pxafb_mach_info *cmx270_display = &generic_crt_640x480;
+ 
+ static int __init cmx270_set_display(char *str)
+@@ -437,6 +461,9 @@ static int __init cmx270_set_display(char *str)
+ 	case MTYPE_TFT320x240:
+ 		cmx270_display = &generic_tft_320x240;
+ 		break;
++  case MTYPE_TFT640x480_SHARP:
++    cmx270_display = &sharp_vga_tft;
++    break;
+ 	case MTYPE_STN640x480:
+ 		cmx270_display = &generic_stn_640x480;
+ 		break;
+-- 
+1.5.4.rc4
+
