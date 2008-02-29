@@ -13,6 +13,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.3.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
            file://sysctl_missing_include.patch;patch=1 \
            file://powerpc-clockres.patch;patch=1 \
+           file://leds-cpu-activity.patch;patch=1 \
+           file://leds-cpu-activity-powerpc.patch;patch=1 \
            file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.24.3"
