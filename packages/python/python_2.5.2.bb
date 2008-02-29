@@ -82,8 +82,11 @@ do_install() {
 
 require python-${PYTHON_MAJMIN}-manifest.inc
 
+# manual additions
 RPROVIDES_python-core = "python"
 RRECOMMENDS_python-core = "python-readline"
+RRECOMMENDS_python-crypt = "openssl"
+PR_python-crypt = "ml1"
 
 # add sitecustomize
 FILES_python-core += "${libdir}/python${PYTHON_MAJMIN}/sitecustomize.py"
