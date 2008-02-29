@@ -1,6 +1,7 @@
-diff -urN linux-2.6.24.orig/drivers/leds/Kconfig linux-2.6.24/drivers/leds/Kconfig
---- linux-2.6.24.orig/drivers/leds/Kconfig	2008-01-24 23:58:37.000000000 +0100
-+++ linux-2.6.24/drivers/leds/Kconfig	2008-02-08 08:12:01.000000000 +0100
+Index: linux-2.6.24.3/drivers/leds/Kconfig
+===================================================================
+--- linux-2.6.24.3.orig/drivers/leds/Kconfig	2008-02-26 01:20:20.000000000 +0100
++++ linux-2.6.24.3/drivers/leds/Kconfig	2008-02-29 00:43:28.000000000 +0100
 @@ -114,6 +114,12 @@
  	help
  	  This option enables support for the CM-X270 LEDs.
@@ -14,14 +15,15 @@ diff -urN linux-2.6.24.orig/drivers/leds/Kconfig linux-2.6.24/drivers/leds/Kconf
  comment "LED Triggers"
  
  config LEDS_TRIGGERS
-diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/drivers/leds/leds-mpc8313e-rdb.c
---- linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.24/drivers/leds/leds-mpc8313e-rdb.c	2008-02-08 08:12:01.000000000 +0100
-@@ -0,0 +1,171 @@
+Index: linux-2.6.24.3/drivers/leds/leds-mpc8313e-rdb.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24.3/drivers/leds/leds-mpc8313e-rdb.c	2008-02-29 01:36:07.000000000 +0100
+@@ -0,0 +1,173 @@
 +/*
 + * drivers/leds/leds-mpc8313e-rdb.c
-+ * Copyright (C) 2007 Jeremy Laine <jeremy.laine@bolloretelecom.eu>
-+ * Copyright (C) 2007 Leon Woestenberg <leon@sidebranch.com>
++ * Copyright (C) 2007-2008 Jeremy Laine <jeremy.laine@bolloretelecom.eu>
++ * Copyright (C) 2007-2008 Leon Woestenberg <leon@sidebranch.com>
 + *
 + * This file is subject to the terms and conditions of the GNU General Public
 + * License.  See the file COPYING in the main directory of this archive for
@@ -38,6 +40,7 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 +#include <linux/err.h>
 +#include <asm/io.h>
 +
++/* note the board is not wired for read access from the LED buffer */
 +#define LEDS_BASE 0xfa000000
 +#define LEDS_SIZE 0x2
 +
@@ -61,62 +64,63 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 +	iowrite8(led_state, led_io);
 +}
 +
++/* led0 is red, led1 is yellow, led2-7 are green */
 +static struct mpc8313_led mpc8313_leds[] = {
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led0",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 1,
++		.bitmask	= 128,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led1",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 2,
++		.bitmask	= 64,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led2",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 4,
++		.bitmask	= 32,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led3",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 8,
++		.bitmask	= 16,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led4",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 16,
++		.bitmask	= 8,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led5",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 32,
++		.bitmask	= 4,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led6",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 64,
++		.bitmask	= 2,
 +	},
 +	{
 +		.cdev = {
 +			.name		= "mpc8313:led7",
 +			.brightness_set	= mpc8313leds_set,
 +		},
-+		.bitmask	= 128,
++		.bitmask	= 1,
 +	},
 +};
 +
@@ -189,9 +193,10 @@ diff -urN linux-2.6.24.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.24/driver
 +MODULE_AUTHOR("Jeremy Laine <jeremy.laine@bolloretelecom.eu>");
 +MODULE_DESCRIPTION("MPC8313E-RDB LED driver");
 +MODULE_LICENSE("GPL");
-diff -urN linux-2.6.24.orig/drivers/leds/Makefile linux-2.6.24/drivers/leds/Makefile
---- linux-2.6.24.orig/drivers/leds/Makefile	2008-01-24 23:58:37.000000000 +0100
-+++ linux-2.6.24/drivers/leds/Makefile	2008-02-08 08:12:38.000000000 +0100
+Index: linux-2.6.24.3/drivers/leds/Makefile
+===================================================================
+--- linux-2.6.24.3.orig/drivers/leds/Makefile	2008-02-26 01:20:20.000000000 +0100
++++ linux-2.6.24.3/drivers/leds/Makefile	2008-02-29 00:43:28.000000000 +0100
 @@ -19,6 +19,7 @@
  obj-$(CONFIG_LEDS_COBALT_RAQ)		+= leds-cobalt-raq.o
  obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
