@@ -4,6 +4,8 @@
 
 require bootsplash_${PV}.bb
 
+DEPENDS += "jpeg-native"
+
 inherit native
 S="${WORKDIR}/bootsplash-${PV}"
 

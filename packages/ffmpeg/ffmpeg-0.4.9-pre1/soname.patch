@@ -1,6 +1,6 @@
---- ffmpeg-0.4.9-pre1/libavcodec/Makefile.orig	2004-08-25 22:36:39.000000000 +0200
-+++ ffmpeg-0.4.9-pre1/libavcodec/Makefile	2004-08-25 22:37:22.000000000 +0200
-@@ -7,7 +7,7 @@
+--- ffmpeg-0.4.9-pre1/libavcodec/Makefile.orig	2008-02-23 19:34:18.000000000 -0500
++++ ffmpeg-0.4.9-pre1/libavcodec/Makefile	2008-02-23 19:24:55.000000000 -0500
+@@ -7,7 +7,7 @@ include ../config.mak
  VPATH=$(SRC_PATH)/libavcodec
  
  # NOTE: -I.. is needed to include config.h
@@ -9,7 +9,19 @@
  
  OBJS= common.o utils.o mem.o allcodecs.o \
        mpegvideo.o jrevdct.o jfdctfst.o jfdctint.o\
-@@ -197,7 +197,7 @@
+@@ -89,9 +89,10 @@ endif
+ 
+ ifeq ($(CONFIG_PP),yes)
+ ifeq ($(SHARED_PP),yes)
+-EXTRALIBS += -lpostproc
++LIBS += -lpostproc
+ else
+ # LIBS += libpostproc/libpostproc.a ... should be fixed
++LIBS += libpostproc/libpostproc.a
+ OBJS += libpostproc/postprocess.o
+ endif
+ endif
+@@ -197,7 +198,7 @@ ifeq ($(CONFIG_WIN32),yes)
  	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(EXTRALIBS) $(AMREXTRALIBS)
  	-lib /machine:i386 /def:$(@:.dll=.def)
  else
@@ -18,7 +30,7 @@
  endif
  
  dsputil.o: dsputil.c dsputil.h
-@@ -269,8 +269,9 @@
+@@ -269,8 +270,9 @@ ifeq ($(CONFIG_WIN32),yes)
  	install -s -m 755 $(SLIB) "$(prefix)"
  else
  	install -d $(prefix)/lib
@@ -30,10 +42,9 @@
  	ldconfig || true
  endif
  else
-
---- ffmpeg-0.4.9-pre1/libavformat/Makefile.orig	2004-08-26 13:45:12.000000000 +0200
-+++ ffmpeg-0.4.9-pre1/libavformat/Makefile	2004-08-26 13:46:00.000000000 +0200
-@@ -6,7 +6,7 @@
+--- ffmpeg-0.4.9-pre1/libavformat/Makefile.orig	2008-02-23 19:37:40.000000000 -0500
++++ ffmpeg-0.4.9-pre1/libavformat/Makefile	2008-02-23 19:06:56.000000000 -0500
+@@ -6,7 +6,7 @@ include ../config.mak
  
  VPATH=$(SRC_PATH)/libavformat
  
@@ -42,7 +53,7 @@
  
  OBJS= utils.o cutils.o os_support.o allformats.o
  PPOBJS=
-@@ -54,6 +54,7 @@
+@@ -54,6 +54,7 @@ endif
  ifeq ($(CONFIG_AUDIO_BEOS),yes)
  PPOBJS+= beosaudio.o
  EXTRALIBS+=-lbe -lmedia
@@ -50,7 +61,7 @@
  # this should be the default !
  EXTRALIBS+=-lavcodec -L../libavcodec
  endif
-@@ -93,7 +94,7 @@
+@@ -93,7 +94,7 @@ ifeq ($(CONFIG_WIN32),yes)
  	$(CC) $(SHFLAGS) -Wl,--output-def,$(@:.dll=.def) -o $@ $(OBJS) $(PPOBJS) $(EXTRALIBS) $(VPATH)/../libavcodec/avcodec.dll
  	-lib /machine:i386 /def:$(@:.dll=.def)
  else
@@ -59,7 +70,7 @@
  endif
  
  depend: $(SRCS)
-@@ -105,8 +106,9 @@
+@@ -105,8 +106,9 @@ ifeq ($(CONFIG_WIN32),yes)
  	install -s -m 755 $(SLIB) "$(prefix)"
  else
  	install -d $(prefix)/lib
@@ -71,4 +82,3 @@
  	ldconfig || true
  endif
  else
-

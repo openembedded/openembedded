@@ -11,7 +11,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "http://www.ostertag.name/tweety/Projekte/gpsdrive/gpsdrive-2.10pre3.tar.gz \
+SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive.desktop"
 
 CFLAGS += "-D_GNU_SOURCE"

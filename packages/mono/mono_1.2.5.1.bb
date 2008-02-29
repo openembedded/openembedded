@@ -14,7 +14,7 @@ EXTRA_OECONF += " --disable-mcs-build "
 do_install_prepend() {
 	install -d ${D}
 	pushd ${D}
-	tar -xzf ${STAGING_DIR}/share/mono-mcs/mono-mcs-${PV}.tar.gz
+	tar -xzf ${STAGING_DATADIR}/mono-mcs/mono-mcs-${PV}.tar.gz
 	popd
 }
 

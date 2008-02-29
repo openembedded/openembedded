@@ -1,3 +1,6 @@
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1898924&group_id=104103&atid=636951
+status: upstream is pretty dead
+
 --- ./gammu/emb/gammu/depend/siemens/dsiemens.c	2006/04/14 23:30:53	1.1
 +++ ./gammu/emb/gammu/depend/siemens/dsiemens.c	2006/04/14 23:31:08
 @@ -351,7 +351,7 @@

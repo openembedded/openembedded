@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
            file://tcl-add-soname.patch;patch=1 \
@@ -27,6 +27,7 @@ do_stage() {
 	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
 	oe_libinstall -so libtcl8.4 ${STAGING_LIBDIR}
 	sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tclConfig.sh
+        sed -i "s,-L${libdir},," tclConfig.sh
 	install -d ${STAGING_BINDIR_CROSS}/
 	install -m 0755 tclConfig.sh ${STAGING_BINDIR_CROSS}
 	cd ..

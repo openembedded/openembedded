@@ -6,7 +6,7 @@ RRECOMMENDS = "wlan-ng-utils"
 LICENSE = "GPL"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
+SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/older/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
 	file://only-the-modules.patch;patch=1 \
 	file://config.in"

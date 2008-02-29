@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=NetSurf
+Comment=NetSurf Web Browser
+GenericName=Web Browser
+Icon=netsurf
+Exec=netsurf
+Terminal=false
+StartupNotify=false
+Categories=Network;WebBrowser;

@@ -1,0 +1,18 @@
+Index: src/map_handler.c
+===================================================================
+--- aa/src/map_handler.c	(Revision 1699)
++++ aa/src/map_handler.c	(Revision 1700)
+@@ -660,9 +660,12 @@
+   if (maploaded)
+     gdk_pixbuf_unref (image);
+ 
++#ifdef MAPNIK
+   if ( !strcmp (filename,"mapnik") ) {
+ 	  limage = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);
+-  } else {
++  } else 
++#endif
++  {
+ 	  limage = gdk_pixbuf_new_from_file (filename, NULL);
+ 	  if (limage == NULL)
+ 	    {

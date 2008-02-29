@@ -73,7 +73,7 @@ do_compile() {
 
 do_stage() {
 	oe_libinstall -C gdk-pixbuf -so libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
-	cd gdk-pixbuf && oe_runmake install DESTDIR=${STAGING_DIR}/usr
+	cd gdk-pixbuf && oe_runmake install DESTDIR=${STAGING_DIR_HOST}${layout_exec_prefix}
 	autotools_stage_includes
 #	install -d -m 0755 ${STAGING_LIBDIR}/gtk-2.0/include
 #	install -m 0644 gdk/gdkconfig.h ${STAGING_LIBDIR}/gtk-2.0/include/gdkconfig.h

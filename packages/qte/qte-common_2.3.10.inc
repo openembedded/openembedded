@@ -134,13 +134,13 @@ do_compile() {
 }
 
 do_stage() {
-	rm -rf ${STAGING_DIR}/${HOST_SYS}/qt2
-	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/lib
-	oe_libinstall -so -C lib lib${PN} ${STAGING_DIR}/${HOST_SYS}/qt2/lib
+	rm -rf ${STAGING_DIR_HOST}/qt2
+	install -d ${STAGING_DIR_HOST}/qt2/lib
+	oe_libinstall -so -C lib lib${PN} ${STAGING_DIR_HOST}/qt2/lib
 	rm -f include/qxt.h
-	install -d ${STAGING_DIR}/${HOST_SYS}/qt2/include
-	cp -pfLR include/* ${STAGING_DIR}/${HOST_SYS}/qt2/include
-	cp -pPR lib/fonts ${STAGING_DIR}/${HOST_SYS}/qt2/lib/
+	install -d ${STAGING_DIR_HOST}/qt2/include
+	cp -pfLR include/* ${STAGING_DIR_HOST}/qt2/include
+	cp -pPR lib/fonts ${STAGING_DIR_HOST}/qt2/lib/
 }
 
 do_install() {

@@ -52,6 +52,8 @@ def mono_find_provides_and_requires(files, d):
 	requires = [e for e in requires if not e in provides]
 	return provides, requires
 
+CLILIBSDIR = "${STAGING_DIR_HOST}/clilibs"
+
 python mono_do_clilibs() {
 	import bb, os, re, os.path
 
@@ -70,14 +72,9 @@ python mono_do_clilibs() {
 		bb.error("WORKDIR not defined")
 		return
 
-	staging = bb.data.getVar('STAGING_DIR', d, 1)
-	if not staging:
-		bb.error("STAGING_DIR not defined")
-		return
-
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 
-	clilibs_dir = os.path.join(staging, "clilibs")
+	clilibs_dir = bb.data.getVar('CLILIBSDIR', d, 1)
 	bb.mkdirhier(clilibs_dir)
 
 	provides, requires = {}, {}

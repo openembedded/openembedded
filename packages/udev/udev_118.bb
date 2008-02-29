@@ -3,9 +3,9 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
 
-PR = "r0"
+PR = "r2"
 
-DEFAULT_PREFERENCE = "-115"
+DEFAULT_PREFERENCE = "-118"
 
 SRC_URI = "\
  http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \

@@ -17,7 +17,7 @@ do_compile() {
 	if [ -z "$CONFIG" ]; then CONFIG=defconfig; fi
 
 	oe_runmake $CONFIG
-	oe_runmake MWDIR=${STAGING_DIR}/target/ "TARGET_CROSS=${TARGET_PREFIX}" all
+	oe_runmake MWDIR=${STAGING_DIR_TARGET} "TARGET_CROSS=${TARGET_PREFIX}" all
 }
 
 do_install() {

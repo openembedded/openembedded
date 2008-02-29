@@ -47,8 +47,8 @@ do_populate_staging() {
 	cd ${D}
 	rm -f ${WORKDIR}/mono-mcs-${PV}.tar.gz
 	tar -cvzf ${WORKDIR}/mono-mcs-${PV}.tar.gz .
-	install -d ${STAGING_DIR}/share/mono-mcs
-	cp ${WORKDIR}/mono-mcs-${PV}.tar.gz ${STAGING_DIR}/share/mono-mcs/
+	install -d ${STAGING_DATADIR}/mono-mcs
+	cp ${WORKDIR}/mono-mcs-${PV}.tar.gz ${STAGING_DATADIR}/mono-mcs/
 }
 
 do_package_write_ipk() {

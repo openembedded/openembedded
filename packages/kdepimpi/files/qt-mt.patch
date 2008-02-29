@@ -1,4 +1,8 @@
-diff --git a/microkde/kresources/resource.cpp b/microkde/kresources/resource.cpp
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1898924&group_id=104103&atid=636951
+status: upstream is pretty dead
+
+diff --git 
+a/microkde/kresources/resource.cpp b/microkde/kresources/resource.cpp
 index cccd485..65d82e2 100644
 --- a/microkde/kresources/resource.cpp
 +++ b/microkde/kresources/resource.cpp

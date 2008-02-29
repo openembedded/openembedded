@@ -11,7 +11,7 @@ SRC_URI = "http://crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.
 
 S = "${WORKDIR}/${SRCNAME}-${PV}/bindings/swig/package"
 
-EXTRA_OECONF = "--with-sword-dir=${STAGING_DIR}/${HOST_SYS}"
+EXTRA_OECONF = "--with-sword-dir=${STAGING_DIR_HOST}${layout_exec_prefix}"
 
 inherit distutils autotools
 

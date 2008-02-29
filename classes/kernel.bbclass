@@ -70,7 +70,7 @@ INITRAMFS_IMAGE_TARGET ?= "initramfs-image"
 
 do_builtin_initramfs() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
-	cp "${DEPLOY_DIR_IMAME}/${INITRAMFS_SYMLINK_NAME}" usr/initramfs_data.cpio.gz
+	cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_SYMLINK_NAME}" usr/initramfs_data.cpio.gz
 	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-initramfs.bin

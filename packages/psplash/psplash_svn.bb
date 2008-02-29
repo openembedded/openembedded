@@ -3,7 +3,7 @@ HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r12"
+PR = "r13"
 RDEPENDS = "initscripts"
 
 # You can create your own pslash-hand-img.h by doing
@@ -36,6 +36,6 @@ do_install_prepend() {
 }
 
 INITSCRIPT_NAME = "psplash"
-INITSCRIPT_PARAMS = "start 0 S . stop 20 0 1 6 ."
+INITSCRIPT_PARAMS = "start 01 S . stop 20 0 1 6 ."
 
 FILES_${PN} += "/mnt/.psplash"

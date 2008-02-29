@@ -1,0 +1,40 @@
+Index: build/unix/config_proginfo_build
+===================================================================
+--- build/unix/config_proginfo_build.orig	2008-02-28 10:00:47.000000000 +0000
++++ build/unix/config_proginfo_build	2008-02-28 10:01:38.000000000 +0000
+@@ -37,9 +37,9 @@
+ 
+ ### gcc ###
+ PROG_gcc_NAME="GNU C compiler"
+-PROG_gcc_FILE="gcc"
++PROG_gcc_FILE="$CC"
+ PROG_gcc_ACTION=""
+-PROG_gcc_VERSION='$(gcc --version)'
++PROG_gcc_VERSION='$($CC --version)'
+ 
+ 
+ ### sed ###
+Index: build/unix/config_proginfo_host
+===================================================================
+--- build/unix/config_proginfo_host.orig	2008-02-28 10:00:47.000000000 +0000
++++ build/unix/config_proginfo_host	2008-02-28 10:03:09.000000000 +0000
+@@ -69,7 +69,7 @@
+ 		;;
+ 	*)
+ 		LIB_SDL_CFLAGS='$(sdl-config --cflags)'
+-		LIB_SDL_LDFLAGS='$(sdl-config --libs)'
++		LIB_SDL_LDFLAGS='$(sdl-config --libs) -lts -lpng -ljpeg -lz'
+ 		LIB_SDL_VERSION='$(sdl-config --version)'
+ 		;;
+ esac
+@@ -170,8 +170,8 @@
+ 		LIB_vorbisfile_LDFLAGS="-lvorbisfile -lvorbis -logg -lm"
+ 		;;
+ 	*)
+-		LIB_vorbisfile_CFLAGS=""
+-		LIB_vorbisfile_LDFLAGS="-lvorbisfile -lvorbis"
++		LIB_vorbisfile_CFLAGS="-I$STAGING_INCDIR"
++		LIB_vorbisfile_LDFLAGS="-L$STAGING_LIBDIR -lvorbisfile -lvorbis -logg"
+ 		;;
+ esac
+ LIB_vorbisfile_VERSION=""
