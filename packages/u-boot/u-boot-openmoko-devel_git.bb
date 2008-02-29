@@ -6,13 +6,15 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r0"
+PR = "r1"
 
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v1 gta02v2 gta02v3 gta02v4"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v4 gta02v5"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRCREV_FORMAT = "git.openmoko.org"
+
+SRCREV = "1dd080c17b105da5cd4720307fa62de38276796a"
 
 SRC_URI = "git://git.openmoko.org/git/u-boot.git;protocol=git;branch=andy \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
