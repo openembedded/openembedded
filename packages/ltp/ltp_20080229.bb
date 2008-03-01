@@ -7,7 +7,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://cross-compile.patch;patch=1 \
            file://runltp-path.patch;patch=1 \
            file://ltp-run \
-           file://posix_shell_compat.patch;patch=1"
+           file://posix_shell_compat.patch;patch=1 \
+           file://ballista.patch;patch=1"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 
