@@ -2,7 +2,6 @@ require linux.inc
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEFAULT_PREFERENCE_avr32 = "1"

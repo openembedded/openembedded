@@ -35,12 +35,6 @@ do_svnrev() {
 	echo "echo ${LOCALVERSION}" >>tools/setlocalversion
 }
 
-do_configure_prepend() {
-	find . -name "*.mk" -exec sed -i 's,-mabi=apcs-gnu,,' {} \;
-	find . -name "Makefile" -exec sed -i 's,-mabi=apcs-gnu,,' {} \;
-	cat ${WORKDIR}/uboot-eabi-fix-HACK.patch |patch -p1
-}
-
 do_compile () {
         chmod +x board/neo1973/gta*/split_by_variant.sh
         for mach in ${UBOOT_MACHINES}

@@ -1,0 +1,22 @@
+head no longer supports "-1" syntax
+
+Index: dtn-2.5.0/oasys/aclocal/gcc.ac
+===================================================================
+--- dtn-2.5.0.orig/oasys/aclocal/gcc.ac	2008-02-27 22:38:22.000000000 +0000
++++ dtn-2.5.0/oasys/aclocal/gcc.ac	2008-02-27 22:39:05.000000000 +0000
+@@ -83,13 +83,13 @@
+     dnl Figure out the version and set version-specific options
+     dnl
+     AC_CACHE_CHECK(for the version of the GNU C compiler, oasys_cv_prog_gccver, [
+-      oasys_cv_prog_gccver=`$CC --version | head -1`
++      oasys_cv_prog_gccver=`$CC --version | head -n 1`
+       oasys_cv_prog_gccver=`echo $oasys_cv_prog_gccver | sed 's/.*gcc.*(GCC) //'`
+       oasys_cv_prog_gccver=`echo $oasys_cv_prog_gccver | sed 's/ .*//'`
+     ])      
+ 
+     AC_CACHE_CHECK(for the version of the GNU C++ compiler, oasys_cv_prog_gxxver, [
+-      oasys_cv_prog_gxxver=`$CXX --version | head -1`
++      oasys_cv_prog_gxxver=`$CXX --version | head -n 1`
+       oasys_cv_prog_gxxver=`echo $oasys_cv_prog_gxxver | sed 's/.*g++.*(GCC) //'`
+       oasys_cv_prog_gxxver=`echo $oasys_cv_prog_gxxver | sed 's/ .*//'`
+     ])

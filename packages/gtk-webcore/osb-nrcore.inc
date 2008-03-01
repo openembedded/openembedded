@@ -12,6 +12,8 @@ inherit autotools pkgconfig
 #/khtml/css/cssproperties.h failes to generate properly with high parallel makes
 PARALLEL_MAKE = ""
 
+EXTRA_OECONF += "--with-javascriptcore-prefix=${STAGING_EXECPREFIXDIR}"
+
 do_configure () {
 	autotools_do_configure
 	cd ${S}
