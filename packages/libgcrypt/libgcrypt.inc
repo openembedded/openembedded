@@ -4,7 +4,8 @@ PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
 DEPENDS = "libgpg-error"
 
-SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-${PV}.tar.gz"
+SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-${PV}.tar.gz \
+           file://add-pkgconfig-support.patch;patch=1"
 
 inherit autotools binconfig pkgconfig
 
