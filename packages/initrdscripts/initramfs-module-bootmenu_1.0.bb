@@ -1,7 +1,7 @@
 SRC_URI = "file://30-bootmenu.sh"
-PR = "r11"
+PR = "r12"
 DESCRIPTION = "An initramfs module with UI for selection of boot device."
-RDEPENDS = "klibc-utils-fstype initramfs-uniboot initramfs-module-block initramfs-module-loop initramfs-module-nfs"
+RDEPENDS = "klibc-utils-fstype-static initramfs-uniboot initramfs-module-block initramfs-module-loop initramfs-module-nfs"
 # For VFAT mounting.
 RRECOMMENDS = "kernel-module-nls-cp437 kernel-module-nls-iso8859-1"
 
