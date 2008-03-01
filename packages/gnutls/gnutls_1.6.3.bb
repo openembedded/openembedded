@@ -6,4 +6,4 @@ SRC_URI += "\
 	file://configure_madness.patch;patch=1 \
 	"
 
-PR = "r4"
+PR = "r5"
