@@ -15,12 +15,12 @@ do_compile() {
 do_install() {
 	find . -name ".svn"|xargs rm -rf
 	install -d ${D}${datadir}/pyneog
-	for i in media *.py Xsession.d.zadje; do
+	for i in media *.py; do
 		cp -a $i ${D}${datadir}/pyneog/
 	done
 
 	install -d ${D}${sysconfdir}/X11/Xsession.d/
-	ln -sf ${datadir}/pyneog/Xsession.d.zadje ${D}${sysconfdir}/X11/Xsession.d/80zadje
+	install -m 0755 80pyneog ${D}${sysconfdir}/X11/Xsession.d/
 }
 
 FILES_${PN} = "${datadir} ${bindir} ${sysconfdir}"
