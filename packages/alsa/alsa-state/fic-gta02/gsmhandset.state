@@ -6,8 +6,8 @@ state.neo1973gta02 {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'PCM Volume'
-		value.0 255
-		value.1 255
+		value.0 235
+		value.1 235
 	}
 	control.2 {
 		comment.access 'read write'
