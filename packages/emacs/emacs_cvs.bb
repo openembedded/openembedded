@@ -26,7 +26,7 @@ FILES_${PN}-el = "${datadir}/emacs/*/*/*.el.gz \
 
 FILES_${PN} += "${datadir}/emacs"
 
-QEMU = "qemu-${TARGET_ARCH} -L ${STAGING_DIR}/${TARGET_SYS}"
+QEMU = "qemu-${TARGET_ARCH} -L ${STAGING_DIR_TARGET}"
 LDFLAGS += "-L${CROSS_DIR}/${TARGET_SYS}/lib"
 
 EXTRA_OECONF = "--without-sound --without-x"

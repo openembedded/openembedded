@@ -25,8 +25,8 @@ EXTRA_OEMAKE = "'V=1' 'CFLAGS=${CFLAGS}' \
                 'LD=${KERNEL_LD}' \
                 'KDIR=${STAGING_KERNEL_DIR}'"
 
-export TARGET_LDFLAGS = "-L${STAGING_DIR}/${TARGET_SYS}/lib \
-                         -Wl,-rpath-link,${STAGING_DIR}/${TARGET_SYS}/lib"
+export TARGET_LDFLAGS = "-L${STAGING_DIR_TARGET}${layout_libdir} \
+                         -Wl,-rpath-link,${STAGING_DIR_TARGET}${layout_libdir}"
 
 do_install() {
         install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/usb/serial

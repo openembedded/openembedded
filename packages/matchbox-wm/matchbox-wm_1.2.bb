@@ -3,9 +3,10 @@ require matchbox-wm.inc
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native "
 RDEPENDS = ""
 
-PR="r3"
+PR="r4"
 
-SRC_URI = "http://projects.o-hand.com/matchbox/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
+SRC_URI = "http://matchbox-project.org/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
+           file://configure_fix.patch;patch=1 \
            file://gconf-2.m4 \
            file://kbdconfig"
 
@@ -29,7 +30,8 @@ ALTERNATIVE_PRIORITY = "10"
 EXTRA_OECONF = " \
                 --enable-startup-notification\
 		--enable-gconf \
-		--enable-expat \
+		 --with-expat-lib=${STAGING_LIBDIR} \
+		 --with-expat-includes=${STAGING_INCDIR} \
 		--disable-xrm"
 
 do_configure_prepend () {

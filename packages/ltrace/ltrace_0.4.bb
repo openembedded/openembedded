@@ -17,7 +17,7 @@ EXTRA_OEMAKE = "INSTALL_FILE='$(INSTALL) -p -m 0644' \
 		INSTALL_SCRIPT='$(INSTALL) -p -m 0755' \
 		INSTALL_DIR='$(INSTALL) -p -d -m 0755' "
 
-export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_DIR}/${TARGET_SYS}/include"
+export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_INCDIR}"
 
 do_configure_prepend() {
 	ln -sf ./linux-gnu sysdeps/linux-gnueabi

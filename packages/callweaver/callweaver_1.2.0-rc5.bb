@@ -29,9 +29,9 @@ INITSCRIPT_PARAMS = "defaults 60"
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF = " --with-ssl=${STAGING_DIR}/${HOST_SYS} --enable-low_memory \
+EXTRA_OECONF = " --with-ssl=${STAGING_DIR_HOST}${layout_exec_prefix} --enable-low_memory \
         --disable-zaptel --with-directory-layout=lsb --enable-t38 \
-        --with-codec-speex=${STAGING_DIR}/${HOST_SYS} \
+        --with-codec-speex=${STAGING_DIR_HOST}${layout_exec_prefix} \
         --with-perl-shebang='#!${bindir}/perl' --with-jabber --with-res_jabber \
         --with-javascript --with-res_js \
         --bindir=${bindir} --datadir=${datadir} --sysconfdir=${sysconfdir} \

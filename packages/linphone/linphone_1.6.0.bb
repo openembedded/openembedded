@@ -32,9 +32,9 @@ export PKG_CONFIG=${STAGING_BINDIR_NATIVE}/pkg-config
 EXTRA_OECONF = "--disable-gtk-doc \
                 --without-ffmpeg --disable-video --without-sdl \
                 --enable-alsa \
-                --with-osip=${STAGING_DIR}/${HOST_SYS} \
-                --with-readline=${STAGING_DIR}/${HOST_SYS} \
-                --with-speex=${STAGING_DIR}/${HOST_SYS} \
+                --with-osip=${STAGING_DIR_HOST}${layout_exec_prefix} \
+                --with-readline=${STAGING_DIR_HOST}${layout_exec_prefix} \
+                --with-speex=${STAGING_DIR_HOST}${layout_exec_prefix} \
                 --disable-truespeech --disable-manual \
                 --disable-gnome_ui"
 

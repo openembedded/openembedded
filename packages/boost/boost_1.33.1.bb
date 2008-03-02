@@ -21,42 +21,43 @@ SRC_URI += "file://linux-uclibc.patch;patch=1"
 S = "${WORKDIR}/${BOOST_P}"
 
 # Make a package for each library, plus -dev and -python
-PACKAGES =
+PACKAGES = "${PN}-dbg"
+BOOSTLIBS = ""
 
 PACKAGES += "boost-date-time"
 FILES_boost-date-time = "${libdir}/libboost_date_time.so.${PV}"
 
-PACKAGES += "boost-filesystem"
+BOOSTLIBS += "boost-filesystem"
 FILES_boost-filesystem = "${libdir}/libboost_filesystem.so.${PV}"
 
-PACKAGES += "boost-prg-exec-monitor"
+BOOSTLIBS += "boost-prg-exec-monitor"
 FILES_boost-prg-exec-monitor = "${libdir}/libboost_prg_exec_monitor.so.${PV}"
 
-PACKAGES += "boost-program-options"
+BOOSTLIBS += "boost-program-options"
 FILES_boost-program-options = "${libdir}/libboost_program_options.so.${PV}"
 
-PACKAGES += "boost-regex"
+BOOSTLIBS += "boost-regex"
 FILES_boost-regex = "${libdir}/libboost_regex.so.${PV}"
 
-PACKAGES += "boost-signals"
+BOOSTLIBS += "boost-signals"
 FILES_boost-signals = "${libdir}/libboost_signals.so.${PV}"
 
-PACKAGES += "boost-test-exec-monitor"
+BOOSTLIBS += "boost-test-exec-monitor"
 FILES_boost-test-exec-monitor = "${libdir}/libboost_test_exec_monitor.so.${PV}"
 
-PACKAGES += "boost-thread-mt"
+BOOSTLIBS += "boost-thread-mt"
 FILES_boost-thread-mt = "${libdir}/libboost_thread-mt.so.${PV}"
 
-PACKAGES += "boost-unit-test-framework"
+BOOSTLIBS += "boost-unit-test-framework"
 FILES_boost-unit-test-framework = "${libdir}/libboost_unit_test_framework.so.${PV}"
 
-PACKAGES += "boost-iostreams"
+BOOSTLIBS += "boost-iostreams"
 FILES_boost-iostreams = "${libdir}/libboost_iostreams.so.${PV}"
 
-PACKAGES += "boost-serialization"
+BOOSTLIBS += "boost-serialization"
 FILES_boost-serialization = "${libdir}/libboost_serialization.so.${PV}"
 
-PACKAGES += "boost-wserialization"
+BOOSTLIBS += "boost-wserialization"
 FILES_boost-wserialization = "${libdir}/libboost_wserialization.so.${PV}"
 
 # Python - remove this and set:
@@ -66,12 +67,18 @@ DEPENDS += "python"
 PYTHON_ROOT = "${STAGING_DIR_HOST}"
 PYTHON_VERSION = "2.4"
 
-PACKAGES += "boost-python"
+BOOSTLIBS += "boost-python"
 FILES_boost-python = "${libdir}/libboost_python.so.${PV}"
+
+PACKAGES += "${BOOSTLIBS}"
 
 # -dev last to pick up the remaining stuff
 PACKAGES += "${PN}-dev"
 FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
+
+# "boost" is a metapackage which pulls in all boost librabries
+PACKAGES += "${PN}"
+RRECOMMENDS_${PN} += "${BOOSTLIBS}"
 
 # Oh yippee, a new build system, it's sooo cooool I could eat my own
 # foot.  inlining=on lets the compiler choose, I think.  At least this
