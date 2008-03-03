@@ -1,0 +1,16 @@
+Index: PyODE-1.2.0/setup.py
+===================================================================
+--- PyODE-1.2.0.orig/setup.py
++++ PyODE-1.2.0/setup.py
+@@ -39,11 +39,6 @@ if sys.platform=="win32":
+ # Linux (and other) specific settings
+ ######################################################################
+ else:
+-
+-   for base in ["/usr", "/usr/local", "/opt/local"]:
+-      INC_DIRS += [os.path.join(base, "include")]
+-      LIB_DIRS += [os.path.join(base, "lib")]
+-
+    LIBS += ["ode", "stdc++"]
+ 
+ 
