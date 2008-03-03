@@ -5,6 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_gesbc-9302 = "1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
+DEFAULT_PREFERENCE_simpad = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
@@ -19,6 +20,21 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 
 # Real-time preemption. This is experimental and requires a different defconfig.
 #SRC_URI += " http://www.kernel.org/pub/linux/kernel/projects/rt/patch-2.6.24-rt1.bz2;patch=1"
+
+SRC_URI_append_simpad = "\
+           file://linux-2.6.24-SIMpad-GPIO-MMC-mod.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-battery-old-way-but-also-with-sysfs.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-cs3-simpad.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-mq200.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-pcmcia.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-serial-gpio_keys-and-cs3-ro.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-ucb1x00-switches.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-hostap_cs-shared-irq.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-orinoco_cs-shared-irq.patch;patch=1 \ 
+           file://collie-kexec.patch;patch=1 \
+           file://export_atags-r2.patch;patch=1 \
+           "	   
 
 SRC_URI_append_gesbc-9302 = " \
 	file://0001-gesbc-nand.patch;patch=1 \
