@@ -67,12 +67,17 @@ do_compile_prepend() {
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME}
-
+	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
+	
 	#reflash.ctl is required to reflash using bootldr
 	# format:
 	# name file md5sumfile destination
 	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_FILENAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
+
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+		cp ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$(basename ${KERNEL_INITRAMFS_PATH} | awk -F. '{print $1}')-${PV}-${PR}-${MACHINE}.bin 
+	fi
 }   
    
 do_deploy[dirs] = "${S}"

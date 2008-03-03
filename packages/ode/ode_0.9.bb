@@ -5,26 +5,30 @@ LICENSE = "LGPL"
 PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opende/ode-src-${PV}.zip \
-           file://config.h"
+           file://install.patch;patch=1"
 
-inherit autotools
+inherit autotools binconfig
 
-#do_configure() {
-#	touch configurator.exe
-#	chmod a+rx configurator.exe
-#	install -m 0644 ${WORKDIR}/config.h include/ode/
-#}
+EXTRA_OECONF = "--disable-demos --enable-soname"
 
-#do_compile() {
-#	oe_runmake CC="${CC}" CFLAGS="${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" RANLIB="${RANLIB}" AR="${AR} qf " ode-lib
-#}
+do_configure_append() {
+	echo "#define dInfinity DBL_MAX" >>include/ode/config.h
+}
 
-#do_stage() {
-#	install -d ${STAGING_INCDIR}/ode/
-#	install -m 0644 include/ode/*.h ${STAGING_INCDIR}/ode/
-#	oe_libinstall -C lib -a libode ${STAGING_LIBDIR}
-#}
+do_stage() {
+	oe_runmake install \
+		bindir=${STAGING_BINDIR_CROSS} \
+		libdir=${STAGING_LIBDIR} \
+		includedir=${STAGING_INCDIR} \
+		datadir=${STAGING_DATADIR}
+}
 
-#do_install() {
-#	:
-#}
+do_install() {
+	oe_runmake install \
+		bindir=${D}${bindir} \
+		libdir=${D}${libdir} \
+		includedir=${D}${incdir} \
+		datadir=${D}${datadir}
+}
+
+FILES_${PN} = "${libdir}/lib*.so*"
