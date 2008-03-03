@@ -12,6 +12,7 @@ TARGET_VENDOR = "-angstrom"
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
+CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
@@ -45,6 +46,9 @@ ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
 ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2420h4 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2430sdp = "0"
+
+#qemu has taken a dislike to armeb as well
+ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 
 #ARM EABI is softfloat by default, but let's make sure :)
 #make it overridable for platforms with FPU, like ep93xx or i.mx31

@@ -1,8 +1,8 @@
-PR = "r17"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
+PR = "r18"
 
 inherit autotools gettext
 

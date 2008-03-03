@@ -291,76 +291,6 @@ python package_do_split_locales() {
 	#bb.data.setVar('RDEPENDS_%s' % mainpkg, ' '.join(rdep), d)
 }
 
-def copyfile(src,dest,newmtime=None,sstat=None):
-    """
-    Copies a file from src to dest, preserving all permissions and
-    attributes; mtime will be preserved even when moving across
-    filesystems.  Returns true on success and false on failure.
-    """
-    import os, stat, shutil, commands
-
-    #print "copyfile("+src+","+dest+","+str(newmtime)+","+str(sstat)+")"
-    try:
-        if not sstat:
-            sstat=os.lstat(src)
-    except Exception, e:
-        print "copyfile: Stating source file failed...", e
-        return False
-
-    destexists=1
-    try:
-        dstat=os.lstat(dest)
-    except:
-        dstat=os.lstat(os.path.dirname(dest))
-        destexists=0
-
-    if destexists:
-        if stat.S_ISLNK(dstat[stat.ST_MODE]):
-            try:
-                os.unlink(dest)
-                destexists=0
-            except Exception, e:
-                pass
-
-    if stat.S_ISLNK(sstat[stat.ST_MODE]):
-        try:
-            target=os.readlink(src)
-            if destexists and not stat.S_ISDIR(dstat[stat.ST_MODE]):
-                os.unlink(dest)
-            os.symlink(target,dest)
-            #os.lchown(dest,sstat[stat.ST_UID],sstat[stat.ST_GID])
-            return os.lstat(dest)
-        except Exception, e:
-            print "copyfile: failed to properly create symlink:", dest, "->", target, e
-            return False
-
-    if stat.S_ISREG(sstat[stat.ST_MODE]):
-            try: # For safety copy then move it over.
-                shutil.copyfile(src,dest+"#new")
-                os.rename(dest+"#new",dest)
-            except Exception, e:
-                print 'copyfile: copy', src, '->', dest, 'failed.', e
-                return False
-    else:
-            #we don't yet handle special, so we need to fall back to /bin/mv
-            a=commands.getstatusoutput("/bin/cp -f "+"'"+src+"' '"+dest+"'")
-            if a[0]!=0:
-                print "copyfile: Failed to copy special file:" + src + "' to '" + dest + "'", a
-                return False # failure
-    try:
-        os.lchown(dest,sstat[stat.ST_UID],sstat[stat.ST_GID])
-        os.chmod(dest, stat.S_IMODE(sstat[stat.ST_MODE])) # Sticky is reset on chown
-    except Exception, e:
-        print "copyfile: Failed to chown/chmod/unlink", dest, e
-        return False
-
-    if newmtime:
-        os.utime(dest,(newmtime,newmtime))
-    else:
-        os.utime(dest, (sstat[stat.ST_ATIME], sstat[stat.ST_MTIME]))
-        newmtime=sstat[stat.ST_MTIME]
-    return newmtime
-
 python populate_packages () {
 	import glob, stat, errno, re
 
@@ -462,7 +392,7 @@ python populate_packages () {
 			fpath = os.path.join(root,file)
 			dpath = os.path.dirname(fpath)
 			bb.mkdirhier(dpath)
-			ret = copyfile(file, fpath)
+			ret = bb.copyfile(file, fpath)
 			if ret is False or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
 		del localdata
@@ -578,15 +508,18 @@ python emit_pkgdata() {
 		os.chdir(root)
 		g = glob('*')
 		if g or allow_empty == "1":
-			file(bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d), 'w').close()
+			packagedfile = bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d)
+			file(packagedfile, 'w').close()
 }
 emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
-	ldconfig
+	[ -x /sbin/ldconfig ] && /sbin/ldconfig
 fi
 }
+
+SHLIBSDIR = "${STAGING_DIR_HOST}/shlibs"
 
 python package_do_shlibs() {
 	import os, re, os.path
@@ -606,25 +539,14 @@ python package_do_shlibs() {
 		bb.error("WORKDIR not defined")
 		return
 
-	staging = bb.data.getVar('STAGING_DIR', d, 1)
-	if not staging:
-		bb.error("STAGING_DIR not defined")
-		return
-
 	ver = bb.data.getVar('PV', d, 1)
 	if not ver:
 		bb.error("PV not defined")
 		return
 
-	target_sys = bb.data.getVar('TARGET_SYS', d, 1)
-	if not target_sys:
-		bb.error("TARGET_SYS not defined")
-		return
-
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 
-	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
-	old_shlibs_dir = os.path.join(staging, "shlibs")
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
 	bb.mkdirhier(shlibs_dir)
 
 	needed = {}
@@ -681,7 +603,7 @@ python package_do_shlibs() {
 
 	shlib_provider = {}
 	list_re = re.compile('^(.*)\.list$')
-	for dir in [old_shlibs_dir, shlibs_dir]: 
+	for dir in [shlibs_dir]: 
 		if not os.path.exists(dir):
 			continue
 		for file in os.listdir(dir):
@@ -751,20 +673,9 @@ python package_do_pkgconfig () {
 		bb.error("WORKDIR not defined")
 		return
 
-	staging = bb.data.getVar('STAGING_DIR', d, 1)
-	if not staging:
-		bb.error("STAGING_DIR not defined")
-		return
-
-	target_sys = bb.data.getVar('TARGET_SYS', d, 1)
-	if not target_sys:
-		bb.error("TARGET_SYS not defined")
-		return
-
 	pkgdest = bb.data.getVar('PKGDEST', d, 1)
 
-	shlibs_dir = os.path.join(staging, target_sys, "shlibs")
-	old_shlibs_dir = os.path.join(staging, "shlibs")
+	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
 	bb.mkdirhier(shlibs_dir)
 
 	pc_re = re.compile('(.*)\.pc$')
@@ -814,7 +725,7 @@ python package_do_pkgconfig () {
 				f.write('%s\n' % p)
 			f.close()
 
-	for dir in [old_shlibs_dir, shlibs_dir]:
+	for dir in [shlibs_dir]:
 		if not os.path.exists(dir):
 			continue
 		for file in os.listdir(dir):
@@ -882,14 +793,39 @@ python package_depchains() {
 	postfixes = (bb.data.getVar('DEPCHAIN_POST', d, 1) or '').split()
 	prefixes  = (bb.data.getVar('DEPCHAIN_PRE', d, 1) or '').split()
 
-	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
-        #bb.note('rdepends for %s is %s' % (base, rdepends))
+	def pkg_adddeprrecs(pkg, base, suffix, getname, depends, d):
 
+		#bb.note('depends for %s is %s' % (base, depends))
+		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
+
+		for depend in depends:
+			if depend.find('-native') != -1 or depend.find('-cross') != -1 or depend.startswith('virtual/'):
+				#bb.note("Skipping %s" % depend)
+				continue
+			if depend.endswith('-dev'):
+				depend = depend.replace('-dev', '')
+			if depend.endswith('-dbg'):
+				depend = depend.replace('-dbg', '')
+			pkgname = getname(depend, suffix)
+			#bb.note("Adding %s for %s" % (pkgname, depend))
+			if not pkgname in rreclist:
+				rreclist.append(pkgname)
+
+		#bb.note('setting: RRECOMMENDS_%s=%s' % (pkg, ' '.join(rreclist)))
+		bb.data.setVar('RRECOMMENDS_%s' % pkg, ' '.join(rreclist), d)
+
+	def pkg_addrrecs(pkg, base, suffix, getname, rdepends, d):
+
+		#bb.note('rdepends for %s is %s' % (base, rdepends))
 		rreclist = explode_deps(bb.data.getVar('RRECOMMENDS_' + pkg, d, 1) or bb.data.getVar('RRECOMMENDS', d, 1) or "")
 
 		for depend in rdepends:
+			if depend.endswith('-dev'):
+				depend = depend.replace('-dev', '')
+			if depend.endswith('-dbg'):
+				depend = depend.replace('-dbg', '')
 			pkgname = getname(depend, suffix)
-			if not pkgname in rreclist and packaged(pkgname, d):
+			if not pkgname in rreclist:
 				rreclist.append(pkgname)
 
 		#bb.note('setting: RRECOMMENDS_%s=%s' % (pkg, ' '.join(rreclist)))
@@ -899,6 +835,10 @@ python package_depchains() {
 		dep = dep.split(' (')[0].strip()
 		if dep not in list:
 			list.append(dep)
+
+	depends = []
+	for dep in explode_deps(bb.data.getVar('DEPENDS', d, 1) or ""):
+		add_dep(depends, dep)
 
 	rdepends = []
 	for dep in explode_deps(bb.data.getVar('RDEPENDS', d, 1) or ""):
@@ -932,6 +872,8 @@ python package_depchains() {
 	for suffix in pkgs:
 		for pkg in pkgs[suffix]:
 			(base, func) = pkgs[suffix][pkg]
+			if suffix == "-dev":
+				pkg_adddeprrecs(pkg, base, suffix, func, depends, d)
 			if len(pkgs[suffix]) == 1:
 				pkg_addrrecs(pkg, base, suffix, func, rdepends, d)
 			else:

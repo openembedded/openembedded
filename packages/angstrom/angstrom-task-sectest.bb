@@ -1,11 +1,11 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r32"
+PR = "r33"
 
 inherit task
 
 RDEPENDS_${PN} = "\
     nmap \
-    ettercap \
+    ettercap-ng \
     stunnel \
     curl \
 #    dsniff \

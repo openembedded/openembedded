@@ -1,0 +1,6 @@
+[Desktop Entry]
+Comment= Changes the CPU frequency
+Exec=qclockchange
+Icon=qclockchange
+Type=Application
+Name=Qclockchange

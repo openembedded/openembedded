@@ -1,0 +1,133 @@
+Index: libhildonfm-1.9.46/hildon-fm/hildon-file-chooser-dialog.c
+===================================================================
+--- libhildonfm-1.9.46.orig/hildon-fm/hildon-file-chooser-dialog.c	2007-10-16 10:11:59.000000000 +0200
++++ libhildonfm-1.9.46/hildon-fm/hildon-file-chooser-dialog.c	2008-02-14 08:24:41.000000000 +0100
+@@ -192,6 +192,7 @@
+   return (first_digit << 4) | second_digit;
+ }
+ 
++#ifdef USE_MAEMO_GTK
+ static void chooser_entry_invalid_input_cb (GtkEntry *entry,
+                                             GtkInvalidInputType inv_type,
+                                             gpointer user_data)
+@@ -202,6 +203,7 @@
+                                     HCS("ckdg_ib_maximum_characters_reached"));
+   }
+ }
++#endif
+ 
+ static gchar *
+ g_unescape_uri_string (const char *escaped,
+@@ -1838,7 +1840,9 @@
+     g_object_class_install_property(gobject_class, PROP_SELECTION_MODE, pspec);
+ 
+ 
++#ifdef USE_MAEMO_GTK
+     hildon_gtk_file_chooser_install_properties(gobject_class);
++#endif
+ }
+ 
+ static void hildon_file_chooser_dialog_sort_changed(GtkWidget * item,
+@@ -1975,10 +1979,10 @@
+           g_signal_connect( priv->entry_name, "changed",
+                           G_CALLBACK( hildon_file_chooser_entry_changed ),
+                           self );
+-
++#ifdef USE_MAEMO_GTK
+     g_signal_connect(priv->entry_name, "invalid-input",
+                      G_CALLBACK(chooser_entry_invalid_input_cb), self);
+-
++#endif
+     priv->hbox_location = gtk_hbox_new(FALSE, HILDON_MARGIN_DEFAULT);
+     priv->hbox_items = gtk_hbox_new(FALSE, HILDON_MARGIN_DEFAULT);
+     priv->image_location = gtk_image_new();
+Index: libhildonfm-1.9.46/hildon-fm/hildon-file-selection.c
+===================================================================
+--- libhildonfm-1.9.46.orig/hildon-fm/hildon-file-selection.c	2007-10-16 10:11:59.000000000 +0200
++++ libhildonfm-1.9.46/hildon-fm/hildon-file-selection.c	2008-02-14 08:21:31.000000000 +0100
+@@ -2036,6 +2036,7 @@
+     g_object_set(cell, "text", buffer, "sensitive", sensitive, NULL);
+ }
+ 
++#ifdef USE_MAEMO_GTK
+ static void hildon_file_selection_navigation_pane_context(GtkWidget *
+                                                           widget,
+                                                           gpointer data)
+@@ -2052,6 +2053,7 @@
+     ULOG_DEBUG(__FUNCTION__);
+     g_signal_emit(data, signal_content_pane_context_menu, 0);
+ }
++#endif
+ 
+ static gboolean hildon_file_selection_on_content_pane_key(GtkWidget *
+                                                           widget,
+@@ -2200,6 +2202,7 @@
+   }
+ }
+ 
++#ifdef USE_MAEMO_GTK
+ static gboolean
+ tap_and_hold_query (gpointer self, guint signal_id)
+ {
+@@ -2224,6 +2227,7 @@
+ {
+   return tap_and_hold_query (self, signal_navigation_pane_context_menu);
+ }
++#endif
+ 
+ static void hildon_file_selection_create_thumbnail_view(HildonFileSelection
+                                                         * self)
+@@ -2277,7 +2281,7 @@
+     g_signal_connect_object(tree, "key-press-event",
+                      G_CALLBACK(hildon_file_selection_on_content_pane_key),
+                      self, 0);
+-
++#ifdef USE_MAEMO_GTK
+     gtk_widget_tap_and_hold_setup(GTK_WIDGET(tree), NULL, NULL,
+                                   GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+     g_signal_connect_object (tree, "tap-and-hold-query",
+@@ -2286,7 +2290,7 @@
+     g_signal_connect_object(tree, "tap-and-hold",
+                      G_CALLBACK
+                      (hildon_file_selection_content_pane_context), self, 0);
+-
++#endif
+     g_signal_connect_object(tree, "notify::has-focus",
+                      G_CALLBACK(content_pane_focus), self, 0);
+ }
+@@ -2397,7 +2401,7 @@
+         (selection, "changed",
+          G_CALLBACK (hildon_file_selection_content_pane_selection_changed),
+          self, 0);
+-
++#ifdef USE_MAEMO_GTK
+     gtk_widget_tap_and_hold_setup(GTK_WIDGET(tree), NULL, NULL,
+                                   GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+     g_signal_connect_object (tree, "tap-and-hold-query",
+@@ -2406,7 +2410,7 @@
+     g_signal_connect_object(tree, "tap-and-hold",
+                      G_CALLBACK
+                      (hildon_file_selection_content_pane_context), self, 0);
+-
++#endif
+     g_signal_connect_object(tree, "key-press-event",
+                      G_CALLBACK(hildon_file_selection_on_content_pane_key),
+                      self, 0);
+@@ -2492,7 +2496,7 @@
+     g_signal_connect_object(selection, "changed",
+                      G_CALLBACK(hildon_file_selection_selection_changed),
+                      self, 0);
+-
++#ifdef USE_MAEMO_GTK
+     gtk_widget_tap_and_hold_setup(GTK_WIDGET(self->priv->dir_tree), NULL,
+                                   NULL, GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
+     g_signal_connect_object (self->priv->dir_tree, "tap-and-hold-query",
+@@ -2502,7 +2506,7 @@
+                      G_CALLBACK
+                      (hildon_file_selection_navigation_pane_context),
+                      self, 0);
+-
++#endif
+     g_signal_connect_object(self->priv->dir_tree, "key-press-event",
+                      G_CALLBACK
+                      (hildon_file_selection_on_navigation_pane_key), self, 0);

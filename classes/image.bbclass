@@ -35,9 +35,9 @@ python () {
 }
 
 #
-# Get a list of files containing device tables to create.
+# Get a list of files containing tables of devices to be created.
 # * IMAGE_DEVICE_TABLE is the old name to an absolute path to a device table file
-# * IMAGE_DEVICE_TABLES is a new name for a file, or list of files, seached
+# * IMAGE_DEVICE_TABLES is a new name for a file, or list of files, searched
 #   for in the BBPATH
 # If neither are specified then the default name of files/device_table-minimal.txt
 # is searched for in the BBPATH (same as the old version.)
@@ -108,6 +108,14 @@ fakeroot do_rootfs () {
 	${IMAGE_POSTPROCESS_COMMAND}
 	
 	${MACHINE_POSTPROCESS_COMMAND}
+}
+
+do_deploy_to[nostamp] = "1"
+do_deploy_to () {
+	# A standalone task to deploy built image to the location specified
+	# by DEPLOY_TO variable (likely passed via environment).
+	# Assumes ${IMAGE_FSTYPES} is a single value!
+	cp "${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.${IMAGE_FSTYPES}" ${DEPLOY_TO}
 }
 
 insert_feed_uris () {
@@ -202,3 +210,4 @@ rootfs_update_timestamp () {
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
 
 addtask rootfs before do_build after do_install
+addtask deploy_to after do_rootfs

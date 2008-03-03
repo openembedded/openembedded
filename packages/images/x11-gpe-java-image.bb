@@ -12,6 +12,7 @@ IMAGE_INSTALL = "\
     ${XSERVER} \
     task-base-extended \
     task-java \
+    task-java-gtk \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \

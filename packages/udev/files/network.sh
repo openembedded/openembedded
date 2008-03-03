@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# udevd does clearenv(). Export shell PATH to children.
+export PATH
+
 # Do not run when pcmcia-cs is installed
 test -x /sbin/cardctl && exit 0
 

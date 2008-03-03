@@ -1,9 +1,10 @@
 require linux-rp.inc
 
-PR = "r3"
+PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
+DEFAULT_PREFERENCE_qemux86 = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -41,6 +42,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/poodle_pm-r5.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
+           file://pxa27x-resume.patch;patch=1;status=external \
            file://squashfs3.3.patch;patch=1;status=external \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
@@ -145,6 +147,7 @@ SRC_URI_append_akita = "\
 SRC_URI_append_spitz = "\
            file://mtd-module.patch;patch=1;status=external \
            file://wm8750-treble.patch;patch=1;status=external \
+           file://spitz_h_rewrite.patch;patch=1;status=external \
            file://sharpsl-rc-r1.patch;patch=1 \
            "
 

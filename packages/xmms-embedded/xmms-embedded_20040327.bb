@@ -31,7 +31,7 @@ do_configure_prepend() {
 }
 
 do_compile() {
-	oe_runmake "STAGING_DIR=${STAGING_DIR}/${HOST_SYS}"
+	oe_runmake "STAGING_DIR=${STAGING_EXECPREFIXDIR}"
 }
 
 do_install() {

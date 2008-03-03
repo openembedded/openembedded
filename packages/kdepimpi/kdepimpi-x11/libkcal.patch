@@ -1,0 +1,16 @@
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1898924&group_id=104103&atid=636951
+status: upstream is pretty dead
+
+--- kdepim/libkcal/libkcal.pro~paths	2005-01-30 00:23:34.000000000 +0100
++++ kdepim/libkcal/libkcal.pro	2005-10-03 11:09:49.000000000 +0200
+@@ -11,8 +11,8 @@
+ DESTDIR = ../bin
+ DEFINES +=  DESKTOP_VERSION
+ unix: {
+-LIBS += ../libical/lib/libical.a
+-LIBS += ../libical/lib/libicalss.a
++LIBS += ../dest$(LIBICAL_PATH)/libical.a
++LIBS += ../dest$(LIBICAL_PATH)/libicalss.a
+ OBJECTS_DIR = obj/unix
+ MOC_DIR = moc/unix
+ }

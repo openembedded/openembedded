@@ -90,8 +90,8 @@ do_stage() {
         # make sure there isn't a conflicting libc in staging
         # this should be solved differently
         rm -f ${STAGING_LIBDIR}/libc.so.6
-        oe_runmake 'install_root=${STAGING_DIR}/${HOST_SYS}' \
-                   'includedir=/include' 'libdir=/lib' 'slibdir=/lib' \
+        oe_runmake 'install_root=${STAGING_DIR_HOST}' \
+                   'includedir=${layout_includedir}' 'libdir=${layout_libdir}' 'slibdir=${layout_base_libdir}' \
                    '${STAGING_LIBDIR}/libc.so.6' \
                    install-headers install-lib
 

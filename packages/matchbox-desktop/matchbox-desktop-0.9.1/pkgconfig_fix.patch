@@ -1,0 +1,15 @@
+Index: matchbox-desktop-0.9.1/matchbox-desktop.pc.in
+===================================================================
+--- matchbox-desktop-0.9.1.orig/matchbox-desktop.pc.in	2008-02-29 13:48:39.000000000 +0000
++++ matchbox-desktop-0.9.1/matchbox-desktop.pc.in	2008-02-29 13:49:07.000000000 +0000
+@@ -6,5 +6,6 @@
+ Name: matchbox-desktop
+ Description: Matchbox Desktop module dependencies.
+ Version: @VERSION@
+-Libs: -L${libdir} @LIBMB_LIBS@
+-Cflags: -I${includedir}/matchbox-desktop @LIBMB_CFLAGS@
+\ No newline at end of file
++Requires: libmb
++Libs: -L${libdir}
++Cflags: -I${includedir}/matchbox-desktop
+\ No newline at end of file

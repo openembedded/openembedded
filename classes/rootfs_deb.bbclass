@@ -10,12 +10,8 @@ fakeroot rootfs_deb_do_rootfs () {
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/info
 	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/updates
 
-	mkdir -p ${STAGING_ETCDIR_NATIVE}/apt/
-
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/preferences
-	> ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev
-	> ${STAGING_ETCDIR_NATIVE}/apt/preferences
 	> ${IMAGE_ROOTFS}/var/dpkg/status
 	> ${IMAGE_ROOTFS}/var/dpkg/available
 	# > ${STAGING_DIR}/var/dpkg/status
@@ -40,9 +36,9 @@ fakeroot rootfs_deb_do_rootfs () {
 		priority=$(expr $priority + 5)
 	done
 
-	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_DIR}/etc/apt/sources.list
+	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_ETCDIR_NATIVE}/apt/sources.list
 
-	cat "${STAGING_DIR}/etc/apt/apt.conf.sample" \
+	cat "${STAGING_ETCDIR_NATIVE}/apt/apt.conf.sample" \
 		| sed -e 's#Architecture ".*";#Architecture "${TARGET_ARCH}";#' \
 		> "${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 

@@ -28,7 +28,7 @@ python do_package_deb_install () {
     pkgfn = bb.data.getVar('PKGFN', d, 1)
     rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
     debdir = bb.data.getVar('DEPLOY_DIR_DEB', d, 1)
-    stagingdir = bb.data.getVar('STAGING_DIR', d, 1)
+    apt_config = bb.data.expand('${STAGING_ETCDIR_NATIVE}/apt/apt.conf', d)
     stagingbindir = bb.data.getVar('STAGING_BINDIR_NATIVE', d, 1)
     tmpdir = bb.data.getVar('TMPDIR', d, 1)
 
@@ -54,8 +54,8 @@ python do_package_deb_install () {
     # env of the fork+execve'd processs
 
     # Set up environment
-    apt_config = os.getenv('APT_CONFIG')
-    os.putenv('APT_CONFIG', os.path.join(stagingdir, 'etc', 'apt', 'apt.conf'))
+    apt_config_backup = os.getenv('APT_CONFIG')
+    os.putenv('APT_CONFIG', apt_config)
     path = os.getenv('PATH')
     os.putenv('PATH', '%s:%s' % (stagingbindir, os.getenv('PATH')))
 
@@ -64,12 +64,12 @@ python do_package_deb_install () {
     commands.getstatusoutput('apt-get install -y %s' % pkgfn)
 
     # revert environment
-    os.putenv('APT_CONFIG', apt_config)
+    os.putenv('APT_CONFIG', apt_config_backup)
     os.putenv('PATH', path)
 }
 
 python do_package_deb () {
-    import sys, re, fcntl, copy
+    import sys, re, copy
 
     workdir = bb.data.getVar('WORKDIR', d, 1)
     if not workdir:
@@ -102,20 +102,12 @@ python do_package_deb () {
         bb.debug(1, "No packages; nothing to do")
         return
 
-    def lockfile(name):
-        lf = open(name, "a+")
-        fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
-        return lf
-
-    def unlockfile(lf):
-        fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
-        lf.close
-
     for pkg in packages.split():
         localdata = bb.data.createCopy(d)
-        root = "%s/install/%s" % (workdir, pkg)
+        pkgdest = bb.data.getVar('PKGDEST', d, 1)
+        root = "%s/%s" % (pkgdest, pkg)
 
-        lf = lockfile(root + ".lock")
+        lf = bb.utils.lockfile(root + ".lock")
 
         bb.data.setVar('ROOT', '', localdata)
         bb.data.setVar('ROOT_%s' % pkg, root, localdata)
@@ -147,7 +139,7 @@ python do_package_deb () {
         if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
             from bb import note
             note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
-            unlockfile(lf)
+            bb.utils.unlockfile(lf)
             continue
 
         controldir = os.path.join(root, 'DEBIAN')
@@ -158,6 +150,7 @@ python do_package_deb () {
             # import codecs
             # ctrlfile = codecs.open("someFile", "w", "utf-8")
         except OSError:
+            bb.utils.unlockfile(lf)
             raise bb.build.FuncFailed("unable to open control file for writing.")
 
         fields = []
@@ -196,6 +189,7 @@ python do_package_deb () {
                 ctrlfile.write(unicode(c % tuple(pullData(fs, localdata))))
         except KeyError:
             (type, value, traceback) = sys.exc_info()
+            bb.utils.unlockfile(lf)
             ctrlfile.close()
             raise bb.build.FuncFailed("Missing field for deb generation: %s" % value)
         # more fields
@@ -231,6 +225,7 @@ python do_package_deb () {
             try:
                 scriptfile = file(os.path.join(controldir, script), 'w')
             except OSError:
+                bb.utils.unlockfile(lf)
                 raise bb.build.FuncFailed("unable to open %s script file for writing." % script)
             scriptfile.write("#!/bin/sh\n")
             scriptfile.write(scriptvar)
@@ -242,6 +237,7 @@ python do_package_deb () {
             try:
                 conffiles = file(os.path.join(controldir, 'conffiles'), 'w')
             except OSError:
+                bb.utils.unlockfile(lf)
                 raise bb.build.FuncFailed("unable to open conffiles for writing.")
             for f in conffiles_str.split():
                 conffiles.write('%s\n' % f)
@@ -250,6 +246,7 @@ python do_package_deb () {
         os.chdir(basedir)
         ret = os.system("PATH=\"%s\" fakeroot dpkg-deb -b %s %s" % (bb.data.getVar("PATH", localdata, 1), root, pkgoutdir))
         if ret != 0:
+            bb.utils.unlockfile(lf)
             raise bb.build.FuncFailed("dpkg-deb execution failed")
 
         for script in ["preinst", "postinst", "prerm", "postrm", "control" ]:
@@ -263,13 +260,16 @@ python do_package_deb () {
         except OSError:
             pass
 
-        unlockfile(lf)
+        bb.utils.unlockfile(lf)
 }
 
 python () {
     import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
-        bb.data.setVarFlag('do_package_write_deb', 'depends', 'dpkg-native:do_populate_staging fakeroot-native:do_populate_staging', d)
+        deps = (bb.data.getVarFlag('do_package_write_deb', 'depends', d) or "").split()
+        deps.append('dpkg-native:do_populate_staging')
+        deps.append('fakeroot-native:do_populate_staging')
+        bb.data.setVarFlag('do_package_write_deb', 'depends', " ".join(deps), d)
 }
 
 python do_package_write_deb () {

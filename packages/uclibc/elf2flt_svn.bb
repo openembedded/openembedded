@@ -9,7 +9,7 @@ SRC_URI = "svn://sources.blackfin.uclinux.org/toolchain/trunk;module=${PN}"
 
 S = "${WORKDIR}/${PN}"
 
-EXTRA_OECONF = " --with-libbfd=${STAGING_DIR}/${TARGET_SYS}/lib/libbfd.a \
-                 --with-libiberty=${STAGING_DIR}/${TARGET_SYS}/lib/libiberty.a \
-                 --with-bfd-include-dir=${STAGING_DIR}/${TARGET_SYS}/include \
+EXTRA_OECONF = " --with-libbfd=${STAGING_LIBDIR}/libbfd.a \
+                 --with-libiberty=${STAGING_LIBDIR}/libiberty.a \
+                 --with-bfd-include-dir=${STAGING_INCDIR} \
                "

@@ -20,12 +20,12 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--x-libraries=${STAGING_LIBDIR} \
-		--with-libgps=${STAGING_DIR}/${HOST_SYS} \
-		--with-libpcap=${STAGING_DIR}/${HOST_SYS} \
+		--with-libgps=${STAGING_EXECPREFIXDIR} \
+		--with-libpcap=${STAGING_EXECPREFIXDIR} \
 		--with-sqlite-includes=${STAGING_INCDIR} \
 		--with-sqlite-libs=${STAGING_LIBDIR} \
 		--without-athena --enable-dbus \
-                --with-libiw=${STAGING_DIR}/${HOST_SYS}"
+                --with-libiw=${STAGING_EXECPREFIXDIR}"
 
 CFLAGS =+ "-I${S}/include"
 LDFLAGS += "-lz"

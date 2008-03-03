@@ -2,7 +2,6 @@ require linux.inc
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEFAULT_PREFERENCE_avr32 = "1"
@@ -10,7 +9,7 @@ DEFAULT_PREFERENCE_avr32 = "1"
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 DEPENDS_append_mpc8323e-rdb = " dtc-native"
 
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \

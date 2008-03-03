@@ -1,3 +1,16 @@
+upstream: n/a
+status: evil hack
+comment: Including host system headers when cross compiling can lead to weird
+issues, in the best case compile issues, in the worst case crashes. E.g. if you
+are building a uclibc system, you certainly do not want glibc headers or OSX libc
+headers to be picked up. To avoid that this patch is penetalizing certain common
+Linux/Unix host directories.
+
+To send the patch upstream the evil paths should be specified by
+a setting or command-line options. Until now this is a evil hack assuming
+certain host system paths. E.g. /usr/local/ and other common paths should be
+added.
+
 Index: gcc-4.0.2/gcc/c-incpath.c
 ===================================================================
 --- gcc-4.0.2.orig/gcc/c-incpath.c	2005-01-23 16:05:27.000000000 +0100

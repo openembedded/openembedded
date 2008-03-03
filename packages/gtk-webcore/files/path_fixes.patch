@@ -1,0 +1,15 @@
+Index: NRCore/configure.in
+===================================================================
+--- NRCore.orig/configure.in	2008-02-29 11:01:14.000000000 +0000
++++ NRCore/configure.in	2008-02-29 12:45:18.000000000 +0000
+@@ -67,8 +67,8 @@
+       AC_MSG_RESULT([found. Using prefix $jscore_prefix])
+       JSCORE_ENABLE=yes
+       AC_SUBST(JSCORE_ENABLE)
+-      JSCORE_LIBS="-L$jscore_prefix/lib -ljscore"
+-      JSCORE_CFLAGS="-I$jscore_prefix/include/gtk-webcore-jscore/"
++      JSCORE_LIBS="-L$jscore_prefix/lib -lgtk_webcore_jscore"
++      JSCORE_CFLAGS="-I$jscore_prefix/include/gtk-webcore/"
+       jscore_pkgdatadir="$jscore_prefix/share/gtk-webcore-jscore"
+    else
+      AC_MSG_ERROR([JavaScriptCore not found. Use --with-javascriptcore-prefix=PREFIX])

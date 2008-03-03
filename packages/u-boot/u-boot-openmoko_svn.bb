@@ -6,16 +6,19 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r0"
+PR = "r1"
 
 SRCREV_FORMAT = "patches"
 
-UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v1 gta02v2 gta02v3 gta02v4"
+UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v4 gta02v5"
 
 DEFAULT_PREFERENCE = "-1"
 
+BLESSED_GIT_REV = "928d1d77f8623c120d8763e20e1ca58df9c5c4c6"
+
 SRC_URI = "\
-  git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream;tag=3afac79ec27b91df185f090b31dad9620779f440 \
+  
+git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream;tag=${BLESSED_GIT_REV} \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
   file://uboot-eabi-fix-HACK.patch;patch=1;maxrev=3773 \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \

@@ -3,11 +3,16 @@ HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
 SECTION = "gpe"
 LICENSE = "GPL"
-DEPENDS = "glib-2.0 gtk+ pango osb-jscore libxt"
+DEPENDS = "glib-2.0 gtk+ pango osb-jscore libxt gperf-native"
 
 LEAD_SONAME = "libnrcore.so"
 
 inherit autotools pkgconfig
+
+#/khtml/css/cssproperties.h failes to generate properly with high parallel makes
+PARALLEL_MAKE = ""
+
+EXTRA_OECONF += "--with-javascriptcore-prefix=${STAGING_EXECPREFIXDIR}"
 
 do_configure () {
 	autotools_do_configure

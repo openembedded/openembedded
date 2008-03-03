@@ -1,13 +1,15 @@
 DESCRIPTION = "Internet connection library"
 LICENSE = "LGPL"
-DEPENDS = "dbus-glib gconf"
+DEPENDS = "dbus gconf osso-ic-oss"
 
-SRC_URI = "http://repository.maemo.org/pool/bora/free/source/${PN}_${PV}.tar.gz \
-           file://dbus-api-update.patch;patch=1"
+PR = "r1"
+
+SRC_URI = "http://repository.maemo.org/pool/maemo4.0/free/source/libc/${PN}/${PN}_${PV}-0.8.tar.gz"
+
 inherit autotools pkgconfig
 
 do_stage() {
-        autotools_stage_all
+	autotools_stage_all
 }
 
 

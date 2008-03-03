@@ -4,7 +4,7 @@ SECTION = "devel"
 LICENSE = "GPL"
 # NOTE: split PR.  If the main .bb changes something that affects its *build*
 # remember to increment the -cross .bb PR too.
-PR = "r10"
+PR = "r11"
 
 inherit autotools gettext
 

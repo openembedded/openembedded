@@ -1,0 +1,140 @@
+Index: kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c
+===================================================================
+--- kexec-tools-1.101.orig/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-22 20:45:15.907610333 +0100
++++ kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-22 20:45:27.508612989 +0100
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-#include <elf.h>
++#include "../../../include/elf.h"
+ #include "../../kexec.h"
+ #include "../../kexec-elf.h"
+ 
+Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
+===================================================================
+--- kexec-tools-1.101.orig/kexec/arch/arm/kexec-zImage-arm.c	2008-02-22 20:45:15.959611260 +0100
++++ kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c	2008-02-22 20:45:27.508612989 +0100
+@@ -110,13 +110,13 @@
+ 	}
+ 
+ 	fread(buf, sizeof(buf[1]), BOOT_PARAMS_SIZE, fp);
+-	if (ferror(fp)) {
++/*	if (ferror(fp)) {
+ 		fprintf(stderr, "Cannot read %s: %s\n",
+ 			fn, strerror(errno));
+ 		fclose(fp);
+ 		return NULL;
+ 	}
+-
++*/
+ 	fclose(fp);
+ 	return (struct tag *) buf;
+ }
+Index: kexec-tools-1.101/kexec/ifdown.c
+===================================================================
+--- kexec-tools-1.101.orig/kexec/ifdown.c	2004-06-09 20:55:31.000000000 +0200
++++ kexec-tools-1.101/kexec/ifdown.c	2008-02-22 20:45:27.508612989 +0100
+@@ -14,7 +14,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/time.h>
+-#include <sys/errno.h>
++#include <errno.h>
+ 
+ #include <net/if.h>
+ #include <netinet/in.h>
+Index: kexec-tools-1.101/purgatory/Makefile
+===================================================================
+--- kexec-tools-1.101.orig/purgatory/Makefile	2005-01-08 23:36:32.000000000 +0100
++++ kexec-tools-1.101/purgatory/Makefile	2008-02-22 20:45:27.516611391 +0100
+@@ -13,7 +13,7 @@
+ 
+ PCFLAGS += $(call cc-option, -ffreestanding)
+ PCFLAGS += $(call cc-option, -fnobuiltin)
+-PCFLAGS += $(call cc-option, -fnostdinc)
++PCFLAGS += $(call cc-option, -nostdinc)
+ PCFLAGS += $(call cc-option, -fno-zero-initialized-in-bss)
+ 
+ PURGATORY_C_SRCS:= 
+Index: kexec-tools-1.101/kexec/kexec-elf-rel.c
+===================================================================
+--- kexec-tools-1.101.orig/kexec/kexec-elf-rel.c	2005-01-13 14:04:21.000000000 +0100
++++ kexec-tools-1.101/kexec/kexec-elf-rel.c	2008-02-22 20:45:27.524612027 +0100
+@@ -4,7 +4,7 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <stdlib.h>
+-#include "elf.h"
++#include "../include/elf.h"
+ #include <boot/elf_boot.h>
+ #include "kexec.h"
+ #include "kexec-elf.h"
+Index: kexec-tools-1.101/kexec/kexec-syscall.h
+===================================================================
+--- kexec-tools-1.101.orig/kexec/kexec-syscall.h	2008-02-22 20:45:15.923611048 +0100
++++ kexec-tools-1.101/kexec/kexec-syscall.h	2008-02-22 20:45:27.524612027 +0100
+@@ -2,7 +2,7 @@
+ #define KEXEC_SYSCALL_H
+ 
+ #define __LIBRARY__
+-#include <syscall.h>
++/*#include <syscall.h>*/
+ #include <sys/syscall.h>
+ #include <unistd.h>
+ 
+@@ -21,7 +21,7 @@
+ #define LINUX_REBOOT_CMD_KEXEC_OLD	0x81726354
+ #define LINUX_REBOOT_CMD_KEXEC_OLD2	0x18263645
+ #define LINUX_REBOOT_CMD_KEXEC		0x45584543
+-
++/*
+ #ifdef __i386__
+ #define __NR_kexec_load		283
+ #endif
+@@ -43,18 +43,19 @@
+ #ifndef __NR_kexec_load
+ #error Unknown processor architecture.  Needs a kexec_load syscall number.
+ #endif
+-
++*/
+ struct kexec_segment;
+-
++/*
+ static inline long kexec_load(void *entry, unsigned long nr_segments,
+ 			struct kexec_segment *segments, unsigned long flags)
+ {
+ 	return (long) syscall(__NR_kexec_load, entry, nr_segments, segments, flags);
+ }
+-
++*/
+ static inline long kexec_reboot(void)
+ {
+-	return (long) syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
++	//return (long) syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
++	return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_KEXEC, 0);
+ }
+ 
+ 
+Index: kexec-tools-1.101/kexec/kexec.c
+===================================================================
+--- kexec-tools-1.101.orig/kexec/kexec.c	2008-02-22 20:45:15.923611048 +0100
++++ kexec-tools-1.101/kexec/kexec.c	2008-02-22 20:45:38.847612035 +0100
+@@ -29,9 +29,7 @@
+ #include <unistd.h>
+ #include <fcntl.h>
+ #include <getopt.h>
+-#ifdef HAVE_ZLIB_H
+-#include <zlib.h>
+-#endif
++#include "zlib.h"
+ #include <sha256.h>
+ #include "kexec.h"
+ #include "kexec-syscall.h"
+@@ -383,7 +381,7 @@
+ 	return buf;
+ }
+ 
+-#if HAVE_ZLIB_H
++#if 1 
+ char *slurp_decompress_file(const char *filename, off_t *r_size)
+ {
+ 	gzFile fp;

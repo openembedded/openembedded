@@ -1,0 +1,13 @@
+Index: NRCit/gtk-webcore-nrcit.pc.in
+===================================================================
+--- NRCit.orig/gtk-webcore-nrcit.pc.in	2008-02-29 13:46:41.000000000 +0000
++++ NRCit/gtk-webcore-nrcit.pc.in	2008-02-29 13:46:51.000000000 +0000
+@@ -6,6 +6,6 @@
+ Name: gtk-webcore-nrcit
+ Description: Gtk+-WebCore HTML rendering engine, browser interface
+ Version: @VERSION@
+-Requires: gtk-webcore-jscore gtk-webcore-nrcore xft fontconfig gdk-2.0 gtk+-2.0 glib-2.0
+-Libs: -L${libdir} -lgtk_webcore_nrcore -lgtk_webcore_nrcit -lgthread-2.0 -lgobject-2.0 @LIBCURL_LIBS@
++Requires: gtk-webcore-jscore gtk-webcore-nrcore xft fontconfig gdk-2.0 gtk+-2.0 glib-2.0 libcurl
++Libs: -L${libdir} -lgtk_webcore_nrcore -lgtk_webcore_nrcit -lgthread-2.0 -lgobject-2.0
+ Cflags: -I${includedir}/gtk-webcore/webi -I${includedir}/gtk-webcore

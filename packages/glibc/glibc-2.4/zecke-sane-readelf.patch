@@ -1,3 +1,8 @@
+upstream: http://sources.redhat.com/bugzilla/show_bug.cgi?id=3004
+status: WONTFIX
+comment: Use OEs version of the readelf version. There might be no
+host system version (e.g. on OSX) or it is not multiarch.
+
 Index: glibc-2.4/configure
 ===================================================================
 --- glibc-2.4.orig/configure	2006-03-06 12:18:56.000000000 +0100

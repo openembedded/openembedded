@@ -6,6 +6,7 @@ SECTION = "devel"
 
 SRC_URI = "http://www.sqlite.org/sqlite-${PV}.tar.gz \
            file://lemon.1"
+
 S = "${WORKDIR}/sqlite-${PV}/tool"
 
 do_compile() {

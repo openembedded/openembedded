@@ -13,16 +13,15 @@ distutils_do_compile() {
 }
 
 distutils_stage_headers() {
-        install -d ${STAGING_DIR_HOST}${layout_prefix}/lib/${PYTHON_DIR}/site-packages
+        install -d ${STAGING_DIR_HOST}${layout_libdir}/${PYTHON_DIR}/site-packages
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
         ${STAGING_BINDIR_NATIVE}/python setup.py install_headers ${DISTUTILS_STAGE_HEADERS_ARGS} || \
         oefatal "python setup.py install_headers execution failed."
 }
 
 distutils_stage_all() {
-        install -d ${STAGING_DIR_HOST}${layout_prefix}/lib/${PYTHON_DIR}/site-packages
-        # is this missing a lib below?
-        PYTHONPATH=${STAGING_DIR_HOST}${layout_prefix}/${PYTHON_DIR}/site-packages \
+        install -d ${STAGING_DIR_HOST}${layout_libdir}/${PYTHON_DIR}/site-packages
+        PYTHONPATH=${STAGING_DIR_HOST}${layout_libdir}/${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
         ${STAGING_BINDIR_NATIVE}/python setup.py install ${DISTUTILS_STAGE_ALL_ARGS} || \
         oefatal "python setup.py install (stage) execution failed."

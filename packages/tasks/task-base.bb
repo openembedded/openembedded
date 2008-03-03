@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r60"
+PR = "r63"
 
 inherit task
 
@@ -345,6 +345,8 @@ RRECOMMENDS_task-base-wifi = "\
     kernel-module-ieee80211-crypt-wep \
     kernel-module-ecb \
     kernel-module-arc4 \
+    kernel-module-crypto_algapi \
+    kernel-module-cryptomgr \
     kernel-module-michael-mic \
     kernel-module-aes"
 

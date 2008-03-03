@@ -1,7 +1,6 @@
 DESCRIPTION = "GNU Transport Layer Security Library"
 HOMEPAGE = "http://www.gnu.org/software/gnutls/"
 DEPENDS = "zlib libgcrypt lzo"
-
 LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2"
@@ -9,6 +8,11 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2"
 inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF="--with-included-opencdk --with-included-libtasn1"
+
+# fix wrong dependency
+do_configure_append() {
+    sed -i s,gcrypt,libgcrypt, lib/gnutls.pc.in
+}
 
 do_stage() {
     oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}

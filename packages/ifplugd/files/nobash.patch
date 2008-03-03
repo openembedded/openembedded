@@ -1,0 +1,8 @@
+--- ifplugd-0.28/conf/ifplugd.init.in.orig	2007-05-24 19:00:03.000000000 +0000
++++ ifplugd-0.28/conf/ifplugd.init.in	2007-05-24 19:00:09.000000000 +0000
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ # $Id: ifplugd.init.in 86 2004-01-26 15:34:24Z lennart $
+ 
+ # This file is part of ifplugd.

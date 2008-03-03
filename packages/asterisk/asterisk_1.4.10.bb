@@ -30,17 +30,17 @@ INITSCRIPT_PARAMS = "defaults 60"
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF =  "--with-ssl=${STAGING_DIR}/${TARGET_SYS}\
-			--with-z=${STAGING_DIR}/${TARGET_SYS}\
-			--with-curl=${STAGING_DIR}/${TARGET_SYS}\
-			--with-termcap=${STAGING_DIR}/${TARGET_SYS}\
-			--with-ogg=${STAGING_DIR}/${TARGET_SYS}\
-			--with-vorbis=${STAGING_DIR}/${TARGET_SYS}\
-			--with-sqlite=${STAGING_DIR}/${TARGET_SYS}\
-			--with-popt=${STAGING_DIR}/${TARGET_SYS}\
-			--with-gnutls=${STAGING_DIR}/${TARGET_SYS}\
+EXTRA_OECONF =  "--with-ssl=${STAGING_EXECPREFIXDIR} \
+			--with-z=${STAGING_EXECPREFIXDIR} \
+			--with-curl=${STAGING_EXECPREFIXDIR} \
+			--with-termcap=${STAGING_EXECPREFIXDIR} \
+			--with-ogg=${STAGING_EXECPREFIXDIR} \
+			--with-vorbis=${STAGING_EXECPREFIXDIR} \
+			--with-sqlite=${STAGING_EXECPREFIXDIR} \
+			--with-popt=${STAGING_EXECPREFIXDIR} \
+			--with-gnutls=${STAGING_EXECPREFIXDIR} \
 			--without-curses\
-			--with-ncurses=${STAGING_DIR}/${TARGET_SYS}\
+			--with-ncurses=${STAGING_EXECPREFIXDIR} \
 			--without-imap\
 			--without-netsnmp\
 			--without-odbc\
