@@ -1,0 +1,106 @@
+diff -Nur linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_cs.c linux-2.6.24/drivers/net/wireless/hostap/hostap_cs.c
+--- linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_cs.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/net/wireless/hostap/hostap_cs.c	2008-02-28 12:00:27.000000000 +0100
+@@ -1,3 +1,8 @@
++/*
++ *
++ * mrdata: -added shared irq
++ */
++
+ #define PRISM2_PCCARD
+ 
+ #include <linux/module.h>
+@@ -35,7 +40,7 @@
+ module_param(ignore_cis_vcc, int, 0444);
+ MODULE_PARM_DESC(ignore_cis_vcc, "Ignore broken CIS VCC entry");
+ 
+-
++int activar=0;
+ /* struct local_info::hw_priv */
+ struct hostap_cs_priv {
+ 	dev_node_t node;
+@@ -499,11 +504,13 @@
+ 
+ 	PDEBUG(DEBUG_HW, "%s: setting Vcc=33 (constant)\n", dev_info);
+ 	p_dev->conf.IntType = INT_MEMORY_AND_IO;
+-
++	
++	activar=0;
+ 	ret = prism2_config(p_dev);
+ 	if (ret) {
+ 		PDEBUG(DEBUG_EXTRA, "prism2_config() failed\n");
+ 	}
++	activar=1;
+ 
+ 	return ret;
+ }
+@@ -693,7 +700,7 @@
+ 	 * irq structure is initialized.
+ 	 */
+ 	if (link->conf.Attributes & CONF_ENABLE_IRQ) {
+-		link->irq.Attributes = IRQ_TYPE_EXCLUSIVE | IRQ_HANDLE_PRESENT;
++		link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FIRST_SHARED | IRQ_HANDLE_PRESENT;
+ 		link->irq.IRQInfo1 = IRQ_LEVEL_ID;
+ 		link->irq.Handler = prism2_interrupt;
+ 		link->irq.Instance = dev;
+diff -Nur linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_hw.c linux-2.6.24/drivers/net/wireless/hostap/hostap_hw.c
+--- linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_hw.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/net/wireless/hostap/hostap_hw.c	2008-02-28 12:00:27.000000000 +0100
+@@ -54,6 +54,7 @@
+ #include "hostap.h"
+ #include "hostap_ap.h"
+ 
++extern int activar;
+ 
+ /* #define final_version */
+ 
+@@ -1497,6 +1498,8 @@
+ 	if (local->hw_downloading)
+ 		return 1;
+ 
++	activar=1;
++
+ 	if (prism2_hw_init(dev, initial)) {
+ 		return local->no_pri ? 0 : 1;
+ 	}
+@@ -2630,8 +2633,15 @@
+ 	int events = 0;
+ 	u16 ev;
+ 
+-	iface = netdev_priv(dev);
+-	local = iface->local;
++
++	// Todos los parametros de entrada son correctos (no son nulos). De momento esta es la unica forma que conozco de detectar el problema.
++	if (!activar) {
++		printk("hostap_hw.c: INTERRUPT BEFORE DEVICE INIT!\n");
++		return IRQ_HANDLED;
++	}
++
++ 	iface = netdev_priv(dev);
++ 	local = iface->local;
+ 
+ 	prism2_io_debug_add(dev, PRISM2_IO_DEBUG_CMD_INTERRUPT, 0, 0);
+ 
+diff -Nur linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_pci.c linux-2.6.24/drivers/net/wireless/hostap/hostap_pci.c
+--- linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_pci.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/net/wireless/hostap/hostap_pci.c	2008-02-28 12:00:27.000000000 +0100
+@@ -19,6 +19,7 @@
+ 
+ #include "hostap_wlan.h"
+ 
++int activar=1;
+ 
+ static char *dev_info = "hostap_pci";
+ 
+diff -Nur linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_plx.c linux-2.6.24/drivers/net/wireless/hostap/hostap_plx.c
+--- linux-2.6.24.vanilla/drivers/net/wireless/hostap/hostap_plx.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/net/wireless/hostap/hostap_plx.c	2008-02-28 12:00:27.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include <asm/io.h>
+ 
+ #include "hostap_wlan.h"
+-
++int activar=1;
+ 
+ static char *dev_info = "hostap_plx";
+ 
