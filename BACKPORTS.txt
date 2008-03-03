@@ -16,17 +16,10 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
+2cd7eb1d99944ff730eef92a2d7c01e695a59c04 Simpad fixes (Koen)
 
-Acked:
 
 Applied:
-efb6794fda11cbd20c3862270a8aaafe4083dd57 altboot: RRECOMMENDS e2fsprogs-mke2fs, bump PR (Koen PaulS)
-05ed4540fccdc5c128859987a31d2d0c58498d3c altboot: add kernel-module-loop as RRECOMMENDS, bump PR. (Koen PaulS)
-2b629c70f36efd84d9157bcab5d582d59fa8258e altboot: Try unb0rking collies keyboard once again... (Koen PaulS)
-3ba9bb700e2671c899e7dd7c9cb3fd8bff810325 altboot: add debug package for files with hardcoded PACKAGES definition.  Partly fixes 2471. (Koen PaulS)
-0ce1ec91df499539b43f53a80718a77449b22b6b altboot: Add SVNR77 (Koen PaulS)
-8a5ed94f2cae71687305cbdc2ec89af5e3900aad altboot: Update to SVNR76 (Koen PaulS)
-efc89b66950503726077461acaa664f7705ed559 altboot: Update to SVNR73 (Koen PaulS)
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
 58fc861e7d3a6d55876c4974fd3778a4d7452c03 binconfig.bbclass custom glob (Koen, Marcin)
 3806d8894babdfee7e759b27b83e75430c119343 linux-rp 2.6.23 25x resume  (Koen, Marcin)
@@ -154,4 +147,11 @@ d0b06899d617a3084a4389de34679546c1615411   "
 6570be85097c98af0508238f19359b4f5aeb0b02   "
 bcbcd3dbc13dded1680b2ed90f51f44cb4557b95   "
 3859c4593b2a4ff696a5e81383ed8bc6dd957598 angstrom.inc: Make Angstrom bitbake caches to be per libc mode. (PaulS, Koen)
+efb6794fda11cbd20c3862270a8aaafe4083dd57 altboot: RRECOMMENDS e2fsprogs-mke2fs, bump PR (Koen PaulS)
+05ed4540fccdc5c128859987a31d2d0c58498d3c altboot: add kernel-module-loop as RRECOMMENDS, bump PR. (Koen PaulS)
+2b629c70f36efd84d9157bcab5d582d59fa8258e altboot: Try unb0rking collies keyboard once again... (Koen PaulS)
+3ba9bb700e2671c899e7dd7c9cb3fd8bff810325 altboot: add debug package for files with hardcoded PACKAGES definition.  Partly fixes 2471. (Koen PaulS)
+0ce1ec91df499539b43f53a80718a77449b22b6b altboot: Add SVNR77 (Koen PaulS)
+8a5ed94f2cae71687305cbdc2ec89af5e3900aad altboot: Update to SVNR76 (Koen PaulS)
+efc89b66950503726077461acaa664f7705ed559 altboot: Update to SVNR73 (Koen PaulS)
 
