@@ -6,8 +6,8 @@ state.neo1973gta02 {
 		comment.range '0 - 255'
 		iface MIXER
 		name 'PCM Volume'
-		value.0 255
-		value.1 255
+		value.0 235
+		value.1 235
 	}
 	control.2 {
 		comment.access 'read write'
@@ -854,6 +854,22 @@ state.neo1973gta02 {
 		comment.count 1
 		iface MIXER
 		name 'DAPM Handset Spk Switch'
+		value false
+	}
+	control.92 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Amp State Switch'
+		value true
+	}
+	control.93 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Amp Spk Switch'
 		value true
 	}
 }
