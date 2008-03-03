@@ -12,6 +12,7 @@ TARGET_VENDOR = "-angstrom"
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
 
+CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
