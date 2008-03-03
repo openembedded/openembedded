@@ -9,7 +9,6 @@ inherit e update-alternatives
 SRC_URI = "${E_CVS};module=e17/apps/e \
            file://Xsession.d/98enlightenment \
            file://applications.menu \
-           file://Makefile.in.in \
 "
 S = "${WORKDIR}/e"
 
