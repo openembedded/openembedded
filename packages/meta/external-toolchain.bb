@@ -12,7 +12,6 @@ PROVIDES = "\
     virtual/libintl \
     virtual/libiconv \
     glibc-thread-db \
-    virtual/linux-libc-headers \
     "
 
 RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
