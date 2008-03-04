@@ -10,7 +10,7 @@ DEPENDS  = "virtual/kernel \
 	${UNSLUNG_EXTRA_DEPENDS}"
 
 IMAGE_INSTALL = "kernel update-modules unslung-rootfs \
-	libc6-unslung slingbox ipkg libipkg \
+	libc6-unslung slingbox ipkg libipkg libgcc \
 	kernel-module-netconsole \
 	${UNSLUNG_EXTRA_INSTALL}"
 
