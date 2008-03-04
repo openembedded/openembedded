@@ -8,7 +8,7 @@ DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
 PV = "0.1.0"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = " \
   file://asoundrc \
