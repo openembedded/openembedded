@@ -6,15 +6,16 @@ OLD_PACKAGE_ARCH := ${PACKAGE_ARCH}
 PACKAGE_ARCH = "${BUILD_ARCH}-${OLD_PACKAGE_ARCH}-sdk"
 
 HOST_ARCH = "${BUILD_ARCH}"
-HOST_VENDOR = "${BUILD_VENDOR}"
+# This isn't BUILD_VENDOR since we don't want to clash with native staging
+HOST_VENDOR = "${TARGET_VENDOR}"
 HOST_OS = "${BUILD_OS}"
 HOST_PREFIX = "${BUILD_PREFIX}"
 HOST_CC_ARCH = "${BUILD_CC_ARCH}"
 
-CPPFLAGS = "${BUILD_CPPFLAGS}"
-CFLAGS = "${BUILD_CFLAGS}"
-CXXFLAGS = "${BUILD_CFLAGS}"
-LDFLAGS = "${BUILD_LDFLAGS}"
+CPPFLAGS = "${BUILDSDK_CPPFLAGS}"
+CFLAGS = "${BUILDSDK_CFLAGS}"
+CXXFLAGS = "${BUILDSDK_CFLAGS}"
+LDFLAGS = "${BUILDSDK_LDFLAGS}"
 
 # Path prefixes
 prefix = "${SDK_PREFIX}"
@@ -49,3 +50,4 @@ FILES_${PN}-dbg += "${prefix}/.debug \
                     ${prefix}/bin/.debug \
                    "
 
+export PKG_CONFIG_SYSROOT_DIR = "${STAGING_DIR}/${HOST_SYS}"

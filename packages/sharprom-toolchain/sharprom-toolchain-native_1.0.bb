@@ -2,14 +2,13 @@ DESCRIPTION = "Precompiled SharpROM toolchain glue package"
 LICENSE = "GPL"
 SECTION = "base"
 # see bug 2199 for the reason the following line is in here
-DEPENDS = "virtual/linux-libc-headers"
+DEPENDS = "linux-libc-headers cross-linkage staging-linkage"
 PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-gcc-2.95 \
   virtual/arm-linux-libc-for-gcc \
   virtual/arm-linux-binutils \
   virtual/libc \
   virtual/arm-linux-gcc \
-  virtual/linux-libc-headers \
   virtual/arm-linux-gcc-initial "
 PR = "r1"
 
