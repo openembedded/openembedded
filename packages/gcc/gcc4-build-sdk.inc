@@ -4,10 +4,6 @@ USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibcgnueabi", "no", "", d 
 EXTRA_OECONF += "--with-sysroot=${prefix}/${TARGET_SYS} --with-build-sysroot=${STAGING_DIR_TARGET}"
 
 do_configure () {
-       # Hack to be removed when staging layout matches the target layout
-       if [ ! -e ${STAGING_DIR_TARGET}/usr ]; then
-           ln -s ${STAGING_DIR_TARGET} ${STAGING_DIR_TARGET}/usr
-       fi
        (cd ${S} && gnu-configize) || die "failure running gnu-configize"
        (cd ${S}/libstdc++-v3 && autoreconf)
        oe_runconf
