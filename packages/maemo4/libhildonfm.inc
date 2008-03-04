@@ -16,6 +16,11 @@ PARALLEL_MAKE = ""
 
 do_stage() {
 	autotools_stage_all
+  if [ ! -d ${STAGING_INCDIR}/hildon-widgets ]
+  then
+    mkdir -p ${STAGING_INCDIR}/hildon-widgets
+  fi
+
 	ln -sf ${STAGING_INCDIR}/hildon-fm-2/hildon/* ${STAGING_INCDIR}/hildon-widgets/
 }
 
