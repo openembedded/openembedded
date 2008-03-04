@@ -3,7 +3,7 @@ EXTRA_QMAKEVARS_POST += "CONFIG+=thread"
 #
 # override variables set by qmake_base to compile Qt/X11 apps
 #
-export QTDIR = "${STAGING_DIR}/${HOST_SYS}/qt3"
+export QTDIR = "${STAGING_DIR_HOST}/qt3"
 export OE_QMAKE_UIC = "${STAGING_BINDIR_NATIVE}/uic3"
 export OE_QMAKE_MOC = "${STAGING_BINDIR_NATIVE}/moc3"
 export OE_QMAKE_CXXFLAGS = "${CXXFLAGS} -DQT_NO_XIM"

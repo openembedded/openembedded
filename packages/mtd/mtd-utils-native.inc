@@ -11,4 +11,3 @@ do_stage () {
                 install -m 0755 $binary ${STAGING_BINDIR}
         done
 }
-

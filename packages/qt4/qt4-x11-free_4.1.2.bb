@@ -22,7 +22,7 @@ PARALLEL_MAKE = ""
 inherit qmake_base qt4x11 pkgconfig
 
 export QTDIR = "${S}"
-STAGING_QT_DIR = "${STAGING_DIR}/${TARGET_SYS}/qt4"
+STAGING_QT_DIR = "${STAGING_DIR_TARGET}/qt4"
 EXTRA_OEMAKE = "-e"
 
 require qt4_arch.inc

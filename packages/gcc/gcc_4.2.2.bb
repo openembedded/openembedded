@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r6"
 
 inherit autotools gettext
 
@@ -43,6 +43,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
 	file://pr34130.patch;patch=1 \
 	file://fortran-static-linking.patch;patch=1 \
+	file://intermask-bigendian.patch;patch=1 \
 "
 
 SRC_URI_append_ep93xx = " \

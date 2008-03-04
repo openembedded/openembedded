@@ -13,15 +13,14 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 case "$1" in
     start)
-        [ -n "$GSM_DL" ] && echo "1" >$GSM_DL;
-
+        [ -n "$GSM_DL" ] && ( echo "1" >$GSM_DL; sleep 1 )
         [ -n "$GSM_POW" ] && ( echo "0" >$GSM_POW; sleep 1 )
         [ -n "$GSM_POW" ] && ( echo "1" >$GSM_POW; sleep 1 )
         [ -n "$GSM_RES" ] && ( echo "1" >$GSM_RES; sleep 1 )
         [ -n "$GSM_RES" ] && ( echo "0" >$GSM_RES; sleep 2 )
 
         echo -n "Starting GSM daemon: "
-        start-stop-daemon -S -x /usr/sbin/gsmd -- gsmd -p $GSM_DEV $GSMD_OPTS >/tmp/gsm.log 2>&1 &
+        start-stop-daemon -S -x /usr/sbin/gsmd -- gsmd -p $GSM_DEV $GSMD_OPTS -d -l syslog
 
         if [ $? = 0 ]; then
             echo "gsmd."

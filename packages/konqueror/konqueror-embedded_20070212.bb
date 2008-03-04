@@ -36,9 +36,9 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--with-extra-libs=${STAGING_LIBDIR} \
 	--with-qtopia-dir=${OPIEDIR} \
 	--with-ssl-version=0.9.7e \
-	--with-ssl-dir=${STAGING_LIBDIR}/.. \
-	--with-qt-includes=${STAGING_DIR}/${HOST_SYS}/qt2/include \
-	--with-qt-libraries=${STAGING_DIR}/${HOST_SYS}/qt2/lib \
+	--with-ssl-dir=${STAGING_DIR_HOST}${layout_exec_prefix} \
+	--with-qt-includes=${STAGING_DIR_HOST}/qt2/include \
+	--with-qt-libraries=${STAGING_DIR_HOST}/qt2/lib \
 	--with-qt-dir=${QTDIR} \
 	--enable-fontsubs \
 	--with-konq-tmp-prefix=/tmp/kde-cache \

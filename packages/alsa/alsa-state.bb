@@ -8,7 +8,7 @@ DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
 PV = "0.1.0"
-PR = "r9"
+PR = "r11"
 
 SRC_URI = " \
   file://asoundrc \
@@ -28,6 +28,7 @@ SRC_URI_append_fic-gta01 = " \
 
 SRC_URI_append_fic-gta02 = "\
   file://stereoout.state \
+  file://gsmhandset.state \
   "
 
 inherit update-rc.d

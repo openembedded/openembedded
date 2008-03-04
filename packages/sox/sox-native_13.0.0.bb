@@ -9,7 +9,7 @@ do_patch() {
 }
 
 do_stage() {
-	make bindir="${STAGING_BINDIR}" libdir="${STAGING_LIBDIR}" mandir="${STAGING_DIR}/${HOST_SYS}/man" includedir="${STAGING_INCDIR}" install
+	make bindir="${STAGING_BINDIR}" libdir="${STAGING_LIBDIR}" mandir="${STAGING_DIR_HOST}${layout_mandir}" includedir="${STAGING_INCDIR}" install
 	rm ${STAGING_BINDIR}/rec
 	ln -s ${STAGING_BINDIR}/play ${STAGING_BINDIR}/rec
 }

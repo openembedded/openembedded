@@ -4,10 +4,8 @@ SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "\
-  http://freedesktop.org/software/dbus/releases/dbus/dbus-${PV}.tar.gz \
+  http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
   file://fix-install-daemon.patch;patch=1 \
@@ -24,7 +22,7 @@ CONFFILES_${PN} = "${sysconfdir}/dbus-1/system.conf ${sysconfdir}/dbus-1/session
 
 DEBIANNAME_${PN} = "dbus-1"
 
-PACKAGES += "${PN}-lib"
+PACKAGES =+ "${PN}-lib"
 
 FILES_${PN} = "\
 ${bindir}/dbus-daemon* \
@@ -39,7 +37,8 @@ ${datadir}/dbus-1/services \
 ${datadir}/dbus-1/system-services \
 "
 FILES_${PN}-lib = "${libdir}/lib*.so.*"
-FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool"
+RRECOMMENDS_${PN}-lib = "${PN}"
+FILES_${PN}-dev += "${libdir}/dbus-1.0/include ${bindir}/dbus-glib-tool ${libdir}/"
 
 pkg_postinst_dbus() {
 #!/bin/sh

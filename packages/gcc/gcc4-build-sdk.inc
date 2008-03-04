@@ -1,14 +1,9 @@
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibcgnueabi", "no", "", d )}'
 
-SYSROOT = "${WORKDIR}/sysroot"
-EXTRA_OECONF += "--with-sysroot=${SYSROOT}"
+EXTRA_OECONF += "--with-sysroot=${prefix}/${TARGET_SYS} --with-build-sysroot=${STAGING_DIR_TARGET}"
 
 do_configure () {
-       # Work around Hardcoded path assumptions in gcc
-       mkdir -p ${SYSROOT}/usr/
-       ln -s ${STAGING_DIR}/${TARGET_SYS}/include ${SYSROOT}/usr/include
-       ln -s ${STAGING_DIR}/${TARGET_SYS}/lib ${SYSROOT}/usr/lib
        (cd ${S} && gnu-configize) || die "failure running gnu-configize"
        (cd ${S}/libstdc++-v3 && autoreconf)
        oe_runconf

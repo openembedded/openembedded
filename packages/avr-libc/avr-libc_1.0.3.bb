@@ -22,12 +22,13 @@ prefix = "${CROSS_DIR}"
 exec_prefix = "${prefix}"
 
 do_stage () {
-# install into CROSS_DIR
+	# install into CROSS_DIR
 	oe_runmake install
-# install into STAGING_DIR
-	oe_runmake "prefix=${STAGING_DIR}" "exec_prefix=${STAGING_DIR}" \
+	# install into staging
+	oe_runmake "prefix=${STAGING_DIR_HOST}${layout_prefix}" \
+		   "exec_prefix=${STAGING_DIR_HOST}${layout_exec_prefix}" \
 		   "bindir=${STAGING_BINDIR}" "libdir=${STAGING_LIBDIR}" \
-		   "tooldir=${STAGING_DIR}" "toolibdir=${STAGING_LIBDIR}" \
+		   "tooldir=${STAGING_DIR_HOST}" "toolibdir=${STAGING_LIBDIR}" \
 		   install
 }
 

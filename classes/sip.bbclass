@@ -55,6 +55,8 @@ sip_do_generate() {
 	done
 }
 
+do_generate[deptask] = "do_populate_staging"
+
 EXPORT_FUNCTIONS do_generate
 
 addtask generate after do_unpack do_patch before do_configure

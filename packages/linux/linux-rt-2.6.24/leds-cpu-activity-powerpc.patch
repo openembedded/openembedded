@@ -1,0 +1,44 @@
+Index: linux-2.6.24.3/arch/powerpc/kernel/idle.c
+===================================================================
+--- linux-2.6.24.3.orig/arch/powerpc/kernel/idle.c	2008-02-29 14:49:40.000000000 +0100
++++ linux-2.6.24.3/arch/powerpc/kernel/idle.c	2008-02-29 16:29:23.000000000 +0100
+@@ -19,6 +19,7 @@
+  * 2 of the License, or (at your option) any later version.
+  */
+ 
++#include <linux/leds.h>
+ #include <linux/sched.h>
+ #include <linux/kernel.h>
+ #include <linux/smp.h>
+@@ -51,6 +52,12 @@
+ __setup("powersave=off", powersave_off);
+ 
+ /*
++ * CPU activity indicator.
++ */
++void (*leds_idle)(int is_idle);
++EXPORT_SYMBOL(leds_idle);
++
++/*
+  * The body of the idle task.
+  */
+ void cpu_idle(void)
+@@ -64,7 +71,8 @@
+ 		while (!need_resched() && !need_resched_delayed() &&
+ 				!cpu_should_die()) {
+ 			ppc64_runlatch_off();
+-
++            if (leds_idle)
++              leds_idle(1);
+ 			if (ppc_md.power_save) {
+ 				clear_thread_flag(TIF_POLLING_NRFLAG);
+ 				/*
+@@ -99,6 +107,8 @@
+ 		if (cpu_should_die())
+ 			cpu_die();
+ 		__preempt_enable_no_resched();
++        if (leds_idle)
++          leds_idle(0);
+ 		schedule();
+ 		preempt_disable();
+ 	}

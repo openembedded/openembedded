@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r2"
+PR = "r3"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -45,7 +45,7 @@ SRC_URI = "\
   file://dl-cache-libcmp.patch;patch=1 \
   file://ldsocache-varrun.patch;patch=1 \
   file://nptl-crosscompile.patch;patch=1 \
-  file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1 \
+  file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1;pnum=0 \
   file://glibc-check_pf.patch;patch=1;pnum=0 \
   file://zecke-sane-readelf.patch;patch=1 \
   file://ldd-unbash.patch;patch=1 \

@@ -37,9 +37,8 @@ import sys
 try:
     import rlcompleter, readline
 except ImportError:
-    sys.stderr.write( "Python %s (OpenEmbedded build) sitecustomize.py not active. Please install python-readline.\n" % sys.version.split()[0] )
+    pass
 else:
     __enableDefaultEncoding()
     __registerExitHandler()
     __enableReadlineSupport()
-    sys.stderr.write( "Python %s (OpenEmbedded build) sitecustomize.py active.\n" % sys.version.split()[0] )

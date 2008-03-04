@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r47"
+PR = "r48"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -190,6 +190,7 @@ SLUGOS_PACKAGES = "\
 	procps \
 	psmisc \
 	puppy \
+	pvrusb2-mci \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -255,7 +256,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	lirc-modules lirc \
 	madfu \
 	openldap \
-	pvrusb2-mci \
 	pwc \
 	qc-usb-messenger \
 	syslog-ng \

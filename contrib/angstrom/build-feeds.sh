@@ -47,7 +47,7 @@ do
                        task-proper-tools mc screen findutils \
 	               mono perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
-		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
+		       gpe-mini-browser gpe-mini-browser2 netsurf midori minimo openmoko-browser2 webkit-gtklauncher \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
 		       gpe-gallery gpe-scap notecase \

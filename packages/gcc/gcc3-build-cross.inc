@@ -1,7 +1,9 @@
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 
-EXTRA_OECONF_PATHS = "--with-local-prefix=${STAGING_DIR}/${TARGET_SYS} \
-		      --with-gxx-include-dir=${STAGING_DIR}/${TARGET_SYS}/include/c++"
+EXTRA_OECONF_PATHS = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
+		      --with-gxx-include-dir=${STAGING_DIR_TARGET}/${layout_includedir}/c++ \
+                      --with-sysroot=${STAGING_DIR_TARGET} \
+                      --with-build-sysroot=${STAGING_DIR_TARGET}"
 
 do_configure_prepend () {
 	rm -f ${CROSS_DIR}/lib/gcc/${TARGET_SYS}/${BINV}/libgcc_eh.a

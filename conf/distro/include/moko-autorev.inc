@@ -9,6 +9,10 @@ SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
 SRCREV_pn-neod ?= "${AUTOREV}"
+SRCREV_pn-opkg ?= "${AUTOREV}"
+SRCREV_pn-opkg-native ?= "${AUTOREV}"
+
+SRCREV_pn-multitap-pad ?= "${AUTOREV}"
 
 SRCREV_pn-openmoko-appmanager2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-appearance ?= "${AUTOREV}"
@@ -30,6 +34,7 @@ SRCREV_pn-openmoko-panel-clock ?= "${AUTOREV}"
 SRCREV_pn-openmoko-panel-gps ?= "${AUTOREV}"
 SRCREV_pn-openmoko-panel-gsm ?= "${AUTOREV}"
 SRCREV_pn-openmoko-panel-mainmenu ?= "${AUTOREV}"
+SRCREV_pn-openmoko-panel-memory ?= "${AUTOREV}"
 SRCREV_pn-openmoko-panel-usb ?= "${AUTOREV}"
 SRCREV_pn-openmoko-sample2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-sound-theme-standard2 ?= "${AUTOREV}"

@@ -16,7 +16,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/sc2/uqm-${PV}-source.tgz \
 
 do_configure() {
 	install ${WORKDIR}/build-opts.sh ${S}/
-	./build-opts.sh ${STAGING_DIR} ${STAGING_BINDIR} ${STAGING_LIBDIR}
+	./build-opts.sh ${STAGING_DIR_HOST}${layout_prefix} ${STAGING_BINDIR} ${STAGING_LIBDIR}
 }
 
 do_compile() {

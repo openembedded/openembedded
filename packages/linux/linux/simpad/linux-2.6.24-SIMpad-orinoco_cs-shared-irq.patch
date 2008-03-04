@@ -1,0 +1,21 @@
+diff -Nur linux-2.6.24.vanilla/drivers/net/wireless/orinoco_cs.c linux-2.6.24/drivers/net/wireless/orinoco_cs.c
+--- linux-2.6.24.vanilla/drivers/net/wireless/orinoco_cs.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/net/wireless/orinoco_cs.c	2008-02-22 21:23:51.000000000 +0100
+@@ -8,6 +8,8 @@
+  * cards such as the 3Com AirConnect and Ericsson WLAN.
+  * 
+  * Copyright notice & release notes in file orinoco.c
++ *
++ * mrdata: added shared irq
+  */
+ 
+ #define DRIVER_NAME "orinoco_cs"
+@@ -120,7 +122,7 @@
+ 	link->priv = dev;
+ 
+ 	/* Interrupt setup */
+-	link->irq.Attributes = IRQ_TYPE_EXCLUSIVE | IRQ_HANDLE_PRESENT;
++	link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FIRST_SHARED | IRQ_HANDLE_PRESENT;
+ 	link->irq.IRQInfo1 = IRQ_LEVEL_ID;
+ 	link->irq.Handler = orinoco_interrupt;
+ 	link->irq.Instance = dev; 

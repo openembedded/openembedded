@@ -1,7 +1,6 @@
 require klibc-common.inc
 
-PR = "r6"
-
+PR = "r7"
 
 # We only want the static utils. klibc build both. So we install only what we want.				
 do_install() {

@@ -1,0 +1,22 @@
+Index: ltp-full-20080229/testcases/ballista/Makefile
+===================================================================
+--- ltp-full-20080229.orig/testcases/ballista/Makefile	2008-02-29 08:55:46.000000000 +0100
++++ ltp-full-20080229/testcases/ballista/Makefile	2008-03-01 01:21:16.000000000 +0100
+@@ -1,4 +1,4 @@
+-ifeq ($(shell perl -v &> /dev/null && echo yes),yes)
++ifeq ($(shell perl -v > /dev/null && echo yes),yes)
+ 
+ all: bal
+ 
+Index: ltp-full-20080229/testcases/ballista/ballista/Makefile
+===================================================================
+--- ltp-full-20080229.orig/testcases/ballista/ballista/Makefile	2008-03-01 01:21:16.000000000 +0100
++++ ltp-full-20080229/testcases/ballista/ballista/Makefile	2008-03-01 01:22:22.000000000 +0100
+@@ -37,6 +37,7 @@
+ 
+ # build everything by default
+ all : callGen callGen_standAlone genCodeCreator replacer ballista
++	rm blexer bparser mut.out
+ 
+ # run-of-of-the-mill rules for utility programs
+ callGen: callGen.cpp

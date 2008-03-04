@@ -14,7 +14,7 @@ export CFLAG_mtx-1 := "${@'${CFLAG}'.replace('-O2', '')}"
 export CFLAG_mtx-2 := "${@'${CFLAG}'.replace('-O2', '')}"
 
 export DIRS = "crypto ssl apps"
-export EX_LIBS = "-lgcc -ldl ${TARGET_LDFLAGS}"
+export EX_LIBS = "-lgcc -ldl"
 export AS = "${CC} -c"
 
 PACKAGES =+ "libcrypto libssl"

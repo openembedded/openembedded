@@ -4,33 +4,30 @@
 
 IMAGE_LINGUAS = ""
 
+ADD_INSTALL = "\
+  fontconfig-utils \
+  \
+  ttf-dejavu-common \
+  ttf-dejavu-sans \
+  ttf-dejavu-serif \
+  \
+"  
+
+
 IMAGE_INSTALL = "\
   ${MACHINE_TASK_PROVIDER} \
-  task-base \
   netbase \
   sysfsutils \
-  modutils-initscripts \
   module-init-tools-depmod \
   rsync \
   screen \
   fbset \
   fbset-modes \
   \
-  matchbox-wm \
-  ${XSERVER} \
-  xserver-kdrive-common \
-  xserver-nodm-init \
-  xauth \
-  xhost \
-  xset \
-  xrandr \
-  "
-
-DEPENDS = "\
-  ${MACHINE_TASK_PROVIDER} \
   task-pyneo \
+  \
+  ${ADD_INSTALL} \
 "
-
 
 inherit image
 

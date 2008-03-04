@@ -1,7 +1,10 @@
+DESCRIPTION = "Driver for at76 based usb-wifi devices"
 SECTION = "base"
 LICENSE = "GPL"
 
-SRCDATE = "20080116"
+PR = "r1"
+
+RDEPENDS = "at76c503-firmware"
 
 SRC_URI = "http://download.berlios.de/at76c503a/at76_usb-0.17.tar.gz"
 S = "${WORKDIR}/at76_usb-${PV}/"

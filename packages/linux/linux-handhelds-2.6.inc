@@ -3,7 +3,7 @@ DESCRIPTION = "handhelds.org Linux kernel 2.6 for PocketPCs and other consumer h
 LICENSE = "GPL"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE ?= '(asus620|asus730|aximx50|aximx50v|h1910|h2200|h3600|h3800|h3900|h4000|h5000|htcalpine|htcapache|htcblueangel|htchermes|htchimalaya|htcsable|htcuniversal|htcwallaby|hx4700|ghi270|looxc550|jornada56x|magician|rx1950|rx3000)'
+COMPATIBLE_MACHINE ?= "(asus620|asus730|aximx50|aximx50v|eseries|h1910|h2200|h3600|h3800|h3900|h4000|h5000|htcalpine|htcapache|htcblueangel|htchermes|htchimalaya|htcsable|htcuniversal|htcwallaby|hx4700|ghi270|looxc550|jornada56x|magician|rx1950|rx3000)"
 
 # SRC_URI *must* be overriden in includer, but this is a good reference
 SRC_URI ?= "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('PV',d,1).replace('.', '-')} \
@@ -54,15 +54,30 @@ do_configure() {
 
 }
 
+do_compile_prepend() {
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+	    if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
+		echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
+		exit 1
+	    fi
+	    cp ${KERNEL_INITRAMFS_PATH} usr/initramfs_data.cpio.gz
+	fi
+}
+
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME}
-
+	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
+	
 	#reflash.ctl is required to reflash using bootldr
 	# format:
 	# name file md5sumfile destination
 	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_FILENAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
+
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+		cp ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$(basename ${KERNEL_INITRAMFS_PATH} | awk -F. '{print $1}')-${PV}-${PR}-${MACHINE}.bin 
+	fi
 }   
    
 do_deploy[dirs] = "${S}"
