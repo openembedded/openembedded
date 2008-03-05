@@ -3,7 +3,7 @@
 #
 # turn off wifi cards before suspend so they are fully reloaded upon resume
 
-wifislot = `pccardctl ls|egrep '(hostap|orinoco)'|cut -f 2 -d " "`
+wifislot = `pccardctl ls|egrep '(hostap|orinoco|libertas)'|cut -f 2 -d " "`
 if test $wifislot
 then
   for slot in $wifislot; do
