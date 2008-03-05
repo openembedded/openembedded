@@ -1,7 +1,7 @@
 DESCRIPTION = "OpenMoko: PIM for the OpenMoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r71"
+PR = "r72"
 
 inherit task
 
@@ -14,7 +14,7 @@ RDEPENDS_task-openmoko-pim = "\
   openmoko-calculator2 \
   openmoko-contacts2 \
   openmoko-dates2 \
-  openmoko-feedreader2 \
+#  openmoko-feedreader2 \
   openmoko-browser2 \
   openmoko-appmanager2 \
   openmoko-tasks2 \
