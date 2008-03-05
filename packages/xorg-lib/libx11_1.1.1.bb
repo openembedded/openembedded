@@ -1,6 +1,6 @@
 require xorg-lib-common.inc
 PE = "1"
-PR = "r5"
+PR = "r6"
 
 DESCRIPTION = "Base X libs."
 DEPENDS += " bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
@@ -9,9 +9,12 @@ PROVIDES = "virtual/libx11"
 
 XORG_PN = "libX11"
 
-EXTRA_OECONF += "--without-xcb"
+EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
 
-SRC_URI += " file://ruutf8.patch;patch=1"
+SRC_URI += "\
+  file://ruutf8.patch;patch=1 \
+  file://fix-searching-for-keysymdef.patch;patch=1 \
+"
 
 do_compile() {
         (

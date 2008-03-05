@@ -5,11 +5,15 @@ DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
             libxdmcp xf86bigfontproto kbproto inputproto"
 PROVIDES = "virtual/libx11"
 PE = "1"
-PR = "r0"
+PR = "r1"
 
 XORG_PN = "libX11"
 
-EXTRA_OECONF += "--without-xcb"
+EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.h"
+
+SRC_URI += "\
+  file://fix-searching-for-keysymdef.patch;patch=1 \
+"
 
 do_compile() {
         (
