@@ -1,0 +1,40 @@
+--- linux-2.6.21/arch/arm/mach-pxa/gumstix.c-orig	2008-02-20 16:18:57.000000000 -0800
++++ linux-2.6.21/arch/arm/mach-pxa/gumstix.c	2008-02-20 16:21:21.000000000 -0800
+@@ -146,8 +146,7 @@
+ 	.pixclock	= 110000,
+ 	.xres		= 480,
+ 	.yres		= 272,
+-	.bpp		= 18,
+-	.nonstd		= 24,
++	.bpp		= 16,
+ 	.hsync_len	= 41,
+ 	.left_margin	= 2,
+ 	.right_margin	= 2,
+@@ -161,7 +160,7 @@
+ 	.modes			= &gumstix_fb_mode,
+ 	.num_modes		= 1,
+ 	.lccr0			= LCCR0_Act | LCCR0_Sngl | LCCR0_Color,
+-	.lccr3			= LCCR3_OutEnH | LCCR3_PixFlEdg | (3 << 30),
++	.lccr3			= LCCR3_OutEnH | LCCR3_PixFlEdg | (0 << 30),
+ 	.pxafb_backlight_power	= &gumstix_lcd_backlight,
+ };
+ #elif defined(CONFIG_FB_PXA_SAMSUNG_LTE430WQ_F0C)
+@@ -175,8 +174,7 @@
+ 	.vsync_len	= 10, // VLW from datasheet: 10 typ
+ 	.upper_margin	= 2, // VBP - VLW from datasheet: 12 - 10 = 2
+ 	.lower_margin	= 4, // VFP from datasheet: 4 typ
+-	.bpp		= 18,
+-	.nonstd		= 24,
++	.bpp		= 16,
+ 	.sync		= 0, // Hsync and Vsync both active low
+ };
+ 
+@@ -184,7 +182,7 @@
+ 	.modes			= &gumstix_fb_mode,
+ 	.num_modes		= 1,
+ 	.lccr0			= LCCR0_Act | LCCR0_Sngl | LCCR0_Color,
+-	.lccr3			= LCCR3_OutEnH | LCCR3_PixFlEdg | (3 << 30),
++	.lccr3			= LCCR3_OutEnH | LCCR3_PixFlEdg | (0 << 30),
+ 	.pxafb_backlight_power	= &gumstix_lcd_backlight,
+ };
+ #endif
