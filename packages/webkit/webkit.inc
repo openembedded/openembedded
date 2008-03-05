@@ -1,3 +1,4 @@
+DESCRIPTION = "WebKit browser engine, GTK+ edition"
 DEPENDS += "flex-native gperf-native perl-native sqlite3"
 SRCREV_FORMAT = "webcore-rwebkit"
 
