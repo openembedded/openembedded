@@ -16,7 +16,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
-2cd7eb1d99944ff730eef92a2d7c01e695a59c04 Simpad fixes (Koen)
 
 
 Applied:
@@ -154,4 +153,5 @@ efb6794fda11cbd20c3862270a8aaafe4083dd57 altboot: RRECOMMENDS e2fsprogs-mke2fs, 
 0ce1ec91df499539b43f53a80718a77449b22b6b altboot: Add SVNR77 (Koen PaulS)
 8a5ed94f2cae71687305cbdc2ec89af5e3900aad altboot: Update to SVNR76 (Koen PaulS)
 efc89b66950503726077461acaa664f7705ed559 altboot: Update to SVNR73 (Koen PaulS)
+2cd7eb1d99944ff730eef92a2d7c01e695a59c04 Simpad fixes (Koen, Bernhard)
 

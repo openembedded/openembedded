@@ -1,0 +1,47 @@
+Index: linux-2.6.24/arch/powerpc/kernel/asm-offsets.c
+===================================================================
+--- linux-2.6.24.orig/arch/powerpc/kernel/asm-offsets.c	2008-02-16 13:54:09.000000000 +0100
++++ linux-2.6.24/arch/powerpc/kernel/asm-offsets.c	2008-02-16 13:54:30.000000000 +0100
+@@ -312,7 +312,7 @@
+ 	DEFINE(CLOCK_REALTIME, CLOCK_REALTIME);
+ 	DEFINE(CLOCK_MONOTONIC, CLOCK_MONOTONIC);
+ 	DEFINE(NSEC_PER_SEC, NSEC_PER_SEC);
+-	DEFINE(CLOCK_REALTIME_RES, TICK_NSEC);
++	DEFINE(CLOCK_REALTIME_RES, MONOTONIC_RES_NSEC);
+ 
+ #ifdef CONFIG_BUG
+ 	DEFINE(BUG_ENTRY_SIZE, sizeof(struct bug_entry));
+Index: linux-2.6.24/include/linux/hrtimer.h
+===================================================================
+--- linux-2.6.24.orig/include/linux/hrtimer.h	2008-02-16 13:54:09.000000000 +0100
++++ linux-2.6.24/include/linux/hrtimer.h	2008-02-16 13:54:33.000000000 +0100
+@@ -223,11 +223,13 @@
+  * idea of the (in)accuracy of timers. Timer values are rounded up to
+  * this resolution values.
+  */
+-# define KTIME_HIGH_RES		(ktime_t) { .tv64 = 1 }
++# define HIGH_RES_NSEC         1
++# define KTIME_HIGH_RES                (ktime_t) { .tv64 = HIGH_RES_NSEC }
++# define MONOTONIC_RES_NSEC    HIGH_RES_NSEC
+ # define KTIME_MONOTONIC_RES	KTIME_HIGH_RES
+ 
+ #else
+-
++# define MONOTONIC_RES_NSEC    LOW_RES_NSEC
+ # define KTIME_MONOTONIC_RES	KTIME_LOW_RES
+ 
+ /*
+Index: linux-2.6.24/include/linux/ktime.h
+===================================================================
+--- linux-2.6.24.orig/include/linux/ktime.h	2008-02-16 13:54:09.000000000 +0100
++++ linux-2.6.24/include/linux/ktime.h	2008-02-16 13:54:36.000000000 +0100
+@@ -316,7 +316,8 @@
+  * idea of the (in)accuracy of timers. Timer values are rounded up to
+  * this resolution values.
+  */
+-#define KTIME_LOW_RES		(ktime_t){ .tv64 = TICK_NSEC }
++#define LOW_RES_NSEC           TICK_NSEC
++#define KTIME_LOW_RES          (ktime_t){ .tv64 = LOW_RES_NSEC }
+ 
+ /* Get the monotonic time in timespec format: */
+ extern void ktime_get_ts(struct timespec *ts);
