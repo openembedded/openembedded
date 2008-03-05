@@ -154,5 +154,5 @@ SRCREV_pn-webkit-gtk ?= "30762"
 SRCREV_pn-webkit-qt ?= "28656"
 SRCREV_pn-webkit-qtopia ?= "28656"
 SRCREV_pn-wesnoth ?= "22021"
-SRCREV_pn-xoo ?= "1623"
+SRCREV_pn-xoo ?= "1971"
 
