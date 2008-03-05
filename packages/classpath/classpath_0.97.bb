@@ -1,6 +1,10 @@
 require classpath.inc
 
-PR = "r0"
+SRC_URI += "\
+  file://xmlstream-fix.patch;patch=1;pnum=0 \
+  "
+
+PR = "r1"
 
 DEPENDS += "gtk+ gconf libxtst"
 

@@ -1,9 +1,7 @@
 DESCRIPTION = "RoadMap is a program that provides car navigation for Linux and UNIX." 
-PRIORITY = "optional"
-AUTHOR = "Pascal Martin <pascal.martin@iname.com>"
+AUTHOR = "Paul Fox <pgf@foxharp.boston.ma.us>"
 HOMEPAGE = "http://roadmap.digitalomaha.net/maps.html"
 LICENSE = "GPL"
-RRECOMMENDS = "gpsd flite"
 DEPENDS = "expat"
 
 FILES_${PN} += "${datadir}/roadmap"
@@ -16,3 +14,6 @@ do_install() {
         oe_runmake install
         install -m 0644 ${WORKDIR}/usdir.rdm ${D}${datadir}/roadmap/
 }
+
+RRECOMMENDS = "gpsd flite"
+FILES_${PN} += "${datadir}/roadmap"

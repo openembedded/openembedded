@@ -14,10 +14,15 @@ TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm'
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
 FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
+FULL_OPTIMIZATION_pn-glibc-intermediate = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
+FULL_OPTIMIZATION_pn-glibc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
+
 
 BUILD_OPTIMIZATION = "-Os"
 BUILD_OPTIMIZATION_pn-perl = "-O1"
+BUILD_OPTIMIZATION_pn-glibc-intermediate = "-O2"
+BUILD_OPTIMIZATION_pn-glibc = "-O2"
 BUILD_OPTIMIZATION_sparc = "-O2"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"

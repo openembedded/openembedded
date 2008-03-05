@@ -1,4 +1,4 @@
-BB_DEFAULT_TASK = "build"
+BB_DEFAULT_TASK ?= "build"
 
 # like os.path.join but doesn't treat absolute RHS specially
 def base_path_join(a, *p):

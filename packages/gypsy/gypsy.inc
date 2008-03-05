@@ -9,4 +9,8 @@ do_configure_prepend () {
 	touch ${S}/gtk-doc.make
 }
 
+do_stage() {
+	autotools_stage_all
+}
+
 FILES_${PN} += "${datadir}/dbus-1/services/"

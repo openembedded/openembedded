@@ -1,8 +1,11 @@
 require classpath.inc
 
-PR = "r5"
+PR = "r6"
 
-SRC_URI += "file://gjar-prefix-patch.diff;patch=1;pnum=0"
+SRC_URI += "\
+  file://gjar-prefix-patch.diff;patch=1;pnum=0 \
+  file://xmlstream-fix.patch;patch=1;pnum=0 \
+  "
 
 PROVIDES = "${PN} classpath"
 
@@ -15,3 +18,5 @@ EXTRA_OECONF += "\
                 --disable-dssi \
                 --disable-examples \
                "
+
+CPPACKAGES = "${PBN}-common ${PBN}-tools"
