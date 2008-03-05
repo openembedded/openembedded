@@ -6,7 +6,7 @@ PR = "r2"
 
 inherit openmoko2
 
-SRC_URI += "file://webkit-update.patch;patch=1;minrev=3646"
+SRC_URI += "file://webkit-update.patch;patch=1;minrev=3646;maxrev=4171"
 
 #SRC_URI += "file://fingerscroll.diff;patch=1"
 
