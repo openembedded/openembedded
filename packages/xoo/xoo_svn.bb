@@ -3,7 +3,7 @@ It is intended for embedded developers that want to simulate a target device \
 (with an accurate display size, working hardware buttons, etc) on a desktop machine."
 HOMEPAGE = "http://projects.o-hand.com/xoo"
 LICENSE = "GPL"
-DEPENDS = "virtual/libx11 libxtst gtk+ libglade"
+DEPENDS = "virtual/libx11 libxtst gtk+ libglade expat"
 PV = "0.7+svnr${SRCREV}"
 PR = "r1"
 

@@ -33,12 +33,12 @@ mtd_utils = "ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
 
 do_install () {
 	install -d ${D}${bindir}
-	install -d ${D}${includedir}
+	install -d ${D}${includedir}/mtd
 	for binary in ${mtd_utils}; do
 		install -m 0755 $binary ${D}${bindir}
 	done
 	for f in ${S}/include/mtd/*.h; do
-		install -m 0644 $f ${D}${includedir}
+		install -m 0644 $f ${D}${includedir}/mtd
 	done
 }
 
