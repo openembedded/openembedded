@@ -1,26 +1,22 @@
 #------------------------------------------------------
-# OpenMoko Image Recipe
+# OpenMoko Qtopia Image Recipe
 #------------------------------------------------------
 
-export IMAGE_BASENAME = "${PN}"
-export IMAGE_LINGUAS = ""
+require openmoko-minimal-image.bb
 
-IMAGE_INSTALL = "\
-  ${MACHINE_TASK_PROVIDER} \
-  task-openmoko-linux \
+export IMAGE_BASENAME = "${PN}"
+
+IMAGE_INSTALL += "\
   alsa-state \
   bluez-hcidump \
   bluez-utils \
   task-openmoko-qtopia \
 "
-DEPENDS = "\
-  ${MACHINE_TASK_PROVIDER} \
+
+DEPENDS += "\
   task-openmoko-qtopia \
 "
 
 RDEPENDS = "${PACKAGE_INSTALL}"
 
-inherit image
-
 LICENSE = MIT
-
