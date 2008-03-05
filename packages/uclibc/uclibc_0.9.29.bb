@@ -33,7 +33,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #as stated above, uclibc needs real kernel-headers
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
-KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
+KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
