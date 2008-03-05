@@ -9,7 +9,7 @@ Index: libsexy-0.1.11/libsexy.pc.in
 -Libs: -L${libdir} -lsexy @PACKAGE_LIBS@
 -Cflags: -I${includedir} @PACKAGE_CFLAGS@
  
-+Requires: pango glib-2.0 gtk+-2.0 libxml
++Requires: pango glib-2.0 gtk+-2.0 libxml-2.0
 +Libs: -L${libdir} -lsexy 
 +Cflags: -I${includedir}
  
