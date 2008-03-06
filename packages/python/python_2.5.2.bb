@@ -5,9 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
-
-# NOTE: Keep the digit in sync with BASEREV in contrib/generate-manifest-2.5.py
-PR = "ml0"
+PR = "ml1"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -82,11 +80,10 @@ do_install() {
 
 require python-${PYTHON_MAJMIN}-manifest.inc
 
-# manual additions
+# manual dependency additions
 RPROVIDES_python-core = "python"
 RRECOMMENDS_python-core = "python-readline"
 RRECOMMENDS_python-crypt = "openssl"
-PR_python-crypt = "ml1"
 
 # add sitecustomize
 FILES_python-core += "${libdir}/python${PYTHON_MAJMIN}/sitecustomize.py"
