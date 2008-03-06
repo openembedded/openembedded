@@ -1,17 +1,15 @@
-Index: libspiff-0.7.2/configure.in
+Index: libspiff-0.8.2/configure.in
 ===================================================================
---- libspiff-0.7.2.orig/configure.in	2007-08-25 15:47:29.000000000 +0000
-+++ libspiff-0.7.2/configure.in	2007-08-25 15:47:48.000000000 +0000
-@@ -78,26 +78,6 @@
- 	LDFLAGS="-L${withval} ${LDFLAGS}"
- ], [])
+--- libspiff-0.8.2.orig/configure.in
++++ libspiff-0.8.2/configure.in
+@@ -80,24 +80,6 @@ AC_ARG_WITH(uriparser-lib, [  --with-uri
  
--
--
+ 
+ 
 -# Local headers must come very first. Otherwise we
 -# risk including headers of an already installed
 -# libSpiff version if its path is in CPPFLAGS
--CPPFLAGS="-Iinclude ${CPPFLAGS}"
+-CPPFLAGS="-I${srcdir}/include ${CPPFLAGS}"
 -
 -
 -
