@@ -7,7 +7,7 @@ SECTION = "devel"
 # cut-down gcc for kernel builds
 # only installs ${TARGET_PREFIX}gcc-${PV}, not ${TARGET_PREFIX}gcc.
 
-require gcc-cross-initial_${PV}.bb
+require gcc-cross-initial_csl-arm-2005q3.bb
 
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-${PV}"
 
