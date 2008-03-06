@@ -8,9 +8,14 @@ PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-libc-for-gcc \
   virtual/arm-linux-binutils \
   virtual/libc \
+  virtual/libintl \
+  virtual/libiconv \
   virtual/arm-linux-gcc \
   virtual/arm-linux-gcc-initial "
 PR = "r1"
+
+RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
+PACKAGES_DYNAMIC = "glibc-gconv-*"
 
 # This needs to be extracted to /usr/local/arm :
 # SRC_URI = "http://handhelds.org/download/projects/toolchain/archive/cross-2.95.3.tar.bz2"

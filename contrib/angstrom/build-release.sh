@@ -22,6 +22,9 @@ do_build() {
         fi
 
 	BUILD_MODE="glibc"
+        echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
+        echo 'ANGSTROM_MODE = "glibc"' >> conf/auto.conf
+
 	if [ "$BUILD_CLEAN" != "" ]
 	then
 		bitbake -c clean $BUILD_CLEAN
