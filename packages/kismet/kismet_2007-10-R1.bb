@@ -1,3 +1,5 @@
 require kismet.inc
 
-PR = "r3"
+SRC_URI += "file://fix_strip.patch;patch=1"
+
+PR = "r5"
