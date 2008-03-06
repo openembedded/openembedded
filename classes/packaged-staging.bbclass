@@ -20,6 +20,9 @@ python () {
         bb.data.setVar("PSTAGING_DISABLED", "1", d)
 }
 
+# multimachine.bbclass will override this
+MULTIMACH_ARCH ?= "${PACKAGE_ARCH}"
+
 export PSTAGING_DISABLED = "0"
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
