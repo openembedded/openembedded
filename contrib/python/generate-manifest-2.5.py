@@ -9,12 +9,11 @@ import os
 import sys
 import time
 
-VERSION = "2.5.1"
-# increase when touching python-core, this should be the same ml version as in python_2.5.x.bb
-BASEREV = 7
+VERSION = "2.5.2"
+BASEREV = 0
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20080122"
+__version__ = "20080306"
 
 class MakefileMaker:
 
@@ -188,7 +187,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-compression", "Python High Level Compression Support", "python-core python-zlib",
     "gzip.* zipfile.*" )
 
-    m.addPackage( 0, "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
+    m.addPackage( 1, "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
     "hashlib.* md5.* sha.* lib-dynload/crypt.so lib-dynload/_hashlib.so lib-dynload/_sha256.so lib-dynload/_sha512.so" )
 
     m.addPackage( 0, "python-textutils", "Python Option Parsing, Text Wrapping and Comma-Separated-Value Support", "python-core python-io python-re python-stringold",
@@ -295,13 +294,13 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core python-io python-re python-fcntl python-pickle",
     "subprocess.*" )
 
-    m.addPackage( 0, "python-sqlite3", "Python Sqlite3 Database Support", "python-core",
-    "sqlite3" ) # package
+    m.addPackage( 1, "python-sqlite3", "Python Sqlite3 Database Support", "python-core",
+    "lib-dynload/_sqlite3.so sqlite3" ) # package
 
     m.addPackage( 0, "python-stringold", "Python String APIs [deprecated]", "python-core python-re",
     "lib-dynload/strop.so string.*" )
 
-    m.addPackage( 0, "python-syslog", "Python's syslog Interface", "python-core",
+    m.addPackage( 0, "python-syslog", "Python's Syslog Interface", "python-core",
     "lib-dynload/syslog.so" )
 
     m.addPackage( 0, "python-terminal", "Python Terminal Controlling Support", "python-core python-io",
