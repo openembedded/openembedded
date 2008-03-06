@@ -17,8 +17,6 @@ do_compile() {
 	(
 		unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
 		cd src/util; touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} makekeys.c -o makekeys
-		# mv to stop it getting rebuilt
-		mv makekeys.c makekeys.c.orig
 		cd ../../
 	) || exit 1
 	oe_runmake
