@@ -11,6 +11,9 @@ EXTRA_OECONF = "--enable-wsp100 --with-pcap=linux \
 
 inherit autotools
 
+# .depend is needed by the main compile but can run in parallel
+PARALLE_MAKE = ""
+
 fakeroot do_install() {
      oe_runmake "DESTDIR=${D}" suidinstall
 }
