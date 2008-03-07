@@ -196,4 +196,4 @@ eb1c40b4c0c0e45af72840032d1f8ffdf59afecc linux-rp-2.6.24: Add tosa supprot from 
 9a5df4f82194968b8ea8a94d7effc5bf61c1e650 zaurusd fixes (Stanislav, Koen)
 3ea27c0c881e1f8965e9208c8a3d98d022602838 xkdrive medium-raw fixes (Stanislav, Koen)
 c72441dc719a5903a8fdc705f309c086346249b0 alsa-state spitz + akita fixes (Stanislav, Koen)
-
+135f1243bae7b8d2761f12a5ee4792c0fdd61cd7 findutils fix (Stanislav, Koen)
