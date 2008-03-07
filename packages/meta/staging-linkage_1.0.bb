@@ -22,7 +22,7 @@ do_install() {
 do_stage () {
 	if [ -e ${STAGING_DIR_HOST}${layout_base_libdir} ]; then
 		cp -pPRr ${STAGING_DIR_HOST}${layout_base_libdir}/* ${STAGING_LIBDIR}
-		mv ${STAGING_DIR_HOST}${layout_base_libdir}/ ${STAGING_DIR_HOST}${layout_libdir}-oldbackup/
+		mv ${STAGING_DIR_HOST}${layout_base_libdir}/ ${STAGING_DIR_HOST}${layout_libdir}-oldbackup
 	fi
 	ln -s ${STAGING_LIBDIR}/ ${STAGING_DIR_HOST}${layout_base_libdir}
 }
