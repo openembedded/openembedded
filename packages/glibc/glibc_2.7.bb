@@ -57,6 +57,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 #	   file://fixup-aeabi-syscalls.patch;patch=1 \
 #	   file://zecke-sane-readelf.patch;patch=1 \
            file://ldd-unbash.patch;patch=1 \
+	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \

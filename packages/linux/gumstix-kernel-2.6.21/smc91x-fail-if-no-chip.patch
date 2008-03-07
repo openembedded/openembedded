@@ -1,0 +1,58 @@
+--- linux-2.6.21/drivers/net/gumstix-smc91x.c-orig	2008-02-24 22:06:30.000000000 -0800
++++ linux-2.6.21/drivers/net/gumstix-smc91x.c	2008-02-25 08:12:57.000000000 -0800
+@@ -90,18 +90,42 @@
+ 	pxa_gpio_mode(GPIO49_nPWE_MD);
+ 
+ 	pxa_gpio_mode(GPIO78_nCS_2_MD);
+-	// If either if statement fails, then we'll drop out and turn_off_eth1,
++
++  // First look for smc91x0
++	// If either if statement fails, then we'll drop out and turn_off_eth0,
++	// if both succeed, then we'll skip that and just proceed
++  // to test for 2 smc91x chips
++	if(request_mem_region(gumstix_smc91x0_resources[0].start, SMC_IO_EXTENT, "smc91x0 probe"))
++	{
++		ioaddr = ioremap(gumstix_smc91x0_resources[0].start, SMC_IO_EXTENT);
++		val = ioread16(ioaddr + BANK_SELECT);
++		iounmap(ioaddr);
++		release_mem_region(gumstix_smc91x0_resources[0].start, SMC_IO_EXTENT);
++		if ((val & 0xFF00) == 0x3300) {
++			goto proceed;
++		}
++	}
++
++  printk(KERN_ERR "%s: smc91x chip not found, returning -ENXIO\n", __FUNCTION__);
++  return -ENXIO;
++
++proceed:
++  printk(KERN_ERR "%s: smc91x chip found\n", __FUNCTION__);
++
++  // Now look for a second smc91x
++	// If either if statement fails, then we'll drop out and return -ENXIO
+ 	// if both succeed, then we'll skip that and just proceed with 2 cards
+-	if(request_mem_region(gumstix_smc91x1_resources[0].start, SMC_IO_EXTENT, "smc91x probe"))
++	if(request_mem_region(gumstix_smc91x1_resources[0].start, SMC_IO_EXTENT, "smc91x1 probe"))
+ 	{
+ 		ioaddr = ioremap(gumstix_smc91x1_resources[0].start, SMC_IO_EXTENT);
+ 		val = ioread16(ioaddr + BANK_SELECT);
+ 		iounmap(ioaddr);
+ 		release_mem_region(gumstix_smc91x1_resources[0].start, SMC_IO_EXTENT);
+ 		if ((val & 0xFF00) == 0x3300) {
+-			goto proceed;
++			goto proceed1;
+ 		}
+ 	}
++  
+ 
+ turn_off_eth1:
+ 	// This is apparently not an SMC91C111
+@@ -110,7 +134,8 @@
+ 	smc91x_devices[1] = NULL;
+ 	pxa_gpio_mode(78 | GPIO_IN);
+ 	
+-proceed:
++proceed1:
++  printk(KERN_ERR "%s: found %d smc91x chip(s)\n", __FUNCTION__);
+ 	pxa_gpio_mode(GPIO15_nCS_1_MD);
+ 
+ 	if(smc91x_devices[1]) pxa_gpio_mode(GPIO_GUMSTIX_ETH1_RST_MD);

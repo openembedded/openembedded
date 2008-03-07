@@ -1,4 +1,4 @@
-DESCRIPTION="A easy-to-use virtual keyboard for small touchscreen displays"
+DESCRIPTION = "An easy-to-use virtual keyboard for small touchscreen displays"
 SECTION = "openmoko/inputmethods"
 DEPENDS = "ecore evas edje"
 PR = "r0"

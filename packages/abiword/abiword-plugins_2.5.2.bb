@@ -20,7 +20,7 @@ PARALLEL_MAKE=""
 EXTRA_OECONF = " --without-libwmf \
                  --without-inter7eps \
 		 --with-abiword=${WORKDIR}/abiword-${PV} \
-		 --with-boost=${STAGINC_INCDIR}/../ \ 
+		 --with-boost=${STAGING_INCDIR}/../ \ 
 		 "
 
 PACKAGES_DYNAMIC = "abiword-plugin-*"

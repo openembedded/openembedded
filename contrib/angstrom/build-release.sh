@@ -5,7 +5,26 @@ DO_UCLIBC=1
 do_build() {
 	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
 
+        if [ $DO_UCLIBC = 1 ]
+        then
+                BUILD_MODE="uclibc"
+                echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+
+                if [ "$BUILD_CLEAN" != "" ]
+                then
+                        bitbake -c clean $BUILD_CLEAN
+                fi
+
+                for target in $BUILD_TARGETS
+                do
+                        bitbake $target && do_report_success
+                done
+        fi
+
 	BUILD_MODE="glibc"
+        echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
+        echo 'ANGSTROM_MODE = "glibc"' >> conf/auto.conf
+
 	if [ "$BUILD_CLEAN" != "" ]
 	then
 		bitbake -c clean $BUILD_CLEAN
@@ -15,22 +34,6 @@ do_build() {
 	do
 		bitbake $target && do_report_success
 	done
-
-	if [ $DO_UCLIBC = 1 ]
-	then
-		BUILD_MODE="uclibc"
-		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
-		
-		if [ "$BUILD_CLEAN" != "" ]
-        	then
-                	bitbake -c clean $BUILD_CLEAN
-        	fi
-
-		for target in $BUILD_TARGETS
-		do
-			bitbake $target && do_report_success
-		done
-	fi
 }
 
 do_report_success() {
@@ -79,7 +82,7 @@ for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 h5000 pood
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="base-image console-image minimal-gpe-image x11-image"
+	BUILD_TARGETS="initramfs-bootmenu-image base-image console-image minimal-gpe-image x11-image"
 	do_build
 done
 

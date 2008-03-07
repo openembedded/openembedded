@@ -1,5 +1,3 @@
-inherit base
-
 # Native packages are built indirectly via dependency,
 # no need for them to be a direct target of 'world'
 EXCLUDE_FROM_WORLD = "1"

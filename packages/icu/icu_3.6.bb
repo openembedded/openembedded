@@ -1,8 +1,9 @@
 require icu-3.6.inc
 
 DEPENDS += "icu-native"
+PR = "r3"
 
-PR = "r2"
+SRC_URI += "file://use-g++-for-linking.patch;patch=1"
 
 do_configure_append() {
         for i in */Makefile */*.inc */*/Makefile */*/*.inc ; do
@@ -11,6 +12,10 @@ do_configure_append() {
         done
 	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc || true
 	sed -i -e 's:$(BINDIR)/::g' extra/uconv/pkgdata.inc.in || true
+}
+
+do_compile() {
+	oe_runmake 'CXX=${CXX}'
 }
 
 do_install_append() {

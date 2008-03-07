@@ -20,6 +20,9 @@ python () {
         bb.data.setVar("PSTAGING_DISABLED", "1", d)
 }
 
+# multimachine.bbclass will override this
+MULTIMACH_ARCH ?= "${PACKAGE_ARCH}"
+
 export PSTAGING_DISABLED = "0"
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage" 
@@ -225,5 +228,5 @@ python do_package_stage () {
     bb.utils.unlockfile(lf)
 }
 
-addtask package_stage after do_package_write_ipk do_package_write_deb do_package_write do_populate_staging before do_build
+addtask package_stage after do_package_write do_populate_staging before do_build
 

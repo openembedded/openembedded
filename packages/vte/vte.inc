@@ -5,6 +5,8 @@ RDEPENDS = "termcap"
 
 inherit gnome
 
+SRC_URI += "file://vte-pkgconfig-fixes.patch;patch=1"
+
 EXTRA_OECONF = "--disable-gtk-doc"
 
 do_stage() {

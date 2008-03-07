@@ -44,9 +44,14 @@ do_install() {
 	mv ${D}${libdir}/security ${D}${libdir}/${PBN}
 }
 
-PACKAGES =+ "${PBN}-common ${PN}-examples \
+# Defines the packages that this classpath recipe creates.
+# This allows the classpath-minimal variants to override this
+# again.
+CPPACKAGES = "${PBN}-common ${PN}-examples \
              ${PN}-tools ${PN}-tools-doc \
-             ${PN}-gtk ${PN}-gconf "
+             ${PN}-gtk ${PN}-gconf"
+
+PACKAGES =+ "${CPPACKAGES}"
 
 FILES_${PN}-dev += "${libdir}/${PBN}/*.la ${incdir}/${PBN}"
 
