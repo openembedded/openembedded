@@ -14,14 +14,26 @@ MACHINES="h2200 h3900 h4000 h5000 hx4700 htcapache htcblueangel htcuniversal"
 EXT="jffs2"
 
 # This is what has been built with:
-# ANGSTROM_MODE=uclibc MACHINE=h4000 IMAGE_FSTYPES="cpio.gz" bitbake liveramdisk-image
+# ANGSTROM_MODE=uclibc MACHINE=h4000 bitbake liveramdisk-image
 LIVERAMDISK_FILE=~/pfalcon/Angstrom-liveramdisk-uclibc-ipk-2007.12-r10-h4000.rootfs.cpio.gz
 # Directory where HaRET source has been checked out
 HARET_PATH=~/pfalcon/haret
-
 # HaRET executable
 HARET_EXE=$HARET_PATH/haret-0.5.0.exe
 LIVERAMDISK_SCRIPT=$HARET_PATH/tools/safeboot-initramfs.txt
+
+if [ ! -f "$LIVERAMDISK_FILE" ]; then
+    echo "$LIVERAMDISK_FILE does not exist"
+    exit 1
+fi
+if [ ! -f "$HARET_EXE" ]; then
+    echo "$HARET_EXE does not exist"
+    exit 1
+fi
+if [ ! -f "$LIVERAMDISK_SCRIPT" ]; then
+    echo "$LIVERAMDISK_SCRIPT does not exist"
+    exit 1
+fi
 
 for m in $MACHINES; do
     for f in `find $m -name "A*x11-image*.$EXT" -o -name "A*opie-image*.$EXT"`; do
