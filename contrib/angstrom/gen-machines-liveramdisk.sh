@@ -43,7 +43,7 @@ for m in $MACHINES; do
 	image_ver=`expr "$base" : '.\+-glibc-ipk-\(.*\)\.rootfs'`
 	liveramdisk_name="$image_name-liveramdisk-$image_ver.exe"
 	# Use the latest kernel version
-	kernel_name=`ls -1 -t $dir/zImage* | head -n1`
+	kernel_name=`ls -1 -t $dir/zImage-2.6* | head -n1`
 
         if [ ! -f "$dir/$liveramdisk_name" ]; then
     	    echo "$f (+ $kernel_name) - need gen"
