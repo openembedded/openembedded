@@ -186,7 +186,6 @@ SRC_URI_append_tosa = "\
 SRC_URI_append_akita = "\
            file://mtd-module.patch;patch=1;status=external \
            file://wm8750-treble.patch;patch=1;status=external \
-           file://sharpsl-rc-r1.patch;patch=1 \
            "
 
 SRC_URI_append_spitz = "\
