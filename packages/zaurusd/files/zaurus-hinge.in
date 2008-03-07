@@ -19,9 +19,12 @@ if [ -z "$1" ]; then
    exit 1
 fi
 
-panel_user="`ps aux|grep matchbox-panel|grep -v grep | awk '{print $2}'`"
+panel_user="`ps aux|grep matchbox-panel|grep -v grep | awk '{print $1}'`"
 
-
+# touch ~/.norot can disable rotation.
+if test -f /home/$panel_user/.norot ; then
+  exit
+fi
 
 STATE=$1
 

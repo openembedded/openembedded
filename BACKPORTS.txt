@@ -193,4 +193,6 @@ a9ec71b4b3a7b6500927fc2c0f61184d610a91e6 Added PXA27x resume fix from Russell Ki
 816caaf243e40e8a4af131a3d54249bffd11fe51 linux-rp 2.6.24: remove repeated content from pxafb.patch (Hans, Koen)
 95605d9087fdf6917d1950bf9008c71fe0efdfda linux-rp-2.6.24: add netfilter modules for qemux86, make 2.6.24 preferred (Hans, Koen)
 eb1c40b4c0c0e45af72840032d1f8ffdf59afecc linux-rp-2.6.24: Add tosa supprot from Dmitry Baryshkov (#3879) (Hans, Koen)
+9a5df4f82194968b8ea8a94d7effc5bf61c1e650 zaurusd fixes (Stanislav, Koen)
+
 
