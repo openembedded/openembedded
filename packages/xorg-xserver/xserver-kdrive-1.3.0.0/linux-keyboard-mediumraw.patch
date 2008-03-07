@@ -1,0 +1,83 @@
+Index: xorg-server-1.3.0.0/hw/kdrive/linux/keyboard.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/kdrive/linux/keyboard.c	2006-11-16 18:01:23.000000000 +0000
++++ xorg-server-1.3.0.0/hw/kdrive/linux/keyboard.c	2007-08-12 12:14:29.000000000 +0000
+@@ -384,14 +384,35 @@
+ LinuxKeyboardRead (int fd, void *closure)
+ {
+     unsigned char   buf[256], *b;
+-    int		    n;
++    int		    n, mediumraw_data, mediumraw_event;
++    static enum { LOWKEY, BYTE1, BYTE2 } mediumraw_state = LOWKEY;
+ 
+     while ((n = read (fd, buf, sizeof (buf))) > 0)
+     {
+ 	b = buf;
+ 	while (n--)
+ 	{
+-	    KdEnqueueKeyboardEvent (b[0] & 0x7f, b[0] & 0x80);
++	    switch (mediumraw_state)
++	    {
++	    case LOWKEY:
++		if ( (b[0] & 0x7f) == 0)
++		{
++		    mediumraw_state = BYTE1;
++		    mediumraw_event = b[0] & 0x80;
++		}
++		else
++		    KdEnqueueKeyboardEvent (b[0] & 0x7f, b[0] & 0x80);
++		break;
++	    case BYTE1:
++		mediumraw_data = (b[0] & 0x7f) << 7;
++		mediumraw_state = BYTE2;
++		break;
++	    case BYTE2:
++		/* FIXME: KdEnqueueKeyboardEvent should accept word size */
++		KdEnqueueKeyboardEvent ( mediumraw_data | (b[0] & 0x7f), mediumraw_event);
++		mediumraw_state = LOWKEY;
++		break;
++	    }
+ 	    b++;
+ 	}
+     }
+Index: xorg-server-1.3.0.0/hw/xfree86/os-support/linux/lnx_kbd.c
+===================================================================
+--- xorg-server-1.3.0.0.orig/hw/xfree86/os-support/linux/lnx_kbd.c	2006-11-16 18:01:25.000000000 +0000
++++ xorg-server-1.3.0.0/hw/xfree86/os-support/linux/lnx_kbd.c	2007-08-12 12:14:29.000000000 +0000
+@@ -430,12 +430,32 @@
+ {
+     KbdDevPtr pKbd = (KbdDevPtr) pInfo->private;
+     unsigned char rBuf[64];
+-    int nBytes, i;
++    int nBytes, i, mediumraw_data, mediumraw_event;
++    static enum { LOWKEY, BYTE1, BYTE2 } mediumraw_state = LOWKEY;
+     if ((nBytes = read( pInfo->fd, (char *)rBuf, sizeof(rBuf))) > 0) {
+-       for (i = 0; i < nBytes; i++)
+-           pKbd->PostEvent(pInfo, rBuf[i] & 0x7f,
+-                           rBuf[i] & 0x80 ? FALSE : TRUE);
++       for (i = 0; i < nBytes; i++) {
++           switch (mediumraw_state) {
++           case LOWKEY:
++               if ( (rBuf[i] & 0x7f) == 0) {
++                   mediumraw_state = BYTE1;
++                   mediumraw_event = rBuf[i] & 0x80;
++               }
++               else
++                   pKbd->PostEvent(pInfo, rBuf[i] & 0x7f,
++                                   rBuf[i] & 0x80 ? FALSE : TRUE);
++               break;
++           case BYTE1:
++               mediumraw_data = (rBuf[i] & 0x7f) << 7;
++               mediumraw_state = BYTE2;
++               break;
++           case BYTE2:
++               pKbd->PostEvent(pInfo, mediumraw_data | (rBuf[i] & 0x7f),
++                               mediumraw_event ? FALSE : TRUE);
++               mediumraw_state = LOWKEY;
++               break;
++           }
+        }
++    }
+ }
+ 
+ static Bool
