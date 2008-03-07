@@ -15,7 +15,7 @@ EXT="jffs2"
 
 # This is what has been built with:
 # ANGSTROM_MODE=uclibc MACHINE=h4000 IMAGE_FSTYPES="cpio.gz" bitbake liveramdisk-image
-LIVERAMDISK_FILE=~/pfalcon/Angstrom-liveramdisk-uclibc-ipk-2007.11RC1.3-h4000.rootfs.cpio.gz
+LIVERAMDISK_FILE=~/pfalcon/Angstrom-liveramdisk-uclibc-ipk-2007.12-r10-h4000.rootfs.cpio.gz
 # Directory where HaRET source has been checked out
 HARET_PATH=~/pfalcon/haret
 
@@ -34,7 +34,7 @@ for m in $MACHINES; do
 	kernel_name=`ls -1 -t $dir/zImage* | head -n1`
 
         if [ ! -f "$dir/$liveramdisk_name" ]; then
-    	    echo $f - need gen
+    	    echo "$f (+ $kernel_name) - need gen"
 	    
 	    # Generate complete LiveRamdisk initramfs by putting jffs2 rootfs into liveramdisk-image cpio
     	    gzip -d -c $LIVERAMDISK_FILE | $HARET_PATH/tools/cpio-append.py $f initrd.jffs2 | gzip -c > $dir/$base.liveramdisk.cpio.gz
