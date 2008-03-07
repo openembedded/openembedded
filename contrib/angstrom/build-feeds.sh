@@ -56,10 +56,10 @@ do
 		       apache2 boa cherokee lighttpd thttpd \
 		       rox-filer gpe-gallery gpe-scap notecase \
 		       pidgin irssi \
-		       roadmap-gtk2 gpsdrive navit \
+		       roadmap-gtk2 gpsdrive navit gpsbabel \
 		       xmms mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff rfakeap driftnet rt73-k2wrlz rt2570 rt2570-k2wrlz \
-		       nmap iptables iperf \
+		       sudo nmap iptables iperf \
 		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
 		       abiword gnumeric evince epdfview gimp \
