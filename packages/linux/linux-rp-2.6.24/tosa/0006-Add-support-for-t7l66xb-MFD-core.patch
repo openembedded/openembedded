@@ -1,0 +1,653 @@
+From 2e31fea352ca97988452f1f2c94809de2977ce40 Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Sat, 29 Dec 2007 15:08:52 +0000
+Subject: [PATCH 06/64] Add support for t7l66xb MFD core
+
+---
+ drivers/mfd/Kconfig         |    6 +
+ drivers/mfd/Makefile        |    1 +
+ drivers/mfd/t7l66xb.c       |  550 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/t7l66xb.h |   45 ++++
+ 4 files changed, 602 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mfd/t7l66xb.c
+ create mode 100644 include/linux/mfd/t7l66xb.h
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 1575323..f79a969 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -9,6 +9,12 @@ config MFD_CORE
+ 	tristate
+ 	default n
+ 
++config MFD_T7L66XB
++	bool "Support Toshiba T7L66XB"
++	select MFD_CORE
++	help
++	  Support for Toshiba Mobile IO Controller T7L66XB
++
+ config MFD_TC6387XB
+ 	bool "Support Toshiba TC6387XB"
+ 	select MFD_CORE
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 41b2190..b2037ae 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -6,6 +6,7 @@ obj-$(CONFIG_MFD_SM501)		+= sm501.o
+ 
+ obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
+ 
++obj-$(CONFIG_MFD_T7L66XB)	+= t7l66xb.o
+ obj-$(CONFIG_MFD_TC6387XB)	+= tc6387xb.o
+ obj-$(CONFIG_MFD_TC6393XB)	+= tc6393xb.o
+ 
+diff --git a/drivers/mfd/t7l66xb.c b/drivers/mfd/t7l66xb.c
+new file mode 100644
+index 0000000..308776a
+--- /dev/null
++++ b/drivers/mfd/t7l66xb.c
+@@ -0,0 +1,550 @@
++/*
++ *
++ * Toshiba T7L66XB core mfd support
++ *
++ * Copyright (c) 2005 Ian Molton
++ * Copyright (c) 2007 Ian Molton
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * T7L66 features:
++ *
++ * Supported in this driver:
++ * SD/MMC
++ * SM/NAND flash controller
++ * OHCI controller
++ *
++ * As yet not supported
++ * GPIO interface (on NAND pins)
++ * Serial interface
++ * TFT 'interface converter'
++ * PCMCIA interface logic
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/io.h>
++#include <linux/irq.h>
++#include <linux/platform_device.h>
++#include <linux/fb.h>
++#include <linux/mfd-core.h>
++#include <linux/mfd/tmio.h>
++#include <linux/mfd/t7l66xb.h>
++
++union t7l66xb_dev_ctl {
++        u8             raw;
++struct {
++        unsigned        usb_en:1;      /* D0   USB enable   */
++        unsigned        mmc_en:1;      /* D1   MMC enable   */
++} __attribute__ ((packed));
++} __attribute__ ((packed));
++
++
++struct t7l66xb_scr {
++        u8 x00[8];
++        u8      revid;          /* 0x08 Revision ID                     */
++        u8 x01[57];
++        u8      imr;            /* 0x42 Interrupt Mask                  */
++	u8 x03[157];
++        union t7l66xb_dev_ctl     dev_ctl; /* 0xe0 Device control       */
++        u8      isr;            /* 0xe1 Interrupt Status                */
++        u8 x04[14];
++        u8      gpio_output_ctl;    /* 0xf0 */
++        u8      gpio_output_status; /* 0xf1 */
++        u16     gpio_input_status;  /* 0xf2 */
++        u8 x05[4];
++        u8      active_pullup_down_ctl; /* 0xf8 */
++        u8 x06[7];
++} __attribute__ ((packed));
++
++
++/*--------------------------------------------------------------------------*/
++
++struct t7l66xb
++{
++	struct t7l66xb_scr __iomem     *scr;
++	spinlock_t                      lock;
++
++	struct resource                 rscr;
++	struct resource                 *iomem;
++	int                             irq;
++};
++
++/*--------------------------------------------------------------------------*/
++
++static int t7l66xb_ohci_enable(struct platform_device *ohci)
++{
++        struct platform_device          *dev    = to_platform_device(ohci->dev.parent);
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++	union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        dev_ctl.raw = readb(&scr->dev_ctl);
++        dev_ctl.usb_en = 1;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++        return 0;
++}
++
++static int t7l66xb_ohci_disable(struct platform_device *ohci)
++{
++        struct platform_device          *dev    = to_platform_device(ohci->dev.parent);
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++        union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        dev_ctl.raw = readb(&scr->dev_ctl);
++        dev_ctl.usb_en = 0;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++        return 0;
++}
++
++/*--------------------------------------------------------------------------*/
++
++static int t7l66xb_mmc_enable(struct platform_device *ohci)
++{
++        struct platform_device          *dev    = to_platform_device(ohci->dev.parent);
++        struct t7l66xb_platform_data   *pdata = dev->dev.platform_data;
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++	union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        if(pdata->enable_clk32k)
++                pdata->enable_clk32k(dev);
++        dev_ctl.raw = readb(&scr->dev_ctl);
++        dev_ctl.mmc_en = 1;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++        return 0;
++}
++
++static int t7l66xb_mmc_disable(struct platform_device *ohci)
++{
++        struct platform_device          *dev    = to_platform_device(ohci->dev.parent);
++        struct t7l66xb_platform_data   *pdata = dev->dev.platform_data;
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++        union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        dev_ctl.raw = readb(&scr->dev_ctl);
++        dev_ctl.mmc_en = 0;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++        if(pdata->disable_clk32k)
++                pdata->disable_clk32k(dev);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++        return 0;
++}
++
++/*--------------------------------------------------------------------------*/
++
++static int t7l66xb_nand_disable(struct platform_device *nand)
++{
++        struct platform_device          *dev    = to_platform_device(nand->dev.parent);
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++        union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        dev_ctl.raw = readb(&scr->dev_ctl);
++//        dev_ctl.nand_en = 0;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++	return 0;
++}
++
++static int t7l66xb_nand_enable(struct platform_device *nand)
++{
++        struct platform_device          *dev    = to_platform_device(nand->dev.parent);
++        struct t7l66xb                  *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem      *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++        union t7l66xb_dev_ctl           dev_ctl;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++
++        dev_ctl.raw = readb(&scr->dev_ctl);
++ //       dev_ctl.nand_en = 1;
++        writeb(dev_ctl.raw, &scr->dev_ctl);
++
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++
++	return 0;
++}
++
++/*--------------------------------------------------------------------------*/
++
++const static struct resource t7l66xb_mmc_resources[] = {
++	{
++		.name = TMIO_MMC_CONTROL,
++		.start = 0x800,
++		.end   = 0x9ff,
++		.flags = IORESOURCE_MEM,
++	},
++	{
++		.name = TMIO_MMC_CONFIG,
++		.start = 0x200,
++		.end   = 0x2ff,
++		.flags = IORESOURCE_MEM,
++	},
++	{
++		.name  = TMIO_MMC_IRQ,
++		.start = IRQ_T7L66XB_MMC,
++		.end   = IRQ_T7L66XB_MMC,
++		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_MFD_SUBDEVICE,
++	},
++};
++
++const static struct resource t7l66xb_ohci_resources[] = {
++        {
++                .name   = TMIO_OHCI_CONFIG,
++                .start  = 0x0300,
++                .end    = 0x03ff,
++                .flags  = IORESOURCE_MEM,
++        },
++        {
++                .name   = TMIO_OHCI_CONTROL,
++                .start  = 0xa00,
++                .end    = 0xbff,
++                .flags  = IORESOURCE_MEM,
++        },
++        {
++                .name   = TMIO_OHCI_SRAM,
++                .start  = 0x01000,
++                .end    = 0x02fff,
++                .flags  = IORESOURCE_MEM,
++        },
++        {
++                .name   = TMIO_OHCI_IRQ,
++                .start  = IRQ_T7L66XB_OHCI,
++                .end    = IRQ_T7L66XB_OHCI,
++                .flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_MFD_SUBDEVICE,
++        },
++};
++
++const static struct resource t7l66xb_nand_resources[] = {
++        {
++                .name   = TMIO_NAND_CONFIG,
++                .start  = 0x0100,
++                .end    = 0x01ff,
++                .flags  = IORESOURCE_MEM,
++        },
++        {
++                .name   = TMIO_NAND_CONTROL,
++                .start  = 0xc00,
++                .end    = 0xc07,
++                .flags  = IORESOURCE_MEM,
++        },
++        {
++                .name   = TMIO_NAND_IRQ,
++                .start  = IRQ_T7L66XB_NAND,
++                .end    = IRQ_T7L66XB_NAND,
++                .flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_MFD_SUBDEVICE,
++        },
++};
++
++static struct mfd_cell t7l66xb_cells[] = {
++	{
++		.name = "tmio-mmc",
++		.enable = t7l66xb_mmc_enable,
++		.disable = t7l66xb_mmc_disable,
++		.num_resources = ARRAY_SIZE(t7l66xb_mmc_resources),
++		.resources = t7l66xb_mmc_resources,
++	},
++        {
++                .name = "tmio-ohci",
++                .enable = t7l66xb_ohci_enable,
++                .disable = t7l66xb_ohci_disable,
++                .num_resources = ARRAY_SIZE(t7l66xb_ohci_resources),
++                .resources = t7l66xb_ohci_resources,
++        },
++        {
++                .name = "tmio-nand",
++                .enable = t7l66xb_nand_enable,
++                .disable = t7l66xb_nand_disable,
++                .num_resources = ARRAY_SIZE(t7l66xb_nand_resources),
++                .resources = t7l66xb_nand_resources,
++        },
++};
++
++/*--------------------------------------------------------------------------*/
++
++/* Handle the T7L66XB interrupt mux */
++static void t7l66xb_irq(unsigned int irq, struct irq_desc *desc)
++{
++	struct platform_device         *dev    = get_irq_chip_data(irq);
++	struct t7l66xb_platform_data   *tcpd   = dev->dev.platform_data;
++	struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++	struct t7l66xb_scr __iomem     *scr    = t7l66xb->scr;
++	unsigned int                   isr;
++	unsigned int                   i;
++
++	desc->chip->ack(irq);
++	while ((isr = readb(&scr->isr) & ~readb(&scr->imr)))
++		for (i = 0; i < T7L66XB_NR_IRQS; i++)
++			if (isr & (1 << i))
++				desc_handle_irq(tcpd->irq_base + i,
++				                irq_desc + tcpd->irq_base + i);
++}
++
++static void t7l66xb_irq_mask(unsigned int irq)
++{
++        struct platform_device          *dev    = get_irq_chip_data(irq);
++        struct t7l66xb_platform_data   *tcpd   = dev->dev.platform_data;
++        struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem     *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++        iowrite8(ioread8(&scr->imr) | (1 << (irq - tcpd->irq_base)),
++                                                                &scr->imr);
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++}
++
++static void t7l66xb_irq_unmask(unsigned int irq)
++{
++        struct platform_device          *dev    = get_irq_chip_data(irq);
++        struct t7l66xb_platform_data   *tcpd   = dev->dev.platform_data;
++        struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++        struct t7l66xb_scr __iomem     *scr    = t7l66xb->scr;
++        unsigned long                   flags;
++
++        spin_lock_irqsave(&t7l66xb->lock, flags);
++        iowrite8(ioread8(&scr->imr) & ~(1 << (irq - tcpd->irq_base)),
++	                                                         &scr->imr);
++        spin_unlock_irqrestore(&t7l66xb->lock, flags);
++}
++
++static struct irq_chip t7l66xb_chip = {
++	.name   = "t7l66xb",
++	.ack	= t7l66xb_irq_mask,
++	.mask	= t7l66xb_irq_mask,
++	.unmask	= t7l66xb_irq_unmask,
++};
++
++/*--------------------------------------------------------------------------*/
++
++/* Install the IRQ handler */
++static void t7l66xb_attach_irq(struct platform_device *dev)
++{
++	struct t7l66xb_platform_data   *tcpd   = dev->dev.platform_data;
++        struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++        unsigned int                    irq;
++
++        for (
++                        irq = tcpd->irq_base;
++                        irq <= tcpd->irq_base + T7L66XB_NR_IRQS;
++                        irq++) {
++		set_irq_chip (irq, &t7l66xb_chip);
++		set_irq_chip_data (irq, dev);
++		set_irq_handler(irq, handle_level_irq);
++		set_irq_flags(irq, IRQF_VALID | IRQF_PROBE);
++	}
++
++	set_irq_type (t7l66xb->irq, IRQT_FALLING);
++	set_irq_chip_data (t7l66xb->irq, dev);
++        set_irq_chained_handler (t7l66xb->irq, t7l66xb_irq);
++}
++
++static void t7l66xb_detach_irq(struct platform_device *dev)
++{
++        struct t7l66xb_platform_data   *tcpd   = dev->dev.platform_data;
++        struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++        unsigned int                    irq;
++
++        set_irq_chained_handler(t7l66xb->irq, NULL);
++        set_irq_chip_data(t7l66xb->irq, NULL);
++
++        for (
++                        irq = tcpd->irq_base;
++                        irq <= tcpd->irq_base + T7L66XB_NR_IRQS;
++                        irq++) {
++                set_irq_flags(irq, 0);
++                set_irq_chip(irq, NULL);
++                set_irq_chip_data(irq, NULL);
++        }
++}
++
++/*--------------------------------------------------------------------------*/
++
++#ifdef CONFIG_PM
++static int t7l66xb_suspend(struct platform_device *dev, pm_message_t state)
++{
++	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
++
++
++	if (pdata && pdata->suspend)
++		pdata->suspend(dev);
++
++	return 0;
++}
++
++static int t7l66xb_resume(struct platform_device *dev)
++{
++	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
++
++	if (pdata && pdata->resume)
++		pdata->resume(dev);
++
++	return 0;
++}
++#else
++#define t7l66xb_suspend NULL
++#define t7l66xb_resume  NULL
++#endif
++
++/*--------------------------------------------------------------------------*/
++
++static int t7l66xb_probe(struct platform_device *dev)
++{
++	struct t7l66xb_platform_data *pdata = dev->dev.platform_data;
++	struct t7l66xb *t7l66xb;
++	struct resource *iomem;
++	struct resource *rscr;
++	int retval = -ENOMEM;
++	
++	iomem = platform_get_resource(dev, IORESOURCE_MEM, 0);
++        if (!iomem)
++                return -EINVAL;
++
++	t7l66xb = kzalloc (sizeof *t7l66xb, GFP_KERNEL);
++	if (!t7l66xb)
++		goto err_kzalloc;
++
++	spin_lock_init(&t7l66xb->lock);
++
++	platform_set_drvdata(dev, t7l66xb);
++	t7l66xb->iomem = iomem;
++        t7l66xb->irq   = platform_get_irq(dev, 0);
++
++	rscr            = &t7l66xb->rscr;
++        rscr->name      = "t7l66xb-core";
++        rscr->start     = iomem->start;
++        rscr->end       = iomem->start + 0xff;
++        rscr->flags     = IORESOURCE_MEM;
++
++        if((retval = request_resource(iomem, rscr)))
++                goto err_request_scr;
++
++	t7l66xb->scr   = ioremap(rscr->start, rscr->end - rscr->start + 1);
++        if (!t7l66xb->scr) {
++                retval = -ENOMEM;
++                goto err_ioremap;
++        }
++
++        if (pdata && pdata->enable)
++                pdata->enable(dev);
++
++	writeb(0xbf, &t7l66xb->scr->imr); /* Mask all interrupts */
++
++	printk(KERN_INFO "%s rev %d @ 0x%08lx, irq %d\n",
++	       dev->name,  readb(&t7l66xb->scr->revid),
++	       (unsigned long)t7l66xb->scr, t7l66xb->irq);
++
++	if(t7l66xb->irq)
++		t7l66xb_attach_irq(dev);
++
++	t7l66xb_cells[2].driver_data = pdata->nand_data;
++
++	if(!(retval = mfd_add_devices(dev, t7l66xb_cells,
++	                              ARRAY_SIZE(t7l66xb_cells),
++	                              iomem, 0, pdata->irq_base)))
++		return 0;
++
++	if(t7l66xb->irq)
++		t7l66xb_detach_irq(dev);
++
++        iounmap(t7l66xb->scr);
++err_ioremap:
++        release_resource(rscr);
++err_request_scr:
++        kfree(t7l66xb);
++err_kzalloc:
++        release_resource(iomem);
++        return retval;
++}
++
++static int t7l66xb_remove(struct platform_device *dev)
++{
++	struct t7l66xb_platform_data   *pdata   = dev->dev.platform_data;
++        struct t7l66xb                 *t7l66xb = platform_get_drvdata(dev);
++        int ret;
++
++        if (t7l66xb->irq)
++                t7l66xb_detach_irq(dev);
++
++        ret = pdata->disable(dev);
++
++        iounmap(t7l66xb->scr);
++        release_resource(&t7l66xb->rscr);
++        release_resource(t7l66xb->iomem);
++
++        mfd_remove_devices(dev);
++
++        platform_set_drvdata(dev, NULL);
++
++        kfree(t7l66xb);
++
++        return ret;
++
++}
++
++static struct platform_driver t7l66xb_platform_driver = {
++	.driver = {
++		.name    = "t7l66xb",
++		.owner   = THIS_MODULE,
++	},
++	.suspend	= t7l66xb_suspend,
++	.resume		= t7l66xb_resume,
++	.probe		= t7l66xb_probe,
++	.remove		= t7l66xb_remove,
++};
++
++/*--------------------------------------------------------------------------*/
++
++static int __init t7l66xb_init(void)
++{
++	int retval = 0;
++		
++	retval = platform_driver_register (&t7l66xb_platform_driver);
++	return retval;
++}
++
++static void __exit t7l66xb_exit(void)
++{
++	platform_driver_unregister(&t7l66xb_platform_driver);
++}
++
++module_init(t7l66xb_init);
++module_exit(t7l66xb_exit);
++
++MODULE_DESCRIPTION("Toshiba T7L66XB core driver");
++MODULE_LICENSE("GPLv2");
++MODULE_AUTHOR("Ian Molton");
++
+diff --git a/include/linux/mfd/t7l66xb.h b/include/linux/mfd/t7l66xb.h
+new file mode 100644
+index 0000000..06b8de5
+--- /dev/null
++++ b/include/linux/mfd/t7l66xb.h
+@@ -0,0 +1,45 @@
++/*
++ * linux/include/asm-arm/hardware/t7l66xb.h
++ *
++ * This file contains the definitions for the T7L66XB
++ *
++ * (C) Copyright 2005 Ian Molton <spyro@f2s.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++#ifndef _ASM_ARCH_T7L66XB_SOC
++#define _ASM_ARCH_T7L66XB_SOC
++
++#include <linux/mfd-core.h>
++#include <linux/mfd/tmio.h>
++
++
++struct t7l66xb_platform_data
++{
++        int (*enable_clk32k)(struct platform_device *dev);
++        int (*disable_clk32k)(struct platform_device *dev);
++
++	int     (*enable)(struct platform_device *dev);
++	int     (*disable)(struct platform_device *dev);
++	int     (*suspend)(struct platform_device *dev);
++	int     (*resume)(struct platform_device *dev);
++
++	int     irq_base;       /* a base for cascaded irq */
++
++	struct tmio_nand_data   *nand_data;
++};
++
++
++#define T7L66XB_NAND_CNF_BASE  (0x000100)
++#define T7L66XB_NAND_CTL_BASE  (0x001000)
++
++#define IRQ_T7L66XB_NAND       (3)
++#define IRQ_T7L66XB_MMC        (1)
++#define IRQ_T7L66XB_OHCI       (2)
++
++#define T7L66XB_NR_IRQS	8
++
++#endif
+-- 
+1.5.3.8
+

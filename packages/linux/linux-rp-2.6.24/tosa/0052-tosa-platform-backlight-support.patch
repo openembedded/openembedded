@@ -1,0 +1,400 @@
+From c7537657bc33d4ee1616accd0259e160d57c5c1b Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Wed, 9 Jan 2008 02:05:40 +0300
+Subject: [PATCH 52/64] tosa platform backlight support
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/video/backlight/Kconfig   |   10 +
+ drivers/video/backlight/Makefile  |    1 +
+ drivers/video/backlight/tosa_bl.c |  345 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 356 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/backlight/tosa_bl.c
+
+diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+index 9609a6c..f47a601 100644
+--- a/drivers/video/backlight/Kconfig
++++ b/drivers/video/backlight/Kconfig
+@@ -59,6 +59,16 @@ config BACKLIGHT_CORGI
+ 	  known as the Corgi backlight driver. If you have a Sharp Zaurus
+ 	  SL-C7xx, SL-Cxx00 or SL-6000x say y. Most users can say n.
+ 
++config BACKLIGHT_TOSA
++	tristate "Sharp Tosa LCD/Backlight Driver (SL-6000)"
++	depends on BACKLIGHT_CLASS_DEVICE && MACH_TOSA
++	default y
++	select I2C
++	select I2C_PXA
++	select PXA_SSP
++	help
++	  If you have a Sharp Zaurus SL-6000y enable this driver.
++
+ config BACKLIGHT_LOCOMO
+ 	tristate "Sharp LOCOMO LCD/Backlight Driver"
+ 	depends on BACKLIGHT_CLASS_DEVICE && SHARP_LOCOMO
+diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
+index 965a78b..e8a6a7c 100644
+--- a/drivers/video/backlight/Makefile
++++ b/drivers/video/backlight/Makefile
+@@ -5,6 +5,7 @@ obj-$(CONFIG_LCD_LTV350QV)	+= ltv350qv.o
+ 
+ obj-$(CONFIG_BACKLIGHT_CLASS_DEVICE) += backlight.o
+ obj-$(CONFIG_BACKLIGHT_CORGI)	+= corgi_bl.o
++obj-$(CONFIG_BACKLIGHT_TOSA)	+= tosa_bl.o
+ obj-$(CONFIG_BACKLIGHT_HP680)	+= hp680_bl.o
+ obj-$(CONFIG_BACKLIGHT_LOCOMO)	+= locomolcd.o
+ obj-$(CONFIG_BACKLIGHT_PROGEAR) += progear_bl.o
+diff --git a/drivers/video/backlight/tosa_bl.c b/drivers/video/backlight/tosa_bl.c
+new file mode 100644
+index 0000000..11a89c6
+--- /dev/null
++++ b/drivers/video/backlight/tosa_bl.c
+@@ -0,0 +1,345 @@
++/*
++ *  LCD / Backlight control code for Sharp SL-6000x (tosa)
++ *
++ *  Copyright (c) 2005		Dirk Opfer
++ *  Copyright (c) 2007		Dmitry Baryshkov
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/backlight.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/fb.h>
++#include <linux/mfd/tc6393xb.h>
++
++#include <asm/hardware/scoop.h>
++#include <asm/mach/sharpsl_param.h>
++#include <asm/arch/ssp.h>
++#include <asm/arch/pxa-regs.h>
++#include <asm/arch/tosa.h>
++#include <asm/gpio.h>
++
++#define	DAC_BASE	0x4e
++#define DAC_CH1		0
++#define DAC_CH2		1
++
++#define TG_REG0_VQV	0x0001
++#define TG_REG0_COLOR	0x0002
++#define TG_REG0_UD	0x0004
++#define TG_REG0_LR	0x0008
++#define COMADJ_DEFAULT 	97
++
++static unsigned short normal_i2c[] = { DAC_BASE, I2C_CLIENT_END };
++I2C_CLIENT_INSMOD;
++
++struct tosa_bl_data {
++	struct i2c_client	client;
++
++	int			comadj;
++	spinlock_t		nssp_lock;
++	struct ssp_dev		nssp_dev;
++	struct ssp_state	nssp_state;
++
++	struct backlight_device	*bl_dev;
++};
++
++static struct i2c_driver tosa_bl_driver;
++
++static void pxa_nssp_output(struct tosa_bl_data *data, unsigned char reg, unsigned char value)
++{
++	unsigned long flag;
++	u32 dummy;
++	u32 dat = ( ((reg << 5) & 0xe0) | (value & 0x1f) );
++	spin_lock_irqsave(&data->nssp_lock, flag);
++
++	ssp_config(&data->nssp_dev, (SSCR0_Motorola | (SSCR0_DSS & 0x07 )), 0, 0, SSCR0_SerClkDiv(128));
++	ssp_enable(&data->nssp_dev);
++
++	ssp_write_word(&data->nssp_dev,dat);
++
++	/* Read null data back from device to prevent SSP overflow */
++	ssp_read_word(&data->nssp_dev, &dummy);
++	ssp_disable(&data->nssp_dev);
++	spin_unlock_irqrestore(&data->nssp_lock, flag);
++
++}
++
++static void tosa_set_backlight(struct tosa_bl_data *data, int brightness)
++{
++	/* SetBacklightDuty */
++	i2c_smbus_write_byte_data(&data->client, DAC_CH2, (unsigned char)brightness);
++
++	/* SetBacklightVR */
++	if (brightness)
++		gpio_set_value(TOSA_TC6393XB_BL_C20MA, 1);
++	else
++		gpio_set_value(TOSA_TC6393XB_BL_C20MA, 0);
++
++	/* bl_enable GP04=1 otherwise GP04=0*/
++	pxa_nssp_output(data, TG_GPODR2, brightness ? 0x01 : 0x00);
++}
++
++static void tosa_lcd_tg_init(struct tosa_bl_data *data)
++{
++	dev_dbg(&data->bl_dev->dev, "tosa_lcd_init\n");
++
++	/* L3V On */
++	set_scoop_gpio( &tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++	mdelay(60);
++
++	/* TG On */
++	gpio_set_value(TOSA_TC6393XB_TG_ON, 0);
++	mdelay(60);
++
++	pxa_nssp_output(data, TG_TPOSCTL,0x00);	/* delayed 0clk TCTL signal for VGA */
++	pxa_nssp_output(data, TG_GPOSR,0x02);		/* GPOS0=powercontrol, GPOS1=GPIO, GPOS2=TCTL */
++}
++
++static void tosa_lcd_tg_on(struct tosa_bl_data *data/*, const struct fb_videomode *mode*/)
++{
++	const int value = TG_REG0_COLOR | TG_REG0_UD | TG_REG0_LR;
++
++	tosa_lcd_tg_init(data);
++
++	dev_dbg(&data->bl_dev->dev, "tosa_lcd_on\n");
++	pxa_nssp_output(data, TG_PNLCTL, value | (/*mode->yres == 320 ? 0 : */ TG_REG0_VQV));
++
++	/* TG LCD pannel power up */
++	pxa_nssp_output(data, TG_PINICTL,0x4);
++	mdelay(50);
++
++	/* TG LCD GVSS */
++	pxa_nssp_output(data, TG_PINICTL,0x0);
++	mdelay(50);
++
++	/* set common voltage */
++	i2c_smbus_write_byte_data(&data->client, DAC_CH1, data->comadj);
++}
++
++static void tosa_lcd_tg_off(struct tosa_bl_data *data)
++{
++	tosa_set_backlight(data, 0);
++	dev_dbg(&data->bl_dev->dev, "tosa_lcd_off\n");
++	/* TG LCD VHSA off */
++	pxa_nssp_output(data, TG_PINICTL,0x4);
++	mdelay(50);
++
++	/* TG LCD signal off */
++	pxa_nssp_output(data, TG_PINICTL,0x6);
++	mdelay(50);
++
++	/* TG Off */
++	gpio_set_value(TOSA_TC6393XB_TG_ON, 1);
++	mdelay(100);
++
++	/* L3V Off */
++	reset_scoop_gpio( &tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++}
++
++
++static int tosa_bl_update_status(struct backlight_device *dev)
++{
++	struct backlight_properties *props = &dev->props;
++	struct tosa_bl_data *data = dev_get_drvdata(&dev->dev);
++	int new_power = max(props->power, props->fb_blank);
++
++	tosa_set_backlight(data, props->brightness);
++
++	if (new_power)
++		tosa_lcd_tg_off(data);
++	else
++		tosa_lcd_tg_on(data);
++
++	return 0;
++}
++
++static int tosa_bl_get_brightness(struct backlight_device *dev)
++{
++	struct backlight_properties *props = &dev->props;
++
++	return props->brightness;
++}
++
++static struct backlight_ops tosa_bl_ops = {
++	.get_brightness		= tosa_bl_get_brightness,
++	.update_status		= tosa_bl_update_status,
++};
++
++static int tosa_bl_detect_client(struct i2c_adapter *adapter, int address,
++                        int kind)
++{
++	int err = 0;
++	struct i2c_client *client;
++	struct tosa_bl_data *data;
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA ))
++		goto out;
++
++	if (!(data = kzalloc(sizeof(struct tosa_bl_data), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	client = &data->client;
++	i2c_set_clientdata(client, data);
++
++	client->addr = address;
++	client->adapter = adapter;
++	client->driver = &tosa_bl_driver;
++
++	strlcpy(client->name, "tosa_bl", I2C_NAME_SIZE);
++
++	spin_lock_init(&data->nssp_lock);
++	data->comadj = sharpsl_param.comadj == -1 ? COMADJ_DEFAULT : sharpsl_param.comadj;
++
++	err = gpio_request(TOSA_TC6393XB_BL_C20MA, "backlight");
++	if (err) {
++		dev_dbg(&data->bl_dev->dev, "Unable to request gpio!\n");
++		goto err_gpio_bl;
++	}
++
++	err = gpio_request(TOSA_TC6393XB_TG_ON, "tg");
++	if (err) {
++		dev_dbg(&data->bl_dev->dev, "Unable to request gpio!\n");
++		goto err_gpio_tg;
++	}
++
++	err = ssp_init(&data->nssp_dev,2,0);
++	if (err) {
++		dev_err(&data->bl_dev->dev, "Unable to register NSSP handler!\n");
++		goto err_ssp_init;
++	}
++
++	/* Tell the i2c layer a new client has arrived */
++	err = i2c_attach_client(client);
++	if (err)
++		goto err_i2c_attach;
++
++	gpio_direction_output(TOSA_TC6393XB_BL_C20MA, 0);
++	gpio_direction_output(TOSA_TC6393XB_TG_ON, 1);
++
++	tosa_lcd_tg_init(data);
++
++	data->bl_dev = backlight_device_register("tosa_bl",
++			&client->dev, data, &tosa_bl_ops);
++	if (err)
++		goto err_bl_register;
++
++	data->bl_dev->props.brightness = 69;
++	data->bl_dev->props.max_brightness = 255;
++	data->bl_dev->props.power = FB_BLANK_UNBLANK;
++	backlight_update_status(data->bl_dev);
++
++
++	return 0;
++
++err_bl_register:
++	tosa_set_backlight(data, 0);
++	tosa_lcd_tg_off(data);
++
++	err = i2c_detach_client(client);
++	if (err)
++		return err;
++err_i2c_attach:
++	ssp_exit(&data->nssp_dev);
++err_ssp_init:
++	gpio_free(TOSA_TC6393XB_TG_ON);
++err_gpio_tg:
++	gpio_free(TOSA_TC6393XB_BL_C20MA);
++err_gpio_bl:
++	kfree(data);
++out:
++	return err;
++}
++
++static int tosa_bl_detach_client(struct i2c_client *client)
++{
++	int err = 0;
++	struct tosa_bl_data *data = i2c_get_clientdata(client);
++
++	backlight_device_unregister(data->bl_dev);
++
++	tosa_set_backlight(data, 0);
++	tosa_lcd_tg_off(data);
++
++	/* Try to detach the client from i2c space */
++	if ((err = i2c_detach_client(client)))
++		return err;
++
++	ssp_exit(&data->nssp_dev);
++
++	gpio_free(TOSA_TC6393XB_TG_ON);
++	gpio_free(TOSA_TC6393XB_BL_C20MA);
++
++	kfree(data);
++
++	return err;
++}
++
++#ifdef CONFIG_PM
++static int tosa_bl_suspend(struct i2c_client *client, pm_message_t mesg)
++{
++	struct tosa_bl_data *data = i2c_get_clientdata(client);
++
++	tosa_lcd_tg_off(data);
++	ssp_flush(&data->nssp_dev);
++	ssp_save_state(&data->nssp_dev,&data->nssp_state);
++
++	return 0;
++}
++
++static int tosa_bl_resume(struct i2c_client *client)
++{
++	struct tosa_bl_data *data = i2c_get_clientdata(client);
++
++	ssp_restore_state(&data->nssp_dev,&data->nssp_state);
++	ssp_enable(&data->nssp_dev);
++	tosa_bl_update_status(data->bl_dev);
++
++	return 0;
++}
++#else
++#define tosa_bl_suspend NULL
++#define tosa_bl_resume NULL
++#endif
++
++static int tosa_bl_attach_adapter(struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, &tosa_bl_detect_client);
++}
++
++static struct i2c_driver tosa_bl_driver = {
++	.driver = {
++		.name	= "tosa_bl",
++	},
++
++	.attach_adapter	= tosa_bl_attach_adapter,
++	.detach_client	= tosa_bl_detach_client,
++
++	.suspend	= tosa_bl_suspend,
++	.resume		= tosa_bl_resume,
++};
++
++static int __init tosa_bl_init(void)
++{
++	return i2c_add_driver(&tosa_bl_driver);
++}
++
++static void __exit tosa_bl_cleanup (void)
++{
++	i2c_del_driver(&tosa_bl_driver);
++}
++
++module_init(tosa_bl_init);
++module_exit(tosa_bl_cleanup);
++
++MODULE_DESCRIPTION("Tosa LCD device");
++MODULE_AUTHOR("Dirk Opfer, Dmitry Baryshkov");
++MODULE_LICENSE("GPL v2");
+-- 
+1.5.3.8
+

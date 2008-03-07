@@ -1,0 +1,26 @@
+From b6a63ad546cc26519a342f3fdd7b1def49ca33ee Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 13 Feb 2008 02:00:14 +0300
+Subject: [PATCH] tmiofb_probe should be __devinit
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/video/tmiofb.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/tmiofb.c b/drivers/video/tmiofb.c
+index 9389a77..958ee8a 100644
+--- a/drivers/video/tmiofb.c
++++ b/drivers/video/tmiofb.c
+@@ -704,7 +704,7 @@ static irqreturn_t tmiofb_irq(int irq, void *__info)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int tmiofb_probe(struct platform_device *dev)
++static int __devinit tmiofb_probe(struct platform_device *dev)
+ {
+ 	struct mfd_cell			*cell	= mfd_get_cell(dev);
+ 	struct tmio_fb_data		*data	= cell->driver_data;
+-- 
+1.5.4.1
+
