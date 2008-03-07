@@ -2,9 +2,10 @@ DESCRIPTION = "Command line tool and library for client-side URL transfers."
 LICENSE = "MIT"
 DEPENDS = "zlib gnutls"
 SECTION = "console/network"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2"
+SRC_URI = "http://curl.haxx.se/download/curl-${PV}.tar.bz2 \
+           file://pkgconfig_fix.patch;patch=1"
 S = "${WORKDIR}/curl-${PV}"
 
 inherit autotools pkgconfig binconfig

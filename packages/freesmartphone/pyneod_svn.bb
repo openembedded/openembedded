@@ -4,11 +4,11 @@ SECTION = "console/network"
 DEPENDS = "python"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit update-rc.d
 
-INITSCRIPT_NAME = "init.d.pyneod"
+INITSCRIPT_NAME = "pyneod"
 INITSCRIPT_PARAMS = "defaults 40"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=pyneod"

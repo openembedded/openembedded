@@ -47,6 +47,9 @@ ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2420h4 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2430sdp = "0"
 
+#qemu has taken a dislike to armeb as well
+ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
+
 #ARM EABI is softfloat by default, but let's make sure :)
 #make it overridable for platforms with FPU, like ep93xx or i.mx31
 TARGET_FPU_arm ?= "soft"

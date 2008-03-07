@@ -1,4 +1,4 @@
 require pango.inc
 
-DEFAULT_PREFERENCE = "-1"
+SRC_URI += "file://pkgconfig_fixes.patch;patch=1"
 

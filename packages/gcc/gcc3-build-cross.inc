@@ -23,11 +23,6 @@ do_stage_append () {
 		rm -rf ${CROSS_DIR}/$d
 	done
 
-    # Hack to be removed when staging layout matches the target layout
-    if [ ! -e ${STAGING_DIR_TARGET}/usr ]; then
-        ln -s ${STAGING_DIR_TARGET} ${STAGING_DIR_TARGET}/usr
-    fi
-
 	# Fix a few include links so cross builds are happier
 	if [ ! -e ${STAGING_INCDIR}/c++ ]; then
 		mkdir -p ${STAGING_INCDIR}

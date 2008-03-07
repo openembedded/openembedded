@@ -333,12 +333,15 @@ def package_qa_check_staged(path,d):
     import os, bb
 
     sane = True
-    workdir = os.path.join(bb.data.getVar('TMPDIR', d, True), "work")
+    tmpdir = bb.data.getVar('TMPDIR', d, True)
+    workdir = os.path.join(tmpdir, "work")
 
-    if bb.data.inherits_class("native", d):
+    if bb.data.inherits_class("native", d) or bb.data.inherits_class("cross", d):
         installed = "installed=no"
+        pkgconfigcheck = workdir
     else:
         installed = "installed=yes"
+        pkgconfigcheck = tmpdir
 
     # find all .la and .pc files
     # read the content
@@ -356,8 +359,8 @@ def package_qa_check_staged(path,d):
                     sane = package_qa_handle_error(8, error_msg, "staging", path, d)
             elif file[-2:] == "pc":
                 file_content = open(path).read()
-                if workdir in file_content:
-                    error_msg = "%s failed sanity test (workdir) in path %s" % (file,root)
+                if pkgconfigcheck in file_content:
+                    error_msg = "%s failed sanity test (tmpdir) in path %s" % (file,root)
                     sane = package_qa_handle_error(6, error_msg, "staging", path, d)
 
     return sane

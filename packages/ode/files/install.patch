@@ -1,0 +1,22 @@
+Index: ode-0.9/Makefile.am
+===================================================================
+--- ode-0.9.orig/Makefile.am
++++ ode-0.9/Makefile.am
+@@ -25,13 +25,13 @@ dist-zip: ${PACKAGE}-${VERSION}.tar.gz
+ 
+ if USE_SONAME
+ install-exec-hook:
+-	ln -s $(libdir)/@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
++	ln -sf ./@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
+ 	$(libdir)/libode.so
+-	ln -s $(libdir)/@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
++	ln -sf ./@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
+ 	$(libdir)/@ODE_SONAME@
+-	ln -s $(libdir)/@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
++	ln -sf ./@ODE_SONAME@.@ODE_REVISION@.@ODE_AGE@ \
+ 	$(libdir)/@ODE_SONAME@.@ODE_REVISION@
+-	/sbin/ldconfig
++	echo /sbin/ldconfig
+ else
+ install-exec-hook:
+ endif
