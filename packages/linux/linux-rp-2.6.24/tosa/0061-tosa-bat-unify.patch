@@ -1,0 +1,342 @@
+From f05aa38af5bd5962ae04c4b128644e7f55451527 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 8 Feb 2008 01:14:48 +0300
+Subject: [PATCH 61/64] tosa-bat-unify
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/power/tosa_battery.c |  161 ++++++++++++++++++++---------------------
+ 1 files changed, 79 insertions(+), 82 deletions(-)
+
+diff --git a/drivers/power/tosa_battery.c b/drivers/power/tosa_battery.c
+index b0fd2f2..008e791 100644
+--- a/drivers/power/tosa_battery.c
++++ b/drivers/power/tosa_battery.c
+@@ -21,15 +21,6 @@
+ #include <asm/gpio.h>
+ #include <asm/arch/tosa.h>
+ 
+-#define BAT_TO_VOLTS(v)		((v) * 1000000 / 414)
+-#define BU_TO_VOLTS(v)		((v) * 1000000 / 1266)
+-/*
+- * It's pretty strange value, but that's roughly what I get from
+- * zaurus maintainer menu
+- */
+-//#define BAT_TO_TEMP(t)		((t) * 10000/2000)
+-#define BAT_TO_TEMP(t)			(t)
+-
+ static DEFINE_MUTEX(bat_lock); /* protects gpio pins */
+ static struct work_struct bat_work;
+ 
+@@ -39,37 +30,27 @@ struct tosa_bat {
+ 	int full_chrg;
+ 
+ 	struct mutex work_lock; /* protects data */
++
+ 	bool (*is_present)(struct tosa_bat *bat);
+ 	int gpio_full;
+ 	int gpio_charge_off;
++
++	int technology;
++
+ 	int gpio_bat;
+ 	int adc_bat;
++	int adc_bat_divider;
++	int bat_max;
++	int bat_min;
++
+ 	int gpio_temp;
+ 	int adc_temp;
++	int adc_temp_divider;
+ };
+ 
+ static struct tosa_bat tosa_bat_main;
+ static struct tosa_bat tosa_bat_jacket;
+ 
+-static enum power_supply_property tosa_bat_main_props[] = {
+-	POWER_SUPPLY_PROP_STATUS,
+-	POWER_SUPPLY_PROP_TECHNOLOGY,
+-	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+-	POWER_SUPPLY_PROP_VOLTAGE_MAX,
+-	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
+-	POWER_SUPPLY_PROP_TEMP,
+-	POWER_SUPPLY_PROP_PRESENT,
+-};
+-
+-static enum power_supply_property tosa_bat_bu_props[] = {
+-	POWER_SUPPLY_PROP_STATUS,
+-	POWER_SUPPLY_PROP_TECHNOLOGY,
+-	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
+-	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+-	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
+-	POWER_SUPPLY_PROP_PRESENT,
+-};
+-
+ static unsigned long tosa_read_bat(struct tosa_bat *bat)
+ {
+ 	unsigned long value = 0;
+@@ -83,6 +64,9 @@ static unsigned long tosa_read_bat(struct tosa_bat *bat)
+ 	value = wm97xx_read_aux_adc(bat->psy.dev->parent->driver_data, bat->adc_bat);
+ 	gpio_set_value(bat->gpio_bat, 0);
+ 	mutex_unlock(&bat_lock);
++
++	value = value * 1000000 / bat->adc_bat_divider;
++
+ 	return value;
+ }
+ 
+@@ -99,6 +83,9 @@ static unsigned long tosa_read_temp(struct tosa_bat *bat)
+ 	value = wm97xx_read_aux_adc(bat->psy.dev->parent->driver_data, bat->adc_temp);
+ 	gpio_set_value(bat->gpio_temp, 0);
+ 	mutex_unlock(&bat_lock);
++
++	value = value * 10000 / bat->adc_temp_divider;
++
+ 	return value;
+ }
+ 
+@@ -119,22 +106,25 @@ static int tosa_bat_get_property(struct power_supply *psy,
+ 		val->intval = bat->status;
+ 		break;
+ 	case POWER_SUPPLY_PROP_TECHNOLOGY:
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LIPO;
++		val->intval = bat->technology;
+ 		break;
+ 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+-		val->intval = BAT_TO_VOLTS(tosa_read_bat(bat));
++		val->intval = tosa_read_bat(bat);
+ 		break;
+ 	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
+ 		if (bat->full_chrg == -1)
+-			val->intval = -1;
++			val->intval = bat->bat_max;
+ 		else
+-			val->intval = BAT_TO_VOLTS(bat->full_chrg);
++			val->intval = bat->full_chrg;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
++		val->intval = bat->bat_max;
+ 		break;
+ 	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
+-		val->intval = BAT_TO_VOLTS(1551);
++		val->intval = bat->bat_min;
+ 		break;
+ 	case POWER_SUPPLY_PROP_TEMP:
+-		val->intval = BAT_TO_TEMP(tosa_read_temp(bat));
++		val->intval = tosa_read_temp(bat);
+ 		break;
+ 	case POWER_SUPPLY_PROP_PRESENT:
+ 		val->intval = bat->is_present ? bat->is_present(bat) : 1;
+@@ -146,40 +136,6 @@ static int tosa_bat_get_property(struct power_supply *psy,
+ 	return ret;
+ }
+ 
+-static int tosa_bu_get_property(struct power_supply *psy,
+-			    enum power_supply_property psp,
+-			    union power_supply_propval *val)
+-{
+-	int ret = 0;
+-	struct tosa_bat *bat = container_of(psy, struct tosa_bat, psy);
+-
+-	switch (psp) {
+-	case POWER_SUPPLY_PROP_STATUS:
+-		val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
+-		break;
+-	case POWER_SUPPLY_PROP_TECHNOLOGY:
+-		val->intval = POWER_SUPPLY_TECHNOLOGY_LiMn;
+-		break;
+-	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
+-		val->intval = 0;
+-		break;
+-	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
+-		val->intval = 3 * 1000000; /* 3 V */
+-		break;
+-	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+-		/* I think so */
+-		val->intval = BU_TO_VOLTS(tosa_read_bat(bat));
+-		break;
+-	case POWER_SUPPLY_PROP_PRESENT:
+-		val->intval = 1;
+-		break;
+-	default:
+-		ret = -EINVAL;
+-		break;
+-	}
+-	return ret;
+-}
+-
+ static bool tosa_jacket_bat_is_present(struct tosa_bat *bat) {
+ 	// FIXME
+ 	return 1;
+@@ -241,6 +197,25 @@ static void tosa_bat_work(struct work_struct *work)
+ }
+ 
+ 
++static enum power_supply_property tosa_bat_main_props[] = {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_VOLTAGE_NOW,
++	POWER_SUPPLY_PROP_VOLTAGE_MAX,
++	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
++	POWER_SUPPLY_PROP_TEMP,
++	POWER_SUPPLY_PROP_PRESENT,
++};
++
++static enum power_supply_property tosa_bat_bu_props[] = {
++	POWER_SUPPLY_PROP_STATUS,
++	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
++	POWER_SUPPLY_PROP_VOLTAGE_NOW,
++	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
++	POWER_SUPPLY_PROP_PRESENT,
++};
++
+ static struct tosa_bat tosa_bat_main = {
+ 	.status = POWER_SUPPLY_STATUS_UNKNOWN,
+ 	.full_chrg = -1,
+@@ -256,10 +231,18 @@ static struct tosa_bat tosa_bat_main = {
+ 
+ 	.gpio_full = TOSA_GPIO_BAT0_CRG,
+ 	.gpio_charge_off = TOSA_TC6393XB_CHARGE_OFF,
++
++	.technology = POWER_SUPPLY_TECHNOLOGY_LIPO,
++
+ 	.gpio_bat = TOSA_TC6393XB_BAT0_V_ON,
+ 	.adc_bat = WM97XX_AUX_ID3,
++	.adc_bat_divider = 414,
++	.bat_max = 4310000,
++	.bat_min = 1551 * 100000 / 414,
++
+ 	.gpio_temp = TOSA_TC6393XB_BAT1_TH_ON,
+ 	.adc_temp = WM97XX_AUX_ID2,
++	.adc_temp_divider = 10000,
+ };
+ 
+ static struct tosa_bat tosa_bat_jacket = {
+@@ -278,10 +261,18 @@ static struct tosa_bat tosa_bat_jacket = {
+ 	.is_present = tosa_jacket_bat_is_present,
+ 	.gpio_full = TOSA_GPIO_BAT1_CRG,
+ 	.gpio_charge_off = TOSA_TC6393XB_CHARGE_OFF_JC,
++
++	.technology = POWER_SUPPLY_TECHNOLOGY_LIPO,
++
+ 	.gpio_bat = TOSA_TC6393XB_BAT1_V_ON,
+ 	.adc_bat = WM97XX_AUX_ID3,
++	.adc_bat_divider = 414,
++	.bat_max = 4310000,
++	.bat_min = 1551 * 100000 / 414,
++
+ 	.gpio_temp = TOSA_TC6393XB_BAT0_TH_ON,
+ 	.adc_temp = WM97XX_AUX_ID2,
++	.adc_temp_divider = 10000,
+ };
+ 
+ static struct tosa_bat tosa_bat_bu = {
+@@ -293,16 +284,22 @@ static struct tosa_bat tosa_bat_bu = {
+ 		.type		= POWER_SUPPLY_TYPE_BATTERY,
+ 		.properties	= tosa_bat_bu_props,
+ 		.num_properties	= ARRAY_SIZE(tosa_bat_bu_props),
+-		.get_property	= tosa_bu_get_property,
++		.get_property	= tosa_bat_get_property,
+ 		.external_power_changed = tosa_bat_external_power_changed,
+ 	},
+ 
+ 	.gpio_full = -1,
+ 	.gpio_charge_off = -1,
++
++	.technology = POWER_SUPPLY_TECHNOLOGY_LiMn,
++
+ 	.gpio_bat = TOSA_TC6393XB_BU_CHRG_ON,
+ 	.adc_bat = WM97XX_AUX_ID4,
++	.adc_bat_divider = 1266,
++
+ 	.gpio_temp = -1,
+ 	.adc_temp = -1,
++	.adc_temp_divider = -1,
+ };
+ 
+ static struct {
+@@ -326,13 +323,14 @@ static struct {
+ };
+ 
+ #ifdef CONFIG_PM
+-static int tosa_bat_suspend(struct device *dev, pm_message_t state)
++static int tosa_bat_suspend(struct platform_device *dev, pm_message_t state)
+ {
+ 	/* do nothing */
++	flush_scheduled_work();
+ 	return 0;
+ }
+ 
+-static int tosa_bat_resume(struct device *dev)
++static int tosa_bat_resume(struct platform_device *dev)
+ {
+ 	schedule_work(&bat_work);
+ 	return 0;
+@@ -342,7 +340,7 @@ static int tosa_bat_resume(struct device *dev)
+ #define tosa_bat_resume NULL
+ #endif
+ 
+-static int __devinit tosa_bat_probe(struct device *dev)
++static int __devinit tosa_bat_probe(struct platform_device *dev)
+ {
+ 	int ret;
+ 	int i;
+@@ -372,13 +370,13 @@ static int __devinit tosa_bat_probe(struct device *dev)
+ 
+ 	INIT_WORK(&bat_work, tosa_bat_work);
+ 
+-	ret = power_supply_register(dev, &tosa_bat_main.psy);
++	ret = power_supply_register(&dev->dev, &tosa_bat_main.psy);
+ 	if (ret)
+ 		goto err_psy_reg_main;
+-	ret = power_supply_register(dev, &tosa_bat_jacket.psy);
++	ret = power_supply_register(&dev->dev, &tosa_bat_jacket.psy);
+ 	if (ret)
+ 		goto err_psy_reg_jacket;
+-	ret = power_supply_register(dev, &tosa_bat_bu.psy);
++	ret = power_supply_register(&dev->dev, &tosa_bat_bu.psy);
+ 	if (ret)
+ 		goto err_psy_reg_bu;
+ 
+@@ -413,7 +411,7 @@ err_gpio:
+ 	return ret;
+ }
+ 
+-static int __devexit tosa_bat_remove(struct device *dev)
++static int __devexit tosa_bat_remove(struct platform_device *dev)
+ {
+ 	int i;
+ 
+@@ -430,10 +428,9 @@ static int __devexit tosa_bat_remove(struct device *dev)
+ 	return 0;
+ }
+ 
+-static struct device_driver tosa_bat_driver = {
+-	.name		= "wm97xx-battery",
+-	.bus		= &wm97xx_bus_type,
+-	.owner		= THIS_MODULE,
++static struct platform_driver tosa_bat_driver = {
++	.driver.name	= "wm97xx-battery",
++	.driver.owner	= THIS_MODULE,
+ 	.probe		= tosa_bat_probe,
+ 	.remove		= __devexit_p(tosa_bat_remove),
+ 	.suspend	= tosa_bat_suspend,
+@@ -442,12 +439,12 @@ static struct device_driver tosa_bat_driver = {
+ 
+ static int __init tosa_bat_init(void)
+ {
+-	return driver_register(&tosa_bat_driver);
++	return platform_driver_register(&tosa_bat_driver);
+ }
+ 
+ static void __exit tosa_bat_exit(void)
+ {
+-	driver_unregister(&tosa_bat_driver);
++	platform_driver_unregister(&tosa_bat_driver);
+ }
+ 
+ module_init(tosa_bat_init);
+-- 
+1.5.3.8
+

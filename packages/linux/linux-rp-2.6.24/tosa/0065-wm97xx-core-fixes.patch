@@ -1,0 +1,49 @@
+From 2544412fc47dc13f4f3935cb4c2fd500d217e905 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 13 Feb 2008 02:00:15 +0300
+Subject: [PATCH] wm97xx-core fixes
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/input/touchscreen/wm97xx-core.c |    8 ++++----
+ include/linux/wm97xx.h                  |    1 -
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+index 840d9ff..4cbb9e5 100644
+--- a/drivers/input/touchscreen/wm97xx-core.c
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -596,7 +596,7 @@ static int wm97xx_probe(struct device *dev)
+ 	}
+ 	platform_set_drvdata(wm->battery_dev, wm);
+ 	wm->battery_dev->dev.parent = dev;
+-	ret = platform_device_register(wm->battery_dev);
++	ret = platform_device_add(wm->battery_dev);
+ 	if (ret < 0)
+ 		goto batt_reg_err;
+ 
+@@ -609,7 +609,7 @@ static int wm97xx_probe(struct device *dev)
+ 	}
+ 	platform_set_drvdata(wm->touch_dev, wm);
+ 	wm->touch_dev->dev.parent = dev;
+-	ret = platform_device_register(wm->touch_dev);
++	ret = platform_device_add(wm->touch_dev);
+ 	if (ret < 0)
+ 		goto touch_reg_err;
+ 
+@@ -619,10 +619,12 @@ static int wm97xx_probe(struct device *dev)
+ 	platform_device_put(wm->touch_dev);
+  touch_err:
+ 	platform_device_unregister(wm->battery_dev);
++	wm->battery_dev = NULL;
+  batt_reg_err:
+ 	platform_device_put(wm->battery_dev);
+  batt_err:
+ 	input_unregister_device(wm->input_dev);
++	wm->input_dev = NULL;
+ 	kfree(wm);
+ 	return ret;
+ }
+-- 
+1.5.4.1
+

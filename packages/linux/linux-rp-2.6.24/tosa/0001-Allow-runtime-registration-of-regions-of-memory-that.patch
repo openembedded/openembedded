@@ -1,0 +1,201 @@
+From d48a09b301d9a460d5ce027433e8cb8872e7b5c3 Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Fri, 4 Jan 2008 18:26:38 +0000
+Subject: [PATCH 01/64] Allow runtime registration of regions of memory that require dma bouncing.
+
+---
+ arch/arm/common/Kconfig           |    4 ++
+ arch/arm/common/dmabounce.c       |   82 ++++++++++++++++++++++++++++++++++++-
+ arch/arm/common/sa1111.c          |    2 +-
+ arch/arm/mach-ixp4xx/Kconfig      |    1 +
+ arch/arm/mach-ixp4xx/common-pci.c |    2 +-
+ 5 files changed, 87 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm/common/Kconfig b/arch/arm/common/Kconfig
+index 3e07346..5f357fb 100644
+--- a/arch/arm/common/Kconfig
++++ b/arch/arm/common/Kconfig
+@@ -13,10 +13,14 @@ config ICST307
+ config SA1111
+ 	bool
+ 	select DMABOUNCE
++	select PLATFORM_DMABOUNCE
+ 
+ config DMABOUNCE
+ 	bool
+ 
++config PLATFORM_DMABOUNCE
++	bool
++
+ config TIMER_ACORN
+ 	bool
+ 
+diff --git a/arch/arm/common/dmabounce.c b/arch/arm/common/dmabounce.c
+index 52fc6a8..ed80abe 100644
+--- a/arch/arm/common/dmabounce.c
++++ b/arch/arm/common/dmabounce.c
+@@ -16,6 +16,7 @@
+  *
+  *  Copyright (C) 2002 Hewlett Packard Company.
+  *  Copyright (C) 2004 MontaVista Software, Inc.
++ *  Copyright (C) 2007 Dmitry Baryshkov <dbaryshkov@gmail.com>
+  *
+  *  This program is free software; you can redistribute it and/or
+  *  modify it under the terms of the GNU General Public License
+@@ -24,6 +25,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/rwsem.h>
+ #include <linux/slab.h>
+ #include <linux/device.h>
+ #include <linux/dma-mapping.h>
+@@ -80,6 +82,80 @@ struct dmabounce_device_info {
+ 	rwlock_t lock;
+ };
+ 
++struct dmabounce_check_entry {
++	struct list_head	list;
++	dmabounce_check		checker;
++	void			*data;
++};
++
++static struct list_head checkers = LIST_HEAD_INIT(checkers);
++static rwlock_t checkers_lock = RW_LOCK_UNLOCKED;
++
++int
++dmabounce_register_checker(dmabounce_check function, void *data)
++{
++	unsigned long flags;
++	struct dmabounce_check_entry *entry =
++		kzalloc(sizeof(struct dmabounce_check_entry), GFP_ATOMIC);
++
++	if (!entry)
++		return ENOMEM;
++
++	INIT_LIST_HEAD(&entry->list);
++	entry->checker = function;
++	entry->data = data;
++
++	write_lock_irqsave(&checkers_lock, flags);
++	list_add(&entry->list, &checkers);
++	write_unlock_irqrestore(&checkers_lock, flags);
++
++	return 0;
++}
++
++void
++dmabounce_remove_checker(dmabounce_check function, void *data)
++{
++	unsigned long flags;
++	struct list_head *pos;
++
++	write_lock_irqsave(&checkers_lock, flags);
++	__list_for_each(pos, &checkers) {
++		struct dmabounce_check_entry *entry = container_of(pos,
++				struct dmabounce_check_entry, list);
++		if (entry->checker == function && entry->data == data) {
++			list_del(pos);
++			write_unlock_irqrestore(&checkers_lock, flags);
++			kfree(entry);
++			return;
++		}
++	}
++
++	write_unlock_irqrestore(&checkers_lock, flags);
++	printk(KERN_WARNING "dmabounce checker not found: %p\n", function);
++}
++
++static int dma_needs_bounce(struct device *dev, dma_addr_t dma, size_t size)
++{
++	unsigned long flags;
++	struct list_head *pos;
++
++	read_lock_irqsave(&checkers_lock, flags);
++	__list_for_each(pos, &checkers) {
++		struct dmabounce_check_entry *entry = container_of(pos,
++				struct dmabounce_check_entry, list);
++		if (entry->checker(dev, dma, size, entry->data)) {
++			read_unlock_irqrestore(&checkers_lock, flags);
++			return 1;
++		}
++	}
++
++	read_unlock_irqrestore(&checkers_lock, flags);
++#ifdef CONFIG_PLATFORM_DMABOUNCE
++	return platform_dma_needs_bounce(dev, dma, size);
++#else
++	return 0;
++#endif
++}
+ #ifdef STATS
+ static ssize_t dmabounce_show(struct device *dev, struct device_attribute *attr,
+ 			      char *buf)
+@@ -239,7 +315,7 @@ map_single(struct device *dev, void *ptr, size_t size,
+ 		struct safe_buffer *buf;
+ 
+ 		buf = alloc_safe_buffer(device_info, ptr, size, dir);
+-		if (buf == 0) {
++		if (buf == NULL) {
+ 			dev_err(dev, "%s: unable to map unsafe buffer %p!\n",
+ 			       __func__, ptr);
+ 			return 0;
+@@ -643,7 +719,6 @@ dmabounce_unregister_dev(struct device *dev)
+ 		dev->bus_id, dev->bus->name);
+ }
+ 
+-
+ EXPORT_SYMBOL(dma_map_single);
+ EXPORT_SYMBOL(dma_unmap_single);
+ EXPORT_SYMBOL(dma_map_sg);
+@@ -653,6 +728,9 @@ EXPORT_SYMBOL(dma_sync_single_for_device);
+ EXPORT_SYMBOL(dma_sync_sg);
+ EXPORT_SYMBOL(dmabounce_register_dev);
+ EXPORT_SYMBOL(dmabounce_unregister_dev);
++EXPORT_SYMBOL(dmabounce_register_checker);
++EXPORT_SYMBOL(dmabounce_remove_checker);
++
+ 
+ MODULE_AUTHOR("Christopher Hoover <ch@hpl.hp.com>, Deepak Saxena <dsaxena@plexity.net>");
+ MODULE_DESCRIPTION("Special dma_{map/unmap/dma_sync}_* routines for systems with limited DMA windows");
+diff --git a/arch/arm/common/sa1111.c b/arch/arm/common/sa1111.c
+index eb06d0b..3b8fbdd 100644
+--- a/arch/arm/common/sa1111.c
++++ b/arch/arm/common/sa1111.c
+@@ -778,7 +778,7 @@ static void __sa1111_remove(struct sa1111 *sachip)
+  * This should only get called for sa1111_device types due to the
+  * way we configure our device dma_masks.
+  */
+-int dma_needs_bounce(struct device *dev, dma_addr_t addr, size_t size)
++int platform_dma_needs_bounce(struct device *dev, dma_addr_t addr, size_t size)
+ {
+ 	/*
+ 	 * Section 4.6 of the "Intel StrongARM SA-1111 Development Module
+diff --git a/arch/arm/mach-ixp4xx/Kconfig b/arch/arm/mach-ixp4xx/Kconfig
+index 61b2dfc..5870371 100644
+--- a/arch/arm/mach-ixp4xx/Kconfig
++++ b/arch/arm/mach-ixp4xx/Kconfig
+@@ -161,6 +161,7 @@ comment "IXP4xx Options"
+ config DMABOUNCE
+ 	bool
+ 	default y
++	select PLATFORM_DMABOUNCE
+ 	depends on PCI
+ 
+ config IXP4XX_INDIRECT_PCI
+diff --git a/arch/arm/mach-ixp4xx/common-pci.c b/arch/arm/mach-ixp4xx/common-pci.c
+index bf04121..ac46492 100644
+--- a/arch/arm/mach-ixp4xx/common-pci.c
++++ b/arch/arm/mach-ixp4xx/common-pci.c
+@@ -336,7 +336,7 @@ static int ixp4xx_pci_platform_notify_remove(struct device *dev)
+ 	return 0;
+ }
+ 
+-int dma_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
++int platform_dma_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
+ {
+ 	return (dev->bus == &pci_bus_type ) && ((dma_addr + size) >= SZ_64M);
+ }
+-- 
+1.5.3.8
+
