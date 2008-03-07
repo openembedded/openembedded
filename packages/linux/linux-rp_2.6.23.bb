@@ -1,10 +1,6 @@
 require linux-rp.inc
 
-PR = "r14"
-
-DEFAULT_PREFERENCE_qemuarm = "-1"
-DEFAULT_PREFERENCE_qemux86 = "-1"
-DEFAULT_PREFERENCE_poodle = "-99"
+PR = "r27"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -18,9 +14,15 @@ DEFAULT_PREFERENCE_poodle = "-99"
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
 SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
-           ${RPSRC}/lzo_jffs2-r3.patch;patch=1 \
-           ${RPSRC}/lzo_crypto-r2.patch;patch=1 \
-           ${RPSRC}/lzo_jffs2_lzomode-r1.patch;patch=1 \
+           ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1;status=merged \
+           ${RPSRC}/lzo_jffs2-r3.patch;patch=1;status=merged \
+           ${RPSRC}/lzo_jffs2_lzomode-r1.patch;patch=1;status=merged \
+           ${RPSRC}/spitzkbd_fix-r0.patch;patch=1;status=merged \
+           file://uvesafb-0.1-rc3-2.6.22.patch;patch=1;status=merged \
+           ${RPSRC}/locomo_led_fix-r0.patch;patch=1;status=merged \
+           file://hrw-add-wcf11-to-hostap.patch;patch=1;status=merged \
+           ${RPSRC}/export_atags-r0a.patch;patch=1;status=pending \
+           ${RPSRC}/lzo_crypto-r2.patch;patch=1;status=pending \
            ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r29.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r9.patch;patch=1 \
@@ -35,31 +37,27 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
            ${RPSRC}/usb_add_epalloc-r3.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r6.patch;patch=1 \
            ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
-           ${RPSRC}/poodle_pm-r4.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r6.patch;patch=1 \
-           ${RPSRC}/w100_extaccel-r1.patch;patch=1 \
+           ${RPSRC}/w100_extaccel-r2.patch;patch=1 \
            ${RPSRC}/w100_extmem-r1.patch;patch=1 \
-           ${RPSRC}/spitzkbd_fix-r0.patch;patch=1 \
-           ${RPSRC}/export_atags-r0.patch;patch=1 \
-           ${RPSRC}/pxa25x_suspend_fixes-r0.patch;patch=1 \
+           ${RPSRC}/poodle_pm-r4.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
-           file://w100fb-unused-var.patch;patch=1 \
-           file://hostap-monitor-mode.patch;patch=1 \
-           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1 \
+           ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
+           file://squashfs3.0-2.6.15.patch;patch=1;status=external \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
-           ${RPSRC}/logo_oz-r2.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
+           file://hostap-monitor-mode.patch;patch=1;status=unmergable \
+           file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1;status=unmergable \
            ${RPSRC}/mmcsd_large_cards-r1.patch;patch=1;status=hack \
-           file://mmcsd_no_scr_check-r2.patch;patch=1 \
+           ${RPSRC}/mmcsd_no_scr_check-r2.patch;patch=1;status=hack \
            ${RPSRC}/integrator_rgb-r1.patch;patch=1;status=hack \
            ${RPSRC}/pxa_cf_initorder_hack-r1.patch;patch=1;status=hack \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
-           file://squashfs3.0-2.6.15.patch;patch=1;status=external \
-           file://uvesafb-0.1-rc3-2.6.22.patch;patch=1;status=external \
            file://htcuni.patch;patch=1 \
            file://binutils-buildid-arm.patch;patch=1 \
+           file://versatile-armv6.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-hx2000 \
            file://defconfig-collie \
@@ -75,7 +73,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
-
 
 # Add this to enable pm debug code (useful with a serial lead)
 #  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
@@ -99,9 +96,10 @@ SRC_URI_append_collie = "\
 #          ${DOSRC}/collie/collie-pm-r1.patch;patch=1 \
 "
 
+SRC_URI_append_poodle = "\
+           ${RPSRC}/poodle_serial_vcc-r0.patch;patch=1 \
+"
 
-#		wm97xx-lg13-r0.patch, tosa-power-r18.patch and tosa-bluetooth-r8.patch
-#		were adapted from $(DOSRC) to apply cleanly
 SRC_URI_append_tosa = "\
            ${CHSRC}/tmio-core-r4.patch;patch=1 \
            file://tmio-tc6393-r8.patch;patch=1 \
@@ -131,6 +129,18 @@ SRC_URI_append_tosa = "\
            file://tosa_udc_use_gpio_vbus.patch;patch=1 \
            "
 #          ${DOSRC}/tosa-asoc-r1.patch;patch=1 "
+
+SRC_URI_append_akita = "\
+           file://sharpsl-rc-r1.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://mtd-module.patch;patch=1 \
+           "
+
+SRC_URI_append_spitz = "\
+           file://sharpsl-rc-r1.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://mtd-module.patch;patch=1 \
+           "
 
 SRC_URI_append_htcuniversal ="\
 	file://htcuni-acx.patch;patch=1;status=external \

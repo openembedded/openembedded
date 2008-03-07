@@ -2,8 +2,6 @@ require linux-rp.inc
 
 PR = "r39"
 
-DEFAULT_PREFERENCE_poodle = "99"
-
 # Handy URLs
 # git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git \
 # http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.14.tar.bz2 \
