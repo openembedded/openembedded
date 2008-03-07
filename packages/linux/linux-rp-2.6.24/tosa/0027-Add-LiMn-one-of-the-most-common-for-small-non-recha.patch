@@ -1,0 +1,59 @@
+From e5e9808fd5ed9cb54dd9da9fb91b32c4f7e9da52 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 9 Jan 2008 02:08:17 +0300
+Subject: [PATCH 27/64] Add LiMn (one of the most common for small non-rechargable batteries)i
+ battery technology and voltage_min/_max properties support.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/power/power_supply_sysfs.c |    5 ++++-
+ include/linux/power_supply.h       |    3 +++
+ 2 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/power/power_supply_sysfs.c b/drivers/power/power_supply_sysfs.c
+index 249f61b..45d2f95 100644
+--- a/drivers/power/power_supply_sysfs.c
++++ b/drivers/power/power_supply_sysfs.c
+@@ -46,7 +46,8 @@ static ssize_t power_supply_show_property(struct device *dev,
+ 		"Unspecified failure"
+ 	};
+ 	static char *technology_text[] = {
+-		"Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe", "NiCd"
++		"Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe", "NiCd",
++		"LiMn"
+ 	};
+ 	static char *capacity_level_text[] = {
+ 		"Unknown", "Critical", "Low", "Normal", "High", "Full"
+@@ -88,6 +89,8 @@ static struct device_attribute power_supply_attrs[] = {
+ 	POWER_SUPPLY_ATTR(present),
+ 	POWER_SUPPLY_ATTR(online),
+ 	POWER_SUPPLY_ATTR(technology),
++	POWER_SUPPLY_ATTR(voltage_max),
++	POWER_SUPPLY_ATTR(voltage_min),
+ 	POWER_SUPPLY_ATTR(voltage_max_design),
+ 	POWER_SUPPLY_ATTR(voltage_min_design),
+ 	POWER_SUPPLY_ATTR(voltage_now),
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index 606c095..cdbc5b8 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -54,6 +54,7 @@ enum {
+ 	POWER_SUPPLY_TECHNOLOGY_LIPO,
+ 	POWER_SUPPLY_TECHNOLOGY_LiFe,
+ 	POWER_SUPPLY_TECHNOLOGY_NiCd,
++	POWER_SUPPLY_TECHNOLOGY_LiMn,
+ };
+ 
+ enum {
+@@ -72,6 +73,8 @@ enum power_supply_property {
+ 	POWER_SUPPLY_PROP_PRESENT,
+ 	POWER_SUPPLY_PROP_ONLINE,
+ 	POWER_SUPPLY_PROP_TECHNOLOGY,
++	POWER_SUPPLY_PROP_VOLTAGE_MAX,
++	POWER_SUPPLY_PROP_VOLTAGE_MIN,
+ 	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
+ 	POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN,
+ 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+-- 
+1.5.3.8
+

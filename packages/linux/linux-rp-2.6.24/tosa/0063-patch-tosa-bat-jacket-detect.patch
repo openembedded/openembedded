@@ -1,0 +1,84 @@
+From 4ef7289137132959e3db5a1e77580ff9db185d90 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 8 Feb 2008 01:13:54 +0300
+Subject: [PATCH 63/64] patch tosa-bat-jacket-detect
+
+---
+ drivers/power/tosa_battery.c |   21 +++++++++++++++------
+ 1 files changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/power/tosa_battery.c b/drivers/power/tosa_battery.c
+index 2db9116..70beed2 100644
+--- a/drivers/power/tosa_battery.c
++++ b/drivers/power/tosa_battery.c
+@@ -137,8 +137,7 @@ static int tosa_bat_get_property(struct power_supply *psy,
+ }
+ 
+ static bool tosa_jacket_bat_is_present(struct tosa_bat *bat) {
+-	// FIXME
+-	return 1;
++	return gpio_get_value(TOSA_GPIO_JACKET_DETECT) == 0;
+ }
+ 
+ static void tosa_bat_external_power_changed(struct power_supply *psy)
+@@ -146,9 +145,9 @@ static void tosa_bat_external_power_changed(struct power_supply *psy)
+ 	schedule_work(&bat_work);
+ }
+ 
+-static irqreturn_t tosa_bat_full_isr(int irq, void *data)
++static irqreturn_t tosa_bat_gpio_isr(int irq, void *data)
+ {
+-	printk(KERN_ERR "bat_full irq: %d\n", gpio_get_value(irq_to_gpio(irq)));
++	printk(KERN_ERR "bat_gpio irq: %d\n", gpio_get_value(irq_to_gpio(irq)));
+ 	schedule_work(&bat_work);
+ 	return IRQ_HANDLED;
+ }
+@@ -334,6 +333,7 @@ static struct {
+ 	{ TOSA_GPIO_BAT1_CRG,		"jacket battery full",	0, 0 },
+ 	{ TOSA_GPIO_BAT0_LOW,		"main battery low",	0, 0 },
+ 	{ TOSA_GPIO_BAT1_LOW,		"jacket battery low",	0, 0 },
++	{ TOSA_GPIO_JACKET_DETECT,	"jacket detect",	0, 0 },
+ };
+ 
+ #ifdef CONFIG_PM
+@@ -395,19 +395,27 @@ static int __devinit tosa_bat_probe(struct platform_device *dev)
+ 		goto err_psy_reg_bu;
+ 
+ 	ret = request_irq(gpio_to_irq(TOSA_GPIO_BAT0_CRG),
+-				tosa_bat_full_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
++				tosa_bat_gpio_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+ 				"main full", &tosa_bat_main);
+ 	if (ret)
+ 		goto err_req_main;
+ 
+ 	ret = request_irq(gpio_to_irq(TOSA_GPIO_BAT1_CRG),
+-				tosa_bat_full_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
++				tosa_bat_gpio_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+ 				"jacket full", &tosa_bat_jacket);
++	if (ret)
++		goto err_req_jacket;
++
++	ret = request_irq(gpio_to_irq(TOSA_GPIO_JACKET_DETECT),
++				tosa_bat_gpio_isr, IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
++				"jacket detect", &tosa_bat_jacket);
+ 	if (!ret) {
+ 		schedule_work(&bat_work);
+ 		return 0;
+ 	}
+ 
++	free_irq(gpio_to_irq(TOSA_GPIO_BAT1_CRG), &tosa_bat_jacket);
++err_req_jacket:
+ 	free_irq(gpio_to_irq(TOSA_GPIO_BAT0_CRG), &tosa_bat_main);
+ err_req_main:
+ 	power_supply_unregister(&tosa_bat_bu.psy);
+@@ -429,6 +437,7 @@ static int __devexit tosa_bat_remove(struct platform_device *dev)
+ {
+ 	int i;
+ 
++	free_irq(gpio_to_irq(TOSA_GPIO_JACKET_DETECT), &tosa_bat_jacket);
+ 	free_irq(gpio_to_irq(TOSA_GPIO_BAT1_CRG), &tosa_bat_jacket);
+ 	free_irq(gpio_to_irq(TOSA_GPIO_BAT0_CRG), &tosa_bat_main);
+ 
+-- 
+1.5.3.8
+

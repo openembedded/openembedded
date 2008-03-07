@@ -1,0 +1,27 @@
+From feeee5d22c00d9d1e2e06eb5610740be238749b9 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Thu, 7 Feb 2008 22:27:38 +0300
+Subject: [PATCH 64/64] Export modes via sysfs
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/video/tmiofb.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/tmiofb.c b/drivers/video/tmiofb.c
+index 6b963a1..9389a77 100644
+--- a/drivers/video/tmiofb.c
++++ b/drivers/video/tmiofb.c
+@@ -800,6 +800,9 @@ static int tmiofb_probe(struct platform_device *dev)
+ 	if (retval)
+ 		goto err_set_par;*/
+ 
++	fb_videomode_to_modelist(data->modes, data->num_modes,
++				 &info->modelist);
++
+ 	retval = register_framebuffer(info);
+ 	if (retval < 0)
+ 		goto err_register_framebuffer;
+-- 
+1.5.3.8
+
