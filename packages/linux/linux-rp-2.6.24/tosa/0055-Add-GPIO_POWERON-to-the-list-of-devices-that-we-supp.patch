@@ -1,0 +1,30 @@
+From bee8b808445a53a7dbb6c15a27064f14dec410c5 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Sun, 20 Jan 2008 03:01:41 +0300
+Subject: [PATCH 55/64] Add GPIO_POWERON to the list of devices that we support resume on.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ arch/arm/mach-pxa/tosa.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 3e832dc..d1cf3dc 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -517,9 +517,9 @@ static void __init tosa_init(void)
+ 	pxa_gpio_mode(TOSA_GPIO_USB_IN | GPIO_IN);
+ 
+ 	/* setup sleep mode values */
+-	PWER  = 0x00000002;
+-	PFER  = 0x00000000;
+-	PRER  = 0x00000002;
++	PWER  = BIT(TOSA_GPIO_POWERON) | BIT(TOSA_GPIO_RESET);
++	PFER  = 0;
++	PRER  = BIT(TOSA_GPIO_POWERON) | BIT(TOSA_GPIO_RESET);
+ 	PGSR0 = 0x00000000;
+ 	PGSR1 = 0x00FF0002;
+ 	PGSR2 = 0x00014000;
+-- 
+1.5.3.8
+

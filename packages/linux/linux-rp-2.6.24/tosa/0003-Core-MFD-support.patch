@@ -1,0 +1,243 @@
+From a07910753f9965842b6647f0561db125b538f5ed Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Fri, 4 Jan 2008 18:32:44 +0000
+Subject: [PATCH 03/64] Core MFD support
+
+This patch provides a common subdevice registration system for MFD type
+chips, using platfrom device.
+
+It also provides a new resource type for IRQs such that a subdevices IRQ may
+be computed based on the MFD cores IRQ handler, since many MFDs provide an IRQ
+multiplex.
+---
+ drivers/mfd/Kconfig      |    4 ++
+ drivers/mfd/Makefile     |    2 +
+ drivers/mfd/mfd-core.c   |  116 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/ioport.h   |    1 +
+ include/linux/mfd-core.h |   51 ++++++++++++++++++++
+ 5 files changed, 174 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mfd/mfd-core.c
+ create mode 100644 include/linux/mfd-core.h
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 2571619..1205c89 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -5,6 +5,10 @@
+ menu "Multifunction device drivers"
+ 	depends on HAS_IOMEM
+ 
++config MFD_CORE
++	tristate
++	default n
++
+ config MFD_SM501
+ 	tristate "Support for Silicon Motion SM501"
+ 	 ---help---
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 5143209..6c20064 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -4,6 +4,8 @@
+ 
+ obj-$(CONFIG_MFD_SM501)		+= sm501.o
+ 
++obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
++
+ obj-$(CONFIG_MCP)		+= mcp-core.o
+ obj-$(CONFIG_MCP_SA11X0)	+= mcp-sa11x0.o
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-core.o
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+new file mode 100644
+index 0000000..88874e1
+--- /dev/null
++++ b/drivers/mfd/mfd-core.c
+@@ -0,0 +1,116 @@
++/*
++ * drivers/mfd/mfd-core.c
++ *
++ * core MFD support
++ * Copyright (c) 2006 Ian Molton
++ * Copyright (c) 2007 Dmitry Baryshkov
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/platform_device.h>
++#include <linux/mfd-core.h>
++
++#define SIGNED_SHIFT(val, shift) ((shift) >= 0 ?	\
++			((val) << (shift)) :		\
++			((val) >> -(shift)))
++
++int mfd_add_devices(
++		struct platform_device *parent,
++		const struct mfd_cell *cells, int n_devs,
++		struct resource *mem,
++		int relative_addr_shift,
++		int irq_base)
++{
++	int i;
++
++	for (i = 0; i < n_devs; i++) {
++		struct resource *res = NULL;
++		const struct mfd_cell *cell = cells + i;
++		struct platform_device *pdev;
++		int ret = -ENOMEM;
++		int r;
++
++		pdev = platform_device_alloc(cell->name, -1);
++		if (!pdev)
++			goto fail_alloc;
++
++		pdev->dev.uevent_suppress = 0;
++		pdev->dev.parent = &parent->dev;
++
++		ret = platform_device_add_data(pdev, &cell, sizeof(struct mfd_cell *));
++		if (ret)
++			goto fail_device;
++
++		res = kzalloc(cell->num_resources * sizeof(struct resource),
++							GFP_KERNEL);
++		if (!res)
++			goto fail_device;
++
++		for (r = 0; r < cell->num_resources; r++) {
++			res[r].name = cell->resources[r].name;
++
++			/* Find out base to use */
++			if (cell->resources[r].flags & IORESOURCE_MEM) {
++				res[r].parent = mem;
++				res[r].start = mem->start +
++					SIGNED_SHIFT(cell->resources[r].start,
++							relative_addr_shift);
++				res[r].end   = mem->start +
++					SIGNED_SHIFT(cell->resources[r].end,
++							relative_addr_shift);
++			} else if ((cell->resources[r].flags & IORESOURCE_IRQ) &&
++				(cell->resources[r].flags & IORESOURCE_IRQ_MFD_SUBDEVICE)) {
++				res[r].start = irq_base +
++					cell->resources[r].start;
++				res[r].end   = irq_base +
++					cell->resources[r].end;
++			} else {
++				res[r].start = cell->resources[r].start;
++				res[r].end   = cell->resources[r].end;
++			}
++
++			res[r].flags = cell->resources[r].flags;
++		}
++
++		ret = platform_device_add_resources(pdev,
++				res,
++				cell->num_resources);
++		kfree(res);
++
++		if (ret)
++			goto fail_device;
++
++		ret = platform_device_add(pdev);
++
++		if (ret) {
++			platform_device_del(pdev);
++fail_device:
++			platform_device_put(pdev);
++fail_alloc:
++			mfd_remove_devices(parent);
++			return ret;
++		}
++	}
++	return 0;
++}
++EXPORT_SYMBOL(mfd_add_devices);
++
++static int mfd_remove_devices_fn(struct device *dev, void *unused)
++{
++	platform_device_unregister(container_of(dev, struct platform_device, dev));
++	return 0;
++}
++
++void mfd_remove_devices(struct platform_device *parent)
++{
++	device_for_each_child(&parent->dev, NULL, mfd_remove_devices_fn);
++}
++EXPORT_SYMBOL(mfd_remove_devices);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Ian Molton, Dmitry Baryshkov");
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 6187a85..0348c71 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -56,6 +56,7 @@ struct resource_list {
+ #define IORESOURCE_IRQ_HIGHLEVEL	(1<<2)
+ #define IORESOURCE_IRQ_LOWLEVEL		(1<<3)
+ #define IORESOURCE_IRQ_SHAREABLE	(1<<4)
++#define IORESOURCE_IRQ_MFD_SUBDEVICE	(1<<5)
+ 
+ /* ISA PnP DMA specific bits (IORESOURCE_BITS) */
+ #define IORESOURCE_DMA_TYPE_MASK	(3<<0)
+diff --git a/include/linux/mfd-core.h b/include/linux/mfd-core.h
+new file mode 100644
+index 0000000..0e9de78
+--- /dev/null
++++ b/include/linux/mfd-core.h
+@@ -0,0 +1,51 @@
++#ifndef MFD_CORE_H
++#define MFD_CORE_H
++/*
++ * drivers/mfd/mfd-core.h
++ *
++ * core MFD support
++ * Copyright (c) 2006 Ian Molton
++ * Copyright (c) 2007 Dmitry Baryshkov
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/platform_device.h>
++
++struct mfd_cell {
++	const char		*name;
++
++	int			(*enable)(struct platform_device *dev);
++	int			(*disable)(struct platform_device *dev);
++	int			(*suspend)(struct platform_device *dev);
++	int			(*resume)(struct platform_device *dev);
++
++	void			*driver_data; /* data passed to drivers */
++
++	/*
++	 * This resources can be specified relatievly to the parent device.
++	 * For accessing device you should use resources from device
++	 */
++	int			num_resources;
++	const struct resource	*resources;
++};
++
++static inline __maybe_unused struct mfd_cell *
++mfd_get_cell(struct platform_device *pdev)
++{
++	return *((struct mfd_cell **)(pdev->dev.platform_data));
++}
++
++extern int mfd_add_devices(
++		struct platform_device *parent,
++		const struct mfd_cell *cells, int n_devs,
++		struct resource *mem,
++		int relative_addr_shift,
++		int irq_base);
++
++extern void mfd_remove_devices(struct platform_device *parent);
++
++#endif
+-- 
+1.5.3.8
+
