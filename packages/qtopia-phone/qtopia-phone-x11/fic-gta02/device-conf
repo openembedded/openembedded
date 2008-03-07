@@ -2,7 +2,6 @@
 -xplatform OE_QT_XPLATFORM
 -verbose
 -qtopiamedia
--mediaengines gstreamer
 -no-infrared
 -dbus
 -dbuspath OE_QT_DBUSPATH
