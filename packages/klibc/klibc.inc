@@ -38,6 +38,8 @@ do_install() {
         install -m 755 usr/utils/shared/true ${D}${base_bindir}
         install -m 755 usr/utils/shared/umount ${D}${base_bindir}
         install -m 755 usr/utils/shared/uname ${D}${base_bindir}
+	install -m 755 usr/utils/shared/modprobe ${D}${base_bindir}
+	install -m 755 usr/utils/shared/losetup ${D}${base_bindir}
 	
 	install -d ${D}${base_libdir}
 	install -m 755 usr/klibc/klibc-*.so ${D}${base_libdir}
@@ -71,11 +73,12 @@ PACKAGES = "${PN} klibc-utils-sh klibc-utils-kinit \
 	klibc-utils-readlink klibc-utils-reboot \
         klibc-utils-sleep klibc-utils-true \
         klibc-utils-umount klibc-utils-uname \
-        klibc-utils-gzip"
+        klibc-utils-gzip klibc-utils-modprobe \
+	klibc-utils-losetup"
 
 FILES_${PN} = "${base_libdir}/klibc*.so"	
 FILES_klibc-utils-sh = "${base_bindir}/sh"
-FILES_klibc-utils-static-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
+FILES_klibc-utils-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
 FILES_klibc-utils-kinit = "${base_bindir}/kinit"
 FILES_klibc-utils-fstype = "${base_bindir}/fstype"
 FILES_klibc-utils-ipconfig = "${base_bindir}/ipconfig"
@@ -105,6 +108,8 @@ FILES_klibc-utils-sleep = "${base_bindir}/sleep"
 FILES_klibc-utils-true = "${base_bindir}/true"
 FILES_klibc-utils-umount = "${base_bindir}/umount"
 FILES_klibc-utils-uname = "${base_bindir}/uname"
+FILES_klibc-utils-modprobe = "${base_bindir}/modprobe"
+FILES_klibc-utils-losetup = "${base_bindir}/losetup"
 
 # Yes we want exactly the klibc that was compiled with the utils
 RDEPENDS_klibc-utils-sh = "${PN} (=${PV}-${PR})"
@@ -137,3 +142,5 @@ RDEPENDS_klibc-utils-sleep = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-true = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-umount = "${PN} (=${PV}-${PR})"
 RDEPENDS_klibc-utils-uname = "${PN} (=${PV}-${PR})"
+RDEPENDS_klibc-utils-modprobe = "${PN} (=${PV}-${PR})"
+RDEPENDS_klibc-utils-losetup = "${PN} (=${PV}-${PR})"
