@@ -24,3 +24,6 @@ python populate_packages_prepend () {
 }
 
 ALLOW_EMPTY = "1"
+
+FILES_${PN}-dbg += "${libdir}/gstreamer-${LIBV}/.debug"
+
