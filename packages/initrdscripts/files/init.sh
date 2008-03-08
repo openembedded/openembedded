@@ -25,7 +25,7 @@ dev_setup()
 }
 
 read_args() {
-    CMDLINE=`cat /proc/cmdline`
+    [ -z "$CMDLINE" ] && CMDLINE=`cat /proc/cmdline`
     for arg in $CMDLINE; do
         optarg=`expr "x$arg" : 'x[^=]*=\(.*\)'`
         case $arg in
@@ -40,7 +40,7 @@ read_args() {
 }
 
 load_modules() {
-    for module in $MODULE_DIR/*; do
+    for module in $MODULE_DIR/$1; do
         echo "initramfs: Loading $module module"
         source $module
     done
@@ -60,6 +60,7 @@ fatal() {
 
 echo "Starting initramfs boot..."
 early_setup
+load_modules '0*'
 read_args
 
 if [ -n "$rootdelay" ]; then
@@ -69,7 +70,8 @@ fi
 
 dev_setup
 
-load_modules
+load_modules '[1-9]*'
+
 [ -n "$BOOT_ROOT" ] && boot_root
 
 fatal "No valid root device was specified.  Please add root=/dev/something to the kernel command-line and try again."
