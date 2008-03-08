@@ -82,7 +82,8 @@ while read maj min nblk dev; do
 
     get_partition_type
     if [ "$fstype" != "ext2" -a "$fstype" != "ext3" -a "$fstype" != "vfat" -a "$fstype" != "jffs2" ]; then
-#	continue
+	# Comment following line to show all available block devices regardless of FS (for debug purposes)
+	continue
 	true
     fi
     
