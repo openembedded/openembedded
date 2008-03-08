@@ -52,8 +52,8 @@ boot_root() {
 }
 
 fatal() {
-    echo $1
-    echo
+    echo $1 >$CONSOLE
+    echo >$CONSOLE
     exec sh
 }
 
@@ -61,6 +61,9 @@ fatal() {
 echo "Starting initramfs boot..."
 early_setup
 load_modules '0*'
+
+[ -z "$CONSOLE" ] && CONSOLE="/dev/console"
+
 read_args
 
 if [ -n "$rootdelay" ]; then
