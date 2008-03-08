@@ -55,7 +55,9 @@ do_configure() {
 }
 
 do_compile_prepend() {
-	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+	# Clean up any stale initramfs archive
+	rm usr/initramfs_data.cpio.gz
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" = "glibc" ]; then
 	    if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
 		echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
 		exit 1

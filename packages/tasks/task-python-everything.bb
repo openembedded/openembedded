@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml26"
+PR = "ml27"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -10,14 +10,15 @@ RDEPENDS = "\
 		python-dbus			\
 		python-dialog		\
 		python-pydirectfb		\
-		python-efl			\
-		python-efl-examples		\
+		task-python-efl			\
+		task-python-efl-examples		\
 		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
 		python-formencode	\
 		python-fpconst		\
 		python-fuse			\
+		python-gammu		\
 		python-gmpy		\
 		python-gnosis		\
 		python-gsmd			\
@@ -32,6 +33,7 @@ RDEPENDS = "\
 		python-libgmail		\
 		python-lightmediascanner \
 		python-lxml		\
+		python-m2crypto \
 		python-mad		\
 		python-numarray		\
 		python-numeric		\
@@ -90,8 +92,6 @@ RDEPENDS = "\
 
 BROKEN_PACKAGES = "\
 		python-egenix-mx-base \
-		python-gammu \
-		python-m2crypto \
 		python-mysqldb \
         python-pyqwt        \
 "
