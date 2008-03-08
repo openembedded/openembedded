@@ -63,6 +63,8 @@ do_compile_prepend() {
 		exit 1
 	    fi
 	    cp ${KERNEL_INITRAMFS_PATH} usr/initramfs_data.cpio.gz
+	    # touch is for broken Koen's cp
+	    touch usr/initramfs_data.cpio.gz
 	fi
 }
 
