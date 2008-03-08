@@ -6,6 +6,8 @@ minimal entaglement, and portability, not speed."
 LICENSE = "BSD-ADV"
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2 \
 	   file://fstype-sane-vfat-and-jffs2-for-1.5.patch;patch=1 \
+	   file://modprobe.patch;patch=1 \
+	   file://losetup.patch;patch=1 \
 	   "
 S = "${WORKDIR}/klibc-${PV}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"

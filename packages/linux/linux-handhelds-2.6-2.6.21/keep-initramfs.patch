@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2008-03-08 11:13:58.939360172 +0100
++++ kernel26/usr/Makefile	2008-03-08 11:14:03.270190232 +0100
+@@ -34,7 +34,7 @@
+ endif
+ 
+ quiet_cmd_initfs = GEN     $@
+-      cmd_initfs = $(initramfs) -o $@ $(ramfs-args) $(ramfs-input)
++      cmd_initfs = echo
+ 
+ targets := initramfs_data.cpio.gz
+ # do not try to update files included in initramfs
