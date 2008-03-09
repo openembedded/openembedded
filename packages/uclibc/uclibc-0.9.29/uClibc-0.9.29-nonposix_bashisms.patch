@@ -7,7 +7,7 @@ Index: uClibc-0.9.29/extra/config/lxdialog/check-lxdialog.sh
  }
  
 -if [ $# == 0 ]; then
-+if [ $# = 0 ]; then
++if [ $# -eq 0 ]; then
  	usage
  	exit 1
  fi
