@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-1"
 
-SECTION = "devel"
+require libtool.inc
 require libtool_${PV}.bb
 
 PR = "r0"
