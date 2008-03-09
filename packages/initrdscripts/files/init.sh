@@ -41,6 +41,7 @@ read_args() {
 
 load_modules() {
     for module in $MODULE_DIR/$1; do
+	# Cannot redir to $CONSOLE here easily - may not be set yet
         echo "initramfs: Loading $module module"
         source $module
     done
@@ -67,7 +68,7 @@ load_modules '0*'
 read_args
 
 if [ -n "$rootdelay" ]; then
-    echo "Waiting $rootdelay seconds for devices to settle..."
+    echo "Waiting $rootdelay seconds for devices to settle..." >$CONSOLE
     sleep $rootdelay
 fi
 
