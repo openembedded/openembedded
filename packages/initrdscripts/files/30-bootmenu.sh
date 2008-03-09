@@ -15,13 +15,6 @@ if ! (echo " " | read -n1 foo) >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ -z "$rootdelay" ]; then
-    echo "rootdelay parameter was not passed on kernel command line - assuming 2s delay"
-    echo "If you would like to avoid this delay, pass explicit rootdelay=0"
-    sleep 2
-    dev_setup
-fi
-
 mkdir -p $MOUNTLOC
 
 list=""

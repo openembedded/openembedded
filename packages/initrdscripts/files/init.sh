@@ -67,6 +67,11 @@ load_modules '0*'
 
 read_args
 
+if [ -z "$rootdelay" ]; then
+    echo "rootdelay parameter was not passed on kernel command line - assuming 2s delay"
+    echo "If you would like to avoid this delay, pass explicit rootdelay=0"
+    rootdelay="2"
+fi
 if [ -n "$rootdelay" ]; then
     echo "Waiting $rootdelay seconds for devices to settle..." >$CONSOLE
     sleep $rootdelay
