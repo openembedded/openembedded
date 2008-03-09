@@ -7,7 +7,7 @@ if expr "$cmdl" : '.*mtdparts=ipaq' > /dev/null; then
     echo "Detected Compaq bootldr or derivative"
     echo "Kernel command line is assumed to be bogus and ignored"
     echo "!!!!!!!!"
-    CMDLINE=" "
+    CMDLINE="console=ttyS0,115200 console=tty0"
     sleep 3
 fi
 
