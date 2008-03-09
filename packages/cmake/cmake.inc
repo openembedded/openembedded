@@ -1,4 +1,3 @@
-# cppunit OE build file
 # Copyright (C) 2005, Koninklijke Philips Electronics NV.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
