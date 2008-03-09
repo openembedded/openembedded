@@ -23,6 +23,8 @@ do_stage() {
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do
         sed -i s,installed=yes,installed=no, $i
+        sed -i -e "/^dependency_libs=/s,-L${libdir},-L${STAGING_LIBDIR},g" $i
+        sed -i -e "s,-L${libdir},-L${STAGING_LIBDIR},g" ${STAGE_TEMP}/${libdir}/$(basename $i .la).prl
         cp -fpPR $i ${STAGING_LIBDIR}/${QT_DIR_NAME}/
         cp -fpPR ${STAGE_TEMP}/${libdir}/$(basename $i .la).prl ${STAGING_LIBDIR}/${QT_DIR_NAME}
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}/${QT_DIR_NAME}
@@ -30,7 +32,9 @@ do_stage() {
 
     for i in libQtAssistantClient${QT_LIBINFIX} libQtDesignerComponents${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtDesigner${QT_LIBINFIX}
     do
+        sed -i -e "s,-L${libdir},-L${STAGING_LIBDIR},g" $i.prl || true
         cp ${STAGE_TEMP}/${libdir}/$i.prl ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
+        sed -i -e "/^dependency_libs=/s,-L${libdir},-L${STAGING_LIBDIR},g" $i.la || true
         cp ${STAGE_TEMP}/${libdir}/$i.la  ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $i ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -a $i ${STAGING_LIBDIR}/${QT_DIR_NAME} || true
