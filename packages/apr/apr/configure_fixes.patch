@@ -1,0 +1,22 @@
+Index: apr-1.2.12/configure.in
+===================================================================
+--- apr-1.2.12.orig/configure.in	2008-03-08 21:41:43.000000000 +0000
++++ apr-1.2.12/configure.in	2008-03-08 21:43:08.000000000 +0000
+@@ -13,12 +13,11 @@
+ dnl 
+ dnl Include our own M4 macros along with those for libtool
+ dnl 
+-sinclude(build/apr_common.m4)
+-sinclude(build/apr_network.m4)
+-sinclude(build/apr_threads.m4)
+-sinclude(build/apr_hints.m4)
+-sinclude(build/libtool.m4)
+-sinclude(build/ltsugar.m4)
++#sinclude(build/apr_common.m4)
++#sinclude(build/apr_network.m4)
++#sinclude(build/apr_threads.m4)
++#sinclude(build/apr_hints.m4)
++#sinclude(build/libtool.m4)
+ 
+ dnl Hard-coded inclusion at the tail end of apr_private.h:
+ AH_BOTTOM([
