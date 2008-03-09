@@ -7,10 +7,10 @@ SRC_URI = "ftp://ftp.gnutls.org/pub/gnutls/gnutls-${PV}.tar.bz2"
 
 inherit autotools binconfig pkgconfig
 
-EXTRA_OECONF="--with-included-opencdk --with-included-libtasn1"
+EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
 
 # fix wrong dependency
-do_configure_append() {
+do_configure_prepend() {
     sed -i s,gcrypt,libgcrypt, lib/gnutls.pc.in
 }
 
