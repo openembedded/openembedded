@@ -3,7 +3,7 @@ SECTION = "libs"
 DEPENDS = "apr expat gdbm"
 LICENSE = "Apache License, Version 2.0"
 
-PR = "r3"
+PR = "r2"
 
 # apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
@@ -20,7 +20,7 @@ inherit autotools lib_package binconfig
 
 OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
 
-do_configure_prepend () {
+do_configure_prepend() {
 	cp ${STAGING_DATADIR}/apr/apr_rules.mk ${S}/build/rules.mk
 }
 
