@@ -137,20 +137,12 @@ python do_package_ipk () {
 		return
 	bb.mkdirhier(dvar)
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "PACKAGES not defined, nothing to package")
-		return
-
 	tmpdir = bb.data.getVar('TMPDIR', d, 1)
 
 	if os.access(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"), os.R_OK):
 		os.unlink(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"))
 
-	if packages == []:
-		bb.debug(1, "No packages; nothing to do")
-		return
-
+	packages = bb.data.getVar('PACKAGES', d, True)
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
 		pkgdest = bb.data.getVar('PKGDEST', d, 1)
@@ -313,6 +305,11 @@ python () {
 }
 
 python do_package_write_ipk () {
+	packages = bb.data.getVar('PACKAGES', d, True)
+	if not packages:
+		bb.debug(1, "No PACKAGES defined, nothing to package")
+		return
+
 	bb.build.exec_func("read_subpackage_metadata", d)
 	bb.build.exec_func("do_package_ipk", d)
 }
