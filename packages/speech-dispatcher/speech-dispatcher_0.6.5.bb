@@ -5,13 +5,14 @@ LICENSE = "GPLv2"
 DEPENDS = "espeak flite pulseaudio libdotconf glib-2.0"
 RPROVIDES_${PN} += "speechd"
 
-PR = "r7"
+PR = "r8"
 
 inherit autotools update-rc.d
 
 SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
 	   file://speech-dispatcher.init \
            file://srcMakefile.am.patch;patch=1 \
+           file://configure_fix.patch;patch=1 \
 	   file://configSpeechd.conf.in_00.patch;patch=1"
 
 LEAD_SONAME = "libspeechd.so"

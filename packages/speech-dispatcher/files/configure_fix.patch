@@ -1,0 +1,46 @@
+Index: speech-dispatcher-0.6.5/configure.in
+===================================================================
+--- speech-dispatcher-0.6.5.orig/configure.in	2008-03-10 23:11:42.000000000 +0000
++++ speech-dispatcher-0.6.5/configure.in	2008-03-10 23:14:02.000000000 +0000
+@@ -134,12 +134,15 @@
+ AC_SUBST(ibmtts_include)
+ 
+ dnl check for espeak support
++AC_LANG_PUSH([C++])
+ AC_CHECK_LIB(espeak,
+ espeak_Initialize,
+ 		espeak_ok="true"; echo "Compiling with espeak support.",
+ 		espeak_ok="false"; echo "Espeak not found.",
+          	-lpthread -lm)
+ 
++AC_LANG_POP([C++])
++
+ AC_ARG_WITH(espeak, AS_HELP_STRING(--with-espeak, Compile with espeak support),
+ 		 if test $withval = "no"; then 
+ 		    echo "Forced compilation without espeak support."; 
+Index: speech-dispatcher-0.6.5/src/modules/Makefile.am
+===================================================================
+--- speech-dispatcher-0.6.5.orig/src/modules/Makefile.am	2008-03-10 23:18:50.000000000 +0000
++++ speech-dispatcher-0.6.5/src/modules/Makefile.am	2008-03-10 23:25:39.000000000 +0000
+@@ -8,6 +8,7 @@
+ EXTRA_DIST = module_main.c module_utils_addvoice.c festival_client.c festival_client.h
+ 
+ AM_CFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir)
++AM_CXXFLAGS = -Wall -DLOCALEDIR=\"$(localedir)\" $(inc_local) @glib_include@ -L$(top_srcdir)/src/audio -I$(top_srcdir)/src/audio -I../../intl/ $(ibmtts_include) @SNDFILE_CFLAGS@ -Wl,--rpath -Wl,$(spdlibdir)
+ 
+ if flite_support
+ if ibmtts_support
+@@ -45,6 +46,6 @@
+ sd_cicero_SOURCES = cicero.c module_utils.c module_utils.h
+ sd_cicero_LDADD = -lm -lpthread -ldotconf @glib_libs@
+ 
+-sd_espeak_SOURCES = espeak.c module_utils.c module_utils.h
++sd_espeak_SOURCES = espeak.c module_utils.c module_utils.h dummy.cpp
+ sd_espeak_LDFLAGS = -rpath '$(spdlibdir)'
+ sd_espeak_LDADD = -lsdaudio -lm -lespeak -lpthread -ldotconf @SNDFILE_LIBS@ @gthread_libs@
+Index: speech-dispatcher-0.6.5/src/modules/dummy.cpp
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ speech-dispatcher-0.6.5/src/modules/dummy.cpp	2008-03-10 23:26:50.000000000 +0000
+@@ -0,0 +1 @@
++
