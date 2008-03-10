@@ -1,0 +1,12 @@
+Index: git/configure.ac
+===================================================================
+--- git.orig/configure.ac	2008-02-20 17:57:44.000000000 +0800
++++ git/configure.ac	2008-02-20 17:58:30.000000000 +0800
+@@ -115,6 +115,7 @@
+ if test "$DOCBOOK2MAN" = "no" ; then
+ 	AC_MSG_WARN([docbook2man not found, will not be able to build man documentation])
+ 	fi
++DOCBOOK2MAN="no"
+ AM_CONDITIONAL(HAVE_DOCBOOK2MAN, [test "$DOCBOOK2MAN" != "no"])
+ 
+ dnl ---------------------------------------------------------------------------
