@@ -2,8 +2,8 @@
 do_stage_append() {
     cd ${STAGING_LIBDIR}/pkgconfig
     sed -i s#"-L${S}/lib"##g Qt*.pc
-    sed -i s#"moc_location=${STAGING_BINDIR}/moc4"#moc_location=${layout_bindir}/moc4# Qt*.pc
-    sed -i s#"uic_location=${STAGING_BINDIR}/uic4"#uic_location=${layout_bindir}/uic4# Qt*.pc
+    sed -i s#"moc_location=${STAGING_BINDIR}/moc4$"## Qt*.pc
+    sed -i s#"uic_location=${STAGING_BINDIR}/uic4$"## Qt*.pc
     sed -i s#"-L${STAGING_LIBDIR}"##g Qt*.pc
     sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g Qt*.pc
 
