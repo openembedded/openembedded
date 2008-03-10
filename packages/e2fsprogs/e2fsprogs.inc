@@ -9,7 +9,6 @@ S = "${WORKDIR}/e2fsprogs-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF_linux-uclibc = "--disable-nls"
-EXTRA_OECONF += " --enable-dynamic-e2fsck"
+EXTRA_OECONF = "--enable-dynamic-e2fsck --disable-nls --sbindir=${base_sbindir}"
 
 PARALLEL_MAKE = ""

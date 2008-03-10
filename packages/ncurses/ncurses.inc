@@ -4,7 +4,6 @@ SECTION = "libs"
 LICENSE = "MIT"
 DEPENDS = "ncurses-native"
 RSUGGESTS_${PN} = "ncurses-terminfo"
-RPROVIDES = "libncurses5"
 
 inherit autotools
 
