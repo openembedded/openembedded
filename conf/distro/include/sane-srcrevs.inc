@@ -12,6 +12,7 @@
 # you know what that means? like... a, b, c, d, e, f, g...
 
 SRCREV_pn-aircrack-ng ?= "802"
+SRCREV_pn-assassin ?= "2"
 SRCREV_pn-bfin-uclibc ?= "1857"
 SRCREV_pn-contact ?= "1410"
 SRCREV_pn-dbus-c++-native ?= "13131"
