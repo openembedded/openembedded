@@ -40,7 +40,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r6"
+PR = "r7"
 
 PARALLEL_MAKE = ""
 
@@ -186,6 +186,10 @@ TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt 
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
+
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
+BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
+
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
