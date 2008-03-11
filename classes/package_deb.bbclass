@@ -94,10 +94,6 @@ python do_package_deb () {
     if os.access(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"),os.R_OK):
         os.unlink(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"))
 
-    if packages == []:
-        bb.debug(1, "No packages; nothing to do")
-        return
-
     packages = bb.data.getVar('PACKAGES', d, 1)
     for pkg in packages.split():
         localdata = bb.data.createCopy(d)
