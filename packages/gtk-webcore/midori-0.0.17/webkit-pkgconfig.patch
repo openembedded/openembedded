@@ -1,0 +1,72 @@
+Index: midori-0.0.17/configure.in
+===================================================================
+--- midori-0.0.17.orig/configure.in	2008-03-10 18:08:54.000000000 +0800
++++ midori-0.0.17/configure.in	2008-03-10 18:10:04.000000000 +0800
+@@ -53,13 +53,13 @@
+ AC_DEFINE_UNQUOTED([GTK_VER], "$GTK_VER", [GTK+ version])
+ 
+ # Checks for WebKitGtk
+-PKG_CHECK_MODULES(WEBKIT, WebKitGtk, have_webkit=true, have_webkit=false)
++PKG_CHECK_MODULES(WEBKIT, webkit-1.0, have_webkit=true, have_webkit=false)
+ if test "x${have_webkit}" = "xfalse" ; then
+     AC_MSG_ERROR([No WebKitGtk package information found])
+ fi
+ AC_SUBST(WEBKIT_CFLAGS)
+ AC_SUBST(WEBKIT_LIBS)
+-WEBKIT_VER=`pkg-config --modversion WebKitGtk`
++WEBKIT_VER=`pkg-config --modversion webkit-1.0`
+ AC_DEFINE_UNQUOTED([WEBKIT_VER], "$WEBKITGTK_VER", [WebKitGtk version])
+ 
+ # Checks for libsexy
+Index: midori-0.0.17/src/global.h
+===================================================================
+--- midori-0.0.17.orig/src/global.h	2008-03-10 18:12:25.000000000 +0800
++++ midori-0.0.17/src/global.h	2008-03-10 18:12:29.000000000 +0800
+@@ -16,7 +16,7 @@
+ #include "../katze/katze.h"
+ 
+ #include <gtk/gtk.h>
+-#include <webkit.h>
++#include <webkit/webkit.h>
+ 
+ // -- globals
+ 
+Index: midori-0.0.17/src/helpers.c
+===================================================================
+--- midori-0.0.17.orig/src/helpers.c	2008-03-10 18:14:43.000000000 +0800
++++ midori-0.0.17/src/helpers.c	2008-03-10 18:14:59.000000000 +0800
+@@ -16,7 +16,7 @@
+ #include "../katze/katze.h"
+ 
+ #include <string.h>
+-#include <webkit.h>
++#include <webkit/webkit.h>
+ 
+ GtkIconTheme* get_icon_theme(GtkWidget* widget)
+ {
+Index: midori-0.0.17/src/webSearch.h
+===================================================================
+--- midori-0.0.17.orig/src/webSearch.h	2008-03-10 18:14:38.000000000 +0800
++++ midori-0.0.17/src/webSearch.h	2008-03-10 18:14:48.000000000 +0800
+@@ -16,7 +16,7 @@
+ 
+ #include <gtk/gtk.h>
+ #include <libsexy/sexy.h>
+-#include <webkit.h>
++#include <webkit/webkit.h>
+ 
+ // -- Types
+ 
+Index: midori-0.0.17/src/webView.h
+===================================================================
+--- midori-0.0.17.orig/src/webView.h	2008-03-10 18:14:15.000000000 +0800
++++ midori-0.0.17/src/webView.h	2008-03-10 18:14:18.000000000 +0800
+@@ -16,7 +16,7 @@
+ #include "browser.h"
+ #include "debug.h"
+ 
+-#include <webkit.h>
++#include <webkit/webkit.h>
+ 
+ WebKitNavigationResponse
+ on_webView_navigation_requested(GtkWidget* webView, WebKitWebFrame* frame
