@@ -7,6 +7,7 @@ SRCREV_pn-libmokoui2 ?= "${AUTOREV}"
 SRCREV_pn-linux-openmoko ?= "${AUTOREV}"
 SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 
+SRCREV_pn-assassin ?= "${AUTOREV}"
 SRCREV_pn-diversity-daemon ?= "${AUTOREV}"
 SRCREV_pn-diversity-nav ?= "${AUTOREV}"
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
