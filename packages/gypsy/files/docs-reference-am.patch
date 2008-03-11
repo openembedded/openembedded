@@ -1,0 +1,17 @@
+Index: gypsy/docs/reference/Makefile.am
+===================================================================
+--- gypsy.orig/docs/reference/Makefile.am	2008-03-10 13:15:06.000000000 +0800
++++ gypsy/docs/reference/Makefile.am	2008-03-10 13:15:24.000000000 +0800
+@@ -88,10 +88,10 @@
+ 
+ # Other files to distribute
+ # e.g. EXTRA_DIST += version.xml.in
+-EXTRA_DIST += version.xml.in \
++EXTRA_DIST = version.xml.in \
+ 	gypsy-design.png
+ 
+-CLEANFILES += $(dbus_docs)
++CLEANFILES = $(dbus_docs)
+ 
+ ref-%.xml: $(top_srcdir)/interfaces/%-full.xml
+ 	$(XSLT) -o $@ $(top_srcdir)/docs/tools/spec-to-docbook.xsl $<
