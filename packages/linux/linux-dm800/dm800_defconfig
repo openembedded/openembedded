@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.12-5.0-brcmstb-dm800
-# Thu Feb 14 14:42:21 2008
+# Linux kernel version: 2.6.12-5.1-brcmstb-dm800
+# Thu Feb 28 19:09:49 2008
 #
 CONFIG_MIPS=y
 
@@ -79,9 +79,11 @@ CONFIG_KMOD=y
 # CONFIG_MIPS_BCM7328 is not set
 # CONFIG_MIPS_BCM7329 is not set
 # CONFIG_MIPS_BCM97456 is not set
-# CONFIG_MIPS_BCM97456B0 is not set
+# CONFIG_MIPS_BCM97456BX is not set
+# CONFIG_MIPS_BCM97456BX_NAND is not set
 # CONFIG_MIPS_BCM7400AX is not set
 # CONFIG_MIPS_BCM7400BX is not set
+# CONFIG_MIPS_BCM7400BX_NAND is not set
 # CONFIG_MIPS_BCM7400AX_NAND is not set
 # CONFIG_MIPS_BCM7405AX is not set
 # CONFIG_MIPS_BCM97455 is not set
@@ -101,8 +103,10 @@ CONFIG_MIPS_BCM7401CX=y
 # CONFIG_MIPS_BCM7402CX is not set
 # CONFIG_MIPS_BCM7402CX_NAND is not set
 # CONFIG_MIPS_BCM7403AX is not set
+# CONFIG_MIPS_BCM7451AX_SMB is not set
 # CONFIG_MIPS_BCM7403AX_NAND is not set
 # CONFIG_MIPS_BCM7452AX is not set
+# CONFIG_MIPS_BCM7452AX_NAND is not set
 # CONFIG_MIPS_BCM7440AX is not set
 # CONFIG_MIPS_BCM7440BX is not set
 # CONFIG_MIPS_BCM7440BX_NAND is not set

@@ -3,20 +3,28 @@ LICENSE = "GPL"
 PN = "linux-dm800"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r2"
+PR = "r3"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
-SRC_URI += "http://sources.dreamboxupdate.com/download/kernel-patches/stblinux-2.6.12-5.0.tar.bz2 \
+SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://dm800_defconfig \
-	file://linuxmips-2.6.12-dream-r6.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-update_dvbapi-r1.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-dvb-multipid-r4.patch;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-brcm-5.1.patch.bz2;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update_dvbapi-r1.patch.bz2;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-core-fix-several-locking-problems.patch.bz2;patch=1;pnum=1 \
+	file://linux-2.6.12-dream-misc.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-add-ioprio.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-fix-serial.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-dm800-flash-layout.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-mtd-blkdevfs-fix.diff;patch=1;pnum=1 \
-	file://linux-2.6.12-dm800-flash-layout.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-set-custom-extraversion.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-7401C0-enable-llsc.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-fixup-prom-args.patch;patch=1;pnum=1"
+	file://linux-2.6.12-fixup-prom-args.patch;patch=1;pnum=1 \
+	file://linuxmips-2.6.12-fix-fadvise.patch;patch=1;pnum=1 \
+	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
+	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
+	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/stblinux-2.6.12"
 
@@ -30,6 +38,7 @@ KERNEL_OUTPUT = "vmlinux"
 KERNEL_OBJECT_SUFFIX = "ko"
 
 do_munge() {
+	mv ${WORKDIR}/linux-2.6.12 ${WORKDIR}/stblinux-2.6.12
 	if [ -d ${S}/drivers/sound ]; then
 		rm -R ${S}/drivers/sound;
 	fi;

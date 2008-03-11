@@ -6,8 +6,8 @@ Index: stblinux-2.6.12/Makefile
  PATCHLEVEL = 6
  SUBLEVEL = 12
  # STABLE_VERSION = .2
--EXTRAVERSION =-5.0-brcmstb
-+EXTRAVERSION =-5.0-brcmstb-dm800
+-EXTRAVERSION =-5.1-brcmstb
++EXTRAVERSION =-5.1-brcmstb-dm800
  NAME=Woozy Numbat
  
  # *DOCUMENTATION*

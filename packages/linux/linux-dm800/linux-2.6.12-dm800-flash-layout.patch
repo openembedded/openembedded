@@ -1,20 +1,23 @@
-Index: stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
-===================================================================
---- stblinux-2.6.12.orig/drivers/mtd/brcmnand/bcm7xxx-nand.c	2008-01-21 02:01:34.000000000 +0100
-+++ stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c	2008-01-21 02:01:52.000000000 +0100
-@@ -72,15 +72,27 @@
+diff -Naur stblinux-2.6.12-org/drivers/mtd/brcmnand/bcm7xxx-nand.c stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
+--- stblinux-2.6.12-org/drivers/mtd/brcmnand/bcm7xxx-nand.c	2008-02-28 18:40:17.000000000 +0100
++++ stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c	2008-02-28 18:45:03.000000000 +0100
+@@ -78,19 +78,28 @@
  
  static struct mtd_partition bcm7XXX_nand_parts[] = 
  {
 -	{ name: "rootfs",		offset: 0,					size: DEFAULT_ROOTFS_SIZE },	
 -#ifdef CONFIG_MTD_ECM_PARTITION
--	{ name: "ecm",		offset: DEFAULT_ROOTFS_SIZE,	size: DEFAULT_ECM_SIZE },	
+-#define AVAIL1_PART	(1)
+-#define OCAP_PART	(2)
+-	{ name: "avail1",		offset: DEFAULT_ROOTFS_SIZE,	size: DEFAULT_AVAIL1_SIZE },
+-	{ name: "ocap",		offset: DEFAULT_ROOTFS_SIZE+DEFAULT_AVAIL1_SIZE,	size: DEFAULT_OCAP_SIZE },	
 -#endif
--	{ name: "kernel",		offset: 0x00800000,			size: 4*1024*1024 },
--	{ name: "cfe",		offset: 0x00C00000,			size: 2*1024*1024 },
--	{ name: "nvm",		offset: 0x00E00000,			size: 1*1024*1024 },
+-	{ name: "kernel",		offset: 0x00800000,			size: 4<<20 },
+-	{ name: "cfe",		offset: 0x00C00000,			size: 2<<20 },
+-	{ name: "nvm",		offset: 0x00E00000,			size: 1<<20 },
 -	/* BBT 1MB not mountable by anyone */
 -	{ name: "data", 		offset: 0x400000000,			size: 0 },
+-};
 +		/* modified for Dreambox DM800 */
 +	{
 +		.name	= "complete",
@@ -36,13 +39,15 @@ Index: stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
 +		.offset	= 4*1024*1024,
 +		.size	= 60*1024*1024
 +	},
- };
++ };
  
  struct brcmnand_info {
-@@ -98,52 +110,6 @@
+ 	struct mtd_info		mtd;
+@@ -106,100 +115,6 @@
+ }
  //EXPORT_SYMBOL(get_brcmnand_handle);
  
- 
+-
 -/* 
 - * Size and offset are variable, depending on the size of the chip, but 
 - * cfe_kernel always starts at 1FC0_0000 and is 4MB size.
@@ -54,6 +59,9 @@ Index: stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
 -	struct mtd_info* mtd = &nandinfo->mtd;
 -	unsigned long size; 
 -	int i = 0;
+-	unsigned int ecm_size = DEFAULT_ECM_SIZE;
+-	unsigned int ocap_size = DEFAULT_OCAP_SIZE;
+-	unsigned int avail1_size = DEFAULT_AVAIL1_SIZE;
 -
 -	if (mtd->size <= (512<<20)) {
 -		size = mtd->size; 	// mtd->size may be different than nandinfo->size
@@ -64,14 +72,40 @@ Index: stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
 -		size = 512 << 20;
 -		*numParts = ARRAY_SIZE(bcm7XXX_nand_parts);
 -	}
+-
+-#ifdef CONFIG_MTD_ECM_PARTITION
+-	/* Do not generate AVAIL1 partition if usable flash size is less than 64MB */
+-	if (size < (64<<20)) {
+-		ecm_size = DEFAULT_OCAP_SIZE;
+-		bcm7XXX_nand_parts[AVAIL1_PART].size = avail1_size = 0;
+-		(*numParts)--;
+-	}
+-	else {
+-		int factor = size / (64 << 20); // Remember size is capped at 512MB
+-		
+-		bcm7XXX_nand_parts[OCAP_PART].size = ocap_size = factor*DEFAULT_OCAP_SIZE;
+-		bcm7XXX_nand_parts[AVAIL1_PART].size = avail1_size = factor*DEFAULT_AVAIL1_SIZE;
+-		ecm_size = ocap_size + avail1_size;
+-	}
+-
+-#endif
 -	nandinfo->parts = bcm7XXX_nand_parts;
--	bcm7XXX_nand_parts[0].size = size - DEFAULT_RESERVED_SIZE - DEFAULT_ECM_SIZE;
+-	bcm7XXX_nand_parts[0].size = size - DEFAULT_RESERVED_SIZE - ecm_size;
 -	bcm7XXX_nand_parts[0].oobsel = &mtd->oobinfo;
 -printk("Part[%d] name=%s, size=%x, offset=%x\n", i, bcm7XXX_nand_parts[0].name, 
 -bcm7XXX_nand_parts[0].size, bcm7XXX_nand_parts[0].offset);
 -
 -	for (i=1; i<  ARRAY_SIZE(bcm7XXX_nand_parts) - 1; i++) {
--		bcm7XXX_nand_parts[i].offset += bcm7XXX_nand_parts[0].size - DEFAULT_ROOTFS_SIZE;
+-#ifdef CONFIG_MTD_ECM_PARTITION
+-		//if (0 == bcm7XXX_nand_parts[i].size)
+-		//	continue;
+-		/* Skip avail1 if size is less than 64 MB) */
+- 		if (0 == avail1_size && AVAIL1_PART == i) {
+-			bcm7XXX_nand_parts[i].offset = bcm7XXX_nand_parts[i-1].size + bcm7XXX_nand_parts[i-1].offset;
+-			continue;
+-		}
+-#endif
+-		bcm7XXX_nand_parts[i].offset = bcm7XXX_nand_parts[i-1].size + bcm7XXX_nand_parts[i-1].offset;
 -		// For now every partition uses the same oobinfo
 -		bcm7XXX_nand_parts[i].oobsel = &mtd->oobinfo;
 -printk("Part[%d] name=%s, size=%x, offset=%x\n", i, bcm7XXX_nand_parts[i].name, 
@@ -84,42 +118,70 @@ Index: stblinux-2.6.12/drivers/mtd/brcmnand/bcm7xxx-nand.c
 -		bcm7XXX_nand_parts[i].offset = 512 << 20;
 -		bcm7XXX_nand_parts[i].size = mtd->size - (513 << 20);
 -		bcm7XXX_nand_parts[i].oobsel = &mtd->oobinfo;
+-#ifdef CONFIG_MTD_ECM_PARTITION
+-printk("Part[%d] name=%s, size=%x, offset=%x\n", avail1_size? i: i-1, bcm7XXX_nand_parts[i].name, 
+-bcm7XXX_nand_parts[i].size, bcm7XXX_nand_parts[i].offset);
+-#else
 -printk("Part[%d] name=%s, size=%x, offset=%x\n", i, bcm7XXX_nand_parts[i].name, 
 -bcm7XXX_nand_parts[i].size, bcm7XXX_nand_parts[i].offset);
+-#endif
+-
 -	}
+-
+-#ifdef CONFIG_MTD_ECM_PARTITION
+-	/* Shift partitions 1 up if avail1_size is 0 */
+-	if (0 == avail1_size) {
+-		for (i=AVAIL1_PART; i < *numParts; i++) {
+-			bcm7XXX_nand_parts[i].offset = bcm7XXX_nand_parts[i+1].offset;
+-			bcm7XXX_nand_parts[i].size = bcm7XXX_nand_parts[i+1].size;
+-		}
+-		bcm7XXX_nand_parts[*numParts].offset = 0;
+-		bcm7XXX_nand_parts[*numParts].size = 0;
+-	}
+-#endif
 -}
 -
  static int __devinit brcmnanddrv_probe(struct device *dev)
  {
  	struct platform_device *pdev = to_platform_device(dev);
-@@ -181,10 +147,9 @@
- 	}
- 
- 	printk("	numchips=%d, size=%08x\n", info->brcmnand.numchips, info->mtd.size);
+@@ -234,14 +149,12 @@
+ 	if (brcmnand_scan(&info->mtd, MAX_NAND_CS)) {
+ 		err = -ENXIO;
+ 		goto out_free_info;
+-	}
+-
+-	printk("	numchips=%d, size=%08x\n", info->brcmnand.numchips, info->mtd.size);
 -	brcmnanddrv_setup_mtd_partitions(info, &numParts);
- //printk("	add_mtd_partitions\n");
+-//printk("	add_mtd_partitions\n");
 -	add_mtd_partitions(&info->mtd, info->parts, numParts);
 -//printk("	dev_set_drvdata\n");	
+-	dev_set_drvdata(&pdev->dev, info);
++ 	}
++ 
++ 	printk("	numchips=%d, size=%08x\n", info->brcmnand.numchips, info->mtd.size);
 +	add_mtd_partitions(&info->mtd, bcm7XXX_nand_parts, 4);
 +//printk("	dev_set_drvdata\n");
- 	dev_set_drvdata(&pdev->dev, info);
++ 	dev_set_drvdata(&pdev->dev, info);
  //printk("<-- brcmnanddrv_probe\n");
  	return 0;
-Index: stblinux-2.6.12/drivers/mtd/brcmnand/brcmnand_base.c
-===================================================================
---- stblinux-2.6.12.orig/drivers/mtd/brcmnand/brcmnand_base.c	2008-01-21 02:01:34.000000000 +0100
-+++ stblinux-2.6.12/drivers/mtd/brcmnand/brcmnand_base.c	2008-01-21 02:01:36.000000000 +0100
-@@ -200,6 +200,13 @@
+ 
+diff -Naur stblinux-2.6.12-org/drivers/mtd/brcmnand/brcmnand_base.c stblinux-2.6.12/drivers/mtd/brcmnand/brcmnand_base.c
+--- stblinux-2.6.12-org/drivers/mtd/brcmnand/brcmnand_base.c	2008-02-28 18:40:17.000000000 +0100
++++ stblinux-2.6.12/drivers/mtd/brcmnand/brcmnand_base.c	2008-02-28 18:46:02.000000000 +0100
+@@ -296,7 +296,15 @@
  		.options = NAND_USE_FLASH_BBT,
  		.timing1 = 0, .timing2 = 0,
  	},
-+	{	/* 8 */
+-	
++
++	{	/* 20 */
 +		.chipId = HYNIX_HY27US08121A,
 +		.mafId = FLASHTYPE_HYNIX,
 +		.chipIdStr = "Hynix HY27US08121A (dream)",
 +		.options = NAND_USE_FLASH_BBT,
 +		.timing1 = 0, .timing2 = 0,
 +	},
- #if 0
- 	{	/* 9 */
- 		.chipId = SAMSUNG_K9K8G08UOA,
++
+ 	{	/* LAST DUMMY ENTRY */
+ 		.chipId = 0,
+ 		.mafId = 0,
