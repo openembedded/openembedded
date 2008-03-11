@@ -2,7 +2,7 @@ DESCRIPTION = "Starling audio player for GPE"
 SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ libgpewidget gstreamer gst-plugins-good gst-plugins-bad esound sqlite3 libsoup"
+DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad esound sqlite libsoup"
 RDEPENDS = "esd \
         gst-plugin-audioconvert \
         gst-plugin-esd \
