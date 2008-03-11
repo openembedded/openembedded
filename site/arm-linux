@@ -179,6 +179,3 @@ gnet_sockaddr_family_field_name=${gnet_sockaddr_family_field_name=ss_family}
 
 # rp-pppoe
 rpppoe_cv_pack_bitfields=${rpppoe_cv_pack_bitfields=rev}
-
-# apr
-ac_cv_file__dev_zero=${ac_cv_file__dev_zero=yes}
