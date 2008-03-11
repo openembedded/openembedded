@@ -1,0 +1,22 @@
+Index: mono-1.2.5.1/mono/Makefile.am
+===================================================================
+--- mono-1.2.5.1.orig/mono/Makefile.am	2008-03-05 15:52:06.000000000 +0800
++++ mono-1.2.5.1/mono/Makefile.am	2008-03-05 15:52:23.000000000 +0800
+@@ -1,3 +1,3 @@
+ 
+-SUBDIRS = utils io-layer monoburg os cil metadata \
++SUBDIRS = utils io-layer os cil metadata \
+       arch interpreter mini dis monograph tests benchmark profiler
+Index: mono-1.2.5.1/mono/mini/Makefile.am
+===================================================================
+--- mono-1.2.5.1.orig/mono/mini/Makefile.am	2008-03-05 16:02:51.000000000 +0800
++++ mono-1.2.5.1/mono/mini/Makefile.am	2008-03-05 16:02:57.000000000 +0800
+@@ -436,7 +436,7 @@
+ 	$(GENMDESC_PRG) $(srcdir)/cpu-mips.md cpu-mips.h mips_desc
+ 
+ inssel.c inssel.h: $(BURGSRC)
+-	$(monodir)/mono/monoburg/monoburg -c 1 -p -e $(BURGSRC) -d inssel.h -s inssel.c
++	monoburg -c 1 -p -e $(BURGSRC) -d inssel.h -s inssel.c
+ 
+ testi: mono test.exe
+ 	$(RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
