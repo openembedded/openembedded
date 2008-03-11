@@ -1,12 +1,8 @@
 require e2fsprogs.inc
 
-PR = "r11"
+PR = "r12"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1"
-
-EXTRA_OECONF += " --sbindir=${base_sbindir} \
-                  --disable-nls \
-                "
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX

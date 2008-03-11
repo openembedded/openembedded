@@ -60,7 +60,7 @@
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/Makefile
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/Makefile	2008-02-24 02:40:56.640036018 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/Makefile	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,19 @@
 +#
 +# Makefile for HTC Universal
@@ -84,7 +84,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/Makefile
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,468 @@
 +/*
 + * Hardware definitions for HTC Universal
@@ -557,7 +557,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,917 @@
 +/*
 + * Audio support for codec Asahi Kasei AK4641
@@ -1479,7 +1479,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.h	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,65 @@
 +/*
 + * Audio support for codec Asahi Kasei AK4641
@@ -1549,7 +1549,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ak4641.h
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_asic3_leds.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_asic3_leds.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_asic3_leds.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,143 @@
 +/*
 + * LEDs support for the HP iPaq hx4700
@@ -1697,7 +1697,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_asic3_leds.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bl.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bl.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bl.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,61 @@
 +/*
 + * Use consistent with the GNU GPL is permitted,
@@ -1763,7 +1763,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bl.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,135 @@
 +/* Bluetooth interface driver for TI BRF6150 on HX4700
 + *
@@ -1903,7 +1903,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.h	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,17 @@
 +/*
 + * Bluetooth support file for calling bluetooth configuration functions
@@ -1925,7 +1925,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_bt.h
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_buttons.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_buttons.c	2008-02-24 02:40:56.644036684 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_buttons.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,87 @@
 +/*
 + * Buttons driver for HTC Universal
@@ -2017,7 +2017,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_buttons.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_core.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_core.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_core.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,226 @@
 +/* Core Hardware driver for Hx4700 (Serial, ASIC3, EGPIOs)
 + *
@@ -2248,7 +2248,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_core.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_lcd.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_lcd.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_lcd.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,212 @@
 +/*
 + * Use consistent with the GNU GPL is permitted,
@@ -2465,7 +2465,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_lcd.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,167 @@
 +
 +/* Phone interface driver for Qualcomm MSM6250 on HTC Universal
@@ -2637,7 +2637,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.h	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,16 @@
 +/*
 + * Bluetooth support file for calling bluetooth configuration functions
@@ -2658,7 +2658,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_phone.h
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_pm.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_pm.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_pm.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,69 @@
 +/*
 + * MyPal 716 power management support for the original HTC IPL in DoC G3
@@ -2732,7 +2732,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_pm.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_power2.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_power2.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_power2.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,97 @@
 +/*
 + * pda_power driver for HTC Universal
@@ -2834,7 +2834,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_power2.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ts2.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ts2.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ts2.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,490 @@
 +/* Touch screen driver for the TI something-or-other
 + *
@@ -3329,7 +3329,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_ts2.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_udc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_udc.c	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_udc.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,71 @@
 +
 +/*
@@ -3405,7 +3405,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/htcuniversal_udc.c
 Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/tsc2046_ts.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/tsc2046_ts.h	2008-02-24 02:40:56.648035744 +0300
++++ linux-2.6.24/arch/arm/mach-pxa/htcuniversal/tsc2046_ts.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,20 @@
 +/*
 + * temporary TSC2046 touchscreen hack
@@ -3429,9 +3429,9 @@ Index: linux-2.6.24/arch/arm/mach-pxa/htcuniversal/tsc2046_ts.h
 +#endif
 Index: linux-2.6.24/arch/arm/mach-pxa/Kconfig
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/Kconfig	2008-02-24 02:40:23.789035215 +0300
-+++ linux-2.6.24/arch/arm/mach-pxa/Kconfig	2008-02-24 02:40:56.652035294 +0300
-@@ -92,6 +92,14 @@ config PXA_SHARPSL_27x
+--- linux-2.6.24.orig/arch/arm/mach-pxa/Kconfig	2008-03-10 16:08:01.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/Kconfig	2008-03-10 16:09:23.000000000 +0000
+@@ -92,6 +92,14 @@
  	bool "Sharp PXA270 models (SL-Cxx00)"
  	select PXA27x
  
@@ -3446,7 +3446,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/Kconfig
  endchoice
  
  endif
-@@ -111,6 +119,86 @@ endchoice
+@@ -111,6 +119,86 @@
  
  endif
  
@@ -3533,17 +3533,17 @@ Index: linux-2.6.24/arch/arm/mach-pxa/Kconfig
  endmenu
  
  config MACH_POODLE
-@@ -196,4 +284,3 @@ config PXA_KEYS
+@@ -196,4 +284,3 @@
  	depends on (PXA25x || PXA27x) && INPUT
  
  endif
 -
 Index: linux-2.6.24/arch/arm/mach-pxa/Makefile
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/Makefile	2008-02-24 02:40:23.797034872 +0300
-+++ linux-2.6.24/arch/arm/mach-pxa/Makefile	2008-02-24 02:40:56.652035294 +0300
-@@ -23,6 +23,7 @@ obj-$(CONFIG_MACH_POODLE)	+= poodle.o co
- obj-$(CONFIG_MACH_TOSA)		+= tosa.o tosa_power.o
+--- linux-2.6.24.orig/arch/arm/mach-pxa/Makefile	2008-03-10 16:08:01.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/Makefile	2008-03-10 16:09:23.000000000 +0000
+@@ -23,6 +23,7 @@
+ obj-$(CONFIG_MACH_TOSA)		+= tosa.o
  obj-$(CONFIG_MACH_EM_X270)	+= em-x270.o
  obj-$(CONFIG_MACH_HX2750)	+= hx2750.o hx2750_test.o
 +obj-$(CONFIG_MACH_HTCUNIVERSAL) += htcuniversal/
@@ -3552,9 +3552,9 @@ Index: linux-2.6.24/arch/arm/mach-pxa/Makefile
    obj-y				+= zylonite.o
 Index: linux-2.6.24/drivers/leds/Kconfig
 ===================================================================
---- linux-2.6.24.orig/drivers/leds/Kconfig	2008-02-24 02:40:23.817034852 +0300
-+++ linux-2.6.24/drivers/leds/Kconfig	2008-02-24 02:40:56.652035294 +0300
-@@ -114,6 +114,13 @@ config LEDS_CM_X270
+--- linux-2.6.24.orig/drivers/leds/Kconfig	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/leds/Kconfig	2008-03-10 16:09:23.000000000 +0000
+@@ -114,6 +114,13 @@
  	help
  	  This option enables support for the CM-X270 LEDs.
  
@@ -3571,7 +3571,7 @@ Index: linux-2.6.24/drivers/leds/Kconfig
 Index: linux-2.6.24/drivers/leds/leds-asic3.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/leds/leds-asic3.c	2008-02-24 02:40:56.652035294 +0300
++++ linux-2.6.24/drivers/leds/leds-asic3.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,189 @@
 +/*
 + * LEDs support for HTC ASIC3 devices.
@@ -3764,9 +3764,9 @@ Index: linux-2.6.24/drivers/leds/leds-asic3.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.24/drivers/mfd/Kconfig
 ===================================================================
---- linux-2.6.24.orig/drivers/mfd/Kconfig	2008-02-24 02:40:23.841034801 +0300
-+++ linux-2.6.24/drivers/mfd/Kconfig	2008-02-24 02:40:56.652035294 +0300
-@@ -43,6 +43,16 @@ config MFD_TSC2101
+--- linux-2.6.24.orig/drivers/mfd/Kconfig	2008-03-10 16:07:51.000000000 +0000
++++ linux-2.6.24/drivers/mfd/Kconfig	2008-03-10 16:09:23.000000000 +0000
+@@ -21,6 +21,16 @@
  	help
  	  Support for TI TSC2101 Touchscreen and Audio Codec
  
@@ -3785,8 +3785,8 @@ Index: linux-2.6.24/drivers/mfd/Kconfig
  menu "Multimedia Capabilities Port drivers"
 Index: linux-2.6.24/drivers/mfd/Makefile
 ===================================================================
---- linux-2.6.24.orig/drivers/mfd/Makefile	2008-02-24 02:40:23.849034737 +0300
-+++ linux-2.6.24/drivers/mfd/Makefile	2008-02-24 02:40:56.652035294 +0300
+--- linux-2.6.24.orig/drivers/mfd/Makefile	2008-03-10 16:07:51.000000000 +0000
++++ linux-2.6.24/drivers/mfd/Makefile	2008-03-10 16:09:23.000000000 +0000
 @@ -2,6 +2,8 @@
  # Makefile for multifunction miscellaneous devices
  #
@@ -3795,11 +3795,11 @@ Index: linux-2.6.24/drivers/mfd/Makefile
 +
  obj-$(CONFIG_MFD_SM501)		+= sm501.o
  
- obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
+ obj-$(CONFIG_MCP)		+= mcp-core.o
 Index: linux-2.6.24/drivers/mfd/asic3_base.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/mfd/asic3_base.c	2008-02-24 02:40:56.652035294 +0300
++++ linux-2.6.24/drivers/mfd/asic3_base.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,1208 @@
 +/*
 + * Driver interface to HTC "ASIC3"
@@ -5012,7 +5012,7 @@ Index: linux-2.6.24/drivers/mfd/asic3_base.c
 Index: linux-2.6.24/drivers/mfd/soc-core.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/mfd/soc-core.c	2008-02-24 02:40:56.652035294 +0300
++++ linux-2.6.24/drivers/mfd/soc-core.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,106 @@
 +/*
 + * drivers/soc/soc-core.c
@@ -5123,7 +5123,7 @@ Index: linux-2.6.24/drivers/mfd/soc-core.c
 Index: linux-2.6.24/drivers/mfd/soc-core.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/mfd/soc-core.h	2008-02-24 02:40:56.652035294 +0300
++++ linux-2.6.24/drivers/mfd/soc-core.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,30 @@
 +/*
 + * drivers/soc/soc-core.h
@@ -5158,7 +5158,7 @@ Index: linux-2.6.24/drivers/mfd/soc-core.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/clock.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/clock.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/clock.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,27 @@
 +/*
 + *  linux/include/asm-arm/arch-pxa/clock.h
@@ -5190,7 +5190,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/clock.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-asic.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-asic.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-asic.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,213 @@
 +/*
 + * include/asm/arm/arch-pxa/htcuniversal-asic.h
@@ -5408,7 +5408,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-asic.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-gpio.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-gpio.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-gpio.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,220 @@
 +/*
 + * include/asm-arm/arch-pxa/htcuniversal-gpio.h
@@ -5633,7 +5633,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-gpio.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-init.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-init.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-init.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,14 @@
 +/*
 + * include/asm/arm/arch-pxa/htcuniversal-init.h
@@ -5652,7 +5652,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal-init.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,3 @@
 +#include <asm/arch/irqs.h>
 +
@@ -5660,7 +5660,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/htcuniversal.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/pxa-pm_ll.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/pxa-pm_ll.h	2008-02-24 02:40:56.656035541 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/pxa-pm_ll.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,6 @@
 +struct pxa_ll_pm_ops {
 +	void (*suspend)(unsigned long);
@@ -5671,7 +5671,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/pxa-pm_ll.h
 Index: linux-2.6.24/include/asm-arm/hardware/asic3_keys.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/hardware/asic3_keys.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/asm-arm/hardware/asic3_keys.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,18 @@
 +#include <linux/input.h>
 +
@@ -5694,7 +5694,7 @@ Index: linux-2.6.24/include/asm-arm/hardware/asic3_keys.h
 Index: linux-2.6.24/include/asm-arm/hardware/asic3_leds.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/hardware/asic3_leds.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/asm-arm/hardware/asic3_leds.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,34 @@
 +/*
 + * LEDs support for HTC ASIC3 devices.
@@ -5733,7 +5733,7 @@ Index: linux-2.6.24/include/asm-arm/hardware/asic3_leds.h
 Index: linux-2.6.24/include/asm-arm/hardware/ipaq-asic3.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/hardware/ipaq-asic3.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/asm-arm/hardware/ipaq-asic3.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,602 @@
 +/*
 + *
@@ -6340,7 +6340,7 @@ Index: linux-2.6.24/include/asm-arm/hardware/ipaq-asic3.h
 Index: linux-2.6.24/include/linux/gpiodev.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/linux/gpiodev.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/linux/gpiodev.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,44 @@
 +#ifndef __GPIODEV_H
 +#define __GPIODEV_H
@@ -6389,7 +6389,7 @@ Index: linux-2.6.24/include/linux/gpiodev.h
 Index: linux-2.6.24/include/linux/input_pda.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/linux/input_pda.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/linux/input_pda.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,47 @@
 +#ifndef _INPUT_PDA_H
 +#define _INPUT_PDA_H
@@ -6441,7 +6441,7 @@ Index: linux-2.6.24/include/linux/input_pda.h
 Index: linux-2.6.24/include/linux/soc/asic3_base.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/linux/soc/asic3_base.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/linux/soc/asic3_base.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,104 @@
 +#include <asm/types.h>
 +#include <linux/gpiodev.h>
@@ -6550,7 +6550,7 @@ Index: linux-2.6.24/include/linux/soc/asic3_base.h
 Index: linux-2.6.24/include/linux/soc/tmio_mmc.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/linux/soc/tmio_mmc.h	2008-02-24 02:40:56.660035858 +0300
++++ linux-2.6.24/include/linux/soc/tmio_mmc.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,17 @@
 +#include <linux/platform_device.h>
 +
@@ -6571,8 +6571,8 @@ Index: linux-2.6.24/include/linux/soc/tmio_mmc.h
 +};
 Index: linux-2.6.24/include/asm-arm/arch-pxa/pxa-regs.h
 ===================================================================
---- linux-2.6.24.orig/include/asm-arm/arch-pxa/pxa-regs.h	2008-02-24 02:40:23.965046594 +0300
-+++ linux-2.6.24/include/asm-arm/arch-pxa/pxa-regs.h	2008-02-24 02:40:56.664035757 +0300
+--- linux-2.6.24.orig/include/asm-arm/arch-pxa/pxa-regs.h	2008-03-10 16:07:59.000000000 +0000
++++ linux-2.6.24/include/asm-arm/arch-pxa/pxa-regs.h	2008-03-10 16:09:23.000000000 +0000
 @@ -2058,6 +2058,8 @@
  #define LDCMD_SOFINT	(1 << 22)
  #define LDCMD_EOFINT	(1 << 21)
@@ -6584,9 +6584,9 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/pxa-regs.h
  #define LCCR5_SOFM2	(1<<1)		/* Start Of Frame Mask for Overlay 2 (channel 2) */
 Index: linux-2.6.24/drivers/mmc/host/Makefile
 ===================================================================
---- linux-2.6.24.orig/drivers/mmc/host/Makefile	2008-02-24 02:40:23.885035847 +0300
-+++ linux-2.6.24/drivers/mmc/host/Makefile	2008-02-24 02:40:56.664035757 +0300
-@@ -13,6 +13,7 @@ obj-$(CONFIG_MMC_SDHCI)		+= sdhci.o
+--- linux-2.6.24.orig/drivers/mmc/host/Makefile	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/mmc/host/Makefile	2008-03-10 16:09:23.000000000 +0000
+@@ -13,6 +13,7 @@
  obj-$(CONFIG_MMC_RICOH_MMC)	+= ricoh_mmc.o
  obj-$(CONFIG_MMC_WBSD)		+= wbsd.o
  obj-$(CONFIG_MMC_AU1X)		+= au1xmmc.o
@@ -6597,7 +6597,7 @@ Index: linux-2.6.24/drivers/mmc/host/Makefile
 Index: linux-2.6.24/drivers/mmc/host/asic3_mmc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/mmc/host/asic3_mmc.c	2008-02-24 02:40:56.664035757 +0300
++++ linux-2.6.24/drivers/mmc/host/asic3_mmc.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,900 @@
 +/* Note that this driver can likely be merged into the tmio driver, so
 + * consider this code temporary.  It works, though.
@@ -7502,7 +7502,7 @@ Index: linux-2.6.24/drivers/mmc/host/asic3_mmc.c
 Index: linux-2.6.24/drivers/mmc/host/asic3_mmc.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/mmc/host/asic3_mmc.h	2008-02-24 02:40:56.664035757 +0300
++++ linux-2.6.24/drivers/mmc/host/asic3_mmc.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,25 @@
 +#ifndef __ASIC3_MMC_H
 +#define __ASIC3_MMC_H
@@ -7529,22 +7529,10 @@ Index: linux-2.6.24/drivers/mmc/host/asic3_mmc.h
 +#define DONT_CARE_BUFFER_BITS ( SD_CTRL_INTMASKBUFFER_UNK7 | SD_CTRL_INTMASKBUFFER_CMD_BUSY )
 +
 +#endif // __ASIC3_MMC_H
-Index: linux-2.6.24/drivers/input/keyboard/Makefile
-===================================================================
---- linux-2.6.24.orig/drivers/input/keyboard/Makefile	2008-02-24 02:40:23.905037294 +0300
-+++ linux-2.6.24/drivers/input/keyboard/Makefile	2008-02-24 02:40:56.664035757 +0300
-@@ -16,6 +16,7 @@ obj-$(CONFIG_KEYBOARD_STOWAWAY)		+= stow
- obj-$(CONFIG_KEYBOARD_CORGI)		+= corgikbd.o
- obj-$(CONFIG_KEYBOARD_SPITZ)		+= spitzkbd.o
- obj-$(CONFIG_KEYBOARD_TOSA)		+= tosakbd.o
-+obj-$(CONFIG_KEYBOARD_ASIC3)		+= asic3_keys.o
- obj-$(CONFIG_KEYBOARD_HIL)		+= hil_kbd.o
- obj-$(CONFIG_KEYBOARD_HIL_OLD)		+= hilkbd.o
- obj-$(CONFIG_KEYBOARD_OMAP)		+= omap-keypad.o
 Index: linux-2.6.24/drivers/input/keyboard/asic3_keys.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/asic3_keys.c	2008-02-24 02:40:56.668036144 +0300
++++ linux-2.6.24/drivers/input/keyboard/asic3_keys.c	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,131 @@
 +/*
 + * Generic buttons driver for ASIC3 SoC.
@@ -7679,10 +7667,10 @@ Index: linux-2.6.24/drivers/input/keyboard/asic3_keys.c
 +MODULE_LICENSE("GPL");
 Index: linux-2.6.24/include/asm-arm/arch-pxa/irqs.h
 ===================================================================
---- linux-2.6.24.orig/include/asm-arm/arch-pxa/irqs.h	2008-02-24 02:40:23.973034657 +0300
-+++ linux-2.6.24/include/asm-arm/arch-pxa/irqs.h	2008-02-24 02:40:56.668036144 +0300
-@@ -183,6 +183,8 @@
-       defined(CONFIG_MACH_TOSA) || \
+--- linux-2.6.24.orig/include/asm-arm/arch-pxa/irqs.h	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/include/asm-arm/arch-pxa/irqs.h	2008-03-10 16:09:23.000000000 +0000
+@@ -182,6 +182,8 @@
+       defined(CONFIG_MACH_LOGICPD_PXA270) || \
        defined(CONFIG_MACH_MAINSTONE)
  #define NR_IRQS			(IRQ_BOARD_END)
 +#elif defined(CONFIG_MACH_HTCUNIVERSAL)
@@ -7693,7 +7681,7 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/irqs.h
 Index: linux-2.6.24/include/asm-arm/arch-pxa/serial.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/arch-pxa/serial.h	2008-02-24 02:40:56.668036144 +0300
++++ linux-2.6.24/include/asm-arm/arch-pxa/serial.h	2008-03-10 16:09:23.000000000 +0000
 @@ -0,0 +1,78 @@
 +/*
 + *  linux/include/asm-arm/arch-pxa/serial.h
@@ -7775,8 +7763,8 @@ Index: linux-2.6.24/include/asm-arm/arch-pxa/serial.h
 +void pxa_set_hwuart_info(struct platform_pxa_serial_funcs *hwuart_funcs);
 Index: linux-2.6.24/drivers/serial/pxa.c
 ===================================================================
---- linux-2.6.24.orig/drivers/serial/pxa.c	2008-02-24 02:40:23.925046354 +0300
-+++ linux-2.6.24/drivers/serial/pxa.c	2008-02-24 02:40:56.668036144 +0300
+--- linux-2.6.24.orig/drivers/serial/pxa.c	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/serial/pxa.c	2008-03-10 16:09:23.000000000 +0000
 @@ -47,6 +47,7 @@
  #include <asm/io.h>
  #include <asm/hardware.h>
@@ -7785,7 +7773,7 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  #include <asm/arch/pxa-regs.h>
  
  
-@@ -60,6 +61,14 @@ struct uart_pxa_port {
+@@ -60,6 +61,14 @@
  	char			*name;
  };
  
@@ -7800,7 +7788,7 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  static inline unsigned int serial_in(struct uart_pxa_port *up, int offset)
  {
  	offset <<= 2;
-@@ -347,6 +356,9 @@ static int serial_pxa_startup(struct uar
+@@ -347,6 +356,9 @@
  	unsigned long flags;
  	int retval;
  
@@ -7810,7 +7798,7 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  	if (port->line == 3) /* HWUART */
  		up->mcr |= UART_MCR_AFE;
  	else
-@@ -404,6 +416,12 @@ static int serial_pxa_startup(struct uar
+@@ -404,6 +416,12 @@
  	(void) serial_in(up, UART_IIR);
  	(void) serial_in(up, UART_MSR);
  
@@ -7823,7 +7811,7 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  	return 0;
  }
  
-@@ -412,6 +430,8 @@ static void serial_pxa_shutdown(struct u
+@@ -412,6 +430,8 @@
  	struct uart_pxa_port *up = (struct uart_pxa_port *)port;
  	unsigned long flags;
  
@@ -7832,7 +7820,7 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  	free_irq(up->port.irq, up);
  
  	/*
-@@ -433,6 +453,8 @@ static void serial_pxa_shutdown(struct u
+@@ -433,6 +453,8 @@
  				  UART_FCR_CLEAR_RCVR |
  				  UART_FCR_CLEAR_XMIT);
  	serial_out(up, UART_FCR, 0);
@@ -7843,8 +7831,8 @@ Index: linux-2.6.24/drivers/serial/pxa.c
  static void
 Index: linux-2.6.24/arch/arm/mach-pxa/generic.c
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/generic.c	2008-02-24 02:40:23.809034497 +0300
-+++ linux-2.6.24/arch/arm/mach-pxa/generic.c	2008-02-24 02:40:56.668036144 +0300
+--- linux-2.6.24.orig/arch/arm/mach-pxa/generic.c	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/generic.c	2008-03-10 16:09:23.000000000 +0000
 @@ -38,6 +38,7 @@
  #include <asm/arch/mmc.h>
  #include <asm/arch/irda.h>
@@ -7853,7 +7841,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/generic.c
  
  #include "devices.h"
  #include "generic.h"
-@@ -412,6 +413,18 @@ struct platform_device pxa_device_hwuart
+@@ -412,6 +413,18 @@
  	.num_resources	= ARRAY_SIZE(pxa_resource_hwuart),
  };
  
@@ -7874,9 +7862,9 @@ Index: linux-2.6.24/arch/arm/mach-pxa/generic.c
  		.start	= 0x40301680,
 Index: linux-2.6.24/drivers/leds/Makefile
 ===================================================================
---- linux-2.6.24.orig/drivers/leds/Makefile	2008-02-24 02:40:23.833034725 +0300
-+++ linux-2.6.24/drivers/leds/Makefile	2008-02-24 02:40:56.668036144 +0300
-@@ -15,6 +15,7 @@ obj-$(CONFIG_LEDS_AMS_DELTA)		+= leds-am
+--- linux-2.6.24.orig/drivers/leds/Makefile	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/leds/Makefile	2008-03-10 16:09:23.000000000 +0000
+@@ -15,6 +15,7 @@
  obj-$(CONFIG_LEDS_NET48XX)		+= leds-net48xx.o
  obj-$(CONFIG_LEDS_WRAP)			+= leds-wrap.o
  obj-$(CONFIG_LEDS_H1940)		+= leds-h1940.o
@@ -7886,9 +7874,9 @@ Index: linux-2.6.24/drivers/leds/Makefile
  obj-$(CONFIG_LEDS_GPIO)			+= leds-gpio.o
 Index: linux-2.6.24/drivers/input/keyboard/Kconfig
 ===================================================================
---- linux-2.6.24.orig/drivers/input/keyboard/Kconfig	2008-02-24 02:40:23.917037268 +0300
-+++ linux-2.6.24/drivers/input/keyboard/Kconfig	2008-02-24 02:40:56.676035032 +0300
-@@ -314,4 +314,11 @@ config KEYBOARD_BFIN
+--- linux-2.6.24.orig/drivers/input/keyboard/Kconfig	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/Kconfig	2008-03-10 16:09:23.000000000 +0000
+@@ -293,4 +293,11 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called bf54x-keys.
  
@@ -7902,16 +7890,31 @@ Index: linux-2.6.24/drivers/input/keyboard/Kconfig
  endif
 Index: linux-2.6.24/drivers/mmc/host/Kconfig
 ===================================================================
---- linux-2.6.24.orig/drivers/mmc/host/Kconfig	2008-02-24 02:41:04.868035778 +0300
-+++ linux-2.6.24/drivers/mmc/host/Kconfig	2008-02-24 02:41:46.328053402 +0300
-@@ -136,3 +136,10 @@ config MMC_TMIO
- 	help
- 	  This provides support for the SD/MMC cell found in TC6393XB,
- 	  T7L66XB and also ipaq ASIC3
-+
+--- linux-2.6.24.orig/drivers/mmc/host/Kconfig	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/mmc/host/Kconfig	2008-03-10 16:09:59.000000000 +0000
+@@ -24,6 +24,13 @@
+ 
+ 	  If unsure, say N.
+ 
 +config MMC_ASIC3
 +	tristate "HTC ASIC3 SD/MMC support"
 +	depends on MMC && HTC_ASIC3
 +	help
 +	  This provides support for the ASIC3 SD/MMC controller, used
 +	  in the iPAQ hx4700 and others.
++
+ config MMC_SDHCI
+ 	tristate "Secure Digital Host Controller Interface support  (EXPERIMENTAL)"
+ 	depends on PCI && EXPERIMENTAL
+Index: linux-2.6.24/drivers/input/keyboard/Makefile
+===================================================================
+--- linux-2.6.24.orig/drivers/input/keyboard/Makefile	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/Makefile	2008-03-10 16:10:28.000000000 +0000
+@@ -6,6 +6,7 @@
+ 
+ obj-$(CONFIG_KEYBOARD_ATKBD)		+= atkbd.o
+ obj-$(CONFIG_KEYBOARD_SUNKBD)		+= sunkbd.o
++obj-$(CONFIG_KEYBOARD_ASIC3)		+= asic3_keys.o
+ obj-$(CONFIG_KEYBOARD_LKKBD)		+= lkkbd.o
+ obj-$(CONFIG_KEYBOARD_XTKBD)		+= xtkbd.o
+ obj-$(CONFIG_KEYBOARD_AMIGA)		+= amikbd.o

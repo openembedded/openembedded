@@ -115,4 +115,3 @@ samba_cv_sig_atomic_t=${samba_cv_sig_atomic_t=yes}
 samba_cv_socklen_t=${samba_cv_socklen_t=yes}
 samba_cv_unixsocket=${samba_cv_unixsocket=yes}
 samba_cv_volatile=${samba_cv_volatile=yes}
-

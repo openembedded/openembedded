@@ -329,12 +329,11 @@ python seppuku_eventhandler() {
 
         file = None
         if name == "TaskFailed":
-            bugname = "%(package)s-%(pv)s-%(pr)s-%(task)s" % { "package" : bb.data.getVar("PN", data, True),
+            bugname = "%(package)s-%(pv)s-autobuild" % { "package" : bb.data.getVar("PN", data, True),
                                                                "pv"      : bb.data.getVar("PV", data, True),
-                                                               "pr"      : bb.data.getVar("PR", data, True),
-                                                               "task"    : e.task }
+                                                               }  
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
-            text     = "The package failed to build at %s for machine %s" % (bb.data.getVar('DATETIME', data, True), bb.data.getVar( 'MACHINE', data, True ) )
+            text     = "The %s step failed at %s for machine %s" % (e.task, bb.data.getVar('DATETIME', data, True), bb.data.getVar( 'MACHINE', data, True ) )
             if len(log_file) != 0:
                 print >> debug_file, "Adding log file %s" % log_file[0]
                 file = open(log_file[0], 'r')

@@ -88,10 +88,6 @@ python do_package_deb () {
         return
     bb.mkdirhier(dvar)
 
-    packages = bb.data.getVar('PACKAGES', d, 1)
-    if not packages:
-        bb.debug(1, "PACKAGES not defined, nothing to package")
-        return
 
     tmpdir = bb.data.getVar('TMPDIR', d, 1)
 
@@ -102,6 +98,7 @@ python do_package_deb () {
         bb.debug(1, "No packages; nothing to do")
         return
 
+    packages = bb.data.getVar('PACKAGES', d, 1)
     for pkg in packages.split():
         localdata = bb.data.createCopy(d)
         pkgdest = bb.data.getVar('PKGDEST', d, 1)
@@ -273,8 +270,13 @@ python () {
 }
 
 python do_package_write_deb () {
-	bb.build.exec_func("read_subpackage_metadata", d)
-	bb.build.exec_func("do_package_deb", d)
+    packages = bb.data.getVar('PACKAGES', d, True)
+    if not packages:
+        bb.debug(1, "No PACKAGES defined, nothing to package")
+        return
+
+    bb.build.exec_func("read_subpackage_metadata", d)
+    bb.build.exec_func("do_package_deb", d)
 }
 do_package_write_deb[dirs] = "${D}"
 addtask package_write_deb before do_package_write after do_package

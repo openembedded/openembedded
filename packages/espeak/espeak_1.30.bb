@@ -15,9 +15,9 @@ DEPENDS = "portaudio-v19"
 
 ######################################################################################
 
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://kent.dl.sourceforge.net/sourceforge/espeak/espeak-${PV}-source.zip"
+SRC_URI = "${SOURCEFORGE_MIRROR}/espeak/espeak-${PV}-source.zip"
 
 S = "${WORKDIR}/${PN}-${PV}-source"
 
