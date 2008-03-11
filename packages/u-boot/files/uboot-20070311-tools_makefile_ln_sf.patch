@@ -1,6 +1,8 @@
---- a/tools/Makefile	2007-03-11 00:55:44.000000000 +0000
-+++ b/tools/Makefile	2007-03-11 00:55:52.000000000 +0000
-@@ -194,14 +194,14 @@
+Index: git/tools/Makefile
+===================================================================
+--- git.orig/tools/Makefile	2008-03-03 13:32:32.000000000 +0800
++++ git/tools/Makefile	2008-03-03 13:40:23.000000000 +0800
+@@ -208,18 +208,18 @@
  
  $(obj)environment.c:
  		@rm -f $(obj)environment.c
@@ -14,6 +16,11 @@
  		@rm -f $(obj)crc32.c
 -		ln -s $(src)../lib_generic/crc32.c $(obj)crc32.c
 +		ln -sf $(src)../lib_generic/crc32.c $(obj)crc32.c
+ 
+ $(obj)sha1.c:
+ 		@rm -f $(obj)sha1.c
+-		ln -s $(src)../lib_generic/sha1.c $(obj)sha1.c
++		ln -sf $(src)../lib_generic/sha1.c $(obj)sha1.c
  
  $(LOGO_H):	$(obj)bmp_logo $(LOGO_BMP)
  		$(obj)./bmp_logo $(LOGO_BMP) >$@
