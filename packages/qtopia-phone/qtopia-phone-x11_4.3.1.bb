@@ -101,7 +101,7 @@ do_install() {
 
    # Install freedesktop.org .desktop files for enlightenment
    install -d ${D}${datadir}/applications
-   for app in "${S}/apps-fdo"*; do
+   for app in "${S}/apps-fdo/"*; do
      for file in "$app"/*.desktop; do
         install -m 0644 $file ${D}${datadir}/applications/
      done
@@ -111,7 +111,7 @@ do_install() {
 
    # Make sure qpe gets launched by X
    install -d ${D}/${sysconfdir}/X11/Xsession.d
-   install -m 0755 ${WORKDIR}/Xsession.d/99qpe ${D}${sysconfdir}/X11/Xsession.d/
+   install -m 0755 ${WORKDIR}/Xsession.d/99qtopia ${D}${sysconfdir}/X11/Xsession.d/
 
    # Install some scripts
    install -d ${D}${bindir}
