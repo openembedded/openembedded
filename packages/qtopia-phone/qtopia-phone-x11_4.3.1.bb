@@ -16,11 +16,12 @@ PR = "r1"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://device-conf \
-           file://qplatformdefs.h"
+           file://qplatformdefs.h \
+           file://Xsession.d/99qtopia"
 
 S = "${WORKDIR}/git"
 
-inherit pkgconfig update-rc.d
+inherit pkgconfig
 
 TARGET-DEVICE="${@base_contains('MACHINE', 'nokia770', ' nokia770', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'nokia800', ' nokia770', '',d)}"
@@ -28,9 +29,6 @@ TARGET-DEVICE="${@base_contains('MACHINE', 'spitz', ' c3200', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'tosa', ' c3200', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'fic-gta01', 'ficgta01', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'fic-gta02', 'ficgta01', '',d)}"
-
-INITSCRIPT_NAME = "qpe"
-INITSCRIPT_PARAMS = "defaults 98"
 
 export QTOPIA_DEPOT_PATH = "${S}"
 
@@ -100,6 +98,24 @@ do_stage() {
 do_install() {
    cd ${BUILDDIR}
    oe_runmake install INSTALL_ROOT=${D}${OE_QT_RPREFIX} IMAGE=${D}${OE_QT_RPREFIX}
+
+   # Install freedesktop.org .desktop files for enlightenment
+   install -d ${D}${datadir}/applications
+   for app in "${S}/apps-fdo"*; do
+     for file in "$app"/*.desktop; do
+        install -m 0644 $file ${D}${datadir}/applications/
+     done
+   done 
+
+   # Install good icons for the desktop files
+
+   # Make sure qpe gets launched by X
+   install -d ${D}/${sysconfdir}/X11/Xsession.d
+   install -m 0755 ${WORKDIR}/Xsession.d/99qpe ${D}${sysconfdir}/X11/Xsession.d/
+
+   # Install some scripts
+   install -d ${D}${bindir}
+   install -m 0755 ${S}/bin/qcop-x11-launch ${D}${bindir}
 }
 
 FILES_${PN} += "${OE_QT_RPREFIX}/bin ${OE_QT_RPREFIX}/help  \
