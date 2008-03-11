@@ -100,9 +100,6 @@ do_stage() {
 do_install() {
    cd ${BUILDDIR}
    oe_runmake install INSTALL_ROOT=${D}${OE_QT_RPREFIX} IMAGE=${D}${OE_QT_RPREFIX}
-   install -d ${D}${sysconfdir}/init.d
-   install -m 0755 ${S}/devices/${TARGET-DEVICE}/src/devtools/startup/qpe.sh ${D}${sysconfdir}/init.d/qpe
-
 }
 
 FILES_${PN} += "${OE_QT_RPREFIX}/bin ${OE_QT_RPREFIX}/help  \
