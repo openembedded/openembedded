@@ -1,0 +1,16 @@
+Include path fixes for Illume:
+
+$(includedir) is pointing to /usr/include, we do not want to have this when compiling
+
+Index: src/Makefile.am
+===================================================================
+--- a/src/Makefile.am	(Revision 12)
++++ b/src/Makefile.am	(Arbeitskopie)
+@@ -3,7 +3,6 @@
+ 
+ INCLUDES = -I. \
+ 	 -I$(top_srcdir) \
+-	 -I$(includedir) \
+ 	 @e_cflags@
+ 
+ pkgdir = $(datadir)/$(MODULE_ARCH)
