@@ -5,6 +5,7 @@ DEPENDS = "webkit-gtk libsexy"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://software.twotoasts.de/media/midori/midori-${PV}.tar.gz \ 
-           file://webkit-pkgconfig.patch;patch=1 \
-          "
+SRC_URI = "http://software.twotoasts.de/media/midori/midori-${PV}.tar.gz \
+           file://webkit-update.patch;patch=1"
+
+
