@@ -199,5 +199,7 @@ c72441dc719a5903a8fdc705f309c086346249b0 alsa-state spitz + akita fixes (Stanisl
 135f1243bae7b8d2761f12a5ee4792c0fdd61cd7 findutils fix (Stanislav, Koen)
 8fdaa25fd43ec0cd83b190b8b345a620111e66b9 mplayer -OMG -noatime (Koen, PaulS)
 2c1b19f138545666f84b9b29076dcc0b6e695ed6 sepukku format change (Koen, PaulS)
+c4d9a3436b6b5626505d88d0ed299c5e20d25227 altboot collie fix (Koen, xjqian)
+4d3fe649ba5cd8d8a2492eb428e3d03d91d873a2 altboot collie fix (Koen, xjqian)
 
 
