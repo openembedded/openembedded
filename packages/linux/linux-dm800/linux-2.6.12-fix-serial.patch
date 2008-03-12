@@ -1,0 +1,32 @@
+Index: stblinux-2.6.12/drivers/char/brcmserial.c
+===================================================================
+--- stblinux-2.6.12.orig/drivers/char/brcmserial.c	2007-12-16 22:49:40.000000000 +0100
++++ stblinux-2.6.12/drivers/char/brcmserial.c	2007-12-16 22:56:00.000000000 +0100
+@@ -1208,6 +1208,6 @@
+ 	600, 1200, 1800, 2400, 4800, 9600, 19200,
+ 	38400, 57600, 115200, 230400, 460800, 0 };
+ 
+-static int tty_get_baud_rate(struct tty_struct *tty)
++int tty_get_baud_rate(struct tty_struct *tty)
+ {
+ 	struct async_struct * info = (struct async_struct *)tty->driver_data;
+ 	unsigned int cflag, i;
+diff -Naur 2.6.12-5.0-org/drivers/char/tty_io.c 2.6.12-5.0-patched/drivers/char/tty_io.c
+--- 2.6.12-5.0-org/drivers/char/tty_io.c	2007-07-26 00:53:30.000000000 +0200
++++ 2.6.12-5.0-patched/drivers/char/tty_io.c	2007-12-11 12:34:52.000000000 +0100
+@@ -2592,6 +2592,7 @@
+  *	flags may be updated.
+  */
+  
++#if 0
+ int tty_get_baud_rate(struct tty_struct *tty)
+ {
+ 	int baud = tty_termios_baud_rate(tty->termios);
+@@ -2607,6 +2608,7 @@
+ 	
+ 	return baud;
+ }
++#endif
+ 
+ EXPORT_SYMBOL(tty_get_baud_rate);
+ 

@@ -1,0 +1,91 @@
+diff -Naur 2.6.12-5.0-org/include/asm-mips/uaccess.h 2.6.12-5.0-patched/include/asm-mips/uaccess.h
+--- 2.6.12-5.0-org/include/asm-mips/uaccess.h	2007-07-26 00:56:08.000000000 +0200
++++ 2.6.12-5.0-patched/include/asm-mips/uaccess.h	2007-12-11 12:34:52.000000000 +0100
+@@ -234,39 +234,72 @@
+ 
+ #define __get_user_nocheck(x,ptr,size)					\
+ ({									\
+-	__typeof(*(ptr)) __gu_val =  (__typeof(*(ptr))) 0;		\
+ 	long __gu_err = 0;						\
+-									\
+ 	might_sleep();							\
+ 	switch (size) {							\
+-	case 1: __get_user_asm("lb", ptr); break;			\
+-	case 2: __get_user_asm("lh", ptr); break;			\
+-	case 4: __get_user_asm("lw", ptr); break;			\
+-	case 8: __GET_USER_DW(ptr); break;				\
++	case 1: {							\
++		s8 __gu_val =  (s8) 0;					\
++		__get_user_asm("lb", ptr); 				\
++		(x) = (__typeof__(*(ptr))) __gu_val;			\
++		break;							\
++		}							\
++	case 2:	{							\
++		s16 __gu_val =  (s16) 0;				\
++		__get_user_asm("lh", ptr);				\
++		(x) = (__typeof__(*(ptr))) __gu_val;			\
++		break;							\
++		}							\
++	case 4:	{							\
++		s32 __gu_val = (s32) 0;					\
++		__get_user_asm("lw", ptr);				\
++		(x) = (__typeof__(*(ptr))) __gu_val;			\
++		break;							\
++		}							\
++	case 8:	{							\
++		s64 __gu_val = (s64) 0;					\
++		__GET_USER_DW(ptr);					\
++		(x) = (__typeof__(*(ptr))) __gu_val;			\
++		break;							\
++		}							\
+ 	default: __get_user_unknown(); break;				\
+ 	}								\
+-	(x) = (__typeof__(*(ptr))) __gu_val;				\
+ 	__gu_err;							\
+ })
+ 
+ #define __get_user_check(x,ptr,size)					\
+ ({									\
+ 	const __typeof__(*(ptr)) __user * __gu_addr = (ptr);		\
+-	__typeof__(*(ptr)) __gu_val = 0;				\
+ 	long __gu_err = -EFAULT;					\
+-									\
+ 	might_sleep();							\
+-									\
+ 	if (likely(access_ok(VERIFY_READ,  __gu_addr, size))) {		\
+ 		switch (size) {						\
+-		case 1: __get_user_asm("lb", __gu_addr); break;		\
+-		case 2: __get_user_asm("lh", __gu_addr); break;		\
+-		case 4: __get_user_asm("lw", __gu_addr); break;		\
+-		case 8: __GET_USER_DW(__gu_addr); break;		\
++		case 1: {							\
++			s8 __gu_val =  (s8) 0;					\
++			__get_user_asm("lb", ptr); 				\
++			(x) = (__typeof__(*(ptr))) __gu_val;			\
++			break;							\
++			}							\
++		case 2:	{							\
++			s16 __gu_val =  (s16) 0;				\
++			__get_user_asm("lh", ptr);				\
++			(x) = (__typeof__(*(ptr))) __gu_val;			\
++			break;							\
++			}							\
++		case 4:	{							\
++			s32 __gu_val = (s32) 0;					\
++			__get_user_asm("lw", ptr);				\
++			(x) = (__typeof__(*(ptr))) __gu_val;			\
++			break;							\
++			}							\
++		case 8:	{							\
++			s64 __gu_val = (s64) 0;					\
++			__GET_USER_DW(ptr);					\
++			(x) = (__typeof__(*(ptr))) __gu_val;			\
++			break;							\
++		}							\
+ 		default: __get_user_unknown(); break;			\
+ 		}							\
+ 	}								\
+-	(x) = (__typeof__(*(ptr))) __gu_val;				\
+ 	__gu_err;							\
+ })
+ 

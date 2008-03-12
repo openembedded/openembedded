@@ -1,0 +1,22 @@
+diff -Naur 2.6.12-5.0-org/arch/mips/kernel/gdb-low.S 2.6.12-5.0-patched/arch/mips/kernel/gdb-low.S
+--- 2.6.12-5.0-org/arch/mips/kernel/gdb-low.S	2007-07-26 00:51:07.000000000 +0200
++++ 2.6.12-5.0-patched/arch/mips/kernel/gdb-low.S	2007-12-11 12:34:52.000000000 +0100
+@@ -52,12 +52,14 @@
+ 		/*
+ 		 * Called from user mode, go somewhere else.
+ 		 */
+-		lui	k1, %hi(saved_vectors)
+ 		mfc0	k0, CP0_CAUSE
+ 		andi	k0, k0, 0x7c
+-		add	k1, k1, k0
+-		lw	k0, %lo(saved_vectors)(k1)
+-		jr	k0
++
++#ifdef CONFIG_MIPS64
++		dsll	k0, k0, 1
++#endif
++		lw	k1, %lo(saved_vectors)(k0)
++		jr	k1
+ 		nop
+ 1:
+ 		move	k0, sp
