@@ -10,9 +10,9 @@ SECTION = "qtopia-phone"
 LICENSE = "GPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
-DEPENDS = "glib-2.0 dbus tslib freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
+DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
 PROVIDES = "qtopia-phone"
-PR = "r1"
+PR = "r2"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://device-conf \

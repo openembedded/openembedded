@@ -3,6 +3,7 @@
 # path setup
 export QPEDIR=/opt/Qtopia
 export PATH=$QPEDIR/bin:$PATH
+export LD_LIBRARY_PATH=$QPEDIR/lib:$LD_LIBRARY_PATH
 
 #tell how to inform illume on incoming phone calls
 #export ILLUME_PHONE_CALL=
