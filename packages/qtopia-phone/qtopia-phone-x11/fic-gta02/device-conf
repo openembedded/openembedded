@@ -10,6 +10,7 @@
 -extra-qtopiacore-config "-fast" 
 -extra-qtopiacore-config "-no-accessibility" 
 -extra-qtopiacore-config "-no-cups"
+-extra-qtopiacore-config "-no-iconv"
 -extra-qtopiacore-config "-nomake demos" 
 -extra-qtopiacore-config "-nomake examples"
 -extra-qtopiacore-config "-qt-libjpeg" 
