@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "espeak flite pulseaudio libdotconf glib-2.0"
 RPROVIDES_${PN} += "speechd"
 
-PR = "r8"
+PR = "r0"
 
 inherit autotools update-rc.d
 
@@ -16,7 +16,7 @@ SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
 	   file://configSpeechd.conf.in_00.patch;patch=1"
 
 LEAD_SONAME = "libspeechd.so"
-EXTRA_OECONF = " --with-espeak=yes --with-flite=yes --with-ibmtts=no --with-nas=no --with-alsa=yes --with-pulse=yes "
+EXTRA_OECONF = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa --with-pulse "
 
 INITSCRIPT_NAME = "speech-dispatcher"
 INITSCRIPT_PARAMS = "defaults 45"
