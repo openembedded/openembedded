@@ -1,6 +1,6 @@
 IMAGE_LINGUAS = ""
 
-DEPENDS = "${MACHINE_TASK_PROVIDER} task-opie-16mb"
+DEPENDS = "task-boot task-opie-16mb"
 
 IMAGE_INSTALL = "task-boot \
                     ipkg ipkg-collateral \
@@ -14,6 +14,6 @@ IMAGE_INSTALL = "task-boot \
 		    task-opie-irda"
 
 # create /etc/timestamp from build date
-IMAGE_PREPROCESS_COMMAND = "merge_feeds; create_etc_timestamp"
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 inherit image
