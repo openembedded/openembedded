@@ -1,7 +1,7 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20080201"
+SRCDATE = "20080312"
 PV = "2.4cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/enigma2-plugins;module=enigma2-plugins;method=pserver"

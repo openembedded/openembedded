@@ -33,15 +33,15 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced vi
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20070904"
+SRCDATE = "20080313"
 
 REL_MAJOR="2"
-REL_MINOR="3"
+REL_MINOR="4"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
-TAG = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
+#TAG = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
-SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver;tag=${TAG};date=${SRCDATE} \
+SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver;date=${SRCDATE} \
            file://enigma2.sh"
 
 S = "${WORKDIR}/enigma2"
