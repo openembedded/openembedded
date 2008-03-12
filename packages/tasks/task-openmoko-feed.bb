@@ -24,7 +24,8 @@ RDEPENDS_task-openmoko-feed = "\
   nano \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
-  python python-pygtk python-pyserial python-efl \
+  python python-pygtk python-pyserial \
+#  python-efl \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
