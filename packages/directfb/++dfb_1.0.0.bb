@@ -11,7 +11,7 @@ RV = "0.9-25"
 inherit autotools pkgconfig
 
 do_configure_append() {
-    find ${S} -type f | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+    find ${S} -type f | xargs sed -i 's:-I/usr/include::g'
 }
 
 do_stage() {

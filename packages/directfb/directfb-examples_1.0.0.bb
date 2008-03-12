@@ -11,8 +11,8 @@ S = "${WORKDIR}/DirectFB-examples-${PV}"
 inherit autotools
 
 do_configure_append() {
-#    find ${S} -type f | xargs sed -i 's:/usr/lib:${STAGING_LIBDIR}:'
-    find ${S} -type f | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
+#    find ${S} -type f | xargs sed -i 's:-L/usr/lib::g'
+    find ${S} -type f | xargs sed -i 's:-I/usr/include::g'
 }
 
 do_stage() {
