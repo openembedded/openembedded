@@ -1,13 +1,13 @@
 keymaps 0-2,4,8,12
 
 # 	      Default 		Shift 		AltGr 		Control 	Alt 		Ctrl+Alt 	
-keycode  29 = SControl	# Calendar	
-keycode  60 = SAlt	# Address
-keycode  63 = space	#Select
+keycode  29 = Control	# Calendar	
+keycode  60 = Alt	# Address
+keycode  63 = space	# Select
 keycode  68 = F13 	# Mail
-keycode  87 = F33	#OK	
+keycode  87 = F33	# OK	
 keycode  88 = F11 	# Menu
-keycode 102 = F12	# Home
+keycode  99 = F12	# Home
 keycode 103 = Up		Up		Prior
 keycode 105 = Left		Left		Decr_Console	
 keycode 106 = Right		Right		Incr_Console	
@@ -18,13 +18,13 @@ keycode  14 = BackSpace		BackSpace	Delete
 keycode  15 = Tab		backslash       Caps_Lock
 keycode  28 = Return         	Return		greater	
 keycode  40 = apostrophe       	quotedbl        tilde
-keycode  42 = SShift		
+keycode  42 = Shift		
 keycode  51 = comma            	semicolon	parenright
 keycode  52 = period		colon		less
 keycode  53 = slash		question	Num_Lock
-keycode  54 = SShift 
+keycode  54 = Shift 
 keycode  57 = space		bar		bar
-keycode  67 = SAltGr
+keycode  67 = AltGr
 
 keycode  16 = +q                +Q		one		Control_q	Meta_q
 keycode  17 = +w               	+W		two		Control_w	Meta_w
