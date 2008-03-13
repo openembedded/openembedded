@@ -491,7 +491,17 @@ state.neo1973 {
 		name 'ADC Data Select'
 		value Stereo
 	}
-	control.52 {
+        control.52 {
+                comment.access 'read write'
+                comment.type ENUMERATED
+                comment.count 1
+                comment.item.0 'Non Inverted'
+                comment.item.1 Inverted
+                iface MIXER
+                name 'ROUT2 Phase'
+                value Inverted
+        }
+	control.53 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -502,7 +512,7 @@ state.neo1973 {
 		name 'Mic Selection Mux'
 		value 'Mic 1'
 	}
-	control.53 {
+	control.54 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -514,7 +524,7 @@ state.neo1973 {
 		name 'Rx Mixer'
 		value 'RXP - RXN'
 	}
-	control.54 {
+	control.55 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -526,7 +536,7 @@ state.neo1973 {
 		name 'Line Mixer'
 		value 'Line 1 + 2'
 	}
-	control.55 {
+	control.56 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -536,7 +546,7 @@ state.neo1973 {
 		name 'Line Mono Mux'
 		value 'Line Mix'
 	}
-	control.56 {
+	control.57 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -546,7 +556,7 @@ state.neo1973 {
 		name 'Line Right Mux'
 		value 'Line 2'
 	}
-	control.57 {
+	control.58 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -556,7 +566,7 @@ state.neo1973 {
 		name 'Line Left Mux'
 		value 'Line 1'
 	}
-	control.58 {
+	control.59 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -564,7 +574,7 @@ state.neo1973 {
 		name 'ALC Mixer Line Capture Switch'
 		value false
 	}
-	control.59 {
+	control.60 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -572,7 +582,7 @@ state.neo1973 {
 		name 'ALC Mixer Mic2 Capture Switch'
 		value false
 	}
-	control.60 {
+	control.61 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -580,7 +590,7 @@ state.neo1973 {
 		name 'ALC Mixer Mic1 Capture Switch'
 		value true
 	}
-	control.61 {
+	control.62 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -588,7 +598,7 @@ state.neo1973 {
 		name 'ALC Mixer Rx Capture Switch'
 		value false
 	}
-	control.62 {
+	control.63 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -600,7 +610,7 @@ state.neo1973 {
 		name 'Mic Sidetone Mux'
 		value 'Left PGA'
 	}
-	control.63 {
+	control.64 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -611,7 +621,7 @@ state.neo1973 {
 		name 'Capture Right Mux'
 		value PGA
 	}
-	control.64 {
+	control.65 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -622,7 +632,7 @@ state.neo1973 {
 		name 'Capture Left Mux'
 		value PGA
 	}
-	control.65 {
+	control.66 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -634,7 +644,7 @@ state.neo1973 {
 		name 'Capture Right Mixer'
 		value 'Analogue Mix Left'
 	}
-	control.66 {
+	control.67 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -646,7 +656,7 @@ state.neo1973 {
 		name 'Capture Left Mixer'
 		value 'Analogue Mix Left'
 	}
-	control.67 {
+	control.68 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -654,7 +664,7 @@ state.neo1973 {
 		name 'Playback Mixer Voice Capture Sw'
 		value false
 	}
-	control.68 {
+	control.69 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -662,7 +672,7 @@ state.neo1973 {
 		name 'Playback Mixer Left Capture Swi'
 		value false
 	}
-	control.69 {
+	control.70 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -670,7 +680,7 @@ state.neo1973 {
 		name 'Playback Mixer Right Capture Sw'
 		value false
 	}
-	control.70 {
+	control.71 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -681,7 +691,7 @@ state.neo1973 {
 		name 'Out4 Mux'
 		value VREF
 	}
-	control.71 {
+	control.72 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -692,7 +702,7 @@ state.neo1973 {
 		name 'Out3 Mux'
 		value VREF
 	}
-	control.72 {
+	control.73 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -704,7 +714,7 @@ state.neo1973 {
 		name 'Mono 2 Mux'
 		value 'Inverted Mono 1'
 	}
-	control.73 {
+	control.74 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -712,7 +722,7 @@ state.neo1973 {
 		name 'Mono Mixer Left Playback Switch'
 		value false
 	}
-	control.74 {
+	control.75 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -720,7 +730,7 @@ state.neo1973 {
 		name 'Mono Mixer Right Playback Switc'
 		value false
 	}
-	control.75 {
+	control.76 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -728,7 +738,7 @@ state.neo1973 {
 		name 'Mono Mixer Voice Playback Switc'
 		value false
 	}
-	control.76 {
+	control.77 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -736,7 +746,7 @@ state.neo1973 {
 		name 'Mono Mixer Sidetone Playback Sw'
 		value false
 	}
-	control.77 {
+	control.78 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -744,7 +754,7 @@ state.neo1973 {
 		name 'Mono Mixer Bypass Playback Swit'
 		value false
 	}
-	control.78 {
+	control.79 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -752,7 +762,7 @@ state.neo1973 {
 		name 'Right Mixer Voice Playback Swit'
 		value false
 	}
-	control.79 {
+	control.80 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -760,7 +770,7 @@ state.neo1973 {
 		name 'Right Mixer Sidetone Playback S'
 		value false
 	}
-	control.80 {
+	control.81 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -768,7 +778,7 @@ state.neo1973 {
 		name 'Right Mixer Right Playback Swit'
 		value false
 	}
-	control.81 {
+	control.82 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -776,7 +786,7 @@ state.neo1973 {
 		name 'Right Mixer Bypass Playback Swi'
 		value false
 	}
-	control.82 {
+	control.83 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -784,7 +794,7 @@ state.neo1973 {
 		name 'Left Mixer Voice Playback Switc'
 		value false
 	}
-	control.83 {
+	control.84 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -792,7 +802,7 @@ state.neo1973 {
 		name 'Left Mixer Sidetone Playback Sw'
 		value false
 	}
-	control.84 {
+	control.85 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -800,7 +810,7 @@ state.neo1973 {
 		name 'Left Mixer Left Playback Switch'
 		value false
 	}
-	control.85 {
+	control.86 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -808,7 +818,7 @@ state.neo1973 {
 		name 'Left Mixer Bypass Playback Swit'
 		value false
 	}
-	control.86 {
+	control.87 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
@@ -817,7 +827,7 @@ state.neo1973 {
 		name 'Amp Left Playback Volume'
 		value 0
 	}
-	control.87 {
+	control.88 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
@@ -826,7 +836,7 @@ state.neo1973 {
 		name 'Amp Right Playback Volume'
 		value 0
 	}
-	control.88 {
+	control.89 {
 		comment.access 'read write'
 		comment.type INTEGER
 		comment.count 1
@@ -835,7 +845,7 @@ state.neo1973 {
 		name 'Amp Mono Playback Volume'
 		value 0
 	}
-	control.89 {
+	control.90 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -848,7 +858,7 @@ state.neo1973 {
 		name 'Amp Mode'
 		value Off
 	}
-	control.90 {
+	control.91 {
 		comment.access 'read write'
 		comment.type ENUMERATED
 		comment.count 1
@@ -865,7 +875,7 @@ state.neo1973 {
 		name 'Neo Mode'
 		value 'Capture Headset'
 	}
-	control.91 {
+	control.92 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -873,7 +883,7 @@ state.neo1973 {
 		name 'Amp Spk 3D Playback Switch'
 		value false
 	}
-	control.92 {
+	control.93 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -881,7 +891,7 @@ state.neo1973 {
 		name 'Amp HP 3d Playback Switch'
 		value false
 	}
-	control.93 {
+	control.94 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1
@@ -889,7 +899,7 @@ state.neo1973 {
 		name 'Amp Fast Wakeup Playback Switch'
 		value false
 	}
-	control.94 {
+	control.95 {
 		comment.access 'read write'
 		comment.type BOOLEAN
 		comment.count 1

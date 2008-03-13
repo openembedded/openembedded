@@ -51,4 +51,3 @@ samba_cv_STAT_STATVFS64=${samba_cv_STAT_STATVFS64=yes}
 samba_cv_SIZEOF_OFF_T=${samba_cv_SIZEOF_OFF_T=yes}
 samba_cv_SIZEOF_INO_T=${samba_cv_SIZEOF_INO_T=yes}
 samba_cv_HAVE_STRUCT_FLOCK64=${samba_cv_HAVE_STRUCT_FLOCK64=yes}
-

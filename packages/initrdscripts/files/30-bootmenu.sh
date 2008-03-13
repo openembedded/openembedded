@@ -15,13 +15,6 @@ if ! (echo " " | read -n1 foo) >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ -z "$rootdelay" ]; then
-    echo "rootdelay parameter was not passed on kernel command line - assuming 2s delay"
-    echo "If you would like to avoid this delay, pass explicit rootdelay=0"
-    sleep 2
-    dev_setup
-fi
-
 mkdir -p $MOUNTLOC
 
 list=""
@@ -36,14 +29,14 @@ add_menu_item()
 }
 
 show_menu() {
-    echo -e -n "${E}3;0H"
+    echo -e -n "${E}3;0H" >$CONSOLE
     cnt=0
     echo -e $list | \
     while read l; do
         if [ $cnt == $num ]; then
-	    echo -e -n "${E}1m"
+	    echo -e -n "${E}1m" >$CONSOLE
 	fi
-        echo -e "$cnt: $l${E}0m"
+        echo -e "$cnt: $l${E}0m" >$CONSOLE
 	cnt=$((cnt + 1))
     done
 }
@@ -109,14 +102,14 @@ total=`echo -e $list | wc -l`
 num=0
 
 # Draw UI
-stty -echo
-echo -e -n "${E}2J"
-echo -e -n "${E}0;0H"
-echo "Select boot image:"
+stty -F $CONSOLE -echo
+echo -e -n "${E}2J" >$CONSOLE
+echo -e -n "${E}0;0H" >$CONSOLE
+echo "Select boot image:" >$CONSOLE
 
 # Main loop
 show_menu
-while read -n1 i; do
+while read -s -n1 i; do
     case "$i" in
 	"A")
 	    num=$((num - 1))
@@ -139,7 +132,7 @@ while read -n1 i; do
     esac
     show_menu
 #    echo "*$esc$i"
-done
+done < $CONSOLE
 
 stty echo
 
@@ -170,8 +163,8 @@ else
     CMDLINE="$CMDLINE root=$ROOT_DEVICE"
 fi
 
-echo ROOT_DEVICE=$ROOT_DEVICE
-echo CMDLINE=$CMDLINE
+echo ROOT_DEVICE=$ROOT_DEVICE >$CONSOLE
+echo CMDLINE=$CMDLINE >$CONSOLE
 
 ##############################
 fi

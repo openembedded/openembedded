@@ -3,15 +3,15 @@
 
 if [ -n "$BOOT_ROOT" -a -f "$BOOT_ROOT/boot/zImage" ]; then
     if ! expr "$CMDLINE" : '.*nokexec'; then
-	echo "Kernel found in rootfs:"
-	ls -l "$BOOT_ROOT/boot/zImage"
+	echo "Kernel found in rootfs:" >$CONSOLE
+	ls -l "$BOOT_ROOT/boot/zImage" >$CONSOLE
 	initramfs=""
 	if [ -f "$BOOT_ROOT/boot/initramfs.bin" ]; then
 	    echo "Initramfs found in rootfs:"
 	    ls -l "$BOOT_ROOT/boot/initramfs.bin"
     	    initramfs="--initrd=$BOOT_ROOT/boot/initramfs.bin"
         fi
-	echo /usr/sbin/kexec -f "$BOOT_ROOT/boot/zImage" $initramfs --command-line="$CMDLINE nokexec"
+	echo /usr/sbin/kexec -f "$BOOT_ROOT/boot/zImage" $initramfs --command-line="$CMDLINE nokexec" >$CONSOLE
         sleep 10
 	/usr/sbin/kexec -f "$BOOT_ROOT/boot/zImage" $initramfs --command-line="$CMDLINE nokexec"
         sleep 10000

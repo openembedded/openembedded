@@ -2,8 +2,8 @@
 Name=GPSDrive
 Comment=GPS map software
 Exec=gpsdrive -p -1
-Terminal=0
+Terminal=false
 Type=Application
-Icon=gpsicon.png
-Categories=Application;Other
-StartupNotify=False
+Icon=gpsicon
+Categories=Graphics;Network;Geography;
+StartupNotify=false
