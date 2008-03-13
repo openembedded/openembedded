@@ -6,7 +6,7 @@ Index: xorg-server-1.4/xorg-server.pc.in
  
  Name: xorg-server
  Description: Modular X.Org X Server
-+Requires: pixman
++Requires: pixman-1
  Version: @PACKAGE_VERSION@
 -Cflags: -I${sdkdir} @PIXMAN_CFLAGS@
 +Cflags: -I${sdkdir}
