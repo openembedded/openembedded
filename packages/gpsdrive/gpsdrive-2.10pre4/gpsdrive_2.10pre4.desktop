@@ -1,10 +1,9 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=GPSDrive
 Comment=GPS map software
 Exec=gpsdrive -M pda -1
-Icon=gpsicon
 Terminal=false
 Type=Application
-Categories=Graphics;Network;Geography;Application;Other
-StartupNotify=true
+Icon=gpsicon
+Categories=Graphics;Network;Geography;
+StartupNotify=false
