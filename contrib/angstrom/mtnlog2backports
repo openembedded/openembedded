@@ -6,7 +6,8 @@
 #
 
 /usr/bin/awk '
+/^$/	{next}
 /^Revi/	{ rev = $2 }
-/^$/	{on=1; next}
+/^ChangeLog: $/	{on=1; next;}
 /^----/ {on=0; next;}
 on == 1	{print rev " " $0 " (<approved by>)"; on=0; next}' $1 | tac
