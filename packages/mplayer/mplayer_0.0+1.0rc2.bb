@@ -6,6 +6,8 @@ DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig
 DEPENDS_append_c7x0 = " libw100 "
 DEPENDS_append_hx4700 = " libw100 "
 
+DEFAULT_PREFERENCE_avr32 = "-1"
+
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc2.tar.bz2 \
