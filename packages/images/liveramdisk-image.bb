@@ -12,6 +12,11 @@ export IMAGE_BASENAME = "liveramdisk"
 export IMAGE_LINGUAS = ""
 
 # Install only ${IMAGE_INSTALL}, not even deps
-PACKAGE_INSTALL_NO_DEPS = "1"
+#PACKAGE_INSTALL_NO_DEPS = "1"
+
+# Remove any kernel-image that the kernel-module-* packages may have pulled in.
+PACKAGE_REMOVE = "kernel-image-* update-modules module-init-tools-depmod uclibc update-rc.d"
+ROOTFS_POSTPROCESS_COMMAND += "ipkg-cl ${IPKG_ARGS} -force-depends \
+                                remove ${PACKAGE_REMOVE};"
 
 inherit image
