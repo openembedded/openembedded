@@ -15,7 +15,7 @@ PR := "${PR}.11"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-PACKAGES = "${PN}"
+PACKAGES = "${PN}-dbg ${PN}"
 
 SRC_URI += "file://openprotium/devfs.sh"
 SRC_URI += "file://openprotium/domainname.sh"

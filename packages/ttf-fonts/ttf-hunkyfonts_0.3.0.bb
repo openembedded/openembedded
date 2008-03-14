@@ -9,7 +9,7 @@ S = "${WORKDIR}/hunkyfonts-${PV}/TTF/"
 
 require ttf.inc
 
-PACKAGES = "ttf-hunky-sans ttf-hunky-serif"
+PACKAGES = "${PN}-dbg ttf-hunky-sans ttf-hunky-serif"
 
 FILES_ttf-hunky-sans = "${datadir}/fonts/truetype/HunkySans*.ttf"
 FILES_ttf-hunky-serif = "${datadir}/fonts/truetype/HunkySerif*.ttf"

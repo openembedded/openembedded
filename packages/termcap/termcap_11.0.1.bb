@@ -11,6 +11,6 @@ do_install() {
 	install -m 0644 termtypes.tc ${D}${sysconfdir}/termcap
 }
 
-PACKAGES = "termcap"
+PACKAGES = "${PN}-dbg termcap"
 FILES_termcap = "${sysconfdir}"
 

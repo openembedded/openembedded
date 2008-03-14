@@ -33,7 +33,7 @@ do_stage () {
 }
 
 #static build
-PACKAGES = "${PN}-dev ${PN}-doc"
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-doc"
 
 FILES_${PN}-dev += "${bindir}/libnet-config"
 

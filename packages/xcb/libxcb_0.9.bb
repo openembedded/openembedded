@@ -10,7 +10,7 @@ DEPENDS = "xcb-proto xproto libxau"
 
 SRC_URI = "http://xcb.freedesktop.org/dist/libxcb-0.9.tar.bz2"
 
-PACKAGES = "libxcb libxcb-dev libxcbcomposite libxcbcomposite-dev \
+PACKAGES = "${PN}-dbg libxcb libxcb-dev libxcbcomposite libxcbcomposite-dev \
             libxcbdamage libxcbdamage-dev libxcbdpms libxcbdpms-dev \
             libxcbglx libxcbglx-dev libxcbrandr libxcbrandr-dev \
             libxcbrecord libxcbrecord-dev libxcbrender libxcbrender-dev \

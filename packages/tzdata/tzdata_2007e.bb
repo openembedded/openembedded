@@ -42,7 +42,7 @@ do_install () {
 # Packages primarily organized by directory with a major city
 # in most time zones in the base package
 
-PACKAGES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
+PACKAGES = "${PN}-dbg tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
     tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
     tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
 

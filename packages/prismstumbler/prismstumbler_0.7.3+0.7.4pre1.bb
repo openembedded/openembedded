@@ -1,7 +1,7 @@
 SECTION = "x11/network"
 PR = "r3"
 
-PACKAGES = "prismstumbler prismstumbler-frontend prismstumbler-doc"
+PACKAGES = "${PN}-dbg prismstumbler prismstumbler-frontend prismstumbler-doc"
 DESCRIPTION = "Prismstumbler wireless LAN scanner"
 DESCRIPTION_prismstumbler-frontend = "Prismstumbler wireless LAN scanner GTK frontend"
 LICENSE = "GPL"

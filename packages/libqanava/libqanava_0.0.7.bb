@@ -41,7 +41,7 @@ do_install() {
 	done
 }
 
-PACKAGES = "libqanava-can libqanava-la libqanava-utl qanava-examples"
+PACKAGES = "${PN}-dbg libqanava-can libqanava-la libqanava-utl qanava-examples"
 FILES_libqanava-can = "${libdir}/libqanava_can*.so*"
 FILES_libqanava-la = "${libdir}/libqanava_la*.so*"
 FILES_libqanava-utl = "${libdir}/libqanava_utl*.so*"

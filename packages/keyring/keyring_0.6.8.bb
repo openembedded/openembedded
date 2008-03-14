@@ -29,7 +29,7 @@ do_install() {
         install -m 0644 ${S}/*.html ${D}${palmtopdir}/help/html/
 }
 
-PACKAGES = "${PN} ${PN}-help"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-help"
 FILES_${PN} = " ${palmtopdir}${base_bindir} ${palmtopdir}/apps ${palmtopdir}/pics"
 FILES_${PN}-help = " ${palmtopdir}/help/html"
 

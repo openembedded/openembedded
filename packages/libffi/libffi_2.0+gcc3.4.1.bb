@@ -6,7 +6,7 @@ PR = "r1"
 
 inherit autotools gettext
 
-PACKAGES = "${PN} ${PN}-dev"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
 FILES_${PN} = "${libdir}/libffi.so.*"
 

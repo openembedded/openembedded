@@ -18,7 +18,7 @@ SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"
 
 
-PACKAGES = "gpe-conf gpe-conf-panel"
+PACKAGES = "${PN}-dbg gpe-conf gpe-conf-panel"
 
 FILES_${PN} = "${sysconfdir} ${bindir} ${datadir}/pixmaps \
                 ${datadir}/applications/gpe-conf-* ${datadir}/gpe/pixmaps \

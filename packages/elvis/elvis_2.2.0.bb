@@ -54,7 +54,7 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove vi /usr/bin/elvis
 }
 
-PACKAGES = "${PN} ${PN}-doc ${PN}-tools"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-doc ${PN}-tools"
 FILES_${PN}-doc = "/usr/share/elvis/manual /usr/share/elvis/README"
 FILES_${PN}-tools = "/usr/bin/elvfmt /usr/bin/elvtags /usr/bin/ref"
 FILES_${PN} = "/usr/bin/elvis /etc/elvis /usr/share/elvis/scripts /usr/share/elvis/README /usr/share/elvis/*.*"

@@ -12,7 +12,7 @@ PR = "r2"
 inherit module
 SECTION = "base"
 
-PACKAGES = "atmelwlandriver-pcmcia atmelwlandriver-usb"
+PACKAGES = "${PN}-dbg atmelwlandriver-pcmcia atmelwlandriver-usb"
 
 FILES_atmelwlandriver-pcmcia = "${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/pcmf502rd.o ${sysconfdir}/pcmcia/pcmf502rd.conf"
 FILES_atmelwlandriver-usb = "${base_libdir}/modules/${KERNEL_VERSION}/drivers/net/wireless/atmel/usbvnetr.o"
