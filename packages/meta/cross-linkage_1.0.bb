@@ -3,6 +3,7 @@ SECTION = "devel"
 PACKAGES = ""
 
 INHIBIT_DEFAULT_DEPS = "1"
+EXCLUDE_FROM_WORLD = "1"
 PR = "r0"
 
 SRC_URI = ""
