@@ -1,0 +1,11 @@
+--- uClibc-0.9.29-orig/libc/string/avr32/bzero.S	2008-03-10 15:02:14.000000000 -0500
++++ uClibc-0.9.29/libc/string/avr32/bzero.S	2008-03-10 15:05:39.000000000 -0500
+@@ -6,6 +6,8 @@
+  * archive for more details.
+  */
+ 
++#include <features.h>
++
+ #ifdef __UCLIBC_SUSV3_LEGACY__
+ 
+ 	.text
