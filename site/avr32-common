@@ -1,4 +1,5 @@
-#glib glib_cv_stack_grows=${glib_cv_stack_grows=no}
+#glib
+glib_cv_stack_grows=${glib_cv_stack_grows=no}
 ac_cv_func_posix_getpwuid_r=${ac_cv_func_posix_getpwuid_r=yes}
 glib_cv_uscore=${glib_cv_uscore=no}
 ac_cv_func_setpgrp_void=${ac_cv_func_setpgrp_void=yes}
