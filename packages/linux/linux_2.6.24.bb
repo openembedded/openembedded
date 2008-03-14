@@ -6,10 +6,12 @@ DEFAULT_PREFERENCE_gesbc-9302 = "1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_simpad = "1"
+DEFAULT_PREFERENCE_atngw100 = "1"
+DEFAULT_PREFERENCE_at32stk1000 = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -55,6 +57,11 @@ SRC_URI_append_cm-x270 = " \
 	file://0004-cm-x270-nand-simplify-name.patch;patch=1 \
 	file://0005-add-display-set-default-16bpp.patch;patch=1 \
 	"
+
+SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.3.atmel.3.tar.bz2 \
+                 file://defconfig"
+S_avr32 = "${WORKDIR}/linux-2.6.24.3.atmel.3"
+
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
