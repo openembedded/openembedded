@@ -11,6 +11,7 @@ TARGET_VENDOR = "-angstrom"
 
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
+PSTAGE_EXTRAPATH = "${ANGSTROM_MODE}"
 
 CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
