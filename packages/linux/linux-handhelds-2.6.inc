@@ -38,6 +38,11 @@ do_configure() {
 	fi
 
 	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" = "glibc" ]; then
+		if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
+		    echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
+		    exit 1
+		fi
+
 		# Kernel expects non-compressed cpio
 		gzip -d -c ${KERNEL_INITRAMFS_PATH} >${WORKDIR}/initramfs.cpio
 		echo "CONFIG_INITRAMFS_SOURCE=\"${WORKDIR}/initramfs.cpio\"" >> ${S}/.config
