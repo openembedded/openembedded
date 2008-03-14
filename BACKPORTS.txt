@@ -16,7 +16,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
-825754db28a782e72d84614900aff9f88d9f6349 liveramdisk-image, initramfs-jffs2: Be sure to depend on/load mtdblock. (PaulS)
 
 Applied:
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
@@ -204,4 +203,5 @@ c4d9a3436b6b5626505d88d0ed299c5e20d25227 altboot collie fix (Koen, xjqian)
 43753505f023f7853afdd0f497c28ef65c4b2509 kernel: add wifi suspend fix for hostap|orinoco. Also, add base_version_less_or_equal(). (Bernhard, PaulS)
 6047723508e3b6eeb7bb92d452b11b5e946540bf opie-image fixes (Henry, Junqian)
 b6ebdc133a282a20876e945c411c3c30af2c008b poodle keymap fix (Henry, Koen)
+825754db28a782e72d84614900aff9f88d9f6349 liveramdisk-image, initramfs-jffs2: Be sure to depend on/load mtdblock. (PaulS, Koen)
 
