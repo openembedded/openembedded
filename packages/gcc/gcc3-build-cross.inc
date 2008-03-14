@@ -18,6 +18,9 @@ do_compile_prepend () {
 	export CC_FOR_TARGET="${CCACHE} ${TARGET_SYS}-gcc ${TARGET_CC_ARCH}"
 }
 
+LIBGCCS_VAR = "-lgcc_s"
+LIBGCCS_VAR_avr32 = ""
+
 do_stage_append () {
 	for d in info man share/doc share/locale ; do
 		rm -rf ${CROSS_DIR}/$d
@@ -44,6 +47,6 @@ do_stage_append () {
 	done
 
 	#fix up libsupc++ and libstdc++ la files
-	sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/lib -lgcc_s -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/lib/libsupc++.la || true
-	sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/lib -lgcc_s -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/lib/libstdc++.la || true
+	sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/lib ${LIBGCCS_VAR} -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/lib/libsupc++.la || true
+	sed -i "s|dependency_libs\s*=\s*.*|dependency_libs='-L${CROSS_DIR}/${TARGET_SYS}/lib ${LIBGCCS_VAR} -lc -lm '|" ${CROSS_DIR}/${TARGET_SYS}/lib/libstdc++.la || true
 }
