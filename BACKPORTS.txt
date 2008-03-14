@@ -204,4 +204,6 @@ c4d9a3436b6b5626505d88d0ed299c5e20d25227 altboot collie fix (Koen, xjqian)
 6047723508e3b6eeb7bb92d452b11b5e946540bf opie-image fixes (Henry, Junqian)
 b6ebdc133a282a20876e945c411c3c30af2c008b poodle keymap fix (Henry, Koen)
 825754db28a782e72d84614900aff9f88d9f6349 liveramdisk-image, initramfs-jffs2: Be sure to depend on/load mtdblock. (PaulS, Koen)
+a3b18a00a09e716f4b3d5bfced86fea0439953a0 h2200: load g_ether on boot (PaulS, Koen)
+
 
