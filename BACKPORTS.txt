@@ -202,4 +202,5 @@ c72441dc719a5903a8fdc705f309c086346249b0 alsa-state spitz + akita fixes (Stanisl
 c4d9a3436b6b5626505d88d0ed299c5e20d25227 altboot collie fix (Koen, xjqian)
 4d3fe649ba5cd8d8a2492eb428e3d03d91d873a2 altboot collie fix (Koen, xjqian)
 43753505f023f7853afdd0f497c28ef65c4b2509 kernel: add wifi suspend fix for hostap|orinoco. Also, add base_version_less_or_equal(). (Bernhard, PaulS)
+6047723508e3b6eeb7bb92d452b11b5e946540bf opie-image fixes (Henry, Junqian)
 
