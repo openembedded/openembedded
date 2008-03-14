@@ -8,7 +8,7 @@ inherit efl
 
 EXTRA_OECONF += "--disable-gtk"
 
-PACKAGES = "edb-utils"
+PACKAGES = "${PN}-dbg edb-utils"
 FILES_${PN} = "${bindir}/edb_ed ${bindir}/edb_vt_ed ${bindir}/edb_gtk_ed"
 RDEPENDS_${PN} += "ncurses"
 

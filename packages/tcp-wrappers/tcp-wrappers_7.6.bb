@@ -6,7 +6,7 @@ SECTION = "console/network"
 PR="r1"
 
 
-PACKAGES = "libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
+PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
 FILES_libwrap = "${libdir}/lib*.so.*"
 FILES_libwrap-doc = "${mandir}/man3 ${mandir}/man5"
 FILES_libwrap-dev = "${libdir}/lib*.so ${includedir}"

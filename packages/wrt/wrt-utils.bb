@@ -43,7 +43,7 @@ do_install() {
 	install -m 644 wlcompat.o ${D}/lib/modules/${KERNEL_VERSION}/
 }
 
-PACKAGES = "wrt-libs wrt-utils kernel-module-wlcompat"
+PACKAGES = "${PN}-dbg wrt-libs wrt-utils kernel-module-wlcompat"
 FILES_wrt-libs = "/usr/lib"
 FILES_wrt-utils = "/usr/sbin /sbin"
 FILES_kernel-module-wlcompat = "/lib/modules/"

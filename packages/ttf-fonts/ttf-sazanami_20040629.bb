@@ -13,7 +13,7 @@ PR = "r1"
 SRC_URI = "http://download.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
 S = "${WORKDIR}/sazanami-20040629"
 
-PACKAGES = "ttf-sazanami-gothic ttf-sazanami-mincho"
+PACKAGES = "${PN}-dbg ttf-sazanami-gothic ttf-sazanami-mincho"
 FILES_ttf-sazanami-gothic = "${datadir}/fonts/truetype/sazanami-gothic.ttf \
 			     ${datadir}/doc/ttf-sazanami-gothic/README"
 FILES_ttf-sazanami-mincho = "${datadir}/fonts/truetype/sazanami-mincho.ttf \

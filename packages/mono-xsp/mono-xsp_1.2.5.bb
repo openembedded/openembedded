@@ -19,7 +19,7 @@ SRC_URI = "http://go-mono.com/sources/xsp/xsp-${PV}.tar.bz2"
 
 S = "${WORKDIR}/xsp-${PV}"
 
-PACKAGES = "\
+PACKAGES = "${PN}-dbg \
 	libmono-webserver1.0-cil \
 	libmono-webserver2.0-cil \
 	mono-xsp \

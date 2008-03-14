@@ -9,6 +9,10 @@ on the output of mtn log --no-graph --no-files for your revisions.
 
 # <revid> <terse description> (<reviewers>)
 
+Candidates:
+be4a9a82ecf6de3dc409f7e421e00f48275630a4 psplash svn: Move startup to S 01, freeing S 00 for something doing fbdev init.
+
+
 Pending review:
 13782a894c357c51a3fa0c51cda4e964f6e42721 gcc ppc buildfix (Koen)
 c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
@@ -206,4 +210,4 @@ b6ebdc133a282a20876e945c411c3c30af2c008b poodle keymap fix (Henry, Koen)
 825754db28a782e72d84614900aff9f88d9f6349 liveramdisk-image, initramfs-jffs2: Be sure to depend on/load mtdblock. (PaulS, Koen)
 a3b18a00a09e716f4b3d5bfced86fea0439953a0 h2200: load g_ether on boot (PaulS, Koen)
 
-
+3ba9bb700e2671c899e7dd7c9cb3fd8bff810325 add debug package for 85 files with hardcoded PACKAGES definition.  Partly fixes 2471. (PaulS, Koen)

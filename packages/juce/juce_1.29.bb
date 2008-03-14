@@ -28,6 +28,6 @@ do_install() {
 	install -m 0655 demo/build/linux/build/jucedemo ${D}${bindir}
 }
 
-PACKAGES = "jucedemo"
+PACKAGES = "${PN}-dbg jucedemo"
 FILES_jucedemo = "${bindir}"
 

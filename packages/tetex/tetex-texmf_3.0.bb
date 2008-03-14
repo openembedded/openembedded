@@ -38,7 +38,7 @@ RRECOMMENDS_${PN} = " \
             tetex-texmf-texdoctk \
             tetex-texmf-web2c "
 
-PACKAGES = "tetex-texmf \
+PACKAGES = "${PN}-dbg tetex-texmf \
             tetex-texmf-bibtex \
             tetex-texmf-context \
             tetex-texmf-texdoc \

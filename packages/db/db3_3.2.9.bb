@@ -23,7 +23,7 @@ EXTRA_OEMAKE = "'SHELL=/bin/sh' 'ar=`which ${AR}` cr' 'chmod=`which chmod`' \
 		'cp=`which cp`' 'ln=`which ln`' 'mkdir=`which mkdir`' 'ranlib=`which ${RANLIB}`' \
 		'rm=`which rm`' 'strip=`which ${STRIP}`'"
 
-PACKAGES = "${PN} ${PN}-bin ${PN}-dev ${PN}-doc ${PN}-locale"
+PACKAGES = "${PN}-dbg ${PN} ${PN}-bin ${PN}-dev ${PN}-doc ${PN}-locale"
 
 FILES_${PN} = "${libdir}/libdb-3.2*so*"
 FILES_${PN}-bin = "${bindir}"

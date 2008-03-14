@@ -37,4 +37,4 @@ do_stage() {
         install -m 0644 lib/glibj.zip ${STAGING_DATADIR}/java/classpath-minimal/
 }
 
-PACKAGES = " "
+PACKAGES = "${PN}-dbg  "
