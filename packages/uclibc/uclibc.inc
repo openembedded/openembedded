@@ -70,7 +70,7 @@ UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
 
 # do_stage barfs on a CC with whitepspace, therefore put the 'HOST_CC_ARCH' in
 # the CFLAGS (for when building the utils).
-OEMAKE_NO_CC = "'OPTIMIZATION=' 'CPU_CFLAGS=${CFLAGS}' 'STRIPTOOL=true' 'LD=${LD}' \
+OEMAKE_NO_CC = "'STRIPTOOL=true' 'LD=${LD}' \
 		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
 EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}'"
 EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
