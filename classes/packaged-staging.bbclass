@@ -153,9 +153,9 @@ python do_prepackaged_stage () {
         if ret != 0:
             bb.note("Failure installing prestage package")
 
-        bb.build.make_stamp("do_prepackaged_stage", d)
-        for task in bb.data.getVar("PSTAGE_TASKS_COVERED", d, 1).split():
-            bb.build.make_stamp("do_" + task, d)
+        #bb.build.make_stamp("do_prepackaged_stage", d)
+        #for task in bb.data.getVar("PSTAGE_TASKS_COVERED", d, 1).split():
+        #    bb.build.make_stamp("do_" + task, d)
         bb.build.make_stamp("do_stage_package_populated", d)
 
     else:
@@ -244,10 +244,13 @@ python do_package_stage () {
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) != "1":
         return
 
+    #
+    # Handle deploy/ packages
+    #
     bb.build.exec_func("read_subpackage_metadata", d)
+    stagepath = bb.data.getVar("PSTAGE_TMPDIR_STAGE", d, 1)
     packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
     if len(packages) > 0:
-        stagepath = bb.data.getVar("PSTAGE_TMPDIR_STAGE", d, 1)
         if bb.data.inherits_class('package_ipk', d):
             ipkpath = os.path.join(stagepath, "deploy", "ipk")
             bb.mkdirhier(ipkpath)
@@ -279,6 +282,18 @@ python do_package_stage () {
                 if not os.path.exists(srcfile):
                     bb.fatal("Package %s does not exist yet it should" % srcfile)
                 bb.copyfile(srcfile, debpath + "/" + srcname)
+
+    #
+    # Handle stamps/ files
+    #
+    stampfn = bb.data.getVar("STAMP", d, True)
+    tmpdir = bb.data.getVar("TMPDIR", d, True)
+    destdir = os.path.dirname(stampfn.replace(tmpdir, stagepath))
+    bb.mkdirhier(destdir)
+    # We need to include the package_stage stamp in the staging package so create one
+    bb.build.make_stamp("do_package_stage", d)
+    os.system("cp %s.do_* %s/" % (stampfn, destdir))
+
     bb.build.exec_func("staging_helper", d)
     bb.build.exec_func("staging_packager", d)
     lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
@@ -286,4 +301,7 @@ python do_package_stage () {
     bb.utils.unlockfile(lf)
 }
 
+#
+# Note an assumption here is that do_deploy runs before do_package_write/do_populate_staging
+#
 addtask package_stage after do_package_write do_populate_staging before do_build
