@@ -1,0 +1,50 @@
+#
+# Automatically generated make config: don't edit
+#
+# TARGET_alpha is not set
+# TARGET_arm is not set
+TARGET_avr32=y
+# TARGET_bfin is not set
+# TARGET_cris is not set
+# TARGET_e1 is not set
+# TARGET_frv is not set
+# TARGET_h8300 is not set
+# TARGET_i386 is not set
+# TARGET_i960 is not set
+# TARGET_m68k is not set
+# TARGET_microblaze is not set
+# TARGET_mips is not set
+# TARGET_nios is not set
+# TARGET_nios2 is not set
+# TARGET_powerpc is not set
+# TARGET_sh is not set
+# TARGET_sh64 is not set
+# TARGET_sparc is not set
+# TARGET_v850 is not set
+# TARGET_x86_64 is not set
+
+#
+# Target Architecture Features and Options
+#
+HAVE_ELF=y
+TARGET_ARCH="avr32"
+ARCH_SUPPORTS_BIG_ENDIAN=y
+UCLIBC_COMPLETELY_PIC=y
+CONFIG_AP7000=y
+LINKRELAX=y
+# ARCH_LITTLE_ENDIAN is not set
+ARCH_BIG_ENDIAN=y
+# ARCH_HAS_NO_MMU is not set
+ARCH_HAS_MMU=y
+UCLIBC_HAS_FLOATS=y
+UCLIBC_HAS_FPU=n
+UCLIBC_HAS_SOFT_FLOAT=y
+DO_C99_MATH=y
+C_SYMBOL_PREFIX=""
+KERNEL_HEADERS="Dummy value, correct value substituted by uclibc.inc"
+HAVE_DOT_CONFIG=y
+
+
+
+
+

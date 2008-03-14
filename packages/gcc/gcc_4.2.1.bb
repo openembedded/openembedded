@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r8"
+PR = "r9"
 
 inherit autotools gettext
 
@@ -42,7 +42,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://pr34130.patch;patch=1 \
 "
 
-SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.1.tar.gz \
+SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.3.tar.gz \
         file://100-uclibc-conf.patch;patch=1 \
         file://103-uclibc-conf-noupstream.patch;patch=1 \
         file://200-uclibc-locale.patch;patch=1 \
