@@ -29,8 +29,28 @@ ANGSTROM_FEED_CONFIGS ?= "angstrom-feed-configs"
 MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use debian style naming
+INHERIT += "debian"
+
 #use multimachine buildrules 
-INHERIT += "debian multimachine sanity devshell angstrom-mirrors insane"
+INHERIT += "multimachine"
+
+#activate config checker
+INHERIT += "sanity" 
+
+#make devshell available as task
+INHERIT += "devshell" 
+
+#use angstrom source mirrors to combat 404s
+INHERIT += "angstrom-mirrors" 
+
+#run QA tests on builds and packages 
+INHERIT += "insane"
+
+#save statistical info on images
+INHERIT += "testlab"
+
+#build staging from packages
+#INHERIT += "packaged-staging"
 
 ANGSTROM_PKG_FORMAT ?= "ipk"
 require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
