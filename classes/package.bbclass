@@ -459,18 +459,6 @@ python populate_packages () {
 }
 populate_packages[dirs] = "${D}"
 
-def package_stagefile(file, d):
-	import bb, os
-
-	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
-
-	if pstageactive == "1":
-		destfile = file.replace(bb.data.getVar("TMPDIR", d, 1), bb.data.getVar("PSTAGE_TMPDIR_STAGE", d, 1))
-		bb.mkdirhier(os.path.dirname(destfile))
-		#print "%s to %s" % (file, destfile)
-		bb.copyfile(file, destfile)
-
-
 python emit_pkgdata() {
 	from glob import glob
 
