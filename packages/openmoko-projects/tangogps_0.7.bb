@@ -13,3 +13,5 @@ SRC_URI = "http://tangogps.org/tangoGPS-0.7.tar.gz \
 S = "${WORKDIR}/tangoGPS-0.7"
 
 inherit autotools
+
+CPPFLAGS += "-I${STAGING_INCDIR}/gconf/2/"
