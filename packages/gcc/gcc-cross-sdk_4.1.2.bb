@@ -2,8 +2,6 @@ PR = "r5"
 
 inherit sdk
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
-
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc gmp-native mpfr-native"
 
 require gcc-${PV}.inc

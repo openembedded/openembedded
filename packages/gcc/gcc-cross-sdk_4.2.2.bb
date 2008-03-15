@@ -2,8 +2,6 @@ PR = "r3"
 
 inherit sdk
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
-
 PACKAGES = "${PN}"
 
 require gcc-${PV}.inc
