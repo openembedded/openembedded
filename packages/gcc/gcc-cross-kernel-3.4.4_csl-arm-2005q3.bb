@@ -3,7 +3,6 @@
 
 DEFAULT_PREFERENCE = "-1"
 
-SECTION = "devel"
 # cut-down gcc for kernel builds
 # only installs ${TARGET_PREFIX}gcc-${PV}, not ${TARGET_PREFIX}gcc.
 

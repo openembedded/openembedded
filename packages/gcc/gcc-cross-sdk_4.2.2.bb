@@ -2,10 +2,7 @@ PR = "r3"
 
 inherit sdk
 
-PACKAGES = "${PN}"
-
 require gcc-${PV}.inc
-require gcc-package-target.inc
 require gcc4-build-sdk.inc
 require gcc-package-sdk.inc
 

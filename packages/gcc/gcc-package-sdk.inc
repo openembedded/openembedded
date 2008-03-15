@@ -1,9 +1,3 @@
-#
-# Note gcc-package.inc was already included before us. 
-#
-# We override PACKAGES and FILES to change the packaging
-#
-
 INHIBIT_PACKAGE_STRIP ?= ""
 HAS_G2C ?= "yes"
 HAS_GFORTRAN ?= "no"
@@ -29,6 +23,12 @@ FILES_${PN} = "\
     ${prefix}/${TARGET_SYS}/bin/* \
     ${prefix}/${TARGET_SYS}/lib/* \
     "
+FILES_${PN}-doc = "\
+    ${infodir} \
+    ${mandir} \
+    ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README \
+    "
+
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
