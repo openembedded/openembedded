@@ -2,3 +2,6 @@ PR = "r6"
 
 require gcc-${PV}.inc
 require gcc-package-target.inc
+
+SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1"
+

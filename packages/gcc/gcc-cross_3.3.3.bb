@@ -1,7 +1,6 @@
 PR = "r3"
 
 require gcc-${PV}.inc
-require gcc-package-target.inc
 require gcc-cross.inc
 require gcc-package-cross.inc
 

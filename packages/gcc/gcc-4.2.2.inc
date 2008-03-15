@@ -77,12 +77,5 @@ LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require gcc3-build.inc
 ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
 
-
 EXTRA_OECONF += " --disable-libssp --disable-bootstrap "
 
-# We know some one is including us, but we only want to apply this fortran hack for the real gcc
-python __anonymous () {
-    import bb
-    if bb.data.getVar('PN', d, True) == "gcc":
-        bb.data.setVar('SRC_URI_append', ' file://fortran-cross-compile-hack.patch;patch=1', d)
-}
