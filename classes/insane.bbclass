@@ -341,7 +341,7 @@ def package_qa_check_staged(path,d):
         pkgconfigcheck = workdir
     else:
         installed = "installed=yes"
-        pkgconfigcheck = workdir
+        pkgconfigcheck = tmpdir
 
     # find all .la and .pc files
     # read the content
