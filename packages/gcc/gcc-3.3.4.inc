@@ -48,8 +48,6 @@ EXTRA_OECONF_uclibc = "--disable-__cxa_atexit"
 EXTRA_OECONF_glibc = "--enable-__cxa_atexit"
 EXTRA_OECONF += "${@get_gcc_fpu_setting(bb, d)}"
 
-require gcc-fpu.inc
-
 python __anonymous () {
     import bb, re
     if (re.match('linux-uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None):

@@ -56,8 +56,6 @@ ARCH_FLAGS_FOR_TARGET_slugos = "${TARGET_CC_ARCH}"
 ARCH_FLAGS_FOR_TARGET_unslung = "${TARGET_CC_ARCH}"
 EXTRA_OEMAKE += "ARCH_FLAGS_FOR_TARGET='${ARCH_FLAGS_FOR_TARGET}'"
 
-require gcc-fpu.inc
-
 do_configure () {
 	# Setup these vars for cross building only
 	# ... because foo_FOR_TARGET apparently gets misinterpreted inside the
