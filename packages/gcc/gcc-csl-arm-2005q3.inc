@@ -6,8 +6,6 @@ PR = "r3"
 
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 
-require gcc-package.inc
-
 SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2005q3-2-arm-none-eabi.src.tar.bz2 \
            file://gcc_optab_arm.patch;patch=1 \
            file://gcc-3.4.4-eabi-bigendian.patch;patch=1"

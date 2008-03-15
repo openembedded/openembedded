@@ -94,5 +94,3 @@ do_configure () {
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
-
-require gcc-package.inc

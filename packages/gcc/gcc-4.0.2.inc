@@ -3,9 +3,6 @@ require gcc-common.inc
 DEPENDS = "mpfr gmp"
 PR = "r7"
 
-
-require gcc-package.inc
-
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \

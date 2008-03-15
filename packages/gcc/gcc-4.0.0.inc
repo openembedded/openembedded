@@ -1,8 +1,6 @@
 require gcc-common.inc
 PR = "r3"
 
-require gcc-package.inc
-
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://ldflags.patch;patch=1"

@@ -7,6 +7,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 PACKAGES = "${PN}"
 
 require gcc-${PV}.inc
+require gcc-package-target.inc
 require gcc4-build-sdk.inc
 require gcc-package-sdk.inc
 
