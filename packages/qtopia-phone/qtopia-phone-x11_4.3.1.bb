@@ -79,7 +79,7 @@ echo "" > ${S}/devices/${TARGET-DEVICE}/environment
 
 mkdir -p ${BUILDDIR}
 cd ${BUILDDIR}
-echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM}
+echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig
 
 }
 
