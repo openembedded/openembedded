@@ -31,3 +31,4 @@ FILES_${PN}-map-icons-classic = "${datadir}/map-icons/classic.small"
 FILES_${PN}-map-icons-other = "${datadir}/map-icons/classic.big ${datadir}/map-icons/japan ${datadir}/map-icons/nickw ${datadir}/map-icons/square.big ${datadir}/map-icons/square.small ${datadir}/map-icons/svg"
 FILES_${PN}-maps = "${datadir}/${PN}/maps ${datadir}/${PN}/map_koord.txt"
 FILES_${PN}-doc = "${datadir}/man ${datadir}/${PN}/Documentation"
+

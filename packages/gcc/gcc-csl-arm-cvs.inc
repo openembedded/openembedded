@@ -1,4 +1,4 @@
-require gcc_csl-arm.bb
+require gcc-csl-arm.inc
 
 PV = "3.4.4+csl-arm-${SRCDATE}"
 BINV = "3.4.4"

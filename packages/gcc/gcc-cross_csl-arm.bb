@@ -1,4 +1,4 @@
-require gcc_csl-arm.bb
+require gcc-csl-arm.inc
 # path mangling, needed by the cross packaging
 require gcc-paths-cross.inc
 inherit cross

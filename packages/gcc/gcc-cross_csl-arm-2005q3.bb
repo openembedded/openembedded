@@ -1,4 +1,4 @@
-require gcc_csl-arm-2005q3.bb
+require gcc-csl-arm-2005q3.inc
 # path mangling, needed by the cross packaging
 require gcc-paths-cross.inc
 inherit cross
