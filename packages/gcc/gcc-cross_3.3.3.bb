@@ -1,4 +1,3 @@
-SECTION = "devel"
 require gcc-${PV}.inc
 require gcc-package-target.inc
 inherit cross
