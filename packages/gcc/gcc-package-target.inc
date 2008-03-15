@@ -1,6 +1,3 @@
-gcclibdir ?= "${libdir}/gcc"
-BINV ?= "${PV}"
-
 PACKAGES = "\
   libgcc ${PN} ${PN}-symlinks \
   g++ g++-symlinks \
@@ -13,10 +10,6 @@ PACKAGES = "\
   libstdc++-dev libg2c-dev \
   ${PN}-doc \
 "
-
-# We really need HOST_SYS here for some packages and TARGET_SYS for others.
-# For now, libgcc is most important so we fix for that - RP.
-SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
 
 FILES_${PN} = "\
   ${bindir}/${TARGET_PREFIX}gcc \
@@ -100,13 +93,6 @@ FILES_${PN}-doc = "\
   ${mandir} \
   ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README \
 "
-
-python do_package() {
-    if bb.data.getVar('DEBIAN_NAMES', d, 1):
-        bb.data.setVar('PKG_libgcc', 'libgcc1', d)
-    bb.build.exec_func('package_do_package', d)
-}
-
 
 do_install () {
 	autotools_do_install

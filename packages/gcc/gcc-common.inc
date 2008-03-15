@@ -12,3 +12,12 @@ def get_gcc_fpu_setting(bb, d):
         return "--with-float=soft"
     return ""
 
+# We really need HOST_SYS here for some packages and TARGET_SYS for others.
+# For now, libgcc is most important so we fix for that - RP.
+SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
+
+DEBIANNAME_libgcc = "libgcc1"
+
+# Some default values
+gcclibdir = "${libdir}/gcc"
+BINV = "${PV}"

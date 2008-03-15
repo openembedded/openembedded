@@ -5,10 +5,8 @@ ${GNU_MIRROR}/gcc/releases/    http://gcc.get-software.com/releases/
 ${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
 }
 
-gcclibdir ?= "${libdir}/gcc"
 S = "${WORKDIR}/gcc-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
-BINV ?= "${PV}"
 
 # gcj doesn't work on some architectures
 JAVA ?= ",java"
