@@ -1,6 +1,6 @@
 require binutils.inc
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
