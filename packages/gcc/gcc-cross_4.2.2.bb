@@ -2,12 +2,10 @@ PR = "r6"
 
 require gcc-${PV}.inc
 require gcc-package-target.inc
-require gcc-cross.inc
-
-DEPENDS += "gmp-native mpfr-native"
-
+require gcc-cross4.inc
 require gcc3-build-cross.inc
 require gcc-package-cross.inc
+
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 # Do not build libssp libmudflap and libgomp
 # We might need them for some beefy targets 
