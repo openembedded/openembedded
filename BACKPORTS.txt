@@ -210,4 +210,7 @@ b6ebdc133a282a20876e945c411c3c30af2c008b poodle keymap fix (Henry, Koen)
 825754db28a782e72d84614900aff9f88d9f6349 liveramdisk-image, initramfs-jffs2: Be sure to depend on/load mtdblock. (PaulS, Koen)
 a3b18a00a09e716f4b3d5bfced86fea0439953a0 h2200: load g_ether on boot (PaulS, Koen)
 
+-- 2007.12-r10 build --
+
+
 3ba9bb700e2671c899e7dd7c9cb3fd8bff810325 add debug package for 85 files with hardcoded PACKAGES definition.  Partly fixes 2471. (PaulS, Koen)
