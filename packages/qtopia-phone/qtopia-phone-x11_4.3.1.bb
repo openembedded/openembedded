@@ -44,8 +44,6 @@ BUILDDIR = "${WORKDIR}/build"
 OE_QT_DBUSPATH = "${STAGING_DIR_HOST}"
 OE_QT_ARCH = "${QT_ARCH}"
 OE_QT_XPLATFORM = "${XPLATFORM}"
-OE_QT_LIBDIR = "${STAGING_LIBDIR}"
-OE_QT_INCDIR = "${STAGING_INCDIR}"
 OE_QT_RPREFIX = "/opt/Qtopia"
 OE_QT_ENDIAN = "${QT_ENDIAN}"
 OE_QT_EXTRACONFIG = "-I${STAGING_INCDIR}/dbus-1.0"
@@ -70,8 +68,6 @@ sed -i -e "s|QMAKE_RPATH.*|QMAKE_RPATH =|" ${S}/devices/${TARGET-DEVICE}/mkspecs
 sed -i -e "s|OE_QT_DBUSPATH|${OE_QT_DBUSPATH}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_ARCH|${OE_QT_ARCH}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_XPLATFORM|${OE_QT_XPLATFORM}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_LIBDIR|${OE_QT_LIBDIR}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_INCDIR|${OE_QT_INCDIR}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_RPREFIX|${OE_QT_RPREFIX}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_ENDIAN|${OE_QT_ENDIAN}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_EXTRACONFIG|${OE_QT_EXTRACONFIG}|" ${WORKDIR}/device-conf
