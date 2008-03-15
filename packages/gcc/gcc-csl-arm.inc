@@ -1,7 +1,6 @@
 require gcc-common.inc
 BINV = "3.4.4"
 PV = "3.4.4+csl-arm-${SRCDATE}"
-PR = "r1"
 
 FILESDIR = "${FILE_DIRNAME}/gcc-csl-arm"
 DEFAULT_PREFERENCE = "-1"

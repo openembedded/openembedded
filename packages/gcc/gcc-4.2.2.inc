@@ -1,7 +1,5 @@
 require gcc-common.inc
 
-PR = "r6"
-
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://103-uclibc-conf-noupstream.patch;patch=1 \

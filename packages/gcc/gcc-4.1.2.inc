@@ -1,7 +1,4 @@
 require gcc-common.inc
-# NOTE: split PR.  If the main .bb changes something that affects its *build*
-# remember to increment the -cross .bb PR too.
-PR = "r11"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \

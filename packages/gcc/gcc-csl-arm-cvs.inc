@@ -5,6 +5,4 @@ BINV = "3.4.4"
 
 SRC_URI += "file://15342.patch;patch=1 file://gcc-3.4.0-arm-lib1asm.patch;patch=1 file://no-libfloat.patch;patch=1"
 
-PR = "r1"
-
 DEFAULT_PREFERENCE = "-1"

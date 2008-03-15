@@ -1,7 +1,6 @@
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
-PR = "r7"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://arm-nolibfloat.patch;patch=1 \

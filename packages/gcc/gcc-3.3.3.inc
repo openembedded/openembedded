@@ -1,7 +1,5 @@
 require gcc-common.inc
 
-PR = "r3"
-
 SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://config.sub.patch;patch=1 \
 	   file://empty6.patch;patch=1 \

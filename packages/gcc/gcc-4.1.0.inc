@@ -1,5 +1,4 @@
 require gcc-common.inc
-PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 

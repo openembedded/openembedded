@@ -1,7 +1,5 @@
 require gcc-common.inc
 
-PR = "r3"
-
 SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://arm-gotoff.dpatch;patch=1;pnum=0 \
 	   file://arm-ldm.dpatch;patch=1;pnum=0 \

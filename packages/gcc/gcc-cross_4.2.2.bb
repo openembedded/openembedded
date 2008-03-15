@@ -1,14 +1,13 @@
+PR = "r6"
+
 require gcc-${PV}.inc
 require gcc-package-target.inc
 require gcc-cross.inc
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
-PR = "r6"
 
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 DEPENDS += "gmp-native mpfr-native"
 
-# cross build
 require gcc3-build-cross.inc
-# cross packaging
 require gcc-package-cross.inc
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 # Do not build libssp libmudflap and libgomp
