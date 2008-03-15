@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r17"
+PR = "r18"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 
@@ -122,6 +122,7 @@ RDEPENDS += "\
         update-modules sysvinit tinylogin udev \
 	module-init-tools modutils-initscripts \
         ipkg-collateral ipkg ipkg-link \
+	libgcc \
 	beep \
 	util-linux-mount \
 	util-linux-umount \
