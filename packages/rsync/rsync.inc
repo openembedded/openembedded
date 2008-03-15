@@ -3,6 +3,7 @@ HOMEPAGE = "http://www.samba.org/rsync"
 SECTION = "console/network"
 LICENSE = "GPL"
 PRIORITY = "optional"
+DEPENDS += "popt"
 
 inherit autotools
 

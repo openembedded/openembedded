@@ -1,7 +1,5 @@
 require rsync.inc
 
-DEPENDS += "popt"
-
 PR = "r0"
 
 SRC_URI = "http://rsync.samba.org/ftp/rsync/rsync-${PV}.tar.gz \
