@@ -12,12 +12,13 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
 PROVIDES = "qtopia-phone"
-PR = "r2"
+PR = "r4"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://device-conf \
            file://qplatformdefs.h \
-           file://Xsession.d/99qtopia"
+           file://Xsession.d/99qtopia \
+           file://qtopia.sh"
 
 S = "${WORKDIR}/git"
 
@@ -116,6 +117,9 @@ do_install() {
    # Install some scripts
    install -d ${D}${bindir}
    install -m 0755 ${S}/bin/qcop-x11-launch ${D}${bindir}
+
+   install -d ${D}${sysconfdir}/profile.d/
+   install -m 0755 ${WORKDIR}/qtopia.sh ${D}${sysconfdir}/profile.d/
 }
 
 FILES_${PN} += "${OE_QT_RPREFIX}/bin ${OE_QT_RPREFIX}/help  \
