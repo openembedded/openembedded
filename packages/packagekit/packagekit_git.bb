@@ -3,9 +3,9 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool"
-RDEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 opkg"
+RDEPENDS = "opkg"
 PV = "0.1+git${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1"
