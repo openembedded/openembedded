@@ -2,14 +2,8 @@ PR = "r3"
 
 require gcc-${PV}.inc
 require gcc-package-target.inc
-inherit cross
-
-DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc"
-PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
-
-# Files for these are defined in the main gcc.oe
-PACKAGES = "libgcc libstdc++ libg2c"
-INHIBIT_PACKAGE_STRIP = "1"
+require gcc-cross.inc
+require gcc-package-cross.inc
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${CROSS_DIR}/${TARGET_SYS} \
 		--with-gxx-include-dir=${CROSS_DIR}/${TARGET_SYS}/include/c++"
@@ -60,35 +54,4 @@ do_stage_append () {
 
 	# We don't really need to keep this around
 	rm -rf ${CROSS_DIR}/share
-}
-
-python do_package() {
-	if bb.data.getVar('DEBIAN_NAMES', d, 1):
-		bb.data.setVar('PKG_libgcc', 'libgcc1', d)
-	bb.build.exec_func('package_do_package', d)
-}
-
-do_install () {
-	oe_runmake 'DESTDIR=${D}' install
-
-	# Move libgcc_s into /lib
-	mkdir -p ${D}${base_libdir}
-	if [ "${BUILD_SYS}" == "${TARGET_SYS}" ]; then
-		# native builds drop one pathname component
-		mv -f ${D}${prefix}/lib/libgcc_s.so.* ${D}${base_libdir}
-	else
-		mv -f ${D}${prefix}/*/lib/libgcc_s.so.* ${D}${base_libdir}
-	fi
-
-	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
-	TGT_LIBDIR=`echo ${libdir} | sed -e 's,${CROSS_DIR},/usr,'`
-	mkdir -p ${D}${TGT_LIBDIR}
-	mv -f ${D}${prefix}/*/lib/libstdc++.so.* ${D}${TGT_LIBDIR}
-	mv -f ${D}${prefix}/*/lib/libg2c.so.* ${D}${TGT_LIBDIR}
-
-	# Manually run the target stripper since we won't get it run by
-	# the packaging.
-	${TARGET_PREFIX}strip ${D}${TGT_LIBDIR}/libstdc++.so.*
-	${TARGET_PREFIX}strip ${D}${TGT_LIBDIR}/libg2c.so.*
-	${TARGET_PREFIX}strip ${D}${base_libdir}/libgcc_s.so.*
 }
