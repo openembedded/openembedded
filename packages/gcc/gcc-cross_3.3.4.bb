@@ -1,5 +1,5 @@
 SECTION = "devel"
-require gcc_${PV}.bb
+require gcc-${PV}.inc
 require gcc-paths-cross.inc
 inherit cross
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"

@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
-require gcc_${PV}.bb
+require gcc-${PV}.inc
 PR = "r2"
 
 inherit sdk

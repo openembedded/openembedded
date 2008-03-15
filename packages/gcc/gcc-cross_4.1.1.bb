@@ -1,4 +1,4 @@
-require gcc_${PV}.bb
+require gcc-${PV}.inc
 # path mangling, needed by the cross packaging
 require gcc-paths-cross.inc
 inherit cross
