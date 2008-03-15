@@ -1,12 +1,7 @@
-DESCRIPTION = "The GNU cc and gcc C compilers."
-HOMEPAGE = "http://www.gnu.org/software/gcc/"
-SECTION = "devel"
-LICENSE = "GPL"
+require gcc-common.inc
 # NOTE: split PR.  If the main .bb changes something that affects its *build*
 # remember to increment the -cross .bb PR too.
 PR = "r11"
-
-inherit autotools gettext
 
 require gcc-package.inc
 

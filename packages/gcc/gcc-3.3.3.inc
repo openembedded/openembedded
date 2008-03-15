@@ -1,10 +1,6 @@
-SECTION = "devel"
-PR = "r3"
-inherit autotools gettext
+require gcc-common.inc
 
-DESCRIPTION = "The GNU cc and gcc C compilers."
-HOMEPAGE = "http://www.gnu.org/software/gcc/"
-LICENSE = "GPL"
+PR = "r3"
 
 # libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
 # packaged in the respective cross packages.

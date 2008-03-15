@@ -1,10 +1,6 @@
-DESCRIPTION = "The GNU cc and gcc C compilers."
-HOMEPAGE = "http://www.gnu.org/software/gcc/"
-SECTION = "devel"
-LICENSE = "GPL"
-PR = "r6"
+require gcc-common.inc
 
-inherit autotools gettext
+PR = "r6"
 
 require gcc-package.inc
 
