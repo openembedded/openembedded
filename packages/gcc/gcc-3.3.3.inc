@@ -2,54 +2,6 @@ require gcc-common.inc
 
 PR = "r3"
 
-# libgcc libstdc++ libg2c are listed in our FILES_*, but are actually
-# packaged in the respective cross packages.
-PACKAGES = "${PN} ${PN}-symlinks \
-            ${PN}-c++ ${PN}-c++-symlinks \
-            ${PN}-f77 ${PN}-f77-symlinks \
-            libstdc++-dev libg2c-dev \
-            ${PN}-doc"
-
-FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
-	       ${bindir}/${TARGET_PREFIX}cpp \
-	       ${bindir}/${TARGET_PREFIX}gcov \
-	       ${bindir}/${TARGET_PREFIX}gccbug \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1 \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/collect2 \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/crt* \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/specs \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/lib* \
-	       ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include"
-
-FILES_${PN}-symlinks = "${bindir}/cc \
-			${bindir}/gcc \
-			${bindir}/cpp \
-			${bindir}/gcov \
-			${bindir}/gccbug"
-
-FILES_${PN}-c++ = "${bindir}/${TARGET_PREFIX}g++ \
-		   ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/cc1plus"
-
-FILES_${PN}-c++-symlinks = "${bindir}/c++ \
-			    ${bindir}/g++"
-
-FILES_libgcc = "/lib/libgcc_s.so.*"
-
-# Called from within gcc-cross, so libdir is set wrong
-#FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-FILES_libstdc++ = "${libdir}/libstdc++.so.*"
-
-FILES_libstdc++-dev = "${includedir}/c++/${PV} \
-		       ${libdir}/libstdc++.so \
-		       ${libdir}/libstdc++.la \
-		       ${libdir}/libstdc++.a \
-		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
-
-FILES_${PN}-doc = "${infodir} \
-		   ${mandir} \
-		   ${libdir}/gcc-lib/${TARGET_SYS}/${PV}/include/README"
-
 SRC_URI = "${GNU_MIRROR}/gcc/releases/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://config.sub.patch;patch=1 \
 	   file://empty6.patch;patch=1 \
@@ -143,46 +95,4 @@ do_configure () {
 	oe_runconf
 }
 
-do_install () {
-	autotools_do_install
-
-	# Cleanup some of the gcc-lib stuff
-	rm -rf ${D}${libdir}/gcc-lib/${TARGET_SYS}/${PV}/install-tools
-
-	# Move libgcc_s into /lib
-	mkdir -p ${D}${base_libdir}
-	mv -f ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
-	rm -f ${D}${libdir}/libgcc_s.so
-	ln -sf `echo ${libdir}/gcc-lib/${TARGET_SYS}/${PV} | tr -s / |
-		sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.? \
-		${D}${libdir}/gcc-lib/${TARGET_SYS}/${PV}/libgcc_s.so
-
-	# Cleanup manpages..
-	rm -rf ${D}${mandir}/man7
-	mv ${D}${mandir}/man1/cpp.1 \
-	   ${D}${mandir}/man1/${TARGET_SYS}-cpp.1
-	mv ${D}${mandir}/man1/gcov.1 \
-	   ${D}${mandir}/man1/${TARGET_SYS}-gcov.1
-
-	# We use libiberty from binutils
-	rm -f ${D}${libdir}/libiberty.a
-
-	cd ${D}${bindir}
-
-	# We care about g++ not c++
-	rm -f *c++
-
-	# We don't care about the gcc-<version> ones for this
-	rm -f *gcc-?.?*
-
-	# These sometimes show up, they are strange, we remove them
-	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
-
-	# Symlinks so we can use these trivially on the target
-	ln -sf ${TARGET_SYS}-g77 g77
-	ln -sf ${TARGET_SYS}-g++ g++
-	ln -sf ${TARGET_SYS}-gcc gcc
-	ln -sf g77 f77
-	ln -sf g++ c++
-	ln -sf gcc cc
-}
+require gcc-package.inc
