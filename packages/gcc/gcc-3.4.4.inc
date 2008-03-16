@@ -21,5 +21,3 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
 SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
-
-require gcc3-build.inc

@@ -11,9 +11,9 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.0/gcc-4.1.0.tar.bz2 \
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
-require gcc4-build.inc
 EXTRA_OECONF += "--disable-libssp"
 
+# Language Overrides
 FORTRAN = ""
 
 

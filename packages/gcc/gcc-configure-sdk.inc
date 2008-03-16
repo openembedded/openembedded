@@ -1,3 +1,6 @@
+require gcc-configure-common.inc
+
+# The two lines below conflict, this needs fixing - RP
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibcgnueabi", "no", "", d )}'
 

@@ -1,20 +1,15 @@
-MIRRORS_prepend () {
-${GNU_MIRROR}/gcc/releases/    ftp://gcc.gnu.org/pub/gcc/releases/
-${GNU_MIRROR}/gcc/	http://mirrors.rcn.net/pub/sourceware/gcc/releases/
-${GNU_MIRROR}/gcc/releases/    http://gcc.get-software.com/releases/
-${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
-}
+#
+# Build the list of lanaguages to build.
+#
+# These can be overridden by the version specific .inc file.
 
-S = "${WORKDIR}/gcc-${PV}"
-B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
-
-# gcj doesn't work on some architectures
+# Java (gcj doesn't work on all architectures)
 JAVA ?= ",java"
 JAVA_arm ?= ""
 JAVA_armeb ?= ""
 JAVA_mipsel ?= ""
 JAVA_sh3 ?= ""
-# gcc4-build sets this to fortran
+# gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
 FORTRAN ?= ",f77"
 LANGUAGES ?= "c,c++${FORTRAN}${JAVA}"
 
@@ -30,12 +25,7 @@ EXTRA_OECONF = "${@['--enable-clocale=generic', ''][bb.data.getVar('USE_NLS', d,
                 --enable-symvers=gnu \
                 --enable-libstdcxx-pch \
                 --program-prefix=${TARGET_PREFIX} \
-                ${EXTRA_OECONF_PATHS} \
-                ${EXTRA_OECONF_DEP}"
-
-EXTRA_OECONF_PATHS = " \
-                      --with-local-prefix=${prefix}/local \
-                      --with-gxx-include-dir=${includedir}/c++/${BINV}"
+                ${EXTRA_OECONF_PATHS}"
 
 # Build uclibc compilers without cxa_atexit support
 EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
@@ -81,3 +71,4 @@ do_configure () {
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	oe_runconf
 }
+

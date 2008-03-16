@@ -36,18 +36,9 @@ SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 SRC_URI_append_linux = " file://ppc-gcc-41-20060515.patch;patch=1 \
                          file://ppc-sfp-long-double-gcc411-7.patch;patch=1 "
 
-
-#Set the fortran bits
-# 'fortran' or '', not 'f77' like gcc3 had
+# Language Overrides
 FORTRAN = ""
-
-#Set the java bits
-JAVA_arm = ""
 JAVA = ""
-
-LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require gcc3-build.inc
-
 
 EXTRA_OECONF += " --disable-libssp "
 

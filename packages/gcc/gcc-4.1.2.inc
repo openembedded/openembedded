@@ -48,19 +48,12 @@ do_compile_prepend_avr32() {
        ln -sf ${S}/libstdc++-v3/config/os/uclibc/ ${S}/libstdc++-v3/config/os/uclibc-linux
 }
 
-#Set the fortran bits
-# ',fortran' or '', not 'f77' like gcc3 had
+
+# Language Overrides
 FORTRAN = ""
-
-#Set the java bits
 JAVA = ""
-JAVA_arm = ""
 
-
-LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require gcc3-build.inc
-ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
-
+ARCH_FLAGS_FOR_TARGET = "-isystem${STAGING_INCDIR}"
 
 EXTRA_OECONF += " --disable-libssp "
 

@@ -84,19 +84,12 @@ PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
-#Set the fortran bits
-# 'i,fortran' or '', not 'f77' like gcc3 had
+# Language Overrides
 FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"
-
-#Set the java bits
 JAVA = ""
-JAVA_arm = ""
 
-LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require gcc3-build.inc
-ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
-
+ARCH_FLAGS_FOR_TARGET = "-isystem${STAGING_INCDIR}"
 
 EXTRA_OECONF += " --disable-libgomp --disable-libssp --disable-bootstrap "
 

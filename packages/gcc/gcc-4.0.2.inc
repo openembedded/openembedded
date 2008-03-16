@@ -22,9 +22,8 @@ SRC_URI_append = " file://100-uclibc-conf.patch;patch=1   \
 
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 
-
-require gcc4-build.inc
+# Language Overrides
+FORTRAN = ""
 
 EXTRA_OECONF += "--disable-libssp"
 
-FORTRAN = ""

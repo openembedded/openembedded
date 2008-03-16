@@ -18,6 +18,18 @@ SHLIBSDIR = "${STAGING_DIR}/${TARGET_SYS}/shlibs"
 
 DEBIANNAME_libgcc = "libgcc1"
 
-# Some default values
+MIRRORS_prepend () {
+${GNU_MIRROR}/gcc/releases/    ftp://gcc.gnu.org/pub/gcc/releases/
+${GNU_MIRROR}/gcc/	http://mirrors.rcn.net/pub/sourceware/gcc/releases/
+${GNU_MIRROR}/gcc/releases/    http://gcc.get-software.com/releases/
+${GNU_MIRROR}/gcc/	http://gcc.get-software.com/releases/
+}
+
+#
+# Set some default values
+#
 gcclibdir = "${libdir}/gcc"
 BINV = "${PV}"
+S = "${WORKDIR}/gcc-${PV}"
+B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
+
