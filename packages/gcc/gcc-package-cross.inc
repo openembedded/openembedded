@@ -1,5 +1,3 @@
-# Packages emitted by our gcc-cross builds.
-#
 INHIBIT_PACKAGE_STRIP ?= ""
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
