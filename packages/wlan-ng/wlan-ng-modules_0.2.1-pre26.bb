@@ -1,20 +1,11 @@
-DESCRIPTION = "linux-wlan-ng (prism2.x, prism3, pcmcia, pci, usb) driver for 11Mbps wireless lan cards"
-HOMEPAGE = "http://www.linux-wlan.org"
-SECTION = "kernel/modules"
-DEPENDS = "virtual/kernel"
-RRECOMMENDS = "wlan-ng-utils"
-LICENSE = "GPL"
-PR = "r2"
+require wlan-ng-modules.inc
+
+PR = "r3"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/older/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
 	file://only-the-modules.patch;patch=1 \
 	file://config.in"
-S = "${WORKDIR}/linux-wlan-ng-${PV}"
-
-inherit module
-
-PARALLEL_MAKE = ""
 
 do_configure() {
 	install -m 0655 ${WORKDIR}/config.in ${S}/config.in
@@ -39,17 +30,3 @@ do_configure() {
 	ln -sf ${S}/src/include/wlan 		src/prism2/driver/include/wlan
 	ln -sf ${S}/src/prism2/include/prism2	src/prism2/driver/include/prism2
 }
-
-do_compile() {
-	oe_runmake -C src all
-}
-
-do_install() {
-	oe_runmake install DESTDIR=${D}
-
-        # Listen closely... sssshhh... can you hear the wlan-ng build system suck?
-        rm -f ${KERNEL_SOURCE}/../config.mk
-        rm -f ${KERNEL_SOURCE}/../../config.mk
-}
-
-FILES_${PN} = "/lib"

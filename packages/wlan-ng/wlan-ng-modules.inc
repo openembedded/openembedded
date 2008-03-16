@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS = "wlan-ng-utils"
-RPROVIDES += "wlan-ng-modules-usb"
+RPROVIDES += "wlan-ng-modules-usb wlan-ng-modules"
 LICENSE = "GPL"
 
 SRC_URI = "file://no-compat.patch;patch=1 \
