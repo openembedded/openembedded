@@ -3,7 +3,7 @@ require glibc.inc
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.7+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
@@ -69,47 +69,22 @@ do_configure () {
 }
 
 rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \
-          yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
-          rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
+	  yppasswd.x klm_prot.x rex.x sm_inter.x mount.x \
+	  rusers.x spray.x nfs_prot.x rquota.x key_prot.x"
 
-do_compile () { 
-        # -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
-        unset LDFLAGS
+do_compile () {
+	# -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
+	unset LDFLAGS
 	base_do_compile
 	(
-                cd ${S}/sunrpc/rpcsvc
-                for r in ${rpcsvc}; do
-                        h=`echo $r|sed -e's,\.x$,.h,'`
-                        rpcgen -h $r -o $h || oewarn "unable to generate header for $r"
-                done
-        ) 
-}       
-
-do_stage() {
-        # FIXME: this removes files from staging
-        # make sure there isn't a conflicting libc in staging
-        # this should be solved differently
-        rm -f ${STAGING_DIR_HOST}${layout_base_libdir}/libc.so.6
-        oe_runmake 'install_root=${STAGING_DIR_HOST}' \
-                   'includedir=${layout_includedir}' 'libdir=${layout_libdir}' 'slibdir=${layout_base_libdir}' \
-                   '${STAGING_DIR_HOST}${layout_base_libdir}/libc.so.6' \
-                   install-headers install-lib
-
-        install -d ${STAGING_INCDIR}/gnu \
-                   ${STAGING_INCDIR}/bits \
-                   ${STAGING_INCDIR}/rpcsvc
-        install -m 0644 ${S}/include/gnu/stubs.h ${STAGING_INCDIR}/gnu/
-        install -m 0644 ${B}/bits/stdio_lim.h ${STAGING_INCDIR}/bits/
-        install -m 0644 misc/syscall-list.h ${STAGING_INCDIR}/bits/syscall.h
-        for r in ${rpcsvc}; do
-                h=`echo $r|sed -e's,\.x$,.h,'`
-                install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
-        done
-        for i in libc.a libc_pic.a libc_nonshared.a; do
-                install -m 0644 ${B}/$i ${STAGING_DIR_HOST}${layout_base_libdir}/ || die "failed to install $i"
-        done
-        echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_DIR_HOST}${layout_base_libdir}/libpthread.so
-        echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_DIR_HOST}${layout_base_libdir}/libc.so
+		cd ${S}/sunrpc/rpcsvc
+		for r in ${rpcsvc}; do
+			h=`echo $r|sed -e's,\.x$,.h,'`
+			rpcgen -h $r -o $h || oewarn "unable to generate header for $r"
+		done
+	)
 }
+
+require glibc-stage.inc
 
 require eglibc-package.bbclass
