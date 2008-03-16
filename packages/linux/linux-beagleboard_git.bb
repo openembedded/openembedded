@@ -5,7 +5,7 @@ PV = "2.6.x+git${SRCREV}"
 
 COMPATIBLE_MACHINE = "beagleboard"
 
-SRC_URI = "git://www.beagleboard.org/linux.git;protocol=git \
+SRC_URI = "git://www.beagleboard.org/linux.git;protocol=http \
            file://defconfig"
 
 S = "${WORKDIR}/git"
