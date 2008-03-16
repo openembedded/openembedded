@@ -1,5 +1,7 @@
 require gcc-common.inc
 
+DEPENDS = "mpfr gmp"
+
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.2/gcc-4.1.2.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://110-arm-eabi.patch;patch=1 \
@@ -56,4 +58,3 @@ JAVA = ""
 ARCH_FLAGS_FOR_TARGET = "-isystem${STAGING_INCDIR}"
 
 EXTRA_OECONF += " --disable-libssp "
-

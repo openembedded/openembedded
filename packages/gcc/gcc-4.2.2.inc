@@ -1,5 +1,7 @@
 require gcc-common.inc
 
+DEPENDS = "mpfr gmp"
+
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
 	file://103-uclibc-conf-noupstream.patch;patch=1 \
@@ -61,8 +63,6 @@ SRC_URI_append_ep93xx = " \
 PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
-
-DEPENDS += " gmp mpfr "
 
 # Language Overrides
 FORTRAN = ""
