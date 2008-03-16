@@ -15,6 +15,8 @@ file://dynskel.patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/omniORB-${PV}"
 
+FILES_${PN}-dev += "${datadir}/idl/omniORB/* ${datadir}/idl/omniORB/cos/*
+
 inherit autotools pkgconfig
 
 do_compile () {
