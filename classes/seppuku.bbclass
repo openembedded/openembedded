@@ -246,9 +246,10 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
         print >> debug, "Can't create an attachment, no attach_query passed to method"
         return False
 
+    logdescription = "Build log for machine %s" % (bb.data.getVar('MACHINE', data, True))
 
     import urllib2
-    param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : "Build log", "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
+    param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : logdescription, "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
 
     try:
         result = poster.open( attach_query, param )
