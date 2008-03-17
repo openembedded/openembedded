@@ -12,10 +12,11 @@
 # bitbake.conf set PSTAGING_ACTIVE = "0", this class sets to "1" if we're active
 # 
 PSTAGE_PKGVERSION = "${PV}-${PR}"
-PSTAGE_PKGARCH    = "${MULTIMACH_ARCH}"
+PSTAGE_PKGARCH    = "${BUILD_SYS}"
 PSTAGE_EXTRAPATH  ?= ""
 PSTAGE_PKGPATH    = "${DISTRO}${PSTAGE_EXTRAPATH}"
-PSTAGE_PKGNAME 	  = "staging-${PN}_${PSTAGE_PKGVERSION}_${PSTAGE_PKGARCH}.ipk"
+PSTAGE_PKGPN      = "${@bb.data.expand('staging-${PN}-${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}', d).replace('_', '-')}"
+PSTAGE_PKGNAME 	  = "${PSTAGE_PKGPN}_${PSTAGE_PKGVERSION}_${PSTAGE_PKGARCH}.ipk"
 PSTAGE_PKG        = "${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}/${PSTAGE_PKGNAME}"
 
 # multimachine.bbclass will override this but add a default in case we're not using it
@@ -77,7 +78,7 @@ python () {
 }
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage"
-PSTAGE_MACHCONFIG       = "${DEPLOY_DIR_PSTAGE}/ipkg-${MACHINE}.conf"
+PSTAGE_MACHCONFIG       = "${DEPLOY_DIR_PSTAGE}/ipkg.conf"
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
 PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
@@ -94,7 +95,7 @@ do_clean_append() {
 	bb.note("Uninstalling package from staging...")
         path = bb.data.getVar("PATH", d, 1)
 	removecmd = bb.data.getVar("PSTAGE_REMOVE_CMD", d, 1)
-	removepkg = bb.data.expand("staging-${PN}", d)
+	removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
         ret = os.system("PATH=\"%s\" %s %s" % (path, removecmd, removepkg))
         if ret != 0:
             bb.note("Failure removing staging package")
@@ -109,7 +110,7 @@ staging_helper () {
 	conffile=${PSTAGE_MACHCONFIG}
 	mkdir -p ${DEPLOY_DIR_PSTAGE}/pstaging_lists
 	if [ ! -e $conffile ]; then
-		ipkgarchs="${BUILD_ARCH} all any noarch ${TARGET_ARCH} ${PACKAGE_ARCHS} ${PACKAGE_EXTRA_ARCHS} ${MACHINE}"
+		ipkgarchs="${BUILD_SYS}"
 		priority=1
 		for arch in $ipkgarchs; do
 			echo "arch $arch $priority" >> $conffile
@@ -130,7 +131,7 @@ python do_prepackaged_stage () {
     bb.note("Uninstalling any existing package from staging...")
     path = bb.data.getVar("PATH", d, 1)
     removecmd = bb.data.getVar("PSTAGE_REMOVE_CMD", d, 1)
-    removepkg = bb.data.expand("staging-${PN}", d)
+    removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
     lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
     ret = os.system("PATH=\"%s\" %s %s" % (path, removecmd, removepkg))
     bb.utils.unlockfile(lf)
@@ -223,7 +224,7 @@ staging_packager () {
 	mkdir -p ${PSTAGE_TMPDIR_STAGE}/CONTROL
 	mkdir -p ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}
 
-	echo "Package: staging-${PN}"           >  ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+	echo "Package: ${PSTAGE_PKGPN}"         >  ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 	echo "Version: ${PSTAGE_PKGVERSION}"    >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 	echo "Description: ${DESCRIPTION}"      >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 	echo "Section: ${SECTION}"              >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
@@ -249,13 +250,14 @@ python do_package_stage () {
     #
     bb.build.exec_func("read_subpackage_metadata", d)
     stagepath = bb.data.getVar("PSTAGE_TMPDIR_STAGE", d, 1)
+    tmpdir = bb.data.getVar("TMPDIR", d, True)
     packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
     if len(packages) > 0:
         if bb.data.inherits_class('package_ipk', d):
-            ipkpath = os.path.join(stagepath, "deploy", "ipk")
+            ipkpath = bb.data.getVar('DEPLOY_DIR_IPK', d, True).replace(tmpdir, stagepath)
             bb.mkdirhier(ipkpath)
         if bb.data.inherits_class('package_deb', d):
-            debpath = os.path.join(stagepath, "deploy", "deb")
+            debpath = bb.data.getVar('DEPLOY_DIR_DEB', d, True).replace(tmpdir, stagepath)
             bb.mkdirhier(debpath)
 
         for pkg in packages:
@@ -265,19 +267,22 @@ python do_package_stage () {
             arch = bb.data.getVar('PACKAGE_ARCH_%s' % pkg, d, 1)
             if not arch:
                 arch = bb.data.getVar('PACKAGE_ARCH', d, 1)
+            pr = bb.data.getVar('PR_%s' % pkg, d, 1)
+            if not pr:
+                pr = bb.data.getVar('PR', d, 1)
             if not packaged(pkg, d):
                 continue
             if bb.data.inherits_class('package_ipk', d):
-                srcname = bb.data.expand(pkgname + "_${PV}-${PR}_" + arch + ".ipk", d)
+                srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_" + arch + ".ipk", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_IPK}/" + arch + "/" + srcname, d)
                 if not os.path.exists(srcfile):
                     bb.fatal("Package %s does not exist yet it should" % srcfile)
                 bb.copyfile(srcfile, ipkpath + "/" + srcname)
             if bb.data.inherits_class('package_deb', d):
                 if arch == 'all':
-                    srcname = bb.data.expand(pkgname + "_${PV}-${PR}_all.deb", d)
+                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_all.deb", d)
                 else:	
-                    srcname = bb.data.expand(pkgname + "_${PV}-${PR}_${DPKG_ARCH}.deb", d)
+                    srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_${DPKG_ARCH}.deb", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_DEB}/" + arch + "/" + srcname, d)
                 if not os.path.exists(srcfile):
                     bb.fatal("Package %s does not exist yet it should" % srcfile)
@@ -287,7 +292,6 @@ python do_package_stage () {
     # Handle stamps/ files
     #
     stampfn = bb.data.getVar("STAMP", d, True)
-    tmpdir = bb.data.getVar("TMPDIR", d, True)
     destdir = os.path.dirname(stampfn.replace(tmpdir, stagepath))
     bb.mkdirhier(destdir)
     # We need to include the package_stage stamp in the staging package so create one
