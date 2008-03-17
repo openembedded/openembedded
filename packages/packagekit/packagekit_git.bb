@@ -25,3 +25,4 @@ do_stage () {
 }
 
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${datadir}/dbus-1/system-services/"
+FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so "
