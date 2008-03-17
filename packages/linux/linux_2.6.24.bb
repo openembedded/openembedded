@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE_at32stk1000 = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -33,6 +33,7 @@ SRC_URI_append_simpad = "\
            file://linux-2.6.24-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;patch=1 \
            file://linux-2.6.24-SIMpad-hostap_cs-shared-irq.patch;patch=1 \
            file://linux-2.6.24-SIMpad-orinoco_cs-shared-irq.patch;patch=1 \ 
+           file://linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
            file://collie-kexec.patch;patch=1 \
            file://export_atags-r2.patch;patch=1 \
            "	   
