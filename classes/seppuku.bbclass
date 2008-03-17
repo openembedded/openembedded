@@ -228,7 +228,7 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
     else:
         return res[0] 
 
-def seppuku_create_attachment(debug, poster, attach_query, product, component, bug_number, text, file):
+def seppuku_create_attachment(data, debug, poster, attach_query, product, component, bug_number, text, file):
     """
 
     Create a new attachment for the failed report
@@ -246,6 +246,7 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
         print >> debug, "Can't create an attachment, no attach_query passed to method"
         return False
 
+    import bb
     logdescription = "Build log for machine %s" % (bb.data.getVar('MACHINE', data, True))
 
     import urllib2
@@ -351,7 +352,7 @@ python seppuku_eventhandler() {
         if bug_number and bug_open:
             print >> debug_file, "The bug is known as '%s'" % bug_number
             if file:
-                if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+                if not seppuku_create_attachment(data, debug_file, poster, attach, product, component, bug_number, text, file):
                      print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
                 else:
                      print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
@@ -372,7 +373,7 @@ python seppuku_eventhandler() {
                 print >> debug_file, "The new bug_number: '%s'" % bug_number
 
         if bug_number and file:
-            if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+            if not seppuku_create_attachment(data, debug_file, poster, attach, product, component, bug_number, text, file):
                 print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
             else:
                 print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
