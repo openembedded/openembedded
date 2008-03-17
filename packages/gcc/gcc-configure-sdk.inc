@@ -27,7 +27,7 @@ export WINDRES_FOR_TARGET = "${CROSS_DIR}/${TARGET_SYS}/bin/windres"
 #
 # We need to override this and make sure the compiler can find staging
 #
-export ARCH_FLAGS_FOR_TARGET = "--sysroot=/media/build1/builds/oe/angstrom/tmp/staging/arm-angstrom-linux-gnueabi"
+export ARCH_FLAGS_FOR_TARGET = "--sysroot=${STAGING_DIR_TARGET}"
 
 do_configure () {
 	export CC_FOR_BUILD="${BUILD_CC}"
