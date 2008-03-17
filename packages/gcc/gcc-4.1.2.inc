@@ -55,6 +55,4 @@ do_compile_prepend_avr32() {
 FORTRAN = ""
 JAVA = ""
 
-ARCH_FLAGS_FOR_TARGET = "-isystem${STAGING_INCDIR}"
-
 EXTRA_OECONF += " --disable-libssp "

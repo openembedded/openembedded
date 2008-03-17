@@ -69,7 +69,5 @@ FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
-ARCH_FLAGS_FOR_TARGET = "-isystem${STAGING_INCDIR}"
-
 EXTRA_OECONF += " --disable-libssp --disable-bootstrap "
 
