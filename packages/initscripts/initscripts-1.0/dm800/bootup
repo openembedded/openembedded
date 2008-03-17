@@ -46,6 +46,9 @@ echo 21 > /proc/progress
 
 hostname -F /etc/hostname
 
+echo 22 > /proc/progress
+/usr/bin/wdog /usr/bin/dccamd -
+
 echo 23 > /proc/progress
 ifup -a
 
