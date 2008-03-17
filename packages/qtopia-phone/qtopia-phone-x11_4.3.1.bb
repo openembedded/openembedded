@@ -12,12 +12,13 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
 PROVIDES = "qtopia-phone"
-PR = "r2"
+PR = "r4"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://device-conf \
            file://qplatformdefs.h \
-           file://Xsession.d/99qtopia"
+           file://Xsession.d/99qtopia \
+           file://qtopia.sh"
 
 S = "${WORKDIR}/git"
 
@@ -43,8 +44,6 @@ BUILDDIR = "${WORKDIR}/build"
 OE_QT_DBUSPATH = "${STAGING_DIR_HOST}"
 OE_QT_ARCH = "${QT_ARCH}"
 OE_QT_XPLATFORM = "${XPLATFORM}"
-OE_QT_LIBDIR = "${STAGING_LIBDIR}"
-OE_QT_INCDIR = "${STAGING_INCDIR}"
 OE_QT_RPREFIX = "/opt/Qtopia"
 OE_QT_ENDIAN = "${QT_ENDIAN}"
 OE_QT_EXTRACONFIG = "-I${STAGING_INCDIR}/dbus-1.0"
@@ -69,8 +68,6 @@ sed -i -e "s|QMAKE_RPATH.*|QMAKE_RPATH =|" ${S}/devices/${TARGET-DEVICE}/mkspecs
 sed -i -e "s|OE_QT_DBUSPATH|${OE_QT_DBUSPATH}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_ARCH|${OE_QT_ARCH}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_XPLATFORM|${OE_QT_XPLATFORM}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_LIBDIR|${OE_QT_LIBDIR}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_INCDIR|${OE_QT_INCDIR}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_RPREFIX|${OE_QT_RPREFIX}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_ENDIAN|${OE_QT_ENDIAN}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_EXTRACONFIG|${OE_QT_EXTRACONFIG}|" ${WORKDIR}/device-conf
@@ -82,7 +79,7 @@ echo "" > ${S}/devices/${TARGET-DEVICE}/environment
 
 mkdir -p ${BUILDDIR}
 cd ${BUILDDIR}
-echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM}
+echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig
 
 }
 
@@ -116,6 +113,9 @@ do_install() {
    # Install some scripts
    install -d ${D}${bindir}
    install -m 0755 ${S}/bin/qcop-x11-launch ${D}${bindir}
+
+   install -d ${D}${sysconfdir}/profile.d/
+   install -m 0755 ${WORKDIR}/qtopia.sh ${D}${sysconfdir}/profile.d/
 }
 
 FILES_${PN} += "${OE_QT_RPREFIX}/bin ${OE_QT_RPREFIX}/help  \
