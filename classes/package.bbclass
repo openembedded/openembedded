@@ -152,7 +152,7 @@ def runstrip(file, d):
     # If the file is in a .debug directory it was already stripped,
     # don't do it again...
     if os.path.dirname(file).endswith(".debug"):
-        bb.note("Already run strip")
+        bb.note("Already ran strip")
         return 0
 
     strip = bb.data.getVar("STRIP", d, 1)
