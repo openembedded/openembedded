@@ -11,9 +11,9 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
-RDEPENDS = "atd"
+RDEPENDS = "atd tzdata"
 PROVIDES = "qtopia-phone"
-PR = "r7"
+PR = "r8"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://Xsession.d/99qtopia \
