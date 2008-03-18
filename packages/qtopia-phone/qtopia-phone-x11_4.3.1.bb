@@ -12,7 +12,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
 PROVIDES = "qtopia-phone"
-PR = "r4"
+PR = "r6"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
            file://device-conf \
@@ -35,18 +35,13 @@ export QTOPIA_DEPOT_PATH = "${S}"
 
 require qtopia-phone_arch.inc
 
-QT_ARCH = "${@qtopia_arch(d)}"
-QT_ENDIAN = "${@qtopia_endian(d)}"
 PLATFORM = "${BUILD_OS}-g++"
 XPLATFORM = "linux-oe-g++"
 BUILDDIR = "${WORKDIR}/build"
 
 OE_QT_DBUSPATH = "${STAGING_DIR_HOST}"
-OE_QT_ARCH = "${QT_ARCH}"
 OE_QT_XPLATFORM = "${XPLATFORM}"
 OE_QT_RPREFIX = "/opt/Qtopia"
-OE_QT_ENDIAN = "${QT_ENDIAN}"
-OE_QT_EXTRACONFIG = "-I${STAGING_INCDIR}/dbus-1.0"
 
 do_configure() {
 
@@ -66,11 +61,8 @@ sed -i -e "s|QMAKE_RPATH.*|QMAKE_RPATH =|" ${S}/devices/${TARGET-DEVICE}/mkspecs
 
 # sed the dynamic config into the file
 sed -i -e "s|OE_QT_DBUSPATH|${OE_QT_DBUSPATH}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_ARCH|${OE_QT_ARCH}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_XPLATFORM|${OE_QT_XPLATFORM}|" ${WORKDIR}/device-conf
 sed -i -e "s|OE_QT_RPREFIX|${OE_QT_RPREFIX}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_ENDIAN|${OE_QT_ENDIAN}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_EXTRACONFIG|${OE_QT_EXTRACONFIG}|" ${WORKDIR}/device-conf
 
 rm -f ${S}/devices/${TARGET-DEVICE}/configure
 cp ${WORKDIR}/device-conf ${S}/devices/${TARGET-DEVICE}/configure
@@ -79,7 +71,7 @@ echo "" > ${S}/devices/${TARGET-DEVICE}/environment
 
 mkdir -p ${BUILDDIR}
 cd ${BUILDDIR}
-echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig
+echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig -I${STAGING_INCDIR}/dbus-1.0
 
 }
 
