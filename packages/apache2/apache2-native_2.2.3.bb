@@ -12,7 +12,7 @@ do_configure () {
 	./configure --with-included-apr --prefix=${prefix}
 }
 
-do_populate_staging () {
+do_stage () {
 	cp srclib/pcre/dftables ${STAGING_BINDIR}
 	cp server/gen_test_char ${STAGING_BINDIR}
 	cp srclib/apr/apr-1-config ${STAGING_BINDIR}
