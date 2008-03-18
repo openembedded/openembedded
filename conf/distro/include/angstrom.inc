@@ -49,9 +49,6 @@ INHERIT += "insane"
 #save statistical info on images
 INHERIT += "testlab"
 
-#build staging from packages
-#INHERIT += "packaged-staging"
-
 ANGSTROM_PKG_FORMAT ?= "ipk"
 require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
 
