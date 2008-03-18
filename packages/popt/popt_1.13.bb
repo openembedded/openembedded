@@ -2,15 +2,15 @@ require popt.inc
 
 DEPENDS = "gettext virtual/libintl"
 
-PR = "r5"
+PR = "r0"
 
 inherit autotools
 
-SRC_URI = "ftp://ftp.rpm.org/pub/rpm/dist/rpm-4.1.x/popt-${PV}.tar.gz \
-	   file://m4.patch;patch=1 \
-	   file://intl.patch;patch=1"
+SRC_URI = "http://freshmeat.net/redir/popt/72854/url_bz2/popt-${PV}.tar.gz"
 
 do_stage() {
 	oe_libinstall -a -so libpopt ${STAGING_LIBDIR}
 	install -m 0644 popt.h ${STAGING_INCDIR}
 }
+
+
