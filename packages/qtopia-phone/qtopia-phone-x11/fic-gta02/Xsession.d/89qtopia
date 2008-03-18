@@ -33,4 +33,4 @@ export QTOPIA_PHONE_MUX=ficgta01
 
 
 # Now start Qtopia
-exec qpe
+qpe &
