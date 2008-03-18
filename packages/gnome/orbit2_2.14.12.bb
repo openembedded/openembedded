@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 DESCRIPTION = "CORBA ORB"
 SECTION = "x11/gnome/libs"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.14/ORBit2-${PV}.tar.bz2 \
@@ -10,8 +10,12 @@ DEPENDS = "libidl popt orbit2-native gtk-doc"
 PARALLEL_MAKE = ""
 
 FILES_${PN} += "${libdir}/orbit-2.0/*.so"
+FILES_${PN}-dev += "${libdir}/orbit-2.0/*.a ${libdir}/orbit-2.0/*.la"
+FILES_${PN}-dbg += "${libdir}/orbit-2.0/.debug"
 
 S = "${WORKDIR}/ORBit2-${PV}"
+
+LEAD_SONAME = "libORBit-2.so"
 
 inherit autotools pkgconfig
 
@@ -25,8 +29,13 @@ do_configure_prepend() {
 }
 
 do_compile_append () {
-	sed 's:^orbit_idl=.*/:orbit_idl=${STAGING_BINDIR_NATIVE}/:' < ORBit-2.0.pc > ORBit-2.0.pc.new
-	mv ORBit-2.0.pc.new ORBit-2.0.pc
+        cp ORBit-2.0.pc ORBit-2.0.pc.old
+        sed 's:^orbit_idl=.*/:orbit_idl=${STAGING_BINDIR_NATIVE}/:' < ORBit-2.0.pc > ORBit-2.0.pc.new
+        mv ORBit-2.0.pc.new ORBit-2.0.pc
+}
+
+do_install_append () {
+        mv ORBit-2.0.pc.old ORBit-2.0.pc
 }
 
 do_stage() {
