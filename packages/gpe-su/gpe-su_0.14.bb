@@ -1,10 +1,3 @@
-LICENSE = "GPL"
+require gpe-su.inc
 
-inherit gpe pkgconfig
-
-DEPENDS = "libgpewidget"
-SECTION = "gpe"
-
-DESCRIPTION = "GPE Graphical root-shell frontend"
-
-SRC_URI = "${GPE_MIRROR}/${PN}-${PV}.tar.gz"
+PR = "r1"
