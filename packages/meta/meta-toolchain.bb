@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
-DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native"
+DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native"
 
 inherit sdk meta
 
@@ -9,8 +9,8 @@ SDK_OUTPUT = "${SDK_DIR}/image"
 SDK_OUTPUT2 = "${SDK_DIR}/image-extras"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 
-IPKG_HOST = "ipkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
-IPKG_TARGET = "ipkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/temp-target"
+IPKG_HOST = "opkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
+IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/temp-target"
 
 TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
 TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
@@ -40,8 +40,8 @@ do_populate_sdk() {
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/.debug/
 	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/share
-	mv ${SDK_OUTPUT}/temp-target/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status
-	rm -rf ${SDK_OUTPUT}/temp-target/usr/lib/ipkg/
+	mv ${SDK_OUTPUT}/temp-target/usr/lib/opkg/status ${SDK_OUTPUT}/${prefix}/package-status
+	rm -rf ${SDK_OUTPUT}/temp-target/usr/lib/opkg/
 	cp -pPR ${SDK_OUTPUT}/temp-target/usr/include/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 	cp -pPR ${SDK_OUTPUT}/temp-target/usr/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/
 	if [ -d ${SDK_OUTPUT}/temp-target/usr/lib/.debug ]; then
@@ -69,7 +69,7 @@ do_populate_sdk() {
 	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
 
 	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}/usr/lib/ipkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
+	mv ${SDK_OUTPUT}/usr/lib/opkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
 	rm -Rf ${SDK_OUTPUT}/usr/lib
 
 	# extract and store ipks, pkgdata and shlibs data
