@@ -49,14 +49,7 @@ PR = "r1"
 # ... and probably other distro's as well.
 #
 
-
-
-python do_unpack () {
-	bb.mkdirhier(bb.data.expand('${S}', d))
-	bb.build.exec_func('base_do_unpack', d, [ '${S}' ])
-}
-
-
+S = "${WORKDIR}"
 
 export CC2 = "${CC}"
 export BINDIR = "${bindir}"
