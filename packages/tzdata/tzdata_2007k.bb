@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r1"
+PR = "r2"
 
 PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
             tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
@@ -13,6 +13,8 @@ RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
              timezone-australia timezone-europe timezone-indian \
              timezone-iso3166.tab timezone-pacific timezone-zone.tab"
+
+RREPLACES_tzdata = "tzdata-dbg"
 
 SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz"
 
@@ -42,7 +44,7 @@ do_install () {
 # Packages primarily organized by directory with a major city
 # in most time zones in the base package
 
-PACKAGES = "${PN}-dbg tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
+PACKAGES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
     tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
     tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
 
