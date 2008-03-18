@@ -29,7 +29,7 @@ do_install() {
 	install ${S}/NPE-C ${D}/${base_libdir}/firmware/
 }
 
-do_populate_staging() {
+do_stage() {
 	install -d ${STAGING_FIRMWARE_DIR}
 	install ${S}/NPE-B ${STAGING_FIRMWARE_DIR}/
 	install ${S}/NPE-C ${STAGING_FIRMWARE_DIR}/
