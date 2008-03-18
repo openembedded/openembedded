@@ -28,3 +28,15 @@ lf_cv_sane_realloc=yes
 #sudo
 sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
 
+#popt
+glib_cv_va_copy=${glib_cv_va_copy=yes}
+glib_cv___va_copy=${glib_cv___va_copy=yes}
+ac_cv_va_copy=${ac_cv_va_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+lftp_cv_va_copy=${lftp_cv_va_copy=yes}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=yes}
+dpkg_cv_va_copy=${ac_cv_va_copy=yes}
+dpkg_cv___va_copy=${ac_cv___va_copy=yes}
+
