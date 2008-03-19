@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r65"
+PR = "r66"
 
 inherit task
 
@@ -206,7 +206,6 @@ RDEPENDS_task-base-alsa = "\
 #
 RRECOMMENDS_task-base-alsa = "\
     alsa-state \
-    alsa-states \
     kernel-module-snd-mixer-oss \
     kernel-module-snd-pcm-oss"
 
