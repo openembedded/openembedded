@@ -205,10 +205,21 @@ autotools_stage_all() {
 		cp -fpPR ${STAGE_TEMP}/${datadir}/aclocal/* ${STAGING_DATADIR}/aclocal
 	fi
 	
-	if [ "${AUTOTOOLS_NATIVE_STAGE_BINARIES}" = "1"] ; then
-		install -d ${STAGING_BINDIR_NATIVE}
-		cp -fpPR ${STAGE_TEMP}/*bin/* ${STAGING_BINDIR_NATIVE}/
-		cp -fpPR ${STAGE_TEMP}/usr/*bin/* ${STAGING_BINDIR_NATIVE}/
+	if [ "${AUTOTOOLS_NATIVE_STAGE_BINARIES}" = "1" ] ; then
+		if [ -d ${STAGE_TEMP}/bin ]; then
+			cp -fpPR ${STAGE_TEMP}/bin/*${STAGING_DIR_HOST}/${layout_bindir}
+		fi
+
+		if [ -d ${STAGE_TEMP}/sbin ]; then
+			cp -fpPR ${STAGE_TEMP}/sbin/* ${STAGING_DIR_HOST}/${layout_bindir}
+		fi
+
+		if [ -d ${STAGE_TEMP}/usr/bin ]; then
+			cp -fpPR ${STAGE_TEMP}/usr/bin/* ${STAGING_DIR_HOST}/${layout_bindir}
+		fi
+		if [ -d ${STAGE_TEMP}/usr/sbin ]; then
+			cp -fpPR ${STAGE_TEMP}/usr/sbin/* ${STAGING_DIR_HOST}/${layout_bindir}
+		fi
 	fi
 	rm -rf ${STAGE_TEMP}
 }
