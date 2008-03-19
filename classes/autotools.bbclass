@@ -17,7 +17,6 @@ def autotools_dep_prepend(d):
 		deps += 'libtool-native '
 		if not bb.data.inherits_class('native', d) \
                         and not bb.data.inherits_class('cross', d) \
-                        and not bb.data.inherits_class('sdk', d) \
                         and not bb.data.getVar('INHIBIT_DEFAULT_DEPS', d, 1):
                     deps += 'libtool-cross '
 
@@ -56,6 +55,7 @@ oe_runconf () {
 		    --oldincludedir=${oldincludedir} \
 		    --infodir=${infodir} \
 		    --mandir=${mandir} \
+                                --enable-mainainer-mode \
 			${EXTRA_OECONF} \
 		    $@"
 		oenote "Running $cfgcmd..."
@@ -171,20 +171,31 @@ autotools_stage_all() {
 	mkdir -p ${STAGE_TEMP}
 	oe_runmake DESTDIR="${STAGE_TEMP}" install
 	if [ -d ${STAGE_TEMP}/${includedir} ]; then
-		cp -fpPR ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}
+		mkdir -p ${STAGING_INCDIR}
+		cp -fpPR -t ${STAGING_INCDIR} ${STAGE_TEMP}/${includedir}/*
 	fi
 	if [ -d ${STAGE_TEMP}/${libdir} ]
 	then
-		find ${STAGE_TEMP}/${libdir} -name '*.la' -exec sed -i s,installed=yes,installed=no, {} \;
-
-		for i in ${STAGE_TEMP}/${libdir}/*.la
-		do
-			if [ ! -f "$i" ]; then
-				cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
-				break
-			fi
-			oe_libinstall -so $(basename $i .la) ${STAGING_LIBDIR}
-		done
+		olddir=`pwd`
+		cd ${STAGE_TEMP}/${libdir}
+		las=$(find . -name \*.la -type f)
+		cd $olddir
+		echo "Found la files: $las"		 
+		if [ -n "$las" ]; then
+			# If there are .la files then libtool was used in the
+			# build, so install them with magic mangling.
+			for i in $las
+			do
+				dir=$(dirname $i)
+				echo "oe_libinstall -C ${S} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}"
+				oe_libinstall -C ${S} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}
+			done
+		else
+			# Otherwise libtool wasn't used, and lib/ can be copied
+			# directly.
+			echo "cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}"
+			cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
+		fi
 	fi
 	if [ -d ${STAGE_TEMP}/${datadir}/aclocal ]; then
 		install -d ${STAGING_DATADIR}/aclocal
