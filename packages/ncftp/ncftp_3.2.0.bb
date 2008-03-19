@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ClarifiedArtistic"
 
-SRC_URI = "ftp://ftp.ncftp.com/ncftp/ncftp-${PV}-src.tar.bz2 \
+SRC_URI = "ftp://ftp.ncftp.com/ncftp/older_versions/ncftp-${PV}-src.tar.bz2 \
 	   file://acinclude.m4 \
 	   file://make.patch;patch=1 \
 	   file://fixes.patch;patch=1"
