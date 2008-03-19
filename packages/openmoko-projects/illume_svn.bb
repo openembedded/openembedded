@@ -2,9 +2,9 @@ DESCRIPTION = "Illume - Mobile UI module for Enlightenment"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 
-DEPENDS = "e eet evas ecore edje embryo efreet edbus edje-native embryo-native"
+DEPENDS = "eet evas ecore edje embryo efreet edbus edje-native embryo-native"
 
-PV = "0.0+svn${SRCREV}"
+PV = "0.0+svnr${SRCREV}"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=https"
 
