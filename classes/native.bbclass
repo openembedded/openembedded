@@ -80,6 +80,7 @@ do_stage () {
 		then
 			oe_runmake install
 		else
+			AUTOTOOLS_NATIVE_STAGE_BINARIES = "1"	
 			autotools_stage_all
 		fi
 	fi

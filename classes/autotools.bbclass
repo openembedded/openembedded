@@ -204,6 +204,12 @@ autotools_stage_all() {
 		install -d ${STAGING_DATADIR}/aclocal
 		cp -fpPR ${STAGE_TEMP}/${datadir}/aclocal/* ${STAGING_DATADIR}/aclocal
 	fi
+	
+	if [ "${AUTOTOOLS_NATIVE_STAGE_BINARIES}" = "1"] ; then
+		install -d ${STAGING_BINDIR_NATIVE}
+		cp -fpPR ${STAGE_TEMP}/*bin/* ${STAGING_BINDIR_NATIVE}/
+		cp -fpPR ${STAGE_TEMP}/usr/*bin/* ${STAGING_BINDIR_NATIVE}/
+	fi
 	rm -rf ${STAGE_TEMP}
 }
 
