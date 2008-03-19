@@ -1,14 +1,14 @@
-LICENSE = "GPL"
-PR = "r1"
-SECTION = "x11/gnome/libs"
 DESCRIPTION = "Bonobo CORBA interfaces library"
+LICENSE = "GPL"
+SECTION = "x11/gnome/libs"
+DEPENDS = "glib-2.0 orbit2 intltool-native libxml2"
 
 inherit gnome
 
-SRC_URI += "file://configure-gthread.patch;patch=1 \
-            file://gtk-doc.m4 \
-            file://gtk-doc.make"
-DEPENDS = "glib-2.0 orbit2 intltool-native libxml2"
+SRC_URI += "file://gtk-doc.m4 \
+            file://gtk-doc.make \
+           "
+
 ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 
 FILES_${PN} += "${libdir}/orbit-2.0/*.so ${libdir}/bonobo/monikers/*.so"
