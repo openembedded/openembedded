@@ -26,7 +26,7 @@ if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] ; then
 
 	TESTLAB_DIR="${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-testlab"
         mkdir -p ${TESTLAB_DIR}/
-	ls -laR ${IMAGE_ROOTFS} >& ${TESTLAB_DIR}/files-in-image.txt 	
+	ls -laR ${IMAGE_ROOTFS} > ${TESTLAB_DIR}/files-in-image.txt 	
      
 	echo > ${TESTLAB_DIR}/installed-packages.txt
 	echo -e "digraph depends {\n    node [shape=plaintext]" > ${TESTLAB_DIR}/depends.dot
