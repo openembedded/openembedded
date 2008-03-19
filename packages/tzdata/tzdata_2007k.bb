@@ -5,9 +5,6 @@ DEPENDS = "tzcode-native"
 
 PR = "r2"
 
-PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
-            tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
-            tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
 RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
              timezone-australia timezone-europe timezone-indian \
