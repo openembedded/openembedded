@@ -25,7 +25,7 @@ do_stage () {
 	done
 }
 
-PACKAGES += "mpeg2dec libmpeg2 libmpeg2-dev libmpeg2convert libmpeg2convert-dev"
+PACKAGES += "libmpeg2 libmpeg2-dev libmpeg2convert libmpeg2convert-dev"
 
 FILES_${PN} = "${bindir}/*"
 FILES_libmpeg2 = "${libdir}/libmpeg2.so.*"
