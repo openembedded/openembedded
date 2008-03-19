@@ -200,26 +200,40 @@ autotools_stage_all() {
 			cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
 		fi
 	fi
-	if [ -d ${STAGE_TEMP}/${datadir}/aclocal ]; then
-		install -d ${STAGING_DATADIR}/aclocal
-		cp -fpPR ${STAGE_TEMP}/${datadir}/aclocal/* ${STAGING_DATADIR}/aclocal
+	
+	#This will remove an empty directory so we can ignore it
+	rmdir ${STAGE_TEMP}/${datadir} || true
+	if [ -d ${STAGE_TEMP}/${datadir} ]; then
+			install -d ${STAGING_DATADIR}/
+			cp -fpPR ${STAGE_TEMP}/${datadir}/* ${STAGING_DATADIR}/
 	fi
 	
 	if [ "${AUTOTOOLS_NATIVE_STAGE_BINARIES}" = "1" ] ; then
-		if [ -d ${STAGE_TEMP}/bin ]; then
-			cp -fpPR ${STAGE_TEMP}/bin/*${STAGING_DIR_HOST}/${layout_bindir}
+		#This will remove an empty directory so we can ignore it
+		rmdir ${STAGE_TEMP}/${bindir} || true 
+		if [ -d ${STAGE_TEMP}/${bindir} ]; then
+			mkdir -p ${STAGING_DIR_HOST}${layout_bindir}
+			cp -fpPR -t ${STAGING_DIR_HOST}/${layout_bindir} ${STAGE_TEMP}/${bindir}/*
 		fi
+		#This will remove an empty directory so we can ignore it
+		rmdir ${STAGE_TEMP}/${sbindir} || true
+		if [ -d ${STAGE_TEMP}/${sbindir} ]; then
+			mkdir -p ${STAGING_DIR_HOST}${layout_sbindir}
+			cp -fpPR -t ${STAGING_DIR_HOST}/${layout_sbindir} ${STAGE_TEMP}/${sbindir}/*
+		fi
+		#This will remove an empty directory so we can ignore it
+		rmdir ${STAGE_TEMP}/${base_bindir} || true
+                if [ -d ${STAGE_TEMP}/${base_bindir} ]; then
+                        mkdir -p ${STAGING_DIR_HOST}${layout_base_bindir}
+                        cp -fpPR -t ${STAGING_DIR_HOST}/${layout_base_bindir} ${STAGE_TEMP}/${base_bindir}/*
+                fi
+		#This will remove an empty directory so we can ignore it
+		rmdir ${STAGE_TEMP}/${base_sbindir} || true
+                if [ -d ${STAGE_TEMP}/${base_sbindir} ]; then
+                        mkdir -p ${STAGING_DIR_HOST}${layout_base_sbindir}
+                        cp -fpPR -t ${STAGING_DIR_HOST}/${layout_nase_sbindir} ${STAGE_TEMP}/${base_sbindir}/*
+                fi
 
-		if [ -d ${STAGE_TEMP}/sbin ]; then
-			cp -fpPR ${STAGE_TEMP}/sbin/* ${STAGING_DIR_HOST}/${layout_bindir}
-		fi
-
-		if [ -d ${STAGE_TEMP}/usr/bin ]; then
-			cp -fpPR ${STAGE_TEMP}/usr/bin/* ${STAGING_DIR_HOST}/${layout_bindir}
-		fi
-		if [ -d ${STAGE_TEMP}/usr/sbin ]; then
-			cp -fpPR ${STAGE_TEMP}/usr/sbin/* ${STAGING_DIR_HOST}/${layout_bindir}
-		fi
 	fi
 	rm -rf ${STAGE_TEMP}
 }
