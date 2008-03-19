@@ -16,6 +16,7 @@ INITSCRIPT_PARAMS = "defaults"
 inherit autotools update-rc.d
 
 EXTRA_OEMAKE += "'WEBDIR=${servicedir}/www'"
+FILES_${PN}-dbg_append = " ${servicedir}/www/cgi-bin/.debug"
 FILES_${PN}_append = " ${servicedir}"
 
 do_configure () {
