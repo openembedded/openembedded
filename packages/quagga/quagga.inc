@@ -21,6 +21,8 @@ RDEPENDS_${PN}-watchquagga = "${PN}"
 # the "ip" command from busybox is not sufficient (flush by protocol flushes all routes)
 RDEPENDS_${PN}          += "iproute2"
 
+QUAGGASUBDIR = ""
+
 # ${QUAGGASUBDIR} is deal with old versions. Set to "/attic" for old
 # versions and leave it empty for recent versions.
 SRC_URI = "http://www.quagga.net/download${QUAGGASUBDIR}/quagga-${PV}.tar.gz \
