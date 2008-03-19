@@ -43,8 +43,9 @@ INHERIT += "devshell"
 #use angstrom source mirrors to combat 404s
 INHERIT += "angstrom-mirrors" 
 
-#run QA tests on builds and packages 
+#run QA tests on builds and packages and log them  
 INHERIT += "insane"
+QA_LOG = "1"
 
 #save statistical info on images
 INHERIT += "testlab"
