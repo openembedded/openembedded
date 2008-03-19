@@ -28,7 +28,9 @@ export LD_LIBRARY_PATH=$QPEDIR/lib:$LD_LIBRARY_PATH
 
 #tell Qtopia how to inform illume on incoming phone calls
 #export ILLUME_PHONE_CALL=
+export QTOPIA_PHONE_VENDOR=ficgta01
+export QTOPIA_PHONE_MUX=ficgta01
 
 
 # Now start Qtopia
-exec qpe
+qpe &

@@ -11,12 +11,11 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS = "glib-2.0 dbus freetype alsa-lib bluez-libs virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor libxtst"
+RDEPENDS = "atd tzdata tzdata-africa tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
 PROVIDES = "qtopia-phone"
-PR = "r4"
+PR = "r8"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
-           file://device-conf \
-           file://qplatformdefs.h \
            file://Xsession.d/99qtopia \
            file://qtopia.sh"
 
@@ -31,24 +30,34 @@ TARGET-DEVICE="${@base_contains('MACHINE', 'tosa', ' c3200', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'fic-gta01', 'ficgta01', '',d)}"
 TARGET-DEVICE="${@base_contains('MACHINE', 'fic-gta02', 'ficgta01', '',d)}"
 
-export QTOPIA_DEPOT_PATH = "${S}"
-
 require qtopia-phone_arch.inc
 
 QT_ARCH = "${@qtopia_arch(d)}"
 QT_ENDIAN = "${@qtopia_endian(d)}"
 PLATFORM = "${BUILD_OS}-g++"
-XPLATFORM = "linux-oe-g++"
 BUILDDIR = "${WORKDIR}/build"
+OE_QT_PREFIX = "/opt/Qtopia"
 
-OE_QT_DBUSPATH = "${STAGING_DIR_HOST}"
-OE_QT_ARCH = "${QT_ARCH}"
-OE_QT_XPLATFORM = "${XPLATFORM}"
-OE_QT_RPREFIX = "/opt/Qtopia"
-OE_QT_ENDIAN = "${QT_ENDIAN}"
-OE_QT_EXTRACONFIG = "-I${STAGING_INCDIR}/dbus-1.0"
+export OE_QMAKE_CC="${CC}"
+export OE_QMAKE_CFLAGS="${CFLAGS}"
+export OE_QMAKE_CXX="${CXX}"
+export OE_QMAKE_LDFLAGS="${LDFLAGS}"
+export OE_QMAKE_AR="${AR}"
+export OE_QMAKE_STRIP="echo"
+export OE_QMAKE_RPATH="-Wl,-rpath-link,"
 
 do_configure() {
+
+# This qmake some how does not honor env var, let us fix it by sed force
+sed -i s%$\(OE_QMAKE_CC\)%"${CC}"%g               ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_CFLAGS\)%"${CFLAGS}"%g       ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_CXX\)%"${CXX}"%g             ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_CXXFLAGS\)%"${CXXFLAGS}"%g   ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_LINK\)%"${CXX}"%g            ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_LDFLAGS\)%"${LDFLAGS}"%g     ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_AR\)%"${AR}"%g               ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+sed -i s%$\(OE_QMAKE_STRIP\)%"echo"%g             ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/linux-oe-g++/qmake.conf
+
 
 unset CC
 unset CXX
@@ -56,30 +65,12 @@ unset CFLAGS
 unset CXXFLAGS
 unset LDFLAGS
 
-mkdir -p ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/${XPLATFORM}
-install -m 644 ${S}/qtopiacore/qt/mkspecs/qws/linux-arm-g++/qmake.conf \
-    ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/${XPLATFORM}
-install -m 644 ${WORKDIR}/qplatformdefs.h \
-    ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/${XPLATFORM}
-sed -i -e "s@arm-linux-@${TARGET_SYS}-@" ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/${XPLATFORM}/qmake.conf
-sed -i -e "s|QMAKE_RPATH.*|QMAKE_RPATH =|" ${S}/devices/${TARGET-DEVICE}/mkspecs/qws/${XPLATFORM}/qmake.conf
-
-# sed the dynamic config into the file
-sed -i -e "s|OE_QT_DBUSPATH|${OE_QT_DBUSPATH}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_ARCH|${OE_QT_ARCH}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_XPLATFORM|${OE_QT_XPLATFORM}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_RPREFIX|${OE_QT_RPREFIX}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_ENDIAN|${OE_QT_ENDIAN}|" ${WORKDIR}/device-conf
-sed -i -e "s|OE_QT_EXTRACONFIG|${OE_QT_EXTRACONFIG}|" ${WORKDIR}/device-conf
-
-rm -f ${S}/devices/${TARGET-DEVICE}/configure
-cp ${WORKDIR}/device-conf ${S}/devices/${TARGET-DEVICE}/configure
-rm -f ${S}/devices/${TARGET-DEVICE}/environment
-echo "" > ${S}/devices/${TARGET-DEVICE}/environment
 
 mkdir -p ${BUILDDIR}
 cd ${BUILDDIR}
-echo yes | ${S}/configure -device ${TARGET-DEVICE} -xplatform ${XPLATFORM} -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig
+echo yes | ${S}/configure -xplatform linux-oe-g++ -arch ${QT_ARCH} ${QT_ENDIAN} -prefix ${OE_QT_PREFIX} -device ${TARGET-DEVICE} -verbose \
+                          -no-drm -no-sxe -displaysize 480x640 -dbus -debug -extra-qtopiacore-config "-qt-libjpeg -qt-zlib -qt-libpng -no-iconv -no-sm -fontconfig -xrender -xrandr" \
+                           -I${STAGING_INCDIR}/freetype2 -I${STAGING_INCDIR}/fontconfig -I${STAGING_INCDIR}/dbus-1.0
 
 }
 
@@ -94,7 +85,7 @@ do_stage() {
 
 do_install() {
    cd ${BUILDDIR}
-   oe_runmake install INSTALL_ROOT=${D}${OE_QT_RPREFIX} IMAGE=${D}${OE_QT_RPREFIX}
+   oe_runmake install INSTALL_ROOT=${D}${OE_QT_PREFIX} IMAGE=${D}${OE_QT_PREFIX}
 
    # Install freedesktop.org .desktop files for enlightenment
    install -d ${D}${datadir}/applications
@@ -118,12 +109,15 @@ do_install() {
    install -m 0755 ${WORKDIR}/qtopia.sh ${D}${sysconfdir}/profile.d/
 }
 
-FILES_${PN} += "${OE_QT_RPREFIX}/bin ${OE_QT_RPREFIX}/help  \
-                ${OE_QT_RPREFIX}/lib/*.so.* ${OE_QT_RPREFIX}/plugins \
-                ${OE_QT_RPREFIX}/qtopia_db.sqlite ${OE_QT_RPREFIX}/sounds \
-                ${OE_QT_RPREFIX}/etc ${OE_QT_RPREFIX}/i18n \
-                ${OE_QT_RPREFIX}/pics ${OE_QT_RPREFIX}/qt_plugins \
-                ${OE_QT_RPREFIX}/services ${OE_QT_RPREFIX}/lib/fonts"
+FILES_${PN} += "${OE_QT_PREFIX}/bin ${OE_QT_PREFIX}/help  \
+                ${OE_QT_PREFIX}/lib/*.so.* ${OE_QT_PREFIX}/plugins/*/*.so \
+                ${OE_QT_PREFIX}/qtopia_db.sqlite ${OE_QT_PREFIX}/sounds \
+                ${OE_QT_PREFIX}/etc ${OE_QT_PREFIX}/i18n \
+                ${OE_QT_PREFIX}/pics ${OE_QT_PREFIX}/qt_plugins/*/*.so \
+                ${OE_QT_PREFIX}/services"
 
-FILES_${PN}-dev += "${OE_QT_RPREFIX}/lib/*.so"
+FILES_${PN}-dbg += "${OE_QT_PREFIX}/lib/.debug/ ${OE_QT_PREFIX}/bin/.debug/ \
+                    ${OE_QT_PREFIX}/plugins/*/.debug/ ${OE_QT_PREFIX}/qt_plugins/*/.debug/ "
+
+FILES_${PN}-dev += "${OE_QT_PREFIX}/lib/*.so"
 
