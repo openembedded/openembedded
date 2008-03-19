@@ -5,7 +5,7 @@ PROVIDES += "virtual/update-alternatives-native"
 
 do_stage () {
     install -d ${sbindir} \
-               ${libdir}/ipkg/alternatives
+               ${libdir}/opkg/alternatives
 
     install -m 0755 update-alternatives ${sbindir}/update-alternatives
 }
