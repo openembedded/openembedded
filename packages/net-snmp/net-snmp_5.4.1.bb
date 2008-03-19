@@ -4,6 +4,9 @@ LICENSE = "BSD"
 DEPENDS = "openssl"
 RDEPENDS_${PN}-server += "net-snmp-mibs"
 RDEPENDS_${PN}-client += "net-snmp-mibs"
+RDEPENDS_${PN}-dev = "net-snmp-client (= ${DEBPV}) net-snmp-server (= ${DEBPV})"
+RRECOMMENDS_${PN}-dbg = "net-snmp-client (= ${DEBPV}) net-snmp-server (= ${DEBPV})"
+
 PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.tar.gz \
