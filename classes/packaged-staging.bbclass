@@ -26,6 +26,8 @@ PSTAGE_NATIVEDEPENDS = "\
     pkgconfig-native \
     autoconf-native \
     automake-native \
+    curl-native \
+    zlib-native \
     libtool-native \
     gnu-config-native \
     shasum-native \
@@ -33,7 +35,7 @@ PSTAGE_NATIVEDEPENDS = "\
     automake-native \
     update-alternatives-cworth-native \
     ipkg-utils-native \
-    ipkg-native \
+    opkg-native \
     m4-native \
     quilt-native \
     stagemanager-native \
@@ -70,7 +72,7 @@ python () {
         bb.data.setVarFlag('do_populate_staging', 'depends', deps, d)
 
         deps = bb.data.getVarFlag('do_prepackaged_stage', 'depends', d) or ""
-        deps += " ipkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
+        deps += " opkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
         bb.data.setVarFlag('do_prepackaged_stage', 'depends', deps, d)
         bb.data.setVar("PSTAGING_ACTIVE", "1", d)
     else:
@@ -78,13 +80,13 @@ python () {
 }
 
 DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage"
-PSTAGE_MACHCONFIG       = "${DEPLOY_DIR_PSTAGE}/ipkg.conf"
+PSTAGE_MACHCONFIG       = "${DEPLOY_DIR_PSTAGE}/opkg.conf"
 
 PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
-PSTAGE_INSTALL_CMD      = "ipkg-cl install -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_UPDATE_CMD	= "ipkg-cl update -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_REMOVE_CMD       = "ipkg-cl remove -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_LIST_CMD		= "ipkg-cl list_installed -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
+PSTAGE_INSTALL_CMD      = "opkg-cl install -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
+PSTAGE_UPDATE_CMD	= "opkg-cl update -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
+PSTAGE_REMOVE_CMD       = "opkg-cl remove -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
+PSTAGE_LIST_CMD		= "opkg-cl list_installed -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
 
 PSTAGE_TMPDIR_STAGE     = "${WORKDIR}/staging-pkg"
 
@@ -106,7 +108,7 @@ do_clean_append() {
 }
 
 staging_helper () {
-	# Assemble appropriate ipkg.conf
+	# Assemble appropriate opkg.conf
 	conffile=${PSTAGE_MACHCONFIG}
 	mkdir -p ${DEPLOY_DIR_PSTAGE}/pstaging_lists
 	if [ ! -e $conffile ]; then

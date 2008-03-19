@@ -85,8 +85,6 @@ fakeroot do_rootfs () {
 
 	insert_feed_uris	
 
-	rm -f ${IMAGE_ROOTFS}${libdir}/ipkg/lists/*
-	
 	${IMAGE_PREPROCESS_COMMAND}
 		
 	export TOPDIR=${TOPDIR}
@@ -132,7 +130,7 @@ insert_feed_uris () {
 		echo "Added $feed_name feed with URL $feed_uri"
 		
 		# insert new feed-sources
-		echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/ipkg/${feed_name}-feed.conf
+		echo "src/gz $feed_name $feed_uri" >> ${IMAGE_ROOTFS}/etc/opkg/${feed_name}-feed.conf
 	done			
 
 	# Allow to use package deploy directory contents as quick devel-testing
@@ -142,7 +140,7 @@ insert_feed_uris () {
 	if [ -n "${FEED_DEPLOYDIR_BASE_URI}" ]; then
 	    for arch in ${PACKAGE_ARCHS}
 	    do
-		echo "src/gz local-$arch ${FEED_DEPLOYDIR_BASE_URI}/$arch" >> ${IMAGE_ROOTFS}/etc/ipkg/local-$arch-feed.conf
+		echo "src/gz local-$arch ${FEED_DEPLOYDIR_BASE_URI}/$arch" >> ${IMAGE_ROOTFS}/etc/opkg/local-$arch-feed.conf
 	    done
 	fi
 }
