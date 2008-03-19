@@ -10,7 +10,7 @@ S = "${WORKDIR}/${PN}-${PV}"
 
 inherit autotools update-rc.d
 
-EXTRA_OECONF = "--with-libol=${STAGING_BINDIR_CROSS}/"
+EXTRA_OECONF = "--with-libol=${STAGING_BINDIR_CROSS}/ --enable-dynamic-linking"
 
 do_install_append() {
         install -d ${D}/${sysconfdir}/${PN}
