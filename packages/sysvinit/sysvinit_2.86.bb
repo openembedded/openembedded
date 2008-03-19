@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r36"
+PR = "r38"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -104,27 +104,31 @@ EOF
 }
 
 pkg_postinst_${PN} () {
-	update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 200
-	update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 200
-	update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
-	update-alternatives --install ${bindir}/last last last.${PN} 200
-	update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 200
-	update-alternatives --install ${bindir}/wall wall wall.${PN} 200
+#/bin/sh
+update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 200
+update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 200
+update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
+update-alternatives --install ${bindir}/last last last.${PN} 200
+update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 200
+update-alternatives --install ${bindir}/wall wall wall.${PN} 200
 }
 
 pkg_prerm_${PN} () {
-	update-alternatives --remove halt halt.${PN}
-	update-alternatives --remove reboot reboot.${PN}
-	update-alternatives --remove shutdown shutdown.${PN}
-	update-alternatives --remove last last.${PN}
-	update-alternatives --remove mesg mesg.${PN}
-	update-alternatives --remove wall wall.${PN}
+#!/bin/sh
+update-alternatives --remove halt halt.${PN}
+update-alternatives --remove reboot reboot.${PN}
+update-alternatives --remove shutdown shutdown.${PN}
+update-alternatives --remove last last.${PN}
+update-alternatives --remove mesg mesg.${PN}
+update-alternatives --remove wall wall.${PN}
 }
 
 pkg_postinst_sysvinit-pidof () {
-	update-alternatives --install ${base_bindir}/pidof pidof pidof.${PN} 200
+#!/bin/sh
+update-alternatives --install ${base_bindir}/pidof pidof pidof.${PN} 200
 }
 
 pkg_prerm_sysvinit-pidof () {
-	update-alternatives --remove pidof pidof.${PN}
+#!/bin/sh
+update-alternatives --remove pidof pidof.${PN}
 }
