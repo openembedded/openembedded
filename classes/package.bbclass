@@ -490,6 +490,8 @@ python emit_pkgdata() {
 	for pkg in packages.split():
 		subdata_file = pkgdatadir + "/runtime/%s" % pkg
 		sf = open(subdata_file, 'w')
+		write_if_exists(sf, pkg, 'PN')
+		write_if_exists(sf, pkg, 'PR')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
 		write_if_exists(sf, pkg, 'RPROVIDES')
@@ -497,7 +499,6 @@ python emit_pkgdata() {
 		write_if_exists(sf, pkg, 'RSUGGESTS')
 		write_if_exists(sf, pkg, 'RREPLACES')
 		write_if_exists(sf, pkg, 'RCONFLICTS')
-		write_if_exists(sf, pkg, 'PR')
 		write_if_exists(sf, pkg, 'PKG')
 		write_if_exists(sf, pkg, 'ALLOW_EMPTY')
 		write_if_exists(sf, pkg, 'FILES')
