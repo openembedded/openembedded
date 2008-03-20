@@ -81,6 +81,7 @@ SRCDATE_engrave ?= "${EFL_SRCDATE}"
 SRCDATE_evolve-native ?= "${EFL_SRCDATE}"
 SRCDATE_evolve ?= "${EFL_SRCDATE}"
 SRCDATE_gevas2 ?= "${EFL_SRCDATE}"
+SRCDATE_imlib2 ?= "${EFL_SRCDATE}"
 
 # Enlightenment Bindings
 SRCDATE_eflpp ?= "${EFL_SRCDATE}"
