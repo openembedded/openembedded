@@ -2,10 +2,10 @@ DESCRIPTION = "PackageKit package management abstraction"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool"
-RDEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 opkg"
+DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
+RDEPENDS_${PN} = "opkg"
 PV = "0.1+git${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1"
@@ -25,3 +25,4 @@ do_stage () {
 }
 
 FILES_${PN} += "${libdir}/packagekit-backend/*.so ${datadir}/dbus-1/system-services/"
+FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so "
