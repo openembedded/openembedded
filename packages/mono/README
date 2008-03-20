@@ -28,6 +28,6 @@ This function calls mono_find_provides_and_requires which finds out (through
 calls to monodis --assembly and monodis --assemblyref) which assemblies are
 provided and required by a particular package. mono_do_clilibs then
 puts the information about provided assemblies into
-${STAGING_DIR}/clilibs/${packagename}.list and information about the
+${CLILIBSDIR}/${packagename}.list and information about the
 required packages into ${PKGDEST}/{packagename}.clilibdeps where it
 will later be picked up by read_shlibdeps.

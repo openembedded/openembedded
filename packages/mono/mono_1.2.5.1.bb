@@ -2,10 +2,11 @@ require mono_1.2.5.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://configure.patch;patch=1 \
-	file://genmdesc-cpp.patch;patch=1"
+	file://genmdesc-cpp.patch;patch=1 \
+	file://disable-monoburg.patch;patch=1"
 
 # Per http://www.mono-project.com/Mono:ARM
 EXTRA_OECONF += " --disable-mcs-build "
@@ -14,7 +15,7 @@ EXTRA_OECONF += " --disable-mcs-build "
 do_install_prepend() {
 	install -d ${D}
 	pushd ${D}
-	tar -xzf ${STAGING_DIR}/share/mono-mcs/mono-mcs-${PV}.tar.gz
+	tar -xzf ${STAGING_DATADIR_NATIVE}/mono-mcs/mono-mcs-${PV}.tar.gz
 	popd
 }
 
