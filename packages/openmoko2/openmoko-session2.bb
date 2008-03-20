@@ -1,10 +1,9 @@
 DESCRIPTION = "Custom Matchbox session files for OpenMoko"
 LICENSE = "GPL"
 SECTION = "x11"
-RDEPENDS = "matchbox-applet-startup-monitor matchbox-panel-2"
-RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2"
+RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
-PR = "r64"
+PR = "r65"
 
 SRC_URI = "\
   file://etc \
