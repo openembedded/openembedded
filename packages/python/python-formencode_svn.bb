@@ -5,9 +5,9 @@ LICENSE = "LGPL"
 DEPENDS = "sqlite3"
 SRCNAME = "FormEncode"
 PV = "0.4+svnr${SRCREV}"
-PR = "ml0"
+PR = "ml1"
 
-inherit distutils
+inherit setuptools
 
 SRC_URI = "svn://svn.colorstudy.com/FormEncode;module=trunk;proto=http"
 
