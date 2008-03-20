@@ -1,21 +1,21 @@
 # This is a generated file, please do not edit directly
 # Use collect-files.py instead. -- Henryk <henryk@openmoko.org>
-FILES_mono-jit-dbg = "/usr/bin/mono*.mdb \
+FILES_mono-jit-dbg += "/usr/bin/mono*.mdb \
 	/usr/bin/mono*/*.mdb"
 FILES_mono-jit = "/usr/bin/mono"
-FILES_mono-gac-dbg = "/usr/bin/gacutil*.mdb \
+FILES_mono-gac-dbg += "/usr/bin/gacutil*.mdb \
 	/usr/bin/gacutil*/*.mdb \
 	/usr/lib/mono/1.0/gacutil.exe*.mdb \
 	/usr/lib/mono/1.0/gacutil.exe*/*.mdb"
 FILES_mono-gac = "/usr/bin/gacutil \
 	/usr/lib/mono/1.0/gacutil.exe"
-FILES_mono-mjs-dbg = "/usr/bin/mjs*.mdb \
+FILES_mono-mjs-dbg += "/usr/bin/mjs*.mdb \
 	/usr/bin/mjs*/*.mdb \
 	/usr/lib/mono/1.0/mjs.exe*.mdb \
 	/usr/lib/mono/1.0/mjs.exe*/*.mdb"
 FILES_mono-mjs = "/usr/bin/mjs \
 	/usr/lib/mono/1.0/mjs.exe*"
-FILES_mono-gmcs-dbg = "/usr/bin/gmcs*.mdb \
+FILES_mono-gmcs-dbg += "/usr/bin/gmcs*.mdb \
 	/usr/bin/gmcs*/*.mdb \
 	/usr/bin/wsdl2*.mdb \
 	/usr/bin/wsdl2*/*.mdb \
@@ -77,7 +77,7 @@ FILES_mono-gmcs = "/usr/bin/gmcs \
 	/usr/lib/mono/2.0/Microsoft.Common.tasks \
 	/usr/lib/mono/2.0/Microsoft.Common.targets \
 	/usr/lib/mono/2.0/Microsoft.VisualBasic.targets"
-FILES_mono-utils-dbg = "/usr/bin/pedump*.mdb \
+FILES_mono-utils-dbg += "/usr/bin/pedump*.mdb \
 	/usr/bin/pedump*/*.mdb \
 	/usr/bin/monodis*.mdb \
 	/usr/bin/monodis*/*.mdb \
@@ -92,7 +92,7 @@ FILES_mono-utils = "/usr/bin/pedump \
 	/usr/bin/monograph \
 	/usr/bin/mono-find-provides \
 	/usr/bin/mono-find-requires"
-FILES_libmono-peapi1.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
+FILES_libmono-peapi1.0-cil-dbg += "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/1.0.*/.debug/ \
 	/usr/lib/mono/gac/PEAPI/1.0.*/../.debug/ \
@@ -100,7 +100,7 @@ FILES_libmono-peapi1.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
 	/usr/lib/mono/1.0/PEAPI.dll*/*.mdb"
 FILES_libmono-peapi1.0-cil = "/usr/lib/mono/gac/PEAPI/1.0.*/ \
 	/usr/lib/mono/1.0/PEAPI.dll"
-FILES_libmono-cairo1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
+FILES_libmono-cairo1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/../.debug/ \
@@ -111,7 +111,7 @@ FILES_libmono-cairo1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
 FILES_libmono-cairo1.0-cil = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Cairo.dll \
 	/usr/lib/pkgconfig/mono-cairo.pc"
-FILES_libmono-system-web2.0-cil-dbg = "/usr/lib/mono/gac/System.Web/2.0.*/*.mdb \
+FILES_libmono-system-web2.0-cil-dbg += "/usr/lib/mono/gac/System.Web/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Web/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Web/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Web/2.0.*/../.debug/ \
@@ -127,7 +127,7 @@ FILES_libmono-system-web2.0-cil = "/usr/lib/mono/gac/System.Web/2.0.*/ \
 	/usr/lib/mono/gac/System.Web.Services/2.0.*/ \
 	/usr/lib/mono/2.0/System.Web.dll \
 	/usr/lib/mono/2.0/System.Web.Services.dll"
-FILES_libmono-accessibility2.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/2.0.*/*.mdb \
+FILES_libmono-accessibility2.0-cil-dbg += "/usr/lib/mono/gac/Accessibility/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Accessibility/2.0.*/../.debug/ \
@@ -135,7 +135,7 @@ FILES_libmono-accessibility2.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/2.0.*/
 	/usr/lib/mono/2.0/Accessibility.dll*/*.mdb"
 FILES_libmono-accessibility2.0-cil = "/usr/lib/mono/gac/Accessibility/2.0.*/ \
 	/usr/lib/mono/2.0/Accessibility.dll"
-FILES_libmono-microsoft7.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*.mdb \
+FILES_libmono-microsoft7.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/../.debug/ \
@@ -159,7 +159,7 @@ FILES_libmono-microsoft7.0-cil = "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/ \
 	/usr/lib/mono/1.0/Microsoft.JScript.dll \
 	/usr/lib/mono/1.0/Microsoft.VisualC.dll \
 	/usr/lib/mono/1.0/Microsoft.Vsa.dll"
-FILES_libmono-winforms2.0-cil-dbg = "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*.mdb \
+FILES_libmono-winforms2.0-cil-dbg += "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/../.debug/ \
@@ -183,7 +183,7 @@ FILES_libmono-winforms2.0-cil = "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/ \
 	/usr/lib/mono/2.0/System.Windows.Forms.dll \
 	/usr/lib/mono/2.0/System.Drawing.Design.dll \
 	/usr/lib/mono/2.0/System.Design.dll"
-FILES_libmono-ldap1.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*.mdb \
+FILES_libmono-ldap1.0-cil-dbg += "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/../.debug/ \
@@ -191,7 +191,7 @@ FILES_libmono-ldap1.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*
 	/usr/lib/mono/1.0/Novell.Directory.Ldap.dll*/*.mdb"
 FILES_libmono-ldap1.0-cil = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/ \
 	/usr/lib/mono/1.0/Novell.Directory.Ldap.dll"
-FILES_libmono-sharpzip2.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*.mdb \
+FILES_libmono-sharpzip2.84-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/../.debug/ \
@@ -199,7 +199,7 @@ FILES_libmono-sharpzip2.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/
 	/usr/lib/mono/2.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip2.84-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/ \
 	/usr/lib/mono/2.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-system-data2.0-cil-dbg = "/usr/lib/mono/gac/System.Data/2.0.*/*.mdb \
+FILES_libmono-system-data2.0-cil-dbg += "/usr/lib/mono/gac/System.Data/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data/2.0.*/../.debug/ \
@@ -207,7 +207,7 @@ FILES_libmono-system-data2.0-cil-dbg = "/usr/lib/mono/gac/System.Data/2.0.*/*.md
 	/usr/lib/mono/2.0/System.Data.dll*/*.mdb"
 FILES_libmono-system-data2.0-cil = "/usr/lib/mono/gac/System.Data/2.0.*/ \
 	/usr/lib/mono/2.0/System.Data.dll"
-FILES_libmono-corlib2.0-cil-dbg = "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
+FILES_libmono-corlib2.0-cil-dbg += "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/I18N*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/I18N*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/I18N*/2.0.*/../.debug/ \
@@ -218,7 +218,7 @@ FILES_libmono-corlib2.0-cil-dbg = "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
 FILES_libmono-corlib2.0-cil = "/usr/lib/mono/gac/I18N*/2.0.*/ \
 	/usr/lib/mono/2.0/I18N*.dll \
 	/usr/lib/mono/2.0/mscorlib.dll*"
-FILES_libmono-winforms1.0-cil-dbg = "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*.mdb \
+FILES_libmono-winforms1.0-cil-dbg += "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/../.debug/ \
@@ -242,7 +242,7 @@ FILES_libmono-winforms1.0-cil = "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/ \
 	/usr/lib/mono/1.0/System.Windows.Forms.dll \
 	/usr/lib/mono/1.0/System.Drawing.Design.dll \
 	/usr/lib/mono/1.0/System.Design.dll"
-FILES_libmono-microsoft8.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*.mdb \
+FILES_libmono-microsoft8.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/../.debug/ \
@@ -266,7 +266,7 @@ FILES_libmono-microsoft8.0-cil = "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/ \
 	/usr/lib/mono/2.0/Microsoft.JScript.dll \
 	/usr/lib/mono/2.0/Microsoft.VisualC.dll \
 	/usr/lib/mono/2.0/Microsoft.Vsa.dll"
-FILES_libmono-corlib1.0-cil-dbg = "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
+FILES_libmono-corlib1.0-cil-dbg += "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/I18N*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/I18N*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/I18N*/1.0.*/../.debug/ \
@@ -277,7 +277,7 @@ FILES_libmono-corlib1.0-cil-dbg = "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
 FILES_libmono-corlib1.0-cil = "/usr/lib/mono/gac/I18N*/1.0.*/ \
 	/usr/lib/mono/1.0/I18N*.dll \
 	/usr/lib/mono/1.0/mscorlib.dll*"
-FILES_libmono-system-web1.0-cil-dbg = "/usr/lib/mono/gac/System.Web/1.0.*/*.mdb \
+FILES_libmono-system-web1.0-cil-dbg += "/usr/lib/mono/gac/System.Web/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Web/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Web/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Web/1.0.*/../.debug/ \
@@ -293,7 +293,7 @@ FILES_libmono-system-web1.0-cil = "/usr/lib/mono/gac/System.Web/1.0.*/ \
 	/usr/lib/mono/gac/System.Web.Services/1.0.*/ \
 	/usr/lib/mono/1.0/System.Web.dll \
 	/usr/lib/mono/1.0/System.Web.Services.dll"
-FILES_libmono-system-runtime2.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/2.0.*/*.mdb \
+FILES_libmono-system-runtime2.0-cil-dbg += "/usr/lib/mono/gac/System.Runtime.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/../.debug/ \
@@ -301,7 +301,7 @@ FILES_libmono-system-runtime2.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/2.
 	/usr/lib/mono/2.0/System.Runtime.*.dll*/*.mdb"
 FILES_libmono-system-runtime2.0-cil = "/usr/lib/mono/gac/System.Runtime.*/2.0.*/ \
 	/usr/lib/mono/2.0/System.Runtime.*.dll"
-FILES_libmono-cscompmgd8.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
+FILES_libmono-cscompmgd8.0-cil-dbg += "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/.debug/ \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/../.debug/ \
@@ -309,7 +309,7 @@ FILES_libmono-cscompmgd8.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
 	/usr/lib/mono/2.0/cscompmgd.dll*/*.mdb"
 FILES_libmono-cscompmgd8.0-cil = "/usr/lib/mono/gac/cscompmgd/8.0.*/ \
 	/usr/lib/mono/2.0/cscompmgd.dll"
-FILES_libmono-cscompmgd7.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
+FILES_libmono-cscompmgd7.0-cil-dbg += "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/.debug/ \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/../.debug/ \
@@ -317,7 +317,7 @@ FILES_libmono-cscompmgd7.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
 	/usr/lib/mono/1.0/cscompmgd.dll*/*.mdb"
 FILES_libmono-cscompmgd7.0-cil = "/usr/lib/mono/gac/cscompmgd/7.0.*/ \
 	/usr/lib/mono/1.0/cscompmgd.dll"
-FILES_libmono-firebirdsql1.7-cil-dbg = "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*.mdb \
+FILES_libmono-firebirdsql1.7-cil-dbg += "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*.mdb \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*/*.mdb \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/.debug/ \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/../.debug/ \
@@ -325,10 +325,10 @@ FILES_libmono-firebirdsql1.7-cil-dbg = "/usr/lib/mono/gac/FirebirdSql.Data.Fireb
 	/usr/lib/mono/1.0/FirebirdSql.Data.Firebird.dll*/*.mdb"
 FILES_libmono-firebirdsql1.7-cil = "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/ \
 	/usr/lib/mono/1.0/FirebirdSql.Data.Firebird.dll"
-FILES_mono-jay-dbg = "/usr/bin/jay*.mdb \
+FILES_mono-jay-dbg += "/usr/bin/jay*.mdb \
 	/usr/bin/jay*/*.mdb"
 FILES_mono-jay = "/usr/bin/jay"
-FILES_libmono-data-tds1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb \
+FILES_libmono-data-tds1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/../.debug/ \
@@ -336,7 +336,7 @@ FILES_libmono-data-tds1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb
 	/usr/lib/mono/1.0/Mono.Data.Tds.dll*/*.mdb"
 FILES_libmono-data-tds1.0-cil = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Data.Tds.dll"
-FILES_libmono-sqlite1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*.mdb \
+FILES_libmono-sqlite1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/../.debug/ \
@@ -352,7 +352,7 @@ FILES_libmono-sqlite1.0-cil = "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/ \
 	/usr/lib/mono/gac/Mono.Data.SqliteClient/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Data.Sqlite.dll \
 	/usr/lib/mono/1.0/Mono.Data.SqliteClient.dll"
-FILES_libmono-relaxng1.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*.mdb \
+FILES_libmono-relaxng1.0-cil-dbg += "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/../.debug/ \
@@ -360,7 +360,7 @@ FILES_libmono-relaxng1.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/
 	/usr/lib/mono/1.0/Commons.Xml.Relaxng.dll*/*.mdb"
 FILES_libmono-relaxng1.0-cil = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/ \
 	/usr/lib/mono/1.0/Commons.Xml.Relaxng.dll"
-FILES_libmono-dev-dbg = "/usr/lib/libmono*.a*.mdb \
+FILES_libmono-dev-dbg += "/usr/lib/libmono*.a*.mdb \
 	/usr/lib/libmono*.a*/*.mdb \
 	/usr/lib/libMono*.a*.mdb \
 	/usr/lib/libMono*.a*/*.mdb \
@@ -383,7 +383,7 @@ FILES_libmono-dev = "/usr/lib/libmono*.a \
 	/usr/lib/pkgconfig/mono.pc \
 	/usr/lib/pkgconfig/dotnet.pc \
 	/usr/include/"
-FILES_libmono-accessibility1.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/1.0.*/*.mdb \
+FILES_libmono-accessibility1.0-cil-dbg += "/usr/lib/mono/gac/Accessibility/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Accessibility/1.0.*/../.debug/ \
@@ -391,13 +391,13 @@ FILES_libmono-accessibility1.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/1.0.*/
 	/usr/lib/mono/1.0/Accessibility.dll*/*.mdb"
 FILES_libmono-accessibility1.0-cil = "/usr/lib/mono/gac/Accessibility/1.0.*/ \
 	/usr/lib/mono/1.0/Accessibility.dll"
-FILES_mono-common-dbg = "/etc/mono*.mdb \
+FILES_mono-common-dbg += "/etc/mono*.mdb \
 	/etc/mono*/*.mdb \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml*.mdb \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml*/*.mdb"
 FILES_mono-common = "/etc/mono \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml"
-FILES_libmono-oracle1.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*.mdb \
+FILES_libmono-oracle1.0-cil-dbg += "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/../.debug/ \
@@ -405,7 +405,7 @@ FILES_libmono-oracle1.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/1.
 	/usr/lib/mono/1.0/System.Data.OracleClient.dll*/*.mdb"
 FILES_libmono-oracle1.0-cil = "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/ \
 	/usr/lib/mono/1.0/System.Data.OracleClient.dll"
-FILES_libmono-system-data1.0-cil-dbg = "/usr/lib/mono/gac/System.Data/1.0.*/*.mdb \
+FILES_libmono-system-data1.0-cil-dbg += "/usr/lib/mono/gac/System.Data/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data/1.0.*/../.debug/ \
@@ -413,7 +413,7 @@ FILES_libmono-system-data1.0-cil-dbg = "/usr/lib/mono/gac/System.Data/1.0.*/*.md
 	/usr/lib/mono/1.0/System.Data.dll*/*.mdb"
 FILES_libmono-system-data1.0-cil = "/usr/lib/mono/gac/System.Data/1.0.*/ \
 	/usr/lib/mono/1.0/System.Data.dll"
-FILES_libmono-bytefx0.7.6.2-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.mdb \
+FILES_libmono-bytefx0.7.6.2-cil-dbg += "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/.debug/ \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/../.debug/ \
@@ -421,7 +421,7 @@ FILES_libmono-bytefx0.7.6.2-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.
 	/usr/lib/mono/2.0/ByteFX.Data.dll*/*.mdb"
 FILES_libmono-bytefx0.7.6.2-cil = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/ \
 	/usr/lib/mono/2.0/ByteFX.Data.dll"
-FILES_libmono0-dbg = "/usr/lib/libmono*.so.*.mdb \
+FILES_libmono0-dbg += "/usr/lib/libmono*.so.*.mdb \
 	/usr/lib/libmono*.so.*/*.mdb \
 	/usr/lib/libMonoPosixHelper.so*.mdb \
 	/usr/lib/libMonoPosixHelper.so*/*.mdb \
@@ -430,7 +430,7 @@ FILES_libmono0-dbg = "/usr/lib/libmono*.so.*.mdb \
 FILES_libmono0 = "/usr/lib/libmono*.so.* \
 	/usr/lib/libMonoPosixHelper.so \
 	/usr/lib/libMonoSupportW.so"
-FILES_libmono-sharpzip0.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*.mdb \
+FILES_libmono-sharpzip0.6-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/../.debug/ \
@@ -438,7 +438,7 @@ FILES_libmono-sharpzip0.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0
 	/usr/lib/mono/compat-1.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip0.6-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/ \
 	/usr/lib/mono/compat-1.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-data-tds2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb \
+FILES_libmono-data-tds2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/../.debug/ \
@@ -446,7 +446,7 @@ FILES_libmono-data-tds2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb
 	/usr/lib/mono/2.0/Mono.Data.Tds.dll*/*.mdb"
 FILES_libmono-data-tds2.0-cil = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Data.Tds.dll"
-FILES_libmono-system-messaging1.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/1.0.*/*.mdb \
+FILES_libmono-system-messaging1.0-cil-dbg += "/usr/lib/mono/gac/System.Messaging/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/../.debug/ \
@@ -454,7 +454,7 @@ FILES_libmono-system-messaging1.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/
 	/usr/lib/mono/1.0/System.Messaging.dll*/*.mdb"
 FILES_libmono-system-messaging1.0-cil = "/usr/lib/mono/gac/System.Messaging/1.0.*/ \
 	/usr/lib/mono/1.0/System.Messaging.dll"
-FILES_libmono-npgsql1.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
+FILES_libmono-npgsql1.0-cil-dbg += "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Npgsql/1.0.*/../.debug/ \
@@ -462,7 +462,7 @@ FILES_libmono-npgsql1.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
 	/usr/lib/mono/1.0/Npgsql.dll*/*.mdb"
 FILES_libmono-npgsql1.0-cil = "/usr/lib/mono/gac/Npgsql/1.0.*/ \
 	/usr/lib/mono/1.0/Npgsql.dll"
-FILES_libmono-security2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb \
+FILES_libmono-security2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/../.debug/ \
@@ -470,7 +470,7 @@ FILES_libmono-security2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb
 	/usr/lib/mono/2.0/Mono.Security.dll*/*.mdb"
 FILES_libmono-security2.0-cil = "/usr/lib/mono/gac/Mono.Security/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Security.dll"
-FILES_libmono-security1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb \
+FILES_libmono-security1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/../.debug/ \
@@ -478,7 +478,7 @@ FILES_libmono-security1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb
 	/usr/lib/mono/1.0/Mono.Security.dll*/*.mdb"
 FILES_libmono-security1.0-cil = "/usr/lib/mono/gac/Mono.Security/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Security.dll"
-FILES_libmono-bytefx0.7.6.1-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.mdb \
+FILES_libmono-bytefx0.7.6.1-cil-dbg += "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/.debug/ \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/../.debug/ \
@@ -486,7 +486,7 @@ FILES_libmono-bytefx0.7.6.1-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.
 	/usr/lib/mono/1.0/ByteFX.Data.dll*/*.mdb"
 FILES_libmono-bytefx0.7.6.1-cil = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/ \
 	/usr/lib/mono/1.0/ByteFX.Data.dll"
-FILES_libmono-microsoft-build2.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*.mdb \
+FILES_libmono-microsoft-build2.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/../.debug/ \
@@ -494,7 +494,7 @@ FILES_libmono-microsoft-build2.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.Build.*/
 	/usr/lib/mono/2.0/Microsoft.Build.*.dll*/*.mdb"
 FILES_libmono-microsoft-build2.0-cil = "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/ \
 	/usr/lib/mono/2.0/Microsoft.Build.*.dll"
-FILES_libmono-system-ldap1.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*.mdb \
+FILES_libmono-system-ldap1.0-cil-dbg += "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/../.debug/ \
@@ -502,7 +502,7 @@ FILES_libmono-system-ldap1.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServic
 	/usr/lib/mono/1.0/System.DirectoryServices.dll*/*.mdb"
 FILES_libmono-system-ldap1.0-cil = "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/ \
 	/usr/lib/mono/1.0/System.DirectoryServices.dll"
-FILES_libmono-relaxng2.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*.mdb \
+FILES_libmono-relaxng2.0-cil-dbg += "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/../.debug/ \
@@ -510,7 +510,7 @@ FILES_libmono-relaxng2.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/
 	/usr/lib/mono/2.0/Commons.Xml.Relaxng.dll*/*.mdb"
 FILES_libmono-relaxng2.0-cil = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/ \
 	/usr/lib/mono/2.0/Commons.Xml.Relaxng.dll"
-FILES_libmono-system-ldap2.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*.mdb \
+FILES_libmono-system-ldap2.0-cil-dbg += "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/../.debug/ \
@@ -518,7 +518,7 @@ FILES_libmono-system-ldap2.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServic
 	/usr/lib/mono/2.0/System.DirectoryServices.dll*/*.mdb"
 FILES_libmono-system-ldap2.0-cil = "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/ \
 	/usr/lib/mono/2.0/System.DirectoryServices.dll"
-FILES_libmono-system-messaging2.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/2.0.*/*.mdb \
+FILES_libmono-system-messaging2.0-cil-dbg += "/usr/lib/mono/gac/System.Messaging/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/../.debug/ \
@@ -526,7 +526,7 @@ FILES_libmono-system-messaging2.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/
 	/usr/lib/mono/2.0/System.Messaging.dll*/*.mdb"
 FILES_libmono-system-messaging2.0-cil = "/usr/lib/mono/gac/System.Messaging/2.0.*/ \
 	/usr/lib/mono/2.0/System.Messaging.dll"
-FILES_libmono-sharpzip0.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*.mdb \
+FILES_libmono-sharpzip0.84-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/../.debug/ \
@@ -534,7 +534,7 @@ FILES_libmono-sharpzip0.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/
 	/usr/lib/mono/1.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip0.84-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/ \
 	/usr/lib/mono/1.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-sqlite2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*.mdb \
+FILES_libmono-sqlite2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/../.debug/ \
@@ -550,7 +550,7 @@ FILES_libmono-sqlite2.0-cil = "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/ \
 	/usr/lib/mono/gac/Mono.Data.SqliteClient/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Data.Sqlite.dll \
 	/usr/lib/mono/2.0/Mono.Data.SqliteClient.dll"
-FILES_libmono-ldap2.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*.mdb \
+FILES_libmono-ldap2.0-cil-dbg += "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/../.debug/ \
@@ -558,7 +558,7 @@ FILES_libmono-ldap2.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*
 	/usr/lib/mono/2.0/Novell.Directory.Ldap.dll*/*.mdb"
 FILES_libmono-ldap2.0-cil = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/ \
 	/usr/lib/mono/2.0/Novell.Directory.Ldap.dll"
-FILES_libmono-npgsql2.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
+FILES_libmono-npgsql2.0-cil-dbg += "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Npgsql/2.0.*/../.debug/ \
@@ -566,7 +566,7 @@ FILES_libmono-npgsql2.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/Npgsql.dll*/*.mdb"
 FILES_libmono-npgsql2.0-cil = "/usr/lib/mono/gac/Npgsql/2.0.*/ \
 	/usr/lib/mono/2.0/Npgsql.dll"
-FILES_libmono-system-runtime1.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/1.0.*/*.mdb \
+FILES_libmono-system-runtime1.0-cil-dbg += "/usr/lib/mono/gac/System.Runtime.*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/../.debug/ \
@@ -574,7 +574,7 @@ FILES_libmono-system-runtime1.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/1.
 	/usr/lib/mono/1.0/System.Runtime.*.dll*/*.mdb"
 FILES_libmono-system-runtime1.0-cil = "/usr/lib/mono/gac/System.Runtime.*/1.0.*/ \
 	/usr/lib/mono/1.0/System.Runtime.*.dll"
-FILES_libmono-oracle2.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*.mdb \
+FILES_libmono-oracle2.0-cil-dbg += "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/../.debug/ \
@@ -582,7 +582,7 @@ FILES_libmono-oracle2.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/2.
 	/usr/lib/mono/2.0/System.Data.OracleClient.dll*/*.mdb"
 FILES_libmono-oracle2.0-cil = "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/ \
 	/usr/lib/mono/2.0/System.Data.OracleClient.dll"
-FILES_libmono-c5-1.0-cil-dbg = "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
+FILES_libmono-c5-1.0-cil-dbg += "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/../.debug/ \
@@ -590,7 +590,7 @@ FILES_libmono-c5-1.0-cil-dbg = "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
 	/usr/lib/mono/2.0/Mono.C5.dll*/*.mdb"
 FILES_libmono-c5-1.0-cil = "/usr/lib/mono/gac/Mono.C5/1.0.*/ \
 	/usr/lib/mono/2.0/Mono.C5.dll"
-FILES_libmono-sharpzip2.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*.mdb \
+FILES_libmono-sharpzip2.6-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/../.debug/ \
@@ -598,7 +598,7 @@ FILES_libmono-sharpzip2.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2
 	/usr/lib/mono/compat-2.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip2.6-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/ \
 	/usr/lib/mono/compat-2.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-cairo2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
+FILES_libmono-cairo2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/../.debug/ \
@@ -606,7 +606,7 @@ FILES_libmono-cairo2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/Mono.Cairo.dll*/*.mdb"
 FILES_libmono-cairo2.0-cil = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Cairo.dll"
-FILES_libmono-peapi2.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
+FILES_libmono-peapi2.0-cil-dbg += "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/2.0.*/.debug/ \
 	/usr/lib/mono/gac/PEAPI/2.0.*/../.debug/ \
@@ -614,7 +614,7 @@ FILES_libmono-peapi2.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/PEAPI.dll*/*.mdb"
 FILES_libmono-peapi2.0-cil = "/usr/lib/mono/gac/PEAPI/2.0.*/ \
 	/usr/lib/mono/2.0/PEAPI.dll"
-FILES_mono-mcs-dbg = "/usr/bin/*.mdb \
+FILES_mono-mcs-dbg += "/usr/bin/*.mdb \
 	/usr/bin/*/*.mdb \
 	/usr/bin/.debug/ \
 	/usr/bin/../.debug/ \
@@ -622,7 +622,7 @@ FILES_mono-mcs-dbg = "/usr/bin/*.mdb \
 	/usr/lib/mono/1.0/*.exe*/*.mdb"
 FILES_mono-mcs = "/usr/bin/ \
 	/usr/lib/mono/1.0/*.exe*"
-FILES_libmono-system1.0-cil-dbg = "/usr/lib/mono/gac/System*/1.0.*/*.mdb \
+FILES_libmono-system1.0-cil-dbg += "/usr/lib/mono/gac/System*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System*/1.0.*/../.debug/ \
@@ -638,7 +638,7 @@ FILES_libmono-system1.0-cil = "/usr/lib/mono/gac/System*/1.0.*/ \
 	/usr/lib/mono/gac/CustomMarshalers/1.0.*/ \
 	/usr/lib/mono/1.0/System*.dll \
 	/usr/lib/mono/1.0/CustomMarshalers.dll*"
-FILES_libmono-system2.0-cil-dbg = "/usr/lib/mono/gac/System*/2.0.*/*.mdb \
+FILES_libmono-system2.0-cil-dbg += "/usr/lib/mono/gac/System*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System*/2.0.*/../.debug/ \
@@ -654,7 +654,7 @@ FILES_libmono-system2.0-cil = "/usr/lib/mono/gac/System*/2.0.*/ \
 	/usr/lib/mono/gac/CustomMarshalers/2.0.*/ \
 	/usr/lib/mono/2.0/System*.dll \
 	/usr/lib/mono/2.0/CustomMarshalers.dll*"
-FILES_libmono1.0-cil-dbg = "/usr/lib/mono/gac/Mono.*/1.0.*/*.mdb \
+FILES_libmono1.0-cil-dbg += "/usr/lib/mono/gac/Mono.*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.*/1.0.*/../.debug/ \
@@ -673,7 +673,7 @@ FILES_libmono1.0-cil = "/usr/lib/mono/gac/Mono.*/1.0.*/ \
 	/usr/lib/mono/gac/mono-service/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.*.dll \
 	/usr/lib/mono/1.0/OpenSystem.C.dll"
-FILES_libmono2.0-cil-dbg = "/usr/lib/mono/gac/Mono.*/2.0.*/*.mdb \
+FILES_libmono2.0-cil-dbg += "/usr/lib/mono/gac/Mono.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.*/2.0.*/../.debug/ \
@@ -817,22 +817,22 @@ PACKAGES = "mono-jit-dbg \
 	libmono2.0-cil"
 # This is a generated file, please do not edit directly
 # Use collect-files.py instead. -- Henryk <henryk@openmoko.org>
-FILES_mono-jit-dbg = "/usr/bin/mono*.mdb \
+FILES_mono-jit-dbg += "/usr/bin/mono*.mdb \
 	/usr/bin/mono*/*.mdb"
 FILES_mono-jit = "/usr/bin/mono"
-FILES_mono-gac-dbg = "/usr/bin/gacutil*.mdb \
+FILES_mono-gac-dbg += "/usr/bin/gacutil*.mdb \
 	/usr/bin/gacutil*/*.mdb \
 	/usr/lib/mono/1.0/gacutil.exe*.mdb \
 	/usr/lib/mono/1.0/gacutil.exe*/*.mdb"
 FILES_mono-gac = "/usr/bin/gacutil \
 	/usr/lib/mono/1.0/gacutil.exe"
-FILES_mono-mjs-dbg = "/usr/bin/mjs*.mdb \
+FILES_mono-mjs-dbg += "/usr/bin/mjs*.mdb \
 	/usr/bin/mjs*/*.mdb \
 	/usr/lib/mono/1.0/mjs.exe*.mdb \
 	/usr/lib/mono/1.0/mjs.exe*/*.mdb"
 FILES_mono-mjs = "/usr/bin/mjs \
 	/usr/lib/mono/1.0/mjs.exe*"
-FILES_mono-gmcs-dbg = "/usr/bin/gmcs*.mdb \
+FILES_mono-gmcs-dbg += "/usr/bin/gmcs*.mdb \
 	/usr/bin/gmcs*/*.mdb \
 	/usr/bin/wsdl2*.mdb \
 	/usr/bin/wsdl2*/*.mdb \
@@ -894,7 +894,7 @@ FILES_mono-gmcs = "/usr/bin/gmcs \
 	/usr/lib/mono/2.0/Microsoft.Common.tasks \
 	/usr/lib/mono/2.0/Microsoft.Common.targets \
 	/usr/lib/mono/2.0/Microsoft.VisualBasic.targets"
-FILES_mono-utils-dbg = "/usr/bin/pedump*.mdb \
+FILES_mono-utils-dbg += "/usr/bin/pedump*.mdb \
 	/usr/bin/pedump*/*.mdb \
 	/usr/bin/monodis*.mdb \
 	/usr/bin/monodis*/*.mdb \
@@ -909,7 +909,7 @@ FILES_mono-utils = "/usr/bin/pedump \
 	/usr/bin/monograph \
 	/usr/bin/mono-find-provides \
 	/usr/bin/mono-find-requires"
-FILES_libmono-peapi1.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
+FILES_libmono-peapi1.0-cil-dbg += "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/1.0.*/.debug/ \
 	/usr/lib/mono/gac/PEAPI/1.0.*/../.debug/ \
@@ -917,7 +917,7 @@ FILES_libmono-peapi1.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/1.0.*/*.mdb \
 	/usr/lib/mono/1.0/PEAPI.dll*/*.mdb"
 FILES_libmono-peapi1.0-cil = "/usr/lib/mono/gac/PEAPI/1.0.*/ \
 	/usr/lib/mono/1.0/PEAPI.dll"
-FILES_libmono-cairo1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
+FILES_libmono-cairo1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Cairo/1.0.*/../.debug/ \
@@ -928,7 +928,7 @@ FILES_libmono-cairo1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/*.mdb \
 FILES_libmono-cairo1.0-cil = "/usr/lib/mono/gac/Mono.Cairo/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Cairo.dll \
 	/usr/lib/pkgconfig/mono-cairo.pc"
-FILES_libmono-system-web2.0-cil-dbg = "/usr/lib/mono/gac/System.Web/2.0.*/*.mdb \
+FILES_libmono-system-web2.0-cil-dbg += "/usr/lib/mono/gac/System.Web/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Web/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Web/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Web/2.0.*/../.debug/ \
@@ -944,7 +944,7 @@ FILES_libmono-system-web2.0-cil = "/usr/lib/mono/gac/System.Web/2.0.*/ \
 	/usr/lib/mono/gac/System.Web.Services/2.0.*/ \
 	/usr/lib/mono/2.0/System.Web.dll \
 	/usr/lib/mono/2.0/System.Web.Services.dll"
-FILES_libmono-accessibility2.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/2.0.*/*.mdb \
+FILES_libmono-accessibility2.0-cil-dbg += "/usr/lib/mono/gac/Accessibility/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Accessibility/2.0.*/../.debug/ \
@@ -952,7 +952,7 @@ FILES_libmono-accessibility2.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/2.0.*/
 	/usr/lib/mono/2.0/Accessibility.dll*/*.mdb"
 FILES_libmono-accessibility2.0-cil = "/usr/lib/mono/gac/Accessibility/2.0.*/ \
 	/usr/lib/mono/2.0/Accessibility.dll"
-FILES_libmono-microsoft7.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*.mdb \
+FILES_libmono-microsoft7.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.JScript/7.0.*/../.debug/ \
@@ -976,7 +976,7 @@ FILES_libmono-microsoft7.0-cil = "/usr/lib/mono/gac/Microsoft.JScript/7.0.*/ \
 	/usr/lib/mono/1.0/Microsoft.JScript.dll \
 	/usr/lib/mono/1.0/Microsoft.VisualC.dll \
 	/usr/lib/mono/1.0/Microsoft.Vsa.dll"
-FILES_libmono-winforms2.0-cil-dbg = "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*.mdb \
+FILES_libmono-winforms2.0-cil-dbg += "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Windows.Forms/2.0.*/../.debug/ \
@@ -1000,7 +1000,7 @@ FILES_libmono-winforms2.0-cil = "/usr/lib/mono/gac/System.Windows.Forms/2.0.*/ \
 	/usr/lib/mono/2.0/System.Windows.Forms.dll \
 	/usr/lib/mono/2.0/System.Drawing.Design.dll \
 	/usr/lib/mono/2.0/System.Design.dll"
-FILES_libmono-ldap1.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*.mdb \
+FILES_libmono-ldap1.0-cil-dbg += "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/../.debug/ \
@@ -1008,7 +1008,7 @@ FILES_libmono-ldap1.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/*
 	/usr/lib/mono/1.0/Novell.Directory.Ldap.dll*/*.mdb"
 FILES_libmono-ldap1.0-cil = "/usr/lib/mono/gac/Novell.Directory.Ldap/1.0.*/ \
 	/usr/lib/mono/1.0/Novell.Directory.Ldap.dll"
-FILES_libmono-sharpzip2.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*.mdb \
+FILES_libmono-sharpzip2.84-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/../.debug/ \
@@ -1016,7 +1016,7 @@ FILES_libmono-sharpzip2.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/
 	/usr/lib/mono/2.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip2.84-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.84.*/ \
 	/usr/lib/mono/2.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-system-data2.0-cil-dbg = "/usr/lib/mono/gac/System.Data/2.0.*/*.mdb \
+FILES_libmono-system-data2.0-cil-dbg += "/usr/lib/mono/gac/System.Data/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data/2.0.*/../.debug/ \
@@ -1024,7 +1024,7 @@ FILES_libmono-system-data2.0-cil-dbg = "/usr/lib/mono/gac/System.Data/2.0.*/*.md
 	/usr/lib/mono/2.0/System.Data.dll*/*.mdb"
 FILES_libmono-system-data2.0-cil = "/usr/lib/mono/gac/System.Data/2.0.*/ \
 	/usr/lib/mono/2.0/System.Data.dll"
-FILES_libmono-corlib2.0-cil-dbg = "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
+FILES_libmono-corlib2.0-cil-dbg += "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/I18N*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/I18N*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/I18N*/2.0.*/../.debug/ \
@@ -1035,7 +1035,7 @@ FILES_libmono-corlib2.0-cil-dbg = "/usr/lib/mono/gac/I18N*/2.0.*/*.mdb \
 FILES_libmono-corlib2.0-cil = "/usr/lib/mono/gac/I18N*/2.0.*/ \
 	/usr/lib/mono/2.0/I18N*.dll \
 	/usr/lib/mono/2.0/mscorlib.dll*"
-FILES_libmono-winforms1.0-cil-dbg = "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*.mdb \
+FILES_libmono-winforms1.0-cil-dbg += "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Windows.Forms/1.0.*/../.debug/ \
@@ -1059,7 +1059,7 @@ FILES_libmono-winforms1.0-cil = "/usr/lib/mono/gac/System.Windows.Forms/1.0.*/ \
 	/usr/lib/mono/1.0/System.Windows.Forms.dll \
 	/usr/lib/mono/1.0/System.Drawing.Design.dll \
 	/usr/lib/mono/1.0/System.Design.dll"
-FILES_libmono-microsoft8.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*.mdb \
+FILES_libmono-microsoft8.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.JScript/8.0.*/../.debug/ \
@@ -1083,7 +1083,7 @@ FILES_libmono-microsoft8.0-cil = "/usr/lib/mono/gac/Microsoft.JScript/8.0.*/ \
 	/usr/lib/mono/2.0/Microsoft.JScript.dll \
 	/usr/lib/mono/2.0/Microsoft.VisualC.dll \
 	/usr/lib/mono/2.0/Microsoft.Vsa.dll"
-FILES_libmono-corlib1.0-cil-dbg = "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
+FILES_libmono-corlib1.0-cil-dbg += "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/I18N*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/I18N*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/I18N*/1.0.*/../.debug/ \
@@ -1094,7 +1094,7 @@ FILES_libmono-corlib1.0-cil-dbg = "/usr/lib/mono/gac/I18N*/1.0.*/*.mdb \
 FILES_libmono-corlib1.0-cil = "/usr/lib/mono/gac/I18N*/1.0.*/ \
 	/usr/lib/mono/1.0/I18N*.dll \
 	/usr/lib/mono/1.0/mscorlib.dll*"
-FILES_libmono-system-web1.0-cil-dbg = "/usr/lib/mono/gac/System.Web/1.0.*/*.mdb \
+FILES_libmono-system-web1.0-cil-dbg += "/usr/lib/mono/gac/System.Web/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Web/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Web/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Web/1.0.*/../.debug/ \
@@ -1110,7 +1110,7 @@ FILES_libmono-system-web1.0-cil = "/usr/lib/mono/gac/System.Web/1.0.*/ \
 	/usr/lib/mono/gac/System.Web.Services/1.0.*/ \
 	/usr/lib/mono/1.0/System.Web.dll \
 	/usr/lib/mono/1.0/System.Web.Services.dll"
-FILES_libmono-system-runtime2.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/2.0.*/*.mdb \
+FILES_libmono-system-runtime2.0-cil-dbg += "/usr/lib/mono/gac/System.Runtime.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Runtime.*/2.0.*/../.debug/ \
@@ -1118,7 +1118,7 @@ FILES_libmono-system-runtime2.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/2.
 	/usr/lib/mono/2.0/System.Runtime.*.dll*/*.mdb"
 FILES_libmono-system-runtime2.0-cil = "/usr/lib/mono/gac/System.Runtime.*/2.0.*/ \
 	/usr/lib/mono/2.0/System.Runtime.*.dll"
-FILES_libmono-cscompmgd8.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
+FILES_libmono-cscompmgd8.0-cil-dbg += "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/.debug/ \
 	/usr/lib/mono/gac/cscompmgd/8.0.*/../.debug/ \
@@ -1126,7 +1126,7 @@ FILES_libmono-cscompmgd8.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/8.0.*/*.mdb \
 	/usr/lib/mono/2.0/cscompmgd.dll*/*.mdb"
 FILES_libmono-cscompmgd8.0-cil = "/usr/lib/mono/gac/cscompmgd/8.0.*/ \
 	/usr/lib/mono/2.0/cscompmgd.dll"
-FILES_libmono-cscompmgd7.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
+FILES_libmono-cscompmgd7.0-cil-dbg += "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/*/*.mdb \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/.debug/ \
 	/usr/lib/mono/gac/cscompmgd/7.0.*/../.debug/ \
@@ -1134,7 +1134,7 @@ FILES_libmono-cscompmgd7.0-cil-dbg = "/usr/lib/mono/gac/cscompmgd/7.0.*/*.mdb \
 	/usr/lib/mono/1.0/cscompmgd.dll*/*.mdb"
 FILES_libmono-cscompmgd7.0-cil = "/usr/lib/mono/gac/cscompmgd/7.0.*/ \
 	/usr/lib/mono/1.0/cscompmgd.dll"
-FILES_libmono-firebirdsql1.7-cil-dbg = "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*.mdb \
+FILES_libmono-firebirdsql1.7-cil-dbg += "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*.mdb \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*/*.mdb \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/.debug/ \
 	/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/../.debug/ \
@@ -1142,10 +1142,10 @@ FILES_libmono-firebirdsql1.7-cil-dbg = "/usr/lib/mono/gac/FirebirdSql.Data.Fireb
 	/usr/lib/mono/1.0/FirebirdSql.Data.Firebird.dll*/*.mdb"
 FILES_libmono-firebirdsql1.7-cil = "/usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/ \
 	/usr/lib/mono/1.0/FirebirdSql.Data.Firebird.dll"
-FILES_mono-jay-dbg = "/usr/bin/jay*.mdb \
+FILES_mono-jay-dbg += "/usr/bin/jay*.mdb \
 	/usr/bin/jay*/*.mdb"
 FILES_mono-jay = "/usr/bin/jay"
-FILES_libmono-data-tds1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb \
+FILES_libmono-data-tds1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/../.debug/ \
@@ -1153,7 +1153,7 @@ FILES_libmono-data-tds1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/*.mdb
 	/usr/lib/mono/1.0/Mono.Data.Tds.dll*/*.mdb"
 FILES_libmono-data-tds1.0-cil = "/usr/lib/mono/gac/Mono.Data.Tds/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Data.Tds.dll"
-FILES_libmono-sqlite1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*.mdb \
+FILES_libmono-sqlite1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/../.debug/ \
@@ -1169,7 +1169,7 @@ FILES_libmono-sqlite1.0-cil = "/usr/lib/mono/gac/Mono.Data.Sqlite/1.0.*/ \
 	/usr/lib/mono/gac/Mono.Data.SqliteClient/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Data.Sqlite.dll \
 	/usr/lib/mono/1.0/Mono.Data.SqliteClient.dll"
-FILES_libmono-relaxng1.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*.mdb \
+FILES_libmono-relaxng1.0-cil-dbg += "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/../.debug/ \
@@ -1177,7 +1177,7 @@ FILES_libmono-relaxng1.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/
 	/usr/lib/mono/1.0/Commons.Xml.Relaxng.dll*/*.mdb"
 FILES_libmono-relaxng1.0-cil = "/usr/lib/mono/gac/Commons.Xml.Relaxng/1.0.*/ \
 	/usr/lib/mono/1.0/Commons.Xml.Relaxng.dll"
-FILES_libmono-dev-dbg = "/usr/lib/libmono*.a*.mdb \
+FILES_libmono-dev-dbg += "/usr/lib/libmono*.a*.mdb \
 	/usr/lib/libmono*.a*/*.mdb \
 	/usr/lib/libMono*.a*.mdb \
 	/usr/lib/libMono*.a*/*.mdb \
@@ -1200,7 +1200,7 @@ FILES_libmono-dev = "/usr/lib/libmono*.a \
 	/usr/lib/pkgconfig/mono.pc \
 	/usr/lib/pkgconfig/dotnet.pc \
 	/usr/include/"
-FILES_libmono-accessibility1.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/1.0.*/*.mdb \
+FILES_libmono-accessibility1.0-cil-dbg += "/usr/lib/mono/gac/Accessibility/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Accessibility/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Accessibility/1.0.*/../.debug/ \
@@ -1208,13 +1208,13 @@ FILES_libmono-accessibility1.0-cil-dbg = "/usr/lib/mono/gac/Accessibility/1.0.*/
 	/usr/lib/mono/1.0/Accessibility.dll*/*.mdb"
 FILES_libmono-accessibility1.0-cil = "/usr/lib/mono/gac/Accessibility/1.0.*/ \
 	/usr/lib/mono/1.0/Accessibility.dll"
-FILES_mono-common-dbg = "/etc/mono*.mdb \
+FILES_mono-common-dbg += "/etc/mono*.mdb \
 	/etc/mono*/*.mdb \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml*.mdb \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml*/*.mdb"
 FILES_mono-common = "/etc/mono \
 	/usr/share/mono-1.0/mono/cil/cil-opcodes.xml"
-FILES_libmono-oracle1.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*.mdb \
+FILES_libmono-oracle1.0-cil-dbg += "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/../.debug/ \
@@ -1222,7 +1222,7 @@ FILES_libmono-oracle1.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/1.
 	/usr/lib/mono/1.0/System.Data.OracleClient.dll*/*.mdb"
 FILES_libmono-oracle1.0-cil = "/usr/lib/mono/gac/System.Data.OracleClient/1.0.*/ \
 	/usr/lib/mono/1.0/System.Data.OracleClient.dll"
-FILES_libmono-system-data1.0-cil-dbg = "/usr/lib/mono/gac/System.Data/1.0.*/*.mdb \
+FILES_libmono-system-data1.0-cil-dbg += "/usr/lib/mono/gac/System.Data/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data/1.0.*/../.debug/ \
@@ -1230,7 +1230,7 @@ FILES_libmono-system-data1.0-cil-dbg = "/usr/lib/mono/gac/System.Data/1.0.*/*.md
 	/usr/lib/mono/1.0/System.Data.dll*/*.mdb"
 FILES_libmono-system-data1.0-cil = "/usr/lib/mono/gac/System.Data/1.0.*/ \
 	/usr/lib/mono/1.0/System.Data.dll"
-FILES_libmono-bytefx0.7.6.2-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.mdb \
+FILES_libmono-bytefx0.7.6.2-cil-dbg += "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/.debug/ \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/../.debug/ \
@@ -1238,7 +1238,7 @@ FILES_libmono-bytefx0.7.6.2-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/*.
 	/usr/lib/mono/2.0/ByteFX.Data.dll*/*.mdb"
 FILES_libmono-bytefx0.7.6.2-cil = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.2*/ \
 	/usr/lib/mono/2.0/ByteFX.Data.dll"
-FILES_libmono0-dbg = "/usr/lib/libmono*.so.*.mdb \
+FILES_libmono0-dbg += "/usr/lib/libmono*.so.*.mdb \
 	/usr/lib/libmono*.so.*/*.mdb \
 	/usr/lib/libMonoPosixHelper.so*.mdb \
 	/usr/lib/libMonoPosixHelper.so*/*.mdb \
@@ -1247,7 +1247,7 @@ FILES_libmono0-dbg = "/usr/lib/libmono*.so.*.mdb \
 FILES_libmono0 = "/usr/lib/libmono*.so.* \
 	/usr/lib/libMonoPosixHelper.so \
 	/usr/lib/libMonoSupportW.so"
-FILES_libmono-sharpzip0.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*.mdb \
+FILES_libmono-sharpzip0.6-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/../.debug/ \
@@ -1255,7 +1255,7 @@ FILES_libmono-sharpzip0.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0
 	/usr/lib/mono/compat-1.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip0.6-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.6.*/ \
 	/usr/lib/mono/compat-1.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-data-tds2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb \
+FILES_libmono-data-tds2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/../.debug/ \
@@ -1263,7 +1263,7 @@ FILES_libmono-data-tds2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/*.mdb
 	/usr/lib/mono/2.0/Mono.Data.Tds.dll*/*.mdb"
 FILES_libmono-data-tds2.0-cil = "/usr/lib/mono/gac/Mono.Data.Tds/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Data.Tds.dll"
-FILES_libmono-system-messaging1.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/1.0.*/*.mdb \
+FILES_libmono-system-messaging1.0-cil-dbg += "/usr/lib/mono/gac/System.Messaging/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Messaging/1.0.*/../.debug/ \
@@ -1271,7 +1271,7 @@ FILES_libmono-system-messaging1.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/
 	/usr/lib/mono/1.0/System.Messaging.dll*/*.mdb"
 FILES_libmono-system-messaging1.0-cil = "/usr/lib/mono/gac/System.Messaging/1.0.*/ \
 	/usr/lib/mono/1.0/System.Messaging.dll"
-FILES_libmono-npgsql1.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
+FILES_libmono-npgsql1.0-cil-dbg += "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Npgsql/1.0.*/../.debug/ \
@@ -1279,7 +1279,7 @@ FILES_libmono-npgsql1.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/1.0.*/*.mdb \
 	/usr/lib/mono/1.0/Npgsql.dll*/*.mdb"
 FILES_libmono-npgsql1.0-cil = "/usr/lib/mono/gac/Npgsql/1.0.*/ \
 	/usr/lib/mono/1.0/Npgsql.dll"
-FILES_libmono-security2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb \
+FILES_libmono-security2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Security/2.0.*/../.debug/ \
@@ -1287,7 +1287,7 @@ FILES_libmono-security2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/2.0.*/*.mdb
 	/usr/lib/mono/2.0/Mono.Security.dll*/*.mdb"
 FILES_libmono-security2.0-cil = "/usr/lib/mono/gac/Mono.Security/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Security.dll"
-FILES_libmono-security1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb \
+FILES_libmono-security1.0-cil-dbg += "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Security/1.0.*/../.debug/ \
@@ -1295,7 +1295,7 @@ FILES_libmono-security1.0-cil-dbg = "/usr/lib/mono/gac/Mono.Security/1.0.*/*.mdb
 	/usr/lib/mono/1.0/Mono.Security.dll*/*.mdb"
 FILES_libmono-security1.0-cil = "/usr/lib/mono/gac/Mono.Security/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.Security.dll"
-FILES_libmono-bytefx0.7.6.1-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.mdb \
+FILES_libmono-bytefx0.7.6.1-cil-dbg += "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*/*.mdb \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/.debug/ \
 	/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/../.debug/ \
@@ -1303,7 +1303,7 @@ FILES_libmono-bytefx0.7.6.1-cil-dbg = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/*.
 	/usr/lib/mono/1.0/ByteFX.Data.dll*/*.mdb"
 FILES_libmono-bytefx0.7.6.1-cil = "/usr/lib/mono/gac/ByteFX.Data/0.7.6.1*/ \
 	/usr/lib/mono/1.0/ByteFX.Data.dll"
-FILES_libmono-microsoft-build2.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*.mdb \
+FILES_libmono-microsoft-build2.0-cil-dbg += "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/../.debug/ \
@@ -1311,7 +1311,7 @@ FILES_libmono-microsoft-build2.0-cil-dbg = "/usr/lib/mono/gac/Microsoft.Build.*/
 	/usr/lib/mono/2.0/Microsoft.Build.*.dll*/*.mdb"
 FILES_libmono-microsoft-build2.0-cil = "/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/ \
 	/usr/lib/mono/2.0/Microsoft.Build.*.dll"
-FILES_libmono-system-ldap1.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*.mdb \
+FILES_libmono-system-ldap1.0-cil-dbg += "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.DirectoryServices/1.0.*/../.debug/ \
@@ -1319,7 +1319,7 @@ FILES_libmono-system-ldap1.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServic
 	/usr/lib/mono/1.0/System.DirectoryServices.dll*/*.mdb"
 FILES_libmono-system-ldap1.0-cil = "/usr/lib/mono/gac/System.DirectoryServices/1.0.*/ \
 	/usr/lib/mono/1.0/System.DirectoryServices.dll"
-FILES_libmono-relaxng2.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*.mdb \
+FILES_libmono-relaxng2.0-cil-dbg += "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/../.debug/ \
@@ -1327,7 +1327,7 @@ FILES_libmono-relaxng2.0-cil-dbg = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/
 	/usr/lib/mono/2.0/Commons.Xml.Relaxng.dll*/*.mdb"
 FILES_libmono-relaxng2.0-cil = "/usr/lib/mono/gac/Commons.Xml.Relaxng/2.0.*/ \
 	/usr/lib/mono/2.0/Commons.Xml.Relaxng.dll"
-FILES_libmono-system-ldap2.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*.mdb \
+FILES_libmono-system-ldap2.0-cil-dbg += "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.DirectoryServices/2.0.*/../.debug/ \
@@ -1335,7 +1335,7 @@ FILES_libmono-system-ldap2.0-cil-dbg = "/usr/lib/mono/gac/System.DirectoryServic
 	/usr/lib/mono/2.0/System.DirectoryServices.dll*/*.mdb"
 FILES_libmono-system-ldap2.0-cil = "/usr/lib/mono/gac/System.DirectoryServices/2.0.*/ \
 	/usr/lib/mono/2.0/System.DirectoryServices.dll"
-FILES_libmono-system-messaging2.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/2.0.*/*.mdb \
+FILES_libmono-system-messaging2.0-cil-dbg += "/usr/lib/mono/gac/System.Messaging/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Messaging/2.0.*/../.debug/ \
@@ -1343,7 +1343,7 @@ FILES_libmono-system-messaging2.0-cil-dbg = "/usr/lib/mono/gac/System.Messaging/
 	/usr/lib/mono/2.0/System.Messaging.dll*/*.mdb"
 FILES_libmono-system-messaging2.0-cil = "/usr/lib/mono/gac/System.Messaging/2.0.*/ \
 	/usr/lib/mono/2.0/System.Messaging.dll"
-FILES_libmono-sharpzip0.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*.mdb \
+FILES_libmono-sharpzip0.84-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/../.debug/ \
@@ -1351,7 +1351,7 @@ FILES_libmono-sharpzip0.84-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/
 	/usr/lib/mono/1.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip0.84-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/0.84.*/ \
 	/usr/lib/mono/1.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-sqlite2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*.mdb \
+FILES_libmono-sqlite2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/../.debug/ \
@@ -1367,7 +1367,7 @@ FILES_libmono-sqlite2.0-cil = "/usr/lib/mono/gac/Mono.Data.Sqlite/2.0.*/ \
 	/usr/lib/mono/gac/Mono.Data.SqliteClient/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Data.Sqlite.dll \
 	/usr/lib/mono/2.0/Mono.Data.SqliteClient.dll"
-FILES_libmono-ldap2.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*.mdb \
+FILES_libmono-ldap2.0-cil-dbg += "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/../.debug/ \
@@ -1375,7 +1375,7 @@ FILES_libmono-ldap2.0-cil-dbg = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/*
 	/usr/lib/mono/2.0/Novell.Directory.Ldap.dll*/*.mdb"
 FILES_libmono-ldap2.0-cil = "/usr/lib/mono/gac/Novell.Directory.Ldap/2.0.*/ \
 	/usr/lib/mono/2.0/Novell.Directory.Ldap.dll"
-FILES_libmono-npgsql2.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
+FILES_libmono-npgsql2.0-cil-dbg += "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Npgsql/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Npgsql/2.0.*/../.debug/ \
@@ -1383,7 +1383,7 @@ FILES_libmono-npgsql2.0-cil-dbg = "/usr/lib/mono/gac/Npgsql/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/Npgsql.dll*/*.mdb"
 FILES_libmono-npgsql2.0-cil = "/usr/lib/mono/gac/Npgsql/2.0.*/ \
 	/usr/lib/mono/2.0/Npgsql.dll"
-FILES_libmono-system-runtime1.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/1.0.*/*.mdb \
+FILES_libmono-system-runtime1.0-cil-dbg += "/usr/lib/mono/gac/System.Runtime.*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Runtime.*/1.0.*/../.debug/ \
@@ -1391,7 +1391,7 @@ FILES_libmono-system-runtime1.0-cil-dbg = "/usr/lib/mono/gac/System.Runtime.*/1.
 	/usr/lib/mono/1.0/System.Runtime.*.dll*/*.mdb"
 FILES_libmono-system-runtime1.0-cil = "/usr/lib/mono/gac/System.Runtime.*/1.0.*/ \
 	/usr/lib/mono/1.0/System.Runtime.*.dll"
-FILES_libmono-oracle2.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*.mdb \
+FILES_libmono-oracle2.0-cil-dbg += "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/../.debug/ \
@@ -1399,7 +1399,7 @@ FILES_libmono-oracle2.0-cil-dbg = "/usr/lib/mono/gac/System.Data.OracleClient/2.
 	/usr/lib/mono/2.0/System.Data.OracleClient.dll*/*.mdb"
 FILES_libmono-oracle2.0-cil = "/usr/lib/mono/gac/System.Data.OracleClient/2.0.*/ \
 	/usr/lib/mono/2.0/System.Data.OracleClient.dll"
-FILES_libmono-c5-1.0-cil-dbg = "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
+FILES_libmono-c5-1.0-cil-dbg += "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.C5/1.0.*/../.debug/ \
@@ -1407,7 +1407,7 @@ FILES_libmono-c5-1.0-cil-dbg = "/usr/lib/mono/gac/Mono.C5/1.0.*/*.mdb \
 	/usr/lib/mono/2.0/Mono.C5.dll*/*.mdb"
 FILES_libmono-c5-1.0-cil = "/usr/lib/mono/gac/Mono.C5/1.0.*/ \
 	/usr/lib/mono/2.0/Mono.C5.dll"
-FILES_libmono-sharpzip2.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*.mdb \
+FILES_libmono-sharpzip2.6-cil-dbg += "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/*/*.mdb \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/.debug/ \
 	/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/../.debug/ \
@@ -1415,7 +1415,7 @@ FILES_libmono-sharpzip2.6-cil-dbg = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2
 	/usr/lib/mono/compat-2.0/ICSharpCode.SharpZipLib.dll*/*.mdb"
 FILES_libmono-sharpzip2.6-cil = "/usr/lib/mono/gac/ICSharpCode.SharpZipLib/2.6.*/ \
 	/usr/lib/mono/compat-2.0/ICSharpCode.SharpZipLib.dll"
-FILES_libmono-cairo2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
+FILES_libmono-cairo2.0-cil-dbg += "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.Cairo/2.0.*/../.debug/ \
@@ -1423,7 +1423,7 @@ FILES_libmono-cairo2.0-cil-dbg = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/Mono.Cairo.dll*/*.mdb"
 FILES_libmono-cairo2.0-cil = "/usr/lib/mono/gac/Mono.Cairo/2.0.*/ \
 	/usr/lib/mono/2.0/Mono.Cairo.dll"
-FILES_libmono-peapi2.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
+FILES_libmono-peapi2.0-cil-dbg += "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/PEAPI/2.0.*/.debug/ \
 	/usr/lib/mono/gac/PEAPI/2.0.*/../.debug/ \
@@ -1431,7 +1431,7 @@ FILES_libmono-peapi2.0-cil-dbg = "/usr/lib/mono/gac/PEAPI/2.0.*/*.mdb \
 	/usr/lib/mono/2.0/PEAPI.dll*/*.mdb"
 FILES_libmono-peapi2.0-cil = "/usr/lib/mono/gac/PEAPI/2.0.*/ \
 	/usr/lib/mono/2.0/PEAPI.dll"
-FILES_mono-mcs-dbg = "/usr/bin/*.mdb \
+FILES_mono-mcs-dbg += "/usr/bin/*.mdb \
 	/usr/bin/*/*.mdb \
 	/usr/bin/.debug/ \
 	/usr/bin/../.debug/ \
@@ -1439,7 +1439,7 @@ FILES_mono-mcs-dbg = "/usr/bin/*.mdb \
 	/usr/lib/mono/1.0/*.exe*/*.mdb"
 FILES_mono-mcs = "/usr/bin/ \
 	/usr/lib/mono/1.0/*.exe*"
-FILES_libmono-system1.0-cil-dbg = "/usr/lib/mono/gac/System*/1.0.*/*.mdb \
+FILES_libmono-system1.0-cil-dbg += "/usr/lib/mono/gac/System*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/System*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/System*/1.0.*/../.debug/ \
@@ -1455,7 +1455,7 @@ FILES_libmono-system1.0-cil = "/usr/lib/mono/gac/System*/1.0.*/ \
 	/usr/lib/mono/gac/CustomMarshalers/1.0.*/ \
 	/usr/lib/mono/1.0/System*.dll \
 	/usr/lib/mono/1.0/CustomMarshalers.dll*"
-FILES_libmono-system2.0-cil-dbg = "/usr/lib/mono/gac/System*/2.0.*/*.mdb \
+FILES_libmono-system2.0-cil-dbg += "/usr/lib/mono/gac/System*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/System*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/System*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/System*/2.0.*/../.debug/ \
@@ -1471,7 +1471,7 @@ FILES_libmono-system2.0-cil = "/usr/lib/mono/gac/System*/2.0.*/ \
 	/usr/lib/mono/gac/CustomMarshalers/2.0.*/ \
 	/usr/lib/mono/2.0/System*.dll \
 	/usr/lib/mono/2.0/CustomMarshalers.dll*"
-FILES_libmono1.0-cil-dbg = "/usr/lib/mono/gac/Mono.*/1.0.*/*.mdb \
+FILES_libmono1.0-cil-dbg += "/usr/lib/mono/gac/Mono.*/1.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/1.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/1.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.*/1.0.*/../.debug/ \
@@ -1490,7 +1490,7 @@ FILES_libmono1.0-cil = "/usr/lib/mono/gac/Mono.*/1.0.*/ \
 	/usr/lib/mono/gac/mono-service/1.0.*/ \
 	/usr/lib/mono/1.0/Mono.*.dll \
 	/usr/lib/mono/1.0/OpenSystem.C.dll"
-FILES_libmono2.0-cil-dbg = "/usr/lib/mono/gac/Mono.*/2.0.*/*.mdb \
+FILES_libmono2.0-cil-dbg += "/usr/lib/mono/gac/Mono.*/2.0.*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/2.0.*/*/*.mdb \
 	/usr/lib/mono/gac/Mono.*/2.0.*/.debug/ \
 	/usr/lib/mono/gac/Mono.*/2.0.*/../.debug/ \

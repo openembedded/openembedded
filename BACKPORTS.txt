@@ -20,11 +20,6 @@ c6c33aa5d673dccd6d19de32e40edd19565dbb5a lockdown updates (Koen)
 16d9e54aa5518e5cf7f8c86dcf394a34ca1e771d   "
 334c3fe81497cd0c121f6445b9053dc3b6b40a2e   "
 c6fac7ea20ca568a16a2b76aae0eb280f2faf7a3   "
-10d839841515280475537b389b383e3e3686c117 divers: replace '=' definition of dbg packages with '+=' for 43 files.  fixes 2317. (Koen)
-5210c083ec8a6cdc5a8ab04ea377114cbb2938b3 mono.bclass: Fix the location used for mono clilibs information to be host specific (Koen) 
-2a0669f06c54e672869fd5943c0428fb5563a512 mono: Use STAGING_DATADIR (Koen)
-7f6d4f240d436d8c36dacf0e5f60d0a68a945992 mono: replace STAGING_DATADIR by STAGING_DATADIR_NATIVE since it's where (Koen)
-96e096c38993a62c2921342c5f3ce446dda4e884 mono: use monoburg from mono-native instead (Koen)
 
 Applied:
 fc6211a28427a6d82895be30299c901ec3e85868 autotools.bbclass libtool (Koen, Marcin)
@@ -224,3 +219,10 @@ a3b18a00a09e716f4b3d5bfced86fea0439953a0 h2200: load g_ether on boot (PaulS, Koe
 03964808c40cbc7460d4711fae17d07972e6ceb6 setserial: add DESCRIPTION, HOMEPAGE, AUTHOR. fix packaging (xjqian PaulS)  | added to feed
 1b6b8412e77f2d8600a5b7bf7e70948e38007d48 openvpn: unify. (xjqian PaulS)  | added to feed
 130abdbeeb7888b012bab591e834a85892fad020 vpnc: add 0.5.1, unify (xjqian PaulS)  | added to feed
+10d839841515280475537b389b383e3e3686c117 divers: replace '=' definition of dbg packages with '+=' for 43 files.  fixes 2317. (Koen, PaulS)
+5210c083ec8a6cdc5a8ab04ea377114cbb2938b3 mono.bclass: Fix the location used for mono clilibs information to be host specific (Koen, PaulS)
+2a0669f06c54e672869fd5943c0428fb5563a512 mono: Use STAGING_DATADIR (Koen, PaulS)
+7f6d4f240d436d8c36dacf0e5f60d0a68a945992 mono: replace STAGING_DATADIR by STAGING_DATADIR_NATIVE since it's where (Koen, PaulS)
+96e096c38993a62c2921342c5f3ce446dda4e884 mono: use monoburg from mono-native instead (Koen, PaulS)
+
+
