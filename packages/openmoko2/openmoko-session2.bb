@@ -1,40 +1,37 @@
 DESCRIPTION = "Custom Matchbox session files for OpenMoko"
-LICENSE = "GPL"
 SECTION = "x11"
+LICENSE = "GPL"
 RDEPENDS = "matchbox-panel-2"
-RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2"
+RDEPENDS += "openmoko-common2 openmoko-today2 openmoko-dialer2 openmoko-panel-memory"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
-PR = "r65"
+PR = "r66"
 
 SRC_URI = "\
   file://etc \
   file://matchbox-session \
 "
-S = ${WORKDIR}
+
+S = "${WORKDIR}"
 
 inherit update-alternatives
 
-ALTERNATIVE_NAME = "x-window-manager"
-ALTERNATIVE_LINK = "${bindir}/x-window-manager"
-ALTERNATIVE_PATH = "${bindir}/matchbox-session"
-ALTERNATIVE_PRIORITY = "11"
-
 do_install() {
-	install -d ${D}${bindir}
-	install -m 0655 ${WORKDIR}/matchbox-session ${D}${bindir}
-	install -d ${D}${sysconfdir}
-	cp -R ${S}/etc/* ${D}${sysconfdir}
-	rm -fR ${D}${sysconfdir}/.svn
-	rm -fR ${D}${sysconfdir}/matchbox/.svn
-	chmod -R 755 ${D}${sysconfdir}/
+        install -d ${D}${bindir}
+        install -m 0655 ${WORKDIR}/matchbox-session ${D}${bindir}
+        install -d ${D}${sysconfdir}
+        cp -R ${S}/etc/* ${D}${sysconfdir}
+        rm -fR ${D}${sysconfdir}/.svn
+        rm -fR ${D}${sysconfdir}/matchbox/.svn
+        chmod -R 755 ${D}${sysconfdir}/
 }
+
+PACKAGE_ARCH = "all"
 
 pkg_postinst_openmoko-session2 () {
 #!/bin/sh -e
 if [ "x$D" != "x" ]; then
     exit 1
 fi
-
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/theme openmoko-standard-2
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/icon_theme openmoko-standard
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/font_name "Sans 5"
@@ -45,10 +42,11 @@ gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --dire
 # gstreamer audio settings
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct -t string --set /system/gstreamer/0.10/default/audiosink pulsesink
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct -t string --set /system/gstreamer/0.10/default/audiosrc pulsesrc
-
 }
 
-PACKAGE_ARCH = "all"
+ALTERNATIVE_NAME = "x-window-manager"
+ALTERNATIVE_PATH = "${bindir}/matchbox-session"
+ALTERNATIVE_LINK = "${bindir}/x-window-manager"
+ALTERNATIVE_PRIORITY = "11"
 
 CONFFILES_${PN} = "${sysconfdir}/matchbox/session"
-
