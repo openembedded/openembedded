@@ -1,0 +1,22 @@
+Index: swt-source/make_linux.mak
+===================================================================
+--- swt-source.orig/make_linux.mak	2008-01-23 15:08:02.000000000 +0800
++++ swt-source/make_linux.mak	2008-01-23 15:08:21.000000000 +0800
+@@ -74,8 +74,6 @@
+ 	-Wno-non-virtual-dtor \
+ 	-fPIC \
+ 	-I. \
+-	-I$(JAVA_HOME)/include \
+-	-I$(JAVA_HOME)/include/linux \
+ 	${SWT_PTR_CFLAGS}
+ MOZILLALIBS = -shared -Wl,--version-script=mozilla_exports -Bsymbolic
+ MOZILLAEXCLUDES = -DNO_XPCOMGlueShutdown -DNO_XPCOMGlueStartup
+@@ -96,8 +94,6 @@
+ 		-DSWT_VERSION=$(SWT_VERSION) \
+ 		$(NATIVE_STATS) \
+ 		-DLINUX -DGTK \
+-		-I$(JAVA_HOME)/include \
+-		-I$(JAVA_HOME)/include/linux \
+ 		-fPIC \
+ 		${SWT_PTR_CFLAGS}
+ LIBS = -shared -fPIC
