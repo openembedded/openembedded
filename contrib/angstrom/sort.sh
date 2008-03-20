@@ -26,7 +26,7 @@ echo "Removing duplicate packages in unsorted"
 cat files-duplicate | xargs rm -f
 
 # Log remaining packages to a file 
-find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v locale > new-files.txt
+find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v -- -doc | grep -v angstrom-version | grep -v locale > new-files.txt
 for newfile in $(cat new-files.txt | sed s:./::g) ; do
     echo "$(date -u +%s) $newfile $(basename ${PWD})" >> ../upload.txt
 done    
@@ -40,11 +40,13 @@ case "$arch" in
 	"armv4t")
 			machines="ep93xx h6300 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="davinci-dvevm gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
+			machines="davinci-dvevm gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6")	
-			machines="mx31ads nokia800" ;;
+			machines="mx31ads nokia800 beagleboard" ;;
+	"armv7")
+			machine="beagleboard" ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")
@@ -137,3 +139,5 @@ for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i
 for arch in arm-oabi armv4t armv5teb armv5te armv6 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort
 done
+
+(cd ~/website/repo ; php update.php)
