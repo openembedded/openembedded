@@ -9,9 +9,9 @@ DEPENDS += "libxkbfile libxcalibrate"
 RDEPENDS_${PN} = "xserver-kdrive"
 PROVIDES = "virtual/xserver"
 PE = "1"
-PR = "r0"
+PR = "r1"
 
-XGLAMO_GIT_REV = "d96175a2db993ef4bc7d9d910e0b47ec7ff20561"
+XGLAMO_GIT_REV = "0d2605edeb50a4b118ac00ae1f00abd085477323"
 
 SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;rev=${XGLAMO_GIT_REV} \
         file://kmode.patch;patch=1 \
