@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# xmodmap to allow the soft-menu to work
+xmodmap -e "keycode 180 = 0x11000601"
+xmodmap -e "keycode 181 = 0x11000602"
+xmodmap -e "keycode 182 = 0x11000603"
+xmodmap -e "keycode 183 = 0x11000604"
+xmodmap -e "keycode 184 = 0x11000605"
+xmodmap -e "keycode 185 = 0x11000606"
+xmodmap -e "keycode 186 = 0x11000607"
+xmodmap -e "keycode 187 = 0x11000608"
+xmodmap -e "keycode 188 = 0x11000609"
+xmodmap -e "keycode 189 = 0x1100060A"
+xmodmap -e "keycode 190 = 0x1100060B"
+xmodmap -e "keycode 191 = 0x1100060B"
+xmodmap -e "keycode 192 = 0x1100060A"
+xmodmap -e "keycode 193 = 0x1100060C"
+xmodmap -e "keycode 194 = 0x1100060D"
+xmodmap -e "keycode 195 = 0x1100060E"
+xmodmap -e "keycode 196 = 0x1100060F"
+xmodmap -e "keycode 197 = 0x11000610"
+xmodmap -e "keycode 198 = 0x1008ff26"
+
+# path setup
+export QPEDIR=/opt/Qtopia
+export PATH=$QPEDIR/bin:$PATH
+export LD_LIBRARY_PATH=$QPEDIR/lib:$LD_LIBRARY_PATH
+
+#tell Qtopia how to inform illume on incoming phone calls
+#export ILLUME_PHONE_CALL=
+export QTOPIA_PHONE_VENDOR=ficgta01
+export QTOPIA_PHONE_MUX=ficgta01
+
+
+# Now start Qtopia
+qpe &

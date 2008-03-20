@@ -41,7 +41,6 @@ do_install () {
 PACKAGES = "${PN}-dbg tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
     tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
     tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
-
 ALLOW_EMPTY_${PN}-dbg = "1"
 
 FILES_tzdata-africa += "${datadir}/zoneinfo/Africa/*"
@@ -154,6 +153,9 @@ FILES_${PN} += "${datadir}/zoneinfo/Pacific/Honolulu     \
                 ${datadir}/zoneinfo/UTC                  \
                 ${datadir}/zoneinfo/Universal            \
                 ${datadir}/zoneinfo/W-SU                 \
+                ${datadir}/zoneinfo/WET                  \
+                ${datadir}/zoneinfo/Zulu                 \
+                ${datadir}/zoneinfo/Etc/*"
                 ${datadir}/zoneinfo/WET                  \
                 ${datadir}/zoneinfo/Zulu                 \
                 ${datadir}/zoneinfo/Etc/*"
