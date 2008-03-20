@@ -2,11 +2,9 @@
 # OpenMoko Image Recipe
 #------------------------------------------------------
 
-IMAGE_LINGUAS = ""
+require openmoko-minimal-image.bb
 
-IMAGE_INSTALL = "\
-  ${MACHINE_TASK_PROVIDER} \
-  task-openmoko-linux \
+IMAGE_INSTALL += "\
   task-openmoko-net \
   task-openmoko-ui \
   task-openmoko-base \
@@ -15,12 +13,9 @@ IMAGE_INSTALL = "\
   task-openmoko-pim \
   "
 
-DEPENDS = "\
-  ${MACHINE_TASK_PROVIDER} \
+DEPENDS += "\
   task-openmoko \
-"
-
+  "
 
 inherit image
 
-ROOTFS_POSTPROCESS_COMMAND += 'date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp'
