@@ -2,11 +2,13 @@ DESCRIPTION = "Illume - Mobile UI module for Enlightenment"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 
-DEPENDS = "eet evas ecore edje embryo efreet edbus edje-native embryo-native"
+DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native"
 
 PV = "0.0+svnr${SRCREV}"
+PR = "r1"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=https"
+SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=https \
+	   file://illume-fix-includes.patch;patch=1;pnum=0;minrev=14"
 
 S = "${WORKDIR}/${PN}"
 
@@ -17,6 +19,7 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--enable-simple-x11 \
                 --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
+export CFLAGS += "-DE_TYPEDEFS=1"
 
 do_configure_append() {
   find ${S} -name Makefile | xargs sed -i 's:/usr/include:${STAGING_INCDIR}:'
