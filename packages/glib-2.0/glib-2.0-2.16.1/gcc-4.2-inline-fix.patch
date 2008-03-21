@@ -1,0 +1,13 @@
+Index: glib-2.16.1/glib/gutils.h
+===================================================================
+--- glib-2.16.1.orig/glib/gutils.h	2008-03-21 16:18:57.000000000 +0100
++++ glib-2.16.1/glib/gutils.h	2008-03-21 16:19:09.000000000 +0100
+@@ -97,7 +97,7 @@
+ #  define G_INLINE_FUNC
+ #  undef  G_CAN_INLINE
+ #elif defined (__GNUC__) 
+-#  ifdef __GNUC_STDC_INLINE__
++#  ifdef __GNUC_GNU_INLINE__
+ #   define G_INLINE_FUNC extern inline __attribute__ ((__gnu_inline__))
+ #  else
+ #   define G_INLINE_FUNC extern inline

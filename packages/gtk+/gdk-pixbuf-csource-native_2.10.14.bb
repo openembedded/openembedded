@@ -24,6 +24,7 @@ do_compile() {
 
 do_stage() {
 	cd gdk-pixbuf && oe_runmake install
+	find ${libdir} -name "libpixbufloader-*.la" -exec rm \{\} \;
 }
 
 do_install() {
