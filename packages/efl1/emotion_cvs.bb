@@ -5,7 +5,7 @@ DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
 PV = "0.1.0+cvs${SRCDATE}"
 PR = "r1"
 
-inherit efl_library
+inherit efl
 
 EXTRA_OECONF = "--disable-xine --enable-gstreamer"
 

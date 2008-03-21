@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 PV = "0.5.2.042+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl_library
+inherit efl
 
 EXTRA_OECONF = "\
   --enable-software-x11 \

@@ -2,11 +2,12 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT BSD"
 PV = "0.16.999.042+cvs${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 inherit e update-alternatives
 
 SRC_URI = "${E_CVS};module=e17/apps/e \
+           file://disable-e-cursor.patch;patch=1 \
            file://Xsession.d/98enlightenment \
            file://applications.menu \
 "

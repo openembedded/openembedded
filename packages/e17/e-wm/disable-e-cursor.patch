@@ -1,0 +1,277 @@
+Index: e/src/bin/e_config.c
+===================================================================
+--- e.orig/src/bin/e_config.c
++++ e/src/bin/e_config.c
+@@ -461,6 +461,7 @@ e_config_init(void)
+    E_CONFIG_VAL(D, T, focus_last_focused_per_desktop, INT); /**/
+    E_CONFIG_VAL(D, T, focus_revert_on_hide_or_close, INT); /**/
+    E_CONFIG_VAL(D, T, pointer_slide, INT); /**/
++   E_CONFIG_VAL(D, T, show_cursor, INT); /**/
+    E_CONFIG_VAL(D, T, use_e_cursor, INT); /**/
+    E_CONFIG_VAL(D, T, cursor_size, INT); /**/
+    E_CONFIG_VAL(D, T, menu_autoscroll_margin, INT); /**/
+@@ -705,6 +706,7 @@ e_config_init(void)
+    e_config->focus_last_focused_per_desktop = 1;
+    e_config->focus_revert_on_hide_or_close = 1;
+    e_config->pointer_slide = 1;
++   e_config->show_cursor = 1;
+    e_config->use_e_cursor = 1;
+    e_config->cursor_size = 32;
+    e_config->menu_autoscroll_margin = 0;
+@@ -1570,6 +1572,7 @@ e_config_init(void)
+    E_CONFIG_LIMIT(e_config->focus_last_focused_per_desktop, 0, 1);
+    E_CONFIG_LIMIT(e_config->focus_revert_on_hide_or_close, 0, 1);
+    E_CONFIG_LIMIT(e_config->pointer_slide, 0, 1);
++   E_CONFIG_LIMIT(e_config->show_cursor, 0, 1);
+    E_CONFIG_LIMIT(e_config->use_e_cursor, 0, 1);
+    E_CONFIG_LIMIT(e_config->cursor_size, 0, 1024);
+    E_CONFIG_LIMIT(e_config->menu_autoscroll_margin, 0, 50);
+Index: e/src/modules/conf_mouse_cursor/e_int_config_cursor.c
+===================================================================
+--- e.orig/src/modules/conf_mouse_cursor/e_int_config_cursor.c
++++ e/src/modules/conf_mouse_cursor/e_int_config_cursor.c
+@@ -3,16 +3,25 @@
+ static void        *_create_data(E_Config_Dialog *cfd);
+ static void        _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
+ static int         _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
++static void        _basic_show_cursor_cb_change(void *data, Evas_Object *obj);
+ static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+ static int         _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
++static void        _advanced_show_cursor_cb_change(void *data, Evas_Object *obj);
+ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
+ 
+ struct _E_Config_Dialog_Data 
+ {
++   int show_cursor;
+    int use_e_cursor;
+ 
+    /* Advanced */
+    int cursor_size;
++
++   struct
++     {
++         Evas_Object *radio_use_e_cursor;
++         Evas_Object *slider_cursor_size;
++     } gui;
+ };
+ 
+ EAPI E_Config_Dialog *
+@@ -41,6 +50,7 @@ e_int_config_cursor(E_Container *con, co
+ static void
+ _fill_data(E_Config_Dialog_Data *cfdata) 
+ {
++   cfdata->show_cursor = e_config->show_cursor;
+    cfdata->use_e_cursor = e_config->use_e_cursor;
+    cfdata->cursor_size = e_config->cursor_size;
+ }
+@@ -66,9 +76,11 @@ _basic_apply_data(E_Config_Dialog *cfd, 
+ {
+    int changed = 0;
+    
++   if (e_config->show_cursor != cfdata->show_cursor) changed = 1;
+    if (e_config->use_e_cursor != cfdata->use_e_cursor) changed = 1;
+    
+    e_config->use_e_cursor = cfdata->use_e_cursor;
++   e_config->show_cursor = cfdata->show_cursor;
+    e_config_save_queue();
+    
+    if (changed) 
+@@ -79,6 +91,11 @@ _basic_apply_data(E_Config_Dialog *cfd, 
+ 	  {
+ 	     E_Manager *man;
+ 	     man = l->data;
++         if (man->pointer && !e_config->show_cursor)
++           {
++               e_pointer_hide(man->pointer);
++               continue;
++           }
+ 	     if (man->pointer) e_object_del(E_OBJECT(man->pointer));
+ 	     man->pointer = e_pointer_window_new(man->root, 1);
+ 	  }
+@@ -86,6 +103,17 @@ _basic_apply_data(E_Config_Dialog *cfd, 
+    return 1;
+ }
+ 
++static void
++_basic_show_cursor_cb_change(void *data, Evas_Object *obj)
++{
++   E_Config_Dialog_Data *cfdata;
++
++   cfdata = data;
++   if (!cfdata) return;
++
++   e_widget_disabled_set(cfdata->gui.radio_use_e_cursor, !cfdata->show_cursor);
++}
++
+ static Evas_Object *
+ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
+ {
+@@ -94,8 +122,14 @@ _basic_create_widgets(E_Config_Dialog *c
+    
+    o = e_widget_list_add(evas, 0, 0);
+       
++   ob = e_widget_check_add(evas, _("Show Cursor"), &(cfdata->show_cursor));
++   e_widget_on_change_hook_set(ob, _basic_show_cursor_cb_change, cfdata);
++   e_widget_list_object_append(o, ob, 1, 1, 0.5);
++
+    of = e_widget_framelist_add(evas, _("Cursor Settings"), 0);
+    rg = e_widget_radio_group_new(&cfdata->use_e_cursor);
++   cfdata->gui.radio_use_e_cursor = rg;
++
+    ob = e_widget_radio_add(evas, _("Use Enlightenment Cursor"), 1, rg);   
+    e_widget_framelist_object_append(of, ob);
+    ob = e_widget_radio_add(evas, _("Use X Cursor"), 0, rg);   
+@@ -111,9 +145,11 @@ _advanced_apply_data(E_Config_Dialog *cf
+ {
+    int changed = 0;
+    
++   if (e_config->show_cursor != cfdata->show_cursor) changed = 1;
+    if (e_config->use_e_cursor != cfdata->use_e_cursor) changed = 1;
+    if (e_config->cursor_size != cfdata->cursor_size) changed = 1;
+-   
++
++   e_config->show_cursor = cfdata->show_cursor;
+    e_config->use_e_cursor = cfdata->use_e_cursor;
+    if (cfdata->cursor_size <= 0) cfdata->cursor_size = 1;
+    e_config->cursor_size = cfdata->cursor_size;
+@@ -128,6 +164,11 @@ _advanced_apply_data(E_Config_Dialog *cf
+ 	  {
+ 	     E_Manager *man;
+ 	     man = l->data;
++         if (man->pointer && !e_config->show_cursor)
++           {
++               e_pointer_hide(man->pointer);
++               continue;
++           }
+ 	     if (man->pointer) e_object_del(E_OBJECT(man->pointer));
+ 	     man->pointer = e_pointer_window_new(man->root, 1);
+ 	  }	
+@@ -135,6 +176,18 @@ _advanced_apply_data(E_Config_Dialog *cf
+    return 1;
+ }
+ 
++static void
++_advanced_show_cursor_cb_change(void *data, Evas_Object *obj)
++{
++   E_Config_Dialog_Data *cfdata;
++
++   cfdata = data;
++   if (!cfdata) return;
++
++   e_widget_disabled_set(cfdata->gui.radio_use_e_cursor, !cfdata->show_cursor);
++   e_widget_disabled_set(cfdata->gui.slider_cursor_size, !cfdata->show_cursor);
++}
++
+ static Evas_Object *
+ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata) 
+ {
+@@ -143,16 +196,27 @@ _advanced_create_widgets(E_Config_Dialog
+       
+    o = e_widget_list_add(evas, 0, 0);
+ 
++   ob = e_widget_check_add(evas, _("Show Cursor"), &(cfdata->show_cursor));
++   e_widget_on_change_hook_set(ob, _advanced_show_cursor_cb_change, cfdata);
++   e_widget_list_object_append(o, ob, 1, 1, 0.5);
++
+    of = e_widget_framelist_add(evas, _("Cursor Settings"), 0);
+    rg = e_widget_radio_group_new(&cfdata->use_e_cursor);
++   cfdata->gui.radio_use_e_cursor = rg;
++
+    ob = e_widget_radio_add(evas, _("Use Enlightenment Cursor"), 1, rg);   
+    e_widget_framelist_object_append(of, ob);
+    ob = e_widget_radio_add(evas, _("Use X Cursor"), 0, rg);   
+    e_widget_framelist_object_append(of, ob);
+    ob = e_widget_label_add(evas, _("Cursor Size"));
+    e_widget_framelist_object_append(of, ob);
++
+    ob = e_widget_slider_add(evas, 1, 0, _("%1.0f pixels"), 8, 128, 4, 0, NULL, &(cfdata->cursor_size), 150);
++   cfdata->gui.slider_cursor_size = ob;
++
+    e_widget_framelist_object_append(of, ob);
++
+    e_widget_list_object_append(o, of, 1, 1, 0.5);   
++
+    return o;
+ }
+Index: e/src/bin/e_pointer.c
+===================================================================
+--- e.orig/src/bin/e_pointer.c
++++ e/src/bin/e_pointer.c
+@@ -94,6 +94,8 @@ e_pointers_size_set(int size)
+ {
+    Evas_List *l;
+ 
++   if (!e_config->show_cursor) return;
++
+    for (l = _e_pointers; l; l = l->next)
+      {
+ 	E_Pointer *p;
+@@ -136,6 +138,13 @@ e_pointers_size_set(int size)
+ }
+ 
+ EAPI void
++e_pointer_hide(E_Pointer *p)
++{
++    if (p->win) ecore_x_window_cursor_set(p->win, 0);
++    if (p->evas) _e_pointer_canvas_del(p);
++}
++
++EAPI void
+ e_pointer_type_push(E_Pointer *p, void *obj, const char *type)
+ {
+    E_Pointer_Stack *stack;
+@@ -199,6 +208,7 @@ EAPI void
+ e_pointer_idler_before(void)
+ {
+    Evas_List *l;
++   if (!e_config->show_cursor) return;
+ 
+    for (l = _e_pointers; l; l = l->next)
+      {
+@@ -305,6 +315,8 @@ _e_pointer_cb_move(void *data, Evas *e _
+    E_Pointer *p;
+    Evas_Coord x, y;
+ 
++   if (!e_config->show_cursor) return;
++
+    p = data;
+    if (!p->e_cursor) return;
+    evas_object_geometry_get(p->hot_object, &x, &y, NULL, NULL);
+@@ -353,6 +365,13 @@ _e_pointer_type_set(E_Pointer *p, const 
+    if (p->type) evas_stringshare_del(p->type);
+    p->type = evas_stringshare_add(type);
+    
++   /* Do not set type if in "hidden mode" */
++   if (!e_config->show_cursor)
++     {
++	ecore_x_window_cursor_set(p->win, 0);
++	return 1;
++     }
++
+    if (p->e_cursor)
+      {
+ 	Evas_Object *o;
+Index: e/src/bin/e_config.h
+===================================================================
+--- e.orig/src/bin/e_config.h
++++ e/src/bin/e_config.h
+@@ -166,6 +166,7 @@ struct _E_Config
+    int         focus_last_focused_per_desktop; // GUI
+    int         focus_revert_on_hide_or_close; // GUI
+    int         pointer_slide; // GUI
++   int         show_cursor; // GUI
+    int         use_e_cursor; // GUI
+    int         cursor_size; // GUI
+    int         menu_autoscroll_margin; // GUI
+Index: e/src/bin/e_pointer.h
+===================================================================
+--- e.orig/src/bin/e_pointer.h
++++ e/src/bin/e_pointer.h
+@@ -42,6 +42,7 @@ struct _E_Pointer
+ EAPI int        e_pointer_init(void);
+ EAPI int        e_pointer_shutdown(void);    
+ EAPI E_Pointer *e_pointer_window_new(Ecore_X_Window win, int filled);
++EAPI void	e_pointer_hide(E_Pointer *p);
+ EAPI void       e_pointer_type_push(E_Pointer *p, void *obj, const char *type);
+ EAPI void       e_pointer_type_pop(E_Pointer *p, void *obj, const char *type);
+ EAPI void       e_pointers_size_set(int size);

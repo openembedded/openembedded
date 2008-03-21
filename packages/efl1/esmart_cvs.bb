@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "evas ecore edje imlib2 epsilon libtool"
 PV = "0.9.0.042+cvs${SRCDATE}"
 
-inherit efl_library
+inherit efl
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 

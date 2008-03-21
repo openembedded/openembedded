@@ -5,7 +5,7 @@ DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PV = "1.4.1.000+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl_library
+inherit efl
 
 SRC_URI += "file://remove-local-includes.patch;patch=1"
 
