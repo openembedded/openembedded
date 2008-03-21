@@ -1,32 +1,30 @@
 DESCRIPTION = "Custom Matchbox session files for OpenMoko"
 LICENSE = "GPL"
 SECTION = "x11"
-RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2"
+RDEPENDS = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2 openmoko-panel-memory"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
-PR = "r65"
+PR = "r66"
 
 SRC_URI = "\
   file://etc \
   file://matchbox-session \
 "
-S = ${WORKDIR}
+
+S = "${WORKDIR}"
 
 inherit update-alternatives
 
-ALTERNATIVE_NAME = "x-window-manager"
-ALTERNATIVE_LINK = "${bindir}/x-window-manager"
-ALTERNATIVE_PATH = "${bindir}/matchbox-session"
-ALTERNATIVE_PRIORITY = "11"
-
 do_install() {
-	install -d ${D}${bindir}
-	install -m 0655 ${WORKDIR}/matchbox-session ${D}${bindir}
-	install -d ${D}${sysconfdir}
-	cp -R ${S}/etc/* ${D}${sysconfdir}
-	rm -fR ${D}${sysconfdir}/.svn
-	rm -fR ${D}${sysconfdir}/matchbox/.svn
-	chmod -R 755 ${D}${sysconfdir}/
+        install -d ${D}${bindir}
+        install -m 0655 ${WORKDIR}/matchbox-session ${D}${bindir}
+        install -d ${D}${sysconfdir}
+        cp -R ${S}/etc/* ${D}${sysconfdir}
+        rm -fR ${D}${sysconfdir}/.svn
+        rm -fR ${D}${sysconfdir}/matchbox/.svn
+        chmod -R 755 ${D}${sysconfdir}/
 }
+
+PACKAGE_ARCH = "all"
 
 pkg_postinst_openmoko-session2 () {
 #!/bin/sh -e
@@ -47,7 +45,9 @@ gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --dire
 
 }
 
-PACKAGE_ARCH = "all"
+ALTERNATIVE_NAME = "x-window-manager"
+ALTERNATIVE_PATH = "${bindir}/matchbox-session"
+ALTERNATIVE_LINK = "${bindir}/x-window-manager"
+ALTERNATIVE_PRIORITY = "11"
 
 CONFFILES_${PN} = "${sysconfdir}/matchbox/session"
-
