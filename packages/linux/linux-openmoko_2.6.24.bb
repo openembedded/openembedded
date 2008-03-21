@@ -10,6 +10,7 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 # re-enabled this when feature is fully implemented in OE
 #SRCREV_FORMAT = "patches-rconfig"
+SRCREV_FORMAT = "patches"
 CONFIG_REV = "4165"
 
 PV = "${VANILLA_VERSION}+svnr${SRCREV}-r${CONFIG_REV}"
