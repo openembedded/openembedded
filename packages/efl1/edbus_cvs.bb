@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 PV = "0.1.0.042+cvs${SRCDATE}"
 PR = "r3"
 
-inherit efl_library
+inherit efl
 
 SRC_URI = "${E_CVS};module=e17/libs/e_dbus"
 S = "${WORKDIR}/e_dbus"

@@ -6,7 +6,7 @@ DEPENDS = "imlib2 epeg libpng evas ecore edje perl-native"
 PV = "0.3.0.012+cvs${SRCDATE}"
 PR = "r1"
 
-inherit efl_library
+inherit efl
 
 SRC_URI += "file://fix_alignment_error.patch;patch=1"
 

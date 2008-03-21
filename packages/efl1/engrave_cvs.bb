@@ -4,4 +4,4 @@ LICENSE = "MIT"
 DEPENDS = "evas ecore"
 PV = "0.0.0+cvs${SRCDATE}"
 
-inherit efl_library
+inherit efl

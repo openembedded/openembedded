@@ -5,7 +5,7 @@ DEPENDS = "curl eet evas tslib"
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.042+cvs${SRCDATE}"
 
-inherit efl_library
+inherit efl
 
 SRC_URI += "file://fix-directfb-include.patch;patch=1"
 
