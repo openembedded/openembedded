@@ -294,8 +294,11 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core python-io python-re python-fcntl python-pickle",
     "subprocess.*" )
 
-    m.addPackage( 1, "python-sqlite3", "Python Sqlite3 Database Support", "python-core",
-    "lib-dynload/_sqlite3.so sqlite3" ) # package
+    m.addPackage( 2, "python-sqlite3", "Python Sqlite3 Database Support", "python-core python-datetime python-lang python-crypt python-io python-threading python-zlib",
+    "lib-dynload/_sqlite3.so sqlite3/dbapi2.* sqlite3/__init__.*" )
+
+    m.addPackage( 0, "python-sqlite3-tests", "Python Sqlite3 Database Support Tests", "python-core python-sqlite3",
+    "sqlite3/test" )
 
     m.addPackage( 0, "python-stringold", "Python String APIs [deprecated]", "python-core python-re",
     "lib-dynload/strop.so string.*" )
