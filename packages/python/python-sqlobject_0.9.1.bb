@@ -7,9 +7,9 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 RDEPENDS = "python-formencode"
 SRCNAME = "SQLObject"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/S/SQLObject/SQLObject-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit distutils
+inherit setuptools
