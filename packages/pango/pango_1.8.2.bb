@@ -11,7 +11,8 @@ PR = "r0"
 FULL_OPTIMIZATION_arm = "-O2"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v2.6/pango-${PV}.tar.bz2 \
-	   file://no-tests.patch;patch=1"
+	   file://no-tests.patch;patch=1 \
+	   file://pkgconfig_fixes.patch;patch=1"
 
 inherit autotools pkgconfig
 
