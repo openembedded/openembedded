@@ -4,4 +4,4 @@ DEPENDS = "jpeg"
 PV = "0.9.0+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl_library
+inherit efl

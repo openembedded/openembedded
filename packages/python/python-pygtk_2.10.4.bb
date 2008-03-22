@@ -6,10 +6,11 @@ RDEPENDS = "python-shell python-pycairo python-pygobject"
 PROVIDES = "python-pygtk2"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-PR = "ml6"
+PR = "ml7"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \
+           file://prevent_to_get_display_during_import.patch;patch=1 \
            file://nodocs.patch;patch=1 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

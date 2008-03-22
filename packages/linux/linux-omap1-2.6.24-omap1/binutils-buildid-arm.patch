@@ -1,0 +1,12 @@
+diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+index 5ff5406..538fcb5 100644
+--- a/arch/arm/kernel/vmlinux.lds.S
++++ b/arch/arm/kernel/vmlinux.lds.S
+@@ -94,6 +94,7 @@ SECTIONS
+ 			TEXT_TEXT
+ 			SCHED_TEXT
+ 			LOCK_TEXT
++			*(.note.*)
+ #ifdef CONFIG_MMU
+ 			*(.fixup)
+ #endif

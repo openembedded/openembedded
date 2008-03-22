@@ -87,7 +87,7 @@ RDEPENDS = "\
 		python-webpy		\
 		moin			\
 		plone			\
-		twisted			\
+		python-twisted			\
 		zope"
 
 BROKEN_PACKAGES = "\

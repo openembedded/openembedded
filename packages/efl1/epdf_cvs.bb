@@ -4,7 +4,7 @@ DEPENDS = "poppler evas ecore etk ewl"
 PV = "0.1.0+cvs${SRCDATE}"
 PR = "r0"
 
-inherit efl_library
+inherit efl
 
 SRC_URI = "${E_CVS};module=e17/proto/${SRCNAME} \
            file://fix-plugin-path-check.patch;HACK=1;patch=1"

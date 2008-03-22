@@ -52,7 +52,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE = "20080311"
+EFL_SRCDATE = "20080321"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"
@@ -81,6 +81,7 @@ SRCDATE_engrave ?= "${EFL_SRCDATE}"
 SRCDATE_evolve-native ?= "${EFL_SRCDATE}"
 SRCDATE_evolve ?= "${EFL_SRCDATE}"
 SRCDATE_gevas2 ?= "${EFL_SRCDATE}"
+SRCDATE_imlib2 ?= "${EFL_SRCDATE}"
 
 # Enlightenment Bindings
 SRCDATE_eflpp ?= "${EFL_SRCDATE}"

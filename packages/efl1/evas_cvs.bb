@@ -47,6 +47,7 @@ EXTRA_OECONF = "\
 		--disable-convert-16-rgb-ipq	\
 		--enable-convert-16-rgb-rot-0	\
 		--enable-convert-16-rgb-rot-90	\
+		--disable-convert-16-rgb-rot-180 \
 		--enable-convert-16-rgb-rot-270	\
 		--enable-convert-24-rgb-888	\
 		--enable-convert-24-bgr-888	\
@@ -56,5 +57,6 @@ EXTRA_OECONF = "\
 		--enable-convert-32-bgrx-8888	\
 		--enable-convert-32-rgb-rot-0	\
 		--enable-convert-32-rgb-rot-90	\
+		--disable-convert-32-rgb-rot-180 \
 		--enable-convert-32-rgb-rot-270"
 

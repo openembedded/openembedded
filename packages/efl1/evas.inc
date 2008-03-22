@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender"
 PV = "0.9.9.042+cvs${SRCDATE}"
 
-inherit efl_library
+inherit efl
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
 EXTRA_OECONF = "<override me>"
@@ -26,7 +26,6 @@ do_install_append() {
 
 FILES_${PN}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"
 FILES_${PN}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
-FILES_${PN} = "${libdir}/libevas*.so*"
 
 PACKAGES_DYNAMIC = "libevas-engine-* libevas-loader-* libevas-saver-*"
 

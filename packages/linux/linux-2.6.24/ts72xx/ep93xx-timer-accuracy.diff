@@ -5,11 +5,11 @@ ticks until the next jiffy in a fractional value representation.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
+Index: linux-2.6.22/arch/arm/mach-ep93xx/core.c
 ===================================================================
---- linux-2.6.23-rc5.orig/arch/arm/mach-ep93xx/core.c	2007-09-04 02:26:38.000000000 +0200
-+++ linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c	2007-09-04 02:26:48.000000000 +0200
-@@ -94,19 +94,32 @@
+--- linux-2.6.22.orig/arch/arm/mach-ep93xx/core.c
++++ linux-2.6.22/arch/arm/mach-ep93xx/core.c
+@@ -94,19 +94,32 @@ void __init ep93xx_map_io(void)
   * track of lost jiffies.
   */
  static unsigned int last_jiffy_time;
@@ -47,10 +47,10 @@ Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
  	}
  
  	write_sequnlock(&xtime_lock);
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/timex.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/timex.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/timex.h	2007-09-04 02:25:36.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/timex.h	2007-09-04 02:26:48.000000000 +0200
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/timex.h
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/timex.h
 @@ -2,4 +2,4 @@
   * linux/include/asm-arm/arch-ep93xx/timex.h
   */

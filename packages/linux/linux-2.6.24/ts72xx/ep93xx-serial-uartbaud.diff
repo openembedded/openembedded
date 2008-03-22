@@ -3,11 +3,11 @@ Force UARTBAUD on before uncompressing.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/uncompress.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/uncompress.h	2007-09-04 02:25:36.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/uncompress.h	2007-09-04 02:28:14.000000000 +0200
-@@ -77,9 +77,56 @@
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/uncompress.h
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
+@@ -77,9 +77,56 @@ static void ethernet_reset(void)
  }
  
  

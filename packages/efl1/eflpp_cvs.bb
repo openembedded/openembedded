@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 DEPENDS = "evas ecore edje emotion esmart etk ewl libsigc++-2.0"
 PV = "0.1.0+cvs${SRCDATE}"
 
-inherit efl_library
+inherit efl
 
 EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 
