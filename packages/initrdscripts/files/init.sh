@@ -41,9 +41,11 @@ read_args() {
 
 load_modules() {
     for module in $MODULE_DIR/$1; do
-	# Cannot redir to $CONSOLE here easily - may not be set yet
-        echo "initramfs: Loading $module module"
-        source $module
+	if [ -e "$module"  ]; then
+	    # Cannot redir to $CONSOLE here easily - may not be set yet
+            echo "initramfs: Loading $module module"
+            source $module
+	fi
     done
 }
 
