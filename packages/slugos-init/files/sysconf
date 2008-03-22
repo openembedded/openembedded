@@ -665,6 +665,8 @@ sysconf_restore(){
 			#
 			mkdir "$saved" || {
 				sysconf_restore_error "$ffsdir" "$saved: failed to create temporary directory"
+				umount "$ffsdir" && rmdir "$ffsdir" ||
+					echo "$0: $ffsdir: temporary directory cleanup failed" >&2
 				return 1
 			}
 			#
@@ -678,6 +680,8 @@ sysconf_restore(){
 			) || {
 				rm -rf "$saved"
 				sysconf_restore_error "$ffsdir" "$saved: cpio -i failed"
+				umount "$ffsdir" && rmdir "$ffsdir" ||
+					echo "$0: $ffsdir: temporary directory cleanup failed" >&2
 				return 1
 			}
 			# either there must be no 'diff' files or it must
