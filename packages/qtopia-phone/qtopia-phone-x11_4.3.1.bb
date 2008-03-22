@@ -16,7 +16,7 @@ PROVIDES = "qtopia-phone"
 PR = "r7"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://git.openmoko.org/git/qtopia.git;protocol=git \
-           file://Xsession.d/99qtopia \
+           file://Xsession.d/89qtopia \
            file://qtopia.sh"
 
 S = "${WORKDIR}/git"
