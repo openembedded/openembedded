@@ -1,0 +1,1128 @@
+From 519d015892ab0a7cad1f6b26fcd38117171384ce Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Tue, 1 Jan 2008 21:22:23 +0000
+Subject: [PATCH 09/64] FB driver for TMIO devices
+
+---
+ drivers/video/Kconfig  |   22 +
+ drivers/video/Makefile |    1 +
+ drivers/video/tmiofb.c | 1062 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1085 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/tmiofb.c
+
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index 5b3dbcf..6d0df58 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -1782,6 +1782,28 @@ config FB_W100
+ 
+ 	  If unsure, say N.
+ 
++config FB_TMIO
++	tristate "Toshiba Mobice IO FrameBuffer support"
++	depends on FB && MFD_CORE
++	select FB_CFB_FILLRECT
++	select FB_CFB_COPYAREA
++	select FB_CFB_IMAGEBLIT
++	---help---
++	  Frame buffer driver for the Toshiba Mobile IO integrated as found
++	  on the Sharp SL-6000 series
++
++	  This driver is also available as a module ( = code which can be
++	  inserted and removed from the running kernel whenever you want). The
++	  module will be called tmiofb. If you want to compile it as a module,
++	  say M here and read <file:Documentation/kbuild/modules.txt>.
++
++	  If unsure, say N.
++
++config FB_TMIO_ACCELL
++	bool "tmiofb acceleration"
++	depends on FB_TMIO
++	default y
++
+ config FB_S3C2410
+ 	tristate "S3C2410 LCD framebuffer support"
+ 	depends on FB && ARCH_S3C2410
+diff --git a/drivers/video/Makefile b/drivers/video/Makefile
+index 83e02b3..74e9384 100644
+--- a/drivers/video/Makefile
++++ b/drivers/video/Makefile
+@@ -97,6 +97,7 @@ obj-$(CONFIG_FB_CIRRUS)		  += cirrusfb.o
+ obj-$(CONFIG_FB_ASILIANT)	  += asiliantfb.o
+ obj-$(CONFIG_FB_PXA)		  += pxafb.o
+ obj-$(CONFIG_FB_W100)		  += w100fb.o
++obj-$(CONFIG_FB_TMIO)		  += tmiofb.o
+ obj-$(CONFIG_FB_AU1100)		  += au1100fb.o
+ obj-$(CONFIG_FB_AU1200)		  += au1200fb.o
+ obj-$(CONFIG_FB_PMAG_AA)	  += pmag-aa-fb.o
+diff --git a/drivers/video/tmiofb.c b/drivers/video/tmiofb.c
+new file mode 100644
+index 0000000..6b963a1
+--- /dev/null
++++ b/drivers/video/tmiofb.c
+@@ -0,0 +1,1062 @@
++/*
++ * Frame Buffer Device for Toshiba Mobile IO(TMIO) controller
++ *
++ * Copyright(C) 2005-2006 Chris Humbert
++ * Copyright(C) 2005 Dirk Opfer
++ *
++ * Based on:
++ *	drivers/video/w100fb.c
++ *	code written by Sharp/Lineo for 2.4 kernels
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/mfd-core.h>
++#include <linux/mfd/tmio.h>
++#include <linux/fb.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++/* Why should fb driver call console functions? because acquire_console_sem() */
++#include <linux/console.h>
++#include <linux/uaccess.h>
++#include <linux/vmalloc.h>
++
++/*
++ * accelerator commands
++ */
++#define TMIOFB_ACC_CSADR(x)	(0x00000000 | ((x) & 0x001ffffe))
++#define TMIOFB_ACC_CHPIX(x)	(0x01000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_CVPIX(x)	(0x02000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_PSADR(x)	(0x03000000 | ((x) & 0x00fffffe))
++#define TMIOFB_ACC_PHPIX(x)	(0x04000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_PVPIX(x)	(0x05000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_PHOFS(x)	(0x06000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_PVOFS(x)	(0x07000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_POADR(x)	(0x08000000 | ((x) & 0x00fffffe))
++#define TMIOFB_ACC_RSTR(x)	(0x09000000 | ((x) & 0x000000ff))
++#define TMIOFB_ACC_TCLOR(x)	(0x0A000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_FILL(x)	(0x0B000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_DSADR(x)	(0x0C000000 | ((x) & 0x00fffffe))
++#define TMIOFB_ACC_SSADR(x)	(0x0D000000 | ((x) & 0x00fffffe))
++#define TMIOFB_ACC_DHPIX(x)	(0x0E000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_DVPIX(x)	(0x0F000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_SHPIX(x)	(0x10000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_SVPIX(x)	(0x11000000 | ((x) & 0x000003ff))
++#define TMIOFB_ACC_LBINI(x)	(0x12000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_LBK2(x)	(0x13000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_SHBINI(x)	(0x14000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_SHBK2(x)	(0x15000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_SVBINI(x)	(0x16000000 | ((x) & 0x0000ffff))
++#define TMIOFB_ACC_SVBK2(x)	(0x17000000 | ((x) & 0x0000ffff))
++
++#define	TMIOFB_ACC_CMGO		0x20000000
++#define	TMIOFB_ACC_CMGO_CEND	0x00000001
++#define	TMIOFB_ACC_CMGO_INT	0x00000002
++#define	TMIOFB_ACC_CMGO_CMOD	0x00000010
++#define	TMIOFB_ACC_CMGO_CDVRV	0x00000020
++#define	TMIOFB_ACC_CMGO_CDHRV	0x00000040
++#define	TMIOFB_ACC_CMGO_RUND	0x00008000
++#define	TMIOFB_ACC_SCGO		0x21000000
++#define	TMIOFB_ACC_SCGO_CEND	0x00000001
++#define	TMIOFB_ACC_SCGO_INT	0x00000002
++#define	TMIOFB_ACC_SCGO_ROP3	0x00000004
++#define	TMIOFB_ACC_SCGO_TRNS	0x00000008
++#define	TMIOFB_ACC_SCGO_DVRV	0x00000010
++#define	TMIOFB_ACC_SCGO_DHRV	0x00000020
++#define	TMIOFB_ACC_SCGO_SVRV	0x00000040
++#define	TMIOFB_ACC_SCGO_SHRV	0x00000080
++#define	TMIOFB_ACC_SCGO_DSTXY	0x00008000
++#define	TMIOFB_ACC_SBGO		0x22000000
++#define	TMIOFB_ACC_SBGO_CEND	0x00000001
++#define	TMIOFB_ACC_SBGO_INT	0x00000002
++#define	TMIOFB_ACC_SBGO_DVRV	0x00000010
++#define	TMIOFB_ACC_SBGO_DHRV	0x00000020
++#define	TMIOFB_ACC_SBGO_SVRV	0x00000040
++#define	TMIOFB_ACC_SBGO_SHRV	0x00000080
++#define	TMIOFB_ACC_SBGO_SBMD	0x00000100
++#define	TMIOFB_ACC_FLGO		0x23000000
++#define	TMIOFB_ACC_FLGO_CEND	0x00000001
++#define	TMIOFB_ACC_FLGO_INT	0x00000002
++#define	TMIOFB_ACC_FLGO_ROP3	0x00000004
++#define	TMIOFB_ACC_LDGO		0x24000000
++#define	TMIOFB_ACC_LDGO_CEND	0x00000001
++#define	TMIOFB_ACC_LDGO_INT	0x00000002
++#define	TMIOFB_ACC_LDGO_ROP3	0x00000004
++#define	TMIOFB_ACC_LDGO_ENDPX	0x00000008
++#define	TMIOFB_ACC_LDGO_LVRV	0x00000010
++#define	TMIOFB_ACC_LDGO_LHRV	0x00000020
++#define	TMIOFB_ACC_LDGO_LDMOD	0x00000040
++
++/* a FIFO is always allocated, even if acceleration is not used */
++#define TMIOFB_FIFO_SIZE	512
++
++/*
++ * LCD Host Controller Configuration Register
++ *
++ * This iomem area supports only 16-bit IO.
++ */
++struct tmio_lhccr {
++	u16 x00[2];
++	u16	cmd;		/* 0x04 Command				*/
++	u16 x01;
++	u16	revid;		/* 0x08 Revision ID			*/
++	u16 x02[3];
++	u16	basel;		/* 0x10 LCD Control Reg Base Addr Low	*/
++	u16	baseh;		/* 0x12 LCD Control Reg Base Addr High	*/
++	u16 x03[0x16];
++	u16	ugcc;		/* 0x40 Unified Gated Clock Control	*/
++	u16	gcc;		/* 0x42 Gated Clock Control		*/
++	u16 x04[6];
++	u16	usc;		/* 0x50 Unified Software Clear		*/
++	u16 x05[7];
++	u16	vramrtc;	/* 0x60 VRAM Timing Control		*/
++				/* 0x61 VRAM Refresh Control		*/
++	u16	vramsac;	/* 0x62 VRAM Access Control		*/
++				/* 0x63	VRAM Status			*/
++	u16	vrambc;		/* 0x64 VRAM Block Control		*/
++	u16 x06[0x4d];
++};
++
++/*
++ * LCD Control Register
++ *
++ * This iomem area supports only 16-bit IO.
++ */
++struct tmio_lcr {
++	u16	uis;	/* 0x000 Unified Interrupt Status		*/
++	u16 x00[3];
++	u16	vhpn;	/* 0x008 VRAM Horizontal Pixel Number		*/
++	u16	cfsal;	/* 0x00a Command FIFO Start Address Low		*/
++	u16	cfsah;	/* 0x00c Command FIFO Start Address High	*/
++	u16	cfs;	/* 0x00e Command FIFO Size			*/
++	u16	cfws;	/* 0x010 Command FIFO Writeable Size		*/
++	u16	bbie;	/* 0x012 BitBLT Interrupt Enable		*/
++	u16	bbisc;	/* 0x014 BitBLT Interrupt Status and Clear	*/
++	u16	ccs;	/* 0x016 Command Count Status			*/
++	u16	bbes;	/* 0x018 BitBLT Execution Status		*/
++	u16 x01;
++	u16	cmdl;	/* 0x01c Command Low				*/
++	u16	cmdh;	/* 0x01e Command High				*/
++	u16 x02;
++	u16	cfc;	/* 0x022 Command FIFO Clear			*/
++	u16	ccifc;	/* 0x024 CMOS Camera IF Control			*/
++	u16	hwt;	/* 0x026 Hardware Test				*/
++	u16 x03[0x6c];
++	u16	lcdccrc;/* 0x100 LCDC Clock and Reset Control		*/
++	u16	lcdcc;	/* 0x102 LCDC Control				*/
++	u16	lcdcopc;/* 0x104 LCDC Output Pin Control		*/
++	u16 x04;
++	u16	lcdis;	/* 0x108 LCD Interrupt Status			*/
++	u16	lcdim;	/* 0x10a LCD Interrupt Mask			*/
++	u16	lcdie;	/* 0x10c LCD Interrupt Enable			*/
++	u16 x05[10];
++	u16	gdsal;	/* 0x122 Graphics Display Start Address Low	*/
++	u16	gdsah;	/* 0x124 Graphics Display Start Address High	*/
++	u16 x06[2];
++	u16	vhpcl;	/* 0x12a VRAM Horizontal Pixel Count Low	*/
++	u16	vhpch;	/* 0x12c VRAM Horizontal Pixel Count High	*/
++	u16	gm;	/* 0x12e Graphic Mode(VRAM access enable)	*/
++	u16 x07[8];
++	u16	ht;	/* 0x140 Horizontal Total			*/
++	u16	hds;	/* 0x142 Horizontal Display Start		*/
++	u16	hss;	/* 0x144 H-Sync Start				*/
++	u16	hse;	/* 0x146 H-Sync End				*/
++	u16 x08[2];
++	u16	hnp;	/* 0x14c Horizontal Number of Pixels		*/
++	u16 x09;
++	u16	vt;	/* 0x150 Vertical Total				*/
++	u16	vds;	/* 0x152 Vertical Display Start			*/
++	u16	vss;	/* 0x154 V-Sync Start				*/
++	u16	vse;	/* 0x156 V-Sync End				*/
++	u16 x0a[4];
++	u16	cdln;	/* 0x160 Current Display Line Number		*/
++	u16	iln;	/* 0x162 Interrupt Line Number			*/
++	u16	sp;	/* 0x164 Sync Polarity				*/
++	u16	misc;	/* 0x166 MISC(RGB565 mode)			*/
++	u16 x0b;
++	u16	vihss;	/* 0x16a Video Interface H-Sync Start		*/
++	u16	vivs;	/* 0x16c Video Interface Vertical Start		*/
++	u16	vive;	/* 0x16e Video Interface Vertical End		*/
++	u16	vivss;	/* 0x170 Video Interface V-Sync Start		*/
++	u16 x0c[6];
++	u16	vccis;	/* 0x17e Video / CMOS Camera Interface Select	*/
++	u16	vidwsal;/* 0x180 VI Data Write Start Address Low	*/
++	u16	vidwsah;/* 0x182 VI Data Write Start Address High	*/
++	u16	vidrsal;/* 0x184 VI Data Read Start Address Low		*/
++	u16	vidrsah;/* 0x186 VI Data Read Start Address High	*/
++	u16	vipddst;/* 0x188 VI Picture Data Display Start Timing	*/
++	u16	vipddet;/* 0x186 VI Picture Data Display End Timing	*/
++	u16	vie;	/* 0x18c Video Interface Enable			*/
++	u16	vcs;	/* 0x18e Video/Camera Select			*/
++	u16 x0d[2];
++	u16	vphwc;	/* 0x194 Video Picture Horizontal Wait Count	*/
++	u16	vphs;	/* 0x196 Video Picture Horizontal Size		*/
++	u16	vpvwc;	/* 0x198 Video Picture Vertical Wait Count	*/
++	u16	vpvs;	/* 0x19a Video Picture Vertical Size		*/
++	u16 x0e[2];
++	u16	plhpix;	/* 0x1a0 PLHPIX					*/
++	u16	xs;	/* 0x1a2 XStart					*/
++	u16	xckhw;	/* 0x1a4 XCK High Width				*/
++	u16 x0f;
++	u16	sths;	/* 0x1a8 STH Start				*/
++	u16	vt2;	/* 0x1aa Vertical Total				*/
++	u16	ycksw;	/* 0x1ac YCK Start Wait				*/
++	u16	ysts;	/* 0x1ae YST Start				*/
++	u16	ppols;	/* 0x1b0 #PPOL Start				*/
++	u16	precw;	/* 0x1b2 PREC Width				*/
++	u16	vclkhw;	/* 0x1b4 VCLK High Width			*/
++	u16	oc;	/* 0x1b6 Output Control				*/
++	u16 x10[0x24];
++};
++static char *mode_option __devinitdata;
++
++struct tmiofb_par {
++	u32				pseudo_palette[16];
++
++#ifdef CONFIG_FB_TMIO_ACCELL
++	wait_queue_head_t		wait_acc;
++	bool				use_polling;
++#endif
++
++	struct tmio_lhccr __iomem	*ccr;
++	struct tmio_lcr __iomem		*lcr;
++	void __iomem			*vram;
++};
++
++/*--------------------------------------------------------------------------*/
++
++static irqreturn_t tmiofb_irq(int irq, void *__info);
++
++/*--------------------------------------------------------------------------*/
++
++
++/*
++ * Turns off the LCD controller and LCD host controller.
++ */
++static int tmiofb_hw_stop(struct platform_device *dev)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	struct tmio_fb_data		*data	= cell->driver_data;
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lhccr __iomem 	*ccr	= par->ccr;
++	struct tmio_lcr __iomem 	*lcr	= par->lcr;
++
++	iowrite16(0,		&ccr->ugcc);
++	iowrite16(0,		&lcr->gm);
++	data->lcd_set_power(dev, 0);
++	iowrite16(0x0010,	&lcr->lcdccrc);
++
++	return 0;
++}
++
++/*
++ * Initializes the LCD host controller.
++ */
++static int tmiofb_hw_init(struct platform_device *dev)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	struct tmio_fb_data		*data	= cell->driver_data;
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lhccr __iomem 	*ccr	= par->ccr;
++	struct tmio_lcr __iomem 	*lcr	= par->lcr;
++	const struct resource		*nlcr	= NULL;
++	const struct resource		*vram	= NULL;
++	unsigned long			base;
++	int				i;
++
++	for (i = 0; i < cell->num_resources; i++) {
++		if (!strcmp((cell->resources+i)->name, TMIO_FB_CONTROL))
++			nlcr = &cell->resources[i];
++		if (!strcmp((cell->resources+i)->name, TMIO_FB_VRAM))
++			vram = &cell->resources[i];
++	}
++
++	if (nlcr == NULL || vram == NULL)
++		return -EINVAL;
++
++	base = nlcr->start;
++
++	if (info->mode == NULL) {
++		printk(KERN_ERR "tmio-fb: null info->mode\n");
++		info->mode = data->modes;
++	}
++
++	data->lcd_mode(dev, info->mode);
++
++	iowrite16(0x003a,	&ccr->ugcc);
++	iowrite16(0x003a,	&ccr->gcc);
++	iowrite16(0x3f00,	&ccr->usc);
++
++	data->lcd_set_power(dev, 1);
++	mdelay(2);
++
++	iowrite16(0x0000,	&ccr->usc);
++	iowrite16(base >> 16,	&ccr->baseh);
++	iowrite16(base,	&ccr->basel);
++	iowrite16(0x0002,	&ccr->cmd);	/* base address enable	*/
++	iowrite16(0x40a8,	&ccr->vramrtc);	/* VRAMRC, VRAMTC	*/
++	iowrite16(0x0018,	&ccr->vramsac);	/* VRAMSTS, VRAMAC	*/
++	iowrite16(0x0002,	&ccr->vrambc);
++	mdelay(2);
++	iowrite16(0x000b,	&ccr->vrambc);
++
++	base = vram->start + info->screen_size;
++	iowrite16(base >> 16,			&lcr->cfsah);
++	iowrite16(base,				&lcr->cfsal);
++	iowrite16(TMIOFB_FIFO_SIZE - 1,		&lcr->cfs);
++	iowrite16(1,				&lcr->cfc);
++	iowrite16(1,				&lcr->bbie);
++	iowrite16(0,				&lcr->cfws);
++
++	return 0;
++}
++
++/*
++ * Sets the LCD controller's output resolution and pixel clock
++ */
++static void tmiofb_hw_mode(struct platform_device *dev)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	struct tmio_fb_data		*data	= cell->driver_data;
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct fb_videomode		*mode	= info->mode;
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lcr __iomem 	*lcr	= par->lcr;
++	unsigned int			i;
++
++	iowrite16(0,				&lcr->gm);
++	data->lcd_set_power(dev, 0);
++	iowrite16(0x0010,			&lcr->lcdccrc);
++	data->lcd_mode(dev, mode);
++	data->lcd_set_power(dev, 1);
++
++	iowrite16(i = mode->xres * 2,		&lcr->vhpn);
++	iowrite16(0,				&lcr->gdsah);
++	iowrite16(0,				&lcr->gdsal);
++	iowrite16(i >> 16,			&lcr->vhpch);
++	iowrite16(i,				&lcr->vhpcl);
++	iowrite16(i = 0,			&lcr->hss);
++	iowrite16(i += mode->hsync_len,	&lcr->hse);
++	iowrite16(i += mode->left_margin,	&lcr->hds);
++	iowrite16(i += mode->xres + mode->right_margin,	&lcr->ht);
++	iowrite16(mode->xres,			&lcr->hnp);
++	iowrite16(i = 0,			&lcr->vss);
++	iowrite16(i += mode->vsync_len,	&lcr->vse);
++	iowrite16(i += mode->upper_margin,	&lcr->vds);
++	iowrite16(i += mode->yres,		&lcr->iln);
++	iowrite16(i += mode->lower_margin,	&lcr->vt);
++	iowrite16(3,	/* RGB565 mode */	&lcr->misc);
++	iowrite16(1,	/* VRAM enable */	&lcr->gm);
++	iowrite16(0x4007,			&lcr->lcdcc);
++	iowrite16(3,	 /* sync polarity */	&lcr->sp);
++
++	iowrite16(0x0010,	&lcr->lcdccrc);
++	mdelay(5);
++	iowrite16(0x0014,	&lcr->lcdccrc);	/* STOP_CKP */
++	mdelay(5);
++	iowrite16(0x0015,	&lcr->lcdccrc);	/* STOP_CKP | SOFT_RESET */
++	iowrite16(0xfffa,	&lcr->vcs);
++}
++
++/*--------------------------------------------------------------------------*/
++
++#ifdef CONFIG_FB_TMIO_ACCELL
++static int __must_check
++tmiofb_acc_wait(struct fb_info *info, unsigned int ccs)
++{
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lcr __iomem		*lcr	= par->lcr;
++	if (in_atomic() || par->use_polling) {
++		int i = 0;
++		while (ioread16(&lcr->ccs) > ccs) {
++			udelay(1);
++			i++;
++			if (i > 10000) {
++				printk(KERN_ERR "tmiofb: timeout waiting for %d\n", ccs);
++				return -ETIMEDOUT;
++			}
++			tmiofb_irq(-1, info);
++		}
++	} else {
++		if (!wait_event_interruptible_timeout(par->wait_acc,
++				ioread16(&par->lcr->ccs) <= ccs, 1000)) {
++			printk(KERN_ERR "tmiofb: timeout waiting for %d\n", ccs);
++			return -ETIMEDOUT;
++		}
++	}
++
++	return 0;
++}
++
++/*
++ * Writes an accelerator command to the accelerator's FIFO.
++ */
++static int
++tmiofb_acc_write(struct fb_info *info, const u32 *cmd, unsigned int count)
++{
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lcr __iomem		*lcr	= par->lcr;
++	int ret;
++
++	ret = tmiofb_acc_wait(info, TMIOFB_FIFO_SIZE - count);
++	if (ret)
++		return ret;
++
++	for (; count; count--, cmd++) {
++		iowrite16(*cmd >> 16,	&lcr->cmdh);
++		iowrite16(*cmd,	&lcr->cmdl);
++	}
++
++	return ret;
++}
++
++/*
++ * Wait for the accelerator to finish its operations before writing
++ * to the framebuffer for consistent display output.
++ */
++static int tmiofb_sync(struct fb_info *fbi)
++{
++	struct tmiofb_par		*par	= fbi->par;
++
++	int ret;
++	int i = 0;
++
++	ret = tmiofb_acc_wait(fbi, 0);
++
++	while (ioread16(&par->lcr->bbes) & 2) {	/* blit active */
++		udelay(1);
++		i++ ;
++		if (i > 10000) {
++			printk(KERN_ERR "timeout waiting for blit to end!\n");
++			return -ETIMEDOUT;
++		}
++	}
++
++	return ret;
++}
++
++static void
++tmiofb_fillrect(struct fb_info *fbi, const struct fb_fillrect *rect)
++{
++	const u32 cmd [] = {
++		TMIOFB_ACC_DSADR((rect->dy * fbi->mode->xres + rect->dx) * 2),
++		TMIOFB_ACC_DHPIX(rect->width	- 1),
++		TMIOFB_ACC_DVPIX(rect->height	- 1),
++		TMIOFB_ACC_FILL(rect->color),
++		TMIOFB_ACC_FLGO,
++	};
++
++	if (fbi->state != FBINFO_STATE_RUNNING ||
++	    fbi->flags & FBINFO_HWACCEL_DISABLED) {
++		cfb_fillrect(fbi, rect);
++		return;
++	}
++
++	tmiofb_acc_write(fbi, cmd, ARRAY_SIZE(cmd));
++}
++
++static void
++tmiofb_copyarea(struct fb_info *fbi, const struct fb_copyarea *area)
++{
++	const u32 cmd [] = {
++		TMIOFB_ACC_DSADR((area->dy * fbi->mode->xres + area->dx) * 2),
++		TMIOFB_ACC_DHPIX(area->width	- 1),
++		TMIOFB_ACC_DVPIX(area->height	- 1),
++		TMIOFB_ACC_SSADR((area->sy * fbi->mode->xres + area->sx) * 2),
++		TMIOFB_ACC_SCGO,
++	};
++
++	if (fbi->state != FBINFO_STATE_RUNNING ||
++	    fbi->flags & FBINFO_HWACCEL_DISABLED) {
++		cfb_copyarea(fbi, area);
++		return;
++	}
++
++	tmiofb_acc_write(fbi, cmd, ARRAY_SIZE(cmd));
++}
++#endif
++
++static void tmiofb_clearscreen(struct fb_info *info)
++{
++	const struct fb_fillrect rect = {
++		.dx	= 0,
++		.dy	= 0,
++		.width	= info->mode->xres,
++		.height	= info->mode->yres,
++		.color	= 0,
++	};
++
++	info->fbops->fb_fillrect(info, &rect);
++}
++
++static int tmiofb_vblank(struct fb_info *fbi, struct fb_vblank *vblank)
++{
++	struct tmiofb_par	*par	= fbi->par;
++	struct fb_videomode	*mode	= fbi->mode;
++	unsigned int		vcount	= ioread16(&par->lcr->cdln);
++	unsigned int		vds	= mode->vsync_len + mode->upper_margin;
++
++	vblank->vcount	= vcount;
++	vblank->flags	= FB_VBLANK_HAVE_VBLANK	| FB_VBLANK_HAVE_VCOUNT
++						| FB_VBLANK_HAVE_VSYNC;
++
++	if (vcount < mode->vsync_len)
++		vblank->flags |= FB_VBLANK_VSYNCING;
++
++	if (vcount < vds || vcount > vds + mode->yres)
++		vblank->flags |= FB_VBLANK_VBLANKING;
++
++	return 0;
++}
++
++
++static int tmiofb_ioctl(struct fb_info *fbi,
++		unsigned int cmd, unsigned long arg)
++{
++	switch (cmd) {
++	case FBIOGET_VBLANK: {
++		struct fb_vblank	vblank	= {0};
++		void __user		*argp	= (void __user *) arg;
++
++		tmiofb_vblank(fbi, &vblank);
++		if (copy_to_user(argp, &vblank, sizeof vblank))
++				return -EFAULT;
++		return 0;
++	}
++
++#ifdef CONFIG_FB_TMIO_ACCELL
++	case FBIO_TMIO_ACC_SYNC:
++		tmiofb_sync(fbi);
++		return 0;
++
++	case FBIO_TMIO_ACC_WRITE: {
++		u32 __user	*argp	= (void __user *) arg;
++		u32		len;
++		u32		acc [16];
++
++		if (copy_from_user(&len, argp, sizeof(u32)))
++			return -EFAULT;
++		if (len > ARRAY_SIZE(acc))
++			return -EINVAL;
++		if (copy_from_user(acc, argp + 1, sizeof(u32) * len))
++			return -EFAULT;
++
++		return tmiofb_acc_write(fbi, acc, len);
++	}
++#endif
++	}
++
++	return -EINVAL;
++}
++
++/*--------------------------------------------------------------------------*/
++
++/* Select the smallest mode that allows the desired resolution to be
++ * displayed.  If desired, the x and y parameters can be rounded up to
++ * match the selected mode.
++ */
++static struct fb_videomode*
++tmiofb_find_mode(struct fb_info *info, struct fb_var_screeninfo *var)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(to_platform_device(info->device));
++	struct tmio_fb_data		*data	= cell->driver_data;
++	struct fb_videomode		*best	= NULL;
++	int				i;
++
++	for (i = 0; i < data->num_modes; i++) {
++		struct fb_videomode *mode = data->modes + i;
++
++		if (mode->xres >= var->xres && mode->yres >= var->yres
++				&& (!best || (mode->xres < best->xres
++					   && mode->yres < best->yres)))
++			best = mode;
++	}
++
++	return best;
++}
++
++static int tmiofb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
++{
++
++	struct fb_videomode	*mode;
++
++	mode = tmiofb_find_mode(info, var);
++	if (!mode || var->bits_per_pixel > 16)
++		return -EINVAL;
++
++	fb_videomode_to_var(var, mode);
++
++	var->xres_virtual	= mode->xres;
++	var->yres_virtual	= info->screen_size / (mode->xres * 2);
++	var->xoffset		= 0;
++	var->yoffset		= 0;
++	var->bits_per_pixel	= 16;
++	var->grayscale		= 0;
++	var->red.offset		= 11;	var->red.length		= 5;
++	var->green.offset	= 5;	var->green.length	= 6;
++	var->blue.offset	= 0;	var->blue.length	= 5;
++	var->transp.offset	= 0;	var->transp.length	= 0;
++	var->nonstd		= 0;
++	var->height		= 82;	/* mm */
++	var->width		= 60;	/* mm */
++	var->rotate		= 0;
++	return 0;
++}
++
++static int tmiofb_set_par(struct fb_info *info)
++{
++/*	struct fb_var_screeninfo	*var	= &info->var;
++	struct fb_videomode		*mode;
++
++	mode = tmiofb_find_mode(info, var);
++	if (!mode)
++		return -EINVAL;
++
++	if (info->mode == mode)
++		return 0;
++
++	info->mode		= mode; */
++	info->fix.line_length	= info->mode->xres * 2;
++
++	tmiofb_hw_mode(to_platform_device(info->device));
++	tmiofb_clearscreen(info);
++	return 0;
++}
++
++static int tmiofb_setcolreg(unsigned regno, unsigned red, unsigned green,
++			   unsigned blue, unsigned transp,
++			   struct fb_info *info)
++{
++	struct tmiofb_par	*par	= info->par;
++
++	if (regno < ARRAY_SIZE(par->pseudo_palette)) {
++		par->pseudo_palette [regno] =
++			((red	& 0xf800))		|
++			((green	& 0xfc00) >>  5)	|
++			((blue	& 0xf800) >> 11);
++		return 0;
++	}
++
++	return 1;
++}
++
++static struct fb_ops tmiofb_ops = {
++	.owner		= THIS_MODULE,
++
++	.fb_ioctl	= tmiofb_ioctl,
++	.fb_check_var	= tmiofb_check_var,
++	.fb_set_par	= tmiofb_set_par,
++	.fb_setcolreg	= tmiofb_setcolreg,
++	.fb_imageblit	= cfb_imageblit,
++#ifdef CONFIG_FB_TMIO_ACCELL
++	.fb_sync	= tmiofb_sync,
++	.fb_fillrect	= tmiofb_fillrect,
++	.fb_copyarea	= tmiofb_copyarea,
++#else
++	.fb_fillrect	= cfb_fillrect,
++	.fb_copyarea	= cfb_copyarea,
++#endif
++};
++
++/*--------------------------------------------------------------------------*/
++
++/*
++ * reasons for an interrupt:
++ *	uis	bbisc	lcdis
++ *	0100	0001		accelerator command completed
++ * 	2000		0001	vsync start
++ * 	2000		0002	display start
++ * 	2000		0004	line number match(0x1ff mask???)
++ */
++static irqreturn_t tmiofb_irq(int irq, void *__info)
++{
++	struct fb_info			*info	= __info;
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lcr __iomem		*lcr	= par->lcr;
++	unsigned int			bbisc	= ioread16(&lcr->bbisc);
++
++
++	if (unlikely(par->use_polling && irq != -1)) {
++		printk(KERN_INFO "tmiofb: switching to waitq\n");
++		par->use_polling = false;
++	}
++
++	iowrite16(bbisc, &lcr->bbisc);
++
++#ifdef CONFIG_FB_TMIO_ACCELL
++	if (bbisc & 1)
++		wake_up(&par->wait_acc);
++#endif
++
++	return IRQ_HANDLED;
++}
++
++static int tmiofb_probe(struct platform_device *dev)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	struct tmio_fb_data		*data	= cell->driver_data;
++	struct resource			*ccr	= platform_get_resource_byname(dev, IORESOURCE_MEM, TMIO_FB_CONFIG);
++	struct resource			*lcr	= platform_get_resource_byname(dev, IORESOURCE_MEM, TMIO_FB_CONTROL);
++	struct resource			*vram	= platform_get_resource_byname(dev, IORESOURCE_MEM, TMIO_FB_VRAM);
++	int				irq	= platform_get_irq(dev, 0);
++	struct fb_info			*info;
++	struct tmiofb_par		*par;
++	int				retval;
++
++	if (data == NULL) {
++		dev_err(&dev->dev, "NULL platform data!\n");
++		return -EINVAL;
++	}
++
++	info = framebuffer_alloc(sizeof(struct tmiofb_par), &dev->dev);
++
++	if (!info) {
++		retval = -ENOMEM;
++		goto err_framebuffer_alloc;
++	}
++
++	par = info->par;
++	platform_set_drvdata(dev, info);
++
++#ifdef CONFIG_FB_TMIO_ACCELL
++	init_waitqueue_head(&par->wait_acc);
++
++	par->use_polling	= true;
++
++	info->flags		= FBINFO_DEFAULT | FBINFO_HWACCEL_COPYAREA
++						 | FBINFO_HWACCEL_FILLRECT;
++#else
++	info->flags		= FBINFO_DEFAULT;
++#endif
++
++	info->fbops		= &tmiofb_ops;
++
++	strcpy(info->fix.id, "tmio-fb");
++	info->fix.smem_start	= vram->start;
++	info->fix.smem_len	= vram->end - vram->start + 1;
++	info->fix.type		= FB_TYPE_PACKED_PIXELS;
++	info->fix.visual	= FB_VISUAL_TRUECOLOR;
++	info->fix.mmio_start	= lcr->start;
++	info->fix.mmio_len	= lcr->end - lcr->start + 1;
++	info->fix.accel		= FB_ACCEL_NONE;
++	info->screen_size	= info->fix.smem_len - (4 * TMIOFB_FIFO_SIZE);
++	info->pseudo_palette	= par->pseudo_palette;
++
++	par->ccr = ioremap(ccr->start, ccr->end - ccr->start + 1);
++	if (!par->ccr) {
++		retval = -ENOMEM;
++		goto err_ioremap_ccr;
++	}
++
++	par->lcr = ioremap(info->fix.mmio_start, info->fix.mmio_len);
++	if (!par->lcr) {
++		retval = -ENOMEM;
++		goto err_ioremap_lcr;
++	}
++
++	par->vram = ioremap(info->fix.smem_start, info->fix.smem_len);
++	if (!par->vram) {
++		retval = -ENOMEM;
++		goto err_ioremap_vram;
++	}
++	info->screen_base = par->vram;
++
++	retval = request_irq(irq, &tmiofb_irq, IRQF_DISABLED,
++					dev->dev.bus_id, info);
++
++	if (retval)
++		goto err_request_irq;
++
++	retval = fb_find_mode(&info->var, info, mode_option,
++			data->modes, data->num_modes,
++			data->modes, 16);
++	if (!retval) {
++		retval = -EINVAL;
++		goto err_find_mode;
++	}
++
++	retval = cell->enable(dev);
++	if (retval)
++		goto err_enable;
++
++	retval = tmiofb_hw_init(dev);
++	if (retval)
++		goto err_hw_init;
++
++/*	retval = tmiofb_set_par(info);
++	if (retval)
++		goto err_set_par;*/
++
++	retval = register_framebuffer(info);
++	if (retval < 0)
++		goto err_register_framebuffer;
++
++	printk(KERN_INFO "fb%d: %s frame buffer device\n",
++				info->node, info->fix.id);
++
++	return 0;
++
++err_register_framebuffer:
++/*err_set_par:*/
++	tmiofb_hw_stop(dev);
++err_hw_init:
++	cell->disable(dev);
++err_enable:
++err_find_mode:
++	free_irq(irq, info);
++err_request_irq:
++	iounmap(par->vram);
++err_ioremap_vram:
++	iounmap(par->lcr);
++err_ioremap_lcr:
++	iounmap(par->ccr);
++err_ioremap_ccr:
++	platform_set_drvdata(dev, NULL);
++	framebuffer_release(info);
++err_framebuffer_alloc:
++	return retval;
++}
++
++static int __devexit tmiofb_remove(struct platform_device *dev)
++{
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	int				irq	= platform_get_irq(dev, 0);
++	struct tmiofb_par		*par;
++
++	if (info) {
++		par = info->par;
++		unregister_framebuffer(info);
++
++		tmiofb_hw_stop(dev);
++
++		cell->disable(dev);
++
++		free_irq(irq, info);
++
++		iounmap(par->vram);
++		iounmap(par->lcr);
++		iounmap(par->ccr);
++
++		framebuffer_release(info);
++		platform_set_drvdata(dev, NULL);
++	}
++
++	return 0;
++}
++
++#if 0
++static void tmiofb_dump_regs(struct platform_device *dev)
++{
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct tmiofb_par		*par	= info->par;
++	struct tmio_lhccr __iomem 	*ccr	= par->ccr;
++	struct tmio_lcr __iomem 	*lcr	= par->lcr;
++
++	printk("lhccr:\n");
++#define CCR_PR(n)	printk("\t" #n " = \t%04x\n", ioread16(&ccr->n));
++	CCR_PR(cmd);
++	CCR_PR(revid);
++	CCR_PR(basel);
++	CCR_PR(baseh);
++	CCR_PR(ugcc);
++	CCR_PR(gcc);
++	CCR_PR(usc);
++	CCR_PR(vramrtc);
++	CCR_PR(vramsac);
++	CCR_PR(vrambc);
++#undef CCR_PR
++
++	printk("lcr: \n");
++#define LCR_PR(n)	printk("\t" #n " = \t%04x\n", ioread16(&lcr->n));
++	LCR_PR(uis);
++	LCR_PR(vhpn);
++	LCR_PR(cfsal);
++	LCR_PR(cfsah);
++	LCR_PR(cfs);
++	LCR_PR(cfws);
++	LCR_PR(bbie);
++	LCR_PR(bbisc);
++	LCR_PR(ccs);
++	LCR_PR(bbes);
++	LCR_PR(cmdl);
++	LCR_PR(cmdh);
++	LCR_PR(cfc);
++	LCR_PR(ccifc);
++	LCR_PR(hwt);
++	LCR_PR(lcdccrc);
++	LCR_PR(lcdcc);
++	LCR_PR(lcdcopc);
++	LCR_PR(lcdis);
++	LCR_PR(lcdim);
++	LCR_PR(lcdie);
++	LCR_PR(gdsal);
++	LCR_PR(gdsah);
++	LCR_PR(vhpcl);
++	LCR_PR(vhpch);
++	LCR_PR(gm);
++	LCR_PR(ht);
++	LCR_PR(hds);
++	LCR_PR(hss);
++	LCR_PR(hse);
++	LCR_PR(hnp);
++	LCR_PR(vt);
++	LCR_PR(vds);
++	LCR_PR(vss);
++	LCR_PR(vse);
++	LCR_PR(cdln);
++	LCR_PR(iln);
++	LCR_PR(sp);
++	LCR_PR(misc);
++	LCR_PR(vihss);
++	LCR_PR(vivs);
++	LCR_PR(vive);
++	LCR_PR(vivss);
++	LCR_PR(vccis);
++	LCR_PR(vidwsal);
++	LCR_PR(vidwsah);
++	LCR_PR(vidrsal);
++	LCR_PR(vidrsah);
++	LCR_PR(vipddst);
++	LCR_PR(vipddet);
++	LCR_PR(vie);
++	LCR_PR(vcs);
++	LCR_PR(vphwc);
++	LCR_PR(vphs);
++	LCR_PR(vpvwc);
++	LCR_PR(vpvs);
++	LCR_PR(plhpix);
++	LCR_PR(xs);
++	LCR_PR(xckhw);
++	LCR_PR(sths);
++	LCR_PR(vt2);
++	LCR_PR(ycksw);
++	LCR_PR(ysts);
++	LCR_PR(ppols);
++	LCR_PR(precw);
++	LCR_PR(vclkhw);
++	LCR_PR(oc);
++#undef LCR_PR
++}
++#endif
++
++#ifdef CONFIG_PM
++static int tmiofb_suspend(struct platform_device *dev, pm_message_t state)
++{
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct tmiofb_par		*par	= info->par;
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	int				retval	= 0;
++
++	acquire_console_sem();
++
++	fb_set_suspend(info, 1);
++
++	if (info->fbops->fb_sync)
++		info->fbops->fb_sync(info);
++
++
++	printk(KERN_INFO "tmiofb: switching to polling\n");
++	par->use_polling = true;
++	tmiofb_hw_stop(dev);
++
++	if (cell->suspend)
++		retval = cell->suspend(dev);
++
++	release_console_sem();
++
++	return retval;
++}
++
++static int tmiofb_resume(struct platform_device *dev)
++{
++	struct fb_info			*info	= platform_get_drvdata(dev);
++	struct mfd_cell			*cell	= mfd_get_cell(dev);
++	int				retval;
++
++	acquire_console_sem();
++
++	if (cell->resume) {
++		retval = cell->resume(dev);
++		if (retval)
++			return retval;
++	}
++
++	tmiofb_irq(-1, info);
++
++	tmiofb_hw_init(dev);
++
++	tmiofb_hw_mode(dev);
++
++	fb_set_suspend(info, 0);
++	release_console_sem();
++	return 0;
++}
++#endif
++
++static struct platform_driver tmiofb_driver = {
++	.driver.name	= "tmio-fb",
++	.driver.owner	= THIS_MODULE,
++	.probe		= tmiofb_probe,
++	.remove		= __devexit_p(tmiofb_remove),
++#ifdef CONFIG_PM
++	.suspend	= tmiofb_suspend,
++	.resume		= tmiofb_resume,
++#endif
++};
++
++/*--------------------------------------------------------------------------*/
++
++#ifndef MODULE
++static void __init tmiofb_setup(char *options)
++{
++	char *this_opt;
++
++	if (!options || !*options)
++		return;
++
++	while ((this_opt = strsep(&options, ",")) != NULL) {
++		if (!*this_opt) continue;
++		/*
++		 * FIXME
++		 */
++	}
++}
++#endif
++
++static int __init tmiofb_init(void)
++{
++#ifndef MODULE
++	char *option = NULL;
++
++	if (fb_get_options("tmiofb", &option))
++		return -ENODEV;
++	tmiofb_setup(option);
++#endif
++	return platform_driver_register(&tmiofb_driver);
++}
++
++static void __exit tmiofb_cleanup(void)
++{
++	platform_driver_unregister(&tmiofb_driver);
++}
++
++module_init(tmiofb_init);
++module_exit(tmiofb_cleanup);
++
++MODULE_DESCRIPTION("TMIO framebuffer driver");
++MODULE_AUTHOR("Chris Humbert, Dirk Opfer, Dmitry Baryshkov");
++MODULE_LICENSE("GPL");
+-- 
+1.5.3.8
+

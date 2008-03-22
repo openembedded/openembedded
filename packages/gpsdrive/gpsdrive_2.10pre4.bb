@@ -1,20 +1,15 @@
-DESCRIPTION = "GPS navigation/map display software"
-SECTION = "x11"
-PRIORITY = "optional"
-LICENSE = "GPL"
-DEPENDS = "virtual/libc gtk+ libpcre gpsd libwww-perl-native mysql"
-RDEPENDS_${PN} = "gdk-pixbuf-loader-gif gpsd libwww-perl"
-PR = "r1"
+require gpsdrive.inc
+
+DEPENDS += "libwww-perl-native libart-lgpl libxml2 cairo mysql"
+RDEPENDS_${PN} += "libwww-perl"
+
+PR = "r2"
 
 SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive_2.10pre4.desktop \
            file://gpsdrive-remove-hardcoded-paths.patch;patch=1 \
            file://gpsdrive-ifdef-mapnik.patch;patch=1 \
            file://gpsdrive-2.10pre4-openstreetmap-download.patch;patch=1"
-
-inherit autotools pkgconfig
-
-EXTRA_OECONF = "--disable-garmin"
 
 do_install_append () {
         mkdir -p  ${D}${datadir}/applications
@@ -36,7 +31,3 @@ FILES_${PN}-map-icons-classic = "${datadir}/map-icons/classic.small"
 FILES_${PN}-map-icons-other = "${datadir}/map-icons/classic.big ${datadir}/map-icons/japan ${datadir}/map-icons/nickw ${datadir}/map-icons/square.big ${datadir}/map-icons/square.small ${datadir}/map-icons/svg"
 FILES_${PN}-maps = "${datadir}/${PN}/maps ${datadir}/${PN}/map_koord.txt"
 FILES_${PN}-doc = "${datadir}/man ${datadir}/${PN}/Documentation"
-
-CFLAGS += "-D_GNU_SOURCE"
-
-DEFAULT_PREFERENCE = "1"

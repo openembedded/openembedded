@@ -50,7 +50,7 @@ do_configure() {
 
 DEPENDS += "devio-native"
 
-do_populate_staging() {
+do_stage() {
 	install -d ${STAGING_LOADER_DIR}
 	. ${CONFIG_SITE}
 	if [ "x$ac_cv_c_bigendian" = "xyes" -o "x$ac_cv_c_littleendian" = "xno" ]; then

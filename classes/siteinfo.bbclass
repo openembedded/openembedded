@@ -21,40 +21,39 @@ def get_siteinfo_list(d):
        target = bb.data.getVar('HOST_ARCH', d, 1) + "-" + bb.data.getVar('HOST_OS', d, 1)
 
        targetinfo = {\
-               "armeb-linux":             "endian-big bit-32 common-glibc arm-common",\
-               "armeb-linux-gnueabi":     "endian-big bit-32 common-glibc arm-common armeb-linux",\
-               "armeb-linux-uclibc":      "endian-big bit-32 common-uclibc arm-common",\
-               "armeb-linux-uclibcgnueabi": "endian-big bit-32 common-uclibc arm-common armeb-linux-uclibc",\
+               "armeb-linux":             "endian-big bit-32 common-linux common-glibc arm-common",\
+               "armeb-linux-gnueabi":     "endian-big bit-32 common-linux common-glibc arm-common armeb-linux",\
+               "armeb-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc arm-common",\
+               "armeb-linux-uclibcgnueabi": "endian-big bit-32 common-linux common-uclibc arm-common armeb-linux-uclibc",\
                "arm-darwin":              "endian-little bit-32 common-darwin",\
-               "arm-linux":               "endian-little bit-32 common-glibc arm-common",\
-               "arm-linux-gnueabi":       "endian-little bit-32 common-glibc arm-common arm-linux",\
-               "arm-linux-uclibc":        "endian-little bit-32 common-uclibc arm-common",\
-               "arm-linux-uclibcgnueabi": "endian-little bit-32 common-uclibc arm-common arm-linux-uclibc",\
-               "avr32-linux":             "endian-big bit-32 common-glibc avr32-common",\ 
-               "avr32-linux-uclibc":      "endian-big bit-32 common-uclibc avr32-common",\
+               "arm-linux":               "endian-little bit-32 common-linux common-glibc arm-common",\
+               "arm-linux-gnueabi":       "endian-little bit-32 common-linux common-glibc arm-common arm-linux",\
+               "arm-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc arm-common",\
+               "arm-linux-uclibcgnueabi": "endian-little bit-32 common-linux common-uclibc arm-common arm-linux-uclibc",\
+               "avr32-linux-uclibc":      "endian-big bit-32 common-linux common-uclibc avr32-common",\
                "bfin-uclinux-uclibc":       "endian-little bit-32 common-uclibc bfin-common",\
-               "i386-linux":              "endian-little bit-32 common-glibc ix86-common",\
-               "i486-linux":              "endian-little bit-32 common-glibc ix86-common",\
-               "i586-linux":              "endian-little bit-32 common-glibc ix86-common",\
-               "i686-linux":              "endian-little bit-32 common-glibc ix86-common",\
-               "i386-linux-uclibc":       "endian-little bit-32 common-uclibc ix86-common",\
-               "i486-linux-uclibc":       "endian-little bit-32 common-uclibc ix86-common",\
-               "i586-linux-uclibc":       "endian-little bit-32 common-uclibc ix86-common",\
-               "i686-linux-uclibc":       "endian-little bit-32 common-uclibc ix86-common",\
-               "mipsel-linux":            "endian-little bit-32 common-glibc",\
-               "mipsel-linux-uclibc":     "endian-little bit-32 common-uclibc",\
-               "mips-linux":              "endian-big bit-32 common-glibc",\
-               "mips-linux-uclibc":       "endian-big bit-32 common-uclibc",\
+               "i386-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i486-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i586-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i686-linux":              "endian-little bit-32 common-linux common-glibc ix86-common",\
+               "i386-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
+               "i486-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
+               "i586-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
+               "i686-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
+               "mipsel-linux":            "endian-little bit-32 common-linux common-glibc",\
+               "mipsel-linux-uclibc":     "endian-little bit-32 common-linux common-uclibc",\
+               "mips-linux":              "endian-big bit-32 common-linux common-glibc",\
+               "mips-linux-uclibc":       "endian-big bit-32 common-linux common-uclibc",\
                "powerpc-darwin":          "endian-big bit-32 common-darwin",\
-               "ppc-linux":               "endian-big bit-32 common-glibc powerpc-common",\ 
-	       "powerpc-linux":           "endian-big bit-32 common-glibc powerpc-common",\
-               "powerpc-linux-uclibc":    "endian-big bit-32 common-uclibc powerpc-common",\
-               "sh3-linux":               "endian-little bit-32 common-glibc sh-common",\
-               "sh4-linux":               "endian-little bit-32 common-glibc sh-common",\
-               "sh4-linux-uclibc":        "endian-little bit-32 common-uclibc sh-common",\
-               "sparc-linux":             "endian-big bit-32 common-glibc",\
-               "x86_64-linux":            "endian-little bit-64 common-glibc",\
-               "x86_64-linux-uclibc":     "endian-little bit-64 common-uclibc"}
+               "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common",\ 
+	       "powerpc-linux":           "endian-big bit-32 common-linux common-glibc powerpc-common",\
+               "powerpc-linux-uclibc":    "endian-big bit-32 common-linux common-uclibc powerpc-common",\
+               "sh3-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
+               "sh4-linux":               "endian-little bit-32 common-linux common-glibc sh-common",\
+               "sh4-linux-uclibc":        "endian-little bit-32 common-linux common-uclibc sh-common",\
+               "sparc-linux":             "endian-big bit-32 common-linux common-glibc",\
+               "x86_64-linux":            "endian-little bit-64 common-linux common-glibc",\
+               "x86_64-linux-uclibc":     "endian-little bit-64 common-linux common-uclibc"}
        if target in targetinfo:
                info = targetinfo[target].split()
                info.append(target)

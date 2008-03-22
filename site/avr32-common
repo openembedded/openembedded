@@ -1,7 +1,9 @@
+#glib
 glib_cv_stack_grows=${glib_cv_stack_grows=no}
 ac_cv_func_posix_getpwuid_r=${ac_cv_func_posix_getpwuid_r=yes}
 glib_cv_uscore=${glib_cv_uscore=no}
 ac_cv_func_setpgrp_void=${ac_cv_func_setpgrp_void=yes}
+ac_cv_func_posix_getgrgid_r=${ac_cv_func_getgrgid_r=yes}
 
 #dbus-glib
 ac_cv_func_posix_getpwnam_r=${ac_cv_func_posix_getpwnam_r=yes}
@@ -22,4 +24,19 @@ ac_cv_linux_vers=${ac_cv_linux_vers=2}
 ac_cv_func_realloc_works=${ac_cv_func_realloc_works=yes}
 ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}
 lf_cv_sane_realloc=yes
+
+#sudo
+sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
+
+#popt
+glib_cv_va_copy=${glib_cv_va_copy=yes}
+glib_cv___va_copy=${glib_cv___va_copy=yes}
+ac_cv_va_copy=${ac_cv_va_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+lftp_cv_va_copy=${lftp_cv_va_copy=yes}
+lftp_cv___va_copy=${lftp_cv___va_copy=yes}
+slrn_cv___va_copy=${slrn_cv___va_copy=yes}
+slrn_cv_va_copy=${slrn_cv_va_copy=yes}
+dpkg_cv_va_copy=${ac_cv_va_copy=yes}
+dpkg_cv___va_copy=${ac_cv___va_copy=yes}
 

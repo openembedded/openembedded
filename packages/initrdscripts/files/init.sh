@@ -25,7 +25,7 @@ dev_setup()
 }
 
 read_args() {
-    CMDLINE=`cat /proc/cmdline`
+    [ -z "$CMDLINE" ] && CMDLINE=`cat /proc/cmdline`
     for arg in $CMDLINE; do
         optarg=`expr "x$arg" : 'x[^=]*=\(.*\)'`
         case $arg in
@@ -40,7 +40,8 @@ read_args() {
 }
 
 load_modules() {
-    for module in $MODULE_DIR/*; do
+    for module in $MODULE_DIR/$1; do
+	# Cannot redir to $CONSOLE here easily - may not be set yet
         echo "initramfs: Loading $module module"
         source $module
     done
@@ -52,24 +53,34 @@ boot_root() {
 }
 
 fatal() {
-    echo $1
-    echo
+    echo $1 >$CONSOLE
+    echo >$CONSOLE
     exec sh
 }
 
 
 echo "Starting initramfs boot..."
 early_setup
+load_modules '0*'
+
+[ -z "$CONSOLE" ] && CONSOLE="/dev/console"
+
 read_args
 
+if [ -z "$rootdelay" ]; then
+    echo "rootdelay parameter was not passed on kernel command line - assuming 2s delay"
+    echo "If you would like to avoid this delay, pass explicit rootdelay=0"
+    rootdelay="2"
+fi
 if [ -n "$rootdelay" ]; then
-    echo "Waiting $rootdelay seconds for devices to settle..."
+    echo "Waiting $rootdelay seconds for devices to settle..." >$CONSOLE
     sleep $rootdelay
 fi
 
 dev_setup
 
-load_modules
+load_modules '[1-9]*'
+
 [ -n "$BOOT_ROOT" ] && boot_root
 
 fatal "No valid root device was specified.  Please add root=/dev/something to the kernel command-line and try again."

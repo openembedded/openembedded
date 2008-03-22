@@ -1,3 +1,3 @@
-PR = "r0"
-
 require quagga.inc
+
+QUAGGASUBDIR = "/attic"

@@ -76,7 +76,7 @@ oe_runmake() {
 	mv ${S}/config.h.orig ${S}/config.h
 }
 
-do_populate_staging() {
+do_stage() {
 	install -d ${STAGING_LOADER_DIR}
 	cp ${S}/arm-kernel-shim-nslu2.bin ${STAGING_LOADER_DIR}/
 	cp ${S}/arm-kernel-shim-nas100d.bin ${STAGING_LOADER_DIR}/

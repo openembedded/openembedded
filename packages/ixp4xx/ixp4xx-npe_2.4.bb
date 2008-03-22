@@ -33,7 +33,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/Intel ${D}${datadir}/common-licenses/
 }
 
-do_populate_staging() {
+do_stage() {
 	install -d ${STAGING_FIRMWARE_DIR}
 	install ${S}/NPE-B ${STAGING_FIRMWARE_DIR}/
 	install ${S}/NPE-C ${STAGING_FIRMWARE_DIR}/

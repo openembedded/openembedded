@@ -43,7 +43,7 @@ do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
-                       usbutils pciutils mtd-utils usbview hal \
+                       usbutils pciutils mtd-utils usbview hal setserial \
                        task-proper-tools mc screen findutils \
 	               mono perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
@@ -55,7 +55,7 @@ do
 		       roadmap-gtk2 gpsdrive navit \
 		       xmms mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
-		       nmap iptables iperf \
+		       nmap iptables iperf openvpn vpnc \
 		       gpe-login ipaq-sleep \
 		       gpe-bluetooth bluez-gnome python-pybluez \
 		       abiword gnumeric evince epdfview gimp \

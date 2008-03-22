@@ -1,0 +1,5 @@
+DESCRIPTION = "Popt is a C library for parsing command line parameters"
+HOMEPAGE = "http://freshmeat.net/projects/popt"
+AUTHOR = "Jeff Johnson"
+LICENSE = "MIT"
+SECTION = "libs"

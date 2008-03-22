@@ -1,0 +1,70 @@
+From a6f03929fa4d20cef339dbed7ef5cd1e040d0548 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Sun, 20 Jan 2008 02:48:07 +0300
+Subject: [PATCH 57/64] Clean up tosa resetting
+
+Use new gpio-assertion reset.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ arch/arm/mach-pxa/tosa.c |   16 +++++++---------
+ 1 files changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index d1cf3dc..2b4aef7 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -41,6 +41,8 @@
+ #include <asm/arch/irda.h>
+ #include <asm/arch/mmc.h>
+ #include <asm/arch/udc.h>
++#include <asm/arch/pm.h>
++#include <asm/arch/system.h>
+ 
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+@@ -489,13 +491,7 @@ static struct platform_device *devices[] __initdata = {
+ 
+ static void tosa_poweroff(void)
+ {
+-	RCSR = RCSR_HWR | RCSR_WDR | RCSR_SMR | RCSR_GPR;
+-
+-	pxa_gpio_mode(TOSA_GPIO_ON_RESET | GPIO_OUT);
+-	GPSR(TOSA_GPIO_ON_RESET) = GPIO_bit(TOSA_GPIO_ON_RESET);
+-
+-	mdelay(1000);
+-	arm_machine_restart('h');
++	arm_machine_restart('g');
+ }
+ 
+ static void tosa_restart(char mode)
+@@ -504,7 +500,7 @@ static void tosa_restart(char mode)
+ 	if((MSC0 & 0xffff0000) == 0x7ff00000)
+ 		MSC0 = (MSC0 & 0xffff) | 0x7ee00000;
+ 
+-	tosa_poweroff();
++	arm_machine_restart('g');
+ }
+ 
+ static void __init tosa_init(void)
+@@ -512,7 +508,6 @@ static void __init tosa_init(void)
+ 	pm_power_off = tosa_poweroff;
+ 	arm_pm_restart = tosa_restart;
+ 
+-	pxa_gpio_mode(TOSA_GPIO_ON_RESET | GPIO_IN);
+ 	pxa_gpio_mode(TOSA_GPIO_TC6393XB_INT | GPIO_IN);
+ 	pxa_gpio_mode(TOSA_GPIO_USB_IN | GPIO_IN);
+ 
+@@ -544,6 +539,9 @@ static void __init fixup_tosa(struct machine_desc *desc,
+ 	mi->bank[0].start = 0xa0000000;
+ 	mi->bank[0].node = 0;
+ 	mi->bank[0].size = (64*1024*1024);
++
++	if (reset_gpio == -1)
++		reset_gpio = TOSA_GPIO_ON_RESET;
+ }
+ 
+ MACHINE_START(TOSA, "SHARP Tosa")
+-- 
+1.5.3.8
+

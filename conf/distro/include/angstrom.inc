@@ -11,6 +11,7 @@ TARGET_VENDOR = "-angstrom"
 
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
+PSTAGE_EXTRAPATH = "${ANGSTROM_MODE}"
 
 CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
@@ -28,8 +29,26 @@ ANGSTROM_FEED_CONFIGS ?= "angstrom-feed-configs"
 MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use debian style naming
+INHERIT += "debian"
+
 #use multimachine buildrules 
-INHERIT += "debian multimachine sanity devshell angstrom-mirrors insane"
+INHERIT += "multimachine"
+
+#activate config checker
+INHERIT += "sanity" 
+
+#make devshell available as task
+INHERIT += "devshell" 
+
+#use angstrom source mirrors to combat 404s
+INHERIT += "angstrom-mirrors" 
+
+#run QA tests on builds and packages and log them  
+INHERIT += "insane"
+QA_LOG = "1"
+
+#save statistical info on images
+INHERIT += "testlab"
 
 ANGSTROM_PKG_FORMAT ?= "ipk"
 require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
@@ -46,6 +65,7 @@ ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
 ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2420h4 = "0"
 ENABLE_BINARY_LOCALE_GENERATION_omap2430sdp = "0"
+ENABLE_BINARY_LOCALE_GENERATION_beagleboard = "0"
 
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"

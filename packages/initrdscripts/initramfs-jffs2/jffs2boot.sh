@@ -4,6 +4,7 @@ echo "Starting initrd boot..."
 mkdir /proc
 mount -t proc proc /proc
 
+modprobe -q mtdblock
 modprobe mtdram total_size=25088 erase_size=256
 sleep 1
 

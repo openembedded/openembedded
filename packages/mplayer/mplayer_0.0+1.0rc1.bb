@@ -38,7 +38,7 @@ PACKAGE_ARCH_mencoder_collie = "collie"
 
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r15"
+PR = "r16"
 
 PARALLEL_MAKE = ""
 
@@ -53,6 +53,9 @@ FILES_${PN} = "${bindir}/mplayer ${libdir}"
 FILES_mencoder = "${bindir}/mencoder"
 
 inherit autotools pkgconfig
+
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
+BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 EXTRA_OECONF = " \
         --prefix=/usr \

@@ -1,0 +1,13 @@
+Index: xorg-server-1.4/xorg-server.pc.in
+===================================================================
+--- xorg-server-1.4.orig/xorg-server.pc.in	2008-02-29 12:29:02.000000000 +0000
++++ xorg-server-1.4/xorg-server.pc.in	2008-02-29 12:27:36.000000000 +0000
+@@ -7,6 +7,7 @@
+ 
+ Name: xorg-server
+ Description: Modular X.Org X Server
++Requires: pixman-1
+ Version: @PACKAGE_VERSION@
+-Cflags: -I${sdkdir} @PIXMAN_CFLAGS@
++Cflags: -I${sdkdir}
+ Libs: -L${libdir}

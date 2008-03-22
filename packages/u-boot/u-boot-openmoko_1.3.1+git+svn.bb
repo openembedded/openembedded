@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 
-UBOOT_UPSTREAM_REV = "10bbb38a402a2faf18858c451bcdc63d45888e6e"
+UBOOT_UPSTREAM_REV = "b29661fc1151077776454288051bc9a488351ce8"
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4 gta02v5"
 SRCREV_FORMAT = "+gitupstream+svnpatchset"
 

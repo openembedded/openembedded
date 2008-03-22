@@ -16,3 +16,6 @@ IMAGE_INSTALL += "\
 DEPENDS += "\
   task-openmoko \
   "
+
+inherit image
+

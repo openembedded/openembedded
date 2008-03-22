@@ -14,7 +14,7 @@ do_configure () {
 	find ${S} -name "configure" | xargs touch
 	CC="${BUILD_CC}" CPP="${BUILD_CPP}" LD="${BUILD_LD}" ${S}/configure --host=${TARGET_SYS} --build=${BUILD_SYS} \
 		--without-cvs --disable-sanity-checks \
-		--with-headers=${CROSS_DIR}/${TARGET_SYS}/include \
+		--with-headers=${STAGING_INCDIR} \
 		--enable-hacker-mode
 	if grep -q GLIBC_2.3 ${S}/ChangeLog; then
 		# glibc-2.3.x passes cross options to $(CC) when generating errlist-compat.c, which fails without a real cross-compiler.

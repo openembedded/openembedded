@@ -1,5 +1,3 @@
-# Packages emitted by our gcc-cross builds.
-#
 INHIBIT_PACKAGE_STRIP ?= ""
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
@@ -28,16 +26,10 @@ FILES_libstdc++-dev = "${target_includedir}/c++/${PV} \
 		       ${target_libdir}/libsupc++.la \
 		       ${target_libdir}/libsupc++.a"
 
-python do_package() {
-	if bb.data.getVar('DEBIAN_NAMES', d, 1):
-		bb.data.setVar('PKG_libgcc', 'libgcc1', d)
-	bb.build.exec_func('package_do_package', d)
-}
-
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
-  # Move libgcc_s into /lib
+	# Move libgcc_s into /lib
         mkdir -p ${D}${target_base_libdir}
         if [ -f ${D}${target_base_libdir}/libgcc_s.so.? ]; then
                 # Already in the right location
@@ -53,7 +45,7 @@ do_install () {
 
 
 
-   # Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
+	# Move libstdc++ and libg2c into libdir (resetting our prefix to /usr
         mkdir -p ${D}${target_libdir}
 
         if [ -f ${D}${prefix}/*/lib/nof/libstdc++.so ]; then

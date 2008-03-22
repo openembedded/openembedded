@@ -3,9 +3,10 @@ HOMEPAGE = "http://www.netfilter.org/"
 SECTION = "console/utils"
 LICENSE = "GPL"
 RRECOMMENDS = "kernel-module-ip-tables kernel-module-iptable-filter"
-PR = "r1"
+PR = "r2"
 SRC_URI = "http://netfilter.org/projects/iptables/files/iptables-${PV}.tar.bz2 \
           file://getsockopt-failed.patch;patch=1 \
+          file://iptables-use-s6_addr32.patch;patch=1 \
           "
 
 S = "${WORKDIR}/iptables-${PV}"

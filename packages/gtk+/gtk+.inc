@@ -8,6 +8,8 @@ DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcr
 
 inherit autotools pkgconfig
 
+LEAD_SONAME = "libgtk-x11-2.0.so"
+
 FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 	${bindir}/gtk-update-icon-cache \
 	${bindir}/gtk-query-immodules-2.0 \
@@ -21,6 +23,7 @@ FILES_${PN}-dev += " \
 	${libdir}/gtk-2.0/${LIBV}/loaders/*.la \
 	${libdir}/gtk-2.0/${LIBV}/immodules/*.la \
 	${libdir}/gtk-2.0/${LIBV}/engines/*.la \
+	${libdir}/gtk-2.0/${LIBV}/printbackends/*.la \
 	${bindir}/gdk-pixbuf-csource \
 	${bindir}/gtk-builder-convert"
 

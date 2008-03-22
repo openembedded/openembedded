@@ -46,6 +46,7 @@ fakeroot rootfs_deb_do_rootfs () {
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
+	export OPKG_OFFLINE_ROOT=${IPKG_OFFLINE_ROOT}
 
 	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
 
@@ -109,22 +110,22 @@ fakeroot rootfs_deb_do_rootfs () {
 
 	set -e
 
-	# Hacks to make dpkg/ipkg coexist for now
+	# Hacks to make dpkg/opkg coexist for now
 	mv ${IMAGE_ROOTFS}/var/dpkg ${IMAGE_ROOTFS}/usr/
 	if [ -e ${IMAGE_ROOTFS}/usr/dpkg/alternatives ]; then
 		rmdir ${IMAGE_ROOTFS}/usr/dpkg/alternatives
 	fi
-        if [ ! -e ${IMAGE_ROOTFS}${libdir}/ipkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}${libdir}/ipkg
+        if [ ! -e ${IMAGE_ROOTFS}${libdir}/opkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg
         fi
 
-        if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/ipkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/ipkg
+        if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/opkg ] ; then
+                mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/opkg
         fi
  
-	ln -sf ${libdir}/ipkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
-	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}${libdir}/ipkg/info
-	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}${libdir}/ipkg/status
+	ln -sf ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
+	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}${libdir}/opkg/info
+	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}${libdir}/opkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
@@ -152,6 +153,6 @@ rootfs_deb_log_check() {
 }
 
 remove_packaging_data_files() {
-	rm -rf ${IMAGE_ROOTFS}${libdir}/ipkg/
+	rm -rf ${IMAGE_ROOTFS}${libdir}/opkg/
 	rm -rf ${IMAGE_ROOTFS}/usr/dpkg/
 }

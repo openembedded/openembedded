@@ -152,7 +152,7 @@ def runstrip(file, d):
     # If the file is in a .debug directory it was already stripped,
     # don't do it again...
     if os.path.dirname(file).endswith(".debug"):
-        bb.note("Already run strip")
+        bb.note("Already ran strip")
         return 0
 
     strip = bb.data.getVar("STRIP", d, 1)
@@ -472,24 +472,31 @@ python emit_pkgdata() {
 		if val:
 			f.write('%s_%s: %s\n' % (var, pkg, encode(val)))
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
+	packages = bb.data.getVar('PACKAGES', d, True)
+	pkgdatadir = bb.data.getVar('PKGDATA_DIR', d, True)
 
-	data_file = bb.data.expand("${PKGDATA_DIR}/${PN}", d)
+	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
+	if pstageactive == "1":
+		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+
+	data_file = pkgdatadir + bb.data.expand("/${PN}" , d)
 	f = open(data_file, 'w')
 	f.write("PACKAGES: %s\n" % packages)
 	f.close()
+	package_stagefile(data_file, d)
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 
 	for pkg in packages.split():
-		subdata_file = bb.data.expand("${PKGDATA_DIR}/runtime/%s" % pkg, d)
+		subdata_file = pkgdatadir + "/runtime/%s" % pkg
 		sf = open(subdata_file, 'w')
+		write_if_exists(sf, pkg, 'PN')
+		write_if_exists(sf, pkg, 'PR')
 		write_if_exists(sf, pkg, 'DESCRIPTION')
 		write_if_exists(sf, pkg, 'RDEPENDS')
 		write_if_exists(sf, pkg, 'RPROVIDES')
 		write_if_exists(sf, pkg, 'RRECOMMENDS')
 		write_if_exists(sf, pkg, 'RSUGGESTS')
-		write_if_exists(sf, pkg, 'RPROVIDES')
 		write_if_exists(sf, pkg, 'RREPLACES')
 		write_if_exists(sf, pkg, 'RCONFLICTS')
 		write_if_exists(sf, pkg, 'PKG')
@@ -501,6 +508,10 @@ python emit_pkgdata() {
 		write_if_exists(sf, pkg, 'pkg_prerm')
 		sf.close()
 
+		package_stagefile(subdata_file, d)
+		#if pkgdatadir2:
+		#	bb.copyfile(subdata_file, pkgdatadir2 + "/runtime/%s" % pkg)
+
 		allow_empty = bb.data.getVar('ALLOW_EMPTY_%s' % pkg, d, 1)
 		if not allow_empty:
 			allow_empty = bb.data.getVar('ALLOW_EMPTY', d, 1)
@@ -508,8 +519,11 @@ python emit_pkgdata() {
 		os.chdir(root)
 		g = glob('*')
 		if g or allow_empty == "1":
-			packagedfile = bb.data.expand('${PKGDATA_DIR}/runtime/%s.packaged' % pkg, d)
+			packagedfile = pkgdatadir + '/runtime/%s.packaged' % pkg
 			file(packagedfile, 'w').close()
+			package_stagefile(packagedfile, d)
+	if pstageactive == "1":
+		bb.utils.unlockfile(lf)
 }
 emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
@@ -548,6 +562,10 @@ python package_do_shlibs() {
 
 	shlibs_dir = bb.data.getVar('SHLIBSDIR', d, 1)
 	bb.mkdirhier(shlibs_dir)
+
+	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
+	if pstageactive == "1":
+		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
 
 	needed = {}
 	private_libs = bb.data.getVar('PRIVATE_LIBS', d, 1)
@@ -590,9 +608,11 @@ python package_do_shlibs() {
 			for s in sonames:
 				fd.write(s + '\n')
 			fd.close()
+			package_stagefile(shlibs_file, d)
 			fd = open(shver_file, 'w')
 			fd.write(ver + '\n')
 			fd.close()
+			package_stagefile(shver_file, d)
 		if needs_ldconfig:
 			bb.debug(1, 'adding ldconfig call to postinst for %s' % pkg)
 			postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, 1) or bb.data.getVar('pkg_postinst', d, 1)
@@ -600,6 +620,9 @@ python package_do_shlibs() {
 				postinst = '#!/bin/sh\n'
 			postinst += bb.data.getVar('ldconfig_postinst_fragment', d, 1)
 			bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
+
+	if pstageactive == "1":
+		bb.utils.unlockfile(lf)
 
 	shlib_provider = {}
 	list_re = re.compile('^(.*)\.list$')
@@ -715,6 +738,10 @@ python package_do_pkgconfig () {
 							if hdr == 'Requires':
 								pkgconfig_needed[pkg] += exp.replace(',', ' ').split()
 
+	pstageactive = bb.data.getVar('PSTAGING_ACTIVE', d, True)
+	if pstageactive == "1":
+		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+
 	for pkg in packages.split():
 		pkgs_file = os.path.join(shlibs_dir, pkg + ".pclist")
 		if os.path.exists(pkgs_file):
@@ -724,6 +751,7 @@ python package_do_pkgconfig () {
 			for p in pkgconfig_provided[pkg]:
 				f.write('%s\n' % p)
 			f.close()
+			package_stagefile(pkgs_file, d)
 
 	for dir in [shlibs_dir]:
 		if not os.path.exists(dir):
@@ -758,6 +786,10 @@ python package_do_pkgconfig () {
 			for dep in deps:
 				fd.write(dep + '\n')
 			fd.close()
+			package_stagefile(deps_file, d)
+
+	if pstageactive == "1":
+		bb.utils.unlockfile(lf)
 }
 
 python read_shlibdeps () {

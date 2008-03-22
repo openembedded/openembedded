@@ -21,12 +21,7 @@ inherit autotools
 
 export LDFLAGS += " -L${STAGING_LIBDIR} "
 
-do_configure() {
-	gnu-configize
-	libtoolize --force
-	aclocal -I build/ -I build/ac-macros/ && autoconf
-	oe_runconf
-}
+acpaths = "-I build/ -I build/ac-macros/"
 
 do_stage() {
 	autotools_stage_all

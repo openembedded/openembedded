@@ -1,15 +1,14 @@
-SECTION = "devel"
+require libtool.inc
 require libtool_${PV}.bb
 
-PR = "r9"
+PR = "r10"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://libdir-la.patch;patch=1 \
                    file://libdir-la2.patch;patch=1 \
                    file://prefix.patch;patch=1 \
                    file://tag.patch;patch=1 \
                    file://install-path-check.patch;patch=1 \
-		   file://nousrlib.patch;patch=1 \
-		   file://rpath-control.patch;patch=1"
+		   file://nousrlib.patch;patch=1"
 
 S = "${WORKDIR}/libtool-${PV}"
 

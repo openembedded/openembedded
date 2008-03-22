@@ -13,6 +13,7 @@ do_stage() {
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		pregen install_dev
 
+	install -d ${CROSS_DIR}/${TARGET_SYS}	
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
 	# This conflicts with the c++ version of this header

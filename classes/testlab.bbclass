@@ -19,26 +19,26 @@
 # * add test suite to run on the target device 
 
 
-# Needs 'dot', 'ipkg-cl'
+# Needs 'dot', 'opkg-cl'
 
 do_testlab() {
-if [ -e  ${IMAGE_ROOTFS}/etc/ipkg ] ; then
+if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] ; then
 
 	TESTLAB_DIR="${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-testlab"
         mkdir -p ${TESTLAB_DIR}/
-	ls -laR ${IMAGE_ROOTFS} >& ${TESTLAB_DIR}/files-in-image.txt 	
+	ls -laR ${IMAGE_ROOTFS} > ${TESTLAB_DIR}/files-in-image.txt 	
      
 	echo > ${TESTLAB_DIR}/installed-packages.txt
 	echo -e "digraph depends {\n    node [shape=plaintext]" > ${TESTLAB_DIR}/depends.dot
 
-	for pkg in $(ipkg-cl -f ${IMAGE_ROOTFS}/etc/ipkg -o ${IMAGE_ROOTFS} list_installed | awk '{print $1}') ; do 
-    		ipkg-cl -f ${IMAGE_ROOTFS}/etc/ipkg -o ${IMAGE_ROOTFS} info $pkg | grep Filename | awk -F: '{print $2}'  >> ${TESTLAB_DIR}/installed-packages.txt
+	for pkg in $(opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} list_installed | awk '{print $1}') ; do 
+    		opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} info $pkg | grep Filename | awk -F: '{print $2}'  >> ${TESTLAB_DIR}/installed-packages.txt
 
-    		for depends in $(ipkg-cl -f ${IMAGE_ROOTFS}/etc/ipkg -o  ${IMAGE_ROOTFS} info $pkg | grep Depends) ; do 
+    		for depends in $(opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o  ${IMAGE_ROOTFS} info $pkg | grep Depends) ; do 
         		echo "$pkg OPP $depends;" | grep -v "(" | grep -v ")" | grep -v Depends | sed -e 's:,::g' -e 's:-:_:g' -e 's:\.:_:g' -e 's:+::g' |sed 's:OPP:->:g' >> ${TESTLAB_DIR}/depends.dot
     		done
     		
-		for recommends in $(ipkg-cl -f ${IMAGE_ROOTFS}/etc/ipkg -o ${IMAGE_ROOTFS} info $pkg | grep Recom) ; do
+		for recommends in $(opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} info $pkg | grep Recom) ; do
         		echo "$pkg OPP $recommends [style=dotted];" | grep -v "(" | grep -v ")" | grep -v Recom | sed -e 's:,::g' -e 's:-:_:g' -e 's:\.:_:g' -e 's:+::g' |sed 's:OPP:->:g' >> ${TESTLAB_DIR}/depends.dot
     		done
 	done

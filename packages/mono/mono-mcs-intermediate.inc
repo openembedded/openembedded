@@ -43,7 +43,7 @@ do_package() {
 	true
 }
 
-do_populate_staging() {
+do_stage() {
 	cd ${D}
 	rm -f ${WORKDIR}/mono-mcs-${PV}.tar.gz
 	tar -cvzf ${WORKDIR}/mono-mcs-${PV}.tar.gz .

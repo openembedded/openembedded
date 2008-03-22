@@ -1,9 +1,6 @@
-DESCRIPTION = "GPE Graphical root-shell frontend"
-SECTION = "gpe"
-LICENSE = "GPL"
-DEPENDS = "libgpewidget"
+require gpe-su.inc
 
-inherit pkgconfig
+PR = "r1"
 
 SRC_URI = "${GPE_SVN} \
            file://svn-build.patch;patch=1"

@@ -1,0 +1,28 @@
+diff -Nur linux-2.6.24.vanilla/drivers/rtc/rtc-sa1100.c linux-2.6.24/drivers/rtc/rtc-sa1100.c
+--- linux-2.6.24.vanilla/drivers/rtc/rtc-sa1100.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/rtc/rtc-sa1100.c	2008-03-17 20:52:41.000000000 +0100
+@@ -15,6 +15,10 @@
+  * Converted to the RTC subsystem and Driver Model
+  *   by Richard Purdie <rpurdie@rpsys.net>
+  *
++ * 2008/03/17 mrdata:
++ *            disable IRQ RTC1Hz and RTCAlrm before request_irq
++ *            in sa1100_rtc_open()
++ *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+  * as published by the Free Software Foundation; either version
+@@ -154,7 +158,12 @@
+ static int sa1100_rtc_open(struct device *dev)
+ {
+ 	int ret;
+-
++	
++	spin_lock_irq(&sa1100_rtc_lock);
++	RTSR &= ~RTSR_HZE;
++	RTSR &= ~RTSR_ALE;
++	spin_unlock_irq(&sa1100_rtc_lock);
++	
+ 	ret = request_irq(IRQ_RTC1Hz, sa1100_rtc_interrupt, IRQF_DISABLED,
+ 				"rtc 1Hz", dev);
+ 	if (ret) {

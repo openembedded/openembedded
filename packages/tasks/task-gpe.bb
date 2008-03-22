@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 
 inherit task
@@ -126,7 +126,7 @@ RDEPENDS_gpe-task-desktopapps = "\
 RDEPENDS_gpe-task-sectest = "\
     mbmerlin \
     nmap \
-    ettercap \
+    ettercap-ng \
     stunnel \
     curl \
 #    dsniff \

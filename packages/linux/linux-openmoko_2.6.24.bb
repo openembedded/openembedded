@@ -8,8 +8,13 @@ KERNEL_RELEASE = "2.6.24"
 # need to synchronize with LOCALVERSION, if set
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
-PV = "${VANILLA_VERSION}+svnr${SRCREV}"
-PR = "r3"
+# re-enabled this when feature is fully implemented in OE
+#SRCREV_FORMAT = "patches-rconfig"
+SRCREV_FORMAT = "patches"
+CONFIG_REV = "4165"
+
+PV = "${VANILLA_VERSION}+svnr${SRCREV}-r${CONFIG_REV}"
+PR = "r4"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -17,11 +22,10 @@ UBOOT_ENTRYPOINT = "30008000"
 ##############################################################
 # source and patches
 #
-SRCREV_FORMAT = "patches-rconfig"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            svn://svn.openmoko.org/branches/src/target/kernel/2.6.24.x;module=patches;proto=http;name=patches \
-           svn://svn.openmoko.org/branches/src/target/kernel/2.6.24.x;module=config;proto=http;name=config "
+           svn://svn.openmoko.org/branches/src/target/kernel/2.6.24.x;module=config;proto=http;rev=${CONFIG_REV};name=config "
 
 S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 

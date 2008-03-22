@@ -1,6 +1,6 @@
 require klibc-common.inc
 
-PR = "r7"
+PR = "r8"
 
 # We only want the static utils. klibc build both. So we install only what we want.				
 do_install() {
@@ -36,6 +36,8 @@ do_install() {
         install -m 755 usr/utils/static/true ${D}${base_bindir}
         install -m 755 usr/utils/static/umount ${D}${base_bindir}
         install -m 755 usr/utils/static/uname ${D}${base_bindir}
+	install -m 755 usr/utils/static/modprobe ${D}${base_bindir}
+	install -m 755 usr/utils/static/losetup ${D}${base_bindir}
         cd ${D}${base_bindir}
 	ln -s gzip gunzip
         ln -s gzip zcat
@@ -57,8 +59,8 @@ PACKAGES = "klibc-utils-static-sh klibc-utils-static-gzip \
 	klibc-utils-static-poweroff klibc-utils-static-readlink \
 	klibc-utils-static-reboot klibc-utils-static-sleep \
 	klibc-utils-static-true klibc-utils-static-umount \
-	klibc-utils-static-uname \
-	"
+	klibc-utils-static-uname klibc-utils-static-modprobe \
+	klibc-utils-static-losetup"
 
 FILES_klibc-utils-static-sh = "${base_bindir}/sh"
 FILES_klibc-utils-static-gzip = "${base_bindir}/gzip ${base_bindir}/gunzip ${base_bindir}/zcat"
@@ -91,3 +93,5 @@ FILES_klibc-utils-static-sleep = "${base_bindir}/sleep"
 FILES_klibc-utils-static-true = "${base_bindir}/true"
 FILES_klibc-utils-static-umount = "${base_bindir}/umount"
 FILES_klibc-utils-static-uname = "${base_bindir}/uname"
+FILES_klibc-utils-static-modprobe = "${base_bindir}/modprobe"
+FILES_klibc-utils-static-losetup = "${base_bindir}/losetup"

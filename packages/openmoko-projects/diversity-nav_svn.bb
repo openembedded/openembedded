@@ -3,7 +3,7 @@ HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "evas edje ecore edbus"
-RDEPENDS = "diversity-daemon"
+RDEPENDS_${PN} = "diversity-daemon"
 PV = "0.0.1+svnr${SRCREV}"
 PR = "r2"
 

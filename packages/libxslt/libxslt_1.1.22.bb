@@ -3,20 +3,15 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2 (>=2.6.27)"
 LICENSE = "MIT"
+PR = "r1"
 
-SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz"
+SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
+           file://pkgconfig_fix.patch;patch=1"
 S = "${WORKDIR}/libxslt-${PV}"
 
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--without-python --without-debug --without-mem-debug --without-crypto"
-
-# Something is wrong inside configure.ac, so we need to resort to sed in this stage :(
-# Koen - 20080305
-do_compile_append() {
-	sed -i -e s:-L${STAGING_LIBDIR}::g  libexslt.pc
-	sed -i -e s:-L${STAGING_LIBDIR}::g  libxslt.pc
-} 
 
 do_stage () {
 	autotools_stage_all

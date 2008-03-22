@@ -1,0 +1,434 @@
+From 39717c1328f6aa13330eded0e0e268993cfd1eea Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Tue, 12 Feb 2008 10:39:53 +0300
+Subject: [PATCH 25/64] Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+
+---
+ arch/arm/mach-pxa/Makefile  |    2 +-
+ arch/arm/mach-pxa/devices.c |  401 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 402 insertions(+), 1 deletions(-)
+ create mode 100644 arch/arm/mach-pxa/devices.c
+
+diff --git a/arch/arm/mach-pxa/Makefile b/arch/arm/mach-pxa/Makefile
+index 5cb0216..f276d24 100644
+--- a/arch/arm/mach-pxa/Makefile
++++ b/arch/arm/mach-pxa/Makefile
+@@ -4,7 +4,7 @@
+ 
+ # Common support (must be linked before board specific support)
+ obj-y				+= clock.o generic.o irq.o dma.o \
+-				   time.o gpio.o
++				   time.o gpio.o devices.o
+ obj-$(CONFIG_PXA25x)		+= pxa25x.o
+ obj-$(CONFIG_PXA27x)		+= pxa27x.o
+ obj-$(CONFIG_PXA3xx)		+= pxa3xx.o mfp.o
+diff --git a/arch/arm/mach-pxa/devices.c b/arch/arm/mach-pxa/devices.c
+new file mode 100644
+index 0000000..928131a
+--- /dev/null
++++ b/arch/arm/mach-pxa/devices.c
+@@ -0,0 +1,401 @@
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++
++#include <asm/arch/gpio.h>
++#include <asm/arch/udc.h>
++#include <asm/arch/pxafb.h>
++#include <asm/arch/mmc.h>
++#include <asm/arch/irda.h>
++#include <asm/arch/i2c.h>
++#include <asm/arch/ohci.h>
++
++#include "devices.h"
++
++#ifdef CONFIG_PXA25x
++
++static u64 pxa25x_ssp_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa25x_resource_ssp[] = {
++	[0] = {
++		.start	= 0x41000000,
++		.end	= 0x4100001f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_SSP,
++		.end	= IRQ_SSP,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 13,
++		.end	= 13,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 14,
++		.end	= 14,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa25x_device_ssp = {
++	.name		= "pxa25x-ssp",
++	.id		= 0,
++	.dev		= {
++		.dma_mask = &pxa25x_ssp_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa25x_resource_ssp,
++	.num_resources	= ARRAY_SIZE(pxa25x_resource_ssp),
++};
++
++static u64 pxa25x_nssp_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa25x_resource_nssp[] = {
++	[0] = {
++		.start	= 0x41400000,
++		.end	= 0x4140002f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_NSSP,
++		.end	= IRQ_NSSP,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 15,
++		.end	= 15,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 16,
++		.end	= 16,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa25x_device_nssp = {
++	.name		= "pxa25x-nssp",
++	.id		= 1,
++	.dev		= {
++		.dma_mask = &pxa25x_nssp_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa25x_resource_nssp,
++	.num_resources	= ARRAY_SIZE(pxa25x_resource_nssp),
++};
++
++static u64 pxa25x_assp_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa25x_resource_assp[] = {
++	[0] = {
++		.start	= 0x41500000,
++		.end	= 0x4150002f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_ASSP,
++		.end	= IRQ_ASSP,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 23,
++		.end	= 23,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 24,
++		.end	= 24,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa25x_device_assp = {
++	/* ASSP is basically equivalent to NSSP */
++	.name		= "pxa25x-nssp",
++	.id		= 2,
++	.dev		= {
++		.dma_mask = &pxa25x_assp_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa25x_resource_assp,
++	.num_resources	= ARRAY_SIZE(pxa25x_resource_assp),
++};
++#endif /* CONFIG_PXA25x */
++
++#if defined(CONFIG_PXA27x) || defined(CONFIG_PXA3xx)
++
++static u64 pxa27x_ohci_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa27x_resource_ohci[] = {
++	[0] = {
++		.start  = 0x4C000000,
++		.end    = 0x4C00ff6f,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = IRQ_USBH1,
++		.end    = IRQ_USBH1,
++		.flags  = IORESOURCE_IRQ,
++	},
++};
++
++struct platform_device pxa27x_device_ohci = {
++	.name		= "pxa27x-ohci",
++	.id		= -1,
++	.dev		= {
++		.dma_mask = &pxa27x_ohci_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.num_resources  = ARRAY_SIZE(pxa27x_resource_ohci),
++	.resource       = pxa27x_resource_ohci,
++};
++
++void __init pxa_set_ohci_info(struct pxaohci_platform_data *info)
++{
++	pxa_register_device(&pxa27x_device_ohci, info);
++}
++
++static u64 pxa27x_ssp1_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa27x_resource_ssp1[] = {
++	[0] = {
++		.start	= 0x41000000,
++		.end	= 0x4100003f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_SSP,
++		.end	= IRQ_SSP,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 13,
++		.end	= 13,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 14,
++		.end	= 14,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa27x_device_ssp1 = {
++	.name		= "pxa27x-ssp",
++	.id		= 0,
++	.dev		= {
++		.dma_mask = &pxa27x_ssp1_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa27x_resource_ssp1,
++	.num_resources	= ARRAY_SIZE(pxa27x_resource_ssp1),
++};
++
++static u64 pxa27x_ssp2_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa27x_resource_ssp2[] = {
++	[0] = {
++		.start	= 0x41700000,
++		.end	= 0x4170003f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_SSP2,
++		.end	= IRQ_SSP2,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 15,
++		.end	= 15,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 16,
++		.end	= 16,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa27x_device_ssp2 = {
++	.name		= "pxa27x-ssp",
++	.id		= 1,
++	.dev		= {
++		.dma_mask = &pxa27x_ssp2_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa27x_resource_ssp2,
++	.num_resources	= ARRAY_SIZE(pxa27x_resource_ssp2),
++};
++
++static u64 pxa27x_ssp3_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa27x_resource_ssp3[] = {
++	[0] = {
++		.start	= 0x41900000,
++		.end	= 0x4190003f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_SSP3,
++		.end	= IRQ_SSP3,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 66,
++		.end	= 66,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 67,
++		.end	= 67,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa27x_device_ssp3 = {
++	.name		= "pxa27x-ssp",
++	.id		= 2,
++	.dev		= {
++		.dma_mask = &pxa27x_ssp3_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa27x_resource_ssp3,
++	.num_resources	= ARRAY_SIZE(pxa27x_resource_ssp3),
++};
++#endif /* CONFIG_PXA27x || CONFIG_PXA3xx */
++
++#ifdef CONFIG_PXA3xx
++static u64 pxa3xx_ssp4_dma_mask = DMA_BIT_MASK(32);
++
++static struct resource pxa3xx_resource_ssp4[] = {
++	[0] = {
++		.start	= 0x41a00000,
++		.end	= 0x41a0003f,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_SSP4,
++		.end	= IRQ_SSP4,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		/* DRCMR for RX */
++		.start	= 2,
++		.end	= 2,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		/* DRCMR for TX */
++		.start	= 3,
++		.end	= 3,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa3xx_device_ssp4 = {
++	/* PXA3xx SSP is basically equivalent to PXA27x */
++	.name		= "pxa27x-ssp",
++	.id		= 3,
++	.dev		= {
++		.dma_mask = &pxa3xx_ssp4_dma_mask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++	.resource	= pxa3xx_resource_ssp4,
++	.num_resources	= ARRAY_SIZE(pxa3xx_resource_ssp4),
++};
++
++static struct resource pxa3xx_resources_mci2[] = {
++	[0] = {
++		.start	= 0x42000000,
++		.end	= 0x42000fff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_MMC2,
++		.end	= IRQ_MMC2,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		.start	= 93,
++		.end	= 93,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		.start	= 94,
++		.end	= 94,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa3xx_device_mci2 = {
++	.name		= "pxa2xx-mci",
++	.id		= 1,
++	.dev		= {
++		.dma_mask = &pxamci_dmamask,
++		.coherent_dma_mask =	0xffffffff,
++	},
++	.num_resources	= ARRAY_SIZE(pxa3xx_resources_mci2),
++	.resource	= pxa3xx_resources_mci2,
++};
++
++void __init pxa3xx_set_mci2_info(struct pxamci_platform_data *info)
++{
++	pxa_register_device(&pxa3xx_device_mci2, info);
++}
++
++static struct resource pxa3xx_resources_mci3[] = {
++	[0] = {
++		.start	= 0x42500000,
++		.end	= 0x42500fff,
++		.flags	= IORESOURCE_MEM,
++	},
++	[1] = {
++		.start	= IRQ_MMC3,
++		.end	= IRQ_MMC3,
++		.flags	= IORESOURCE_IRQ,
++	},
++	[2] = {
++		.start	= 100,
++		.end	= 100,
++		.flags	= IORESOURCE_DMA,
++	},
++	[3] = {
++		.start	= 101,
++		.end	= 101,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++struct platform_device pxa3xx_device_mci3 = {
++	.name		= "pxa2xx-mci",
++	.id		= 2,
++	.dev		= {
++		.dma_mask = &pxamci_dmamask,
++		.coherent_dma_mask = 0xffffffff,
++	},
++	.num_resources	= ARRAY_SIZE(pxa3xx_resources_mci3),
++	.resource	= pxa3xx_resources_mci3,
++};
++
++void __init pxa3xx_set_mci3_info(struct pxamci_platform_data *info)
++{
++	pxa_register_device(&pxa3xx_device_mci3, info);
++}
++
++#endif /* CONFIG_PXA3xx */
+-- 
+1.5.3.8
+

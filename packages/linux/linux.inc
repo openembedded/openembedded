@@ -144,6 +144,5 @@ do_deploy() {
 
 do_deploy[dirs] = "${S}"
 
-addtask sizecheck before do_install after do_compile
 addtask deploy before do_package after do_install
 

@@ -228,7 +228,7 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
     else:
         return res[0] 
 
-def seppuku_create_attachment(debug, poster, attach_query, product, component, bug_number, text, file):
+def seppuku_create_attachment(data, debug, poster, attach_query, product, component, bug_number, text, file):
     """
 
     Create a new attachment for the failed report
@@ -246,9 +246,11 @@ def seppuku_create_attachment(debug, poster, attach_query, product, component, b
         print >> debug, "Can't create an attachment, no attach_query passed to method"
         return False
 
+    import bb
+    logdescription = "Build log for machine %s" % (bb.data.getVar('MACHINE', data, True))
 
     import urllib2
-    param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : "Build log", "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
+    param = { "bugid" : bug_number, "action" : "insert", "data" : file, "description" : logdescription, "ispatch" : "0", "contenttypemethod" : "list", "contenttypeselection" : "text/plain", "comment" : text }
 
     try:
         result = poster.open( attach_query, param )
@@ -329,12 +331,11 @@ python seppuku_eventhandler() {
 
         file = None
         if name == "TaskFailed":
-            bugname = "%(package)s-%(pv)s-%(pr)s-%(task)s" % { "package" : bb.data.getVar("PN", data, True),
+            bugname = "%(package)s-%(pv)s-autobuild" % { "package" : bb.data.getVar("PN", data, True),
                                                                "pv"      : bb.data.getVar("PV", data, True),
-                                                               "pr"      : bb.data.getVar("PR", data, True),
-                                                               "task"    : e.task }
+                                                               }  
             log_file = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', event.data, True), event.task))
-            text     = "The package failed to build at %s for machine %s" % (bb.data.getVar('DATETIME', data, True), bb.data.getVar( 'MACHINE', data, True ) )
+            text     = "The %s step in %s failed at %s for machine %s" % (e.task, bb.data.getVar("PN", data, True), bb.data.getVar('DATETIME', data, True), bb.data.getVar( 'MACHINE', data, True ) )
             if len(log_file) != 0:
                 print >> debug_file, "Adding log file %s" % log_file[0]
                 file = open(log_file[0], 'r')
@@ -351,7 +352,7 @@ python seppuku_eventhandler() {
         if bug_number and bug_open:
             print >> debug_file, "The bug is known as '%s'" % bug_number
             if file:
-                if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+                if not seppuku_create_attachment(data, debug_file, poster, attach, product, component, bug_number, text, file):
                      print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
                 else:
                      print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)
@@ -372,7 +373,7 @@ python seppuku_eventhandler() {
                 print >> debug_file, "The new bug_number: '%s'" % bug_number
 
         if bug_number and file:
-            if not seppuku_create_attachment(debug_file, poster, attach, product, component, bug_number, text, file):
+            if not seppuku_create_attachment(data, debug_file, poster, attach, product, component, bug_number, text, file):
                 print >> debug_file, "Failed to attach the build log for bug #%s" % bug_number
             else:
                 print >> debug_file, "Created an attachment for '%s' '%s' '%s'" % (product, component, bug_number)

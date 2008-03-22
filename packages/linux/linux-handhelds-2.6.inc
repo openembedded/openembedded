@@ -37,6 +37,16 @@ do_configure() {
 		die "No default configuration for ${MACHINE} available."
 	fi
 
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" = "glibc" ]; then
+		if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
+		    echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
+		    exit 1
+		fi
+
+		# Kernel expects non-compressed cpio
+		gzip -d -c ${KERNEL_INITRAMFS_PATH} >${WORKDIR}/initramfs.cpio
+		echo "CONFIG_INITRAMFS_SOURCE=\"${WORKDIR}/initramfs.cpio\"" >> ${S}/.config
+	fi
 
 	if [ "${TARGET_OS}" == "linux-gnueabi" -o  "${TARGET_OS}" == "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
@@ -48,20 +58,11 @@ do_configure() {
 
 	sed 	-e '/CONFIG_AEABI/d' \
 		-e '/CONFIG_OABI_COMPAT=/d' \
+		-e '/CONFIG_INITRAMFS_SOURCE=/d' \
 		'${WORKDIR}/defconfig' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig
 
-}
-
-do_compile_prepend() {
-	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
-	    if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
-		echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
-		exit 1
-	    fi
-	    cp ${KERNEL_INITRAMFS_PATH} usr/initramfs_data.cpio.gz
-	fi
 }
 
 do_deploy() {

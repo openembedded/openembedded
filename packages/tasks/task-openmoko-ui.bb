@@ -53,5 +53,6 @@ THEMES_rokre2   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-q
 THEMES_rokre6   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_magician = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_chumby   = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
+THEMES_htcblueangel = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 
 RDEPENDS_task-openmoko-ui += "${THEMES}"

@@ -1,0 +1,1083 @@
+From d3e044e0e10e6c6b75716cb927e92b4ec284132f Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date: Sat, 26 Jan 2008 21:14:20 +0300
+Subject: [PATCH 30/64] Core driver for WM97xx touchscreens
+
+This patch series adds support for the touchscreen controllers provided
+by Wolfson Microelectronics WM97xx series chips in both polled and
+streaming modes.
+
+These drivers have been maintained out of tree since 2003.  During that
+time the driver the primary maintainer was Liam Girdwood and a number of
+people have made contributions including Stanley Cai, Rodolfo Giometti,
+Russell King, Marc Kleine-Budde, Ian Molton, Vincent Sanders, Andrew
+Zabolotny, Graeme Gregory, Mike Arthur and myself.  Apologies to anyone
+I have omitted.
+
+Signed-off-by: Liam Girdwood <liam.girdwood@wolfsonmicro.com>
+Signed-off-by: Graeme Gregory <gg@opensource.wolfsonmicro.com>
+Signed-off-by: Mike Arthur <mike.arthur@wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Cc: Stanley Cai <stanley.cai@intel.com>
+Cc: Rodolfo Giometti <giometti@enneenne.com>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Ian Molton <spyro@f2s.com>
+Cc: Vincent Sanders <vince@kyllikki.org>
+Cc: Andrew Zabolotny <zap@homelink.ru>
+---
+ drivers/input/touchscreen/wm97xx-core.c |  724 +++++++++++++++++++++++++++++++
+ include/linux/wm97xx.h                  |  309 +++++++++++++
+ 2 files changed, 1033 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/input/touchscreen/wm97xx-core.c
+ create mode 100644 include/linux/wm97xx.h
+
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+new file mode 100644
+index 0000000..27a0a99
+--- /dev/null
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -0,0 +1,724 @@
++/*
++ * wm97xx-core.c  --  Touch screen driver core for Wolfson WM9705, WM9712
++ *                    and WM9713 AC97 Codecs.
++ *
++ * Copyright 2003, 2004, 2005, 2006, 2007, 2008 Wolfson Microelectronics PLC.
++ * Author: Liam Girdwood
++ *         liam.girdwood@wolfsonmicro.com or linux@wolfsonmicro.com
++ * Parts Copyright : Ian Molton <spyro@f2s.com>
++ *                   Andrew Zabolotny <zap@homelink.ru>
++ *                   Russell King <rmk@arm.linux.org.uk>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ * Notes:
++ *
++ *  Features:
++ *       - supports WM9705, WM9712, WM9713
++ *       - polling mode
++ *       - continuous mode (arch-dependent)
++ *       - adjustable rpu/dpp settings
++ *       - adjustable pressure current
++ *       - adjustable sample settle delay
++ *       - 4 and 5 wire touchscreens (5 wire is WM9712 only)
++ *       - pen down detection
++ *       - battery monitor
++ *       - sample AUX adcs
++ *       - power management
++ *       - codec GPIO
++ *       - codec event notification
++ * Todo
++ *       - Support for async sampling control for noisy LCDs.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/version.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/string.h>
++#include <linux/proc_fs.h>
++#include <linux/pm.h>
++#include <linux/interrupt.h>
++#include <linux/bitops.h>
++#include <linux/workqueue.h>
++#include <linux/wm97xx.h>
++#include <linux/uaccess.h>
++#include <linux/io.h>
++
++#define TS_NAME			"wm97xx"
++#define WM_CORE_VERSION		"0.65"
++#define DEFAULT_PRESSURE	0xb0c0
++
++
++/*
++ * Touchscreen absolute values
++ *
++ * These parameters are used to help the input layer discard out of
++ * range readings and reduce jitter etc.
++ *
++ *   o min, max:- indicate the min and max values your touch screen returns
++ *   o fuzz:- use a higher number to reduce jitter
++ *
++ * The default values correspond to Mainstone II in QVGA mode
++ *
++ * Please read
++ * Documentation/input/input-programming.txt for more details.
++ */
++
++static int abs_x[3] = {350, 3900, 5};
++module_param_array(abs_x, int, NULL, 0);
++MODULE_PARM_DESC(abs_x, "Touchscreen absolute X min, max, fuzz");
++
++static int abs_y[3] = {320, 3750, 40};
++module_param_array(abs_y, int, NULL, 0);
++MODULE_PARM_DESC(abs_y, "Touchscreen absolute Y min, max, fuzz");
++
++static int abs_p[3] = {0, 150, 4};
++module_param_array(abs_p, int, NULL, 0);
++MODULE_PARM_DESC(abs_p, "Touchscreen absolute Pressure min, max, fuzz");
++
++/*
++ * wm97xx IO access, all IO locking done by AC97 layer
++ */
++int wm97xx_reg_read(struct wm97xx *wm, u16 reg)
++{
++	if (wm->ac97)
++		return wm->ac97->bus->ops->read(wm->ac97, reg);
++	else
++		return -1;
++}
++EXPORT_SYMBOL_GPL(wm97xx_reg_read);
++
++void wm97xx_reg_write(struct wm97xx *wm, u16 reg, u16 val)
++{
++	/* cache digitiser registers */
++	if (reg >= AC97_WM9713_DIG1 && reg <= AC97_WM9713_DIG3)
++		wm->dig[(reg - AC97_WM9713_DIG1) >> 1] = val;
++
++	/* cache gpio regs */
++	if (reg >= AC97_GPIO_CFG && reg <= AC97_MISC_AFE)
++		wm->gpio[(reg - AC97_GPIO_CFG) >> 1] = val;
++
++	/* wm9713 irq reg */
++	if (reg == 0x5a)
++		wm->misc = val;
++
++	if (wm->ac97)
++		wm->ac97->bus->ops->write(wm->ac97, reg, val);
++}
++EXPORT_SYMBOL_GPL(wm97xx_reg_write);
++
++/**
++ *	wm97xx_read_aux_adc - Read the aux adc.
++ *	@wm: wm97xx device.
++ *  @adcsel: codec ADC to be read
++ *
++ *	Reads the selected AUX ADC.
++ */
++
++int wm97xx_read_aux_adc(struct wm97xx *wm, u16 adcsel)
++{
++	int power_adc = 0, auxval;
++	u16 power = 0;
++
++	/* get codec */
++	mutex_lock(&wm->codec_mutex);
++
++	/* When the touchscreen is not in use, we may have to power up
++	 * the AUX ADC before we can use sample the AUX inputs->
++	 */
++	if (wm->id == WM9713_ID2 &&
++	    (power = wm97xx_reg_read(wm, AC97_EXTENDED_MID)) & 0x8000) {
++		power_adc = 1;
++		wm97xx_reg_write(wm, AC97_EXTENDED_MID, power & 0x7fff);
++	}
++
++	/* Prepare the codec for AUX reading */
++	wm->codec->aux_prepare(wm);
++
++	/* Turn polling mode on to read AUX ADC */
++	wm->pen_probably_down = 1;
++	wm->codec->poll_sample(wm, adcsel, &auxval);
++
++	if (power_adc)
++		wm97xx_reg_write(wm, AC97_EXTENDED_MID, power | 0x8000);
++
++	wm->codec->dig_restore(wm);
++
++	wm->pen_probably_down = 0;
++
++	mutex_unlock(&wm->codec_mutex);
++	return auxval & 0xfff;
++}
++EXPORT_SYMBOL_GPL(wm97xx_read_aux_adc);
++
++/**
++ *	wm97xx_get_gpio - Get the status of a codec GPIO.
++ *	@wm: wm97xx device.
++ *      @gpio: gpio
++ *
++ *	Get the status of a codec GPIO pin
++ */
++
++enum wm97xx_gpio_status wm97xx_get_gpio(struct wm97xx *wm, u32 gpio)
++{
++	u16 status;
++	enum wm97xx_gpio_status ret;
++
++	mutex_lock(&wm->codec_mutex);
++	status = wm97xx_reg_read(wm, AC97_GPIO_STATUS);
++
++	if (status & gpio)
++		ret = WM97XX_GPIO_HIGH;
++	else
++		ret = WM97XX_GPIO_LOW;
++
++	mutex_unlock(&wm->codec_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(wm97xx_get_gpio);
++
++/**
++ *	wm97xx_set_gpio - Set the status of a codec GPIO.
++ *	@wm: wm97xx device.
++ *  @gpio: gpio
++ *
++ *
++ *	Set the status of a codec GPIO pin
++ */
++
++void wm97xx_set_gpio(struct wm97xx *wm, u32 gpio,
++				enum wm97xx_gpio_status status)
++{
++	u16 reg;
++
++	mutex_lock(&wm->codec_mutex);
++	reg = wm97xx_reg_read(wm, AC97_GPIO_STATUS);
++
++	if (status & WM97XX_GPIO_HIGH)
++		reg |= gpio;
++	else
++		reg &= ~gpio;
++
++	if (wm->id == WM9712_ID2)
++		wm97xx_reg_write(wm, AC97_GPIO_STATUS, reg << 1);
++	else
++		wm97xx_reg_write(wm, AC97_GPIO_STATUS, reg);
++	mutex_unlock(&wm->codec_mutex);
++}
++EXPORT_SYMBOL_GPL(wm97xx_set_gpio);
++
++/*
++ * Codec GPIO pin configuration, this sets pin direction, polarity,
++ * stickyness and wake up.
++ */
++void wm97xx_config_gpio(struct wm97xx *wm, u32 gpio, enum wm97xx_gpio_dir dir,
++		   enum wm97xx_gpio_pol pol, enum wm97xx_gpio_sticky sticky,
++		   enum wm97xx_gpio_wake wake)
++{
++	u16 reg;
++
++	mutex_lock(&wm->codec_mutex);
++	reg = wm97xx_reg_read(wm, AC97_GPIO_POLARITY);
++
++	if (pol == WM97XX_GPIO_POL_HIGH)
++		reg |= gpio;
++	else
++		reg &= ~gpio;
++
++	wm97xx_reg_write(wm, AC97_GPIO_POLARITY, reg);
++	reg = wm97xx_reg_read(wm, AC97_GPIO_STICKY);
++
++	if (sticky == WM97XX_GPIO_STICKY)
++		reg |= gpio;
++	else
++		reg &= ~gpio;
++
++	wm97xx_reg_write(wm, AC97_GPIO_STICKY, reg);
++	reg = wm97xx_reg_read(wm, AC97_GPIO_WAKEUP);
++
++	if (wake == WM97XX_GPIO_WAKE)
++		reg |= gpio;
++	else
++		reg &= ~gpio;
++
++	wm97xx_reg_write(wm, AC97_GPIO_WAKEUP, reg);
++	reg = wm97xx_reg_read(wm, AC97_GPIO_CFG);
++
++	if (dir == WM97XX_GPIO_IN)
++		reg |= gpio;
++	else
++		reg &= ~gpio;
++
++	wm97xx_reg_write(wm, AC97_GPIO_CFG, reg);
++	mutex_unlock(&wm->codec_mutex);
++}
++EXPORT_SYMBOL_GPL(wm97xx_config_gpio);
++
++/*
++ * Handle a pen down interrupt.
++ */
++static void wm97xx_pen_irq_worker(struct work_struct *work)
++{
++	struct wm97xx *wm = container_of(work, struct wm97xx, pen_event_work);
++
++	/* do we need to enable the touch panel reader */
++	if (wm->id == WM9705_ID2) {
++		if (wm97xx_reg_read(wm, AC97_WM97XX_DIGITISER_RD) &
++					WM97XX_PEN_DOWN)
++			wm->pen_is_down = 1;
++		else
++			wm->pen_is_down = 0;
++	} else {
++		u16 status, pol;
++		mutex_lock(&wm->codec_mutex);
++		status = wm97xx_reg_read(wm, AC97_GPIO_STATUS);
++		pol = wm97xx_reg_read(wm, AC97_GPIO_POLARITY);
++
++		if (WM97XX_GPIO_13 & pol & status) {
++			wm->pen_is_down = 1;
++			wm97xx_reg_write(wm, AC97_GPIO_POLARITY, pol &
++						~WM97XX_GPIO_13);
++		} else {
++			wm->pen_is_down = 0;
++			wm97xx_reg_write(wm, AC97_GPIO_POLARITY, pol |
++					 WM97XX_GPIO_13);
++		}
++
++		if (wm->id == WM9712_ID2)
++			wm97xx_reg_write(wm, AC97_GPIO_STATUS, (status &
++						~WM97XX_GPIO_13) << 1);
++		else
++			wm97xx_reg_write(wm, AC97_GPIO_STATUS, status &
++						~WM97XX_GPIO_13);
++		mutex_unlock(&wm->codec_mutex);
++	}
++
++	queue_delayed_work(wm->ts_workq, &wm->ts_reader, 0);
++
++	if (!wm->pen_is_down && wm->mach_ops && wm->mach_ops->acc_enabled)
++		wm->mach_ops->acc_pen_up(wm);
++	wm->mach_ops->irq_enable(wm, 1);
++}
++
++/*
++ * Codec PENDOWN irq handler
++ *
++ * We have to disable the codec interrupt in the handler because it can
++ * take upto 1ms to clear the interrupt source. The interrupt is then enabled
++ * again in the slow handler when the source has been cleared.
++ */
++static irqreturn_t wm97xx_pen_interrupt(int irq, void *dev_id)
++{
++	struct wm97xx *wm = dev_id;
++	wm->mach_ops->irq_enable(wm, 0);
++	queue_work(wm->ts_workq, &wm->pen_event_work);
++	return IRQ_HANDLED;
++}
++
++/*
++ * initialise pen IRQ handler and workqueue
++ */
++static int wm97xx_init_pen_irq(struct wm97xx *wm)
++{
++	u16 reg;
++
++	/* If an interrupt is supplied an IRQ enable operation must also be
++	 * provided. */
++	BUG_ON(!wm->mach_ops->irq_enable);
++
++	INIT_WORK(&wm->pen_event_work, wm97xx_pen_irq_worker);
++
++	if (request_irq(wm->pen_irq, wm97xx_pen_interrupt, IRQF_SHARED,
++			"wm97xx-pen", wm)) {
++		dev_err(wm->dev,
++			"Failed to register pen down interrupt, polling");
++		wm->pen_irq = 0;
++		return -EINVAL;
++	}
++
++	/* enable PEN down on wm9712/13 */
++	if (wm->id != WM9705_ID2) {
++		reg = wm97xx_reg_read(wm, AC97_MISC_AFE);
++		wm97xx_reg_write(wm, AC97_MISC_AFE, reg & 0xfffb);
++		reg = wm97xx_reg_read(wm, 0x5a);
++		wm97xx_reg_write(wm, 0x5a, reg & ~0x0001);
++	}
++
++	return 0;
++}
++
++static int wm97xx_read_samples(struct wm97xx *wm)
++{
++	struct wm97xx_data data;
++	int rc;
++
++	mutex_lock(&wm->codec_mutex);
++
++	if (wm->mach_ops && wm->mach_ops->acc_enabled)
++		rc = wm->mach_ops->acc_pen_down(wm);
++	else
++		rc = wm->codec->poll_touch(wm, &data);
++
++	if (rc & RC_PENUP) {
++		if (wm->pen_is_down) {
++			wm->pen_is_down = 0;
++			dev_dbg(wm->dev, "pen up\n");
++			input_report_abs(wm->input_dev, ABS_PRESSURE, 0);
++			input_sync(wm->input_dev);
++		} else if (!(rc & RC_AGAIN)) {
++			/* We need high frequency updates only while
++			* pen is down, the user never will be able to
++			* touch screen faster than a few times per
++			* second... On the other hand, when the user
++			* is actively working with the touchscreen we
++			* don't want to lose the quick response. So we
++			* will slowly increase sleep time after the
++			* pen is up and quicky restore it to ~one task
++			* switch when pen is down again.
++			*/
++			if (wm->ts_reader_interval < HZ / 10)
++				wm->ts_reader_interval++;
++		}
++
++	} else if (rc & RC_VALID) {
++		dev_dbg(wm->dev,
++			"pen down: x=%x:%d, y=%x:%d, pressure=%x:%d\n",
++			data.x >> 12, data.x & 0xfff, data.y >> 12,
++			data.y & 0xfff, data.p >> 12, data.p & 0xfff);
++		input_report_abs(wm->input_dev, ABS_X, data.x & 0xfff);
++		input_report_abs(wm->input_dev, ABS_Y, data.y & 0xfff);
++		input_report_abs(wm->input_dev, ABS_PRESSURE, data.p & 0xfff);
++		input_sync(wm->input_dev);
++		wm->pen_is_down = 1;
++		wm->ts_reader_interval = wm->ts_reader_min_interval;
++	} else if (rc & RC_PENDOWN) {
++		dev_dbg(wm->dev, "pen down");
++		wm->pen_is_down = 1;
++		wm->ts_reader_interval = wm->ts_reader_min_interval;
++	}
++
++	mutex_unlock(&wm->codec_mutex);
++	return rc;
++}
++
++/*
++* The touchscreen sample reader.
++*/
++static void wm97xx_ts_reader(struct work_struct *work)
++{
++	int rc;
++	struct wm97xx *wm = container_of(work, struct wm97xx, ts_reader.work);
++
++	BUG_ON(!wm->codec);
++
++	do {
++		rc = wm97xx_read_samples(wm);
++	} while (rc & RC_AGAIN);
++
++	if (wm->pen_is_down || !wm->pen_irq)
++		queue_delayed_work(wm->ts_workq, &wm->ts_reader,
++				   wm->ts_reader_interval);
++}
++
++/**
++ *	wm97xx_ts_input_open - Open the touch screen input device.
++ *	@idev:	Input device to be opened.
++ *
++ *	Called by the input sub system to open a wm97xx touchscreen device.
++ *  Starts the touchscreen thread and touch digitiser.
++ */
++static int wm97xx_ts_input_open(struct input_dev *idev)
++{
++	struct wm97xx *wm = input_get_drvdata(idev);
++
++	wm->ts_workq = create_singlethread_workqueue("kwm97xx");
++	if (wm->ts_workq == NULL) {
++		dev_err(wm->dev,
++			"Failed to create workqueue\n");
++		return -EINVAL;
++	}
++
++	/* start digitiser */
++	if (wm->mach_ops && wm->mach_ops->acc_enabled)
++		wm->codec->acc_enable(wm, 1);
++	wm->codec->dig_enable(wm, 1);
++
++	INIT_DELAYED_WORK(&wm->ts_reader, wm97xx_ts_reader);
++
++	wm->ts_reader_min_interval = HZ >= 100 ? HZ / 100 : 1;
++	if (wm->ts_reader_min_interval < 1)
++		wm->ts_reader_min_interval = 1;
++	wm->ts_reader_interval = wm->ts_reader_min_interval;
++
++	wm->pen_is_down = 0;
++	if (wm->pen_irq)
++		wm97xx_init_pen_irq(wm);
++	else
++		dev_err(wm->dev, "No IRQ specified\n");
++
++	/* If we either don't have an interrupt for pen down events or
++	 * failed to acquire it then we need to poll.
++	 */
++	if (wm->pen_irq == 0)
++		queue_delayed_work(wm->ts_workq, &wm->ts_reader,
++				   wm->ts_reader_interval);
++
++	return 0;
++}
++
++/**
++ *	wm97xx_ts_input_close - Close the touch screen input device.
++ *	@idev:	Input device to be closed.
++ *
++ *	Called by the input sub system to close a wm97xx touchscreen device.
++ *  Kills the touchscreen thread and stops the touch digitiser.
++ */
++
++static void wm97xx_ts_input_close(struct input_dev *idev)
++{
++	struct wm97xx *wm = input_get_drvdata(idev);
++
++	if (wm->pen_irq)
++		free_irq(wm->pen_irq, wm);
++
++	wm->pen_is_down = 0;
++
++	/* ts_reader rearms itself so we need to explicitly stop it
++	 * before we destroy the workqueue.
++	 */
++	cancel_delayed_work_sync(&wm->ts_reader);
++	destroy_workqueue(wm->ts_workq);
++
++	/* stop digitiser */
++	wm->codec->dig_enable(wm, 0);
++	if (wm->mach_ops && wm->mach_ops->acc_enabled)
++		wm->codec->acc_enable(wm, 0);
++}
++
++static int wm97xx_probe(struct device *dev)
++{
++	struct wm97xx *wm;
++	int ret = 0, id = 0;
++
++	wm = kzalloc(sizeof(struct wm97xx), GFP_KERNEL);
++	if (!wm)
++		return -ENOMEM;
++	mutex_init(&wm->codec_mutex);
++
++	wm->dev = dev;
++	dev->driver_data = wm;
++	wm->ac97 = to_ac97_t(dev);
++
++	/* check that we have a supported codec */
++	id = wm97xx_reg_read(wm, AC97_VENDOR_ID1);
++	if (id != WM97XX_ID1) {
++		dev_err(dev, "Device with vendor %04x is not a wm97xx\n", id);
++		kfree(wm);
++		return -ENODEV;
++	}
++
++	wm->id = wm97xx_reg_read(wm, AC97_VENDOR_ID2);
++
++	dev_info(wm->dev, "detected a wm97%02x codec", wm->id & 0xff);
++
++	switch (wm->id & 0xff) {
++#ifdef CONFIG_TOUCHSCREEN_WM9705
++	case 0x05:
++		wm->codec = &wm9705_codec;
++		break;
++#endif
++#ifdef CONFIG_TOUCHSCREEN_WM9712
++	case 0x12:
++		wm->codec = &wm9712_codec;
++		break;
++#endif
++#ifdef CONFIG_TOUCHSCREEN_WM9713
++	case 0x13:
++		wm->codec = &wm9713_codec;
++		break;
++#endif
++	default:
++		dev_err(wm->dev, "Support for wm97%02x not compiled in.\n",
++			wm->id & 0xff);
++		kfree(wm);
++		return -ENODEV;
++	}
++
++	wm->input_dev = input_allocate_device();
++	if (wm->input_dev == NULL) {
++		kfree(wm);
++		return -ENOMEM;
++	}
++
++	/* set up touch configuration */
++	wm->input_dev->name = "wm97xx touchscreen";
++	wm->input_dev->open = wm97xx_ts_input_open;
++	wm->input_dev->close = wm97xx_ts_input_close;
++	set_bit(EV_ABS, wm->input_dev->evbit);
++	set_bit(ABS_X, wm->input_dev->absbit);
++	set_bit(ABS_Y, wm->input_dev->absbit);
++	set_bit(ABS_PRESSURE, wm->input_dev->absbit);
++	input_set_abs_params(wm->input_dev, ABS_X, abs_x[0], abs_x[1],
++			     abs_x[2], 0);
++	input_set_abs_params(wm->input_dev, ABS_Y, abs_y[0], abs_y[1],
++			     abs_y[2], 0);
++	input_set_abs_params(wm->input_dev, ABS_PRESSURE, abs_p[0], abs_p[1],
++			     abs_p[2], 0);
++	input_set_drvdata(wm->input_dev, wm);
++	wm->input_dev->dev.parent = dev;
++	ret = input_register_device(wm->input_dev);
++	if (ret < 0) {
++		input_free_device(wm->input_dev);
++		kfree(wm);
++		return -ENOMEM;
++	}
++
++	/* set up physical characteristics */
++	wm->codec->phy_init(wm);
++
++	/* load gpio cache */
++	wm->gpio[0] = wm97xx_reg_read(wm, AC97_GPIO_CFG);
++	wm->gpio[1] = wm97xx_reg_read(wm, AC97_GPIO_POLARITY);
++	wm->gpio[2] = wm97xx_reg_read(wm, AC97_GPIO_STICKY);
++	wm->gpio[3] = wm97xx_reg_read(wm, AC97_GPIO_WAKEUP);
++	wm->gpio[4] = wm97xx_reg_read(wm, AC97_GPIO_STATUS);
++	wm->gpio[5] = wm97xx_reg_read(wm, AC97_MISC_AFE);
++
++	/* register our battery device */
++	wm->battery_dev = platform_device_alloc("wm97xx-battery", 0);
++	if (!wm->battery_dev)
++		goto batt_err;
++	platform_set_drvdata(wm->battery_dev, wm);
++	wm->battery_dev->dev.parent = dev;
++	ret = platform_device_register(wm->battery_dev);
++	if (ret < 0)
++		goto batt_reg_err;
++
++	/* register our extended touch device (for machine specific
++	 * extensions) */
++	wm->touch_dev = platform_device_alloc("wm97xx-touch", 0);
++	if (!wm->touch_dev)
++		goto touch_err;
++	platform_set_drvdata(wm->touch_dev, wm);
++	wm->touch_dev->dev.parent = dev;
++	ret = platform_device_register(wm->touch_dev);
++	if (ret < 0)
++		goto touch_reg_err;
++
++	return ret;
++
++ touch_reg_err:
++	platform_device_put(wm->touch_dev);
++ touch_err:
++	platform_device_unregister(wm->battery_dev);
++ batt_reg_err:
++	platform_device_put(wm->battery_dev);
++ batt_err:
++	input_unregister_device(wm->input_dev);
++	kfree(wm);
++	return ret;
++}
++
++static int wm97xx_remove(struct device *dev)
++{
++	struct wm97xx *wm = dev_get_drvdata(dev);
++
++	platform_device_unregister(wm->battery_dev);
++	platform_device_unregister(wm->touch_dev);
++	input_unregister_device(wm->input_dev);
++
++	kfree(wm);
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int wm97xx_resume(struct device *dev)
++{
++	struct wm97xx *wm = dev_get_drvdata(dev);
++
++	/* restore digitiser and gpios */
++	if (wm->id == WM9713_ID2) {
++		wm97xx_reg_write(wm, AC97_WM9713_DIG1, wm->dig[0]);
++		wm97xx_reg_write(wm, 0x5a, wm->misc);
++		if (wm->input_dev->users) {
++			u16 reg;
++			reg = wm97xx_reg_read(wm, AC97_EXTENDED_MID) & 0x7fff;
++			wm97xx_reg_write(wm, AC97_EXTENDED_MID, reg);
++		}
++	}
++
++	wm97xx_reg_write(wm, AC97_WM9713_DIG2, wm->dig[1]);
++	wm97xx_reg_write(wm, AC97_WM9713_DIG3, wm->dig[2]);
++
++	wm97xx_reg_write(wm, AC97_GPIO_CFG, wm->gpio[0]);
++	wm97xx_reg_write(wm, AC97_GPIO_POLARITY, wm->gpio[1]);
++	wm97xx_reg_write(wm, AC97_GPIO_STICKY, wm->gpio[2]);
++	wm97xx_reg_write(wm, AC97_GPIO_WAKEUP, wm->gpio[3]);
++	wm97xx_reg_write(wm, AC97_GPIO_STATUS, wm->gpio[4]);
++	wm97xx_reg_write(wm, AC97_MISC_AFE, wm->gpio[5]);
++
++	return 0;
++}
++
++#else
++#define wm97xx_resume		NULL
++#endif
++
++/*
++ * Machine specific operations
++ */
++int wm97xx_register_mach_ops(struct wm97xx *wm,
++			     struct wm97xx_mach_ops *mach_ops)
++{
++	mutex_lock(&wm->codec_mutex);
++	if (wm->mach_ops) {
++		mutex_unlock(&wm->codec_mutex);
++		return -EINVAL;
++	}
++	wm->mach_ops = mach_ops;
++	mutex_unlock(&wm->codec_mutex);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm97xx_register_mach_ops);
++
++void wm97xx_unregister_mach_ops(struct wm97xx *wm)
++{
++	mutex_lock(&wm->codec_mutex);
++	wm->mach_ops = NULL;
++	mutex_unlock(&wm->codec_mutex);
++}
++EXPORT_SYMBOL_GPL(wm97xx_unregister_mach_ops);
++
++static struct device_driver wm97xx_driver = {
++	.name = 	"ac97",
++	.bus = 		&ac97_bus_type,
++	.owner = 	THIS_MODULE,
++	.probe = 	wm97xx_probe,
++	.remove = 	wm97xx_remove,
++	.resume =	wm97xx_resume,
++};
++
++static int __init wm97xx_init(void)
++{
++	return driver_register(&wm97xx_driver);
++}
++
++static void __exit wm97xx_exit(void)
++{
++	driver_unregister(&wm97xx_driver);
++}
++
++module_init(wm97xx_init);
++module_exit(wm97xx_exit);
++
++/* Module information */
++MODULE_AUTHOR("Liam Girdwood <liam.girdwood@wolfsonmicro.com>");
++MODULE_DESCRIPTION("WM97xx Core - Touch Screen / AUX ADC / GPIO Driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/wm97xx.h b/include/linux/wm97xx.h
+new file mode 100644
+index 0000000..fc6e0b3
+--- /dev/null
++++ b/include/linux/wm97xx.h
+@@ -0,0 +1,309 @@
++
++/*
++ * Register bits and API for Wolfson WM97xx series of codecs
++ */
++
++#ifndef _LINUX_WM97XX_H
++#define _LINUX_WM97XX_H
++
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/ac97_codec.h>
++#include <sound/initval.h>
++#include <linux/types.h>
++#include <linux/list.h>
++#include <linux/input.h>	/* Input device layer */
++#include <linux/platform_device.h>
++
++/*
++ * WM97xx AC97 Touchscreen registers
++ */
++#define AC97_WM97XX_DIGITISER1		0x76
++#define AC97_WM97XX_DIGITISER2		0x78
++#define AC97_WM97XX_DIGITISER_RD 	0x7a
++#define AC97_WM9713_DIG1		0x74
++#define AC97_WM9713_DIG2		AC97_WM97XX_DIGITISER1
++#define AC97_WM9713_DIG3		AC97_WM97XX_DIGITISER2
++
++/*
++ * WM97xx register bits
++ */
++#define WM97XX_POLL		0x8000	/* initiate a polling measurement */
++#define WM97XX_ADCSEL_X		0x1000	/* x coord measurement */
++#define WM97XX_ADCSEL_Y		0x2000	/* y coord measurement */
++#define WM97XX_ADCSEL_PRES	0x3000	/* pressure measurement */
++#define WM97XX_ADCSEL_MASK	0x7000
++#define WM97XX_COO		0x0800	/* enable coordinate mode */
++#define WM97XX_CTC		0x0400	/* enable continuous mode */
++#define WM97XX_CM_RATE_93	0x0000	/* 93.75Hz continuous rate */
++#define WM97XX_CM_RATE_187	0x0100	/* 187.5Hz continuous rate */
++#define WM97XX_CM_RATE_375	0x0200	/* 375Hz continuous rate */
++#define WM97XX_CM_RATE_750	0x0300	/* 750Hz continuous rate */
++#define WM97XX_CM_RATE_8K	0x00f0	/* 8kHz continuous rate */
++#define WM97XX_CM_RATE_12K	0x01f0	/* 12kHz continuous rate */
++#define WM97XX_CM_RATE_24K	0x02f0	/* 24kHz continuous rate */
++#define WM97XX_CM_RATE_48K	0x03f0	/* 48kHz continuous rate */
++#define WM97XX_CM_RATE_MASK	0x03f0
++#define WM97XX_RATE(i)		(((i & 3) << 8) | ((i & 4) ? 0xf0 : 0))
++#define WM97XX_DELAY(i)		((i << 4) & 0x00f0)	/* sample delay times */
++#define WM97XX_DELAY_MASK	0x00f0
++#define WM97XX_SLEN		0x0008	/* slot read back enable */
++#define WM97XX_SLT(i)		((i - 5) & 0x7)	/* panel slot (5-11) */
++#define WM97XX_SLT_MASK		0x0007
++#define WM97XX_PRP_DETW		0x4000	/* detect on, digitise off, wake */
++#define WM97XX_PRP_DET		0x8000	/* detect on, digitise off, no wake */
++#define WM97XX_PRP_DET_DIG	0xc000	/* setect on, digitise on */
++#define WM97XX_RPR		0x2000	/* wake up on pen down */
++#define WM97XX_PEN_DOWN		0x8000	/* pen is down */
++#define WM97XX_ADCSRC_MASK	0x7000	/* ADC source mask */
++
++#define WM97XX_AUX_ID1		0x8001
++#define WM97XX_AUX_ID2		0x8002
++#define WM97XX_AUX_ID3		0x8003
++#define WM97XX_AUX_ID4		0x8004
++
++
++/* WM9712 Bits */
++#define WM9712_45W		0x1000	/* set for 5-wire touchscreen */
++#define WM9712_PDEN		0x0800	/* measure only when pen down */
++#define WM9712_WAIT		0x0200	/* wait until adc is read before next sample */
++#define WM9712_PIL		0x0100	/* current used for pressure measurement. set 400uA else 200uA */
++#define WM9712_MASK_HI		0x0040	/* hi on mask pin (47) stops conversions */
++#define WM9712_MASK_EDGE	0x0080	/* rising/falling edge on pin delays sample */
++#define	WM9712_MASK_SYNC	0x00c0	/* rising/falling edge on mask initiates sample */
++#define WM9712_RPU(i)		(i&0x3f)	/* internal pull up on pen detect (64k / rpu) */
++#define WM9712_PD(i)		(0x1 << i)	/* power management */
++
++/* WM9712 Registers */
++#define AC97_WM9712_POWER	0x24
++#define AC97_WM9712_REV		0x58
++
++/* WM9705 Bits */
++#define WM9705_PDEN		0x1000	/* measure only when pen is down */
++#define WM9705_PINV		0x0800	/* inverts sense of pen down output */
++#define WM9705_BSEN		0x0400	/* BUSY flag enable, pin47 is 1 when busy */
++#define WM9705_BINV		0x0200	/* invert BUSY (pin47) output */
++#define WM9705_WAIT		0x0100	/* wait until adc is read before next sample */
++#define WM9705_PIL		0x0080	/* current used for pressure measurement. set 400uA else 200uA */
++#define WM9705_PHIZ		0x0040	/* set PHONE and PCBEEP inputs to high impedance */
++#define WM9705_MASK_HI		0x0010	/* hi on mask stops conversions */
++#define WM9705_MASK_EDGE	0x0020	/* rising/falling edge on pin delays sample */
++#define	WM9705_MASK_SYNC	0x0030	/* rising/falling edge on mask initiates sample */
++#define WM9705_PDD(i)		(i & 0x000f)	/* pen detect comparator threshold */
++
++
++/* WM9713 Bits */
++#define WM9713_PDPOL		0x0400	/* Pen down polarity */
++#define WM9713_POLL		0x0200	/* initiate a polling measurement */
++#define WM9713_CTC		0x0100	/* enable continuous mode */
++#define WM9713_ADCSEL_X		0x0002	/* X measurement */
++#define WM9713_ADCSEL_Y		0x0004	/* Y measurement */
++#define WM9713_ADCSEL_PRES	0x0008	/* Pressure measurement */
++#define WM9713_COO		0x0001	/* enable coordinate mode */
++#define WM9713_PDEN		0x0800	/* measure only when pen down */
++#define WM9713_ADCSEL_MASK	0x00fe	/* ADC selection mask */
++#define WM9713_WAIT		0x0200	/* coordinate wait */
++
++/* AUX ADC ID's */
++#define TS_COMP1		0x0
++#define TS_COMP2		0x1
++#define TS_BMON			0x2
++#define TS_WIPER		0x3
++
++/* ID numbers */
++#define WM97XX_ID1		0x574d
++#define WM9712_ID2		0x4c12
++#define WM9705_ID2		0x4c05
++#define WM9713_ID2		0x4c13
++
++/* Codec GPIO's */
++#define WM97XX_MAX_GPIO		16
++#define WM97XX_GPIO_1		(1 << 1)
++#define WM97XX_GPIO_2		(1 << 2)
++#define WM97XX_GPIO_3		(1 << 3)
++#define WM97XX_GPIO_4		(1 << 4)
++#define WM97XX_GPIO_5		(1 << 5)
++#define WM97XX_GPIO_6		(1 << 6)
++#define WM97XX_GPIO_7		(1 << 7)
++#define WM97XX_GPIO_8		(1 << 8)
++#define WM97XX_GPIO_9		(1 << 9)
++#define WM97XX_GPIO_10		(1 << 10)
++#define WM97XX_GPIO_11		(1 << 11)
++#define WM97XX_GPIO_12		(1 << 12)
++#define WM97XX_GPIO_13		(1 << 13)
++#define WM97XX_GPIO_14		(1 << 14)
++#define WM97XX_GPIO_15		(1 << 15)
++
++
++#define AC97_LINK_FRAME		21	/* time in uS for AC97 link frame */
++
++
++/*---------------- Return codes from sample reading functions ---------------*/
++
++/* More data is available; call the sample gathering function again */
++#define RC_AGAIN			0x00000001
++/* The returned sample is valid */
++#define RC_VALID			0x00000002
++/* The pen is up (the first RC_VALID without RC_PENUP means pen is down) */
++#define RC_PENUP			0x00000004
++/* The pen is down (RC_VALID implies RC_PENDOWN, but sometimes it is helpful
++   to tell the handler that the pen is down but we don't know yet his coords,
++   so the handler should not sleep or wait for pendown irq) */
++#define RC_PENDOWN			0x00000008
++
++/*
++ * The wm97xx driver provides a private API for writing platform-specific
++ * drivers.
++ */
++
++/* The structure used to return arch specific sampled data into */
++struct wm97xx_data {
++    int x;
++    int y;
++    int p;
++};
++
++/*
++ * Codec GPIO status
++ */
++enum wm97xx_gpio_status {
++    WM97XX_GPIO_HIGH,
++    WM97XX_GPIO_LOW
++};
++
++/*
++ * Codec GPIO direction
++ */
++enum wm97xx_gpio_dir {
++    WM97XX_GPIO_IN,
++    WM97XX_GPIO_OUT
++};
++
++/*
++ * Codec GPIO polarity
++ */
++enum wm97xx_gpio_pol {
++    WM97XX_GPIO_POL_HIGH,
++    WM97XX_GPIO_POL_LOW
++};
++
++/*
++ * Codec GPIO sticky
++ */
++enum wm97xx_gpio_sticky {
++    WM97XX_GPIO_STICKY,
++    WM97XX_GPIO_NOTSTICKY
++};
++
++/*
++ * Codec GPIO wake
++ */
++enum wm97xx_gpio_wake {
++    WM97XX_GPIO_WAKE,
++    WM97XX_GPIO_NOWAKE
++};
++
++/*
++ * Digitiser ioctl commands
++ */
++#define WM97XX_DIG_START	0x1
++#define WM97XX_DIG_STOP		0x2
++#define WM97XX_PHY_INIT		0x3
++#define WM97XX_AUX_PREPARE	0x4
++#define WM97XX_DIG_RESTORE	0x5
++
++struct wm97xx;
++
++extern struct wm97xx_codec_drv wm9705_codec;
++extern struct wm97xx_codec_drv wm9712_codec;
++extern struct wm97xx_codec_drv wm9713_codec;
++
++/*
++ * Codec driver interface - allows mapping to WM9705/12/13 and newer codecs
++ */
++struct wm97xx_codec_drv {
++	u16 id;
++	char *name;
++
++	/* read 1 sample */
++	int (*poll_sample) (struct wm97xx *, int adcsel, int *sample);
++
++	/* read X,Y,[P] in poll */
++	int (*poll_touch) (struct wm97xx *, struct wm97xx_data *);
++
++	int (*acc_enable) (struct wm97xx *, int enable);
++	void (*phy_init) (struct wm97xx *);
++	void (*dig_enable) (struct wm97xx *, int enable);
++	void (*dig_restore) (struct wm97xx *);
++	void (*aux_prepare) (struct wm97xx *);
++};
++
++
++/* Machine specific and accelerated touch operations */
++struct wm97xx_mach_ops {
++
++	/* accelerated touch readback - coords are transmited on AC97 link */
++	int acc_enabled;
++	void (*acc_pen_up) (struct wm97xx *);
++	int (*acc_pen_down) (struct wm97xx *);
++	int (*acc_startup) (struct wm97xx *);
++	void (*acc_shutdown) (struct wm97xx *);
++
++	/* interrupt mask control - required for accelerated operation */
++	void (*irq_enable) (struct wm97xx *, int enable);
++
++	/* pre and post sample - can be used to minimise any analog noise */
++	void (*pre_sample) (int);  /* function to run before sampling */
++	void (*post_sample) (int);  /* function to run after sampling */
++};
++
++struct wm97xx {
++	u16 dig[3], id, gpio[6], misc;	/* Cached codec registers */
++	u16 dig_save[3];		/* saved during aux reading */
++	struct wm97xx_codec_drv *codec;	/* attached codec driver*/
++	struct input_dev *input_dev;	/* touchscreen input device */
++	struct snd_ac97 *ac97;		/* ALSA codec access */
++	struct device *dev;		/* ALSA device */
++	struct platform_device *battery_dev;
++	struct platform_device *touch_dev;
++	struct wm97xx_mach_ops *mach_ops;
++	struct mutex codec_mutex;
++	struct delayed_work ts_reader;  /* Used to poll touchscreen */
++	unsigned long ts_reader_interval; /* Current interval for timer */
++	unsigned long ts_reader_min_interval; /* Minimum interval */
++	unsigned int pen_irq;		/* Pen IRQ number in use */
++	struct workqueue_struct *ts_workq;
++	struct work_struct pen_event_work;
++	u16 acc_slot;			/* AC97 slot used for acc touch data */
++	u16 acc_rate;			/* acc touch data rate */
++	unsigned pen_is_down:1;		/* Pen is down */
++	unsigned aux_waiting:1;		/* aux measurement waiting */
++	unsigned pen_probably_down:1;	/* used in polling mode */
++};
++
++/*
++ * Codec GPIO access (not supported on WM9705)
++ * This can be used to set/get codec GPIO and Virtual GPIO status.
++ */
++enum wm97xx_gpio_status wm97xx_get_gpio(struct wm97xx *wm, u32 gpio);
++void wm97xx_set_gpio(struct wm97xx *wm, u32 gpio,
++			  enum wm97xx_gpio_status status);
++void wm97xx_config_gpio(struct wm97xx *wm, u32 gpio,
++				     enum wm97xx_gpio_dir dir,
++				     enum wm97xx_gpio_pol pol,
++				     enum wm97xx_gpio_sticky sticky,
++				     enum wm97xx_gpio_wake wake);
++
++/* codec AC97 IO access */
++int wm97xx_reg_read(struct wm97xx *wm, u16 reg);
++void wm97xx_reg_write(struct wm97xx *wm, u16 reg, u16 val);
++
++/* aux adc readback */
++int wm97xx_read_aux_adc(struct wm97xx *wm, u16 adcsel);
++
++/* machine ops */
++int wm97xx_register_mach_ops(struct wm97xx *, struct wm97xx_mach_ops *);
++void wm97xx_unregister_mach_ops(struct wm97xx *);
++
++#endif
+-- 
+1.5.3.8
+

@@ -162,7 +162,7 @@ def package_qa_get_elf(path, bits32):
 # 2 - package depends on debug package
 # 3 - non dbg contains .so
 # 4 - wrong architecture
-# 5 - .la contains installed=yes
+# 5 - .la contains installed=yes or reference to the workdir
 # 6 - .pc contains reference to /usr/include or workdir
 # 7 - the desktop file is not valid
 # 8 - .la contains reference to the workdir
@@ -178,7 +178,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    return not error_class in [0, 5, 7, 8]
+    return not error_class in [0, 5, 7]
 
 def package_qa_write_error(error_class, name, path, d):
     """
@@ -313,9 +313,8 @@ def package_qa_check_desktop(path, name, d):
     import bb, os
     sane = True
     if path.endswith(".desktop"):
-        validate = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True), \
-                                'desktop-file-validate')
-        output = os.popen("%s %s" % (validate, path))
+        output = os.popen("desktop-file-validate %s" % path)
+        # This only produces output on errors
         for l in output:
             sane = package_qa_handle_error(7, l.strip(), name, path, d)
 
@@ -336,11 +335,10 @@ def package_qa_check_staged(path,d):
     tmpdir = bb.data.getVar('TMPDIR', d, True)
     workdir = os.path.join(tmpdir, "work")
 
+    installed = "installed=yes"
     if bb.data.inherits_class("native", d) or bb.data.inherits_class("cross", d):
-        installed = "installed=no"
         pkgconfigcheck = workdir
     else:
-        installed = "installed=yes"
         pkgconfigcheck = tmpdir
 
     # find all .la and .pc files
@@ -351,9 +349,11 @@ def package_qa_check_staged(path,d):
             path = os.path.join(root,file)
             if file[-2:] == "la":
                 file_content = open(path).read()
-                if installed in file_content:
-                    error_msg = "%s failed sanity test (installed) in path %s" % (file,root)
-                    sane = package_qa_handle_error(5, error_msg, "staging", path, d)
+                # Don't check installed status for native/cross packages
+                if not bb.data.inherits_class("native", d) and not bb.data.inherits_class("cross", d):
+                    if installed in file_content:
+                        error_msg = "%s failed sanity test (installed) in path %s" % (file,root)
+                        sane = package_qa_handle_error(5, error_msg, "staging", path, d)
                 if workdir in file_content:
                     error_msg = "%s failed sanity test (workdir) in path %s" % (file,root)
                     sane = package_qa_handle_error(8, error_msg, "staging", path, d)

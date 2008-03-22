@@ -1,7 +1,7 @@
 Index: linux-2.6.24/arch/arm/mach-pxa/spitz.c
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/spitz.c	2008-01-27 02:10:17.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/spitz.c	2008-01-27 02:10:52.000000000 +0000
+--- linux-2.6.24.orig/arch/arm/mach-pxa/spitz.c	2008-03-10 17:05:37.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/spitz.c	2008-03-10 17:05:55.000000000 +0000
 @@ -259,6 +259,13 @@
  	.id		= -1,
  };
@@ -26,8 +26,8 @@ Index: linux-2.6.24/arch/arm/mach-pxa/spitz.c
  	&spitzled_device,
 Index: linux-2.6.24/drivers/input/keyboard/Kconfig
 ===================================================================
---- linux-2.6.24.orig/drivers/input/keyboard/Kconfig	2008-01-27 02:10:20.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/Kconfig	2008-01-27 02:10:52.000000000 +0000
+--- linux-2.6.24.orig/drivers/input/keyboard/Kconfig	2008-03-10 17:05:40.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/Kconfig	2008-03-10 17:05:55.000000000 +0000
 @@ -154,6 +154,17 @@
  	  To compile this driver as a module, choose M here: the
  	  module will be called spitzkbd.
@@ -48,20 +48,18 @@ Index: linux-2.6.24/drivers/input/keyboard/Kconfig
  	depends on AMIGA
 Index: linux-2.6.24/drivers/input/keyboard/Makefile
 ===================================================================
---- linux-2.6.24.orig/drivers/input/keyboard/Makefile	2008-01-27 02:10:20.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/Makefile	2008-01-27 02:11:43.000000000 +0000
-@@ -15,6 +15,7 @@
- obj-$(CONFIG_KEYBOARD_STOWAWAY)		+= stowaway.o
- obj-$(CONFIG_KEYBOARD_CORGI)		+= corgikbd.o
- obj-$(CONFIG_KEYBOARD_SPITZ)		+= spitzkbd.o
+--- linux-2.6.24.orig/drivers/input/keyboard/Makefile	2008-03-10 17:05:40.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/Makefile	2008-03-10 17:06:17.000000000 +0000
+@@ -26,3 +26,5 @@
+ obj-$(CONFIG_KEYBOARD_HP7XX)		+= jornada720_kbd.o
+ obj-$(CONFIG_KEYBOARD_MAPLE)		+= maple_keyb.o
+ obj-$(CONFIG_KEYBOARD_BFIN)		+= bf54x-keys.o
 +obj-$(CONFIG_SHARPSL_RC)		+= sharpsl_rc.o
- obj-$(CONFIG_KEYBOARD_ASIC3)		+= asic3_keys.o
- obj-$(CONFIG_KEYBOARD_HIL)		+= hil_kbd.o
- obj-$(CONFIG_KEYBOARD_HIL_OLD)		+= hilkbd.o
++
 Index: linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c	2008-01-27 02:10:52.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c	2008-03-10 17:05:55.000000000 +0000
 @@ -0,0 +1,291 @@
 +/*
 + *  Keyboard driver for Sharp Clamshell Models (SL-Cxx00)
@@ -357,7 +355,7 @@ Index: linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c
 Index: linux-2.6.24/drivers/input/keyboard/spitzkbd.c
 ===================================================================
 --- linux-2.6.24.orig/drivers/input/keyboard/spitzkbd.c	2008-01-24 22:58:37.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/spitzkbd.c	2008-01-27 02:10:52.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/spitzkbd.c	2008-03-10 17:05:55.000000000 +0000
 @@ -19,6 +19,7 @@
  #include <linux/jiffies.h>
  #include <linux/module.h>
@@ -440,8 +438,8 @@ Index: linux-2.6.24/drivers/input/keyboard/spitzkbd.c
  	del_timer_sync(&spitzkbd->htimer);
 Index: linux-2.6.24/arch/arm/mach-pxa/sharpsl.h
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/sharpsl.h	2008-01-27 02:10:15.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/sharpsl.h	2008-01-27 02:10:52.000000000 +0000
+--- linux-2.6.24.orig/arch/arm/mach-pxa/sharpsl.h	2008-03-10 17:05:35.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/sharpsl.h	2008-03-10 17:05:55.000000000 +0000
 @@ -37,15 +37,10 @@
   */
  #define READ_GPIO_BIT(x)    (GPLR(x) & GPIO_bit(x))
@@ -462,7 +460,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/sharpsl.h
 Index: linux-2.6.24/arch/arm/mach-pxa/sharpsl_pm.c
 ===================================================================
 --- linux-2.6.24.orig/arch/arm/mach-pxa/sharpsl_pm.c	2008-01-24 22:58:37.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/sharpsl_pm.c	2008-01-27 02:10:52.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/sharpsl_pm.c	2008-03-10 17:05:55.000000000 +0000
 @@ -135,6 +135,8 @@
  			| MAXCTRL_SGL | MAXCTRL_UNI | MAXCTRL_STR);
  }
@@ -475,7 +473,7 @@ Index: linux-2.6.24/arch/arm/mach-pxa/sharpsl_pm.c
 Index: linux-2.6.24/include/asm-arm/hardware/sharpsl_pm.h
 ===================================================================
 --- linux-2.6.24.orig/include/asm-arm/hardware/sharpsl_pm.h	2008-01-24 22:58:37.000000000 +0000
-+++ linux-2.6.24/include/asm-arm/hardware/sharpsl_pm.h	2008-01-27 02:10:52.000000000 +0000
++++ linux-2.6.24/include/asm-arm/hardware/sharpsl_pm.h	2008-03-10 17:05:55.000000000 +0000
 @@ -104,3 +104,10 @@
  irqreturn_t sharpsl_chrg_full_isr(int irq, void *dev_id);
  irqreturn_t sharpsl_fatal_isr(int irq, void *dev_id);
@@ -490,7 +488,7 @@ Index: linux-2.6.24/include/asm-arm/hardware/sharpsl_pm.h
 Index: linux-2.6.24/include/linux/input.h
 ===================================================================
 --- linux-2.6.24.orig/include/linux/input.h	2008-01-24 22:58:37.000000000 +0000
-+++ linux-2.6.24/include/linux/input.h	2008-01-27 02:10:52.000000000 +0000
++++ linux-2.6.24/include/linux/input.h	2008-03-10 17:05:55.000000000 +0000
 @@ -636,6 +636,7 @@
  #define SW_TABLET_MODE		0x01  /* set = tablet mode */
  #define SW_HEADPHONE_INSERT	0x02  /* set = inserted */
@@ -501,8 +499,8 @@ Index: linux-2.6.24/include/linux/input.h
  
 Index: linux-2.6.24/arch/arm/mach-pxa/spitz_pm.c
 ===================================================================
---- linux-2.6.24.orig/arch/arm/mach-pxa/spitz_pm.c	2008-01-24 22:58:37.000000000 +0000
-+++ linux-2.6.24/arch/arm/mach-pxa/spitz_pm.c	2008-01-27 02:10:52.000000000 +0000
+--- linux-2.6.24.orig/arch/arm/mach-pxa/spitz_pm.c	2008-03-10 17:05:40.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-pxa/spitz_pm.c	2008-03-10 17:05:55.000000000 +0000
 @@ -162,6 +162,13 @@
  	if (resume_on_alarm && (PEDR & PWER_RTC))
  		is_resume |= PWER_RTC;

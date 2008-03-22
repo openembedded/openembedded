@@ -1,27 +1,6 @@
-inherit autotools pkgconfig
+require gpsdrive.inc
 
-PR = "r1"
-PACKAGES += "gpsdrive-add"
-DESCRIPTION = "GPS navigation/map display software"
-DEPENDS = "virtual/libc gtk+ libpcre gpsd"
-RDEPENDS_${PN} = "gdk-pixbuf-loader-gif gpsd"
-SECTION = "x11"
-PRIORITY = "optional"
-LICENSE = "GPL"
+PR = "r2"
 
 SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive.desktop"
-
-CFLAGS += "-D_GNU_SOURCE"
-
-FILES_${PN} = "${bindir}/gpsdrive ${bindir}/wpcvt ${bindir}/wpget ${datadir}/pixmaps ${datadir}/applications"
-FILES_${PN} += "${datadir}/${PN}"
-
-FILES_gpsdrive-add = "${libdir}"
-
-EXTRA_OECONF = "--disable-garmin"
-
-do_install_append () {
-        mkdir -p  ${D}${datadir}/applications
-        install -m 0644 ${WORKDIR}/gpsdrive.desktop ${D}${datadir}/applications/gpsdrive.desktop
-}

@@ -177,6 +177,15 @@ do_install() {
     rm -rf ${D}/${bindir}/${QT_DIR_NAME}
     rm -rf ${D}/${datadir}/${QT_DIR_NAME}/mkspecs
 
+    # fix some .la and .pc files
+    sed -i s#"moc_location=${STAGING_BINDIR}/moc4$"#"moc_location=${bindir}/moc4"# ${D}/${libdir}/pkgconfig/Qt*.pc
+    sed -i s#"uic_location=${STAGING_BINDIR}/uic4$"#"uic_location=${bindir}/uic4"# ${D}/${libdir}/pkgconfig/Qt*.pc
+    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g ${D}/${libdir}/pkgconfig/Qt*.pc
+    sed -i s#-L${STAGING_LIBDIR}##g ${D}${libdir}/pkgconfig/Qt*.pc
+
+    sed -i s#-L${STAGING_LIBDIR}#-L${libdir}#g ${D}${libdir}/libQt*.la
+    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g ${D}/${libdir}/libQt*.la
+
     install -d ${D}/${libdir}/fonts
     touch ${D}/${libdir}/fonts/fontdir
 }

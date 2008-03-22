@@ -1,17 +1,17 @@
 inherit package
 
-BOOTSTRAP_EXTRA_RDEPENDS += "ipkg-collateral ipkg"
+BOOTSTRAP_EXTRA_RDEPENDS += "opkg-collateral opkg"
 IMAGE_PKGTYPE ?= "ipk"
 
-IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/ipkg.conf"
-IPKGCONF_SDK =  "${STAGING_ETCDIR_NATIVE}/ipkg-sdk.conf"
+IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/opkg.conf"
+IPKGCONF_SDK =  "${STAGING_ETCDIR_NATIVE}/opkg-sdk.conf"
 
 python package_ipk_fn () {
 	from bb import data
 	bb.data.setVar('PKGFN', bb.data.getVar('PKG',d), d)
 }
 
-python package_ipk_install () {
+python package_ipk_install () { 
 	#
 	# Warning - this function is not multimachine safe (see stagingdir reference)!
 	#
@@ -35,7 +35,7 @@ python package_ipk_install () {
 		raise bb.build.FuncFailed
 
 	# Generate ipk.conf if it or the stamp doesnt exist
-	conffile = os.path.join(stagingdir,"ipkg.conf")
+	conffile = os.path.join(stagingdir,"opkg.conf")
 	if not os.access(conffile, os.R_OK):
 		ipkg_archs = bb.data.getVar('PACKAGE_ARCHS',d)
 		if ipkg_archs is None:
@@ -60,8 +60,8 @@ python package_ipk_install () {
 		f = open(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"),"w")
 		f.close()
 
-	ret = os.system('ipkg-cl  -o %s -f %s update' % (rootfs, conffile))
-	ret = os.system('ipkg-cl  -o %s -f %s install %s' % (rootfs, conffile, pkgfn))
+	ret = os.system('opkg-cl  -o %s -f %s update' % (rootfs, conffile))
+	ret = os.system('opkg-cl  -o %s -f %s install %s' % (rootfs, conffile, pkgfn))
 	if (ret != 0 ):
 		raise bb.build.FuncFailed
 }
@@ -137,20 +137,12 @@ python do_package_ipk () {
 		return
 	bb.mkdirhier(dvar)
 
-	packages = bb.data.getVar('PACKAGES', d, 1)
-	if not packages:
-		bb.debug(1, "PACKAGES not defined, nothing to package")
-		return
-
 	tmpdir = bb.data.getVar('TMPDIR', d, 1)
 
 	if os.access(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"), os.R_OK):
 		os.unlink(os.path.join(tmpdir, "stamps", "IPK_PACKAGE_INDEX_CLEAN"))
 
-	if packages == []:
-		bb.debug(1, "No packages; nothing to do")
-		return
-
+	packages = bb.data.getVar('PACKAGES', d, True)
 	for pkg in packages.split():
 		localdata = bb.data.createCopy(d)
 		pkgdest = bb.data.getVar('PKGDEST', d, 1)
@@ -313,6 +305,11 @@ python () {
 }
 
 python do_package_write_ipk () {
+	packages = bb.data.getVar('PACKAGES', d, True)
+	if not packages:
+		bb.debug(1, "No PACKAGES defined, nothing to package")
+		return
+
 	bb.build.exec_func("read_subpackage_metadata", d)
 	bb.build.exec_func("do_package_ipk", d)
 }
