@@ -4,10 +4,10 @@ code.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
+Index: linux-2.6.22/arch/arm/mach-ep93xx/core.c
 ===================================================================
---- linux-2.6.23-rc5.orig/arch/arm/mach-ep93xx/core.c	2007-09-04 02:25:36.000000000 +0200
-+++ linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c	2007-09-04 02:28:12.000000000 +0200
+--- linux-2.6.22.orig/arch/arm/mach-ep93xx/core.c	2007-08-30 00:42:49.000000000 +0200
++++ linux-2.6.22/arch/arm/mach-ep93xx/core.c	2007-08-30 00:43:00.000000000 +0200
 @@ -509,6 +509,52 @@
  };
  
@@ -82,10 +82,10 @@ Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
  	platform_device_register(&ep93xx_ohci_device);
 +	platform_device_register(&ep93xx_i2c_device);
  }
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-04 02:25:36.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-04 02:28:10.000000000 +0200
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-08-30 00:42:49.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-08-30 00:43:00.000000000 +0200
 @@ -91,6 +91,7 @@
  #define EP93XX_GPIO_B_INT_ENABLE	EP93XX_GPIO_REG(0xb8)
  #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
@@ -94,10 +94,10 @@ Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h
  
  #define EP93XX_AAC_BASE			(EP93XX_APB_VIRT_BASE + 0x00080000)
  
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/platform.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/platform.h	2007-09-04 02:26:20.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/platform.h	2007-09-04 02:26:38.000000000 +0200
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:42:52.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/platform.h	2007-08-30 00:43:00.000000000 +0200
 @@ -10,6 +10,9 @@
  void ep93xx_init_devices(void);
  extern struct sys_timer ep93xx_timer;

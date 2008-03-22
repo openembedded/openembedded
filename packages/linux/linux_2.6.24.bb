@@ -8,6 +8,7 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_simpad = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
+DEFAULT_PREFERENCE_ts72xx = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
@@ -64,6 +65,20 @@ SRC_URI_avr32 = "http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.24.
                  file://defconfig"
 S_avr32 = "${WORKDIR}/linux-2.6.24.3.atmel.3"
 
+SRC_URI_append_ts72xx = "\
+	file://ep93xx-gpio-interrupt-debounce.diff;patch=1 \
+	file://ep93xx-i2c-bus.diff;patch=1 \
+	file://ep93xx-i2c.diff;patch=1 \
+	file://ep93xx-leds.diff;patch=1 \
+	file://ep93xx-serial-uartbaud.diff;patch=1 \
+	file://ep93xx-serial-clocks.diff;patch=1 \
+	file://ep93xx-timer-accuracy.diff;patch=1 \
+	file://ep93xx-maverick-uniqid.patch;patch=1 \
+	file://ts72xx-nfbit-fix.patch;patch=1 \
+	file://ts72xx-machine-id-fix.patch;patch=1 \
+	file://ts72xx-watchdog.patch;patch=1 \
+	file://ts72xx-use-cpld-reset.patch;patch=1 \
+	file://ts72xx-rs485.patch;patch=1"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 

@@ -4,11 +4,11 @@ so that using ttyAM1 or ttyAM2 as console can work.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/uncompress.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/uncompress.h	2007-09-04 02:26:42.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/uncompress.h	2007-09-04 02:26:47.000000000 +0200
-@@ -78,6 +78,23 @@
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/uncompress.h
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/uncompress.h
+@@ -78,6 +78,23 @@ static void ethernet_reset(void)
  
  
  /*
@@ -32,7 +32,7 @@ Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/uncompress.h
   * Some bootloaders don't turn on the UARTBAUD bit, which means that
   * the UARTs will be running off a divided 7.3728 MHz clock instead of
   * the 14.7456 MHz peripheral clock when linux boots.
-@@ -126,6 +143,7 @@
+@@ -126,6 +143,7 @@ static void fix_uart_base(void)
  static void arch_decomp_setup(void)
  {
  	ethernet_reset();

@@ -10,3 +10,4 @@ ts72xx-machine-id-fix.patch
 ts72xx-nfbit-fix.patch
 ts72xx-watchdog.patch 
 ts72xx-use-cpld-reset.patch
+ts72xx-rs485.patch

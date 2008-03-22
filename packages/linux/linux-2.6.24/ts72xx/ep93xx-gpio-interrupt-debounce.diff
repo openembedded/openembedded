@@ -3,11 +3,11 @@ Implement GPIO interrupt debouncing on ep93xx.
 
 Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
+Index: linux-2.6.22/arch/arm/mach-ep93xx/core.c
 ===================================================================
---- linux-2.6.23-rc5.orig/arch/arm/mach-ep93xx/core.c	2007-09-04 02:22:19.000000000 +0200
-+++ linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c	2007-09-04 02:28:19.000000000 +0200
-@@ -154,6 +154,7 @@
+--- linux-2.6.22.orig/arch/arm/mach-ep93xx/core.c
++++ linux-2.6.22/arch/arm/mach-ep93xx/core.c
+@@ -154,6 +154,7 @@ struct sys_timer ep93xx_timer = {
   *************************************************************************/
  static unsigned char gpio_int_unmasked[3];
  static unsigned char gpio_int_enabled[3];
@@ -15,7 +15,7 @@ Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
  static unsigned char gpio_int_type1[3];
  static unsigned char gpio_int_type2[3];
  
-@@ -161,16 +162,19 @@
+@@ -161,16 +162,19 @@ static void update_gpio_int_params(int a
  {
  	if (abf == 0) {
  		__raw_writeb(0, EP93XX_GPIO_A_INT_ENABLE);
@@ -35,7 +35,7 @@ Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
  		__raw_writeb(gpio_int_type2[2], EP93XX_GPIO_F_INT_TYPE2);
  		__raw_writeb(gpio_int_type1[2], EP93XX_GPIO_F_INT_TYPE1);
  		__raw_writeb(gpio_int_unmasked[2] & gpio_int_enabled[2], EP93XX_GPIO_F_INT_ENABLE);
-@@ -361,6 +365,13 @@
+@@ -361,6 +365,13 @@ static int ep93xx_gpio_irq_type(unsigned
  	} else {
  		gpio_int_enabled[port] &= ~(1 << line);
  	}
@@ -49,10 +49,10 @@ Index: linux-2.6.23-rc5/arch/arm/mach-ep93xx/core.c
  	update_gpio_int_params(port);
  
  	return 0;
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-04 02:22:19.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h	2007-09-04 02:28:19.000000000 +0200
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/ep93xx-regs.h
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/ep93xx-regs.h
 @@ -78,16 +78,19 @@
  #define EP93XX_GPIO_F_INT_ACK		EP93XX_GPIO_REG(0x54)
  #define EP93XX_GPIO_F_INT_ENABLE	EP93XX_GPIO_REG(0x58)
@@ -73,11 +73,11 @@ Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/ep93xx-regs.h
  
  #define EP93XX_AAC_BASE			(EP93XX_APB_VIRT_BASE + 0x00080000)
  
-Index: linux-2.6.23-rc5/include/linux/irq.h
+Index: linux-2.6.22/include/linux/irq.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/linux/irq.h	2007-09-04 02:24:58.000000000 +0200
-+++ linux-2.6.23-rc5/include/linux/irq.h	2007-09-04 02:25:01.000000000 +0200
-@@ -44,6 +44,7 @@
+--- linux-2.6.22.orig/include/linux/irq.h
++++ linux-2.6.22/include/linux/irq.h
+@@ -44,6 +44,7 @@ typedef	void fastcall (*irq_flow_handler
  #define IRQ_TYPE_LEVEL_LOW	0x00000008	/* Level low type */
  #define IRQ_TYPE_SENSE_MASK	0x0000000f	/* Mask of the above */
  #define IRQ_TYPE_PROBE		0x00000010	/* Probing in progress */

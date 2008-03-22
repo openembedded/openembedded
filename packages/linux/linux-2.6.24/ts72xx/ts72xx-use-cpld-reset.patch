@@ -4,10 +4,10 @@ sometimes get stuck...
 
 Signed-off-by: Petr Stetiar <ynezz@true.cz>
 
-Index: linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/system.h
+Index: linux-2.6.22/include/asm-arm/arch-ep93xx/system.h
 ===================================================================
---- linux-2.6.23-rc5.orig/include/asm-arm/arch-ep93xx/system.h	2007-09-04 02:29:35.000000000 +0200
-+++ linux-2.6.23-rc5/include/asm-arm/arch-ep93xx/system.h	2007-09-04 02:31:52.000000000 +0200
+--- linux-2.6.22.orig/include/asm-arm/arch-ep93xx/system.h	2007-08-30 00:53:47.000000000 +0200
++++ linux-2.6.22/include/asm-arm/arch-ep93xx/system.h	2007-08-30 00:54:28.000000000 +0200
 @@ -3,6 +3,7 @@
   */
  
