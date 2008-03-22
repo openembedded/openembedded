@@ -1,6 +1,6 @@
 require wlan-ng-modules.inc
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/older/linux-wlan-ng-${PV}.tar.bz2 \
 	file://no-compat.patch;patch=1 \
