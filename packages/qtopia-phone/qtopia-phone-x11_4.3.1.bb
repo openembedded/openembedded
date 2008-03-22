@@ -99,7 +99,7 @@ do_install() {
 
    # Make sure qpe gets launched by X
    install -d ${D}/${sysconfdir}/X11/Xsession.d
-   install -m 0755 ${WORKDIR}/Xsession.d/99qtopia ${D}${sysconfdir}/X11/Xsession.d/
+   install -m 0755 ${WORKDIR}/Xsession.d/89qtopia ${D}${sysconfdir}/X11/Xsession.d/
 
    # Install some scripts
    install -d ${D}${bindir}
