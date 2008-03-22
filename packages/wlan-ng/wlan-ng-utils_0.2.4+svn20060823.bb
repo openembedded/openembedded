@@ -1,5 +1,7 @@
 require wlan-ng-utils.inc
 
+PR = "r1"
+
 SRCDATE = "20060823"
 PV = "0.2.4+svn${SRCDATE}"
 
