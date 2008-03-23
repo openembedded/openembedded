@@ -214,6 +214,18 @@ autotools_stage_all() {
 			echo "cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}"
 			cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
 		fi
+	
+	fi
+	# Ok, this is nasty. pkgconfig.bbclass is usually used to install .pc files,
+	# however some packages rely on the presence of .pc files to enable/disable
+	# their configurataions in which case we better should not install everything
+	# unconditionally, but rather depend on the actual results of make install.
+	# The good news though: a) there are not many packages doing this and
+	# b) packaged staging will fix that anyways. :M:
+	if [ "${AUTOTOOLS_STAGE_PKGCONFIG}" = "1" ]
+	then
+		echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
+		cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
 	fi
 	rm -rf ${STAGE_TEMP}/${mandir} || true
 	rm -rf ${STAGE_TEMP}/${infodir} || true
