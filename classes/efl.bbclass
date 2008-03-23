@@ -4,8 +4,11 @@ LICENSE = "MIT BSD"
 SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-native', '')}"
 SRC_URI = "${E_CVS};module=e17/libs/${SRCNAME}"
 S = "${WORKDIR}/${SRCNAME}"
+DEPENDS += "pkgconfig-native"
 
-inherit autotools pkgconfig
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
+# do NOT inherit pkgconfig here, see note in autotools_stage_all
+inherit autotools
 
 do_stage() {
 	autotools_stage_all
