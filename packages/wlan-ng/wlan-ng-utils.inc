@@ -61,8 +61,8 @@ do_install() {
 	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
 	install -d ${D}${mandir}/man1
 	install -m 0644 ${S}/man/*.1 ${D}${mandir}/man1/
+	rm -rf ${D}/usr/local/man
 }
 
-FILES_${PN}-doc += "/usr/local/man"
 FILES_${PN}-dbg += "/sbin/.debug"
 FILES_${PN} = "/etc /sbin"
