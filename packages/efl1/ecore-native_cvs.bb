@@ -4,9 +4,6 @@ DEPENDS = "eet-native evas-native"
 PR = "r3"
 
 EXTRA_OECONF = "\
-                --x-includes=${STAGING_INCDIR}/X11 \
-                --x-libraries=${STAGING_LIBDIR} \
-				\
                 --enable-ecore-txt \
                 --disable-ecore-config \
                 --disable-ecore-x-xcb \
@@ -16,6 +13,7 @@ EXTRA_OECONF = "\
                 --disable-ecore-sdl \
                 --enable-ecore-fb \
                 --enable-ecore-evas \
+                --enable-ecore-evas-fb \
                 --disable-ecore-evas-x11-gl \
                 --disable-ecore-evas-xrender \
                 --disable-ecore-evas-dfb \
