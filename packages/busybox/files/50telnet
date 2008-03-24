@@ -1,0 +1,16 @@
+#!/bin/sh
+# Copyright (C) 2006 OpenWrt.org
+# Copyright (C) 2008 Koen Kooi
+
+# This starts telnetd if the password for 'root' is empty. This is needed for devices without a screen or serial console (wifi router, NAS, etc). 
+
+start() {
+	if awk -F: '/^root:/ && ($2 != "") && ($2 !~ /\!/) {exit 1}' /etc/passwd 2>/dev/null 
+	then 
+		telnetd -l /bin/login.failsafe
+	fi
+}
+
+stop() {
+	killall telnetd
+}
