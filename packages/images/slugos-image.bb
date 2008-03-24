@@ -9,7 +9,7 @@ HOMEPAGE = "http://www.nslu2-linux.org"
 DEPENDS = "task-slugos"
 IMAGE_INSTALL = "task-slugos"
 
-COMPATIBLE_MACHINE = "nslu2"
+COMPATIBLE_MACHINE = "nslu2|ixp4xx"
 
 IMAGE_NAME = "${IMAGE_BASENAME}-${DISTRO_VERSION}"
 IMAGE_FSTYPES = "jffs2 tar.gz"
