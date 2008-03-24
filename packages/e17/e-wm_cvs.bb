@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT BSD"
 PV = "0.16.999.042+cvs${SRCDATE}"
-PR = "r1"
+PR = "r0"
 
 inherit e update-alternatives
 
@@ -51,6 +51,10 @@ FILES_${PN} = "\
 FILES_${PN}-dbg += "\
   ${libdir}/enlightenment/modules/*/*/.debug/ \
   ${libdir}/enlightenment/preload/.debug/ \
+"
+
+FILES_${PN}-dev += "\
+  ${libdir}/enlightenment/preload/*.?a \
 "
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start"
