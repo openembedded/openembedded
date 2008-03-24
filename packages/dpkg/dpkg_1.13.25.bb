@@ -8,4 +8,5 @@ EXTRA_OECONF = "--without-static-progs \
 		--with-start-stop-daemon \
 		--with-zlib \
 		--with-bz2lib \
-		--without-sgml-doc"
+		--without-sgml-doc \
+		PERL=/usr/bin/perl"
