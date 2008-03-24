@@ -12,6 +12,8 @@ PROVIDES += "virtual/libintl virtual/libiconv"
 
 inherit autotools
 
+LEAD_SONAME = "libc.so"
+
 GLIBC_EXTRA_OECONF ?= ""
 INHIBIT_DEFAULT_DEPS = "1"
 
