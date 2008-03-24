@@ -1,21 +1,17 @@
-# Keep this until the dsmg600 via-velocity BE patch is forward-ported
-DEFAULT_PREFERENCE = "-1"
-
 require linux.inc
 require linux-ixp4xx.inc
 
 VANILLA_VERSION = "2.6.24"
-KERNEL_RELEASE = "2.6.24"
+KERNEL_RELEASE = "2.6.24.3"
 
 # If you use a rc, you will need to use this:
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r1"
-
-# ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \
+PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
+	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \
 	   svn://svn.nslu2-linux.org/svnroot/kernel/trunk/patches;module=${VANILLA_VERSION};proto=http \
 	   file://defconfig-${KERNEL_RELEASE}"
 
