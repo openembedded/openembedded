@@ -1,4 +1,4 @@
-require binutils.inc
+require ../binutils/binutils.inc
 
 PR = "r1"
 

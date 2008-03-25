@@ -1,4 +1,4 @@
-require bash.inc
+require ../bash/bash.inc
 PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \

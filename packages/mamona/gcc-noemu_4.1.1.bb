@@ -54,7 +54,7 @@ JAVA_arm = ""
 JAVA = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require gcc3-build.inc
+require ../gcc/gcc3-build.inc
 
 EXTRA_OECONF += "--disable-libspp --with-slibdir=\"/lib\""
 
