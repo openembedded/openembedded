@@ -1,0 +1,105 @@
+state.EAC {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '6 - 127'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 87
+		value.1 87
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'PCM Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 127'
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 103
+		value.1 103
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Line Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '31 - 127'
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 103
+		value.1 103
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '1 - 3'
+		iface MIXER
+		name 'Mic Boost'
+		value 0
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 2
+		comment.item.0 Mic
+		comment.item.1 Line
+		comment.item.2 'Line swapped'
+		comment.item.3 'Line mono'
+		iface MIXER
+		name 'Capture Source'
+		value.0 Mic
+		value.1 Mic
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Headset Amplifier'
+		value false
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Speaker Amplifier'
+		value true
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Headset Mic Select'
+		value false
+	}
+}
