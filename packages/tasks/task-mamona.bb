@@ -36,4 +36,5 @@ RDEPENDS = "\
     xcalibrate \
     xinit \
     xsp \
+    xterm \
 "
