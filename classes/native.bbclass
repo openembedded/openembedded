@@ -82,10 +82,15 @@ oldincludedir = "${exec_prefix}/include"
 datadir = "${exec_prefix}/share"
 
 do_stage () {
-	if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
-	then
-		oe_runmake install
-	fi
+        if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
+        then
+                if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" != "1" ]
+                then
+                        oe_runmake install
+                else
+                        autotools_stage_all
+                fi
+        fi
 }
 
 do_install () {
