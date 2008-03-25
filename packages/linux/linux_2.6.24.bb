@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_ts72xx = "1"
 
 DEPENDS_append_mpc8313e-rdb = " dtc-native"
 
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
