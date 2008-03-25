@@ -1,6 +1,6 @@
 DESCRIPTION = "task mamona base"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -10,7 +10,6 @@ RDEPENDS = "\
   base-files \
   base-passwd \
   bash \
-  binutils \
   busybox \
   bzip2 \
   coreutils \

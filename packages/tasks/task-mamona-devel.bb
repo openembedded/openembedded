@@ -1,6 +1,6 @@
 DESCRIPTION = "Necessary packages for development"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r2"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -23,4 +23,5 @@ RDEPENDS = "\
   cvs \
   subversion \
   pkgconfig \
+  binutils \
 "
