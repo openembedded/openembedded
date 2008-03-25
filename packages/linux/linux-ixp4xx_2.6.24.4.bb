@@ -2,7 +2,7 @@ require linux.inc
 require linux-ixp4xx.inc
 
 VANILLA_VERSION = "2.6.24"
-KERNEL_RELEASE = "2.6.24.3"
+KERNEL_RELEASE = "2.6.24.4"
 
 # If you use a rc, you will need to use this:
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
