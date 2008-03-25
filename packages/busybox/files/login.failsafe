@@ -1,0 +1,19 @@
+#!/bin/sh
+# Copyright (C) 2006 OpenWrt.org
+# Copyright (C) 2008 Koen Kooi
+
+grep '^root:[^!]' /etc/passwd >&- 2>&-
+[ "$?" = "0" ]  &&  
+{
+    echo "Login failed."
+    exit 0
+} || {
+cat << EOF
+ === IMPORTANT ============================
+  Use 'passwd' to set your login password
+  this will disable telnet and enable SSH
+ ------------------------------------------
+EOF
+}
+
+exec /bin/sh --login
