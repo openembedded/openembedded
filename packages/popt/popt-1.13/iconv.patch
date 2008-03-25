@@ -1,0 +1,13 @@
+Index: popt-1.13/Makefile.am
+===================================================================
+--- popt-1.13.orig/Makefile.am	2008-03-25 21:51:12.000000000 +0100
++++ popt-1.13/Makefile.am	2008-03-25 21:51:42.000000000 +0100
+@@ -39,7 +39,7 @@
+ usrlib_LTLIBRARIES = libpopt.la
+ 
+ libpopt_la_SOURCES = popt.c findme.c poptparse.c poptconfig.c popthelp.c poptint.c
+-libpopt_la_LDFLAGS = -no-undefined @LTLIBINTL@
++libpopt_la_LDFLAGS = -no-undefined @LTLIBINTL@ @LTLIBICONV@
+ 
+ if HAVE_LD_VERSION_SCRIPT
+ libpopt_la_LDFLAGS += -Wl,--version-script=$(srcdir)/libpopt.vers
