@@ -14,7 +14,6 @@ RDEPENDS = "\
     glib-2.0 \
     glibc \
     hal \
-    hal-info \
     intltool \
     libfontenc \
     libusb \
