@@ -1,0 +1,12 @@
+diff -urN opkg.orig/configure.ac opkg/configure.ac
+--- opkg.orig/configure.ac	2008-03-20 13:29:09.000000000 +0100
++++ opkg/configure.ac	2008-03-25 09:39:52.000000000 +0100
+@@ -94,7 +94,7 @@
+ AC_CHECK_MEMBERS([struct stat.st_rdev])
+ 
+ # Checks endianness
+-AC_C_BIGENDIAN(ENDIAN_CFLAGS="-DWORDS_BIGENDIAN=1",)
++AC_C_BIGENDIAN(BIGENDIAN_CFLAGS="-DWORDS_BIGENDIAN=1",)
+ AC_SUBST(BIGENDIAN_CFLAGS)
+ 
+ # Don't do annoying tests that don't work when cross-compiling, just trust them.
