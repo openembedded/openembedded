@@ -1,0 +1,113 @@
+#!/bin/sh
+# USB Networking script
+# Copyright (C) 2007 INdT.
+# @author Abner Jose de Faria Silva <abner.silva@indt.org.br>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+DESC="USB Networking"
+
+INITFSPATH=/mnt/initfs
+MODULENAME="g_ether"
+MODULEPATH=$INITFSPATH/lib/modules/$(uname -r)/$MODULENAME.ko
+CONFIGPATH=/etc/default/usbnet
+
+MOUNTPOINT=/media/mmc
+
+LSMOD=/bin/lsmod
+RMMOD=/sbin/rmmod
+INSMOD=/sbin/insmod
+IFUP=/sbin/ifup
+IFDOWN=/sbin/ifdown
+
+test -e "$MODULEPATH" || exit 0
+test -x "$IFUP" || exit 0
+test -x "$IFDOWN" || exit 0
+test -x "$LSMOD" || exit 0
+test -x "$RMMOD" || exit 0
+test -x "$INSMOD" || exit 0
+
+test -r "$CONFIGPATH" && . $CONFIGPATH
+
+
+print_error()
+{
+    echo "failed."
+    echo "$1"
+}
+
+start_usbnet()
+{
+    if $LSMOD | grep -q "$MODULENAME"; then
+        echo "$DESC is already configured."
+        return
+    fi
+
+    echo -n "Starting $DESC: "
+
+    for f in 1 2; do
+        umount "$MOUNTPOINT$f" > /dev/null 2>&1
+    done
+
+    if ! $INSMOD "$MODULEPATH" > /dev/null 2>&1; then
+        print_error "Error loading $MODULEPATH."
+        return
+    fi
+
+    if ! $IFUP -i "$INTERFACE_CONF" usb0 > /dev/null 2>&1; then
+        print_error "Error configuring usb0."
+        return;
+    fi
+
+    echo "done."
+}
+
+stop_usbnet()
+{
+    echo -n "Stopping $DESC: "
+
+    if ! $IFDOWN -i "$INTERFACE_CONF" usb0 > /dev/null 2>&1; then
+        print_error "Error deconfiguring usb0."
+        return;
+    fi
+
+    if ! $RMMOD "$MODULENAME" > /dev/null 2>&1; then
+        print_error "Error unloading $MODULENAME"
+        return
+    fi
+
+    echo "done."
+}
+
+case "$1" in
+    start)
+        start_usbnet
+        ;;
+    stop)
+        stop_usbnet
+        ;;
+    restart|force-reload)
+        stop_usbnet
+        start_usbnet
+        ;;
+    *)
+        echo "Usage: $(basename $0) {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+echo ""
+
+exit 0

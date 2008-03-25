@@ -1,0 +1,4 @@
+# Defaults for usbnet initscript
+# sourced by /etc/init.d/usbnet
+
+INTERFACE_CONF=/etc/network/interfaces.usbnet
