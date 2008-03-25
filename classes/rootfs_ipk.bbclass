@@ -60,8 +60,9 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
 	
-	# Keep this line until package manager selection is implemented
+	# Keep these lines until package manager selection is implemented
 	ln -s opkg ${IMAGE_ROOTFS}${sysconfdir}/ipkg
+	ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
 	
 	${ROOTFS_POSTPROCESS_COMMAND}
 	
