@@ -224,5 +224,6 @@ a3b18a00a09e716f4b3d5bfced86fea0439953a0 h2200: load g_ether on boot (PaulS, Koe
 2a0669f06c54e672869fd5943c0428fb5563a512 mono: Use STAGING_DATADIR (Koen, PaulS)
 7f6d4f240d436d8c36dacf0e5f60d0a68a945992 mono: replace STAGING_DATADIR by STAGING_DATADIR_NATIVE since it's where (Koen, PaulS)
 96e096c38993a62c2921342c5f3ce446dda4e884 mono: use monoburg from mono-native instead (Koen, PaulS)
-
-
+a6d2d41d484ef7827260add2c94d270077592a01 db_4.3.29: fix packaging QA <xjqian koen>
+578f199bc6b531a09543f38044f98199ef5f49ad db: sync with poky <xjqian koen>
+847c6e3f16104e7b87568edf06d0d9cc79b5e860 db: fix upstream SRC_URI, unify db4. <xjqian koen>
