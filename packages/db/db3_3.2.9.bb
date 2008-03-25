@@ -1,8 +1,8 @@
 SECTION = "libs"
 DESCRIPTION = "Berkeley DB v3."
-HOMEPAGE = "http://www.sleepycat.com"
-LICENSE = "BSD Sleepycat"
-PR = "r2"
+HOMEPAGE = "http://www.oracle.com/technology/products/berkeley-db/db/index.html"
+LICENSE = "BSD"
+PR = "r3"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db"
 
@@ -11,7 +11,7 @@ CONFLICTS = "db"
 # a build to select the desired one.
 PROVIDES += "${VIRTUAL_NAME}"
 
-SRC_URI = "http://download-west.oracle.com/berkeley-db/db-${PV}.tar.gz \
+SRC_URI = "http://download.oracle.com/berkeley-db/db-${PV}.tar.gz \
 	   file://autofoo.patch;patch=1"
 S = "${WORKDIR}/db-${PV}/dist"
 B = "${WORKDIR}/db-${PV}/build_unix"
