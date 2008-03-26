@@ -1,0 +1,57 @@
+diff -urNp --exclude '*.swp' --exclude DEV-PHASE gcc-orig/gcc/reload.c gcc/gcc/reload.c
+--- gcc-orig/gcc/reload.c	2008-02-18 09:59:15.000000000 -0800
++++ gcc/gcc/reload.c	2008-02-18 10:05:47.000000000 -0800
+@@ -4574,7 +4574,7 @@ find_reloads_toplev (rtx x, int opnum, e
+ 	      x = mem;
+ 	      i = find_reloads_address (GET_MODE (x), &x, XEXP (x, 0), &XEXP (x, 0),
+ 					opnum, type, ind_levels, insn);
+-	      if (x != mem)
++	      if (!rtx_equal_p (x, mem))
+ 		push_reg_equiv_alt_mem (regno, x);
+ 	      if (address_reloaded)
+ 		*address_reloaded = i;
+@@ -4789,7 +4789,7 @@ find_reloads_address (enum machine_mode 
+ 		  find_reloads_address (GET_MODE (tem), &tem, XEXP (tem, 0),
+ 					&XEXP (tem, 0), opnum,
+ 					ADDR_TYPE (type), ind_levels, insn);
+-		  if (tem != orig)
++	          if (!rtx_equal_p (tem, orig))
+ 		    push_reg_equiv_alt_mem (regno, tem);
+ 		}
+ 	      /* We can avoid a reload if the register's equivalent memory
+@@ -5589,7 +5589,7 @@ find_reloads_address_1 (enum machine_mod
+ 				      RELOAD_OTHER,
+ 				      ind_levels, insn);
+ 
+-		if (tem != orig)
++	        if (!rtx_equal_p (tem, orig))
+ 		  push_reg_equiv_alt_mem (regno, tem);
+ 
+ 		/* Then reload the memory location into a base
+@@ -5656,7 +5656,7 @@ find_reloads_address_1 (enum machine_mod
+ 		  find_reloads_address (GET_MODE (tem), &tem, XEXP (tem, 0),
+ 					&XEXP (tem, 0), opnum, type,
+ 					ind_levels, insn);
+-		  if (tem != orig)
++	          if (!rtx_equal_p (tem, orig))
+ 		    push_reg_equiv_alt_mem (regno, tem);
+ 		  /* Put this inside a new increment-expression.  */
+ 		  x = gen_rtx_fmt_e (GET_CODE (x), GET_MODE (x), tem);
+@@ -5848,7 +5848,7 @@ find_reloads_address_1 (enum machine_mod
+ 		find_reloads_address (GET_MODE (x), &x, XEXP (x, 0),
+ 				      &XEXP (x, 0), opnum, ADDR_TYPE (type),
+ 				      ind_levels, insn);
+-		if (x != tem)
++	        if (!rtx_equal_p (x, tem))
+ 		  push_reg_equiv_alt_mem (regno, x);
+ 	      }
+ 	  }
+@@ -6076,7 +6076,7 @@ find_reloads_subreg_address (rtx x, int 
+ 					       XEXP (tem, 0), &XEXP (tem, 0),
+ 					       opnum, type, ind_levels, insn);
+ 	      /* ??? Do we need to handle nonzero offsets somehow?  */
+-	      if (!offset && tem != orig)
++	      if (!offset && !rtx_equal_p (tem, orig))
+ 		push_reg_equiv_alt_mem (regno, tem);
+ 
+ 	      /* For some processors an address may be valid in the
