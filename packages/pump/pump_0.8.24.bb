@@ -1,5 +1,5 @@
 DESCRIPTION = "BOOTP and DHCP client for automatic IP configuration"
-SECTION = "devel"
+SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "popt"
