@@ -1,7 +1,7 @@
 Index: popt-1.13/Makefile.am
 ===================================================================
---- popt-1.13.orig/Makefile.am	2008-03-25 21:51:12.000000000 +0100
-+++ popt-1.13/Makefile.am	2008-03-25 21:51:42.000000000 +0100
+--- popt-1.13.orig/Makefile.am	2007-11-14 20:42:27.000000000 +0000
++++ popt-1.13/Makefile.am	2008-03-26 22:14:05.000000000 +0000
 @@ -39,7 +39,7 @@
  usrlib_LTLIBRARIES = libpopt.la
  
@@ -11,3 +11,15 @@ Index: popt-1.13/Makefile.am
  
  if HAVE_LD_VERSION_SCRIPT
  libpopt_la_LDFLAGS += -Wl,--version-script=$(srcdir)/libpopt.vers
+Index: popt-1.13/configure.ac
+===================================================================
+--- popt-1.13.orig/configure.ac	2007-11-14 20:42:27.000000000 +0000
++++ popt-1.13/configure.ac	2008-03-26 22:20:16.000000000 +0000
+@@ -95,6 +95,7 @@
+ AC_CHECK_FUNCS(getuid geteuid mtrace __secure_getenv setregid strerror iconv)
+ 
+ AM_GNU_GETTEXT([external])
++AM_ICONV_LINK
+ 
+ popt_sysconfdir="${sysconfdir}"
+ eval "popt_sysconfdir=\"${popt_sysconfdir}\"" # expand contained ${prefix}
