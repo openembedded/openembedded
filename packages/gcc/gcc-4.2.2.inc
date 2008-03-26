@@ -71,3 +71,4 @@ JAVA = ""
 
 EXTRA_OECONF += " --disable-libssp --disable-bootstrap "
 
+ARM_INSTRUCTION_SET = "arm"

@@ -92,3 +92,5 @@ FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
 EXTRA_OECONF += " --disable-libgomp --disable-libssp --disable-bootstrap "
+
+ARM_INSTRUCTION_SET = "arm"

@@ -56,3 +56,5 @@ FORTRAN = ""
 JAVA = ""
 
 EXTRA_OECONF += " --disable-libssp "
+
+ARM_INSTRUCTION_SET = "arm"
