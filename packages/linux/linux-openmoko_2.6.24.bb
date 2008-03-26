@@ -11,10 +11,10 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 # re-enabled this when feature is fully implemented in OE
 #SRCREV_FORMAT = "patches-rconfig"
 SRCREV_FORMAT = "patches"
-CONFIG_REV = "4165"
-
+CONFIG_REV_fic-gta01 = "4251"
+CONFIG_REV_fic-gta02 = "4251"
 PV = "${VANILLA_VERSION}+svnr${SRCREV}-r${CONFIG_REV}"
-PR = "r4"
+PR = "r5"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -55,11 +55,14 @@ module_autoload_snd-mixer-oss = "snd-mixer-oss"
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 
+CONFIG_NAME_fic-gta01 = "gta01"
+CONFIG_NAME_fic-gta02 = "gta02"
+
 do_prepatch() {
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openmoko
         mv .pc .pc.old
-        mv ${WORKDIR}/config/defconfig-${KERNEL_RELEASE} ${WORKDIR}/defconfig
+        mv ${WORKDIR}/config/defconfig-${CONFIG_NAME} ${WORKDIR}/defconfig
 }
 
 addtask prepatch after do_unpack before do_patch
