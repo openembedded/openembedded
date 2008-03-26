@@ -1,0 +1,70 @@
+#!/bin/sh
+DAEMON=/usr/sbin/squid
+NAME=squid
+DESC="Squid HTTP proxy"
+PIDFILE=/var/run/squid.pid
+SQUID_ARGS="-D -sYC"
+
+test -f $DAEMON || exit 0
+
+grepconf() {
+    w="     " # space tab
+    sq=/etc/$NAME.conf
+    # sed is cool.
+    res=`sed -ne '
+            s/^'$1'['"$w"']\+[^'"$w"']\+['"$w"']\+\([^'"$w"']\+\).*$/\1/p;
+            t end;
+            d;
+            :end q' < $sq`
+    [ -n "$res" ] || res=$2
+    echo "$res"
+}
+
+start() {
+    owner=nobody
+
+    cdr=`grepconf cache_dir /var/spool/$NAME`
+    if [ ! -d "$cdr/00" ]; then
+        mkdir -p $cdr
+	chown $owner $cdr
+	$DAEMON -z
+    fi
+    
+    ldr="/var/log/$NAME"
+    if [ ! -d "$ldr" ]; then
+        mkdir -p $ldr
+	chown $owner $cdr
+    fi
+
+    start-stop-daemon -S -p $PIDFILE -x $DAEMON
+}
+
+stop() {
+        start-stop-daemon -K -p $PIDFILE -x $DAEMON
+}
+
+case "$1" in
+    start)
+        echo -n "Starting $DESC: $NAME... "
+        start
+        echo "done."
+       ;;
+    stop)
+        echo -n "Stopping $DESC: $NAME... "
+        stop
+        echo "done."
+        ;;
+    restart)
+        echo "Restarting $DESC: $NAME... "
+        stop
+        sleep 1
+        start
+        echo "done."
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
