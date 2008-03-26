@@ -3,12 +3,13 @@ DESCRIPTION = "The Device-mapper is a new component of the linux kernel \
 that supports logical volume management. It is required by LVM2 and EVMS. \
 The original LVM (included in stock 2.4 kernels) does not use it."
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/${PN}.${PV}"
 
 SRC_URI = "ftp://sources.redhat.com/pub/dm/device-mapper.${PV}.tgz \
-	   file://devmap-mknod-busybox.patch;patch=1"
+	   file://devmap-mknod-busybox.patch;patch=1 \
+	   file://remove_insanity.patch;patch=1 "
 
 inherit autotools update-rc.d
 
