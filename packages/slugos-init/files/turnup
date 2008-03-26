@@ -490,12 +490,6 @@ boot_rootfs() {
 			return 1
 		};;
 	*)	{	echo '#!/bin/sh'
-#			echo 'modprobe ehci-hcd'
-#			echo 'modprobe ohci-hcd'
-#			echo 'modprobe sd_mod'
-#			echo 'modprobe usb-storage'
-#			echo 'modprobe ext3'
-#			echo 'sleep 5'
 			echo 'leds beep'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
 			test -n "$uuid" && echo -n "UUID='$uuid' "

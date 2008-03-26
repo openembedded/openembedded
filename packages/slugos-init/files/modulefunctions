@@ -6,29 +6,29 @@
 
 loaddiskmods(){
 	case "$(machine)" in
-	    nslu2)                     
-	        modprobe ehci-hcd
-	        modprobe ohci-hcd
+	    nslu2)		       
+		[ -d /sys/module/ehci_hcd ]   || modprobe ehci-hcd
+		[ -d /sys/module/ohci_hcd ]   || modprobe ohci-hcd
 		;;
-            nas100d)
-	        modprobe ehci-hcd
-                modprobe uhci-hcd
-                modprobe pata-artop
-                ;;
-            dsmg600)
-	        modprobe ehci-hcd
-                modprobe uhci-hcd
-                modprobe pata-artop
-                ;;
+	    nas100d)
+		[ -d /sys/module/ehci_hcd ]   || modprobe ehci-hcd
+		[ -d /sys/module/uhci_hcd ]   || modprobe uhci-hcd
+		[ -d /sys/module/pata_artop ] || modprobe pata-artop
+		;;
+	    dsmg600)
+		[ -d /sys/module/ehci_hcd ]   || modprobe ehci-hcd
+		[ -d /sys/module/uhci_hcd ]   || modprobe uhci-hcd
+		[ -d /sys/module/pata_artop ] || modprobe pata-artop
+		;;
 
 	esac
 }
 
 loadnetmods(){
 	case "$(machine)" in
-            dsmg600)
-                modprobe via-velocity
-                ;;
+	    dsmg600)
+		[ -d /sys/module/via_velocity ] || modprobe via-velocity
+		;;
 	    *)
 		true
 		;;
@@ -36,7 +36,7 @@ loadnetmods(){
 }
 
 loadnfsmods(){
-	modprobe nfs
+	[ -d /sys/module/nfs ] || modprobe nfs
 }
 
 loadmiscmods(){
