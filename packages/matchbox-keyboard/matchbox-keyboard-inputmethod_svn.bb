@@ -16,8 +16,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-keyboard;pr
         file://6-Add-layout-switch-key-to-all-layouts.patch;patch=1 \
 	    file://80matchboxkeyboard"
 
-SRC_URI_append_fic-gta01 = " file://fic-gta01-font-size.patch;patch=1"
-SRC_URI_append_fic-gta02 = " file://fic-gta01-font-size.patch;patch=1"
+SRC_URI_append_om-gta01 = " file://fic-gta01-font-size.patch;patch=1"
+SRC_URI_append_om-gta02 = " file://fic-gta01-font-size.patch;patch=1"
 
 S = "${WORKDIR}/matchbox-keyboard"
 

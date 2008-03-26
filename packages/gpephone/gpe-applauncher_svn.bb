@@ -15,7 +15,7 @@ S = "${WORKDIR}/${PN}"
 
 
 PACKAGES += "gpe-applauncher-config"
-PACKAGE_ARCH_gpe-applauncher-config_fic-gta01 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_gpe-applauncher-config_om-gta01 = "${MACHINE_ARCH}"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgpelaunch dbus-glib libsettings libxsettings-client"
 RDEPENDS_${PN} += "gpe-applauncher-config"

@@ -7,8 +7,8 @@ PE = "1"
 
 inherit openmoko2
 
-SRC_URI_append_fic-gta01 = " file://kernel-2.6.24.patch;patch=1"
-SRC_URI_append_fic-gta02 = " file://kernel-2.6.24.patch;patch=1"
+SRC_URI_append_om-gta01 = " file://kernel-2.6.24.patch;patch=1"
+SRC_URI_append_om-gta02 = " file://kernel-2.6.24.patch;patch=1"
 
 EXTRA_OECONF = "--with-dbusbindir=${STAGING_BINDIR_NATIVE}"
 

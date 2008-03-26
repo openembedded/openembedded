@@ -30,7 +30,7 @@ READER_GUI	  = "gpe"
 READER_STATUS	  = "release"
 
 # Set device specific overrides
-READER_RESOLUTION_fic-gta01 = "480x640"
+READER_RESOLUTION_om-gta01 = "480x640"
 READER_RESOLUTION_spitz = "640x480"
 READER_RESOLUTION_akita = "640x480"
 READER_RESOLUTION_htcuniversal = "640x480"
