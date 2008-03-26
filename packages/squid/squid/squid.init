@@ -26,14 +26,14 @@ start() {
     cdr=`grepconf cache_dir /var/spool/$NAME`
     if [ ! -d "$cdr/00" ]; then
         mkdir -p $cdr
-	chown $owner $cdr
-	$DAEMON -z
+        chown $owner $cdr
+        $DAEMON -z
     fi
     
     ldr="/var/log/$NAME"
     if [ ! -d "$ldr" ]; then
         mkdir -p $ldr
-	chown $owner $cdr
+        chown $owner $ldr
     fi
 
     start-stop-daemon -S -p $PIDFILE -x $DAEMON
