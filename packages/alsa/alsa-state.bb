@@ -15,7 +15,7 @@ SRC_URI = " \
   file://asound.state \
   file://alsa-state "
 
-SRC_URI_append_fic-gta01 = " \
+SRC_URI_append_om-gta01 = " \
   file://capturehandset.state \
   file://captureheadset.state \
   file://gsmbluetooth.state \
@@ -26,7 +26,7 @@ SRC_URI_append_fic-gta01 = " \
   file://voip-handset.state \
   file://voip-headset.state"
 
-SRC_URI_append_fic-gta02 = "\
+SRC_URI_append_om-gta02 = "\
   file://stereoout.state \
   file://gsmhandset.state \
   "

@@ -39,7 +39,7 @@ S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 ALLOW_EMPTY = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'fic-gta01|fic-gta02'
+COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 

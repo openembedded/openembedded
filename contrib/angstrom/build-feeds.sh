@@ -38,7 +38,7 @@ do_report_success() {
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder-feed.log
 }
 
-for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
+for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
