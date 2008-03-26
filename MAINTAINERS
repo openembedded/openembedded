@@ -97,7 +97,7 @@ Mail:       jeremy.laine@bolloretelecom.eu
 Website:    http://www.jerryweb.org/
 Machines:   mpc8313e-rdb
 Recipes:    libexosip2, python-cheetah, python-django, python-pyopenssl,
-Recipes:    pump
+Recipes:    pump, squidview
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
