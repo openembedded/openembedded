@@ -229,5 +229,7 @@ a6d2d41d484ef7827260add2c94d270077592a01 db_4.3.29: fix packaging QA <xjqian koe
 847c6e3f16104e7b87568edf06d0d9cc79b5e860 db: fix upstream SRC_URI, unify db4. <xjqian koen>
 a99dc9b34551aa3889d7057538bf2e37b0471af1 patch.bbclass: Show full path of a patch <koen, xjqian>
 complicated                                           : use autotools_stage_all for native packages <koen, xjqian>						
+7712d9178e2d4268d697de3c404c8853aa202089 testlab: add it <hvontres, koen>
+552396a9dfe973c66350f15cdf75d1b55fc16adb  "   "
 
 

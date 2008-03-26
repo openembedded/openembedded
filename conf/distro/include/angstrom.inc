@@ -29,7 +29,7 @@ MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 
 #use debian style naming
 #use multimachine buildrules 
-INHERIT += "debian multimachine sanity devshell angstrom-mirrors insane"
+INHERIT += "debian multimachine sanity devshell angstrom-mirrors insane testlab"
 
 ANGSTROM_PKG_FORMAT ?= "ipk"
 require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
