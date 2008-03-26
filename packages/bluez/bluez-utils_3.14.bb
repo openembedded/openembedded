@@ -28,7 +28,7 @@ EXTRA_OECONF = " \
 # The config options are explained below:
 
 #  --enable-obex           enable OBEX support
-#  --enable-alsa           enable ALSA support, not needed for nokia770, nokia800 and fic-gtao1
+#  --enable-alsa           enable ALSA support, not needed for nokia770, nokia800 and om-gtao1
 #  --enable-cups           install CUPS backend support
 #  --enable-bccmd          install BCCMD interface utility
 #  --enable-avctrl         install Audio/Video control utility

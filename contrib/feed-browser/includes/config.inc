@@ -251,7 +251,7 @@ $feeds = array(
 				     ),
 				array(
 						'name'=>'FIC gta01/Neo1973 phone',
-						'url'=>'armv4t/machine/fic-gta01',
+						'url'=>'armv4t/machine/om-gta01',
 				     ),
 
 				array(
