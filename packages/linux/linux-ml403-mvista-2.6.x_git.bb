@@ -55,8 +55,3 @@ do_install_prepend() {
         install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE}.elf \
                         arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-

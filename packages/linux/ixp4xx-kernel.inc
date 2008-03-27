@@ -353,8 +353,6 @@ do_install_append() {
 	install_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
 
-do_deploy[dirs] = "${S}"
-
 deploy_image() {
 	copy_image '${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-'"$1" "$2"
 }
@@ -369,5 +367,3 @@ do_deploy() {
 	deploy_image 'dsmg600${SITEINFO_ENDIANESS}' 'dsmg600'
 	deploy_image 'fsg3${SITEINFO_ENDIANESS}' 'fsg3'
 }
-
-addtask deploy before do_package after do_install

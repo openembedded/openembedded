@@ -105,15 +105,6 @@ do_configure_prepend() {
         echo "CONFIG_CMDLINE=\"${CMDLINE}\"" >> ${S}/.config
 }
 
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}-${DATETIME}.bin
-}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-
 PACKAGE_ARCH_corgi    = "c7x0"
 PACKAGE_ARCH_shepherd = "c7x0"
 PACKAGE_ARCH_husky    = "c7x0"

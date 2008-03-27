@@ -32,17 +32,10 @@ do_configure() {
         yes '' | oe_runmake oldconfig
 }
 
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${PR}-${MACHINE}.tgz -C ${D} lib
+do_deploy_append() {
         ${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
         rm -f linux.bin.gz
         gzip -9 linux.bin
         ${STAGING_BINDIR_NATIVE}/mkimage -A arm -O linux -T kernel -C gzip -a a0008000 -e a0008000 -n "Boundary Devices NEON" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}.bin
         rm -f linux.bin.gz
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_package after do_install

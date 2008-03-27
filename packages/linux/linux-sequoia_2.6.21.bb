@@ -39,22 +39,9 @@ do_stage_append () {
        cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
 
-
-
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE} \
-                 ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
-}
-
 #seems like 2.6.21 kernel images have moved (or is this only for the Denx kernel ?)
 #so we need to copy the kernel image where kernel.bbclass expects it to be
 do_install_prepend() {
         install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE} \
                         arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-

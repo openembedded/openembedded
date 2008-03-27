@@ -25,8 +25,3 @@ FILES_kernel-image = "/boot/${KERNEL_IMAGETYPE}*"
 do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconf_jlime ${S}/.config
 }
-
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 arch/$(ARCH)/boot/$(KERNEL_IMAGETYPE) $(DEPLOY_DIR)/images/$(KERNEL_IMAGETYPE)
-}

@@ -44,18 +44,7 @@ do_configure() {
 		make ARCH=ppc oldconfig
 }
 
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/images/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
-}
-
 #ppc build leaves the kernel in a different place
 #do_movekernel() {
 #
 #}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-
-

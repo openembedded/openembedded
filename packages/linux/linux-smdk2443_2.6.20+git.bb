@@ -31,21 +31,12 @@ do_configure() {
 	oe_runmake oldconfig
 }
 
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin
-        rm -f ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-        ln -s ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${MACHINE}.bin
-        tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_RELEASE}-${MACHINE}.tgz -C ${D} lib
+do_deploy_append() {
 	${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
         rm -f linux.bin.gz
         gzip -9 linux.bin
         uboot-mkimage -A arm -O linux -T kernel -C gzip -a 30008000 -e 30008000 -n "smdk2443 kernel" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${MACHINE}-${DATETIME}.bin
         rm -f linux.bin.gz
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_package after do_install
 
 KERNEL_RELEASE = "2.6.21-rc5"

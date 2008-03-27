@@ -79,7 +79,3 @@ do_deploy() {
         install -m 0644 arch/mips/zboot/images/mtx-1.flash.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.flash.srec
 	install -m 0644 arch/mips/zboot/images/mtx-1.srec ${DEPLOY_DIR}/images/${KERNEL_IMAGE_NAME}.ram.srec
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile

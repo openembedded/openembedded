@@ -26,7 +26,3 @@ do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	elftoaout -o ${DEPLOY_DIR_IMAGE}/linux-aout-${DATETIME} ${KERNEL_IMAGETYPE}
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile

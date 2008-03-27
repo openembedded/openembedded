@@ -23,8 +23,6 @@ HHV     ?= "${@bb.data.getVar('PV',d,1).split('-')[1].split('hh')[-1]}"
 
 KERNEL_PRIORITY = "${@'%d' % (int(bb.data.getVar('K_MAJOR',d,1)) * 100000000 + int(bb.data.getVar('K_MINOR',d,1)) * 1000000 + int(bb.data.getVar('K_MICRO',d,1)) * 10000 + float(bb.data.getVar('HHV',d,1)))}"
 
-KERNEL_FILENAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}.bin"
-
 do_configure() {
 
 	if [ `grep EXTRAVERSION Makefile | grep hh | awk '{print $3}' | sed s/-hh//` != ${HHV} ]; then
@@ -65,15 +63,11 @@ do_configure() {
 
 }
 
-do_deploy() {
-	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_FILENAME}
-	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
-	
+do_deploy_append() {
 	#reflash.ctl is required to reflash using bootldr
 	# format:
 	# name file md5sumfile destination
-	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_FILENAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
+	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGE_BASE_NAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
 
 	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
@@ -81,17 +75,13 @@ do_deploy() {
 	fi
 }   
    
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_package after do_install
-
 
 gen_haret_startup() {
 	cat >${DEPLOY_DIR_IMAGE}/startup.txt <<EOF 
 # This is startup file for HaRET, Linux bootloader for WinCE
 # http://handhelds.org/wiki/HaRET
 
-set kernel "${KERNEL_FILENAME}"
+set kernel "${KERNEL_IMAGE_BASE_NAME}"
 
 # Boot choices. Uncomment 'set' statements in exactly one section
 
