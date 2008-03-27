@@ -3,6 +3,19 @@ inherit linux-kernel-base module_strip
 PROVIDES += "virtual/kernel"
 DEPENDS += "virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} virtual/${TARGET_PREFIX}gcc${KERNEL_CCSUFFIX} update-modules"
 
+KERNEL_IMAGETYPE ?= "zImage"
+
+python __anonymous () {
+
+    import bb
+    
+    kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
+    if kerneltype == 'uImage':
+    	depends = bb.data.getVar("DEPENDS", d, 1)
+    	depends = "%s u-boot-mkimage-native" % depends
+    	bb.data.setVar("DEPENDS", depends, d)
+}
+
 inherit kernel-arch
 
 PACKAGES_DYNAMIC += "kernel-module-*"
@@ -10,11 +23,6 @@ PACKAGES_DYNAMIC += "kernel-image-*"
 
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
-KERNEL_IMAGETYPE ?= "zImage"
-# Base filename under which users see built kernel (i.e. deploy name)
-KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}"
-# Symlink  basename pointing to the most recently built kernel for a machine
-KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}" 
 
 KERNEL_PRIORITY = "${@bb.data.getVar('PV',d,1).split('-')[0].split('.')[-1]}"
 
@@ -50,6 +58,9 @@ KERNEL_LOCALVERSION ?= ""
 
 # kernels are generally machine specific
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+# U-Boot support
+UBOOT_ENTRYPOINT ?= "20008000"
 
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
@@ -438,13 +449,47 @@ python populate_packages_prepend () {
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
-        if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
-            size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
-            if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
-                    rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
-                    die  "This kernel (size=$size > ${KERNEL_IMAGE_MAXSIZE}) is too big for your device. Please reduce the size of the kernel by making more of it modular."
-            fi
-        fi
+	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
+        	size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
+        	if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
+                	rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}
+                	die  "This kernel (size=$size > ${KERNEL_IMAGE_MAXSIZE}) is too big for your device. Please reduce the size of the kernel by making more of it modular."
+        	fi
+    	fi
 }
 
 addtask sizecheck before do_install after do_compile
+
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${PV}-${PR}-${MACHINE}-${DATETIME}"
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${MACHINE}"
+
+do_deploy() {
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
+	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${PR}-${MACHINE}.tgz -C ${D} lib
+
+	if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
+		if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
+			${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
+			uboot-mkimage -A ${ARCH} -O linux -T kernel -C none -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+			rm -f linux.bin
+		else
+			${OBJCOPY} -O binary -R .note -R .comment -S vmlinux linux.bin
+			rm -f linux.bin.gz
+			gzip -9 linux.bin
+			uboot-mkimage -A ${ARCH} -O linux -T kernel -C gzip -a ${UBOOT_ENTRYPOINT} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin.gz ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+			rm -f linux.bin.gz
+		fi
+		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/uImage-${PV}-${PR}-${MACHINE}-${DATETIME}.bin
+	fi
+
+	cd ${DEPLOY_DIR_IMAGE}
+	rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+	ln -sf ${KERNEL_IMAGE_BASE_NAME}.bin ${KERNEL_IMAGE_SYMLINK_NAME}.bin
+        package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_SYMLINK_NAME}.bin
+}
+
+do_deploy[dirs] = "${S}"
+
+addtask deploy before do_package after do_install
