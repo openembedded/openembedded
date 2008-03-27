@@ -5,6 +5,8 @@ DEPENDS += "virtual/${TARGET_PREFIX}depmod-${@get_kernelmajorversion('${PV}')} v
 
 KERNEL_IMAGETYPE ?= "zImage"
 
+# Add dependency on mkimage for kernels that build a uImage
+
 python __anonymous () {
 
     import bb
@@ -12,7 +14,7 @@ python __anonymous () {
     kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
     if kerneltype == 'uImage':
     	depends = bb.data.getVar("DEPENDS", d, 1)
-    	depends = "%s u-boot-mkimage-native" % depends
+    	depends = "%s u-boot-mkimage-openmoko-native" % depends
     	bb.data.setVar("DEPENDS", depends, d)
 }
 
