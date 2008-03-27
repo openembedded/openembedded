@@ -1,0 +1,28 @@
+fixes
+
+{BUILD_DIR}/build-glibc/csu/crtn.o: In function "dummy":
+{BUILD_DIR}/build-glibc/csu/crtn.S:14: multiple definition of "dummy"
+{BUILD_DIR}/build-glibc/csu/crti.o:{BUILD_DIR}/build-glibc/csu/crti.S:33: first defined here
+{BUILD_DIR}/build-glibc/csu/crtn.o: In function "_init":
+{BUILD_DIR}/build-glibc/csu/crtn.S:30: multiple definition of "_init"
+{BUILD_DIR}/build-glibc/csu/crti.o:{BUILD_DIR}/build-glibc/csu/crti.S:65: first defined here
+{BUILD_DIR}/build-glibc/csu/crtn.o: In function "_fini":
+{BUILD_DIR}/build-glibc/csu/crtn.S:25: multiple definition of "_fini"
+{BUILD_DIR}/build-glibc/csu/crti.o:{BUILD_DIR}/build-glibc/csu/crti.S:38: first defined here
+{BUILD_DIR}/build-glibc/csu/crti.o: In function "_fini":
+{BUILD_DIR}/build-glibc/csu/crti.S:(.init+0x20): undefined reference to "i_am_not_a_leaf"
+{BUILD_DIR}/build-glibc/csu/crtn.o: In function "_fini":
+{BUILD_DIR}/build-glibc/csu/crtn.S:(.init+0x40): undefined reference to "i_am_not_a_leaf"
+{BUILD_DIR}/build-glibc/csu/crtn.S:(.init+0x44): undefined reference to "i_am_not_a_leaf"
+
+--- glibc-2.3.6/sysdeps/powerpc/powerpc32/Makefile.org  2006-08-21 19:03:01.000000000 -0700
++++ glibc-2.3.6/sysdeps/powerpc/powerpc32/Makefile      2006-08-21 19:03:19.000000000 -0700
+@@ -21,7 +21,7 @@
+ ifneq ($(elf),no)
+ # The initfini generation code doesn't work in the presence of -fPIC, so
+ # we use -fpic instead which is much better.
+-CFLAGS-initfini.s = -g0 -fpic -O1
++CFLAGS-initfini.s = -g0 -fpic -O1 $(fno-unit-at-a-time)
+
+ # There is no benefit to using sdata for these objects, and the user
+ # of the library should be able to control what goes into sdata.

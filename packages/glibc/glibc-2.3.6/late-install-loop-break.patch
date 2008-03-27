@@ -1,0 +1,29 @@
+--- glibc-2.3.6/Makerules	Sat Sep  8 22:59:54 2007
++++ glibc-2.3.6/Makerules	Sun Sep  9 01:04:29 2007
+@@ -154,26 +154,6 @@
+ common-before-compile = $(before-compile)
+ endif
+ 
+-ifndef subdir
+-# If a makefile needs to do something conditional on something that
+-# can only be figured out from headers, write a FOO.make.c input
+-# file that uses cpp contructs and contains @@@ LINE @@@ for each LINE
+-# to emit in the generated makefile, and use -include $(common-objpfx)FOO.make.
+-#
+-# We only generate these in the top-level makefile, to avoid any weirdness
+-# from subdir-specific makefile tweaks creeping in on an update.
+-$(common-objpfx)%.make: $(..)%.make.c $(..)Makerules $(common-before-compile)
+-	rm -f $@T $@.dT
+-	(echo '# Generated from $*.make.c by Makerules.'; \
+-	 $(CC) $(CFLAGS) $(CPPFLAGS) -E $< \
+-	       -MD -MP -MT '$$(common-objpfx)$*.make' -MF $@.dT \
+-	 | sed -n '/@@@/{s/@@@[	 ]*\(.*\)@@@/\1/;s/[	 ]*$$//p;}'; \
+-	 echo 'common-generated += $(@F)'; \
+-	 sed $(sed-remove-objpfx) $(sed-remove-dotdot) $@.dT; \
+-	 rm -f $@.dT) > $@T
+-	mv -f $@T $@
+-endif
+-
+ ifdef subdir
+ sed-remove-dotdot := -e 's@  *\.\.\/\([^ 	\]*\)@ $$(..)\1@g' \
+ 		     -e 's@^\.\.\/\([^ 	\]*\)@$$(..)\1@g'
