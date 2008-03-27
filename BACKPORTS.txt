@@ -2,7 +2,7 @@ This file holds all the revision from .dev we want in this stable branch.
 Patches are sent to the angstrom-distro-devel mailinglist with the [Review] prefix in the subject
 To quickly lookup any revision from below, use
 http://www.openembedded.org/viewmtn/revision/info/<rev>
-
+ 
 To easily generate lines in the format below, run contrib/angstrom/mtnlog2backports
 on the output of mtn log --no-graph --no-files for your revisions.
 
