@@ -1,0 +1,11 @@
+--- squid-2.6.STABLE14.orig/configure.in	2007-07-15 16:21:59.000000000 +0200
++++ squid-2.6.STABLE14/configure.in	2008-03-25 17:15:53.000000000 +0100
+@@ -2416,7 +2416,7 @@
+ 
+ if test -n "$SELECT_TYPE"; then
+ 	: # Nothing to do
+-elif test "$ac_cv_epoll_works" = "yes" ; then
++elif test "$ac_cv_func_epoll_ctl" = "yes" && "$ac_cv_epoll_works" = "yes" ; then
+ 	SELECT_TYPE="epoll"
+ elif test "$ac_cv_func_kqueue" = "yes" ; then
+ 	SELECT_TYPE="kqueue"

@@ -25,5 +25,5 @@ SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
 # Language Overrides
 FORTRAN = ""
 
-EXTRA_OECONF += "--disable-libssp"
+EXTRA_OECONF_BASE = "--disable-libssp"
 

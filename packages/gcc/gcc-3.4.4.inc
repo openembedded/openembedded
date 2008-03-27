@@ -13,6 +13,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	   file://gcc-3.4.0-arm-bigendian-uclibc.patch;patch=1 \
 	   file://GCC3.4.0VisibilityPatch.diff;patch=1 \
 	   file://15342.patch;patch=1 \
+	   file://jarfix.patch;patch=1 \
 	   file://always-fixincperm.patch;patch=1 \
 	   file://GCOV_PREFIX_STRIP-cross-profile_3.4.patch;patch=1 \
 	   file://zecke-xgcc-cpp.patch;patch=1 \

@@ -37,6 +37,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 "
 
 SRC_URI_avr32 = " http://ewi546.ewi.utwente.nl/tmp/avr32-gcc-4.2.1-atmel.1.0.3.tar.gz \
+        file://gcc-pr32889.patch;patch=1 \
         file://100-uclibc-conf.patch;patch=1 \
         file://103-uclibc-conf-noupstream.patch;patch=1 \
         file://200-uclibc-locale.patch;patch=1 \
@@ -91,4 +92,6 @@ FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"
 JAVA = ""
 
-EXTRA_OECONF += " --disable-libgomp --disable-libssp --disable-bootstrap "
+EXTRA_OECONF_BASE = "--disable-libssp --disable-bootstrap --disable-libgomp --disable-libmudflap"
+
+ARM_INSTRUCTION_SET = "arm"

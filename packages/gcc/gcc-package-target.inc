@@ -1,13 +1,15 @@
 PACKAGES = "\
-  libgcc ${PN} ${PN}-symlinks \
+  ${PN} ${PN}-symlinks \
   g++ g++-symlinks \
   cpp cpp-symlinks \
   g77 g77-symlinks \
   gfortran gfortran-symlinks \
   gcov gcov-symlinks \
   libmudflap libmudflap-dev \
-  libstdc++ libg2c \
-  libstdc++-dev libg2c-dev \
+  libgcc-dev \
+  libstdc++-dev \
+  libg2c-dev \
+  libgfortran-dev \
   ${PN}-doc \
 "
 
@@ -80,6 +82,10 @@ FILES_libstdc++-dev = "\
   ${libdir}/libsupc++.la \
   ${libdir}/libsupc++.a \
 "
+
+FILES_libgfortran-dev = "${libdir}/libgfortran.a \
+                         ${libdir}/libgfortran.so \
+                         ${libdir}/libgfortranbegin.a"
 
 FILES_libmudflap = "${libdir}/libmudflap*.so.*"
 FILES_libmudflap-dev = "\

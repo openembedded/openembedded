@@ -42,4 +42,4 @@ SRC_URI_append_linux = " file://ppc-gcc-41-20060515.patch;patch=1 \
 FORTRAN = ""
 JAVA = ""
 
-EXTRA_OECONF += " --disable-libssp "
+EXTRA_OECONF_BASE = "--disable-libssp --disable-libmudflap"

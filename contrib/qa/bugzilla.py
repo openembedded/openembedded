@@ -5126,7 +5126,7 @@ bugs_openmoko = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>FIXE</nobr>
     </td>
-    <td>defconfig-fic-gta01 could use updating
+    <td>defconfig-om-gta01 could use updating
     </td>
 
   </tr>
@@ -5798,7 +5798,7 @@ bugs_openmoko = """<!-- 1.0@bugzilla.org -->
     </td>
     <td><nobr>FIXE</nobr>
     </td>
-    <td>Please enable CONFIG_TUN as a module in defconfig-fic-gta01
+    <td>Please enable CONFIG_TUN as a module in defconfig-om-gta01
     </td>
 
   </tr>

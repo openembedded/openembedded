@@ -10,8 +10,8 @@ inherit openmoko2 gconf
 SRC_URI += "file://htc.patch;patch=1;maxrev=3348 \
             file://ipaq.patch;patch=1;maxrev=3348"
 
-EXTRA_OECONF_fic-gta01 = "--with-platform=neo1973"
-EXTRA_OECONF_fic-gta02 = "--with-platform=neo1973"
+EXTRA_OECONF_om-gta01 = "--with-platform=neo1973"
+EXTRA_OECONF_om-gta02 = "--with-platform=neo1973"
 EXTRA_OECONF_a780      = "--with-platform=ezx"
 EXTRA_OECONF_a1200     = "--with-platform=ezx"
 EXTRA_OECONF_e680      = "--with-platform=ezx"

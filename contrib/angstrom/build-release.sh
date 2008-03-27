@@ -78,7 +78,7 @@ do
 done  
 
 # graphics, flash storage
-for machine in fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
+for machine in om-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -96,7 +96,7 @@ do
 done 
 
 #phones
-for machine in fic-gta01 a780 
+for machine in om-gta01 a780 
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="minimal-openmoko-image openmoko-image"

@@ -1,0 +1,39 @@
+diff -Nur gtkhtml3.8-3.12.3/src/htmlengine-edit-clueflowstyle.c gtkhtml3.8-3.12.3.new/src/htmlengine-edit-clueflowstyle.c
+--- gtkhtml3.8-3.12.3/src/htmlengine-edit-clueflowstyle.c	2007-01-29 10:50:59.000000000 +0100
++++ gtkhtml3.8-3.12.3.new/src/htmlengine-edit-clueflowstyle.c	2008-02-15 10:07:22.000000000 +0100
+@@ -175,7 +175,7 @@
+ 	while (p != NULL) {
+ 		if (HTML_OBJECT_TYPE (obj->parent) != HTML_TYPE_CLUEFLOW) {
+ 			g_warning ("(%s:%s)  Eeeek!  Unknown parent type `%s'.",
+-				   __FILE__, G_GNUC_FUNCTION,
++				   __FILE__, G_STRFUNC,
+ 				   html_type_name (HTML_OBJECT_TYPE (obj->parent)));
+ 			break;
+ 		}
+@@ -209,7 +209,7 @@
+ 				/* This should not happen.  */
+ 				g_warning ("(%s:%s)  There were not enough paragraphs for "
+ 					   "setting the paragraph style.",
+-					   __FILE__, G_GNUC_FUNCTION);
++					   __FILE__, G_STRFUNC);
+ 				break;
+ 			}
+ 		} while (obj != NULL && HTML_CLUEFLOW (obj->parent) == clueflow);
+@@ -217,7 +217,7 @@
+ 
+ 	if (prop_list == NULL) {
+ 		/* This should not happen.  */
+-		g_warning ("%s:%s Eeek!  Nothing done?", __FILE__, G_GNUC_FUNCTION);
++		g_warning ("%s:%s Eeek!  Nothing done?", __FILE__, G_STRFUNC);
+ 		return;
+ 	}
+ 
+@@ -280,7 +280,7 @@
+ 	while (p != NULL) {
+ 		if (HTML_OBJECT_TYPE (p->parent) != HTML_TYPE_CLUEFLOW) {
+ 			g_warning ("(%s:%s)  Eeeek!  Unknown parent type `%s'.",
+-				   __FILE__, G_GNUC_FUNCTION,
++				   __FILE__, G_STRFUNC,
+ 				   html_type_name (HTML_OBJECT_TYPE (p->parent)));
+ 			break;
+ 		}

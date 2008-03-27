@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r48"
+PR = "r49"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -74,6 +74,7 @@ SLUGOS_PACKAGES = "\
 	diffutils \
 	dircproxy \
 	dnsmasq \
+	dropbear \
 	e2fsprogs \
 	e2fsprogs-libs \
 	expat \
@@ -151,7 +152,6 @@ SLUGOS_PACKAGES = "\
 	microcom \
 	minicom \
 	monit \
-	motion \
 	mpd \
 	mt-daapd \
 	mtd-utils \
@@ -255,6 +255,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	gspcav1 \
 	lirc-modules lirc \
 	madfu \
+	motion \
 	openldap \
 	pwc \
 	qc-usb-messenger \

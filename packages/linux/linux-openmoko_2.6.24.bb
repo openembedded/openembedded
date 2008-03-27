@@ -11,10 +11,10 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 # re-enabled this when feature is fully implemented in OE
 #SRCREV_FORMAT = "patches-rconfig"
 SRCREV_FORMAT = "patches"
-CONFIG_REV = "4165"
-
+CONFIG_REV_om-gta01 = "4251"
+CONFIG_REV_om-gta02 = "4251"
 PV = "${VANILLA_VERSION}+svnr${SRCREV}-r${CONFIG_REV}"
-PR = "r4"
+PR = "r5"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
@@ -35,7 +35,7 @@ S = "${WORKDIR}/linux-${VANILLA_VERSION}"
 ALLOW_EMPTY = "1"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'fic-gta01|fic-gta02'
+COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
@@ -55,11 +55,14 @@ module_autoload_snd-mixer-oss = "snd-mixer-oss"
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 
+CONFIG_NAME_om-gta01 = "gta01"
+CONFIG_NAME_om-gta02 = "gta02"
+
 do_prepatch() {
         mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openmoko
         mv .pc .pc.old
-        mv ${WORKDIR}/config/defconfig-${KERNEL_RELEASE} ${WORKDIR}/defconfig
+        mv ${WORKDIR}/config/defconfig-${CONFIG_NAME} ${WORKDIR}/defconfig
 }
 
 addtask prepatch after do_unpack before do_patch

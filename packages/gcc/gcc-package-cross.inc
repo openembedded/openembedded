@@ -2,29 +2,16 @@ INHIBIT_PACKAGE_STRIP ?= ""
 OLD_INHIBIT_PACKAGE_STRIP := "${INHIBIT_PACKAGE_STRIP}"
 INHIBIT_PACKAGE_STRIP = "1"
 
-PACKAGES = "libgcc libgcc-dev libstdc++ libg2c libg2c-dev libgfortran libgfortran-dev"
+PACKAGES = "libgcc libstdc++ libg2c libgfortran"
 
 # Called from within gcc-cross, so libdir is set wrong
 FILES_libg2c = "${target_libdir}/libg2c.so.*"
-FILES_libg2c-dev = "${target_libdir}/libg2c.so \
-		    ${target_libdir}/libg2c.a \
-		    ${target_libdir}/libfrtbegin.a"
 
 FILES_libgfortran = "${target_libdir}/libgfortran.so.*"
-FILES_libgfortran-dev = "${target_libdir}/libgfortran.a \
-			 ${target_libdir}/libgfortran.so \
-			 ${target_libdir}/libgfortranbegin.a"
 
 FILES_libgcc = "${target_base_libdir}/libgcc_s.so.1"
-FILES_libgcc-dev = "${target_base_libdir}/libgcc_s.so"
 
 FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
-FILES_libstdc++-dev = "${target_includedir}/c++/${PV} \
-		       ${target_libdir}/libstdc++.so \
-		       ${target_libdir}/libstdc++.la \
-		       ${target_libdir}/libstdc++.a \
-		       ${target_libdir}/libsupc++.la \
-		       ${target_libdir}/libsupc++.a"
 
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
