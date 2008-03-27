@@ -1,3 +1,13 @@
+This patch adds support for Sharp CE-RH2 on Spitz.
+
+It is not clean enough to be upstreamed:
+- It is a bit syslog-noisy.
+- Does not support other Zaurus models.
+- Maybe split to more parts:
+  * MAX1111 driver
+  * linear input device
+  * virtual keyboard on top of linear input device
+
 Index: linux-2.6.24/arch/arm/mach-pxa/spitz.c
 ===================================================================
 --- linux-2.6.24.orig/arch/arm/mach-pxa/spitz.c	2008-03-10 17:05:37.000000000 +0000

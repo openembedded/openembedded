@@ -1,0 +1,65 @@
+Fixes "Error: symbol `__bind' is already defined" error when building for PowerPC
+
+Patch taken from http://bugs.debian.org/343571
+
+
+--- x/sysdeps/powerpc/powerpc32/fpu/s_lround.S	2004-06-30 17:29:12.000000000 -0500
++++ x/sysdeps/powerpc/powerpc32/fpu/s_lround.S	2005-11-18 16:48:11.000000000 -0600
+@@ -88,7 +79,6 @@
+ 	b	.L9
+ 	END (__lround)
+ 
+-strong_alias (__lround, __lround)
+ weak_alias (__lround, lround)
+ 
+ strong_alias (__lround, __lroundf)
+--- x/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S	2005-12-16 01:04:21.000000000 -0600
++++ x/sysdeps/unix/sysv/linux/powerpc/powerpc32/socket.S	2005-12-16 01:06:26.000000000 -0600
+@@ -42,7 +42,11 @@
+ #define stackblock 20
+ 
+ #ifndef __socket
+-#define __socket P(__,socket)
++# ifndef NO_WEAK_ALIAS
++#  define __socket P(__,socket)
++# else
++#  define __socket socket
++# endif
+ #endif
+ 
+ 	.text
+@@ -116,4 +120,6 @@
+ 
+ PSEUDO_END (__socket)
+ 
++#ifndef NO_WEAK_ALIAS
+ weak_alias (__socket, socket)
++#endif
+--- x/sysdeps/unix/sysv/linux/powerpc/powerpc64/socket.S	2005-12-16 01:08:45.000000000 -0600
++++ x/sysdeps/unix/sysv/linux/powerpc/powerpc64/socket.S	2005-12-16 01:09:32.000000000 -0600
+@@ -41,12 +41,12 @@
+ 
+ #define stackblock 80 /* offset to socket parm area.  */
+ 
+-#ifndef socket
+-/* If this is just socket.S leave it alone! */
+-#else
+ #ifndef __socket
+-#define __socket P(__,socket)
+-#endif
++# ifndef NO_WEAK_ALIAS
++#  define __socket P(__,socket)
++# else
++#  define __socket socket
++# endif
+ #endif
+ 
+ 	.text
+@@ -120,4 +120,6 @@
+ 	cfi_endproc
+ PSEUDO_END (__socket)
+ 
++#ifndef NO_WEAK_ALIAS
+ weak_alias (__socket, socket)
++#endif
+

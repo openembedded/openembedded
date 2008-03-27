@@ -1,0 +1,28 @@
+fixes
+
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.o: In function "dummy":
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.S:14: multiple definition of "dummy"
+{BUILD_DIR}/build-glibc/linuxthreads/crti.o:{BUILD_DIR}/build-glibc/linuxthreads/crti.S:33: first defined here
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.o: In function "_fini":
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.S:30: multiple definition of "_fini"
+{BUILD_DIR}/build-glibc/linuxthreads/crti.o:{BUILD_DIR}/build-glibc/linuxthreads/crti.S:65: first defined here
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.o: In function "_init":
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.S:23: multiple definition of "_init"
+{BUILD_DIR}/build-glibc/linuxthreads/crti.o:{BUILD_DIR}/build-glibc/linuxthreads/crti.S:37: first defined here
+{BUILD_DIR}/build-glibc/linuxthreads/crti.o: In function "_fini":
+{BUILD_DIR}/build-glibc/linuxthreads/crti.S:(.text+0x70): undefined reference to "i_am_not_a_leaf"
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.o: In function "_fini":
+{BUILD_DIR}/build-glibc/linuxthreads/crtn.S:(.text+0x38): undefined reference to "i_am_not_a_leaf"
+collect2: ld returned 1 exit status
+
+--- glibc-2.3.6/linuxthreads/sysdeps/powerpc/Makefile.org      2003-02-17 20:33:17.000000000 +0000
++++ glibc-2.3.6/linuxthreads/sysdeps/powerpc/Makefile  2007-04-04 16:26:01.969067632 +0100
+@@ -1,6 +1,6 @@
+ ifeq ($(subdir):$(elf),linuxthreads:yes)
+ # See CFLAGS-initfini.s above; this is the same code.
+-CFLAGS-pt-initfini.s = -g0 -fpic -O1
++CFLAGS-pt-initfini.s = -g0 -fpic -O1 $(fno-unit-at-a-time)
+ endif
+ ifeq ($(subdir),csu)
+ gen-as-const-headers += tcb-offsets.sym
+
