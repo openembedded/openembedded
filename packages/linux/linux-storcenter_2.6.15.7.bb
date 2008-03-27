@@ -23,14 +23,3 @@ do_configure() {
 	install -m 644 ${WORKDIR}/defconfig-${PV} ${S}/.config
 	make ARCH=${ARCH} oldconfig
 }
-
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
-}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-
-

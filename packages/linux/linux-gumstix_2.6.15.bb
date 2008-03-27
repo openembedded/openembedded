@@ -72,16 +72,12 @@ do_configure_prepend() {
 	install -m 0644 ${WORKDIR}/defconfig-gumstix ${S}/.config
 }
 
-do_deploy() {
+do_deploy_append() {
         ${HOST_PREFIX}objcopy -O binary -R .note -R .comment -S arch/arm/boot/compressed/vmlinux arch/arm/boot/compressed/linux.bin
         mkimage -A arm -O linux -T kernel -C none -a 0xa0008000 -e 0xa0008000 -n "gumstix" -d arch/arm/boot/compressed/linux.bin arch/arm/boot/uImage
 		install -d ${DEPLOY_DIR_IMAGE}
 		cp arch/arm/boot/uImage ${DEPLOY_DIR_IMAGE}/uImage-${PN}-${PV}
 }
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
 
 PACKAGES += "kernel-modules-sound kernel-modules-bluetooth kernel-modules-pcmcia kernel-modules-ide kernel-modules-ethernet kernel-modules-wireless kernel-modules-usb kernel-modules-mmc kernel-modules-fat kernel-modules-nfs"
 

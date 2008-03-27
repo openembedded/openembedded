@@ -70,14 +70,3 @@ do_stage_append () {
        cp -pPR include/asm-powerpc ${STAGING_KERNEL_DIR}/include/
        cp -pPR include/asm-ppc ${STAGING_KERNEL_DIR}/include/
 }
-
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${PV}-${MACHINE}-${DATETIME}
-}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-
-

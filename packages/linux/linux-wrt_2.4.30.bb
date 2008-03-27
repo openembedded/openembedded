@@ -107,8 +107,4 @@ do_deploy() {
 		${DEPLOY_DIR_IMAGE}/wrt-kernel-${PV}.lzma
 }
 
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-
 COMPATIBLE_MACHINE = "wrt54"

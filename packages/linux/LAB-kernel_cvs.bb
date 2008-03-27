@@ -51,19 +51,13 @@ do_configure() {
         yes '' | oe_runmake oldconfig
 }
 
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/LAB-image-${MACHINE}
+KERNEL_IMAGE_BASE_NAME = "LAB-image-${MACHINE}-${DATETIME}.bin"
+KERNEL_IMAGE_SYMLINK_NAME =  "LAB-image-${MACHINE}^"
 
+do_deploy_append() {
 	# Generate the HTC flavor, which must be a multiple of 512 bytes long.
 	cat ${WORKDIR}/greatwall_header arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${WORKDIR}/greatwall_trailer | dd conv=sync of=${DEPLOY_DIR_IMAGE}/LAB-image-${MACHINE}.htc
 }
 
 do_stage() {
 }
-
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
-

@@ -56,7 +56,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://pxa-serial-hack.patch;patch=1;status=hack \
            file://connectplus-remove-ide-HACK.patch;patch=1;status=hack \
            file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
-           file://htcuni.patch;patch=1 \
            file://binutils-buildid-arm.patch;patch=1 \
            file://versatile-armv6.patch;patch=1 \
            file://defconfig-c7x0 \
@@ -75,6 +74,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
 
+# file://htcuni.patch;patch=1 \
 
 # Add this to enable pm debug code (useful with a serial lead)
 #  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1

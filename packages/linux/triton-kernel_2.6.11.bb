@@ -3,8 +3,6 @@ DESCRIPTION = "Linux kernel for the KARO TRITON XScale Board"
 LICENSE = "GPL"
 PR = "r0"
 
-KERNEL_SUFFIX = "triton"
-
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/people/akpm/patches/2.6/${PV}/${PV}-mm2/${PV}-mm2.bz2;patch=1 \
 		   file://patch-2.6.11-mm2-karo9.bz2;patch=1 \
@@ -25,14 +23,5 @@ do_configure_prepend() {
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
-
-do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}
-}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_build after do_compile
 
 COMPATIBLE_MACHINE = "triton"

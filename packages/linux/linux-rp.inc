@@ -4,6 +4,8 @@ LICENSE = "GPL"
 
 inherit kernel
 
+
+INITRAMFS_IMAGE=initramfs-kexec-image
 DEPENDS_append_collie = " bc-native"
 RPROVIDES_kernel-base += "hostap-modules"
 
@@ -17,9 +19,6 @@ TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
 COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86|htcuniversal)'
 
-KERNEL_CUSTOM_NAME ?= ""
-KERNEL_DEPLOY_NAME ?= "${KERNEL_IMAGETYPE}-${PV}-${KERNEL_CUSTOM_NAME}${MACHINE}-${DATETIME}.bin"
-KERNEL_SYMLINK_NAME ?=  "${KERNEL_IMAGETYPE}-${KERNEL_CUSTOM_NAME}${MACHINE}.bin"
 KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
@@ -141,18 +140,6 @@ do_configure() {
 
 	yes '' | oe_runmake oldconfig
 }
-
-do_deploy() {
-	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_DEPLOY_NAME}
-	cd ${DEPLOY_DIR_IMAGE}
-	ln -sf ${KERNEL_DEPLOY_NAME} ${KERNEL_SYMLINK_NAME}
-	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${MACHINE}.tgz -C ${D} lib	
-}
-
-do_deploy[dirs] = "${S}"
-
-addtask deploy before do_package after do_install
 
 # wlan-ng stuff need compiled kernel sources
 do_rm_work() {
