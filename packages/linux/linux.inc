@@ -4,20 +4,6 @@ LICENSE = "GPL"
 
 inherit kernel
 
-# Add dependency on mkimage for kernels that build a uImage
-
-python __anonymous () {
-
-    import bb
-
-    kerneltype = bb.data.getVar('KERNEL_IMAGETYPE', d, 1) or ''
-    if kerneltype == 'uImage':
-        depends = bb.data.getVar("DEPENDS", d, 1)
-        depends = "%s u-boot-mkimage-openmoko-native" % depends
-        bb.data.setVar("DEPENDS", depends, d)
-}
-
-
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
 # Specify the commandline for your device

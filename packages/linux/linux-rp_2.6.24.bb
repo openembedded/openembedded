@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r6"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -58,6 +58,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
            file://binutils-buildid-arm.patch;patch=1 \
            file://versatile-armv6.patch;patch=1 \
+	   file://htcuni.patch;patch=1 \
            file://defconfig-c7x0 \
            file://defconfig-hx2000 \
            file://defconfig-collie \
@@ -74,7 +75,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
 
-# file://htcuni.patch;patch=1 \
 
 # Add this to enable pm debug code (useful with a serial lead)
 #  ${RPSRC}/sharpsl_pm_debug-r0.patch;patch=1
@@ -183,6 +183,7 @@ SRC_URI_append_akita = "\
            file://mtd-module.patch;patch=1;status=external \
            file://wm8750-treble.patch;patch=1;status=external \
            file://sharpsl-rc-r1.patch;patch=1 \
+           file://sharpsl-rc-r2.patch;patch=1 \
            "
 
 SRC_URI_append_spitz = "\
@@ -190,6 +191,12 @@ SRC_URI_append_spitz = "\
            file://wm8750-treble.patch;patch=1;status=external \
            file://spitz_h_rewrite.patch;patch=1;status=external \
            file://sharpsl-rc-r1.patch;patch=1 \
+           file://sharpsl-rc-r2.patch;patch=1 \
+           "
+
+SRC_URI_append_c7x0 = "\
+           file://sharpsl-rc-r1.patch;patch=1 \
+           file://sharpsl-rc-r2.patch;patch=1 \
            "
 
 SRC_URI_append_htcuniversal ="\
