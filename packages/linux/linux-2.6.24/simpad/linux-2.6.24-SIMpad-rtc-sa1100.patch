@@ -1,0 +1,68 @@
+diff -Nur linux-2.6.24.vanilla/drivers/rtc/rtc-sa1100.c linux-2.6.24_rtc/drivers/rtc/rtc-sa1100.c
+--- linux-2.6.24.vanilla/drivers/rtc/rtc-sa1100.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24_rtc/drivers/rtc/rtc-sa1100.c	2008-03-24 13:49:40.000000000 +0100
+@@ -79,7 +79,10 @@
+ 
+ 	rtsr = RTSR;
+ 	/* clear interrupt sources */
+-	RTSR = 0;
++	RTSR &= ~RTSR_HZE; //RTSR = 0; is not possible and does not work
++	RTSR &= ~RTSR_HZ;
++	RTSR &= ~RTSR_ALE;
++	RTSR &= ~RTSR_AL;
+ 	RTSR = (RTSR_AL | RTSR_HZ) & (rtsr >> 2);
+ 
+ 	/* clear alarm interrupt if it has occurred */
+@@ -155,6 +158,20 @@
+ {
+ 	int ret;
+ 
++	/*
++	 * On some devices RTSR is set to some value but it must be set to 0.
++	 * We have to set RTSR to 0 and OIER/OSSR to default. This should not be
++	 * necessary here but it is.
++	 */
++	spin_lock_irq(&sa1100_rtc_lock);
++	RTSR &= ~RTSR_HZE;
++	RTSR &= ~RTSR_HZ;
++	RTSR &= ~RTSR_ALE;
++	RTSR &= ~RTSR_AL;
++	OIER &= ~OIER_E1;
++	OSSR = OSSR_M1;
++	spin_unlock_irq(&sa1100_rtc_lock);
++
+ 	ret = request_irq(IRQ_RTC1Hz, sa1100_rtc_interrupt, IRQF_DISABLED,
+ 				"rtc 1Hz", dev);
+ 	if (ret) {
+@@ -186,7 +203,10 @@
+ static void sa1100_rtc_release(struct device *dev)
+ {
+ 	spin_lock_irq(&sa1100_rtc_lock);
+-	RTSR = 0;
++	RTSR &= ~RTSR_HZE; //RTSR = 0; is not possible and does not work
++	RTSR &= ~RTSR_HZ;
++	RTSR &= ~RTSR_ALE;
++	RTSR &= ~RTSR_AL;
+ 	OIER &= ~OIER_E1;
+ 	OSSR = OSSR_M1;
+ 	spin_unlock_irq(&sa1100_rtc_lock);
+@@ -339,6 +359,19 @@
+ 
+ 	platform_set_drvdata(pdev, rtc);
+ 
++	/*
++	 * On some devices RTSR is set to some value but it must be set to 0.
++	 * We have to set RTSR to 0 and OIER/OSSR to default.
++	 */
++	spin_lock_irq(&sa1100_rtc_lock);
++	RTSR &= ~RTSR_HZE;
++	RTSR &= ~RTSR_HZ;
++	RTSR &= ~RTSR_ALE;
++	RTSR &= ~RTSR_AL;
++	OIER &= ~OIER_E1;
++	OSSR = OSSR_M1;
++	spin_unlock_irq(&sa1100_rtc_lock);
++
+ 	return 0;
+ }
+ 
