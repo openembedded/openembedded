@@ -63,8 +63,7 @@ module_autoload_locomokbd_collie = "locomokbd"
 module_autoload_sa1100-cs_collie = "sa1100_cs"
 module_autoload_collie-ts_collie = "collie-ts"
 module_autoload_leds-locomo_collie = "leds-locomo"
-module_autoload_unix_collie = "unix"
-
+module_autoload_power_collie = "power"
 
 do_configure() {
 	rm -f ${S}/.config
