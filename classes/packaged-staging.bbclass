@@ -257,10 +257,8 @@ python do_package_stage () {
     if len(packages) > 0:
         if bb.data.inherits_class('package_ipk', d):
             ipkpath = bb.data.getVar('DEPLOY_DIR_IPK', d, True).replace(tmpdir, stagepath)
-            bb.mkdirhier(ipkpath)
         if bb.data.inherits_class('package_deb', d):
             debpath = bb.data.getVar('DEPLOY_DIR_DEB', d, True).replace(tmpdir, stagepath)
-            bb.mkdirhier(debpath)
 
         for pkg in packages:
             pkgname = bb.data.getVar('PKG_%s' % pkg, d, 1)
@@ -279,7 +277,10 @@ python do_package_stage () {
                 srcfile = bb.data.expand("${DEPLOY_DIR_IPK}/" + arch + "/" + srcname, d)
                 if not os.path.exists(srcfile):
                     bb.fatal("Package %s does not exist yet it should" % srcfile)
-                bb.copyfile(srcfile, ipkpath + "/" + srcname)
+                destpath = ipkpath + "/" + arch + "/"
+                bb.mkdirhier(destpath)
+                bb.copyfile(srcfile, destpath + srcname)
+
             if bb.data.inherits_class('package_deb', d):
                 if arch == 'all':
                     srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_all.deb", d)
@@ -288,7 +289,9 @@ python do_package_stage () {
                 srcfile = bb.data.expand("${DEPLOY_DIR_DEB}/" + arch + "/" + srcname, d)
                 if not os.path.exists(srcfile):
                     bb.fatal("Package %s does not exist yet it should" % srcfile)
-                bb.copyfile(srcfile, debpath + "/" + srcname)
+                destpath = debpath + "/" + arch + "/" 
+                bb.mkdirhier(destpath)
+                bb.copyfile(srcfile, destpath + srcname)
 
     #
     # Handle stamps/ files
