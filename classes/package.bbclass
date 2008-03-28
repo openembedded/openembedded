@@ -904,7 +904,7 @@ python package_depchains() {
 	for suffix in pkgs:
 		for pkg in pkgs[suffix]:
 			(base, func) = pkgs[suffix][pkg]
-			if suffix == "-dev":
+			if suffix == "-dev" and not pkg.startswith("kernel-module-"):
 				pkg_adddeprrecs(pkg, base, suffix, func, depends, d)
 			if len(pkgs[suffix]) == 1:
 				pkg_addrrecs(pkg, base, suffix, func, rdepends, d)
