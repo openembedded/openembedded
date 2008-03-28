@@ -1,14 +1,14 @@
 require pulse.inc
 
 DEPENDS += "dbus"
+PR = "r4"
 
 # this is not correct (see below)
 SRC_URI += "\
   file://disable-using-glibc-tls.patch;patch=1 \
   file://fix-dbus-without-hal.patch;patch=1 \
+  file://fix-shm.patch;patch=1 \
 "            
-
-PR = "r3"
 
 # problems w/ pulseaudio 0.9.9 atm:
 # 1.) needs libltdl >= 1.5.24 (yes, any older version will NOT work at runtime)
