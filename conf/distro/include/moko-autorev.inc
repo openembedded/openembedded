@@ -1,3 +1,10 @@
+SRCREV_pn-assassin ?= "${AUTOREV}"
+SRCREV_pn-diversity-daemon ?= "${AUTOREV}"
+SRCREV_pn-diversity-nav ?= "${AUTOREV}"
+SRCREV_pn-dfu-util ?= "${AUTOREV}"
+SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
+SRCREV_pn-illume ?= "${AUTOREV}"
+
 SRCREV_pn-libgsmd ?= "${AUTOREV}"
 SRCREV_pn-libjana ?= "${AUTOREV}"
 SRCREV_pn-libmokogsmd2 ?= "${AUTOREV}"
@@ -7,15 +14,9 @@ SRCREV_pn-libmokoui2 ?= "${AUTOREV}"
 SRCREV_pn-linux-openmoko ?= "${AUTOREV}"
 SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 
-SRCREV_pn-assassin ?= "${AUTOREV}"
-SRCREV_pn-diversity-daemon ?= "${AUTOREV}"
-SRCREV_pn-diversity-nav ?= "${AUTOREV}"
+SRCREV_pn-multitap-pad ?= "${AUTOREV}"
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
 SRCREV_pn-neod ?= "${AUTOREV}"
-SRCREV_pn-opkg ?= "${AUTOREV}"
-SRCREV_pn-opkg-native ?= "${AUTOREV}"
-
-SRCREV_pn-multitap-pad ?= "${AUTOREV}"
 
 SRCREV_pn-openmoko-appmanager2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-appearance ?= "${AUTOREV}"
@@ -52,12 +53,12 @@ SRCREV_pn-openmoko-worldclock2 ?= "${AUTOREV}"
 
 SRCREV_pn-openocd ?= "${AUTOREV}"
 SRCREV_pn-openocd-native ?= "${AUTOREV}"
+SRCREV_pn-opkg ?= "${AUTOREV}"
+SRCREV_pn-opkg-native ?= "${AUTOREV}"
 
 SRCREV_pn-python-gsmd ?= "${AUTOREV}"
 
 SRCREV_pn-u-boot-openmoko ?= "${AUTOREV}"
 SRCREV_pn-u-boot-openmoko-devel ?= "${AUTOREV}"
-SRCREV_pn-dfu-util ?= "${AUTOREV}"
-SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
 SRCREV_pn-usbpath ?= "${AUTOREV}"
 SRCREV_pn-usbpath-native ?= "${AUTOREV}"
