@@ -40,6 +40,9 @@ FILES_${PN}-dev   += "${bindir}/${PN}-config \
                       ${libdir}/${PN}/*/*.a \
                       ${libdir}/${PN}/*/*.la"
 
+FILES_${PN}-dbg +=   "${libdir}/${PN}/.debug \
+                      ${libdir}/${PN}/*/.debug"
+
 FILES_${PN}-tests  = "${bindir}/${PN} \
                       ${bindir}/*_* \
                       ${datadir}"
