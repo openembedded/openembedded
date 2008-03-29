@@ -6,8 +6,8 @@ This patch is a bit ugly:
 
 Index: linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c
 ===================================================================
---- linux-2.6.24.orig/drivers/input/keyboard/sharpsl_rc.c	2008-03-07 20:47:28.000000000 +0000
-+++ linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c	2008-03-07 22:36:40.000000000 +0000
+--- linux-2.6.24.orig/drivers/input/keyboard/sharpsl_rc.c	2008-03-08 19:29:02.000000000 +0000
++++ linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c	2008-03-08 22:23:35.000000000 +0000
 @@ -21,12 +21,10 @@
  #include <linux/module.h>
  #include <linux/slab.h>
@@ -96,11 +96,11 @@ Index: linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c
 -		reset_scoop_gpio(&REMOTE_SCOOP_DEVICE.dev, REMOTE_AKIN_PULLUP);
 -
 +		if (machine_is_borzoi() || machine_is_spitz())
-+			reset_scoop_gpio(&platform_scoop_config->devs[1].dev, SPITZ_SCP2_AKIN_PULLUP);
++			reset_scoop_gpio(platform_scoop_config->devs[1].dev, SPITZ_SCP2_AKIN_PULLUP);
 +		else if (machine_is_akita())
 +            		akita_reset_ioexp(&akitaioexp_device.dev, AKITA_IOEXP_AKIN_PULLUP);
 +		else
-+			reset_scoop_gpio(&platform_scoop_config->devs[0].dev, CORGI_SCP_AKIN_PULLUP);
++			reset_scoop_gpio(platform_scoop_config->devs[0].dev, CORGI_SCP_AKIN_PULLUP);
  		mod_timer(&data->rctimer, jiffies + msecs_to_jiffies(RC_POLL_MS));
  	}
  	return IRQ_HANDLED;
@@ -110,11 +110,11 @@ Index: linux-2.6.24/drivers/input/keyboard/sharpsl_rc.c
  	} else {
 -		set_scoop_gpio(&REMOTE_SCOOP_DEVICE.dev, REMOTE_AKIN_PULLUP);
 +		if (machine_is_borzoi() || machine_is_spitz())
-+			set_scoop_gpio(&platform_scoop_config->devs[1].dev, SPITZ_SCP2_AKIN_PULLUP);
++			set_scoop_gpio(platform_scoop_config->devs[1].dev, SPITZ_SCP2_AKIN_PULLUP);
 +		else if (machine_is_akita())
 +            		akita_set_ioexp(&akitaioexp_device.dev, AKITA_IOEXP_AKIN_PULLUP);
 +		else
-+			set_scoop_gpio(&platform_scoop_config->devs[0].dev, CORGI_SCP_AKIN_PULLUP);
++			set_scoop_gpio(platform_scoop_config->devs[0].dev, CORGI_SCP_AKIN_PULLUP);
  		data->handling_press = 0;
  	}
  }
