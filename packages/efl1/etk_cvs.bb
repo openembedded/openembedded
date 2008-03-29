@@ -6,22 +6,19 @@ PR = "r0"
 
 inherit efl
 
-# TODO package engines seperatly (do_split_packages)
-
-PACKAGES =+ "etk-engines"
-FILES_${PN} = "${libdir}/libetk.so*"
-FILES_${PN}-examples += "${bindir}"
-FILES_${PN}-engines = "${libdir}/etk/engines/*.so ${datadir}"
-FILES_${PN}-dev += "${libdir}/etk/engines/*.a ${libdir}/etk/engines/*.la"
-FILES_${PN}-dbg += "${libdir}/etk/engines/.debug/"
-
-RRECOMMENDS_${PN} = "${PN}-engines"
+RRECOMMENDS_${PN} = "\
+  etk-engines-software-x11 \
+  etk-engines-evas \
+  etk-engines-fb \
+  etk-engines-x11 \
+  etk-engines-software-x11-16 \
+"
 
 PACKAGES += "etk-engines-software-x11"
 FILES_${PN}-engines-software-x11 = "${libdir}/etk/engines/ecore_evas_software_x11.so"
 
-#PACKAGES =+ "etk-engines-gl-x11"
-#FILES_${PN}-engines-gl-x11 = "${libdir}/etk/engines/ecore_evas_gl_x11.so"
+PACKAGES =+ "etk-engines-gl-x11"
+FILES_${PN}-engines-gl-x11 = "${libdir}/etk/engines/ecore_evas_gl_x11.so"
 
 PACKAGES =+ "etk-engines-evas"
 FILES_${PN}-engines-evas = "${libdir}/etk/engines/ecore_evas.so"
