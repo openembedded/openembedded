@@ -90,17 +90,8 @@ do_configure_append_avr32() {
         sed -i -e s:-mno-pic::g arch/avr32/Makefile
 }
 
-
-UBOOT_ENTRYPOINT ?= "20008000"
-UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
-
 do_compile_append() {
     if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
-	if test "x${ARCH}" = "xpowerpc" ; then
-		UBOOT_ARCH=ppc
-	else
-		UBOOT_ARCH=$ARCH
-	fi
         if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
             ${OBJCOPY} -O binary -R .note -R .comment -S arch/${ARCH}/boot/compressed/vmlinux linux.bin
             uboot-mkimage -A ${UBOOT_ARCH} -O linux -T kernel -C none -a ${UBOOT_LOADADDRESS} -e ${UBOOT_ENTRYPOINT} -n "${DISTRO_NAME}/${PV}/${MACHINE}" -d linux.bin arch/${ARCH}/boot/uImage

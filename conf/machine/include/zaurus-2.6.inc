@@ -33,7 +33,8 @@ MACHINE_EXTRA_RRECOMMENDS_akita  = "kernel-module-snd-soc-spitz kernel-module-px
 MACHINE_EXTRA_RRECOMMENDS_spitz  = "kernel-module-snd-soc-spitz"
 MACHINE_EXTRA_RRECOMMENDS_poodle = "kernel-module-snd-soc-poodle kernel-module-pxa2xx-cs kernel-module-pcmcia"
 MACHINE_EXTRA_RRECOMMENDS_collie = "kernel-module-locomo-spi kernel-module-sa1100-cs kernel-module-mmc-block \
-	kernel-module-collie-ts kernel-module-leds-locomo kernel-module-locomokbd"
+	kernel-module-collie-ts kernel-module-leds-locomo kernel-module-locomokbd kernel-module-mmc-spi \
+	kernel-module-power"
 
 GUI_MACHINE_CLASS = "bigscreen"
 GUI_MACHINE_CLASS_collie = "smallscreen"

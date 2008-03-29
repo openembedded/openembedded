@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r6"
+PR = "r7"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -82,24 +82,23 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 # Disabled until I find the reason this gives issues with cdc_subset
 #            ${RPSRC}/usb_rndis_tweaks-r0.patch;patch=1 \
 
-# Is anything out of this still needed? Parts were commited to mainline by rmk (drivers/mfd/)
-# (Pavel Machek's git tree has updated versions of this?)
-#  ${JLSRC}/zaurus-lcd-2.6.11.diff.gz;patch=1
 
-# These patches are extracted from Pavel Machek's git tree
-# (diff against vanilla kernel)
 SRC_URI_append_collie = "\
-	${TKSRC}/mtd-sharp-flash-hack-r3.patch;patch=1 \
+	${TKSRC}/mtd-sharp-flash-hack-r4.patch;patch=1 \
 	${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
-	${TKSRC}/locomo-r0.patch;patch=1 \
-#	${TKSRC}/locomo_spi-4.patch;patch=1 \
-	${TKSRC}/collie-kexec.patch;patch=1 \
-	${TKSRC}/sharpsl_pm-3.patch;patch=1 \
-	${TKSRC}/collie_pm-2.patch;patch=1 \
-	${TKSRC}/locomokeyb_suspendkey-2.patch;patch=1 \
+	${TKSRC}/locomo-r1.patch;patch=1 \
+	${TKSRC}/collie-kexec-r1.patch;patch=1 \
+	${TKSRC}/sharpsl_pm-4.patch;patch=1 \
+	${TKSRC}/collie_pm-3.patch;patch=1 \
 	${TKSRC}/ucb1x00_suspend.patch;patch=1 \
 	${TKSRC}/collie-ts.patch;patch=1 \
 	${TKSRC}/pcmcia_suspend.patch;patch=1 \
+	${TKSRC}/locomo_spi-6.patch;patch=1 \
+	${TKSRC}/config.patch;patch=1 \
+	${TKSRC}/locomokeyb.patch;patch=1 \
+	${TKSRC}/mmc-spi.patch;patch=1 \
+	${TKSRC}/linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
+	${TKSRC}/sa1100_spinlock.patch;patch=1 \
 "
 
 SRC_URI_append_poodle = "\
