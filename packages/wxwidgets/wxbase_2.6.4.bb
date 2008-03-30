@@ -1,25 +1,10 @@
-DESCRIPTION = "wxBase is a library for programming \
-non-GUI (console) applications using the base wxWidgets functionality."
-HOMEPAGE = "http://www.wxwidgets.org/"
-LICENSE = "GPL"
-SECTION = "libs"
-PRIORITY = "optional"
-DEPENDS = "jpeg libpng zlib"
+require wxbase.inc
 
-
-SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxBase-${PV}.tar.bz2"
-
-S = "${WORKDIR}/wxBase-${PV}"
-
-inherit autotools pkgconfig
+PR = "r0"
 
 EXTRA_OECONF = "--enable-largefile"
 
-LEAD_SONAME = "libwx_base-2.6.so*"
-
-do_configure() {
-       oe_runconf
-}
+LEAD_SONAME = "libwx_base-2.6.so"
 
 do_stage() {
        install -d ${STAGING_INCDIR}/wx-2.6/wx
@@ -36,12 +21,8 @@ do_stage() {
            -i ${STAGING_LIBDIR}/wx/config/${TARGET_PREFIX}base-ansi-release-2.6
 }
 
-FILES_${PN} += " \
-       ${libdir}/wx/config"
-
-FILES_${PN}-dev += " \
-       ${libdir}/wx/include \
-       ${datadir}/bakefile"
+FILES_${PN} += "${libdir}/wx/config"
+FILES_${PN}-dev += "${libdir}/wx/include ${datadir}/bakefile"
 
 do_install() {
        oe_runmake 'DESTDIR=${D}' install
