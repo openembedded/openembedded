@@ -2,16 +2,19 @@ DESCRIPTION = "wxWidgets is a cross platform application framework utilizing nat
 HOMEPAGE = "http://www.wxwidgets.org"
 SECTION = "x11/libs"
 LICENSE = "GPL"
-DEPENDS = "gtk+"
-PR = "r0"
+DEPENDS = "gtk+ jpeg tiff libpng zlib expat"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wxwindows/wxWidgets-${PV}.tar.gz"
+
 S = "${WORKDIR}/wxWidgets-${PV}"
 
 inherit autotools pkgconfig
 
+EXTRA_OECONF = " --enable-gpe "
+
 do_configure() {
-	oe_runconf
+       oe_runconf
 }
 
-#FIXME add sane packaging
+FILES_${PN} += "${libdir}/wx/config"
+FILES_${PN}-dev += "${libdir}/wx/include ${datadir}/bakefile"
