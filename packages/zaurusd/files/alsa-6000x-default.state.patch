@@ -1,5 +1,5 @@
---- zaurusd/config/alsa/6000x-default.state.old	2007-12-22 04:31:38.000000000 -0600
-+++ zaurusd/config/alsa/6000x-default.state	2007-12-26 00:06:02.000000000 -0600
+--- zaurusd/config/alsa/6000x-default.state.old	2008-03-21 02:21:47.000000000 -0500
++++ zaurusd/config/alsa/6000x-default.state	2008-03-30 07:48:06.000000000 -0500
 @@ -37,13 +37,23 @@ state.Tosa {
  	}
  	control.5 {
@@ -701,9 +701,12 @@
  		comment.access 'read write'
  		comment.type ENUMERATED
  		comment.count 1
-@@ -661,7 +719,7 @@ state.Tosa {
+@@ -659,9 +717,9 @@ state.Tosa {
+ 		comment.item.1 'Headphone Mix'
+ 		iface MIXER
  		name 'Speaker Mux'
- 		value 'Headphone Mix'
+-		value 'Headphone Mix'
++		value 'Speaker Mix'
  	}
 -	control.75 {
 +	control.82 {
@@ -728,9 +731,12 @@
  		comment.access 'read write'
  		comment.type ENUMERATED
  		comment.count 1
-@@ -698,15 +756,14 @@ state.Tosa {
+@@ -696,17 +754,16 @@ state.Tosa {
+ 		comment.item.4 Off
+ 		iface MIXER
  		name 'Jack Function'
- 		value Headphone
+-		value Headphone
++		value Off
  	}
 -	control.78 {
 +	control.85 {
