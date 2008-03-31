@@ -1,0 +1,32 @@
+#!/bin/bash
+
+export PATH=/home/zecke/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+
+cd $HOME/mtn2git-scm/oe-convert/
+
+# Update monotone
+mtn --db ../OE.mtn pull monotone.linuxtogo.org "org.openembedded.*"
+
+OLD_OE_DIR=openembedded-git.$$.$RANDOM
+
+git-clone -l openembedded-git $OLD_OE_DIR
+cp git-import-marks2 $OLD_OE_DIR/
+cp mtn2git-status.v2 $OLD_OE_DIR/
+cp mtn2git-marks     $OLD_OE_DIR/
+
+cd openembedded-git
+# Convert (this could fail as our marks are not complete...) and we hardcode the revision
+#../../mtn2git/mtn2git.py --db ../../OE.mtn --marks=../mtn2git-marks --status=../mtn2git-status.v2 2> /dev/null | git-fast-import --date-format=rfc2822 --import-marks=../git-import-marks2 --export-marks=../git-import-marks2
+../../mtn2git/mtn2git.py --db ../../OE.mtn --marks=../mtn2git-marks --status=../mtn2git-status.v2 | git-fast-import --date-format=rfc2822 --import-marks=../git-import-marks2 --export-marks=../git-import-marks2
+
+
+
+# Push all changes to the server, update the master tag as well
+for branch in dev dreambox documentation oetest oz354x packaged-staging oz354fam083 angstrom-2007.12-stable entity stable;
+do
+    git-push --force git+ssh://ABC@repo.or.cz/srv/git/org.openembedded.dev.git org.openembedded.$branch;
+done
+
+#dev is our master
+git-push --force git+ssh://ABC@repo.or.cz/srv/git/org.openembedded.dev.git org.openembedded.dev:master;
+
