@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-PR = "r20"
+PR = "r21"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -22,10 +22,12 @@ do_compile() {
 do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0755 updater.sh ${DEPLOY_DIR_IMAGE}/updater.sh.${MACHINE}
+        package_stagefile_shell ${DEPLOY_DIR_IMAGE}/updater.sh.${MACHINE}
 
 	case ${MACHINE} in
 		spitz )
 			install -m 0755 gnu-tar ${DEPLOY_DIR_IMAGE}/gnu-tar
+		        package_stagefile_shell ${DEPLOY_DIR_IMAGE}/gnu-tar
 			;;
         	*)
 			;;
