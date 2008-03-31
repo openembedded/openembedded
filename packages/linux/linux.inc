@@ -24,8 +24,16 @@ KERNEL_DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
 KERNEL_DEVICETREE_FLAGS_mpc8313e-rdb = "-R 8 -S 0x3000"
 KERNEL_DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
 
-DEPENDS_append_mpc8313e-rdb = " dtc-native"
-DEPENDS_append_mpc8323e-rdb = " dtc-native"
+python __anonymous () {
+
+    import bb
+    
+    devicetree = bb.data.getVar('KERNEL_DEVICETREE', d, 1) or ''
+    if devicetree:
+    	depends = bb.data.getVar("DEPENDS", d, 1)
+    	depends = "%s dtc-native" % depends
+    	bb.data.setVar("DEPENDS", depends, d)
+}
 
 do_configure_prepend() {
         echo "" > ${S}/.config
