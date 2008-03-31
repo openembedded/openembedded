@@ -64,15 +64,5 @@ python do_compulab_image() {
 	    os.symlink(img_file, link_file)
 }
 
-do_devicetree_image() {
-        if test -n "${DEVICETREE}" ; then
-            dtc -I dts -O dtb -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${DEVICETREE}
-
-            cd ${DEPLOY_DIR_IMAGE}
-            rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-            ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-        fi
-}
-
 addtask compulab_image after do_deploy before do_package
-addtask devicetree_image after do_deploy before do_package
+

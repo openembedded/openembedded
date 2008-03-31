@@ -18,6 +18,15 @@ CMDLINE_at91sam9263ek = "mem=64M console=ttyS0,115200 root=/dev/mmcblk0p1 rootfs
 CMDLINE_DEBUG ?= '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
 CMDLINE_append = " ${CMDLINE_DEBUG} "
 
+# Support for binary device tree generation
+
+KERNEL_DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
+KERNEL_DEVICETREE_FLAGS_mpc8313e-rdb = "-R 8 -S 0x3000"
+KERNEL_DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
+
+DEPENDS_append_mpc8313e-rdb = " dtc-native"
+DEPENDS_append_mpc8323e-rdb = " dtc-native"
+
 do_configure_prepend() {
         echo "" > ${S}/.config
 
@@ -106,3 +115,14 @@ do_compile_append() {
     fi
 }
 
+do_devicetree_image() {
+        if test -n "${KERNEL_DEVICETREE}" ; then
+            dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_DEVICETREE}
+
+            cd ${DEPLOY_DIR_IMAGE}
+            rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+            ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+        fi
+}
+
+addtask devicetree_image after do_deploy before do_package

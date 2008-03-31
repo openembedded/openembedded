@@ -10,8 +10,6 @@ DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 
-DEPENDS_append_mpc8313e-rdb = " dtc-native"
-
 PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
@@ -84,8 +82,6 @@ CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M
 
 FILES_kernel-image_gesbc-9302 = ""
 
-DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
-DEVICETREE_FLAGS_mpc8313e-rdb = "-R 8 -S 0x3000"
 python do_compulab_image() {
 	import os
 	import os.path
@@ -122,16 +118,5 @@ python do_compulab_image() {
 }
 
 
-do_devicetree_image() {
-        if test -n "${DEVICETREE}" ; then
-            dtc -I dts -O dtb ${DEVICETREE_FLAGS} -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${DEVICETREE}
-
-            cd ${DEPLOY_DIR_IMAGE}
-            rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-            ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-        fi
-}
-
 addtask compulab_image after do_deploy before do_package
-addtask devicetree_image after do_deploy before do_package
 
