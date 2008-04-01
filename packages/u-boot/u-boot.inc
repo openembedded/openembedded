@@ -10,7 +10,8 @@ PARALLEL_MAKE=""
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 
 UBOOT_MACHINE ?= "${MACHINE}_config"
-UBOOT_IMAGE = "u-boot-${MACHINE}-${PV}-${PR}.bin"
+UBOOT_IMAGE ?= "u-boot-${MACHINE}-${PV}-${PR}.bin"
+UBOOT_SYMLINK ?= "u-boot-${MACHINE}.bin"
 
 do_compile () {
 	unset LDFLAGS
@@ -23,6 +24,10 @@ do_compile () {
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install ${S}/u-boot.bin ${DEPLOY_DIR_IMAGE}/${UBOOT_IMAGE}
+
+	cd ${DEPLOY_DIR_IMAGE}
+	rm -f ${UBOOT_SYMLINK}
+	ln -sf ${UBOOT_IMAGE} ${UBOOT_SYMLINK}
 }
 do_deploy[dirs] = "${S}"
 addtask deploy before do_build after do_compile
