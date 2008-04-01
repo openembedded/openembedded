@@ -10,7 +10,6 @@ PR = "r8"
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1"
 
-SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
