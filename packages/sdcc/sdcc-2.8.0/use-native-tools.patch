@@ -1,0 +1,129 @@
+diff -Nurd sdcc.orig/device/lib/Makefile.in sdcc/device/lib/Makefile.in
+--- sdcc.orig/device/lib/Makefile.in	2007-06-03 22:38:18.000000000 +0200
++++ sdcc/device/lib/Makefile.in	2008-04-01 10:05:17.352552206 +0200
+@@ -27,8 +27,8 @@
+ PORTINCDIR	= $(INCDIR)/mcs51
+ endif
+ 
+-CC		= $(top_builddir)/bin/sdcc
+-CPP		= $(top_builddir)/bin/sdcpp
++CC		= sdcc
++CPP		= sdcpp
+ 
+ prefix          = @prefix@
+ exec_prefix     = @exec_prefix@
+diff -Nurd sdcc.orig/device/lib/ds390/Makefile.in sdcc/device/lib/ds390/Makefile.in
+--- sdcc.orig/device/lib/ds390/Makefile.in	2007-06-03 22:38:18.000000000 +0200
++++ sdcc/device/lib/ds390/Makefile.in	2008-04-01 10:06:23.287688808 +0200
+@@ -1,7 +1,7 @@
+ VPATH  = @srcdir@
+ srcdir = @srcdir@
+ 
+-CC = ../../../bin/sdcc
++CC = sdcc
+ 
+ #VERBOSE = --verbose
+ 
+diff -Nurd sdcc.orig/device/lib/ds400/Makefile.in sdcc/device/lib/ds400/Makefile.in
+--- sdcc.orig/device/lib/ds400/Makefile.in	2007-06-03 22:38:18.000000000 +0200
++++ sdcc/device/lib/ds400/Makefile.in	2008-04-01 10:06:44.282796254 +0200
+@@ -1,4 +1,4 @@
+-CC = ../../../bin/sdcc
++CC = sdcc
+ 
+ VPATH  = @srcdir@
+ srcdir = @srcdir@
+diff -Nurd sdcc.orig/device/lib/gbz80/Makefile.in sdcc/device/lib/gbz80/Makefile.in
+--- sdcc.orig/device/lib/gbz80/Makefile.in	2007-04-18 21:56:32.000000000 +0200
++++ sdcc/device/lib/gbz80/Makefile.in	2008-04-01 10:07:40.539249456 +0200
+@@ -5,8 +5,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SCC = $(TOPDIR)/bin/sdcc -mgbz80
+-SAS = $(TOPDIR)/bin/as-gbz80
++SCC = sdcc -mgbz80
++SAS = as-gbz80
+ 
+ OBJ = div.o mul.o putchar.o printf.o shift.o stubs.o crt0_rle.o heap.o fstubs.o
+ 
+diff -Nurd sdcc.orig/device/lib/hc08/Makefile.in sdcc/device/lib/hc08/Makefile.in
+--- sdcc.orig/device/lib/hc08/Makefile.in	2007-04-18 21:56:32.000000000 +0200
++++ sdcc/device/lib/hc08/Makefile.in	2008-04-01 10:09:20.336580262 +0200
+@@ -5,8 +5,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SCC = $(TOPDIR)/bin/sdcc -mhc08
+-SAS = $(TOPDIR)/bin/as6808
++SCC = sdcc -mhc08
++SAS = as6808
+ 
+ OBJ = _ret.rel _divuint.rel _divulong.rel _mulint.rel _mullong.rel
+ 
+diff -Nurd sdcc.orig/device/lib/mcs51/Makefile.in sdcc/device/lib/mcs51/Makefile.in
+--- sdcc.orig/device/lib/mcs51/Makefile.in	2007-04-18 21:56:32.000000000 +0200
++++ sdcc/device/lib/mcs51/Makefile.in	2008-04-01 10:05:53.603952030 +0200
+@@ -4,8 +4,8 @@
+ top_srcdir   = @top_srcdir@
+ top_builddir = @top_builddir@
+ 
+-SAS = $(top_builddir)/bin/asx8051
+-SCC = $(top_builddir)/bin/sdcc
++SAS = asx8051
++SCC = sdcc
+ 
+ OBJ = crtstart.rel crtxinit.rel crtxclear.rel crtclear.rel crtxstack.rel \
+       crtpagesfr.rel crtbank.rel crtcall.rel
+diff -Nurd sdcc.orig/device/lib/pic/Makefile.common.in sdcc/device/lib/pic/Makefile.common.in
+--- sdcc.orig/device/lib/pic/Makefile.common.in	2007-05-05 09:41:17.000000000 +0200
++++ sdcc/device/lib/pic/Makefile.common.in	2008-04-01 10:10:10.375857197 +0200
+@@ -68,8 +68,8 @@
+ 
+ #################################################
+ ### programs to use
+-CPP	= $(top_builddir)/../../../bin/sdcpp
+-CC	= $(top_builddir)/../../../bin/sdcc
++CPP	= sdcpp
++CC	= sdcc
+ AS	= @GPASM@
+ LD	= @GPLINK@
+ LIB	= @GPLIB@
+diff -Nurd sdcc.orig/device/lib/z80/Makefile.in sdcc/device/lib/z80/Makefile.in
+--- sdcc.orig/device/lib/z80/Makefile.in	2007-04-18 21:56:32.000000000 +0200
++++ sdcc/device/lib/z80/Makefile.in	2008-04-01 10:07:15.147644058 +0200
+@@ -5,8 +5,8 @@
+ 
+ TOPDIR = ../../..
+ 
+-SCC = $(TOPDIR)/bin/sdcc -mz80
+-SAS = $(TOPDIR)/bin/as-z80
++SCC = sdcc -mz80
++SAS = as-z80
+ 
+ OBJ = div.o mul.o putchar.o shift.o stubs.o crt0_rle.o heap.o fstubs.o
+ 
+diff -Nurd sdcc.orig/support/regression/Makefile.in sdcc/support/regression/Makefile.in
+--- sdcc.orig/support/regression/Makefile.in	2008-02-21 19:51:18.000000000 +0100
++++ sdcc/support/regression/Makefile.in	2008-04-01 10:08:38.665755305 +0200
+@@ -155,7 +155,7 @@
+ 
+ # Defaults.  Override in spec.mk if required.
+ # Path to SDCC
+-SDCC = $(top_builddir)/bin/sdcc
++SDCC = sdcc
+ # Base flags.
+ SDCCFLAGS += --fverbose-asm -DNO_VARARGS
+ # Extension of object intermediate files
+diff -Nurd sdcc.orig/support/tests/dhrystone/Makefile sdcc/support/tests/dhrystone/Makefile
+--- sdcc.orig/support/tests/dhrystone/Makefile	2001-10-22 03:14:16.000000000 +0200
++++ sdcc/support/tests/dhrystone/Makefile	2008-04-01 10:08:55.786456870 +0200
+@@ -3,7 +3,7 @@
+ 
+ PROC = z80
+ 
+-CC = $(TOPDIR)/bin/sdcc
++CC = sdcc
+ 
+ # -DNOENUM is here to make the results more predictable
+ CFLAGS += -DREG= -DNOSTRUCTASSIGN -DNOENUM -V -m$(PROC) --profile --dumpall --stack-auto
