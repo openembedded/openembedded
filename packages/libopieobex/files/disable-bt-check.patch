@@ -1,0 +1,19 @@
+--- obex/obex.pro	2007-07-20 23:44:06.000000000 +1200
++++ obex/obex.pro	2007-10-18 17:57:15.000000000 +1300
+@@ -13,12 +13,12 @@
+ include( $(OPIEDIR)/include.pro )
+ target.path = $$prefix/plugins/applets
+ 
+-#FIXME: These parameters are used if bluetooth is used
+-CONFTEST = $$system( echo $CONFIG_LIBOPIETOOTH )
+-contains( CONFTEST, y ){
++#FIXME: This test does not work under OE. Instead, just always enable bluetooth.
++#CONFTEST = $$system( echo $CONFIG_LIBOPIETOOTH )
++#contains( CONFTEST, y ){
+ HEADERS     += btobex.h
+ SOURCES     += btobex.cpp
+ INCLUDEPATH += $(OPIEDIR)/noncore/net/opietooth/lib
+ LIBS        += -lopietooth1 -lbluetooth
+ DEFINES     += BLUETOOTH
+-}
++#}
