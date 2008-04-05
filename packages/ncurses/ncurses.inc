@@ -83,6 +83,9 @@ pkg_prerm_ncurses-tools () {
 
 PACKAGES =+ "${PN}-ncurses ${PN}-panel ${PN}-menu ${PN}-form ${PN}-terminfo ${PN}-tools"
 FILES_${PN}-ncurses = "${libdir}/libncurses.so.*"
+# You can'r really run any ncurses app without terminfo files, which is why the packaging was that way before mickeyl broke it. 
+# This RRECOMMENDS should pull in terminfo to fix that 
+RRECOMMENDS_${PN}-ncurses = "${PN}-terminfo"
 FILES_${PN}-panel = "${libdir}/libpanel.so.*"
 FILES_${PN}-menu = "${libdir}/libmenu.so.*"
 FILES_${PN}-form = "${libdir}/libform.so.*"

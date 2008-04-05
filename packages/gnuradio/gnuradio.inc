@@ -21,7 +21,8 @@ EXTRA_OECONF = " \
                 --enable-gr-audio-jack \
                 --enable-gr-audio-oss \
                 --enable-mblock \
-	        "
+	        --disable-html-docs \
+		"
 
 do_configure_append() {
         find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':'-I${STAGING_INCDIR}':g

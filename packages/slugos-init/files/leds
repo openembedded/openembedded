@@ -81,8 +81,8 @@ sysled_readystatus(){
 		esac;;
 	esac
 
-	led_set "$1/ready" "$ready"
-	led_set "$1/status" "$status"
+	led_set "$1/$ready_led_name" "$ready"
+	led_set "$1/$status_led_name" "$status"
 }
 #
 # the cases for one LED (just ready)
@@ -104,7 +104,7 @@ sysled_ready(){
 		esac;;
 	esac
 
-	led_set "$1/ready" "$ready"
+	led_set "$1/$ready_led_name" "$ready"
 }
 #
 # the cases for one blue flashing LED (just power)
@@ -126,7 +126,7 @@ sysled_power(){
 		esac;;
 	esac
 
-	led_set "$1/power" "$power"
+	led_set "$1/$power_led_name" "$power"
 }
 #
 sysled(){
@@ -154,16 +154,16 @@ sysled(){
 	fi
 	#
 	# check for the 'ready' LED - otherwise check for a 'power' LED
-	if test -d "$mp/class/leds/ready"
+	if test -d "$mp/class/leds/$ready_led_name"
 	then
-		if test -d "$mp/class/leds/status"
+		if test -d "$mp/class/leds/$status_led_name"
 		then
 			sysled_readystatus "$mp/class/leds" $boot"$@"
 		else
 			sysled_ready "$mp/class/leds" $boot"$@"
 		fi
 	else
-		if test -d "$mp/class/leds/power"
+		if test -d "$mp/class/leds/$power_led_name"
 		then
 			sysled_power "$mp/class/leds" $boot"$@"
 		fi
@@ -211,7 +211,37 @@ leds_help(){
 	echo "    if possible cause the machine to emit a beep" >&2
 }
 
-#
+# Define the LED names based on kernel version.
+version=$(uname -r | cut -c -6)
+if [ "$version" \< "2.6.25" ]; then
+	status_led_name="status"
+	ready_led_name="ready"
+	power_led_name="power"
+else
+	case "$(machine)" in
+	dsmg600)
+		status_led_name="none"
+		ready_led_name="none"
+		power_led_name="dsmg600:green:power"
+		;;
+	fsg3)
+		status_led_name="none"
+		ready_led_name="fsg:blue:sync"
+		power_led_name="none"
+		;;
+	nas100d)
+		status_led_name="none"
+		ready_led_name="none"
+		power_led_name="nas100d:blue:power"
+		;;
+	nslu2)
+		status_led_name="nslu2:red:status"
+		ready_led_name="nslu2:green:ready"
+		power_led_name="none"
+		;;
+	esac
+fi
+
 # the real command, if required
 case "$1" in
 boot|system|user|singleuser|shutdown)

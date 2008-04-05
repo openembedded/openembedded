@@ -211,8 +211,7 @@ autotools_stage_all() {
 		else
 			# Otherwise libtool wasn't used, and lib/ can be copied
 			# directly.
-			echo "cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}"
-			cp -fpPR ${STAGE_TEMP}/${libdir}/* ${STAGING_LIBDIR}
+      autotools_stage_dir ${STAGE_TEMP}/${libdir} ${STAGING_LIBDIR}
 		fi
 	
 	fi
