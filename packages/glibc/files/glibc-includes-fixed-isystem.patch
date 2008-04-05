@@ -1,0 +1,32 @@
+http://sourceware.org/ml/libc-alpha/2007-03/msg00017.html:
+
+GCC trunk now has multiple internal headers directories, one
+containing the self-contained GCC-provided headers and one containing
+the <limits.h> (not self-contained but including libc's <limits.h> or
+a fixed version thereof) and the fixed headers; more such directories
+may be added in future.
+
+When glibc uses -nostdinc, it needs to use -isystem options for all
+these internal directories.  This patch teaches it about the
+include-fixed directory (and is harmless with old GCC versions without
+that directory).
+
+2007-03-18  Joseph Myers  <joseph@codesourcery.com>
+
+	* configure.in: Also pass -isystem option for GCC's include-fixed
+	directory.
+	* configure: Regenerate.
+
+Index: configure.in
+===================================================================
+--- /tmp/configure.in	2008-04-05 19:20:52.176759390 +0200
++++ glibc-2.6.1/configure.in	2008-04-05 19:21:26.663424600 +0200
+@@ -912,7 +912,7 @@
+ # thing on a system that doesn't need fixincludes.  (Not presently a problem.)
+ if test -n "$sysheaders"; then
+   ccheaders=`$CC -print-file-name=include`
+-  SYSINCLUDES="-nostdinc -isystem $ccheaders \
++  SYSINCLUDES="-nostdinc -isystem $ccheaders -isystem $ccheaders-fixed \
+ -isystem `echo $sysheaders | sed 's/:/ -isystem /g'`"
+   if test -n "$CXX"; then
+     cxxversion=`$CXX -dumpversion 2>&AS_MESSAGE_LOG_FD` &&
