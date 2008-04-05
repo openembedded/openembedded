@@ -1,5 +1,12 @@
 # general
 ac_cv_have_decl_sys_siglist=${ac_cv_have_decl_sys_siglist=no}
+ac_cv_af_unix_large_dgram=${ac_cv_af_unix_large_dgram=yes}
+ac_cv_have_setresuid_decl=${ac_cv_have_setresuid_decl=yes}
+ac_cv_func_setresuid=${ac_cv_func_setresuid=yes}
+ac_cv_va_copy=${ac_cv_va_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+ac_cv_func_va_copy=${ac_cv_func_va_copy=yes}
+ac_cv_func___va_copy=${ac_cv_func___va_copy=yes}
 
 #dbus-glib
 ac_cv_have_abstract_sockets=${ac_cv_have_abstract_sockets=yes}
