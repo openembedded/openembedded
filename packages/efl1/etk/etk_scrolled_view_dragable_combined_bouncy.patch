@@ -1,0 +1,496 @@
+Hi All,
+    The attached patch lets etk_scrolled_view been dragable with 
+pressing on the panel directly and drag. If you drag fast, after 
+releasing the panel will still scrolling until it stop slowly.
+
+Adding the following functions.
+void            etk_scrolled_view_dragable_set(Etk_Scrolled_View 
+*scrolled_view, Etk_Bool dragable);
+Etk_Bool   etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view);
+
+additional functions for detail control. (Most user don't need them)
+double        
+etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View 
+*scrolled_view,double interval);
+double        
+etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View 
+*scrolled_view);
+unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View 
+*scrolled_view,unsigned int damping);
+unsigned int etk_scrolled_view_drag_damping_magic_get(Etk_Scrolled_View 
+*scrolled_view);
+
+You can test this with etk_test after patching and adding two line in 
+etk_test
+
+Signed-off: Tick @ openmoko.org
+
+Index: etk/src/lib/etk_scrolled_view.c
+===================================================================
+--- etk.orig/src/lib/etk_scrolled_view.c	2008-04-02 11:53:32.000000000 +0800
++++ etk/src/lib/etk_scrolled_view.c	2008-04-05 00:41:47.000000000 +0800
+@@ -37,7 +37,15 @@
+ static Etk_Bool _etk_scrolled_view_child_added_cb(Etk_Object *object, void *child, void *data);
+ static Etk_Bool _etk_scrolled_view_child_removed_cb(Etk_Object *object, void *child, void *data);
+ static Etk_Bool _etk_scrolled_view_child_scroll_size_changed_cb(Etk_Object *object, void *data);
++static int _etk_scrolled_view_motive_bounce(void *data); 
+ 
++
++static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data); 
++static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
++static Etk_Bool _etk_scrolled_view_mouse_click(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
++static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data); 
++
++static Etk_Bool _etk_scrolled_view_bar_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data); 
+ /**************************
+  *
+  * Implementation
+@@ -173,6 +181,106 @@
+       *vpolicy = scrolled_view ? scrolled_view->vpolicy : ETK_POLICY_AUTO;
+ }
+ 
++/**
++ * @brief Set the scrolled view dragable or not
++ * @param scrolled_view a scrolled view
++ * @param dragable The scrolled view is dragable or not?
++ */ 
++void etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk_Bool dragable) 
++{
++   if (!scrolled_view)
++      return;
++   scrolled_view->drag.dragable = dragable;
++}
++
++/**
++ * @brief Get the scrolled view dragable flag
++ * @param scrolled_view a scrolled view
++ * @return Returns ETK_TURE if the scrolled view is dragable
++ */
++Etk_Bool etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view) 
++{
++   if (!scrolled_view)
++      return ETK_FALSE;
++   return scrolled_view->drag.dragable;
++}
++
++/**
++ * @brief Set the scrolled view boucy or not.
++ * @param scrolled_view  a scrolled view
++ * @param bouncy The scrolled view is bouncy or not (Default TRUE)
++ */ 
++void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy) 
++{
++   if (!scrolled_view)
++      return;
++   scrolled_view->drag.bouncy = bouncy;
++}
++
++/**
++ * @brief  Get the scrolled view bouncy flag
++ * @param scrolled_view  a scrolled view
++ * @return Returns ETK_TURE if the scrolled view is bouncy
++ */ 
++Etk_Bool etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view) 
++{
++   if (!scrolled_view)
++      return ETK_FALSE;
++   return scrolled_view->drag.bouncy;
++}
++
++/**
++ * @brief Set the scrolled view sample interval to calculate the scrolling speed.
++ * @param scrolled_view a scrolled view
++ * @param interval The interval of sampling latest scrolling speed (minimial 0.2 second, default 0.5 second)
++ * @return Returns the actual sampling interval set. If scrolled_view is NULL returns 0.0f. 
++ */
++double etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View *scrolled_view,double interval) 
++{
++   if (!scrolled_view)
++      return 0.0f;
++   interval = interval >= 0.2f ? interval : 0.2f;
++   scrolled_view->drag.sample_magic = interval;
++   return scrolled_view->drag.sample_magic;
++}
++
++/**
++ * @brief Get the scrolled view sample interval to calculate the scrolling speed.
++ * @param scrolled_view a scrolled view
++ * @return Returns the sampling interval. If scrolled_view is NULL return 0.0f. 
++ */
++double etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View *scrolled_view)
++{
++   if (!scrolled_view)
++      return 0.0f;
++   return scrolled_view->drag.sample_magic;
++}
++
++/**
++ * @brief Set the damping magic number of a dragable scrolled view
++ * @param scrolled_view a scrolled view
++ * @param damping The damping factor of the dragable scrolled view (default 100)
++ * @return Returns the actual damping factor set
++ */ 
++unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View *scrolled_view,unsigned int damping)
++{
++   if (!scrolled_view)
++      return 0;
++   scrolled_view->drag.damping_magic = damping;
++   return scrolled_view->drag.damping_magic;
++}
++
++/**
++ * @brief Get the damping magic number of a dragable scrolled view
++ * @param scrolled_view a scrolled view
++ * @return Returns the actual damping factor
++ */ 
++unsigned int etk_scrolled_view_drag_damping_magic_get(Etk_Scrolled_View *scrolled_view) 
++{
++   if (!scrolled_view)
++      return 0;
++   return scrolled_view->drag.damping_magic;
++}
+ 
+ /**************************
+  *
+@@ -189,6 +297,14 @@
+    scrolled_view->hpolicy = ETK_POLICY_AUTO;
+    scrolled_view->vpolicy = ETK_POLICY_AUTO;
+ 
++   scrolled_view->drag.bar_pressed = ETK_FALSE;
++   scrolled_view->drag.dragable    = ETK_FALSE;
++   scrolled_view->drag.bouncy      = ETK_TRUE;
++
++   // FIXME This can be put in etk_config (Make whole system be configured)
++   etk_scrolled_view_drag_sample_interval_magic_set(scrolled_view,0.5f);
++   etk_scrolled_view_drag_damping_magic_set(scrolled_view,100);
++
+    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 12.0, 50.0, 0.0);
+    etk_widget_theme_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
+    etk_widget_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
+@@ -205,11 +321,18 @@
+    ETK_WIDGET(scrolled_view)->size_allocate = _etk_scrolled_view_size_allocate;
+ 
+    etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_key_down_cb), NULL);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_down), &scrolled_view->drag);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_up), &scrolled_view->drag);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_click), &scrolled_view->drag);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_MOVE_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_move), &scrolled_view->drag);
+    etk_signal_connect_by_code(ETK_WIDGET_MOUSE_WHEEL_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_mouse_wheel), NULL);
+    etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_added_cb), NULL);
+    etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(scrolled_view), ETK_CALLBACK(_etk_scrolled_view_child_removed_cb), NULL);
+    etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_hscrollbar_value_changed_cb), scrolled_view);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(scrolled_view->hscrollbar), ETK_CALLBACK(_etk_scrolled_view_bar_mouse_down), scrolled_view);
+    etk_signal_connect_by_code(ETK_RANGE_VALUE_CHANGED_SIGNAL, ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_vscrollbar_value_changed_cb), scrolled_view);
++   etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(scrolled_view->vscrollbar), ETK_CALLBACK(_etk_scrolled_view_bar_mouse_down), scrolled_view);
++
+ }
+ 
+ /* Sets the property whose id is "property_id" to the value "value" */
+@@ -390,6 +513,94 @@
+    etk_widget_size_allocate(child, child_geometry);
+ }
+ 
++/* Check if reaching the boundary */
++static inline double _etk_scrolled_view_bounce_check (Etk_Range * range, double delta,double v) 
++{
++   double pos = (range->value + delta);
++   if (pos <= range->lower) 
++   {
++      pos = range->lower + (range->lower - pos);
++      v *= -1;
++   }
++   etk_range_value_set(range, pos);
++   if (pos > range->value) 
++      v *= -1;
++   return v;
++}
++
++/* Animator for inertial scrolling */
++static int _etk_scrolled_view_motive_bounce(void *data) 
++{
++   Etk_Scrolled_View *scrolled_view = ETK_SCROLLED_VIEW(data);
++   struct Etk_Scrolled_View_Mouse_Drag *drag;
++   Etk_Range *vscrollbar_range;
++   Etk_Range *hscrollbar_range;
++   double delta_time;
++   double delta_V;
++   double delta_x;
++   double delta_y;
++   if (!scrolled_view) 
++      return 0;
++   drag = &scrolled_view->drag;
++   if (drag->mouse_down) 
++      return 0;
++
++   // Using trapezoid method to calculate the distance. 
++   delta_time = ecore_time_get() - drag->timestamp;
++   delta_V = delta_time * (drag->damping_magic + abs(drag->Vx)+ abs(drag->Vy))/2;
++   delta_time = delta_time < 0.01f ? 0.01f: delta_time;
++
++   if (drag->Vx < delta_V && drag->Vx > -delta_V) 
++   {
++      delta_x = 0;
++      drag->Vx = 0;
++   } 
++   else if (drag->Vx > 0)
++   {
++      delta_x = ((drag->Vx * 2) - delta_V) * delta_time / 2;
++      drag->Vx = drag->Vx - delta_V;
++   } 
++   else 
++   {
++      delta_x = ((drag->Vx * 2) + delta_V) * delta_time / 2;
++      drag->Vx = drag->Vx +  delta_V;
++   }
++
++   if (drag->Vy < delta_V && drag->Vy > -delta_V) 
++   {
++      drag->Vy = 0;
++      delta_y = 0;
++   } 
++   else if(drag->Vy > 0)
++   {
++      delta_y = ((drag->Vy * 2) - delta_V) * delta_time / 2;
++      drag->Vy = drag->Vy - delta_V;
++   } else 
++   {
++      delta_y = ((drag->Vy * 2) + delta_V) * delta_time / 2;
++      drag->Vy = drag->Vy + delta_V;
++   }
++
++   if (drag->Vx == 0 && drag->Vy == 0) 
++      return 0;
++
++   vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
++   hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
++   if (drag->bouncy)  
++   {
++      drag->Vx = _etk_scrolled_view_bounce_check(hscrollbar_range, delta_x, drag->Vx);
++      drag->Vy = _etk_scrolled_view_bounce_check(vscrollbar_range, delta_y, drag->Vy);
++   }
++   else 
++   {
++      drag->Vx = drag->Vx == _etk_scrolled_view_bounce_check(hscrollbar_range, delta_x, drag->Vx) ? drag->Vx : 0.0f;
++      drag->Vy = drag->Vy == _etk_scrolled_view_bounce_check(vscrollbar_range, delta_y, drag->Vy) ? drag->Vy : 0.0f;
++   }
++   drag->timestamp = ecore_time_get();
++   return 1;
++}
++
++
+ /**************************
+  *
+  * Callbacks and handlers
+@@ -431,6 +642,135 @@
+    return propagate;
+ }
+ 
++/* Called when mouse button has been pressed down */
++static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data) 
++{
++   Etk_Scrolled_View *scrolled_view;
++   Etk_Range *vscrollbar_range;
++   Etk_Range *hscrollbar_range;
++   struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
++
++   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
++      return ETK_FALSE;
++
++   if (!drag->dragable) 
++      return ETK_FALSE;
++
++   if (!drag->mouse_down && event->button) 
++   {
++      vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
++      hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
++      drag->mouse_down = ETK_TRUE;
++      drag->timestamp = ecore_time_get(); 
++      drag->old_timestamp = 0.0f;
++      drag->position = event->widget;
++      drag->bar_position.x = hscrollbar_range->value;
++      drag->bar_position.y = vscrollbar_range->value;
++   }
++   return ETK_FALSE;
++}
++
++/* Called when mouse is dragging */
++static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data) 
++{
++   Etk_Scrolled_View *scrolled_view;
++   Etk_Range *vscrollbar_range;
++   Etk_Range *hscrollbar_range;
++   double delta_time;
++   struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
++
++   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
++      return ETK_FALSE;
++
++   if (!drag->dragable)
++      return ETK_FALSE;
++
++   if (!drag->mouse_down) 
++      return ETK_FALSE;
++
++   if (!event->buttons) 
++      return ETK_FALSE;
++
++   vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
++   hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
++   if (drag->scroll_flag == 0) 
++   {
++         drag->scroll_flag = (event->cur.widget.y - drag->position.y)/vscrollbar_range->step_increment || (event->cur.widget.x - drag->position.x)/hscrollbar_range->step_increment;
++   }
++
++   if (drag->scroll_flag) 
++   {
++      if (drag->bar_pressed==ETK_FALSE) 
++      {
++         etk_range_value_set(vscrollbar_range, vscrollbar_range->value - (event->cur.widget.y - drag->position.y));
++         etk_range_value_set(hscrollbar_range, hscrollbar_range->value - (event->cur.widget.x - drag->position.x));
++      }
++      drag->position  = event->cur.widget;
++      delta_time = ecore_time_get() - drag->timestamp;
++      // in case delta_time is zero
++      delta_time = delta_time == 0.0f ? drag->sample_magic : delta_time;
++      if (delta_time > drag->sample_magic || drag->old_timestamp == 0) 
++      {
++         drag->old_timestamp = drag->timestamp;
++         drag->timestamp = ecore_time_get();
++         drag->Vx = (hscrollbar_range->value - drag->bar_position.x) / delta_time;
++         drag->Vy = (vscrollbar_range->value - drag->bar_position.y) / delta_time;
++         drag->bar_position.x = hscrollbar_range->value;
++         drag->bar_position.y = vscrollbar_range->value;
++      }
++      return ETK_TRUE;
++   }
++   return ETK_FALSE;
++}
++
++/* Called when mouse button has been released */
++static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data) 
++{
++   Etk_Scrolled_View *scrolled_view;
++   struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
++
++   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
++      return ETK_FALSE;
++
++   if (!drag->dragable) 
++      return ETK_FALSE;
++
++   if (!drag->mouse_down) 
++      return ETK_FALSE;
++
++   if (drag->bar_pressed == ETK_TRUE) 
++   {
++      drag->bar_pressed = ETK_FALSE;
++      return ETK_FALSE;
++   }
++
++   drag->mouse_down = ETK_FALSE;
++
++   if (drag->scroll_flag) 
++   {
++      drag->timestamp = ecore_time_get();
++      ecore_animator_add(&_etk_scrolled_view_motive_bounce, scrolled_view);
++      return ETK_TRUE;
++   }
++   return ETK_FALSE;
++}
++
++/* Called when mouse button has been clicked */
++static Etk_Bool _etk_scrolled_view_mouse_click (Etk_Object *object, Etk_Event_Mouse_Up *event, void *data) 
++{
++   Etk_Scrolled_View *scrolled_view;
++   struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
++   if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
++      return ETK_TRUE;
++
++   if (drag->scroll_flag) 
++   {
++      drag->scroll_flag = 0;
++      return ETK_TRUE;
++   }
++   return ETK_FALSE;
++}
++
+ /* Called when the user wants to scroll the scrolled view with the mouse wheel */
+ static Etk_Bool _etk_scrolled_view_mouse_wheel(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data)
+ {
+@@ -458,6 +798,18 @@
+    return ETK_TRUE;
+ }
+ 
++/* Called when dragging on the scrollbar */
++static Etk_Bool _etk_scrolled_view_bar_mouse_down(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data) 
++{
++   Etk_Scrolled_View *scrolled_view;
++   Etk_Widget *child;
++   if (!(scrolled_view = ETK_SCROLLED_VIEW(data)) || !(child = ETK_BIN(scrolled_view)->child) || !child->scroll)
++      return ETK_FALSE;
++   scrolled_view->drag.bar_pressed = ETK_TRUE;
++   return ETK_FALSE;
++}
++
++
+ /* Called when the value of the vscrollbar has changed */
+ static Etk_Bool _etk_scrolled_view_vscrollbar_value_changed_cb(Etk_Object *object, double value, void *data)
+ {
+Index: etk/src/lib/etk_scrolled_view.h
+===================================================================
+--- etk.orig/src/lib/etk_scrolled_view.h	2008-04-02 11:53:32.000000000 +0800
++++ etk/src/lib/etk_scrolled_view.h	2008-04-05 00:03:31.000000000 +0800
+@@ -33,9 +33,24 @@
+    ETK_POLICY_AUTO,     /**< The scrollbar is shown and hidden automatically whether or not the child can fit
+                          * entirely in the scrolled view */
+    ETK_POLICY_SHOW,     /**< The scrollbar is always visible */
+-   ETK_POLICY_HIDE      /**< The scrollbar is always hidden */
++   ETK_POLICY_HIDE,     /**< The scrollbar is always hidden */
+ } Etk_Scrolled_View_Policy;
+ 
++struct Etk_Scrolled_View_Mouse_Drag 
++{
++   Etk_Bool mouse_down;
++   Etk_Bool bar_pressed;
++   Etk_Bool dragable;
++   Etk_Bool bouncy;
++   int scroll_flag;
++   Etk_Position position;
++   Etk_Position bar_position;
++   double sample_magic;
++   unsigned int damping_magic;
++   double timestamp;
++   double old_timestamp;
++   double Vx,Vy;
++};
+ 
+ /**
+  * @brief @widget The structure of a scrolled view
+@@ -52,9 +67,12 @@
+ 
+    Etk_Scrolled_View_Policy hpolicy;
+    Etk_Scrolled_View_Policy vpolicy;
++
++   struct Etk_Scrolled_View_Mouse_Drag drag;
+ };
+ 
+ 
++
+ Etk_Type   *etk_scrolled_view_type_get(void);
+ Etk_Widget *etk_scrolled_view_new(void);
+ 
+@@ -63,6 +81,14 @@
+ void        etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_Widget *child);
+ void        etk_scrolled_view_policy_set(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy hpolicy, Etk_Scrolled_View_Policy vpolicy);
+ void        etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled_View_Policy *hpolicy, Etk_Scrolled_View_Policy *vpolicy);
++void        etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk_Bool dragable);
++Etk_Bool    etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view);
++void        etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy);
++Etk_Bool    etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view);
++double      etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View *scrolled_view,double interval);
++double      etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View *scrolled_view);
++unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View *scrolled_view,unsigned int damping);
++unsigned int etk_scrolled_view_drag_damping_magic_get(Etk_Scrolled_View *scrolled_view);
+ 
+ /** @} */
+ 
