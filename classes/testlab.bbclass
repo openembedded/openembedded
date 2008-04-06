@@ -32,7 +32,7 @@ if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] ; then
 	echo -e "digraph depends {\n    node [shape=plaintext]" > ${TESTLAB_DIR}/depends.dot
 
 	for pkg in $(opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} list_installed | awk '{print $1}') ; do 
-    		opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} info $pkg | grep Filename | awk -F: '{print $2}'  >> ${TESTLAB_DIR}/installed-packages.txt
+		opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o ${IMAGE_ROOTFS} info $pkg | awk '/Package/ {printf $2"_"} /Version/ {printf $2"_"} /Archi/ {print $2".ipk"}'  >> ${TESTLAB_DIR}/installed-packages.txt
 
     		for depends in $(opkg-cl -f ${IMAGE_ROOTFS}/etc/opkg -o  ${IMAGE_ROOTFS} info $pkg | grep Depends) ; do 
         		echo "$pkg OPP $depends;" | grep -v "(" | grep -v ")" | grep -v Depends | sed -e 's:,::g' -e 's:-:_:g' -e 's:\.:_:g' -e 's:+::g' |sed 's:OPP:->:g' >> ${TESTLAB_DIR}/depends.dot
@@ -57,7 +57,7 @@ if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] ; then
 	#dot -Tpng -o ${TESTLAB_DIR}/image-dependencies-nokernel-nolibc-noupdate-nomodules.png ${TESTLAB_DIR}/depends-nokernel-nolibc-noupdate-nomodules.dot
 
 	for file in $(cat ${TESTLAB_DIR}/installed-packages.txt) ; do 
-     		du -k $(find ${DEPLOY_DIR_IPK} -name "$file") 
+     		du -k $(find ${DEPLOY_DIR_IPK} -name "$file") | head -n1
 	done | grep "\.ipk" | sed -e s:${DEPLOY_DIR_IPK}::g | sort -n -r | awk '{print $1 "\tKiB " $2}' > ${TESTLAB_DIR}/installed-package-sizes.txt
 fi
 }
