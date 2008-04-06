@@ -7,8 +7,6 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libpcre-${PV}"
 # NOTE: consider defining PREFERRED_PROVIDER_pcre
 PROVIDES = ""
 
-SRC_URI += "file://native-rpath-link.patch;patch=1"
-
 do_compile () {
 	# The generation of dftables can lead to timestamp problems with ccache
 	# because the generated config.h seems newer.  It is sufficient to ensure that the

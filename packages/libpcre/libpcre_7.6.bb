@@ -5,9 +5,10 @@ provides a POSIX calling interface to PCRE; the regular expressions \
 themselves still follow Perl syntax and semantics. The header file for \
 the POSIX-style functions is called pcreposix.h."
 SECTION = "devel"
-PR = "r8"
+PR = "r1"
 LICENSE = "BSD"
-SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/pcre/pcre-${PV}.tar.bz2 \
+           file://pcre-cross.patch;patch=1"
 S = "${WORKDIR}/pcre-${PV}"
 
 PROVIDES = "pcre"
@@ -18,7 +19,7 @@ PARALLEL_MAKE = ""
 
 LEAD_SONAME = "libpcre.so"
 CFLAGS_append = " -D_REENTRANT"
-EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000"
+EXTRA_OECONF = " --with-link-size=2 --enable-newline-is-lf --with-match-limit=10000000 --enable-rebuild-chartables --enable-utf8"
 
 do_compile () {
 	# stop libtool from trying to link with host libraries - fix from #33
@@ -29,7 +30,7 @@ do_compile () {
 	# because the generated config.h seems newer.  It is sufficient to ensure that the
 	# attempt to build dftables inside make will actually work (foo_FOR_BUILD is
 	# only used for this).
-	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC}"
+	oe_runmake CC_FOR_BUILD="${BUILD_CC}" CFLAGS_FOR_BUILD="-DLINK_SIZE=2 -I${S}/include" LINK_FOR_BUILD="${BUILD_CC} -L${S}/lib"
 }
 
 do_stage () {
