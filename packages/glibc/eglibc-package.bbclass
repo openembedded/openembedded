@@ -262,7 +262,7 @@ python package_do_split_gconvs () {
 		else:
 			eglibc_name = name
 		bb.data.setVar('RDEPENDS_%s' % pkgname, legitimize_package_name('eglibc-binary-localedata-%s' % eglibc_name), d)
-		bb.data.setVar('RPROVIDES_%s' % pkgname, 'glibc-binary-localedata-%s' % group, d)
+		bb.data.setVar('RPROVIDES_%s' % pkgname, 'glibc-binary-localedata-%s' % eglibc_name, d)
 		rprovides = 'virtual-locale-%s' % legitimize_package_name(name)
 		m = re.match("(.*)_(.*)", name)
 		if m:

@@ -5,6 +5,9 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.7+svnr${SRCREV}"
 PR = "r4"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
+           file://eglibc-svn-arm-cargs6.patch;patch=1 \
+           file://eglibc-svn-arm-check_pf.patch;patch=1 \
+           file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
 S = "${WORKDIR}/trunk/libc"
@@ -48,8 +51,13 @@ EXTRA_OECONF = "--enable-kernel=${OLDEST_KERNEL} \
 
 EXTRA_OECONF += "${@get_eglibc_fpu_setting(bb, d)}"
 
-do_configure_prepend() {
+do_unpack_append() {
+	bb.build.exec_func('do_move_ports', d)
+}
+
+do_move_ports() {
         if test -d ${WORKDIR}/trunk/ports ; then
+	    rm -rf ${S}/ports
 	    mv ${WORKDIR}/trunk/ports ${S}/
 	fi    
 }
