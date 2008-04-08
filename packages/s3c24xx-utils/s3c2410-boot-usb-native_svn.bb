@@ -3,7 +3,7 @@ DEPENDS = "libusb-native"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
 LICENSE = "GPL"
-PV = "0.1.0+svn${SRCDATE}"
+PV = "0.1.0+svn${SRCREV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=s3c2410_boot_usb;proto=https"
