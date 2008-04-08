@@ -1,0 +1,1 @@
+BUS=="usb", KERNEL=="ttyUSB0", SUBSYSTEM=="tty", ACTION=="add", RUN+="/bin/sh -c 'while [ -e /dev/ttyUSB0 ]; do /sbin/getty 115200 ttyUSB0; done'"
