@@ -2,7 +2,7 @@ DESCRIPTION = "JTAG utility to interface w/ a S3C2410 device"
 SECTION = "devel"
 AUTHOR = "Harald Welte"
 LICENSE = "GPL"
-PV = "0.1+svn${SRCDATE}"
+PV = "0.1+svn${SRCREV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=sjf2410-linux;proto=https"
