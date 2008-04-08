@@ -3,15 +3,16 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
+PR = "r3"
 
-PR = "r2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
+           file://add-pkgconfig.patch;patch=1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz"
 S = "${WORKDIR}/libmad-${PV}"
 
 SRC_URI_append_avr32 = " file://libmad-0.15.1b-avr32-optimization.patch;patch=1"
 
-inherit autotools
+inherit autotools pkgconfig
 
 EXTRA_OECONF = "-enable-speed --enable-shared"
 # The ASO's don't take any account of thumb...
@@ -27,3 +28,5 @@ do_stage() {
 	oe_libinstall -so libmad ${STAGING_LIBDIR}
 	install -m 0644 mad.h ${STAGING_INCDIR}
 }
+
+ARM_INSTRUCTION_SET = "arm"
