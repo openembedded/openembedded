@@ -7,7 +7,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/dosfstools-${PV}"
 
 S="${WORKDIR}/dosfstools-${PV}"
 
-PR="r3"
+PR="r4"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
 	file://mkdosfs-bootcode.patch;patch=1 \
@@ -16,7 +16,8 @@ SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}
 	file://dosfstools-2.10-kernel-2.6.patch;patch=1 \
 	file://msdos_fat12_undefined.patch;patch=1 \
 	file://dosfstools-msdos_fs-types.patch;patch=1 \
-	file://include-linux-types.patch;patch=1"
+	file://include-linux-types.patch;patch=1 \
+	file://2.6.20-syscall.patch;patch=1"
 
 inherit native
 

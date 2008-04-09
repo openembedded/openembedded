@@ -3,6 +3,5 @@
 # Released under the MIT license (see packages/COPYING)
 
 require mtools_${PV}.bb
-S="${WORKDIR}/mtools-${PV}"
 
 inherit autotools native
