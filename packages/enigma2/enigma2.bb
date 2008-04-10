@@ -33,7 +33,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced vi
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20080313"
+SRCDATE = "20080411"
 
 REL_MAJOR="2"
 REL_MINOR="4"
