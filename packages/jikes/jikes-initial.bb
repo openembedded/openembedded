@@ -2,7 +2,8 @@ SUMMARY = "Initial Java 1.4-compatible (and not higher) compiler"
 
 DEPENDS = "jikes-native classpath-initial"
 
-SRC_URI = ""
+# Packaged-staging needs a Source: field to put in the packages, so SRC_URI can't be empty
+SRC_URI = "file://dummy"
 
 S = "${WORKDIR}"
 
