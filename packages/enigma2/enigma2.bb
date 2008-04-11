@@ -44,6 +44,8 @@ PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver;date=${SRCDATE} \
            file://enigma2.sh"
 
+SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
+
 S = "${WORKDIR}/enigma2"
 
 FILES_${PN} += "${datadir}/fonts"

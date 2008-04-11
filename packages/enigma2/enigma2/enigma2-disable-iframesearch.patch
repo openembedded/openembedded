@@ -1,0 +1,13 @@
+Index: enigma2/lib/dvb/dvb.cpp
+===================================================================
+--- enigma2.orig/lib/dvb/dvb.cpp	2008-04-11 19:01:56.000000000 +0200
++++ enigma2/lib/dvb/dvb.cpp	2008-04-11 19:02:15.000000000 +0200
+@@ -845,7 +845,7 @@
+ 	}
+ #endif
+ 
+-#if 1 /* not yet */
++#if 0 /* not yet */
+ 	if (!m_iframe_search)
+ 		return len;
+ 
