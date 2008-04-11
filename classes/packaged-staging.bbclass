@@ -233,9 +233,15 @@ staging_packager () {
 	echo "Priority: Optional"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 	echo "Maintainer: ${MAINTAINER}"        >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
 	echo "Architecture: ${PSTAGE_PKGARCH}"  >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
-	echo "Source: ${SRC_URI}"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
-
-        ${PSTAGE_BUILD_CMD} ${PSTAGE_TMPDIR_STAGE} ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}
+	
+	# Protect against empty SRC_URI
+	if [ "${SRC_URI}" != "" ] ; then		
+		echo "Source: ${SRC_URI}"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+	else
+		echo "Source: OpenEmbedded"               >> ${PSTAGE_TMPDIR_STAGE}/CONTROL/control
+	fi
+        
+	${PSTAGE_BUILD_CMD} ${PSTAGE_TMPDIR_STAGE} ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}
 	${PSTAGE_INSTALL_CMD} ${PSTAGE_PKG}
 }
 
