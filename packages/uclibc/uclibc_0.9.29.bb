@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r12"
+PR = "r13"
 
 require uclibc.inc
 
@@ -16,6 +16,7 @@ PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://errno_values.h.patch;patch=1 \
 	    file://termios.h.patch;patch=1 \
+	    file://unistd_arm.patch;patch=1 \
             file://uClibc-0.9.29-001-fix-mmap.patch;patch=1 \
             file://uClibc-0.9.29-002-atmel.1.patch;patch=1 \
             file://uClibc-0.9.29-avr32-fix-sa_onstack.patch;patch=1 \
