@@ -1,4 +1,5 @@
-PR = "r1"
+# Split PR, don't forget to bump gcc-cross as well
+PR = "r2"
 
 require gcc-${PV}.inc
 require gcc-configure-target.inc
