@@ -21,6 +21,7 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-pim \
     ${ANGSTROM_EXTRA_INSTALL}"
 
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 #zap root password for release images
 ROOTFS_POSTPROCESS_COMMAND += '${@base_conditional("DISTRO_TYPE", "release", "zap_root_password; ", "",d)}'

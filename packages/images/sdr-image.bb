@@ -8,6 +8,8 @@
 
 PR = "r2"
 
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
+
 # Also generate tar.bz2 images for use on e.g. SD or nfsroot
 IMAGE_FSTYPES += "tar.bz2"
 

@@ -16,6 +16,8 @@
 # Although it is only fully tested with the Angstrom distro, this
 # image is intended to be distro-agnostic.
 
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
+
 DISTRO_SSH_DAEMON ?= "dropbear"
 
 DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"

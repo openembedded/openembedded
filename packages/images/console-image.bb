@@ -1,5 +1,7 @@
 #Angstrom bootstrap image
 
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
+
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 DEPENDS = "task-base-extended \
