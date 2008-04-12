@@ -14,3 +14,6 @@ EXTRA_AUTORECONF += " -I${S}/gnulib/m4"
 EXTRA_OECONF = " --without-tcl --without-qt --without-pam"
 
 
+do_stage() {
+    autotools_stage_all
+}
