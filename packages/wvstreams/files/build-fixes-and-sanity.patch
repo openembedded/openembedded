@@ -1,0 +1,84 @@
+Index: wvstreams-4.4.1/configure.ac
+===================================================================
+--- wvstreams-4.4.1.orig/configure.ac	2007-08-30 04:47:54.000000000 +0200
++++ wvstreams-4.4.1/configure.ac	2008-04-12 00:15:13.000000000 +0200
+@@ -445,7 +445,6 @@
+ # tcl
+ if test "$with_tcl" != "no"; then
+     CPPFLAGS_save="$CPPFLAGS"
+-    WV_APPEND(CPPFLAGS, -I/usr/include/tcl8.3)
+     AC_CHECK_HEADERS(tcl.h,, [with_tcl=no])
+     AC_CHECK_LIB(tcl8.3, TclInterpInit,, [with_tcl=no])
+     if test "$with_tcl" != "no"; then
+Index: wvstreams-4.4.1/Makefile
+===================================================================
+--- wvstreams-4.4.1.orig/Makefile	2007-08-30 04:48:09.000000000 +0200
++++ wvstreams-4.4.1/Makefile	2008-04-12 00:51:51.000000000 +0200
+@@ -76,7 +76,7 @@
+ 	$(call configure)
+ 
+ include/wvautoconf.h: include/wvautoconf.h.in
+-	$(call configure)
++	
+ 
+ gnulib/Makefile: gnulib/Makefile.in
+ 	$(call configure)
+@@ -97,9 +97,7 @@
+ 	@touch $@
+ 
+ configure: configure.ac include/wvautoconf.h.in aclocal.m4
+-	autoconf
+-	@rm -f config.mk include/wvautoconf.h gnulib/Makefile
+-	@touch $@
++	@echo hey@
+ 
+ include/wvautoconf.h.in: configure.ac aclocal.m4
+ 	autoheader
+Index: wvstreams-4.4.1/config.mk.in
+===================================================================
+--- wvstreams-4.4.1.orig/config.mk.in	2007-08-17 07:15:31.000000000 +0200
++++ wvstreams-4.4.1/config.mk.in	2008-04-12 00:25:54.000000000 +0200
+@@ -31,6 +31,7 @@
+ 
+ prefix=@prefix@
+ datadir=@datadir@
++datarootdir=@datarootdir@
+ includedir=@includedir@
+ infodir=@infodir@
+ localstatedir=@localstatedir@
+Index: wvstreams-4.4.1/vars.mk
+===================================================================
+--- wvstreams-4.4.1.orig/vars.mk	2007-08-17 07:15:31.000000000 +0200
++++ wvstreams-4.4.1/vars.mk	2008-04-12 01:44:03.000000000 +0200
+@@ -174,7 +174,7 @@
+ 
+ libwvutils.a libwvutils.so: $(filter-out $(BASEOBJS) $(TESTOBJS),$(call objects,utils)) gnulib/libgnu.a
+ libwvutils.so: libwvbase.so
+-libwvutils.so: -lz -lcrypt
++libwvutils.so: LIBS+=-lz -lcrypt
+ 
+ libwvstreams.a libwvstreams.so: $(filter-out $(BASEOBJS), \
+ 	$(call objects,configfile crypto ipstreams \
+Index: wvstreams-4.4.1/wvrules.mk
+===================================================================
+--- wvstreams-4.4.1.orig/wvrules.mk	2007-08-17 07:15:31.000000000 +0200
++++ wvstreams-4.4.1/wvrules.mk	2008-04-12 01:00:05.000000000 +0200
+@@ -51,7 +51,7 @@
+ LIBWVTEST=$(WVSTREAMS_LIB)/libwvtest.a $(LIBWVUTILS)
+ 
+ # Default compiler we use for linking
+-WVLINK_CC = gcc
++WVLINK_CC = $(CC)
+ 
+ # FIXME: what does this do??
+ XX_LIBS := $(XX_LIBS) $(shell $(CC) -lsupc++ -lgcc_eh 2>&1 | grep -q "undefined reference" && echo " -lsupc++ -lgcc_eh")
+Index: wvstreams-4.4.1/xplc/config/config.mk.in
+===================================================================
+--- wvstreams-4.4.1.orig/xplc/config/config.mk.in	2005-10-31 23:33:26.000000000 +0100
++++ wvstreams-4.4.1/xplc/config/config.mk.in	2008-04-12 00:27:33.000000000 +0200
+@@ -49,4 +49,4 @@
+ LN_S:=@LN_S@
+ LIBS:=@LIBS@
+ CVS2CL:=@CVS2CL@
+-
++datarootdir:=@datarootdir@
