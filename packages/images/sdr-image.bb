@@ -6,24 +6,34 @@
 # X demo
 # xorg.conf
 
+PR = "r2"
+
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
+
+# Also generate tar.bz2 images for use on e.g. SD or nfsroot
+IMAGE_FSTYPES += "tar.bz2"
+
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
 
+# Install "big" X if the target has a screen
+GUIPACKAGES = " \
+        xf86-input-evdev \
+        xf86-input-mouse \
+        xf86-video-dummy \
+        xf86-video-fbdev \
+        ${@base_contains("COMBINED_FEATURES", "usbhost", "xf86-video-sisusb", "",d)} \
+        xf86-video-vesa \
+"
+
 IMAGE_INSTALL = " task-base-extended \
 	kernel-modules \
-	task-proper-tools \
 	gnuradio gnuradio-usrp \
 	gnuplot \
-	xf86-input-keyboard \
-	xf86-input-evdev \
-	xf86-input-mouse \
-	xf86-video-dummy \
-	xf86-video-fbdev \
-	xf86-video-sisusb \
-	xf86-video-vesa \
+	${@base_contains("MACHINE_FEATURES", "screen", "${GUIPACKAGES}", "",d)} \
 	python-core perl \
 	uucp picocom \
-	pulseaudio pulseaudio-module-zeroconf-publish avahi-utils \
+	angstrom-zeroconf-audio avahi-utils \
 "
 
 inherit image
