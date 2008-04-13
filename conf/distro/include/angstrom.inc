@@ -9,6 +9,10 @@ DISTRO_NAME = "Angstrom"
 
 TARGET_VENDOR = "-angstrom"
 
+# Add FEED_ARCH to overrides
+OVERRIDES .= ":${FEED_ARCH}"
+
+
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
 PSTAGE_EXTRAPATH = "${ANGSTROM_MODE}"
@@ -61,11 +65,8 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "1"
 LOCALE_UTF8_ONLY = "1"
 
 #qemu doesn't like armv6/eabi/vfp
-ENABLE_BINARY_LOCALE_GENERATION_mx31ads = "0"
-ENABLE_BINARY_LOCALE_GENERATION_nokia800 = "0"
-ENABLE_BINARY_LOCALE_GENERATION_omap2420h4 = "0"
-ENABLE_BINARY_LOCALE_GENERATION_omap2430sdp = "0"
-ENABLE_BINARY_LOCALE_GENERATION_beagleboard = "0"
+ENABLE_BINARY_LOCALE_GENERATION_armv6 = "0"
+ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
 
 #qemu has taken a dislike to armeb as well
 ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
