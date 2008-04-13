@@ -24,6 +24,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-rh251682.patch;patch=1;pnum=0 \
         file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
 	file://debian/libstdc++-pic.dpatch;patch=1;pnum=0 \
+	file://debian/gcc-ice-hack.dpatch;patch=1;pnum=0 \ 
+	file://debian/pr30961.dpatch;patch=1;pnum=0 \
 #	file://100-uclibc-conf.patch;patch=1 \
 #	file://103-uclibc-conf-noupstream.patch;patch=1 \
 #	file://200-uclibc-locale.patch;patch=1 \
