@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2007-12-26 20:28:11.474790960 +0100
++++ em8300-0.16.3/modules/Makefile	2007-12-26 20:28:57.938122985 +0100
+@@ -19,7 +19,7 @@
+ 
+ ifeq ($(KERNELRELEASE),)
+ 
+-KERNEL_LOCATION := /lib/modules/$(shell uname -r)/build
++KERNEL_LOCATION = SEDME 
+ 
+ # If you are using external i2c modules, you should set
+ # EM8300_I2C_LOCATION to the source directory of the modules.
