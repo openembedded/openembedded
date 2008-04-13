@@ -1,3 +1,3 @@
 TARGET_CC_ARCH = "-march=i486"
-
+FEED_ARCH = "i486"
 
