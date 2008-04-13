@@ -3,4 +3,5 @@
 #
 TARGET_CC_ARCH = "-march=k6-2"
 PACKAGE_ARCH = "geode"
+FEED_ARCH = "geode"
 
