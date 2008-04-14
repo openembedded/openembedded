@@ -9,6 +9,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/libs/klibc/Stable/klibc-${PV}.tar.bz2 \
 	   file://modprobe.patch;patch=1 \
 	   file://losetup.patch;patch=1 \
 	   file://dash_readopt.patch;patch=1 \
+	   file://wc.patch;patch=1 \
 	   "
 S = "${WORKDIR}/klibc-${PV}"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
