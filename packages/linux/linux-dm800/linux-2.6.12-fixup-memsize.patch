@@ -45,7 +45,7 @@ Index: stblinux-2.6.12/arch/mips/kernel/setup.c
 +	if (memsize_str)
 +	{
 +		int memsize = simple_strtol(memsize_str, NULL, 0);
-+		brcm_insert_ram_node(0, size, BOOT_MEM_RAM, &brcm_bm);
++		brcm_insert_ram_node(0, memsize<<20, BOOT_MEM_RAM, &brcm_bm);
 +		printk("---> memsize from bootloader: %d\n", memsize);
 +	} else
 +	{
