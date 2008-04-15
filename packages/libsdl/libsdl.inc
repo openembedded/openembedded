@@ -5,7 +5,7 @@ DEPENDS = "alsa-lib mesa virtual/libx11 libxext"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
