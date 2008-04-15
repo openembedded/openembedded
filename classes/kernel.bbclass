@@ -470,7 +470,7 @@ do_deploy() {
 	install -d ${DEPLOY_DIR_IMAGE}
 	install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin
-	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${KERNEL_VERSION}-${PR}-${MACHINE}.tgz -C ${D} lib
+	tar -cvzf ${DEPLOY_DIR_IMAGE}/modules-${PV}-${PR}-${MACHINE}.tgz -C ${D} lib
 
 	if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
 		if test -e arch/${ARCH}/boot/compressed/vmlinux ; then
