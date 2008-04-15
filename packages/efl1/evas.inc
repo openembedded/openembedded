@@ -41,6 +41,9 @@ RRECOMMENDS_${PN} = "\
   libevas-loader-png \
   libevas-loader-jpeg \
   libevas-loader-eet \
-  libevas-loader-svg \
 "
 
+# disabling this, since (due to OE bugs) it drags in whole Gtk+
+#RRECOMMENDS_${PN} += "\
+#  libevas-loader-svg \
+#"

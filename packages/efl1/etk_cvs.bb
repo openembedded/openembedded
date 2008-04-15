@@ -2,11 +2,9 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0.042+cvs${SRCDATE}"
-PR = "r1"
+PR = "r0"
 
 inherit efl
-
-SRC_URI += "file://etk_scrolled_view_dragable_combined_bouncy.patch;patch=1"
 
 RRECOMMENDS_${PN} = "\
   etk-engines-software-x11 \
