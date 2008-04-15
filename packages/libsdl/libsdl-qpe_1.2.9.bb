@@ -12,6 +12,7 @@ SRC_URI += "\
   file://SDL-Akita-1.2.9.patch;patch=1 \
   file://fixlibs-1.2.9.patch;patch=1 \
   file://explicit-extern-C.patch;patch=1 \
+  file://no-PAGE_SIZE.patch;patch=1 \
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
@@ -26,6 +27,6 @@ EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads
 do_compile_prepend() {
 	if [ "${PALMTOP_USE_MULTITHREADED_QT}" == "yes" ]
 	then
-		sed -i s,-lqte,-lqte-mt, src/Makefile
+		sed -i s,-lqte\([^-]\),-lqte-mt, src/Makefile
 	fi
 }

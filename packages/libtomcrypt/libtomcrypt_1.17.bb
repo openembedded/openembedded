@@ -7,7 +7,9 @@ routines."
 SECTION = "libs/network"
 PRIORITY = "optional"
 LICENSE = "PD"
-SRC_URI = "http://libtomcrypt.org/files/crypt-${PV}.tar.bz2"
+PR = "r0"
+
+SRC_URI = "http://libtom.org/files/crypt-${PV}.tar.bz2"
 
 inherit autotools
 
@@ -17,10 +19,9 @@ EXTRA_OEMAKE = "library"
 
 do_stage() {
 	oe_libinstall -a libtomcrypt ${STAGING_LIBDIR}/
-	install -m 0644 *.h ${STAGING_INCDIR}/
+	install -m 0644 ${S}/src/headers/*.h ${STAGING_INCDIR}/
 }
 
 do_install() {
 	:
 }
-
