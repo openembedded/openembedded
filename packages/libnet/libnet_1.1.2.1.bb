@@ -6,7 +6,7 @@ LICENSE = "BSD"
 DEPENDS = "libpcap"
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.1"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet/libnet_${PV}.orig.tar.gz \
            file://support-uclibc.patch;patch=1 \
@@ -33,8 +33,7 @@ do_stage () {
 }
 
 #static build
-PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-doc"
-
+FILES_${PN} = ""
 FILES_${PN}-dev += "${bindir}/libnet-config"
 
 CPPFLAGS_prepend = "-I${S}/libnet/include "

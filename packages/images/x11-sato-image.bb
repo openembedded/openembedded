@@ -1,6 +1,8 @@
 DISTRO_SSH_DAEMON ?= "dropbear"
 DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"
 
+IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
+
 IMAGE_INSTALL = "\
 	task-base-extended \
 	${DISTRO_SSH_DAEMON} \

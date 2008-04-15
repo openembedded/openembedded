@@ -318,7 +318,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-unittest", "Python Unit Testing Framework", "python-core python-stringold python-lang",
     "unittest.*" )
 
-    m.addPackage( 0, "python-xml", "Python basic XML support.", "python-core python-re python-netclient",
+    m.addPackage( 1, "python-xml", "Python basic XML support.", "python-core python-re",
     "lib-dynload/pyexpat.so xml xmllib.*" ) # package
 
     m.addPackage( 0, "python-xmlrpc", "Python XMLRPC Support", "python-core python-xml python-netserver python-lang",
