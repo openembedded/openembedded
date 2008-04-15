@@ -1,9 +1,10 @@
 require linux-omap.inc
 
 # uncomment the below to get the latest and greatest and avoid a full reparse
-# or override in it local.conf like this: SRCREV_pn-linux-davinci = "${@bb.fetch.get_srcrev(d)}"
-#SRCREV = "${@bb.fetch.get_srcrev(d)}"
-SRCREV ?= "758eda6a823eacb2412b3c71da5f0ad07a16469d"
+# or override in it local.conf like this: DAVINCI_SRCREV_pn-linux-davinci = "${@bb.fetch.get_srcrev(d)}"
+#DAVINCI_SRCREV = "${@bb.fetch.get_srcrev(d)}"
+DAVINCI_SRCREV ?= "758eda6a823eacb2412b3c71da5f0ad07a16469d"
+SRCREV = "${DAVINCI_SRCREV}"
 
 PV = "2.6.24+2.6.25-rc8-git${SRCREV}"
 PR = "r1"
