@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm800"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r3"
+PR = "r4"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -21,6 +21,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linux-2.6.12-set-custom-extraversion.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-7401C0-enable-llsc.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-prom-args.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-fadvise.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
