@@ -32,9 +32,7 @@ do_compile() {
 addtask unpackpost after do_unpack before do_patch
 
 do_install() {
-  oe_jarinstall swt-pi.jar
-  oe_jarinstall swt.jar
-  oe_jarinstall swt-gtk-${PV}.jar swt-gtk.jar
+  oe_jarinstall swt-gtk-${PV}.jar swt-gtk.jar swt.jar
 
   oe_libinstall -so libswt-atk-gtk-${SWTVERSION} ${D}/${libdir_jni}
   oe_libinstall -so libswt-cairo-gtk-${SWTVERSION} ${D}/${libdir_jni}  
@@ -43,9 +41,7 @@ do_install() {
 }
 
 do_stage() {
-  oe_jarinstall -s swt-pi.jar
-  oe_jarinstall -s swt.jar
-  oe_jarinstall -s swt-gtk-${PV}.jar swt-gtk.jar
+  oe_jarinstall -s swt-gtk-${PV}.jar swt-gtk.jar swt.jar
 }
 
 PACKAGES += "lib${PN}-jni"
