@@ -2,12 +2,12 @@ omap3beagle: register SD interface
 
 Signed-off-by: Koen Kooi <koen@openembedded.org>
 ---
- board-omap3beagle.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
-
+ Makefile            |    3 ++-
+ board-omap3beagle.c |   12 ++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 --- /tmp/board-omap3beagle.c	2008-04-16 18:12:56.347129861 +0200
-+++ git/arch/arm/mach-omap2/board-omap3beagle.c	2008-04-16 18:15:25.079135583 +0200
-@@ -48,8 +48,17 @@
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2008-04-16 19:02:08.490169463 +0200
+@@ -48,15 +48,27 @@
  	omap_gpio_init();
  }
  
@@ -24,4 +24,26 @@ Signed-off-by: Koen Kooi <koen@openembedded.org>
 +	{OMAP_TAG_MMC, &omap3beagle_mmc_config },
  };
  
++extern void __init sdp_mmc_init(void);
++
  static void __init omap3_beagle_init(void)
+ {
+ 	omap_board_config = omap3_beagle_config;
+ 	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
+ 	omap_serial_init();
++	sdp_mmc_init();
+ }
+ 
+ arch_initcall(omap3_beagle_i2c_init);
+--- /tmp/Makefile	2008-04-16 19:08:53.653462476 +0200
++++ git/arch/arm/mach-omap2/Makefile	2008-04-16 19:09:15.836793250 +0200
+@@ -35,7 +35,8 @@
+ 					   board-3430sdp-usb.o \
+ 					   board-3430sdp-flash.o
+ obj-$(CONFIG_MACH_OMAP3EVM)		+= board-omap3evm.o
+-obj-$(CONFIG_MACH_OMAP3_BEAGLE)		+= board-omap3beagle.o
++obj-$(CONFIG_MACH_OMAP3_BEAGLE)		+= board-omap3beagle.o \
++					   board-sdp-hsmmc.o 
+ obj-$(CONFIG_MACH_OMAP_APOLLON)		+= board-apollon.o \
+ 					   board-apollon-mmc.o	\
+ 					   board-apollon-keys.o
