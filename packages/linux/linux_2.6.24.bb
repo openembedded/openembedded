@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -45,9 +45,12 @@ SRC_URI_append_gesbc-9302 = " \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
+	file://powerpc-kexec.patch;patch=1 \
 	file://mpc831x-nand.patch;patch=1 \
 	file://mpc8313e-rdb-leds.patch;patch=1 \
-	file://mpc8313e-rdb-rtc.patch;patch=1"
+	file://mpc8313e-rdb-rtc.patch;patch=1 \
+	file://mpc8313e-rdb-cardbus.patch;patch=1 \
+	"
 
 CMDLINE_gesbc-9302 = "console=ttyAM0 root=mtd5 rootfstype=jffs2 mtdparts=GESBC-NAND:64m(app),-(data)"
 
