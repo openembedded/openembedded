@@ -33,15 +33,21 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced vi
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20080411"
+SRCDATE = "20080417"
 
+# if you want experimental, use:
+#REL_MAJOR="2"
+#REL_MINOR="5"
+#TAG = ""
+
+# if you want a 2.4-based release, use
 REL_MAJOR="2"
 REL_MINOR="4"
+TAG = ";tag=enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
-#TAG = "enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
-SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver;date=${SRCDATE} \
+SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver${TAG};date=${SRCDATE} \
            file://enigma2.sh"
 
 SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
