@@ -1,0 +1,37 @@
+
+Updated Kconfig and Makefile to add OMAP3 EVM Board
+
+Signed-off-by: Syed Mohammed Khasim <khasim@ti.com>
+---
+ arch/arm/mach-omap2/Kconfig  |    3 +++
+ arch/arm/mach-omap2/Makefile |    1 +
+ 2 files changed, 4 insertions(+)
+
+Index: my_branch/arch/arm/mach-omap2/Makefile
+===================================================================
+--- my_branch.orig/arch/arm/mach-omap2/Makefile	2008-04-16 14:39:51.000000000 +0530
++++ my_branch/arch/arm/mach-omap2/Makefile	2008-04-16 14:41:28.000000000 +0530
+@@ -34,6 +34,7 @@
+ 					   board-sdp-hsmmc.o \
+ 					   board-3430sdp-usb.o \
+ 					   board-3430sdp-flash.o
++obj-$(CONFIG_MACH_OMAP3EVM)		+= board-omap3evm.o
+ obj-$(CONFIG_MACH_OMAP_APOLLON)		+= board-apollon.o \
+ 					   board-apollon-mmc.o	\
+ 					   board-apollon-keys.o
+
+Index: my_branch/arch/arm/mach-omap2/Kconfig
+===================================================================
+--- my_branch.orig/arch/arm/mach-omap2/Kconfig	2008-04-16 14:40:02.000000000 +0530
++++ my_branch/arch/arm/mach-omap2/Kconfig	2008-04-16 14:41:28.000000000 +0530
+@@ -106,3 +106,6 @@
+ 	bool "OMAP 3430 SDP board"
+ 	depends on ARCH_OMAP3 && ARCH_OMAP34XX
+ 
++config MACH_OMAP3EVM
++	bool "OMAP 3530 EVM board"
++	depends on ARCH_OMAP3 && ARCH_OMAP34XX
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
