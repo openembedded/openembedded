@@ -45,7 +45,6 @@ SRC_URI_append_gesbc-9302 = " \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
-	file://powerpc-kexec.patch;patch=1 \
 	file://mpc831x-nand.patch;patch=1 \
 	file://mpc8313e-rdb-leds.patch;patch=1 \
 	file://mpc8313e-rdb-rtc.patch;patch=1 \
