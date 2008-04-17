@@ -21,7 +21,7 @@ export CPPFLAGS_FOR_BUILD = "${BUILD_CPPFLAGS}"
 
 EXTRA_OEMAKE = "'SUBDIRS=intl mmalloc libiberty opcodes bfd sim gdb etc utils' LDFLAGS='${BUILD_LDFLAGS}'"
 
-EXTRA_OECONF = "--with-curses --with-readline"
+EXTRA_OECONF = "--with-curses --with-readline --disable-werror"
 
 do_configure () {
 # override this function to avoid the autoconf/automake/aclocal/autoheader
