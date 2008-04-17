@@ -5,7 +5,7 @@ DEPENDS += "hal libxkbfile libxcalibrate pixman"
 DEFAULT_PREFERENCE = "-99" 
 
 PE = "1"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
@@ -24,6 +24,7 @@ SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	file://keyboard-resume-workaround.patch;patch=1 \
 	file://xorg-avr32-support.diff;patch=1 \
 #	file://pkgconfig_fix.patch;patch=1 \
+	file://no_xkb.patch;patch=1;pnum=0 \
         "
 
 S = "${WORKDIR}/xorg-server-${PV}"
@@ -31,4 +32,6 @@ S = "${WORKDIR}/xorg-server-${PV}"
 W100_OECONF = "--disable-w100"
 W100_OECONF_arm = "--enable-w100"
 
-EXTRA_OECONF += "--enable-builtin-fonts"
+EXTRA_OECONF += "--enable-builtin-fonts \
+		 --disable-dri2 \
+		"
