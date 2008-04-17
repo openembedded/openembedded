@@ -171,6 +171,7 @@ EXTRA_OECONF = " \
         --disable-win32waveout \
         --enable-select \
         \
+	--disable-ass \
         "
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
@@ -190,6 +191,7 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 
