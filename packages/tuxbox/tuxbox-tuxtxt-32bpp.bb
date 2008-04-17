@@ -13,7 +13,7 @@ FILES_${PN} = "/usr/bin /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensi
 
 SRCDATE = "20060112"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r4"
+PR = "r5"
 
 S = "${WORKDIR}/tuxtxt"
 

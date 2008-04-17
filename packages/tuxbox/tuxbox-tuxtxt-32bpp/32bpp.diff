@@ -48,7 +48,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  		{
 -			memset(p, color, w);
 -			p += var_screeninfo.xres;
-+			for (xtmp=0; xtmp<=w; xtmp++)
++			for (xtmp=0; xtmp<w; xtmp++)
 +			{
 +				memcpy(p+xtmp*4,bgra[color],4);
 +			}
@@ -61,19 +61,19 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  void ClearBB(int color)
  {
 -	memset(lfb + (var_screeninfo.yres-var_screeninfo.yoffset)*var_screeninfo.xres, color, var_screeninfo.xres*var_screeninfo.yres);
-+	FillRect(0,(var_screeninfo.yres-var_screeninfo.yoffset),fix_screeninfo.line_length,var_screeninfo.yres, color);
++	FillRect(0, var_screeninfo.yres - var_screeninfo.yoffset, var_screeninfo.xres, var_screeninfo.yres, color);
  }
  
  void ClearFB(int color)
  {
 -	memset(lfb + var_screeninfo.xres*var_screeninfo.yoffset, color, var_screeninfo.xres*var_screeninfo.yres);
-+	FillRect(0,var_screeninfo.yoffset,fix_screeninfo.line_length,var_screeninfo.yres,color);
++	FillRect(0, var_screeninfo.yoffset, var_screeninfo.xres, var_screeninfo.yres, color);
  }
  
  void ClearB(int color)
  {
 -	memset(lfb, color, 2*var_screeninfo.xres*var_screeninfo.yres);
-+	FillRect(0,0,fix_screeninfo.line_length,var_screeninfo.yres*2,color);
++	FillRect(0, 0, var_screeninfo.xres, var_screeninfo.yres*2, color);
  }
  
  
@@ -394,7 +394,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
 -	close(saa);
  
 +	/* clear screen */
-+	memset(lfb,0, var_screeninfo.yres*fix_screeninfo.line_length);
++	memset(lfb, 0, var_screeninfo.yres * fix_screeninfo.line_length);
  
  	/* close freetype */
  	FTC_Manager_Done(manager);
@@ -560,7 +560,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
 -					memset(d + ax[x], f1, ax[x+1] - ax[x]);
 +				{
 +//					memset(d + ax[x], f1, ax[x+1] - ax[x]);
-+					for (ltmp=0 ; ltmp <= (ax[x+1]-ax[x]); ltmp++)
++					for (ltmp=0 ; ltmp < (ax[x+1]-ax[x]); ltmp++)
 +					{
 +						memcpy(d + ax[x]*4 +ltmp*4,bgra[f1],4);
 +					}
@@ -570,7 +570,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
 -				d += var_screeninfo.xres;
 +				{
 +//					memset(d + ax[x+6], f2, ax[x+7] - ax[x+6]); /* 2nd byte 6 pixels to the right */
-+					for (ltmp=0 ; ltmp <= (ax[x+7]-ax[x+6]); ltmp++)
++					for (ltmp=0 ; ltmp < (ax[x+7]-ax[x+6]); ltmp++)
 +					{
 +						memcpy(d + ax[x+6]*4 +ltmp*4,bgra[f2],4);
 +					}
@@ -607,7 +607,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	if (l > 0)
 -		memset(lfb + x + y * var_screeninfo.xres, color, l);
 +	{
-+		for (ltmp=0; ltmp <= l; ltmp++)
++		for (ltmp=0; ltmp < l; ltmp++)
 +		{
 +			memcpy(lfb + x*4 + ltmp*4 + y * fix_screeninfo.line_length, bgra[color], 4);
 +		}
@@ -633,7 +633,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
 -			memset(p + xoffset, color, l);
 -		p += var_screeninfo.xres;
 +		{
-+			for (ltmp=0; ltmp <= l; ltmp++)
++			for (ltmp=0; ltmp < l; ltmp++)
 +			{
 +				memcpy(p + xoffset*4 +ltmp*4, bgra[color], 4);
 +			}
@@ -852,7 +852,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  	if (transpmode)
  		fillcolor = transp;
-@@ -5476,47 +5563,53 @@
+@@ -5476,47 +5563,54 @@
  		fillcolor = FullScrColor;
  
  	if (zoommode == 2)
@@ -887,7 +887,7 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  	for (i = StartY; i>0;i--)
  	{
 -		memset(dst - i*var_screeninfo.xres, fillcolor, screenwidth);
-+		for (swtmp=0; swtmp<=screenwidth; swtmp++)
++		for (swtmp=0; swtmp<screenwidth/4; swtmp++)
 +		{
 +			memcpy(dst - i*fix_screeninfo.line_length+swtmp*4, bgra[fillcolor], 4);
 +		}
@@ -907,10 +907,12 @@ diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
  
  //	if (!pagecatching )
  //		memcpy(dst, lfb + (StartY+24*fontheight)*var_screeninfo.xres, var_screeninfo.xres*fontheight); /* copy line25 in normal height */
- 	for (i = var_screeninfo.yres - StartY - 25*fontheight; i >= 0;i--)
+-	for (i = var_screeninfo.yres - StartY - 25*fontheight; i >= 0;i--)
++	dst -= fix_screeninfo.line_length;
++	for (i = var_screeninfo.yres - StartY - 25 * fontheight; i >= 0;i--)
  	{
 -		memset(dst + var_screeninfo.xres*(fontheight+i), fillcolor, screenwidth);
-+		for (swtmp=0; swtmp<= screenwidth;swtmp++)
++		for (swtmp=0; swtmp < screenwidth/4;swtmp++)
 +		{
 +			memcpy(dst + fix_screeninfo.line_length*(fontheight+i)+swtmp*4, bgra[fillcolor], 4);
 +		}
