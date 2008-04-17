@@ -9,7 +9,7 @@
 
 pydir=${libdir}/python2.5
 pydyndir=${pydir}/lib-dynload
-
+PROVIDES+="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio python-2.5-extensions python-2.5-ctypes python-2.5-sqlite3 "
 PACKAGES="python-threading python-distutils python-textutils python-codecs python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-resource python-devel python-math python-hotshot python-unixadmin python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-syslog python-html python-readline python-pydoc python-logging python-mailbox python-xml python-mime python-tests python-unittest python-stringold python-lib-old-and-deprecated python-compile python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio python-2.5-extensions python-2.5-ctypes python-2.5-sqlite3 "
 
 DESCRIPTION_python-threading="Python Threading & Synchronization Support"
@@ -45,7 +45,7 @@ FILES_python-datetime="${pydir}/_strptime.* ${pydir}/calendar.* ${pydyndir}/date
 DESCRIPTION_python-core="Python Interpreter and core modules (needed!)"
 PR_python-core="ml0"
 RDEPENDS_python-core=""
-FILES_python-core="${pydir}/__future__.* ${pydir}/copy.* ${pydir}/copy_reg.* ${pydir}/ConfigParser.py ${pydir}/getopt.* ${pydir}/heapq.* ${pydyndir}/_heapq.so ${pydir}/linecache.* ${pydir}/new.* ${pydir}/os.* ${pydir}/posixpath.* ${pydir}/warnings.* ${pydir}/site.* ${pydir}/stat.* ${pydir}/UserDict.* ${pydyndir}/binascii.so ${pydyndir}/_struct.so ${pydir}/struct.* ${pydyndir}/time.so ${pydyndir}/xreadlines.so ${pydyndir}/dl.so ${pydir}/types.* ${pydir}/pkgutil.* /usr/bin/python "
+FILES_python-core="${pydir}/__future__.* ${pydir}/copy.* ${pydir}/copy_reg.* ${pydir}/ConfigParser.py ${pydir}/getopt.* ${pydir}/heapq.* ${pydyndir}/_heapq.so ${pydir}/linecache.* ${pydir}/new.* ${pydir}/os.* ${pydir}/posixpath.* ${pydir}/warnings.* ${pydir}/site.* ${pydir}/stat.* ${pydir}/UserDict.* ${pydyndir}/binascii.so ${pydyndir}/_struct.so ${pydir}/struct.* ${pydyndir}/time.so ${pydyndir}/xreadlines.so ${pydyndir}/dl.so ${pydir}/types.* ${pydir}/pkgutil.* /usr/bin/python ${pydir}/platform.* "
 
 DESCRIPTION_python-io="Python Low-Level I/O"
 PR_python-io="ml0"
@@ -257,17 +257,17 @@ PR_python-audio="ml0"
 RDEPENDS_python-audio="python-core"
 FILES_python-audio="${pydir}/wave.* ${pydir}/chunk.* ${pydyndir}/ossaudiodev.so ${pydyndir}/audioop.so ${pydyndir}/linuxaudiodev.so "
 
-DESCRIPTION_python-2.5-extensions="Python 2.5 Extensions"
-PR_python-2.5-extensions="ml0"
-RDEPENDS_python-2.5-extensions="python-core"
-FILES_python-2.5-extensions="${pydir}/contextlib.* ${pydir}/functools.* ${pydyndir}/_functools.so ${pydir}/runpy.* "
+DESCRIPTION_python-extensions="Python 2.5 Extensions"
+PR_python-extensions="ml0"
+RDEPENDS_python-extensions="python-core"
+FILES_python-extensions="${pydir}/contextlib.* ${pydir}/functools.* ${pydyndir}/_functools.so ${pydir}/runpy.* "
 
-DESCRIPTION_python-2.5-ctypes="Python 2.5 ctypes/dlls/sharedlib Extensions"
-PR_python-2.5-ctypes="ml0"
-RDEPENDS_python-2.5-ctypes="python-core"
-FILES_python-2.5-ctypes="${pydir}/ctypes ${pydyndir}/_ctypes.so "
+DESCRIPTION_python-ctypes="Python 2.5 ctypes/dlls/sharedlib Extensions"
+PR_python-ctypes="ml0"
+RDEPENDS_python-ctypes="python-core"
+FILES_python-ctypes="${pydir}/ctypes ${pydyndir}/_ctypes.so "
 
-DESCRIPTION_python-2.5-sqlite3="Python 2.5 Sqlite Database Lib"
-PR_python-2.5-sqlite3="ml0"
-RDEPENDS_python-2.5-sqlite3="python-core"
-FILES_python-2.5-sqlite3="${pydir}/sqlite3 ${pydyndir}/_sqlite3.so "
+DESCRIPTION_python-sqlite3="Python 2.5 Sqlite Database Lib"
+PR_python-sqlite3="ml0"
+RDEPENDS_python-sqlite3="python-core"
+FILES_python-sqlite3="${pydir}/sqlite3 ${pydyndir}/_sqlite3.so "

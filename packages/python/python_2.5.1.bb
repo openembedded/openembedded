@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 MAINTAINER = "Michael 'Mickey' Lauer <mickey@Vanille.de>"
 DEPENDS = "python-native readline zlib gdbm openssl"
-PR = "ml1"
+PR = "ml2"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -14,6 +14,7 @@ SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
            file://crosscompile.patch;patch=1 \
 	   file://build-native-md5-sha.patch;patch=1 \
 	   file://fix-tkinter-detection.patch;patch=1 \
+	   file://enable-ctypes-module.patch;patch=1 \
 	   file://some_configure_fixes.patch;patch=1;pnum=0"
 
 SRC_URI_append_opendreambox = " file://forced_largefile_support.patch;patch=1;pnum=1"
