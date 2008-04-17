@@ -82,7 +82,6 @@ EXTRA_OECONF = " \
 	--disable-dvdread-internal \
         --disable-cdparanoia \
         --enable-freetype \
-        --disable-unrarlib \
         --disable-menu \
         --enable-sortsub \
         --disable-fribidi \
@@ -161,7 +160,7 @@ EXTRA_OECONF = " \
         --enable-ossaudio \
         --disable-arts \
         --disable-esd \
-        --disable-polyp \
+        --disable-pulse \
         --disable-jack \
         --disable-openal \
         --disable-nas \
@@ -177,6 +176,10 @@ EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 EXTRA_OECONF_append_c7x0 = " --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
+EXTRA_OECONF_append_armv6 = " --enable-armv6 "
+EXTRA_OECONF_append_armv7a = "--enable-armv6 "
+
+
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
 MY_ARCH := "${PACKAGE_ARCH}"
@@ -187,6 +190,10 @@ TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt 
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
+
+FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
+BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
