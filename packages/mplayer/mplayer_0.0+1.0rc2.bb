@@ -42,7 +42,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r7"
+PR = "r8"
 
 PARALLEL_MAKE = ""
 
@@ -171,12 +171,16 @@ EXTRA_OECONF = " \
         --disable-win32waveout \
         --enable-select \
         \
+	--disable-ass \
         "
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
 EXTRA_OECONF_append_c7x0 = " --enable-imageon "
 EXTRA_OECONF_append_hx4700 = " --enable-imageon "
+
+EXTRA_OECONF_append_armv6 = " --enable-armv6 "
+EXTRA_OECONF_append_armv7a = "--enable-armv6 "
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt 
@@ -190,6 +194,7 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 

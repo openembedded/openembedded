@@ -1,22 +1,20 @@
-Index: trunk/Makefile
-===================================================================
---- trunk.orig/Makefile	2007-06-29 14:48:19.000000000 +0100
-+++ trunk/Makefile	2007-06-29 14:48:43.000000000 +0100
-@@ -252,7 +252,7 @@
+--- /tmp/Makefile	2008-04-17 21:48:32.987984542 +0200
++++ trunk/Makefile	2008-04-17 21:48:52.042750779 +0200
+@@ -337,7 +337,7 @@
  	if test -f $(CONFDIR)/codecs.conf ; then mv -f $(CONFDIR)/codecs.conf $(CONFDIR)/codecs.conf.old ; fi
  
  install-mplayer: mplayer$(EXESUF)
 -	$(INSTALL) -m 755 $(INSTALLSTRIP) mplayer$(EXESUF) $(BINDIR)
-+	$(INSTALL) -m 755 mplayer$(EXESUF) $(BINDIR)
++	$(INSTALL) -m 755  mplayer$(EXESUF) $(BINDIR)
  
  install-mplayer-man:
- 	for i in $(MAN_LANG); do \
-@@ -265,7 +265,7 @@
+ 	for lang in $(MAN_LANG); do \
+@@ -350,7 +350,7 @@
  	done
  
  install-mencoder: mencoder$(EXESUF)
 -	$(INSTALL) -m 755 $(INSTALLSTRIP) mencoder$(EXESUF) $(BINDIR)
 +	$(INSTALL) -m 755 mencoder$(EXESUF) $(BINDIR)
- 	for i in $(MAN_LANG); do \
- 		if test "$$i" = en ; then \
+ 	for lang in $(MAN_LANG); do \
+ 		if test "$$lang" = en ; then \
  			cd $(MANDIR)/man1 && ln -sf mplayer.1 mencoder.1 ; \
