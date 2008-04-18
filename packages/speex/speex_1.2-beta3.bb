@@ -18,12 +18,14 @@ LEAD_SONAME = "libspeex.so"
 #
 #	--enable-arm4-asm
 #	--enable-arm5e-asm
+#       --enable-blackfin-asm
 #	--enable-fixed-point
 #       --disable-float-api --disable-vbr (must disable-vbr if disable-float-api)
 #
 
 EXTRA_OECONF_append_openmn = " --enable-arm5e-asm --enable-fixed-point --disable-float-api --disable-vbr "
 EXTRA_OECONF_append_amsdelta = " --enable-arm4-asm --enable-fixed-point --disable-float-api --diable-vbr "
+EXTRA_OECONF_append_bfin = " --enable-blackfin-asm --enable-fixed-point --disable-float-api --diable-vbr "
 EXTRA_OECONF_append_arm = " --enable-fixed-point --disable-float-api --disable-vbr "
 EXTRA_OECONF_append_dht-walnut = " --enable-fixed-point --disable-float-api --disable-vbr "
 
