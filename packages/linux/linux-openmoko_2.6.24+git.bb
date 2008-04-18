@@ -4,7 +4,7 @@ require linux-openmoko.inc
 DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ Openmoko"
 
 PE = "1"
-PV = "${KERNEL_RELEASE}+git${SRCDATE}"
+PV = "${KERNEL_RELEASE}+git${SRCREV}"
 PR = "r0"
 
 SRC_URI = "git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable"
