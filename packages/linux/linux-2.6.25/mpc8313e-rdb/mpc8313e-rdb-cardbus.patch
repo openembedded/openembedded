@@ -1,0 +1,12 @@
+diff -urN linux-2.6.24.orig/drivers/pcmcia/yenta_socket.c linux-2.6.24/drivers/pcmcia/yenta_socket.c
+--- linux-2.6.24.orig/drivers/pcmcia/yenta_socket.c	2008-01-24 23:58:37.000000000 +0100
++++ linux-2.6.24/drivers/pcmcia/yenta_socket.c	2008-04-16 18:03:38.000000000 +0200
+@@ -551,7 +551,7 @@
+  * max 4 MB, min 16 kB. We try very hard to not get below
+  * the "ACC" values, though.
+  */
+-#define BRIDGE_MEM_MAX 4*1024*1024
++#define BRIDGE_MEM_MAX 64*1024*1024
+ #define BRIDGE_MEM_ACC 128*1024
+ #define BRIDGE_MEM_MIN 16*1024
+ 

@@ -1,0 +1,204 @@
+diff -urN linux-2.6.25.orig/drivers/leds/Kconfig linux-2.6.25/drivers/leds/Kconfig
+--- linux-2.6.25.orig/drivers/leds/Kconfig	2008-04-17 04:49:44.000000000 +0200
++++ linux-2.6.25/drivers/leds/Kconfig	2008-04-18 09:00:52.000000000 +0200
+@@ -145,6 +145,12 @@
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called leds-clevo-mail.
+ 
++config LEDS_MPC8313E_RDB
++	tristate "LED Support for MPC8313E-RDB LEDs"
++	depends on LEDS_CLASS && PPC_83xx
++	help
++	  This option enables support for the LEDs on MPC8313E-RDB board.
++
+ comment "LED Triggers"
+ 
+ config LEDS_TRIGGERS
+diff -urN linux-2.6.25.orig/drivers/leds/leds-mpc8313e-rdb.c linux-2.6.25/drivers/leds/leds-mpc8313e-rdb.c
+--- linux-2.6.25.orig/drivers/leds/leds-mpc8313e-rdb.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.25/drivers/leds/leds-mpc8313e-rdb.c	2008-04-18 09:00:52.000000000 +0200
+@@ -0,0 +1,173 @@
++/*
++ * drivers/leds/leds-mpc8313e-rdb.c
++ * Copyright (C) 2007-2008 Jeremy Laine <jeremy.laine@bolloretelecom.eu>
++ * Copyright (C) 2007-2008 Leon Woestenberg <leon@sidebranch.com>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ * MPC8313E-RDB LEDs driver
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/ioport.h>
++#include <linux/leds.h>
++#include <linux/err.h>
++#include <asm/io.h>
++
++/* note the board is not wired for read access from the LED buffer */
++#define LEDS_BASE 0xfa000000
++#define LEDS_SIZE 0x2
++
++static struct platform_device *leds_pdev = NULL;
++static struct resource *led_mem = NULL;
++static void *led_io = NULL;
++static u8 led_state = 0xff;
++
++struct mpc8313_led {
++	struct led_classdev cdev;
++	u8 bitmask;
++};
++
++static void mpc8313leds_set(struct led_classdev *led_cdev, enum led_brightness value)
++{
++	struct mpc8313_led *led_dev = container_of(led_cdev, struct mpc8313_led, cdev);
++	if (value)
++		led_state &= ~led_dev->bitmask;
++	else
++		led_state |= led_dev->bitmask;
++	iowrite8(led_state, led_io);
++}
++
++/* led0 is red, led1 is yellow, led2-7 are green */
++static struct mpc8313_led mpc8313_leds[] = {
++	{
++		.cdev = {
++			.name		= "mpc8313:led0",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 128,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led1",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 64,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led2",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 32,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led3",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 16,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led4",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 8,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led5",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 4,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led6",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 2,
++	},
++	{
++		.cdev = {
++			.name		= "mpc8313:led7",
++			.brightness_set	= mpc8313leds_set,
++		},
++		.bitmask	= 1,
++	},
++};
++
++static int mpc8313leds_probe(struct platform_device *pdev)
++{
++	int i;
++	int ret;
++       
++	for (i = ret = 0; ret >= 0 && i < ARRAY_SIZE(mpc8313_leds); i++) {
++		ret = led_classdev_register(&pdev->dev,
++			&mpc8313_leds[i].cdev);
++	}
++
++	if (ret < 0 && i > 1) {
++		for (i = i - 2; i >= 0; i--)
++			led_classdev_unregister(&mpc8313_leds[i].cdev);
++	}
++	
++	return ret;
++}
++
++static int mpc8313leds_remove(struct platform_device *pdev)
++{
++	int i;
++
++	for (i = ARRAY_SIZE(mpc8313_leds) - 1; i >= 0; i--)
++		led_classdev_unregister(&mpc8313_leds[i].cdev);
++	
++	return 0;
++}
++
++static struct platform_driver mpc8313leds_driver = {
++	.driver         = {
++		.name   = "mpc8313-leds",
++		.owner  = THIS_MODULE,
++	},
++	.probe          = mpc8313leds_probe,
++	.remove         = mpc8313leds_remove,
++};
++
++static int __init mpc8313leds_init(void)
++{
++	if (!(led_mem = request_mem_region(LEDS_BASE, LEDS_SIZE, "mpc8313-leds")))
++		return -ENOMEM;
++	if (!(led_io = ioremap(LEDS_BASE, LEDS_SIZE)))
++	{
++		release_mem_region(LEDS_BASE, LEDS_SIZE);
++		led_mem = NULL;
++		return -ENOMEM;
++	}
++	iowrite8(led_state, led_io);
++
++	leds_pdev = platform_device_register_simple("mpc8313-leds", -1, NULL, 0);
++
++	return platform_driver_register(&mpc8313leds_driver);
++}
++
++static void __exit mpc8313leds_exit(void)
++{
++	if (led_mem) release_mem_region(LEDS_BASE, LEDS_SIZE);
++	led_mem = NULL;
++	platform_driver_unregister(&mpc8313leds_driver);
++
++	platform_device_unregister(leds_pdev);
++}
++
++module_init(mpc8313leds_init);
++module_exit(mpc8313leds_exit);
++
++MODULE_AUTHOR("Jeremy Laine <jeremy.laine@bolloretelecom.eu>");
++MODULE_DESCRIPTION("MPC8313E-RDB LED driver");
++MODULE_LICENSE("GPL");
+diff -urN linux-2.6.25.orig/drivers/leds/Makefile linux-2.6.25/drivers/leds/Makefile
+--- linux-2.6.25.orig/drivers/leds/Makefile	2008-04-17 04:49:44.000000000 +0200
++++ linux-2.6.25/drivers/leds/Makefile	2008-04-18 09:01:18.000000000 +0200
+@@ -21,6 +21,7 @@
+ obj-$(CONFIG_LEDS_CM_X270)              += leds-cm-x270.o
+ obj-$(CONFIG_LEDS_CLEVO_MAIL)		+= leds-clevo-mail.o
+ obj-$(CONFIG_LEDS_HP6XX)		+= leds-hp6xx.o
++obj-$(CONFIG_LEDS_MPC8313E_RDB)		+= leds-mpc8313e-rdb.o
+ 
+ # LED Triggers
+ obj-$(CONFIG_LEDS_TRIGGER_TIMER)	+= ledtrig-timer.o
