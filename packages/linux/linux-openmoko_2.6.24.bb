@@ -1,7 +1,7 @@
 require linux.inc
 require linux-openmoko.inc
 
-DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ OpenMoko"
+DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ Openmoko"
 VANILLA_VERSION = "2.6.24"
 KERNEL_RELEASE = "2.6.24"
 
