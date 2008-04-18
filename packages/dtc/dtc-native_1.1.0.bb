@@ -2,7 +2,6 @@ DESCRIPTION = "The Device Tree Compiler is a tool used to manipulate the Open-Fi
 SECTION = "bootloader"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
 
 DEFAULT_PREFERENCE = "1"
 
