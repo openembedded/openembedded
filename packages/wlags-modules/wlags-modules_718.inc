@@ -22,7 +22,7 @@ TARFILE = "wl_lkm_${PV}_release.tar.gz"
 # * then I do the usual compile/install/package dance
 #
 
-SRC_URI = "http://www.agere.com/mobility/docs/${TARFILE} \
+SRC_URI = "ftp://ftp.elmeg.de/artem/ClientCards/11b/linux/${TARFILE} \
 	file://Makefile \
 	file://includes.patch \
 	file://kernel-pcmcia.patch \
