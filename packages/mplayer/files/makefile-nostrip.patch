@@ -1,3 +1,5 @@
+upstream: not applicable, I think (unless somebody claims there is a more portable way to stripping)
+
 Index: MPlayer-1.0rc1/Makefile
 ===================================================================
 --- MPlayer-1.0rc1.orig/Makefile

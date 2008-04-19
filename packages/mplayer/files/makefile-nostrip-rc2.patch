@@ -1,22 +1,24 @@
 upstream: not applicable, I think (unless somebody claims there is a more portable way to stripping)
 
---- /tmp/Makefile	2008-04-17 21:48:32.987984542 +0200
-+++ trunk/Makefile	2008-04-17 21:48:52.042750779 +0200
-@@ -337,7 +337,7 @@
+Index: MPlayer-1.0rc2/Makefile
+===================================================================
+--- MPlayer-1.0rc2.orig/Makefile	2008-04-19 10:31:18.000000000 +0200
++++ MPlayer-1.0rc2/Makefile	2008-04-19 10:31:55.000000000 +0200
+@@ -253,7 +253,7 @@
  	if test -f $(CONFDIR)/codecs.conf ; then mv -f $(CONFDIR)/codecs.conf $(CONFDIR)/codecs.conf.old ; fi
  
  install-mplayer: mplayer$(EXESUF)
 -	$(INSTALL) -m 755 $(INSTALLSTRIP) mplayer$(EXESUF) $(BINDIR)
-+	$(INSTALL) -m 755  mplayer$(EXESUF) $(BINDIR)
++	$(INSTALL) -m 755 mplayer$(EXESUF) $(BINDIR)
  
  install-mplayer-man:
- 	for lang in $(MAN_LANG); do \
-@@ -350,7 +350,7 @@
+ 	for i in $(MAN_LANG); do \
+@@ -266,7 +266,7 @@
  	done
  
  install-mencoder: mencoder$(EXESUF)
 -	$(INSTALL) -m 755 $(INSTALLSTRIP) mencoder$(EXESUF) $(BINDIR)
 +	$(INSTALL) -m 755 mencoder$(EXESUF) $(BINDIR)
- 	for lang in $(MAN_LANG); do \
- 		if test "$$lang" = en ; then \
+ 	for i in $(MAN_LANG); do \
+ 		if test "$$i" = en ; then \
  			cd $(MANDIR)/man1 && ln -sf mplayer.1 mencoder.1 ; \
