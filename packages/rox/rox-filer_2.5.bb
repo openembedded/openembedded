@@ -2,7 +2,7 @@ DESCRIPTION = "File manager at the core of the ROX desktop"
 HOMEPAGE = "http://rox.sf.net"
 LICENSE = "GPL"
 SECTION = "x11/applications"
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ shared-mime-info"
 RDEPENDS = "shared-mime-info"
 PR = "r2"
 
