@@ -20,8 +20,10 @@ if [ "$PS1" ]; then
 fi
 
 if [ -d /etc/profile.d ]; then
-  for i in `ls /etc/profile.d/`; do
-    . /etc/profile.d/$i
+  for i in /etc/profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
   done
   unset i
 fi
