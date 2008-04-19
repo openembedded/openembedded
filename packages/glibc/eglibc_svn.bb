@@ -2,8 +2,8 @@ require glibc.inc
 
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
-PV = "2.7+svnr${SRCREV}"
-PR = "r4"
+PV = "2.8+svnr${SRCREV}"
+PR = "r5"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://eglibc-svn-arm-cargs6.patch;patch=1 \
            file://eglibc-svn-arm-check_pf.patch;patch=1 \
