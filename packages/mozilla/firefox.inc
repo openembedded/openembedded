@@ -1,5 +1,7 @@
 SRC_URI += "file://mozilla-firefox.png file://mozilla-firefox.desktop"
 
+PARALLEL_MAKE = ""
+
 PACKAGES =+ "firefox-inspector"
 
 FILES_firefox-inspector = "	${libdir}/firefox-${PV}/chrome/inspector* \
@@ -31,8 +33,5 @@ pkg_postinst_firefox() {
 
 do_stage() {
 	autotools_stage_all
-
-
-
 }
 

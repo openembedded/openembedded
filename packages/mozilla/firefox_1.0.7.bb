@@ -15,7 +15,7 @@ inherit autotools mozilla
 	
 require firefox.inc
 
-EXTRA_OECONF += " --with-gssapi=${STAGINGLIBDIR}/../"
+EXTRA_OECONF += " --with-gssapi=${STAGING_LIBDIR}/../"
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
