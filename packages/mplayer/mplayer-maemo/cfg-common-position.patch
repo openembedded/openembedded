@@ -1,0 +1,10 @@
+--- /tmp/cfg-common.h	2008-04-20 17:19:27.399560700 +0200
++++ trunk/cfg-common.h	2008-04-20 17:20:52.853869963 +0200
+@@ -97,7 +97,6 @@
+ 	{"endpos", &end_at, CONF_TYPE_TIME_SIZE, 0, 0, 0, NULL},
+ 
+ 	{"edl", &edl_filename,  CONF_TYPE_STRING, 0, 0, 0, NULL},
+-	{"use-last-saved-position", &use_last_saved_position, CONF_TYPE_FLAG, 0, -1, 1, NULL},
+ 
+ 	// AVI specific: force non-interleaved mode
+ 	{"ni", &force_ni, CONF_TYPE_FLAG, 0, 0, 1, NULL},

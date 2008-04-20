@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2008-04-20 15:14:45.637878245 +0200
++++ trunk/Makefile	2008-04-20 15:15:10.812438751 +0200
+@@ -401,7 +401,7 @@
+ 	windres -o $@ osdep/mplayer.rc
+ 
+ codec-cfg: codec-cfg.c codec-cfg.h help_mp.h
+-	$(HOST_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
++	$(BUILD_CC) -I. -DCODECS2HTML codec-cfg.c -o $@
+ 
+ codecs.conf.h: codec-cfg etc/codecs.conf
+ 	./codec-cfg ./etc/codecs.conf > $@
