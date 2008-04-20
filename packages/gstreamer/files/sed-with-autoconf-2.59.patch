@@ -1,0 +1,12 @@
+diff -Naur gst-plugins-base-0.10.19-org/common/m4/gtk-doc.m4 gst-plugins-base-0.10.19/common/m4/gtk-doc.m4
+--- gst-plugins-base-0.10.19-org/common/m4/gtk-doc.m4	2008-03-11 00:29:18.000000000 +0100
++++ gst-plugins-base-0.10.19/common/m4/gtk-doc.m4	2008-04-18 18:10:47.000000000 +0200
+@@ -30,7 +30,7 @@
+       have_gtk_doc=yes
+     fi
+     if test -z "$SED"; then
+-      AC_PROG_SED
++      AC_CHECK_PROG(SED, sed)
+     fi
+ 
+ dnl do we want to do a version check?

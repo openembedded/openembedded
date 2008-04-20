@@ -7,7 +7,8 @@ PR = "r0"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
+SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
+	file://sed-with-autoconf-2.59.patch;patch=1;pnum=1"
 
 EXTRA_OECONF = "--disable-x --disable-aalib --disable-esd --disable-shout2 \
 		--disable-sdl --with-check=no --enable-neon"
