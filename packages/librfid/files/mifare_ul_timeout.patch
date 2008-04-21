@@ -1,0 +1,13 @@
+--- librfid.orig/src/rfid_proto_mifare_ul.c	(revision 2085)
++++ librfid/src/rfid_proto_mifare_ul.c	(working copy)
+@@ -34,8 +34,8 @@
+ 
+ 
+ /* FIXME */
+-#define MIFARE_UL_READ_FWT	100
+-#define MIFARE_UL_WRITE_FWT	100
++#define MIFARE_UL_READ_FWT	200
++#define MIFARE_UL_WRITE_FWT	800
+ 
+ static int
+ mful_read(struct rfid_protocol_handle *ph, unsigned int page,
