@@ -8,7 +8,6 @@ SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
-  file://fix-dbus-launch-x11.patch;patch=1 \
   file://dbus-1.init \
 "
 
