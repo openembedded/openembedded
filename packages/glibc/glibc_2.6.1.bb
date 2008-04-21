@@ -63,7 +63,10 @@ SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"
 SRC_URI_append_sh4 = " file://no-z-defs.patch;patch=1"
 
 # PowerPC Patches to add support for soft-float
-SRC_URI_append_powerpc = "file://powerpc-sqrt-hack.diff;patch=1"
+SRC_URI_append_powerpc = "\
+  file://powerpc-sqrt-hack.diff;patch=1 \
+  file://glibc-2.6.1-powerpc-nofpu.patch;patch=1 \
+"
 
 S = "${WORKDIR}/glibc-${PV}"
 B = "${WORKDIR}/build-${TARGET_SYS}"
