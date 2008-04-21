@@ -7,7 +7,7 @@ SRCREV = "e015fc7dba8f5002daa0982eb81d33cc72e68e95"
 # The e105fc commit is the merge of 2.6.25 into the omap tree, so we leave of the +git part of PV  
 #PV = "2.6.25+git${SRCREV}"
 PV = "2.6.25"
-PR = "r4"
+PR = "r5"
 
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
