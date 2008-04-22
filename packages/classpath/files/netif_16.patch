@@ -1,0 +1,263 @@
+Index: java/net/NetworkInterface.java
+===================================================================
+RCS file: /sources/classpath/classpath/java/net/NetworkInterface.java,v
+retrieving revision 1.23
+diff -u -r1.23 NetworkInterface.java
+--- java/net/NetworkInterface.java	18 Dec 2006 21:37:39 -0000	1.23
++++ java/net/NetworkInterface.java	21 Apr 2008 10:38:25 -0000
+@@ -1,5 +1,5 @@
+ /* NetworkInterface.java --
+-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
++   Copyright (C) 2002, 2003, 2004, 2005, 2006, 2008 Free Software Foundation, Inc.
+ 
+ This file is part of GNU Classpath.
+ 
+@@ -265,4 +265,50 @@
+ 
+     return result.toString();
+   }
++
++  /**
++   * Determines whether this interface is ready to transfer data.
++   *
++   * @return whether the interface is up
++  */
++  public boolean isUp()
++    throws SocketException
++  {
++    return VMNetworkInterface.isUp(netif.name);
++  }
++
++  /**
++   * Determines whether this interface does point to point
++   * transmission.
++   *
++   * @return whether the interface does point to point transmission
++  */
++  public boolean isPointToPoint()
++    throws SocketException
++  {
++    return VMNetworkInterface.isPointToPoint(netif.name);
++  }
++
++  /**
++   * Determines whether this interface is the loopback interface.
++   *
++   * @return whether the interface is the loopback interface
++  */
++  public boolean isLoopback()
++    throws SocketException
++  {
++    return VMNetworkInterface.isLoopback(netif.name);
++  }
++
++  /**
++   * Determines whether this interface supports multicast transmission.
++   *
++   * @return whether the interface supports multicast transmission.
++  */
++  public boolean supportsMulticast()
++    throws SocketException
++  {
++    return VMNetworkInterface.supportsMulticast(netif.name);
++  }
++
+ }
+Index: vm/reference/java/net/VMNetworkInterface.java
+===================================================================
+RCS file: /sources/classpath/classpath/vm/reference/java/net/VMNetworkInterface.java,v
+retrieving revision 1.7
+diff -u -r1.7 VMNetworkInterface.java
+--- vm/reference/java/net/VMNetworkInterface.java	18 Dec 2006 21:37:39 -0000	1.7
++++ vm/reference/java/net/VMNetworkInterface.java	21 Apr 2008 10:38:25 -0000
+@@ -1,5 +1,5 @@
+ /* VMNetworkInterface.java --
+-   Copyright (C) 2005  Free Software Foundation, Inc.
++   Copyright (C) 2005, 2008  Free Software Foundation, Inc.
+ 
+ This file is part of GNU Classpath.
+ 
+@@ -119,4 +119,13 @@
+     else
+       throw new SocketException("invalid interface address");
+   }
++
++  static native boolean isUp(String name) throws SocketException;
++
++  static native boolean isLoopback(String name) throws SocketException;
++
++  static native boolean isPointToPoint(String name) throws SocketException;
++
++  static native boolean supportsMulticast(String name) throws SocketException;
++
+ }
+Index: native/jni/java-net/java_net_VMNetworkInterface.c
+===================================================================
+RCS file: /sources/classpath/classpath/native/jni/java-net/java_net_VMNetworkInterface.c,v
+retrieving revision 1.6
+diff -u -r1.6 java_net_VMNetworkInterface.c
+--- native/jni/java-net/java_net_VMNetworkInterface.c	5 Apr 2007 12:34:19 -0000	1.6
++++ native/jni/java-net/java_net_VMNetworkInterface.c	21 Apr 2008 10:38:25 -0000
+@@ -1,5 +1,5 @@
+ /* VMNetworkInterface.c - Native methods for NetworkInterface class
+-   Copyright (C) 2003, 2005, 2006  Free Software Foundation, Inc.
++   Copyright (C) 2003, 2005, 2006, 2008 Free Software Foundation, Inc.
+ 
+ This file is part of GNU Classpath.
+ 
+@@ -50,11 +50,18 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
++#include <net/if.h>
++#include <sys/ioctl.h>
++
+ #include <jni.h>
+ #include <jcl.h>
+ 
++#include <cpnative.h>
++#include <cpnet.h>
++
+ #include "java_net_VMNetworkInterface.h"
+ 
++int iff_flags(JNIEnv *, jstring, jint *);
+ 
+ static jmethodID java_net_VMNetworkInterface_init;
+ static jmethodID java_net_VMNetworkInterface_addAddress;
+@@ -251,4 +258,136 @@
+ #endif /* HAVE_IFADDRS_H && HAVE_GETIFADDRS */
+ }
+ 
++int iff_flags(JNIEnv *env, jstring name, jint *flags)
++{
++  struct ifreq iff;
++  const char *iff_name;
++  jint socket;
++  int error, retval;
++
++  if ((error = cpnet_openSocketDatagram(env, &socket, AF_INET)))
++  {
++    return error;
++  }
++
++  iff_name = JCL_jstring_to_cstring(env, name);
++  memset(&iff, 0, sizeof(iff));
++  strcpy(iff.ifr_name, iff_name);
++ 
++  if (ioctl(socket, SIOCGIFFLAGS, &iff) >= 0)
++  {
++    *flags = (jint) iff.ifr_flags;
++
++    retval = 0;
++  }
++  else
++  {
++    retval = errno;
++  }
++
++  cpnet_close(env, socket);
++
++  JCL_free_cstring(env, name, iff_name);
++
++  return retval;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_java_net_VMNetworkInterface_isUp (JNIEnv *env, jclass class UNUSED,
++                                       jstring name)
++{
++  jint flags;
++  int error;
++  jboolean retval;
++
++  if ((error = iff_flags(env, name, &flags)))
++  {
++    JCL_ThrowException(env, "java/net/SocketException",
++                       cpnative_getErrorString(error));
++
++    retval = JNI_FALSE;
++  }
++  else
++  {
++    retval = (flags & (IFF_UP | IFF_RUNNING))
++             ? JNI_TRUE
++             : JNI_FALSE;
++  }
++
++  return retval;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_java_net_VMNetworkInterface_isPointToPoint (JNIEnv *env,
++                                                 jclass class UNUSED,
++                                                 jstring name)
++{
++  jint flags;
++  int error;
++  jboolean retval;
++
++  if ((error = iff_flags(env, name, &flags)))
++  {
++    JCL_ThrowException(env, "java/net/SocketException",
++                       cpnative_getErrorString(error));
++
++    retval = JNI_FALSE;
++  }
++  else
++  {
++    retval = (flags & IFF_POINTOPOINT) ? JNI_TRUE
++                                       : JNI_FALSE;
++  }
++
++  return retval;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_java_net_VMNetworkInterface_isLoopback (JNIEnv *env,
++                                             jclass class UNUSED,
++                                             jstring name)
++{
++  jint flags;
++  int error;
++  jboolean retval;
++
++  if ((error = iff_flags(env, name, &flags)))
++  {
++    JCL_ThrowException(env, "java/net/SocketException",
++                       cpnative_getErrorString(error));
++
++    retval = JNI_FALSE;
++  }
++  else
++  {
++    retval = (flags & IFF_LOOPBACK) ? JNI_TRUE : JNI_FALSE;
++  }
++
++  return retval;
++}
++
++JNIEXPORT jboolean JNICALL
++Java_java_net_VMNetworkInterface_supportsMulticast (JNIEnv *env,
++                                                    jclass class UNUSED,
++                                                    jstring name)
++{
++  jint flags;
++  int error;
++  jboolean retval;
++
++  if ((error = iff_flags(env, name, &flags)))
++  {
++    JCL_ThrowException(env, "java/net/SocketException",
++                       cpnative_getErrorString(error));
++
++    retval = JNI_FALSE;
++  }
++  else
++  {
++    retval = (flags & IFF_MULTICAST) ? JNI_TRUE : JNI_FALSE;
++  }
++
++  return retval;
++}
++
+ /* end of file */
