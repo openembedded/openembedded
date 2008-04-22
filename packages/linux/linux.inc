@@ -23,6 +23,7 @@ CMDLINE_append = " ${CMDLINE_DEBUG} "
 KERNEL_DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
 KERNEL_DEVICETREE_FLAGS_mpc8313e-rdb = "-R 8 -S 0x3000"
 KERNEL_DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
+KERNEL_DEVICETREE_haleakala = "arch/${ARCH}/boot/dts/haleakala.dts"
 
 python __anonymous () {
 
