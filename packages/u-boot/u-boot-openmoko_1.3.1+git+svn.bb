@@ -6,9 +6,9 @@ PRIORITY = "optional"
 
 UBOOT_UPSTREAM_REV = "b29661fc1151077776454288051bc9a488351ce8"
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v3 gta02v4 gta02v5"
-SRCREV_FORMAT = "+gitupstream+svnpatchset"
+SRCREV_FORMAT = "patchset"
 
-PV = "1.3.1${SRCREV}"
+PV = "1.3.1+svnr${SRCREV}+git${UBOOT_UPSTREAM_REV}"
 PR = "r3"
 
 PROVIDES = "virtual/bootloader"
@@ -18,8 +18,6 @@ SRC_URI = "\
   git://www.denx.de/git/u-boot.git;protocol=git;tag=${UBOOT_UPSTREAM_REV};name=upstream \
   svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patchset \
   file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
-#  file://makefile-no-dirafter.patch;patch=1 \
-#  file://fix-data-abort-from-sd-ombug799.patch;patch=1 \
 "
 
 EXTRA_OEMAKE = "ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
