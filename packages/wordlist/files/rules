@@ -1,0 +1,218 @@
+#!/usr/bin/make -f
+# -*- Makefile -*- $Id: rules,v 1.18 2005/10/15 03:03:48 david Exp $
+# Sample debian/rules that uses debhelper. 
+# GNU copyright 1997 to 1999 by Joey Hess.
+# Customized 27 Oct 1999 by David Coe for wenglish, later moved to scowl
+# This version is for packages that are architecture independent.
+
+# Copied & modified 20080409 from debian source package by John Lee
+# into OpenEmbedded.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# In addition to the scowl binary package, we create wamerican-small, wamerican, wamerican-large, wamerican-huge, and the
+# corresponding packages for wbritish and wcanadian.
+# The medium size packages have no -size part in their names
+# These are the scowl extensions (complexity numbers?) that contribute to each word list (i.e. each size);
+# the -size parts "-small", "", "-large", and "-huge" correspond to the end of the binary package name:
+export SIZE_EXTENSIONS-small:=10 20 35
+export SIZE_EXTENSIONS:=$(SIZE_EXTENSIONS-small) 40 50
+export SIZE_EXTENSIONS-large:=$(SIZE_EXTENSIONS) 55 60 70
+export SIZE_EXTENSIONS-huge:=$(SIZE_EXTENSIONS-large) 80
+
+# These are the scowl word list classes we use:
+CLASSES:=words proper-names upper contractions
+VARIANTS:=0 1
+
+build: build-stamp
+build-stamp:
+#	dh_testdir
+
+	set -e;\
+	for SPELLING in american british canadian; do\
+	  for SIZE in -small "" -large -huge; do\
+	    echo "The following SCOWL word lists were concatenated and sorted (with duplicates" > w$$SPELLING$$SIZE.scowl-word-lists-used;\
+	    echo "removed) to create this word list (see README.Debian for more details):" >> w$$SPELLING$$SIZE.scowl-word-lists-used;\
+	    for CLASS in $(CLASSES); do\
+	      for EXT in $$(eval echo \\$$SIZE_EXTENSIONS$$SIZE); do\
+		if [ -f final/english-$$CLASS.$$EXT ]; then\
+		  echo "cat final/english-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted";\
+		  cat final/english-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted;\
+		  echo "  english-$$CLASS.$$EXT" >> w$$SPELLING$$SIZE.scowl-word-lists-used;\
+		fi;\
+		for VARIANT in $(VARIANTS); do\
+		  if [ -f final/variant_$$VARIANT-$$CLASS.$$EXT ]; then\
+		    echo "cat final/variant_$$VARIANT-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted";\
+		    cat final/variant_$$VARIANT-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted;\
+		    echo "  variant_$$VARIANT-$$CLASS.$$EXT" >> w$$SPELLING$$SIZE.scowl-word-lists-used;\
+		  fi;\
+		done;\
+		if [ -f final/$$SPELLING-$$CLASS.$$EXT ]; then\
+		  echo "cat final/$$SPELLING-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted";\
+		  cat final/$$SPELLING-$$CLASS.$$EXT >> $$SPELLING-english$$SIZE.unsorted;\
+		  echo "  $$SPELLING-$$CLASS.$$EXT" >> w$$SPELLING$$SIZE.scowl-word-lists-used;\
+		fi;\
+	      done;\
+	    done;\
+	  echo "sort -u < $$SPELLING-english$$SIZE.unsorted > $$SPELLING-english$$SIZE; rm $$SPELLING-english$$SIZE.unsorted";\
+	  sort -u < $$SPELLING-english$$SIZE.unsorted > $$SPELLING-english$$SIZE; rm $$SPELLING-english$$SIZE.unsorted;\
+	  done;\
+	done
+
+	touch build-stamp
+
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	set -e;\
+	for SIZE in -small "" -large -huge; do\
+	  for SPELLING in american british canadian; do\
+	    rm -f $$SPELLING-english$$SIZE.unsorted $$SPELLING-english$$SIZE $$SPELLING-english$$SIZE.5 w$$SPELLING$$SIZE.scowl-word-lists-used;\
+	  done;\
+	done
+
+	dh_clean
+
+
+install: DH_OPTIONS=
+install: install-scowl install-wamerican install-wamerican-small install-wamerican-large install-wamerican-huge install-wbritish install-wbritish-small install-wbritish-large install-wbritish-huge install-wcanadian install-wcanadian-small install-wcanadian-large install-wcanadian-huge
+
+
+
+.PHONY: install-scowl
+install-scowl: PKG=scowl
+install-scowl: 
+	dh_testdir
+	dh_testroot
+	dh_installdirs --package=$(PKG)
+
+	dh_install --package=$(PKG) final/*.[0-9][0-9] usr/share/dict/scowl
+	dh_installdocs --package=$(PKG) README debian/README.Debian
+
+
+.PHONY: install-wordlist
+install-wordlist:
+#	PKG and WORDLIST must have been set to the binary package name and word list file name, respectively.
+	dh_testdir
+	dh_testroot
+	dh_installdirs --package=$(PKG)
+
+	dh_install --package=$(PKG) $(WORDLIST) usr/share/dict
+
+	dh_installdocs --package=$(PKG) $(PKG).scowl-word-lists-used debian/README.Debian
+
+	installdeb-wordlist --package=$(PKG) # This internally uses dh_installdebcon
+
+	sed "s/WORDLIST/$(WORDLIST)/g" < debian/wordlist_manpage_template > $(WORDLIST).5
+	dh_installman --package=$(PKG) $(WORDLIST).5
+
+
+.PHONY: install-wamerican
+install-wamerican: build-stamp
+	 $(MAKE) -f debian/rules PKG=wamerican WORDLIST=american-english install-wordlist
+
+.PHONY: install-wamerican-small
+install-wamerican-small: build-stamp
+	 $(MAKE) -f debian/rules PKG=wamerican-small WORDLIST=american-english-small install-wordlist
+
+.PHONY: install-wamerican-large
+install-wamerican-large: build-stamp
+	 $(MAKE) -f debian/rules PKG=wamerican-large WORDLIST=american-english-large install-wordlist
+
+.PHONY: install-wamerican-huge
+install-wamerican-huge: build-stamp
+	 $(MAKE) -f debian/rules PKG=wamerican-huge WORDLIST=american-english-huge install-wordlist
+
+
+.PHONY: install-wbritish
+install-wbritish: build-stamp
+	 $(MAKE) -f debian/rules PKG=wbritish WORDLIST=british-english install-wordlist
+
+.PHONY: install-wbritish-small
+install-wbritish-small: build-stamp
+	 $(MAKE) -f debian/rules PKG=wbritish-small WORDLIST=british-english-small install-wordlist
+
+.PHONY: install-wbritish-large
+install-wbritish-large: build-stamp
+	 $(MAKE) -f debian/rules PKG=wbritish-large WORDLIST=british-english-large install-wordlist
+
+.PHONY: install-wbritish-huge
+install-wbritish-huge: build-stamp
+	 $(MAKE) -f debian/rules PKG=wbritish-huge WORDLIST=british-english-huge install-wordlist
+
+
+.PHONY: install-wcanadian
+install-wcanadian: build-stamp
+	 $(MAKE) -f debian/rules PKG=wcanadian WORDLIST=canadian-english install-wordlist
+
+.PHONY: install-wcanadian-small
+install-wcanadian-small: build-stamp
+	 $(MAKE) -f debian/rules PKG=wcanadian-small WORDLIST=canadian-english-small install-wordlist
+
+.PHONY: install-wcanadian-large
+install-wcanadian-large: build-stamp
+	 $(MAKE) -f debian/rules PKG=wcanadian-large WORDLIST=canadian-english-large install-wordlist
+
+.PHONY: install-wcanadian-huge
+install-wcanadian-huge: build-stamp
+	 $(MAKE) -f debian/rules PKG=wcanadian-huge WORDLIST=canadian-english-huge install-wordlist
+
+
+
+# This single target is used to build all the packages, all at once, or
+# one at a time. So keep in mind: any options passed to commands here will
+# affect _all_ packages. Anything you want to only affect one package
+# should be put in another target, such as the install target.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+#	dh_installdocs    # moved to the install targets, because it doesn't DWIM with "-A -p scowl README"
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installcatalogs
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installman
+#	dh_installcron
+#	dh_installinfo
+#	dh_undocumented
+#	dh_strip
+	dh_link
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build install
+	 $(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch: build install
+# (Uncomment this next line if you have such packages.)
+#	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+# Any other binary targets build just one binary package at a time.
+binary-%: build install
+	make -f debian/rules binary-common DH_OPTIONS=-p$*
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary-common binary install
