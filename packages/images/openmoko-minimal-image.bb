@@ -18,4 +18,4 @@ DEPENDS = "\
 
 inherit image
 
-ROOTFS_POSTPROCESS_COMMAND += 'date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp'
+ROOTFS_POSTPROCESS_COMMAND += "rootfs_update_timestamp;"
