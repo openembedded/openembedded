@@ -1,3 +1,4 @@
+EFL_SRCDATE = "${@time.strftime('%Y%m%d', time.gmtime())}"
 SRCREV_pn-assassin ?= "${AUTOREV}"
 SRCREV_pn-dfu-util ?= "${AUTOREV}"
 SRCREV_pn-dfu-util-native ?= "${AUTOREV}"
