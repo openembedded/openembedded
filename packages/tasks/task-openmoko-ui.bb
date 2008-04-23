@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: GUI for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r72"
+PR = "r72.01"
 
 inherit task
 
@@ -45,7 +45,7 @@ RDEPENDS_task-openmoko-ui = "\
 # taking into account not only size but also PPI! Ultimately this might
 # need recomputing some theme files and images on-the-fly :/ SVG and logical
 # theme description anyone? Or simply Edje to the rescue! :D
-THEMES          = "openmoko-icon-theme-standard2      openmoko-theme-standard2"
+THEMES          = "openmoko-icon-theme-standard2      moko-gtk-engine"
 THEMES_a780     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_e680     = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"
 THEMES_a1200    = "openmoko-icon-theme-standard2-qvga openmoko-theme-standard2-qvga"

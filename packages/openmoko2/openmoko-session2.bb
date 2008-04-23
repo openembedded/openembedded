@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2 openmoko-panel-memory"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
-PR = "r66"
+PR = "r68"
 
 SRC_URI = "\
   file://etc \
@@ -32,7 +32,7 @@ if [ "x$D" != "x" ]; then
     exit 1
 fi
 
-gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/theme openmoko-standard-2
+gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/theme Moko
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/icon_theme openmoko-standard
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/font_name "Sans 5"
 gconftool-2 --config-source=xml::$D${sysconfdir}/gconf/gconf.xml.defaults --direct --type string --set /desktop/poky/interface/wallpaper ${datadir}/pixmaps/wallpaper.png
