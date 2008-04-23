@@ -4,7 +4,7 @@ AUTHOR = "Russell King w/ plugins by Chris Larson et. al."
 SECTION = "base"
 LICENSE = "LGPL"
 
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "http://download.berlios.de/tslib/tslib-1.0.tar.bz2 \
            file://tslib-input_raw-grab_events.patch;patch=1 \
