@@ -17,6 +17,7 @@ SRCREV_pn-linux-openmoko-devel ?= "${AUTOREV}"
 SRCREV_pn-multitap-pad ?= "${AUTOREV}"
 SRCREV_pn-moko-gtk-engine ?= "${AUTOREV}"
 SRCREV_pn-neod ?= "${AUTOREV}"
+SRCREV_pn-openmoko-agpsui ?= "${AUTOREV}"
 
 SRCREV_pn-openmoko-appmanager2 ?= "${AUTOREV}"
 SRCREV_pn-openmoko-appearance ?= "${AUTOREV}"
