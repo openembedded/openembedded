@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Base Task for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r72"
+PR = "r73"
 
 inherit task
 
@@ -20,10 +20,11 @@ RDEPENDS_task-openmoko-base = "\
   openmoko-terminal2 \
 #  openmoko-keyboard \
   openmoko-panel-battery \
-  openmoko-panel-bt \
   openmoko-panel-clock \
   openmoko-panel-usb \
-  ${@base_contains('MACHINE_FEATURES', 'gps', 'openmoko-panel-gps', '',d)} \
+  ${@base_contains('MACHINE_FEATURES', 'bluetooth', 'openmoko-panel-bt', '', d)} \
+  ${@base_contains('MACHINE_FEATURES', 'gps', 'openmoko-panel-gps', '', d)} \
+  ${@base_contains('MACHINE_FEATURES', 'wifi', 'openmoko-panel-wifi', '', d)} \
   \
   openmoko-today2 \
 #  openmoko-appmanager \

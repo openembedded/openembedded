@@ -1,7 +1,7 @@
-DESCRIPTION = "Custom Matchbox session files for Openmoko"
+ESCRIPTION = "Custom Matchbox session files for Openmoko"
 LICENSE = "GPL"
 SECTION = "x11"
-RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2 openmoko-panel-memory"
+RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
 PR = "r68"
 
