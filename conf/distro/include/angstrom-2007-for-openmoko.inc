@@ -240,7 +240,7 @@ DISTRO_EXTRA_RDEPENDS += "\
     update-modules \
     ${@base_contains("MACHINE_FEATURES", "screen", "psplash", "",d)} \   
     angstrom-version \
-    ipkg ipkg-collateral ${ANGSTROM_FEED_CONFIGS} \
+    opkg opkg-collateral ${ANGSTROM_FEED_CONFIGS} \
     util-linux-mount util-linux-umount \
     ${EXTRA_STUFF} \
     ${DEBUG_APPS} \
