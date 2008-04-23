@@ -7,8 +7,9 @@
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
+RRECOMMENDS_${PN}_openmoko = "openmoko-alsa-scenarios"
 PV = "0.1.0"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = " \
   file://asoundrc \
