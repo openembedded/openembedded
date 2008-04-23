@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Debugging and Benchmarking Tools"
+DESCRIPTION = "Openmoko: Debugging and Benchmarking Tools"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r59"

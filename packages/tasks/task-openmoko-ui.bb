@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: GUI for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: GUI for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r72"
@@ -10,7 +10,7 @@ XSERVER ?= "xserver-kdrive-fbdev"
 #
 # task-openmoko-ui
 #
-DESCRIPTION_task-openmoko-ui = "OpenMoko: The X11/Gtk+2 based native User Interface"
+DESCRIPTION_task-openmoko-ui = "Openmoko: The X11/Gtk+2 based native User Interface"
 PACKAGE_ARCH_task-openmoko-ui = "${MACHINE_ARCH}"
 RDEPENDS_task-openmoko-ui = "\
   gdk-pixbuf-loader-png \

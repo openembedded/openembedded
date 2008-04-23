@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Dates Application"
+DESCRIPTION = "The Openmoko Dates Application"
 SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"

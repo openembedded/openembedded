@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Appearance Editor"
+DESCRIPTION = "The Openmoko Appearance Editor"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 gconf gtk+"
 RDEPENDS = "libedata-cal openmoko-today2-folders"

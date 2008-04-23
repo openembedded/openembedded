@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Webbrowser"
+DESCRIPTION = "The Openmoko Webbrowser"
 SECTION = "openmoko/apps"
 DEPENDS += "intltool libmokoui2 check webkit-gtk"
 PV = "0.0.1+svnr${SRCREV}"

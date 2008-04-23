@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Command Line Terminal"
+DESCRIPTION = "The Openmoko Command Line Terminal"
 SECTION = "openmoko/applications"
 DEPENDS = "vala-native vte libmokoui2"
 RDEPENDS = "ttf-liberation-mono"

@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: PIM for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: PIM for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r72"
@@ -8,7 +8,7 @@ inherit task
 #
 # task-openmoko-pim
 #
-DESCRIPTION_task-openmoko-pim = "OpenMoko: Personal Information Management Suite"
+DESCRIPTION_task-openmoko-pim = "Openmoko: Personal Information Management Suite"
 RDEPENDS_task-openmoko-pim = "\
   eds-dbus \
   openmoko-calculator2 \

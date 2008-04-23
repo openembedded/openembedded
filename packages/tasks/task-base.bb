@@ -372,7 +372,7 @@ RDEPENDS_task-base-screen = "\
 	"
 
 #
-# GPE/OPIE/OpenMoko provide own touchscreen calibration utils
+# GPE/OPIE/Openmoko provide own touchscreen calibration utils
 #
 RDEPENDS_task-base-touchscreen = "\
     tslib-tests \

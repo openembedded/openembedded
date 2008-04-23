@@ -1,4 +1,4 @@
-DESCRIPTION = "Common files for the OpenMoko distribution"
+DESCRIPTION = "Common files for the Openmoko distribution"
 SECTION = "openmoko/base"
 PV = "0.0+svnr${SRCREV}"
 PR = "r1"

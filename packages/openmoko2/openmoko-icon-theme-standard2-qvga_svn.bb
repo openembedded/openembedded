@@ -1,4 +1,4 @@
-DESCRIPTION = "Standard Gtk+ icon theme for the OpenMoko framework, QVGA edition"
+DESCRIPTION = "Standard Gtk+ icon theme for the Openmoko framework, QVGA edition"
 SECTION = "openmoko/base"
 DEPENDS = "imagemagick-native librsvg-native"
 PV = "0.1.0+svnr${SRCREV}"

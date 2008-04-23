@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko Settings GUI"
+DESCRIPTION = "Openmoko Settings GUI"
 AUTHOR = "Kristian M."
 SECTION = "openmoko/applications"
 RDEPENDS = "python-pygtk python-subprocess python-threading"

@@ -1,4 +1,4 @@
-DESCRIPTION = "Meta-package for OpenMoko Misc. Feed Items"
+DESCRIPTION = "Meta-package for Openmoko Misc. Feed Items"
 LICENSE = "MIT"
 
 RDEPENDS = "\

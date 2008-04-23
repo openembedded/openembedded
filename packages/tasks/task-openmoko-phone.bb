@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: Tasks for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r73"
@@ -8,7 +8,7 @@ inherit task
 #
 # task-openmoko-phone
 #
-DESCRIPTION_task-openmoko-phone = "OpenMoko: GSM and GPRS Phone Services"
+DESCRIPTION_task-openmoko-phone = "Openmoko: GSM and GPRS Phone Services"
 RDEPENDS_task-openmoko-phone = "\
   gsmd \
   libgsmd-tools \

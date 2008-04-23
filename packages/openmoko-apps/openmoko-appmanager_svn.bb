@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Application Manager"
+DESCRIPTION = "The Openmoko Application Manager"
 SECTION = "openmoko/applications"
 DEPENDS += "ipkg"
 PV = "0.0.1+svnr${SRCREV}"

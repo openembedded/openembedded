@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Base Task for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: Base Task for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r72"
@@ -8,7 +8,7 @@ inherit task
 #
 # task-openmoko-base
 #
-DESCRIPTION_task-openmoko-base = "OpenMoko: Top Panel, Application Launcher, Application Manager"
+DESCRIPTION_task-openmoko-base = "Openmoko: Top Panel, Application Launcher, Application Manager"
 RDEPENDS_task-openmoko-base = "\
   matchbox-panel-2 \
   matchbox-panel-2-applets \

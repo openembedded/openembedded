@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Python Development Tools"
+DESCRIPTION = "Openmoko: Python Development Tools"
 SECTION = "openmoko/devel"
 LICENSE = "MIT"
 PR = "r3"

@@ -4,7 +4,7 @@
 #
 # This includes three test sites
 #   site contains one bug entry
-#   all_bugs contains all OpenMoko bugs as of \today
+#   all_bugs contains all Openmoko bugs as of \today
 #   no_bug  is a query which showed no bug
 #
 

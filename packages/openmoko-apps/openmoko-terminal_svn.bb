@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Command Line Console"
+DESCRIPTION = "The Openmoko Command Line Console"
 SECTION = "openmoko/applications"
 RDEPENDS += "gtkterm2"
 PV = "1.0.0"

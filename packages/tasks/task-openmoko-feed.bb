@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Misc. Feed Items"
+DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r26"

@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Sample Project"
+DESCRIPTION = "The Openmoko Sample Project"
 SECTION = "openmoko/applications"
 DEPENDS = "libmokoui2 intltool gconf"
 PV = "0.0.1+svnr${SRCREV}"

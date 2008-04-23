@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko Sound System"
+DESCRIPTION = "Openmoko Sound System"
 SECTION = "openmoko/base"
 RDEPENDS = "\
   pulseaudio-server \

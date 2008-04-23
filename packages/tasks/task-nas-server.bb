@@ -56,7 +56,7 @@ RRECOMMENDS_task-nas-server-iptables = "\
 	kernel-module-ipt-masquerade \
 "
 
-DESCRIPTION_task-nas-server-openmoko = "NAS-Server: OpenMoko Support"
+DESCRIPTION_task-nas-server-openmoko = "NAS-Server: Openmoko Support"
 RDEPENDS_task-nas-server-openmoko = "\
 	dfu-util \
 "

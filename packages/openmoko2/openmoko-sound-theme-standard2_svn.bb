@@ -1,4 +1,4 @@
-DESCRIPTION = "Standard sound theme for the OpenMoko framework"
+DESCRIPTION = "Standard sound theme for the Openmoko framework"
 SECTION = "openmoko/base"
 RREPLACES = "openmoko-sound-theme-standard"
 RPROVIDES = "openmoko-sound-theme-standard"

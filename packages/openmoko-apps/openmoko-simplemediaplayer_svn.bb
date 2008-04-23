@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Media Player"
+DESCRIPTION = "The Openmoko Media Player"
 SECTION = "openmoko/applications"
 DEPENDS += "alsa-lib dbus-glib id3lib libvorbis"
 PV = "0.0.1+svnr${SRCREV}"

@@ -1,4 +1,4 @@
-DESCRIPTION = "MokoGateway: Tasks for a companion server for the OpenMoko Linux Distribution"
+DESCRIPTION = "MokoGateway: Tasks for a companion server for the Openmoko Linux Distribution"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
 PR = "r4"

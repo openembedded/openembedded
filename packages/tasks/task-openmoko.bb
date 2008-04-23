@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Tasks for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: Tasks for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PROVIDES = "task-openmoko-everything"

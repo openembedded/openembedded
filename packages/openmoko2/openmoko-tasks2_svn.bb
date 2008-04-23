@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Agenda"
+DESCRIPTION = "The Openmoko Agenda"
 SECTION = "openmoko/pim"
 DEPENDS = "dbus-glib eds-dbus libmokoui2"
 RDEPENDS = "libedata-cal"

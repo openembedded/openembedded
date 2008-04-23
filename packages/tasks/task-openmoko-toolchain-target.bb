@@ -1,4 +1,4 @@
-DESCRIPTION = "Packages for a standalone OpenMoko SDK or external toolchain"
+DESCRIPTION = "Packages for a standalone Openmoko SDK or external toolchain"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

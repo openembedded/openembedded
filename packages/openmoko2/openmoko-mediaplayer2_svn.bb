@@ -1,4 +1,4 @@
-DESCRIPTION = "A media player for OpenMoko"
+DESCRIPTION = "A media player for Openmoko"
 SECTION = "openmoko/tools"
 DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
 RDEPENDS = "gst-meta-audio gconf openmoko-sound-system2"

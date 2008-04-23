@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Application Manager"
+DESCRIPTION = "The Openmoko Application Manager"
 SECTION = "openmoko/applications"
 DEPENDS = "libmokoui2 libmokojournal2 startup-notification dbus-glib libice libsm ipkg"
 PV = "0.1.0+svnr${SRCREV}"

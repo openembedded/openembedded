@@ -1,5 +1,5 @@
 #------------------------------------------------------
-# Minimal OpenMoko Image Recipe
+# Minimal Openmoko Image Recipe
 # This should only have the base system + dialer
 # #------------------------------------------------------
 

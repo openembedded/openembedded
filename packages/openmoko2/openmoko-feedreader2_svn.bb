@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Feed Reader"
+DESCRIPTION = "The Openmoko Feed Reader"
 SECTION = "openmoko/apps"
 DEPENDS += "libmokoui2 libmrss check webkit-gtk"
 PV = "0.0.1+svnr${SRCREV}"

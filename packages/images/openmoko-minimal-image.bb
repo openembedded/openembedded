@@ -1,5 +1,5 @@
 #------------------------------------------------------
-# OpenMoko Minimal Image Recipe
+# Openmoko Minimal Image Recipe
 # other openmoko images should include this.
 # -----------------------------------------------------
 

@@ -1,4 +1,4 @@
-DESCRIPTION = "Standard Gtk+ theme for the OpenMoko framework, QVGA edition"
+DESCRIPTION = "Standard Gtk+ theme for the Openmoko framework, QVGA edition"
 SECTION = "openmoko/base"
 RCONFLICTS = "openmoko-theme-standard"
 RPROVIDES = "openmoko-theme-standard-2"

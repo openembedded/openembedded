@@ -1,4 +1,4 @@
-DESCRIPTION = "Standard Gtk+ theme for the OpenMoko distribution, qvga version"
+DESCRIPTION = "Standard Gtk+ theme for the Openmoko distribution, qvga version"
 SECTION = "openmoko/base"
 PV = "0.0+svnr${SRCREV}"
 PR = "r0"

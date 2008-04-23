@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Tasks Application"
+DESCRIPTION = "The Openmoko Tasks Application"
 SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gtk+ libglade eds-dbus openmoko-libs"

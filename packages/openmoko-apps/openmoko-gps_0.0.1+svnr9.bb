@@ -7,8 +7,8 @@
 # Filename: openmoko-gps_svn.bb
 # Date: 20080101 (YMD)
 
-DESCRIPTION = "A tiny GPS output parser for the OpenMoko platform."
-HOMEPAGE = "http://forge.bearstech.com/trac/wiki/OpenMokoGPS"
+DESCRIPTION = "A tiny GPS output parser for the Openmoko platform."
+HOMEPAGE = "http://forge.bearstech.com/trac/wiki/OpenmokoGPS"
 SECTION = "base"
 LICENSE = "GPL"
 

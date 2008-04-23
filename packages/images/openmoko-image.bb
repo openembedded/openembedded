@@ -1,5 +1,5 @@
 #------------------------------------------------------
-# OpenMoko Image Recipe
+# Openmoko Image Recipe
 #------------------------------------------------------
 
 require openmoko-minimal-image.bb

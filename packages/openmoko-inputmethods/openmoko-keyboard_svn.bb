@@ -1,4 +1,4 @@
-DESCRIPTION = "Matchbox virtual keyboard for X11 - OpenMoko fork"
+DESCRIPTION = "Matchbox virtual keyboard for X11 - Openmoko fork"
 LICENSE = "GPL"
 DEPENDS = "libfakekey expat libxft"
 SECTION = "openmoko/inputmethods"

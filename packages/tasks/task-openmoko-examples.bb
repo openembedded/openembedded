@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Examples for the OpenMoko Linux Distribution"
+DESCRIPTION = "Openmoko: Examples for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r71"

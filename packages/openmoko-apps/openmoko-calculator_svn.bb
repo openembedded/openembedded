@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Calculator Application"
+DESCRIPTION = "The Openmoko Calculator Application"
 SECTION = "openmoko/applications"
 AUTHOR = "Rodolphe Ortalo <rodolphe.ortalo@free.fr>"
 

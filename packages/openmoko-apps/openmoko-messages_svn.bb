@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Messaging Application"
+DESCRIPTION = "The Openmoko Messaging Application"
 SECTION = "openmoko/applications"
 
 PV = "0.0.1+svnr${SRCREV}"

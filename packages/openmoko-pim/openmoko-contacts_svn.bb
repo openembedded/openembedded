@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko address book"
+DESCRIPTION = "The Openmoko address book"
 LICENSE = "GPL"
 SECTION = "openmoko/pim"
 DEPENDS += "glib-2.0 gtk+ libglade eds-dbus gnome-vfs openmoko-libs"

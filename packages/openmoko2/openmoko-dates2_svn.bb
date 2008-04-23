@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Calendar"
+DESCRIPTION = "The Openmoko Calendar"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus libjana"
 RDEPENDS = "libedata-cal"

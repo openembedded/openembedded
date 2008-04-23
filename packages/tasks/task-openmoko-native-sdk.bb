@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko: Native SDK"
+DESCRIPTION = "Openmoko: Native SDK"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
 PR = "r58"

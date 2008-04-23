@@ -1,4 +1,4 @@
-DESCRIPTION = "OpenMoko Today application."
+DESCRIPTION = "Openmoko Today application."
 SECTION = "openmoko/pim"
 LICENSE = "GPL"
 DEPENDS = "openmoko-libs eds-dbus startup-notification"

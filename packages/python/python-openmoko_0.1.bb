@@ -1,4 +1,4 @@
-DESCRIPTION = "Python Bindings for the OpenMoko Platform"
+DESCRIPTION = "Python Bindings for the Openmoko Platform"
 AUTHOR = "Holger 'Zecke' Freyther"
 LICENSE = "LGPL"
 DEPENDS = "python-pygtk libmokoui2 libmokojournal2 libmokogsmd2"

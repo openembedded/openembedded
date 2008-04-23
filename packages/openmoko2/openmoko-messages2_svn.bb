@@ -1,4 +1,4 @@
-DESCRIPTION = "The OpenMoko Message application"
+DESCRIPTION = "The Openmoko Message application"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 libjana"
 PV = "0.1.0+svnr${SRCREV}"
