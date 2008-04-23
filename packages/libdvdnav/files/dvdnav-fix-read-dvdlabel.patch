@@ -1,0 +1,52 @@
+--- libdvdnav-0.1.10-org/src/vm.c	2004-05-21 21:32:25.000000000 +0200
++++ libdvdnav-0.1.10/src/vm/vm.c	2008-04-15 13:25:33.000000000 +0200
+@@ -43,6 +43,10 @@
+ 
+ #include "dvdnav_internal.h"
+ 
++#if defined(__linux__)
++#include <mntent.h>
++#endif
++
+ #ifdef _MSC_VER
+ #include <io.h>   /* read() */
+ #endif /* _MSC_VER */
+@@ -131,7 +135,7 @@
+      * all off_t are 64bit.
+      */
+     off_t off;
+-    int fd, i;
++    int fd = 0, i;
+     uint8_t data[DVD_VIDEO_LB_LEN];
+ 
+     /* Read DVD name */
+@@ -141,6 +145,29 @@
+       if( off == ( 32 * (off_t) DVD_VIDEO_LB_LEN ) ) {
+         off = read( fd, data, DVD_VIDEO_LB_LEN ); 
+         close(fd);
++#if defined(__linux__)
++	if (off != ( (off_t) DVD_VIDEO_LB_LEN )) {
++		FILE *mntfile;
++		mntfile = fopen( MOUNTED, "r" );
++		if ( mntfile ) {
++			struct mntent *me;
++			while( ( me = getmntent( mntfile ) ) ) {
++				if( strstr( device, me->mnt_dir ) ) {
++					fprintf( stderr, "libdvdnav: Attempting to read dvd label from device %s mounted on %s \n", me->mnt_fsname, me->mnt_dir );
++					fd = open(me->mnt_fsname, O_RDONLY);
++				}
++			}
++			fclose( mntfile );
++		}
++		if (fd > 0) {
++			off = lseek( fd, 32 * (off_t) DVD_VIDEO_LB_LEN, SEEK_SET );
++			if( off == ( 32 * (off_t) DVD_VIDEO_LB_LEN ) ) {
++				off = read( fd, data, DVD_VIDEO_LB_LEN );
++				close(fd);
++			}
++		}
++	}
++#endif
+         if (off == ( (off_t) DVD_VIDEO_LB_LEN )) {
+           fprintf(MSG_OUT, "libdvdnav: DVD Title: ");
+           for(i=25; i < 73; i++ ) {
