@@ -1,0 +1,6 @@
+# dsp dev
+KERNEL=="dspctl",    NAME="dspctl/ctl"
+KERNEL=="dspmem",    NAME="dspctl/mem", MODE="0640", GROUP="kmem"
+KERNEL=="dsptwch",   NAME="dspctl/twch", MODE="0640"
+KERNEL=="dsperr",    NAME="dspctl/err", MODE="0440"
+KERNEL=="dsptask[0-9]*", MODE="0666"
