@@ -72,7 +72,7 @@ UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
 # the CFLAGS (for when building the utils).
 OEMAKE_NO_CC = "'STRIPTOOL=true' 'LD=${LD}' \
 		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
-EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}'"
+EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}' HOSTCFLAGS='-I${STAGING_INCDIR}'"
 EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
 EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 
@@ -172,7 +172,7 @@ do_stage() {
 }
 
 do_install() {
-        # This MUST be done first because we
+        # Tis MUST be done first because we
         # will install crt1.o in the install_dev stage and gcc needs it)
 	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
