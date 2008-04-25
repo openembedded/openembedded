@@ -22,9 +22,9 @@ cd openembedded-git
 
 
 # Push all changes to the server, update the master tag as well
-for branch in dev dreambox documentation oetest oz354x packaged-staging oz354fam083 angstrom-2007.12-stable entity stable;
+for branch in `mtn --db ../../OE.mtn ls branches`;
 do
-    git-push --force git+ssh://ABC@repo.or.cz/srv/git/org.openembedded.dev.git org.openembedded.$branch;
+    git-push --force git+ssh://zecke2@repo.or.cz/srv/git/org.openembedded.dev.git $branch;
 done
 
 #dev is our master
