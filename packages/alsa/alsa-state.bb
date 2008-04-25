@@ -9,7 +9,7 @@ LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
 RRECOMMENDS_${PN}_openmoko = "openmoko-alsa-scenarios"
 PV = "0.1.0"
-PR = "r12"
+PR = "r15"
 
 SRC_URI = " \
   file://asoundrc \
