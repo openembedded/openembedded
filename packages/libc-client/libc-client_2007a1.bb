@@ -3,12 +3,11 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "University of Washington's Free-Fork License"
 DEPENDS = "libpam openssl"
-PR = "r1"
 
-SRC_URI = "ftp://ftp.cac.washington.edu/imap/c-client.tar.Z \
+SRC_URI = "ftp://ftp.cac.washington.edu/imap/imap-${PV}.tar.Z \
 	   file://quote_cctype.patch;patch=1"
 
-S = "${WORKDIR}/imap-2007"
+S = "${WORKDIR}/imap-2007a"
 
 EXTRA_OEMAKE = "CC='${CC}'"
 
