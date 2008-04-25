@@ -44,3 +44,15 @@ RDEPENDS = "\
     xsp \
     xterm \
 "
+
+RDEPENDS_append_nokia770 = " \
+    libasound-module-ctl-dsp-ctl \
+    libasound-module-pcm-alsa-dsp \
+    mamona-sound-n770 \
+"
+
+RDEPENDS_append_nokia800 = " \
+    libasound-module-ctl-dsp-ctl \
+    libasound-module-pcm-alsa-dsp \
+    mamona-sound-n800 \
+"
