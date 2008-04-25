@@ -20,7 +20,6 @@ RDEPENDS = "\
   alsa-lib \
   alsa-utils-alsactl \
   alsa-state \
-  mamona-sound-n800 \
   usbnet \
   openssh-sshd \
   openssh-scp \
