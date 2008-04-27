@@ -7,6 +7,8 @@ DEPENDS += "popt"
 
 inherit autotools
 
+SRC_URI = "http://rsync.samba.org/ftp/rsync/old-versions/rsync-${PV}.tar.gz"
+
 EXTRA_OEMAKE='STRIP=""'
 
 do_install_append() {
