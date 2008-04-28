@@ -1,1 +1,0 @@
-require qtopia-phone.inc
