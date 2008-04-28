@@ -1,7 +1,13 @@
-diff -urN hostapd.orig/Makefile hostapd/Makefile
---- hostapd.orig/Makefile	2007-05-28 19:26:55.000000000 +0200
-+++ hostapd/Makefile	2007-11-22 16:28:44.000000000 +0100
-@@ -6,6 +6,8 @@
+diff -urN hostapd-0.5.10.orig/Makefile hostapd-0.5.10/Makefile
+--- hostapd-0.5.10.orig/Makefile	2008-02-20 01:08:54.000000000 +0100
++++ hostapd-0.5.10/Makefile	2008-04-28 17:01:36.000000000 +0200
+@@ -1,10 +1,14 @@
++ifndef CC
+ CC=gcc
++endif
+ DIR_WPA_SUPPLICANT=.
+ 
+ ifndef CFLAGS
  CFLAGS = -MMD -O2 -Wall -g
  endif
  
@@ -10,7 +16,7 @@ diff -urN hostapd.orig/Makefile hostapd/Makefile
  # define HOSTAPD_DUMP_STATE to include SIGUSR1 handler for dumping state to
  # a file (undefine it, if you want to save in binary size)
  CFLAGS += -DHOSTAPD_DUMP_STATE
-@@ -361,10 +363,10 @@
+@@ -333,10 +337,10 @@
  	fi
  
  install: all
@@ -21,5 +27,5 @@ diff -urN hostapd.orig/Makefile hostapd/Makefile
 -	$(CC) -o hostapd $(OBJS) $(LIBS)
 +	$(CC) $(LDFLAGS) -o hostapd $(OBJS) $(LIBS)
  
- OBJS_c = hostapd_cli.o ../src/common/wpa_ctrl.o ../src/utils/os_$(CONFIG_OS).o
- hostapd_cli: $(OBJS_c)
+ driver_conf.c: Makefile .config
+ 	rm -f driver_conf.c

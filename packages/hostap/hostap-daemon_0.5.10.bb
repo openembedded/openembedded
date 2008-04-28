@@ -5,14 +5,16 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "openssl ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
 
-DEFAULT_PREFERENCE = "-1"
+#we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
+MY_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
 	file://makefile-cross.diff;patch=1 \
 	file://defconfig \
 	file://init"
 
-S = "${WORKDIR}/hostapd-${PV}/hostapd"
+S = "${WORKDIR}/hostapd-${PV}"
 
 export HAS_PCI = "${@base_contains('COMBINED_FEATURES', 'pci', 1, 0,d)}"
 
@@ -28,7 +30,7 @@ do_configure() {
 }
 
 do_compile() {
-	CFLAGS='${CFLAGS}' CC='${CC}' make
+	make
 }
 
 do_install() {
