@@ -8,11 +8,8 @@ DEPENDS = "gnutls ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",
 MY_ARCH := "${PACKAGE_ARCH}"
 PACKAGE_ARCH = "${@base_contains('COMBINED_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}', d)}"
 
-DEFAULT_PREFERENCE = "-2"
-
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
-	file://gnutlsfix.patch;patch=1 \
 	file://ifupdown.sh \
 	file://functions.sh"
 
