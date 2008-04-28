@@ -24,4 +24,6 @@ RDEPENDS = "\
   subversion \
   pkgconfig \
   binutils \
+  diffutils \
+  binutils-symlinks \
 "
