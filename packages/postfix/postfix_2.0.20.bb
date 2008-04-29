@@ -1,7 +1,7 @@
 SECTION = "console/network"
 DEPENDS = "virtual/db libpcre postfix-native"
 LICENSE = "IPL"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-${PV}.tar.gz \
 	   file://${FILESDIR}/makedefs.patch;patch=1 \
@@ -53,6 +53,7 @@ do_install () {
 }
 
 pkg_postinst () {
+	update-alternatives --install ${sbindir}/sendmail sendmail sendmail.${PN} 40
         grep postfix /etc/group || addgroup postfix
         grep postdrop /etc/group || addgroup postdrop
         grep vmail /etc/group || addgroup vmail
@@ -69,11 +70,10 @@ pkg_postinst () {
 	/etc/init.d/populate-volatile.sh update
 	touch /etc/aliases
 	newaliases
-	update-alternatives --install sendmail sendmail ${sbindir}/sendmail.${PN} 40
 }
 
 pkg_postrm () {
-	update-alternatives --remove sendmail ${sbindir}/sendmail
+	update-alternatives --remove sendmail sendmail.${PN}
 }
 
 # Exclude .debug directories from the main package
