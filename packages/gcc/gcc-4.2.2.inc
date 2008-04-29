@@ -40,6 +40,13 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://intermask-bigendian.patch;patch=1 \
 "
 
+
+SRC_URI_append_avr32 = " \
+        file://gcc-4.2.2.atmel.1.0.8.patch.bz2;patch=1 \
+        file://901-avr32-no-cond-exec-before-reload-by-default.patch;patch=1 \
+"
+
+
 SRC_URI_append_ep93xx = " \
         file://arm-crunch-saveregs.patch;patch=1 \
         file://arm-crunch-20000320.patch;patch=1 \

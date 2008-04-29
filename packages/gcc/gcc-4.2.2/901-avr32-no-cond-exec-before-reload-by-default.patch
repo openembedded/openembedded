@@ -1,0 +1,13 @@
+Index: gcc-4.2.2/gcc/config/avr32/avr32.c
+===================================================================
+--- gcc-4.2.2.orig/gcc/config/avr32/avr32.c	2008-04-08 10:42:47.000000000 +0200
++++ gcc-4.2.2/gcc/config/avr32/avr32.c	2008-04-08 10:43:33.000000000 +0200
+@@ -161,7 +161,7 @@
+ /* Set default target_flags. */
+ #undef TARGET_DEFAULT_TARGET_FLAGS
+ #define TARGET_DEFAULT_TARGET_FLAGS \
+-  (MASK_HAS_ASM_ADDR_PSEUDOS | MASK_MD_REORG_OPTIMIZATION | MASK_COND_EXEC_BEFORE_RELOAD)
++  (MASK_HAS_ASM_ADDR_PSEUDOS | MASK_MD_REORG_OPTIMIZATION)
+ 
+ void 
+ avr32_optimization_options (int level,
