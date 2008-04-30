@@ -1,0 +1,11 @@
+--- /tmp/ehci-hub.c	2008-04-30 11:41:59.381876290 +0200
++++ git/drivers/usb/host/ehci-hub.c	2008-04-30 11:42:20.522875367 +0200
+@@ -734,7 +734,7 @@
+ 			 * this bit; seems too long to spin routinely...
+ 			 */
+ 			retval = handshake(ehci, status_reg,
+-					PORT_RESET, 0, 750);
++					PORT_RESET, 0, 1250);
+ 			if (retval != 0) {
+ 				ehci_err (ehci, "port %d reset error %d\n",
+ 					wIndex + 1, retval);

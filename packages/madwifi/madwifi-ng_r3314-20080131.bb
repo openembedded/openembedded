@@ -1,8 +1,5 @@
 # Bitbake recipe for the madwifi-ng driver
 
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_ixp4xx = "1"
-
 # Disable stripping of kernel modules, since this action strips too
 # much out, and the resulting module won't load.
 INHIBIT_PACKAGE_STRIP = "1"
