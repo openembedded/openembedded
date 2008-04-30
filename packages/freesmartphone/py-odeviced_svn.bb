@@ -21,11 +21,15 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/odeviced ${D}${sysconfdir}/init.d/
 	install -m 0644 ${WORKDIR}/odeviced.conf ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}/dbus-1/system.d/
+	mv -f ${D}${datadir}/etc/dbus-1/system.d/odeviced.conf ${D}${sysconfdir}/dbus-1/system.d/
 }
 
 RDEPENDS_${PN} += "\
   python-dbus \
   python-pygobject \
+  python-pyrtc \
+  python-syslog \
 "
 
 FILES_${PN} += "${sysconfdir}"

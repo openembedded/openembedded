@@ -1,8 +1,7 @@
 require busybox.inc
-PR = "r4"
+PR = "r0"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
-           http://busybox.net/downloads/fixes-1.9.1/busybox-1.9.1-lineedit.patch;patch=1 \
            file://udhcpscript.patch;patch=1 \
            file://adduser-longops.patch;patch=1 \
            file://sort-z-nul.patch;patch=1;status=upstream \
