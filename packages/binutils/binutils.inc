@@ -67,6 +67,11 @@ export CC = "${CCACHE}${HOST_PREFIX}gcc ${HOST_CC_ARCH}"
 
 do_configure () {
 	(cd ${S}; gnu-configize) || die "Failed to run gnu-configize"
+
+        # Fix for issues when system's texinfo version >= 4.10
+        # (See https://bugzilla.redhat.com/show_bug.cgi?id=345621)
+        sed -i -e "s@egrep 'texinfo.*'@egrep 'texinfo[^0-9]*([1-3][0-9]|4\.[4-9]|4.[1-9][0-9]+|[5-9])'@" '${S}/configure'
+
 	oe_runconf
 #
 # must prime config.cache to ensure the build of libiberty
