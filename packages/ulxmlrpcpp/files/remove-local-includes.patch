@@ -1,0 +1,13 @@
+Index: ulxmlrpcpp-1.7.3/configure.in
+===================================================================
+--- ulxmlrpcpp-1.7.3.orig/configure.in
++++ ulxmlrpcpp-1.7.3/configure.in
+@@ -326,8 +326,6 @@ else
+   echo "***  ssl (OpenSSL) found."
+   echo "********************************************************"
+   AC_DEFINE(ULXR_INCLUDE_SSL_STUFF, 1, [Define to compile with ssl support.])
+-  dnl should fix RedHat problem
+-  EA_EXTRA_INC="$EA_EXTRA_INC -I/usr/include/kerberos/"
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <openssl/ssl.h>]], [[unsigned x = SSL_ERROR_WANT_ACCEPT; ]])],[AC_DEFINE(ULXR_HAVE_SSL_ERROR_WANT_ACCEPT, 1, Define if your ssl has SSL_ERROR_WANT_ACCEPT)
+   ],[])
+ fi
