@@ -1,8 +1,8 @@
-# Copyright (C) 2007, Stelios Koroneos - Digital OPSiS, All Rights Reserved
+# Copyright (C) 2008, Ovidiu Sas - VoIP Embedded Inc., All Rights Reserved
+# Copyright (C) 2008, Stelios Koroneos - Digital OPSiS, All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 DESCRIPTION = "The Asterisk open source software PBX"
 HOMEPAGE = "http://www.asterisk.org"
-SECTION = "voip"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 SECTION = "console/telephony"
@@ -10,7 +10,8 @@ DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
 PR = "r0"
 
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
+
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://sounds.xml.patch;patch=1\
@@ -19,13 +20,10 @@ SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://volatiles \
 	file://init"
 
-ARCH_efika="ppc"
-ARCH_dht-walnut="ppc"
-ARCH_magicbox="ppc"
-ARCH_sequoia="ppc"
-
-
-
+ARCH_efika="powerpc"
+ARCH_dht-walnut="powerpc"
+ARCH_magicbox="powerpc"
+ARCH_sequoia="powerpc"
 
 INITSCRIPT_NAME = "asterisk"
 INITSCRIPT_PARAMS = "defaults 60"
@@ -79,7 +77,7 @@ do_configure () {
 do_compile() {
         (
          #make sure that menuselect gets build using host toolchain
-         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
+         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS RANLIB
          cd menuselect 
          ./configure
          oe_runmake
@@ -88,8 +86,9 @@ do_compile() {
         oe_runmake
 }
 
-
-
+do_stage() {
+	autotools_stage_includes
+}
 
 do_install_append() {
         install -d ${D}${sysconfdir}/init.d/
@@ -117,18 +116,24 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/amd.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/asterisk.adsi"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/asterisk.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_adaptive_odbc.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_custom.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_manager.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_odbc.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_pgsql.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_sqlite3_custom.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/cdr_tds.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/cli.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/codecs.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/console.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/dnsmgr.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/dundi.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/enum.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/extconfig.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/extensions.ael"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/extensions.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/extensions.lua"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/extensions_minivm.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/features.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/festival.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/followme.conf"
@@ -140,21 +145,25 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/iax.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/iaxprov.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/indications.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/jabber.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/jingle.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/logger.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/manager.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/meetme.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/mgcp.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/minivm.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/misdn.conf"
-CONFFILES_${PN} += "${sysconfdir}/asterisk/modem.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/modules.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/musiconhold.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/muted.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/osp.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/oss.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/phone.conf"
-CONFFILES_${PN} += "${sysconfdir}/asterisk/privacy.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/phoneprov.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/queuerules.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/queues.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/res_ldap.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/res_odbc.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/res_pgsql.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/res_snmp.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/rpt.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/rtp.conf"
@@ -166,6 +175,8 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/sla.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/smdi.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/telcordia-1.adsi"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/udptl.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/unistim.conf"
+CONFFILES_${PN} += "${sysconfdir}/asterisk/usbradio.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/users.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/voicemail.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/vpb.conf"

@@ -1,14 +1,14 @@
+# Copyright (C) 2007-2008, Stelios Koroneos - Digital OPSiS, All Rights Reserved
+# Released under the MIT license (see packages/COPYING)
 DESCRIPTION = "The Asterisk open source software PBX"
 HOMEPAGE = "http://www.asterisk.org"
-SECTION = "voip"
 LICENSE = "GPLv2"
 PRIORITY = "optional"
 SECTION = "console/telephony"
 DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
-RRECOMMENDS_${PN} = "logrotate"
-PR = "r1"
+#RRECOMMENDS_${PN} = "logrotate"
+PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://sounds.xml.patch;patch=1\
@@ -17,10 +17,10 @@ SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
 	file://volatiles \
 	file://init"
 
-ARCH_efika="ppc"
-ARCH_dht-walnut="ppc"
-ARCH_magicbox="ppc"
-ARCH_sequoia="ppc"
+ARCH_efika="powerpc"
+ARCH_dht-walnut="powerpc"
+ARCH_magicbox="powerpc"
+ARCH_sequoia="powerpc"
 
 
 
@@ -77,7 +77,7 @@ do_configure () {
 do_compile() {
         (
          #make sure that menuselect gets build using host toolchain
-         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
+         unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS RANLIB
          cd menuselect 
          ./configure
          oe_runmake
@@ -143,7 +143,6 @@ CONFFILES_${PN} += "${sysconfdir}/asterisk/manager.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/meetme.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/mgcp.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/misdn.conf"
-CONFFILES_${PN} += "${sysconfdir}/asterisk/modem.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/modules.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/musiconhold.conf"
 CONFFILES_${PN} += "${sysconfdir}/asterisk/muted.conf"
