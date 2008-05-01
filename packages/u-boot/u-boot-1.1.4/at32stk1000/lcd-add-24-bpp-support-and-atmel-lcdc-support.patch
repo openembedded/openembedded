@@ -1,0 +1,670 @@
+Index: u-boot-1.1.4/common/lcd.c
+===================================================================
+--- u-boot-1.1.4.orig/common/lcd.c	2007-01-11 15:25:03.000000000 +0100
++++ u-boot-1.1.4/common/lcd.c	2007-01-11 15:28:54.000000000 +0100
+@@ -34,6 +34,7 @@
+ #include <command.h>
+ #include <version.h>
+ #include <stdarg.h>
++#include <malloc.h>
+ #include <linux/types.h>
+ #include <devices.h>
+ #if defined(CONFIG_POST)
+@@ -81,6 +82,9 @@
+ extern void lcd_enable (void);
+ static void *lcd_logo (void);
+ 
++#ifdef CONFIG_VIDEO_BMP_GZIP
++extern int gunzip(void *, int, unsigned char *, unsigned long *);
++#endif
+ 
+ #if LCD_BPP == LCD_COLOR8
+ extern void lcd_setcolreg (ushort regno,
+@@ -112,9 +116,12 @@
+ #if 1
+ 	/* Copy up rows ignoring the first one */
+ 	memcpy (CONSOLE_ROW_FIRST, CONSOLE_ROW_SECOND, CONSOLE_SCROLL_SIZE);
+-
+ 	/* Clear the last one */
+ 	memset (CONSOLE_ROW_LAST, COLOR_MASK(lcd_color_bg), CONSOLE_ROW_SIZE);
++#ifdef CONFIG_AVR32
++	/* flush cache */
++	dcache_clean_range(CONSOLE_ROW_FIRST, CONSOLE_SIZE);
++#endif
+ #else
+ 	/*
+ 	 * Poor attempt to optimize speed by moving "long"s.
+@@ -228,10 +235,23 @@
+ static void lcd_drawchars (ushort x, ushort y, uchar *str, int count)
+ {
+ 	uchar *dest;
+-	ushort off, row;
++	ushort off, row, bpp, bytespp;
++#ifdef CONFIG_AVR32
++	uchar *dest_start;
++#endif
+ 
+-	dest = (uchar *)(lcd_base + y * lcd_line_length + x * (1 << LCD_BPP) / 8);
+-	off  = x * (1 << LCD_BPP) % 8;
++#if (LCD_BPP > LCD_COLOR32)
++	bpp = LCD_BPP;
++#else
++	bpp = 1<<LCD_BPP;
++#endif
++	bytespp = (bpp + 7) / 8;
++
++	dest = (uchar *)(lcd_base + y * lcd_line_length + x * bytespp);
++	off  = x * bytespp * 8 % 8;
++#ifdef CONFIG_AVR32
++	dest_start = dest;
++#endif
+ 
+ 	for (row=0;  row < VIDEO_FONT_HEIGHT;  ++row, dest += lcd_line_length)  {
+ 		uchar *s = str;
+@@ -261,7 +281,17 @@
+ 				bits <<= 1;
+ 			}
+ #elif LCD_BPP == LCD_COLOR16
+-			for (c=0; c<16; ++c) {
++			for (c=0; c<8; ++c) {
++				*d++ = (bits & 0x80) ?
++						lcd_color_fg : lcd_color_bg;
++				bits <<= 1;
++			}
++#elif LCD_BPP == LCD_COLOR24
++			for (c=0; c<8; ++c) {
++				*d++ = (bits & 0x80) ?
++						lcd_color_fg : lcd_color_bg;
++				*d++ = (bits & 0x80) ?
++						lcd_color_fg : lcd_color_bg;
+ 				*d++ = (bits & 0x80) ?
+ 						lcd_color_fg : lcd_color_bg;
+ 				bits <<= 1;
+@@ -271,6 +301,10 @@
+ #if LCD_BPP == LCD_MONOCHROME
+ 		*d  = rest | (*d & ((1 << (8-off)) - 1));
+ #endif
++#ifdef CONFIG_AVR32
++		/* flush cache */
++		dcache_clean_range(dest_start, (int)(d - dest_start));
++#endif
+ 	}
+ }
+ 
+@@ -346,7 +380,11 @@
+ 
+ 	lcd_base = (void *)(gd->fb_base);
+ 
+-	lcd_line_length = (panel_info.vl_col * NBITS (panel_info.vl_bpix)) / 8;
++	if (panel_info.vl_bpix > LCD_COLOR32)
++		lcd_line_length = (panel_info.vl_col * panel_info.vl_bpix) / 8;
++	else
++		lcd_line_length = (panel_info.vl_col
++				* NBITS (panel_info.vl_bpix)) / 8;
+ 
+ 	lcd_init (lcd_base);		/* LCD initialization */
+ 
+@@ -407,6 +445,11 @@
+ 	console_col = 0;
+ 	console_row = 0;
+ 
++#ifdef CONFIG_AVR32
++	/* flush cache */
++	dcache_clean_range(CONSOLE_ROW_FIRST, CONSOLE_SIZE);
++#endif
++
+ 	return (0);
+ }
+ 
+@@ -453,10 +496,17 @@
+ ulong lcd_setmem (ulong addr)
+ {
+ 	ulong size;
+-	int line_length = (panel_info.vl_col * NBITS (panel_info.vl_bpix)) / 8;
++	int bpp;
++	int line_length;
++	if (panel_info.vl_bpix > LCD_COLOR32)
++		bpp = panel_info.vl_bpix;
++	else
++		bpp = NBITS (panel_info.vl_bpix);
++
++	line_length = (panel_info.vl_col * bpp) / 8;
+ 
+ 	debug ("LCD panel info: %d x %d, %d bit/pix\n",
+-		panel_info.vl_col, panel_info.vl_row, NBITS (panel_info.vl_bpix) );
++		panel_info.vl_col, panel_info.vl_row, bpp);
+ 
+ 	size = line_length * panel_info.vl_row;
+ 
+@@ -475,14 +525,22 @@
+ 
+ static void lcd_setfgcolor (int color)
+ {
++#if LCD_BPP <= LCD_COLOR8
+ 	lcd_color_fg = color & 0x0F;
++#else
++	lcd_color_fg = color;
++#endif
+ }
+ 
+ /*----------------------------------------------------------------------*/
+ 
+ static void lcd_setbgcolor (int color)
+ {
++#if LCD_BPP <= LCD_COLOR8
+ 	lcd_color_bg = color & 0x0F;
++#else
++	lcd_color_bg = color;
++#endif
+ }
+ 
+ /*----------------------------------------------------------------------*/
+@@ -509,7 +567,11 @@
+ #ifdef CONFIG_LCD_LOGO
+ void bitmap_plot (int x, int y)
+ {
++#if !defined(CONFIG_ATMEL_LCDC)
+ 	ushort *cmap;
++#else
++	ulong *cmap;
++#endif
+ 	ushort i, j;
+ 	uchar *bmap;
+ 	uchar *fb;
+@@ -519,6 +581,8 @@
+ #elif defined(CONFIG_MPC823)
+ 	volatile immap_t *immr = (immap_t *) CFG_IMMR;
+ 	volatile cpm8xx_t *cp = &(immr->im_cpm);
++#elif defined(CONFIG_ATMEL_LCDC)
++	struct lcdc_info *cinfo = panel_info.lcdc;
+ #endif
+ 
+ 	debug ("Logo: width %d  height %d  colors %d  cmap %d\n",
+@@ -534,6 +598,8 @@
+ 		cmap = (ushort *)fbi->palette;
+ #elif defined(CONFIG_MPC823)
+ 		cmap = (ushort *)&(cp->lcd_cmap[BMP_LOGO_OFFSET*sizeof(ushort)]);
++#elif defined(CONFIG_ATMEL_LCDC)
++		cmap = (ulong *)(cinfo->palette) + BMP_LOGO_OFFSET;
+ #endif
+ 
+ 		WATCHDOG_RESET();
+@@ -541,10 +607,19 @@
+ 		/* Set color map */
+ 		for (i=0; i<(sizeof(bmp_logo_palette)/(sizeof(ushort))); ++i) {
+ 			ushort colreg = bmp_logo_palette[i];
++#if defined(CONFIG_ATMEL_LCDC)
++			/* convert to match palette registers */
++			uchar red   = (colreg >> 8) & 0x0f;
++			uchar green = (colreg >> 4) & 0x0f;
++			uchar blue  = (colreg >> 0) & 0x0f;
++			colreg  = (blue  << 11);
++			colreg |= (green << 6);
++			colreg |= (red   << 1);
++#endif
+ #ifdef  CFG_INVERT_COLORS
+-			*cmap++ = 0xffff - colreg;
++			*(cmap++) = 0xffff - colreg;
+ #else
+-			*cmap++ = colreg;
++			*(cmap++) = colreg;
+ #endif
+ 		}
+ 
+@@ -579,14 +654,16 @@
+  */
+ int lcd_display_bitmap(ulong bmp_image, int x, int y)
+ {
++#if !defined(CONFIG_ATMEL_LCDC)
+ 	ushort *cmap;
++#endif
+ 	ushort i, j;
+ 	uchar *fb;
+ 	bmp_image_t *bmp=(bmp_image_t *)bmp_image;
+ 	uchar *bmap;
+ 	ushort padded_line;
+ 	unsigned long width, height;
+-	unsigned colors,bpix;
++	unsigned colors,bpix,bpp,bytespp;
+ 	unsigned long compression;
+ #if defined(CONFIG_PXA250)
+ 	struct pxafb_info *fbi = &panel_info.pxa;
+@@ -597,82 +674,126 @@
+ 
+ 	if (!((bmp->header.signature[0]=='B') &&
+ 		(bmp->header.signature[1]=='M'))) {
+-		printf ("Error: no valid bmp image at %lx\n", bmp_image);
++		printf ("[LCD] No valid BMP image at 0x%08lx\n", bmp_image);
+ 		return 1;
+-}
++	}
+ 
+ 	width = le32_to_cpu (bmp->header.width);
+ 	height = le32_to_cpu (bmp->header.height);
++	bpp = le16_to_cpu (bmp->header.bit_count);
+ 	colors = 1<<le16_to_cpu (bmp->header.bit_count);
+ 	compression = le32_to_cpu (bmp->header.compression);
++	bytespp = (panel_info.vl_bpix + 7) / 8;
+ 
+-	bpix = NBITS(panel_info.vl_bpix);
++	if (panel_info.vl_bpix > LCD_COLOR32)
++		bpix = panel_info.vl_bpix;
++	else
++		bpix = NBITS(panel_info.vl_bpix);
+ 
+-	if ((bpix != 1) && (bpix != 8)) {
++	if ((bpix != 1) && (bpix != 8) && (bpix != 24)) {
+ 		printf ("Error: %d bit/pixel mode not supported by U-Boot\n",
+ 			bpix);
+ 		return 1;
+ 	}
+ 
+-	if (bpix != le16_to_cpu(bmp->header.bit_count)) {
++	if (bpix != bpp) {
+ 		printf ("Error: %d bit/pixel mode, but BMP has %d bit/pixel\n",
+-			bpix,
+-			le16_to_cpu(bmp->header.bit_count));
++			bpix, bpp);
+ 		return 1;
+ 	}
+ 
+-	debug ("Display-bmp: %d x %d  with %d colors\n",
+-		(int)width, (int)height, (int)colors);
++	debug ("Display-bmp: %d x %d with %d colors (%d bpp)\n",
++		(int)width, (int)height, (int)colors, (int)bpp);
+ 
+-	if (bpix==8) {
++	if (bpix == 8) {
+ #if defined(CONFIG_PXA250)
+ 		cmap = (ushort *)fbi->palette;
+ #elif defined(CONFIG_MPC823)
+ 		cmap = (ushort *)&(cp->lcd_cmap[255*sizeof(ushort)]);
++#elif defined(CONFIG_ATMEL_LCDC)
++		/* no need to have a palette link, we use lcd_setcolreg */
+ #else
+ # error "Don't know location of color map"
+ #endif
+ 
+ 		/* Set color map */
+ 		for (i=0; i<colors; ++i) {
++#if LCP_BPP <= LCD_COLOR8 /* palette only for 8 bpp and less */
+ 			bmp_color_table_entry_t cte = bmp->color_table[i];
++#endif
++#if !defined(CONFIG_ATMEL_LCDC)
+ 			ushort colreg =
+ 				( ((cte.red)   << 8) & 0xf800) |
+ 				( ((cte.green) << 3) & 0x07e0) |
+ 				( ((cte.blue)  >> 3) & 0x001f) ;
+ #ifdef CFG_INVERT_COLORS
+-			*cmap = 0xffff - colreg;
+-#else
+-			*cmap = colreg;
++			colreg = 0xffff - colreg;
+ #endif
+ #if defined(CONFIG_PXA250)
+-			cmap++;
++			cmap[i] = colreg;
+ #elif defined(CONFIG_MPC823)
+-			cmap--;
++			cmap[colors-i] = colreg;
++#endif
++#else /* CONFIG_ATMEL_LCDC */
++#if LCD_BPP <= LCD_COLOR8
++			lcd_setcolreg(i, cte.red, cte.green, cte.blue);
++#endif
+ #endif
+ 		}
+ 	}
+ 
+-	padded_line = (width&0x3) ? ((width&~0x3)+4) : (width);
+-	if ((x + width)>panel_info.vl_col)
++	padded_line = (((width * bpp + 7) / 8) + 3) & ~0x3;
++	if ((x + width) > panel_info.vl_col)
+ 		width = panel_info.vl_col - x;
+-	if ((y + height)>panel_info.vl_row)
++	if ((y + height) > panel_info.vl_row)
+ 		height = panel_info.vl_row - y;
+ 
+ 	bmap = (uchar *)bmp + le32_to_cpu (bmp->header.data_offset);
+-	fb   = (uchar *) (lcd_base +
+-		(y + height - 1) * lcd_line_length + x);
+-	for (i = 0; i < height; ++i) {
+-		WATCHDOG_RESET();
+-		for (j = 0; j < width ; j++)
++	fb   = (uchar *) (lcd_base + (y + height - 1) * lcd_line_length + x);
++
++	switch (bpp) {
++	case 24:
++		for (i = 0; i < height; ++i) {
++			WATCHDOG_RESET();
++			for (j = 0; j < width; j++) {
+ #if defined(CONFIG_PXA250)
+-			*(fb++)=*(bmap++);
++#error 24 bpp support not added for PXA250
++#elif defined(CONFIG_ATMEL_LCDC)
++				fb[0] = bmap[0];
++				fb[1] = bmap[1];
++				fb[2] = bmap[2];
++				fb += 3;
++				bmap += 3;
+ #elif defined(CONFIG_MPC823)
+-			*(fb++)=255-*(bmap++);
++#error 24 bpp support not added for MPC823
+ #endif
+-		bmap += (width - padded_line);
+-		fb   -= (width + lcd_line_length);
+-	}
++			}
++			bmap += (width * bytespp - padded_line);
++			fb   -= (width * bytespp + lcd_line_length);
++		}
++		break;
++	case 1: /* pass through */
++	case 8:
++		for (i = 0; i < height; ++i) {
++			WATCHDOG_RESET();
++			for (j = 0; j < width; j++) {
++#if defined(CONFIG_PXA250)
++				*(fb++)=*(bmap++);
++#elif defined(CONFIG_ATMEL_LCDC)
++				*(fb++)=*(bmap++);
++#elif defined(CONFIG_MPC823)
++				*(fb++)=255-*(bmap++);
++#endif
++			}
++			bmap += (width * bytespp - padded_line);
++			fb   -= (width * bytespp + lcd_line_length);
++		}
++		break;
++	default:
++		break;
++	};
++
++	/* TODO: flush fb */
+ 
+ 	return (0);
+ }
+@@ -694,12 +815,68 @@
+ 	static int do_splash = 1;
+ 
+ 	if (do_splash && (s = getenv("splashimage")) != NULL) {
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		bmp_image_t *bmp;
++		unsigned char *dst = NULL;
++		ulong len;
++#endif
+ 		addr = simple_strtoul(s, NULL, 16);
+ 		do_splash = 0;
+ 
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		bmp = (bmp_image_t *)addr;
++
++		if (!((bmp->header.signature[0]=='B') &&
++		      (bmp->header.signature[1]=='M'))) {
++			len = CFG_VIDEO_LOGO_MAX_SIZE;
++			dst = malloc(CFG_VIDEO_LOGO_MAX_SIZE);
++			if (dst == NULL) {
++				printf("[LCD] Malloc for gunzip failed!\n");
++				return ((void *)lcd_base);
++			}
++			if (gunzip(dst, CFG_VIDEO_LOGO_MAX_SIZE,
++						(uchar *)addr, &len) != 0) {
++				free(dst);
++				printf("[LCD] No valid BMP image at 0x%08lx\n",
++						addr);
++				return ((void *)lcd_base);
++			}
++			if (len == CFG_VIDEO_LOGO_MAX_SIZE) {
++				printf("[LCD] Image could be truncated (increase "
++						"CFG_VIDEO_LOGO_MAX_SIZE)!\n");
++			}
++
++			/*
++			 * Set addr to decompressed image
++			 */
++			bmp = (bmp_image_t *)dst;
++
++			/*
++			 * Check for bmp mark 'BM'
++			 */
++			if (!((bmp->header.signature[0] == 'B') &&
++			      (bmp->header.signature[1] == 'M'))) {
++				printf("[LCD] No valid BMP image at 0x%08lx\n",
++						addr);
++				free(dst);
++				return ((void *)lcd_base);
++			}
++
++			addr = (ulong)dst;
++		}
++#endif
+ 		if (lcd_display_bitmap (addr, 0, 0) == 0) {
++#ifdef CONFIG_VIDEO_BMP_GZIP
++			if (dst)
++				free(dst);
++#endif
+ 			return ((void *)lcd_base);
+ 		}
++
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		if (dst)
++			free(dst);
++#endif
+ 	}
+ #endif /* CONFIG_SPLASH_SCREEN */
+ 
+Index: u-boot-1.1.4/include/lcd.h
+===================================================================
+--- u-boot-1.1.4.orig/include/lcd.h	2007-01-11 15:25:03.000000000 +0100
++++ u-boot-1.1.4/include/lcd.h	2007-01-11 15:25:38.000000000 +0100
+@@ -148,7 +148,159 @@
+ 
+ extern vidinfo_t panel_info;
+ 
+-#endif /* CONFIG_MPC823 or CONFIG_PXA250 */
++#elif defined CONFIG_ATMEL_LCDC
++struct lcdc_bitfield {
++	u32 offset;	/* beginning of bitfield */
++	u32 length;	/* length of bitfield */
++	u32 msb_right;	/* != 0 : Most significant bit is right */
++};
++
++struct lcdc_var_screeninfo {
++	u32 xres;			/* visible resolution		*/
++	u32 yres;
++	u32 xres_virtual;		/* virtual resolution		*/
++	u32 yres_virtual;
++	u32 xoffset;			/* offset from virtual to visible */
++	u32 yoffset;			/* resolution			*/
++
++	u32 bits_per_pixel;		/* guess what			*/
++	u32 grayscale;			/* != 0 Graylevels instead of colors */
++
++	struct lcdc_bitfield red;	/* bitfield in fb mem if true color, */
++	struct lcdc_bitfield green;	/* else only length is significant */
++	struct lcdc_bitfield blue;
++	struct lcdc_bitfield transp;	/* transparency			*/
++
++	u32 nonstd;			/* != 0 Non standard pixel format */
++
++	u32 activate;			/* see FB_ACTIVATE_*		*/
++
++	u32 height;			/* height of picture in mm    */
++	u32 width;			/* width of picture in mm     */
++
++	u32 accel_flags;		/* (OBSOLETE) see fb_info.flags */
++
++	/* Timing: All values in pixclocks, except pixclock (of course) */
++	u32 pixclock;			/* pixel clock in ps (pico seconds) */
++	u32 left_margin;		/* time from sync to picture	*/
++	u32 right_margin;		/* time from picture to sync	*/
++	u32 upper_margin;		/* time from sync to picture	*/
++	u32 lower_margin;
++	u32 hsync_len;		/* length of horizontal sync	*/
++	u32 vsync_len;		/* length of vertical sync	*/
++	u32 sync;			/* see FB_SYNC_*		*/
++	u32 vmode;			/* see FB_VMODE_*		*/
++	u32 rotate;			/* angle we rotate counter clockwise */
++	u32 reserved[5];		/* Reserved for future compatibility */
++};
++
++/*
++ * Atmel LCDC DMA descriptor
++ */
++struct lcdc_dma_descriptor {
++	u_long	fdadr;		/* Frame descriptor address register */
++	u_long	fsadr;		/* Frame source address register */
++	u_long	fidr;		/* Frame ID register */
++	u_long	ldcmd;		/* Command register */
++};
++
++/*
++ * Atmel LCDC info
++ */
++struct lcdc_info {
++	u_long	reg_lccr3;
++	u_long	reg_lccr2;
++	u_long	reg_lccr1;
++	u_long	reg_lccr0;
++	u_long	fdadr0;
++	u_long	fdadr1;
++
++	void	*regs;
++
++	u_long	guard_time;
++	u_long	xres;
++	u_long	yres;
++	u_long	xres_virtual;
++	u_long	yres_virtual;
++	u_long	bits_per_pixel;
++	u_long	smem_start;
++	u_long	line_length;
++	u_long	visual;
++
++	u_long	pixclock;
++	u_long	left_margin;
++	u_long	right_margin;
++	u_long	upper_margin;
++	u_long	lower_margin;
++	u_long	hsync_len;
++	u_long	vsync_len;
++	u_long	sync;
++	u_long	yoffset;
++	u_long	xoffset;
++
++	struct  lcdc_var_screeninfo var;
++
++	/* DMA descriptors */
++	struct	lcdc_dma_descriptor	*dmadesc_fblow;
++	struct	lcdc_dma_descriptor	*dmadesc_fbhigh;
++	struct	lcdc_dma_descriptor	*dmadesc_palette;
++
++	u_long	screen;		/* physical address of frame buffer */
++	u_long	palette;	/* physical address of palette memory */
++	u_int	palette_size;
++
++	/* Device resource */
++	const struct device *dev;
++};
++
++/*
++ * LCD controller stucture for AVR32 CPU
++ */
++typedef struct vidinfo {
++	ushort	vl_col;		/* Number of columns (i.e. 640) */
++	ushort	vl_row;		/* Number of rows (i.e. 480) */
++	ushort	vl_width;	/* Width of display area in millimeters */
++	ushort	vl_height;	/* Height of display area in millimeters */
++
++	/* LCD configuration register */
++	u_char	vl_clkp;	/* Clock polarity */
++	u_char	vl_oep;		/* Output Enable polarity */
++	u_char	vl_hsp;		/* Horizontal Sync polarity */
++	u_char	vl_vsp;		/* Vertical Sync polarity */
++	u_char	vl_dp;		/* Data polarity */
++	u_char	vl_bpix;	/* Bits per pixel, 0 = 1, 1 = 2, 2 = 4, 3 = 8, 4 = 16 */
++	u_char	vl_lbw;		/* LCD Bus width, 0 = 4, 1 = 8 */
++	u_char	vl_splt;	/* Split display, 0 = single-scan, 1 = dual-scan */
++	u_char	vl_clor;	/* Color, 0 = mono, 1 = color */
++	u_char	vl_tft;		/* 0 = passive, 1 = TFT */
++
++	/* Horizontal control register. Timing from data sheet */
++	ushort	vl_hpw;		/* Horz sync pulse width */
++	u_char	vl_blw;		/* Wait before of line */
++	u_char	vl_elw;		/* Wait end of line */
++
++	/* Vertical control register. */
++	u_char	vl_vpw;		/* Vertical sync pulse width */
++	u_char	vl_bfw;		/* Wait before of frame */
++	u_char	vl_efw;		/* Wait end of frame */
++
++	/* Atmel LCDC controller params */
++	struct	lcdc_info *lcdc;
++	u_long	pixclock;
++	u_long	left_margin;
++	u_long	right_margin;
++	u_long	upper_margin;
++	u_long	lower_margin;
++	u_long	hsync_len;
++	u_long	vsync_len;
++	u_long	sync;
++	u_long	yoffset;
++	u_long	xoffset;
++} vidinfo_t;
++
++extern vidinfo_t panel_info;
++
++#endif /* CONFIG_MPC823 or CONFIG_PXA250 or CONFIG_ATMEL_LCDC */
+ 
+ /* Video functions */
+ 
+@@ -184,6 +336,16 @@
+ #define LCD_COLOR4	2
+ #define LCD_COLOR8	3
+ #define LCD_COLOR16	4
++#define LCD_COLOR32	5
++#define LCD_COLOR15	15
++#define LCD_COLOR24	24
++
++#define FB_VISUAL_MONO01		0	/* Monochr. 1=Black 0=White */
++#define FB_VISUAL_MONO10		1	/* Monochr. 1=White 0=Black */
++#define FB_VISUAL_TRUECOLOR		2	/* True color	*/
++#define FB_VISUAL_PSEUDOCOLOR		3	/* Pseudo color (like atari) */
++#define FB_VISUAL_DIRECTCOLOR		4	/* Direct color */
++#define FB_VISUAL_STATIC_PSEUDOCOLOR	5	/* Pseudo color readonly */
+ 
+ /*----------------------------------------------------------------------*/
+ #if defined(CONFIG_LCD_INFO_BELOW_LOGO)
+@@ -235,7 +397,7 @@
+ # define CONSOLE_COLOR_GREY	14
+ # define CONSOLE_COLOR_WHITE	15	/* Must remain last / highest	*/
+ 
+-#else
++#elif LCD_BPP == LCD_COLOR16
+ 
+ /*
+  * 16bpp color definitions
+@@ -243,6 +405,14 @@
+ # define CONSOLE_COLOR_BLACK	0x0000
+ # define CONSOLE_COLOR_WHITE	0xffff	/* Must remain last / highest	*/
+ 
++#else
++
++/*
++ * 24bpp color definitions
++ */
++# define CONSOLE_COLOR_BLACK	0x000000
++# define CONSOLE_COLOR_WHITE	0xffffff /* Must remain last / highest */
++
+ #endif /* color definitions */
+ 
+ /************************************************************************/
+@@ -274,6 +444,8 @@
+ 				 (c) << 4 | (c) << 5 | (c) << 6 | (c) << 7)
+ #elif LCD_BPP == LCD_COLOR8
+ # define COLOR_MASK(c)		(c)
++#elif LCD_BPP == LCD_COLOR24
++# define COLOR_MASK(c)		(c)
+ #else
+ # error Unsupported LCD BPP.
+ #endif

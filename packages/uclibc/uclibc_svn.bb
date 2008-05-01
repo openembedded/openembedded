@@ -8,8 +8,8 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r5"
-
+PR = "r6"
+DEFAULT_PREFERENCE  = "2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -28,10 +28,8 @@ KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
             file://uClibc.machine \
             file://uClibc.distro \
-            file://error_print_progname.patch;patch=1 \
-            file://select.diff;patch=1 \
+            file://uclibc-arm-ftruncate64.patch;patch=1 \
+            file://errno_values.h.patch;patch=1 \
             "
 
 S = "${WORKDIR}/uClibc"
-
-

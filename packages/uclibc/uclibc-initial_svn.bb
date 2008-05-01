@@ -3,20 +3,20 @@ require uclibc_svn.bb
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-cvs', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-DEPENDS = "linux-libc-headers"
+DEPENDS = "linux-libc-headers ncurses-native"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 PACKAGES = ""
 
 do_stage() {
 	# Install initial headers into the cross dir
-	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGING_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGING_PREFIX}/ \
+	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		pregen install_dev
 
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
 	# This conflicts with the c++ version of this header
-	rm -f ${UCLIBC_STAGING_PREFIX}/include/bits/atomicity.h
+	rm -f ${UCLIBC_STAGE_PREFIX}/include/bits/atomicity.h
 }
 
 do_install() {

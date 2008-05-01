@@ -2,6 +2,7 @@ DESCRIPTION = "GnuPG Made Easy (GPGME) is a library designed to make access to G
 HOMEPAGE = "http://www.gnupg.org/gpgme.html"
 LICENSE = "GPL"
 DEPENDS = "libgpg-error pth libassuan"
+RRECOMMENDS_${PN} = "gnupg"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-${PV}.tar.gz"
 
