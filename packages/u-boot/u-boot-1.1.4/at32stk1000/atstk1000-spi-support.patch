@@ -1,0 +1,98 @@
+diff -uprN u-boot-orig/board/atstk1000/spi.c u-boot/board/atstk1000/spi.c
+--- u-boot-orig/board/atstk1000/spi.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/board/atstk1000/spi.c	2007-01-03 08:46:36.000000000 +0100
+@@ -0,0 +1,83 @@
++/*
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#include <common.h>
++
++#include <spi.h>
++#include <asm/io.h>
++#include <atmel_spi.h>
++
++extern void ltv350qv_init(void);
++
++static struct spi_options_t cs0 = {
++	.reg		= 0,
++	.baudrate	= 200000,
++	.bits		= 8,
++	.spck_delay	= 0,
++	.trans_delay	= 0,
++	.stay_act	= 1,
++	.spi_mode	= 3,
++};
++static struct spi_options_t cs1 = {
++	.reg		= 1,
++	.baudrate	= 1500000,
++	.bits		= 8,
++	.spck_delay	= 0,
++	.trans_delay	= 0,
++	.stay_act	= 1,
++	.spi_mode	= 3,
++};
++
++void spi_chipsel_dac(int cs)
++{
++	if (cs) spi_select_chip(0);
++	else spi_unselect_chip(0);
++}
++
++void spi_chipsel_lcd(int cs)
++{
++	if (cs) spi_select_chip(1);
++	else spi_unselect_chip(1);
++}
++
++spi_chipsel_type spi_chipsel[] = {
++	spi_chipsel_dac,
++	spi_chipsel_lcd,
++};
++int spi_chipsel_cnt = sizeof(spi_chipsel) / sizeof(spi_chipsel[0]);
++
++void board_init_spi(void)
++{
++	int ret;
++
++	spi_init();
++
++	ret = spi_setup_chip_reg(&cs0, 45000000); /* TODO: get APBA speed */
++	if (ret)
++		return;
++	ret = spi_setup_chip_reg(&cs1, 45000000); /* TODO: get APBA speed */
++	if (ret)
++		return;
++
++	spi_enable();
++
++	ltv350qv_init();
++}
+diff -uprN u-boot-orig/board/atstk1000/Makefile u-boot/board/atstk1000/Makefile
+--- u-boot-orig/board/atstk1000/Makefile	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/board/atstk1000/Makefile	2007-01-01 16:23:12.000000000 +0100
+@@ -31,6 +31,7 @@ endif
+ LIB		:= lib$(BOARD).a
+ 
+ SRC		:= $(BOARD).c $(DAUGHTERBOARD).c eth.c flash.c
++SRC		+= spi.c
+ OBJS		:= $(addsuffix .o,$(basename $(SRC)))
+ 
+ .PHONY: all

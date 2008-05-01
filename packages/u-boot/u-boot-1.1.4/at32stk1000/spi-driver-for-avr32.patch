@@ -1,0 +1,1026 @@
+diff -uprN u-boot-orig/include/atmel_spi.h u-boot/include/atmel_spi.h
+--- u-boot-orig/include/atmel_spi.h	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/include/atmel_spi.h	2007-01-01 18:45:27.000000000 +0100
+@@ -0,0 +1,676 @@
++#ifndef __SPI_H_
++#define __SPI_H_
++
++/*! \brief Timeout for spi read and write blocking functions */
++#define SPI_TIMEOUT		10000
++/*! \brief Enable PDC functions for SPI */
++#define SPI_ENABLE_PDC
++
++#define SPI_10_BPT                                   0x00000002
++#define SPI_11_BPT                                   0x00000003
++#define SPI_12_BPT                                   0x00000004
++#define SPI_13_BPT                                   0x00000005
++#define SPI_14_BPT                                   0x00000006
++#define SPI_15_BPT                                   0x00000007
++#define SPI_16_BPT                                   0x00000008
++#define SPI_8_BPT                                    0x00000000
++#define SPI_9_BPT                                    0x00000001
++#define SPI_BITS                                              4
++#define SPI_BITS_10_BPT                              0x00000002
++#define SPI_BITS_11_BPT                              0x00000003
++#define SPI_BITS_12_BPT                              0x00000004
++#define SPI_BITS_13_BPT                              0x00000005
++#define SPI_BITS_14_BPT                              0x00000006
++#define SPI_BITS_15_BPT                              0x00000007
++#define SPI_BITS_16_BPT                              0x00000008
++#define SPI_BITS_8_BPT                               0x00000000
++#define SPI_BITS_9_BPT                               0x00000001
++#define SPI_BITS_MASK                                0x000000f0
++#define SPI_BITS_OFFSET                                       4
++#define SPI_BITS_SIZE                                         4
++#define SPI_CPOL                                              0
++#define SPI_CPOL_MASK                                0x00000001
++#define SPI_CPOL_OFFSET                                       0
++#define SPI_CPOL_SIZE                                         1
++#define SPI_CR                                       0x00000000
++#define SPI_CR_LASTXFER                                      24
++#define SPI_CR_LASTXFER_MASK                         0x01000000
++#define SPI_CR_LASTXFER_OFFSET                               24
++#define SPI_CR_LASTXFER_SIZE                                  1
++#define SPI_CR_SPIDIS                                         1
++#define SPI_CR_SPIDIS_MASK                           0x00000002
++#define SPI_CR_SPIDIS_OFFSET                                  1
++#define SPI_CR_SPIDIS_SIZE                                    1
++#define SPI_CR_SPIEN                                          0
++#define SPI_CR_SPIEN_MASK                            0x00000001
++#define SPI_CR_SPIEN_OFFSET                                   0
++#define SPI_CR_SPIEN_SIZE                                     1
++#define SPI_CR_SWRST                                          7
++#define SPI_CR_SWRST_MASK                            0x00000080
++#define SPI_CR_SWRST_OFFSET                                   7
++#define SPI_CR_SWRST_SIZE                                     1
++#define SPI_CSAAT                                             3
++#define SPI_CSAAT_MASK                               0x00000008
++#define SPI_CSAAT_OFFSET                                      3
++#define SPI_CSAAT_SIZE                                        1
++#define SPI_CSR0                                     0x00000030
++#define SPI_CSR0_BITS                                         4
++#define SPI_CSR0_BITS_10_BPT                         0x00000002
++#define SPI_CSR0_BITS_11_BPT                         0x00000003
++#define SPI_CSR0_BITS_12_BPT                         0x00000004
++#define SPI_CSR0_BITS_13_BPT                         0x00000005
++#define SPI_CSR0_BITS_14_BPT                         0x00000006
++#define SPI_CSR0_BITS_15_BPT                         0x00000007
++#define SPI_CSR0_BITS_16_BPT                         0x00000008
++#define SPI_CSR0_BITS_8_BPT                          0x00000000
++#define SPI_CSR0_BITS_9_BPT                          0x00000001
++#define SPI_CSR0_BITS_MASK                           0x000000f0
++#define SPI_CSR0_BITS_OFFSET                                  4
++#define SPI_CSR0_BITS_SIZE                                    4
++#define SPI_CSR0_CPOL                                         0
++#define SPI_CSR0_CPOL_MASK                           0x00000001
++#define SPI_CSR0_CPOL_OFFSET                                  0
++#define SPI_CSR0_CPOL_SIZE                                    1
++#define SPI_CSR0_CSAAT                                        3
++#define SPI_CSR0_CSAAT_MASK                          0x00000008
++#define SPI_CSR0_CSAAT_OFFSET                                 3
++#define SPI_CSR0_CSAAT_SIZE                                   1
++#define SPI_CSR0_DLYBCT                                      24
++#define SPI_CSR0_DLYBCT_MASK                         0xff000000
++#define SPI_CSR0_DLYBCT_OFFSET                               24
++#define SPI_CSR0_DLYBCT_SIZE                                  8
++#define SPI_CSR0_DLYBS                                       16
++#define SPI_CSR0_DLYBS_MASK                          0x00ff0000
++#define SPI_CSR0_DLYBS_OFFSET                                16
++#define SPI_CSR0_DLYBS_SIZE                                   8
++#define SPI_CSR0_NCPHA                                        1
++#define SPI_CSR0_NCPHA_MASK                          0x00000002
++#define SPI_CSR0_NCPHA_OFFSET                                 1
++#define SPI_CSR0_NCPHA_SIZE                                   1
++#define SPI_CSR0_SCBR                                         8
++#define SPI_CSR0_SCBR_MASK                           0x0000ff00
++#define SPI_CSR0_SCBR_OFFSET                                  8
++#define SPI_CSR0_SCBR_SIZE                                    8
++#define SPI_CSR1                                     0x00000034
++#define SPI_CSR1_BITS                                         4
++#define SPI_CSR1_BITS_10_BPT                         0x00000002
++#define SPI_CSR1_BITS_11_BPT                         0x00000003
++#define SPI_CSR1_BITS_12_BPT                         0x00000004
++#define SPI_CSR1_BITS_13_BPT                         0x00000005
++#define SPI_CSR1_BITS_14_BPT                         0x00000006
++#define SPI_CSR1_BITS_15_BPT                         0x00000007
++#define SPI_CSR1_BITS_16_BPT                         0x00000008
++#define SPI_CSR1_BITS_8_BPT                          0x00000000
++#define SPI_CSR1_BITS_9_BPT                          0x00000001
++#define SPI_CSR1_BITS_MASK                           0x000000f0
++#define SPI_CSR1_BITS_OFFSET                                  4
++#define SPI_CSR1_BITS_SIZE                                    4
++#define SPI_CSR1_CPOL                                         0
++#define SPI_CSR1_CPOL_MASK                           0x00000001
++#define SPI_CSR1_CPOL_OFFSET                                  0
++#define SPI_CSR1_CPOL_SIZE                                    1
++#define SPI_CSR1_CSAAT                                        3
++#define SPI_CSR1_CSAAT_MASK                          0x00000008
++#define SPI_CSR1_CSAAT_OFFSET                                 3
++#define SPI_CSR1_CSAAT_SIZE                                   1
++#define SPI_CSR1_DLYBCT                                      24
++#define SPI_CSR1_DLYBCT_MASK                         0xff000000
++#define SPI_CSR1_DLYBCT_OFFSET                               24
++#define SPI_CSR1_DLYBCT_SIZE                                  8
++#define SPI_CSR1_DLYBS                                       16
++#define SPI_CSR1_DLYBS_MASK                          0x00ff0000
++#define SPI_CSR1_DLYBS_OFFSET                                16
++#define SPI_CSR1_DLYBS_SIZE                                   8
++#define SPI_CSR1_NCPHA                                        1
++#define SPI_CSR1_NCPHA_MASK                          0x00000002
++#define SPI_CSR1_NCPHA_OFFSET                                 1
++#define SPI_CSR1_NCPHA_SIZE                                   1
++#define SPI_CSR1_SCBR                                         8
++#define SPI_CSR1_SCBR_MASK                           0x0000ff00
++#define SPI_CSR1_SCBR_OFFSET                                  8
++#define SPI_CSR1_SCBR_SIZE                                    8
++#define SPI_CSR2                                     0x00000038
++#define SPI_CSR2_BITS                                         4
++#define SPI_CSR2_BITS_10_BPT                         0x00000002
++#define SPI_CSR2_BITS_11_BPT                         0x00000003
++#define SPI_CSR2_BITS_12_BPT                         0x00000004
++#define SPI_CSR2_BITS_13_BPT                         0x00000005
++#define SPI_CSR2_BITS_14_BPT                         0x00000006
++#define SPI_CSR2_BITS_15_BPT                         0x00000007
++#define SPI_CSR2_BITS_16_BPT                         0x00000008
++#define SPI_CSR2_BITS_8_BPT                          0x00000000
++#define SPI_CSR2_BITS_9_BPT                          0x00000001
++#define SPI_CSR2_BITS_MASK                           0x000000f0
++#define SPI_CSR2_BITS_OFFSET                                  4
++#define SPI_CSR2_BITS_SIZE                                    4
++#define SPI_CSR2_CPOL                                         0
++#define SPI_CSR2_CPOL_MASK                           0x00000001
++#define SPI_CSR2_CPOL_OFFSET                                  0
++#define SPI_CSR2_CPOL_SIZE                                    1
++#define SPI_CSR2_CSAAT                                        3
++#define SPI_CSR2_CSAAT_MASK                          0x00000008
++#define SPI_CSR2_CSAAT_OFFSET                                 3
++#define SPI_CSR2_CSAAT_SIZE                                   1
++#define SPI_CSR2_DLYBCT                                      24
++#define SPI_CSR2_DLYBCT_MASK                         0xff000000
++#define SPI_CSR2_DLYBCT_OFFSET                               24
++#define SPI_CSR2_DLYBCT_SIZE                                  8
++#define SPI_CSR2_DLYBS                                       16
++#define SPI_CSR2_DLYBS_MASK                          0x00ff0000
++#define SPI_CSR2_DLYBS_OFFSET                                16
++#define SPI_CSR2_DLYBS_SIZE                                   8
++#define SPI_CSR2_NCPHA                                        1
++#define SPI_CSR2_NCPHA_MASK                          0x00000002
++#define SPI_CSR2_NCPHA_OFFSET                                 1
++#define SPI_CSR2_NCPHA_SIZE                                   1
++#define SPI_CSR2_SCBR                                         8
++#define SPI_CSR2_SCBR_MASK                           0x0000ff00
++#define SPI_CSR2_SCBR_OFFSET                                  8
++#define SPI_CSR2_SCBR_SIZE                                    8
++#define SPI_CSR3                                     0x0000003c
++#define SPI_CSR3_BITS                                         4
++#define SPI_CSR3_BITS_10_BPT                         0x00000002
++#define SPI_CSR3_BITS_11_BPT                         0x00000003
++#define SPI_CSR3_BITS_12_BPT                         0x00000004
++#define SPI_CSR3_BITS_13_BPT                         0x00000005
++#define SPI_CSR3_BITS_14_BPT                         0x00000006
++#define SPI_CSR3_BITS_15_BPT                         0x00000007
++#define SPI_CSR3_BITS_16_BPT                         0x00000008
++#define SPI_CSR3_BITS_8_BPT                          0x00000000
++#define SPI_CSR3_BITS_9_BPT                          0x00000001
++#define SPI_CSR3_BITS_MASK                           0x000000f0
++#define SPI_CSR3_BITS_OFFSET                                  4
++#define SPI_CSR3_BITS_SIZE                                    4
++#define SPI_CSR3_CPOL                                         0
++#define SPI_CSR3_CPOL_MASK                           0x00000001
++#define SPI_CSR3_CPOL_OFFSET                                  0
++#define SPI_CSR3_CPOL_SIZE                                    1
++#define SPI_CSR3_CSAAT                                        3
++#define SPI_CSR3_CSAAT_MASK                          0x00000008
++#define SPI_CSR3_CSAAT_OFFSET                                 3
++#define SPI_CSR3_CSAAT_SIZE                                   1
++#define SPI_CSR3_DLYBCT                                      24
++#define SPI_CSR3_DLYBCT_MASK                         0xff000000
++#define SPI_CSR3_DLYBCT_OFFSET                               24
++#define SPI_CSR3_DLYBCT_SIZE                                  8
++#define SPI_CSR3_DLYBS                                       16
++#define SPI_CSR3_DLYBS_MASK                          0x00ff0000
++#define SPI_CSR3_DLYBS_OFFSET                                16
++#define SPI_CSR3_DLYBS_SIZE                                   8
++#define SPI_CSR3_NCPHA                                        1
++#define SPI_CSR3_NCPHA_MASK                          0x00000002
++#define SPI_CSR3_NCPHA_OFFSET                                 1
++#define SPI_CSR3_NCPHA_SIZE                                   1
++#define SPI_CSR3_SCBR                                         8
++#define SPI_CSR3_SCBR_MASK                           0x0000ff00
++#define SPI_CSR3_SCBR_OFFSET                                  8
++#define SPI_CSR3_SCBR_SIZE                                    8
++#define SPI_DLYBCS                                           24
++#define SPI_DLYBCS_MASK                              0xff000000
++#define SPI_DLYBCS_OFFSET                                    24
++#define SPI_DLYBCS_SIZE                                       8
++#define SPI_DLYBCT                                           24
++#define SPI_DLYBCT_MASK                              0xff000000
++#define SPI_DLYBCT_OFFSET                                    24
++#define SPI_DLYBCT_SIZE                                       8
++#define SPI_DLYBS                                            16
++#define SPI_DLYBS_MASK                               0x00ff0000
++#define SPI_DLYBS_OFFSET                                     16
++#define SPI_DLYBS_SIZE                                        8
++#define SPI_ENDRX                                             4
++#define SPI_ENDRX_MASK                               0x00000010
++#define SPI_ENDRX_OFFSET                                      4
++#define SPI_ENDRX_SIZE                                        1
++#define SPI_ENDTX                                             5
++#define SPI_ENDTX_MASK                               0x00000020
++#define SPI_ENDTX_OFFSET                                      5
++#define SPI_ENDTX_SIZE                                        1
++#define SPI_FDIV                                              3
++#define SPI_FDIV_MASK                                0x00000008
++#define SPI_FDIV_OFFSET                                       3
++#define SPI_FDIV_SIZE                                         1
++#define SPI_IDR                                      0x00000018
++#define SPI_IDR_ENDRX                                         4
++#define SPI_IDR_ENDRX_MASK                           0x00000010
++#define SPI_IDR_ENDRX_OFFSET                                  4
++#define SPI_IDR_ENDRX_SIZE                                    1
++#define SPI_IDR_ENDTX                                         5
++#define SPI_IDR_ENDTX_MASK                           0x00000020
++#define SPI_IDR_ENDTX_OFFSET                                  5
++#define SPI_IDR_ENDTX_SIZE                                    1
++#define SPI_IDR_MODF                                          2
++#define SPI_IDR_MODF_MASK                            0x00000004
++#define SPI_IDR_MODF_OFFSET                                   2
++#define SPI_IDR_MODF_SIZE                                     1
++#define SPI_IDR_NSSR                                          8
++#define SPI_IDR_NSSR_MASK                            0x00000100
++#define SPI_IDR_NSSR_OFFSET                                   8
++#define SPI_IDR_NSSR_SIZE                                     1
++#define SPI_IDR_OVRES                                         3
++#define SPI_IDR_OVRES_MASK                           0x00000008
++#define SPI_IDR_OVRES_OFFSET                                  3
++#define SPI_IDR_OVRES_SIZE                                    1
++#define SPI_IDR_RDRF                                          0
++#define SPI_IDR_RDRF_MASK                            0x00000001
++#define SPI_IDR_RDRF_OFFSET                                   0
++#define SPI_IDR_RDRF_SIZE                                     1
++#define SPI_IDR_RXBUFF                                        6
++#define SPI_IDR_RXBUFF_MASK                          0x00000040
++#define SPI_IDR_RXBUFF_OFFSET                                 6
++#define SPI_IDR_RXBUFF_SIZE                                   1
++#define SPI_IDR_TDRE                                          1
++#define SPI_IDR_TDRE_MASK                            0x00000002
++#define SPI_IDR_TDRE_OFFSET                                   1
++#define SPI_IDR_TDRE_SIZE                                     1
++#define SPI_IDR_TXBUFE                                        7
++#define SPI_IDR_TXBUFE_MASK                          0x00000080
++#define SPI_IDR_TXBUFE_OFFSET                                 7
++#define SPI_IDR_TXBUFE_SIZE                                   1
++#define SPI_IDR_TXEMPTY                                       9
++#define SPI_IDR_TXEMPTY_MASK                         0x00000200
++#define SPI_IDR_TXEMPTY_OFFSET                                9
++#define SPI_IDR_TXEMPTY_SIZE                                  1
++#define SPI_IER                                      0x00000014
++#define SPI_IER_ENDRX                                         4
++#define SPI_IER_ENDRX_MASK                           0x00000010
++#define SPI_IER_ENDRX_OFFSET                                  4
++#define SPI_IER_ENDRX_SIZE                                    1
++#define SPI_IER_ENDTX                                         5
++#define SPI_IER_ENDTX_MASK                           0x00000020
++#define SPI_IER_ENDTX_OFFSET                                  5
++#define SPI_IER_ENDTX_SIZE                                    1
++#define SPI_IER_MODF                                          2
++#define SPI_IER_MODF_MASK                            0x00000004
++#define SPI_IER_MODF_OFFSET                                   2
++#define SPI_IER_MODF_SIZE                                     1
++#define SPI_IER_NSSR                                          8
++#define SPI_IER_NSSR_MASK                            0x00000100
++#define SPI_IER_NSSR_OFFSET                                   8
++#define SPI_IER_NSSR_SIZE                                     1
++#define SPI_IER_OVRES                                         3
++#define SPI_IER_OVRES_MASK                           0x00000008
++#define SPI_IER_OVRES_OFFSET                                  3
++#define SPI_IER_OVRES_SIZE                                    1
++#define SPI_IER_RDRF                                          0
++#define SPI_IER_RDRF_MASK                            0x00000001
++#define SPI_IER_RDRF_OFFSET                                   0
++#define SPI_IER_RDRF_SIZE                                     1
++#define SPI_IER_RXBUFF                                        6
++#define SPI_IER_RXBUFF_MASK                          0x00000040
++#define SPI_IER_RXBUFF_OFFSET                                 6
++#define SPI_IER_RXBUFF_SIZE                                   1
++#define SPI_IER_TDRE                                          1
++#define SPI_IER_TDRE_MASK                            0x00000002
++#define SPI_IER_TDRE_OFFSET                                   1
++#define SPI_IER_TDRE_SIZE                                     1
++#define SPI_IER_TXBUFE                                        7
++#define SPI_IER_TXBUFE_MASK                          0x00000080
++#define SPI_IER_TXBUFE_OFFSET                                 7
++#define SPI_IER_TXBUFE_SIZE                                   1
++#define SPI_IER_TXEMPTY                                       9
++#define SPI_IER_TXEMPTY_MASK                         0x00000200
++#define SPI_IER_TXEMPTY_OFFSET                                9
++#define SPI_IER_TXEMPTY_SIZE                                  1
++#define SPI_IMR                                      0x0000001c
++#define SPI_IMR_ENDRX                                         4
++#define SPI_IMR_ENDRX_MASK                           0x00000010
++#define SPI_IMR_ENDRX_OFFSET                                  4
++#define SPI_IMR_ENDRX_SIZE                                    1
++#define SPI_IMR_ENDTX                                         5
++#define SPI_IMR_ENDTX_MASK                           0x00000020
++#define SPI_IMR_ENDTX_OFFSET                                  5
++#define SPI_IMR_ENDTX_SIZE                                    1
++#define SPI_IMR_MODF                                          2
++#define SPI_IMR_MODF_MASK                            0x00000004
++#define SPI_IMR_MODF_OFFSET                                   2
++#define SPI_IMR_MODF_SIZE                                     1
++#define SPI_IMR_NSSR                                          8
++#define SPI_IMR_NSSR_MASK                            0x00000100
++#define SPI_IMR_NSSR_OFFSET                                   8
++#define SPI_IMR_NSSR_SIZE                                     1
++#define SPI_IMR_OVRES                                         3
++#define SPI_IMR_OVRES_MASK                           0x00000008
++#define SPI_IMR_OVRES_OFFSET                                  3
++#define SPI_IMR_OVRES_SIZE                                    1
++#define SPI_IMR_RDRF                                          0
++#define SPI_IMR_RDRF_MASK                            0x00000001
++#define SPI_IMR_RDRF_OFFSET                                   0
++#define SPI_IMR_RDRF_SIZE                                     1
++#define SPI_IMR_RXBUFF                                        6
++#define SPI_IMR_RXBUFF_MASK                          0x00000040
++#define SPI_IMR_RXBUFF_OFFSET                                 6
++#define SPI_IMR_RXBUFF_SIZE                                   1
++#define SPI_IMR_TDRE                                          1
++#define SPI_IMR_TDRE_MASK                            0x00000002
++#define SPI_IMR_TDRE_OFFSET                                   1
++#define SPI_IMR_TDRE_SIZE                                     1
++#define SPI_IMR_TXBUFE                                        7
++#define SPI_IMR_TXBUFE_MASK                          0x00000080
++#define SPI_IMR_TXBUFE_OFFSET                                 7
++#define SPI_IMR_TXBUFE_SIZE                                   1
++#define SPI_IMR_TXEMPTY                                       9
++#define SPI_IMR_TXEMPTY_MASK                         0x00000200
++#define SPI_IMR_TXEMPTY_OFFSET                                9
++#define SPI_IMR_TXEMPTY_SIZE                                  1
++#define SPI_LASTXFER                                         24
++#define SPI_LASTXFER_MASK                            0x01000000
++#define SPI_LASTXFER_OFFSET                                  24
++#define SPI_LASTXFER_SIZE                                     1
++#define SPI_LLB                                               7
++#define SPI_LLB_MASK                                 0x00000080
++#define SPI_LLB_OFFSET                                        7
++#define SPI_LLB_SIZE                                          1
++#define SPI_MODF                                              2
++#define SPI_MODFDIS                                           4
++#define SPI_MODFDIS_MASK                             0x00000010
++#define SPI_MODFDIS_OFFSET                                    4
++#define SPI_MODFDIS_SIZE                                      1
++#define SPI_MODF_MASK                                0x00000004
++#define SPI_MODF_OFFSET                                       2
++#define SPI_MODF_SIZE                                         1
++#define SPI_MR                                       0x00000004
++#define SPI_MR_DLYBCS                                        24
++#define SPI_MR_DLYBCS_MASK                           0xff000000
++#define SPI_MR_DLYBCS_OFFSET                                 24
++#define SPI_MR_DLYBCS_SIZE                                    8
++#define SPI_MR_FDIV                                           3
++#define SPI_MR_FDIV_MASK                             0x00000008
++#define SPI_MR_FDIV_OFFSET                                    3
++#define SPI_MR_FDIV_SIZE                                      1
++#define SPI_MR_LLB                                            7
++#define SPI_MR_LLB_MASK                              0x00000080
++#define SPI_MR_LLB_OFFSET                                     7
++#define SPI_MR_LLB_SIZE                                       1
++#define SPI_MR_MODFDIS                                        4
++#define SPI_MR_MODFDIS_MASK                          0x00000010
++#define SPI_MR_MODFDIS_OFFSET                                 4
++#define SPI_MR_MODFDIS_SIZE                                   1
++#define SPI_MR_MSTR                                           0
++#define SPI_MR_MSTR_MASK                             0x00000001
++#define SPI_MR_MSTR_OFFSET                                    0
++#define SPI_MR_MSTR_SIZE                                      1
++#define SPI_MR_PCS                                           16
++#define SPI_MR_PCSDEC                                         2
++#define SPI_MR_PCSDEC_MASK                           0x00000004
++#define SPI_MR_PCSDEC_OFFSET                                  2
++#define SPI_MR_PCSDEC_SIZE                                    1
++#define SPI_MR_PCS_MASK                              0x000f0000
++#define SPI_MR_PCS_OFFSET                                    16
++#define SPI_MR_PCS_SIZE                                       4
++#define SPI_MR_PS                                             1
++#define SPI_MR_PS_MASK                               0x00000002
++#define SPI_MR_PS_OFFSET                                      1
++#define SPI_MR_PS_SIZE                                        1
++#define SPI_MSTR                                              0
++#define SPI_MSTR_MASK                                0x00000001
++#define SPI_MSTR_OFFSET                                       0
++#define SPI_MSTR_SIZE                                         1
++#define SPI_NCPHA                                             1
++#define SPI_NCPHA_MASK                               0x00000002
++#define SPI_NCPHA_OFFSET                                      1
++#define SPI_NCPHA_SIZE                                        1
++#define SPI_NSSR                                              8
++#define SPI_NSSR_MASK                                0x00000100
++#define SPI_NSSR_OFFSET                                       8
++#define SPI_NSSR_SIZE                                         1
++#define SPI_OVRES                                             3
++#define SPI_OVRES_MASK                               0x00000008
++#define SPI_OVRES_OFFSET                                      3
++#define SPI_OVRES_SIZE                                        1
++#define SPI_PCS                                              16
++#define SPI_PCSDEC                                            2
++#define SPI_PCSDEC_MASK                              0x00000004
++#define SPI_PCSDEC_OFFSET                                     2
++#define SPI_PCSDEC_SIZE                                       1
++#define SPI_PCS_MASK                                 0x000f0000
++#define SPI_PCS_OFFSET                                       16
++#define SPI_PCS_SIZE                                          4
++#define SPI_PS                                                1
++#define SPI_PS_MASK                                  0x00000002
++#define SPI_PS_OFFSET                                         1
++#define SPI_PS_SIZE                                           1
++#define SPI_PTCR                                     0x00000120
++#define SPI_PTCR_RXTDIS                                       1
++#define SPI_PTCR_RXTDIS_MASK                         0x00000002
++#define SPI_PTCR_RXTDIS_OFFSET                                1
++#define SPI_PTCR_RXTDIS_SIZE                                  1
++#define SPI_PTCR_RXTEN                                        0
++#define SPI_PTCR_RXTEN_MASK                          0x00000001
++#define SPI_PTCR_RXTEN_OFFSET                                 0
++#define SPI_PTCR_RXTEN_SIZE                                   1
++#define SPI_PTCR_TXTDIS                                       9
++#define SPI_PTCR_TXTDIS_MASK                         0x00000200
++#define SPI_PTCR_TXTDIS_OFFSET                                9
++#define SPI_PTCR_TXTDIS_SIZE                                  1
++#define SPI_PTCR_TXTEN                                        8
++#define SPI_PTCR_TXTEN_MASK                          0x00000100
++#define SPI_PTCR_TXTEN_OFFSET                                 8
++#define SPI_PTCR_TXTEN_SIZE                                   1
++#define SPI_PTSR                                     0x00000124
++#define SPI_PTSR_RXTEN                                        0
++#define SPI_PTSR_RXTEN_MASK                          0x00000001
++#define SPI_PTSR_RXTEN_OFFSET                                 0
++#define SPI_PTSR_RXTEN_SIZE                                   1
++#define SPI_PTSR_TXTEN                                        8
++#define SPI_PTSR_TXTEN_MASK                          0x00000100
++#define SPI_PTSR_TXTEN_OFFSET                                 8
++#define SPI_PTSR_TXTEN_SIZE                                   1
++#define SPI_RCR                                      0x00000104
++#define SPI_RCR_RXCTR                                         0
++#define SPI_RCR_RXCTR_MASK                           0x0000ffff
++#define SPI_RCR_RXCTR_OFFSET                                  0
++#define SPI_RCR_RXCTR_SIZE                                   16
++#define SPI_RD                                                0
++#define SPI_RDR                                      0x00000008
++#define SPI_RDRF                                              0
++#define SPI_RDRF_MASK                                0x00000001
++#define SPI_RDRF_OFFSET                                       0
++#define SPI_RDRF_SIZE                                         1
++#define SPI_RDR_PCS                                          16
++#define SPI_RDR_PCS_MASK                             0x000f0000
++#define SPI_RDR_PCS_OFFSET                                   16
++#define SPI_RDR_PCS_SIZE                                      4
++#define SPI_RDR_RD                                            0
++#define SPI_RDR_RD_MASK                              0x0000ffff
++#define SPI_RDR_RD_OFFSET                                     0
++#define SPI_RDR_RD_SIZE                                      16
++#define SPI_RD_MASK                                  0x0000ffff
++#define SPI_RD_OFFSET                                         0
++#define SPI_RD_SIZE                                          16
++#define SPI_RNCR                                     0x00000114
++#define SPI_RNCR_RXNCR                                        0
++#define SPI_RNCR_RXNCR_MASK                          0x0000ffff
++#define SPI_RNCR_RXNCR_OFFSET                                 0
++#define SPI_RNCR_RXNCR_SIZE                                  16
++#define SPI_RNPR                                     0x00000110
++#define SPI_RPR                                      0x00000100
++#define SPI_RXBUFF                                            6
++#define SPI_RXBUFF_MASK                              0x00000040
++#define SPI_RXBUFF_OFFSET                                     6
++#define SPI_RXBUFF_SIZE                                       1
++#define SPI_RXCTR                                             0
++#define SPI_RXCTR_MASK                               0x0000ffff
++#define SPI_RXCTR_OFFSET                                      0
++#define SPI_RXCTR_SIZE                                       16
++#define SPI_RXNCR                                             0
++#define SPI_RXNCR_MASK                               0x0000ffff
++#define SPI_RXNCR_OFFSET                                      0
++#define SPI_RXNCR_SIZE                                       16
++#define SPI_RXTDIS                                            1
++#define SPI_RXTDIS_MASK                              0x00000002
++#define SPI_RXTDIS_OFFSET                                     1
++#define SPI_RXTDIS_SIZE                                       1
++#define SPI_RXTEN                                             0
++#define SPI_RXTEN_MASK                               0x00000001
++#define SPI_RXTEN_OFFSET                                      0
++#define SPI_RXTEN_SIZE                                        1
++#define SPI_SCBR                                              8
++#define SPI_SCBR_MASK                                0x0000ff00
++#define SPI_SCBR_OFFSET                                       8
++#define SPI_SCBR_SIZE                                         8
++#define SPI_SPIDIS                                            1
++#define SPI_SPIDIS_MASK                              0x00000002
++#define SPI_SPIDIS_OFFSET                                     1
++#define SPI_SPIDIS_SIZE                                       1
++#define SPI_SPIEN                                             0
++#define SPI_SPIENS                                           16
++#define SPI_SPIENS_MASK                              0x00010000
++#define SPI_SPIENS_OFFSET                                    16
++#define SPI_SPIENS_SIZE                                       1
++#define SPI_SPIEN_MASK                               0x00000001
++#define SPI_SPIEN_OFFSET                                      0
++#define SPI_SPIEN_SIZE                                        1
++#define SPI_SR                                       0x00000010
++#define SPI_SR_ENDRX                                          4
++#define SPI_SR_ENDRX_MASK                            0x00000010
++#define SPI_SR_ENDRX_OFFSET                                   4
++#define SPI_SR_ENDRX_SIZE                                     1
++#define SPI_SR_ENDTX                                          5
++#define SPI_SR_ENDTX_MASK                            0x00000020
++#define SPI_SR_ENDTX_OFFSET                                   5
++#define SPI_SR_ENDTX_SIZE                                     1
++#define SPI_SR_MODF                                           2
++#define SPI_SR_MODF_MASK                             0x00000004
++#define SPI_SR_MODF_OFFSET                                    2
++#define SPI_SR_MODF_SIZE                                      1
++#define SPI_SR_NSSR                                           8
++#define SPI_SR_NSSR_MASK                             0x00000100
++#define SPI_SR_NSSR_OFFSET                                    8
++#define SPI_SR_NSSR_SIZE                                      1
++#define SPI_SR_OVRES                                          3
++#define SPI_SR_OVRES_MASK                            0x00000008
++#define SPI_SR_OVRES_OFFSET                                   3
++#define SPI_SR_OVRES_SIZE                                     1
++#define SPI_SR_RDRF                                           0
++#define SPI_SR_RDRF_MASK                             0x00000001
++#define SPI_SR_RDRF_OFFSET                                    0
++#define SPI_SR_RDRF_SIZE                                      1
++#define SPI_SR_RXBUFF                                         6
++#define SPI_SR_RXBUFF_MASK                           0x00000040
++#define SPI_SR_RXBUFF_OFFSET                                  6
++#define SPI_SR_RXBUFF_SIZE                                    1
++#define SPI_SR_SPIENS                                        16
++#define SPI_SR_SPIENS_MASK                           0x00010000
++#define SPI_SR_SPIENS_OFFSET                                 16
++#define SPI_SR_SPIENS_SIZE                                    1
++#define SPI_SR_TDRE                                           1
++#define SPI_SR_TDRE_MASK                             0x00000002
++#define SPI_SR_TDRE_OFFSET                                    1
++#define SPI_SR_TDRE_SIZE                                      1
++#define SPI_SR_TXBUFE                                         7
++#define SPI_SR_TXBUFE_MASK                           0x00000080
++#define SPI_SR_TXBUFE_OFFSET                                  7
++#define SPI_SR_TXBUFE_SIZE                                    1
++#define SPI_SR_TXEMPTY                                        9
++#define SPI_SR_TXEMPTY_MASK                          0x00000200
++#define SPI_SR_TXEMPTY_OFFSET                                 9
++#define SPI_SR_TXEMPTY_SIZE                                   1
++#define SPI_SWRST                                             7
++#define SPI_SWRST_MASK                               0x00000080
++#define SPI_SWRST_OFFSET                                      7
++#define SPI_SWRST_SIZE                                        1
++#define SPI_TCR                                      0x0000010c
++#define SPI_TCR_TXCTR                                         0
++#define SPI_TCR_TXCTR_MASK                           0x0000ffff
++#define SPI_TCR_TXCTR_OFFSET                                  0
++#define SPI_TCR_TXCTR_SIZE                                   16
++#define SPI_TD                                                0
++#define SPI_TDR                                      0x0000000c
++#define SPI_TDRE                                              1
++#define SPI_TDRE_MASK                                0x00000002
++#define SPI_TDRE_OFFSET                                       1
++#define SPI_TDRE_SIZE                                         1
++#define SPI_TDR_LASTXFER                                     24
++#define SPI_TDR_LASTXFER_MASK                        0x01000000
++#define SPI_TDR_LASTXFER_OFFSET                              24
++#define SPI_TDR_LASTXFER_SIZE                                 1
++#define SPI_TDR_PCS                                          16
++#define SPI_TDR_PCS_MASK                             0x000f0000
++#define SPI_TDR_PCS_OFFSET                                   16
++#define SPI_TDR_PCS_SIZE                                      4
++#define SPI_TDR_TD                                            0
++#define SPI_TDR_TD_MASK                              0x0000ffff
++#define SPI_TDR_TD_OFFSET                                     0
++#define SPI_TDR_TD_SIZE                                      16
++#define SPI_TD_MASK                                  0x0000ffff
++#define SPI_TD_OFFSET                                         0
++#define SPI_TD_SIZE                                          16
++#define SPI_TNCR                                     0x0000011c
++#define SPI_TNCR_TXNCR                                        0
++#define SPI_TNCR_TXNCR_MASK                          0x0000ffff
++#define SPI_TNCR_TXNCR_OFFSET                                 0
++#define SPI_TNCR_TXNCR_SIZE                                  16
++#define SPI_TNPR                                     0x00000118
++#define SPI_TPR                                      0x00000108
++#define SPI_TXBUFE                                            7
++#define SPI_TXBUFE_MASK                              0x00000080
++#define SPI_TXBUFE_OFFSET                                     7
++#define SPI_TXBUFE_SIZE                                       1
++#define SPI_TXCTR                                             0
++#define SPI_TXCTR_MASK                               0x0000ffff
++#define SPI_TXCTR_OFFSET                                      0
++#define SPI_TXCTR_SIZE                                       16
++#define SPI_TXEMPTY                                           9
++#define SPI_TXEMPTY_MASK                             0x00000200
++#define SPI_TXEMPTY_OFFSET                                    9
++#define SPI_TXEMPTY_SIZE                                      1
++#define SPI_TXNCR                                             0
++#define SPI_TXNCR_MASK                               0x0000ffff
++#define SPI_TXNCR_OFFSET                                      0
++#define SPI_TXNCR_SIZE                                       16
++#define SPI_TXTDIS                                            9
++#define SPI_TXTDIS_MASK                              0x00000200
++#define SPI_TXTDIS_OFFSET                                     9
++#define SPI_TXTDIS_SIZE                                       1
++#define SPI_TXTEN                                             8
++#define SPI_TXTEN_MASK                               0x00000100
++#define SPI_TXTEN_OFFSET                                      8
++#define SPI_TXTEN_SIZE                                        1
++
++enum {
++	SPI_ERROR = -1,
++	SPI_OK = 0,
++	SPI_ERROR_TIMEOUT = 1,
++	SPI_ERROR_ARGUMENT,
++	SPI_ERROR_OVERRUN,
++	SPI_ERROR_MODE_FAULT,
++	SPI_ERROR_OVERRUN_AND_MODE_FAULT
++};
++
++struct spi_options_t {
++	unsigned char reg;
++	unsigned int baudrate;
++	unsigned char bits;
++	unsigned char spck_delay;
++	unsigned char trans_delay;
++	unsigned char stay_act;
++	unsigned char spi_mode;
++};
++
++struct spi_info {
++	void			*regs;
++};
++
++int spi_select_chip(unsigned char chip);
++
++int spi_unselect_chip(unsigned char chip);
++
++int spi_setup_chip_reg(struct spi_options_t *options, unsigned int cpuHz);
++
++void spi_enable(void);
++
++void spi_disable(void);
++
++int spi_write(uchar *addr, int alen, uchar *buffer, int len);
++
++int spi_read(uchar *addr, int alen, uchar *buffer, int len);
++
++#define SPI_BIT(name)                          (1 << SPI_##name##_OFFSET)
++#define SPI_MKBF(name,value)                   (((value) & ((1 << SPI_##name##_SIZE) - 1)) << SPI_##name##_OFFSET)
++#define SPI_GETBF(name,value)                  (((value) >> SPI_##name##_OFFSET) & ((1 << SPI_##name##_SIZE) - 1))
++#define SPI_INSBF(name,value,old)              (((old) & ~(((1 << SPI_##name##_SIZE) - 1) << SPI_##name##_OFFSET)) | SPI_MKBF(name, value))
++
++#define spi_readl(port,reg)		readl((port)->regs + SPI_##reg)
++#define spi_writel(port,reg,value)	writel((value), (port)->regs + SPI_##reg)
++
++#endif /* #ifndef __SPI_H_ */
+diff -uprN u-boot-orig/drivers/atmel_spi.c u-boot/drivers/atmel_spi.c
+--- u-boot-orig/drivers/atmel_spi.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/drivers/atmel_spi.c	2007-01-03 10:01:26.000000000 +0100
+@@ -0,0 +1,330 @@
++/*
++ * Copyright (C) 2004-2006 Atmel Corporation
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++#include <common.h>
++
++#ifdef CONFIG_ATMEL_SPI
++
++#include <part.h>
++#include <malloc.h>
++#include <spi.h>
++#include <atmel_spi.h>
++
++#include <asm/io.h>
++#include <asm/errno.h>
++#include <asm/byteorder.h>
++
++#include <asm/arch/memory-map.h>
++#include <asm/arch/platform.h>
++
++
++struct spi_info *spi;
++
++void spi_reset(struct spi_info *spi);
++
++int get_baud_div(struct spi_options_t * options, int busHz);
++
++int spi_selection_mode(unsigned char variable_ps,
++		unsigned char pcs_decode,
++		unsigned char delay);
++
++void spi_reset(struct spi_info *spi)
++{
++	spi_writel(spi, CR, SPI_BIT(CR_SWRST));
++}
++
++void spi_init()
++{
++	const struct device *dev;
++
++#ifdef CFG_SPI0
++	dev = get_device(DEVICE_SPI0);
++#elif CFG_SPI1
++	dev = get_device(DEVICE_SPI1);
++#else
++#error No SPI device available
++#endif
++	if (!dev)
++		return;
++
++	spi = malloc(sizeof(struct spi_info));
++	if (!spi)
++		return;
++
++	spi->regs = dev->regs;
++
++	/* Reset */
++	spi_reset(spi);
++
++	/* Master Mode */
++	spi_writel(spi, MR, SPI_BIT(MR_MSTR)
++			|SPI_MR_PCS_MASK
++			|(0<<SPI_MR_FDIV_OFFSET)
++			|(0<<SPI_MR_MODFDIS_OFFSET));
++
++	/* Selection mode:
++	 * no variable peripheral select
++	 * no peripheral chip select decode
++	 * 0 delay cycles after a chip select
++	 */
++	if (!spi_selection_mode(0, 0, 0))
++		return;
++
++	debug("spi: controller at 0x%08x\n", spi->regs);
++}
++
++int spi_selection_mode(unsigned char variable_ps,
++		unsigned char pcs_decode,
++		unsigned char delay)
++{
++	if (variable_ps > 1 || pcs_decode > 1) {
++		return SPI_ERROR_ARGUMENT;
++	}
++
++	/* Unset bitfields */
++	spi_writel(spi, MR, spi_readl(spi, MR) &
++			~(SPI_MR_PS_MASK|SPI_MR_PCSDEC_MASK
++				|SPI_MR_DLYBCS_MASK));
++	/* Set selction bits */
++	spi_writel(spi, MR, spi_readl(spi, MR)
++			|SPI_MKBF(MR_PS, variable_ps)
++			|SPI_MKBF(MR_PCSDEC, pcs_decode)
++			|SPI_MKBF(MR_DLYBCS, delay));
++
++	return SPI_OK;
++}
++
++int spi_select_chip(unsigned char chip)
++{
++	/* Assert all lines; no peripheral is selected */
++	spi_writel(spi, MR_PCS, spi_readl(spi, MR)|SPI_MR_PCS_MASK);
++
++	if (spi_readl(spi, MR) & SPI_MR_PCSDEC_MASK) {
++		ulong status;
++
++		/* The signal is decoded; allow up to 15 chips */
++		if (chip > 14) {
++			return SPI_ERROR_ARGUMENT;
++		}
++
++		status = spi_readl(spi, MR);
++		status &= ~SPI_MR_PCS_MASK;
++		status |= SPI_MKBF(MR_PCS, chip);
++		spi_writel(spi, MR, status);
++	} else {
++		if (chip > 3) {
++			return SPI_ERROR_ARGUMENT;
++		}
++
++		spi_writel(spi, MR, spi_readl(spi, MR) &
++				~(1<<(SPI_MR_PCS_OFFSET + chip)));
++	}
++
++	debug("spi: chip select %d activated\n", chip);
++
++	return SPI_OK;
++}
++
++int spi_unselect_chip(unsigned char chip)
++{
++	/* Assert all lines; no peripheral is selected */
++	spi_writel(spi, MR, spi_readl(spi, MR)|SPI_MR_PCS_MASK);
++
++	/* Last transfer, so deassert the current NPCS if CSAAT is set */
++	spi_writel(spi, CR, spi_readl(spi, MR)|SPI_CR_LASTXFER_MASK);
++
++	debug("spi: chip select %d deactivated\n", chip);
++
++	return SPI_OK;
++}
++
++int spi_setup_chip_reg(struct spi_options_t *options,
++		unsigned int busHz)
++{
++	int baudDiv = -1;
++	unsigned long csr = 0;
++
++	if (options->bits > 16 || options->bits < 8 || options->stay_act > 1) {
++		return SPI_ERROR_ARGUMENT;
++	}
++
++	baudDiv = get_baud_div(options, busHz);
++
++	if (baudDiv < 0) {
++		return -baudDiv;
++	}
++
++	/* Will use CSR0 offsets; these are the same for CSR0 - CSR3 */
++	csr = ((options->bits - 8)<<SPI_CSR0_BITS_OFFSET)|
++		(baudDiv<<SPI_CSR0_SCBR_OFFSET)|
++		(options->spck_delay<<SPI_CSR0_DLYBS_OFFSET)|
++		(options->trans_delay<<SPI_CSR0_DLYBCT_OFFSET)|
++		(options->stay_act<<SPI_CSR0_CSAAT_OFFSET);
++
++	switch (options->spi_mode) {
++		case 0:
++			csr |= (1<<SPI_CSR0_NCPHA_OFFSET); /* pass through */
++		case 1:
++			break;
++		case 2:
++			csr |= (1<<SPI_CSR0_NCPHA_OFFSET); /* pass through */
++		case 3:
++			csr |= (1<<SPI_CSR0_CPOL_OFFSET);
++			break;
++		default: /* Not in legal range */
++			return SPI_ERROR_ARGUMENT;
++	}
++
++	switch (options->reg) {
++		case 0:
++			spi_writel(spi, CSR0, csr);
++			break;
++		case 1:
++			spi_writel(spi, CSR1, csr);
++			break;
++		case 2:
++			spi_writel(spi, CSR2, csr);
++			break;
++		case 3:
++			spi_writel(spi, CSR3, csr);
++			break;
++		default:
++			return SPI_ERROR_ARGUMENT;
++	}
++
++	debug("spi: chip select %d registered\n", options->reg);
++
++	return SPI_OK;
++}
++
++void spi_enable()
++{
++	spi_writel(spi, CR, SPI_BIT(CR_SPIEN));
++}
++
++void spi_disable()
++{
++	spi_writel(spi, CR, SPI_BIT(CR_SPIDIS));
++}
++
++int spi_write(uchar *addr, int alen, uchar *buffer, int len)
++{
++	int sent = 0;
++	uchar *addr_p = addr;
++	uchar *buffer_p = buffer;
++	unsigned int timeout = SPI_TIMEOUT;
++
++	if ((alen + len) <= 0)
++		return -SPI_ERROR_ARGUMENT;
++
++	do {
++		while (!(spi_readl(spi, SR) & SPI_BIT(SR_TXEMPTY)) && --timeout);
++		if (!timeout)
++			return -SPI_ERROR_TIMEOUT;
++		if (len > 0 || alen > 1)
++			spi_writel(spi, TDR, *addr_p++ & 0x0000FFFF);
++		else
++			spi_writel(spi, TDR, (*addr_p++ & 0x0000FFFF)
++					| SPI_BIT(TDR_LASTXFER));
++		sent++;
++	} while (--alen > 0);
++
++	timeout = SPI_TIMEOUT;
++
++	do {
++		while (!(spi_readl(spi, SR) & SPI_BIT(SR_TXEMPTY)) && --timeout);
++		if (!timeout)
++			return -SPI_ERROR_TIMEOUT;
++		if (len > 1)
++			spi_writel(spi, TDR, *buffer_p++ & 0x0000FFFF);
++		else
++			spi_writel(spi, TDR, (*buffer_p++ & 0x0000FFFF)
++					| SPI_BIT(TDR_LASTXFER));
++		sent++;
++	} while (--len > 0);
++
++	return sent;
++}
++
++int spi_read(uchar *addr, int alen, uchar *buffer, int len)
++{
++	int received = 0;
++	uchar *addr_p = addr;
++	uchar *buffer_p = buffer;
++	unsigned int timeout = SPI_TIMEOUT;
++
++	if ((alen + len) <= 0)
++		return SPI_ERROR_ARGUMENT;
++
++	do {
++		while (!(spi_readl(spi, SR) & SPI_BIT(SR_RDRF)) && --timeout);
++		if (!timeout)
++			return -SPI_ERROR_TIMEOUT;
++		*addr_p++ = spi_readl(spi, RDR) & 0x000000FF;
++		--alen;
++		received++;
++	} while (alen > 0);
++
++	timeout = SPI_TIMEOUT;
++
++	do {
++		while (!(spi_readl(spi, SR) & SPI_BIT(SR_RDRF)) && --timeout);
++		if (!timeout)
++			return -SPI_ERROR_TIMEOUT;
++		*buffer_p++ = spi_readl(spi, RDR) & 0x000000FF;
++		--len;
++		received++;
++	} while (len > 0);
++
++	return received;
++}
++
++int spi_xfer(spi_chipsel_type chipsel, int bitlen, uchar *dout, uchar *din)
++{
++	int len = 0;
++	uchar *dout_p = dout;
++	uchar *din_p = din;
++
++	while (--bitlen) {
++		if (spi_write(dout_p++, 1, 0, 0) != 1)
++			break;
++		if (spi_read(din_p++, 1, 0, 0) != 1)
++			break;
++		len++;
++	}
++
++	return len;
++}
++
++int get_baud_div(struct spi_options_t *options, int busHz) {
++	int baudDiv = 0;
++
++	baudDiv = busHz / options->baudrate;
++
++	if (baudDiv > (SPI_CSR0_SCBR_MASK<<SPI_CSR0_SCBR_OFFSET)
++			|| baudDiv <= 0) {
++		return -SPI_ERROR_ARGUMENT;
++	}
++
++	return baudDiv;
++}
++
++#endif /* CONFIG_ATMEL_SPI */
+diff -uprN u-boot-orig/drivers/Makefile u-boot/drivers/Makefile
+--- u-boot-orig/drivers/Makefile	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/drivers/Makefile	2007-01-01 16:10:49.000000000 +0100
+@@ -28,7 +28,7 @@ include $(TOPDIR)/config.mk
+ LIB	= libdrivers.a
+ 
+ OBJS	= 3c589.o 5701rls.o ali512x.o \
+-	  atmel_usart.o atmel_lcdc.o \
++	  atmel_usart.o atmel_lcdc.o atmel_spi.o \
+ 	  bcm570x.o bcm570x_autoneg.o cfb_console.o cfi_flash.o \
+ 	  cs8900.o ct69000.o dataflash.o dc2114x.o dm9000x.o \
+ 	  e1000.o eepro100.o \

@@ -1,0 +1,11 @@
+diff -uprN u-boot-orig/include/asm-avr32/global_data.h u-boot/include/asm-avr32/global_data.h
+--- u-boot-orig/include/asm-avr32/global_data.h	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/include/asm-avr32/global_data.h	2006-12-19 11:08:14.000000000 +0100
+@@ -44,6 +44,7 @@ typedef	struct	global_data {
+ 	unsigned long	env_addr;	/* Address of env struct */
+ 	unsigned long	env_valid;	/* Checksum of env valid? */
+ 	unsigned long	cpu_hz;		/* TODO: remove */
++	unsigned long	fb_base;	/* Address to framebuffer */
+ 	void		**jt;
+ } gd_t;
+ 

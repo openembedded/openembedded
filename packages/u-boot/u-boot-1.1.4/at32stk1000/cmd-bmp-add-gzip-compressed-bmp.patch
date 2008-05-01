@@ -1,0 +1,90 @@
+Index: u-boot-orig/common/cmd_bmp.c
+===================================================================
+--- u-boot-orig.orig/common/cmd_bmp.c	2007-01-05 14:50:55.000000000 +0100
++++ u-boot-orig/common/cmd_bmp.c	2007-01-05 15:59:21.000000000 +0100
+@@ -176,13 +176,83 @@
+  */
+ static int bmp_display(ulong addr, int x, int y)
+ {
++	int ret;
++#ifdef CONFIG_VIDEO_BMP_GZIP
++	bmp_image_t *bmp = (bmp_image_t *)addr;
++	unsigned char *dst = NULL;
++	ulong len;
++
++	if (!((bmp->header.signature[0]=='B') &&
++	      (bmp->header.signature[1]=='M'))) {
++
++		/*
++		 * Decompress bmp image
++		 */
++		len = CFG_VIDEO_LOGO_MAX_SIZE;
++		dst = malloc(CFG_VIDEO_LOGO_MAX_SIZE);
++		if (dst == NULL) {
++			printf("Error: malloc in gunzip failed!\n");
++			return(1);
++		}
++		if (gunzip(dst, CFG_VIDEO_LOGO_MAX_SIZE, (uchar *)addr, &len) != 0) {
++			free(dst);
++			printf("There is no valid bmp file at the given address\n");
++			return(1);
++		}
++		if (len == CFG_VIDEO_LOGO_MAX_SIZE) {
++			printf("Image could be truncated "
++					"(increase CFG_VIDEO_LOGO_MAX_SIZE)!\n");
++		}
++
++		/*
++		 * Set addr to decompressed image
++		 */
++		bmp = (bmp_image_t *)dst;
++
++		/*
++		 * Check for bmp mark 'BM'
++		 */
++		if (!((bmp->header.signature[0] == 'B') &&
++		      (bmp->header.signature[1] == 'M'))) {
++			printf("There is no valid bmp file at the given address\n");
++			free(dst);
++			return(1);
++		}
++	}
++
++	if (dst) {
++		addr = (ulong)dst;
++	}
++#endif /* CONFIG_VIDEO_BMP_GZIP */
++
+ #if defined(CONFIG_LCD)
+ 	extern int lcd_display_bitmap (ulong, int, int);
+ 
+-	return (lcd_display_bitmap (addr, x, y));
++	ret = lcd_display_bitmap (addr, x, y);
++	if (ret) {
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		free(dst);
++#endif
++		return ret;
++	}
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		free(dst);
++#endif
++	return 0;
++
+ #elif defined(CONFIG_VIDEO)
+ 	extern int video_display_bitmap (ulong, int, int);
+-	return (video_display_bitmap (addr, x, y));
++	ret = video_display_bitmap (addr, x, y);
++	if (ret) {
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		free(dst);
++#endif
++		return ret;
++	}
++#ifdef CONFIG_VIDEO_BMP_GZIP
++		free(dst);
++#endif
++	return 0;
+ #else
+ # error bmp_display() requires CONFIG_LCD or CONFIG_VIDEO
+ #endif
