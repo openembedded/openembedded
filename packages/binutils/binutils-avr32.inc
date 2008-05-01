@@ -5,17 +5,16 @@
 
 do_avr32_reconf () {
         if test ${TARGET_ARCH} == avr32; then
-            (cd ${S} && autoconf2.13) || die "Error running autoconf"
+            (cd ${S} && autoconf) || die "Error running autoconf"
             for dir in bfd opcodes binutils ld; do
                 (cd "${S}/$dir" &&
-                 aclocal-1.9 &&
+                 aclocal &&
                  autoconf &&
-                 automake-1.9 &&
+                 automake &&
                  autoheader) || die "Error reconfiguring $dir"
             done
         fi
 }
-
 
 do_avr32_configure_bfd () {
         if test ${TARGET_ARCH} == avr32; then
@@ -23,8 +22,6 @@ do_avr32_configure_bfd () {
             (cd ${B}/bfd && make headers) || die "Error running 'make headers'"
         fi
 }
-
-
 
 addtask avr32_reconf after do_patch before do_configure
 addtask avr32_configure_bfd after do_configure before do_compile
