@@ -13,8 +13,8 @@
  		echo " WARNING WARNING WARNING" ;\
  	fi
  
--install: datafiles bininstall $(SUBDIRS_INSTALL)
-+install: datafiles bininstall $(SUBDIRS_INSTALL) samples
+-install: badshell datafiles bininstall $(SUBDIRS_INSTALL)
++install: badshell datafiles bininstall $(SUBDIRS_INSTALL) samples
  	@if [ -x /usr/sbin/asterisk-post-install ]; then \
  		/usr/sbin/asterisk-post-install $(DESTDIR) . ; \
  	fi

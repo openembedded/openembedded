@@ -1,0 +1,117 @@
+Index: u-boot-1.1.4/cpu/at32ap7xxx/hsdramc.c
+===================================================================
+--- u-boot-1.1.4.orig/cpu/at32ap7xxx/hsdramc.c	2007-01-11 15:28:40.000000000 +0100
++++ u-boot-1.1.4/cpu/at32ap7xxx/hsdramc.c	2007-01-11 15:29:36.000000000 +0100
+@@ -133,6 +133,7 @@
+ 	printf("SDRAM: %u MB at address 0x%08lx\n",
+ 	       sdram_size >> 20, info->phys_addr);
+ 
++#ifdef CONFIG_SDRAM_TEST
+ 	printf("Testing SDRAM...");
+ 	for (i = 0; i < sdram_size / 4; i++)
+ 		sdram[i] = i;
+@@ -148,6 +149,7 @@
+ 	}
+ 
+ 	puts("OK\n");
++#endif
+ 
+ 	return sdram_size;
+ }
+Index: u-boot-1.1.4/include/configs/atngw.h
+===================================================================
+--- u-boot-1.1.4.orig/include/configs/atngw.h	2007-01-11 15:28:40.000000000 +0100
++++ u-boot-1.1.4/include/configs/atngw.h	2007-01-30 16:41:23.000000000 +0100
+@@ -31,6 +31,10 @@
+ 
+ #define CONFIG_NGW_EXT_FLASH		1
+ 
++/* Handy macros for making strings */
++#define xstringify(x) #x
++#define stringify(x) xstringify(x)
++
+ /*
+  * Timer clock frequency. We're using the CPU-internal COUNT register
+  * for this, so this is equivalent to the CPU core clock frequency
+@@ -80,9 +84,9 @@
+ 
+ #define CONFIG_BAUDRATE			115200
+ #define CONFIG_BOOTARGS							\
+-	"console=ttyS0 root=/dev/mmcblk0p1"
++	"console=ttyS0 root=/dev/mtdblock1 rootfstype=jffs2"
+ #define CONFIG_BOOTCOMMAND						\
+-	"mmcinit; ext2load mmc 0:1 0x90400000 /uImage; bootm 0x90400000"
++	"fsload 0x90250000 /uImage; bootm 0x90250000"
+ 
+ #define CONFIG_BOOTDELAY		2
+ #define CONFIG_AUTOBOOT			1
+@@ -105,8 +109,8 @@
+  * generated and assigned to the environment variables "ethaddr" and
+  * "eth1addr".
+  */
+-#define CONFIG_ETHADDR			"6a:87:71:14:cd:cb"
+-#define CONFIG_ETH1ADDR			"ca:f8:15:e6:3e:e6"
++#define CONFIG_ETHADDR			"42:b2:13:36:50:94"
++#define CONFIG_ETH1ADDR			"4e:29:49:7e:5c:b9"
+ #define CONFIG_OVERWRITE_ETHADDR_ONCE	1
+ #define CONFIG_NET_MULTI		1
+ 
+@@ -183,6 +187,7 @@
+ 
+ #define CFG_SDRAM_BASE			0x10000000
+ #define CFG_SDRAM_16BIT			1
++#define CONFIG_SDRAM_TEST		1
+ 
+ #define CFG_ENV_IS_IN_FLASH		1
+ #define CFG_ENV_SIZE			65536
+@@ -202,7 +207,7 @@
+ #define CFG_DMA_ALLOC_END		(CFG_MALLOC_START)
+ #define CFG_DMA_ALLOC_START		(CFG_DMA_ALLOC_END - CFG_DMA_ALLOC_LEN)
+ /* Allow 2MB for the kernel run-time image */
+-#define CFG_LOAD_ADDR			(CFG_SDRAM_BASE + 0x00200000)
++#define CFG_LOAD_ADDR			(CFG_SDRAM_BASE + 0x00250000)
+ #define CFG_BOOTPARAMS_LEN		(16 * 1024)
+ 
+ /* Other configuration settings that shouldn't have to change all that often */
+Index: u-boot-1.1.4/include/configs/atstk1002.h
+===================================================================
+--- u-boot-1.1.4.orig/include/configs/atstk1002.h	2007-01-11 15:29:36.000000000 +0100
++++ u-boot-1.1.4/include/configs/atstk1002.h	2007-01-30 16:41:25.000000000 +0100
+@@ -98,7 +98,7 @@
+ #define CFG_CONSOLE_UART_DEV		DEVICE_USART1
+ 
+ /* Define to force consol on serial */
+-/* #define CFG_CONSOLE_ALLWAYS_UART	1 */
++#define CFG_CONSOLE_ALLWAYS_UART	1
+ #ifdef CFG_CONSOLE_ALLWAYS_UART
+ #define CFG_CONSOLE_IS_IN_ENV		1
+ #define CFG_CONSOLE_OVERWRITE_ROUTINE	1
+@@ -123,7 +123,7 @@
+ #endif
+ 
+ #define CONFIG_BOOTCOMMAND						\
+-	"mmcinit; ext2load mmc 0:1 /uImage; bootm"
++	"mmcinit; ext2load mmc 0:1 0x90250000 /uImage; bootm 0x90250000"
+ #define CONFIG_BOOTDELAY		2
+ #define CONFIG_AUTOBOOT			1
+ 
+@@ -145,8 +145,8 @@
+  * generated and assigned to the environment variables "ethaddr" and
+  * "eth1addr".
+  */
+-#define CONFIG_ETHADDR			"6a:87:71:14:cd:cb"
+-#define CONFIG_ETH1ADDR			"ca:f8:15:e6:3e:e6"
++#define CONFIG_ETHADDR			"42:b2:13:36:50:94"
++#define CONFIG_ETH1ADDR			"4e:29:49:7e:5c:b9"
+ #define CONFIG_OVERWRITE_ETHADDR_ONCE	1
+ #define CONFIG_NET_MULTI		1
+ 
+@@ -233,6 +233,8 @@
+ #define CFG_INTRAM_SIZE			0x8000
+ 
+ #define CFG_SDRAM_BASE			0x10000000
++/* Will do SDRAM test if defined */
++#define CONFIG_SDRAM_TEST		1
+ 
+ #define CFG_ENV_IS_IN_FLASH		1
+ #define CFG_ENV_SIZE			65536

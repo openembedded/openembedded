@@ -1,0 +1,124 @@
+Index: u-boot-orig/include/configs/atstk1002.h
+===================================================================
+--- u-boot-orig.orig/include/configs/atstk1002.h	2007-01-05 15:58:53.000000000 +0100
++++ u-boot-orig/include/configs/atstk1002.h	2007-01-05 16:04:50.000000000 +0100
+@@ -32,6 +32,10 @@
+ 
+ #define CONFIG_ATSTK1000_EXT_FLASH	1
+ 
++/* Handy macros for making strings */
++#define xstringify(x) #x
++#define stringify(x) xstringify(x)
++
+ /*
+  * Timer clock frequency. We're using the CPU-internal COUNT register
+  * for this, so this is equivalent to the CPU core clock frequency
+@@ -68,10 +72,39 @@
+ #define CFG_USART1			1
+ #define CFG_MMCI			1
+ #define CFG_MACB0			1
+-#define CFG_MACB1			1
++/* #define CFG_MACB1			1 */
++
++/* Enable SPI support */
++#define CONFIG_SPI			1
++#define CONFIG_ATMEL_SPI		1
++#define CFG_SPI0			1
++
++/* Enable LCD support */
++#define CFG_DMAC			1
++#define CFG_LCDC			1
++#define CONFIG_LCD			1
++#define CONFIG_ATMEL_LCDC		1
++#define CONFIG_DISPLAY_LTV350QV		1
++
++/* Setup LCD */
++#define LCD_BPP				LCD_COLOR24
++/* CFG_SDRAM_BASE + 0x00500000 */
++#define CFG_LCD_BASE			0x10500000
++#define CFG_WHITE_ON_BLACK		1
++#define CONFIG_VIDEO_BMP_GZIP		1
++#define CFG_VIDEO_LOGO_MAX_SIZE		262144 /* > 320 * 240 * 3 */
++/* #define CONFIG_SPLASH_SCREEN		1 */
+ 
+ #define CFG_CONSOLE_UART_DEV		DEVICE_USART1
+ 
++/* Define to force consol on serial */
++/* #define CFG_CONSOLE_ALLWAYS_UART	1 */
++#ifdef CFG_CONSOLE_ALLWAYS_UART
++#define CFG_CONSOLE_IS_IN_ENV		1
++#define CFG_CONSOLE_OVERWRITE_ROUTINE	1
++#define CFG_CONSOLE_ENV_OVERWRITE	1
++#endif
++
+ /* User serviceable stuff */
+ #define CONFIG_CMDLINE_TAG		1
+ #define CONFIG_SETUP_MEMORY_TAGS	1
+@@ -80,11 +113,17 @@
+ #define CONFIG_STACKSIZE		(2048)
+ 
+ #define CONFIG_BAUDRATE			115200
++
++#ifdef CFG_LCD_BASE
+ #define CONFIG_BOOTARGS							\
+-	"console=ttyUS0 root=/dev/mmcblk0p1 fbmem=600k"
+-#define CONFIG_BOOTCOMMAND						\
+-	"mmcinit; ext2load mmc 0:1 0x90400000 /uImage; bootm 0x90400000"
++	"console=ttyS0 root=/dev/mmcblk0p1 fbmem=600k@" stringify(CFG_LCD_BASE)
++#else
++#define CONFIG_BOOTARGS							\
++	"console=ttyS0 root=/dev/mmcblk0p1 fbmem=600k"
++#endif
+ 
++#define CONFIG_BOOTCOMMAND						\
++	"mmcinit; ext2load mmc 0:1 /uImage; bootm"
+ #define CONFIG_BOOTDELAY		2
+ #define CONFIG_AUTOBOOT			1
+ 
+@@ -144,7 +183,7 @@
+ 					 /* | CFG_CMD_DIAG */		\
+ 					 /* | CFG_CMD_HWFLOW */		\
+ 					 /* | CFG_CMD_SAVES */		\
+-					 /* | CFG_CMD_SPI */		\
++					 | CFG_CMD_SPI			\
+ 					 /* | CFG_CMD_PING */		\
+ 					 | CFG_CMD_MMC			\
+ 					 /* | CFG_CMD_FAT */		\
+@@ -152,6 +191,7 @@
+ 					 /* | CFG_CMD_ITEST */		\
+ 					 | CFG_CMD_EXT2			\
+ 					 | CFG_CMD_JFFS2		\
++					 | CFG_CMD_BMP			\
+ 		)
+ 
+ #include <cmd_confdefs.h>
+@@ -201,7 +241,7 @@
+ #define CFG_INIT_SP_ADDR		(CFG_INTRAM_BASE + CFG_INTRAM_SIZE)
+ 
+ #ifdef CONFIG_ATSTK1000
+-# define CFG_MALLOC_LEN			(256*1024)
++# define CFG_MALLOC_LEN			(512*1024)
+ # define CFG_MALLOC_END							\
+ 	({								\
+ 		DECLARE_GLOBAL_DATA_PTR;				\
+@@ -213,7 +253,7 @@
+ # define CFG_DMA_ALLOC_END		(CFG_MALLOC_START)
+ # define CFG_DMA_ALLOC_START		(CFG_DMA_ALLOC_END - CFG_DMA_ALLOC_LEN)
+ /* Allow 2MB for the kernel run-time image */
+-# define CFG_LOAD_ADDR			(CFG_SDRAM_BASE + 0x00200000)
++# define CFG_LOAD_ADDR			(CFG_SDRAM_BASE + 0x00250000)
+ # define CFG_BOOTPARAMS_LEN		(16 * 1024)
+ #else
+ # define CFG_MALLOC_LEN			(8*1024)
+Index: u-boot-orig/board/atstk1000/atstk1000.c
+===================================================================
+--- u-boot-orig.orig/board/atstk1000/atstk1000.c	2007-01-05 16:02:33.000000000 +0100
++++ u-boot-orig/board/atstk1000/atstk1000.c	2007-01-05 16:04:00.000000000 +0100
+@@ -52,3 +52,7 @@
+ 	gd->bd->bi_phy_id[0] = 0x10;
+ 	gd->bd->bi_phy_id[1] = 0x11;
+ }
++
++#ifdef CFG_CONSOLE_ALLWAYS_UART
++int overwrite_console(void) { return 1; }
++#endif

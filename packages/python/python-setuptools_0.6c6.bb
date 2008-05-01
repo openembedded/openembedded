@@ -3,7 +3,7 @@ HOMEPAGE = "http://cheeseshop.python.org/pypi/setuptools"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT-like"
-RDEPENDS = "python-core python-zlib"
+RDEPENDS = "python-distutils python-compression"
 SRCNAME = "setuptools"
 PR = "ml1"
 
@@ -14,9 +14,4 @@ inherit distutils
 
 do_install_prepend() {
     install -d ${D}/${libdir}/${PYTHON_DIR}/site-packages
-}
-
-do_stage() {
-    BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-      ${STAGING_BINDIR_NATIVE}/python setup.py install 
 }
