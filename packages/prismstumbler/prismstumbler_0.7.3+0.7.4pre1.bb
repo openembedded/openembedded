@@ -26,9 +26,11 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 		--with-sqlite-libs=${STAGING_LIBDIR} \
 		--without-athena --enable-dbus \
                 --with-libiw=${STAGING_EXECPREFIXDIR}"
-
 CFLAGS =+ "-I${S}/include"
 LDFLAGS += "-lz"
+
+# Ugly hack to find libstdc++ for libgps
+EXTRA_OEMAKE_append = 'CCLD="${CXX}"'
 
 FILES_${PN} = "${bindir}/prismstumbler"
 
