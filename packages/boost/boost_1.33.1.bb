@@ -17,6 +17,7 @@ BOOST_P = "boost_${BOOST_VER}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2"
 #SRC_URI += "file://unit_test_log10f.patch;patch=1"
 SRC_URI += "file://linux-uclibc.patch;patch=1"
+SRC_URI += "file://atomic_count_gcc_atomicity.patch;patch=1"
 
 S = "${WORKDIR}/${BOOST_P}"
 

@@ -6,7 +6,7 @@ require gnash.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-DEPENDS = "libxml2 libmad zlib boost jpeg pango curl freetype"
+DEPENDS = "agg libxml2 libmad zlib boost jpeg pango curl freetype"
 
 S = ${WORKDIR}/gnash-${PV}
 
