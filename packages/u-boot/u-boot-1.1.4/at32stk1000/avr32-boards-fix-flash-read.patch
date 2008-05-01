@@ -1,0 +1,120 @@
+Index: u-boot-orig/board/atmel/ngw/flash.c
+===================================================================
+--- u-boot-orig.orig/board/atmel/ngw/flash.c	2007-01-03 11:31:44.000000000 +0100
++++ u-boot-orig/board/atmel/ngw/flash.c	2007-01-03 11:33:13.000000000 +0100
+@@ -161,7 +161,7 @@
+ {
+ 	unsigned long flags;
+ 	uint16_t *base, *p, *s, *end;
+-	uint16_t word, status;
++	uint16_t word, status,status1;
+ 	int ret = ERR_OK;
+ 
+ 	if (addr < info->start[0]
+@@ -196,20 +196,36 @@
+ 		sync_write_buffer();
+ 
+ 		/* Wait for completion */
+-		do {
++        status1 = readw(p);
++        do {
+ 			/* TODO: Timeout */
+-			status = readw(p);
+-		} while ((status != word) && !(status & 0x28));
+-
++            status = status1;
++            status1=readw(p);
++        } while ( ((status ^ status1) & 0x40) && // toggle bit has toggled
++                 !(status1 & 0x28) // status is "working"
++                );
++
++        // We'll need to check once again for toggle bit because the toggle bit
++        // may stop toggling as I/O5 changes to "1" (ref at49bv642.pdf p9)
++        status1=readw(p);
++        status=readw(p);
++        if ((status ^ status1) & 0x40)
++        {
++			printf("Flash write error at address 0x%p: 0x%02x != 0x%02x\n",
++			       p, status,word);
++            ret = ERR_PROG_ERROR;
++            writew(0xf0, base);
++            readw(base);
++            break;
++        }
++        // we can now verify status==word if we want to.
++
++        // is this Product ID Exit command really required??
++        // --If configuration is 00 (the default) the device is allready in read mode,
++        // and the instruction is not required!
+ 		writew(0xf0, base);
+ 		readw(base);
+ 
+-		if (status != word) {
+-			printf("Flash write error at address 0x%p: 0x%02x\n",
+-			       p, status);
+-			ret = ERR_PROG_ERROR;
+-			break;
+-		}
+ 	}
+ 
+ 	local_irq_restore(flags);
+Index: u-boot-orig/board/atstk1000/flash.c
+===================================================================
+--- u-boot-orig.orig/board/atstk1000/flash.c	2007-01-03 11:31:44.000000000 +0100
++++ u-boot-orig/board/atstk1000/flash.c	2007-01-03 11:33:13.000000000 +0100
+@@ -160,7 +160,7 @@
+ {
+ 	unsigned long flags;
+ 	uint16_t *base, *p, *s, *end;
+-	uint16_t word, status;
++	uint16_t word, status,status1;
+ 	int ret = ERR_OK;
+ 
+ 	if (addr < info->start[0]
+@@ -195,20 +195,36 @@
+ 		sync_write_buffer();
+ 
+ 		/* Wait for completion */
+-		do {
++        status1 = readw(p);
++        do {
+ 			/* TODO: Timeout */
+-			status = readw(p);
+-		} while ((status != word) && !(status & 0x28));
+-
++            status = status1;
++            status1=readw(p);
++        } while ( ((status ^ status1) & 0x40) && // toggle bit has toggled
++                 !(status1 & 0x28) // status is "working"
++                );
++
++        // We'll need to check once again for toggle bit because the toggle bit
++        // may stop toggling as I/O5 changes to "1" (ref at49bv642.pdf p9)
++        status1=readw(p);
++        status=readw(p);
++        if ((status ^ status1) & 0x40)
++        {
++			printf("Flash write error at address 0x%p: 0x%02x != 0x%02x\n",
++			       p, status,word);
++            ret = ERR_PROG_ERROR;
++            writew(0xf0, base);
++            readw(base);
++            break;
++        }
++        // we can now verify status==word if we want to.
++
++        // is this Product ID Exit command really required??
++        // --If configuration is 00 (the default) the device is allready in read mode,
++        // and the instruction is not required!
+ 		writew(0xf0, base);
+ 		readw(base);
+ 
+-		if (status != word) {
+-			printf("Flash write error at address 0x%p: 0x%02x\n",
+-			       p, status);
+-			ret = ERR_PROG_ERROR;
+-			break;
+-		}
+ 	}
+ 
+ 	local_irq_restore(flags);

@@ -1,0 +1,61 @@
+diff -uprN u-boot-orig/lib_avr32/board.c u-boot/lib_avr32/board.c
+--- u-boot-orig/lib_avr32/board.c	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/lib_avr32/board.c	2007-01-05 13:29:34.000000000 +0100
+@@ -28,6 +28,7 @@
+ 
+ #include <asm/initcalls.h>
+ #include <asm/sections.h>
++#include <asm/page.h>
+ 
+ #ifndef CONFIG_IDENT_STRING
+ #define CONFIG_IDENT_STRING ""
+@@ -128,6 +129,10 @@ void start_u_boot (void)
+ {
+ 	DECLARE_GLOBAL_DATA_PTR;
+ 	gd_t gd_data;
++#if defined(CONFIG_VFD) || defined(CONFIG_LCD)
++	unsigned long size;
++	unsigned long addr;
++#endif
+ 
+ 	/* Initialize the global data pointer */
+ 	memset(&gd_data, 0, sizeof(gd_data));
+@@ -172,9 +177,38 @@ void start_u_boot (void)
+ 	if (!gd->bd->bi_boot_params)
+ 		puts("WARNING: Cannot allocate space for boot parameters\n");
+ 
++#if CONFIG_SPI
++	board_init_spi();
++#endif
++
++#ifdef CONFIG_VFD
++	/*
++	 * reserve memory for VFD display (always full pages)
++	 */
++	/* bss_end is defined in the board-specific linker script */
++	addr = CFG_LCD_BASE;
++	size = vfd_setmem(addr);
++	gd->fb_base = addr;
++#endif /* CONFIG_VFD */
++
++#ifdef CONFIG_LCD
++	/*
++	 * reserve memory for LCD display (always full pages)
++	 */
++	/* bss_end is defined in the board-specific linker script */
++	addr = CFG_LCD_BASE;
++	size = lcd_setmem(addr);
++	gd->fb_base = addr;
++#endif /* CONFIG_LCD */
++
+ 	/* initialize environment */
+ 	env_relocate();
+ 
++#ifdef CONFIG_VFD
++	/* must do this after the framebuffer is allocated */
++	drv_vfd_init();
++#endif /* CONFIG_VFD */
++
+ 	devices_init();
+ 	jumptable_init();
+ 	console_init_r();
