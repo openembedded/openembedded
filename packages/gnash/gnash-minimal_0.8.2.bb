@@ -1,14 +1,17 @@
-require gnash.inc
+DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 features"
+HOMEPAGE = "http://www.gnu.org/software/gnash"
+LICENSE = "GPL-2"
+DEPENDS = "agg libxml2 libmad zlib boost jpeg pango curl freetype"
+PR = "r2"
+
+SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2"
+S = ${WORKDIR}/gnash-${PV}
+
+inherit autotools pkgconfig
 
 # gnash-minimal is intended for running directly on a framebuffer device
 # for memory constrained devices, but does not accept all SWF files.
-# It is useful as a GUI frontend for dedicated SWF files.
-
-DEFAULT_PREFERENCE = "-1"
-
-DEPENDS = "agg libxml2 libmad zlib boost jpeg pango curl freetype"
-
-S = ${WORKDIR}/gnash-${PV}
+# As such, it is useful as a GUI frontend for dedicated SWF files.
 
 # JPEG support and libz cannot be disabled due to a bug in 0.8.2.
 # maintainer-mode is enabled to disable the testsuite.
@@ -33,3 +36,13 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --enable-maintainer-mode \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 "
+
+PACKAGES =+ " libgnashamf libgnashbackend libgnashbase libgnashserver "
+
+FILES_libltdl = "${libdir}/gnash/libltdl*.so"
+FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
+FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
+FILES_libgnashmedia = "${libdir}/gnash/libgnashmedia-${PV}.so"
+FILES_libgnashserver = "${libdir}/gnash/libgnashserver-${PV}.so"
+
+PARALLEL_MAKE = ""
