@@ -2,7 +2,7 @@ DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 featu
 HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
 DEPENDS = "agg libxml2 libmad zlib boost jpeg pango curl freetype"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2"
 S = ${WORKDIR}/gnash-${PV}
@@ -34,15 +34,16 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --disable-cygnal \
 		--disable-testsuite \
                 --enable-maintainer-mode \
+                --enable-fps-debug \
+                --enable-allstatic \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 "
 
-PACKAGES =+ " libgnashamf libgnashbackend libgnashbase libgnashserver "
+PACKAGES =+ " libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
 
-FILES_libltdl = "${libdir}/gnash/libltdl*.so"
+FILES_libltdl = "${libdir}/gnash/libltdl*.so*"
 FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
 FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
 FILES_libgnashmedia = "${libdir}/gnash/libgnashmedia-${PV}.so"
 FILES_libgnashserver = "${libdir}/gnash/libgnashserver-${PV}.so"
 
-PARALLEL_MAKE = ""
