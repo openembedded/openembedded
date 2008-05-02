@@ -1,0 +1,94 @@
+Index: cx3110x-0.8.1/src/sm_drv_spi_io.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_spi_io.c	2008-04-22 14:54:42.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_spi_io.c	2008-04-22 15:00:07.000000000 -0300
+@@ -240,18 +240,21 @@
+ 	omap_start_dma(spi_dma.dma_tx_ch);
+ 
+ 	/* We don't want to turn CS off before transfer is done */
+-	
++
++        while(!spi_dma.dma_rx_done) {
++                udelay(5);
++        }
++
+ 	while(!spi_dma.dma_tx_done) {
+ 		udelay(5);
+ 	}
+ 
++	spi_dma.dma_rx_done = 0;
+ 	spi_dma.dma_tx_done = 0;
+ 
+ 	/* UMAC may send us odd number of bytes long frames */
+ 	if (length % 2) {
+-		u16 last_word;
+-		
+-		last_word = *(uint16_t *)(buffer + length - 1);		
++		u16 last_word = *((uint8_t *)buffer + length - 1);
+ 		omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, last_word);
+ 	}
+ 
+@@ -264,7 +267,6 @@
+ int cx3110x_spi_read(struct net_device *dev, unsigned long address, unsigned char * buffer, unsigned int length)
+ {
+ 	int i;
+-	u16 * short_buffer = (u16 *) buffer;
+ 	unsigned int r_length = length >> 1;
+ 
+ 	DEBUG(DBG_SPI_IO, "omap_wlan_spi_read\n");
+@@ -274,8 +276,13 @@
+ 	omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, 
+ 				      (address << 8) | ADDR_READ_BIT_15);
+ 
+-	for (i = 0 ; i < r_length ; i++)
+-		omap_mcbsp_spi_master_recv_word_poll(OMAP_MCBSP2, (u32*)(short_buffer + i));
++        for (i = 0 ; i < r_length ; i++) {
++                u32 tmp;
++                omap_mcbsp_spi_master_recv_word_poll(OMAP_MCBSP2, &tmp);
++                /* Assume little endian byte order */
++                buffer[i * 2 + 0] = tmp & 0xFF;
++                buffer[i * 2 + 1] = (tmp >> 8) & 0xFF;
++        }
+ 
+ 	SPI_CS_OFF();
+ 	return 0;
+@@ -285,24 +292,22 @@
+ int cx3110x_spi_write(struct net_device *dev, unsigned long address, unsigned char * buffer, unsigned int length)
+ {
+ 	int i;
+-	u16 * short_buffer = (u16 *) buffer;
+ 	unsigned int w_length = length >> 1;
+ 
+-
+ 	DEBUG(DBG_SPI_IO, "omap_wlan_spi_write (%d bytes @ 0x%lx)\n", length, address << 8);
+ 
+ 	SPI_CS_ON();
+ 
+ 	omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, address << 8);
+ 	
+-	for (i = 0 ; i < w_length ; i++)
+-		omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, short_buffer[i]); 
++        for (i = 0 ; i < w_length ; i++) {
++                /* Assume little endian byte order */
++                omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, (u32)buffer[i * 2] | ((u32)buffer[i * 2 + 1] << 8));
++        }
+ 
+ 	/* UMAC may send us odd number of bytes long frames */
+ 	if (length % 2) {
+-		u16 last_word;
+-
+-		last_word = buffer[length - 1];
++                u16 last_word = buffer[length - 1];
+ 		omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, last_word); 
+ 	}
+ 
+@@ -366,6 +371,9 @@
+ 	while(rate_mhz/div >= max_mhz)
+ 		div++;
+ 		
++        printk("McBSP2: freq_limit=%dMHz, base_freq=%dMHz, divisor=%d (%d.%dMHz)\n",
++                max_mhz, rate_mhz, div, rate_mhz / div, (rate_mhz * 10 / div) % 10);
++
+ 	spi_dma.dma_tx_done = 0;
+ 	spi_dma.dma_rx_done = 0;
+ 	

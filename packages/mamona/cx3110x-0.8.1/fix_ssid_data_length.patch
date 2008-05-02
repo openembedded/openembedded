@@ -1,0 +1,13 @@
+Index: cx3110x-0.8.1/src/sm_drv_ioctl_umac.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_ioctl_umac.c	2008-04-28 15:59:37.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_ioctl_umac.c	2008-04-28 15:59:57.000000000 -0300
+@@ -171,7 +171,7 @@
+ 	/* The following entries will be displayed in the same order we give them */
+ 
+ 	/* The ESSID. */
+-	iwe.u.data.length = strlen(bss->ssid);
++	iwe.u.data.length = strlen(bss->ssid + 1);
+ 	iwe.u.data.flags = 1;
+ 	iwe.cmd = SIOCGIWESSID;
+ 	current_ev = iwe_stream_add_point(current_ev, end_buf,

@@ -1,0 +1,53 @@
+Index: cx3110x-0.8.1/src/sm_drv_spi_io.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_spi_io.c	2007-10-15 08:56:20.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_spi_io.c	2008-04-22 14:53:49.000000000 -0300
+@@ -91,7 +91,7 @@
+ 	int dma_tx_done;
+ 	int dma_rx_done;
+ 	
+-	uint16_t recv_buffer;
++	uint16_t *recv_buffer;
+ };
+ 
+ static struct omap_wlan_spi_dma spi_dma;
+@@ -142,7 +142,7 @@
+ 	omap_set_dma_src_params(spi_dma.dma_tx_ch,
+ 				OMAP_DMA_PORT_EMIFF,
+ 				OMAP_DMA_AMODE_CONSTANT,
+-				virt_to_phys(&spi_dma.recv_buffer),
++				virt_to_phys(spi_dma.recv_buffer),
+ 				0, 0);
+ 
+ 	/* Prepare for reading */
+@@ -208,7 +208,7 @@
+ 	omap_set_dma_dest_params(spi_dma.dma_rx_ch,
+ 				 OMAP_DMA_PORT_EMIFF,
+ 				 OMAP_DMA_AMODE_CONSTANT,
+-				 virt_to_phys(&spi_dma.recv_buffer),
++				 virt_to_phys(spi_dma.recv_buffer),
+ 				 0, 0);
+ 
+ 
+@@ -319,6 +319,12 @@
+ 	struct net_local * lp;
+ 	struct spi_hif_local_data * spi_lp;
+ 
++        spi_dma.recv_buffer = kmalloc(sizeof(*spi_dma.recv_buffer), GFP_ATOMIC);
++        if (!spi_dma.recv_buffer) {
++                printk("spi_dma.recv_buffer allocation failed\n");
++                return -1;
++        }
++
+ 	lp = dev->priv;
+ 	spi_lp = HIF_LP(lp);
+ 
+@@ -411,6 +417,8 @@
+ 	omap_free_gpio(wlan_config->irq_gpio);
+ 	omap_free_dma(spi_dma.dma_tx_ch);
+ 	omap_free_dma(spi_dma.dma_rx_ch);
++
++        kfree(spi_dma.recv_buffer);
+ }
+ 
+ 
