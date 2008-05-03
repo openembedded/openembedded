@@ -13,7 +13,7 @@
 +  ARGS="$ARGS -mouse tslib"
 +else
 +  if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
-+    ARGS="$ARGS -mouse /dev/input/mice"
++    ARGS="$ARGS -mouse mouse"
 +  fi
  fi
  

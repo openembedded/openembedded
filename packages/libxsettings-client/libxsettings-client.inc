@@ -9,7 +9,7 @@ GPE_TARBALL_SUFFIX = "bz2"
 inherit autotools pkgconfig gpe
 
 SRC_URI = "${GPE_MIRROR}/libxsettings-client-${PV}.tar.bz2 \
-        file://Makefile-am.patch;patch=1"
+"
 
 headers = "xsettings-client.h xsettings-common.h"
 do_stage () {
