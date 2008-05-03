@@ -1,15 +1,15 @@
 DESCRIPTION = "GSM 07.10 muxer userspace daemon"
-HOMEPAGE = "http://www.freesmartphone.org"
+HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/gsm0710muxd"
 AUTHOR = "M. Dietrich"
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib"
 RDEPENDS = "dbus dbus-glib"
 LICENSE = "GPL"
-PV = "0.9.1+svnr${SRCREV}"
-PR = "r1"
+PV = "0.9.1+gitr${SRCREV}"
+PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=gsm0710muxd"
-S = "${WORKDIR}/gsm0710muxd"
+SRC_URI = "${FREESMARTPHONE_GIT}/gsm0710muxd.git;protocol=git;branch=master"
+S = "${WORKDIR}/git"
 
 inherit autotools
 

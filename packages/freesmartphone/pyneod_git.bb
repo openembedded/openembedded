@@ -1,18 +1,19 @@
-DESCRIPTION = "FIC Neo Smartphone daemons implementing the freesmartphone.org dbus APIs"
+DESCRIPTION = "Zad - daemons"
+HOMEPAGE = "http://neo1973-germany.de/wiki/Zad"
 AUTHOR = "M. Dietrich"
 SECTION = "console/network"
 DEPENDS = "python"
 LICENSE = "GPL"
-PV = "0.0+svnr${SRCREV}"
-PR = "r3"
+PV = "0.0.0+gitr${SRCREV}"
+PR = "r0"
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "pyneod"
 INITSCRIPT_PARAMS = "defaults 40"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=pyneod"
-S = "${WORKDIR}/pyneod"
+SRC_URI = "${FREESMARTPHONE_GIT}/pyneo.git;protocol=git;branch=master"
+S = "${WORKDIR}/git/pyneod"
 
 export D := "${D}"
 export PREFIX = "${prefix}"

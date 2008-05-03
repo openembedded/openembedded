@@ -1,12 +1,13 @@
-DESCRIPTION = "FIC Neo Smartphone UI Environment"
+DESCRIPTION = "Zad - GUI"
+HOMEPAGE = "http://neo1973-germany.de/wiki/Zad"
 AUTHOR = "M. Dietrich"
 SECTION = "python/ui"
 LICENSE = "GPL"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0.0+gitr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=pyneog"
-S = "${WORKDIR}/pyneog"
+SRC_URI = "${FREESMARTPHONE_GIT}/pyneo.git;protocol=git;branch=master"
+S = "${WORKDIR}/git/pyneog"
 
 do_compile() {
 	:

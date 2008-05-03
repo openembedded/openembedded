@@ -1,10 +1,10 @@
 DESCRIPTION = "The Open Device Daemon Prototype in Python"
-HOMEPAGE = "http://www.freesmartphone.org"
+HOMEPAGE = "http://www.freesmartphone.org/mediawiki/index.php/Implementations/OpenDeviceDaemon"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPLv2"
-PV = "0.7.9+svnr${SRCREV}"
+PV = "0.7.9+gitr${SRCREV}"
 PR = "r0"
 
 inherit distutils update-rc.d
@@ -12,10 +12,10 @@ inherit distutils update-rc.d
 INITSCRIPT_NAME = "odeviced"
 INITSCRIPT_PARAMS = "defaults 20"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=py-odeviced \
+SRC_URI = "${FREESMARTPHONE_GIT}/python-odeviced.git;protocol=git;branch=master \
            file://odeviced \
            file://odeviced.conf"
-S = "${WORKDIR}/py-odeviced"
+S = "${WORKDIR}/git"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
