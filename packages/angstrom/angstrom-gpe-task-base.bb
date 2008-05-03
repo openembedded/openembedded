@@ -1,11 +1,12 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r34"
+PR = "r35"
 
 inherit task
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 RDEPENDS_${PN} = "\
+    gpe-scap \
     matchbox \
     matchbox-panel-hacks \
     matchbox-applet-startup-monitor \
