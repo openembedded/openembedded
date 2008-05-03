@@ -6,11 +6,11 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPLv2"
 SRCNAME = "pyrtc"
 DEPENDS = "python-cython-native"
-PV = "1.0.0+svnr${SRCREV}"
+PV = "1.0.0+gitr${SRCREV}"
 PR = "ml0"
 
-SRC_URI = "svn://projects.linuxtogo.org/svn/smartphones/trunk/software;module=${SRCNAME}"
-S = "${WORKDIR}/${SRCNAME}"
+SRC_URI = "git://git.freesmartphone.org/python-helpers.git;protocol=git;branch=master"
+S = "${WORKDIR}/git/${SRCNAME}"
 
 inherit distutils
 
