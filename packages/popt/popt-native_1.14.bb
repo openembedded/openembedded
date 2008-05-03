@@ -6,7 +6,7 @@ PR = "r0"
 
 inherit native autotools
 
-SRC_URI = "http://freshmeat.net/redir/popt/72854/url_bz2/popt-${PV}.tar.gz"
+SRC_URI = "http://rpm5.org/files/popt/popt-${PV}.tar.gz"
 
 S = "${WORKDIR}/popt-${PV}"
 
