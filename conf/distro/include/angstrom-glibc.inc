@@ -19,7 +19,7 @@ TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm'
 
 #mess with compiler flags to use -Os instead of -O2
 #Please see http://free-electrons.com/doc/embedded_linux_optimizations/img47.html for some more info
-# perl has some problems, see http://bugs.openembedded.org/show_bug.cgi?id=1616
+# perl has some problems, see http://bugs.openembedded.net/show_bug.cgi?id=1616
 # [23:00] oxo: glibc (any version) on sparc does not like (repeat me) "-Os"
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -frename-registers -fomit-frame-pointer -Os"
