@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "BSD"
 #PR = "-r1"
 
-SRC_URI = "http://www.bitchx.org/files/source/ircii-pana-${PV}-final.tar.gz \
+SRC_URI = "http://bitchx.sourceforge.net/ircii-pana-${PV}-final.tar.gz \
 	   file://gcc34.patch;patch=1"
 S = "${WORKDIR}/BitchX"
 

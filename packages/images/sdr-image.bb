@@ -2,11 +2,10 @@
 # An image with tools for software defined radio and unicorn radio
 
 # TODO: 
-# http://poh9.blogspot.com/2008/02/for-my-own-future-reference-how-to.html
 # X demo
 # xorg.conf
 
-PR = "r2"
+PR = "r3"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
@@ -15,9 +14,10 @@ IMAGE_FSTYPES += "tar.bz2"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
+XSERVER ?= "xserver-kdrive-fbdev"
 
 # Install "big" X if the target has a screen
-GUIPACKAGES = " \
+GUIPACKAGES_BIGX = " \
         xf86-input-evdev \
         xf86-input-mouse \
         xf86-video-dummy \
@@ -26,10 +26,18 @@ GUIPACKAGES = " \
         xf86-video-vesa \
 "
 
+GUIPACKAGES = " \
+	${XSERVER} \
+	angstrom-x11-base-depends \
+	angstrom-gpe-task-base \
+	angstrom-gpe-task-settings \
+	xterm e-wm \
+"
+
 IMAGE_INSTALL = " task-base-extended \
 	kernel-modules \
 	gnuradio gnuradio-usrp \
-	gnuplot \
+	screen procps \
 	${@base_contains("MACHINE_FEATURES", "screen", "${GUIPACKAGES}", "",d)} \
 	python-core perl \
 	uucp picocom \

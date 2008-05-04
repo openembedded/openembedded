@@ -8,7 +8,7 @@ PR = "r1"
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2"
 
 # lazy hack. needs proper fixing in gettext.m4, see
-# http://bugs.openembedded.org/show_bug.cgi?id=2348
+# http://bugs.openembedded.net/show_bug.cgi?id=2348
 # please close bug and remove this comment when properly fixed
 #
 EXTRA_OECONF_linux-uclibc = "--disable-nls"

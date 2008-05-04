@@ -14,6 +14,8 @@
 SRCREV_pn-aircrack-ng ?= "802"
 SRCREV_pn-assassin ?= "41"
 SRCREV_pn-bfin-uclibc ?= "1857"
+SRCREV_pn-uclibc ?= "21926"
+SRCREV_pn-uclibc-initial ?= "21926"
 SRCREV_pn-contact ?= "1410"
 SRCREV_pn-dbus-c++-native ?= "13131"
 SRCREV_pn-dbus-c++ ?= "13131"
