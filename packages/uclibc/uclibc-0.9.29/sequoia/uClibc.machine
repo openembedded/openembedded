@@ -1,10 +1,9 @@
 #
 # Automatically generated make config: don't edit
-# Thu May  1 16:06:57 2008
+# Sun May 13 11:25:50 2007
 #
 # TARGET_alpha is not set
 # TARGET_arm is not set
-TARGET_avr32=y
 # TARGET_bfin is not set
 # TARGET_cris is not set
 # TARGET_e1 is not set
@@ -19,7 +18,7 @@ TARGET_avr32=y
 # TARGET_mips is not set
 # TARGET_nios is not set
 # TARGET_nios2 is not set
-# TARGET_powerpc is not set
+TARGET_powerpc=y
 # TARGET_sh is not set
 # TARGET_sh64 is not set
 # TARGET_sparc is not set
@@ -30,11 +29,11 @@ TARGET_avr32=y
 #
 # Target Architecture Features and Options
 #
-TARGET_ARCH="avr32"
+TARGET_ARCH="powerpc"
 FORCE_OPTIONS_FOR_ARCH=y
-CONFIG_AVR32_AP7=y
-LINKRELAX=y
-TARGET_SUBARCH=""
+CONFIG_CLASSIC=y
+# CONFIG_E500 is not set
+TARGET_SUBARCH="classic"
 
 #
 # Using ELF file format
@@ -47,8 +46,8 @@ ARCH_BIG_ENDIAN=y
 ARCH_HAS_MMU=y
 ARCH_USE_MMU=y
 UCLIBC_HAS_FLOATS=y
-# UCLIBC_HAS_FPU is not set
-UCLIBC_HAS_SOFT_FLOAT=y
+UCLIBC_HAS_FPU=y
 DO_C99_MATH=y
-KERNEL_HEADERS="/home/stelios/proj/OE/tmp/uclibc/staging/avr32-angstrom-linux-uclibc/usr/include"
+KERNEL_HEADERS="/data/build/koen/OE/build/tmp/angstrom/cross/powerpc-angstrom-linux-uclibc/include"
 HAVE_DOT_CONFIG=y
+

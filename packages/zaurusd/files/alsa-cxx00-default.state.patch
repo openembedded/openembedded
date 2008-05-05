@@ -1,4 +1,4 @@
-http://bugs.openembedded.org/show_bug.cgi?id=2617
+http://bugs.openembedded.net/show_bug.cgi?id=2617
 - Fixes default ALSA state for SL-Cxx00.
   * Treble level reflects kernel fix alsa-wm8750-treble.patch (>2.6.24).
   * Increased Mic Levels and Boost.
