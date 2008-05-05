@@ -3,6 +3,8 @@ SECTION = "kernel/modules"
 LICENSE = "GPL"
 PR = "r0"
 
+PACKAGES = "cx3110x"
+
 COMPATIBLE_MACHINE = "(nokia770|nokia800)"
 
 SRC_URI = "https://garage.maemo.org/frs/download.php/2443/cx3110x-0.8.1.tar.gz \
