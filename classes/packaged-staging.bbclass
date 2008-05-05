@@ -41,6 +41,8 @@ PSTAGE_NATIVEDEPENDS = "\
     stagemanager-native \
     "
 
+BB_STAMP_WHITELIST = "${PSTAGE_NATIVEDEPENDS}"
+
 python () {
     import bb
     pstage_allowed = True
@@ -71,9 +73,9 @@ python () {
         deps += " stagemanager-native:do_populate_staging"
         bb.data.setVarFlag('do_populate_staging', 'depends', deps, d)
 
-        deps = bb.data.getVarFlag('do_prepackaged_stage', 'depends', d) or ""
+        deps = bb.data.getVarFlag('do_setscene', 'depends', d) or ""
         deps += " opkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
-        bb.data.setVarFlag('do_prepackaged_stage', 'depends', deps, d)
+        bb.data.setVarFlag('do_setscene', 'depends', deps, d)
         bb.data.setVar("PSTAGING_ACTIVE", "1", d)
     else:
         bb.data.setVar("PSTAGING_ACTIVE", "0", d)
@@ -90,17 +92,48 @@ PSTAGE_LIST_CMD		= "opkg-cl list_installed -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
 
 PSTAGE_TMPDIR_STAGE     = "${WORKDIR}/staging-pkg"
 
-do_clean_append() {
+def pstage_manualclean(srcname, destvarname, d):
+	import os, bb
+
+	src = os.path.join(bb.data.getVar('PSTAGE_TMPDIR_STAGE', d, True), srcname)
+	dest = bb.data.getVar(destvarname, d, True)
+
+	for walkroot, dirs, files in os.walk(src):
+		for file in files:
+			filepath = os.path.join(walkroot, file).replace(src, dest)
+			bb.note("rm %s" % filepath)
+			os.system("rm %s" % filepath)
+
+def pstage_cleanpackage(pkgname, d):
+	import os, bb
+
+        path = bb.data.getVar("PATH", d, 1)
+	list_cmd = bb.data.getVar("PSTAGE_LIST_CMD", d, True)
+
+	bb.note("Checking if staging package installed")
+	lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+	ret = os.system("PATH=\"%s\" %s | grep %s" % (path, list_cmd, pkgname))
+	if ret == 0:
+		bb.note("Yes. Uninstalling package from staging...")
+		removecmd = bb.data.getVar("PSTAGE_REMOVE_CMD", d, 1)
+		ret = os.system("PATH=\"%s\" %s %s" % (path, removecmd, pkgname))
+		if ret != 0:
+			bb.note("Failure removing staging package")
+	else:
+		bb.note("No. Manually removing any installed files")
+		pstage_manualclean("staging", "STAGING_DIR", d)
+		pstage_manualclean("cross", "CROSS_DIR", d)
+		pstage_manualclean("deploy", "DEPLOY_DIR", d)
+
+	bb.utils.unlockfile(lf)
+
+do_clean_prepend() {
         """
         Clear the build and temp directories
         """
-	bb.note("Uninstalling package from staging...")
-        path = bb.data.getVar("PATH", d, 1)
-	removecmd = bb.data.getVar("PSTAGE_REMOVE_CMD", d, 1)
+
 	removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
-        ret = os.system("PATH=\"%s\" %s %s" % (path, removecmd, removepkg))
-        if ret != 0:
-            bb.note("Failure removing staging package")
+	pstage_cleanpackage(removepkg, d)
 
         stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
         bb.note("Removing staging package %s" % stagepkg)
@@ -123,22 +156,16 @@ staging_helper () {
 
 PSTAGE_TASKS_COVERED = "fetch unpack munge patch configure qa_configure rig_locales compile sizecheck install deploy package populate_staging package_write_deb package_write_ipk package_write package_stage qa_staging"
 
-python do_prepackaged_stage () {
+SCENEFUNCS += "packagestage_scenefunc"
+
+python packagestage_scenefunc () {
     import os
 
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
-        bb.build.make_stamp("do_prepackaged_stage", d)
         return
 
-    bb.note("Uninstalling any existing package from staging...")
-    path = bb.data.getVar("PATH", d, 1)
-    removecmd = bb.data.getVar("PSTAGE_REMOVE_CMD", d, 1)
     removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
-    lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
-    ret = os.system("PATH=\"%s\" %s %s" % (path, removecmd, removepkg))
-    bb.utils.unlockfile(lf)
-    if ret != 0:
-        bb.note("Failure attempting to remove staging package")
+    pstage_cleanpackage(removepkg, d)
 
     stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
 
@@ -156,17 +183,11 @@ python do_prepackaged_stage () {
         if ret != 0:
             bb.note("Failure installing prestage package")
 
-        #bb.build.make_stamp("do_prepackaged_stage", d)
-        #for task in bb.data.getVar("PSTAGE_TASKS_COVERED", d, 1).split():
-        #    bb.build.make_stamp("do_" + task, d)
         bb.build.make_stamp("do_stage_package_populated", d)
 
-    else:
-        bb.build.make_stamp("do_prepackaged_stage", d)
 }
-do_prepackaged_stage[cleandirs] = "${PSTAGE_TMPDIR_STAGE}"
-do_prepackaged_stage[selfstamp] = "1"
-addtask prepackaged_stage before do_fetch
+packagestage_scenefunc[cleandirs] = "${PSTAGE_TMPDIR_STAGE}"
+packagestage_scenefunc[dirs] = "${STAGING_DIR}"
 
 addhandler packagedstage_stampfixing_eventhandler
 python packagedstage_stampfixing_eventhandler() {
@@ -201,7 +222,7 @@ populate_staging_preamble () {
 populate_staging_postamble () {
 	if [ "$PSTAGING_ACTIVE" = "1" ]; then
 		# list the packages currently installed in staging
-		${PSTAGE_LIST_CMD} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-list         
+		# ${PSTAGE_LIST_CMD} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-list         
 
 		set +e
 		stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/stamp-cache-staging -u -d ${PSTAGE_TMPDIR_STAGE}/staging
@@ -246,7 +267,14 @@ staging_packager () {
 }
 
 staging_package_installer () {
-	${PSTAGE_INSTALL_CMD} ${PSTAGE_PKG}
+	#${PSTAGE_INSTALL_CMD} ${PSTAGE_PKG}
+
+	STATUSFILE=${TMPDIR}${layout_libdir}/opkg/status
+	echo "Package: ${PSTAGE_PKGPN}"        >> $STATUSFILE
+	echo "Version: ${PSTAGE_PKGVERSION}"   >> $STATUSFILE
+	echo "Status: install user installed"  >> $STATUSFILE
+	echo "Architecture: ${PSTAGE_PKGARCH}" >> $STATUSFILE
+	echo "" >> $STATUSFILE
 }
 
 python do_package_stage () {
@@ -281,11 +309,10 @@ python do_package_stage () {
             if bb.data.inherits_class('package_ipk', d):
                 srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_" + arch + ".ipk", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_IPK}/" + arch + "/" + srcname, d)
-                if not os.path.exists(srcfile):
-                    bb.fatal("Package %s does not exist yet it should" % srcfile)
-                destpath = ipkpath + "/" + arch + "/"
-                bb.mkdirhier(destpath)
-                bb.copyfile(srcfile, destpath + srcname)
+                if os.path.exists(srcfile):
+                    destpath = ipkpath + "/" + arch + "/"
+                    bb.mkdirhier(destpath)
+                    bb.copyfile(srcfile, destpath + srcname)
 
             if bb.data.inherits_class('package_deb', d):
                 if arch == 'all':
@@ -293,11 +320,10 @@ python do_package_stage () {
                 else:	
                     srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_${DPKG_ARCH}.deb", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_DEB}/" + arch + "/" + srcname, d)
-                if not os.path.exists(srcfile):
-                    bb.fatal("Package %s does not exist yet it should" % srcfile)
-                destpath = debpath + "/" + arch + "/" 
-                bb.mkdirhier(destpath)
-                bb.copyfile(srcfile, destpath + srcname)
+                if os.path.exists(srcfile):
+                    destpath = debpath + "/" + arch + "/" 
+                    bb.mkdirhier(destpath)
+                    bb.copyfile(srcfile, destpath + srcname)
 
     #
     # Handle stamps/ files
@@ -307,7 +333,7 @@ python do_package_stage () {
     bb.mkdirhier(destdir)
     # We need to include the package_stage stamp in the staging package so create one
     bb.build.make_stamp("do_package_stage", d)
-    os.system("cp %s.do_* %s/" % (stampfn, destdir))
+    os.system("cp -dpR %s.do_* %s/" % (stampfn, destdir))
 
     bb.build.exec_func("staging_helper", d)
     bb.build.exec_func("staging_packager", d)
@@ -320,3 +346,13 @@ python do_package_stage () {
 # Note an assumption here is that do_deploy runs before do_package_write/do_populate_staging
 #
 addtask package_stage after do_package_write do_populate_staging before do_build
+
+do_package_stage_all () {
+	:
+}
+do_package_stage_all[recrdeptask] = "do_package_stage"
+addtask package_stage_all after do_package_stage before do_build
+
+
+
+
