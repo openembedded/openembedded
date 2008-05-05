@@ -160,9 +160,9 @@ DEPENDS_prepend="${@base_dep_prepend(d)} "
 def base_set_filespath(path, d):
 	import os, bb
 	filespath = []
+	# The ":" ensures we have an 'empty' override
+	overrides = (bb.data.getVar("OVERRIDES", d, 1) or "") + ":"
 	for p in path:
-		overrides = bb.data.getVar("OVERRIDES", d, 1) or ""
-		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
 	return ":".join(filespath)
@@ -325,7 +325,7 @@ oe_libinstall() {
 			__runcmd rm -f $destpath/$libname.la
 			__runcmd sed -e 's/^installed=yes$/installed=no/' \
 				     -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
-				     -e "/^dependency_libs=/s,\([[:space:]']+\)${libdir},\1${STAGING_LIBDIR},g" \
+				     -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
 				     $dotlai >$destpath/$libname.la
 		else
 			__runcmd install -m 0644 $dotlai $destpath/$libname.la
@@ -848,7 +848,7 @@ def has_subpkgdata(pkg, d):
 	return os.access(get_subpkgedata_fn(pkg, d), os.R_OK)
 
 def read_subpkgdata(pkg, d):
-	import bb, os
+	import bb
 	return read_pkgdatafile(get_subpkgedata_fn(pkg, d))
 
 def has_pkgdata(pn, d):
@@ -857,7 +857,7 @@ def has_pkgdata(pn, d):
 	return os.access(fn, os.R_OK)
 
 def read_pkgdata(pn, d):
-	import bb, os
+	import bb
 	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
 	return read_pkgdatafile(fn)
 
