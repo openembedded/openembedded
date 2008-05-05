@@ -473,6 +473,24 @@ python base_do_mrproper() {
 	bb.build.exec_func('do_clean', d)
 }
 
+SCENEFUNCS += "base_scenefunction"
+											
+python base_do_setscene () {
+        for f in (bb.data.getVar('SCENEFUNCS', d, 1) or '').split():
+                bb.build.exec_func(f, d)
+	if not os.path.exists(bb.data.getVar('STAMP', d, 1) + ".do_setscene"):
+		bb.build.make_stamp("do_setscene", d)
+}
+do_setscene[selfstamp] = "1"
+addtask setscene before do_fetch
+
+python base_scenefunction () {
+	stamp = bb.data.getVar('STAMP', d, 1) + ".needclean"
+	if os.path.exists(stamp):
+	        bb.build.exec_func("do_clean", d)
+}
+
+
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
 do_fetch[depends] = "shasum-native:do_populate_staging"
@@ -701,6 +719,7 @@ python base_eventhandler() {
 				dir = "%s.*" % e.stampPrefix[fn]
 				bb.note("Removing stamps: " + dir)
 				os.system('rm -f '+ dir)
+				os.system('touch ' + e.stampPrefix[fn] + '.needclean')
 
 	if not data in e.__dict__:
 		return NotHandled
@@ -978,7 +997,7 @@ inherit patch
 # Move to autotools.bbclass?
 inherit siteinfo
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
+EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {
