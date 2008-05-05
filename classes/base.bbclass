@@ -160,9 +160,9 @@ DEPENDS_prepend="${@base_dep_prepend(d)} "
 def base_set_filespath(path, d):
 	import os, bb
 	filespath = []
+	# The ":" ensures we have an 'empty' override
+	overrides = (bb.data.getVar("OVERRIDES", d, 1) or "") + ":"
 	for p in path:
-		overrides = bb.data.getVar("OVERRIDES", d, 1) or ""
-		overrides = overrides + ":"
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
 	return ":".join(filespath)
@@ -325,7 +325,7 @@ oe_libinstall() {
 			__runcmd rm -f $destpath/$libname.la
 			__runcmd sed -e 's/^installed=yes$/installed=no/' \
 				     -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
-				     -e "/^dependency_libs=/s,\([[:space:]']+\)${libdir},\1${STAGING_LIBDIR},g" \
+				     -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
 				     $dotlai >$destpath/$libname.la
 		else
 			__runcmd install -m 0644 $dotlai $destpath/$libname.la
@@ -473,6 +473,24 @@ python base_do_mrproper() {
 	bb.build.exec_func('do_clean', d)
 }
 
+SCENEFUNCS += "base_scenefunction"
+											
+python base_do_setscene () {
+        for f in (bb.data.getVar('SCENEFUNCS', d, 1) or '').split():
+                bb.build.exec_func(f, d)
+	if not os.path.exists(bb.data.getVar('STAMP', d, 1) + ".do_setscene"):
+		bb.build.make_stamp("do_setscene", d)
+}
+do_setscene[selfstamp] = "1"
+addtask setscene before do_fetch
+
+python base_scenefunction () {
+	stamp = bb.data.getVar('STAMP', d, 1) + ".needclean"
+	if os.path.exists(stamp):
+	        bb.build.exec_func("do_clean", d)
+}
+
+
 addtask fetch
 do_fetch[dirs] = "${DL_DIR}"
 do_fetch[depends] = "shasum-native:do_populate_staging"
@@ -540,6 +558,45 @@ python base_do_fetch() {
 addtask fetchall after do_fetch
 do_fetchall[recrdeptask] = "do_fetch"
 base_do_fetchall() {
+	:
+}
+
+addtask checkuri
+do_checkuri[nostamp] = "1"
+python do_checkuri() {
+	import sys
+
+	localdata = bb.data.createCopy(d)
+	bb.data.update_data(localdata)
+
+	src_uri = bb.data.getVar('SRC_URI', localdata, 1)
+
+	try:
+		bb.fetch.init(src_uri.split(),d)
+	except bb.fetch.NoMethodError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("No method: %s" % value)
+
+	try:
+		bb.fetch.checkstatus(localdata)
+	except bb.fetch.MissingParameterError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Missing parameters: %s" % value)
+	except bb.fetch.FetchError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Fetch failed: %s" % value)
+	except bb.fetch.MD5SumError:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("MD5  failed: %s" % value)
+	except:
+		(type, value, traceback) = sys.exc_info()
+		raise bb.build.FuncFailed("Unknown fetch Error: %s" % value)
+}
+
+addtask checkuriall after do_checkuri
+do_checkuriall[recrdeptask] = "do_checkuri"
+do_checkuriall[nostamp] = "1"
+base_do_checkuriall() {
 	:
 }
 
@@ -701,6 +758,7 @@ python base_eventhandler() {
 				dir = "%s.*" % e.stampPrefix[fn]
 				bb.note("Removing stamps: " + dir)
 				os.system('rm -f '+ dir)
+				os.system('touch ' + e.stampPrefix[fn] + '.needclean')
 
 	if not data in e.__dict__:
 		return NotHandled
@@ -829,7 +887,7 @@ def has_subpkgdata(pkg, d):
 	return os.access(get_subpkgedata_fn(pkg, d), os.R_OK)
 
 def read_subpkgdata(pkg, d):
-	import bb, os
+	import bb
 	return read_pkgdatafile(get_subpkgedata_fn(pkg, d))
 
 def has_pkgdata(pn, d):
@@ -838,7 +896,7 @@ def has_pkgdata(pn, d):
 	return os.access(fn, os.R_OK)
 
 def read_pkgdata(pn, d):
-	import bb, os
+	import bb
 	fn = bb.data.expand('${PKGDATA_DIR}/%s' % pn, d)
 	return read_pkgdatafile(fn)
 
@@ -978,7 +1036,7 @@ inherit patch
 # Move to autotools.bbclass?
 inherit siteinfo
 
-EXPORT_FUNCTIONS do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
+EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {

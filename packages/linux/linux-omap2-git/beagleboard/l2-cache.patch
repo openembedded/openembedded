@@ -1,0 +1,38 @@
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 15066c2..70f85c1 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -665,6 +665,12 @@ config CPU_CACHE_ROUND_ROBIN
+ 	  Say Y here to use the predictable round-robin cache replacement
+ 	  policy.  Unless you specifically require this or are unsure, say N.
+ 
++config CPU_L2CACHE_DISABLE
++	bool "Disable level 2 cache"
++	depends on CPU_V7
++	help
++	  Say Y here to disable the level 2 cache.  If unsure, say N.
++
+ config CPU_BPREDICT_DISABLE
+ 	bool "Disable branch prediction"
+ 	depends on CPU_ARM1020 || CPU_V6 || CPU_XSC3 || CPU_V7
+diff --git a/arch/arm/mm/proc-v7.S b/arch/arm/mm/proc-v7.S
+index a1d7331..432ddab 100644
+--- a/arch/arm/mm/proc-v7.S
++++ b/arch/arm/mm/proc-v7.S
+@@ -181,6 +181,16 @@ __v7_setup:
+ 	mcr	p15, 0, r4, c2, c0, 1		@ load TTB1
+ 	mov	r10, #0x1f			@ domains 0, 1 = manager
+ 	mcr	p15, 0, r10, c3, c0, 0		@ load domain access register
++#ifndef CONFIG_CPU_L2CACHE_DISABLE
++	@ L2 cache configuration in the L2 aux control register
++	mrc	p15, 1, r10, c9, c0, 2
++	bic	r10, r10, #(1 << 16)		@ L2 outer cache
++	mcr	p15, 1, r10, c9, c0, 2
++	@ L2 cache is enabled in the aux control register
++	mrc	p15, 0, r10, c1, c0, 1
++	orr	r10, r10, #2
++	mcr	p15, 0, r10, c1, c0, 1
++#endif
+ #endif
+ 	adr	r5, v7_crval
+ 	ldmia	r5, {r5, r6}

@@ -1,7 +1,57 @@
-Index: xserver-common-1.22/X11/default.xmodmap
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xserver-common-1.22/X11/default.xmodmap	2008-04-18 14:01:52.000000000 +0100
+diff -Nurd xserver-common-1.22.old/X11/Xinit.d/12keymap xserver-common-1.22/X11/Xinit.d/12keymap
+--- xserver-common-1.22.old/X11/Xinit.d/12keymap	2008-02-07 16:53:16.000000000 +0100
++++ xserver-common-1.22/X11/Xinit.d/12keymap	2008-05-04 17:30:48.278316443 +0200
+@@ -2,6 +2,9 @@
+ 
+ MACHINE=`awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo`
+ 
++# since kdrive 1.4 there is no default keymap in server
++xmodmap - </etc/X11/default.xmodmap
++
+ case $MACHINE in
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		xmodmap - < /etc/X11/shepherd.xmodmap
+diff -Nurd xserver-common-1.22.old/X11/Xserver xserver-common-1.22/X11/Xserver
+--- xserver-common-1.22.old/X11/Xserver	2008-03-04 17:41:41.000000000 +0100
++++ xserver-common-1.22/X11/Xserver	2008-05-04 17:31:04.388313190 +0200
+@@ -53,10 +53,14 @@
+   ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
+ fi
+ 
+-# use usb mouse if present
++# kdrive 1.4 onwards needs -mouse args
+ # Xorg doesn't support "-mouse" option, and uses /dev/input/mice automatically
+-if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ]; then
+-  ARGS="$ARGS -mouse /dev/input/mice"
++if [ -e "$TSLIB_TSDEVICE" ] ; then
++  ARGS="$ARGS -mouse tslib"
++else
++  if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
++    ARGS="$ARGS -mouse mouse"
++  fi
+ fi
+ 
+ # start off server in conventional location.
+@@ -103,8 +107,7 @@
+ 	"Nokia RX-44")
+ 		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
+ 	"GTA01" )
+-	#we set 100 dpi for the time being, should the -dpi 285
+-		ARGS="$ARGS -dpi 100 -screen 480x640" ;;
++		ARGS="$ARGS -dpi 285 -screen 480x640" ;;
+ 	"Motorola Ezx Platform")
+ 		ARGS="$ARGS -dpi 170 -screen 240x320" ;;
+ 	"ARM-IntegratorCP" | "ARM-Versatile PB")
+@@ -130,4 +133,6 @@
+ 		fi
+ esac
+ 
++echo "tslib: $TSLIB_TSDEVICE"
++echo "exec $XSERVER $ARGS $*"
+ exec $XSERVER $ARGS $*
+diff -Nurd xserver-common-1.22.old/X11/default.xmodmap xserver-common-1.22/X11/default.xmodmap
+--- xserver-common-1.22.old/X11/default.xmodmap	1970-01-01 01:00:00.000000000 +0100
++++ xserver-common-1.22/X11/default.xmodmap	2008-05-04 17:30:48.278316443 +0200
 @@ -0,0 +1,260 @@
 +keycode   8 =
 +keycode   9 = Escape
@@ -263,43 +313,3 @@ Index: xserver-common-1.22/X11/default.xmodmap
 +add mod4 = Mode_switch
 +!mod5      
 +
-Index: xserver-common-1.22/X11/Xinit.d/12keymap
-===================================================================
---- xserver-common-1.22.orig/X11/Xinit.d/12keymap	2008-02-07 15:53:16.000000000 +0000
-+++ xserver-common-1.22/X11/Xinit.d/12keymap	2008-04-18 13:55:33.000000000 +0100
-@@ -2,6 +2,9 @@
- 
- MACHINE=`awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo`
- 
-+# since kdrive 1.4 there is no default keymap in server
-+xmodmap - </etc/X11/default.xmodmap
-+
- case $MACHINE in
- 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
- 		xmodmap - < /etc/X11/shepherd.xmodmap
-Index: xserver-common-1.22/X11/Xserver
-===================================================================
---- xserver-common-1.22.orig/X11/Xserver	2008-03-04 16:41:41.000000000 +0000
-+++ xserver-common-1.22/X11/Xserver	2008-04-18 13:55:33.000000000 +0100
-@@ -59,6 +59,11 @@
-   ARGS="$ARGS -mouse /dev/input/mice"
- fi
- 
-+# kdrive 1.4 onwards needs -mouse args
-+if [ -n "$TSLIB_TSDEVICE" ]; then
-+  ARGS="$ARGS -mouse tslib"
-+fi
-+
- # start off server in conventional location.
- case `module_id` in
- 	"HP iPAQ H3100" | "HP iPAQ H3800")
-@@ -103,8 +108,7 @@
- 	"Nokia RX-44")
- 		ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" ;;
- 	"GTA01" )
--	#we set 100 dpi for the time being, should the -dpi 285
--		ARGS="$ARGS -dpi 100 -screen 480x640" ;;
-+		ARGS="$ARGS -dpi 285 -screen 480x640" ;;
- 	"Motorola Ezx Platform")
- 		ARGS="$ARGS -dpi 170 -screen 240x320" ;;
- 	"ARM-IntegratorCP" | "ARM-Versatile PB")

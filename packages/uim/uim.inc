@@ -15,4 +15,5 @@ EXTRA_OECONF += "--disable-applet \
 
 SRC_URI = "http://uim.freedesktop.org/releases/uim/stable/uim-${PV}.tar.bz2"
 
-FILES_${PN}-dbg += "${libdir}/*/*/immodules/.debug ${libdir}/uim/plugin"
+FILES_${PN}-dbg += "${libdir}/*/*/*/.debug ${libdir}/*/*/.debug"
+FILES_${PN}-dev += "${libdir}/uim/plugin/*.la"

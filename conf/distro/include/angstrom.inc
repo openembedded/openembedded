@@ -76,8 +76,11 @@ ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
+TARGET_FPU_ppc405 ?= "soft"
 
-TARGET_FPU_dht-walnut ?= "soft"
+TARGET_FPU_armv6 ?= "hard"
+TARGET_FPU_armv7a ?= "hard"
+TARGET_FPU_ppc603e ?= "hard"
 
 #Set the right arch for the feeds
 #Alphabetically sorted
@@ -284,11 +287,11 @@ TINDER_REPORT     = "1"
 # in their local.conf
 
 # seppuku bbclass
-SEPPUKU_LOGIN        = "http://bugs.openembedded.org/query.cgi?"
-SEPPUKU_QUERY        = "http://bugs.openembedded.org/buglist.cgi?"
-SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%20unstable&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
-SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.org/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
-SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.org/attachment.cgi?"
+SEPPUKU_LOGIN        = "http://bugs.openembedded.net/query.cgi?"
+SEPPUKU_QUERY        = "http://bugs.openembedded.net/buglist.cgi?"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.net/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%20unstable&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_ADDCOMMENT   = "http://bugs.openembedded.net/process_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.net/attachment.cgi?"
 SEPPUKU_AUTOBUILD    = "1"
 
 SEPPUKU_PRODUCT      = "Openembedded"

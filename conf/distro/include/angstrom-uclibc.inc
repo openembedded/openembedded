@@ -3,6 +3,12 @@
 PREFERRED_PROVIDER_virtual/libc = "uclibc"
 PREFERRED_PROVIDER_virtual/libiconv ?= "libiconv"
 PREFERRED_PROVIDER_virtual/libintl ?= "gettext"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "uclibc"
+PREFERRED_PROVIDER_virtual/arm-angstrom-linux-uclibcgnueabi-libc-for-gcc    = "uclibc-initial"
+PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-uclibcgnueabi-libc-for-gcc  = "uclibc-initial"
+
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
+PREFERRED_PROVIDER_linux-libc-headers = "linux-libc-headers"
 
 USE_NLS ?= "no"
 USE_NLS_glib-2.0 = "yes"
