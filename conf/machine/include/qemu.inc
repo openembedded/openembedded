@@ -2,7 +2,7 @@ PCMCIA_MANAGER = "pcmciautils"
 PREFERRED_PROVIDER_xserver = "xserver-kdrive"
 GUI_MACHINE_CLASS = "bigscreen"
 
-MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget screen"
+MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget screen keyboard"
 
 IMAGE_FSTYPES ?= "tar.bz2 ext2"
 

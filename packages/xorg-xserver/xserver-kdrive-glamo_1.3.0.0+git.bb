@@ -9,9 +9,9 @@ DEPENDS += "libxkbfile libxcalibrate"
 RDEPENDS_${PN} = "xserver-kdrive"
 PROVIDES = "virtual/xserver"
 PE = "1"
-PR = "r1"
+PR = "r5"
 
-XGLAMO_GIT_REV = "0d2605edeb50a4b118ac00ae1f00abd085477323"
+XGLAMO_GIT_REV = "a51364e2f23d4b6331c5ed613ce3f7e15f8e540f"
 
 SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;rev=${XGLAMO_GIT_REV} \
         file://kmode.patch;patch=1 \
@@ -35,6 +35,7 @@ SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;rev=${XGLAMO_
         file://w100-fix-offscreen-bmp.patch;patch=1 \
         file://kdrive-1.3-18bpp.patch;patch=1 \
         file://gumstix-kmode.patch;patch=1 \
+        file://fix-picturestr-include-order.patch;patch=1 \
 "
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-1.3.0.0:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"

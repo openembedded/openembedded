@@ -9,6 +9,7 @@ do_stage_append() {
 
     cd ${STAGING_LIBDIR}
     sed -i s#"-L${S}/lib"##g libQt*.la
+    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g libQt*.la
 }
 
 STAGE_TEMP = "${WORKDIR}/temp-staging"

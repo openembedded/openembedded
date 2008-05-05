@@ -2,7 +2,7 @@
 DAEMON=/usr/sbin/hostapd
 NAME=hostapd
 DESC="HOSTAP Daemon"
-ARGS="/etc/hostapd.conf"
+ARGS="/etc/hostapd.conf -B"
 
 test -f $DAEMON || exit 0
 
@@ -10,25 +10,23 @@ set -e
 
 case "$1" in
     start)
-        echo -n "starting $DESC: $NAME... "
-	start-stop-daemon -S -b -n $NAME -a $DAEMON -- $ARGS
-	echo "done."
+	echo -n "Starting $DESC: "
+	start-stop-daemon -S -x $DAEMON -- $ARGS
+	echo "$NAME."
 	;;
     stop)
-        echo -n "stopping $DESC: $NAME... "
-	start-stop-daemon -K -n $NAME
-	echo "done."
+	echo -n "Stopping $DESC: "
+	start-stop-daemon -K -x $DAEMON
+	echo "$NAME."
 	;;
     restart)
-        echo "restarting $DESC: $NAME... "
- 	$0 stop
+	$0 stop
 	$0 start
-	echo "done."
 	;;
     reload)
-    	echo -n "reloading $DESC: $NAME... "
-    	killall -HUP $(basename ${DAEMON})
-	echo "done."
+	echo -n "Reloading $DESC: "
+	killall -HUP $(basename ${DAEMON})
+	echo "$NAME."
 	;;
     *)
 	echo "Usage: $0 {start|stop|restart|reload}"

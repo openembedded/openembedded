@@ -1,0 +1,755 @@
+diff -uprN u-boot-orig/include/atmel_lcdc.h u-boot/include/atmel_lcdc.h
+--- u-boot-orig/include/atmel_lcdc.h	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/include/atmel_lcdc.h	2006-12-21 16:26:10.000000000 +0100
+@@ -0,0 +1,269 @@
++/*
++ * Register definitions for Atmel/SIDSA LCD Controller
++ *
++ * Copyright (C) 2004-2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef __ATMEL_LCDC_H__
++#define __ATMEL_LCDC_H__
++
++#define LCDC_CONTRAST_CTR                       0x00000840
++# define LCDC_CONTRAST_CTR_ENA_OFFSET           3
++# define LCDC_CONTRAST_CTR_ENA_SIZE             1
++# define LCDC_CONTRAST_CTR_POL_OFFSET           2
++# define LCDC_CONTRAST_CTR_POL_SIZE             1
++# define LCDC_CONTRAST_CTR_PS_OFFSET            0
++# define LCDC_CONTRAST_CTR_PS_SIZE              2
++#define LCDC_CONTRAST_VAL                       0x00000844
++# define LCDC_CONTRAST_VAL_CVAL_OFFSET          0
++# define LCDC_CONTRAST_VAL_CVAL_SIZE            8
++#define LCDC_DMABADDR1                          0x00000000
++# define LCDC_DMABADDR1_BADDR_U_OFFSET          0
++# define LCDC_DMABADDR1_BADDR_U_SIZE            32
++#define LCDC_DMABADDR2                          0x00000004
++# define LCDC_DMABADDR2_BADDR_L_OFFSET          0
++# define LCDC_DMABADDR2_BADDR_L_SIZE            32
++#define LCDC_DMACON                             0x0000001C
++# define LCDC_DMACON_DMABUSY_OFFSET             2
++# define LCDC_DMACON_DMABUSY_SIZE               1
++# define LCDC_DMACON_DMAEN_OFFSET               0
++# define LCDC_DMACON_DMAEN_SIZE                 1
++# define LCDC_DMACON_DMARST_OFFSET              1
++# define LCDC_DMACON_DMARST_SIZE                1
++# define LCDC_DMACON_DMAUPDT_OFFSET             3
++# define LCDC_DMACON_DMAUPDT_SIZE               1
++# define LCDC_DMACON_DMA2DEN_OFFSET             4
++# define LCDC_DMACON_DMA2DEN_SIZE               1
++#define LCDC_DMAFRMADD1                         0x00000010
++# define LCDC_DMAFRMADD1_FRMADD_U_OFFSET        0
++# define LCDC_DMAFRMADD1_FRMADD_U_SIZE          32
++#define LCDC_DMAFRMADD2                         0x00000014
++# define LCDC_DMAFRMADD2_FRMADD_L_OFFSET        0
++# define LCDC_DMAFRMADD2_FRMADD_L_SIZE          32
++#define LCDC_DMAFRMCFG                          0x00000018
++# define LCDC_DMAFRMCFG_BRSTLEN_OFFSET          24
++# define LCDC_DMAFRMCFG_BRSTLEN_SIZE            7
++# define LCDC_DMAFRMCFG_FRMSIZE_OFFSET          0
++# define LCDC_DMAFRMCFG_FRMSIZE_SIZE            23
++#define LCDC_DMAFRMPT1                          0x00000008
++# define LCDC_DMAFRMPT1_FRMPT_U_OFFSET          0
++# define LCDC_DMAFRMPT1_FRMPT_U_SIZE            23
++#define LCDC_DMAFRMPT2                          0x0000000C
++# define LCDC_DMAFRMPT2_FRMPT_L_OFFSET          0
++# define LCDC_DMAFRMPT2_FRMPT_L_SIZE            23
++#define LCDC_DMA2DCFG                           0x00000020
++# define LCDC_DMA2DCFG_ADDRINC_OFFSET           0
++# define LCDC_DMA2DCFG_ADDRINC_SIZE             16
++# define LCDC_DMA2DCFG_PIXELOFF_OFFSET          24
++# define LCDC_DMA2DCFG_PIXELOFF_SIZE            5
++#define LCDC_DP1_2                              0x0000081C
++# define LCDC_DP1_2_DP1_2_OFFSET                0
++# define LCDC_DP1_2_DP1_2_SIZE                  8
++#define LCDC_DP2_3                              0x00000828
++# define LCDC_DP2_3_DP2_3_OFFSET                0
++# define LCDC_DP2_3_DP2_3_SIZE                  12
++#define LCDC_DP3_4                              0x00000830
++# define LCDC_DP3_4_DP3_4_OFFSET                0
++# define LCDC_DP3_4_DP3_4_SIZE                  16
++#define LCDC_DP3_5                              0x00000824
++# define LCDC_DP3_5_DP3_5_OFFSET                0
++# define LCDC_DP3_5_DP3_5_SIZE                  20
++#define LCDC_DP4_5                              0x00000834
++# define LCDC_DP4_5_DP4_5_OFFSET                0
++# define LCDC_DP4_5_DP4_5_SIZE                  20
++#define LCDC_DP4_7                              0x00000820
++# define LCDC_DP4_7_DP4_7_OFFSET                0
++# define LCDC_DP4_7_DP4_7_SIZE                  28
++#define LCDC_DP5_7                              0x0000082C
++# define LCDC_DP5_7_DP5_7_OFFSET                0
++# define LCDC_DP5_7_DP5_7_SIZE                  28
++#define LCDC_DP6_7                              0x00000838
++# define LCDC_DP6_7_DP6_7_OFFSET                0
++# define LCDC_DP6_7_DP6_7_SIZE                  28
++#define LCDC_LCDCON1                            0x00000800
++# define LCDC_LCDCON1_BYPASS_OFFSET             0
++# define LCDC_LCDCON1_BYPASS_SIZE               1
++# define LCDC_LCDCON1_CLKVAL_OFFSET             12
++# define LCDC_LCDCON1_CLKVAL_SIZE               9
++# define LCDC_LCDCON1_LINECNT_OFFSET            21
++# define LCDC_LCDCON1_LINECNT_SIZE              11
++#define LCDC_LCDCON2                            0x00000804
++# define LCDC_LCDCON2_CLKMOD_OFFSET             15
++# define LCDC_LCDCON2_CLKMOD_SIZE               1
++# define LCDC_LCDCON2_DISTYPE_OFFSET            0
++# define LCDC_LCDCON2_DISTYPE_SIZE              2
++# define LCDC_LCDCON2_IFWIDTH_OFFSET            3
++# define LCDC_LCDCON2_IFWIDTH_SIZE              2
++# define LCDC_LCDCON2_INVCLK_OFFSET             11
++# define LCDC_LCDCON2_INVCLK_SIZE               1
++# define LCDC_LCDCON2_INVDVAL_OFFSET            12
++# define LCDC_LCDCON2_INVDVAL_SIZE              1
++# define LCDC_LCDCON2_INVFRAME_OFFSET           9
++# define LCDC_LCDCON2_INVFRAME_SIZE             1
++# define LCDC_LCDCON2_INVLINE_OFFSET            10
++# define LCDC_LCDCON2_INVLINE_SIZE              1
++# define LCDC_LCDCON2_INVVD_OFFSET              8
++# define LCDC_LCDCON2_INVVD_SIZE                1
++# define LCDC_LCDCON2_MEMOR_OFFSET              30
++# define LCDC_LCDCON2_MEMOR_SIZE                2
++# define LCDC_LCDCON2_PIXELSIZE_OFFSET          5
++# define LCDC_LCDCON2_PIXELSIZE_SIZE            3
++# define LCDC_LCDCON2_SCANMOD_OFFSET            2
++# define LCDC_LCDCON2_SCANMOD_SIZE              1
++#define LCDC_LCDFIFO                            0x00000814
++# define LCDC_LCDFIFO_FIFOTH_OFFSET             0
++# define LCDC_LCDFIFO_FIFOTH_SIZE               16
++#define LCDC_LCDFRMCFG                          0x00000810
++# define LCDC_LCDFRMCFG_LINESIZE_OFFSET         21
++# define LCDC_LCDFRMCFG_LINESIZE_SIZE           11
++# define LCDC_LCDFRMCFG_LINEVAL_OFFSET          0
++# define LCDC_LCDFRMCFG_LINEVAL_SIZE            11
++#define LCDC_LCDMVAL                            0x00000818
++# define LCDC_LCDMVAL_MMODE_OFFSET              31
++# define LCDC_LCDMVAL_MMODE_SIZE                1
++# define LCDC_LCDMVAL_MVAL_OFFSET               0
++# define LCDC_LCDMVAL_MVAL_SIZE                 8
++#define LCDC_LCDTIM1                            0x00000808
++# define LCDC_LCDTIM1_VBP_OFFSET                8
++# define LCDC_LCDTIM1_VBP_SIZE                  8
++# define LCDC_LCDTIM1_VFP_OFFSET                0
++# define LCDC_LCDTIM1_VFP_SIZE                  8
++# define LCDC_LCDTIM1_VHDLY_OFFSET              24
++# define LCDC_LCDTIM1_VHDLY_SIZE                4
++# define LCDC_LCDTIM1_VPW_OFFSET                16
++# define LCDC_LCDTIM1_VPW_SIZE                  6
++#define LCDC_LCDTIM2                            0x0000080C
++# define LCDC_LCDTIM2_HBP_OFFSET                0
++# define LCDC_LCDTIM2_HBP_SIZE                  8
++# define LCDC_LCDTIM2_HFP_OFFSET                21
++# define LCDC_LCDTIM2_HFP_SIZE                  11
++# define LCDC_LCDTIM2_HPW_OFFSET                8
++# define LCDC_LCDTIM2_HPW_SIZE                  6
++#define LCDC_LCD_GPR                            0x0000085C
++# define LCDC_LCD_GPR_GPRB0_OFFSET              0
++# define LCDC_LCD_GPR_GPRB0_SIZE                1
++# define LCDC_LCD_GPR_GPRB1_OFFSET              1
++# define LCDC_LCD_GPR_GPRB1_SIZE                1
++# define LCDC_LCD_GPR_GPRB2_OFFSET              2
++# define LCDC_LCD_GPR_GPRB2_SIZE                1
++# define LCDC_LCD_GPR_GPRB3_OFFSET              3
++# define LCDC_LCD_GPR_GPRB3_SIZE                1
++# define LCDC_LCD_GPR_GPRB4_OFFSET              4
++# define LCDC_LCD_GPR_GPRB4_SIZE                1
++# define LCDC_LCD_GPR_GPRB5_OFFSET              5
++# define LCDC_LCD_GPR_GPRB5_SIZE                1
++# define LCDC_LCD_GPR_GPRB6_OFFSET              6
++# define LCDC_LCD_GPR_GPRB6_SIZE                1
++# define LCDC_LCD_GPR_GPRB7_OFFSET              7
++# define LCDC_LCD_GPR_GPRB7_SIZE                1
++#define LCDC_LCD_ICR                            0x00000858
++# define LCDC_LCD_ICR_EOFIC_OFFSET              2
++# define LCDC_LCD_ICR_EOFIC_SIZE                1
++# define LCDC_LCD_ICR_LNIC_OFFSET               0
++# define LCDC_LCD_ICR_LNIC_SIZE                 1
++# define LCDC_LCD_ICR_LSTLNIC_OFFSET            1
++# define LCDC_LCD_ICR_LSTLNIC_SIZE              1
++# define LCDC_LCD_ICR_MERIC_OFFSET              6
++# define LCDC_LCD_ICR_MERIC_SIZE                1
++# define LCDC_LCD_ICR_OWRIC_OFFSET              5
++# define LCDC_LCD_ICR_OWRIC_SIZE                1
++# define LCDC_LCD_ICR_UFLWIC_OFFSET             4
++# define LCDC_LCD_ICR_UFLWIC_SIZE               1
++#define LCDC_LCD_IDR                            0x0000084C
++# define LCDC_LCD_IDR_EOFID_OFFSET              2
++# define LCDC_LCD_IDR_EOFID_SIZE                1
++# define LCDC_LCD_IDR_LNID_OFFSET               0
++# define LCDC_LCD_IDR_LNID_SIZE                 1
++# define LCDC_LCD_IDR_LSTLNID_OFFSET            1
++# define LCDC_LCD_IDR_LSTLNID_SIZE              1
++# define LCDC_LCD_IDR_MERID_OFFSET              6
++# define LCDC_LCD_IDR_MERID_SIZE                1
++# define LCDC_LCD_IDR_OWRID_OFFSET              5
++# define LCDC_LCD_IDR_OWRID_SIZE                1
++# define LCDC_LCD_IDR_UFLWID_OFFSET             4
++# define LCDC_LCD_IDR_UFLWID_SIZE               1
++#define LCDC_LCD_IER                            0x00000848
++# define LCDC_LCD_IER_EOFIE_OFFSET              2
++# define LCDC_LCD_IER_EOFIE_SIZE                1
++# define LCDC_LCD_IER_LNIE_OFFSET               0
++# define LCDC_LCD_IER_LNIE_SIZE                 1
++# define LCDC_LCD_IER_LSTLNIE_OFFSET            1
++# define LCDC_LCD_IER_LSTLNIE_SIZE              1
++# define LCDC_LCD_IER_MERIE_OFFSET              6
++# define LCDC_LCD_IER_MERIE_SIZE                1
++# define LCDC_LCD_IER_OWRIE_OFFSET              5
++# define LCDC_LCD_IER_OWRIE_SIZE                1
++# define LCDC_LCD_IER_UFLWIE_OFFSET             4
++# define LCDC_LCD_IER_UFLWIE_SIZE               1
++#define LCDC_LCD_IMR                            0x00000850
++# define LCDC_LCD_IMR_EOFIM_OFFSET              2
++# define LCDC_LCD_IMR_EOFIM_SIZE                1
++# define LCDC_LCD_IMR_LNIM_OFFSET               0
++# define LCDC_LCD_IMR_LNIM_SIZE                 1
++# define LCDC_LCD_IMR_LSTLNIM_OFFSET            1
++# define LCDC_LCD_IMR_LSTLNIM_SIZE              1
++# define LCDC_LCD_IMR_MERIM_OFFSET              6
++# define LCDC_LCD_IMR_MERIM_SIZE                1
++# define LCDC_LCD_IMR_OWRIM_OFFSET              5
++# define LCDC_LCD_IMR_OWRIM_SIZE                1
++# define LCDC_LCD_IMR_UFLWIM_OFFSET             4
++# define LCDC_LCD_IMR_UFLWIM_SIZE               1
++#define LCDC_LCD_IRR                            0x00000864
++# define LCDC_LCD_IRR_EOFIR_OFFSET              2
++# define LCDC_LCD_IRR_EOFIR_SIZE                1
++# define LCDC_LCD_IRR_LNIR_OFFSET               0
++# define LCDC_LCD_IRR_LNIR_SIZE                 1
++# define LCDC_LCD_IRR_LSTLNIR_OFFSET            1
++# define LCDC_LCD_IRR_LSTLNIR_SIZE              1
++# define LCDC_LCD_IRR_MERIR_OFFSET              6
++# define LCDC_LCD_IRR_MERIR_SIZE                1
++# define LCDC_LCD_IRR_OWRIR_OFFSET              5
++# define LCDC_LCD_IRR_OWRIR_SIZE                1
++# define LCDC_LCD_IRR_UFLWIR_OFFSET             4
++# define LCDC_LCD_IRR_UFLWIR_SIZE               1
++#define LCDC_LCD_ISR                            0x00000854
++# define LCDC_LCD_ISR_EOFIS_OFFSET              2
++# define LCDC_LCD_ISR_EOFIS_SIZE                1
++# define LCDC_LCD_ISR_LNIS_OFFSET               0
++# define LCDC_LCD_ISR_LNIS_SIZE                 1
++# define LCDC_LCD_ISR_LSTLNIS_OFFSET            1
++# define LCDC_LCD_ISR_LSTLNIS_SIZE              1
++# define LCDC_LCD_ISR_MERIS_OFFSET              6
++# define LCDC_LCD_ISR_MERIS_SIZE                1
++# define LCDC_LCD_ISR_OWRIS_OFFSET              5
++# define LCDC_LCD_ISR_OWRIS_SIZE                1
++# define LCDC_LCD_ISR_UFLWIS_OFFSET             4
++# define LCDC_LCD_ISR_UFLWIS_SIZE               1
++#define LCDC_LCD_ITR                            0x00000860
++# define LCDC_LCD_ITR_EOFIT_OFFSET              2
++# define LCDC_LCD_ITR_EOFIT_SIZE                1
++# define LCDC_LCD_ITR_LNIT_OFFSET               0
++# define LCDC_LCD_ITR_LNIT_SIZE                 1
++# define LCDC_LCD_ITR_LSTLNIT_OFFSET            1
++# define LCDC_LCD_ITR_LSTLNIT_SIZE              1
++# define LCDC_LCD_ITR_MERIT_OFFSET              6
++# define LCDC_LCD_ITR_MERIT_SIZE                1
++# define LCDC_LCD_ITR_OWRIT_OFFSET              5
++# define LCDC_LCD_ITR_OWRIT_SIZE                1
++# define LCDC_LCD_ITR_UFLWIT_OFFSET             4
++# define LCDC_LCD_ITR_UFLWIT_SIZE               1
++#define LCDC_PWRCON                             0x0000083C
++# define LCDC_PWRCON_GUARD_TIME_OFFSET          1
++# define LCDC_PWRCON_GUARD_TIME_SIZE            7
++# define LCDC_PWRCON_LCD_BUSY_OFFSET            31
++# define LCDC_PWRCON_LCD_BUSY_SIZE              1
++# define LCDC_PWRCON_LCD_PWR_OFFSET             0
++# define LCDC_PWRCON_LCD_PWR_SIZE               1
++
++#define LCDC_BIT(name)                          (1 << LCDC_##name##_OFFSET)
++#define LCDC_MKBF(name,value)                   (((value) & ((1 << LCDC_##name##_SIZE) - 1)) << LCDC_##name##_OFFSET)
++#define LCDC_GETBF(name,value)                  (((value) >> LCDC_##name##_OFFSET) & ((1 << LCDC_##name##_SIZE) - 1))
++#define LCDC_INSBF(name,value,old)              (((old) & ~(((1 << LCDC_##name##_SIZE) - 1) << LCDC_##name##_OFFSET)) | LCDC_MKBF(name, value))
++
++#define lcdc_readl(port,reg)		readl((port)->regs + LCDC_##reg)
++#define lcdc_writel(port,reg,value)	writel((value), (port)->regs + LCDC_##reg)
++
++#endif /* __ASM_AVR32_PERIPH_LCDC_H__ */
+diff -uprN u-boot-orig/drivers/atmel_lcdc.c u-boot/drivers/atmel_lcdc.c
+--- u-boot-orig/drivers/atmel_lcdc.c	1970-01-01 01:00:00.000000000 +0100
++++ u-boot/drivers/atmel_lcdc.c	2007-01-05 12:29:24.000000000 +0100
+@@ -0,0 +1,465 @@
++/*
++ * Framebuffer Driver for Atmel/SIDSA LCD Controller
++ *
++ * Copyright (C) 2006 Atmel Corporation
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <common.h>
++
++#if defined(CONFIG_ATMEL_LCDC)
++
++#ifndef LCD_BPP
++# define LCD_BPP	LCD_COLOR24
++#endif
++
++#include <lcd.h>
++#include <malloc.h>
++#include <video_fb.h>
++
++#include <atmel_lcdc.h>
++
++#include <asm/io.h>
++#include <asm/arch/sm.h>
++#include <asm/arch/platform.h>
++
++/* Sync defines */
++#define FB_SYNC_HOR_HIGH_ACT	1	/* horizontal sync high active	*/
++#define FB_SYNC_VERT_HIGH_ACT	2	/* vertical sync high active	*/
++#define FB_SYNC_EXT		4	/* external sync		*/
++#define FB_SYNC_COMP_HIGH_ACT	8	/* composite sync high active   */
++#define FB_SYNC_BROADCAST	16	/* broadcast video timings      */
++/* vtotal = 144d/288n/576i => PAL  */
++/* vtotal = 121d/242n/484i => NTSC */
++#define FB_SYNC_ON_GREEN	32	/* sync on green */
++#define FB_SYNC_PCLK_RISING	64	/* pixel data sampled on rising pclk */
++
++/* More or less configurable parameters */
++#define LCDC_FIFO_SIZE		512
++#define LCDC_DMA_BURST_LEN	8
++
++/* TODO: These should be autogenerated from part description file */
++#define LCDC_DISTYPE_STN_MONO	0
++#define LCDC_DISTYPE_STN_COLOR	1
++#define LCDC_DISTYPE_TFT	2
++#define LCDC_LUT		0xc00
++
++#ifdef CONFIG_DISPLAY_LTV350QV
++/* 320x240x24 @ 75 Hz */
++vidinfo_t panel_info = {
++		vl_col:		320,		/* Number of columns */
++		vl_row:		240,		/* Number of rows */
++		vl_width:	320,		/* Width in mm */
++		vl_height:	240,		/* Height in mm */
++		vl_clkp:	CFG_HIGH,	/* Clock polarity */
++		vl_oep:		CFG_HIGH,	/* Output enable polarity */
++		vl_hsp:		CFG_HIGH,	/* Horizontal sync polarity */
++		vl_vsp:		CFG_HIGH,	/* Vertical sync polarity */
++		vl_dp:		CFG_HIGH,	/* Data polarity */
++		vl_bpix:	LCD_BPP,	/* Bits per pixel */
++		vl_lbw:		1,		/* LCD bus width */
++		vl_splt:	0,		/* Split display? 0=single, 1=dual */
++		vl_clor:	1,		/* Color? 0 = mono, 1 = color */
++		vl_tft:		1,		/* TFT? 0 = passive, 1 = TFT */
++		vl_hpw:		16,		/* Horizontal sync pulse width */
++		vl_blw:		17,		/* Wait before of line */
++		vl_elw:		33,		/* Wait end of line */
++		vl_vpw:		1,		/* Vertical sync pulse width */
++		vl_bfw:		10,		/* Wait before of frame */
++		vl_efw:		10,		/* Wait end of frame */
++
++		pixclock:	145111,
++		left_margin:	17,
++		right_margin:	33,
++		upper_margin:	10,
++		lower_margin:	10,
++		hsync_len:	16,
++		vsync_len:	1,
++		sync:		FB_SYNC_PCLK_RISING,
++		yoffset:	0,
++		xoffset:	0,
++};
++#else
++#error A display must be defined for the LCD controller
++#endif
++
++void lcd_ctrl_init	(void *lcdbase);
++void lcd_enable	(void);
++
++int lcd_line_length;
++int lcd_color_fg;
++int lcd_color_bg;
++
++void *lcd_base;			/* Start of framebuffer memory	*/
++void *lcd_console_address;	/* Start of console buffer	*/
++
++short console_col;
++short console_row;
++
++static int lcdc_init_mem(void *lcdbase);
++void lcdc_init(void *lcdbase);
++
++static inline u_int chan_to_field(u_int chan, const struct lcdc_bitfield *bf)
++{
++	chan &= 0xffff;
++	chan >>= 16 - bf->length;
++	return chan << bf->offset;
++}
++
++/*
++ * ************************************************************************* *
++ *                        Das U-Boot LCD functions                           *
++ * ************************************************************************* *
++ */
++void lcd_setcolreg (ushort regno, ushort red, ushort green, ushort blue)
++{
++	struct lcdc_info *cinfo = panel_info.lcdc;
++	u_int *palette = (u_int *)cinfo->palette;
++	u_int val;
++
++	if (cinfo->var.grayscale)
++		red = green = blue = (19595 * red + 38470 * green
++				+ 7471 * blue) >> 16;
++
++	switch (cinfo->visual) {
++	case FB_VISUAL_TRUECOLOR:
++		if (regno < 16) {
++			/* TODO: I do not get why we need a palette here
++			palette = cinfo->pseudo_palette;
++			*/
++
++			val  = chan_to_field(red, &cinfo->var.red);
++			val |= chan_to_field(green, &cinfo->var.green);
++			val |= chan_to_field(blue, &cinfo->var.blue);
++
++			palette[regno] = val;
++		}
++		break;
++
++	case FB_VISUAL_PSEUDOCOLOR:
++		if (regno < 256) {
++			val =  ((blue  << 7) & 0x7c00);
++			val |= ((green << 2) & 0x03e0);
++			val |= ((red   >> 3) & 0x001f);
++
++			/*
++			 * TODO: intensity bit. Maybe something like
++			 *   ~(red[10] ^ green[10] ^ blue[10]) & 1
++			 */
++			palette[regno] = val;
++		}
++		break;
++	}
++}
++
++void lcd_ctrl_init (void *lcdbase)
++{
++	lcdc_init_mem(lcdbase);
++	lcdc_init(lcdbase);
++}
++
++
++
++void lcd_enable (void)
++{
++	return;
++}
++
++ulong calc_fbsize (void)
++{
++	ulong size;
++	int line_length;
++	if (panel_info.vl_bpix > LCD_COLOR32)
++		line_length = panel_info.vl_col * panel_info.vl_bpix / 8;
++	else
++		line_length = panel_info.vl_col * NBITS(panel_info.vl_bpix) / 8;
++
++	size = line_length * panel_info.vl_row;
++	size += PAGE_SIZE;
++
++	return size;
++}
++
++/* ************************************************************************* *
++ *                    Architecture specific functions                        *
++ * ************************************************************************* *
++ */
++static int lcdc_init_mem(void *lcdbase)
++{
++	struct lcdc_info *cinfo;
++	const struct device *dev;
++
++	cinfo = malloc(sizeof(struct lcdc_info));
++	if (!cinfo) {
++		printf("lcdc: could not allocate RAM for lcdc_info\n");
++		return -1;
++	}
++
++	dev = get_device(DEVICE_LCDC);
++	if (!dev)
++		printf("lcdc: could not get LCDC\n");
++
++	cinfo->dev = dev;
++	cinfo->regs = dev->regs;
++
++	cinfo->screen = (u_long)lcdbase;
++	cinfo->palette_size = NBITS(panel_info.vl_bpix) == 8 ? 256 : 16;
++	/* palette is stored in LCD controller IO memory */
++	cinfo->palette = (u_long)cinfo->regs + LCDC_LUT;
++
++	panel_info.lcdc = cinfo;
++
++	return 0;
++}
++
++static void lcdc_update_dma()
++{
++	unsigned long dma_addr;
++	unsigned long pixeloff;
++	unsigned long dma2dcfg;
++	struct lcdc_info *cinfo = panel_info.lcdc;
++
++	dma_addr = (cinfo->smem_start + cinfo->yoffset * cinfo->line_length
++			+ cinfo->xoffset * cinfo->bits_per_pixel / 8);
++
++	dma_addr &= ~3UL;
++	pixeloff = LCDC_MKBF(DMA2DCFG_PIXELOFF, cinfo->xoffset * cinfo->bits_per_pixel);
++
++	/* Set framebuffer DMA base address and pixel offset */
++	lcdc_writel(cinfo, DMABADDR1, dma_addr);
++	dma2dcfg = lcdc_readl(cinfo, DMA2DCFG);
++	dma2dcfg = LCDC_INSBF(DMA2DCFG_PIXELOFF, pixeloff, dma2dcfg);
++	lcdc_writel(cinfo, DMA2DCFG, dma2dcfg);
++
++	/* Update configuration */
++	lcdc_writel(cinfo, DMACON, (lcdc_readl(cinfo, DMACON)
++				| LCDC_BIT(DMACON_DMAUPDT)));
++}
++
++static int lcdc_set_var(struct lcdc_info *info)
++{
++	info->var.red.msb_right = info->var.green.msb_right
++		= info->var.blue.msb_right = 0;
++	info->var.transp.offset = info->var.transp.length = 0;
++
++	switch (info->bits_per_pixel) {
++	case 2:
++	case 4:
++	case 8:
++		info->var.red.offset = info->var.green.offset
++			= info->var.blue.offset = 0;
++		info->var.red.length = info->var.green.length
++			= info->var.blue.length = info->var.bits_per_pixel;
++		break;
++	case 15:
++	case 16:
++		/*
++		 * Bit 16 is the "intensity" bit, I think. Not sure
++		 * what we're going to use that for...
++		 */
++		info->var.red.offset = 0;
++		info->var.green.offset = 5;
++		info->var.blue.offset = 10;
++		info->var.red.length = 5;
++		info->var.green.length = 5;
++		info->var.blue.length = 5;
++		break;
++	case 32:
++		info->var.transp.offset = 24;
++		info->var.transp.length = 8;
++		/* fall through */
++	case 24:
++		info->var.red.offset = 16;
++		info->var.green.offset = 8;
++		info->var.blue.offset = 0;
++		info->var.red.length = info->var.green.length
++			= info->var.blue.length = 8;
++		break;
++	default:
++		printf("lcdc: color depth %d not supported\n",
++		       info->var.bits_per_pixel);
++		return -1;
++	}
++
++	info->var.xoffset = info->var.yoffset = 0;
++	info->var.red.msb_right = info->var.green.msb_right
++		= info->var.blue.msb_right = info->var.transp.msb_right = 0;
++
++	return 0;
++}
++
++void lcdc_init(void *lcdbase)
++{
++	unsigned int value;
++	const struct device *sm;
++	struct lcdc_info *cinfo = panel_info.lcdc;
++
++	sm = get_device(DEVICE_SM);
++	if (!sm)
++		printf("lcdc: could not get SM\n");
++
++	cinfo->xres = panel_info.vl_col;
++	cinfo->yres = panel_info.vl_row;
++	cinfo->xres_virtual = panel_info.vl_col;
++	cinfo->yres_virtual = panel_info.vl_row;
++	if (panel_info.vl_bpix > LCD_COLOR32) {
++		cinfo->bits_per_pixel = panel_info.vl_bpix;
++	} else {
++		cinfo->bits_per_pixel = (1<<panel_info.vl_bpix);
++	}
++	/* INFO: if you see weird offset errors when displaying data
++	 * increase the guard_time */
++	cinfo->guard_time = 2;
++
++	cinfo->pixclock = panel_info.pixclock;
++
++	cinfo->left_margin = panel_info.left_margin;
++	cinfo->right_margin = panel_info.right_margin;
++	cinfo->upper_margin = panel_info.upper_margin;
++	cinfo->lower_margin = panel_info.lower_margin;
++
++	cinfo->hsync_len = panel_info.hsync_len;
++	cinfo->vsync_len = panel_info.vsync_len;
++
++	cinfo->sync = panel_info.sync;
++
++	cinfo->smem_start = (u_long)lcdbase;
++	cinfo->yoffset = panel_info.yoffset;
++	cinfo->xoffset = panel_info.xoffset;
++	cinfo->line_length = cinfo->xres;
++
++	panel_info.lcdc = cinfo;
++
++	if (cinfo->bits_per_pixel <= 8) {
++		cinfo->visual = FB_VISUAL_PSEUDOCOLOR;
++	} else {
++		cinfo->visual = FB_VISUAL_TRUECOLOR;
++	}
++
++	/* setup var information */
++	if (lcdc_set_var(cinfo) != 0) {
++		printf("lcdc: could not set var information\n");
++		return;
++	}
++
++	sm_writel(sm, PM_GCCTRL7, SM_BIT(PLLSEL)|SM_BIT(CEN));
++
++	debug("lcdc: resolution: %ux%u %dbpp (%ux%u virtual)\n",
++			cinfo->xres, cinfo->yres, cinfo->bits_per_pixel,
++			cinfo->xres_virtual, cinfo->yres_virtual);
++
++	/* Turn off the LCD controller and the DMA controller */
++	lcdc_writel(cinfo, PWRCON,
++			LCDC_MKBF(PWRCON_GUARD_TIME, cinfo->guard_time));
++	lcdc_writel(cinfo, DMACON, 0);
++
++	cinfo->line_length = (cinfo->xres_virtual
++			* (cinfo->bits_per_pixel / 8));
++
++	/* Re-initialize the DMA engine... */
++	lcdc_update_dma();
++
++	/* ...set frame size and burst length = 8 words (?) */
++	value = LCDC_MKBF(DMAFRMCFG_FRMSIZE,
++			(cinfo->yres * cinfo->line_length + 3) / 4);
++	value |= LCDC_MKBF(DMAFRMCFG_BRSTLEN, (LCDC_DMA_BURST_LEN - 1));
++	lcdc_writel(cinfo, DMAFRMCFG, value);
++
++	/* ...set 2D configuration (necessary for xres_virtual != xres) */
++	value = LCDC_MKBF(DMA2DCFG_ADDRINC,
++			cinfo->xres_virtual - cinfo->xres);
++	lcdc_writel(cinfo, DMA2DCFG, value);
++
++	/* ...wait for DMA engine to become idle... */
++	while (lcdc_readl(cinfo, DMACON) & LCDC_BIT(DMACON_DMABUSY));
++
++	/* ...and enable it with updated configuration */
++	lcdc_writel(cinfo, DMACON, (LCDC_BIT(DMACON_DMAEN)
++				| LCDC_BIT(DMACON_DMAUPDT)
++				| LCDC_BIT(DMACON_DMA2DEN)));
++
++	/* Now, the LCD core... */
++
++	/* Set pixel clock. */
++	value = 140000000 / 100000 * cinfo->pixclock;
++	value /= 10000000;
++	value = (value + 1) / 2;
++	if (value == 0) {
++		lcdc_writel(cinfo, LCDCON1, LCDC_BIT(LCDCON1_BYPASS));
++	} else {
++		lcdc_writel(cinfo, LCDCON1, LCDC_MKBF(LCDCON1_CLKVAL, value - 1));
++	}
++
++	/* Initialize control register 2 */
++	value = (LCDC_BIT(LCDCON2_CLKMOD)
++			| LCDC_MKBF(LCDCON2_DISTYPE, LCDC_DISTYPE_TFT));
++	if (!(cinfo->sync & FB_SYNC_HOR_HIGH_ACT))
++		value |= LCDC_BIT(LCDCON2_INVLINE);
++	if (!(cinfo->sync & FB_SYNC_VERT_HIGH_ACT))
++		value |= LCDC_BIT(LCDCON2_INVFRAME);
++	if (cinfo->sync & FB_SYNC_PCLK_RISING)
++		value |= LCDC_BIT(LCDCON2_INVCLK);
++
++	switch (cinfo->bits_per_pixel) {
++		case 1:	value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 0); break;
++		case 2: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 1); break;
++		case 4: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 2); break;
++		case 8: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 3); break;
++		case 15: /* fall through */
++		case 16: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 4); break;
++		case 24: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 5); break;
++		case 32: value |= LCDC_MKBF(LCDCON2_PIXELSIZE, 6); break;
++		default:
++			 printf("lcdc: %d bits per pixel not supported\n",
++					 cinfo->bits_per_pixel);
++			 return;
++			 break;
++	}
++	lcdc_writel(cinfo, LCDCON2, value);
++
++	/* Vertical timing */
++	value = LCDC_MKBF(LCDTIM1_VPW, cinfo->vsync_len - 1);
++	value |= LCDC_MKBF(LCDTIM1_VBP, cinfo->upper_margin);
++	value |= LCDC_MKBF(LCDTIM1_VFP, cinfo->lower_margin);
++	lcdc_writel(cinfo, LCDTIM1, value);
++
++	/* Horizontal timing */
++	value = LCDC_MKBF(LCDTIM2_HFP, cinfo->right_margin - 1);
++	value |= LCDC_MKBF(LCDTIM2_HPW, cinfo->hsync_len - 1);
++	value |= LCDC_MKBF(LCDTIM2_HBP, cinfo->left_margin - 1);
++	lcdc_writel(cinfo, LCDTIM2, value);
++
++	/* Display size */
++	value = LCDC_MKBF(LCDFRMCFG_LINESIZE, cinfo->xres - 1);
++	value |= LCDC_MKBF(LCDFRMCFG_LINEVAL, cinfo->yres - 1);
++	lcdc_writel(cinfo, LCDFRMCFG, value);
++
++	/* FIFO Threshold: Use formula from data sheet */
++	value = LCDC_FIFO_SIZE - (2 * LCDC_DMA_BURST_LEN + 3);
++	lcdc_writel(cinfo, LCDFIFO, value);
++
++	/* Toggle LCD_MODE every frame */
++	lcdc_writel(cinfo, LCDMVAL, 0);
++
++	/* Disable all interrupts */
++	lcdc_writel(cinfo, LCD_IDR, ~0UL);
++
++	/* Wait for the LCDC core to become idle and enable it */
++	while (lcdc_readl(cinfo, PWRCON) & LCDC_BIT(PWRCON_LCD_BUSY));
++
++	lcdc_writel(cinfo, PWRCON,
++			LCDC_MKBF(PWRCON_GUARD_TIME, cinfo->guard_time)
++			| LCDC_BIT(PWRCON_LCD_PWR));
++
++	debug("lcdc: controller at 0x%08x, framebuffer at 0x%08x\n",
++			cinfo->regs, cinfo->smem_start);
++
++	/* clear 320 x 240 x 24bpp area in framebuffer */
++	memset((void *)cinfo->smem_start, 0, cinfo->xres * cinfo->yres * 3);
++
++	return;
++}
++#endif
+diff -uprN u-boot-orig/drivers/Makefile u-boot/drivers/Makefile
+--- u-boot-orig/drivers/Makefile	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/drivers/Makefile	2007-01-01 16:10:49.000000000 +0100
+@@ -27,7 +27,8 @@ include $(TOPDIR)/config.mk
+ 
+ LIB	= libdrivers.a
+ 
+-OBJS	= 3c589.o 5701rls.o ali512x.o atmel_usart.o \
++OBJS	= 3c589.o 5701rls.o ali512x.o \
++	  atmel_usart.o atmel_lcdc.o \
+ 	  bcm570x.o bcm570x_autoneg.o cfb_console.o cfi_flash.o \
+ 	  cs8900.o ct69000.o dataflash.o dc2114x.o dm9000x.o \
+ 	  e1000.o eepro100.o \

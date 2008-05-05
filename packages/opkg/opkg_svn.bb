@@ -1,6 +1,6 @@
 require opkg.inc
 
-PR = "r3"
+PR = "r4"
 
 PACKAGES =+ "libopkg-dev libopkg"
 
@@ -12,7 +12,7 @@ FILES_libopkg = "${libdir}/*.so.*"
 OPKG_INIT_POSITION = "98"
 OPKG_INIT_POSITION_slugos = "41"
 
-pkg_postinst_opkg () {
+pkg_postinst_${PN} () {
 #!/bin/sh
 if [ "x$D" != "x" ]; then
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d
@@ -26,7 +26,7 @@ fi
 update-alternatives --install ${bindir}/opkg opkg ${bindir}/opkg-cl 100
 }
 
-pkg_postrm_opkg () {
+pkg_postrm_${PN} () {
 #!/bin/sh
 update-alternatives --remove opkg ${bindir}/opkg-cl
 }

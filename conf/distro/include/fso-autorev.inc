@@ -1,0 +1,8 @@
+SRCREV_pn-gsm0710muxd = "${AUTOREV}"
+SRCREV_pn-pygsm = "${AUTOREV}"
+SRCREV_pn-pyneod = "${AUTOREV}"
+SRCREV_pn-pynoeg = "${AUTOREV}"
+SRCREV_pn-python-odeviced = "${AUTOREV}"
+SRCREV_pn-python-ophoned = "${AUTOREV}"
+SRCREV_pn-python-pytrc = "${AUTOREV}"
+SRCREV_pn-zhone = "${AUTOREV}"

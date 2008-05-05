@@ -10,6 +10,7 @@ PR = "r0"
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \
 	 file://uclibc-dns.patch;patch=1 \
+#         file://uclibc-define-glob.patch;patch=1 \
          file://asterisk.patch;patch=1 \
          file://enable-speex.patch;patch=1"
 

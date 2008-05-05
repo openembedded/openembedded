@@ -1,0 +1,16 @@
+diff -uprN u-boot-orig/include/asm-avr32/initcalls.h u-boot/include/asm-avr32/initcalls.h
+--- u-boot-orig/include/asm-avr32/initcalls.h	2007-01-01 19:26:46.000000000 +0100
++++ u-boot/include/asm-avr32/initcalls.h	2007-01-05 13:29:16.000000000 +0100
+@@ -30,6 +30,12 @@ extern void board_init_memories(void);
+ extern void board_init_pio(void);
+ extern void board_init_info(void);
+ 
++#if CONFIG_SPI
++extern void board_init_spi(void);
++#else
++static inline void board_init_spi(void) { }
++#endif
++
+ #if (CONFIG_COMMANDS & CFG_CMD_NET)
+ extern void net_init(void);
+ #else

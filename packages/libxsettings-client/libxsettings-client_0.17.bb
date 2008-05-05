@@ -1,22 +1,6 @@
-SECTION = "gpe/libs"
-LICENSE = "BSD-X"
-PRIORITY = "optional"
-DEPENDS = "libxsettings virtual/libx11 libxt gtk-doc"
-# libxt is required to stop configure breaking builds by
-# including system paths to find it if it isn't present.
-PR="r1"
+require libxsettings-client.inc
 
-GPE_TARBALL_SUFFIX = "bz2"
-inherit autotools pkgconfig gpe
+DEPENDS += "gtk-doc"
+PR="r2"
 
 SRC_URI += "file://no-host-includes.patch;patch=1 "
-
-headers = "xsettings-client.h xsettings-common.h"
-do_stage () {
-        oe_libinstall -so libXsettings-client ${STAGING_LIBDIR}
-        mkdir -p ${STAGING_INCDIR}
-        for h in ${headers}; do
-               install -m 0644 ${S}/$h ${STAGING_INCDIR}/$h
-        done
-}
-

@@ -1,7 +1,0 @@
-d asterisk asterisk 0775 /var/run/asterisk none
-d asterisk asterisk 0775 /var/lib/asterisk none
-d asterisk asterisk 0775 /var/log/asterisk none
-d asterisk asterisk 0775 /var/log/asterisk/cdr-csv none
-d asterisk asterisk 0775 /var/log/asterisk/cdr-custom none
-d asterisk asterisk 0775 /var/spool/asterisk/outgoing none
-d asterisk asterisk 0775 /var/spool/asterisk/voicemail none

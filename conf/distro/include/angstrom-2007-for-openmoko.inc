@@ -255,5 +255,5 @@ DISTRO_EXTRA_RRECOMMENDS += " \
     openssh-sftp-server \
     "
 
-SEPPUKU_NEWREPORT    = "http://bugs.openembedded.org/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%202007.12&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
+SEPPUKU_NEWREPORT    = "http://bugs.openembedded.net/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom%202007.12&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&"
 

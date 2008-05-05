@@ -27,12 +27,12 @@ EXTRA_OECONF = "--enable-gui=gtk \
 
 PACKAGES =+ " libgnashamf libgnashbackend libgnashbase libgnashgeo libgnashgui libgnashplayer libgnashserver "
 
-FILES_libgnashamf = "${libdir}/libgnashamf-${PV}.so"
-FILES_libgnashbackend = "${libdir}/libgnashbackend-${PV}.so"
-FILES_libgnashbase = "${libdir}/libgnashbase-${PV}.so"
-FILES_libgnashgeo = "${libdir}/libgnashgeo-${PV}.so"
-FILES_libgnashgui = "${libdir}/libgnashgui-${PV}.so"
-FILES_libgnashplayer = "${libdir}/libgnashplayer-${PV}.so"
-FILES_libgnashserver = "${libdir}/libgnashserver-${PV}.so"
+FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
+FILES_libgnashbackend = "${libdir}/gnash/libgnashbackend-${PV}.so"
+FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
+FILES_libgnashgeo = "${libdir}/gnash/libgnashgeo-${PV}.so"
+FILES_libgnashgui = "${libdir}/gnash/libgnashgui-${PV}.so"
+FILES_libgnashplayer = "${libdir}/gnash/libgnashplayer-${PV}.so"
+FILES_libgnashserver = "${libdir}/gnash/libgnashserver-${PV}.so"
 
 PARALLEL_MAKE = ""

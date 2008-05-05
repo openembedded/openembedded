@@ -9,7 +9,7 @@ SECTION = "libs"
 DEPENDS = "boost-jam-native zlib"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r0"
+PR = "r1"
 
 BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
@@ -17,6 +17,7 @@ BOOST_P = "boost_${BOOST_VER}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2"
 #SRC_URI += "file://unit_test_log10f.patch;patch=1"
 SRC_URI += "file://linux-uclibc.patch;patch=1"
+SRC_URI += "file://atomic_count_gcc_atomicity.patch;patch=1"
 
 S = "${WORKDIR}/${BOOST_P}"
 

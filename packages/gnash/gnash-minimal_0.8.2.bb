@@ -1,0 +1,2 @@
+require gnash-minimal.inc
+

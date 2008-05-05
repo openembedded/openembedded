@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r50"
+PR = "r53"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -50,6 +50,7 @@ SLUGOS_PACKAGES = "\
 	bluez-utils \
 	bluez-hcidump \
 	bogofilter \
+	bonnie++ \
 	boost \
 	bridge-utils \
 	bzip2 \
@@ -103,6 +104,7 @@ SLUGOS_PACKAGES = "\
 	hdparm \
 	ifupdown \
 	inetutils \
+	iozone3 \
 	iperf \
 	ipkg-utils \
 	iptables \
@@ -176,6 +178,7 @@ SLUGOS_PACKAGES = "\
 	openobex-apps \
 	openntpd \
 	openobex \
+	openocd \
 	openssh \
 	openvpn \
 	patch \
@@ -216,6 +219,7 @@ SLUGOS_PACKAGES = "\
 	sudo \
 	sysfsutils \
 	tar \
+	task-mokogateway-everything \
 	tcpdump \
 	thttpd \
 	tiff \
@@ -262,7 +266,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	pwc \
 	qc-usb-messenger \
 	syslog-ng \
-	openocd task-mokogateway-everything \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
 	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \

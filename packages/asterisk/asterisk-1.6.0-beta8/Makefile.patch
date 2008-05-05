@@ -1,0 +1,20 @@
+--- asterisk-1.6.0/Makefile	2008-03-18 11:58:50.000000000 -0400
++++ asterisk-1.6.0.new/Makefile	2008-03-28 12:11:32.137042768 -0400
+@@ -142,7 +142,7 @@ else
+   ASTSBINDIR=$(sbindir)
+   ASTSPOOLDIR=$(localstatedir)/spool/asterisk
+   ASTLOGDIR=$(localstatedir)/log/asterisk
+-  ASTVARRUNDIR=$(localstatedir)/run
++  ASTVARRUNDIR=$(localstatedir)/run/asterisk
+   ASTMANDIR=$(mandir)
+ ifneq ($(findstring BSD,$(OSARCH)),)
+   ASTVARLIBDIR=$(prefix)/share/asterisk
+@@ -571,7 +571,7 @@ ifneq ($(findstring ~,$(DESTDIR)),)
+ 	@exit 1
+ endif
+ 
+-install: badshell datafiles bininstall
++install: badshell datafiles bininstall samples
+ 	@if [ -x /usr/sbin/asterisk-post-install ]; then \
+ 		/usr/sbin/asterisk-post-install $(DESTDIR) . ; \
+ 	fi
