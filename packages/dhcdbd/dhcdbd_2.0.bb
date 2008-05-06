@@ -1,11 +1,10 @@
 DESCRIPTION = "DBus-enabled dhcp client"
-HOMEPAGE = "http://people.redhat.com/jvdias/dhcdbd/"
 SECTION = "net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
 RDEPENDS = "dhcp-client"
 
-SRC_URI = "http://people.redhat.com/dcantrel/dhcdbd/dhcdbd-${PV}.tar.bz2 \
+SRC_URI = "http://dcantrel.fedorapeople.org/dhcdbd/dhcdbd-${PV}.tar.bz2 \
            file://no-ext-options.patch;patch=1 \
            file://dhcdbd"
 
