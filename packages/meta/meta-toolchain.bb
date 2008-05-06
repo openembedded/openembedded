@@ -10,7 +10,7 @@ SDK_OUTPUT2 = "${SDK_DIR}/image-extras"
 SDK_DEPLOY = "${TMPDIR}/deploy/sdk"
 
 IPKG_HOST = "opkg-cl -f ${IPKGCONF_SDK} -o ${SDK_OUTPUT}"
-IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/temp-target"
+IPKG_TARGET = "opkg-cl -f ${IPKGCONF_TARGET} -o ${SDK_OUTPUT}/${SDK_PREFIX}/${TARGET_SYS}"
 
 TOOLCHAIN_HOST_TASK ?= "task-sdk-host"
 TOOLCHAIN_TARGET_TASK ?= "task-sdk-bare"
@@ -37,40 +37,15 @@ do_populate_sdk() {
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 
-	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include
-	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/.debug/
-	mkdir -p ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/share
-	mv ${SDK_OUTPUT}/temp-target/usr/lib/opkg/status ${SDK_OUTPUT}/${prefix}/package-status
-	rm -rf ${SDK_OUTPUT}/temp-target/usr/lib/opkg/
-	cp -pPR ${SDK_OUTPUT}/temp-target/usr/include/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
-	cp -pPR ${SDK_OUTPUT}/temp-target/usr/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/
-	if [ -d ${SDK_OUTPUT}/temp-target/usr/lib/.debug ]; then
-		cp -pPR ${SDK_OUTPUT}/temp-target/usr/lib/.debug/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/.debug/
-	fi
-	cp -pPR ${SDK_OUTPUT}/temp-target/usr/share/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/share/
-	cp -pPR ${SDK_OUTPUT}/temp-target/lib/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/
-	if [ -d ${SDK_OUTPUT}/temp-target/lib/.debug ]; then
-		cp -pPR ${SDK_OUTPUT}/temp-target/lib/.debug/* ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/.debug/
-	fi
-	rm -rf ${SDK_OUTPUT}/temp-target/
-
-	for fn in `ls ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/`; do
-		if [ -h ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/$fn ]; then
-			link=`readlink ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/$fn`
-			bname=`basename $link`
-			if [ ! -e $link -a -e ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/$bame ]; then
-				rm ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/$fn
-				ln -s $bname ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/$fn
-			fi
-		fi
-	done
-
-	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libpthread.so
-	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libc.so
-
-	# remove unwanted housekeeping files
-	mv ${SDK_OUTPUT}/usr/lib/opkg/status ${SDK_OUTPUT}/${prefix}/package-status-host
+	install -d ${SDK_OUTPUT}/${prefix}/usr/lib/opkg
+	mv ${SDK_OUTPUT}/usr/lib/opkg/* ${SDK_OUTPUT}/${prefix}/usr/lib/opkg/
 	rm -Rf ${SDK_OUTPUT}/usr/lib
+
+	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}
+	install -m 0644 ${IPKGCONF_TARGET} ${IPKGCONF_SDK} ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/
+
+	install -d ${SDK_OUTPUT}/${sysconfdir}
+	install -m 0644 ${IPKGCONF_SDK} ${SDK_OUTPUT}/${sysconfdir}/
 
 	# extract and store ipks, pkgdata and shlibs data
 	target_pkgs=`cat ${SDK_OUTPUT}/${prefix}/package-status | grep Package: | cut -f 2 -d ' '`
@@ -108,25 +83,15 @@ do_populate_sdk() {
 	# gcc-cross-sdk get built :( (30/11/07)
 	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
-	# Remove broken .la files
-	rm -f ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/*.la
-
-	# Generate link for sysroot use
-	# /usr/local/poky/eabi-glibc/arm/arm-poky-linux-gnueabi/usr -> .
-	cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}
-	ln -sf . usr 
-
-	# fix pkgconfig data files
-	if [ -e ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig ]; then
-		cd ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/pkgconfig
-		for f in *.pc ; do
-			sed -i 's%=/usr%=${prefix}/${TARGET_SYS}%g' "$f"
-		done
-		for f in *.pc ; do
-			sed -i 's%${STAGING_DIR}%${prefix}%g' "$f"
-		done
-	fi
-	
+	# Fix or remove broken .la files
+	for i in `find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS} -name \*.la`; do
+		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${layout_base_libdir},\1${prefix}/${TARGET_SYS}${layout_base_libdir},g" \
+			-e "/^dependency_libs=/s,\([[:space:]']\)${layout_libdir},\1${prefix}/${TARGET_SYS}${layout_libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${layout_base_libdir},-\1${prefix}/${TARGET_SYS}${layout_base_libdir},g" \
+			-e "/^dependency_libs=/s,\-\([LR]\)${layout_libdir},-\1${prefix}/${TARGET_SYS}${layout_libdir},g" \
+			-e 's/^installed=yes$/installed=no/' $i
+	done
+	rm -f ${SDK_OUTPUT}/${prefix}/lib/*.la
 
 	# Setup site file for external use
 	siteconfig=${SDK_OUTPUT}/${prefix}/site-config
@@ -140,8 +105,10 @@ do_populate_sdk() {
 	touch $script
 	echo 'export PATH=${prefix}/bin:$PATH' >> $script
 	echo 'export PKG_CONFIG_SYSROOT_DIR=${prefix}/${TARGET_SYS}' >> $script
-	echo 'export PKG_CONFIG_PATH=${prefix}/${TARGET_SYS}/lib/pkgconfig' >> $script
+	echo 'export PKG_CONFIG_PATH=${prefix}/${TARGET_SYS}${layout_libdir}/pkgconfig' >> $script
 	echo 'export CONFIG_SITE=${prefix}/site-config' >> $script
+	echo "alias opkg='LD_LIBRARY_PATH=${prefix}/lib ${prefix}/bin/opkg-cl -f ${sysconfdir}/opkg-sdk.conf -o ${prefix}'" >> $script
+	echo "alias opkg-target='LD_LIBRARY_PATH=${prefix}/lib ${prefix}/bin/opkg-cl -f ${prefix}/${TARGET_SYS}${layout_sysconfdir}/opkg.conf -o ${prefix}/${TARGET_SYS}'" >> $script
 
 	# Add version information
 	versionfile=${SDK_OUTPUT}/${prefix}/version
