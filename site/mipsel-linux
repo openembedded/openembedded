@@ -131,3 +131,7 @@ ac_cv_uint=${ac_cv_unit=yes}
 #python2.5
 ac_cv_file__dev_ptmx=${ac_cv_file__dev_ptmx=yes}
 ac_cv_file__dev_ptc=${ac_cv_file__dev_ptc=no}
+ac_cv_no_strict_aliasing_ok=${ac_cv_no_strict_aliasing_ok=yes}
+ac_cv_pthread=${ac_cv_pthread=yes}
+ac_cv_cxx_thread=${ac_cv_cxx_thread=yes}
+
