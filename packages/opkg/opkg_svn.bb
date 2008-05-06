@@ -1,7 +1,5 @@
 require opkg.inc
 
-PR = "r4"
-
 PACKAGES =+ "libopkg-dev libopkg"
 
 FILES_libopkg-dev = "${libdir}/*.a ${libdir}/*.la ${libdir}/*.so"
