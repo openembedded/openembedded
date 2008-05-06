@@ -72,3 +72,12 @@ python populate_packages_prepend () {
 
 	do_split_packages(d, enigma2_plugindir, '(.*?/.*?)/.*', 'enigma2-plugin-%s', '%s ', recursive=True, match_path=True, prepend=True)
 }
+
+do_stage_append() {
+	install -d ${STAGING_INCDIR}/enigma2
+	install -m 0644 ${WORKDIR}/enigma2/include/*.h ${STAGING_INCDIR}/enigma2
+	for dir in actions base components driver dvb dvb/lowlevel dvb_ci gdi gui mmi nav python service; do
+		install -d ${STAGING_INCDIR}/enigma2/lib/$dir;
+		install -m 0644 ${WORKDIR}/enigma2/lib/$dir/*.h ${STAGING_INCDIR}/enigma2/lib/$dir;
+	done
+}
