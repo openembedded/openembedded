@@ -46,6 +46,7 @@ TOBUILD = "\
   src/gui \
   src/tools/uic3 \
   tools/linguist/lrelease \
+  tools/linguist/lupdate \
 "
 
 do_compile() {
@@ -62,6 +63,7 @@ do_stage() {
     install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
     install -m 0755 bin/rcc ${STAGING_BINDIR}/rcc4
     install -m 0755 bin/lrelease ${STAGING_BINDIR}/lrelease4
+    install -m 0755 bin/lupdate ${STAGING_BINDIR}/lupdate4
     install -d ${STAGING_DIR_NATIVE}/qt4/
     install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR_NATIVE}/qt4/
 }
