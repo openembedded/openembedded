@@ -53,9 +53,9 @@ mount_tmpfs() {
   fi
 }
 
-# I hate this hack.  -- Md
 make_extra_nodes() {
-  mknod -m 666 /dev/null c 1 3
+  [ -c /dev/null ] || mknod -m 666 /dev/null c 1 3
+# I hate this hack.  -- Md
   if [ "$(echo /lib/udev/devices/*)" != "/lib/udev/devices/*" ]; then
     cp -a /lib/udev/devices/* /dev/
   fi
