@@ -76,8 +76,11 @@ ENABLE_BINARY_LOCALE_GENERATION_armeb = "0"
 TARGET_FPU_arm ?= "soft"
 TARGET_FPU_armeb ?= "soft"
 TARGET_FPU_ixp4xx ?= "soft"
+TARGET_FPU_ppc405 ?= "soft"
 
-TARGET_FPU_dht-walnut ?= "soft"
+TARGET_FPU_armv6 ?= "hard"
+TARGET_FPU_armv7a ?= "hard"
+TARGET_FPU_ppc603e ?= "hard"
 
 #Set the right arch for the feeds
 #Alphabetically sorted
