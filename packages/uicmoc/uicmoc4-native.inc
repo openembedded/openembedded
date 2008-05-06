@@ -4,7 +4,7 @@ SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
            file://configure-fix.patch;patch=1"
@@ -45,6 +45,7 @@ TOBUILD = "\
   src/network \
   src/gui \
   src/tools/uic3 \
+  tools/linguist/lrelease \
 "
 
 do_compile() {
@@ -60,6 +61,7 @@ do_stage() {
     install -m 0755 bin/uic ${STAGING_BINDIR}/uic4
     install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
     install -m 0755 bin/rcc ${STAGING_BINDIR}/rcc4
+    install -m 0755 bin/lrelease ${STAGING_BINDIR}/lrelease4
     install -d ${STAGING_DIR_NATIVE}/qt4/
     install -m 0644 tools/porting/src/q3porting.xml ${STAGING_DIR_NATIVE}/qt4/
 }
