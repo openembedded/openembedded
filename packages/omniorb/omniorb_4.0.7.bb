@@ -8,10 +8,11 @@ PR = "r0"
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz \
 file://omniORB.cfg \
 file://omniORB-cross.patch;patch=1 \
-file://omniORB_embedded_appl.patch;patch=1" \
+file://omniORB_embedded_appl.patch;patch=1 \
 file://rm_LongDouble.patch;patch=1 \
 file://arm_double.patch;patch=1;pnum=0 \
-file://dynskel.patch;patch=1;pnum=0"
+file://dynskel.patch;patch=1;pnum=0 \
+"
 
 S = "${WORKDIR}/omniORB-${PV}"
 
