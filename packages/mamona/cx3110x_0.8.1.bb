@@ -3,7 +3,9 @@ SECTION = "kernel/modules"
 LICENSE = "GPL"
 PR = "r0"
 
-PACKAGES = "cx3110x"
+PACKAGES = "${PN}"
+
+FILES_${PN} += "/lib/modules/cx3110x.ko"
 
 COMPATIBLE_MACHINE = "(nokia770|nokia800)"
 
@@ -27,7 +29,6 @@ BUILD_CFLAGS=""
 TARGET_LDFLAGS=""
 
 do_configure() {
-	:
 }
 
 do_compile() {
@@ -37,6 +38,6 @@ do_compile() {
 }
 
 do_install() {
-    mkdir -p ${WORKDIR}/install/${PN}/lib/modules/
-    install -m 0644 ${S}/src/cx3110x.ko ${WORKDIR}/install/${PN}/lib/modules/
+    install -d ${D}/lib/modules/
+    install -m 0644 ${S}/src/cx3110x.ko ${D}/lib/modules/
 }
