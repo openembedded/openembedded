@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r16"
+PR = "r17"
 
 require uclibc.inc
 
@@ -17,6 +17,7 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://errno_values.h.patch;patch=1 \
 	    file://termios.h.patch;patch=1 \
 	    file://unistd_arm.patch;patch=1 \
+	    file://build_wcs_upper_buffer.patch;patch=1 \
             file://uClibc-0.9.29-001-fix-mmap.patch;patch=1 \
             file://uClibc-0.9.29-002-atmel.1.patch;patch=1 \
             file://uClibc-0.9.29-avr32-fix-sa_onstack.patch;patch=1 \
@@ -26,11 +27,7 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://uClibc-0.9.29-rm-whitespace.patch;patch=1 \
             file://uClibc-0.9.29-avr32-bzero.patch;patch=1 \
 	    file://uClibc-0.9.29-nonposix_bashisms.patch;patch=1 \
-            "
-
-
-# mmap-unsigned-shift_bugid1303.patch
-# http://uclibc.org/lists/uclibc-cvs/2007-May/011360.html;patch=1"
+           "
 
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -44,4 +41,3 @@ SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 S = "${WORKDIR}/uClibc-${UCLIBC_BASE}"
 
 LEAD_SONAME = "libc.so"
-

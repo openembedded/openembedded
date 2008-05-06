@@ -1,0 +1,46 @@
+Index: gpm-1.20.1/src/prog/gpm-root.y
+===================================================================
+--- gpm-1.20.1.orig/src/prog/gpm-root.y
++++ gpm-1.20.1/src/prog/gpm-root.y
+@@ -44,7 +44,6 @@
+ #include <sys/stat.h>       /* fstat() */
+ #include <sys/utsname.h>    /* uname() */
+ #include <termios.h>        /* winsize */
+-#include <linux/limits.h>   /* OPEN_MAX */
+ #include <linux/vt.h>       /* VT_ACTIVATE */
+ #include <linux/keyboard.h> /* K_SHIFT */
+ #include <utmp.h>         
+@@ -525,7 +524,9 @@ int f_bgcmd(int mode, DrawItem *self, in
+ 	            open("/dev/null",O_RDONLY); /* stdin  */
+ 	            open(consolename,O_WRONLY); /* stdout */
+ 	            dup(1);                     /* stderr */  
+-	            for (i=3;i<OPEN_MAX; i++) close(i);
++	            int open_max = sysconf(_SC_OPEN_MAX);
++               if (open_max == -1) open_max = 1024;
++               for (i=3;i<open_max; i++) close(i);
+ 	            execl("/bin/sh","sh","-c",self->arg,(char *)NULL);
+ 	            exit(1); /* shouldn't happen */
+ 	         default: return 0;
+Index: gpm-1.20.1/src/special.c
+===================================================================
+--- gpm-1.20.1.orig/src/special.c
++++ gpm-1.20.1/src/special.c
+@@ -25,7 +25,6 @@
+ 
+ /* This file is compiled conditionally, see the Makefile */
+ 
+-#include <linux/limits.h> /* for OPEN_MAX */
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -155,7 +154,9 @@ int processSpecial(Gpm_Event *event)
+       open(GPM_NULL_DEV,O_RDONLY); /* stdin  */
+       open(option.consolename,O_WRONLY); /* stdout */
+       dup(1);                     /* stderr */
+-      for (i=3;i<OPEN_MAX; i++) close(i);
++      int open_max = sysconf(_SC_OPEN_MAX);
++      if (open_max == -1) open_max = 1024;
++      for (i=3;i<open_max; i++) close(i);
+       execl("/bin/sh","sh","-c",command,(char *)NULL);
+       exit(1); /* shouldn't happen */
+       

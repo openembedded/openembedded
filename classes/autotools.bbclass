@@ -172,7 +172,7 @@ autotools_stage_dir() {
 	rmdir "$from" 2> /dev/null || true
 	if [ -d "$from" ]; then
 		mkdir -p "$to"
-		cp -fpPR -t "$to" "$from"/*
+		cp -fpPR "$from"/* "$to"
 	fi
 }
 
