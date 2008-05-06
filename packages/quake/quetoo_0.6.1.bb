@@ -2,7 +2,7 @@ DESCRIPTION = "Initially a fork of the Quake2Forge project, this engine aims to 
 LICENSE = "GPLv2"
 
 DEPENDS = "libsdl-x11 zlib mesa"
-SRC_URI = "http://tastyspleen.net/~jdolan/quetoo-${PV}-full.tar.bz2"
+SRC_URI = "http://tastyspleen.net/~jdolan/quetoo-${PV}.tar.bz2"
 
 inherit autotools pkgconfig
 
