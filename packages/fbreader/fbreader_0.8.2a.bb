@@ -1,8 +1,8 @@
 DESCRIPTION = "FBreader is an ebook reader"
-LICENSE = "GPLv2"
-HOMEPAGE = "http://only.mawhrin.net/fbreader/"
+HOMEPAGE = "http://www.fbreader.org"
 SECTION = "x11/utils"
 PRIORITY = "optional"
+LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv"
 PR = "r5"
 
@@ -10,7 +10,7 @@ PR = "r5"
 # this package MACHINE specific.
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
-SRC_URI = "http://only.mawhrin.net/fbreader/fbreader-sources-${PV}.tgz \
+SRC_URI = "http://www.fbreader.org/obsolete/fbreader-sources-${PV}.tgz \
 	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
 	   file://480x640-buildfix.patch;patch=1"
 	   
