@@ -12,7 +12,9 @@ FILES_${PN} = "${libdir}/lib*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"
 
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
+
 do_stage() {
 	autotools_stage_all
-	cp ${PKG_CONFIG_DIR}/libsoup.pc ${PKG_CONFIG_DIR}/libsoup-2.2.pc
+	ln -sf libsoup-2.2.pc ${PKG_CONFIG_DIR}/libsoup.pc
 }
