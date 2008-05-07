@@ -1,4 +1,5 @@
 upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1959138&group_id=37116&atid=418820
+status: accepted in revision 31912 (less than an hour for turnaround, fantastic!)
 origin: adapted from http://bugs.openembedded.net/show_bug.cgi?id=3522
 comment: the strict check for targets needs to be relaxed to compile for some of OE targets
 
