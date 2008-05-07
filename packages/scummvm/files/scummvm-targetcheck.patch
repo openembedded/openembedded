@@ -1,3 +1,7 @@
+upstream: http://sourceforge.net/tracker/index.php?func=detail&aid=1959138&group_id=37116&atid=418820
+origin: adapted from http://bugs.openembedded.net/show_bug.cgi?id=3522
+comment: the strict check for targets needs to be relaxed to compile for some of OE targets
+
 diff -uNr scummvm-0.9.1.vanilla/configure scummvm-0.9.1/configure
 --- scummvm-0.9.1.vanilla/configure	2007-12-23 00:08:23.000000000 +0100
 +++ scummvm-0.9.1/configure	2007-12-23 00:08:35.000000000 +0100
