@@ -1,0 +1,117 @@
+Use native helpers staged by anthy-native.
+
+Index: anthy-9100e/mkanthydic/Makefile.am
+===================================================================
+--- anthy-9100e.orig/mkanthydic/Makefile.am	2008-05-05 00:36:35.000000000 +0200
++++ anthy-9100e/mkanthydic/Makefile.am	2008-05-05 00:37:59.000000000 +0200
+@@ -3,12 +3,12 @@
+ CLEANFILES = anthy.dic
+ INCLUDES = -I$(top_srcdir)/ -DSRCDIR=\"$(srcdir)\"
+ 
+-noinst_PROGRAMS = mkfiledic
+-mkfiledic_SOURCES = mkfiledic.c
+-mkfiledic_LDADD = ../src-diclib/libdiclib.la
++#noinst_PROGRAMS = mkfiledic
++#mkfiledic_SOURCES = mkfiledic.c
++#mkfiledic_LDADD = ../src-diclib/libdiclib.la
+ 
+-anthy.dic : mkfiledic ../mkworddic/anthy.wdic ../depgraph/anthy.dep ../calctrans/anthy.cand_info ../calctrans/anthy.trans_info ../calctrans/anthy.corpus_array ../calctrans/anthy.corpus_bucket
+-	./mkfiledic
++anthy.dic : ../mkworddic/anthy.wdic ../depgraph/anthy.dep ../calctrans/anthy.cand_info ../calctrans/anthy.trans_info ../calctrans/anthy.corpus_array ../calctrans/anthy.corpus_bucket
++	mkfiledic
+ 
+ 
+ # To install 
+Index: anthy-9100e/depgraph/Makefile.am
+===================================================================
+--- anthy-9100e.orig/depgraph/Makefile.am	2008-05-05 00:38:48.000000000 +0200
++++ anthy-9100e/depgraph/Makefile.am	2008-05-05 00:40:24.000000000 +0200
+@@ -9,11 +9,11 @@
+ EXTRA_DIST = indepword.txt $(DEPWORDS)
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkdepgraph
+-mkdepgraph_SOURCES = mkdepgraph.c
+-mkdepgraph_LDADD =  ../src-main/libanthy.la ../src-worddic/libanthydic.la
++#noinst_PROGRAMS = mkdepgraph
++#mkdepgraph_SOURCES = mkdepgraph.c
++#mkdepgraph_LDADD =  ../src-main/libanthy.la ../src-worddic/libanthydic.la
+ 
+-anthy.dep : mkdepgraph
+-	./mkdepgraph
++anthy.dep :
++	mkdepgraph
+ 
+ noinst_DATA = anthy.dep
+Index: anthy-9100e/mkworddic/Makefile.am
+===================================================================
+--- anthy-9100e.orig/mkworddic/Makefile.am	2008-05-05 00:40:57.000000000 +0200
++++ anthy-9100e/mkworddic/Makefile.am	2008-05-05 00:41:52.000000000 +0200
+@@ -16,14 +16,14 @@
+  udict dict.args.in
+ 
+ # Generate the dictionary
+-noinst_PROGRAMS = mkworddic
+-mkworddic_SOURCES = mkdic.c writewords.c mkudic.c calcfreq.c mkdic.h
+-mkworddic_LDADD = ../src-worddic/libanthydic.la
++#noinst_PROGRAMS = mkworddic
++#mkworddic_SOURCES = mkdic.c writewords.c mkudic.c calcfreq.c mkdic.h
++#mkworddic_LDADD = ../src-worddic/libanthydic.la
+ 
+ noinst_DATA = anthy.wdic
+ 
+-anthy.wdic : mkworddic
+-	   ./mkworddic -f ./dict.args
++anthy.wdic :
++	   mkworddic -f ./dict.args
+ 
+ 
+ # To install
+Index: anthy-9100e/calctrans/Makefile.am
+===================================================================
+--- anthy-9100e.orig/calctrans/Makefile.am	2008-05-08 15:05:18.000000000 +0200
++++ anthy-9100e/calctrans/Makefile.am	2008-05-08 15:10:40.000000000 +0200
+@@ -15,31 +15,31 @@
+ 
+ update_params:
+ 	rm -f parsed_data2
+-	./proccorpus $(srcdir)/corpus.?.txt > parsed_data
+-	./calctrans parsed_data -o $(srcdir)/corpus_info
+-	./calctrans parsed_data -e -o $(srcdir)/weak_words
++	proccorpus $(srcdir)/corpus.?.txt > parsed_data
++	calctrans parsed_data -o $(srcdir)/corpus_info
++	calctrans parsed_data -e -o $(srcdir)/weak_words
+ 	make do_update_params
+ 
+ update_params0:
+ 	rm -f parsed_data2
+-	./proccorpus $(srcdir)/corpus.0.txt > parsed_data
+-	./calctrans parsed_data -o $(srcdir)/corpus_info
+-	./calctrans parsed_data -e -o $(srcdir)/weak_words
++	proccorpus $(srcdir)/corpus.0.txt > parsed_data
++	calctrans parsed_data -o $(srcdir)/corpus_info
++	calctrans parsed_data -e -o $(srcdir)/weak_words
+ 	make do_update_params
+ 
+ update_params2:
+-	./proccorpus $(srcdir)/corpus.?.txt >> parsed_data2
+-	./calctrans parsed_data parsed_data2 -o $(srcdir)/corpus_info
+-	./calctrans parsed_data parsed_data2 -e -o $(srcdir)/weak_words
++	proccorpus $(srcdir)/corpus.?.txt >> parsed_data2
++	calctrans parsed_data parsed_data2 -o $(srcdir)/corpus_info
++	calctrans parsed_data parsed_data2 -e -o $(srcdir)/weak_words
+ 	make do_update_params
+ 
+ do_update_params:
+-	./calctrans -c $(srcdir)/corpus_info
++	calctrans -c $(srcdir)/corpus_info
+ 	rm -f $(dict_source_files)
+ 	make $(dict_source_files)
+ 
+-$(dict_source_files): $(srcdir)/corpus_info $(srcdir)/weak_words calctrans
+-	./calctrans -c $(srcdir)/corpus_info $(srcdir)/weak_words
++$(dict_source_files): $(srcdir)/corpus_info $(srcdir)/weak_words
++	calctrans -c $(srcdir)/corpus_info $(srcdir)/weak_words
+ 
+ noinst_DATA = $(dict_source_files)
+ CLEANFILES = $(dict_source_files) parsed_data parsed_data2 anthy.feature_info

@@ -1,3 +1,6 @@
+Stage the native anthy helpers mkfiledic, mkdepgraph, mkworddic, 
+calctrans and proccorpus.
+
 --- anthy-7811/mkanthydic/Makefile.am~	2006-05-13 18:28:35.000000000 +0900
 +++ anthy-7811/mkanthydic/Makefile.am	2006-06-18 10:56:25.770000000 +0900
 @@ -3,7 +3,7 @@
@@ -29,17 +32,17 @@
 -noinst_PROGRAMS = mkworddic
 +#noinst_PROGRAMS = mkworddic
 +bin_PROGRAMS = mkworddic
- mkworddic_SOURCES = mkdic.c writewords.c mkudic.c mkdic.h
+ mkworddic_SOURCES = mkdic.c writewords.c mkudic.c calcfreq.c mkdic.h
  mkworddic_LDADD = ../src-worddic/libanthydic.la
+
+--- anthy-9100e.orig/calctrans/Makefile.am	2008-05-08 15:04:13.000000000 +0200
++++ anthy-9100e/calctrans/Makefile.am	2008-05-08 15:04:24.000000000 +0200
+@@ -3,7 +3,7 @@
+  corpus.3.txt corpus.4.txt corpus.5.txt\
+  corpus_info weak_words
  
---- anthy-7811/mkmatrix/Makefile.am~	2006-06-18 11:29:52.110000000 +0900
-+++ anthy-7811/mkmatrix/Makefile.am	2006-06-18 11:32:30.630000000 +0900
-@@ -1,6 +1,7 @@
- EXTRA_DIST = dep.sorted
+-noinst_PROGRAMS = calctrans proccorpus
++bin_PROGRAMS = calctrans proccorpus
+ INCLUDES = -I$(top_srcdir)/
  
--noinst_PROGRAMS = mkmatrix
-+#noinst_PROGRAMS = mkmatrix
-+bin_PROGRAMS = mkmatrix
- INCLUDES = -I$(top_srcdir)/include
- mkmatrix_LDADD = ../src-worddic/libanthydic.la -lm
- mkmatrix_SOURCES = mkmatrix.c
+ calctrans_SOURCES = calctrans.c input_set.c input_set.h corpus.c

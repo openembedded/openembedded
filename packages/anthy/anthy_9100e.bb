@@ -1,24 +1,22 @@
 DESCRIPTION = "A Japanese input method"
-AUTHOR = "Anthy Developers <anthy-dev@lists.sourceforge.jp>"
-HOMEPAGE = "http://anthy.sourceforge.jp"
-LICENSE = "GPL"
-DEPENDS = "anthy-native"
-SECTION = "inputmethods"
-PR = "r2"
-
-SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/20510/anthy-7811.tar.gz \
-	   file://not_build_elc.patch;patch=1 \
-	   file://2ch_t.patch;patch=1 \
-	   file://change_anthy_dic_path.patch;patch=1 \
-	   file://native-mkanthydic-mkdepgraph.patch;patch=1"
-
-inherit autotools pkgconfig
-
 DESCRIPTION_anthy = "A Japanese input method (backend, dictionary and utility)"
 DESCRIPTION_libanthy0 = "Anthy runtime library"
 DESCRIPTION_libanthy-dev = "Anthy static library, headers and documets for developers"
+AUTHOR = "Anthy Developers <anthy-dev@lists.sourceforge.jp>"
+HOMEPAGE = "http://anthy.sourceforge.jp"
+SECTION = "inputmethods"
 SECTION_libanthy0 = "libs/inputmethods"
 SECTION_libanthy-dev = "devel/libs"
+LICENSE = "GPL"
+DEPENDS = "anthy-native"
+PR = "r3"
+
+SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/29142/anthy-9100e.tar.gz \
+           file://not_build_elc.patch;patch=1 \
+           file://2ch_t.patch;patch=1 \
+           file://native-helpers.patch;patch=1"
+
+inherit autotools pkgconfig
 
 # gettext
 
