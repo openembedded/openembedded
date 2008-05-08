@@ -3,7 +3,6 @@ require linux.inc
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_gesbc-9302 = "1"
-DEFAULT_PREFERENCE_cm-x270 = "-1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_simpad = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"

@@ -26,6 +26,8 @@ SRC_URI_append_cm-x270 = " \
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
+FILES_kernel-image_cm-x270 = ""
+
 python do_compulab_image() {
 	import os
 	import os.path
