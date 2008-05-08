@@ -32,7 +32,7 @@ SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
             file://errno_values.h.patch;patch=1 \
 	    file://build_wcs_upper_buffer.patch;patch=1 \
             file://arm_fix_alignment.patch;patch=1 \
-	    file://file://unistd_arm.patch;patch=1 \
+	    file://unistd_arm.patch;patch=1 \
             "
 
 S = "${WORKDIR}/uClibc"
