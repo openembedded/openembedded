@@ -6,7 +6,8 @@ require linux-omap.inc
 DAVINCI_SRCREV ?= "713dc561fa98efb6cbac3f641c43d30ce8b840dd"
 SRCREV = "${DAVINCI_SRCREV}"
 
-PV = "2.6.24+2.6.25-rc8-git${SRCREV}"
+PV = "2.6.25"
+#PV = "2.6.25+2.6.26-rc0+git${SRCREV}"
 PR = "r1"
 
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
