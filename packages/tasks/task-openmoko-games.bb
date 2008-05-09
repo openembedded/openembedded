@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Games for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r71"
+PR = "r72"
 
 inherit task
 
@@ -11,4 +11,5 @@ inherit task
 DESCRIPTION_task-openmoko-games = "Openmoko: Games"
 RDEPENDS_task-openmoko-games = "\
   oh-puzzles \
+  kobodeluxe \
 "

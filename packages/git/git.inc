@@ -8,14 +8,14 @@ SRC_URI = "http://www.kernel.org/pub/software/scm/git/git-${PV}.tar.bz2 \
 	   "
 S = "${WORKDIR}/git-${PV}"
 
-EXTRA_OEMAKE = "NO_TCLTL=1"
+EXTRA_OEMAKE = "NO_TCLTK=1"
 
 inherit autotools
 
 do_install () {
-	oe_runmake install prefix=${D} bindir=${D}${bindir} \
-		template_dir=${D}${datadir}/git-core/templates \
-		GIT_PYTHON_DIR=${D}${datadir}/git-core/python
+	oe_runmake install DESTDIR="${D}" bindir=${bindir} \
+		template_dir=${datadir}/git-core/templates \
+		GIT_PYTHON_DIR=${datadir}/git-core/python
 }
 
 FILES_${PN} += "${datadir}/git-core"

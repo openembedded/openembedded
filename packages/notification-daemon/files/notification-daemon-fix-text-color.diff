@@ -1,0 +1,44 @@
+--- notification-daemon-0.3.7.orig/src/themes/standard/theme.c	2007-01-26 04:20:15.000000000 +0000
++++ notification-daemon-0.3.7/src/themes/standard/theme.c	2008-04-18 12:14:33.000000000 +0100
+@@ -653,6 +653,23 @@
+ 	return FALSE;
+ }
+ 
++
++static void
++style_set_cb (GtkWidget *label, GtkStyle *previous_style, WindowData *windata)
++{
++	static gboolean in_style_set_cb;
++
++	if (in_style_set_cb)
++		return;
++
++	in_style_set_cb = TRUE;
++
++	gtk_widget_modify_fg (label, GTK_STATE_NORMAL,
++			      &label->style->text[GTK_STATE_NORMAL]);
++
++	in_style_set_cb = FALSE;
++}
++
+ GtkWindow *
+ create_notification(UrlClickedCb url_clicked)
+ {
+@@ -753,6 +770,8 @@
+ 	gtk_widget_set_size_request(spacer, SPACER_LEFT, -1);
+ 
+ 	windata->summary_label = gtk_label_new(NULL);
++	g_signal_connect(windata->summary_label, "style-set",
++			 G_CALLBACK(style_set_cb), windata);
+ 	gtk_widget_show(windata->summary_label);
+ 	gtk_box_pack_start(GTK_BOX(hbox), windata->summary_label, TRUE, TRUE, 0);
+ 	gtk_misc_set_alignment(GTK_MISC(windata->summary_label), 0, 0);
+@@ -800,6 +819,8 @@
+ 	gtk_box_pack_start(GTK_BOX(windata->content_hbox), vbox, TRUE, TRUE, 0);
+ 
+ 	windata->body_label = sexy_url_label_new();
++	g_signal_connect(windata->body_label, "style-set",
++			 G_CALLBACK(style_set_cb), windata);
+ 	gtk_box_pack_start(GTK_BOX(vbox), windata->body_label, TRUE, TRUE, 0);
+ 	gtk_misc_set_alignment(GTK_MISC(windata->body_label), 0, 0);
+ 	gtk_label_set_line_wrap(GTK_LABEL(windata->body_label), TRUE);

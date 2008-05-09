@@ -1,5 +1,7 @@
-Stage the native anthy helpers mkfiledic, mkdepgraph, mkworddic, 
-calctrans and proccorpus.
+upstream: not applicable
+author: pH5
+comment: Stage the native anthy helpers mkfiledic, mkdepgraph, mkworddic, 
+comment: calctrans and proccorpus.
 
 --- anthy-7811/mkanthydic/Makefile.am~	2006-05-13 18:28:35.000000000 +0900
 +++ anthy-7811/mkanthydic/Makefile.am	2006-06-18 10:56:25.770000000 +0900

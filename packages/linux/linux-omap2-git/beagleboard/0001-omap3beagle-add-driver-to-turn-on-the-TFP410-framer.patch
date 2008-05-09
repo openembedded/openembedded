@@ -40,10 +40,10 @@ index cad6a68..fe7ee5d 100644
  omapfb-objs := $(objs-yy)
 diff --git a/drivers/video/omap/lcd_omap3beagle.c b/drivers/video/omap/lcd_omap3beagle.c
 new file mode 100644
-index 0000000..99343b1
+index 0000000..d49101a
 --- /dev/null
 +++ b/drivers/video/omap/lcd_omap3beagle.c
-@@ -0,0 +1,141 @@
+@@ -0,0 +1,140 @@
 +/*
 + * LCD panel support for the TI OMAP3 Beagle board
 + *
@@ -79,8 +79,8 @@ index 0000000..99343b1
 +
 +#define LCD_XRES	 	1024	
 +#define LCD_YRES 		768
-+#define LCD_PIXCLOCK_MAX	16700 /* in pico seconds  */
-+#define LCD_PIXCLOCK_MIN	15200 /* in pico seconds */
++#define LCD_PIXCLOCK_MAX        64000 /* in pico seconds  */
++#define LCD_PIXCLOCK_MIN        64000 /* in pico seconds */
 +
 +#define ENABLE_VDAC_DEDICATED	0x03
 +#define ENABLE_VDAC_DEV_GRP	0x20
@@ -101,13 +101,13 @@ index 0000000..99343b1
 +
 +static int omap3beagle_panel_enable(struct lcd_panel *panel)
 +{
-+	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 0);
++	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 1);
 +	return 0;
 +}
 +
 +static void omap3beagle_panel_disable(struct lcd_panel *panel)
 +{
-+	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 1);
++	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 0);
 +}
 +
 +static unsigned long omap3beagle_panel_get_caps(struct lcd_panel *panel)
@@ -117,11 +117,10 @@ index 0000000..99343b1
 +
 +struct lcd_panel omap3beagle_panel = {
 +	.name		= "omap3beagle",
-+	.config		= OMAP_LCDC_PANEL_TFT | OMAP_LCDC_INV_VSYNC |
-+			  OMAP_LCDC_INV_HSYNC,
++	.config		= OMAP_LCDC_PANEL_TFT,
 +
-+	.bpp		= 16,
-+	.data_lines	= 18,
++	.bpp		= 24,
++	.data_lines	= 24,
 +	.x_res		= LCD_XRES,
 +	.y_res		= LCD_YRES,
 +	.hsw		= 3,		/* hsync_len (4) - 1 */

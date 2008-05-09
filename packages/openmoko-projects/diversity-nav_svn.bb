@@ -2,10 +2,10 @@ DESCRIPTION = "Diversity_nav - a GPS location based communicative application"
 HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"
-DEPENDS = "evas edje ecore edbus ewl"
-RDEPENDS_${PN} = "diversity-daemon ewl-themes"
+DEPENDS = "evas edje ecore edbus etk"
+RDEPENDS_${PN} = "diversity-daemon"
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/diversity/trunk;module=diversity-nav;proto=https"
 

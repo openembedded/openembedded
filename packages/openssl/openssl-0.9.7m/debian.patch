@@ -1,0 +1,832 @@
+Index: openssl-0.9.7m/tools/c_rehash.in
+===================================================================
+--- openssl-0.9.7m.orig/tools/c_rehash.in	2002-10-11 22:35:45.000000000 +0200
++++ openssl-0.9.7m/tools/c_rehash.in	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ 
+ # Perl c_rehash script, scan all files in a directory
+Index: openssl-0.9.7m/tools/c_rehash
+===================================================================
+--- openssl-0.9.7m.orig/tools/c_rehash	2007-02-23 13:52:38.000000000 +0100
++++ openssl-0.9.7m/tools/c_rehash	2008-04-12 02:37:45.000000000 +0200
+@@ -6,7 +6,7 @@
+ 
+ my $openssl;
+ 
+-my $dir = "/usr/local/ssl";
++my $dir = "/usr/lib/ssl";
+ 
+ if(defined $ENV{OPENSSL}) {
+ 	$openssl = $ENV{OPENSSL};
+Index: openssl-0.9.7m/crypto/md5/asm/md5-sparcv9.S
+===================================================================
+--- openssl-0.9.7m.orig/crypto/md5/asm/md5-sparcv9.S	2003-05-30 00:22:34.000000000 +0200
++++ openssl-0.9.7m/crypto/md5/asm/md5-sparcv9.S	2008-04-12 02:37:45.000000000 +0200
+@@ -74,14 +74,14 @@
+ #define Dval	R8
+ 
+ #if defined(MD5_BLOCK_DATA_ORDER)
+-# if defined(OPENSSL_SYSNAME_ULTRASPARC)
++/*# if defined(OPENSSL_SYSNAME_ULTRASPARC)*/
+ #  define	LOAD			lda
+ #  define	X(i)			[%i1+i*4]%asi
+ #  define	md5_block		md5_block_asm_data_order_aligned
+ #  define	ASI_PRIMARY_LITTLE	0x88
+-# else
++/*# else
+ #  error "MD5_BLOCK_DATA_ORDER is supported only on UltraSPARC!"
+-# endif
++# endif*/
+ #else
+ # define	LOAD			ld
+ # define	X(i)			[%i1+i*4]
+Index: openssl-0.9.7m/crypto/pkcs7/pk7_mime.c
+===================================================================
+--- openssl-0.9.7m.orig/crypto/pkcs7/pk7_mime.c	2005-05-01 14:47:33.000000000 +0200
++++ openssl-0.9.7m/crypto/pkcs7/pk7_mime.c	2008-04-12 02:37:45.000000000 +0200
+@@ -297,9 +297,9 @@
+ 
+ 		if(strcmp(hdr->value, "application/x-pkcs7-signature") &&
+ 			strcmp(hdr->value, "application/pkcs7-signature")) {
+-			sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
+ 			PKCS7err(PKCS7_F_SMIME_READ_PKCS7,PKCS7_R_SIG_INVALID_MIME_TYPE);
+ 			ERR_add_error_data(2, "type: ", hdr->value);
++			sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
+ 			sk_BIO_pop_free(parts, BIO_vfree);
+ 			return NULL;
+ 		}
+Index: openssl-0.9.7m/crypto/dsa/dsa_ossl.c
+===================================================================
+--- openssl-0.9.7m.orig/crypto/dsa/dsa_ossl.c	2006-09-28 13:53:49.000000000 +0200
++++ openssl-0.9.7m/crypto/dsa/dsa_ossl.c	2008-04-12 02:37:45.000000000 +0200
+@@ -286,6 +286,18 @@
+ 		return -1;
+ 		}
+ 
++	if (BN_num_bits(dsa->q) != 160)
++		{
++		DSAerr(DSA_F_DSA_DO_VERIFY,DSA_R_BAD_Q_VALUE);
++		return -1;
++		}
++
++	if (BN_num_bits(dsa->p) > OPENSSL_DSA_MAX_MODULUS_BITS)
++		{
++		DSAerr(DSA_F_DSA_DO_VERIFY,DSA_R_MODULUS_TOO_LARGE);
++		return -1;
++		}
++
+ 	BN_init(&u1);
+ 	BN_init(&u2);
+ 	BN_init(&t1);
+Index: openssl-0.9.7m/crypto/dsa/dsa.h
+===================================================================
+--- openssl-0.9.7m.orig/crypto/dsa/dsa.h	2006-09-28 13:53:49.000000000 +0200
++++ openssl-0.9.7m/crypto/dsa/dsa.h	2008-04-12 02:37:45.000000000 +0200
+@@ -83,6 +83,10 @@
+ # define OPENSSL_DSA_MAX_MODULUS_BITS	10000
+ #endif
+ 
++#ifndef OPENSSL_DSA_MAX_MODULUS_BITS
++# define OPENSSL_DSA_MAX_MODULUS_BITS	10000
++#endif
++
+ #define DSA_FLAG_CACHE_MONT_P	0x01
+ #define DSA_FLAG_NO_EXP_CONSTTIME       0x02 /* new with 0.9.7h; the built-in DSA
+                                               * implementation now uses constant time
+Index: openssl-0.9.7m/crypto/rc4/asm/rc4-x86_64.pl
+===================================================================
+--- openssl-0.9.7m.orig/crypto/rc4/asm/rc4-x86_64.pl	2005-05-04 18:12:07.000000000 +0200
++++ openssl-0.9.7m/crypto/rc4/asm/rc4-x86_64.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/local/bin/perl
+ #
+ # ====================================================================
+ # Written by Andy Polyakov <appro@fy.chalmers.se> for the OpenSSL
+Index: openssl-0.9.7m/crypto/asn1/charmap.pl
+===================================================================
+--- openssl-0.9.7m.orig/crypto/asn1/charmap.pl	2000-07-28 03:58:11.000000000 +0200
++++ openssl-0.9.7m/crypto/asn1/charmap.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ 
+ use strict;
+ 
+Index: openssl-0.9.7m/crypto/sha/asm/sha1-ia64.pl
+===================================================================
+--- openssl-0.9.7m.orig/crypto/sha/asm/sha1-ia64.pl	2004-12-09 21:55:52.000000000 +0100
++++ openssl-0.9.7m/crypto/sha/asm/sha1-ia64.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/local/bin/perl
+ #
+ # ====================================================================
+ # Written by Andy Polyakov <appro@fy.chalmers.se> for the OpenSSL
+Index: openssl-0.9.7m/crypto/bn/asm/ppc.pl
+===================================================================
+--- openssl-0.9.7m.orig/crypto/bn/asm/ppc.pl	2005-07-03 11:24:35.000000000 +0200
++++ openssl-0.9.7m/crypto/bn/asm/ppc.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl
++#!/usr/local/bin/perl
+ #
+ # Implemented as a Perl wrapper as we want to support several different
+ # architectures with single file. We pick up the target based on the
+Index: openssl-0.9.7m/crypto/rsa/rsa_eay.c
+===================================================================
+--- openssl-0.9.7m.orig/crypto/rsa/rsa_eay.c	2006-12-04 21:41:46.000000000 +0100
++++ openssl-0.9.7m/crypto/rsa/rsa_eay.c	2008-04-12 02:37:45.000000000 +0200
+@@ -336,6 +336,28 @@
+ 	int local_blinding = 0;
+ 	BN_BLINDING *blinding = NULL;
+ 
++	if (BN_num_bits(rsa->n) > OPENSSL_RSA_MAX_MODULUS_BITS)
++		{
++		RSAerr(RSA_F_RSA_EAY_PUBLIC_ENCRYPT, RSA_R_MODULUS_TOO_LARGE);
++		return -1;
++		}
++
++	if (BN_ucmp(rsa->n, rsa->e) <= 0)
++		{
++		RSAerr(RSA_F_RSA_EAY_PUBLIC_ENCRYPT, RSA_R_BAD_E_VALUE);
++		return -1;
++		}
++
++	/* for large moduli, enforce exponent limit */
++	if (BN_num_bits(rsa->n) > OPENSSL_RSA_SMALL_MODULUS_BITS)
++		{
++		if (BN_num_bits(rsa->e) > OPENSSL_RSA_MAX_PUBEXP_BITS)
++			{
++			RSAerr(RSA_F_RSA_EAY_PUBLIC_ENCRYPT, RSA_R_BAD_E_VALUE);
++			return -1;
++			}
++		}
++	
+ 	BN_init(&f);
+ 	BN_init(&ret);
+ 
+@@ -644,6 +666,28 @@
+ 			}
+ 		}
+ 
++	if (BN_num_bits(rsa->n) > OPENSSL_RSA_MAX_MODULUS_BITS)
++		{
++		RSAerr(RSA_F_RSA_EAY_PUBLIC_DECRYPT, RSA_R_MODULUS_TOO_LARGE);
++		return -1;
++		}
++
++	if (BN_ucmp(rsa->n, rsa->e) <= 0)
++		{
++		RSAerr(RSA_F_RSA_EAY_PUBLIC_DECRYPT, RSA_R_BAD_E_VALUE);
++		return -1;
++		}
++
++	/* for large moduli, enforce exponent limit */
++	if (BN_num_bits(rsa->n) > OPENSSL_RSA_SMALL_MODULUS_BITS)
++		{
++		if (BN_num_bits(rsa->e) > OPENSSL_RSA_MAX_PUBEXP_BITS)
++			{
++			RSAerr(RSA_F_RSA_EAY_PUBLIC_DECRYPT, RSA_R_BAD_E_VALUE);
++			return -1;
++			}
++		}
++	
+ 	BN_init(&f);
+ 	BN_init(&ret);
+ 	ctx=BN_CTX_new();
+Index: openssl-0.9.7m/crypto/rsa/rsa.h
+===================================================================
+--- openssl-0.9.7m.orig/crypto/rsa/rsa.h	2006-09-28 13:53:50.000000000 +0200
++++ openssl-0.9.7m/crypto/rsa/rsa.h	2008-04-12 02:37:45.000000000 +0200
+@@ -165,6 +165,17 @@
+ # define OPENSSL_RSA_MAX_PUBEXP_BITS	64 /* exponent limit enforced for "large" modulus only */
+ #endif
+ 
++#ifndef OPENSSL_RSA_MAX_MODULUS_BITS
++# define OPENSSL_RSA_MAX_MODULUS_BITS	16384
++#endif
++
++#ifndef OPENSSL_RSA_SMALL_MODULUS_BITS
++# define OPENSSL_RSA_SMALL_MODULUS_BITS	3072
++#endif
++#ifndef OPENSSL_RSA_MAX_PUBEXP_BITS
++# define OPENSSL_RSA_MAX_PUBEXP_BITS	64 /* exponent limit enforced for "small" modulus only */
++#endif
++
+ #define RSA_3	0x3L
+ #define RSA_F4	0x10001L
+ 
+Index: openssl-0.9.7m/crypto/opensslconf.h
+===================================================================
+--- openssl-0.9.7m.orig/crypto/opensslconf.h	2007-02-23 13:52:32.000000000 +0100
++++ openssl-0.9.7m/crypto/opensslconf.h	2008-04-12 02:37:45.000000000 +0200
+@@ -4,17 +4,38 @@
+ /* OpenSSL was configured with the following options: */
+ #ifndef OPENSSL_DOING_MAKEDEPEND
+ 
++#ifndef OPENSSL_NO_IDEA
++# define OPENSSL_NO_IDEA
++#endif
++#ifndef OPENSSL_NO_MDC2
++# define OPENSSL_NO_MDC2
++#endif
++#ifndef OPENSSL_NO_RC5
++# define OPENSSL_NO_RC5
++#endif
+ #ifndef OPENSSL_NO_KRB5
+ # define OPENSSL_NO_KRB5
+ #endif
+ 
+ #endif /* OPENSSL_DOING_MAKEDEPEND */
++#ifndef OPENSSL_THREADS
++# define OPENSSL_THREADS
++#endif
+ 
+ /* The OPENSSL_NO_* macros are also defined as NO_* if the application
+    asks for it.  This is a transient feature that is provided for those
+    who haven't had the time to do the appropriate changes in their
+    applications.  */
+ #ifdef OPENSSL_ALGORITHM_DEFINES
++# if defined(OPENSSL_NO_IDEA) && !defined(NO_IDEA)
++#  define NO_IDEA
++# endif
++# if defined(OPENSSL_NO_MDC2) && !defined(NO_MDC2)
++#  define NO_MDC2
++# endif
++# if defined(OPENSSL_NO_RC5) && !defined(NO_RC5)
++#  define NO_RC5
++# endif
+ # if defined(OPENSSL_NO_KRB5) && !defined(NO_KRB5)
+ #  define NO_KRB5
+ # endif
+@@ -27,7 +48,7 @@
+ 
+ #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
+ #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
+-#define OPENSSLDIR "/usr/local/ssl"
++#define OPENSSLDIR "/usr/lib/ssl"
+ #endif
+ #endif
+ 
+@@ -79,7 +100,7 @@
+ 
+ #if defined(HEADER_BN_H) && !defined(CONFIG_HEADER_BN_H)
+ #define CONFIG_HEADER_BN_H
+-#undef BN_LLONG
++#define BN_LLONG
+ 
+ /* Should we define BN_DIV2W here? */
+ 
+@@ -98,7 +119,7 @@
+ #define CONFIG_HEADER_RC4_LOCL_H
+ /* if this is defined data[i] is used instead of *data, this is a %20
+  * speedup on x86 */
+-#undef RC4_INDEX
++#define RC4_INDEX
+ #endif
+ 
+ #if defined(HEADER_BF_LOCL_H) && !defined(CONFIG_HEADER_BF_LOCL_H)
+@@ -112,14 +133,14 @@
+ /* the following is tweaked from a config script, that is why it is a
+  * protected undef/define */
+ #ifndef DES_PTR
+-#undef DES_PTR
++#define DES_PTR
+ #endif
+ 
+ /* This helps C compiler generate the correct code for multiple functional
+  * units.  It reduces register dependancies at the expense of 2 more
+  * registers */
+ #ifndef DES_RISC1
+-#undef DES_RISC1
++#define DES_RISC1
+ #endif
+ 
+ #ifndef DES_RISC2
+@@ -133,7 +154,7 @@
+ /* Unroll the inner loop, this sometimes helps, sometimes hinders.
+  * Very mucy CPU dependant */
+ #ifndef DES_UNROLL
+-#undef DES_UNROLL
++#define DES_UNROLL
+ #endif
+ 
+ /* These default values were supplied by
+Index: openssl-0.9.7m/ms/fipscheck.pl
+===================================================================
+--- openssl-0.9.7m.orig/ms/fipscheck.pl	2006-01-28 14:34:27.000000000 +0100
++++ openssl-0.9.7m/ms/fipscheck.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/local/bin/perl
+ 
+ # fipscheck.pl
+ # sample perl script to check integrity of critical FIPS files
+Index: openssl-0.9.7m/Configure
+===================================================================
+--- openssl-0.9.7m.orig/Configure	2007-02-22 23:30:49.000000000 +0100
++++ openssl-0.9.7m/Configure	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-:
++#!/usr/local/bin/perl
+ eval 'exec perl -S $0 ${1+"$@"}'
+     if $running_under_some_shell;
+ ##
+@@ -390,6 +390,43 @@
+ # assembler versions -- currently defunct:
+ ##"OpenBSD-alpha","gcc:-DTERMIOS -O3 -fomit-frame-pointer:::(unknown):SIXTY_FOUR_BIT_LONG DES_INT DES_PTR DES_RISC2:${alpha_asm}",
+ 
++# Debian GNU/* (various architectures)
++"debian-alpha","gcc:-DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${alpha_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-alpha-ev4","gcc:-DTERMIO -O3 -mcpu=ev4 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${alpha_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-alpha-ev5","gcc:-DTERMIO -O3 -mcpu=ev5 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_RISC1 DES_UNROLL:${alpha_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-arm","gcc:-DL_ENDIAN -DTERMIO -O2 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_RISC1::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++#"debian-amd64","gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-amd64", "gcc:-m64 -DL_ENDIAN -DTERMIO -O3 -Wall -DMD32_REG_T=int::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK RC4_CHAR BF_PTR2 DES_INT DES_UNROLL:asm/x86_64-gcc.o:::::::::dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++#"debian-freebsd-alpha","gcc:-DTERMIOS -O -fomit-frame-pointer::(unknown):::SIXTY_FOUR_BIT_LONG RC4_CHUNK DES_INT DES_PTR DES_RISC2::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-kfreebsd-i386","gcc:-DL_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-hppa","gcc:-DB_ENDIAN -DTERMIO -O2 -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-hurd-i386","gcc:-DL_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-ia64","gcc:-DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHUNK RC4_CHAR:asm/ia64.o:::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++#"debian-i386","gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::dlfcn:linux-shared:-fPIC",
++"debian-i386","gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-i386-i486","gcc:-DL_ENDIAN -DTERMIO -O3 -march=i486 -mcpu=i486 -Wa,--noexecstack -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-i386-i586","gcc:-DL_ENDIAN -DTERMIO -O3 -march=i586 -mcpu=i586 -Wa,--noexecstack -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-i386-i686/cmov","gcc:-DL_ENDIAN -DTERMIO -O3 -march=i686 -mcpu=i686 -Wa,--noexecstack -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-m68k","gcc:-DB_ENDIAN -DTERMIO -O2 -Wall::-D_REENTRANT::-ldl:BN_LLONG MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-mips",   "gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-mipsel",   "gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG RC2_CHAR RC4_INDEX DES_INT DES_UNROLL DES_RISC2::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-i386",	"gcc:-DL_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -m486 -Wall::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-m68k",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-netbsd-sparc",	"gcc:-DB_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -mv8 -Wall::(unknown):::BN_LLONG MD2_CHAR RC4_INDEX DES_UNROLL::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-alpha","gcc:-DTERMIOS -O3 -fomit-frame-pointer::(unknown):::SIXTY_FOUR_BIT_LONG DES_INT DES_PTR DES_RISC2::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-i386",  "gcc:-DL_ENDIAN -DTERMIOS -O3 -fomit-frame-pointer -m486::(unknown):::BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_out_asm}:dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-openbsd-mips","gcc:-O2 -DL_ENDIAN::(unknown)::BN_LLONG MD2_CHAR RC4_INDEX RC4_CHAR DES_UNROLL DES_RISC2 DES_PTR BF_PTR:::::::::::dlfcn:bsd-gcc-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-powerpc","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG DES_UNROLL DES_RISC2 DES_PTR MD2_CHAR RC4_INDEX::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-ppc64","gcc:-m64 -DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_RISC1 DES_UNROLL:asm/linux_ppc64.o:::::::::dlfcn:linux-shared:-fPIC:-m64:.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-s390","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)", 
++"debian-sh3",   "gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh4",   "gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh3eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sh4eb",   "gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc-v8","gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=v8 -fomit-frame-pointer -Wall -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:asm/sparcv8.o:::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"debian-sparc-v9","gcc:-DB_ENDIAN -DTERMIO -O3 -mcpu=v9 -Wa,-Av8plus -fomit-frame-pointer -Wall -DULTRASPARC -DBN_DIV2W::-D_REENTRANT::-ldl:BN_LLONG RC4_CHAR RC4_CHUNK DES_UNROLL BF_PTR:asm/sparcv8plus.o:::asm/md5-sparcv8plus.o::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++
+ # The intel boxes :-), It would be worth seeing if bsdi-gcc can use the
+ # bn86-elf.o file file since it is hand tweaked assembler.
+ "linux-elf",	"gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall::-D_REENTRANT::-ldl:BN_LLONG ${x86_gcc_des} ${x86_gcc_opts}:${x86_elf_asm}:dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+Index: openssl-0.9.7m/os2/backwardify.pl
+===================================================================
+--- openssl-0.9.7m.orig/os2/backwardify.pl	2003-11-28 15:51:17.000000000 +0100
++++ openssl-0.9.7m/os2/backwardify.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl -w
++#!/usr/local/bin/perl
+ use strict;
+ 
+ # Use as $0
+Index: openssl-0.9.7m/Makefile.org
+===================================================================
+--- openssl-0.9.7m.orig/Makefile.org	2007-01-16 20:30:19.000000000 +0100
++++ openssl-0.9.7m/Makefile.org	2008-04-12 02:37:45.000000000 +0200
+@@ -57,6 +57,7 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
++#TOP=$(shell pwd)
+ CC= gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+ CFLAG= -DTERMIOS -DL_ENDIAN -fomit-frame-pointer -O3 -m486 -Wall -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+@@ -195,7 +196,7 @@
+ # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
+ SHLIB_MARK=
+ 
+-DIRS=   crypto fips-1.0 ssl $(SHLIB_MARK) apps test tools
++DIRS=   crypto fips-1.0 ssl $(SHLIB_MARK) apps doc tools
+ SHLIBDIRS= crypto ssl
+ 
+ # dirs in crypto to build
+@@ -214,10 +215,10 @@
+ 
+ MAKEFILE= Makefile
+ 
+-MANDIR=$(OPENSSLDIR)/man
++MANDIR=/usr/share/man
+ MAN1=1
+ MAN3=3
+-MANSUFFIX=
++MANSUFFIX=ssl
+ SHELL=/bin/sh
+ 
+ TOP=    .
+Index: openssl-0.9.7m/util/selftest.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/selftest.pl	2005-06-20 22:45:44.000000000 +0200
++++ openssl-0.9.7m/util/selftest.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ #
+ # Run the test suite and generate a report
+ #
+Index: openssl-0.9.7m/util/extract-names.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/extract-names.pl	2004-03-25 20:52:36.000000000 +0100
++++ openssl-0.9.7m/util/extract-names.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/local/bin/perl
+ 
+ $/ = "";			# Eat a paragraph at once.
+ while(<STDIN>) {
+Index: openssl-0.9.7m/util/checkhash.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/checkhash.pl	2005-05-26 23:29:03.000000000 +0200
++++ openssl-0.9.7m/util/checkhash.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env perl -w
++#!/usr/local/bin/perl
+ 
+ my $package = caller;
+ 
+Index: openssl-0.9.7m/util/clean-depend.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/clean-depend.pl	2001-10-10 10:27:28.000000000 +0200
++++ openssl-0.9.7m/util/clean-depend.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ # Clean the dependency list in a makefile of standard includes...
+ # Written by Ben Laurie <ben@algroup.co.uk> 19 Jan 1999
+ 
+Index: openssl-0.9.7m/util/mkerr.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/mkerr.pl	2006-11-21 20:19:09.000000000 +0100
++++ openssl-0.9.7m/util/mkerr.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ 
+ my $config = "crypto/err/openssl.ec";
+ my $debug = 0;
+Index: openssl-0.9.7m/util/mkdef.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/mkdef.pl	2006-02-05 00:05:40.000000000 +0100
++++ openssl-0.9.7m/util/mkdef.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ #
+ # generate a .def file
+ #
+Index: openssl-0.9.7m/util/mkstack.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/mkstack.pl	2004-10-04 18:27:36.000000000 +0200
++++ openssl-0.9.7m/util/mkstack.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/local/bin/perl
+ 
+ # This is a utility that searches out "DECLARE_STACK_OF()"
+ # declarations in .h and .c files, and updates/creates/replaces
+Index: openssl-0.9.7m/util/pod2man.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/pod2man.pl	2005-06-18 06:27:11.000000000 +0200
++++ openssl-0.9.7m/util/pod2man.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-: #!/usr/bin/perl-5.005
++#!/usr/local/bin/perl
+     eval 'exec /usr/bin/perl -S $0 ${1+"$@"}'
+ 	if $running_under_some_shell;
+ 
+Index: openssl-0.9.7m/util/fipslink.pl
+===================================================================
+--- openssl-0.9.7m.orig/util/fipslink.pl	2006-02-06 00:49:06.000000000 +0100
++++ openssl-0.9.7m/util/fipslink.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/local/bin/perl
+ 
+ sub check_env
+ 	{
+Index: openssl-0.9.7m/config
+===================================================================
+--- openssl-0.9.7m.orig/config	2007-01-16 14:48:16.000000000 +0100
++++ openssl-0.9.7m/config	2008-04-12 02:37:45.000000000 +0200
+@@ -179,8 +179,8 @@
+ 	echo "${MACHINE}-whatever-linux1"; exit 0
+ 	;;
+ 
+-    GNU*)
+-	echo "hurd-x86"; exit 0;
++    GNU:*|GNU/*:*)
++	echo "${MACHINE}-gnuish"; exit 0;
+ 	;;
+ 
+     LynxOS:*)
+Index: openssl-0.9.7m/doc/Makefile
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ openssl-0.9.7m/doc/Makefile	2008-04-12 02:37:45.000000000 +0200
+@@ -0,0 +1,40 @@
++VERSION =
++
++#PODS = $(wildcard *.pod)
++#MANS = $(addsuffix .man, $(basename $(PODS)))
++
++MANS = openssl.1 ssl.3 crypto.3
++
++P2M = pod2man --center='OpenSSL Documentation' --release="OpenSSL $(VERSION)"
++
++all: manpages
++
++.PHONY: manpages 
++
++manpages: openssl.1 crypto.3 ssl.3
++
++openssl.1:
++	$(P2M) --section=1 openssl.pod > openssl.1
++
++crypto.3:
++	$(P2M) --section=3 crypto.pod > crypto.3
++
++ssl.3:
++	$(P2M) --section=3 ssl.pod > ssl.3
++
++.PHONY: install
++install:
++	mkdir -p $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man1
++	mkdir -p $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	install -m 644 -p openssl.1 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man1
++	install -m 644 -p crypto.3 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	install -m 644 -p ssl.3 $(INSTALL_PREFIX)$(INSTALLTOP)/share/man/man3
++	rm -f $(MANS)
++
++.PHONY: clean
++clean:
++	rm -f $(MANS)
++
++.PHONY: realclean
++realclean:
++	-$(MAKE) clean
+Index: openssl-0.9.7m/Makefile
+===================================================================
+--- openssl-0.9.7m.orig/Makefile	2007-02-23 13:52:32.000000000 +0100
++++ openssl-0.9.7m/Makefile	2008-04-12 02:46:16.000000000 +0200
+@@ -11,11 +11,11 @@
+ SHLIB_VERSION_HISTORY=
+ SHLIB_MAJOR=0
+ SHLIB_MINOR=9.7
+-SHLIB_EXT=
+-PLATFORM=dist
+-OPTIONS= no-krb5
+-CONFIGURE_ARGS=dist
+-SHLIB_TARGET=
++SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
++PLATFORM=debian-i386
++OPTIONS=--prefix=/usr --openssldir=/usr/lib/ssl no-idea no-mdc2 no-rc5 zlib-dynamic debug no-krb5
++CONFIGURE_ARGS=--prefix=/usr --openssldir=/usr/lib/ssl no-idea no-mdc2 no-rc5 zlib-dynamic debug debian-i386
++SHLIB_TARGET=linux-shared
+ 
+ # HERE indicates where this Makefile lives.  This can be used to indicate
+ # where sub-Makefiles are expected to be.  Currently has very limited usage,
+@@ -26,10 +26,10 @@
+ # for, say, /usr/ and yet have everything installed to /tmp/somedir/usr/.
+ # Normally it is left empty.
+ INSTALL_PREFIX=
+-INSTALLTOP=/usr/local/ssl
++INSTALLTOP=/usr
+ 
+ # Do not edit this manually. Use Configure --openssldir=DIR do change this!
+-OPENSSLDIR=/usr/local/ssl
++OPENSSLDIR=/usr/lib/ssl
+ 
+ # NO_IDEA - Define to build without the IDEA algorithm
+ # NO_RC4  - Define to build without the RC4 algorithm
+@@ -59,12 +59,12 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
+-CC= cc
++CC= gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+-CFLAG= -DOPENSSL_NO_KRB5 -O
+-DEPFLAG= 
++CFLAG= -DZLIB_SHARED -DZLIB -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DOPENSSL_NO_KRB5 -DOPENSSL_NO_IDEA -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5 -DL_ENDIAN -DTERMIO -O3  -Wall -g
++DEPFLAG= -DOPENSSL_NO_IDEA -DOPENSSL_NO_MDC2 -DOPENSSL_NO_RC5
+ PEX_LIBS= 
+-EX_LIBS= 
++EX_LIBS= -ldl 
+ EXE_EXT= 
+ ARFLAGS= 
+ AR=ar $(ARFLAGS) r
+@@ -72,7 +72,7 @@
+ PERL= /usr/bin/perl
+ TAR= tar
+ TARFLAGS= --no-recursion
+-MAKEDEPPROG=makedepend
++MAKEDEPPROG= gcc
+ 
+ # We let the C compiler driver to take care of .s files. This is done in
+ # order to be excused from maintaining a separate set of architecture
+@@ -197,13 +197,13 @@
+ # we might set SHLIB_MARK to '$(SHARED_LIBS)'.
+ SHLIB_MARK=
+ 
+-DIRS=   crypto fips-1.0 ssl $(SHLIB_MARK) apps test tools
++DIRS=   crypto fips-1.0 ssl $(SHLIB_MARK) apps doc tools
+ SHLIBDIRS= crypto ssl
+ 
+ # dirs in crypto to build
+ SDIRS=  objects \
+-	md2 md4 md5 sha mdc2 hmac ripemd \
+-	des rc2 rc4 rc5 idea bf cast \
++	md2 md4 md5 sha hmac ripemd \
++	des rc2 rc4 bf cast \
+ 	bn ec rsa dsa dh dso engine aes \
+ 	buffer bio stack lhash rand err \
+ 	evp asn1 pem x509 x509v3 conf txt_db pkcs7 pkcs12 comp ocsp ui krb5
+@@ -216,10 +216,10 @@
+ 
+ MAKEFILE= Makefile
+ 
+-MANDIR=$(OPENSSLDIR)/man
++MANDIR=/usr/share/man
+ MAN1=1
+ MAN3=3
+-MANSUFFIX=
++MANSUFFIX=ssl
+ SHELL=/bin/sh
+ 
+ TOP=    .
+@@ -230,7 +230,7 @@
+ SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
+ SHARED_SSL=libssl$(SHLIB_EXT)
+ SHARED_LIBS=
+-SHARED_LIBS_LINK_EXTS=
++SHARED_LIBS_LINK_EXTS=.so.$(SHLIB_MAJOR) .so
+ SHARED_LDFLAGS=
+ 
+ GENERAL=        Makefile
+Index: openssl-0.9.7m/VMS/VMSify-conf.pl
+===================================================================
+--- openssl-0.9.7m.orig/VMS/VMSify-conf.pl	2004-05-13 23:38:23.000000000 +0200
++++ openssl-0.9.7m/VMS/VMSify-conf.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-#! /usr/bin/perl
++#!/usr/local/bin/perl
+ 
+ use strict;
+ use warnings;
+Index: openssl-0.9.7m/ssl/ssl_lib.c
+===================================================================
+--- openssl-0.9.7m.orig/ssl/ssl_lib.c	2006-09-28 13:53:51.000000000 +0200
++++ openssl-0.9.7m/ssl/ssl_lib.c	2008-04-12 02:48:25.000000000 +0200
+@@ -1169,7 +1169,6 @@
+ char *SSL_get_shared_ciphers(const SSL *s,char *buf,int len)
+ 	{
+ 	char *p;
+-	const char *cp;
+ 	STACK_OF(SSL_CIPHER) *sk;
+ 	SSL_CIPHER *c;
+ 	int i;
+@@ -1182,20 +1181,21 @@
+ 	sk=s->session->ciphers;
+ 	for (i=0; i<sk_SSL_CIPHER_num(sk); i++)
+ 		{
+-		/* Decrement for either the ':' or a '\0' */
+-		len--;
++ 		int n;
++ 
+ 		c=sk_SSL_CIPHER_value(sk,i);
+-		for (cp=c->name; *cp; )
++ 		n=strlen(c->name);
++ 		if (n+1 > len)
+ 			{
+-			if (len-- <= 0)
+-				{
+-				*p='\0';
+-				return(buf);
+-				}
+-			else
+-				*(p++)= *(cp++);
++ 			if (p != buf)
++ 				--p;
++ 			*p='\0';
++ 			return buf;
+ 			}
++ 		strcpy(p,c->name);
++ 		p+=n;
+ 		*(p++)=':';
++ 		len-=n+1;
+ 		}
+ 	p[-1]='\0';
+ 	return(buf);
+Index: openssl-0.9.7m/ssl/ssl_algs.c
+===================================================================
+--- openssl-0.9.7m.orig/ssl/ssl_algs.c	2001-02-20 09:11:58.000000000 +0100
++++ openssl-0.9.7m/ssl/ssl_algs.c	2008-04-12 02:37:45.000000000 +0200
+@@ -109,3 +109,8 @@
+ 	return(1);
+ 	}
+ 
++#undef SSLeay_add_ssl_algorithms
++int SSLeay_add_ssl_algorithms(void)
++    {
++         return SSL_library_init();
++    }
+Index: openssl-0.9.7m/demos/tunala/configure.in
+===================================================================
+--- openssl-0.9.7m.orig/demos/tunala/configure.in	2002-01-08 03:58:54.000000000 +0100
++++ openssl-0.9.7m/demos/tunala/configure.in	2008-04-12 02:37:45.000000000 +0200
+@@ -1,4 +1,4 @@
+-dnl Process this file with autoconf to produce a configure script.
++#!/usr/local/bin/perl
+ AC_INIT(tunala.c)
+ AM_CONFIG_HEADER(config.h)
+ AM_INIT_AUTOMAKE(tunala, 0.0.1-dev)
+Index: openssl-0.9.7m/apps/CA.pl
+===================================================================
+--- openssl-0.9.7m.orig/apps/CA.pl	2007-02-23 13:52:38.000000000 +0100
++++ openssl-0.9.7m/apps/CA.pl	2008-04-12 02:37:45.000000000 +0200
+@@ -63,6 +63,7 @@
+ foreach (@ARGV) {
+ 	if ( /^(-\?|-h|-help)$/ ) {
+ 	    print STDERR "usage: CA -newcert|-newreq|-newreq-nodes|-newca|-sign|-verify\n";
++	    print STDERR "usage: CA -signcert certfile keyfile|-newcert|-newreq|-newca|-sign|-verify\n";
+ 	    exit 0;
+ 	} elsif (/^-newcert$/) {
+ 	    # create a certificate
+@@ -159,6 +160,7 @@
+ 	} else {
+ 	    print STDERR "Unknown arg $_\n";
+ 	    print STDERR "usage: CA -newcert|-newreq|-newreq-nodes|-newca|-sign|-verify\n";
++	    print STDERR "usage: CA -signcert certfile keyfile|-newcert|-newreq|-newca|-sign|-verify\n";
+ 	    exit 1;
+ 	}
+ }
+Index: openssl-0.9.7m/apps/CA.pl.in
+===================================================================
+--- openssl-0.9.7m.orig/apps/CA.pl.in	2005-07-04 23:44:19.000000000 +0200
++++ openssl-0.9.7m/apps/CA.pl.in	2008-04-12 02:37:45.000000000 +0200
+@@ -63,6 +63,7 @@
+ foreach (@ARGV) {
+ 	if ( /^(-\?|-h|-help)$/ ) {
+ 	    print STDERR "usage: CA -newcert|-newreq|-newreq-nodes|-newca|-sign|-verify\n";
++	    print STDERR "usage: CA -signcert certfile keyfile|-newcert|-newreq|-newca|-sign|-verify\n";
+ 	    exit 0;
+ 	} elsif (/^-newcert$/) {
+ 	    # create a certificate
+@@ -159,6 +160,7 @@
+ 	} else {
+ 	    print STDERR "Unknown arg $_\n";
+ 	    print STDERR "usage: CA -newcert|-newreq|-newreq-nodes|-newca|-sign|-verify\n";
++	    print STDERR "usage: CA -signcert certfile keyfile|-newcert|-newreq|-newca|-sign|-verify\n";
+ 	    exit 1;
+ 	}
+ }
+Index: openssl-0.9.7m/apps/progs.h
+===================================================================
+--- openssl-0.9.7m.orig/apps/progs.h	2004-06-19 15:54:59.000000000 +0200
++++ openssl-0.9.7m/apps/progs.h	2008-04-12 02:37:45.000000000 +0200
+@@ -35,11 +35,9 @@
+ extern int spkac_main(int argc,char *argv[]);
+ extern int smime_main(int argc,char *argv[]);
+ extern int rand_main(int argc,char *argv[]);
+-extern int prime_main(int argc,char *argv[]);
+-#ifndef OPENSSL_NO_ENGINE
+ extern int engine_main(int argc,char *argv[]);
+-#endif
+ extern int ocsp_main(int argc,char *argv[]);
++extern int prime_main(int argc,char *argv[]);
+ 
+ #define FUNC_TYPE_GENERAL	1
+ #define FUNC_TYPE_MD		2
+@@ -95,9 +93,7 @@
+ #if !defined(OPENSSL_NO_SOCK) && !(defined(OPENSSL_NO_SSL2) && defined(OPENSSL_NO_SSL3))
+ 	{FUNC_TYPE_GENERAL,"s_client",s_client_main},
+ #endif
+-#ifndef OPENSSL_NO_SPEED
+ 	{FUNC_TYPE_GENERAL,"speed",speed_main},
+-#endif
+ #if !defined(OPENSSL_NO_SOCK) && !(defined(OPENSSL_NO_SSL2) && defined(OPENSSL_NO_SSL3))
+ 	{FUNC_TYPE_GENERAL,"s_time",s_time_main},
+ #endif
+@@ -116,11 +112,9 @@
+ 	{FUNC_TYPE_GENERAL,"spkac",spkac_main},
+ 	{FUNC_TYPE_GENERAL,"smime",smime_main},
+ 	{FUNC_TYPE_GENERAL,"rand",rand_main},
+-	{FUNC_TYPE_GENERAL,"prime",prime_main},
+-#ifndef OPENSSL_NO_ENGINE
+ 	{FUNC_TYPE_GENERAL,"engine",engine_main},
+-#endif
+ 	{FUNC_TYPE_GENERAL,"ocsp",ocsp_main},
++	{FUNC_TYPE_GENERAL,"prime",prime_main},
+ #ifndef OPENSSL_NO_MD2
+ 	{FUNC_TYPE_MD,"md2",dgst_main},
+ #endif

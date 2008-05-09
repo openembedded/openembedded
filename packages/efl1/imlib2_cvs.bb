@@ -3,9 +3,13 @@ LICENSE = "BSD"
 # can also depend on tiff34, ungif or gif, z, bz2, id3tag
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PV = "1.4.1.000+cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
+
+# The original patch was out of date in 20080420
+SRC_URI += "file://remove-local-includes.patch;patch=1;maxdate=20080420 \
+            file://remove-local-includes-20080421.patch;patch=1;mindate=20080420 "
 
 EXTRA_OECONF = "--with-x"
 
