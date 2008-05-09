@@ -11,6 +11,6 @@ SRC_URI += "file://drmfix.patch;patch=1 \
 
 MESA_VER = "7.0.2"
 
-EXTRA_OECONF += " ac_cv_file__usr_share_X11_sgml_defs_ent=no "
+EXTRA_OECONF += " ac_cv_file__usr_share_sgml_X11_defs_ent=no "
 
 export LDFLAGS += " -ldl "

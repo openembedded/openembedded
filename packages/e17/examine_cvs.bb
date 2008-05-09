@@ -1,8 +1,10 @@
 DESCRIPTION = "Examine, the program configurator"
-DEPENDS = "ewl"
 LICENSE = "MIT BSD"
+DEPENDS = "ewl"
 PV = "0.0.1+cvs${SRCDATE}"
 PR = "r0"
+
+SRCNAME = "examine"
 
 inherit e
 

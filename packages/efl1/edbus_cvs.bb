@@ -2,11 +2,13 @@ DESCRIPTION = "DBus and HAL convenience wrappers for EFL"
 DEPENDS = "dbus ecore efreet ewl"
 LICENSE = "MIT BSD"
 PV = "0.1.0.042+cvs${SRCDATE}"
-PR = "r0"
+PR = "r5"
 
 inherit efl
 
-SRC_URI = "${E_CVS};module=e17/libs/e_dbus"
+SRC_URI = "${E_CVS};module=e17/libs/e_dbus \
+           http://people.openmoko.org/stefan/e_nm-big-hack.patch;patch=1;pnum=1;mindate=20080330 \
+			"
 S = "${WORKDIR}/e_dbus"
 
 EXTRA_OECONF = "--enable-build-test-gui"

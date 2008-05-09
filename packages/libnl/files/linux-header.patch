@@ -1,0 +1,24 @@
+Index: libnl-1.0-pre8/include/netlink/netlink.h
+===================================================================
+--- libnl-1.0-pre8.orig/include/netlink/netlink.h	2007-11-21 18:25:39.000000000 +0100
++++ libnl-1.0-pre8/include/netlink/netlink.h	2008-04-07 03:18:14.000000000 +0200
+@@ -24,7 +24,6 @@
+ #include <linux/netlink.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/genetlink.h>
+-#include <linux/ip_mp_alg.h>
+ #include <linux/netfilter/nfnetlink.h>
+ #include <netlink/types.h>
+ #include <netlink/handlers.h>
+Index: libnl-1.0-pre8/lib/route/route_obj.c
+===================================================================
+--- libnl-1.0-pre8.orig/lib/route/route_obj.c	2008-04-07 03:20:25.000000000 +0200
++++ libnl-1.0-pre8/lib/route/route_obj.c	2008-04-07 03:20:35.000000000 +0200
+@@ -33,6 +33,7 @@
+  * @{
+  */
+ 
++#include <linux/ip_mp_alg.h>
+ #include <netlink-local.h>
+ #include <netlink/netlink.h>
+ #include <netlink/cache.h>

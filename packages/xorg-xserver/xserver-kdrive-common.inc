@@ -117,7 +117,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-dmx ${W100_OECONF} \
                 --with-default-font-path=built-ins \
                 --enable-tslib --enable-xcalibrate \
-                ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+                ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
 do_configure_prepend() {
     sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac

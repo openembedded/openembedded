@@ -1,0 +1,15 @@
+Index: imlib2/configure.in
+===================================================================
+--- imlib2.orig/configure.in	2007-09-01 14:34:26.000000000 +0000
++++ imlib2/configure.in	2007-09-01 14:35:07.000000000 +0000
+@@ -188,9 +188,7 @@
+ 
+ if test "x$have_x" = "xyes"; then
+   AC_PATH_XTRA
+-  x_dir=${x_dir:-/usr/X11R6}
+-  x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+-  x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
++  x_libs="-lX11 -lXext"
+   AM_CONDITIONAL(BUILD_X11, true)
+   AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
+ else

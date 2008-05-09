@@ -10,6 +10,4 @@ PR = "r0"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/python-openmoko/trunk;module=python-gsmd;proto=http"
 S = "${WORKDIR}/python-gsmd"
 
-SRCREV_pn-python-gsmd ?= "${AUTOREV}"
-
 inherit distutils

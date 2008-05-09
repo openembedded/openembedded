@@ -1,0 +1,13 @@
+--- libnl-1.0-pre8/Makefile.opts.in.orig	2007-11-21 18:25:39.000000000 +0100
++++ libnl-1.0-pre8/Makefile.opts.in	2008-04-04 23:38:40.000000000 +0200
+@@ -10,8 +10,8 @@
+ #
+ 
+ CC               := @CC@
+-CFLAGS           := @CFLAGS@
+-LDFLAGS          := @LDFLAGS@
++CFLAGS           := -I./include -I. -I../include @CFLAGS@
++LDFLAGS          :=
+ CPPFLAGS         := @CPPFLAGS@
+ PACKAGE_NAME     := @PACKAGE_NAME@
+ PACKAGE_VERSION  := @PACKAGE_VERSION@

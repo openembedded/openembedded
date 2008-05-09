@@ -9,11 +9,10 @@ DEPENDS += "libxkbfile libxcalibrate"
 RDEPENDS_${PN} = "xserver-kdrive"
 PROVIDES = "virtual/xserver"
 PE = "1"
-PR = "r5"
+PR = "r6"
+PV = "1.3.0.0+git${SRCREV}"
 
-XGLAMO_GIT_REV = "a51364e2f23d4b6331c5ed613ce3f7e15f8e540f"
-
-SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git;rev=${XGLAMO_GIT_REV} \
+SRC_URI = "git://people.freedesktop.org/~dodji/xglamo;protocol=git \
         file://kmode.patch;patch=1 \
         file://disable-apm.patch;patch=1 \
         file://no-serial-probing.patch;patch=1 \
@@ -53,7 +52,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
                 --disable-dmx \
                 --with-default-font-path=built-ins \
                 --enable-tslib --enable-xcalibrate \
-                ac_cv_file__usr_share_X11_sgml_defs_ent=no"
+                ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
 do_configure_prepend() {
     sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac

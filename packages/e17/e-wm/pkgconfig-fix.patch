@@ -1,0 +1,18 @@
+Index: enlightenment.pc.in
+===================================================================
+--- enlightenment.pc.in.orig	2008-03-28 22:33:51.000000000 +0100
++++ enlightenment.pc.in	2008-03-29 17:22:30.000000000 +0100
+@@ -1,11 +1,12 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+-includedir=@includedir@
++includedir=@includedir@/@PACKAGE@
+ 
+ Name: enlightenment
+ Description: Enlightenmnt Window Manager
+ Version: @VERSION@
++Requires: efreet >= 0.0.3.042
+ Libs: @libdir@/@PACKAGE@/modules
+ Libs.private: 
+ Cflags: -I${includedir}

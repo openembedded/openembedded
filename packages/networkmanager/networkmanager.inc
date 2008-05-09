@@ -5,8 +5,7 @@ HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib hal gconf-dbus wireless-tools"
 RDEPENDS = "wpa-supplicant iproute2 dhcdbd"
-
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager/0.6/NetworkManager-${PV}.tar.bz2 \
 	  file://NetworkManager \
@@ -21,7 +20,7 @@ EXTRA_OECONF = " \
 		--without-gcrypt \
  		--with-wpa_supplicant=/usr/sbin/wpa_supplicant \
 		--with-dhcdbd=/sbin/dhcdbd \
-		--with-ip=/sbin/ip"
+		--with-ip=/sbin/ip.iproute2"
 
 inherit autotools pkgconfig
 
@@ -48,13 +47,18 @@ fi
 /etc/init.d/populate-volatile.sh update
 }
 
-PACKAGES =+ "libnmutil libnmglib" 
+PACKAGES =+ "libnmutil libnmglib libnmglib-vpn" 
 
 FILES_libnmutil += "${libdir}/libnm-util.so.*"
 FILES_libnmglib += "${libdir}/libnm_glib.so.*"
+FILES_libnmglib-vpn += "${libdir}/libnm_glib_vpn.so.*"
 
-FILES_${PN} += "${datadir} \
-		${libexecdir}"
+FILES_${PN} += " \
+		${libexecdir} \
+		${libdir}/pppd/*/nm-pppd-plugin.so \
+		${libdir}/NetworkManager/*.so"
+FILES_${PN}-dbg += "${libdir}/NetworkManager/.debug/ \
+		    ${libdir}/pppd/*/.debug/ "
 
 FILES_${PN}-dev += " ${datadir}/NetworkManager/gdb-cmd "
 
