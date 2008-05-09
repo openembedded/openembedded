@@ -3,11 +3,12 @@ HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "network/misc"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 dbus dbus-glib eds-dbus libjana curl"
-RDEPENDS_${PN} = "eds-dbus openmoko-dialer2"
+RDEPENDS_${PN} = "eds-dbus"
 PV = "0.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/diversity/trunk;module=diversity-daemon;proto=https"
+SRC_URI = "svn://svn.projects.openmoko.org/svnroot/diversity/trunk;module=diversity-daemon;proto=https \
+           file://no-xmmp.patch;patch=1;minrev=276"
 S = "${WORKDIR}/diversity-daemon"
 
 inherit autotools pkgconfig
