@@ -42,6 +42,7 @@ IMAGE_INSTALL = " task-base-extended \
 	python-core perl \
 	uucp picocom \
 	angstrom-zeroconf-audio avahi-utils \
+	${ANGSTROM_EXTRA_INSTALL} \
 "
 
 inherit image
