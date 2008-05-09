@@ -8,7 +8,8 @@ SRCNAME = "pygtk"
 LICENSE = "LGPL"
 PR = "r1"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.8/${SRCNAME}-${PV}.tar.bz2 \
+MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
