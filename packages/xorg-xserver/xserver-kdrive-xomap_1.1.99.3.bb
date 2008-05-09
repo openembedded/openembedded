@@ -45,7 +45,7 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive --enable-builtin-fonts \
 		--disable-xkb --disable-xnest --disable-xvfb \
 		--disable-xevie --disable-xprint --disable-xtrap \
 		--with-default-font-path=built-ins \
-		ac_cv_file__usr_share_X11_sgml_defs_ent=no \
+		ac_cv_file__usr_share_sgml_X11_defs_ent=no \
 		--enable-xomap"
 
 do_configure_prepend() {
