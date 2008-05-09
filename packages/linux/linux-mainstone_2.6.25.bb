@@ -6,7 +6,7 @@ LICENSE = "GPL"
 PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.25-rc4.bz2;patch=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.25/patch-2.6.25-rc4.bz2;patch=1 \
            file://mainstone-keypad.patch;patch=1 \
            file://defconfig"
 
