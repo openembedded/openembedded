@@ -1,4 +1,6 @@
-Use native helpers staged by anthy-native.
+upstream: not applicable
+author: pH5
+comment: Use native helpers staged by anthy-native.
 
 Index: anthy-9100e/mkanthydic/Makefile.am
 ===================================================================
