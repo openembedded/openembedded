@@ -7,30 +7,16 @@
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 RRECOMMENDS_alsa-state = "alsa-states"
-RRECOMMENDS_${PN}_openmoko = "openmoko-alsa-scenarios"
+RRECOMMENDS_${PN}_om-gta01 = "openmoko-alsa-scenarios"
+RRECOMMENDS_${PN}_om-gta02 = "openmoko-alsa-scenarios"
 PV = "0.1.0"
-PR = "r15"
+PR = "r16"
 
 SRC_URI = " \
   file://asoundrc \
   file://asound.state \
   file://alsa-state "
 
-SRC_URI_append_om-gta01 = " \
-  file://capturehandset.state \
-  file://captureheadset.state \
-  file://gsmbluetooth.state \
-  file://gsmhandset.state \
-  file://gsmheadset.state \
-  file://gsmspeakerout.state \
-  file://stereoout.state \
-  file://voip-handset.state \
-  file://voip-headset.state"
-
-SRC_URI_append_om-gta02 = "\
-  file://stereoout.state \
-  file://gsmhandset.state \
-  "
 
 inherit update-rc.d
 
