@@ -3,8 +3,10 @@ HOMEPAGE = "http://www.galago-project.org/"
 SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS = "gettext dbus gtk+ libsexy gconf libwnck"
+PR = "r1"
 
-SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz"
+SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
+           file://notification-daemon-fix-text-color.diff;patch=1"
 
 EXTRA_OECONF = "--disable-binreloc"
 
