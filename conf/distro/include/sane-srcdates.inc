@@ -52,7 +52,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE ?= "20080427"
+EFL_SRCDATE ?= "20080428"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"
@@ -155,3 +155,6 @@ SRCDATE_yamonenv ?= "20060814"
 # Freedesktop.org
 SRCDATE_poppler0.6 = "20070708"
 
+# aleph1/yaffs
+SRCDATE_yaffs2-utils = "20080331"
+SRCDATE_yaffs2-utils-native = "20080331"
