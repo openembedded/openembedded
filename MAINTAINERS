@@ -151,12 +151,10 @@ Recipes:    mx31ads-kernel*
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://blog.haerwu.biz/
-Machines:   collie, tosa, progear, alix
+Machines:   tosa, progear, alix, nokia800, nokia770
 Distros:    Poky, OpenZaurus, Ångström
-Interests:  WiFi, Native SDK
-Recipes:    linux, hostap*, orinoco*, wpa-supplicant*, wireless-tools, keymaps
-Recipes:    linux-rp, gammu
-Recipes:    ttf-fonts/* 
+Interests:  WiFi, Native SDK, Nokia tablets
+Recipes:    linux, linux-rp, linux-nokia*, gammu, ttf-fonts/* 
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net
