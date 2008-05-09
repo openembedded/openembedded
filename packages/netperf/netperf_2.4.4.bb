@@ -3,7 +3,7 @@ SECTION = "console/network"
 HOMEPAGE = "http://www.netperf.org/"
 LICENSE = "netperf"
 
-SRC_URI="${DEBIAN_MIRROR}/non-free/n/netperf/netperf_${PV}.orig.tar.gz \
+SRC_URI="ftp://ftp.netperf.org/netperf/netperf-${PV}.tar.bz2 \
          file://init"
 
 inherit update-rc.d autotools
@@ -11,11 +11,6 @@ inherit update-rc.d autotools
 S = "${WORKDIR}/netperf-${PV}"
 
 CFLAGS_append = " -DDO_UNIX -DDO_IPV6"
-
-do_configure_prepend() {
-        install -m 0644 ${S}/m4/m4/m4/*.m4 ${S}/m4/
-        install -m 0644 ${S}/src/missing/m4/*.m4 ${S}/m4/
-}
 
 do_install() {
         install -d ${D}${sbindir} ${D}${bindir} ${D}${sysconfdir}/init.d
