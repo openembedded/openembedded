@@ -1,6 +1,6 @@
 DESCRIPTION = "Ecore is the Enlightenment application framework library"
 LICENSE = "MIT BSD"
-DEPENDS = "curl eet evas tslib"
+DEPENDS = "curl eet evas tslib libxtst libxscrnsaver"
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.042+cvs${SRCDATE}"
