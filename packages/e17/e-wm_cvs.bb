@@ -2,13 +2,15 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT BSD"
 PV = "0.16.999.042+cvs${SRCDATE}"
-PR = "r0"
+PR = "r5"
 
 inherit e update-alternatives
 
 SRC_URI = "${E_CVS};module=e17/apps/e \
            file://disable-e-cursor.patch;patch=1 \
-           file://Xsession.d/98enlightenment \
+           file://pkgconfig-fix.patch;patch=1;pnum=0;mindate=20080328;maxdate=20080401 \
+           file://profile-search.patch;patch=1;mindate=20080328;maxdate=20080401 \
+           file://enlightenment_start.oe \
            file://applications.menu \
 "
 S = "${WORKDIR}/e"
@@ -34,8 +36,7 @@ do_stage() {
 
 do_install_append() {
     # customising - should rather make this simple upstream
-    install -d ${D}/${sysconfdir}/X11/Xsession.d
-    install -m 755 ${WORKDIR}/Xsession.d/98enlightenment ${D}/${sysconfdir}/X11/Xsession.d
+    install -m 755 ${WORKDIR}/enlightenment_start.oe ${D}/${bindir}
     install -d ${D}/${sysconfdir}/xdg/menus
     install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
 }
@@ -57,7 +58,7 @@ FILES_${PN}-dev += "\
   ${libdir}/enlightenment/preload/*.?a \
 "
 
-ALTERNATIVE_PATH = "${bindir}/enlightenment_start"
+ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
 ALTERNATIVE_PRIORITY = "16"

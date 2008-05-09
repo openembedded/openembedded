@@ -1,0 +1,8 @@
+#!/bin/sh
+
+E_PROFILE=""
+if [ -r /etc/enlightenment/default_profile ]; then
+  . /etc/enlightenment/default_profile
+fi
+
+exec enlightenment_start $E_PROFILE

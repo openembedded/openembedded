@@ -1,0 +1,41 @@
+? .e_border.c.swn
+? .e_border.c.swo
+? .e_border.c.swp
+? .e_border.h.swp
+? .e_config.c.swp
+? .e_int_menus.c.swp
+? .e_main.c.swp
+? .e_popup.c.swp
+? .e_prefix.c.swp
+? .e_shelf.c.swo
+? .e_shelf.c.swp
+Index: e_config.c
+===================================================================
+RCS file: /var/cvs/e/e17/apps/e/src/bin/e_config.c,v
+retrieving revision 1.282
+diff -u -r1.282 e_config.c
+--- e/src/bin/e_config.c	20 Feb 2008 04:12:58 -0000	1.282
++++ e/src/bin/e_config.c	31 Mar 2008 01:57:00 -0000
+@@ -1827,7 +1827,22 @@
+      {
+ 	data = eet_data_read(ef, edd, "config");
+ 	eet_close(ef);
++        return data;
+      }
++
++   /* fallback to a system directory
++    * FIXME proper $PATH like handling might be wanted
++    */ 
++   snprintf(buf, sizeof(buf), "%s/data/config/%s/%s.cfg",
++	    e_prefix_data_get(), _e_config_profile, domain);
++   ef = eet_open(buf, EET_FILE_MODE_READ);
++   if (ef)
++     {
++	data = eet_data_read(ef, edd, "config");
++	eet_close(ef);
++        return data;
++     }
++
+    return data;
+ }
+ 
