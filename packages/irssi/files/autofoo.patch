@@ -1,3 +1,4 @@
+upstream: http://bugs.irssi.org/index.php?do=details&task_id=590
 
 #
 # Patch managed by http://www.holgerschurig.de/patcher.html
