@@ -4,7 +4,8 @@ LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
 PR = "r3"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/2.12/pygobject-${PV}.tar.bz2 \
+MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/${MAJ_VER}/pygobject-${PV}.tar.bz2 \
            file://python-path.patch;patch=1"
 S = "${WORKDIR}/pygobject-${PV}"
 

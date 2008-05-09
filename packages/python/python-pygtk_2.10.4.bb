@@ -8,7 +8,8 @@ SRCNAME = "pygtk"
 LICENSE = "LGPL"
 PR = "ml8"
 
-SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/2.10/${SRCNAME}-${PV}.tar.bz2 \
+MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2 \
            file://fix-gtkunixprint.patch;patch=1 \
            file://prevent_to_get_display_during_import.patch;patch=1 \
            file://nodocs.patch;patch=1 \
