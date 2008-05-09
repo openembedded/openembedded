@@ -25,6 +25,9 @@ ac_cv_func_realloc_works=${ac_cv_func_realloc_works=yes}
 ac_cv_func_realloc_0_nonnull=${ac_cv_func_realloc_0_nonnull=yes}
 lf_cv_sane_realloc=yes
 
+#gnash
+ac_cv_type_error_t=${ac_cv_type_error_t=yes}
+
 #sudo
 sudo_cv_uid_t_len=${sudo_cv_uid_t_len=10}
 
