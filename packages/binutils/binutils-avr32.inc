@@ -5,7 +5,7 @@
 
 do_avr32_reconf () {
         if test ${TARGET_ARCH} == avr32; then
-            (cd ${S} && autoconf2.13) || die "Error running autoconf"
+            (cd ${S} && autoconf) || die "Error running autoconf"
             for dir in bfd opcodes binutils ld; do
                 (cd "${S}/$dir" &&
                  aclocal &&
