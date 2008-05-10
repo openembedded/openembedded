@@ -3,7 +3,7 @@
 #@DESCRIPTION: genric machine configuration for ixp4xx platforms
 
 # Set default for common ixp4xx-based machines
-MACHINE_FEATURES ?= "kernel26 usbhost ext2 vfat redboot apex"
+MACHINE_FEATURES ?= "kernel26 usbhost pci ext2 vfat redboot apex"
 
 # Select an appropriate default kernel
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-ixp4xx"
