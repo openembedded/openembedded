@@ -1,3 +1,16 @@
+From 75b8dbeed8f53ffb7edc58b2393084fe2346477e Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@openembedded.org>
+Date: Fri, 9 May 2008 20:54:00 +0200
+Subject: [PATCH] omap3beagle: add driver to turn on the TFP410 framer to get DVI output
+
+Signed-off-by: Koen Kooi <koen@openembedded.org>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |   11 +++
+ drivers/video/omap/Makefile             |    1 +
+ drivers/video/omap/lcd_omap3beagle.c    |  135 +++++++++++++++++++++++++++++++
+ 3 files changed, 147 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/omap/lcd_omap3beagle.c
+
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
 index 0c0cbfc..c992cc7 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
@@ -40,10 +53,10 @@ index cad6a68..fe7ee5d 100644
  omapfb-objs := $(objs-yy)
 diff --git a/drivers/video/omap/lcd_omap3beagle.c b/drivers/video/omap/lcd_omap3beagle.c
 new file mode 100644
-index 0000000..d49101a
+index 0000000..f5b7466
 --- /dev/null
 +++ b/drivers/video/omap/lcd_omap3beagle.c
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,135 @@
 +/*
 + * LCD panel support for the TI OMAP3 Beagle board
 + *
@@ -79,13 +92,8 @@ index 0000000..d49101a
 +
 +#define LCD_XRES	 	1024	
 +#define LCD_YRES 		768
-+#define LCD_PIXCLOCK_MAX        64000 /* in pico seconds  */
-+#define LCD_PIXCLOCK_MIN        64000 /* in pico seconds */
-+
-+#define ENABLE_VDAC_DEDICATED	0x03
-+#define ENABLE_VDAC_DEV_GRP	0x20
-+#define ENABLE_VPLL2_DEDICATED	0x05
-+#define ENABLE_VPLL2_DEV_GRP	0xE0
++#define LCD_PIXCLOCK_MAX        64000 /* in kHz */
++#define LCD_PIXCLOCK_MIN        64000 /* in kHz */
 +
 +static int omap3beagle_panel_init(struct lcd_panel *panel,
 +				struct omapfb_device *fbdev)
@@ -184,3 +192,6 @@ index 0000000..d49101a
 +
 +module_init(omap3beagle_panel_drv_init);
 +module_exit(omap3beagle_panel_drv_exit);
+-- 
+1.5.4.3
+
