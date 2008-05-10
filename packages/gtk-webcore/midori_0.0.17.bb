@@ -1,11 +1,5 @@
-DESCRIPTION = "Midori is a lightweight web browser."
-LICENSE = "GPLv2"
+require midori.inc           
 
-DEPENDS = "webkit-gtk libsexy" 
-
-inherit autotools pkgconfig
-
-SRC_URI = "http://software.twotoasts.de/media/midori/midori-${PV}.tar.gz \
-           file://webkit-update.patch;patch=1"
+SRC_URI += "file://webkit-update.patch;patch=1"
 
 
