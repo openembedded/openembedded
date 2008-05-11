@@ -1,0 +1,29 @@
+--- clalsadrv.orig/Makefile	2008-05-10 12:13:03.000000000 -0700
++++ clalsadrv/Makefile	2008-05-10 12:13:48.000000000 -0700
+@@ -17,9 +17,9 @@
+ 
+ # Modify as required.
+ #
+-PREFIX = /usr
++PREFIX = ${DESTDIR}/usr
+ SUFFIX := $(shell uname -m | sed -e 's/^unknown/$//' -e 's/^i.86/$//' -e 's/^x86_64/$/64/')
+-LIBDIR = lib$(SUFFIX)
++LIBDIR = lib
+ 
+ 
+ MAJVERS = 1
+@@ -42,12 +42,12 @@
+ 
+ 
+ $(CLALSADRV_MIN): $(CLALSADRV_O)
+-	g++ -shared $(LDFLAGS) -Wl,-soname,$(CLALSADRV_MAJ) -o $(CLALSADRV_MIN) $(CLALSADRV_O) $(CLALSADRV_DEP)
++	${CXX} -shared $(LDFLAGS) -Wl,-soname,$(CLALSADRV_MAJ) -o $(CLALSADRV_MIN) $(CLALSADRV_O) $(CLALSADRV_DEP)
+ 
+ 
+ install:	$(CLALSADRV_MIN)
+ 	/usr/bin/install -d $(PREFIX)/$(LIBDIR)
+-	/usr/bin/install -m 644 $(CLALSADRV_H) $(PREFIX)/include
++	/usr/bin/install -D -m 644 $(CLALSADRV_H) $(PREFIX)/include/$(CLALSADRV_H)
+ 	/usr/bin/install -m 755 $(CLALSADRV_MIN) $(PREFIX)/$(LIBDIR)
+ 	/sbin/ldconfig -n $(PREFIX)/$(LIBDIR)
+ 	ln -sf $(CLALSADRV_MIN) $(PREFIX)/$(LIBDIR)/$(CLALSADRV_SO)

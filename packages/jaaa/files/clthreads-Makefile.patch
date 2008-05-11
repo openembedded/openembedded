@@ -1,0 +1,29 @@
+--- clthreads-2.4.0.orig/Makefile	2008-05-10 11:49:46.000000000 -0700
++++ clthreads-2.4.0/Makefile	2008-05-10 11:49:49.000000000 -0700
+@@ -17,9 +17,9 @@
+ 
+ # Modify as required.
+ #
+-PREFIX = /usr/local
++PREFIX = ${DESTDIR}/usr
+ SUFFIX := $(shell uname -m | sed -e 's/^unknown/$//' -e 's/^i.86/$//' -e 's/^x86_64/$/64/')
+-LIBDIR = lib$(SUFFIX)
++LIBDIR = lib
+ 
+ 
+ MAJVERS = 2
+@@ -42,12 +42,12 @@
+ 
+ 
+ $(CLTHREADS_MIN): $(CLTHREADS_O)
+-	g++ -shared $(LDFLAGS) -Wl,-soname,$(CLTHREADS_MAJ) -o $(CLTHREADS_MIN) $(CLTHREADS_O) $(CLTHREADS_DEP)
++	$(CXX) -shared $(LDFLAGS) -Wl,-soname,$(CLTHREADS_MAJ) -o $(CLTHREADS_MIN) $(CLTHREADS_O) $(CLTHREADS_DEP)
+ 
+ 
+ install:	$(CLTHREADS_MIN)
+ 	/usr/bin/install -d $(PREFIX)/$(LIBDIR)
+-	/usr/bin/install -m 644 $(CLTHREADS_H) $(PREFIX)/include
++	/usr/bin/install -D -m 644 $(CLTHREADS_H) $(PREFIX)/include/$(CLTHREADS_H)
+ 	/usr/bin/install -m 755 $(CLTHREADS_MIN) $(PREFIX)/$(LIBDIR)
+ 	/sbin/ldconfig -n $(PREFIX)/$(LIBDIR)
+ 	ln -sf $(CLTHREADS_MIN) $(PREFIX)/$(LIBDIR)/$(CLTHREADS_SO)

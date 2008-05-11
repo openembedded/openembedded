@@ -1,0 +1,36 @@
+--- jaaa.orig/Makefile	2007-03-15 07:21:57.000000000 -0700
++++ jaaa/Makefile	2008-05-10 11:03:53.000000000 -0700
+@@ -15,15 +15,15 @@
+ #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+ 
+-PREFIX = /usr
++PREFIX = ${DESTDIR}/usr
+ SUFFIX := $(shell uname -m | sed -e 's/^unknown/$//' -e 's/^i.86/$//' -e 's/^x86_64/$/64/')
+-LIBDIR = lib$(SUFFIX)
++LIBDIR = lib
+ VERSION = 0.4.2
+ DISTDIR = jaaa-$(VERSION)
+-CPPFLAGS += -O3 -Wall -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -I/usr/include/freetype2
++CPPFLAGS += -O3 -Wall -DVERSION=\"$(VERSION)\" -DPREFIX=\"$(PREFIX)\" -I${PKG_CONFIG_SYSROOT_DIR}/usr/include/freetype2
+ #CPPFLAGS += -march=pentium4
+ 
+-LDFLAGS += -L$(PREFIX)/$(LIBDIR) -L/usr/X11R6/$(LIBDIR)
++LDFLAGS += -L$(PREFIX)/$(LIBDIR) -L${PKG_CONFIG_SYSROOT_DIR}/usr/X11R6/$(LIBDIR)
+ LDLIBS += -lclalsadrv -lclthreads -lclxclient -lpthread -lfftw3f -ljack -lasound -lpthread -lXft -lX11 -lrt
+ 
+ JAAA_H = styles.h spectwin.h audio.h prbsgen.h rngen.h
+@@ -31,11 +31,11 @@
+ 
+ 
+ jaaa:	$(JAAA_O)
+-	g++ $(LDFLAGS) -o jaaa $(JAAA_O) $(LDLIBS)
++	${CXX} $(LDFLAGS) -o jaaa $(JAAA_O) $(LDLIBS)
+ 
+ 
+ install:	jaaa
+-	/usr/bin/install -m 755 jaaa $(PREFIX)/bin
++	/usr/bin/install -D -m 755 jaaa $(PREFIX)/bin/jaaa
+ 
+ $(JAAA_O):	$(JAAA_H)
+ 
