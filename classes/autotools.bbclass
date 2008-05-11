@@ -172,7 +172,7 @@ autotools_stage_dir() {
 	rmdir "$from" 2> /dev/null || true
 	if [ -d "$from" ]; then
 		mkdir -p "$to"
-		cp -fpPR "$from"/* "$to"
+		cp -fpPR -t "$to" "$from"/*
 	fi
 }
 
@@ -205,8 +205,8 @@ autotools_stage_all() {
 			for i in $las
 			do
 				dir=$(dirname $i)
-				echo "oe_libinstall -C ${S} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}"
-				oe_libinstall -C ${S} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}
+				echo "oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}"
+				oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}
 			done
 		else
 			# Otherwise libtool wasn't used, and lib/ can be copied
@@ -233,3 +233,4 @@ autotools_stage_all() {
 }
 
 EXPORT_FUNCTIONS do_configure do_install
+
