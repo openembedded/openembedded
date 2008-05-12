@@ -2,7 +2,7 @@ DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 featu
 HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
 DEPENDS = "agg libxml2 libmad zlib boost jpeg pango curl freetype"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2"
 S = ${WORKDIR}/gnash-${PV}
@@ -38,6 +38,10 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --enable-allstatic \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 "
+
+# the test for error_t is wrong for uclibc, needs _GNU_SOURCE for correct
+# detection because uclibc does not have argz.h which enables error_t 
+CFLAGS += " -D_GNU_SOURCE "
 
 PACKAGES =+ " libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
 
