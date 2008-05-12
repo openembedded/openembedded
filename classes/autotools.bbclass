@@ -58,7 +58,6 @@ oe_runconf () {
 		    --oldincludedir=${oldincludedir} \
 		    --infodir=${infodir} \
 		    --mandir=${mandir} \
-                                --enable-mainainer-mode \
 			${EXTRA_OECONF} \
 		    $@"
 		oenote "Running $cfgcmd..."
@@ -172,7 +171,7 @@ autotools_stage_dir() {
 	rmdir "$from" 2> /dev/null || true
 	if [ -d "$from" ]; then
 		mkdir -p "$to"
-		cp -fpPR -t "$to" "$from"/*
+		cp -fpPR "$from"/* "$to"
 	fi
 }
 
@@ -199,21 +198,14 @@ autotools_stage_all() {
 		las=$(find . -name \*.la -type f)
 		cd $olddir
 		echo "Found la files: $las"		 
-		if [ -n "$las" ]; then
-			# If there are .la files then libtool was used in the
-			# build, so install them with magic mangling.
-			for i in $las
-			do
-				dir=$(dirname $i)
-				echo "oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}"
-				oe_libinstall -C ${STAGE_TEMP}/${libdir}/${dir} -so $(basename $i .la) ${STAGING_LIBDIR}/${dir}
-			done
-		else
-			# Otherwise libtool wasn't used, and lib/ can be copied
-			# directly.
-      autotools_stage_dir ${STAGE_TEMP}/${libdir} ${STAGING_LIBDIR}
-		fi
-	
+		for i in $las
+		do
+			sed -e 's/^installed=yes$/installed=no/' \
+			    -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${STAGING_LIBDIR}/\1,g' \
+			    -e "/^dependency_libs=/s,\([[:space:]']\)${libdir},\1${STAGING_LIBDIR},g" \
+			    -i ${STAGE_TEMP}/${libdir}/$i
+		done
+		autotools_stage_dir ${STAGE_TEMP}/${libdir} ${STAGING_LIBDIR}
 	fi
 	# Ok, this is nasty. pkgconfig.bbclass is usually used to install .pc files,
 	# however some packages rely on the presence of .pc files to enable/disable
