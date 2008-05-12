@@ -1,0 +1,45 @@
+diff -ru --exclude=.svn linux-2.6.15-neuros/arch/arm/boot/Makefile linux-2.6.15/arch/arm/boot/Makefile
+--- linux-2.6.15-neuros/arch/arm/boot/Makefile	2008-01-13 11:56:56.450898985 +0100
++++ linux-2.6.15/arch/arm/boot/Makefile	2008-01-13 11:56:56.460899323 +0100
+@@ -10,7 +10,7 @@
+ 
+ MKIMAGE         := $(srctree)/scripts/mkuboot.sh
+ #ISOFT_PORT
+--include $(PRJROOT)/.config/bsp_config
++#-include $(PRJROOT)/.config/bsp_config
+ 
+ ifneq ($(MACHINE),)
+ include $(srctree)/$(MACHINE)/Makefile.boot
+diff -ru --exclude=.svn linux-2.6.15-neuros/arch/arm/mach-ntosd-dm320/Makefile.boot linux-2.6.15/arch/arm/mach-ntosd-dm320/Makefile.boot
+--- linux-2.6.15-neuros/arch/arm/mach-ntosd-dm320/Makefile.boot	2007-04-24 01:45:49.000000000 +0200
++++ linux-2.6.15/arch/arm/mach-ntosd-dm320/Makefile.boot	2008-01-13 10:57:14.834590821 +0100
+@@ -1,3 +1,3 @@
+-zreladdr-$(CONFIG_ARCH_NTOSD_DM320)      := $(CONFIG_KERNEL_LOAD_ADDR)
+-params_phys-$(CONFIG_ARCH_NTOSD_DM320)   := $(CONFIG_KERNEL_PARAM_ADDR)
+-initrd_phys-$(CONFIG_ARCH_NTOSD_DM320)   := $(CONFIG_KERNEL_INITRD_ADDR)
++zreladdr-$(CONFIG_ARCH_NTOSD_DM320)      := 0x01108000
++params_phys-$(CONFIG_ARCH_NTOSD_DM320)   := 0x01100100
++initrd_phys-$(CONFIG_ARCH_NTOSD_DM320)   := 0x01800000
+diff -ru --exclude=.svn linux-2.6.15-neuros/drivers/usb/net/rt73/Makefile linux-2.6.15/drivers/usb/net/rt73/Makefile
+--- linux-2.6.15-neuros/drivers/usb/net/rt73/Makefile	2007-04-24 01:49:11.000000000 +0200
++++ linux-2.6.15/drivers/usb/net/rt73/Makefile	2007-12-31 14:51:25.148965284 +0100
+@@ -23,9 +23,9 @@
+ # REVISION:
+ # 1) Initial creation. ------------------------------- 2007-04-20 nerochiaro
+ 
+-ifndef PRJROOT
+-    $(error You must first source the BSP environment: "source neuros-env")
+-endif
++#ifndef PRJROOT
++#    $(error You must first source the BSP environment: "source neuros-env")
++#endif
+ 
+ MODULE_NAME := rt73
+ obj-$(CONFIG_USB_RT73) += $(MODULE_NAME).o
+@@ -38,4 +38,4 @@
+ EXTRA_CFLAGS += -DDBG
+ 
+ # Do not disable this or the driver will revert to vanilla rt73
+-EXTRA_CFLAGS += -DPLAT_DM320
+\ No newline at end of file
++EXTRA_CFLAGS += -DPLAT_DM320
