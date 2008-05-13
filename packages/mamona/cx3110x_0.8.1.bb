@@ -19,6 +19,7 @@ SRC_URI = "https://garage.maemo.org/frs/download.php/2443/cx3110x-0.8.1.tar.gz \
  file://fix_cross_makefile.patch;patch=1 \
  file://fix_ssid_data_length.patch;patch=1 \
  file://770_performance_improvements.patch;patch=1 \
+ file://create_sysfs_link_for_wlan0.patch;patch=1 \
 "
 # add service file
 
