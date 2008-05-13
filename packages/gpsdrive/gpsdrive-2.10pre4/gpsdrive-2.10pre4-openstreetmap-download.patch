@@ -1,0 +1,128 @@
+diff -ur gpsdrive-2.10pre4.orig/scripts/gpsfetchmap.pl gpsdrive-2.10pre4/scripts/gpsfetchmap.pl
+--- gpsdrive-2.10pre4.orig/scripts/gpsfetchmap.pl	2007-12-28 18:49:44.000000000 +0100
++++ gpsdrive-2.10pre4/scripts/gpsfetchmap.pl	2008-01-04 19:01:35.000000000 +0100
+@@ -35,6 +35,7 @@
+ modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
+ modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
+ modified (Jul 2007) by Maciek Kaliszewski <mkalkal\@interia.pl>
++modified (Jan 2008) by Gernot Hillier <gernot\@hillier.de> (added Openstreetmap support)
+ Version svn-$Version
+ ";
+ 
+@@ -176,6 +177,25 @@
+       15812 => 3 ,
+       7906  => 2,
+       3953 => 1
++    },
++    openstreetmap_tah => {
++      256*576000 =>  1,
++      128*576000 =>  2,
++       64*576000 =>  3,
++       32*576000 =>  4,
++       16*576000 =>  5,
++        8*576000 =>  6,
++        4*576000 =>  7,
++        2*576000 =>  8,
++          576000 =>  9,
++          288000 => 10,
++          144000 => 11,
++           72000 => 12,
++           36000 => 13,
++           18000 => 14,
++           9000  => 15,
++            4500 => 16,
++            2250 => 17
+     }
+ };
+ 
+@@ -331,7 +351,6 @@
+     exit();
+ }
+ 
+-
+ # Verify that we have the options that we need 
+ pod2usage(1) if (&error_check);
+ 
+@@ -417,6 +436,13 @@
+     print "+-----------------------------------------------------------+\n";
+     print "| Landsat Maps are Copyright, .....   |\n";
+     print "| They are free for non commercial use.                     |\n";
++}elsif ( $mapserver eq 'openstreetmap_tah' ){
++    print "+-----------------------------------------------------------+\n";
++    print "| OpenStreetmap Maps are Copyright by the OpenStreetmap     |\n";
++    print "| project.                                                  |\n";
++    print "| They are free for use under the terms of the              |\n";
++    print "| Creative Commons \"Attribution-Share Alike 2.0 Generic\"    |\n";
++    print "| license. See http://www.openstreetmap.org for details.    |\n";
+ } elsif ( ! $force) {
+     print "You are violating the map servers copyright!\n";
+     print "Are you sure you want to continue? [y|n] ";
+@@ -700,6 +726,11 @@
+     {
+ 	($url,$mapscale)=googlemap_url($lati,$long,$scale);
+     } 
++    elsif ( $mapserver eq 'openstreetmap_tah') 
++    {	
++	$filename=~s/\.gif/.png/;
++	($url,$mapscale)=openstreetmap_tah_url($lati,$long,$scale);
++    } 
+     else 
+     {
+ 	print "Unknown map sever :", $mapserver, "\n"; 
+@@ -935,6 +966,37 @@
+     return ($url,$mapscale);
+ }
+ 
++#############################################################################
++sub openstreetmap_tah_url($$$){
++    my $lati = shift;
++    my $long = shift;
++    my $scale = shift;
++
++    my $mapscale = $scale;
++    my $zoom = undef;
++    for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
++	next unless $s == $scale;
++	$zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
++	$mapscale = $s;
++	last;
++    }
++
++    unless ( $zoom ) {
++	print "Error calculating Zoomlevel for Scale: $scale\n";
++	return (undef,undef);
++    }
++
++    if ($debug) {
++	print "\n";
++	print "Using openstreetmap_tah zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
++	print "lat: $lati\n";
++	print "lon: $long\n";
++    }
++
++    my $url = "http://tah.openstreetmap.org/MapOf/?lat=$lati&long=$long&z=$zoom&w=1280&h=1024&format=png";
++#   print "$url\n";
++    return ($url,$mapscale);
++}
+ 
+ #############################################################################
+ sub eniro_url($$$){
+@@ -2284,7 +2346,7 @@
+ =item B<--mapserver <MAPSERVER>>
+ 
+ Mapserver to download from. Default: 'expedia'.
+-Currently can use: landsat or expedia.
++Currently usable: landsat, expedia or openstreetmap_tah.
+ 
+ geoscience, gov_au, incrementp, googlesat, googlemap and eniro have download stubs, 
+ but they are !!!NOT!!!! in the right scale.
+@@ -2294,6 +2356,9 @@
+ 
+ landsat covers the whole world with satelite Photos
+ 
++openstreetmap_tah: Free maps from the OpenStreetmap Tiles@Home project, see 
++		   http://www.openstreetmap.org and http://tah.openstreetmap.org.
++
+ gov_au is for Australia
+ 
+ incrementp for japanese Maps
