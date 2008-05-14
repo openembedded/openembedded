@@ -1,13 +1,15 @@
 inherit pkgconfig native
 
+DEFAULT_PREFERENCE = "-1"
+
 require openssl.inc
 
 # This flag can contain target options (e.g -mfpu=neon for armv7-a systems)
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-export CFLAG = " "
-
+export CFLAG = " ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
+                 -DTERMIO  "
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://configure-targets.patch;patch=1 \
