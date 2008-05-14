@@ -121,7 +121,7 @@ def seppuku_find_bug_report(debug_file, opener, query, product, component, bugna
     @param component = search for this component
     @param bugname = the bug to search for
 
-    http://bugs.openembedded.net/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=org.openembedded.stable&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
+    http://bugs.openembedded.net/buglist.cgi?short_desc_type=substring&short_desc=manual+test+bug&product=Openembedded&emailreporter2=1&emailtype2=substring&email2=freyther%40yahoo.com
     but it does not support ctype=csv...
     """
     import urllib
@@ -154,7 +154,7 @@ def seppuku_reopen_bug(poster, file, product, component, bug_number, bugname, te
 
     Same as with opening a new report, some bits need to be inside the url
 
-    http://bugs.openembedded.net/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=Angstrom&longdesclength=2&product=org.openembedded.stable&component=Build&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&knob=reopen&short_desc=foo
+    http://bugs.openembedded.net/process_bug.cgi?id=239&bug_file_loc=http%3A%2F%2F&version=Angstrom&longdesclength=2&product=Openembedded&component=Build&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other&knob=reopen&short_desc=foo
     """
 
     import urllib2
@@ -189,7 +189,7 @@ def seppuku_file_bug(poster, file, product, component, bugname, text):
     Create a completely new bug report
 
 
-    http://bugs.openembedded.net/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&product=org.openembedded.stable&component=Build&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other
+    http://bugs.openembedded.net/post_bug.cgi?bug_file_loc=http%3A%2F%2F&version=Angstrom&product=Openembedded&component=Build&short_desc=foo&comment=bla&priority=P2&bug_severity=normal&op_sys=Linux&rep_platform=Other
 
     You are forced to add some default values to the bugzilla query and stop with '&'
 
