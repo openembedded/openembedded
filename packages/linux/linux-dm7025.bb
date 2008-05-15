@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm7025"
 KV = "2.6.12"
 PV = "2.6.12.6"
-PR = "r9"
+PR = "s1"
 
 DEPENDS = "zlib-native"
 
@@ -14,6 +14,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linuxmips-${KV}-dm7025-r6.conf \
 	http://dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1 \
 	http://dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-core-fix-several-locking-problems.patch.bz2;patch=1;pnum=1 \
+	http://dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvbapi-pilot-rolloff-extension-r0.patch.bz2;patch=1;pnum=1 \
 #squashfs-lzma stuff
 	http://squashfs-lzma.org/dl/sqlzma3.2-r2b.tar.bz2 \
 	http://dreamboxupdate.com/download/kernel-patches/sqlzma2k-3.2-r2-2.6.12.6.patch.bz2 \
