@@ -23,12 +23,17 @@ TARGET_OS = "linux${@['','-gnueabi'][bb.data.getVar('TARGET_ARCH',d,1) in ['arm'
 # [23:00] oxo: glibc (any version) on sparc does not like (repeat me) "-Os"
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -frename-registers -fomit-frame-pointer -Os"
+
+FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -frename-registers -fomit-frame-pointer -O2"
+TARGET_CC_ARCH_pn-glibc_armv7a = " -O3 -fno-tree-vectorize -march=armv7a -frename-registers -fomit-frame-pointer -mfloat-abi=softfp -mfpu=vfp "
+
 FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
 FULL_OPTIMIZATION_pn-glibc-intermediate = "-O2"
 FULL_OPTIMIZATION_pn-glibc = "-fexpensive-optimizations -fomit-frame-pointer -O2"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
-FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations -ftree-vectorize -fomit-frame-pointer -O2" 
+FULL_OPTIMIZATION_pn-glibc_armv7a = " -O3 -fno-tree-vectorize -march=armv7a -frename-registers -fomit-frame-pointer -mfloat-abi=softfp -mfpu=vfp "
+CFLAGS_pn-glibc_armv7a  = " -fexpensive-optimizations  -O3 -fno-tree-vectorize -march=armv7a -frename-registers -fomit-frame-pointer -mfloat-abi=softfp -mfpu=vfp"
 
 BUILD_OPTIMIZATION = "-Os"
 BUILD_OPTIMIZATION_pn-perl = "-O1"

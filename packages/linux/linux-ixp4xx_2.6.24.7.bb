@@ -2,13 +2,13 @@ require linux.inc
 require linux-ixp4xx.inc
 
 VANILLA_VERSION = "2.6.24"
-KERNEL_RELEASE = "2.6.24.4"
+KERNEL_RELEASE = "2.6.24.7"
 
 # If you use a rc, you will need to use this:
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-PR = "r2"
+# PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
 	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \

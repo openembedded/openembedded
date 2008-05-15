@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -12,7 +12,7 @@ RDEPENDS_task-sdk-opie = "\
     libopienet2 \
     libopiepim2 \
     libopieui2 \
-    libqpe1 \
+    libqpe-opie \
     qte \
     libqtaux2 \
     libmailwrapper"
