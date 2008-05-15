@@ -2,7 +2,6 @@ require linux.inc
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_alix = "1"
 
 PR = "r3"
 
