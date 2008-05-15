@@ -4,10 +4,10 @@ DESCRIPTION_dbus-java-bin = "${DESCRIPTION} (Binaries)"
 
 LICENSE = "GPLv2 AFL"
 SECTION = "libs"
-HOMEPAGE = "http://jalimo.org"
+HOMEPAGE = "http://dbus.freedesktop.org/doc/dbus-java"
 AUTHOR = "Matthew Johnson <dbus@matthew.ath.cx>"
 
-PR = "r2"
+PR = "r3"
 
 inherit java-library
 
@@ -15,7 +15,7 @@ SRC_URI = "http://dbus.freedesktop.org/releases/dbus-java/dbus-java-${PV}.tar.gz
 
 S = "${WORKDIR}/dbus-java-${PV}"
 
-DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native"
+DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native fastjar-native"
 RSUGGESTS_libdbus-java = "libmatthew-java dbus"
 RDEPENDS_dbus-java-viewer = "java2-runtime libmatthew-java ${JPN}"
 RDEPENDS_dbus-java-bin = "java2-runtime libmatthew-java ${JPN}"
@@ -25,8 +25,8 @@ do_compile () {
 	oe_runmake \
     JCFLAGS="-source 1.5" \
     JAVAC="javac" \
-    JARPREFIX="${STAGING_DATADIR}/java" \
-    JAVAUNIXJARDIR="${STAGING_DATADIR}/java" \
+    JARPREFIX="${STAGING_DATADIR_JAVA}" \
+    JAVAUNIXJARDIR="${STAGING_DATADIR_JAVA}" \
     CLASSPATH="${S}/classes" \
     JAR="fastjar" \
     .binclasses
@@ -34,8 +34,8 @@ do_compile () {
 	oe_runmake \
     JCFLAGS="-source 1.5" \
     JAVAC="javac" \
-    JARPREFIX="${STAGING_DATADIR}/java" \
-    JAVAUNIXJARDIR="${STAGING_DATADIR}/java" \
+    JARPREFIX="${STAGING_DATADIR_JAVA}" \
+    JAVAUNIXJARDIR="${STAGING_DATADIR_JAVA}" \
     CLASSPATH="${S}/classes" \
     JAR="fastjar" \
     all
@@ -47,8 +47,8 @@ do_compile () {
   oe_runmake \
     JAVAC="oefatal \"No Java compilation expected here.\"" \
     JAR="oefatal \"No jar invocation expected here.\"" \
-    JARPREFIX=${datadir}/java \
-    JAVAUNIXPATH=${datadir}/java \
+    JARPREFIX=${datadir_java} \
+    JAVAUNIXPATH=${datadir_java} \
     all
 
   # Trigger generation of all documentation files to prevent this
@@ -56,12 +56,12 @@ do_compile () {
   oe_runmake \
     JAVAC="oefatal \"No Java compilation expected here.\"" \
     JAR="oefatal \"No jar invocation expected here.\"" \
-    JARPREFIX=${datadir}/java \
-    JAVAUNIXPATH=${datadir}/java \
+    JARPREFIX=${datadir_java} \
+    JAVAUNIXPATH=${datadir_java} \
     CreateInterface.1 ListDBus.1 DBusDaemon.1 DBusViewer.1 changelog AUTHORS COPYING README INSTALL DBusCall.1
 }
 
-do_staging () {
+do_stage () {
   oe_jarinstall -s ${JPN}-${PV}.jar ${JPN}.jar
 }
 
