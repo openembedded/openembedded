@@ -1,5 +1,7 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
+DEPENDS - "virtual/kernel"
+
 PR = "r0"
 
 # Get dsplink tarball from TI website, place in sources and calculate
@@ -8,11 +10,16 @@ PR = "r0"
 SRC_URI ="http://install.tarball.in.source.dir/dsplink_1_50.tar.gz \
 "
 
-S = "${WORKDIR}/dsplink_1_50"
+S = "${WORKDIR}/dsplink_1_50/dsplink"
+
+# Needed for buildscripts
+export DSPLINK = "${S}"
 
 do_configure () {
 }
 
 do_compile () {
 }
+
+PACKAGE_ARCH = "${MACHINE_ARCH}" 
 
