@@ -35,3 +35,24 @@ PACKAGE_ARCH_${JPN} = "all"
 
 FILES_${JPN} = "${datadir_java}"
 
+# File name of the libraries' main Jar file
+JARFILENAME = "${P}.jar"
+
+# Space-separated list of alternative file names.
+ALTJARFILENAMES = "${PN}.jar"
+
+java_install() {
+  oe_jarinstall ${JARFILENAME} ${ALTJARFILENAMES}
+}
+
+do_install() {
+  java_install
+}
+
+java_stage() {
+  oe_jarinstall -s ${JARFILENAME} ${ALTJARFILENAMES}
+}
+
+do_stage() {
+  java_stage
+}

@@ -61,6 +61,41 @@ oe_jarinstall() {
   done
 }
 
+oe_makeclasspath() {
+  # Purpose: Generate a classpath variable from the given Jar file names
+  # where the ".jar" has been omitted.
+  #
+  # oe_makeclasspath foo baz bar
+  # Prints ${datadir_java}/foo.jar:${datadir_java}/baz.jar:${datadir_java}/bar.jar
+  #
+  # oe_makeclasspath -s foo baz bar
+  # Prints ${STAGING_DATADIR_JAVA}/foo.jar:${STAGING_DATADIR_JAVA}/baz.jar:${STAGING_DATADIR_JAVA}/bar.jar
+  #
+  # Provide the -s at the beginning otherwise strange things happen.
+  #
+  dir=${datadir_java}
+	classpath=
+	delimiter=
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+    -s)
+      dir=${STAGING_DATADIR_JAVA}
+      ;;
+    -*)
+      oefatal "oe_makeclasspath: unknown option: $1"
+      ;;
+    *)
+      classpath=$classpath$delimiter$dir/$1.jar
+      delimiter=":"
+      ;;
+    esac
+    shift
+  done
+
+	echo $classpath
+}
+
 # Creates a simple wrapper script for your Java program.
 # The script is written to ${PN} by default. 
 #
