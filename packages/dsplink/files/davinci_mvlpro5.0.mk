@@ -48,8 +48,8 @@ BASE_CGTOOLS    := /opt/montavista/pro/devkit/arm/v5t_le/bin
 BASE_OSINC      := $(BASE_BUILDOS)/include
 
 OSINC_GENERIC   := $(BASE_OSINC)
-OSINC_PLATFORM  := /opt/montavista/pro/devkit/arm/v5t_le/lib/gcc/armv5tl-montavista-linux-gnueabi/4.2.0/include
-OSINC_TARGET    := /opt/montavista/pro/devkit/arm/v5t_le/target/usr/include
+OSINC_PLATFORM  := SED_ME_CROSS/4.2.0/include
+OSINC_TARGET    := SED_ME_STAGINGDIR/usr/include
 
 ifneq ("$(VARIANT)", "")
 OSINC_VARIANT   := $(BASE_OSINC)
@@ -59,7 +59,7 @@ endif
 #   ----------------------------------------------------------------------------
 #   Base directory for libraries provided by GPP OS
 #   ----------------------------------------------------------------------------
-BASE_OSLIB      := /opt/montavista/pro/devkit/arm/v5t_le/lib
+BASE_OSLIB      := SED_ME_STAGINGDIR/lib
 
 OSLIB_GENERIC   := $(BASE_OSLIB)
 OSLIB_PLATFORM  := $(BASE_OSLIB)
@@ -77,10 +77,10 @@ endif
 #   ----------------------------------------------------------------------------
 #   Name of the compiler
 #   ----------------------------------------------------------------------------
-COMPILER        := $(BASE_CGTOOLS)/arm_v5t_le-gcc
-LD              := $(BASE_CGTOOLS)/arm_v5t_le-ld
+COMPILER        := SED_ME_TARGET_PREFIXgcc
+LD              := SED_ME_TARGET_PREFIXDIR-ld
 
-CROSS_COMPILE   := arm_v5t_le-
+CROSS_COMPILE   := SED_ME_TARGET_PREFIX
 export CROSS_COMPILE
 
 #   ----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ STD_CC_DEFNS    := -D_REENTRANT
 #   ============================================================================
 #   ARCHIVER1 - This denotes the linker.
 #   ============================================================================
-ARCHIVER1        := $(BASE_CGTOOLS)/arm_v5t_le-ld
+ARCHIVER1        := SED_ME_TARGET_PREFIX-ld
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the archiver
@@ -146,7 +146,7 @@ STD_AR_FLAGS1    := -EL -r
 #   ============================================================================
 #   ARCHIVER2 - This denotes the archiver.
 #   ============================================================================
-ARCHIVER2        := $(BASE_CGTOOLS)/arm_v5t_le-ar
+ARCHIVER2        := SED_ME_TARGET_PREFIX-ar
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the archiver
@@ -157,7 +157,7 @@ STD_AR_FLAGS2    := -r
 #   ============================================================================
 #   LINKER - The compiler is used for linking purpose as well.
 #   ============================================================================
-LINKER      := $(BASE_CGTOOLS)/arm_v5t_le-gcc
+LINKER      := SED_ME_TARGET_PREFIXgcc
 
 #   ----------------------------------------------------------------------------
 #   Command line switches used by the linker
