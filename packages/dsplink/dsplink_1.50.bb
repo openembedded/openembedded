@@ -1,6 +1,6 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
-DEPENDS - "virtual/kernel"
+DEPENDS = "virtual/kernel"
 
 PR = "r0"
 
@@ -19,6 +19,7 @@ do_configure () {
 }
 
 do_compile () {
+sh ${S}/etc/host/scripts/Linux/buildmodule.sh
 }
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
