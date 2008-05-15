@@ -35,7 +35,7 @@ USE_DISTRIBUTION := 1
 #   ----------------------------------------------------------------------------
 #   Base directory for the GPP OS
 #   ----------------------------------------------------------------------------
-BASE_BUILDOS    := ${HOME}/montavista/kernel/Linux
+BASE_BUILDOS    := SED_ME_KERNELDIR
 
 #   ----------------------------------------------------------------------------
 #   Base for code generation tools - compiler, linker, archiver etc.
