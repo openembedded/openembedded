@@ -17,8 +17,8 @@ export  CFGDATE            := MAY 14, 2008  11:53:09
 #   =========================================================
 #   DSP/BIOS LINK GPP side root directory.
 #   =========================================================
-export GPPROOT             := /home/balister/src/dsplink_1_50/dsplink/gpp
-export DSPROOT             := /home/balister/src/dsplink_1_50/dsplink/dsp
+export GPPROOT             := SED_ME_SOURCEDIR/gpp
+export DSPROOT             := SED_ME_SOURCEDIR/dsp
 
 
 #   =========================================================
@@ -31,17 +31,17 @@ export DSPOS               := DspBios
 #   =========================================================
 #   Specific distribution of GPP and DSP OS (if any)
 #   =========================================================
-export GPPDISTRIBUTION     := davinci_mvlpro5.0
-export GPPOSVERSION        := 2.6.18
+export GPPDISTRIBUTION     := SED_ME_GPPDISTRO
+export GPPOSVERSION        := SED_ME_KERNELVERSION
 export GPPOSVARIANT        := 
-export DSPDISTRIBUTION     := c64xxp_5.xx_linux
+export DSPDISTRIBUTION     := SED_ME_DSPDISTRO
 
 
 #   =========================================================
 #   Target GPP and DSP platforms for DSP/BIOS LINK
 #   =========================================================
-export GPPPLATFORM         := Davinci
-export DSPPLATFORM         := Davinci
+export GPPPLATFORM         := SED_ME_PLATFORM
+export DSPPLATFORM         := SED_ME_PLATFORM
 
 
 #   =========================================================
