@@ -1,7 +1,6 @@
 DESCRIPTION = "Mickey's Terminal Program"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
-DEPENDS = "python-serial"
 LICENSE = "GPLv2"
 PV = "2.9.0+gitr${SRCREV}"
 PR = "r0"
@@ -16,7 +15,7 @@ do_install() {
 
 RDEPENDS_${PN} = "\
   python-readline \
-  python-serial \
+  python-pyserial \
   python-textutils \
   python-threading \
 "
