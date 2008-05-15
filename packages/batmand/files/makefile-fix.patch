@@ -1,0 +1,13 @@
+Index: batman-0.3/Makefile
+===================================================================
+--- batman-0.3.orig/Makefile	2008-05-15 19:09:47.000000000 +0200
++++ batman-0.3/Makefile	2008-05-15 21:01:14.000000000 +0200
+@@ -17,8 +17,6 @@
+ #
+ 
+ 
+-CC =		gcc
+-CFLAGS =	-Wall -O1 -g3
+ EXTRA_CFLAGS =	-DDEBUG_MALLOC -DMEMORY_USAGE -DPROFILE_DATA -DREVISION_VERSION=$(REVISION_VERSION)
+ LDFLAGS =	-lpthread
+ 
