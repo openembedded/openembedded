@@ -28,6 +28,7 @@ RDEPENDS_${PN} += "\
   python-dbus \
   python-pygobject \
   python-pyrtc \
+  python-pyserial \
   python-syslog \
 "
 
