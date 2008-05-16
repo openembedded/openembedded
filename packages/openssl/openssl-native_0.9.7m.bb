@@ -6,11 +6,7 @@ require openssl.inc
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-export CFLAG = " ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
-                 -DTERMIO  "
-
-
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://armeb.patch;patch=1;pnum=0 \
