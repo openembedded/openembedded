@@ -4,8 +4,6 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r5"
-
 DEPENDS = "expat virtual/libintl libdaemon dbus glib-2.0"
 
 # uclibc has no nss
