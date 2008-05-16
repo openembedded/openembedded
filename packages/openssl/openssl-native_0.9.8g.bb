@@ -8,7 +8,8 @@ require openssl.inc
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-PR = "r1"
+export CFLAG = " ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)} \
+                 -DTERMIO  "
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://configure-targets.patch;patch=1 \
