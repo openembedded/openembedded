@@ -18,15 +18,6 @@ def oestats_getid(d):
 	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'r')
 	return f.read()
 	
-def oestats_revision(dir):
-	import re
-	try:
-		f = file("%s/_MTN/revision" % dir)
-		m = re.search(r"old_revision \[(.*)\]", f.read())
-		return m.group(1)
-	except:
-		return
-
 def oestats_send(server, action, vars = {}):
 	import httplib, urllib
 
@@ -43,17 +34,10 @@ def oestats_start(server, builder, d):
 	import bb
 	import os.path
 
-	# collect information about revisions
-	path_bb = bb.data.getVar('BBPATH', d, True)
-	for p in (path_bb or "").split(':'):
-		revision = oestats_revision(p)
-		if revision:
-			break
-
 	# send report
 	response = oestats_send(server, "/builds/start/", {
 		'builder': builder,
-		'revision': revision,
+		'revision': bb.data.getVar('METADATA_REVISION', d, True),
 		'machine': bb.data.getVar('MACHINE', d, True),
 		'distro': bb.data.getVar('DISTRO', d, True),
 	})
