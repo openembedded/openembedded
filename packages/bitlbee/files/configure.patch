@@ -1,0 +1,21 @@
+--- bitlbee/configure.orig	2006-11-25 13:01:16.000000000 +0100
++++ bitlbee/configure	2006-11-25 13:09:19.000000000 +0100
+@@ -57,6 +57,9 @@
+ 
+ --ssl=...	SSL library to use (gnutls, nss, openssl, bogus, auto)
+ 							$ssl
++
++--arch=...  	The target architecture              	$arch
++--cpu=...  	The target cpu              		$cpu
+ EOF
+ 		exit;
+ 	fi
+@@ -366,6 +369,8 @@
+ ;;
+ esac
+ 
++echo Cpu: $cpu
++
+ echo
+ echo 'Configuration done:'
+ 
