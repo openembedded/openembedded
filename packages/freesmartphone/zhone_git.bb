@@ -2,19 +2,15 @@ DESCRIPTION = "Zhone: Zen Phone"
 LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "edje-native"
-RDEPENDS = "task-python-efl python-textutils"
+RDEPENDS = "task-python-efl python-textutils python-dbus"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"
 S = "${WORKDIR}/git"
 
 inherit autotools
-
-RDEPENDS_${PN} += "\
-  python-dbus \
-"
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/X11/Xsession.d/
@@ -23,7 +19,5 @@ do_install_append() {
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
 
-RCONFLICTS = "openmoko-session2"
-RREPLACES = "openmoko-session2"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
