@@ -1,0 +1,21 @@
+source: https://dev.openwrt.org/browser/trunk/openwrt/package/dropbear/patches/scp-argument-fix.patch?rev=453
+comment: remove unsupported default arguments in scp.  Fixes OE bug 3227.
+
+diff -ur dropbear-0.49-orig/scp.c dropbear-0.49/scp.c
+--- dropbear-0.49-orig/scp.c	2007-02-22 16:51:35.000000000 +0100
++++ dropbear-0.49/scp.c	2007-10-19 14:19:08.000000000 +0200
+@@ -308,10 +308,10 @@
+ 	memset(&args, '\0', sizeof(args));
+ 	args.list = NULL;
+ 	addargs(&args, "%s", ssh_program);
+-	addargs(&args, "-x");
+-	addargs(&args, "-oForwardAgent no");
+-	addargs(&args, "-oPermitLocalCommand no");
+-	addargs(&args, "-oClearAllForwardings yes");
++//	addargs(&args, "-x");
++//	addargs(&args, "-oForwardAgent no");
++//	addargs(&args, "-oPermitLocalCommand no");
++//	addargs(&args, "-oClearAllForwardings yes");
+ 
+ 	fflag = tflag = 0;
+ 	while ((ch = getopt(argc, argv, "dfl:prtvBCc:i:P:q1246S:o:F:")) != -1)
