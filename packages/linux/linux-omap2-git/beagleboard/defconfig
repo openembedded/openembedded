@@ -1324,6 +1324,7 @@ CONFIG_SND_SOC=y
 # SoC Audio for the Texas Instruments OMAP
 #
 CONFIG_SND_OMAP_SOC=y
+CONFIG_SND_OMAP_SOC_MCBSP=y
 
 #
 # Open Sound System
