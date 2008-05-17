@@ -5,7 +5,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MA
 SRCREV = "fe2c08002adea304a13ccb806aa1ab4058607094"
 
 PV = "2.6.25+2.6.26-rc2+git${SRCREV}"
-PR = "r14"
+PR = "r15"
 
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
