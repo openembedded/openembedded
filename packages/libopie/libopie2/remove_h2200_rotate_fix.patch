@@ -1,0 +1,15 @@
+--- libopie2/opiecore/device/odevice_ipaq.cpp	25 Jul 2007 10:49:20 -0000	1.32
++++ libopie2/opiecore/device/odevice_ipaq.cpp	17 Mar 2007 22:08:43 -0000	1.30
+@@ -330,12 +330,6 @@
+                 case Rot180: quarters = 1/*270deg*/; break;
+                 case Rot270: quarters = 0/*270deg*/; break;
+             }
+-            if( d->m_model == Model_iPAQ_H22xx ) {
+-              // FIXME: there's something screwed with the keycodes being sent on h2200. I have
+-              // added a temporary workaround for this here, but the bug should be fixed properly
+-              // later in the right place. - Paul Eggleton 25/07/2007
+-              quarters = 0;
+-            }
+             newkeycode = Key_Left + ( keycode - Key_Left + quarters ) % 4;
+             break;
+         }

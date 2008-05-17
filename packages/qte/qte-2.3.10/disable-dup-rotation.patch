@@ -1,0 +1,13 @@
+--- qte/src/kernel/kernelkeyboard.cpp	2008-04-04 11:07:42.000000000 +0100
++++ qte/src/kernel/kernelkeyboard.cpp	2008-04-04 11:07:45.000000000 +0100
+@@ -627,8 +627,8 @@
+     case Qt::Key_Down:
+         unicode = 0xffff;
+         mod_key = false;
+-        if (qt_screen->isTransformed())
+-            qtKeyCode = static_cast<Qt::Key>( xform_dirkey(static_cast<int>( qtKeyCode ) ) );
++//        if (qt_screen->isTransformed())
++//            qtKeyCode = static_cast<Qt::Key>( xform_dirkey(static_cast<int>( qtKeyCode ) ) );
+         break;
+     /*
+      * handle lock, we don't handle scroll lock!
