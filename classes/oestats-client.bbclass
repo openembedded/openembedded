@@ -22,28 +22,37 @@ def oestats_send(server, action, vars = {}):
 	import httplib, urllib
 
 	params = urllib.urlencode(vars)
-	headers = {"Content-type": "application/x-www-form-urlencoded",
-		"Accept": "text/plain"}
+	headers = {"Content-type": "application/x-www-form-urlencoded"}
 	conn = httplib.HTTPConnection(server)
 	conn.request("POST", action, params, headers)
 	response = conn.getresponse()
+	data = response.read()
 	conn.close()
-	return response
+	return data
 
 def oestats_start(server, builder, d):
 	import bb
 	import os.path
+	import re
 
 	# send report
-	response = oestats_send(server, "/builds/start/", {
-		'builder': builder,
-		'revision': bb.data.getVar('METADATA_REVISION', d, True),
-		'machine': bb.data.getVar('MACHINE', d, True),
-		'distro': bb.data.getVar('DISTRO', d, True),
-	})
-	id = response.read()
+	id = ""
+	try:
+		data = oestats_send(server, "/builds/start/", {
+			'builder': builder,
+			'revision': bb.data.getVar('METADATA_REVISION', d, True),
+			'machine': bb.data.getVar('MACHINE', d, True),
+			'distro': bb.data.getVar('DISTRO', d, True),
+		})
+		if re.match("^\d+$", data): id=data
+	except:
+		pass
 
 	# save the build id
+	if id:
+		bb.note("oestats: build %s" % id)
+	else:
+		bb.note("oestats: server error, disabling stats")
 	oestats_setid(d, id)
 
 def oestats_stop(server, d, status):
@@ -51,6 +60,7 @@ def oestats_stop(server, d, status):
 
 	# retrieve build id
 	id = oestats_getid(d)
+	if not id: return
 
 	# send report
 	response = oestats_send(server, "/builds/stop/%s/" % id, {
@@ -63,6 +73,9 @@ def oestats_task(server, d, task, status):
 
 	# retrieve build id
 	id = oestats_getid(d)
+	if not id: return
+
+	# calculate build time
 	try:
 		elapsed = time.time() - float(bb.data.getVar('OESTATS_STAMP', d, True))
 	except:
