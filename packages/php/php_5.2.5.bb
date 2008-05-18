@@ -1,6 +1,6 @@
 require php.inc
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
@@ -19,7 +19,7 @@ EXTRA_OECONF = "    --without-iconv \
                     --with-mysqli="${STAGING_BINDIR_NATIVE}/mysql_config" \
 "
 
-EXTRA_OECONF += " --with-pear-php-cli=${STAGING_BINDIR} --with-libxml-dir=${STAGING_BINDIR}"
+EXTRA_OECONF += " --with-pear-php-cli=${STAGING_BINDIR} --with-libxml-dir=${STAGING_BINDIR_CROSS}"
 
 export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
 export PHP_NATIVE_DIR="${STAGING_BINDIR_NATIVE}"
