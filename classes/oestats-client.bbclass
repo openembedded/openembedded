@@ -70,7 +70,7 @@ def oestats_start(server, builder, d):
 	if id:
 		bb.note("oestats: build %s" % id)
 	else:
-		bb.note("oestats: server error, disabling stats")
+		bb.note("oestats: error starting build, disabling stats")
 	oestats_setid(d, id)
 
 def oestats_stop(server, d, status):
@@ -81,9 +81,12 @@ def oestats_stop(server, d, status):
 	if not id: return
 
 	# send report
-	response = oestats_send(server, "/builds/stop/%s/" % id, {
-		'status': status,
-	})
+	try:
+		response = oestats_send(server, "/builds/stop/%s/" % id, {
+			'status': status,
+		})
+	except:
+		bb.note("oestats: error stopping build")
 
 def oestats_task(server, d, task, status):
 	import bb
@@ -100,14 +103,18 @@ def oestats_task(server, d, task, status):
 		elapsed = 0
 
 	# send report
-	response = oestats_send(server, "/builds/task/%s/" % id, {
-		'package': bb.data.getVar('PN', d, True),
-		'version': bb.data.getVar('PV', d, True),
-		'revision': bb.data.getVar('PR', d, True),
-		'task': task,
-		'status': status,
-		'time': str(elapsed),
-	})
+	try:
+		response = oestats_send(server, "/builds/task/%s/" % id, {
+			'package': bb.data.getVar('PN', d, True),
+			'version': bb.data.getVar('PV', d, True),
+			'revision': bb.data.getVar('PR', d, True),
+			'task': task,
+			'status': status,
+			'time': str(elapsed),
+		})
+	except:
+		bb.note("oestats: error sending task, disabling stats")
+		oestats_setid(d, "")
 
 addhandler oestats_eventhandler
 python oestats_eventhandler () {
