@@ -1,0 +1,93 @@
+diff -Naru Keyring.orig/accountlist.cpp Keyring/accountlist.cpp
+--- Keyring.orig/accountlist.cpp	2002-09-29 17:24:09.000000000 +0200
++++ Keyring/accountlist.cpp	2007-06-05 15:46:59.000000000 +0200
+@@ -314,7 +314,7 @@
+  */
+ void AccountList::resetTimer(){
+ 	mSeconds=mTimerStart;	
+-	mStartTime = time(NULL);
++	mStartTime = (time_t*)time(NULL);
+ 	wLCD->display(mSeconds);	
+ }
+ 
+@@ -390,20 +390,20 @@
+ 	//if so and it has expired, lock keyring.
+ 	if(mTimerViewingAC && mTimerEnabled){
+ 			//Timer has expired
+-			if((time(NULL)-mStartTime) > mTimerStart){
++			if((time(NULL)-(time_t)mStartTime) > mTimerStart){
+ 					lock();
+ 			} else {
+ 					//Timer needs to be updated
+ 					time_t diff=time(NULL)-viewtime;
+ 					mSeconds=mSeconds-diff;
+-					mStartTime = time(NULL)-(mTimerStart-mSeconds);
++					mStartTime = (time_t*)time(NULL)-(mTimerStart-mSeconds);
+ 					mUpdateTimer->start(500,false);
+ 					wLCD->display(mSeconds);	
+ 			}
+ 	} else {
+ 			if(mTimerEnabled){
+ 					mUpdateTimer->start(500,false);
+-					mStartTime = time(NULL)-(mTimerStart-mSeconds);
++					mStartTime = (time_t*)time(NULL)-(mTimerStart-mSeconds);
+ 			}
+ 	}
+ 
+@@ -432,7 +432,7 @@
+ 		if(mTimerEnabled)
+ 			mUpdateTimer->start(500,false);
+ 		mSeconds=mTimerStart;
+-		mStartTime = time(NULL);
++		mStartTime = (time_t*)time(NULL);
+ 		updateCountDown();
+ 	
+ 		//Let's be a bastard and bitch if the
+@@ -463,11 +463,11 @@
+ void AccountList::updateCountDown(){
+ 	wLCD->display(mSeconds);	
+ 	if(mSeconds==0 || 
+-			(((time(NULL)-mStartTime) > mTimerStart) && mTimerPowerOff)){
++			(((time(NULL)-(time_t)mStartTime) > mTimerStart) && mTimerPowerOff)){
+ 		lock();
+ 		return;
+ 	}
+-	mSeconds=mTimerStart-(time(NULL)-mStartTime);
++	mSeconds=mTimerStart-(time(NULL)-(time_t)mStartTime);
+ }
+ 
+ void AccountList::selectionChanged(QListViewItem *item){
+@@ -548,20 +548,20 @@
+ 		//if so and it has expired, lock keyring.
+ 		if(mTimerViewingAC && mTimerEnabled){
+ 			//Timer has expired
+-			if((time(NULL)-mStartTime) > mTimerStart){
++			if((time(NULL)-(time_t)mStartTime) > mTimerStart){
+ 				lock();
+ 			} else {
+ 				//Timer needs to be updated
+-				time_t diff=time(NULL)-viewtime;
++				time_t diff = time(NULL)-(time_t)viewtime;
+ 				mSeconds=mSeconds-diff;
+-				mStartTime = time(NULL)-(mTimerStart-mSeconds);
++				mStartTime = (time_t*)time(NULL)-(mTimerStart-mSeconds);
+ 				mUpdateTimer->start(500,false);
+ 				wLCD->display(mSeconds);	
+ 			}
+ 		} else {
+ 			if(mTimerEnabled){
+ 				mUpdateTimer->start(500,false);
+-				mStartTime = time(NULL)-(mTimerStart-mSeconds);
++				mStartTime = (time_t*)time(NULL)-(mTimerStart-mSeconds);
+ 			}
+ 		}
+ 		delete qd;	
+@@ -627,7 +627,7 @@
+ 		
+ 	if(mTimerEnabled){
+ 			mUpdateTimer->start(500,false);
+-			mStartTime = time(NULL)-(mTimerStart-mSeconds);
++			mStartTime = (time_t*)time(NULL)-(mTimerStart-mSeconds);
+ 	}
+ 
+ 	showAccountList();
