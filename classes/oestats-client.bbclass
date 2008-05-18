@@ -19,12 +19,30 @@ def oestats_getid(d):
 	return f.read()
 	
 def oestats_send(server, action, vars = {}):
-	import httplib, urllib
+	import httplib
 
-	params = urllib.urlencode(vars)
-	headers = {"Content-type": "application/x-www-form-urlencoded"}
+	# build body
+	output = []
+	bound = '----------ThIs_Is_tHe_bouNdaRY_$'
+	for key in vars:
+		assert vars[key]
+		output.append('--' + bound)
+		output.append('Content-Disposition: form-data; name="%s"' % key)
+		output.append('')
+		output.append(vars[key])
+	output.append('--' + bound + '--')
+	output.append('')
+	body = "\r\n".join(output)
+
+	# build headers
+	headers = {
+		"User-agent": "oestats-client/0.1",
+		"Content-type": "multipart/form-data; boundary=%s" % bound,
+		"Content-length": str(len(body))}
+
+	# send request
 	conn = httplib.HTTPConnection(server)
-	conn.request("POST", action, params, headers)
+	conn.request("POST", action, body, headers)
 	response = conn.getresponse()
 	data = response.read()
 	conn.close()
@@ -88,7 +106,7 @@ def oestats_task(server, d, task, status):
 		'revision': bb.data.getVar('PR', d, True),
 		'task': task,
 		'status': status,
-		'time': elapsed,
+		'time': str(elapsed),
 	})
 
 addhandler oestats_eventhandler
