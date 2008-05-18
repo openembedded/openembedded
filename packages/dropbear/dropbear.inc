@@ -10,7 +10,6 @@ SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.gz \
 	   file://urandom-xauth-changes-to-options.h.patch;patch=1 \
 	   file://configure.patch;patch=1 \
 	   file://fix-2kb-keys.patch;patch=1 \
-	   file://scp-argument-fix.patch;patch=1 \
 	   file://allow-nopw.patch \
 	   file://init"
 
