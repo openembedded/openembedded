@@ -6,7 +6,7 @@
 #
 # INHERIT += "oestats-client"
 # OESTATS_SERVER = "some.server.org:8000"
-# OESTATS_BUILDER = "some title"
+# OESTATS_BUILDER = "some_nickname"
 
 def oestats_setid(d, val):
 	import bb
@@ -18,7 +18,7 @@ def oestats_getid(d):
 	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'r')
 	return f.read()
 	
-def oestats_send(server, action, vars = {}):
+def oestats_send(server, action, vars = {}, files = {}):
 	import httplib
 
 	# build body
@@ -30,6 +30,14 @@ def oestats_send(server, action, vars = {}):
 		output.append('Content-Disposition: form-data; name="%s"' % key)
 		output.append('')
 		output.append(vars[key])
+	for key in files:
+		assert files[key]
+		output.append('--' + bound)
+		output.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, files[key]['filename']))
+		output.append('Content-Type: %s' % files[key]['content-type'])
+		
+		output.append('')
+		output.append(files[key]['content'])
 	output.append('--' + bound + '--')
 	output.append('')
 	body = "\r\n".join(output)
@@ -90,6 +98,7 @@ def oestats_stop(server, d, status):
 
 def oestats_task(server, d, task, status):
 	import bb
+	import glob
 	import time
 
 	# retrieve build id
@@ -101,7 +110,19 @@ def oestats_task(server, d, task, status):
 		elapsed = time.time() - float(bb.data.getVar('OESTATS_STAMP', d, True))
 	except:
 		elapsed = 0
-
+	
+	# send the log for failures
+	files = {}
+	if status == 'Failed':
+		logs = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', d, True), task))
+        	if len(logs) > 0:
+			log = logs[0]
+			bb.note("oestats: sending log file : %s" % log)
+			files['log'] = {
+				'filename': 'log.txt',
+				'content': file(log).read(),
+				'content-type': 'text/plain'}
+	
 	# send report
 	try:
 		response = oestats_send(server, "/builds/task/%s/" % id, {
@@ -111,7 +132,7 @@ def oestats_task(server, d, task, status):
 			'task': task,
 			'status': status,
 			'time': str(elapsed),
-		})
+		}, files)
 	except:
 		bb.note("oestats: error sending task, disabling stats")
 		oestats_setid(d, "")
