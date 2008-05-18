@@ -32,6 +32,8 @@ python () {
     for dep in (bb.data.getVar('EXTRA_IMAGEDEPENDS', d, True) or "").split():
         deps += " %s:do_populate_staging" % dep
     bb.data.setVarFlag('do_rootfs', 'depends', deps, d)
+
+    runtime_mapping_rename("PACKAGE_INSTALL", d)
 }
 
 #
@@ -66,6 +68,7 @@ LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVa
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
+do_rootfs[lockfiles] = "${IMAGE_ROOTFS}.lock"
 do_build[nostamp] = "1"
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
