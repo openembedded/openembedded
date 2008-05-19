@@ -8,7 +8,8 @@ PV = "0.2.3+gitr${SRCREV}"
 PR = "r9"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
-           file://disable-docbook2man.patch;patch=1"
+           file://disable-docbook2man.patch;patch=1 \
+           file://d1e096c3267c1c9492041382b954e9327bc8bbec.patch;patch=0"
 
 
 S = "${WORKDIR}/git"
