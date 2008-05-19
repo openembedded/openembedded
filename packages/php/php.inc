@@ -5,7 +5,6 @@ LICENSE = "PHP"
 DEPENDS = "zlib libxml2 mysql virtual/libiconv php-native"
 
 SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2\
-               file://autotools.patch;patch=1 \
                file://acinclude-xml2-config.patch;patch=1"
 
 inherit autotools
