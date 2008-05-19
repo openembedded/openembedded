@@ -8,8 +8,6 @@ PR = "r0"
 
 inherit efl
 
-SRC_URI += "file://fix_alignment_error.patch;patch=1"
-
 # a gstreamer thumbnailer would be nice now that we have emotion using gstreamer as well
 EXTRA_OECONF = "--disable-xine"
 

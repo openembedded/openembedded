@@ -6,9 +6,10 @@ PR = "r5"
 
 inherit efl
 
-SRC_URI = "${E_CVS};module=e17/libs/e_dbus \
-           http://people.openmoko.org/stefan/e_nm-big-hack.patch;patch=1;pnum=1;mindate=20080330 \
-			"
+SRC_URI = "\
+  ${E_CVS};module=e17/libs/e_dbus \
+  http://people.openmoko.org/stefan/e_nm-big-hack.patch;patch=1;pnum=1;mindate=20080330;maxdate=20080501 \
+"
 S = "${WORKDIR}/e_dbus"
 
 EXTRA_OECONF = "--enable-build-test-gui"
