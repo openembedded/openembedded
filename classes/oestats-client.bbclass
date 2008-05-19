@@ -81,7 +81,7 @@ def oestats_start(server, builder, d):
 		bb.note("oestats: error starting build, disabling stats")
 	oestats_setid(d, id)
 
-def oestats_stop(server, d, status):
+def oestats_stop(server, d, failures):
 	import bb
 
 	# retrieve build id
@@ -89,6 +89,11 @@ def oestats_stop(server, d, status):
 	if not id: return
 
 	# send report
+	if failures > 0:
+		status = "Failed"
+	else:
+		status = "Succeeded"		      
+
 	try:
 		response = oestats_send(server, "/builds/%s/" % id, {
 			'status': status,
@@ -155,7 +160,7 @@ python oestats_eventhandler () {
 	if getName(e) == 'BuildStarted':
 		oestats_start(server, builder, e.data)
 	elif getName(e) == 'BuildCompleted':
-		oestats_stop(server, e.data, 'Completed')
+		oestats_stop(server, e.data, e.getFailures())
 	elif getName(e) == 'TaskStarted':
 		bb.data.setVar('OESTATS_STAMP', repr(time.time()), e.data)
 	elif getName(e) == 'TaskSucceeded':
