@@ -6,7 +6,7 @@
 #
 # INHERIT += "oestats-client"
 # OESTATS_SERVER = "some.server.org:8000"
-# OESTATS_BUILDER = "some title"
+# OESTATS_BUILDER = "some_nickname"
 
 def oestats_setid(d, val):
 	import bb
@@ -18,32 +18,67 @@ def oestats_getid(d):
 	f = file(bb.data.getVar('TMPDIR', d, True) + '/oestats.id', 'r')
 	return f.read()
 	
-def oestats_send(server, action, vars = {}):
-	import httplib, urllib
+def oestats_send(server, action, vars = {}, files = {}):
+	import httplib
 
-	params = urllib.urlencode(vars)
-	headers = {"Content-type": "application/x-www-form-urlencoded",
-		"Accept": "text/plain"}
+	# build body
+	output = []
+	bound = '----------ThIs_Is_tHe_bouNdaRY_$'
+	for key in vars:
+		assert vars[key]
+		output.append('--' + bound)
+		output.append('Content-Disposition: form-data; name="%s"' % key)
+		output.append('')
+		output.append(vars[key])
+	for key in files:
+		assert files[key]
+		output.append('--' + bound)
+		output.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, files[key]['filename']))
+		output.append('Content-Type: %s' % files[key]['content-type'])
+		
+		output.append('')
+		output.append(files[key]['content'])
+	output.append('--' + bound + '--')
+	output.append('')
+	body = "\r\n".join(output)
+
+	# build headers
+	headers = {
+		"User-agent": "oestats-client/0.1",
+		"Content-type": "multipart/form-data; boundary=%s" % bound,
+		"Content-length": str(len(body))}
+
+	# send request
 	conn = httplib.HTTPConnection(server)
-	conn.request("POST", action, params, headers)
+	conn.request("POST", action, body, headers)
 	response = conn.getresponse()
+	data = response.read()
 	conn.close()
-	return response
+	return data
 
 def oestats_start(server, builder, d):
 	import bb
 	import os.path
+	import re
 
 	# send report
-	response = oestats_send(server, "/builds/start/", {
-		'builder': builder,
-		'revision': bb.data.getVar('METADATA_REVISION', d, True),
-		'machine': bb.data.getVar('MACHINE', d, True),
-		'distro': bb.data.getVar('DISTRO', d, True),
-	})
-	id = response.read()
+	id = ""
+	try:
+		data = oestats_send(server, "/builds/start/", {
+			'builder': builder,
+			'revision': bb.data.getVar('METADATA_REVISION', d, True),
+			'machine': bb.data.getVar('MACHINE', d, True),
+			'distro': bb.data.getVar('DISTRO', d, True),
+		})
+		if re.match("^\d+$", data): id=data
+	except:
+		pass
 
 	# save the build id
+	if id:
+		bb.note("oestats: build %s" % id)
+	else:
+		bb.note("oestats: error starting build, disabling stats")
 	oestats_setid(d, id)
 
 def oestats_stop(server, d, status):
@@ -51,32 +86,56 @@ def oestats_stop(server, d, status):
 
 	# retrieve build id
 	id = oestats_getid(d)
+	if not id: return
 
 	# send report
-	response = oestats_send(server, "/builds/stop/%s/" % id, {
-		'status': status,
-	})
+	try:
+		response = oestats_send(server, "/builds/stop/%s/" % id, {
+			'status': status,
+		})
+	except:
+		bb.note("oestats: error stopping build")
 
 def oestats_task(server, d, task, status):
 	import bb
+	import glob
 	import time
 
 	# retrieve build id
 	id = oestats_getid(d)
+	if not id: return
+
+	# calculate build time
 	try:
 		elapsed = time.time() - float(bb.data.getVar('OESTATS_STAMP', d, True))
 	except:
 		elapsed = 0
-
+	
+	# send the log for failures
+	files = {}
+	if status == 'Failed':
+		logs = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', d, True), task))
+        	if len(logs) > 0:
+			log = logs[0]
+			bb.note("oestats: sending log file : %s" % log)
+			files['log'] = {
+				'filename': 'log.txt',
+				'content': file(log).read(),
+				'content-type': 'text/plain'}
+	
 	# send report
-	response = oestats_send(server, "/builds/task/%s/" % id, {
-		'package': bb.data.getVar('PN', d, True),
-		'version': bb.data.getVar('PV', d, True),
-		'revision': bb.data.getVar('PR', d, True),
-		'task': task,
-		'status': status,
-		'time': elapsed,
-	})
+	try:
+		response = oestats_send(server, "/builds/task/%s/" % id, {
+			'package': bb.data.getVar('PN', d, True),
+			'version': bb.data.getVar('PV', d, True),
+			'revision': bb.data.getVar('PR', d, True),
+			'task': task,
+			'status': status,
+			'time': str(elapsed),
+		}, files)
+	except:
+		bb.note("oestats: error sending task, disabling stats")
+		oestats_setid(d, "")
 
 addhandler oestats_eventhandler
 python oestats_eventhandler () {
