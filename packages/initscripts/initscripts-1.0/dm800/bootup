@@ -32,6 +32,8 @@ echo 18 > /proc/progress
 modprobe bcm7401
 
 echo 19 > /proc/progress
+
+cat /etc/videomode > /proc/stb/video/videomode
 modprobe dreambox_rc2
 modprobe fp
 
