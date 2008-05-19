@@ -2,6 +2,8 @@ require php.inc
 
 PR = "r3"
 
+SRC_URI += "file://autotools.patch;patch=1"
+
 inherit autotools
 
 export THREADS="pthread"
