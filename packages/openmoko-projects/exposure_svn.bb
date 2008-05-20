@@ -1,10 +1,9 @@
-AUTHOR = "Willie <willie@openmoko.com>"
 DESCRIPTION = "Exposure all devices on neo1973"
+AUTHOR = "Willie <willie@openmoko.com>"
 DEPENDS = "python-etk"
 RDEPENDS = "python-etk python-re python-codecs"
 PV = "0.0.1+svnr${SRCREV}"
-SRCREV = ${AUTOREV}
-PR = "r0"
+PR = "r1"
 
 S = ${WORKDIR}/${PN}
 
