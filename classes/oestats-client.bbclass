@@ -44,7 +44,7 @@ def oestats_send(server, action, vars = {}, files = {}):
 
 	# build headers
 	headers = {
-		"User-agent": "oestats-client/0.2",
+		"User-agent": "oestats-client/0.3",
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
@@ -135,6 +135,7 @@ def oestats_task(server, d, task, status):
 			'package': bb.data.getVar('PN', d, True),
 			'version': bb.data.getVar('PV', d, True),
 			'revision': bb.data.getVar('PR', d, True),
+			'depends': bb.data.getVar('DEPENDS', d, True),
 			'task': task,
 			'status': status,
 			'time': str(elapsed),
