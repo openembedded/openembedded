@@ -2,7 +2,7 @@ DESCRIPTION = "Evas is the Enlightenment canvas API"
 LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
 DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender"
-PV = "0.9.9.042+cvs${SRCDATE}"
+PV = "0.9.9.043+cvs${SRCDATE}"
 
 inherit efl
 
