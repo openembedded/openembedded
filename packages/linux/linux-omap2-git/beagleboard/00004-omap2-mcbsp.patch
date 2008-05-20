@@ -1,0 +1,144 @@
+From: Eduardo Valentin <eduardo.valentin@indt.org.br>
+
+This patch adds support for mach-omap2 based on current
+mcbsp platform driver.
+
+Signed-off-by: Eduardo Valentin <eduardo.valentin@indt.org.br>
+---
+ arch/arm/mach-omap2/Makefile |    2 +
+ arch/arm/mach-omap2/mcbsp.c  |  105 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-omap2/mcbsp.c
+
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index 552664c..84fa698 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -7,6 +7,8 @@ obj-y := irq.o id.o io.o memory.o control.o prcm.o clock.o mux.o \
+ 		devices.o serial.o gpmc.o timer-gp.o powerdomain.o \
+ 		clockdomain.o
+ 
++obj-$(CONFIG_OMAP_MCBSP) += mcbsp.o
++
+ # Functions loaded to SRAM
+ obj-$(CONFIG_ARCH_OMAP2)		+= sram24xx.o
+ 
+diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+new file mode 100644
+index 0000000..e2ee8f7
+--- /dev/null
++++ b/arch/arm/mach-omap2/mcbsp.c
+@@ -0,0 +1,105 @@
++/*
++ * linux/arch/arm/mach-omap2/mcbsp.c
++ *
++ * Copyright (C) 2008 Instituto Nokia de Tecnologia
++ * Contact: Eduardo Valentin <eduardo.valentin@indt.org.br>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Multichannel mode not supported.
++ */
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/clk.h>
++#include <linux/err.h>
++
++#include <asm/arch/dma.h>
++#include <asm/arch/mux.h>
++#include <asm/arch/cpu.h>
++#include <asm/arch/mcbsp.h>
++
++static void omap2_mcbsp2_mux_setup(void)
++{
++	omap_cfg_reg(Y15_24XX_MCBSP2_CLKX);
++	omap_cfg_reg(R14_24XX_MCBSP2_FSX);
++	omap_cfg_reg(W15_24XX_MCBSP2_DR);
++	omap_cfg_reg(V15_24XX_MCBSP2_DX);
++	omap_cfg_reg(V14_24XX_GPIO117);
++	/*
++	 * TODO: Need to add MUX settings for OMAP 2430 SDP
++	 */
++}
++
++static void omap2_mcbsp_request(unsigned int id)
++{
++	if (cpu_is_omap2420() && (id == OMAP_MCBSP2))
++		omap2_mcbsp2_mux_setup();
++}
++
++static int omap2_mcbsp_check(unsigned int id)
++{
++	if (id > OMAP_MAX_MCBSP_COUNT - 1) {
++		printk(KERN_ERR "OMAP-McBSP: McBSP%d doesn't exist\n", id + 1);
++		return -ENODEV;
++	}
++	return 0;
++}
++
++static struct omap_mcbsp_ops omap2_mcbsp_ops = {
++	.request	= omap2_mcbsp_request,
++	.check		= omap2_mcbsp_check,
++};
++
++static struct omap_mcbsp_platform_data omap2_mcbsp_pdata[] = {
++#ifdef CONFIG_ARCH_OMAP24XX
++	{
++		.virt_base	= IO_ADDRESS(OMAP24XX_MCBSP1_BASE),
++		.dma_rx_sync	= OMAP24XX_DMA_MCBSP1_RX,
++		.dma_tx_sync	= OMAP24XX_DMA_MCBSP1_TX,
++		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
++		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
++		.ops		= &omap2_mcbsp_ops,
++		.clocks		= { "mcbsp_ick", "mcbsp_fck" },
++	},
++	{
++		.virt_base	= IO_ADDRESS(OMAP24XX_MCBSP2_BASE),
++		.dma_rx_sync	= OMAP24XX_DMA_MCBSP2_RX,
++		.dma_tx_sync	= OMAP24XX_DMA_MCBSP2_TX,
++		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
++		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
++		.ops		= &omap2_mcbsp_ops,
++		.clocks		= { "mcbsp_ick", "mcbsp_fck" },
++	},
++#endif
++#ifdef CONFIG_ARCH_OMAP34XX
++	{
++		.virt_base	= IO_ADDRESS(OMAP34XX_MCBSP1_BASE),
++		.dma_rx_sync	= OMAP24XX_DMA_MCBSP1_RX,
++		.dma_tx_sync	= OMAP24XX_DMA_MCBSP1_TX,
++		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
++		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
++		.ops		= &omap2_mcbsp_ops,
++		.clocks		= { "mcbsp_ick", "mcbsp_fck" },
++	},
++	{
++		.virt_base	= IO_ADDRESS(OMAP34XX_MCBSP2_BASE),
++		.dma_rx_sync	= OMAP24XX_DMA_MCBSP2_RX,
++		.dma_tx_sync	= OMAP24XX_DMA_MCBSP2_TX,
++		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
++		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
++		.ops		= &omap2_mcbsp_ops,
++		.clocks		= { "mcbsp_ick", "mcbsp_fck" },
++	},
++#endif
++};
++#define mcbsp_count		ARRAY_SIZE(omap2_mcbsp_pdata)
++
++int __init omap2_mcbsp_init(void)
++{
++	omap_mcbsp_register_board_cfg(omap2_mcbsp_pdata, mcbsp_count);
++
++	return omap_mcbsp_init();
++}
++arch_initcall(omap2_mcbsp_init);
+-- 
+1.5.5.1.67.gbdb8.dirty
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
