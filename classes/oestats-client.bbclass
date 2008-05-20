@@ -5,7 +5,7 @@
 # To make use of this class, add to your local.conf:
 #
 # INHERIT += "oestats-client"
-# OESTATS_SERVER = "some.server.org:8000"
+# OESTATS_SERVER = "some.server.org"
 # OESTATS_BUILDER = "some_nickname"
 
 def oestats_setid(d, val):
@@ -44,7 +44,7 @@ def oestats_send(server, action, vars = {}, files = {}):
 
 	# build headers
 	headers = {
-		"User-agent": "oestats-client/0.1",
+		"User-agent": "oestats-client/0.3",
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
@@ -64,7 +64,7 @@ def oestats_start(server, builder, d):
 	# send report
 	id = ""
 	try:
-		data = oestats_send(server, "/builds/start/", {
+		data = oestats_send(server, "/builds/", {
 			'builder': builder,
 			'revision': bb.data.getVar('METADATA_REVISION', d, True),
 			'machine': bb.data.getVar('MACHINE', d, True),
@@ -81,7 +81,7 @@ def oestats_start(server, builder, d):
 		bb.note("oestats: error starting build, disabling stats")
 	oestats_setid(d, id)
 
-def oestats_stop(server, d, status):
+def oestats_stop(server, d, failures):
 	import bb
 
 	# retrieve build id
@@ -89,8 +89,13 @@ def oestats_stop(server, d, status):
 	if not id: return
 
 	# send report
+	if failures > 0:
+		status = "Failed"
+	else:
+		status = "Succeeded"		      
+
 	try:
-		response = oestats_send(server, "/builds/stop/%s/" % id, {
+		response = oestats_send(server, "/builds/%s/" % id, {
 			'status': status,
 		})
 	except:
@@ -125,10 +130,12 @@ def oestats_task(server, d, task, status):
 	
 	# send report
 	try:
-		response = oestats_send(server, "/builds/task/%s/" % id, {
+		response = oestats_send(server, "/tasks/", {
+			'build': id,
 			'package': bb.data.getVar('PN', d, True),
 			'version': bb.data.getVar('PV', d, True),
 			'revision': bb.data.getVar('PR', d, True),
+			'depends': bb.data.getVar('DEPENDS', d, True),
 			'task': task,
 			'status': status,
 			'time': str(elapsed),
@@ -154,7 +161,7 @@ python oestats_eventhandler () {
 	if getName(e) == 'BuildStarted':
 		oestats_start(server, builder, e.data)
 	elif getName(e) == 'BuildCompleted':
-		oestats_stop(server, e.data, 'Completed')
+		oestats_stop(server, e.data, e.getFailures())
 	elif getName(e) == 'TaskStarted':
 		bb.data.setVar('OESTATS_STAMP', repr(time.time()), e.data)
 	elif getName(e) == 'TaskSucceeded':
