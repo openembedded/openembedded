@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE_i586 = "0"
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r7"
+PR = "r8"
 
 GLIBC_ADDONS ?= "linuxthreads"
 

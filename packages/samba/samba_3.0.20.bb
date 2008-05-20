@@ -1,7 +1,7 @@
 require samba.inc
 inherit update-rc.d
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init \
@@ -48,4 +48,4 @@ FILES_${PN} += "${libdir}/vfs/*.so ${libdir}/charset/*.so ${libdir}/*.dat"
 FILES_${PN}-dbg += "${libdir}/vfs/.debug/*.so ${libdir}/charset/.debug/*.so"
 #
 # bug fix for samba.inc:
-FILES_cifs-doc = "${mandir}/man8/mount.cifs.8"
+FILES_cifs-doc += "${mandir}/man8/mount.cifs.8"

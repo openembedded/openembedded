@@ -2,10 +2,9 @@ DESCRIPTION = "A server-side, HTML-embedded scripting language. This package pro
 HOMEPAGE = "http://www.php.net"
 SECTION = "console/network"
 LICENSE = "PHP"
-DEPENDS = "zlib libxml2 mysql virtual/libiconv php-native"
+DEPENDS = "zlib libxml2 mysql mysql-native virtual/libiconv php-native"
 
 SRC_URI =     "http://us2.php.net/distributions/php-${PV}.tar.bz2\
-               file://autotools.patch;patch=1 \
                file://acinclude-xml2-config.patch;patch=1"
 
 inherit autotools

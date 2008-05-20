@@ -1,0 +1,31 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+    	echo "Starting bitlbee daemon"
+	start-stop-daemon --start --startas BITLBEED_EXEC \
+		-c nobody:nogroup  --exec BITLBEED_EXEC -- \
+		BITLBEED_OPTS /usr/sbin/bitlbee
+	[ $? -eq 0 ] || echo $? "Failed to start bitlbee daemon"
+    ;;
+
+    stop)
+        echo "Stopping bitlbee daemon"
+	start-stop-daemon --stop --signal 9 \
+	                 --exec BITLBEED_EXEC
+	[ $? -eq 0 ] || echo $? "Failed to stop bitlbee daemon"
+    ;;
+
+    restart)
+    	$0 stop
+    	sleep 1
+    	$0 start
+    ;;
+
+    *)
+        echo "usage: $0 { start | stop }"
+    	exit 1
+    ;;
+esac
+
+exit 0

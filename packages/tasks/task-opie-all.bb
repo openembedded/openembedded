@@ -18,7 +18,7 @@ RDEPENDS_task-opie-applets = "opie-aboutapplet opie-autorotateapplet opie-batter
                      opie-clipboardapplet opie-clockapplet opie-homeapplet \
                      opie-irdaapplet opie-lockapplet opie-logoutapplet \
                      opie-mailapplet opie-memoryapplet opie-multikeyapplet \
-                     opie-networkapplet opie-notesapplet opie-pcmciaapplet \
+                     opie-networkapplet opie-notesapplet opie-cardapplet \
                      opie-pyquicklaunchapplet opie-restartapplet \
                      opie-restartapplet2 opie-rotateapplet \
                      opie-screenshotapplet opie-suspendapplet opie-vmemo \

@@ -4,6 +4,7 @@ build:
 binary-arch:
 
 clean:
+	dh_clean
 
 binary-indep:
 	dh_testdir

@@ -19,9 +19,9 @@ S = "${WORKDIR}/git"
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/ophoned ${D}${sysconfdir}/init.d/
-#	install -m 0644 ${WORKDIR}/odeviced.conf ${D}${sysconfdir}
+#	install -m 0644 ${WORKDIR}/ophoned.conf ${D}${sysconfdir}
 	install -d ${D}${sysconfdir}/dbus-1/system.d/
-#	mv -f ${D}${datadir}/etc/dbus-1/system.d/odeviced.conf ${D}${sysconfdir}/dbus-1/system.d/
+	mv -f ${D}${datadir}/etc/dbus-1/system.d/ophoned.conf ${D}${sysconfdir}/dbus-1/system.d/
 }
 
 RDEPENDS_${PN} += "\

@@ -4,8 +4,6 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r5"
-
 DEPENDS = "expat virtual/libintl libdaemon dbus glib-2.0"
 
 # uclibc has no nss
@@ -23,6 +21,7 @@ RDEPENDS_append = ""
 
 # TODO: build and enable all the extra stuff avahi offers
 EXTRA_OECONF = "--with-distro=debian  --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
+EXTRA_OECONF_append_mipsel = " --disable-stack-protector"
 AVAHI_PYTHON = "--disable-python"
 AVAHI_GTK = "--disable-gtk"
 

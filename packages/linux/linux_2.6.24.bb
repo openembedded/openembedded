@@ -73,6 +73,7 @@ SRC_URI_append_ts72xx = "\
 	file://ep93xx-serial-clocks.diff;patch=1 \
 	file://ep93xx-timer-accuracy.diff;patch=1 \
 	file://ep93xx-maverick-uniqid.patch;patch=1 \
+	file://ep93xx-eth-phylib-framework.patch;patch=1 \
 	file://ts72xx-nfbit-fix.patch;patch=1 \
 	file://ts72xx-machine-id-fix.patch;patch=1 \
 	file://ts72xx-watchdog.patch;patch=1 \

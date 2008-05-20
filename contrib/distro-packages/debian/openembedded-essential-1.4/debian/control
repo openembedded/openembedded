@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Marcin Juszkiewicz <hrw@openembedded.org>
 Build-Depends: debhelper (>= 5)
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 
 Package: openembedded-essential
 Architecture: all

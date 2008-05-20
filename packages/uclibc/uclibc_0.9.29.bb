@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r17"
+PR = "r18"
 
 require uclibc.inc
 
@@ -27,6 +27,7 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	    file://uClibc-0.9.29-rm-whitespace.patch;patch=1 \
             file://uClibc-0.9.29-avr32-bzero.patch;patch=1 \
 	    file://uClibc-0.9.29-nonposix_bashisms.patch;patch=1 \
+            file://arm_fix_alignment.patch;patch=1 \
            "
 
 #recent versions uclibc require real kernel headers

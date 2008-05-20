@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$1" in
+start)
+  /usr/sbin/wwwoffled
+  ;;
+restart)
+  /usr/bin/wwwoffle -kill
+  /usr/sbin/wwwoffled >/dev/null 2>&1
+  ;;
+reload|force-reload)
+  /usr/bin/wwwoffle -config
+  ;;
+stop)
+  /usr/bin/wwwoffle -kill
+  ;;
+*)
+  echo "Usage: /etc/init.d/wwwoffle {start|stop|restart|reload|force-reload}"
+  exit 1
+esac
+
+exit 0

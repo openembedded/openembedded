@@ -1,0 +1,27 @@
+diff -Naur dillo-0.6.6-orig/src/dw_table.c dillo-0.6.6/src/dw_table.c
+--- dillo-0.6.6-orig/src/dw_table.c	2007-03-22 22:46:10.000000000 +0100
++++ dillo-0.6.6/src/dw_table.c	2007-03-22 22:48:57.000000000 +0100
+@@ -1177,7 +1177,10 @@
+               sub_extr_width = rest_w * cols_per_sub / rest_n;
+               rest_w -= sub_extr_width;
+               rest_n -= cols_per_sub;
+-              EXTR_VALUE (sub_extremes[i]) = sub_extr_width;
++	      if(max)
++                sub_extremes[i].max_width = sub_extr_width;
++	      else
++                sub_extremes[i].min_width = sub_extr_width;
+             }
+          }
+       } else {
+@@ -1196,7 +1199,10 @@
+                   delta = rest_w * EXTR_VALUE (sub_extremes[i]) / rest_n;
+                   rest_w -= delta;
+                   rest_n -= EXTR_VALUE (sub_extremes[i]);
+-                  EXTR_VALUE (sub_extremes[i]) += delta;
++		  if(max)
++                    sub_extremes[i].max_width += delta;
++		  else
++                    sub_extremes[i].min_width += delta;
+                }
+                DEBUG_MSG (DEBUG_WIDTH_LEVEL + 2, "%d\n",
+                           EXTR_VALUE (sub_extremes[i]));
