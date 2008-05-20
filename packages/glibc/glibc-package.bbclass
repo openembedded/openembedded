@@ -247,6 +247,9 @@ python package_do_split_gconvs () {
 
 	def output_locale_binary(name, locale, encoding):
 		target_arch = bb.data.getVar("TARGET_ARCH", d, 1)
+		if target_arch in ("i586", "i686"):
+		   target_arch = "i386"
+
 		qemu = "qemu-%s -r 2.6.16" % target_arch
 		pkgname = 'locale-base-' + legitimize_package_name(name)
 		m = re.match("(.*)\.(.*)", name)
