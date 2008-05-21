@@ -5,7 +5,8 @@ OPENDREAMBOX_COMMON = "base-files busybox \
 	base-passwd ncurses joe mc vsftpd timezones-alternative \
 	netkit-base fakelocale less dreambox-bootlogo  \
 	dreambox-dccamd dreambox-keymaps tuxbox-image-info dvbsnoop \
-	dreambox-compat tuxbox-common mrouted smartmontools hddtemp"
+	dreambox-compat tuxbox-common mrouted smartmontools hddtemp \
+	hotplug-ng autofs"
 
 OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 	ppp module-init-tools samba"
@@ -83,6 +84,9 @@ MODEM_SUPPORT_R = "kernel-module-crc-ccitt kernel-module-ppp-async \
 	kernel-module-ppp-generic \
 	kernel-module-slhc update-modules"
 
+WLAN_SUPPORT = "wireless-tools wlan-rt73 wpa-supplicant"
+WLAN_SUPPORT_R = "enigma2-plugin-systemplugins-wirelesslan"
+
 # now machine specific:
 OPENDREAMBOX_COMMON_MACHINE_dm600pvr += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TUXBOX} ${MODEM_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm600pvr += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R} dreambox-blindscan-utils"
@@ -96,12 +100,12 @@ OPENDREAMBOX_COMMON_MACHINE_dm7020 += "${OPENDREAMBOX_V2_ONLY} ${OPENDREAMBOX_TU
 OPENDREAMBOX_COMMON_MACHINE_R_dm7020 += "${OPENDREAMBOX_TUXBOX_R} ${MODEM_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm7020 += "${OPENDREAMBOX_TUXBOX_D}"
 
-OPENDREAMBOX_COMMON_MACHINE_dm7025 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
+OPENDREAMBOX_COMMON_MACHINE_dm7025 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm7025 += "${OPENDREAMBOX_EXPERIMENTAL_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm7025 += ""
 
-OPENDREAMBOX_COMMON_MACHINE_dm800 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL}"
-OPENDREAMBOX_COMMON_MACHINE_R_dm800 += "${OPENDREAMBOX_EXPERIMENTAL_R} enigma2-plugin-systemplugins-videomode"
+OPENDREAMBOX_COMMON_MACHINE_dm800 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT}"
+OPENDREAMBOX_COMMON_MACHINE_R_dm800 += "${OPENDREAMBOX_EXPERIMENTAL_R} ${WLAN_SUPPORT_R} enigma2-plugin-systemplugins-videomode"
 OPENDREAMBOX_COMMON_MACHINE_D_dm800 += ""
 
 # collect the stuff into OPENDREAMBOX_COMMON
