@@ -1,0 +1,19 @@
+Index: autofs-4.1.4/samples/Makefile
+===================================================================
+--- autofs-4.1.4.orig/samples/Makefile	2008-05-21 22:59:29.000000000 +0200
++++ autofs-4.1.4/samples/Makefile	2008-05-21 23:00:04.000000000 +0200
+@@ -34,6 +34,8 @@
+ 	install -c -m 755 auto.net $(INSTALLROOT)/etc
+ 	-mv -f $(INSTALLROOT)/etc/auto.smb $(INSTALLROOT)/etc/auto.smb.old
+ 	install -c -m 755 auto.smb    $(INSTALLROOT)/etc
++	-mv -f $(INSTALLROOT)/etc/auto.hotplug $(INSTALLROOT)/etc/auto.hotplug.old
++	install -c -m 755 auto.hotplug    $(INSTALLROOT)/etc
+ 	install -d -m 755 $(INSTALLROOT)$(initdir)
+ 	install -c -m 755 rc.autofs   $(INSTALLROOT)$(initdir)/autofs
+ 	install -d -m 755 $(INSTALLROOT)$(autofslibdir)
+Index: autofs-4.1.4/samples/auto.hotplug
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ autofs-4.1.4/samples/auto.hotplug	2008-05-21 22:59:47.000000000 +0200
+@@ -0,0 +1 @@
++* -fstype=auto,ro :/dev/&
