@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
 DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
 # bump this on every change in contrib/python/generate-manifest-2.5.py
-PR = "ml3"
+PR = "ml4"
 
 PYTHON_MAJMIN = "2.5"
 
@@ -68,7 +68,7 @@ do_stage() {
 
 do_install() {
 	install -m 0644 Makefile.orig Makefile
-
+	
 	oe_runmake HOSTPGEN=${STAGING_BINDIR_NATIVE}/pgen \
 		HOSTPYTHON=${STAGING_BINDIR_NATIVE}/python \
 		STAGING_LIBDIR=${STAGING_LIBDIR} \
@@ -77,6 +77,9 @@ do_install() {
 		DESTDIR=${D} LIBDIR=${libdir} install
 
 	install -m 0644 ${WORKDIR}/sitecustomize.py ${D}/${libdir}/python${PYTHON_MAJMIN}
+
+	# remove hardcoded ccache, see http://bugs.openembedded.net/show_bug.cgi?id=4144
+	sed -i -e s,ccache,'$(CCACHE)', ${D}/${libdir}/python${PYTHON_MAJMIN}/config/Makefile
 }
 
 require python-${PYTHON_MAJMIN}-manifest.inc
