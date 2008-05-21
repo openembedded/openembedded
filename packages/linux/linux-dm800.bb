@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm800"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r7"
+PR = "r8"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
