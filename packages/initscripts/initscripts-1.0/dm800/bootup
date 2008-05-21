@@ -34,15 +34,16 @@ modprobe bcm7401
 echo 19 > /proc/progress
 
 cat /etc/videomode > /proc/stb/video/videomode
-modprobe dreambox_rc2
-modprobe fp
 
 echo 20 > /proc/progress
-for mod in cifs nfsd; do
+
+for mod in dreambox_rc2 fp cifs nfsd usb-storage sd autofs4 vfat rt73; do
 	modprobe $mod 2> /dev/null ;
 done
 
 echo 21 > /proc/progress
+
+automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
 
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 
