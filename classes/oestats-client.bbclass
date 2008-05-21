@@ -44,7 +44,7 @@ def oestats_send(server, action, vars = {}, files = {}):
 
 	# build headers
 	headers = {
-		"User-agent": "oestats-client/0.3",
+		"User-agent": "oestats-client/0.4",
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
@@ -66,6 +66,7 @@ def oestats_start(server, builder, d):
 	try:
 		data = oestats_send(server, "/builds/", {
 			'builder': builder,
+			'branch': bb.data.getVar('METADATA_BRANCH', d, True),
 			'revision': bb.data.getVar('METADATA_REVISION', d, True),
 			'machine': bb.data.getVar('MACHINE', d, True),
 			'distro': bb.data.getVar('DISTRO', d, True),
