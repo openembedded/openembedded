@@ -211,7 +211,7 @@ void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 }
 
 	/* reserve to two sectors plus 1% for badblocks, and round down */
-#define BADBLOCK_SAFE(x) ( ((x) - (16384 * 2) - (x) / 100) &~ 16384 )
+#define BADBLOCK_SAFE(x) ( ((x) - (16384 * 2) ) &~ 16384 )
 
 int main(int argc, char **argv)
 {
