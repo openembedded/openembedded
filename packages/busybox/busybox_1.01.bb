@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
@@ -28,6 +28,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://readlink.patch;patch=1 \
 	   file://rmmod.patch;patch=1 \
 	   file://udhcpscript.patch;patch=1 \
+	   file://zeroconf.patch;patch=1 \
 	   file://thumb-bsdlabel.patch;patch=1 \
 	   file://glibc2.4-icmp6.patch;patch=1 \
            file://uclibc_posix.patch;patch=1 \
