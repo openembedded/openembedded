@@ -2,7 +2,7 @@ DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
-	libfribidi gstreamer libxmlccwrap"
+	libfribidi gstreamer libxmlccwrap libdreamdvd"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
@@ -32,8 +32,8 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu wit
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 
 PN = "enigma2"
-PR = "r0"
-SRCDATE = "20080417"
+PR = "r1"
+SRCDATE = "20080522"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
