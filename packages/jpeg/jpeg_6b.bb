@@ -6,16 +6,13 @@ PRIORITY = "required"
 DEPENDS = "libtool-cross"
 RPROVIDES_${PN} = "jpeg"
 
-
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.ijg.org/files/jpegsrc.v${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
 	   file://ldflags.patch;patch=1 \
 	   file://paths.patch;patch=1 \
-           file://libtool.patch;patch=1 \
-           "
-
+	   file://libtool_tweak.patch;patch=1"
 S = "${WORKDIR}/jpeg-${PV}"
 
 inherit autotools
@@ -23,7 +20,12 @@ inherit autotools
 EXTRA_OECONF="--enable-static --enable-shared"
 EXTRA_OEMAKE='"LIBTOOL=${STAGING_BINDIR_NATIVE}/${HOST_SYS}-libtool"'
 
-CFLAGS_append = " -D_REENTRANT" 
+CFLAGS_append = " -D_REENTRANT"
+
+do_configure_prepend () {
+	rm -f ${S}/ltconfig
+	rm -f ${S}/ltmain.sh
+}
 
 do_stage() {
 	install -m 644 jconfig.h ${STAGING_INCDIR}/jconfig.h
