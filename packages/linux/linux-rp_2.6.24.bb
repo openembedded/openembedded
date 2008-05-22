@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r6"
 
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE_collie = "1"
@@ -201,6 +201,10 @@ SRC_URI_append_htcuniversal ="\
 SRC_URI_append_zylonite ="\
 	file://pxa_fb_overlay.patch;patch=1 \
 	file://zylonite-boot.patch;patch=1 \
+	"
+
+SRC_URI_append_c7x0 ="\
+	file://pxa2xx_udc-clock.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/linux-2.6.24"
