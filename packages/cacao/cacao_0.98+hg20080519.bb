@@ -2,9 +2,9 @@ require cacao.inc
 
 PR = "r0"
 
-SRC_URI = "http://downloads.openmoko.org/sources/cacao-0.98+hg8190.tar.gz;md5sum=1c6e0530be63ec8a4c0ab2935c2fdc8f \
-           file://cacao-hg8190-classpath_var.patch;patch=1 \
-           file://cacao-hg8190-libdir.patch;patch=1 \
+SRC_URI = "http://downloads.openmoko.org/sources/cacao-0.98+hg20080519.tar.gz;md5sum=1c6e0530be63ec8a4c0ab2935c2fdc8f \
+           file://cacao-hg20080519-classpath_var.patch;patch=1 \
+           file://cacao-hg20080519-libdir.patch;patch=1 \
           "
 
 S = "${WORKDIR}/cacao"
