@@ -295,7 +295,7 @@ SEPPUKU_ATTACHMENT   = "http://bugs.openembedded.net/attachment.cgi?"
 SEPPUKU_AUTOBUILD    = "1"
 
 SEPPUKU_PRODUCT      = "Openembedded"
-SEPPUKU_COMPONENT    = "build"
+SEPPUKU_COMPONENT    = "org.openembedded.dev"
 
 
 
