@@ -16,8 +16,6 @@ inherit gpe autotools pkgconfig
 
 SRC_URI += "file://removeblue-fontsize8.patch;patch=1"
 SRC_URI += " file://chvt-keylaunch.patch;patch=1 "
-SRC_URI += " file://gpe-xcalibrate-rises-from-dead.patch;patch=1 "
-SRC_URI += " file://size-autolock-properly.patch;patch=1 "
 SRC_URI += " file://c-locale.patch;patch=1 "
 
 SRC_URI_append_spitz = "file://brightness-adjust-keyluanchrc.patch;patch=1"
