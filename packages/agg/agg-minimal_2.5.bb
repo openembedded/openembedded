@@ -8,7 +8,6 @@ DEPENDS = "freetype"
 PR = "r0"
 
 SRC_URI = "http://www.antigrain.com/agg-${PV}.tar.gz"
-# this patch is needed to build without SDL
 SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;patch=1"
 S = "${WORKDIR}/agg-${PV}"
 
@@ -21,9 +20,7 @@ FILES_${PN} = "${libdir}/libagg.so.* \
 
 LEAD_SONAME = "libagg.so"
 
-# configured for minimal external dependencies (no X, no SDL) for use by
-# framebuffer driven applications.
-EXTRA_OECONF = "--enable-gpc --without-x --disable-examples --disable-ctrl \
+EXTRA_OECONF = "--disable-gpc --without-x --disable-examples --disable-ctrl \
 --disable-platform --disable-win32tt --disable-sdltest"
 
 do_stage() {
