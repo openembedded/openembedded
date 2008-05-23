@@ -52,7 +52,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE ?= "20080518"
+EFL_SRCDATE ?= "20080524"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"
