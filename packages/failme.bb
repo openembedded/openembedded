@@ -1,0 +1,5 @@
+
+do_configure() {
+idontexist
+}
+
