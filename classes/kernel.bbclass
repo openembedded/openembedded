@@ -91,9 +91,9 @@ do_builtin_initramfs() {
 	# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
 	rm usr/initramfs_data.cpio.gz
 }
-addtask builtin_initramfs after do_compile
-do_builtin_initramfs[nostamp] = "1"
-do_builtin_initramfs[depends] = "${INITRAMFS_IMAGE_TARGET}:do_rootfs"
+#addtask builtin_initramfs after do_compile
+#do_builtin_initramfs[nostamp] = "1"
+#do_builtin_initramfs[depends] = "${INITRAMFS_IMAGE_TARGET}:do_rootfs"
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`

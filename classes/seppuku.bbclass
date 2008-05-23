@@ -380,5 +380,10 @@ python seppuku_eventhandler() {
         else:
             print >> debug_file, "Not trying to create an attachment for bug #%s" % bug_number
 
+        # store bug number for oestats-client
+        if bug_number:
+            bb.data.setVar('OESTATS_BUG_NUMBER', bug_number, event.data)
+            bb.data.setVar('OESTATS_BUG_TRACKER', "http://bugs.openembedded.net/", event.data)
+
     return NotHandled
 }

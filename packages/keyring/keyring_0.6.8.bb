@@ -5,7 +5,8 @@ LICENSE = "GPL"
 DEPENDS = "gdbm"
 PR = "r2"
 
-SRC_URI = "http://www.scrypt.net/~celer/kweb/Keyring-0.6.8.tgz"
+SRC_URI = "http://www.scrypt.net/~celer/kweb/Keyring-0.6.8.tgz \
+	   file://keyring-0.6.8-datatype.patch;patch=1"
 S = "${WORKDIR}/Keyring"
 
 inherit palmtop

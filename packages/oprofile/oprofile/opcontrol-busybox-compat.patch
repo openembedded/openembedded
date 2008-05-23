@@ -1,0 +1,49 @@
+Index: oprofile-0.9.3/utils/opcontrol
+===================================================================
+--- oprofile-0.9.3.orig/utils/opcontrol	2008-05-23 16:54:21.000000000 +0800
++++ oprofile-0.9.3/utils/opcontrol	2008-05-23 00:47:38.000000000 +0800
+@@ -908,7 +908,7 @@
+ 		return
+ 	fi
+ 
+-	kill -s 0 `cat $LOCK_FILE` 2>/dev/null
++	kill -0 `cat $LOCK_FILE` 2>/dev/null
+ 	if test "$?" -ne 0; then
+ 		echo "Detected stale lock file. Removing." >&2
+ 		rm -f "$LOCK_FILE"
+@@ -919,7 +919,7 @@
+ 		echo "Stopping profiling."
+ 		echo 0 >/dev/oprofile/enable
+ 	fi
+-	kill -s USR2 `cat $LOCK_FILE` 2>/dev/null
++	kill -usr2 `cat $LOCK_FILE` 2>/dev/null
+ }
+ 
+ 
+@@ -932,7 +932,7 @@
+ 		return
+ 	fi
+ 
+-	kill -s 0 `cat $LOCK_FILE` 2>/dev/null
++	kill -0 `cat $LOCK_FILE` 2>/dev/null
+ 	if test "$?" -ne 0; then
+ 		echo "Detected stale lock file. Removing." >&2
+ 		rm -f "$LOCK_FILE"
+@@ -1274,7 +1274,7 @@
+ {
+  
+ 	if test -f "$LOCK_FILE"; then
+-		kill -s 0 `cat $LOCK_FILE` 2>/dev/null
++		kill -0 `cat $LOCK_FILE` 2>/dev/null
+ 		if test "$?" -eq 0; then
+ 			return;
+ 		else
+@@ -1341,7 +1341,7 @@
+ 	if test "$KERNEL_SUPPORT" = "yes"; then
+ 		echo 1 >$MOUNT/enable
+ 	fi
+-	kill -s USR1 `cat $LOCK_FILE` 2>/dev/null
++	kill -USR1 `cat $LOCK_FILE` 2>/dev/null
+ 	echo "Profiler running."
+ }
+ 

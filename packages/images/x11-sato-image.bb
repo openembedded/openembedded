@@ -1,5 +1,5 @@
 DISTRO_SSH_DAEMON ?= "dropbear"
-DISTRO_PACKAGE_MANAGER ?= "ipkg ipkg-collateral"
+DISTRO_PACKAGE_MANAGER ?= "opkg-nogpg opkg-collateral"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 

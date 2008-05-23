@@ -1,6 +1,6 @@
 #Angstrom minimal gpe image
 # This image provides a barebone dm and 'desktop' 
-# Very angstrom and ipkg centric
+# Very angstrom and opkg centric
 
 XSERVER ?= "xserver-kdrive-fbdev"
 
@@ -16,7 +16,7 @@ IMAGE_INSTALL = "\
     matchbox-wm \
     gpe-terminal \
     angstrom-feed-configs \
-    ipkg \
+    opkg-nogpg opkg-collateral \
     "
 
 #zap root password for release images

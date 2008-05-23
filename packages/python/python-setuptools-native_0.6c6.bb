@@ -1,4 +1,5 @@
 require python-setuptools_${PV}.bb
+inherit native
 
 DEPENDS = "python-native"
 

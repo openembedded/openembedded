@@ -1,5 +1,5 @@
+require dropbear.inc
+
 PR = "r2"
 
-require dropbear.inc
-SRC_URI += "file://scp-argument-fix.patch;patch=1 \
-	   "
+SRC_URI += "file://scp-argument-fix.patch;patch=1"
