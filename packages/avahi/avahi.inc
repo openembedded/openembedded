@@ -20,8 +20,7 @@ inherit autotools pkgconfig update-rc.d
 RDEPENDS_append = ""
 
 # TODO: build and enable all the extra stuff avahi offers
-EXTRA_OECONF = "--with-distro=debian  --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
-EXTRA_OECONF_append_mipsel = " --disable-stack-protector"
+EXTRA_OECONF = "--with-distro=debian  --disable-stack-protector --disable-nls --disable-gdbm ${AVAHI_GTK} --disable-mono --disable-monodoc --disable-qt3 --disable-qt4 ${AVAHI_PYTHON}"
 AVAHI_PYTHON = "--disable-python"
 AVAHI_GTK = "--disable-gtk"
 
