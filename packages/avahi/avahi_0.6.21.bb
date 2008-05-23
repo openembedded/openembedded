@@ -1,6 +1,6 @@
 require avahi.inc
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://dbus-pre-1.1.1-support.patch;patch=1"
 SRC_URI += "file://avr32-ipv6-fix.patch;patch=1"

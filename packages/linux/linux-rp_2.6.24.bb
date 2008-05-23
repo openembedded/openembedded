@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r10"
+PR = "r11"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -196,6 +196,7 @@ SRC_URI_append_spitz = "\
            "
 
 SRC_URI_append_c7x0 = "\
+           file://pxa2xx_udc-clock.patch;patch=1 \
            file://sharpsl-rc-r1.patch;patch=1 \
            file://sharpsl-rc-r2.patch;patch=1 \
            "
