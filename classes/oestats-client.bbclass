@@ -118,7 +118,7 @@ def oestats_task(server, d, task, status):
 	except:
 		elapsed = 0
 	
-	# send the log for failures
+	# prepare files
 	files = {}
 	if status == 'Failed':
 		logs = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', d, True), task))
@@ -130,20 +130,25 @@ def oestats_task(server, d, task, status):
 				'content': file(log).read(),
 				'content-type': 'text/plain'}
 	
+	# prepare report
+	vars = {
+		'build': id,
+		'package': bb.data.getVar('PN', d, True),
+		'version': bb.data.getVar('PV', d, True),
+		'revision': bb.data.getVar('PR', d, True),
+		'depends': bb.data.getVar('DEPENDS', d, True),
+		'task': task,
+		'status': status,
+		'time': str(elapsed)}
+	bug_number = bb.data.getVar('OESTATS_BUG_NUMBER', d, True)
+	bug_tracker = bb.data.getVar('OESTATS_BUG_TRACKER', d, True)
+	if bug_number and bug_tracker:
+		vars['bug_number'] = bug_number
+		vars['bug_tracker'] = bug_tracker
+
 	# send report
 	try:
-		response = oestats_send(server, "/tasks/", {
-			'build': id,
-			'package': bb.data.getVar('PN', d, True),
-			'version': bb.data.getVar('PV', d, True),
-			'revision': bb.data.getVar('PR', d, True),
-			'depends': bb.data.getVar('DEPENDS', d, True),
-			'task': task,
-			'status': status,
-			'time': str(elapsed),
-			'bug_number': bb.data.getVar('OESTATS_BUG_NUMBER', d, True) or "",
-			'bug_tracker': bb.data.getVar('OESTATS_BUG_TRACKER', d, True) or "",
-		}, files)
+		response = oestats_send(server, "/tasks/", vars, files)
 	except:
 		bb.note("oestats: error sending task, disabling stats")
 		oestats_setid(d, "")
