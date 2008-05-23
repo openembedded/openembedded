@@ -44,7 +44,7 @@ def oestats_send(server, action, vars = {}, files = {}):
 
 	# build headers
 	headers = {
-		"User-agent": "oestats-client/0.4",
+		"User-agent": "oestats-client/0.5",
 		"Content-type": "multipart/form-data; boundary=%s" % bound,
 		"Content-length": str(len(body))}
 
@@ -66,8 +66,9 @@ def oestats_start(server, builder, d):
 	try:
 		data = oestats_send(server, "/builds/", {
 			'builder': builder,
-			'branch': bb.data.getVar('METADATA_BRANCH', d, True),
-			'revision': bb.data.getVar('METADATA_REVISION', d, True),
+			'build_arch': bb.data.getVar('BUILD_ARCH', d, True),
+			'metadata_branch': bb.data.getVar('METADATA_BRANCH', d, True),
+			'metadata_revision': bb.data.getVar('METADATA_REVISION', d, True),
 			'machine': bb.data.getVar('MACHINE', d, True),
 			'distro': bb.data.getVar('DISTRO', d, True),
 		})
@@ -140,6 +141,8 @@ def oestats_task(server, d, task, status):
 			'task': task,
 			'status': status,
 			'time': str(elapsed),
+			'bug_number': bb.data.getVar('OESTATS_BUG_NUMBER', d, True) or "",
+			'bug_tracker': bb.data.getVar('OESTATS_BUG_TRACKER', d, True) or "",
 		}, files)
 	except:
 		bb.note("oestats: error sending task, disabling stats")
