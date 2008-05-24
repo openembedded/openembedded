@@ -1,0 +1,15 @@
+diff --git a/include/linux/a.out.h b/include/linux/a.out.h
+index 208f4e8..d149699 100644
+--- a/include/linux/a.out.h
++++ b/include/linux/a.out.h
+@@ -1,6 +1,10 @@
+ #ifndef __A_OUT_GNU_H__
+ #define __A_OUT_GNU_H__
+ 
++#ifndef __KERNEL__
++#define CONFIG_ARCH_SUPPORTS_AOUT
++#endif
++
+ #ifdef CONFIG_ARCH_SUPPORTS_AOUT
+ 
+ #define __GNU_EXEC_MACROS__
