@@ -47,7 +47,11 @@ PARALLEL_MAKE = ""
 do_compile () {
 	ln -sf ${S}/gpp/src/api/*h ${S}/gpp/inc/
 	ln -sf ${S}/gpp/src/pmgr/Linux/2.6.18 ${S}/gpp/src/pmgr/Linux/2.6.26-rc2-omap1
+	ln -sf ${S}/gpp/src/pmgr/Linux/drv_pmgr.h ${S}/gpp/inc/drv_pmgr.h
+	ln -sf ${S}/gpp/src/pmgr/pmgr_proc.h ${S}/gpp/inc/pmgr_proc.h
+
 	unset DISPLAY
+
 	oe_runmake -C ${S}/gpp/src
 }
 
