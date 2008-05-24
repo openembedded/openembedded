@@ -23,6 +23,7 @@ PROVIDES += "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']}"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers ncurses-native"
+RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
 # Blackfin needs a wrapper around ld
 DEPENDS_append_bfin = " elf2flt "
