@@ -1,12 +1,10 @@
-require glibc.inc
+require eglibc.inc
 
-DEFAULT_PREFERENCE = "-1"
+# DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.8+svnr${SRCREV}"
 PR = "r6"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
-           file://eglibc-svn-arm-cargs6.patch;patch=1 \
-           file://eglibc-svn-arm-check_pf.patch;patch=1 \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
@@ -15,6 +13,7 @@ B = "${WORKDIR}/build-${TARGET_SYS}"
 
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
+PROVIDES_${PN}-dbg = "glibc-dbg"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -93,6 +92,6 @@ do_compile () {
 	)
 }
 
-require glibc-stage.inc
+require eglibc-stage.inc
 
 require eglibc-package.bbclass
