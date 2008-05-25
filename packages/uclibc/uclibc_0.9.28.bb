@@ -1,4 +1,4 @@
-DEFAULT_PREFERENCE = "1"
+DEFAULT_PREFERENCE = "3"
 PR = "r13"
 
 require uclibc.inc
