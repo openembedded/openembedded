@@ -148,6 +148,8 @@ kernel_do_stage() {
 		install -m 0644 arch/x86/Makefile* ${STAGING_KERNEL_DIR}/arch/x86
 	fi
 	cp -fR include/config* ${STAGING_KERNEL_DIR}/include/	
+	# Install kernel images and system.map to staging
+	[ -e vmlinux ] && install -m 0644 vmlinux ${STAGING_KERNEL_DIR}/	
 	install -m 0644 ${KERNEL_OUTPUT} ${STAGING_KERNEL_DIR}/${KERNEL_IMAGETYPE}
 	install -m 0644 System.map ${STAGING_KERNEL_DIR}/System.map-${KERNEL_VERSION}
 	[ -e Module.symvers ] && install -m 0644 Module.symvers ${STAGING_KERNEL_DIR}/
