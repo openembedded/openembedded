@@ -13,6 +13,10 @@ echo 13 > /proc/progress
 swapon -a
 echo 14 > /proc/progress
 
+for mod in cifs nfsd usb-storage sd autofs4 vfat; do
+	modprobe $mod 2> /dev/null ;
+done
+
 mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
 echo 15 > /proc/progress
 
@@ -37,7 +41,7 @@ cat /etc/videomode > /proc/stb/video/videomode
 
 echo 20 > /proc/progress
 
-for mod in dreambox_rc2 fp cifs nfsd usb-storage sd autofs4 vfat rt73; do
+for mod in dreambox_rc2 fp rt73; do
 	modprobe $mod 2> /dev/null ;
 done
 
