@@ -281,9 +281,10 @@ TINDER_CLOBBER    = "1"
 TINDER_REPORT     = "1"
 
 # Configuration for seppuku autobuilder, people only need to put:
-# INHERIT += "seppuku"
+# INHERIT += "seppuku oestats-client"
 # SEPPUKU_USER         = "your_bugzilla@user.id"
 # SEPPUKU_PASS         = "your_bugzilla_password"
+# OESTATS_BUILDER      = "your_name" 
 # in their local.conf
 
 # seppuku bbclass
@@ -297,7 +298,7 @@ SEPPUKU_AUTOBUILD    = "1"
 SEPPUKU_PRODUCT      = "Openembedded"
 SEPPUKU_COMPONENT    = "org.openembedded.dev"
 
-
+OESTATS_SERVER      ?= "tinderbox.openembedded.net"
 
 
 
