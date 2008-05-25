@@ -57,6 +57,8 @@ do_compile () {
 	unset DISPLAY
  
 	oe_runmake -C ${S}/gpp/src all targets
+	oe_runmake -C ${S}/gpp/src all targets
+	oe_runmake -C ${S}/gpp/src/samples
 }
 
 do_install () {
