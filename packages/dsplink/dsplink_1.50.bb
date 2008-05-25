@@ -1,10 +1,12 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
 DEPENDS = "virtual/kernel perl-native"
+RDEPENDS = "update-modules"
 
 inherit module-base
 
 PR = "r0"
+PV = "1.50+kernel${KERNEL_VERSION}"
 
 # Get dsplink tarball from TI website, place in sources and calculate
 # md5sum
@@ -56,6 +58,26 @@ do_compile () {
  
 	oe_runmake -C ${S}/gpp/src all targets
 }
+
+do_install () {
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
+	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
+}
+
+pkg_postinst_${PN}-module () {
+        if [ -n "$D" ]; then
+                exit 1
+        fi
+        depmod -a
+        update-modules || true
+}
+
+pkg_postrm_${PN}-module () {
+        update-modules || true
+}
+
+PACKAGES =+ "${PN}-module"
+FILES_${PN}-module  = "${sysconfdir} /lib/modules"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
 
