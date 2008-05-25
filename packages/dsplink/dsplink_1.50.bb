@@ -24,6 +24,15 @@ S = "${WORKDIR}/dsplink_1_50/dsplink"
 # Needed for buildscripts
 export DSPLINK = "${S}"
 
+DSPLINKPLATFORM ?= "Davinci"
+
+DSPLINKPLATFORM_omap5912osk = "Omap"
+DSPLINKPLATFORM_beagleboard = "Omap"
+DSPLINKPLATFORM_davinci-sffsdr = "Davinci"
+DSPLINKPLATFORM_davinci-dvevm = "Davinci"
+
+export DSPLINKPLATFORM 
+
 do_configure () {
 	cp ${WORKDIR}/CURRENTCFG.MK ${S}/config
 	cp ${WORKDIR}/davinci_mvlpro5.0.mk ${S}/make/Linux
@@ -33,7 +42,7 @@ do_configure () {
 		-e s:SED_ME_GPPDISTRO:davinci_mvlpro5\.0:g \
 		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
 		-e s:SED_ME_DSPDISTRO:davinci_mvlpro5\.0:g \
-		-e s:SED_ME_PLATFORM:Davinci:g \
+		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
 		${S}/config/CURRENTCFG.MK	
 
 	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
@@ -56,7 +65,6 @@ do_compile () {
 
 	unset DISPLAY
  
-	oe_runmake -C ${S}/gpp/src all targets
 	oe_runmake -C ${S}/gpp/src all targets
 	oe_runmake -C ${S}/gpp/src/samples
 }
