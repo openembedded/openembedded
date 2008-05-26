@@ -72,6 +72,9 @@ LIBS_p = $(TARGET_LDFLAGS)
 # Driver interface for the Zydas zd1211 driver
 CONFIG_DRIVER_ZD1211=y
 
+# Driver interface for Ralink rt73 driver
+CONFIG_DRIVER_RALINK=y
+
 # Driver interface for generic Linux wireless extensions
 CONFIG_DRIVER_WEXT=y
 
