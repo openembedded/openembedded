@@ -7,7 +7,6 @@ PV = "0.0.1+svnr${SRCREV}"
 PR = "r1"
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/ninja;module=trunk;proto=http"
 
-SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
