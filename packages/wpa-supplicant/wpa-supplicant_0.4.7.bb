@@ -6,13 +6,15 @@ HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 DEPENDS_mtx-1_append = "madwifi-modules"
 DEPENDS_mtx-2_append = "madwifi-modules"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \
 	file://defconfig \
         file://driver-hermes.patch;patch=1 \
 	file://driver-zd1211.patch;patch=1 \
+	file://wpa_supplicant-ralink_rt73.patch;patch=1 \
+	file://wpa_supplicant-ralink_rt73-fix.patch;patch=1 \
 	file://wpa_supplicant.conf"
 
 S = "${WORKDIR}/wpa_supplicant-${PV}"

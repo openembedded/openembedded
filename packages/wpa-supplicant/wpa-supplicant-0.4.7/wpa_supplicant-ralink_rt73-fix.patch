@@ -1,0 +1,20 @@
+	Fix as described on
+	<URL:http://rt2x00.serialmonkey.com/phpBB2/viewtopic.php?p=18240#18240> and
+	<URL:http://rt2x00.serialmonkey.com/phpBB2/viewtopic.php?p=18314#18314>
+	(needs current rt73 from <URL:http://rt2x00.serialmonkey.com/> to work)
+	
+	2007-05-16 Milan Holzaepfel <public at mjh dot name>
+
+
+diff -Nurp wpa_supplicant-0.5.7_rt73/driver_ralink.h wpa_supplicant-0.5.7_rt73-fixed/driver_ralink.h
+--- wpa_supplicant-0.5.7_rt73/driver_ralink.h	2007-05-13 16:08:52.000000000 +0200
++++ wpa_supplicant-0.5.7_rt73-fixed/driver_ralink.h	2007-05-13 16:26:37.000000000 +0200
+@@ -15,7 +15,7 @@
+ #define SIOCIWFIRSTPRIV								SIOCDEVPRIVATE
+ #endif
+ 
+-#define RT_PRIV_IOCTL								(SIOCIWFIRSTPRIV + 0x0E)  
++#define RT_PRIV_IOCTL								(SIOCIWFIRSTPRIV + 0x01)  
+ #define RTPRIV_IOCTL_SET							(SIOCIWFIRSTPRIV + 0x02)
+ 
+ // IEEE 802.11 OIDs  &  Ralink defined OIDs  ******
