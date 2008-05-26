@@ -30,6 +30,7 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "all
 DESCRIPTION_append_enigma2-plugin-systemplugins-satfinder = "helps you to align your dish."
 DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu with selectable skins."
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
+RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
 PR = "r1"
