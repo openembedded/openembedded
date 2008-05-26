@@ -6,7 +6,7 @@ RDEPENDS = "libdvdnav"
 
 PR = "r0"
 PV = "0.0.1"
-SRCDATE = "20080418"
+SRCDATE = "20080526"
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/libdreamdvd;module=libdreamdvd;method=pserver"
 
 S = "${WORKDIR}/libdreamdvd"
