@@ -11,6 +11,11 @@
 #include <string.h>
 #include <netinet/in.h>
 
+int eraseblock_size, spare_size, sector_size, largepage;
+
+#define SECTOR_SIZE_WITH_ECC (sector_size+spare_size)
+
+
 /*
  * Pre-calculated 256-way 1 byte column parity
  */
@@ -133,77 +138,126 @@ void emit_4(unsigned long val)
 	write(1, &val, 4);
 }
 
-#define TO_SECT(x) (x+511)/512
+#define TO_SECT(x) (x+sector_size-1)/sector_size
 
 typedef void fnc_encode_ecc(unsigned char *dst, unsigned char *src, int cnt);
 
 void encode_hevers(unsigned char *dst, unsigned char *src, int count)
 {
-	dst[0] = count >> 8;
-	dst[1] = count & 0xFF;
-	unsigned char temp;
-	int cnt;
-	for(cnt=0; cnt<512; cnt++)
+	if (!largepage)
 	{
-		temp=src[cnt];
-		dst[2]^=temp;
-		if(cnt & 1) 
-			dst[6 + 0]^=temp;
-		else 
-			dst[6 + 1]^=temp;
-		if(cnt & 2) dst[6 + 2]^=temp;
-		if(cnt & 4) dst[6 + 3]^=temp;
-		if(cnt & 8) dst[6 + 4]^=temp;
-		if(cnt & 16) dst[6 + 5]^=temp;
-		if(cnt & 32) dst[6 + 6]^=temp;
-		if(cnt & 64) dst[6 + 7]^=temp;
-		if(cnt & 128) dst[6 + 8]^=temp;
-		if(cnt & 256) dst[6 + 9]^=temp;
+		dst[0] = count >> 8;
+		dst[1] = count & 0xFF;
+		unsigned char temp;
+		int cnt;
+		for(cnt=0; cnt<sector_size; cnt++)
+		{
+			temp=src[cnt];
+			dst[2]^=temp;
+			if(cnt & 1) 
+				dst[6 + 0]^=temp;
+			else 
+				dst[6 + 1]^=temp;
+			if(cnt & 2) dst[6 + 2]^=temp;
+			if(cnt & 4) dst[6 + 3]^=temp;
+			if(cnt & 8) dst[6 + 4]^=temp;
+			if(cnt & 16) dst[6 + 5]^=temp;
+			if(cnt & 32) dst[6 + 6]^=temp;
+			if(cnt & 64) dst[6 + 7]^=temp;
+			if(cnt & 128) dst[6 + 8]^=temp;
+			if(cnt & 256) dst[6 + 9]^=temp;
+		}
+	} else
+	{
+		dst[0] = 0xFF;
+		dst[1] = 0xFF;
+		dst[2] = count >> 8;
+		dst[3] = count & 0xFF;
+		unsigned char temp;
+		int cnt;
+		for(cnt=0; cnt<sector_size; cnt++)
+		{
+			temp=src[cnt];
+			dst[40]^=temp;
+			if(cnt & 1) 
+				dst[41]^=temp;
+			else 
+				dst[42]^=temp;
+			if(cnt & 2) dst[43]^=temp;
+			if(cnt & 4) dst[44]^=temp;
+			if(cnt & 8) dst[45]^=temp;
+			if(cnt & 16) dst[46]^=temp;
+			if(cnt & 32) dst[47]^=temp;
+			if(cnt & 64) dst[48]^=temp;
+			if(cnt & 128) dst[49]^=temp;
+			if(cnt & 256) dst[50]^=temp;
+		}
 	}
 }
 
 void encode_jffs2(unsigned char *dst, unsigned char *src, int cnt)
 {
-	unsigned char ecc_code[8];
-	nand_calculate_ecc (src, ecc_code);
-	nand_calculate_ecc (src+256, ecc_code+3);
+	memset(dst, 0xFF, spare_size);
 
-	dst[0] = ecc_code[0];
-	dst[1] = ecc_code[1];
-	dst[2] = ecc_code[2];
-	dst[3] = ecc_code[3];
-	dst[4] = 0xFF;
-	dst[5] = 0xFF;
-	dst[6] = ecc_code[4];
-	dst[7] = ecc_code[5];
-	
-	if (!(cnt & 31))
+	if (!largepage)
 	{
-		dst[8]  = 0x19;
-		dst[9]  = 0x85;
-		dst[10] = 0x20;
-		dst[11] = 0x03;
-		dst[12] = 0x00;
-		dst[13] = 0x00;
-		dst[14] = 0x00;
-		dst[15] = 0x08;
+		unsigned char ecc_code[8];
+		nand_calculate_ecc (src, ecc_code);
+		nand_calculate_ecc (src+256, ecc_code+3);
+		dst[0] = ecc_code[0];
+		dst[1] = ecc_code[1];
+		dst[2] = ecc_code[2];
+		dst[3] = ecc_code[3];
+		dst[4] = 0xFF;
+		dst[5] = 0xFF;
+		dst[6] = ecc_code[4];
+		dst[7] = ecc_code[5];
+
+		if (!(cnt & ((eraseblock_size/sector_size)-1)))
+		{
+			dst[8]  = 0x19;
+			dst[9]  = 0x85;
+			dst[10] = 0x20;
+			dst[11] = 0x03;
+			dst[12] = 0x00;
+			dst[13] = 0x00;
+			dst[14] = 0x00;
+			dst[15] = 0x08;
+		} else
+			memset(dst + 8, 0xFF, 8);
 	} else
-		memset(dst + 8, 0xFF, 8);
+	{
+		int i;
+		for (i=0; i<8; ++i)
+			nand_calculate_ecc (src + i * 256, dst + 40 + i * 3);
+
+		if (!(cnt & ((eraseblock_size/sector_size)-1)))
+		{
+			dst[2] = 0x19;
+			dst[3] = 0x85;
+			dst[4] = 0x20;
+			dst[5] = 0x03;
+			dst[6] = 0x00;
+			dst[7] = 0x00;
+			dst[8] = 0x00;
+			dst[9] = 0x08;
+		}
+	}
 }
 
 void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 {
-	emit_4(size * 528);
+	emit_4(size * SECTOR_SIZE_WITH_ECC);
 	int cnt = 0;
 	while (1)
 	{
-		unsigned char sector[512 + 16];
-		memset(sector, 0xFF, 512 + 16);
-		int r = fread(sector, 1, 512, src);
+		unsigned char sector[sector_size + spare_size];
+		memset(sector, 0xFF, sector_size + spare_size);
+		int r = fread(sector, 1, sector_size, src);
 		if (!r)
 			break;
-		eccfnc(sector + 512, sector, cnt);
-		write(1, sector, 528);
+		eccfnc(sector + sector_size, sector, cnt);
+		write(1, sector, SECTOR_SIZE_WITH_ECC);
 		++cnt;
 	}
 	if (cnt != size)
@@ -211,19 +265,19 @@ void emit_file(FILE *src, int size, fnc_encode_ecc * eccfnc)
 }
 
 	/* reserve to two sectors plus 1% for badblocks, and round down */
-#define BADBLOCK_SAFE(x) ( ((x) - (16384 * 2) ) &~ 16384 )
+#define BADBLOCK_SAFE(x) ( ((x) - (eraseblock_size * 2) - (x) / 100) &~ eraseblock_size )
 
 int main(int argc, char **argv)
 {
-	if ((argc != 4) && (argc != 5) && (argc != 6))
+	if ((argc != 4) && (argc != 5) && (argc != 6) && (argc != 7) )
 	{
-		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> [<arch> [<size-in-MB>]] > image.nfi\n", *argv);
+		fprintf(stderr, "usage: %s <2nd.bin.gz> <boot.jffs2> <root.jffs2> [<arch>] [<flashsize-in-mb>] [options]> image.nfi\n", *argv);
 		return 1;
 	}
-	
+
 	FILE *f_2nd, *f_boot, *f_root;
 	int size_2nd, size_boot, size_root;
-	
+
 	file_open(&f_2nd, &size_2nd, argv[1]);
 	file_open(&f_boot, &size_boot, argv[2]);
 	file_open(&f_root, &size_root, argv[3]);
@@ -232,48 +286,60 @@ int main(int argc, char **argv)
 	if (argc >= 6)
 		flashsize = atoi(argv[5]) * 1024 * 1024;
 
-		// pre-35 have old layout
-#ifdef OLD_LAYOUT
-	int partition[] = {0x20000, 0x200000, flashsize};
-#else
+
 	int partition[] = {0x40000, 0x400000, flashsize};
-#endif
-	
+
+	if ((argc >= 7) && strstr(argv[6], "large"))
+	{
+		largepage = 1;
+		eraseblock_size = 128*1024;
+		spare_size = 64;
+		sector_size = 2048;
+		partition[0] = 0x100000;
+	} else
+	{
+		largepage = 0;
+		eraseblock_size = 16384;
+		spare_size = 16;
+		sector_size = 512;
+		partition[0] = 0x40000;
+	}
+
 	if (size_2nd > BADBLOCK_SAFE(partition[0]))
 		die("2nd stage is too big. did you gzip it before?");
 	if (size_boot > BADBLOCK_SAFE(partition[1] - partition[0]))
 		die("boot is too big. You can modify the buildimage tool, but you don't want that.");
 	if (size_root > BADBLOCK_SAFE(partition[2] - partition[1]))
 		die("root is too big. This doesn't work. sorry.");
-	
-	int sectors_2nd = TO_SECT(size_2nd), sectors_boot = TO_SECT(size_boot), sectors_root = TO_SECT(size_root);
-	
-	int num_partitions = 3;
-	
-	int total_size = 4 + num_partitions * 4 + 4 + sectors_2nd * 528 + 4 + sectors_boot * 528 + 4 + sectors_root * 528;
 
-		/* in case an architecture is given, write NFI1 header */	
+	int sectors_2nd = TO_SECT(size_2nd), sectors_boot = TO_SECT(size_boot), sectors_root = TO_SECT(size_root);
+
+	int num_partitions = 3;
+
+	int total_size = 4 + num_partitions * 4 + 4 + sectors_2nd * SECTOR_SIZE_WITH_ECC + 4 + sectors_boot * SECTOR_SIZE_WITH_ECC + 4 + sectors_root * SECTOR_SIZE_WITH_ECC;
+
+		/* in case an architecture is given, write NFI1 header */
 	if (argc >= 5)
 	{
 		char header[32] = "NFI1";
 		strncpy(header + 4, argv[4], 28);
 		write(1, header, 32);
 	}
-	
+
 		/* global header */
 	emit_4(total_size);
-	
+
 		/* partition */
 	emit_4(num_partitions * 4);
 	int i;
 	for (i=0; i < num_partitions; ++i)
 		emit_4(partition[i]);
-	
+
 		/* 2nd stage */
 	emit_file(f_2nd, sectors_2nd, encode_hevers);
 		/* boot + root */
 	emit_file(f_boot, sectors_boot, encode_jffs2);
 	emit_file(f_root, sectors_root, encode_jffs2);
-	
+
 	return 0;
 }
