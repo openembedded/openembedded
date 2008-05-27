@@ -40,7 +40,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-240x320.jpg
 
 #        for res in 320x240 240x320 320x320 320x480 480x320 480x640 640x480 600x800 800x600; do
-        for res in 240x320 320x320 320x480 480x320 480x640 640x480 800x600; do
+        for res in 240x240 320x320 320x480 480x320 480x640 640x480 800x600; do
          install -m 0644 ${WORKDIR}/pics/launcher/firstuse-${res}.jpg ${D}${palmtopdir}/pics/launcher/firstuse-${res}.jpg
          install -m 0644 ${WORKDIR}/pics/launcher/opie-background-${res}.jpg ${D}${palmtopdir}/pics/launcher/opie-background-${res}.jpg
         done
