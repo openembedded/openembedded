@@ -58,6 +58,7 @@ do_munge () {
 			"./temp");;
 			"./image");;
 			"./install");;
+			"./dm7025_defconfig");;
 			*)mv $i ${WORKDIR}/squashfs-lzma;;
 		esac
 	done
