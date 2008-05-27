@@ -1,0 +1,68 @@
+diff -Naur b/src/rds_text.cpp a/src/rds_text.cpp
+--- b/src/rds_text.cpp	2007-03-25 10:11:18.000000000 +0200
++++ a/src/rds_text.cpp	2007-11-26 13:14:00.000000000 +0100
+@@ -36,7 +36,9 @@
+ 		sn = new eSocketNotifier(eApp, fd, eSocketNotifier::Read);
+ 		CONNECT(sn->activated, RDSTextDecoder::process_data);
+ 	}
+-	
++
++	memset(rtp_item, 0, sizeof(rtp_item));
++
+ 	int x = eSkin::getActive()->queryValue("rds.pos.x", 0);
+ 	int y = eSkin::getActive()->queryValue("rds.pos.y", 0);
+ 	int width = eSkin::getActive()->queryValue("rds.pos.width", 0);
+@@ -586,13 +588,19 @@
+ 										
+ 										unsigned char rtplus_osd_tmp[64];
+ 										
+-										memcpy(rtp_item[rtp_typ[0]],lastmessage+rtp_start[0],rtp_len[0]+1);
+-										rtp_item[rtp_typ[0]][rtp_len[0]+1]=0;
++										if (rtp_start[0] < 66 && (rtp_len[0]+rtp_start[0]) < 66)
++										{
++											memcpy(rtp_item[rtp_typ[0]],lastmessage+rtp_start[0],rtp_len[0]+1);
++											rtp_item[rtp_typ[0]][rtp_len[0]+1]=0;
++										}
+ 										
+ 										if (rtp_typ[0] != rtp_typ[1])
+ 										{
+-											memcpy(rtp_item[rtp_typ[1]],lastmessage+rtp_start[1],rtp_len[1]+1);
+-											rtp_item[rtp_typ[1]][rtp_len[1]+1]=0;
++											if (rtp_start[1] < 66 && (rtp_len[1]+rtp_start[1]) < 66)
++											{
++												memcpy(rtp_item[rtp_typ[1]],lastmessage+rtp_start[1],rtp_len[1]+1);
++												rtp_item[rtp_typ[1]][rtp_len[1]+1]=0;
++											}
+ 										}
+ 
+ 										// main RTPlus item_types used by the radio stations:
+diff -Naur b/src/rds_text.cpp.patch a/src/rds_text.cpp.patch
+--- b/src/rds_text.cpp.patch	1970-01-01 01:00:00.000000000 +0100
++++ a/src/rds_text.cpp.patch	2007-11-08 23:45:47.000000000 +0100
+@@ -0,0 +1,26 @@
++--- rds_text.cpp.org	2007-03-25 10:11:18.000000000 +0200
+++++ rds_text.cpp	2007-11-08 23:40:37.000000000 +0100
++@@ -586,13 +586,19 @@
++ 										
++ 										unsigned char rtplus_osd_tmp[64];
++ 										
++-										memcpy(rtp_item[rtp_typ[0]],lastmessage+rtp_start[0],rtp_len[0]+1);
++-										rtp_item[rtp_typ[0]][rtp_len[0]+1]=0;
+++										if (rtp_start[0] < 66 && (rtp_len[0]+rtp_start[0]) < 66)
+++										{
+++											memcpy(rtp_item[rtp_typ[0]],lastmessage+rtp_start[0],rtp_len[0]+1);
+++											rtp_item[rtp_typ[0]][rtp_len[0]+1]=0;
+++										}
++ 										
++ 										if (rtp_typ[0] != rtp_typ[1])
++ 										{
++-											memcpy(rtp_item[rtp_typ[1]],lastmessage+rtp_start[1],rtp_len[1]+1);
++-											rtp_item[rtp_typ[1]][rtp_len[1]+1]=0;
+++											if (rtp_start[1] < 66 && (rtp_len[1]+rtp_start[1]) < 66)
+++											{
+++												memcpy(rtp_item[rtp_typ[1]],lastmessage+rtp_start[1],rtp_len[1]+1);
+++												rtp_item[rtp_typ[1]][rtp_len[1]+1]=0;
+++											}
++ 										}
++ 
++ 										// main RTPlus item_types used by the radio stations:

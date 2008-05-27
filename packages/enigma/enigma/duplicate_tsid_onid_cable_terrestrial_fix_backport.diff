@@ -1,0 +1,62 @@
+--- enigma-org/lib/dvb/dvbscan.cpp	11 Oct 2005 20:34:36 -0000	1.34
++++ enigma/lib/dvb/dvbscan.cpp	29 Apr 2008 14:43:47 -0000
+@@ -244,11 +244,15 @@
+ 							break;
+ 						}
+ 					}
+-					
++
+ 					eDVBNamespace dvb_namespace =
+ 						tp.satellite.isValid()
+ 						?eTransponder::buildNamespace(onid,tsid,tp.satellite.orbital_position,tp.satellite.frequency, tp.satellite.polarisation)
+-						:-1;
++						:tp.cable.isValid()
++						?eTransponder::buildNamespace(onid,tsid, 0xFFFF, tp.cable.frequency, 0)
++						:tp.terrestrial.isValid()
++						?eTransponder::buildNamespace(onid,tsid, 0xEEEE, tp.terrestrial.centre_frequency/1000, 0)
++						:-1; // should not happen
+ 
+ 					tp.dvb_namespace=dvb_namespace;
+ 
+@@ -390,14 +394,17 @@
+ 		// build "namespace" to work around buggy satellites
+ 	if (transponder->satellite.valid)
+ 		dvb_namespace=eTransponder::buildNamespace(onid, tsid, transponder->satellite.orbital_position, transponder->satellite.frequency, transponder->satellite.polarisation);
++	else if (transponder->cable.valid)
++		dvb_namespace=eTransponder::buildNamespace(onid, tsid, 0xFFFF, transponder->cable.frequency, 0);
++	else if (transponder->terrestrial.valid)
++		dvb_namespace=eTransponder::buildNamespace(onid, tsid, 0xEEEE, transponder->terrestrial.centre_frequency/1000, 0);
+ 	else
+-		dvb_namespace=0;
++		dvb_namespace=0; // should not happen!
+ 
+ 	transponder->dvb_namespace=dvb_namespace;
+ 
+ 	eTransponder *tmp = 0;
+-	if ( transponder->satellite.valid &&
+-		dvb_namespace.get() & 0xFFFF )  // feeds.. scpc.. or muxxers with default values
++	if ( dvb_namespace.get() & 0xFFFF )  // feeds.. scpc.. or muxxers with default values
+ 	{
+ 		eDebug("[SCAN] SCPC detected... compare complete transponder");
+ 		// we must search transponder via freq pol usw..
+--- enigma-org/src/scan.cpp	17 Dec 2007 15:09:13 -0000	1.93
++++ enigma/src/scan.cpp	29 Apr 2008 14:44:15 -0000
+@@ -2004,8 +2004,16 @@
+ 			transponder.satellite.orbital_position,
+ 			transponder.satellite.frequency,
+ 			transponder.satellite.polarisation);
+-	else
+-		dvb_namespace=0;
++	else if (transponder.cable.valid)
++		dvb_namespace=eTransponder::buildNamespace(onid, tsid,
++			0xFFFF,
++			transponder.cable.frequency,
++			0);
++	else if (transponder.terrestrial.valid)
++		dvb_namespace=eTransponder::buildNamespace(onid, tsid,
++			0xEEEE,
++			transponder.terrestrial.centre_frequency/1000, // centre_freq is in hz
++			0);
+ 
+ 	transponder.dvb_namespace=dvb_namespace;
+ 

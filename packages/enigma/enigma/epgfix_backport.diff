@@ -1,5 +1,6 @@
---- enigma_org/include/lib/dvb/epgcache.h	9 Mar 2007 01:04:34 -0000	1.60
-+++ enigma/lib/dvb/epgcache.h	22 Oct 2007 15:14:52 -0000
+diff -Naur enigma/include/lib/dvb/epgcache.h enigma_fix/include/lib/dvb/epgcache.h
+--- enigma/include/lib/dvb/epgcache.h	2008-02-18 17:35:38.000000000 +0100
++++ enigma_fix/include/lib/dvb/epgcache.h	2008-02-18 17:06:58.000000000 +0100
 @@ -315,7 +315,7 @@
  
  	int state;
@@ -9,8 +10,9 @@
  	int sectionRead(__u8 *data, int source);
  	static eEPGCache *instance;
  
---- enigma_org/lib/dvb/epgcache.cpp	24 Feb 2007 16:03:12 -0000	1.100
-+++ enigma/lib/dvb/epgcache.cpp	22 Oct 2007 15:14:52 -0000
+diff -Naur enigma/lib/dvb/epgcache.cpp enigma_fix/lib/dvb/epgcache.cpp
+--- enigma/lib/dvb/epgcache.cpp	2008-02-18 17:35:38.000000000 +0100
++++ enigma_fix/lib/dvb/epgcache.cpp	2008-02-18 17:34:01.000000000 +0100
 @@ -325,7 +325,7 @@
  					int sid = data[ptr++] << 8;
  					sid |= data[ptr++];
@@ -99,7 +101,20 @@
  }
  
  int eEPGCache::sectionRead(__u8 *data, int source)
-@@ -658,7 +691,11 @@
+@@ -560,7 +593,11 @@
+ 		if ( data[ptr-1] < 0x40 )
+ 			--ptr;
+ 
+-		uniqueEPGKey service( HILO(eit->service_id), HILO(eit->original_network_id), HILO(eit->transport_stream_id) );
++		// Cablecom HACK.. for incorrect tsid/onid in eit data
++		bool use_transponder_chid = source == SCHEDULE || (source == NOWNEXT && data[0] == 0x4E);
++		uniqueEPGKey service( HILO(eit->service_id), 
++		    use_transponder_chid ? current_service.onid : HILO(eit->original_network_id), 
++		    use_transponder_chid ? current_service.tsid : HILO(eit->transport_stream_id) );
+ 
+ 		eit_event_struct* eit_event = (eit_event_struct*) (data+ptr);
+ 		int eit_event_size;
+@@ -658,7 +695,11 @@
  							eventData *tmp = ev_it->second;
  							ev_it->second = tm_it_tmp->second =
  								new eventData(eit_event, eit_event_size, source);
@@ -112,7 +127,7 @@
  							delete tmp;
  							goto next;
  						}
-@@ -730,8 +767,6 @@
+@@ -730,8 +771,6 @@
  					tm_it=prevTimeIt=servicemap.second.insert( prevTimeIt, std::pair<const time_t, eventData*>( TM, evt ) );
  				}
  
@@ -121,7 +136,7 @@
  #if EPG_DEBUG
  				if ( consistencyCheck )
  				{
-@@ -751,6 +786,11 @@
+@@ -751,6 +790,11 @@
  							ev_it->first, event_id );
  				}
  #endif
