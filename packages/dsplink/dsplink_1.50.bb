@@ -3,10 +3,11 @@ DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 DEPENDS = "virtual/kernel perl-native"
 RDEPENDS = "update-modules"
 
-inherit module-base
+inherit module
 
 PR = "r0"
-PV = "1.50+kernel${KERNEL_VERSION}"
+PE = "1"
+PV = "1.50"
 
 # Get dsplink tarball from TI website, place in sources and calculate
 # md5sum
