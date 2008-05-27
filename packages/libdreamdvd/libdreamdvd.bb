@@ -5,7 +5,7 @@ DEPENDS = "libdvdnav"
 RDEPENDS = "libdvdnav"
 
 PR = "r0"
-PV = "1.0cvs${SRCDATA}"
+PV = "1.0cvs${SRCDATE}"
 SRCDATE = "20080526"
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/libdreamdvd;module=libdreamdvd;method=pserver"
 
