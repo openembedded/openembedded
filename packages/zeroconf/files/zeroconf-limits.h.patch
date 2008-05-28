@@ -1,0 +1,21 @@
+In newer glibc after this commit.
+
+http://sourceware.org/cgi-bin/cvsweb.cgi/libc/sysdeps/unix/sysv/linux/bits/socket.h.diff?r1=1.60&r2=1.61&cvsroot=glibc
+
+
+do not include limits.h indirectly through sockets.h so we would need to include limits.h explicitely.
+
+-Khem
+
+Index: zeroconf-0.9/zeroconf.c
+===================================================================
+--- zeroconf-0.9.orig/zeroconf.c	2008-05-27 16:56:05.000000000 -0700
++++ zeroconf-0.9/zeroconf.c	2008-05-27 16:56:20.000000000 -0700
+@@ -33,6 +33,7 @@
+ #include <net/if_arp.h>
+ #include <sys/time.h>
+ #include <signal.h>
++#include <limits.h>
+ 
+ #include "delay.h"
+ 
