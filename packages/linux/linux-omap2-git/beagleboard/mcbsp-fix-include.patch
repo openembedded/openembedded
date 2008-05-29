@@ -1,0 +1,10 @@
+--- /tmp/mcbsp.c	2008-05-29 00:41:05.793645383 +0200
++++ git/arch/arm/mach-omap2/mcbsp.c	2008-05-29 00:41:31.584031392 +0200
+@@ -14,6 +14,7 @@
+ #include <linux/init.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
++#include <linux/io.h>
+ 
+ #include <asm/arch/dma.h>
+ #include <asm/arch/mux.h>
