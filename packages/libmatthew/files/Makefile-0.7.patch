@@ -1,0 +1,15 @@
+Index: libmatthew-java-0.7/Makefile
+===================================================================
+--- libmatthew-java-0.7.orig/Makefile	2008-05-27 13:17:47.000000000 +0800
++++ libmatthew-java-0.7/Makefile	2008-05-27 13:18:04.000000000 +0800
+@@ -8,8 +8,8 @@
+ PPFLAGS+=-C -P
+ CFLAGS+=-fpic -Wall -Os -pedantic -std=c99 -Werror
+ GCJFLAGS+=-fjni
+-JCFLAGS+=-source 5.0
+-INCLUDES+=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
++#JCFLAGS+=-source 5.0
++#INCLUDES+=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+ JAVADOCFLAGS?=-quiet -author -link http://java.sun.com/j2se/1.4.2/docs/api/
+ 
+ LDVER?=$(shell ld -v | cut -d' ' -f1)
