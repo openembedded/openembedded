@@ -1,4 +1,5 @@
 PREFERRED_VERSION_busybox 	= "1.9.2"
+PREFERRED_VERSION_cairo		= "1.6.4"
 PREFERRED_VERSION_dbus 		= "1.2.1"
 PREFERRED_VERSION_glib-2.0 	= "2.16.1"
 PREFERRED_VERSION_gst-pulse 	= "0.9.7"
