@@ -47,6 +47,21 @@ syncookies () {
     fi
 }
 
+wpa_supplicantcheck () {
+    if [ -e /var/run/wpa_supplicant/wlan0 ]; then
+        echo -n "disabling wpa_supplicant "
+        start-stop-daemon -K -x /usr/sbin/wpa_supplicant
+        # HACK: wpa_supplicant sometimes doesn't quit properly on SIGTERM.
+        if [ -e /var/run/wpa_supplicant/wlan0 ]; then
+        	echo -n "wpa_supplicant still running, force kill now.. "
+        	killall -9 /usr/sbin/wpa_supplicant
+        	rm -rf /var/run/wpa_supplicant
+        	echo "done."
+    		fi
+        echo "done."
+    fi
+}
+
 doopt () {
     optname=$1
     default=$2
@@ -67,6 +82,7 @@ case "$1" in
         doopt ip_forward no
 
         echo -n "Configuring network interfaces... "
+				wpa_supplicantcheck
         ifup -a
 	echo "done."
 	;;
@@ -83,12 +99,14 @@ case "$1" in
         else
             echo -n "Deconfiguring network interfaces... "
             ifdown -a
+            wpa_supplicantcheck
 	    echo "done."
         fi
 	;;
     force-reload|restart)
         echo -n "Reconfiguring network interfaces... "
         ifdown -a
+        wpa_supplicantcheck
         ifup -a
 	echo "done."
 	;;
