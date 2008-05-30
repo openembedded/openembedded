@@ -13,6 +13,8 @@ RDEPENDS = "\
     alsa-utils-alsactl \
     alsa-state \
     alsa-utils-alsamixer \
+    bluez-utils \
+    bluez-utils-compat \
     dbus \
     dbus-glib \
     expat \
