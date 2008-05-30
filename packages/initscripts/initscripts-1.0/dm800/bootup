@@ -41,7 +41,7 @@ cat /etc/videomode > /proc/stb/video/videomode
 
 echo 20 > /proc/progress
 
-for mod in dreambox_rc2 fp rt73; do
+for mod in dreambox_rc2 fp rt73 zd1211b; do
 	modprobe $mod 2> /dev/null ;
 done
 
