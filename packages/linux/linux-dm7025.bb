@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm7025"
 KV = "2.6.12"
 PV = "2.6.12.6"
-PR = "s3"
+PR = "s4"
 
 DEPENDS = "zlib-native"
 
