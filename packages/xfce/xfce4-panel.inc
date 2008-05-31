@@ -20,6 +20,7 @@ do_install() {
 }
 
 PACKAGES += "${PN}-plugins ${PN}-mcs-plugins"
-FILES_${PN}-plugins += "${libdir}/xfce4/panel-plugins/*.so*"
+FILES_${PN}-plugins += "${libdir}/xfce4/panel-plugins/*.so* \
+                        ${datadir}/xfce4/panel-plugins/*.desktop"
 FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/"
 FILES_${PN}-dbg += "${libdir}/xfce4/mcs-plugins/.debug"
