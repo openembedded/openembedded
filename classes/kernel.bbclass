@@ -17,9 +17,13 @@ python __anonymous () {
     	depends = "%s u-boot-mkimage-openmoko-native" % depends
     	bb.data.setVar("DEPENDS", depends, d)
 
-    if bb.data.getVar('INITRAMFS_IMAGE', d, True) != '':
-	bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d);
+    image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
+    if image != '' and image is not None:
+        bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d)
 }
+
+INITRAMFS_IMAGE ?= ""
+INITRAMFS_TASK ?= ""
 
 inherit kernel-arch
 
