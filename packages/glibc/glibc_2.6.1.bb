@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r2"
+PR = "r3"
 
 ARM_INSTRUCTION_SET = "arm"
 

@@ -79,9 +79,6 @@ do_install() {
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
 	rm -f ${D}/etc/rpc
-	rm -f ${D}${includedir}/scsi/sg.h
-	rm -f ${D}${includedir}/scsi/scsi_ioctl.h
-	rm -f ${D}${includedir}/scsi/scsi.h
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"
