@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r12"
+PR = "r14"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -22,6 +22,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/export_atags-r2.patch;patch=1;status=pending \
            ${RPSRC}/lzo_crypto-r2.patch;patch=1;status=pending \
            ${RPSRC}/corgi_rearrange_lcd-r0.patch;patch=1;status=pending \
+	   file://hrw-hostapcard.patch;patch=1;status=pending \
            ${RPSRC}/allow_disable_deferrred-r0.patch;patch=1 \
            ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r33.patch;patch=1 \
@@ -44,6 +45,12 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
            file://pxa27x-resume.patch;patch=1;status=external \
+           file://mtd-module.patch;patch=1;status=external \
+           file://wm8750-treble.patch;patch=1;status=external \
+           file://spitz_h_rewrite.patch;patch=1;status=external \
+           file://pxa2xx_udc-clock.patch;patch=1 \
+           file://sharpsl-rc-r1.patch;patch=1 \
+           file://sharpsl-rc-r2.patch;patch=1 \
            file://squashfs3.3.patch;patch=1;status=external \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
@@ -178,27 +185,6 @@ SRC_URI_append_tosa = "\
            file://tosa/0043-Use-clocklib-for-sa1100-sub-arch.patch;patch=1 \
            file://tosa/0056-Support-resetting-by-asserting-GPIO-pin.patch;patch=1 \
            file://tosa/0057-Clean-up-tosa-resetting.patch;patch=1 \
-           "
-
-SRC_URI_append_akita = "\
-           file://mtd-module.patch;patch=1;status=external \
-           file://wm8750-treble.patch;patch=1;status=external \
-           file://sharpsl-rc-r1.patch;patch=1 \
-           file://sharpsl-rc-r2.patch;patch=1 \
-           "
-
-SRC_URI_append_spitz = "\
-           file://mtd-module.patch;patch=1;status=external \
-           file://wm8750-treble.patch;patch=1;status=external \
-           file://spitz_h_rewrite.patch;patch=1;status=external \
-           file://sharpsl-rc-r1.patch;patch=1 \
-           file://sharpsl-rc-r2.patch;patch=1 \
-           "
-
-SRC_URI_append_c7x0 = "\
-           file://pxa2xx_udc-clock.patch;patch=1 \
-           file://sharpsl-rc-r1.patch;patch=1 \
-           file://sharpsl-rc-r2.patch;patch=1 \
            "
 
 SRC_URI_append_htcuniversal ="\
