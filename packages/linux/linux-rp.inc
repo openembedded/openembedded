@@ -4,8 +4,6 @@ LICENSE = "GPL"
 
 inherit kernel
 
-
-INITRAMFS_IMAGE=initramfs-kexec-image
 DEPENDS_append_collie = " bc-native"
 RPROVIDES_kernel-base += "hostap-modules"
 
