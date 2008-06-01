@@ -13,6 +13,11 @@ ADD_INSTALL = "\
   \
 "  
 
+TOOLS_INSTALL = "\
+  nano \
+  powertop \
+  htop \
+"
 
 IMAGE_INSTALL = "\
   ${MACHINE_TASK_PROVIDER} \
@@ -27,6 +32,7 @@ IMAGE_INSTALL = "\
   task-pyneo \
   \
   ${ADD_INSTALL} \
+  ${TOOLS_INSTALL} \
 "
 
 inherit image
