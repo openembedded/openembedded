@@ -88,7 +88,7 @@ mickey_rootfs_postprocess() {
     mkdir -p ./local/pkg
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
-    echo "192.168.0.200:/local/pkg /local/pkg nfs auto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
+    echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
     cd $curdir
 }
 
