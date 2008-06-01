@@ -1,6 +1,8 @@
 DESCRIPTION = "Meta package to enable zeroconf audio with pulseaudio"
 DEPENDS = "avahi pulseaudio"
-RDEPENDS = "pulseaudio-module-zeroconf-publish avahi-daemon"
+RDEPENDS = "pulseaudio-module-native-protocol-tcp  pulseaudio-module-zeroconf-publish pulseaudio-server avahi-daemon"
+
+PR = "r1"
 
 do_compile() {
 	:
