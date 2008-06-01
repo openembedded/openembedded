@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r11"
+PR = "r12"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -36,7 +36,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/pm_changes-r1.patch;patch=1 \
            ${RPSRC}/usb_add_epalloc-r4.patch;patch=1 \
            ${RPSRC}/usb_pxa27x_udc-r8.patch;patch=1 \
-           ${RPSRC}/locomo_kbd_tweak-r1.patch;patch=1 \
+           ${RPSRC}/locomo_kbd_tweak-r1a.patch;patch=1 \
            ${RPSRC}/pxa27x_overlay-r8.patch;patch=1 \
            ${RPSRC}/w100_extaccel-r2.patch;patch=1 \
            ${RPSRC}/w100_extmem-r1.patch;patch=1 \
