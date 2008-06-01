@@ -2,6 +2,8 @@ DESCRIPTION = "A tool for automatically generating Makefiles."
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
+DEFAULT_PREFERENCE = "-1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
 	${@['file://path_prog_fixes.patch;patch=1', ''][bb.data.inherits_class('native', d)]}"
@@ -21,11 +23,9 @@ do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 	install -d ${D}${datadir}
 	if [ ! -e ${D}${datadir}/aclocal ]; then
-		ln -sf aclocal-1.9 ${D}${datadir}/aclocal
+		ln -sf aclocal-1.10 ${D}${datadir}/aclocal
 	fi
 	if [ ! -e ${D}${datadir}/automake ]; then
-		ln -sf automake-1.9 ${D}${datadir}/automake
+		ln -sf automake-1.10 ${D}${datadir}/automake
 	fi
 }
-
-DEFAULT_PREFERENCE = "-1"

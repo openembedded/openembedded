@@ -464,7 +464,7 @@ diff -Naur zlib-1.2.3/configure zlib-1.2.3new/configure
 diff -Naur zlib-1.2.3/configure.ac zlib-1.2.3new/configure.ac
 --- zlib-1.2.3/configure.ac	1970-01-01 01:00:00.000000000 +0100
 +++ zlib-1.2.3new/configure.ac	2006-08-07 20:38:31.612402750 +0200
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,17 @@
 +AC_INIT(zlib,1.2.3)
 +AC_CONFIG_SRCDIR(adler32.c)
 +AM_INIT_AUTOMAKE(zlibs,1.2.3)
@@ -476,13 +476,16 @@ diff -Naur zlib-1.2.3/configure.ac zlib-1.2.3new/configure.ac
 +
 +AC_HEADER_STDC
 +
-+AC_CONFIG_FILES([Makefile])
++AC_CONFIG_FILES([
++Makefile
++zlib.pc
++])
 +
 +AC_OUTPUT
 diff -Naur zlib-1.2.3/Makefile.am zlib-1.2.3new/Makefile.am
 --- zlib-1.2.3/Makefile.am	2006/10/14 05:35:40	1.1
 +++ zlib-1.2.3new/Makefile.am	2006/10/14 05:36:49
-@@ -0,0 +1,8 @@
+@@ -0,0 +1,11 @@
 +lib_LTLIBRARIES = libz.la
 +
 +libz_la_SOURCES = adler32.c compress.c crc32.c gzio.c uncompr.c deflate.c \
@@ -491,6 +494,9 @@ diff -Naur zlib-1.2.3/Makefile.am zlib-1.2.3new/Makefile.am
 +libz_la_LDFLAGS = -version-number 1:2:3
 +
 +include_HEADERS = zconf.h zlib.h
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA = zlib.pc
 diff -Naur zlib-1.2.3/Makefile.in zlib-1.2.3new/Makefile.in
 --- zlib-1.2.3/Makefile.in	2005-07-18 04:25:21.000000000 +0200
 +++ zlib-1.2.3new/Makefile.in	1970-01-01 01:00:00.000000000 +0100
@@ -649,3 +655,18 @@ diff -Naur zlib-1.2.3/Makefile.in zlib-1.2.3new/Makefile.in
 -trees.o: deflate.h zutil.h zlib.h zconf.h trees.h
 -uncompr.o: zlib.h zconf.h
 -zutil.o: zutil.h zlib.h zconf.h
+diff -Naur zlib-1.2.3/zlib.pc.in zlib-1.2.3New/zlib.pc.in
+--- zlib-1.2.3/zlib.pc.in       1970-01-01 01:00:00.000000000 +0100
++++ zlib-1.2.3New/zlib.pc.in    2006-12-07 10:55:45.000000000 +0100
+@@ -0,0 +1,10 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: zlib
++Description: Standard (de)compression library
++Version: @VERSION@
++Libs: -L${libdir} -lz
++Cflags: -I${includedir}
+

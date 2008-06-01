@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Vendor-compatible Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
-PR = "r21"
+PR = "r22"
 
 COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "nslu2"
@@ -49,5 +49,5 @@ do_configure_prepend() {
 	rm -rf ${S}/include/asm-arm/arch ${S}/include/asm-arm/proc \
 	       ${S}/include/asm-arm/.proc ${S}/include/asm-arm/.arch
 }
-KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}-${DATETIME}.bin"
-KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}.bin"
+KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}-${DATETIME}"
+KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-${KERNEL_SUFFIX}"

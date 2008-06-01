@@ -22,7 +22,6 @@ DEPENDS_prepend = "${@["libopie2 ", ""][(bb.data.getVar('PN', d, 1) == 'libopie2
 # to be consistent, put all targets into workdir
 # NOTE: leave one space at the end, other files are expecting that
 EXTRA_QMAKEVARS_POST += " DESTDIR=${S} "
-EXTRA_QMAKEVARS_POST += " DEFINES+=OPIE_BINDIR='\"${bindir}\"' DEFINES+=OPIE_LIBDIR='\"${libdir}/opie/lib\"' DEFINES+=OPIE_QTDIR='\"${libdir}/opie\"' "
 
 # Opie standard TAG value
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"

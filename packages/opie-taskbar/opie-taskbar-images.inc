@@ -19,6 +19,15 @@ PIXMAP_SIZE_simpad 	= "-800x600"
 PIXMAP_SIZE_asus730     = "-480x640"
 PIXMAP_SIZE_htcuniversal= "-480x640"
 PIXMAP_SIZE_hx4700      = "-480x640"
+PIXMAP_SIZE_palmz31     = "-160x160"
+PIXMAP_SIZE_palmz71     = "-320x320"
+PIXMAP_SIZE_palmz72     = "-320x320"
+PIXMAP_SIZE_palmt650    = "-320x320"
+PIXMAP_SIZE_palmt680    = "-320x320"
+PIXMAP_SIZE_palmt3      = "-320x480"
+PIXMAP_SIZE_palmt5      = "-320x480"
+PIXMAP_SIZE_palmtx      = "-320x480"
+PIXMAP_SIZE_palmld      = "-320x480"
 
 do_configure() {
         :
@@ -27,21 +36,14 @@ do_configure() {
 do_install() {
 	install -d ${D}${palmtopdir}/pics/launcher
 	
-	install -m 0644 ${FILESDIR}/firstuse-320x320.jpg ${D}${palmtopdir}/pics/launcher/firstuse-320x320.jpg
-	install -m 0644 ${FILESDIR}/opie-background-320x320.jpg ${D}${palmtopdir}/pics/launcher/opie-background-320x320.jpg
 	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-240x320.jpg
 	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-240x320.jpg
-	# TODO: those should be correct images for the resolution:
-	install -m 0644 ${WORKDIR}/pics/launcher/firstuse.jpg ${D}${palmtopdir}/pics/launcher/firstuse-320x240.jpg
-	install -m 0644 ${WORKDIR}/pics/launcher/opie-background.jpg ${D}${palmtopdir}/pics/launcher/opie-background-320x240.jpg
 
-        for res in 320x480 480x320 480x640 640x480 800x600; do
+#        for res in 320x240 240x320 320x320 320x480 480x320 480x640 640x480 600x800 800x600; do
+        for res in 240x240 320x320 320x480 480x320 480x640 640x480 800x600; do
          install -m 0644 ${WORKDIR}/pics/launcher/firstuse-${res}.jpg ${D}${palmtopdir}/pics/launcher/firstuse-${res}.jpg
          install -m 0644 ${WORKDIR}/pics/launcher/opie-background-${res}.jpg ${D}${palmtopdir}/pics/launcher/opie-background-${res}.jpg
         done
-	# TODO: those should be correct images for the resoltion:
-        install -m 0644 ${WORKDIR}/pics/launcher/firstuse-800x600.jpg ${D}${palmtopdir}/pics/launcher/firstuse-600x800.jpg
-        install -m 0644 ${WORKDIR}/pics/launcher/opie-background-800x600.jpg ${D}${palmtopdir}/pics/launcher/opie-background-600x800.jpg
 }
 
 python do_package_prepend () {

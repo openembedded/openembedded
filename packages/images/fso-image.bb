@@ -24,6 +24,7 @@ MICKEY_INSTALL = "\
 ZHONE_INSTALL = "\
   gsm0710muxd \
   python-odeviced \
+  python-oeventd \
   python-ophoned \
   python-ousaged \
   zhone \
@@ -49,6 +50,10 @@ IMAGE_INSTALL = "\
   xrandr \
   \
   python-codecs \
+  \
+  openmoko-alsa-scenarios \
+  openmoko-sound-system2 \
+  openmoko-sound-theme-standard2 \
   \
   ${ADD_INSTALL} \
   ${MICKEY_INSTALL} \

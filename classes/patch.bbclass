@@ -425,15 +425,8 @@ def patch_init(d):
 addtask patch after do_unpack
 do_patch[dirs] = "${WORKDIR}"
 
-python () {
-    import bb
-    # do_patch tasks require PATCHTOOL-native to have staged
-    patchdeps = bb.data.getVar("PATCHTOOL", d, True)
-    if patchdeps:
-        patchdeps = "%s-native" % patchdeps
-        if not patchdeps in bb.data.getVar("PROVIDES", d, True):
-            bb.data.setVarFlag('do_patch', 'depends', patchdeps + ":do_populate_staging", d)
-}
+PATCHDEPENDENCY = "${PATCHTOOL}-native:do_populate_staging"
+do_patch[depends] = "${PATCHDEPENDENCY}"
 
 python patch_do_patch() {
 	import re

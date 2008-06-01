@@ -5,12 +5,13 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "zlib jpeg"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI  = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz \
-            file://configure_ac.patch"
+            file://configure_ac.patch \
+           file://clientlogger.patch;patch=1"
 S = "${WORKDIR}/LibVNCServer-${PV}"
 
 # => create libvncserver only
@@ -20,6 +21,3 @@ inherit autotools
 do_stage() {
     autotools_stage_all
 }
-
-
-

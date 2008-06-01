@@ -7,7 +7,8 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r18"
+PR = "r19"
+DEFAULT_PREFERENCE = "3"
 
 require uclibc.inc
 

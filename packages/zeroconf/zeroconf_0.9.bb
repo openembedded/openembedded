@@ -5,10 +5,11 @@ LICENSE = "GPL"
 SECTION = "net"
 PRIORITY = "optional"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://www.progsoc.org/~wildfire/zeroconf/download/${PN}-${PV}.tar.gz \
 	   file://zeroconf-default \
+	   file://zeroconf-limits.h.patch;patch=1 \
 	   file://debian-zeroconf"
 
 do_install () {

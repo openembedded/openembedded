@@ -78,7 +78,7 @@ endif
 #   Name of the compiler
 #   ----------------------------------------------------------------------------
 COMPILER        := SED_ME_TARGET_PREFIXgcc
-LD              := SED_ME_TARGET_PREFIXDIR-ld
+LD              := SED_ME_TARGET_PREFIXld
 
 CROSS_COMPILE   := SED_ME_TARGET_PREFIX
 export CROSS_COMPILE
@@ -135,7 +135,7 @@ STD_CC_DEFNS    := -D_REENTRANT
 #   ============================================================================
 #   ARCHIVER1 - This denotes the linker.
 #   ============================================================================
-ARCHIVER1        := SED_ME_TARGET_PREFIX-ld
+ARCHIVER1        := SED_ME_TARGET_PREFIXld
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the archiver
@@ -146,7 +146,7 @@ STD_AR_FLAGS1    := -EL -r
 #   ============================================================================
 #   ARCHIVER2 - This denotes the archiver.
 #   ============================================================================
-ARCHIVER2        := SED_ME_TARGET_PREFIX-ar
+ARCHIVER2        := SED_ME_TARGET_PREFIXar
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the archiver

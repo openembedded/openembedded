@@ -16,28 +16,14 @@ PSTAGE_PKGARCH    = "${BUILD_SYS}"
 PSTAGE_EXTRAPATH  ?= ""
 PSTAGE_PKGPATH    = "${DISTRO}${PSTAGE_EXTRAPATH}"
 PSTAGE_PKGPN      = "${@bb.data.expand('staging-${PN}-${MULTIMACH_ARCH}${TARGET_VENDOR}-${TARGET_OS}', d).replace('_', '-')}"
-PSTAGE_PKGNAME 	  = "${PSTAGE_PKGPN}_${PSTAGE_PKGVERSION}_${PSTAGE_PKGARCH}.ipk"
+PSTAGE_PKGNAME    = "${PSTAGE_PKGPN}_${PSTAGE_PKGVERSION}_${PSTAGE_PKGARCH}.ipk"
 PSTAGE_PKG        = "${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}/${PSTAGE_PKGNAME}"
 
 # multimachine.bbclass will override this but add a default in case we're not using it
 MULTIMACH_ARCH ?= "${PACKAGE_ARCH}"
 
 PSTAGE_NATIVEDEPENDS = "\
-    pkgconfig-native \
-    autoconf-native \
-    automake-native \
-    curl-native \
-    zlib-native \
-    libtool-native \
-    gnu-config-native \
     shasum-native \
-    libtool-native \
-    automake-native \
-    update-alternatives-cworth-native \
-    ipkg-utils-native \
-    opkg-native \
-    m4-native \
-    quilt-native \
     stagemanager-native \
     "
 
@@ -69,26 +55,31 @@ python () {
     # Add task dependencies if we're active, otherwise mark packaged staging
     # as inactive.
     if pstage_allowed:
-        deps = bb.data.getVarFlag('do_populate_staging', 'depends', d) or ""
-        deps += " stagemanager-native:do_populate_staging"
-        bb.data.setVarFlag('do_populate_staging', 'depends', deps, d)
-
         deps = bb.data.getVarFlag('do_setscene', 'depends', d) or ""
-        deps += " opkg-native:do_populate_staging ipkg-utils-native:do_populate_staging"
+        deps += " stagemanager-native:do_populate_staging"
         bb.data.setVarFlag('do_setscene', 'depends', deps, d)
+
+        policy = bb.data.getVar("BB_STAMP_POLICY", d, True)
+        if policy == "whitelist" or policy == "full":
+           deps = bb.data.getVarFlag('do_setscene', 'recrdeptask', d) or ""
+           deps += " do_setscene"
+           bb.data.setVarFlag('do_setscene', 'recrdeptask', deps, d)
+
         bb.data.setVar("PSTAGING_ACTIVE", "1", d)
     else:
         bb.data.setVar("PSTAGING_ACTIVE", "0", d)
 }
 
-DEPLOY_DIR_PSTAGE 	= "${DEPLOY_DIR}/pstage"
-PSTAGE_MACHCONFIG       = "${DEPLOY_DIR_PSTAGE}/opkg.conf"
+DEPLOY_DIR_PSTAGE   = "${DEPLOY_DIR}/pstage"
+PSTAGE_MACHCONFIG   = "${DEPLOY_DIR_PSTAGE}/opkg.conf"
 
-PSTAGE_BUILD_CMD        = "${IPKGBUILDCMD}"
-PSTAGE_INSTALL_CMD      = "opkg-cl install -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_UPDATE_CMD	= "opkg-cl update -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_REMOVE_CMD       = "opkg-cl remove -force-depends -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
-PSTAGE_LIST_CMD		= "opkg-cl list_installed -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR}"
+PSTAGE_PKGMANAGER = "stage-manager-ipkg"
+
+PSTAGE_BUILD_CMD        = "stage-manager-ipkg-build -o 0 -g 0"
+PSTAGE_INSTALL_CMD      = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${TMPDIR} install"
+PSTAGE_UPDATE_CMD       = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR} update"
+PSTAGE_REMOVE_CMD       = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -force-depends -o ${TMPDIR} remove"
+PSTAGE_LIST_CMD         = "${PSTAGE_PKGMANAGER} -f ${PSTAGE_MACHCONFIG} -o ${TMPDIR} list_installed"
 
 PSTAGE_TMPDIR_STAGE     = "${WORKDIR}/staging-pkg"
 
@@ -104,10 +95,21 @@ def pstage_manualclean(srcname, destvarname, d):
 			bb.note("rm %s" % filepath)
 			os.system("rm %s" % filepath)
 
+def pstage_set_pkgmanager(d):
+    import bb
+    path = bb.data.getVar("PATH", d, 1)
+    pkgmanager = bb.which(path, 'opkg-cl')
+    if pkgmanager == "":
+        pkgmanager = bb.which(path, 'ipkg-cl')
+    if pkgmanager != "":
+        bb.data.setVar("PSTAGE_PKGMANAGER", pkgmanager, d)
+
+
 def pstage_cleanpackage(pkgname, d):
 	import os, bb
 
-        path = bb.data.getVar("PATH", d, 1)
+	path = bb.data.getVar("PATH", d, 1)
+	pstage_set_pkgmanager(d)
 	list_cmd = bb.data.getVar("PSTAGE_LIST_CMD", d, True)
 
 	bb.note("Checking if staging package installed")
@@ -128,16 +130,16 @@ def pstage_cleanpackage(pkgname, d):
 	bb.utils.unlockfile(lf)
 
 do_clean_prepend() {
-        """
-        Clear the build and temp directories
-        """
+	"""
+	Clear the build and temp directories
+	"""
 
 	removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
 	pstage_cleanpackage(removepkg, d)
 
-        stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
-        bb.note("Removing staging package %s" % stagepkg)
-        os.system('rm -rf ' + stagepkg)
+	stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
+	bb.note("Removing staging package %s" % stagepkg)
+	os.system('rm -rf ' + stagepkg)
 }
 
 staging_helper () {
@@ -151,6 +153,14 @@ staging_helper () {
 			echo "arch $arch $priority" >> $conffile
 			priority=$(expr $priority + 5)
 		done
+		echo "dest root /" >> $conffile
+	fi
+	if [ ! -e ${TMPDIR}${layout_libdir}/opkg/info/ ]; then
+		mkdir -p ${TMPDIR}${layout_libdir}/opkg/info/
+	fi
+ 	if [ ! -e ${TMPDIR}${layout_libdir}/ipkg/ ]; then
+		cd ${TMPDIR}${layout_libdir}/
+		ln -s opkg/ ipkg
 	fi
 }
 
@@ -164,26 +174,71 @@ python packagestage_scenefunc () {
     if bb.data.getVar("PSTAGING_ACTIVE", d, 1) == "0":
         return
 
+    bb.build.exec_func("staging_helper", d)
+
     removepkg = bb.data.expand("${PSTAGE_PKGPN}", d)
     pstage_cleanpackage(removepkg, d)
 
     stagepkg = bb.data.expand("${PSTAGE_PKG}", d)
 
     if os.path.exists(stagepkg):
-        bb.note("Following speedup\n")
         path = bb.data.getVar("PATH", d, 1)
-        installcmd = bb.data.getVar("PSTAGE_INSTALL_CMD", d, 1)
+        pstage_set_pkgmanager(d)
+        file = bb.data.getVar("FILE", d, True)
+        bb.debug(2, "Packaged staging active for %s\n" % file)
 
-        bb.build.exec_func("staging_helper", d)
-
-        bb.debug(1, "Staging stuff already packaged, using that instead")
-        lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
-        ret = os.system("PATH=\"%s\" %s %s" % (path, installcmd, stagepkg))
-        bb.utils.unlockfile(lf)
+        #
+        # Install the staging package somewhere temporarily so we can extract the stamp files
+        #
+        cmd = bb.data.expand("${PSTAGE_PKGMANAGER} -force-depends -f ${PSTAGE_MACHCONFIG} -o ${WORKDIR}/tstage install", d)
+        ret = os.system("PATH=\"%s\" %s %s" % (path, cmd, stagepkg))
         if ret != 0:
-            bb.note("Failure installing prestage package")
+            bb.fatal("Couldn't install the staging package to a temp directory")
 
-        bb.build.make_stamp("do_stage_package_populated", d)
+        #
+        # Copy the stamp files into the main stamps directoy
+        #
+        cmd = bb.data.expand("cp -dpR ${WORKDIR}/tstage/stamps/* ${TMPDIR}/stamps/", d)
+        ret = os.system(cmd)
+        if ret != 0:
+            bb.fatal("Couldn't copy the staging package stamp files")
+
+        #
+        # Iterate over the stamps seeing if they're valid. If we find any that
+        # are invalid or the task wasn't in the taskgraph, assume caution and 
+        # do a rebuild.
+        #
+        # FIXME - some tasks are safe to ignore in the task graph. e.g. package_write_*
+        stageok = True
+        taskscovered = bb.data.getVar("PSTAGE_TASKS_COVERED", d, True).split()
+        stamp = bb.data.getVar("STAMP", d, True)
+        for task in taskscovered:
+            task = 'do_' + task
+            stampfn = "%s.%s" % (stamp, task)
+            bb.debug(1, "Checking %s" % (stampfn))
+            if os.path.exists(stampfn):
+                stageok = bb.runqueue.check_stamp_fn(file, task, d)
+                bb.debug(1, "Result %s" % (stageok))
+                if not stageok:
+                    break
+
+        # Remove the stamps and files we added above
+        # FIXME - we should really only remove the stamps we added
+        os.system('rm -f ' + stamp + '.*')
+        os.system(bb.data.expand("rm -rf ${WORKDIR}/tstage", d))
+
+        if stageok:
+            bb.note("Staging package found, using it for %s." % file)
+            installcmd = bb.data.getVar("PSTAGE_INSTALL_CMD", d, 1)
+            lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
+            ret = os.system("PATH=\"%s\" %s %s" % (path, installcmd, stagepkg))
+            bb.utils.unlockfile(lf)
+            if ret != 0:
+                bb.note("Failure installing prestage package")
+
+            bb.build.make_stamp("do_stage_package_populated", d)
+        else:
+            bb.note("Staging package found but invalid for %s" % file)
 
 }
 packagestage_scenefunc[cleandirs] = "${PSTAGE_TMPDIR_STAGE}"
@@ -224,9 +279,17 @@ populate_staging_postamble () {
 		# list the packages currently installed in staging
 		# ${PSTAGE_LIST_CMD} | awk '{print $1}' > ${DEPLOY_DIR_PSTAGE}/installed-list         
 
+		# exitcode == 5 is ok, it means the files change
 		set +e
 		stage-manager -p ${STAGING_DIR} -c ${DEPLOY_DIR_PSTAGE}/stamp-cache-staging -u -d ${PSTAGE_TMPDIR_STAGE}/staging
+		exitcode=$?
+		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
+			exit $exitcode
+		fi
 		stage-manager -p ${CROSS_DIR} -c ${DEPLOY_DIR_PSTAGE}/stamp-cache-cross -u -d ${PSTAGE_TMPDIR_STAGE}/cross
+		if [ "$exitcode" != "5" -a "$exitcode" != "0" ]; then
+			exit $exitcode
+		fi
 		set -e
 	fi
 }
@@ -263,7 +326,6 @@ staging_packager () {
 	fi
         
 	${PSTAGE_BUILD_CMD} ${PSTAGE_TMPDIR_STAGE} ${DEPLOY_DIR_PSTAGE}/${PSTAGE_PKGPATH}
-	${PSTAGE_INSTALL_CMD} ${PSTAGE_PKG}
 }
 
 staging_package_installer () {
@@ -275,6 +337,14 @@ staging_package_installer () {
 	echo "Status: install user installed"  >> $STATUSFILE
 	echo "Architecture: ${PSTAGE_PKGARCH}" >> $STATUSFILE
 	echo "" >> $STATUSFILE
+
+	CTRLFILE=${TMPDIR}${layout_libdir}/opkg/info/${PSTAGE_PKGPN}.control
+	echo "Package: ${PSTAGE_PKGPN}"        > $CTRLFILE
+	echo "Version: ${PSTAGE_PKGVERSION}"   >> $CTRLFILE
+	echo "Architecture: ${PSTAGE_PKGARCH}" >> $CTRLFILE
+
+	cd ${PSTAGE_TMPDIR_STAGE}
+	find -type f | grep -v ./CONTROL | sed -e 's/^\.//' > ${TMPDIR}${layout_libdir}/opkg/info/${PSTAGE_PKGPN}.list
 }
 
 python do_package_stage () {
@@ -317,7 +387,7 @@ python do_package_stage () {
             if bb.data.inherits_class('package_deb', d):
                 if arch == 'all':
                     srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_all.deb", d)
-                else:	
+                else:
                     srcname = bb.data.expand(pkgname + "_${PV}-" + pr + "_${DPKG_ARCH}.deb", d)
                 srcfile = bb.data.expand("${DEPLOY_DIR_DEB}/" + arch + "/" + srcname, d)
                 if os.path.exists(srcfile):
@@ -335,6 +405,7 @@ python do_package_stage () {
     bb.build.make_stamp("do_package_stage", d)
     os.system("cp -dpR %s.do_* %s/" % (stampfn, destdir))
 
+    pstage_set_pkgmanager(d)
     bb.build.exec_func("staging_helper", d)
     bb.build.exec_func("staging_packager", d)
     lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
@@ -352,7 +423,3 @@ do_package_stage_all () {
 }
 do_package_stage_all[recrdeptask] = "do_package_stage"
 addtask package_stage_all after do_package_stage before do_build
-
-
-
-
