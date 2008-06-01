@@ -24,6 +24,9 @@ case "$1" in
       $0 $1 background &
     else
        . /etc/profile
+       [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+       [ -z $HOME ] && export HOME=/home/$LOGNAME
+
 
        echo "Starting Xserver"
        /etc/X11/Xserver &
