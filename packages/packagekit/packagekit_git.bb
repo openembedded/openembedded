@@ -5,11 +5,13 @@ LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "opkg"
 PV = "0.2.3+gitr${SRCREV}"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1 \
-           file://d1e096c3267c1c9492041382b954e9327bc8bbec.patch;patch=1"
+           file://01_d1e096c3267c1c9492041382b954e9327bc8bbec.patch;patch=1 \
+	   file://02_9ced8313fb12f0f89ad6ced7c0fdc7241ff00d77.patch;patch=1"
+
 
 
 S = "${WORKDIR}/git"
