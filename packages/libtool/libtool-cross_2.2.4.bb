@@ -37,8 +37,11 @@ do_stage () {
 	install -c -m 0644 ${S}/libltdl/config/ltmain.sh ${STAGING_DATADIR}/libtool/
 	install -c -m 0644 ${S}/libltdl/m4/libtool.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltdl.m4 ${STAGING_DATADIR}/aclocal/
-	install -c -m 0644 ${WORKDIR}/dolt.m4 ${STAGING_DATADIR}/aclocal/
+	if [ -e ${WORKDIR}/dolt.m4 ] ; then
+		install -c -m 0644 ${WORKDIR}/dolt.m4 ${STAGING_DATADIR}/aclocal/
+	fi
 }
+
 
 do_install () {
 	:
