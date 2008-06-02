@@ -12,7 +12,7 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/hald
 PIDDIR=/var/run/hald
-PIDFILE=$PIDDIR/hald.pid
+PIDFILE=$PIDDIR/pid
 NAME=hald
 DAEMONUSER=haldaemon
 DESC="Hardware abstraction layer"
