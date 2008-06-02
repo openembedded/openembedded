@@ -14,7 +14,6 @@ FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
 FILES_${PN}-dev += "${libdir}/${PN}/*/*.so ${libdir}/${PN}/*/*.la"
 
 SRC_URI_append = " \
-                  file://navit.xml-so.patch;patch=1 \
                   file://navit.desktop \
                   file://navit.launcher \
 	  	 "
