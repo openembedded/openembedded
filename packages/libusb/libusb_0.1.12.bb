@@ -3,9 +3,10 @@ access to USB devices."
 HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r1"
+PR = "r3"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
+	   file://configure_fix.patch;patch=1"
 
 S = "${WORKDIR}/libusb-${PV}"
 
@@ -14,7 +15,7 @@ inherit autotools pkgconfig binconfig lib_package
 PARALLEL_MAKE = ""
 EXTRA_OECONF = "--disable-build-docs"
 
-export CXXFLAGS += "-lstdc++"
+export CXXFLAGS += "-lstdc++ -I${STAGING_INCDIR}"
 
 do_stage() {
 
