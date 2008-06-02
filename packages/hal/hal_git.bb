@@ -1,49 +1,49 @@
-require hal.inc
+DESCRIPTION = "Hardware Abstraction Layer"
+HOMEPAGE = "http://freedesktop.org/Software/hal"
+SECTION = "unknown"
+LICENSE = "GPL LGPL AFL"
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb"
-RDEPENDS += "udev hal-info"
-#RDEPENDS_hal-device-manager = "python hal python-pygnome"
-RRECOMMENDS = "udev-utils"
+DEFAULT_PREFERENCE = "-1"
 
-PR = "r7"
+DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb"
+RDEPENDS_${PN} += "udev hal-info"
+RRECOMMENDS_${PN} += "udev-utils"
 
-SRC_URI += "file://99_hal \
-            file://20hal \
-	   "
+SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
+        file://20hal \
+        file://99_hal"
 
-LEAD_SONAME = "libhal.so"
+PV = "0.5.9.1+git${SRCDATE}"
+PR = "r5"
 
-# machines with pci and acpi get a machine dependant hal
+S = "${WORKDIR}/git"
+
+inherit autotools pkgconfig
+
 EXTRA_OECONF = "--with-hwdata=${datadir}/hwdata \
-                --with-expat=${STAGING_LIBDIR}/.. \
+                --with-expat=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-dbus-sys=${sysconfdir}/dbus-1/system.d \
                 --with-hotplug=${sysconfdir}/hotplug.d \
                 --disable-docbook-docs \
                 --disable-policy-kit \
-                --disable-pmu \
-                --disable-pnp-ids \
-                ${@base_contains('COMBINED_FEATURES', 'pci', '--enable-pci --enable-pci-ids', '--disable-pci --disable-pci-ids',d)} \
-                ${@base_contains('MACHINE_FEATURES', 'acpi', '--enable-acpi', '--disable-acpi',d)} \
-               "
-
-MY_ARCH := "${PACKAGE_ARCH}"
-PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'acpi', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
-PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'pci', '${MACHINE_ARCH}', '${MY_ARCH}',d)}"
+                --disable-acpi --disable-acpi-acpid --disable-acpi-proc \
+                --disable-sonypic \
+                --disable-pmu --disable-pci \
+                --disable-pci-ids --disable-pnp-ids \
+                "
 
 do_install_append() {
 	install -d ${D}/etc/default/volatiles
 	install -m 0644 ${WORKDIR}/99_hal ${D}/etc/default/volatiles
-        install -d ${D}/etc/dbus-1/event.d
-        install -m 0755 ${WORKDIR}/20hal ${D}/etc/dbus-1/event.d
+	install -d ${D}/etc/dbus-1/event.d
+	install -m 0755 ${WORKDIR}/20hal ${D}/etc/dbus-1/event.d
 }
 
 do_stage() {
-        oe_libinstall -C libhal -a -so libhal ${STAGING_LIBDIR}
-        oe_libinstall -C libhal-storage -a -so libhal-storage ${STAGING_LIBDIR}
-
-        install -d ${STAGING_INCDIR}/hal
-        install -m 0644 libhal/libhal.h ${STAGING_INCDIR}/hal
-        install -m 0644 libhal-storage/libhal-storage.h ${STAGING_INCDIR}/hal
+        autotools_stage_all
+        install -d ${STAGING_LIBDIR}
+        install -m 755 libhal/.libs/libhal.so.1.0.0 ${STAGING_LIBDIR}/libhal.so
+        install -m 755 libhal-storage/.libs/libhal-storage.so.1.0.0 ${STAGING_LIBDIR}/libhal-storage.so
 }
 
 # At the time the postinst runs, dbus might not be setup so only restart if running
@@ -61,7 +61,7 @@ pkg_postinst_hal () {
 	DBUSPID=`pidof dbus-daemon`
 
 	if [ "x$DBUSPID" != "x" ]; then
-		/etc/init.d/dbus-1 force-reload
+		/etc/init.d/dbus-1 reload
 	fi
 }
 
@@ -69,12 +69,6 @@ pkg_postrm_hal () {
 	deluser haldaemon || true
 	delgroup haldaemon || true
 }
-
-#PACKAGES += "hal-device-manager"
-
-#FILES_hal-device-manager = " \
-#               ${datadir}/hal/device-manager/ \
-#               ${bindir}/hal-device-manager"
 
 FILES_${PN} = "${sysconfdir} \
                 ${bindir}/lshal \
@@ -85,6 +79,7 @@ FILES_${PN} = "${sysconfdir} \
                 ${bindir}/hal-set-property  \
                 ${bindir}/hal-lock  \
                 ${bindir}/hal-is-caller-locked-out  \
+                ${bindir}/hal-disable-polling  \
                 ${sbindir} \
                 ${libdir}/libhal.so.* \
                 ${libdir}/libhal-storage.so.* \
