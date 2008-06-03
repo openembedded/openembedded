@@ -54,6 +54,7 @@ EXTRA_OECONF = " \
         --disable-xf86keysym \
 	--disable-tv \
         --disable-tv-v4l2 \
+        --enable-v4l2 \
         --disable-tv-bsdbt848 \
 	--enable-rtc \
         --enable-network \
