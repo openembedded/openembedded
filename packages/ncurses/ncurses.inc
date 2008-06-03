@@ -1,15 +1,28 @@
 DESCRIPTION = "Ncurses library"
 HOMEPAGE = "http://www.gnu.org/software/ncurses/ncurses.html"
-SECTION = "libs"
 LICENSE = "MIT"
+SECTION = "libs"
 DEPENDS = "ncurses-native"
+PACKAGES_prepend = "ncurses-tools "
+PACKAGES_append = " ncurses-terminfo"
+FILES_ncurses_append = " ${datadir}/tabset"
 RSUGGESTS_${PN} = "ncurses-terminfo"
+RPROVIDES = "libncurses5"
 
 inherit autotools
 
-PARALLEL_MAKE = ""
+# This keeps only tput/tset in ncurses
+# clear/reset are in already busybox
+FILES_ncurses-tools = "${bindir}/tic ${bindir}/toe ${bindir}/infotocap ${bindir}/captoinfo ${bindir}/infocmp ${bindir}/clear.${PN} ${bindir}/reset.${PN} ${bindir}/tack "
+FILES_ncurses-terminfo = "${datadir}/terminfo"
+FILES_${PN} = "${bindir}/tput ${bindir}/tset ${libdir}/lib*.so.* usr/share/tabset etc/terminfo"
+
+PARALLEL_MAKE=""
+
+FILESPATH = "${FILE_DIRNAME}/local:${FILE_DIRNAME}/ncurses-${PV}-${PR}:${FILE_DIRNAME}/ncurses-${PV}:${FILE_DIRNAME}/ncurses:${FILE_DIRNAME}"
 
 EXTRA_OECONF = "--with-shared \
+                --with-libtool \
 	        --without-profile \
 	        --without-debug \
 	        --disable-rpath \
@@ -20,7 +33,6 @@ EXTRA_OECONF = "--with-shared \
 	        --without-cxx-binding \
 	        --with-terminfo-dirs=${sysconfdir}/terminfo:${datadir}/terminfo \
 	        --enable-overwrite"
-
 export BUILD_CCFLAGS = "-I${S}/ncurses -I${S}/include ${BUILD_CFLAGS}"
 export BUILD_LDFLAGS = ""
 export EXTRA_OEMAKE = '"BUILD_LDFLAGS=" "BUILD_CCFLAGS=${BUILD_CCFLAGS}"'
@@ -64,48 +76,24 @@ do_install() {
 		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
 
-	mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}
-	mv ${D}${bindir}/reset ${D}${bindir}/reset.${PN}
+	if [ "${PN}" = "ncurses" ]; then
+		mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}
+		mv ${D}${bindir}/reset ${D}${bindir}/reset.${PN}
+	fi
 }
 		
 		
 pkg_postinst_ncurses-tools () {
-	update-alternatives --install ${bindir}/clear clear clear.${PN} 100
-	update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+	if [ "${PN}" = "ncurses" ]; then
+		update-alternatives --install ${bindir}/clear clear clear.${PN} 100
+		update-alternatives --install ${bindir}/reset reset reset.${PN} 100
+	fi
 }
 				
 			
 pkg_prerm_ncurses-tools () {
-	update-alternatives --remove clear clear.${PN}
-	update-alternatives --remove reset reset.${PN}
+	if [ "${PN}" = "ncurses" ]; then
+		update-alternatives --remove clear clear.${PN}
+		update-alternatives --remove reset reset.${PN}
+	fi
 }
-
-
-PACKAGES =+ "${PN}-ncurses ${PN}-panel ${PN}-menu ${PN}-form ${PN}-terminfo ${PN}-tools"
-FILES_${PN}-ncurses = "${libdir}/libncurses.so.*"
-# You can'r really run any ncurses app without terminfo files, which is why the packaging was that way before mickeyl broke it. 
-# This RRECOMMENDS should pull in terminfo to fix that 
-RRECOMMENDS_${PN}-ncurses = "${PN}-terminfo"
-FILES_${PN}-panel = "${libdir}/libpanel.so.*"
-FILES_${PN}-menu = "${libdir}/libmenu.so.*"
-FILES_${PN}-form = "${libdir}/libform.so.*"
-FILES_${PN}-terminfo = "\
-  ${libdir}/terminfo \
-  ${datadir}/terminfo \
-"
-FILES_${PN}-tools = "\
-  ${bindir}/tic \
-  ${bindir}/tack \
-  ${bindir}/toe \
-  ${bindir}/infotocap \
-  ${bindir}/captoinfo \
-  ${bindir}/infocmp \
-  ${bindir}/clear.${PN} \
-  ${bindir}/reset.${PN} \
-"
-FILES_${PN} = "\
-  ${bindir}/tput \
-  ${bindir}/tset \
-  ${datadir}/tabset \
-  ${sysconfdir}/terminfo \
-"

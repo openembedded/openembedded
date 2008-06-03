@@ -2,7 +2,7 @@ require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
 SRCDATE = "20050627"
-PR = "r17"
+PR = "r18"
 
 #Doesnt build for sh3
 DEFAULT_PREFERENCE_sh3="-1"

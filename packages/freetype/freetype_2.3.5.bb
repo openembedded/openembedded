@@ -1,7 +1,7 @@
 DESCRIPTION = "Freetype font rendering library"
 SECTION = "libs"
 LICENSE = "freetype"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
            file://fix-x86_64-build.patch;patch=1 \
@@ -18,7 +18,8 @@ EXTRA_OECONF = "--without-zlib"
 
 do_configure() {
 	cd builds/unix
-	gnu-configize
+	libtoolize --force --copy
+	gnu-configize --force
 	aclocal -I .
 	autoconf
 	cd ${S}

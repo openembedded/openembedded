@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 require gcc-csl-arm-2007q3.inc
 require gcc-cross4.inc

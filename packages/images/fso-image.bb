@@ -3,34 +3,9 @@
 #------------------------------------------------------
 
 IMAGE_LINGUAS = ""
- 
-ADD_INSTALL = "\
-  fontconfig-utils \
-  \
-  ttf-dejavu-common \
-  ttf-dejavu-sans \
-  ttf-dejavu-serif \
-  \
-"
- 
-MICKEY_INSTALL = "\
-  htop \
-  mickeyterm \
-  nano \
-  powertop \
-  s3c24xx-gpio \
-"
- 
-ZHONE_INSTALL = "\
-  gsm0710muxd \
-  python-odeviced \
-  python-oeventd \
-  python-ophoned \
-  python-ousaged \
-  zhone \
-"
- 
-IMAGE_INSTALL = "\
+
+# getting the base system up
+BASE_INSTALL = "\
   ${MACHINE_TASK_PROVIDER} \
   netbase \
   sysfsutils \
@@ -39,7 +14,10 @@ IMAGE_INSTALL = "\
   screen \
   fbset \
   fbset-modes \
-  \
+"
+
+# getting an X window system up
+X_INSTALL = "\
   matchbox-wm \
   ${XSERVER} \
   xserver-kdrive-common \
@@ -49,18 +27,69 @@ IMAGE_INSTALL = "\
   xset \
   xrandr \
   \
-  python-codecs \
+  fontconfig-utils \
   \
+  ttf-dejavu-common \
+  ttf-dejavu-sans \
+  ttf-dejavu-serif \
+  \
+"
+
+# useful command line tools
+TOOLS_INSTALL = "\
+  htop \
+  mickeyterm \
+  nano \
+  powertop \
+  s3c24xx-gpio \
+"
+
+# audio
+AUDIO_INSTALL = "\
   openmoko-alsa-scenarios \
   openmoko-sound-system2 \
   openmoko-sound-theme-standard2 \
-  \
-  ${ADD_INSTALL} \
-  ${MICKEY_INSTALL} \
+"
+
+# python
+PYTHON_INSTALL = "\
+  task-python-efl \
+  python-codecs \
+  python-gst \
+"
+
+# zhone
+ZHONE_INSTALL = "\
+  gsm0710muxd \
+  python-odeviced \
+  python-ophoned \
+  python-ousaged \
+  zhone \
+"
+
+IMAGE_INSTALL = "\
+  ${BASE_INSTALL} \
+  ${X_INSTALL} \
+  ${AUDIO_INSTALL} \
+  ${TOOLS_INSTALL} \
+  ${PYTHON_INSTALL} \
   ${ZHONE_INSTALL} \
 "
- 
-inherit image
- 
-ROOTFS_POSTPROCESS_COMMAND += 'date "+%m%d%H%M%Y" >${IMAGE_ROOTFS}/etc/timestamp'
 
+inherit image
+
+# perform some convenience tweaks to the rootfs
+mickey_rootfs_postprocess() {
+    curdir=$PWD
+    cd ${IMAGE_ROOTFS}
+    date "+%m%d%H%M%Y" >./etc/timestamp
+    echo "alias pico=nano" >>./etc/profile
+    echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
+    mkdir -p ./local/pkg
+    echo >>./etc/fstab
+    echo "# NFS Host" >>./etc/fstab
+    echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
+    cd $curdir
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "mickey_rootfs_postprocess"

@@ -16,7 +16,14 @@ python __anonymous () {
     	depends = bb.data.getVar("DEPENDS", d, 1)
     	depends = "%s u-boot-mkimage-openmoko-native" % depends
     	bb.data.setVar("DEPENDS", depends, d)
+
+    image = bb.data.getVar('INITRAMFS_IMAGE', d, True)
+    if image != '' and image is not None:
+        bb.data.setVar('INITRAMFS_TASK', '${INITRAMFS_IMAGE}:do_rootfs', d)
 }
+
+INITRAMFS_IMAGE ?= ""
+INITRAMFS_TASK ?= ""
 
 inherit kernel-arch
 
@@ -79,21 +86,28 @@ kernel_do_compile() {
 	fi
 }
 
-INITRAMFS_SYMLINK_NAME ?= "initramfs-${MACHINE}"
-INITRAMFS_IMAGE_TARGET ?= "initramfs-image"
 
 do_builtin_initramfs() {
-	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
-	cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_SYMLINK_NAME}" usr/initramfs_data.cpio.gz
-	oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
-	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 ${KERNEL_OUTPUT} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-initramfs.bin
-	# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
-	rm usr/initramfs_data.cpio.gz
+	 if [ ! -z "${INITRAMFS_IMAGE}" ]; then
+		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
+		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" usr/initramfs_data.cpio.gz
+		oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
+	
+		install -d ${DEPLOY_DIR_IMAGE}
+		install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin
+		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin
+	
+		# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
+		rm usr/initramfs_data.cpio.gz
+		
+		cd ${DEPLOY_DIR_IMAGE}
+		rm -f ${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
+		ln -sf ${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin ${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
+		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
+	fi
 }
-#addtask builtin_initramfs after do_compile
-#do_builtin_initramfs[nostamp] = "1"
-#do_builtin_initramfs[depends] = "${INITRAMFS_IMAGE_TARGET}:do_rootfs"
+addtask builtin_initramfs before do_build after do_package_write
+do_builtin_initramfs[depends] = '${INITRAMFS_TASK}'
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`

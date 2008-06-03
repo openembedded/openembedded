@@ -8,7 +8,7 @@ PR = "r4"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt10.bz2;patch=1;p=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt11.bz2;patch=1;p=1 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
            file://powerpc-clockres.patch;patch=1 \
            file://leds-cpu-activity.patch;patch=1 \

@@ -3,7 +3,7 @@ require linux-omap.inc
 # uncomment the below to get the latest and greatest and avoid a full reparse
 # or override in it local.conf like this: DAVINCI_SRCREV_pn-linux-davinci = "${@bb.fetch.get_srcrev(d)}"
 #DAVINCI_SRCREV = "${@bb.fetch.get_srcrev(d)}"
-DAVINCI_SRCREV ?= "713dc561fa98efb6cbac3f641c43d30ce8b840dd"
+DAVINCI_SRCREV ?= "e23e6d5c446074082d93285f21cf95ed0d537a6f"
 SRCREV = "${DAVINCI_SRCREV}"
 
 PV = "2.6.25"

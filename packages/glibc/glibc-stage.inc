@@ -16,8 +16,8 @@ do_stage() {
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${STAGING_INCDIR}/rpcsvc/
 	done
 	for i in libc.a libc_pic.a libc_nonshared.a; do
-		install -m 0644 ${B}/$i ${STAGING_DIR_HOST}/${layout_base_libdir}/ || die "failed to install $i"
+		install -m 0644 ${B}/$i ${STAGING_DIR_HOST}/${layout_libdir}/ || die "failed to install $i"
 	done
-	echo 'GROUP ( libpthread.so.0 libpthread_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_base_libdir}/libpthread.so
-	echo 'GROUP ( libc.so.6 libc_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_base_libdir}/libc.so
+	echo 'GROUP ( ${layout_base_libdir}/libpthread.so.0 ${layout_libdir}/libpthread_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_libdir}/libpthread.so
+	echo 'GROUP ( ${layout_base_libdir}/libc.so.6 ${layout_libdir}/libc_nonshared.a )' > ${STAGING_DIR_HOST}/${layout_libdir}/libc.so
 }

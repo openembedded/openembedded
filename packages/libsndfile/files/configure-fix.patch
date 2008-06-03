@@ -1,0 +1,10 @@
+--- /tmp/configure.ac	2008-06-02 20:33:03.191936504 +0200
++++ libsndfile-1.0.17/configure.ac	2008-06-02 20:33:15.120002907 +0200
+@@ -31,6 +31,7 @@
+ SHARED_VERSION_INFO="1:17:0"
+ 
+ AC_PROG_CC
++AC_PROG_CXX
+ AM_PROG_LIBTOOL
+ 
+ AC_CHECK_PROG(autogen, autogen, yes, no)

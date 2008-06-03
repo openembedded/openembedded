@@ -11,5 +11,7 @@ PACKAGES += "xfdesktop-backdrops ${PN}-mcs-plugins"
 
 FILES_xfdesktop-backdrops="${datadir}/xfce4/backdrops/*"
 FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/*.so"
-FILES_${PN} += "${libdir}/xfce4/panel-plugins/*.so"
+FILES_${PN} += "${libdir}/xfce4/panel-plugins/*.so \
+                ${libdir}/xfce4/panel-plugins/xfce4-menu-plugin \
+                ${datadir}/xfce4/panel-plugins/*.desktop"
 FILES_${PN}-dbg += "/usr/libexec/xfce4/panel-plugins/.debug"
