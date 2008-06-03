@@ -11,7 +11,7 @@ do_configure() {
 }
 
 do_compile() {
-	${CC} ${CFLAGS} -o ${S}/makedevs ${S}/makedevs.c
+	${CC} ${CFLAGS} -L${STAGING_LIBDIR}/ -o ${S}/makedevs ${S}/makedevs.c
 }
 
 do_install() {
