@@ -46,9 +46,15 @@ TOOLS_INSTALL = "\
 
 # audio
 AUDIO_INSTALL = "\
-  openmoko-alsa-scenarios \
   openmoko-sound-system2 \
   openmoko-sound-theme-standard2 \
+"
+
+AUDIO_INSTALL_append_om-gta01 = "\
+  openmoko-alsa-scenarios \
+"
+AUDIO_INSTALL_append_om-gta02 = "\
+  openmoko-alsa-scenarios \
 "
 
 # python
