@@ -1,0 +1,14 @@
+Libtool 2.2.2 requires this is used with AC_SUBST
+
+RP - 14/4/08
+
+--- /tmp/configure.in	2008-06-02 15:21:22.254641651 +0200
++++ fontconfig-2.4.1/configure.in	2008-06-02 15:21:48.485061892 +0200
+@@ -46,6 +46,7 @@
+ AC_SUBST(LT_CURRENT)
+ AC_SUBST(LT_REVISION)
+ LT_AGE=1
++AC_SUBST(LT_AGE)
+ 
+ LT_VERSION_INFO="$LT_CURRENT:$LT_REVISION:$LT_AGE"
+ AC_SUBST(LT_VERSION_INFO)
