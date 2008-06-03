@@ -2187,14 +2187,14 @@
 +	CPPFLAGS="-I\$(srcdir)/../include $CPPFLAGS"
 +fi
 +if test "$GCC" != yes; then
-+	CPPFLAGS="$CPPFLAGS"
++	CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 +elif test "$includedir" != "/usr/include"; then
 +	if test "$includedir" = '${prefix}/include' ; then
 +		if test $prefix != /usr ; then
-+			CPPFLAGS="$CPPFLAGS"
++			CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 +		fi
 +	else
-+		CPPFLAGS="$CPPFLAGS"
++		CPPFLAGS="$CPPFLAGS -I\$(includedir)"
 +	fi
 +fi
 +AC_SUBST(CPPFLAGS)
