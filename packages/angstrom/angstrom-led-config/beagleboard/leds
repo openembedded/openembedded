@@ -1,0 +1,3 @@
+#file format: name trigger
+beagleboard::led0 mmc0
+beagleboard::led1 nand-disk

@@ -1,0 +1,31 @@
+#! /bin/sh
+
+if [ -e /sys/class/leds/ ] ; then
+ 
+case "$1" in
+  start)
+       echo "Configuring leds:"
+       for led in /sys/class/leds/* ; do
+	trigger=$(grep "$(basename $led)" /etc/default/leds | awk '{print $2}')
+	if [ "x$trigger" = "x" ] ; then trigger="none" ; fi 
+	echo "  $(basename $led): $trigger"
+        echo "$trigger" > "$led/trigger"
+       done
+;;
+  stop)
+       echo "Deconfiguring leds:"
+       for led in /sys/class/leds/* ; do
+	echo "  $(basename $led): no trigger" 
+	echo "none" > "$led/trigger"	
+       done
+       ;;
+  *)
+       echo "Usage: /etc/init.d/led-config {start|stop}"
+       exit 1
+esac
+
+else
+	echo "No LEDs detected"
+fi
+
+exit 0                                                                         
