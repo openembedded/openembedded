@@ -62,10 +62,15 @@
     <Name>Settings</Name>
     <Directory>Settings.directory</Directory>
     <Include>
-      <Or>
-        <Category>SystemSettings</Category>
-        <Category>Settings</Category>
-      </Or>
+      <And>
+        <Or>
+          <Category>SystemSettings</Category>
+          <Category>Settings</Category>
+        </Or>
+        <Not>
+          <Category>System</Category>
+        </Not>
+      </And>
     </Include>
   </Menu>
 
