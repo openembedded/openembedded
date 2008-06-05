@@ -1,9 +1,8 @@
 require wlan-ng-modules.inc
 
-PR = "r1"
+PR = "r0"
 
-SRCDATE = "20080315"
-PV = "0.2.8+svn${SRCDATE}"
+PV = "0.2.8+svnr${SRCREV}"
 
 SRC_URI += "svn://svn.shaftnet.org/linux-wlan-ng;module=trunk "
 		

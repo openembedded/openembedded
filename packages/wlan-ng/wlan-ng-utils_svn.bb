@@ -1,10 +1,12 @@
 require wlan-ng-utils.inc
 
-SRC_URI += "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
+PR = "r0"
+
+PV = "0.2.8+svnr${SRCREV}"
+
+SRC_URI += "svn://svn.shaftnet.org/linux-wlan-ng;module=trunk \
         file://scripts-makefile-hostcc.patch;patch=1 \
 	file://pcmciasrc.patch;patch=1 \
 	file://hostldflags.patch;patch=1"
 
-S = "${WORKDIR}/linux-wlan-ng-${PV}"
-
-PR = "r2"
+S = "${WORKDIR}/trunk"
