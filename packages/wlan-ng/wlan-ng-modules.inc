@@ -2,8 +2,6 @@ DESCRIPTION = "linux-wlan-ng (prism2.x, prism3, pcmcia, pci, usb) driver for 11M
 HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/modules"
 DEPENDS = "virtual/kernel"
-RRECOMMENDS = "wlan-ng-utils"
-RPROVIDES += "wlan-ng-modules-usb"
 LICENSE = "GPL"
 
 SRC_URI = "file://no-compat.patch;patch=1 \
@@ -55,15 +53,22 @@ do_install() {
         # Listen closely... sssshhh... can you hear the wlan-ng build system suck?
         rm -f ${KERNEL_SOURCE}/../config.mk
         rm -f ${KERNEL_SOURCE}/../../config.mk	
+
+	# man page and configure scripts are shipped by wlan-ng-utils
+	rm -rf ${D}/usr/local/man
+	rm -rf ${D}/etc
 }
 
-PACKAGES = "${PN}-dbg wlan-ng-modules-usb wlan-ng-modules-cs wlan-ng-modules-pci wlan-ng-modules-p80211"
-FILES_wlan-ng-modules-p80211 = "/lib/modules/${KERNEL_VERSION}/wlan-ng/p80211${KERNEL_OBJECT_SUFFIX}"
-FILES_wlan-ng-modules-usb = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_usb${KERNEL_OBJECT_SUFFIX}"
-FILES_wlan-ng-modules-cs  = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_cs${KERNEL_OBJECT_SUFFIX}"
-FILES_wlan-ng-modules-pci = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_pci${KERNEL_OBJECT_SUFFIX} \
+PACKAGES =+ "${PN}-p80211 ${PN}-usb ${PN}-cs ${PN}-pci"
+ALLOW_EMPTY_${PN} = "1"
+FILES_${PN}-p80211 = "/lib/modules/${KERNEL_VERSION}/wlan-ng/p80211${KERNEL_OBJECT_SUFFIX}"
+FILES_${PN}-usb = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_usb${KERNEL_OBJECT_SUFFIX}"
+FILES_${PN}-cs  = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_cs${KERNEL_OBJECT_SUFFIX}"
+FILES_${PN}-pci = "/lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_pci${KERNEL_OBJECT_SUFFIX} \
 			     /lib/modules/${KERNEL_VERSION}/wlan-ng/prism2_plx${KERNEL_OBJECT_SUFFIX}"
-RDEPENDS_wlan-ng-modules-p80211 = "wlan-ng-utils"
-RDEPENDS_wlan-ng-modules-usb = "wlan-ng-modules-p80211"
-RDEPENDS_wlan-ng-modules-cs  = "wlan-ng-modules-p80211"
-RDEPENDS_wlan-ng-modules-pci = "wlan-ng-modules-p80211"
+
+RDEPENDS_${PN}-p80211 = "wlan-ng-utils"
+RDEPENDS_${PN}     = "${PN}-p80211"
+RDEPENDS_${PN}-usb = "${PN}-p80211"
+RDEPENDS_${PN}-cs  = "${PN}-p80211"
+RDEPENDS_${PN}-pci = "${PN}-p80211"
