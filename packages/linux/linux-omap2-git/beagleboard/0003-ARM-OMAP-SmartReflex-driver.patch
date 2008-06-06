@@ -2,7 +2,8 @@ From: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 To: linux-omap@vger.kernel.org
 Cc: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 Subject: [PATCH 3/3] ARM: OMAP: SmartReflex driver: integration to linux-omap
-Date: 	Mon,  2 Jun 2008 14:30:14 +0300
+Date: 	Fri,  6 Jun 2008 12:49:49 +0300
+Message-Id: <1212745789-13926-3-git-send-email-ext-kalle.jokiniemi@nokia.com>
 
 - Changed register accesses to use prm_{read,write}_mod_reg and
   prm_{set,clear,rmw}_mod_reg_bits() functions instread of
@@ -12,21 +13,24 @@ Date: 	Mon,  2 Jun 2008 14:30:14 +0300
 
 - replaced cpu-related #ifdefs with if (cpu_is_xxxx()) calls.
 
-- removed EFUSE related ifdefs
+- Added E-fuse support: Use silicon characteristics parameters from E-fuse
 
 - added smartreflex_disable/enable calls to pm34xx.c suspend function.
 
 - Added "SmartReflex support" entry into Kconfig under "System type->TI OMAP
   Implementations". It depends on ARCH_OMAP34XX and TWL4030_CORE.
 
+- Added "SmartReflex testing support" Kconfig option for using hard coded
+  software parameters instead of E-fuse parameters.
+
 Signed-off-by: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 ---
  arch/arm/mach-omap2/Makefile      |    3 +
  arch/arm/mach-omap2/pm34xx.c      |    9 +
- arch/arm/mach-omap2/smartreflex.c |  457 ++++++++++++++++++++++---------------
- arch/arm/mach-omap2/smartreflex.h |    2 +-
- arch/arm/plat-omap/Kconfig        |   17 ++
- 5 files changed, 302 insertions(+), 186 deletions(-)
+ arch/arm/mach-omap2/smartreflex.c |  531 +++++++++++++++++++++++--------------
+ arch/arm/mach-omap2/smartreflex.h |    9 +-
+ arch/arm/plat-omap/Kconfig        |   31 +++
+ 5 files changed, 385 insertions(+), 198 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
 index 50c6657..f645b6e 100644
@@ -77,7 +81,7 @@ index 7e775cc..3da4f47 100644
  }
  
 diff --git a/arch/arm/mach-omap2/smartreflex.c b/arch/arm/mach-omap2/smartreflex.c
-index dae7460..253369b 100644
+index dae7460..0b10a5d 100644
 --- a/arch/arm/mach-omap2/smartreflex.c
 +++ b/arch/arm/mach-omap2/smartreflex.c
 @@ -3,6 +3,9 @@
@@ -90,7 +94,7 @@ index dae7460..253369b 100644
   * Copyright (C) 2007 Texas Instruments, Inc.
   * Lesly A M <x0080970@ti.com>
   *
-@@ -20,13 +23,15 @@
+@@ -20,13 +23,16 @@
  #include <linux/err.h>
  #include <linux/clk.h>
  #include <linux/sysfs.h>
@@ -103,6 +107,7 @@ index dae7460..253369b 100644
  
 -#include "prcm-regs.h"
 +#include <asm/arch/omap34xx.h>
++#include <asm/arch/control.h>
 +
 +#include "prm.h"
  #include "smartreflex.h"
@@ -110,7 +115,7 @@ index dae7460..253369b 100644
  
  
  /* #define DEBUG_SR 1 */
-@@ -37,11 +42,16 @@
+@@ -37,11 +43,16 @@
  #  define DPRINTK(fmt, args...)
  #endif
  
@@ -127,7 +132,7 @@ index dae7460..253369b 100644
  	u32 req_opp_no;
  	u32 opp1_nvalue, opp2_nvalue, opp3_nvalue, opp4_nvalue, opp5_nvalue;
  	u32 senp_mod, senn_mod;
-@@ -53,6 +63,7 @@ static struct omap_sr sr1 = {
+@@ -53,6 +64,7 @@ static struct omap_sr sr1 = {
  	.srid = SR1,
  	.is_sr_reset = 1,
  	.is_autocomp_active = 0,
@@ -135,7 +140,7 @@ index dae7460..253369b 100644
  	.srbase_addr = OMAP34XX_SR1_BASE,
  };
  
-@@ -60,6 +71,7 @@ static struct omap_sr sr2 = {
+@@ -60,6 +72,7 @@ static struct omap_sr sr2 = {
  	.srid = SR2,
  	.is_sr_reset = 1,
  	.is_autocomp_active = 0,
@@ -143,7 +148,7 @@ index dae7460..253369b 100644
  	.srbase_addr = OMAP34XX_SR2_BASE,
  };
  
-@@ -85,8 +97,6 @@ static inline u32 sr_read_reg(struct omap_sr *sr, int offset)
+@@ -85,8 +98,6 @@ static inline u32 sr_read_reg(struct omap_sr *sr, int offset)
  	return omap_readl(sr->srbase_addr + offset);
  }
  
@@ -152,7 +157,7 @@ index dae7460..253369b 100644
  static void cal_reciprocal(u32 sensor, u32 *sengain, u32 *rnsen)
  {
  	u32 gn, rn, mul;
-@@ -100,7 +110,21 @@ static void cal_reciprocal(u32 sensor, u32 *sengain, u32 *rnsen)
+@@ -100,7 +111,21 @@ static void cal_reciprocal(u32 sensor, u32 *sengain, u32 *rnsen)
  		}
  	}
  }
@@ -175,10 +180,11 @@ index dae7460..253369b 100644
  
  static int sr_clk_enable(struct omap_sr *sr)
  {
-@@ -131,20 +155,48 @@ static int sr_clk_disable(struct omap_sr *sr)
+@@ -131,22 +156,86 @@ static int sr_clk_disable(struct omap_sr *sr)
  	return 0;
  }
  
+-static void sr_set_nvalues(struct omap_sr *sr)
 +static void sr_set_clk_length(struct omap_sr *sr)
 +{
 +	struct clk *osc_sys_ck;
@@ -210,11 +216,47 @@ index dae7460..253369b 100644
 +	}
 +}
 +
-+/*
-+ * TODO: once EFUSE is available, it should be used instead of these
-+ * pre-calculated values.
-+ */
- static void sr_set_nvalues(struct omap_sr *sr)
++static void sr_set_efuse_nvalues(struct omap_sr *sr)
++{
++	if (sr->srid == SR1) {
++		sr->senn_mod = (omap_ctrl_readl(OMAP343X_CONTROL_FUSE_SR) &
++					OMAP343X_SR1_SENNENABLE_MASK) >>
++					OMAP343X_SR1_SENNENABLE_SHIFT;
++
++		sr->senp_mod = (omap_ctrl_readl(OMAP343X_CONTROL_FUSE_SR) &
++					OMAP343X_SR1_SENPENABLE_MASK) >>
++					OMAP343X_SR1_SENPENABLE_SHIFT;
++
++		sr->opp5_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP5_VDD1);
++		sr->opp4_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP4_VDD1);
++		sr->opp3_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP3_VDD1);
++		sr->opp2_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP2_VDD1);
++		sr->opp1_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP1_VDD1);
++	} else if (sr->srid == SR2) {
++		sr->senn_mod = (omap_ctrl_readl(OMAP343X_CONTROL_FUSE_SR) &
++					OMAP343X_SR2_SENNENABLE_MASK) >>
++					OMAP343X_SR2_SENNENABLE_SHIFT;
++
++		sr->senp_mod = (omap_ctrl_readl(OMAP343X_CONTROL_FUSE_SR) &
++					OMAP343X_SR2_SENPENABLE_MASK) >>
++					OMAP343X_SR2_SENPENABLE_SHIFT;
++
++		sr->opp3_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP3_VDD2);
++		sr->opp2_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP2_VDD2);
++		sr->opp1_nvalue = omap_ctrl_readl(
++					OMAP343X_CONTROL_FUSE_OPP1_VDD2);
++	}
++}
++
++/* Hard coded nvalues for testing purposes, may cause device to hang! */
++static void sr_set_testing_nvalues(struct omap_sr *sr)
  {
 -#ifdef USE_EFUSE_VALUES
 -	u32 n1, n2;
@@ -228,10 +270,14 @@ index dae7460..253369b 100644
 -#ifdef USE_EFUSE_VALUES
 -		/* Read values for VDD1 from EFUSE */
 -#else
- 		/* since E-Fuse Values are not available, calculating the
- 		 * reciprocal of the SenN and SenP values for SR1
+-		/* since E-Fuse Values are not available, calculating the
+-		 * reciprocal of the SenN and SenP values for SR1
++		/* Calculating the reciprocal of the SenN and SenP values
++		 * for SR1
  		 */
-@@ -216,15 +268,16 @@ static void sr_set_nvalues(struct omap_sr *sr)
+ 		sr->senp_mod = 0x03;        /* SenN-M5 enabled */
+ 		sr->senn_mod = 0x03;
+@@ -216,15 +305,16 @@ static void sr_set_nvalues(struct omap_sr *sr)
  				(rnsenp << NVALUERECIPROCAL_RNSENP_SHIFT) |
  				(rnsenn << NVALUERECIPROCAL_RNSENN_SHIFT));
  
@@ -252,7 +298,7 @@ index dae7460..253369b 100644
  		/* since E-Fuse Values are not available, calculating the
  		 * reciprocal of the SenN and SenP values for SR2
  		 */
-@@ -269,8 +322,6 @@ static void sr_set_nvalues(struct omap_sr *sr)
+@@ -269,134 +359,163 @@ static void sr_set_nvalues(struct omap_sr *sr)
  				(senngain << NVALUERECIPROCAL_SENNGAIN_SHIFT) |
  				(rnsenp << NVALUERECIPROCAL_RNSENP_SHIFT) |
  				(rnsenn << NVALUERECIPROCAL_RNSENN_SHIFT));
@@ -261,7 +307,18 @@ index dae7460..253369b 100644
  	}
  
  }
-@@ -281,122 +332,145 @@ static void sr_configure_vp(int srid)
+ 
++static void sr_set_nvalues(struct omap_sr *sr)
++{
++	if (SR_TESTING_NVALUES)
++		sr_set_testing_nvalues(sr);
++	else
++		sr_set_efuse_nvalues(sr);
++}
++
+ static void sr_configure_vp(int srid)
+ {
+ 	u32 vpconfig;
  
  	if (srid == SR1) {
  		vpconfig = PRM_VP1_CONFIG_ERROROFFSET | PRM_VP1_CONFIG_ERRORGAIN
@@ -492,7 +549,7 @@ index dae7460..253369b 100644
  		sr_write_reg(sr, SRCONFIG, sr_config);
  
  		sr_write_reg(sr, AVGWEIGHT, SR1_AVGWEIGHT_SENPAVGWEIGHT |
-@@ -408,18 +482,18 @@ static void sr_configure(struct omap_sr *sr)
+@@ -408,18 +527,18 @@ static void sr_configure(struct omap_sr *sr)
  
  	} else if (sr->srid == SR2) {
  		sr_config = SR2_SRCONFIG_ACCUMDATA |
@@ -514,15 +571,35 @@ index dae7460..253369b 100644
  		sr_modify_reg(sr, ERRCONFIG, (SR_ERRWEIGHT_MASK |
  			SR_ERRMAXLIMIT_MASK | SR_ERRMINLIMIT_MASK),
  			(SR2_ERRWEIGHT | SR2_ERRMAXLIMIT | SR2_ERRMINLIMIT));
-@@ -476,7 +550,6 @@ static void sr_enable(struct omap_sr *sr, u32 target_opp_no)
+@@ -428,9 +547,9 @@ static void sr_configure(struct omap_sr *sr)
+ 	sr->is_sr_reset = 0;
+ }
  
- 	if (current_nvalue == nvalue_reciprocal) {
- 		DPRINTK("System is already at the desired voltage level\n");
+-static void sr_enable(struct omap_sr *sr, u32 target_opp_no)
++static int sr_enable(struct omap_sr *sr, u32 target_opp_no)
+ {
+-	u32 nvalue_reciprocal, current_nvalue;
++	u32 nvalue_reciprocal;
+ 
+ 	sr->req_opp_no = target_opp_no;
+ 
+@@ -472,11 +591,10 @@ static void sr_enable(struct omap_sr *sr, u32 target_opp_no)
+ 		}
+ 	}
+ 
+-	current_nvalue = sr_read_reg(sr, NVALUERECIPROCAL);
+-
+-	if (current_nvalue == nvalue_reciprocal) {
+-		DPRINTK("System is already at the desired voltage level\n");
 -		return;
++	if (nvalue_reciprocal == 0) {
++		printk(KERN_NOTICE "OPP%d doesn't support SmartReflex\n",
++								target_opp_no);
++		return SR_FALSE;
  	}
  
  	sr_write_reg(sr, NVALUERECIPROCAL, nvalue_reciprocal);
-@@ -485,18 +558,18 @@ static void sr_enable(struct omap_sr *sr, u32 target_opp_no)
+@@ -485,18 +603,19 @@ static void sr_enable(struct omap_sr *sr, u32 target_opp_no)
  	sr_modify_reg(sr, ERRCONFIG,
  			(ERRCONFIG_VPBOUNDINTEN | ERRCONFIG_VPBOUNDINTST),
  			(ERRCONFIG_VPBOUNDINTEN | ERRCONFIG_VPBOUNDINTST));
@@ -542,10 +619,11 @@ index dae7460..253369b 100644
  	/* SRCONFIG - enable SR */
  	sr_modify_reg(sr, SRCONFIG, SRCONFIG_SRENABLE, SRCONFIG_SRENABLE);
 -
++	return SR_TRUE;
  }
  
  static void sr_disable(struct omap_sr *sr)
-@@ -507,11 +580,13 @@ static void sr_disable(struct omap_sr *sr)
+@@ -507,11 +626,13 @@ static void sr_disable(struct omap_sr *sr)
  	sr_modify_reg(sr, SRCONFIG, SRCONFIG_SRENABLE, ~SRCONFIG_SRENABLE);
  
  	if (sr->srid == SR1) {
@@ -563,7 +641,21 @@ index dae7460..253369b 100644
  	}
  }
  
-@@ -574,16 +649,13 @@ void enable_smartreflex(int srid)
+@@ -535,7 +656,12 @@ void sr_start_vddautocomap(int srid, u32 target_opp_no)
+ 									srid);
+ 
+ 	sr->is_autocomp_active = 1;
+-	sr_enable(sr, target_opp_no);
++	if (!sr_enable(sr, target_opp_no)) {
++		printk(KERN_WARNING "SR%d: VDD autocomp not activated\n", srid);
++		sr->is_autocomp_active = 0;
++		if (sr->is_sr_reset == 1)
++			sr_clk_disable(sr);
++	}
+ }
+ EXPORT_SYMBOL(sr_start_vddautocomap);
+ 
+@@ -574,20 +700,18 @@ void enable_smartreflex(int srid)
  
  	if (sr->is_autocomp_active == 1) {
  		if (sr->is_sr_reset == 1) {
@@ -585,7 +677,13 @@ index dae7460..253369b 100644
  
  			sr_configure(sr);
  
-@@ -602,15 +674,6 @@ void disable_smartreflex(int srid)
+-			sr_enable(sr, target_opp_no);
++			if (!sr_enable(sr, target_opp_no))
++				sr_clk_disable(sr);
+ 		}
+ 	}
+ }
+@@ -602,15 +726,6 @@ void disable_smartreflex(int srid)
  		sr = &sr2;
  
  	if (sr->is_autocomp_active == 1) {
@@ -601,7 +699,7 @@ index dae7460..253369b 100644
  		if (sr->is_sr_reset == 0) {
  
  			sr->is_sr_reset = 1;
-@@ -618,17 +681,18 @@ void disable_smartreflex(int srid)
+@@ -618,17 +733,18 @@ void disable_smartreflex(int srid)
  			sr_modify_reg(sr, SRCONFIG, SRCONFIG_SRENABLE,
  							~SRCONFIG_SRENABLE);
  
@@ -629,7 +727,7 @@ index dae7460..253369b 100644
  			}
  		}
  	}
-@@ -638,7 +702,6 @@ void disable_smartreflex(int srid)
+@@ -638,7 +754,6 @@ void disable_smartreflex(int srid)
  /* Voltage Scaling using SR VCBYPASS */
  int sr_voltagescale_vcbypass(u32 target_opp, u8 vsel)
  {
@@ -637,7 +735,7 @@ index dae7460..253369b 100644
  	int sr_status = 0;
  	u32 vdd, target_opp_no;
  	u32 vc_bypass_value;
-@@ -651,39 +714,53 @@ int sr_voltagescale_vcbypass(u32 target_opp, u8 vsel)
+@@ -651,39 +766,53 @@ int sr_voltagescale_vcbypass(u32 target_opp, u8 vsel)
  	if (vdd == PRCM_VDD1) {
  		sr_status = sr_stop_vddautocomap(SR1);
  
@@ -692,12 +790,12 @@ index dae7460..253369b 100644
  								"write\n");
 -			return ret;
 +			return SR_FAIL;
- 		}
++		}
 +		if (loop_cnt > 50) {
 +			retries_cnt++;
 +			loop_cnt = 0;
 +			udelay(10);
-+		}
+ 		}
 +		vc_bypass_value = prm_read_mod_reg(OMAP3430_GR_MOD,
 +					OMAP3_PRM_VC_BYPASS_VAL_OFFSET);
  	}
@@ -707,7 +805,7 @@ index dae7460..253369b 100644
  
  	if (sr_status) {
  		if (vdd == PRCM_VDD1)
-@@ -696,13 +773,15 @@ int sr_voltagescale_vcbypass(u32 target_opp, u8 vsel)
+@@ -696,13 +825,15 @@ int sr_voltagescale_vcbypass(u32 target_opp, u8 vsel)
  }
  
  /* Sysfs interface to select SR VDD1 auto compensation */
@@ -726,7 +824,7 @@ index dae7460..253369b 100644
  {
  	u32 current_vdd1opp_no;
  	unsigned short value;
-@@ -722,7 +801,7 @@ static ssize_t omap_sr_vdd1_autocomp_store(struct kset *subsys,
+@@ -722,7 +853,7 @@ static ssize_t omap_sr_vdd1_autocomp_store(struct kset *subsys,
  	return n;
  }
  
@@ -735,7 +833,7 @@ index dae7460..253369b 100644
  	.attr = {
  	.name = __stringify(sr_vdd1_autocomp),
  	.mode = 0644,
-@@ -732,13 +811,15 @@ static struct subsys_attribute sr_vdd1_autocomp = {
+@@ -732,13 +863,15 @@ static struct subsys_attribute sr_vdd1_autocomp = {
  };
  
  /* Sysfs interface to select SR VDD2 auto compensation */
@@ -754,7 +852,7 @@ index dae7460..253369b 100644
  {
  	u32 current_vdd2opp_no;
  	unsigned short value;
-@@ -758,7 +839,7 @@ static ssize_t omap_sr_vdd2_autocomp_store(struct kset *subsys,
+@@ -758,7 +891,7 @@ static ssize_t omap_sr_vdd2_autocomp_store(struct kset *subsys,
  	return n;
  }
  
@@ -763,7 +861,7 @@ index dae7460..253369b 100644
  	.attr = {
  	.name = __stringify(sr_vdd2_autocomp),
  	.mode = 0644,
-@@ -774,15 +855,19 @@ static int __init omap3_sr_init(void)
+@@ -774,15 +907,19 @@ static int __init omap3_sr_init(void)
  	int ret = 0;
  	u8 RdReg;
  
@@ -792,7 +890,7 @@ index dae7460..253369b 100644
  
  	/* Call the VPConfig, VCConfig, set N Values. */
  	sr_set_nvalues(&sr1);
-@@ -794,22 +879,24 @@ static int __init omap3_sr_init(void)
+@@ -794,22 +931,24 @@ static int __init omap3_sr_init(void)
  	sr_configure_vc();
  
  	/* Enable SR on T2 */
@@ -826,10 +924,21 @@ index dae7460..253369b 100644
 -arch_initcall(omap3_sr_init);
 +late_initcall(omap3_sr_init);
 diff --git a/arch/arm/mach-omap2/smartreflex.h b/arch/arm/mach-omap2/smartreflex.h
-index 2091a15..d7ccd46 100644
+index 2091a15..194429e 100644
 --- a/arch/arm/mach-omap2/smartreflex.h
 +++ b/arch/arm/mach-omap2/smartreflex.h
-@@ -238,7 +238,7 @@ extern u32 current_vdd2_opp;
+@@ -233,12 +233,18 @@
+ extern u32 current_vdd1_opp;
+ extern u32 current_vdd2_opp;
+ 
++#ifdef CONFIG_OMAP_SMARTREFLEX_TESTING
++#define SR_TESTING_NVALUES 	1
++#else
++#define SR_TESTING_NVALUES 	0
++#endif
++
+ /*
+  * Smartreflex module enable/disable interface.
   * NOTE: if smartreflex is not enabled from sysfs, these functions will not
   * do anything.
   */
@@ -838,11 +947,19 @@ index 2091a15..d7ccd46 100644
  void enable_smartreflex(int srid);
  void disable_smartreflex(int srid);
  #else
+@@ -246,7 +252,6 @@ static inline void enable_smartreflex(int srid) {}
+ static inline void disable_smartreflex(int srid) {}
+ #endif
+ 
+-
+ #endif
+ 
+ 
 diff --git a/arch/arm/plat-omap/Kconfig b/arch/arm/plat-omap/Kconfig
-index b085b07..53745ce 100644
+index b085b07..960c13f 100644
 --- a/arch/arm/plat-omap/Kconfig
 +++ b/arch/arm/plat-omap/Kconfig
-@@ -56,6 +56,23 @@ config OMAP_DEBUG_CLOCKDOMAIN
+@@ -56,6 +56,37 @@ config OMAP_DEBUG_CLOCKDOMAIN
  	  for every clockdomain register write.  However, the
  	  extra detail costs some memory.
  
@@ -862,6 +979,20 @@ index b085b07..53745ce 100644
 +	  initialized. To enable the automatic voltage
 +	  compensation for VDD1 and VDD2, user must write 1 to
 +	  /sys/power/sr_vddX_autocomp, where X is 1 or 2.
++
++config OMAP_SMARTREFLEX_TESTING
++	bool "Smartreflex testing support"
++	depends on OMAP_SMARTREFLEX
++	default n
++	help
++	  Say Y if you want to enable SmartReflex testing with SW hardcoded
++	  NVALUES intead of E-fuse NVALUES set in factory silicon testing.
++
++	  In some devices the E-fuse values have not been set, even though
++	  SmartReflex modules are included. Using these hardcoded values set
++	  in software, one can test the SmartReflex features without E-fuse.
++
++	  WARNING: Enabling this option may cause your device to hang!
 +
  config OMAP_RESET_CLOCKS
  	bool "Reset unused clocks during boot"

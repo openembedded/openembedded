@@ -2,19 +2,19 @@ From: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 To: linux-omap@vger.kernel.org
 Cc: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 Subject: [PATCH 2/3] ARM: OMAP: SmartReflex driver: added required register and bit definitions.
-Date: 	Fri, 30 May 2008 17:12:26 +0300
+Date: 	Fri,  6 Jun 2008 12:49:48 +0300
 
 Added new register and bit definitions to enable Smartreflex driver integration.
 Also PRM_VC_SMPS_SA bit definitions' naming was changed to match the naming of
 other similar bit definitions.
 
-
 Signed-off-by: Kalle Jokiniemi <ext-kalle.jokiniemi@nokia.com>
 ---
  arch/arm/mach-omap2/prm-regbits-34xx.h |   27 ++++++--
  arch/arm/mach-omap2/smartreflex.h      |  124 ++++++++++++++++++++++++++++++-
+ include/asm-arm/arch-omap/control.h    |   19 +++++
  include/asm-arm/arch-omap/omap34xx.h   |    2 +
- 3 files changed, 144 insertions(+), 9 deletions(-)
+ 4 files changed, 163 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/prm-regbits-34xx.h b/arch/arm/mach-omap2/prm-regbits-34xx.h
 index c6a7940..f82b5a7 100644
@@ -224,6 +224,43 @@ index 62907ef..2091a15 100644
 +#endif
 +
  
+diff --git a/include/asm-arm/arch-omap/control.h b/include/asm-arm/arch-omap/control.h
+index 12bc22a..6e64fe7 100644
+--- a/include/asm-arm/arch-omap/control.h
++++ b/include/asm-arm/arch-omap/control.h
+@@ -138,6 +138,15 @@
+ #define OMAP343X_CONTROL_TEST_KEY_11	(OMAP2_CONTROL_GENERAL + 0x00f4)
+ #define OMAP343X_CONTROL_TEST_KEY_12	(OMAP2_CONTROL_GENERAL + 0x00f8)
+ #define OMAP343X_CONTROL_TEST_KEY_13	(OMAP2_CONTROL_GENERAL + 0x00fc)
++#define OMAP343X_CONTROL_FUSE_OPP1_VDD1	(OMAP2_CONTROL_GENERAL + 0x0110)
++#define OMAP343X_CONTROL_FUSE_OPP2_VDD1	(OMAP2_CONTROL_GENERAL + 0x0114)
++#define OMAP343X_CONTROL_FUSE_OPP3_VDD1	(OMAP2_CONTROL_GENERAL + 0x0118)
++#define OMAP343X_CONTROL_FUSE_OPP4_VDD1	(OMAP2_CONTROL_GENERAL + 0x011c)
++#define OMAP343X_CONTROL_FUSE_OPP5_VDD1	(OMAP2_CONTROL_GENERAL + 0x0120)
++#define OMAP343X_CONTROL_FUSE_OPP1_VDD2	(OMAP2_CONTROL_GENERAL + 0x0124)
++#define OMAP343X_CONTROL_FUSE_OPP2_VDD2	(OMAP2_CONTROL_GENERAL + 0x0128)
++#define OMAP343X_CONTROL_FUSE_OPP3_VDD2	(OMAP2_CONTROL_GENERAL + 0x012c)
++#define OMAP343X_CONTROL_FUSE_SR	(OMAP2_CONTROL_GENERAL + 0x0130)
+ #define OMAP343X_CONTROL_IVA2_BOOTADDR	(OMAP2_CONTROL_GENERAL + 0x0190)
+ #define OMAP343X_CONTROL_IVA2_BOOTMOD	(OMAP2_CONTROL_GENERAL + 0x0194)
+ #define OMAP343X_CONTROL_TEMP_SENSOR	(OMAP2_CONTROL_GENERAL + 0x02b4)
+@@ -172,6 +181,16 @@
+ #define OMAP2_SYSBOOT_1_MASK		(1 << 1)
+ #define OMAP2_SYSBOOT_0_MASK		(1 << 0)
+ 
++/* CONTROL_FUSE_SR bits */
++#define OMAP343X_SR2_SENNENABLE_MASK	(0x3 << 10)
++#define OMAP343X_SR2_SENNENABLE_SHIFT	10
++#define OMAP343X_SR2_SENPENABLE_MASK	(0x3 << 8)
++#define OMAP343X_SR2_SENPENABLE_SHIFT	8
++#define OMAP343X_SR1_SENNENABLE_MASK	(0x3 << 2)
++#define OMAP343X_SR1_SENNENABLE_SHIFT	2
++#define OMAP343X_SR1_SENPENABLE_MASK	(0x3 << 0)
++#define OMAP343X_SR1_SENPENABLE_SHIFT	0
++
+ #ifndef __ASSEMBLY__
+ #if defined(CONFIG_ARCH_OMAP2) || defined(CONFIG_ARCH_OMAP3)
+ extern void __iomem *omap_ctrl_base_get(void);
 diff --git a/include/asm-arm/arch-omap/omap34xx.h b/include/asm-arm/arch-omap/omap34xx.h
 index 6a0459a..3667fd6 100644
 --- a/include/asm-arm/arch-omap/omap34xx.h
@@ -239,4 +276,3 @@ index 6a0459a..3667fd6 100644
  #if defined(CONFIG_ARCH_OMAP3430)
 -- 
 1.5.4.3
-
