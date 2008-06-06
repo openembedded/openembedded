@@ -3,7 +3,7 @@ SECTION = "base"
 RDEPENDS = "initscripts console-tools"
 LICENSE = "GPL"
 PACKAGE_ARCH = "${MACHINE}"
-PR = "r18"
+PR = "r19"
 
 inherit update-rc.d
 
