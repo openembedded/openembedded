@@ -5,7 +5,7 @@ SRC_URI += "\
   file://SimpleName.diff;patch=1;pnum=0 \
   "
 
-PR = "r1"
+PR = "r0"
 
 PROVIDES = "${PN} classpath"
 

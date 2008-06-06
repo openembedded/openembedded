@@ -1,10 +1,7 @@
 Index: java/net/NetworkInterface.java
 ===================================================================
-RCS file: /sources/classpath/classpath/java/net/NetworkInterface.java,v
-retrieving revision 1.23
-diff -u -r1.23 NetworkInterface.java
---- java/net/NetworkInterface.java	18 Dec 2006 21:37:39 -0000	1.23
-+++ java/net/NetworkInterface.java	21 Apr 2008 10:38:25 -0000
+--- java/net/NetworkInterface.java.orig	2006-12-18 22:37:39.000000000 +0100
++++ java/net/NetworkInterface.java	2008-06-06 14:00:44.000000000 +0200
 @@ -1,5 +1,5 @@
  /* NetworkInterface.java --
 -   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
@@ -65,11 +62,8 @@ diff -u -r1.23 NetworkInterface.java
  }
 Index: vm/reference/java/net/VMNetworkInterface.java
 ===================================================================
-RCS file: /sources/classpath/classpath/vm/reference/java/net/VMNetworkInterface.java,v
-retrieving revision 1.7
-diff -u -r1.7 VMNetworkInterface.java
---- vm/reference/java/net/VMNetworkInterface.java	18 Dec 2006 21:37:39 -0000	1.7
-+++ vm/reference/java/net/VMNetworkInterface.java	21 Apr 2008 10:38:25 -0000
+--- vm/reference/java/net/VMNetworkInterface.java.orig	2006-12-18 22:37:39.000000000 +0100
++++ vm/reference/java/net/VMNetworkInterface.java	2008-06-06 14:00:44.000000000 +0200
 @@ -1,5 +1,5 @@
  /* VMNetworkInterface.java --
 -   Copyright (C) 2005  Free Software Foundation, Inc.
@@ -93,11 +87,8 @@ diff -u -r1.7 VMNetworkInterface.java
  }
 Index: native/jni/java-net/java_net_VMNetworkInterface.c
 ===================================================================
-RCS file: /sources/classpath/classpath/native/jni/java-net/java_net_VMNetworkInterface.c,v
-retrieving revision 1.6
-diff -u -r1.6 java_net_VMNetworkInterface.c
---- native/jni/java-net/java_net_VMNetworkInterface.c	5 Apr 2007 12:34:19 -0000	1.6
-+++ native/jni/java-net/java_net_VMNetworkInterface.c	21 Apr 2008 10:38:25 -0000
+--- native/jni/java-net/java_net_VMNetworkInterface.c.orig	2007-04-05 14:34:19.000000000 +0200
++++ native/jni/java-net/java_net_VMNetworkInterface.c	2008-06-06 14:00:44.000000000 +0200
 @@ -1,5 +1,5 @@
  /* VMNetworkInterface.c - Native methods for NetworkInterface class
 -   Copyright (C) 2003, 2005, 2006  Free Software Foundation, Inc.
@@ -261,3 +252,18 @@ diff -u -r1.6 java_net_VMNetworkInterface.c
 +}
 +
  /* end of file */
+Index: include/java_net_VMNetworkInterface.h
+===================================================================
+--- include/java_net_VMNetworkInterface.h.orig	2008-06-06 14:21:27.000000000 +0200
++++ include/java_net_VMNetworkInterface.h	2008-06-06 14:22:12.000000000 +0200
+@@ -12,6 +12,10 @@
+ 
+ JNIEXPORT void JNICALL Java_java_net_VMNetworkInterface_initIds (JNIEnv *env, jclass);
+ JNIEXPORT jobjectArray JNICALL Java_java_net_VMNetworkInterface_getVMInterfaces (JNIEnv *env, jclass);
++JNIEXPORT jboolean JNICALL Java_java_net_VMNetworkInterface_isUp (JNIEnv *env, jclass, jstring);
++JNIEXPORT jboolean JNICALL Java_java_net_VMNetworkInterface_isLoopback (JNIEnv *env, jclass, jstring);
++JNIEXPORT jboolean JNICALL Java_java_net_VMNetworkInterface_isPointToPoint (JNIEnv *env, jclass, jstring);
++JNIEXPORT jboolean JNICALL Java_java_net_VMNetworkInterface_supportsMulticast (JNIEnv *env, jclass, jstring);
+ 
+ #ifdef __cplusplus
+ }
