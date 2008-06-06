@@ -1,0 +1,22 @@
+http://cvs.pld-linux.org/cgi-bin/cvsweb.cgi/SOURCES/Attic/autoconf-sh.patch?rev=1.1;content-type=text%2Fplain
+
+Index: tests/wrapper.in
+===================================================================
+RCS file: /cvsroot/autoconf/autoconf/tests/wrapper.in,v
+retrieving revision 1.4
+diff -u -u -r1.4 wrapper.in
+--- autoconf-2.59/tests/wrapper.in 25 Sep 2003 09:30:35 -0000 1.4
++++ autoconf-2.59/tests/wrapper.in 19 Nov 2003 13:17:11 -0000
+@@ -13,9 +13,10 @@
+ elif test -n "${BASH_VERSION+set}" && (set -o posix) >/dev/null 2>&1; then
+   set -o posix
+ fi
++DUALCASE=1; export DUALCASE # for MKS sh
+ 
+ # Support unset when possible.
+-if ((MAIL=60; unset MAIL) || exit) >/dev/null 2>&1; then
++if ( (MAIL=60; unset MAIL) || exit) >/dev/null 2>&1; then
+   as_unset=unset
+ else
+   as_unset=false
+
