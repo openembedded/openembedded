@@ -20,6 +20,8 @@ CMDLINE_append = " ${CMDLINE_DEBUG} "
 
 # Support for binary device tree generation
 
+FILES_kernel-devicetree = "/boot/devicetree*"
+
 KERNEL_DEVICETREE_mpc8313e-rdb = "arch/${ARCH}/boot/dts/mpc8313erdb.dts"
 KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb.dts"
 KERNEL_DEVICETREE_mpc8323e-rdb = "arch/${ARCH}/boot/dts/mpc832x_rdb.dts"
@@ -35,8 +37,9 @@ python __anonymous () {
     devicetree = bb.data.getVar('KERNEL_DEVICETREE', d, 1) or ''
     if devicetree:
     	depends = bb.data.getVar("DEPENDS", d, 1)
-    	depends = "%s dtc-native" % depends
-    	bb.data.setVar("DEPENDS", depends, d)
+    	bb.data.setVar("DEPENDS", "%s dtc-native" % depends, d)
+    	packages = bb.data.getVar("PACKAGES", d, 1)
+    	bb.data.setVar("PACKAGES", "%s kernel-devicetree" % packages, d)
 }
 
 do_configure_prepend() {
@@ -128,13 +131,14 @@ do_compile_append() {
 }
 
 do_devicetree_image() {
-        if test -n "${KERNEL_DEVICETREE}" ; then
-            dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_DEVICETREE}
-
-            cd ${DEPLOY_DIR_IMAGE}
-            rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-            ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
-        fi
+    if test -n "${KERNEL_DEVICETREE}" ; then
+        dtc -I dts -O dtb ${KERNEL_DEVICETREE_FLAGS} -o devicetree ${KERNEL_DEVICETREE}
+        install -m 0644 devicetree ${D}/boot/devicetree-${KERNEL_VERSION}
+        install -m 0644 devicetree ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.dtb
+        cd ${DEPLOY_DIR_IMAGE}
+        rm -f ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+        ln -sf ${KERNEL_IMAGE_BASE_NAME}.dtb ${KERNEL_IMAGE_SYMLINK_NAME}.dtb
+    fi
 }
 
 addtask devicetree_image after do_deploy before do_package
