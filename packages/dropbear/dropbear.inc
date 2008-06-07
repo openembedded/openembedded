@@ -6,19 +6,21 @@ DEPENDS = "zlib"
 PROVIDES = "ssh sshd"
 RPROVIDES = "ssh sshd"
 
-SRC_URI = "http://matt.ucc.asn.au/dropbear/releases/dropbear-${PV}.tar.gz \
-	   file://urandom-xauth-changes-to-options.h.patch;patch=1 \
-	   file://configure.patch;patch=1 \
-	   file://fix-2kb-keys.patch;patch=1 \
-	   file://allow-nopw.patch \
-	   file://init"
+SRC_URI = "\
+  http://matt.ucc.asn.au/dropbear/dropbear-${PV}.tar.bz2 \
+  file://urandom-xauth-changes-to-options.h.patch;patch=1 \
+  file://configure.patch;patch=1 \
+  file://fix-2kb-keys.patch;patch=1 \
+  file://allow-nopw.patch \
+  file://init \
+"
 
 inherit autotools update-rc.d
 
 INITSCRIPT_NAME = "dropbear"
 INITSCRIPT_PARAMS = "defaults 10"
 
-CFLAGS_prepend = " -I. "
+CFLAGS =+ "-I."
 LD = "${CC}"
 
 SBINCOMMANDS = "dropbear dropbearkey dropbearconvert"
@@ -33,13 +35,13 @@ do_configure_prepend() {
 }
 
 do_install() {
-	install -d ${D}${sysconfdir} \
-		   ${D}${sysconfdir}/init.d \
-		   ${D}${sysconfdir}/default \
-		   ${D}${sysconfdir}/dropbear \
-                   ${D}${bindir} \
-		   ${D}${sbindir} \
-		   ${D}${localstatedir}
+	install -d ${D}${sysconfdir}
+	install -d ${D}${sysconfdir}/init.d
+	install -d ${D}${sysconfdir}/default
+	install -d ${D}${sysconfdir}/dropbear
+	install -d ${D}${bindir}
+	install -d ${D}${sbindir}
+	install -d ${D}${localstatedir}
 
 	install -m 0755 dropbearmulti ${D}${sbindir}/
 	ln -s ${sbindir}/dropbearmulti ${D}${bindir}/dbclient
@@ -62,12 +64,12 @@ pkg_postinst () {
 }
 
 pkg_postrm_append () {
-  if [ -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
-        rm ${sysconfdir}/dropbear/dropbear_rsa_host_key
-  fi
-  if [ -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
-        rm ${sysconfdir}/dropbear/dropbear_dss_host_key
-  fi
-  update-alternatives --remove ssh ${bindir}/dropbearmulti
-  update-alternatives --remove scp ${bindir}/dropbearmulti
+	if [ -f "${sysconfdir}/dropbear/dropbear_rsa_host_key" ]; then
+		rm ${sysconfdir}/dropbear/dropbear_rsa_host_key
+	fi
+	if [ -f "${sysconfdir}/dropbear/dropbear_dss_host_key" ]; then
+		rm ${sysconfdir}/dropbear/dropbear_dss_host_key
+	fi
+	update-alternatives --remove ssh ${bindir}/dropbearmulti
+	update-alternatives --remove scp ${bindir}/dropbearmulti
 }
