@@ -8,7 +8,7 @@ LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
 RV = "1.0-0"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = " \
     http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
@@ -17,6 +17,7 @@ SRC_URI = " \
     file://getpagesize.patch;patch=1 \
     file://fix-includes.patch;patch=1 \
     file://mkdfiff.patch;patch=1 \
+    file://dont-use-linux-config.patch;patch=1 \
 "
 S = "${WORKDIR}/DirectFB-${PV}"
 
