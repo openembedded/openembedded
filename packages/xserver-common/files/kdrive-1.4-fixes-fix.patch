@@ -1,0 +1,22 @@
+--- /tmp/12keymap	2008-06-07 12:24:24.425525517 +0200
++++ xserver-common-1.22/X11/Xinit.d/12keymap	2008-06-07 12:27:35.152175933 +0200
+@@ -2,9 +2,6 @@
+ 
+ MACHINE=`awk 'BEGIN { FS=": " } /Hardware/ { print $2 } ' </proc/cpuinfo`
+ 
+-# since kdrive 1.4 there is no default keymap in server
+-xmodmap - </etc/X11/default.xmodmap
+-
+ case $MACHINE in
+ 	"SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
+ 		xmodmap - < /etc/X11/shepherd.xmodmap
+@@ -28,5 +25,9 @@
+ 	"Simpad" | "HP iPAQ"* | "Asus MyPal"*)
+ 		xmodmap - < /etc/X11/keyboardless.xmodmap
+ 		;;
++	*)
++		# since kdrive 1.4 there is no default keymap in server
++		xmodmap - </etc/X11/default.xmodmap
++		;;
+ esac
+ 
