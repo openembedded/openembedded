@@ -1,5 +1,5 @@
 require qte-common_${PV}.inc
-PR = "r26"
+PR = "r27"
 
 EXTRA_OECONF += "-thread"
 
