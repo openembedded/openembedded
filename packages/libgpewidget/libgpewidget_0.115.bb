@@ -2,8 +2,8 @@ LICENSE     = "LGPL"
 DESCRIPTION = "libgpewidget contains a collection of widgets and other common code shared by many GPE applications."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
-DEPENDS     = "gtk+ cairo libxrender gtk-doc"
-PR          = "r0"
+DEPENDS     = "gtk+ cairo libxinerama libxrender gtk-doc"
+PR          = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpe pkgconfig autotools
