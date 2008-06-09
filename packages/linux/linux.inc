@@ -142,3 +142,12 @@ do_devicetree_image() {
 }
 
 addtask devicetree_image after do_deploy before do_package
+
+pkg_postinst_kernel-devicetree () {
+	cd /${KERNEL_IMAGEDEST}; update-alternatives --install /${KERNEL_IMAGEDEST}/devicetree devicetree devicetree-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+}
+
+pkg_postrm_kernel-devicetree () {
+	cd /${KERNEL_IMAGEDEST}; update-alternatives --remove devicetree devicetree-${KERNEL_VERSION} || true
+}
+
