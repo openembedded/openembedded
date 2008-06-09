@@ -8,10 +8,7 @@ PV = "0.2.3+gitr${SRCREV}"
 PR = "r12"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
-           file://disable-docbook2man.patch;patch=1 \
-           file://01_d1e096c3267c1c9492041382b954e9327bc8bbec.patch;patch=1 \
-           file://02_9ced8313fb12f0f89ad6ced7c0fdc7241ff00d77.patch;patch=1 \
-           file://03_group_infomation.patch;patch=1"
+           file://disable-docbook2man.patch;patch=1"
 
 
 
