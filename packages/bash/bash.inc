@@ -12,11 +12,17 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 EXTRA_OECONF = "--with-ncurses"
-export CC_FOR_BUILD = "${BUILD_CC}"
+export RM="echo"
 
 do_configure () {
 	gnu-configize
 	oe_runconf
+}
+
+do_compile_prepend() {
+	cd builtins
+	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} -I${S}/include -I${S} -o mkbuiltins mkbuiltins.c
+	cd ${S}
 }
 
 pkg_postinst () {
