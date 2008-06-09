@@ -2,7 +2,8 @@ require bash.inc
 
 PR = "r5"
 
-SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz \
+SRC_URI += "\
+           file://builtins.patch;patch=1 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-001;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-002;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-003;patch=1;pnum=0 \

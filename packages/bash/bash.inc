@@ -8,11 +8,13 @@ inherit autotools gettext
 
 PARALLEL_MAKE = ""
 
+SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz"
+S = "${WORKDIR}/bash-${PV}"
+
 bindir = "/bin"
 sbindir = "/sbin"
 
 EXTRA_OECONF = "--with-ncurses"
-export RM="echo"
 
 do_configure () {
 	gnu-configize
