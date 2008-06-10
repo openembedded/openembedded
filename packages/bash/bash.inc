@@ -23,6 +23,7 @@ do_configure () {
 
 do_compile_prepend() {
 	cd builtins
+	touch mkbuiltins.o
 	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} -I${S}/include -I${S} -o mkbuiltins mkbuiltins.c
 	cd ${S}
 }
