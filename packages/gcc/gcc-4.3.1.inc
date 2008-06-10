@@ -18,9 +18,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-cpp-pragma.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-java-debug-iface-type.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-libgomp-speedup.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-pr35440.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-i386-libgomp.patch;patch=1;pnum=0 \
-	file://fedora/gcc43-pr35751.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-rh251682.patch;patch=1;pnum=0 \
         file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
 	file://debian/libstdc++-pic.dpatch;patch=1;pnum=0 \
