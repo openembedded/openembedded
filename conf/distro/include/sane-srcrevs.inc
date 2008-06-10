@@ -12,6 +12,7 @@
 # you know what that means? like... a, b, c, d, e, f, g...
 
 SRCREV_pn-aircrack-ng ?= "802"
+SRCREV_pn-alsa-scenario ?= "633aaccc37f845146e490090dbd2a1ebb8064fd6"
 SRCREV_pn-assassin ?= "93"
 SRCREV_pn-bfin-uclibc ?= "1857"
 SRCREV_pn-uclibc ?= "21996"
