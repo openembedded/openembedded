@@ -10,7 +10,7 @@ RRECOMMENDS_alsa-state = "alsa-states"
 RRECOMMENDS_${PN}_om-gta01 = "openmoko-alsa-scenarios"
 RRECOMMENDS_${PN}_om-gta02 = "openmoko-alsa-scenarios"
 PV = "0.1.0"
-PR = "r16"
+PR = "r17"
 
 SRC_URI = " \
   file://asoundrc \

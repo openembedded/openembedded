@@ -1,7 +1,7 @@
 require pulse.inc
 
 DEPENDS += "dbus"
-PR = "r1"
+PR = "r2"
 
 # this is not correct (see below)
 SRC_URI += "\

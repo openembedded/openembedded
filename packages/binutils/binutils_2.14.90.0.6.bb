@@ -1,7 +1,7 @@
 SECTION = "devel"
 inherit autotools gettext
 
-PR = "r4"
+PR = "r5"
 
 DESCRIPTION = "A GNU collection of binary utilities"
 HOMEPAGE = "http://www.gnu.org/software/binutils/"

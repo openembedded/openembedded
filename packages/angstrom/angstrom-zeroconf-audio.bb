@@ -13,7 +13,7 @@ RDEPENDS = " \
   pulseaudio-module-zeroconf-publish \
 "
 
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}"
 
