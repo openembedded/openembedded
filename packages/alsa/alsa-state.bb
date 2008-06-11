@@ -6,9 +6,6 @@
 
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
-RRECOMMENDS_alsa-state = "alsa-states"
-RRECOMMENDS_${PN}_om-gta01 = "openmoko-alsa-scenarios"
-RRECOMMENDS_${PN}_om-gta02 = "openmoko-alsa-scenarios"
 PV = "0.1.0"
 PR = "r18"
 
@@ -27,11 +24,15 @@ do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/alsa-state ${D}${sysconfdir}/init.d
 
-	install -m 0644 ${WORKDIR}/asoundrc ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/asound.conf ${D}${sysconfdir}
 	install -m 0644 ${WORKDIR}/*.state ${D}${sysconfdir}
 }
 
 PACKAGES += "alsa-states"
+
+RRECOMMENDS_alsa-state = "alsa-states"
+RRECOMMENDS_${PN}_om-gta01 = "openmoko-alsa-scenarios"
+RRECOMMENDS_${PN}_om-gta02 = "openmoko-alsa-scenarios"
 
 FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asound.conf"
 CONFFILES_${PN} = "${sysconfdir}/asound.conf"
