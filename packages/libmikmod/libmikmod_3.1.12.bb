@@ -2,10 +2,11 @@ DESCRIPTION = "libmikmod is a module player library supporting many formats, inc
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/mikmod/libmikmod-${PV}.tar.gz \
+  file://m4.patch;patch=1 \
   file://autofoo.patch;patch=1 \
 "
 
