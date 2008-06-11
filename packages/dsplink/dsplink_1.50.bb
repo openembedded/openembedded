@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r0"
+PR = "r1"
 PE = "1"
 PV = "1.50"
 

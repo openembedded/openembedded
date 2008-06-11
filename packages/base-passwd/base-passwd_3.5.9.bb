@@ -1,6 +1,6 @@
 DESCRIPTION = "Base system password/group files."
 SECTION = "base"
-PR = "r2"
+PR = "r3"
 LICENSE = "GPL"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \

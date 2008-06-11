@@ -1,3 +1,3 @@
 require avahi.inc
 
-PR = "r7"
+PR = "r8"

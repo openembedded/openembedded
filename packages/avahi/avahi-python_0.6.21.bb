@@ -1,6 +1,6 @@
 require avahi.inc
 
-PR = "r6"
+PR = "r7"
 
 # FIXME: without --enable-gtk, avahi-discover (pygtk) won't be built
 FILES_avahi-discover = ""
