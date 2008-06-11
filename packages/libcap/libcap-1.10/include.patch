@@ -1,0 +1,13 @@
+Index: libcap-1.10/Make.Rules
+===================================================================
+--- libcap-1.10.orig/Make.Rules	2008-06-09 20:55:01.000000000 +0200
++++ libcap-1.10/Make.Rules	2008-06-09 20:56:03.000000000 +0200
+@@ -59,7 +59,7 @@
+ 
+ # Flags to pass down recursive makes
+ 
+-MAKE_DEFS = CC='$(CC)' CFLAGS='$(CFLAGS)' \
++MAKE_DEFS = CC='$(CC)' CFLAGS='$(CFLAGS) $(IPATH)' \
+ 	LD='$(LD)' LIBS='$(LIBS)' LDFLAGS='$(LDFLAGS)' \
+ 	VERSION='$(VERSION)' MINOR='$(MINOR)' \
+ 	LIBDIR='$(LIBDIR)' INCDIR='$(INCDIR)' \
