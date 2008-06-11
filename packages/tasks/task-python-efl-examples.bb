@@ -6,9 +6,10 @@ RDEPENDS = "\
   python-ecore-examples \
   python-emotion-examples \
   python-edje-examples \
+  python-etk-examples \
   python-epsilon-examples \
   python-math python-textutils \
 "
-PR = "ml3"
+PR = "ml4"
 
 ALLOW_EMPTY = "1"
