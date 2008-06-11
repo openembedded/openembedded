@@ -37,8 +37,11 @@ X_INSTALL = "\
 
 # useful command line tools
 TOOLS_INSTALL = "\
+  alsa-utils-aplay \
+#  bash \
   htop \
   mickeyterm \
+  mplayer \
   nano \
   powertop \
   s3c24xx-gpio \
@@ -46,8 +49,9 @@ TOOLS_INSTALL = "\
 
 # audio
 AUDIO_INSTALL = "\
-  openmoko-sound-system2 \
+  pulseaudio-meta \
   openmoko-sound-theme-standard2 \
+  gst-meta-audio \
 "
 
 AUDIO_INSTALL_append_om-gta01 = "\
@@ -91,6 +95,7 @@ mickey_rootfs_postprocess() {
     date "+%m%d%H%M%Y" >./etc/timestamp
     echo "alias pico=nano" >>./etc/profile
     echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
+    echo "alias ipkg='opkg'" >>./etc/profile
     mkdir -p ./local/pkg
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
