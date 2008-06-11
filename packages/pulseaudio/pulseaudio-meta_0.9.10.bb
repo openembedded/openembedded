@@ -11,16 +11,21 @@ RDEPENDS = "\
   pulseaudio-module-cli-protocol-unix \
   pulseaudio-module-suspend-on-idle \
   gst-plugin-pulse \
+  libasound-module-ctl-pulse \
+  libasound-module-pcm-pulse \
 "
-PR = "r0"
+PR = "r1"
 
 inherit update-rc.d
 
 INITSCRIPT_NAME = "pulseaudio"
 INITSCRIPT_PARAMS = "defaults 35"
 
-SRC_URI = "file://pulseaudio \
-           file://session"
+SRC_URI = "\
+  file://pulseaudio \
+  file://session \
+  file://asound.conf \
+"
 S = "${WORKDIR}"
 
 do_install() {
@@ -28,6 +33,12 @@ do_install() {
     install -m 0755 ${WORKDIR}/pulseaudio ${D}/${sysconfdir}/init.d/
     install -d ${D}/${sysconfdir}/pulse
 	install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/pulse/session
+	install -m 0644 ${WORKDIR}/asound.conf ${D}/${sysconfdir}
 }
 
 PACKAGE_ARCH = "all"
+
+CONFFILES_${PN} = "\
+  ${sysconfdir}/pulse/session \
+  ${sysconfdir}/asound.conf \
+"
