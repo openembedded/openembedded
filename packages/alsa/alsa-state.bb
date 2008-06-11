@@ -10,13 +10,13 @@ RRECOMMENDS_alsa-state = "alsa-states"
 RRECOMMENDS_${PN}_om-gta01 = "openmoko-alsa-scenarios"
 RRECOMMENDS_${PN}_om-gta02 = "openmoko-alsa-scenarios"
 PV = "0.1.0"
-PR = "r17"
+PR = "r18"
 
-SRC_URI = " \
-  file://asoundrc \
+SRC_URI = "\
+  file://asound.conf \
   file://asound.state \
-  file://alsa-state "
-
+  file://alsa-state \
+"
 
 inherit update-rc.d
 
@@ -32,8 +32,12 @@ do_install() {
 }
 
 PACKAGES += "alsa-states"
-FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asoundrc"
+
+FILES_${PN} = "${sysconfdir}/init.d ${sysconfdir}/asound.conf"
+CONFFILES_${PN} = "${sysconfdir}/asound.conf"
+
 FILES_alsa-states = "${sysconfdir}/*.state"
+
 PACKAGE_ARCH_${PN} = "all"
 PACKAGE_ARCH_alsa-states = "${MACHINE_ARCH}"
 
@@ -46,4 +50,3 @@ pkg_postinst_${PN}() {
 		fi
 	fi
 }
-
