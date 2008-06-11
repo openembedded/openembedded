@@ -1,0 +1,13 @@
+Index: dvdauthor-0.6.14/src/subfont.c
+===================================================================
+--- dvdauthor-0.6.14.orig/src/subfont.c	2008-04-08 23:58:04.000000000 +0200
++++ dvdauthor-0.6.14/src/subfont.c	2008-04-08 23:56:50.000000000 +0200
+@@ -557,7 +557,7 @@
+ 	desc->font[c] = -1;
+ 	return;
+     }
+-    if( oglyph->format != FT_GLYPH_FORMAT_BITMAP ) {
++    if( oglyph->format != ft_glyph_format_bitmap ) {
+         WARNING("FT_Get_Glyph did not return a bitmap glyph.");
+         desc->font[c] = -1;
+         return;

@@ -1,0 +1,21 @@
+Index: dvdauthor-0.6.14/configure.ac
+===================================================================
+--- dvdauthor-0.6.14.orig/configure.ac	2008-04-08 23:57:39.000000000 +0200
++++ dvdauthor-0.6.14/configure.ac	2008-04-08 23:56:53.000000000 +0200
+@@ -57,12 +57,10 @@
+ AC_SUBST(MAGICK_CPPFLAGS)
+ AC_SUBST(MAGICK_LIBS)
+ 
+-AC_CHECK_PROGS(FRIBIDICONFIG, [fribidi-config])
+-if test -n "$FRIBIDICONFIG"; then
+-   FRIBIDI_CPPFLAGS="`$FRIBIDICONFIG --cflags`"
+-   FRIBIDI_LIBS="`$FRIBIDICONFIG --libs`"
+-   AC_DEFINE(HAVE_FRIBIDI, 1, [Whether FriBiDi is available])
+-fi
++PKG_CHECK_MODULES(FRIBIDI, fribidi)
++AC_SUBST(FRIBIDI_CFLAGS)
++AC_SUBST(FRIBIDI_LIBS)
++AC_DEFINE(HAVE_FRIBIDI, 1, [Whether FriBiDi is available])
+ 
+ AC_SUBST(FRIBIDI_CPPFLAGS)
+ AC_SUBST(FRIBIDI_LIBS)
