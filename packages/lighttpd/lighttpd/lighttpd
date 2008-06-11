@@ -1,16 +1,15 @@
 #!/bin/sh
-#
 
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/lighttpd
 NAME=lighttpd
 DESC="Lighttpd Web Server"
-
+OPTS="-f /etc/lighttpd.conf"
 
 case "$1" in
   start)
 	echo -n "Starting $DESC: "
-	start-stop-daemon --start -x "$DAEMON" --  -f /etc/lighttpd.conf
+	start-stop-daemon --start -x "$DAEMON" -- $OPTS
 	echo "$NAME."
 	;;
   stop)
@@ -20,9 +19,9 @@ case "$1" in
 	;;
   restart|force-reload)
 	echo -n "Restarting $DESC: "
-	start-stop-daemon -K -x "$DAEMON"
+	start-stop-daemon --stop -x "$DAEMON"
 	sleep 1
-	start-stop-daemon -S -x "$DAEMON"
+	start-stop-daemon --start -x "$DAEMON" -- $OPTS
 	echo "$NAME."
 	;;
   *)
