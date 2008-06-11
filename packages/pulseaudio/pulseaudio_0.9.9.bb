@@ -1,4 +1,4 @@
-require pulse.inc
+require pulseaudio.inc
 
 DEPENDS += "dbus"
 PR = "r5"
