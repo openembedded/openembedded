@@ -1,4 +1,5 @@
 SRCREV_pn-gsm0710muxd = "${AUTOREV}"
+SRCREV_pn-gsmd2 = "${AUTOREV}"
 SRCREV_pn-pygsm = "${AUTOREV}"
 SRCREV_pn-mickeyterm = "${AUTOREV}"
 SRCREV_pn-pyneod = "${AUTOREV}"

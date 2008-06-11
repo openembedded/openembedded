@@ -5,12 +5,12 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPLv2"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 inherit distutils update-rc.d
 
 INITSCRIPT_NAME = "oeventd"
-INITSCRIPT_PARAMS = "defaults 20"
+INITSCRIPT_PARAMS = "defaults 21"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/eventd.git;protocol=git;branch=master \

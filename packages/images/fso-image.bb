@@ -37,7 +37,6 @@ X_INSTALL = "\
 
 # useful command line tools
 TOOLS_INSTALL = "\
-  alsa-utils-aplay \
 #  bash \
   htop \
   mickeyterm \
@@ -49,9 +48,14 @@ TOOLS_INSTALL = "\
 
 # audio
 AUDIO_INSTALL = "\
-  pulseaudio-meta \
-  openmoko-sound-theme-standard2 \
+  alsa-oss \
+  alsa-state \
+  alsa-utils-aplay \
   gst-meta-audio \
+  gst-plugin-mad \
+  gst-plugin-modplug \
+  gst-plugin-sid \
+  openmoko-sound-theme-standard2 \
 "
 
 AUDIO_INSTALL_append_om-gta01 = "\
@@ -72,6 +76,7 @@ PYTHON_INSTALL = "\
 ZHONE_INSTALL = "\
   gsm0710muxd \
   python-odeviced \
+  python-oeventd \
   python-ophoned \
   python-ousaged \
   zhone \
