@@ -21,7 +21,7 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0002-omap3-cpuidle.patch;patch=1 \
 "
 
-COMPATIBLE_MACHINE = "omap2430sdp|omap2420h4|beagleboard"
+COMPATIBLE_MACHINE = "omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
 S = "${WORKDIR}/git"
