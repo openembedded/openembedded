@@ -1,0 +1,49 @@
+Index: madwifi-ng-r3314-20080131/ath/if_athvar.h
+===================================================================
+--- madwifi-ng-r3314-20080131.orig/ath/if_athvar.h	2008-06-12 03:19:30.000000000 +0200
++++ madwifi-ng-r3314-20080131/ath/if_athvar.h	2008-06-12 03:19:41.000000000 +0200
+@@ -522,7 +522,7 @@
+ 	atomic_t av_beacon_alloc;       /* set to 1 when the next beacon needs
+ 					   to be recomputed */
+ #else
+-	unsigned int av_beacon_alloc;
++	unsigned long av_beacon_alloc;
+ #endif
+ };
+ #define	ATH_VAP(_v)	((struct ath_vap *)(_v))
+Index: madwifi-ng-r3314-20080131/hal/public/mips1-le-elf.inc
+===================================================================
+--- madwifi-ng-r3314-20080131.orig/hal/public/mips1-le-elf.inc	2008-06-12 03:18:14.000000000 +0200
++++ madwifi-ng-r3314-20080131/hal/public/mips1-le-elf.inc	2008-06-12 03:18:34.000000000 +0200
+@@ -68,5 +68,5 @@
+ 
+ LDOPTS=	-EL
+ COPTS+=	-DAH_BYTE_ORDER=AH_LITTLE_ENDIAN
+-COPTS+=	-G 0 -EL -mno-abicalls -fno-pic -mips1 -Wa,--trap \
++COPTS+=	-G 0 -mno-abicalls -fno-pic -Wa,--trap \
+ 	-fno-strict-aliasing -fno-common -fomit-frame-pointer -mlong-calls
+Index: madwifi-ng-r3314-20080131/ath_hal/ah_os.h
+===================================================================
+--- madwifi-ng-r3314-20080131.orig/ath_hal/ah_os.h	2008-06-12 03:20:15.000000000 +0200
++++ madwifi-ng-r3314-20080131/ath_hal/ah_os.h	2008-06-12 03:22:16.000000000 +0200
+@@ -156,6 +156,11 @@
+ #endif
+ #endif				/* AH_BYTE_ORDER */
+ 
++#if LINUX_VERSION_CODE == KERNEL_VERSION(2,6,12)
++#define iowrite32 writel
++#define ioread32 readl
++#endif
++
+ /*
+  * Some big-endian architectures don't set CONFIG_GENERIC_IOMAP, but fail to
+  * implement iowrite32be and ioread32be.  Provide compatibility macros when
+@@ -169,7 +174,7 @@
+  */
+ #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,12)) && \
+ 	!defined(CONFIG_GENERIC_IOMAP) && \
+-	!defined(__mips__) && !defined(__hppa__) && !defined(__powerpc__)
++	!defined(__hppa__) && !defined(__powerpc__)
+ # ifndef iowrite32be
+ #  define iowrite32be(_val, _addr) iowrite32(swab32((_val)), (_addr))
+ # endif
