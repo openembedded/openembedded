@@ -1,0 +1,3 @@
+mjpegtools-remove-sdl-dependency.patch -p1
+mjpegtools-fix-include.patch
+mjpegtools-v4l-doesn-mean-x11.patch
