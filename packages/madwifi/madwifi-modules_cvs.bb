@@ -1,14 +1,13 @@
 DESCRIPTION = "Linux driver for 802.11a/b/g universal NIC cards using Atheros chip sets"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "Bruno Randolf <bruno.randolf@4g-systems.biz>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
 SRCDATE = "20050803"
 PV = "1.0.0+cvs${SRCDATE}"
 
-SRC_URI = "cvs://anonymous@cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"
+SRC_URI = "cvs://anonymous@madwifi.cvs.sourceforge.net/cvsroot/madwifi;module=madwifi;date=${SRCDATE}"
 
 S = "${WORKDIR}/madwifi"
 
@@ -29,7 +28,7 @@ do_compile() {
 do_install() {
 	oe_runmake DESTDIR=${D} install
 	install -d ${D}/${sbindir}
-	cd tools; 
+	cd tools;
 	oe_runmake DESTDIR=${D} BINDIR=${sbindir} install
 	install -m 755 athchans athctrl athkey ${D}/${sbindir}
 }
@@ -40,7 +39,7 @@ do_stage() {
 	install -m 0644 net80211/*.h ${STAGING_INCDIR}/madwifi/net80211/
 	install -m 0644 include/compat.h ${STAGING_INCDIR}/madwifi/include/
 	cd ${STAGING_INCDIR}/madwifi/net80211/
-	ln -s ../include/compat.h .
+	rm -f compat.h; ln -s ../include/compat.h .
 }
 
 pkg_postinst() {
@@ -51,6 +50,6 @@ else
 fi
 }
 
-PACKAGES = "madwifi-tools ${PN}"
+PACKAGES = "${PN}-dbg madwifi-tools ${PN}"
 FILES_${PN} = "/lib/modules/"
 FILES_madwifi-tools = "/usr/"

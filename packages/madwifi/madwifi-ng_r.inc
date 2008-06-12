@@ -1,24 +1,35 @@
 DESCRIPTION = "Linux driver for 802.11a/b/g universal NIC cards using Atheros chip sets"
 SECTION = "base"
 PRIORITY = "optional"
-MAINTAINER = "NSLU2 Linux <nslu2-linux@yahoogroups.com>"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-PR="r0"
+PR="r5"
 
-SRC_URI = "http://snapshots.madwifi.org/${PN}/${PN}-${PV}.tar.gz \
+WACKELF_SRC_URI = ""
+WACKELF_SRC_URI_ixp4xx = " file://20-xscale-VFP-wackelf.patch;patch=1"
+WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf.patch;patch=1"
+
+SRC_URI = "http://snapshots.madwifi.org/madwifi-trunk/${PN}-${PV}.tar.gz \
 	   file://10-xscale-be-elf-copts.patch;patch=1 \
 	   file://10-xscale-le-elf-copts.patch;patch=1 \
-	   file://10-sh4-le-elf-copts.patch;patch=1"
+           file://10-sh4-le-elf-copts.patch;patch=1 \
+	   ${WACKELF_SRC_URI}"
 
 S = "${WORKDIR}/${PN}-${PV}"
 
 inherit module-base
 
+ARCH_efika="powerpc"
+ARCH_dht-walnut="ppc"
+ARCH_magicbox="ppc"
+ARCH_sequoia="ppc"
+
 EXTRA_OEMAKE = "LDFLAGS= KERNELPATH=${STAGING_KERNEL_DIR} KERNELRELEASE=${KERNEL_VERSION} TOOLPREFIX=${TARGET_PREFIX}"
 
-EXTRA_OEMAKE_prepend_slugos = "TARGET=xscale-${ARCH_BYTE_SEX}-elf "
+EXTRA_OEMAKE_prepend_ixp4xxle = "TARGET=xscale-le-elf "
+EXTRA_OEMAKE_prepend_ixp4xxbe = "TARGET=xscale-be-elf "
+
 
 do_compile() {
 	oe_runmake all
@@ -44,6 +55,6 @@ else
 fi
 }
 
-PACKAGES = "${PN}-modules ${PN}-tools"
+PACKAGES += "${PN}-modules ${PN}-tools"
 FILES_${PN}-modules = "/lib/modules/"
 FILES_${PN}-tools = "/usr/"
