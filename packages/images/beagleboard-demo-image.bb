@@ -20,8 +20,8 @@ IMAGE_INSTALL = "\
     e-wm exhibit \
     xterm xmms epiphany-firefox-replacement \
     hicolor-icon-theme gnome-icon-theme \
-    jaaa octave nmap iperf gnuplot \
-    abiword gnumeric gimp minimo \
+    jaaa nmap iperf gnuplot \
+    abiword gnumeric gimp \
     powertop \
 "
 
