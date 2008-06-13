@@ -40,15 +40,15 @@ case "$arch" in
 	"armv4t")
 			machines="ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="davinci-dvevm gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
+			machines="davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6")	
-			machines="mx31ads nokia800 davinci-sffsdr" ;;
+			machines="mx31ads nokia800 " ;;
 	"armv7")
 			machines="" ;;
 	"armv7a")
-			machines="beagleboard" ;;
+			machines="beagleboard omap3evm " ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")
@@ -82,7 +82,7 @@ for i in `find . -name  "*.ipk"| grep $arch` ; do mkdir -p ../$archdir/base/ || 
 }
 
 do_index() {
-ipkg_tools_path="/usr/local/bin"
+ipkg_tools_path="/home/angstrom/bin"
 echo "Processing $(basename $PWD) packages...."
 
 BPWD=`pwd`
@@ -101,7 +101,7 @@ for i in ../* ; do
   if [ -d $i ]; then
       cd $i
       echo -n "building index for $i:" |sed s:\.\./::
-      ${ipkg_tools_path}/ipkg-make-index -p Packages -l Packages.filelist  -m -L ../locales  . >& /dev/null
+      ${ipkg_tools_path}/ipkg-make-index -p Packages -l Packages.filelist  -m -L ../locales  . >& /tmp/index-log
       echo " DONE"
   fi
 done
@@ -130,13 +130,13 @@ echo " DONE"
 cd ${BPWD}
 
 echo -n "Stripping source lines from Package files"
-for i in `find . -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; done
+for i in `find . -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; touch $i.sig ; done
 echo " DONE"
 }
 
 echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
- (cd ../all && ipkg-make-index -p Packages -m . >& /dev/null)
+ (cd ../all && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )  
 
 for arch in arm-oabi armv4t armv5teb armv5te armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort
