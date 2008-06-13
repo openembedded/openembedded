@@ -9,6 +9,8 @@ do_install () {
 
 do_stage () {
 	cd gcc
+	install -d ${CROSS_DIR}/bin/
+	install -d ${CROSS_DIR}/lib/
 	oe_runmake install-common install-headers install-libgcc
 	install -m 0755 xgcc ${CROSS_DIR}/bin/${TARGET_PREFIX}gcc-${PV}
 }
