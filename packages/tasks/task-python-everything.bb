@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml29"
+PR = "ml30"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -9,10 +9,8 @@ RDEPENDS = "\
 		python-constraint	\
 		python-dbus			\
 		python-dialog		\
-		python-pydirectfb		\
 		task-python-efl			\
 		task-python-efl-examples		\
-		python-pycurl		\
 		python-fam			\
 		python-fnorb		\
 		python-formencode	\
@@ -45,6 +43,8 @@ RDEPENDS = "\
 		python-pycairo		\
 		python-pychecker	\
 		python-pycodes		\
+		python-pycurl		\
+		python-pydirectfb	\
 		python-pyephem		\
 		python-pyfits		\
 		python-pyflakes		\
@@ -69,6 +69,7 @@ RDEPENDS = "\
 		python-pyweather	\
 		python-pyxml		\
 		python-pyxmlrpc		\
+		python-pyyaml		\
 		python-scapy		\
 		python-scons		\
 		python-setuptools	\
