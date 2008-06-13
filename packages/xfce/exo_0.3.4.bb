@@ -1,7 +1,9 @@
 DEPENDS = "libxfce4util xfce-mcs-manager hal liburi-perl-native python-native"
 
-inherit  xfce
-XFCE_VERSION = 4.4.1
+inherit xfce
+XFCE_VERSION = 4.4.2
+
+SRC_URI += " file://configure.patch;patch=1"
 
 # Note: Python checking is broken
 
