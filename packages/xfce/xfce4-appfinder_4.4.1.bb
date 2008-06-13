@@ -2,4 +2,7 @@
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see COPYING.MIT)
 
-require ${PN}.inc
+DESCRIPTION="XFCE Application Finder"
+SECTION = "x11"
+inherit xfce
+DEPENDS="libxfcegui4"
