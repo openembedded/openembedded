@@ -1,0 +1,46 @@
+--- u-boot.orig/board/omap3530beagle/omap3530beagle.c
++++ u-boot/board/omap3530beagle/omap3530beagle.c
+@@ -33,7 +33,7 @@
+ #include <i2c.h>
+ #include <asm/mach-types.h>
+ 
+-#include "beagle_logo_FNL_2.h"
++//#include "beagle_logo_FNL_2.h"
+ 
+ #if (CONFIG_COMMANDS & CFG_CMD_NAND) && defined(CFG_NAND_LEGACY)
+ #include <linux/mtd/nand_legacy.h>
+@@ -230,6 +230,7 @@ void s_init(void)
+ 		sdrc_init();
+ }
+ 
++#if 0
+ ushort tone[] = {
+ 	0x0ce4, 0x0ce4, 0x1985, 0x1985, 0x25A1, 0x25A1, 0x30FD, 0x30FE,
+ 	0x3B56, 0x3B55, 0x447A, 0x447A, 0x4C3B, 0x4C3C, 0x526D, 0x526C,
+@@ -457,6 +458,7 @@ int audio_init()
+ 	}
+ }
+ 
++
+ dss_init()
+ {
+ 	unsigned int i;
+@@ -586,6 +588,7 @@ dss_init()
+ 	udelay(1000);
+ 
+ }
++#endif
+ 
+ /*******************************************************
+  * Routine: misc_init_r
+@@ -618,8 +621,10 @@ int misc_init_r(void)
+         *((uint *) 0x49058094) = 0x00000506;
+         *((uint *) 0x49056094) = 0xF060F000;
+ 
++#if 0
+ 	dss_init();
+ 	audio_init();
++#endif
+ 
+ 	return (0);
+ }

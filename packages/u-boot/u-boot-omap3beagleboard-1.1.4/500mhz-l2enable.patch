@@ -1,0 +1,42 @@
+--- u-boot.orig/board/omap3530beagle/clock.c
++++ u-boot/board/omap3530beagle/clock.c
+@@ -167,7 +167,7 @@ void prcm_init(void)
+ 	/* Getting the base address of Core DPLL param table*/
+ 	dpll_param_p = (dpll_param *)get_core_dpll_param();
+ 	/* Moving it to the right sysclk and ES rev base */
+-	dpll_param_p = dpll_param_p + 2*clk_index + sil_index;
++	dpll_param_p = dpll_param_p + 3*clk_index + sil_index;
+ 	if(xip_safe){
+ 		/* CORE DPLL */
+ 		/* sr32(CM_CLKSEL2_EMU) set override to work when asleep */
+@@ -254,7 +254,7 @@ void prcm_init(void)
+ 	/* Getting the base address to MPU DPLL param table*/
+ 	dpll_param_p = (dpll_param *)get_mpu_dpll_param();
+ 	/* Moving it to the right sysclk and ES rev base */
+-	dpll_param_p = dpll_param_p + 2*clk_index + sil_index;
++	dpll_param_p = dpll_param_p + 3*clk_index + sil_index;
+ 	/* MPU DPLL (unlocked already) */
+ 	sr32(CM_CLKSEL2_PLL_MPU, 0, 5, dpll_param_p->m2);	/* Set M2 */
+ 	sr32(CM_CLKSEL1_PLL_MPU, 8, 11, dpll_param_p->m);	/* Set M */
+@@ -266,7 +266,7 @@ void prcm_init(void)
+ 	/* Getting the base address to IVA DPLL param table*/
+ 	dpll_param_p = (dpll_param *)get_iva_dpll_param();
+ 	/* Moving it to the right sysclk and ES rev base */
+-	dpll_param_p = dpll_param_p + 2*clk_index + sil_index;
++	dpll_param_p = dpll_param_p + 3*clk_index + sil_index;
+ 	/* IVA DPLL (set to 12*20=240MHz) */
+ 	sr32(CM_CLKEN_PLL_IVA2, 0, 3, PLL_STOP);
+ 	wait_on_value(BIT0, 0, CM_IDLEST_PLL_IVA2, LDELAY);
+--- u-boot_1_1_4_beagle.orig/cpu/omap3/cpu.c
++++ u-boot_1_1_4_beagle/cpu/omap3/cpu.c
+@@ -129,9 +129,7 @@ int cleanup_before_linux (void)
+ 
+ 	/* invalidate I-cache */
+ 	arm_cache_flush();
+-#ifndef CONFIG_L2_OFF	
+-	/* turn off L2 cache */
+-	l2cache_disable();
++#ifndef CONFIG_L2_OFF
+ 	/* invalidate L2 cache also */
+ 	v7_flush_dcache_all(get_device_type());
+ #endif
