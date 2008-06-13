@@ -13,7 +13,6 @@ SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 
 SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;patch=1 \
-	   file://flash.patch;patch=1 \
 	   file://0001-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
 	   file://0002-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
 	   file://0003-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
