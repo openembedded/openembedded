@@ -1,0 +1,13 @@
+--- u-boot/Makefile-orig	2008-05-29 14:00:30.000000000 -0700
++++ u-boot/Makefile	2008-05-29 13:59:13.000000000 -0700
+@@ -1823,8 +1823,8 @@ omap2430sdp_config :    unconfig
+ omap3430sdp_config :    unconfig
+ 	@./mkconfig $(@:_config=) arm omap3 omap3430sdp
+ 
+-omap3530beagle_config :    unconfig
+-	@./mkconfig $(@:_config=) arm omap3 omap3530beagle
++beagleboard_config :    unconfig
++	@./mkconfig omap3530beagle arm omap3 omap3530beagle
+ 
+ #========================================================================
+ # i386
