@@ -3,15 +3,16 @@ SECTION = "libs"
 LICENSE = "freetype"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
-           file://no-hardcode.patch;patch=1 \
-	  "
-
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
+  file://no-hardcode.patch;patch=1 \
+  file://fix-configure.patch;patch=1 \
+"
 S = "${WORKDIR}/freetype-${PV}"
 
 inherit autotools pkgconfig binconfig
 
-LIBTOOL = "${S}/builds/unix/${HOST_SYS}-libtool"
+LIBTOOL = "${HOST_SYS}-libtool"
 EXTRA_OEMAKE = "'LIBTOOL=${LIBTOOL}'"
 EXTRA_OECONF = "--without-zlib"
 
