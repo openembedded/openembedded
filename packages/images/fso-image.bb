@@ -55,9 +55,11 @@ AUDIO_INSTALL = "\
   gst-plugin-mad \
   gst-plugin-modplug \
   gst-plugin-sid \
-  openmoko-sound-theme-standard2 \
+  fso-sounds \
 "
 
+# FIXME these should rather be part of alsa-state,
+# once Om stabilizes them...
 AUDIO_INSTALL_append_om-gta01 = "\
   openmoko-alsa-scenarios \
 "

@@ -2,7 +2,7 @@ DESCRIPTION = "ImageMagick is an image convertion tools"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "tiff"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;patch=1 \
@@ -15,6 +15,7 @@ S = "${WORKDIR}/ImageMagick-${IMVER}"
 
 inherit autotools binconfig pkgconfig
 
+EXTRA_AUTORECONF += "--exclude=libtoolize"
 EXTRA_OECONF = "--without-x --without-freetype --without-perl"
 EXTRA_OECONF_openprotium = "--without-x --without-freetype --without-xml --without-perl"
 
