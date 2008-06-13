@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 LICENSE = "GPL"
 
 inherit xfce
-XFCE_VERSION = 4.4.1
+XFCE_VERSION = 4.4.2
 
 do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal
