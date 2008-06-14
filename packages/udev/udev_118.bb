@@ -2,14 +2,16 @@ DESCRIPTION = "udev is a daemon which dynamically creates and removes device nod
 /dev/, handles hotplug events and loads drivers at boot time. It replaces \
 the hotplug package and requires a kernel not older than 2.6.12."
 RPROVIDES_${PN} = "hotplug"
-PR = "r0"
+
+PR = "r3"
+
+DEFAULT_PREFERENCE = "-118"
 
 SRC_URI = "\
  http://kernel.org/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
  file://flags.patch;patch=1 \
  file://vol_id_ld.patch;patch=1 \
  file://udevtrigger_add_devname_filtering.patch;patch=1 \
- file://noasmlinkage.patch;patch=1 \
  file://mount.blacklist \
 "
 
@@ -22,13 +24,15 @@ FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
 UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/"
 EXTRA_OEMAKE += "libudevdir=/lib/udev libdir=${base_libdir} prefix="
 
+do_compile_prepend() {
+	sed -i s,asmlinkage,, *.c
+}
+
 do_install () {
-	install -d ${D}${usrsbindir}
-	install -d ${D}${sysconfdir}
-	install -d ${D}${sbindir}
-
+	install -d ${D}${usrsbindir} \
+                   ${D}${sysconfdir} \
+                   ${D}${sbindir}
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
-
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
 

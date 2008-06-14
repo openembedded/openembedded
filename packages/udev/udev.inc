@@ -2,16 +2,15 @@ DESCRIPTION ?= "udev is a program which dynamically creates and removes device n
 /dev/. It responds to /sbin/hotplug device events and requires a 2.6 kernel."
 LICENSE = "GPL"
 
-SRC_URI += "\
-  file://udev.rules \
-  file://devfs-udev.rules \
-  file://links.conf \
-  file://permissions.rules \
-  file://mount.sh \
-  file://network.sh \
-  file://local.rules \
-  file://init \
-"
+SRC_URI += " \
+	   file://udev.rules \
+	   file://devfs-udev.rules \
+	   file://links.conf \
+           file://permissions.rules \
+	   file://mount.sh \
+	   file://network.sh \
+	   file://local.rules \
+           file://init"
 
 inherit update-rc.d autotools pkgconfig
 
@@ -38,11 +37,9 @@ EXTRA_OEMAKE = "-e \
 		'STRIP=echo'"
 
 do_install () {
-	install -d ${D}${usrsbindir}
-	install -d ${D}${sbindir}
-
+	install -d ${D}${usrsbindir} \
+		   ${D}${sbindir}
 	oe_runmake 'DESTDIR=${D}' INSTALL=install install
-
 	install -d ${D}${sysconfdir}/init.d
 	install -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/udev
 
@@ -63,8 +60,8 @@ do_install () {
 
 do_stage () {
 	autotools_stage_all
-	install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
-	oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
+        install -m 0644 ${S}/extras/volume_id/lib/libvolume_id.h ${STAGING_INCDIR}
+        oe_libinstall -C extras/volume_id/lib -so libvolume_id ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
