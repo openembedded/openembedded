@@ -1,0 +1,13 @@
+Index: xf86-video-dummy-0.3.0/configure.ac
+===================================================================
+--- xf86-video-dummy-0.3.0.orig/configure.ac	2008-06-14 12:20:36.000000000 +0200
++++ xf86-video-dummy-0.3.0/configure.ac	2008-06-14 12:20:58.000000000 +0200
+@@ -58,7 +58,7 @@
+ sdkdir=$(pkg-config --variable=sdkdir xorg-server)
+ 
+ CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
+-INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src -I$(prefix)/include'
++INCLUDES="$XORG_INCS "'-I$(top_srcdir)/src'
+ AC_SUBST([CFLAGS])
+ AC_SUBST([INCLUDES])
+ 
