@@ -1,6 +1,8 @@
 DESCRIPTION = "Drop-in Esound replacement"
 LICENSE = "GPLv2"
 
+PR = "r1"
+
 RCONFLICTS = "esd"
 RREPLACES = "esd"
 
@@ -31,7 +33,7 @@ fi
 mkdir -p /etc/pulse || true
 # Remove existing entries
 if [ -e /etc/pulse/session ] ; then
-        sed -i -e /load-module\ module-esound-protocol-unix/d e /load-module\ module-esound-protocol-tcp/d /etc/pulse/session
+        sed -i -e /load-module\ module-esound-protocol-unix/d -e /load-module\ module-esound-protocol-tcp/d /etc/pulse/session
 fi
 # Load esound modules
 echo "load-module module-esound-protocol-tcp" >> /etc/pulse/session
