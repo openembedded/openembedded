@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.linuxpowertop.org/"
 LICENSE = "GPLv2"
 DEPENDS = "ncurses"
 
-SRC_URI = "http://www.linuxpowertop.org/download/powertop-${PV}.tar.gz"
+SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz"
 
 CFLAGS += "${LDFLAGS}"
 
