@@ -1,22 +1,11 @@
-upstream: not applicable, I think (unless somebody claims there is a more portable way to stripping)
-
---- /tmp/Makefile	2008-04-17 21:48:32.987984542 +0200
-+++ trunk/Makefile	2008-04-17 21:48:52.042750779 +0200
-@@ -337,7 +337,7 @@
- 	if test -f $(CONFDIR)/codecs.conf ; then mv -f $(CONFDIR)/codecs.conf $(CONFDIR)/codecs.conf.old ; fi
+--- /tmp/Makefile	2008-06-10 21:05:55.613676241 +0200
++++ trunk/Makefile	2008-06-10 21:06:30.701172833 +0200
+@@ -797,7 +797,7 @@
+ 	$(INSTALL) -d $(BINDIR) $(CONFDIR)
  
- install-mplayer: mplayer$(EXESUF)
--	$(INSTALL) -m 755 $(INSTALLSTRIP) mplayer$(EXESUF) $(BINDIR)
-+	$(INSTALL) -m 755  mplayer$(EXESUF) $(BINDIR)
+ install-%: %$(EXESUF) install-dirs
+-	$(INSTALL) -m 755 $(INSTALLSTRIP) $< $(BINDIR)
++	$(INSTALL) -m 755 $< $(BINDIR)
  
- install-mplayer-man:
- 	for lang in $(MAN_LANG); do \
-@@ -350,7 +350,7 @@
- 	done
- 
- install-mencoder: mencoder$(EXESUF)
--	$(INSTALL) -m 755 $(INSTALLSTRIP) mencoder$(EXESUF) $(BINDIR)
-+	$(INSTALL) -m 755 mencoder$(EXESUF) $(BINDIR)
- 	for lang in $(MAN_LANG); do \
- 		if test "$$lang" = en ; then \
- 			cd $(MANDIR)/man1 && ln -sf mplayer.1 mencoder.1 ; \
+ install-mplayer-man: $(foreach lang,$(MAN_LANG_ALL),install-mplayer-man-$(lang))
+ install-mencoder-man: $(foreach lang,$(MAN_LANG_ALL),install-mencoder-man-$(lang))
