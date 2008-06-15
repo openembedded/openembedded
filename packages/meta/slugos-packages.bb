@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r54"
+PR = "r55"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -134,7 +134,6 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	lighttpd \
-	linphone \
 	litestream \
 	logrotate \
 	lrzsz \
@@ -210,7 +209,6 @@ SLUGOS_PACKAGES = "\
 	sipsak \
 	slugimage \
 	smartmontools \
-	spandsp \
 	sqlite \
 	squid \
 	ssmtp \
@@ -260,12 +258,14 @@ SLUGOS_BROKEN_PACKAGES = "\
 	eciadsl \
 	fetchmail \
 	gspcav1 \
+	linphone \
 	lirc-modules lirc \
 	madfu \
 	motion \
 	openldap \
 	pwc \
 	qc-usb-messenger \
+	spandsp \
 	syslog-ng \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
