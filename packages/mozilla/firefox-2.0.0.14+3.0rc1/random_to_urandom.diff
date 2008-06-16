@@ -1,0 +1,26 @@
+# Component manager should not use /dev/random for generation ranodm numbers
+# It cause hangs on embedding platforms,which does not have enough devices for generation required entropy
+# Bug somewhere exists but it is very old
+Index: nsprpub/pr/src/md/unix/uxrng.c
+===================================================================
+--- mozilla/nsprpub/pr/src/md/unix/uxrng.c.orig
++++ mozilla/nsprpub/pr/src/md/unix/uxrng.c
+@@ -144,17 +144,17 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ 
+ static int      fdDevRandom;
+ static PRCallOnceType coOpenDevRandom;
+ 
+ static PRStatus OpenDevRandom( void )
+ {
+-    fdDevRandom = open( "/dev/random", O_RDONLY );
++    fdDevRandom = open( "/dev/urandom", O_RDONLY );
+     return((-1 == fdDevRandom)? PR_FAILURE : PR_SUCCESS );
+ } /* end OpenDevRandom() */
+ 
+ static size_t GetDevRandom( void *buf, size_t size )
+ {
+     int bytesIn;
+     int rc;
+ 
