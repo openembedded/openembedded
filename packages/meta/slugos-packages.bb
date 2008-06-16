@@ -188,7 +188,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	popt \
 	portmap \
-	postfix \
 	ppp \
 	procps \
 	psmisc \
@@ -244,7 +243,6 @@ SLUGOS_PACKAGES = "\
 	wview-vpro \
 	wview-wxt510 \
 	xinetd \
-	yeaphone \
 	yp-tools ypbind ypserv \
 	zd1211-firmware \
 	zip \
@@ -263,6 +261,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	madfu \
 	motion \
 	openldap \
+	postfix \
 	pwc \
 	qc-usb-messenger \
 	spandsp \
@@ -270,6 +269,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
 	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \
+	yeaphone \
 	zd1211 \
 	"
 

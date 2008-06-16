@@ -1,6 +1,8 @@
 DESCRIPTION = "Meta package to make alsa transparently use pulseaudio"
 LICENSE = "GPLv2"
 
+PR = "r1"
+
 SRC_URI = "file://asound.conf.pulseaudio"
 
 RDEPENDS = "hal \
@@ -9,6 +11,10 @@ RDEPENDS = "hal \
 	pulseaudio-module-alsa-sink \
 	pulseaudio-module-alsa-source \
 	pulseaudio-module-hal-detect \
+	pulseaudio-module-volume-restore \
+	pulseaudio-module-default-device-restore \
+	pulseaudio-module-rescue-streams \
+	pulseaudio-module-suspend-on-idle \
 	libasound-module-ctl-pulse \
 	libasound-module-pcm-pulse \
 "
