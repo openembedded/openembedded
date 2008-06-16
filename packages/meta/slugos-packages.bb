@@ -188,7 +188,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	popt \
 	portmap \
-	postfix \
 	ppp \
 	procps \
 	psmisc \
@@ -262,6 +261,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	madfu \
 	motion \
 	openldap \
+	postfix \
 	pwc \
 	qc-usb-messenger \
 	spandsp \
