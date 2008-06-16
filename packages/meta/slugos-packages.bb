@@ -61,7 +61,6 @@ SLUGOS_PACKAGES = "\
 	coreutils \
 	cron \
 	cryptsetup \
-	ctorrent \
 	ctrlproxy \
 	cups \
 	curl \
@@ -252,6 +251,7 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	bwmon \
+	ctorrent \
 	dsniff \
 	eciadsl \
 	fetchmail \
