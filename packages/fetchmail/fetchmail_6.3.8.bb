@@ -6,7 +6,7 @@ SECTION = "console/network"
 
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
 	   file://CVE-2007-4565.patch;patch=1 \
@@ -14,7 +14,7 @@ SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
 
 inherit autotools gettext
 
-# Special handling for the fetchmailconf python scripts
+FILES_${PN} = "${bindir}/fetchmail"
 PACKAGES += "${PN}conf"
-FILES_${PN}conf = "${libdir}/python2.5/site-packages/fetchmailconf.py*"
+FILES_${PN}conf = "${libdir}/python2.5/site-packages/fetchmailconf.py* ${bindir}/fetchmailconf"
 rdepends_${PN}conf = "${PN}"
