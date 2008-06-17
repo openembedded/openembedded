@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r56"
+PR = "r57"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -81,6 +81,7 @@ SLUGOS_PACKAGES = "\
 	expat \
 	ez-ipupdate \
 	fconfig \
+	fetchmail \
 	file \
 	findutils \
 	fis \
@@ -256,7 +257,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	ctorrent \
 	dsniff \
 	eciadsl \
-	fetchmail \
 	gspcav1 \
 	linphone \
 	lirc-modules lirc \
