@@ -1,0 +1,11 @@
+--- ipkg-utils/arfile.py.orig	2008-06-11 21:07:01.000000000 -0500
++++ ipkg-utils/arfile.py	2008-06-14 19:56:04.000000000 -0500
+@@ -86,6 +86,8 @@
+                 return FileSection(self.f, self.f.tell(), size)
+ 
+             # Skip data and loop
++            if size % 2:
++                size = size + 1
+             data = self.f.seek(size, 1)
+ #            print hex(f.tell())
+ 
