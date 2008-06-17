@@ -1,6 +1,6 @@
 DESCRIPTION = "Alternative system logger daemon"
-DEPENDS = "libol flex eventlog"
-PR = "r1"
+DEPENDS = "libol flex eventlog glib-2.0"
+PR = "r2"
 
 SRC_URI = "http://www.balabit.com/downloads/files/syslog-ng/sources/stable/src/${P}.tar.gz \
           file://syslog-ng.conf \
