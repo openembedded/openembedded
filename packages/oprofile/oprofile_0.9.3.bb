@@ -1,15 +1,18 @@
+SECTION = "devel"
 DESCRIPTION = "OProfile is a system-wide profiler for Linux systems, capable \
 of profiling all running code at low overhead."
-SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "popt binutils"
-PR = "r1"
+RDEPENDS = "binutils-symlinks"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
-           file://acinclude.m4 \
-           file://opcontrol-busybox-compat.patch;patch=1 \
-           "
-
+           file://armv6_fix.patch;patch=1 \
+           file://oparchive_fix.patch;patch=1 \
+           file://root_option.patch;patch=1 \
+           file://opstart.patch;patch=1 \
+           file://fix-arith.patch;patch=1;pnum=0 \
+           file://acinclude.m4"
 S = "${WORKDIR}/oprofile-${PV}"
 
 inherit autotools
@@ -18,12 +21,11 @@ inherit autotools
 # Should add the oprofile kernel modules, for those with 2.4
 # kernels, as a seperate .oe file.
 EXTRA_OECONF = "--with-kernel-support \
-                --without-x \
-                --disable-werror "
+		--without-x"
 
 do_configure () {
-        cp ${WORKDIR}/acinclude.m4 ${S}/
-        autotools_do_configure
+	cp ${WORKDIR}/acinclude.m4 ${S}/
+	autotools_do_configure
 }
 # Available config options
 #  --enable-abi                 enable abi portability code (default is disabled)
