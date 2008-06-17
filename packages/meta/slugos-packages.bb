@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r55"
+PR = "r56"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -53,6 +53,7 @@ SLUGOS_PACKAGES = "\
 	bonnie++ \
 	boost \
 	bridge-utils \
+	bwmon \
 	bzip2 \
 	ccxstream \
 	cdparanoia \
@@ -207,6 +208,7 @@ SLUGOS_PACKAGES = "\
 	sipsak \
 	slugimage \
 	smartmontools \
+	spandsp \
 	sqlite \
 	squid \
 	ssmtp \
@@ -215,6 +217,7 @@ SLUGOS_PACKAGES = "\
 	stunnel \
 	sudo \
 	sysfsutils \
+	syslog-ng \
 	tar \
 	task-mokogateway-everything \
 	tcpdump \
@@ -250,7 +253,6 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	bwmon \
 	ctorrent \
 	dsniff \
 	eciadsl \
@@ -264,8 +266,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	postfix \
 	pwc \
 	qc-usb-messenger \
-	spandsp \
-	syslog-ng \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
 	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \
