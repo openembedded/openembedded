@@ -1,6 +1,6 @@
 require libtool.inc
 
-PR = "r12"
+PR = "r14"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -18,5 +18,8 @@ inherit autotools
 EXTRA_AUTORECONF = "--exclude=libtoolize"
 
 do_stage () {
-	autotools_stage_all
+       install -d ${STAGING_INCDIR}/libltdl
+       install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
+       install -m 0644 libltdl/libltdl/*.h ${STAGING_INCDIR}/libltdl/
+       oe_libinstall -a -so -C libltdl libltdl ${STAGING_LIBDIR}
 }

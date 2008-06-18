@@ -1,14 +1,14 @@
-PV = "0.9.2+cvs${SRCDATE}"
-PR = "r1"
+PV = "0.9.3+cvs${SRCDATE}"
+PR = "r0"
 SECTION = "devel"
 DESCRIPTION = "OProfile is a system-wide profiler for Linux systems, capable \
 of profiling all running code at low overhead."
 LICENSE = "GPL"
 DEPENDS = "popt binutils"
-
-DEFAULT_PREFERENCE = "-1"
+RDEPENDS = "binutils-symlinks"
 
 SRC_URI = "cvs://anonymous@oprofile.cvs.sourceforge.net/cvsroot/oprofile;module=oprofile \
+           file://opstart.patch;patch=1 \
 	   file://acinclude.m4"
 S = "${WORKDIR}/oprofile"
 
