@@ -1,0 +1,7 @@
+--- midori-0.0.18/midori.desktop.in-orig	2008-03-19 14:34:52.000000000 -0700
++++ midori-0.0.18/midori.desktop.in	2008-03-19 14:21:56.000000000 -0700
+@@ -1,4 +1,3 @@
+-
+ [Desktop Entry]
+ Version=1.0
+ Encoding=UTF-8
