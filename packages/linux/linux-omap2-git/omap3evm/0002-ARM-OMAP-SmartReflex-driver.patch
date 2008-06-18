@@ -266,9 +266,9 @@ index 6a0459a..3667fd6 100644
 --- a/include/asm-arm/arch-omap/omap34xx.h
 +++ b/include/asm-arm/arch-omap/omap34xx.h
 @@ -54,6 +54,8 @@
+ #define OMAP34XX_HSUSB_OTG_BASE	(L4_34XX_BASE + 0xAB000)
  #define OMAP34XX_HSUSB_HOST_BASE	(L4_34XX_BASE + 0x64000)
  #define OMAP34XX_USBTLL_BASE	(L4_34XX_BASE + 0x62000)
- #define IRQ_SIR_IRQ		0x0040
 +#define OMAP34XX_SR1_BASE	0x480C9000
 +#define OMAP34XX_SR2_BASE	0x480CB000
  
