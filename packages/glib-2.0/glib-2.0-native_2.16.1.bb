@@ -2,9 +2,18 @@ require glib-2.0_${PV}.bb
 
 FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
 DEPENDS = "gtk-doc-native"
-PR = "r0"
+PR = "r1"
 
 inherit native
+
+do_configure_prepend() {
+    if [ -e ${S}/${TARGET_SYS}-libtool ] ; then
+		echo "${TARGET_SYS}-libtool already present"
+    else
+        cp ${STAGING_BINDIR}/${TARGET_SYS}-libtool ${S}
+    fi
+
+}
 
 do_stage () {
 	install -m 0755 gobject/glib-mkenums ${STAGING_BINDIR}/
