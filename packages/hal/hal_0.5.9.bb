@@ -1,6 +1,6 @@
 require hal.inc
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb"
+DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb-compat"
 RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"

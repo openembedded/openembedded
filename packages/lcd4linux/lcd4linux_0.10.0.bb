@@ -1,7 +1,7 @@
 DESCRIPTION = "LCD4Linux is a small program that grabs information from the kernel and some subsystems and displays it on an external liquid crystal display."
 LICENSE = "GPLv2"
 
-DEPENDS = "libusb ncurses readline virtual/libx11"
+DEPENDS = "libusb-compat ncurses readline virtual/libx11"
 
 PV = "0.10.0+0.10.1-RC2"
 PR = "r1"

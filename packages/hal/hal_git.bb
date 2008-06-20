@@ -5,7 +5,7 @@ LICENSE = "GPL LGPL AFL"
 
 DEFAULT_PREFERENCE = "-1"
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb"
+DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb-compat"
 RDEPENDS_${PN} += "udev hal-info"
 RRECOMMENDS_${PN} += "udev-utils"
 
