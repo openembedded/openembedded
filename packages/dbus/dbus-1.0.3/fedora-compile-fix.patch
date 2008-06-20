@@ -1,0 +1,18 @@
+Do not fail with udrec being unknown and say we are using
+_GNU_SOURCE. This is needed for the libc/header/gcc combo
+fedora 9 is using. bits/socket.h has struct udrec #ifdefed
+with _GNU.
+
+Index: dbus-1.0.3/dbus/dbus-sysdeps-unix.c
+===================================================================
+--- dbus-1.0.3.orig/dbus/dbus-sysdeps-unix.c
++++ dbus-1.0.3/dbus/dbus-sysdeps-unix.c
+@@ -22,6 +22,8 @@
+  *
+  */
+ 
++#define _GNU_SOURCE
++
+ #include "dbus-internals.h"
+ #include "dbus-sysdeps.h"
+ #include "dbus-sysdeps-unix.h"
