@@ -36,17 +36,6 @@ do_configure_append () {
 }
 
 do_stage() {
-	oe_libinstall -so -C src libSDL ${STAGING_LIBDIR}
+	autotools_stage_all		
 	rm ${STAGING_LIBDIR}/libSDL.la
-	ln -sf libSDL.so ${STAGING_LIBDIR}/libSDL-1.2.so
-	#oe_libinstall -a -C src/main libSDLmain ${STAGING_LIBDIR}
-	install -m 0644 src/main/libSDLmain.a ${STAGING_LIBDIR}
-
-	install -d ${STAGING_INCDIR}/SDL
-	for f in include/*.h
-	do
-		install -m 0644 $f ${STAGING_INCDIR}/SDL/
-	done
-
-	install -m 0644 *.m4 ${STAGING_DATADIR}/aclocal/
 }
