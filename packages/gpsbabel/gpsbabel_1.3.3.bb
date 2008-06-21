@@ -1,10 +1,10 @@
 SECTION = "console/utils"
 DESCRIPTION = "GPS data converter"
-DEPENDS = "expat libusb"
+DEPENDS = "expat libusb-compat"
 HOMEPAGE = "http://gpsbabel.sf.net"
 LICENSE = "GPL"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gpsbabel/gpsbabel-${PV}.tar.gz"
 

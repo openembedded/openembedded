@@ -1,10 +1,10 @@
 DESCRIPTION = "Host side USB console utilities."
 SECTION = "base"
-DEPENDS += "libusb"
+DEPENDS += "libusb-compat"
 LICENSE = "GPL"
 PRIORITY = "optional"
 PV = "0.71+cvs${SRCDATE}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "cvs://anonymous@linux-usb.cvs.sourceforge.net/cvsroot/linux-usb;module=usbutils"
 S = "${WORKDIR}/usbutils"

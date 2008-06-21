@@ -1,9 +1,11 @@
 DESCRIPTION = "Host side USB console utilities."
 SECTION = "base"
-DEPENDS += "libusb"
+DEPENDS += "libusb-compat"
 LICENSE = "GPL"
 PRIORITY = "optional"
 DEFAULT_PREFERENCE = "1"
+
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-usb/usbutils-${PV}.tar.gz"
 S = "${WORKDIR}/usbutils-${PV}"
