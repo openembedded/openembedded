@@ -4,6 +4,8 @@ HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
 
+PE = "1"
+
 DEPENDS = "libusb1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-compat-0.1.0-beta1.tar.bz2 \
