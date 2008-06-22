@@ -77,10 +77,7 @@ PYTHON_INSTALL = "\
 # zhone
 ZHONE_INSTALL = "\
   gsm0710muxd \
-  python-odeviced \
-  python-oeventd \
-  python-ophoned \
-  python-ousaged \
+  frameworkd \
   zhone \
 "
 
