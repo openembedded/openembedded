@@ -1,0 +1,147 @@
+From linux-omap-owner@vger.kernel.org Sun Jun 22 10:11:39 2008
+Received: from localhost
+	([127.0.0.1] helo=dominion ident=koen)
+	by dominion.dominion.void with esmtp (Exim 4.63)
+	(envelope-from <linux-omap-owner@vger.kernel.org>)
+	id 1KAKfj-0008Qc-FC
+	for koen@localhost; Sun, 22 Jun 2008 10:11:39 +0200
+Received: from xs.service.utwente.nl [130.89.5.250]
+	by dominion with POP3 (fetchmail-6.3.6)
+	for <koen@localhost> (single-drop); Sun, 22 Jun 2008 10:11:39 +0200 (CEST)
+Received: from mail.service.utwente.nl ([130.89.5.253]) by exchange.service.utwente.nl with Microsoft SMTPSVC(6.0.3790.3959);
+	 Sat, 21 Jun 2008 19:06:02 +0200
+Received: from smtp.utwente.nl ([130.89.2.9]) by mail.service.utwente.nl with Microsoft SMTPSVC(6.0.3790.3959);
+	 Sat, 21 Jun 2008 19:06:01 +0200
+Received: from vger.kernel.org (vger.kernel.org [209.132.176.167])
+          by smtp.utwente.nl (8.12.10/SuSE Linux 0.7) with ESMTP id m5LH5TSm026212
+          for <k.kooi@student.utwente.nl>; Sat, 21 Jun 2008 19:05:30 +0200
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1753396AbYFURFN (ORCPT <rfc822;k.kooi@student.utwente.nl>);
+	Sat, 21 Jun 2008 13:05:13 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1753305AbYFURFN
+	(ORCPT <rfc822;linux-omap-outgoing>);
+	Sat, 21 Jun 2008 13:05:13 -0400
+Received: from utopia.booyaka.com ([72.9.107.138]:41675 "EHLO
+	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753145AbYFURFL (ORCPT
+	<rfc822;linux-omap@vger.kernel.org>); Sat, 21 Jun 2008 13:05:11 -0400
+Received: (qmail 20532 invoked by uid 526); 21 Jun 2008 17:05:10 -0000
+Date: 	Sat, 21 Jun 2008 11:05:10 -0600 (MDT)
+From: Paul Walmsley <paul@pwsan.com>
+To: "Gadiyar, Anand" <gadiyar@ti.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+cc: Dirk Behme <dirk.behme@googlemail.com>,
+        "jouni.hogander@nokia.com" <jouni.hogander@nokia.com>
+Subject: [PATCH] OMAP3 clock: fix omap2_clk_wait_ready for OMAP3430ES2 DSS
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB022BB66209@dbde02.ent.ti.com>
+Message-ID: <alpine.DEB.1.00.0806211054100.19765@utopia.booyaka.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB022BE46296@dbde02.ent.ti.com>,<485CA347.909@googlemail.com> <5A47E75E594F054BAF48C5E4FC4B92AB022BB66209@dbde02.ent.ti.com>
+User-Agent: Alpine 1.00 (DEB 882 2007-12-20)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: linux-omap-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-omap.vger.kernel.org>
+X-Mailing-List: 	linux-omap@vger.kernel.org
+X-UTwente-MailScanner-Information: Scanned by MailScanner. Contact servicedesk@icts.utwente.nl for more information.
+X-UTwente-MailScanner: Found to be clean
+X-UTwente-MailScanner-From: linux-omap-owner@vger.kernel.org
+X-Spam-Status: No
+X-OriginalArrivalTime: 21 Jun 2008 17:06:02.0187 (UTC) FILETIME=[157001B0:01C8D3C1]
+
+
+On OMAP3430ES2, DSS has both an initiator standby CM_IDLEST bit, and a
+target idle CM_IDLEST bit.  This is a departure from previous silicon,
+which only had an initiator standby bit.
+
+This means we need to test the target idle bit after enabling
+dss1_alwon_fclk.  Previous clock code has done the wrong thing since ES2
+came out: it's either tested the wrong bit, causing intermittent
+
+    Clock dss1_alwon_fck didn't enable in 100000 tries
+
+messages; or not tested anything at all, causing intermittent crashes 
+during DISPC initialization with:
+
+    Unhandled fault: external abort on non-linefetch (0x1028)
+
+This patch modifies omap2_clk_wait_ready() to wait for the DSS to become
+accessible after dss1_alwon_fclk is enabled.
+
+Thanks to Anand Gadiyar <gadiyar@ti.com> for identifying one of the
+problem patches.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+---
+
+ arch/arm/mach-omap2/clock.c           |   30 ++++++++++++++++++++++++------
+ arch/arm/mach-omap2/cm-regbits-34xx.h |    4 +++-
+ 2 files changed, 27 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/clock.c b/arch/arm/mach-omap2/clock.c
+index ed15868..1820f75 100644
+--- a/arch/arm/mach-omap2/clock.c
++++ b/arch/arm/mach-omap2/clock.c
+@@ -244,18 +244,36 @@ static void omap2_clk_wait_ready(struct clk *clk)
+ 	}
+ 
+ 	/* REVISIT: What are the appropriate exclusions for 34XX? */
+-	/* OMAP3: ignore DSS-mod clocks */
+-	if (cpu_is_omap34xx() &&
+-	    ((reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(OMAP3430_DSS_MOD, 0) ||
+-	     (((reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(CORE_MOD, 0)) &&
+-	      clk->enable_bit == OMAP3430_EN_SSI_SHIFT)))
+-		return;
++	if (cpu_is_omap34xx()) {
++
++		/* 3430ES1 DSS and SSI have no target idlest bits */
++		if (is_sil_rev_equal_to(OMAP3430_REV_ES1_0) &&
++		    ((reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(OMAP3430_DSS_MOD, 0) ||
++		     ((reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(CORE_MOD, 0) &&
++		      clk->enable_bit == OMAP3430_EN_SSI_SHIFT)))
++			return;
++
++		/* Even for 3430ES2 DSS, only wait for dss1_alwon_fclk */
++		if (is_sil_rev_greater_than(OMAP3430_REV_ES1_0) &&
++		    (reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(OMAP3430_DSS_MOD, 0) &&
++		    clk->enable_bit != OMAP3430_EN_DSS1_SHIFT)
++			return;
++
++	}
+ 
+ 	/* Check if both functional and interface clocks
+ 	 * are running. */
+ 	bit = 1 << clk->enable_bit;
+ 	if (!(__raw_readl((__force void __iomem *)other_reg) & bit))
+ 		return;
++
++	/* OMAP3430ES2 DSS is an unusual case */
++	if (cpu_is_omap34xx() &&
++	    (reg & ~0xff) == (__force u32)OMAP34XX_CM_REGADDR(OMAP3430_DSS_MOD, 0) &&
++	    clk->enable_bit == OMAP3430_EN_DSS1_SHIFT) {
++		bit = OMAP3430ES2_ST_DSS_IDLE;
++	}
++
+ 	st_reg = ((other_reg & ~0xf0) | 0x20); /* CM_IDLEST* */
+ 
+ 	omap2_wait_clock_ready((__force void __iomem *)st_reg, bit, clk->name);
+diff --git a/arch/arm/mach-omap2/cm-regbits-34xx.h b/arch/arm/mach-omap2/cm-regbits-34xx.h
+index 6ec66f4..946c552 100644
+--- a/arch/arm/mach-omap2/cm-regbits-34xx.h
++++ b/arch/arm/mach-omap2/cm-regbits-34xx.h
+@@ -500,7 +500,9 @@
+ #define OMAP3430_CM_ICLKEN_DSS_EN_DSS_SHIFT		0
+ 
+ /* CM_IDLEST_DSS */
+-#define OMAP3430_ST_DSS					(1 << 0)
++#define OMAP3430ES2_ST_DSS_IDLE				(1 << 1)
++#define OMAP3430ES2_ST_DSS_STDBY			(1 << 0)
++#define OMAP3430ES1_ST_DSS				(1 << 0)
+ 
+ /* CM_AUTOIDLE_DSS */
+ #define OMAP3430_AUTO_DSS				(1 << 0)
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

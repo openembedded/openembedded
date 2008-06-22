@@ -4,9 +4,10 @@ LICENSE = "GPLv2"
 DEPENDS = "libusb-compat ncurses readline virtual/libx11"
 
 PV = "0.10.0+0.10.1-RC2"
-PR = "r1"
+PR = "r3"
 
 SRC_URI = "http://ssl.bulix.org/projects/lcd4linux/raw-attachment/wiki/Download/lcd4linux-0.10.1-RC2.tar.gz \
+           file://libusb-compat.diff;patch=1 \ 
            file://lcd4linux.init"
 
 S =  "${WORKDIR}/lcd4linux-0.10.1-RC2"

@@ -1,5 +1,5 @@
 DESCRIPTION = "APEX Boot Loader Environment User Modification Tool"
-SECTION = "util"
+SECTION = "misc"
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
