@@ -47,8 +47,8 @@ export DSPPLATFORM         := SED_ME_PLATFORM
 #   =========================================================
 #   Target GPP and DSP devices
 #   =========================================================
-export GPPDEVICE           := Davinci
-export DSPDEVICE           := C64XX
+export GPPDEVICE           := SED_ME_PLATFORM
+export DSPDEVICE           := SED_ME_DSP 
 
 
 #   =========================================================
