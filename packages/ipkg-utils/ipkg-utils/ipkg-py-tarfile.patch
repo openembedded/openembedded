@@ -85,7 +85,7 @@ Index: ipkg-utils/arfile.py
 +            memberName = descriptor[0][:-1]
 +            self.directory[memberName] = descriptor + [self.f.tell()]
 +#            print "read:", memberName
-+            if memberName == fname:
++            if memberName == fname or (memberName.startswith("`") and memberName[1:] == fname):
 +                # Record directory offset to start from next time
 +                self.directoryOffset = self.f.tell() + size
 +                return FileSection(self.f, self.f.tell(), size)
