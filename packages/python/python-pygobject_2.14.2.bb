@@ -2,16 +2,22 @@ DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
-PR = "r3"
+PR = "r0"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
-SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/${MAJ_VER}/pygobject-${PV}.tar.bz2 \
-           file://python-path.patch;patch=1"
+
+SRC_URI = "\
+  ftp://ftp.gnome.org/pub/GNOME/sources/pygobject/${MAJ_VER}/pygobject-${PV}.tar.bz2 \
+  file://python-path.patch;patch=1 \
+  file://generate-constants.patch;patch=1 \
+"
 S = "${WORKDIR}/pygobject-${PV}"
+
+FILESPATH = "${FILE_DIRNAME}/python-pygobject:${FILE_DIRNAME}/files"
 
 inherit autotools distutils-base pkgconfig
 
-EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
+EXTRA_OECONF += '--with-python-includes="${STAGING_INCDIR}/.."'
 
 do_stage() {
 	autotools_stage_all

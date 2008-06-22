@@ -1,23 +1,46 @@
-Index: pygobject-2.12.3/m4/python.m4
+Index: pygobject-2.14.2/m4/python.m4
 ===================================================================
---- pygobject-2.12.3.orig/m4/python.m4	2007-03-02 15:00:20.945635455 +0100
-+++ pygobject-2.12.3/m4/python.m4	2007-03-02 15:00:43.532189734 +0100
-@@ -43,12 +43,18 @@
+--- pygobject-2.14.2.orig/m4/python.m4
++++ pygobject-2.14.2/m4/python.m4
+@@ -43,6 +43,11 @@ AC_DEFUN([AM_CHECK_PYTHON_HEADERS],
  [AC_REQUIRE([AM_PATH_PYTHON])
  AC_MSG_CHECKING(for headers required to compile python extensions)
  dnl deduce PYTHON_INCLUDES
 +AC_ARG_WITH(python-includes,
-+	[  --with-python-includes=DIR  path to Python includes], py_exec_prefix=$withval)
++       [  --with-python-includes=DIR  path to Python includes], py_exec_prefix=$withval)
 +if test x$py_exec_prefix != x; then
 +PYTHON_INCLUDES="-I${py_exec_prefix}/include/python${PYTHON_VERSION}"
 +else
  py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
  py_exec_prefix=`$PYTHON -c "import sys; print sys.exec_prefix"`
- PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
- if test "$py_prefix" != "$py_exec_prefix"; then
+ if test -x "$PYTHON-config"; then
+@@ -53,6 +58,7 @@ if test "$py_prefix" != "$py_exec_prefix
    PYTHON_INCLUDES="$PYTHON_INCLUDES -I${py_exec_prefix}/include/python${PYTHON_VERSION}"
+ fi
  fi
 +fi
  AC_SUBST(PYTHON_INCLUDES)
  dnl check if the headers exist:
  save_CPPFLAGS="$CPPFLAGS"
+Index: pygobject-2.14.2/configure.ac
+===================================================================
+--- pygobject-2.14.2.orig/configure.ac
++++ pygobject-2.14.2/configure.ac
+@@ -71,9 +71,6 @@ AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(c
+ 
+ AC_MSG_CHECKING([for PySignal_SetWakeupFd in Python.h])
+ py_prefix=`$PYTHON -c "import sys; print sys.prefix"`
+-PYTHON_INCLUDES="-I${py_prefix}/include/python${PYTHON_VERSION}"
+-old_CPPFLAGS=$CPPFLAGS
+-CPPFLAGS="-Wall -Werror $PYTHON_INCLUDES"
+ AC_TRY_COMPILE([#include <Python.h>],
+   [PySignal_SetWakeupFd(0);],
+   setwakeupfd_ok=yes,
+@@ -83,7 +80,6 @@ if test "x$setwakeupfd_ok" != xno; then
+   AC_DEFINE(HAVE_PYSIGNAL_SETWAKEUPFD, 1,
+                 [Define to 1 if PySignal_SetWakeupFd is available])
+ fi
+-CPPFLAGS=$old_CPPFLAGS
+ 
+ PLATFORM=`$PYTHON -c "from distutils import util; print util.get_platform()"`
+ AC_SUBST(PLATFORM)
