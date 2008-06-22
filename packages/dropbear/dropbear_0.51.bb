@@ -1,2 +1,4 @@
 require dropbear.inc
-PR = "r0"
+PR = "r1"
+
+SRC_URI += "file://no-host-lookup.patch;patch=1"
