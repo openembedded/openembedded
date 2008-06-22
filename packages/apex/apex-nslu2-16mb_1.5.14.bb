@@ -1,9 +1,9 @@
 DESCRIPTION = "APEX Boot Loader"
-SECTION = ""
+SECTION = "misc"
 PRIORITY = "optional"
 HOMEPAGE = "http://wiki.buici.com/twiki/bin/view/Main/ApexBootloader"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.buici.com/pub/apex/apex-${PV}.tar.gz \
 	   file://defconfig"
@@ -33,12 +33,14 @@ do_configure() {
 	      -e 's/.*CONFIG_BIGENDIAN.*/CONFIG_BIGENDIAN=y/' \
 	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/BE (16MiB Flash)\"/' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
+	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE_ALT=|CONFIG_ENV_DEFAULT_CMDLINE_ALT=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 		${WORKDIR}/defconfig > ${S}/.config
 	elif [ "x$ac_cv_c_littleendian" = "xyes" -o "x$ac_cv_c_bigendian" = "xno" ]; then
 	  sed -e 's/.*CONFIG_USER_LITTLEENDIAN.*/CONFIG_USER_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_LITTLEENDIAN.*/CONFIG_LITTLEENDIAN=y/' \
 	      -e 's/.*CONFIG_TARGET_DESCRIPTION.*/CONFIG_TARGET_DESCRIPTION=\"OpenEmbedded NSLU2\/LE (16MiB Flash)\"/' \
 	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE=|CONFIG_ENV_DEFAULT_CMDLINE=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
+	      -e 's|CONFIG_ENV_DEFAULT_CMDLINE_ALT=|CONFIG_ENV_DEFAULT_CMDLINE_ALT=\"${CMDLINE_CONSOLE} ${CMDLINE_ROOT} ${CMDLINE_DEBUG}\"|' \
 		${WORKDIR}/defconfig > ${S}/.config
 	else
 	  oefatal do_configure cannot determine endianess
