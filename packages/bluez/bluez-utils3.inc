@@ -82,7 +82,8 @@ do_install_append() {
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
         install -m 0644 ${S}/rfcomm/rfcomm.conf ${D}${sysconfdir}/bluetooth/
-        install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/
+        install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/ ||true 
+		install -m 0755 ${S}/test/.libs/passkey-agent ${D}${base_bindir}/ ||true
 }
 
 

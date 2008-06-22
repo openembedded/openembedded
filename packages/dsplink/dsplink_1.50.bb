@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r1"
+PR = "r3"
 PE = "1"
 PV = "1.50"
 
@@ -32,7 +32,10 @@ DSPLINKPLATFORM_beagleboard = "Omap"
 DSPLINKPLATFORM_davinci-sffsdr = "Davinci"
 DSPLINKPLATFORM_davinci-dvevm = "Davinci"
 
+DSPLINKDSP ?= "C64XX"
+
 export DSPLINKPLATFORM 
+export DSPLINKDSP
 
 do_configure () {
 	cp ${WORKDIR}/CURRENTCFG.MK ${S}/config
@@ -44,6 +47,7 @@ do_configure () {
 		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
 		-e s:SED_ME_DSPDISTRO:davinci_mvlpro5\.0:g \
 		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
+		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
 		${S}/config/CURRENTCFG.MK	
 
 	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
