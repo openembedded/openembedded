@@ -23,6 +23,7 @@ IMAGE_INSTALL = "\
     jaaa nmap iperf gnuplot \
     abiword gnumeric gimp \
     powertop \
+	pidgin irssi \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
