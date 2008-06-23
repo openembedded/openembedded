@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Linux kernel version: 2.6.26-rc5-omap1
-# Fri Jun 13 19:50:40 2008
+# Linux kernel version: 2.6.26-rc7-omap1
+# Mon Jun 23 10:04:35 2008
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -581,6 +581,7 @@ CONFIG_MTD_NAND=y
 # CONFIG_MTD_NAND_VERIFY_WRITE is not set
 # CONFIG_MTD_NAND_ECC_SMC is not set
 # CONFIG_MTD_NAND_MUSEUM_IDS is not set
+CONFIG_MTD_NAND_OMAP2=y
 CONFIG_MTD_NAND_IDS=y
 # CONFIG_MTD_NAND_DISKONCHIP is not set
 # CONFIG_MTD_NAND_NANDSIM is not set
@@ -1155,9 +1156,6 @@ CONFIG_SND_SOC=y
 # SoC Audio for the Texas Instruments OMAP
 #
 CONFIG_SND_OMAP_SOC=y
-CONFIG_SND_OMAP_SOC_MCBSP=y
-CONFIG_SND_OMAP_SOC_OMAP3BEAGLE=y
-CONFIG_SND_SOC_TWL4030=y
 
 #
 # Open Sound System
@@ -1425,6 +1423,7 @@ CONFIG_RTC_INTF_DEV=y
 # CONFIG_RTC_DRV_M41T80 is not set
 CONFIG_RTC_DRV_TWL4030=y
 # CONFIG_RTC_DRV_S35390A is not set
+# CONFIG_RTC_DRV_FM3130 is not set
 
 #
 # SPI RTC drivers
@@ -1683,8 +1682,7 @@ CONFIG_FRAME_POINTER=y
 # CONFIG_DEBUG_USER is not set
 # CONFIG_DEBUG_ERRORS is not set
 # CONFIG_DEBUG_STACK_USAGE is not set
-CONFIG_DEBUG_LL=n
-# CONFIG_DEBUG_ICEDCC is not set
+# CONFIG_DEBUG_LL is not set
 
 #
 # Security options
