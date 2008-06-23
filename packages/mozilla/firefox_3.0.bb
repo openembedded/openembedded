@@ -10,6 +10,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/3.0/source/fi
 	file://Bug405992.atomic.nspr.diff;patch=1 \
 	file://random_to_urandom.diff;patch=1 \
 	file://jemalloc-tls.patch;patch=1 \
+	http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz \
 "
 
 S = "${WORKDIR}/mozilla"
@@ -18,6 +19,10 @@ S = "${WORKDIR}/mozilla"
 
 inherit mozilla
 require firefox.inc
+
+do_unpack2() {
+	cp -pPr ${WORKDIR}/js/src* ${S}/js/
+}
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
@@ -36,3 +41,5 @@ do_stage() {
         # removes 2 lines that call absent headers
         sed -e '178,179d' ${STAGING_INCDIR}/firefox-${PV}/nsIServiceManager.h
 }
+
+addtask unpack2 after do_unpack before do_patch
