@@ -11,6 +11,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/3.0/source/fi
 	file://random_to_urandom.diff;patch=1 \
 	file://jemalloc-tls.patch;patch=1 \
 	http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz \
+	http://ftp.debian.org/debian/pool/main/i/iceweasel/iceweasel_3.0~rc2-2.diff.gz;patch=1 \	
 "
 
 S = "${WORKDIR}/mozilla"
