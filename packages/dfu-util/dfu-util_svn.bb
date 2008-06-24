@@ -1,9 +1,9 @@
 DESCRIPTION = "USB Device Firmware Upgrade utility"
 SECTION = "devel"
-AUTHOR = "Harald Welte"
+AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 PV = "0.1+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libusb usbpath"
 
