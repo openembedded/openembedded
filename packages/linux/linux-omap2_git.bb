@@ -5,7 +5,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MA
 SRCREV = "6604ac6c8a14d583a463159f3a1601427dab7e05"
 
 PV = "2.6.25+2.6.26-rc7+${PR}+git${SRCREV}"
-PR = "r27"
+PR = "r28"
 
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
@@ -18,6 +18,7 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0002-omap3-cpuidle.patch;patch=1 \
            file://timer-suppression.patch;patch=1 \
            file://fix-dispc-clocks.patch;patch=1 \
+           file://soc.patch;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \
