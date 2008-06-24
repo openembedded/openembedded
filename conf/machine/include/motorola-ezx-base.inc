@@ -2,7 +2,7 @@ TARGET_ARCH = "arm"
 PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5te iwmmxt"
 
 PREFERRED_PROVIDER_xserver = "xserver-kdrive"
-PREFERRED_PROVIDER_virtual/kernel = "linux-ezx"
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-ezx"
 
 #cat /proc/mtd
 #dev:    size   erasesize  name
