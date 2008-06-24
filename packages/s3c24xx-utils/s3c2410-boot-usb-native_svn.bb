@@ -1,10 +1,10 @@
 DESCRIPTION = "Boots a S3C2410 device with a user supplied kernel zImage"
 DEPENDS = "libusb-native"
 SECTION = "devel"
-AUTHOR = "Harald Welte"
+AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
-PV = "0.1.0+svn${SRCREV}"
-PR = "r0"
+PV = "0.1.0+svnr${SRCREV}"
+PR = "r1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=s3c2410_boot_usb;proto=https"
 S = "${WORKDIR}/s3c2410_boot_usb"
@@ -16,8 +16,8 @@ do_compile() {
 }
 
 do_deploy() {
-        install -d ${DEPLOY_DIR_IMAGE}
-        install -m 0755 s3c2410-boot-usb ${DEPLOY_DIR_IMAGE}
+        install -d ${DEPLOY_DIR_TOOLS}
+        install -m 0755 s3c2410-boot-usb ${DEPLOY_DIR_TOOLS}/s3c2410-boot-usb-${PV}
 }
 
 do_stage() {
