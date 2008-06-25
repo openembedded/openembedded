@@ -1,7 +1,8 @@
 require olsrd.inc
+
 PR = "r0"
 
-SRC_URI="http://www.olsr.org/releases/0.5/olsrd-${PV}.tar.bz2 \
+SRC_URI="http://www.olsr.org/releases/${MAJ_VER}/olsrd-${PV}.tar.bz2 \
         file://init \
         file://olsrd.conf \
         file://unbreak-makefile.patch;patch=1"

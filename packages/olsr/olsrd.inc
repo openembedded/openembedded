@@ -5,7 +5,8 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "BSD"
 
-SRC_URI="http://www.olsr.org/releases/0.4/olsrd-${PV}.tar.bz2 \
+MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI="http://www.olsr.org/releases/${MAJ_VER}/olsrd-${PV}.tar.bz2 \
 	file://init \
 	file://olsrd.conf"
 
