@@ -1,0 +1,51 @@
+diff -r 8484332b813c configure.ac
+--- a/configure.ac	Sun Jun 22 18:19:54 2008 +0200
++++ b/configure.ac	Mon Jun 23 08:53:17 2008 +0200
+@@ -550,6 +550,7 @@
+ 
+ AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_PREFIX
+ AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_CLASSES
++AC_CHECK_WITH_BUILD_JAVA_RUNTIME_LIBRARY_CLASSES
+ 
+ if test x"${ENABLE_JRE_LAYOUT}" = "xno"; then
+    AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_LIBDIR
+diff -r 8484332b813c m4/java-runtime-library.m4
+--- a/m4/java-runtime-library.m4	Sun Jun 22 18:19:54 2008 +0200
++++ b/m4/java-runtime-library.m4	Mon Jun 23 08:53:17 2008 +0200
+@@ -93,20 +93,32 @@
+ AC_DEFINE_UNQUOTED([JAVA_RUNTIME_LIBRARY_CLASSES], "${JAVA_RUNTIME_LIBRARY_CLASSES}", [Java runtime library classes])
+ AC_SUBST(JAVA_RUNTIME_LIBRARY_CLASSES)
+ 
++dnl where are Java core library classes located at compilation time
++
++AC_DEFUN([AC_CHECK_WITH_BUILD_JAVA_RUNTIME_LIBRARY_CLASSES],[
++AC_MSG_CHECKING(where Java core library classes are located at compile time)
++AC_ARG_WITH([build-java-runtime-library-classes],
++            [AS_HELP_STRING(--with-build-java-runtime-library-classes=<path>,path to Java core library classes (includes the name of the file and may be flat) [[default=${JAVA_RUNTIME_LIBRARY_PREFIX}/share/classpath/glibj.zip]])],
++            [BUILD_JAVA_RUNTIME_LIBRARY_CLASSES=${withval}],
++            [BUILD_JAVA_RUNTIME_LIBRARY_CLASSES=${JAVA_RUNTIME_LIBRARY_PREFIX}/share/classpath/glibj.zip])
++AC_MSG_RESULT(${BUILD_JAVA_RUNTIME_LIBRARY_CLASSES})
++AC_DEFINE_UNQUOTED([BUILD_JAVA_RUNTIME_LIBRARY_CLASSES], "${BUILD_JAVA_RUNTIME_LIBRARY_CLASSES}", [Java core library classes at compile time])
++AC_SUBST(BUILD_JAVA_RUNTIME_LIBRARY_CLASSES)
++])
++
+ dnl define BOOTCLASSPATH for Makefiles
+ case "${WITH_JAVA_RUNTIME_LIBRARY}" in
+     cldc1.1 | gnuclasspath)
+-        BOOTCLASSPATH="\$(top_builddir)/src/classes/classes:\$(JAVA_RUNTIME_LIBRARY_CLASSES)"
++        BOOTCLASSPATH="\$(top_builddir)/src/classes/classes:\$(BUILD_JAVA_RUNTIME_LIBRARY_CLASSES)"
+         ;;
+     *)
+-        BOOTCLASSPATH="\$(JAVA_RUNTIME_LIBRARY_CLASSES)"
++        BOOTCLASSPATH="\$(BUILD_JAVA_RUNTIME_LIBRARY_CLASSES)"
+         ;;
+ esac
+ AC_SUBST(BOOTCLASSPATH)
+ ])
+ 
+-
+-dnl where are Java runtime library native libraries installed
++dnl where are Java runtime library native libraries installed (at compilation time)
+ 
+ AC_DEFUN([AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_LIBDIR],[
+ AC_MSG_CHECKING(where Java runtime library native libraries are installed)
