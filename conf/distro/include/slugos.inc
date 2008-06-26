@@ -166,5 +166,8 @@ PREFERRED_PROVIDER_gdk-pixbuf-loader-wbmp ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-xbm  ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm  ?= "gtk+"
 
+PREFERRED_PROVIDER_avahi  ?= "avahi"
+PREFERRED_PROVIDER_gconf  ?= "gconf"
+
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc
