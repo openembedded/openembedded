@@ -1,0 +1,30 @@
+Index: cacao/src/vm/properties.c
+===================================================================
+--- cacao.orig/src/vm/properties.c	2008-05-21 15:26:21.000000000 +0800
++++ cacao/src/vm/properties.c	2008-05-21 15:28:59.000000000 +0800
+@@ -211,15 +211,22 @@
+ 
+ # if defined(WITH_JAVA_RUNTIME_LIBRARY_GNU_CLASSPATH)
+ 
+-	boot_library_path = JAVA_RUNTIME_LIBRARY_LIBDIR"/classpath";
++	boot_library_path = JAVA_RUNTIME_LIBRARY_LIBDIR"/classpath:OE_LIBDIR_JNI";
+ 
+ # elif defined(WITH_JAVA_RUNTIME_LIBRARY_OPENJDK)
+ 
+-	boot_library_path = JAVA_RUNTIME_LIBRARY_LIBDIR;
++	boot_library_path = JAVA_RUNTIME_LIBRARY_LIBDIR":OE_LIBDIR_JNI";
+ 
+ # elif defined(WITH_JAVA_RUNTIME_LIBRARY_CLDC1_1)
+ 
+-	/* No boot_library_path required. */
++	/* No boot_library_path required.
++	   Well, don't be that strict on Debian-like
++	   environments. Setting this to /usr/lib/jni
++	   makes it unneccessary to fumble with
++	   LD_LIBRARY_PATH to get things like MIDPath
++	   running.
++	*/
++	boot_library_path = "OE_LIBDIR_JNI";
+ 
+ # else
+ #  error unknown classpath configuration

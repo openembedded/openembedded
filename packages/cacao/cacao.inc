@@ -15,32 +15,16 @@ RPROVIDES_cacao = "java2-runtime"
 
 inherit java autotools update-alternatives
 
-# Old and new options do not interfere.
 EXTRA_OECONF = "\
 	${@['','--enable-softfloat'][bb.data.getVar('TARGET_FPU',d,1) == 'soft']} \
 	--enable-debug \
-	--with-vm-zip=${datadir}/cacao/vm.zip \
 	--with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh-${PV} \
-  ${OLD_CACAO_OECONF} \
-  ${NEW_CACAO_OECONF} \
-  "
-
-# Options needed for Cacao < 0.99 (including hg snapshots)
-OLD_CACAO_OECONF = "\
 	--with-classpath-includedir=${STAGING_INCDIR}/classpath \
 	--with-classpath-classes=${STAGING_DATADIR}/classpath/glibj.zip \
 	--with-target-classpath-classes=${datadir}/classpath/glibj.zip \
-	--with-classpath-libdir=${libdir_jni}:${libdir} \
+	--with-vm-zip=${datadir}/cacao/vm.zip \
+	--with-classpath-libdir=${libdir} \
 	"
-
-# Options needed for Cacao >= 0.99
-NEW_CACAO_OECONF = "\
-  --with-build-java-runtime-library-classes=${STAGING_DATADIR}/classpath/glibj.zip \
-  --with-java-runtime-library-classes=${datadir}/classpath/glibj.zip \
-  --with-java-runtime-library-libdir=${libdir_jni}:${libdir} \
-  --with-jni_md_h=${STAGING_INCDIR}/classpath \
-  --with-jni_h=${STAGING_INCDIR}/classpath \
-  "
 
 PACKAGES = "${PN} ${PN}-doc ${PN}-dbg"
 
@@ -52,3 +36,16 @@ ALTERNATIVE_NAME = "java"
 ALTERNATIVE_LINK = "${bindir}/${ALTERNATIVE_NAME}"
 ALTERNATIVE_PATH = "${bindir}/cacao"
 ALTERNATIVE_PRIORITY = "10"
+
+do_configure_prepend() {
+  # Replaces the placeholder OE_LIBDIR_JNI with the JNI library directory
+  # configured in OE.
+  if [ -e src/vm/properties.c ]; then
+    sed -i -e "s|OE_LIBDIR_JNI|${libdir_jni}|" src/vm/properties.c
+  fi
+
+  if [ -e src/vm/properties.c ]; then
+    sed -i -e "s|OE_LIBDIR_JNI|${libdir_jni}|" src/vm/vm.c
+  fi
+}
+
