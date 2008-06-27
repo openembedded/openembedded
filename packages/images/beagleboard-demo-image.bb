@@ -21,7 +21,9 @@ IMAGE_INSTALL = "\
     xterm xmms epiphany-firefox-replacement \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
-    abiword gnumeric gimp \
+    abiword \
+#    gnumeric \
+#    gimp \
     powertop \
     pidgin \
 #    irssi \
