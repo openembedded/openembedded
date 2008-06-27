@@ -1,22 +1,49 @@
-DESCRIPTION = "MIDPath is a Java library which provides a MIDP2 implementation"
-HOMEPAGE = "http://midpath.thenesis.org/"
-LICENSE  = "GPL"
-PRIORITY = "optional"
-SECTION  = "interpreters"
-PR = "r1"
+# This is the include recipe for the midpath recipes for your platform.
+#
+# To support your particular platform, write a proper configuration, add
+# a new recipe and decided which components it should install by modifying
+# RDEPENDS.
+require midpath-common.inc
 
-SRC_URI = "http://downloads.sourceforge.net/midpath/midpath-${PV}.tar.gz"
+RDEPENDS = "midpath-core midpath-core-bluetooth midpath-core-ogg midpath-core-mp3"
 
-S = "${WORKDIR}/midpath-${PV}"
+PROVIDES = "midpath"
+RPROVIDES = "midpath"
 
-DEPENDS = "virtual/javac-native fastjar-native classpath"
+CONFIGURATION = "${@bb.fatal('Variable CONFIGURATION is not set in your midpath.inc-based recipe.')}"
 
-JAVAC_CMD = "${STAGING_BINDIR_NATIVE}/javac"
+do_compile() {
+  :
+}
 
-FASTJAR_CMD = "${STAGING_BINDIR_NATIVE}/fastjar"
+do_install() {
+	# Installation of configuration.cfg:
+  # Creates a symbolic link at ${datadir}/midpath which points to ${sysconfdir}/midpath
+  install -d ${D}${datadir}/midpath/configuration/com/sun/midp/configuration
+  ln -sf ${sysconfdir}/midpath/configuration.cfg ${D}${datadir}/midpath/configuration/com/sun/midp/configuration/configuration.cfg
 
-JAVA_PATH = "${STAGING_DATADIR}/java"
+  # Put the file itself into ${sysconfdir}/midpath
+  install -d ${D}${sysconfdir}/midpath
+  install -m 0644 ${WORKDIR}/${CONFIGURATION} ${D}${sysconfdir}/midpath/configuration.cfg
 
-GNU_CLASSPATH_PATH = "${JAVA_PATH}/classpath/glibj.zip"
+  # Same procedure for MIDP2.0 required system properties
+  ln -sf ${sysconfdir}/midpath/system_properties ${D}${datadir}/midpath/configuration/com/sun/midp/configuration/system_properties
+  install -m 0644 configuration/com/sun/midp/configuration/system_properties ${D}${sysconfdir}/midpath
 
-CLDC_PATH = ${STAGING_DATADIR}/midpath-cldc/midpath-cldc1.1.jar
+  # Put l10n data into $datadir
+  install -d ${D}${datadir}/midpath/configuration/com/sun/midp/configuration/l10n
+  install -m 0644 configuration/com/sun/midp/configuration/l10n/en-US.xml ${D}${datadir}/midpath/configuration/com/sun/midp/configuration/l10n
+}
+
+PACKAGES = "${PN}"
+
+FILES_${PN} = "\
+	${datadir}/midpath/configuration \
+  ${sysconfdir}/midpath \
+	"
+
+CONFFILES_${PN} = "\
+  ${sysconfdir}/midpath/system_properties \
+  ${sysconfdir}/midpath/configuration.cfg \
+  "
+

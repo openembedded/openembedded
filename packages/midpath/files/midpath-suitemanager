@@ -1,0 +1,2 @@
+#!/bin/sh
+LAUNCHER_CLASS=org.thenesis.midpath.main.SuiteManager midpath-launcher-j2se "$@"
