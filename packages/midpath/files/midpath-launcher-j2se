@@ -4,7 +4,9 @@ if [ ! $LAUNCHER_CLASS ]; then
   LAUNCHER_CLASS=org.thenesis.midpath.main.MIDletLauncher
 fi
 
-JAVA=java
+if [ ! $JAVA ]; then
+  JAVA=java
+fi
 
 JAR_HOME=/usr/share/java
 
