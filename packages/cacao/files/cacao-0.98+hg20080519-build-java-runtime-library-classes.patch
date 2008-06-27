@@ -1,26 +1,36 @@
+Index: cacao/configure.ac
+===================================================================
+--- cacao.orig/configure.ac	2008-06-27 01:23:44.000000000 +0200
++++ cacao/configure.ac	2008-06-27 01:24:02.000000000 +0200
+@@ -772,6 +772,7 @@
+ 
+ AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_PREFIX
+ AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_CLASSES
++AC_CHECK_WITH_BUILD_JAVA_RUNTIME_LIBRARY_CLASSES
+ 
+ if test x"${ENABLE_JRE_LAYOUT}" = "xno"; then
+    AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_LIBDIR
 Index: cacao/m4/java-runtime-library.m4
 ===================================================================
---- cacao.orig/m4/java-runtime-library.m4	2008-06-27 13:51:34.000000000 +0200
-+++ cacao/m4/java-runtime-library.m4	2008-06-27 13:53:31.000000000 +0200
-@@ -92,14 +92,28 @@
- AC_MSG_RESULT(${JAVA_RUNTIME_LIBRARY_CLASSES})
+--- cacao.orig/m4/java-runtime-library.m4	2008-06-27 01:23:44.000000000 +0200
++++ cacao/m4/java-runtime-library.m4	2008-06-27 01:24:02.000000000 +0200
+@@ -93,20 +93,32 @@
  AC_DEFINE_UNQUOTED([JAVA_RUNTIME_LIBRARY_CLASSES], "${JAVA_RUNTIME_LIBRARY_CLASSES}", [Java runtime library classes])
  AC_SUBST(JAVA_RUNTIME_LIBRARY_CLASSES)
-+])
-+
-+
+ 
 +dnl where are Java core library classes located at compilation time
 +
 +AC_DEFUN([AC_CHECK_WITH_BUILD_JAVA_RUNTIME_LIBRARY_CLASSES],[
 +AC_MSG_CHECKING(where Java core library classes are located at compile time)
 +AC_ARG_WITH([build-java-runtime-library-classes],
-+            [AS_HELP_STRING(--with-build-java-runtime-library-classes=<path>,path to Java core library classes (includes the name of the file and may be flat) [[default=${JAVA_RUNTIME_LIBRARY_CLASSES}]])],
++            [AS_HELP_STRING(--with-build-java-runtime-library-classes=<path>,path to Java core library classes (includes the name of the file and may be flat) [[default=${JAVA_RUNTIME_LIBRARY_PREFIX}/share/classpath/glibj.zip]])],
 +            [BUILD_JAVA_RUNTIME_LIBRARY_CLASSES=${withval}],
-+            [BUILD_JAVA_RUNTIME_LIBRARY_CLASSES=${JAVA_RUNTIME_LIBRARY_CLASSES}])
++            [BUILD_JAVA_RUNTIME_LIBRARY_CLASSES=${JAVA_RUNTIME_LIBRARY_PREFIX}/share/classpath/glibj.zip])
 +AC_MSG_RESULT(${BUILD_JAVA_RUNTIME_LIBRARY_CLASSES})
 +AC_DEFINE_UNQUOTED([BUILD_JAVA_RUNTIME_LIBRARY_CLASSES], "${BUILD_JAVA_RUNTIME_LIBRARY_CLASSES}", [Java core library classes at compile time])
 +AC_SUBST(BUILD_JAVA_RUNTIME_LIBRARY_CLASSES)
- 
++])
++
  dnl define BOOTCLASSPATH for Makefiles
  case "${WITH_JAVA_RUNTIME_LIBRARY}" in
      cldc1.1 | gnuclasspath)
@@ -33,15 +43,11 @@ Index: cacao/m4/java-runtime-library.m4
          ;;
  esac
  AC_SUBST(BOOTCLASSPATH)
-Index: cacao/configure.ac
-===================================================================
---- cacao.orig/configure.ac	2008-06-27 13:51:34.000000000 +0200
-+++ cacao/configure.ac	2008-06-27 13:53:31.000000000 +0200
-@@ -772,6 +772,7 @@
+ ])
  
- AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_PREFIX
- AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_CLASSES
-+AC_CHECK_WITH_BUILD_JAVA_RUNTIME_LIBRARY_CLASSES
+-
+-dnl where are Java runtime library native libraries installed
++dnl where are Java runtime library native libraries installed (at compilation time)
  
- if test x"${ENABLE_JRE_LAYOUT}" = "xno"; then
-    AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_LIBDIR
+ AC_DEFUN([AC_CHECK_WITH_JAVA_RUNTIME_LIBRARY_LIBDIR],[
+ AC_MSG_CHECKING(where Java runtime library native libraries are installed)
