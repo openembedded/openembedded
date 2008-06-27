@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.0+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit distutils update-rc.d
 
@@ -30,6 +30,7 @@ RDEPENDS_${PN} += "\
   python-pygobject \
   python-pyrtc \
   python-pyserial \
+  python-shell \
   python-syslog \
 "
 
