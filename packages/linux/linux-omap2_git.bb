@@ -26,9 +26,6 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \
            file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;patch=1 \
-           file://0001-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
-           file://0002-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
-           file://0003-ARM-OMAP-SmartReflex-driver.patch;patch=1 \
            file://0001-omap3-cpuidle.patch;patch=1 \
            file://0002-omap3-cpuidle.patch;patch=1 \
 "
