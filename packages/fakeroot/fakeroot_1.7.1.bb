@@ -5,8 +5,10 @@ LICENSE = "GPL"
 RDEPENDS = "util-linux"
 PR = "r2"
 
-SRC_URI = "ftp://ftp.debian.org/debian/pool/main/f/fakeroot/fakeroot_${PV}.tar.gz \
-           file://work-with-older-libtool.patch;patch=1"
+SRC_URI = "\
+  ftp://ftp.gentoo.mesh-solutions.com/mirrors/gentoo/distfiles/fakeroot_1.7.1.tar.gz
+  file://work-with-older-libtool.patch;patch=1 \
+"
 
 inherit autotools
 
