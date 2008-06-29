@@ -12,12 +12,15 @@ export DSPLINK = "${S}"
 
 DSPLINKPLATFORM ?= "Davinci"
 
-DSPLINKPLATFORM_omap5912osk = "Omap"
-DSPLINKPLATFORM_beagleboard = "Omap"
+DSPLINKPLATFORM_omap5912osk = "OMAP"
+DSPLINKPLATFORM_beagleboard = "OMAP"
 DSPLINKPLATFORM_davinci-sffsdr = "Davinci"
 DSPLINKPLATFORM_davinci-dvevm = "Davinci"
 
 DSPLINKDSP ?= "C64XX"
+DSPLINKSOC ?= "DM6446"
+
+DSPLINKSOC_beagleboard = "3530"
 
 export DSPLINKPLATFORM 
 export DSPLINKDSP
@@ -33,7 +36,8 @@ do_configure () {
 		-e s:SED_ME_DSPDISTRO:davinci_mvlpro5\.0:g \
 		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
 		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
-		${S}/config/CURRENTCFG.MK	
+		-e s:SED_ME_SOC:${DSPLINKSOC}:g \	
+    	${S}/config/CURRENTCFG.MK	
 
 	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
 		-e s:SED_ME_STAGINGDIR:${STAGING_DIR_TARGET}:g \
