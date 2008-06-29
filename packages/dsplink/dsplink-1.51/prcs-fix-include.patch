@@ -27,3 +27,23 @@
  
  /*  ----------------------------------- DSP/BIOS Link               */
  #include <dsplink.h>
+--- /tmp/hal_intgen.c	2008-06-29 23:42:05.000000000 +0200
++++ dsplink_1_51_00_08/dsplink/gpp/src/ldrv/HAL/OMAP/3530/hal_intgen.c	2008-06-29 23:42:18.000000000 +0200
+@@ -17,6 +17,7 @@
+ 
+ 
+ /*  ----------------------------------- OS headers                  */
++#include <linux/autoconf.h> 
+ #include <asm/io.h>
+ 
+ /*  ----------------------------------- DSP/BIOS Link               */
+--- /tmp/hal_prcm.c	2008-06-29 23:42:05.000000000 +0200
++++ dsplink_1_51_00_08/dsplink/gpp/src/ldrv/HAL/OMAP/3530/hal_prcm.c	2008-06-29 23:43:10.000000000 +0200
+@@ -18,6 +18,7 @@
+ 
+ 
+ /*  ----------------------------------- OS headers                  */
++#include <linux/autoconf.h> 
+ #include <asm/io.h>
+ 
+ /*  ----------------------------------- DSP/BIOS Link               */
