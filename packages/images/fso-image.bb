@@ -40,7 +40,6 @@ TOOLS_INSTALL = "\
 #  bash \
   htop \
   mickeyterm \
-  mplayer \
   nano \
   powertop \
   s3c24xx-gpio \
