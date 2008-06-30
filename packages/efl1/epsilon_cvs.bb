@@ -2,7 +2,7 @@ DESCRIPTION = "Epsilon is a flexible and powerful image thumbnailing library \
 that is compliant with the freedesktop.org Thumbnail Managing Standard."
 LICENSE = "MIT BSD"
 # can also depend on xine for movie thumbnails
-DEPENDS = "imlib2 epeg libpng evas ecore edje perl-native"
+DEPENDS = "libpng evas ecore edje perl-native"
 PV = "0.3.0.012+cvs${SRCDATE}"
 PR = "r0"
 

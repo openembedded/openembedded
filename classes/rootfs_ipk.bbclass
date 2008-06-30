@@ -20,7 +20,7 @@ fakeroot rootfs_ipk_do_rootfs () {
 	package_generate_ipkg_conf
 
 	mkdir -p ${T}
-
+	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg/
 	opkg-cl ${IPKG_ARGS} update
 
 	# Uclibc builds don't provide this stuff...

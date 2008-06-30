@@ -6,7 +6,7 @@ PROVIDES += "gst-plugins"
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just 
 # a missing alsa plugin
-DEPENDS += "alsa-lib"
+DEPENDS += "alsa-lib libsm"
 
-PR = "r2"
+PR = "r3"
 

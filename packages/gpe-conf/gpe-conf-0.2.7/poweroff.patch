@@ -1,0 +1,11 @@
+--- gpe-conf/suid.c~	2008-06-05 12:41:26.000000000 +0200
++++ gpe-conf/suid.c	2008-06-05 12:41:26.000000000 +0200
+@@ -454,7 +454,7 @@
+ 				else if (strcmp (cmd, "SHDN") == 0)  // shutdown device
+ 				{
+ 					fscanf (in, "%100s", arg2);
+-					system ("poweroff");
++					system ("/sbin/poweroff");
+ 				}
+ 				else if (strcmp (cmd, "MODP") == 0)  /* modprobe kernel module */
+ 				{

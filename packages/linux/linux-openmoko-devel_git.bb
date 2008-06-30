@@ -1,21 +1,24 @@
 require linux.inc
 require linux-openmoko.inc
 
-DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ Openmoko"
+DESCRIPTION = "Linux 2.6.x (development) kernel for the Openmoko Neo Smartphones"
 DEFAULT_PREFERENCE = "-1"
 
-KERNEL_RELEASE = "2.6.24-rc8"
+KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 # If you use a rc, you will need to use this:
 PV = "${KERNEL_RELEASE}+git${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
 SRC_URI = "git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy"
 S = "${WORKDIR}/git"
+
+SRC_URI_append-om-gta02 = " file://del-hardcoded-led-behaviour.patch;patch=1"
+SRC_URI += "file://defconfig-${MACHINE}"
 
 ##############################################################
 # kernel image resides on a seperate flash partition (for now)
@@ -42,5 +45,6 @@ module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 module_autoload_s3cmci = "s3cmci"
 
 do_configure_prepend() {
-        mv defconfig-2.6.24 ${WORKDIR}/defconfig
+	cp ${WORKDIR}/defconfig-${MACHINE} ${WORKDIR}/defconfig
 }
+

@@ -1,0 +1,56 @@
+Backport support for url.redirect-code directive from 1.5 branch.
+
+diff -urN lighttpd-1.4.18.orig/src/mod_redirect.c lighttpd-1.4.18/src/mod_redirect.c
+--- lighttpd-1.4.18.orig/src/mod_redirect.c	2007-04-10 09:52:58.000000000 +0200
++++ lighttpd-1.4.18/src/mod_redirect.c	2008-06-11 17:38:50.000000000 +0200
+@@ -16,6 +16,8 @@
+ typedef struct {
+ 	pcre_keyvalue_buffer *redirect;
+ 	data_config *context; /* to which apply me */
++
++	unsigned short redirect_code;
+ } plugin_config;
+ 
+ typedef struct {
+@@ -72,6 +74,7 @@
+ 
+ 	config_values_t cv[] = {
+ 		{ "url.redirect",               NULL, T_CONFIG_LOCAL, T_CONFIG_SCOPE_CONNECTION }, /* 0 */
++		{ "url.redirect-code",          NULL, T_CONFIG_SHORT, T_CONFIG_SCOPE_CONNECTION }, /* 1 */
+ 		{ NULL,                         NULL, T_CONFIG_UNSET, T_CONFIG_SCOPE_UNSET }
+ 	};
+ 
+@@ -90,6 +93,7 @@
+ 		s->redirect   = pcre_keyvalue_buffer_init();
+ 
+ 		cv[0].destination = s->redirect;
++		cv[1].destination = &(s->redirect_code);
+ 
+ 		p->config_storage[i] = s;
+ 		ca = ((data_config *)srv->config_context->data[i])->value;
+@@ -140,6 +144,7 @@
+ 	plugin_config *s = p->config_storage[0];
+ 
+ 	p->conf.redirect = s->redirect;
++	p->conf.redirect_code = s->redirect_code;
+ 	p->conf.context = NULL;
+ 
+ 	/* skip the first, the global context */
+@@ -157,6 +162,8 @@
+ 			if (0 == strcmp(du->key->ptr, "url.redirect")) {
+ 				p->conf.redirect = s->redirect;
+ 				p->conf.context = dc;
++			} else if (0 == strcmp(du->key->ptr, "url.redirect-code")) {
++				p->conf.redirect_code = s->redirect_code;
+ 			}
+ 		}
+ 	}
+@@ -250,7 +257,7 @@
+ 
+ 			response_header_insert(srv, con, CONST_STR_LEN("Location"), CONST_BUF_LEN(p->location));
+ 
+-			con->http_status = 301;
++			con->http_status = p->conf.redirect_code > 99 && p->conf.redirect_code < 1000 ? p->conf.redirect_code : 301;
+ 			con->file_finished = 1;
+ 
+ 			return HANDLER_FINISHED;

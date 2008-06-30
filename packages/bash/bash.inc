@@ -8,15 +8,24 @@ inherit autotools gettext
 
 PARALLEL_MAKE = ""
 
+SRC_URI = "${GNU_MIRROR}/bash/bash-${PV}.tar.gz"
+S = "${WORKDIR}/bash-${PV}"
+
 bindir = "/bin"
 sbindir = "/sbin"
 
 EXTRA_OECONF = "--with-ncurses"
-export CC_FOR_BUILD = "${BUILD_CC}"
 
 do_configure () {
 	gnu-configize
 	oe_runconf
+}
+
+do_compile_prepend() {
+	cd builtins
+	touch mkbuiltins.o
+	${BUILD_CC} ${BUILD_CFLAGS} ${BUILD_LDFLAGS} -I${S}/include -I${S} -o mkbuiltins mkbuiltins.c
+	cd ${S}
 }
 
 pkg_postinst () {

@@ -1,0 +1,23 @@
+diff -Naur fltk-chess.orig/fltk-chess.cxx fltk-chess/fltk-chess.cxx
+--- fltk-chess.orig/fltk-chess.cxx	2005-08-25 01:42:28.000000000 +0400
++++ fltk-chess/fltk-chess.cxx	2008-05-17 19:26:57.000000000 +0400
+@@ -705,8 +705,8 @@
+ 
+ void cb_P(Fl_Widget * ob, void *p)
+ {
+-
+-    changeP = (char) p;
++    int temp_p = (int) p;
++    changeP = (char) temp_p;
+ }
+ 
+ 
+@@ -881,7 +881,7 @@
+ 	// close(fdFrom[0]); 
+ 	// close(fdFrom[1]);
+ 
+-	execl("./gnuchess", NULL);
++	execl("/bin/sh", "/bin/sh", "-c", "exec gnuchess", NULL);
+ 
+     } else {
+ 

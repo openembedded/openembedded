@@ -1,0 +1,19 @@
+--- handsfree/old/Makefile	2006-11-21 18:01:13.000000000 +0000
++++ handsfree/Makefile	2006-11-21 14:01:17.000000000 +0000
+@@ -9,12 +9,12 @@
+ # I use a dmixer as default alsa device to mix
+ # the handsfree output with other sound playback 
+ #
+-ALSA_PLAY="default"
+-ALSA_REC="plughw:0,0"
++#ALSA_PLAY="default"
++#ALSA_REC="plughw:0,0"
+ 
+ 
+-LDFLAGS= -lbluetooth -lasound
+-CFLAGS=-g -Wall -DOSS=0
++#LDFLAGS= -lbluetooth -lasound
++#CFLAGS=-g -Wall -DOSS=0
+ 
+ all: handsfree headset
+ 

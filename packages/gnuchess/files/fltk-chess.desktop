@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=FLTK Chess
+Comment=FLTK frontend to GNUchess
+Exec=fltk-chess
+Type=Application
+Icon=fltk-chess
+Categories=Game;BoardGame;

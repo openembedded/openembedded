@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gimp.org"
 SECTION = "x11/graphics"
 LICENSE = "GPL"
 
-DEPENDS = "sed-native libart-lgpl gtk+ jpeg libpng libexif tiff"
+DEPENDS = "sed-native gdk-pixbuf-csource-native libart-lgpl gtk+ jpeg libpng libexif tiff"
 
 SRC_URI = "ftp://ftp.gimp.org/pub/gimp/v2.3/gimp-${PV}.tar.bz2 \
                  file://configure-libwmf.patch;patch=1"

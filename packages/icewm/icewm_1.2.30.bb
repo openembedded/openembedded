@@ -1,13 +1,15 @@
-SECTION = "x11/wm"
 DESCRIPTION = "IceWM Window Manager"
+SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr xft mkfontdir-native"
 RRECOMMENDS = "ttf-dejavu-sans"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \
-	   file://makefile.patch;patch=1 \
-	   file://configure.patch;patch=1"
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \
+  file://makefile.patch;patch=1 \
+  file://configure.patch;patch=1 \
+"
 
 inherit autotools pkgconfig
 

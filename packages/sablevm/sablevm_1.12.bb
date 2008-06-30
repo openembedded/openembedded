@@ -9,7 +9,7 @@ DEPENDS = "libffi libtool popt \
 #          unzip"
 RRECOMMENDS = "sablevm-classpath (>= ${PV})"
 
-SRC_URI = "http://sablevm.org/download/release/${PV}/${PN}-${PV}.tar.gz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/sablevm/${PN}-${PV}.tar.gz \
            file://no-internal-libs.patch;patch=1"
 
 inherit autotools update-alternatives

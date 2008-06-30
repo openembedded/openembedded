@@ -1,0 +1,14 @@
+--- u-boot/Makefile-orig	2008-05-29 14:00:30.000000000 -0700
++++ u-boot/Makefile	2008-05-29 13:59:13.000000000 -0700
+@@ -2550,8 +2550,8 @@ omap2430sdp_config :    unconfig
+ #########################################################################
+ ## ARM CORTEX Systems
+ #########################################################################
+-omap3530beagle_config :    unconfig
+-	@./mkconfig $(@:_config=) arm omap3 omap3530beagle
++beagleboard_config :    unconfig
++	@./mkconfig omap3530beagle arm omap3 omap3530beagle
+ 
+ #########################################################################
+ ## XScale Systems
+

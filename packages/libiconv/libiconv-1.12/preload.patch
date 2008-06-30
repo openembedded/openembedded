@@ -1,0 +1,379 @@
+Index: libiconv-1.12/Makefile.in
+===================================================================
+--- libiconv-1.12.orig/Makefile.in	2007-03-20 02:50:46.000000000 +0100
++++ libiconv-1.12/Makefile.in	2008-06-07 00:29:42.753386009 +0200
+@@ -31,6 +31,7 @@
+ 
+ all : lib/localcharset.h force
+ 	cd lib && $(MAKE) all
++	cd preload && $(MAKE) all
+ 	cd srclib && $(MAKE) all
+ 	cd src && $(MAKE) all
+ 	cd po && $(MAKE) all
+@@ -50,6 +51,7 @@
+ install : lib/localcharset.h force
+ 	cd libcharset && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd lib && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
++	cd preload && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd srclib && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd src && $(MAKE) install prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	if [ ! -d $(DESTDIR)$(includedir) ] ; then $(mkinstalldirs) $(DESTDIR)$(includedir) ; fi
+@@ -60,6 +62,7 @@
+ installdirs : force
+ 	cd libcharset && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd lib && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
++	cd preload && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd srclib && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd src && $(MAKE) installdirs prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	if [ ! -d $(DESTDIR)$(includedir) ] ; then $(mkinstalldirs) $(DESTDIR)$(includedir) ; fi
+@@ -69,6 +72,7 @@
+ uninstall : force
+ 	cd libcharset && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd lib && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
++	cd preload && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd srclib && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	cd src && $(MAKE) uninstall prefix='$(prefix)' exec_prefix='$(exec_prefix)' libdir='$(libdir)'
+ 	$(RM) $(DESTDIR)$(includedir)/iconv.h
+@@ -78,6 +82,7 @@
+ check : all force
+ 	cd libcharset && $(MAKE) check
+ 	cd lib && $(MAKE) check
++	cd preload && $(MAKE) check
+ 	cd srclib && $(MAKE) check
+ 	cd src && $(MAKE) check
+ 	cd po && $(MAKE) check
+@@ -88,6 +93,7 @@
+ 	cd libcharset && $(MAKE) mostlyclean
+ 	$(RM) lib/charset.alias lib/libcharset.* lib/localcharset.h
+ 	cd lib && $(MAKE) mostlyclean
++	cd preload && $(MAKE) mostlyclean
+ 	cd srclib && $(MAKE) mostlyclean
+ 	cd src && $(MAKE) mostlyclean
+ 	cd po && $(MAKE) mostlyclean
+@@ -99,6 +105,7 @@
+ 	cd libcharset && $(MAKE) clean
+ 	$(RM) lib/charset.alias lib/libcharset.* lib/localcharset.h
+ 	cd lib && $(MAKE) clean
++	cd preload && $(MAKE) clean
+ 	cd srclib && $(MAKE) clean
+ 	cd src && $(MAKE) clean
+ 	cd po && $(MAKE) clean
+@@ -110,6 +117,7 @@
+ 	cd libcharset && if test -f Makefile; then $(MAKE) distclean; fi
+ 	$(RM) lib/charset.alias lib/libcharset.* lib/localcharset.h
+ 	cd lib && if test -f Makefile; then $(MAKE) distclean; fi
++	cd preload && if test -f Makefile; then $(MAKE) distclean; fi
+ 	cd srclib && if test -f Makefile; then $(MAKE) distclean; fi
+ 	cd src && if test -f Makefile; then $(MAKE) distclean; fi
+ 	cd po && if test -f Makefile; then $(MAKE) distclean; fi
+@@ -124,6 +132,7 @@
+ 	cd libcharset && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+ 	$(RM) lib/charset.alias lib/libcharset.* lib/localcharset.h
+ 	cd lib && if test -f Makefile; then $(MAKE) maintainer-clean; fi
++	cd preload && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+ 	cd srclib && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+ 	cd src && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+ 	cd po && if test -f Makefile; then $(MAKE) maintainer-clean; fi
+Index: libiconv-1.12/lib/Makefile.in
+===================================================================
+--- libiconv-1.12.orig/lib/Makefile.in	2007-05-28 00:15:31.000000000 +0200
++++ libiconv-1.12/lib/Makefile.in	2008-06-07 00:29:42.753386009 +0200
+@@ -64,41 +64,11 @@
+ OBJECTS_RES_yes = libiconv.res
+ OBJECTS_RES_no =
+ 
+-all : @PLUGLIB@ libiconv.la
++all : libiconv.la
+ 
+ libiconv.la : $(OBJECTS)
+ 	$(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) -o libiconv.la -rpath $(libdir) -version-info $(LIBICONV_VERSION_INFO) -no-undefined $(OBJECTS)
+ 
+-preloadable_libiconv.so : preloadable_libiconv_@OS@.so
+-	$(RM) preloadable_libiconv.so
+-	$(LN_S) preloadable_libiconv_@OS@.so preloadable_libiconv.so
+-
+-preloadable_libiconv_linux.so : $(SOURCES)
+-	if test -n "@GCC@"; then \
+-	  $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -fPIC -DPIC -DLIBICONV_PLUG $(SOURCES) -shared -o preloadable_libiconv_linux.so; \
+-	else \
+-	  $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -KPIC -DPIC -DLIBICONV_PLUG $(SOURCES) -shared -o preloadable_libiconv_linux.so; \
+-	fi
+-
+-preloadable_libiconv_solaris.so : $(SOURCES)
+-	if test -n "@GCC@"; then \
+-	  $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -fPIC -DPIC -DLIBICONV_PLUG $(SOURCES) -shared -o preloadable_libiconv_solaris.so; \
+-	else \
+-	  $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -KPIC -DPIC -DLIBICONV_PLUG $(SOURCES) -G -o preloadable_libiconv_solaris.so; \
+-	fi
+-
+-preloadable_libiconv_osf.so : $(SOURCES)
+-	if test -n "@GCC@"; then \
+-	  $(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -fPIC -DPIC -DLIBICONV_PLUG $(SOURCES) -shared -o preloadable_libiconv_osf.so; \
+-	else \
+-	  mkdir objects; \
+-	  for f in $(SOURCES); do \
+-	    $(CC) $(INCLUDES) $(CFLAGS) $(CPPFLAGS) $(DEFS) -DPIC -DLIBICONV_PLUG -c $$f -o objects/`basename $$f | sed -e 's,\.c$$,.o,'`; \
+-	  done; \
+-	  /bin/ld -shared -expect_unresolved \* -o preloadable_libiconv_osf.so objects/*.o; \
+-	  rm -rf objects; \
+-	fi
+-
+ iconv.lo : $(srcdir)/iconv.c $(srcdir)/converters.h $(srcdir)/encodings.def $(srcdir)/encodings_aix.def $(srcdir)/encodings_osf1.def $(srcdir)/encodings_dos.def $(srcdir)/encodings_local.def $(srcdir)/aliases.h $(srcdir)/aliases_aix.h $(srcdir)/aliases_osf1.h $(srcdir)/aliases_dos.h $(srcdir)/flags.h
+ 	$(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c $(srcdir)/iconv.c
+ 
+@@ -134,21 +104,19 @@
+ 	         rm -f $$objects && \
+ 	         mv -f libiconv.new.a libiconv.a) ;; \
+ 	esac
+-	if test -n "@PLUGLIB@"; then $(INSTALL_DATA) @PLUGLIB@ $(DESTDIR)$(libdir)/@PLUGLIB@.new && mv $(DESTDIR)$(libdir)/@PLUGLIB@.new $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
+ 
+ installdirs : force
+ 	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
+ 
+ uninstall : force
+ 	$(LIBTOOL_UNINSTALL) $(RM) $(DESTDIR)$(libdir)/libiconv.la
+-	if test -n "@PLUGLIB@"; then $(RM) $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
+ 
+ check : all
+ 
+ mostlyclean : clean
+ 
+ clean : force
+-	$(RM) *.o *.lo libiconv.res *.a *.la preloadable_libiconv* core *.stackdump so_locations
++	$(RM) *.o *.lo libiconv.res *.a *.la core *.stackdump so_locations
+ 	$(RM) -r .libs _libs
+ 
+ distclean : clean
+Index: libiconv-1.12/preload/configure.ac
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libiconv-1.12/preload/configure.ac	2008-06-07 00:29:42.753386009 +0200
+@@ -0,0 +1,78 @@
++dnl Copyright (C) 1999-2008 Free Software Foundation, Inc.
++dnl This file is part of the GNU LIBICONV Library.
++dnl
++dnl The GNU LIBICONV Library is free software; you can redistribute it and/or
++dnl modify it under the terms of the GNU Library General Public License as
++dnl published by the Free Software Foundation; either version 2 of the
++dnl License, or (at your option) any later version.
++dnl
++dnl The GNU LIBICONV Library is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++dnl Library General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU Library General Public License
++dnl along with the GNU LIBICONV Library; see the file COPYING.LIB.  If not,
++dnl write to the Free Software Foundation, Inc., 51 Franklin Street,
++dnl Fifth Floor, Boston, MA 02110-1301, USA.
++
++AC_PREREQ([2.60])
++
++PACKAGE=libiconv
++VERSION=0
++
++AC_INIT(configure.ac)
++AC_CONFIG_AUX_DIR(../build-aux)
++AC_PROG_MAKE_SET
++AC_SUBST(PACKAGE)
++AC_SUBST(VERSION)
++
++dnl           checks for basic programs
++
++AC_PROG_CC
++AC_PROG_CPP
++AC_PROG_INSTALL
++
++dnl           check for host type
++
++AC_CANONICAL_HOST
++
++dnl           checks for installer options
++
++gl_RELOCATABLE_LIBRARY
++
++dnl           checks for programs
++
++AC_PROG_LN_S
++
++dnl           checks for UNIX variants that set DEFS
++
++AC_USE_SYSTEM_EXTENSIONS
++
++dnl           checks for compiler output filename suffixes
++
++AC_OBJEXT
++AC_EXEEXT
++
++dnl           check for build configuration
++
++dnl Here we need to build shared object files, regardless whether the user
++dnl wants to the libiconv library itself to be installed shared or static or
++dnl both.
++enable_shared=yes
++enable_static=no
++LT_INIT([win32-dll])
++gl_VISIBILITY
++
++dnl           check whether OS supports plug libraries
++
++case "$host_os" in
++  linux* | solaris* | osf*)
++    PLUGLIB="preloadable_libiconv.so" ;;
++  *)
++    PLUGLIB=""
++esac
++AC_SUBST(PLUGLIB)
++
++AC_CONFIG_FILES([Makefile])
++AC_OUTPUT
+Index: libiconv-1.12/preload/Makefile.devel
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libiconv-1.12/preload/Makefile.devel	2008-06-07 00:29:42.753386009 +0200
+@@ -0,0 +1,21 @@
++# This is the developer's makefile, not the user's makefile.
++# Don't use it unless you know exactly what you do!
++
++SHELL = /bin/sh
++MAKE = make
++AUTOCONF = autoconf-2.62
++ACLOCAL = aclocal-1.10
++CP = cp
++RM = rm -f
++
++all : configures
++
++aclocal.m4 : $(wildcard ../m4/*.m4)
++	$(ACLOCAL) -I ../m4 -I ../srcm4 --output=$@
++
++configures : configure
++
++configure : configure.ac aclocal.m4
++	$(AUTOCONF)
++
++force :
+Index: libiconv-1.12/preload/Makefile.in
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libiconv-1.12/preload/Makefile.in	2008-06-07 00:29:42.756717414 +0200
+@@ -0,0 +1,83 @@
++# Makefile for libiconv/preload
++
++#### Start of system configuration section. ####
++
++# Directories used by "make":
++srcdir = @srcdir@
++
++# Directories used by "make install":
++prefix = @prefix@
++local_prefix = /usr/local
++exec_prefix = @exec_prefix@
++libdir = @libdir@
++
++# Programs used by "make":
++CC = @CC@
++CFLAGS = @CFLAGS@ @CFLAG_VISIBILITY@
++CPPFLAGS = @CPPFLAGS@
++LDFLAGS = @LDFLAGS@
++INCLUDES = -I../lib -I$(srcdir)/../lib -I../include -I$(srcdir)/../include -I.. -I$(srcdir)/..
++# -DBUILDING_LIBICONV: Change expansion of LIBICONV_DLL_EXPORTED macro.
++# -DBUILDING_DLL: Change expansion of RELOCATABLE_DLL_EXPORTED macro.
++DEFS = -DLIBDIR=\"$(libdir)\" -DBUILDING_LIBICONV -DBUILDING_DLL \
++-DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(libdir)\" -DNO_XMALLOC \
++-Dset_relocation_prefix=libiconv_set_relocation_prefix \
++-Drelocate=libiconv_relocate @DEFS@
++LIBTOOL = @LIBTOOL@
++LIBTOOL_COMPILE = $(LIBTOOL) --mode=compile
++LIBTOOL_LINK = $(LIBTOOL) --mode=link
++LN_S = @LN_S@
++RM = rm -f
++
++# Programs used by "make install":
++INSTALL = @INSTALL@
++INSTALL_PROGRAM = @INSTALL_PROGRAM@
++INSTALL_DATA = @INSTALL_DATA@
++mkinstalldirs = $(SHELL) @top_srcdir@/build-aux/mkinstalldirs
++
++#### End of system configuration section. ####
++
++SHELL = /bin/sh
++
++# Needed by $(LIBTOOL).
++top_builddir = .
++
++SOURCES = $(srcdir)/../lib/iconv.c $(srcdir)/../libcharset/lib/localcharset.c $(srcdir)/../lib/relocatable.c
++
++all : @PLUGLIB@
++
++preloadable_libiconv.so : $(SOURCES)
++	$(RM) -r objects
++	mkdir objects && \
++	for f in $(SOURCES); do \
++	  $(LIBTOOL_COMPILE) $(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -DLIBICONV_PLUG -c $$f -o objects/`basename $$f | sed -e 's,\.c$$,.o,'` || exit 1; \
++	done && \
++	$(LIBTOOL_LINK) $(CC) $(LDFLAGS) $(CFLAGS) -o libiconv.la -rpath $(libdir) -no-undefined objects/*.lo && \
++	$(RM) -r objects
++	cp .libs/libiconv.so preloadable_libiconv.so
++
++install : all force
++	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
++	if test -n "@PLUGLIB@"; then $(INSTALL_DATA) @PLUGLIB@ $(DESTDIR)$(libdir)/@PLUGLIB@.new && mv $(DESTDIR)$(libdir)/@PLUGLIB@.new $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
++
++installdirs : force
++	if [ ! -d $(DESTDIR)$(libdir) ] ; then $(mkinstalldirs) $(DESTDIR)$(libdir) ; fi
++
++uninstall : force
++	if test -n "@PLUGLIB@"; then $(RM) $(DESTDIR)$(libdir)/@PLUGLIB@ ; fi
++
++check : all
++
++mostlyclean : clean
++
++clean : force
++	$(RM) *.o *.lo *.a *.la preloadable_libiconv* core *.stackdump so_locations
++	$(RM) -r .libs _libs objects
++
++distclean : clean
++	$(RM) config.status config.log config.cache Makefile libtool
++
++maintainer-clean : distclean
++
++force :
++
+Index: libiconv-1.12/configure.ac
+===================================================================
+--- libiconv-1.12.orig/configure.ac	2008-06-07 00:35:12.706686714 +0200
++++ libiconv-1.12/configure.ac	2008-06-07 00:36:05.351174592 +0200
+@@ -121,23 +121,6 @@
+ m4_popdef([AC_LIBOBJ])
+ AC_SUBST([SRCLIBOBJS])
+ 
+-dnl           check whether OS supports plug libraries
+-
+-OS=""
+-case "$host_os" in
+-  linux*)   OS="linux" ;;
+-  solaris*) OS="solaris" ;;
+-  osf*)     OS="osf" ;;
+-esac
+-if test -n "$OS"; then
+-  AC_SUBST(OS)
+-  AC_SUBST(GCC)
+-  PLUGLIB="preloadable_libiconv.so"
+-else
+-  PLUGLIB=""
+-fi
+-AC_SUBST(PLUGLIB)
+-
+ dnl Compilation on mingw and Cygwin needs special Makefile rules, because
+ dnl 1. when we install a shared library, we must arrange to export
+ dnl    auxiliary pointer variables for every exported variable,
+@@ -185,6 +168,7 @@
+ ])
+ 
+ AC_CONFIG_SUBDIRS(libcharset)
++AC_CONFIG_SUBDIRS(preload)
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([lib/Makefile])
+ AC_CONFIG_FILES([srclib/Makefile])

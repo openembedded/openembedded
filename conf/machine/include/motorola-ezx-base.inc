@@ -2,7 +2,7 @@ TARGET_ARCH = "arm"
 PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5te iwmmxt"
 
 PREFERRED_PROVIDER_xserver = "xserver-kdrive"
-PREFERRED_PROVIDER_virtual/kernel = "linux-ezx"
+PREFERRED_PROVIDER_virtual/kernel ?= "linux-ezx"
 
 #cat /proc/mtd
 #dev:    size   erasesize  name
@@ -14,11 +14,12 @@ PREFERRED_PROVIDER_virtual/kernel = "linux-ezx"
 MACHINE_FEATURES = "kernel26 touchscreen apm alsa bluetooth usbgadget usbhost keyboard screen phone"
 MACHINE_FEATURES += " iwmmxt"
 
-
 MACHINE_DISPLAY_WIDTH_PIXELS = "240"
 MACHINE_DISPLAY_HEIGHT_PIXELS = "320"
 MACHINE_DISPLAY_ORIENTATION = "0"
 MACHINE_DISPLAY_PPI = "180"
+
+XSERVER = "xserver-kdrive-fbdev"
 
 ROOT_FLASH_SIZE = "24"
 

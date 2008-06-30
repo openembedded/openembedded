@@ -1,3 +1,4 @@
+DESCRIPTION = "WebKit browser engine, GTK+ edition"
 DEPENDS = "curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs flex-native gperf-native perl-native sqlite3"
 
 SRCREV_FORMAT = "webcore-rwebkit"
@@ -13,6 +14,7 @@ SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http;name=webkit \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitLibraries;proto=http \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitTools;proto=http \
+  file://acinclude.m4 \
   file://Makefile \
   file://Makefile.shared \
   file://autogen.sh \

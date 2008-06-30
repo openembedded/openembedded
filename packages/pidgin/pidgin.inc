@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "multi-protocol instant messaging client"
 LICENSE = "GPL"
 
-DEPENDS = "avahi gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
+DEPENDS = "startup-notification avahi gtk+ ncurses gnutls virtual/libintl gstreamer dbus"
 RRECOMMENDS_${PN} = "libpurple-plugin-ssl-gnutls libpurple-protocol-irc libpurple-protocol-xmpp"
 
 EXTRA_OECONF = " \

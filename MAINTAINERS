@@ -46,7 +46,7 @@ Mail:       erik@hovland.org
 Distros:    familiar
 Machines:   h3600, h5400
 Interests:  Kernels, Porting, Distro refinement
-Recipes:    at76c503a, dropbear, handhelds-sa, handhelds-pxa
+Recipes:    at76c503a, handhelds-sa, handhelds-pxa
 
 Person:     Florian Boor
 Mail:       fb@kernelconcepts.de
@@ -68,7 +68,7 @@ Interests:  Multimedia in gpe and on fbdev, and gtk+ apps on PDA devices.
 Interests:  GNOME on PDA
 Recipes:    mplayer, xmms, xmms-mad, xmms-tremor, dillo, links, links-x11
 Recipes:    epdfview, sylpheed-claws, sylpheed, gqview, tightvnc
-Recipes:    epdfview, gtk+_2.10.*
+Recipes:    epdfview, gtk+_2.10.* openmoko2/*
 
 Person:     Holger Hans Peter Freyther
 Mail:       zecke@selfish.org
@@ -166,8 +166,8 @@ Person:     Michael 'Mickey' Lauer
 Mail:       mlauer@vanille-media.de
 Distros:    Openmoko, Ångström, Generic
 Machines:   om-gta01, om-gta02, nokia810, x86, qemuarm, qemux86
-Interests:  Core OE infrastructure, everything Python, EFL, E17, Qt4
-Recipes:    *python*, efl/*, e17*
+Interests:  Core OE infrastructure, everything Python, EFL
+Recipes:    efl1/*, busybox/*, dbus/*, dropbear/*, freesmartphone/*, gstreamer/*, *python*
 
 Person:     Patrick Gfeller
 Mail:       gfellerpatrik@gmx.net

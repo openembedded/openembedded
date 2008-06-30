@@ -1,11 +1,11 @@
 require hal.inc
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb"
+DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb-compat"
 RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://99_hal \
             file://20hal \

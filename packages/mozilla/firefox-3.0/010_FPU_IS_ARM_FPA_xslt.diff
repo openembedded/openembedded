@@ -1,0 +1,56 @@
+# Bug 369722 – prdtoa.c jsnum.h txDouble.h not required IEEE_ARM define on Codesourcery EABI gcc3.4.4 compiler
+#
+--- mozilla/content/xslt/public/txDouble.h.orig	2006-07-13 17:21:52.000000000 +0300
++++ mozilla/content/xslt/public/txDouble.h	2007-10-25 15:01:25.000000000 +0300
+@@ -58,46 +58,48 @@ fp_except_t oldmask = fpsetmask(~allmask
+ /**
+  * Stefan Hanske <sh990154@mail.uni-greifswald.de> reports:
+  *  ARM is a little endian architecture but 64 bit double words are stored
+  * differently: the 32 bit words are in little endian byte order, the two words
+  * are stored in big endian`s way.
+  */
+ 
+ #if defined(__arm) || defined(__arm32__) || defined(__arm26__) || defined(__arm__)
+-#define CPU_IS_ARM
++#if !defined(__VFP_FP__)
++#define FPU_IS_ARM_FPA
++#endif
+ #endif
+ 
+ #if (__GNUC__ == 2 && __GNUC_MINOR__ > 95) || __GNUC__ > 2
+ /**
+  * This version of the macros is safe for the alias optimizations
+  * that gcc does, but uses gcc-specific extensions.
+  */
+ 
+ typedef union txdpun {
+     PRFloat64 d;
+     struct {
+-#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
++#if defined(IS_LITTLE_ENDIAN) && !defined(FPU_IS_ARM_FPA)
+         PRUint32 lo, hi;
+ #else
+         PRUint32 hi, lo;
+ #endif
+     } s;
+ } txdpun;
+ 
+ #define TX_DOUBLE_HI32(x) (__extension__ ({ txdpun u; u.d = (x); u.s.hi; }))
+ #define TX_DOUBLE_LO32(x) (__extension__ ({ txdpun u; u.d = (x); u.s.lo; }))
+ 
+ #else // __GNUC__
+ 
+ /* We don't know of any non-gcc compilers that perform alias optimization,
+  * so this code should work.
+  */
+ 
+-#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
++#if defined(IS_LITTLE_ENDIAN) && !defined(FPU_IS_ARM_FPA)
+ #define TX_DOUBLE_HI32(x)        (((PRUint32 *)&(x))[1])
+ #define TX_DOUBLE_LO32(x)        (((PRUint32 *)&(x))[0])
+ #else
+ #define TX_DOUBLE_HI32(x)        (((PRUint32 *)&(x))[0])
+ #define TX_DOUBLE_LO32(x)        (((PRUint32 *)&(x))[1])
+ #endif
+ 
+ #endif // __GNUC__

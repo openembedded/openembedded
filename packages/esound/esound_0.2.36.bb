@@ -3,12 +3,14 @@ SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
 PE = "1"
-PR = "r2"
+PR = "r3"
 
 inherit gnome binconfig
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.bz2 \
-           file://no-docs.patch;patch=1"
+	   https://launchpad.net/ubuntu/breezy/+source/esound/0.2.36-1ubuntu5/+files/esound_0.2.36-1ubuntu5.diff.gz;patch=1 \
+           file://no-docs.patch;patch=1 \
+	   file://configure-fix.patch;patch=1"
 
 EXTRA_OECONF = " \
     --disable-alsa \

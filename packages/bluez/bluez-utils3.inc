@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland Utilities."
 SECTION = "console"
 PRIORITY = "optional"
-DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} libusb dbus glib-2.0"
+DEPENDS = "gstreamer gst-plugins-base bluez-libs-${PV} libusb-compat dbus glib-2.0"
 PROVIDES = "bluez-utils-dbus"
 RPROVIDES_${PN} = "bluez-pan bluez-sdp bluez-utils-dbus"
 RREPLACES = "bluez-utils-dbus"
@@ -82,7 +82,8 @@ do_install_append() {
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
         install -m 0644 ${S}/rfcomm/rfcomm.conf ${D}${sysconfdir}/bluetooth/
-        install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/
+        install -m 0755 ${S}/daemon/.libs/passkey-agent ${D}${base_bindir}/ ||true 
+		install -m 0755 ${S}/test/.libs/passkey-agent ${D}${base_bindir}/ ||true
 }
 
 

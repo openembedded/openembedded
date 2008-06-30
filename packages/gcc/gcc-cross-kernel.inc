@@ -1,6 +1,8 @@
 # Cut-down gcc for kernel builds
 # Only installs ${TARGET_PREFIX}gcc-${PV}, not ${TARGET_PREFIX}gcc.
 
+DEPENDS += "gcc-cross"
+
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-${PV}"
 
 do_install () {

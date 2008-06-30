@@ -2,9 +2,11 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet"
 LICENSE = "MIT BSD"
 PV = "0.16.999.042+cvs${SRCDATE}"
-PR = "r5"
+PR = "r8"
 
 inherit e update-alternatives
+
+RDEPENDS += "shared-mime-info mime-support"
 
 SRC_URI = "${E_CVS};module=e17/apps/e \
            file://disable-e-cursor.patch;patch=1 \
@@ -57,6 +59,8 @@ FILES_${PN}-dbg += "\
 FILES_${PN}-dev += "\
   ${libdir}/enlightenment/preload/*.?a \
 "
+
+CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
 ALTERNATIVE_NAME = "x-window-manager"

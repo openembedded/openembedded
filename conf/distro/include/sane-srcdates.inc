@@ -52,7 +52,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE ?= "20080518"
+EFL_SRCDATE ?= "20080610"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"
@@ -139,7 +139,7 @@ SRCDATE_mpd ?= "20070210"
 SRCDATE_mystun-server ?= "20060814"
 SRCDATE_olsrd ?= "20060814"
 SRCDATE_opencvs ?= "20060814"
-SRCDATE_oprofile ?= "20061011"
+SRCDATE_oprofile ?= "20080210"
 SRCDATE_portaudio ?= "20060814"
 SRCDATE_putty ?= "20060814"
 SRCDATE_python-cairo ?= "20060814"

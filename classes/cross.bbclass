@@ -49,8 +49,8 @@ bindir = "${exec_prefix}/bin"
 sbindir = "${exec_prefix}/bin"
 libexecdir = "${exec_prefix}/libexec"
 libdir = "${exec_prefix}/lib"
-includedir = "${exec_prefix}/include"
-oldincludedir = "${exec_prefix}/include"
+includedir = "${STAGING_DIR_TARGET}/${layout_includedir}"
+oldincludedir = "${STAGING_DIR_TARGET}/${layout_includedir}"
 
 do_stage () {
 	oe_runmake install

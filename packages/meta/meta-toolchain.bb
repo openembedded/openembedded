@@ -31,9 +31,11 @@ do_populate_sdk() {
 		revipkgarchs="$arch $revipkgarchs"
 	done
 
+	mkdir -p ${SDK_OUTPUT}/usr/lib/opkg
 	${IPKG_HOST} update
 	${IPKG_HOST} -force-depends install ${TOOLCHAIN_HOST_TASK}
 
+	mkdir -p ${SDK_OUTPUT}/${SDK_PREFIX}/${TARGET_SYS}/usr/lib/opkg
 	${IPKG_TARGET} update
 	${IPKG_TARGET} install ${TOOLCHAIN_TARGET_TASK}
 

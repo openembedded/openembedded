@@ -6,14 +6,16 @@ DEPENDS = "libtool-native zlib-native virtual/javac-native classpath-native"
 
 S = "${WORKDIR}/cacao-${PV}"
 
-PR = "r1"
-
 inherit autotools native
 
 EXTRA_OECONF = " \
-    --with-classpath-includedir=${STAGING_INCDIR}/classpath \
-    --with-classpath-classes=${STAGING_DATADIR}/classpath/glibj.zip \
-    "
+  --with-classpath-includedir=${STAGING_INCDIR}/classpath \
+  --with-classpath-classes=${STAGING_DATADIR}/classpath/glibj.zip \
+  \
+  --with-java-runtime-library-classes=${STAGING_DATADIR}/classpath/glibj.zip \
+  --with-jni_md_h=${STAGING_INCDIR}/classpath \
+  --with-jni_h=${STAGING_INCDIR}/classpath \
+  "
 
 do_compile() {
   # Compile the header generator only (and what is needed for it).

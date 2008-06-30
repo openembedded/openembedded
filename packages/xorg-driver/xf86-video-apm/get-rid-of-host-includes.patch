@@ -1,0 +1,13 @@
+Index: xf86-video-apm-1.2.0/configure.ac
+===================================================================
+--- xf86-video-apm-1.2.0.orig/configure.ac	2008-06-13 20:04:44.000000000 +0200
++++ xf86-video-apm-1.2.0/configure.ac	2008-06-13 20:05:02.000000000 +0200
+@@ -63,7 +63,7 @@
+ AC_SUBST([XF86RUSH_CFLAGS])
+ 
+ CFLAGS="$CFLAGS $XORG_CFLAGS $XF86RUSH_CFLAGS"' -I$(top_srcdir)/src'
+-INCLUDES="$XORG_INCS -I${sdkdir} $XF86RUSH_INCS "'-I$(top_srcdir)/src -I$(prefix)/include'
++INCLUDES="$XORG_INCS $XF86RUSH_INCS "'-I$(top_srcdir)/src'
+ AC_SUBST([CFLAGS])
+ AC_SUBST([INCLUDES])
+ 

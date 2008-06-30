@@ -4,7 +4,7 @@ SECTION = "x11"
 DEPENDS = "edje-native"
 RDEPENDS = "task-python-efl python-textutils python-dbus"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"
@@ -19,5 +19,5 @@ do_install_append() {
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+PACKAGE_ARCH = "all"
 

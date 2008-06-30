@@ -1,0 +1,17 @@
+Index: library/storage.cpp
+===================================================================
+RCS file: /cvs/opie/library/storage.cpp,v
+retrieving revision 1.25
+retrieving revision 1.26
+diff -U3 -r1.25 -r1.26
+--- library/storage.cpp	7 Mar 2005 14:32:58 -0000	1.25
++++ library/storage.cpp	29 Dec 2007 02:14:09 -0000	1.26
+@@ -307,7 +307,7 @@
+     bool hasMmc=false;
+     if( deviceTab("/dev/mmc/part"))
+         hasMmc=true;
+-    if( deviceTab("/dev/mmcd"))
++    else if( deviceTab("/dev/mmcblk"))
+         hasMmc=true;
+     return hasMmc;
+ }

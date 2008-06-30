@@ -1,7 +1,7 @@
-require pulse.inc
+require pulseaudio.inc
 
 DEPENDS += "dbus"
-PR = "r4"
+PR = "r5"
 
 # this is not correct (see below)
 SRC_URI += "\

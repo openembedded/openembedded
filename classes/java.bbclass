@@ -1,5 +1,8 @@
 # Defines the commonly used target directories and provides a convenience
 # function to install jar files.
+#
+# All the default directory locations herein resemble locations chosen in
+# the Debian distribution.
 
 # Jar location on target
 datadir_java ?= ${datadir}/java
@@ -7,8 +10,12 @@ datadir_java ?= ${datadir}/java
 # JNI library location on target
 libdir_jni ?= ${libdir}/jni
 
+# JVM bundle location on target
+libdir_jvm ?= ${libdir}/jvm
+
 STAGING_DATADIR_JAVA ?= ${STAGING_DATADIR}/java
 STAGING_LIBDIR_JNI ?= ${STAGING_LIBDIR}/jni
+STAGING_LIBDIR_JVM ?= ${STAGING_LIBDIR}/jvm
 
 oe_jarinstall() {
   # Purpose: Install a jar file and create all the given symlinks to it.

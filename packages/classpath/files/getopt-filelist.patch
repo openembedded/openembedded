@@ -1,0 +1,271 @@
+? tools/generated
+Index: tools/gnu/classpath/tools/common/ClasspathToolParser.java
+===================================================================
+RCS file: /sources/classpath/classpath/tools/gnu/classpath/tools/common/ClasspathToolParser.java,v
+retrieving revision 1.1
+diff -u -r1.1 ClasspathToolParser.java
+--- tools/gnu/classpath/tools/common/ClasspathToolParser.java	22 Sep 2006 01:01:26 -0000	1.1
++++ tools/gnu/classpath/tools/common/ClasspathToolParser.java	3 Jun 2008 16:34:45 -0000
+@@ -38,9 +38,16 @@
+ 
+ package gnu.classpath.tools.common;
+ 
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.FileNotFoundException;
++import java.io.FileReader;
++import java.io.Reader;
+ import java.text.MessageFormat;
++import java.util.ArrayList;
+ 
+ import gnu.classpath.Configuration;
++import gnu.classpath.tools.getopt.FileArgumentCallback;
+ import gnu.classpath.tools.getopt.Option;
+ import gnu.classpath.tools.getopt.OptionException;
+ import gnu.classpath.tools.getopt.Parser;
+@@ -84,4 +91,137 @@
+                }
+              });
+   }
++
++	public void parse(String[] inArgs, FileArgumentCallback files,
++									  boolean handleFileLists)
++	{
++		FileArgumentCallback cb;
++
++		if (handleFileLists)
++			cb = new AtFileArgumentCallback(files);
++		else
++			cb = files;
++
++		parse(inArgs, cb);
++	}
++
++  public String[] parse(String[] inArgs, boolean handleFileLists)
++  {
++    final ArrayList fileResult = new ArrayList();
++
++		final FileArgumentCallback cb = new FileArgumentCallback()
++  	{
++    	public void notifyFile(String fileArgument)
++    	{
++    	  fileResult.add(fileArgument);
++    	}
++    };
++
++		if (handleFileLists)
++			parse(inArgs, new AtFileArgumentCallback(cb));
++		else
++			parse(inArgs, cb);
++
++    return (String[]) fileResult.toArray(new String[0]);
++  }
++
++
++  /** Simple function that takes the given {@link Reader}, treats it like
++   * a textfile and reads all the whitespace separated entries from it
++   * and adds them to the @{link FileArgumentCallback} instance.
++   */
++  public void parseFileList(Reader reader, FileArgumentCallback cb)
++	throws OptionException
++  {
++    BufferedReader breader = new BufferedReader(reader);
++    String line = null;
++
++    try
++      {
++        while ((line = breader.readLine()) != null)
++          parseLine(line, cb);
++          
++        reader.close();
++      }
++    catch (IOException ioe)
++      {
++        System.err.println(programName + ": IO error while reading from inputstream");
++        System.exit(1);
++      }
++      
++  }
++  
++  /** Parses whitespace separated file entries.
++   *
++   * Note: This is not coping with whitespace in files or quoting.
++   */
++  private void parseLine(String line, FileArgumentCallback cb)
++    throws IOException, OptionException
++  {
++    final int length = line.length();
++    int start = 0;
++    int end = 0;
++
++		// While not reached end of line ...
++    while (start < length)
++      {
++				// Search for first non-whitespace character for the start of a word.
++        while (Character.isWhitespace(line.codePointAt(start)))
++          {
++            start++;
++        
++            if (start == length)
++              return;
++          }
++    
++        end = start + 1;
++	
++				// Search for first whitespace character for the end of a word.
++        while (end < length && !Character.isWhitespace(line.codePointAt(end)))
++          end++;
++      
++        cb.notifyFile(line.substring(start, end));
++    
++        start = end + 1;
++      }
++  }
++
++	/** Implementation of {@link FileArgumentCallback} that handles
++ 		* file arguments in {@link #notifyFile} starting with a <code>@</code>
++		* through {@link ClasspathToolParser#parseFileList}.
++		*/
++	class AtFileArgumentCallback extends FileArgumentCallback
++	{
++		FileArgumentCallback cb;
++	
++		AtFileArgumentCallback(FileArgumentCallback cb)
++		{
++			this.cb = cb;
++		}
++
++  	public void notifyFile(String fileArgument)
++		throws OptionException
++  	{
++			if (fileArgument.codePointAt(0) == '@')
++			{
++				FileReader fr = null;
++
++				try
++					{
++						fr = new FileReader(fileArgument.substring(1));
++					}
++				catch (FileNotFoundException fnfe)
++					{
++						System.err.println(programName + ": file not found " + fileArgument.substring(1));
++						System.exit(1);
++					}
++
++				ClasspathToolParser.this.parseFileList(fr, cb);
++			}
++			else
++  	  	cb.notifyFile(fileArgument);
++  	}
++
++  }
++
+ }
+Index: tools/gnu/classpath/tools/getopt/Parser.java
+===================================================================
+RCS file: /sources/classpath/classpath/tools/gnu/classpath/tools/getopt/Parser.java,v
+retrieving revision 1.10
+diff -u -r1.10 Parser.java
+--- tools/gnu/classpath/tools/getopt/Parser.java	20 Mar 2008 18:04:44 -0000	1.10
++++ tools/gnu/classpath/tools/getopt/Parser.java	3 Jun 2008 16:34:45 -0000
+@@ -58,7 +58,7 @@
+   /** The maximum right column position. */
+   public static final int MAX_LINE_LENGTH = 80;
+ 
+-  private String programName;
++  protected String programName;
+ 
+   private String headerText;
+ 
+Index: tools/gnu/classpath/tools/jar/Main.java
+===================================================================
+RCS file: /sources/classpath/classpath/tools/gnu/classpath/tools/jar/Main.java,v
+retrieving revision 1.11
+diff -u -r1.11 Main.java
+--- tools/gnu/classpath/tools/jar/Main.java	3 Jun 2008 14:02:13 -0000	1.11
++++ tools/gnu/classpath/tools/jar/Main.java	3 Jun 2008 16:34:45 -0000
+@@ -172,9 +172,9 @@
+     }
+   }
+ 
+-  private Parser initializeParser()
++  private ClasspathToolParser initializeParser()
+   {
+-    Parser p = new JarParser("jar"); //$NON-NLS-1$
++    ClasspathToolParser p = new JarParser("jar"); //$NON-NLS-1$
+     p.setHeader(Messages.getString("Main.Usage")); //$NON-NLS-1$
+ 
+     OptionGroup grp = new OptionGroup(Messages.getString("Main.OpMode")); //$NON-NLS-1$
+@@ -265,11 +265,11 @@
+   private void run(String[] args)
+       throws InstantiationException, IllegalAccessException, IOException
+   {
+-    Parser p = initializeParser();
++    ClasspathToolParser p = initializeParser();
+     // Special hack to emulate old tar-style commands.
+     if (args.length > 0 && args[0].charAt(0) != '-')
+       args[0] = '-' + args[0];
+-    p.parse(args, new HandleFile());
++    p.parse(args, new HandleFile(), true);
+     if (readNamesFromStdin)
+       readNames();
+     Action t = (Action) operationMode.newInstance();
+Index: tools/gnu/classpath/tools/javah/GcjhMain.java
+===================================================================
+RCS file: /sources/classpath/classpath/tools/gnu/classpath/tools/javah/GcjhMain.java,v
+retrieving revision 1.1
+diff -u -r1.1 GcjhMain.java
+--- tools/gnu/classpath/tools/javah/GcjhMain.java	6 Mar 2007 18:52:34 -0000	1.1
++++ tools/gnu/classpath/tools/javah/GcjhMain.java	3 Jun 2008 16:34:46 -0000
+@@ -38,10 +38,11 @@
+ 
+ package gnu.classpath.tools.javah;
+ 
++import gnu.classpath.tools.common.ClasspathToolParser;
++
+ import gnu.classpath.tools.getopt.Option;
+ import gnu.classpath.tools.getopt.OptionException;
+ import gnu.classpath.tools.getopt.OptionGroup;
+-import gnu.classpath.tools.getopt.Parser;
+ 
+ import java.io.IOException;
+ import java.util.ArrayList;
+@@ -60,9 +61,9 @@
+     return "gcjh";
+   }
+ 
+-  protected Parser getParser()
++  protected ClasspathToolParser getParser()
+   {
+-    Parser result = super.getParser();
++    ClasspathToolParser result = super.getParser();
+ 
+     result.setHeader("usage: gcjh [OPTION]... CLASS...");
+ 
+Index: tools/gnu/classpath/tools/javah/Main.java
+===================================================================
+RCS file: /sources/classpath/classpath/tools/gnu/classpath/tools/javah/Main.java,v
+retrieving revision 1.10
+diff -u -r1.10 Main.java
+--- tools/gnu/classpath/tools/javah/Main.java	31 Jul 2007 16:15:53 -0000	1.10
++++ tools/gnu/classpath/tools/javah/Main.java	3 Jun 2008 16:34:46 -0000
+@@ -188,7 +188,7 @@
+     return "javah";
+   }
+ 
+-  protected Parser getParser()
++  protected ClasspathToolParser getParser()
+   {
+     ClasspathToolParser result = new ClasspathToolParser(getName(), true);
+     result.setHeader("usage: javah [OPTIONS] CLASS...");
+@@ -339,8 +339,8 @@
+ 
+   protected void run(String[] args) throws IOException
+   {
+-    Parser p = getParser();
+-    String[] classNames = p.parse(args);
++    ClasspathToolParser p = getParser();
++    String[] classNames = p.parse(args, true);
+     postParse(classNames);
+     loader = classpath.getLoader();
+ 

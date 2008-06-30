@@ -47,8 +47,8 @@ export DSPPLATFORM         := SED_ME_PLATFORM
 #   =========================================================
 #   Target GPP and DSP devices
 #   =========================================================
-export GPPDEVICE           := Davinci
-export DSPDEVICE           := C64XX
+export GPPDEVICE           := SED_ME_PLATFORM
+export DSPDEVICE           := SED_ME_DSP 
 
 
 #   =========================================================
@@ -94,6 +94,6 @@ export PROBE               := 0
 #   =========================================================
 #   Platform Variant
 #   =========================================================
-export VARIANT             := DM6446
+export VARIANT             := SED_ME_SOC
 
 

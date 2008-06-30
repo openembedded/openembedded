@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=MIDPath SuiteManager
+Comment=Manage MIDlets
+Exec=midpath-suitemanager
+Icon=midpath
+Terminal=false
+Type=Application
+Categories=GTK;Office;
+X-SingleInstance=true
+StartupNotify=true
+

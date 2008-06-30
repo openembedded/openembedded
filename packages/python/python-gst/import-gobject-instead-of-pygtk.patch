@@ -1,0 +1,19 @@
+Index: gst-python-0.10.10/gst/__init__.py
+===================================================================
+--- gst-python-0.10.10.orig/gst/__init__.py
++++ gst-python-0.10.10/gst/__init__.py
+@@ -28,13 +28,8 @@ try:
+ except:
+    pass
+ 
+-import sys
++import sys, gobject
+ 
+-# we always require 2.0 of pygtk; so if pygtk is not imported anywhere
+-# yet, we import pygtk here and .require
+-if 'gobject' not in sys.modules:
+-    import pygtk
+-    pygtk.require('2.0')
+ 
+ class Value:
+    def __init__(self, type):

@@ -1,0 +1,13 @@
+Index: bash-3.2/builtins/Makefile.in
+===================================================================
+--- bash-3.2.orig/builtins/Makefile.in
++++ bash-3.2/builtins/Makefile.in
+@@ -189,7 +189,7 @@ install:	@HELPINSTALL@
+ 
+ mkbuiltins.o: ../config.h
+ mkbuiltins.o: mkbuiltins.c
+-	$(RM) $@
++	echo $(RM) $@
+ 	$(CC_FOR_BUILD) -c $(CCFLAGS_FOR_BUILD) $<
+ 
+ mkbuiltins$(EXEEXT): mkbuiltins.o

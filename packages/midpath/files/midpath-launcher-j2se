@@ -1,0 +1,50 @@
+#!/bin/sh
+
+if [ ! $LAUNCHER_CLASS ]; then
+  LAUNCHER_CLASS=org.thenesis.midpath.main.MIDletLauncher
+fi
+
+if [ ! $JAVA ]; then
+  JAVA=java
+fi
+
+JAR_HOME=/usr/share/java
+
+MIDPATH_HOME=/usr/share/midpath
+
+JLP=/usr/lib/jni
+
+# Set the classpath
+CP=\
+$MIDPATH_HOME/configuration:\
+$MIDPATH_HOME/midpath.jar:\
+$MIDPATH_HOME/microbackend.jar:\
+$MIDPATH_HOME/sdljava-cldc.jar:\
+$MIDPATH_HOME/escher-cldc.jar:\
+$MIDPATH_HOME/jlayerme-cldc.jar:\
+$MIDPATH_HOME/jorbis-cldc.jar:\
+$MIDPATH_HOME/avetanabt-cldc.jar:\
+$MIDPATH_HOME/jgl-cldc.jar:\
+$MIDPATH_HOME/jsr239-opengles-jgl.jar:\
+$MIDPATH_HOME/jsr239-opengles-core.jar:\
+$MIDPATH_HOME/jsr239-opengles-nio.jar:\
+$MIDPATH_HOME/jsr184-m3g.jar:\
+$MIDPATH_HOME/jsr205-messaging.jar:\
+$MIDPATH_HOME/jsr179-location.jar:\
+$MIDPATH_HOME/jsr226-svg-core.jar:\
+$MIDPATH_HOME/jsr226-svg-midp2.jar:\
+$JAR_HOME/kxml2.jar:\
+$JAR_HOME/xmlpull.jar:\
+$JAR_HOME/swt.jar
+
+# Add whatever is mentioned in the CLASSPATH environment variable
+if [ $CLASSPATH ]
+then
+  CP=$CP:$CLASSPATH
+fi
+
+# Add the MIDlet jar to the classpath  (must be loaded by the main classloader)
+CP=$CP:$MIDPATH_HOME/repository/midpath-demos.jar
+
+$JAVA -cp $CP -Djava.library.path=$JLP $LAUNCHER_CLASS "$@"
+

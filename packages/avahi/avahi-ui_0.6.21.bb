@@ -1,6 +1,6 @@
 require avahi.inc
 
-PR = "r6"
+PR = "r7"
 
 DEPENDS += "avahi gtk+"
 

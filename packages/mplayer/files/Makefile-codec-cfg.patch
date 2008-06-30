@@ -1,11 +1,11 @@
---- /tmp/Makefile	2008-04-17 21:41:29.623907292 +0200
-+++ trunk/Makefile	2008-04-17 21:42:04.164926258 +0200
-@@ -311,7 +311,7 @@
+--- /tmp/Makefile	2008-06-10 20:55:43.100403024 +0200
++++ trunk/Makefile	2008-06-10 20:56:10.881647093 +0200
+@@ -731,7 +731,7 @@
  	$(CC) -o $@ $^ $(LDFLAGS_MENCODER)
  
  codec-cfg$(EXESUF): codec-cfg.c codec-cfg.h help_mp.h
--	$(HOST_CC) -O -I. -DCODECS2HTML $< -o $@
-+	$(BUILD_CC) -O -I. -DCODECS2HTML $< -o $@
+-	$(HOST_CC) -O -I. -DCODECS2HTML -o $@ $<
++	$(BUILD_CC) -O -I. -DCODECS2HTML -o $@ $<
  
  codecs.conf.h: codec-cfg$(EXESUF) etc/codecs.conf
  	./codec-cfg$(EXESUF) ./etc/codecs.conf > $@

@@ -1,13 +1,17 @@
-DESCRIPTION = "setserial is a program designed to set and/or report the configuration information associated with a serial port"
+DESCRIPTION = "setserial is a program designed to set and/or \
+report the configuration information associated with a serial port"
 HOMEPAGE = "http://setserial.sourceforge.net"
-AUTHOR = "Theodore Ts'o tytso@mit.edu"
+AUTHOR = "Theodore Ts'o >tytso@mit.edu>"
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/setserial/${PN}-${PV}.tar.gz"
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/setserial/${PN}-${PV}.tar.gz \
+  file://addflags.patch;patch=1 \
+"
 
 do_install() {
         install -d ${D}${bindir}

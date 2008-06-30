@@ -1,0 +1,87 @@
+Index: configuration/com/sun/midp/configuration/system_properties
+===================================================================
+--- configuration/com/sun/midp/configuration/system_properties	(Revision 290)
++++ configuration/com/sun/midp/configuration/system_properties	(Revision 291)
+@@ -1,47 +1,47 @@
+ javax.microedition.io.Connector.protocolpath=com.sun.midp.io
+-microedition.profiles=MIDP-2.0 
+-microedition.configuration=CLDC-1.1 
+-microedition.locale=en-US 
++microedition.profiles=MIDP-2.0
++microedition.configuration=CLDC-1.1
++microedition.locale=en-US
+ microedition.platform=j2me
+-microedition.encoding=ISO8859_1 
+-microedition.hostname=localhost 
++microedition.encoding=ISO8859_1
++microedition.hostname=localhost
+ microedition.commports= 
+-microedition.jtwi.version=1.0 
+-microedition.media.version=1.1 
+-supports.mixing=true 
+-supports.audio.capture=false 
+-supports.video.capture=false 
+-supports.recording=false 
++microedition.jtwi.version=1.0
++microedition.media.version=1.1
++supports.mixing=true
++supports.audio.capture=false
++supports.video.capture=false
++supports.recording=false
+ audio.encodings=encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=audio/mp3 encoding=audio/ogg
+ video.snapshot.encodings=encoding=png encoding=image/png
+ video.encodings= 
+-streamable.contents=encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=audio/mp3 encoding=audio/ogg 
+-microedition.io.file.FileConnection.version=1.0 
+-Bluetooth.api.version=1.1 
+-obex.api.version=1.1 
+-bluetooth.l2cap.receiveMTU.max=1024 
+-bluetooth.master.switch=true 
+-bluetooth.connected.devices.max=6 
+-bluetooth.sd.trans.max=8 
+-bluetooth.sd.attr.retrievable.max=16 
+-bluetooth.connected.inquiry=true 
+-bluetooth.connected.inquiry.scan=true 
+-bluetooth.connected.page=true 
+-bluetooth.connected.page.scan=true 
+-microedition.m3g.version=1.1 
+-microedition.location.version=1.1 
+-microedition.m2g.version=1.1 
+-microedition.m2g.svg.version=1.1 
+-microedition.m2g.svg.baseProfile=tiny 
+-xml.jaxp.subset.version=1.0 
+-xml.rpc.subset.version=1.0 
+-wireless.messaging.version=2.0 
+-wireless.messaging.sms.smsc=+17815511212 
+-wireless.messaging.mms.mmsc=+17815511212 
++streamable.contents=encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=audio/mp3 encoding=audio/ogg
++microedition.io.file.FileConnection.version=1.0
++Bluetooth.api.version=1.1
++obex.api.version=1.1
++bluetooth.l2cap.receiveMTU.max=1024
++bluetooth.master.switch=true
++bluetooth.connected.devices.max=6
++bluetooth.sd.trans.max=8
++bluetooth.sd.attr.retrievable.max=16
++bluetooth.connected.inquiry=true
++bluetooth.connected.inquiry.scan=true
++bluetooth.connected.page=true
++bluetooth.connected.page.scan=true
++microedition.m3g.version=1.1
++microedition.location.version=1.1
++microedition.m2g.version=1.1
++microedition.m2g.svg.version=1.1
++microedition.m2g.svg.baseProfile=tiny
++xml.jaxp.subset.version=1.0
++xml.rpc.subset.version=1.0
++wireless.messaging.version=2.0
++wireless.messaging.sms.smsc=+17815511212
++wireless.messaging.mms.mmsc=+17815511212
+ 
+ # microedition.pim.version=
+ # microedition.global.version=
+-# microedition.sip.version=1.0.1 
++# microedition.sip.version=1.0.1
+ # 
+ # com.sun.midp.io.http.proxy=
+ # com.sun.midp.io.http.force_non_persistent=

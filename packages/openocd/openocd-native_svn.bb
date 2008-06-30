@@ -10,8 +10,8 @@ do_stage() {
 }
 
 do_deploy() {
-	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0755 src/openocd ${DEPLOY_DIR_IMAGE}/openocd
+	install -d ${DEPLOY_DIR_TOOLS}
+	install -m 0755 src/openocd ${DEPLOY_DIR_TOOLS}/openocd-${PV}
 }
 
 addtask deploy before do_package after do_install

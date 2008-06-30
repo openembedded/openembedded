@@ -17,8 +17,10 @@ do_rm_work () {
     cd ${WORKDIR}
     for dir in *
     do
-        if [ `basename ${S}` = $dir ]; then
-            rm -rf $dir
+        if [ `basename ${dir}` = "temp" ]; then
+            echo "Not removing temp"
+        else 
+            echo "Removing $dir" ; rm $dir -rf		
         fi
     done
 }

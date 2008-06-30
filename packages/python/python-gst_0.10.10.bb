@@ -2,10 +2,13 @@ DESCRIPTION = "Python Gstreamer bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gstreamer gst-plugins-base python-pygobject"
-PR = "ml1"
+PR = "ml2"
 
-SRC_URI = "http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
-           file://python-path.patch;patch=1"
+SRC_URI = "\
+  http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
+  file://python-path.patch;patch=1 \
+  file://import-gobject-instead-of-pygtk.patch;patch=1 \
+"
 S = "${WORKDIR}/gst-python-${PV}"
 
 inherit autotools distutils-base pkgconfig
@@ -30,3 +33,4 @@ FILES_${PN}-dev += "\
 "
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/gst-0.10/gst/.debug/"
 FILES_${PN}-examples = "${datadir}/gst-python/0.10/examples"
+

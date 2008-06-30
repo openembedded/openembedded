@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r54"
+PR = "r57"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -53,6 +53,7 @@ SLUGOS_PACKAGES = "\
 	bonnie++ \
 	boost \
 	bridge-utils \
+	bwmon \
 	bzip2 \
 	ccxstream \
 	cdparanoia \
@@ -61,7 +62,6 @@ SLUGOS_PACKAGES = "\
 	coreutils \
 	cron \
 	cryptsetup \
-	ctorrent \
 	ctrlproxy \
 	cups \
 	curl \
@@ -81,6 +81,7 @@ SLUGOS_PACKAGES = "\
 	expat \
 	ez-ipupdate \
 	fconfig \
+	fetchmail \
 	file \
 	findutils \
 	fis \
@@ -134,7 +135,6 @@ SLUGOS_PACKAGES = "\
 	libvorbis \
 	libxml2 \
 	lighttpd \
-	linphone \
 	litestream \
 	logrotate \
 	lrzsz \
@@ -189,7 +189,6 @@ SLUGOS_PACKAGES = "\
 	pkgconfig \
 	popt \
 	portmap \
-	postfix \
 	ppp \
 	procps \
 	psmisc \
@@ -219,6 +218,7 @@ SLUGOS_PACKAGES = "\
 	stunnel \
 	sudo \
 	sysfsutils \
+	syslog-ng \
 	tar \
 	task-mokogateway-everything \
 	tcpdump \
@@ -246,7 +246,6 @@ SLUGOS_PACKAGES = "\
 	wview-vpro \
 	wview-wxt510 \
 	xinetd \
-	yeaphone \
 	yp-tools ypbind ypserv \
 	zd1211-firmware \
 	zip \
@@ -255,21 +254,22 @@ SLUGOS_PACKAGES = "\
 
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
-	bwmon \
+	ctorrent \
 	dsniff \
 	eciadsl \
-	fetchmail \
 	gspcav1 \
+	linphone \
 	lirc-modules lirc \
 	madfu \
 	motion \
 	openldap \
+	postfix \
 	pwc \
 	qc-usb-messenger \
-	syslog-ng \
 	task-native-sdk \
 	unionfs-modules unionfs-utils \
 	wview-sim-mysql wview-wxt510-mysql wview-vpro-mysql \
+	yeaphone \
 	zd1211 \
 	"
 

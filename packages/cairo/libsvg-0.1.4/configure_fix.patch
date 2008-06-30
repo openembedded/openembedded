@@ -1,0 +1,22 @@
+diff -urN libsvg-0.1.4.orig/configure.in libsvg-0.1.4/configure.in
+--- libsvg-0.1.4.orig/configure.in	2005-06-15 22:27:49.000000000 +0200
++++ libsvg-0.1.4/configure.in	2008-06-07 03:06:30.000000000 +0200
+@@ -9,15 +9,18 @@
+ 
+ # Increment if the interface has additions, changes, removals.
+ LT_CURRENT=1
++AC_SUBST(LT_CURRENT)
+ 
+ # Increment any time the source changes; set to
+ # 0 if you increment CURRENT
+ LT_REVISION=0
++AC_SUBST(LT_REVISION)
+ 
+ # Increment if any interfaces have been added; set to 0
+ # if any interfaces have been removed. removal has
+ # precedence over adding, so set to 0 if both happened.
+ LT_AGE=0
++AC_SUBST(LT_AGE)
+ 
+ VERSION_INFO="$LT_CURRENT:$LT_REVISION:$LT_AGE"
+ AC_SUBST(VERSION_INFO)
