@@ -4,11 +4,13 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-SRCREV = "844af286e4675d25bbefd9164b4df29609264a86"
+SRCREV = "116b6dff4996f494b54fc0f05695ba792086ea9e"
+
+PR = "r1"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 
-DEPENDS = "gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+DEPENDS = "dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
 SRC_URI = "git://git.videolan.org/vlc.git;protocol=git;branch=0.8.6-neuros"
 
@@ -33,7 +35,7 @@ EXTRA_OECONF = "\
     --disable-mod \
 	--enable-davinci --enable-davincifb --enable-davinciresizer \
     --enable-v4l2 --enable-aa --enable-wma --enable-faad \
-    --disable-dbus \
+    --enable-dbus \
 "
 
 
