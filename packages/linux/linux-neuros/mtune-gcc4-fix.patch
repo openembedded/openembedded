@@ -1,0 +1,11 @@
+--- /tmp/Makefile	2008-06-30 19:58:09.000000000 +0200
++++ linux-2.6.15/arch/arm/Makefile	2008-06-30 19:58:53.000000000 +0200
+@@ -55,7 +55,7 @@
+ tune-$(CONFIG_CPU_ARM922T)	:=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM925T)	:=-mtune=arm9tdmi
+ #tune-$(CONFIG_CPU_ARM926T)	:=-mtune=arm9tdmi
+-tune-$(CONFIG_CPU_ARM926T)	:=-mtune=arm926ejs
++tune-$(CONFIG_CPU_ARM926T)	:=-mtune=arm926ej-s
+ tune-$(CONFIG_CPU_SA110)	:=-mtune=strongarm110
+ tune-$(CONFIG_CPU_SA1100)	:=-mtune=strongarm1100
+ tune-$(CONFIG_CPU_XSCALE)	:=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
