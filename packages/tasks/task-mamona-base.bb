@@ -21,24 +21,22 @@ RDEPENDS = "\
   file \
   gawk \
   gawk-common \
+  initscripts \
   libgcc \
   libstdc++ \
-  zlib \
+  makedevs \
   ncurses \
   netbase \
+  patch \
   perl \
-  perl-module-base \
-  perl-module-carp \
-  perl-module-exporter \
-  perl-module-strict \
-  perl-module-vars \
-  perl-module-warnings \
-  perl-module-warnings-register \
+  pkgconfig \
   procps \
   sed \
+  sudo \
   sysvinit \
   sysvinit-inittab \
   tar \
+  tinylogin \
   udev \
   update-alternatives-dpkg \
   update-rc.d \
@@ -46,10 +44,5 @@ RDEPENDS = "\
   util-linux-losetup \
   util-linux-swaponoff \
   util-linux-umount \
-  pkgconfig \
-  initscripts \
-  makedevs \
-  patch \
-  tinylogin \
-  sudo \
+  zlib \
 "
