@@ -71,6 +71,8 @@ netbase \
 portmap \
 ppp \
 procps \
+python-pyqt \
+qt4-x11-free \
 renderproto-dev \
 samba \
 sgml-common \
