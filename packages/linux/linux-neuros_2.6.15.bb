@@ -1,7 +1,7 @@
 #require linux-omap.inc
 
 PV = "2.6.15-torfu"
-PR = "r4"
+PR = "r5"
 
 COMPATIBLE_MACHINE = "(neuros-osd)"
 
@@ -10,6 +10,7 @@ COMPATIBLE_MACHINE = "(neuros-osd)"
 SRC_URI = "svn://svn.neurostechnology.com/svn/neuros-bsp/branches/torfu/kernels;module=linux-2.6.15;proto=svn;rev= \
 	file://g0-20080113.patch;patch=1\
 	file://bsp_config.h \
+	file://mtune-gcc4-fix.patch;patch=1 \ 
 	file://defconfig"
 
 S = "${WORKDIR}/linux-2.6.15"
