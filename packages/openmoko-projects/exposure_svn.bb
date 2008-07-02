@@ -1,8 +1,8 @@
 DESCRIPTION = "Exposure all devices on neo1973"
-DEPENDS = "python-etk python-dbus"
-RDEPENDS = "python-etk python-re python-codecs python-dbus"
+DEPENDS = "python-etk python-edbus"
+RDEPENDS = "python-etk python-re python-codecs python-edbus python-pyxdg"
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r2.02"
+PR = "r2.03"
 
 S = "${WORKDIR}/trunk"
 
