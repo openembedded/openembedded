@@ -1,11 +1,11 @@
-DESCRIPTION = "The freesmartphon.org Framework Daemon"
+DESCRIPTION = "The freesmartphone.org Framework Daemon"
 HOMEPAGE = "http://www.freesmartphone.org"
-AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
+AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.0+gitr${SRCREV}"
-PR = "r3"
+PR = "r5"
 
 inherit distutils update-rc.d
 
@@ -36,5 +36,5 @@ RDEPENDS_${PN} += "\
   python-syslog \
 "
 
-FILES_${PN} += "${sysconfdir}"
+FILES_${PN} += "${sysconfdir} ${datadir}"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/framework/subsystems/*/.debug"
