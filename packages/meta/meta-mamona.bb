@@ -64,7 +64,7 @@ makedev \
 matchbox-wm \
 mime-support \
 module-init-tools \
-mplayer \
+mplayer-maemo \
 ncurses \
 net-tools \
 netbase \
