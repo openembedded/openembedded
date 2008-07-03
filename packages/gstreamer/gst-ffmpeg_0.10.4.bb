@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer zlib"
-PR = "r0"
+PR = "r1"
 
 # This uses the systems ffmpeg, which is unsupported, but we can't build the internal one with the current autotools (ab)usage
 DEFAULT_PREFERENCE = "-1"
@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE = "-1"
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-           file://configure-hack.diff;patch =1 \
+           file://configure-hack.diff;patch=1 \
 "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
