@@ -4,7 +4,7 @@
 DESCRIPTION = "Mamona input methods"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/wiki"
 LICENSE = "GPL"
-SECTION = "x11"
+SECTION = "libs/inputmethods"
 DEPENDS = "ecore"
 PR = "r1"
 
