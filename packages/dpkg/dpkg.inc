@@ -24,6 +24,7 @@ if [ "x$D" != "x" ]; then
 	# this happens at S98 where our good 'ole packages script used to run
 	printf "#!/bin/sh
 	dpkg --configure -a
+	rm -f /${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
 \n" > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
 	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${DPKG_INIT_POSITION}configure
 fi
