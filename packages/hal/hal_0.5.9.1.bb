@@ -7,7 +7,7 @@ DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb-compat"
 RDEPENDS_${PN} += "udev hal-info"
 RRECOMMENDS_${PN} += "udev-utils"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz \
            file://configure_fix.patch;patch=1 \
@@ -52,10 +52,10 @@ pkg_postinst_hal () {
 		exit 1
 	fi
 
-	/etc/init.d/populate-volatile.sh update
-
 	grep haldaemon /etc/group || addgroup haldaemon
 	grep haldaemon /etc/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
+
+	/etc/init.d/populate-volatile.sh update
 
 	DBUSPID=`pidof dbus-daemon`
 
