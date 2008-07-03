@@ -1,16 +1,16 @@
 DESCRIPTION = "Zhone: Zen Phone"
 LICENSE = "GPL"
 SECTION = "x11"
-DEPENDS = "edje-native"
+DEPENDS = "edje-native python-pyrex-native python-cython-native"
 RDEPENDS = "task-python-efl python-textutils python-dbus"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"
 S = "${WORKDIR}/git"
 
-inherit autotools
+inherit distutils
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/X11/Xsession.d/
@@ -18,6 +18,3 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
-
-PACKAGE_ARCH = "all"
-
