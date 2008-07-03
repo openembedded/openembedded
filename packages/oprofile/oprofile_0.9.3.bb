@@ -4,7 +4,8 @@ of profiling all running code at low overhead."
 LICENSE = "GPL"
 DEPENDS = "popt binutils"
 RDEPENDS = "binutils-symlinks"
-PR = "r4"
+RRECOMMENDS = "kernel-vmlinux"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
            file://armv6_fix.patch;patch=1 \
@@ -12,7 +13,9 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
            file://root_option.patch;patch=1 \
            file://opstart.patch;patch=1 \
            file://fix-arith.patch;patch=1;pnum=0 \
+           file://gcc43x-fix.patch;patch=1 \
            file://acinclude.m4"
+
 S = "${WORKDIR}/oprofile-${PV}"
 
 inherit autotools
