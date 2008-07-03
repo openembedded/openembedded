@@ -5,7 +5,7 @@ RDEPENDS += "udev hal-info"
 #RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI += "file://99_hal \
             file://20hal \
@@ -53,10 +53,10 @@ pkg_postinst_hal () {
 		exit 1
 	fi
 
-	/etc/init.d/populate-volatile.sh update
-
 	grep haldaemon /etc/group || addgroup haldaemon
 	grep haldaemon /etc/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
+
+	/etc/init.d/populate-volatile.sh update
 
 	DBUSPID=`pidof dbus-daemon`
 
