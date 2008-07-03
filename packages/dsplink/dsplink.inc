@@ -66,6 +66,10 @@ do_compile () {
 do_install () {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
+
+	install -d ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp   ${D}/${bindir}
 }
 
 pkg_postinst_${PN}-module () {
@@ -82,6 +86,7 @@ pkg_postrm_${PN}-module () {
 
 PACKAGES =+ "${PN}-module"
 FILES_${PN}-module  = "${sysconfdir} /lib/modules"
+FILES_${PN} = "${bindir}/mpcsxfergpp ${bindir}/ringiogpp"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
 
