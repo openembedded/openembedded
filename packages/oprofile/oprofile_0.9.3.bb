@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "popt binutils"
 RDEPENDS = "binutils-symlinks"
 RRECOMMENDS = "kernel-vmlinux"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
            file://armv6_fix.patch;patch=1 \
@@ -14,6 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
            file://opstart.patch;patch=1 \
            file://fix-arith.patch;patch=1;pnum=0 \
            file://gcc43x-fix.patch;patch=1 \
+           file://armv7a.diff;patch=1 \
            file://acinclude.m4"
 
 S = "${WORKDIR}/oprofile-${PV}"
