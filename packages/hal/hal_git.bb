@@ -14,7 +14,7 @@ SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://99_hal"
 
 PV = "0.5.9.1+git${SRCDATE}"
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/git"
 
@@ -53,10 +53,10 @@ pkg_postinst_hal () {
 		exit 1
 	fi
 
-	/etc/init.d/populate-volatile.sh update
-
 	grep haldaemon /etc/group || addgroup haldaemon
 	grep haldaemon /etc/passwd || adduser --disabled-password --system --home /var/run/hald --no-create-home haldaemon --ingroup haldaemon -g HAL
+
+	/etc/init.d/populate-volatile.sh update
 
 	DBUSPID=`pidof dbus-daemon`
 

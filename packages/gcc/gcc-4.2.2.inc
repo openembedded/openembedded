@@ -43,7 +43,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI_append_avr32 = " \
         file://gcc-4.2.2.atmel.1.0.8.patch.bz2;patch=1 \
-        file://901-avr32-no-cond-exec-before-reload-by-default.patch;patch=1 \
+	file://901-avr32-fix-no-cond-exec-before-reload.patch;patch=1 \
+	file://902-avr32-fix-sync-insn-instructions.patch;patch=1 \
+	file://903-avr32-fix-removal-of-redundant-cast-operations.patch;patch=1 \
 "
 
 

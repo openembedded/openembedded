@@ -99,7 +99,7 @@ CC_SW_DEB       := -g
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler
 #   ----------------------------------------------------------------------------
-STD_KRNL_FLAGS  := -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes\
+STD_KRNL_FLAGS  := -include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes\
                    -Wno-trigraphs -fno-strict-aliasing -fno-common             \
                    -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
                    -mlittle-endian -D__LINUX_ARM_ARCH__=5 -march=armv5t        \

@@ -8,8 +8,8 @@ KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 # If you use a rc, you will need to use this:
-PV = "${KERNEL_RELEASE}+git${SRCREV}"
-PR = "r1"
+PV = "${KERNEL_RELEASE}+gitr${SRCREV}"
+PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
