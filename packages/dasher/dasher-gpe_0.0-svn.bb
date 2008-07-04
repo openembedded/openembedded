@@ -1,12 +1,12 @@
-
 LICENSE="GPL"
+PV = "0.0+svnr${SRCREV}"
 PR = "r1"
 DEPENDS = "libxsettings-client libglade libxtst gconf gtk+"
 SECTION = "gpe"
-SRC_URI = "cvs://anonymous@anoncvs.gnome.org/cvs/gnome;module=dasher;date=20040828 \
+SRC_URI = "svn://svn.gnome.org/svn/dasher;module=trunk \
 	file://configure-lossage.patch;patch=1"
 
-S = "${WORKDIR}/dasher"
+S = "${WORKDIR}/trunk"
 FILES_${PN} += "${datadir}/dasher"
 
 inherit autotools
