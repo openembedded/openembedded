@@ -98,5 +98,3 @@ xtrans-dev \
 # TODO: some of noemu packages are broken. Fix them before
 # put task-mamona-noemu back to meta-mamona.
 #task-mamona-noemu \
-
-include mamona-buildall.inc
