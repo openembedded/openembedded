@@ -17,7 +17,7 @@ SRC_URI = "git://dev.openbossa.org/mamona/mamona_input_methods.git;protocol=http
 S = "${WORKDIR}/git"
 
 # Mamona IM
-RPROVIDES_${PN} = "libmamona-im"
+RPROVIDES_${PN} = "libmamona-im0"
 
 # Ecore
 PACKAGES += "\

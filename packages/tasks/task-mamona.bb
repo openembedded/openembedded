@@ -25,7 +25,7 @@ RDEPENDS = "\
     hal \
     intltool \
     libfontenc \
-    libmamona-im \
+    libmamona-im0 \
     libusb \
     libx11 \
     libxau \
