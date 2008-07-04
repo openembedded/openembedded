@@ -1,0 +1,17 @@
+<default>
+	<prerequisites>
+		<tag type="services" />
+		<bcastsystem type="DVB-S" />
+		<satellite type="130" />
+	</prerequisites>
+	
+	<info>
+		<author>tmbinc@elitedvb.net</author>
+		<name>Hotbird (13.0E)</name>
+	</info>
+
+	<files type="directories">
+		<file type="services" name="lamedb.130">
+		</file>
+	</files>
+</default>
