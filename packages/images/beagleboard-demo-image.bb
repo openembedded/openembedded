@@ -24,7 +24,7 @@ IMAGE_INSTALL = "\
     abiword \
 #    gnumeric \
 #    gimp \
-    powertop \
+    powertop oprofile \
     pidgin \
 #    irssi \
 "
