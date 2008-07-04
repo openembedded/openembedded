@@ -2,10 +2,10 @@ require linux-omap.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MACHINE}"
 
-SRCREV = "050684c18f2ea0b08fdd5233a0cd3c7f96e00a0e"
+SRCREV = "c32c81d59d2d8a66e63f82c9732db256d302068e"
 
 PV = "2.6.25+2.6.26-rc8+${PR}+git${SRCREV}"
-PR = "r36"
+PR = "r38"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -20,6 +20,7 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://16bpp.patch;patch=1 \
            file://no-empty-flash-warnings.patch;patch=1 \
            file://logo_linux_clut224.ppm \
+           file://oprofile-0.9.3.armv7.diff;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \
