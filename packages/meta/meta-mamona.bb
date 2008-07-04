@@ -68,6 +68,7 @@ mplayer-maemo \
 ncurses \
 net-tools \
 netbase \
+openobex \
 portmap \
 ppp \
 procps \
