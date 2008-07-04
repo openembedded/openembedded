@@ -1,7 +1,7 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-PR = "r19"
+PR = "r20"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://cross_compile.patch;patch=1 \
                    file://prefix.patch;patch=1"
@@ -27,13 +27,19 @@ do_stage () {
 	install -d ${STAGING_DATADIR}/libtool/config/ ${STAGING_DATADIR}/aclocal/
 	install -c ${S}/libltdl/config/config.guess ${STAGING_DATADIR}/libtool/
 	install -c ${S}/libltdl/config/config.sub ${STAGING_DATADIR}/libtool/
-	install -c -m 0644 ${S}/libltdl/config/ltmain.sh ${STAGING_DATADIR}/libtool/config/
+	for i in config.guess config.sub compile depcomp general.m4sh getopt.m4sh install-sh ltmain.m4sh ltmain.sh mdate-sh missing mkstamp ; do \
+		install -c -m 0644 ${S}/libltdl/config/$i ${STAGING_DATADIR}/libtool/config/
+	done
 	install -c -m 0644 ${S}/libltdl/m4/libtool.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltdl.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltoptions.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltversion.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/ltsugar.m4 ${STAGING_DATADIR}/aclocal/
 	install -c -m 0644 ${S}/libltdl/m4/lt~obsolete.m4 ${STAGING_DATADIR}/aclocal/
+	install -c -m 0644 ${S}/libltdl/m4/argz.m4 ${STAGING_DATADIR}/aclocal/
+
+	install -d ${STAGING_DATADIR}/libtool/libltdl
+	cp -pPr  ${S}/libltdl/* ${STAGING_DATADIR}/libtool/libltdl/
 }
 
 do_install () {
