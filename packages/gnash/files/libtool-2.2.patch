@@ -1,0 +1,35 @@
+diff -NrU5 gnash-0.8.3.orig/libbase/Makefile.am gnash-0.8.3/libbase/Makefile.am
+--- gnash-0.8.3.orig/libbase/Makefile.am	2008-06-26 22:56:12.000000000 +0200
++++ gnash-0.8.3/libbase/Makefile.am	2008-06-26 22:57:48.000000000 +0200
+@@ -19,13 +19,13 @@
+ 
+ # this is where Gnash plugins get installed
+ pluginsdir = $(prefix)/lib/gnash/plugins
+ 
+ if INSTALL_LTDL
+-include_HEADERS =  $(top_srcdir)/libltdl/ltdl.h
+-LIBLTDLLIB = libltdl.la
+-LIBLTDLHEAD =  $(top_srcdir)/libltdl/ltdl.h
++#include_HEADERS =  $(top_srcdir)/libltdl/ltdl.h
++#LIBLTDLLIB = libltdl.la
++#LIBLTDLHEAD =  $(top_srcdir)/libltdl/ltdl.h
+ endif
+ 
+ sysconf_DATA = gnashrc gnashpluginrc
+ 
+ edit = sed \
+@@ -174,12 +174,12 @@
+ 
+ libgnashbase_la_LDFLAGS = -release $(VERSION)
+ 
+ libltdlc_la_CPPFLAGS = $(LTDLINCL)
+ if CONVENIENCE_LTDL
+-noinst_LTLIBRARIES = libltdlc.la
+-libltdlc_la_SOURCES = $(top_srcdir)/libltdl/ltdl.c
++#noinst_LTLIBRARIES = libltdlc.la
++#libltdlc_la_SOURCES = $(top_srcdir)/libltdl/ltdl.c
+ endif
+ CLEANFILES = libltdl.la libltdlc.la gnashrc gnashpluginrc
+ 
+ libltdl_la_SOURCES = $(top_srcdir)/libltdl/ltdl.c
+ libltdl_la_LDFLAGS = -no-undefined -version-info 4:4:1
