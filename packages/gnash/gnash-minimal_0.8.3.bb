@@ -1,5 +1,7 @@
 require gnash-minimal.inc
 
+PR = "r6"
+
 EXTRA_OECONF += " --without-included-ltdl \
                   --with-ltdl-include=${STAGING_INCDIR} \
                   --with-ltdl-lib=${STAGING_LIBDIR} \

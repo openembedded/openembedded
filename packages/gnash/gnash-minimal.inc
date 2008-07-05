@@ -42,11 +42,13 @@ EXTRA_OECONF="--enable-gui=gtk \
 # detection because uclibc does not have argz.h which enables error_t 
 CFLAGS += " -D_GNU_SOURCE "
 
-PACKAGES =+ " libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
+PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
 
+FILES_${PN}-dbg += "${libdir}/gnash/.debug"
+FILES_${PN}-dev += "${libdir}/gnash/*a"
 FILES_libltdl = "${libdir}/gnash/libltdl*.so*"
 FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
 FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
 FILES_libgnashmedia = "${libdir}/gnash/libgnashmedia-${PV}.so"
 FILES_libgnashserver = "${libdir}/gnash/libgnashserver-${PV}.so"
-
+FILES_libgnashnet = "${libdir}/gnash/libgnashnet.so.*"
