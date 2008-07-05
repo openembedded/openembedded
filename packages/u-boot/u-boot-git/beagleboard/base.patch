@@ -1467,10 +1467,10 @@ index 0000000..2f94684
 +#endif /* (CONFIG_COMMANDS & CFG_CMD_NAND) */
 diff --git a/board/omap3530beagle/omap3530beagle.c b/board/omap3530beagle/omap3530beagle.c
 new file mode 100644
-index 0000000..7d9a566
+index 0000000..0bdfb72
 --- /dev/null
 +++ b/board/omap3530beagle/omap3530beagle.c
-@@ -0,0 +1,388 @@
+@@ -0,0 +1,390 @@
 +/*
 + * (C) Copyright 2004-2008
 + * Texas Instruments, <www.ti.com>
@@ -1740,6 +1740,8 @@ index 0000000..7d9a566
 +	*((uint *) 0x49058094) = 0x00000506;
 +	*((uint *) 0x49056094) = 0xF060F000;
 +
++	/* set clksel_tv and clksel_dss1 */
++	*((uint *) 0x48004E40) = 0x00001002;
 +	return (0);
 +}
 +

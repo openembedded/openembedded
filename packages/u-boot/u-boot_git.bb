@@ -1,5 +1,5 @@
 require u-boot.inc
-PR="r4"
+PR="r6"
 
 SRCREV_davinci-sffsdr = "a524e112b424c6843800ea2f19d3a8cf01d0aa94"
 SRCREV_beagleboard = "a94f22f08f280905926219e568568964cb9eeb9d"
