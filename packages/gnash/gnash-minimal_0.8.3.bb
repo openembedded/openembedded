@@ -1,6 +1,6 @@
-require gnash.inc
+require gnash-minimal.inc
 
-PR = "r2"
+PR = "r6"
 
 EXTRA_OECONF += " --without-included-ltdl \
                   --with-ltdl-include=${STAGING_INCDIR} \
@@ -8,4 +8,5 @@ EXTRA_OECONF += " --without-included-ltdl \
 "
 
 SRC_URI += "file://libtool-2.2.patch;patch=1"
+
 
