@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.26-rc8-omap1
-# Fri Jul  4 09:57:18 2008
+# Sun Jul  6 15:22:47 2008
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -1225,6 +1225,10 @@ CONFIG_FB_CFB_IMAGEBLIT=y
 # CONFIG_FB_S1D13XXX is not set
 # CONFIG_FB_VIRTUAL is not set
 CONFIG_FB_OMAP=y
+# CONFIG_FB_OMAP_031M3R is not set
+# CONFIG_FB_OMAP_048M3R is not set
+CONFIG_FB_OMAP_079M3R=y
+# CONFIG_FB_OMAP_092M9R is not set
 # CONFIG_FB_OMAP_LCDC_EXTERNAL is not set
 # CONFIG_FB_OMAP_BOOTLOADER_INIT is not set
 CONFIG_FB_OMAP_CONSISTENT_DMA_SIZE=4
