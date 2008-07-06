@@ -19,7 +19,8 @@ IMAGE_INSTALL = "\
     psplash \
     e-wm exhibit \
     xterm xmms epiphany-firefox-replacement \
-    hicolor-icon-theme gnome-icon-theme \
+    swfdec-mozilla \
+	hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \
 #    gnumeric \
