@@ -1,0 +1,25 @@
+--- /tmp/Makefile	2008-07-07 20:48:41.000000000 +0200
++++ git/Makefile	2008-07-07 20:49:22.000000000 +0200
+@@ -21,10 +21,6 @@
+ # MA 02111-1307 USA
+ #
+ 
+-ifndef PRJROOT
+-$(error You must first source the BSP environment: "source neuros-env")
+-endif
+-
+ VERSION = 1
+ PATCHLEVEL = 3
+ SUBLEVEL = 2
+@@ -417,11 +413,6 @@
+ 		grep -v '\(compiled\)\|\(\.o$$\)\|\( [aUw] \)\|\(\.\.ng$$\)\|\(LASH[RL]DI\)' | \
+ 		sort > $(obj)System.map
+ 
+-install: u-boot.bin u-boot 
+-	@install -p u-boot.bin $(PRJROOT)/images/ > /dev/null
+-	@install -p u-boot $(PRJROOT)/images/ > /dev/null
+-	@install uboot_desc $(PRJROOT)/images/ > /dev/null
+-
+ #
+ # Auto-generate the autoconf.mk file (which is included by all makefiles)
+ #
