@@ -1,0 +1,20 @@
+This is the tool to generate the OSD upgrading package.
+
+1. Compile the tool
+   gcc crc32.c package.c -o osdpkg
+
+2. Copy tool to neuros-bsp/images
+
+3. Create upk
+   ./osdpkg nh [upk_desc] [upk_name] [bins ...]
+
+You can choose to either generate a full package that includes each
+binary or a package just for that part that has been changed.
+
+Example:
+<1> To create a upk by including everything
+   ./osdpkg nh "upk by yada_yada on 2006-10-18" r3.upk env.img
+u-boot.bin uImage root.cramfs
+
+<2> To create a upk by just including the rootfs
+   ./osdpkg nh "upk by blah_blah on 2006-10-18" r3.upk root.cramfs

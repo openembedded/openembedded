@@ -1,0 +1,40 @@
+# *  Copyright(C) 2007 Neuros Technology International LLC. 
+# *               <www.neurostechnology.com>
+# *
+# *  Terminal application config file.........TQ 2007-02-05
+
+# build target
+#       ARM  -- Neuros hardware.
+#       HOST -- Host PC
+BUILD_TARGET := HOST
+
+# global test code switch
+#       YES  -- include test code
+#       NO   -- exclude all test code
+INCLUDE_TEST_CODE:= NO
+
+# BSP root directory
+BSP_ROOT     := $(PRJROOT)
+
+
+# setting up tools etc.
+ifeq ($(BUILD_TARGET), ARM)
+     TOOLS_PREFIX :=arm-linux-
+     PROJ_TERMINAL_ENV :="--ARM--"
+     TOOLS_PATH   :=${PATH}:${BSP_ROOT}/toolchain/bin
+endif
+ifeq ($(BUILD_TARGET), HOST)
+     TOOLS_PREFIX:=
+     PROJ_TERMINAL_ENV="--HOST--"
+     TOOLS_PATH   :=${PATH}     
+endif
+PATH:=${TOOLS_PATH}
+
+
+# tools definition
+CC    := $(TOOLS_PREFIX)gcc
+CXX   := $(TOOLS_PREFIX)g++
+AR    := $(TOOLS_PREFIX)ar
+LD    := $(TOOLS_PREFIX)ld
+NM    := $(TOOLS_PREFIX)nm
+STRIP := $(TOOLS_PREFIX)strip
