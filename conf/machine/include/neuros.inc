@@ -1,5 +1,7 @@
 MACHINE_POSTPROCESS_COMMAND = "neuros_make_installkit"
 
+EXTRA_IMAGEDEPENDS += "u-boot u-boot-env virtual/kernel neuros-pkggen-native"
+
 neuros_make_installkit () {
     cd ${DEPLOY_DIR_IMAGE}
     rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/
@@ -7,8 +9,8 @@ neuros_make_installkit () {
 
     # Get the latest kernel and u-boot using the foo-<machine>.bin symlinks
     cp uImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/temp/uImage
-    cp u-boot-${MACHINE}.bin ${IMAGE_NAME}-installkit/u-boot.bin
-    cp default_env.img ${IMAGE_NAME}-installkit/	
+    [ -f u-boot-${MACHINE}.bin ] && cp u-boot-${MACHINE}.bin ${IMAGE_NAME}-installkit/u-boot.bin
+    [ -f default_env.img ] && cp default_env.img ${IMAGE_NAME}-installkit/	
 
     cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/initrd.bin
 
