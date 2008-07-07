@@ -1,5 +1,6 @@
 DESCRIPTION = "Tool to generate ready to flash .pkg files for neuros machines"
 LICENSE = "GPLv2"
+PR = "r1"
 
 inherit native
 
@@ -18,7 +19,7 @@ do_compile_prepend() {
 }
 
 do_stage() {
-	install -m 0755 packet_osd2 ${STAGING_DIR_NATIVE}
+	install -m 0755 packet_osd2 ${STAGING_BINDIR_NATIVE}
 }
 
 
