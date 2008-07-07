@@ -12,7 +12,7 @@ neuros_make_installkit () {
     [ -f u-boot-${MACHINE}.bin ] && cp u-boot-${MACHINE}.bin ${IMAGE_NAME}-installkit/u-boot.bin
     [ -f default_env.img ] && cp default_env.img ${IMAGE_NAME}-installkit/	
 
-    cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/initrd.bin
+    cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/rootfs.yaffs2 
 
     cd ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/ 
       mkfs.jffs2 -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 -n 
