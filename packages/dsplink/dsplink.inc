@@ -1,7 +1,8 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
 DEPENDS = "virtual/kernel perl-native"
-RDEPENDS = "update-modules"
+RDEPENDS_${PN}-module = "update-modules"
+RRECOMMENDS_${PN} = "${PN}-module"
 
 inherit module
 
