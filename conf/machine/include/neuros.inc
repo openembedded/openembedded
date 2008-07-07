@@ -16,6 +16,9 @@ neuros_make_installkit () {
 
     cd ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/ 
       mkfs.jffs2 -d ./temp -o uImage.jffs2 -e 0x20000 -s 0x800 -n 
+      echo "${MACHINE}" > rootfs.version
+      echo "${MACHINE}" > u-boot.version
+      echo "${MACHINE}" > uImage.version
       packet_osd2 osd20.pkg '${DISTRO} Developer UPK' default_env.img u-boot.bin uImage.jffs2 rootfs.yaffs2 
       cd ${DEPLOY_DIR_IMAGE} 
     
