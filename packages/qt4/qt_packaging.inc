@@ -3,6 +3,7 @@ NONDEV_PACKAGES += "${QT_BASE_LIB}core4 ${QT_BASE_LIB}gui4 ${QT_BASE_LIB}network
              ${QT_BASE_LIB}designer4 ${QT_BASE_LIB}designercomponents4 \
              ${QT_BASE_LIB}3support4 ${QT_BASE_LIB}assistantclient4 ${QT_BASE_LIB}script4 \
              ${QT_BASE_LIB}dbus4 ${QT_BASE_LIB}opengl4 \
+             ${QT_BASE_LIB}help ${QT_BASE_LIB}clucene ${QT_BASE_LIB}webkit \
              ${QT_BASE_NAME}-assistant ${QT_BASE_NAME}-common \
              ${QT_BASE_NAME}-designer \
              ${QT_BASE_NAME}-demos ${QT_BASE_NAME}-examples \
@@ -24,7 +25,11 @@ DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
              ${QT_BASE_LIB}script4-dev \
              ${QT_BASE_LIB}dbus4-dev \
              ${QT_BASE_LIB}opengl4-dev \
-             ${QT_BASE_LIB}uitools4-dev"
+             ${QT_BASE_LIB}uitools4-dev \
+             ${QT_BASE_LIB}help-dev \
+             ${QT_BASE_LIB}clucene-dev \
+             ${QT_BASE_LIB}webkit-dev \
+             "
 
 DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}gui4-dbg \
@@ -39,7 +44,11 @@ DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}assistantclient4-dbg \
              ${QT_BASE_LIB}script4-dbg \
              ${QT_BASE_LIB}dbus4-dbg \
-             ${QT_BASE_LIB}opengl4-dbg"
+             ${QT_BASE_LIB}opengl4-dbg \
+             ${QT_BASE_LIB}help-dbg \
+             ${QT_BASE_LIB}clucene-dbg \
+             ${QT_BASE_LIB}webkit-dbg \
+             "
 
 
 PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
@@ -103,7 +112,15 @@ FILES_${QT_BASE_LIB}opengl4                 = "${libdir}/libQtOpenGL${QT_LIBINFI
 FILES_${QT_BASE_LIB}opengl4-dev             = "${@qt_default_dev('OpenGL')}"
 FILES_${QT_BASE_LIB}opengl4-dbg             = "${libdir}/.debug/libQtOpenGL*"
 FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/QtUiTools${QT_LIBINFIX}.pc"
-
+FILES_${QT_BASE_LIB}Hhlp                    = "${libdir}/libQtHelp${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}help-dev                = "${@qt_default_dev('Help')}"
+FILES_${QT_BASE_LIB}help-dbg                = "${libdir}/.debug/libQtHelp*"
+FILES_${QT_BASE_LIB}clucene                 = "${libdir}/libQtClucene${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}clucene-dev             = "${@qt_default_dev('Clucene')}"
+FILES_${QT_BASE_LIB}clucene-dbg             = "${libdir}/.debug/libQtClucene*"
+FILES_${QT_BASE_LIB}webkit                  = "${libdir}/libQtWebKit${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}webkit-dev              = "${@qt_default_dev('Webkit')}"
+FILES_${QT_BASE_LIB}webkit-dbg              = "${libdir}/.debug/libQtWebkit*"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
