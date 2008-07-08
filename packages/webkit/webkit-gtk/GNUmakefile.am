@@ -14,8 +14,9 @@
 #
 # Sources, headers, flags, etc... should be added to the respective variables
 # with the above suffix, e.g, webcore-specific sources should go to
-# webcore_sources, gtk port-specific flags should go to webkitgtk_cppflags,
-# etc... The only exceptions are the global variables. See Global Variables below.
+# webcore_sources, gtk port API and WebCoreSupport parts to webkitgtk_sources,
+# etc... The only exceptions are the global variables. See Global Variables
+# below.
 #
 # Global Variables
 #
@@ -37,6 +38,8 @@ GENPROGRAMS := $(top_builddir)/Programs
 CREATE_HASH_TABLE = $(srcdir)/JavaScriptCore/kjs/create_hash_table
 
 # Libraries and support components
+bin_PROGRAMS :=
+
 noinst_PROGRAMS :=
 
 lib_LIBRARIES :=
@@ -69,6 +72,12 @@ global_cflags += \
 
 global_cxxflags += \
 	-fno-rtti
+endif
+
+# -no-undefined required for building DLLs on Windows
+# It breaks the build on other platforms, so we use it conditionally
+if OS_WIN32
+no_undefined = -no-undefined
 endif
 
 # Shared libraries
@@ -115,17 +124,19 @@ libJavaScriptCore_la_LIBADD = \
 	-lpthread
 
 libJavaScriptCore_la_CXXFLAGS = \
+	-fstrict-aliasing \
+	-O3 \
 	$(global_cxxflags) \
 	$(global_cflags) \
 	$(GLOBALDEPS_CFLAGS) \
-	$(UNICODE_CFLAGS) \
-	-fno-strict-aliasing
+	$(UNICODE_CFLAGS)
 
 libJavaScriptCore_la_CFLAGS = \
+	-fstrict-aliasing \
+	-O3 \
 	$(global_cflags) \
 	$(GLOBALDEPS_CFLAGS) \
-	$(UNICODE_CFLAGS) \
-	-fno-strict-aliasing
+	$(UNICODE_CFLAGS)
 
 libJavaScriptCore_la_CPPFLAGS = \
 	$(global_cppflags) \
@@ -139,16 +150,22 @@ webcore_headers :=
 webcore_libadd :=
 webcore_built_sources :=
 webcore_built_nosources :=
+webcoregtk_cppflags :=
+webcoregtk_sources :=
+webcoregtk_headers :=
 
 nodist_libWebCore_la_SOURCES = \
 	$(webcore_built_sources)
 
 libWebCore_la_SOURCES = \
 	$(webcore_headers) \
-	$(webcore_sources)
+	$(webcore_sources) \
+	$(webcoregtk_headers) \
+	$(webcoregtk_sources)
 
 libWebCore_la_CXXFLAGS = \
 	-fno-strict-aliasing \
+	-O2 \
 	$(global_cxxflags) \
 	$(global_cflags) \
 	$(GLOBALDEPS_CFLAGS) \
@@ -156,6 +173,7 @@ libWebCore_la_CXXFLAGS = \
 	$(WEBKITDEPS_CFLAGS) \
 	$(LIBCURL_CFLAGS) \
 	$(LIBSOUP_CFLAGS) \
+	$(FREETYPE_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
 	$(GSTREAMER_CFLAGS) \
 	$(LIBXSLT_CFLAGS) \
@@ -164,12 +182,14 @@ libWebCore_la_CXXFLAGS = \
 
 libWebCore_la_CFLAGS = \
 	-fno-strict-aliasing \
+	-O2 \
 	$(global_cflags) \
 	$(GLOBALDEPS_CFLAGS) \
 	$(UNICODE_CFLAGS) \
 	$(WEBKITDEPS_CFLAGS) \
 	$(LIBCURL_CFLAGS) \
 	$(LIBSOUP_CFLAGS) \
+	$(FREETYPE_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
 	$(GSTREAMER_CFLAGS) \
 	$(LIBXSLT_CFLAGS) \
@@ -180,7 +200,7 @@ libWebCore_la_CPPFLAGS = \
 	$(global_cppflags) \
 	$(webcore_cppflags) \
 	$(javascriptcore_cppflags) \
-	$(webkitgtk_cppflags) \
+	$(webcoregtk_cppflags) \
 	$(HILDON_CPPFLAGS)
 
 libWebCore_la_LIBADD = \
@@ -190,6 +210,7 @@ libWebCore_la_LIBADD = \
 	$(WEBKITDEPS_LIBS) \
 	$(LIBCURL_LIBS) \
 	$(LIBSOUP_LIBS) \
+	$(FREETYPE_LIBS) \
 	$(UNICODE_LIBS) \
 	$(SQLITE3_LIBS) \
 	$(GSTREAMER_LIBS) \
@@ -211,7 +232,9 @@ nodist_libwebkit_1_0_la_SOURCES = \
 	$(webkitgtk_built_sources)
 
 libwebkit_1_0_ladir = $(prefix)/include/webkit-1.0/webkit
-libwebkit_1_0_la_HEADERS = $(webkitgtk_h_api)
+libwebkit_1_0_la_HEADERS = \
+	$(webkitgtk_h_api) \
+	WebKit/gtk/webkit/webkitenumtypes.h
 
 libwebkit_1_0_la_SOURCES = \
 	$(webkitgtk_headers) \
@@ -224,11 +247,13 @@ libwebkit_1_0_la_CFLAGS = \
 	$(libWebCore_la_CFLAGS)
 
 libwebkit_1_0_la_CPPFLAGS = \
-	$(libWebCore_la_CPPFLAGS)
+	$(libWebCore_la_CPPFLAGS) \
+	$(webkitgtk_cppflags)
 
 libwebkit_1_0_la_LDFLAGS = \
 	$(COVERAGE_LDFLAGS) \
-	-version-info @LIBWEBKITGTK_VERSION@
+	-version-info @LIBWEBKITGTK_VERSION@ \
+	$(no_undefined)
 
 libwebkit_1_0_la_LIBADD = \
 	libWebCore.la
@@ -236,6 +261,7 @@ libwebkit_1_0_la_LIBADD = \
 #
 # Extra checks and flags
 global_cppflags += \
+	-DBUILDING_CAIRO__=1 \
 	-DBUILDING_GTK__=1 \
 	-DWTF_CHANGES
 
@@ -252,7 +278,7 @@ endif
 if !ENABLE_DEBUG
 global_cppflags += -DNDEBUG
 else
-webkitgtk_cppflags += \
+webcoregtk_cppflags += \
 	-DG_DISABLE_DEPRECATED \
 	-DGDK_PIXBUF_DISABLE_DEPRECATED \
 	-DGDK_DISABLE_DEPRECATED \
@@ -282,15 +308,11 @@ if ENABLE_VIDEO
 webcore_libadd += -lgstinterfaces-0.10 -lgstvideo-0.10
 endif
 
-webkitgtk_cppflags += \
--I$(top_builddir)/WebKit/gtk/webkit \
--DBUILDING_CAIRO__=1 \
--DBUILD_WEBKIT
-
 webkitgtk_h_api += \
 	WebKit/gtk/webkit/webkit.h \
 	WebKit/gtk/webkit/webkitdefines.h \
 	WebKit/gtk/webkit/webkitnetworkrequest.h \
+	WebKit/gtk/webkit/webkitversion.h \
 	WebKit/gtk/webkit/webkitwebbackforwardlist.h \
 	WebKit/gtk/webkit/webkitwebframe.h \
 	WebKit/gtk/webkit/webkitwebhistoryitem.h \
@@ -299,7 +321,9 @@ webkitgtk_h_api += \
 
 webkitgtk_built_sources += \
 	DerivedSources/webkit-marshal.h \
-	DerivedSources/webkit-marshal.cpp
+	DerivedSources/webkit-marshal.cpp \
+	DerivedSources/webkitenumtypes.cpp \
+	WebKit/gtk/webkit/webkitenumtypes.h
 
 webkitgtk_headers += \
 	WebKit/gtk/webkit/webkitprivate.h \
@@ -314,6 +338,7 @@ webkitgtk_headers += \
 webkitgtk_sources += \
 	WebKit/gtk/webkit/webkitnetworkrequest.cpp \
 	WebKit/gtk/webkit/webkitprivate.cpp \
+	WebKit/gtk/webkit/webkitversion.cpp \
 	WebKit/gtk/webkit/webkitwebbackforwardlist.cpp \
 	WebKit/gtk/webkit/webkitwebframe.cpp \
 	WebKit/gtk/webkit/webkitwebhistoryitem.cpp \
@@ -327,6 +352,13 @@ webkitgtk_sources += \
 	WebKit/gtk/WebCoreSupport/InspectorClientGtk.cpp \
 	WebKit/gtk/WebCoreSupport/PasteboardHelperGtk.cpp
 
+webkitgtk_cppflags += \
+	-DBUILDING_WEBKIT \
+	-I$(srcdir)/WebKit/gtk \
+	-I$(srcdir)/WebKit/gtk/WebCoreSupport \
+	-I$(srcdir)/WebKit/gtk/webkit \
+	-I$(top_builddir)/WebKit/gtk/webkit
+
 webkitgtk_cleanfiles += \
 	$(top_builddir)/Programs/GtkLauncher \
 	$(top_builddir)/WebKit/gtk/webkit-1.0.pc
@@ -334,12 +366,14 @@ webkitgtk_cleanfiles += \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = WebKit/gtk/webkit-1.0.pc
 
-WEBKIT_MARSHAL = $(GENSOURCES)/webkit-marshal
-WEBKIT_MARSHAL_LIST = $(srcdir)/WebKit/gtk/webkit/webkit-marshal.list
-
 stamp_files := \
 	stamp-webkit-marshal.cpp \
-	stamp-webkit-marshal.h
+	stamp-webkit-marshal.h \
+	stamp-webkitenumtypes.cpp \
+	stamp-webkitenumtypes.h
+
+WEBKIT_MARSHAL = $(GENSOURCES)/webkit-marshal
+WEBKIT_MARSHAL_LIST = $(srcdir)/WebKit/gtk/webkit/webkit-marshal.list
 
 DerivedSources/webkit-marshal.cpp: stamp-webkit-marshal.cpp
 	@true
@@ -355,6 +389,53 @@ stamp-webkit-marshal.cpp: $(WEBKIT_MARSHAL_LIST)
 stamp-webkit-marshal.h: $(WEBKIT_MARSHAL_LIST)
 	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --header > $(WEBKIT_MARSHAL).h && \
 	echo timestamp > $(@F)
+
+WebKit/gtk/webkit/webkitenumtypes.h: stamp-webkitenumtypes.h
+	@true
+stamp-webkitenumtypes.h: $(webkitgtk_h_api) Makefile
+	(cd $(srcdir) \
+	&& glib-mkenums \
+			--fhead "#ifndef WEBKIT_ENUM_TYPES_H\n" \
+			--fhead "#define WEBKIT_ENUM_TYPES_H\n\n" \
+			--fhead "#include <glib-object.h>\n\n" \
+			--fhead "#include <webkit/webkitdefines.h>\n\n" \
+			--fhead "G_BEGIN_DECLS\n\n" \
+			--ftail "G_END_DECLS\n\n" \
+			--ftail "#endif\n" \
+			--fprod "#include <@filename@>\n\n" \
+			--eprod "#define WEBKIT_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n\n" \
+			--eprod "WEBKIT_API GType\n@enum_name@_get_type(void);\n\n" \
+		$(webkitgtk_h_api) | \
+		sed 's,WebKit/gtk/,,' | \
+		sed 's,web_kit,webkit,' | \
+		sed 's,WEBKIT_TYPE_KIT,WEBKIT_TYPE,' \
+		) > xgen-gth \
+	&& (cmp -s xgen-gth WebKit/gtk/webkit/webkitenumtypes.h || cp xgen-gth WebKit/gtk/webkit/webkitenumtypes.h) \
+	&& rm -f xgen-gth \
+	&& echo timestamp > $(@F)
+
+DerivedSources/webkitenumtypes.cpp: $(webkitgtk_h_api) Makefile
+	(cd $(srcdir) \
+	&& glib-mkenums \
+			--fhead "#include <config.h>\n" \
+			--fhead "#include <glib-object.h>\n" \
+			--fhead "#include \"$(top_builddir)/WebKit/gtk/webkit/webkitenumtypes.h\"\n\n" \
+			--fhead "extern \"C\" {\n\n" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--vhead "static const G@Type@Value _@enum_name@_values[] = {" \
+			--vprod "    { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "    { 0, NULL, NULL }\n};\n\n" \
+			--vtail "GType @enum_name@_get_type(void)\n{\n" \
+			--vtail "    static GType type = 0;\n\n" \
+			--vtail "    if (!type)\n" \
+			--vtail "        type = g_@type@_register_static(\"@EnumName@\", _@enum_name@_values);\n\n" \
+			--vtail "    return type;\n}\n\n" \
+			--ftail "}\n" \
+		$(webkitgtk_h_api) | \
+		sed 's,web_kit,webkit,' \
+		) > xgen-gtc \
+	&& cp xgen-gtc $@ \
+	&& rm -f xgen-gtc
 
 # END WEBKIT GTK+
 

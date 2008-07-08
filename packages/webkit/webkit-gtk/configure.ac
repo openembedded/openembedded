@@ -1,11 +1,24 @@
-AC_INIT([WebKit],[0.1],[http://bugs.webkit.org/])
-
 AC_PREREQ(2.59)
 
+m4_define([webkit_major_version], [1])
+m4_define([webkit_minor_version], [0])
+m4_define([webkit_micro_version], [2])
+
+AC_INIT([WebKit],[webkit_major_version.webkit_minor_version.webkit_micro_version],[http://bugs.webkit.org/])
+
 AC_CONFIG_HEADERS([aconfig.h])
+
+WEBKIT_MAJOR_VERSION=webkit_major_version
+WEBKIT_MINOR_VERSION=webkit_minor_version
+WEBKIT_MICRO_VERSION=webkit_micro_version
+AC_SUBST(WEBKIT_MAJOR_VERSION)
+AC_SUBST(WEBKIT_MINOR_VERSION)
+AC_SUBST(WEBKIT_MICRO_VERSION)
+
 AC_CONFIG_SRCDIR([WebCore/config.h])
 
-# see http://www.gnu.org/software/libtool/manual.html#Versioning
+dnl # Libtool library version, not to confuse with API version
+dnl # see http://www.gnu.org/software/libtool/manual.html#Versioning
 LIBWEBKITGTK_VERSION=1:0:0
 AC_SUBST([LIBWEBKITGTK_VERSION])
 
@@ -38,23 +51,24 @@ case "$host" in
        ;;
 esac
 
-# If CXXFLAGS and CFLAGS are unset, default to -O2
+# If CXXFLAGS and CFLAGS are unset, default to empty.
 # This is to tell automake not to include '-g' if CXXFLAGS is not set
 # For more info - http://www.gnu.org/software/automake/manual/autoconf.html#C_002b_002b-Compiler
 if test -z "$CXXFLAGS"; then
-   CXXFLAGS="-O2"
+   CXXFLAGS=""
 fi
 if test -z "$CFLAGS"; then
-   CFLAGS="-O2"
+   CFLAGS=""
 fi
 
-# programs
-AC_DISABLE_STATIC
-AM_PROG_LIBTOOL
-AC_PROG_INSTALL
 AM_PROG_CC_STDC
-AC_PROG_CXX
 AM_PROG_CC_C_O
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+DOLT
 
 # check for -fvisibility=hidden compiler support (GCC >= 4)
 saved_CFLAGS="$CFLAGS"
@@ -147,10 +161,12 @@ esac
 AC_MSG_RESULT([$unicode_backend])
 
 if test "$unicode_backend" = "icu"; then
-	# check for icu-config
 	if test "$os_darwin" = "yes"; then
 		UNICODE_CFLAGS="-I\$(srcdir)/JavaScriptCore/icu -I\$(srcdir)/WebCore/icu"
 		UNICODE_LIBS="-licucore"
+	elif test "$os_win32" = "yes"; then
+		UNICODE_CFLAGS=""
+		UNICODE_LIBS="-licuin -licuuc"
 	else
 		AC_PATH_PROG(icu_config, icu-config, no)
 		if test "$icu_config" = "no"; then
@@ -243,9 +259,6 @@ PKG_CHECK_MODULES([WEBKITDEPS],
                   [gtk+-2.0 >= $GTK_REQUIRED_VERSION
                   pango >= $PANGO_REQUIRED_VERSION
                   cairo >= $CAIRO_REQUIRED_VERSION
-                  cairo-ft,
-                  fontconfig >= $FONTCONFIG_REQUIRED_VERSION
-                  freetype2 >= $FREETYPE2_REQUIRED_VERSION
                   libxml-2.0 >= $LIBXML_REQUIRED_VERSION])
 AC_SUBST([WEBKITDEPS_CFLAGS])
 AC_SUBST([WEBKITDEPS_LIBS])
@@ -266,14 +279,6 @@ AC_ARG_ENABLE(dashboard_support,
               [],[enable_dashboard_support="yes"])
 AC_MSG_RESULT([$enable_dashboard_support])
 
-# check whether to build with cross-document messaging support
-AC_MSG_CHECKING([whether to enable HTML5 cross-document messaging support])
-AC_ARG_ENABLE(cross_document_messaging,
-              AC_HELP_STRING([--enable-cross-document-messaging],
-                             [enable HTML5 cross-document messaging support [default=yes]]),
-              [],[enable_cross_document_messaging="yes"])
-AC_MSG_RESULT([$enable_cross_document_messaging])
-
 # check whether to enable HTML5 Offline Web Applications support
 AC_MSG_CHECKING([whether to enable HTML5 offline web applications support])
 AC_ARG_ENABLE(offline_web_applications,
@@ -286,8 +291,8 @@ AC_MSG_RESULT([$enable_offline_web_applications])
 AC_MSG_CHECKING([whether to enable HTML5 client-side session and persistent storage support])
 AC_ARG_ENABLE(dom_storage,
               AC_HELP_STRING([--enable-dom-storage],
-                             [enable HTML5 client-side session and persistent storage support [default=no]]),
-              [],[enable_dom_storage="no"])
+                             [enable HTML5 client-side session and persistent storage support [default=yes]]),
+              [],[enable_dom_storage="yes"])
 AC_MSG_RESULT([$enable_dom_storage])
 
 # check whether to build with database support
@@ -302,8 +307,8 @@ AC_MSG_RESULT([$enable_database])
 AC_MSG_CHECKING([whether to enable icon database support])
 AC_ARG_ENABLE(icon_database,
               AC_HELP_STRING([--enable-icon-database],
-                             [enable icon database [default=no]]),
-              [],[enable_icon_database="no"])
+                             [enable icon database [default=yes]]),
+              [],[enable_icon_database="yes"])
 AC_MSG_RESULT([$enable_icon_database])
 
 # check whether to enable HTML5 audio/video support
@@ -330,39 +335,30 @@ AC_ARG_ENABLE(xslt,
               [],[enable_xslt="yes"])
 AC_MSG_RESULT([$enable_xslt])
 
-# check whether to enable SVG experimental features
-# Enable all SVG if it is
-AC_MSG_CHECKING([whether to enable SVG experimental features])
-AC_ARG_ENABLE(svg_experimental,
-              AC_HELP_STRING([--enable-svg-experimental],
-                             [enable support for SVG experimental features [default=no]]),
-              [],[enable_svg_experimental="no"])
-AC_MSG_RESULT([$enable_svg_experimental])
-
-if test "$enable_svg_experimental" = "yes"; then
-   enable_svg=yes
-   enable_svg_animation=yes
-#   enable_svg_filters=yes
-   enable_svg_fonts=yes
-   enable_svg_foreign_object=yes
-   enable_svg_as_image=yes
-   enable_svg_use_element=yes
-fi
-
 # check whether to enable SVG support
 AC_MSG_CHECKING([whether to enable SVG support])
 AC_ARG_ENABLE(svg,
               AC_HELP_STRING([--enable-svg],
-                             [enable support for SVG [default=no]]),
-              [],[enable_svg="no"])
+                             [enable support for SVG [default=yes]]),
+              [],[enable_svg="yes"])
 AC_MSG_RESULT([$enable_svg])
+
+# turn off svg features if --disable-svg is requested
+if test "$enable_svg" = "no"; then
+   enable_svg_animation=no
+   enable_svg_filters=no
+   enable_svg_fonts=no
+   enable_svg_foreign_object=no
+   enable_svg_as_image=no
+   enable_svg_use_element=no
+fi
 
 # check whether to enable support for SVG animation
 AC_MSG_CHECKING([whether to enable support for SVG animation])
 AC_ARG_ENABLE(svg_animation,
               AC_HELP_STRING([--enable-svg-animation],
-                             [enable support for SVG animation (experimental) [default=no]]),
-              [],[enable_svg_animation="no"])
+                             [enable support for SVG animation (experimental) [default=yes]]),
+              [],[enable_svg_animation="yes"])
 AC_MSG_RESULT([$enable_svg_animation])
 
 # check whether to enable support for SVG filters
@@ -377,33 +373,47 @@ AC_MSG_RESULT([$enable_svg_filters])
 AC_MSG_CHECKING([whether to enable support for SVG fonts])
 AC_ARG_ENABLE(svg_fonts,
               AC_HELP_STRING([--enable-svg-fonts],
-                             [enable support for SVG fonts (experimental) [default=no]]),
-              [],[enable_svg_fonts="no"])
+                             [enable support for SVG fonts (experimental) [default=yes]]),
+              [],[enable_svg_fonts="yes"])
 AC_MSG_RESULT([$enable_svg_fonts])
 
 # check whether to enable foreign objects support for SVG
 AC_MSG_CHECKING([whether to enable support for SVG foreign objects])
 AC_ARG_ENABLE(svg_foreign_object,
               AC_HELP_STRING([--enable-svg-foreign-object],
-                             [enable support for SVG foreign objects (experimental) [default=no]]),
-              [],[enable_svg_foreign_object="no"])
+                             [enable support for SVG foreign objects (experimental) [default=yes]]),
+              [],[enable_svg_foreign_object="yes"])
 AC_MSG_RESULT([$enable_svg_foreign_object])
 
 # check whether to enable SVG As Image support
 AC_MSG_CHECKING([whether to enable SVG as Image support])
 AC_ARG_ENABLE(svg_as_image,
               AC_HELP_STRING([--enable-svg-as-image],
-                             [enable SVG as Image support (experimental) [default=no]]),
-              [],[enable_svg_as_image="no"])
+                             [enable SVG as Image support (experimental) [default=yes]]),
+              [],[enable_svg_as_image="yes"])
 AC_MSG_RESULT([$enable_svg_as_image])
 
 # check whether to enable SVG USE element support
 AC_MSG_CHECKING([whether to enable support for SVG use element])
 AC_ARG_ENABLE(svg_use_element,
               AC_HELP_STRING([--enable-svg-use-element],
-                             [enable SVG use element support (experimental) [default=no]]),
-              [],[enable_svg_use_element="no"])
+                             [enable SVG use element support (experimental) [default=yes]]),
+              [],[enable_svg_use_element="yes"])
 AC_MSG_RESULT([$enable_svg_use_element])
+
+# check for SVG features, enabling SVG if necessary
+if test "$enable_svg_animation" = "yes" || \
+   test "$enable_svg_filters" = "yes" || \
+   test "$enable_svg_fonts" = "yes" || \
+   test "$enable_svg_foreign_object" = "yes" || \
+   test "$enable_svg_as_image" = "yes" || \
+   test "$enable_svg_use_element" = "yes"; then
+   svg_flags=yes
+   if test "$enable_svg" = "no"; then
+       AC_MSG_WARN([SVG feature(s) requested but SVG is disabled.. Enabling SVG support])
+       enable_svg=yes
+   fi
+fi
 
 # check whether to enable code coverage
 AC_MSG_CHECKING([whether to enable code coverage support])
@@ -444,6 +454,9 @@ fi
 if test "$with_http_backend" = "curl"; then
    PKG_CHECK_MODULES([LIBCURL],
                      [libcurl >= $LIBCURL_REQUIRED_VERSION])
+   if test "$os_win32" = "yes"; then
+      LIBCURL_LIBS="$LIBCURL_LIBS -lWs2_32"
+   fi
    AC_SUBST([LIBCURL_CFLAGS])
    AC_SUBST([LIBCURL_LIBS])
 fi
@@ -455,8 +468,21 @@ if test "$with_http_backend" = "soup"; then
    AC_SUBST([LIBSOUP_LIBS])
 fi
 
+# check if FreeType/FontConfig are available
+if test "$with_font_backend" = "freetype"; then
+   PKG_CHECK_MODULES([FREETYPE],
+                     [cairo-ft
+                     fontconfig >= $FONTCONFIG_REQUIRED_VERSION
+                     freetype2 >= $FREETYPE2_REQUIRED_VERSION])
+   AC_SUBST([FREETYPE_CFLAGS])
+   AC_SUBST([FREETYPE_LIBS])
+fi
+
 # check if sqlite 3 is available
-if test "$enable_icon_database" = "yes" || test "$enable_database" = "yes"; then
+if test "$enable_icon_database" = "yes" || \
+   test "$enable_database" = "yes" || \
+   test "$enable_offline_web_applications" = "yes" || \
+   test "$enable_dom_storage" = "yes"; then
    PKG_CHECK_MODULES([SQLITE3], [sqlite3 >= $SQLITE_REQUIRED_VERSION])
    AC_SUBST([SQLITE3_CFLAGS])
    AC_SUBST([SQLITE3_LIBS])
@@ -488,18 +514,9 @@ if test "$enable_coverage" = "yes"; then
    AC_SUBST([COVERAGE_LDFLAGS])
 fi
 
-# check for SVG features, enabling SVG if necessary
-if test "$enable_svg_animation" = "yes" || \
-   test "$enable_svg_filters" = "yes" || \
-   test "$enable_svg_fonts" = "yes" || \
-   test "$enable_svg_foreign_object" = "yes" || \
-   test "$enable_svg_as_image" = "yes" || \
-   test "$enable_svg_use_element" = "yes"; then
-   svg_flags=yes
-   if test "$enable_svg" = "no"; then
-       AC_MSG_WARN([SVG feature(s) requested but SVG is disabled.. Enabling SVG support])
-       enable_svg=yes
-   fi
+# check for HTML features
+if test "$enable_video" = "yes"; then
+    html_flags=yes
 fi
 
 # OS conditionals
@@ -525,7 +542,6 @@ AM_CONDITIONAL([USE_PANGO], [test "$with_font_backend" = "pango"])
 # WebKit feature conditionals
 AM_CONDITIONAL([ENABLE_DEBUG],[test "$enable_debug" = "yes"])
 AM_CONDITIONAL([ENABLE_DASHBOARD_SUPPORT],[test "$enable_dashboard_support" = "yes"])
-AM_CONDITIONAL([ENABLE_CROSS_DOCUMENT_MESSAGING],[test "$enable_cross_document_messaging" = "yes"])
 AM_CONDITIONAL([ENABLE_OFFLINE_WEB_APPLICATIONS],[test "$enable_offline_web_applications" = "yes"])
 AM_CONDITIONAL([ENABLE_DOM_STORAGE],[test "$enable_dom_storage" = "yes"])
 AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
@@ -543,10 +559,12 @@ AM_CONDITIONAL([ENABLE_SVG_USE],[test "$enable_svg_use_element" = "yes"])
 AM_CONDITIONAL([ENABLE_COVERAGE],[test "$enable_coverage" = "yes"])
 AM_CONDITIONAL([ENABLE_FAST_MALLOC],[test "$enable_fast_malloc" = "yes"])
 AM_CONDITIONAL([SVG_FLAGS],[test "$svg_flags" = "yes"])
+AM_CONDITIONAL([HTML_FLAGS],[test "$html_flags" = "yes"])
 
 AC_CONFIG_FILES([
 GNUmakefile
 WebKit/gtk/webkit-1.0.pc:WebKit/gtk/webkit.pc.in
+WebKit/gtk/webkit/webkitversion.h
 ]
 )
 
@@ -564,7 +582,6 @@ Build configuration:
  Optimized memory allocator                               : $enable_fast_malloc
 Features:
  Dashboard support                                        : $enable_dashboard_support
- HTML5 cross-document messaging                           : $enable_cross_document_messaging
  HTML5 offline web applications support                   : $enable_offline_web_applications
  HTML5 client-side session and persistent storage support : $enable_dom_storage
  HTML5 client-side database storage support               : $enable_database
