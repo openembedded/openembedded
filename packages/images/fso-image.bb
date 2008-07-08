@@ -39,6 +39,7 @@ X_INSTALL = "\
 TOOLS_INSTALL = "\
 #  bash \
   htop \
+  mickeydbus \
   mickeyterm \
   nano \
   powertop \
