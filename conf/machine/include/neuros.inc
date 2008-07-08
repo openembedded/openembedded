@@ -1,4 +1,5 @@
 MACHINE_POSTPROCESS_COMMAND = "neuros_make_installkit"
+EXTRA_IMAGECMD_yaffs2 = "0"
 
 EXTRA_IMAGEDEPENDS += "u-boot u-boot-env virtual/kernel neuros-pkggen-native"
 
