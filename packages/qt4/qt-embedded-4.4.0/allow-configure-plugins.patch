@@ -1,0 +1,62 @@
+Index: qtopia-core-opensource-src-4.3.3/configure
+===================================================================
+--- qtopia-core-opensource-src-4.3.3.orig/configure	2008-01-20 11:42:07.000000000 +0100
++++ qtopia-core-opensource-src-4.3.3/configure	2008-01-20 22:31:37.000000000 +0100
+@@ -639,10 +639,10 @@
+ 
+ CFG_SQL_AVAILABLE=
+ if [ -d "$relpath/src/plugins/sqldrivers" ]; then
+-  for a in "$relpath/src/plugins/sqldrivers/"*; do
+-     if [ -d "$a" ]; then
+-	 base_a=`basename $a`
+-  	 CFG_SQL_AVAILABLE="${CFG_SQL_AVAILABLE} ${base_a}"
++  for a in `ls $relpath/src/plugins/sqldrivers/`; do
++     dir="$relpath/src/plugins/sqldrivers/$a"
++     if [ -d "$dir" ]; then
++  	 CFG_SQL_AVAILABLE="${CFG_SQL_AVAILABLE} ${a}"
+ 	 eval "CFG_SQL_${base_a}=auto"
+      fi
+   done
+@@ -650,30 +650,30 @@
+ 
+ CFG_DECORATION_PLUGIN_AVAILABLE=
+ if [ -d "$relpath/src/plugins/decorations" ]; then
+-  for a in "$relpath/src/plugins/decorations/"*; do
+-     if [ -d "$a" ]; then
+-	 base_a=`basename $a`
+-  	 CFG_DECORATION_PLUGIN_AVAILABLE="${CFG_DECORATION_PLUGIN_AVAILABLE} ${base_a}"
++  for a in `ls $relpath/src/plugins/decorations/`; do
++     dir="$relpath/src/plugins/decorations/$a"
++     if [ -d "$dir" ]; then
++  	 CFG_DECORATION_PLUGIN_AVAILABLE="${CFG_DECORATION_PLUGIN_AVAILABLE} ${a}"
+      fi
+   done
+ fi
+ 
+ CFG_MOUSE_PLUGIN_AVAILABLE=
+ if [ -d "$relpath/src/plugins/mousedrivers" ]; then
+-  for a in "$relpath/src/plugins/mousedrivers/"*; do
+-     if [ -d "$a" ]; then
+-	 base_a=`basename $a`
+-  	 CFG_MOUSE_PLUGIN_AVAILABLE="${CFG_MOUSE_PLUGIN_AVAILABLE} ${base_a}"
++  for a in `ls $relpath/src/plugins/mousedrivers/`; do
++     dir="$relpath/src/plugins/mousedrivers/$a"
++     if [ -d "$dir" ]; then
++  	 CFG_MOUSE_PLUGIN_AVAILABLE="${CFG_MOUSE_PLUGIN_AVAILABLE} ${a}"
+      fi
+   done
+ fi
+ 
+ CFG_GFX_PLUGIN_AVAILABLE=
+ if [ -d "$relpath/src/plugins/gfxdrivers" ]; then
+-  for a in "$relpath/src/plugins/gfxdrivers/"*; do
+-     if [ -d "$a" ]; then
+-	 base_a=`basename $a`
+-  	 CFG_GFX_PLUGIN_AVAILABLE="${CFG_GFX_PLUGIN_AVAILABLE} ${base_a}"
++  for a in `ls $relpath/src/plugins/gfxdrivers/`; do
++     dir="$relpath/src/plugins/gfxdrivers/$a"
++     if [ -d "$dir" ]; then
++  	 CFG_GFX_PLUGIN_AVAILABLE="${CFG_GFX_PLUGIN_AVAILABLE} ${a}"
+      fi
+   done
+   CFG_GFX_OFF="$CFG_GFX_AVAILABLE" # assume all off
