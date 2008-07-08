@@ -57,9 +57,9 @@ ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
 FILES_${PN}-dbg = "${bindir}/*/.debug "
-RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
-RDEPENDS_${PN}-dev = "${DEV_PACKAGES}"
-RDEPENDS_${PN}-dbg = "${DBG_PACKAGES}"
+RRECOMMENDS_${PN} = "${NONDEV_PACKAGES}"
+RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
+RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
 def qt_default_dev(name):
     return """${libdir}/libQt%(name)s${QT_LIBINFIX}.la
