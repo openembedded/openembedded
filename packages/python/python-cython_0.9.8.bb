@@ -4,10 +4,10 @@ and the messy, low-level world of C."
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-SRCNAME = "cython"
+SRCNAME = "Cython"
 PR = "ml0"
 
-SRC_URI = "http://www.cython.org/${SRCNAME}-${PV}.zip"
+SRC_URI = "http://www.cython.org/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
