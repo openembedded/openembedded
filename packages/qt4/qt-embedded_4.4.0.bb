@@ -3,7 +3,7 @@ require qtopia-core.inc
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://qconfig-oe.h \
            file://0001-cross-compile.patch;patch=1 \
-#           file://0003-no-tools.patch;patch=1 \
+           file://0003-no-tools.patch;patch=1 \
            file://0004-no-qmake.patch;patch=1 \
            file://0005-fix-mkspecs.patch;patch=1 \
            file://build-tools.patch;patch=1"
