@@ -137,11 +137,11 @@ FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 python populate_packages_prepend() {
 	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
 	translation_name = bb.data.expand('${QT_BASE_NAME}-translation-%s', d)
-	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '{PN} translation for %s', extra_depends='' )
+	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '${PN} translation for %s', extra_depends='' )
 
 	phrasebook_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/phrasebooks/', d)
 	phrasebook_name = bb.data.expand('${QT_BASE_NAME}-phrasebook-%s', d)
-	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '{PN} phrasebook for %s', extra_depends='' )
+	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '${PN} phrasebook for %s', extra_depends='' )
 
 	# Package all the plugins and their -dbg version and create a meta package
 	import os
@@ -158,7 +158,7 @@ python populate_packages_prepend() {
             plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
             dev_packages = []
             dev_hook = lambda file,pkg,b,c,d:dev_packages.append((file,pkg))
-            do_split_packages(d, plugin_dir,     glob, plugin_name,     '{PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
+            do_split_packages(d, plugin_dir,     glob, plugin_name,     '${PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
             # Create a -dbg package as well
             plugin_dir_dbg     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug' % path, d)
             packages = bb.data.getVar('PACKAGES',d)
@@ -166,7 +166,7 @@ python populate_packages_prepend() {
                 packages = "%s %s-dbg" % (packages, package)
                 file_name = os.path.join(plugin_dir_dbg, os.path.basename(file))
                 bb.data.setVar("FILES_%s-dbg" % package, file_name, d)
-                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "{PN} %s for %s" % (name, package), d) 
+                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "${PN} %s for %s" % (name, package), d) 
 
             bb.data.setVar('PACKAGES', packages, d)
 

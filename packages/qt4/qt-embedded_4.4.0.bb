@@ -1,6 +1,9 @@
 require qtopia-core.inc
 
-PR = "r2"
+PROVIDES += "qtopia-core"
+RPROVIDES_${PN} = "qtopia-core"
+
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://qconfig-oe.h \
