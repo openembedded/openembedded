@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "libgsm"
 
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r9"
+PR = "r10"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
@@ -79,7 +79,8 @@ do_stage() {
         for h in avformat.h avio.h rtp.h rtsp.h rtspcodes.h
         do
            install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/ffmpeg/$h
-        done
+           install -m 0644 ${S}/libavformat/$h  ${STAGING_INCDIR}/libavformat/$h	
+	done
 
 		for h in adler32.h avstring.h avutil.h base64.h bswap.h \
                  common.h crc.h fifo.h integer.h intfloat_readwrite.h \
