@@ -24,7 +24,7 @@ SRC_URI = "\
 
 S = "${WORKDIR}/"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig lib_package
 
 EXTRA_OECONF = "\
                 --enable-debug=no \

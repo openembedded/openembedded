@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml30"
+PR = "ml31"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -36,6 +36,7 @@ RDEPENDS = "\
 		python-numarray		\
 		python-numeric		\
 		python-ogg		\
+		python-opendir		\
 		python-pexpect		\
 		python-pyalsa		\
 		python-pyalsaaudio	\

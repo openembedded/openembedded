@@ -1,0 +1,18 @@
+# *  Copyright(C) 2007 Neuros Technology International LLC. 
+# *               <www.neurostechnology.com>
+# *
+# *  Terminal application make rules..........TQ 2007-02-05
+
+## build target config.
+ifeq ($(BUILD_TARGET), ARM)
+DEFINES += -DBUILD_TARGET_ARM=1
+else
+DEFINES += -DBUILD_TARGET_ARM=0
+endif
+
+## global test code switch.
+ifeq ($(INCLUDE_TEST_CODE), YES)
+DEFINES += -DTERMINAL_TEST_CODE=1
+else
+DEFINES += -DTERMINAL_TEST_CODE=0
+endif

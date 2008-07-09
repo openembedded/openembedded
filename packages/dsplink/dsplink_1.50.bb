@@ -1,6 +1,6 @@
 require dsplink.inc
 
-PR = "r4"
+PR = "r6"
 PE = "1"
 PV = "1.50"
 

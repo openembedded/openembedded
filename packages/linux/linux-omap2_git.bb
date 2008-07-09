@@ -2,10 +2,10 @@ require linux-omap.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MACHINE}"
 
-SRCREV = "c32c81d59d2d8a66e63f82c9732db256d302068e"
+SRCREV = "7786cd7a00ae0b18923185789380a88052f4eee7"
 
-PV = "2.6.25+2.6.26-rc8+${PR}+git${SRCREV}"
-PR = "r39"
+PV = "2.6.25+2.6.26-rc9+${PR}+git${SRCREV}"
+PR = "r40"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
