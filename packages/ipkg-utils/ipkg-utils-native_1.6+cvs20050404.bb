@@ -1,7 +1,7 @@
 require ipkg-utils_${PV}.bb
 
 RDEPENDS = ""
-PR = "r18"
+PR = "r19"
 
 inherit native
 
