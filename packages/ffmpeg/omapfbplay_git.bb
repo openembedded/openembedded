@@ -2,11 +2,13 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
+PR = "r1"
+
 inherit module-base
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "980e6e293f380ec038643c2110aec34f0b96697d"
+SRCREV = "5d0a1fd4c9733ef8c57823c368e21688344bbeb4"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git"
 
 S = "${WORKDIR}/git"
