@@ -1,0 +1,10 @@
+--- /tmp/Makefile	2008-07-10 12:59:00.000000000 +0200
++++ git/Makefile	2008-07-10 12:57:38.723198000 +0200
+@@ -5,6 +5,6 @@
+ CFLAGS = -O3 -Wall -fomit-frame-pointer -mcpu=cortex-a8 -mfpu=neon \
+ 	-I$(LINUX)/include -I$(FFMPEG)
+ LDFLAGS = -L$(FFMPEG)/libavcodec -L$(FFMPEG)/libavformat -L$(FFMPEG)/libavutil
+-LDLIBS = -lavformat -lavcodec -lavutil -lm -lz -lpthread
++LDLIBS = -lavformat -lavcodec -lavutil -lz -ldl -lbz2 -lfaac -lgsm -lmp3lame -lm -lpthread
+ 
+ all: omapfbplay

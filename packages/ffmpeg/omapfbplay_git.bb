@@ -2,19 +2,20 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r1"
+PR = "r2"
 
 inherit module-base
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
 SRCREV = "5d0a1fd4c9733ef8c57823c368e21688344bbeb4"
-SRC_URI = "git://git.mansr.com/${PN};protocol=git"
+SRC_URI = "git://git.mansr.com/${PN};protocol=git \
+           file://fbplay-static.diff;patch=1 "
 
 S = "${WORKDIR}/git"
 
 
-CFLAGS += "-I${STAGING_KERNEL_DIR}/include "
+CFLAGS += " -static -I${STAGING_KERNEL_DIR}/include "
 
 do_compile() {
 	oe_runmake -e
