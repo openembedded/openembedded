@@ -28,6 +28,7 @@ IMAGE_INSTALL = "\
     powertop oprofile \
     pidgin \
 #    irssi \
+    mplayer omapfbplay \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
