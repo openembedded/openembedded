@@ -1,5 +1,5 @@
 DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
-DEPENDS = "bzip2 libmp3lame ffmpeg virtual/kernel"
+DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
 PR = "r3"
