@@ -35,6 +35,7 @@ RDEPENDS = "\
     libxkbfile \
     libxrandr \
     libxrender \
+    matchbox-keyboard \
     pointercal \
     python-core \
     tslib \
