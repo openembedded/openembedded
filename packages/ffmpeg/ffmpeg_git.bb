@@ -42,7 +42,7 @@ EXTRA_OECONF = " \
         --enable-libfaadbin \
         --enable-libgsm \
         --enable-libmp3lame \
-        --enable-swscale \
+        --disable-swscale \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
@@ -63,7 +63,7 @@ do_stage() {
         for lib in libavcodec libavdevice libavformat \
                    libavutil libpostproc libswscale
         do
-            oe_libinstall -a -so -C $lib $lib ${STAGING_LIBDIR}
+            oe_libinstall -a -so -C $lib $lib ${STAGING_LIBDIR} || true
             install -d ${STAGING_INCDIR}/$lib 
         done 
 
