@@ -4,7 +4,7 @@ SECTION = "x11"
 DEPENDS = "edje-native python-pyrex-native python-cython-native"
 RDEPENDS = "task-python-efl python-textutils python-dbus"
 PV = "0.0.0+gitr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"
