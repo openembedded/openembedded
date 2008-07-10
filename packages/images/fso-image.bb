@@ -18,7 +18,9 @@ BASE_INSTALL = "\
 
 # getting an X window system up
 X_INSTALL = "\
-  matchbox-wm \
+  e-wm \
+  illume \
+  illume-theme \
   ${XSERVER} \
   xserver-kdrive-common \
   xserver-nodm-init \
