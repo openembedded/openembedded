@@ -86,8 +86,11 @@ do_compile () {
 	ln -sf ${S}/gpp/src/pmgr/pmgr_proc.h ${S}/gpp/inc/pmgr_proc.h
 
 	unset DISPLAY
- 
-	oe_runmake -C ${S}/gpp/src all targets
+	
+	sed -i -e 's:gcc:gcc${KERNEL_CCSUFFIX}:' ${S}/make/Linux/openembedded.mk
+	oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}" -C ${S}/gpp/src all targets
+	
+	sed -i -e 's:gcc${KERNEL_CCSUFFIX}:gcc:' ${S}/make/Linux/openembedded.mk
 	oe_runmake -C ${S}/gpp/src/samples
 }
 
