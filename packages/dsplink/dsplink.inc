@@ -88,6 +88,7 @@ pkg_postrm_${PN}-module () {
 PACKAGES =+ "${PN}-module"
 FILES_${PN}-module  = "${sysconfdir} /lib/modules"
 FILES_${PN} = "${bindir}/mpcsxfergpp ${bindir}/ringiogpp"
+INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
 
