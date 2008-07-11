@@ -99,12 +99,7 @@ CC_SW_DEB       := -g
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler
 #   ----------------------------------------------------------------------------
-STD_KRNL_FLAGS  := -include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes\
-                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
-                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
-                   -mlittle-endian SEDME_KERNEL_ARMFLAGS \
-                   -msoft-float -Uarm -mapcs                  \
-                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux
+STD_KRNL_FLAGS  := SEDME_KERNEL_ARMFLAGS 
 STD_USER_FLAGS  := -mlittle-endian SEDME_USER_ARMFLAGS -msoft-float \
                   -Uarm -Wdeclaration-after-statement -marm -Wall              \
                   -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing      \

@@ -25,23 +25,41 @@ DSPLINKSOC_beagleboard = "3530"
 
 
 USERARMFLAGS = "${TARGET_CC_ARCH}"
-KERNELARMFLAGS = "-D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi"
-KERNELARMFLAGS_armv6 = "-D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s"
-KERNELARMFLAGS_armv7a = "-D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8"
-
+KERNELARMFLAGS = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi \
+                   -msoft-float -Uarm -mapcs                  \
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
+KERNELARMFLAGS_armv6 = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s \
+                   -msoft-float -Uarm -mapcs                  \                   
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
+KERNELARMFLAGS_armv7a = "-c -nostdinc -include $(BASE_OSINC)/linux/autoconf.h -isystem $(OSINC_PLATFORM)  -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \                                      
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8 \
+                   -msoft-float -Uarm -mapcs                  \ 
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux \
+                   -D__KERNEL__ -mno-thumb-interwork   -msoft-float -fno-optimize-sibling-calls -g  -fno-stack-protector -Wno-pointer-sign -g -DUSE_UDEV=1 -DOS_LINUX -DLINUX_KERNEL"
 
 export DSPLINKPLATFORM 
 export DSPLINKDSP
 
 do_configure () {
 	cp ${WORKDIR}/CURRENTCFG.MK ${S}/config
-	cp ${WORKDIR}/davinci_mvlpro5.0.mk ${S}/make/Linux
+	cp ${WORKDIR}/openembedded.mk ${S}/make/Linux
 	cp ${WORKDIR}/c64xx_5.xx_linux.mk ${S}/make/DspBios
 
 	sed -i 	-e s:SED_ME_SOURCEDIR:${S}:g \
-		-e s:SED_ME_GPPDISTRO:davinci_mvlpro5\.0:g \
+		-e s:SED_ME_GPPDISTRO:openembedded:g \
 		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
-		-e s:SED_ME_DSPDISTRO:davinci_mvlpro5\.0:g \
+		-e s:SED_ME_DSPDISTRO:openembedded:g \
 		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
 		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
 		-e s:SED_ME_SOC:${DSPLINKSOC}:g \	
@@ -53,7 +71,7 @@ do_configure () {
 		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \
 		-e 's:SEDME_KERNEL_ARMFLAGS:${KERNELARMFLAGS}:g' \
 		-e 's:SEDME_USER_ARMFLAGS:${USERARMFLAGS}:g' \
-		${S}/make/Linux/davinci_mvlpro5.0.mk 
+		${S}/make/Linux/openembedded.mk 
 
 }
 
