@@ -1,8 +1,8 @@
 require u-boot.inc
-PR="r7"
+PR="r9"
 
 SRCREV_davinci-sffsdr = "a524e112b424c6843800ea2f19d3a8cf01d0aa94"
-SRCREV_beagleboard = "a94f22f08f280905926219e568568964cb9eeb9d"
+SRCREV_beagleboard = "9b55a2536919f4de1bb1044e6eb8262c2f53bc96"
 SRCREV_neuros-osd2 = "482dfe48845192c7f810bccfc93db93d0f1654f7"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
