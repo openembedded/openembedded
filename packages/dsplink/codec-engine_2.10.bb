@@ -17,6 +17,7 @@ SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
 
 S = "${WORKDIR}/codec_engine_2_10_01"
 
+PARALLEL_MAKE = ""
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
