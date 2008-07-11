@@ -102,10 +102,10 @@ CC_SW_DEB       := -g
 STD_KRNL_FLAGS  := -include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes\
                    -Wno-trigraphs -fno-strict-aliasing -fno-common             \
                    -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
-                   -mlittle-endian -D__LINUX_ARM_ARCH__=5 -march=armv5t        \
-                   -mtune=arm9tdmi  -msoft-float -Uarm -mapcs                  \
+                   -mlittle-endian SEDME_KERNEL_ARMFLAGS \
+                   -msoft-float -Uarm -mapcs                  \
                    -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux
-STD_USER_FLAGS  := -mlittle-endian -march=armv5t -mtune=arm9tdmi  -msoft-float \
+STD_USER_FLAGS  := -mlittle-endian SEDME_USER_ARMFLAGS -msoft-float \
                   -Uarm -Wdeclaration-after-statement -marm -Wall              \
                   -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing      \
                   -fno-common -fno-omit-frame-pointer -mapcs -c                \

@@ -23,6 +23,13 @@ DSPLINKSOC ?= "DM6446"
 
 DSPLINKSOC_beagleboard = "3530"
 
+
+USERARMFLAGS = "${TARGET_CC_ARCH}"
+KERNELARMFLAGS = "-D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi"
+KERNELARMFLAGS_armv6 = "-D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s"
+KERNELARMFLAGS_armv7a = "-D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8"
+
+
 export DSPLINKPLATFORM 
 export DSPLINKDSP
 
@@ -43,7 +50,9 @@ do_configure () {
 	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
 		-e s:SED_ME_STAGINGDIR:${STAGING_DIR_TARGET}:g \
 		-e s:SED_ME_TARGET_PREFIX:${TARGET_PREFIX}:g \
-		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \	
+		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \
+		-e 's:SEDME_KERNEL_ARMFLAGS:${KERNELARMFLAGS}:g' \
+		-e 's:SEDME_USER_ARMFLAGS:${USERARMFLAGS}:g' \
 		${S}/make/Linux/davinci_mvlpro5.0.mk 
 
 }
