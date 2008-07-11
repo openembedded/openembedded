@@ -3,10 +3,11 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libid3tag"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mad/libmad-${PV}.tar.gz \
-           file://add-pkgconfig.patch;patch=1"
+           file://add-pkgconfig.patch;patch=1 \
+	   file://mad.diff;patch=1 "
 
 S = "${WORKDIR}/libmad-${PV}"
 
