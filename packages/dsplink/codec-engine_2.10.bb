@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r2"
+PR = "r3"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -72,6 +72,7 @@ pkg_postrm_${PN}-module () {
 
 PACKAGES =+ "dsplink-cmemk-module"
 FILES_dsplink-cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*ko"
+INHIBIT_PACKAGE_STRIP = "1"
 
 FILES_${PN} = "${base_sbindir}"
 

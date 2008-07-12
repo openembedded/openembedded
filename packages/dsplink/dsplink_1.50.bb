@@ -1,6 +1,6 @@
 require dsplink.inc
 
-PR = "r6"
+PR = "r7"
 PE = "1"
 PV = "1.50"
 
@@ -11,7 +11,7 @@ PV = "1.50"
 SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_50.tar.gz \
            file://CURRENTCFG.MK \
            file://c64xx_5.xx_linux.mk \
-           file://davinci_mvlpro5.0.mk \
+           file://openembedded.mk \
 	   file://prcs-fix-include.patch;patch=1;pnum=2 \
 "
 
