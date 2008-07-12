@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "MIT-like"
 RDEPENDS = "python-distutils python-compression"
 SRCNAME = "setuptools"
-PR = "ml2"
+PR = "ml0"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
