@@ -41,6 +41,7 @@ X_INSTALL = "\
 TOOLS_INSTALL = "\
 #  bash \
   htop \
+  lsof \
   mickeydbus \
   mickeyterm \
   nano \
