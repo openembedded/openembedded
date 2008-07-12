@@ -1,0 +1,12 @@
+--- /tmp/arm.c	2008-07-12 21:44:16.000000000 +0200
++++ gcc-4.2/gcc/config/arm/arm.c	2008-07-12 21:45:48.393198000 +0200
+@@ -11591,7 +11591,8 @@
+ 		  && count != 0
+ 		  && !current_function_calls_eh_return
+ 		  && bit_count(saved_regs_mask) * 4 == count
+-		  && !IS_INTERRUPT (func_type))
++		  && !IS_INTERRUPT (func_type)
++		  && !cfun->tail_call_emit) 
+ 		{
+ 		  unsigned long mask;
+ 		  mask = (1 << (arm_size_return_regs() / 4)) - 1;
