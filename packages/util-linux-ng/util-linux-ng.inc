@@ -14,29 +14,22 @@ RC=""
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
-#           file://gcc34.patch;patch=1 \
-#           file://MCONFIG \
-#           file://make_include \
-#           file://swapargs.h \
-#	   file://fdiskbsdlabel_thumb.diff;patch=1 \
-#	   file://umount.diff;patch=1 \
-#          file://defines.h"
 
-PACKAGES_prepend = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-swaponoff util-linux-losetup util-linux-umount util-linux-mount util-linux-readprofile "
+PACKAGES =+ "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-swaponoff util-linux-ng-losetup util-linux-ng-umount util-linux-ng-mount util-linux-ng-readprofile "
 
 FILES_${PN}-doc += "/usr/share/misc/getopt/getopt-*.*"
 
-FILES_util-linux-fdisk = "/sbin/fdisk.${PN}"
-FILES_util-linux-cfdisk = "/sbin/cfdisk"
-FILES_util-linux-sfdisk = "/sbin/sfdisk"
-FILES_util-linux-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
-FILES_util-linux-losetup = "/sbin/losetup.${PN}"
-FILES_util-linux-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
-FILES_util-linux-umount = "/bin/umount.${PN}"
-FILES_util-linux-readprofile = "/usr/sbin/readprofile"
+FILES_util-linux-ng-fdisk = "/sbin/fdisk.${PN}"
+FILES_util-linux-ng-cfdisk = "/sbin/cfdisk"
+FILES_util-linux-ng-sfdisk = "/sbin/sfdisk"
+FILES_util-linux-ng-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
+FILES_util-linux-ng-losetup = "/sbin/losetup.${PN}"
+FILES_util-linux-ng-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
+FILES_util-linux-ng-umount = "/bin/umount.${PN}"
+FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile"
 
-RRECOMMENDS_${PN} = "util-linux-fdisk util-linux-cfdisk util-linux-sfdisk util-linux-mount util-linux-readprofile "
-RDEPENDS_${PN} = "util-linux-umount util-linux-swaponoff util-linux-losetup"
+RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
+RDEPENDS_${PN} = "util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
 
 EXTRA_OECONF = "--disable-use-tty-group --disable-makeinstall-chown \
 --enable-kill --enable-last --enable-mesg --enable-raw --enable-login-utils \
@@ -104,7 +97,6 @@ do_install () {
 	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
 	mv ${D}${bindir}/renice ${D}${bindir}/renice.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
-        return 0
 
 	mv ${D}${sbindir}/losetup ${D}${base_sbindir}/losetup.${PN}
 	mv ${D}${sbindir}/swapon ${D}${base_sbindir}/swapon.${PN}
@@ -112,19 +104,19 @@ do_install () {
 	mv ${D}${bindir}/mount ${D}${base_bindir}/mount.${PN}
 	mv ${D}${sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
 
-	mv ${D}${bindir}/agetty ${D}${base_sbindir}/ 
-	mv ${D}${bindir}/blockdev ${D}${base_sbindir}/
-	mv ${D}${bindir}/cfdisk ${D}${base_sbindir}/
-	mv ${D}${bindir}/ctrlaltdel ${D}${base_sbindir}/
+	mv ${D}${sbindir}/agetty ${D}${base_sbindir}/ 
+	mv ${D}${sbindir}/blockdev ${D}${base_sbindir}/
+	mv ${D}${sbindir}/cfdisk ${D}${base_sbindir}/
+	mv ${D}${sbindir}/ctrlaltdel ${D}${base_sbindir}/
 
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
-	checklink swapon ${D}${base_sbindir}/swapoff ".${PN}"
-	checklink shutdown ${D}${base_sbindir}/reboot ".${PN}"
-	checklink shutdown ${D}${base_sbindir}/halt ".${PN}"
-	checklink shutdown ${D}${base_sbindir}/fastboot ""
-	checklink shutdown ${D}${base_sbindir}/fasthalt ""
+	ln -sf ${base_sbindir}/swapon ${D}${base_sbindir}/swapoff.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/reboot.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/halt.${PN}
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fastboot
+	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fasthalt
 }
 
 pkg_postinst_${PN} () {
@@ -174,44 +166,44 @@ pkg_prerm_${PN} () {
 	update-alternatives --remove wall wall.${PN}
 }
 
-pkg_postinst_util-linux-fdisk () {
+pkg_postinst_util-linux-ng-fdisk () {
 	update-alternatives --install ${base_sbindir}/fdisk fdisk fdisk.${PN} 100
 }
 
-pkg_prerm_util-linux-fdisk () {
+pkg_prerm_util-linux-ng-fdisk () {
 	update-alternatives --remove fdisk fdisk.${PN}
 }
 
-pkg_postinst_util-linux-mount () {
+pkg_postinst_util-linux-ng-mount () {
 	update-alternatives --install ${base_bindir}/mount mount mount.${PN} 100
 }
 
-pkg_prerm_util-linux-mount () {
+pkg_prerm_util-linux-ng-mount () {
 	update-alternatives --remove mount mount.${PN}
 }
 
-pkg_postinst_util-linux-umount () {
+pkg_postinst_util-linux-ng-umount () {
 	update-alternatives --install ${base_bindir}/umount umount umount.${PN} 100
 }
 
-pkg_prerm_util-linux-umount () {
+pkg_prerm_util-linux-ng-umount () {
 	update-alternatives --remove umount umount.${PN}
 }
 
-pkg_postinst_util-linux-losetup () {
+pkg_postinst_util-linux-ng-losetup () {
 	update-alternatives --install ${base_sbindir}/losetup losetup losetup.${PN} 100
 }
 
-pkg_prerm_util-linux-losetup () {
+pkg_prerm_util-linux-ng-losetup () {
 	update-alternatives --remove losetup losetup.${PN}
 }
 
-pkg_postinst_util-linux-swaponoff () {
+pkg_postinst_util-linux-ng-swaponoff () {
 	update-alternatives --install ${base_sbindir}/swapoff swapoff swapoff.${PN} 100
 	update-alternatives --install ${base_sbindir}/swapon swapon swapon.${PN} 100
 }
 
-pkg_prerm_util-linux-swaponoff () {
+pkg_prerm_util-linux-ng-swaponoff () {
 	update-alternatives --remove swapoff swapoff.${PN}
 	update-alternatives --remove swapon swapon.${PN}
 }
