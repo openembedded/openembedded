@@ -3,9 +3,11 @@ HOMEPAGE = "http://www.emma-soft.com/projects/epdfview/"
 LICENSE = "GPLv2"
 SECTION = "x11/applications"
 DEPENDS = "poppler gtk+ cups"
-PR="r2"
+PR = "r3"
 
-SRC_URI = "http://www.emma-soft.com/projects/epdfview/chrome/site/releases/epdfview-${PV}.tar.bz2"
+SRC_URI = "http://www.emma-soft.com/projects/epdfview/chrome/site/releases/epdfview-${PV}.tar.bz2 \
+           file://poppler8.diff;patch=1 \
+	  "
 
 inherit autotools
 
