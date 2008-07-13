@@ -1,7 +1,7 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "zlib ncurses e2fsprogs-libs"
+DEPENDS = "udev zlib ncurses e2fsprogs-libs"
 
 inherit autotools
 
@@ -13,7 +13,7 @@ inherit autotools
 RC=""
 DEFAULT_PREFERENCE = "-1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v2.13/util-linux-ng-${PV}${RC}.tar.bz2"
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
 #           file://gcc34.patch;patch=1 \
 #           file://MCONFIG \
 #           file://make_include \
