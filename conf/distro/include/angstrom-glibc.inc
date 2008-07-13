@@ -29,9 +29,6 @@ FULL_OPTIMIZATION_pn-glibc-intermediate = "-O2"
 FULL_OPTIMIZATION_pn-glibc = "-fexpensive-optimizations -fomit-frame-pointer -O2"
 FULL_OPTIMIZATION_sparc = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
-FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations -frename-registers -fomit-frame-pointer -ftree-vectorize -O2"
-FULL_OPTIMIZATION_pn-glibc_armv7a = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -ftree-vectorize -O3"
-
 BUILD_OPTIMIZATION = "-Os"
 BUILD_OPTIMIZATION_pn-perl = "-O1"
 BUILD_OPTIMIZATION_pn-glibc-intermediate = "-O2"
