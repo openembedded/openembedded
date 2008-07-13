@@ -1,11 +1,12 @@
 DESCRIPTION = "Configuration files for runtime LED configuration" 
 
 #PV = "${DISTRO_VERSION}"
-PR = "r0"
+PR = "r1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit update-rc.d
 INITSCRIPT_NAME = "led-config"
+INITSCRIPT_PARAMS = "defaults 05"
 
 SRC_URI = "file://led-config \
            file://leds \
