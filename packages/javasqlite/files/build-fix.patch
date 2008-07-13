@@ -1,0 +1,378 @@
+Index: javasqlite-20080130/configure.in
+===================================================================
+--- javasqlite-20080130.orig/configure.in	2008-01-07 19:21:33.000000000 +0100
++++ javasqlite-20080130/configure.in	2008-07-13 15:54:47.000000000 +0200
+@@ -30,69 +30,25 @@
+ ##########
+ # Find SQLite header file and library
+ #
+-AC_ARG_WITH(sqlite, [  --with-sqlite=DIR       use SQLite header/lib from DIR],
+-  SQLITE_DIR=$withval)
+-if test ! -n "$SQLITE_DIR" -a -d "$SQLITE_DIR" ; then
+-  AC_MSG_WARN([SQLite2 directory $SQLITE_DIR does not exist])
++AC_ARG_WITH(sqlite-incdir, [  --with-sqlite-incdir=DIR       use SQLite header from DIR],
++  SQLITE_INCDIR=$withval)
++if test ! -n "$SQLITE_INCDIR" -a -d "$SQLITE_INCDIR" ; then
++  AC_MSG_WARN([SQLite2 directory $SQLITE_INCDIR does not exist])
+ fi
+ 
+-if test -z "$SQLITE_DIR" ; then
+-  SQLITE_DIR="../sqlite /usr /usr/local /opt"
++AC_ARG_WITH(sqlite-libdir, [  --with-sqlite-libdir=DIR       use SQLite lib from DIR],
++  SQLITE_LIBDIR=$withval)
++if test ! -n "$SQLITE_LIBDIR" -a -d "$SQLITE_LIBDIR" ; then
++  AC_MSG_WARN([SQLite2 directory $SQLITE_LIBDIR does not exist])
+ fi
+ 
+-AC_MSG_CHECKING([for SQLite header and library])
+-SQLITE_INC=UNKNOWN
+-SQLITE_LIB=UNKNOWN
+-for i in $SQLITE_DIR ; do
+-  if test -r $i/sqlite.h ; then
+-    if test -r $i/libsqlite.la ; then
+-      SQLITE_INC="$i"
+-      SQLITE_LIB="$i/libsqlite.la"
+-      SQLITE_LIBDIR="$i"
+-      break
+-    elif test -r $i/libsqlite.a ; then
+-      SQLITE_INC="$i"
+-      SQLITE_LIB="$i/libsqlite.a"
+-      SQLITE_LIBDIR="$i"
+-      break
+-    fi
+-  elif test -r $i/include/sqlite.h ; then
+-    for lib in lib64 lib ; do
+-      if test -r $i/$lib/libsqlite.la ; then
+-        SQLITE_INC="$i/include"
+-        SQLITE_LIB="$i/$lib/libsqlite.la"
+-        SQLITE_LIBDIR="$i/$lib"
+-        break
+-      elif test -r $i/$lib/libsqlite.a ; then
+-        SQLITE_INC="$i/include"
+-        SQLITE_LIB="$i/$lib/libsqlite.a"
+-        SQLITE_LIBDIR="$i/$lib"
+-        break
+-      elif test -r $i/$lib/libsqlite.so ; then
+-        SQLITE_INC="$i/include"
+-        SQLITE_LIB="-lsqlite"
+-        SQLITE_LIBDIR="$i/$lib"
+-        break
+-      fi
+-    done
+-    if test "$SQLITE_LIB" != "UNKNOWN" ; then
+-      break
+-    fi
+-  fi
+-done
+-if test "$SQLITE_INC" = "UNKNOWN" -o "$SQLITE_LIB" = "UNKNOWN" ; then
+-  AC_MSG_RESULT(no)
+-  AC_MSG_WARN(SQLite2 header files and/or library not found)
+-  SQLITE_INC=""
+-  SQLITE_LIB=""
+-  HAVE_SQLITE2=0
+-else
+-  SQLITE_INC="-I${SQLITE_INC}"
+-  HAVE_SQLITE2=1
+-  AC_MSG_RESULT(yes)
+-fi
++SQLITE_INC="-I$SQLITE_INCDIR"
++SQLITE_LIB="-lsqlite"
++HAVE_SQLITE2=1
++
+ AC_SUBST(SQLITE_INC)
+ AC_SUBST(SQLITE_LIB)
++AC_SUBST(SQLITE_LIBDIR)
+ AC_SUBST(HAVE_SQLITE2)
+ 
+ ##########
+@@ -127,70 +83,28 @@
+ ##########
+ # Find SQLite3 header file and library
+ #
+-AC_ARG_WITH(sqlite3,
+-  [  --with-sqlite3=DIR      use SQLite3 header/lib from DIR],
+-  SQLITE3_DIR=$withval)
+-if test ! -n "$SQLITE3_DIR" -a -d "$SQLITE3_DIR" ; then
+-  AC_MSG_WARN([SQLite3 directory $SQLITE3_DIR does not exist])
++AC_ARG_WITH(sqlite3-incdir,
++  [  --with-sqlite3-incdir=DIR      use SQLite3 header from DIR],
++  SQLITE3_INCDIR=$withval)
++if test ! -n "$SQLITE3_INCDIR" -a -d "$SQLITE3_INCDIR" ; then
++  AC_MSG_WARN([SQLite3 directory $SQLITE3_INCDIR does not exist])
+ fi
+ 
+-if test -z "$SQLITE3_DIR" ; then
+-  SQLITE3_DIR="../sqlite /usr /usr/local /opt"
++AC_ARG_WITH(sqlite3-libdir,
++  [  --with-sqlite3-libdir=DIR      use SQLite3 lib from DIR],
++  SQLITE3_LIBDIR=$withval)
++if test ! -n "$SQLITE3_LIBDIR" -a -d "$SQLITE3_LIBDIR" ; then
++  AC_MSG_WARN([SQLite3 directory $SQLITE3_LIBDIR does not exist])
+ fi
+ 
+-AC_MSG_CHECKING([for SQLite3 header and library])
+-SQLITE3_INC=UNKNOWN
+-SQLITE3_LIB=UNKNOWN
+-for i in $SQLITE3_DIR ; do
+-  if test -r $i/sqlite3.h ; then
+-    if test -r $i/libsqlite3.la ; then
+-      SQLITE3_INC="$i"
+-      SQLITE3_LIB="$i/libsqlite3.la"
+-      SQLITE3_LIBDIR="$i"
+-      break
+-    elif test -r $i/libsqlite3.a ; then
+-      SQLITE3_INC="$i"
+-      SQLITE3_LIB="$i/libsqlite3.a"
+-      SQLITE3_LIBDIR="$i"
+-      break
+-    fi
+-  elif test -r $i/include/sqlite3.h ; then
+-    for lib in lib64 lib ; do
+-      if test -r $i/$lib/libsqlite3.la ; then
+-        SQLITE3_INC="$i/include"
+-        SQLITE3_LIB="$i/$lib/libsqlite3.la"
+-        SQLITE3_LIBDIR="$i/$lib"
+-        break
+-      elif test -r $i/$lib/libsqlite3.a ; then
+-        SQLITE3_INC="$i/include"
+-        SQLITE3_LIB="$i/$lib/libsqlite3.a"
+-        SQLITE3_LIBDIR="$i/$lib"
+-        break
+-      elif test -r $i/$lib/libsqlite3.so ; then
+-        SQLITE3_INC="$i/include"
+-        SQLITE3_LIB="-lsqlite3"
+-        SQLITE3_LIBDIR="$i/$lib"
+-        break
+-      fi
+-    done
+-    if test "$SQLITE3_LIB" != "UNKNOWN" ; then
+-      break
+-    fi
+-  fi
+-done
+-if test "$SQLITE3_INC" = "UNKNOWN" -o "$SQLITE3_LIB" = "UNKNOWN" ; then
+-  AC_MSG_RESULT(no)
+-  AC_MSG_WARN(SQLite3 header files and/or library not found)
+-  SQLITE3_INC=""
+-  SQLITE3_LIB=""
+-  HAVE_SQLITE3=0
+-else
+-  SQLITE3_INC="-I${SQLITE3_INC}"
+-  HAVE_SQLITE3=1
+-  AC_MSG_RESULT(yes)
+-fi
++SQLITE3_INC="-I$SQLITE3_INCDIR"
++SQLITE3_LIB="-lsqlite3"
++
++HAVE_SQLITE3=1
++
+ AC_SUBST(SQLITE3_INC)
+ AC_SUBST(SQLITE3_LIB)
++AC_SUBST(SQLITE3_LIBDIR)
+ AC_SUBST(HAVE_SQLITE3)
+ 
+ ##########
+@@ -310,52 +224,45 @@
+ #
+ 
+ AC_CHECK_PROG([READLINK], [readlink], [readlink], [])
+-AC_ARG_WITH(jdk, [  --with-jdk=DIR          use Java top directory DIR],
+-  JAVA_HOME=$withval)
+-if test -z "$JAVA_HOME" ; then
+-  JAVA_HOME=`which javac`
+-  if test -n "$READLINK" ; then
+-    while test -L $JAVA_HOME ; do
+-      JAVA_HOME=`$READLINK $JAVA_HOME`
+-    done
+-  fi
+-  JAVA_HOME=`dirname $JAVA_HOME`
+-  JAVA_HOME=`dirname $JAVA_HOME`
+-  if test "x$JAR_DIR_UNSPEC" = "xyes" ; then
+-    JAR_DIR=$JAVA_HOME/jre/lib/ext
+-    AC_MSG_RESULT([will install sqlite.jar into $JAR_DIR])
+-  fi
+-  if test "$prefix" = "/usr/local" ; then
+-    case "$target_cpu" in
+-      [i[3-6]86*])
+-        NATIVE_LIB_DIR=$JAVA_HOME/jre/lib/i386
+-        ;;
+-      *)
+-        NATIVE_LIB_DIR=$JAVA_HOME/jre/lib/$target_cpu
+-        ;;
+-    esac
+-    AC_MSG_RESULT([will install libsqlite_jni into $NATIVE_LIB_DIR])
+-  fi
+-fi
+-if test ! -d "$JAVA_HOME" ; then
+-  AC_MSG_ERROR([JAVA_HOME directory not found, please use --with-jdk=DIR])
+-fi
+ 
+-if test -n "$JAVA_HOME" ; then
+-  JAVA_RUN=$JAVA_HOME/bin/java
+-  JAVAC=$JAVA_HOME/bin/javac
+-  JAVAH="$JAVA_HOME/bin/javah -jni"
+-  JAR=$JAVA_HOME/bin/jar
+-  JAVADOC=$JAVA_HOME/bin/javadoc
+-else
+-  JAVA_RUN=`which java`
+-  JAVAC=`which javac`
+-  JAVAH="`which javah` -jni"
+-  JAR=`which jar`
+-  JAVADOC=`which javadoc`
+-  JAVA_HOME=`dirname $JAVAC`
+-  JAVA_HOME=`dirname $JAVA_HOME`
+-fi
++AC_ARG_WITH([java],
++            [AS_HELP_STRING([--with-java],
++              [specify Java executable (default: java)])],
++            [],
++            [with_java=java])
++
++AC_ARG_WITH([javac],
++            [AS_HELP_STRING([--with-javac],
++              [specify Java Compiler executable (default: javac)])],
++            [],
++            [with_javac=javac])
++
++AC_ARG_WITH([javah],
++            [AS_HELP_STRING([--with-javah],
++              [specify Java Header generator executable (default: javah)])],
++            [],
++            [with_javah=javah])
++
++AC_ARG_WITH([jar],
++            [AS_HELP_STRING([--with-jar],
++              [specify Jar executable (default: jar)])],
++            [],
++            [with_jar=jar])
++
++AC_ARG_WITH([javadoc],
++            [AS_HELP_STRING([--with-javadoc],
++              [specify Javadoc executable (default: javadoc)])],
++            [],
++            [with_javadoc=javadoc])
++
++JAVA_RUN="$with_java"
++JAVAC="$with_javac $JAVACFLAGS"
++JAVAH="$with_javah -jni"
++JAR=$with_jar
++JAVADOC=$with_javadoc
++
++JAVA_HOME=`dirname $JAVAC`
++JAVA_HOME=`dirname $JAVA_HOME`
+ 
+ AC_SUBST(JAVAH)
+ AC_SUBST(JAVA_RUN)
+@@ -363,22 +270,14 @@
+ AC_SUBST(JAR)
+ AC_SUBST(JAVADOC)
+ 
++AC_ARG_WITH([jni-incdir],
++            [AS_HELP_STRING([--with-jni-incdir],
++              [jni.h location (default: $inc/classpath)])],
++            [],
++            [with_jni_incdir=$inc/classpath])
++
+ # Set up the JNI include directory specification
+-case $build_os in
+-  solaris*)
+-    JNIINCLUDE="-I$JAVA_HOME/include -I$JAVA_HOME/include/solaris"
+-    ;;
+-  linux*)
+-    JNIINCLUDE="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
+-    ;;
+-  freebsd*)
+-    JNIINCLUDE="-I$JAVA_HOME/include -I$JAVA_HOME/include/freebsd"
+-    ;;
+-  *)
+-    JNIINCLUDE="-I${JAVA_HOME}/include -I${JAVA_HOME}/include/${build_os}"
+-    AC_MSG_WARN([setting generic JNI include file directives!])
+-    ;;
+-esac
++JNIINCLUDE=-I$with_jni_incdir
+ AC_MSG_RESULT([setting JNI include file directives: $JNIINCLUDE])
+ 
+ # Figure out JDK version
+@@ -398,9 +297,12 @@
+   JAVAC="$JAVAC -nowarn"
+ fi
+ 
+-if test "x$NATIVE_LIB_DIR" = "x" ; then
+-  NATIVE_LIB_DIR=$libdir
+-fi
++AC_ARG_WITH([target-native-libdir],
++            [AS_HELP_STRING([--with-target-native-libdir],
++              [directory for JNI library on target device (default: \$libdir)])],
++            [],
++            [with_target_native_libdir=$libdir])
++NATIVE_LIB_DIR=$with_target_native_libdir
+ 
+ AC_SUBST(JNIINCLUDE)
+ AC_SUBST(JAR_DIR)
+Index: javasqlite-20080130/Makefile.in
+===================================================================
+--- javasqlite-20080130.orig/Makefile.in	2008-01-07 19:14:29.000000000 +0100
++++ javasqlite-20080130/Makefile.in	2008-07-13 17:03:10.000000000 +0200
+@@ -2,7 +2,12 @@
+ 
+ prefix =	@prefix@
+ CC =		@CC@
+-LIBTOOL =	./libtool
++LIBTOOL = wrong-libtool
++LIBTOOL_CC =	$(LIBTOOL) --mode=compile --tag=CC
++LIBTOOL_LINK =	$(LIBTOOL) --mode=link --tag=CC
++LIBTOOL_INSTALL =	$(LIBTOOL) --mode=install --tag=CC
++SQLITE_LIBDIR = -L@SQLITE_LIBDIR@
++SQLITE3_LIBDIR = -L@SQLITE_LIBDIR@
+ SQLITE_INC =	@SQLITE_INC@
+ SQLITE_LIB =	@SQLITE_LIB@
+ SQLITE3_INC =	@SQLITE3_INC@
+@@ -119,16 +124,16 @@
+ 	    SQLite.FunctionContext SQLite.Stmt SQLite.Blob
+ 
+ sqlite_jni.lo:	native/sqlite_jni.h native/sqlite_jni.c
+-	$(LIBTOOL) $(CC) -c $(CFLAGS) native/sqlite_jni.c
++	$(LIBTOOL_CC) $(CC) -c $(CFLAGS) native/sqlite_jni.c
+ 
+ libsqlite_jni.la:	sqlite_jni.lo
+-	$(LIBTOOL) $(CC) -o libsqlite_jni.la sqlite_jni.lo \
++	$(LIBTOOL_LINK) $(CC) -o libsqlite_jni.la sqlite_jni.lo \
+ 	    -rpath $(NATIVE_LIB_DIR) $(LIBS)
+ 
+ native/mkconst:	native/mkconst.c
+-	$(LIBTOOL) $(CC) $(SQLITE_INC) $(SQLITE3_INC) \
++	$(LIBTOOL_LINK) $(CC) $(SQLITE_INC) $(SQLITE3_INC) \
+ 	    -DHAVE_SQLITE2=@HAVE_SQLITE2@ -DHAVE_SQLITE3=@HAVE_SQLITE3@ \
+-	    -o native/mkconst native/mkconst.c $(LIBS)
++	    -o native/mkconst native/mkconst.c $(LIBS) $(SQLITE_LIBDIR) $(SQLITE3_LIBDIR)
+ 
+ Makefile:	Makefile.in configure config.status
+ 	./config.status
+@@ -173,4 +178,4 @@
+ 	$(INSTALL) -d -m 755 $(DESTDIR)$(JAR_DIR)
+ 	$(INSTALL) -m 644 sqlite.jar $(DESTDIR)$(JAR_DIR)
+ 	$(INSTALL) -d -m 755 $(DESTDIR)$(NATIVE_LIB_DIR)
+-	$(LIBTOOL) $(INSTALL) libsqlite_jni.la $(DESTDIR)$(NATIVE_LIB_DIR)
++	$(LIBTOOL_INSTALL) $(INSTALL) libsqlite_jni.la $(DESTDIR)$(NATIVE_LIB_DIR)
+Index: javasqlite-20080130/SQLite/JDBCDriver.java
+===================================================================
+--- javasqlite-20080130.orig/SQLite/JDBCDriver.java	2008-07-13 17:28:52.000000000 +0200
++++ javasqlite-20080130/SQLite/JDBCDriver.java	2008-07-13 17:53:14.000000000 +0200
+@@ -13,7 +13,7 @@
+ 
+     static {
+ 	try {
+-	    Class connClass = null;
++	    Class<? extends Connection> connClass = null;
+ 	    Class args[] = new Class[4];
+ 	    args[0] = Class.forName("java.lang.String");
+ 	    args[1] = args[0];
+@@ -49,7 +49,7 @@
+ 		    }
+ 		}
+ 	    }
+-	    connClass = Class.forName(cvers);
++	    connClass = (Class<? extends Connection>) Class.forName(cvers);
+ 	    makeConn = connClass.getConstructor(args);
+ 	    java.sql.DriverManager.registerDriver(new JDBCDriver());
+ 	} catch (java.lang.Exception e) {
