@@ -17,13 +17,13 @@ EXTRA_OECONF = "\
   --with-vm-zip=${datadir}/cacao/vm.zip \
   \
   --with-classpath-libdir=${libdir_jni}:${libdir} \
-  --with-classpath-includedir=${incdir}/classpath \
+  --with-classpath-includedir=${includedir}/classpath \
   --with-classpath-classes=${datadir}/classpath/glibj.zip \
   \
   --with-java-runtime-library-classes=${datadir}/classpath/glibj.zip \
   --with-java-runtime-library-libdir=${libdir_jni}:${libdir} \
-  --with-jni_md_h=${incdir}/classpath \
-  --with-jni_h=${incdir}/classpath \
+  --with-jni_md_h=${includedir}/classpath \
+  --with-jni_h=${includedir}/classpath \
   "
 
 # force usage of ecj-initial
