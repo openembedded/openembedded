@@ -1,0 +1,87 @@
+diff -Naur 2.6.12-5.0-org/arch/mips/kernel/reset.c 2.6.12-5.0-patched/arch/mips/kernel/reset.c
+--- 2.6.12-5.0-org/arch/mips/kernel/reset.c	2007-07-26 00:51:08.000000000 +0200
++++ 2.6.12-5.0-patched/arch/mips/kernel/reset.c	2007-12-11 12:34:52.000000000 +0100
+@@ -27,6 +27,7 @@
+ }
+ 
+ EXPORT_SYMBOL(machine_restart);
++EXPORT_SYMBOL(_machine_restart);
+ 
+ void machine_halt(void)
+ {
+@@ -34,6 +35,7 @@
+ }
+ 
+ EXPORT_SYMBOL(machine_halt);
++EXPORT_SYMBOL(_machine_halt);
+ 
+ void machine_power_off(void)
+ {
+@@ -41,3 +43,4 @@
+ }
+ 
+ EXPORT_SYMBOL(machine_power_off);
++EXPORT_SYMBOL(_machine_power_off);
+diff -Naur 2.6.12-5.0-org/drivers/video/Kconfig 2.6.12-5.0-patched/drivers/video/Kconfig
+--- 2.6.12-5.0-org/drivers/video/Kconfig	2007-07-26 00:54:49.000000000 +0200
++++ 2.6.12-5.0-patched/drivers/video/Kconfig	2007-12-11 12:34:52.000000000 +0100
+@@ -39,7 +39,7 @@
+ 	  device-aware may cause unexpected results. If unsure, say N.
+ 
+ config FB_CFB_FILLRECT
+-	tristate
++	tristate "FB_CFB_FILLRECT"
+ 	depends on FB
+ 	default n
+ 	---help---
+@@ -48,7 +48,7 @@
+ 	  (accelerated) version.
+ 
+ config FB_CFB_COPYAREA
+-	tristate
++	tristate "FB_CFB_COPYAREA"
+ 	depends on FB
+ 	default n
+ 	---help---
+@@ -57,7 +57,7 @@
+ 	  version.
+ 
+ config FB_CFB_IMAGEBLIT
+-	tristate
++	tristate "FB_CFB_IMAGEBLIT"
+ 	depends on FB
+ 	default n
+ 	---help---
+@@ -66,7 +66,7 @@
+ 	  (accelerated) version.
+ 
+ config FB_SOFT_CURSOR
+-	tristate
++	tristate "FB_SOFT_CURSOR"
+ 	depends on FB
+ 	default n
+ 	---help---
+diff -Naur 2.6.12-5.0-org/drivers/char/keyboard.c 2.6.12-5.0-patched/drivers/char/keyboard.c
+--- 2.6.12-5.0-org/drivers/char/keyboard.c	2007-07-26 00:53:29.000000000 +0200
++++ 2.6.12-5.0-patched/drivers/char/keyboard.c	2007-12-11 12:34:52.000000000 +0100
+@@ -1186,6 +1186,9 @@
+ 	for (i = KEY_RESERVED; i < BTN_MISC; i++)
+ 		if (test_bit(i, dev->keybit)) break;
+ 
++	if ( test_bit(EV_NO_CONSOLE, dev->evbit) )
++		return NULL;
++
+ 	if ((i == BTN_MISC) && !test_bit(EV_SND, dev->evbit)) 
+ 		return NULL;
+ 
+diff -Naur 2.6.12-5.0-org/include/linux/input.h 2.6.12-5.0-patched/include/linux/input.h
+--- 2.6.12-5.0-org/include/linux/input.h	2007-07-26 00:56:59.000000000 +0200
++++ 2.6.12-5.0-patched/include/linux/input.h	2007-12-11 12:34:52.000000000 +0100
+@@ -92,6 +92,7 @@
+ #define EV_FF			0x15
+ #define EV_PWR			0x16
+ #define EV_FF_STATUS		0x17
++#define EV_NO_CONSOLE		0x1e
+ #define EV_MAX			0x1f
+ 
+ /*

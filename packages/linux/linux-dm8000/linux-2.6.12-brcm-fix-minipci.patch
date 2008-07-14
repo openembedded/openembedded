@@ -1,0 +1,11 @@
+--- stblinux-2.6.12.org/include/asm-mips/brcmstb/brcm97400b0/boardmap.h	2008-07-03 23:48:25.000000000 +0200
++++ stblinux-2.6.12/include/asm-mips/brcmstb/brcm97400b0/boardmap.h	2008-07-03 21:23:22.000000000 +0200
+@@ -69,7 +69,7 @@
+ 
+ #define PCI_1394_PHYS_MEM_WIN0_BASE   0xd0000000
+ 
+-#define PCI_DEVICE_ID_EXT       0x0d
++#define PCI_DEVICE_ID_EXT       1 /* 0x0d */
+ #define PCI_DEVICE_ID_1394      0x0e
+ #define PCI_DEVICE_ID_MINI      0x04
+ #define PCI_DEVICE_ID_SATA      0 /* On 2ndary PCI bus */

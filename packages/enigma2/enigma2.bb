@@ -11,7 +11,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
-RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf"
+RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
@@ -33,8 +33,8 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced vi
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
-PR = "r1"
-SRCDATE = "20080522"
+PR = "r0"
+SRCDATE = "20080713"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -46,12 +46,17 @@ REL_MAJOR="2"
 REL_MINOR="4"
 TAG = ";tag=enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
+REL_MINOR_dm8000="5"
+TAG_dm8000=""
+
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver${TAG};date=${SRCDATE} \
            file://enigma2.sh"
 
 SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
+
+SRC_URI_append_dm8000 = " file://revert_tuner_config.patch;patch=0;pnum=0"
 
 S = "${WORKDIR}/enigma2"
 

@@ -1,0 +1,13 @@
+Index: stblinux-2.6.12/Makefile
+===================================================================
+--- stblinux-2.6.12.orig/Makefile	2007-12-17 20:09:55.000000000 +0100
++++ stblinux-2.6.12/Makefile	2007-12-17 22:37:51.000000000 +0100
+@@ -2,7 +2,7 @@
+ PATCHLEVEL = 6
+ SUBLEVEL = 12
+ # STABLE_VERSION = .2
+-EXTRAVERSION =-5.1-brcmstb
++EXTRAVERSION =-5.1-brcmstb-dm8000
+ NAME=Woozy Numbat
+ 
+ # *DOCUMENTATION*

@@ -1,0 +1,14 @@
+--- 2.6.12-5.1-org/arch/mips/Makefile	2008-03-19 16:22:29.000000000 +0100
++++ 2.6.12-5.1-patched/arch/mips/Makefile	2008-03-24 14:06:32.000000000 +0100
+@@ -876,10 +876,9 @@
+ core-$(CONFIG_MIPS_BCM7400A0) += arch/mips/brcmstb/common/
+ core-$(CONFIG_MIPS_BCM7400B0) += arch/mips/brcmstb/common/
+ 
+-ifdef CONFIG_SMP
+ cflags-$(CONFIG_MIPS_BCM7400A0)	+= -Iinclude/asm-mips/mach-brcmstb
+ cflags-$(CONFIG_MIPS_BCM7400B0)	+= -Iinclude/asm-mips/mach-brcmstb
+-endif
++
+ load-$(CONFIG_MIPS_BCM7400A0) := 0x80001000
+ load-$(CONFIG_MIPS_BCM7400B0) := 0x80001000
+ 

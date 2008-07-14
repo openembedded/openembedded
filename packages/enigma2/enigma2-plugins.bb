@@ -1,7 +1,7 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20080417"
+SRCDATE = "20080712"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -12,6 +12,9 @@ SRCDATE = "20080417"
 REL_MAJOR="2"
 REL_MINOR="4"
 TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
+
+REL_MINOR_dm8000="5"
+TAG_dm8000=""
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 

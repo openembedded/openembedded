@@ -1,0 +1,90 @@
+modprobe lcd
+echo 10 > /proc/progress
+[ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
+
+mount -t proc proc /proc
+echo 11 > /proc/progress
+
+mount -t sysfs sysfs /sys
+echo 12 > /proc/progress
+
+depmod -Ae
+echo 13 > /proc/progress
+
+swapon -a
+echo 14 > /proc/progress
+
+for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd; do
+	modprobe $mod 2> /dev/null ;
+done
+
+mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+echo 15 > /proc/progress
+
+tar xzf /etc/var.tar.gz -C /
+echo 16 > /proc/progress
+
+# sleep after 10min
+for i in 0 1; do
+	hdparm -S 120 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
+done
+
+echo 17 > /proc/progress
+
+# set UDMA66
+for i in 0 1; do
+	hdparm -X66 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
+done
+
+# accustic management
+for i in 0 1; do
+	hdparm -M 128 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
+done
+
+echo 18 > /proc/progress
+for i in dreambox_rc2 fp info; do
+	modprobe $i;
+done
+
+echo 19 > /proc/progress
+
+cat /etc/videomode > /proc/stb/video/videomode
+
+echo 20 > /proc/progress
+
+for mod in rt73 zd1211b; do
+	modprobe $mod 2> /dev/null ;
+done
+
+echo "loading madwifi modules"
+for x in wlan ath_rate; do
+	for mod in `ls /lib/modules/$(uname -r)/net | grep $x | cut -d . -f 0`; do 
+		modprobe $mod 2> /dev/null ;
+	done
+done
+modprobe ath_pci 2> /dev/null
+
+echo 21 > /proc/progress
+
+automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
+
+[ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
+
+hostname -F /etc/hostname
+
+echo 22 > /proc/progress
+/usr/bin/wdog /usr/bin/dccamd -
+
+echo 23 > /proc/progress
+ifup -a
+
+echo 24 > /proc/progress
+mount -at nfs,smbfs,cpfs 2>/dev/null
+
+[ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
+
+echo 25 > /proc/progress
+
+ldconfig
+
+ipkg-cl configure

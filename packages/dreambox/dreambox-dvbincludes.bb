@@ -83,3 +83,13 @@ do_install_dm800() {
 		install -m 0644 ${S}/$f ${STAGING_INCDIR}/$f
 	done;
 }
+
+do_install_dm8000() {
+	install -d ${STAGING_INCDIR}/ci
+	install -d ${STAGING_INCDIR}/dbox
+	install -d ${STAGING_INCDIR}/dreambox
+	install -d ${STAGING_INCDIR}/tuxbox
+	for f in ${INPUT_FILES}; do
+		install -m 0644 ${S}/$f ${STAGING_INCDIR}/$f
+	done;
+}
