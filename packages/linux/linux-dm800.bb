@@ -14,8 +14,8 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-core-fix-several-locking-problems.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvbapi-pilot-rolloff-extension-r0.patch.bz2;patch=1;pnum=1\
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update-wireless.patch.bz2;patch=1;pnum=1\
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-add-ioprio.patch.bz2;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-misc.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-add-ioprio.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fix-serial.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dm800-flash-layout.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
