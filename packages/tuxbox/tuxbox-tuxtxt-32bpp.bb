@@ -7,13 +7,14 @@ SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/plugins/tu
 	   file://32bpp.diff;patch=1;pnum=1 \
 	   file://add_new_default_conf.diff;patch=1;pnum=1 \
 	   file://add_e2_plugin.diff;patch=1;pnum=1 \
-	   file://tuxtxt-resize_video_patch-7025.diff;patch=1;pnum=1"
+	   file://tuxtxt-resize_video_patch-7025.diff;patch=1;pnum=1 \
+	   file://add_advanced_rc.diff;patch=1;pnum=1"
 
 FILES_${PN} = "/usr/bin /usr/share/fonts /usr/lib/enigma2/python/Plugins/Extensions/Tuxtxt /etc/tuxtxt"
 
 SRCDATE = "20060112"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r5"
+PR = "r6"
 
 S = "${WORKDIR}/tuxtxt"
 

@@ -1,0 +1,94 @@
+diff -Naur tuxtxt/tuxtxt.c tuxtxt-patched/tuxtxt.c
+--- tuxtxt/tuxtxt.c	2008-04-18 19:04:09.000000000 +0200
++++ tuxtxt-patched/tuxtxt.c	2008-07-13 12:30:33.000000000 +0200
+@@ -1489,7 +1489,7 @@
+ {
+ 	char cvs_revision[] = "$Revision: 1.95 $";
+ 
+-	int cnt=0;
++	int cnt=0, rc_num=0;
+ #if !TUXTXT_CFG_STANDALONE
+ 	int initialized = tuxtxt_init();
+ 	if ( initialized )
+@@ -1520,8 +1520,8 @@
+ 		return 0;
+ 	}
+ 
+-	rc=-1;
+-	while(1)
++	rc[0]=rc[1]=-1;
++	while(rc_num < 2)
+ 	{
+ 		struct stat s;
+ 		char tmp[128];
+@@ -1529,28 +1529,26 @@
+ 		if (stat(tmp, &s))
+ 			break;
+ 		/* open Remote Control */
+-		if ((rc=open(tmp, O_RDONLY)) == -1)
++		if ((rc[rc_num]=open(tmp, O_RDONLY | O_EXCL | O_NONBLOCK)) == -1)
+ 		{
+ 			perror("TuxTxt <open remote control>");
+ 			return 0;
+ 		}
+-		if (ioctl(rc, EVIOCGNAME(128), tmp) < 0)
++		if (ioctl(rc[rc_num], EVIOCGNAME(128), tmp) < 0)
+ 			perror("EVIOCGNAME failed");
+-		if (strstr(tmp, "remote control"))
+-			break;
+-		close(rc);
+-		rc=-1;
++		if (!strstr(tmp, "remote control"))
++			close(rc[rc_num]);
++		else
++			++rc_num;
+ 		++cnt;
+ 	}
+ 	
+-	if (rc == -1)
++	if (rc[0] == -1)
+ 	{
+-		printf("couldnt find correct input device!!!\n");
++		printf("couldnt find usable input device!!!\n");
+ 		return -1;
+ 	}
+ 
+-	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
+-
+ 	/* open LCD  */
+ 	if ((lcd=open("/dev/dbox/lcd0", O_RDWR)) == -1)
+ 	{
+@@ -1745,7 +1743,10 @@
+ 	/* exit */
+ 	CleanUp();
+ 	
+-	close(rc);
++	if (rc[0] != -1)
++			close(rc[0]);
++	if (rc[1] != -1)
++			close(rc[1]);
+ 	close(lcd);
+ 	close(fb);
+ 
+@@ -6357,7 +6358,8 @@
+ 			{
+ 				switch (RCCode)
+ #else
+-	if (read(rc, &ev, sizeof(ev)) == sizeof(ev))
++	if ((read(rc[0], &ev, sizeof(ev)) == sizeof(ev)) ||
++	    (rc[1] != -1 && read(rc[1], &ev, sizeof(ev)) == sizeof(ev)))
+ 	{
+ 		if (ev.value)
+ 		{
+diff -Naur tuxtxt/tuxtxt.h tuxtxt-patched/tuxtxt.h
+--- tuxtxt/tuxtxt.h	2008-04-18 19:04:08.000000000 +0200
++++ tuxtxt-patched/tuxtxt.h	2008-07-13 12:25:04.000000000 +0200
+@@ -428,7 +428,7 @@
+ int hotlist[10];
+ int maxhotlist;
+ 
+-int pig, rc, fb, lcd;
++int pig, rc[2], fb, lcd;
+ int sx, ex, sy, ey;
+ int PosX, PosY, StartX, StartY;
+ int lastpage;
