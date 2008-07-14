@@ -7,7 +7,6 @@ PR = "r2"
 
 QTVER = "qtopia-core-opensource-src-${QTVERSION}"
 
-FILESDIR += "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qmake2-native"
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
            file://0008-backport-qt-lib-infix.patch;patch=1 \
