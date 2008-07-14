@@ -17,7 +17,7 @@ S = "${WORKDIR}/${QTVER}"
 
 # we need the real target system here
 CROSS_SYS := "${TARGET_SYS}"
-inherit autotools cross 
+inherit autotools  
 
 export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
@@ -62,6 +62,3 @@ do_stage() {
     cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
 }
 
-do_install() {
-    :
-}
