@@ -3,7 +3,7 @@ PRIORITY = "optional"
 LICENSE = "proprietary"
 MAINTAINER = "tmbinc@elitedvb.net"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "file://*"
 
