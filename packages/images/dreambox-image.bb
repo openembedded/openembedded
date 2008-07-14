@@ -24,12 +24,17 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-systemplugins-configurationbackup \
 	enigma2-plugin-systemplugins-satfinder \
 	enigma2-plugin-systemplugins-videotune \
+	enigma2-plugin-systemplugins-networkwizard \
+	enigma2-plugin-extensions-mediascanner \
 	enigma2-plugin-extensions-webinterface \
+	enigma2-plugin-extensions-graphmultiepg \
 	enigma2-plugin-systemplugins-skinselector \
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
-	enigma2-skins \
+	enigma2-plugin-systemplugins-hotplug \
+	enigma2-plugin-systemplugins-defaultservicesscanner \
 	enigma2-streamproxy \
+	enigma2-defaultservices \
 	twisted-web2 twisted python-crypt python-crypto \
 	python-netserver python-pickle dreambox-blindscan-utils"
 
