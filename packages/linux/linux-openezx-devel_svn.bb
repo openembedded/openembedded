@@ -8,8 +8,8 @@ require linux.inc
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
-KERNEL_RELEASE = "2.6.24"
-KERNEL_PATCHES = "kernel-2.6.24.x-patches"
+KERNEL_RELEASE = "2.6.25"
+KERNEL_PATCHES = "kernel-${KERNEL_RELEASE}.x-patches"
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
 PR = "r0"
 
