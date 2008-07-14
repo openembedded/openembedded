@@ -1,12 +1,9 @@
 /*
- *  Copyright(C) 2005 Neuros Technology International LLC. 
- *               <www.neurostechnology.com>
+ * Copyright (C) 2006 - 2008 Neuros Technology LLC.
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; only support version 2 of the License.
  *
  *  This program is distributed in the hope that, in addition to its 
  *  original purpose to support Neuros hardware, it will be useful 
@@ -51,7 +48,7 @@
 #define IH_TYPE_ROOTFS          10
 
 /* addr in flash */
-#define UBOOT_ADDR_START      0x00018000
+#define UBOOT_ADDR_START      0x000C0000
 #define UBOOT_SIZE                  (1*1024*1024)
 #define UBOOT_ADDR_END        (UBOOT_ADDR_START+UBOOT_SIZE-1)
 #define KERNEL_ADDR_START    (UBOOT_ADDR_END+1)
@@ -61,9 +58,9 @@
 #define ROOTFS_ADDR_END       (256*1024*1024 - 1)
 
 #define UBOOT_FILE_NAME   "u-boot.bin"
-#define KERNEL_FILE_NAME  "kernel.img"
-#define ROOTFS_FILE_NAME  "rootfs.img"
-#define SCRIPT_FILE_NAME  "env.img"
+#define KERNEL_FILE_NAME  "uImage.jffs2"
+#define ROOTFS_FILE_NAME  "rootfs.yaffs2"
+#define SCRIPT_FILE_NAME  "default_env.img"
 
 #define UBOOT_VER_FILE    "u-boot.version"
 #define KERNEL_VER_FILE   "uImage.version"
