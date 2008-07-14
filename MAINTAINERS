@@ -272,6 +272,7 @@ Interests:  free software, java, games, packages/maemo4/*
 Distros:    chinook-compat
 Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
 Recipes:    classpath*, cacao*, jamvm*
+Recipes:    miglayout, javasqlite*, sqlitejbdc
 Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
 Recipes:    woodstox2
 Recipes:    midpath*, logic-analyze

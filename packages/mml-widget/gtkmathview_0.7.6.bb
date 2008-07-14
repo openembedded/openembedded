@@ -9,10 +9,10 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "--disable-binreloc"
 
 do_configure() {
-oe_runconf
+	oe_runconf
 }
 
 do_stage() {
-autotools_stage_all
+	autotools_stage_all
 }
 

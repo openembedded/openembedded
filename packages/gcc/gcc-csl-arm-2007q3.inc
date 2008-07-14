@@ -30,6 +30,7 @@ SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-20
 #           file://fortran-static-linking.patch;patch=1 \
 #           file://gcc-configure-no-fortran.patch;patch=1;pnum=1 \
 #           file://gcc-new-makeinfo.patch;patch=1 \
+           file://gcc-Os-fix.diff;patch=1 \
 "
 
 
