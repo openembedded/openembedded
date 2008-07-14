@@ -12,7 +12,7 @@ PV = "0.1+git"
 
 inherit autotools pkgconfig lib_package
 
-SRC_URI = "git://dev.openbossa.org/mamona/mamona_input_methods.git;protocol=http"
+SRC_URI = "git://dev.openbossa.org/mamona/projects/mamona_input_methods.git;protocol=http"
 
 S = "${WORKDIR}/git"
 
