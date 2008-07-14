@@ -1,0 +1,132 @@
+--- /tmp/qapplication_p.h	2008-07-14 11:39:24.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.0/src/gui/kernel/qapplication_p.h	2008-07-14 11:39:47.000000000 +0200
+@@ -344,7 +344,7 @@
+ # endif
+     QRect maxWindowRect(const QScreen *screen) const { return maxWindowRects[screen]; }
+     void setMaxWindowRect(const QScreen *screen, int screenNo, const QRect &rect);
+-    void setScreenTransformation(QScreen *screen, int screen, int transformation);
++    void setScreenTransformation(QScreen *screen, int screenNo, int transformation);
+ #endif
+ 
+     static QApplicationPrivate *instance() { return self; }
+--- /tmp/qdrawhelper_p.h	2008-07-14 11:48:26.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.0/src/gui/painting/qdrawhelper_p.h	2008-07-14 11:50:12.000000000 +0200
+@@ -1379,7 +1379,7 @@
+ static inline quint32 qt_convertToRgb(SRC color);
+ 
+ template <>
+-static inline quint32 qt_convertToRgb(quint32 color)
++inline quint32 qt_convertToRgb(quint32 color)
+ {
+     const int r = qRed(color) >> (8 - qrgb::len_red);
+     const int g = qGreen(color) >> (8 - qrgb::len_green);
+@@ -1394,7 +1394,7 @@
+ }
+ 
+ template <>
+-static inline quint32 qt_convertToRgb(quint16 color)
++inline quint32 qt_convertToRgb(quint16 color)
+ {
+     return qt_convertToRgb(qt_colorConvert<quint32, quint16>(color, 0));
+ }
+@@ -1422,14 +1422,14 @@
+ } Q_PACKED;
+ 
+ template <>
+-static inline qrgb_generic16 qt_colorConvert(quint32 color, qrgb_generic16 dummy)
++inline qrgb_generic16 qt_colorConvert(quint32 color, qrgb_generic16 dummy)
+ {
+     Q_UNUSED(dummy);
+     return qrgb_generic16(color);
+ }
+ 
+ template <>
+-static inline qrgb_generic16 qt_colorConvert(quint16 color, qrgb_generic16 dummy)
++inline qrgb_generic16 qt_colorConvert(quint16 color, qrgb_generic16 dummy)
+ {
+     Q_UNUSED(dummy);
+     return qrgb_generic16(qt_colorConvert<quint32, quint16>(color, 0));
+--- /tmp/qscreen_qws.cpp	2008-07-14 11:51:39.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.0/src/gui/embedded/qscreen_qws.cpp	2008-07-14 11:52:56.000000000 +0200
+@@ -828,13 +828,13 @@
+ static inline quint8 qt_convertToGray4(SRC color);
+ 
+ template <>
+-static inline quint8 qt_convertToGray4(quint32 color)
++inline quint8 qt_convertToGray4(quint32 color)
+ {
+     return qGray(color) >> 4;
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToGray4(quint16 color)
++inline quint8 qt_convertToGray4(quint16 color)
+ {
+     const int r = (color & 0xf800) >> 11;
+     const int g = (color & 0x07e0) >> 6; // only keep 5 bit
+@@ -843,13 +843,13 @@
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToGray4(qrgb444 color)
++inline quint8 qt_convertToGray4(qrgb444 color)
+ {
+     return qt_convertToGray4(quint32(color));
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToGray4(qargb4444 color)
++inline quint8 qt_convertToGray4(qargb4444 color)
+ {
+     return qt_convertToGray4(quint32(color));
+ }
+@@ -969,25 +969,25 @@
+ static inline quint8 qt_convertToMono(SRC color);
+ 
+ template <>
+-static inline quint8 qt_convertToMono(quint32 color)
++inline quint8 qt_convertToMono(quint32 color)
+ {
+     return qGray(color) >> 7;
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToMono(quint16 color)
++inline quint8 qt_convertToMono(quint16 color)
+ {
+     return (qGray(qt_colorConvert<quint32, quint16>(color, 0)) >> 7);
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToMono(qargb4444 color)
++inline quint8 qt_convertToMono(qargb4444 color)
+ {
+     return (qGray(quint32(color)) >> 7);
+ }
+ 
+ template <>
+-static inline quint8 qt_convertToMono(qrgb444 color)
++inline quint8 qt_convertToMono(qrgb444 color)
+ {
+     return (qGray(quint32(color)) >> 7);
+ }
+--- /tmp/qdrawhelper.cpp	2008-07-14 11:56:25.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.0/src/gui/painting/qdrawhelper.cpp	2008-07-14 11:57:29.000000000 +0200
+@@ -3374,7 +3374,7 @@
+ 
+ #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ template <>
+-static inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src)
++inline void madd_4(qargb8565 *dest, const quint32 a, const qargb8565 *src)
+ {
+     Q_ASSERT((quintptr(dest) & 0x3) == 0);
+     Q_ASSERT((quintptr(src) & 0x3) == 0);
+@@ -3455,7 +3455,7 @@
+ 
+ #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ template <>
+-static inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src)
++inline void madd_4(qargb8555 *dest, const quint32 a, const qargb8555 *src)
+ {
+     Q_ASSERT((quintptr(dest) & 0x3) == 0);
+     Q_ASSERT((quintptr(src) & 0x3) == 0);

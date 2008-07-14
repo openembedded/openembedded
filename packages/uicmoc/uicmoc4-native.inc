@@ -10,8 +10,6 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.ta
            file://configure-fix.patch;patch=1"
 S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
 
-inherit native
-
 EXTRA_OECONF = "-prefix ${STAGING_DIR_NATIVE}/qt4 \
                 -qt-libjpeg -qt-gif -system-zlib \
                 -no-nis -no-cups -no-exceptions  \
