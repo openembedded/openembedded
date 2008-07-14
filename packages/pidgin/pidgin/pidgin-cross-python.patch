@@ -1,0 +1,16 @@
+Index: pidgin-2.4.3/configure.ac
+===================================================================
+--- pidgin-2.4.3.orig/configure.ac	2008-07-14 13:13:16.000000000 +0000
++++ pidgin-2.4.3/configure.ac	2008-07-14 13:34:12.000000000 +0000
+@@ -1350,8 +1350,9 @@
+ 		AC_CHECK_LIB(pthread, pthread_create, )
+ 		AC_CHECK_LIB(util, openpty, )
+ 		AC_CHECK_LIB(db, dbopen, )
+-		PY_LIBS="-lpython$PY_VERSION -L$PY_EXEC_PREFIX/lib/python$PY_VERSION/config"
+-		PY_CFLAGS="-I$PY_PREFIX/include/python$PY_VERSION"
++		m4_pattern_allow([^PKG_CONFIG_SYSROOT_DIR$])
++		PY_LIBS="-lpython$PY_VERSION -L$PKG_CONFIG_SYSROOT_DIR/usr/lib/python$PY_VERSION/config"
++		PY_CFLAGS="-I$PKG_CONFIG_SYSROOT_DIR/usr/include/python$PY_VERSION"
+ 		AC_DEFINE(USE_PYTHON, [1], [Define if python headers are available.])
+ 		AC_MSG_RESULT(ok)
+ 	else
