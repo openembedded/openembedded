@@ -101,6 +101,15 @@ do_install () {
 	install -d ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp   ${D}/${bindir}
+
+	install -d ${D}/${libdir}
+	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib  ${D}/${libdir}
+}
+
+
+do_stage() {
+	install -d ${STAGING_LIBDIR}
+	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib ${STAGING_LIBDIR}/
 }
 
 pkg_postinst_${PN}-module () {
