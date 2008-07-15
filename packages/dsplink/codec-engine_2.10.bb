@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r3"
+PR = "r4"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -56,6 +56,18 @@ do_install() {
 		mv ${D}/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 		install -d ${D}/${base_sbindir}
 		cd ${D} ; mv apitest apitestd multi_process multi_processd translate translated ${D}/${base_sbindir}		
+
+		install -d ${D}/${libdir}
+		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
+			install -m 0755 $i ${D}/${libdir}/
+		done
+}
+
+do_stage() {
+		install -d ${STAGING_LIBDIR}	
+		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
+			install -m 0755 $i ${STAGING_LIBDIR}/
+		done
 }
 
 pkg_postinst_${PN}-module () {
