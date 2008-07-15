@@ -6,7 +6,7 @@ HOMEPAGE = "http://dev.openbossa.org/trac/mamona/wiki"
 LICENSE = "GPL"
 SECTION = "libs/inputmethods"
 DEPENDS = "ecore"
-PR = "r2"
+PR = "r3"
 
 PV = "0.1+git"
 
@@ -38,31 +38,6 @@ FILES_${PN}-ecore-dev = "\
         "
 FILES_${PN}-ecore-dbg = "\
             ${libdir}/ecore/immodules/.debug \
-        "
-
-# E Applet
-PACKAGES += "\
-             ${PN}-e-applet \
-             ${PN}-e-applet-dev \
-             ${PN}-e-applet-dbg \
-         "
-RPROVIDES_${PN}-e-appet = "libmamona-im-e-applet"
-EXTRA_OECONF += "\
-            --enable-e-applet \
-        "
-FILES_${PN}-e-applet = "\
-            ${libdir}/enlightenment/modules/mamonaim/module.desktop \
-            ${libdir}/enlightenment/modules/mamonaim/mamonaim.edj \
-            ${libdir}/enlightenment/modules/mamonaim/e-module-mamonaim.edj \
-            ${libdir}/enlightenment/modules/mamonaim/*.png \
-            ${libdir}/enlightenment/modules/mamonaim/*/module.so \
-        "
-FILES_${PN}-e-applet-dev = "\
-            ${libdir}/enlightenment/modules/mamonaim/*/module.la \
-            ${libdir}/enlightenment/modules/mamonaim/*/module.a \
-        "
-FILES_${PN}-e-applet-dbg = "\
-            ${libdir}/enlightenment/modules/mamonaim/*/.debug \
         "
 
 do_configure_prepend() {
