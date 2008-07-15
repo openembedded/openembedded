@@ -5,8 +5,8 @@ DESCRIPTION = "Mamona input methods"
 HOMEPAGE = "http://dev.openbossa.org/trac/mamona/wiki"
 LICENSE = "GPL"
 SECTION = "libs/inputmethods"
-DEPENDS = "ecore"
-PR = "r3"
+DEPENDS = "ecore gtk+"
+PR = "r4"
 
 PV = "0.1+git"
 
@@ -40,10 +40,39 @@ FILES_${PN}-ecore-dbg = "\
             ${libdir}/ecore/immodules/.debug \
         "
 
+# GTK
+PACKAGES += "\
+            ${PN}-gtk \
+            ${PN}-gtk-dev \
+            ${PN}-gtk-dbg \
+        "
+RPROVIDES_${PN}-gtk = "libmamona-im-gtk"
+EXTRA_OECONF += "\
+            --enable-gtk-im \
+        "
+FILES_${PN}-gtk = "\
+            ${libdir}/gtk-2.0/*/immodules/mamona-im-gtk-module.so \
+        "
+FILES_${PN}-gtk-dev = "\
+            ${libdir}/gtk-2.0/*/immodules/mamona-im-gtk-module.la \
+            ${libdir}/gtk-2.0/*/immodules/mamona-im-gtk-module.a \
+        "
+FILES_${PN}-gtk-dbg = "\
+            ${libdir}/gtk-2.0/*/immodules/.debug \
+        "
+
 do_configure_prepend() {
     ./autogen.sh
 }
 
 do_stage() {
     autotools_stage_all
+}
+
+pkg_postinst_${PN}-gtk() {
+    gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
+}
+
+pkg_postrm_${PN}-gtk() {
+    gtk-query-immodules-2.0 > ${sysconfdir}/gtk-2.0/gtk.immodules
 }
