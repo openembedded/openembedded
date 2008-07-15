@@ -1,0 +1,23 @@
+diff -Naur busybox-1.01-org/examples/udhcp/simple.script busybox-1.01/examples/udhcp/simple.script
+--- busybox-1.01-org/examples/udhcp/simple.script	2008-07-14 17:49:12.000000000 +0200
++++ busybox-1.01/examples/udhcp/simple.script	2008-07-14 15:19:00.000000000 +0200
+@@ -21,9 +21,16 @@
+ 	    :
+ 	done
+ 
+-	for i in $router ; do
+-	    route add default gw $i dev $interface
+-	done
++	if [ -e /etc/default_gw ]; then
++	    default_gw=`cat /etc/default_gw`
++	else
++	    default_gw=$interface
++	fi
++	if [ "$interface" = "$default_gw" ]; then
++	    for i in $router ; do
++		route add default gw $i dev $interface
++	    done
++	fi
+     fi
+ 
+     echo -n > $RESOLV_CONF

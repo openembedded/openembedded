@@ -10,7 +10,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://udhcppidfile.patch;patch=1 \
@@ -44,6 +44,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
 	   file://mount.busybox \
 	   file://umount.busybox"
 SRC_URI_append_slugos += " file://sysctl.conf "
+SRC_URI_append_opendreambox += " file://default_gw.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/busybox-${PV}"
 
