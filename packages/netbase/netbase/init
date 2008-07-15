@@ -48,11 +48,11 @@ syncookies () {
 }
 
 wpa_supplicantcheck () {
-    if [ -e /var/run/wpa_supplicant/wlan0 ]; then
+    if [ -e /var/run/wpa_supplicant ]; then
         echo -n "disabling wpa_supplicant "
         start-stop-daemon -K -x /usr/sbin/wpa_supplicant
         # HACK: wpa_supplicant sometimes doesn't quit properly on SIGTERM.
-        if [ -e /var/run/wpa_supplicant/wlan0 ]; then
+        if [ -e /var/run/wpa_supplicant ]; then
         	echo -n "wpa_supplicant still running, force kill now.. "
         	killall -9 /usr/sbin/wpa_supplicant
         	rm -rf /var/run/wpa_supplicant
