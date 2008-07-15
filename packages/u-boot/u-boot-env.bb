@@ -1,5 +1,7 @@
 DESCRIPTION = "Dummy package to get uboot env image into deploy"
 
+PR = "r1"
+
 inherit kernel-arch
 
 SRC_URI = "file://default-env.ascr"
