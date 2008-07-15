@@ -10,6 +10,7 @@ task-mamona-base \
 task-mamona \
 task-mamona-devel \
 task-mamona-sdk \
+task-mamona-wm \
 coreutils \
 cpio \
 dbus \
@@ -18,7 +19,6 @@ dnsmasq \
 dosfstools \
 e2fsprogs \
 expat \
-e-wm \
 findutils \
 fontconfig \
 gconf \
