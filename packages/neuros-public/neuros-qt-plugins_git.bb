@@ -1,6 +1,8 @@
 DESCRIPTION = "Neuros qt-plugins"
 LICENSE = "GPL"
 
+PR = "r1"
+
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core
@@ -10,8 +12,8 @@ SRC_URI = "git://git.neurostechnology.com/git/qt-plugins;protocol=git"
 S = "${WORKDIR}/git/osdir"
 
 do_install() {
-	install -d ${D}/${libdir}/${QT_DIR_NAME}/plugins/inputmethods/
-	install -m 0755 ${S}/build/*plugin* ${D}/${libdir}/${QT_DIR_NAME}/plugins/inputmethods/
+	install -d ${D}/${libdir}/${QT_DIR_NAME}/plugins/kbddrivers/
+	install -m 0755 ${S}/build/*plugin* ${D}/${libdir}/${QT_DIR_NAME}/plugins/kbddrivers/
 }
 
 FILES_${PN} += "${libdir}/${QT_DIR_NAME}/plugins"
