@@ -8,4 +8,5 @@ PACKAGES = "${PN}"
 RDEPENDS = "\
     e-wm \
     libmamona-im-ecore \
+    libmamona-im-gtk \
 "
