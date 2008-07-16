@@ -106,6 +106,9 @@ do_compile () {
 	
 	sed -i -e 's:gcc${KERNEL_CCSUFFIX}:gcc:' ${S}/make/Linux/openembedded.mk
 	oe_runmake -C ${S}/gpp/src/samples
+
+	oe_runmake -C ${S}/dsp/src
+	oe_runmake -C ${S}/dsp/src/samples
 }
 
 do_install () {

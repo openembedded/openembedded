@@ -35,7 +35,7 @@ USE_DISTRIBUTION := 1
 #   ----------------------------------------------------------------------------
 #   Base directory for the DSP OS
 #   ----------------------------------------------------------------------------
-BASE_INSTALL    := SEDME_TITOOLS_BASEPATH 
+BASE_INSTALL    := SEDME_TITOOLS_BASEPATH
 BASE_SABIOS     := $(BASE_INSTALL)/SEDME_BIOSUNPACKDIR
 BASE_BUILDOS    := $(BASE_SABIOS)/packages/ti/bios
 
