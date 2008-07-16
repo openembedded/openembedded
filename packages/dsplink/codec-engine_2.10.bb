@@ -33,11 +33,19 @@ do_configure() {
     sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
         -e s:SEDME_BIOSUNPACKDIR:${TITOOLSDIR}/${TIBIOSDIR}:g \
         -e 's:SEDME_S:${S}:g' \
-        -e s:SEDME_XDCTOOLSUNPACKDIR:${TIXDCTOOLSDIR}:g \
+        -e s:SEDME_XDCTOOLSUNPACKDIR:${TITOOLSDIR}/${TIXDCTOOLSDIR}:g \
         -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
         -e s:bin/arm_v5t_le-gcc:bin/${TARGET_PREFIX}gcc:g \
-        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TICGTOOLSDIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
         ${S}/examples/xdcpaths.mak
+
+    sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
+        ${S}/examples/user.bld
+
+    for cfg in ${S}/examples/ti/sdo/ce/examples/apps/image_copy/package/cfg/*/*cfg ; do
+        sed -i -e s:arm_v5t_le-:${TAGET_PREFIX}:g $cfg
+    done
 }
 
 do_compile() {
