@@ -1,12 +1,12 @@
-DESCRIPTION = "Video player and streamer - GPE edition"
+DESCRIPTION = "Video player and streamer - davinci edition"
 HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-SRCREV = "116b6dff4996f494b54fc0f05695ba792086ea9e"
+SRCREV = "fa02f65b17429432d13a108f73744f33709dd01c"
 
-PR = "r1"
+PR = "r2"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 
@@ -45,10 +45,16 @@ do_configure() {
 	libtoolize --force
 	autoreconf --force -i
 	oe_runconf
+	rm config.log
+	sed -i -e s:-L/usr/lib:-L${STAGING_LIBDIR}/:g vlc-config
 }
 
 do_stage() {
 	autotools_stage_all
+}
+
+do_compile() {
+	${S}/compile
 }
 
 RCONFLICTS_${PN} = "vlc"
