@@ -1,0 +1,243 @@
+diff --git a/backends/dummy/pk-backend-dummy.c b/backends/dummy/pk-backend-dummy.c
+index 5714e9f..162e6ce 100644
+--- a/backends/dummy/pk-backend-dummy.c
++++ b/backends/dummy/pk-backend-dummy.c
+@@ -777,6 +777,16 @@ backend_what_provides (PkBackend *backend, PkFilterEnum filters, PkProvidesEnum
+ }
+ 
+ /**
++ * backend_repos_ping:
++ */ 
++static PkNetworkEnum
++backend_repos_ping (PkBackend *backend)
++{
++	pk_backend_finished (backend);
++	return PK_NETWORK_ENUM_UNKNOWN;
++}
++
++/**
+  * backend_get_packages:
+  */
+ static void
+@@ -821,6 +831,7 @@ PK_BACKEND_OPTIONS (
+ 	backend_service_pack,			/* service_pack */
+ 	backend_update_packages,		/* update_packages */
+ 	backend_update_system,			/* update_system */
+-	backend_what_provides			/* what_provides */
++	backend_what_provides, 			/* what_provides */
++	backend_repos_ping			/* repos_ping */
+ );
+ 
+diff --git a/backends/opkg/pk-backend-opkg.c b/backends/opkg/pk-backend-opkg.c
+index 02966c9..a20769f 100644
+--- a/backends/opkg/pk-backend-opkg.c
++++ b/backends/opkg/pk-backend-opkg.c
+@@ -705,6 +705,16 @@ backend_get_details (PkBackend *backend, const gchar *package_id)
+ 	pk_backend_thread_create (backend, backend_get_details_thread);
+ }
+ 
++static PkNetworkEnum 
++backend_repos_ping (PkBackend *backend)
++{
++	int opkg_ret = opkg_repository_accessibility_check(opkg);
++	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
++	pk_backend_finished (backend);
++	pk_debug("opkg repos_ping ret = %d\n", opkg_ret);
++	return opkg_ret ? PK_NETWORK_ENUM_OFFLINE : PK_NETWORK_ENUM_ONLINE;
++}
++
+ PK_BACKEND_OPTIONS (
+ 	"opkg",					/* description */
+ 	"Thomas Wood <thomas@openedhand.com>",	/* author */
+@@ -737,6 +747,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	backend_update_packages,		/* update_packages */
+ 	backend_update_system,			/* update_system */
+-	NULL					/* what_provides */
++	NULL, 					/* what_provides */
++	backend_repos_ping			/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-dbus.c b/backends/test/pk-backend-test-dbus.c
+index 76686dc..9ef733d 100644
+--- a/backends/test/pk-backend-test-dbus.c
++++ b/backends/test/pk-backend-test-dbus.c
+@@ -105,6 +105,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	NULL,					/* update_packages */
+ 	NULL,					/* update_system */
+-	NULL					/* what_provides */
++	NULL,					/* what_provides */
++	NULL					/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-fail.c b/backends/test/pk-backend-test-fail.c
+index b429c1b..a70564a 100644
+--- a/backends/test/pk-backend-test-fail.c
++++ b/backends/test/pk-backend-test-fail.c
+@@ -275,6 +275,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	backend_update_packages,		/* update_packages */
+ 	backend_update_system,			/* update_system */
+-	NULL					/* what_provides */
++	NULL, 					/* what_provides */
++	NULL					/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-nop.c b/backends/test/pk-backend-test-nop.c
+index 3526fa5..a715b9b 100644
+--- a/backends/test/pk-backend-test-nop.c
++++ b/backends/test/pk-backend-test-nop.c
+@@ -55,6 +55,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	NULL,					/* update_package */
+ 	NULL,					/* update_system */
+-	NULL					/* what_provides */
++	NULL, 					/* what_provides */
++	NULL					/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-spawn.c b/backends/test/pk-backend-test-spawn.c
+index 584f44c..424c7d4 100644
+--- a/backends/test/pk-backend-test-spawn.c
++++ b/backends/test/pk-backend-test-spawn.c
+@@ -96,6 +96,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	NULL,					/* update_package */
+ 	NULL,					/* update_system */
+-	NULL					/* what_provides */
++	NULL,					/* what_provides */
++	NULL					/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-succeed.c b/backends/test/pk-backend-test-succeed.c
+index c046c1d..116d4fe 100644
+--- a/backends/test/pk-backend-test-succeed.c
++++ b/backends/test/pk-backend-test-succeed.c
+@@ -304,6 +304,16 @@ backend_what_provides (PkBackend *backend, PkFilterEnum filters, PkProvidesEnum
+ }
+ 
+ /**
++ * backend_repos_ping
++ */ 
++static PkNetworkEnum
++backend_repos_ping (PkBackend *backend)
++{
++	pk_backend_finished(backend);
++	return PK_NETWORK_ENUM_UNKNOWN;
++}
++
++/**
+  * backend_get_packages:
+  */
+ static void
+@@ -344,6 +354,7 @@ PK_BACKEND_OPTIONS (
+ 	backend_service_pack,			/* service_pack */
+ 	backend_update_packages,		/* update_packages */
+ 	backend_update_system,			/* update_system */
+-	backend_what_provides			/* what_provides */
++	backend_what_provides, 			/* what_provides */
++	backend_repos_ping			/* repos_ping */
+ );
+ 
+diff --git a/backends/test/pk-backend-test-thread.c b/backends/test/pk-backend-test-thread.c
+index 46ee862..a00cd26 100644
+--- a/backends/test/pk-backend-test-thread.c
++++ b/backends/test/pk-backend-test-thread.c
+@@ -168,6 +168,7 @@ PK_BACKEND_OPTIONS (
+ 	NULL,					/* service_pack */
+ 	NULL,					/* update_package */
+ 	NULL,					/* update_system */
+-	NULL					/* what_provides */
++	NULL, 					/* what_provides */
++	NULL					/* repos_ping */
+ );
+ 
+diff --git a/src/pk-backend-internal.h b/src/pk-backend-internal.h
+index 2bffaff..f46159c 100644
+--- a/src/pk-backend-internal.h
++++ b/src/pk-backend-internal.h
+@@ -71,6 +71,8 @@ PkGroupEnum	 pk_backend_get_groups			(PkBackend	*backend);
+ PkFilterEnum	 pk_backend_get_filters			(PkBackend	*backend);
+ PkRoleEnum	 pk_backend_get_actions			(PkBackend	*backend);
+ 
++PkNetworkEnum    pk_backend_repos_ping			(PkBackend      *backend);
++
+ G_END_DECLS
+ 
+ #endif /* __PK_BACKEND_INTERNAL_H */
+diff --git a/src/pk-backend.c b/src/pk-backend.c
+index 6efa55e..32ff276 100644
+--- a/src/pk-backend.c
++++ b/src/pk-backend.c
+@@ -165,6 +165,23 @@ pk_backend_get_filters (PkBackend *backend)
+ }
+ 
+ /**
++ */
++PkNetworkEnum    
++pk_backend_repos_ping (PkBackend      *backend) 
++{
++	g_return_val_if_fail (PK_IS_BACKEND (backend), PK_NETWORK_ENUM_UNKNOWN);
++	g_return_val_if_fail (backend->priv->locked != FALSE, PK_NETWORK_ENUM_UNKNOWN);
++
++	/* not compulsory */
++	if (backend->desc->repos_ping == NULL) {
++		return PK_NETWORK_ENUM_UNKNOWN;
++	}
++
++	pk_debug("Runing backend's repos_ping\n");
++	return backend->desc->repos_ping (backend);
++}
++
++/**
+  * pk_backend_get_actions:
+  **/
+ PkRoleEnum
+diff --git a/src/pk-backend.h b/src/pk-backend.h
+index a7ba754..1f41c6c 100644
+--- a/src/pk-backend.h
++++ b/src/pk-backend.h
+@@ -258,6 +258,7 @@ typedef struct {
+ 							 PkFilterEnum	 filters,
+ 							 PkProvidesEnum	 provides,
+ 							 const gchar	*search);
++	PkNetworkEnum	(*repos_ping) 			(PkBackend 	*backend);
+ 	gpointer	padding[10];
+ } PkBackendDesc;
+ 
+@@ -266,7 +267,7 @@ typedef struct {
+ 			   get_update_detail, get_updates, install_files, install_packages,		\
+ 			   install_signature, refresh_cache, remove_packages, repo_enable,		\
+ 			   repo_set_data, resolve, rollback, search_details, search_file, search_group,	\
+-			   search_name, service_pack, update_packages, update_system, what_provides)	\
++			   search_name, service_pack, update_packages, update_system, what_provides, repos_ping)	\
+ 	G_MODULE_EXPORT const PkBackendDesc pk_backend_desc = { 					\
+ 		description,		\
+ 		author,			\
+@@ -300,6 +301,7 @@ typedef struct {
+ 		update_packages,	\
+ 		update_system,		\
+ 		what_provides,		\
++		repos_ping, 		\
+ 		{0} 			\
+ 	}
+ 
+diff --git a/src/pk-engine.c b/src/pk-engine.c
+index 14ecf41..f9359f2 100644
+--- a/src/pk-engine.c
++++ b/src/pk-engine.c
+@@ -279,8 +279,11 @@ pk_engine_get_network_state (PkEngine *engine, gchar **state, GError **error)
+ {
+ 	PkNetworkEnum network;
+ 	g_return_val_if_fail (PK_IS_ENGINE (engine), FALSE);
+-	/* get the network state */
+-	network = pk_network_get_network_state (engine->priv->network);
++	network = pk_backend_repos_ping(engine->priv->backend);
++	if (network == PK_NETWORK_ENUM_UNKNOWN)  {
++		/* get the network state */
++		network = pk_network_get_network_state (engine->priv->network);
++	}
+ 	*state = g_strdup (pk_network_enum_to_text (network));
+ 	return TRUE;
+ }
