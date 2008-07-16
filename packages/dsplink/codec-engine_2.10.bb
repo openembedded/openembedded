@@ -46,6 +46,8 @@ do_configure() {
     for cfg in ${S}/examples/ti/sdo/ce/examples/apps/image_copy/package/cfg/*/*cfg ; do
         sed -i -e s:arm_v5t_le-:${TAGET_PREFIX}:g $cfg
     done
+
+    echo -n "${CFLAGS} -I${TITOOLSDIR}/${TIXDCTOOLSDIR}/packages -I${S}/packages -I${S}/cetools/packages" > ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/compiler.opt
 }
 
 do_compile() {
@@ -76,6 +78,9 @@ do_compile() {
            KERNEL_VERSION=${KERNEL_VERSION}    \
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
            AR="${KERNEL_AR}" 
+
+#	oe_runmake -C ${S}/examples/ti/sdo/ce/examples/apps
+
 }
 
 do_install() {
