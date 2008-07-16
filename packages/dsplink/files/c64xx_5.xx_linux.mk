@@ -35,8 +35,8 @@ USE_DISTRIBUTION := 1
 #   ----------------------------------------------------------------------------
 #   Base directory for the DSP OS
 #   ----------------------------------------------------------------------------
-BASE_INSTALL    := /opt/ti-tools
-BASE_SABIOS     := $(BASE_INSTALL)/bios
+BASE_INSTALL    := SEDME_TITOOLS_BASEPATH 
+BASE_SABIOS     := $(BASE_INSTALL)/SEDME_BIOSUNPACKDIR
 BASE_BUILDOS    := $(BASE_SABIOS)/packages/ti/bios
 
 #   ----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ XDCTOOLS_DIR    := $(BASE_SABIOS)/xdctools
 #   ----------------------------------------------------------------------------
 #   Base for code generation tools - compiler, linker, archiver etc.
 #   ----------------------------------------------------------------------------
-BASE_CGTOOLS    := $(BASE_INSTALL)/c6000/cgtools
+BASE_CGTOOLS    := $(BASE_INSTALL)/SEDME_CGTOOLSDIR
 BASE_CGTOOLSBIN := $(BASE_CGTOOLS)/bin
 
 #   ----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ CC_SW_REL       := -o3
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler
 #   ----------------------------------------------------------------------------
-STD_CC_FLAGS    := -q -pdr -pdv -pden -ml3 -mv6400 -d"CHIP_DM642"
+STD_CC_FLAGS    := SEDME_DSPFLAGS -d"CHIP_DM642"
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler when building an executable

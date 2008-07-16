@@ -11,6 +11,13 @@ S = "${WORKDIR}/dsplink_1_50/dsplink"
 # Needed for buildscripts
 export DSPLINK = "${S}"
 
+# Path to the dir where the TI tools are unpacked
+TITOOLSDIR ?= "/OE/TI"
+# Path under TITOOLSDIR where dspbios is unpacked 
+TIBIOSDIR ?= "bios_5_32_03"
+# Path under TITOOLSDIR where the dsp toolchain is unpacked
+TICGTOOLSDIR ?= "cg6x_6_1_2"
+
 DSPLINKPLATFORM ?= "Davinci"
 
 DSPLINKPLATFORM_omap5912osk = "OMAP"
@@ -48,6 +55,8 @@ KERNELARMFLAGS_armv7a = "-c -nostdinc -include $(BASE_OSINC)/linux/autoconf.h -i
                    -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux \
                    -D__KERNEL__ -mno-thumb-interwork   -msoft-float -fno-optimize-sibling-calls -g  -fno-stack-protector -Wno-pointer-sign -g -DUSE_UDEV=1 -DOS_LINUX -DLINUX_KERNEL"
 
+DSPFLAGS = "-q -pdr -pdv -pden -ml3 -mv64+ "
+
 export DSPLINKPLATFORM 
 export DSPLINKDSP
 
@@ -59,7 +68,7 @@ do_configure () {
 	sed -i 	-e s:SED_ME_SOURCEDIR:${S}:g \
 		-e s:SED_ME_GPPDISTRO:openembedded:g \
 		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
-		-e s:SED_ME_DSPDISTRO:openembedded:g \
+		-e s:SED_ME_DSPDISTRO:c64xx_5.xx_linux:g \
 		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
 		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
 		-e s:SED_ME_SOC:${DSPLINKSOC}:g \	
@@ -73,6 +82,11 @@ do_configure () {
 		-e 's:SEDME_USER_ARMFLAGS:${USERARMFLAGS}:g' \
 		${S}/make/Linux/openembedded.mk 
 
+	sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
+		-e s:SEDME_BIOSUNPACKDIR:${TIBIOSDIR}:g \	
+		-e s:SEDME_CGTOOLSDIR:${TICGTOOLSDIR}:g \	
+		-e 's:SEDME_DSPFLAGS:${DSPFLAGS}:g' \
+		${S}/make/DspBios/c64xx_5.xx_linux.mk
 }
 
 PARALLEL_MAKE = ""
