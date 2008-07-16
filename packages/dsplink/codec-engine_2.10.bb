@@ -13,11 +13,33 @@ PV = "2.10"
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/CE/index.html
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
-"
+           file://xdcpaths.mak \
+          "
 
 S = "${WORKDIR}/codec_engine_2_10_01"
 
+# Path to the dir where the TI tools are unpacked
+TITOOLSDIR ?= "/OE/TI"
+# Path under TITOOLSDIR where dspbios is unpacked
+TIBIOSDIR ?= "bios_5_32_03"
+TIXDCTOOLSDIR ?= "${TIBIOSDIR}/xdctools"
+# Path under TITOOLSDIR where the dsp toolchain is unpacked
+TICGTOOLSDIR ?= "cg6x_6_1_2"
+
 PARALLEL_MAKE = ""
+
+do_configure() {
+    cp ${WORKDIR}/xdcpaths.mak ${S}/examples/
+    sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
+        -e s:SEDME_BIOSUNPACKDIR:${TITOOLSDIR}/${TIBIOSDIR}:g \
+        -e 's:SEDME_S:${S}:g' \
+        -e s:SEDME_XDCTOOLSUNPACKDIR:${TIXDCTOOLSDIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
+        -e s:bin/arm_v5t_le-gcc:bin/${TARGET_PREFIX}gcc:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TICGTOOLSDIR}:g \
+        ${S}/examples/xdcpaths.mak
+}
+
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
