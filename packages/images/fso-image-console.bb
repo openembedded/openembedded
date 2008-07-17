@@ -9,5 +9,5 @@ IMAGE_INSTALL = "\
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
-  frameworkd \
 "
+

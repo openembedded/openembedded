@@ -7,7 +7,7 @@ DEPENDS += "popt"
 
 inherit autotools
 
-SRC_URI = "http://rsync.samba.org/ftp/rsync/old-versions/rsync-${PV}.tar.gz"
+SRC_URI = "http://rsync.samba.org/ftp/rsync/src/rsync-${PV}.tar.gz"
 
 EXTRA_OEMAKE='STRIP=""'
 

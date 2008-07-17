@@ -41,9 +41,11 @@ X_INSTALL = "\
 TOOLS_INSTALL = "\
 #  bash \
   htop \
+  iptables \
   lsof \
   mickeydbus \
   mickeyterm \
+  mtd-utils \
   nano \
   powertop \
   s3c24xx-gpio \
@@ -96,7 +98,7 @@ IMAGE_INSTALL = "\
 inherit image
 
 # perform some convenience tweaks to the rootfs
-mickey_rootfs_postprocess() {
+fso_rootfs_postprocess() {
     curdir=$PWD
     cd ${IMAGE_ROOTFS}
     date "+%m%d%H%M%Y" >./etc/timestamp
@@ -110,4 +112,4 @@ mickey_rootfs_postprocess() {
     cd $curdir
 }
 
-ROOTFS_POSTPROCESS_COMMAND += "mickey_rootfs_postprocess"
+ROOTFS_POSTPROCESS_COMMAND += "fso_rootfs_postprocess"
