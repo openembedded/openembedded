@@ -1,0 +1,32 @@
+diff -Naur liboil-0.3.14-org/liboil/liboilcpu-powerpc.c liboil-0.3.14/liboil/liboilcpu-powerpc.c
+--- liboil-0.3.14-org/liboil/liboilcpu-powerpc.c	2008-03-13 08:22:52.000000000 +0100
++++ liboil-0.3.14/liboil/liboilcpu-powerpc.c	2008-07-14 11:50:17.000000000 +0200
+@@ -35,7 +35,10 @@
+ #include <liboil/liboilutils.h>
+ 
+ #if defined(__linux__)
++#include <linux/version.h>
++#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,13)
+ #include <linux/auxvec.h>
++#endif
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -101,7 +104,7 @@
+ }
+ #endif
+ 
+-#if defined(__linux__)
++#if defined(__linux__) && LINUX_VERSION_CODE > KERNEL_VERSION(2,6,13)
+ static void
+ oil_check_altivec_proc_auxv (void)
+ {
+@@ -169,7 +172,7 @@
+   oil_check_altivec_sysctl_freebsd();
+ #elif defined(__APPLE__)
+   oil_check_altivec_sysctl_darwin();
+-#elif defined(__linux__)
++#elif defined(__linux__) && LINUX_VERSION_CODE > KERNEL_VERSION(2,6,13)
+   oil_check_altivec_proc_auxv();
+ #else
+   oil_check_altivec_fault();
