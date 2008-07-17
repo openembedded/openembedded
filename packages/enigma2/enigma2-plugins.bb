@@ -25,6 +25,13 @@ inherit autotools
 
 S = "${WORKDIR}/enigma2-plugins"
 
+DEPENDS = "${@get_version_depends(bb, d)}"
+
+def get_version_depends(bb, d):
+	if bb.data.getVar('REL_MINOR', d, 1) > '4':
+		return "python-pyopenssl"
+	return ""
+
 python populate_packages_prepend () {
 	enigma2_plugindir = bb.data.expand('${libdir}/enigma2/python/Plugins', d)
 
