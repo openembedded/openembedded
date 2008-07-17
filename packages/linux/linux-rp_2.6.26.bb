@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
@@ -35,6 +35,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            ${RPSRC}/poodle_pm-r6.patch;patch=1 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
+           file://zaurus-i2c-init.patch;patch=1;status=upstream \
            ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
