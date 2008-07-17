@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index 8bfc891..e9bf61a 100644
+index e557d0d..3eac691 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -141,7 +141,7 @@ ifeq ($(ARCH),ppc)
@@ -11,7 +11,7 @@ index 8bfc891..e9bf61a 100644
  endif
  ifeq ($(ARCH),i386)
  CROSS_COMPILE = i386-linux-
-@@ -252,7 +252,7 @@ LIBBOARD = board/$(BOARDDIR)/lib$(BOARD).a
+@@ -253,7 +253,7 @@ LIBBOARD = board/$(BOARDDIR)/lib$(BOARD).a
  LIBBOARD := $(addprefix $(obj),$(LIBBOARD))
  
  # Add GCC lib
@@ -20,7 +20,7 @@ index 8bfc891..e9bf61a 100644
  
  # The "tools" are needed early, so put this first
  # Don't include stuff already done in $(LIBS)
-@@ -2565,6 +2565,12 @@ SMN42_config	:	unconfig
+@@ -2569,6 +2569,12 @@ SMN42_config	:	unconfig
  	@$(MKCONFIG) $(@:_config=) arm arm720t SMN42 siemens lpc2292
  
  #########################################################################
@@ -1467,10 +1467,10 @@ index 0000000..2f94684
 +#endif /* (CONFIG_COMMANDS & CFG_CMD_NAND) */
 diff --git a/board/omap3530beagle/omap3530beagle.c b/board/omap3530beagle/omap3530beagle.c
 new file mode 100644
-index 0000000..0bdfb72
+index 0000000..7d9a566
 --- /dev/null
 +++ b/board/omap3530beagle/omap3530beagle.c
-@@ -0,0 +1,390 @@
+@@ -0,0 +1,388 @@
 +/*
 + * (C) Copyright 2004-2008
 + * Texas Instruments, <www.ti.com>
@@ -1740,8 +1740,6 @@ index 0000000..0bdfb72
 +	*((uint *) 0x49058094) = 0x00000506;
 +	*((uint *) 0x49056094) = 0xF060F000;
 +
-+	/* set clksel_tv and clksel_dss1 */
-+	*((uint *) 0x48004E40) = 0x00001002;
 +	return (0);
 +}
 +
@@ -2323,19 +2321,60 @@ index 0000000..72f15f6
 +	.bss : { *(.bss) }
 +	_end = .;
 +}
-diff --git a/common/env_nand.c b/common/env_nand.c
-index a48e98e..8b04a01 100644
---- a/common/env_nand.c
-+++ b/common/env_nand.c
-@@ -231,6 +231,8 @@ int saveenv(void)
- 	size_t total;
- 	int ret = 0;
+diff --git a/common/cmd_nand.c b/common/cmd_nand.c
+index 9e38bf7..0ae362c 100644
+--- a/common/cmd_nand.c
++++ b/common/cmd_nand.c
+@@ -37,6 +37,12 @@ int find_dev_and_part(const char *id, struct mtd_device **dev,
+ 		u8 *part_num, struct part_info **part);
+ #endif
  
-+	nand_erase_options_t nand_erase_options;
++#if defined(CONFIG_OMAP) && (defined(CONFIG_OMAP3_BEAGLE))
++extern void omap_nand_switch_ecc(nand_info_t *nand, int hardware);
++#else
++#define omap_nand_switch_ecc(x, y) do {} while(0)
++#endif
 +
- 	nand_erase_options.length = CFG_ENV_RANGE;
- 	nand_erase_options.quiet = 0;
- 	nand_erase_options.jffs2 = 0;
+ static int nand_dump_oob(nand_info_t *nand, ulong off)
+ {
+ 	return 0;
+@@ -222,7 +228,7 @@ int do_nand(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
+ 	    strncmp(cmd, "dump", 4) != 0 &&
+ 	    strncmp(cmd, "read", 4) != 0 && strncmp(cmd, "write", 5) != 0 &&
+ 	    strcmp(cmd, "scrub") != 0 && strcmp(cmd, "markbad") != 0 &&
+-	    strcmp(cmd, "biterr") != 0 &&
++	    strcmp(cmd, "biterr") != 0 && strncmp(cmd, "ecc", 3) != 0 &&
+ 	    strcmp(cmd, "lock") != 0 && strcmp(cmd, "unlock") != 0 )
+ 		goto usage;
+ 
+@@ -307,6 +313,19 @@ int do_nand(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
+ 
+ 	}
+ 
++	if (strncmp(cmd, "ecc", 3) == 0) {
++		if (argc < 2)
++			goto usage;
++		if (strncmp(argv[2], "hw", 2) == 0)
++			omap_nand_switch_ecc(nand, 1);
++		else if (strncmp(argv[2], "sw", 2) == 0)
++			omap_nand_switch_ecc(nand, 0);
++		else
++			goto usage;
++
++		return 0;
++	}
++
+ 	/* read write */
+ 	if (strncmp(cmd, "read", 4) == 0 || strncmp(cmd, "write", 5) == 0) {
+ 		int read;
+@@ -472,6 +491,7 @@ U_BOOT_CMD(nand, 5, 1, do_nand,
+ 	"nand scrub - really clean NAND erasing bad blocks (UNSAFE)\n"
+ 	"nand markbad off - mark bad block at offset (UNSAFE)\n"
+ 	"nand biterr off - make a bit error at offset (UNSAFE)\n"
++	"nand ecc [hw/sw] - switch the ecc calculation algorithm \n"
+ 	"nand lock [tight] [status] - bring nand to lock state or display locked pages\n"
+ 	"nand unlock [offset] [size] - unlock section\n");
+ 
 diff --git a/cpu/omap3/Makefile b/cpu/omap3/Makefile
 new file mode 100644
 index 0000000..097447a
@@ -4122,10 +4161,10 @@ index 7dab786..7782e9d 100644
  			udelay(1000);
  		}else
 diff --git a/fs/jffs2/jffs2_1pass.c b/fs/jffs2/jffs2_1pass.c
-index 7e27ee1..e552e08 100644
+index d1423c1..a75c606 100644
 --- a/fs/jffs2/jffs2_1pass.c
 +++ b/fs/jffs2/jffs2_1pass.c
-@@ -303,7 +303,9 @@ static inline void *get_node_mem_nor(u32 off)
+@@ -304,7 +304,9 @@ static inline void *get_node_mem_nor(u32 off)
   */
  static inline void *get_fl_mem(u32 off, u32 size, void *ext_buf)
  {
@@ -4135,7 +4174,7 @@ index 7e27ee1..e552e08 100644
  
  #if defined(CONFIG_CMD_FLASH)
  	if (id->type == MTD_DEV_TYPE_NOR)
-@@ -321,7 +323,9 @@ static inline void *get_fl_mem(u32 off, u32 size, void *ext_buf)
+@@ -322,7 +324,9 @@ static inline void *get_fl_mem(u32 off, u32 size, void *ext_buf)
  
  static inline void *get_node_mem(u32 off)
  {
@@ -4270,7 +4309,7 @@ index 0000000..7cdd58c
 +#endif
 diff --git a/include/asm-arm/arch-omap3/clocks_omap3.h b/include/asm-arm/arch-omap3/clocks_omap3.h
 new file mode 100644
-index 0000000..9bb4700
+index 0000000..fdb0c4c
 --- /dev/null
 +++ b/include/asm-arm/arch-omap3/clocks_omap3.h
 @@ -0,0 +1,101 @@
@@ -4319,7 +4358,7 @@ index 0000000..9bb4700
 +/* PER DPLL */
 +# define PER_M6X2       3	/* 288MHz: CM_CLKSEL1_EMU */
 +# define PER_M5X2       4	/* 216MHz: CM_CLKSEL_CAM */
-+# define PER_M4X2       9	/* 96MHz : CM_CLKSEL_DSS-dss1 */
++# define PER_M4X2       2	/* 432MHz : CM_CLKSEL_DSS-dss1 */
 +# define PER_M3X2       16	/* 54MHz : CM_CLKSEL_DSS-tv */
 +
 +#  define CLSEL1_EMU_VAL ((CORE_M3X2 << 16) | (PER_M6X2 << 24) | (0x0a50))
@@ -5406,7 +5445,7 @@ index 0000000..37aaa08
 +#endif /* MMC_HOST_DEF_H */
 diff --git a/include/asm-arm/arch-omap3/mux.h b/include/asm-arm/arch-omap3/mux.h
 new file mode 100644
-index 0000000..33947b9
+index 0000000..ec4aeb0
 --- /dev/null
 +++ b/include/asm-arm/arch-omap3/mux.h
 @@ -0,0 +1,757 @@
@@ -6046,8 +6085,8 @@ index 0000000..33947b9
 +	MUX_VAL(CP(HSUSB0_DATA7),   (IEN  | PTD | DIS | M0)) /*HSUSB0_DATA7*/\
 +	MUX_VAL(CP(I2C1_SCL),       (IEN  | PTU | EN  | M0)) /*I2C1_SCL*/\
 +	MUX_VAL(CP(I2C1_SDA),       (IEN  | PTU | EN  | M0)) /*I2C1_SDA*/\
-+	MUX_VAL(CP(I2C2_SCL),       (IDIS | PTU | DIS | M4)) /*GPIO_168*/\
-+	MUX_VAL(CP(I2C2_SDA),       (IEN  | PTU | EN  | M4)) /*GPIO_183*/\
++	MUX_VAL(CP(I2C2_SCL),       (IEN  | PTU | EN  | M0)) /*I2C2_SCL*/\
++	MUX_VAL(CP(I2C2_SDA),       (IEN  | PTU | EN  | M0)) /*I2C2_SDA*/\
 +	MUX_VAL(CP(I2C3_SCL),       (IEN  | PTU | EN  | M0)) /*I2C3_SCL*/\
 +	MUX_VAL(CP(I2C3_SDA),       (IEN  | PTU | EN  | M0)) /*I2C3_SDA*/\
 +	MUX_VAL(CP(I2C4_SCL),       (IEN  | PTU | EN  | M0)) /*I2C4_SCL*/\
@@ -6376,7 +6415,7 @@ index 0000000..271b554
 +#endif
 diff --git a/include/configs/omap3530beagle.h b/include/configs/omap3530beagle.h
 new file mode 100644
-index 0000000..fd21ab3
+index 0000000..20efbf3
 --- /dev/null
 +++ b/include/configs/omap3530beagle.h
 @@ -0,0 +1,292 @@
@@ -6532,9 +6571,9 @@ index 0000000..fd21ab3
 +/* Environment information */
 +#define CONFIG_BOOTDELAY         10
 +
-+#define CONFIG_BOOTCOMMAND "mmcinit;fatload mmc 0 0x80300000 uImage; fatload mmc 0 0x81600000 rd-ext2.bin; bootm 0x80300000\0"
++#define CONFIG_BOOTCOMMAND "nand read 80200000 280000 400000 ; bootm 80200000"
 +
-+#define CONFIG_BOOTARGS "setenv bootargs console=ttyS2,115200n8 ramdisk_size=3072 root=/dev/ram0 rw rootfstype=ext2 initrd=0x81600000,3M "
++#define CONFIG_BOOTARGS "setenv bootargs console=ttyS2,115200n8 noinitrd root=/dev/mtdblock4 rw rootfstype=jffs2"
 +
 +#define CONFIG_NETMASK           255.255.254.0
 +#define CONFIG_IPADDR            128.247.77.90

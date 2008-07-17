@@ -1,6 +1,6 @@
 DESCRIPTION = "Shows the GSM / GPRS status in the Openmoko panel"
-DEPENDS = "libgsmd libnotify"
+DEPENDS = "libmokogsmd2 libnotify"
 PV = "0.1.0+svn${SVNREV}"
-PR = "r1"
+PR = "r2"
 
 inherit openmoko-panel-plugin

@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r2"
+PR = "r4"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -13,9 +13,42 @@ PV = "2.10"
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/CE/index.html
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
-"
+           file://xdcpaths.mak \
+          "
 
 S = "${WORKDIR}/codec_engine_2_10_01"
+
+# Path to the dir where the TI tools are unpacked
+TITOOLSDIR ?= "/OE/TI"
+# Path under TITOOLSDIR where dspbios is unpacked
+TIBIOSDIR ?= "bios_5_32_03"
+TIXDCTOOLSDIR ?= "${TIBIOSDIR}/xdctools"
+# Path under TITOOLSDIR where the dsp toolchain is unpacked
+TICGTOOLSDIR ?= "cg6x_6_1_2"
+
+PARALLEL_MAKE = ""
+
+do_configure() {
+    cp ${WORKDIR}/xdcpaths.mak ${S}/examples/
+    sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
+        -e s:SEDME_BIOSUNPACKDIR:${TITOOLSDIR}/${TIBIOSDIR}:g \
+        -e 's:SEDME_S:${S}:g' \
+        -e s:SEDME_XDCTOOLSUNPACKDIR:${TITOOLSDIR}/${TIXDCTOOLSDIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
+        -e s:bin/arm_v5t_le-gcc:bin/${TARGET_PREFIX}gcc:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
+        ${S}/examples/xdcpaths.mak
+
+    sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
+        ${S}/examples/user.bld
+
+    for cfg in ${S}/examples/ti/sdo/ce/examples/apps/image_copy/package/cfg/*/*cfg ; do
+        sed -i -e s:arm_v5t_le-:${TAGET_PREFIX}:g $cfg
+    done
+
+    echo -n "${CFLAGS} -I${TITOOLSDIR}/${TIXDCTOOLSDIR}/packages -I${S}/packages -I${S}/cetools/packages" > ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/compiler.opt
+}
 
 do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
@@ -45,6 +78,9 @@ do_compile() {
            KERNEL_VERSION=${KERNEL_VERSION}    \
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
            AR="${KERNEL_AR}" 
+
+#	oe_runmake -C ${S}/examples/ti/sdo/ce/examples/apps
+
 }
 
 do_install() {
@@ -55,6 +91,18 @@ do_install() {
 		mv ${D}/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 		install -d ${D}/${base_sbindir}
 		cd ${D} ; mv apitest apitestd multi_process multi_processd translate translated ${D}/${base_sbindir}		
+
+		install -d ${D}/${libdir}
+		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
+			install -m 0755 $i ${D}/${libdir}/
+		done
+}
+
+do_stage() {
+		install -d ${STAGING_LIBDIR}	
+		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
+			install -m 0755 $i ${STAGING_LIBDIR}/
+		done
 }
 
 pkg_postinst_${PN}-module () {
@@ -71,6 +119,7 @@ pkg_postrm_${PN}-module () {
 
 PACKAGES =+ "dsplink-cmemk-module"
 FILES_dsplink-cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*ko"
+INHIBIT_PACKAGE_STRIP = "1"
 
 FILES_${PN} = "${base_sbindir}"
 

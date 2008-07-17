@@ -15,7 +15,8 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-settings \
     ${ANGSTROM_EXTRA_INSTALL} \
     angstrom-zeroconf-audio \
-    gpe-scap \
+   	angstrom-led-config \ 
+	gpe-scap \
     psplash \
     e-wm exhibit \
     xterm xmms epiphany-firefox-replacement \

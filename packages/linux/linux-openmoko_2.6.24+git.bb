@@ -3,16 +3,21 @@ require linux-openmoko.inc
 
 DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ Openmoko"
 
-PE = "1"
-PV = "${KERNEL_RELEASE}+git${SRCREV}"
+PV = "${KERNEL_RELEASE}+gitr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable"
+SRC_URI = "git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
+           file://0001-squashfs-with-lzma.patch;patch=1 \
+	   file://0002-squashfs-initrd.patch;patch=1 \
+	   file://0003-squashfs-force-O2.patch;patch=1 \
+	   file://0004-squashfs-Kconfig.patch;patch=1 \
+	   file://0005-squashfs-Makefile.patch;patch=1"
 
 S = "${WORKDIR}/git"
 
 do_configure_prepend() {
         cp -f ${S}/defconfig-${CONFIG_NAME} ${WORKDIR}/defconfig
+	echo CONFIG_SQUASHFS=m >>${WORKDIR}/defconfig
 }
 
 ##############################################################

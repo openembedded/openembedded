@@ -1,12 +1,9 @@
 /*
- *  Copyright(C) 2005 Neuros Technology International LLC. 
- *               <www.neurostechnology.com>
+ * Copyright (C) 2006 - 2008 Neuros Technology LLC.
  *
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; only support version 2 of the License.
  *
  *  This program is distributed in the hope that, in addition to its 
  *  original purpose to support Neuros hardware, it will be useful 
@@ -380,7 +377,7 @@ int main(int argc, char *argv[])
     package_header_t *phd = &p_head;
     struct stat buf;
 
-    printf("\npackage tool version %s ", VERSION);
+    printf("\npackage tool version %s \n", VERSION);
 
     strncpy((char *)phd->p_name, argv[1], NAMELEN-1);
     if ((fp_w = fopen((char *)phd->p_name, "wb+")) == NULL)

@@ -7,7 +7,6 @@ PR = "r2"
 
 QTVER = "qtopia-core-opensource-src-${QTVERSION}"
 
-FILESDIR += "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qmake2-native"
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.gz \
            file://0001-fix-mkspecs.patch;patch=1 \
            file://0008-backport-qt-lib-infix.patch;patch=1 \
@@ -18,7 +17,7 @@ S = "${WORKDIR}/${QTVER}"
 
 # we need the real target system here
 CROSS_SYS := "${TARGET_SYS}"
-inherit autotools cross 
+inherit autotools  
 
 export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
@@ -63,6 +62,3 @@ do_stage() {
     cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
 }
 
-do_install() {
-    :
-}

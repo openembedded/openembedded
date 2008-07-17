@@ -1,12 +1,12 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r5"
+PR = "r6"
 
 inherit task
 
 RDEPENDS_${PN} = "\
             coreutils \
 	    findutils \
-	    util-linux \
+	    util-linux-ng \
 	    gawk \
 	    sed \
 	    wget \

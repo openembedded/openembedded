@@ -31,8 +31,6 @@ setenv console console=ttyS0,115200n8
 
 setenv mem_reserve mem=200M
 
-setenv video_params video=davincifb:output=ntsc:format=composite
-
 setenv ip ip=\192.168.1.100:\192.168.1.1:\192.168.1.1:\255.255.255.0:\neuros::off
 
 setenv nfs_mount_params udp,v3,rsize=4096,wsize=4096
