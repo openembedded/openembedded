@@ -7,17 +7,15 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
-RV = "1.0-0"
-PR = "r5"
 
 SRC_URI = " \
     http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
     file://fix-pkgconfig-cflags.patch;patch=1 \
     file://fix-font-missing-char.patch;patch=1 \
     file://getpagesize.patch;patch=1 \
-    file://fix-includes.patch;patch=1 \
     file://mkdfiff.patch;patch=1 \
     file://dont-use-linux-config.patch;patch=1 \
+    file://ts_lib_autotools.patch;patch=1 \
 "
 S = "${WORKDIR}/DirectFB-${PV}"
 
