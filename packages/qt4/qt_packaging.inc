@@ -3,6 +3,7 @@ NONDEV_PACKAGES += "${QT_BASE_LIB}core4 ${QT_BASE_LIB}gui4 ${QT_BASE_LIB}network
              ${QT_BASE_LIB}designer4 ${QT_BASE_LIB}designercomponents4 \
              ${QT_BASE_LIB}3support4 ${QT_BASE_LIB}assistantclient4 ${QT_BASE_LIB}script4 \
              ${QT_BASE_LIB}dbus4 ${QT_BASE_LIB}opengl4 \
+             ${QT_BASE_LIB}help ${QT_BASE_LIB}clucene ${QT_BASE_LIB}webkit \
              ${QT_BASE_NAME}-assistant ${QT_BASE_NAME}-common \
              ${QT_BASE_NAME}-designer \
              ${QT_BASE_NAME}-demos ${QT_BASE_NAME}-examples \
@@ -24,7 +25,11 @@ DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
              ${QT_BASE_LIB}script4-dev \
              ${QT_BASE_LIB}dbus4-dev \
              ${QT_BASE_LIB}opengl4-dev \
-             ${QT_BASE_LIB}uitools4-dev"
+             ${QT_BASE_LIB}uitools4-dev \
+             ${QT_BASE_LIB}help-dev \
+             ${QT_BASE_LIB}clucene-dev \
+             ${QT_BASE_LIB}webkit-dev \
+             "
 
 DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}gui4-dbg \
@@ -39,7 +44,11 @@ DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}assistantclient4-dbg \
              ${QT_BASE_LIB}script4-dbg \
              ${QT_BASE_LIB}dbus4-dbg \
-             ${QT_BASE_LIB}opengl4-dbg"
+             ${QT_BASE_LIB}opengl4-dbg \
+             ${QT_BASE_LIB}help-dbg \
+             ${QT_BASE_LIB}clucene-dbg \
+             ${QT_BASE_LIB}webkit-dbg \
+             "
 
 
 PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
@@ -48,9 +57,9 @@ ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
 FILES_${PN}-dbg = "${bindir}/*/.debug "
-RDEPENDS_${PN} = "${NONDEV_PACKAGES}"
-RDEPENDS_${PN}-dev = "${DEV_PACKAGES}"
-RDEPENDS_${PN}-dbg = "${DBG_PACKAGES}"
+RRECOMMENDS_${PN} = "${NONDEV_PACKAGES}"
+RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
+RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
 
 def qt_default_dev(name):
     return """${libdir}/libQt%(name)s${QT_LIBINFIX}.la
@@ -103,7 +112,15 @@ FILES_${QT_BASE_LIB}opengl4                 = "${libdir}/libQtOpenGL${QT_LIBINFI
 FILES_${QT_BASE_LIB}opengl4-dev             = "${@qt_default_dev('OpenGL')}"
 FILES_${QT_BASE_LIB}opengl4-dbg             = "${libdir}/.debug/libQtOpenGL*"
 FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/QtUiTools${QT_LIBINFIX}.pc"
-
+FILES_${QT_BASE_LIB}help                    = "${libdir}/libQtHelp${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}help-dev                = "${@qt_default_dev('Help')}"
+FILES_${QT_BASE_LIB}help-dbg                = "${libdir}/.debug/libQtHelp*"
+FILES_${QT_BASE_LIB}clucene                 = "${libdir}/libQtCLucene${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}clucene-dev             = "${@qt_default_dev('CLucene')}"
+FILES_${QT_BASE_LIB}clucene-dbg             = "${libdir}/.debug/libQtCLucene*"
+FILES_${QT_BASE_LIB}webkit                  = "${libdir}/libQtWebKit${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}webkit-dev              = "${@qt_default_dev('WebKit')}"
+FILES_${QT_BASE_LIB}webkit-dbg              = "${libdir}/.debug/libQtWebKit*"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
@@ -120,11 +137,11 @@ FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
 python populate_packages_prepend() {
 	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
 	translation_name = bb.data.expand('${QT_BASE_NAME}-translation-%s', d)
-	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '{PN} translation for %s', extra_depends='' )
+	do_split_packages(d, translation_dir, '^qt_(.*)\.qm$', translation_name, '${PN} translation for %s', extra_depends='' )
 
 	phrasebook_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/phrasebooks/', d)
 	phrasebook_name = bb.data.expand('${QT_BASE_NAME}-phrasebook-%s', d)
-	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '{PN} phrasebook for %s', extra_depends='' )
+	do_split_packages(d, phrasebook_dir, '^(.*)\.qph$', phrasebook_name, '${PN} phrasebook for %s', extra_depends='' )
 
 	# Package all the plugins and their -dbg version and create a meta package
 	import os
@@ -141,7 +158,7 @@ python populate_packages_prepend() {
             plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
             dev_packages = []
             dev_hook = lambda file,pkg,b,c,d:dev_packages.append((file,pkg))
-            do_split_packages(d, plugin_dir,     glob, plugin_name,     '{PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
+            do_split_packages(d, plugin_dir,     glob, plugin_name,     '${PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
             # Create a -dbg package as well
             plugin_dir_dbg     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug' % path, d)
             packages = bb.data.getVar('PACKAGES',d)
@@ -149,7 +166,7 @@ python populate_packages_prepend() {
                 packages = "%s %s-dbg" % (packages, package)
                 file_name = os.path.join(plugin_dir_dbg, os.path.basename(file))
                 bb.data.setVar("FILES_%s-dbg" % package, file_name, d)
-                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "{PN} %s for %s" % (name, package), d) 
+                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "${PN} %s for %s" % (name, package), d) 
 
             bb.data.setVar('PACKAGES', packages, d)
 

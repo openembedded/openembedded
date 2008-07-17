@@ -3,9 +3,10 @@ require classpath.inc
 SRC_URI += "\
   file://gjar-prefix-patch.diff;patch=1;pnum=0 \
   file://xmlstream-fix.patch;patch=1;pnum=0 \
+  file://javanet-local.patch;patch=1;pnum=0 \
   "
 
-PR = "r5"
+PR = "r6"
 
 DEPENDS += "gtk+ gconf libxtst"
 

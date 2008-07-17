@@ -1,0 +1,254 @@
+This is a multi-part message in MIME format.
+--------------010700040803000401040503
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+When I was going through OProfile to compile using GCC-4.3 I found a number of 
+include that needed to be added. Information about porting applications to 
+GCC-4.3 is on:
+
+http://gcc.gnu.org/gcc-4.3/porting_to.html
+
+The attached patch has required changes to successfully compile with GCC 4.3. I 
+have tested that the oprofile still builds on Fedora 8 and RHEL 4 machines. 
+However, I haven't tested on older distrobutions. Does anyone see a problem with 
+this patch on older systems? If not, I would like to check this in.
+
+-Will
+
+2008-02-15  Will Cohen  <wcohen@redhat.com>
+
+	* gui/oprof_start_util.cpp
+	* libutil++/file_manip.cpp
+	* libutil++/bfd_support.cpp
+	* libutil++/bfd_spu_support.cpp
+	* libutil++/op_spu_bfd.cpp
+	* libutil++/cverb.cpp
+	* libutil++/child_reader.cpp
+	* pp/opgprof_options.cpp
+	* pp/opannotate_options.cpp
+	* pp/oparchive.cpp
+	* pp/common_option.cpp
+	* libpp/sample_container.cpp
+	* libpp/op_header.cpp
+	* libpp/profile.cpp
+	* libabi/opimport.cpp
+	* libregex/demangle_symbol.cpp: Add includes for gcc 4.3 compatibility.
+
+--------------010700040803000401040503
+Content-Type: text/x-patch;
+ name="oprofile_gcc43.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="oprofile_gcc43.patch"
+
+diff -up oprofile-gcc43/pp/oparchive.cpp.orig oprofile-gcc43/pp/oparchive.cpp
+--- oprofile-gcc43/pp/oparchive.cpp.orig	2007-11-20 15:47:00.000000000 -0500
++++ oprofile-gcc43/pp/oparchive.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -12,6 +12,7 @@
+ 
+ #include <iostream>
+ #include <fstream>
++#include <cstdlib>
+ 
+ #include <errno.h>
+ #include <string.h>
+diff -up oprofile-gcc43/pp/opgprof_options.cpp.orig oprofile-gcc43/pp/opgprof_options.cpp
+--- oprofile-gcc43/pp/opgprof_options.cpp.orig	2007-11-20 15:47:00.000000000 -0500
++++ oprofile-gcc43/pp/opgprof_options.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -13,6 +13,7 @@
+ #include <list>
+ #include <iterator>
+ #include <iostream>
++#include <cstdlib>
+ 
+ #include "opgprof_options.h"
+ #include "popt_options.h"
+diff -up oprofile-gcc43/pp/common_option.cpp.orig oprofile-gcc43/pp/common_option.cpp
+--- oprofile-gcc43/pp/common_option.cpp.orig	2007-11-20 15:46:59.000000000 -0500
++++ oprofile-gcc43/pp/common_option.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -12,6 +12,7 @@
+ #include <iostream>
+ #include <sstream>
+ #include <iterator>
++#include <cstdlib>
+ 
+ #include "op_config.h"
+ #include "locate_images.h"
+diff -up oprofile-gcc43/pp/opannotate_options.cpp.orig oprofile-gcc43/pp/opannotate_options.cpp
+--- oprofile-gcc43/pp/opannotate_options.cpp.orig	2008-02-13 13:57:22.000000000 -0500
++++ oprofile-gcc43/pp/opannotate_options.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -13,6 +13,7 @@
+ #include <list>
+ #include <iterator>
+ #include <iostream>
++#include <cstdlib>
+ 
+ #include "profile_spec.h"
+ #include "arrange_profiles.h"
+diff -up oprofile-gcc43/libregex/demangle_symbol.cpp.orig oprofile-gcc43/libregex/demangle_symbol.cpp
+--- oprofile-gcc43/libregex/demangle_symbol.cpp.orig	2007-06-03 12:50:17.000000000 -0400
++++ oprofile-gcc43/libregex/demangle_symbol.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -8,6 +8,8 @@
+  * @author John Levon
+  */
+ 
++#include <cstdlib>
++
+ #include "config.h"
+ 
+ #include "demangle_symbol.h"
+diff -up oprofile-gcc43/libpp/sample_container.cpp.orig oprofile-gcc43/libpp/sample_container.cpp
+--- oprofile-gcc43/libpp/sample_container.cpp.orig	2003-08-10 20:59:18.000000000 -0400
++++ oprofile-gcc43/libpp/sample_container.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -9,6 +9,7 @@
+  * @author John Levon
+  */
+ 
++#include <climits>
+ #include <set>
+ #include <numeric>
+ #include <algorithm>
+diff -up oprofile-gcc43/libpp/profile.cpp.orig oprofile-gcc43/libpp/profile.cpp
+--- oprofile-gcc43/libpp/profile.cpp.orig	2007-11-12 16:56:07.000000000 -0500
++++ oprofile-gcc43/libpp/profile.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -15,6 +15,7 @@
+ #include <iostream>
+ #include <string>
+ #include <sstream>
++#include <cstring>
+ 
+ #include <cerrno>
+ 
+diff -up oprofile-gcc43/libpp/op_header.cpp.orig oprofile-gcc43/libpp/op_header.cpp
+--- oprofile-gcc43/libpp/op_header.cpp.orig	2007-11-12 16:56:07.000000000 -0500
++++ oprofile-gcc43/libpp/op_header.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -14,6 +14,7 @@
+ #include <iomanip>
+ #include <set>
+ #include <sstream>
++#include <cstring>
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff -up oprofile-gcc43/libabi/opimport.cpp.orig oprofile-gcc43/libabi/opimport.cpp
+--- oprofile-gcc43/libabi/opimport.cpp.orig	2005-08-17 15:15:41.000000000 -0400
++++ oprofile-gcc43/libabi/opimport.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -17,6 +17,8 @@
+ #include <iostream>
+ #include <vector>
+ #include <cassert>
++#include <cstring>
++#include <cstdlib>
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff -up oprofile-gcc43/gui/oprof_start_util.cpp.orig oprofile-gcc43/gui/oprof_start_util.cpp
+--- oprofile-gcc43/gui/oprof_start_util.cpp.orig	2005-08-07 07:15:48.000000000 -0400
++++ oprofile-gcc43/gui/oprof_start_util.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -19,6 +19,7 @@
+ #include <sstream>
+ #include <iostream>
+ #include <fstream>
++#include <cstdlib>
+ 
+ #include <qfiledialog.h>
+ #include <qmessagebox.h>
+diff -up oprofile-gcc43/libutil++/file_manip.cpp.orig oprofile-gcc43/libutil++/file_manip.cpp
+--- oprofile-gcc43/libutil++/file_manip.cpp.orig	2007-11-12 16:56:07.000000000 -0500
++++ oprofile-gcc43/libutil++/file_manip.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -15,6 +15,8 @@
+ #include <dirent.h>
+ #include <fnmatch.h>
+ #include <utime.h>
++#include <limits.h>
++#include <stdlib.h>
+ 
+ #include <cstdio>
+ #include <cerrno>
+diff -up oprofile-gcc43/libutil++/bfd_support.cpp.orig oprofile-gcc43/libutil++/bfd_support.cpp
+--- oprofile-gcc43/libutil++/bfd_support.cpp.orig	2007-11-12 16:56:07.000000000 -0500
++++ oprofile-gcc43/libutil++/bfd_support.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -19,6 +19,8 @@
+ #include <fstream>
+ #include <sstream>
+ #include <string>
++#include <cstring>
++#include <cstdlib>
+ 
+ using namespace std;
+ 
+diff -up oprofile-gcc43/libutil++/child_reader.cpp.orig oprofile-gcc43/libutil++/child_reader.cpp
+--- oprofile-gcc43/libutil++/child_reader.cpp.orig	2004-01-19 15:00:27.000000000 -0500
++++ oprofile-gcc43/libutil++/child_reader.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -11,10 +11,13 @@
+ 
+ #include <unistd.h>
+ #include <sys/wait.h>
++#include <limits.h>
+ 
+ #include <cerrno>
+ #include <sstream>
+ #include <iostream>
++#include <cstring>
++#include <cstdlib>
+ 
+ #include "op_libiberty.h"
+ #include "child_reader.h"
+diff -up oprofile-gcc43/libutil++/bfd_spu_support.cpp.orig oprofile-gcc43/libutil++/bfd_spu_support.cpp
+--- oprofile-gcc43/libutil++/bfd_spu_support.cpp.orig	2008-02-13 13:57:18.000000000 -0500
++++ oprofile-gcc43/libutil++/bfd_spu_support.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -20,6 +20,7 @@
+ #include <fstream>
+ #include <sstream>
+ #include <string>
++#include <cstring>
+ #include <sys/types.h>
+ 
+ struct spu_elf {
+diff -up oprofile-gcc43/libutil++/cverb.cpp.orig oprofile-gcc43/libutil++/cverb.cpp
+--- oprofile-gcc43/libutil++/cverb.cpp.orig	2006-11-20 10:01:48.000000000 -0500
++++ oprofile-gcc43/libutil++/cverb.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -13,6 +13,7 @@
+ #include <iostream>
+ #include <map>
+ #include <string>
++#include <cstring>
+ 
+ #include "cverb.h"
+ 
+diff -up oprofile-gcc43/libutil++/op_spu_bfd.cpp.orig oprofile-gcc43/libutil++/op_spu_bfd.cpp
+--- oprofile-gcc43/libutil++/op_spu_bfd.cpp.orig	2008-02-13 13:57:18.000000000 -0500
++++ oprofile-gcc43/libutil++/op_spu_bfd.cpp	2008-02-15 10:58:50.000000000 -0500
+@@ -14,6 +14,8 @@
+ #include <sys/stat.h>
+ 
+ #include <iostream>
++#include <cstring>
++#include <cstdlib>
+ 
+ #include "op_bfd.h"
+ #include "locate_images.h"
+
+--------------010700040803000401040503
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+-------------------------------------------------------------------------
+This SF.net email is sponsored by: Microsoft
+Defy all challenges. Microsoft(R) Visual Studio 2008.
+http://clk.atdmt.com/MRT/go/vse0120000070mrt/direct/01/
+--------------010700040803000401040503
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+oprofile-list mailing list
+oprofile-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/oprofile-list
+
+--------------010700040803000401040503--

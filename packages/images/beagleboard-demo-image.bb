@@ -15,18 +15,21 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-settings \
     ${ANGSTROM_EXTRA_INSTALL} \
     angstrom-zeroconf-audio \
-    gpe-scap \
+   	angstrom-led-config \ 
+	gpe-scap \
     psplash \
     e-wm exhibit \
     xterm xmms epiphany-firefox-replacement \
-    hicolor-icon-theme gnome-icon-theme \
+    swfdec-mozilla \
+	hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \
 #    gnumeric \
 #    gimp \
-    powertop \
+    powertop oprofile \
     pidgin \
 #    irssi \
+    mplayer omapfbplay \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

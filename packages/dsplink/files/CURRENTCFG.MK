@@ -48,7 +48,7 @@ export DSPPLATFORM         := SED_ME_PLATFORM
 #   Target GPP and DSP devices
 #   =========================================================
 export GPPDEVICE           := SED_ME_PLATFORM
-export DSPDEVICE           := SED_ME_DSP 
+export DSPDEVICE           := SED_ME_DSP
 
 
 #   =========================================================

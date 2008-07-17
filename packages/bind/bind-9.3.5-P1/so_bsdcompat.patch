@@ -1,0 +1,32 @@
+--- bind-9.3.5-P1/lib/isc/unix/socket.c.orig	2008-07-13 21:53:24.000000000 -0500
++++ bind-9.3.5-P1/lib/isc/unix/socket.c	2008-07-13 21:57:06.000000000 -0500
+@@ -1423,7 +1423,7 @@
+ {
+ 	isc_socket_t *sock = NULL;
+ 	isc_result_t ret;
+-#if defined(USE_CMSG) || defined(SO_BSDCOMPAT)
++#if defined(USE_CMSG)
+ 	int on = 1;
+ #endif
+ 	char strbuf[ISC_STRERRORSIZE];
+@@ -1514,7 +1514,7 @@
+ 		return (ISC_R_UNEXPECTED);
+ 	}
+ 
+-#ifdef SO_BSDCOMPAT
++/* #ifdef SO_BSDCOMPAT
+ 	RUNTIME_CHECK(isc_once_do(&bsdcompat_once,
+ 				  clear_bsdcompat) == ISC_R_SUCCESS);
+ 	if (bsdcompat && setsockopt(sock->fd, SOL_SOCKET, SO_BSDCOMPAT,
+@@ -1526,9 +1526,9 @@
+ 				 isc_msgcat_get(isc_msgcat, ISC_MSGSET_GENERAL,
+ 						ISC_MSG_FAILED, "failed"),
+ 				 strbuf);
+-		/* Press on... */
++
+ 	}
+-#endif
++#endif */
+ 
+ #ifdef SO_NOSIGPIPE
+ 	if (setsockopt(sock->fd, SOL_SOCKET, SO_NOSIGPIPE,

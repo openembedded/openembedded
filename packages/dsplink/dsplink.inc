@@ -1,7 +1,8 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
 DEPENDS = "virtual/kernel perl-native"
-RDEPENDS = "update-modules"
+RDEPENDS_${PN}-module = "update-modules"
+RRECOMMENDS_${PN} = "${PN}-module"
 
 inherit module
 
@@ -9,6 +10,13 @@ S = "${WORKDIR}/dsplink_1_50/dsplink"
 
 # Needed for buildscripts
 export DSPLINK = "${S}"
+
+# Path to the dir where the TI tools are unpacked
+TITOOLSDIR ?= "/OE/TI"
+# Path under TITOOLSDIR where dspbios is unpacked 
+TIBIOSDIR ?= "bios_5_32_03"
+# Path under TITOOLSDIR where the dsp toolchain is unpacked
+TICGTOOLSDIR ?= "cg6x_6_1_2"
 
 DSPLINKPLATFORM ?= "Davinci"
 
@@ -22,18 +30,45 @@ DSPLINKSOC ?= "DM6446"
 
 DSPLINKSOC_beagleboard = "3530"
 
+
+USERARMFLAGS = "${TARGET_CC_ARCH}"
+KERNELARMFLAGS = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi \
+                   -msoft-float -Uarm -mapcs                  \
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
+KERNELARMFLAGS_armv6 = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s \
+                   -msoft-float -Uarm -mapcs                  \                   
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
+KERNELARMFLAGS_armv7a = "-c -nostdinc -include $(BASE_OSINC)/linux/autoconf.h -isystem $(OSINC_PLATFORM)  -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
+                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
+                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \                                      
+                   -mlittle-endian \
+                   -D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8 \
+                   -msoft-float -Uarm -mapcs                  \ 
+                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux \
+                   -D__KERNEL__ -mno-thumb-interwork   -msoft-float -fno-optimize-sibling-calls -g  -fno-stack-protector -Wno-pointer-sign -g -DUSE_UDEV=1 -DOS_LINUX -DLINUX_KERNEL"
+
+DSPFLAGS = "-q -pdr -pdv -pden -ml3 -mv64+ "
+
 export DSPLINKPLATFORM 
 export DSPLINKDSP
 
 do_configure () {
 	cp ${WORKDIR}/CURRENTCFG.MK ${S}/config
-	cp ${WORKDIR}/davinci_mvlpro5.0.mk ${S}/make/Linux
+	cp ${WORKDIR}/openembedded.mk ${S}/make/Linux
 	cp ${WORKDIR}/c64xx_5.xx_linux.mk ${S}/make/DspBios
 
 	sed -i 	-e s:SED_ME_SOURCEDIR:${S}:g \
-		-e s:SED_ME_GPPDISTRO:davinci_mvlpro5\.0:g \
+		-e s:SED_ME_GPPDISTRO:openembedded:g \
 		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
-		-e s:SED_ME_DSPDISTRO:davinci_mvlpro5\.0:g \
+		-e s:SED_ME_DSPDISTRO:c64xx_5.xx_linux:g \
 		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
 		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
 		-e s:SED_ME_SOC:${DSPLINKSOC}:g \	
@@ -42,9 +77,16 @@ do_configure () {
 	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
 		-e s:SED_ME_STAGINGDIR:${STAGING_DIR_TARGET}:g \
 		-e s:SED_ME_TARGET_PREFIX:${TARGET_PREFIX}:g \
-		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \	
-		${S}/make/Linux/davinci_mvlpro5.0.mk 
+		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \
+		-e 's:SEDME_KERNEL_ARMFLAGS:${KERNELARMFLAGS}:g' \
+		-e 's:SEDME_USER_ARMFLAGS:${USERARMFLAGS}:g' \
+		${S}/make/Linux/openembedded.mk 
 
+	sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
+		-e s:SEDME_BIOSUNPACKDIR:${TIBIOSDIR}:g \	
+		-e s:SEDME_CGTOOLSDIR:${TICGTOOLSDIR}:g \	
+		-e 's:SEDME_DSPFLAGS:${DSPFLAGS}:g' \
+		${S}/make/DspBios/c64xx_5.xx_linux.mk
 }
 
 PARALLEL_MAKE = ""
@@ -58,14 +100,33 @@ do_compile () {
 	ln -sf ${S}/gpp/src/pmgr/pmgr_proc.h ${S}/gpp/inc/pmgr_proc.h
 
 	unset DISPLAY
- 
-	oe_runmake -C ${S}/gpp/src all targets
+	
+	sed -i -e 's:gcc:gcc${KERNEL_CCSUFFIX}:' ${S}/make/Linux/openembedded.mk
+	oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}" -C ${S}/gpp/src all targets
+	
+	sed -i -e 's:gcc${KERNEL_CCSUFFIX}:gcc:' ${S}/make/Linux/openembedded.mk
 	oe_runmake -C ${S}/gpp/src/samples
+
+	oe_runmake -C ${S}/dsp/src
+	oe_runmake -C ${S}/dsp/src/samples
 }
 
 do_install () {
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
+
+	install -d ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp   ${D}/${bindir}
+
+	install -d ${D}/${libdir}
+	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib  ${D}/${libdir}
+}
+
+
+do_stage() {
+	install -d ${STAGING_LIBDIR}
+	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib ${STAGING_LIBDIR}/
 }
 
 pkg_postinst_${PN}-module () {
@@ -82,6 +143,8 @@ pkg_postrm_${PN}-module () {
 
 PACKAGES =+ "${PN}-module"
 FILES_${PN}-module  = "${sysconfdir} /lib/modules"
+FILES_${PN} = "${bindir}/mpcsxfergpp ${bindir}/ringiogpp"
+INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
 

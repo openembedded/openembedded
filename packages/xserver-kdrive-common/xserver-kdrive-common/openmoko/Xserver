@@ -65,7 +65,6 @@ case `module_id` in
                 IMAGEON="w3220"
                 ;;
         "Ramses")
-                # What is this "vt2" in aid of?
                 ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
         # both 'Sharp-Collie' and just 'Collie' have been reported
         *Poodle)
@@ -94,14 +93,14 @@ case `module_id` in
                 modprobe mbxfb
                 ARGS="$ARGS -br -fb /dev/fb1" ;;
         "GTA01" | "GTA02")
-                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm" ;;
+                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
         "Motorola Ezx Platform")
-                ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm" ;;
+                ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
         "Nokia N800")
                 ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
-	"Freescale MX21ADS")
-		# That's what /proc/cpuinfo shows as hardware on the chumby
-		ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm" ;;
+        "Freescale MX21ADS")
+         # That's what /proc/cpuinfo shows as hardware on the chumby
+                ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise

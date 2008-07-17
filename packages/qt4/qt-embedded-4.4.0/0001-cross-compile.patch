@@ -1,0 +1,32 @@
+--- /tmp/configure	2008-07-08 10:01:36.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.0/configure	2008-07-08 10:23:04.000000000 +0200
+@@ -762,7 +762,7 @@
+             UNKNOWN_ARG=yes
+         fi
+         ;;
+-    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk|-arch|-host-arch|-mysql_config)
++    -prefix|-docdir|-headerdir|-plugindir|-datadir|-libdir|-bindir|-translationdir|-sysconfdir|-examplesdir|-demosdir|-depths|-make|-nomake|-platform|-xplatform|-buildkey|-sdk|-arch|-host-arch|-mysql_config|-crossarch)
+         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
+         shift
+         VAL="$1"
+@@ -1179,7 +1179,10 @@
+     xplatform)
+         XPLATFORM="$VAL"
+         ;;
+-    debug-and-release)
++	crossarch)
++		CROSSARCH="$VAL"
++		;;
++	debug-and-release)
+         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+             CFG_DEBUG_RELEASE="$VAL"
+         else
+@@ -2417,6 +2420,8 @@
+     ARCH=$HOST_ARCH
+ fi
+ 
++ARCH="$CROSSARCH"
++
+ if [ -d "$relpath/src/corelib/arch/$ARCH" ]; then
+     if [ "$OPT_VERBOSE" = "yes" ]; then
+         echo "    '$ARCH' is supported"

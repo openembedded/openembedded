@@ -8,20 +8,19 @@ KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 # If you use a rc, you will need to use this:
-PV = "${KERNEL_RELEASE}+git${SRCREV}"
-PR = "r1"
+PV = "${KERNEL_RELEASE}+gitr${SRCREV}"
+PR = "r2"
 
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
-SRC_URI = "git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy"
+SRC_URI = "\
+  git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy \
+  file://defconfig-oe"
 S = "${WORKDIR}/git"
 
-SRC_URI_append-om-gta02 = " file://del-hardcoded-led-behaviour.patch;patch=1"
-SRC_URI += "file://defconfig-${MACHINE}"
-
 ##############################################################
-# kernel image resides on a seperate flash partition (for now)
+# kernel image resides on a seperate flash partition
 #
 FILES_kernel-image = ""
 ALLOW_EMPTY = "1"
@@ -45,6 +44,11 @@ module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 module_autoload_s3cmci = "s3cmci"
 
 do_configure_prepend() {
-	cp ${WORKDIR}/defconfig-${MACHINE} ${WORKDIR}/defconfig
+	install -m 0644 ${WORKDIR}/defconfig-oe ${WORKDIR}/defconfig
+	if [ ${MACHINE} == "om-gta01" ]; then
+		echo -n "fixing up configuration for Openmoko GTA01..."
+		sed -i -e s,CONFIG_S3C_LOWLEVEL_UART_PORT=2,CONFIG_S3C_LOWLEVEL_UART_PORT=0, ${WORKDIR}/defconfig
+		sed -i -e s,CONFIG_DEBUG_S3C_UART=2,CONFIG_DEBUG_S3C_UART=0, ${WORKDIR}/defconfig
+		echo "done"
+	fi
 }
-

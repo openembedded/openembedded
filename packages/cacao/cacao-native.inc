@@ -13,15 +13,24 @@ S = "${WORKDIR}/cacao-${PV}"
 inherit native autotools
 
 EXTRA_OECONF = "\
-    --enable-debug \
-    --with-classpath-libdir=${libdir} \
-    --with-classpath-includedir=${includedir}/classpath \
-    --with-classpath-classes=${datadir}/classpath/glibj.zip \
-    --with-vm-zip=${datadir}/cacao/vm.zip \
-    "
+  --enable-debug \
+  --with-vm-zip=${datadir}/cacao/vm.zip \
+  \
+  --with-classpath-libdir=${libdir_jni}:${libdir} \
+  --with-classpath-includedir=${includedir}/classpath \
+  --with-classpath-classes=${datadir}/classpath/glibj.zip \
+  \
+  --with-java-runtime-library-classes=${datadir}/classpath/glibj.zip \
+  --with-java-runtime-library-libdir=${libdir_jni}:${libdir} \
+  --with-jni_md_h=${includedir}/classpath \
+  --with-jni_h=${includedir}/classpath \
+  "
 
-# force usage of ecj-initial (but Java5-compatible class library)
-export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial -bootclasspath ${STAGING_DATADIR_NATIVE}/classpath/glibj.zip"
+# force usage of ecj-initial
+# Important: Not specifying the bootclasspath argument here is only supported
+# for Cacao >= 0.99. Earlier Cacao may need the BCP set to a Java5-capable
+# class library.
+export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
 
 # force usage of fastjar
-export JAR=fastjar
+export JAR="fastjar"

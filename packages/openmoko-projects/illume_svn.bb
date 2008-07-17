@@ -4,10 +4,9 @@ LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native"
 RRECOMMENDS = "wamerican"
 PV = "0.0+svnr${SRCREV}"
-PR = "r3"
+PR = "r6"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=https \
-           file://keyboard.patch;patch=1;pnum=0;minrev=17;maxrev=20"
+SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=https"
 
 S = "${WORKDIR}/${PN}"
 
@@ -21,5 +20,6 @@ EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
 FILES_${PN} = "${libdir}/enlightenment/modules/*/*.edj \
                ${libdir}/enlightenment/modules/*/*.desktop \
                ${libdir}/enlightenment/modules/*/*/* \
+               ${datadir}/enlightenment/data/config/*/* \
                ${datadir}/${PN} "
 FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug/"

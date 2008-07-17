@@ -2,6 +2,8 @@ require ffmpeg.inc
 
 DEPENDS += "libgsm"
 
+SRCREV ?= "12186"
+
 PV = "0.4.9+svnr${SRCREV}" 
 PR = "r0"
 

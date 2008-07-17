@@ -1,4 +1,4 @@
-DESCRIPTION = "Corrects you if you type `sl' by mistake"
+DESCRIPTION = "Corrects you if you type sl by mistake"
 SECTION = "console/games"
 LICENSE = "unknown"
 DEPENDS = "ncurses"
@@ -8,7 +8,7 @@ SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/universe/s/sl/sl_3.03.orig.tar.
 
 S = "${WORKDIR}/${P}.orig"
 
-LDFLAGS += "-lcurses"
+LDFLAGS += "-lncurses"
 
 do_install() {
         install -d ${D}${bindir}

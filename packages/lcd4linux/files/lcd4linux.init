@@ -13,7 +13,7 @@
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/sbin/lcd4linux
+DAEMON=/usr/bin/lcd4linux
 NAME=lcd4linux
 DESC=lcd4linux
 

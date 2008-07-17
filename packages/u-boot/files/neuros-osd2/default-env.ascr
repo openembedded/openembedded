@@ -1,0 +1,53 @@
+setenv loadaddr 0x82000000
+setenv ubootaddr 0x82000800
+setenv tftp_root /images
+setenv nfs_root /home/user/rootfs/fs
+setenv bootfile uImage
+
+setenv defenv_fname default_env.img
+setenv defenv_loc /images/default_env.img
+setenv defenv_loc_cmd setenv defenv_loc \$(tftp_root)/\$(defenv_fname)
+
+setenv uboot_fname u-boot.bin
+setenv uboot_loc /images/u-boot.bin
+setenv uboot_loc_cmd setenv uboot_loc \$(tftp_root)/\$(uboot_fname)\;setenv uboot_desc \$(tftp_root)/uboot_desc
+
+setenv kernel_fname uImage
+setenv kernel_loc /images/uImage
+setenv kernel_loc_cmd setenv kernel_loc \$(tftp_root)/\$(kernel_fname)
+
+setenv jffs2_fname uImage.jffs2
+setenv jffs2_loc /images/uImage.jffs2
+setenv jffs2_loc_cmd setenv jffs2_loc \$(tftp_root)/\$(jffs2_fname)
+
+setenv rootfs_fname rootfs.yaffs2
+setenv rootfs_loc /images/rootfs.yaffs2
+setenv rootfs_loc_cmd setenv rootfs_loc \$(tftp_root)/\$(rootfs_fname)
+
+setenv rootfs_nfs_loc /rootfs/fs
+setenv rootfs_nfs_loc_cmd setenv rootfs_nfs_loc \$(nfs_root)
+
+setenv console console=ttyS0,115200n8
+
+setenv mem_reserve mem=200M
+
+setenv ip ip=\192.168.1.100:\192.168.1.1:\192.168.1.1:\255.255.255.0:\neuros::off
+
+setenv nfs_mount_params udp,v3,rsize=4096,wsize=4096
+setenv nfs_cmd setenv bootargs \$(console) root=/dev/nfs rw nfsroot=\$(serverip):\$(rootfs_nfs_loc),\$(nfs_mount_params) \$(ip) \$(mem_reserve) \$(video_params)
+setenv yaffs_cmd setenv bootargs \$(console) root=/dev/mtdblock4 rw \$(ip) \$(mem_reserve) \$(video_params)
+
+setenv update-locs run uboot_loc_cmd\;run kernel_loc_cmd\;run jffs2_loc_cmd\;run defenv_loc_cmd\;run rootfs_nfs_loc_cmd\;saveenv
+setenv update-defenv run defenv_loc_cmd\;tftp \$(loadaddr) \$(defenv_loc)\;setenv filesize\;autoscr \$(loadaddr)\;run update-locs
+setenv update-uboot run uboot_loc_cmd\;tftp \$(loadaddr) \$(uboot_desc)\;tftp \$(ubootaddr) \$(uboot_loc)\;setenv filesize\;nand erase c0000 c0000\;nand write \$(loadaddr) c0000 c0000
+setenv update-kernel run jffs2_loc_cmd\;tftp \$(loadaddr) \$(jffs2_loc)\;setenv filesize\;nand erase 1c0000 500000\;nand write.jffs2 \$(loadaddr) 1c0000 500000
+setenv update-rootfs run rootfs_loc_cmd\;tftp \$(loadaddr) \$(rootfs_loc)\;nand erase 6c0000\;nand write.yaffs \$(loadaddr) 6c0000 \$(filesize)\;setenv filesize
+
+setenv update-ipdhcp setenv ip ip=::::\$(hostname)::dhcp\;saveenv
+setenv update-ipstatic setenv ip ip=\$(ipaddr):\$(serverip):\$(gatewayip):\$(netmask):\$(hostname)::off\;saveenv
+
+setenv devboot tftp \$(loadaddr) \$(uboot_loc)\;setenv filesize\;go \$(loadaddr)
+setenv devkernel run nfs_cmd\;tftp \$(loadaddr) \$(kernel_loc)\;setenv filesize\;bootm \$(loadaddr)
+setenv yaffs_boot run yaffs_cmd\;fsload \$(loadaddr) \$(bootfile)\;bootm \$(loadaddr)
+
+setenv bootcmd run yaffs_boot

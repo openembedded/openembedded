@@ -4,6 +4,8 @@ LICENSE = "GPL"
 
 DEPENDS = "zlib-native classpath-initial jikes-initial"
 
+PR = "r1"
+
 PROVIDES = "virtual/java-initial"
 
 S = "${WORKDIR}/jamvm-${PV}"
@@ -18,7 +20,7 @@ ARM_INSTRUCTION_SET = "arm"
 inherit native autotools
 
 EXTRA_OECONF = "\
-  --with-classpath-install-dir=${STAGING_DIR_NATIVE}\
+  --with-classpath-install-dir=${prefix} \
   --program-suffix=-initial \
   "
 

@@ -4,7 +4,7 @@ SECTION = "net"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/zd1211/zd1211-firmware1.3.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/zd1211/zd1211-firmware${PV}.tar.bz2"
 
 S = "${WORKDIR}/${PN}"
 

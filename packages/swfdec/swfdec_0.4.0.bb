@@ -1,5 +1,5 @@
 DESCRIPTION = "Swfdec is a decoder/renderer for Macromedia Flash animations."
-LICENSE = ""LGPL
+LICENSE = "LGPL"
 
 DEPENDS = "pango cairo liboil zlib libmad gtk+ alsa-lib"
 

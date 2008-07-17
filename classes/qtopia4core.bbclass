@@ -1,6 +1,7 @@
 DEPENDS_prepend = "${@["qtopia-core ", ""][(bb.data.getVar('PN', d, 1) == 'qtopia-core')]}"
 inherit qmake2
 
+QT_DIR_NAME = "qtopia"
 #
 # override variables set by qmake-base to compile QtopiaCore apps
 #
