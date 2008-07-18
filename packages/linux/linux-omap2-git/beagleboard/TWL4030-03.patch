@@ -1,0 +1,126 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: <linux-omap-owner@vger.kernel.org>
+X-Spam-Checker-Version: SpamAssassin 3.2.2 (2007-07-23) on
+	morningsun.geekisp.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME,
+	DK_POLICY_SIGNSOME,RCVD_IN_DNSWL_MED autolearn=ham version=3.2.2
+Delivered-To: balister.org-philip@balister.org
+Received: (qmail 14206 invoked by uid 1003); 18 Jul 2008 01:35:28 -0000
+Received: from vger.kernel.org (209.132.176.167)
+  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:28 -0000
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1751582AbYGRBf1 (ORCPT <rfc822;philip@balister.org>);
+	Thu, 17 Jul 2008 21:35:27 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1754168AbYGRBf1
+	(ORCPT <rfc822;linux-omap-outgoing>);
+	Thu, 17 Jul 2008 21:35:27 -0400
+Received: from utopia.booyaka.com ([72.9.107.138]:49363 "EHLO
+	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754586AbYGRBfY (ORCPT
+	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:24 -0400
+Received: (qmail 13876 invoked by uid 526); 18 Jul 2008 01:35:23 -0000
+MBOX-Line: From nobody Thu Jul 17 19:34:50 2008
+From:	Paul Walmsley <paul@pwsan.com>
+Subject: [PATCH 3/9] TWL4030: use correct register addresses for BCI IMR
+	registers
+To:	linux-omap@vger.kernel.org
+Date:	Thu, 17 Jul 2008 19:34:50 -0600
+Message-ID: <20080718013450.18943.33123.stgit@localhost.localdomain>
+In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
+References: <20080718013205.18943.34047.stgit@localhost.localdomain>
+User-Agent: StGIT/0.14.3.163.g06f9
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Sender:	linux-omap-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-omap.vger.kernel.org>
+X-Mailing-List:	linux-omap@vger.kernel.org
+
+The existing code to mask and clear BCI interrupts in twl_init_irq() is
+wrong.  It uses the wrong register offsets, it does not mask all of the
+BCI IMR registers, and it does not clear all of the BCI ISR registers.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+---
+
+ drivers/i2c/chips/twl4030-core.c |   40 ++++++++++++++++++++++++++++++++------
+ 1 files changed, 34 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/i2c/chips/twl4030-core.c b/drivers/i2c/chips/twl4030-core.c
+index dfc3805..bb0732c 100644
+--- a/drivers/i2c/chips/twl4030-core.c
++++ b/drivers/i2c/chips/twl4030-core.c
+@@ -750,29 +750,57 @@ static void twl_init_irq(void)
+ 	/* POWER HACK (END) */
+ 	/* Slave address 0x4A */
+ 
+-	/* BCIIMR1_1 */
++	/* BCIIMR1A */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x2);
++	if (res < 0) {
++		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
++		return;
++	}
++
++	/* BCIIMR2A */
+ 	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x3);
+ 	if (res < 0) {
+ 		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+ 		return;
+ 	}
+ 
+-	/* BCIIMR1_2 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x4);
++	/* BCIIMR1B */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x6);
+ 	if (res < 0) {
+ 		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+ 		return;
+ 	}
+ 
+-	/* BCIIMR2_1 */
++	/* BCIIMR2B */
+ 	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x7);
+ 	if (res < 0) {
+ 		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+ 		return;
+ 	}
+ 
+-	/* BCIIMR2_2 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x8);
++	/* BCIISR1A */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x0);
++	if (res < 0) {
++		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
++		return;
++	}
++
++	/* BCIISR2A */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x1);
++	if (res < 0) {
++		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
++		return;
++	}
++
++	/* BCIISR1B */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x4);
++	if (res < 0) {
++		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
++		return;
++	}
++
++	/* BCIISR2B */
++	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x5);
+ 	if (res < 0) {
+ 		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+ 		return;
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
