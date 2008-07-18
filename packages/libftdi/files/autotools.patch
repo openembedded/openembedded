@@ -2,7 +2,7 @@ Index: libftdi-0.13/configure.ac
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
 +++ libftdi-0.13/configure.ac	2008-07-18 14:35:52.710117546 +0200
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,53 @@
 +#                                               -*- Autoconf -*-
 +# Process this file with autoconf to produce a configure script.
 +
@@ -53,7 +53,6 @@ Index: libftdi-0.13/configure.ac
 +		 libftdi.pc
 +		 libftdi.spec
 +                 doc/Makefile
-+                 examples/Makefile
 +                 src/Makefile])
 +AC_CONFIG_COMMANDS([default],[[chmod a+x libftdi-config]],[[]])
 +AC_OUTPUT
