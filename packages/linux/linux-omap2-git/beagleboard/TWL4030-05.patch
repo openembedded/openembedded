@@ -1,0 +1,275 @@
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: <linux-omap-owner@vger.kernel.org>
+X-Spam-Checker-Version: SpamAssassin 3.2.2 (2007-07-23) on
+	morningsun.geekisp.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.0 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME,
+	DK_POLICY_SIGNSOME,RCVD_IN_DNSWL_MED autolearn=ham version=3.2.2
+Delivered-To: balister.org-philip@balister.org
+Received: (qmail 11680 invoked by uid 1003); 18 Jul 2008 01:35:29 -0000
+Received: from vger.kernel.org (209.132.176.167)
+  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:29 -0000
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1755063AbYGRBf2 (ORCPT <rfc822;philip@balister.org>);
+	Thu, 17 Jul 2008 21:35:28 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1754168AbYGRBf2
+	(ORCPT <rfc822;linux-omap-outgoing>);
+	Thu, 17 Jul 2008 21:35:28 -0400
+Received: from utopia.booyaka.com ([72.9.107.138]:49365 "EHLO
+	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1755063AbYGRBfZ (ORCPT
+	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:25 -0400
+Received: (qmail 13884 invoked by uid 526); 18 Jul 2008 01:35:23 -0000
+MBOX-Line: From nobody Thu Jul 17 19:34:52 2008
+From:	Paul Walmsley <paul@pwsan.com>
+Subject: [PATCH 5/9] TWL4030: read and write module ISRs to clear them at init
+To:	linux-omap@vger.kernel.org
+Date:	Thu, 17 Jul 2008 19:34:52 -0600
+Message-ID: <20080718013451.18943.18579.stgit@localhost.localdomain>
+In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
+References: <20080718013205.18943.34047.stgit@localhost.localdomain>
+User-Agent: StGIT/0.14.3.163.g06f9
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Sender:	linux-omap-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-omap.vger.kernel.org>
+X-Mailing-List:	linux-omap@vger.kernel.org
+
+TWL4030 interrupt status register bits can be cleared in one of two ways:
+either by reading from the register, or by writing a 1 to the
+appropriate bit(s) in the register.  This behavior can be altered at any
+time by the <twlmodule>_SIH_CTRL.COR register bit ("clear-on-read").
+
+twl4030-core.c does not touch these *_SIH_CTRL registers during boot,
+and the TWL4030 TRM is deeply confused as to whether COR=1 means that
+the registers are cleared on reads, or cleared on writes.
+
+So, take the cautious way out and both read from and write to the TWL4030
+module ISRs to clear them at startup.  Also, use WARN_ON() to warn if the
+read/write failed, and don't skip the rest of the initialization on failure
+either.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+---
+
+ drivers/i2c/chips/twl4030-core.c |  128 +++++++++++++++-----------------------
+ 1 files changed, 51 insertions(+), 77 deletions(-)
+
+diff --git a/drivers/i2c/chips/twl4030-core.c b/drivers/i2c/chips/twl4030-core.c
+index 9d93524..615fb84 100644
+--- a/drivers/i2c/chips/twl4030-core.c
++++ b/drivers/i2c/chips/twl4030-core.c
+@@ -712,6 +712,28 @@ static int power_companion_init(void)
+ 	return e;
+ }
+ 
++/**
++ * twl4030_i2c_clear_isr - clear TWL4030 SIH ISR regs via read + write
++ * @mod_no: TWL4030 module number
++ * @reg: register index to clear
++ *
++ * Reads, then writes 0xff to a TWL4030 interrupt status register to ensure
++ * that interrupts are cleared.  The read + write is necessary since we
++ * don't know whether the COR bit is set in <module>_SIH_CTRL.  Returns
++ * the status from the I2C read operation.
++ */
++static int twl4030_i2c_clear_isr(u8 mod_no, u8 reg)
++{
++	int res;
++	u8 tmp;
++
++	res = twl4030_i2c_read_u8(mod_no, &tmp, reg);
++	if (res < 0)
++		return res;
++
++	return twl4030_i2c_write_u8(mod_no, 0xff, reg);
++}
++
+ static void twl_init_irq(void)
+ {
+ 	int	i = 0;
+@@ -719,6 +741,13 @@ static void twl_init_irq(void)
+ 	char	*msg = "Unable to register interrupt subsystem";
+ 	unsigned int irq_num;
+ 
++	/*
++	 * For each TWL4030 module with ISR/IMR registers, mask all
++	 * interrupts and then clear any existing interrupt status bits,
++	 * since we initially do not have any TWL4030 module interrupt
++	 * handlers present.
++	 */
++
+ 	/* PWR_IMR1 */
+ 	res = twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xFF, 0x1);
+ 	if (res < 0) {
+@@ -735,19 +764,11 @@ static void twl_init_irq(void)
+ 
+ 	/* Clear off any other pending interrupts on power */
+ 	/* PWR_ISR1 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xFF, 0x00);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INT, 0x00) < 0);
+ 
+ 	/* PWR_ISR2 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xFF, 0x02);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
+-	/* POWER HACK (END) */
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INT, 0x02) < 0);
++
+ 	/* Slave address 0x4A */
+ 
+ 	/* BCIIMR1A */
+@@ -779,32 +800,16 @@ static void twl_init_irq(void)
+ 	}
+ 
+ 	/* BCIISR1A */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x0);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INTERRUPTS, 0x0) < 0);
+ 
+ 	/* BCIISR2A */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x1);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INTERRUPTS, 0x1) < 0);
+ 
+ 	/* BCIISR1B */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x4);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INTERRUPTS, 0x4) < 0);
+ 
+ 	/* BCIISR2B */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xFF, 0x5);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INTERRUPTS, 0x5) < 0);
+ 
+ 	/* MAD C */
+ 	/* MADC_IMR1 */
+@@ -822,18 +827,10 @@ static void twl_init_irq(void)
+ 	}
+ 
+ 	/* MADC_ISR1 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_MADC, 0xFF, 0x61);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_MADC, 0x61) < 0);
+ 
+ 	/* MADC_ISR2 */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_MADC, 0xFF, 0x63);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_MADC, 0x63) < 0);
+ 
+ 	/* key Pad */
+ 	/* KEYPAD - IMR1 */
+@@ -842,12 +839,10 @@ static void twl_init_irq(void)
+ 		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+ 		return;
+ 	}
+-	{
+-		u8 clear;
+-		/* Clear ISR */
+-		twl4030_i2c_read_u8(TWL4030_MODULE_KEYPAD, &clear, 0x11);
+-		twl4030_i2c_read_u8(TWL4030_MODULE_KEYPAD, &clear, 0x11);
+-	}
++
++	/* KEYPAD - ISR1 */
++	/* XXX does this still need to be done twice for some reason? */
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x11) < 0);
+ 
+ 	/* KEYPAD - IMR2 */
+ 	res = twl4030_i2c_write_u8(TWL4030_MODULE_KEYPAD, 0xFF, (0x14));
+@@ -856,6 +851,9 @@ static void twl_init_irq(void)
+ 		return;
+ 	}
+ 
++	/* KEYPAD - ISR2 */
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x13) < 0);
++
+ 	/* Slave address 0x49 */
+ 	/* GPIO_IMR1A */
+ 	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xFF, (0x1C));
+@@ -900,46 +898,22 @@ static void twl_init_irq(void)
+ 	}
+ 
+ 	/* GPIO_ISR1A */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x19);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x19) < 0);
+ 
+ 	/* GPIO_ISR2A */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x1a);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x1a) < 0);
+ 
+ 	/* GPIO_ISR3A */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x1b);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x1b) < 0);
+ 
+ 	/* GPIO_ISR1B */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x1f);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x1f) < 0);
+ 
+ 	/* GPIO_ISR2B */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x20);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x20) < 0);
+ 
+ 	/* GPIO_ISR3B */
+-	res = twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x21);
+-	if (res < 0) {
+-		pr_err("%s[%d][%d]\n", msg, res, __LINE__);
+-		return;
+-	}
++	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x21) < 0);
+ 
+ 	/* install an irq handler for each of the PIH modules */
+ 	for (i = TWL4030_IRQ_BASE; i < TWL4030_IRQ_END; i++) {
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

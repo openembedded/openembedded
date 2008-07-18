@@ -32,6 +32,15 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://cache-display-fix.patch;patch=1 \
            file://serialfix.diff;patch=1 \
            file://i2c-omap-race-fix.diff;patch=1 \
+           file://TWL4030-01.patch;patch=1 \
+           file://TWL4030-02.patch;patch=1 \
+           file://TWL4030-03.patch;patch=1 \
+           file://TWL4030-04.patch;patch=1 \
+           file://TWL4030-05.patch;patch=1 \
+           file://TWL4030-06.patch;patch=1 \
+           file://TWL4030-07.patch;patch=1 \
+           file://TWL4030-08.patch;patch=1 \
+           file://TWL4030-09.patch;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \
