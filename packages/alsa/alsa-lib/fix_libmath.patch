@@ -1,0 +1,17 @@
+Index: alsa-lib-1.0.15/configure.in
+===================================================================
+--- alsa-lib-1.0.15.orig/configure.in	2007-10-15 10:45:26.000000000 +0200
++++ alsa-lib-1.0.15/configure.in	2008-07-19 15:51:34.177119589 +0200
+@@ -191,9 +191,9 @@
+   AC_MSG_RESULT(no)
+ fi
+ 
+-ALSA_DEPLIBS=""
+-if test "$softfloat" != "yes"; then
+-  ALSA_DEPLIBS="-lm"
++ALSA_DEPLIBS="-lm"
++if test "$softfloat" = "yes"; then
++   AC_CHECK_LIB([m], [floor], , [ALSA_DEPLIBS=""])
+ fi
+ 
+ dnl Check for libdl
