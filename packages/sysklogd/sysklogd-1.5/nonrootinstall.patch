@@ -1,0 +1,21 @@
+upstream: not applicable.  It seems upstream has made a conscious choice here.  See lines 56-61 in the Makefile.
+
+Index: tmp/sysklogd-1.5/Makefile
+===================================================================
+--- sysklogd-1.5.orig/Makefile	2008-07-19 13:33:35.793734746 +0200
++++ sysklogd-1.5/Makefile	2008-07-19 13:34:07.351535636 +0200
+@@ -131,10 +131,10 @@
+ 	${INSTALL} -m 500 -s klogd ${BINDIR}/klogd
+ 
+ install_man:
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} sysklogd.8 ${MANDIR}/man8/sysklogd.8
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslogd.8 ${MANDIR}/man8/syslogd.8
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} syslog.conf.5 ${MANDIR}/man5/syslog.conf.5
+-	${INSTALL} -o ${MAN_USER} -g ${MAN_GROUP} -m ${MAN_PERMS} klogd.8 ${MANDIR}/man8/klogd.8
++	${INSTALL} -m ${MAN_PERMS} sysklogd.8 ${MANDIR}/man8/sysklogd.8
++	${INSTALL} -m ${MAN_PERMS} syslogd.8 ${MANDIR}/man8/syslogd.8
++	${INSTALL} -m ${MAN_PERMS} syslog.conf.5 ${MANDIR}/man5/syslog.conf.5
++	${INSTALL} -m ${MAN_PERMS} klogd.8 ${MANDIR}/man8/klogd.8
+ 
+ obj-m += oops.o
+ 
