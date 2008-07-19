@@ -2,6 +2,7 @@ DESCRIPTION = "Alsa sound library"
 HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
+PR = "1"
 
 # configure.in sets -D__arm__ on the command line for any arm system
 # (not just those with the ARM instruction set), this should be removed,
@@ -10,14 +11,23 @@ LICENSE = "GPL"
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2 \
-           file://fix-tstamp-declaration.patch;patch=1"
+           file://fix-tstamp-declaration.patch;patch=1 \
+	   file://fix_libmath.patch;patch=1 \
+	  "
 
 inherit autotools pkgconfig
+
+
+EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python"
+
 
 require alsa-fpu.inc
 EXTRA_OECONF += "${@get_alsa_fpu_setting(bb, d)} "
 
-EXTRA_OECONF = "--with-cards=pdaudiocf --with-oss=yes --disable-python"
+
+require alsa-versym.inc
+EXTRA_OECONF += "${@get_alsa_versym_setting(bb, d)} "
+
 
 do_stage () {
 	oe_libinstall -so -C src libasound ${STAGING_LIBDIR}/
