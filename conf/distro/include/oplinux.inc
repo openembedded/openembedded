@@ -9,9 +9,6 @@ BB_MIN_VERSION = "1.8.10"
 #OPLinux and OPLinux-uclibc source mirrors
 INHERIT += "oplinux-mirrors"
 
-#oplinux is a multimachine distro
-INHERIT += "multimachine"
-
 # check for required tools and minimal BitBake version
 INHERIT += "sanity"
 
