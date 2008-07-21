@@ -330,4 +330,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-mailbox", "Python Mailbox Format Support", "python-core python-mime",
     "mailbox.*" )
 
+    m.addPackage( 0, "python-difflib", "Python helpers for computing deltas between objects.", "python-lang python-re",
+    "difflib.*" )
+
     m.make()
