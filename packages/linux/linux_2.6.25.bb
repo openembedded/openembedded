@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r2"
+PR = "r3"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -10,6 +10,7 @@ DEFAULT_PREFERENCE_sequoia = "1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_alix = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
+DEFAULT_PREFERENCE_at91-l9260 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
            file://defconfig"
@@ -30,6 +31,10 @@ SRC_URI_append_cm-x270 = " \
 
 SRC_URI_append_at32stk1000 = " \
 	http://avr32linux.org/twiki/pub/Main/LinuxPatches/linux-2.6.25.6.atmel.1.patch.bz2;patch=1 \
+"
+
+SRC_URI_append_at91-l9260 = " \
+	http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1 \
 "
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
