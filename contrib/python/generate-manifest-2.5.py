@@ -184,8 +184,8 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-compiler", "Python Compiler Support", "python-core",
     "compiler" ) # package
 
-    m.addPackage( 0, "python-compression", "Python High Level Compression Support", "python-core python-zlib",
-    "gzip.* zipfile.*" )
+    m.addPackage( 1, "python-compression", "Python High Level Compression Support", "python-core python-zlib",
+    "gzip.* zipfile.* tarfile.*" )
 
     m.addPackage( 1, "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
     "hashlib.* md5.* sha.* lib-dynload/crypt.so lib-dynload/_hashlib.so lib-dynload/_sha256.so lib-dynload/_sha512.so" )
