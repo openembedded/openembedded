@@ -4,8 +4,11 @@ HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
 
+PR = "r1"
+
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \
+  file://0.9.0-gcc3.4-compat-fix.patch;patch=1 \
 "
 S = "${WORKDIR}/libusb-${PV}"
 
