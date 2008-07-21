@@ -2,10 +2,10 @@ require linux.inc
 
 DESCRIPTION = "Linux kernel for Neuros OSD devices"
 
-SRCREV = "a4701816600fbfc6d3144fa169a27a57d05d2682"
+SRCREV = "e014243410af1c7c214e6974f5fc2f23c0a1c1ee"
 
 PV = "2.6.23-${PR}+git${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 COMPATIBLE_MACHINE = "(neuros-osd|neuros-osd2)"
 

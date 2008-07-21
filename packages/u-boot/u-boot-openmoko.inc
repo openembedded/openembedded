@@ -1,39 +1,19 @@
 DESCRIPTION = "U-boot bootloader w/ Neo1973 (GTA01) and Neo FreeRunner (GTA02) support"
-AUTHOR = "Harald Welte <laforge@openmoko.org>"
+AUTHOR = "Harald Welte <laforge@openmoko.org> et. al."
 LICENSE = "GPL"
 SECTION = "bootloader"
 PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
-LOCALVERSION = "+git${SRCDATE}+svnr${SRCREV}"
+LOCALVERSION = "+gitr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-PR = "r1"
-
-SRCREV_FORMAT = "patches"
+PR = "r0"
 
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v4 gta02v5"
 
 DEFAULT_PREFERENCE = "-1"
 
-BLESSED_GIT_REV = "928d1d77f8623c120d8763e20e1ca58df9c5c4c6"
-
-SRC_URI = "\
-  
-git://www.denx.de/git/u-boot.git/;protocol=git;name=upstream;tag=${BLESSED_GIT_REV} \
-  svn://svn.openmoko.org/trunk/src/target/u-boot;module=patches;proto=http;name=patches \
-  file://uboot-eabi-fix-HACK.patch;patch=1;maxrev=3773 \
-  file://uboot-20070311-tools_makefile_ln_sf.patch;patch=1 \
-  file://makefile-no-dirafter.patch;patch=1 \
-  file://boot-menu-gfx-fix-openmoko-bug-1140.patch;patch=1;maxrev=3775 \
-"
-S = "${WORKDIR}/git"
-
 EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
 TARGET_LDFLAGS = ""
-
-do_quilt() {
-	mv ${WORKDIR}/patches ${S}/patches && cd ${S} && quilt push -av
-	rm -Rf patches .pc
-}
 
 do_svnrev() {
 	mv -f tools/setlocalversion tools/setlocalversion.old

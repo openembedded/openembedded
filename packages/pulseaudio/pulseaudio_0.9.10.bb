@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "dbus"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "\
   file://disable-using-glibc-tls.patch;patch=1 \
@@ -10,6 +10,7 @@ SRC_URI += "\
 #  file://libtool2.patch;patch=1 \
   file://2113.diff;patch=1;pnum=0 \
   file://2114.diff;patch=1;pnum=0 \
+  file://libiconv.patch;patch=1 \
 "            
 
 do_compile_prepend() {

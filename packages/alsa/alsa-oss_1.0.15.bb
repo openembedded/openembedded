@@ -2,8 +2,11 @@ DESCRIPTION = "Alsa OSS Compatibility Package"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib"
+PR = "1"
 
-SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2"
+SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
+	   file://libio.patch;patch=1 \
+	  "
 
 inherit autotools 
 

@@ -35,9 +35,6 @@ MAINTAINER = "Angstrom Developers <angstrom-distro-devel@linuxtogo.org>"
 #use debian style naming
 INHERIT += "debian"
 
-#use multimachine buildrules 
-INHERIT += "multimachine"
-
 #activate config checker
 INHERIT += "sanity" 
 

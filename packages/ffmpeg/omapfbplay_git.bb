@@ -2,13 +2,13 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r5"
+PR = "r6"
 
 inherit module-base
 
 PV = "0.0+${PR}+gitr${SRCREV}"
 
-SRCREV = "5d0a1fd4c9733ef8c57823c368e21688344bbeb4"
+SRCREV = "0e4b69dbdc807da9b51e97fcffd8e26427b57162"
 SRC_URI = "git://git.mansr.com/${PN};protocol=git \
            file://fbplay-static.diff;patch=1 "
 
