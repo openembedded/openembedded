@@ -1,0 +1,11 @@
+diff -urN iscsitarget-0.4.15/usr/Makefile iscsitarget-0.4.15.new/usr/Makefile
+--- iscsitarget-0.4.15/usr/Makefile	2006-07-03 14:09:30.000000000 +0000
++++ iscsitarget-0.4.15.new/usr/Makefile	2007-07-29 23:16:45.000000000 +0000
+@@ -1,6 +1,6 @@
+ CFLAGS += -O2 -fno-inline -Wall -Wstrict-prototypes -g -I../include
+ PROGRAMS = ietd ietadm
+-LIBS = -lcrypto
++LIBS = -lcrypto $(LDFLAGS)
+ 
+ all: $(PROGRAMS)
+ 
