@@ -10,6 +10,7 @@ DEFAULT_PREFERENCE_sequoia = "1"
 DEFAULT_PREFERENCE_cm-x270 = "1"
 DEFAULT_PREFERENCE_alix = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
+DEFAULT_PREFERENCE_at91-l9260 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
            file://defconfig"
