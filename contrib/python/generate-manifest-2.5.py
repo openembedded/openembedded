@@ -333,4 +333,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-difflib", "Python helpers for computing deltas between objects.", "python-lang python-re",
     "difflib.*" )
 
+    m.addPackage( 0, "python-doctest", "Python framework for running examples in docstrings.", "python-core python-lang python-io python-re python-unittest python-debugger python-difflib",
+    "doctest.*" )
+
     m.make()
