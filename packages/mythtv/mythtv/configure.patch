@@ -1,5 +1,5 @@
 --- /tmp/configure	2008-07-22 10:27:56.000000000 +0200
-+++ mythtv/configure	2008-07-22 12:40:06.000000000 +0200
++++ mythtv/configure	2008-07-22 12:50:43.000000000 +0200
 @@ -476,12 +476,13 @@
  }
  
@@ -16,6 +16,20 @@
      cat >$TMPC
      log_file $TMPC
      check_cmd $cc $CFLAGS $ECFLAGS $OPTFLAGS "$@" -c -o $TMPO $TMPC
+@@ -1117,11 +1118,11 @@
+ fi
+ 
+ # machine
+-arch=`uname -m`
++disabled cross_compile && arch=`uname -m`
+ arch_raw="$arch"
+ cpu="generic"
+ cpu_override="no"
+-processor=`uname -p 2>/dev/null`
++disabled cross_compile && processor=`uname -p 2>/dev/null`
+ processor_flags=""
+ tune="generic"
+ 
 @@ -1214,7 +1215,7 @@
  # build settings
  SHFLAGS='-shared -Wl,-soname,$@'
