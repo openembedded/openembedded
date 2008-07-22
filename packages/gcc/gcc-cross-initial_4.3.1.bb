@@ -5,6 +5,7 @@ DEPENDS += "gmp-native mpfr-native"
 
 EXTRA_OECONF += " --disable-libmudflap \
 		  --disable-libgomp \
+		  --enable-decimal-float=no \
 		  --disable-libssp"
 
 # Hack till we fix *libc properly

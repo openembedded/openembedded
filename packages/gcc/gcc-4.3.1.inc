@@ -45,7 +45,6 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
-#	file://gcc41-configure.in.patch;patch=1 \
 #	file://arm-thumb.patch;patch=1 \
 #	file://arm-thumb-cache.patch;patch=1 \
 	file://ldflags.patch;patch=1 \
@@ -59,6 +58,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 #	file://intermask-bigendian.patch;patch=1 \
 	file://gcc-arm-frename-registers.patch;patch=1 \
 	file://gcc-release-branch/PR-36500-fix-neon.patch;patch=1 \
+	file://gcc-4.3.1-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \
+	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
