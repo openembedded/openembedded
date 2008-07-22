@@ -10,6 +10,10 @@ DEPENDS = "ecj-initial fastjar-native zip-native"
 
 inherit autotools native
 
+# Newer versions expect setting the compiler through this
+# environment variable.
+export JAVAC=${STAGING_BINDIR_NATIVE}/ecj-initial
+
 EXTRA_OECONF = "\
   --with-glibj \
   --with-ecj=${STAGING_BINDIR_NATIVE}/ecj-initial \
