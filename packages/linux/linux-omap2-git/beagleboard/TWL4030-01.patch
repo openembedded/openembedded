@@ -1,42 +1,6 @@
-X-Mozilla-Status: 0001
-X-Mozilla-Status2: 00000000
-Return-Path: <linux-omap-owner@vger.kernel.org>
-X-Spam-Checker-Version: SpamAssassin 3.2.1 (2007-05-02) on shovel.geekisp.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME
-	autolearn=ham version=3.2.1
-Delivered-To: balister.org-philip@balister.org
-Received: (qmail 26975 invoked by uid 1003); 18 Jul 2008 01:35:27 -0000
-Received: from vger.kernel.org (209.132.176.167)
-  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:27 -0000
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-	id S1756265AbYGRBf0 (ORCPT <rfc822;philip@balister.org>);
-	Thu, 17 Jul 2008 21:35:26 -0400
-Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1751582AbYGRBfZ
-	(ORCPT <rfc822;linux-omap-outgoing>);
-	Thu, 17 Jul 2008 21:35:25 -0400
-Received: from utopia.booyaka.com ([72.9.107.138]:49361 "EHLO
-	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1752321AbYGRBfX (ORCPT
-	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:23 -0400
-Received: (qmail 13868 invoked by uid 526); 18 Jul 2008 01:35:22 -0000
-MBOX-Line: From nobody Thu Jul 17 19:34:49 2008
-From:	Paul Walmsley <paul@pwsan.com>
-Subject: [PATCH 1/9] TWL4030: remove superfluous PWR interrupt status clear
-	before masking
-To:	linux-omap@vger.kernel.org
-Date:	Thu, 17 Jul 2008 19:34:49 -0600
-Message-ID: <20080718013448.18943.6984.stgit@localhost.localdomain>
-In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
-References: <20080718013205.18943.34047.stgit@localhost.localdomain>
-User-Agent: StGIT/0.14.3.163.g06f9
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Sender:	linux-omap-owner@vger.kernel.org
-Precedence: bulk
-List-ID: <linux-omap.vger.kernel.org>
-X-Mailing-List:	linux-omap@vger.kernel.org
+TWL4030: remove superfluous PWR interrupt status clear before masking
+
+From: Paul Walmsley <paul@pwsan.com>
 
 twl_irq_init() clears PWR interrupt status bits, then masks the interrupts
 off, then clears the PWR interrupt status bits again.  The first clear
@@ -77,10 +41,3 @@ index adc45d4..ff662bc 100644
  	/* PWR_IMR1 */
  	res = twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xFF, 0x1);
  	if (res < 0) {
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-

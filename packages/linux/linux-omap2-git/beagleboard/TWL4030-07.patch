@@ -1,50 +1,13 @@
-X-Mozilla-Status: 0001
-X-Mozilla-Status2: 00000000
-Return-Path: <linux-omap-owner@vger.kernel.org>
-X-Spam-Checker-Version: SpamAssassin 3.2.2 (2007-07-23) on
-	morningsun.geekisp.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME,
-	DK_POLICY_SIGNSOME,RCVD_IN_DNSWL_MED autolearn=ham version=3.2.2
-Delivered-To: balister.org-philip@balister.org
-Received: (qmail 26193 invoked by uid 1003); 18 Jul 2008 01:35:31 -0000
-Received: from vger.kernel.org (209.132.176.167)
-  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:31 -0000
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-	id S1752321AbYGRBfb (ORCPT <rfc822;philip@balister.org>);
-	Thu, 17 Jul 2008 21:35:31 -0400
-Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1756854AbYGRBfb
-	(ORCPT <rfc822;linux-omap-outgoing>);
-	Thu, 17 Jul 2008 21:35:31 -0400
-Received: from utopia.booyaka.com ([72.9.107.138]:49367 "EHLO
-	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756351AbYGRBfZ (ORCPT
-	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:25 -0400
-Received: (qmail 13892 invoked by uid 526); 18 Jul 2008 01:35:23 -0000
-MBOX-Line: From nobody Thu Jul 17 19:34:54 2008
-From:	Paul Walmsley <paul@pwsan.com>
-Subject: [PATCH 7/9] TWL4030: move TWL module register defs into separate
-	include files
-To:	linux-omap@vger.kernel.org
-Date:	Thu, 17 Jul 2008 19:34:54 -0600
-Message-ID: <20080718013453.18943.69329.stgit@localhost.localdomain>
-In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
-References: <20080718013205.18943.34047.stgit@localhost.localdomain>
-User-Agent: StGIT/0.14.3.163.g06f9
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Sender:	linux-omap-owner@vger.kernel.org
-Precedence: bulk
-List-ID: <linux-omap.vger.kernel.org>
-X-Mailing-List:	linux-omap@vger.kernel.org
+TWL4030: move TWL module register defs into separate include files
 
-twl_init_irq() accesses TWL module IMR and ISR registers.  Currently, it
-uses "magic numbers" for these register indices, but symbolic constants
-are definitely preferred.  Rather than duplicating already existing
-symbolic constants in twl4030-gpio.c and twl4030-pwrirq.c, move the
-existing constants out into include files.  This patch should not change
-kernel behavior.
+From: Paul Walmsley <paul@pwsan.com>
+
+twl_init_irq() uses "magic numbers" to access TWL module IMR and ISR
+registers.  Symbolic constants are definitely preferred.
+
+Rather than duplicating already existing symbolic constants in
+twl4030-gpio.c and twl4030-pwrirq.c, move the existing constants out
+into include files.  This patch should not change kernel behavior.
 
 Signed-off-by: Paul Walmsley <paul@pwsan.com>
 ---
@@ -309,10 +272,3 @@ index 0000000..7a13368
 +#define TWL4030_INT_PWR_SIH_CTRL	0x7
 +
 +#endif /* End of __TWL4030_PWRIRQ_H */
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
