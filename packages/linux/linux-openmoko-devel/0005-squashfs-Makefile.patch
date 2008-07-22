@@ -1,0 +1,12 @@
+diff -urN linux-2.6.24/fs/Makefile linux-2.6.24.sqlzma-ng/fs/Makefile
+--- linux-2.6.24/fs/Makefile	2007-11-13 21:24:14.000000000 -0500
++++ linux-2.6.24.sqlzma-ng/fs/Makefile	2007-11-13 21:19:15.000000000 -0500
+@@ -72,6 +72,7 @@
+ obj-$(CONFIG_JBD2)		+= jbd2/
+ obj-$(CONFIG_EXT2_FS)		+= ext2/
+ obj-$(CONFIG_CRAMFS)		+= cramfs/
++obj-$(CONFIG_SQUASHFS)		+= squashfs/
+ obj-y				+= ramfs/
+ obj-$(CONFIG_HUGETLBFS)		+= hugetlbfs/
+ obj-$(CONFIG_CODA_FS)		+= coda/
+

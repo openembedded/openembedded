@@ -19,7 +19,8 @@ S = "${WORKDIR}/git"
 inherit autotools
 
 EXTRA_OECONF = "\
-    --with-contrib \
+    --enable-libtool \
+	--with-contrib \
 	--disable-dvdread \
 	--disable-wxwidgets \
     --disable-skins2 \
@@ -51,10 +52,6 @@ do_configure() {
 
 do_stage() {
 	autotools_stage_all
-}
-
-do_compile() {
-	${S}/compile
 }
 
 RCONFLICTS_${PN} = "vlc"

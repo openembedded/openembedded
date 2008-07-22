@@ -1,41 +1,6 @@
-X-Mozilla-Status: 0001
-X-Mozilla-Status2: 00000000
-Return-Path: <linux-omap-owner@vger.kernel.org>
-X-Spam-Checker-Version: SpamAssassin 3.2.1 (2007-05-02) on shovel.geekisp.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME
-	autolearn=ham version=3.2.1
-Delivered-To: balister.org-philip@balister.org
-Received: (qmail 19695 invoked by uid 1003); 18 Jul 2008 01:35:30 -0000
-Received: from vger.kernel.org (209.132.176.167)
-  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:30 -0000
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-	id S1756218AbYGRBf3 (ORCPT <rfc822;philip@balister.org>);
-	Thu, 17 Jul 2008 21:35:29 -0400
-Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1754168AbYGRBf3
-	(ORCPT <rfc822;linux-omap-outgoing>);
-	Thu, 17 Jul 2008 21:35:29 -0400
-Received: from utopia.booyaka.com ([72.9.107.138]:49366 "EHLO
-	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1756218AbYGRBfZ (ORCPT
-	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:25 -0400
-Received: (qmail 13888 invoked by uid 526); 18 Jul 2008 01:35:23 -0000
-MBOX-Line: From nobody Thu Jul 17 19:34:53 2008
-From:	Paul Walmsley <paul@pwsan.com>
-Subject: [PATCH 6/9] TWL4030: change init-time IMR mask code to WARN if error
-To:	linux-omap@vger.kernel.org
-Date:	Thu, 17 Jul 2008 19:34:53 -0600
-Message-ID: <20080718013452.18943.96350.stgit@localhost.localdomain>
-In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
-References: <20080718013205.18943.34047.stgit@localhost.localdomain>
-User-Agent: StGIT/0.14.3.163.g06f9
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Sender:	linux-omap-owner@vger.kernel.org
-Precedence: bulk
-List-ID: <linux-omap.vger.kernel.org>
-X-Mailing-List:	linux-omap@vger.kernel.org
+TWL4030: change init-time IMR mask code to WARN if error
+
+From: Paul Walmsley <paul@pwsan.com>
 
 twl_init_irq() prints error messages and returns if any interrupt mask
 register writes fail.  Change this to generate a warning traceback and
@@ -50,11 +15,11 @@ Signed-off-by: Paul Walmsley <paul@pwsan.com>
  1 files changed, 18 insertions(+), 82 deletions(-)
 
 diff --git a/drivers/i2c/chips/twl4030-core.c b/drivers/i2c/chips/twl4030-core.c
-index 615fb84..1906635 100644
+index eae0634..99cc143 100644
 --- a/drivers/i2c/chips/twl4030-core.c
 +++ b/drivers/i2c/chips/twl4030-core.c
-@@ -749,18 +749,10 @@ static void twl_init_irq(void)
- 	 */
+@@ -778,18 +778,10 @@ static void twl_init_irq(void)
+ 
  
  	/* PWR_IMR1 */
 -	res = twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xFF, 0x1);
@@ -73,8 +38,8 @@ index 615fb84..1906635 100644
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_INT, 0xff, 0x3) < 0);
  
  	/* Clear off any other pending interrupts on power */
- 	/* PWR_ISR1 */
-@@ -772,32 +764,16 @@ static void twl_init_irq(void)
+ 
+@@ -807,32 +799,16 @@ static void twl_init_irq(void)
  	/* Slave address 0x4A */
  
  	/* BCIIMR1A */
@@ -111,9 +76,9 @@ index 615fb84..1906635 100644
 -	}
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_INTERRUPTS, 0xff, 0x7) < 0);
  
- 	/* BCIISR1A */
- 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_INTERRUPTS, 0x0) < 0);
-@@ -813,18 +789,10 @@ static void twl_init_irq(void)
+ 	/* Are BCI interrupt status bits cleared by reads or writes? */
+ 	cor = twl4030_read_cor_bit(TWL4030_MODULE_INTERRUPTS,
+@@ -853,18 +829,10 @@ static void twl_init_irq(void)
  
  	/* MAD C */
  	/* MADC_IMR1 */
@@ -132,9 +97,9 @@ index 615fb84..1906635 100644
 -	}
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_MADC, 0xff, 0x64) < 0);
  
- 	/* MADC_ISR1 */
- 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_MADC, 0x61) < 0);
-@@ -834,68 +802,36 @@ static void twl_init_irq(void)
+ 	/* Are MADC interrupt status bits cleared by reads or writes? */
+ 	cor = twl4030_read_cor_bit(TWL4030_MODULE_MADC,
+@@ -879,11 +847,7 @@ static void twl_init_irq(void)
  
  	/* key Pad */
  	/* KEYPAD - IMR1 */
@@ -145,9 +110,10 @@ index 615fb84..1906635 100644
 -	}
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_KEYPAD, 0xff, 0x12) < 0);
  
- 	/* KEYPAD - ISR1 */
- 	/* XXX does this still need to be done twice for some reason? */
- 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x11) < 0);
+ 	/* Are keypad interrupt status bits cleared by reads or writes? */
+ 	cor = twl4030_read_cor_bit(TWL4030_MODULE_KEYPAD,
+@@ -895,57 +859,29 @@ static void twl_init_irq(void)
+ 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x11, cor) < 0);
  
  	/* KEYPAD - IMR2 */
 -	res = twl4030_i2c_write_u8(TWL4030_MODULE_KEYPAD, 0xFF, (0x14));
@@ -158,7 +124,7 @@ index 615fb84..1906635 100644
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_KEYPAD, 0xff, 0x14) < 0);
  
  	/* KEYPAD - ISR2 */
- 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x13) < 0);
+ 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_KEYPAD, 0x13, cor) < 0);
  
  	/* Slave address 0x49 */
  	/* GPIO_IMR1A */
@@ -209,12 +175,5 @@ index 615fb84..1906635 100644
 -	}
 +	WARN_ON(twl4030_i2c_write_u8(TWL4030_MODULE_GPIO, 0xff, 0x24) < 0);
  
- 	/* GPIO_ISR1A */
- 	WARN_ON(twl4030_i2c_clear_isr(TWL4030_MODULE_GPIO, 0x19) < 0);
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+ 	/* Are GPIO interrupt status bits cleared by reads or writes? */
+ 	cor = twl4030_read_cor_bit(TWL4030_MODULE_GPIO,

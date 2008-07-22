@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.1+gitr${SRCREV}"
-PR = "r9"
+PR = "r10"
 
 inherit distutils update-rc.d
 
@@ -34,7 +34,16 @@ RDEPENDS_${PN} += "\
   python-pyyaml \
   python-shell \
   python-syslog \
+  \
+  ${PN}-config \
 "
 
-FILES_${PN} += "${sysconfdir} ${datadir}"
+
+PACKAGES =+ "${PN}-config"
+
+PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
+FILES_${PN}-config = "${sysconfdir}"
+
+PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
+FILES_${PN} += "${datadir}"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/framework/subsystems/*/.debug"

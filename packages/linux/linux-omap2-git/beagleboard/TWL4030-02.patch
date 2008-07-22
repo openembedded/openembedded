@@ -1,42 +1,6 @@
-X-Mozilla-Status: 0001
-X-Mozilla-Status2: 00000000
-Return-Path: <linux-omap-owner@vger.kernel.org>
-X-Spam-Checker-Version: SpamAssassin 3.2.2 (2007-07-23) on
-	morningsun.geekisp.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.0 required=5.0 tests=AWL,DKIM_POLICY_SIGNSOME,
-	DK_POLICY_SIGNSOME,RCVD_IN_DNSWL_MED autolearn=ham version=3.2.2
-Delivered-To: balister.org-philip@balister.org
-Received: (qmail 17413 invoked by uid 1003); 18 Jul 2008 01:35:27 -0000
-Received: from vger.kernel.org (209.132.176.167)
-  by mail.geekisp.com with SMTP; 18 Jul 2008 01:35:27 -0000
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-	id S1757296AbYGRBf1 (ORCPT <rfc822;philip@balister.org>);
-	Thu, 17 Jul 2008 21:35:27 -0400
-Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1751582AbYGRBf0
-	(ORCPT <rfc822;linux-omap-outgoing>);
-	Thu, 17 Jul 2008 21:35:26 -0400
-Received: from utopia.booyaka.com ([72.9.107.138]:49362 "EHLO
-	utopia.booyaka.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1754168AbYGRBfY (ORCPT
-	<rfc822;linux-omap@vger.kernel.org>); Thu, 17 Jul 2008 21:35:24 -0400
-Received: (qmail 13872 invoked by uid 526); 18 Jul 2008 01:35:23 -0000
-MBOX-Line: From nobody Thu Jul 17 19:34:50 2008
-From:	Paul Walmsley <paul@pwsan.com>
-Subject: [PATCH 2/9] TWL4030: clear TWL GPIO interrupt status registers
-To:	linux-omap@vger.kernel.org
-Date:	Thu, 17 Jul 2008 19:34:50 -0600
-Message-ID: <20080718013449.18943.78895.stgit@localhost.localdomain>
-In-Reply-To: <20080718013205.18943.34047.stgit@localhost.localdomain>
-References: <20080718013205.18943.34047.stgit@localhost.localdomain>
-User-Agent: StGIT/0.14.3.163.g06f9
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Sender:	linux-omap-owner@vger.kernel.org
-Precedence: bulk
-List-ID: <linux-omap.vger.kernel.org>
-X-Mailing-List:	linux-omap@vger.kernel.org
+TWL4030: clear TWL GPIO interrupt status registers
+
+From: Paul Walmsley <paul@pwsan.com>
 
 twl_init_irq() does not clear the TWL GPIO ISR registers, but the PIH
 ISR thinks that it has.  This causes any previously-latched GPIO interrupts
@@ -105,10 +69,3 @@ index ff662bc..dfc3805 100644
  	/* install an irq handler for each of the PIH modules */
  	for (i = TWL4030_IRQ_BASE; i < TWL4030_IRQ_END; i++) {
  		set_irq_chip(i, &twl4030_irq_chip);
-
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
