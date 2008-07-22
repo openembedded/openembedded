@@ -3,21 +3,20 @@ require mythtv.inc
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.21+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 REALPV = "0.22"
 
-SRCREV = "17891"
+SRCREV = "17892"
 SRC_URI = "svn://svn.mythtv.org/svn/trunk;module=mythtv;proto=http"
 
 SRC_URI += "file://configure.patch;patch=1 \
-            file://ifdef-qt.diff;patch=1 \
            "
 
 S = "${WORKDIR}/mythtv"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-mythlibs = "mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
+mythlibs = "mythdb mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
