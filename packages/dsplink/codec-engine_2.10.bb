@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r4"
+PR = "r5"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -14,6 +14,7 @@ PV = "2.10"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
            file://xdcpaths.mak \
+           file://ticel-config \
           "
 
 S = "${WORKDIR}/codec_engine_2_10_01"
@@ -47,6 +48,7 @@ do_configure() {
         sed -i -e s:arm_v5t_le-:${TAGET_PREFIX}:g $cfg
     done
 
+	install -d ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/
     echo -n "${CFLAGS} -I${TITOOLSDIR}/${TIXDCTOOLSDIR}/packages -I${S}/packages -I${S}/cetools/packages" > ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/compiler.opt
 }
 
@@ -103,6 +105,22 @@ do_stage() {
 		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
 			install -m 0755 $i ${STAGING_LIBDIR}/
 		done
+		install -d ${STAGING_INCDIR}/codec-engine}
+		
+		for header in $(find ${S}/cetools/packages/ -name "*.h") ; do
+			install -d ${STAGING_INCDIR}/codec-engine/$(dirname $header | sed s:${S}::g)
+			cp -pPr  $header ${STAGING_INCDIR}/codec-engine/$(echo $header | sed s:${S}::g)
+		done
+	
+		for header in $(find ${S}/packages/ -name "*.h") ; do
+			install -d ${STAGING_INCDIR}/codec-engine/$(dirname $header | sed s:${S}::g)
+			cp -pPr  $header ${STAGING_INCDIR}/codec-engine/$(echo $header | sed s:${S}::g)
+		done
+	
+		sed -i -e s:SEDME_CFLAGS:"-I${TITOOLSDIR}/${TIBIOSDIR}/xdctools/packages -I${STAGING_INCDIR}/codec-engine/packages  -I${STAGING_INCDIR}/codec-engine/cetools/packages/":g \
+		       -e s:SEDME_STAGINGLIBDIR:${STAGING_LIBDIR}:g \
+		          ${WORKDIR}/ticel-config
+		install -m 0755 ${WORKDIR}/ticel-config ${STAGING_BINDIR_CROSS}
 }
 
 pkg_postinst_${PN}-module () {
