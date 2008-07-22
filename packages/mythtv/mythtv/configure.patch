@@ -1,0 +1,47 @@
+--- /tmp/configure	2008-07-22 10:27:56.000000000 +0200
++++ mythtv/configure	2008-07-22 10:54:24.000000000 +0200
+@@ -1714,7 +1714,7 @@
+ 
+ has_library()
+ {
+-    if test -f /etc/ld.so.conf ; then
++	if test -f /etc/ld.so.conf && disabled cross_compile ; then
+         LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
+     else
+         LIBPATHS=''
+@@ -1725,7 +1725,7 @@
+     LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
+ 
+     # recurse down just one level, should be enough in most cases
+-    if test -f /etc/ld.so.conf ; then
++    if test -f /etc/ld.so.conf && disabled cross_compile ; then
+         INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
+         SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
+         for x in $SRCH ; do
+@@ -1734,7 +1734,7 @@
+         done
+     fi
+ 
+-    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
++    enabled cross_compile || LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
+ 
+     HAS_IT="no"
+     for LIBPATH in $LIBPATHS ; do
+@@ -2254,7 +2254,7 @@
+ EOF
+ 
+ if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
+-$TMPE && cpuclipspositive="yes"
++enabled cross_compile || $TMPE && cpuclipspositive="yes"
+ fi
+ 
+ # test negative wrap
+@@ -2269,7 +2269,7 @@
+ EOF
+ 
+ if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
+-$TMPE && cpuclipsnegative="yes"
++enabled cross_compile || $TMPE && cpuclipsnegative="yes"
+ fi
+ 
+ # test for distcc
