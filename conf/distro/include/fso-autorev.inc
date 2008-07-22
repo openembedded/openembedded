@@ -1,6 +1,7 @@
 SRCREV_pn-frameworkd = "${AUTOREV}"
 SRCREV_pn-gsm0710muxd = "${AUTOREV}"
 SRCREV_pn-gsmd2 = "${AUTOREV}"
+SRCREV_pn-illume-theme-freesmartphone = "${AUTOREV}"
 SRCREV_pn-pygsm = "${AUTOREV}"
 SRCREV_pn-mickeydbus = "${AUTOREV}"
 SRCREV_pn-mickeyterm = "${AUTOREV}"
