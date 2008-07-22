@@ -20,11 +20,12 @@ CMDLINE = "unused -- bootloader passes ATAG list"
 module_autoload_ohci-hcd = "ohci-hcd"
 module_autoload_hci_usb = "hci_usb"
 module_autoload_g_ether = "g_ether"
-# audio
+# audio (GTA01)
 module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
+# audio (GTA02)
+module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
-
 
 ################################################################
 # extra stuff we need for openmoko that is not in linux.inc
