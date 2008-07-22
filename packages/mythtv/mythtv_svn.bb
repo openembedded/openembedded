@@ -65,6 +65,7 @@ do_configure_prepend() {
 	./configure	--prefix=/usr		\
 			--mandir=/usr/man 	\
 			--cpu=${MYTHTV_ARCH}	\
+			--arch=${MYTHTV_ARCH} \
 			--disable-altivec	\
 			--disable-strip \
 			--enable-v4l		\
