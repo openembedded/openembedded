@@ -9,7 +9,9 @@ PR = "r13"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1 \
-           file://repository-ping.patch;patch=1 "
+           file://repository-ping.patch;patch=1 \
+           file://force_depends.patch;patch=1 \
+           "
 
 
 S = "${WORKDIR}/git"
