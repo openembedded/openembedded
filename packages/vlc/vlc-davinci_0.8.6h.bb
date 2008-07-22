@@ -4,9 +4,9 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-SRCREV = "fa02f65b17429432d13a108f73744f33709dd01c"
+SRCREV = "1ae3abd276bc478f7a3156c4acef1dd20f1b1899"
 
-PR = "r2"
+PR = "r3"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 
@@ -35,7 +35,7 @@ EXTRA_OECONF = "\
 	--enable-live555 --enable-tremor \
     --disable-mod \
 	--enable-davinci --enable-davincifb --enable-davinciresizer \
-    --enable-v4l2 --enable-aa --enable-wma --enable-faad \
+    --enable-v4l2 --disable-aa --enable-wma --disable-faad \
     --enable-dbus \
 "
 
