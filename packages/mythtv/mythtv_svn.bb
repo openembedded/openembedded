@@ -43,6 +43,22 @@ python __anonymous () {
 
     bb.data.setVar("PACKAGES", packages, d)
 }
+
+EXTRA_OECONF_armv5te = " --enable-armv5te "
+EXTRA_OECONF_armv6 = " --enable-armv6 "
+EXTRA_OECONF_armv7a =  --enable-armv6"
+
+#build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
+#not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt
+MY_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', 'iwmmxt', '${MY_ARCH}',d)}"
+
+MY_TARGET_CC_ARCH := "${TARGET_CC_ARCH}"
+TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt -mtune=iwmmxt', '${MY_TARGET_CC_ARCH}',d)}"
+
+EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
+
+
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
 	find . -name "Makefile"|xargs rm -f
@@ -50,13 +66,15 @@ do_configure_prepend() {
 			--mandir=/usr/man 	\
 			--cpu=${MYTHTV_ARCH}	\
 			--disable-altivec	\
+			--disable-strip \
 			--enable-v4l		\
 			--enable-audio-oss	\
 			--enable-proc-opt	\
 			--enable-dvb		\
 			--enable-libmp3lame \
 			--cross-compile	\
-            --dvb-path=${STAGING_INCDIR}
+            --dvb-path=${STAGING_INCDIR} \
+			${EXTRA_OECONF}
 
 	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
 	mv settings.pro.new settings.pro

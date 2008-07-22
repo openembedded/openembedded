@@ -1,6 +1,31 @@
 --- /tmp/configure	2008-07-22 10:27:56.000000000 +0200
-+++ mythtv/configure	2008-07-22 10:54:24.000000000 +0200
-@@ -1714,7 +1714,7 @@
++++ mythtv/configure	2008-07-22 12:40:06.000000000 +0200
+@@ -476,12 +476,13 @@
+ }
+ 
+ check_cmd(){
+-    log "$@"
++   	echo "Checking $@" 
++	log "$@"
+     "$@" >>$logfile 2>&1
+ }
+ 
+ check_cc(){
+-    log check_cc "$@"
++	log check_cc "$@"
+     cat >$TMPC
+     log_file $TMPC
+     check_cmd $cc $CFLAGS $ECFLAGS $OPTFLAGS "$@" -c -o $TMPO $TMPC
+@@ -1214,7 +1215,7 @@
+ # build settings
+ SHFLAGS='-shared -Wl,-soname,$@'
+ VHOOKSHFLAGS='$(SHFLAGS)'
+-LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
++#LDLATEFLAGS='-Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil'
+ FFSERVERLDFLAGS=-Wl,-E
+ LDCONFIG="ldconfig"
+ LIBPREF="lib"
+@@ -1714,7 +1715,7 @@
  
  has_library()
  {
@@ -9,7 +34,7 @@
          LIBPATHS=`cat /etc/ld.so.conf | grep -v "#" | grep -v "include"`
      else
          LIBPATHS=''
-@@ -1725,7 +1725,7 @@
+@@ -1725,7 +1726,7 @@
      LIBPATHS="$LIBPATHS `echo $DYLD_LIBRARY_PATH | sed s/':'/' '/g` "
  
      # recurse down just one level, should be enough in most cases
@@ -18,16 +43,61 @@
          INCL=`cat /etc/ld.so.conf | grep -v "#" | grep  "^include"`
          SRCH=`echo "$INCL" | sed '{ s/^include \//\//; s/^include /\/etc\//}'`
          for x in $SRCH ; do
-@@ -1734,7 +1734,7 @@
+@@ -1734,29 +1735,31 @@
          done
      fi
  
 -    LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
 +    enabled cross_compile || LIBPATHS="`echo $LIBPATHS /$libdir_name /usr/$libdir_name /usr/local/$libdir_name /usr/X11R6/$libdir_name | sed s/'\/ '/' '/g` "
  
-     HAS_IT="no"
+-    HAS_IT="no"
++    HAS_IT="yes"
      for LIBPATH in $LIBPATHS ; do
-@@ -2254,7 +2254,7 @@
+         if test x`ls $LIBPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
+             HAS_IT="yes"
+         fi
+     done
++    echo "$1: $HAS_IT"
+     expr $HAS_IT : "yes" > /dev/null
+ }
+ 
+ has_header()
+ {
+-    HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
++    enabled cross_compile || HPATHS="/usr/local/include /usr/include /usr/include/g++-v3 /usr/X11R6/include"
+     INCL=`echo $DYLD_LIBRARY_PATH $LD_LIBRARY_PATH | sed s/':'/' '/g`
+     HPATHS="$HPATHS "$(echo $INCL | sed "s/$libdir_name/include/g")
+ 
+-    HAS_IT="no"
++    HAS_IT="yes"
+     for HPATH in $HPATHS ; do
+         if test x`ls $HPATH/$1* 2> /dev/null | head -n 1` != x"" ; then
+             HAS_IT="yes"
+         fi
+     done
++    echo "$1: $HAS_IT" 
+     expr $HAS_IT : "yes" > /dev/null
+ }
+ 
+@@ -1863,13 +1866,15 @@
+ if test x"$cmov" = x"default"; then
+     disable cmov
+     if enabled cpu_override; then
+-        is_x86_cmov_cpu "$cpu" && enable cmov
++        disabled cross_compile && is_x86_cmov_cpu "$cpu" && enable cmov
+         disabled cmov || is_x86_slow_cmov_cpu "$cpu" || enable fast_cmov
+     elif expr "$processor_flags" : ".*cmov" > /dev/null ; then
+-        enable cmov
++        disabled cross_compile && enable cmov
+     fi
+ fi
+ 
++enabled cross_compile && disable cmov
++
+ # use different default ARCHFLAGS for CPU missing cmov (Via C3 ...)
+ if test x"$arch" = x"x86_32" && disabled cmov && disabled cpu_override; then
+     ARCHFLAGS="-march=i586"
+@@ -2254,7 +2259,7 @@
  EOF
  
  if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
@@ -36,7 +106,7 @@
  fi
  
  # test negative wrap
-@@ -2269,7 +2269,7 @@
+@@ -2269,7 +2274,7 @@
  EOF
  
  if $cc $CFLAGS $ECFLAGS -o $TMPE $TMPC 2>/dev/null ; then
