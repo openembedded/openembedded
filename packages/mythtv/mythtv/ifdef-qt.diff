@@ -1,0 +1,13 @@
+--- /tmp/mythmainwindow.cpp	2008-07-22 18:19:06.000000000 +0200
++++ mythtv/libs/libmythui/mythmainwindow.cpp	2008-07-22 18:19:26.000000000 +0200
+@@ -4,7 +4,10 @@
+ 
+ #include <algorithm>
+ 
++#ifdef USE_OPENGL_PAINTER
+ #include <QGLWidget>
++endif
++
+ #include <QApplication>
+ #include <QTimer>
+ #include <QDesktopWidget>

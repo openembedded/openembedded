@@ -5,10 +5,11 @@ DEFAULT_PREFERENCE = "-1"
 PV = "0.21+svnr${SRCREV}"
 PR = "r0"
 
-SRCREV = "17880"
+SRCREV = "17891"
 SRC_URI = "svn://svn.mythtv.org/svn/trunk;module=mythtv;proto=http"
 
 SRC_URI += "file://configure.patch;patch=1 \
+            file://ifdef-qt.diff;patch=1 \
            "
 
 S = "${WORKDIR}/mythtv"
@@ -62,11 +63,13 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
 	find . -name "Makefile"|xargs rm -f
+
 	./configure	--prefix=/usr		\
 			--mandir=/usr/man 	\
 			--cpu=${MYTHTV_ARCH}	\
 			--arch=${MYTHTV_ARCH} \
 			--disable-altivec	\
+		 	--disable-opengl-video \
 			--disable-strip \
 			--enable-v4l		\
 			--enable-audio-oss	\
@@ -79,6 +82,10 @@ do_configure_prepend() {
 
 	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
 	mv settings.pro.new settings.pro
+    for pro in ${S}/libs/*pro ${S}/libs/*/*pro; do
+		sed -i -e s:opengl::g $pro
+	done
+
 }
 
 python populate_packages_prepend () {
