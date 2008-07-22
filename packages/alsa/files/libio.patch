@@ -1,7 +1,7 @@
 Index: alsa-oss-1.0.15/alsa/stdioemu.c
 ===================================================================
 --- alsa-oss-1.0.15.orig/alsa/stdioemu.c	2007-10-15 10:50:40.000000000 +0200
-+++ alsa-oss-1.0.15/alsa/stdioemu.c	2008-07-20 22:29:46.767474560 +0200
++++ alsa-oss-1.0.15/alsa/stdioemu.c	2008-07-21 22:17:06.303161438 +0200
 @@ -37,7 +37,9 @@
  #endif
  
@@ -18,8 +18,8 @@ Index: alsa-oss-1.0.15/alsa/stdioemu.c
  		result = fopencookie (fdc,"w", fns);
 +#ifdef HAVE_FILENO
  		result->_fileno = fdc->fd;		/* ugly patchy slimy kludgy hack */
-+else
-+		result->_filedes = fdc->fd;
++#else
++		result->__filedes = fdc->fd;
 +#endif
  	}
  	return result;
@@ -27,7 +27,7 @@ Index: alsa-oss-1.0.15/alsa/stdioemu.c
 Index: alsa-oss-1.0.15/configure.in
 ===================================================================
 --- alsa-oss-1.0.15.orig/configure.in	2007-10-15 10:50:40.000000000 +0200
-+++ alsa-oss-1.0.15/configure.in	2008-07-20 22:49:45.455837502 +0200
++++ alsa-oss-1.0.15/configure.in	2008-07-21 22:16:11.719837298 +0200
 @@ -33,6 +33,12 @@
    LIBS="$OLD_LIBS"
  fi

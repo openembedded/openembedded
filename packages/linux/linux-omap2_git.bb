@@ -6,7 +6,7 @@ SRCREV = "d3b3ae0fe6c71641da19c8de466ec366d39847e3"
 
 PV = "2.6.26"
 #PV = "2.6.25+2.6.26-rc9+${PR}+git${SRCREV}"
-PR = "r45"
+PR = "r46"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -41,6 +41,8 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://TWL4030-07.patch;patch=1 \
            file://TWL4030-08.patch;patch=1 \
            file://TWL4030-09.patch;patch=1 \
+           file://mru-clocks1.diff;patch=1 \
+           file://mru-clocks2.diff;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \

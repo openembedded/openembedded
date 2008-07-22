@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Start the iSCSI Enterprise Target.
+#
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+start_server()
+{
+	modprobe -q crc32c
+	modprobe iscsi_trgt
+	start-stop-daemon --start --quiet --pidfile /var/run/iscsi_trgt.pid --exec /sbin/ietd
+}
+	
+stop_server()
+{
+	ietadm --op delete
+	start-stop-daemon --stop --quiet --pidfile /var/run/iscsi_trgt.pid --exec /sbin/ietd
+	sleep 1
+	modprobe -r iscsi_trgt
+}
+
+case "$1" in
+	start)
+		start_server
+		;;
+	stop)
+		stop_server
+		;;
+	*)
+		echo "Usage: {start|stop}" >&2
+		exit 1
+		;;
+esac
+
+exit 0

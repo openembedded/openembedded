@@ -2,15 +2,13 @@ DESCRIPTION = "A full featured personal video recorder system."
 HOMEPAGE = "http://www.mythtv.org"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-DEPENDS = "libxinerama lame libxv libxxf86vm libxvmc lirc qt-x11-free"
-RDEPENDS_${PN} = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
+DEPENDS = "jack alsa-lib lame libxinerama libxv libxxf86vm libxvmc lirc"
+#RDEPENDS_${PN} = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2"
 
-inherit qmake qt3x11
+inherit qmake2 qt4x11
 
-# there is a -march=586 somewhere in the source tree
-COMPATIBLE_HOST = 'i.86.*-linux'
 
 QMAKE_PROFILES = "mythtv.pro"
 
@@ -22,7 +20,7 @@ def mythtv_arch(d):
         elif arch == "x86_64":
                 arch = "x86"
         elif arch == "arm":
-                arch = "armv4l"
+                arch = "${BASE_PACKAGE_ARCH}"
         return arch
 
 MYTHTV_ARCH := "${@mythtv_arch(d)}"
