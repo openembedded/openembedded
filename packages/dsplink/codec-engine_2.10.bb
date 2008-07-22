@@ -85,6 +85,20 @@ do_compile() {
 
 }
 
+export DSPLIBS = "${S}/packages/ti/sdo/ce/utils/trace/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/bioslog/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/video/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/audio/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/speech/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/lib/*.a \
+                  ${S}/packages/ti/sdo/ce/alg/lib/*.a \
+                  ${S}/cetools/packages/ti/sdo/fc/dman3/*.a \
+                  ${S}/cetools/packages/ti/sdo/fc/acpy3/*.a \
+                  ${S}/packages/ti/sdo/ce/utils/xdm/lib/*.a \
+                  ${S}/cetools/packages/ti/sdo/utils/trace/lib/*.a \
+                  ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a \ 
+                 "
+
 do_install() {
 		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 		cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
@@ -95,15 +109,15 @@ do_install() {
 		cd ${D} ; mv apitest apitestd multi_process multi_processd translate translated ${D}/${base_sbindir}		
 
 		install -d ${D}/${libdir}
-		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
-			install -m 0755 $i ${D}/${libdir}/
+		for i in ${DSPLIBS}; do
+			install -m 0755 $i ${D}/${libdir}/ || true
 		done
 }
 
 do_stage() {
 		install -d ${STAGING_LIBDIR}	
-		for i in ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ; do
-			install -m 0755 $i ${STAGING_LIBDIR}/
+		for i in ${DSPLIBS} ; do
+			install -m 0755 $i ${STAGING_LIBDIR}/ || true 
 		done
 		install -d ${STAGING_INCDIR}/codec-engine}
 		
