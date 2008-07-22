@@ -1,0 +1,73 @@
+Index: jamvm-1.4.5/configure.ac
+===================================================================
+--- jamvm-1.4.5.orig/configure.ac
++++ jamvm-1.4.5/configure.ac
+@@ -1,6 +1,6 @@
+ dnl Process this file with autoconf to produce a configure script.
+ AC_INIT(src/jam.c)
+-AM_INIT_AUTOMAKE(jamvm, 1.4.5)
++AM_INIT_AUTOMAKE(jamvm-initial, 1.4.5)
+ AC_CONFIG_HEADERS([src/config.h])
+ AC_PREFIX_DEFAULT(/usr/local/jamvm)
+ 
+Index: jamvm-1.4.5/java-initial
+===================================================================
+--- /dev/null
++++ jamvm-1.4.5/java-initial
+@@ -0,0 +1,5 @@
++#!/bin/sh
++#
++# Wrapper script inspired by the one provided by cacao.
++
++exec jamvm-initial ${1+"$@"}
+Index: jamvm-1.4.5/lib/Makefile.am
+===================================================================
+--- jamvm-1.4.5.orig/lib/Makefile.am
++++ jamvm-1.4.5/lib/Makefile.am
+@@ -1,4 +1,4 @@
+-@use_zip_yes@ GLIBJ_ZIP = ${with_classpath_install_dir}/share/classpath/glibj.zip
++@use_zip_yes@ GLIBJ_ZIP = ${with_classpath_install_dir}/share/classpath-initial/glibj.zip
+ @use_zip_no@ GLIBJ_ZIP = ${with_classpath_install_dir}/share/classpath/
+ 
+ SUBDIRS = jamvm java gnu sun
+Index: jamvm-1.4.5/src/dll.c
+===================================================================
+--- jamvm-1.4.5.orig/src/dll.c
++++ jamvm-1.4.5/src/dll.c
+@@ -294,7 +294,7 @@ char *getDllPath() {
+ }
+ 
+ char *getBootDllPath() {
+-    return CLASSPATH_INSTALL_DIR"/lib/classpath";
++    return CLASSPATH_INSTALL_DIR"/lib/classpath-initial";
+ }
+ 
+ char *getDllName(char *name) {
+Index: jamvm-1.4.5/src/Makefile.am
+===================================================================
+--- jamvm-1.4.5.orig/src/Makefile.am
++++ jamvm-1.4.5/src/Makefile.am
+@@ -2,7 +2,7 @@ SUBDIRS = os
+ DIST_SUBDIRS = os arch
+ 
+ bin_PROGRAMS = jamvm
+-include_HEADERS = jni.h
++noinst_HEADERS = jni.h
+ 
+ lib_LTLIBRARIES = libjvm.la
+ noinst_LTLIBRARIES = libcore.la
+Index: jamvm-1.4.5/src/class.c
+===================================================================
+--- jamvm-1.4.5.orig/src/class.c
++++ jamvm-1.4.5/src/class.c
+@@ -1653,8 +1653,8 @@ void scanDirsForJars(char *directories) 
+ }
+ 
+ #ifdef USE_ZIP
+-#define JAMVM_CLASSES INSTALL_DIR"/share/jamvm/classes.zip"
+-#define CLASSPATH_CLASSES CLASSPATH_INSTALL_DIR"/share/classpath/glibj.zip"
++#define JAMVM_CLASSES INSTALL_DIR"/share/jamvm-initial/classes.zip"
++#define CLASSPATH_CLASSES CLASSPATH_INSTALL_DIR"/share/classpath-initial/glibj.zip"
+ #else
+ #define JAMVM_CLASSES INSTALL_DIR"/share/jamvm/classes"
+ #define CLASSPATH_CLASSES CLASSPATH_INSTALL_DIR"/share/classpath"
