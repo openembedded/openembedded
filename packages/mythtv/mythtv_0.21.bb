@@ -47,7 +47,7 @@ python __anonymous () {
 
 EXTRA_OECONF_armv5te = " --enable-armv5te "
 EXTRA_OECONF_armv6 = " --enable-armv6 "
-EXTRA_OECONF_armv7a =  --enable-armv6"
+EXTRA_OECONF_armv7a = " --enable-armv6"
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt
