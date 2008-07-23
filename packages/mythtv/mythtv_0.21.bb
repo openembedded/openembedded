@@ -2,7 +2,7 @@ require mythtv.inc
 
 inherit qmake qt3x11
 
-PR = "${SRCREV}+r0"
+PR = "${SRCREV}+r1"
 REALPV = "0.21"
 
 SRCREV = "17789"
@@ -15,7 +15,7 @@ S = "${WORKDIR}/mythtv"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-mythlibs = "mythdb mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
+mythlibs = "mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
