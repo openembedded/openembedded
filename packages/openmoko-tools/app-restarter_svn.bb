@@ -3,6 +3,8 @@ LICENSE = "GPL"
 
 SRC_URI="svn://svn.openmoko.org/developers/zecke/;module=app_restarter;proto=http"
 S = "${WORKDIR}/app_restarter"
+PV = "1.0+svn${SRCREV}"
+PE = "1"
 
 inherit pkgconfig
 
