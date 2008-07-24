@@ -1,7 +1,7 @@
 gcclibdir ?= "${libdir}/gcc"
 BINV ?= "${PV}"
 
-PACKAGES = "libgcc ${PN} ${PN}-symlinks \
+PACKAGES = "libgcc libgcc-dev ${PN} ${PN}-symlinks \
             g++-noemu g++-noemu-symlinks \
 	    cpp-noemu cpp-noemu-symlinks \
             g77-noemu g77-noemu-symlinks \
@@ -10,6 +10,9 @@ PACKAGES = "libgcc ${PN} ${PN}-symlinks \
 	    libstdc++-noemu libg2c-noemu \
 	    libstdc++-noemu-dev libg2c-noemu-dev \
             ${PN}-doc"
+
+FILES_libgcc = "${base_libdir}/libgcc_s.so.*"
+FILES_libgcc-dev = "${base_libdir}/libgcc_s.so"
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
 	       ${bindir}/${TARGET_PREFIX}gccbug \
@@ -55,11 +58,13 @@ FILES_libstdc++-noemu-dev = "${includedir}/c++/${BINV} \
 		       ${libdir}/libstdc++.la \
 		       ${libdir}/libstdc++.a \
 		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
+		       ${libdir}/libsupc++.a \
+               ${libdir}/libstdc++_pic.a"
 
+LEAD_SONAME_libmudflap-noemu = "libmudflap.so.0"
 FILES_libmudflap-noemu = "${libdir}/libmudflap*.so.*"
 FILES_libmudflap-noemu-dev = "${libdir}/libmudflap*.so \
-                        ${libdir}/libmudflap*.a \
+                        ${libdir}/libmudflap*.la \
                         ${libdir}/libmudflap*.a"
 
 
