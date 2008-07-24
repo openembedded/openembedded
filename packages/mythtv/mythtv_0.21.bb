@@ -2,14 +2,18 @@ require mythtv.inc
 
 inherit qmake qt3x11
 
-PR = "${SRCREV}+r1"
+PR = "${SRCREV}+r2"
 REALPV = "0.21"
 
 SRCREV = "17789"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-21-fixes;module=mythtv;proto=http"
 
-SRC_URI += "file://configure.patch;patch=1 \
-           "
+SRC_URI += " \
+            file://ffmpeg-arm-update.diff;patch=1 \
+            file://configure.patch;patch=1 \
+            file://configh \
+	    file://configmak \
+	    "
 
 S = "${WORKDIR}/mythtv"
 
@@ -59,7 +63,6 @@ TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt 
 
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
 
-
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
 	find . -name "Makefile"|xargs rm -f
@@ -83,10 +86,12 @@ do_configure_prepend() {
 
 	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
 	mv settings.pro.new settings.pro
-    for pro in ${S}/*/*pro ${S}/*/*/*pro ${S}/*/*/*/*pro ; do
+	for pro in ${S}/*/*pro ${S}/*/*/*pro ${S}/*/*/*/*pro ; do
 		sed -i -e s:opengl::g $pro
 	done
 	sed -i /.SUBDIR/d ${S}/bindings/*pro
+	cat ${WORKDIR}/configh >> ${S}/config.h
+	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
 }
 
 python populate_packages_prepend () {
