@@ -3,15 +3,19 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "zlib libpng jpeg virtual/libsdl"
 LICENSE = "LGPL"
+PR = "r1"
 
-SRC_URI = "http://www.libsdl.org/projects/SDL_image/release/SDL_image-${PV}.tar.gz"
+SRC_URI = "http://www.libsdl.org/projects/SDL_image/release/SDL_image-${PV}.tar.gz \
+	   file://autotools.patch;patch=1 \
+	  "
+
 S = "${WORKDIR}/SDL_image-${PV}"
+
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
 inherit autotools
 
 do_stage() {
-	oe_libinstall -so libSDL_image ${STAGING_LIBDIR}
-	ln -sf libSDL_image.so ${STAGING_LIBDIR}/libSDL_image-1.2.so
-	install -m 0644 SDL_image.h ${STAGING_INCDIR}/SDL/SDL_image.h
+	autotools_stage_all
 }
 
