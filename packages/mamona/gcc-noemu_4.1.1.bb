@@ -4,6 +4,9 @@ HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
 LICENSE = "GPL"
 
+RCONFLICTS = "gcc"
+RREPLACES = "gcc"
+
 inherit autotools gettext
 
 require gcc-package-noemu.inc
