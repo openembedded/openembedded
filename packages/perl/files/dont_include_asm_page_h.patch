@@ -1,0 +1,12 @@
+diff -Naur perl-5.8.7-org/ext/IPC/SysV/SysV.xs perl-5.8.7/ext/IPC/SysV/SysV.xs
+--- perl-5.8.7-org/ext/IPC/SysV/SysV.xs	2001-06-30 20:46:07.000000000 +0200
++++ perl-5.8.7/ext/IPC/SysV/SysV.xs	2008-07-22 14:03:21.000000000 +0200
+@@ -4,7 +4,7 @@
+ 
+ #include <sys/types.h>
+ #ifdef __linux__
+-#   include <asm/page.h>
++//#   include <asm/page.h>
+ #endif
+ #if defined(HAS_MSG) || defined(HAS_SEM) || defined(HAS_SHM)
+ #ifndef HAS_SEM

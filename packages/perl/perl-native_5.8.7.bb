@@ -2,7 +2,7 @@ DESCRIPTION = "Perl is a popular scripting language."
 MAINTAINER="David Karlstrom <daka@thg.se>"
 HOMEPAGE = "http://www.perl.org/"
 LICENSE = "Artistic|GPL"
-PR = "r3"
+PR = "r4"
 
 SECTION = "libs"
 inherit native
@@ -12,7 +12,8 @@ DEPENDS = "virtual/db-native gdbm-native"
 SRC_URI = "http://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
            file://Configure-multilib.patch;patch=1 \
 	   file://host_gcc_4.2_buildfix.patch;patch=1 \
-           file://makedepend-dash.patch;patch=1"
+           file://makedepend-dash.patch;patch=1 \
+           file://dont_include_asm_page_h.patch;patch=1;pnum=1"
 S = "${WORKDIR}/perl-${PV}"
 
 #perl is not parallel_make safe
