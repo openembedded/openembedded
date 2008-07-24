@@ -102,12 +102,10 @@ SRC_URI_append_collie = "\
 	${TKSRC}/pcmcia_suspend.patch;patch=1 \
 	${TKSRC}/locomo_spi-6.patch;patch=1 \
 	${TKSRC}/config.patch;patch=1 \
-	${TKSRC}/locomokeyb-2.patch;patch=1 \
 	${TKSRC}/mmc-spi.patch;patch=1 \
 	${TKSRC}/linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
 	${TKSRC}/sa1100_spinlock.patch;patch=1 \
 	${TKSRC}/sa1100-dma.patch;patch=1 \
-	${TKSRC}/sa1100_udc_g_ether-2.patch;patch=1 \
 "
 
 SRC_URI_append_poodle = "\
