@@ -1,6 +1,9 @@
 DESCRIPTION = "Neuros qt-plugins"
 LICENSE = "GPL"
 
+PV = "0.0+${PR}+gitr${SRCREV}"
+PR = "r1"
+
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core
@@ -14,4 +17,7 @@ do_install() {
 	install -m 0755 ${S}/build/lib* ${D}/${libdir}
 }
 
-
+do_stage() {
+	install -d ${STAGING_LIBDIR}
+	install -m 0755 ${S}/build/lib* ${STAGING_LIBDIR}	
+}
