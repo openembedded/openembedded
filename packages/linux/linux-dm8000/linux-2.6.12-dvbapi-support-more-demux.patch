@@ -1,0 +1,16 @@
+diff -Naur stblinux-2.6.12-org/drivers/media/dvb/dvb-core/dvbdev.c stblinux-2.6.12/drivers/media/dvb/dvb-core/dvbdev.c
+--- stblinux-2.6.12-org/drivers/media/dvb/dvb-core/dvbdev.c	2008-07-17 23:14:00.000000000 +0200
++++ stblinux-2.6.12/drivers/media/dvb/dvb-core/dvbdev.c	2008-07-17 22:34:33.000000000 +0200
+@@ -52,9 +52,9 @@
+ };
+ 
+ #define DVB_MAX_ADAPTERS	8
+-#define DVB_MAX_IDS		4
+-#define nums2minor(num,type,id)	((num << 6) | (id << 4) | type)
+-#define MAX_DVB_MINORS		(DVB_MAX_ADAPTERS*64)
++#define DVB_MAX_IDS		8
++#define nums2minor(num,type,id)	((num << 7) | (id << 4) | type)
++#define MAX_DVB_MINORS		(DVB_MAX_ADAPTERS*128)
+ 
+ static struct class *dvb_class;
+ 
