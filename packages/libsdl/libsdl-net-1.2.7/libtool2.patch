@@ -1,0 +1,13 @@
+Index: SDL_net-1.2.7/configure.in
+===================================================================
+--- SDL_net-1.2.7.orig/configure.in	2007-07-20 14:40:02.000000000 +0200
++++ SDL_net-1.2.7/configure.in	2008-07-24 00:41:04.282718579 +0200
+@@ -42,6 +42,8 @@
+ dnl Setup for automake
+ AM_INIT_AUTOMAKE(SDL_net, $VERSION)
+ 
++dnl got macros
++AC_CONFIG_MACRO_DIR([acinclude])
+ dnl Check for tools
+ 
+ AC_LIBTOOL_WIN32_DLL
