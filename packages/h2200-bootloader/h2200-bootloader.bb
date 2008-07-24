@@ -1,5 +1,5 @@
 DESCRIPTION = "Bootloader firmware extractor for the h2200 iPAQ"
-RRECOMMENDS = "kernel-module-mtdblock"
+RRECOMMENDS_${PN} = "kernel-module-mtdblock"
 ALLOW_EMPTY = "1"
 PR = "r3"
 
