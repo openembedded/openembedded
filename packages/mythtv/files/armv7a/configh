@@ -1,0 +1,14 @@
+#define HAVE_LLRINT 1
+#define HAVE_ROUNDF 1
+#define ARCH_ARMV4L 1
+#define ENABLE_ARMV4L 1
+#define HAVE_ARMV5TE 1
+#define ENABLE_ARMV5TE 1
+#define HAVE_ARMV6 1
+#define ENABLE_ARMV6 1
+#define HAVE_ARMV6T2 1
+#define ENABLE_ARMV6T2 1
+#define HAVE_ARMVFP 1
+#define ENABLE_ARMVFP 1
+#define HAVE_NEON 1
+#define ENABLE_NEON 1

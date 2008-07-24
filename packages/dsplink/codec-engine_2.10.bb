@@ -85,18 +85,17 @@ do_compile() {
 
 }
 
-export DSPLIBS = "${S}/packages/ti/sdo/ce/utils/trace/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/bioslog/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/video/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/audio/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/speech/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/lib/*.a \
-                  ${S}/packages/ti/sdo/ce/alg/lib/*.a \
-                  ${S}/cetools/packages/ti/sdo/fc/dman3/*.a \
-                  ${S}/cetools/packages/ti/sdo/fc/acpy3/*.a \
-                  ${S}/packages/ti/sdo/ce/utils/xdm/lib/*.a \
-                  ${S}/cetools/packages/ti/sdo/utils/trace/lib/*.a \
-                  ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a \ 
+export DSPLIBS = "${S}/packages/ti/sdo/ce/utils/trace/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/bioslog/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/video/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/audio/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/speech/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/lib/*.a* \
+                  ${S}/packages/ti/sdo/ce/alg/lib/*.a* \
+                  ${S}/cetools/packages/ti/sdo/fc/dman3/*.a* \
+                  ${S}/cetools/packages/ti/sdo/fc/acpy3/*.a* \
+                  ${S}/packages/ti/sdo/ce/utils/xdm/lib/*.a* \
+                  ${S}/cetools/packages/ti/sdo/utils/trace/lib/*.a* \
                  "
 
 do_install() {
@@ -108,17 +107,23 @@ do_install() {
 		install -d ${D}/${base_sbindir}
 		cd ${D} ; mv apitest apitestd multi_process multi_processd translate translated ${D}/${base_sbindir}		
 
+
 		install -d ${D}/${libdir}
 		for i in ${DSPLIBS}; do
 			install -m 0755 $i ${D}/${libdir}/ || true
 		done
+        install -m 0755 ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ${D}/${libdir}
 }
 
 do_stage() {
 		install -d ${STAGING_LIBDIR}	
 		for i in ${DSPLIBS} ; do
-			install -m 0755 $i ${STAGING_LIBDIR}/ || true 
+			install -m 0755 $i ${STAGING_LIBDIR}/ 
+			ln -sf ${STAGING_LIBDIR}/$(basename $i | awk -F. '{print $1}').a470MV  ${STAGING_LIBDIR}/$(basename $i | awk -F. '{print $1}').a || true 
 		done
+
+        install -m 0755 ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ${STAGING_LIBDIR}/
+
 		install -d ${STAGING_INCDIR}/codec-engine}
 		
 		for header in $(find ${S}/cetools/packages/ -name "*.h") ; do
