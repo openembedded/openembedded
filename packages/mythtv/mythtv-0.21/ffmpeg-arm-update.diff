@@ -1651,7 +1651,7 @@ diff -Nurd mythtv.orig/libs/libavcodec/libavcodec.pro mythtv/libs/libavcodec/lib
  
  contains( HAVE_ARMV6, yes )      { SOURCES += armv4l/simple_idct_armv6.S }
  
-+contains( HAVE_NEON, yes )      { SOURCES += armv4l/simple_idct_neon.S }
++contains( HAVE_NEON, yes )      { SOURCES += armv4l/float_arm_vfp.c armv4l/simple_idct_neon.S armv4l/dsputil_neon.c armv4l/h264dsp_neon.S }
 +
  contains( HAVE_VIS, yes ) {
      SOURCES += sparc/dsputil_vis.c
