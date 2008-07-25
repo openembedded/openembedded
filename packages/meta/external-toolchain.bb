@@ -6,6 +6,7 @@ PROVIDES = "\
     linux-libc-headers \
     virtual/${TARGET_PREFIX}gcc \
     virtual/${TARGET_PREFIX}gcc-initial \
+    virtual/${TARGET_PREFIX}gcc-intermediate \
     virtual/${TARGET_PREFIX}binutils \
     virtual/${TARGET_PREFIX}libc-for-gcc \
     virtual/libc \

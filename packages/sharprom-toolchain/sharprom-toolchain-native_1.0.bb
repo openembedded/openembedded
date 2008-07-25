@@ -12,6 +12,7 @@ PROVIDES_sharprom-compatible = "\
   virtual/libiconv \
   virtual/arm-linux-gcc \
   virtual/arm-linux-libc-for-gcc \
+  virtual/arm-linux-gcc-intermediate \
   virtual/arm-linux-gcc-initial "
 PR = "r2"
 

@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-PR = "r13"
+PR = "r14"
 
 require uclibc.inc
 
@@ -34,6 +34,7 @@ THUMBSTUFF = " \
               file://dl-startup.h.patch;patch=1 \
               file://dl-string.h.patch;patch=1 \
               file://dl-sysdep.h.patch;patch=1 \
+              file://uclibc-libgcc-eh.patch;patch=1 \
              "
 
 SRC_URI_append_arm = " ${THUMBSTUFF} "

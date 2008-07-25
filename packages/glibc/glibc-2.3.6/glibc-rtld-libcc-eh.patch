@@ -1,0 +1,25 @@
+---
+ elf/Makefile |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+Index: glibc-2.3.6/elf/Makefile
+===================================================================
+--- glibc-2.3.6.orig/elf/Makefile	2008-07-17 01:10:39.000000000 -0700
++++ glibc-2.3.6/elf/Makefile	2008-07-17 01:17:18.000000000 -0700
+@@ -279,7 +279,7 @@ $(objpfx)rtld-libc.a: $(objpfx)librtld.m
+ 	$(MAKE) -f $< -f rtld-Rules
+ 
+ $(objpfx)librtld.os: $(objpfx)dl-allobjs.os $(objpfx)rtld-libc.a
+-	$(LINK.o) -nostdlib -nostartfiles -r -o $@ '-Wl,-(' $^ -lgcc '-Wl,-)' \
++	$(LINK.o) -nostdlib -nostartfiles -r -o $@ '-Wl,-(' $^ -lgcc -lgcc_eh '-Wl,-)' \
+ 		  -Wl,-Map,$@.map
+ 
+ generated += librtld.map librtld.mk rtld-libc.a librtld.os.map
+@@ -295,6 +295,7 @@ $(objpfx)ld.so: $(objpfx)librtld.os $(ld
+ 		      -e 's/\. = 0 + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
+ 		  > $@.lds
+ 	$(LINK.o) -nostdlib -nostartfiles -shared -o $@			\
++		  -lgcc -lgcc_eh					\
+ 		  $(LDFLAGS-rtld) -Wl,-z,defs $(z-now-$(bind-now))	\
+ 		  $(filter-out $(map-file),$^) $(load-map-file)		\
+ 		  -Wl,-soname=$(rtld-installed-name) -T $@.lds
