@@ -6,11 +6,6 @@
 #@MAINTAINER: Michael 'Mickey' Lauer <mickey@Vanille.de>
 #@--------------------------------------------------------------------
 
-# If you want to use the angstrom 2007.12 release or if
-# you want to base you distro on angstrom 2007, switch to
-# the org.openembedded.angstrom-2007.12-stable branch
-# THIS FILE WILL GO AWAY IN JANUARY 2008!!
-
 DISTRO_VERSION = "2007.11RC3"
 DISTRO_REVISION = "51"
 
@@ -33,30 +28,12 @@ DISTRO_TYPE ?= "debug"
 # Also, it appears that no locales fit in 16Mb for now. "C" locale rules!
 IMAGE_LINGUAS = '${@base_less_or_equal("ROOT_FLASH_SIZE", "16", "", "en-gb", d)}'
 
-# These will be put under package management soon
-#FEED_URIS += " \
-#		no-arch##${ANGSTROM_URI}/unstable/feed/all \
-#		base##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/base \
-#		perl##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/perl \
-#		python##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/python \
-#		debug##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/debug \
-#		gstreamer##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/gstreamer \
-#		${MACHINE}##${ANGSTROM_URI}/unstable/feed/${FEED_ARCH}/machine/${MACHINE}"
-#        base##${ANGSTROM_URI}/releases/${DISTRO_VERSION}/feed/${FEED_ARCH}/base \
-#        ${MACHINE}##${ANGSTROM_URI}/releases/${DISTRO_VERSION}/feed/${FEED_ARCH}/machine/${MACHINE} \
-#        updates##${ANGSTROM_URI}/releases/${DISTRO_VERSION}/feed/${FEED_ARCH}/updates"
-
-
 # set feed path variables
 FEED_BASEPATH = "feeds/2007/${ANGSTROM_PKG_FORMAT}/${ANGSTROM_MODE}/"
 
 
 #The angstrom-mirrors.bbclass should have everything, but we can use this as a fallback
-CVS_TARBALL_STASH ?= "\
-		     http://www.angstrom-distribution.org/unstable/sources/ \
-		     http://ewi546.ewi.utwente.nl/mirror/www.openzaurus.org/official/unstable/3.5.4/sources/ \
-		    "
-
+CVS_TARBALL_STASH ?= "http://www.angstrom-distribution.org/unstable/sources/"
 
 #Make sure we use 2.6 on machines with a 2.4/2.6 selector
 KERNEL = "kernel26"
