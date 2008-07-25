@@ -22,7 +22,7 @@ python __anonymous () {
 PROVIDES += "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES += "${@['virtual/libiconv', ''][bb.data.getVar('USE_NLS', d, 1) != 'yes']}"
 DEPENDS = "virtual/${TARGET_PREFIX}binutils \
-	   virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers ncurses-native"
+	   virtual/${TARGET_PREFIX}gcc-intermediate linux-libc-headers ncurses-native pax-utils-native"
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
 # Blackfin needs a wrapper around ld
@@ -73,7 +73,8 @@ UCLIBC_STAGE_PREFIX = "${STAGING_DIR_HOST}${layout_prefix}"
 # the CFLAGS (for when building the utils).
 OEMAKE_NO_CC = "'STRIPTOOL=true' 'LD=${LD}' \
 		'LOCALE_DATA_FILENAME=${UCLIBC_LOCALE_FILE}'"
-EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}' HOSTCFLAGS='-I${STAGING_INCDIR_NATIVE}'"
+EXTRA_OEMAKE = "${OEMAKE_NO_CC} 'CC=${CC}' \
+		'HOSTCFLAGS=-I${STAGING_INCDIR_NATIVE}'"
 EXTRA_OEMAKE_task_do_populate_staging = "${OEMAKE_NO_CC}"
 EXTRA_OEMAKE_task_do_package = "${OEMAKE_NO_CC}"
 

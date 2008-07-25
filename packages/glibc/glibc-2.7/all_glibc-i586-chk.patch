@@ -1,0 +1,33 @@
+http://bugs.gentoo.org/199479
+
+2007-09-13  H.J. Lu  <hongjiu.lu@intel.com>
+
+	* sysdeps/i386/i586/memcpy_chk.S: New file.
+	* sysdeps/i386/i586/mempcpy_chk.S: Likewise.
+	* sysdeps/i386/i586/memset_chk.S: Likewise.
+
+Index: glibc/sysdeps/i386/i586/memcpy_chk.S
+===================================================================
+RCS file: sysdeps/i386/i586/memcpy_chk.S
+diff -N sysdeps/i386/i586/memcpy_chk.S
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ glibc/sysdeps/i386/i586/memcpy_chk.S	13 Nov 2007 01:56:18 -0000	1.1
+@@ -0,0 +1 @@
++#include <sysdeps/i386/i686/memcpy_chk.S>
+Index: glibc/sysdeps/i386/i586/mempcpy_chk.S
+===================================================================
+RCS file: sysdeps/i386/i586/mempcpy_chk.S
+diff -N sysdeps/i386/i586/mempcpy_chk.S
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ glibc/sysdeps/i386/i586/mempcpy_chk.S	13 Nov 2007 01:56:18 -0000	1.1
+@@ -0,0 +1 @@
++#include <sysdeps/i386/i686/mempcpy_chk.S>
+Index: glibc/sysdeps/i386/i586/memset_chk.S
+===================================================================
+RCS file: sysdeps/i386/i586/memset_chk.S
+diff -N sysdeps/i386/i586/memset_chk.S
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ glibc/sysdeps/i386/i586/memset_chk.S	13 Nov 2007 01:56:18 -0000	1.1
+@@ -0,0 +1 @@
++#include <sysdeps/i386/i686/memset_chk.S>
+

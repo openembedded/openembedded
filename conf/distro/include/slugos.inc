@@ -96,13 +96,14 @@ DISTRO_EXTRA_RRECOMMENDS ?= ""
 
 # Virtuals:
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial = "gcc-cross-initial"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc = "gcc-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++ = "gcc-cross"
 
 #Set preferred provider for the C library that is used to build the crosscompiler (NPTL voodoo)
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc       = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc     = "glibc-intermediate"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc"
+PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc       = "glibc"
+PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc     = "glibc"
 
 # Set the preferred provider for a few toolchain-related items, otherwise
 # these may be selected from the external-toolchain instead.
@@ -118,8 +119,8 @@ PREFERRED_VERSION_gcc                ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross          ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross-sdk      ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross-initial  ?= "4.1.2"
+PREFERRED_VERSION_gcc-cross-intermediate  ?= "4.1.2"
 PREFERRED_VERSION_glibc              ?= "2.5"
-PREFERRED_VERSION_glibc-intermediate ?= "2.5"
 PREFERRED_VERSION_glibc-initial      ?= "2.5"
 
 # Select the smallest provider of x11 libraries
