@@ -1,0 +1,2 @@
+#define HAVE_LLRINT 1
+#define HAVE_ROUNDF 1

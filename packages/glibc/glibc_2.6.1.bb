@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r7"
+PR = "r8"
 
 ARM_INSTRUCTION_SET = "arm"
 
@@ -56,6 +56,7 @@ SRC_URI = "\
   file://etc/ld.so.conf \
   file://generate-supported.mk \
   file://glibc-2.6.1-RTLD_SINGLE_THREAD_P-1.patch;patch=1 \
+  file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
 "
 
 # Build fails on sh3 and sh4 without additional patches

@@ -4,7 +4,7 @@ AUTHOR = "Rasterman"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native"
 PV = "0.0+svnr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"
@@ -21,6 +21,7 @@ EXTRA_OECONF = "\
 RRECOMMENDS_${PN} = "\
   wamerican \
   ${PN}-config \
+  ${PN}-theme \
   ${PN}-dicts-default \
   ${PN}-keyboards-default \
   ${PN}-keyboards-numbers \

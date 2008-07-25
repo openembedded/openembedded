@@ -1,5 +1,7 @@
 require mythtv.inc
 
+inherit qmake2 qt3x11
+
 PR = "r1"
 
 SRC_URI += "file://msmpeg-underscore-pic.patch;patch=1 \

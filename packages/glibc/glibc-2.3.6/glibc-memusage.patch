@@ -1,0 +1,44 @@
+---
+ malloc/Makefile    |    4 +++-
+ malloc/memusage.sh |    6 ++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+Index: glibc-2.3.6/malloc/Makefile
+===================================================================
+--- glibc-2.3.6.orig/malloc/Makefile	2008-07-17 14:40:54.000000000 -0700
++++ glibc-2.3.6/malloc/Makefile	2008-07-17 14:42:07.000000000 -0700
+@@ -80,7 +80,7 @@ ifneq ($(cross-compiling),yes)
+ ifneq ($(LIBGD),no)
+ install-bin = memusagestat
+ install-bin-script += memusage
+-generated += memusagestat memusage
++generated += memusagestat
+ extra-objs += memusagestat.o
+ 
+ # The configure.in check for libgd and its headers did not use $SYSINCLUDES.
+@@ -90,6 +90,8 @@ extra-objs += memusagestat.o
+ $(objpfx)memusagestat.o: sysincludes = # nothing
+ endif
+ endif
++install-bin-script += memusage
++generated += memusage
+ 
+ # Another goal which can be used to override the configure decision.
+ .PHONY: do-memusagestat
+Index: glibc-2.3.6/malloc/memusage.sh
+===================================================================
+--- glibc-2.3.6.orig/malloc/memusage.sh	2008-07-17 14:42:17.000000000 -0700
++++ glibc-2.3.6/malloc/memusage.sh	2008-07-17 14:42:54.000000000 -0700
+@@ -205,6 +205,12 @@ if test $# -eq 0; then
+   do_usage
+ fi
+ 
++# Find memusagestat.
++if test -n "$png" -a ! -x $memusagestat; then
++  echo >&2 $"PNG generation is not supported."
++  png=""
++fi
++
+ # This will be in the environment.
+ add_env="LD_PRELOAD=$memusageso"
+ 

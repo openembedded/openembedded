@@ -6,6 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
 DEFAULT_PREFERENCE_spitz = "1"
+DEFAULT_PREFERENCE_collie = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -59,10 +60,11 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            file://defconfig-qemux86 \
            file://defconfig-bootcdx86 \
            file://defconfig-htcuniversal \
+           file://defconfig-collie \
+           file://initramfs-config-collie \
            file://defconfig-zylonite"
 # Disabled until the patchset is updated:
 #           file://defconfig-tosa
-#           file://defconfig-collie
 #           file://defconfig-poodle
 
 
@@ -78,23 +80,8 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
 
 
 SRC_URI_append_collie = "\
-	${TKSRC}/mtd-sharp-flash-hack-r4.patch;patch=1 \
-	${TKSRC}/mcp-sa11x0-r0.patch;patch=1 \
-	${TKSRC}/locomo-r1.patch;patch=1 \
-	${TKSRC}/collie-kexec-r1.patch;patch=1 \
-	${TKSRC}/sharpsl_pm-4.patch;patch=1 \
-	${TKSRC}/collie_pm-3.patch;patch=1 \
-	${TKSRC}/ucb1x00_suspend.patch;patch=1 \
-	${TKSRC}/collie-ts.patch;patch=1 \
-	${TKSRC}/pcmcia_suspend.patch;patch=1 \
-	${TKSRC}/locomo_spi-6.patch;patch=1 \
-	${TKSRC}/config.patch;patch=1 \
-	${TKSRC}/locomokeyb-2.patch;patch=1 \
-	${TKSRC}/mmc-spi.patch;patch=1 \
-	${TKSRC}/linux-2.6.24-SIMpad-rtc-sa1100.patch;patch=1 \
-	${TKSRC}/sa1100_spinlock.patch;patch=1 \
-	${TKSRC}/sa1100-dma.patch;patch=1 \
-	${TKSRC}/sa1100_udc_g_ether-2.patch;patch=1 \
+	file://collie.patch;patch=1 \
+	file://collie_keymap.patch;patch=1 \
 "
 
 SRC_URI_append_poodle = "\

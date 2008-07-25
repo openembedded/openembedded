@@ -1,0 +1,55 @@
+#!/bin/sh
+
+LIBS=""
+for lib in \
+    decode_x470MV.a \
+    TraceUtil.a \
+    bioslog.a \
+    video.a \
+    audio.a \
+    speech.a \
+    ce.a \
+    Algorithm_noOS.a \
+    alg.a \
+    osal_dsplink_linux.a \
+    osal_dsplink_linux_6446.a \
+    dman3Cfg.a \
+    acpy3.a \
+    cmem.a \
+    dsplink.lib \
+    XdmUtils.a \
+    gt.a
+do
+    LIBS="${LIBS} SEDME_STAGINGLIBDIR/${lib}"
+done
+
+CFLAGS="SEDME_CFLAGS"
+
+usage()
+{
+    echo "Usage : $0 [--cflags] [--libs]"
+    exit 1
+}
+
+test "$#" = 0 && usage
+
+OUT=""
+while test "$#" -gt 0;
+do
+    case "$1" in
+        "--cflags")
+            OUT="${OUT} ${CFLAGS}"
+        ;;
+        "--libs")
+            OUT="${OUT} ${LIBDIRS} ${LIBS}"
+        ;;
+        *)
+            usage
+        ;;
+    esac
+
+    shift
+done
+
+echo "${OUT}"
+exit 0

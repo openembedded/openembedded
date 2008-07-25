@@ -1,5 +1,7 @@
 require mythtv.inc
 
+inherit qmake2 qt3x11
+
 DEPENDS += "openchrome"
 PR = "r0"
 

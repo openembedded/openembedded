@@ -20,7 +20,7 @@ BASE_INSTALL = "\
 X_INSTALL = "\
   e-wm \
   illume \
-  illume-theme \
+  illume-theme-freesmartphone \
   ${XSERVER} \
   xserver-kdrive-common \
   xserver-nodm-init \

@@ -1,7 +1,7 @@
 require dsplink.inc
 
 
-DEFAULT_PREFERNECE = "-1"
+DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
 PR = "r9"

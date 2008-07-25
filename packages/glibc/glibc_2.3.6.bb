@@ -1,6 +1,6 @@
 require glibc.inc
 
-PR = "r0"
+PR = "r1"
 
 #FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.3.6', '${FILE_DIRNAME}/orig/glibc', '${FILE_DIRNAME}/orig/files', '${FILE_DIRNAME}/orig' ], d)}"
 
@@ -19,13 +19,16 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
            ${CROSSTOOL_PATCH_URL}glibc-2.3.6-fix-pr631.patch;patch=1 \
            ${CROSSTOOL_PATCH_URL}glibc-fp-byteorder.patch;patch=1 \
            ${CROSSTOOL_PATCH_URL}glibc-mips-bootstrap-gcc-header-install.patch;patch=1 \
+           ${CROSSTOOL_PATCH_URL}arm-ctl_bus_isa.patch;patch=1 \
            ${CROSSTOOL_PATCH_URL}make-install-lib-all.patch;patch=1 \
            ${CROSSTOOL_PATCH_URL}maybe/glibc-2.3.6-allow-gcc-4.0-powerpc32.patch;patch=1 \
            file://glibc-2.3.6-bind-already-defined-on-powerpc.patch;patch=1 \
            file://glibc-2.3.6-allow-gcc-4.1-powerpc32-initfini.s.patch;patch=1 \
            file://glibc-2.3.6-linuxthreads-allow-gcc-4.1-powerpc32-initfini.s.patch;patch=1 \
-           file://late-install-loop-break.patch \
-	   \
+           file://late-install-loop-break.patch;patch=1 \
+           file://glibc-arm-socket-weakalias.patch;patch=1 \
+           file://glibc-2.3.6-linuxthreads-pthread-raise.patch;patch=1 \
+           file://glibc-cross_sunrpc.patch;patch=1 \
            file://etc/ld.so.conf \
 	   file://generate-supported.mk"
 
@@ -60,7 +63,7 @@ do_configure () {
 		exit 1
 	fi
 	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
-	CPPFLAGS="" oe_runconf
+	CPPFLAGS="" libc_cv_forced_unwind=yes libc_cv_c_cleanup=yes oe_runconf
 }
 
 rpcsvc = "bootparam_prot.x nlm_prot.x rstat.x \

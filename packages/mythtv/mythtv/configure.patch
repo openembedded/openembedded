@@ -1,5 +1,5 @@
 --- /tmp/configure	2008-07-22 10:27:56.000000000 +0200
-+++ mythtv/configure	2008-07-22 12:50:43.000000000 +0200
++++ mythtv/configure	2008-07-22 17:53:20.000000000 +0200
 @@ -476,12 +476,13 @@
  }
  
@@ -30,6 +30,15 @@
  processor_flags=""
  tune="generic"
  
+@@ -1185,7 +1186,7 @@
+ lamemp3="yes"
+ lirc="yes"
+ mac_bundle="no"
+-opengl="yes"
++opengl="no"
+ v4l="yes"
+ x11="yes"
+ x11_include_path="/usr/X11R6/include"
 @@ -1214,7 +1215,7 @@
  # build settings
  SHFLAGS='-shared -Wl,-soname,$@'
@@ -129,3 +138,11 @@
  fi
  
  # test for distcc
+@@ -2718,6 +2723,7 @@
+ 
+ check_header GL/gl.h
+ has_library libGL || has_library libopengl32 || disable opengl
++enabled cross_compile && disable opengl
+ 
+ VENDOR_XVMC_LIBS=""
+ check_header X11/extensions/XvMClib.h

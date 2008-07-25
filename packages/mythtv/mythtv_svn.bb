@@ -1,11 +1,14 @@
 require mythtv.inc
 
+inherit qmake2 qt4x11
+
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.21+svnr${SRCREV}"
-PR = "r0"
+PV = "0.21+0.22rc+svnr${SRCREV}"
+PR = "r2"
+REALPV = "0.22"
 
-SRCREV = "17880"
+SRCREV = "17892"
 SRC_URI = "svn://svn.mythtv.org/svn/trunk;module=mythtv;proto=http"
 
 SRC_URI += "file://configure.patch;patch=1 \
@@ -15,14 +18,14 @@ S = "${WORKDIR}/mythtv"
 
 QMAKE_PROFILES = "mythtv.pro"
 
-mythlibs = "mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
+mythlibs = "mythdb mythavutil mythavcodec mythavformat myth mythtv mythui mythfreemheg mythupnp mythlivemedia"
 PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 
+FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
 FILES_mythtv-backend = "${bindir}/mythbackend ${bindir}/mythcommflag ${bindir}/mythfilldatabase ${bindir}/mythtranscode"
 FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfrontend_* ${datadir}/mythtv/*.ttf"
-RDEPENDS_mythtv-frontend = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
-FILES_mythtv-bin = "${bindir}"
-FILES_mythtv-filters = "${libdir}/mythtv/filters"
+FILES_mythtv-bin = "${bindir}/*"
+FILES_mythtv-filters = "${libdir}/mythtv/filters/*"
 FILES_mythtv-data = "${datadir}"
 RDEPENDS_${PN} = "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-data"
 ALLOW_EMPTY_${PN} = "1"
@@ -33,7 +36,7 @@ python __anonymous () {
     import bb
 
     mythlibs = bb.data.getVar('mythlibs', d).split()
-    pv = bb.data.expand(bb.data.getVar("PV", d), d)
+    pv = bb.data.expand(bb.data.getVar("REALPV", d), d)
 
     for m in mythlibs:
         bb.data.setVar("FILES_lib%s%s" % (m, pv), "${libdir}/lib%s-%s.so.*" % (m, pv), d)
@@ -46,7 +49,7 @@ python __anonymous () {
 
 EXTRA_OECONF_armv5te = " --enable-armv5te "
 EXTRA_OECONF_armv6 = " --enable-armv6 "
-EXTRA_OECONF_armv7a =  --enable-armv6"
+EXTRA_OECONF_armv7a = " --enable-armv6"
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt
@@ -62,11 +65,13 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable
 do_configure_prepend() {
 # it's not autotools anyway, so we call ./configure directly
 	find . -name "Makefile"|xargs rm -f
+
 	./configure	--prefix=/usr		\
 			--mandir=/usr/man 	\
 			--cpu=${MYTHTV_ARCH}	\
 			--arch=${MYTHTV_ARCH} \
 			--disable-altivec	\
+		 	--disable-opengl-video \
 			--disable-strip \
 			--enable-v4l		\
 			--enable-audio-oss	\
@@ -75,10 +80,15 @@ do_configure_prepend() {
 			--enable-libmp3lame \
 			--cross-compile	\
             --dvb-path=${STAGING_INCDIR} \
+			--with-bindings= \
 			${EXTRA_OECONF}
 
 	sed 's!PREFIX =.*!PREFIX = ${prefix}!;/INCLUDEPATH += $${PREFIX}\/include/d' < settings.pro > settings.pro.new
 	mv settings.pro.new settings.pro
+    for pro in ${S}/*/*pro ${S}/*/*/*pro ${S}/*/*/*/*pro ; do
+		sed -i -e s:opengl::g $pro
+	done
+	sed -i /.SUBDIR/d ${S}/bindings/*pro
 }
 
 python populate_packages_prepend () {

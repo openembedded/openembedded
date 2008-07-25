@@ -5,14 +5,14 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
 
-PR = "r3"
+PR = "r4"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
 TARGET_CPPFLAGS = "-I${STAGING_DIR_TARGET}${layout_includedir}"
 
 
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.4', '${FILE_DIRNAME}/glibc-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
 GLIBC_ADDONS ?= "ports,nptl,libidn"
 
@@ -58,6 +58,8 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 #	   file://zecke-sane-readelf.patch;patch=1 \
            file://ldd-unbash.patch;patch=1 \
 	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
+	   file://all_glibc-i586-chk.patch;patch=1 \
+	   file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \

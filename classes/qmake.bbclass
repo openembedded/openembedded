@@ -2,6 +2,7 @@ inherit qmake_base
 
 DEPENDS_prepend = "qmake-native "
 
+export QMAKESPEC
 export OE_QMAKE_UIC="${STAGING_BINDIR_NATIVE}/uic"
 export OE_QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc"
 export OE_QMAKE_QMAKE="${STAGING_BINDIR_NATIVE}/qmake"
