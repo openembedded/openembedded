@@ -1,5 +1,5 @@
 DESCRIPTON = "A init script that mounts a device and kexecs a new kernel from it."
-PR = "r4"
+PR = "r5"
 
 do_compile() {
         cat > init.sh << EOF
@@ -21,5 +21,5 @@ PACKAGE_ARCH = "all"
 
 FILES_${PN} = "/init /proc /mnt"
 
-ROOTDEV = "mtd2"
-ROOTFS = "jffs2"
+ROOTDEV = "/dev/mmcblk0p1"
+ROOTFS = "ext2"
