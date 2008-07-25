@@ -1,6 +1,12 @@
 Notes on Mono support in OE.
 
 ===============================
+Mono 1.9.1 status
+
+- mono-native and mono-mcs-intermediate error out during compile, but in a
+  dev shell they compile fine -- very strange.
+
+===============================
 Cross Compiling Mono
 
 Cross compiling mono requires a two stage build because the mono mcs directory

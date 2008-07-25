@@ -7,8 +7,6 @@ DEPENDS = "jack alsa-lib lame libxinerama libxv libxxf86vm libxvmc lirc"
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2"
 
-inherit qmake2 qt4x11
-
 
 QMAKE_PROFILES = "mythtv.pro"
 

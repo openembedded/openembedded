@@ -1,7 +1,8 @@
 DESCRIPTION = "Neuros qt-plugins"
 LICENSE = "GPL"
 
-PR = "r1"
+PV = "0.0+${PR}+gitr${SRCREV}"
+PR = "r2"
 
 DEPENDS = "qt-embedded"
 

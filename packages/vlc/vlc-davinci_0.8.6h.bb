@@ -10,7 +10,7 @@ PR = "r3"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 
-DEPENDS = "dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+DEPENDS = "codec-engine dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
 SRC_URI = "git://git.videolan.org/vlc.git;protocol=git;branch=0.8.6-neuros"
 
