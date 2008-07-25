@@ -1,9 +1,11 @@
 require mythtv.inc
 
+inherit qmake2 qt4x11
+
 DEFAULT_PREFERENCE = "-1"
 
-PV = "0.21+svnr${SRCREV}"
-PR = "r1"
+PV = "0.21+0.22rc+svnr${SRCREV}"
+PR = "r2"
 REALPV = "0.22"
 
 SRCREV = "17892"
@@ -22,7 +24,6 @@ PACKAGES =+ "mythtv-backend mythtv-frontend mythtv-bin mythtv-filters mythtv-dat
 FILES_${PN}-dbg += "${libdir}/mythtv/filters/.debug"
 FILES_mythtv-backend = "${bindir}/mythbackend ${bindir}/mythcommflag ${bindir}/mythfilldatabase ${bindir}/mythtranscode"
 FILES_mythtv-frontend = "${bindir}/mythfrontend ${datadir}/mythtv/i18n/mythfrontend_* ${datadir}/mythtv/*.ttf"
-RDEPENDS_mythtv-frontend = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
 FILES_mythtv-bin = "${bindir}/*"
 FILES_mythtv-filters = "${libdir}/mythtv/filters/*"
 FILES_mythtv-data = "${datadir}"
@@ -48,7 +49,7 @@ python __anonymous () {
 
 EXTRA_OECONF_armv5te = " --enable-armv5te "
 EXTRA_OECONF_armv6 = " --enable-armv6 "
-EXTRA_OECONF_armv7a =  --enable-armv6"
+EXTRA_OECONF_armv7a = " --enable-armv6"
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
 #not every iwmmxt machine has the lcd connected to pxafb, but building the module doesn't hurt
