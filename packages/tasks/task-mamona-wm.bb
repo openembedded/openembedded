@@ -9,4 +9,6 @@ RDEPENDS = "\
     e-wm \
     libmamona-im-ecore \
     libmamona-im-gtk \
+    pango-module-basic-x \
+    pango-module-basic-fc \
 "
