@@ -10,9 +10,13 @@ DEPENDS = "ecj-initial fastjar-native zip-native"
 
 inherit autotools native
 
+export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
+
+# Note: the --with-ecj options seems redundant but is
+# for compatibility with older classpath versions.
 EXTRA_OECONF = "\
-  --with-glibj \
   --with-ecj=${STAGING_BINDIR_NATIVE}/ecj-initial \
+  --with-glibj \
   --with-fastjar=fastjar \
   --enable-local-sockets \
   --disable-alsa \
