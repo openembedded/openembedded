@@ -1,12 +1,14 @@
 DESCRIPTION = "Speex is an Open Source/Free Software patent-free audio compression format designed for speech."
-SECTION = "libs"
+SECTION = "libs/multimedia"
 LICENSE = "BSD"
 HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
+BETA = "1.2rc1"
+PV = "1.1+${BETA}"
 PR = "r0"
 
-SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-1.2beta3.tar.gz"
-S = "${WORKDIR}/${PN}-1.2beta3"
+SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${BETA}.tar.gz"
+S = "${WORKDIR}/speex-${BETA}"
 
 PARALLEL_MAKE = ""
 
@@ -29,15 +31,19 @@ EXTRA_OECONF_append_bfin = " --enable-blackfin-asm --enable-fixed-point --disabl
 EXTRA_OECONF_append_arm = " --enable-fixed-point --disable-float-api --disable-vbr "
 EXTRA_OECONF_append_dht-walnut = " --enable-fixed-point --disable-float-api --disable-vbr "
 
+
+
 do_configure_append() {
 	sed -i s/"^OGG_CFLAGS.*$"/"OGG_CFLAGS = "/g Makefile */Makefile */*/Makefile
 	sed -i s/"^OGG_LIBS.*$"/"OGG_LIBS = -logg"/g Makefile */Makefile */*/Makefile
-	perl -pi -e 's:\s*-I/usr/include$::g' Makefile */Makefile */*/Makefile
+	find . -name "Makefile" -exec sed -i s,-I/usr/include,, {} \;
 }
 
 do_stage() {
-	oe_libinstall -C libspeex -so libspeex ${STAGING_LIBDIR}
-	install -d ${STAGING_INCDIR}/speex
-	install -m 0644 include/speex/*.h ${STAGING_INCDIR}/speex
-	install -m 0644 speex.m4 ${STAGING_DATADIR}/aclocal/
+	autotools_stage_all
 }
+
+PACKAGES =+ "${PN}-utils ${PN}-dsp"
+FILES_${PN}-utils = "${bindir}/speex*"
+FILES_${PN}-dsp = "${libdir}/libspeexdsp.so.*"
+FILES_${PN} = "${libdir}/libspeex.so.*"
