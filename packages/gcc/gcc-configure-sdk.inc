@@ -7,6 +7,7 @@ USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibcgnueabi", "no", "", d 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
                       --with-gxx-include-dir=${STAGING_DIR_TARGET}/${layout_includedir}/c++ \
                       --with-sysroot=${prefix}/${TARGET_SYS} \
+                      --with-build-time-tools=${CROSS_DIR}/${TARGET_SYS}/bin \
                       --with-build-sysroot=${STAGING_DIR_TARGET}"
 
 #

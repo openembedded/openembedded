@@ -1,11 +1,10 @@
 DESCRIPTION = "Base task package for GPE Palmtop Environment"
-PR = "r8"
+PR = "r9"
 LICENSE = "MIT"
 
 inherit task
 
 RDEPENDS_${PN} = "\
-    gpe-bootsplash \
     bluez-utils-dbus \
     matchbox \
     xcursor-transparent-theme \

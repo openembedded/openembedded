@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs-2.3.5"
-PR = "r8"
+PR = "r10"
 PV = "2.3.5+cvs${SRCDATE}"
 
 GLIBC_ADDONS ?= "ports,linuxthreads"

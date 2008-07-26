@@ -1,0 +1,14 @@
+#To populate the source mirror the autobuilder uses the following command:
+
+rsync ~/OE/downloads/ angstrom@linuxtogo.org:~/website/unstable/sources/ -av \
+	--exclude "*.md5" \
+	--exclude "svn" \
+	--exclude "cvs"  \
+	--exclude "git" \
+	--exclude "umac.ko" \
+	--exclude "IPL_ixp400NpeLibrary-2_3_2.zip" \
+	--exclude "*.lock" \
+	--exclude "codec_*" \
+	--exclude "dsplink*" \
+	--progress
+

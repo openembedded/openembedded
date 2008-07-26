@@ -1,7 +1,7 @@
 From: Mans Rullgard <mans@mansr.com>
 Date: Tue, 22 Jul 2008 00:58:18 +0000 (+0100)
 Subject: ARM: OMAP: add clk_get_parent() for OMAP2/3
-X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=76a35ce79194b60e3697378e726e1e510c9349d1
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=e2de5e5578fbaa9b4b75074796da0608fc93e6ae
 
 ARM: OMAP: add clk_get_parent() for OMAP2/3
 

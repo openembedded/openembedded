@@ -5,9 +5,12 @@ PRIORITY = "optional"
 LICENSE = "MIT-like"
 RDEPENDS = "python-distutils python-compression"
 SRCNAME = "setuptools"
-PR = "ml0"
+PR = "ml1"
 
-SRC_URI = "http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "\
+  http://cheeseshop.python.org/packages/source/s/setuptools/${SRCNAME}-${PV}.tar.gz\
+  file://fix-log-usage.patch;patch=1 \
+"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils

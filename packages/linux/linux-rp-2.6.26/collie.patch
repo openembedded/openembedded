@@ -1,0 +1,1883 @@
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index c7ad324..daa2e0a 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -998,7 +998,7 @@ config CPU_FREQ_SA1100
+ 
+ config CPU_FREQ_SA1110
+ 	bool
+-	depends on CPU_FREQ && (SA1100_ASSABET || SA1100_CERF || SA1100_PT_SYSTEM3)
++	depends on CPU_FREQ && (SA1100_ASSABET || SA1100_CERF || SA1100_PT_SYSTEM3 || SA1100_COLLIE)
+ 	default y
+ 
+ config CPU_FREQ_INTEGRATOR
+diff --git a/arch/arm/mach-sa1100/dma.c b/arch/arm/mach-sa1100/dma.c
+index e508028..36f726c 100644
+--- a/arch/arm/mach-sa1100/dma.c
++++ b/arch/arm/mach-sa1100/dma.c
+@@ -39,7 +39,7 @@ typedef struct {
+ 
+ static sa1100_dma_t dma_chan[SA1100_DMA_CHANNELS];
+ 
+-static spinlock_t dma_list_lock;
++static  DEFINE_SPINLOCK(dma_list_lock);
+ 
+ 
+ static irqreturn_t dma_irq_handler(int irq, void *dev_id)
+diff --git a/drivers/input/keyboard/locomokbd.c b/drivers/input/keyboard/locomokbd.c
+index 9caed30..79e19bf 100644
+--- a/drivers/input/keyboard/locomokbd.c
++++ b/drivers/input/keyboard/locomokbd.c
+@@ -265,6 +265,7 @@ static int __devinit locomokbd_probe(struct locomo_dev *dev)
+ 	for (i = 0; i < LOCOMOKBD_NUMKEYS; i++)
+ 		set_bit(locomokbd->keycode[i], input_dev->keybit);
+ 	clear_bit(0, input_dev->keybit);
++	locomo_writel(0, locomokbd->base + LOCOMO_KSC);
+ 
+ 	/* attempt to get the interrupt */
+ 	err = request_irq(dev->irq[0], locomokbd_interrupt, 0, "locomokbd", locomokbd);
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 9f93c29..33fc5d6 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -72,4 +72,10 @@ config MCP_UCB1200_TS
+ 	tristate "Touchscreen interface support"
+ 	depends on MCP_UCB1200 && INPUT
+ 
++config MCP_COLLIE_TS
++	tristate "Touchscreen collie support"
++	depends on MCP_UCB1200 && INPUT && !MCP_UCB1200_TS
++	 ---help---
++	  Driver for touchscreen on collie - sharp sl-5500.
++
+ endmenu
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 33daa2f..0885ccd 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -16,7 +16,7 @@ obj-$(CONFIG_MCP)		+= mcp-core.o
+ obj-$(CONFIG_MCP_SA11X0)	+= mcp-sa11x0.o
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-core.o
+ obj-$(CONFIG_MCP_UCB1200_TS)	+= ucb1x00-ts.o
+-
++obj-$(CONFIG_MCP_COLLIE_TS)     += collie-ts.o
+ ifeq ($(CONFIG_SA1100_ASSABET),y)
+ obj-$(CONFIG_MCP_UCB1200)	+= ucb1x00-assabet.o
+ endif
+diff --git a/drivers/mfd/collie-ts.c b/drivers/mfd/collie-ts.c
+new file mode 100644
+index 0000000..ddde5fc
+--- /dev/null
++++ b/drivers/mfd/collie-ts.c
+@@ -0,0 +1,449 @@
++/*
++ *  Touchscreen driver for UCB1x00-based touchscreens
++ *
++ *  Copyright (C) 2001 Russell King, All Rights Reserved.
++ *  Copyright (C) 2005 Pavel Machek
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * 21-Jan-2002 <jco@ict.es> :
++ *
++ * Added support for synchronous A/D mode. This mode is useful to
++ * avoid noise induced in the touchpanel by the LCD, provided that
++ * the UCB1x00 has a valid LCD sync signal routed to its ADCSYNC pin.
++ * It is important to note that the signal connected to the ADCSYNC
++ * pin should provide pulses even when the LCD is blanked, otherwise
++ * a pen touch needed to unblank the LCD will never be read.
++ */
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/smp.h>
++#include <linux/smp_lock.h>
++#include <linux/sched.h>
++#include <linux/completion.h>
++#include <linux/delay.h>
++#include <linux/string.h>
++#include <linux/input.h>
++#include <linux/device.h>
++#include <linux/freezer.h>
++#include <linux/slab.h>
++#include <linux/kthread.h>
++
++#include <asm/dma.h>
++#include <asm/semaphore.h>
++#include <asm/arch/collie.h>
++#include <asm/mach-types.h>
++
++#include "ucb1x00.h"
++
++struct ucb1x00_ts {
++	struct input_dev	*idev;
++	struct ucb1x00		*ucb;
++
++	wait_queue_head_t	irq_wait;
++	struct task_struct	*rtask;
++	u16			x_res;
++	u16			y_res;
++
++	unsigned int		adcsync:1;
++};
++
++static int adcsync;
++
++/**********************************
++
++     ................
++     .              . = 340
++     .              .
++     .             ^.
++     .             ^.
++     .             ^.
++     .             ^.
++     .              .
++     .             X. = 10
++     .  <<<<<<<<  Y .
++     ................
++     .   Sharp    =200
++     .              .
++     .  -   O    -  .
++     .              .
++     ................
++
++**********************************/
++
++
++static inline void ucb1x00_ts_evt_add(struct ucb1x00_ts *ts, u16 pressure, u16 x, u16 y)
++{
++	struct input_dev *idev = ts->idev;
++
++	input_report_abs(idev, ABS_X, x);
++	input_report_abs(idev, ABS_Y, y);
++	input_report_abs(idev, ABS_PRESSURE, pressure);
++        input_report_key(idev, BTN_TOUCH, 1);
++	input_sync(idev);
++}
++
++static inline void ucb1x00_ts_event_release(struct ucb1x00_ts *ts)
++{
++	struct input_dev *idev = ts->idev;
++
++	input_report_abs(idev, ABS_PRESSURE, 0);
++        input_report_key(idev, BTN_TOUCH, 0);
++	input_sync(idev);
++}
++
++/*
++ * Switch to interrupt mode. This set touchscreen to interrupt 
++ * mode, so that chip is able to send interrupt.
++ */
++static inline void ucb1x00_ts_mode_int(struct ucb1x00_ts *ts)
++{
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			UCB_TS_CR_TSMX_POW | UCB_TS_CR_TSPX_POW |
++			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_GND |
++			UCB_TS_CR_MODE_INT);
++}
++
++/*
++ * Switch to pressure mode, and read pressure.  We don't need to wait
++ * here, since both plates are being driven.
++ *
++ * set_read_pressure() in sharp code
++ */
++static inline void ucb1x00_ts_read_pressure(struct ucb1x00_ts *ts)
++{
++	ucb1x00_io_write(ts->ucb, COLLIE_TC35143_GPIO_TBL_CHK, 0);
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			  UCB_TS_CR_TSPX_POW | UCB_TS_CR_TSMX_POW |
++			  UCB_TS_CR_MODE_POS | UCB_TS_CR_BIAS_ENA);
++
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr | 
++			  UCB_ADC_INP_AD2 | 
++			  UCB_ADC_SYNC_ENA);
++	udelay(100);
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr | 
++			  UCB_ADC_INP_AD2 | 
++			  UCB_ADC_SYNC_ENA | UCB_ADC_START);
++}
++
++/*
++ * Switch to X position mode and measure Y plate.  We switch the plate
++ * configuration in pressure mode, then switch to position mode.  This
++ * gives a faster response time.  Even so, we need to wait about 55us
++ * for things to stabilise.
++ */
++static inline void ucb1x00_ts_read_xpos(struct ucb1x00_ts *ts)
++{
++	ucb1x00_io_write(ts->ucb, 0, COLLIE_TC35143_GPIO_TBL_CHK);
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			UCB_TS_CR_TSMX_GND | UCB_TS_CR_TSPX_POW |
++			UCB_TS_CR_MODE_POS | UCB_TS_CR_BIAS_ENA);
++
++
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr | 
++			  UCB_ADC_INP_TSPY | UCB_ADC_SYNC_ENA);
++	udelay(100);
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr | 
++			  UCB_ADC_INP_TSPY | UCB_ADC_SYNC_ENA | 
++		 	  UCB_ADC_START);
++}
++
++/*
++ * Switch to Y position mode and measure X plate.  We switch the plate
++ * configuration in pressure mode, then switch to position mode.  This
++ * gives a faster response time.  Even so, we need to wait about 55us
++ * for things to stabilise.
++ */
++static inline void ucb1x00_ts_read_ypos(struct ucb1x00_ts *ts)
++{
++	ucb1x00_io_write(ts->ucb, 0, COLLIE_TC35143_GPIO_TBL_CHK);
++
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_POW |
++			UCB_TS_CR_MODE_POS | UCB_TS_CR_BIAS_ENA);
++
++
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr | 
++			  UCB_ADC_INP_TSPX | UCB_ADC_SYNC_ENA);
++	udelay(100);
++	ucb1x00_reg_write(ts->ucb, UCB_ADC_CR, ts->ucb->adc_cr |
++			  UCB_ADC_INP_TSPX | UCB_ADC_SYNC_ENA | 
++			  UCB_ADC_START);
++}
++
++/*
++ * Switch to X plate resistance mode.  Set MX to ground, PX to
++ * supply.  Measure current.
++ */
++static inline unsigned int ucb1x00_ts_read_xres(struct ucb1x00_ts *ts)
++{
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			UCB_TS_CR_TSMX_GND | UCB_TS_CR_TSPX_POW |
++			UCB_TS_CR_MODE_PRES | UCB_TS_CR_BIAS_ENA);
++	return ucb1x00_adc_read(ts->ucb, 0, ts->adcsync);
++}
++
++/*
++ * Switch to Y plate resistance mode.  Set MY to ground, PY to
++ * supply.  Measure current.
++ */
++static inline unsigned int ucb1x00_ts_read_yres(struct ucb1x00_ts *ts)
++{
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR,
++			UCB_TS_CR_TSMY_GND | UCB_TS_CR_TSPY_POW |
++			UCB_TS_CR_MODE_PRES | UCB_TS_CR_BIAS_ENA);
++	return ucb1x00_adc_read(ts->ucb, 0, ts->adcsync);
++}
++
++/*
++ * This is a RT kernel thread that handles the ADC accesses
++ * (mainly so we can use semaphores in the UCB1200 core code
++ * to serialise accesses to the ADC).
++ */
++static int ucb1x00_thread(void *_ts)
++{
++	struct ucb1x00_ts *ts = _ts;
++	struct task_struct *tsk = current;
++	DECLARE_WAITQUEUE(wait, tsk);
++	int state;
++
++	/*
++	 * We could run as a real-time thread.  However, thus far
++	 * this doesn't seem to be necessary.
++	 */
++
++	add_wait_queue(&ts->irq_wait, &wait);	
++
++	while (!kthread_should_stop()) {
++		unsigned int data[3];
++			
++		for (state=0; state<3; state++) {
++			
++			ucb1x00_adc_enable(ts->ucb);
++			ucb1x00_enable_irq(ts->ucb, UCB_IRQ_ADC, UCB_FALLING);
++			switch (state) {
++			/* Order matters here; last measurement seems to be more noisy then the
++			   rest, and we care about pressure least */
++				case 2: ucb1x00_ts_read_pressure(ts);
++					break;
++				case 0: ucb1x00_ts_read_ypos(ts);
++					break;
++				case 1: ucb1x00_ts_read_xpos(ts);
++					break;
++			}
++			/* wait for adc */
++			try_to_freeze();
++			schedule_timeout(1000 * HZ);
++			ucb1x00_disable_irq(ts->ucb, UCB_IRQ_ADC, UCB_FALLING);
++			data[state] = UCB_ADC_DAT(ucb1x00_reg_read(ts->ucb, UCB_ADC_DATA));
++			ucb1x00_adc_disable(ts->ucb);
++		}	
++		
++		/* If not pressed any more, try to sleep! */
++		if (data[2] < 300) {
++			set_task_state(tsk, TASK_INTERRUPTIBLE);
++			ucb1x00_enable_irq(ts->ucb, UCB_IRQ_TSPX, UCB_RISING);
++			ucb1x00_ts_mode_int(ts);
++			ucb1x00_disable(ts->ucb);
++			ucb1x00_ts_event_release(ts);
++			try_to_freeze();
++			schedule_timeout(1000 * HZ);
++			ucb1x00_disable_irq(ts->ucb, UCB_IRQ_TSPX, UCB_RISING);
++			ucb1x00_enable(ts->ucb);
++		} else {	
++			ucb1x00_ts_evt_add(ts, data[2], data[1], data[0]);
++		}
++		ucb1x00_disable(ts->ucb);
++		msleep(20);
++		ucb1x00_enable(ts->ucb);
++	}
++
++	remove_wait_queue(&ts->irq_wait, &wait);
++
++	ts->rtask = NULL;
++	return 0;
++}
++
++/*
++ * We only detect touch screen _touches_ with this interrupt
++ * handler, and even then we just schedule our task.
++ */
++static void ucb1x00_ts_irq(int idx, void *id)
++{
++	struct ucb1x00_ts *ts = id;
++	wake_up(&ts->irq_wait);
++}
++
++static void ucb1x00_adc_irq(int idx, void *id)
++{
++	struct ucb1x00_ts *ts = id;
++	wake_up(&ts->irq_wait);
++}
++
++static int ucb1x00_ts_open(struct input_dev *idev)
++{
++	struct ucb1x00_ts *ts = input_get_drvdata(idev);
++	int ret = 0;
++
++	BUG_ON(ts->rtask);
++
++	init_waitqueue_head(&ts->irq_wait);
++	
++	ret = ucb1x00_hook_irq(ts->ucb, UCB_IRQ_TSPX, ucb1x00_ts_irq, ts);
++	if (ret < 0)
++		return ret;
++	
++	ret = ucb1x00_hook_irq(ts->ucb, UCB_IRQ_ADC, ucb1x00_adc_irq, ts);
++	if (ret < 0) {
++		ucb1x00_free_irq(ts->ucb, UCB_IRQ_TSPX, ts);
++		return ret;
++	}
++
++	ucb1x00_enable_irq(ts->ucb, UCB_IRQ_TSPX, UCB_RISING);
++	
++	/*
++	 * If we do this at all, we should allow the user to
++	 * measure and read the X and Y resistance at any time.
++	 */
++	ucb1x00_adc_enable(ts->ucb);
++	ts->x_res = ucb1x00_ts_read_xres(ts);
++	ts->y_res = ucb1x00_ts_read_yres(ts);
++	ucb1x00_adc_disable(ts->ucb);
++
++	if (machine_is_collie()) {
++		ucb1x00_io_set_dir(ts->ucb, 0, COLLIE_TC35143_GPIO_TBL_CHK);
++	}
++
++	ts->rtask = kthread_run(ucb1x00_thread, ts, "ktsd");
++	if (!IS_ERR(ts->rtask)) {
++		ret = 0;
++	} else {
++		ucb1x00_free_irq(ts->ucb, UCB_IRQ_TSPX, ts);
++		ts->rtask = NULL;
++		ret = -EFAULT;
++	}
++	
++	return ret;
++}
++
++/*
++ * Release touchscreen resources.  Disable IRQs.
++ */
++static void ucb1x00_ts_close(struct input_dev *idev)
++{
++	struct ucb1x00_ts *ts = input_get_drvdata(idev);
++
++	if (ts->rtask)
++		kthread_stop(ts->rtask);
++
++	ucb1x00_enable(ts->ucb);
++	ucb1x00_free_irq(ts->ucb, UCB_IRQ_TSPX, ts);
++	ucb1x00_free_irq(ts->ucb, UCB_IRQ_ADC, ts);
++	ucb1x00_reg_write(ts->ucb, UCB_TS_CR, 0);
++	ucb1x00_disable(ts->ucb);
++}
++
++#ifdef CONFIG_PM
++static int ucb1x00_ts_resume(struct ucb1x00_dev *dev)
++{
++	struct ucb1x00_ts *ts = dev->priv;
++
++	if (ts->rtask != NULL) {
++		/*
++		 * Restart the TS thread to ensure the
++		 * TS interrupt mode is set up again
++		 * after sleep.
++		 */
++		wake_up(&ts->irq_wait);
++	}
++	return 0;
++}
++#else
++#define ucb1x00_ts_resume NULL
++#endif
++
++
++/*
++ * Initialisation.
++ */
++static int ucb1x00_ts_add(struct ucb1x00_dev *dev)
++{
++	struct ucb1x00_ts *ts;
++	struct input_dev *idev;
++	int err;
++
++	ts = kzalloc(sizeof(struct ucb1x00_ts), GFP_KERNEL);
++	idev = input_allocate_device();
++	if (!ts || !idev) {
++		err = -ENOMEM;
++		goto fail;
++	}
++
++	ts->ucb = dev->ucb;
++	ts->idev = idev;
++	ts->adcsync = adcsync ? UCB_SYNC : UCB_NOSYNC;
++
++	input_set_drvdata(idev, ts);
++	idev->name       = "Touchscreen panel";
++	idev->id.product = ts->ucb->id;
++	idev->open       = ucb1x00_ts_open;
++	idev->close      = ucb1x00_ts_close;
++
++	__set_bit(EV_ABS, idev->evbit);
++	__set_bit(ABS_X, idev->absbit);
++	__set_bit(ABS_Y, idev->absbit);
++	__set_bit(ABS_PRESSURE, idev->absbit);
++
++        input_set_abs_params(ts->idev, ABS_X, 0, 450, 0, 0);
++        input_set_abs_params(ts->idev, ABS_Y, 200, 800, 0, 0);
++        input_set_abs_params(ts->idev, ABS_PRESSURE, 400, 800, 0, 0);
++
++
++	err = input_register_device(idev);
++	if (err)
++		goto fail;
++
++	dev->priv = ts;
++
++	return 0;
++
++ fail:
++	input_free_device(idev);
++	kfree(ts);
++	return err;
++}
++
++static void ucb1x00_ts_remove(struct ucb1x00_dev *dev)
++{
++	struct ucb1x00_ts *ts = dev->priv;
++
++	input_unregister_device(ts->idev);
++	kfree(ts);
++}
++
++static struct ucb1x00_driver ucb1x00_ts_driver = {
++	.add		= ucb1x00_ts_add,
++	.remove		= ucb1x00_ts_remove,
++	.resume		= ucb1x00_ts_resume,
++};
++
++static int __init ucb1x00_ts_init(void)
++{
++	return ucb1x00_register_driver(&ucb1x00_ts_driver);
++}
++
++static void __exit ucb1x00_ts_exit(void)
++{
++	ucb1x00_unregister_driver(&ucb1x00_ts_driver);
++}
++
++module_param(adcsync, int, 0444);
++module_init(ucb1x00_ts_init);
++module_exit(ucb1x00_ts_exit);
++
++MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
++MODULE_DESCRIPTION("UCB1x00 touchscreen driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/mfd/ucb1x00.h b/drivers/mfd/ucb1x00.h
+index a8ad8a0..137b043 100644
+--- a/drivers/mfd/ucb1x00.h
++++ b/drivers/mfd/ucb1x00.h
+@@ -34,7 +34,10 @@
+ #define UCB_IE_TCLIP		(1 << 14)
+ #define UCB_IE_ACLIP		(1 << 15)
+ 
++/* UCB1200 irqs */
++#define UCB_IRQ_ADC		11
+ #define UCB_IRQ_TSPX		12
++#define UCB_IRQ_TSMX		13
+ 
+ #define UCB_TC_A	0x05
+ #define UCB_TC_A_LOOP		(1 << 7)	/* UCB1200 */
+diff --git a/drivers/net/wireless/hostap/hostap_cs.c b/drivers/net/wireless/hostap/hostap_cs.c
+index 3b4e55c..0ae741d 100644
+--- a/drivers/net/wireless/hostap/hostap_cs.c
++++ b/drivers/net/wireless/hostap/hostap_cs.c
+@@ -35,7 +35,7 @@ static int ignore_cis_vcc;
+ module_param(ignore_cis_vcc, int, 0444);
+ MODULE_PARM_DESC(ignore_cis_vcc, "Ignore broken CIS VCC entry");
+ 
+-
++int activar=0;
+ /* struct local_info::hw_priv */
+ struct hostap_cs_priv {
+ 	dev_node_t node;
+@@ -499,11 +499,13 @@ static int hostap_cs_probe(struct pcmcia_device *p_dev)
+ 
+ 	PDEBUG(DEBUG_HW, "%s: setting Vcc=33 (constant)\n", dev_info);
+ 	p_dev->conf.IntType = INT_MEMORY_AND_IO;
+-
++	
++	activar=0;
+ 	ret = prism2_config(p_dev);
+ 	if (ret) {
+ 		PDEBUG(DEBUG_EXTRA, "prism2_config() failed\n");
+ 	}
++	activar=1;
+ 
+ 	return ret;
+ }
+diff --git a/drivers/net/wireless/hostap/hostap_hw.c b/drivers/net/wireless/hostap/hostap_hw.c
+index 13d5882..6f24d66 100644
+--- a/drivers/net/wireless/hostap/hostap_hw.c
++++ b/drivers/net/wireless/hostap/hostap_hw.c
+@@ -54,6 +54,7 @@
+ #include "hostap.h"
+ #include "hostap_ap.h"
+ 
++extern int activar;
+ 
+ /* #define final_version */
+ 
+@@ -1497,6 +1498,8 @@ static int prism2_hw_config(struct net_device *dev, int initial)
+ 	if (local->hw_downloading)
+ 		return 1;
+ 
++	activar=1;
++
+ 	if (prism2_hw_init(dev, initial)) {
+ 		return local->no_pri ? 0 : 1;
+ 	}
+@@ -2628,8 +2631,15 @@ static irqreturn_t prism2_interrupt(int irq, void *dev_id)
+ 	int events = 0;
+ 	u16 ev;
+ 
+-	iface = netdev_priv(dev);
+-	local = iface->local;
++
++	// Todos los parametros de entrada son correctos (no son nulos). De momento esta es la unica forma que conozco de detectar el problema.
++	if (!activar) {
++		printk("hostap_hw.c: INTERRUPT BEFORE DEVICE INIT!\n");
++		return IRQ_HANDLED;
++	}
++
++ 	iface = netdev_priv(dev);
++ 	local = iface->local;
+ 
+ 	prism2_io_debug_add(dev, PRISM2_IO_DEBUG_CMD_INTERRUPT, 0, 0);
+ 
+diff --git a/drivers/net/wireless/hostap/hostap_pci.c b/drivers/net/wireless/hostap/hostap_pci.c
+index 3a874fc..df58aa3 100644
+--- a/drivers/net/wireless/hostap/hostap_pci.c
++++ b/drivers/net/wireless/hostap/hostap_pci.c
+@@ -19,6 +19,7 @@
+ 
+ #include "hostap_wlan.h"
+ 
++int activar=1;
+ 
+ static char *dev_info = "hostap_pci";
+ 
+diff --git a/drivers/net/wireless/hostap/hostap_plx.c b/drivers/net/wireless/hostap/hostap_plx.c
+index cbf15d7..4475174 100644
+--- a/drivers/net/wireless/hostap/hostap_plx.c
++++ b/drivers/net/wireless/hostap/hostap_plx.c
+@@ -21,7 +21,7 @@
+ #include <asm/io.h>
+ 
+ #include "hostap_wlan.h"
+-
++int activar=1;
+ 
+ static char *dev_info = "hostap_plx";
+ 
+diff --git a/drivers/pcmcia/sa1100_generic.c b/drivers/pcmcia/sa1100_generic.c
+index c5b2a44..eecbe8c 100644
+--- a/drivers/pcmcia/sa1100_generic.c
++++ b/drivers/pcmcia/sa1100_generic.c
+@@ -81,13 +81,14 @@ static int sa11x0_drv_pcmcia_probe(struct device *dev)
+ 	return ret;
+ }
+ 
+-static struct device_driver sa11x0_pcmcia_driver = {
+-	.probe		= sa11x0_drv_pcmcia_probe,
+-	.remove		= soc_common_drv_pcmcia_remove,
+-	.name		= "sa11x0-pcmcia",
+-	.bus		= &platform_bus_type,
+-	.suspend 	= pcmcia_socket_dev_suspend,
+-	.resume 	= pcmcia_socket_dev_resume,
++static struct platform_driver sa11x0_pcmcia_driver = {
++	.driver 	= {
++		.name   = "sa11x0-pcmcia",
++		.probe	= sa11x0_drv_pcmcia_probe,
++		.remove	= soc_common_drv_pcmcia_remove,
++		.suspend= pcmcia_socket_dev_suspend,
++		.resume	= pcmcia_socket_dev_resume,
++	},
+ };
+ 
+ /* sa11x0_pcmcia_init()
+@@ -100,7 +101,7 @@ static struct device_driver sa11x0_pcmcia_driver = {
+  */
+ static int __init sa11x0_pcmcia_init(void)
+ {
+-	return driver_register(&sa11x0_pcmcia_driver);
++	return platform_driver_register(&sa11x0_pcmcia_driver);
+ }
+ 
+ /* sa11x0_pcmcia_exit()
+@@ -110,7 +111,7 @@ static int __init sa11x0_pcmcia_init(void)
+  */
+ static void __exit sa11x0_pcmcia_exit(void)
+ {
+-	driver_unregister(&sa11x0_pcmcia_driver);
++	platform_driver_unregister(&sa11x0_pcmcia_driver);
+ }
+ 
+ MODULE_AUTHOR("John Dorsey <john+@cs.cmu.edu>");
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 66ec5d8..aba38d7 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -123,6 +123,10 @@ config SPI_MPC52xx_PSC
+ 	  This enables using the Freescale MPC52xx Programmable Serial
+ 	  Controller in master SPI mode.
+ 
++config SPI_LOCOMO
++	tristate "Locomo SPI master"
++	depends on SPI_MASTER && SHARP_LOCOMO && EXPERIMENTAL
++
+ config SPI_MPC83xx
+ 	tristate "Freescale MPC83xx/QUICC Engine SPI controller"
+ 	depends on SPI_MASTER && (PPC_83xx || QUICC_ENGINE) && EXPERIMENTAL
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index 7fca043..b89992b 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -28,6 +28,7 @@ obj-$(CONFIG_SPI_S3C24XX)		+= spi_s3c24xx.o
+ obj-$(CONFIG_SPI_TXX9)			+= spi_txx9.o
+ obj-$(CONFIG_SPI_XILINX)		+= xilinx_spi.o
+ obj-$(CONFIG_SPI_SH_SCI)		+= spi_sh_sci.o
++obj-$(CONFIG_SPI_LOCOMO)                += locomo_spi.o
+ # 	... add above this line ...
+ 
+ # SPI protocol drivers (device/link on bus)
+diff --git a/drivers/spi/locomo_spi.c b/drivers/spi/locomo_spi.c
+new file mode 100644
+index 0000000..d3a4bd9
+--- /dev/null
++++ b/drivers/spi/locomo_spi.c
+@@ -0,0 +1,1097 @@
++#include <asm/io.h>
++#include <asm/irq.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/stat.h>
++#include <linux/delay.h>
++#include <linux/wait.h>
++#include <linux/interrupt.h>
++#include <asm/hardware/locomo.h>
++#include <asm/errno.h>
++#include <linux/mmc/host.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/mmc_spi.h>
++#include <linux/workqueue.h>
++#include <linux/spinlock.h>
++#include <linux/list.h>
++#include "locomo_spi.h"
++static struct locomospi_dev * spidev;
++static struct work_struct transfer_wq;
++int  delay;
++
++char* transtxbuf=(char*)NULL;
++char* transrxbuf=(char*)NULL;
++int transfercount=0, transfersize=0;
++static DECLARE_WAIT_QUEUE_HEAD(transferqueue);
++/* MMC_SPI functions *********************************************************/
++
++static int locomommcspi_init(struct device *dev, irqreturn_t (*isr)(int, void*), void *mmc)
++{
++	int result;
++	result=request_irq(IRQ_LOCOMO_CARDDETECT, isr, IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, "locomo-spi",  mmc);
++	return result;
++}
++
++static void locomommcspi_exit(struct device *dev, void* mmc)
++{
++	free_irq(IRQ_LOCOMO_CARDDETECT, mmc);
++}
++
++static int locomommcspi_getro(struct device *dev)
++{
++	return locomo_gpio_read_level(spidev->ldev->dev.parent,LOCOMO_GPIO_WRITE_PROT) > 0 ? 1 : 0;
++}
++
++static void locomommcspi_setpower(struct device *dev, unsigned int mask)
++{
++	if(!mask && spidev->card_power)
++		locomospi_power(0);
++	else if( !spidev->card_power )
++		locomospi_power(1);
++
++}
++
++
++static struct mmc_spi_platform_data colliemmc ={
++	.init 		= locomommcspi_init,
++	.exit 		= locomommcspi_exit,
++	.detect_delay 	= 200,
++	.get_ro 	= locomommcspi_getro,
++	.ocr_mask 	= MMC_VDD_32_33 | MMC_VDD_33_34,
++	.setpower	= locomommcspi_setpower,
++	.powerup_msecs  = 200,
++};
++
++/* Utility function **********************************************************/
++
++static void locomospi_power(int on)
++{
++	locomo_gpio_write(spidev->ldev->dev.parent, LOCOMO_GPIO_CARD_POWER, on);
++	spidev->card_power=on;
++	printk(KERN_DEBUG "locomospi: power %d\n",on);
++}
++
++static void locomospi_setclock(unsigned int div, unsigned int clock)
++{
++	u16 r = ioread16(spidev->base+LOCOMO_SPIMD);
++	div &= 0x7;
++	clock &= 0x3;
++	if(clock != spidev->clock_base || div != spidev->clock_div){
++		r &= ~(LOCOMO_SPI_XSEL  | LOCOMO_SPI_CLKSEL | LOCOMO_SPI_XEN);
++		iowrite16(r,spidev->base+LOCOMO_SPIMD);
++		r |=  (div | (clock <<3) | LOCOMO_SPI_XEN);
++		iowrite16(r,spidev->base+LOCOMO_SPIMD);
++		spidev->clock_div = div;
++		spidev->clock_base = clock;
++		udelay(300);
++	}
++
++}
++// returns 1 if card ist present, 0 otherwise
++static int locomospi_carddetect()
++{
++	return (locomo_gpio_read_level(spidev->ldev->dev.parent,LOCOMO_GPIO_CARD_DETECT)>0)?0:1;
++}
++
++static void locomospi_setcs(int high)
++{
++	u16 r;
++	printk(KERN_DEBUG "locomospi: cs %d\n",high);
++	r = ioread16(spidev->base + LOCOMO_SPICT);
++	if(high)
++		r |= LOCOMO_SPI_CS;
++	else
++		r &= ~LOCOMO_SPI_CS;
++	iowrite16(r, spidev->base + LOCOMO_SPICT);
++}
++
++static void locomospi_reg_open()
++{
++	u16 r;
++	spidev->clock_div = DIV_64;
++	spidev->clock_base = CLOCK_18MHZ;
++	locomospi_power(1);
++	msleep(100);
++//	iowrite16( 0xec00 | (CLOCK_18MHZ <<3)|DIV_64, spidev->base+LOCOMO_SPIMD);
++	iowrite16( LOCOMO_SPI_MSB1ST | LOCOMO_SPI_DOSTAT | LOCOMO_SPI_RCPOL | LOCOMO_SPI_TCPOL 
++			|(CLOCK_18MHZ <<3) | DIV_64, spidev->base+LOCOMO_SPIMD);
++//	if(locomospi_carddetect()){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16( r, spidev->base+LOCOMO_SPIMD);
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XEN;
++		iowrite16( r, spidev->base+LOCOMO_SPIMD);
++//	}
++	iowrite16( LOCOMO_SPI_CS, spidev->base+LOCOMO_SPICT);
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r |= (LOCOMO_SPI_CEN | LOCOMO_SPI_RXUEN | LOCOMO_SPI_ALIGNEN);
++	iowrite16( r, spidev->base+LOCOMO_SPICT);
++	udelay(200);
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r &= ~LOCOMO_SPI_CS;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++}
++
++static void locomospi_reg_release()
++{
++	u16 r;
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r &= ~LOCOMO_SPI_CEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	r = ioread16(spidev->base+LOCOMO_SPIMD);
++	r &= ~LOCOMO_SPI_XEN;
++	iowrite16(r, spidev->base+LOCOMO_SPIMD);
++	r = ioread16(spidev->base+LOCOMO_SPIMD);
++	r &= ~LOCOMO_SPI_XON;
++	iowrite16(r, spidev->base+LOCOMO_SPIMD);
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r |= LOCOMO_SPI_XEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	locomospi_power(0);
++}
++#if 0
++static int txrx(const char* txbuffer, char* rxbuffer, int size)
++{
++	u16 r = ioread16(spidev->base+LOCOMO_SPICT);
++	r |= LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	printk(KERN_DEBUG "locomospi: %d bytes to prozess\n",size);
++	/* initialize global vars for isr */
++	transfercount=0; transfersize=size; 
++	transtxbuf=txbuffer; transrxbuf=rxbuffer;
++
++	/* start transmit and go sleep  isr will wake us*/
++	enable_irq(IRQ_LOCOMO_SPI_TEND);
++	iowrite8(txbuffer[0], spidev->base+LOCOMO_SPITD);
++	wait_event(transferqueue, transfercount >= transfersize);
++	disable_irq(IRQ_LOCOMO_SPI_TEND);
++	transrxbuf=NULL; transtxbuf=NULL;
++	
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r &= ~LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	int i;
++	for(i=0; i< size; i++)
++		printk(KERN_DEBUG "locomospi: sent: %x  received: %x \n",txbuffer[i], rxbuffer[i]);
++	
++	
++	return size;
++}
++
++
++static int tx(const char* txbuffer, int size)
++{
++	printk(KERN_DEBUG "locomospi: %d bytes to send\n",size);
++	/* initialize global vars for isr */
++	transfercount=0; transfersize=size; 
++	transtxbuf=txbuffer; 
++
++	/* start transmit and go sleep  isr will wake us*/
++	enable_irq(IRQ_LOCOMO_SPI_RFW);
++	iowrite8(txbuffer[0], spidev->base+LOCOMO_SPITD);
++	wait_event(transferqueue, transfercount >= transfersize);
++	disable_irq(IRQ_LOCOMO_SPI_RFW);
++	transtxbuf=NULL;
++	
++	int i;
++	for(i=0; i< size; i++)
++		printk(KERN_DEBUG "locomospi: sent: %x\n",txbuffer[i]);
++	
++	
++	return size;
++}
++
++static int rx(char* rxbuffer, int size)
++{
++	printk(KERN_DEBUG "locomospi: %d bytes to read\n",size);
++	/* initialize global vars for isr */
++	transfercount=0; transfersize=size; 
++	transrxbuf=rxbuffer;
++
++	/* start transmit and go sleep  isr will wake us*/
++	enable_irq(IRQ_LOCOMO_SPI_RFR);
++	rxbuffer[0]=ioread8(spidev->base+LOCOMO_SPIRD);
++	wait_event(transferqueue, transfercount >= transfersize);
++	disable_irq(IRQ_LOCOMO_SPI_RFR);
++	transrxbuf=NULL;
++	
++	int i;
++	for(i=0; i< size; i++)
++		printk(KERN_DEBUG "locomospi: received: %x \n", rxbuffer[i]);
++	
++	
++	return size;
++}
++
++#else
++static int txrx(const char* txbuffer, char* rxbuffer, int size)
++{
++	int i=0,j=0;
++	int wait;
++	u16 r;
++/*	char * txback = kmalloc(size * sizeof(char), GFP_KERNEL);
++	memcpy(txback, txbuffer, size);	
++*/	
++	if(spidev->clock_div == 4)
++		wait = 0x10000;
++	else
++		wait = 8;
++	
++//	printk(KERN_DEBUG "locomospi: txrx %d bytes to prozess\n",size);
++	
++//	r = ioread16(spidev->base+LOCOMO_SPICT);
++//	r |= LOCOMO_SPI_ALIGNEN;
++//	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	//discard first bogus byte
++
++	ioread8(spidev->base+LOCOMO_SPIRD);
++	for(i=0; i<size; i++){
++		for(j=0; j <= wait; j++){
++			if(ioread16(spidev->base+LOCOMO_SPIST) & LOCOMO_SPI_RFW)
++				break;
++		}
++		iowrite8(txbuffer[i], spidev->base+LOCOMO_SPITD);
++		ndelay(delay);
++		
++		for(j=0; j <= wait; j++){
++			if(ioread16(spidev->base+LOCOMO_SPIST) & LOCOMO_SPI_RFR)
++				break;
++		}
++		rxbuffer[i] = ioread8(spidev->base+LOCOMO_SPIRD);
++		ndelay(delay);
++	}
++//	r = ioread16(spidev->base+LOCOMO_SPICT);
++//	r &= ~LOCOMO_SPI_ALIGNEN;
++//	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	
++/*	for(j=0; j< size; j++)
++		printk(KERN_DEBUG "locomospi: sent: %x  received: %x \n",txback[j], rxbuffer[j]);
++	
++	kfree(txback);	
++*/	return i;
++}
++
++static int tx(const char* buffer, int size)
++{
++	int i=0,j=0;
++	int wait;
++	u16 r;
++	if(spidev->clock_div == 4)
++		wait = 0x10000;
++	else
++		wait = 8;
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r &= ~LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++
++//	printk(KERN_DEBUG "locomospi: tx %d bytes to transmit\n",size);
++	for(i=0; i<size; i++){
++		for(j=0; j <= wait; j++){
++			if(ioread16(spidev->base+LOCOMO_SPIST) & LOCOMO_SPI_RFW)
++				break;
++		}
++		iowrite8(buffer[i], spidev->base+LOCOMO_SPITD);
++		ndelay(delay);
++	}
++
++	for(j=0; j <= wait; j++){
++		if(ioread16(spidev->base+LOCOMO_SPIST) & LOCOMO_SPI_TEND)
++			break;
++	}
++	
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r |= LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	
++//	for(j=0; j< size; j++)
++//		printk(KERN_DEBUG "locomospi: sent: %x \n", buffer[j]);
++//	printk(KERN_DEBUG "locomospi: tx %d bytes transmitted\n",i);
++	return i;
++}
++
++static int rx(char* buffer, int size)
++{
++	int i,j;
++	int wait;
++	u16 r; 	
++	printk(KERN_DEBUG "locomospi: rx %d bytes to receive\n",size);
++	if(spidev->clock_div == 4)
++		wait = 0x10000;
++	else
++		wait = 8;
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r &= ~LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++
++	for(i=0; i<size; i++){
++
++		for(j=0; j <= wait; j++){
++			if(ioread16(spidev->base+LOCOMO_SPIST) & LOCOMO_SPI_RFR)
++				break;
++		}
++		buffer[i]= ioread8(spidev->base+LOCOMO_SPIRD);
++		ndelay(delay);
++	}
++	
++	r = ioread16(spidev->base+LOCOMO_SPICT);
++	r |= LOCOMO_SPI_ALIGNEN;
++	iowrite16(r, spidev->base+LOCOMO_SPICT);
++	
++	for(j=0; j< size; j++)
++		printk(KERN_DEBUG "locomospi: received: %x \n", buffer[j]);
++	printk(KERN_DEBUG "locomospi: rx %d bytes received\n",i);
++	return i;
++}
++#endif
++/*
++static irqreturn_t locomospi_rwready(int irq, void *dev_id)
++{
++	struct locomospi_dev* dev=(struct locomospi_dev*) dev_id;
++//	dev_dbg(&spidev->sdev->dev, "IRQ: %d\n", irq);
++//	printk(KERN_DEBUG "locomospi: IRQ: %d\n", irq);
++	wake_up_interruptible(&dev->waitqueue);
++	return IRQ_HANDLED;
++}
++*/
++static irqreturn_t locomospi_testisr(int irq, void *dev_id)
++{
++	char *buf="";
++	switch(irq){
++		case IRQ_LOCOMO_SPI_RFR: buf="RFR";
++					 break;
++		case IRQ_LOCOMO_SPI_RFW: buf="RFW";
++					 break;
++		case IRQ_LOCOMO_SPI_REND:buf="REND";
++					 break;
++		case IRQ_LOCOMO_SPI_TEND:buf="TEND";
++					 break;
++		case IRQ_LOCOMO_CARDDETECT:
++					 buf="CARD_DETECT";
++					 break;
++		default:		return IRQ_NONE;
++	}
++	printk(KERN_DEBUG "locomospi: IRQ: %s\n",buf);
++//	dev_dbg(&spidev->sdev->dev, "IRQ: %s\n",buf);
++	return IRQ_HANDLED;
++}
++static irqreturn_t locomospi_txrxisr(int irq, void *dev_id)
++{
++	if(transfercount < transfersize){
++		transrxbuf[transfercount++] = ioread8(spidev->base+LOCOMO_SPIRD);
++		iowrite8(transtxbuf[transfercount], spidev->base+LOCOMO_SPITD); 		
++	}
++	else{
++		/* transfer complete. wake up txrx */
++		wake_up(&transferqueue);
++	}
++	return IRQ_HANDLED;	
++}	
++
++static irqreturn_t locomospi_txisr(int irq, void *dev_id)
++{
++	if(transfercount < transfersize){
++		iowrite8(transtxbuf[transfercount++], spidev->base+LOCOMO_SPITD); 		
++	}
++	else{
++		/* transfer complete. wake up txrx */
++		wake_up(&transferqueue);
++	}
++	return IRQ_HANDLED;	
++}	
++
++static irqreturn_t locomospi_rxisr(int irq, void *dev_id)
++{
++	if(transfercount < transfersize){
++		transrxbuf[transfercount++] = ioread8(spidev->base+LOCOMO_SPIRD);
++	}
++	else{
++		/* transfer complete. wake up txrx */
++		wake_up(&transferqueue);
++	}
++	return IRQ_HANDLED;	
++}	
++
++static void locomospi_clock(unsigned int Hz)
++{
++	u16 r;
++	printk(KERN_DEBUG "locomospi: changing clock to: %d\n", Hz);
++	if(Hz == 0){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r &= ~LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++	}
++	else if(Hz >= 24576000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_1, CLOCK_25MHZ);
++		delay=41;
++	}
++	else if(Hz >= 22579200){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_1, CLOCK_22MHZ);
++		delay=45;
++	}
++	else if(Hz >= 18432000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_1, CLOCK_18MHZ);
++		delay=55;
++	}
++	else if(Hz >= 12288000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_2, CLOCK_25MHZ);
++		delay=82;
++	}
++	else if(Hz >= 11289600){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_2, CLOCK_22MHZ);
++		delay=89;
++	}
++	else if(Hz >= 9216000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_2, CLOCK_18MHZ);
++		delay=110;
++	}
++	else if(Hz >= 6144000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_4, CLOCK_25MHZ);
++		delay=164;
++	}
++	else if(Hz >= 5644800){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_4, CLOCK_22MHZ);
++		delay=178;
++	}
++	else if(Hz >= 4608000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_4, CLOCK_18MHZ);
++		delay=218;
++	}
++	else if(Hz >= 3072000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_8, CLOCK_25MHZ);
++		delay=327;
++	}
++	else if(Hz >= 2822400){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_8, CLOCK_22MHZ);
++		delay=355;
++	}
++	else if(Hz >= 2304000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_8, CLOCK_18MHZ);
++		delay=435;
++	}
++	else if(Hz >= 384000){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_64, CLOCK_25MHZ);
++		delay=2605;
++	}
++	else if(Hz >= 352800){
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_64, CLOCK_22MHZ);
++		delay=2834;
++	}
++	else{ /* set to 288 KHz */
++		r = ioread16(spidev->base+LOCOMO_SPIMD);
++		r |= LOCOMO_SPI_XON;
++		iowrite16(r, spidev->base+LOCOMO_SPIMD);
++		locomospi_setclock(DIV_64, CLOCK_18MHZ);
++		delay=3473;
++	}
++	spidev->clock = Hz;
++}
++
++/* sysfs attributes used for debug *******************************************/
++
++/* SPI registers */
++ssize_t locomospi_showspimd(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPIMD));
++}
++
++ssize_t locomospi_storespimd(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPIMD);
++	return count;
++}
++static DRIVER_ATTR(spimd, S_IWUSR | S_IRUGO, locomospi_showspimd, locomospi_storespimd);
++
++ssize_t locomospi_showspict(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPICT));
++}
++
++ssize_t locomospi_storespict(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPICT);
++	return count;
++}
++static DRIVER_ATTR(spict, S_IWUSR | S_IRUGO, locomospi_showspict, locomospi_storespict);
++
++ssize_t locomospi_showspist(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPIST));
++}
++
++ssize_t locomospi_storespist(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPIST);
++	return count;
++}
++static DRIVER_ATTR(spist, S_IWUSR | S_IRUGO, locomospi_showspist, locomospi_storespist);
++
++ssize_t locomospi_showspitd(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPITD));
++}
++
++ssize_t locomospi_storespitd(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPITD);
++	return count;
++}
++static DRIVER_ATTR(spitd, S_IWUSR | S_IRUGO, locomospi_showspitd, locomospi_storespitd);
++
++ssize_t locomospi_showspird(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPIRD));
++}
++
++ssize_t locomospi_storespird(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPIRD);
++	return count;
++}
++static DRIVER_ATTR(spird, S_IWUSR | S_IRUGO, locomospi_showspird, locomospi_storespird);
++
++ssize_t locomospi_showspits(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPITS));
++}
++
++ssize_t locomospi_storespits(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPITS);
++	return count;
++}
++static DRIVER_ATTR(spits, S_IWUSR | S_IRUGO, locomospi_showspits, locomospi_storespits);
++
++ssize_t locomospi_showspirs(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "0x%x\n", ioread16(spidev->base+LOCOMO_SPIRS));
++}
++
++ssize_t locomospi_storespirs(struct device_driver *drv, const char *buf, size_t count)
++{
++	iowrite16(simple_strtoul(buf, NULL, 16), spidev->base+LOCOMO_SPIRS);
++	return count;
++}
++static DRIVER_ATTR(spirs, S_IWUSR | S_IRUGO, locomospi_showspirs, locomospi_storespirs);
++
++/* MMC Card status */
++
++ssize_t locomospi_showpower(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "%d\n", spidev->card_power);
++}
++
++ssize_t locomospi_storepower(struct device_driver *drv, const char *buf, size_t count)
++{
++	locomospi_power(simple_strtoul(buf, NULL, 10));
++	return count;
++}
++static DRIVER_ATTR(cardpower, S_IWUSR | S_IRUGO, locomospi_showpower, locomospi_storepower);
++
++ssize_t locomospi_detectcard(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "%d\n",(locomo_gpio_read_level(spidev->ldev->dev.parent,LOCOMO_GPIO_CARD_DETECT)>0)?0:1);
++}
++static DRIVER_ATTR(carddetect, S_IRUGO, locomospi_detectcard, NULL);
++
++ssize_t locomospi_writeprotect(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "%d\n",(locomo_gpio_read_level(spidev->ldev->dev.parent,LOCOMO_GPIO_WRITE_PROT)>0)?1:0);
++}
++static DRIVER_ATTR(cardwriteprotect, S_IRUGO, locomospi_writeprotect, NULL);
++
++
++ssize_t locomospi_showclock(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "%d\n", spidev->clock);
++}
++
++ssize_t locomospi_storeclock(struct device_driver *drv, const char *buf, size_t count)
++{
++	locomospi_clock(simple_strtoul(buf, NULL, 10));
++	return count;
++}
++static DRIVER_ATTR(clock, S_IWUSR | S_IRUGO, locomospi_showclock, locomospi_storeclock);
++
++/* debug */
++ssize_t locomospi_showdelay(struct device_driver *drv, char *buf)
++{
++	return sprintf(buf, "%d\n", delay);
++}
++
++ssize_t locomospi_storedelay(struct device_driver *drv, const char *buf, size_t count)
++{
++	delay=simple_strtoul(buf,NULL,10);
++	return count;
++}
++static DRIVER_ATTR(delay, S_IWUSR | S_IRUGO, locomospi_showdelay, locomospi_storedelay);
++
++ssize_t locomospi_reset(struct device_driver *drv, const char *buf, size_t count)
++{
++	int choice = simple_strtoul(buf, NULL, 10);
++	char   buff[100];
++	u16 r; 
++	switch(choice){
++		case 0: locomospi_reg_release();
++			schedule_timeout(2*HZ);
++			locomospi_reg_open();
++			break;
++		case 1: {
++				char b1[] = "\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff";
++				char b2[] = "\xff\x40\x00\x00\x00\x00\x95\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff";
++				locomospi_setcs(1);
++				txrx(b1,b1,17);
++				locomospi_setcs(0);
++				txrx(b2,b2,18);
++
++			}
++			break;
++		case 2: locomospi_setcs(1);
++			txrx("\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",buff,18);
++			locomospi_setcs(0);
++			txrx("\xff\x40\x00\x00\x00\x00\x95\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff",buff,17);
++			break;
++		case 3: 
++			r = ioread16(spidev->base+LOCOMO_SPIMD);
++			r |= LOCOMO_SPI_LOOPBACK;
++			iowrite16(r, spidev->base+LOCOMO_SPIMD);
++			txrx("X",buff,1);
++			txrx("abcdefghijklmnopqrstuvwxyz1234567890",buff,36);
++			txrx("Y",buff,1);
++			udelay(100);
++			txrx("Z",buff,1);
++			schedule_timeout(HZ);	
++			txrx("abcdefghijklmnopqrstuvwxyz1234567890",buff,36);
++			
++			r = ioread16(spidev->base+LOCOMO_SPIMD);
++			r &= ~LOCOMO_SPI_LOOPBACK;
++			iowrite16(r, spidev->base+LOCOMO_SPIMD);
++			break;
++		default: /* do nothing */;
++	}
++	return count;
++}
++static DRIVER_ATTR(reset, S_IWUSR, NULL, locomospi_reset);
++
++typedef struct locomo_reg_entry {
++        u32 addr;
++        char* name;
++} locomo_reg_entry_t;
++#define LCM     (sizeof(locomo_regs)/sizeof(locomo_reg_entry_t))
++static locomo_reg_entry_t locomo_regs[] =
++{
++/*      { addr,    name,     description } */
++        { 0x00, "VER" },
++        { 0x04, "ST" },
++        { 0x08, "C32K" },
++        { 0x0C, "ICR" },
++        { 0x10, "MCSX0" },
++        { 0x14, "MCSX1" },
++        { 0x18, "MCSX2" },
++        { 0x1C, "MCSX3" },
++        { 0x20, "ASD" },
++        { 0x28, "HSD" },
++        { 0x2C, "HSC" },
++        { 0x30, "TADC" },
++        { 0x38, "TC" },
++        { 0x3C, "CPSD" },
++        { 0x40, "KIB" },
++        { 0x44, "KSC" },
++        { 0x48, "KCMD" },
++        { 0x4C, "KIC" },
++        { 0x54, "ACC" },
++        { 0x60, "SPIMD" },
++        { 0x64, "SPICT" },
++        { 0x68, "SPIST" },
++        { 0x70, "SPIIS" },
++        { 0x74, "SPIWE" },
++        { 0x78, "SPIIE" },
++        { 0x7C, "SPIIR" },
++        { 0x80, "SPITD" },
++        { 0x84, "SPIRD" },
++        { 0x88, "SPITS" },
++        { 0x8C, "SPIRS" },
++        { 0x90, "GPD" },
++        { 0x94, "GPE" },
++        { 0x98, "GPL" },
++        { 0x9C, "GPO" },
++        { 0xa0, "GRIE" },
++        { 0xa4, "GFIE" },
++        { 0xa8, "GIS" },
++        { 0xac, "GWE" },
++        { 0xb0, "GIE" },
++        { 0xb4, "GIR" },
++        { 0xc8, "ALC" },
++        { 0xcc, "ALR" },
++        { 0xd0, "PAIF" },
++        { 0xd8, "LTC" },
++        { 0xdc, "LTINT" },
++        { 0xe0, "DAC" },
++        { 0xe8, "LPT0" },
++        { 0xec, "LPT1" },
++        { 0xfc, "TCR" },
++};
++
++static ssize_t lcm_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	int base = spidev->base - LOCOMO_SPI; 
++	char b[4000]="";
++	char c[30];
++	int i;
++	for(i=0; i<LCM; i++){
++		sprintf(c,"%s:\t\t 0x%x\n",locomo_regs[i].name, ioread16(base + locomo_regs[i].addr));
++		strcat(b,c);
++	}
++	return sprintf(buf,"%s",b);
++}
++
++static DRIVER_ATTR(regs, 0444, lcm_show, NULL);
++
++
++/* SPI functions *************************************************************/
++
++static void locomospi_do_transfer(struct work_struct *wrk)
++{
++	struct list_head *mptr, *tptr, *mptr2;
++	struct spi_transfer *entry;
++	struct spi_message *msg;
++
++	list_for_each_safe(mptr, mptr2, &spidev->message_list){
++		msg = list_entry(mptr, struct spi_message, queue);
++
++		msg->status = 0;
++		msg->actual_length = 0;
++		list_for_each(tptr, &msg->transfers){
++			entry = list_entry(tptr, struct spi_transfer, transfer_list);
++			if(entry->tx_buf && entry->rx_buf){ //duplex
++				txrx((char*) entry->tx_buf, (char*) entry->rx_buf, entry->len);				
++				msg->actual_length += entry->len;
++			} else if(entry->tx_buf && !entry->rx_buf){ //write
++				tx((char*) entry->tx_buf, entry->len);
++				msg->actual_length += entry->len;
++			} else if(!entry->tx_buf && entry->rx_buf){ //read
++				rx((char*) entry->rx_buf, entry->len);
++				msg->actual_length += entry->len;
++			} else if(!entry->tx_buf && !entry->rx_buf){ //error
++				dev_err(&spidev->sdev->dev, "do_transfer: no buffers allocated\n");
++				msg->status = -EFAULT;
++			}
++		}
++		spin_lock(&spidev->message_lock);
++		list_del(mptr);
++		spin_unlock(&spidev->message_lock);
++		msg->complete(msg->context);
++	}
++}
++
++static int locomospi_setup(struct spi_device *spi)
++{
++	if((spi->mode & SPI_CS_HIGH) != (spidev->spimode & SPI_CS_HIGH)) 
++		locomospi_setcs(spi->mode & SPI_CS_HIGH ? 1 : 0 );
++	if(spidev->clock != spi->max_speed_hz){
++		locomospi_clock(spi->max_speed_hz);
++	}
++	spidev->spimode = spi->mode;
++
++	return 0;
++}
++
++static int locomospi_transfer(struct spi_device *spi, struct spi_message *msg)
++{
++
++	spin_lock(&spidev->message_lock);
++	list_add_tail(&msg->queue, &spidev->message_list);
++	spin_unlock(&spidev->message_lock);
++	schedule_work(&transfer_wq);
++	return 0;
++}
++
++static struct locomo_driver locomo_spi_driver = {
++	.drv = {
++		.name = "locomo-spi",
++	},
++	.devid	= LOCOMO_DEVID_SPI,
++	.probe	= locomospi_probe,
++	.remove	= locomospi_remove,
++#ifdef CONFIG_PM
++	.suspend = locomospi_suspend,
++	.resume = locomospi_resume,
++#endif
++};
++
++static struct spi_board_info board = {
++	.modalias 	= "mmc_spi",
++	.platform_data 	= (void*) &colliemmc,
++	.controller_data= NULL,
++	.irq		= 0,
++	.max_speed_hz	= 25000000,
++	.bus_num	= 0,
++	.chip_select	= 0,
++	.mode		= 0,
++};
++
++#ifdef CONFIG_PM
++static int locomospi_suspend(struct locomo_dev *dev, pm_message_t state)
++{
++	disable_irq(IRQ_LOCOMO_CARDDETECT);
++	return 0;
++}
++
++static int locomospi_resume(struct locomo_dev *dev)
++{
++	enable_irq(IRQ_LOCOMO_CARDDETECT);
++	return 0;
++}
++#endif
++
++static int locomospi_probe(struct locomo_dev *dev)
++{
++	int result=0;
++	printk(KERN_DEBUG "Collie MMC over SPI Driver\n");
++	spidev=kmalloc(sizeof(struct locomospi_dev),GFP_KERNEL);
++	if(!spidev){
++		return -ENOMEM;
++	}
++	spidev->ldev = dev;
++	spidev->card_power = 1;
++	spidev->spimode = 0;
++
++	if(!request_mem_region((unsigned long) dev->mapbase, dev->length, LOCOMO_DRIVER_NAME(dev))) {
++		dev_err(&dev->dev, " Can't aquire access to io memory\n");
++		return -EBUSY;
++	}
++	spidev->base=(unsigned long) dev->mapbase;
++	locomospi_reg_open();
++
++	locomo_gpio_set_dir(dev->dev.parent, LOCOMO_GPIO_CARD_POWER, 0);
++	locomo_gpio_set_dir(dev->dev.parent, LOCOMO_GPIO_CARD_DETECT, 1);
++	locomo_gpio_set_dir(dev->dev.parent, LOCOMO_GPIO_WRITE_PROT, 1);
++
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_cardpower);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_carddetect);
++	if(result){
++		dev_err(&dev->dev,"error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_cardwriteprotect);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spimd);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spict);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spist);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spitd);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spird);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spits);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_spirs);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_clock);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_delay);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_reset);
++	if(result){
++		dev_err(&dev->dev, "error creating driver attribute\n");
++		goto region;
++	}
++	result=driver_create_file(&locomo_spi_driver.drv, &driver_attr_regs);
++        if(result){
++                dev_err(&dev->dev, "error creating driver attribute\n");
++                goto region;
++        }
++	INIT_WORK(&transfer_wq, locomospi_do_transfer);
++	INIT_LIST_HEAD(&spidev->message_list);
++	spin_lock_init(&spidev->message_lock);
++	init_waitqueue_head(&spidev->waitqueue);
++	spidev->master=spi_alloc_master(&dev->dev,0);
++	if(!spidev->master){
++		result=-ENOMEM;
++		goto region;
++	}
++	spidev->master->bus_num = 0;
++	spidev->master->num_chipselect = 1;
++	spidev->master->setup = locomospi_setup;
++	spidev->master->transfer = locomospi_transfer;
++	spidev->sdev = spi_new_device(spidev->master, &board);
++	if(!spidev->sdev){
++		dev_err(&dev->dev, "failed to register spi device\n");
++		result = -EINVAL;
++		goto master;
++	}
++/*	result=request_irq(IRQ_LOCOMO_SPI_RFR, locomospi_testisr, IRQF_SHARED, "locomo-spi", (void*) spidev);
++	if(result) {
++		dev_err(&dev->dev, "Could not get IRQ: RFR\n");
++		goto regdev;
++	}
++	//disable_irq(IRQ_LOCOMO_SPI_RFR);
++*//*	result=request_irq(IRQ_LOCOMO_SPI_RFW, locomospi_testisr, IRQF_SHARED, "locomo-spi", (void*) spidev);
++	if(result) {
++		dev_err(&dev->dev, "Could not get IRQ: RFW\n");
++		goto irq1;
++	}
++	//disable_irq(IRQ_LOCOMO_SPI_RFW);
++*//*	result=request_irq(IRQ_LOCOMO_SPI_REND, locomospi_testisr, IRQF_SHARED, "locomo-spi", (void*) spidev);
++	if(result) {
++		dev_err(&dev->dev, "Could not get IRQ: REND\n");
++		goto irq2;
++	}
++*//*	result=request_irq(IRQ_LOCOMO_SPI_TEND, locomospi_testisr, IRQF_SHARED, "locomo-spi", (void*) spidev);
++	if(result) {
++		dev_err(&dev->dev, "Could not get IRQ: TEND\n");
++		goto irq3;
++	}
++	//disable_irq(IRQ_LOCOMO_SPI_TEND);	
++*/	spidev->workqueue = create_singlethread_workqueue("locomo-spi");
++	if(!spidev->workqueue){
++		dev_err(&dev->dev, "failed to create workqueue\n");
++		goto irq4;
++	}
++	result=spi_register_master(spidev->master);
++	if(result){
++		dev_err(&dev->dev, "failed to register spimaster\n");
++		goto wq;
++	}
++	return 0;
++wq:
++	destroy_workqueue(spidev->workqueue);
++irq4:
++//	free_irq(IRQ_LOCOMO_SPI_TEND, (void*) spidev);
++irq3:
++//	free_irq(IRQ_LOCOMO_SPI_REND, (void*) spidev);
++irq2:
++//	free_irq(IRQ_LOCOMO_SPI_RFW, (void*) spidev);
++irq1:
++//	free_irq(IRQ_LOCOMO_SPI_RFR, (void*) spidev);
++regdev:
++	spi_unregister_device(spidev->sdev);
++master:
++	spi_master_put(spidev->master);
++region:
++	release_mem_region((unsigned long) dev->mapbase, dev->length);
++	kfree(spidev);
++	return result;
++
++}
++
++static int locomospi_remove(struct locomo_dev *dev)
++{
++	spi_unregister_device(spidev->sdev);
++	spi_unregister_master(spidev->master);
++	destroy_workqueue(spidev->workqueue);
++	locomospi_reg_release();
++//	free_irq(IRQ_LOCOMO_SPI_TEND, (void*) spidev);
++//	free_irq(IRQ_LOCOMO_SPI_REND, (void*) spidev);
++//	free_irq(IRQ_LOCOMO_SPI_RFW, (void*) spidev);
++//	free_irq(IRQ_LOCOMO_SPI_RFR, (void*) spidev);
++	spi_master_put(spidev->master);
++	release_mem_region((unsigned long) dev->mapbase, dev->length);
++	kfree(spidev);
++	return 0;
++}
++
++
++
++static int __init locomospi_init(void)
++{
++	int ret = locomo_driver_register(&locomo_spi_driver);
++	if (ret)
++		return ret;
++
++
++	return 0;
++}
++
++static void __exit locomospi_exit(void)
++{
++	locomo_driver_unregister(&locomo_spi_driver);
++}
++
++module_init(locomospi_init);
++module_exit(locomospi_exit);
++
++MODULE_AUTHOR("Thomas Kunze thommy@tabao.de");
++MODULE_DESCRIPTION("Collie mmc driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/spi/locomo_spi.h b/drivers/spi/locomo_spi.h
+new file mode 100644
+index 0000000..7e1c0ce
+--- /dev/null
++++ b/drivers/spi/locomo_spi.h
+@@ -0,0 +1,75 @@
++#include <asm/hardware/locomo.h>
++#ifndef __LOCOMO_SPI_H__
++#define __LOCOMO_SPI_H__
++
++/* locomo-spi status register LOCOMO_SPIST */
++#define LOCOMO_SPI_TEND (1 << 3)        /* Transfer end bit */
++#define LOCOMO_SPI_REND (1 << 2)        /* Receive end bit */
++#define LOCOMO_SPI_RFW  (1 << 1)        /* write buffer bit */
++#define LOCOMO_SPI_RFR  (1)             /* read buffer bit */
++
++/* locomo-spi mode register LOCOMO_SPIMD */
++#define LOCOMO_SPI_LOOPBACK (1 << 15)	/* loopback tx to rx 	*/
++#define LOCOMO_SPI_MSB1ST   (1 << 14)	/* send MSB first 	*/
++#define LOCOMO_SPI_DOSTAT   (1 << 13)	/* transmit line is idle high */
++#define LOCOMO_SPI_TCPOL    (1 << 11) 	/* transmit CPOL (maybe affects CPHA too) */
++#define LOCOMO_SPI_RCPOL    (1 << 10)	/* receive CPOL (maybe affects CPHA too) */
++#define	LOCOMO_SPI_TDINV    (1 << 9)	/* invert transmit line */
++#define LOCOMO_SPI_RDINV    (1 << 8)	/* invert receive line */
++#define LOCOMO_SPI_XON	    (1 << 7)	/* enable spi controller clock */
++#define LOCOMO_SPI_XEN	    (1 << 6)	/* clock bit write enable xon must be off, wait 300 us before xon->1 */ 
++#define LOCOMO_SPI_XSEL	    0x0018 	/* clock select 		*/
++#define CLOCK_18MHZ	    0		/* 18,432 MHz clock 	*/
++#define CLOCK_22MHZ	    1		/* 22,5792 MHz clock	*/
++#define CLOCK_25MHZ	    2		/* 24,576 MHz clock	*/
++#define LOCOMO_SPI_CLKSEL   0x7	
++#define DIV_1		    0		/* don't divide clock   */
++#define DIV_2		    1		/* divide clock by two	*/
++#define DIV_4		    2		/* divide clock by four */
++#define DIV_8		    3		/* divide clock by eight*/
++#define DIV_64		    4		/* divide clock by 64 */
++
++/* locomo-spi control register LOCOMO_SPICT */
++#define LOCOMO_SPI_CRC16_7_B 	(1 << 15) 	/* 0: crc16 1: crc7 */
++#define LOCOMO_SPI_CRCRX_TX_B	(1 << 14)
++#define LOCOMO_SPI_CRCRESET_B	(1 << 13)
++#define LOCOMO_SPI_CEN		(1 << 7)	/* ?? enable */
++#define LOCOMO_SPI_CS		(1 << 6)	/* chip select */
++#define LOCOMO_SPI_UNIT16	(1 << 5) 	/* 0: 8 bit units, 1: 16 bit unit */
++#define LOCOMO_SPI_ALIGNEN	(1 << 2)	/* align transfer enable */
++#define LOCOMO_SPI_RXWEN	(1 << 1)	/* continous receive */
++#define LOCOMO_SPI_RXUEN	(1 << 0)	/* aligned receive */
++
++#define IRQ_LOCOMO_CARDDETECT	IRQ_LOCOMO_GPIO13
++
++
++struct locomospi_dev {
++	struct locomo_dev *ldev;
++	struct spi_master *master;
++	struct spi_device *sdev;
++	int card_power;
++	int clock_base;
++	int clock_div;
++	int clock;
++	unsigned long base;
++	u8 spimode;
++	wait_queue_head_t waitqueue;
++	struct workqueue_struct *workqueue;
++	struct list_head message_list;
++	spinlock_t message_lock;
++};
++
++
++static irqreturn_t 	locomospi_cardisr(int, void*);
++static int 	locomospi_probe(struct locomo_dev*);
++static int 	locomospi_remove(struct locomo_dev*);
++static int 	locomospi_carddetect(void);
++static void 	locomospi_reg_open(void);
++static void	locomospi_reg_release(void);
++static int 	tx(const char*, int);
++static int 	rx(char *, int);
++static void 	locomospi_power(int on);
++static int locomospi_suspend(struct locomo_dev *dev, pm_message_t state);
++static int locomospi_resume(struct locomo_dev *dev);
++static void locomospi_setcs(int high);
++#endif

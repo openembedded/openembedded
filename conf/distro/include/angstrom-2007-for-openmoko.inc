@@ -89,21 +89,25 @@ PREFERRED_VERSION_gcc               ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross         ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross-sdk     ?= "4.1.2"
 PREFERRED_VERSION_gcc-cross-initial ?= "4.1.2"
+PREFERRED_VERSION_gcc-cross-intermediate ?= "4.1.2"
 
 PREFERRED_VERSION_gcc_dht-walnut               ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross_dht-walnut         ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-sdk_dht-walnut     ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-initial_dht-walnut ?= "4.1.1"
+PREFERRED_VERSION_gcc-cross-intermediate_dht-walnut ?= "4.1.1"
 
 PREFERRED_VERSION_gcc_xilinx-ml403               ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross_xilinx-ml403         ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-sdk_xilinx-ml403     ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-initial_xilinx-ml403 ?= "4.1.1"
+PREFERRED_VERSION_gcc-cross-intermediate_xilinx-ml403 ?= "4.1.1"
 
 PREFERRED_VERSION_gcc_mpc8323e-rdb               ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross_mpc8323e-rdb         ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-sdk_mpc8323e-rdb     ?= "4.1.1"
 PREFERRED_VERSION_gcc-cross-initial_mpc8323e-rdb ?= "4.1.1"
+PREFERRED_VERSION_gcc-cross-intermediate_mpc8323e-rdb ?= "4.1.1"
 
 PREFERRED_VERSION_binutils          ?= "2.18"
 PREFERRED_VERSION_binutils-cross    ?= "2.18"
@@ -115,6 +119,7 @@ PREFERRED_VERSION_avr32-gcc               = "4.1.2"
 PREFERRED_VERSION_avr32-gcc-cross         = "4.1.2"
 PREFERRED_VERSION_gcc-cross-sdk_avr32     = "4.0.2"
 PREFERRED_VERSION_gcc-cross-initial_avr32 = "4.0.2"
+PREFERRED_VERSION_gcc-cross-intermediate_avr32 = "4.0.2"
 
 PREFERRED_VERSION_binutils_avr32 = "2.17"
 PREFERRED_VERSION_binutils-cross_avr32 = "2.17"
@@ -133,9 +138,6 @@ PREFERRED_VERSION_uclibc-initial ?= "0.9.29"
 PREFERRED_VERSION_uclibc_avr32 = "0.9.28"
 PREFERRED_VERSION_uclibc-initial_avr32 = "0.9.28"
 
-PREFERRED_VERSION_glibc-intermediate_i686 ?= "2.4"
-PREFERRED_VERSION_glibc-intermediate ?= "2.5"
-
 PREFERRED_VERSION_glibc-initial ?= "2.5"
 
 # To use an EABI compatible version 3 series gcc, either uncomment 
@@ -143,6 +145,7 @@ PREFERRED_VERSION_glibc-initial ?= "2.5"
 #
 # PREFERRED_VERSION_gcc-cross = "3.4.4+csl-arm-2005q3"
 # PREFERRED_VERSION_gcc-cross-initial = "3.4.4+csl-arm-2005q3"
+# PREFERRED_VERSION_gcc-cross-intermediate = "3.4.4+csl-arm-2005q3"
 
 #Loads preferred versions from files, these have weak assigments (?=), so put them at the bottom
 require conf/distro/include/preferred-xorg-versions.inc
@@ -153,17 +156,17 @@ require conf/distro/include/preferred-e-versions.inc
 # Virtuals:
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial = "gcc-cross-initial"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-intermediate"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc = "gcc-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++ = "gcc-cross"
 
 #Set preferred provider for the C library that is used to build the crosscompiler (NPTL voodoo)
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc               = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/arm-angstrom-linux-gnueabi-libc-for-gcc    = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-gnueabi-libc-for-gcc  = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/arm-angstrom-linux-libc-for-gcc            = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/powerpc-angstrom-linux-libc-for-gcc        = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/mipsel-angstrom-linux-libc-for-gcc         = "glibc-intermediate"
-PREFERRED_PROVIDER_virtual/sparc-angstrom-linux-libc-for-gcc          = "glibc-intermediate"
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc               = "glibc"
+PREFERRED_PROVIDER_virtual/arm-angstrom-linux-gnueabi-libc-for-gcc    = "glibc"
+PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-gnueabi-libc-for-gcc  = "glibc"
+PREFERRED_PROVIDER_virtual/powerpc-angstrom-linux-libc-for-gcc        = "glibc"
+PREFERRED_PROVIDER_virtual/mipsel-angstrom-linux-libc-for-gcc         = "glibc"
+PREFERRED_PROVIDER_virtual/sparc-angstrom-linux-libc-for-gcc          = "glibc"
 
 PREFERRED_PROVIDER_virtual/arm-angstrom-linux-uclibcgnueabi-libc-for-gcc    = "uclibc-initial"
 PREFERRED_PROVIDER_virtual/armeb-angstrom-linux-uclibcgnueabi-libc-for-gcc  = "uclibc-initial"

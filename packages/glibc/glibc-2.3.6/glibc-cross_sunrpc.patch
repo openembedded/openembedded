@@ -1,0 +1,79 @@
+Fix rpcsvc headers missing from glibc, also
+allows glibc to produce the rpc headers when cross compiling,
+And fix for glibc-bootstrap package doesn't currently build because the
+generated sunrpc headers are not available
+    
+
+---
+ sunrpc/Makefile |   28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+Index: glibc-2.3.6/sunrpc/Makefile
+===================================================================
+--- glibc-2.3.6.orig/sunrpc/Makefile	2005-07-17 20:03:49.000000000 -0700
++++ glibc-2.3.6/sunrpc/Makefile	2008-07-17 15:28:04.000000000 -0700
+@@ -75,6 +75,8 @@ install-sbin := rpcinfo
+ rpcgen-objs = rpc_main.o rpc_hout.o rpc_cout.o rpc_parse.o \
+ 	      rpc_scan.o rpc_util.o rpc_svcout.o rpc_clntout.o \
+ 	      rpc_tblout.o rpc_sample.o
++host-rpcgen-objs = $(addprefix host-,$(rpcgen-objs))
++
+ # These headers are part of rpcgen.
+ distribute := proto.h rpc_util.h rpc_parse.h rpc_scan.h \
+ 	      $(rpcgen-objs:.o=.c) etc.rpc \
+@@ -98,8 +100,8 @@ otherlibs += $(nssobjdir)/libnss_files.a
+ 	     $(resolvobjdir)/libresolv.a
+ endif
+ 
+-ifeq (no,$(cross-compiling))
+-# We can only build this library if we can run the rpcgen we build.
++ifneq (,$(findstring subdir_install,$(MAKECMDGOALS)))
++## We can only build this library if we can run the rpcgen we build.
+ headers += $(rpcsvc:%.x=rpcsvc/%.h)
+ extra-libs := librpcsvc
+ extra-libs-others := librpcsvc # Make it in `others' pass, not `lib' pass.
+@@ -144,8 +146,26 @@ cpp-srcs-left := $(rpcgen-objs:.o=.c)
+ lib := nonlib
+ include $(patsubst %,$(..)cppflags-iterator.mk,$(cpp-srcs-left))
+ 
++# Rely on the target rpcgen objects for dependency information.
++$(objpfx)host-%.o: %.c $(objpfx)%.o
++	$(patsubst %/,cd % &&,$(objpfx)) \
++	$(BUILD_CC) $($(basename $(<F))-CFLAGS) \
++		-I$(shell cd .. && pwd) \
++		-Dattribute_hidden= \
++		-include $(shell cd ../include && pwd)/libintl.h \
++		-O2 $(ALL_BUILD_CFLAGS) $(shell pwd)/$(<F) -c -o $(@F)
++
++$(objpfx)host-rpcgen: $(addprefix $(objpfx),$(host-rpcgen-objs))
++	$(BUILD_CC) $(BUILD_CFLAGS) $+ -o $(objpfx)host-rpcgen
++
+ # Tell rpcgen where to find the C preprocessor.
++ifeq ($(cross-compiling),no)
+ rpcgen-cmd = CPP='$(CC) -E -x c-header' $(built-program-cmd) -Y ../scripts
++rpcgen-prog = $(objpfx)rpcgen
++else
++rpcgen-cmd = CPP='$(CC) -E -x c-header' $(objpfx)host-rpcgen -Y ../scripts
++rpcgen-prog = $(objpfx)host-rpcgen
++endif
+ 
+ # Install the rpc data base file.
+ $(inst_sysconfdir)/rpc: etc.rpc $(+force)
+@@ -156,7 +176,7 @@ $(inst_sysconfdir)/rpc: etc.rpc $(+force
+ # relinked.
+ $(rpcsvc:%.x=$(objpfx)rpcsvc/%.h): $(objpfx)rpcsvc/%.h: $(objpfx)rpcsvc/%.stmp
+ 	@:
+-$(objpfx)rpcsvc/%.stmp: rpcsvc/%.x $(objpfx)rpcgen
++$(objpfx)rpcsvc/%.stmp: rpcsvc/%.x $(rpcgen-prog)
+ 	$(make-target-directory)
+ 	-@rm -f ${@:stmp=T} $@
+ 	$(rpcgen-cmd) -h $< -o ${@:stmp=T}
+@@ -166,7 +186,7 @@ $(objpfx)rpcsvc/%.stmp: rpcsvc/%.x $(obj
+ # Generate the rpcsvc XDR functions with rpcgen.
+ $(rpcsvc:%.x=$(objpfx)x%.c): $(objpfx)x%.c: $(objpfx)x%.stmp
+ 	@:
+-$(objpfx)x%.stmp: rpcsvc/%.x $(objpfx)rpcgen
++$(objpfx)x%.stmp: rpcsvc/%.x $(rpcgen-prog)
+ 	-@rm -f ${@:stmp=T} $@
+ 	$(rpcgen-cmd) -c $< -o ${@:stmp=T}
+ 	$(move-if-change) $(@:stmp=T) $(@:stmp=c)

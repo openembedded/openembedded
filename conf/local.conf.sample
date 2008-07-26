@@ -51,6 +51,7 @@ BBMASK = ""
 PREFERRED_PROVIDERS = "virtual/qte:qte virtual/libqpe:libqpe-opie"
 PREFERRED_PROVIDERS += " virtual/libsdl:libsdl-x11"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-initial:gcc-cross-initial"
+PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc-intermediate:gcc-cross-intermediate"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}gcc:gcc-cross"
 PREFERRED_PROVIDERS += " virtual/${TARGET_PREFIX}g++:gcc-cross"
 

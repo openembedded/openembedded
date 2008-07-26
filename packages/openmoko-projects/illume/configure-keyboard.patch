@@ -1,0 +1,39 @@
+Index: configure.in
+===================================================================
+--- configure.in	(Revision 170)
++++ configure.in	(Arbeitskopie)
+@@ -95,6 +95,21 @@
+ AC_SUBST(e_libs)
+ AC_SUBST(e_modules)
+ 
++want_illume_virtual_keyboard=no
++AC_ARG_ENABLE(illume-keyboard,
++    AC_HELP_STRING(
++        [--enable-illume-keyboard],
++        [Enable the illume virtual keyboard.]
++    ),
++    [want_illume_virtual_keyboard=$enableval]
++    )
++AC_MSG_CHECKING(whether the illume virtual keyboard is to be built in)
++AC_MSG_RESULT($want_illume_virtual_keyboard)
++
++if test "x$want_illume_virtual_keyboard" = "xyes"; then
++    AC_DEFINE(BUILD_ILLUME_VIRTUAL_KEYBOARD, 1, [Build the virtual keyboard in])
++fi
++
+ AC_OUTPUT([
+ Makefile
+ src/Makefile
+Index: src/e_mod_win.c
+===================================================================
+--- src/e_mod_win.c	(Revision 170)
++++ src/e_mod_win.c	(Arbeitskopie)
+@@ -102,7 +102,7 @@
+ 		    e_module_dir_get(m),
+ 		    e_module_dir_get(m));
+    // FIXME: run kbd app or use internal
+-#if 0
++#ifdef BUILD_ILLUME_VIRTUAL_KEYBOARD
+    //enable for now to test internal kbd
+    vkbd_int = e_kbd_int_new(e_module_dir_get(m),
+ 			    e_module_dir_get(m),

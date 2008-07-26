@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r10"
+PR = "r12"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -28,8 +28,6 @@ SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
             file://uClibc.machine \
             file://uClibc.distro \
             file://uclibc-arm-ftruncate64.patch;patch=1 \
-            file://errno_values.h.patch;patch=1 \
-	    file://build_wcs_upper_buffer.patch;patch=1 \
             file://arm_fix_alignment.patch;patch=1 \
 	    file://unistd_arm.patch;patch=1 \
             "

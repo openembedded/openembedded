@@ -1,0 +1,46 @@
+Index: mono-1.9.1/configure.in
+===================================================================
+--- mono-1.9.1.orig/configure.in	2008-07-16 23:37:52.000000000 -0400
++++ mono-1.9.1/configure.in	2008-07-16 23:38:23.000000000 -0400
+@@ -660,13 +660,6 @@
+ 		;;
+ 
+ 	xincluded)
+-		AC_CONFIG_SUBDIRS(libgc)
+-
+-		# Pass CPPFLAGS to libgc configure
+-		# Maybe we should use a separate variable for this to avoid passing useless and
+-		# potentially problematic defines to libgc (like -D_FILE_OFFSET_BITS=64)
+-		export CPPFLAGS
+-
+ 		found_boehm=yes
+ 		gc_headers=yes
+ 		use_included_gc=yes
+@@ -714,9 +707,6 @@
+    CPPFLAGS="$CPPFLAGS -DLARGE_CONFIG"
+ fi
+ 
+-# tell libgc/configure about what we want
+-ac_configure_args="$ac_configure_args --disable-embed-check --with-libgc-threads=$libgc_threads $libgc_configure_args"
+-
+ AM_CONDITIONAL(INCLUDED_LIBGC, test x$use_included_gc = xyes)
+ AC_SUBST(LIBGC_CFLAGS)
+ AC_SUBST(LIBGC_LIBS)
+@@ -1970,6 +1960,17 @@
+ 	CPPFLAGS="$CPPFLAGS -DNO_UNALIGNED_ACCESS"
+ fi
+ 
++case "x$gc" in
++	xincluded)
++		# Pass CPPFLAGS to libgc configure
++		# We should use a separate variable for this to avoid passing useless and
++		# potentially problematic defines to libgc (like -D_FILE_OFFSET_BITS=64)
++		# This should be executed late so we pick up the final version of CPPFLAGS
++		ac_configure_args="$ac_configure_args --disable-embed-check --with-libgc-threads=$libgc_threads $libgc_configure_args \"CPPFLAGS=$CPPFLAGS\""
++		AC_CONFIG_SUBDIRS(libgc)
++		;;
++esac
++
+ PREVIEW=yes
+ AC_ARG_WITH(preview,  [ --with-preview=yes,no     If you want to install the 2.0 FX preview],[
+ 	if test x$with_preview = xno; then
