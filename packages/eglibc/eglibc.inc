@@ -11,7 +11,10 @@ DEPENDS = "virtual/${TARGET_PREFIX}gcc-intermediate linux-libc-headers"
 #RDEPENDS += "${@['','libgcc']['nptl' in '${GLIBC_ADDONS}']}"
 PROVIDES = "virtual/libc virtual/${TARGET_PREFIX}libc-for-gcc"
 PROVIDES += "virtual/libintl virtual/libiconv"
-
+# We need this RRECOMMENDS because libc dlopens libgcc
+# and shlib mechanism can not detect it because its not
+# listed in the NEEDED field.
+RRECOMMENDS += "libgcc"
 inherit autotools
 
 LEAD_SONAME = "libc.so"
