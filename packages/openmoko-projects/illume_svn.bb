@@ -4,9 +4,12 @@ AUTHOR = "Rasterman"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native"
 PV = "0.0+svnr${SRCREV}"
-PR = "r8"
+PR = "r10"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=http"
+SRC_URI = "\
+  svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=http \
+  file://configure-keyboard.patch;patch=1;pnum=0 \
+"
 S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig
@@ -16,6 +19,8 @@ EXTRA_OECONF = "\
   --x-libraries=${STAGING_LIBDIR} \
   --enable-simple-x11 \
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+\
+  --enable-illume-keyboard \
 "
 
 RRECOMMENDS_${PN} = "\
