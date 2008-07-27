@@ -1,7 +1,7 @@
 Index: kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-22 20:45:15.907610333 +0100
-+++ kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-22 20:45:27.508612989 +0100
+--- kexec-tools-1.101.orig/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-24 14:15:46.934825202 +0100
++++ kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c	2008-02-24 14:15:47.014827381 +0100
 @@ -1,5 +1,5 @@
  #include <stdio.h>
 -#include <elf.h>
@@ -11,9 +11,20 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-elf-rel-arm.c
  
 Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/arch/arm/kexec-zImage-arm.c	2008-02-22 20:45:15.959611260 +0100
-+++ kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c	2008-02-22 20:45:27.508612989 +0100
-@@ -110,13 +110,13 @@
+--- kexec-tools-1.101.orig/kexec/arch/arm/kexec-zImage-arm.c	2008-02-24 14:15:46.982825391 +0100
++++ kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c	2008-07-26 01:58:20.838624318 +0200
+@@ -2,6 +2,10 @@
+  * - 08/21/2007 ATAG support added by Uli Luckas <u.luckas@road.de>
+  *
+  */
++
++/* work around for linux header files */
++#define __deprecated
++
+ #define _GNU_SOURCE
+ #include <stdio.h>
+ #include <string.h>
+@@ -110,13 +114,13 @@
  	}
  
  	fread(buf, sizeof(buf[1]), BOOT_PARAMS_SIZE, fp);
@@ -31,8 +42,8 @@ Index: kexec-tools-1.101/kexec/arch/arm/kexec-zImage-arm.c
  }
 Index: kexec-tools-1.101/kexec/ifdown.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/ifdown.c	2004-06-09 20:55:31.000000000 +0200
-+++ kexec-tools-1.101/kexec/ifdown.c	2008-02-22 20:45:27.508612989 +0100
+--- kexec-tools-1.101.orig/kexec/ifdown.c	2008-02-24 14:15:34.025828340 +0100
++++ kexec-tools-1.101/kexec/ifdown.c	2008-02-24 14:15:47.014827381 +0100
 @@ -14,7 +14,7 @@
  #include <sys/ioctl.h>
  #include <sys/socket.h>
@@ -44,8 +55,8 @@ Index: kexec-tools-1.101/kexec/ifdown.c
  #include <netinet/in.h>
 Index: kexec-tools-1.101/purgatory/Makefile
 ===================================================================
---- kexec-tools-1.101.orig/purgatory/Makefile	2005-01-08 23:36:32.000000000 +0100
-+++ kexec-tools-1.101/purgatory/Makefile	2008-02-22 20:45:27.516611391 +0100
+--- kexec-tools-1.101.orig/purgatory/Makefile	2008-02-24 14:15:34.037827479 +0100
++++ kexec-tools-1.101/purgatory/Makefile	2008-02-24 14:15:47.022825503 +0100
 @@ -13,7 +13,7 @@
  
  PCFLAGS += $(call cc-option, -ffreestanding)
@@ -57,8 +68,8 @@ Index: kexec-tools-1.101/purgatory/Makefile
  PURGATORY_C_SRCS:= 
 Index: kexec-tools-1.101/kexec/kexec-elf-rel.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/kexec-elf-rel.c	2005-01-13 14:04:21.000000000 +0100
-+++ kexec-tools-1.101/kexec/kexec-elf-rel.c	2008-02-22 20:45:27.524612027 +0100
+--- kexec-tools-1.101.orig/kexec/kexec-elf-rel.c	2008-02-24 14:15:34.025828340 +0100
++++ kexec-tools-1.101/kexec/kexec-elf-rel.c	2008-02-24 14:15:47.030825302 +0100
 @@ -4,7 +4,7 @@
  #include <stdio.h>
  #include <errno.h>
@@ -70,8 +81,8 @@ Index: kexec-tools-1.101/kexec/kexec-elf-rel.c
  #include "kexec-elf.h"
 Index: kexec-tools-1.101/kexec/kexec-syscall.h
 ===================================================================
---- kexec-tools-1.101.orig/kexec/kexec-syscall.h	2008-02-22 20:45:15.923611048 +0100
-+++ kexec-tools-1.101/kexec/kexec-syscall.h	2008-02-22 20:45:27.524612027 +0100
+--- kexec-tools-1.101.orig/kexec/kexec-syscall.h	2008-02-24 14:15:46.950825917 +0100
++++ kexec-tools-1.101/kexec/kexec-syscall.h	2008-02-24 14:15:47.030825302 +0100
 @@ -2,7 +2,7 @@
  #define KEXEC_SYSCALL_H
  
@@ -116,8 +127,8 @@ Index: kexec-tools-1.101/kexec/kexec-syscall.h
  
 Index: kexec-tools-1.101/kexec/kexec.c
 ===================================================================
---- kexec-tools-1.101.orig/kexec/kexec.c	2008-02-22 20:45:15.923611048 +0100
-+++ kexec-tools-1.101/kexec/kexec.c	2008-02-22 20:45:38.847612035 +0100
+--- kexec-tools-1.101.orig/kexec/kexec.c	2008-02-24 14:15:46.950825917 +0100
++++ kexec-tools-1.101/kexec/kexec.c	2008-07-26 01:58:53.545624148 +0200
 @@ -29,9 +29,7 @@
  #include <unistd.h>
  #include <fcntl.h>
@@ -134,7 +145,7 @@ Index: kexec-tools-1.101/kexec/kexec.c
  }
  
 -#if HAVE_ZLIB_H
-+#if 1 
++#if 1
  char *slurp_decompress_file(const char *filename, off_t *r_size)
  {
  	gzFile fp;

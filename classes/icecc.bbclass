@@ -36,11 +36,11 @@ def icc_determine_gcc_version(gcc):
     import os
     return os.popen("%s --version" % gcc ).readline().split()[2]
 
+
 def create_cross_env(bb,d):
     """
     Create a tar.bz2 of the current toolchain
     """
-
     # Constin native-native compilation no environment needed if
     # host prefix is empty (let us duplicate the query for ease)
     prefix = bb.data.expand('${HOST_PREFIX}', d)
@@ -55,14 +55,14 @@ def create_cross_env(bb,d):
     target_prefix = bb.data.expand('${TARGET_PREFIX}',  d)
     float   = bb.data.getVar('TARGET_FPU', d) or "hard"
     name    = socket.gethostname()
-  
 
     # Stupid check to determine if we have built a libc and a cross
     # compiler.
     try:
-        os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libc.so'))
+        os.stat(os.path.join(ice_dir, target_sys, 'lib', 'libstdc++.so'))
         os.stat(os.path.join(ice_dir, target_sys, 'bin', 'g++'))
     except: # no cross compiler built yet
+        bb.error('no cross compiler built yet?')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,target_sys,"bin","g++") )
@@ -95,7 +95,6 @@ def create_cross_env(bb,d):
 
 
 def create_native_env(bb,d):
-
     import tarfile, socket, time, os
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
@@ -104,8 +103,7 @@ def create_native_env(bb,d):
     target_prefix = bb.data.expand('${TARGET_PREFIX}',  d)
     float   = bb.data.getVar('TARGET_FPU', d) or "hard"
     name    = socket.gethostname()
-  
-    
+
     archive_name = "local-host-env" + "-" + name
     tar_file = os.path.join(ice_dir, 'ice', archive_name + '.tar.gz')
 
@@ -121,7 +119,6 @@ def create_native_env(bb,d):
             # directory already exists, continue
             pass
 
-
     #check if user has specified a specific icecc-create-env script
     #if not use the OE provided one
     cr_env_script = bb.data.getVar('ICECC_ENV_EXEC',  d) or  bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
@@ -134,9 +131,14 @@ def create_native_env(bb,d):
     return tar_file
 
 
+def get_cross_kernel_cc(bb,d):
+    kernel_cc = bb.data.expand('${KERNEL_CC}', d)
+    kernel_cc = kernel_cc.replace('ccache', '')
+    kernel_cc = kernel_cc.strip()
+    return kernel_cc
+
 
 def create_cross_kernel_env(bb,d):
-
     import tarfile, socket, time, os
     ice_dir = bb.data.expand('${CROSS_DIR}', d)
     prefix  = bb.data.expand('${HOST_PREFIX}' , d)
@@ -145,15 +147,14 @@ def create_cross_kernel_env(bb,d):
     target_prefix = bb.data.expand('${TARGET_PREFIX}',  d)
     float   = bb.data.getVar('TARGET_FPU', d) or "hard"
     name    = socket.gethostname()
-    kernel_cc = bb.data.expand('${KERNEL_CC}', d)
-    kernel_cc = kernel_cc[:-1]
-  
+    kernel_cc = get_cross_kernel_cc(bb, d)
 
     # Stupid check to determine if we have built a libc and a cross
     # compiler.
     try:
-       os.stat(os.path.join(ice_dir, 'bin', kernel_cc))
+        os.stat(os.path.join(ice_dir, 'bin', kernel_cc))
     except: # no cross compiler built yet
+        bb.error('no cross compiler built yet')
         return ""
 
     VERSION = icc_determine_gcc_version( os.path.join(ice_dir,"bin",kernel_cc) )
@@ -198,8 +199,8 @@ def create_env(bb,d):
           return create_native_env(bb,d)
         else:  
           return create_cross_env(bb,d)
-        
-       
+
+
 def create_path(compilers, type, bb, d):
     """
     Create Symlinks for the icecc in the staging directory
@@ -211,7 +212,6 @@ def create_path(compilers, type, bb, d):
     #check if the icecc path is set by the user
     icecc   = bb.data.getVar('ICECC_PATH', d) or os.popen("%s icecc" % "which").read()[:-1]
 
-    
     # Create the dir if necessary
     try:
         os.stat(staging)
@@ -228,31 +228,25 @@ def create_path(compilers, type, bb, d):
     return staging + ":"
 
 
-
-
-
 def use_icc_version(bb,d):
-
       icecc_ver = "yes"
       system_class_blacklist = [ "none" ] 
-      
+
       for black in system_class_blacklist:
            if bb.data.inherits_class(black, d):
               icecc_ver = "no"
 
-
       user_class_blacklist =  bb.data.getVar('ICECC_USER_CLASS_BL', d) or "none"
       user_class_blacklist = user_class_blacklist.split()
-      
+
       for black in user_class_blacklist:
            if bb.data.inherits_class(black, d):
               icecc_ver = "no"
- 
+
       return icecc_ver
 
 
-
-def icc_path(bb,d,compile):
+def icc_path(bb,d):
     package_tmp = bb.data.expand('${PN}', d)
 
     #"system" package blacklist contains a list of packages that can not distribute compile tasks
@@ -260,79 +254,75 @@ def icc_path(bb,d,compile):
     system_package_blacklist = [ "uclibc", "glibc-intermediate", "gcc", "qemu", "bind", "u-boot", "dhcp-forwarder", "enchant" ]
 
     for black in system_package_blacklist:
-      if black in package_tmp:
-         bb.data.setVar("PARALLEL_MAKE" , "", d) 
-         return ""
+        if black in package_tmp:
+            bb.note(package_tmp, ' found in blacklist, disable icecc')
+            bb.data.setVar("PARALLEL_MAKE" , "", d) 
+            return ""
 
     #user defined exclusion list
-    user_package_blacklist = bb.data.getVar('ICECC_USER_PACKAGE_BL', d) or "none"   
+    user_package_blacklist = bb.data.getVar('ICECC_USER_PACKAGE_BL', d) or ""
     user_package_blacklist = user_package_blacklist.split()
 
     for black in user_package_blacklist:
-      if black in package_tmp:
-         bb.data.setVar("PARALLEL_MAKE" , "", d) 
-         return ""
-
+        if black in package_tmp:
+            bb.data.setVar("PARALLEL_MAKE" , "", d) 
+            return ""
 
     prefix = bb.data.expand('${HOST_PREFIX}', d)
 
-            
-    if compile and bb.data.inherits_class("cross", d):
-       return create_path( ["gcc", "g++"], "native", bb, d)
+    if bb.data.inherits_class("cross", d):
+        return create_path( ["gcc", "g++"], "native", bb, d)
 
-    elif compile and bb.data.inherits_class("native", d):
-         return create_path( ["gcc", "g++"], "native", bb, d)
+    elif bb.data.inherits_class("native", d):
+        return create_path( ["gcc", "g++"], "native", bb, d)
 
-    elif compile and bb.data.inherits_class("kernel", d):
-          return create_path( [get_cross_kernel_ver(bb,d), "foo"], "cross-kernel", bb, d)
+    elif bb.data.inherits_class("kernel", d):
+        return create_path( [get_cross_kernel_cc(bb,d), ], "cross-kernel", bb, d)
 
-    elif not compile or len(prefix) == 0:
-           return create_path( ["gcc", "g++"], "native", bb, d)
+    elif len(prefix) == 0:
+        return create_path( ["gcc", "g++"], "native", bb, d)
 
     else:
-           return create_path( [prefix+"gcc", prefix+"g++"], "cross", bb, d)      
-
-
+        return create_path( [prefix+"gcc", prefix+"g++"], "cross", bb, d)      
 
 
 def icc_version(bb,d):
     return create_env(bb,d)
 
+
 def check_for_kernel(bb,d):     
-     if  bb.data.inherits_class("kernel", d):
-       return "yes"
+    if  bb.data.inherits_class("kernel", d):
+         return "yes"
+    return "no"
 
-       return "no"
 
+set_icecc_env() {
+    ICECC_PATH=${@icc_path(bb,d)}
+    if test x${ICECC_PATH} != x; then
+	export PATH=${ICECC_PATH}$PATH
+	export CCACHE_PATH=$PATH
+        #check if we are building a kernel and select gcc-cross-kernel
+        if [ "${@check_for_kernel(bb,d)}" = "yes" ]; then
+            export ICECC_CC="${@get_cross_kernel_cc(bb,d)}"
+	    export ICECC_CXX="${HOST_PREFIX}g++"
+	else
+	    export ICECC_CC="${HOST_PREFIX}gcc"
+	    export ICECC_CXX="${HOST_PREFIX}g++"
+	fi
 
-def get_cross_kernel_ver(bb,d):
-
-       return  bb.data.expand('${KERNEL_CC}', d).strip() or "gcc"
-
-# set the icecream environment variables
-do_configure_prepend() {
-    export PATH=${@icc_path(bb,d,False)}$PATH
-    export ICECC_CC="gcc"
-    export ICECC_CXX="g++"
-}
-
-do_compile_prepend() {
-
-    export PATH=${@icc_path(bb,d,True)}$PATH
- 
- #check if we are building a kernel and select gcc-cross-kernel
- if [ "${@check_for_kernel(bb,d)}" = "yes" ]; then
-    export ICECC_CC="${@get_cross_kernel_ver(bb,d)}"
-    export ICECC_CXX="${HOST_PREFIX}g++"
- else
-    export ICECC_CC="${HOST_PREFIX}gcc"
-    export ICECC_CXX="${HOST_PREFIX}g++"
- fi
-
-    if [ "${@use_icc_version(bb,d)}" = "yes" ]; then
-        export ICECC_VERSION="${@icc_version(bb,d)}"
-    else
-        export ICECC_VERSION="NONE"
+	if [ "${@use_icc_version(bb,d)}" = "yes" ]; then
+            export ICECC_VERSION="${@icc_version(bb,d)}"
+	else
+            export -n ICECC_VERSION
+	fi
+	oenote "set the icecream environment variables: PATH=$PATH, CCACHE_PATH=$CCACHE_PATH, ICECC_CC=$ICECC_CC, ICECC_CXX=$ICECC_CXX, ICECC_VERSION=$ICECC_VERSION"
     fi
 }
 
+do_configure_prepend() {
+    set_icecc_env
+}
+
+do_compile_prepend() {
+    set_icecc_env
+}
