@@ -61,7 +61,6 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            file://defconfig-bootcdx86 \
            file://defconfig-htcuniversal \
            file://defconfig-collie \
-           file://initramfs-config-collie \
            file://defconfig-zylonite"
 # Disabled until the patchset is updated:
 #           file://defconfig-tosa
