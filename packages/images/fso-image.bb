@@ -64,6 +64,13 @@ AUDIO_INSTALL = "\
   fso-sounds \
 "
 
+GTK_INSTALL = "\
+  openmoko-calculator2 \
+  openmoko-terminal2 \
+  gpe-scap \
+  tangogps \
+"
+
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
 AUDIO_INSTALL_append_om-gta01 = "\
@@ -90,6 +97,7 @@ ZHONE_INSTALL = "\
 IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
   ${X_INSTALL} \
+  ${GTK_INSTALL} \
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
@@ -102,14 +110,25 @@ inherit image
 fso_rootfs_postprocess() {
     curdir=$PWD
     cd ${IMAGE_ROOTFS}
+    # date/time
     date "+%m%d%H%M%Y" >./etc/timestamp
+    # alias foo
     echo "alias pico=nano" >>./etc/profile
     echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
+    # nfs
     mkdir -p ./local/pkg
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
     echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
+    # fix .desktop files for illume
+    desktop=`find ./usr/share/applications -name "*.desktop"`
+    for file in $desktop; do
+        echo "Categories=Office;" >>$file
+    done
+    # minimal gtk theme foo
+    mkdir -p ./etc/gtk-2.0/
+    echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
     cd $curdir
 }
 
