@@ -6,7 +6,7 @@ S = "${WORKDIR}/classpath-${PV}"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
-DEPENDS = "ecj-initial fastjar-native zip-native"
+DEPENDS = "ecj-initial fastjar-native zip-nativei gettext-native"
 
 inherit autotools native
 
@@ -29,6 +29,12 @@ EXTRA_OECONF = "\
   --includedir=${STAGING_INCDIR}/classpath \
   --with-vm=java \
   "
+# hack to get config.rpath in, it comes from gettext
+do_configure_prepend () {
+
+        ${@['','cp ${STAGING_DATADIR}/automake-1.10/config.rpath ${S}'][bb.data.getVar('PREFERRED_VERSION_automake-native',d,1) == '1.10']}
+
+}
 
 do_stage() {
 	oe_runmake install
