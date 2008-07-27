@@ -40,6 +40,7 @@ X_INSTALL = "\
 # useful command line tools
 TOOLS_INSTALL = "\
 #  bash \
+  dosfstools \
   htop \
   iptables \
   lsof \
