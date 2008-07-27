@@ -1,12 +1,13 @@
 include mesa-common.inc
 
-SRC_URI += " file://mklib-cross.patch;patch=1"
+# suppress mklib-rpath-link patch from mesa-common
+SRC_URI = "${SOURCEFORGE_MIRROR}/mesa3d/MesaLib-${PV}.tar.bz2 file://mklib-cross.patch;patch=1"
 
 FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
-PR = "r1"
+PR = "r0"
 
 DEPENDS += "libdrm"
 # DRI is useless without the kernel drivers

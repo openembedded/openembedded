@@ -1,0 +1,14 @@
+--- s/bin/mklib~	2008-02-19 15:30:18.000000000 +0000
++++ s/bin/mklib	2008-07-27 11:15:25.000000000 +0100
+@@ -204,9 +204,9 @@
+ 	if [ "x$LINK" = "x" ] ; then
+ 	    # -linker was not specified so set default link command now
+             if [ $CPLUSPLUS = 1 ] ; then
+-                LINK=g++
++                LINK=$CXX
+             else
+-                LINK=gcc
++                LINK=$CC
+             fi
+ 	fi
+ 
