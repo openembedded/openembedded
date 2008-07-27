@@ -1,0 +1,110 @@
+--- s/offsets.cpp~	2004-07-11 22:50:59.000000000 +0100
++++ s/offsets.cpp	2008-07-27 10:28:40.000000000 +0100
+@@ -100,30 +100,30 @@
+ #endif
+ 
+ #define OFFSET(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " CPU + %d\n", (int) &((struct SCPUState *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " CPU + %d\n",  &((struct SCPUState *) 0)->F);
+ #define OFFSET2(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " Registers + %d\n", (int) &((struct SRegisters *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " Registers + %d\n",  &((struct SRegisters *) 0)->F);
+ #define OFFSET3(F) \
+-fprintf (S9xSTREAM, "#define " #F " Memory + %d\n", (int) &((class CMemory *) 0)->F);
++fprintf (S9xSTREAM, "#define " #F " Memory + %d\n",  &((class CMemory *) 0)->F);
+ #define OFFSET4(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " APU + %d\n", (int) &((struct SAPU *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " APU + %d\n",  &((struct SAPU *) 0)->F);
+ #define OFFSET5(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " IAPU + %d\n", (int) &((struct SIAPU *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " IAPU + %d\n",  &((struct SIAPU *) 0)->F);
+ #define OFFSET6(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " ICPU + %d\n", (int) &((struct SICPU *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " ICPU + %d\n",  &((struct SICPU *) 0)->F);
+ #define OFFSET7(N,F) \
+-fprintf (S9xSTREAM, "#define " #N " Settings + %d\n", (int) &((struct SSettings *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " Settings + %d\n",  &((struct SSettings *) 0)->F);
+ #define OFFSET8(N, F) \
+-fprintf (S9xSTREAM, "#define " #N " APURegisters + %d\n", (int) &((struct SAPURegisters *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " APURegisters + %d\n",  &((struct SAPURegisters *) 0)->F);
+ 
+ #define OFFSET9(N, F) \
+-fprintf (S9xSTREAM, "#define " #N " PPU + %d\n", (int) &((struct SPPU *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " PPU + %d\n",  &((struct SPPU *) 0)->F);
+ #define OFFSET10(N, F) \
+-fprintf (S9xSTREAM, "#define " #N " IPPU + %d\n", (int) &((struct InternalPPU *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " IPPU + %d\n",  &((struct InternalPPU *) 0)->F);
+ #define OFFSET11(N, F) \
+-fprintf (S9xSTREAM, "#define " #N " SA1 + %d\n", (int) &((struct SSA1 *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " SA1 + %d\n",  &((struct SSA1 *) 0)->F);
+ #define OFFSET12(N, F) \
+-fprintf (S9xSTREAM, "#define " #N " SA1Registers + %d\n", (int) &((struct SSA1Registers *) 0)->F);
++fprintf (S9xSTREAM, "#define " #N " SA1Registers + %d\n",  &((struct SSA1Registers *) 0)->F);
+ 
+ int main (int /*argc*/, char ** /*argv*/)
+ {
+--- s/getset.h~	2004-07-11 22:50:58.000000000 +0100
++++ s/getset.h	2008-07-27 10:30:38.000000000 +0100
+@@ -120,7 +120,7 @@
+ 		return (*(GetAddress + (Address & 0xffff)));
+     }
+ 	
+-    switch ((int) GetAddress)
++    switch ((long)GetAddress)
+     {
+     case CMemory::MAP_PPU:
+ 		return (S9xGetPPU (Address & 0xffff));
+@@ -225,7 +225,7 @@
+ #endif	
+     }
+ 
+-    switch ((int) GetAddress)
++    switch ((long) GetAddress)
+     {
+     case CMemory::MAP_PPU:
+ 		return (S9xGetPPU (Address & 0xffff) |
+@@ -349,7 +349,7 @@
+ 		return;
+     }
+ 	
+-    switch ((int) SetAddress)
++    switch ((long) SetAddress)
+     {
+     case CMemory::MAP_PPU:
+ 		S9xSetPPU (Byte, Address & 0xffff);
+@@ -482,7 +482,7 @@
+ 		return;
+     }
+ 	
+-    switch ((int) SetAddress)
++    switch ((long) SetAddress)
+     {
+     case CMemory::MAP_PPU:
+ 		S9xSetPPU ((uint8) Word, Address & 0xffff);
+@@ -603,7 +603,7 @@
+ 	{
+ 		return s7r.bank50;
+ 	}
+-    switch ((int) GetAddress)
++    switch ((long) GetAddress)
+     {
+ 	case CMemory::MAP_SPC7110_DRAM:
+ #ifdef SPC7110_DEBUG
+@@ -669,7 +669,7 @@
+ 	if(Settings.SPC7110&&((Address&0x7FFFFF)==0x4800))
+ 		return s7r.bank50;
+ 
+-    switch ((int) GetAddress)
++    switch ((long) GetAddress)
+     {
+ 	case CMemory::MAP_SPC7110_DRAM:
+ #ifdef SPC7110_DEBUG
+@@ -729,7 +729,7 @@
+ 		return;
+     }
+ 	
+-    switch ((int) GetAddress)
++    switch ((long) GetAddress)
+     {
+     case CMemory::MAP_PPU:
+ 		CPU.PCBase = Memory.FillRAM;
