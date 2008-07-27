@@ -1,5 +1,4 @@
 PACKAGES = "libviaXvMC libviaXvMCPro libviaXvMC-dev libviaXvMCPro-dev libviaXvMC-dbg libviaXvMCPro-dbg ${PN}-doc"
-PACKAGES_DYNAMIC = "xorg-driver-via"
 
 FILES_libviaXvMC = "${libdir}/libviaXvMC.so.*"
 FILES_libviaXvMCPro = "${libdir}/libviaXvMCPro.so.*"
