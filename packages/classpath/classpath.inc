@@ -20,13 +20,9 @@ SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
 S = "${WORKDIR}/${PBN}-${PV}"
 
-# Newer versions expect setting the compiler through this
-# environment variable.
-export JAVAC=${STAGING_BINDIR_NATIVE}/javac
-
 EXTRA_OECONF = "\
   --with-glibj \
-  --with-ecj=${STAGING_BINDIR_NATIVE}/javac \
+  --with-ecj=javac \
   --with-fastjar=fastjar \
   --includedir=${includedir}/classpath \
   --with-vm=java \
