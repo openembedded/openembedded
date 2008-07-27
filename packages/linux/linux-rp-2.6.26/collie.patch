@@ -534,6 +534,23 @@ index a8ad8a0..137b043 100644
  
  #define UCB_TC_A	0x05
  #define UCB_TC_A_LOOP		(1 << 7)	/* UCB1200 */
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index c7d5a52..215bec2 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -210,6 +210,12 @@ static int sa1100_probe_subdev(struct sa_subdev_info *subdev, struct resource *r
+ 		goto err;
+ 	}
+ 	subdev->mtd->owner = THIS_MODULE;
++	
++#ifdef CONFIG_SA1100_COLLIE
++	/* collie flash starts locked */
++	 if (subdev->mtd->unlock)
++		 subdev->mtd->unlock(subdev->mtd, 0xc0000, subdev->mtd->size - 0xc0000);
++#endif
+ 
+ 	printk(KERN_INFO "SA1100 flash: CFI device at 0x%08lx, %dMiB, "
+ 		"%d-bit\n", phys, subdev->mtd->size >> 20,
 diff --git a/drivers/net/wireless/hostap/hostap_cs.c b/drivers/net/wireless/hostap/hostap_cs.c
 index 3b4e55c..0ae741d 100644
 --- a/drivers/net/wireless/hostap/hostap_cs.c
