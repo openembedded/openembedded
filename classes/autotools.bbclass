@@ -142,13 +142,20 @@ autotools_do_configure() {
 
 autotools_do_install() {
 	oe_runmake 'DESTDIR=${D}' install
+}
 
+do_install_append() {
         for i in `find ${D} -name "*.la"` ; do \
-            sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
-            sed -i -e s:${D}::g $i
-            sed -i -e 's:-I${WORKDIR}\S*: :g' $i
-            sed -i -e 's:-L${WORKDIR}\S*: :g' $i
-	done
+                sed -i -e '/^dependency_libs=/s,${WORKDIR}[[:alnum:]/\._+-]*/\([[:alnum:]\._+-]*\),${libdir}/\1,g' $i
+                sed -i -e s:${CROSS_DIR}/${HOST_SYS}::g $i
+                sed -i -e s:${CROSS_DIR}::g $i
+                sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
+                sed -i -e s:${STAGING_DIR_HOST}::g $i
+                sed -i -e s:${STAGING_DIR}::g $i
+                sed -i -e s:${S}::g $i
+                sed -i -e s:${T}::g $i
+                sed -i -e s:${D}::g $i
+        done
 }
 
 STAGE_TEMP="${WORKDIR}/temp-staging"
