@@ -6,7 +6,7 @@ S = "${WORKDIR}/classpath-${PV}"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
-DEPENDS = "ecj-initial fastjar-native zip-nativei gettext-native"
+DEPENDS = "ecj-initial fastjar-native zip-native gettext-native"
 
 inherit autotools native
 
