@@ -73,6 +73,9 @@ UBOOT_ENTRYPOINT ?= "20008000"
 UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
 
 kernel_do_compile() {
+	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
+		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
+	fi
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
 	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 	if [ "${KERNEL_MAJOR_VERSION}" != "2.6" ]; then
@@ -85,29 +88,8 @@ kernel_do_compile() {
 		oenote "no modules to compile"
 	fi
 }
+kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
-
-do_builtin_initramfs() {
-	 if [ ! -z "${INITRAMFS_IMAGE}" ]; then
-		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
-		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" usr/initramfs_data.cpio.gz
-		oe_runmake ${KERNEL_IMAGETYPE} CC="${KERNEL_CC}" LD="${KERNEL_LD}"
-	
-		install -d ${DEPLOY_DIR_IMAGE}
-		install -m 0644 arch/${ARCH}/boot/${KERNEL_IMAGETYPE} ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin
-		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin
-	
-		# Make sure to kill injected initramfs, in case someone will do "-c compile -f"
-		rm usr/initramfs_data.cpio.gz
-		
-		cd ${DEPLOY_DIR_IMAGE}
-		rm -f ${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
-		ln -sf ${KERNEL_IMAGE_BASE_NAME}-${INITRAMFS_IMAGE}.bin ${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
-		package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_SYMLINK_NAME}-${INITRAMFS_IMAGE}.bin
-	fi
-}
-addtask builtin_initramfs before do_build after do_package_write
-do_builtin_initramfs[depends] = '${INITRAMFS_TASK}'
 
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
@@ -468,7 +450,7 @@ python populate_packages_prepend () {
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
-	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" ]; then
+	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" -a -z "${DONT_CHECK_KERNELSIZE}"]; then
         	size=`ls -l arch/${ARCH}/boot/${KERNEL_IMAGETYPE} | awk '{ print $5}'`
         	if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
                 	rm arch/${ARCH}/boot/${KERNEL_IMAGETYPE}

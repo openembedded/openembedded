@@ -140,6 +140,10 @@ do_configure() {
 
 	yes '' | oe_runmake oldconfig
 }
+#collie dosn't need to deploy kernel. The kernel is in the rootfs and
+# linux-kexecboot kernel is flashed
+do_deploy_collie() {
+}
 
 # wlan-ng stuff need compiled kernel sources
 do_rm_work() {
