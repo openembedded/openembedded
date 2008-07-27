@@ -1,4 +1,5 @@
-# Lock down some SRCDATEs, see http://svn.o-hand.com/view/poky/trunk/openembedded/conf/distro/poky.conf for the original version 
+# Lock down some SRCDATEs
+# See http://svn.o-hand.com/view/poky/trunk/openembedded/conf/distro/poky.conf for the original version 
 
 # Kernel modules
 SRCDATE_at76c503a-modules ?= "20060814"
@@ -52,7 +53,7 @@ SRCDATE_gtkhtml2 ?= "20060323"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCDATE ?= "20080716"
+EFL_SRCDATE ?= "20080727"
 SRCDATE_edb-native ?= "${EFL_SRCDATE}"
 SRCDATE_edb ?= "${EFL_SRCDATE}"
 SRCDATE_eet-native ?= "${EFL_SRCDATE}"

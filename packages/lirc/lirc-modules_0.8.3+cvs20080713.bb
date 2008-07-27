@@ -16,7 +16,7 @@ inherit autotools module
 
 require lirc-config.inc
 
-MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make -e V=1' -C drivers"
+MAKE_TARGETS = "KERNEL_PATH=${STAGING_KERNEL_DIR} MAKE='make V=1' -C drivers"
 
 fakeroot do_install() {
 	oe_runmake -C drivers DESTDIR="${D}" moduledir="/lib/modules/${KERNEL_VERSION}/lirc" install
