@@ -1,0 +1,11 @@
+Index: detect-stylus/Makefile
+===================================================================
+--- detect-stylus.orig/Makefile	2008-07-28 16:30:40.000000000 +0100
++++ detect-stylus/Makefile	2008-07-28 16:31:08.000000000 +0100
+@@ -39,5 +39,6 @@
+ 	mkdir -p $(DESTDIR)$(PREFIX)/bin/
+ 	$(STRIP) $(PACKAGE)
+ 	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install detect-tsdevice $(DESTDIR)$(PREFIX)/bin/detect-tsdevice
+ 	mkdir -p $(DESTDIR)/etc/X11/Xinit.d
+ 	install 70detect-stylus $(DESTDIR)/etc/X11/Xinit.d
