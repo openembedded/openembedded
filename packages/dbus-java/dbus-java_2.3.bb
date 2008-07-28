@@ -7,7 +7,7 @@ SECTION = "libs"
 HOMEPAGE = "http://dbus.freedesktop.org/doc/dbus-java"
 AUTHOR = "Matthew Johnson <dbus@matthew.ath.cx>"
 
-PR = "r3"
+PR = "r4"
 
 inherit java-library
 
@@ -16,9 +16,9 @@ SRC_URI = "http://dbus.freedesktop.org/releases/dbus-java/dbus-java-${PV}.tar.gz
 S = "${WORKDIR}/dbus-java-${PV}"
 
 DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native fastjar-native"
-RSUGGESTS_libdbus-java = "libmatthew-java dbus"
-RDEPENDS_dbus-java-viewer = "java2-runtime libmatthew-java ${JPN}"
-RDEPENDS_dbus-java-bin = "java2-runtime libmatthew-java ${JPN}"
+RSUGGESTS_libdbus-java = "libunixsocket-java dbus"
+RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java ${JPN}"
+RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java ${JPN}"
 
 do_compile () {
   # run target .binclasses first to fix a brokenness in the Makefile
