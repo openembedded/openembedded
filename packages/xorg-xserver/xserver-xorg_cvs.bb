@@ -54,7 +54,9 @@ do_install() {
 do_stage() {
 	install -d ${STAGING_INCDIR}/xserver-xorg
 	for i in i810 via; do
-	  pushd ${S}/programs/Xserver/hw/xfree86/drivers/$i; install -m 0644 *.h ${STAGING_INCDIR}/xserver-xorg/; popd
+	  cd ${S}/programs/Xserver/hw/xfree86/drivers/$i; install -m 0644 *.h ${STAGING_INCDIR}/xserver-xorg/
 	done
+
+	cd ${S}
 	install -m 0644 programs/Xserver/hw/xfree86/common/fourcc.h ${STAGING_INCDIR}/xserver-xorg/
 }

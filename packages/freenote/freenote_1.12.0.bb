@@ -16,8 +16,9 @@ do_configure_prepend() {
 	mv -f FreeNote subdir1
 	mv -f FreeNoteSetup subdir2
 	printf "TEMPLATE=subdirs\nSUBDIRS=subdir1 subdir2\n" >> freenote.pro
-	pushd ${S}/subdir1 && rm *.pro && qmake -project && echo "TARGET=FreeNote" >> subdir1.pro && popd
-	pushd ${S}/subdir2 && rm *.pro && qmake -project && echo "TARGET=FreeNoteSetup" >> subdir2.pro && popd
+	cd ${S}/subdir1 && rm *.pro && qmake -project && echo "TARGET=FreeNote" >> subdir1.pro
+	cd ${S}/subdir2 && rm *.pro && qmake -project && echo "TARGET=FreeNoteSetup" >> subdir2.pro
+	cd ${S}
 }
 
 do_install() {

@@ -21,10 +21,10 @@ do_configure_prepend() {
 	sed -i -e 's,/opt/QtPalmtop/bin/,${bindir}/,g' "${S}/ui/nunome.h"
 	sed -i -e 's,/opt/QtPalmtop/,${palmtopdir}/,g' "${S}/ui/nunome.h"
 	printf "TEMPLATE=subdirs\nSUBDIRS=Nnmlib server ui dicman ui\n" >nunome.pro
-	pushd Nnmlib && qmake -project -t lib && popd
-	pushd server && qmake -project && printf "LIBS+=-lNnmlib\nTARGET=server.bin\n" >> server.pro && popd
-	pushd dicman && qmake -project && printf "LIBS+=-lnunome -lNnmlib\nTARGET=dicman.bin\n" >> dicman.pro && popd
-	pushd ui && qmake -project -t lib && printf "LIBS+=-lNnmlib\nTARGET=nunome\n" >> ui.pro && popd
+	cd Nnmlib && qmake -project -t lib && cd ../
+	cd server && qmake -project && printf "LIBS+=-lNnmlib\nTARGET=server.bin\n" >> server.pro && cd ../
+	cd dicman && qmake -project && printf "LIBS+=-lnunome -lNnmlib\nTARGET=dicman.bin\n" >> dicman.pro && cd ../
+	cd ui && qmake -project -t lib && printf "LIBS+=-lNnmlib\nTARGET=nunome\n" >> ui.pro && cd ../
 	find . -name "moc*"|xargs rm -f
 	find . -name "Makefile"|xargs rm -f
 }
