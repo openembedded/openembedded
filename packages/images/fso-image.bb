@@ -68,7 +68,7 @@ GTK_INSTALL = "\
   openmoko-calculator2 \
   openmoko-terminal2 \
   gpe-scap \
-  tangogps \
+  tangogps-fso \
 "
 
 # FIXME these should rather be part of alsa-state,
