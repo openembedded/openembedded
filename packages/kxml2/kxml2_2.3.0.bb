@@ -15,7 +15,7 @@ S = "${WORKDIR}"
 JAR = "${PN}-${PV}.jar"
 
 SRC_URI = "\
-    http://belnet.dl.sourceforge.net/sourceforge/kxml/${PN}-src-${PV}.zip \
+    ${SOURCEFORGE_MIRROR}/kxml/${PN}-src-${PV}.zip \
     file://makefile.patch;patch=1 \
     "
 
