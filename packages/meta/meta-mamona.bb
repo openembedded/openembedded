@@ -11,6 +11,7 @@ task-mamona \
 task-mamona-devel \
 task-mamona-sdk \
 task-mamona-wm \
+task-mamona-python \
 coreutils \
 cpio \
 dbus \
@@ -72,7 +73,6 @@ openobex \
 portmap \
 ppp \
 procps \
-python-pyqt \
 qt4-x11-free \
 renderproto-dev \
 samba \
