@@ -1,0 +1,2 @@
+# mmc numbers are assigned dynamicly so if you have other dynamic assigned block devices it may be wrong
+/dev/mmcblk0p1	b	660	0	6	179	1	-	-	-

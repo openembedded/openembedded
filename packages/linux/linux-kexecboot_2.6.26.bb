@@ -1,7 +1,7 @@
-require linux-rp.inc
+require linux-kexecboot.inc
 
 PR = "r1"
-
+FILESDIR = "linux-rp_${PV}"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
