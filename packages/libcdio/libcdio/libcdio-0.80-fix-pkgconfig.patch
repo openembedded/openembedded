@@ -1,0 +1,23 @@
+Index: libcdio-0.80/Makefile.am
+===================================================================
+--- libcdio-0.80.orig/Makefile.am
++++ libcdio-0.80/Makefile.am
+@@ -45,12 +45,15 @@ endif
+ # pkg-config(1) related rules
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libcdio.pc  \
+-	         libcdio++.pc  \
+ 	         libiso9660.pc \
+-	         libiso9660++.pc \
+-	         libudf.pc
++	         libudf.pc \
+ 		 $(paranoiapcs)
+ 
++#if ENABLE_CPP
++#pkgconfig_DATA += \
++#	libcdio++.pc \
++#	libiso9660++.pc
++#endif
+ 
+ $(pkgconfig_DATA): config.status
+ 
