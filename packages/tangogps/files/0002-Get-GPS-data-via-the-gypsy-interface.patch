@@ -1,0 +1,182 @@
+From aab817f5f2d66f1ef1e710eb6b698865d14b7fc2 Mon Sep 17 00:00:00 2001
+From: Daniel Willmann <daniel@totalueberwachung.de>
+Date: Mon, 21 Jul 2008 04:33:59 +0200
+Subject: [PATCH] Get GPS data via the gypsy interface.
+ Except for the time (which ogpsd doesn't send periodically) the interface
+ is implemented.
+
+---
+ configure.in        |    2 +-
+ src/gps_functions.c |   96 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/gps_functions.h |    3 +-
+ src/init.c          |    6 ++-
+ 4 files changed, 103 insertions(+), 4 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 3661a57..cf06033 100644
+--- a/configure.in
++++ b/configure.in
+@@ -23,7 +23,7 @@ AM_GLIB_GNU_GETTEXT
+ 
+ AM_PROG_LIBTOOL
+ 
+-PKG_CHECK_MODULES(PACKAGE, [gtk+-2.0 gdk-2.0 gconf-2.0])
++PKG_CHECK_MODULES(PACKAGE, [gtk+-2.0 gdk-2.0 gconf-2.0 gypsy])
+ AC_SUBST(PACKAGE_CFLAGS)
+ AC_SUBST(PACKAGE_LIBS)
+ 
+diff --git a/src/gps_functions.c b/src/gps_functions.c
+index bafbc18..57646e1 100644
+--- a/src/gps_functions.c
++++ b/src/gps_functions.c
+@@ -4,6 +4,13 @@
+ #  include <config.h>
+ #endif
+ 
++#include <gypsy/gypsy-control.h>
++#include <gypsy/gypsy-device.h>
++#include <gypsy/gypsy-position.h>
++#include <gypsy/gypsy-accuracy.h>
++#include <gypsy/gypsy-course.h>
++#include <gypsy/gypsy-satellite.h>
++
+ #include <glib.h>
+ #include <glib/gprintf.h>
+ 
+@@ -630,3 +637,92 @@ get_gps()
+ 	
+ 
+ }
++
++static void on_fix_status_changed(GypsyDevice *device, GypsyDeviceFixStatus status, void *user_data)
++{
++	gpsdata->fix.mode = status;
++	gpsdata->valid =  status > 1;
++}
++
++static void on_position_changed(GypsyPosition *position, GypsyPositionFields fields_set,
++		int timestamp, double latitude, double longitude, double altitude, void *user_data)
++{
++	if (gpsdata->valid) {
++		gpsdata->fix.latitude = latitude;
++		gpsdata->fix.longitude = longitude;
++		gpsdata->fix.altitude = altitude;
++	}
++}
++
++static void on_accuracy_changed(GypsyAccuracy *accuracy, int fields, double pdop,
++		double hdop, double vdop, void *user_data)
++{
++	gpsdata->hdop = hdop;
++}
++
++static void on_course_changed(GypsyCourse *course, GypsyCourseFields fields_set,
++		int timestamp, double speed, double direction, double climb, void *user_data)
++{
++	gpsdata->fix.speed = speed/3.6;
++	gpsdata->fix.track = direction;
++}
++
++static void on_satellites_changed(GypsySatellite *sat,  GPtrArray *sats, void *user_data)
++{
++	int i;
++
++	gpsdata->satellites_used = 0;
++	gpsdata->satellites_inview = sats->len;
++	for (i = 0; i < sats->len; i++) {
++	    GypsySatelliteDetails *details = sats->pdata[i];
++
++			if (details->in_use) {
++				gpsdata->satellites_used++;
++			}
++	}
++}
++
++// typedef struct {
++//     double time;        /* Time of update, seconds since Unix epoch */
++//     int    mode;        /* Mode of fix */
++//     double latitude;    /* Latitude in degrees (valid if mode >= 2) */
++//     double longitude;   /* Longitude in degrees (valid if mode >= 2) */
++//     double altitude;    /* Altitude in meters (valid if mode == 3) */
++//     double track;       /* Course made good (relative to true north) */
++//     double speed;       /* Speed over ground, meters/sec */
++//     double bearing;	/* in radian */
++// } gps_fix_t;
++// 
++// typedef struct {
++// 	gps_fix_t fix;
++// 	int satellites_used;
++// 	int satellites_inview;
++// 	double hdop;
++// 	gboolean valid;
++// } gps_data_t;
++
++
++#define GYPSY_OBJ_PATH "/org/freedesktop/Gypsy"
++
++int setup_gypsy() {
++	gpsdata = g_new0(gps_data_t,1);
++
++	GypsyControl *gyctrl = gypsy_control_get_default();
++	GypsyDevice *gydevice = gypsy_device_new(GYPSY_OBJ_PATH);
++	GypsyPosition *gypos = gypsy_position_new(GYPSY_OBJ_PATH);
++	GypsyAccuracy *gyacc = gypsy_accuracy_new(GYPSY_OBJ_PATH);
++	GypsyCourse *gycourse = gypsy_course_new(GYPSY_OBJ_PATH);
++	GypsySatellite *gysat = gypsy_satellite_new(GYPSY_OBJ_PATH);
++
++	g_signal_connect(gydevice, "fix-status-changed", G_CALLBACK(on_fix_status_changed), NULL);
++	g_signal_connect(gypos, "position-changed", G_CALLBACK(on_position_changed), NULL);
++	g_signal_connect(gyacc, "accuracy-changed", G_CALLBACK(on_accuracy_changed), NULL);
++	g_signal_connect(gycourse, "course-changed", G_CALLBACK(on_course_changed), NULL);
++	g_signal_connect(gysat, "satellites-changed", G_CALLBACK(on_satellites_changed), NULL);
++
++	gpsdata->fix.mode = gypsy_device_get_fix_status(gydevice, NULL);
++	gpsdata->valid = gpsdata->fix.mode > 1;
++
++	return 1;
++}
++
+diff --git a/src/gps_functions.h b/src/gps_functions.h
+index 1090565..207b39f 100644
+--- a/src/gps_functions.h
++++ b/src/gps_functions.h
+@@ -1,4 +1,5 @@
+-
++int
++setup_gypsy();
+ 
+ void
+ get_gps();
+diff --git a/src/init.c b/src/init.c
+index 46ca583..c557ce4 100644
+--- a/src/init.c
++++ b/src/init.c
+@@ -26,7 +26,7 @@
+ #include "wp.h"
+ 
+ FILE *fp = NULL;
+-
++int have_gypsy = 0;
+ 
+ 
+ void
+@@ -197,7 +197,8 @@ cb_gps_timer()
+ 			
+ 	printf("timer called\n");
+ 
+-	get_gps();
++	if (!have_gypsy)
++		get_gps();
+ 	
+ 
+ 	if(gpsdata) 
+@@ -868,5 +869,6 @@ init()
+ 	gtk_label_set_text(GTK_LABEL(widget), "V: " VERSION " (C) Marcus Bauer, GPLv2");
+ #endif
+ 
++	have_gypsy = setup_gypsy();
+ 	timer = g_timeout_add (1000,cb_gps_timer,data);
+ }
+-- 
+1.5.4.5
+

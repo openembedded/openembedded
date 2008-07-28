@@ -2,7 +2,7 @@ DESCRIPTION = "ImageMagick is an image convertion tools"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "tiff"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;patch=1 \
@@ -24,11 +24,11 @@ do_stage() {
 }
 
 FILES_${PN} += "${libdir}/ImageMagick-${IMVER}/modules-Q16/*/*.so \
+                ${libdir}/ImageMagick-${IMVER}/modules-Q16/*/*.la \
                 ${libdir}/ImageMagick-${IMVER}/config/ \
                 ${datadir}/ImageMagick-${IMVER}"
 
-FILES_${PN}-dev += "${libdir}/ImageMagick-${IMVER}/modules-Q16/*/*.la \
-                    ${libdir}/ImageMagick-${IMVER}/modules-Q16/*/*.a"
+FILES_${PN}-dev += "${libdir}/ImageMagick-${IMVER}/modules-Q16/*/*.a"
 
 FILES_${PN}-dbg += "${libdir}/ImageMagick-${IMVER}/modules-Q16/*/.debug/*"
 

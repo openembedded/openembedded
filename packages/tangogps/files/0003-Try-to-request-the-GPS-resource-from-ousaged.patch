@@ -1,0 +1,73 @@
+From 2562a173716141cd9ea5c227dfa52f04ce4205f8 Mon Sep 17 00:00:00 2001
+From: Daniel Willmann <daniel@totalueberwachung.de>
+Date: Tue, 22 Jul 2008 00:22:58 +0200
+Subject: [PATCH] Try to request the GPS resource from ousaged
+
+---
+ configure.in        |    2 +-
+ src/gps_functions.c |   22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+), 1 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index cf06033..2bc3cf9 100644
+--- a/configure.in
++++ b/configure.in
+@@ -23,7 +23,7 @@ AM_GLIB_GNU_GETTEXT
+ 
+ AM_PROG_LIBTOOL
+ 
+-PKG_CHECK_MODULES(PACKAGE, [gtk+-2.0 gdk-2.0 gconf-2.0 gypsy])
++PKG_CHECK_MODULES(PACKAGE, [gtk+-2.0 gdk-2.0 gconf-2.0 dbus-glib-1 gypsy])
+ AC_SUBST(PACKAGE_CFLAGS)
+ AC_SUBST(PACKAGE_LIBS)
+ 
+diff --git a/src/gps_functions.c b/src/gps_functions.c
+index 57646e1..0802e67 100644
+--- a/src/gps_functions.c
++++ b/src/gps_functions.c
+@@ -11,6 +11,7 @@
+ #include <gypsy/gypsy-course.h>
+ #include <gypsy/gypsy-satellite.h>
+ 
++#include <dbus/dbus-glib.h>
+ #include <glib.h>
+ #include <glib/gprintf.h>
+ 
+@@ -705,6 +706,11 @@ static void on_satellites_changed(GypsySatellite *sat,  GPtrArray *sats, void *u
+ #define GYPSY_OBJ_PATH "/org/freedesktop/Gypsy"
+ 
+ int setup_gypsy() {
++	DBusGConnection *connection;
++	DBusGProxy *proxy;
++	GError *error;
++	int result;
++
+ 	gpsdata = g_new0(gps_data_t,1);
+ 
+ 	GypsyControl *gyctrl = gypsy_control_get_default();
+@@ -723,6 +729,22 @@ int setup_gypsy() {
+ 	gpsdata->fix.mode = gypsy_device_get_fix_status(gydevice, NULL);
+ 	gpsdata->valid = gpsdata->fix.mode > 1;
+ 
++  error = NULL;
++  connection = dbus_g_bus_get (DBUS_BUS_SYSTEM, &error);
++  if (connection == NULL) {
++    g_printerr ("Failed to open connection to bus: %s\n",
++          error->message);
++    g_error_free (error);
++    proxy = NULL;
++  }
++
++  proxy = dbus_g_proxy_new_for_name (connection,
++             "org.freesmartphone.ousaged",
++             "/org/freesmartphone/Usage",
++             "org.freesmartphone.Usage");
++
++	dbus_g_proxy_call (proxy, "RequestResource", &error, G_TYPE_STRING, "GPS", G_TYPE_INVALID, G_TYPE_BOOLEAN, &result, G_TYPE_INVALID);
++
+ 	return 1;
+ }
+ 
+-- 
+1.5.4.5
+
