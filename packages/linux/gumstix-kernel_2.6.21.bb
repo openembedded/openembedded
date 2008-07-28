@@ -1,4 +1,4 @@
-require linux.inc
+require gumstix-linux.inc
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
        file://defconfig \

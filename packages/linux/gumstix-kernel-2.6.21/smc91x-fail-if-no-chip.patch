@@ -52,7 +52,7 @@
  	
 -proceed:
 +proceed1:
-+  printk(KERN_ERR "%s: found %d smc91x chip(s)\n", __FUNCTION__);
++  printk(KERN_ERR "%s: found %d smc91x chip(s)\n", __FUNCTION__,num_devices);
  	pxa_gpio_mode(GPIO15_nCS_1_MD);
  
  	if(smc91x_devices[1]) pxa_gpio_mode(GPIO_GUMSTIX_ETH1_RST_MD);
