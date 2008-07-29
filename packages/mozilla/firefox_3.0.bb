@@ -21,6 +21,8 @@ S = "${WORKDIR}/mozilla"
 inherit mozilla
 require firefox.inc
 
+export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
+
 do_unpack2() {
 	cp -pPr ${WORKDIR}/js/src* ${S}/js/
 }
