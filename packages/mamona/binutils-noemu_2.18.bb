@@ -21,10 +21,8 @@ SRC_URI = "\
 # powerpc patches
 SRC_URI += "file://binutils-2.16.1-e300c2c3.patch;patch=1"
 
-EXTRA_OECONF = "--with-sysroot=${CROSS_DIR}/${TARGET_SYS} \
-        --program-prefix=${TARGET_PREFIX} --disable-shared"
+EXTRA_OECONF = "--program-prefix=${TARGET_PREFIX} --disable-shared"
 
-HOST_SYS = "${BUILD_SYS}"
 
 do_configure () {
     CC=gcc AS=as LD=ld CXX=g++ AR=ar OBJCOPY=objcopy OBJDUMP=objdump RANLIB=ranlib NM=nm STRIP=strip oe_runconf
