@@ -8,5 +8,9 @@ PACKAGES = "${PN}"
 RDEPENDS = "\
   bash-noemu \
   binutils-noemu \
+  binutils-noemu-symlinks \
   gcc-noemu \
+  gcc-noemu-symlinks \
+  g++-noemu \
+  g++-noemu-symlinks \
 "
