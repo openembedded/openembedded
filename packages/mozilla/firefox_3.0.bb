@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/3.0/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
@@ -12,6 +12,8 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/3.0/source/fi
 	file://jemalloc-tls.patch;patch=1 \
 	http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz \
 	http://ftp.debian.org/debian/pool/main/i/iceweasel/iceweasel_3.0~rc2-2.diff.gz;patch=1 \	
+        file://0001-Remove-Werror-from-build.patch;patch=1 \
+        file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla"
