@@ -4,6 +4,8 @@ require ../binutils/binutils.inc
 
 RCONFLICTS = "binutils"
 RREPLACES = "binutils"
+RCONFLICTS_binutils-noemu-symlinks = "binutils-symlinks"
+RREPLACES_binutils-noemu-symlinks = "binutils-symlinks"
 
 SRC_URI = "\
      ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
