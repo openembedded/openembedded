@@ -4,6 +4,7 @@ PR = "r1"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
+RCONFLICTS = "task-mamona-sdk task-mamona-base task-mamona"
 
 RDEPENDS = "\
   bash-noemu \
