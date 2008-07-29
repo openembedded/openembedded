@@ -8,6 +8,10 @@ PR = "r0"
 
 RCONFLICTS = "gcc"
 RREPLACES = "gcc"
+RCONFLICTS_g++-noemu = "g++"
+RREPLACES_g++-noemu = "g++"
+RCONFLICTS_cpp-noemu = "cpp"
+RREPLACES_cpp-noemu = "cpp"
 
 inherit autotools gettext
 
@@ -74,14 +78,11 @@ JAVA_arm = ""
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
 require ../gcc/gcc3-build.inc
-ARCH_FLAGS_FOR_TARGET=-isystem${STAGING_INCDIR}
 
 
-EXTRA_OECONF += " --disable-libssp --with-slibdir=\"/lib\" --without-cross-host"
+EXTRA_OECONF += " --disable-libssp --with-slibdir=\"/lib\" "
 
 EXTRA_OEMAKE += "LDFLAGS=\"-static\" build_tooldir=\"${STAGING_DIR}/${TARGET_SYS}\""
-
-HOST_SYS = ${BUILD_SYS}
 
 CONFIG_SITE=""
 
