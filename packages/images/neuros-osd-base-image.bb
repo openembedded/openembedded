@@ -21,6 +21,9 @@ IMAGE_INSTALL = "task-boot \
                  wireless-tools zd1211-firmware \
                  ${DISTRO_SSH_DAEMON} \
                  qt-embedded dbus \
+                 neuros-mainmenu \
+                 neuros-nwm \
+#                 vlc-davinci \
                 "
 
 IMAGE_LINGUAS = ""
