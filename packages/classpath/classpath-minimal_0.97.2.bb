@@ -3,6 +3,7 @@ require classpath.inc
 SRC_URI += "\
   file://netif_16.patch;patch=1;pnum=0 \
   file://SimpleName.diff;patch=1;pnum=0 \
+  file://javanet-local.patch;patch=1;pnum=0 \
   "
 
 PR = "r0"
