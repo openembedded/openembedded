@@ -116,8 +116,24 @@ do_install () {
 	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
 
 	install -d ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp   ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagegpp        ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagemultigpp   ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp       ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/mplistgpp         ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/readwritegpp      ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp         ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/scalegpp          ${D}/${bindir}
+
+	install -d ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/loop.out          ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/messagemulti.out  ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/message.out       ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/mpcsxfer.out      ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/mplist.out        ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/readwrite.out     ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/ringio.out        ${D}/${datadir}/dsplink
+	install ${S}/dsp/BUILD/EXPORT/RELEASE/scale.out         ${D}/${datadir}/dsplink
 
 	install -d ${D}/${libdir}
 	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib  ${D}/${libdir}
@@ -143,7 +159,8 @@ pkg_postrm_${PN}-module () {
 
 PACKAGES =+ "${PN}-module"
 FILES_${PN}-module  = "${sysconfdir} /lib/modules"
-FILES_${PN} = "${bindir}/mpcsxfergpp ${bindir}/ringiogpp"
+FILES_${PN} = "${bindir}/* ${datadir}/dsplink/*"
+
 INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}" 
