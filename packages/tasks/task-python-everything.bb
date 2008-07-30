@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml31"
+PR = "ml32"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -33,6 +33,7 @@ RDEPENDS = "\
 		python-lxml		\
 		python-m2crypto \
 		python-mad		\
+		python-mako		\
 		python-numarray		\
 		python-numeric		\
 		python-ogg		\
@@ -79,6 +80,7 @@ RDEPENDS = "\
 		python-sgmlop		\
 		python-snmplib		\
 		python-soappy		\
+		python-sphinxsearch	\
 		python-spydi		\
 		python-spyro		\
 		python-sqlalchemy	\
