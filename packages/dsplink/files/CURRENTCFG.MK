@@ -59,30 +59,30 @@ export USE_POOL            := 1
 export USE_NOTIFY          := 1
 export USE_MPCS            := 1
 export USE_RINGIO          := 1
-export USE_MPLIST          := 0
-export USE_MSGQ            := 0
-export USE_CHNL            := 0
+export USE_MPLIST          := 1
+export USE_MSGQ            := 1
+export USE_CHNL            := 1
 
 
 #   =========================================================
 #   Compile time physical link scalability options for device
 #   =========================================================
-export USE_CHNL_ZCPY_LINK  := 0
+export USE_CHNL_ZCPY_LINK  := 1
 export USE_CHNL_PCPY_LINK  := 0
-export USE_MSGQ_ZCPY_LINK  := 0
+export USE_MSGQ_ZCPY_LINK  := 1
 export USE_MSGQ_PCPY_LINK  := 0
 
 
 #   =========================================================
 #   Enable/ Disable trace
 #   =========================================================
-export TRACE               := 1
+export TRACE               := 0
 
 
 #   =========================================================
 #   Enable/ Disable profiling
 #   =========================================================
-export PROFILE             := 1
+export PROFILE             := 0
 
 
 #   =========================================================

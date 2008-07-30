@@ -15,6 +15,10 @@ SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_50.tar.gz \
 	   file://prcs-fix-include.patch;patch=1;pnum=2 \
 "
 
+SRC_URI_append_davinci-sffsdr = " \
+           file://dsplink-128M.patch;patch=1;pnum=2 \
+"
+
 S = "${WORKDIR}/dsplink_1_50/dsplink"
 
 
