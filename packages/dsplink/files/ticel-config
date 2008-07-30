@@ -2,7 +2,6 @@
 
 LIBS=""
 for lib in \
-    decode_x470MV.a \
     TraceUtil.a \
     bioslog.a \
     video.a \
@@ -11,8 +10,7 @@ for lib in \
     ce.a \
     Algorithm_noOS.a \
     alg.a \
-    osal_dsplink_linux.a \
-    osal_dsplink_linux_6446.a \
+    osal_linux_470.a \
     dman3Cfg.a \
     acpy3.a \
     cmem.a \

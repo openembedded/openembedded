@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r5"
+PR = "r7"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -94,6 +94,7 @@ export DSPLIBS = "${S}/packages/ti/sdo/ce/utils/trace/lib/*.a* \
                   ${S}/packages/ti/sdo/ce/alg/lib/*.a* \
                   ${S}/cetools/packages/ti/sdo/fc/dman3/*.a* \
                   ${S}/cetools/packages/ti/sdo/fc/acpy3/*.a* \
+		          ${S}/packages/ti/sdo/ce/osal/linux/lib/osal_linux_470.a* \ 
                   ${S}/packages/ti/sdo/ce/utils/xdm/lib/*.a* \
                   ${S}/cetools/packages/ti/sdo/utils/trace/lib/*.a* \
                  "
