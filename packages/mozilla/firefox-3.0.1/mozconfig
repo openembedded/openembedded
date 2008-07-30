@@ -18,7 +18,7 @@ ac_add_options --disable-accessibility
 ac_add_options --disable-composer
 #ac_add_options --enable-plaintext-editor-only
 ac_add_options --disable-mailnews
-ac_add_options --disable-ldap	
+ac_add_options --disable-ldap
 #ac_add_options --disable-postscript
 ac_add_options --disable-mathml
 ac_add_options --disable-jsd
@@ -43,7 +43,7 @@ ac_add_options --disable-gnomeui
 ac_add_options --enable-crypto
 
 # build minimal set of protocol handlers
-ac_add_options --enable-necko-protocols=http,file,res,jar,ftp,about,viewsource
+ac_add_options --enable-necko-protocols=http,file,res,ftp,about,viewsource
 
 # build minimal set of image decoders
 ac_add_options --enable-image-decoders=png,gif,jpeg
@@ -59,3 +59,8 @@ ac_add_options --enable-optimize=-O1
 # Use cairo from system
 ac_add_options --enable-system-cairo
 
+# Disable jemalloc
+ac_add_options --disable-jemalloc
+
+# enable libxul
+ac_add_options --enable-libxul
