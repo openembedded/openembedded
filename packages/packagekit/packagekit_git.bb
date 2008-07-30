@@ -5,12 +5,13 @@ LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "opkg"
 PV = "0.2.3+gitr${SRCREV}"
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1 \
            file://repository-ping.patch;patch=1 \
            file://force_depends.patch;patch=1 \
+           file://remove_search_memory_leak.patch;patch=1 \
            "
 
 
