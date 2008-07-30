@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \
@@ -10,7 +10,6 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://Bug405992.atomic.nspr.diff;patch=1 \
 	file://random_to_urandom.diff;patch=1 \
 	file://jemalloc-tls.patch;patch=1 \
-	http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz \
 	http://ftp.debian.org/debian/pool/main/i/iceweasel/iceweasel_3.0~rc2-2.diff.gz;patch=1 \	
         file://0001-Remove-Werror-from-build.patch;patch=1 \
         file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
@@ -24,10 +23,6 @@ inherit mozilla
 require firefox.inc
 
 export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
-
-do_unpack2() {
-	cp -pPr ${WORKDIR}/js/src* ${S}/js/
-}
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
@@ -47,4 +42,3 @@ do_stage() {
         sed -e '178,179d' ${STAGING_INCDIR}/firefox-${PV}/nsIServiceManager.h
 }
 
-addtask unpack2 after do_unpack before do_patch
