@@ -2,7 +2,7 @@ require mythtv.inc
 
 inherit qmake qt3x11
 
-PR = "${SRCREV}+r2"
+PR = "${SRCREV}+r3"
 REALPV = "0.21"
 
 SRCREV = "17789"
@@ -10,6 +10,7 @@ SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-21-fixes;module=mythtv;pr
 
 SRC_URI += " \
             file://ffmpeg-arm-update.diff;patch=1 \
+            file://no-cortex-deadlock.patch;patch=1;pnum=2 \
             file://configure.patch;patch=1 \
             file://configh \
 	    file://configmak \
