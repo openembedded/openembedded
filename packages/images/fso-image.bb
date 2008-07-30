@@ -71,6 +71,10 @@ GTK_INSTALL = "\
   tangogps-fso \
 "
 
+GAMES_INSTALL = "\
+  numptyphysics \
+"
+
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
 AUDIO_INSTALL_append_om-gta01 = "\
@@ -98,6 +102,7 @@ IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
   ${X_INSTALL} \
   ${GTK_INSTALL} \
+  ${GAMES_INSTALL} \
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
