@@ -2,7 +2,7 @@ DESCRIPTION = "Simple ffmpeg-based player that uses the omapfb overlays"
 DEPENDS = "bzip2 lame ffmpeg virtual/kernel"
 LICENSE = "MIT"
 
-PR = "r8"
+PR = "r9"
 
 inherit module-base
 
@@ -15,7 +15,7 @@ SRC_URI = "git://git.mansr.com/${PN};protocol=git \
 S = "${WORKDIR}/git"
 
 
-CFLAGS += " -static -I${STAGING_KERNEL_DIR}/include "
+CFLAGS += " -I${STAGING_KERNEL_DIR}/include "
 
 do_compile() {
 	oe_runmake -e
