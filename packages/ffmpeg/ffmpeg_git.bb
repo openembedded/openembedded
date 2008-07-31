@@ -6,6 +6,8 @@ PV = "0.4.9+${PR}+gitr${SRCREV}"
 PR = "r19"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_armv5te = "1"
+DEFAULT_PREFERENCE_armv6 = "1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
 FFBRANCH_arm = "arm-neon"
