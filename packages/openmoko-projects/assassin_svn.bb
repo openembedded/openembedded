@@ -4,11 +4,11 @@ LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) glib-2.0 e-wm packagekit etk edbus eet"
 RDEPENDS = "etk-theme-ninja"
 PV = "0.2+svnr${SRCREV}"
-PR = "r6.03"
+PR = "r6.04"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=assassin;proto=https"
+SRC_URI = "svn://om-assassin.googlecode.com/svn/;module=trunk;proto=http"
 
-S = "${WORKDIR}/assassin"
+S = "${WORKDIR}/trunk"
 
 inherit autotools pkgconfig
 
