@@ -4,8 +4,8 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.1+gitr${SRCREV}"
-PR = "r12"
+PV = "0.8.2+gitr${SRCREV}"
+PR = "r0"
 
 inherit distutils update-rc.d
 
@@ -21,8 +21,6 @@ do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/frameworkd ${D}${sysconfdir}/init.d/
 	install -m 0644 ${WORKDIR}/frameworkd.conf ${D}${sysconfdir}
-	install -d ${D}${sysconfdir}/dbus-1/system.d/
-	mv -f ${D}${datadir}/etc/dbus-1/system.d/frameworkd.conf ${D}${sysconfdir}/dbus-1/system.d/
 }
 
 RDEPENDS_${PN} += "\
@@ -42,8 +40,8 @@ RDEPENDS_${PN} += "\
 PACKAGES =+ "${PN}-config"
 
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
-FILES_${PN}-config = "${sysconfdir}"
+FILES_${PN}-config = "${sysconfdir}/frameworkd.conf"
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
-FILES_${PN} += "${datadir}"
+FILES_${PN} += "${sysconfdir}/dbus-1 ${sysconfdir}/freesmartphone ${sysconfdir}/init.d ${datadir}"
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/framework/subsystems/*/.debug"
