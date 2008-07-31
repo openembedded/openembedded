@@ -1,6 +1,7 @@
 require jamvm.inc 
 
 DEPENDS = "zlib-native classpath-native virtual/javac-native"
+RDEPENDS = ""
 
 PROVIDES_jamvm = "virtual/java-native"
 
