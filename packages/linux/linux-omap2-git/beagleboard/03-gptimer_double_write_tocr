@@ -1,0 +1,25 @@
+OMAP3 GPTIMER: TOCR clears sometimes require two writes
+
+From: Paul Walmsley <paul@pwsan.com>
+
+Some GPTIMER register changes do not take effect with a single write;
+they require two writes for some reason.  Could be related to the
+existing 3430 errata "GPTimer 1,2, and 10: first write access to TCRR
+register discarded"
+---
+
+ arch/arm/plat-omap/dmtimer.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/plat-omap/dmtimer.c b/arch/arm/plat-omap/dmtimer.c
+index 18a1e68..4a5ada7 100644
+--- a/arch/arm/plat-omap/dmtimer.c
++++ b/arch/arm/plat-omap/dmtimer.c
+@@ -619,6 +619,7 @@ void omap_dm_timer_set_int_enable(struct omap_dm_timer *timer,
+ void omap_dm_timer_clear_ovf_cnt(struct omap_dm_timer *timer)
+ {
+ 	omap_dm_timer_write_reg(timer, OMAP_TIMER_TICK_INT_MASK_SET_REG, 0);
++	omap_dm_timer_write_reg(timer, OMAP_TIMER_TICK_INT_MASK_SET_REG, 0);
+ }
+ 
+ unsigned int omap_dm_timer_read_status(struct omap_dm_timer *timer)

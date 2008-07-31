@@ -1,8 +1,10 @@
-3430 TRM 16.2.4.2 states:
+OMAP2/3 GPTIMER: don't load GPTIMER with 0xffffffff
 
 From: Paul Walmsley <paul@pwsan.com>
 
-Do not put the overflow value (0xFFFFFFFF) in the GPTi.TLDR register
+3430 TRM 16.2.4.2 states:
+
+     Do not put the overflow value (0xFFFFFFFF) in the GPTi.TLDR register
      because it can lead to undesired results.
 
 3430 TRM 16.2.4.7 states:

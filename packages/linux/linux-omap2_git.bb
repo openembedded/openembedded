@@ -6,7 +6,7 @@ SRCREV = "d3b3ae0fe6c71641da19c8de466ec366d39847e3"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r51"
+PR = "r52"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -47,6 +47,8 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
            file://01-gptimer_maintain_tldr_lt_0xffffffff;patch=1 \
            file://02-gptimer_clear_tocr;patch=1 \
+           file://03-gptimer_double_write_tocr;patch=1 \
+	   file://04-gptimer_add_debug;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \

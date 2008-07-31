@@ -1,0 +1,105 @@
+Add extra debug for the q_d_w_o() when work fn is already active.
+
+From: Paul Walmsley <paul@pwsan.com>
+
+
+---
+
+ arch/arm/mach-omap2/timer-gp.c      |    3 ++-
+ arch/arm/plat-omap/dmtimer.c        |   18 ++++++++++++++++++
+ include/asm-arm/arch-omap/dmtimer.h |    1 +
+ kernel/workqueue.c                  |   12 ++++++++++++
+ 4 files changed, 33 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/timer-gp.c b/arch/arm/mach-omap2/timer-gp.c
+index 869fe14..4db3252 100644
+--- a/arch/arm/mach-omap2/timer-gp.c
++++ b/arch/arm/mach-omap2/timer-gp.c
+@@ -37,6 +37,7 @@
+ #include <asm/arch/dmtimer.h>
+ 
+ static struct omap_dm_timer *gptimer;
++struct omap_dm_timer *gptimer_pub;
+ static struct clock_event_device clockevent_gpt;
+ 
+ static irqreturn_t omap2_gp_timer_interrupt(int irq, void *dev_id)
+@@ -114,7 +115,7 @@ static void __init omap2_gp_clockevent_init(void)
+ {
+ 	u32 tick_rate;
+ 
+-	gptimer = omap_dm_timer_request_specific(1);
++	gptimer = gptimer_pub = omap_dm_timer_request_specific(1);
+ 	BUG_ON(gptimer == NULL);
+ 
+ #if defined(CONFIG_OMAP_32K_TIMER)
+diff --git a/arch/arm/plat-omap/dmtimer.c b/arch/arm/plat-omap/dmtimer.c
+index 4a5ada7..3242495 100644
+--- a/arch/arm/plat-omap/dmtimer.c
++++ b/arch/arm/plat-omap/dmtimer.c
+@@ -622,6 +622,24 @@ void omap_dm_timer_clear_ovf_cnt(struct omap_dm_timer *timer)
+ 	omap_dm_timer_write_reg(timer, OMAP_TIMER_TICK_INT_MASK_SET_REG, 0);
+ }
+ 
++void omap_dm_timer_dump_int_enable(struct omap_dm_timer *timer)
++{
++	u32 l;
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_COUNTER_REG);
++	pr_err("GPT TCRR: %08x\n", l);
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_STAT_REG);
++	pr_err("GPT TISR: %08x\n", l);
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_TICK_INT_MASK_SET_REG);
++	pr_err("GPT TOCR: %08x\n", l);
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_TICK_INT_MASK_COUNT_REG);
++	pr_err("GPT TOWR: %08x\n", l);
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_TICK_POS_REG);
++	pr_err("GPT TPIR: %08x\n", l);
++	l = omap_dm_timer_read_reg(timer, OMAP_TIMER_TICK_NEG_REG);
++	pr_err("GPT TNIR: %08x\n", l);
++}
++
++
+ unsigned int omap_dm_timer_read_status(struct omap_dm_timer *timer)
+ {
+ 	unsigned int l;
+diff --git a/include/asm-arm/arch-omap/dmtimer.h b/include/asm-arm/arch-omap/dmtimer.h
+index 7b1138b..db57015 100644
+--- a/include/asm-arm/arch-omap/dmtimer.h
++++ b/include/asm-arm/arch-omap/dmtimer.h
+@@ -73,6 +73,7 @@ void omap_dm_timer_set_prescaler(struct omap_dm_timer *timer, int prescaler);
+ 
+ void omap_dm_timer_set_int_enable(struct omap_dm_timer *timer, unsigned int value);
+ 
++void omap_dm_timer_dump_int_enable(struct omap_dm_timer *timer);
+ void omap_dm_timer_clear_ovf_cnt(struct omap_dm_timer *timer);
+ 
+ unsigned int omap_dm_timer_read_status(struct omap_dm_timer *timer);
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index ce77995..65b3b9a 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -33,6 +33,9 @@
+ #include <linux/kallsyms.h>
+ #include <linux/debug_locks.h>
+ #include <linux/lockdep.h>
++#include <asm/arch/dmtimer.h>
++
++extern struct omap_dm_timer *gptimer_pub;
+ 
+ /*
+  * The per-CPU workqueue (if single thread, we always use the first
+@@ -235,6 +238,15 @@ int queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
+ 		else
+ 			add_timer(timer);
+ 		ret = 1;
++	} else {
++		s64 texp;
++		u64 now = ktime_to_ns(ktime_get());
++		u64 ens = jiffies_to_usecs(dwork->timer.expires) * 1000;
++		texp = ens - now;
++		if (texp < 0) {
++			pr_err("** Timer workaround\n");
++			omap_dm_timer_dump_int_enable(gptimer_pub);
++		}
+ 	}
+ 	return ret;
+ }
