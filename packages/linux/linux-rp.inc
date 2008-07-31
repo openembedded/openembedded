@@ -65,6 +65,24 @@ module_autoload_collie-ts_collie = "collie-ts"
 module_autoload_leds-locomo_collie = "leds-locomo"
 module_autoload_power_collie = "power"
 
+
+#package kernel cmdline
+PACKAGES_append += "kernel-cmdline"
+FILES_kernel-cmdline = "/boot/kernel-cmdline*"
+PKG_kernel-cmdline = "kernel-cmdline-${KERNEL_VERSION}"
+RRECOMMENDS_kernel-base += "kernel-cmdline"
+
+pkg_postinst_kernel-cmdline () {
+	cd /boot; update-alternatives --install /boot/kernel-cmdline kernel-cmdline kernel-cmdline-${KERNEL_VERSION} ${KERNEL_PRIORITY} || true
+}
+
+pkg_postrm_kernel-cmdline () {
+	cd /boot; update-alternatives --remove kernel-cmdline kernel-cmdline-${KERNEL_VERSION} || true
+}
+do_install_append () {
+	echo "${CMDLINE_CON} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"> "${D}/boot/kernel-cmdline-${KERNEL_VERSION}"
+}
+
 do_configure() {
 	rm -f ${S}/.config
 
