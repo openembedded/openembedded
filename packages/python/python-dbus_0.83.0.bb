@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 LICENSE = "MIT"
 DEPENDS = "expat dbus dbus-glib virtual/libintl python-pyrex-native"
 RDEPENDS = "python-io python-logging python-stringold python-threading python-xml"
-PR = "ml4"
+PR = "ml0"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-python/dbus-python-${PV}.tar.gz"
 S = "${WORKDIR}/dbus-python-${PV}"
