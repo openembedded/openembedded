@@ -1,0 +1,15 @@
+--- libstroke-0.5.1/tests/Makefile.am.orig	2008-06-11 13:46:40.000000000 +0400
++++ libstroke-0.5.1/tests/Makefile.am	2008-06-11 13:47:23.000000000 +0400
+@@ -14,7 +14,11 @@
+ gnome_stroke_test_SOURCES = gnome_stroke_test.c
+ 
+ INCLUDES = -I$(top_srcdir)/libstroke -I$(top_srcdir)/libgstroke \
+-		@X_CFLAGS@ @GTK_CFLAGS@
++		@X_CFLAGS@
++
++if HAVE_LIBGTK
++INCLUDES += @GTK_CFLAGS@
++endif
+ 
+ stroke_test_LDADD = ../libstroke/libstroke.la @X_LDFLAGS@
+ gnome_stroke_test_LDADD = ../libgstroke/libgstroke.la @GTK_LIBS@
