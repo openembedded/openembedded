@@ -16,6 +16,13 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
 		--with-build-sysroot=${STAGING_DIR_TARGET} \
 		${@get_gcc_fpu_setting(bb, d)}"
 
+do_stage_prepend () {
+	# get rid of dummy libc.so
+	if [ -z "`file ${STAGING_DIR_TARGET}${layout_libdir}/libc.so | grep "ASCII C program text"`" ]; then
+		rm -rf ${STAGING_DIR_TARGET}${layout_libdir}/libc.so
+	fi
+}
+
 do_install () {
 	:
 }
