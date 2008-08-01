@@ -1,0 +1,12 @@
+diff -Naur bash-3.0.orig/config-top.h bash-3.0/config-top.h
+--- bash-3.0.orig/config-top.h	2003-08-05 16:36:12.000000000 +0200
++++ bash-3.0/config-top.h	2007-08-29 22:30:57.059985318 +0200
+@@ -52,7 +52,7 @@
+ /* The default value of the PATH variable. */
+ #ifndef DEFAULT_PATH_VALUE
+ #define DEFAULT_PATH_VALUE \
+-  "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."
++  "/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin"
+ #endif
+ 
+ /* The value for PATH when invoking `command -p'.  This is only used when

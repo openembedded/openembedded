@@ -1,6 +1,6 @@
 require bash.inc
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "\
            file://builtins.patch;patch=1 \
@@ -43,4 +43,5 @@ SRC_URI += "\
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-037;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-038;patch=1;pnum=0 \
            http://ftp.gnu.org/gnu/bash/bash-3.2-patches/bash32-039;patch=1;pnum=0 \
+           file://default_path.patch;patch=1 \
            "
