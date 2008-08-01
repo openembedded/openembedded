@@ -1,6 +1,6 @@
---- /tmp/configure	2008-07-08 10:01:36.000000000 +0200
-+++ qt-embedded-linux-opensource-src-4.4.0/configure	2008-07-08 10:23:04.000000000 +0200
-@@ -762,7 +762,7 @@
+--- /tmp/configure	2008-08-01 20:59:48.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.1/configure	2008-08-01 21:02:05.000000000 +0200
+@@ -765,7 +765,7 @@
              UNKNOWN_ARG=yes
          fi
          ;;
@@ -9,7 +9,7 @@
          VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
          shift
          VAL="$1"
-@@ -1179,7 +1179,10 @@
+@@ -1182,7 +1182,10 @@
      xplatform)
          XPLATFORM="$VAL"
          ;;
@@ -21,12 +21,12 @@
          if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
              CFG_DEBUG_RELEASE="$VAL"
          else
-@@ -2417,6 +2420,8 @@
-     ARCH=$HOST_ARCH
+@@ -2437,6 +2440,8 @@
+     CFG_ARCH=$CFG_HOST_ARCH
  fi
  
-+ARCH="$CROSSARCH"
++CFG_ARCH="$CROSSARCH"
 +
- if [ -d "$relpath/src/corelib/arch/$ARCH" ]; then
+ if [ -d "$relpath/src/corelib/arch/$CFG_ARCH" ]; then
      if [ "$OPT_VERBOSE" = "yes" ]; then
-         echo "    '$ARCH' is supported"
+         echo "    '$CFG_ARCH' is supported"
