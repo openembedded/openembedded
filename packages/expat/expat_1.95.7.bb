@@ -1,7 +1,9 @@
 require expat.inc
-PR = "r1"
+PR = "r2"
 
-SRC_URI += "file://autotools.patch;patch=1"
+SRC_URI += "file://autotools.patch;patch=1 \
+	    file://expat-XMLCALL.patch;patch=1 \
+	   "
 
 inherit lib_package
 

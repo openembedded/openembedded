@@ -1,0 +1,17 @@
+---
+ lib/expat.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: expat-1.95.7/lib/expat.h
+===================================================================
+--- expat-1.95.7.orig/lib/expat.h	2008-07-31 15:56:39.000000000 -0700
++++ expat-1.95.7/lib/expat.h	2008-07-31 15:58:38.000000000 -0700
+@@ -45,7 +45,7 @@
+ #ifndef XMLCALL
+ #if defined(XML_USE_MSC_EXTENSIONS)
+ #define XMLCALL __cdecl
+-#elif defined(__GNUC__)
++#elif defined(__GNUC__) && defined(__i386) && !defined(__INTEL_COMPILER)
+ #define XMLCALL __attribute__((cdecl))
+ #else
+ /* For any platform which uses this definition and supports more than
