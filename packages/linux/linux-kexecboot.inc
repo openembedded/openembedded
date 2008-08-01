@@ -2,6 +2,7 @@ DESCRIPTION = "2.6 Linux kexec bootloader for Zaurus devices and iPAQ hx2750."
 SECTION = "kernel"
 LICENSE = "GPL"
 
+DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexec-image"
 inherit kernel
 PACKAGES = ""

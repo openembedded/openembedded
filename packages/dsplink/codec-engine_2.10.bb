@@ -14,7 +14,6 @@ PV = "2.10"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
            file://xdcpaths.mak \
-           file://ticel-config \
           "
 
 S = "${WORKDIR}/codec_engine_2_10_01"
@@ -137,10 +136,6 @@ do_stage() {
 			cp -pPr  $header ${STAGING_INCDIR}/codec-engine/$(echo $header | sed s:${S}::g)
 		done
 	
-		sed -i -e s:SEDME_CFLAGS:"-I${TITOOLSDIR}/${TIBIOSDIR}/xdctools/packages -I${STAGING_INCDIR}/codec-engine/packages  -I${STAGING_INCDIR}/codec-engine/cetools/packages/":g \
-		       -e s:SEDME_STAGINGLIBDIR:${STAGING_LIBDIR}:g \
-		          ${WORKDIR}/ticel-config
-		install -m 0755 ${WORKDIR}/ticel-config ${STAGING_BINDIR_CROSS}
 }
 
 pkg_postinst_${PN}-module () {

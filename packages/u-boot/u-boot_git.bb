@@ -1,8 +1,8 @@
 require u-boot.inc
 PR="r11"
 
-SRCREV_davinci-sffsdr = "699f05125509249072a0b865c8d35520d97cd501"
-SRCREV_davinci-dvevm = "699f05125509249072a0b865c8d35520d97cd501"
+SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
+SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_beagleboard = "bde63587622c4b830a27d1ddf7265843de9e994f"
 SRCREV_neuros-osd2 = "70ee511d37ca99afee00edc27be36d0af2832bbc"
 
