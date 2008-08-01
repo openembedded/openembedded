@@ -32,7 +32,10 @@ SRC_URI_append_nylon = " file://xargs-double-size.patch;patch=1"
 export EXTRA_CFLAGS = "${CFLAGS}"
 EXTRA_OEMAKE_append = " CROSS=${HOST_PREFIX}"
 PACKAGES =+ "${PN}-httpd ${PN}-udhcpd"
-
+# We need this RRECOMMENDS because libc dlopens libgcc
+# and shlib mechanism can not detect it because its not
+# listed in the NEEDED field.
+RDEPENDS += "libgcc"
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
 FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
 
