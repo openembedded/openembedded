@@ -2,13 +2,14 @@ DESCRIPTION = "Illume - A mobile UI module for the Enlightenment Window Manager"
 HOMEPAGE = "http://illume.projects.openmoko.org"
 AUTHOR = "Rasterman"
 LICENSE = "MIT/BSD"
-DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native"
+DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
 PV = "0.0+svnr${SRCREV}"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "\
   svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=http \
-  file://configure-keyboard.patch;patch=1;pnum=0 \
+  file://configure-keyboard.patch;patch=1;pnum=0;maxrev=170 \
+  file://module.illume.src \
 "
 S = "${WORKDIR}/${PN}"
 
@@ -19,6 +20,7 @@ EXTRA_OECONF = "\
   --x-libraries=${STAGING_LIBDIR} \
   --enable-simple-x11 \
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+  --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
 \
   --enable-illume-keyboard \
 "
@@ -54,3 +56,7 @@ FILES_${PN} = "\
   ${libdir}/enlightenment/modules/*/*/* \
 "
 FILES_${PN}-dbg += "${libdir}/enlightenment/modules/*/*/.debug/"
+
+do_configure_append() {
+  mv ${WORKDIR}/module.illume.src ${S}/config/illume/
+}
