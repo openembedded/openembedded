@@ -1,0 +1,16 @@
+--- blueprobe-0.18/blueprobe.init	2007-01-11 12:54:09.000000000 +0100
++++ blueprobe-0.18/blueprobe.init	2007-01-14 12:16:25.000000000 +0100
+@@ -102,6 +102,13 @@
+ 	PROTO=texas
+ 	PROBE=no
+ 	;;
++    "HP iPAQ RX3000")
++	BLUETOOTH=yes
++	PORT=/dev/ttySAC0
++	SPEED=115200
++	PROTO=texas
++	PROBE=no
++	;;
+                                              	
+     *)
+ 	BLUETOOTH=no
