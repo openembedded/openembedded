@@ -7,7 +7,7 @@ FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS += "libdrm"
 # DRI is useless without the kernel drivers
@@ -37,6 +37,6 @@ FILES_${PN}-dbg += "${libdir}/dri/.debug"
 python populate_packages_prepend () {
         import re, os.path
 
-        do_split_packages(d, root=bb.data.expand('${libdir}/dri', d), file_regex='(.*)_dri\.so', output_pattern='mesa-dri-driver-%s', description='%s DRI driver')
+        do_split_packages(d, root=bb.data.expand('${libdir}/dri', d), file_regex='(.*)_dri\.so', output_pattern='mesa-dri-driver-%s', description='%s DRI driver', extra_depends='')
 }
 
