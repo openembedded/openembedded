@@ -18,7 +18,7 @@ if [ "x$D" != "x" ]; then
 	echo "#!/bin/sh
 opkg-cl configure
 " > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
-	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
+	chmod 0755 ${IMAGE_ROOTFS}${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
 fi
 
 update-alternatives --install ${bindir}/opkg opkg ${bindir}/opkg-cl 100
