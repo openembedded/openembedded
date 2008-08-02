@@ -240,7 +240,7 @@ if __name__ == "__main__":
     "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* repr.* token.* tokenize.* " + 
     "traceback.* linecache.* weakref.*" )
 
-    m.addPackage( 0, "python-logging", "Python Logging Support", "python-core python-io python-lang python-stringold",
+    m.addPackage( 1, "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
     "logging" ) # package
 
     m.addPackage( 0, "python-lib-old-and-deprecated", "Python Deprecated Libraries", "python-core",
