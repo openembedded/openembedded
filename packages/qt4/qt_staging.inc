@@ -15,6 +15,12 @@ do_stage_append() {
     cd ${STAGING_LIBDIR}
     sed -i s#"-L${S}/lib"##g libQt*.la
     sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g libQt*.la
+
+    install -d ${STAGING_DIR_TARGET}/qt4/bin
+    cp ${STAGING_DIR_NATIVE}/qt4/bin/* ${STAGING_DIR_TARGET}/qt4/bin/ 
+    for qttool in ${STAGING_DIR_TARGET}/qt4/bin/*4 ; do
+         ln -sf $qttool  ${STAGING_DIR_TARGET}/qt4/bin/$(basename $qttool |sed s:4::g)
+    done
 }
 
 STAGE_TEMP = "${WORKDIR}/temp-staging"
