@@ -2,13 +2,13 @@ DESCRIPTION = "RRD is the Acronym for Round Robin Database. RRD is a system to s
 HOMEPAGE = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"
-PR = "r1"
+PR = "r2"
 SRC_URI = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.x/rrdtool-${PV}.tar.gz \
 	file://perl-make-options.diff;patch=1;pnum=0"
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-shared --enable-local-libpng --enable-local-zlib --program-prefix=''"
+EXTRA_OECONF = "rd_cv_ieee_works=yes --enable-shared --enable-local-libpng --enable-local-zlib --program-prefix=''"
 
 do_install_append() {
 	install -d ${D}${docdir}/rrdtool/
@@ -16,6 +16,11 @@ do_install_append() {
 	mv ${D}/usr/doc/* ${D}${docdir}/rrdtool/
 	mv ${D}/usr/examples ${D}${docdir}/rrdtool/
 	mv ${D}/usr/contrib ${D}${docdir}/rrdtool/
+}
+
+do_stage () {
+	install -m 0644 src/*.h ${STAGING_INCDIR}/
+	oe_libinstall -a -so librrd ${STAGING_LIBDIR}
 }
 
 FILES_${PN} += "${libdir}/perl"
