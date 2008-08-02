@@ -24,14 +24,6 @@ def check_conf_exists(fn, data):
 			return True
 	return False
 
-def check_app_exists(app, d):
-	from bb import which, data
-
-	app = data.expand(app, d)
-	path = data.getVar('PATH', d)
-	return len(which(path, app)) != 0
-
-
 def check_sanity(e):
 	from bb import note, error, data, __version__
 	from bb.event import Handled, NotHandled, getName

@@ -1,2 +1,2 @@
-require qemu_cvs.bb
+require qemu_${PV}.bb
 require qemu-native.inc

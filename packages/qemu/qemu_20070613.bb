@@ -4,6 +4,7 @@ SRCDATE = "20070613"
 PV = "0.9.0+cvs${SRCDATE}"
 PR = "r5"
 
+FILESPATH = "${FILE_DIRNAME}/qemu-${PV}"
 FILESDIR = "${WORKDIR}"
 
 SRC_URI = "\
@@ -36,15 +37,6 @@ SRC_URI = "\
     file://workaround_bad_futex_headers.patch;patch=1 \
     file://fix_segfault.patch;patch=1 \
     file://no-strip.patch;patch=1"
-
-#    svn://svn.o-hand.com/repos/misc/trunk/qemu-packaging/qemu;module=debian;proto=http;srcdate=20070119 \
-#    file://debian/patches/21_net_soopts.patch;patch=1;pnum=0 \
-#    file://debian/patches/35_syscall_sockaddr.patch;patch=1;pnum=0 \
-#    file://debian/patches/43_arm_cpustate.patch;patch=1;pnum=0 \
-#    file://debian/patches/62_linux_boot_nasm.patch;patch=1;pnum=0 \
-#    file://debian/patches/67_ppc_ftbfs.patch;patch=1;pnum=0 \
-#    file://debian/patches/80_ui_curses.patch;patch=1;pnum=0 \
-#    file://debian/patches/96-x.patch;patch=1"
 
 S = "${WORKDIR}/qemu"
 
