@@ -1,0 +1,37 @@
+upstream: all patches sent upstream to Anthony D. Urso <anthonyu@killa.net> by Yuri Bushmelev.  
+status: pending
+origin: http://packages.gentoo.org/package/sys-auth/otpcalc?full_cat 
+
+--- otpCalc-0.97.orig/otpCalc.man	2005-04-29 23:17:06.000000000 +0100
++++ otpCalc-0.97/otpCalc.man	2005-04-29 23:19:03.000000000 +0100
+@@ -24,18 +24,20 @@
+ the Challenge input:
+ .IP
+ .TS
+-s/key		MD4
+-.br
+-otp-md4		MD4
+-.br
+-otp-md5		MD5
+-.br
+-otp-rmd160	RIPEMD-160
+-.br
+-otp-sha1		SHA1
+-.br
++allbox tab(#);
++cb l
++cb l
++cb l
++cb l
++cb l.
++s/key#MD4
++otp-md4#MD4
++otp-md5#MD5
++otp-rmd160#RIPEMD-160
++otp-sha1#SHA1
+ .TE
+ .LP
++.LP
+ In the absence of a prefix, the default hash, specified in the Settings menu,
+ is used.
+ .SH "SEE ALSO"

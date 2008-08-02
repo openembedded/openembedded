@@ -1,0 +1,16 @@
+upstream: all patches sent upstream to Anthony D. Urso <anthonyu@killa.net> by Yuri Bushmelev.  
+status: pending
+origin: http://packages.gentoo.org/package/sys-auth/otpcalc?full_cat 
+
+diff -urN otpCalc-0.97.orig/crypto.h otpCalc-0.97/crypto.h
+--- otpCalc-0.97.orig/crypto.h	2001-05-12 02:04:54.000000000 -0400
++++ otpCalc-0.97/crypto.h	2006-03-21 17:24:54.000000000 -0500
+@@ -1,4 +1,4 @@
+-void md4lite(char *, size_t);
+-void md5lite(char *, size_t);
+-void rmd160lite(char *, size_t);
+-void sha1lite(char *, size_t);
++void md4lite(char *message, unsigned int len);
++void md5lite(char *message, unsigned int len);
++void rmd160lite(char *message, unsigned int len);
++void sha1lite(char *message, unsigned int len);

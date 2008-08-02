@@ -1,0 +1,15 @@
+upstream: all patches sent upstream to Anthony D. Urso <anthonyu@killa.net> by Yuri Bushmelev.
+status: pending
+origin: http://packages.gentoo.org/package/sys-auth/otpcalc?full_cat
+
+--- otpCalc-0.97.orig/callbacks.c	2004-11-24 05:57:45.000000000 +0000
++++ otpCalc-0.97/callbacks.c	2006-02-24 22:36:56.602831704 +0000
+@@ -81,7 +81,7 @@
+ void calculate(void)
+ {
+ 
+-	void (*hashes[4])();
++	void (*hashes[5])();
+ 
+ 	gchar *challenge, *passwd, *message, *response;
+ 	struct tokens *set;
