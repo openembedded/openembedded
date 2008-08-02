@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Kill oneko
+Comment=Kills cute cat chasing mouse cursor
+Icon=kill-oneko.png
+Exec=killall oneko
+Type=Application
+Categories=Game;Amusement;
+Terminal=false
+

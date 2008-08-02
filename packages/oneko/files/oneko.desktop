@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Oneko
+Comment=Cute cat chasing around your mouse cursor.
+Icon=oneko.png
+Exec=/usr/bin/oneko
+Type=Application
+Categories=Game;Amusement;
+Terminal=false
+
