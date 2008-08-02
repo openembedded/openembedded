@@ -3,13 +3,15 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
-QTVER = "qtopia-core-opensource-src-${QTVERSION}"
+# We call 'moc' during the build 
+DEPENDS = "uicmoc4-native"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.gz \
+QTVER = "qt-embedded-linux-opensource-src-${QTVERSION}"
+
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.bz2 \
            file://0001-fix-mkspecs.patch;patch=1 \
-           file://0008-backport-qt-lib-infix.patch;patch=1 \
            file://qt-config.patch;patch=1 \
            file://use-lflags-last.patch;patch=1 \
            file://linux-oe-qmake.conf"
@@ -23,6 +25,8 @@ export QTDIR = "${S}"
 EXTRA_OEMAKE = "-e"
 
 do_configure() {
+    # Make sure we regenerate all Makefiles 
+    find ${S} -name "Makefile" | xargs rm
     # Install the OE build templates
     for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++
     do
@@ -43,8 +47,9 @@ do_configure() {
     export OE_QMAKE_LINK="${CCLD}"
     export OE_QMAKE_AR="${AR}"
     export OE_QMAKE_STRIP="${STRIP}"
-    export OE_QMAKE_UIC="${STAGING_BINDIR_NATIVE}/uic"
-    export OE_QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc"
+    export OE_QMAKE_UIC="${STAGING_BINDIR_NATIVE}/uic4"
+    export OE_QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc4"
+    export QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc4"
     export OE_QMAKE_RCC="non-existant"
     export OE_QMAKE_QMAKE="${STAGING_BINDIR_NATIVE}/qmake"
     export OE_QMAKE_RPATH="-Wl,-rpath-link,"

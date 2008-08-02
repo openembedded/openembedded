@@ -1,8 +1,9 @@
-QTVERSION="4.3.3"
+QTVERSION="4.4.1"
 FILESDIR += "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/qmake2-native"
-require ${PN}.inc
 
 inherit cross
+
+require ${PN}.inc
 
 do_install() {
     :
