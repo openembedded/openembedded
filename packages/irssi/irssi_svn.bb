@@ -3,8 +3,8 @@ HOMEPAGE = "http://irssi.org/"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS += "ncurses glib-2.0"
-PV = "0.8.10+svn${SRCDATE}"
-PR = "r3"
+PV = "0.8.11+svn${SRCDATE}"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -15,8 +15,9 @@ RDEPENDS_${PN} += "${PN}-common"
 
 inherit autotools
 
+SVN_REPO_URI = "http://svn.irssi.org/repos/irssi/trunk"
 SRC_URI = "svn://svn.irssi.org/repos/irssi/;module=trunk;proto=http \
-	   file://autofoo.patch;patch=1"
+	  "
 S = "${WORKDIR}/trunk"
 
 EXTRA_OECONF = "--enable-ipv6 \
@@ -34,6 +35,9 @@ EXTRA_OECONF = "--enable-ipv6 \
 		--with-ncurses=${STAGING_LIBDIR}/.."
 
 do_configure () {
+	# create the ChangeLog file that hold irssi date and time version
+	TZ=UTC svn log -v "${SVN_REPO_URI}" > ChangeLog
+
 	# create help files
 	echo "Creating help files..."
 	perl syntax.pl
