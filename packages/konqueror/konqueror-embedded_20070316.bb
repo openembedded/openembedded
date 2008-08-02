@@ -10,10 +10,11 @@ PR = "r5"
 
 inherit autotools
 
-SRC_URI = "http://www.basyskom.de/uploads/175/35/kdenox_snapshot_Qt2_2007.02.12.tar.bz2 \
+SRC_URI = "http://www.basyskom.de/uploads/175/37/kdenox_snapshot_qt2_20070316.tar.bz2 \
 	   file://dont-use-kde-config.patch;patch=1 \
            file://konqe_new_opie.patch;patch=1 \
-	   file://konqe-kapplication.patch;patch=1"
+	   file://konqe-kapplication.patch;patch=1 \
+           file://fix_configure.patch;patch=1"
 S = "${WORKDIR}/kdenox"
 
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
