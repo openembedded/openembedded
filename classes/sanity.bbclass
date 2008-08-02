@@ -91,6 +91,12 @@ def check_sanity(e):
 	if not check_app_exists('${BUILD_PREFIX}g++', e.data):
 		missing = missing + "C++ Compiler (${BUILD_PREFIX}g++),"
 
+	if os.path.exists("/proc/sys/vm/mmap_min_addr"):
+		f = file("/proc/sys/vm/mmap_min_addr", "r")
+		if (f.read().strip() != "0"):
+			messages = messages + "/proc/sys/vm/mmap_min_addr is not 0. This will cause problems with qemu so please fix the value (as root).\n"
+		f.close()
+
 	required_utilities = "patch help2man diffstat texi2html makeinfo cvs svn bzip2 tar gzip gawk md5sum"
 
 	for util in required_utilities.split():

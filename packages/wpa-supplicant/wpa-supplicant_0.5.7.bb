@@ -1,3 +1,5 @@
 require wpa-supplicant-0.5.inc
 
-PR = "r1"
+SRC_URI += "file://gnutlsfix.patch;patch=1"
+
+PR = "r2"

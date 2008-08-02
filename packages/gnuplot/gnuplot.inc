@@ -4,18 +4,16 @@ HOMEPAGE = "http://www.gnuplot.info/"
 SECTION = "console/scientific"
 LICENSE = "BSD-4"
 PRIORITY = "optional"
-DEPENDS = "pango cairo virtual/libx11 libpng gd readline"
+DEPENDS = "virtual/libx11 readline"
 
 inherit autotools
 
 acpaths = ""
 
 EXTRA_OECONF = "--with-readline=${STAGING_LIBDIR}/.. \
-		--without-plot \
-		--with-png=${STAGING_LIBDIR}/.. \
-		--with-gd=${STAGING_LIBDIR}/.. \
 		--without-lisp-files \
-		--without-tutorial"
+		--without-tutorial \
+                --disable-wxwidgets"
 
 do_compile_prepend() {
 	install -m 0644 ${WORKDIR}/qtplot-0.2/qtopia.trm ${S}/term/
