@@ -1,0 +1,15 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- libmatchbox-1.9/libmb/mbutil.c~reset-sigchld
++++ libmatchbox-1.9/libmb/mbutil.c
+@@ -92,6 +92,7 @@
+     }
+ 
+   argv[nargs] = NULL;
++  signal(SIGCHLD, SIG_DFL);
+   rc = execvp (argv[0], argv);
+ 
+   for (i = 0; i < nargs; i++)
