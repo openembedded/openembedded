@@ -56,6 +56,7 @@ do_compile() {
 }
 
 do_stage() {
+	install -d ${STAGING_BINDIR}/
     install -m 0755 bin/moc ${STAGING_BINDIR}/moc4
     install -m 0755 bin/uic ${STAGING_BINDIR}/uic4
     install -m 0755 bin/uic3 ${STAGING_BINDIR}/uic34
