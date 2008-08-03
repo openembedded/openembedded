@@ -1,10 +1,10 @@
 require u-boot.inc
-PR="r12"
+PR="r13"
 
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_beagleboard = "2d77381a184df7b5017b4a1301d2c02300f3ca3d"
-SRCREV_neuros-osd2 = "70ee511d37ca99afee00edc27be36d0af2832bbc"
+SRCREV_neuros-osd2 = "a56f1723a6869428996038ff0496a093a04af157"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git;tag=cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093 "

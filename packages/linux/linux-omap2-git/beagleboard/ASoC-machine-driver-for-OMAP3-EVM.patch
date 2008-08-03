@@ -1,0 +1,278 @@
+From: Steve Sakoman <steve@sakoman.com>
+Date: Fri, 18 Jul 2008 16:41:37 +0000 (-0700)
+Subject: ASoC machine driver for OMAP3 EVM
+X-Git-Url: http://www.sakoman.net/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git;a=commitdiff_plain;h=2e6af042b4af677e62e32d048e770f6755e67a7f
+
+ASoC machine driver for OMAP3 EVM
+
+Add basic audio support for OMAP3 EVM
+
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
+---
+
+diff --git a/arch/arm/configs/omap3_beagle_defconfig b/arch/arm/configs/omap3_beagle_defconfig
+index cce83e5..a48780a 100644
+--- a/arch/arm/configs/omap3_beagle_defconfig
++++ b/arch/arm/configs/omap3_beagle_defconfig
+@@ -735,7 +735,82 @@ CONFIG_FONT_8x16=y
+ #
+ # Sound
+ #
+-# CONFIG_SOUND is not set
++CONFIG_SOUND=y
++
++#
++# Advanced Linux Sound Architecture
++#
++CONFIG_SND=y
++CONFIG_SND_TIMER=y
++CONFIG_SND_PCM=y
++CONFIG_SND_HWDEP=y
++CONFIG_SND_RAWMIDI=y
++# CONFIG_SND_SEQUENCER is not set
++CONFIG_SND_OSSEMUL=y
++CONFIG_SND_MIXER_OSS=y
++CONFIG_SND_PCM_OSS=y
++CONFIG_SND_PCM_OSS_PLUGINS=y
++# CONFIG_SND_DYNAMIC_MINORS is not set
++CONFIG_SND_SUPPORT_OLD_API=y
++CONFIG_SND_VERBOSE_PROCFS=y
++CONFIG_SND_VERBOSE_PRINTK=y
++CONFIG_SND_DEBUG=y
++CONFIG_SND_DEBUG_DETECT=y
++CONFIG_SND_PCM_XRUN_DEBUG=y
++
++#
++# Generic devices
++#
++# CONFIG_SND_DUMMY is not set
++# CONFIG_SND_MTPAV is not set
++# CONFIG_SND_SERIAL_U16550 is not set
++# CONFIG_SND_MPU401 is not set
++
++#
++# ALSA ARM devices
++#
++# CONFIG_SND_OMAP_AIC23 is not set
++# CONFIG_SND_OMAP_TSC2101 is not set
++# CONFIG_SND_SX1 is not set
++# CONFIG_SND_OMAP_TSC2102 is not set
++# CONFIG_SND_OMAP24XX_EAC is not set
++
++#
++# SPI devices
++#
++
++#
++# USB devices
++#
++CONFIG_SND_USB_AUDIO=y
++# CONFIG_SND_USB_CAIAQ is not set
++
++#
++# System on Chip audio support
++#
++CONFIG_SND_SOC=y
++
++#
++# ALSA SoC audio for Freescale SOCs
++#
++
++#
++# SoC Audio for the Texas Instruments OMAP
++#
++CONFIG_SND_OMAP_SOC=y
++CONFIG_SND_OMAP_SOC_MCBSP=y
++CONFIG_SND_OMAP_SOC_OMAP3BEAGLE=y
++CONFIG_SND_SOC_TWL4030=y
++
++#
++# Open Sound System
++#
++CONFIG_SOUND_PRIME=y
++CONFIG_HID_SUPPORT=y
++CONFIG_HID=y
++# CONFIG_HID_DEBUG is not set
++# CONFIG_HIDRAW is not set
++
+ # CONFIG_HID_SUPPORT is not set
+ CONFIG_USB_SUPPORT=y
+ CONFIG_USB_ARCH_HAS_HCD=y
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 0230d83..0def5ba 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -16,4 +16,12 @@ config SND_OMAP_SOC_N810
+ 	help
+ 	  Say Y if you want to add support for SoC audio on Nokia N810.
+ 
++config SND_OMAP_SOC_OMAP3EVM
++	tristate "SoC Audio support for OMAP3 EVM"
++	depends on SND_OMAP_SOC && MACH_OMAP3EVM
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the OMAP3 EVM.
++
+ endmenu
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index d8d8d58..985eddc 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -7,5 +7,8 @@ obj-$(CONFIG_SND_OMAP_SOC_MCBSP) += snd-soc-omap-mcbsp.o
+ 
+ # OMAP Machine Support
+ snd-soc-n810-objs := n810.o
++snd-soc-omap3evm-objs := omap3evm.o
+ 
+ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
++obj-$(CONFIG_SND_OMAP_SOC_OMAP3EVM) += snd-soc-omap3evm.o
++
+diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
+new file mode 100644
+index 0000000..d436bb4
+--- /dev/null
++++ b/sound/soc/omap/omap3evm.c
+@@ -0,0 +1,142 @@
++/*
++ * omap3evm.c  --  SoC audio for OMAP3 EVM
++ *
++ * Author: Steve Sakoman <steve@sakoman.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include <asm/mach-types.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/gpio.h>
++#include <asm/arch/mcbsp.h>
++
++#include "omap-mcbsp.h"
++#include "omap-pcm.h"
++#include "../codecs/twl4030.h"
++
++static int omap3evm_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_codec_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_cpu_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
++
++	/* Set codec DAI configuration */
++	ret = codec_dai->dai_ops.set_fmt(codec_dai,
++					 SND_SOC_DAIFMT_I2S |
++					 SND_SOC_DAIFMT_NB_NF |
++					 SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0) {
++	printk(KERN_INFO "can't set codec DAI configuration\n");
++		return ret;
++	}
++
++	/* Set cpu DAI configuration */
++	ret = cpu_dai->dai_ops.set_fmt(cpu_dai,
++				       SND_SOC_DAIFMT_I2S |
++				       SND_SOC_DAIFMT_NB_NF |
++				       SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0) {
++	printk(KERN_INFO "can't set cpu DAI configuration\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct snd_soc_ops omap3evm_ops = {
++	.hw_params = omap3evm_hw_params,
++};
++
++/* Digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link omap3evm_dai = {
++	.name = "TWL4030",
++	.stream_name = "TWL4030",
++	.cpu_dai = &omap_mcbsp_dai[0],
++	.codec_dai = &twl4030_dai,
++	.ops = &omap3evm_ops,
++};
++
++/* Audio machine driver */
++static struct snd_soc_machine snd_soc_machine_omap3evm = {
++	.name = "omap3evm",
++	.dai_link = &omap3evm_dai,
++	.num_links = 1,
++};
++
++/* Audio subsystem */
++static struct snd_soc_device omap3evm_snd_devdata = {
++	.machine = &snd_soc_machine_omap3evm,
++	.platform = &omap_soc_platform,
++	.codec_dev = &soc_codec_dev_twl4030,
++};
++
++static struct platform_device *omap3evm_snd_device;
++
++static int __init omap3evm_soc_init(void)
++{
++	int ret;
++
++	printk(KERN_INFO "OMAP3 EVM SoC init\n");
++	if (!machine_is_omap3evm()) {
++		printk(KERN_INFO "Not OMAP3 EVM!\n");
++		return -ENODEV;
++	}
++
++	omap3evm_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!omap3evm_snd_device) {
++		printk(KERN_INFO "Platform device allocation failed\n");
++		return -ENOMEM;
++	}
++
++	platform_set_drvdata(omap3evm_snd_device, &omap3evm_snd_devdata);
++	omap3evm_snd_devdata.dev = &omap3evm_snd_device->dev;
++	*(unsigned int *)omap3evm_dai.cpu_dai->private_data = 1; /* McBSP2 */
++
++	ret = platform_device_add(omap3evm_snd_device);
++	if (ret)
++		goto err1;
++
++	return 0;
++
++err1:
++	printk(KERN_INFO "Unable to add platform device\n");
++	platform_device_put(omap3evm_snd_device);
++
++	return ret;
++}
++
++static void __exit omap3evm_soc_exit(void)
++{
++	printk(KERN_INFO "OMAP3 EVM SoC exit\n");
++	platform_device_unregister(omap3evm_snd_device);
++}
++
++module_init(omap3evm_soc_init);
++module_exit(omap3evm_soc_exit);
++
++MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
++MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
++MODULE_LICENSE("GPL");
