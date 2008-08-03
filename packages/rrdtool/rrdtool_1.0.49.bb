@@ -1,9 +1,11 @@
-DESCRIPTION = "RRD is the Acronym for Round Robin Database. RRD is a system to store and display time-series data (i.e. network bandwidth, machine-room temperature, server load average)."
-HOMEPAGE = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool"
+DESCRIPTION = "High performance data logging and graphing system for time series data."
+HOMEPAGE = "http://oss.oetiker.ch/rrdtool/"
+SECTION = "utils"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"
+DEPENDS_rddtool-perl = "perl-module-lib perl-module-dynaloader"
 PR = "r2"
-SRC_URI = "http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.0.x/rrdtool-${PV}.tar.gz \
+SRC_URI = "http://oss.oetiker.ch/rrdtool/pub/rrdtool-1.0.x/rdtool-${PV}.tar.gz \
 	file://perl-make-options.diff;patch=1;pnum=0"
 
 inherit autotools
@@ -19,10 +21,7 @@ do_install_append() {
 }
 
 do_stage () {
-	install -m 0644 src/*.h ${STAGING_INCDIR}/
-	oe_libinstall -a -so librrd ${STAGING_LIBDIR}
+	autotools_stage_all
 }
 
 FILES_${PN} += "${libdir}/perl"
-
-DEPENDS_rddtool-perl = "perl-module-lib perl-module-dynaloader"
