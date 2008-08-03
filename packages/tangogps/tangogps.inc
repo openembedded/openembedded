@@ -8,5 +8,6 @@ DEPENDS = "curl gtk+ gconf gypsy"
 RRECOMMENDS = "gpsd"
 
 SRC_URI = "http://www.tangogps.org/downloads/tangogps-${PV}.tar.gz"
+S = "${WORKDIR}/tangogps-${PV}"
 
 inherit autotools pkgconfig
