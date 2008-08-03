@@ -6,6 +6,7 @@ PR = "r2"
 SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init \
            file://quota.patch;patch=1;pnum=0 \
+	   file://cifs.patch;patch=1 \
 	   "
 
 INITSCRIPT_NAME = "samba"
