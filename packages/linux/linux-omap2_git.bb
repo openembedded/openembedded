@@ -6,7 +6,7 @@ SRCREV = "d3b3ae0fe6c71641da19c8de466ec366d39847e3"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r53"
+PR = "r54"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -17,7 +17,9 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0001-omap3-cpuidle.patch;patch=1 \ 
            file://0002-omap3-cpuidle.patch;patch=1 \
            file://timer-suppression.patch;patch=1 \
-           file://soc.patch;patch=1 \
+           file://ASoC-TWL4030-codec-driver.patch;patch=1 \
+           file://ASoC-machine-driver-for-OMAP3-EVM.patch;patch=1 \
+           file://ASoC-machine-driver-for_OMAP3-Beagle.patch;patch=1 \
            file://16bpp.patch;patch=1 \
            file://no-empty-flash-warnings.patch;patch=1 \
            file://logo_linux_clut224.ppm \
