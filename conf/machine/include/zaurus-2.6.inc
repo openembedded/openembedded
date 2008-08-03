@@ -19,6 +19,7 @@ SERIAL_CONSOLE_collie = "115200 ttySA0"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
+PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
@@ -80,4 +81,4 @@ zaurus_make_installkit () {
 RDEPENDS_kernel-base = ""
 # collie is an exception. We use mmc as root, include kernel and use another small kernel to boot it.
 RDEPENDS_kernel-base_collie = "kernel-image" 
-KERNEL_IMAGETYPE = "zImage"
+KERNEL_IMAGETYPE ?= "zImage"
