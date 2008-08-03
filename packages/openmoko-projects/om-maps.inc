@@ -1,11 +1,11 @@
-DESCRIPTION = "Diversity Maps - ${MAP_NAME}"
+DESCRIPTION = "Map of ${MAP_NAME}, for use with Locations application"
 HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "network/misc"
 LICENSE = "Creative Commons Attribution-ShareAlike 2.0"
 
-SRC_URI = "http://people.openmoko.org/olv/diversity/${MAP_VER}/${MAP_FN}"
+SRC_URI = "http://people.openmoko.org/olv/om-maps/${MAP_VER}/${MAP_FN}"
 
-MAP_DIR = "${datadir}/diversity-nav/maps"
+MAP_DIR = "${datadir}/om-maps"
 FILES_${PN} = "${MAP_DIR}/${MAP_FN}"
 
 PACKAGES = "${PN}"

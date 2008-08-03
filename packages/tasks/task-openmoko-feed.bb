@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r43"
+PR = "r44"
 
 inherit task
 
@@ -49,17 +49,17 @@ RDEPENDS_task-openmoko-feed = "\
   mono \
 #  diversity-daemon \
 #  diversity-maps-taipei \
+  om-maps-berlin \
+  om-maps-buenos-aires \
+  om-maps-london \
+  om-maps-new-york \
+  om-maps-paris \
+  om-maps-providence \
+  om-maps-san-francisco \
+  om-maps-sydney \
+  om-maps-taipei \
   om-locations \
-#  om-maps-berlin \
-#  om-maps-buenos-aires \
-#  om-maps-london \
-#  om-maps-new-york \
-#  om-maps-paris \
-#  om-maps-providence \
-#  om-maps-san-francisco \
-#  om-maps-sydney \
-#  om-maps-taipei \
-#  om-settings \
+  om-settings \
   assassin \
 #  assassin-thumbnail \
   tangogps \
