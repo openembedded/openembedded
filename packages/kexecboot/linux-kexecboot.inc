@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 
 DONT_CHECK_KERNELSIZE = ""
-INITRAMFS_IMAGE = "initramfs-kexec-image"
+INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 inherit kernel
 PACKAGES = ""
 PROVIDES = ""

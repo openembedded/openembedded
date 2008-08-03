@@ -1,13 +1,11 @@
 DESCRIPTON = "A init script that mounts a device and kexecs a new kernel from it."
 PR = "r6"
-
+RDEPENDS = "kexecboot"
 do_compile() {
         cat > init.sh << EOF
 #!/bin/sh
 /bin/mount -t proc proc /proc
-/bin/mount -t ${ROOTFS} ${ROOTDEV} /mnt
-/usr/sbin/kexec -l /mnt/boot/zImage
-/usr/sbin/kexec -e
+/usr/bin/kexecboot -a 270 -i /dev/event0
 EOF
 }
 
@@ -20,8 +18,3 @@ do_install() {
 PACKAGE_ARCH = "all"
 
 FILES_${PN} = "/init /proc /mnt"
-
-ROOTDEV = "/dev/mmcblk0p1"
-ROOTFS = "ext2"
-#ROOTDEV = "mtd2"
-#ROOTFS = "jffs2"
