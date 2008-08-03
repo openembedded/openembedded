@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.2+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit distutils update-rc.d
 
@@ -42,6 +42,7 @@ PACKAGES =+ "${PN}-config"
 
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
 FILES_${PN}-config = "${sysconfdir}/frameworkd.conf"
+CONFFILES_${PN}-config = "${sysconfdir}/frameworkd.conf"
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
 FILES_${PN} += "${sysconfdir}/dbus-1 ${sysconfdir}/freesmartphone ${sysconfdir}/init.d ${datadir}"
