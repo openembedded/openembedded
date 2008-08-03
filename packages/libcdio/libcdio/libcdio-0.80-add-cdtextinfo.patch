@@ -1,32 +1,7 @@
-Index: libcdio-0.80/configure.ac
+Index: libcdio-0.80/src/cdtextinfo.c
 ===================================================================
---- libcdio-0.80/configure.ac
-+++ libcdio-0.80/configure.ac
-@@ -605,6 +605,7 @@
-        test/testisocd2.c \
-        test/check_common_fn \
-        test/Makefile \
-+       cdtextinfo/Makefile \
-        ])
- 
- # AC_CONFIG_FILES([po/Makefile])
-Index: libcdio-0.80/Makefile.am
-===================================================================
---- libcdio-0.80/Makefile.am
-+++ libcdio-0.80/Makefile.am
-@@ -36,7 +36,7 @@
- 	libudf.pc.in \
- 	package/libcdio.spec.in 
- 
--SUBDIRS = doc include lib src test example
-+SUBDIRS = doc include lib src test cdtextinfo
- 
- if BUILD_CD_PARANOIA
- paranoiapcs = libcdio_paranoia.pc libcdio_cdda.pc
-Index: libcdio-0.80/cdtextinfo/cdtextinfo.c
-===================================================================
---- libcdio-0.80/cdtextinfo/cdtextinfo.c
-+++ libcdio-0.80/cdtextinfo/cdtextinfo.c
+--- libcdio-0.80/src/cdtextinfo.c
++++ libcdio-0.80/src/cdtextinfo.c
 @@ -0,0 +1,372 @@                                                                                                                                    
 +/*                                                                                                                                                  
 +  This program is free software; you can redistribute it and/or modify                                                                              
@@ -53,8 +28,8 @@ Index: libcdio-0.80/cdtextinfo/cdtextinfo.c
 +#include <cddb/cddb.h>                                                                                                                              
 +#include <cdio/cdio.h>                                                                                                                              
 +#include <cdio/cdtext.h>                                                                                                                            
-+#include "../src/cddb.h"                                                                                                                            
-+#include "../src/getopt.h"                                                                                                                          
++#include "cddb.h"                                                                                                                            
++#include "getopt.h"                                                                                                                          
 +                                                                                                                                                    
 +struct opts_s                                                                                                                                       
 +{                                                                                                                                                   
@@ -400,15 +375,20 @@ Index: libcdio-0.80/cdtextinfo/cdtextinfo.c
 +
 +    return 0;
 +}
-Index: libcdio-0.80/cdtextinfo/Makefile.am
+Index: libcdio-0.80/src/Makefile.am
 ===================================================================
---- libcdio-0.80/cdtextinfo/Makefile.am
-+++ libcdio-0.80/cdtextinfo/Makefile.am
-@@ -0,0 +1,7 @@
-+bin_PROGRAMS =  cdtextinfo
-+cdtextinfo_SOURCES = cdtextinfo.c
-+
-+INCLUDES = -I$(top_srcdir) $(LIBCDIO_CFLAGS)
-+
+--- libcdio-0.80/src/Makefile.am
++++ libcdio-0.80/src/Makefile.am       2008-07-29 09:56:06.000000000 +0000
+@@ -85,7 +85,12 @@
+ #mmc_tool_LDADD   = $(LIBISO9660_LIBS) $(LIBCDIO_LIBS) $(LIBICONV)
+ #bin_mmc_tool     = mmc-tool
+
+-bin_PROGRAMS = $(bin_cd_drive) $(bin_cd_info)  $(bin_cdinfo_linux) $(bin_cd_read) $(bin_iso_info) $(bin_iso_read) $(bin_cdda_player) $(bin_mmc_tool)
++bin_cdtextinfo =  cdtextinfo
++cdtextinfo_SOURCES = cdtextinfo.c cddb.c cddb.h $(GETOPT_C)
++cdtextinfo_LDADD          = $(LIBCDIO_LIBS) $(LIBICONV) $(CDDB_LIBS)
 +cdtextinfo_DEPENDENCIES   = $(LIBCDIO_DEPS)
-+cdtextinfo_LDADD          = $(LIBCDIO_LIBS) $(LIBICONV)
++
++bin_PROGRAMS = $(bin_cd_drive) $(bin_cd_info) $(bin_cdinfo_linux) $(bin_cd_read) $(bin_iso_info) $(bin_iso_read) $(bin_cdda_player) $(bin_mmc_tool) $(bin_cdtextinfo)
+
+ INCLUDES = -I$(top_srcdir) $(LIBCDIO_CFLAGS) $(VCDINFO_CFLAGS) $(CDDB_CFLAGS)

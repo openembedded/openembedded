@@ -4,6 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 MAINTAINER = "Andreas Frisch <andreas.frisch@multimedia-labs.de>"
+PR="r1"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/libcdio/${PN}-${PV}.tar.gz\
 	    file://${PN}-${PV}-configure-crosscompile.patch;patch=1\
@@ -20,7 +21,7 @@ DEPEND = "sys-devel/gettext dev-util/pkgconfig"
 
 do_compile_append () {
 	install -d ${D}${bindir}
-	install -m 0755 ${S}/cdtextinfo/.libs/cdtextinfo ${D}${bindir}
+	install -m 0755 ${S}/src/.libs/cdtextinfo ${D}${bindir}
 }
 
 do_stage () {
