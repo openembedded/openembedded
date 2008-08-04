@@ -1,0 +1,46 @@
+diff -urN strace-4.5.14/signal.c strace-4.5.14-mips/signal.c
+--- strace-4.5.14/signal.c	2006-01-12 22:34:50.000000000 +0000
++++ strace-4.5.14-mips/signal.c	2007-05-03 06:59:09.000000000 +0000
+@@ -66,7 +66,7 @@
+ 
+ 
+ #ifdef LINUX
+-
++#include <linux/version.h>
+ #ifdef IA64
+ # include <asm/ptrace_offsets.h>
+ #endif /* !IA64 */
+@@ -1420,7 +1420,11 @@
+ 		if (umove(tcp, sp, &sc) < 0)
+ 		  	return 0;
+ 		tcp->u_arg[0] = 1;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,0)
+ 		tcp->u_arg[1] = sc.sc_sigset;
++#else
++		tcp->u_arg[1] = sc.sc_hi2;
++#endif
+ 	} else {
+ 	  	tcp->u_rval = tcp->u_error = 0;
+ 		if(tcp->u_arg[0] == 0)
+diff -urN strace-4.5.14/system.c strace-4.5.14-mips/system.c
+--- strace-4.5.14/system.c	2006-01-12 21:21:06.000000000 +0000
++++ strace-4.5.14-mips/system.c	2007-05-03 06:59:09.000000000 +0000
+@@ -78,6 +78,7 @@
+ #endif
+ 
+ #include <linux/sysctl.h>
++#include <linux/version.h>
+ 
+ static const struct xlat mount_flags[] = {
+ 	{ MS_MGC_VAL,	"MS_MGC_VAL"	},
+@@ -1578,7 +1579,9 @@
+ 	{ CTL_KERN, "CTL_KERN" },
+ 	{ CTL_VM, "CTL_VM" },
+ 	{ CTL_NET, "CTL_NET" },
+-	{ CTL_PROC, "CTL_PROC" },
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,18)
++        { CTL_PROC, "CTL_PROC" },
++#endif
+ 	{ CTL_FS, "CTL_FS" },
+ 	{ CTL_DEBUG, "CTL_DEBUG" },
+ 	{ CTL_DEV, "CTL_DEV" },
