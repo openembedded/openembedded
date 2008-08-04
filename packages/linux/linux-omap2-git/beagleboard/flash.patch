@@ -1,171 +1,108 @@
-diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index 13d0043..d582b8f 100644
---- a/arch/arm/mach-omap2/Makefile
-+++ b/arch/arm/mach-omap2/Makefile
-@@ -44,7 +44,8 @@ obj-$(CONFIG_MACH_OMAP3EVM)		+= board-omap3evm.o \
- 					   board-omap3evm-flash.o
- obj-$(CONFIG_MACH_OMAP3_BEAGLE)		+= board-omap3beagle.o \
- 					   usb-musb.o usb-ehci.o \
--					   hsmmc.o
-+					   hsmmc.o \
-+					   board-omap3beagle-flash.o
- obj-$(CONFIG_MACH_OMAP_LDP)		+= board-ldp.o \
- 					   hsmmc.o \
- 					   usb-musb.o
-diff --git a/arch/arm/mach-omap2/board-omap3beagle-flash.c b/arch/arm/mach-omap2/board-omap3beagle-flash.c
-new file mode 100644
-index 0000000..5346df0
---- /dev/null
-+++ b/arch/arm/mach-omap2/board-omap3beagle-flash.c
-@@ -0,0 +1,119 @@
-+/*
-+ * board-omap3beagle-flash.c
-+ * 
-+ * Copyright (c) 2008 Texas Instruments
-+ *
-+ * Modified from board-omap3evm-flash.c
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/types.h>
-+#include <linux/io.h>
-+
-+#include <asm/mach/flash.h>
-+#include <asm/arch/board.h>
-+#include <asm/arch/gpmc.h>
-+#include <asm/arch/nand.h>
-+
-+#define GPMC_CS0_BASE  0x60
-+#define GPMC_CS_SIZE   0x30
-+
-+static struct mtd_partition omap3beagle_nand_partitions[] = {
-+	/* All the partition sizes are listed in terms of NAND block size */
-+	{
-+		.name		= "X-Loader",
-+		.offset		= 0,
-+		.size		= 4*(64 * 2048),	
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "U-Boot",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x80000 */
-+		.size		= 15*(64 * 2048),
-+		.mask_flags	= MTD_WRITEABLE,	/* force read-only */
-+	},
-+	{
-+		.name		= "U-Boot Env",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x260000 */
-+		.size		= 1*(64 * 2048),
-+	},
-+	{
-+		.name		= "Kernel",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x280000 */
-+		.size		= 32*(64 * 2048),
-+	},
-+	{
-+		.name		= "File System",
-+		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x680000 */
-+		.size		= MTDPART_SIZ_FULL,
-+	},
-+};
-+
-+static struct omap_nand_platform_data omap3beagle_nand_data = {
-+	.parts		= omap3beagle_nand_partitions,
-+	.nr_parts	= ARRAY_SIZE(omap3beagle_nand_partitions),
-+	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
-+	.nand_setup	= NULL,
-+	.dev_ready	= NULL,
-+};
-+
-+static struct resource omap3beagle_nand_resource = {
-+	.flags		= IORESOURCE_MEM,
-+};
-+
-+static struct platform_device omap3beagle_nand_device = {
-+	.name		= "omap2-nand",
-+	.id		= -1,
-+	.dev		= {
-+		.platform_data	= &omap3beagle_nand_data,
-+	},
-+	.num_resources	= 1,
-+	.resource	= &omap3beagle_nand_resource,
-+};
-+
-+
-+void __init omap3beagle_flash_init(void)
-+{
-+	u8 cs = 0;
-+	u8 nandcs = GPMC_CS_NUM + 1;
-+
-+	u32 gpmc_base_add = OMAP34XX_GPMC_VIRT;
-+
-+	/* find out the chip-select on which NAND exists */
-+	while (cs < GPMC_CS_NUM) {
-+		u32 ret = 0;
-+		ret = gpmc_cs_read_reg(cs, GPMC_CS_CONFIG1);
-+
-+		if ((ret & 0xC00) == 0x800) {
-+			printk(KERN_INFO "Found NAND on CS%d\n", cs);
-+			if (nandcs > GPMC_CS_NUM)
-+				nandcs = cs;
-+		}
-+		cs++;
-+	}
-+
-+	if (nandcs > GPMC_CS_NUM) {
-+		printk(KERN_INFO "NAND: Unable to find configuration "
-+				 "in GPMC\n ");
-+		return;
-+	}
-+
-+	if (nandcs < GPMC_CS_NUM) {
-+		omap3beagle_nand_data.cs = nandcs;
-+		omap3beagle_nand_data.gpmc_cs_baseaddr = (void *)(gpmc_base_add +
-+			GPMC_CS0_BASE + nandcs * GPMC_CS_SIZE);
-+		omap3beagle_nand_data.gpmc_baseaddr = (void *) (gpmc_base_add);
-+
-+		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
-+		if (platform_device_register(&omap3beagle_nand_device) < 0)
-+			printk(KERN_ERR "Unable to register NAND device\n");
-+	}
-+}
-diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index c992cc7..99e042e 100644
---- a/arch/arm/mach-omap2/board-omap3beagle.c
-+++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -94,6 +94,7 @@ static void __init omap3_beagle_init(void)
- 	hsmmc_init();
- 	usb_musb_init();
- 	usb_ehci_init();
-+	omap3beagle_flash_init();
- }
- 
- arch_initcall(omap3_beagle_i2c_init);
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3d5e432..02b9ced 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -71,7 +71,7 @@ config MTD_NAND_AMS_DELTA
+Received: from mail.service.utwente.nl ([130.89.5.253]) by exchange.service.utwente.nl with Microsoft SMTPSVC(6.0.3790.3959);
+	 Mon, 4 Aug 2008 17:59:28 +0200
+Received: from mx.utwente.nl ([130.89.2.12]) by mail.service.utwente.nl with Microsoft SMTPSVC(6.0.3790.3959);
+	 Mon, 4 Aug 2008 17:59:27 +0200
+Received: from vger.kernel.org (vger.kernel.org [209.132.176.167])
+          by mx.utwente.nl (8.12.10/SuSE Linux 0.7) with ESMTP id m74FwiDg028981
+          for <k.kooi@student.utwente.nl>; Mon, 4 Aug 2008 17:58:45 +0200
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1754560AbYHDP6O (ORCPT <rfc822;k.kooi@student.utwente.nl>);
+	Mon, 4 Aug 2008 11:58:14 -0400
+Received: (majordomo@vger.kernel.org) by vger.kernel.org id S1756033AbYHDP6N
+	(ORCPT <rfc822;linux-omap-outgoing>); Mon, 4 Aug 2008 11:58:13 -0400
+Received: from fg-out-1718.google.com ([72.14.220.154]:19323 "EHLO
+	fg-out-1718.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1757716AbYHDP6L (ORCPT
+	<rfc822;linux-omap@vger.kernel.org>); Mon, 4 Aug 2008 11:58:11 -0400
+Received: by fg-out-1718.google.com with SMTP id 19so1022490fgg.17
+        for <linux-omap@vger.kernel.org>; Mon, 04 Aug 2008 08:58:10 -0700 (PDT)
+DKIM-Signature: 	v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:x-accept-language:mime-version:to:cc:subject
+         :content-type;
+        bh=9UH32BpZIt6pkxG3XXDaUMdlsAxT/6HeJgy/cl4UMoY=;
+        b=f81vPPHp6KYejbQyr/s6gwGwGNYUr4art1U829ybVG5aVezJQUy8iuNQqgwPGNLhz+
+         sCPYTp/d7RKpnui9FFxQcy5HOMggvJAgdxr49Y61RZMM+OJS2BugTaUUXWS3/RoEBR+h
+         o/UXxMqR45NI684Nvvcx56Qc4NZQOIyiW3U1I=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=googlemail.com; s=gamma;
+        h=message-id:date:from:user-agent:x-accept-language:mime-version:to
+         :cc:subject:content-type;
+        b=lVauU4WHsnkoGN1/uhQ8jzixuaX2VXizHsSNc8Tq8RZPvOw+yZfIGd1ix6QWVBjttR
+         9TgcojtGA0jx2hYbplibTmFPnoDcKym2qyF5DrX+G0ZLD/nVA+K9bd16sHErFeNz5eId
+         tx0WvpQ2hkVKKG4NgJqINAGB3iNcP80PlM/vk=
+Received: by 10.86.70.11 with SMTP id s11mr3676282fga.15.1217865490017;
+        Mon, 04 Aug 2008 08:58:10 -0700 (PDT)
+Received: from ?192.168.178.25? ( [195.4.48.71])
+        by mx.google.com with ESMTPS id d4sm55517fga.8.2008.08.04.08.58.08
+        (version=TLSv1/SSLv3 cipher=RC4-MD5);
+        Mon, 04 Aug 2008 08:58:09 -0700 (PDT)
+Message-ID: <4897270F.7000205@googlemail.com>
+Date: 	Mon, 04 Aug 2008 17:58:07 +0200
+From: Dirk Behme <dirk.behme@googlemail.com>
+User-Agent: Mozilla Thunderbird 1.0.7 (X11/20050923)
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+To: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+CC: Steve Sakoman <sakoman@gmail.com>
+Subject: [PATCH 1/3 v2] mtd omap2 nand driver: extend to work with omap3 boards
+Content-Type: multipart/mixed;
+ boundary="------------070804080507040009060104"
+Sender: linux-omap-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-omap.vger.kernel.org>
+X-Mailing-List: 	linux-omap@vger.kernel.org
+X-UTwente-MailScanner-Information: Scanned by MailScanner. Contact servicedesk@icts.utwente.nl for more information.
+X-UTwente-MailScanner: Found to be clean
+X-UTwente-MailScanner-From: linux-omap-owner@vger.kernel.org
+X-Spam-Status: No
+Return-Path: linux-omap-owner@vger.kernel.org
+X-OriginalArrivalTime: 04 Aug 2008 15:59:28.0133 (UTC) FILETIME=[12F8BB50:01C8F64B]
+
+This is a multi-part message in MIME format.
+--------------070804080507040009060104
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+From: Teerth Reddy <teerth@ti.com>, Steve Sakoman <steve@sakoman.com>, 
+Dirk Behme <dirk.behme@gmail.com>
+
+Extend omap2 mtd nand driver to work with ARCH_OMAP3 boards
+
+Signed-off-by: Steve Sakoman <steve@sakoman.com>
+Signed-off-by: Dirk Behme <dirk.behme@gmail.com>
+
+
+--------------070804080507040009060104
+Content-Type: text/plain;
+ name="1_nand.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="1_nand.txt"
+
+Index: linux-beagle/drivers/mtd/nand/Kconfig
+===================================================================
+--- linux-beagle.orig/drivers/mtd/nand/Kconfig
++++ linux-beagle/drivers/mtd/nand/Kconfig
+@@ -70,10 +70,10 @@ config MTD_NAND_AMS_DELTA
+ 	  Support for NAND flash on Amstrad E3 (Delta).
  
  config MTD_NAND_OMAP2
- 	tristate "NAND Flash device on OMAP 2420H4/2430SDP boards"
+-	tristate "NAND Flash device on OMAP 2420H4/2430SDP boards"
 -	depends on (ARM && ARCH_OMAP2 && MTD_NAND)
++	tristate "NAND Flash device on OMAP2 and OMAP3"
 +	depends on ARM && MTD_NAND && (ARCH_OMAP2 || ARCH_OMAP3)
  	help
-           Support for NAND flash on Texas Instruments 2430SDP/2420H4 platforms.
+-          Support for NAND flash on Texas Instruments 2430SDP/2420H4 platforms.
++          Support for NAND flash on Texas Instruments OMAP2 and OMAP3 platforms.
  
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 3b7307c..3aac1d2 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
+ config MTD_NAND_OMAP
+ 	tristate "NAND Flash device on OMAP H3/H2/P2 boards"
+Index: linux-beagle/drivers/mtd/nand/omap2.c
+===================================================================
+--- linux-beagle.orig/drivers/mtd/nand/omap2.c
++++ linux-beagle/drivers/mtd/nand/omap2.c
 @@ -111,15 +111,6 @@
  static const char *part_probes[] = { "cmdlinepart", NULL };
  #endif
@@ -196,7 +133,7 @@ index 3b7307c..3aac1d2 100644
  static void omap_nand_wp(struct mtd_info *mtd, int mode)
  {
  	struct omap_nand_info *info = container_of(mtd,
-@@ -189,11 +187,11 @@ static void omap_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+@@ -189,11 +187,11 @@ static void omap_hwcontrol(struct mtd_in
  }
  
  /*
@@ -213,7 +150,7 @@ index 3b7307c..3aac1d2 100644
  static void omap_read_buf(struct mtd_info *mtd, u_char *buf, int len)
  {
  	struct omap_nand_info *info = container_of(mtd,
-@@ -207,11 +205,11 @@ static void omap_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+@@ -207,11 +205,11 @@ static void omap_read_buf(struct mtd_inf
  }
  
  /*
@@ -230,7 +167,7 @@ index 3b7307c..3aac1d2 100644
  static void omap_write_buf(struct mtd_info *mtd, const u_char * buf, int len)
  {
  	struct omap_nand_info *info = container_of(mtd,
-@@ -250,10 +248,16 @@ static int omap_verify_buf(struct mtd_info *mtd, const u_char * buf, int len)
+@@ -250,10 +248,16 @@ static int omap_verify_buf(struct mtd_in
  	return 0;
  }
  
@@ -247,7 +184,7 @@ index 3b7307c..3aac1d2 100644
  	unsigned long val = 0x0;
  
  	/* Read from ECC Control Register */
-@@ -264,16 +268,15 @@ static void omap_hwecc_init(struct mtd_info *mtd)
+@@ -264,16 +268,15 @@ static void omap_hwecc_init(struct mtd_i
  
  	/* Read from ECC Size Config Register */
  	val = __raw_readl(info->gpmc_baseaddr + GPMC_ECC_SIZE_CONFIG);
@@ -283,7 +220,7 @@ index 3b7307c..3aac1d2 100644
   */
  static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
  			    u8 *ecc_data2,	/* read from register */
-@@ -409,6 +416,14 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+@@ -409,6 +416,14 @@ static int omap_compare_ecc(u8 *ecc_data
  	}
  }
  
@@ -298,7 +235,7 @@ index 3b7307c..3aac1d2 100644
  static int omap_correct_data(struct mtd_info *mtd, u_char * dat,
  				u_char * read_ecc, u_char * calc_ecc)
  {
-@@ -436,65 +451,64 @@ static int omap_correct_data(struct mtd_info *mtd, u_char * dat,
+@@ -436,65 +451,64 @@ static int omap_correct_data(struct mtd_
  }
  
  /*
@@ -396,12 +333,12 @@ index 3b7307c..3aac1d2 100644
  		break;
  	default:
  		DEBUG(MTD_DEBUG_LEVEL0, "Error: Unrecognized Mode[%d]!\n",
-@@ -504,7 +518,38 @@ static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
+@@ -504,7 +518,38 @@ static void omap_enable_hwecc(struct mtd
  
  	__raw_writel(val, info->gpmc_baseaddr + GPMC_ECC_CONFIG);
  }
 +#endif
- 
++
 +/*
 + * omap_wait - Wait function is called during Program and erase
 + * operations and the way it is called from MTD layer, we should wait
@@ -427,7 +364,7 @@ index 3b7307c..3aac1d2 100644
 +	}
 +	return status;
 +}
-+
+ 
 +/*
 + * omap_dev_ready - calls the platform specific dev_ready function
 + * @mtd: MTD device structure
@@ -435,7 +372,7 @@ index 3b7307c..3aac1d2 100644
  static int omap_dev_ready(struct mtd_info *mtd)
  {
  	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
-@@ -534,7 +579,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+@@ -534,7 +579,7 @@ static int __devinit omap_nand_probe(str
  	struct omap_nand_info		*info;
  	struct omap_nand_platform_data	*pdata;
  	int				err;
@@ -444,7 +381,7 @@ index 3b7307c..3aac1d2 100644
  
  
  	pdata = pdev->dev.platform_data;
-@@ -568,15 +613,20 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+@@ -568,15 +613,20 @@ static int __devinit omap_nand_probe(str
  	}
  
  	/* Enable RD PIN Monitoring Reg */
@@ -468,7 +405,7 @@ index 3b7307c..3aac1d2 100644
  	if (!request_mem_region(info->phys_base, NAND_IO_SIZE,
  				pdev->dev.driver->name)) {
  		err = -EBUSY;
-@@ -597,29 +647,39 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+@@ -597,29 +647,39 @@ static int __devinit omap_nand_probe(str
  	info->nand.write_buf  = omap_write_buf;
  	info->nand.verify_buf = omap_verify_buf;
  
@@ -528,14 +465,7 @@ index 3b7307c..3aac1d2 100644
  
  	/* DIP switches on some boards change between 8 and 16 bit
  	 * bus widths for flash.  Try the other width if the first try fails.
-@@ -636,14 +696,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
- 		add_mtd_partitions(&info->mtd, info->parts, err);
--	else if (err < 0 && pdata->parts)
-+	else if (err <= 0 && pdata->parts)
- 		add_mtd_partitions(&info->mtd, pdata->parts, pdata->nr_parts);
- 	else
+@@ -642,8 +702,6 @@ static int __devinit omap_nand_probe(str
  #endif
  		add_mtd_device(&info->mtd);
  
@@ -544,15 +474,9 @@ index 3b7307c..3aac1d2 100644
  	platform_set_drvdata(pdev, &info->mtd);
  
  	return 0;
-diff --git a/include/asm-arm/arch-omap/board-omap3beagle.h b/include/asm-arm/arch-omap/board-omap3beagle.h
-index 46dff31..26ecfb8 100644
---- a/include/asm-arm/arch-omap/board-omap3beagle.h
-+++ b/include/asm-arm/arch-omap/board-omap3beagle.h
-@@ -29,5 +29,7 @@
- #ifndef __ASM_ARCH_OMAP3_BEAGLE_H
- #define __ASM_ARCH_OMAP3_BEAGLE_H
- 
-+extern void omap3beagle_flash_init(void);
-+
- #endif /* __ASM_ARCH_OMAP3_BEAGLE_H */
- 
+
+--------------070804080507040009060104--
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

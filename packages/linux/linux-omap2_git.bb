@@ -2,11 +2,11 @@ require linux-omap.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MACHINE}"
 
-SRCREV = "d3b3ae0fe6c71641da19c8de466ec366d39847e3"
+SRCREV = "80b542010d78ccc74c6ee22c9700775736913a3c"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r54"
+PR = "r55"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -14,7 +14,8 @@ SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;patch=1 \
            file://flash.patch;patch=1 \
-           file://0001-omap3-cpuidle.patch;patch=1 \ 
+           file://flash2.patch;patch=1 \
+	   file://0001-omap3-cpuidle.patch;patch=1 \ 
            file://0002-omap3-cpuidle.patch;patch=1 \
            file://timer-suppression.patch;patch=1 \
            file://ASoC-TWL4030-codec-driver.patch;patch=1 \
@@ -31,16 +32,6 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://06-ensure-fclk.diff;patch=1 \
            file://07-set-burst-size.diff;patch=1 \
            file://cache-display-fix.patch;patch=1 \
-           file://i2c-omap-race-fix.diff;patch=1 \
-           file://TWL4030-01.patch;patch=1 \
-           file://TWL4030-02.patch;patch=1 \
-           file://TWL4030-03.patch;patch=1 \
-           file://TWL4030-04.patch;patch=1 \
-           file://TWL4030-05.patch;patch=1 \
-           file://TWL4030-06.patch;patch=1 \
-           file://TWL4030-07.patch;patch=1 \
-           file://TWL4030-08.patch;patch=1 \
-           file://TWL4030-09.patch;patch=1 \
            file://mru-clocks1.diff;patch=1 \
            file://mru-clocks2.diff;patch=1 \
            file://mru-clocks3.diff;patch=1 \	
