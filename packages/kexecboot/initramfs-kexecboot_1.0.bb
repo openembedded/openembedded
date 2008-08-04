@@ -1,11 +1,18 @@
 DESCRIPTON = "A init script that mounts a device and kexecs a new kernel from it."
-PR = "r6"
-RDEPENDS = "kexecboot"
+PR = "r7"
+RDEPENDS = "kexecboot klibc-utils-static-mount klibc-utils-static-sh klibc-utils-static-sleep"
+
+FBANGLE = "270"
+INPUTDEV = "/dev/event0"
+
+
 do_compile() {
         cat > init.sh << EOF
 #!/bin/sh
+/bin/sleep 3
 /bin/mount -t proc proc /proc
-/usr/bin/kexecboot -a 270 -i /dev/event0
+echo "0 4 1 7" > /proc/sys/kernel/printk
+/usr/bin/kexecboot -a ${FBANGLE} -i ${INPUTDEV}
 EOF
 }
 

@@ -5,5 +5,5 @@ inherit image
 
 export IMAGE_BASENAME = "initramfs-kexecboot-image"
 
-IMAGE_INSTALL = "klibc-utils-static-sh klibc-utils-static-mount kexec-static initramfs-kexecboot"
+IMAGE_INSTALL = "initramfs-kexecboot"
 IMAGE_LINGUAS = ""

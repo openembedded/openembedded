@@ -251,7 +251,7 @@ CONFIG_ALIGNMENT_TRAP=y
 #
 CONFIG_ZBOOT_ROM_TEXT=0x0
 CONFIG_ZBOOT_ROM_BSS=0x0
-CONFIG_CMDLINE="console=ttySA0,115200n8 console=tty1 noinitrd root=/dev/mtdblock2 rootfstype=jffs2 rootdelay=3 mem=64M fbcon=rotate:1 dyntick=enable"
+CONFIG_CMDLINE="console=ttySA0,115200n8 noinitrd root=/dev/mtdblock2 rootfstype=jffs2 rootdelay=3 mem=64M fbcon=rotate:1 dyntick=enable"
 # CONFIG_XIP_KERNEL is not set
 CONFIG_KEXEC=y
 CONFIG_ATAGS_PROC=y
@@ -398,7 +398,7 @@ CONFIG_BLK_DEV_IDE=y
 # Please see Documentation/ide/ide.txt for help/info on IDE drives
 #
 # CONFIG_BLK_DEV_IDE_SATA is not set
-# CONFIG_BLK_DEV_IDEDISK is not set
+CONFIG_BLK_DEV_IDEDISK=y
 # CONFIG_IDEDISK_MULTI_MODE is not set
 CONFIG_BLK_DEV_IDECS=y
 # CONFIG_BLK_DEV_IDECD is not set

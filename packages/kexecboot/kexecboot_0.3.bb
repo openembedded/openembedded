@@ -1,12 +1,14 @@
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 DEPENDS = "klibc"
+RDEPENDS = "kexec-static"
 inherit autotools
 
 # You can create your own *-img.h by doing
 # ./make-image-header.sh <file>.png HAND
 
-SRC_URI = "http://projects.linuxtogo.org/frs/download.php/221/kexecboot-${PV}.tar.gz"
+SRC_URI = "http://projects.linuxtogo.org/frs/download.php/221/kexecboot-${PV}.tar.gz \
+	   file://rootdelay.patch;patch=1"
 S = "${WORKDIR}/kexecboot-${PV}"
 
 
