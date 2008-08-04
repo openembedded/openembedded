@@ -16,4 +16,5 @@ inherit autotools
 EXTRA_OECONF = " --with-ffmpeg=${STAGING_LIBDIR} \
                  --with-mysql-lib=${STAGING_LIBDIR} \
                  --with-mysql-include=${STAGING_INCDIR}/mysql \
-                 --with-pgsql=${STAGING_DIR_HOST}${layout_exec_prefix} "
+                 --with-pgsql-lib=${STAGING_LIBDIR} \
+                 --with-pgsql-include=${STAGING_INCDIR} "
