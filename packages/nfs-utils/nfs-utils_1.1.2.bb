@@ -3,6 +3,8 @@ PRIORITY = "optional"
 SECTION = "console/network"
 LICENSE = "GPL"
 
+PR = "2"
+
 DEPENDS = "tcp-wrappers libevent"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
@@ -45,13 +47,16 @@ do_install() {
 	install -m 0755 ${WORKDIR}/nfsserver ${D}${sysconfdir}/init.d/nfsserver
 
 	install -d ${D}${sbindir}
+	install -d ${D}${base_sbindir}
 	install -m 0755 ${S}/utils/exportfs/exportfs ${D}${sbindir}/exportfs
 	install -m 0755 ${S}/utils/mountd/mountd ${D}${sbindir}/mountd
-	install -m 0755 ${S}/utils/mount/mount.nfs ${D}${sbindir}/mount.nfs
+	install -m 0755 ${S}/utils/mount/mount.nfs ${D}${base_sbindir}/mount.nfs
 	install -m 0755 ${S}/utils/nfsd/nfsd ${D}${sbindir}/nfsd
 	install -m 0755 ${S}/utils/nfsstat/nfsstat ${D}${sbindir}/nfsstat
 	install -m 0755 ${S}/utils/showmount/showmount ${D}${sbindir}/showmount
 	install -m 0755 ${S}/utils/statd/statd ${D}${sbindir}/statd
+
+	ln -s ${D}/${base_sbindir}/mount.nfs ${D}/${base_sbindir}/mount.nfs4
 
 	install -d ${D}${mandir}/man8
 	install -m 0644 ${S}/utils/exportfs/exportfs.man ${D}${mandir}/man8/exportfs.8
@@ -61,3 +66,6 @@ do_install() {
 	install -m 0644 ${S}/utils/showmount/showmount.man ${D}${mandir}/man8/showmount.8
 	install -m 0644 ${S}/utils/statd/statd.man ${D}${mandir}/man8/statd.8
 }
+
+PACKAGES =+ "nfs-utils-client"
+FILES_nfs-utils-client = "${base_sbindir}/mount.nfs ${base_sbindir}/mount.nfs4"
