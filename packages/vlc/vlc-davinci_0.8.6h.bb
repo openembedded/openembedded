@@ -4,9 +4,9 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-SRCREV = "d13ee15ec1547dd34a3290684573f91df359f589"
+SRCREV = "e712a114e04a1070f1afdf31ec668cb28eda513c"
 
-PR = "r4"
+PR = "r5"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 

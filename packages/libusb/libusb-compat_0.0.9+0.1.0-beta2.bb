@@ -5,15 +5,15 @@ SECTION = "libs"
 LICENSE = "LGPL"
 
 PE = "1"
-PR = "r1"
+PR = "r0"
 
 DEPENDS = "libusb1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-compat-0.1.0-beta1.tar.bz2 \
+SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-compat-0.1.0-beta2.tar.bz2 \
 					file://0.1.0-beta1-gcc3.4-fix.patch;patch=1 \
           "
 
-S = "${WORKDIR}/libusb-compat-0.1.0-beta1"
+S = "${WORKDIR}/libusb-compat-0.1.0-beta2"
 
 inherit autotools pkgconfig binconfig lib_package
 
