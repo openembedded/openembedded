@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "libgsm"
 
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r20"
+PR = "r21"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"
@@ -14,7 +14,7 @@ FFBRANCH_arm = "arm-neon"
 FFBRANCH ?= "master"
 
 SRCREV = "3692b8de9fae73860be636606cb6344f26e28b1a"
-SRCREV_arm = "af7bda5224b6cdfb0c1f03686d2a6b631a455668"
+SRCREV_arm = "3c4b8ba71b922be6559fcfea3cb990ea3ded234d"
 SRC_URI = "git://git.mansr.com/ffmpeg.mru;protocol=git;branch=${FFBRANCH} \
 "
 
