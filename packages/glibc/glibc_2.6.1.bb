@@ -1,8 +1,6 @@
 require glibc.inc
 PR = "r10"
 
-ARM_INSTRUCTION_SET = "arm"
-
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev"
 
