@@ -1,15 +1,15 @@
-DESCRIPTION = "Neuros qt-plugins"
+DESCRIPTION = "Neuros lib-gui"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r2"
+PR = "r0"
 
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core
 
-SRCREV = "af9e7b73d0313046587cddaec5f879c78ce05d1a"
-SRC_URI = "git://git.neurostechnology.com/git/lib-widgets;protocol=git"
+SRCREV = "bac10d263a4bb9e01db16d7dd356de315a3ffed7"
+SRC_URI = "git://git.neurostechnology.com/git/lib-gui;protocol=git"
 S = "${WORKDIR}/git/"
 
 do_install() {

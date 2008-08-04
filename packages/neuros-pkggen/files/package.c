@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
     }
 
     /* packet firmware to package */
-    if (pack_firmware(fp_w, hw_len, 4, &argv[3]) != 0)
+    if (pack_firmware(fp_w, hw_len, argc - 3, &argv[3]) != 0)
         return(-1);
     /* packet upk_desc and version info */
     if (pack_ver_info(fp_w, hw_len+phd->p_headsize, argv[2]) != 0)
