@@ -6,7 +6,7 @@ SRCREV = "040378c1b24ace3b8945318a8c24ef218200912c"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r56"
+PR = "r57"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
