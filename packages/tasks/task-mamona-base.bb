@@ -9,7 +9,7 @@ RDEPENDS = "\
   apt \
   base-files \
   base-passwd \
-  bash \
+  bash | bash-noemu \
   busybox \
   bzip2 \
   coreutils \

@@ -1,30 +1,16 @@
-DESCRIPTION = "Mamona SDK - Packages for compilation and debug"
-LICENSE = "MIT"
 PR = "r2"
-ALLOW_EMPTY = "1"
 
-PACKAGES = "${PN}"
+include mamona-sdk.inc
 
-RDEPENDS = "\
-  task-mamona \
-  automake \
-  bison \
-  fakeroot \
-  flex \
+RCONFLICTS = "task-mamona-sdk-noemu"
+RREPLACES = "task-mamona-sdk-noemu"
+
+RDEPENDS += "\
+  bash \
+  binutils \
+  binutils-symlinks \
   gcc \
   gcc-symlinks \
   g++ \
   g++-symlinks \
-  gdb \
-  gettext \
-  groff \
-  libc6-dev \
-  libstdc++-dev \
-  make \
-  cvs \
-  subversion \
-  pkgconfig \
-  binutils \
-  diffutils \
-  binutils-symlinks \
 "
