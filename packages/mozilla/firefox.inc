@@ -2,16 +2,17 @@ SRC_URI += "file://mozilla-firefox.png file://mozilla-firefox.desktop"
 
 PACKAGES =+ "firefox-inspector"
 
-FILES_firefox-inspector = "	${libdir}/firefox-${PV}/chrome/inspector* \
-				${libdir}/firefox-${PV}/components/*nspector* \
-				${libdir}/firefox-${PV}/extensions/inspector* \
-				${libdir}/firefox-${PV}/defaults/preferences/inspector* \
+FILES_firefox-inspector = "	${libdir}/firefox*-*/chrome/inspector* \
+				${libdir}/firefox*-${PV}/components/*nspector* \
+				${libdir}/firefox*-${PV}/extensions/inspector* \
+				${libdir}/firefox*-${PV}/defaults/preferences/inspector* \
 				"
-FILES_${PN} = "${bindir}/firefox ${datadir}/applications/ ${datadir}/pixmaps/ ${libdir}/firefox-${PV}/* ${bindir}/defaults"
+FILES_${PN} = "${bindir}/firefox ${datadir}/applications/ ${datadir}/pixmaps/ ${libdir}/firefox*-*/* ${bindir}/defaults"
 FILES_${PN}-dev += "${datadir}/idl ${bindir}/firefox-config"
-FILES_${PN}-dbg += "	${libdir}/firefox-${PV}/.debug \
-			${libdir}/firefox-${PV}/*/.debug \
-			${libdir}/firefox-${PV}/*/*/*/.debug \
+FILES_${PN}-dbg += "	${libdir}/firefox-*/.debug \
+			${libdir}/firefox-*/*/.debug \
+			${libdir}/firefox-*/*/*/.debug \	
+			${libdir}/firefox-*/*/*/*/.debug \
 			${bindir}/.debug \
 			"
 
@@ -21,12 +22,12 @@ do_install() {
 	install -d ${D}${datadir}/pixmaps
 	install -m 0644 ${WORKDIR}/mozilla-firefox.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-firefox.png ${D}${datadir}/pixmaps/
-	rm -f ${D}${libdir}/firefox-${PV}/TestGtkEmbed
+	rm -f ${D}${libdir}/firefox-*/TestGtkEmbed
 }
 
 pkg_postinst_firefox() {
 	# work around requirement for root access on first startup
-	chmod -R a+w ${libdir}/firefox*
+	chmod -R a+w ${libdir}/firefox* ||true 
 }
 
 do_stage() {
