@@ -100,6 +100,8 @@ def oestats_stop(server, d, failures):
 		response = oestats_send(server, "/builds/%s/" % id, {
 			'status': status,
 		})
+		if status == 'Failed':
+			bb.note("oestats: build failed, see http://%s%s" % (server,response))
 	except:
 		bb.note("oestats: error stopping build")
 
@@ -124,7 +126,6 @@ def oestats_task(server, d, task, status):
 		logs = glob.glob("%s/log.%s.*" % (bb.data.getVar('T', d, True), task))
         	if len(logs) > 0:
 			log = logs[0]
-			bb.note("oestats: sending log file : %s" % log)
 			files['log'] = {
 				'filename': 'log.txt',
 				'content': file(log).read(),
@@ -149,6 +150,8 @@ def oestats_task(server, d, task, status):
 	# send report
 	try:
 		response = oestats_send(server, "/tasks/", vars, files)
+		if status == 'Failed':
+			bb.note("oestats: task failed, see http://%s%s" % (server, response))
 	except:
 		bb.note("oestats: error sending task, disabling stats")
 		oestats_setid(d, "")
