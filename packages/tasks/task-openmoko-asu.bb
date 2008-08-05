@@ -4,7 +4,7 @@ SECTION = "openmoko/base"
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r2.02"
 
 inherit task
 
@@ -31,7 +31,7 @@ RDEPENDS_task-openmoko-asu = "\
   xset \
   xrandr \
   libnotify \
-  exposure \
+  om-settings \
   etk-theme-ninja \
   openmoko-community-repository \
   assassin-thumbnail \
