@@ -1,9 +1,9 @@
 DESCRIPTION = "Configuration files for online package repositories of Openmoko community repository feeds"
-PR = "r0"
+PR = "r0.01"
 
 do_compile() {
     mkdir -p ${S}/${sysconfdir}/opkg
-    for feed in community-repository; do
+    for feed in Multiverse; do
         echo "src/gz daily-${feed} ${OPENMOKO_URI}/${feed}" > ${S}/${sysconfdir}/opkg/${feed}-feed.conf
     done
 }
@@ -18,4 +18,4 @@ CONFFILES_${PN} += "${sysconfdir}/opkg/community-repository-feed.conf"
 
 PKG_TAGS_${PN} = "group::repos"
 
-OPENMOKO_URI = "http://downloads.openmoko.org"
+OPENMOKO_URI = "http://downloads.openmoko.org/repository/"
