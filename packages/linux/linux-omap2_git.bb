@@ -2,19 +2,17 @@ require linux-omap.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-omap2-git/${MACHINE}"
 
-SRCREV = "80b542010d78ccc74c6ee22c9700775736913a3c"
+SRCREV = "040378c1b24ace3b8945318a8c24ef218200912c"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r55"
+PR = "r56"
 
 SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://0001-ASoC-OMAP-Add-basic-support-for-OMAP34xx-in-McBSP.patch;patch=1 \
-           file://flash.patch;patch=1 \
-           file://flash2.patch;patch=1 \
 	   file://0001-omap3-cpuidle.patch;patch=1 \ 
            file://0002-omap3-cpuidle.patch;patch=1 \
            file://timer-suppression.patch;patch=1 \
@@ -36,7 +34,6 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://mru-clocks2.diff;patch=1 \
            file://mru-clocks3.diff;patch=1 \	
            file://4bitmmc.diff;patch=1 \
-	   file://400khz-i2c.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
            file://01-gptimer_clear_isrs_on_init;patch=1 \
            file://02-gptimer_use_match_for_tick;patch=1 \
