@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "libgsm"
 
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r21"
+PR = "r22"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"
@@ -44,7 +44,7 @@ EXTRA_OECONF = " \
         --enable-libfaadbin \
         --enable-libgsm \
         --enable-libmp3lame \
-        --disable-swscale \
+        --enable-swscale \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
