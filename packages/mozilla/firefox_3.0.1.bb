@@ -11,8 +11,8 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://random_to_urandom.diff;patch=1 \
 	file://jemalloc-tls.patch;patch=1 \
 	http://ftp.debian.org/debian/pool/main/i/iceweasel/iceweasel_3.0~rc2-2.diff.gz;patch=1 \	
-        file://0001-Remove-Werror-from-build.patch;patch=1 \
-        file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
+	file://0001-Remove-Werror-from-build.patch;patch=1 \
+	file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla"

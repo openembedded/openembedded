@@ -1,7 +1,7 @@
 #ifndef js_cpucfg___
 #define js_cpucfg___
 
-/* AUTOMATICALLY GENERATED - DO NOT EDIT */
+/* AUTOMATICALLY GENERATED - DO NOT EDIT, unless you are an OE dev :) */
 
 #define IS_LITTLE_ENDIAN 1
 #undef  IS_BIG_ENDIAN
@@ -48,5 +48,7 @@
 #define JS_WORDS_PER_DWORD_LOG2  1L
 
 #define JS_STACK_GROWTH_DIRECTION (-1)
+
+#define JS_HAVE_LONG_LONG
 
 #endif /* js_cpucfg___ */
