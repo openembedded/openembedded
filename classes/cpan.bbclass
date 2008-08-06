@@ -10,6 +10,7 @@ export PERLCONFIGTARGET = "${@is_target(d)}"
 
 # Env var which tells perl where the perl include files are
 export PERL_INC = "${STAGING_LIBDIR}/perl/${@get_perl_version(d)}/CORE"
+export PERL_ARCHLIB = "${STAGING_LIBDIR_NATIVE}/perl/${@get_perl_version(d)}"
 
 cpan_do_configure () {
 	yes '' | perl Makefile.PL ${EXTRA_CPANFLAGS}

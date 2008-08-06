@@ -1,0 +1,32 @@
+upstream: OE-only
+origin: Yuri Bushmelev <jay4mail at gmail.com>
+comment: disable xft-config calls while cross-compiling
+--- fvwm-2.5.26/acinclude.m4.orig	2008-06-10 01:53:46.000000000 +0400
++++ fvwm-2.5.26/acinclude.m4	2008-06-10 01:53:51.000000000 +0400
+@@ -1225,14 +1225,14 @@
+     XFT_CONFIG=$xft_config_prefix/bin/xft-config
+   fi
+ fi
+-AC_PATH_PROG(XFT_CONFIG, xft-config, no)
++dnl AC_PATH_PROG(XFT_CONFIG, xft-config, no)
+ 
+ min_xft_version=ifelse([$1], ,2.0.0,$1)
+ AC_MSG_CHECKING(for Xft - version >= $min_xft_version)
+ no_xft=""
+ pkg_config_xft_exists=""
+ 
+-if test "$XFT_CONFIG" = "no" ; then
++dnl if test "$XFT_CONFIG" = "no" ; then
+   if test "x$PKG_CONFIG" != "xno" ; then
+     if $PKG_CONFIG --exists 'xft' ; then
+       if $PKG_CONFIG --exists 'xft >= $1' ; then
+@@ -1249,7 +1249,8 @@
+   else
+     no_xft=yes
+   fi
+-else
++dnl else
++if false; then
+   XFT_CFLAGS=`$XFT_CONFIG $xft_config_args --cflags`
+   XFT_LIBS=`$XFT_CONFIG $xft_config_args --libs`
+   xft_config_major_version=`$XFT_CONFIG $xft_config_args --version | \

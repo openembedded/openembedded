@@ -1,0 +1,56 @@
+upstream: OE-only
+origin: Yuri Bushmelev <jay4mail at gmail.com>
+comment: disable mkstemp() safety check, X11/keysym.h check and old libstroke check
+--- fvwm-2.5.26/configure.ac.orig	2008-06-11 15:44:28.000000000 +0400
++++ fvwm-2.5.26/configure.ac	2008-06-11 15:44:46.000000000 +0400
+@@ -1405,7 +1407,8 @@
+ 
+ # check for mkstemp, see the discution on this subject on the fvwm workers
+ # list (2001-02-16 and 2001-02-24)
+-AM_SAFETY_CHECK_MKSTEMP
++#AM_SAFETY_CHECK_MKSTEMP
++AC_DEFINE(HAVE_SAFETY_MKSTEMP)
+ 
+ # If we do not have atexit(), then check for on_exit()
+ if test x$ac_cv_func_atexit = xno; then
+@@ -1465,23 +1468,23 @@
+   problem_gnomehints=": Explicitly disabled"
+ fi
+ 
+-# Define some compatibility macros needed for config.h.
+-mg_DEFINE_IF_NOT([#include <X11/keysym.h>],
+-  [defined XK_Page_Up && defined XK_Page_Down],
+-  [COMPAT_OLD_KEYSYMDEF], [$X_CFLAGS],
+-  [Old AIX systems (3.2.5) don't define some common keysyms.])
+-AH_VERBATIM([_COMPAT_OLD_KEYSYMDEF],
+-[#ifdef COMPAT_OLD_KEYSYMDEF
+-#  define XK_Page_Up   XK_Prior
+-#  define XK_Page_Down XK_Next
+-#endif])
+-
+-if test x"$with_stroke" = xyes; then
+-  mg_DEFINE_IF_NOT([#include <stroke.h>],
+-    [defined STROKE_MAX_SEQUENCE],
+-    [COMPAT_OLD_LIBSTROKE], [$stroke_CFLAGS],
+-    [Old libstroke <= 0.4 does not use STROKE_ prefix for constants.])
+-fi
++## Define some compatibility macros needed for config.h.
++#mg_DEFINE_IF_NOT([#include <X11/keysym.h>],
++#  [defined XK_Page_Up && defined XK_Page_Down],
++#  [COMPAT_OLD_KEYSYMDEF], [$X_CFLAGS],
++#  [Old AIX systems (3.2.5) don't define some common keysyms.])
++#AH_VERBATIM([_COMPAT_OLD_KEYSYMDEF],
++#[#ifdef COMPAT_OLD_KEYSYMDEF
++##  define XK_Page_Up   XK_Prior
++##  define XK_Page_Down XK_Next
++##endif])
++
++#if test x"$with_stroke" = xyes; then
++#  mg_DEFINE_IF_NOT([#include <stroke.h>],
++#    [defined STROKE_MAX_SEQUENCE],
++#    [COMPAT_OLD_LIBSTROKE], [$stroke_CFLAGS],
++#    [Old libstroke <= 0.4 does not use STROKE_ prefix for constants.])
++#fi
+ AH_VERBATIM([_COMPAT_OLD_LIBSTROKE],
+ [#ifdef COMPAT_OLD_LIBSTROKE
+ /* currently we only use one constant */

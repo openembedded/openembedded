@@ -1,0 +1,26 @@
+upstream: http://fvwm.lair.be/viewtopic.php?f=49&t=2107
+status: pending
+origin: Yuri Bushmelev <jay4mail at gmail.com>
+comment: fixes libs detection in configure when cross-compiling
+--- fvwm-2.5.26/configure.ac.orig	2008-06-11 15:44:28.000000000 +0400
++++ fvwm-2.5.26/configure.ac	2008-06-11 15:44:46.000000000 +0400
+@@ -792,7 +792,8 @@
+ 	 problem_xpm=": Internal xpm detection logic error"
+        fi
+      fi],
+-   [with_xpm=no; problem_xpm=": Xpm test error, see config.log"])
++   [with_xpm=no; problem_xpm=": Xpm test error, see config.log"],
++   [echo $ac_n "cross compiling; assumed OK... $ac_c"])
+   AC_MSG_RESULT($with_xpm)
+   CPPFLAGS="$my_CPPFLAGS"
+   LIBS="$my_LIBS"
+@@ -840,7 +841,8 @@
+ 	 problem_png=": Internal png detection logic error"
+        fi
+      fi],
+-   [with_png="no"; problem_png=": png test error, see config.log"])
++   [with_png="no"; problem_png=": png test error, see config.log"],
++   [echo $ac_n "cross compiling; assumed OK... $ac_c"])
+   AC_MSG_RESULT($with_png)
+   CPPFLAGS="$my_CPPFLAGS"
+   LIBS="$my_LIBS"

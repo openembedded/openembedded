@@ -3,7 +3,7 @@ require ffmpeg.inc
 DEPENDS += "libgsm"
 
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r21"
+PR = "r23"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"
@@ -44,7 +44,7 @@ EXTRA_OECONF = " \
         --enable-libfaadbin \
         --enable-libgsm \
         --enable-libmp3lame \
-        --disable-swscale \
+        --enable-swscale \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
@@ -93,8 +93,9 @@ do_stage() {
            install -m 0644 ${S}/libavutil/$h        ${STAGING_INCDIR}/libavutil/$h 
         done
 
-        install -m 0644 ${S}/libswscale/swscale.h ${STAGING_INCDIR}/ffmpeg/swscale.h
-        install -m 0644 ${S}/libswscale/rgb2rgb.h ${STAGING_INCDIR}/ffmpeg/rgb2rgb.h
+        install -d ${STAGING_INCDIR}/libswscale/ 
+        install -m 0644 ${S}/libswscale/*.h ${STAGING_INCDIR}/ffmpeg/
+        install -m 0644 ${S}/libswscale/*.h ${STAGING_INCDIR}/libswscale/
 
         install -d ${STAGING_INCDIR}/libpostproc
         install -d ${STAGING_INCDIR}/postproc 
