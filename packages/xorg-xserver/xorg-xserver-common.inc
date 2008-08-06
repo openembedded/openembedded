@@ -36,12 +36,14 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 		    ${libdir}/xorg/modules/*/*/.debug \
 		    "
 
+CONFFILES_${PN} += "${sysconfdir}/X11/xorg.conf"
+
 do_stage() {
 	autotools_stage_all
 }
 
 do_install_append () {
-	install -d ${D}/etc/X11
-	install -m 0644 ${WORKDIR}/xorg.conf ${D}/etc/X11/
+	install -d ${D}/${sysconfdir}/X11
+	install -m 0644 ${WORKDIR}/xorg.conf ${D}/${sysconfdir}/X11/
 	ln -sf ${datadir}/fonts/X11 ${D}/${libdir}/X11/fonts
 }
