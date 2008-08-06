@@ -13,6 +13,8 @@ FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info \
 
 inherit autotools pkgconfig gconf
 
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
+
 gnome_stage_includes() {
 	autotools_stage_includes
 }
