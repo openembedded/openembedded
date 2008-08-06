@@ -1,5 +1,6 @@
 DESCRIPTION = "Small utility to restart a crashing application"
 LICENSE = "GPL"
+DEPENDS = "virtual/libx11"
 
 SRC_URI="svn://svn.openmoko.org/developers/zecke/;module=app_restarter;proto=http"
 S = "${WORKDIR}/app_restarter"
