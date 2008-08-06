@@ -3,7 +3,7 @@ SECTION = "x11/gnome"
 LICENSE = "LGPL"
 DEPENDS = "orbit2 glib-2.0  libxml2"
 ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/GConf-${PV}"
 
@@ -20,7 +20,10 @@ do_compile() {
 }
 
 do_stage() {
-	autotools_stage_all
+	oe_libinstall -so -C gconf libgconf-2 ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}/gconf/2/gconf/
+	( cd gconf; for i in ${HEADERS}; do install -m 0644 $i ${STAGING_INCDIR}/gconf/2/gconf/$i; done )
+	install -m 0644 gconf.m4 ${STAGING_DATADIR}/aclocal/gconf-2.m4
 }
 
 do_install() {
@@ -28,4 +31,4 @@ do_install() {
 }
 
 FILES_${PN} += " ${libdir}/GConf/*"
-FILES_gconf-dbg += "${libdir}/*/*/.debug"
+FILES_${PN}-dbg += "${libdir}/*/*/.debug"
