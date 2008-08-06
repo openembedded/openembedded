@@ -1,7 +1,8 @@
 DESCRIPTION = "Babl is a dynamic, any to any, pixel format conversion library."
 LICENSE = "LGPL"
 
-PV = "0.0.14+svn${SRCDATE}"
+SRCREV = "349"
+PV = "0.0.23+svn${SRCREV}"
 PR = "r1"
 
 inherit gnome
