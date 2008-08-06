@@ -1,10 +1,10 @@
 # Demo image for beagleboard
 
-XSERVER ?= "xserver-xorg \
-            xf86-input-evdev \
-            xf86-input-mouse \
-            xf86-video-fbdev \
-            xf86-input-keyboard \
+XSERVER = "xserver-xorg \
+           xf86-input-evdev \
+           xf86-input-mouse \
+           xf86-video-fbdev \
+           xf86-input-keyboard \
 "
 
 ANGSTROM_EXTRA_INSTALL ?= ""
