@@ -1,0 +1,451 @@
+Index: oprofile-0.9.4/ChangeLog
+===================================================================
+--- oprofile-0.9.4.orig/ChangeLog	2008-07-18 01:04:22.000000000 +0200
++++ oprofile-0.9.4/ChangeLog	2008-08-08 15:32:15.226950589 +0200
+@@ -1,3 +1,14 @@
++2008-08-08  Jean Pihet <jpihet@mvista.com>
++
++	* events/arm/armv7/events:
++	* events/arm/armv7/unit_masks:
++	* libop/op_cpu_type.c:
++	* libop/op_cpu_type.h:
++	* libop/op_events.c:
++	* utils/ophelp.c: Added ARMv7 support to be consistent with the
++	kernel, remove some duplicate code and add some extra events
++	* event/Makefile.am: Install armv7 stuff.
++
+ 2008-07-17  Maynard Johnson  <maynardj@us.ibm.com>
+ 
+ 	* configure.in: bump version in AM_INIT_AUTOMAKE to 0.9.4
+Index: oprofile-0.9.4/events/arm/armv7/events
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ oprofile-0.9.4/events/arm/armv7/events	2008-08-08 15:32:15.226950589 +0200
+@@ -0,0 +1,53 @@
++# ARM V7 events
++# From Cortex A8 DDI (ARM DDI 0344B, revision r1p1)
++#
++event:0x00 counters:1,2,3,4 um:zero minimum:500 name:PMNC_SW_INCR : Software increment of PMNC registers
++event:0x01 counters:1,2,3,4 um:zero minimum:500 name:IFETCH_MISS : Instruction fetch misses from cache or normal cacheable memory
++event:0x02 counters:1,2,3,4 um:zero minimum:500 name:ITLB_MISS : Instruction fetch misses from TLB
++event:0x03 counters:1,2,3,4 um:zero minimum:500 name:DCACHE_REFILL : Data R/W operation that causes a refill from cache or normal cacheable memory
++event:0x04 counters:1,2,3,4 um:zero minimum:500 name:DCACHE_ACCESS : Data R/W from cache
++event:0x05 counters:1,2,3,4 um:zero minimum:500 name:DTLB_REFILL : Data R/W that causes a TLB refill
++event:0x06 counters:1,2,3,4 um:zero minimum:500 name:DREAD : Data read architecturally executed (note: architecturally executed = for instructions that are unconditional or that pass the condition code)
++event:0x07 counters:1,2,3,4 um:zero minimum:500 name:DWRITE : Data write architecturally executed
++event:0x08 counters:1,2,3,4 um:zero minimum:500 name:INSTR_EXECUTED : All executed instructions
++event:0x09 counters:1,2,3,4 um:zero minimum:500 name:EXC_TAKEN : Exception taken
++event:0x0A counters:1,2,3,4 um:zero minimum:500 name:EXC_EXECUTED : Exception return architecturally executed
++event:0x0B counters:1,2,3,4 um:zero minimum:500 name:CID_WRITE : Instruction that writes to the Context ID Register architecturally executed
++event:0x0C counters:1,2,3,4 um:zero minimum:500 name:PC_WRITE : SW change of PC, architecturally executed (not by exceptions)
++event:0x0D counters:1,2,3,4 um:zero minimum:500 name:PC_IMM_BRANCH : Immediate branch instruction executed (taken or not)
++event:0x0E counters:1,2,3,4 um:zero minimum:500 name:PC_PROC_RETURN : Procedure return architecturally executed (not by exceptions)
++event:0x0F counters:1,2,3,4 um:zero minimum:500 name:UNALIGNED_ACCESS : Unaligned access architecturally executed
++event:0x10 counters:1,2,3,4 um:zero minimum:500 name:PC_BRANCH_MIS_PRED : Branch mispredicted or not predicted. Counts pipeline flushes because of misprediction
++event:0x12 counters:1,2,3,4 um:zero minimum:500 name:PC_BRANCH_MIS_USED : Branch or change in program flow that could have been predicted
++event:0x40 counters:1,2,3,4 um:zero minimum:500 name:WRITE_BUFFER_FULL : Any write buffer full cycle
++event:0x41 counters:1,2,3,4 um:zero minimum:500 name:L2_STORE_MERGED : Any store that is merged in L2 cache
++event:0x42 counters:1,2,3,4 um:zero minimum:500 name:L2_STORE_BUFF : Any bufferable store from load/store to L2 cache
++event:0x43 counters:1,2,3,4 um:zero minimum:500 name:L2_ACCESS : Any access to L2 cache
++event:0x44 counters:1,2,3,4 um:zero minimum:500 name:L2_CACH_MISS : Any cacheable miss in L2 cache
++event:0x45 counters:1,2,3,4 um:zero minimum:500 name:AXI_READ_CYCLES : Number of cycles for an active AXI read
++event:0x46 counters:1,2,3,4 um:zero minimum:500 name:AXI_WRITE_CYCLES : Number of cycles for an active AXI write
++event:0x47 counters:1,2,3,4 um:zero minimum:500 name:MEMORY_REPLAY : Any replay event in the memory subsystem
++event:0x48 counters:1,2,3,4 um:zero minimum:500 name:UNALIGNED_ACCESS_REPLAY : Unaligned access that causes a replay
++event:0x49 counters:1,2,3,4 um:zero minimum:500 name:L1_DATA_MISS : L1 data cache miss as a result of the hashing algorithm
++event:0x4A counters:1,2,3,4 um:zero minimum:500 name:L1_INST_MISS : L1 instruction cache miss as a result of the hashing algorithm
++event:0x4B counters:1,2,3,4 um:zero minimum:500 name:L1_DATA_COLORING : L1 data access in which a page coloring alias occurs
++event:0x4C counters:1,2,3,4 um:zero minimum:500 name:L1_NEON_DATA : NEON data access that hits L1 cache
++event:0x4D counters:1,2,3,4 um:zero minimum:500 name:L1_NEON_CACH_DATA : NEON cacheable data access that hits L1 cache
++event:0x4E counters:1,2,3,4 um:zero minimum:500 name:L2_NEON : L2 access as a result of NEON memory access
++event:0x4F counters:1,2,3,4 um:zero minimum:500 name:L2_NEON_HIT : Any NEON hit in L2 cache
++event:0x50 counters:1,2,3,4 um:zero minimum:500 name:L1_INST : Any L1 instruction cache access, excluding CP15 cache accesses
++event:0x51 counters:1,2,3,4 um:zero minimum:500 name:PC_RETURN_MIS_PRED : Return stack misprediction at return stack pop (incorrect target address)
++event:0x52 counters:1,2,3,4 um:zero minimum:500 name:PC_BRANCH_FAILED : Branch prediction misprediction
++event:0x53 counters:1,2,3,4 um:zero minimum:500 name:PC_BRANCH_TAKEN : Any predicted branch that is taken
++event:0x54 counters:1,2,3,4 um:zero minimum:500 name:PC_BRANCH_EXECUTED : Any taken branch that is executed
++event:0x55 counters:1,2,3,4 um:zero minimum:500 name:OP_EXECUTED : Number of operations executed (in instruction or mutli-cycle instruction)
++event:0x56 counters:1,2,3,4 um:zero minimum:500 name:CYCLES_INST_STALL : Cycles where no instruction available
++event:0x57 counters:1,2,3,4 um:zero minimum:500 name:CYCLES_INST : Number of instructions issued in a cycle
++event:0x58 counters:1,2,3,4 um:zero minimum:500 name:CYCLES_NEON_DATA_STALL : Number of cycles the processor waits on MRC data from NEON
++event:0x59 counters:1,2,3,4 um:zero minimum:500 name:CYCLES_NEON_INST_STALL : Number of cycles the processor waits on NEON instruction queue or NEON load queue
++event:0x5A counters:1,2,3,4 um:zero minimum:500 name:NEON_CYCLES : Number of cycles NEON and integer processors are not idle
++event:0x70 counters:1,2,3,4 um:zero minimum:500 name:PMU0_EVENTS : Number of events from external input source PMUEXTIN[0]
++event:0x71 counters:1,2,3,4 um:zero minimum:500 name:PMU1_EVENTS : Number of events from external input source PMUEXTIN[1]
++event:0x72 counters:1,2,3,4 um:zero minimum:500 name:PMU_EVENTS : Number of events from both external input sources PMUEXTIN[0] and PMUEXTIN[1]
++event:0xFF counters:0 um:zero minimum:500 name:CPU_CYCLES : Number of CPU cycles
++
+Index: oprofile-0.9.4/events/arm/armv7/unit_masks
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ oprofile-0.9.4/events/arm/armv7/unit_masks	2008-08-08 15:32:15.273760932 +0200
+@@ -0,0 +1,4 @@
++# ARM V7 PMNC possible unit masks
++#
++name:zero type:mandatory default:0x00
++	0x00 No unit mask
+Index: oprofile-0.9.4/events/Makefile.in
+===================================================================
+--- oprofile-0.9.4.orig/events/Makefile.in	2008-07-18 01:14:45.000000000 +0200
++++ oprofile-0.9.4/events/Makefile.in	2008-08-08 15:32:34.971961074 +0200
+@@ -1,8 +1,8 @@
+-# Makefile.in generated by automake 1.9.6 from Makefile.am.
++# Makefile.in generated by automake 1.10 from Makefile.am.
+ # @configure_input@
+ 
+ # Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
+-# 2003, 2004, 2005  Free Software Foundation, Inc.
++# 2003, 2004, 2005, 2006  Free Software Foundation, Inc.
+ # This Makefile.in is free software; the Free Software Foundation
+ # gives unlimited permission to copy and/or distribute it,
+ # with or without modifications, as long as this notice is preserved.
+@@ -13,15 +13,11 @@
+ # PARTICULAR PURPOSE.
+ 
+ @SET_MAKE@
+-srcdir = @srcdir@
+-top_srcdir = @top_srcdir@
+ VPATH = @srcdir@
+ pkgdatadir = $(datadir)/@PACKAGE@
+ pkglibdir = $(libdir)/@PACKAGE@
+ pkgincludedir = $(includedir)/@PACKAGE@
+-top_builddir = ..
+ am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
+-INSTALL = @INSTALL@
+ install_sh_DATA = $(install_sh) -c -m 644
+ install_sh_PROGRAM = $(install_sh) -c
+ install_sh_SCRIPT = $(install_sh) -c
+@@ -38,20 +34,8 @@
+ subdir = events
+ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+-am__aclocal_m4_deps = $(top_srcdir)/m4/binutils.m4 \
+-	$(top_srcdir)/m4/builtinexpect.m4 \
+-	$(top_srcdir)/m4/cellspubfdsupport.m4 \
+-	$(top_srcdir)/m4/compileroption.m4 \
+-	$(top_srcdir)/m4/configmodule.m4 \
+-	$(top_srcdir)/m4/copyifchange.m4 $(top_srcdir)/m4/docbook.m4 \
+-	$(top_srcdir)/m4/extradirs.m4 $(top_srcdir)/m4/findkernel.m4 \
+-	$(top_srcdir)/m4/kerneloption.m4 \
+-	$(top_srcdir)/m4/kernelversion.m4 \
+-	$(top_srcdir)/m4/mallocattribute.m4 \
+-	$(top_srcdir)/m4/poptconst.m4 \
+-	$(top_srcdir)/m4/precompiledheader.m4 $(top_srcdir)/m4/qt.m4 \
+-	$(top_srcdir)/m4/resultyn.m4 $(top_srcdir)/m4/sstream.m4 \
+-	$(top_srcdir)/m4/typedef.m4 $(top_srcdir)/configure.in
++am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
++	$(top_srcdir)/configure.in
+ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
+ 	$(ACLOCAL_M4)
+ mkinstalldirs = $(install_sh) -d
+@@ -61,8 +45,6 @@
+ DIST_SOURCES =
+ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+ ACLOCAL = @ACLOCAL@
+-AMDEP_FALSE = @AMDEP_FALSE@
+-AMDEP_TRUE = @AMDEP_TRUE@
+ AMTAR = @AMTAR@
+ AR = @AR@
+ AUTOCONF = @AUTOCONF@
+@@ -70,10 +52,7 @@
+ AUTOMAKE = @AUTOMAKE@
+ AWK = @AWK@
+ BFD_LIBS = @BFD_LIBS@
+-BUILD_JVMPI_AGENT_FALSE = @BUILD_JVMPI_AGENT_FALSE@
+-BUILD_JVMPI_AGENT_TRUE = @BUILD_JVMPI_AGENT_TRUE@
+-BUILD_JVMTI_AGENT_FALSE = @BUILD_JVMTI_AGENT_FALSE@
+-BUILD_JVMTI_AGENT_TRUE = @BUILD_JVMTI_AGENT_TRUE@
++BUILD_HAMMER = @BUILD_HAMMER@
+ CAT_ENTRY_END = @CAT_ENTRY_END@
+ CAT_ENTRY_START = @CAT_ENTRY_START@
+ CC = @CC@
+@@ -90,16 +69,17 @@
+ DEFS = @DEFS@
+ DEPDIR = @DEPDIR@
+ DOCBOOK_ROOT = @DOCBOOK_ROOT@
+-ECHO = @ECHO@
++DSYMUTIL = @DSYMUTIL@
++DUMPBIN = @DUMPBIN@
+ ECHO_C = @ECHO_C@
+ ECHO_N = @ECHO_N@
+ ECHO_T = @ECHO_T@
+ EGREP = @EGREP@
+ EXEEXT = @EXEEXT@
+ EXTRA_CFLAGS_MODULE = @EXTRA_CFLAGS_MODULE@
+-F77 = @F77@
+-FFLAGS = @FFLAGS@
++FGREP = @FGREP@
+ GREP = @GREP@
++INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+@@ -114,17 +94,23 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LIBTOOL = @LIBTOOL@
++LIPO = @LIPO@
+ LN_S = @LN_S@
+ LTLIBOBJS = @LTLIBOBJS@
+ MAKEINFO = @MAKEINFO@
++MKDIR_P = @MKDIR_P@
+ MOC = @MOC@
+ MODINSTALLDIR = @MODINSTALLDIR@
++NM = @NM@
++NMEDIT = @NMEDIT@
+ OBJEXT = @OBJEXT@
+ OPROFILE_DIR = @OPROFILE_DIR@
+ OPROFILE_MODULE_ARCH = @OPROFILE_MODULE_ARCH@
+ OP_CFLAGS = @OP_CFLAGS@
+ OP_CXXFLAGS = @OP_CXXFLAGS@
+ OP_DOCDIR = @OP_DOCDIR@
++OTOOL = @OTOOL@
++OTOOL64 = @OTOOL64@
+ PACKAGE = @PACKAGE@
+ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+ PACKAGE_NAME = @PACKAGE_NAME@
+@@ -139,13 +125,13 @@
+ QT_LIB = @QT_LIB@
+ QT_VERSION = @QT_VERSION@
+ RANLIB = @RANLIB@
++SED = @SED@
+ SET_MAKE = @SET_MAKE@
+ SHELL = @SHELL@
+ SIZE_T_TYPE = @SIZE_T_TYPE@
+ STRIP = @STRIP@
+ UIC = @UIC@
+ VERSION = @VERSION@
+-XMKMF = @XMKMF@
+ XML_CATALOG = @XML_CATALOG@
+ XSLTPROC = @XSLTPROC@
+ XSLTPROC_FLAGS = @XSLTPROC_FLAGS@
+@@ -153,13 +139,13 @@
+ X_EXTRA_LIBS = @X_EXTRA_LIBS@
+ X_LIBS = @X_LIBS@
+ X_PRE_LIBS = @X_PRE_LIBS@
++abs_builddir = @abs_builddir@
++abs_srcdir = @abs_srcdir@
++abs_top_builddir = @abs_top_builddir@
++abs_top_srcdir = @abs_top_srcdir@
+ ac_ct_CC = @ac_ct_CC@
+ ac_ct_CXX = @ac_ct_CXX@
+-ac_ct_F77 = @ac_ct_F77@
+-am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
+-am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
+-am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
+-am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
++ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
+ am__include = @am__include@
+ am__leading_dot = @am__leading_dot@
+ am__quote = @am__quote@
+@@ -171,15 +157,12 @@
+ build_cpu = @build_cpu@
+ build_os = @build_os@
+ build_vendor = @build_vendor@
++builddir = @builddir@
+ datadir = @datadir@
+ datarootdir = @datarootdir@
+ docdir = @docdir@
+ dvidir = @dvidir@
+ exec_prefix = @exec_prefix@
+-have_qt_FALSE = @have_qt_FALSE@
+-have_qt_TRUE = @have_qt_TRUE@
+-have_xsltproc_FALSE = @have_xsltproc_FALSE@
+-have_xsltproc_TRUE = @have_xsltproc_TRUE@
+ host = @host@
+ host_alias = @host_alias@
+ host_cpu = @host_cpu@
+@@ -189,12 +172,11 @@
+ includedir = @includedir@
+ infodir = @infodir@
+ install_sh = @install_sh@
+-kernel_support_FALSE = @kernel_support_FALSE@
+-kernel_support_TRUE = @kernel_support_TRUE@
+ libdir = @libdir@
+ libexecdir = @libexecdir@
+ localedir = @localedir@
+ localstatedir = @localstatedir@
++lt_ECHO = @lt_ECHO@
+ mandir = @mandir@
+ mkdir_p = @mkdir_p@
+ oldincludedir = @oldincludedir@
+@@ -204,8 +186,11 @@
+ psdir = @psdir@
+ sbindir = @sbindir@
+ sharedstatedir = @sharedstatedir@
++srcdir = @srcdir@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
++top_builddir = @top_builddir@
++top_srcdir = @top_srcdir@
+ topdir = @topdir@
+ event_files = \
+ 	alpha/ev4/events alpha/ev4/unit_masks \
+@@ -298,10 +283,6 @@
+ 
+ clean-libtool:
+ 	-rm -rf .libs _libs
+-
+-distclean-libtool:
+-	-rm -f libtool
+-uninstall-info-am:
+ tags: TAGS
+ TAGS:
+ 
+@@ -310,23 +291,21 @@
+ 
+ 
+ distdir: $(DISTFILES)
+-	$(mkdir_p) $(distdir)/alpha/ev4 $(distdir)/alpha/ev5 $(distdir)/alpha/ev6 $(distdir)/alpha/ev67 $(distdir)/alpha/pca56 $(distdir)/arm/armv6 $(distdir)/arm/mpcore $(distdir)/arm/xscale1 $(distdir)/arm/xscale2 $(distdir)/avr32 $(distdir)/i386/athlon $(distdir)/i386/core $(distdir)/i386/core_2 $(distdir)/i386/p4 $(distdir)/i386/p4-ht $(distdir)/i386/p6_mobile $(distdir)/i386/pii $(distdir)/i386/piii $(distdir)/i386/ppro $(distdir)/ia64/ia64 $(distdir)/ia64/itanium $(distdir)/ia64/itanium2 $(distdir)/mips/20K $(distdir)/mips/24K $(distdir)/mips/25K $(distdir)/mips/34K $(distdir)/mips/5K $(distdir)/mips/r10000 $(distdir)/mips/r12000 $(distdir)/mips/rm7000 $(distdir)/mips/rm9000 $(distdir)/mips/sb1 $(distdir)/mips/vr5432 $(distdir)/mips/vr5500 $(distdir)/ppc/7450 $(distdir)/ppc/e300 $(distdir)/ppc/e500 $(distdir)/ppc/e500v2 $(distdir)/ppc64/970 $(distdir)/ppc64/970MP $(distdir)/ppc64/cell-be $(distdir)/ppc64/pa6t $(distdir)/ppc64/power4 $(distdir)/ppc64/power5 $(distdir)/ppc64/power5+ $(distdir)/ppc64/power5++ $(distdir)/ppc64/power6 $(distdir)/rtc $(distdir)/x86-64/family10 $(distdir)/x86-64/hammer
+-	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
+-	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
+-	list='$(DISTFILES)'; for file in $$list; do \
+-	  case $$file in \
+-	    $(srcdir)/*) file=`echo "$$file" | sed "s|^$$srcdirstrip/||"`;; \
+-	    $(top_srcdir)/*) file=`echo "$$file" | sed "s|^$$topsrcdirstrip/|$(top_builddir)/|"`;; \
+-	  esac; \
++	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
++	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
++	list='$(DISTFILES)'; \
++	  dist_files=`for file in $$list; do echo $$file; done | \
++	  sed -e "s|^$$srcdirstrip/||;t" \
++	      -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
++	case $$dist_files in \
++	  */*) $(MKDIR_P) `echo "$$dist_files" | \
++			   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
++			   sort -u` ;; \
++	esac; \
++	for file in $$dist_files; do \
+ 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
+-	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+-	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+-	    dir="/$$dir"; \
+-	    $(mkdir_p) "$(distdir)$$dir"; \
+-	  else \
+-	    dir=''; \
+-	  fi; \
+ 	  if test -d $$d/$$file; then \
++	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+ 	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
+ 	      cp -pR $(srcdir)/$$file $(distdir)$$dir || exit 1; \
+ 	    fi; \
+@@ -371,7 +350,7 @@
+ 
+ distclean: distclean-am
+ 	-rm -f Makefile
+-distclean-am: clean-am distclean-generic distclean-libtool
++distclean-am: clean-am distclean-generic
+ 
+ dvi: dvi-am
+ 
+@@ -385,12 +364,20 @@
+ 
+ install-data-am: install-data-local
+ 
++install-dvi: install-dvi-am
++
+ install-exec-am:
+ 
++install-html: install-html-am
++
+ install-info: install-info-am
+ 
+ install-man:
+ 
++install-pdf: install-pdf-am
++
++install-ps: install-ps-am
++
+ installcheck-am:
+ 
+ maintainer-clean: maintainer-clean-am
+@@ -409,17 +396,21 @@
+ 
+ ps-am:
+ 
+-uninstall-am: uninstall-info-am uninstall-local
++uninstall-am: uninstall-local
++
++.MAKE: install-am install-strip
+ 
+ .PHONY: all all-am check check-am clean clean-generic clean-libtool \
+ 	distclean distclean-generic distclean-libtool distdir dvi \
+ 	dvi-am html html-am info info-am install install-am \
+-	install-data install-data-am install-data-local install-exec \
+-	install-exec-am install-info install-info-am install-man \
++	install-data install-data-am install-data-local install-dvi \
++	install-dvi-am install-exec install-exec-am install-html \
++	install-html-am install-info install-info-am install-man \
++	install-pdf install-pdf-am install-ps install-ps-am \
+ 	install-strip installcheck installcheck-am installdirs \
+ 	maintainer-clean maintainer-clean-generic mostlyclean \
+ 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+-	uninstall uninstall-am uninstall-info-am uninstall-local
++	uninstall uninstall-am uninstall-local
+ 
+ 
+ install-data-local:
+Index: oprofile-0.9.4/libop/op_cpu_type.c
+===================================================================
+--- oprofile-0.9.4.orig/libop/op_cpu_type.c	2008-02-22 17:17:48.000000000 +0100
++++ oprofile-0.9.4/libop/op_cpu_type.c	2008-08-08 15:32:15.307120161 +0200
+@@ -71,6 +71,7 @@
+ 	{ "ppc64 PA6T", "ppc64/pa6t", CPU_PPC64_PA6T, 6 },
+ 	{ "ARM MPCore", "arm/mpcore", CPU_ARM_MPCORE, 2 },
+ 	{ "ARM V6 PMU", "arm/armv6", CPU_ARM_V6, 3 },
++	{ "ARM V7 PMNC", "arm/armv7", CPU_ARM_V7, 5 },
+ 	{ "ppc64 POWER5++", "ppc64/power5++", CPU_PPC64_POWER5pp, 6 },
+ 	{ "e300", "ppc/e300", CPU_PPC_E300, 4 },
+ 	{ "AVR32", "avr32", CPU_AVR32, 3 },
+Index: oprofile-0.9.4/libop/op_cpu_type.h
+===================================================================
+--- oprofile-0.9.4.orig/libop/op_cpu_type.h	2008-02-22 17:17:48.000000000 +0100
++++ oprofile-0.9.4/libop/op_cpu_type.h	2008-08-08 15:32:15.322934386 +0200
+@@ -69,6 +69,7 @@
+  	CPU_PPC64_PA6T, /**< ppc64 PA6T */
+ 	CPU_ARM_MPCORE, /**< ARM MPCore */
+ 	CPU_ARM_V6, /**< ARM V6 */
++	CPU_ARM_V7, /**< ARM V7 */
+ 	CPU_PPC64_POWER5pp,  /**< ppc64 Power5++ family */
+ 	CPU_PPC_E300, /**< e300 */
+ 	CPU_AVR32, /**< AVR32 */
+Index: oprofile-0.9.4/libop/op_events.c
+===================================================================
+--- oprofile-0.9.4.orig/libop/op_events.c	2008-02-22 17:17:48.000000000 +0100
++++ oprofile-0.9.4/libop/op_events.c	2008-08-08 15:32:15.347934528 +0200
+@@ -793,6 +793,7 @@
+ 		case CPU_ARM_XSCALE2:
+ 		case CPU_ARM_MPCORE:
+ 		case CPU_ARM_V6:
++		case CPU_ARM_V7:
+ 		case CPU_AVR32:
+ 			descr->name = "CPU_CYCLES";
+ 			break;
+Index: oprofile-0.9.4/utils/ophelp.c
+===================================================================
+--- oprofile-0.9.4.orig/utils/ophelp.c	2008-02-22 17:17:49.000000000 +0100
++++ oprofile-0.9.4/utils/ophelp.c	2008-08-08 15:32:15.362934395 +0200
+@@ -433,6 +433,11 @@
+ 		printf("See ARM11 Technical Reference Manual\n");
+   		break;
+ 
++	case CPU_ARM_V7:
++		printf("See ARM11 Technical Reference Manual\n"
++			"Cortex A8 DDI (ARM DDI 0344B, revision r1p1)\n");
++  		break;
++
+ 	case CPU_PPC64_PA6T:
+ 		printf("See PA6T Power Implementation Features Book IV\n"
+ 			   "Chapter 7 Performance Counters\n");
+Index: oprofile-0.9.4/events/Makefile.am
+===================================================================
+--- oprofile-0.9.4.orig/events/Makefile.am	2008-08-08 15:35:37.318966302 +0200
++++ oprofile-0.9.4/events/Makefile.am	2008-08-08 15:35:57.259878132 +0200
+@@ -31,6 +31,7 @@
+ 	arm/xscale1/events arm/xscale1/unit_masks \
+ 	arm/xscale2/events arm/xscale2/unit_masks \
+ 	arm/armv6/events arm/armv6/unit_masks \
++	arm/armv7/events arm/armv7/unit_masks \
+ 	arm/mpcore/events arm/mpcore/unit_masks \
+ 	avr32/events avr32/unit_masks \
+ 	mips/20K/events mips/20K/unit_masks \

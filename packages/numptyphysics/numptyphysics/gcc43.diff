@@ -1,0 +1,50 @@
+--- /tmp/Common.h	2008-08-08 15:47:57.000000000 +0200
++++ trunk/Common.h	2008-08-08 15:48:08.403198000 +0200
+@@ -14,6 +14,7 @@
+  *
+  */
+ 
++#include <cstring>
+ #ifndef COMMON_H
+ #define COMMON_H
+ 
+--- /tmp/b2Body.h	2008-08-08 15:51:13.000000000 +0200
++++ trunk/Box2D/Source/Dynamics/b2Body.h	2008-08-08 15:52:26.583198000 +0200
+@@ -24,6 +24,7 @@
+ #include "../Collision/b2Shape.h"
+ 
+ #include <memory>
++#include <cstring>
+ 
+ class b2Joint;
+ class b2Contact;
+--- /tmp/b2BroadPhase.cpp	2008-08-08 15:53:43.000000000 +0200
++++ trunk/Box2D/Source/Collision/b2BroadPhase.cpp	2008-08-08 15:54:04.913198000 +0200
+@@ -18,6 +18,7 @@
+ 
+ #include "b2BroadPhase.h"
+ #include <algorithm>
++#include <cstring>
+ 
+ // Notes:
+ // - we use bound arrays instead of linked lists for cache coherence.
+--- /tmp/b2PolyContact.cpp	2008-08-08 15:55:01.000000000 +0200
++++ trunk/Box2D/Source/Dynamics/Contacts/b2PolyContact.cpp	2008-08-08 15:56:15.553198000 +0200
+@@ -21,6 +21,7 @@
+ 
+ #include <memory>
+ #include <new>
++#include <cstring>
+ 
+ b2Contact* b2PolyContact::Create(b2Shape* shape1, b2Shape* shape2, b2BlockAllocator* allocator)
+ {
+--- /tmp/b2BlockAllocator.cpp	2008-08-08 15:57:02.000000000 +0200
++++ trunk/Box2D/Source/Common/b2BlockAllocator.cpp	2008-08-08 15:57:35.833198000 +0200
+@@ -20,6 +20,7 @@
+ #include <cstdlib>
+ #include <memory>
+ #include <climits>
++#include <cstring>
+ 
+ int32 b2BlockAllocator::s_blockSizes[b2_blockSizes] = 
+ {

@@ -1,6 +1,7 @@
-diff -urN oprofile-0.9.3/ChangeLog oprofile-0.9.3.armv7/ChangeLog
---- oprofile-0.9.3/ChangeLog	2007-07-16 20:22:17.000000000 +0200
-+++ oprofile-0.9.3.armv7/ChangeLog	2008-04-23 18:38:40.000000000 +0200
+Index: oprofile-0.9.3/ChangeLog
+===================================================================
+--- oprofile-0.9.3.orig/ChangeLog	2007-07-16 20:22:17.000000000 +0200
++++ oprofile-0.9.3/ChangeLog	2008-08-08 15:41:09.194935711 +0200
 @@ -1,3 +1,14 @@
 +
 +2008-04-23  Jean Pihet <jpihet@mvista.com>
@@ -16,9 +17,10 @@ diff -urN oprofile-0.9.3/ChangeLog oprofile-0.9.3.armv7/ChangeLog
  2007-07-09  Maynard Johnson <maynardj@us.ibm.com>
  
          * doc/opreport.xsd:
-diff -urN oprofile-0.9.3/events/arm/armv7/events oprofile-0.9.3.armv7/events/arm/armv7/events
---- oprofile-0.9.3/events/arm/armv7/events	1970-01-01 01:00:00.000000000 +0100
-+++ oprofile-0.9.3.armv7/events/arm/armv7/events	2008-04-24 15:06:48.000000000 +0200
+Index: oprofile-0.9.3/events/arm/armv7/events
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ oprofile-0.9.3/events/arm/armv7/events	2008-08-08 15:41:09.198936463 +0200
 @@ -0,0 +1,53 @@
 +# ARM V7 events
 +# From Cortex A8 DDI (ARM DDI 0344B, revision r1p1) 
@@ -73,37 +75,19 @@ diff -urN oprofile-0.9.3/events/arm/armv7/events oprofile-0.9.3.armv7/events/arm
 +event:0x72 counters:1,2,3,4 um:zero minimum:500 name:PMU_EVENTS : Number of events from both external input sources PMUEXTIN[0] and PMUEXTIN[1]
 +event:0xFF counters:0 um:zero minimum:500 name:CPU_CYCLES : Number of CPU cycles
 +
-diff -urN oprofile-0.9.3/events/arm/armv7/unit_masks oprofile-0.9.3.armv7/events/arm/armv7/unit_masks
---- oprofile-0.9.3/events/arm/armv7/unit_masks	1970-01-01 01:00:00.000000000 +0100
-+++ oprofile-0.9.3.armv7/events/arm/armv7/unit_masks	2008-04-01 10:52:00.000000000 +0200
+Index: oprofile-0.9.3/events/arm/armv7/unit_masks
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ oprofile-0.9.3/events/arm/armv7/unit_masks	2008-08-08 15:41:09.210955689 +0200
 @@ -0,0 +1,4 @@
 +# ARM V7 PMNC possible unit masks
 +#
 +name:zero type:mandatory default:0x00
 +	0x00 No unit mask
-diff -urN oprofile-0.9.3/events/Makefile.in oprofile-0.9.3.armv7/events/Makefile.in
---- oprofile-0.9.3/events/Makefile.in	2007-07-16 20:23:28.000000000 +0200
-+++ oprofile-0.9.3.armv7/events/Makefile.in	2008-04-24 15:11:52.000000000 +0200
-@@ -211,6 +211,7 @@
- 	arm/xscale1/events arm/xscale1/unit_masks \
- 	arm/xscale2/events arm/xscale2/unit_masks \
- 	arm/armv6/events arm/armv6/unit_masks \
-+	arm/armv7/events arm/armv7/unit_masks \
- 	arm/mpcore/events arm/mpcore/unit_masks \
- 	mips/20K/events mips/20K/unit_masks \
- 	mips/24K/events mips/24K/unit_masks \
-@@ -270,7 +271,7 @@
- 
- 
- distdir: $(DISTFILES)
--	$(mkdir_p) $(distdir)/alpha/ev4 $(distdir)/alpha/ev5 $(distdir)/alpha/ev6 $(distdir)/alpha/ev67 $(distdir)/alpha/pca56 $(distdir)/arm/armv6 $(distdir)/arm/mpcore $(distdir)/arm/xscale1 $(distdir)/arm/xscale2 $(distdir)/i386/athlon $(distdir)/i386/core $(distdir)/i386/core_2 $(distdir)/i386/p4 $(distdir)/i386/p4-ht $(distdir)/i386/p6_mobile $(distdir)/i386/pii $(distdir)/i386/piii $(distdir)/i386/ppro $(distdir)/ia64/ia64 $(distdir)/ia64/itanium $(distdir)/ia64/itanium2 $(distdir)/mips/20K $(distdir)/mips/24K $(distdir)/mips/25K $(distdir)/mips/34K $(distdir)/mips/5K $(distdir)/mips/r10000 $(distdir)/mips/r12000 $(distdir)/mips/rm7000 $(distdir)/mips/rm9000 $(distdir)/mips/sb1 $(distdir)/mips/vr5432 $(distdir)/mips/vr5500 $(distdir)/ppc/7450 $(distdir)/ppc/e500 $(distdir)/ppc/e500v2 $(distdir)/ppc64/970 $(distdir)/ppc64/970MP $(distdir)/ppc64/cell-be $(distdir)/ppc64/pa6t $(distdir)/ppc64/power4 $(distdir)/ppc64/power5 $(distdir)/ppc64/power5+ $(distdir)/ppc64/power5++ $(distdir)/ppc64/power6 $(distdir)/rtc $(distdir)/x86-64/family10 $(distdir)/x86-64/hammer
-+	$(mkdir_p) $(distdir)/alpha/ev4 $(distdir)/alpha/ev5 $(distdir)/alpha/ev6 $(distdir)/alpha/ev67 $(distdir)/alpha/pca56 $(distdir)/arm/armv6 $(distdir)/arm/armv7 $(distdir)/arm/mpcore $(distdir)/arm/xscale1 $(distdir)/arm/xscale2 $(distdir)/i386/athlon $(distdir)/i386/core $(distdir)/i386/core_2 $(distdir)/i386/p4 $(distdir)/i386/p4-ht $(distdir)/i386/p6_mobile $(distdir)/i386/pii $(distdir)/i386/piii $(distdir)/i386/ppro $(distdir)/ia64/ia64 $(distdir)/ia64/itanium $(distdir)/ia64/itanium2 $(distdir)/mips/20K $(distdir)/mips/24K $(distdir)/mips/25K $(distdir)/mips/34K $(distdir)/mips/5K $(distdir)/mips/r10000 $(distdir)/mips/r12000 $(distdir)/mips/rm7000 $(distdir)/mips/rm9000 $(distdir)/mips/sb1 $(distdir)/mips/vr5432 $(distdir)/mips/vr5500 $(distdir)/ppc/7450 $(distdir)/ppc/e500 $(distdir)/ppc/e500v2 $(distdir)/ppc64/970 $(distdir)/ppc64/970MP $(distdir)/ppc64/cell-be $(distdir)/ppc64/pa6t $(distdir)/ppc64/power4 $(distdir)/ppc64/power5 $(distdir)/ppc64/power5+ $(distdir)/ppc64/power5++ $(distdir)/ppc64/power6 $(distdir)/rtc $(distdir)/x86-64/family10 $(distdir)/x86-64/hammer
- 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
- 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
- 	list='$(DISTFILES)'; for file in $$list; do \
-diff -urN oprofile-0.9.3/libop/op_cpu_type.c oprofile-0.9.3.armv7/libop/op_cpu_type.c
---- oprofile-0.9.3/libop/op_cpu_type.c	2007-07-16 20:22:17.000000000 +0200
-+++ oprofile-0.9.3.armv7/libop/op_cpu_type.c	2008-04-23 18:31:56.000000000 +0200
+Index: oprofile-0.9.3/libop/op_cpu_type.c
+===================================================================
+--- oprofile-0.9.3.orig/libop/op_cpu_type.c	2007-07-16 20:22:17.000000000 +0200
++++ oprofile-0.9.3/libop/op_cpu_type.c	2008-08-08 15:41:09.242955608 +0200
 @@ -71,6 +71,7 @@
  	{ "ppc64 PA6T", "ppc64/pa6t", CPU_PPC64_PA6T, 6 },
  	{ "ARM MPCore", "arm/mpcore", CPU_ARM_MPCORE, 2 },
@@ -112,9 +96,10 @@ diff -urN oprofile-0.9.3/libop/op_cpu_type.c oprofile-0.9.3.armv7/libop/op_cpu_t
  	{ "ppc64 POWER5++", "ppc64/power5++", CPU_PPC64_POWER5pp, 6 },
  };
   
-diff -urN oprofile-0.9.3/libop/op_cpu_type.h oprofile-0.9.3.armv7/libop/op_cpu_type.h
---- oprofile-0.9.3/libop/op_cpu_type.h	2007-07-16 20:22:17.000000000 +0200
-+++ oprofile-0.9.3.armv7/libop/op_cpu_type.h	2008-04-23 18:34:37.000000000 +0200
+Index: oprofile-0.9.3/libop/op_cpu_type.h
+===================================================================
+--- oprofile-0.9.3.orig/libop/op_cpu_type.h	2007-07-16 20:22:17.000000000 +0200
++++ oprofile-0.9.3/libop/op_cpu_type.h	2008-08-08 15:41:09.262956072 +0200
 @@ -69,6 +69,7 @@
   	CPU_PPC64_PA6T, /**< ppc64 PA6T */
  	CPU_ARM_MPCORE, /**< ARM MPCore */
@@ -123,9 +108,10 @@ diff -urN oprofile-0.9.3/libop/op_cpu_type.h oprofile-0.9.3.armv7/libop/op_cpu_t
  	CPU_PPC64_POWER5pp,  /**< ppc64 Power5++ family */
  	MAX_CPU_TYPE
  } op_cpu;
-diff -urN oprofile-0.9.3/libop/op_events.c oprofile-0.9.3.armv7/libop/op_events.c
---- oprofile-0.9.3/libop/op_events.c	2007-07-16 20:22:17.000000000 +0200
-+++ oprofile-0.9.3.armv7/libop/op_events.c	2008-04-23 18:39:30.000000000 +0200
+Index: oprofile-0.9.3/libop/op_events.c
+===================================================================
+--- oprofile-0.9.3.orig/libop/op_events.c	2007-07-16 20:22:17.000000000 +0200
++++ oprofile-0.9.3/libop/op_events.c	2008-08-08 15:41:09.278955619 +0200
 @@ -788,6 +788,7 @@
  		case CPU_ARM_XSCALE2:
  		case CPU_ARM_MPCORE:
@@ -134,9 +120,10 @@ diff -urN oprofile-0.9.3/libop/op_events.c oprofile-0.9.3.armv7/libop/op_events.
  			descr->name = "CPU_CYCLES";
  			break;
  
-diff -urN oprofile-0.9.3/utils/ophelp.c oprofile-0.9.3.armv7/utils/ophelp.c
---- oprofile-0.9.3/utils/ophelp.c	2007-07-16 20:22:17.000000000 +0200
-+++ oprofile-0.9.3.armv7/utils/ophelp.c	2008-04-23 19:17:51.000000000 +0200
+Index: oprofile-0.9.3/utils/ophelp.c
+===================================================================
+--- oprofile-0.9.3.orig/utils/ophelp.c	2007-07-16 20:22:17.000000000 +0200
++++ oprofile-0.9.3/utils/ophelp.c	2008-08-08 15:41:09.294934552 +0200
 @@ -433,6 +433,11 @@
  		printf("See ARM11 Technical Reference Manual\n");
    		break;
@@ -149,3 +136,15 @@ diff -urN oprofile-0.9.3/utils/ophelp.c oprofile-0.9.3.armv7/utils/ophelp.c
  	case CPU_PPC64_PA6T:
  		printf("See PA6T Power Implementation Features Book IV\n"
  			   "Chapter 7 Performance Counters\n");
+Index: oprofile-0.9.3/events/Makefile.am
+===================================================================
+--- oprofile-0.9.3.orig/events/Makefile.am	2008-08-08 15:41:24.746955563 +0200
++++ oprofile-0.9.3/events/Makefile.am	2008-08-08 15:41:43.465544495 +0200
+@@ -31,6 +31,7 @@
+ 	arm/xscale1/events arm/xscale1/unit_masks \
+ 	arm/xscale2/events arm/xscale2/unit_masks \
+ 	arm/armv6/events arm/armv6/unit_masks \
++	arm/armv7/events arm/armv7/unit_masks \
+ 	arm/mpcore/events arm/mpcore/unit_masks \
+ 	mips/20K/events mips/20K/unit_masks \
+ 	mips/24K/events mips/24K/unit_masks \

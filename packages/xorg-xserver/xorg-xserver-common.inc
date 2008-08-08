@@ -13,7 +13,7 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
 
-RDEPENDS_${PN} = "rgb"
+RDEPENDS_${PN} = "rgb xorg-minimal-fonts"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2 \
@@ -36,11 +36,14 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 		    ${libdir}/xorg/modules/*/*/.debug \
 		    "
 
+CONFFILES_${PN} += "${sysconfdir}/X11/xorg.conf"
+
 do_stage() {
 	autotools_stage_all
 }
 
 do_install_append () {
-	install -d ${D}/etc/X11
-	install -m 0644 ${WORKDIR}/xorg.conf ${D}/etc/X11/
+	install -d ${D}/${sysconfdir}/X11
+	install -m 0644 ${WORKDIR}/xorg.conf ${D}/${sysconfdir}/X11/
+	ln -sf ${datadir}/fonts/X11 ${D}/${libdir}/X11/fonts
 }

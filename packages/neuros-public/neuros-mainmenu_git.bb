@@ -2,7 +2,7 @@ DESCRIPTION = "Neuros window manager"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "qt-embedded"
 
@@ -18,6 +18,9 @@ do_install() {
 
 	install -d ${D}/${sysconfdir}/menu
 	install -m 0644 ${S}/resources/menu/* ${D}/${sysconfdir}/menu
+
+	install -d ${D}/${sysconfdir}/nwm
+	echo "${bindir}/mainmenu" > ${D}/${sysconfdir}/nwm/startup
 }
 
 

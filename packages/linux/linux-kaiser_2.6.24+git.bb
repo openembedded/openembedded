@@ -3,9 +3,7 @@ require linux.inc
 PV = "2.6.24+git${SRCREV}"
 PR = "r1"
 
-COMPATIBLE_MACHINE = "htckaiser"
-COMPATIBLE_MACHINE = "htcpolaris"
-
+COMPATIBLE_MACHINE = "htckaiser|htcpolaris"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/mobile-linux/kernel.git;branch=htc-msm;protocol=git"
 

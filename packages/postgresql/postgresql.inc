@@ -18,9 +18,7 @@ do_compile_append() {
 do_stage() {
          autotools_stage_includes
          
-         mkdir -p ${STAGING_LIBDIR}/pgsql
-         oe_libinstall -a -so -C src/interfaces/libpq libpq ${STAGING_LIBDIR}/pgsql
-
+         oe_libinstall -a -so -C src/interfaces/libpq libpq ${STAGING_LIBDIR}
          oe_libinstall -a -so -C src/interfaces/ecpg/ecpglib libecpg ${STAGING_LIBDIR}
          oe_libinstall -a -so -C src/interfaces/ecpg/compatlib libecpg_compat ${STAGING_LIBDIR}
          oe_libinstall -a -so -C src/interfaces/ecpg/pgtypeslib libpgtypes ${STAGING_LIBDIR}

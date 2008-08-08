@@ -8,13 +8,24 @@ inherit autotools pkgconfig
 
 
 EXTRA_OECONF = "\
-               --with-sdl \
+               --with-games=baseq2 \
+	       --with-sdl \
 	       --with-zlib \
 	       "
 
 do_configure() {
-	gnu-configize
-	libtoolize --force
+	for i in ctf qmass vanctf ; do
+		mkdir -p ${S}/data/$i/sound
+		mkdir -p ${S}/data/$i/maps 
+		mkdir -p ${S}/src/$i
+		touch ${S}/data/$i/Makefile.in
+		touch ${S}/data/$i/sound/Makefile.in
+		touch ${S}/data/$i/maps/Makefile.in
+		touch ${S}/src/$i/Makefile.in	
+	done
+
+	sed -i -e s:-Werror::g ${S}/configure
+	gnu-configize --force
 	oe_runconf
 	rm config.log
 }

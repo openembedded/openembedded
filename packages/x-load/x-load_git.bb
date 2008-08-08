@@ -2,10 +2,10 @@ require x-load.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/x-load-git/${MACHINE}"
 
-SRCREV = "04ad40d5c8bca196aa4a5dfe945a007e21f1b149"
+SRCREV = "73eb0caf065b3b3f407d8af5c4836624e5cc7b69"
 
-PV = "1.41+${PR}+git${SRCREV}"
-PR="r6"
+PV = "1.42+${PR}+git${SRCREV}"
+PR="r7"
 
 SRC_URI = "git://www.sakoman.net/git/x-load-omap3.git;branch=master;protocol=git"
 

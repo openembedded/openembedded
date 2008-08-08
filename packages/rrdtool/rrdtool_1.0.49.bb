@@ -10,7 +10,7 @@ SRC_URI = "http://oss.oetiker.ch/rrdtool/pub/rrdtool-1.0.x/rdtool-${PV}.tar.gz \
 
 inherit autotools
 
-EXTRA_OECONF = "rd_cv_ieee_works=yes --enable-shared --enable-local-libpng --enable-local-zlib --program-prefix=''"
+EXTRA_OECONF = "--enable-shared --enable-local-libpng --enable-local-zlib --program-prefix=''"
 
 do_install_append() {
 	install -d ${D}${docdir}/rrdtool/

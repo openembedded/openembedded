@@ -1,0 +1,31 @@
+#!/bin/sh
+###############################################################################$
+#
+# Filename: /etc/init.d/nwm
+#
+# File Description: Qt Neuros server Startup Script
+#
+# @author Tom Bruno tbruno@neuros.us
+# @version  $Revision: 1.0 $
+#
+###############################################################################$
+
+[ "$1" != "" ] && action=$1
+if [ "$action" = "" ]
+then
+	echo "Usage: $0 <action  start|stop>" >&2
+	exit 1
+fi
+
+if [ "$action" = "start" ]
+then
+
+	QWS_KEYBOARD="osdir" QWS_DISPLAY="LinuxFb:/dev/fb2" /usr/local/bin/nwm &
+
+else
+	if [ "$action" = "stop" ]
+	then
+		killall nwm
+	fi
+fi
+

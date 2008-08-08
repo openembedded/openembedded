@@ -9,6 +9,7 @@ PV = "0.2+svnr${SRCREV}"
 SRC_URI = "\
   svn://garage.maemo.org/svn/${PN};module=trunk;proto=https \
   http://wwwpub.zih.tu-dresden.de/~mkluge/numptyphysics_setup.tgz \
+  file://gcc43.diff;patch=1 \
 "
 S = "${WORKDIR}/trunk"
 
@@ -16,7 +17,7 @@ EXTRA_S = "${WORKDIR}/local/packages/numptyphysics"
 
 # what an ugly buildsystem... handcrafted Makefiles... back to the stoneage
 export CCOPTS = "${CFLAGS} -I Box2D/Include"
-export LDOPTS = "${LDFLAGS} -lSDL -lSDL_image"
+export LDOPTS = "${LDFLAGS} -lSDL -lSDL_image -lX11"
 
 do_configure() {
 	for i in Config.h Makefile Game.cpp; do
