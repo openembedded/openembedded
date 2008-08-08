@@ -18,13 +18,7 @@ SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
 
 S = "${WORKDIR}/codec_engine_2_10_01"
 
-# Path to the dir where the TI tools are unpacked
-TITOOLSDIR ?= "/OE/TI"
-# Path under TITOOLSDIR where dspbios is unpacked
-TIBIOSDIR ?= "bios_5_32_03"
-TIXDCTOOLSDIR ?= "${TIBIOSDIR}/xdctools"
-# Path under TITOOLSDIR where the dsp toolchain is unpacked
-TICGTOOLSDIR ?= "cg6x_6_1_2"
+require ti-paths.inc
 
 PARALLEL_MAKE = ""
 

@@ -11,12 +11,7 @@ S = "${WORKDIR}/dsplink_1_50/dsplink"
 # Needed for buildscripts
 export DSPLINK = "${S}"
 
-# Path to the dir where the TI tools are unpacked
-TITOOLSDIR ?= "/OE/TI"
-# Path under TITOOLSDIR where dspbios is unpacked 
-TIBIOSDIR ?= "bios_5_32_03"
-# Path under TITOOLSDIR where the dsp toolchain is unpacked
-TICGTOOLSDIR ?= "cg6x_6_1_2"
+require ti-paths.inc
 
 DSPLINKPLATFORM ?= "Davinci"
 
