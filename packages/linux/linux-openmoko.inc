@@ -4,11 +4,11 @@
 KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
-FILES_kernel-image = ""
-ALLOW_EMPTY = "1"
-
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
+
+CONFIG_NAME_om-gta01 = "gta01"
+CONFIG_NAME_om-gta02 = "gta02"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
@@ -63,6 +63,10 @@ else
 		MTD_KERNEL_PARTITION=/dev/$MTD_KERNEL_PARTITION
 
 		if [ "x$MTD_KERNEL_PARTITION" = "x" ] ; then
+			exit 1
+		fi
+
+		if [ ! -f /${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ] ; then
 			exit 1
 		fi
 
