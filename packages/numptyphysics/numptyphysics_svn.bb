@@ -9,6 +9,7 @@ PV = "0.2+svnr${SRCREV}"
 SRC_URI = "\
   svn://garage.maemo.org/svn/${PN};module=trunk;proto=https \
   http://wwwpub.zih.tu-dresden.de/~mkluge/numptyphysics_setup.tgz \
+  file://gcc43.diff;patch=1 \
 "
 S = "${WORKDIR}/trunk"
 
