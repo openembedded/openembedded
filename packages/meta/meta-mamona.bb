@@ -10,8 +10,10 @@ task-mamona-base \
 task-mamona \
 task-mamona-devel \
 task-mamona-sdk \
+task-mamona-sdk-noemu \
 task-mamona-wm \
 task-mamona-python \
+task-mamona-systemtap \
 coreutils \
 cpio \
 dbus \
@@ -21,6 +23,7 @@ dosfstools \
 e2fsprogs \
 expat \
 findutils \
+firefox \
 fontconfig \
 gconf \
 glib-2.0 \
@@ -63,6 +66,7 @@ libxv \
 lsof \
 makedev \
 matchbox-wm \
+midori \
 mime-support \
 module-init-tools \
 mplayer-maemo \
@@ -94,7 +98,3 @@ wget \
 xkbd \
 xtrans-dev \
 "
-
-# TODO: some of noemu packages are broken. Fix them before
-# put task-mamona-noemu back to meta-mamona.
-#task-mamona-noemu \
