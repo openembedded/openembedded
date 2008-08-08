@@ -16,7 +16,7 @@ EXTRA_S = "${WORKDIR}/local/packages/numptyphysics"
 
 # what an ugly buildsystem... handcrafted Makefiles... back to the stoneage
 export CCOPTS = "${CFLAGS} -I Box2D/Include"
-export LDOPTS = "${LDFLAGS} -lSDL -lSDL_image"
+export LDOPTS = "${LDFLAGS} -lSDL -lSDL_image -lX11"
 
 do_configure() {
 	for i in Config.h Makefile Game.cpp; do
