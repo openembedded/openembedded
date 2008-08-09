@@ -1,5 +1,6 @@
 inherit distutils-base
 
+DISTUTILS_BUILD_ARGS ?= ""
 DISTUTILS_STAGE_HEADERS_ARGS ?= "--install-dir=${STAGING_INCDIR}/${PYTHON_DIR}"
 DISTUTILS_STAGE_ALL_ARGS ?= "--prefix=${STAGING_DIR_HOST}${layout_prefix} \
     --install-data=${STAGING_DATADIR}"
@@ -8,7 +9,7 @@ DISTUTILS_INSTALL_ARGS ?= "--prefix=${D}/${prefix} \
 
 distutils_do_compile() {
          BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
-         ${STAGING_BINDIR_NATIVE}/python setup.py build || \
+         ${STAGING_BINDIR_NATIVE}/python setup.py build ${DISTUTILS_BUILD_ARGS} || \
          oefatal "python setup.py build_ext execution failed."
 }
 
