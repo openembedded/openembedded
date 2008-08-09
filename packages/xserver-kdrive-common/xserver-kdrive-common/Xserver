@@ -106,14 +106,14 @@ case `module_id` in
                 else
                      DPI=140
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE}" ;;
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib" ;;
        "GTA02")
                 if [ `screen_width` -gt 330 ] ; then
                      DPI=285
                 else 
                      DPI=140
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE}" 
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib" 
 		XSERVER=/usr/bin/Xglamo 
 		;;
 	"Nokia N770")
@@ -143,4 +143,4 @@ fi
 
 DISPLAY=':0'
 
-exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $*
+exec xinit /etc/X11/Xsession -- $XSERVER $DISPLAY $ARGS $* >/tmp/x.log 2>&1
