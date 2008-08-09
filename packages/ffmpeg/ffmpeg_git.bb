@@ -13,6 +13,7 @@ DEFAULT_PREFERENCE_armv7a = "1"
 FFBRANCH_arm = "arm"
 FFBRANCH ?= "master"
 
+# When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
 SRCREV = "3692b8de9fae73860be636606cb6344f26e28b1a"
 SRCREV_arm = "772c7cee7595b4122ca77d3e72e1430417ff58f5"
 SRC_URI = "git://git.mansr.com/ffmpeg.mru;protocol=git;branch=${FFBRANCH} \
