@@ -6,8 +6,8 @@ DESCRIPTION = "Linux 2.6.x (development) kernel for FIC SmartPhones shipping w/ 
 KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
-PV = "${KERNEL_RELEASE}+gitr${SRCREV}"
-PR = "r4"
+PV = "${KERNEL_RELEASE}+${PR}+gitr${SRCREV}"
+PR = "r5"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
