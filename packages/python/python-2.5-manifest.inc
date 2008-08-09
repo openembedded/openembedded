@@ -1,6 +1,7 @@
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
 # Generator: './generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
+
  
 
 PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
@@ -268,9 +269,9 @@ RDEPENDS_python-shell="python-core python-re"
 FILES_python-shell="${libdir}/python2.5/cmd.* ${libdir}/python2.5/commands.* ${libdir}/python2.5/dircache.* ${libdir}/python2.5/fnmatch.* ${libdir}/python2.5/glob.* ${libdir}/python2.5/popen2.* ${libdir}/python2.5/shutil.* "
 
 DESCRIPTION_python-bsddb="Python Berkeley Database Bindings"
-PR_python-bsddb="ml0"
+PR_python-bsddb="ml1"
 RDEPENDS_python-bsddb="python-core"
-FILES_python-bsddb="${libdir}/python2.5/bsddb "
+FILES_python-bsddb="${libdir}/python2.5/bsddb ${libdir}/python2.5/lib-dynload/_bsddb.so "
 
 DESCRIPTION_python-mmap="Python Memory-Mapped-File Support"
 PR_python-mmap="ml0"
