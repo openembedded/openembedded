@@ -1,7 +1,7 @@
 DESCRIPTION = "GMyth is a library to access MythTV backend services."
 LICENSE = "LGPLv2""
 HOMEPAGE = "http://gmyth.sourceforge.net/wiki/index.php/Main_Page"
-DEPENDS = "myththv curl libxml2 glib-2.0"
+DEPENDS = "mythtv curl libxml2 glib-2.0"
 
 PR = "r2"
 
