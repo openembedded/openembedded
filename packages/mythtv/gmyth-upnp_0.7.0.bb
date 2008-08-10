@@ -2,6 +2,8 @@ DESCRIPTION = "GMyth is a library to access MythTV backend services."
 LICENSE = "LGPLv2""
 HOMEPAGE = "http://gmyth.sourceforge.net/wiki/index.php/Main_Page"
 
+PR = "r1"
+
 DEPENDS = "glib-2.0 mysql gmyth libupnp
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gmyth/${PN}_0.7-indt1.tar.gz"
@@ -11,7 +13,14 @@ inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
+do_compile_append() {
+        sed -i -e s:${STAGING_DIR_TARGET}::g \
+	       -e s,Version:,Version:\ 0\.7\.0,g \
+	       -e s:/${TARGET_SYS}::g \   
+		  gmyth-upnp.pc
+}
+
 do_stage() {
-	autotools_stage_all
-}	
+        autotools_stage_all
+}
 
