@@ -57,6 +57,7 @@ AUDIO_INSTALL = "\
   alsa-oss \
   alsa-state \
   alsa-utils-aplay \
+  alsa-utils-amixer \
   gst-meta-audio \
   gst-plugin-mad \
   gst-plugin-modplug \
