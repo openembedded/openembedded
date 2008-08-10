@@ -6,9 +6,9 @@ SRCREV = "d6daf8d8cc5ccf90247def5551ee9c3e8555e848"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r58"
+PR = "r59"
 
-SRC_URI = "git://source.mvista.com/git/linux-omap-2.6.git;protocol=git \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
@@ -35,10 +35,7 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://mru-clocks3.diff;patch=1 \	
            file://4bitmmc.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
-           file://01-gptimer_clear_isrs_on_init;patch=1 \
-           file://02-gptimer_use_match_for_tick;patch=1 \
-           file://03-gptimer_match_plus_ovf;patch=1 \
-           file://04-gptimer_add_debug_to_sysrq_q;patch=1 \
+           file://01-make_tick_gptimer_configurable;patch=1 \
            file://read_die_ids.patch;patch=1 \
 "
 
