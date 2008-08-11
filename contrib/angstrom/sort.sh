@@ -14,11 +14,6 @@ find */ -name  "*.ipk" -exec mv  '{}'  ./ \;
 # Make a list of ipkg files already present in feeds and in unsorted
 echo "Making a list of unsorted packages"
 for i in $(find . -name "*.ipk") ; do basename $i ; done > files-unsorted
-if [ "$1" != "--skip-sorted-list" ]; then
-    echo "Making a list of sorted packages (takes long)"
-    for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
-fi
-
 # Make a list of duplicates and delete those
 echo "Finding duplicate packages in unsorted"
 cat files-sorted files-unsorted | sort | uniq -d > files-duplicate
@@ -28,8 +23,9 @@ cat files-duplicate | xargs rm -f
 # Log remaining packages to a file 
 find . -name "*.ipk" |grep -v dbg | grep -v -- -dev | grep -v -- -doc | grep -v angstrom-version | grep -v locale > new-files.txt
 for newfile in $(cat new-files.txt | sed s:./::g) ; do
-    echo "$(date -u +%s) $newfile $(basename ${PWD})" >> ../upload.txt
+    echo "$(date -u +%s) $newfile $(basename ${PWD})" >> ../upload-full.txt
 done    
+tail -n 100 ../upload-full.txt > ../upload.txt
 
 do_sort() {
 archdir=$arch
@@ -141,5 +137,10 @@ for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i
 for arch in arm-oabi armv4t armv5teb armv5te armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort
 done
+
+if [ "$1" != "--skip-sorted-list" ]; then
+    echo "Updating list of sorted packages (takes long)"
+    for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
+fi
 
 (cd ~/website/repo ; php update.php)
