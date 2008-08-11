@@ -1,0 +1,102 @@
+Adds VDD2 scaling support
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+---
+ arch/arm/mach-omap2/resource34xx.c |   35 +++++++++++++++++++++++++++++++++--
+ arch/arm/plat-omap/omap-pm-srf.c   |   15 +++++----------
+ 2 files changed, 38 insertions(+), 12 deletions(-)
+
+Index: linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/mach-omap2/resource34xx.c	2008-07-21
+12:10:22.032527379 +0530
++++ linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c	2008-07-21
+12:10:22.479513287 +0530
+@@ -174,7 +174,9 @@ void init_opp(struct shared_resource *re
+ int set_opp(struct shared_resource *resp, u32 target_level)
+ {
+ #ifdef CONFIG_MACH_OMAP_3430SDP
+-	unsigned long mpu_freq;
++	unsigned long mpu_freq, l3_freq, tput;
++	int ind;
++	struct bus_throughput_db *tput_db;
+
+ 	if (resp->curr_level == target_level)
+ 		return 0;
+@@ -195,7 +197,36 @@ int set_opp(struct shared_resource *resp
+ 		}
+ 		resp->curr_level = curr_vdd1_prcm_set->opp;
+ 	} else if (strcmp(resp->name, "vdd2_opp") == 0) {
+-		/* Not supported yet */
++		tput_db = resp->resource_data;
++		tput = target_level;
++		/* using the throughput db map to the appropriate L3 Freq */
++		for (ind = 1; ind < MAX_VDD2_OPP; ind++)
++			if (tput_db->throughput[ind] > tput)
++				target_level = ind;
++
++		/* Set the highest OPP possible */
++		if (ind == MAX_VDD2_OPP)
++			target_level = ind-1;
++
++		if (resp->curr_level == target_level)
++			return 0;
++
++		resp->curr_level = target_level;
++
++		l3_freq = get_freq(vdd2_rate_table + MAX_VDD2_OPP,
++					target_level);
++		if (resp->curr_level > target_level) {
++			/* Scale Frequency and then voltage */
++			clk_set_rate(vdd2_clk, l3_freq);
++			sr_voltagescale_vcbypass(PRCM_VDD2,
++					vdd2_volts[target_level-1]);
++		} else {
++			/* Scale Voltage and then frequency */
++			sr_voltagescale_vcbypass(PRCM_VDD2,
++					vdd2_volts[target_level-1]);
++			clk_set_rate(vdd1_clk, l3_freq);
++		}
++		resp->curr_level = curr_vdd2_prcm_set->opp;
+ 	}
+ #endif
+ 	return 0;
+Index: linux-omap-2.6/arch/arm/plat-omap/omap-pm-srf.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/plat-omap/omap-pm-srf.c	2008-07-21
+12:10:21.626540178 +0530
++++ linux-omap-2.6/arch/arm/plat-omap/omap-pm-srf.c	2008-07-21
+12:10:22.479513287 +0530
+@@ -95,21 +95,16 @@ void omap_pm_set_min_bus_tput(struct dev
+ 		return;
+ 	};
+
+-	if (r == 0)
++	if (r == 0) {
+ 		pr_debug("OMAP PM: remove min bus tput constraint: "
+ 			 "dev %s for agent_id %d\n", dev_name(dev), agent_id);
+-	else
++		resource_release("vdd2_opp", r);
++	} else {
+ 		pr_debug("OMAP PM: add min bus tput constraint: "
+ 			 "dev %s for agent_id %d: rate %ld KiB\n",
+ 			 dev_name(dev), agent_id, r);
+-
+-	/*
+-	 * This code should model the interconnect and compute the
+-	 * required clock frequency, convert that to a VDD2 OPP ID, then
+-	 * set the VDD2 OPP appropriately.
+-	 *
+-	 * TI CDP code can call constraint_set here on the VDD2 OPP.
+-	 */
++		resource_request("vdd2_opp", dev, r);
++	}
+ }
+
+ void omap_pm_set_max_dev_wakeup_lat(struct device *dev, long t)
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

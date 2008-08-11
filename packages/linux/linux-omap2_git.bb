@@ -6,7 +6,7 @@ SRCREV = "d6daf8d8cc5ccf90247def5551ee9c3e8555e848"
 
 PV = "2.6.26"
 #PV = "2.6.26+2.6.27-rc1+${PR}+git${SRCREV}"
-PR = "r59"
+PR = "r60"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -37,6 +37,21 @@ SRC_URI_append_beagleboard = " file://no-harry-potter.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
            file://01-make_tick_gptimer_configurable;patch=1 \
            file://read_die_ids.patch;patch=1 \
+           file://omap23-pm-noop.eml;patch=1 \
+           file://01-omappm-srf.eml;patch=1 \
+           file://02-omappm-mpu-latency-modeling.eml;patch=1 \
+           file://03-omappm-omap3srf.eml;patch=1 \
+           file://04-omappm-srf-noop.eml;patch=1 \
+           file://05-omappm-virtualclocks.eml;patch=1 \
+           file://06-omappm-opp-resource-modeling.eml;patch=1 \
+           file://07-omappm-srf-updates.eml;patch=1 \
+           file://08-omappm-voltagescaling.eml;patch=1 \
+           file://09-omappm-vdd2-scaling.eml;patch=1 \
+           file://10-omappm-off-mode.eml;patch=1 \
+           file://01-postrate-notifier.eml;patch=1 \
+           file://02-postrate-notifier.eml;patch=1 \
+           file://01-omap3-cpufreq.eml;patch=1 \
+           file://01-beagle-cpufreq.diff;patch=1 \
 "
 
 SRC_URI_append_omap3evm = " file://no-harry-potter.diff;patch=1 \

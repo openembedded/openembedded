@@ -1,0 +1,38 @@
+BeagleBoard: make Beagle use GPTIMER12 for system ticks
+
+From: Paul Walmsley <paul@pwsan.com>
+
+There is suspicion that the 32kHz input clock to the OMAP may be noisy
+on BeagleBoards.  On OMAP2/3 GPTIMER1, this can cause the timer
+counter register to warp to unknown values or miss interrupt
+conditions.  So, use GPTIMER12 instead, which apparently has its own
+secure 32kHz oscillator and will hopefully not be prone to the 32kHz
+glitches.
+---
+
+ arch/arm/configs/omap3_beagle_defconfig |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/configs/omap3_beagle_defconfig b/arch/arm/configs/omap3_beagle_defconfig
+index e1b16d0..7805995 100644
+--- a/arch/arm/configs/omap3_beagle_defconfig
++++ defconfig
+@@ -182,8 +182,8 @@ CONFIG_OMAP_BOOT_REASON=y
+ # CONFIG_OMAP_MCBSP is not set
+ # CONFIG_OMAP_MMU_FWK is not set
+ # CONFIG_OMAP_MBOX_FWK is not set
+-CONFIG_OMAP_MPU_TIMER=y
+-# CONFIG_OMAP_32K_TIMER is not set
++# CONFIG_OMAP_MPU_TIMER is not set
++CONFIG_OMAP_32K_TIMER=y
+ CONFIG_OMAP_DM_TIMER=y
+ # CONFIG_OMAP_LL_DEBUG_UART1 is not set
+ # CONFIG_OMAP_LL_DEBUG_UART2 is not set
+@@ -198,6 +198,7 @@ CONFIG_ARCH_OMAP3430=y
+ # CONFIG_MACH_OMAP_3430SDP is not set
+ # CONFIG_MACH_OMAP3EVM is not set
+ CONFIG_MACH_OMAP3_BEAGLE=y
++CONFIG_OMAP_TICK_GPTIMER=12
+ 
+ #
+ # Boot options
