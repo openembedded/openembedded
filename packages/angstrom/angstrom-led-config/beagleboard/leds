@@ -1,3 +1,3 @@
 #file format: name trigger
-beagleboard::led0 mmc0
-beagleboard::led1 nand-disk
+beagleboard::usr0 mmc0
+beagleboard::usr1 nand-disk
