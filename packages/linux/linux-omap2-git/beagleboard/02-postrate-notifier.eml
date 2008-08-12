@@ -1,0 +1,186 @@
+This patch implements the remaining code for notification of clock
+rate changes via the clock framework:
+
+- a notifier registration function, clk_notifier_register()
+
+- a notifier unregistration function, clk_notifier_unregister()
+
+- the clk_notify_post_rate_chg() call-chain function, has been fleshed out
+
+The implementation is via an atomic notifier, called with the clockfw
+spinlock held.  Callback functions must not sleep and must not re-enter
+the clock framework, and should execute quickly.
+
+In the medium-term future, there are likely to be few users of these
+notifiers.  So, rather than storing one notifier per struct clk,
+notifiers are stored in a separate, dynamically allocated list,
+effectively trading execution speed (in terms of a sequential scan of
+the notifier list) for memory savings.  The implementation is
+completely hidden from the callbacks and is easily changed if
+necessary.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+---
+
+ arch/arm/plat-omap/clock.c |  118 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 115 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/plat-omap/clock.c b/arch/arm/plat-omap/clock.c
+index 421d076..354f45f 100644
+--- a/arch/arm/plat-omap/clock.c
++++ b/arch/arm/plat-omap/clock.c
+@@ -22,6 +22,7 @@
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+ #include <linux/cpufreq.h>
++#include <linux/notifier.h>
+ #include <linux/debugfs.h>
+ 
+ #include <asm/io.h>
+@@ -34,6 +35,8 @@ static DEFINE_SPINLOCK(clockfw_lock);
+ 
+ static struct clk_functions *arch_clock;
+ 
++static LIST_HEAD(clk_notifier_list);
++
+ /*-------------------------------------------------------------------------
+  * Standard clock functions defined in include/linux/clk.h
+  *-------------------------------------------------------------------------*/
+@@ -380,6 +383,110 @@ EXPORT_SYMBOL(clk_init_cpufreq_table);
+ #endif
+ 
+ /**
++<<<<<<< current:arch/arm/plat-omap/clock.c
++=======
++ * clk_notifier_register - add a clock rate change notifier
++ * @clk: struct clk * to watch for rate echanges
++ * @nb: struct notifier_block * with callback info
++ *
++ * Request notification after a frequency change on clock 'clk'.  This
++ * uses an atomic notifier.  The callback will be called with
++ * interrupts disabled; therefore callback code should be very
++ * lightweight.  Callback code must not call back into the clock
++ * framework.  Callback code will be passed the previous and new rate
++ * of the clock.
++ *
++ * clk_notifier_register() must be called from process
++ * context.  Returns -EINVAL if called with null arguments, -ENOMEM
++ * upon allocation failure; otherwise, passes along the return value
++ * of atomic_notifier_chain_register().
++ */
++int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
++{
++	struct clk_notifier *cn = NULL, *cn_new = NULL;
++	int r;
++	unsigned long flags;
++
++	if (!clk || !nb)
++		return -EINVAL;
++
++	/* Allocate this here speculatively so we can avoid GFP_ATOMIC */
++	cn_new = kzalloc(sizeof(struct clk_notifier), GFP_KERNEL);
++	if (!cn_new)
++		return -ENOMEM;
++
++	spin_lock_irqsave(&clockfw_lock, flags);
++
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk)
++			break;
++	}
++
++	if (cn->clk != clk) {
++		cn_new->clk = clk;
++		ATOMIC_INIT_NOTIFIER_HEAD(&cn_new->notifier_head);
++
++		list_add(&cn_new->node, &clk_notifier_list);
++		cn = cn_new;
++	} else {
++		kfree(cn_new); /* didn't need it after all */
++	}
++
++	r = atomic_notifier_chain_register(&cn->notifier_head, nb);
++
++	spin_unlock_irqrestore(&clockfw_lock, flags);
++
++	return r;
++}
++
++/**
++ * clk_notifier_unregister - remove a clock rate change notifier
++ * @clk: struct clk *
++ * @nb: struct notifier_block * with callback info
++ *
++ * Request no further notification for frequency changes on clock
++ * 'clk'.  This function presently does not release memory allocated
++ * by its corresponding _register function; see inline comments for
++ * more informations.  Returns -EINVAL if called with null arguments;
++ * otherwise, passes along the return value of
++ * atomic_notifier_chain_unregister().
++ */
++int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
++{
++	struct clk_notifier *cn = NULL;
++	int r = -EINVAL;
++	unsigned long flags;
++
++	if (!clk || !nb)
++		return -EINVAL;
++
++	spin_lock_irqsave(&clockfw_lock, flags);
++
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk)
++			break;
++	}
++
++	if (cn->clk == clk) {
++		r = atomic_notifier_chain_unregister(&cn->notifier_head, nb);
++
++		/*
++		 * XXX unfortunately it seems that there is no polite
++		 * way to test if a notifier has zero users.  So once
++		 * a post-notifier has been registered on a clock,
++		 * that struct clk_notifier will not be freed, even if
++		 * all of its users unregister.
++		 */
++	} else {
++		r = -ENOENT;
++	}
++
++	spin_unlock_irqrestore(&clockfw_lock, flags);
++
++	return r;
++}
++
++/**
+  * clk_notify_post_rate_chg - call post-clk-rate-change notifier chain
+  * @clk: struct clk * that is changing rate
+  * @old_rate: old rate
+@@ -400,11 +507,16 @@ void clk_notify_post_rate_chg(struct clk *clk, unsigned long old_rate,
+ 	cnd.old_rate = old_rate;
+ 	cnd.new_rate = new_rate;
+ 
+-	/* XXX Call notifier here */
+-
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk) {
++			atomic_notifier_call_chain(&cn->notifier_head,
++						   CLK_POST_RATE_CHANGE,
++						   &cnd);
++			break;
++		}
++	}
+ }
+ 
+-
+ /*-------------------------------------------------------------------------*/
+ 
+ #ifdef CONFIG_OMAP_RESET_CLOCKS
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

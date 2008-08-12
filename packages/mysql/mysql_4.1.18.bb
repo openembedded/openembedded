@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS += "ncurses mysql-native"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
@@ -28,7 +28,7 @@ EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR_NATIVE}/gen_lex_hash'"
 EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc/mysql --localstatedir=/var/mysql --datadir=/var/mysql --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
 
 do_stage() {
-	autotools_stage_includes
+	autotools_stage_all
 	oe_libinstall -a -so -C libmysql libmysqlclient ${STAGING_LIBDIR}
 	oe_libinstall -a -C libmysqld libmysqld ${STAGING_LIBDIR}
 }

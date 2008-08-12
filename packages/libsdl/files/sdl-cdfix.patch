@@ -1,0 +1,11 @@
+--- /tmp/SDL_syscdrom.c	2008-08-11 21:56:58.000000000 +0200
++++ SDL-1.2.11/src/cdrom/linux/SDL_syscdrom.c	2008-08-11 21:57:07.813198000 +0200
+@@ -51,6 +51,8 @@
+ #ifdef __SVR4
+ #include <sys/cdio.h>
+ #endif
++#include <linux/cdrom.h>
++
+ 
+ /* Define this to use the alternative getmntent() code */
+ #ifndef __SVR4

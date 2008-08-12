@@ -1,0 +1,35 @@
+--- /tmp/Makefile.am	2008-08-11 20:31:09.000000000 +0200
++++ sdlquake-1.0.9/Makefile.am	2008-08-11 20:55:00.263198000 +0200
+@@ -33,7 +33,6 @@
+ 	crc.h			\
+ 	cvar.c			\
+ 	cvar.h			\
+-	d_copy.S		\
+ 	d_edge.c		\
+ 	d_fill.c		\
+ 	d_iface.h		\
+@@ -48,7 +47,6 @@
+ 	d_sprite.c		\
+ 	d_surf.c		\
+ 	d_zpoint.c		\
+-	dosasm.S		\
+ 	dosisms.h		\
+ 	draw.c			\
+ 	draw.h			\
+@@ -103,7 +101,6 @@
+ 	r_sprite.c		\
+ 	r_surf.c		\
+ 	r_vars.c		\
+-	r_varsa.S		\
+ 	render.h		\
+ 	resource.h		\
+ 	sbar.c			\
+@@ -136,7 +133,7 @@
+ 	world.h			\
+ 	zone.c			\
+ 	zone.h			\
+-	$(X86_SRCS) $(NONX86_SRCS)
++	$(NONX86_SRCS)
+ 
+ X86_SRCS =			\
+ 	snd_mixa.S		\

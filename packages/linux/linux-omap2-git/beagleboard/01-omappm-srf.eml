@@ -1,0 +1,513 @@
+Adds Generic Shared Resource Framework structures and API's
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+---
+ arch/arm/plat-omap/resource.c        |  389 +++++++++++++++++++++++++++++++++++
+ include/asm-arm/arch-omap/resource.h |   97 ++++++++
+ 2 files changed, 486 insertions(+)
+
+Index: linux-omap-2.6/arch/arm/plat-omap/resource.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-omap-2.6/arch/arm/plat-omap/resource.c	2008-08-07 15:06:58.000000000
++0530
+@@ -0,0 +1,389 @@
++/*
++ * linux/arch/arm/plat-omap/resource.c
++ * Shared Resource Framework API implementation
++ *
++ * Copyright (C) 2007-2008 Texas Instruments, Inc.
++ * Written by Rajendra Nayak <rnayak@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
++ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++ * History:
++ *
++ */
++
++#include <linux/errno.h>
++#include <linux/err.h>
++#include <asm/arch/resource.h>
++#include <linux/slab.h>
++
++/* res_list contains all registered struct shared_resource */
++static LIST_HEAD(res_list);
++
++/* res_mutex protects res_list add and del ops */
++static DEFINE_MUTEX(res_mutex);
++
++/* Static Pool of users for a resource */
++/* used till kmalloc becomes availabel */
++struct  users_list usr_list[MAX_USERS];
++
++/* Private/Internal functions */
++
++/**
++ * resource_lookup - loop up a resource by its name, return a pointer
++ * @name: The name of the resource to lookup
++ *
++ * Looks for a registered resource by its name. Returns a pointer to
++ * the struct shared_resource if found, else returns NULL.
++ */
++static struct shared_resource *resource_lookup(const char *name)
++{
++	struct shared_resource *res, *tmp_res;
++
++	if (!name)
++		return NULL;
++
++	res = NULL;
++
++	srf_mutex_lock(&res_mutex);
++	list_for_each_entry(tmp_res, &res_list, node) {
++		if (!strcmp(name, tmp_res->name)) {
++			res = tmp_res;
++			break;
++		}
++	}
++	srf_mutex_unlock(&res_mutex);
++	return res;
++}
++
++/**
++ * update_resource_level - Regenerates and updates the curr_level of the res
++ * @resp: Pointer to the resource
++ *
++ * This function looks at all the users of the given resource and the levels
++ * requested by each of them, and recomputes a target level for the resource
++ * acceptable to all its current usres. It then calls platform specific
++ * change_level to change the level of the resource.
++ * Returns 0 on success, else a non-zero value returned by the platform
++ * specific change_level function.
++ **/
++static int update_resource_level(struct shared_resource *resp)
++{
++	struct users_list *user;
++	unsigned long target_level;
++	int ret;
++
++	/* Regenerate the target_value for the resource */
++	target_level = RES_DEFAULTLEVEL;
++	list_for_each_entry(user, &resp->users_list, node)
++		if (user->level > target_level)
++			target_level = user->level;
++
++	pr_debug("SRF: Changing Level for resource %s to %ld\n",
++				resp->name, target_level);
++	ret = resp->ops->change_level(resp, target_level);
++	if (ret) {
++		printk(KERN_ERR "Unable to Change"
++					"level for resource %s to %ld\n",
++		resp->name, target_level);
++		return ret;
++	}
++	return ret;
++}
++
++/**
++ * get_user - gets a new users_list struct from static pool or dynamically
++ *
++ * This function initally looks for availability in the static pool and
++ * tries to dynamcially allocate only once the static pool is empty.
++ * We hope that during bootup by the time we hit a case of dynamic allocation
++ * slab initialization would have happened.
++ * Returns a pointer users_list struct on success. On dynamic allocation failure
++ * returns a ERR_PTR(-ENOMEM).
++ */
++static struct users_list *get_user(void)
++{
++	int ind = 0;
++	struct users_list *user;
++
++	/* See if something available in the static pool */
++	while (ind < MAX_USERS) {
++		if (usr_list[ind].usage == UNUSED)
++			break;
++		else
++			ind++;
++	}
++	if (ind < MAX_USERS) {
++		/* Pick from the static pool */
++		user = &usr_list[ind];
++		user->usage = STATIC_ALLOC;
++	} else {
++		/* By this time we hope slab is initialized */
++		if (slab_is_available()) {
++			user = kmalloc(sizeof(struct  users_list), GFP_KERNEL);
++			if (!user) {
++				printk(KERN_ERR "SRF:FATAL ERROR: kmalloc"
++							"failed\n");
++				return ERR_PTR(-ENOMEM);
++			}
++			user->usage = DYNAMIC_ALLOC;
++		} else {
++			/* Dynamic alloc not available yet */
++			printk(KERN_ERR "SRF: FATAL ERROR: users_list"
++				"initial POOL EMPTY before slab init\n");
++			return ERR_PTR(-ENOMEM);
++		}
++	}
++	return user;
++}
++
++/**
++ * free_user - frees the dynamic users_list and marks the static one unused
++ * @user: The struct users_list to be freed
++ *
++ * Looks at the usage flag and either frees the users_list if it was
++ * dynamically allocated, and if its from the static pool, marks it unused.
++ * No return value.
++ */
++void free_user(struct users_list *user)
++{
++	if (user->usage == DYNAMIC_ALLOC)
++		kfree(user);
++	else {
++		user->usage = UNUSED;
++		user->level = RES_DEFAULTLEVEL;
++		user->dev = NULL;
++	}
++}
++
++/**
++ * resource_init - Initializes the Shared resource framework.
++ * @resources: List of all the resources modelled
++ *
++ * Loops through the list of resources and registers all that
++ * are available for the current CPU.
++ * No return value
++ */
++void resource_init(struct shared_resource **resources)
++{
++	struct shared_resource **resp;
++	int ind;
++
++	pr_debug("Initializing Shared Resource Framework\n");
++
++	if (!cpu_is_omap343x()) {
++		/* This CPU is not supported */
++		printk(KERN_WARNING "Shared Resource Framework does not"
++			"support this CPU type.\n");
++		WARN_ON(1);
++	}
++
++	/* Init the users_list POOL */
++	for (ind = 0; ind < MAX_USERS; ind++) {
++		usr_list[ind].usage = UNUSED;
++		usr_list[ind].dev = NULL;
++		usr_list[ind].level = RES_DEFAULTLEVEL;
++	}
++
++	if (resources)
++		for (resp = resources; *resp; resp++)
++			resource_register(*resp);
++}
++
++/**
++ * resource_register - registers and initializes a resource
++ * @res: struct shared_resource * to register
++ *
++ * Initializes the given resource and adds it to the resource list
++ * for the current CPU.
++ * Returns 0 on success, -EINVAL if given a NULL pointer, -EEXIST if the
++ * resource is already registered.
++ */
++int resource_register(struct shared_resource *resp)
++{
++	if (!resp)
++		return -EINVAL;
++
++	if (!omap_chip_is(resp->omap_chip))
++		return -EINVAL;
++
++	/* Verify that the resource is not already registered */
++	if (resource_lookup(resp->name))
++		return -EEXIST;
++
++	INIT_LIST_HEAD(&resp->users_list);
++	mutex_init(&resp->res_mutex);
++
++	srf_mutex_lock(&res_mutex);
++	/* Add the resource to the resource list */
++	list_add(&resp->node, &res_list);
++	srf_mutex_unlock(&res_mutex);
++
++	/* Call the resource specific init*/
++	if (resp->ops->init)
++		resp->ops->init(resp);
++
++	pr_debug("resource: registered %s\n", resp->name);
++
++	return 0;
++}
++EXPORT_SYMBOL(resource_register);
++
++/**
++ * resource_unregister - unregister a resource
++ * @res: struct shared_resource * to unregister
++ *
++ * Removes a resource from the resource list.
++ * Returns 0 on success, -EINVAL if passed a NULL pointer.
++ */
++int resource_unregister(struct shared_resource *resp)
++{
++	if (!resp)
++		return -EINVAL;
++
++	srf_mutex_lock(&res_mutex);
++	/* delete the resource from the resource list */
++	list_del(&resp->node);
++	srf_mutex_unlock(&res_mutex);
++
++	pr_debug("resource: unregistered %s\n", resp->name);
++
++	return 0;
++}
++EXPORT_SYMBOL(resource_unregister);
++
++/**
++ * resource_request - Request for a required level of a resource
++ * @name: The name of the resource requested
++ * @dev: Uniquely identifes the caller
++ * @level: The requested level for the resource
++ *
++ * This function recomputes the target level of the resource based on
++ * the level requested by the user. The level of the resource is
++ * changed to the target level, if it is not the same as the existing level
++ * of the resource. Multiple calls to this function by the same device will
++ * replace the previous level requested
++ * Returns 0 on success, -EINVAL if the resource name passed in invalid.
++ * -ENOMEM if no static pool available or dynamic allocations fails.
++ * Else returns a non-zero error value returned by one of the failing
++ * shared_resource_ops.
++ */
++int resource_request(const char *name, struct device *dev,
++					unsigned long level)
++{
++	struct shared_resource *resp;
++	struct  users_list *user;
++	int 	found = 0, ret = 0;
++
++	resp = resource_lookup(name);
++	if (!resp) {
++		printk(KERN_ERR "resource_request: Invalid resource name\n");
++		return -EINVAL;
++	}
++
++	/* Call the resource specific validate function */
++	if (resp->ops->validate_level)
++		ret = resp->ops->validate_level(resp, level);
++		if (ret)
++			return ret;
++
++	srf_mutex_lock(&resp->res_mutex);
++	list_for_each_entry(user, &(resp->users_list), node)
++		if (user->dev == dev) {
++			found = 1;
++			break;
++		}
++	if (!found) {
++		/* First time user */
++		user = get_user();
++		if (IS_ERR(user)) {
++			srf_mutex_unlock(&resp->res_mutex);
++			return -ENOMEM;
++		}
++		user->dev = dev;
++		list_add(&user->node, &resp->users_list);
++		resp->no_of_users++;
++	}
++	user->level = level;
++	srf_mutex_unlock(&resp->res_mutex);
++
++	/* Recompute and set the current level for the resource */
++	return update_resource_level(resp);
++}
++EXPORT_SYMBOL(resource_request);
++
++/**
++ * resource_release - Release a previously requested level of a resource
++ * @name: The name of the resource to be released
++ * @dev: Uniquely identifes the caller
++ *
++ * This function recomputes the target level of the resource after removing
++ * the level requested by the user. The level of the resource is
++ * changed to the target level, if it is not the same as the existing level
++ * of the resource.
++ * Returns 0 on success, -EINVAL if the resource name or dev structure
++ * is invalid.
++ */
++int resource_release(const char *name, struct device *dev)
++{
++	struct shared_resource *resp;
++	struct users_list *user;
++	int found = 0;
++
++	resp = resource_lookup(name);
++	if (!resp) {
++		printk(KERN_ERR "resource_release: Invalid resource name\n");
++		return -EINVAL;
++	}
++
++	srf_mutex_lock(&resp->res_mutex);
++	list_for_each_entry(user, &(resp->users_list), node)
++		if (user->dev == dev) {
++			found = 1;
++			break;
++		}
++
++	if (!found) {
++		srf_mutex_unlock(&resp->res_mutex);
++		/* No such user exists */
++		return -EINVAL;
++	}
++
++	resp->no_of_users--;
++	list_del(&user->node);
++	free_user(user);
++	srf_mutex_unlock(&resp->res_mutex);
++
++	/* Recompute and set the current level for the resource */
++	return update_resource_level(resp);
++}
++EXPORT_SYMBOL(resource_release);
++
++/**
++ * resource_get_level - Returns the current level of the resource
++ * @name: Name of the resource
++ *
++ * Returns the current level of the resource if found, else returns
++ * -EINVAL if the resource name is invalid.
++ */
++int resource_get_level(const char *name)
++{
++	struct shared_resource *resp;
++	u32 ret;
++
++	resp = resource_lookup(name);
++	if (!resp) {
++		printk(KERN_ERR "resource_release: Invalid resource name\n");
++		return -EINVAL;
++	}
++
++	srf_mutex_lock(&resp->res_mutex);
++	ret = resp->curr_level;
++	srf_mutex_unlock(&resp->res_mutex);
++	return ret;
++}
++EXPORT_SYMBOL(resource_get_level);
+Index: linux-omap-2.6/include/asm-arm/arch-omap/resource.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-omap-2.6/include/asm-arm/arch-omap/resource.h	2008-08-07
+15:06:58.000000000 +0530
+@@ -0,0 +1,97 @@
++/*
++ * linux/include/asm-arm/arch-omap/resource.h
++ * Structure definitions for Shared resource Framework
++ *
++ * Copyright (C) 2007-2008 Texas Instruments, Inc.
++ * Written by Rajendra Nayak <rnayak@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * THIS PACKAGE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
++ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
++ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * History:
++ *
++ */
++
++#ifndef __ARCH_ARM_OMAP_RESOURCE_H
++#define __ARCH_ARM_OMAP_RESOURCE_H
++
++#include <linux/list.h>
++#include <linux/mutex.h>
++#include <linux/device.h>
++#include <asm/arch/cpu.h>
++
++#define srf_mutex_lock(x)	{ \
++				if (!(in_atomic() || irqs_disabled()))	\
++					mutex_lock(x); \
++				}
++#define srf_mutex_unlock(x)	{ \
++				if (!(in_atomic() || irqs_disabled()))  \
++					mutex_unlock(x); \
++				}
++
++#define RES_DEFAULTLEVEL	0x0
++
++struct shared_resource_ops; /* forward declaration */
++
++/* Used to model a Shared Multilevel Resource */
++struct shared_resource {
++	/* Resource name */
++	const char *name;
++	/* Used to represent the OMAP chip types containing this res */
++	const struct omap_chip_id omap_chip;
++	/* Total no of users at any point of this resource */
++	u8 no_of_users;
++	/* Current level of this resource */
++	u32 curr_level;
++	/* Used to store any resource specific data */
++	void  *resource_data;
++	/* List of all the current users for this resource */
++	struct list_head users_list;
++	/* Used to guard the resource */
++	struct mutex res_mutex;
++	/* Shared resource operations */
++	struct shared_resource_ops *ops;
++	struct list_head node;
++};
++
++struct shared_resource_ops {
++	/* Init function for the resource */
++	void (*init)(struct shared_resource *res);
++	/* Function to change the level of the resource */
++	int (*change_level)(struct shared_resource *res, u32 target_level);
++	/* Function to validate the requested level of the resource */
++	int (*validate_level)(struct shared_resource *res, u32 target_level);
++};
++
++/* This is to statically defining the users pool */
++/* This static pool is used till kmalloc becomes available */
++#define MAX_USERS	10
++#define UNUSED		0x0
++#define	DYNAMIC_ALLOC	0x1
++#define STATIC_ALLOC	0x2
++
++/* Used to represent a user of a shared resource */
++struct users_list {
++	/* Device pointer used to uniquely identify the user */
++	struct device *dev;
++	/* Current level as requested for the resource by the user */
++	u32 level;
++	struct list_head node;
++	u8 usage;
++};
++
++/* Shared resource Framework API's */
++void resource_init(struct shared_resource **resources);
++int resource_register(struct shared_resource *res);
++int resource_unregister(struct shared_resource *res);
++int resource_request(const char *name, struct device *dev,
++						 unsigned long level);
++int resource_release(const char *name, struct device *dev);
++int resource_get_level(const char *name);
++
++#endif /* __ARCH_ARM_OMAP_RESOURCE_H */
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
