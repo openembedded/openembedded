@@ -4,6 +4,9 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
 LICENSE = "GPL"
 
+PR = "r1"
+RRECOMMENDS = "freedoom"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/prboom/prboom-${PV}.tar.gz \
 	   "
 
