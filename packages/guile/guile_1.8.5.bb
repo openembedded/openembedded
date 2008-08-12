@@ -5,10 +5,12 @@ SECTION = "devel/scheme"
 DEPENDS = "guile-native"
 LICENSE = "GPL"
 
+PR = "r1"
+
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch;patch=1 "
 
-inherit autotools
+inherit autotools binconfig
 
 acpaths = "-I ${S}/guile-config"
 
