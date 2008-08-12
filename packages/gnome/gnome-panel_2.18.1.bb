@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-DEPENDS = "libwnck orbit2 gtk+ libgnome libgnomeui gnome-desktop libglade gnome-menus"
+DEPENDS = "startup-notification libwnck orbit2 gtk+ libgnome libgnomeui gnome-desktop libglade gnome-menus"
 
 PR = "r1"
 
