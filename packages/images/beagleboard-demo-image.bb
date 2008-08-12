@@ -1,6 +1,6 @@
 # Demo image for beagleboard
 
-XSERVER = "xserver-xorg \
+XSERVER ?= "xserver-xorg \
            xf86-input-evdev \
            xf86-input-mouse \
            xf86-video-fbdev \
@@ -20,13 +20,13 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-settings \
     ${ANGSTROM_EXTRA_INSTALL} \
     angstrom-zeroconf-audio \
-   	angstrom-led-config \ 
-	gpe-scap \
+    angstrom-led-config \ 
+    gpe-scap \
     psplash \
     e-wm exhibit \
     xterm xmms epiphany-firefox-replacement \
     swfdec-mozilla \
-	hicolor-icon-theme gnome-icon-theme \
+    hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \
 #    gnumeric \
@@ -35,6 +35,7 @@ IMAGE_INSTALL = "\
     pidgin \
 #    irssi \
     mplayer omapfbplay \
+    gnome-games \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
