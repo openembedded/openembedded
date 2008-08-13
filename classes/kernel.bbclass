@@ -233,6 +233,9 @@ ALLOW_EMPTY_kernel-image = "1"
 DEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 RDEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 
+# renamed modules
+RPROVIDES_kernel-module-aes-generic = "kernel-module-aes"
+
 pkg_postinst_kernel-image () {
 if [ ! -e "$D/lib/modules/${KERNEL_VERSION}" ]; then
 	mkdir -p $D/lib/modules/${KERNEL_VERSION}
