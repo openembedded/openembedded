@@ -35,7 +35,7 @@ PACKAGES =+ "${PN}-httpd ${PN}-udhcpd"
 # We need this RRECOMMENDS because libc dlopens libgcc
 # and shlib mechanism can not detect it because its not
 # listed in the NEEDED field.
-RDEPENDS += "libgcc"
+RRECOMMENDS += "libgcc"
 FILES_${PN}-httpd = "${sysconfdir}/init.d/busybox-httpd /srv/www"
 FILES_${PN}-udhcpd = "${sysconfdir}/init.d/busybox-udhcpd"
 
