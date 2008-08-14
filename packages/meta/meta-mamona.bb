@@ -94,6 +94,7 @@ tslib \
 ttf-bitstream-vera \
 udev \
 util-linux \
+vim \
 wget \
 xkbd \
 xtrans-dev \
