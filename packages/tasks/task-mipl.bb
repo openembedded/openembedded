@@ -7,8 +7,6 @@ DESCRIPTION = "Mobile ipv6 extensions"
 
 inherit task
 
-PACKAGE_ARCH = "all"
-
 RDEPENDS = "mipv6"
 RRECOMMENDS = "kernel-module-ipv6 \
                kernel-module-mip6 \
