@@ -87,7 +87,7 @@ for source in checksums_parser.sections():
         if md5 != md5data:
             file_ok = False
 
-        shapipe = os.popen("oe_sha256sum " + localpath)
+        shapipe = os.popen("sha256sum " + localpath)
         shadata = (shapipe.readline().split() or [ "" ])[0]
         shapipe.close()
 

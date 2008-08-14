@@ -1,0 +1,35 @@
+A Temp patch needed only till OFF mode is implemented.
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+---
+ arch/arm/mach-omap2/resource34xx.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/mach-omap2/resource34xx.c	2008-08-11
+17:39:00.000000000 +0530
++++ linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c	2008-08-11
+17:39:00.000000000 +0530
+@@ -131,13 +131,13 @@ int set_pd_latency(struct shared_resourc
+ 				omap2_clkdm_wakeup(pwrdm->pwrdm_clkdms[i]);
+ 			}
+ 			pwrdm_set_next_pwrst(pwrdm, PWRDM_POWER_ON);
+-			pwrdm_set_next_pwrst(pwrdm, pd_lat_level);
++			pwrdm_set_next_pwrst(pwrdm, PWRDM_POWER_RET);
+ 			for (i = 0; pwrdm->pwrdm_clkdms[i]; i++) {
+ 				omap2_clkdm_sleep(pwrdm->pwrdm_clkdms[i]);
+ 				omap2_clkdm_allow_idle(pwrdm->pwrdm_clkdms[i]);
+ 			}
+ 		} else
+-			pwrdm_set_next_pwrst(pwrdm, pd_lat_level);
++			pwrdm_set_next_pwrst(pwrdm, PWRDM_POWER_RET);
+ 		break;
+ 	case PWRDM_POWER_ON:
+ 		pwrdm_set_next_pwrst(pwrdm, PWRDM_POWER_ON);
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

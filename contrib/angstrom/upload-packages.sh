@@ -14,22 +14,28 @@ REMOTED=website/feeds/2008/ipk/$(basename $PWD)
 mkdir -p upload-queue || true
 
 # Find and delete morgue dirs, we don't need them
+echo "Deleting morgue directories"
 find ipk/ -name "morgue" -exec rm -rf \{\} \;
 
 # Copy all packages to an upload queue
+echo "Copying packages to upload queue"
 find ipk/ -name "*.ipk" -exec cp \{\} upload-queue/ \;
 
 # Find file already present on webserver
-ssh $REMOTEM "find $REMOTED/ -name "*.ipk" -exec basename \{\} \;" > files-remote
+echo "Getting file list from server"
+scp $REMOTEM:$REMOTED/unsorted/files-sorted files-remote
 ls upload-queue/ | grep -v morgue > files-local
 
 # Check for files already present on webserver
+echo "Checking for duplicates"
 cat files-remote files-local | sort | uniq -u >files-uniq
 cat files-uniq files-local | sort | uniq -d > files-trans
 
 # Copy over non-duplicate files
+echo "Starting rsync..."
 rsync -vz --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
 
 # Clean up temporary files
+echo "Removing upload queue"
 rm -rf files-remote files-local files-uniq files-trans upload-queue	
 

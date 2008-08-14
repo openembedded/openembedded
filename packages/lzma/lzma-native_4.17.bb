@@ -2,9 +2,10 @@ DESCRIPTION = "LZMA is a general compression method. LZMA provides high compress
 HOMEPAGE = "http://www.7-zip.org/"
 LICENSE = "LGPL"
 DEPENDS = "zlib-native"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "http://www.7-zip.org/dl/lzma417.tar.bz2 \
+PVNODOT = "${@bb.data.getVar('PV',d,1).split('.')[0]}${@bb.data.getVar('PV',d,1).split('.')[1]}"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sevenzip/lzma${PVNODOT}.tar.bz2 \
            file://lzma-406-zlib-stream.patch;patch=1;pnum=2"
 
 S = "${WORKDIR}/SRC"

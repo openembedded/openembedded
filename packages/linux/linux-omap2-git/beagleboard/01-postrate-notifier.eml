@@ -1,0 +1,392 @@
+Add the infrastructure necessary to support clock post-rate-change notifiers
+in the OMAP clock framework.  This includes:
+
+- adding the clk_notify_post_rate_chg() function, which will trigger a
+  notifier call chain when a clock rate is changed (but which currently
+  does nothing); and
+
+- adding calls to clk_notify_post_rate_chg() everywhere clk->rate is
+  assigned (mostly *_recalc() functions).
+
+This patch has no functional effect by itself; the actual notifier
+implementation follows in a separate patch.
+
+One item to note is that the post-rate-change notifier is called even
+if the new clock rate is identical to the old rate.  This is because
+the process of changing the rate may have temporarily disabled or
+glitched the clock or one of its parents, and some devices may be
+sensitive to such changes.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+---
+
+ arch/arm/mach-omap2/clock.c       |   37 +++++++++++++++++++++++++++------
+ arch/arm/mach-omap2/clock24xx.c   |   42 +++++++++++++++++++++++++++++++++++--
+ arch/arm/mach-omap2/clock34xx.c   |   10 +++++++++
+ arch/arm/plat-omap/clock.c        |   32 ++++++++++++++++++++++++++++
+ include/asm-arm/arch-omap/clock.h |   21 +++++++++++++++++++
+ 5 files changed, 134 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/clock.c b/arch/arm/mach-omap2/clock.c
+index ed15868..bd3c1f8 100644
+--- a/arch/arm/mach-omap2/clock.c
++++ b/arch/arm/mach-omap2/clock.c
+@@ -165,10 +165,15 @@ u32 omap2_get_dpll_rate(struct clk *clk)
+  */
+ void omap2_fixed_divisor_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
+ 	WARN_ON(!clk->fixed_div);
+ 
++	orig_rate = clk->rate;
+ 	clk->rate = clk->parent->rate / clk->fixed_div;
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	if (clk->flags & RATE_PROPAGATES)
+ 		propagate_rate(clk);
+ }
+@@ -376,6 +381,7 @@ int omap2_clk_enable(struct clk *clk)
+ void omap2_clksel_recalc(struct clk *clk)
+ {
+ 	u32 div = 0;
++	unsigned long orig_rate;
+ 
+ 	pr_debug("clock: recalc'ing clksel clk %s\n", clk->name);
+ 
+@@ -385,10 +391,13 @@ void omap2_clksel_recalc(struct clk *clk)
+ 
+ 	if (clk->rate == (clk->parent->rate / div))
+ 		return;
++	orig_rate = clk->rate;
+ 	clk->rate = clk->parent->rate / div;
+ 
+ 	pr_debug("clock: new clock rate is %ld (div %d)\n", clk->rate, div);
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	if (clk->flags & RATE_PROPAGATES)
+ 		propagate_rate(clk);
+ }
+@@ -662,6 +671,8 @@ int omap2_clksel_set_rate(struct clk *clk, unsigned long rate)
+ 		wmb();
+ 	}
+ 
++	/* post-rate-change notifier will be called by omap2_clk_set_rate() */
++
+ 	return 0;
+ }
+ 
+@@ -670,20 +681,30 @@ int omap2_clksel_set_rate(struct clk *clk, unsigned long rate)
+ int omap2_clk_set_rate(struct clk *clk, unsigned long rate)
+ {
+ 	int ret = -EINVAL;
+-
+-	pr_debug("clock: set_rate for clock %s to rate %ld\n", clk->name, rate);
++	unsigned long orig_rate;
+ 
+ 	/* CONFIG_PARTICIPANT clocks are changed only in sets via the
+ 	   rate table mechanism, driven by mpu_speed  */
+ 	if (clk->flags & CONFIG_PARTICIPANT)
+ 		return -EINVAL;
+ 
++	if (!clk->set_rate)
++		return -EINVAL;
++
++	orig_rate = clk->rate;
++
++	pr_debug("clock: set_rate for clock %s from %ld Hz to %ld Hz\n",
++		 clk->name, orig_rate, rate);
++
+ 	/* dpll_ck, core_ck, virt_prcm_set; plus all clksel clocks */
+-	if (clk->set_rate)
+-		ret = clk->set_rate(clk, rate);
++	ret = clk->set_rate(clk, rate);
+ 
+-	if (ret == 0 && (clk->flags & RATE_PROPAGATES))
+-		propagate_rate(clk);
++	if (ret == 0) {
++		clk_notify_post_rate_chg(clk, orig_rate, rate);
++
++		if (clk->flags & RATE_PROPAGATES)
++			propagate_rate(clk);
++	}
+ 
+ 	return ret;
+ }
+@@ -732,6 +753,7 @@ int omap2_clk_set_parent(struct clk *clk, struct clk *new_parent)
+ {
+ 	void __iomem *src_addr;
+ 	u32 field_val, field_mask, reg_val, parent_div;
++	unsigned long orig_rate;
+ 
+ 	if (clk->flags & CONFIG_PARTICIPANT)
+ 		return -EINVAL;
+@@ -765,11 +787,14 @@ int omap2_clk_set_parent(struct clk *clk, struct clk *new_parent)
+ 	clk->parent = new_parent;
+ 
+ 	/* CLKSEL clocks follow their parents' rates, divided by a divisor */
++	orig_rate = clk->rate;
+ 	clk->rate = new_parent->rate;
+ 
+ 	if (parent_div > 0)
+ 		clk->rate /= parent_div;
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	pr_debug("clock: set parent of %s to %s (new rate %ld)\n",
+ 		 clk->name, clk->parent->name, clk->rate);
+ 
+diff --git a/arch/arm/mach-omap2/clock24xx.c b/arch/arm/mach-omap2/clock24xx.c
+index 54cc6e1..e001549 100644
+--- a/arch/arm/mach-omap2/clock24xx.c
++++ b/arch/arm/mach-omap2/clock24xx.c
+@@ -172,11 +172,22 @@ static long omap2_dpllcore_round_rate(unsigned long target_rate)
+ 
+ static void omap2_dpllcore_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
++	orig_rate = clk->rate;
+ 	clk->rate = omap2_get_dpll_rate_24xx(clk);
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	propagate_rate(clk);
+ }
+ 
++/*
++ * XXX REVISIT: This code needs to keep track of the underlying struct
++ * clocks that it is changing, so it can call post-rate-change notifiers
++ * on them.  This function probably should be rewritten to use the clock
++ * fw.
++ */
+ static int omap2_reprogram_dpllcore(struct clk *clk, unsigned long rate)
+ {
+ 	u32 cur_rate, low, mult, div, valid_rate, done_rate;
+@@ -259,7 +270,14 @@ dpll_exit:
+  */
+ static void omap2_table_mpu_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
++	orig_rate = clk->rate;
+ 	clk->rate = curr_prcm_set->mpu_speed;
++
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
++	/* No rate propagation since table clocks have no children */
+ }
+ 
+ /*
+@@ -294,7 +312,14 @@ static long omap2_round_to_table_rate(struct clk *clk, unsigned long rate)
+ 	return highest_rate;
+ }
+ 
+-/* Sets basic clocks based on the specified rate */
++/*
++ * Sets basic clocks based on the specified rate
++ *
++ * XXX REVISIT: This code needs to keep track of the underlying struct
++ * clocks that it is changing, so it can call post-rate-change notifiers
++ * on them.  This function probably should be rewritten to use the clock
++ * fw.
++ */
+ static int omap2_select_table_rate(struct clk *clk, unsigned long rate)
+ {
+ 	u32 cur_rate, done_rate, bypass = 0, tmp;
+@@ -353,7 +378,8 @@ static int omap2_select_table_rate(struct clk *clk, unsigned long rate)
+ 		cm_write_mod_reg(prcm->cm_clksel_gfx, GFX_MOD, CM_CLKSEL);
+ 
+ 		/* Major subsystem dividers */
+-		tmp = cm_read_mod_reg(CORE_MOD, CM_CLKSEL1) & OMAP24XX_CLKSEL_DSS2_MASK;
++		tmp = cm_read_mod_reg(CORE_MOD, CM_CLKSEL1) &
++			OMAP24XX_CLKSEL_DSS2_MASK;
+ 		cm_write_mod_reg(prcm->cm_clksel1_core | tmp, CORE_MOD,
+ 				 CM_CLKSEL1);
+ 
+@@ -460,13 +486,25 @@ static u32 omap2_get_sysclkdiv(void)
+ 
+ static void omap2_osc_clk_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
++	orig_rate = clk->rate;
+ 	clk->rate = omap2_get_apll_clkin() * omap2_get_sysclkdiv();
++
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	propagate_rate(clk);
+ }
+ 
+ static void omap2_sys_clk_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
++	orig_rate = clk->rate;
+ 	clk->rate = clk->parent->rate / omap2_get_sysclkdiv();
++
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	propagate_rate(clk);
+ }
+ 
+diff --git a/arch/arm/mach-omap2/clock34xx.c b/arch/arm/mach-omap2/clock34xx.c
+index 408b51a..7b89b61 100644
+--- a/arch/arm/mach-omap2/clock34xx.c
++++ b/arch/arm/mach-omap2/clock34xx.c
+@@ -53,8 +53,13 @@
+  */
+ static void omap3_dpll_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
++	orig_rate = clk->rate;
+ 	clk->rate = omap2_get_dpll_rate(clk);
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	propagate_rate(clk);
+ }
+ 
+@@ -500,6 +505,7 @@ static void omap3_clkoutx2_recalc(struct clk *clk)
+ 	const struct dpll_data *dd;
+ 	u32 v;
+ 	struct clk *pclk;
++	unsigned long orig_rate;
+ 
+ 	/* Walk up the parents of clk, looking for a DPLL */
+ 	pclk = clk->parent;
+@@ -513,6 +519,8 @@ static void omap3_clkoutx2_recalc(struct clk *clk)
+ 
+ 	WARN_ON(!dd->control_reg || !dd->enable_mask);
+ 
++	orig_rate = clk->rate;
++
+ 	v = __raw_readl(dd->control_reg) & dd->enable_mask;
+ 	v >>= __ffs(dd->enable_mask);
+ 	if (v != DPLL_LOCKED)
+@@ -520,6 +528,8 @@ static void omap3_clkoutx2_recalc(struct clk *clk)
+ 	else
+ 		clk->rate = clk->parent->rate * 2;
+ 
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	if (clk->flags & RATE_PROPAGATES)
+ 		propagate_rate(clk);
+ }
+diff --git a/arch/arm/plat-omap/clock.c b/arch/arm/plat-omap/clock.c
+index c2e741d..421d076 100644
+--- a/arch/arm/plat-omap/clock.c
++++ b/arch/arm/plat-omap/clock.c
+@@ -254,10 +254,16 @@ __setup("mpurate=", omap_clk_setup);
+ /* Used for clocks that always have same value as the parent clock */
+ void followparent_recalc(struct clk *clk)
+ {
++	unsigned long orig_rate;
++
+ 	if (clk == NULL || IS_ERR(clk))
+ 		return;
+ 
++	orig_rate = clk->rate;
+ 	clk->rate = clk->parent->rate;
++
++	clk_notify_post_rate_chg(clk, orig_rate, clk->rate);
++
+ 	if (unlikely(clk->flags & RATE_PROPAGATES))
+ 		propagate_rate(clk);
+ }
+@@ -373,6 +379,32 @@ void clk_init_cpufreq_table(struct cpufreq_frequency_table **table)
+ EXPORT_SYMBOL(clk_init_cpufreq_table);
+ #endif
+ 
++/**
++ * clk_notify_post_rate_chg - call post-clk-rate-change notifier chain
++ * @clk: struct clk * that is changing rate
++ * @old_rate: old rate
++ * @new_rate: new rate
++ *
++ * Triggers a notifier call chain on the post-clk-rate-change notifier
++ * for clock 'clk'.  Passes a pointer to the struct clk and the
++ * previous and current rates to the notifier callback.  Intended to be
++ * called by internal clock code only.  No return value.
++ */
++void clk_notify_post_rate_chg(struct clk *clk, unsigned long old_rate,
++			      unsigned long new_rate)
++{
++	struct clk_notifier *cn;
++	struct clk_notifier_data cnd;
++
++	cnd.clk = clk;
++	cnd.old_rate = old_rate;
++	cnd.new_rate = new_rate;
++
++	/* XXX Call notifier here */
++
++}
++
++
+ /*-------------------------------------------------------------------------*/
+ 
+ #ifdef CONFIG_OMAP_RESET_CLOCKS
+diff --git a/include/asm-arm/arch-omap/clock.h b/include/asm-arm/arch-omap/clock.h
+index bfaf7b6..e3c9aeb 100644
+--- a/include/asm-arm/arch-omap/clock.h
++++ b/include/asm-arm/arch-omap/clock.h
+@@ -10,6 +10,8 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <linux/notifier.h>
++
+ #ifndef __ARCH_ARM_OMAP_CLOCK_H
+ #define __ARCH_ARM_OMAP_CLOCK_H
+ 
+@@ -58,6 +60,19 @@ struct dpll_data {
+ 
+ #endif
+ 
++struct clk_notifier {
++	struct clk			*clk;
++	struct atomic_notifier_head	notifier_head;
++	struct list_head		node;
++};
++
++struct clk_notifier_data {
++	struct clk			*clk;
++	unsigned long			old_rate;
++	unsigned long			new_rate;
++};
++
++
+ struct clk {
+ 	struct list_head	node;
+ 	struct module		*owner;
+@@ -121,6 +136,10 @@ extern void clk_allow_idle(struct clk *clk);
+ extern void clk_deny_idle(struct clk *clk);
+ extern int clk_get_usecount(struct clk *clk);
+ extern void clk_enable_init_clocks(void);
++extern int clk_notifier_register(struct clk *clk, struct notifier_block *nb);
++extern int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb);
++extern void clk_notify_post_rate_chg(struct clk *clk, unsigned long old_rate,
++				     unsigned long new_rate);
+ #ifdef CONFIG_CPU_FREQ
+ extern void clk_init_cpufreq_table(struct cpufreq_frequency_table **table);
+ #endif
+@@ -161,6 +180,8 @@ extern void clk_init_cpufreq_table(struct cpufreq_frequency_table **table);
+ 
+ #define RATE_IN_24XX		(RATE_IN_242X | RATE_IN_243X)
+ 
++/* Clk rate change notifier callback type */
++#define CLK_POST_RATE_CHANGE		1
+ 
+ /* CM_CLKSEL2_PLL.CORE_CLK_SRC options (24XX) */
+ #define CORE_CLK_SRC_32K		0
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

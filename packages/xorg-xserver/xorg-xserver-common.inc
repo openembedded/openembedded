@@ -4,7 +4,7 @@ LICENSE = "MIT-X"
 
 PROVIDES = "virtual/xserver"
 
-DEPENDS = "fontconfig freetype flex-native lbxutil kbproto \ 
+DEPENDS = "hal fontconfig freetype flex-native lbxutil kbproto \ 
 xf86driproto drm glproto randrproto renderproto fixesproto damageproto \
 xcmiscproto xextproto xproto xf86miscproto xf86vidmodeproto xf86bigfontproto \
 scrnsaverproto bigreqsproto resourceproto fontsproto inputproto \
@@ -13,7 +13,7 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
 
-RDEPENDS_${PN} = "rgb xorg-minimal-fonts"
+RDEPENDS_${PN} = "hal rgb xorg-minimal-fonts"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2 \

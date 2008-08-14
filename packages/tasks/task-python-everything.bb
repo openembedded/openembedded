@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml32"
+PR = "ml33"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -39,6 +39,7 @@ RDEPENDS = "\
 		python-ogg		\
 		python-opendir		\
 		python-pexpect		\
+		python-ptrace		\
 		python-pyalsa		\
 		python-pyalsaaudio	\
 		python-pybluez		\

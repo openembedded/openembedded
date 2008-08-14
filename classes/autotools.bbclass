@@ -215,8 +215,10 @@ autotools_stage_all() {
 	# b) packaged staging will fix that anyways. :M:
 	if [ "${AUTOTOOLS_STAGE_PKGCONFIG}" = "1" ]
 	then
-		echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
-		cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
+		if [ -e ${STAGE_TEMP}/${libdir}/pkgconfig/ ] ; then
+			echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
+			cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
+		fi
 	fi
 	rm -rf ${STAGE_TEMP}/${mandir} || true
 	rm -rf ${STAGE_TEMP}/${infodir} || true

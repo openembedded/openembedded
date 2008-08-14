@@ -1,0 +1,178 @@
+--- /tmp/board-omap3beagle.h	2008-08-11 15:40:17.000000000 +0200
++++ git/include/asm-arm/arch-omap/board-omap3beagle.h	2008-08-11 15:41:32.433198000 +0200
+@@ -29,5 +29,41 @@
+ #ifndef __ASM_ARCH_OMAP3_BEAGLE_H
+ #define __ASM_ARCH_OMAP3_BEAGLE_H
+ 
++/* MPU speeds */
++#define S600M   600000000
++#define S550M   550000000
++#define S500M   500000000
++#define S250M   250000000
++#define S125M   125000000
++
++/* IVA speeds */
++#define S430M   430000000
++#define S400M   400000000
++#define S360M   360000000
++#define S180M   180000000
++#define S90M    90000000
++
++/* L3 speeds */
++#define S83M    83000000
++#define S166M   166000000
++
++/* VDD1 OPPS */
++#define VDD1_OPP1       0x1
++#define VDD1_OPP2       0x2
++#define VDD1_OPP3       0x3
++#define VDD1_OPP4       0x4
++#define VDD1_OPP5       0x5
++
++/* VDD2 OPPS */
++#define VDD2_OPP1       0x1
++#define VDD2_OPP2       0x2
++#define VDD2_OPP3       0x3
++
++#define MIN_VDD1_OPP    VDD1_OPP1
++#define MAX_VDD1_OPP    VDD1_OPP5
++#define MIN_VDD2_OPP    VDD2_OPP1
++#define MAX_VDD2_OPP    VDD2_OPP3
++
++
+ #endif /* __ASM_ARCH_OMAP3_BEAGLE_H */
+ 
+--- /tmp/resource34xx.c	2008-08-11 16:11:28.000000000 +0200
++++ git/arch/arm/mach-omap2/resource34xx.c	2008-08-11 16:20:18.803198000 +0200
+@@ -173,7 +173,7 @@
+ 
+ int set_opp(struct shared_resource *resp, u32 target_level)
+ {
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ 	unsigned long mpu_freq, l3_freq, tput;
+ 	int ind;
+ 	struct bus_throughput_db *tput_db;
+@@ -248,7 +248,7 @@
+  */
+ void init_freq(struct shared_resource *resp)
+ {
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ 	char *linked_res_name;
+ 	resp->no_of_users = 0;
+ 
+@@ -269,7 +269,7 @@
+ 
+ int set_freq(struct shared_resource *resp, u32 target_level)
+ {
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ 	unsigned int vdd1_opp;
+ 
+ 	if (strcmp(resp->name, "mpu_freq") == 0)
+--- /tmp/clock34xx.c	2008-08-11 15:57:48.000000000 +0200
++++ git/arch/arm/mach-omap2/clock34xx.c	2008-08-11 16:22:43.093198000 +0200
+@@ -773,7 +773,7 @@
+ 	dpll2_clk = clk_get(NULL, "dpll2_ck");
+ 	dpll3_clk = clk_get(NULL, "dpll3_ck");
+ 
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ 	mpu_speed = dpll1_clk->rate;
+ 	prcm_vdd = vdd1_rate_table + MAX_VDD1_OPP;
+ 	for (; prcm_vdd->speed; prcm_vdd--) {
+@@ -836,7 +836,7 @@
+ 	return (prcm_config+1)->opp;
+ }
+ 
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ static void omap3_table_recalc(struct clk *clk)
+ {
+ 	if ((clk != &virt_vdd1_prcm_set) && (clk != &virt_vdd2_prcm_set))
+--- /tmp/board-omap3beagle.c	2008-08-11 15:54:04.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2008-08-11 16:25:11.333198000 +0200
+@@ -39,9 +39,62 @@
+ #include <asm/arch/gpmc.h>
+ #include <asm/arch/nand.h>
+ 
++#include <asm/arch/clock.h>
++
+ #define GPMC_CS0_BASE  0x60
+ #define GPMC_CS_SIZE   0x30
+ 
++struct vdd_prcm_config vdd1_rate_table[] = {
++       {0, 0, 0},
++       /*OPP1*/
++       {S125M, VDD1_OPP1, 0},
++       /*OPP2*/
++       {S250M, VDD1_OPP2, 0},
++       /*OPP3*/
++       {S500M, VDD1_OPP3, 0},
++       /*OPP4*/
++       {S550M, VDD1_OPP4, 0},
++       /*OPP5*/
++       {S600M, VDD1_OPP5, 0},
++};
++
++struct vdd_prcm_config vdd2_rate_table[] = {
++       {0, 0, 0},
++       /*OPP1*/
++       {0, VDD2_OPP1, 0},
++       /*OPP2*/
++       {S83M, VDD2_OPP2, 0},
++       /*OPP3*/
++       {S166M, VDD2_OPP3, 0},
++};
++
++struct vdd_prcm_config iva2_rate_table[] = {
++       {0, 0, 0},
++       /*OPP1*/
++       {S90M, VDD1_OPP1, 0},
++       /*OPP2*/
++       {S180M, VDD1_OPP2, 0},
++       /*OPP3*/
++       {S360M, VDD1_OPP3, 0},
++       /*OPP4*/
++       {S400M, VDD1_OPP4, 0},
++       /*OPP5*/
++       {S430M, VDD1_OPP5, 0},
++};
++
++u8 vdd1_volts[MAX_VDD1_OPP] = {
++        /* Vsel corresponding to 0.9V (OPP1), 1.00V (OPP2),
++         * 1.20V (OPP3), 1.27V (OPP4), 1.35 (OPP5)
++         */
++        0x18, 0x20, 0x30, 0x36, 0x3C
++};
++
++u8 vdd2_volts[MAX_VDD2_OPP] = {
++        /* Vsel corresponding to 0.9V (OPP1), 1.00V (OPP2), 1.15 (OPP3) */
++        0x18, 0x20, 0x2C
++};
++
++
+ static struct mtd_partition omap3beagle_nand_partitions[] = {
+ 	/* All the partition sizes are listed in terms of NAND block size */
+ 	{
+--- /tmp/cpu-omap.c	2008-08-11 15:43:01.000000000 +0200
++++ git/arch/arm/plat-omap/cpu-omap.c	2008-08-11 16:31:24.943198000 +0200
+@@ -47,7 +47,7 @@
+ 
+ static struct clk *mpu_clk;
+ 
+-#ifdef CONFIG_MACH_OMAP_3430SDP
++#if defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE)
+ extern struct vdd_prcm_config vdd1_rate_table[];
+ extern struct vdd_prcm_config vdd2_rate_table[];
+ extern struct vdd_prcm_config iva2_rate_table[];
+@@ -127,7 +127,7 @@
+ 	ret = clk_set_rate(mpu_clk, freqs.new * 1000);
+ 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+ #elif defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)\
+-	&& defined(CONFIG_MACH_OMAP_3430SDP)
++	&& (defined(CONFIG_MACH_OMAP_3430SDP) || defined(CONFIG_MACH_OMAP3_BEAGLE))
+ 	{
+ 		int ind;
+ 		for (ind = 1; ind <= MAX_VDD1_OPP; ind++) {

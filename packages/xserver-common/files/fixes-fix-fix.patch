@@ -1,0 +1,20 @@
+--- /tmp/default.xmodmap	2008-08-10 20:06:35.000000000 +0200
++++ xserver-common-1.22/X11/default.xmodmap	2008-08-10 20:07:04.000000000 +0200
+@@ -188,13 +188,13 @@
+ keycode 195 =
+ keycode 196 =
+ keycode 197 =
+-keycode 198 =
++keycode 198 = Up
+ keycode 199 =
+-keycode 200 =
+-keycode 201 =
++keycode 200 = Left
++keycode 201 = Right
+ keycode 202 =
+ keycode 203 =
+-keycode 204 =
++keycode 204 = Down
+ keycode 205 =
+ keycode 206 =
+ keycode 207 =

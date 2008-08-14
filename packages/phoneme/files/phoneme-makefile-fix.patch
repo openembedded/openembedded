@@ -1,0 +1,144 @@
+Index: cdc/build/share/rules_zoneinfo.mk
+===================================================================
+--- cdc/build/share/rules_zoneinfo.mk.orig
++++ cdc/build/share/rules_zoneinfo.mk
+@@ -45,7 +45,7 @@ $(ZONEINFO_CLASSES_DIR):
+ .compile.classlist:
+ 	$(AT)if [ -s $(ZONEINFO_CLASSES_DIR)/.classes.list ] ; then	\
+ 	     echo "Compiling zic classes... ";				\
+-	     $(JAVAC_CMD)						\
++	     $(JAVAC_CMD) -sourcepath $(CVM_SHAREROOT)/classes		\
+ 			-d $(ZONEINFO_CLASSES_DIR)			\
+ 			@$(ZONEINFO_CLASSES_DIR)/.classes.list ;	\
+ 	fi
+Index: cdc/build/share/jcc.mk
+===================================================================
+--- cdc/build/share/jcc.mk.orig
++++ cdc/build/share/jcc.mk
+@@ -93,7 +93,7 @@ $(CVM_GENOPCODE_DEPEND) :: $(CVM_JCC_SRC
+ 		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
+ 	@echo "... $@"
+ 	$(AT)CLASSPATH=$(CVM_JCC_SRCPATH); export CLASSPATH; \
+-	$(CVM_JAVAC) $(JAVAC_OPTIONS) -d $(CVM_JCC_CLASSPATH) \
++	$(CVM_JAVAC) $(JAVAC_OPTIONS) -sourcepath $(CVM_JCC_SRCPATH) -d $(CVM_JCC_CLASSPATH) \
+ 	    $(subst /,$(CVM_FILESEP),$(CVM_JCC_SRCPATH)/GenOpcodes.java)
+ 	$(AT)rm -f $(CVM_JCC_CLASSPATH)/JCCMessage.properties; \
+ 	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
+@@ -253,7 +253,7 @@ $(CVM_JCC_DEPEND) :: $(CVM_JCC_SRCPATH)/
+ 		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
+ 	@echo "... $@"
+ 	@CLASSPATH=$(CVM_JCC_CLASSPATH)$(PS)$(CVM_JCC_SRCPATH)$(PS)$(CVM_DERIVEDROOT)/javavm/runtime; export CLASSPATH; \
+-	$(CVM_JAVAC) $(JAVAC_OPTIONS) -d $(CVM_JCC_CLASSPATH) \
++	$(CVM_JAVAC) $(JAVAC_OPTIONS) -classpath $(CVM_JCC_CLASSPATH)$(PS)$(CVM_JCC_SRCPATH)$(PS)$(CVM_DERIVEDROOT)/javavm/runtime -d $(CVM_JCC_CLASSPATH) \
+ 	    $(CVM_JCC_CLASSES)
+ 	@rm -f $(CVM_JCC_CLASSPATH)/JCCMessage.properties; \
+ 	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
+Index: cdc/build/share/defs.mk
+===================================================================
+--- cdc/build/share/defs.mk.orig
++++ cdc/build/share/defs.mk
+@@ -1187,7 +1187,7 @@ BUNDLE_PRODUCT_NAME  = $(subst $(TM),$(e
+ BUNDLE_VERSION	= $(subst -,_,$(J2ME_BUILD_VERSION_STRING))
+ BUNDLE_TARGET	= $(subst -,_,$(CVM_TARGET))
+ 
+-BINARY_BUNDLE_NAME	= \
++BINARY_BUNDLE_NAME	?= \
+ 	$(BUNDLE_PRODUCT_NAME)-$(BUNDLE_VERSION)-$(BUNDLE_TARGET)-bin
+ BINARY_BUNDLE_DIRNAME	= $(BINARY_BUNDLE_NAME)
+ 
+@@ -2153,11 +2153,11 @@ endif
+ 
+ # Note, ALL_INCLUDE_FLAGS flags is setup in rules.mk so
+ # abs2rel only needs to be called on it once.
+-CPPFLAGS 	+= $(CVM_DEFINES) $(ALL_INCLUDE_FLAGS)
+-CFLAGS_SPEED   	= $(CFLAGS) $(CCFLAGS_SPEED) $(CPPFLAGS)
+-CFLAGS_SPACE   	= $(CFLAGS) $(CCFLAGS_SPACE) $(CPPFLAGS)
+-CFLAGS_LOOP    	= $(CFLAGS) $(CCFLAGS_LOOP)  $(CPPFLAGS)
+-CFLAGS_FDLIB   	= $(CFLAGS) $(CCFLAGS_FDLIB) $(CPPFLAGS)
++CVM_CPPFLAGS 	+= $(CVM_DEFINES) $(ALL_INCLUDE_FLAGS)
++CFLAGS_SPEED   	= $(CFLAGS) $(CCFLAGS_SPEED) $(CVM_CPPFLAGS)
++CFLAGS_SPACE   	= $(CFLAGS) $(CCFLAGS_SPACE) $(CVM_CPPFLAGS)
++CFLAGS_LOOP    	= $(CFLAGS) $(CCFLAGS_LOOP)  $(CVM_CPPFLAGS)
++CFLAGS_FDLIB   	= $(CFLAGS) $(CCFLAGS_FDLIB) $(CVM_CPPFLAGS)
+ CFLAGS_JCS	= 
+ 
+ LINKFLAGS       += -g -Wl,-export-dynamic $(LINK_ARCH_FLAGS)
+@@ -2165,13 +2165,13 @@ LINKLIBS     	+= -lpthread -ldl $(LINK_A
+ LINKLIBS_JCS    +=
+ 
+ SO_CCFLAGS   	= $(CCFLAGS_SPEED)
+-SO_CFLAGS	= $(CFLAGS) $(SO_CCFLAGS) $(CPPFLAGS)
++SO_CFLAGS	= $(CFLAGS) $(SO_CCFLAGS) $(CVM_CPPFLAGS)
+ SO_LINKFLAGS 	= $(LINKFLAGS) -shared
+ 
+ #
+ # commands for running the tools
+ #
+-ASM_CMD 	= $(AT)$(TARGET_AS) $(ASM_FLAGS) -D_ASM $(CPPFLAGS) \
++ASM_CMD 	= $(AT)$(TARGET_AS) $(ASM_FLAGS) -D_ASM $(CVM_CPPFLAGS) \
+ 			-o $@ $(call abs2rel,$<)
+ 
+ # compileCCC(flags, objfile, srcfiles)
+Index: cdc/build/share/rules.mk
+===================================================================
+--- cdc/build/share/rules.mk.orig
++++ cdc/build/share/rules.mk
+@@ -521,7 +521,7 @@ endif
+ # As a performance improvement, evaluate some flags in case
+ # they contain shell commands.
+ # FIXME: Disabled because this causes GCI build failures
+-#$(J2ME_CLASSLIB):: CPPFLAGS := $(CPPFLAGS)
++#$(J2ME_CLASSLIB):: CVM_CPPFLAGS := $(CVM_CPPFLAGS)
+ 
+ $(J2ME_CLASSLIB):: initbuild
+ $(J2ME_CLASSLIB):: btclasses $(CVM_BUILDTIME_CLASSESZIP)
+@@ -708,14 +708,14 @@ $(CVM_OBJDIR)/executejava.o: $(CVM_DERIV
+ # command to use to generate dependency makefiles if requested
+ ifeq ($(GENERATEMAKEFILES), true)
+ GENERATEMAKEFILES_CMD = \
+-	@$(TARGET_CC) $(CCDEPEND) $(CC_ARCH_FLAGS) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(CCDEPEND) $(CC_ARCH_FLAGS) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ 
+ # command to use to generate stack map analysis files if requested
+ ifeq ($(CVM_CSTACKANALYSIS), true)
+ CSTACKANALYSIS_CMD = \
+-	$(AT)$(TARGET_CC) -S $(CCFLAGS) $(CPPFLAGS) -o $(@:.o=.asm) $<
++	$(AT)$(TARGET_CC) -S $(CCFLAGS) $(CVM_CPPFLAGS) -o $(@:.o=.asm) $<
+ endif
+ 
+ #
+@@ -751,7 +753,7 @@ $(CVM_OBJDIR)/%.o: %.S
+ 	@echo "as  $<"
+ 	$(ASM_CMD)
+ ifeq ($(GENERATEMAKEFILES), true)
+-	@$(TARGET_CC) $(ASM_ARCH_FLAGS) $(CCDEPEND) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(ASM_ARCH_FLAGS) $(CCDEPEND) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ ifeq ($(CVM_CSTACKANALYSIS), true)
+@@ -772,7 +774,7 @@ $(CVM_FDLIB_FILES): $(CVM_OBJDIR)/%.o: $
+ 	@echo "cc  $<"
+ 	$(CC_CMD_FDLIB)
+ ifeq ($(GENERATEMAKEFILES), true)
+-	@$(TARGET_CC) $(CC_ARCH_FLAGS) $(CCDEPEND) $(CPPFLAGS) $< \
++	@$(TARGET_CC) $(CC_ARCH_FLAGS) $(CCDEPEND) $(CVM_CPPFLAGS) $< \
+ 		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
+ endif
+ 
+Index: cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
+===================================================================
+--- cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c.orig
++++ cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
+@@ -41,8 +41,8 @@
+ #include <dlfcn.h>
+ #include <stddef.h>
+ /* avoid conflicting ucontext definitions */
+-#define ucontext asm_ucontext
+-#include <asm/ucontext.h>
++/*#define ucontext asm_ucontext*/
++#include <ucontext.h>
+ #include <unistd.h>
+ 
+ #define MAXSIGNUM 32

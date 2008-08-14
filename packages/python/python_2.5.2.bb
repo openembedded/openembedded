@@ -3,10 +3,10 @@ HOMEPAGE = "http://www.python.org"
 LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
-DEPENDS = "python-native readline zlib gdbm openssl sqlite3 tcl tk"
-DEPENDS_sharprom = "python-native readline zlib gdbm openssl"
+DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
+DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # bump this on every change in contrib/python/generate-manifest-2.5.py
-PR = "ml8"
+PR = "ml9"
 
 PYTHON_MAJMIN = "2.5"
 

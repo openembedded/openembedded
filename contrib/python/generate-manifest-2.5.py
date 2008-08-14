@@ -22,16 +22,19 @@ class MakefileMaker:
         self.packages = {}
         self.targetPrefix = "${libdir}/python%s/" % VERSION[:3]
         self.output = outfile
-        self.out( "# WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file." )
-        self.out( "# Generator: '%s' Version %s (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>" % ( sys.argv[0], __version__ ) )
-        self.out( "# Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy" )
+        self.out( """ \
+# WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
+# Generator: '%s' Version %s (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
+""" % ( sys.argv[0], __version__ ) )
+
     #
     # helper functions
     #
 
     def out( self, data ):
         """print a line to the output file"""
-        print >> self.output, data
+        self.output.write( "%s\n" % data )
 
     def setPrefix( self, targetPrefix ):
         """set a file prefix for addPackage files"""
@@ -167,8 +170,8 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-audio", "Python Audio Handling", "python-core",
     "wave.* chunk.* sndhdr.* lib-dynload/ossaudiodev.so lib-dynload/audioop.so" )
 
-    m.addPackage( 0, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
-    "bsddb" ) # package
+    m.addPackage( 1, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
+    "bsddb lib-dynload/_bsddb.so" ) # package
 
     m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core python-lang",
     "codecs.* encodings gettext.* locale.* lib-dynload/_locale.so lib-dynload/unicodedata.so stringprep.* xdrlib.*" )

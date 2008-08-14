@@ -18,6 +18,14 @@ do_avr32_reconf () {
 
 do_avr32_configure_bfd () {
         if test ${TARGET_ARCH} == avr32; then
+						# fix Makefile brokenness due to unmatched single quotes 
+						(cd ${B} && sed -i -e "s,'CC=ccache,'CC=${CC}'," Makefile) 
+						# *_alias options are not supported in binutils 2.17 and need
+						# to be removed
+						(cd ${B} && sed -i -e "s,'host_alias=.*',," Makefile)
+						(cd ${B} && sed -i -e "s,'build_alias=.*',," Makefile)
+						(cd ${B} && sed -i -e "s,'target_alias=*.',," Makefile)
+
             (cd ${B} && make configure-bfd) || die "Error running 'make configure-bfd'"
             (cd ${B}/bfd && make headers) || die "Error running 'make headers'"
         fi

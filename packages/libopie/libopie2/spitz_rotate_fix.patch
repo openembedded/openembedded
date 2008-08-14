@@ -1,0 +1,23 @@
+--- libopie2/opiecore/device/odevice_zaurus.cpp	30 Jul 2007 19:10:52 -0000	1.53
++++ libopie2/opiecore/device/odevice_zaurus.cpp	8 Aug 2008 23:15:15 -0000
+@@ -760,9 +760,18 @@
+         case Key_Up   :
+         case Key_Down :
+         {
+-            if (rotation()==Rot90) {
+-                newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
++            if (d->m_model == Model_Zaurus_SLC3000) {
++                // This ensures that the cursor keys work correctly and that the
++                // side wheel works as expected when the screen is flipped over
++                if (rotation() == Rot270)
++                    newkeycode = Key_Left + ( keycode - Key_Left + 1 ) % 4;
+             }
++            else {
++                if (rotation()==Rot90)
++                    newkeycode = Key_Left + ( keycode - Key_Left + 3 ) % 4;
++            }
++            break;
++            
+         }
+         break;
+ 

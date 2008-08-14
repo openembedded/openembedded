@@ -1,0 +1,310 @@
+commit 23a7d5dea599efec1f459bac64cf9edc4bd5ae11
+Author: Ilpo Ruotsalainen <ilpo.ruotsalainen@movial.fi>
+Date:   Thu Nov 29 12:29:59 2007 +0000
+
+    Implement ARM optimized version of fill routines.
+
+diff --git a/configure.ac b/configure.ac
+index 22a91ef..3ac2a40 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -148,6 +148,32 @@ fi
+ AM_CONDITIONAL(USE_SSE, test $have_sse_intrinsics = yes)
+ 
+ dnl ========================================================
++
++dnl Test for architechture specific optimizations for this platform
++
++AC_MSG_CHECKING(for architechture specific optimizations)
++
++use_arch_opts=no
++
++case "$host_cpu" in
++arm)
++	if test "$GCC" = "yes" ; then
++		use_arch_opts=yes
++		ARCH_OPT_SOURCES='pixman-arch-arm.lo'
++	fi
++	;;
++esac
++
++AC_MSG_RESULT($use_arch_opts)
++
++if test $use_arch_opts = yes ; then
++	AC_DEFINE(USE_ARCH_OPTS, 1, [use architechture specific optimizations])
++fi
++
++AC_SUBST([ARCH_OPT_SOURCES])
++AM_CONDITIONAL(USE_ARCH_OPTS, test $use_arch_opts = yes)
++
++dnl ========================================================
+ AC_SUBST(MMX_CFLAGS)
+ 
+ PKG_CHECK_MODULES(GTK, [gtk+-2.0], [HAVE_GTK=yes], [HAVE_GTK=no])
+diff --git a/pixman/Makefile.am b/pixman/Makefile.am
+index 66283a2..dab6363 100644
+--- a/pixman/Makefile.am
++++ b/pixman/Makefile.am
+@@ -20,6 +20,11 @@ libpixman_1_la_SOURCES =		\
+ libpixmanincludedir = $(includedir)/pixman-1/
+ libpixmaninclude_HEADERS = pixman.h
+ 
++if USE_ARCH_OPTS
++libpixman_1_la_LIBADD += $(ARCH_OPT_SOURCES)
++libpixman_1_la_DEPENDENCIES = $(ARCH_OPT_SOURCES)
++endif
++
+ # mmx code
+ if USE_MMX
+ noinst_LTLIBRARIES = libpixman-mmx.la
+diff --git a/pixman/pixman-arch-arm.c b/pixman/pixman-arch-arm.c
+new file mode 100644
+index 0000000..655092c
+--- /dev/null
++++ b/pixman/pixman-arch-arm.c
+@@ -0,0 +1,205 @@
++/*
++ * Copyright © 2007 Movial Creative Technologies Inc
++ *
++ * Permission to use, copy, modify, distribute, and sell this software and its
++ * documentation for any purpose is hereby granted without fee, provided that
++ * the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation.
++ *
++ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS
++ * SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
++ * FITNESS, IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
++ * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
++ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
++ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
++ * SOFTWARE.
++ *
++ * Author: Ilpo Ruotsalainen <ilpo.ruotsalainen@movial.fi>
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include "pixman.h"
++#include "pixman-private.h"
++
++static void
++pixman_fill8 (uint32_t  *bits,
++	      int	stride,
++	      int	x,
++	      int	y,
++	      int	width,
++	      int	height,
++	      uint32_t  xor)
++{
++    int byte_stride = stride * sizeof (uint32_t);
++    uint8_t *dst = (uint8_t *) bits;
++    uint8_t v = xor & 0xff;
++
++    xor = v | (v << 8);
++    xor |= xor << 16;
++
++    dst = dst + y * byte_stride + x;
++
++    while (height--)
++    {
++	uint32_t dummy1, dummy2;
++
++	asm volatile(
++	    /* Check if the fill width is very small */
++	    "	cmp	%0, #8\n"
++	    "	bcc	2f\n"
++	    /* Output single pixels until aligned to word boundary */
++	    "1:	tst	%1, #3\n"
++	    "	strneb	%4, [%1], #1\n"
++	    "	subne	%0, %0, #1\n"
++	    "	bne	1b\n"
++	    /* Output up to 16 pixels per iteration */
++	    "1:	subs	%0, %0, #8\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	subcss	%0, %0, #8\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	bcs	1b\n"
++	    /* Finish up any remaining pixels */
++	    "	and	%0, %0, #7\n"
++	    "2:	subs	%0, %0, #1\n"
++	    "	strcsb	%4, [%1], #1\n"
++	    "	subcss	%0, %0, #1\n"
++	    "	strcsb	%4, [%1], #1\n"
++	    "	bcs	2b\n"
++	    : "=r" (dummy1), "=r" (dummy2)
++	    : "0" (width), "1" (dst), "r" (xor)
++	    : "cc", "memory"
++	    );
++
++	dst += byte_stride;
++    }
++}
++
++static void
++pixman_fill16 (uint32_t *bits,
++	       int       stride,
++	       int       x,
++	       int       y,
++	       int       width,
++	       int       height,
++	       uint32_t  xor)
++{
++    int short_stride = (stride * sizeof (uint32_t)) / sizeof (uint16_t);
++    uint16_t *dst = (uint16_t *)bits;
++    uint16_t v = xor & 0xffff;
++
++    xor = v | v << 16;
++
++    dst = dst + y * short_stride + x;
++
++    while (height--)
++    {
++	uint32_t dummy1, dummy2;
++
++	asm volatile(
++	    /* Check if the fill width is very small */
++	    "	cmp	%0, #4\n"
++	    "	bcc	2f\n"
++	    /* Output single pixels until aligned to word boundary */
++	    "1:	tst	%1, #2\n"
++	    "	strneh	%4, [%1], #2\n"
++	    "	subne	%0, %0, #1\n"
++	    "	bne	1b\n"
++	    /* Output up to 8 pixels per iteration */
++	    "1:	subs	%0, %0, #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	subcss	%0, %0, #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	bcs	1b\n"
++	    /* Finish up any remaining pixels */
++	    "	and	%0, %0, #3\n"
++	    "2:	subs	%0, %0, #1\n"
++	    "	strcsh	%4, [%1], #2\n"
++	    "	bcs	2b\n"
++	    : "=r" (dummy1), "=r" (dummy2)
++	    : "0" (width), "1" (dst), "r" (xor)
++	    : "cc", "memory"
++	    );
++
++	dst += short_stride;
++    }
++}
++
++static void
++pixman_fill32 (uint32_t *bits,
++	       int       stride,
++	       int       x,
++	       int       y,
++	       int       width,
++	       int       height,
++	       uint32_t  xor)
++{
++    bits = bits + y * stride + x;
++    
++    while (height--)
++    {
++	uint32_t dummy1, dummy2;
++
++	asm volatile(
++	    /* Check if the fill width is very small */
++	    "	cmp	%0, #2\n"
++	    "	bcc	2f\n"
++	    /* Output up to 4 pixels per iteration */
++	    "1:	subs	%0, %0, #2\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	subcss	%0, %0, #2\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	strcs	%4, [%1], #4\n"
++	    "	bcs	1b\n"
++	    /* Output last pixel if necessary */
++	    "2:	tst	%0, #1\n"
++	    "	strne	%4, [%1], #4\n"
++	    : "=r" (dummy1), "=r" (dummy2)
++	    : "0" (width), "1" (bits), "r" (xor)
++	    : "cc", "memory"
++	    );
++
++	bits += stride;
++    }
++}
++
++pixman_bool_t
++pixman_fill (uint32_t *bits,
++	     int stride,
++	     int bpp,
++	     int x,
++	     int y,
++	     int width,
++	     int height,
++	     uint32_t xor)
++{
++    switch (bpp)
++    {
++    case 8:
++	pixman_fill8 (bits, stride, x, y, width, height, xor);
++	break;
++	
++    case 16:
++	pixman_fill16 (bits, stride, x, y, width, height, xor);
++	break;
++	
++    case 32:
++	pixman_fill32 (bits, stride, x, y, width, height, xor);
++	break;
++
++    default:
++	return FALSE;
++	break;
++    }
++	
++    return TRUE;
++}
+diff --git a/pixman/pixman-arch.h b/pixman/pixman-arch.h
+new file mode 100644
+index 0000000..1eee9d3
+--- /dev/null
++++ b/pixman/pixman-arch.h
+@@ -0,0 +1,7 @@
++#ifdef USE_ARCH_OPTS
++
++#ifdef __arm__
++#define USE_ARCH_FILL
++#endif
++
++#endif
+--- /tmp/pixman-utils.c	2008-08-14 12:38:44.000000000 +0200
++++ pixman-0.11.8/pixman/pixman-utils.c	2008-08-14 12:40:03.503198000 +0200
+@@ -28,6 +28,7 @@
+ #include <stdlib.h>
+ 
+ #include "pixman-private.h"
++#include "pixman-arch.h"
+ #include "pixman-mmx.h"
+ 
+ PIXMAN_EXPORT pixman_bool_t
+@@ -84,6 +85,7 @@
+ 	return FALSE;
+ }
+ 
++#ifndef USE_ARCH_FILL
+ static void
+ pixman_fill8 (uint32_t  *bits,
+ 	      int	stride,
+@@ -197,7 +199,7 @@
+ 
+     return TRUE;
+ }
+-
++#endif
+ 
+ /*
+  * Compute the smallest value no less than y which is on a

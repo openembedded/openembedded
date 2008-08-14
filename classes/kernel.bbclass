@@ -233,6 +233,9 @@ ALLOW_EMPTY_kernel-image = "1"
 DEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 RDEPENDS_kernel-module-dtl1-cs = "bluez-dtl1-workaround"
 
+# renamed modules
+RPROVIDES_kernel-module-aes-generic = "kernel-module-aes"
+
 pkg_postinst_kernel-image () {
 if [ ! -e "$D/lib/modules/${KERNEL_VERSION}" ]; then
 	mkdir -p $D/lib/modules/${KERNEL_VERSION}
@@ -450,7 +453,7 @@ python populate_packages_prepend () {
 # Support checking the kernel size since some kernels need to reside in partitions
 # with a fixed length or there is a limit in transferring the kernel to memory
 do_sizecheck() {
-	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" -a -z "${DONT_CHECK_KERNELSIZE}"]; then
+	if [ ! -z "${KERNEL_IMAGE_MAXSIZE}" -a -z "${DONT_CHECK_KERNELSIZE}" ]; then
         	size=`ls -l ${KERNEL_OUTPUT} | awk '{ print $5}'`
         	if [ $size -ge ${KERNEL_IMAGE_MAXSIZE} ]; then
                 	rm ${KERNEL_OUTPUT}
