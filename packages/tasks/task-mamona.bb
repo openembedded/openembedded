@@ -42,7 +42,6 @@ RDEPENDS = "\
     tslib \
     tslib-calibrate \
     udev \
-    update-modules \
     wireless-tools \
     wpa-supplicant \
     xserver-kdrive-xomap \
