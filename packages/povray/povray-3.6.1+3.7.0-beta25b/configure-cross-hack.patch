@@ -1,0 +1,42 @@
+--- /tmp/configure.ac	2008-08-14 01:13:37.000000000 +0200
++++ povray-3.7.0.beta.25b/configure.ac	2008-08-14 01:17:56.253198000 +0200
+@@ -357,8 +357,6 @@
+   AC_MSG_RESULT([yes])
+   AX_CHECK_LIB([z], [$required_libz_version], [z], [zlibVersion], [zlib.h], [zlibVersion()], [$with_zlib])
+   if test x"$ax_check_lib" != x"ok"; then
+-    AC_MSG_ERROR([cannot find a suitable ZLIB library])
+-  else
+     pov_libz=ok
+   fi
+ fi
+@@ -373,8 +371,6 @@
+   AC_MSG_RESULT([yes])
+   AX_CHECK_LIB([png], [$required_libpng_version], [png12 png], [png_get_libpng_ver], [png.h], [png_get_libpng_ver(NULL)], [$with_libpng])
+   if test x"$ax_check_lib" != x"ok"; then
+-    AC_MSG_ERROR([cannot find a suitable PNG library])
+-  else
+     pov_libpng=ok
+   fi
+ fi
+@@ -390,11 +386,9 @@
+   AC_MSG_RESULT([yes])
+   AX_CHECK_LIBJPEG([$required_libjpeg_version], [$with_libjpeg])
+   if test x"$ax_check_libjpeg" != x"ok"; then
+-    AC_MSG_ERROR([cannot find a suitable JPEG library])
+-  else
+     # create jversion.h in builddir
+     test -d "./source" || mkdir ./source
+-    echo "#define JVERSION \"${ax_check_libjpeg_version}\"" > ./source/jversion.h
++    echo "#define JVERSION \"62\"" > ./source/jversion.h
+     pov_libjpeg=ok
+   fi
+ fi
+@@ -409,8 +403,6 @@
+   AC_MSG_RESULT([yes])
+   AX_CHECK_LIBTIFF([$required_libtiff_version], [$with_libtiff])
+   if test x"$ax_check_libtiff" != x"ok"; then
+-    AC_MSG_ERROR([cannot find a suitable TIFF library])
+-  else
+     pov_libtiff=ok
+   fi
+ fi

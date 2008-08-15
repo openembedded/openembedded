@@ -1,0 +1,70 @@
+--- /tmp/processoptions.cpp	2008-08-14 01:47:37.000000000 +0200
++++ povray-3.7.0.beta.25b/source/base/processoptions.cpp	2008-08-14 01:48:23.853198000 +0200
+@@ -90,6 +90,7 @@
+  *
+  *********************************************************************************/
+ 
++#include <cstring>
+ #include <cstdarg>
+ #include <cctype>
+ 
+--- /tmp/fileinputoutput.cpp	2008-08-14 01:49:16.000000000 +0200
++++ povray-3.7.0.beta.25b/source/base/fileinputoutput.cpp	2008-08-14 01:49:33.043198000 +0200
+@@ -90,6 +90,7 @@
+  *
+  *********************************************************************************/
+ 
++#include <cstring>
+ #include <cstdlib>
+ #include <cstdarg>
+ 
+--- /tmp/textstreambuffer.cpp	2008-08-14 01:52:07.000000000 +0200
++++ povray-3.7.0.beta.25b/source/base/textstreambuffer.cpp	2008-08-14 01:52:21.693198000 +0200
+@@ -90,6 +90,7 @@
+  *
+  *********************************************************************************/
+ 
++#include <cstring>
+ #include <algorithm>
+ 
+ #include "configbase.h"
+--- /tmp/fileinputoutput.h	2008-08-14 01:53:49.000000000 +0200
++++ povray-3.7.0.beta.25b/source/base/fileinputoutput.h	2008-08-14 01:54:07.213198000 +0200
+@@ -96,6 +96,7 @@
+ #include "base/types.h"
+ #include "base/path.h"
+ 
++#include <cstring>
+ #include <string>
+ 
+ namespace pov_base
+--- /tmp/configbase.h	2008-08-14 01:57:58.000000000 +0200
++++ povray-3.7.0.beta.25b/source/base/configbase.h	2008-08-14 01:58:12.373198000 +0200
+@@ -95,6 +95,7 @@
+ #ifndef CONFIGBASE_H
+ #define CONFIGBASE_H
+ 
++#include <climits>
+ #include "syspovconfigbase.h"
+ 
+ #ifndef DBL
+--- /tmp/unixoptions.cpp	2008-08-14 02:02:52.000000000 +0200
++++ povray-3.7.0.beta.25b/vfe/unix/unixoptions.cpp	2008-08-14 10:22:09.073198000 +0200
+@@ -454,13 +454,16 @@
+ 				char *errormsg =
+ 					"Cannot determine the current working directory.\n"
+ 					"Check that the PWD environment variable does exist and is valid.\n";
++				int no_error_call = 1;
+ 				if(no_error_call)
+ 				{
+ 					fprintf(stderr, "%s: %s\n", PACKAGE, errormsg);
+ 					exit(EXIT_FAILURE);
+ 				}
++#ifdef USE_ERROR				
+ 				else
+-					Error("%s", errormsg);
++					std::Error("%s", errormsg);
++#endif
+ 			}
+ #endif
+ 

@@ -30,6 +30,14 @@ EXTRA_OECONF = "\
 
 inherit autotools
 
+# hack to get config.rpath in, it comes from gettext
+do_configure_prepend () {
+
+        ${@['','cp ${STAGING_DATADIR_NATIVE}/automake-1.10/config.rpath ${S}'][bb.data.getVar('PREFERRED_VERSION_automake-native',d,1) == '1.10']}
+
+}
+	
+
 do_stage() {
 	install -d ${STAGING_INCDIR}/classpath
 	install -m 0644 include/jni* ${STAGING_INCDIR}/classpath

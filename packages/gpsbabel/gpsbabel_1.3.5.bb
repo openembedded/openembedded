@@ -6,7 +6,7 @@ LICENSE = "GPL"
 
 PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/gpsbabel/gpsbabel-${PV}.tar.gz"
+SRC_URI = "http://www.gpsbabel.org/plan9.php?dl=gpsbabel-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
