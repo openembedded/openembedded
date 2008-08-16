@@ -26,6 +26,9 @@ do_configure_prepend() {
 	# remove Werror from VFS_CFLAGS
 	sed -i s:-Werror::g configure.in
 
+	# G_GNUC_FUNCTION is deprecated
+	sed -i -e s,-DG_DISABLE_DEPRECATED,-DSED_ROCKS_DUDE, */Makefile.am
+
 	touch gtk-doc.make
 }
 
