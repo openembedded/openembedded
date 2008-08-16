@@ -50,6 +50,7 @@ TOOLS_INSTALL = "\
   nano \
   powertop \
   s3c24xx-gpio \
+  sysstat \
 "
 
 # audio
