@@ -54,7 +54,8 @@ Website:    http://fl0rian.wordpress.com, http://www.kernelconcepts.de/~fuchs/
 Machines:   nokia770, netvista, htcuniversal, netbook-pro, htctornado, bd-neon
 Distros:  
 Interests:  GPEPhone, OpenSync, GPE, Matchbox, *dbus*, X, sqlite, Palm TX,
-interests:  phone devices
+interests:  phone devices, evaluation hardware and PDAs
+Recipes:    atd
 Recipes:    gpe-*, libgpe*, libeventdb, libtododb, libcontactsdb, xserver-common
 Recipes:    gomunicator, mbmerlin, prismstumbler, gkdial, fbreader, networkmanager
 Recipes:    minimix, minilite, miniclipboard, gpephone*

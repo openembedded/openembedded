@@ -1,5 +1,5 @@
 require apt.inc
-PR = "r1"
+PR = "r3"
 
 SRC_URI += "file://nodoc.patch;patch=1"
 

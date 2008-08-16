@@ -2,7 +2,7 @@ DESCRIPTION = "Python Packet Capture Library"
 SECTION = "devel/python"
 PRIORITY = "optional"
 RDEPENDS = "python-core"
-DEPENDS = "libpcap-0.7.2 libnet-1.1.1"
+DEPENDS = "libpcap libnet"
 SRCNAME = "pycap"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
