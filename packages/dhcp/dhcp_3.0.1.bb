@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Internet Software Consortium DHCP package"
 HOMEPAGE = "http://www.isc.org/"
 LICENSE = "BSD"
-PR = "r2"
+PR = "r3"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://noattrmode.patch;patch=1 \
 	   file://fixincludes.patch;patch=1 \
@@ -33,12 +33,13 @@ do_install() {
 	install -m 0644 ${WORKDIR}/default-server ${D}${sysconfdir}/default/dhcp-server
 	install -m 0644 ${WORKDIR}/dhclient.conf ${D}${sysconfdir}/dhcp/dhclient.conf
 	install -m 0644 ${WORKDIR}/dhcpd.conf ${D}${sysconfdir}/dhcp/dhcpd.conf
+	install -d ${D}/var/lib/dhcp
 }
 
 PACKAGES = "${PN}-dbg dhcp-server dhcp-client dhcp-relay dhcp-omshell dhcp-dev dhcp-doc"
 FILES_dhcp-server = "${sbindir}/dhcpd /etc/init.d/dhcp-server /etc/default/dhcp-server /etc/dhcp/dhcpd.conf"
 FILES_dhcp-relay = "${sbindir}/dhcrelay /etc/init.d/dhcp-relay /etc/default/dhcp-relay"
-FILES_dhcp-client = "/sbin/ /etc/dhcp/dhclient.conf"
+FILES_dhcp-client = "/sbin/ /etc/dhcp/dhclient.conf /var/lib/dhcp"
 FILES_dhcp-omshell = "${bindir}/omshell"
 
 CONFFILES_dhcp-server_nylon = "/etc/dhcp/dhcpd.conf"

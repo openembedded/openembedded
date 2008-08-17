@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r27"
+PR = "r30"
 
 inherit task
 
@@ -9,7 +9,6 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   openmoko-agpsui \
   gypsy \
-  py-odeviced \
   gsm0710muxd \
   ppp \
   bluez-hcidump \
@@ -17,6 +16,7 @@ RDEPENDS_task-openmoko-feed = "\
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   free42-vga \
+  git \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
   ipkg-link ipkg-utils \
   joe \
@@ -26,11 +26,10 @@ RDEPENDS_task-openmoko-feed = "\
   mplayer \
   mtpaint \
   mysql \
-  nano \
+  nano navit \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
-#  python-efl \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
@@ -46,7 +45,6 @@ RDEPENDS_task-openmoko-feed = "\
   classpath \
   gpsdrive \
   asterisk \
-  qtopia-phone \
   gnash \
   mono \
   diversity-daemon \
