@@ -1,0 +1,18 @@
+--- tangogps-0.9.2/src/gps_functions.c~	2008-08-15 05:54:26.000000000 +0930
++++ tangogps-0.9.2/src/gps_functions.c	2008-08-15 23:29:19.000000000 +0930
+@@ -649,6 +649,7 @@
+ 		int timestamp, double latitude, double longitude, double altitude, void *user_data)
+ {
+ 	if (gpsdata->valid) {
++		gpsdata->fix.time = timestamp;
+ 		gpsdata->fix.latitude = latitude;
+ 		gpsdata->fix.longitude = longitude;
+ 		gpsdata->fix.altitude = altitude;
+@@ -664,6 +665,7 @@
+ static void on_course_changed(GypsyCourse *course, GypsyCourseFields fields_set,
+ 		int timestamp, double speed, double direction, double climb, void *user_data)
+ {
++	gpsdata->fix.time = timestamp;
+ 	gpsdata->fix.speed = speed/3.6;
+ 	gpsdata->fix.track = direction;
+ }
