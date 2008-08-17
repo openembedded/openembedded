@@ -1,6 +1,6 @@
 require php.inc
 
-PR = "r3"
+PR = "r1"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
@@ -14,7 +14,7 @@ EXTRA_OECONF = "    --without-iconv \
     		    --enable-wddx \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
-    		    --with-zlib \
+		    --with-zlib \
                     --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
                     --with-mysqli="${STAGING_BINDIR_NATIVE}/mysql_config" \
 "
