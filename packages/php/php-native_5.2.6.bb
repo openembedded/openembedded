@@ -2,7 +2,7 @@ require php_${PV}.bb
 
 SECTION = "console/network"
 DEPENDS = "zlib-native libxml2-native mysql-native"
-PR = "r2"
+PR = "r1"
 
 S = "${WORKDIR}/php-${PV}"
 
