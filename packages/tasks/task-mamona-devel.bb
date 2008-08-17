@@ -1,14 +1,15 @@
 DESCRIPTION = "Necessary packages for development at runtime environment"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
 
 RDEPENDS = "\
-  task-mamona \  
+  task-mamona \
   gdb \
   strace \
+  udev-usbserial \
   usbnet \
   openssh-sshd \
   openssh-scp \
