@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r28"
+PR = "r29"
 
 inherit task
 
@@ -25,7 +25,7 @@ RDEPENDS_task-openmoko-feed = "\
   mplayer \
   mtpaint \
   mysql \
-  nano \
+  nano navit \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
