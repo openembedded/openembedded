@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer zlib"
-PR = "r3"
+PR = "r4"
 
 # This uses the systems ffmpeg, which is unsupported, but we can't build the internal one with the current autotools (ab)usage
 DEFAULT_PREFERENCE = "-1"
