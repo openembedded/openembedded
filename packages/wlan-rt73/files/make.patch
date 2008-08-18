@@ -1,0 +1,20 @@
+--- Module/Makefile	2008-05-06 07:58:14.000000000 +0200
++++ Module/Makefile	2008-08-04 15:08:58.000000000 +0200
+@@ -14,6 +14,8 @@
+ #Support Block Net-If during TxSw queue full.
+ HAS_BLOCK_NET_IF=y
+ 
++VERSION := $(shell uname -r)
++MODPATH := /lib/modules/$(VERSION)
+ 
+ WFLAGS := -Wall -Wstrict-prototypes -Wno-trigraphs
+ 
+@@ -35,7 +37,7 @@
+ EXTRA_CFLAGS += $(WFLAGS)
+ 
+ ifeq ($(PLATFORM),PC)
+-LINUX_SRC =/lib/modules/$(shell uname -r)/build
++LINUX_SRC ?= $(MODPATH)/source
+ endif
+ ifeq ($(PLATFORM),CMPC)
+ LINUX_SRC = /home/fonchi/vendor/kernel-default-2.6.21/linux-2.6.21
