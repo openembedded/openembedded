@@ -31,14 +31,21 @@ done
 
 echo 17 > /proc/progress
 
-# set UDMA66
+# set UDMA66, enable dma
 for i in 0 1; do
+	hdparm -d 1 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
 	hdparm -X66 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
 done
 
 # accustic management
 for i in 0 1; do
 	hdparm -M 128 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
+done
+
+# disable dma for cd drive ... 
+# we remove this when the dma timeout problem is fixed!
+for i in 0 1; do
+	hdparm -d 0 /dev/ide/host0/bus$i/target0/lun0/cd || /bin/true;
 done
 
 echo 18 > /proc/progress
