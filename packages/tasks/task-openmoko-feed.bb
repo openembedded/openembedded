@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r30"
+PR = "r31"
 
 inherit task
 
@@ -22,11 +22,13 @@ RDEPENDS_task-openmoko-feed = "\
   joe \
   kbdd \
   kexec-tools \
+  libnotify \
   midori \
   mplayer \
   mtpaint \
   mysql \
   nano navit \
+  notification-daemon \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial \
@@ -39,17 +41,18 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
-  libswt3.4-gtk-java \
-  cacao \
-  jamvm \
-  classpath \
   gpsdrive \
   asterisk \
-  gnash \
   mono \
   diversity-daemon \
   diversity-nav \
   diversity-maps-taipei \
   assassin \
   tangogps \
+\
+  libswt3.4-gtk-java \
+  cacao \
+  jamvm \
+  classpath \
+  gnash \
 "
