@@ -29,6 +29,8 @@ SRCREV = ${@bb.fatal('SRCREV is not defined in this phoneme-advanced recipe!')}
 
 COMMON_DIR  = "${libdir_jvm}/${PN}"
 
+PME_PROFILE ?= "foundation"
+
 do_compile() {
 	set_arch
 	oe_runmake -C cdc/build/linux-$ARCH-generic bin
@@ -50,9 +52,7 @@ do_configure() {
   cd cdc/build/linux-$ARCH-generic
 
   echo "Configuring PhoneME Advanced build"
-  # At the moment we do not support anything else than the foundation 
-  #profiles.
-  pmo_start J2ME_CLASSLIB foundation
+  pmo_start J2ME_CLASSLIB ${PME_PROFILE}
 
   # Dispatch to arch-specific functions.
   oe_phoneme_config$ARCH
