@@ -1,0 +1,13 @@
+Index: madwifi-ng-r3314-20080131/ath/if_athvar.h
+===================================================================
+--- madwifi-ng-r3314-20080131.orig/ath/if_athvar.h	2008-06-12 03:19:30.000000000 +0200
++++ madwifi-ng-r3314-20080131/ath/if_athvar.h	2008-06-12 03:19:41.000000000 +0200
+@@ -522,7 +522,7 @@
+ 	atomic_t av_beacon_alloc;       /* set to 1 when the next beacon needs
+ 					   to be recomputed */
+ #else
+-	unsigned int av_beacon_alloc;
++	unsigned long av_beacon_alloc;
+ #endif
+ };
+ #define	ATH_VAP(_v)	((struct ath_vap *)(_v))
