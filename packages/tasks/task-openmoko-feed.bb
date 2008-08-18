@@ -16,22 +16,19 @@ RDEPENDS_task-openmoko-feed = "\
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   free42-vga \
-  git \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
   kexec-tools \
-  libnotify \
   midori \
   mplayer \
   mtpaint \
   mysql \
-  nano navit \
-  notification-daemon \
+  nano \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
-  python python-pygtk python-pyserial \
+  python python-pygtk python-pyserial python-gst \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
@@ -41,18 +38,50 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
+#  libswt3.4-gtk-java \
+#  cacao \
+#  jamvm \
+#  classpath \
   gpsdrive \
   asterisk \
+#  gnash \
   mono \
   diversity-daemon \
   diversity-nav \
   diversity-maps-taipei \
+#  om-maps-berlin \
+#  om-maps-buenos-aires \
+#  om-maps-london \
+#  om-maps-new-york \
+#  om-maps-paris \
+#  om-maps-providence \
+#  om-maps-san-francisco \
+#  om-maps-sydney \
+#  om-maps-taipei \
+#  om-settings \
   assassin \
+#  assassin-thumbnail \
   tangogps \
-\
-  libswt3.4-gtk-java \
-  cacao \
-  jamvm \
-  classpath \
-  gnash \
+#  pyefl-sudoku \
+  minicom \
+  vim \
+#  iotop \
+#  evince \
+  epdf \
+  xprop \
+  xev \
+  xwininfo \
+  gpsd \
+  mc \
+  devmem2 \
+  bluez-utils-alsa \
+  tcpdump \
+  gdb \
+  lsof \
+#  openmoko-set-root-password \
+#  qtopia-phone-enable-debug \
+  git \
+  navit \
+  libnotify \
+  notification-daemon \
 "
