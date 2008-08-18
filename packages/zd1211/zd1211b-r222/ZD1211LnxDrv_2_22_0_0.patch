@@ -1,0 +1,60 @@
+--- ZD1211LnxDrv_2_22_0_0/Kopie von Makefile	2008-08-05 15:04:08.000000000 +0200
++++ ZD1211LnxDrv_2_22_0_0/Makefile	2008-08-05 15:09:28.000000000 +0200
+@@ -4,9 +4,11 @@
+ #
+ #
+ 
+-HOST=
+-CC=$(HOST)gcc
+-LD=$(HOST)ld
++#HOST=
++#CC=$(HOST)gcc
++#LD=$(HOST)ld
++VERSION := $(shell uname -r)
++MODPATH := /lib/modules/$(VERSION)
+ KERN_VER=$(shell uname -r | cut -b1-3;)
+ KDIR := /lib/modules/$(shell uname -r)/build
+ PWD := $(shell pwd)
+@@ -17,15 +19,17 @@
+ 
+ ifeq ($(KERN_VER), 2.6) 
+     KERN_26=y
+-    KERNEL_SOURCE=/usr/src/linux-2.6.9
++    KERNEL_SOURCE ?= $(MODPATH)/source
+ else 
+     KERN_24=y
+     KERNEL_SOURCE=/usr/src/linux-2.4
+ endif
+ 
+ SRC_DIR=src
+-DEFINES=-D__KERNEL__ -DMODULE=1
++DEFINES ?= -D__KERNEL__ -DMODULE=1
+ 
++# set to 1 for zd1211b
++ZD1211REV_B=1
+ 
+ KERNRELEASE := $(shell uname -r;)
+ MODPATH := /lib/modules/$(KERNRELEASE)
+@@ -258,14 +261,14 @@
+ endif
+ 
+ debug:
+-	gcc -o apdbg apdbg.c
+-	chmod +x apdbg
+-	cp ./apdbg /sbin/apdbg   
+-	make -C Menudbg
+-	mv Menudbg/menudbg .
+-	chmod +x menudbg
+-	cp ./menudbg /sbin
+-	gcc -DPKT_SEND_FUNCTION -o winevl_iface Winevl_iface/pkt_send.c Winevl_iface/winevl_bridge.c
++	#gcc -o apdbg apdbg.c
++	#chmod +x apdbg
++	#cp ./apdbg /sbin/apdbg   
++	#make -C Menudbg
++	#mv Menudbg/menudbg .
++	#chmod +x menudbg
++	#cp ./menudbg /sbin
++	#gcc -DPKT_SEND_FUNCTION -o winevl_iface Winevl_iface/pkt_send.c Winevl_iface/winevl_bridge.c
+ 
+ clean:
+ 	rm -rf .tmp_versions .*.cmd *.ko *.mod.c *.mod.o *.o $(SRC_DIR)/*.o  $(SRC_DIR)/.*.o.cmd menudbg apdbg winevl_iface
