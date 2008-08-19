@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r31"
+PR = "r32"
 
 inherit task
 
@@ -85,4 +85,7 @@ RDEPENDS_task-openmoko-feed = "\
   libnotify \
   notification-daemon \
   u-boot-openmoko \
+  libxine \
+#  subversion \
+  task-openmoko-games \
 "
