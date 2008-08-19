@@ -2,9 +2,9 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 DEFAULT_PREFERENCE = "-1"
-DEPENDS = "virtual/libiconv"
+DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 PROVIDES = "virtual/libintl"
 
 SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
@@ -14,12 +14,6 @@ SRC_URI = "${GNU_MIRROR}/gettext/gettext-${PV}.tar.gz \
 
 SRC_URI_append_linux-uclibc = " file://gettext-error_print_progname.patch;patch=1"
 SRC_URI_append_linux-uclibcgnueabi = " file://gettext-error_print_progname.patch;patch=1"
-
-#gettext.class cant be inherit here so use this hack same as in libiconv
-DEPENDS += "${@['','gettext-native'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
-
-EXTRA_OECONF +=  "${@['--disable-nls','--enable-nls'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
-
 
 PARALLEL_MAKE = ""
 
@@ -34,6 +28,7 @@ EXTRA_OECONF += "--without-lispdir \
 		 --with-included-glib \
 		 --without-emacs \
 	        "
+
 acpaths = '-I ${S}/autoconf-lib-link/m4/ \
 	   -I ${S}/gettext-runtime/m4 \
 	   -I ${S}/gettext-tools/m4'
