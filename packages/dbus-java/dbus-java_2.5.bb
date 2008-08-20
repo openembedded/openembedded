@@ -6,10 +6,10 @@ HOMEPAGE = "http://dbus.freedesktop.org/doc/dbus-java"
 SECTION = "libs"
 LICENSE = "LGPLv2 AFL"
 DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native fastjar-native"
-RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java ${JPN}"
-RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java ${JPN}"
-RSUGGESTS_libdbus-java = "libunixsocket-java dbus"
-PR = "r0"
+RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java dbus-java-bin libmatthew-debug-java ${JPN}"
+RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java libmatthew-debug-java ${JPN}"
+RSUGGESTS_libdbus-java = "libunixsocket-java"
+PR = "r1"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-java/dbus-java-${PV}.tar.gz"
 
@@ -53,11 +53,11 @@ do_compile () {
 }
 
 do_install () {
-	oe_jarinstall ${JPN}-${PV}.jar ${JPN}.jar
-  oe_jarinstall dbus-java-viewer-${PV}.jar dbus-java-viewer.jar
-  oe_jarinstall dbus-java-bin-${PV}.jar dbus-java-bin.jar
+  oe_jarinstall ${JPN}-${PV}.jar ${JPN}.jar dbus.jar
+  oe_jarinstall dbus-java-viewer-${PV}.jar dbus-java-viewer.jar dbus-viewer.jar
+  oe_jarinstall dbus-java-bin-${PV}.jar dbus-java-bin.jar dbus-bin.jar
   
-	install -d ${D}${bindir}
+  install -d ${D}${bindir}
   install bin/DBusViewer ${D}${bindir}
   install bin/DBusCall ${D}${bindir}
   install bin/CreateInterface ${D}${bindir}
@@ -73,7 +73,7 @@ do_install () {
 }
 
 do_stage () {
-	oe_jarinstall -s ${JPN}-${PV}.jar ${JPN}.jar
+  oe_jarinstall -s ${JPN}-${PV}.jar ${JPN}.jar
 }
 
 PACKAGE_ARCH = "all"
