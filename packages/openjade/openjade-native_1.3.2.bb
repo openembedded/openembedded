@@ -15,8 +15,12 @@ EXTRA_OECONF = "--enable-spincludedir=${STAGING_INCDIR}/OpenSP \
                 --enable-splibdir=${STAGING_LIBDIR} \
 		--enable-default-catalog=${sysconfdir}/sgml/catalog \
 		--enable-default-search-path=${datadir}/sgml"
+
 acpaths = "-I ${S}/config"
-CFLAGS_prepend = "-I${S}/include"
+
+# Trailing whitespace is important. Otherwise compiler arguments will be messed
+# up, resulting in a fail in do_configure.
+CFLAGS_prepend = "-I${S}/include "
 
 do_configure () {
 	mv config/configure.in .

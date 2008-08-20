@@ -1,0 +1,21 @@
+Index: gst-ffmpeg-0.10.2/gst-libs/ext/ffmpeg/configure.ac
+===================================================================
+--- gst-ffmpeg-0.10.2.orig/gst-libs/ext/ffmpeg/configure.ac	2008-08-20 00:20:19.177850039 +0200
++++ gst-ffmpeg-0.10.2/gst-libs/ext/ffmpeg/configure.ac	2008-08-20 00:26:24.567809464 +0200
+@@ -27,13 +27,15 @@
+ 
+ AM_MAINTAINER_MODE
+ AC_GNU_SOURCE
++
++AC_PROG_LIBTOOL
+ AM_PROG_AS
+ AC_PROG_CC
++AC_PROG_CXX
+ AC_PROG_INSTALL
+ AC_SYS_LARGEFILE
+ AC_STDC_HEADERS
+ AM_DISABLE_STATIC
+-AC_PROG_LIBTOOL
+ 
+ dnl Warning for anyone using these custom macros.
+ dnl before asking me questions on why it doesn't work and why you

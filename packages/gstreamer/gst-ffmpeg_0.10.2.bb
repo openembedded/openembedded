@@ -4,12 +4,14 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "gstreamer zlib"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-	   file://armv5.patch;patch=1"
+	   file://armv5.patch;patch=1 \
+	   file://autotools.patch;patch=1 \
+          "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
 FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
