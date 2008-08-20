@@ -1,7 +1,10 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "GPLv2"
 
+PR = "r2"
+
 DEPENDS = "sugar-toolkit libxml2 gtk+"
+RDEPENDS = "sugar-toolkit"
 
 SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar/${PN}-${PV}.tar.bz2"
 
