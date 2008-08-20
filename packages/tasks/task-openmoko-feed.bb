@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r33"
+PR = "r34"
 
 inherit task
 
@@ -89,4 +89,6 @@ RDEPENDS_task-openmoko-feed = "\
 #  subversion \
   task-openmoko-games \
   xournal \
+  openvpn \
+  python-pygame \
 "
