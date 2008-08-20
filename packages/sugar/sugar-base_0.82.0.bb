@@ -1,10 +1,10 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "python-pygtk sugar-toolkit"
-RDEPENDS = "python-pygtk sugar-toolkit python-logging python-dbus python-subprocess telepathy-python"
+RDEPENDS = "python-pygtk sugar-toolkit python-logging python-dbus python-subprocess telepathy-python python-crypt python-numpy "
 
 SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar-base/${PN}-${PV}.tar.bz2"
 
