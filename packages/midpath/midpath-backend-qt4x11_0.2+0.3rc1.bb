@@ -6,7 +6,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
 
 S = "${WORKDIR}/midpath-0.3rc1"
 
-DEPENDS = "classpath qt-mt"
+DEPENDS = "classpath qte-mt"
 
 inherit qt4x11
 
