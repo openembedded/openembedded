@@ -84,7 +84,6 @@ RDEPENDS_task-openmoko-feed = "\
   navit \
   libnotify \
   notification-daemon \
-  u-boot-openmoko \
   libxine \
 #  subversion \
   task-openmoko-games \
