@@ -2,7 +2,7 @@ DESCRIPTION = "GMyth is a library to access MythTV backend services."
 LICENSE = "LGPLv2""
 HOMEPAGE = "http://gmyth.sourceforge.net/wiki/index.php/Main_Page"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "glib-2.0 mysql gmyth libupnp"
 
@@ -19,6 +19,10 @@ do_compile_append() {
 	       -e s:/${TARGET_SYS}::g \   
                -e s:clinkc::g \
                   gmyth-upnp.pc
+}
+
+do_install_append() {
+	mv ${D}/${bindir}/test ${D}/${bindir}/gmyth-upnp-test
 }
 
 do_stage() {

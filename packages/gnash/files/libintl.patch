@@ -1,0 +1,13 @@
+Index: gnash-0.8.3/gui/am-frag/fb.am
+===================================================================
+--- gnash-0.8.3.orig/gui/am-frag/fb.am	2008-08-19 00:37:45.000000000 +0200
++++ gnash-0.8.3/gui/am-frag/fb.am	2008-08-19 00:38:04.000000000 +0200
+@@ -30,7 +30,7 @@
+ fb_gnash_CPPFLAGS += $(AGG_CFLAGS)
+ fb_gnash_SOURCES += 
+ fb_gnash_LDADD = $(top_builddir)/backend/libgnashagg.la \
+-		$(GNASH_LIBS) $(AGG_LIBS)
++		$(GNASH_LIBS) $(AGG_LIBS) $(INTLLIBS)
+ endif				# BUILD_AGG_RENDERER
+ endif				# BUILD_FB_GUI
+ 

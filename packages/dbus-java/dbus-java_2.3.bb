@@ -20,10 +20,15 @@ RSUGGESTS_libdbus-java = "libunixsocket-java dbus"
 RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java ${JPN}"
 RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java ${JPN}"
 
+# jamvm-native unfortunately contains non-generificed java/lang/reflect classes
+# which are accessed in this package. Work around this by setting the bootclasspath
+# explicitly.
+JCFLAGS = "-bootclasspath ${STAGING_DATADIR}/classpath/glibj.zip"
+
 do_compile () {
   # run target .binclasses first to fix a brokenness in the Makefile
 	oe_runmake \
-    JCFLAGS="-source 1.5" \
+    JCFLAGS="-source 1.5 ${JCFLAGS}" \
     JAVAC="javac" \
     JARPREFIX="${STAGING_DATADIR_JAVA}" \
     JAVAUNIXJARDIR="${STAGING_DATADIR_JAVA}" \
@@ -32,7 +37,7 @@ do_compile () {
     .binclasses
 
 	oe_runmake \
-    JCFLAGS="-source 1.5" \
+    JCFLAGS="-source 1.5 ${JCFLAGS}" \
     JAVAC="javac" \
     JARPREFIX="${STAGING_DATADIR_JAVA}" \
     JAVAUNIXJARDIR="${STAGING_DATADIR_JAVA}" \

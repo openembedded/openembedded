@@ -4,6 +4,8 @@ DEPENDS = "imagemagick-native librsvg-native"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r2"
 
+EXCLUDE_FROM_WORLD = "1"
+
 inherit openmoko2
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/OM-2007.2/artwork/;module=icons;proto=http"

@@ -1,6 +1,6 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "opie/multimedia"
-DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod-3.1.11"
+DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod"
 LICENSE = "GPL"
 PR = "r4"
 

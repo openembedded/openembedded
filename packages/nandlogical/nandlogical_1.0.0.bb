@@ -9,7 +9,7 @@ SRC_URI = "file://nandlogical.c"
 S = "${WORKDIR}/${P}"
 
 do_compile () {
-	${CC} -o nandlogical ${WORKDIR}/nandlogical.c -static
+	${CC} -o nandlogical ${WORKDIR}/nandlogical.c
 }
 
 do_install () {

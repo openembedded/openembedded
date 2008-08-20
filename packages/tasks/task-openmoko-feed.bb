@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r27"
+PR = "r34"
 
 inherit task
 
@@ -9,7 +9,6 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   openmoko-agpsui \
   gypsy \
-  py-odeviced \
   gsm0710muxd \
   ppp \
   bluez-hcidump \
@@ -29,8 +28,7 @@ RDEPENDS_task-openmoko-feed = "\
   nano \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
-  python python-pygtk python-pyserial \
-#  python-efl \
+  python python-pygtk python-pyserial python-gst \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
@@ -40,18 +38,56 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
-  libswt3.4-gtk-java \
-  cacao \
-  jamvm \
-  classpath \
+#  libswt3.4-gtk-java \
+#  cacao \
+#  jamvm \
+#  classpath \
   gpsdrive \
   asterisk \
-  qtopia-phone \
-  gnash \
+#  gnash \
   mono \
   diversity-daemon \
   diversity-nav \
   diversity-maps-taipei \
+#  om-maps-berlin \
+#  om-maps-buenos-aires \
+#  om-maps-london \
+#  om-maps-new-york \
+#  om-maps-paris \
+#  om-maps-providence \
+#  om-maps-san-francisco \
+#  om-maps-sydney \
+#  om-maps-taipei \
+#  om-settings \
   assassin \
+#  assassin-thumbnail \
   tangogps \
+#  pyefl-sudoku \
+  minicom \
+  vim \
+#  iotop \
+#  evince \
+  epdf \
+  xprop \
+  xev \
+  xwininfo \
+  gpsd \
+  mc \
+  devmem2 \
+  bluez-utils-alsa \
+  tcpdump \
+  gdb \
+  lsof \
+#  openmoko-set-root-password \
+#  qtopia-phone-enable-debug \
+  git \
+  navit \
+  libnotify \
+  notification-daemon \
+  libxine \
+#  subversion \
+  task-openmoko-games \
+  xournal \
+  openvpn \
+  python-pygame \
 "
