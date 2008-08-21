@@ -1,0 +1,83 @@
+From: Marco Pesenti Gritti <marco@localhost.localdomain>
+Date: Thu, 21 Aug 2008 12:52:39 +0000 (+0200)
+Subject: User icon-slicer to generate the icons, instead of cursorthemegen.
+X-Git-Url: http://dev.laptop.org/git?p=artwork;a=commitdiff_plain;h=2954f4c6d2c178ba005025a94f3d31e54fe37103
+
+User icon-slicer to generate the icons, instead of cursorthemegen.
+---
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,6 +14,8 @@ AC_PROG_CC
+ AC_HEADER_STDC
+ AC_PROG_LIBTOOL
+ 
++AC_PATH_PROG([ICON_SLICER], [icon-slicer])
++
+ PKG_CHECK_MODULES(GTK2, gtk+-2.0 >= 2.0.0,,
+ 	          AC_MSG_ERROR([GTK+-2.0 is required to compile redhat-artwork]))
+ 
+@@ -46,7 +48,6 @@ fi
+ AC_OUTPUT([
+ Makefile
+ cursor/Makefile
+-cursor/cursorthemegen/Makefile
+ cursor/sugar/Makefile
+ icons/Makefile
+ icons/scalable/Makefile
+diff --git a/cursor/Makefile.am b/cursor/Makefile.am
+index 5f0148f..4fa44db 100644
+--- a/cursor/Makefile.am
++++ b/cursor/Makefile.am
+@@ -1 +1 @@
+-SUBDIRS = cursorthemegen sugar
++SUBDIRS = sugar
+
+diff --git a/cursor/sugar/Makefile.am b/cursor/sugar/Makefile.am
+index cb9beec..9af934c 100644
+--- a/cursor/sugar/Makefile.am
++++ b/cursor/sugar/Makefile.am
+@@ -1,6 +1,3 @@
+-THEMEGEN = $(top_builddir)/cursor/cursorthemegen/cursorthemegen
+-THEME_DIR = $(top_builddir)/cursor/sugar/theme
+-
+ all-local: sugar.stamp
+ 
+ sugar_images =			\
+@@ -12,26 +9,24 @@ sugar_images =			\
+ 	sugar-05.png		\
+ 	sugar-06.png		\
+ 	sugar-07.png		\
+-	sugar-08.png              \
+-	sugar-09.png              \
+-	sugar-10.png             \
+-	sugar-11.png             \
++	sugar-08.png            \
++	sugar-09.png            \
++	sugar-10.png            \
++	sugar-11.png            \
+ 	sugar-hotspots.png
+ 
+ sugar.stamp: $(sugar_images) $(THEMEGEN) sugar.cursortheme
+-	rm -rf sugar &&     	                                \
+-	BDIR=`pwd` && cd $(srcdir) &&                           \
+-	$$BDIR/$(THEMEGEN) sugar.cursortheme $$BDIR/theme &&    	\
+-	cd $$BDIR && touch sugar.stamp
++	$(ICON_SLICER) --image-dir=$(srcdir) --output-dir=$(builddir) $(srcdir)/sugar.cursortheme
++	touch sugar.stamp
+ 
+ clean-local:
+-	rm -rf $(THEME_DIR)
+-	rm -rf $(top_builddir)/cursor/sugar/sugar.stamp
++	rm -rf cursors
++	rm sugar.stamp
+ 
+ install-data-local:
+ 	$(mkinstalldirs) $(DESTDIR)$(datadir)/icons/sugar/cursors/
+-	for i in `cd $(THEME_DIR) && echo *` ; do					\
+-	  $(INSTALL) $(THEME_DIR)/$$i $(DESTDIR)$(datadir)/icons/sugar/cursors/$$i ;	\
++	for i in `cd $(srcdir)/cursors && echo *` ; do						\
++	  $(INSTALL) $(srcdir)/cursors/$$i $(DESTDIR)$(datadir)/icons/sugar/cursors/$$i ;	\
+ 	done
+ 
+ uninstall-local:
