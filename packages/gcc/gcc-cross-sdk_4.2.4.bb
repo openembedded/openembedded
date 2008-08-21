@@ -1,4 +1,4 @@
-PR = "r2"
+PR = "r3"
 
 inherit sdk
 
@@ -9,6 +9,6 @@ require gcc-package-sdk.inc
 
 DEPENDS += "gmp-native mpfr-native"
 
-EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \
-		--disable-libgomp --disable-libmudflap \
+EXTRA_OECONF += "--disable-libunwind-exceptions --enable-libssp \
+		--enable-libgomp --disable-libmudflap \
 		--with-mpfr=${STAGING_DIR_NATIVE}${layout_exec_prefix}"

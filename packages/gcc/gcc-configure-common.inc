@@ -9,10 +9,14 @@ JAVA_arm ?= ""
 JAVA_armeb ?= ""
 JAVA_mipsel ?= ""
 JAVA_sh3 ?= ""
+OBJC_linux-uclibcgnueabi ?= ""
+OBJC_linux-uclibc ?= ""
+OBJC_avr ?= ""
+OBJC ?= ",objc"
+
 # gcc 3.x expects 'f77', 4.0 expects 'f95', 4.1 and 4.2 expect 'fortran'
 FORTRAN ?= ",f77"
-LANGUAGES ?= "c,objc,c++${FORTRAN}${JAVA}"
-LANGUAGES_avr32 = "c,c++${FORTRAN}${JAVA}"
+LANGUAGES ?= "c,c++${OBJC}${FORTRAN}${JAVA}"
 
 EXTRA_OECONF_BASE ?= ""
 EXTRA_OECONF_PATHS ?= ""

@@ -1,0 +1,34 @@
+Source: http://www.nabble.com/-PATCH--uclibc-extern-inline-td14223616.html
+
+Description:
+
+Needed for uclibc-0.9.29 to compile with gcc 4.3.1
+
+You get this error without
+
+libc/libc_so.a(libc_pthread_init.oS): In function `testandset':
+libc_pthread_init.c:(.text+0x0): multiple definition of `testandset'
+libc/libc_so.a(forward.oS):forward.c:(.text+0x0): first defined here
+libc/libc_so.a(rpc_thread.oS): In function `testandset':
+rpc_thread.c:(.text+0x0): multiple definition of `testandset'
+libc/libc_so.a(forward.oS):forward.c:(.text+0x0): first defined here
+make[1]: *** [lib/libc.so] Error 1
+make: *** [lib/libc.so.0] Error 2
+
+
+---
+ Rules.mak |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: uClibc-0.9.29/Rules.mak
+===================================================================
+--- uClibc-0.9.29.orig/Rules.mak	2008-08-19 13:43:56.000000000 -0700
++++ uClibc-0.9.29/Rules.mak	2008-08-19 13:45:04.000000000 -0700
+@@ -402,6 +402,7 @@ CFLAGS += -DSTATIC
+ endif
+ 
+ CFLAGS += $(call check_gcc,-std=gnu99,)
++CFLAGS += $(call check_gcc,-fgnu89-inline,)
+ 
+ LDFLAGS_NOSTRIP:=$(CPU_LDFLAGS-y) -shared --warn-common --warn-once -z combreloc
+ # binutils-2.16.1 warns about ignored sections, 2.16.91.0.3 and newer are ok

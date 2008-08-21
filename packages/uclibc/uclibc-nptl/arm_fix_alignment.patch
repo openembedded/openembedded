@@ -1,0 +1,19 @@
+ARMV5 can use STRD and LDRD access instructions but these accesses need to be 
+8 byte aligned. The dynamic linker's malloc needs to match this so structures
+become 8 byte aligned to void unaligned accesses.
+
+RP - 14/02/2008
+
+Index: uClibc-nptl/ldso/ldso/arm/dl-sysdep.h
+===================================================================
+--- uClibc-nptl.orig/ldso/ldso/arm/dl-sysdep.h	2008-08-08 16:52:28.000000000 -0700
++++ uClibc-nptl/ldso/ldso/arm/dl-sysdep.h	2008-08-08 23:51:39.000000000 -0700
+@@ -18,6 +18,8 @@
+   GOT_BASE[1] = (unsigned long) MODULE; \
+ }
+ 
++#define DL_MALLOC_ALIGN 8  /* EABI needs 8 byte alignment for STRD LDRD*/
++
+ static __inline__ unsigned long arm_modulus(unsigned long m, unsigned long p)
+ {
+ 	unsigned long i,t,inc;
