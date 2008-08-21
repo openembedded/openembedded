@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r42"
+PR = "r43"
 
 inherit task
 
@@ -49,6 +49,7 @@ RDEPENDS_task-openmoko-feed = "\
   mono \
 #  diversity-daemon \
 #  diversity-maps-taipei \
+  om-locations \
 #  om-maps-berlin \
 #  om-maps-buenos-aires \
 #  om-maps-london \
