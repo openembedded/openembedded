@@ -5,4 +5,5 @@ DEPENDS = "libgpelaunch libgpewidget"
 
 inherit gpe
 
+SRC_URI += "file://setlocale.patch;patch=1"
 
