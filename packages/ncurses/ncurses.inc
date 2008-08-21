@@ -75,6 +75,7 @@ do_install() {
 	then
 		ln -sf xterm-color ${D}${sysconfdir}/terminfo/x/xterm
 	fi
+	ln -sf rxvt-unicode ${D}${sysconfdir}/terminfo/r/rxvt
 
 	if [ "${PN}" = "ncurses" ]; then
 		mv ${D}${bindir}/clear ${D}${bindir}/clear.${PN}
