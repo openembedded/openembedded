@@ -1,0 +1,125 @@
+Index: linux-2.6.25/drivers/input/Kconfig
+===================================================================
+--- linux-2.6.25.orig/drivers/input/Kconfig	2008-04-17 04:49:44.000000000 +0200
++++ linux-2.6.25/drivers/input/Kconfig	2008-08-21 16:37:40.000000000 +0200
+@@ -69,6 +69,13 @@
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called mousedev.
+ 
++config INPUT_VMS
++	tristate "Virtual Mouse Driver" if EMBEDDED
++	default y
++	---help---
++	  vms.c from the book Essential Linux Device Drivers
++
++
+ config INPUT_MOUSEDEV_PSAUX
+ 	bool "Provide legacy /dev/psaux device"
+ 	default y
+Index: linux-2.6.25/drivers/input/Makefile
+===================================================================
+--- linux-2.6.25.orig/drivers/input/Makefile	2008-04-17 04:49:44.000000000 +0200
++++ linux-2.6.25/drivers/input/Makefile	2008-08-21 16:37:40.000000000 +0200
+@@ -11,6 +11,8 @@
+ obj-$(CONFIG_INPUT_POLLDEV)	+= input-polldev.o
+ 
+ obj-$(CONFIG_INPUT_MOUSEDEV)	+= mousedev.o
++
++obj-$(CONFIG_INPUT_VMS)	+= vms.o
+ obj-$(CONFIG_INPUT_JOYDEV)	+= joydev.o
+ obj-$(CONFIG_INPUT_EVDEV)	+= evdev.o
+ obj-$(CONFIG_INPUT_EVBUG)	+= evbug.o
+Index: linux-2.6.25/drivers/input/vms.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.25/drivers/input/vms.c	2008-08-21 17:24:05.000000000 +0200
+@@ -0,0 +1,89 @@
++/**
++ * Copyright (c) 2008 by Pearson Education, Inc.
++ *
++ * This material may be distributed only subject to the terms and conditions
++ * set forth in the Open Publication License, v1.0 or later (the latest version
++ * is presently available at http://www.opencontent.org/openpub/).
++ *
++ * Copyright (c) 2008 Leon Woestenberg
++ * Copyright (c) 2008 Sreekrishnan Venkateswaran
++ *
++ * I copied this from Sreekrishnan's book (see http://elinuxdd.com) -- Leon.
++ *
++ */
++
++#include <linux/fs.h>
++#include <asm/uaccess.h>
++#include <linux/input.h>
++#include <linux/platform_device.h>
++
++struct input_dev *vms_input_dev;
++static struct platform_device *vms_dev;
++
++/* for each set of coordinates, we publish them along with a left button
++ * press and release event
++ */
++static ssize_t write_vms(struct device *dev, struct device_attribute *attr,
++  const char *buffer, size_t count)
++{
++	int x, y;
++	sscanf(buffer, "%d%d", &x, &y);
++	input_report_abs(vms_input_dev, ABS_X, x);
++	input_report_abs(vms_input_dev, ABS_Y, y);
++	input_report_key(vms_input_dev, BTN_LEFT, 1);
++	input_sync(vms_input_dev);
++	input_report_key(vms_input_dev, BTN_LEFT, 0);
++	input_sync(vms_input_dev);
++	return count;
++}
++
++DEVICE_ATTR(coordinates, 0644, NULL, write_vms);
++
++static struct attribute *vms_attrs[] = {
++  &dev_attr_coordinates.attr,
++  NULL
++};
++
++static struct attribute_group vms_attr_group = {
++  .attrs = vms_attrs,
++};
++
++static int __init vms_init(void)
++{
++	vms_dev = platform_device_register_simple("vms", -1, NULL, 0);
++	if (IS_ERR(vms_dev)) {
++		PTR_ERR(vms_dev);
++		printk("vms_init: error\n");
++	}
++	sysfs_create_group(&vms_dev->dev.kobj, &vms_attr_group);
++
++	vms_input_dev = input_allocate_device();
++	if (!vms_input_dev) {
++		printk("bad input_allocate_device()\n");
++	}
++
++	set_bit(EV_ABS, vms_input_dev->evbit);
++	set_bit(ABS_X, vms_input_dev->absbit);
++	set_bit(ABS_Y, vms_input_dev->absbit);
++
++	set_bit(EV_KEY, vms_input_dev->evbit);
++	set_bit(BTN_LEFT, vms_input_dev->keybit);
++
++	input_register_device(vms_input_dev);
++	printk("vms initialized\n");
++	return 0;
++}
++
++static int __init vms_exit(void)
++{
++	input_unregister_device(vms_input_dev);
++	sysfs_remove_group(&vms_dev->dev.kobj, &vms_attr_group);
++	platform_device_unregister(vms_dev);
++	return;
++}
++
++module_init(vms_init);
++module_exit(vms_exit);
++
++MODULE_LICENSE("GPL");
++
