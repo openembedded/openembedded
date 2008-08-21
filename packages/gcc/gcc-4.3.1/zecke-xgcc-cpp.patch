@@ -14,3 +14,15 @@ Index: gcc-4.3.1/Makefile.in
  	CFLAGS="$(CFLAGS_FOR_TARGET) $(SYSROOT_CFLAGS_FOR_TARGET) $(DEBUG_PREFIX_CFLAGS_FOR_TARGET)"; export CFLAGS; \
  	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
  	CPPFLAGS="$(CPPFLAGS_FOR_TARGET)"; export CPPFLAGS; \
+Index: gcc-4.3.1/Makefile.tpl
+===================================================================
+--- gcc-4.3.1.orig/Makefile.tpl	2008-08-21 00:07:58.000000000 -0700
++++ gcc-4.3.1/Makefile.tpl	2008-08-21 00:09:52.000000000 -0700
+@@ -223,6 +223,7 @@
+ 	AR="$(AR_FOR_TARGET)"; export AR; \
+ 	AS="$(COMPILER_AS_FOR_TARGET)"; export AS; \
+ 	CC="$(CC_FOR_TARGET)"; export CC; \
++	CPP="$(CC_FOR_TARGET) -E"; export CPP; \
+ 	CFLAGS="$(CFLAGS_FOR_TARGET) $(SYSROOT_CFLAGS_FOR_TARGET) $(DEBUG_PREFIX_CFLAGS_FOR_TARGET)"; export CFLAGS; \
+ 	CONFIG_SHELL="$(SHELL)"; export CONFIG_SHELL; \
+ 	CPPFLAGS="$(CPPFLAGS_FOR_TARGET)"; export CPPFLAGS; \
