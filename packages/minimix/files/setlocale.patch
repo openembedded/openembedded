@@ -1,0 +1,20 @@
+Index: minimix-0.9/minimix.c
+===================================================================
+--- minimix-0.9.orig/minimix.c	2008-08-21 18:14:22.089134309 +0200
++++ minimix-0.9/minimix.c	2008-08-21 18:19:50.741374220 +0200
+@@ -19,6 +19,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <libintl.h>
++#include <locale.h>
+ 
+ #include <gtk/gtk.h>
+ #include <gdk/gdkx.h>
+@@ -33,7 +34,6 @@
+ #include <sys/ioctl.h>
+ #include <sys/soundcard.h>
+ 
+-
+ GtkWidget *slider_window;
+ GtkWidget *window, *slider;
+ GtkWidget *icon;
