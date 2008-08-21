@@ -7,6 +7,7 @@ RDEPENDS = "classpath"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jamvm/jamvm-${PV}.tar.gz"
 
+PROVIDES = "jamvm virtual/java"
 RPROVIDES_jamvm = "java2-runtime"
 
 # This uses 32 bit arm, so force the instruction set to arm, not thumb

@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-DEPENDS = "libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common"
+DEPENDS = "libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop"
 
 PR = "r1"
 
@@ -10,6 +10,7 @@ EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
                 --with-ggzmod-includes=${STAGING_INCDIR} \
 		--with-ggzmod-libraries=${STAGING_LIBDIR} \
 	        --enable-scalable \
+		--enable-omitgames=aisleriot \
 	       "
 
 do_configure_prepend() {

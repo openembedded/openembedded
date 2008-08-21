@@ -5,6 +5,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://udhcpscript.patch;patch=1 \
            file://adduser-longops.patch;patch=1 \
            file://sort-z-nul.patch;patch=1;status=upstream \
+           file://topmem.patch;patch=1 \
            file://busybox-cron \
            file://busybox-httpd \
            file://busybox-udhcpd \

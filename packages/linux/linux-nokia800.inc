@@ -2,8 +2,6 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for Nokia 770/800"
 LICENSE = "GPL"
 
-KERNEL_OUTPUT = "arch/${ARCH}/boot/compressed/${KERNEL_IMAGETYPE}"
-
 inherit kernel
 
 RPROVIDES_kernel-image = "hostap-modules"

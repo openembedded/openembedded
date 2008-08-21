@@ -8,7 +8,7 @@ SRCNAME = "pygame"
 PR = "ml0"
 
 SRC_URI = "\
-  ftp://ftp.pyganem.org/pygame/${SRCNAME}-${PV}release.tar.gz \
+  ftp://ftp.pygame.org/pub/pygame/${SRCNAME}-${PV}release.tar.gz \
   file://Setup"
 S = "${WORKDIR}/${SRCNAME}-${PV}release"
 
