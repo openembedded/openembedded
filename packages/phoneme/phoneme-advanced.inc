@@ -65,7 +65,7 @@ do_configure() {
   pmo JAVAME_LEGAL_DIR ${WORKDIR}/legal
 
   pmo "# Java toolchain binaries"
-  pmo JDK_HOME $JAVA_HOME
+  pmo JDK_HOME /dev/null
   pmo CVM_TARGET_TOOLS_PREFIX ${CROSS_DIR}/bin/
   pmo CVM_JAVA java
   pmo CVM_JAVAC javac
