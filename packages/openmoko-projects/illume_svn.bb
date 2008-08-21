@@ -1,13 +1,13 @@
 DESCRIPTION = "Illume - A mobile UI module for the Enlightenment Window Manager"
 HOMEPAGE = "http://illume.projects.openmoko.org"
-AUTHOR = "Rasterman"
+AUTHOR = "Carsten 'Rasterman' Haitzler"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
 PV = "0.0+svnr${SRCREV}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "\
-  svn://svn.projects.openmoko.org/svnroot/;module=${PN};proto=http \
+  svn://svn.enlightenment.org/svn/e/trunk/;module=${PN};proto=http \
   file://configure-keyboard.patch;patch=1;pnum=0;maxrev=170 \
   file://module.illume.src \
 "
