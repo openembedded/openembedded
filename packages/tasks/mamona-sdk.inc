@@ -8,6 +8,7 @@ RDEPENDS = "\
   task-mamona \
   automake \
   bison \
+  cmake \
   fakeroot \
   flex \
   git \
