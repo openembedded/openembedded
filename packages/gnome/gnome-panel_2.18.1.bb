@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-DEPENDS = "startup-notification libwnck orbit2 gtk+ libgnome libgnomeui gnome-desktop libglade gnome-menus"
+DEPENDS = "startup-notification libwnck orbit2 gtk+ libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
 PR = "r1"
 
@@ -15,6 +15,8 @@ FILES_libpanel-applet = "${libdir}/libpanel-applet-2.so.*"
 
 FILES_${PN} =+ "${datadir}/gnome* \
                 ${datadir}/icons"
+
+EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2"
 
 do_stage() {
         autotools_stage_all
