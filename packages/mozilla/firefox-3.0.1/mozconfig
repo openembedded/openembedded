@@ -32,12 +32,12 @@ ac_add_options --enable-necko-small-buffers
 # disable debug logging and tests
 #ac_add_options --disable-dtd-debug
 ac_add_options --disable-logging
-ac_add_options --enable-debug=-ggdb
 ac_add_options --disable-gtktest
 ac_add_options --disable-tests
 ac_add_options --disable-printing
 ac_add_options --disable-gnomevfs
 ac_add_options --disable-gnomeui
+ac_add_options --enable-debugger-info-modules
 
 # build crypto module (PSM + NSS)
 ac_add_options --enable-crypto
