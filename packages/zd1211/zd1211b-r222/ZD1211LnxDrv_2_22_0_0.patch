@@ -1,5 +1,6 @@
---- ZD1211LnxDrv_2_22_0_0/Kopie von Makefile	2008-08-05 15:04:08.000000000 +0200
-+++ ZD1211LnxDrv_2_22_0_0/Makefile	2008-08-05 15:09:28.000000000 +0200
+diff -Naur org/Makefile patched/Makefile
+--- org/Makefile	2008-08-19 12:45:17.000000000 +0200
++++ patched/Makefile	2008-08-19 12:44:55.000000000 +0200
 @@ -4,9 +4,11 @@
  #
  #
@@ -35,8 +36,8 @@
  
  KERNRELEASE := $(shell uname -r;)
  MODPATH := /lib/modules/$(KERNRELEASE)
-@@ -258,14 +261,14 @@
- endif
+@@ -362,14 +366,14 @@
+ 	/bin/sh scripts/Menuconfig
  
  debug:
 -	gcc -o apdbg apdbg.c
