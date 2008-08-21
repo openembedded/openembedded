@@ -1,0 +1,91 @@
+--- /tmp/configure.in	2008-08-21 12:56:59.000000000 +0200
++++ xscreensaver-5.07/configure.in	2008-08-21 13:06:16.293198000 +0200
+@@ -952,9 +952,6 @@
+ #
+ AC_DEFUN(AC_CHECK_X_HEADER, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   CPPFLAGS=`eval eval eval eval eval eval eval eval eval echo $CPPFLAGS`
+   AC_CHECK_HEADER([$1],[$2],[$3],[$4])
+@@ -964,9 +961,6 @@
+ #
+ AC_DEFUN(AC_EGREP_X_HEADER, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   CPPFLAGS=`eval eval eval eval eval eval eval eval eval echo $CPPFLAGS`
+   AC_EGREP_HEADER([$1], [$2], [$3], [$4])
+@@ -976,9 +970,6 @@
+ #
+ AC_DEFUN(AC_TRY_X_COMPILE, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   CPPFLAGS=`eval eval eval eval eval eval eval eval eval echo $CPPFLAGS`
+   AC_TRY_COMPILE([$1], [$2], [$3], [$4])
+@@ -993,9 +984,6 @@
+   ac_save_LDFLAGS="$LDFLAGS"
+ #  ac_save_LIBS="$LIBS"
+ 
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   # note: $X_CFLAGS includes $x_includes
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+ 
+@@ -1018,9 +1006,6 @@
+ #
+ AC_DEFUN(AC_TRY_X_RUN, [
+   ac_save_CPPFLAGS="$CPPFLAGS"
+-  if test \! -z "$includedir" ; then 
+-    CPPFLAGS="$CPPFLAGS -I$includedir"
+-  fi
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+   CPPFLAGS=`eval eval eval eval eval eval eval eval eval echo $CPPFLAGS`
+   AC_TRY_RUN([$1], [$2], [$3], [$4])
+@@ -1099,11 +1084,8 @@
+ 
+ # random compiler setup
+ AC_CANONICAL_HOST
+-AC_PROG_CC_ANSI
+ AC_NO_LONG_STRING_WARNINGS
+ AC_NO_MISPLACED_DECLARATIONS
+-AC_NO_OBJECTIVE_C
+-AC_NO_CPLUSPLUS_COMMENTS_IN_C_CODE
+ AC_PROG_CPP
+ AC_C_CONST
+ AC_C_INLINE
+@@ -2831,9 +2813,6 @@
+ EOF
+ 
+          ac_save_CPPFLAGS="$CPPFLAGS"
+-         if test \! -z "$includedir" ; then 
+-           CPPFLAGS="$CPPFLAGS -I$includedir"
+-         fi
+          CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+ 
+          mglv=`(eval "$ac_cpp conftest.$ac_ext") 2>&AC_FD_CC | grep configure:`
+@@ -3515,16 +3494,6 @@
+ DEPEND_FLAGS=
+ DEPEND_DEFINES=
+ 
+-
+-if test \! -z "$includedir" ; then 
+-  INCLUDES="$INCLUDES -I$includedir"
+-fi
+-
+-if test \! -z "$libdir" ; then
+-  LDFLAGS="$LDFLAGS -L$libdir"
+-fi
+-
+-
+ PREFERRED_DEMO_PROGRAM=''
+ ALL_DEMO_PROGRAMS=
+ if test "$have_motif" = yes; then
