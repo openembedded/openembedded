@@ -2,7 +2,7 @@ DESCRIPTION = "Guile is an interpreter for the Scheme programming language, \
 packaged as a library which can be incorporated into your programs."
 HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
 SECTION = "devel/scheme"
-DEPENDS = "guile-native"
+DEPENDS = "guile-native gmp"
 LICENSE = "GPL"
 
 PR = "r1"
