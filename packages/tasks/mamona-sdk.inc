@@ -10,6 +10,7 @@ RDEPENDS = "\
   bison \
   fakeroot \
   flex \
+  git \
   gdb \
   gettext \
   groff \
