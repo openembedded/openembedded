@@ -1,0 +1,56 @@
+--- git/include/configs/akita.h	2007-12-26 17:57:00.000000000 +0000
++++ git/include/configs/akita.h	2007-12-26 18:07:47.000000000 +0000
+@@ -81,35 +81,35 @@
+ 	"if testkey 101 ; "												\
+ 	"then "														\
+ 		"nand read.logical 0xa1000000 0x00060000 0x00540000; "							\
+-		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192; " \
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192 mtdparts=sharpsl-nand-0:7168k(smf),ROOT_FLASH_SIZEM(root),-(home); " \
+ 		"bootm; "												\
+ 	"fi; "														\
+ 	"if testkey 2 ; "												\
+ 	"then "														\
+ 		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
+-		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mmcblk0p1 fbcon=rotate:1; " 		\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mmcblk0p1 rootwait fbcon=rotate:1; " 	\
+ 		"bootm; "												\
+ 	"fi; "														\
+ 	"if testkey 18 ; "												\
+ 	"then "														\
+ 		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
+-		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hda1 fbcon=rotate:1; "	 		\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hda1 rootwait fbcon=rotate:1; "	 	\
+ 		"bootm; "												\
+ 	"fi; "														\
+ 	"if testkey 3 ; "												\
+ 	"then "														\
+ 		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
+-		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hdc1 fbcon=rotate:1; "	 		\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hdc1 rootwait fbcon=rotate:1; "	 	\
+ 		"bootm; "												\
+ 	"fi; "														\
+ 	"nand read.logical 0xa1000000 0x005a0000 0x00160000; "								\
+-	"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mtdblock2 rootfstype=jffs2 fbcon=rotate:1; " 	\
++	"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mtdblock2 rootfstype=jffs2 fbcon=rotate:1 mtdparts=sharpsl-nand-0:7168k(smf),ROOT_FLASH_SIZEM(root),-(home); " \
+ 	"bootm; "
+ #else
+ #define CONFIG_BOOTCOMMAND	"" // "run boot_flash"
+ #endif
+ 
+-#define CONFIG_BOOTARGS		"console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192"
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192 mtdparts=sharpsl-nand-0:7168k(smf),ROOT_FLASH_SIZEM(root),-(home)"
+ #define CONFIG_SETUP_MEMORY_TAGS 1
+ #define CONFIG_CMDLINE_TAG	 1	/* enable passing of ATAGs	*/
+ #define CONFIG_INITRD_TAG	 1
+@@ -302,9 +302,9 @@
+ /* Note: fake mtd_id used, no linux mtd map file */
+ 
+ #define CONFIG_JFFS2_CMDLINE
+-#define MTDIDS_DEFAULT		"nand0=laze-0"
++#define MTDIDS_DEFAULT		"nand0=sharpsl-nand"
+ //#define MTDPARTS_DEFAULT	"mtdparts=laze-0:256k(uboot),128k(env),-(jffs2)"
+-#define MTDPARTS_DEFAULT	"mtdparts=laze-0:7168k(Logical),-(JFFS2)"
++#define MTDPARTS_DEFAULT	"mtdparts=sharpsl-nand-0:7168k(smf),ROOT_FLASH_SIZEM(root),-(home)"
+ 
+ /*
+  * SHARP SL NAND logical partition

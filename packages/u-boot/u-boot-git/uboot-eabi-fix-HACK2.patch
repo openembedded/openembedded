@@ -1,0 +1,47 @@
+Index: git/lib_arm/div0.c
+===================================================================
+--- git.orig/lib_arm/div0.c
++++ git/lib_arm/div0.c
+@@ -22,9 +22,3 @@
+  */
+ 
+ /* Replacement (=dummy) for GNU/Linux division-by zero handler */
+-void __div0 (void)
+-{
+-	extern void hang (void);
+-
+-	hang();
+-}
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile
++++ git/Makefile
+@@ -225,7 +225,7 @@ LIBS := $(addprefix $(obj),$(LIBS))
+ .PHONY : $(LIBS)
+ 
+ # Add GCC lib
+-PLATFORM_LIBS += -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
++PLATFORM_LIBS += -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc -lgcc_eh
+ 
+ # The "tools" are needed early, so put this first
+ # Don't include stuff already done in $(LIBS)
+--- git/board/akita/akita.c.orig        2007-12-26 17:52:33.000000000 +0000
++++ git/board/akita/akita.c     2007-12-26 17:52:59.000000000 +0000
+@@ -87,3 +87,7 @@
+ 
+        return 0;
+ }
++
++void raise() {}
++
++void abort() {}
+--- git/board/corgi/corgi.c.orig        2007-12-26 17:52:33.000000000 +0000
++++ git/board/corgi/corgi.c     2007-12-26 17:52:59.000000000 +0000
+@@ -87,3 +87,7 @@
+ 
+        return 0;
+ }
++
++void raise() {}
++
++void abort() {}

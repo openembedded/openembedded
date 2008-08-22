@@ -1,0 +1,2467 @@
+diff -Nur u-boot-2006-04-18-1106/CREDITS u-boot-2006-04-18-1106-new/CREDITS
+--- u-boot-2006-04-18-1106/CREDITS	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/CREDITS	2006-07-05 11:19:44.000000000 +0000
+@@ -93,6 +93,12 @@
+ E: jonathan.debruyne@siemens.atea.be
+ D: Port to Siemens IAD210 board
+ 
++N: Alexander Chukov
++E: sash@pdaXrom.org
++D: initial support for Sharp Zaurus SL-C1000/3100
++D: initial support for Sharp Zaurus SL-C7x0/C860
++W: http://www.pdaXrom.org
++
+ N: Ken Chou
+ E: kchou@ieee.org
+ D: Support for A3000 SBC board
+diff -Nur u-boot-2006-04-18-1106/MAINTAINERS u-boot-2006-04-18-1106-new/MAINTAINERS
+--- u-boot-2006-04-18-1106/MAINTAINERS	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/MAINTAINERS	2006-07-05 11:19:44.000000000 +0000
+@@ -379,6 +379,11 @@
+ 
+ 	AT91RM9200DK		at91rm9200
+ 
++Alexander Chukov <sash@pdaXrom.org>
++
++	akita			xscale
++	corgi			xscale
++
+ George G. Davis <gdavis@mvista.com>
+ 
+ 	assabet			SA1100
+diff -Nur u-boot-2006-04-18-1106/MAKEALL u-boot-2006-04-18-1106-new/MAKEALL
+--- u-boot-2006-04-18-1106/MAKEALL	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/MAKEALL	2006-07-05 11:19:44.000000000 +0000
+@@ -206,7 +206,7 @@
+ 	adsvix		cerf250		cradle		csb226		\
+ 	delta		innokom		lubbock		pxa255_idp	\
+ 	wepep250	xaeniax		xm250		xsengine	\
+-	zylonite							\
++	zylonite	akita	corgi					\
+ "
+ 
+ LIST_ixp="ixdp425"
+diff -Nur u-boot-2006-04-18-1106/Makefile u-boot-2006-04-18-1106-new/Makefile
+--- u-boot-2006-04-18-1106/Makefile	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/Makefile	2006-07-05 11:19:44.000000000 +0000
+@@ -61,7 +61,7 @@
+ CROSS_COMPILE = powerpc-linux-
+ endif
+ ifeq ($(ARCH),arm)
+-CROSS_COMPILE = arm-linux-
++CROSS_COMPILE = armv5tel-linux-
+ endif
+ ifeq ($(ARCH),i386)
+ ifeq ($(HOSTARCH),i386)
+@@ -1709,6 +1709,12 @@
+ zylonite_config :
+ 	@./mkconfig $(@:_config=) arm pxa zylonite
+ 
++akita_config 	:	unconfig
++	@./mkconfig $(@:_config=) arm pxa akita
++
++corgi_config 	:	unconfig
++	@./mkconfig $(@:_config=) arm pxa corgi
++
+ #########################################################################
+ ## ARM1136 Systems
+ #########################################################################
+diff -Nur u-boot-2006-04-18-1106/README u-boot-2006-04-18-1106-new/README
+--- u-boot-2006-04-18-1106/README	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/README	2006-07-05 11:19:44.000000000 +0000
+@@ -311,7 +311,8 @@
+ 		CONFIG_KB9202,		CONFIG_LART,		CONFIG_LPD7A400,
+ 		CONFIG_LUBBOCK,		CONFIG_OSK_OMAP5912,	CONFIG_OMAP2420H4,
+ 		CONFIG_SHANNON,		CONFIG_P2_OMAP730,	CONFIG_SMDK2400,
+-		CONFIG_SMDK2410,	CONFIG_TRAB,		CONFIG_VCMA9
++		CONFIG_SMDK2410,	CONFIG_TRAB,		CONFIG_VCMA9,
++		CONFIG_AKITA,		CONFIG_CORGI
+ 
+ 		MicroBlaze based boards:
+ 		------------------------
+diff -Nur u-boot-2006-04-18-1106/board/akita/Makefile u-boot-2006-04-18-1106-new/board/akita/Makefile
+--- u-boot-2006-04-18-1106/board/akita/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/Makefile	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,51 @@
++#
++# board/akita/Makefile
++#
++# (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++#
++# (C) Copyright 2000
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= lib$(BOARD).a
++
++OBJS	:= akita.o nand.o kbd.o
++SOBJS	:= lowlevel_init.o
++
++$(LIB):	$(OBJS) $(SOBJS)
++	$(AR) crv $@ $(OBJS) $(SOBJS)
++
++clean:
++	rm -f $(SOBJS) $(OBJS)
++
++distclean:	clean
++	rm -f $(LIB) core *.bak .depend
++
++#########################################################################
++
++.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c)
++		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) > $@
++
++-include .depend
++
++#########################################################################
+diff -Nur u-boot-2006-04-18-1106/board/akita/akita.c u-boot-2006-04-18-1106-new/board/akita/akita.c
+--- u-boot-2006-04-18-1106/board/akita/akita.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/akita.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,89 @@
++/*
++ * board/akita/akita.c
++ *
++ * Configuration settings for the Sharp Zaurus SL-Cxx00.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from adsvix board configuration:
++ * (C) Copyright 2004
++ * Robert Whaley, Applied Data Systems, Inc. rwhaley@applieddata.net
++ * (C) Copyright 2002
++ * Kyle Harris, Nexus Technologies, Inc. kharris@nexus-tech.net
++ * (C) Copyright 2002
++ * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
++ * Marius Groeger <mgroeger@sysgo.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++
++void set_turbo_mode(void);
++
++/* ------------------------------------------------------------------------- */
++
++/*
++ * Miscellaneous platform dependent initialisations
++ */
++
++int board_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	/* memory and cpu-speed are setup before relocation */
++	/* so we do _nothing_ here */
++
++	/* arch number of Sharp Zaurus Akita : MACH_TYPE_AKITA */
++	gd->bd->bi_arch_number = 744;
++
++	/* adress of boot parameters */
++	gd->bd->bi_boot_params = 0xa0000100;
++
++	/* set cpu turbo mode */
++	set_turbo_mode();
++
++	spitzkbd_init();
++
++	return 0;
++}
++
++int board_late_init(void)
++{
++	setenv("stdout", "serial");
++	setenv("stderr", "serial");
++	return 0;
++}
++
++
++int dram_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
++	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
++	gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
++	gd->bd->bi_dram[1].size = PHYS_SDRAM_2_SIZE;
++	gd->bd->bi_dram[2].start = PHYS_SDRAM_3;
++	gd->bd->bi_dram[2].size = PHYS_SDRAM_3_SIZE;
++	gd->bd->bi_dram[3].start = PHYS_SDRAM_4;
++	gd->bd->bi_dram[3].size = PHYS_SDRAM_4_SIZE;
++
++	return 0;
++}
+diff -Nur u-boot-2006-04-18-1106/board/akita/config.mk u-boot-2006-04-18-1106-new/board/akita/config.mk
+--- u-boot-2006-04-18-1106/board/akita/config.mk	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/config.mk	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1 @@
++TEXT_BASE = 0xa3000000
+diff -Nur u-boot-2006-04-18-1106/board/akita/kbd.c u-boot-2006-04-18-1106-new/board/akita/kbd.c
+--- u-boot-2006-04-18-1106/board/akita/kbd.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/kbd.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,261 @@
++/*
++ * board/akita/kbd.c
++ *
++ * Keyboard driver for the Sharp Zaurus SL-Cxx00.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from:
++ *
++ * linux/drivers/input/keyboard/spitzkbd.c
++ *
++ * Keyboard driver for Sharp Spitz, Borzoi and Akita (SL-Cxx00 series)
++ *
++ * Copyright (C) 2005 Richard Purdie
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <command.h>
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++#define GPIO_DFLT_LOW		0x400
++#define GPIO_DFLT_HIGH		0x800
++
++void pxa_gpio_mode(int gpio_mode)
++{
++	int gpio = gpio_mode & GPIO_MD_MASK_NR;
++	int fn = (gpio_mode & GPIO_MD_MASK_FN) >> 8;
++	int gafr;
++
++	if (gpio_mode & GPIO_DFLT_LOW)
++		GPCR(gpio) = GPIO_bit(gpio);
++	else if (gpio_mode & GPIO_DFLT_HIGH)
++		GPSR(gpio) = GPIO_bit(gpio);
++	if (gpio_mode & GPIO_MD_MASK_DIR)
++		GPDR(gpio) |= GPIO_bit(gpio);
++	else
++		GPDR(gpio) &= ~GPIO_bit(gpio);
++	gafr = GAFR(gpio) & ~(0x3 << (((gpio) & 0xf)*2));
++	GAFR(gpio) = gafr |  (fn  << (((gpio) & 0xf)*2));
++}
++
++#define SPITZ_KEY_STROBE_NUM         (11)
++#define SPITZ_KEY_SENSE_NUM          (7)
++
++#define SPITZ_GPIO_G0_STROBE_BIT     0x0f800000
++#define SPITZ_GPIO_G1_STROBE_BIT     0x00100000
++#define SPITZ_GPIO_G2_STROBE_BIT     0x01000000
++#define SPITZ_GPIO_G3_STROBE_BIT     0x00041880
++#define SPITZ_GPIO_G0_SENSE_BIT      0x00021000
++#define SPITZ_GPIO_G1_SENSE_BIT      0x000000d4
++#define SPITZ_GPIO_G2_SENSE_BIT      0x08000000
++#define SPITZ_GPIO_G3_SENSE_BIT      0x00000000
++
++#define SPITZ_GPIO_KEY_STROBE0       88
++#define SPITZ_GPIO_KEY_STROBE1       23
++#define SPITZ_GPIO_KEY_STROBE2       24
++#define SPITZ_GPIO_KEY_STROBE3       25
++#define SPITZ_GPIO_KEY_STROBE4       26
++#define SPITZ_GPIO_KEY_STROBE5       27
++#define SPITZ_GPIO_KEY_STROBE6       52
++#define SPITZ_GPIO_KEY_STROBE7       103
++#define SPITZ_GPIO_KEY_STROBE8       107
++#define SPITZ_GPIO_KEY_STROBE9       108
++#define SPITZ_GPIO_KEY_STROBE10      114
++
++#define SPITZ_GPIO_KEY_SENSE0        12
++#define SPITZ_GPIO_KEY_SENSE1        17
++#define SPITZ_GPIO_KEY_SENSE2        91
++#define SPITZ_GPIO_KEY_SENSE3        34
++#define SPITZ_GPIO_KEY_SENSE4        36
++#define SPITZ_GPIO_KEY_SENSE5        38
++#define SPITZ_GPIO_KEY_SENSE6        39
++
++#define SPITZ_GPIO_ON_KEY          (95)
++
++#define KB_ROWS			7
++#define KB_COLS			11
++#define KB_ROWMASK(r)		(1 << (r))
++#define SCANCODE(r,c)		(((r)<<4) + (c) + 1)
++#define	NR_SCANCODES		((KB_ROWS<<4) + 1)
++
++#define SCAN_INTERVAL		(50) /* ms */
++#define HINGE_SCAN_INTERVAL	(150) /* ms */
++
++#define KB_DISCHARGE_DELAY	10
++#define KB_ACTIVATE_DELAY	10
++
++static int spitz_strobes[] = {
++	SPITZ_GPIO_KEY_STROBE0,
++	SPITZ_GPIO_KEY_STROBE1,
++	SPITZ_GPIO_KEY_STROBE2,
++	SPITZ_GPIO_KEY_STROBE3,
++	SPITZ_GPIO_KEY_STROBE4,
++	SPITZ_GPIO_KEY_STROBE5,
++	SPITZ_GPIO_KEY_STROBE6,
++	SPITZ_GPIO_KEY_STROBE7,
++	SPITZ_GPIO_KEY_STROBE8,
++	SPITZ_GPIO_KEY_STROBE9,
++	SPITZ_GPIO_KEY_STROBE10,
++};
++
++static int spitz_senses[] = {
++	SPITZ_GPIO_KEY_SENSE0,
++	SPITZ_GPIO_KEY_SENSE1,
++	SPITZ_GPIO_KEY_SENSE2,
++	SPITZ_GPIO_KEY_SENSE3,
++	SPITZ_GPIO_KEY_SENSE4,
++	SPITZ_GPIO_KEY_SENSE5,
++	SPITZ_GPIO_KEY_SENSE6,
++};
++
++static inline void spitzkbd_discharge_all(void)
++{
++	/* STROBE All HiZ */
++	GPCR0  =  SPITZ_GPIO_G0_STROBE_BIT;
++	GPDR0 &= ~SPITZ_GPIO_G0_STROBE_BIT;
++	GPCR1  =  SPITZ_GPIO_G1_STROBE_BIT;
++	GPDR1 &= ~SPITZ_GPIO_G1_STROBE_BIT;
++	GPCR2  =  SPITZ_GPIO_G2_STROBE_BIT;
++	GPDR2 &= ~SPITZ_GPIO_G2_STROBE_BIT;
++	GPCR3  =  SPITZ_GPIO_G3_STROBE_BIT;
++	GPDR3 &= ~SPITZ_GPIO_G3_STROBE_BIT;
++}
++
++static inline void spitzkbd_activate_all(void)
++{
++	/* STROBE ALL -> High */
++	GPSR0  =  SPITZ_GPIO_G0_STROBE_BIT;
++	GPDR0 |=  SPITZ_GPIO_G0_STROBE_BIT;
++	GPSR1  =  SPITZ_GPIO_G1_STROBE_BIT;
++	GPDR1 |=  SPITZ_GPIO_G1_STROBE_BIT;
++	GPSR2  =  SPITZ_GPIO_G2_STROBE_BIT;
++	GPDR2 |=  SPITZ_GPIO_G2_STROBE_BIT;
++	GPSR3  =  SPITZ_GPIO_G3_STROBE_BIT;
++	GPDR3 |=  SPITZ_GPIO_G3_STROBE_BIT;
++
++	udelay(KB_DISCHARGE_DELAY);
++}
++
++static inline void spitzkbd_activate_col(int col)
++{
++	int gpio = spitz_strobes[col];
++	GPDR0 &= ~SPITZ_GPIO_G0_STROBE_BIT;
++	GPDR1 &= ~SPITZ_GPIO_G1_STROBE_BIT;
++	GPDR2 &= ~SPITZ_GPIO_G2_STROBE_BIT;
++	GPDR3 &= ~SPITZ_GPIO_G3_STROBE_BIT;
++	GPSR(gpio) = GPIO_bit(gpio);
++	GPDR(gpio) |= GPIO_bit(gpio);
++}
++
++static inline void spitzkbd_reset_col(int col)
++{
++	int gpio = spitz_strobes[col];
++	GPDR0 &= ~SPITZ_GPIO_G0_STROBE_BIT;
++	GPDR1 &= ~SPITZ_GPIO_G1_STROBE_BIT;
++	GPDR2 &= ~SPITZ_GPIO_G2_STROBE_BIT;
++	GPDR3 &= ~SPITZ_GPIO_G3_STROBE_BIT;
++	GPCR(gpio) = GPIO_bit(gpio);
++	GPDR(gpio) |= GPIO_bit(gpio);
++}
++
++static inline int spitzkbd_get_row_status(int col)
++{
++	return ((GPLR0 >> 12) & 0x01) | ((GPLR0 >> 16) & 0x02)
++		| ((GPLR2 >> 25) & 0x04) | ((GPLR1 << 1) & 0x08)
++		| ((GPLR1 >> 0) & 0x10) | ((GPLR1 >> 1) & 0x60);
++}
++
++static int spitzkbd_scankeyboard(void)
++{
++	unsigned int row, col, rowd;
++	unsigned int num_pressed, pwrkey = ((GPLR(SPITZ_GPIO_ON_KEY) & GPIO_bit(SPITZ_GPIO_ON_KEY)) != 0);
++	int ret = -1;
++
++	num_pressed = 0;
++	for (col = 0; col < KB_COLS; col++) {
++		spitzkbd_discharge_all();
++		udelay(KB_DISCHARGE_DELAY);
++
++		spitzkbd_activate_col(col);
++		udelay(KB_ACTIVATE_DELAY);
++
++		rowd = spitzkbd_get_row_status(col);
++		for (row = 0; row < KB_ROWS; row++) {
++			unsigned int scancode, pressed;
++
++			scancode = SCANCODE(row, col);
++			pressed = rowd & KB_ROWMASK(row);
++
++			if (pressed)
++				ret = scancode;
++		}
++		spitzkbd_reset_col(col);
++	}
++
++	spitzkbd_activate_all();
++
++	if (pwrkey)
++		return -2;
++	
++	return ret;
++}
++
++void spitzkbd_init(void)
++{
++	int i;
++
++	/* Setup sense interrupts - RisingEdge Detect, sense lines as inputs */
++	for (i = 0; i < SPITZ_KEY_SENSE_NUM; i++)
++		pxa_gpio_mode(spitz_senses[i] | GPIO_IN);
++
++	/* Set Strobe lines as outputs - set high */
++	for (i = 0; i < SPITZ_KEY_STROBE_NUM; i++)
++		pxa_gpio_mode(spitz_strobes[i] | GPIO_OUT | GPIO_DFLT_HIGH);
++
++	pxa_gpio_mode(SPITZ_GPIO_ON_KEY | GPIO_IN);
++}
++
++int do_testkey(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	int scan;
++	
++	if (argc < 2)
++		return 1;
++
++	scan = spitzkbd_scankeyboard();
++
++
++//	if (scan >= 0)
++//		printf("Scan = %d\n", scan);
++//	else
++//		printf("Nothing!\n");
++
++	return !(simple_strtol(argv[1], NULL, 10) == scan);
++}
++
++U_BOOT_CMD(
++	testkey,   2,      1,      do_testkey,
++	"testkey - compare pressed key with arg\n",
++	"<key scancode>"
++);
+diff -Nur u-boot-2006-04-18-1106/board/akita/lowlevel_init.S u-boot-2006-04-18-1106-new/board/akita/lowlevel_init.S
+--- u-boot-2006-04-18-1106/board/akita/lowlevel_init.S	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/lowlevel_init.S	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,135 @@
++/*
++ * board/akita/lowlevel_init.S
++ *
++ * Configuration settings for the Sharp Zaurus SL-Cxx00.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * This was originally from the Lubbock u-boot port and from BLOB with cleanup
++ *
++ * NOTE: I haven't clean this up considerably, just enough to get it
++ * running. See hal_platform_setup.h for the source. See
++ * board/cradle/lowlevel_init.S for another PXA250 setup that is
++ * much cleaner.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++/* wait for coprocessor write complete */
++   .macro CPWAIT reg
++   mrc	p15,0,\reg,c2,c0,0
++   mov	\reg,\reg
++   sub	pc,pc,#4
++   .endm
++
++/*********** Write out to HEX 7 segment leds *********/
++
++#undef DEBUG_HEXLOG
++
++#ifdef DEBUG_HEXLOG
++#define LEDCTL		0x08000040
++#define LEDDAT1	0x08000010
++#define LEDDAT2	0x08000014
++
++.macro wait, count
++	mov		r10, \count
++0:
++	subs	r10, r10, #1
++	bne		0b
++.endm
++
++.macro hexlog_init
++	ldr		r11, =LEDCTL
++	mov		r10, #0xff
++	str		r10, [r11]
++	ldr		r11, =LEDDAT2
++	mov		r10, #0xFFFFFFFF
++	str		r10, [r11]
++	ldr		r11, =LEDDAT1
++	mov		r10, #0x0
++	str		r10, [r11]
++.endm
++
++.macro hexlog, val
++	ldr		r11, =LEDCTL
++	mov		r10, #0xff
++	str		r10, [r11]
++	ldr		r11, =LEDDAT2
++	mov		r10, #0xFFFFFFFF
++	str		r10, [r11]
++
++	ldr		r11, =LEDDAT1
++	mov		r10, \val
++	str		r10, [r11]
++
++	wait		#0x400000
++.endm
++
++#else
++
++.macro hexlog_init
++	nop
++.endm
++
++.macro hexlog, val
++	nop
++.endm
++
++#endif
++
++/***********************************/
++
++/*
++ *	Memory setup
++ */
++
++.globl lowlevel_init
++lowlevel_init:
++
++	mov	pc, lr
++
++.globl set_turbo_mode
++
++set_turbo_mode:
++	/* Turn on turbo mode */
++	mrc	p14, 0, r2, c6, c0, 0
++	orr	r2, r2, #0xB		/* Turbo, Fast-Bus, Freq change**/
++	mcr	p14, 0, r2, c6, c0, 0
++
++	/* Setup vectors */
++	ldr	r0, =TEXT_BASE
++	ldr	r1, =TEXT_BASE+0x40
++	ldr	r2, =0x0
++1:
++	ldr	r3, [r0]
++	str	r3, [r2]
++	add	r0, r0, #4
++	add	r2, r2, #4
++	cmp	r0, r1
++	bne	1b
++
++	ldr	r0, =0x0
++	ldr	r1, [r0, #4]
++	str	r1, [r0]
++
++	mov	pc, lr
+diff -Nur u-boot-2006-04-18-1106/board/akita/nand.c u-boot-2006-04-18-1106-new/board/akita/nand.c
+--- u-boot-2006-04-18-1106/board/akita/nand.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/nand.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,169 @@
++/*
++ * board/akita/nand.c
++ *
++ * NAND driver for the Sharp Zaurus SL-Cxx00.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from mtd nand driver:
++ *
++ * drivers/mtd/nand/sharpsl.c
++ *
++ * Copyright (C) 2004 Richard Purdie
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++
++
++#if (CONFIG_COMMANDS & CFG_CMD_NAND)
++
++#include <nand.h>
++#include <linux/mtd/nand_ecc.h>
++
++static int sharpsl_io_base = CFG_NAND_BASE;
++
++/* register offset */
++#define ECCLPLB	 	sharpsl_io_base+0x00	/* line parity 7 - 0 bit */
++#define ECCLPUB	 	sharpsl_io_base+0x04	/* line parity 15 - 8 bit */
++#define ECCCP	   	sharpsl_io_base+0x08	/* column parity 5 - 0 bit */
++#define ECCCNTR	 	sharpsl_io_base+0x0C	/* ECC byte counter */
++#define ECCCLRR	 	sharpsl_io_base+0x10	/* cleare ECC */
++#define FLASHIO	 	sharpsl_io_base+0x14	/* Flash I/O */
++#define FLASHCTL	sharpsl_io_base+0x18	/* Flash Control */
++
++/* Flash control bit */
++#define FLRYBY		(1 << 5)
++#define FLCE1		(1 << 4)
++#define FLWP		(1 << 3)
++#define FLALE		(1 << 2)
++#define FLCLE		(1 << 1)
++#define FLCE0		(1 << 0)
++
++#define readb(address) *((volatile unsigned char *)(address))
++#define writeb(v, address) *((volatile unsigned char *)(address))=v
++
++/*
++ *	hardware specific access to control-lines
++ */
++static void
++sharpsl_nand_hwcontrol(struct mtd_info* mtd, int cmd)
++{
++	switch (cmd) {
++	case NAND_CTL_SETCLE:
++		writeb(readb(FLASHCTL) | FLCLE, FLASHCTL);
++		break;
++	case NAND_CTL_CLRCLE:
++		writeb(readb(FLASHCTL) & ~FLCLE, FLASHCTL);
++		break;
++
++	case NAND_CTL_SETALE:
++		writeb(readb(FLASHCTL) | FLALE, FLASHCTL);
++		break;
++	case NAND_CTL_CLRALE:
++		writeb(readb(FLASHCTL) & ~FLALE, FLASHCTL);
++		break;
++
++	case NAND_CTL_SETNCE:
++		writeb(readb(FLASHCTL) & ~(FLCE0|FLCE1), FLASHCTL);
++		break;
++	case NAND_CTL_CLRNCE:
++		writeb(readb(FLASHCTL) | (FLCE0|FLCE1), FLASHCTL);
++		break;
++	}
++}
++
++static int
++sharpsl_nand_dev_ready(struct mtd_info* mtd)
++{
++	return !((readb(FLASHCTL) & FLRYBY) == 0);
++}
++
++static void
++sharpsl_nand_enable_hwecc(struct mtd_info* mtd, int mode)
++{
++	writeb(0 ,ECCCLRR);
++}
++
++static int
++sharpsl_nand_calculate_ecc(struct mtd_info* mtd, const u_char* dat,
++				u_char* ecc_code)
++{
++	ecc_code[0] = ~readb(ECCLPUB);
++	ecc_code[1] = ~readb(ECCLPLB);
++	ecc_code[2] = (~readb(ECCCP) << 2) | 0x03;
++	return readb(ECCCNTR) != 0;
++}
++
++static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
++
++static struct nand_bbt_descr sharpsl_akita_bbt = {
++	.options = 0,
++	.offs = 4,
++	.len = 1,
++	.pattern = scan_ff_pattern
++};
++
++static struct nand_oobinfo akita_oobinfo = {
++	.useecc = MTD_NANDECC_AUTOPLACE,
++	.eccbytes = 24,
++	.eccpos = {
++		0x5,  0x1,  0x2,  0x3,  0x6,  0x7,  0x15, 0x11,
++		0x12, 0x13, 0x16, 0x17, 0x25, 0x21, 0x22, 0x23,
++		0x26, 0x27, 0x35, 0x31, 0x32, 0x33, 0x36, 0x37},
++	.oobfree = { {0x08, 0x09} }
++};
++
++/*
++ * Board-specific NAND initialization. The following members of the
++ * argument are board-specific (per include/linux/mtd/nand.h):
++ * - IO_ADDR_R?: address to read the 8 I/O lines of the flash device
++ * - IO_ADDR_W?: address to write the 8 I/O lines of the flash device
++ * - hwcontrol: hardwarespecific function for accesing control-lines
++ * - dev_ready: hardwarespecific function for  accesing device ready/busy line
++ * - enable_hwecc?: function to enable (reset)  hardware ecc generator. Must
++ *   only be provided if a hardware ECC is available
++ * - eccmode: mode of ecc, see defines
++ * - chip_delay: chip dependent delay for transfering data from array to
++ *   read regs (tR)
++ * - options: various chip options. They can partly be set to inform
++ *   nand_scan about special functionality. See the defines for further
++ *   explanation
++ * Members with a "?" were not set in the merged testing-NAND branch,
++ * so they are not set here either.
++ */
++void board_nand_init(struct nand_chip *nand)
++{
++	writeb(readb(FLASHCTL) | FLWP, FLASHCTL);
++
++	nand->IO_ADDR_R = FLASHIO;
++	nand->IO_ADDR_W = FLASHIO;
++	nand->hwcontrol = sharpsl_nand_hwcontrol;
++	nand->dev_ready = sharpsl_nand_dev_ready;
++	nand->eccmode = NAND_ECC_HW3_256;
++	nand->chip_delay = 15;
++	nand->options = NAND_SAMSUNG_LP_OPTIONS;
++	nand->badblock_pattern = &sharpsl_akita_bbt;
++	nand->autooob = &akita_oobinfo;
++	nand->enable_hwecc = sharpsl_nand_enable_hwecc;
++	nand->calculate_ecc = sharpsl_nand_calculate_ecc;
++	nand->correct_data = nand_correct_data;
++}
++#endif /* (CONFIG_COMMANDS & CFG_CMD_NAND) */
+diff -Nur u-boot-2006-04-18-1106/board/akita/u-boot.lds u-boot-2006-04-18-1106-new/board/akita/u-boot.lds
+--- u-boot-2006-04-18-1106/board/akita/u-boot.lds	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/akita/u-boot.lds	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,56 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
++OUTPUT_ARCH(arm)
++ENTRY(_start)
++SECTIONS
++{
++	. = 0x00000000;
++
++	. = ALIGN(4);
++	.text      :
++	{
++	  cpu/pxa/start.o	(.text)
++	  *(.text)
++	}
++
++	. = ALIGN(4);
++	.rodata : { *(.rodata) }
++
++	. = ALIGN(4);
++	.data : { *(.data) }
++
++	. = ALIGN(4);
++	.got : { *(.got) }
++
++	. = .;
++	__u_boot_cmd_start = .;
++	.u_boot_cmd : { *(.u_boot_cmd) }
++	__u_boot_cmd_end = .;
++
++	. = ALIGN(4);
++	__bss_start = .;
++	.bss : { *(.bss) }
++	_end = .;
++}
+diff -Nur u-boot-2006-04-18-1106/board/corgi/Makefile u-boot-2006-04-18-1106-new/board/corgi/Makefile
+--- u-boot-2006-04-18-1106/board/corgi/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/Makefile	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,51 @@
++#
++# board/corgi/Makefile
++#
++# (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++#
++# (C) Copyright 2000
++# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++#
++# See file CREDITS for list of people who contributed to this
++# project.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++include $(TOPDIR)/config.mk
++
++LIB	= lib$(BOARD).a
++
++OBJS	:= corgi.o nand.o kbd.o
++SOBJS	:= lowlevel_init.o
++
++$(LIB):	$(OBJS) $(SOBJS)
++	$(AR) crv $@ $(OBJS) $(SOBJS)
++
++clean:
++	rm -f $(SOBJS) $(OBJS)
++
++distclean:	clean
++	rm -f $(LIB) core *.bak .depend
++
++#########################################################################
++
++.depend:	Makefile $(SOBJS:.o=.S) $(OBJS:.o=.c)
++		$(CC) -M $(CPPFLAGS) $(SOBJS:.o=.S) $(OBJS:.o=.c) > $@
++
++-include .depend
++
++#########################################################################
+diff -Nur u-boot-2006-04-18-1106/board/corgi/config.mk u-boot-2006-04-18-1106-new/board/corgi/config.mk
+--- u-boot-2006-04-18-1106/board/corgi/config.mk	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/config.mk	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1 @@
++TEXT_BASE = 0xa1000000
+diff -Nur u-boot-2006-04-18-1106/board/corgi/corgi.c u-boot-2006-04-18-1106-new/board/corgi/corgi.c
+--- u-boot-2006-04-18-1106/board/corgi/corgi.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/corgi.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,87 @@
++/*
++ * board/corgi/corgi.c
++ *
++ * Configuration settings for the Sharp Zaurus SL-C7x0/860.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from adsvix board configuration:
++ * (C) Copyright 2004
++ * Robert Whaley, Applied Data Systems, Inc. rwhaley@applieddata.net
++ * (C) Copyright 2002
++ * Kyle Harris, Nexus Technologies, Inc. kharris@nexus-tech.net
++ * (C) Copyright 2002
++ * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
++ * Marius Groeger <mgroeger@sysgo.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++
++/* ------------------------------------------------------------------------- */
++
++/*
++ * Miscellaneous platform dependent initialisations
++ */
++
++int board_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	/* memory and cpu-speed are setup before relocation */
++	/* so we do _nothing_ here */
++
++	/* arch number of Sharp Zaurus Corgi : MACH_TYPE_CORGI */
++	gd->bd->bi_arch_number = 423;
++
++	/* adress of boot parameters */
++	gd->bd->bi_boot_params = 0xa0000100;
++
++	/* set cpu turbo mode */
++	set_turbo_mode();
++
++	corgikbd_init();
++
++	return 0;
++}
++
++int board_late_init(void)
++{
++	setenv("stdout", "serial");
++	setenv("stderr", "serial");
++	return 0;
++}
++
++
++int dram_init (void)
++{
++	DECLARE_GLOBAL_DATA_PTR;
++
++	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
++	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
++	gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
++	gd->bd->bi_dram[1].size = PHYS_SDRAM_2_SIZE;
++	gd->bd->bi_dram[2].start = PHYS_SDRAM_3;
++	gd->bd->bi_dram[2].size = PHYS_SDRAM_3_SIZE;
++	gd->bd->bi_dram[3].start = PHYS_SDRAM_4;
++	gd->bd->bi_dram[3].size = PHYS_SDRAM_4_SIZE;
++
++	return 0;
++}
+diff -Nur u-boot-2006-04-18-1106/board/corgi/kbd.c u-boot-2006-04-18-1106-new/board/corgi/kbd.c
+--- u-boot-2006-04-18-1106/board/corgi/kbd.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/kbd.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,202 @@
++/*
++ * board/corgi/kbd.c
++ *
++ * Keyboard driver for the Sharp Zaurus SL-C7x0/860.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from:
++ *
++ * linux/drivers/input/keyboard/spitzkbd.c
++ *
++ * Keyboard driver for Sharp Corgi models (SL-C7xx)
++ *
++ * Copyright (C) 2005 Richard Purdie
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <command.h>
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++#define GPIO_DFLT_LOW		0x400
++#define GPIO_DFLT_HIGH		0x800
++
++void pxa_gpio_mode(int gpio_mode)
++{
++	int gpio = gpio_mode & GPIO_MD_MASK_NR;
++	int fn = (gpio_mode & GPIO_MD_MASK_FN) >> 8;
++	int gafr;
++
++	if (gpio_mode & GPIO_DFLT_LOW)
++		GPCR(gpio) = GPIO_bit(gpio);
++	else if (gpio_mode & GPIO_DFLT_HIGH)
++		GPSR(gpio) = GPIO_bit(gpio);
++	if (gpio_mode & GPIO_MD_MASK_DIR)
++		GPDR(gpio) |= GPIO_bit(gpio);
++	else
++		GPDR(gpio) &= ~GPIO_bit(gpio);
++	gafr = GAFR(gpio) & ~(0x3 << (((gpio) & 0xf)*2));
++	GAFR(gpio) = gafr |  (fn  << (((gpio) & 0xf)*2));
++}
++
++/*
++ * Corgi Keyboard Definitions
++ */
++#define CORGI_KEY_STROBE_NUM		(12)
++#define CORGI_KEY_SENSE_NUM			(8)
++#define CORGI_GPIO_ALL_STROBE_BIT	(0x00003ffc)
++#define CORGI_GPIO_HIGH_SENSE_BIT	(0xfc000000)
++#define CORGI_GPIO_HIGH_SENSE_RSHIFT	(26)
++#define CORGI_GPIO_LOW_SENSE_BIT	(0x00000003)
++#define CORGI_GPIO_LOW_SENSE_LSHIFT	(6)
++#define CORGI_GPIO_STROBE_BIT(a)	GPIO_bit(66+(a))
++#define CORGI_GPIO_SENSE_BIT(a)		GPIO_bit(58+(a))
++#define CORGI_GAFR_ALL_STROBE_BIT	(0x0ffffff0)
++#define CORGI_GAFR_HIGH_SENSE_BIT	(0xfff00000)
++#define CORGI_GAFR_LOW_SENSE_BIT	(0x0000000f)
++#define CORGI_GPIO_KEY_SENSE(a)		(58+(a))
++#define CORGI_GPIO_KEY_STROBE(a)	(66+(a))
++
++#define CORGI_GPIO_AK_INT			(4)	/* Headphone Jack Control Interrupt */
++
++#define KB_ROWS				8
++#define KB_COLS				12
++#define KB_ROWMASK(r)		(1 << (r))
++#define SCANCODE(r,c)		( ((r)<<4) + (c) + 1 )
++/* zero code, 124 scancodes */
++#define	NR_SCANCODES		( SCANCODE(KB_ROWS-1,KB_COLS-1) +1 +1 )
++
++#define SCAN_INTERVAL		(50) /* ms */
++#define HINGE_SCAN_INTERVAL	(250) /* ms */
++
++#define KB_DISCHARGE_DELAY	10
++#define KB_ACTIVATE_DELAY	10
++
++static inline void corgikbd_discharge_all(void)
++{
++	/* STROBE All HiZ */
++	GPCR2  = CORGI_GPIO_ALL_STROBE_BIT;
++	GPDR2 &= ~CORGI_GPIO_ALL_STROBE_BIT;
++}
++
++static inline void corgikbd_activate_all(void)
++{
++	/* STROBE ALL -> High */
++	GPSR2  = CORGI_GPIO_ALL_STROBE_BIT;
++	GPDR2 |= CORGI_GPIO_ALL_STROBE_BIT;
++
++	udelay(KB_DISCHARGE_DELAY);
++
++	/* Clear any interrupts we may have triggered when altering the GPIO lines */
++	GEDR1 = CORGI_GPIO_HIGH_SENSE_BIT;
++	GEDR2 = CORGI_GPIO_LOW_SENSE_BIT;
++}
++
++static inline void corgikbd_activate_col(int col)
++{
++	/* STROBE col -> High, not col -> HiZ */
++	GPSR2 = CORGI_GPIO_STROBE_BIT(col);
++	GPDR2 = (GPDR2 & ~CORGI_GPIO_ALL_STROBE_BIT) | CORGI_GPIO_STROBE_BIT(col);
++}
++
++static inline void corgikbd_reset_col(int col)
++{
++	/* STROBE col -> Low */
++	GPCR2 = CORGI_GPIO_STROBE_BIT(col);
++	/* STROBE col -> out, not col -> HiZ */
++	GPDR2 = (GPDR2 & ~CORGI_GPIO_ALL_STROBE_BIT) | CORGI_GPIO_STROBE_BIT(col);
++}
++
++#define GET_ROWS_STATUS(c)	(((GPLR1 & CORGI_GPIO_HIGH_SENSE_BIT) >> CORGI_GPIO_HIGH_SENSE_RSHIFT) | ((GPLR2 & CORGI_GPIO_LOW_SENSE_BIT) << CORGI_GPIO_LOW_SENSE_LSHIFT))
++
++static int corgikbd_scankeyboard(void)
++{
++	unsigned int row, col, rowd;
++	unsigned int num_pressed;
++	int ret = -1;
++
++	num_pressed = 0;
++	for (col = 0; col < KB_COLS; col++) {
++		corgikbd_discharge_all();
++		udelay(KB_DISCHARGE_DELAY);
++
++		corgikbd_activate_col(col);
++		udelay(KB_ACTIVATE_DELAY);
++
++		rowd = GET_ROWS_STATUS(col);
++		for (row = 0; row < KB_ROWS; row++) {
++			unsigned int scancode, pressed;
++
++			scancode = SCANCODE(row, col);
++			pressed = rowd & KB_ROWMASK(row);
++
++			if (pressed)
++			    ret = scancode;
++		}
++		corgikbd_reset_col(col);
++	}
++
++	corgikbd_activate_all();
++
++	return ret;
++}
++
++void corgikbd_init(void)
++{
++	int i;
++	
++	/* Setup sense interrupts - RisingEdge Detect, sense lines as inputs */
++	for (i = 0; i < CORGI_KEY_SENSE_NUM; i++)
++		pxa_gpio_mode(CORGI_GPIO_KEY_SENSE(i) | GPIO_IN);
++
++	/* Set Strobe lines as outputs - set high */
++	for (i = 0; i < CORGI_KEY_STROBE_NUM; i++)
++		pxa_gpio_mode(CORGI_GPIO_KEY_STROBE(i) | GPIO_OUT | GPIO_DFLT_HIGH);
++
++	/* Setup the headphone jack as an input */
++	pxa_gpio_mode(CORGI_GPIO_AK_INT | GPIO_IN);
++}
++
++int do_testkey(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	int scan;
++	
++	if (argc < 2)
++		return 1;
++
++	scan = corgikbd_scankeyboard();
++
++
++//	if (scan >= 0)
++//		printf("Scan = %d\n", scan);
++//	else
++//		printf("Nothing!\n");
++
++	return !(simple_strtol(argv[1], NULL, 10) == scan);
++}
++
++U_BOOT_CMD(
++	testkey,   2,      1,      do_testkey,
++	"testkey - compare pressed key with arg\n",
++	"<key scancode>"
++);
+diff -Nur u-boot-2006-04-18-1106/board/corgi/lowlevel_init.S u-boot-2006-04-18-1106-new/board/corgi/lowlevel_init.S
+--- u-boot-2006-04-18-1106/board/corgi/lowlevel_init.S	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/lowlevel_init.S	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,136 @@
++/*
++ * board/corgi/lowlevel_init.S
++ *
++ * Configuration settings for the Sharp Zaurus SL-C7x0/860.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * This was originally from the Lubbock u-boot port and from BLOB with cleanup
++ *
++ * NOTE: I haven't clean this up considerably, just enough to get it
++ * running. See hal_platform_setup.h for the source. See
++ * board/cradle/lowlevel_init.S for another PXA250 setup that is
++ * much cleaner.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <config.h>
++#include <version.h>
++#include <asm/arch/pxa-regs.h>
++
++/* wait for coprocessor write complete */
++   .macro CPWAIT reg
++   mrc	p15,0,\reg,c2,c0,0
++   mov	\reg,\reg
++   sub	pc,pc,#4
++   .endm
++
++/*********** Write out to HEX 7 segment leds *********/
++
++#undef DEBUG_HEXLOG
++
++#ifdef DEBUG_HEXLOG
++#define LEDCTL		0x08000040
++#define LEDDAT1	0x08000010
++#define LEDDAT2	0x08000014
++
++.macro wait, count
++	mov		r10, \count
++0:
++	subs	r10, r10, #1
++	bne		0b
++.endm
++
++.macro hexlog_init
++	ldr		r11, =LEDCTL
++	mov		r10, #0xff
++	str		r10, [r11]
++	ldr		r11, =LEDDAT2
++	mov		r10, #0xFFFFFFFF
++	str		r10, [r11]
++	ldr		r11, =LEDDAT1
++	mov		r10, #0x0
++	str		r10, [r11]
++.endm
++
++.macro hexlog, val
++	ldr		r11, =LEDCTL
++	mov		r10, #0xff
++	str		r10, [r11]
++	ldr		r11, =LEDDAT2
++	mov		r10, #0xFFFFFFFF
++	str		r10, [r11]
++
++	ldr		r11, =LEDDAT1
++	mov		r10, \val
++	str		r10, [r11]
++
++	wait		#0x400000
++.endm
++
++#else
++
++.macro hexlog_init
++	nop
++.endm
++
++.macro hexlog, val
++	nop
++.endm
++
++#endif
++
++/***********************************/
++
++/*
++ *	Memory setup
++ */
++
++.globl lowlevel_init
++lowlevel_init:
++
++	mov	pc, lr
++
++.globl set_turbo_mode
++
++set_turbo_mode:
++	/* Turn on turbo mode */
++	mrc	p14, 0, r2, c6, c0, 0
++	orr	r2, r2, #0x3		/* Turbo, Freq change */
++	mcr	p14, 0, r2, c6, c0, 0
++
++
++	/* Setup vectors */
++	ldr	r0, =TEXT_BASE
++	ldr	r1, =TEXT_BASE+0x40
++	ldr	r2, =0x0
++1:
++	ldr	r3, [r0]
++	str	r3, [r2]
++	add	r0, r0, #4
++	add	r2, r2, #4
++	cmp	r0, r1
++	bne	1b
++
++	ldr	r0, =0x0
++	ldr	r1, [r0, #4]
++	str	r1, [r0]
++
++	mov	pc, lr
+diff -Nur u-boot-2006-04-18-1106/board/corgi/nand.c u-boot-2006-04-18-1106-new/board/corgi/nand.c
+--- u-boot-2006-04-18-1106/board/corgi/nand.c	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/nand.c	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,157 @@
++/*
++ * board/corgi/nand.c
++ *
++ * NAND driver for the Sharp Zaurus SL-C7x0/860.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from mtd nand driver:
++ *
++ * drivers/mtd/nand/sharpsl.c
++ *
++ * Copyright (C) 2004 Richard Purdie
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++
++
++#if (CONFIG_COMMANDS & CFG_CMD_NAND)
++
++#include <nand.h>
++#include <linux/mtd/nand_ecc.h>
++
++static int sharpsl_io_base = CFG_NAND_BASE;
++
++/* register offset */
++#define ECCLPLB	 	sharpsl_io_base+0x00	/* line parity 7 - 0 bit */
++#define ECCLPUB	 	sharpsl_io_base+0x04	/* line parity 15 - 8 bit */
++#define ECCCP	   	sharpsl_io_base+0x08	/* column parity 5 - 0 bit */
++#define ECCCNTR	 	sharpsl_io_base+0x0C	/* ECC byte counter */
++#define ECCCLRR	 	sharpsl_io_base+0x10	/* cleare ECC */
++#define FLASHIO	 	sharpsl_io_base+0x14	/* Flash I/O */
++#define FLASHCTL	sharpsl_io_base+0x18	/* Flash Control */
++
++/* Flash control bit */
++#define FLRYBY		(1 << 5)
++#define FLCE1		(1 << 4)
++#define FLWP		(1 << 3)
++#define FLALE		(1 << 2)
++#define FLCLE		(1 << 1)
++#define FLCE0		(1 << 0)
++
++#define readb(address) *((volatile unsigned char *)(address))
++#define writeb(v, address) *((volatile unsigned char *)(address))=v
++
++/*
++ *	hardware specific access to control-lines
++ */
++static void
++sharpsl_nand_hwcontrol(struct mtd_info* mtd, int cmd)
++{
++	switch (cmd) {
++	case NAND_CTL_SETCLE:
++		writeb(readb(FLASHCTL) | FLCLE, FLASHCTL);
++		break;
++	case NAND_CTL_CLRCLE:
++		writeb(readb(FLASHCTL) & ~FLCLE, FLASHCTL);
++		break;
++
++	case NAND_CTL_SETALE:
++		writeb(readb(FLASHCTL) | FLALE, FLASHCTL);
++		break;
++	case NAND_CTL_CLRALE:
++		writeb(readb(FLASHCTL) & ~FLALE, FLASHCTL);
++		break;
++
++	case NAND_CTL_SETNCE:
++		writeb(readb(FLASHCTL) & ~(FLCE0|FLCE1), FLASHCTL);
++		break;
++	case NAND_CTL_CLRNCE:
++		writeb(readb(FLASHCTL) | (FLCE0|FLCE1), FLASHCTL);
++		break;
++	}
++}
++
++static int
++sharpsl_nand_dev_ready(struct mtd_info* mtd)
++{
++	return !((readb(FLASHCTL) & FLRYBY) == 0);
++}
++
++static void
++sharpsl_nand_enable_hwecc(struct mtd_info* mtd, int mode)
++{
++	writeb(0 ,ECCCLRR);
++}
++
++static int
++sharpsl_nand_calculate_ecc(struct mtd_info* mtd, const u_char* dat,
++				u_char* ecc_code)
++{
++	ecc_code[0] = ~readb(ECCLPUB);
++	ecc_code[1] = ~readb(ECCLPLB);
++	ecc_code[2] = (~readb(ECCCP) << 2) | 0x03;
++	return readb(ECCCNTR) != 0;
++}
++
++static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
++
++static struct nand_bbt_descr sharpsl_bbt = {
++	.options = 0,
++	.offs = 4,
++	.len = 2,
++	.pattern = scan_ff_pattern
++};
++
++/*
++ * Board-specific NAND initialization. The following members of the
++ * argument are board-specific (per include/linux/mtd/nand.h):
++ * - IO_ADDR_R?: address to read the 8 I/O lines of the flash device
++ * - IO_ADDR_W?: address to write the 8 I/O lines of the flash device
++ * - hwcontrol: hardwarespecific function for accesing control-lines
++ * - dev_ready: hardwarespecific function for  accesing device ready/busy line
++ * - enable_hwecc?: function to enable (reset)  hardware ecc generator. Must
++ *   only be provided if a hardware ECC is available
++ * - eccmode: mode of ecc, see defines
++ * - chip_delay: chip dependent delay for transfering data from array to
++ *   read regs (tR)
++ * - options: various chip options. They can partly be set to inform
++ *   nand_scan about special functionality. See the defines for further
++ *   explanation
++ * Members with a "?" were not set in the merged testing-NAND branch,
++ * so they are not set here either.
++ */
++void board_nand_init(struct nand_chip *nand)
++{
++	writeb(readb(FLASHCTL) | FLWP, FLASHCTL);
++
++	nand->IO_ADDR_R = FLASHIO;
++	nand->IO_ADDR_W = FLASHIO;
++	nand->hwcontrol = sharpsl_nand_hwcontrol;
++	nand->dev_ready = sharpsl_nand_dev_ready;
++	nand->eccmode = NAND_ECC_HW3_256;
++	nand->chip_delay = 15;
++	nand->badblock_pattern = &sharpsl_bbt;
++	nand->enable_hwecc = sharpsl_nand_enable_hwecc;
++	nand->calculate_ecc = sharpsl_nand_calculate_ecc;
++	nand->correct_data = nand_correct_data;
++}
++#endif /* (CONFIG_COMMANDS & CFG_CMD_NAND) */
+diff -Nur u-boot-2006-04-18-1106/board/corgi/u-boot.lds u-boot-2006-04-18-1106-new/board/corgi/u-boot.lds
+--- u-boot-2006-04-18-1106/board/corgi/u-boot.lds	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/board/corgi/u-boot.lds	2006-07-05 11:19:44.000000000 +0000
+@@ -0,0 +1,56 @@
++/*
++ * (C) Copyright 2000
++ * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm", "elf32-littlearm")
++OUTPUT_ARCH(arm)
++ENTRY(_start)
++SECTIONS
++{
++	. = 0x00000000;
++
++	. = ALIGN(4);
++	.text      :
++	{
++	  cpu/pxa/start.o	(.text)
++	  *(.text)
++	}
++
++	. = ALIGN(4);
++	.rodata : { *(.rodata) }
++
++	. = ALIGN(4);
++	.data : { *(.data) }
++
++	. = ALIGN(4);
++	.got : { *(.got) }
++
++	. = .;
++	__u_boot_cmd_start = .;
++	.u_boot_cmd : { *(.u_boot_cmd) }
++	__u_boot_cmd_end = .;
++
++	. = ALIGN(4);
++	__bss_start = .;
++	.bss : { *(.bss) }
++	_end = .;
++}
+diff -Nur u-boot-2006-04-18-1106/common/cmd_nand.c u-boot-2006-04-18-1106-new/common/cmd_nand.c
+--- u-boot-2006-04-18-1106/common/cmd_nand.c	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/common/cmd_nand.c	2006-07-05 11:19:44.000000000 +0000
+@@ -81,6 +81,63 @@
+ 	return 0;
+ }
+ 
++#ifdef NAND_LOGICAL
++/////////////////////////////////////////////////////////////////////
++// oob structure
++/////////////////////////////////////////////////////////////////////
++
++#define NAND_NOOB_LOGADDR_00		8
++#define NAND_NOOB_LOGADDR_01		9
++#define NAND_NOOB_LOGADDR_10		10
++#define NAND_NOOB_LOGADDR_11		11
++#define NAND_NOOB_LOGADDR_20		12
++#define NAND_NOOB_LOGADDR_21		13
++
++static uint nand_get_logical_no(unsigned char *oob)
++{
++    unsigned short us,bit;
++    int par;
++    int good0, good1;
++
++    if(oob[NAND_NOOB_LOGADDR_00] == oob[NAND_NOOB_LOGADDR_10] &&
++       oob[NAND_NOOB_LOGADDR_01] == oob[NAND_NOOB_LOGADDR_11]){
++	good0 = NAND_NOOB_LOGADDR_00;
++	good1 = NAND_NOOB_LOGADDR_01;
++    }else
++    if(oob[NAND_NOOB_LOGADDR_10] == oob[NAND_NOOB_LOGADDR_20] &&
++       oob[NAND_NOOB_LOGADDR_11] == oob[NAND_NOOB_LOGADDR_21]){
++	good0 = NAND_NOOB_LOGADDR_10;
++	good1 = NAND_NOOB_LOGADDR_11;
++    }else
++    if(oob[NAND_NOOB_LOGADDR_20] == oob[NAND_NOOB_LOGADDR_00] &&
++       oob[NAND_NOOB_LOGADDR_21] == oob[NAND_NOOB_LOGADDR_01]){
++	good0 = NAND_NOOB_LOGADDR_20;
++	good1 = NAND_NOOB_LOGADDR_21;
++    }else{
++	return (uint)-1;
++    }
++
++    us = (((unsigned short)(oob[good0]) & 0x00ff) << 0) |
++	 (((unsigned short)(oob[good1]) & 0x00ff) << 8);
++
++    par = 0;
++    for(bit = 0x0001; bit != 0; bit <<= 1){
++	if(us & bit){
++	    par++;
++	}
++    }
++    if(par & 1){
++	return (uint)-2;
++    }
++
++    if(us == 0xffff){
++	return 0xffff;
++    }else{
++	return ((us & 0x07fe) >> 1);
++    }
++}
++#endif
++
+ /* ------------------------------------------------------------------------- */
+ 
+ static void
+@@ -245,6 +302,55 @@
+ 		if (off == 0 && size == 0)
+ 			return 1;
+ 
++#ifdef NAND_LOGICAL
++		s = strchr(cmd, '.');
++		if (s != NULL) {
++			if (strcmp(s, ".logical") == 0) {
++				int blocks = NAND_LOGICAL_SIZE / nand->erasesize;
++				ulong *log2phy = malloc(blocks * sizeof(ulong));
++				u_char *oobuf = malloc(nand->oobblock + nand->oobsize);
++				int i;
++				ulong offset;
++				ret = 1;
++				for (i = 0; i < blocks; i++)
++					log2phy[i] = (uint) -1;
++				offset = 0;
++				for (i = 0; i < blocks; i++) {
++					ret = nand_read_raw(nand, oobuf, offset, nand->oobblock, nand->oobsize);
++					if (!ret) {
++						int log_no = nand_get_logical_no(oobuf + nand->oobblock);
++						if (((int)log_no >= 0) && (log_no < blocks)) {
++							log2phy[log_no] = offset;
++							//printf("NAND logical - %08X -> %04X\n", offset, log_no);
++						}
++					}
++					offset += nand->erasesize;
++				}
++				
++				for (i = 0; i < size / nand->erasesize; i++) {
++					ulong sz = nand->erasesize;
++					offset = log2phy[off / nand->erasesize];
++					if ((int)offset < 0) {
++					        printf("NAND logical - offset %08X not found\n", off);
++						return 1;
++					}
++					//printf("NAND logical - %04X -> %08X\n", off / nand->erasesize, offset);
++					ret = nand_read(nand, offset, &sz, (u_char *)addr);
++					if (ret) {
++						printf("NAND logical - offset %08X, read error\n", off);
++						return 1;
++					}
++					off += nand->erasesize;
++					addr += nand->erasesize;
++				}
++				printf(" %d bytes read from NAND logical\n", size);
++				free(oobuf);
++				free(log2phy);
++				return ret == 0 ? 0 : 1;
++			}
++		}
++#endif
++
+ 		i = strncmp(cmd, "read", 4) == 0;	/* 1 = read, 0 = write */
+ 		printf("\nNAND %s: device %d offset %u, size %u ... ",
+ 		       i ? "read" : "write", nand_curr_device, off, size);
+diff -Nur u-boot-2006-04-18-1106/cpu/pxa/config.mk u-boot-2006-04-18-1106-new/cpu/pxa/config.mk
+--- u-boot-2006-04-18-1106/cpu/pxa/config.mk	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/cpu/pxa/config.mk	2006-07-05 11:19:44.000000000 +0000
+@@ -22,8 +22,7 @@
+ # MA 02111-1307 USA
+ #
+ 
+-PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 \
+-	-msoft-float
++PLATFORM_RELFLAGS += -fno-strict-aliasing  -fno-common -ffixed-r8 -fomit-frame-pointer
+ 
+ #PLATFORM_CPPFLAGS += -mapcs-32 -march=armv4 -mtune=strongarm1100
+ PLATFORM_CPPFLAGS += -march=armv5 -mtune=xscale
+@@ -32,5 +31,5 @@
+ # Supply options according to compiler version
+ #
+ # ========================================================================
+-PLATFORM_CPPFLAGS +=$(call cc-option,-mapcs-32,-mabi=apcs-gnu)
++#PLATFORM_CPPFLAGS +=$(call cc-option,-mapcs-32,-mabi=apcs-gnu)
+ PLATFORM_RELFLAGS +=$(call cc-option,-mshort-load-bytes,$(call cc-option,-malignment-traps,))
+diff -Nur u-boot-2006-04-18-1106/cpu/pxa/start.S u-boot-2006-04-18-1106-new/cpu/pxa/start.S
+--- u-boot-2006-04-18-1106/cpu/pxa/start.S	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/cpu/pxa/start.S	2006-07-05 11:19:44.000000000 +0000
+@@ -42,6 +42,7 @@
+ 	ldr	pc, _irq
+ 	ldr	pc, _fiq
+ 
++_reset:			.word reset
+ _undefined_instruction: .word undefined_instruction
+ _software_interrupt:	.word software_interrupt
+ _prefetch_abort:	.word prefetch_abort
+diff -Nur u-boot-2006-04-18-1106/fs/cramfs/cramfs.c u-boot-2006-04-18-1106-new/fs/cramfs/cramfs.c
+--- u-boot-2006-04-18-1106/fs/cramfs/cramfs.c	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/fs/cramfs/cramfs.c	2006-07-05 11:19:44.000000000 +0000
+@@ -44,8 +44,13 @@
+ 
+ /* CPU address space offset calculation macro, struct part_info offset is
+  * device address space offset, so we need to shift it by a device start address. */
++#if (CONFIG_COMMANDS & CFG_CMD_FLASH)
+ extern flash_info_t flash_info[];
+ #define PART_OFFSET(x)	(x->offset + flash_info[x->dev->id->num].start[0])
++#else
++static struct cramfs_super super_fake;
++#define PART_OFFSET(x)	(&super_fake)
++#endif
+ 
+ static int cramfs_read_super (struct part_info *info)
+ {
+diff -Nur u-boot-2006-04-18-1106/include/asm-arm/arch-pxa/pxa-regs.h u-boot-2006-04-18-1106-new/include/asm-arm/arch-pxa/pxa-regs.h
+--- u-boot-2006-04-18-1106/include/asm-arm/arch-pxa/pxa-regs.h	2006-04-18 09:05:03.000000000 +0000
++++ u-boot-2006-04-18-1106-new/include/asm-arm/arch-pxa/pxa-regs.h	2006-07-05 11:19:44.000000000 +0000
+@@ -1269,15 +1269,16 @@
+ #define _GEDR(x)	__REG2(0x40E00048, ((x) & 0x60) >> 3)
+ #define _GAFR(x)	__REG2(0x40E00054, ((x) & 0x70) >> 2)
+ 
+-#define GPLR(x)		((((x) & 0x7f) < 96) ? _GPLR(x) : GPLR3)
+-#define GPDR(x)		((((x) & 0x7f) < 96) ? _GPDR(x) : GPDR3)
+-#define GPSR(x)		((((x) & 0x7f) < 96) ? _GPSR(x) : GPSR3)
+-#define GPCR(x)		((((x) & 0x7f) < 96) ? _GPCR(x) : GPCR3)
+-#define GRER(x)		((((x) & 0x7f) < 96) ? _GRER(x) : GRER3)
+-#define GFER(x)		((((x) & 0x7f) < 96) ? _GFER(x) : GFER3)
+-#define GEDR(x)		((((x) & 0x7f) < 96) ? _GEDR(x) : GEDR3)
+-#define GAFR(x)		((((x) & 0x7f) < 96) ? _GAFR(x) : \
+-			 ((((x) & 0x7f) < 112) ? GAFR3_L : GAFR3_U))
++#define GPLR(x) 	(*((((x) & 0x7f) < 96) ? &_GPLR(x) : &GPLR3))
++#define GPDR(x)		(*((((x) & 0x7f) < 96) ? &_GPDR(x) : &GPDR3))
++#define GPSR(x)		(*((((x) & 0x7f) < 96) ? &_GPSR(x) : &GPSR3))
++#define GPCR(x)		(*((((x) & 0x7f) < 96) ? &_GPCR(x) : &GPCR3))
++#define GRER(x)		(*((((x) & 0x7f) < 96) ? &_GRER(x) : &GRER3))
++#define GFER(x)		(*((((x) & 0x7f) < 96) ? &_GFER(x) : &GFER3))
++#define GEDR(x)		(*((((x) & 0x7f) < 96) ? &_GEDR(x) : &GEDR3))
++#define GAFR(x)		(*((((x) & 0x7f) < 96) ? &_GAFR(x) : \
++			 ((((x) & 0x7f) < 112) ? &GAFR3_L : &GAFR3_U)))
++
+ #else
+ 
+ #define GPLR(x)		__REG2(0x40E00000, ((x) & 0x60) >> 3)
+diff -Nur u-boot-2006-04-18-1106/include/configs/akita.h u-boot-2006-04-18-1106-new/include/configs/akita.h
+--- u-boot-2006-04-18-1106/include/configs/akita.h	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/include/configs/akita.h	2006-07-13 11:00:46.000000000 +0000
+@@ -0,0 +1,324 @@
++/*
++ * include/configs/akita.h
++ *
++ * Configuration settings for the Sharp Zaurus SL-C1000/C3100.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from adsvix board configuration:
++ * (C) Copyright 2004
++ * Robert Whaley, Applied Data Systems, Inc. rwhaley@applieddata.net
++ * (C) Copyright 2002
++ * Kyle Harris, Nexus Technologies, Inc. kharris@nexus-tech.net
++ * (C) Copyright 2002
++ * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
++ * Marius Groeger <mgroeger@sysgo.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++#define CONFIG_SKIP_LOWLEVEL_INIT
++
++#undef SKIP_CONFIG_RELOCATE_UBOOT
++
++#undef CONFIG_HARD_I2C
++
++/*
++ * High Level Configuration Options
++ * (easy to change)
++ */
++#define CONFIG_PXA27X		1	/* This is an PXA27x CPU */
++#define CONFIG_AKITA		1	/* on Sharp Zaurus Akita */
++//#define CONFIG_MMC			1
++#define BOARD_LATE_INIT		1
++
++#undef CONFIG_USE_IRQ			/* we don't need IRQ/FIQ stuff */
++
++#define RTC			1
++
++/*
++ * Size of malloc() pool
++ */
++//#define CFG_MALLOC_LEN	    (CFG_ENV_SIZE + 128*1024)
++#define CFG_MALLOC_LEN	    (CFG_ENV_SIZE + 256*1024)
++#define CFG_GBL_DATA_SIZE	128	/* size in bytes reserved for initial data */
++
++/*
++ * select serial console configuration
++ */
++#define CONFIG_FFUART	       1       /* we use FFUART on Mainstone */
++
++/* allow to overwrite serial and ethaddr */
++#define CONFIG_BAUDRATE	       115200
++//#define CONFIG_DOS_PARTITION   1
++
++#undef CONFIG_SHOW_BOOT_PROGRESS
++
++#if 1
++#define	CONFIG_BOOTDELAY	1
++#define CONFIG_AUTOBOOT_PROMPT  "Autobooting in %d seconds\n"
++
++#define	CONFIG_BOOTCOMMAND						\
++	"if testkey 101 ; "												\
++	"then "														\
++		"nand read.logical 0xa1000000 0x00060000 0x00540000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192; " \
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 2 ; "												\
++	"then "														\
++		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mmcblk0p1 fbcon=rotate:1; " 		\
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 18 ; "												\
++	"then "														\
++		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hda1 fbcon=rotate:1; "	 		\
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 3 ; "												\
++	"then "														\
++		"nand read.logical 0xa1000000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hdc1 fbcon=rotate:1; "	 		\
++		"bootm; "												\
++	"fi; "														\
++	"nand read.logical 0xa1000000 0x005a0000 0x00160000; "								\
++	"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mtdblock2 rootfstype=jffs2 fbcon=rotate:1; " 	\
++	"bootm; "
++#else
++#define CONFIG_BOOTCOMMAND	"" // "run boot_flash"
++#endif
++
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 console=tty1 root=/dev/ram rw fbcon=rotate:1 ramdisk_size=8192"
++#define CONFIG_SETUP_MEMORY_TAGS 1
++#define CONFIG_CMDLINE_TAG	 1	/* enable passing of ATAGs	*/
++#define CONFIG_INITRD_TAG	 1
++
++#define CONFIG_COMMANDS		((				\
++				    CONFIG_CMD_DFL 	| 	\
++				    CFG_CMD_NAND 	|	\
++				    CFG_CMD_JFFS2	 	\
++				    ) & ~(			\
++				    CFG_CMD_NET 	| 	\
++				    CFG_CMD_FLASH 	| 	\
++				    CFG_CMD_IMLS 	 	\
++				))
++
++//				    CFG_CMD_ENV
++			
++/* this must be included AFTER the definition of CONFIG_COMMANDS (if any) */
++#include <cmd_confdefs.h>
++
++
++#if (CONFIG_COMMANDS & CFG_CMD_KGDB)
++#define CONFIG_KGDB_BAUDRATE	230400		/* speed to run kgdb serial port */
++#define CONFIG_KGDB_SER_INDEX	2		/* which serial port to use */
++#endif
++
++/*
++ * Miscellaneous configurable options
++ */
++#define CFG_HUSH_PARSER		1
++#define CFG_PROMPT_HUSH_PS2	"> "
++
++#define CFG_LONGHELP				/* undef to save memory		*/
++#define CFG_PROMPT		"U-Boot> "	/* Monitor Command Prompt */
++
++#define CFG_CBSIZE		256		/* Console I/O Buffer Size	*/
++#define CFG_PBSIZE (CFG_CBSIZE+sizeof(CFG_PROMPT)+16) /* Print Buffer Size */
++#define CFG_MAXARGS		16		/* max number of command args	*/
++#define CFG_BARGSIZE		CFG_CBSIZE	/* Boot Argument Buffer Size	*/
++#define CFG_DEVICE_NULLDEV	1
++
++#define CFG_MEMTEST_START	0xa0400000	/* memtest works on	*/
++#define CFG_MEMTEST_END		0xa0800000	/* 4 ... 8 MB in DRAM	*/
++
++#undef	CFG_CLKS_IN_HZ		/* everything, incl board info, in Hz */
++
++#define CFG_LOAD_ADDR		0xa1000000	/* default load address */
++
++#define CFG_HZ			3686400		/* incrementer freq: 3.6864 MHz */
++#define CFG_CPUSPEED		0x207		/* need to look more closely, I think this is Turbo = 2x, L=91Mhz */
++
++						/* valid baudrates */
++#define CFG_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200 }
++
++#define CFG_MMC_BASE		0xF0000000
++
++/*
++ * Stack sizes
++ *
++ * The stack sizes are set up in start.S using the settings below
++ */
++#define CONFIG_STACKSIZE	(128*1024)	/* regular stack */
++#ifdef CONFIG_USE_IRQ
++#define CONFIG_STACKSIZE_IRQ	(4*1024)	/* IRQ stack */
++#define CONFIG_STACKSIZE_FIQ	(4*1024)	/* FIQ stack */
++#endif
++
++/*
++ * Physical Memory Map
++ */
++#define CONFIG_NR_DRAM_BANKS	4	   /* we have 2 banks of DRAM */
++#define PHYS_SDRAM_1		0xa0000000 /* SDRAM Bank #1 */
++#define PHYS_SDRAM_1_SIZE	0x04000000 /* 64 MB */
++#define PHYS_SDRAM_2		0xa4000000 /* SDRAM Bank #2 */
++#define PHYS_SDRAM_2_SIZE	0x00000000 /* 0 MB */
++#define PHYS_SDRAM_3		0xa8000000 /* SDRAM Bank #3 */
++#define PHYS_SDRAM_3_SIZE	0x00000000 /* 0 MB */
++#define PHYS_SDRAM_4		0xac000000 /* SDRAM Bank #4 */
++#define PHYS_SDRAM_4_SIZE	0x00000000 /* 0 MB */
++
++#define PHYS_FLASH_1		0xd4000000 /* Flash Bank #1 */
++
++#define CFG_DRAM_BASE		0xa0000000
++#define CFG_DRAM_SIZE		0x04000000
++
++#define CFG_FLASH_BASE		PHYS_FLASH_1
++
++/*
++ * GPIO settings for Mainstone
++ */
++
++#define CFG_GPSR0_VAL		0x00708800
++#define CFG_GPSR1_VAL		0x03cf0002
++#define CFG_GPSR2_VAL		0x0021FC00
++#define CFG_GPSR3_VAL		0x00000000
++
++#define CFG_GPCR0_VAL		0x00001000
++#define CFG_GPCR1_VAL		0x00000000
++#define CFG_GPCR2_VAL		0x00000000
++#define CFG_GPCR3_VAL		0x00000000
++
++#define CFG_GPDR0_VAL		0xC27B9C04
++#define CFG_GPDR1_VAL		0x00EFAA83
++#define CFG_GPDR2_VAL		0x0E23FC00
++#define CFG_GPDR3_VAL		0x001E1F81
++
++#define CFG_GAFR0_L_VAL		0x94F00000
++#define CFG_GAFR0_U_VAL		0x015A859A
++#define CFG_GAFR1_L_VAL		0x999A955A
++#define CFG_GAFR1_U_VAL		0x0005A4AA
++#define CFG_GAFR2_L_VAL		0x6AA00000
++#define CFG_GAFR2_U_VAL		0x55A8041A
++#define CFG_GAFR3_L_VAL		0x56AA955A
++#define CFG_GAFR3_U_VAL		0x00000001
++
++#define CFG_PSSR_VAL		0x20	// ???????????
++
++/*
++ * PCMCIA and CF Interfaces
++ */
++#define CFG_MECR_VAL		0x00000001
++#define CFG_MCMEM0_VAL		0x00010204
++#define CFG_MCMEM1_VAL		0x00010204
++#define CFG_MCATT0_VAL		0x00010204
++#define CFG_MCATT1_VAL		0x00010204
++#define CFG_MCIO0_VAL		0x0000c108
++#define CFG_MCIO1_VAL		0x0001c108
++
++//#define CONFIG_PXA_PCMCIA 1
++//#define CONFIG_PXA_IDE 1
++
++#define CONFIG_PCMCIA_SLOT_A 1
++/* just to keep build system happy  */
++
++#define CFG_PCMCIA_MEM_ADDR     0x28000000
++#define CFG_PCMCIA_MEM_SIZE     0x04000000
++
++#define CFG_IDE_MAXBUS		1
++/* max. 1 IDE bus		*/
++#define CFG_IDE_MAXDEVICE	1
++/* max. 1 drive per IDE bus	*/
++
++#define CFG_ATA_IDE0_OFFSET	0x0000
++
++#define CFG_ATA_BASE_ADDR	0x20000000
++
++/* Offset for data I/O			*/
++#define CFG_ATA_DATA_OFFSET	0x1f0
++
++/* Offset for normal register accesses	*/
++#define CFG_ATA_REG_OFFSET	0x1f0
++
++/* Offset for alternate registers	*/
++#define CFG_ATA_ALT_OFFSET	0x3f0
++
++#define CFG_NO_FLASH 1
++#define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks		*/
++#define CFG_MAX_FLASH_SECT	512	/* max number of sectors on one chip	*/
++
++/*-----------------------------------------------------------------------
++ * NAND-FLASH stuff
++ *-----------------------------------------------------------------------
++ */
++#undef CFG_NAND_LEGACY
++
++/* NAND debugging */
++//#define CONFIG_MTD_DEBUG
++//#define CONFIG_MTD_DEBUG_VERBOSE 3
++
++#define CFG_NAND_BASE		0xd4000000
++#define CFG_MAX_NAND_DEVICE	1	/* Max number of NAND devices		*/
++#define NAND_MAX_CHIPS 		1
++
++//#define CONFIG_MTD_NAND_VERIFY_WRITE 1  /* verify all writes!!!         */
++//#define CFG_NAND_SKIP_BAD_DOT_I      1  /* ".i" read skips bad blocks   */
++
++#define CONFIG_JFFS2_NAND 1			/* jffs2 on nand support */
++#define NAND_CACHE_PAGES 16			/* size of nand cache in 512 bytes pages */
++
++/*
++ * JFFS2 partitions
++ *
++ */
++/* No command line, one static partition */
++//#undef CONFIG_JFFS2_CMDLINE
++//#define CONFIG_JFFS2_DEV		"nand0"
++//#define CONFIG_JFFS2_PART_SIZE		0xFFFFFFFF
++//#define CONFIG_JFFS2_PART_OFFSET	0x00060000
++
++/* mtdparts command line support */
++/* Note: fake mtd_id used, no linux mtd map file */
++
++#define CONFIG_JFFS2_CMDLINE
++#define MTDIDS_DEFAULT		"nand0=laze-0"
++//#define MTDPARTS_DEFAULT	"mtdparts=laze-0:256k(uboot),128k(env),-(jffs2)"
++#define MTDPARTS_DEFAULT	"mtdparts=laze-0:7168k(Logical),-(JFFS2)"
++
++/*
++ * SHARP SL NAND logical partition
++ */
++#define NAND_LOGICAL		1
++#define NAND_LOGICAL_SIZE	0x700000
++
++/*
++ * Environment
++ */
++
++#define CFG_ENV_IS_IN_NAND	1
++#define CFG_ENV_OFFSET		0x40000
++//#define CFG_ENV_OFFSET_REDUND	0x44000
++#define CFG_ENV_SIZE		0x20000
++
++#endif	/* __CONFIG_H */
+diff -Nur u-boot-2006-04-18-1106/include/configs/corgi.h u-boot-2006-04-18-1106-new/include/configs/corgi.h
+--- u-boot-2006-04-18-1106/include/configs/corgi.h	1970-01-01 00:00:00.000000000 +0000
++++ u-boot-2006-04-18-1106-new/include/configs/corgi.h	2006-07-13 11:19:04.000000000 +0000
+@@ -0,0 +1,326 @@
++/*
++ * include/configs/corgi.h
++ *
++ * Configuration settings for the Sharp Zaurus SL-C7x0/C860.
++ *
++ * (C) Copyright 2006 Alexander Chukov <sash@pdaXrom.org>
++ *
++ * portions from adsvix board configuration:
++ * (C) Copyright 2004
++ * Robert Whaley, Applied Data Systems, Inc. rwhaley@applieddata.net
++ * (C) Copyright 2002
++ * Kyle Harris, Nexus Technologies, Inc. kharris@nexus-tech.net
++ * (C) Copyright 2002
++ * Sysgo Real-Time Solutions, GmbH <www.elinos.com>
++ * Marius Groeger <mgroeger@sysgo.de>
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#ifndef __CONFIG_H
++#define __CONFIG_H
++
++#define CONFIG_SKIP_LOWLEVEL_INIT
++
++#undef SKIP_CONFIG_RELOCATE_UBOOT
++
++#undef CONFIG_HARD_I2C
++
++/*
++ * High Level Configuration Options
++ * (easy to change)
++ */
++#define CONFIG_PXA250		1	/* This is an PXA255 CPU    */
++#define CONFIG_CORGI		1	/* on Sharp Zaurus Corgi    */
++//#define CONFIG_MMC			1
++#define BOARD_LATE_INIT		1
++
++#undef CONFIG_USE_IRQ			/* we don't need IRQ/FIQ stuff */
++
++#define RTC			1
++
++/*
++ * Size of malloc() pool
++ */
++//#define CFG_MALLOC_LEN	    (CFG_ENV_SIZE + 128*1024)
++#define CFG_MALLOC_LEN	    (CFG_ENV_SIZE + 256*1024)
++#define CFG_GBL_DATA_SIZE	128	/* size in bytes reserved for initial data */
++
++/*
++ * select serial console configuration
++ */
++#define CONFIG_FFUART	       1       /* we use FFUART on Mainstone */
++
++/* allow to overwrite serial and ethaddr */
++#define CONFIG_BAUDRATE	       115200
++//#define CONFIG_DOS_PARTITION   1
++
++#undef CONFIG_SHOW_BOOT_PROGRESS
++
++#if 1
++#define	CONFIG_BOOTDELAY	1
++#define CONFIG_AUTOBOOT_PROMPT  "Autobooting in %d seconds\n"
++
++#define	CONFIG_BOOTCOMMAND						\
++	"if testkey 101 ; "												\
++	"then "														\
++		"nand read.logical 0xa0800000 0x00060000 0x00540000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/ram rw ramdisk_size=8192; " 		\
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 2 ; "												\
++	"then "														\
++		"nand read.logical 0xa0800000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mmcblk0p1; " 				\
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 18 ; "												\
++	"then "														\
++		"nand read.logical 0xa0800000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hda1; "			 		\
++		"bootm; "												\
++	"fi; "														\
++	"if testkey 3 ; "												\
++	"then "														\
++		"nand read.logical 0xa0800000 0x005a0000 0x00160000; "							\
++		"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/hdc1; "			 		\
++		"bootm; "												\
++	"fi; "														\
++	"nand read.logical 0xa0800000 0x005a0000 0x00160000; "								\
++	"setenv bootargs console=ttyS0,115200 console=tty1 root=/dev/mtdblock2 rootfstype=jffs2; " 			\
++	"bootm; "
++#else
++#define CONFIG_BOOTCOMMAND	"" // "run boot_flash"
++#endif
++
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 console=tty1 root=/dev/ram rw ramdisk_size=8192"
++#define CONFIG_SETUP_MEMORY_TAGS 1
++#define CONFIG_CMDLINE_TAG	 1	/* enable passing of ATAGs	*/
++#define CONFIG_INITRD_TAG	 1
++
++#define CONFIG_COMMANDS		((				\
++				    CONFIG_CMD_DFL 	| 	\
++				    CFG_CMD_NAND 	|	\
++				    CFG_CMD_JFFS2	 	\
++				    ) & ~(			\
++				    CFG_CMD_NET 	| 	\
++				    CFG_CMD_FLASH 	| 	\
++				    CFG_CMD_IMLS 	 	\
++				))
++
++//				    CFG_CMD_ENV
++			
++/* this must be included AFTER the definition of CONFIG_COMMANDS (if any) */
++#include <cmd_confdefs.h>
++
++
++#if (CONFIG_COMMANDS & CFG_CMD_KGDB)
++#define CONFIG_KGDB_BAUDRATE	230400		/* speed to run kgdb serial port */
++#define CONFIG_KGDB_SER_INDEX	2		/* which serial port to use */
++#endif
++
++/*
++ * Miscellaneous configurable options
++ */
++#define CFG_HUSH_PARSER		1
++#define CFG_PROMPT_HUSH_PS2	"> "
++
++#define CFG_LONGHELP				/* undef to save memory		*/
++#define CFG_PROMPT		"U-Boot> "	/* Monitor Command Prompt */
++
++#define CFG_CBSIZE		256		/* Console I/O Buffer Size	*/
++#define CFG_PBSIZE (CFG_CBSIZE+sizeof(CFG_PROMPT)+16) /* Print Buffer Size */
++#define CFG_MAXARGS		16		/* max number of command args	*/
++#define CFG_BARGSIZE		CFG_CBSIZE	/* Boot Argument Buffer Size	*/
++#define CFG_DEVICE_NULLDEV	1
++
++#define CFG_MEMTEST_START	0xa0400000	/* memtest works on	*/
++#define CFG_MEMTEST_END		0xa0800000	/* 4 ... 8 MB in DRAM	*/
++
++#undef	CFG_CLKS_IN_HZ		/* everything, incl board info, in Hz */
++
++#define CFG_LOAD_ADDR		0xa0800000	/* default load address */
++
++#define CFG_HZ			3686400		/* incrementer freq: 3.6864 MHz */
++#define CFG_CPUSPEED		0x207		/* need to look more closely, I think this is Turbo = 2x, L=91Mhz */
++
++						/* valid baudrates */
++#define CFG_BAUDRATE_TABLE	{ 9600, 19200, 38400, 57600, 115200 }
++
++#define CFG_MMC_BASE		0xF0000000
++
++/*
++ * Stack sizes
++ *
++ * The stack sizes are set up in start.S using the settings below
++ */
++#define CONFIG_STACKSIZE	(128*1024)	/* regular stack */
++#ifdef CONFIG_USE_IRQ
++#define CONFIG_STACKSIZE_IRQ	(4*1024)	/* IRQ stack */
++#define CONFIG_STACKSIZE_FIQ	(4*1024)	/* FIQ stack */
++#endif
++
++/*
++ * Physical Memory Map
++ */
++#define CONFIG_NR_DRAM_BANKS	4	   /* we have 2 banks of DRAM */
++#define PHYS_SDRAM_1		0xa0000000 /* SDRAM Bank #1 */
++#define PHYS_SDRAM_1_SIZE	0x04000000 /* 64 MB */
++#define PHYS_SDRAM_2		0xa4000000 /* SDRAM Bank #2 */
++#define PHYS_SDRAM_2_SIZE	0x00000000 /* 0 MB */
++#define PHYS_SDRAM_3		0xa8000000 /* SDRAM Bank #3 */
++#define PHYS_SDRAM_3_SIZE	0x00000000 /* 0 MB */
++#define PHYS_SDRAM_4		0xac000000 /* SDRAM Bank #4 */
++#define PHYS_SDRAM_4_SIZE	0x00000000 /* 0 MB */
++
++#define PHYS_FLASH_1		0xd4000000 /* Flash Bank #1 */
++
++#define CFG_DRAM_BASE		0xa0000000
++#define CFG_DRAM_SIZE		0x04000000
++
++#define CFG_FLASH_BASE		PHYS_FLASH_1
++
++/*
++ * GPIO settings for Mainstone
++ */
++
++#define CFG_GPSR0_VAL		0x00708800
++#define CFG_GPSR1_VAL		0x03cf0002
++#define CFG_GPSR2_VAL		0x0021FC00
++#define CFG_GPSR3_VAL		0x00000000
++
++#define CFG_GPCR0_VAL		0x00001000
++#define CFG_GPCR1_VAL		0x00000000
++#define CFG_GPCR2_VAL		0x00000000
++#define CFG_GPCR3_VAL		0x00000000
++
++#define CFG_GPDR0_VAL		0xC27B9C04
++#define CFG_GPDR1_VAL		0x00EFAA83
++#define CFG_GPDR2_VAL		0x0E23FC00
++#define CFG_GPDR3_VAL		0x001E1F81
++
++#define CFG_GAFR0_L_VAL		0x94F00000
++#define CFG_GAFR0_U_VAL		0x015A859A
++#define CFG_GAFR1_L_VAL		0x999A955A
++#define CFG_GAFR1_U_VAL		0x0005A4AA
++#define CFG_GAFR2_L_VAL		0x6AA00000
++#define CFG_GAFR2_U_VAL		0x55A8041A
++#define CFG_GAFR3_L_VAL		0x56AA955A
++#define CFG_GAFR3_U_VAL		0x00000001
++
++#define CFG_PSSR_VAL		0x20	// ???????????
++
++/*
++ * PCMCIA and CF Interfaces
++ */
++#define CFG_MECR_VAL		0x00000001
++#define CFG_MCMEM0_VAL		0x00010204
++#define CFG_MCMEM1_VAL		0x00010204
++#define CFG_MCATT0_VAL		0x00010204
++#define CFG_MCATT1_VAL		0x00010204
++#define CFG_MCIO0_VAL		0x0000c108
++#define CFG_MCIO1_VAL		0x0001c108
++
++//#define CONFIG_PXA_PCMCIA 1
++//#define CONFIG_PXA_IDE 1
++
++#define CONFIG_PCMCIA_SLOT_A 1
++/* just to keep build system happy  */
++
++#define CFG_PCMCIA_MEM_ADDR     0x28000000
++#define CFG_PCMCIA_MEM_SIZE     0x04000000
++
++#define CFG_IDE_MAXBUS		1
++/* max. 1 IDE bus		*/
++#define CFG_IDE_MAXDEVICE	1
++/* max. 1 drive per IDE bus	*/
++
++#define CFG_ATA_IDE0_OFFSET	0x0000
++
++#define CFG_ATA_BASE_ADDR	0x20000000
++
++/* Offset for data I/O			*/
++#define CFG_ATA_DATA_OFFSET	0x1f0
++
++/* Offset for normal register accesses	*/
++#define CFG_ATA_REG_OFFSET	0x1f0
++
++/* Offset for alternate registers	*/
++#define CFG_ATA_ALT_OFFSET	0x3f0
++
++#define CFG_NO_FLASH 1
++#define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks		*/
++#define CFG_MAX_FLASH_SECT	512	/* max number of sectors on one chip	*/
++
++/*-----------------------------------------------------------------------
++ * NAND-FLASH stuff
++ *-----------------------------------------------------------------------
++ */
++#undef CFG_NAND_LEGACY
++
++/* NAND debugging */
++//#define CONFIG_MTD_DEBUG
++//#define CONFIG_MTD_DEBUG_VERBOSE 3
++
++#define CFG_NAND_BASE		0xd4000000
++#define CFG_MAX_NAND_DEVICE	1	/* Max number of NAND devices		*/
++#define NAND_MAX_CHIPS 		1
++
++//#define CONFIG_MTD_NAND_VERIFY_WRITE 1  /* verify all writes!!!         */
++//#define CFG_NAND_SKIP_BAD_DOT_I      1  /* ".i" read skips bad blocks   */
++
++#define CONFIG_JFFS2_NAND 1			/* jffs2 on nand support */
++#define NAND_CACHE_PAGES 16			/* size of nand cache in 512 bytes pages */
++
++#define NAND_ALLOW_ERASE_ALL	1
++
++/*
++ * JFFS2 partitions
++ *
++ */
++/* No command line, one static partition */
++//#undef CONFIG_JFFS2_CMDLINE
++//#define CONFIG_JFFS2_DEV		"nand0"
++//#define CONFIG_JFFS2_PART_SIZE		0xFFFFFFFF
++//#define CONFIG_JFFS2_PART_OFFSET	0x00060000
++
++/* mtdparts command line support */
++/* Note: fake mtd_id used, no linux mtd map file */
++
++#define CONFIG_JFFS2_CMDLINE
++#define MTDIDS_DEFAULT		"nand0=laze-0"
++//#define MTDPARTS_DEFAULT	"mtdparts=laze-0:256k(uboot),128k(env),-(jffs2)"
++#define MTDPARTS_DEFAULT	"mtdparts=laze-0:7168k(Logical),-(JFFS2)"
++
++/*
++ * SHARP SL NAND logical partition
++ */
++#define NAND_LOGICAL		1
++#define NAND_LOGICAL_SIZE	0x700000
++
++/*
++ * Environment
++ */
++
++#define CFG_ENV_IS_IN_NAND	1
++#define CFG_ENV_OFFSET		0x40000
++//#define CFG_ENV_OFFSET_REDUND	0x44000
++#define CFG_ENV_SIZE		0x20000
++
++#endif	/* __CONFIG_H */
+--- s/examples/Makefile.orig	2006-12-09 15:08:45.000000000 +0600
++++ s/examples/Makefile	2006-12-09 15:09:00.000000000 +0600
+@@ -60,7 +60,7 @@
+ include $(TOPDIR)/config.mk
+ 
+ SREC	= hello_world.srec
+-BIN	= hello_world.bin hello_world
++BIN	= hello_world hello_world.bin
+ 
+ ifeq ($(CPU),mpc8xx)
+ SREC	= test_burst.srec
+@@ -122,7 +122,7 @@
+ 
+ CPPFLAGS += -I..
+ 
+-all:	.depend $(OBJS) $(LIB) $(SREC) $(BIN)
++all:	.depend $(OBJS) $(LIB) $(BIN) $(SREC)
+ 
+ #########################################################################
+ $(LIB): .depend $(LIBOBJS)
