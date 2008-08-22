@@ -37,6 +37,7 @@ then
 	# the UUID mount fails a standard device mount
 	# is attempted.
 	if	test -n "$UUID" &&
+		mount "$@" UUID="$UUID" /mnt ||
 		mount "$@" -U "$UUID" /mnt ||
 		mount "$@" "$device" /mnt
 	then

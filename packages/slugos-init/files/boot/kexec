@@ -126,7 +126,7 @@ if [ -n "$1" -a -n "$2" ] ; then
 		sleep "$sleep"
 		if [ -n "$UUID" ] ; then
 		echo "mounting partition UUID \"$UUID\"..."
-		    if mount -o ro -U "$UUID" /mnt ; then
+		    if mount -o ro UUID="$UUID" /mnt ; then
 			need_umount=1
 			kexec_image="/mnt/$kpath"
 		    fi
