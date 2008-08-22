@@ -16,8 +16,8 @@
 if [ -d /tmp -a ! -L /tmp ] ; then
   echo "bootclean.sh: Cleaning /tmp..."
   cd /tmp || { echo "bootclean.sh: unable to cd to /tmp." ; return 1 ; }
-  find . -depth -xdev ! -type d -print0 | xargs -0r rm -f --
-  find . -depth -xdev -type d ! -name . -empty -exec rmdir \{\} \;
+  find . -xdev ! -type d -print0 | xargs -0r rm -f --
+  find . -depth -xdev -type d ! -name . -exec rmdir \{\} \;
 else
   echo "bootclean.sh: Skipping /tmp (not a directory)..."
 fi

@@ -1,0 +1,88 @@
+--- opkg/libopkg/opkg_download.c.orig	2008-08-21 12:33:49.000000000 -0500
++++ opkg/libopkg/opkg_download.c	2008-08-21 15:12:00.000000000 -0500
+@@ -17,7 +17,9 @@
+    General Public License for more details.
+ */
+ #include "config.h"
++#ifdef HAVE_CURL
+ #include <curl/curl.h>
++#endif
+ #ifdef HAVE_GPGME
+ #include <gpgme.h>
+ #endif
+@@ -76,6 +78,7 @@
+ 	setenv("no_proxy", conf->no_proxy, 1);
+     }
+ 
++#ifdef HAVE_CURL
+     CURL *curl;
+     CURLcode res;
+     FILE * file = fopen (tmp_file_location, "w");
+@@ -121,6 +124,27 @@
+         free(src_basec);
+ 	return -1;
+     }
++#else
++    {
++      int res;
++      char *wgetcmd;
++      char *wgetopts;
++      wgetopts = getenv("OPKG_WGETOPTS");
++      sprintf_alloc(&wgetcmd, "wget -q %s%s -O \"%s\" \"%s\"",
++		    (conf->http_proxy || conf->ftp_proxy) ? "-Y on " : "",
++		    (wgetopts!=NULL) ? wgetopts : "",
++		    tmp_file_location, src);
++      opkg_message(conf, OPKG_INFO, "Executing: %s\n", wgetcmd);
++      res = xsystem(wgetcmd);
++      free(wgetcmd);
++      if (res) {
++	opkg_message(conf, OPKG_ERROR, "Failed to download %s, error %d\n", src, res);
++	free(tmp_file_location);
++        free(src_basec);
++	return res;
++      }
++    }
++#endif
+ 
+     err = file_move(tmp_file_location, dest_file_name);
+ 
+--- opkg/configure.ac.orig	2008-07-08 09:39:11.000000000 -0500
++++ opkg/configure.ac	2008-08-21 14:57:35.000000000 -0500
+@@ -23,7 +23,7 @@
+ # Checks for libraries
+ 
+ # check for libcurl
+-PKG_CHECK_MODULES(CURL, libcurl)
++#PKG_CHECK_MODULES(CURL, libcurl)
+ 
+ 
+ 
+--- opkg/libopkg/opkg.c.orig	2008-08-21 19:49:35.000000000 -0500
++++ opkg/libopkg/opkg.c	2008-08-21 19:55:27.000000000 -0500
+@@ -1021,7 +1021,9 @@
+   return package;
+ }
+ 
++#ifdef HAVE_CURL
+ #include <curl/curl.h>
++#endif
+ /**
+  * @brief Check the accessibility of repositories. It will try to access the repository to check if the respository is accessible throught current network status. 
+  * @param opkg The opkg_t
+@@ -1071,12 +1073,16 @@
+     repositories--;
+ 
+     err = opkg_download(opkg->conf, iter1->data, "/dev/null", NULL, NULL);
++#ifdef HAVE_CURL
+     if (!(err == CURLE_OK || 
+ 		err == CURLE_HTTP_RETURNED_ERROR || 
+ 		err == CURLE_FILE_COULDNT_READ_FILE ||
+ 		err == CURLE_REMOTE_FILE_NOT_FOUND || 
+ 		err == CURLE_TFTP_NOTFOUND
+ 		)) {
++#else
++    if (!(err == 0)) {
++#endif
+ 	    ret++;
+     }
+     str_list_elt_deinit(iter1);

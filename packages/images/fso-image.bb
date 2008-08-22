@@ -2,6 +2,7 @@
 # freesmartphone.org Image Recipe
 #------------------------------------------------------
 
+COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
 IMAGE_LINGUAS = ""
 
 # getting the base system up

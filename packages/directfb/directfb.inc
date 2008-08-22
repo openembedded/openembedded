@@ -9,7 +9,7 @@ HOMEPAGE = "http://directfb.org"
 DEPENDS = "jpeg libpng freetype zlib tslib"
 
 SRC_URI = " \
-    http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
+    http://www.directfb.org/downloads/Core/DirectFB-${PV}.tar.gz \
     file://fix-pkgconfig-cflags.patch;patch=1 \
     file://fix-font-missing-char.patch;patch=1 \
     file://getpagesize.patch;patch=1 \
@@ -21,7 +21,7 @@ S = "${WORKDIR}/DirectFB-${PV}"
 
 LDFLAGS_append =" -lts -lm"
 
-inherit autotools pkgconfig
+inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "\
   --with-gfxdrivers=none \
