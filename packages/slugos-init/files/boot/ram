@@ -28,9 +28,12 @@ then
 		# filter out boot (with zimage), linuxrc and anything
 		# below /var, keep dev or the boot will fail (note that
 		# nothing is mounted this early in the bootstrap).
-		find . -mount -print |
+		find . -xdev -print |
 		sed '\@^./boot/@d;\@^./boot$@d;\@^./linuxrc@d;\@^./var/@d' |
 		cpio -p -d -m -u /mnt
+		# busybox find with -xdev will not print the name of the
+		# mountpoint, so create the empty dir manually if required.
+		test -d /mnt/mnt || mkdir /mnt/mnt
 		# checkmount checks for sh, init and no .recovery plus
 		# either mnt or initrd, mnt must exist!
 		if checkmount /mnt
