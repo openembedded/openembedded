@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r19"
+PR = "r20"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 ALLOW_EMPTY = "1"
@@ -119,6 +119,8 @@ DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
 
 DISTRO_EXTRA_RDEPENDS ?= ""
+
+## This comment block is temporary, to be removed once SlugOS 5.0 stabilizes
 ##RDEPENDS += "\
 ##	kernel ixp4xx-npe \
 ##	base-files base-passwd netbase \
@@ -138,13 +140,14 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## util-linux-* utilities are now replaced by busybox tools.  Also, ipkg
 ## is replaced by a trimmed-down version of opkg (no package signatures,
 ## and it uses the busybox wget command instead of libcurl - MJW
+## SlugOS 5.0 - module-init-tools replaced by busybox as well - MJW
 
 RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
-	module-init-tools modutils-initscripts \
+	modutils-initscripts \
         opkg-collateral opkg-nogpg-nocurl \
 	libgcc \
 	beep \
