@@ -18,7 +18,7 @@ PACKAGES = "${PN}-dbg \
 qpf-bitstream-vera-sans-mono-small \
 qpf-bitstream-vera-sans-mono-large \
 qpf-bitstream-vera-sans-mono-larger \
-qpf-bitstream-vera-sans-mono-huge"
+qpf-bitstream-vera-sans-mono-huge ${PN}"
 
 FILES_qpf-bitstream-vera-sans-mono-small = "\
 ${palmqtdir}/lib/fonts/verasansmono_10* \
