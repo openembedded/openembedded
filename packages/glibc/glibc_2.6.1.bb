@@ -1,8 +1,8 @@
 require glibc.inc
-PR = "r10"
+PR = "r11"
 
 PACKAGES_DYNAMIC = "libc6*"
-RPROVIDES_${PN}-dev = "libc6-dev"
+RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"

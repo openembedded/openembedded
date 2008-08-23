@@ -52,7 +52,7 @@ FILES_uclibc-utils = "${bindir} ${sbindir}"
 FILES_uclibc-utils-dbg += "${bindir}/.debug ${sbindir}/.debug"
 FILES_uclibc-gconv = "${libdir}/gconv"
 FILES_uclibc-thread-db = "/lib/libthread_db*"
-RPROVIDES_uclibc-dev += "libc-dev"
+RPROVIDES_uclibc-dev += "libc-dev virtual-libc-dev"
 
 #
 # This locale file gets copied into uClibc-${PV}/extra/locale/ prior to
