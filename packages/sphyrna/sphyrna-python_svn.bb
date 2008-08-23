@@ -3,11 +3,11 @@ HOMEPAGE = "http://projects.linuxtogo.org/projects/sphyrna"
 LICENSE = "GPLv2"
 DEPENDS = "readline"
 PV = "0.0+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn;module=sphyrna"
 
-S = "${WORKDIR}/${PN}"
+S = "${WORKDIR}/sphyrna"
 
 inherit autotools
 
