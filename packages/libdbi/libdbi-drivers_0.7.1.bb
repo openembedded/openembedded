@@ -14,7 +14,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/libdbi-drivers/libdbi-drivers-${PV}.tar.gz"
 
 inherit autotools
 
-PACKAGES = "${PN}-dbg libdbd-sqlite"
+PACKAGES = "${PN}-dbg libdbd-sqlite ${PN}"
 
 EXTRA_OECONF = "--with-dbi-incdir=${STAGING_INCDIR} \
                 --with-sqlite \
