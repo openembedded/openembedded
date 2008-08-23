@@ -3,7 +3,7 @@ HOMEPAGE = "http://asio.sf.net/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/asio/boost_asio_0_3_7.tar.bz2"
 
@@ -32,5 +32,4 @@ do_stage() {
 	cp -dpR boost ${STAGING_INCDIR}
 }
 
-PACKAGES = "${PN}-dbg ${PN}-dev"
 FILES_${PN}-dev = "/usr/include"
