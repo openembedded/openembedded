@@ -13,7 +13,7 @@ PARALLEL_MAKE = ""
 inherit opie
 
 DEPENDS += " flite "
-EXTRA_QMAKEVARS_POST += " SUBDIRS+=FliteDyn SUBDIRS+=FliteDyn16 "
+EXTRA_QMAKEVARS_POST += " SUBDIRS+=FliteDyn SUBDIRS+=FliteDyn16 INCLUDEPATH+=${STAGING_INCDIR}/flite"
 
 do_install() {
 		install -d ${D}${palmtopdir}/pics/${APPNAME}/
