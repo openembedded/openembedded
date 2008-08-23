@@ -151,7 +151,7 @@ do_install() {
 }
 
 
-PACKAGES = "libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs kammu libmicrokammu"
+PACKAGES = "libmicrokcal libmicrokabc kopi-applet kopi kapi libmicrokdelibs kammu libmicrokammu ${PN}"
 
 FILES_kopi = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
 FILES_kapi = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"

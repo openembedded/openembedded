@@ -8,3 +8,5 @@ file://nomail.patch;patch=1 \
 
 include kdepimpi-base.inc
 include kdepimpi-x11.inc
+
+PR = "r1"

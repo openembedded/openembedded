@@ -58,7 +58,7 @@ do_install-broken() {
     done
 }
 
-PACKAGES = "libmicrokcal-x11 libmicrokabc-x11 kopi-applet-x11 kopi-x11 kapi-x11 libmicrokdelibs-x11 kammu-x11 libmicrokammu-x11"
+PACKAGES = "libmicrokcal-x11 libmicrokabc-x11 kopi-applet-x11 kopi-x11 kapi-x11 libmicrokdelibs-x11 kammu-x11 libmicrokammu-x11 ${PN}"
 
 FILES_kopi-x11 = "${palmtopdir}/bin/kopi ${palmtopdir}/apps/1Pim/korganizer.desktop ${palmtopdir}/pics/kdepim/korganizer/* "
 FILES_kapi-x11 = "${palmtopdir}/bin/kapi ${palmtopdir}/apps/1Pim/kaddressbook.desktop ${palmtopdir}/pics/kdepim/kaddressbook/* ${palmtopdir}/lib/libmicrokabc_* ${palmtopdir}/lib/libmicrokabcformat_binary*"
