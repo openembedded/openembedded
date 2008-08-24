@@ -37,6 +37,13 @@ RDEPENDS_${PN} += "\
   ${PN}-config \
 "
 
+RRECOMMENDS_${PN} += "\
+  alsa-utils-amixer \
+  ppp \
+"
+
+RRECOMMENDS_${PN}_append_om-gta01 = "gsm0710muxd"
+RRECOMMENDS_${PN}_append_om-gta02 = "gsm0710muxd"
 
 PACKAGES =+ "${PN}-config"
 
