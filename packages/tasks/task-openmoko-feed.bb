@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r52"
+PR = "r53"
 
 inherit task
 
@@ -69,7 +69,7 @@ RDEPENDS_task-openmoko-feed = "\
   vim \
   iotop \
   evince \
-  epdf \
+  epdfview \
   xprop \
   xev \
   xwininfo \
