@@ -5,7 +5,6 @@ DEPENDS = "alsa-lib mesa virtual/libx11 libxext"
 DEPENDS_avr32 = "alsa-lib virtual/libx11 libxext"
 PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
-PR = "r5"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
@@ -15,7 +14,7 @@ SRC_URI = "\
   file://acinclude.m4"
 S = "${WORKDIR}/SDL-${PV}"
 
-inherit autotools binconfig
+inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "<overwrite me>"
 
