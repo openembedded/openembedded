@@ -173,12 +173,25 @@ checkmount(){
 	# basic test for init (the kernel will try to load this)
 	# but require a shell in bin/sh too
 	test	\( -d "$1/mnt" \) -a \
+		\( -d "$1/dev" \) -a \
 		\( -x "$1/bin/sh" -o -h "$1/bin/sh" \) -a \
 		\( -x "$1/usr/sbin/chroot" -o -h "$1/usr/sbin/chroot" -o \
 		   -x "$1/sbin/chroot" -o -h "$1/sbin/chroot" \) -a \
 		\( -x "$1/sbin/init" -o -h "$1/sbin/init" -o \
 		   -x "$1/etc/init" -o -h "$1/etc/init" -o \
 		   -x "$1/bin/init" -o -h "$1/bin/init" \)
+}
+#
+# minimaldevnodes "mountpoint"
+#  tests an already mounted mountpoint to see if a very minimal
+#  set of devices exists or can be created in dev, and returns
+#  failure if not.  This is required for booting to an nfsroot
+#  with an empty dev directory, as commonly occurs when the rootfs
+#  is created from a tar.gz image.  This is also required for mdev.
+minimaldevnodes(){
+	[ -c "$1/dev/console" ] || mknod -m 600 "$1/dev/console" c 5 1 || return 1
+	[ -c "$1/dev/null"    ] || mknod -m 666 "$1/dev/null"    c 1 3 || return 1
+	return 0
 }
 #
 # swivel "new root" "old root"
