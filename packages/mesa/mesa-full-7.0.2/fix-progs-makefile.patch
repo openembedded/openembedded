@@ -1,0 +1,65 @@
+Index: Mesa-7.0.2/progs/demos/Makefile
+===================================================================
+--- Mesa-7.0.2.orig/progs/demos/Makefile	2008-08-22 15:52:16.000000000 +0800
++++ Mesa-7.0.2/progs/demos/Makefile	2008-08-22 15:52:33.000000000 +0800
+@@ -13,7 +13,7 @@
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS) -lstdc++
+ 
+ PROGS = \
+ 	arbfplight \
+Index: Mesa-7.0.2/progs/glsl/Makefile
+===================================================================
+--- Mesa-7.0.2.orig/progs/glsl/Makefile	2008-08-22 15:56:37.000000000 +0800
++++ Mesa-7.0.2/progs/glsl/Makefile	2008-08-22 15:56:52.000000000 +0800
+@@ -7,7 +7,7 @@
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS) -lstdc++
+ 
+ PROGS = \
+ 	brick \
+Index: Mesa-7.0.2/progs/redbook/Makefile
+===================================================================
+--- Mesa-7.0.2.orig/progs/redbook/Makefile	2008-08-22 15:55:10.000000000 +0800
++++ Mesa-7.0.2/progs/redbook/Makefile	2008-08-22 15:55:27.000000000 +0800
+@@ -7,7 +7,7 @@
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS) -lstdc++
+ 
+ PROGS = aaindex aapoly aargb accanti accpersp alpha alpha3D anti \
+ 	bezcurve bezmesh checker clip colormat cube depthcue dof \
+Index: Mesa-7.0.2/progs/samples/Makefile
+===================================================================
+--- Mesa-7.0.2.orig/progs/samples/Makefile	2008-08-22 15:56:01.000000000 +0800
++++ Mesa-7.0.2/progs/samples/Makefile	2008-08-22 15:56:13.000000000 +0800
+@@ -7,7 +7,7 @@
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLUT_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLUT_LIB) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS) -lstdc++
+ 
+ PROGS = accum bitmap1 bitmap2 blendeq blendxor copy cursor depth eval fog \
+ 	font line logo nurb olympic overlay point prim quad select \
+Index: Mesa-7.0.2/progs/xdemos/Makefile
+===================================================================
+--- Mesa-7.0.2.orig/progs/xdemos/Makefile	2008-08-22 15:57:11.000000000 +0800
++++ Mesa-7.0.2/progs/xdemos/Makefile	2008-08-22 15:57:22.000000000 +0800
+@@ -8,7 +8,7 @@
+ 
+ LIB_DEP = $(TOP)/$(LIB_DIR)/$(GL_LIB_NAME) $(TOP)/$(LIB_DIR)/$(GLU_LIB_NAME)
+ 
+-LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS)
++LIBS = -L$(TOP)/$(LIB_DIR) -l$(GLU_LIB) -l$(GL_LIB) $(APP_LIB_DEPS) -lstdc++
+ 
+ PROGS = glthreads \
+ 	glxdemo \
