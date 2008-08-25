@@ -29,4 +29,5 @@ RRECOMMENDS = "\
   kernel-module-ip-tables \
   kernel-module-iptable-nat \
   kernel-module-iptable-filter \
+  kernel-module-ipt-masquerade \
 "
