@@ -17,6 +17,7 @@ RPROVIDES_${PN}-common = "${PBN}-common"
 RPROVIDES_${PN}-gtk = "${PBN}-awt"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
+	  
 
 S = "${WORKDIR}/${PBN}-${PV}"
 
@@ -30,21 +31,19 @@ EXTRA_OECONF = "\
 
 inherit autotools
 
-# hack to get config.rpath in, it comes from gettext
 do_configure_prepend () {
 
-        ${@['','cp ${STAGING_DATADIR_NATIVE}/automake-1.10/config.rpath ${S}'][bb.data.getVar('PREFERRED_VERSION_automake-native',d,1) == '1.10']}
-
+        cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}
 }
 	
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/classpath
 	install -m 0644 include/jni* ${STAGING_INCDIR}/classpath
-  install -m 0644 include/jni_md.h ${STAGING_INCDIR}/classpath/
+  	install -m 0644 include/jni_md.h ${STAGING_INCDIR}/classpath/
 
-  install -d ${STAGING_DATADIR}/classpath
-  install -m 0644 lib/glibj.zip ${STAGING_DATADIR}/classpath  
+  	install -d ${STAGING_DATADIR}/classpath
+  	install -m 0644 lib/glibj.zip ${STAGING_DATADIR}/classpath  
 }
 
 do_install() {

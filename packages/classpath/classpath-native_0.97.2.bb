@@ -10,5 +10,7 @@ SRC_URI += "\
   file://SimpleName.diff;patch=1;pnum=0 \
   file://javanet-local.patch;patch=1;pnum=0 \
   file://sun-security-getproperty_0.96.1.patch;patch=1;pnum=0 \
+  file://ecj_java_dir.patch;patch=1 \
+  file://autotools.patch;patch=1 \
   "
 
