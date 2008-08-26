@@ -2,7 +2,6 @@
 # freesmartphone.org Image Recipe
 #------------------------------------------------------
 
-COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
 IMAGE_LINGUAS = ""
 
 # getting the base system up
@@ -16,6 +15,10 @@ BASE_INSTALL = "\
   fbset \
   fbset-modes \
 "
+
+# Some machines don't set a *runtime* provider for X, so default to Xfbdev here
+# virtual/xserver won't work, since the kdrive recipes will build multiple xserver packages
+XSERVER ?= "xserver-kdrive-fbdev"
 
 # getting an X window system up
 X_INSTALL = "\
