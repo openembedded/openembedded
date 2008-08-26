@@ -1,0 +1,26 @@
+Index: classpath-0.97.2/configure.ac
+===================================================================
+--- classpath-0.97.2.orig/configure.ac	2008-06-06 02:58:57.000000000 +0200
++++ classpath-0.97.2/configure.ac	2008-08-02 00:58:16.537364104 +0200
+@@ -41,6 +41,8 @@
+ AC_CONFIG_HEADERS([include/config.h])
+ AC_PREFIX_DEFAULT(/usr/local/classpath)
+ 
++AC_CONFIG_MACRO_DIR([m4])
++
+ dnl -----------------------------------------------------------
+ dnl Enable collections.jar (disabled by default)
+ dnl -----------------------------------------------------------
+Index: classpath-0.97.2/Makefile.am
+===================================================================
+--- classpath-0.97.2.orig/Makefile.am	2008-06-01 20:47:05.000000000 +0200
++++ classpath-0.97.2/Makefile.am	2008-08-02 00:58:39.004023720 +0200
+@@ -5,7 +5,7 @@
+ DIST_SUBDIRS = lib doc external include native resource scripts tools examples
+ 
+ # Allow users to pass site-specific flags to autoreconf via an env var. 
+-ACLOCAL_AMFLAGS = -I m4 ${LOCAL_AUTORECONF_FLAGS}
++ACLOCAL_AMFLAGS = -I m4 --install ${LOCAL_AUTORECONF_FLAGS}
+ 
+ native: lib
+ 
