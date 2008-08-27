@@ -50,10 +50,10 @@ do
 		       gpe-mini-browser gpe-mini-browser2 netsurf midori minimo openmoko-browser2 webkit-gtklauncher \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
-		       gpe-gallery gpe-scap notecase \
+		       gpe-gallery gpe-scap notecase task-gpe-pim \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit \
-		       xmms mplayer quasar vlc-gpe gnome-mplayer \
+		       xmms totem mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
 		       nmap iptables iperf openvpn vpnc \
 		       gpe-login ipaq-sleep \
@@ -71,7 +71,9 @@ do
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
 		       task-opie \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
-		      "
+		       rdesktop \ 
+               gnome-games \ 
+               "
 	do_build
 done
 
