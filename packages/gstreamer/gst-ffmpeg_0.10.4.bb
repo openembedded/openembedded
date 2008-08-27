@@ -6,11 +6,6 @@ HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer zlib"
 PR = "r4"
 
-# This uses the systems ffmpeg, which is unsupported, but we can't build the internal one with the current autotools (ab)usage
-DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_armv6 = "1"
-DEFAULT_PREFERENCE_armv7a = "1"
-
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
