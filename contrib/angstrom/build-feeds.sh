@@ -45,9 +45,9 @@ do
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
                        usbutils pciutils mtd-utils usbview hal setserial \
                        task-proper-tools mc screen findutils \
-	               mono perl python ruby \
+	               mono jamvm perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
-		       gpe-mini-browser gpe-mini-browser2 netsurf midori minimo openmoko-browser2 webkit-gtklauncher \
+		       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany minimo openmoko-browser2 \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
 		       gpe-gallery gpe-scap notecase task-gpe-pim \
