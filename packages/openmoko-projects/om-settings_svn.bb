@@ -3,6 +3,7 @@ DEPENDS = "python-etk python-edbus"
 RDEPENDS = "python-etk python-re python-codecs python-edbus python-pyxdg"
 PV = "0.0.1+svnr${SRCREV}"
 PR = "r2.05"
+PE = "1"
 
 S = "${WORKDIR}/trunk"
 
