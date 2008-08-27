@@ -6,7 +6,7 @@ LICENSE = "BSD GPLv2"
 PR = "r4"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
-        file://ppp-2.4.3-mppe-mppc-1.1.patch;patch=1
+        file://ppp-2.4.3-mppe-mppc-1.1.patch;patch=1 \
 	file://makefile.patch;patch=1 \
 	file://cifdefroute.patch;patch=1 \
 	file://pppd-resolv-varrun.patch;patch=1 \
