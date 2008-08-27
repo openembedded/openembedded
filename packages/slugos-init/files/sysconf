@@ -238,7 +238,7 @@ sysconf_save_conffiles(){
 	}
 	#
 	(	cd "$ffsdir"
-		find etc/*.conf $(sed 's!^/!!' usr/lib/ipkg/info/*.conffiles) ! -type d -newer etc/.configured -print |
+		find etc/*.conf $(sed 's!^/!!' usr/lib/opkg/info/*.conffiles) ! -type d -newer etc/.configured -print |
 			sed 's/^/diff /'
 		exec sed 's/#.*$//;/^[ 	]*$/d' etc/default/conffiles
 	) | sed 's!^/*!!' |

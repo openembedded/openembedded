@@ -1,7 +1,9 @@
 # Note: OpenTTD's build system changed considerably in 0.6.x
 # This include file is written towards the newer versions.
 
-DESCRIPTION = "Open source clone of the Microprose game 'Transport Tycoon Deluxe' - SDL edition."
+DESCRIPTION = "Open source clone of the Microprose game 'Transport Tycoon Deluxe' - SDL edition. \
+This package provides the engine only.  You will need to get the data file elsewhere \
+through official channels."
 HOMEPAGE = "http://openttd.sf.net"
 LICENSE = "GPLv2"
 

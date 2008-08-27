@@ -49,7 +49,7 @@ l root root 1777 /var/tmp /var/volatile/tmp
 d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
-d root root 0755 /var/lib/ipkg none
+d root root 0755 /var/lib/opkg none
 f root root 0664 /var/log/wtmp none
 f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
@@ -68,7 +68,7 @@ d root root 1777 /var/tmp none
 d root root 0755 /var/lock/subsys none
 d root root 0755 /var/lib/dropbear none
 d root root 0755 /var/lib/misc none
-d root root 0755 /var/lib/ipkg none
+d root root 0755 /var/lib/opkg none
 f root root 0664 /var/log/wtmp none
 f root root 0664 /var/log/lastlog none
 f root root 0664 /var/run/utmp none"
@@ -578,7 +578,7 @@ disk() {
 	fso="$(fsoptions "$@")"
 	if	if test -n "$uuid"
 		then
-			mount "$@" -U "$uuid" "$new"
+			mount "$@" UUID="$uuid" "$new"
 		else
 			mount "$@" "$device" "$new"
 		fi
@@ -591,7 +591,7 @@ disk() {
 	if test -n "$fst" &&
 		if test -n "$uuid"
 		then
-			mount -t "$fst" -o "$fso" -U "$uuid" "$new"
+			mount -t "$fst" -o "$fso" UUID="$uuid" "$new"
 		else
 			mount -t "$fst" -o "$fso" "$device" "$new"
 		fi
@@ -633,7 +633,7 @@ disk() {
 		then
 			echo "  options used: -t $fst -o $fso [error in this script]" >&2
 			test -n "$uuid" &&
-				echo "  uuid: $uuid (passed with -U)" >&2
+				echo "  uuid: $uuid (passed with UUID=<uuid>)" >&2
 		fi
 	fi
 

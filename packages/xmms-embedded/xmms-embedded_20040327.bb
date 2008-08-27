@@ -2,7 +2,7 @@ DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plu
 SECTION = "opie/multimedia"
 DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://anonymous@xmms-embedded.cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \
@@ -61,3 +61,5 @@ do_install() {
         install -m 0644 Skins/winamp_xmms/${f} ${D}${palmtopdir}/lib/xmms/skin/${f}
     done
 }
+
+FILES-${PN}-dbg += "${palmtopdir}/lib/xmms/Input/.debug"

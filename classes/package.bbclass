@@ -117,6 +117,20 @@ def do_split_packages(d, root, file_regex, output_pattern, description, postinst
 
 PACKAGE_DEPENDS += "file-native"
 
+def package_stash_hook(func, name, d):
+	import bb, os.path
+	body = bb.data.getVar(func, d, True)
+	pn = bb.data.getVar('PN', d, True)
+	staging = bb.data.getVar('PKGDATA_DIR', d, True)
+	dirname = os.path.join(staging, 'hooks', name)
+	bb.mkdirhier(dirname)
+	fn = os.path.join(dirname, pn)
+	f = open(fn, 'w')
+	f.write("python () {\n");
+	f.write(body);
+	f.write("}\n");
+	f.close()
+
 python () {
     import bb
     if bb.data.getVar('PACKAGES', d, True) != '':
@@ -656,6 +670,7 @@ python package_do_shlibs() {
 		dep_pkg = dep_pkg[0]
 		shlib_provider[l] = (dep_pkg, lib_ver)
 
+	dep_packages = []
 	for pkg in packages.split():
 		bb.debug(2, "calculating shlib requirements for %s" % pkg)
 
@@ -673,6 +688,9 @@ python package_do_shlibs() {
 					dep = dep_pkg
 				if not dep in deps:
 					deps.append(dep)
+				if not dep_pkg in dep_packages:
+					dep_packages.append(dep_pkg)
+					
 			else:
 				bb.note("Couldn't find shared library provider for %s" % n)
 
@@ -924,6 +942,38 @@ PACKAGEFUNCS ?= "package_do_split_locales \
 		package_depchains \
 		emit_pkgdata"
 
+def package_run_hooks(f, d):
+	import bb, os
+	staging = bb.data.getVar('PKGDATA_DIR', d, True)
+	dn = os.path.join(staging, 'hooks', f)
+	if os.access(dn, os.R_OK):
+		for f in os.listdir(dn):
+			fn = os.path.join(dn, f)
+			fp = open(fn, 'r')
+			line = 0
+			for l in fp.readlines():
+				l = l.rstrip()
+				bb.parse.parse_py.BBHandler.feeder(line, l, fn, os.path.basename(fn), d)
+				line += 1
+			fp.close()
+	                anonqueue = bb.data.getVar("__anonqueue", d, 1) or []
+        	        body = [x['content'] for x in anonqueue]
+            	        flag = { 'python' : 1, 'func' : 1 }
+            	        bb.data.setVar("__anonfunc", "\n".join(body), d)
+         		bb.data.setVarFlags("__anonfunc", flag, d)
+		        try:
+                		t = bb.data.getVar('T', d)
+           			bb.data.setVar('T', '${TMPDIR}/', d)
+                		bb.build.exec_func("__anonfunc", d)
+                		bb.data.delVar('T', d)
+                		if t:
+                    			bb.data.setVar('T', t, d)
+		        except Exception, e:
+                		bb.msg.debug(1, bb.msg.domain.Parsing, "Exception when executing anonymous function: %s" % e)
+                		raise
+            		bb.data.delVar("__anonqueue", d)
+            		bb.data.delVar("__anonfunc", d)
+
 python package_do_package () {
 	packages = (bb.data.getVar('PACKAGES', d, 1) or "").split()
 	if len(packages) < 1:
@@ -932,6 +982,7 @@ python package_do_package () {
 
 	for f in (bb.data.getVar('PACKAGEFUNCS', d, 1) or '').split():
 		bb.build.exec_func(f, d)
+		package_run_hooks(f, d)
 }
 do_package[dirs] = "${D}"
 addtask package before do_build after do_install

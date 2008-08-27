@@ -9,7 +9,7 @@ RDEPENDS += "python-lang"
 
 inherit setuptools
 
-SRC_URI = "${E_CVS};module=e17/proto/python-efl/${PN}"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/BINDINGS/python;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"
 
 do_install_append() {

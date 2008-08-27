@@ -37,12 +37,14 @@ then
 	# the UUID mount fails a standard device mount
 	# is attempted.
 	if	test -n "$UUID" &&
-		mount "$@" -U "$UUID" /mnt ||
+		mount "$@" UUID="$UUID" /mnt ||
 		mount "$@" "$device" /mnt
 	then
-		# checkmount checks for sh, chroot, init
-		# and /mnt (i.e. /mnt/mnt in this case)
-		if checkmount /mnt
+		# checkmount checks for sh, chroot, init, /dev
+		# and /mnt (i.e. /mnt/mnt in this case).
+		# minimaldevnodes checks (and creates if required)
+		# a few mandatory /dev nodes we may need.
+		if checkmount /mnt && minimaldevnodes /mnt
 		then
 			# pivot to /initrd if available, else /mnt
 			cd /

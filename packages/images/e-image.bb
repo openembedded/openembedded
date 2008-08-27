@@ -5,9 +5,9 @@ DEPENDS += "task-e-x11-core task-gpe-base task-gpe-pim task-gpe-settings task-gp
             figment xhost gpe-soundserver gpe-confd xauth"
 
 IMAGE_INSTALL += "task-e-x11-core \
-                        ask-gpe-pim \
+                        task-gpe-pim \
                         task-gpe-settings \
-                        task-gpe-apps \
+#                        task-gpe-apps \
                         task-gpe-connectivity \
                         task-gpe-games \
                         task-apps-extra \

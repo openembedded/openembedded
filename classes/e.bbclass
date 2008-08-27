@@ -1,6 +1,6 @@
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/apps"
-SRC_URI = "${E_CVS};module=e17/apps/${SRCNAME}"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
 
 inherit autotools pkgconfig binconfig

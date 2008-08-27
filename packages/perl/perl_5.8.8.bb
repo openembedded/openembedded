@@ -1,11 +1,11 @@
 DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
-SECTION = "devel"
+SECTION = "devel/perl"
 LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r25"
+PR = "r26"
 
 # Major part of version
 PVM = "5.8"

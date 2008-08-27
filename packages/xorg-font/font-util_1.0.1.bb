@@ -1,5 +1,7 @@
 require xorg-font-common.inc
 
+PACKAGE_ARCH = "${BASE_PACKAGE_ARCH}"
+
 DESCRIPTION = "X font utils."
 
 DEPENDS = "encodings"

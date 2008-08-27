@@ -7,10 +7,16 @@
 include initscripts_${PV}.bb
 
 RCONFLICTS = "initscripts"
+
+# SlugOS uses the busybox makedevs, so until that dependency gets virtualized
+# the below lines serve to remove the dependency on the full makedevs package:
+DEPENDS = ""
+RDEPENDS = ""
+
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.12"
+PR := "${PR}.14"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 

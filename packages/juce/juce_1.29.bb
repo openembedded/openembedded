@@ -6,7 +6,7 @@ DEPENDS = "alsa-lib freetype virtual/libx11"
 PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion
-SRC_URI = "http://www.rawmaterialsoftware.com/juce/downloads/juce_1_29.zip \
+SRC_URI = "http://downloads.openmoko.org/sources/juce_${@bb.data.getVar('PV',d,1).split('.')[0]}_${@bb.data.getVar('PV',d,1).split('.')[1]}.zip \
            file://remove-x86isms.patch;patch=1 \
            file://no-opengl.patch;patch=1"
 S = "${WORKDIR}/juce"
@@ -28,6 +28,6 @@ do_install() {
 	install -m 0655 demo/build/linux/build/jucedemo ${D}${bindir}
 }
 
-PACKAGES = "${PN}-dbg jucedemo"
+PACKAGES = "${PN}-dbg jucedemo ${PN}"
 FILES_jucedemo = "${bindir}"
 

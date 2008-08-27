@@ -1,8 +1,8 @@
 DESCRIPTION = "Evas is the Enlightenment canvas API"
 LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
-DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender"
-PV = "0.9.9.043+cvs${SRCDATE}"
+DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
+PV = "0.9.9.043+svnr${SRCREV}"
 
 inherit efl
 
@@ -21,7 +21,7 @@ python populate_packages_prepend () {
 }
 
 do_install_append() {
-    find "${D}" -name .debug -type d | xargs -iBLAH rm -rf "BLAH"
+    find "${D}" -name .debug -type d -exec rm -rf {} \;
 }
 
 FILES_${PN}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"

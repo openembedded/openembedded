@@ -1,11 +1,13 @@
 require ffmpeg.inc
 
-PR = "r3"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
            file://configure.patch;patch=0 \
            file://gcc4.patch;patch=1 \
            file://soname.patch;patch=1 \
+           file://libavformat-makefile.patch;patch=1 \
+           file://Makefile-lame.patch;patch=1 \
           "
 
 EXTRA_OECONF += " \
@@ -27,11 +29,16 @@ EXTRA_OECONF += " \
         \
         --cpu=${TARGET_ARCH} \
         --tune=${PACKAGE_ARCH} \
-        --extra-ldflags="-la52" \
+        --extra-libs="-la52" \
+        --extra-ldflags="-L${STAGING_LIBDIR}" \
         \
         --disable-audio-beos \
         --disable-v4l \
         --disable-dv1394 \
+"
+
+EXTRA_OECONF_append_x86 += " \
+        --disable-mmx \
 "
 
 do_stage() {

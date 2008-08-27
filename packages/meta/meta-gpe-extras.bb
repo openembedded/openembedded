@@ -1,11 +1,11 @@
 DESCRIPTION = "Meta-package of extra applications for the GPE Palmtop Environment"
 LICENSE = "MIT"
-PR="r2"
+PR="r3"
 
 RDEPENDS = "\
-    gpe-task-apps-extra \
-    gpe-task-games \
-    gpe-task-web \
-    gpe-task-desktopapps"
+    task-gpe-apps \
+    task-gpe-games \
+    task-gpe-web \
+    task-gpe-desktopapps"
 
 inherit meta

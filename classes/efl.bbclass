@@ -2,7 +2,7 @@ SECTION = "e/libs"
 HOMEPAGE = "http://www.enlightenment.org"
 LICENSE = "MIT BSD"
 SRCNAME = "${@bb.data.getVar('PN', d, 1).replace('-native', '')}"
-SRC_URI = "${E_CVS};module=e17/libs/${SRCNAME}"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
 DEPENDS += "pkgconfig-native"
 

@@ -22,6 +22,8 @@ do_stage() {
 	autotools_stage_all
 }
 
+PACKAGE_ARCH = "all"
+
 pkg_postinst_${PN} () {
 	set -x
 	for fontdir in `find $D/usr/lib/X11/fonts -type d`; do 

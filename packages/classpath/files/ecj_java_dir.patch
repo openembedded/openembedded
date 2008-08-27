@@ -1,0 +1,34 @@
+Index: classpath-0.97.2/lib/gen-classlist.sh.in
+===================================================================
+--- classpath-0.97.2.orig/lib/gen-classlist.sh.in	2008-06-02 03:37:29.000000000 +0200
++++ classpath-0.97.2/lib/gen-classlist.sh.in	2008-08-01 00:00:58.055208770 +0200
+@@ -148,4 +148,7 @@
+   done
+ fi
+ 
++# hack for javac that uses -d and do not make the directories
++awk -F " " '{print $1}' classes.1 | uniq | awk -F " " '{system("mkdir -p " $0)}'
++
+ exit 0
+Index: classpath-0.97.2/tools/Makefile.am
+===================================================================
+--- classpath-0.97.2.orig/tools/Makefile.am	2008-06-02 04:01:47.000000000 +0200
++++ classpath-0.97.2/tools/Makefile.am	2008-08-01 00:11:18.531985989 +0200
+@@ -180,6 +180,8 @@
+ 	mkdir classes asm
+ ## Compile ASM separately as it is latin-1 encoded.
+ 	find $(srcdir)/external/asm -name '*.java' -print > asm.lst
++	awk -F "/" '{OFS=FS;gsub("/"$$2"/"$$3,"",$$0);gsub("/"$$NF,"",$$0); print $$0}' asm.lst | \
++	   sort | uniq | awk -F " " '{system("mkdir -p asm/" $$0)}'
+ 	AC=`echo $(JCOMPILER) | sed -e 's/UTF-8/ISO-8859-1/g'`; \
+ 	  $$AC -g -d asm @asm.lst
+ 	find $(srcdir)/gnu/classpath/tools \
+@@ -189,6 +191,8 @@
+ 	     $(srcdir)/com/sun/tools/javah \
+ 	     $(srcdir)/sun/rmi/rmic \
+ 	     -name '*.java' -print > classes.lst
++	awk -F "/" '{OFS=FS;gsub("/"$$NF,"",$$0); print $$0}' classes.lst | \
++           sort | uniq | awk -F " " '{system("mkdir -p classes/" $$0)}'
+ 	$(JCOMPILER) -g -d classes @classes.lst
+ 	cat classes.lst asm.lst > all-classes.lst
+ ## Copy over tools resource files.

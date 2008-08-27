@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.2+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit distutils update-rc.d
 
@@ -37,6 +37,14 @@ RDEPENDS_${PN} += "\
   ${PN}-config \
 "
 
+RRECOMMENDS_${PN} += "\
+  alsa-utils-amixer \
+  ppp \
+"
+
+# recommend MUXer on platforms that require one
+RRECOMMENDS_${PN}_append_om-gta01 = "gsm0710muxd"
+RRECOMMENDS_${PN}_append_om-gta02 = "gsm0710muxd"
 
 PACKAGES =+ "${PN}-config"
 

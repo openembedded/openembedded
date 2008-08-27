@@ -1,4 +1,5 @@
 require libsdl.inc
+PR = "r6"
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --enable-oss --enable-alsa --disable-esd --disable-arts \

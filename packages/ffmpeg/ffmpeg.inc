@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-DEPENDS = "zlib libogg libvorbis faac faad2 liba52 lame"
+DEPENDS = "coreutils-native zlib libogg libvorbis faac faad2 liba52 lame"
 RSUGGESTS = "mplayer"
 
 inherit autotools pkgconfig

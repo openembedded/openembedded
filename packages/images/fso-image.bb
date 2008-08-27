@@ -16,6 +16,10 @@ BASE_INSTALL = "\
   fbset-modes \
 "
 
+# Some machines don't set a *runtime* provider for X, so default to Xfbdev here
+# virtual/xserver won't work, since the kdrive recipes will build multiple xserver packages
+XSERVER ?= "xserver-kdrive-fbdev"
+
 # getting an X window system up
 X_INSTALL = "\
   e-wm \

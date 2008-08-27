@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r18"
+PR = "r20"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 ALLOW_EMPTY = "1"
@@ -23,10 +23,12 @@ SLUGOS_STANDARD_RRECOMMENDS = ""
 
 # diff, cpio and find are required for turnup and ipkg.
 SLUGOS_STANDARD_RRECOMMENDS += "\
-diffutils \
 cpio \
-findutils \
 "
+## SlugOS 5.0 -- uses busybox diff & find; cpio still needs -p and ability to
+## create CRC archives before we can use busybox cpio - MJW
+#diffutils \
+#findutils \
 
 # These lines add support for formatting ext2 and ext3 file systems
 # on a hard disk attached to the NSLU2.  ext3 is the standard Linux
@@ -42,7 +44,8 @@ e2fsprogs-blkid \
 # These lines add support for an X/Y/ZModem package called lrzsz
 # (this is of use for people with modified NSLU2 hardware which
 # supports a serial port.)
-SLUGOS_STANDARD_RRECOMMENDS += "lrzsz"
+## SlugOS 5.0 -- uses busybox rx command - MJW
+#SLUGOS_STANDARD_RRECOMMENDS += "lrzsz"
 
 # Filesystem selection.  Adding entries here adds the module to the
 # image.  The module must be built as part of nslu2-kernel (i.e. it
@@ -116,19 +119,38 @@ DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"
 
 DISTRO_EXTRA_RDEPENDS ?= ""
+
+## This comment block is temporary, to be removed once SlugOS 5.0 stabilizes
+##RDEPENDS += "\
+##	kernel ixp4xx-npe \
+##	base-files base-passwd netbase \
+##        busybox initscripts-slugos slugos-init \
+##        update-modules sysvinit tinylogin udev \
+##	module-init-tools modutils-initscripts \
+##        ipkg-collateral ipkg ipkg-link \
+##	libgcc \
+##	beep \
+##	util-linux-mount \
+##	util-linux-umount \
+##	util-linux-swaponoff \
+##	util-linux-losetup \
+##	${SLUGOS_STANDARD_RDEPENDS} \
+##	${DISTRO_EXTRA_RDEPENDS}"
+## SlugOS 5.0 - original RDEPENDS above for reference; tinylogin and the
+## util-linux-* utilities are now replaced by busybox tools.  Also, ipkg
+## is replaced by a trimmed-down version of opkg (no package signatures,
+## and it uses the busybox wget command instead of libcurl - MJW
+## SlugOS 5.0 - module-init-tools replaced by busybox as well - MJW
+
 RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
-        update-modules sysvinit tinylogin udev \
-	module-init-tools modutils-initscripts \
-        ipkg-collateral ipkg ipkg-link \
+        update-modules sysvinit udev \
+	modutils-initscripts \
+        opkg-collateral opkg-nogpg-nocurl \
 	libgcc \
 	beep \
-	util-linux-mount \
-	util-linux-umount \
-	util-linux-swaponoff \
-	util-linux-losetup \
 	${SLUGOS_STANDARD_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS}"
 

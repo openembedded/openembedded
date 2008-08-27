@@ -14,7 +14,7 @@
 # Set ALIGN in /etc/default/rcS to override (do not edit this
 # file!)  Set ALIGN to empty to avoid changing the kernel
 # default (currently '0').
-ALIGN=1
+ALIGN=3
 . /etc/default/rcS
 test -e /proc/cpu/alignment -a -n "$ALIGN" -a "$ALIGN" -ge 0 -a "$ALIGN" -lt 6 &&
 	echo "$ALIGN" >/proc/cpu/alignment

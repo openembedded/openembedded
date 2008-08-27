@@ -1,0 +1,22 @@
+Source:
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=5196/1
+
+Description: 
+This patch is already submitted upstream. So it will not be needed in 2.6.27 onwards I guess but anyone interested in compiling prior versions of kernels with gcc 4.3 for ARM would need this patch.
+ 
+diff --git a/include/asm-arm/processor.h b/include/asm-arm/processor.h
+index b01d5e7..517a4d6 100644
+--- a/include/asm-arm/processor.h
++++ b/include/asm-arm/processor.h
+@@ -112,9 +112,9 @@ extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
+ static inline void prefetch(const void *ptr)
+ {
+ 	__asm__ __volatile__(
+-		"pld\t%0"
++		"pld\t%a0"
+ 		:
+-		: "o" (*(char *)ptr)
++		: "p" (ptr)
+ 		: "cc");
+ }
+
