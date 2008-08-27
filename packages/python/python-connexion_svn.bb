@@ -4,7 +4,7 @@ SECTION = "devel/python"
 LICENSE = "GPL"
 BV = "0.4.6"
 PV = "${BV}+svnr${SRCREV}"
-PR = "ml0"
+PR = "ml1"
 
 inherit distutils
 
@@ -24,3 +24,6 @@ do_install() {
 		cd ${S}/$i && distutils_do_install
 	done
 }
+
+RDEPENDS_${PN} += "python-ctypes"
+
