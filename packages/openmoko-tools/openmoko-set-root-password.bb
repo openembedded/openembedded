@@ -7,7 +7,8 @@ PKG_TAGS_${PN} = "group::programming"
 
 SRC_URI = "svn://svn.openmoko.org/developers/zecke/;module=root-password;proto=http"
 S = "${WORKDIR}/root-password"
-PV = "1.0+svn${SRCREV}"
+PV = "1.0+svnr${SRCREV}"
+PE = "1"
 
 do_compile () {
     cd ${S}
