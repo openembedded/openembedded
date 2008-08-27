@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r10"
+PR = "r11"
 
 PACKAGES = "${PN}-dbg \
     gst-meta-base \
@@ -35,7 +35,8 @@ RDEPENDS_gst-meta-audio = "\
     gst-plugin-ivorbis \
     gst-plugin-ogg \
     gst-plugin-mad \
-    gst-plugin-id3demux"
+    gst-plugin-id3demux \
+    gst-plugin-wavparse"
 
 RDEPENDS_gst-meta-debug = "\
     gst-meta-base \
