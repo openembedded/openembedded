@@ -46,5 +46,7 @@ ac_cv_func_va_copy=${ac_cv_func_va_copy=yes}
 ac_cv_func___va_copy=${ac_cv_func___va_copy=yes}
 ac_cv_epoll_works=${ac_cv_epoll_works=yes}
 
+#git
+ac_cv_fread_reads_directories=${ac_cv_fread_reads_directories=yes}
 # pth
 ac_cv_check_sjlj=ssjlj
