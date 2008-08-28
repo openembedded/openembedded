@@ -3,13 +3,13 @@ HOMEPAGE = "http://freedesktop.org/Software/hal"
 SECTION = "unknown"
 LICENSE = "GPL LGPL AFL"
 
-SRC_URI = "http://freedesktop.org/~david/dist/hal-${PV}.tar.gz"
+SRC_URI = "http://hal.freedesktop.org/releases/hal-${PV}.tar.gz"
 
 S = "${WORKDIR}/hal-${PV}"
 
 inherit autotools pkgconfig
 
-DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb"
+DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb gperf-native"
 RDEPENDS += "udev hal-info"
 RRECOMMENDS = "udev-utils"
 
