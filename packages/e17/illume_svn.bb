@@ -1,5 +1,6 @@
 DESCRIPTION = "Illume - A mobile UI module for the Enlightenment Window Manager"
-AUTHOR = "Rasterman"
+HOMEPAGE = "http://illume.projects.openmoko.org"
+AUTHOR = "Carsten 'Rasterman' Haitzler"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
 PV = "0.0+svnr${SRCREV}"
