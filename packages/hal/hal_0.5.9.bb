@@ -2,7 +2,6 @@ require hal.inc
 
 DEPENDS = "virtual/kernel dbus-glib udev intltool intltool-native expat libusb-compat"
 RDEPENDS += "udev hal-info"
-#RDEPENDS_hal-device-manager = "python hal python-pygnome"
 RRECOMMENDS = "udev-utils"
 
 PR = "r8"
@@ -69,12 +68,6 @@ pkg_postrm_hal () {
 	deluser haldaemon || true
 	delgroup haldaemon || true
 }
-
-#PACKAGES += "hal-device-manager"
-
-#FILES_hal-device-manager = " \
-#               ${datadir}/hal/device-manager/ \
-#               ${bindir}/hal-device-manager"
 
 FILES_${PN} = "${sysconfdir} \
                 ${bindir}/lshal \
