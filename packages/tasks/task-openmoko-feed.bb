@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r36"
+PR = "r37"
 
 inherit task
 
@@ -95,4 +95,5 @@ RDEPENDS_task-openmoko-feed = "\
   fbreader \
   zip \
   firefox \
+  tichy \
 "
