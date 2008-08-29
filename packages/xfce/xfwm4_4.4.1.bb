@@ -4,7 +4,7 @@
 
 DESCRIPTION="XFCE4 Window Manager"
 SECTION = "x11/wm"
-inherit xfce
+inherit xfce update-alternatives
 
 FILES_${PN} += "${datadir}/xfwm4/defaults ${datadir}/xfwm4/themes/default.keys/*"
 
@@ -25,3 +25,7 @@ PACKAGES += " ${PN}-mcs-plugins"
 
 FILES_${PN}-mcs-plugins += "${libdir}/xfce4/mcs-plugins/*.so"
 
+ALTERNATIVE_PATH = "${bindir}/xfce4-session"
+ALTERNATIVE_NAME = "x-window-manager"
+ALTERNATIVE_LINK = "${bindir}/x-window-manager"
+ALTERNATIVE_PRIORITY = "10"
