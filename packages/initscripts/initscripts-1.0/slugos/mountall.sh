@@ -5,6 +5,15 @@
 #
 . /etc/default/rcS
 
+# If the right stuff exists, attempt to automatically assemble any
+# RAID devices that might be configured.
+#
+if test -x /sbin/mdadm
+then
+	test "$VERBOSE" != no && echo "Assembling RAID devices..."
+	mdadm --assemble --scan --auto=md
+fi
+
 #
 # Mount local filesystems in /etc/fstab. For some reason, people
 # might want to mount "proc" several times, and mount -v complains
