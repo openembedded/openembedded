@@ -274,7 +274,13 @@ setup_dev() {
 	#	/dev/null
 	# syslog, and maybe other things, only work if fd 1 is valid, therefore
 	# we must create these devices here...
-	makedevs --root="$1" --devtable="$2"
+	# (if makedevs is a symlink, it's the busybox version, different syntax)
+	if [ -h /sbin/makedevs ]
+	then
+		makedevs -d "$2" "$1"
+	else
+		makedevs --root="$1" --devtable="$2"
+	fi
 	:>"$1"/dev/.noram
 	return 0
 }
@@ -290,7 +296,13 @@ setup_bootdev() {
 	}
 	# NOTE: this fails silently with 0 return code(!) when a directory
 	# does not exist yet things are created within it.
-	makedevs -r "$1" -D "$2"
+	# (if makedevs is a symlink, it's the busybox version, different syntax)
+	if [ -h /sbin/makedevs ]
+	then
+		makedevs -d "$2" "$1"
+	else
+		makedevs -r "$1" -D "$2"
+	fi
 }
 
 #
@@ -432,6 +444,7 @@ boot_rootfs() {
 	sleep="$3"
 	device="$4"
 	uuid=
+	mduuid=
 
 	# test this first as the test does not depend on the correctness
 	# of the other arguments
@@ -452,6 +465,11 @@ boot_rootfs() {
 			return 1
 		}
 		uuid="$3"
+		if (echo "$device" | grep -q '^/dev/md')
+		then
+			# FIXME: should use awk to do the below extraction
+			mduuid=`mdadm --detail --brief "$device" | sed 's/^.*UUID=//'`
+		fi
 		shift 3;;
 	nfs)	shift 2;;
 	flash)	;;
@@ -493,6 +511,7 @@ boot_rootfs() {
 			echo 'leds beep'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
 			test -n "$uuid" && echo -n "UUID='$uuid' "
+			test -n "$mduuid" && echo -n "MDUUID='$mduuid' "
 			echo -n "exec '/boot/$type' '$device'"
 			for opt in "$@"
 			do

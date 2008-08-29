@@ -2,7 +2,7 @@
 # Known SlugOS configuration files.  These files are preserved on
 # a flash upgrade.  Other configuration files, found from:
 #
-#    /usr/lib/ipkg/*.conffiles
+#    /usr/lib/opkg/*.conffiles
 #    /etc/*.conf
 #
 # are preserved too with an operation of 'diff' if they have been
