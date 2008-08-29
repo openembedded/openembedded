@@ -14,7 +14,7 @@ RDEPENDS = "xfwm4-theme-default"
 
 EXTRA_OECONF += " --enable-startup-notification"
 
-PACKAGES_DYNAMIC = "xfwm4-theme-*"
+PACKAGES_DYNAMIC += "xfwm4-theme-*"
 
 python populate_packages_prepend () {
 	themedir = bb.data.expand('${datadir}/themes', d)
