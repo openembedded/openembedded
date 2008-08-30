@@ -1,12 +1,13 @@
 require ffmpeg.inc
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
            file://configure.patch;patch=0 \
            file://gcc4.patch;patch=1 \
            file://soname.patch;patch=1 \
 	   file://Makefile-avformat-use-LDFLAGS.patch;patch=1 \
+           file://Makefile-add-liblame.patch;patch=1 \
            file://install-must-not-strip.patch;patch=1 \
           "
 

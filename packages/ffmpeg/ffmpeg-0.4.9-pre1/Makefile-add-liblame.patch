@@ -1,0 +1,13 @@
+--- /orig-Makefile	2008-07-17 00:29:01.000000000 +0300
++++ /Makefile	2008-07-17 00:29:35.000000000 +0300
+@@ -58,6 +58,10 @@
+ EXTRALIBS+=-lfaac
+ endif
+ 
++ifeq ($(CONFIG_MP3LAME),yes)
++EXTRALIBS+=-lmp3lame
++endif
++
+ ifeq ($(BUILD_VHOOK),yes)
+ VHOOK=videohook
+ INSTALLVHOOK=install-vhook
