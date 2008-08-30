@@ -5,7 +5,7 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
 	file://toolbar-resize-fix.patch;patch=1"
@@ -25,7 +25,7 @@ do_install() {
 pkg_postinst() {
 #!/bin/sh
 if pidof -s qpe >/dev/null; then
-  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+  /usr/bin/qcop QPE/TaskBar "reloadApplets()"
 else
   exit 0
 fi
@@ -34,6 +34,6 @@ fi
 
 pkg_postrm() {
 #!/bin/sh
-/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+/usr/bin/qcop QPE/TaskBar "reloadApplets()"
  if [ -n "$D" ]; then false; fi
 }
