@@ -1,13 +1,12 @@
 require ffmpeg.inc
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
            file://configure.patch;patch=0 \
            file://gcc4.patch;patch=1 \
            file://soname.patch;patch=1 \
-           file://libavformat-makefile.patch;patch=1 \
-           file://Makefile-lame.patch;patch=1 \
+           file://install-must-not-strip.patch;patch=1 \
           "
 
 EXTRA_OECONF += " \

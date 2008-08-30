@@ -1,0 +1,47 @@
+Index: ffmpeg-0.4.9-pre1/libavcodec/Makefile
+===================================================================
+--- ffmpeg-0.4.9-pre1.orig/libavcodec/Makefile	2008-08-30 11:13:14.000000000 +0200
++++ ffmpeg-0.4.9-pre1/libavcodec/Makefile	2008-08-30 11:13:34.000000000 +0200
+@@ -267,10 +267,10 @@
+ ifeq ($(BUILD_SHARED),yes)
+ install: all install-headers
+ ifeq ($(CONFIG_WIN32),yes)
+-	install -s -m 755 $(SLIB) "$(prefix)"
++	install -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec.so.0.4.9
++	install -m 755 $(SLIB) $(prefix)/lib/libavcodec.so.0.4.9
+ 	ln -sf libavcodec.so.0.4.9 $(prefix)/lib/libavcodec.so.0
+ 	ln -sf libavcodec.so.0.4.9 $(prefix)/lib/libavcodec.so
+ 	ldconfig || true
+Index: ffmpeg-0.4.9-pre1/libavcodec/libpostproc/Makefile
+===================================================================
+--- ffmpeg-0.4.9-pre1.orig/libavcodec/libpostproc/Makefile	2008-08-30 11:13:14.000000000 +0200
++++ ffmpeg-0.4.9-pre1/libavcodec/libpostproc/Makefile	2008-08-30 11:13:40.000000000 +0200
+@@ -50,7 +50,7 @@
+ install: all
+ ifeq ($(SHARED_PP),yes)
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SPPLIB) $(prefix)/lib/$(SPPLIB).$(SPPVERSION)
++	install -m 755 $(SPPLIB) $(prefix)/lib/$(SPPLIB).$(SPPVERSION)
+ 	ln -sf $(SPPLIB).$(SPPVERSION) $(prefix)/lib/$(SPPLIB)
+ 	ldconfig || true
+ 	mkdir -p $(prefix)/include/postproc
+Index: ffmpeg-0.4.9-pre1/libavformat/Makefile
+===================================================================
+--- ffmpeg-0.4.9-pre1.orig/libavformat/Makefile	2008-08-30 11:13:14.000000000 +0200
++++ ffmpeg-0.4.9-pre1/libavformat/Makefile	2008-08-30 11:13:46.000000000 +0200
+@@ -103,10 +103,10 @@
+ ifeq ($(BUILD_SHARED),yes)
+ install: all install-headers
+ ifeq ($(CONFIG_WIN32),yes)
+-	install -s -m 755 $(SLIB) "$(prefix)"
++	install -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat.so.0.4.9
++	install -m 755 $(SLIB) $(prefix)/lib/libavformat.so.0.4.9
+ 	ln -sf libavformat.so.0.4.9 $(prefix)/lib/libavformat.so.0
+ 	ln -sf libavformat.so.0.4.9 $(prefix)/lib/libavformat.so
+ 	ldconfig || true

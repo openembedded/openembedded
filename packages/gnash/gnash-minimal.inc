@@ -28,7 +28,7 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --disable-glext \
                 --disable-Xft \
                 --disable-expat \
-                --disable-mad \
+                --enable-mad \
                 --disable-gstreamer \
                 --disable-cairo \
                 --disable-plugin \
