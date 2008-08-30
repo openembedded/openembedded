@@ -8,6 +8,8 @@ RDEPENDS = "qpealarmclock"
 RCONFLICTS = "opie-clockapplet"
 RREPLACES = "opie-clockapplet"
 
+PR = "r1"
+
 APPNAME = "qpealarmclockapplet"
 APPTYPE = "binary"
 
@@ -23,13 +25,13 @@ pkg_postinst() {
 #!/bin/sh
 if [ -n "$D" ]; then exit 1; fi
 if pidof -s qpe >/dev/null; then
-  /opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+  /usr/bin/qcop QPE/TaskBar "reloadApplets()"
 fi
 }
 
 pkg_postrm() {
 #!/bin/sh
-/opt/QtPalmtop/bin/qcop QPE/TaskBar "reloadApplets()"
+/usr/bin/qcop QPE/TaskBar "reloadApplets()"
  if [ -n "$D" ]; then false; fi
 }
 
