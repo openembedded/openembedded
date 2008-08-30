@@ -27,3 +27,9 @@ ${bindir}/qcop QPE/TaskBar "reloadApplets()"
 do_install() {
 }
 
+# FILES plugins/applets/libclockapplet.so* pics/clockapplet/*.png
+do_install() {
+        install -d ${D}${palmtopdir}/pics/clockapplet/
+        install -m 0644 ${WORKDIR}/pics/clockapplet/*.png ${D}${palmtopdir}/pics/clockapplet/
+}
+
