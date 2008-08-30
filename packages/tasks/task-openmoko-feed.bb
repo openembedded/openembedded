@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r38"
+PR = "r39"
 
 inherit task
 
@@ -97,4 +97,5 @@ RDEPENDS_task-openmoko-feed = "\
   firefox \
   tichy \
   pidgin \
+  epdfview \
 "
