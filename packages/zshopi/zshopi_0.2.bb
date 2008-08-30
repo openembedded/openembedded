@@ -10,7 +10,7 @@ APPNAME = "zshopi"
 APPDESKTOP = "${WORKDIR}"
 PR = "r1"
 
-SRC_URI = "http://www.lachner-net.de/Frames/Software/zshopi_0.2.tar.bz2 \
+SRC_URI = "http://www.lachner-net.de/old/Frames/Software/zshopi_0.2.tar.bz2 \
 file://zshopi.desktop \
 file://zshopi.png"
 
