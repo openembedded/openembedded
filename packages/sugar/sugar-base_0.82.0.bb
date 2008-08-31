@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-PR = "r7"
+PR = "r8"
 
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \
@@ -15,6 +15,7 @@ RDEPENDS = "librsvg-gtk \
 	    python-dbus \
 	    python-subprocess \
 	    telepathy-gabble telepathy-salut telepathy-python \
+	    sugar-presence-service \
 	    python-crypt \
 	    python-numpy \
 	    python-compression \
