@@ -8,6 +8,10 @@ RRECOMMENDS = "telepathy-gabble"
 inherit gnome
 
 PARALLEL_MAKE = ""
+PR = "r1"
+
+PACKAGES =+ "empathy-scrollkeeper-junk"
+FILES_empathy-scrollkeeper-junk = "/var/lib/scrollkeeper"
 
 FILES_${PN} += "${datadir}/mission-control/profiles/*.profile \
         ${datadir}/dbus-1/services/*.service \
