@@ -1,6 +1,6 @@
 require intltool_${PV}.bb
 
-PR = "r1"
+PR = "r2"
 
 inherit native
 DEPENDS = "libxml-parser-perl-native"
@@ -13,3 +13,8 @@ do_configure_prepend() {
 	 	sed -i -e s:-w::g $i 
 	done	
 }
+
+do_configure_append() {
+        sed -i -e s:head\ -1:head\ -n1:g intltool.m4
+}
+	
