@@ -1,10 +1,11 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-PR = "r5"
+PR = "r6"
 
 DEPENDS = "python-pygtk sugar-toolkit"
-RDEPENDS = "hippo-canvas \
+RDEPENDS = "librsvg-gtk \
+            hippo-canvas \
             python-datetime \
             python-netclient \
 	    python-pygtk \
