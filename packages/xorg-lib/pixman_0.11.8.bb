@@ -3,6 +3,8 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
+PR = "r2"
+
 SRC_URI = "http://cairographics.org/releases/pixman-${PV}.tar.gz \
            file://pixman-arm.patch;patch=1 \
 	  "

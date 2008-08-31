@@ -1,76 +1,97 @@
-commit 23a7d5dea599efec1f459bac64cf9edc4bd5ae11
-Author: Ilpo Ruotsalainen <ilpo.ruotsalainen@movial.fi>
-Date:   Thu Nov 29 12:29:59 2007 +0000
+commit 44d4231272bdf08fac077cdcaeaac1aec0dd1500
+Author: Jeff Muizelaar <jmuizelaar@mozilla.com>
+Date:   Thu Aug 28 13:02:17 2008 -0400
 
-    Implement ARM optimized version of fill routines.
+    arm-simd
 
 diff --git a/configure.ac b/configure.ac
-index 22a91ef..3ac2a40 100644
+index 702bed0..7f24db5 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -148,6 +148,32 @@ fi
- AM_CONDITIONAL(USE_SSE, test $have_sse_intrinsics = yes)
+@@ -301,6 +301,44 @@ AC_SUBST(VMX_CFLAGS)
  
- dnl ========================================================
+ AM_CONDITIONAL(USE_VMX, test $have_vmx_intrinsics = yes)
+ 
++dnl Check for ARM
 +
-+dnl Test for architechture specific optimizations for this platform
++have_armv5_simd=no
++AC_MSG_CHECKING(whether to use ARM assembler)
++xserver_save_CFLAGS=$CFLAGS
++CFLAGS="$CFLAGS $ARM_CFLAGS"
++AC_COMPILE_IFELSE([
++int main () {
++    asm("uqadd8 r1, r1, r2");
++    return 0;
++}], have_armv5_simd=yes)
++CFLAGS=$xserver_save_CFLAGS
 +
-+AC_MSG_CHECKING(for architechture specific optimizations)
++AC_ARG_ENABLE(arm,
++   [AC_HELP_STRING([--disable-arm],
++                   [disable ARM fast paths])],
++   [enable_arm=$enableval], [enable_arm=auto])
 +
-+use_arch_opts=no
-+
-+case "$host_cpu" in
-+arm)
-+	if test "$GCC" = "yes" ; then
-+		use_arch_opts=yes
-+		ARCH_OPT_SOURCES='pixman-arch-arm.lo'
-+	fi
-+	;;
-+esac
-+
-+AC_MSG_RESULT($use_arch_opts)
-+
-+if test $use_arch_opts = yes ; then
-+	AC_DEFINE(USE_ARCH_OPTS, 1, [use architechture specific optimizations])
++if test $enable_arm = no ; then
++   have_armv5_simd=disabled
 +fi
 +
-+AC_SUBST([ARCH_OPT_SOURCES])
-+AM_CONDITIONAL(USE_ARCH_OPTS, test $use_arch_opts = yes)
++if test $have_armv5_simd = yes ; then
++   AC_DEFINE(USE_ARM, 1, [use ARM compiler intrinsics])
++else
++   ARM_CFLAGS=
++fi
 +
-+dnl ========================================================
- AC_SUBST(MMX_CFLAGS)
- 
- PKG_CHECK_MODULES(GTK, [gtk+-2.0], [HAVE_GTK=yes], [HAVE_GTK=no])
++AC_MSG_RESULT($have_armv5_simd)
++if test $enable_arm = yes && test $have_armv5_simd = no ; then
++   AC_MSG_ERROR([ARM intrinsics not detected])
++fi
++
++AC_SUBST(ARM_CFLAGS)
++
++AM_CONDITIONAL(USE_ARM, test $have_armv5_simd = yes)
++
++
+ AC_ARG_ENABLE(gtk,
+    [AC_HELP_STRING([--enable-gtk],
+                    [enable tests using GTK+ [default=auto]])],
 diff --git a/pixman/Makefile.am b/pixman/Makefile.am
-index 66283a2..dab6363 100644
+index 4f046f1..2cad71a 100644
 --- a/pixman/Makefile.am
 +++ b/pixman/Makefile.am
-@@ -20,6 +20,11 @@ libpixman_1_la_SOURCES =		\
- libpixmanincludedir = $(includedir)/pixman-1/
- libpixmaninclude_HEADERS = pixman.h
+@@ -77,3 +77,16 @@ libpixman_sse_la_LIBADD = $(DEP_LIBS)
+ libpixman_1_la_LIBADD += libpixman-sse.la
+ endif
  
-+if USE_ARCH_OPTS
-+libpixman_1_la_LIBADD += $(ARCH_OPT_SOURCES)
-+libpixman_1_la_DEPENDENCIES = $(ARCH_OPT_SOURCES)
++# arm code
++if USE_ARM
++noinst_LTLIBRARIES += libpixman-arm.la
++libpixman_arm_la_SOURCES = \
++	pixman-arm.c \
++	pixman-arm.h \
++	pixman-combine32.h
++libpixman_arm_la_CFLAGS = $(DEP_CFLAGS) $(ARM_CFLAGS)
++libpixman_arm_la_LIBADD = $(DEP_LIBS)
++libpixman_1_la_LIBADD += libpixman-arm.la
 +endif
 +
- # mmx code
- if USE_MMX
- noinst_LTLIBRARIES = libpixman-mmx.la
-diff --git a/pixman/pixman-arch-arm.c b/pixman/pixman-arch-arm.c
++
+diff --git a/pixman/pixman-arm.c b/pixman/pixman-arm.c
 new file mode 100644
-index 0000000..655092c
+index 0000000..9750730
 --- /dev/null
-+++ b/pixman/pixman-arch-arm.c
-@@ -0,0 +1,205 @@
++++ b/pixman/pixman-arm.c
+@@ -0,0 +1,312 @@
 +/*
-+ * Copyright Â© 2007 Movial Creative Technologies Inc
++ * Copyright © 2008 Mozilla Corporation
 + *
 + * Permission to use, copy, modify, distribute, and sell this software and its
 + * documentation for any purpose is hereby granted without fee, provided that
 + * the above copyright notice appear in all copies and that both that
 + * copyright notice and this permission notice appear in supporting
-+ * documentation.
++ * documentation, and that the name of Mozilla Corporation not be used in
++ * advertising or publicity pertaining to distribution of the software without
++ * specific, written prior permission.  Mozilla Corporation makes no
++ * representations about the suitability of this software for any purpose.  It
++ * is provided "as is" without express or implied warranty.
 + *
 + * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS
 + * SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
@@ -81,230 +102,423 @@ index 0000000..655092c
 + * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 + * SOFTWARE.
 + *
-+ * Author: Ilpo Ruotsalainen <ilpo.ruotsalainen@movial.fi>
++ * Author:  Jeff Muizelaar (jeff@infidigm.net)
++ *
 + */
-+
 +#ifdef HAVE_CONFIG_H
 +#include <config.h>
 +#endif
 +
-+#include "pixman.h"
++#include "pixman-arm.h"
++#include "pixman-combine32.h"
++
++void
++fbCompositeSrcAdd_8000x8000arm (pixman_op_t op,
++				pixman_image_t * pSrc,
++				pixman_image_t * pMask,
++				pixman_image_t * pDst,
++				int16_t      xSrc,
++				int16_t      ySrc,
++				int16_t      xMask,
++				int16_t      yMask,
++				int16_t      xDst,
++				int16_t      yDst,
++				uint16_t     width,
++				uint16_t     height)
++{
++    uint8_t	*dstLine, *dst;
++    uint8_t	*srcLine, *src;
++    int	dstStride, srcStride;
++    uint16_t	w;
++    uint8_t	s, d;
++    uint16_t	t;
++
++    fbComposeGetStart (pSrc, xSrc, ySrc, uint8_t, srcStride, srcLine, 1);
++    fbComposeGetStart (pDst, xDst, yDst, uint8_t, dstStride, dstLine, 1);
++
++    while (height--)
++    {
++	dst = dstLine;
++	dstLine += dstStride;
++	src = srcLine;
++	srcLine += srcStride;
++	w = width;
++
++	while (w && (unsigned long)dst & 3)
++	{
++	    s = *src;
++	    d = *dst;
++	    t = d + s;
++	    /* s = t | (0 - (t >> 8)); */
++	    asm("usat %0, #8, %1" : "=r"(s) : "r"(t));
++	    *dst = s;
++
++	    dst++;
++	    src++;
++	    w--;
++	}
++
++	while (w >= 4)
++	{
++	    asm("uqadd8 %0, %1, %2" : "=r"(*(uint32_t*)dst) : "r"(*(uint32_t*)src), "r"(*(uint32_t*)dst));
++	    dst += 4;
++	    src += 4;
++	    w -= 4;
++	}
++
++	while (w)
++	{
++	    s = *src;
++	    d = *dst;
++	    t = d + s;
++	    /* s = t | (0 - (t >> 8)); */
++	    asm("usat %0, #8, %1" : "=r"(s) : "r"(t));
++	    *dst = s;
++
++	    dst++;
++	    src++;
++	    w--;
++	}
++    }
++
++}
++
++void
++fbCompositeSrc_8888x8888arm (pixman_op_t op,
++			 pixman_image_t * pSrc,
++			 pixman_image_t * pMask,
++			 pixman_image_t * pDst,
++			 int16_t      xSrc,
++			 int16_t      ySrc,
++			 int16_t      xMask,
++			 int16_t      yMask,
++			 int16_t      xDst,
++			 int16_t      yDst,
++			 uint16_t     width,
++			 uint16_t     height)
++{
++    uint32_t	*dstLine, *dst;
++    uint32_t	*srcLine, *src;
++    int	dstStride, srcStride;
++    uint16_t	w;
++    uint32_t component_mask = 0xff00ff;
++    uint32_t component_half = 0x800080;
++
++    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
++    fbComposeGetStart (pSrc, xSrc, ySrc, uint32_t, srcStride, srcLine, 1);
++
++    while (height--)
++    {
++	dst = dstLine;
++	dstLine += dstStride;
++	src = srcLine;
++	srcLine += srcStride;
++	w = width;
++
++//#define inner_branch
++	asm volatile (
++			"cmp %[w], #0\n\t"
++			"beq 2f\n\t"
++			"1:\n\t"
++			/* load dest */
++			"ldr r5, [%[src]], #4\n\t"
++#ifdef inner_branch
++			/* We can avoid doing the multiplication in two cases: 0x0 or 0xff.
++			 * The 0x0 case also allows us to avoid doing an unecessary data
++			 * write which is more valuable so we only check for that */
++			"cmp r5, #0x1000000\n\t"
++			"blt 3f\n\t"
++
++			/* = 255 - alpha */
++			"mvn r8, r5\n\t"
++			"mov r8, r8, lsr #24\n\t"
++
++			"ldr r4, [%[dest]] \n\t"
++
++#else
++			"ldr r4, [%[dest]] \n\t"
++
++			/* = 255 - alpha */
++			"mvn r8, r5\n\t"
++			"mov r8, r8, lsr #24\n\t"
++#endif
++			"and r6, %[component_mask], r4\n\t"
++			"and r7, %[component_mask], r4, lsr #8\n\t"
++
++			/* multiply by 257 and divide by 65536 */
++			"mla r6, r6, r8, %[component_half]\n\t"
++			"mla r7, r7, r8, %[component_half]\n\t"
++
++			"and r8, %[component_mask], r6, lsr #8\n\t"
++			"and r9, %[component_mask], r7, lsr #8\n\t"
++
++			"add r6, r6, r8\n\t"
++			"add r7, r7, r9\n\t"
++
++			"and r6, %[component_mask], r6, lsr #8\n\t"
++			"and r7, %[component_mask], r7, lsr #8\n\t"
++
++			/* recombine */
++			"orr r6, r6, r7, lsl #8\n\t"
++
++			"uqadd8 r5, r6, r5\n\t"
++
++#ifdef inner_branch
++			"3:\n\t"
++
++#endif
++			"str r5, [%[dest]], #4\n\t"
++			/* increment counter and jmp to top */
++			"subs	%[w], %[w], #1\n\t"
++			"bne	1b\n\t"
++			"2:\n\t"
++			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
++			: [component_half] "r" (component_half), [component_mask] "r" (component_mask)
++			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
++			);
++    }
++}
++
++void
++fbCompositeSrc_8888x8x8888arm (pixman_op_t op,
++			       pixman_image_t * pSrc,
++			       pixman_image_t * pMask,
++			       pixman_image_t * pDst,
++			       int16_t	xSrc,
++			       int16_t	ySrc,
++			       int16_t      xMask,
++			       int16_t      yMask,
++			       int16_t      xDst,
++			       int16_t      yDst,
++			       uint16_t     width,
++			       uint16_t     height)
++{
++    uint32_t	*dstLine, *dst;
++    uint32_t	*srcLine, *src;
++    uint32_t	mask;
++    int	dstStride, srcStride;
++    uint16_t	w;
++    uint32_t component_mask = 0xff00ff;
++    uint32_t component_half = 0x800080;
++
++    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
++    fbComposeGetStart (pSrc, xSrc, ySrc, uint32_t, srcStride, srcLine, 1);
++
++    fbComposeGetSolid (pMask, mask, pDst->bits.format);
++    mask = (mask) >> 24;
++
++    while (height--)
++    {
++	dst = dstLine;
++	dstLine += dstStride;
++	src = srcLine;
++	srcLine += srcStride;
++	w = width;
++
++//#define inner_branch
++	asm volatile (
++			"cmp %[w], #0\n\t"
++			"beq 2f\n\t"
++			"1:\n\t"
++			/* load dest */
++			"ldr r5, [%[src]], #4\n\t"
++#ifdef inner_branch
++			/* We can avoid doing the multiplication in two cases: 0x0 or 0xff.
++			 * The 0x0 case also allows us to avoid doing an unecessary data
++			 * write which is more valuable so we only check for that */
++			"cmp r5, #0x1000000\n\t"
++			"blt 3f\n\t"
++
++#endif
++			"ldr r4, [%[dest]] \n\t"
++
++			"and r6, %[component_mask], r5\n\t"
++			"and r7, %[component_mask], r5, lsr #8\n\t"
++
++			/* multiply by alpha (r8) then by 257 and divide by 65536 */
++			"mla r6, r6, %[mask_alpha], %[component_half]\n\t"
++			"mla r7, r7, %[mask_alpha], %[component_half]\n\t"
++
++			"and r8, %[component_mask], r6, lsr #8\n\t"
++			"and r9, %[component_mask], r7, lsr #8\n\t"
++
++			"add r6, r6, r8\n\t"
++			"add r7, r7, r9\n\t"
++
++			"and r6, %[component_mask], r6, lsr #8\n\t"
++			"and r7, %[component_mask], r7, lsr #8\n\t"
++
++			/* recombine */
++			"orr r5, r6, r7, lsl #8\n\t"
++
++			"and r6, %[component_mask], r4\n\t"
++			"and r7, %[component_mask], r4, lsr #8\n\t"
++
++			"mvn r8, r5\n\t"
++			"mov r8, r8, lsr #24\n\t"
++
++			/* multiply by alpha (r8) then by 257 and divide by 65536 */
++			"mla r6, r6, r8, %[component_half]\n\t"
++			"mla r7, r7, r8, %[component_half]\n\t"
++
++			"and r8, %[component_mask], r6, lsr #8\n\t"
++			"and r9, %[component_mask], r7, lsr #8\n\t"
++
++			"add r6, r6, r8\n\t"
++			"add r7, r7, r9\n\t"
++
++			"and r6, %[component_mask], r6, lsr #8\n\t"
++			"and r7, %[component_mask], r7, lsr #8\n\t"
++
++			/* recombine */
++			"orr r6, r6, r7, lsl #8\n\t"
++
++			"uqadd8 r5, r6, r5\n\t"
++
++#ifdef inner_branch
++			"3:\n\t"
++
++#endif
++			"str r5, [%[dest]], #4\n\t"
++			/* increment counter and jmp to top */
++			"subs	%[w], %[w], #1\n\t"
++			"bne	1b\n\t"
++			"2:\n\t"
++			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
++			: [component_half] "r" (component_half), [component_mask] "r" (component_mask), [mask_alpha] "r" (mask)
++			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
++			);
++    }
++}
++
++
+diff --git a/pixman/pixman-arm.h b/pixman/pixman-arm.h
+new file mode 100644
+index 0000000..06a3121
+--- /dev/null
++++ b/pixman/pixman-arm.h
+@@ -0,0 +1,80 @@
++/*
++ * Copyright © 2008 Mozilla Corporation
++ *
++ * Permission to use, copy, modify, distribute, and sell this software and its
++ * documentation for any purpose is hereby granted without fee, provided that
++ * the above copyright notice appear in all copies and that both that
++ * copyright notice and this permission notice appear in supporting
++ * documentation, and that the name of Mozilla Corporation not be used in
++ * advertising or publicity pertaining to distribution of the software without
++ * specific, written prior permission.  Mozilla Corporation makes no
++ * representations about the suitability of this software for any purpose.  It
++ * is provided "as is" without express or implied warranty.
++ *
++ * THE COPYRIGHT HOLDERS DISCLAIM ALL WARRANTIES WITH REGARD TO THIS
++ * SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
++ * FITNESS, IN NO EVENT SHALL THE COPYRIGHT HOLDERS BE LIABLE FOR ANY
++ * SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
++ * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
++ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
++ * SOFTWARE.
++ *
++ * Author:  Jeff Muizelaar (jeff@infidigm.net)
++ *
++ */
++
 +#include "pixman-private.h"
 +
-+static void
-+pixman_fill8 (uint32_t  *bits,
-+	      int	stride,
-+	      int	x,
-+	      int	y,
-+	      int	width,
-+	      int	height,
-+	      uint32_t  xor)
-+{
-+    int byte_stride = stride * sizeof (uint32_t);
-+    uint8_t *dst = (uint8_t *) bits;
-+    uint8_t v = xor & 0xff;
++#ifdef USE_ARM
 +
-+    xor = v | (v << 8);
-+    xor |= xor << 16;
++static inline pixman_bool_t pixman_have_arm(void) { return TRUE; }
 +
-+    dst = dst + y * byte_stride + x;
-+
-+    while (height--)
-+    {
-+	uint32_t dummy1, dummy2;
-+
-+	asm volatile(
-+	    /* Check if the fill width is very small */
-+	    "	cmp	%0, #8\n"
-+	    "	bcc	2f\n"
-+	    /* Output single pixels until aligned to word boundary */
-+	    "1:	tst	%1, #3\n"
-+	    "	strneb	%4, [%1], #1\n"
-+	    "	subne	%0, %0, #1\n"
-+	    "	bne	1b\n"
-+	    /* Output up to 16 pixels per iteration */
-+	    "1:	subs	%0, %0, #8\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	subcss	%0, %0, #8\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	bcs	1b\n"
-+	    /* Finish up any remaining pixels */
-+	    "	and	%0, %0, #7\n"
-+	    "2:	subs	%0, %0, #1\n"
-+	    "	strcsb	%4, [%1], #1\n"
-+	    "	subcss	%0, %0, #1\n"
-+	    "	strcsb	%4, [%1], #1\n"
-+	    "	bcs	2b\n"
-+	    : "=r" (dummy1), "=r" (dummy2)
-+	    : "0" (width), "1" (dst), "r" (xor)
-+	    : "cc", "memory"
-+	    );
-+
-+	dst += byte_stride;
-+    }
-+}
-+
-+static void
-+pixman_fill16 (uint32_t *bits,
-+	       int       stride,
-+	       int       x,
-+	       int       y,
-+	       int       width,
-+	       int       height,
-+	       uint32_t  xor)
-+{
-+    int short_stride = (stride * sizeof (uint32_t)) / sizeof (uint16_t);
-+    uint16_t *dst = (uint16_t *)bits;
-+    uint16_t v = xor & 0xffff;
-+
-+    xor = v | v << 16;
-+
-+    dst = dst + y * short_stride + x;
-+
-+    while (height--)
-+    {
-+	uint32_t dummy1, dummy2;
-+
-+	asm volatile(
-+	    /* Check if the fill width is very small */
-+	    "	cmp	%0, #4\n"
-+	    "	bcc	2f\n"
-+	    /* Output single pixels until aligned to word boundary */
-+	    "1:	tst	%1, #2\n"
-+	    "	strneh	%4, [%1], #2\n"
-+	    "	subne	%0, %0, #1\n"
-+	    "	bne	1b\n"
-+	    /* Output up to 8 pixels per iteration */
-+	    "1:	subs	%0, %0, #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	subcss	%0, %0, #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	bcs	1b\n"
-+	    /* Finish up any remaining pixels */
-+	    "	and	%0, %0, #3\n"
-+	    "2:	subs	%0, %0, #1\n"
-+	    "	strcsh	%4, [%1], #2\n"
-+	    "	bcs	2b\n"
-+	    : "=r" (dummy1), "=r" (dummy2)
-+	    : "0" (width), "1" (dst), "r" (xor)
-+	    : "cc", "memory"
-+	    );
-+
-+	dst += short_stride;
-+    }
-+}
-+
-+static void
-+pixman_fill32 (uint32_t *bits,
-+	       int       stride,
-+	       int       x,
-+	       int       y,
-+	       int       width,
-+	       int       height,
-+	       uint32_t  xor)
-+{
-+    bits = bits + y * stride + x;
-+    
-+    while (height--)
-+    {
-+	uint32_t dummy1, dummy2;
-+
-+	asm volatile(
-+	    /* Check if the fill width is very small */
-+	    "	cmp	%0, #2\n"
-+	    "	bcc	2f\n"
-+	    /* Output up to 4 pixels per iteration */
-+	    "1:	subs	%0, %0, #2\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	subcss	%0, %0, #2\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	strcs	%4, [%1], #4\n"
-+	    "	bcs	1b\n"
-+	    /* Output last pixel if necessary */
-+	    "2:	tst	%0, #1\n"
-+	    "	strne	%4, [%1], #4\n"
-+	    : "=r" (dummy1), "=r" (dummy2)
-+	    : "0" (width), "1" (bits), "r" (xor)
-+	    : "cc", "memory"
-+	    );
-+
-+	bits += stride;
-+    }
-+}
-+
-+pixman_bool_t
-+pixman_fill (uint32_t *bits,
-+	     int stride,
-+	     int bpp,
-+	     int x,
-+	     int y,
-+	     int width,
-+	     int height,
-+	     uint32_t xor)
-+{
-+    switch (bpp)
-+    {
-+    case 8:
-+	pixman_fill8 (bits, stride, x, y, width, height, xor);
-+	break;
-+	
-+    case 16:
-+	pixman_fill16 (bits, stride, x, y, width, height, xor);
-+	break;
-+	
-+    case 32:
-+	pixman_fill32 (bits, stride, x, y, width, height, xor);
-+	break;
-+
-+    default:
-+	return FALSE;
-+	break;
-+    }
-+	
-+    return TRUE;
-+}
-diff --git a/pixman/pixman-arch.h b/pixman/pixman-arch.h
-new file mode 100644
-index 0000000..1eee9d3
---- /dev/null
-+++ b/pixman/pixman-arch.h
-@@ -0,0 +1,7 @@
-+#ifdef USE_ARCH_OPTS
-+
-+#ifdef __arm__
-+#define USE_ARCH_FILL
++#else
++#define pixman_have_arm() FALSE
 +#endif
 +
-+#endif
---- /tmp/pixman-utils.c	2008-08-14 12:38:44.000000000 +0200
-+++ pixman-0.11.8/pixman/pixman-utils.c	2008-08-14 12:40:03.503198000 +0200
-@@ -28,6 +28,7 @@
- #include <stdlib.h>
- 
- #include "pixman-private.h"
-+#include "pixman-arch.h"
++#ifdef USE_ARM
++
++void
++fbCompositeSrcAdd_8000x8000arm (pixman_op_t op,
++				pixman_image_t * pSrc,
++				pixman_image_t * pMask,
++				pixman_image_t * pDst,
++				int16_t      xSrc,
++				int16_t      ySrc,
++				int16_t      xMask,
++				int16_t      yMask,
++				int16_t      xDst,
++				int16_t      yDst,
++				uint16_t     width,
++				uint16_t     height);
++void
++fbCompositeSrc_8888x8888arm (pixman_op_t op,
++			 pixman_image_t * pSrc,
++			 pixman_image_t * pMask,
++			 pixman_image_t * pDst,
++			 int16_t      xSrc,
++			 int16_t      ySrc,
++			 int16_t      xMask,
++			 int16_t      yMask,
++			 int16_t      xDst,
++			 int16_t      yDst,
++			 uint16_t     width,
++			 uint16_t     height);
++
++void
++fbCompositeSrc_8888x8x8888arm (pixman_op_t op,
++			 pixman_image_t * pSrc,
++			 pixman_image_t * pMask,
++			 pixman_image_t * pDst,
++			 int16_t      xSrc,
++			 int16_t      ySrc,
++			 int16_t      xMask,
++			 int16_t      yMask,
++			 int16_t      xDst,
++			 int16_t      yDst,
++			 uint16_t     width,
++			 uint16_t     height);
++
++#endif /* USE_ARM */
+diff --git a/pixman/pixman-pict.c b/pixman/pixman-pict.c
+index b918219..05abc82 100644
+--- a/pixman/pixman-pict.c
++++ b/pixman/pixman-pict.c
+@@ -34,6 +34,7 @@
  #include "pixman-mmx.h"
+ #include "pixman-vmx.h"
+ #include "pixman-sse.h"
++#include "pixman-arm.h"
+ #include "pixman-combine32.h"
  
- PIXMAN_EXPORT pixman_bool_t
-@@ -84,6 +85,7 @@
- 	return FALSE;
- }
+ #ifdef __GNUC__
+@@ -1479,6 +1480,18 @@ static const FastPathInfo vmx_fast_paths[] =
+ };
+ #endif
  
-+#ifndef USE_ARCH_FILL
- static void
- pixman_fill8 (uint32_t  *bits,
- 	      int	stride,
-@@ -197,7 +199,7 @@
- 
-     return TRUE;
- }
--
++#ifdef USE_ARM
++static const FastPathInfo arm_fast_paths[] =
++{
++    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_null,     PIXMAN_a8r8g8b8, fbCompositeSrc_8888x8888arm,      0 },
++    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_a8,       PIXMAN_a8r8g8b8, fbCompositeSrc_8888x8x8888arm,    NEED_SOLID_MASK },
++    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_a8,       PIXMAN_x8r8g8b8, fbCompositeSrc_8888x8x8888arm,	   NEED_SOLID_MASK },
++
++    { PIXMAN_OP_ADD, PIXMAN_a8,        PIXMAN_null,     PIXMAN_a8,       fbCompositeSrcAdd_8000x8000arm,   0 },
++
++    { PIXMAN_OP_NONE },
++};
 +#endif
  
- /*
-  * Compute the smallest value no less than y which is on a
+ static const FastPathInfo c_fast_paths[] =
+ {
+@@ -1829,6 +1842,12 @@ pixman_image_composite (pixman_op_t      op,
+ 	if (!info && pixman_have_vmx())
+ 	    info = get_fast_path (vmx_fast_paths, op, pSrc, pMask, pDst, pixbuf);
+ #endif
++#ifdef USE_ARM
++
++	if (!info && pixman_have_arm())
++	    info = get_fast_path (arm_fast_paths, op, pSrc, pMask, pDst, pixbuf);
++#endif
++
+         if (!info)
+ 	    info = get_fast_path (c_fast_paths, op, pSrc, pMask, pDst, pixbuf);
+ 
