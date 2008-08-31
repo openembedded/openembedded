@@ -4,9 +4,10 @@ PRIORITY    = "optional"
 LICENSE     = "GPL"
 DEPENDS     = "uicmoc3-native"
 
-SRC_URI     = "ftp://download.kde.org/pub/kde/stable/3.5.4/src/kdelibs-3.5.4.tar.bz2 \
-	      file://dcopidl-compile.patch;patch=1 "
-S           = "${WORKDIR}/kdelibs-3.5.4/dcop/dcopidl"
+SRC_URI     = "ftp://download.kde.org/pub/kde/stable/${PV}/src/kdelibs-${PV}.tar.bz2"
+#\
+#	      file://dcopidl-compile.patch;patch=1 "
+S           = "${WORKDIR}/kdelibs-${PV}/dcop/dcopidl2cpp"
 
 inherit native qmake qt3e
 
@@ -16,11 +17,11 @@ EXTRA_QMAKEVARS_POST_append = "CONFIG-=thread "
 
 # create a .pro file now
 do_configure_prepend() {
-     echo "SOURCES += main.cpp yacc.cc scanner.cc " > dcopidl.pro
-     echo "HEADERS += yacc.cc.h " >> dcopidl.pro
+     echo "SOURCES += main.cpp skel.cpp stub.cpp stubimpl.cpp" > dcopidl2cpp.pro
+     echo "HEADERS += main.h " >> dcopidl2cpp.pro
 }
 
 do_stage() {
      install -d ${STAGING_BINDIR}
-     install -m 0755 dcopidl ${STAGING_BINDIR}
+     install -m 0755 dcopidl2cpp ${STAGING_BINDIR}
 }
