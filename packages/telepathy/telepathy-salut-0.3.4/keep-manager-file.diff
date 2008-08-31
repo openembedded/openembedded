@@ -1,0 +1,11 @@
+--- /tmp/Makefile.am	2008-08-31 15:37:45.000000000 +0200
++++ telepathy-salut-0.3.4/data/Makefile.am	2008-08-31 15:38:09.163198000 +0200
+@@ -15,8 +15,4 @@
+ 
+ CLEANFILES = $(service_DATA) $(manager_DATA)
+ 
+-$(manager_DATA): always-build
+-	$(MAKE) -C ../src write-mgr-file
+-	../src/write-mgr-file > $@
+-
+ .PHONY: always-build
