@@ -1,0 +1,13 @@
+
+[ConnectionManager]
+Name=Salut
+BusName=org.freedesktop.Telepathy.ConnectionManager.salut
+ObjectPath=/org/freedesktop/Telepathy/ConnectionManager/salut
+
+[Protocol local-xmpp]
+param-nickname=s
+param-first-name=s required
+param-last-name=s required
+param-jid=s
+param-email=s
+param-published-name=s
