@@ -73,7 +73,8 @@ do_configure_prepend() {
 			--cpu=${MYTHTV_ARCH}	\
 			--arch=${MYTHTV_ARCH} \
 			--disable-altivec	\
-		 	--disable-opengl-video \
+		 	--disable-directfb	\
+			--disable-opengl-video \
 			--disable-strip \
 			--enable-v4l		\
 			--enable-audio-oss	\
@@ -81,7 +82,7 @@ do_configure_prepend() {
 			--enable-dvb		\
 			--enable-libmp3lame \
 			--cross-compile	\
-            --dvb-path=${STAGING_INCDIR} \
+			--dvb-path=${STAGING_INCDIR} \
 			--with-bindings= \
 			${EXTRA_OECONF}
 

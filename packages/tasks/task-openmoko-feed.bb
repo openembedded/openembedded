@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r39"
+PR = "r40"
 
 inherit task
 
@@ -98,4 +98,7 @@ RDEPENDS_task-openmoko-feed = "\
   tichy \
   pidgin \
   epdfview \
+  midori \
+  microcom \
+  emacs \
 "
