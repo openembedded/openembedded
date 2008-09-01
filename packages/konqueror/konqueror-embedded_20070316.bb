@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL GPL"
-PR = "r5"
+PR = "r6"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
@@ -22,7 +22,7 @@ export MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export UIC = "${STAGING_BINDIR_NATIVE}/uic"
 #export exec_prefix = "${palmtopdir}"
 #export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
-export CXXFLAGS = "-fexceptions -fno-rtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DENABLE_BOOKMARKS"
+export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
 # uncomment this for a static build
 # EXTRAFLAGS = "-lts"
@@ -47,7 +47,7 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--disable-static \
 	--enable-shared \
 	--disable-debug \
-	--with-gui=qpe \
+	--with-gui=road \
 	--with-ipv6-lookup=no \
 	--without-xinerama \
 #	--disable-scrollbars \
@@ -63,7 +63,7 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--disable-selection \
 	--enable-final \
 	--enable-qt-embedded \
-#	--enable-rtti-embedded \
+	--enable-rtti-embedded \
 	--enable-mt \
 	--enable-qpe \
 	--enable-qt-mt \

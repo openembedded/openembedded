@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-PR = "r8"
+PR = "r10"
 
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \
@@ -23,7 +23,11 @@ RDEPENDS = "librsvg-gtk \
 	    python-simplejson \
 	    python-misc \
 	    python-xmlrpc \
-	    "
+	    python-compiler \
+	    python-pydoc \
+	    python-mmap \
+	    python-doctest \
+	    ssh-keygen"
 
 SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar-base/${PN}-${PV}.tar.bz2"
 

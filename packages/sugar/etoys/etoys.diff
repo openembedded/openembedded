@@ -1,0 +1,65 @@
+--- /tmp/Makefile.in	2008-09-01 13:20:20.000000000 +0200
++++ etoys-3.0.2076/Makefile.in	2008-09-01 13:29:37.453198000 +0200
+@@ -79,23 +79,23 @@
+ dirs = $(bindir) $(etoysdir) $(mimedir) $(exmpldir) $(guidedir) $(docsdir)
+ 
+ install-etoys: Content 
+-	for d in $(dirs) ; do mkdir -p $$d ; done
+-	install -v etoys $(bindir)
+-	for f in $(etoys) ; do install -v -m 644 $$f $(etoysdir); done
+-	for f in $(examples); do install -v -m 644 $$f $(exmpldir); done
++	for d in $(dirs) ; do mkdir -p $(DESTDIR)$$d ; done
++	install -v etoys $(DESTDIR)$(bindir)
++	for f in $(etoys) ; do install -v -m 644 $$f $(DESTDIR)$(etoysdir); done
++	for f in $(examples); do install -v -m 644 $$f $(DESTDIR)$(exmpldir); done
+ 	for f in $(guides); do \
+ 		dest=$(guidedir)/`basename $$f`; \
+ 		echo -n $$dest; \
+-		( gunzip -c $$f | gzip -v --rsyncable > $$dest ); \
+-		chmod 644 $$dest; \
++		( gunzip -c $$f | gzip -v --rsyncable > $(DESTDIR)$$dest ); \
++		chmod 644 $(DESTDIR)$$dest; \
+ 	done
+-	for f in $(docs) ; do install -v -m 644 $$f $(docsdir); done
++	for f in $(docs) ; do install -v -m 644 $$f $(DESTDIR)$(docsdir); done
+ 	for f in $(mos) ; do \
+ 		dir=`dirname $$f|sed 's/^Content.//'` ; \
+-		mkdir -p $(etoysdir)/$$dir ; \
+-		install -v -m 644 $$f $(etoysdir)/$$dir ; \
++		mkdir -p $(DESTDIR)$(etoysdir)/$$dir ; \
++		install -v -m 644 $$f $(DESTDIR)$(etoysdir)/$$dir ; \
+ 	done
+-	install -v -m 644 etoys.xml $(mimedir)
++	install -v -m 644 etoys.xml $(DESTDIR)$(mimedir)
+ 
+ 
+ # install activity - only used from sugar-jhbuild
+@@ -109,20 +109,20 @@
+ 	./mkNews > $@
+ 
+ install-activity: $(activityall)
+-	mkdir -p $(activitydir)/activity
+-	mkdir -p $(activitydir)/bin
+-	install -v etoys-activity $(activitydir)/bin
+-	rm -f $(activitydir)/etoys-activity
+-	install -v -m 644 NEWS $(activitydir)
+-	install -v -m 644 activity.info $(activitydir)/activity
+-	install -v -m 644 activity-etoys.svg $(activitydir)/activity
++	mkdir -p $(DESTDIR)$(activitydir)/activity
++	mkdir -p $(DESTDIR)$(activitydir)/bin
++	install -v etoys-activity $(DESTDIR)$(activitydir)/bin
++	rm -f $(DESTDIR)$(activitydir)/etoys-activity
++	install -v -m 644 NEWS $(DESTDIR)$(activitydir)
++	install -v -m 644 activity.info $(DESTDIR)$(activitydir)/activity
++	install -v -m 644 activity-etoys.svg $(DESTDIR)$(activitydir)/activity
+ 
+ 
+ # install both, etoys and activity.
+ # RPM uses install-etoys only, and runs update-mime as post script
+ 
+ install: install-etoys install-activity
+-	update-mime-database $(datadir)/mime
++	update-mime-database $(DESTDIR)$(datadir)/mime
+ 
+ # build .xo bundle - invoke "make xo" manually 
+ 
