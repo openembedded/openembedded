@@ -13,6 +13,7 @@ do_configure_prepend() {
 	mkdir -p ${S}/m4
 }	
 
+PACKAGES_ARCH = "all"
 FILES_${PN} += "${datadir}/${PN} \
                 ${datadir}/mime \
 		${datadir}/xsessions \
