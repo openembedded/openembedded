@@ -1,0 +1,11 @@
+--- /tmp/Makefile.in	2008-09-01 18:46:13.000000000 +0200
++++ sane-backends-1.0.19/frontend/Makefile.in	2008-09-01 18:46:31.773198000 +0200
+@@ -98,7 +98,7 @@
+ 		$(LIBS)
+ 
+ scanimage: $(SCAN_OBJS) $(LIBSANE) $(LIBLIB)
+-	@$(LIBTOOL) $(MLINK) $(LINK) $(SCAN_OBJS) $(LIBLIB) $(LIBSANE)  $(LIBS)
++	@$(LIBTOOL) $(MLINK) $(LINK) $(SCAN_OBJS) $(LIBLIB) $(LIBSANEI) $(LIBSANE) $(LIBSANEI)  $(LIBS)
+ 
+ # tstbackend is not compiled by default. 
+ # To compile it, add tstbackend to BINPROGS.

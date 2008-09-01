@@ -1,17 +1,29 @@
 DESCRIPTION = "Scanner drivers for SANE"
-DEPENDS = "gphoto2 jpeg libusb"
+DEPENDS = "hal gphoto2 jpeg libusb"
 LICENSE = "LGPL"
 
-PR = "r2"
-
-SRC_URI = "ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-${PV}/sane-backends-${PV}.tar.gz \
+SRC_URI = "http://alioth.debian.org/frs/download.php/2318/sane-backends-${PV}.tar.gz \
 	file://Makefile.in.patch;patch=1 \
 	file://saned.xinetd \
+	file://byteorder.m4 \
+	file://stdint.m4 \
+	file://sane-symbols.diff;patch=1 \
 	"
 
 inherit autotools pkgconfig binconfig
 
 EXTRA_OECONF = "--disable-translations"
+
+do_configure_prepend() {
+	mkdir -p ${S}/m4
+	cp ${STAGING_DATADIR}/aclocal/libtool.m4 ${S}/m4/
+	cp ${WORKDIR}/*.m4 ${S}/m4/
+}
+
+PARALLEL_MAKE = ""
+do_compile_prepend() {
+	ln -sf ${S}/${TARGET_PREFIX}libtool ${S}/libtool
+}	
 
 do_install_append() {
 	install -d "${D}/${sysconfdir}/xinetd.d"
