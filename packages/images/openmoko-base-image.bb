@@ -1,7 +1,7 @@
 #------------------------------------------------------
-# Openmoko Bare Image Recipe
+# Openmoko Base Image Recipe
 #------------------------------------------------------
 
 require openmoko-minimal-image.bb
 
-IMAGE_INSTALL += "task-openmoko-bare"
+IMAGE_INSTALL += "task-openmoko-basic"

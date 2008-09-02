@@ -4,4 +4,7 @@
 
 require openmoko-minimal-image.bb
 
-IMAGE_INSTALL += "task-openmoko-asu"
+IMAGE_INSTALL += "\
+                  task-openmoko-asu \
+                  task-openmoko-basic \
+                  "
