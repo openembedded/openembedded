@@ -8,6 +8,10 @@ swap_module () {
         rmmod cx3110x
         # Inserting the new one
         insmod $MODULE
+        # Setting device options (MAC, default country, etc)
+        if [ -x /mnt/initfs/usr/bin/wlan-cal ]; then
+            chroot /mnt/initfs /usr/bin/wlan-cal
+        fi
         # Getting up the interface to make the firmware being loaded (stupid, i know)
         ifconfig wlan0 up
     else
