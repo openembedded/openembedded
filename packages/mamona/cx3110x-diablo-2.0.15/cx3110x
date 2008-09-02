@@ -1,0 +1,40 @@
+#!/bin/sh
+
+MODULE="/lib/modules/`uname -r`/cx3110x.ko"
+
+swap_module () {
+    if [ -e $MODULE ]; then
+        # Removing builtin driver
+        rmmod cx3110x
+        # Inserting the new one
+        insmod $MODULE
+        # Setting device options (MAC, default country, etc)
+        if [ -x /mnt/initfs/usr/bin/wlan-cal ]; then
+            chroot /mnt/initfs /usr/bin/wlan-cal
+        fi
+        # Getting up the interface to make the firmware being loaded (stupid, i know)
+        ifconfig wlan0 up
+    else
+        echo "OOPS: $MODULE not found, the switch is not possible" 1>&2
+    fi
+}
+
+case "$1" in
+    start)
+	swap_module
+	;;
+    stop)
+	ifconfig $IFACE down
+	rmmod cx3110x
+	;;
+    force-reload | restart)
+	swap_module
+	;;
+    *)
+	echo "Usage: /etc/init.d/cx3110x {start|stop|restart|force-reload}"
+	exit 1
+	;;
+esac
+
+exit 0
+
