@@ -94,6 +94,7 @@ RDEPENDS_task-openmoko-feed = "\
   irssi \
   zsh \
   fbreader \
+  gzip \
   zip \
   firefox \
   tichy \
