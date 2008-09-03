@@ -95,6 +95,10 @@ fi
 AC_PATH_PROG(FLEX, flex)
 if test -z "$FLEX"; then
    AC_MSG_ERROR([You need the 'flex' lexer generator to compile WebKit])
+else
+   FLEX_VERSION=`$FLEX --version | sed 's,.*\ \([0-9]*\.[0-9]*\.[0-9]*\)$,\1,'`
+   AX_COMPARE_VERSION([2.5.33],[gt],[$FLEX_VERSION],
+      AC_MSG_WARN([You need at least version 2.5.33 of the 'flex' lexer generator to compile WebKit correctly]))
 fi
 
 AC_PATH_PROG(GPERF, gperf)
@@ -283,6 +287,26 @@ PKG_CHECK_MODULES([WEBKITDEPS],
                   libxml-2.0 >= $LIBXML_REQUIRED_VERSION])
 AC_SUBST([WEBKITDEPS_CFLAGS])
 AC_SUBST([WEBKITDEPS_LIBS])
+
+# check for Xt if the target is X11
+if test "$with_target" = "x11"; then
+   PKG_CHECK_MODULES([XT],
+                     [xt],
+                     [xt_has_pkg_config=yes],
+                     [xt_has_pkg_config=no])
+   # some old versions of Xt do not provide xt.pc, so try to link against Xt
+   # and if it's installed fall back to just adding -lXt
+   if test "$xt_has_pkg_config" = "no"; then
+      # using AC_CHECK_LIB instead of AC_SEARCH_LIB is fine in this case as
+      # we don't care about the XtOpenDisplay symbol but only about the
+      # existence of libXt
+      AC_CHECK_LIB([Xt], [XtOpenDisplay],
+                   [XT_CFLAGS=""; XT_LIBS="-lXt"],
+                   [AC_MSG_ERROR([X Toolkit Intrinsics library (libXt) not found])])
+   fi
+   AC_SUBST([XT_CFLAGS])
+   AC_SUBST([XT_LIBS])
+fi
 
 # check whether to build with debugging enabled
 AC_MSG_CHECKING([whether to do a debug build])
