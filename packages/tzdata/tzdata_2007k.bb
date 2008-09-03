@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r3"
+PR = "r3.01"
 
 RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
@@ -19,7 +19,7 @@ TZONES= "africa antarctica asia australasia europe northamerica southamerica  \
 #        pacificnew \
         "
 
-CONFFILES_${PN} = "${sysconfdir}/timezone"
+CONFFILES_${PN} = "${sysconfdir}/timezone ${sysconfdir}/localtime"
 
 do_compile () {
         for zone in ${TZONES}; do \
