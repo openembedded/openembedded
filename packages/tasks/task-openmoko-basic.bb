@@ -3,7 +3,7 @@ SECTION = "openmoko/base"
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 LICENSE = "MIT"
-PR = "r0.02"
+PR = "r0.03"
 
 inherit task
 
@@ -24,6 +24,7 @@ RDEPENDS_task-openmoko-basic = "\
 # to let opkg install illume-theme-asu first than illume-theme-freesmartphone
 # then we have ASU theme but not FSO theme in default.
            illume-theme-asu \
+           illume-theme-illume \
            illume \
            e-wm \
            ${XSERVER} \
