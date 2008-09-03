@@ -3,7 +3,6 @@ HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
 
 DEPENDS = "virtual/libiconv virtual/libintl ffmpeg libtool agg libxml2 libmad zlib boost jpeg pango curl freetype"
-RDEPENDS = "libltdl"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2"
 S = ${WORKDIR}/gnash-${PV}
@@ -48,11 +47,10 @@ EXTRA_OECONF="--enable-gui=gtk \
 # detection because uclibc does not have argz.h which enables error_t 
 CFLAGS += " -D_GNU_SOURCE  -I${S}/libltdl  -I${STAGING_INCDIR}/libltdl"
 
-PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
+PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia"
 
 FILES_${PN}-dbg += "${libdir}/gnash/.debug"
 FILES_${PN}-dev += "${libdir}/gnash/*a"
-FILES_libltdl = "${libdir}/gnash/libltdl*.so*"
 FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
 FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
 FILES_libgnashmedia = "${libdir}/gnash/libgnashmedia-${PV}.so"
