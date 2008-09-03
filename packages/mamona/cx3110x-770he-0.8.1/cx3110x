@@ -12,8 +12,6 @@ swap_module () {
         if [ -x /mnt/initfs/usr/bin/wlan-cal ]; then
             chroot /mnt/initfs /usr/bin/wlan-cal
         fi
-        # Getting up the interface to make the firmware being loaded (stupid, i know)
-        ifconfig wlan0 up
     else
         echo "OOPS: $MODULE not found, the switch is not possible" 1>&2
     fi
@@ -24,7 +22,6 @@ case "$1" in
 	swap_module
 	;;
     stop)
-	ifconfig $IFACE down
 	rmmod cx3110x
 	;;
     force-reload | restart)
