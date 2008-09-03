@@ -6,52 +6,13 @@ isEmpty(OUTPUT_DIR) {
     CONFIG(debug):OUTPUT_DIR=$$PWD/WebKitBuild/Debug
 }
 
-!gtk-port:CONFIG += qt-port
-qt-port:DEFINES += BUILDING_QT__=1
-qt-port:!building-libs {
+DEFINES += BUILDING_QT__=1
+building-libs {
+    win32-msvc*: INCLUDEPATH += $$PWD/JavaScriptCore/os-win32
+} else {
     QMAKE_LIBDIR = $$OUTPUT_DIR/lib $$QMAKE_LIBDIR
     LIBS += -lQtWebKit
     DEPENDPATH += $$PWD/WebKit/qt/Api
-}
-
-gtk-port:!building-libs {
-    QMAKE_LIBDIR = $$OUTPUT_DIR/lib $$QMAKE_LIBDIR
-    LIBS += -lWebKitGtk
-    DEPENDPATH += $$PWD/WebKit/gtk $$PWD/WebKit/gtk/WebCoreSupport $$PWD/WebKit/gtk/webkit
-}
-
-gtk-port {
-    CONFIG += link_pkgconfig
-
-    DEFINES += BUILDING_CAIRO__=1 BUILDING_GTK__=1
-
-    # We use FreeType directly with Cairo
-    PKGCONFIG += cairo-ft
-
-    directfb: PKGCONFIG += cairo-directfb gtk+-directfb-2.0
-    else: PKGCONFIG += cairo gtk+-2.0
-
-    # Set a CONFIG flag for the GTK+ target (x11, quartz, win32, directfb)
-    CONFIG += $$system(pkg-config --variable=target $$PKGCONFIG)
-
-    # We use the curl http backend on all platforms
-    PKGCONFIG += libcurl
-    DEFINES += WTF_USE_CURL=1
-
-    LIBS += -lWebKitGtk -ljpeg -lpng
-
-    QMAKE_CXXFLAGS += $$system(icu-config --cppflags)
-    QMAKE_LIBS += $$system(icu-config --ldflags)
-
-    # This set of warnings is borrowed from the Mac build
-    QMAKE_CXXFLAGS += -Wall -W -Wcast-align -Wchar-subscripts -Wformat-security -Wmissing-format-attribute -Wpointer-arith -Wwrite-strings -Wno-format-y2k -Wno-unused-parameter -Wundef
-
-    # These flags are based on optimization experience from the Mac port:
-    # Helps code size significantly and speed a little
-    QMAKE_CXXFLAGS += -fno-exceptions -fno-rtti
-
-    DEPENDPATH += $$PWD/JavaScriptCore/API
-    INCLUDEPATH += $$PWD
 }
 
 DEFINES += USE_SYSTEM_MALLOC
@@ -59,49 +20,70 @@ CONFIG(release) {
     DEFINES += NDEBUG
 }
 
-gtk-port:CONFIG(debug) {
-    DEFINES += G_DISABLE_DEPRECATED GDK_PIXBUF_DISABLE_DEPRECATED GDK_DISABLE_DEPRECATED GTK_DISABLE_DEPRECATED PANGO_DISABLE_DEPRECATED
-# maybe useful for debugging   DEFINES += GDK_MULTIHEAD_SAFE GTK_MULTIHEAD_SAFE
-}
-
 BASE_DIR = $$PWD
-qt-port:INCLUDEPATH += \
-    $$PWD/WebKit/qt/Api
-gtk-port:INCLUDEPATH += \
-    $$BASE_DIR/WebCore/platform/gtk \
-    $$BASE_DIR/WebCore/platform/network/curl \
-    $$BASE_DIR/WebCore/platform/graphics/cairo \
-    $$BASE_DIR/WebCore/loader/gtk \
-    $$BASE_DIR/WebCore/page/gtk \
-    $$BASE_DIR/WebKit/gtk \
-    $$BASE_DIR/WebKit/gtk/WebCoreSupport \
-    $$BASE_DIR/WebKit/gtk/webkit
-INCLUDEPATH += \
-    $$BASE_DIR/JavaScriptCore/ \
-    $$BASE_DIR/JavaScriptCore/kjs \
-    $$BASE_DIR/JavaScriptCore/bindings \
-    $$BASE_DIR/JavaScriptCore/bindings/c \
-    $$BASE_DIR/JavaScriptCore/wtf \
-    $$BASE_DIR/JavaScriptCore/ForwardingHeaders \
-    $$BASE_DIR/WebCore \
-    $$BASE_DIR/WebCore/ForwardingHeaders \
-    $$BASE_DIR/WebCore/platform \
-    $$BASE_DIR/WebCore/platform/network \
-    $$BASE_DIR/WebCore/platform/graphics \
-    $$BASE_DIR/WebCore/loader \
-    $$BASE_DIR/WebCore/page \
-    $$BASE_DIR/WebCore/css \
-    $$BASE_DIR/WebCore/dom \
-    $$BASE_DIR/WebCore/bridge \
-    $$BASE_DIR/WebCore/editing \
-    $$BASE_DIR/WebCore/rendering \
-    $$BASE_DIR/WebCore/history \
-    $$BASE_DIR/WebCore/xml \
-    $$BASE_DIR/WebCore/html \
-    $$BASE_DIR/WebCore/plugins
+INCLUDEPATH += $$PWD/WebKit/qt/Api
 
+#
+# For builds inside Qt we interpret the output rule and the input of each extra compiler manually
+# and add the resulting sources to the SOURCES variable, because the build inside Qt contains already
+# all the generated files. We do not need to generate any extra compiler rules in that case.
+#
+# In addition this function adds a new target called 'generated_files' that allows manually calling
+# all the extra compilers to generate all the necessary files for the build using 'make generated_files'
+#
+defineTest(addExtraCompiler) {
+    CONFIG(QTDIR_build) {
+        outputRule = $$eval($${1}.output)
 
-macx {
-	INCLUDEPATH += /usr/include/libxml2
-	LIBS += -lxml2 -lxslt
+        input = $$eval($${1}.input)
+        input = $$eval($$input)
+
+        for(file,input) {
+            base = $$basename(file)
+            base ~= s/\..+//
+            newfile=$$replace(outputRule,\\$\\{QMAKE_FILE_BASE\\},$$base)
+            SOURCES += $$newfile
+        }
+
+        export(SOURCES)
+    } else {
+        QMAKE_EXTRA_COMPILERS += $$1
+        generated_files.depends += compiler_$${1}_make_all
+        export(QMAKE_EXTRA_COMPILERS)
+        export(generated_files.depends)
+    }
+    return(true)
 }
+
+defineTest(addExtraCompilerWithHeader) {
+    addExtraCompiler($$1)
+
+    eval(headerFile = $${2})
+    isEmpty(headerFile) {
+        eval($${1}_header.output = $$eval($${1}.output))
+        eval($${1}_header.output ~= s/\.cpp/.h/)
+        eval($${1}_header.output ~= s/\.c/.h/)
+    } else {
+        eval($${1}_header.output = $$headerFile)
+    }
+
+    eval($${1}_header.input = $$eval($${1}.input))
+    eval($${1}_header.commands = @echo -n '')
+    eval($${1}_header.depends = compiler_$${1}_make_all)
+    eval($${1}_header.variable_out = GENERATED_FILES)
+
+    export($${1}_header.output)
+    export($${1}_header.input)
+    export($${1}_header.commands)
+    export($${1}_header.depends)
+    export($${1}_header.variable_out)
+
+    !CONFIG(QTDIR_build): QMAKE_EXTRA_COMPILERS += $${1}_header
+
+    export(QMAKE_EXTRA_COMPILERS)
+    export(generated_files.depends)
+    export(SOURCES)
+
+    return(true)
+}
+

@@ -1,34 +1,33 @@
 #!/bin/bash
 
-DO_UCLIBC=1
+DO_UCLIBC=0
 
 do_build() {
-	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
+	#echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
 
 	BUILD_MODE="glibc"
 	if [ "$BUILD_CLEAN" != "" ]
 	then
-		bitbake -c clean $BUILD_CLEAN
+		MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
 	fi
 
 	for target in $BUILD_TARGETS
 	do
-		bitbake $target && do_report_success
+		MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
 	done
 
 	if [ $DO_UCLIBC = 1 ]
 	then
 		BUILD_MODE="uclibc"
-		echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
 		
 		if [ "$BUILD_CLEAN" != "" ]
         	then
-                	bitbake -c clean $BUILD_CLEAN
+                	ANGSTROM_MODE=uclibc MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
         	fi
 		
 		for target in $BUILD_TARGETS
 		do
-			bitbake $target && do_report_success
+			ANGSTROM_MODE=uclibc MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
 		done
 	fi
 }
@@ -38,7 +37,7 @@ do_report_success() {
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder-feed.log
 }
 
-for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
+for machine in gumstix-connex gumstix-verdex efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"

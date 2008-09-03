@@ -1,5 +1,5 @@
 DESCRIPTION = "WebKit browser engine, GTK+ edition"
-DEPENDS = "curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs flex-native gperf-native perl-native sqlite3"
+DEPENDS = "curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
@@ -19,6 +19,7 @@ SRC_URI = "\
   file://Makefile.shared \
   file://autogen.sh \
   file://configure.ac \
+  file://symbols.filter \
   file://GNUmakefile.am \
  "
 
@@ -26,10 +27,12 @@ S = "${WORKDIR}/"
 
 inherit autotools pkgconfig lib_package
 
+# FIXME: Segfaulting without --with-http-backend=curl
 EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
+		--with-http-backend=curl \
                "
 
 do_compile_prepend() {
