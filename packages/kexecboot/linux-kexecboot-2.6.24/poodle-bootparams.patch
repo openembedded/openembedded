@@ -1,0 +1,10 @@
+--- ../ref/linux-2.6.21.6/arch/arm/mach-pxa/poodle.c	2007-07-06 23:47:55.000000000 -0500
++++ linux-2.6.21.6-armeb/arch/arm/mach-pxa/poodle.c	2007-08-06 23:02:50.000000000 -0500
+@@ -409,6 +409,7 @@
+ 
+ MACHINE_START(POODLE, "SHARP Poodle")
+ 	.phys_io	= 0x40000000,
++	.boot_params	= 0xa0000200,  /* fake boot params loc for kexec */
+ 	.io_pg_offst	= (io_p2v(0x40000000) >> 18) & 0xfffc,
+ 	.fixup		= fixup_poodle,
+ 	.map_io		= pxa_map_io,
