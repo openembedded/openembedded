@@ -1,8 +1,9 @@
 DESCRIPTON = "A init script that mounts a device and kexecs a new kernel from it."
-PR = "r7"
+PR = "r8"
 RDEPENDS = "kexecboot klibc-utils-static-mount klibc-utils-static-sh klibc-utils-static-sleep"
 
 FBANGLE = "270"
+FBANGLE_c7x0 = "0"
 INPUTDEV = "/dev/event0"
 
 

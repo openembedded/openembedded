@@ -4,6 +4,12 @@ LICENSE = "GPL"
 
 DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
+
+# uncomment the following lines if you use u-boot as bootloader
+#KERNEL_IMAGETYPE_c7x0="uImage"
+#KERNEL_IMAGETYPE_akita="uImage"
+#KERNEL_IMAGETYPE_spitz="uImage"
+
 inherit kernel
 PACKAGES = ""
 PROVIDES = ""
