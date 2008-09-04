@@ -13,5 +13,6 @@ SRC_URI += "\
   file://ecj_java_dir.patch;patch=1 \
   file://autotools.patch;patch=1 \
   file://decimalformat.patch;patch=1 \
+  file://cp-byte-loophelper.patch;patch=1;pnum=0 \
   "
 
