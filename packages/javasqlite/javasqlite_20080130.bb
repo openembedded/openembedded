@@ -52,7 +52,7 @@ do_install_append() {
   rm ${D}${libdir_jni}/libsqlite_jni.a
 }
 
-PACKAGES = "lib${PN}-jni lib${PN}-jni-dbg"
+PACKAGES += "lib${PN}-jni lib${PN}-jni-dbg"
 
 FILES_lib${PN}-jni = "${libdir_jni}/lib*.so*"
 FILES_lib${PN}-jni-dbg = "${libdir_jni}/.debug/lib*.so*"
