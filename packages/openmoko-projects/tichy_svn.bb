@@ -11,3 +11,4 @@ S = "${WORKDIR}/tichy"
 inherit distutils
 
 FILES_${PN} += "${datadir}"
+RDEPENDS_${PN} += "python-pygame"

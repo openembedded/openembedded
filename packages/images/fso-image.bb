@@ -24,6 +24,11 @@ XSERVER ?= "xserver-kdrive-fbdev"
 X_INSTALL = "\
   e-wm \
   illume \
+  illume-config-illume \
+  illume-dicts-english-us \
+  illume-keyboards-default \
+  illume-keyboards-numbers \
+  illume-keyboards-terminal \
   illume-theme-freesmartphone \
   ${XSERVER} \
   xserver-kdrive-common \
@@ -113,6 +118,7 @@ IMAGE_INSTALL = "\
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
   ${ZHONE_INSTALL} \
+  tichy \
 "
 
 inherit image
@@ -140,6 +146,8 @@ fso_rootfs_postprocess() {
     # minimal gtk theme foo
     mkdir -p ./etc/gtk-2.0/
     echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
+    # fix strange iconv/gconf bug
+    ln -s libc.so.6 ./lib/libc.so
     cd $curdir
 }
 

@@ -20,8 +20,7 @@ EXTRA_OECONF = "\
 "
 
 RRECOMMENDS_${PN} = "\
-  wamerican \
-  ${PN}-config \
+  ${PN}-config-illume \
   ${PN}-theme \
   ${PN}-dicts-english-us \
   ${PN}-keyboards-default \
@@ -30,18 +29,22 @@ RRECOMMENDS_${PN} = "\
 "
 
 PACKAGES =+ "\
-  ${PN}-config \
+  ${PN}-config-illume \
+  ${PN}-config-asu \
   ${PN}-dicts-english-us \
   ${PN}-keyboards-default \
   ${PN}-keyboards-numbers \
   ${PN}-keyboards-terminal \
 "
-PACKAGE_ARCH_${PN}-config = "all"
+PACKAGE_ARCH_${PN}-config-illume = "all"
+PACKAGE_ARCH_${PN}-config-asu = "all"
 PACKAGE_ARCH_${PN}-dicts-english-us = "all"
 PACKAGE_ARCH_${PN}-keyboards-default = "all"
 PACKAGE_ARCH_${PN}-keyboards-numbers = "all"
+PACKAGE_ARCH_${PN}-keyboards-terminal = "all"
 
-FILES_${PN}-config = "${datadir}/enlightenment/data/config/*/* ${datadir}/illume"
+FILES_${PN}-config-illume = "${datadir}/enlightenment/data/config/illume/*"
+FILES_${PN}-config-asu = "${datadir}/enlightenment/data/config/asu/*"
 FILES_${PN}-dicts-english-us = "${libdir}/enlightenment/modules/illume/dicts/English_*.dic"
 FILES_${PN}-keyboards-default = "${libdir}/enlightenment/modules/illume/keyboards/Default.kbd"
 FILES_${PN}-keyboards-numbers = "${libdir}/enlightenment/modules/illume/keyboards/Numbers.kbd"
