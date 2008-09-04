@@ -52,10 +52,10 @@ zaurus_make_installkit () {
     mkdir ${IMAGE_NAME}-installkit/
 
     # Get the latest kernel using the zImage-<machine>.bin symlink
-    if [ "${MACHINE}" = "collie" ]; then
-	    [ -f "zImage-${MACHINE}-kexecboot.bin" ] && cp zImage-${MACHINE}-kexecboot.bin ${IMAGE_NAME}-installkit/zImage
+    if [ "${@base_contains('MACHINE_FEATURES', 'kexecboot', 'true', 'false',d)}" ]; then
+	    [ -f "zImage-kexecboot-${MACHINE}.bin" ] && cp zImage-kexecboot-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
 	    # we need also tgz for mmc or cf cards
-	    cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/hdimage1.tgz
+	    cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/image.tgz
     else
 	    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
     fi
@@ -79,6 +79,5 @@ zaurus_make_installkit () {
 
 # Don't include kernels in standard images for Zaurus machines
 RDEPENDS_kernel-base = ""
-# collie is an exception. We use mmc as root, include kernel and use another small kernel to boot it.
-RDEPENDS_kernel-base_collie = "kernel-image" 
+
 KERNEL_IMAGETYPE ?= "zImage"
