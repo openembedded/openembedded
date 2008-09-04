@@ -53,7 +53,6 @@ SRCREV_pn-gsmd2 ?= "963f34df8fa3ff4b301079dcf86e9acea6b6fe0f"
 SRCREV_pn-gtkhtml2 ?= "1158"
 SRCREV_pn-gypsy ?= "134"
 SRCREV_pn-hildon-1 ?= "14429"
-SRCREV_pn-illume ?= "35605"
 SRCREV_pn-illume-theme-asu ?= "170"
 SRCREV_pn-illume-theme-freesmartphone ?= "fcadedec08294c5eebd176483695828959a76e0b"
 SRCREV_pn-kismet ?= "2285"
@@ -192,7 +191,7 @@ SRCREV_pn-zhone ?= "69e029bd85a1caaad4e5d61087836a8e1ea20dcc"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "35592"
+EFL_SRCREV ?= "35727"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eet-native ?= "${EFL_SRCREV}"

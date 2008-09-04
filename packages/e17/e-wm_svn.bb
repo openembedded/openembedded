@@ -6,6 +6,8 @@ PR = "r11"
 
 inherit e update-alternatives
 
+RDEPENDS += "shared-mime-info mime-support"
+
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
   file://disable-e-cursor.patch;patch=1 \
@@ -16,6 +18,7 @@ S = "${WORKDIR}/e"
 
 EXTRA_OECONF = "\
   --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+  --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
   --x-includes=${STAGING_INCDIR}/X11 \
   --x-libraries=${STAGING_LIBDIR} \
   --enable-simple-x11 \
@@ -42,8 +45,6 @@ do_install_append() {
     install -d ${D}/${sysconfdir}/xdg/menus
     install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
 }
-
-RDEPENDS += "shared-mime-info mime-support"
 
 FILES_${PN} = "\
   ${bindir}/* \
