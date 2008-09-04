@@ -1,0 +1,68 @@
+Index: gnu/java/nio/charset/ByteDecodeLoopHelper.java
+===================================================================
+RCS file: /sources/classpath/classpath/gnu/java/nio/charset/ByteDecodeLoopHelper.java,v
+retrieving revision 1.1
+diff -u -r1.1 ByteDecodeLoopHelper.java
+--- gnu/java/nio/charset/ByteDecodeLoopHelper.java	23 Nov 2007 16:11:17 -0000	1.1
++++ gnu/java/nio/charset/ByteDecodeLoopHelper.java	3 Sep 2008 23:11:29 -0000
+@@ -119,6 +119,8 @@
+     int inRemaining = in.remaining();
+     int outRemaining = out.remaining();
+     CoderResult result;
++
++	bailOut:
+     if (inRemaining <= outRemaining)
+       {
+         for (int i = 0; i < inRemaining; i++)
+@@ -129,7 +131,7 @@
+               {
+                 inPos--;
+                 result = CoderResult.unmappableForLength(1);
+-                break;
++				break bailOut;
+               }
+             char c = mapToChar(b);
+             outArray[outPos] = c;
+@@ -147,7 +149,7 @@
+               {
+                 inPos--;
+                 result = CoderResult.unmappableForLength(1);
+-                break;
++				break bailOut;
+               }
+             char c = mapToChar(b);
+             outArray[outPos] = c;
+Index: gnu/java/nio/charset/ByteEncodeLoopHelper.java
+===================================================================
+RCS file: /sources/classpath/classpath/gnu/java/nio/charset/ByteEncodeLoopHelper.java,v
+retrieving revision 1.1
+diff -u -r1.1 ByteEncodeLoopHelper.java
+--- gnu/java/nio/charset/ByteEncodeLoopHelper.java	23 Nov 2007 16:11:17 -0000	1.1
++++ gnu/java/nio/charset/ByteEncodeLoopHelper.java	3 Sep 2008 23:11:29 -0000
+@@ -120,6 +120,8 @@
+     int inRemaining = in.remaining();
+     int outRemaining = out.remaining();
+     CoderResult result;
++
++	bailOut:
+     if (inRemaining <= outRemaining)
+       {
+         for (int i = 0; i < inRemaining; i++)
+@@ -130,7 +132,7 @@
+               {
+                 inPos--;
+                 result = CoderResult.unmappableForLength(1);
+-                break;
++                break bailOut;
+               }
+             byte b = mapToByte(inChar);
+             outArray[outPos] = b;
+@@ -148,7 +150,7 @@
+               {
+                 inPos--;
+                 result = CoderResult.unmappableForLength(1);
+-                break;
++                break bailOut;
+               }
+             byte b = mapToByte(inChar);
+             outArray[outPos] = b;
