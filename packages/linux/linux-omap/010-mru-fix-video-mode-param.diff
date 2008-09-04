@@ -1,0 +1,35 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 3 Sep 2008 23:19:04 +0000 (+0100)
+Subject: OMAP: Fix omapfb video mode selection when built as module
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=9bafff77f3028cd170c605c8d883963522c8546c
+
+OMAP: Fix omapfb video mode selection when built as module
+
+This fixes the video_mode parameter when omapfb is built as a module.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/omapfb_main.c b/drivers/video/omap/omapfb_main.c
+index 19a1a83..e0b3642 100644
+--- a/drivers/video/omap/omapfb_main.c
++++ b/drivers/video/omap/omapfb_main.c
+@@ -54,7 +54,7 @@ static unsigned long	def_vxres;
+ static unsigned long	def_vyres;
+ static unsigned int	def_rotate;
+ static unsigned int	def_mirror;
+-static char		def_mode[16] = CONFIG_FB_OMAP_VIDEO_MODE;
++static char		def_mode[16];
+ 
+ #ifdef CONFIG_FB_OMAP_MANUAL_UPDATE
+ static int		manual_update = 1;
+@@ -2143,7 +2143,8 @@ static int __init omapfb_init(void)
+ 	omapfb_setup(option);
+ #endif
+ 
+-	omapfb_find_mode(def_mode, &video_mode);
++	omapfb_find_mode(def_mode[0]? def_mode : CONFIG_FB_OMAP_VIDEO_MODE,
++			 &video_mode);
+ 
+ 	/* Register the driver with LDM */
+ 	if (platform_driver_register(&omapfb_driver)) {

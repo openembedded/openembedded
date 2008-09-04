@@ -1,0 +1,174 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 3 Sep 2008 23:05:33 +0000 (+0100)
+Subject: OMAP: Build LCD drivers as separate modules
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=127dc3100fe9d25ed2b6c0a056e4160cc05db653
+
+OMAP: Build LCD drivers as separate modules
+
+This enables building the various LCD drivers as modules separate
+from omapfb.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/Kconfig b/drivers/video/omap/Kconfig
+index 9977e80..93cd760 100644
+--- a/drivers/video/omap/Kconfig
++++ b/drivers/video/omap/Kconfig
+@@ -53,6 +53,70 @@ config FB_OMAP_LCD_MIPID
+ 	  the Mobile Industry Processor Interface DBI-C/DCS
+ 	  specification. (Supported LCDs: Philips LPH8923, Sharp LS041Y3)
+ 
++config OMAP_FB_LCD_AMS_DELTA
++	tristate "AMS DELTA LCD support"
++	depends on FB_OMAP && MACH_AMS_DELTA
++
++config OMAP_FB_LCD_H2
++	tristate "H2 LCD support"
++	depends on FB_OMAP && MACH_OMAP_H2
++
++config OMAP_FB_LCD_H3
++	tristate "H3 LCD support"
++	depends on FB_OMAP && MACH_OMAP_H3
++
++config OMAP_FB_LCD_H4
++	tristate "OMAP 2420 H4 LCD support"
++	depends on FB_OMAP && MACH_OMAP_H4
++
++config OMAP_FB_LCD_PALMTE
++	tristate "PALMTE LCD support"
++	depends on FB_OMAP && MACH_OMAP_PALMTE
++
++config OMAP_FB_LCD_PALMTT
++	tristate "PALMTT LCD support"
++	depends on FB_OMAP && MACH_OMAP_PALMTT
++
++config OMAP_FB_LCD_PALMZ71
++	tristate "PALMZ71 LCD support"
++	depends on FB_OMAP && MACH_OMAP_PALMZ71
++
++config OMAP_FB_LCD_INN1610
++	tristate "INN1610 LCD support"
++	depends on FB_OMAP && ARCH_OMAP16XX && MACH_OMAP_INNOVATOR
++
++config OMAP_FB_LCD_INN1510
++	tristate "INN1510 LCD support"
++	depends on FB_OMAP && ARCH_OMAP15XX && MACH_OMAP_INNOVATOR
++
++config OMAP_FB_LCD_OSK
++	tristate "OSK LCD support"
++	depends on FB_OMAP && MACH_OMAP_OSK
++
++config OMAP_FB_LCD_SX1
++	tristate "SX1 LCD support"
++	depends on FB_OMAP && MACH_SX1
++
++config OMAP_FB_LCD_APOLLON
++	tristate "OMAP 2420 Apollon LCD support"
++	depends on FB_OMAP && MACH_OMAP_APOLLON
++
++config OMAP_FB_LCD_2430SDP
++	tristate "OMAP 2430/3430 SDP LCD support"
++	depends on FB_OMAP && (MACH_OMAP_2430SDP || MACH_OMAP_3430SDP)
++
++config OMAP_FB_LCD_OMAP2EVM
++	tristate "OMAP 2530 EVM LCD support"
++	depends on FB_OMAP && MACH_OMAP2EVM
++
++config OMAP_FB_LCD_OMAP3EVM
++	tristate "OMAP 3530 EVM LCD support"
++	depends on FB_OMAP && MACH_OMAP3EVM
++
++config OMAP_FB_LCD_OMAP3BEAGLE
++	tristate "Beagle board DVI port support"
++	depends on FB_OMAP && MACH_OMAP3_BEAGLE
++
+ config FB_OMAP_BOOTLOADER_INIT
+ 	bool "Check bootloader initialization"
+ 	depends on FB_OMAP
+diff --git a/drivers/video/omap/Makefile b/drivers/video/omap/Makefile
+dissimilarity index 64%
+index f9b5cd4..dbdcd67 100644
+--- a/drivers/video/omap/Makefile
++++ b/drivers/video/omap/Makefile
+@@ -1,40 +1,40 @@
+-#
+-# Makefile for the new OMAP framebuffer device driver
+-#
+-
+-obj-$(CONFIG_FB_OMAP) += omapfb.o
+-
+-objs-yy := omapfb_main.o
+-
+-objs-y$(CONFIG_ARCH_OMAP1) += lcdc.o
+-objs-y$(CONFIG_ARCH_OMAP2) += dispc.o
+-objs-y$(CONFIG_ARCH_OMAP3) += dispc.o
+-
+-objs-$(CONFIG_ARCH_OMAP1)$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += sossi.o
+-objs-$(CONFIG_ARCH_OMAP2)$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += rfbi.o
+-
+-objs-y$(CONFIG_FB_OMAP_LCDC_HWA742) += hwa742.o
+-objs-y$(CONFIG_FB_OMAP_LCDC_BLIZZARD) += blizzard.o
+-
+-objs-y$(CONFIG_MACH_AMS_DELTA) += lcd_ams_delta.o
+-objs-y$(CONFIG_MACH_OMAP_H4) += lcd_h4.o
+-objs-y$(CONFIG_MACH_OMAP_H3) += lcd_h3.o
+-objs-y$(CONFIG_MACH_OMAP_H2) += lcd_h2.o
+-objs-y$(CONFIG_MACH_OMAP_PALMTE) += lcd_palmte.o
+-objs-y$(CONFIG_MACH_OMAP_PALMTT) += lcd_palmtt.o
+-objs-y$(CONFIG_MACH_OMAP_PALMZ71) += lcd_palmz71.o
+-objs-$(CONFIG_ARCH_OMAP16XX)$(CONFIG_MACH_OMAP_INNOVATOR) += lcd_inn1610.o
+-objs-$(CONFIG_ARCH_OMAP15XX)$(CONFIG_MACH_OMAP_INNOVATOR) += lcd_inn1510.o
+-objs-y$(CONFIG_MACH_OMAP_OSK) += lcd_osk.o
+-objs-y$(CONFIG_MACH_SX1) += lcd_sx1.o
+-
+-objs-y$(CONFIG_MACH_OMAP_APOLLON) += lcd_apollon.o
+-objs-y$(CONFIG_MACH_OMAP_2430SDP) += lcd_2430sdp.o
+-objs-y$(CONFIG_MACH_OMAP_3430SDP) += lcd_2430sdp.o
+-objs-y$(CONFIG_MACH_OMAP2EVM) += lcd_omap2evm.o
+-objs-y$(CONFIG_MACH_OMAP3EVM) += lcd_omap3evm.o
+-objs-y$(CONFIG_MACH_OMAP3_BEAGLE) += lcd_omap3beagle.o
+-objs-y$(CONFIG_FB_OMAP_LCD_MIPID) += lcd_mipid.o
+-
+-omapfb-objs := $(objs-yy)
+-
++#
++# Makefile for the new OMAP framebuffer device driver
++#
++
++obj-$(CONFIG_FB_OMAP) += omapfb.o
++
++objs-yy := omapfb_main.o
++
++objs-y$(CONFIG_ARCH_OMAP1) += lcdc.o
++objs-y$(CONFIG_ARCH_OMAP2) += dispc.o
++objs-y$(CONFIG_ARCH_OMAP3) += dispc.o
++
++objs-$(CONFIG_ARCH_OMAP1)$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += sossi.o
++objs-$(CONFIG_ARCH_OMAP2)$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += rfbi.o
++
++objs-y$(CONFIG_FB_OMAP_LCDC_HWA742) += hwa742.o
++objs-y$(CONFIG_FB_OMAP_LCDC_BLIZZARD) += blizzard.o
++
++obj-$(CONFIG_OMAP_FB_LCD_AMS_DELTA) += lcd_ams_delta.o
++obj-$(CONFIG_OMAP_FB_LCD_H4) += lcd_h4.o
++obj-$(CONFIG_OMAP_FB_LCD_H3) += lcd_h3.o
++obj-$(CONFIG_OMAP_FB_LCD_H2) += lcd_h2.o
++obj-$(CONFIG_OMAP_FB_LCD_PALMTE) += lcd_palmte.o
++obj-$(CONFIG_OMAP_FB_LCD_PALMTT) += lcd_palmtt.o
++obj-$(CONFIG_OMAP_FB_LCD_PALMZ71) += lcd_palmz71.o
++obj-$(CONFIG_OMAP_FB_LCD_INN1610) += lcd_inn1610.o
++obj-$(CONFIG_OMAP_FB_LCD_INN1510) += lcd_inn1510.o
++obj-$(CONFIG_OMAP_FB_LCD_OSK) += lcd_osk.o
++obj-$(CONFIG_OMAP_FB_LCD_SX1) += lcd_sx1.o
++
++obj-$(CONFIG_OMAP_FB_LCD_APOLLON) += lcd_apollon.o
++obj-$(CONFIG_OMAP_FB_LCD_2430SDP) += lcd_2430sdp.o
++obj-$(CONFIG_OMAP_FB_LCD_2430SDP) += lcd_2430sdp.o
++obj-$(CONFIG_OMAP_FB_LCD_OMAP2EVM) += lcd_omap2evm.o
++obj-$(CONFIG_OMAP_FB_LCD_OMAP3EVM) += lcd_omap3evm.o
++obj-$(CONFIG_OMAP_FB_LCD_OMAP3BEAGLE) += lcd_omap3beagle.o
++obj-$(CONFIG_OMAP_FB_LCD_MIPID) += lcd_mipid.o
++
++omapfb-objs := $(objs-yy)
++

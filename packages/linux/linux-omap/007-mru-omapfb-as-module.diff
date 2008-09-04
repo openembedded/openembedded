@@ -1,0 +1,50 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 3 Sep 2008 23:10:08 +0000 (+0100)
+Subject: OMAP: Fix omapfb built as module
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=ae65001ce247e510121bcda21775263bb4c42e05
+
+OMAP: Fix omapfb built as module
+
+This makes it possible to build omapfb as a module.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/dispc.c b/drivers/video/omap/dispc.c
+index 6187e8f..4213c4f 100644
+--- a/drivers/video/omap/dispc.c
++++ b/drivers/video/omap/dispc.c
+@@ -1073,7 +1073,8 @@ static int mmap_kern(struct omapfb_mem_region *region)
+ 	pgprot_t		pgprot;
+ 	unsigned long		vaddr;
+ 
+-	kvma = get_vm_area(region->size, VM_IOREMAP);
++	kvma = __get_vm_area(region->size, VM_IOREMAP,
++			     VMALLOC_START, VMALLOC_END);
+ 	if (kvma == NULL) {
+ 		dev_err(dispc.fbdev->dev, "can't get kernel vm area\n");
+ 		return -ENOMEM;
+diff --git a/drivers/video/omap/omapfb_main.c b/drivers/video/omap/omapfb_main.c
+index 6d09e03..19a1a83 100644
+--- a/drivers/video/omap/omapfb_main.c
++++ b/drivers/video/omap/omapfb_main.c
+@@ -2016,12 +2016,15 @@ EXPORT_SYMBOL(omapfb_unregister_panel);
+ static int omapfb_remove(struct platform_device *pdev)
+ {
+ 	struct omapfb_device *fbdev = platform_get_drvdata(pdev);
+-	enum omapfb_state saved_state = fbdev->state;
+ 
+-	/* FIXME: wait till completion of pending events */
++	if (fbdev) {
++		enum omapfb_state saved_state = fbdev->state;
+ 
+-	fbdev->state = OMAPFB_DISABLED;
+-	omapfb_free_resources(fbdev, saved_state);
++		/* FIXME: wait till completion of pending events */
++
++		fbdev->state = OMAPFB_DISABLED;
++		omapfb_free_resources(fbdev, saved_state);
++	}
+ 
+ 	return 0;
+ }

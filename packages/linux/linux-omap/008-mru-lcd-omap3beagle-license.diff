@@ -1,0 +1,22 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Wed, 3 Sep 2008 23:12:03 +0000 (+0100)
+Subject: OMAP: Add missing MODULE_LICENSE in lcd_omap3beagle
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=368ba31e3e7dccdcea790c559ad3d3b4a20d924f
+
+OMAP: Add missing MODULE_LICENSE in lcd_omap3beagle
+
+This adds a missing MODULE_LICENSE("GPL") in lcd_omap3beagle.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/lcd_omap3beagle.c b/drivers/video/omap/lcd_omap3beagle.c
+index f2861ec..7b63db9 100644
+--- a/drivers/video/omap/lcd_omap3beagle.c
++++ b/drivers/video/omap/lcd_omap3beagle.c
+@@ -127,3 +127,5 @@ static void __exit omap3beagle_panel_drv_exit(void)
+ 
+ module_init(omap3beagle_panel_drv_init);
+ module_exit(omap3beagle_panel_drv_exit);
++
++MODULE_LICENSE("GPL");
