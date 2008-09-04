@@ -1,6 +1,6 @@
 DESCRIPTION = "Task mamona: Build and Install Mamona Platform"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -36,6 +36,7 @@ RDEPENDS = "\
     libxrandr \
     libxrender \
     matchbox-keyboard \
+    netm-cli \
     networkmanager \
     pointercal \
     python-core \
