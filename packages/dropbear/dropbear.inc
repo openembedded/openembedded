@@ -79,4 +79,4 @@ pkg_postrm_append () {
 	update-alternatives --remove scp ${bindir}/dropbearmulti
 }
 
-CONFFILES_${PN} += "${sysconfdir}/default/dropbear"
+CONFFILES_${PN}_openmoko += "${sysconfdir}/default/dropbear"
