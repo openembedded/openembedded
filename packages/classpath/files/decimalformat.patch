@@ -1,0 +1,31 @@
+Index: classpath-0.97.2/java/text/DecimalFormat.java
+===================================================================
+--- classpath-0.97.2.orig/java/text/DecimalFormat.java
++++ classpath-0.97.2/java/text/DecimalFormat.java
+@@ -1296,7 +1296,7 @@ public class DecimalFormat extends Numbe
+             currencySymbol = this.symbols.getCurrencySymbol();
+ 
+             // if \u00A4 is doubled, we use the international currency symbol
+-            if (i < len && pattern.charAt(i + 1) == '\u00A4')
++            if ((i + 1) < len && pattern.charAt(i + 1) == '\u00A4')
+               {
+                 currencySymbol = this.symbols.getInternationalCurrencySymbol();
+                 i++;
+@@ -1320,7 +1320,7 @@ public class DecimalFormat extends Numbe
+         else if (ch == '\'')
+           {
+             // QUOTE
+-            if (i < len && pattern.charAt(i + 1) == '\'')
++            if ((i + 1) < len && pattern.charAt(i + 1) == '\'')
+               {
+                 // we need to add ' to the buffer 
+                 buffer.append(ch);
+@@ -1692,7 +1692,7 @@ public class DecimalFormat extends Numbe
+         else if (ch == '\'')
+           {
+             // QUOTE
+-            if (i < len && pattern.charAt(i + 1) == '\'')
++            if ((i + 1) < len && pattern.charAt(i + 1) == '\'')
+               {
+                 // we need to add ' to the buffer 
+                 buffer.append(ch);

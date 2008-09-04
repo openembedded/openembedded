@@ -1,8 +1,8 @@
 DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 features"
 HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
-DEPENDS = "libtool gtk+ cairo libxml2 libmad libsdl-mixer zlib boost jpeg pango curl freetype"
-PR = "r1"
+DEPENDS = "libtool ffmpeg gtk+ cairo libxml2 libmad libsdl-mixer zlib boost jpeg pango curl freetype"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2 \
           "
@@ -11,7 +11,7 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF = "--enable-gui=gtk \
                 --enable-renderer=cairo \
-                --enable-media=none \
+                --enable-media=ffmpeg \
                 --disable-klash \
                 --enable-z \
                 --enable-jpeg \
@@ -20,7 +20,7 @@ EXTRA_OECONF = "--enable-gui=gtk \
                 --enable-expat \
                 --enable-mad \
                 --enable-cairo \
-                --disable-plugin \
+                --enable-plugin \
                 --disable-cygnal \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 "

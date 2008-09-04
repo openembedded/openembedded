@@ -24,8 +24,20 @@ then
 	# waiting for disk
 	if test "$sleep" -gt 0
 	then
-		echo "Waiting $sleep seconds for disk"
+		echo "boot: waiting $sleep seconds for disk"
 		sleep "$sleep"
+	fi
+	# Attempt to assemble the RAID if necessary
+	if (echo $device | grep -q "^/dev/md")
+	then
+		if test -n "$MDUUID"
+		then
+			echo "boot: assembling RAID array (UUID)"
+			mdadm -Acpartitions --auto=md --uuid="$MDUUID" $device
+		else
+			echo "boot: assembling RAID array (config file)"
+			mdadm -As --auto=md $device
+		fi
 	fi
 	#
 	# fire the boot

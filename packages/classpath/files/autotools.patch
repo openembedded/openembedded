@@ -22,16 +22,3 @@ Index: classpath-0.93/configure.ac
  
  # Handle -Werror default case.
  if test "$ENABLE_WERROR" = default; then
-Index: classpath-0.93/Makefile.am
-===================================================================
---- classpath-0.93.orig/Makefile.am	2006-02-08 08:35:30.000000000 +0100
-+++ classpath-0.93/Makefile.am	2008-08-24 21:45:42.405241264 +0200
-@@ -4,7 +4,7 @@
- SUBDIRS = lib doc external include native resource scripts tools $(EXAMPLESDIR)
- DIST_SUBDIRS = lib doc external include native resource scripts tools examples
- 
--ACLOCAL_AMFLAGS = -I m4
-+ACLOCAL_AMFLAGS = -I m4 --install
- 
- native: lib
- 

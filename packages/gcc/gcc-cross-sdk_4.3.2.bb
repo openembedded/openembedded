@@ -1,3 +1,5 @@
+PR = "r2"
+
 inherit sdk
 
 require gcc-${PV}.inc

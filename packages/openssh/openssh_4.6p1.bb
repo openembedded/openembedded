@@ -14,7 +14,7 @@ It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://sftp-server-nolibcrypto.patch;patch=1 \
@@ -57,17 +57,18 @@ do_install_append() {
 	rmdir ${D}/var/run/sshd ${D}/var/run ${D}/var
 }
 
-PACKAGES =+ " openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc openssh-sftp-server"
+PACKAGES =+ " ssh-keygen openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc openssh-sftp-server"
 FILES_openssh-dbg +=${bindir}/.debug ${libdir}exec/.debug"
 FILES_openssh-scp = "${bindir}/scp.${PN}"
 FILES_openssh-ssh = "${bindir}/ssh.${PN} ${bindir}/slogin /${sysconfdir}/ssh/ssh_config"
-FILES_openssh-sshd = "${sbindir}/sshd /${sysconfdir}/init.d/sshd ${bindir}/ssh-keygen"
+FILES_openssh-sshd = "${sbindir}/sshd /${sysconfdir}/init.d/sshd"
 FILES_openssh-sshd += " /${sysconfdir}/ssh/moduli /${sysconfdir}/ssh/sshd_config"
 FILES_openssh-sftp = "${bindir}/sftp"
 FILES_openssh-sftp-server = "${libdir}exec/sftp-server"
 FILES_openssh-misc = "${bindir}/ssh* ${libdir}exec/ssh*"
+FILES_ssh-keygen = "${bindir}/ssh-keygen"
 
-RDEPENDS_openssh += " openssh-scp openssh-ssh openssh-sshd"
+RDEPENDS_openssh += " openssh-scp openssh-ssh openssh-sshd ssh-keygen "
 DEPENDS_openssh-sshd += " update-rc.d"
 RDEPENDS_openssh-sshd += " update-rc.d"
 

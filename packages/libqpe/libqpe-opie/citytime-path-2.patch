@@ -1,0 +1,11 @@
+--- library/tzselect.cpp	12 Jan 2008 10:14:42 -0000	1.13
++++ library/tzselect.cpp	30 Aug 2008 15:32:13 -0000
+@@ -270,7 +270,7 @@
+ void TimeZoneSelector::slotExecute( void )
+ {
+   // execute the world time application...
+-    if (QFile::exists(QPEApplication::qpeDir()+"bin/citytime"))
++    if (QFile::exists(OPIE_BINDIR "/citytime"))
+         Global::execute( "citytime" );
+     else
+         QMessageBox::warning(this,tr("citytime executable not found"),

@@ -20,7 +20,7 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-libgomp-speedup.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-i386-libgomp.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-rh251682.patch;patch=1;pnum=0 \
-        file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
+    file://debian/arm-unbreak-eabi-armv4t.dpatch;patch=1 \
 	file://debian/libstdc++-pic.dpatch;patch=1;pnum=0 \
 	file://debian/gcc-ice-hack.dpatch;patch=1;pnum=0 \ 
 	file://debian/pr30961.dpatch;patch=1;pnum=0 \
@@ -40,13 +40,12 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 #	file://402-libbackend_dep_gcov-iov.h.patch;patch=1 \
 	file://602-sdk-libstdc++-includes.patch;patch=1 \
 	file://740-sh-pr24836.patch;patch=1 \
-#	file://800-arm-bigendian.patch;patch=1 \
-#	file://801-arm-bigendian-eabi.patch;patch=1 \
+	file://800-arm-bigendian.patch;patch=1 \
 	file://904-flatten-switch-stmt-00.patch;patch=1 \
 	file://arm-nolibfloat.patch;patch=1 \
 	file://arm-softfloat.patch;patch=1 \
-#	file://arm-thumb.patch;patch=1 \
-#	file://arm-thumb-cache.patch;patch=1 \
+	file://arm-thumb.patch;patch=1 \
+	file://arm-thumb-cache.patch;patch=1 \
 	file://ldflags.patch;patch=1 \
 	file://fix-ICE-in-arm_unwind_emit_set.diff;patch=1 \
 	file://cache-amnesia.patch;patch=1 \
@@ -54,7 +53,6 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
 #	file://pr34130.patch;patch=1 \
 #	file://fortran-static-linking.patch;patch=1 \
-#	file://intermask-bigendian.patch;patch=1 \
 	file://gcc-arm-frename-registers.patch;patch=1 \
 	file://gcc-release-branch/PR-36500-fix-neon.patch;patch=1 \
 	file://gcc-4.3.1-SYSROOT_CFLAGS_FOR_TARGET.patch;patch=1 \

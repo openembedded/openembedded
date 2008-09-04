@@ -264,9 +264,9 @@ RDEPENDS_python-debugger="python-core python-io python-lang python-re python-str
 FILES_python-debugger="${libdir}/python2.5/bdb.* ${libdir}/python2.5/pdb.* "
 
 DESCRIPTION_python-shell="Python Shell-Like Functionality"
-PR_python-shell="ml0"
+PR_python-shell="ml1"
 RDEPENDS_python-shell="python-core python-re"
-FILES_python-shell="${libdir}/python2.5/cmd.* ${libdir}/python2.5/commands.* ${libdir}/python2.5/dircache.* ${libdir}/python2.5/fnmatch.* ${libdir}/python2.5/glob.* ${libdir}/python2.5/popen2.* ${libdir}/python2.5/shutil.* "
+FILES_python-shell="${libdir}/python2.5/cmd.* ${libdir}/python2.5/commands.* ${libdir}/python2.5/dircache.* ${libdir}/python2.5/fnmatch.* ${libdir}/python2.5/glob.* ${libdir}/python2.5/popen2.* ${libdir}/python2.5/shlex.* ${libdir}/python2.5/shutil.* "
 
 DESCRIPTION_python-bsddb="Python Berkeley Database Bindings"
 PR_python-bsddb="ml1"

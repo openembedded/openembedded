@@ -2,8 +2,7 @@ DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 featu
 HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
 
-DEPENDS = "virtual/libiconv virtual/libintl libtool agg libxml2 libmad zlib boost jpeg pango curl freetype"
-RDEPENDS = "libltdl"
+DEPENDS = "virtual/libiconv virtual/libintl ffmpeg libtool agg libxml2 libmad zlib boost jpeg pango curl freetype"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2"
 S = ${WORKDIR}/gnash-${PV}
@@ -28,27 +27,30 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --disable-glext \
                 --disable-Xft \
                 --disable-expat \
-                --disable-mad \
+                --enable-mad \
                 --disable-gstreamer \
-                --disable-cairo \
+                --enable-media=ffmpeg \
                 --disable-plugin \
                 --disable-cygnal \
-		--disable-testsuite \
+                --disable-testsuite \
                 --enable-maintainer-mode \
                 --enable-fps-debug \
                 --enable-allstatic \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
-                "
+                --disable-ltdl-install \
+                --without-included-ltdl \
+#  --with-ltdl-include=${STAGING_INCDIR} \
+#  --with-ltdl-lib=${STAGING_LIBDIR} \
+"
 
 # the test for error_t is wrong for uclibc, needs _GNU_SOURCE for correct
 # detection because uclibc does not have argz.h which enables error_t 
-CFLAGS += " -D_GNU_SOURCE "
+CFLAGS += " -D_GNU_SOURCE  -I${S}/libltdl  -I${STAGING_INCDIR}/libltdl"
 
-PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia libltdl"
+PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia"
 
 FILES_${PN}-dbg += "${libdir}/gnash/.debug"
 FILES_${PN}-dev += "${libdir}/gnash/*a"
-FILES_libltdl = "${libdir}/gnash/libltdl*.so*"
 FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
 FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
 FILES_libgnashmedia = "${libdir}/gnash/libgnashmedia-${PV}.so"

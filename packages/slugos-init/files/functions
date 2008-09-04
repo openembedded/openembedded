@@ -191,6 +191,7 @@ checkmount(){
 minimaldevnodes(){
 	[ -c "$1/dev/console" ] || mknod -m 600 "$1/dev/console" c 5 1 || return 1
 	[ -c "$1/dev/null"    ] || mknod -m 666 "$1/dev/null"    c 1 3 || return 1
+	[ -c "$1/dev/tty0"    ] || mknod -m 644 "$1/dev/tty0"    c 4 0 || return 1
 	return 0
 }
 #

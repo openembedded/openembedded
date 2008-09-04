@@ -1,7 +1,7 @@
-Index: gcc-4.3.1/libstdc++-v3/acinclude.m4
+Index: gcc-4.3.2/libstdc++-v3/acinclude.m4
 ===================================================================
---- gcc-4.3.1.orig/libstdc++-v3/acinclude.m4	2008-04-25 09:52:57.000000000 -0700
-+++ gcc-4.3.1/libstdc++-v3/acinclude.m4	2008-08-19 01:15:23.000000000 -0700
+--- gcc-4.3.2.orig/libstdc++-v3/acinclude.m4	2008-04-25 09:52:57.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/acinclude.m4	2008-08-28 17:55:56.000000000 -0700
 @@ -1349,7 +1349,7 @@
  AC_DEFUN([GLIBCXX_ENABLE_CLOCALE], [
    GLIBCXX_ENABLE(clocale,auto,[@<:@=MODEL@:>@],
@@ -62,10 +62,10 @@ Index: gcc-4.3.1/libstdc++-v3/acinclude.m4
    esac
  
    # This is where the testsuite looks for locale catalogs, using the
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c++locale_internal.h	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c++locale_internal.h	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,63 @@
 +// Prototypes for GLIBC thread locale __-prefixed functions -*- C++ -*-
 +
@@ -130,10 +130,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c++locale_internal.h
 +#endif
 +
 +#endif // GLIBC 2.3 and later
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c_locale.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c_locale.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,160 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -295,10 +295,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.cc
 +{
 +  const char* const* const locale::_S_categories = __gnu_cxx::category_names;
 +}  // namespace std
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.h
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c_locale.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.h	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/c_locale.h	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,117 @@
 +// Wrapper for underlying C-language localization -*- C++ -*-
 +
@@ -417,10 +417,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/c_locale.h
 +}
 +
 +#endif
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/codecvt_members.cc	2008-08-19 01:39:14.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/codecvt_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,308 @@
 +// std::codecvt implementation details, GNU version -*- C++ -*-
 +
@@ -730,10 +730,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/codecvt_members.cc
 +  }
 +#endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/collate_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/collate_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/collate_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/collate_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,80 @@
 +// std::collate implementation details, GNU version -*- C++ -*-
 +
@@ -815,10 +815,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/collate_members.cc
 +    { return __wcsxfrm_l(__to, __from, __n, _M_c_locale_collate); }
 +#endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/ctype_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/ctype_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/ctype_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/ctype_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,300 @@
 +// std::ctype implementation details, GNU version -*- C++ -*-
 +
@@ -1120,10 +1120,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/ctype_members.cc
 +  }
 +#endif //  _GLIBCXX_USE_WCHAR_T
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/messages_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/messages_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,100 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1225,10 +1225,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.cc
 +    }
 +#endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.h
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/messages_members.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.h	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/messages_members.h	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,118 @@
 +// std::messages implementation details, GNU version -*- C++ -*-
 +
@@ -1348,10 +1348,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/messages_members.h
 +	   this->_S_create_c_locale(this->_M_c_locale_messages, __s);
 +	 }
 +     }
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/monetary_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/monetary_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/monetary_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/monetary_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,692 @@
 +// std::moneypunct implementation details, GNU version -*- C++ -*-
 +
@@ -2045,10 +2045,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/monetary_members.cc
 +    }
 +#endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/numeric_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/numeric_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/numeric_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/numeric_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,160 @@
 +// std::numpunct implementation details, GNU version -*- C++ -*-
 +
@@ -2210,10 +2210,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/numeric_members.cc
 +    { delete _M_data; }
 + #endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.cc
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/time_members.cc
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.cc	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/time_members.cc	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,406 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2621,10 +2621,10 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.cc
 +    }
 +#endif
 +}
-Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.h
+Index: gcc-4.3.2/libstdc++-v3/config/locale/uclibc/time_members.h
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.h	2008-08-19 01:38:05.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/config/locale/uclibc/time_members.h	2008-08-28 17:55:56.000000000 -0700
 @@ -0,0 +1,68 @@
 +// std::time_get, std::time_put implementation, GNU version -*- C++ -*-
 +
@@ -2694,11 +2694,11 @@ Index: gcc-4.3.1/libstdc++-v3/config/locale/uclibc/time_members.h
 +      delete _M_data;
 +      _S_destroy_c_locale(_M_c_locale_timepunct);
 +    }
-Index: gcc-4.3.1/libstdc++-v3/configure
+Index: gcc-4.3.2/libstdc++-v3/configure
 ===================================================================
---- gcc-4.3.1.orig/libstdc++-v3/configure	2008-04-25 09:52:57.000000000 -0700
-+++ gcc-4.3.1/libstdc++-v3/configure	2008-08-19 01:38:04.000000000 -0700
-@@ -14001,7 +14001,7 @@
+--- gcc-4.3.2.orig/libstdc++-v3/configure	2008-07-07 12:49:54.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/configure	2008-08-28 18:02:13.000000000 -0700
+@@ -14003,7 +14003,7 @@
    enableval="$enable_clocale"
  
        case "$enableval" in
@@ -2707,7 +2707,7 @@ Index: gcc-4.3.1/libstdc++-v3/configure
         *) { { echo "$as_me:$LINENO: error: Unknown argument to enable/disable clocale" >&5
  echo "$as_me: error: Unknown argument to enable/disable clocale" >&2;}
     { (exit 1); exit 1; }; } ;;
-@@ -14034,6 +14034,9 @@
+@@ -14036,6 +14036,9 @@
    # Default to "generic".
    if test $enable_clocale_flag = auto; then
      case ${target_os} in
@@ -2717,7 +2717,7 @@ Index: gcc-4.3.1/libstdc++-v3/configure
        linux* | gnu* | kfreebsd*-gnu | knetbsd*-gnu)
          enable_clocale_flag=gnu
          ;;
-@@ -14422,6 +14425,76 @@
+@@ -14424,6 +14427,76 @@
        CTIME_CC=config/locale/generic/time_members.cc
        CLOCALE_INTERNAL_H=config/locale/generic/c++locale_internal.h
        ;;
@@ -2794,19 +2794,19 @@ Index: gcc-4.3.1/libstdc++-v3/configure
    esac
  
    # This is where the testsuite looks for locale catalogs, using the
-@@ -17014,7 +17087,7 @@
+@@ -17016,7 +17089,7 @@
  
    # Fake what AC_TRY_COMPILE does.  XXX Look at redoing this new-style.
      cat > conftest.$ac_ext << EOF
--#line 17017 "configure"
-+#line 17090 "configure"
+-#line 17019 "configure"
++#line 17092 "configure"
  int main()
  {
    // NB: _Atomic_word not necessarily int.
-Index: gcc-4.3.1/libstdc++-v3/include/c_compatibility/wchar.h
+Index: gcc-4.3.2/libstdc++-v3/include/c_compatibility/wchar.h
 ===================================================================
---- gcc-4.3.1.orig/libstdc++-v3/include/c_compatibility/wchar.h	2007-03-04 14:59:49.000000000 -0800
-+++ gcc-4.3.1/libstdc++-v3/include/c_compatibility/wchar.h	2008-08-19 01:15:23.000000000 -0700
+--- gcc-4.3.2.orig/libstdc++-v3/include/c_compatibility/wchar.h	2007-03-04 14:59:49.000000000 -0800
++++ gcc-4.3.2/libstdc++-v3/include/c_compatibility/wchar.h	2008-08-28 17:55:56.000000000 -0700
 @@ -106,7 +106,9 @@
  using std::wmemcpy;
  using std::wmemmove;
@@ -2817,10 +2817,10 @@ Index: gcc-4.3.1/libstdc++-v3/include/c_compatibility/wchar.h
  
  #if _GLIBCXX_USE_C99
  using std::wcstold;
-Index: gcc-4.3.1/libstdc++-v3/include/c_std/cwchar
+Index: gcc-4.3.2/libstdc++-v3/include/c_std/cwchar
 ===================================================================
---- gcc-4.3.1.orig/libstdc++-v3/include/c_std/cwchar	2007-05-27 07:50:21.000000000 -0700
-+++ gcc-4.3.1/libstdc++-v3/include/c_std/cwchar	2008-08-19 01:15:23.000000000 -0700
+--- gcc-4.3.2.orig/libstdc++-v3/include/c_std/cwchar	2007-05-27 07:50:21.000000000 -0700
++++ gcc-4.3.2/libstdc++-v3/include/c_std/cwchar	2008-08-28 17:55:56.000000000 -0700
 @@ -182,7 +182,9 @@
    using ::wcscoll;
    using ::wcscpy;

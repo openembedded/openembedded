@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r20"
+PR = "r21"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 ALLOW_EMPTY = "1"
@@ -21,14 +21,10 @@ ALLOW_EMPTY = "1"
 SLUGOS_STANDARD_RDEPENDS = ""
 SLUGOS_STANDARD_RRECOMMENDS = ""
 
-# diff, cpio and find are required for turnup and ipkg.
+# The full cpio (non-busybox) is required for turnup and sysconfig.
 SLUGOS_STANDARD_RRECOMMENDS += "\
 cpio \
 "
-## SlugOS 5.0 -- uses busybox diff & find; cpio still needs -p and ability to
-## create CRC archives before we can use busybox cpio - MJW
-#diffutils \
-#findutils \
 
 # These lines add support for formatting ext2 and ext3 file systems
 # on a hard disk attached to the NSLU2.  ext3 is the standard Linux
@@ -40,12 +36,6 @@ e2fsprogs-e2fsck \
 e2fsprogs-badblocks \
 e2fsprogs-blkid \
 "
-
-# These lines add support for an X/Y/ZModem package called lrzsz
-# (this is of use for people with modified NSLU2 hardware which
-# supports a serial port.)
-## SlugOS 5.0 -- uses busybox rx command - MJW
-#SLUGOS_STANDARD_RRECOMMENDS += "lrzsz"
 
 # Filesystem selection.  Adding entries here adds the module to the
 # image.  The module must be built as part of nslu2-kernel (i.e. it
@@ -100,6 +90,15 @@ kernel-module-mii \
 kernel-module-ixp4xx-mac \
 kernel-module-ixp4xx-qmgr \
 kernel-module-via-velocity \
+kernel-module-netconsole \
+"
+
+# Add packages and modules required for RAID-1 support
+# (temporary, intended only to facilitate testing - MJW)
+SLUGOS_STANDARD_RRECOMMENDS += "\
+mdadm \
+kernel-module-md-mod \
+kernel-module-raid1 \
 "
 
 # Other candidate packages that have been considered and
@@ -110,10 +109,10 @@ kernel-module-via-velocity \
 # kernel-module-isofs \
 # kernel-module-udf \
 # kernel-module-loop \
-# kernel-module-netconsole \
+# wireless-tools \
 # wpa-supplicant \
 # zd1211-firmware kernel-module-zd1211rw \
-# madwifi-ng-modules madwifi-ng-tools wireless-tools \
+# madwifi-ng-modules madwifi-ng-tools \
 
 DISTRO_EXTRA_DEPENDS ?= ""
 DEPENDS += "${DISTRO_EXTRA_DEPENDS}"

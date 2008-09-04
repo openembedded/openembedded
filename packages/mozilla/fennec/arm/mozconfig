@@ -1,0 +1,10 @@
+mk_add_options MOZ_BUILD_PROJECTS="xulrunner mobile"
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/objdir
+mk_add_options AUTOCONF=autoconf2.13
+
+ac_add_options --disable-javaxpcom
+
+ac_add_app_options xulrunner --with-arm-kuser
+ac_add_app_options xulrunner --enable-application=xulrunner
+
+ac_add_app_options mobile --enable-application=mobile

@@ -1,3 +1,3 @@
 require gnash-minimal.inc
 
-PR = "r1"
+PR = "r2"

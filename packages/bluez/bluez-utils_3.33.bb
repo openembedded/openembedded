@@ -1,12 +1,13 @@
 require bluez-utils3.inc
 
-PR = "r1"
+PR = "r2"
 
 # see bluez-utils3.inc for the explanation of these option
 EXTRA_OECONF = " \
                  --enable-bccmd \
 		 --enable-hid2hci \
-                 --disable-alsa \ 
+                 --enable-hidd \
+		 --disable-alsa \ 
 		 --disable-cups \
 		 --enable-glib \
 		 --disable-sdpd \

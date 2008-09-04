@@ -10,6 +10,12 @@ PMOUNT="/usr/bin/pmount"
 UMOUNT="/bin/umount"
 name="`basename "$DEVNAME"`"
 
+if ( blkid "$DEVNAME" | grep -q 'TYPE="mdraid"' )
+then
+	logger "udev/mount.sh" "[$DEVNAME] is a member of an array, ignoring"
+	exit 0
+fi
+
 for line in `cat /etc/udev/mount.blacklist | grep -v ^#`
 do
 	if ( echo "$DEVNAME" | grep -q "$line" )

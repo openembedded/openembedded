@@ -38,8 +38,10 @@ mozilla_do_configure() {
 			`dirname $cg`/
 		done
 	)
-	oe_runmake -f client.mk ${MOZ_OBJDIR}/Makefile \
-				${MOZ_OBJDIR}/config.status
+	if [ -e ${MOZ_OBJDIR}/Makefile ] ; then 
+		oe_runmake -f client.mk ${MOZ_OBJDIR}/Makefile \
+					${MOZ_OBJDIR}/config.status
+	fi
 }
 
 mozilla_do_compile() {

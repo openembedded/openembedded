@@ -3,6 +3,8 @@
 rsync ~/OE/downloads/ angstrom@linuxtogo.org:~/website/unstable/sources/ -av \
 	--exclude "*.md5" \
 	--exclude "svn" \
+	--exclude "hg" \
+	--exclude "bzr" \
 	--exclude "cvs"  \
 	--exclude "git" \
 	--exclude "umac.ko" \

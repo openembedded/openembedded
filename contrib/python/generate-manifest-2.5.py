@@ -289,8 +289,8 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-resource", "Python Resource Control Interface", "python-core",
     "lib-dynload/resource.so" )
 
-    m.addPackage( 0, "python-shell", "Python Shell-Like Functionality", "python-core python-re",
-    "cmd.* commands.* dircache.* fnmatch.* glob.* popen2.* shutil.*" )
+    m.addPackage( 1, "python-shell", "Python Shell-Like Functionality", "python-core python-re",
+    "cmd.* commands.* dircache.* fnmatch.* glob.* popen2.* shlex.* shutil.*" )
 
     m.addPackage( 0, "python-robotparser", "Python robots.txt parser", "python-core python-netclient",
     "robotparser.*")
