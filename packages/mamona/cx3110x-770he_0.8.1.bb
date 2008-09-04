@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 KERVER = "2.6.16"
 
@@ -21,6 +21,7 @@ SRC_URI += "https://garage.maemo.org/frs/download.php/2443/cx3110x-0.8.1.tar.gz 
  file://fix_ssid_data_length.patch;patch=1 \
  file://770_performance_improvements.patch;patch=1 \
  file://create_sysfs_link_for_wlan0.patch;patch=1 \
+ file://fix_opps_while_connecting_with_nm.patch;patch=1 \
 "
 
 do_compile() {
