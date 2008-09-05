@@ -71,8 +71,9 @@ do
 		       task-opie \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       gsm0710muxd frameworkd zhone \
-               gnome-games \ 
-               "
+               gnome-games \
+               mythtv \
+	       "
 	do_build
 done
 
