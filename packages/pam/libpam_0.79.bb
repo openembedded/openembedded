@@ -52,11 +52,7 @@ LEAD_SONAME = "libpam.so.*"
 FILES_${PN} += "/usr/lib/security/pam_*.so /usr/lib/security/pam_filter/*"
 
 do_stage() {
-	autotools_stage_includes
-	for lib in libpam libpamc libpam_misc
-	do
-		oe_libinstall -so -C "$lib" "$lib" ${STAGING_LIBDIR}
-	done
+	autotools_stage_all
 }
 
 # An attempt to build on uclibc will fail, causing annoyance,
