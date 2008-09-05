@@ -1,5 +1,7 @@
 require gdb-common.inc
 
+DEFAULT_PREFERENCE_avr32 = "-99"
+
 DEPENDS = "ncurses readline"
 
 PACKAGES =+ "gdbserver"
