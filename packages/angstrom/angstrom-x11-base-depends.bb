@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r37"
+PR = "r38"
 
 inherit task
 
@@ -11,6 +11,7 @@ DEPENDS = "virtual/xserver"
 
 RDEPENDS = "\
     ${XSERVER} \
+    dbus-x11 \
     ttf-dejavu-sans \
     ttf-dejavu-sans-mono \
     "
