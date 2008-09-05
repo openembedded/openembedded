@@ -3,11 +3,6 @@ HOMEPAGE = "http://dbus.freedesktop.org"
 SECTION = "base"
 LICENSE = "GPL"
 DEPENDS = "expat glib-2.0 virtual/libintl libsm libice libx11"
-RDEPENDS_${PN}-x11 = "${PN}"
-RRECOMMENDS_${PN}-lib = "${PN}"
-RRECOMMENDS_${PN} = "${PN}-x11"
-RCONFLICTS_${PN} = "dbus-1"
-RREPLACES_${PN} = "dbus-1"
 
 SRC_URI = "\
   http://dbus.freedesktop.org/releases/dbus/dbus-${PV}.tar.gz \
@@ -47,6 +42,12 @@ do_stage() {
         mkdir -p ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
         install -m 0644 dbus/dbus-arch-deps.h ${STAGING_LIBDIR}/dbus-1.0/include/dbus/
 }
+
+RDEPENDS_${PN}-x11 = "${PN}"
+RRECOMMENDS_${PN}-lib = "${PN}"
+RRECOMMENDS_${PN} = "${PN}-x11"
+RCONFLICTS_${PN} = "dbus-1"
+RREPLACES_${PN} = "dbus-1"
 
 PACKAGES =+ "${PN}-lib ${PN}-x11"
 
