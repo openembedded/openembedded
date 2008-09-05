@@ -1,0 +1,25 @@
+Patch taken from the debian unstable package
+
+
+Index: nxcomp/Loop.cpp
+===================================================================
+--- nxcomp/Loop.cpp	2008-06-16 18:49:56.330011773 +0100
++++ nxcomp/Loop.cpp	2008-06-16 18:50:18.093320515 +0100
+@@ -5888,7 +5888,7 @@
+ 
+   #if defined(__linux__)
+ 
+-  newAction.sa_restorer = NULL;
++  memset(&newAction, NULL, sizeof(newAction));
+ 
+   #endif
+ 
+@@ -6506,7 +6506,7 @@
+ 
+   #if defined(__linux__)
+ 
+-  action.sa_restorer = NULL;
++  memset(&action, NULL, sizeof(action));
+ 
+   #endif
+ 
