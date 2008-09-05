@@ -1,7 +1,6 @@
 require dbus.inc
-RRECOMMENDS = " "
-RRECOMMENDS_${PN} = " "
-RDEPENDS = " "
+RRECOMMENDS = ""
+RDEPENDS = ""
 inherit native
 
 DEPENDS = "glib-2.0-native libxml2-native expat-native"
