@@ -1,9 +1,10 @@
 DEPENDS += "cairo"
 
 PV = "0.0"
+PR = "r1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=d14db8996980 \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=60dd20721284 \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7352ef83055a \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=767c0315369c \
            file://jsautocfg.h \
 "
 
@@ -24,7 +25,9 @@ do_configure_prepend() {
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
-	sed -i "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" security/coreconf/Linux.mk
+	sed -i -e "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" \
+	       -e  s:'$(OS_TEST)':${TARGET_ARCH}:g \
+	           ${S}/security/coreconf/Linux.mk
 }
 
 do_stage() {
