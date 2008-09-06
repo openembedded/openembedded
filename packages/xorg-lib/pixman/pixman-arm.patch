@@ -1,11 +1,5 @@
-commit 44d4231272bdf08fac077cdcaeaac1aec0dd1500
-Author: Jeff Muizelaar <jmuizelaar@mozilla.com>
-Date:   Thu Aug 28 13:02:17 2008 -0400
-
-    arm-simd
-
 diff --git a/configure.ac b/configure.ac
-index 702bed0..7f24db5 100644
+index 702bed0..59e0d99 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -301,6 +301,44 @@ AC_SUBST(VMX_CFLAGS)
@@ -14,7 +8,7 @@ index 702bed0..7f24db5 100644
  
 +dnl Check for ARM
 +
-+have_armv5_simd=no
++have_armv6_simd=no
 +AC_MSG_CHECKING(whether to use ARM assembler)
 +xserver_save_CFLAGS=$CFLAGS
 +CFLAGS="$CFLAGS $ARM_CFLAGS"
@@ -22,7 +16,7 @@ index 702bed0..7f24db5 100644
 +int main () {
 +    asm("uqadd8 r1, r1, r2");
 +    return 0;
-+}], have_armv5_simd=yes)
++}], have_armv6_simd=yes)
 +CFLAGS=$xserver_save_CFLAGS
 +
 +AC_ARG_ENABLE(arm,
@@ -31,23 +25,23 @@ index 702bed0..7f24db5 100644
 +   [enable_arm=$enableval], [enable_arm=auto])
 +
 +if test $enable_arm = no ; then
-+   have_armv5_simd=disabled
++   have_armv6_simd=disabled
 +fi
 +
-+if test $have_armv5_simd = yes ; then
++if test $have_armv6_simd = yes ; then
 +   AC_DEFINE(USE_ARM, 1, [use ARM compiler intrinsics])
 +else
 +   ARM_CFLAGS=
 +fi
 +
-+AC_MSG_RESULT($have_armv5_simd)
-+if test $enable_arm = yes && test $have_armv5_simd = no ; then
++AC_MSG_RESULT($have_armv6_simd)
++if test $enable_arm = yes && test $have_armv6_simd = no ; then
 +   AC_MSG_ERROR([ARM intrinsics not detected])
 +fi
 +
 +AC_SUBST(ARM_CFLAGS)
 +
-+AM_CONDITIONAL(USE_ARM, test $have_armv5_simd = yes)
++AM_CONDITIONAL(USE_ARM, test $have_armv6_simd = yes)
 +
 +
  AC_ARG_ENABLE(gtk,
@@ -76,10 +70,10 @@ index 4f046f1..2cad71a 100644
 +
 diff --git a/pixman/pixman-arm.c b/pixman/pixman-arm.c
 new file mode 100644
-index 0000000..9750730
+index 0000000..5ea65cb
 --- /dev/null
 +++ b/pixman/pixman-arm.c
-@@ -0,0 +1,312 @@
+@@ -0,0 +1,433 @@
 +/*
 + * Copyright © 2008 Mozilla Corporation
 + *
@@ -203,6 +197,7 @@ index 0000000..9750730
 +    uint16_t	w;
 +    uint32_t component_mask = 0xff00ff;
 +    uint32_t component_half = 0x800080;
++    uint32_t alpha_mask = 0xff;
 +
 +    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
 +    fbComposeGetStart (pSrc, xSrc, ySrc, uint32_t, srcStride, srcLine, 1);
@@ -230,8 +225,7 @@ index 0000000..9750730
 +			"blt 3f\n\t"
 +
 +			/* = 255 - alpha */
-+			"mvn r8, r5\n\t"
-+			"mov r8, r8, lsr #24\n\t"
++			"sub r8, %[alpha_mask], r5, lsr #24\n\t"
 +
 +			"ldr r4, [%[dest]] \n\t"
 +
@@ -239,8 +233,7 @@ index 0000000..9750730
 +			"ldr r4, [%[dest]] \n\t"
 +
 +			/* = 255 - alpha */
-+			"mvn r8, r5\n\t"
-+			"mov r8, r8, lsr #24\n\t"
++			"sub r8, %[alpha_mask], r5, lsr #24\n\t"
 +#endif
 +			"and r6, %[component_mask], r4\n\t"
 +			"and r7, %[component_mask], r4, lsr #8\n\t"
@@ -273,7 +266,8 @@ index 0000000..9750730
 +			"bne	1b\n\t"
 +			"2:\n\t"
 +			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
-+			: [component_half] "r" (component_half), [component_mask] "r" (component_mask)
++			: [component_half] "r" (component_half), [component_mask] "r" (component_mask),
++			  [alpha_mask] "r" (alpha_mask)
 +			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
 +			);
 +    }
@@ -300,6 +294,7 @@ index 0000000..9750730
 +    uint16_t	w;
 +    uint32_t component_mask = 0xff00ff;
 +    uint32_t component_half = 0x800080;
++    uint32_t alpha_mask = 0xff;
 +
 +    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
 +    fbComposeGetStart (pSrc, xSrc, ySrc, uint32_t, srcStride, srcLine, 1);
@@ -354,8 +349,8 @@ index 0000000..9750730
 +			"and r6, %[component_mask], r4\n\t"
 +			"and r7, %[component_mask], r4, lsr #8\n\t"
 +
-+			"mvn r8, r5\n\t"
-+			"mov r8, r8, lsr #24\n\t"
++			/* 255 - alpha */
++			"sub r8, %[alpha_mask], r5, lsr #24\n\t"
 +
 +			/* multiply by alpha (r8) then by 257 and divide by 65536 */
 +			"mla r6, r6, r8, %[component_half]\n\t"
@@ -385,19 +380,139 @@ index 0000000..9750730
 +			"bne	1b\n\t"
 +			"2:\n\t"
 +			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
-+			: [component_half] "r" (component_half), [component_mask] "r" (component_mask), [mask_alpha] "r" (mask)
++			: [component_half] "r" (component_half), [component_mask] "r" (component_mask), [mask_alpha] "r" (mask),
++			  [alpha_mask] "r" (alpha_mask)
 +			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
 +			);
 +    }
 +}
 +
++void
++fbCompositeSolidMask_nx8x8888arm (pixman_op_t      op,
++			       pixman_image_t * pSrc,
++			       pixman_image_t * pMask,
++			       pixman_image_t * pDst,
++			       int16_t      xSrc,
++			       int16_t      ySrc,
++			       int16_t      xMask,
++			       int16_t      yMask,
++			       int16_t      xDst,
++			       int16_t      yDst,
++			       uint16_t     width,
++			       uint16_t     height)
++{
++    uint32_t	 src, srca;
++    uint32_t	*dstLine, *dst;
++    uint8_t	*maskLine, *mask;
++    int		 dstStride, maskStride;
++    uint16_t	 w;
 +
++    fbComposeGetSolid(pSrc, src, pDst->bits.format);
++
++    srca = src >> 24;
++    if (src == 0)
++	return;
++
++    uint32_t component_mask = 0xff00ff;
++    uint32_t component_half = 0x800080;
++
++    uint32_t src_hi = (src >> 8) & component_mask;
++    uint32_t src_lo = src & component_mask;
++
++    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
++    fbComposeGetStart (pMask, xMask, yMask, uint8_t, maskStride, maskLine, 1);
++
++    while (height--)
++    {
++	dst = dstLine;
++	dstLine += dstStride;
++	mask = maskLine;
++	maskLine += maskStride;
++	w = width;
++
++//#define inner_branch
++	asm volatile (
++			"cmp %[w], #0\n\t"
++			"beq 2f\n\t"
++			"1:\n\t"
++			/* load mask */
++			"ldrb r5, [%[mask]], #1\n\t"
++#ifdef inner_branch
++			/* We can avoid doing the multiplication in two cases: 0x0 or 0xff.
++			 * The 0x0 case also allows us to avoid doing an unecessary data
++			 * write which is more valuable so we only check for that */
++			/* 0x1000000 is the least value that contains alpha all values
++			 * less than it have a 0 alpha value */
++			"cmp r5, #0x0\n\t"
++			"beq 3f\n\t"
++
++#endif
++			"ldr r4, [%[dest]] \n\t"
++
++			/* multiply by alpha (r8) then by 257 and divide by 65536 */
++			"mla r6, %[src_lo], r5, %[component_half]\n\t"
++			"mla r7, %[src_hi], r5, %[component_half]\n\t"
++
++			"and r8, %[component_mask], r6, lsr #8\n\t"
++			"and r5, %[component_mask], r7, lsr #8\n\t"
++
++			"add r6, r6, r8\n\t"
++			"add r7, r7, r5\n\t"
++
++			"and r6, %[component_mask], r6, lsr #8\n\t"
++			"and r7, %[component_mask], r7, lsr #8\n\t"
++
++			/* recombine */
++			"orr r5, r6, r7, lsl #8\n\t"
++
++			"and r6, %[component_mask], r4\n\t"
++			"and r7, %[component_mask], r4, lsr #8\n\t"
++
++			/* we could simplify this to use 'sub' if we were
++			 * willing to give up a register for alpha_mask */
++			"mvn r8, r5\n\t"
++			"mov r8, r8, lsr #24\n\t"
++
++			/* multiply by alpha (r8) then by 257 and divide by 65536 */
++			"mla r6, r6, r8, %[component_half]\n\t"
++			"mla r7, r7, r8, %[component_half]\n\t"
++
++			"and r8, %[component_mask], r6, lsr #8\n\t"
++			"and r4, %[component_mask], r7, lsr #8\n\t"
++
++			"add r6, r6, r8\n\t"
++			"add r7, r7, r4\n\t"
++
++			"and r6, %[component_mask], r6, lsr #8\n\t"
++			"and r7, %[component_mask], r7, lsr #8\n\t"
++
++			/* recombine */
++			"orr r6, r6, r7, lsl #8\n\t"
++
++			"uqadd8 r5, r6, r5\n\t"
++
++#ifdef inner_branch
++			"3:\n\t"
++
++#endif
++			"str r5, [%[dest]], #4\n\t"
++			/* increment counter and jmp to top */
++			"subs	%[w], %[w], #1\n\t"
++			"bne	1b\n\t"
++			"2:\n\t"
++			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src), [mask] "+r" (mask)
++			: [component_half] "r" (component_half), [component_mask] "r" (component_mask),
++			  [src_hi] "r" (src_hi), [src_lo] "r" (src_lo)
++			: "r4", "r5", "r6", "r7", "r8", "cc", "memory"
++			);
++    }
++}
 diff --git a/pixman/pixman-arm.h b/pixman/pixman-arm.h
 new file mode 100644
-index 0000000..06a3121
+index 0000000..258054a
 --- /dev/null
 +++ b/pixman/pixman-arm.h
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,94 @@
 +/*
 + * Copyright © 2008 Mozilla Corporation
 + *
@@ -476,10 +591,24 @@ index 0000000..06a3121
 +			 int16_t      yDst,
 +			 uint16_t     width,
 +			 uint16_t     height);
++void
++fbCompositeSolidMask_nx8x8888arm (pixman_op_t op,
++			 pixman_image_t * pSrc,
++			 pixman_image_t * pMask,
++			 pixman_image_t * pDst,
++			 int16_t      xSrc,
++			 int16_t      ySrc,
++			 int16_t      xMask,
++			 int16_t      yMask,
++			 int16_t      xDst,
++			 int16_t      yDst,
++			 uint16_t     width,
++			 uint16_t     height);
++
 +
 +#endif /* USE_ARM */
 diff --git a/pixman/pixman-pict.c b/pixman/pixman-pict.c
-index b918219..05abc82 100644
+index b918219..e59e904 100644
 --- a/pixman/pixman-pict.c
 +++ b/pixman/pixman-pict.c
 @@ -34,6 +34,7 @@
@@ -490,7 +619,7 @@ index b918219..05abc82 100644
  #include "pixman-combine32.h"
  
  #ifdef __GNUC__
-@@ -1479,6 +1480,18 @@ static const FastPathInfo vmx_fast_paths[] =
+@@ -1479,6 +1480,26 @@ static const FastPathInfo vmx_fast_paths[] =
  };
  #endif
  
@@ -498,10 +627,18 @@ index b918219..05abc82 100644
 +static const FastPathInfo arm_fast_paths[] =
 +{
 +    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_null,     PIXMAN_a8r8g8b8, fbCompositeSrc_8888x8888arm,      0 },
++    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_null,	PIXMAN_x8r8g8b8, fbCompositeSrc_8888x8888arm,	   0 },
++    { PIXMAN_OP_OVER, PIXMAN_a8b8g8r8, PIXMAN_null,	PIXMAN_a8b8g8r8, fbCompositeSrc_8888x8888arm,	   0 },
++    { PIXMAN_OP_OVER, PIXMAN_a8b8g8r8, PIXMAN_null,	PIXMAN_x8b8g8r8, fbCompositeSrc_8888x8888arm,	   0 },
 +    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_a8,       PIXMAN_a8r8g8b8, fbCompositeSrc_8888x8x8888arm,    NEED_SOLID_MASK },
 +    { PIXMAN_OP_OVER, PIXMAN_a8r8g8b8, PIXMAN_a8,       PIXMAN_x8r8g8b8, fbCompositeSrc_8888x8x8888arm,	   NEED_SOLID_MASK },
 +
 +    { PIXMAN_OP_ADD, PIXMAN_a8,        PIXMAN_null,     PIXMAN_a8,       fbCompositeSrcAdd_8000x8000arm,   0 },
++
++    { PIXMAN_OP_OVER, PIXMAN_solid,    PIXMAN_a8,       PIXMAN_a8r8g8b8, fbCompositeSolidMask_nx8x8888arm,     0 },
++    { PIXMAN_OP_OVER, PIXMAN_solid,    PIXMAN_a8,       PIXMAN_x8r8g8b8, fbCompositeSolidMask_nx8x8888arm,     0 },
++    { PIXMAN_OP_OVER, PIXMAN_solid,    PIXMAN_a8,       PIXMAN_a8b8g8r8, fbCompositeSolidMask_nx8x8888arm,     0 },
++    { PIXMAN_OP_OVER, PIXMAN_solid,    PIXMAN_a8,       PIXMAN_x8b8g8r8, fbCompositeSolidMask_nx8x8888arm,     0 },
 +
 +    { PIXMAN_OP_NONE },
 +};
@@ -509,7 +646,7 @@ index b918219..05abc82 100644
  
  static const FastPathInfo c_fast_paths[] =
  {
-@@ -1829,6 +1842,12 @@ pixman_image_composite (pixman_op_t      op,
+@@ -1829,6 +1850,12 @@ pixman_image_composite (pixman_op_t      op,
  	if (!info && pixman_have_vmx())
  	    info = get_fast_path (vmx_fast_paths, op, pSrc, pMask, pDst, pixbuf);
  #endif
