@@ -1,4 +1,4 @@
-DEPENDS += "cairo"
+DEPENDS += "cairo alsa-lib "
 
 PV = "0.7"
 PR = "r1"
