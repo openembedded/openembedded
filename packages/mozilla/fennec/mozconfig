@@ -1,25 +1,9 @@
-# Options for client.mk.
 mk_add_options MOZ_BUILD_PROJECTS="xulrunner mobile"
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../mobilebase
-
-# Global options
-#ac_add_options --enable-debug
-#ac_add_options --disable-optimize
-#ac_add_options --enable-logging
-#ac_cv_visibility_pragma=no
-
-#ac_add_options --enable-timeline
-
-# XULRunner options
-ac_add_app_options xulrunner --enable-application=xulrunner
-ac_add_app_options xulrunner --disable-javaxpcom
-
-# mobile options
-ac_add_app_options mobile --enable-application=mobile
-ac_add_app_options mobile --with-libxul-sdk=../xulrunner/dist
-
-# configure will be automatically generated using the 'autoconf-2.13'
-# command.  If autoconf-2.13 isn't the right name for your system, as
-# is the case on OS X using MacPorts, use the real command name as
-# demonstrated below.
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/objdir
 mk_add_options AUTOCONF=autoconf2.13
+
+ac_add_options --disable-javaxpcom
+
+ac_add_app_options xulrunner --enable-application=xulrunner
+
+ac_add_app_options mobile --enable-application=mobile

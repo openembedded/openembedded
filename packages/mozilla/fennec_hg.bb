@@ -1,6 +1,6 @@
 DEPENDS += "cairo"
 
-PV = "0.0"
+PV = "0.7"
 PR = "r1"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7352ef83055a \
@@ -32,20 +32,23 @@ do_compile_prepend() {
 	       -e  s:'$(OS_TEST)':${TARGET_ARCH}:g \
 	           ${S}/security/coreconf/Linux.mk
 
-	sed -i -e /LIBXUL_DIST/d ${S}/objdir/mobile/config/autoconf.mk
-	echo "LIBXUL_DIST=${S}/objdir/xulrunner/dist" >> ${S}/objdir/mobile/config/autoconf.mk
+	sed -i -e /LIBXUL_DIST/d \ 
+	       -e /LIBXUL_SDK/d \   
+		  ${S}/objdir/mobile/config/autoconf.mk
+
+	echo "LIBXUL_DIST	 = ${S}/objdir/xulrunner/dist" >> ${S}/objdir/mobile/config/autoconf.mk
+	echo "LIBXUL_SDK	 = ${S}/objdir/xulrunner/dist" >> ${S}/objdir/mobile/config/autoconf.mk
 }
 
-do_stage() {
-        install -d ${STAGING_INCDIR}/fennec-${PV}
-        cd dist/sdk/include
-		rm -rf obsolete
-        headers=`find . -name "*.h"`
-        for f in $headers
-        do
-                install -D -m 0644 $f ${STAGING_INCDIR}/fennec-${PV}/
-        done
-        # removes 2 lines that call absent headers
-        sed -e '178,179d' ${STAGING_INCDIR}/fennec-${PV}/nsIServiceManager.h
+
+do_install() {
+	cd ${S}/objdir/mobile/
+	oe_runmake package
+	install -d ${D}/${libdir}
+	tar xjf ${S}/objdir/mobile/dist/fennec-${PV}*.tar.bz2 -C ${D}/${libdir}
+	# remove x86 binary
+	rm ${D}/${libdir}/fennec/xulrunner/nsinstall
 }
+
+FILES_${PN} += "${libdir}/fennec" 
 
