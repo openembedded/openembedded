@@ -13,8 +13,11 @@ S = "${WORKDIR}/mozilla-central"
 inherit mozilla
 require firefox.inc
 
+PARALLEL_MAKE = ""
 export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
+
+export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/mobile-browser ] ; then
@@ -28,6 +31,9 @@ do_compile_prepend() {
 	sed -i -e "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" \
 	       -e  s:'$(OS_TEST)':${TARGET_ARCH}:g \
 	           ${S}/security/coreconf/Linux.mk
+
+	sed -i -e /LIBXUL_DIST/d ${S}/objdir/mobile/config/autoconf.mk
+	echo "LIBXUL_DIST=${S}/objdir/xulrunner/dist" >> ${S}/objdir/mobile/config/autoconf.mk
 }
 
 do_stage() {
