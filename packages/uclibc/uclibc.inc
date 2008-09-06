@@ -26,7 +26,7 @@ DEPENDS = "virtual/${TARGET_PREFIX}binutils \
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
 
 # Blackfin needs a wrapper around ld
-DEPENDS_append_bfin = " elf2flt "
+#DEPENDS_append_bfin = " elf2flt "
 
 INHIBIT_DEFAULT_DEPS = "1"
 PARALLEL_MAKE = ""
@@ -132,6 +132,7 @@ do_configure() {
 
 	# Mangle the resulting .config depending on OE variables
 	perl -i -p -e 's,^CROSS=.*,TARGET_ARCH=${TARGET_ARCH}\nCROSS=${TARGET_PREFIX},g' ${S}/Rules.mak
+	sed -i -e s:'$(CROSS)strip':true: ${S}/Rules.mak	
 	perl -i -p -e '${configmangle}' ${S}/.config
 
    	sed -i -e '/CONFIG_ARM_EABI/d' ${S}/.config
@@ -176,11 +177,11 @@ do_stage() {
 do_install() {
         # Tis MUST be done first because we
         # will install crt1.o in the install_dev stage and gcc needs it)
-	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
+	oe_runmake STRIPTOOL=true PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		install_dev install_runtime
 
-	oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+	oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
 		install_dev install_runtime 
 
 	# We don't really need this in ${includedir}
@@ -209,7 +210,10 @@ do_install() {
 	fi
 
         oe_runmake utils
-        oe_runmake PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
+        oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
                 install_utils
+	
+	# oe_runstrip needs +x on files	
+	chmod +x ${D}/${base_libdir}/*
 }
 
