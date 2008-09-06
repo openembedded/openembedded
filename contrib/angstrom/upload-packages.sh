@@ -33,7 +33,7 @@ cat files-uniq files-local | sort | uniq -d > files-trans
 
 # Copy over non-duplicate files
 echo "Starting rsync..."
-rsync -vz --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
+rsync -avz --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
 
 # Clean up temporary files
 echo "Removing upload queue"
