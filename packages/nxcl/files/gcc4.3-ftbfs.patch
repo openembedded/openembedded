@@ -1,0 +1,41 @@
+patch taken from the debian unstable package
+to let nxcl build with gcc-4.3
+
+
+Index: nxcl/lib/notQt.cpp
+===================================================================
+--- nxcl/lib/notQt.cpp	2008-04-10 11:05:10.338942907 +0000
++++ nxcl/lib/notQt.cpp	2008-04-10 11:05:10.338942907 +0000
+@@ -19,6 +19,7 @@
+ 
+ #include <iostream>
+ #include <sstream>
++#include <cstdlib>
+ extern "C" {
+ #include <unistd.h>
+ #include <errno.h>
+Index: nxcl/lib/nxclientlib.cpp
+===================================================================
+--- nxcl/lib/nxclientlib.cpp	2008-04-10 11:05:10.338942907 +0000
++++ nxcl/lib/nxclientlib.cpp	2008-04-10 11:05:10.338942907 +0000
+@@ -42,6 +42,8 @@
+     #include <sys/types.h>
+     #include <sys/stat.h>
+     #include <unistd.h>
++    #include <stdlib.h>
++    #include <string.h>
+ }
+ 
+ /*
+Index: nxcl/nxcl/nxcl.cpp
+===================================================================
+--- nxcl/nxcl/nxcl.cpp	2008-04-10 11:06:21.840797475 +0000
++++ nxcl/nxcl/nxcl.cpp	2008-04-10 11:06:47.841471864 +0000
+@@ -29,6 +29,7 @@
+ extern "C" {
+ #include <dbus/dbus.h>
+ #include <X11/Xlib.h>
++#include <stdlib.h>
+ }
+ 
+ using namespace nxcl;
