@@ -7,6 +7,7 @@ require uclibc.inc
 # fix_includes.sh script is run (see nokernelheader.patch below)
 # this must be correct.
 KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
+PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
