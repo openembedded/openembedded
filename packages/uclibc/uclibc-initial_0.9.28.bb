@@ -3,13 +3,9 @@ require uclibc_${PV}.bb
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-${PV}', '${FILE_DIRNAME}/uclibc', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
-DEPENDS = "linux-libc-headers virtual/${TARGET_PREFIX}gcc-initial"
+DEPENDS = "linux-libc-headers ncurses-native virtual/${TARGET_PREFIX}gcc-initial"
 PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
 PACKAGES = ""
-
-do_stage_avr32() {
-	:
-}
 
 do_stage() {
 	# Install initial headers into the cross dir
@@ -18,10 +14,11 @@ do_stage() {
 		pregen install_dev
 	make PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		libc/sysdeps/linux/${TARGET_ARCH}/crt1.o \
-		libc/sysdeps/linux/${TARGET_ARCH}/crti.o \
-		libc/sysdeps/linux/${TARGET_ARCH}/crtn.o
+               libc/sysdeps/linux/${TARGET_ARCH}/crt1.o \
+               libc/sysdeps/linux/${TARGET_ARCH}/crti.o \
+               libc/sysdeps/linux/${TARGET_ARCH}/crtn.o
 
+	install -d ${CROSS_DIR}/${TARGET_SYS}	
 	ln -sf include ${CROSS_DIR}/${TARGET_SYS}/sys-include
 
 	# This conflicts with the c++ version of this header
