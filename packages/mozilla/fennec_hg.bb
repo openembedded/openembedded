@@ -1,4 +1,4 @@
-DEPENDS += "cairo"
+DEPENDS += "cairo alsa-lib "
 
 PV = "0.7"
 PR = "r1"
@@ -28,6 +28,7 @@ do_configure_prepend() {
 
 do_compile_prepend() {
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
+	cp ${WORKDIR}/jsautocfg.h ${S}/objdir/xulrunner/js/src/
 	sed -i -e "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" \
 	       -e  s:'$(OS_TEST)':${TARGET_ARCH}:g \
 	           ${S}/security/coreconf/Linux.mk
