@@ -2,12 +2,16 @@ HOMEPAGE = "http://xqt.sourceforge.jp"
 LICENSE = "GPL"
 SECTION = "x11"
 
+PR = "r1"
+
 SRCDATE = "20041111"
 DEPENDS = "freetype libxi libxmu flex-native virtual/libqte2 libqpe-opie"
 
 SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xc;method=pserver \
 	   file://imake-staging.patch;patch=1 \
 	   file://moc_call.patch;patch=1 "
+
+inherit palmtop
 
 S = "${WORKDIR}/xc"
 
@@ -28,7 +32,7 @@ do_configure() {
 	# Qt defines
 	echo "#define QtCmnDefs -fno-exceptions -fno-rtti" >> config/cf/host.def
 	echo "#define QtDir ${QTDIR}" >> config/cf/host.def
-	echo "#define QtLibs -lqpe -lqte -lm -lpng -ljpeg -lts -lsupc++" >> config/cf/host.def
+	echo "#define QtLibs -lqpe -l${QT_LIBRARY} -lm -lpng -ljpeg -lts -lsupc++" >> config/cf/host.def
 	echo "#define MocBin ${STAGING_BINDIR_NATIVE}/moc" >> config/cf/host.def
 	echo "#define QtDefs -DQWS -DOPIE_NEW_MALLOC -DOPIE_NO_ERASE_RECT_HACKFIX  QtCmnDefs" >> config/cf/host.def
 
