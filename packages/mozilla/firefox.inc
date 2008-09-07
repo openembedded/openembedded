@@ -1,4 +1,4 @@
-SRC_URI += "file://mozilla-firefox.png file://mozilla-firefox.desktop"
+SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
 PACKAGES =+ "${PN}-inspector"
 
