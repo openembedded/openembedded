@@ -18,6 +18,7 @@ do_stage_append() {
 
     install -d ${STAGING_DIR_TARGET}/qt4/bin
     cp ${STAGING_DIR_NATIVE}/qt4/bin/* ${STAGING_DIR_TARGET}/qt4/bin/ || true 
+    cp ${STAGING_DIR_NATIVE}/${bindir}/{rcc*,uic*,moc*} ${STAGING_DIR_TARGET}/qt4/bin/ || true	
     for qttool in ${STAGING_DIR_TARGET}/qt4/bin/*4 ; do
          ln -sf $qttool  ${STAGING_DIR_TARGET}/qt4/bin/$(basename $qttool |sed s:4::g) 
     done
