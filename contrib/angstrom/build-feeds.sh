@@ -46,12 +46,12 @@ do
                        task-proper-tools mc screen findutils \
 	               mono jamvm perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
-		       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany minimo openmoko-browser2 \
+		       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany fennec minimo openmoko-browser2 \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
 		       gpe-gallery gpe-scap notecase task-gpe-pim \
 		       pidgin irssi \
-		       roadmap-gtk2 gpsdrive navit \
+		       roadmap-gtk2 gpsdrive navit viking \
 		       xmms totem mplayer quasar vlc-gpe gnome-mplayer \
 		       wpa-gui wifi-radar kismet aircrack-ng dsniff \
 		       nmap iptables iperf openvpn vpnc \
