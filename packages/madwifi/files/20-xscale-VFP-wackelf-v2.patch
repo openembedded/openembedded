@@ -1,0 +1,20 @@
+--- madwifi-trunk-r3837-20080802/ath_hal/Makefile.orig	2008-09-06 22:23:21.000000000 -0500
++++ madwifi-trunk-r3837-20080802/ath_hal/Makefile	2008-09-06 22:29:50.000000000 -0500
+@@ -82,12 +82,16 @@ endif
+ quiet_cmd_uudecode = UUDECODE $@
+       cmd_uudecode = $(obj)/uudecode -o $@ $<
+ 
+-$(filter-out ./,$(obj)/)$(HALBIN): $(HAL)/public/$(TARGET).hal.o.uu $(obj)/uudecode
++$(obj)/wackelf: $(HAL)/public/wackelf.c
++	$(HOSTCC) $(HOSTCFLAGS) -o $@ $<
++
++$(filter-out ./,$(obj)/)$(HALBIN): $(HAL)/public/$(TARGET).hal.o.uu $(obj)/uudecode $(obj)/wackelf
+ ifdef LINUX24
+ 	$(cmd_uudecode)
+ else
+ 	$(call if_changed,uudecode)
+ endif
++	$(obj)/wackelf -fpa $@
+ 
+ # Replace as many hashed names as possible with meaningful
+ # ones in the symbol table of the binary kernel module for HAL.
