@@ -1,0 +1,68 @@
+commit 8507756d8868b8d8c7a149bd2427a04262638156
+Author: Vladimir Vukicevic <vladimir@slide.(none)>
+Date:   Sat Sep 6 17:46:52 2008 -0700
+
+    Add SRC x888x0565 C fast path
+
+diff --git a/pixman/pixman-pict.c b/pixman/pixman-pict.c
+index eeefa33..b5fb0ff 100644
+--- a/pixman/pixman-pict.c
++++ b/pixman/pixman-pict.c
+@@ -759,6 +759,46 @@ fbCompositeSrc_8888x0565 (pixman_op_t op,
+     }
+ }
+ 
++
++void
++fbCompositeSrc_x888x0565 (pixman_op_t op,
++                          pixman_image_t * pSrc,
++                          pixman_image_t * pMask,
++                          pixman_image_t * pDst,
++                          int16_t      xSrc,
++                          int16_t      ySrc,
++                          int16_t      xMask,
++                          int16_t      yMask,
++                          int16_t      xDst,
++                          int16_t      yDst,
++                          uint16_t     width,
++                          uint16_t     height)
++{
++    uint16_t	*dstLine, *dst;
++    uint32_t	*srcLine, *src, s;
++    int	dstStride, srcStride;
++    uint16_t	w;
++
++    fbComposeGetStart (pSrc, xSrc, ySrc, uint32_t, srcStride, srcLine, 1);
++    fbComposeGetStart (pDst, xDst, yDst, uint16_t, dstStride, dstLine, 1);
++
++    while (height--)
++    {
++	dst = dstLine;
++	dstLine += dstStride;
++	src = srcLine;
++	srcLine += srcStride;
++	w = width;
++
++	while (w--)
++	{
++	    s = READ(pSrc, src++);
++	    WRITE(pDst, dst, cvt8888to0565(s));
++	    dst++;
++	}
++    }
++}
++
+ void
+ fbCompositeSrcAdd_8000x8000 (pixman_op_t	op,
+ 			     pixman_image_t * pSrc,
+@@ -1568,6 +1608,10 @@ static const FastPathInfo c_fast_paths[] =
+     { PIXMAN_OP_SRC, PIXMAN_r5g6b5,    PIXMAN_null,     PIXMAN_r5g6b5,   fbCompositeSrcSrc_nxn, 0 },
+     { PIXMAN_OP_SRC, PIXMAN_b5g6r5,    PIXMAN_null,     PIXMAN_b5g6r5,   fbCompositeSrcSrc_nxn, 0 },
+ #endif
++    { PIXMAN_OP_SRC, PIXMAN_a8r8g8b8,  PIXMAN_null,     PIXMAN_r5g6b5,   fbCompositeSrc_x888x0565, 0 },
++    { PIXMAN_OP_SRC, PIXMAN_x8r8g8b8,  PIXMAN_null,     PIXMAN_r5g6b5,   fbCompositeSrc_x888x0565, 0 },
++    { PIXMAN_OP_SRC, PIXMAN_a8b8g8r8,  PIXMAN_null,     PIXMAN_b5g6r5,   fbCompositeSrc_x888x0565, 0 },
++    { PIXMAN_OP_SRC, PIXMAN_x8b8g8r8,  PIXMAN_null,     PIXMAN_b5g6r5,   fbCompositeSrc_x888x0565, 0 },
+     { PIXMAN_OP_IN,  PIXMAN_a8,        PIXMAN_null,     PIXMAN_a8,       fbCompositeSrcIn_8x8,   0 },
+     { PIXMAN_OP_IN,  PIXMAN_solid,     PIXMAN_a8,	PIXMAN_a8,	 fbCompositeSolidMaskIn_nx8x8, 0 },
+     { PIXMAN_OP_NONE },
