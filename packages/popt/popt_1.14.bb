@@ -1,6 +1,6 @@
 require popt.inc
 
-DEPENDS = "gettext virtual/libintl"
+DEPENDS = "gettext-native virtual/libintl"
 
 PR = "r1"
 
