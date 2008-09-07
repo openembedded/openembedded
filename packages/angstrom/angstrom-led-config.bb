@@ -1,7 +1,7 @@
 DESCRIPTION = "Configuration files for runtime LED configuration" 
 
 #PV = "${DISTRO_VERSION}"
-PR = "r2"
+PR = "r3"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 inherit update-rc.d
