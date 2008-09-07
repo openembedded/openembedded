@@ -1,7 +1,7 @@
 DESCRIPTION = "The binary which uses libxcomp from nomachine"
 HOMEPAGE = "http://www.nomachine.com/"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libxcomp"
 
@@ -14,5 +14,5 @@ S = "${WORKDIR}/nxproxy"
 
 do_install () {
        install -d ${D}${bindir}/
-       install -s -m 0644 nxproxy ${D}${bindir}/
+       install -s -m 0755 nxproxy ${D}${bindir}/
 }
