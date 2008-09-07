@@ -1,0 +1,27 @@
+patch by Henning Heinold
+
+Index: qtnx-0.9/qtnx.pro
+===================================================================
+--- qtnx-0.9.orig/qtnx.pro	2008-09-04 11:42:19.000000000 +0200
++++ qtnx-0.9/qtnx.pro	2008-09-04 11:42:32.000000000 +0200
+@@ -24,6 +24,6 @@
+ DEPENDPATH	+= $(QTDIR)/include
+ 
+ 
+-QT += ui xml
++QT += gui xml
+ 
+ TARGET		= qtnx
+Index: qtnx-0.9/qtnxwin32.pro
+===================================================================
+--- qtnx-0.9.orig/qtnxwin32.pro	2008-03-07 12:13:15.000000000 +0100
++++ qtnx-0.9/qtnxwin32.pro	2008-09-04 11:42:41.000000000 +0200
+@@ -14,7 +14,7 @@
+ 
+ QMAKE_LFLAGS += -Wl,-subsystem,windows
+ 
+-QT += ui xml
++QT += gui xml
+ 
+ TARGET		= qtnx
+ 
