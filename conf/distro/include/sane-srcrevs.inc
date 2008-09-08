@@ -251,4 +251,5 @@ SRCREV_pn-exquisite ?= "${EFL_SRCREV}"
 SRCREV_pn-rage ?= "${EFL_SRCREV}"
 
 # Illume module
-SRCREV_pn-illume ?= "${EFL_SRCREV}"
+# Use EFL_SRCREV again when E does not segfault
+SRCREV_pn-illume ?= "35866"

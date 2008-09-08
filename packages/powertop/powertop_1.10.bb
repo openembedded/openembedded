@@ -1,7 +1,7 @@
 DESCRIPTION = "PowerTOP, a tool that helps you find what software is using the most power."
 HOMEPAGE = "http://www.linuxpowertop.org/"
 LICENSE = "GPLv2"
-DEPENDS = "ncurses"
+DEPENDS = "virtual/libintl ncurses"
 
 SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz"
 

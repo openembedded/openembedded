@@ -1,11 +1,12 @@
 DEPENDS += "cairo alsa-lib "
 
 PV = "0.7"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7352ef83055a \
            hg://hg.mozilla.org/;module=mobile-browser;rev=767c0315369c \
            file://jsautocfg.h \
+           file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla-central"
@@ -49,7 +50,16 @@ do_install() {
 	tar xjf ${S}/objdir/mobile/dist/fennec-${PV}*.tar.bz2 -C ${D}/${libdir}
 	# remove x86 binary
 	rm ${D}/${libdir}/fennec/xulrunner/nsinstall
+        install -d ${D}${datadir}/applications
+        install -d ${D}${datadir}/pixmaps
+        install -m 0644 ${WORKDIR}/mozilla-${PN}.desktop ${D}${datadir}/applications/
+        install -m 0644 ${WORKDIR}/mozilla-${PN}.png ${D}${datadir}/pixmaps/
 }
+
+do_stage() {
+	:
+}	
+
 
 FILES_${PN} += "${libdir}/fennec" 
 

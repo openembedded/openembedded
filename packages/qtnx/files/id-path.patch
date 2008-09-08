@@ -1,0 +1,24 @@
+fix from latest debian unstable package
+
+
+Index: qtnx-0.9/qtnxwindow.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.cpp	2008-09-02 22:11:45.015711881 +0200
++++ qtnx-0.9/qtnxwindow.cpp	2008-09-02 22:24:27.168968002 +0200
+@@ -290,7 +290,7 @@
+ 
+     m_NXClient->setDepth(getDepth());
+ 
+-    QString keyPath = "id.key";
++    QString keyPath = "/usr/share/qtnx/id.key";
+ 
+ #ifdef Q_WS_MAC
+     keyPath = binaryPath + "/id.key";
+@@ -405,6 +405,7 @@
+ 
+     connect(settingsDialog, SIGNAL(closing(QString)), this, SLOT(configureClosed(QString)));
+ 
++
+     settingsDialog->show();
+ }
+ 

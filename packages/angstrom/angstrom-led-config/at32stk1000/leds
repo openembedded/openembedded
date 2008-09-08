@@ -1,0 +1,9 @@
+#file format: name trigger
+led0:amber nand-disk
+led1:amber mmc0
+led2:amber none
+led3:amber none
+led4:amber none
+led5:amber none
+led6:amber none
+led7:amber heartbeat

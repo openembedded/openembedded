@@ -581,6 +581,11 @@ python package_do_shlibs() {
 	if pstageactive == "1":
 		lf = bb.utils.lockfile(bb.data.expand("${STAGING_DIR}/staging.lock", d))
 
+	if bb.data.getVar('PACKAGE_SNAP_LIB_SYMLINKS', d, True) == "1":
+		snap_symlinks = True
+	else:
+		snap_symlinks = False
+
 	needed = {}
 	private_libs = bb.data.getVar('PRIVATE_LIBS', d, 1)
 	for pkg in packages.split():
@@ -590,6 +595,7 @@ python package_do_shlibs() {
 		needed[pkg] = []
 		sonames = list()
 		top = os.path.join(pkgdest, pkg)
+		renames = []
 		for root, dirs, files in os.walk(top):
 			for file in files:
 				soname = None
@@ -605,12 +611,18 @@ python package_do_shlibs() {
 						if m:
 							needed[pkg].append(m.group(1))
 						m = re.match("\s+SONAME\s+([^\s]*)", l)
-						if m and not m.group(1) in sonames:
-							# if library is private (only used by package) then do not build shlib for it
-							if not private_libs or -1 == private_libs.find(m.group(1)):
-								sonames.append(m.group(1))
-						if m and libdir_re.match(root):
-							needs_ldconfig = True
+						if m:
+							this_soname = m.group(1)
+							if not this_soname in sonames:
+								# if library is private (only used by package) then do not build shlib for it
+								if not private_libs or -1 == private_libs.find(this_soname):
+									sonames.append(this_soname)
+							if libdir_re.match(root):
+								needs_ldconfig = True
+							if snap_symlinks and (file != soname):
+								renames.append((path, os.path.join(root, this_soname)))
+		for (old, new) in renames:
+			os.rename(old, new)
 		shlibs_file = os.path.join(shlibs_dir, pkg + ".list")
 		if os.path.exists(shlibs_file):
 			os.remove(shlibs_file)
