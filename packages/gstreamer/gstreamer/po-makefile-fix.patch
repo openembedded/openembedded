@@ -1,13 +1,12 @@
-Index: gstreamer-0.10.17/po/Makefile.in.in
-===================================================================
---- gstreamer-0.10.17.orig/po/Makefile.in.in	2008-01-25 23:21:31.000000000 +0800
-+++ gstreamer-0.10.17/po/Makefile.in.in	2008-03-20 19:10:54.000000000 +0800
+diff -urN gstreamer-0.10.17.orig/po/Makefile.in.in gstreamer-0.10.17/po/Makefile.in.in
+--- gstreamer-0.10.17.orig/po/Makefile.in.in	2008-01-25 16:21:31.000000000 +0100
++++ gstreamer-0.10.17/po/Makefile.in.in	2008-09-08 14:41:21.000000000 +0200
 @@ -30,7 +30,7 @@
  INSTALL = @INSTALL@
  INSTALL_DATA = @INSTALL_DATA@
  MKINSTALLDIRS = @MKINSTALLDIRS@
 -mkinstalldirs = $(SHELL) `case "$(MKINSTALLDIRS)" in /*) echo "$(MKINSTALLDIRS)" ;; *) echo "$(top_builddir)/$(MKINSTALLDIRS)" ;; esac`
-+mkinstalldirs = $(MKINSTALLDIRS)
++mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
  
  GMSGFMT = @GMSGFMT@
  MSGFMT = @MSGFMT@
