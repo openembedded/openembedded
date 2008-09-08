@@ -2,13 +2,13 @@ DESCRIPTION = "Neuros window manager"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core update-rc.d
 
-SRCREV = "e6c30ba6e5be217ca4bf7e98e00f87bb7241872c"
+SRCREV = "b042e49d3a71cea6d4545ef6f2fc90979518b22e"
 SRC_URI = "git://git.neurostechnology.com/git/app-nwm;protocol=git \
            file://init"
 

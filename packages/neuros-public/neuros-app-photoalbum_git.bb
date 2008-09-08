@@ -2,13 +2,13 @@ DESCRIPTION = "Neuros photoalbum app"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core
 
-SRCREV = "2e08d843f04a98738e66507f70fe3f503c263bff"
+SRCREV = "c306f8e1ab92d916d99516d6aebc0749c1be5f5e"
 SRC_URI = "git://git.neurostechnology.com/git/app-photoalbum;protocol=git"
 S = "${WORKDIR}/git/"
 

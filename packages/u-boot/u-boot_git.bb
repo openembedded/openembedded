@@ -1,10 +1,10 @@
 require u-boot.inc
-PR="r17"
+PR="r18"
 
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_beagleboard = "9c1c36409b2cb4e81aab0bd9d0a69c68f4475aae"
-SRCREV_neuros-osd2 = "bc66414cd99154a40949db1bd2f45a62b8febca9"
+SRCREV_neuros-osd2 = "df6de5f4ff79dc43ba2a79a3afa975d22ec273b5"
 SRCREV_akita = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"

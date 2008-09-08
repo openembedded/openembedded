@@ -2,13 +2,13 @@ DESCRIPTION = "Neuros qt-plugins"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "qt-embedded"
 
 inherit qtopia4core
 
-SRCREV = "d344957a0731d31cbe5ef5e1f64defbb1627d162"
+SRCREV = "7636920455c7e963f004e394de9db39d2e9ac35f"
 SRC_URI = "git://git.neurostechnology.com/git/qt-plugins;protocol=git"
 S = "${WORKDIR}/git/osdir"
 
