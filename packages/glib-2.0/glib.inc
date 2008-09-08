@@ -14,8 +14,10 @@ PR = "r2"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
-FILES_${PN} = "${libdir}/lib*so.*"
-FILES_${PN}-dev += "${libdir}/glib-2.0 ${datadir}/glib-2.0"
+FILES_${PN} = "${libdir}/lib*so.* ${libdir}/gio/modules/*.so"
+FILES_${PN}-dev += "${libdir}/glib-2.0 ${datadir}/glib-2.0 ${libdir}/gio/modules/*.la"
+FILES_${PN}-dbg += "${libdir}/gio/modules/.debug"
+
 
 EXTRA_OECONF = "--disable-debug "
 
