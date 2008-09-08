@@ -20,7 +20,7 @@ DEFAULT_PREFERENCE_akita = "1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
+SRC_URI += "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            ${RPSRC}/lzo_jffs2_sysfs-r1.patch;patch=1 \
            ${RPSRC}/hx2750_base-r34.patch;patch=1 \
            ${RPSRC}/hx2750_bl-r9.patch;patch=1 \
@@ -53,20 +53,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            file://connectplus-prevent-oops-HACK.patch;patch=1;status=hack \
            file://htcuni.patch;patch=1 \
            file://versatile-armv6.patch;patch=1 \
-           file://defconfig-c7x0 \
-           file://defconfig-hx2000 \
-           file://defconfig-akita \
-           file://defconfig-spitz \
-           file://defconfig-qemuarm \
-           file://defconfig-qemux86 \
-           file://defconfig-bootcdx86 \
-           file://defconfig-htcuniversal \
-           file://defconfig-collie \
-           file://defconfig-zylonite"
-# Disabled until the patchset is updated:
-#           file://defconfig-tosa
-#           file://defconfig-poodle
-
+           "	
 
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack

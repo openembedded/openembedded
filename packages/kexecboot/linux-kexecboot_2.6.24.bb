@@ -19,7 +19,7 @@ DEFAULT_PREFERENCE_tosa = "-1"
 
 # Patches submitted upstream are towards top of this list 
 # Hacks should clearly named and at the bottom
-SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
+SRC_URI += "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${RPSRC}/export_atags-r2.patch;patch=1;status=pending \
            ${RPSRC}/lzo_crypto-r2.patch;patch=1;status=pending \
            ${RPSRC}/corgi_rearrange_lcd-r0.patch;patch=1;status=pending \
@@ -67,18 +67,7 @@ SRC_URI = "${KERNELORG_MIRROR}pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://binutils-buildid-arm.patch;patch=1 \
            file://versatile-armv6.patch;patch=1 \
            file://htcuni.patch;patch=1 \
-           file://defconfig-c7x0 \
-           file://defconfig-hx2000 \
-           file://defconfig-collie \
-           file://defconfig-poodle \
-           file://defconfig-akita \
-           file://defconfig-spitz \
-           file://defconfig-qemuarm \
-           file://defconfig-qemux86 \
-           file://defconfig-bootcdx86 \
-           file://defconfig-htcuniversal \
-           file://defconfig-tosa \
-           file://defconfig-zylonite"
+           "
 
 # FIXMEs before made default	   
 # ${RPSRC}/mmcsd_no_scr_check-r1.patch;patch=1;status=hack
