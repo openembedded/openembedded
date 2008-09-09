@@ -1,0 +1,356 @@
+From fd62a67dc5b454528aa6b1732ccdaf9d845083d4 Mon Sep 17 00:00:00 2001
+From: Li Yang <leoli@freescale.com>
+Date: Tue, 3 Jun 2008 19:18:48 +0800
+Subject: [PATCH] add VSC7385 support to MPC8313ERDB
+
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ drivers/net/tsec.c                       |   38 +++++++++++-
+ examples/Makefile                    |    7 ++-
+ examples/vsc7385_load/Makefile       |  104 ++++++++++++++++++++++++++++++
+ examples/vsc7385_load/Readme.txt     |   15 ++++
+ examples/vsc7385_load/vsc7385_load.c |  117 ++++++++++++++++++++++++++++++++++
+ 5 files changed, 279 insertions(+), 2 deletions(-)
+ create mode 100644 examples/vsc7385_load/Makefile
+ create mode 100644 examples/vsc7385_load/Readme.txt
+ create mode 100644 examples/vsc7385_load/vsc7385_load.c
+
+diff --git a/drivers/net/tsec.c b/drivers/net/tsec.c
+index ca6284b..d863ca3 100644
+--- a/drivers/net/tsec.c
++++ b/drivers/net/tsec.c
+@@ -9,6 +9,12 @@
+  * (C) Copyright 2003, Motorola, Inc.
+  * author Andy Fleming
+  *
++ * Copyright (C) 2006-2008 Freescale Semiconductor, Inc. All rights reserved.
++ * Change Log:
++ * Dec,2006: Wilson Lo (Wilson.Lo@freescale.com)
++ *           Vitesse VSC7385 L2 Switch support as an unknow phy
++ *           for MPC8313ERDB board
++ *
+  */
+ 
+ #include <config.h>
+@@ -1350,7 +1356,33 @@ struct phy_info phy_info_dp83865 = {
+ 			   {miim_end,}
+ 			   },
+ };
++#ifdef CONFIG_VSC7385_ENET
++uint mii_unknown_hardcoded(uint mii_reg, struct tsec_private *priv)
++{
++	priv->duplexity = 1;
++	priv->speed = 1000;
++	priv->link = 1;
++	return 0;
++}
++#endif
+ 
++#ifdef CONFIG_VSC7385_ENET
++struct phy_info phy_info_unknown = {
++	0xffffffff,
++	"unknown phy, assume 1000BaseT Full duplex",
++	0,
++	(struct phy_cmd[]) { /* config */
++		{miim_end,}
++	},
++	(struct phy_cmd[]) { /* startup */
++		{0x1, miim_read, mii_unknown_hardcoded},
++		{miim_end,}
++	},
++	(struct phy_cmd[]) { /* shutdown */
++		{miim_end,}
++	},
++};
++#endif
+ struct phy_info *phy_info[] = {
+ 	&phy_info_cis8204,
+ 	&phy_info_cis8201,
+@@ -1365,7 +1397,11 @@ struct phy_info *phy_info[] = {
+ 	&phy_info_VSC8244,
+ 	&phy_info_dp83865,
+ 	&phy_info_generic,
+-	NULL
++#ifdef CONFIG_VSC7385_ENET
++    &phy_info_unknown,
++#endif
++
++    NULL
+ };
+ 
+ /* Grab the identifier of the device's PHY, and search through
+diff --git a/examples/Makefile b/examples/Makefile
+index e9b4974..5bb5eab 100644
+--- a/examples/Makefile
++++ b/examples/Makefile
+@@ -152,7 +152,12 @@ clibdir := $(shell dirname `$(CC) $(CFLAGS) -print-file-name=libc.a`)
+ 
+ CPPFLAGS += -I..
+ 
+-all:	$(obj).depend $(OBJS) $(LIB) $(SREC) $(BIN) $(ELF)
++VSC =  vsc7385_load\vsc7385_load.srec
++
++all:	$(obj).depend $(OBJS) $(LIB) $(SREC) $(BIN) $(ELF) $(VSC)
++
++$(VSC):
++	cd vsc7385_load && $(MAKE)
+ 
+ #########################################################################
+ $(LIB):	$(obj).depend $(LIBOBJS)
+diff --git a/examples/vsc7385_load/Makefile b/examples/vsc7385_load/Makefile
+new file mode 100644
+index 0000000..37dfe3b
+--- /dev/null
++++ b/examples/vsc7385_load/Makefile
+@@ -0,0 +1,104 @@
++#
++# Copyright (C) 2006-2008 Freescale Semiconductor, Inc. All rights reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++# Description:	Makefile for the Vitesse VSC7385 Gigabit Ethernet Switch
++#		firmware loader.
++#
++# Changelog:
++# 20061006	Joe.D'Abbraccio@freescale.com
++#		This file is based on the examples/Makefile within the U-Boot
++#		source tree.  It is modified to build a U-boot application
++#		that loads the Vitesse VSC7385 Gigabit Ethernet Switch firmware
++#
++
++
++ARCH = ppc
++
++ifeq ($(ARCH),ppc)
++LOAD_ADDR = 0x40000
++endif
++
++PROGNAME = vsc7385_load
++
++MAINSRC = vsc7385_load
++
++ifdef TOPDIR
++include $(TOPDIR)/config.mk
++endif
++
++
++SREC	= $(MAINSRC).srec
++BIN	= $(MAINSRC).bin $(MAINSRC)
++
++ifeq ($(BIG_ENDIAN),y)
++EX_LDFLAGS += -EB
++endif
++
++
++SUBSRCS	=
++
++OBJS	= $(SREC:.srec=.o) $(SUBSRCS:=.o)
++
++LIB	= ../libstubs.a
++LIBAOBJS=
++ifeq ($(ARCH),ppc)
++LIBAOBJS+= ../$(ARCH)_longjmp.o ../$(ARCH)_setjmp.o
++endif
++LIBCOBJS= ../stubs.o
++LIBOBJS	= $(LIBAOBJS) $(LIBCOBJS)
++
++ifdef TOPDIR
++gcclibdir := $(shell dirname `$(CC) -print-libgcc-file-name`)
++clibdir := $(shell dirname `$(CC) $(CFLAGS) -print-file-name=libc.a`)
++endif
++
++CPPFLAGS += -I.
++
++all: .depend $(SREC) $(BIN) $(SUBSRCS:=.o)
++
++#########################################################################
++$(LIB): .depend $(LIBOBJS)
++	$(AR) crv $@ $(LIBOBJS)
++
++$(LIBOBJS):
++
++$(PROGNAME):	$(PROGNAME).o $(SUBSRCS:=.o) $(LIB)
++	$(LD) -g $(EX_LDFLAGS) -Ttext $(LOAD_ADDR) \
++		-o $(PROGNAME) -e main $< $(SUBSRCS:=.o) $(LIB) \
++		-Map $(PROGNAME).map -L$(gcclibdir) -lgcc
++
++$(PROGNAME).srec:	$(PROGNAME)
++	$(OBJCOPY) -O srec $< $@ 2>/dev/null
++
++$(PROGNAME).bin:	$(PROGNAME)
++	$(OBJCOPY) -O binary $(PROGNAME) $(PROGNAME).bin 2>/dev/null
++
++#########################################################################
++
++.depend:	Makefile $(OBJS:.o=.c) #$(LIBCOBJS:.o=.c) $(LIBAOBJS:.o=.S)
++#		$(CC) -M $(CFLAGS) $(OBJS:.o=.c) $(LIBCOBJS:.o=.c) $(LIBAOBJS:.o=.S) > $@
++		$(CC) -M $(CFLAGS) $(OBJS:.o=.c) > $@
++
++ifdef TOPDIR
++sinclude .depend
++endif
++
++#########################################################################
++
++clean:
++	rm -f $(PROGNAME) *.bin *.srec *.map .depend *.o
+diff --git a/examples/vsc7385_load/Readme.txt b/examples/vsc7385_load/Readme.txt
+new file mode 100644
+index 0000000..14e7821
+--- /dev/null
++++ b/examples/vsc7385_load/Readme.txt
+@@ -0,0 +1,15 @@
++This directory contains a U-Boot application that loads firmware required by
++the Vitesse VSC7385 Gigabit Switch device on the MPC8349E-mITXE or the
++MPC8313ERDB.  The firmware loader application loads a binary image stored
++within the Flash ROM on the hardware platform.  The binary image is loaded
++to the VSC7385 device that contains a standalone processor that runs the
++software (within the binary image) independently of the main processor
++subsystem and software within the MPC83xx.  Once loaded and started the VSC7385
++has no interaction with U-Boot or the Linux kernel.
++
++The firmware loader, U-Boot application, is built using the U-Boot example
++applications as a template.  The loader application build process is controlled
++using the example/Makefile by modifying this Makefile to add the loader
++application.  An additional makefile is contained within this directory that
++contains the firmware loader application complete build instructions.
++
+diff --git a/examples/vsc7385_load/vsc7385_load.c b/examples/vsc7385_load/vsc7385_load.c
+new file mode 100644
+index 0000000..24982e4
+--- /dev/null
++++ b/examples/vsc7385_load/vsc7385_load.c
+@@ -0,0 +1,117 @@
++/*
++ *
++ * Copyright (C) 2006-2008 Freescale Semiconductor, Inc. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ *
++ * Description: Firmware loader for the  Vitesse VSC7385 Gigabit Ethernet Switch
++ *
++ * Changelog:
++ * 20070124	Joe.D'Abbraccio@freescale.com
++ *			Added support for both MPC8349E-mITX and the MPC8313ERDB
++ * 20061006	Joe.D'Abbraccio@freescale.com
++ *			Initial version.
++ *
++ */
++
++#include <common.h>
++#include <exports.h>
++#include <config.h>
++
++#if CONFIG_MPC8349ITX || CONFIG_MPC8313ERDB
++
++#if CONFIG_MPC8349ITX
++const unsigned char * VSC7385_image = 0xFEFFE000;
++#elif CONFIG_MPC8313ERDB
++const unsigned char * VSC7385_image = 0xFE7FE000;
++#endif
++
++unsigned long image_size = (8 * 1024);
++
++
++int main(int argc, char *argv[])
++{
++	unsigned long *RESET = (unsigned long *)(CFG_VSC7385_BASE + 0x1c050);
++	unsigned long *CTRL = (unsigned long *)(CFG_VSC7385_BASE + 0x1c040);
++	unsigned long *ADDR = (unsigned long *)(CFG_VSC7385_BASE + 0x1c044);
++	unsigned long *DATA = (unsigned long *)(CFG_VSC7385_BASE + 0x1c048);
++	unsigned long *CHIPID = (unsigned long *)(CFG_VSC7385_BASE + 0x1c060);
++	unsigned long *MAP = (unsigned long *)(CFG_VSC7385_BASE + 0x1c070);
++	unsigned long size, i, value;
++	unsigned char load_succeeded;
++
++	size = image_size;
++	*RESET = 3;
++	udelay(200);
++
++	printf("VSC7385 Version = 0x%08lx\n", *CHIPID);
++	udelay(20);
++
++	value = (
++			(1<<7) |
++			(1<<3) |
++			(1<<2) |
++			(1<<1) |
++			(0<<0)
++			);
++	*CTRL = value;
++	udelay(20);
++
++	*MAP = 1;
++	udelay(20);
++
++	*ADDR = 0x0;
++	udelay(20);
++
++	for (i=0; i<size; i++){
++		*DATA=VSC7385_image[i];
++		udelay(20);
++	}
++	load_succeeded = 1;
++
++	/* Read back to compare */
++	*ADDR = 0x0;
++
++	for (i=0; i<size; i++){
++		udelay(20);
++		value = *DATA;
++		if (value != VSC7385_image[i]) {
++			printf("Error loading VSC7385 IRAM: ADDR: 0x%x, read value 0x%x mismatch image 0x%x\n",
++				   i, value, VSC7385_image[i]);
++			load_succeeded = 0;
++			if (getc() == 'q') {
++				break;
++			}
++		}
++	}
++	if (load_succeeded == 1) {
++		printf("Value in IRAM matches binary, total bytes 0x%x loaded\n", size);
++	}
++
++	value = (
++			(0<<7) |
++			(1<<3) |
++			(0<<2) |
++			(1<<1) |
++			(1<<0)
++			);
++	*CTRL = value;
++
++	return(0);
++}
++
++#endif
+-- 
+1.5.5.1.248.g4b17
+
