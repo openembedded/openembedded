@@ -52,7 +52,6 @@ RDEPENDS = "\
     xcalibrate \
     xinit \
     xsp \
-    xterm \
 "
 
 RDEPENDS_append_nokia770 = " \
