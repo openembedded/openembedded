@@ -21,6 +21,7 @@ SRC_URI_neuros-osd2 += "file://Makefile-fix.patch;patch=1"
 SRC_URI_append_akita = "file://pdaXrom-u-boot.patch;patch=1 \
                         file://uboot-eabi-fix-HACK2.patch;patch=1 \
                         file://akita-standard-partitioning.patch;patch=1 \
+                       "
 SRC_URI_append_spitz = "file://pdaXrom-u-boot.patch;patch=1 \
                         file://uboot-eabi-fix-HACK2.patch;patch=1 \
                         file://spitz-standard-partitioning.patch;patch=1 \
