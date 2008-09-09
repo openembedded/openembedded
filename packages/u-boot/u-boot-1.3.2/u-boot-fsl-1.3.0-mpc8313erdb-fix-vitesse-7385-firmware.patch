@@ -1,0 +1,45 @@
+From a91275155f2250040bb21e4a1bb7f44c5092f6a2 Mon Sep 17 00:00:00 2001
+From: Li Yang <leoli@freescale.com>
+Date: Wed, 28 May 2008 11:18:55 +0800
+Subject: [PATCH] Fix Vitesse 7385 firmware loading problem
+
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ include/configs/MPC8313ERDB.h |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/include/configs/MPC8313ERDB.h b/include/configs/MPC8313ERDB.h
+index 6568fe1..4e034ea 100644
+--- a/include/configs/MPC8313ERDB.h
++++ b/include/configs/MPC8313ERDB.h
+@@ -184,7 +184,7 @@
+ /*
+  * Local Bus LCRR and LBCR regs
+  */
+-#define CFG_LCRR	LCRR_EADC_1 | LCRR_CLKDIV_2	/* 0x00010002 */
++#define CFG_LCRR	LCRR_EADC_1 | LCRR_CLKDIV_4	/* 0x00010004 */
+ #define CFG_LBC_LBCR	( 0x00040000 /* TODO */ \
+ 			| (0xFF << LBCR_BMT_SHIFT) \
+ 			| 0xF )	/* 0x0004ff0f */
+@@ -467,12 +467,13 @@
+ #define CFG_IBAT5L	(CFG_IMMR | BATL_PP_10 | BATL_CACHEINHIBIT | BATL_GUARDEDSTORAGE)
+ #define CFG_IBAT5U	(CFG_IMMR | BATU_BL_256M | BATU_VS | BATU_VP)
+ 
+-/* SDRAM @ 0xF0000000, stack in DCACHE 0xFDF00000 & FLASH @ 0xFE000000 */
+-#define CFG_IBAT6L	(0xF0000000 | BATL_PP_10)
+-#define CFG_IBAT6U	(0xF0000000 | BATU_BL_256M | BATU_VS | BATU_VP)
++/* stack in DCACHE 0xFDF00000 & FLASH @ 0xFE000000 */
++#define CFG_IBAT6L	(0xF8000000 | BATL_PP_10)
++#define CFG_IBAT6U	(0xF8000000 | BATU_BL_128M | BATU_VS | BATU_VP)
+ 
+-#define CFG_IBAT7L	(0)
+-#define CFG_IBAT7U	(0)
++/* Vitesse 7385 switch @ 0xF0000000 */
++#define CFG_IBAT7L	(0xF0000000 | BATL_PP_10 | BATL_CACHEINHIBIT | BATL_GUARDEDSTORAGE)
++#define CFG_IBAT7U	(0xF0000000 | BATU_BL_128M | BATU_VS | BATU_VP)
+ 
+ #define CFG_DBAT0L	CFG_IBAT0L
+ #define CFG_DBAT0U	CFG_IBAT0U
+-- 
+1.5.5.1.248.g4b17
+

@@ -1,0 +1,31 @@
+From 5c7efa5e60ec09810c5e2cdbb99872769116eb56 Mon Sep 17 00:00:00 2001
+From: Li Yang <leoli@freescale.com>
+Date: Fri, 6 Jun 2008 11:44:32 +0800
+Subject: [PATCH] performance tuning for TSEC ports
+
+Increase transaction priority and TSEC clock.
+
+Signed-off-by: Li Yang <leoli@freescale.com>
+---
+ include/configs/MPC8313ERDB.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/include/configs/MPC8313ERDB.h b/include/configs/MPC8313ERDB.h
+index 0f6db5b..710d3e8 100644
+--- a/include/configs/MPC8313ERDB.h
++++ b/include/configs/MPC8313ERDB.h
+@@ -65,8 +65,11 @@
+ /*#define CFG_8313ERDB_BROKEN_PMC 1	*/
+ #undef CFG_8313ERDB_BROKEN_PMC
+ 
++/* Performance tuning */
+ #define CFG_ACR_PIPE_DEP	3	/* Arbiter pipeline depth (0-3) */
+ #define CFG_ACR_RPTCNT		3	/* Arbiter repeat count (0-7) */
++#define CFG_SPCR_TSECEP		3	/* eTSEC emergency priority (0-3) */
++#define CFG_SCCR_TSEC1CM	1	/* TSEC1/2 clock mode (0-3) */
+ 
+ /*
+  * DDR Setup
+-- 
+1.5.5.1.248.g4b17
+
