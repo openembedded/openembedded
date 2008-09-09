@@ -2,8 +2,10 @@ require intltool.inc
 
 PR = "r2"
 
+EXTRA_OEMAKE = "'PERL_TARGET=/usr/bin/perl'"
+
 do_configure_prepend() {
-	sed -i -e s:\\\$\(PERL\):/usr/bin/perl:g Makefile.am
+	sed -i -e s:\\\$\(PERL\):\$\(PERL_TARGET\):g Makefile.am
 }	
 
 do_configure_append() {
