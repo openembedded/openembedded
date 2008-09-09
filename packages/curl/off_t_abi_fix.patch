@@ -1,0 +1,17 @@
+--- configure.ac~	2008-09-07 16:53:11.000000000 +0100
++++ configure.ac	2008-09-09 08:49:29.000000000 +0100
+@@ -1998,6 +1998,14 @@
+ CURL_CHECK_STRUCT_TIMEVAL
+ CURL_VERIFY_RUNTIMELIBS
+ 
++if test x"$ac_cv_sys_file_offset_bits" == "x64"; then
++  if test "${ac_cv_sizeof_large_off_t+set}" = set; then
++    ac_cv_sizeof_off_t=$ac_cv_sizeof_large_off_t
++  else
++    unset ac_cv_sizeof_off_t
++  fi
++fi
++
+ AC_CHECK_SIZEOF(size_t)
+ AC_CHECK_SIZEOF(int)
+ AC_CHECK_SIZEOF(long)
