@@ -1,5 +1,7 @@
 inherit base
 
+FILES_${PN}-dev += "${bindir}/*-config"
+
 # The namespaces can clash here hence the two step replace
 def get_binconfig_mangle(d):
 	import bb.data
@@ -39,7 +41,7 @@ do_install_append() {
         done
     fi	
 
-	for lafile in `find ${D} -name *.la` ; do
+	for lafile in `find ${D} -name "*.la"` ; do
 		sed -i \
 		    -e 's:${STAGING_LIBDIR}:${libdir}:g;' \
 		    -e 's:${STAGING_INCDIR}:${includedir}:g;' \
