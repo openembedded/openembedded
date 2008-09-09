@@ -18,6 +18,13 @@ do_stage() {
     autotools_stage_all
 }
 
+# gammu has a non-standard uninstalled .pc file, which confuses pkgconfig.bbclass.
+# Replace it by custom do_stage_append():
+do_stage_append () {
+	install -d ${PKG_CONFIG_DIR}
+	cat build-configure/cfg/gammu.pc > ${PKG_CONFIG_DIR}/gammu.pc
+}
+
 PACKAGES =+ "libgammu"
 
 FILES_${PN} = "${bindir}/gammu ${bindir}/jadmaker"
