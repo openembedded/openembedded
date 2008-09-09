@@ -1,0 +1,32 @@
+--- /tmp/sys_linux.c	2008-09-09 11:50:06.000000000 +0200
++++ trunk/src/linux/sys_linux.c	2008-09-09 11:48:06.113198000 +0200
+@@ -225,6 +225,8 @@
+ 	const char *gamename = "gameppc.so";
+ #elif defined __sparc__
+ 	const char *gamename = "gamesparc.so";
++#elif defined __arm__
++        const char *gamename = "gamearm.so";
+ #else
+ #error Unknown arch
+ #endif
+--- /tmp/Makefile	2008-09-09 11:52:05.000000000 +0200
++++ trunk/Makefile	2008-09-09 11:53:26.543198000 +0200
+@@ -60,18 +60,6 @@
+ # this nice line comes from the linux kernel makefile
+ ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc/ -e s/sparc64/sparc/ -e s/arm.*/arm/ -e s/sa110/arm/ -e s/alpha/axp/)
+ 
+-ifneq ($(ARCH),x86_64)
+-ifneq ($(ARCH),i386)
+-ifneq ($(ARCH),axp)
+-ifneq ($(ARCH),ppc)
+-ifneq ($(ARCH),sparc)
+-$(error arch $(ARCH) is currently not supported)
+-endif
+-endif
+-endif
+-endif
+-endif
+-
+ CC=gcc
+ 
+ ifndef OPT_CFLAGS
