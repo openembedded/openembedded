@@ -215,7 +215,6 @@ SLUGOS_PACKAGES = "\
 	streamripper \
 	stunnel \
 	sudo \
-	swat \
 	sysfsutils \
 	syslog-ng \
 	tar \
