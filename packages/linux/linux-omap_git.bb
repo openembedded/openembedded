@@ -22,7 +22,8 @@ SRC_URI_append = " file://no-harry-potter.diff;patch=1 \
            file://4bitmmc.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
            file://read_die_ids.patch;patch=1 \
-           "
+           file://fix-install.patch;patch=1 \
+"
 
 temporarely-disabled = " \
            file://01-fix-timing-print.diff;patch=1 \
