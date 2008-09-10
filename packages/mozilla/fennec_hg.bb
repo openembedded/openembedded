@@ -1,9 +1,9 @@
 DEPENDS += "cairo alsa-lib "
 
 PV = "0.7"
-PR = "r2"
+PR = "r4"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7352ef83055a \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=087dfa16ea19 \
            hg://hg.mozilla.org/;module=mobile-browser;rev=767c0315369c \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
