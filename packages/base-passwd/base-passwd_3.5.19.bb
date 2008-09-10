@@ -2,8 +2,6 @@ DESCRIPTION = "Base system password/group files."
 SECTION = "base"
 LICENSE = "GPL"
 
-DEFAULT_PREFERENCE = "-1"
-
 SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
 	   file://nobash.patch;patch=1 \
 	   file://root-home.patch;patch=1 \
