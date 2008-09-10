@@ -1,7 +1,7 @@
 DESCRIPTION = "MokoGateway: Tasks for a companion server for the Openmoko Linux Distribution"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "r4"
+PR = "r5"
 
 inherit task
 
@@ -73,9 +73,16 @@ RRECOMMENDS_task-mokogateway-wifi = "\
 
 DESCRIPTION_task-mokogateway-debug = "MokoGateway: Debug"
 RDEPENDS_task-mokogateway-debug = "\
-	dfu-util \
-	openocd \
 "
+# The following packages are broken -- victims of libusb confusion.
+# These packages depend upon libusb, which provides libusb.a -- however
+# everything else depends upon libusb-compat, which also provides libusb.a
+# (this includes bluez-*, usbutils-*, hal-*, libhal-*, etc).  The wrong
+# libusb.a is staged for at least somebody.  The hacky solution right now
+# is to not build these two utils, as they are the only ones in common use
+# that DEPEND upon libusb.  This needs to be fixed in a better way, but this
+# will, at least, get the feeds working again.
+#	dfu-util \
+#	openocd \
 RRECOMMENDS_task-mokogateway-debug = "\
 "
-
