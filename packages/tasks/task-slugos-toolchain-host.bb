@@ -1,5 +1,5 @@
 require task-sdk-host.bb
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "Packages for a standalone SlugOS external toolchain"
 ALLOW_EMPTY = "1"
 

@@ -138,6 +138,7 @@ do_populate_sdk() {
 	script=${SDK_OUTPUT}/${prefix}/environment-setup
 	touch $script
 	echo 'export PATH=${prefix}/bin:$PATH' >> $script
+	echo 'export LIBTOOL_SYSROOT_PATH=${prefix}/${TARGET_SYS}' >> $script
 	echo 'export PKG_CONFIG_SYSROOT_DIR=${prefix}/${TARGET_SYS}' >> $script
 	echo 'export PKG_CONFIG_PATH=${prefix}/${TARGET_SYS}${layout_libdir}/pkgconfig' >> $script
 	echo 'export CONFIG_SITE=${prefix}/site-config' >> $script
