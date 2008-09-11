@@ -4,12 +4,14 @@ HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
           file://topf2ps.patch;patch=1"
 
 S = "${WORKDIR}/${PN}-${PV}"
+
+PARALLEL_MAKE = ""
 
 inherit autotools pkgconfig
 
