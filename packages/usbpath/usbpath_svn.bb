@@ -2,7 +2,7 @@ DESCRIPTION = "Convert the physical locations of a USB device to/from its number
 AUTHOR = "Werner Almesberger <werner@openmoko.org>"
 SECTION = "console/utils"
 LICENSE = "GPL"
-DEPENDS = "libusb-compat"
+DEPENDS = "libusb"
 
 PV = "0.0+svnr${SRCREV}"
 
