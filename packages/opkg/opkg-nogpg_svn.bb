@@ -3,6 +3,9 @@ require opkg_svn.bb
 DEPENDS = "curl"
 PROVIDES += "opkg"
 
+SRC_URI += "file://reduce-nogpg-noise.patch;patch=1"
+PR = "r1"
+
 SRCREV = "${SRCREV_pn-opkg}"
 
 EXTRA_OECONF += "--disable-gpg"
