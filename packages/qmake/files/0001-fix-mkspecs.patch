@@ -51,7 +51,7 @@
  
 --- /tmp/linux.conf	2008-07-08 10:32:18.000000000 +0200
 +++ qt-embedded-linux-opensource-src-4.4.0/mkspecs/common/linux.conf	2008-07-08 10:38:37.000000000 +0200
-@@ -7,26 +7,27 @@
+@@ -7,26 +7,28 @@
  
  QMAKE_INCDIR          =
  QMAKE_LIBDIR          =
@@ -84,6 +84,7 @@
 -QMAKE_UIC             = $$[QT_INSTALL_BINS]/uic
 +QMAKE_MOC             = $(OE_QMAKE_MOC)
 +QMAKE_UIC             = $(OE_QMAKE_UIC)
++QMAKE_RCC             = $(OE_QMAKE_RCC)
  
 -QMAKE_AR              = ar cqs
 +QMAKE_AR              = $(OE_QMAKE_AR) cqs

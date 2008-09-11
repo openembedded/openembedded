@@ -51,7 +51,8 @@ do_configure() {
     export OE_QMAKE_UIC="${STAGING_BINDIR_NATIVE}/uic4"
     export OE_QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc4"
     export QMAKE_MOC="${STAGING_BINDIR_NATIVE}/moc4"
-    export OE_QMAKE_RCC="non-existant"
+    export OE_QMAKE_RCC="${STAGING_BINDIR_NATIVE}/rcc4"
+    export QMAKE_RCC="${STAGING_BINDIR_NATIVE}/rcc4"
     export OE_QMAKE_QMAKE="${STAGING_BINDIR_NATIVE}/qmake"
     export OE_QMAKE_RPATH="-Wl,-rpath-link,"
     echo yes | ./configure -prefix ${STAGING_DIR_TARGET}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
@@ -69,4 +70,3 @@ do_stage() {
     install -d ${CROSS_DATADIR}/qt4
     cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
 }
-
