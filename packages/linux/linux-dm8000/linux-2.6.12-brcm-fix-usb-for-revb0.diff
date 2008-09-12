@@ -1,0 +1,11 @@
+--- stblinux-2.6.12/include/asm-mips/brcmstb/brcm97400b0/bcmintrnum.h	2008-07-25 13:55:08.000000000 +0200
++++ stblinux-2.6.12/include/asm-mips/brcmstb/brcm97400b0/bcmintrnum.h	2008-09-11 18:00:03.000000000 +0200
+@@ -106,7 +106,7 @@
+ 
+ #define BCM_LINUX_EXPANSION_SLOT (BCM_LINUX_EXT_PCI_IRQ)
+ 
+-#if 1
++#if 0
+ // IRQ lines for EHCI-1 and OHCI-0 are swapped on the 7400A0 chip.
+ #define BCM_LINUX_USB_EHCI_CPU_INTR (1+32+BCHP_HIF_CPU_INTR1_INTR_W1_STATUS_USB_EHCI_CPU_INTR_SHIFT)
+ #define BCM_LINUX_USB_EHCI_1_CPU_INTR (1+32+BCHP_HIF_CPU_INTR1_INTR_W1_STATUS_USB_OHCI_0_CPU_INTR_SHIFT)

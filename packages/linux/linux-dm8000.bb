@@ -3,7 +3,7 @@ LICENSE = "GPL"
 PN = "linux-dm8000"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r3"
+PR = "r4"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -20,6 +20,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linux-2.6.12-dm8000-nand.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-mtd-blkdevfs-fix.diff;patch=1;pnum=1 \
+	file://linux-2.6.12-brcm-fix-usb-for-revb0.diff;patch=1;pnum=1 \
 	file://linux-2.6.12-set-custom-extraversion.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-prom-args.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-7400AB-enable-llsc.patch;patch=1;pnum=1 \
