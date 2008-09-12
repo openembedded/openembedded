@@ -16,9 +16,8 @@ RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
-DEPENDS += "enigma2-plugins"
-
-PACKAGES_DYNAMIC = "enigma2-plugin-*"
+#DEPENDS += "enigma2-plugins"
+#PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
 DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
@@ -34,7 +33,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20080713"
+SRCDATE = "20080912"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -55,8 +54,6 @@ SRC_URI = "cvs://anonymous@dreamboxupdate.com/cvs;module=enigma2;method=pserver$
            file://enigma2.sh"
 
 SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1"
-
-SRC_URI_append_dm8000 = " file://revert_tuner_config.patch;patch=0;pnum=0"
 
 S = "${WORKDIR}/enigma2"
 

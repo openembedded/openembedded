@@ -1,7 +1,9 @@
 DESCRIPTION = "Additional plugins for Enigma2"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
-SRCDATE = "20080712"
+SRCDATE = "20080912"
+
+PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -26,6 +28,7 @@ inherit autotools
 S = "${WORKDIR}/enigma2-plugins"
 
 DEPENDS = "${@get_version_depends(bb, d)}"
+DEPENDS += "enigma2"
 
 def get_version_depends(bb, d):
 	if bb.data.getVar('REL_MINOR', d, 1) > '4':
