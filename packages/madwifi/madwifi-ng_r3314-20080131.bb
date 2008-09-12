@@ -7,13 +7,15 @@ INHIBIT_PACKAGE_STRIP = "1"
 require madwifi-ng_r.inc
 
 # PR set after the include, to override what's set in the included file.
-PR = "r7"
+PR = "r8"
 
-SRC_URI += "http://sources.dreamboxupdate.com/download/snapshots/openwrt_madwifi_patches_20080811.tar.bz2 \
-	file://40-fix-warnings.patch;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/snapshots/450-new_madwifi_mipsel_hal.patch.bz2;patch=1"
+SRC_URI += "http://sources.dreamboxupdate.com/download/snapshots/openwrt_madwifi_patches_20080829.tar.bz2 \
+	http://sources.dreamboxupdate.com/download/snapshots/ath_hal-20080815.tgz \
+	file://40-fix-warnings.patch;patch=1;pnum=1"
 
 do_munge() {
+	rm -rf ${S}/hal || /bin/true
+	mv ${WORKDIR}/ath_hal-20080815 ${S}/hal
 	CUR=`pwd`
 	cd ${S}
 	for i in `ls ${WORKDIR}/openwrt_madwifi_patches | grep ".patch" | sort -n | xargs`; do
@@ -23,6 +25,6 @@ do_munge() {
 	cd $CUR
 }
 
-addtask munge before do_patch after do_unpack
+addtask munge before do_compile after do_patch
 
 
