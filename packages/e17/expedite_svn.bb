@@ -3,9 +3,9 @@ DEPENDS = "eet evas"
 RDEPENDS = "libevas-engine-buffer libevas-engine-fb libevas-engine-software-generic libevas-engine-software-x11 libevas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r0"
 
-inherit autotools
+inherit e
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \
@@ -23,9 +23,5 @@ EXTRA_OECONF = "\
   --disable-direct3d \
   --disable-software-sdl \
 "
-
-do_configure_append() {
-        find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
-}
 
 FILES_${PN} += "${datadir}"

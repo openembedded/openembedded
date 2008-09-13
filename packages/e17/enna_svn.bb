@@ -11,6 +11,4 @@ inherit e
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/MISC;module=enna;proto=http"
 S = "${WORKDIR}/enna"
 
-do_configure_prepend() {
-    autopoint
-}
+FILES_${PN}-dbg += "${libdir}/${PN}/modules/.debug"
