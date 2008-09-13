@@ -13,8 +13,10 @@ EXTRA_QMAKEVARS_PRE += "LIBOBEXFTP_INC_DIR=${STAGING_INCDIR}/obexftp"
 
 inherit opie
 
-# Files: plugins/application/libbluetooth-manager.so* bin/bluetooth-manager apps/Settings/bluetooth-manager.desktop pics/opietooth/*
+# Files: plugins/application/libbluetooth-manager.so* bin/bluetooth-manager apps/Settings/bluetooth-manager.desktop pics/opietooth/* pics/opietooth/icons/*
 do_install() {
         install -d ${D}${palmtopdir}/pics/opietooth/
+        install -d ${D}${palmtopdir}/pics/opietooth/icons/
         install -m 0644 ${WORKDIR}/pics/opietooth/*.png ${D}${palmtopdir}/pics/opietooth/
+        install -m 0644 ${WORKDIR}/pics/opietooth/icons/*.png ${D}${palmtopdir}/pics/opietooth/icons/
 }
