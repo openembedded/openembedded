@@ -1,0 +1,13 @@
+Index: recode-3.6/src/recodext.h
+===================================================================
+--- recode-3.6.orig/src/recodext.h	2008-09-12 19:26:53.000000000 -0700
++++ recode-3.6/src/recodext.h	2008-09-12 19:27:15.000000000 -0700
+@@ -218,7 +218,7 @@
+     enum recode_symbol_type type : 3;
+ 
+     /* Non zero if this one should be ignored.  */
+-    bool ignore : 2;
++    bool ignore : 1;
+   };
+ 
+ struct recode_surface_list

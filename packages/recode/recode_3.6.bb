@@ -2,7 +2,12 @@ DESCRIPTION = "Charset converting utility"
 SECTION = "console/utils"
 LICENSE = "GPL"
 
+PR = "r1"
 SRC_URI = "${GNU_MIRROR}/recode/recode-${PV}.tar.gz"
+FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/recode-${PV}', '${FILE_DIRNAME}' ], d)}"
+
+SRC_URI += "file://recode-bitfield-width.patch;patch=1 \
+            "
 
 inherit autotools
 
