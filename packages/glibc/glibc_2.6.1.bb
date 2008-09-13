@@ -1,5 +1,5 @@
 require glibc.inc
-PR = "r11"
+PR = "r12"
 
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
@@ -55,6 +55,8 @@ SRC_URI = "\
   file://generate-supported.mk \
   file://glibc-2.6.1-RTLD_SINGLE_THREAD_P-1.patch;patch=1 \
   file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
+  file://glibc-use-isystem-include-fixed.patch;patch=1 \
+  file://glibc-arm-no-asm-page.patch;patch=1 \
 "
 
 # Build fails on sh3 and sh4 without additional patches
