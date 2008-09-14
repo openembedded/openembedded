@@ -6,10 +6,10 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
-SRCREV = "74fcfe9c589f1060b5e5a791e9c0c54212d7c1b8"
+SRCREV = "de1121fdb899f762"
 
 PV = "2.6.26+2.6.27-rc6+${PR}+git${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -24,7 +24,6 @@ SRC_URI_append = " \
            file://musb-dma-iso-in.eml;patch=1 \
            file://musb-support-high-bandwidth.patch.eml;patch=1 \
            file://musb-mru-otgfix.diff;patch=1 \
-           file://16bpp.patch;patch=1 \
 	   file://01-fix-timing-print.diff;patch=1 \
            file://03-enable-overlay-opt.diff;patch=1 \
            file://05-fix-display-panning.diff;patch=1 \
@@ -54,7 +53,6 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
                              "
 
 SRC_URI_append_omap3evm = " \
-           file://touchscreen.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
