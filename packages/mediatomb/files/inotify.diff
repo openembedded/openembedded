@@ -1,0 +1,45 @@
+--- /tmp/configure.ac	2008-09-14 20:31:20.000000000 +0200
++++ mediatomb-0.11.0/configure.ac	2008-09-14 20:32:23.043198000 +0200
+@@ -2888,41 +2888,7 @@
+     fi
+ fi
+ 
+-if test "x$INOTIFY_EN" != xno; then
+-dnl The check below was inspired by configure.ac from the inotify tools
+-dnl package, see the "Acknowledgements" section in our README file for more 
+-dnl information.
+-    CXXFLAGS="$CXXFLAGS $INOTIFY_CXXFLAGS"
+-    AC_MSG_CHECKING([whether sys/inotify.h works])
+-    AC_RUN_IFELSE(
+-        AC_LANG_PROGRAM([[#include <sys/inotify.h>]],
+-                         [[return (-1 == inotify_init());]]
+-                       ),
+-                [
+-                    AC_MSG_RESULT([yes]); 
+-                    AC_DEFINE([SYS_INOTIFY_H_OK],[1],[sys/inotify.h exists and works on this system])],
+-                [
+-                    AC_MSG_RESULT([no, using own inotify headers])
+-                    AC_MSG_CHECKING([whether inotify-nosys.h works on this system])
+-                    AC_RUN_IFELSE(
+-                        AC_LANG_PROGRAM([[#include "src/inotify-nosys.h"]],
+-                         [[return (-1 == inotify_init());]]
+-                        ),
+-                        [
+-                            AC_MSG_RESULT([yes]);
+-                            INOTIFY_OK=yes
+-                        ],
+-                        [
+-                            if test "x$INOTIFY_EN" != xyes; then
+-                                AC_MSG_RESULT([no, disabling inotify support])
+-                            else
+-                                AC_MSG_RESULT([no])
+-                            fi
+-                            INOTIFY_OK=missing
+-                        ])
+-
+-                ])
+-fi
++INOTIFY_OK=yes
+ 
+ if test "x$INOTIFY_OK" = xyes; then
+     AC_DEFINE([HAVE_INOTIFY], [1], [inotify presence])
