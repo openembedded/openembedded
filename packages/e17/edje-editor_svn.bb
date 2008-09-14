@@ -1,12 +1,12 @@
 DESCRIPTION = "Edje-Editor is just that."
+SECTION = "x11/devel"
 LICENSE = "MIT BSD"
 DEPENDS = "etk"
+SRCNAME = "edje_editor"
+
 PV = "0.0.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit e
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=edje_editor;proto=http"
-S = "${WORKDIR}/edje_editor"
-
-FILES_${PN} = "${bindir}/* ${libdir}/* ${datadir} ${sysconfdir} ${sbindir}"
+FILES_${PN} += "${datadir}"
