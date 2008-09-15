@@ -2,6 +2,7 @@ IMAGE_LINGUAS = ""
 
 DEPENDS = "task-boot task-opie-16mb"
 
+ANGSTROM_EXTRA_INSTALL ?= ""
 IMAGE_INSTALL = "task-boot \
                     ipkg ipkg-collateral \
                     dropbear \
@@ -11,7 +12,8 @@ IMAGE_INSTALL = "task-boot \
                     task-opie-16mb-settings \
                     task-opie-16mb-apps \
                     task-opie-16mb-pim \
-		    task-opie-irda"
+		    task-opie-irda \
+                    ${ANGSTROM_EXTRA_INSTALL} "
 
 # create /etc/timestamp from build date
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
