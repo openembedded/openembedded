@@ -1,5 +1,7 @@
 HOMEPAGE = "http://www.enlightenment.org"
 SECTION = "e/apps"
+SRCNAME ?= "${PN}"
+
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
 
@@ -9,6 +11,10 @@ do_prepsources () {
   make clean distclean || true
 }
 addtask prepsources after do_fetch before do_unpack
+
+do_configure_append() {
+        find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
+}
 
 export CURL_CONFIG = "${STAGING_BINDIR_CROSS}/curl-config"
 export FREETYPE_CONFIG = "${STAGING_BINDIR_CROSS}/freetype-config"

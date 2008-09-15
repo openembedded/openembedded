@@ -43,6 +43,7 @@ SRCREV_pn-elf2flt ?= "1786"
 SRCREV_pn-epiphany ?= "7837"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-frameworkd ?= "248637c1264624aa08de40c2bbea96c418e0702e"
+SRCREV_pn-fso-gpsd ?= "a79873ad595d7b524727daf06810a130fe002277"
 SRCREV_pn-fso-sounds ?= "b24d3c2e66fee10a5e288101cd1b6f5bbd3da7e2"
 SRCREV_pn-fstests ?= "204"
 SRCREV_pn-gconf-dbus ?= "641"
@@ -156,7 +157,6 @@ SRCREV_pn-packagekit ?= "813fa8cfb139246cf180d52895b52b28616ae2f5"
 SRCREV_pn-portaudio-v19 ?= "1387"
 SRCREV_pn-psplash ?= "249"
 SRCREV_pn-pty-forward-native ?= "4214"
-SRCREV_pn-python-etk ?= "8b51535150cbc88467e3d8b578e54df27eac643"
 SRCREV_pn-pygsm ?= "976477f6b403f422b4ea730f71ebf409f6671141"
 SRCREV_pn-pylgrim ?= "20"
 SRCREV_pn-pyneod ?= "41de4d538b50b27ab2a2f5aae1a180b880a05b6a"
@@ -191,7 +191,7 @@ SRCREV_pn-zhone ?= "be3d72c6e5f5c0733df7064a616f8e39c1c12f2b"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "35727"
+EFL_SRCREV ?= "35984"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
@@ -249,7 +249,3 @@ SRCREV_pn-e-wm ?= "${EFL_SRCREV}"
 SRCREV_pn-enna ?= "${EFL_SRCREV}"
 SRCREV_pn-exquisite ?= "${EFL_SRCREV}"
 SRCREV_pn-rage ?= "${EFL_SRCREV}"
-
-# Illume module
-# Use EFL_SRCREV again when E does not segfault
-SRCREV_pn-illume ?= "35866"
