@@ -1,0 +1,66 @@
+
+# HG changeset patch
+# User Christian Thalinger <twisti@complang.tuwien.ac.at>
+# Date 1221467463 -7200
+# Node ID a67fe1cb2b81b7cbfc9d824f17b440e50c7697ef
+# Parent d88bf99453b644bd2cc5c0dc5f8038f3151d897a
+* src/vm/jit/arm/codegen.c (codegen_emit) [__VFP_FP__]: Implemented
+I2F, I2D, F2I, and D2I correctly.
+
+--- a/src/vm/jit/arm/codegen.c	Mon Sep 15 10:17:30 2008 +0200
++++ b/src/vm/jit/arm/codegen.c	Mon Sep 15 10:31:03 2008 +0200
+@@ -1013,7 +1013,12 @@
+ 
+ 			s1 = emit_load_s1(jd, iptr, REG_ITMP1);
+ 			d = codegen_reg_of_dst(jd, iptr, REG_FTMP1);
++#if defined(__VFP_FP__)
++			M_FMSR(s1, d);
++			M_CVTIF(d, d);
++#else
+ 			M_CVTIF(s1, d);
++#endif
+ 			emit_store_dst(jd, iptr, d);
+ 			break;
+ 
+@@ -1021,7 +1026,12 @@
+ 
+ 			s1 = emit_load_s1(jd, iptr, REG_ITMP1);
+ 			d = codegen_reg_of_dst(jd, iptr, REG_FTMP1);
++#if defined(__VFP_FP__)
++			M_FMSR(s1, d);
++			M_CVTID(d, d);
++#else
+ 			M_CVTID(s1, d);
++#endif
+ 			emit_store_dst(jd, iptr, d);
+ 			break;
+ 
+@@ -1029,9 +1039,12 @@
+ 
+ 			s1 = emit_load_s1(jd, iptr, REG_FTMP1);
+ 			d = codegen_reg_of_dst(jd, iptr, REG_ITMP1);
++#if defined(__VFP_FP__)
++			M_CVTFI(s1, REG_FTMP2);
++			M_FMRS(REG_FTMP2, d);
++#else
+ 			/* this uses round towards zero, as Java likes it */
+ 			M_CVTFI(s1, d);
+-#if !defined(__VFP_FP__)
+ 			/* this checks for NaN; to return zero as Java likes it */
+ 			M_FCMP(s1, 0x8);
+ 			M_MOVVS_IMM(0, d);
+@@ -1043,9 +1056,12 @@
+ 
+ 			s1 = emit_load_s1(jd, iptr, REG_FTMP1);
+ 			d = codegen_reg_of_dst(jd, iptr, REG_ITMP1);
++#if defined(__VFP_FP__)
++			M_CVTDI(s1, REG_FTMP2);
++			M_FMRS(REG_FTMP2, d);
++#else
+ 			/* this uses round towards zero, as Java likes it */
+ 			M_CVTDI(s1, d);
+-#if !defined(__VFP_FP__)
+ 			/* this checks for NaN; to return zero as Java likes it */
+ 			M_DCMP(s1, 0x8);
+ 			M_MOVVS_IMM(0, d);
+
