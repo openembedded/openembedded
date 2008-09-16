@@ -249,3 +249,5 @@ SRCREV_pn-e-wm ?= "${EFL_SRCREV}"
 SRCREV_pn-enna ?= "${EFL_SRCREV}"
 SRCREV_pn-exquisite ?= "${EFL_SRCREV}"
 SRCREV_pn-rage ?= "${EFL_SRCREV}"
+
+SRCREV_pn-illume ?= "${EFL_SRCREV}"
