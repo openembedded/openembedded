@@ -1,17 +1,20 @@
 From: Mans Rullgard <mans@mansr.com>
-Date: Sat, 5 Jul 2008 20:31:56 +0000 (+0100)
-Subject: omapfb: fix video timings message
-X-Git-Tag: beagle-5~3
-X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=2929b75035ebe8702ba2ff2c81b654c487701f64
+Date: Fri, 29 Aug 2008 01:16:14 +0000 (+0100)
+Subject: OMAP: Fix video timings info message
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=3a8bdf0967ae2c4eb3cebb97118ef0392f709c1c
 
-omapfb: fix video timings message
+OMAP: Fix video timings info message
+
+This fixes the hsync frequency value printed on startup.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
 
 diff --git a/drivers/video/omap/omapfb_main.c b/drivers/video/omap/omapfb_main.c
-index 418ed9f..1166a01 100644
+index d176a2c..e7f3462 100644
 --- a/drivers/video/omap/omapfb_main.c
 +++ b/drivers/video/omap/omapfb_main.c
-@@ -1789,7 +1789,8 @@ static int omapfb_do_probe(struct platform_device *pdev,
+@@ -1792,7 +1792,8 @@ static int omapfb_do_probe(struct platform_device *pdev,
  			vram, fbdev->mem_desc.region_cnt);
  	pr_info("omapfb: Pixclock %lu kHz hfreq %lu.%lu kHz "
  			"vfreq %lu.%lu Hz\n",

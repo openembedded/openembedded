@@ -1,18 +1,20 @@
 From: Mans Rullgard <mans@mansr.com>
-Date: Tue, 22 Jul 2008 00:58:18 +0000 (+0100)
-Subject: ARM: OMAP: add clk_get_parent() for OMAP2/3
-X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=e2de5e5578fbaa9b4b75074796da0608fc93e6ae
+Date: Fri, 29 Aug 2008 01:51:36 +0000 (+0100)
+Subject: OMAP: Add clk_get_parent() for OMAP2/3
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=08d1f1947a5a970b2fe6e4dfeeb70286b9379056
 
-ARM: OMAP: add clk_get_parent() for OMAP2/3
+OMAP: Add clk_get_parent() for OMAP2/3
+
+This makes clk_get_parent() work on OMAP2/3.
 
 Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
 
 diff --git a/arch/arm/mach-omap2/clock.c b/arch/arm/mach-omap2/clock.c
-index 577be44..28aec36 100644
+index 5f48e14..aae0d2e 100644
 --- a/arch/arm/mach-omap2/clock.c
 +++ b/arch/arm/mach-omap2/clock.c
-@@ -824,6 +824,11 @@ int omap2_clk_set_parent(struct clk *clk, struct clk *new_parent)
+@@ -831,6 +831,11 @@ int omap2_clk_set_parent(struct clk *clk, struct clk *new_parent)
  	return 0;
  }
  
@@ -25,7 +27,7 @@ index 577be44..28aec36 100644
  
  /**
 diff --git a/arch/arm/mach-omap2/clock.h b/arch/arm/mach-omap2/clock.h
-index 49245f7..4aa69d5 100644
+index 3fa2e26..2916879 100644
 --- a/arch/arm/mach-omap2/clock.h
 +++ b/arch/arm/mach-omap2/clock.h
 @@ -29,6 +29,7 @@ int omap2_clk_set_rate(struct clk *clk, unsigned long rate);
@@ -37,10 +39,10 @@ index 49245f7..4aa69d5 100644
  #ifdef CONFIG_OMAP_RESET_CLOCKS
  void omap2_clk_disable_unused(struct clk *clk);
 diff --git a/arch/arm/mach-omap2/clock24xx.c b/arch/arm/mach-omap2/clock24xx.c
-index 54cc6e1..ed7af21 100644
+index c26d9d8..f91bd57 100644
 --- a/arch/arm/mach-omap2/clock24xx.c
 +++ b/arch/arm/mach-omap2/clock24xx.c
-@@ -422,6 +422,7 @@ static struct clk_functions omap2_clk_functions = {
+@@ -423,6 +423,7 @@ static struct clk_functions omap2_clk_functions = {
  	.clk_round_rate		= omap2_clk_round_rate,
  	.clk_set_rate		= omap2_clk_set_rate,
  	.clk_set_parent		= omap2_clk_set_parent,
@@ -49,10 +51,10 @@ index 54cc6e1..ed7af21 100644
  #ifdef	CONFIG_CPU_FREQ
  	.clk_init_cpufreq_table	= omap2_clk_init_cpufreq_table,
 diff --git a/arch/arm/mach-omap2/clock34xx.c b/arch/arm/mach-omap2/clock34xx.c
-index 04dedec..08c8c46 100644
+index 152d095..2196edd 100644
 --- a/arch/arm/mach-omap2/clock34xx.c
 +++ b/arch/arm/mach-omap2/clock34xx.c
-@@ -541,6 +541,7 @@ static struct clk_functions omap2_clk_functions = {
+@@ -606,6 +606,7 @@ static struct clk_functions omap2_clk_functions = {
  	.clk_round_rate		= omap2_clk_round_rate,
  	.clk_set_rate		= omap2_clk_set_rate,
  	.clk_set_parent		= omap2_clk_set_parent,

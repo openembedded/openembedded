@@ -1,9 +1,9 @@
 From: Mans Rullgard <mans@mansr.com>
-Date: Wed, 23 Jul 2008 08:40:07 +0000 (+0100)
-Subject: ARM: OMAP: Set DSS1_ALWON_FCLK to a multiple of the pixel clock
-X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=01ee28c50701caa94739e764c3dae9298edd8216
+Date: Fri, 29 Aug 2008 01:34:39 +0000 (+0100)
+Subject: OMAP: Improve pixel clock configuration
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=01c2d720e59c291de9eb21eb65225f2f215fef84
 
-ARM: OMAP: Set DSS1_ALWON_FCLK to a multiple of the pixel clock
+OMAP: Improve pixel clock configuration
 
 This sets the DSS1_ALWON_FCLK clock as close as possible to a
 multiple of the requested pixel clock, while keeping it below
@@ -16,10 +16,10 @@ Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
 
 diff --git a/drivers/video/omap/dispc.c b/drivers/video/omap/dispc.c
-index fd06ca2..e0e8528 100644
+index 64bf333..888d2c2 100644
 --- a/drivers/video/omap/dispc.c
 +++ b/drivers/video/omap/dispc.c
-@@ -176,6 +176,7 @@ static struct {
+@@ -177,6 +177,7 @@ static struct {
  
  	struct clk	*dss_ick, *dss1_fck;
  	struct clk	*dss_54m_fck;
@@ -27,13 +27,12 @@ index fd06ca2..e0e8528 100644
  
  	enum omapfb_update_mode	update_mode;
  	struct omapfb_device	*fbdev;
-@@ -738,21 +739,34 @@ static void setup_color_conv_coef(void)
+@@ -736,19 +737,34 @@ static void setup_color_conv_coef(void)
  	MOD_REG_FLD(at2_reg, (1 << 11), ct->full_range);
  }
  
--#define MAX_FCK_LCD 173000000
 +#define MAX_FCK 173000000
- 
++
  static void calc_ck_div(int is_tft, int pck, int *lck_div, int *pck_div)
  {
 +	unsigned long prate = clk_get_rate(clk_get_parent(dispc.dpll4_m4_ck));
@@ -41,6 +40,7 @@ index fd06ca2..e0e8528 100644
 +	unsigned long fck_div;
  	unsigned long fck, lck;
  
+-	*lck_div = 1;
  	pck = max(1, pck);
 +
 +	if (pck * pcd_min > MAX_FCK) {
@@ -57,8 +57,7 @@ index fd06ca2..e0e8528 100644
 +		fck_div = 1;
 +	clk_set_rate(dispc.dpll4_m4_ck, prate / fck_div);
  	fck = clk_get_rate(dispc.dss1_fck);
--	*lck_div = (fck + MAX_FCK_LCD - 1) / MAX_FCK_LCD;
--	lck = fck / *lck_div;
+-	lck = fck;
 -	*pck_div = (lck + pck - 1) / pck;
 -	if (is_tft)
 -		*pck_div = max(2, *pck_div);
@@ -70,7 +69,7 @@ index fd06ca2..e0e8528 100644
  	if (*pck_div > 255) {
  		*pck_div = 255;
  		lck = pck * *pck_div;
-@@ -914,11 +928,21 @@ static int get_dss_clocks(void)
+@@ -909,11 +925,21 @@ static int get_dss_clocks(void)
  		return PTR_ERR(dispc.dss_54m_fck);
  	}
  

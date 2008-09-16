@@ -1,13 +1,19 @@
 From: Mans Rullgard <mans@mansr.com>
-Date: Thu, 28 Aug 2008 21:20:39 +0000 (+0100)
-Subject: OMAP: Enable overlay optimisation when possible
-X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=5a7378bb691e76ce247f39f79e1a928166f1aed9
+Date: Fri, 29 Aug 2008 01:45:26 +0000 (+0100)
+Subject: OMAP: Enable overlay optimisation
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=7e052af7e4c73dc450412486ad37eb529e725dc7
 
-OMAP: Enable overlay optimisation when possible
+OMAP: Enable overlay optimisation
+
+This enables the overlay optimisation feature when the video
+overlay is active. This reduces memory bandwidth used by the
+display subsystem, improving overall performance.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
 ---
 
 diff --git a/drivers/video/omap/dispc.c b/drivers/video/omap/dispc.c
-index 7c525f5..1d56ee0 100644
+index 888d2c2..0f0b2e5 100644
 --- a/drivers/video/omap/dispc.c
 +++ b/drivers/video/omap/dispc.c
 @@ -315,6 +315,60 @@ void omap_dispc_enable_digit_out(int enable)
@@ -81,11 +87,10 @@ index 7c525f5..1d56ee0 100644
  	MOD_REG_FLD(DISPC_CONTROL, 1<<5, 1<<5);
  
  	return height * screen_width * bpp / 8;
-@@ -586,13 +643,19 @@ static int omap_dispc_enable_plane(int plane, int enable)
+@@ -585,11 +642,19 @@ static int omap_dispc_enable_plane(int plane, int enable)
  	const u32 at_reg[] = { DISPC_GFX_ATTRIBUTES,
  				DISPC_VID1_BASE + DISPC_VID_ATTRIBUTES,
  				DISPC_VID2_BASE + DISPC_VID_ATTRIBUTES };
--	unsigned overlay_opt = plane & !!enable & !dispc.color_key.key_type;
 +	struct omapfb_plane_struct *pi;
 +
  	if ((unsigned int)plane > dispc.mem_desc.region_cnt)
@@ -96,14 +101,13 @@ index 7c525f5..1d56ee0 100644
 +
  	enable_lcd_clocks(1);
  	MOD_REG_FLD(at_reg[plane], 1, enable ? 1 : 0);
--	MOD_REG_FLD(DISPC_CONTROL, 1<<12 | 1<<5, overlay_opt<<12 | 1<<5);
 +	if (plane < 2)
 +		setup_overlay_opt();
 +	MOD_REG_FLD(DISPC_CONTROL, 1<<5, 1<<5);
  	enable_lcd_clocks(0);
  
  	return 0;
-@@ -636,6 +699,7 @@ static int omap_dispc_set_color_key(struct omapfb_color_key *ck)
+@@ -633,6 +698,7 @@ static int omap_dispc_set_color_key(struct omapfb_color_key *ck)
  	if (val != 0)
  		dispc_write_reg(tr_reg, ck->trans_key);
  	dispc_write_reg(df_reg, ck->background);
