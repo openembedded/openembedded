@@ -45,7 +45,9 @@ DESCRIPTION_xserver-kdrive-smi = "X server from freedesktop.org, supporting Sili
 DESCRIPTION_xserver-kdrive-vesa = "X server from freedesktop.org, supporting any card with a VESA, VGA or even EGA BIOS. x86 hardware only"
 DESCRIPTION_xserver-kdrive-via = "X server from freedesktop.org, supporting VIA chipsets"
 
-FILES_${PN} += "${libdir}/xserver/SecurityPolicy"
+PACKAGES =+ "xserver-security-policy"
+FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
+RRECOMMENDS_${PN} += "xserver-security-policy"
 
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
 FILES_xserver-kdrive-fake = "${bindir}/Xfake"

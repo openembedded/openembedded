@@ -10,6 +10,7 @@ DESCRIPTION_xserver-kdrive-fake = "Fake X server"
 DESCRIPTION_xserver-kdrive-xephyr = "X server in an X window"
 
 PE = "1"
+PR = "r1"
 
 FILES_${PN} = "${libdir}/xserver"
 FILES_xserver-kdrive-fbdev = "${bindir}/Xfbdev"
