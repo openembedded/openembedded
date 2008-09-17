@@ -50,8 +50,7 @@ RDEPENDS_task-opie-settings = "opie-appearance opie-aqpkg opie-backup opie-butto
                       opie-formatter opie-language opie-launcher-settings \
                       opie-light-and-power opie-mediummount opie-networksettings \
                       opie-packagemanager opie-security opie-sshkeys opie-sysinfo \
-                      opie-systemtime opie-usermanager opie-icon-reload \
-                      opie-vmemo-settings"
+                      opie-systemtime opie-icon-reload opie-vmemo-settings"
 
 RDEPENDS_task-opie-pim = "task-opie-base-pim task-opie-todayplugins task-opie-datebookplugins \
                  opie-mail opie-pimconverter"
