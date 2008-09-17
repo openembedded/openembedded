@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r14"
+PR = "r15"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -30,6 +30,9 @@ SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
             file://uclibc-arm-ftruncate64.patch;patch=1 \
             file://arm_fix_alignment.patch;patch=1 \
 	    file://unistd_arm.patch;patch=1 \
-            "
+	    file://arm-linuxthreads.patch;patch=1 \
+	    file://linuxthreads-changes.patch;patch=1 \
+	    file://uclibc_mathc99.patch;patch=1 \
+           "
 
 S = "${WORKDIR}/uClibc"
