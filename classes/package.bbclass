@@ -365,6 +365,8 @@ python populate_packages () {
 	os.system('rm -rf %s' % pkgdest)
 
 	seen = []
+	main_is_empty = 1
+	main_pkg = bb.data.getVar('PN', d, 1)
 
 	for pkg in package_list:
 		localdata = bb.data.createCopy(d)
@@ -409,6 +411,8 @@ python populate_packages () {
 			ret = bb.copyfile(file, fpath)
 			if ret is False or ret == 0:
 				raise bb.build.FuncFailed("File population failed")
+			if pkg == main_pkg and main_is_empty:
+				main_is_empty = 0
 		del localdata
 	os.chdir(workdir)
 
@@ -453,7 +457,11 @@ python populate_packages () {
 					dangling_links[pkg].append(os.path.normpath(target))
 
 	for pkg in package_list:
-		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 1) or bb.data.getVar('RDEPENDS', d, 1) or "")
+		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
+
+		remstr = "${PN} (= ${DEBPV})"
+		if main_is_empty and remstr in rdepends:
+			rdepends.remove(remstr)
 		for l in dangling_links[pkg]:
 			found = False
 			bb.debug(1, "%s contains dangling link %s" % (pkg, l))
