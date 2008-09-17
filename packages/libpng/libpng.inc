@@ -3,33 +3,12 @@ HOMEPAGE = "http://www.libpng.org/"
 LICENSE = "libpng"
 SECTION = "libs"
 PRIORITY = "required"
-
 DEPENDS = "zlib"
-
-PACKAGES =+ "${PN}12-dbg ${PN}12 ${PN}12-dev"
-
-FILES_${PN}12-dbg += "${libdir}/libpng12*.dbg"
-FILES_${PN}12 = "${libdir}/libpng12.so.*"
-FILES_${PN}12-dev = "${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc"
-FILES_${PN} = "${libdir}/lib*.so.*"
-FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la \
-		${libdir}/*.a ${libdir}/pkgconfig \
-		${datadir}/aclocal ${bindir} ${sbindir}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libpng/libpng-${PV}.tar.bz2"
 S = "${WORKDIR}/libpng-${PV}"
 
-inherit pkgconfig binconfig
-
-EXTRA_OEMAKE_append = " ZLIBINC=${STAGING_INCDIR} ZLIBLIB=${STAGING_LIBDIR}"
-
-do_compile() {
-	sed < scripts/makefile.linux > makefile -e 's/^ZLIBINC.*//' -e 's/^ZLIBLIB.*//'
-	unset LDFLAGS
-	oe_runmake 'CC=${CC}' 'LD=${LD}' 'CFLAGS=${CFLAGS}' \
-		   'ZLIBINC=${STAGING_INCDIR}' \
-		   'ZLIBLIB=${STAGING_LIBDIR}'
-}
+inherit autotools pkgconfig binconfig
 
 do_stage() {
 	cp libpng.pc libpng12.pc
@@ -55,3 +34,12 @@ python do_package() {
         bb.build.exec_func('package_do_package', d)
 }
 
+PACKAGES =+ "${PN}12-dbg ${PN}12 ${PN}12-dev"
+
+FILES_${PN}12-dbg += "${libdir}/libpng12*.dbg"
+FILES_${PN}12 = "${libdir}/libpng12.so.*"
+FILES_${PN}12-dev = "${libdir}/libpng12.* ${includedir}/libpng12 ${libdir}/pkgconfig/libpng12.pc"
+FILES_${PN} = "${libdir}/lib*.so.*"
+FILES_${PN}-dev = "${includedir} ${libdir}/lib*.so ${libdir}/*.la \
+		${libdir}/*.a ${libdir}/pkgconfig \
+		${datadir}/aclocal ${bindir} ${sbindir}"
