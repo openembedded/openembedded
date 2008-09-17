@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r35"
+PR = "r36"
 
 inherit task
 
@@ -28,7 +28,6 @@ RDEPENDS_${PN} = "\
     gpe-confd \
     gpe-autostarter \
     ${@base_contains("MACHINE_FEATURES", "touchscreen", "libgtkstylus", "",d)} \
-    ${@base_contains("MACHINE_FEATURES", "keyboard", "", "libgtkinput",d)} \
     suspend-desktop \
     teleport \
     xauth \
