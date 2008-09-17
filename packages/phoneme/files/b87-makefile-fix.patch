@@ -1,8 +1,8 @@
 Index: cdc/build/share/rules_zoneinfo.mk
 ===================================================================
---- cdc/build/share/rules_zoneinfo.mk.orig
-+++ cdc/build/share/rules_zoneinfo.mk
-@@ -45,7 +45,7 @@ $(ZONEINFO_CLASSES_DIR):
+--- cdc.orig/build/share/rules_zoneinfo.mk	2008-09-17 17:38:44.424243663 +0200
++++ cdc/build/share/rules_zoneinfo.mk	2008-09-17 17:46:13.900243700 +0200
+@@ -45,7 +45,7 @@
  .compile.classlist:
  	$(AT)if [ -s $(ZONEINFO_CLASSES_DIR)/.classes.list ] ; then	\
  	     echo "Compiling zic classes... ";				\
@@ -13,9 +13,9 @@ Index: cdc/build/share/rules_zoneinfo.mk
  	fi
 Index: cdc/build/share/jcc.mk
 ===================================================================
---- cdc/build/share/jcc.mk.orig
-+++ cdc/build/share/jcc.mk
-@@ -93,7 +93,7 @@ $(CVM_GENOPCODE_DEPEND) :: $(CVM_JCC_SRC
+--- cdc.orig/build/share/jcc.mk	2008-09-17 17:38:44.664243074 +0200
++++ cdc/build/share/jcc.mk	2008-09-17 17:46:13.900243700 +0200
+@@ -93,7 +93,7 @@
  		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
  	@echo "... $@"
  	$(AT)CLASSPATH=$(CVM_JCC_SRCPATH); export CLASSPATH; \
@@ -24,7 +24,7 @@ Index: cdc/build/share/jcc.mk
  	    $(subst /,$(CVM_FILESEP),$(CVM_JCC_SRCPATH)/GenOpcodes.java)
  	$(AT)rm -f $(CVM_JCC_CLASSPATH)/JCCMessage.properties; \
  	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
-@@ -253,7 +253,7 @@ $(CVM_JCC_DEPEND) :: $(CVM_JCC_SRCPATH)/
+@@ -252,7 +252,7 @@
  		 $(CVM_JCC_SRCPATH)/JCCMessage.properties
  	@echo "... $@"
  	@CLASSPATH=$(CVM_JCC_CLASSPATH)$(PS)$(CVM_JCC_SRCPATH)$(PS)$(CVM_DERIVEDROOT)/javavm/runtime; export CLASSPATH; \
@@ -35,9 +35,9 @@ Index: cdc/build/share/jcc.mk
  	cp $(CVM_JCC_SRCPATH)/JCCMessage.properties $(CVM_JCC_CLASSPATH)/JCCMessage.properties
 Index: cdc/build/share/defs.mk
 ===================================================================
---- cdc/build/share/defs.mk.orig
-+++ cdc/build/share/defs.mk
-@@ -1187,7 +1187,7 @@ BUNDLE_PRODUCT_NAME  = $(subst $(TM),$(e
+--- cdc.orig/build/share/defs.mk	2008-09-17 17:38:44.324242543 +0200
++++ cdc/build/share/defs.mk	2008-09-17 17:46:13.923263871 +0200
+@@ -1205,7 +1205,7 @@
  BUNDLE_VERSION	= $(subst -,_,$(J2ME_BUILD_VERSION_STRING))
  BUNDLE_TARGET	= $(subst -,_,$(CVM_TARGET))
  
@@ -46,7 +46,7 @@ Index: cdc/build/share/defs.mk
  	$(BUNDLE_PRODUCT_NAME)-$(BUNDLE_VERSION)-$(BUNDLE_TARGET)-bin
  BINARY_BUNDLE_DIRNAME	= $(BINARY_BUNDLE_NAME)
  
-@@ -2153,11 +2153,11 @@ endif
+@@ -2193,11 +2193,11 @@
  
  # Note, ALL_INCLUDE_FLAGS flags is setup in rules.mk so
  # abs2rel only needs to be called on it once.
@@ -63,7 +63,7 @@ Index: cdc/build/share/defs.mk
  CFLAGS_JCS	= 
  
  LINKFLAGS       += -g -Wl,-export-dynamic $(LINK_ARCH_FLAGS)
-@@ -2165,13 +2165,13 @@ LINKLIBS     	+= -lpthread -ldl $(LINK_A
+@@ -2205,13 +2205,13 @@
  LINKLIBS_JCS    +=
  
  SO_CCFLAGS   	= $(CCFLAGS_SPEED)
@@ -81,9 +81,9 @@ Index: cdc/build/share/defs.mk
  # compileCCC(flags, objfile, srcfiles)
 Index: cdc/build/share/rules.mk
 ===================================================================
---- cdc/build/share/rules.mk.orig
-+++ cdc/build/share/rules.mk
-@@ -521,7 +521,7 @@ endif
+--- cdc.orig/build/share/rules.mk	2008-09-17 17:38:44.636242663 +0200
++++ cdc/build/share/rules.mk	2008-09-17 17:46:13.947252841 +0200
+@@ -520,7 +520,7 @@
  # As a performance improvement, evaluate some flags in case
  # they contain shell commands.
  # FIXME: Disabled because this causes GCI build failures
@@ -92,7 +92,7 @@ Index: cdc/build/share/rules.mk
  
  $(J2ME_CLASSLIB):: initbuild
  $(J2ME_CLASSLIB):: btclasses $(CVM_BUILDTIME_CLASSESZIP)
-@@ -708,14 +708,14 @@ $(CVM_OBJDIR)/executejava.o: $(CVM_DERIV
+@@ -709,14 +709,14 @@
  # command to use to generate dependency makefiles if requested
  ifeq ($(GENERATEMAKEFILES), true)
  GENERATEMAKEFILES_CMD = \
@@ -109,7 +109,7 @@ Index: cdc/build/share/rules.mk
  endif
  
  #
-@@ -751,7 +753,7 @@ $(CVM_OBJDIR)/%.o: %.S
+@@ -752,7 +752,7 @@
  	@echo "as  $<"
  	$(ASM_CMD)
  ifeq ($(GENERATEMAKEFILES), true)
@@ -118,7 +118,7 @@ Index: cdc/build/share/rules.mk
  		2> /dev/null | sed 's!$*\.o!$(dir $@)&!g' > $(@:.o=.d)
  endif
  ifeq ($(CVM_CSTACKANALYSIS), true)
-@@ -772,7 +774,7 @@ $(CVM_FDLIB_FILES): $(CVM_OBJDIR)/%.o: $
+@@ -773,7 +773,7 @@
  	@echo "cc  $<"
  	$(CC_CMD_FDLIB)
  ifeq ($(GENERATEMAKEFILES), true)
@@ -129,8 +129,8 @@ Index: cdc/build/share/rules.mk
  
 Index: cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
 ===================================================================
---- cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c.orig
-+++ cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c
+--- cdc.orig/src/linux-arm/javavm/runtime/segvhandler_arch.c	2008-09-17 17:41:08.367553837 +0200
++++ cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c	2008-09-17 17:46:13.963253086 +0200
 @@ -41,8 +41,8 @@
  #include <dlfcn.h>
  #include <stddef.h>
