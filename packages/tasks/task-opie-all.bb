@@ -24,7 +24,7 @@ RDEPENDS_task-opie-applets = "opie-aboutapplet opie-autorotateapplet opie-batter
                      opie-screenshotapplet opie-suspendapplet opie-vmemo \
                      opie-volumeapplet opie-vtapplet opie-zkbapplet \
                      "
-RDEPENDS_task-opie-inputmethods = "opie-dasher opie-dvorak opie-handwriting \
+RDEPENDS_task-opie-inputmethods = "opie-dvorak opie-handwriting \
                           opie-handwriting-classicset opie-jumpx opie-keyboard \
                           opie-keyview opie-kjumpx opie-multikey opie-unikeyboard"
 
