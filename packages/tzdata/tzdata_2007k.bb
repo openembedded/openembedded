@@ -3,12 +3,8 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r1"
+PR = "r3"
 
-PROVIDES = "tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
-            tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
-            tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
-RPROVIDES = "tzdata"
 RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
              timezone-australia timezone-europe timezone-indian \
@@ -45,6 +41,8 @@ do_install () {
 PACKAGES = "${PN}-dbg tzdata tzdata-misc tzdata-posix tzdata-right tzdata-africa \
     tzdata-americas tzdata-antarctica tzdata-arctic tzdata-asia \
     tzdata-atlantic tzdata-australia tzdata-europe tzdata-pacific"
+
+ALLOW_EMPTY_${PN}-dbg = "1"
 
 FILES_tzdata-africa += "${datadir}/zoneinfo/Africa/*"
 RPROVIDES_tzdata-africa = "tzdata-africa"
@@ -126,6 +124,7 @@ FILES_${PN} += "${datadir}/zoneinfo/Pacific/Honolulu     \
                 ${datadir}/zoneinfo/Asia/Bankok          \
                 ${datadir}/zoneinfo/Asia/Hong_Kong       \
                 ${datadir}/zoneinfo/Asia/Tokyo           \
+                ${datadir}/zoneinfo/Australia/Perth      \
                 ${datadir}/zoneinfo/Australia/Darwin     \
                 ${datadir}/zoneinfo/Australia/Adelaide   \
                 ${datadir}/zoneinfo/Australia/Brisbane   \
