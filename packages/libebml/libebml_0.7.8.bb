@@ -23,5 +23,5 @@ do_stage () {
 do_install() {
 	install -m 0644 ebml/*.h ${STAGING_INCDIR}
 	install -d ${STAGING_INCDIR}/ebml
-	(cd ${S}/ebml; cp *.h ${STAGING_INCDIR}/ebml/; mkdir ${STAGING_INCDIR}/ebml/c; cp c/libebml_t.h ${STAGING_INCDIR}/ebml/c;)
+	(cd ${S}/ebml; cp *.h ${STAGING_INCDIR}/ebml/; mkdir -p ${STAGING_INCDIR}/ebml/c; cp c/libebml_t.h ${STAGING_INCDIR}/ebml/c;)
 }
