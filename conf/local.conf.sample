@@ -154,5 +154,9 @@ BBINCLUDELOGS = "yes"
 # a cvs:// URI. Outcomment this, if you always want to pull directly from CVS.
 #CVS_TARBALL_STASH = ""
 
+# Uncomment this if you want to install shared libraries directly under their SONAME,
+# rather than installing as the full version and symlinking to the SONAME.
+# PACKAGE_SNAP_LIB_SYMLINKS = "1"
+
 # EDIT THIS FILE and then remove the line below before using!
 REMOVE_THIS_LINE:="${@bb.fatal('Read the comments in your conf/local.conf')}"
