@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SUMMARY  = "Moblin Connection Manager"
 PV       = "0.0+git${SRCREV}"
-PR       = "r4"
+PR       = "r4.01"
 S        = "${WORKDIR}/git"
 LICENSE  = "GPL"
 
@@ -13,7 +13,7 @@ EXTRA_OECONF += " \
     ac_cv_path_DHCLIENT=/sbin/dhclient "
 
 SRC_URI  = "git://moblin.org/repos/projects/connman.git;proto=http \
-            file://connman-build-and-work.patch;patch=1 \
+            file://use_nm_in_cross_compiling.patch;patch=1\
             file://connman "
 
 INITSCRIPT_NAME = "connman"
@@ -41,7 +41,7 @@ FILES_${PN}-dbg += "${libdir}/connman/plugins/.debug \
 python populate_packages_prepend() {
 	plugin_dir = bb.data.expand('${libdir}/connman/plugins/', d)
 	plugin_name = bb.data.expand('${PN}-plugin-%s', d)
-	do_split_packages(d, plugin_dir, '^lib(.*).so$', plugin_name, '${PN} plugin for %s', extra_depends='' )
+        do_split_packages(d, plugin_dir, '^(.*).so$', plugin_name, '${PN} plugin for %s', extra_depends='' )
 }
 
 do_stage() {
