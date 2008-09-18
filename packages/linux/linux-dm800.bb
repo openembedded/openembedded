@@ -27,7 +27,8 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linuxmips-2.6.12-fix-fadvise.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
-	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1"
+	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
+	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 
 S = "${WORKDIR}/stblinux-2.6.12"
 
@@ -51,6 +52,10 @@ addtask munge before do_patch after do_unpack
 
 do_configure_prepend() {
 	oe_machinstall -m 0644 ${WORKDIR}/dm800_defconfig ${S}/.config
+        if [ -d ${WORKDIR}/cdfs-${PV} ]; then
+                mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
+                cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
+        fi;
 	oe_runmake oldconfig
 }
 
