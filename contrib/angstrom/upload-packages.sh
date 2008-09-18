@@ -8,28 +8,34 @@
 REMOTEM=angstrom@linuxtogo.org
 
 # Feed dir we want to upload to
-REMOTED=website/feeds/2007/ipk/glibc
+REMOTED=website/feeds/2007/ipk/$(basename $PWD)
 
 # create upload dir
 mkdir -p upload-queue || true
 
 # Find and delete morgue dirs, we don't need them
+echo "Deleting morgue directories"
 find ipk/ -name "morgue" -exec rm -rf \{\} \;
 
 # Copy all packages to an upload queue
+echo "Copying packages to upload queue"
 find ipk/ -name "*.ipk" -exec cp \{\} upload-queue/ \;
 
 # Find file already present on webserver
-ssh $REMOTEM "find $REMOTED/ -name "*.ipk" -exec basename \{\} \;" > /tmp/files-remote
-ls upload-queue/ | grep -v morgue >/tmp/files-local
+echo "Getting file list from server"
+scp $REMOTEM:$REMOTED/unsorted/files-sorted files-remote
+ls upload-queue/ | grep -v morgue > files-local
 
 # Check for files already present on webserver
-cat /tmp/files-remote /tmp/files-local | sort | uniq -u >/tmp/files-uniq
-cat /tmp/files-uniq /tmp/files-local | sort | uniq -d > /tmp/files-trans
+echo "Checking for duplicates"
+cat files-remote files-local | sort | uniq -u >files-uniq
+cat files-uniq files-local | sort | uniq -d > files-trans
 
 # Copy over non-duplicate files
-rsync -vz --files-from=/tmp/files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
+echo "Starting rsync..."
+rsync -avz --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
 
 # Clean up temporary files
-rm /tmp/files-remote /tmp/files-local /tmp/files-uniq /tmp/files-trans
+echo "Removing upload queue"
+rm -rf files-remote files-local files-uniq files-trans upload-queue	
 
