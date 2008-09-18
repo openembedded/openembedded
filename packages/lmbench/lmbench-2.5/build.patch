@@ -1,0 +1,11 @@
+--- lmbench-2.5/scripts/build.old	2008-09-18 17:03:59.000000000 +0100
++++ lmbench-2.5/scripts/build	2008-09-18 17:04:01.000000000 +0100
+@@ -34,7 +34,7 @@
+ 	
+ # check for IA64 HP-UX w/ HP's ANSI compiler; may need pointer swizzling
+ arch=`echo $OS | awk -F- '{print $1;}'`
+-if [ X$CC = "Xcc" -a X$arch = "Xia64" ]
++if [ "X$CC" = "Xcc" -a "X$arch" = "Xia64" ]
+ then
+ 	echo "#include <stdlib.h>" > ${BASE}$$.c
+ 	echo "main(int ac, char *av[])" >> ${BASE}$$.c
