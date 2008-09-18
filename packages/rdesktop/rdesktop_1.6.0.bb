@@ -1,8 +1,6 @@
 require rdesktop.inc
 
-PR = "r1"
-
-SRC_URI += "file://strip.patch;patch=1"
+PR = "r0"
 
 inherit autotools
 
