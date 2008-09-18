@@ -1,0 +1,65 @@
+--- libxml2-2.6.32/Makefile.am	2008-01-11 08:22:32.000000000 +0100
++++ libxml2-2.6.32/Makefile.am	2008-07-18 13:43:32.000000000 +0200
+@@ -8,7 +8,7 @@
+ 
+ noinst_PROGRAMS=testSchemas testRelax testSAX testHTML testXPath testURI \
+                 testThreads testC14N testAutomata testRegexp \
+-                testReader testapi testModule runtest runsuite
++                testReader testModule runtest runsuite
+ 
+ bin_PROGRAMS = xmllint xmlcatalog
+ 
+@@ -135,20 +135,20 @@
+ testdso_la_LDFLAGS = -module -rpath $(libdir)
+ 
+ # that one forces the rebuild when "make rebuild" is run on doc/
+-rebuild_testapi:
+-	-@(if [ "$(PYTHON)" != "" ] ; then \
+-	    $(PYTHON) $(srcdir)/gentest.py $(srcdir) ; fi )
++#rebuild_testapi:
++#	-@(if [ "$(PYTHON)" != "" ] ; then \
++#	    $(PYTHON) $(srcdir)/gentest.py $(srcdir) ; fi )
+ 
+ # that one is just to make sure it is rebuilt if missing
+ # but adding the dependances generate mess
+-testapi.c:
+-	-@(if [ "$(PYTHON)" != "" ] ; then \
+-	    $(PYTHON) $(srcdir)/gentest.py $(srcdir) ; fi )
+-
+-testapi_SOURCES=testapi.c
+-testapi_LDFLAGS = 
+-testapi_DEPENDENCIES = $(DEPS)
+-testapi_LDADD= $(LDADDS)
++#testapi.c:
++#	-@(if [ "$(PYTHON)" != "" ] ; then \
++#	    $(PYTHON) $(srcdir)/gentest.py $(srcdir) ; fi )
++
++#testapi_SOURCES=testapi.c
++#testapi_LDFLAGS = 
++#testapi_DEPENDENCIES = $(DEPS)
++#testapi_LDADD= $(LDADDS)
+ 
+ #testOOM_SOURCES=testOOM.c testOOMlib.h testOOMlib.c
+ #testOOM_LDFLAGS = 
+@@ -169,9 +169,9 @@
+ 	@echo '## Go get a cup of coffee it is gonna take a while ...'
+ 	$(MAKE) CHECKER='valgrind -q' tests
+ 
+-APItests: testapi$(EXEEXT)
+-	@echo "## Running the API regression tests this may take a little while"
+-	-@($(CHECKER) $(top_builddir)/testapi -q)
++#APItests: testapi$(EXEEXT)
++#	@echo "## Running the API regression tests this may take a little while"
++#	-@($(CHECKER) $(top_builddir)/testapi -q)
+ 
+ HTMLtests : testHTML$(EXEEXT)
+ 	@(echo > .memdump)
+@@ -1116,7 +1116,7 @@
+ dist-test: distdir
+ 	(mkdir -p $(distdir))
+ 	(cd $(srcdir) ; tar -cf - --exclude CVS --exclude .svn xstc/Tests) | (cd $(distdir); tar xf -)
+-	tar -cf - $(distdir)/test $(distdir)/result $(distdir)/xstc/Tests  $(distdir)/Makefile.tests $(distdir)/README $(distdir)/README.tests $(distdir)/AUTHORS $(distdir)/testapi.c $(distdir)/runtest.c $(distdir)/runsuite.c | GZIP=$(GZIP_ENV) gzip -c >`echo "$(distdir)" | sed "s+libxml2+libxml2-tests+"`.tar.gz
++	tar -cf - $(distdir)/test $(distdir)/result $(distdir)/xstc/Tests  $(distdir)/Makefile.tests $(distdir)/README $(distdir)/README.tests $(distdir)/AUTHORS $(distdir)/runtest.c $(distdir)/runsuite.c | GZIP=$(GZIP_ENV) gzip -c >`echo "$(distdir)" | sed "s+libxml2+libxml2-tests+"`.tar.gz
+ 	@(rm -rf $(distdir)/xstc/Test)
+ 
+ cleantar:
