@@ -1,9 +1,11 @@
 require evas.inc
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
+        --enable-evas-magic-debug \
+        \
 		--enable-fb					\
 		--disable-directfb			\
 		--disable-sdl				\
@@ -59,4 +61,3 @@ EXTRA_OECONF = "\
 		--enable-convert-32-rgb-rot-90	\
 		--disable-convert-32-rgb-rot-180 \
 		--enable-convert-32-rgb-rot-270"
-

@@ -1,11 +1,13 @@
 require evas.inc
 inherit native
 DEPENDS = "freetype-native libpng-native jpeg-native eet-native"
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \
 		--x-libraries=${STAGING_LIBDIR} \
+		--enable-evas-magic-debug \
+		\
 		--enable-fb				\
 		--disable-directfb			\
 		--disable-sdl				\
