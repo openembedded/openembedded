@@ -1,12 +1,6 @@
-DESCRIPTION = "Rdesktop rdp client for X"
-DEPENDS = "virtual/libx11 openssl"
-HOMEPAGE = "http://www.rdesktop.org"
-SECTION = "x11/network"
-LICENSE = "GPL"
-PV = "1.6.0"
-PR = "r0"
+require rdesktop.inc
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/rdesktop/rdesktop-${PV}.tar.gz"
+PR = "r0"
 
 inherit autotools
 

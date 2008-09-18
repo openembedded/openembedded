@@ -41,6 +41,7 @@ TARGET_FPU = "soft"
 
 # glib-2.0 builds require USE_NLS to be overridden
 USE_NLS_glib-2.0 = "yes"
+USE_NLS_glib-2.0-native = "yes"
 
 INHERIT += "package_ipk debian"
 

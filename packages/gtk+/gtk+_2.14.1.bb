@@ -1,5 +1,7 @@
 require gtk+.inc
 
+PR = "r1"
+
 DEPENDS += "cairo jasper"
 
 # disable per default - this uses as little patches as possible
