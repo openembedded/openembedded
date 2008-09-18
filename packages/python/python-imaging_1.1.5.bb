@@ -2,7 +2,7 @@ DESCRIPTION = "Python Imaging Library"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "freetype jpeg tiff"
+DEPENDS = "freetype jpeg"
 RDEPENDS = "python-lang python-stringold"
 SRCNAME = "Imaging"
 
