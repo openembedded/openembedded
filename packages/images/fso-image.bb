@@ -60,6 +60,7 @@ TOOLS_INSTALL = "\
   powertop \
   s3c24xx-gpio \
   sysstat \
+  tcpdump \
 "
 
 # audio
@@ -106,7 +107,18 @@ PYTHON_INSTALL = "\
 ZHONE_INSTALL = "\
   gsm0710muxd \
   frameworkd \
+  fso-gspd \
   zhone \
+"
+
+# additional apps
+APPS_INSTALL = "\
+  tichy \
+  gpe-gallery \
+  gpe-sketchbook \
+  gpe-filemanager \
+  vagalume \
+  starling \
 "
 
 IMAGE_INSTALL = "\
@@ -118,7 +130,7 @@ IMAGE_INSTALL = "\
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
   ${ZHONE_INSTALL} \
-  tichy \
+  ${APPS_INSTALL} \
 "
 
 inherit image
