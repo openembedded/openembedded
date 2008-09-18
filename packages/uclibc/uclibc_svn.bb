@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r14"
+PR = "r16"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -25,11 +25,14 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-svn', '${FILE_DIRNA
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
 SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
-            file://uClibc.machine \
-            file://uClibc.distro \
-            file://uclibc-arm-ftruncate64.patch;patch=1 \
-            file://arm_fix_alignment.patch;patch=1 \
-	    file://unistd_arm.patch;patch=1 \
-            "
+			file://uClibc.machine \
+			file://uClibc.distro \
+			file://uclibc-arm-ftruncate64.patch;patch=1 \
+			file://arm_fix_alignment.patch;patch=1 \
+			file://unistd_arm.patch;patch=1 \
+			file://arm-linuxthreads.patch;patch=1 \
+			file://linuxthreads-changes.patch;patch=1 \
+			file://uclibc_mathc99.patch;patch=1 \
+           "
 
 S = "${WORKDIR}/uClibc"

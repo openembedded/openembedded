@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 #DEFAULT_PREFERENCE = "2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
@@ -28,7 +28,7 @@ KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 SRC_URI += "svn://uclibc.org/branches/;module=uClibc-nptl \
             file://uClibc.machine \
             file://uClibc.distro \
-	    file://uclibc-arm-ftruncate64.patch;patch=1 \
+			file://uclibc-arm-ftruncate64.patch;patch=1 \
             file://arm_fix_alignment.patch;patch=1 \
             "
 

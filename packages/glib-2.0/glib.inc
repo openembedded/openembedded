@@ -8,16 +8,19 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
-PACKAGES =+ " glib-2.0-utils "
+PACKAGES =+ "gobject-2.0 gmodule-2.0 gthread-2.0 gio-2.0 glib-2.0-utils "
 
-PR = "r2"
+PR = "r3"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
 FILES_${PN} = "${libdir}/lib*so.* ${libdir}/gio/modules/*.so"
 FILES_${PN}-dev += "${libdir}/glib-2.0 ${datadir}/glib-2.0 ${libdir}/gio/modules/*.la"
 FILES_${PN}-dbg += "${libdir}/gio/modules/.debug"
-
+FILES_gmodule-2.0 = "${libdir}/libgmodule-2.0.so.*"
+FILES_gobject-2.0 = "${libdir}/libgobject-2.0.so.*"
+FILES_gio-2.0 = "${libdir}/libgio-2.0.so.*"
+FILES_gthread-2.0 = "${libdir}/libgthread-2.0.so.*"
 
 EXTRA_OECONF = "--disable-debug "
 

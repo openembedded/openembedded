@@ -16,11 +16,14 @@ FILES_${PN}-dev += "${libdir}/${PN}/*/*.so ${libdir}/${PN}/*/*.la"
 SRC_URI_append = " \
                   file://navit.desktop \
                   file://navit.launcher \
+                  file://navit.png \
 	  	 "
 
 do_install_append() {
         install -d ${D}${datadir}/applications/
         install -m 0644 ${WORKDIR}/navit.desktop ${D}${datadir}/applications/
+        install -d ${D}${datadir}/pixmaps/
+        install -m 0644 ${WORKDIR}/navit.png ${D}${datadir}/pixmaps/
 
         mv ${D}${bindir}/navit ${D}${bindir}/navit.real
         install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
