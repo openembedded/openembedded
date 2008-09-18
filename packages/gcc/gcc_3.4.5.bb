@@ -25,5 +25,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
 SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
+SRC_URI += "file://libstdc++-v3-open_missing_mode.patch;patch=1"
 
 include gcc3-build.inc

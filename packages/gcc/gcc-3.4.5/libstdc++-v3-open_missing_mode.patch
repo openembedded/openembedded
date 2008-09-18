@@ -1,0 +1,13 @@
+from https://hardened.gentooexperimental.org/secure/raw-attachment/ticket/29/libstdc%2B%2B-v3-open_missing_mode.patch
+diff -Nru /var/tmp/portage/sys-libs/libstdc++-v3-3.3.6/work/gcc-3.3.6/gcc/collect2.c /root/hardened/gcc-3.3.6/gcc/collect2.c
+--- gcc-3.3.6/gcc/collect2.c	2003-12-08 20:02:39.000000000 +0100
++++ gcc-3.3.6/gcc/collect2.c	2008-06-19 01:04:21.000000000 +0200
+@@ -1572,7 +1572,7 @@
+   if (redir)
+     {
+       /* Open response file.  */
+-      redir_handle = open (redir, O_WRONLY | O_TRUNC | O_CREAT);
++      redir_handle = open (redir, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
+ 
+       /* Duplicate the stdout and stderr file handles
+ 	 so they can be restored later.  */
