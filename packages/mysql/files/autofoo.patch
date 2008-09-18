@@ -1,10 +1,6 @@
-
-#
-# Patch managed by http://www.holgerschurig.de/patcher.html
-#
-
---- mysql-4.1.15/acinclude.m4~autofoo
-+++ mysql-4.1.15/acinclude.m4
+diff -aurp mysql-4.1.22.old/acinclude.m4 mysql-4.1.22/acinclude.m4
+--- mysql-4.1.22.old/acinclude.m4	2008-09-18 13:00:13.000000000 -0500
++++ mysql-4.1.22/acinclude.m4	2008-09-18 12:58:41.000000000 -0500
 @@ -1,5 +1,88 @@
  # Local macros for automake & autoconf
  
@@ -94,7 +90,7 @@
  
  AC_DEFUN([MYSQL_CHECK_READLINE_DECLARES_HIST_ENTRY], [
      AC_CACHE_CHECK([HIST_ENTRY is declared in readline/readline.h], mysql_cv_hist_entry_declared,
-@@ -340,7 +423,7 @@
+@@ -344,7 +427,7 @@ dnl ------------------------------------
  AC_DEFUN([MYSQL_CHECK_ULONG],
  [AC_MSG_CHECKING(for type ulong)
  AC_CACHE_VAL(ac_cv_ulong,
@@ -103,7 +99,7 @@
  #include <sys/types.h>
  main()
  {
-@@ -358,7 +441,7 @@
+@@ -362,7 +445,7 @@ fi
  AC_DEFUN([MYSQL_CHECK_UCHAR],
  [AC_MSG_CHECKING(for type uchar)
  AC_CACHE_VAL(ac_cv_uchar,
@@ -112,7 +108,7 @@
  #include <sys/types.h>
  main()
  {
-@@ -376,7 +459,7 @@
+@@ -380,7 +463,7 @@ fi
  AC_DEFUN([MYSQL_CHECK_UINT],
  [AC_MSG_CHECKING(for type uint)
  AC_CACHE_VAL(ac_cv_uint,
@@ -121,7 +117,7 @@
  #include <sys/types.h>
  main()
  {
-@@ -395,7 +478,7 @@
+@@ -399,7 +482,7 @@ fi
  AC_DEFUN([MYSQL_CHECK_IN_ADDR_T],
  [AC_MSG_CHECKING(for type in_addr_t)
  AC_CACHE_VAL(ac_cv_in_addr_t,
@@ -130,7 +126,7 @@
  #include <sys/types.h>
  #include <sys/socket.h>
  #include <netinet/in.h>
-@@ -456,7 +539,7 @@
+@@ -460,7 +543,7 @@ fi
  AC_DEFUN([MYSQL_CHECK_FP_EXCEPT],
  [AC_MSG_CHECKING(for type fp_except)
  AC_CACHE_VAL(ac_cv_fp_except,
@@ -139,9 +135,10 @@
  #include <sys/types.h>
  #include <ieeefp.h>
  main()
---- mysql-4.1.15/configure.in~autofoo
-+++ mysql-4.1.15/configure.in
-@@ -234,8 +234,6 @@
+diff -aurp mysql-4.1.22.old/configure.in mysql-4.1.22/configure.in
+--- mysql-4.1.22.old/configure.in	2008-09-18 13:00:14.000000000 -0500
++++ mysql-4.1.22/configure.in	2008-09-18 12:54:00.000000000 -0500
+@@ -236,8 +236,6 @@ then
  else
    AC_PATH_PROG(AS, as, as)
  fi
@@ -150,7 +147,7 @@
  # We use libtool
  #AC_LIBTOOL_WIN32_DLL
  AC_PROG_LIBTOOL
-@@ -256,44 +254,7 @@
+@@ -258,44 +256,7 @@ AC_PROG_YACC
  AC_CHECK_PROG(PDFMANUAL, pdftex, manual.pdf)
  AC_CHECK_PROG(DVIS,      tex,    manual.dvi)
  
@@ -196,11 +193,14 @@
  
  # option, cache_name, variable,
  # code to execute if yes, code to exectute if fail
-@@ -870,42 +831,7 @@
+@@ -878,47 +839,7 @@ struct request_info *req;
  AC_SUBST(WRAPLIBS)
  
  if test "$TARGET_LINUX" = "true"; then
 -  AC_MSG_CHECKING([for atomic operations])
+-
+-  AC_LANG_SAVE
+-  AC_LANG_CPLUSPLUS
 -
 -  atom_ops=
 -  AC_TRY_RUN([
@@ -236,11 +236,13 @@
 -
 -  if test -z "$atom_ops"; then atom_ops="no"; fi
 -  AC_MSG_RESULT($atom_ops)
-+  MYSQL_FUNCS_ATOMIC
+-
+-  AC_LANG_RESTORE
++  MYSQL_FUNC_ATOMIC
  
    AC_ARG_WITH(pstack,
      [  --with-pstack           Use the pstack backtrace library],
-@@ -958,13 +884,13 @@
+@@ -971,13 +892,13 @@ fi
  # Later in this script LIBS will be augmented with a threads library.
  NON_THREADED_LIBS="$LIBS"
  
@@ -248,8 +250,7 @@
 +AC_CACHE_CHECK([for int8], [mysql_cv_type_int8], [
  case $SYSTEM_TYPE in
    *netware)
--    AC_MSG_RESULT([no])
-+    mysql_cv_type_int8=no
+     AC_MSG_RESULT([no])
      ;;
    *)
 -AC_TRY_RUN([
@@ -257,7 +258,7 @@
  #ifdef HAVE_STDLIB_H
  #include <stdlib.h>
  #endif
-@@ -975,22 +901,21 @@
+@@ -988,22 +909,21 @@ AC_TRY_RUN([
  
  #ifdef HAVE_SYS_TYPES_H
  #include <sys/types.h>
@@ -288,7 +289,7 @@
  #
  # Some system specific hacks
  #
-@@ -1798,7 +1723,7 @@
+@@ -1814,7 +1734,7 @@ then
    AC_MSG_ERROR("MySQL needs a long long type.")
  fi
  # off_t is not a builtin type
@@ -297,9 +298,10 @@
  if test "$ac_cv_sizeof_off_t" -eq 0
  then
    AC_MSG_ERROR("MySQL needs a off_t type.")
---- mysql-4.1.15/innobase/configure.in~autofoo
-+++ mysql-4.1.15/innobase/configure.in
-@@ -3,6 +3,7 @@
+diff -aurp mysql-4.1.22.old/innobase/configure.in mysql-4.1.22/innobase/configure.in
+--- mysql-4.1.22.old/innobase/configure.in	2008-09-18 13:00:14.000000000 -0500
++++ mysql-4.1.22/innobase/configure.in	2008-09-18 12:55:39.000000000 -0500
+@@ -3,6 +3,7 @@ AC_INIT
  AC_CANONICAL_SYSTEM
  AM_MAINTAINER_MODE
  AM_CONFIG_HEADER(ib_config.h)
@@ -307,7 +309,7 @@
  AM_INIT_AUTOMAKE(ib, 0.90)
  
  # This is need before AC_PROG_CC
-@@ -32,7 +33,6 @@
+@@ -32,7 +33,6 @@ CFLAGS="$CFLAGS "
  CXXFLAGS="$CXXFLAGS "
  
  AC_PROG_CC

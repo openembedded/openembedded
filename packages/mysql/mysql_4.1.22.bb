@@ -2,14 +2,13 @@ DESCRIPTION = "The MySQL Open Source Database System"
 HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
-DEPENDS += "ncurses mysql-native"
-PR = "r4"
+DEPENDS = "ncurses"
+PR = "r0"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
-	   file://gen_lex_hash.patch;patch=1 \
-	   file://my.cnf \
-	   file://mysqld.sh"
+           file://my.cnf \
+           file://mysqld.sh"
 
 S = "${WORKDIR}/mysql-${PV}"
 
@@ -24,8 +23,12 @@ INITSCRIPT_NAME = "mysqld"
 INITSCRIPT_PARAMS = "start 45 S . stop 45 0 6 1 ."
 
 PARALLEL_MAKE = " "
-EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR_NATIVE}/gen_lex_hash'"
+#EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR_NATIVE}/gen_lex_hash'"
 EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc/mysql --localstatedir=/var/mysql --datadir=/var/mysql --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "
+
+do_configure_append() {
+     sed -i /comp_err/d ${S}/sql/share/Makefile
+}
 
 do_stage() {
 	autotools_stage_all
