@@ -3,7 +3,7 @@ DESCRIPTION = "A library to make creating GObjects easier"
 HOMEPAGE = "http://www.5z.com/jirka/gob.html"
 SECTION = "libs"
 DEPENDS = "gtk+ bison flex"
-SRC_URI = "http://ftp.5z.com/pub/gob/gob2-${PV}.tar.gz"
+SRC_URI = "http://ftp.5z.com/pub/gob/old/gob2-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
