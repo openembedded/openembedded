@@ -1,7 +1,7 @@
 require linux-libc-headers.inc
 
 INHIBIT_DEFAULT_DEPS = "1"
-PR = "r3"
+PR = "r4"
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""
 

@@ -3,7 +3,7 @@ SECTION = "base"
 DEPENDS = "zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r6"
+PR = "r7"
 
 # This is the default package, thus we lock to a specific git version so 
 # upstream changes will not break builds.
@@ -36,7 +36,11 @@ mtd_utils = "ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
 
 do_install () {
 	install -d ${D}${bindir}
+	install -d ${D}${includedir}/mtd
 	for binary in ${mtd_utils}; do
 		install -m 0755 $binary ${D}${bindir}
+	done
+	for f in ${S}/include/mtd/*.h; do
+		install -m 0644 $f ${D}${includedir}/mtd/
 	done
 }

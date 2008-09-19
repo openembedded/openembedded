@@ -12,7 +12,6 @@ DEFAULT_PREFERENCE = "-2"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-gnutls \
-	file://gnutlsfix.patch;patch=1 \
 	file://ifupdown.sh \
 	file://functions.sh"
 
