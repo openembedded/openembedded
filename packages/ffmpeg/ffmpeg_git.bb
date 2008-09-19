@@ -1,10 +1,10 @@
 require ffmpeg.inc
 
-DEPENDS += "libgsm"
+DEPENDS += "schroedinger libgsm"
 
 PE = "1"
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r31"
+PR = "r32"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"
@@ -47,7 +47,8 @@ EXTRA_OECONF = " \
         --enable-libfaadbin \
         --enable-libgsm \
         --enable-libmp3lame \
-        --enable-swscale \
+        --enable-libschroedinger \
+	--enable-swscale \
         --arch=${TARGET_ARCH} \
         --enable-cross-compile \
         --extra-cflags="${TARGET_CFLAGS} ${HOST_CC_ARCH}${TOOLCHAIN_OPTIONS}" \
