@@ -5,10 +5,11 @@ SRC_URI = "file://defconfig"
 DONT_CHECK_KERNELSIZE = ""
 INITRAMFS_IMAGE = "initramfs-kexecboot-image"
 
-# uncomment the following lines if you use u-boot as bootloader
-#KERNEL_IMAGETYPE_c7x0="uImage"
-#KERNEL_IMAGETYPE_akita="uImage"
-#KERNEL_IMAGETYPE_spitz="uImage"
+CMDLINE = "console=ttyS0,115200n8 console=tty1"
+CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M fbcon=rotate:1"
+CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 
 PACKAGES = ""
 PROVIDES = ""
