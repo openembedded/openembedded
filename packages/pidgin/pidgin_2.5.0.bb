@@ -1,5 +1,7 @@
 require pidgin.inc
 
+PR = "r2"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \
            file://sanitize-configure.ac.patch;patch=1 \
            file://gconf-no-errors.patch;patch=1 \
@@ -13,5 +15,3 @@ EXTRA_OECONF += " --disable-gtkspell \
                   --disable-nm \ 
                   --disable-screensaver \
                 "
-
-PR = "r1"

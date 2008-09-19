@@ -22,30 +22,30 @@ EXTRA_OECONF = " \
 OE_LT_RPATH_ALLOW=":${libdir}/purple-2:"
 OE_LT_RPATH_ALLOW[export]="1"
 
-PACKAGES =+ "libpurple libpurple-dev libpurple-dbg libpurple-liboscar libpurple-libjabber libpurple-logreader finch finch-dev finch-dbg"
-
+PACKAGES =+ "libpurple-dbg libpurple-dev libpurple libgnt-dbg libgnt libgnt-dev finch-dbg finch finch-dev ${PN}-data"
 
 LEAD_SONAME = "libpurple.so.0"
-FILES_libpurple     = "${libdir}/libpurple*.so.* /usr/bin/purple-* /etc/gconf/schemas/purple*"
-FILES_libpurple-dev = "${libdir}/libpurple* \
-                       ${libdir}/purple-2/*.la " 
+FILES_libpurple     = "${libdir}/libpurple*.so.* ${libdir}/purple-2 ${bindir}/purple-* ${sysconfdir}/gconf/schemas/purple*"
+FILES_libpurple-dev = "${libdir}/libpurple*.la \
+                       ${libdir}/libpurple*.so \
+                       ${libdir}/purple-2/*.la \
+                       ${libdir}/purple-2/libjabber.so \
+                       ${libdir}/purple-2/liboscar.so \
+                       ${datadir}/aclocal"
 FILES_libpurple-dbg += "${libdir}/.debug/libpurple* \
                        ${libdir}/purple-2/.debug"
-FILES_libpurple-liboscar = "${libdir}/purple-2/liboscar.so.*"
-FILES_libpurple-libjabber = "${libdir}/purple-2/libjabber.so.*"
-FILES_libpurple-logreader = "${libdir}/purple-2/log_reader.so"
-FILES_finch         = "${bindir}/finch /usr/lib/libgnt.so.*" 
+FILES_libgnt         = "${libdir}/libgnt.so.* ${libdir}/gnt/*.so" 
+FILES_libgnt-dev     = "${libdir}/gnt/*.la" 
+FILES_libgnt-dbg     = "${libdir}/gnt/.debug \
+FILES_finch         = "${bindir}/finch" 
 FILES_finch-dev     = "${libdir}/finch/*.la" 
 FILES_finch-dbg     = "${bindir}/.debug/finch \
                        ${libdir}/finch/.debug"
 
-FILES_${PN} = "${bindir} ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \
-	    ${sysconfdir} ${sharedstatedir} ${localstatedir} \
-	    /bin /sbin /lib/*.so* ${datadir}/${PN} ${libdir}/${PN}/*.so \
-	    ${datadir}/pixmaps ${datadir}/applications \
-	    ${datadir}/idl ${datadir}/omf ${datadir}/sounds \
-	    ${libdir}/bonobo/servers ${datadir}/icons"
-FILES_${PN}-dev += "${libdir}/pidgin/*.la"
+FILES_${PN} = "${bindir} ${datadir}/${PN} ${libdir}/${PN}/*.so \
+	       ${datadir}/applications"
+FILES_${PN}-data = "${datadir}/pixmaps ${datadir}/sounds ${datadir}/icons"
+FILES_${PN}-dev += "${libdir}/${PN}/*.la"
 
 inherit autotools gettext pkgconfig gconf
 
