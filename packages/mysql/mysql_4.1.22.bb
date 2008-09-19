@@ -3,10 +3,11 @@ HOMEPAGE = "http://www.mysql.com/"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
+           file://fix_host_path.patch;patch=1 \
            file://my.cnf \
            file://mysqld.sh"
 
