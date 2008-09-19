@@ -11,6 +11,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/pidgin/pidgin-${PV}.tar.bz2 \
 EXTRA_OECONF += " --disable-gtkspell \
                   --disable-meanwhile \
                   --disable-nm \ 
+                  --disable-screensaver \
                 "
 
-PR = "r0"
+PR = "r1"
