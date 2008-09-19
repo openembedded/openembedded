@@ -3,6 +3,8 @@ LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
 DEPENDS = "eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
 PV = "0.9.9.043+svnr${SRCREV}"
+PR = "r1"
+
 
 inherit efl
 
