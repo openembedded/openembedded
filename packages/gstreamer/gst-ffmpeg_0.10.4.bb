@@ -3,7 +3,7 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
-DEPENDS = "ffmpeg gstreamer zlib"
+DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
 PR = "r5"
 
 inherit autotools pkgconfig
