@@ -42,7 +42,8 @@ do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="qmake-native qmake2-native"
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
-                       usbutils pciutils mtd-utils usbview hal setserial \
+                       gdb gdbserver strace \
+		       usbutils pciutils mtd-utils usbview hal setserial \
                        task-proper-tools mc screen findutils \
 	               mono jamvm perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
