@@ -1,6 +1,8 @@
 require php.inc
 
-PR = "r1"
+DEPENDS = "zlib libxml2 virtual/libiconv php-native"
+
+PR = "r2"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
@@ -10,56 +12,70 @@ export LIBS=" -lpthread "
 EXTRA_OECONF = "    --without-iconv \
  		    --enable-discard-path \
 		    --enable-sockets \
+                    --enable-pcntl \
     		    --enable-memory-limit \
     		    --enable-wddx \
                     --enable-embedded-mysqli \
                     --enable-magic-quotes \
-		    --with-zlib \
-                    --with-mysql="${STAGING_DIR_TARGET}${layout_exec_prefix}" \
-                    --with-mysqli="${STAGING_BINDIR_NATIVE}/mysql_config" \
-"
-
-EXTRA_OECONF += " --with-pear-php-cli=${STAGING_BINDIR} --with-libxml-dir=${STAGING_BINDIR_CROSS}"
+		    --with-zlib --with-zlib-dir = ${STAGING_LIBDIR}/.. \
+                    --with-libxml-dir = ${STAGING_BINDIR_CROSS} \
+#                   --with-mysql = "${STAGING_DIR_TARGET}${layout_exec_prefix}" \
+#                   --with-mysqli = "${STAGING_BINDIR_NATIVE}/mysql_config" \
+               "
 
 export LD_LIBRARY_PATH = "${STAGING_LIBDIR}"
-export PHP_NATIVE_DIR="${STAGING_BINDIR_NATIVE}"
-export PHP_PEAR_PHP_BIN="/usr/bin/php"
+export PHP_NATIVE_DIR = "${STAGING_BINDIR_NATIVE}"
+export PHP_PEAR_PHP_BIN = "${bindir}/php"
 
 do_configure_append() {
     find ${S} -type f | xargs sed -i 's:I/usr/include:I${STAGING_INCDIR}:g'
+}
+
+# fixme
+do_install_append() {
+    mv ${D}/${STAGING_DIR_NATIVE}/${sysconfdir} ${D}/${sysconfdir}
+    rm -rf ${D}/${STAGING_DIR_NATIVE}
+    rm -rf ${D}/.registry
+    rm -rf ${D}/.channels
+    rm -rf ${D}/.[a-z]*
 }
 
 PACKAGES = "${PN}-dbg \
             ${PN}-cli \
             ${PN}-pear \
             ${PN}-dev \
+            ${PN}-doc \
             ${PN} \
 "
 
 
-FILES_${PN}-dbg            =+"/usr/bin/.debug"
+FILES_${PN}-dbg            =+ "${bindir}/.debug"
 
-FILES_${PN}-cli            ="/usr/bin/php"
+FILES_${PN}-doc            += "${libdir}/php/doc" 
 
-FILES_${PN}-pear            ="/usr/bin/pear* /usr/bin/pecl \
-                             /usr/lib/php/PEAR \
-                             /usr/lib/php/PEAR.php \
-                             /usr/lib/php/System.php /usr/lib/php/peclcmd.php /usr/lib/php/pearcmd.php \
-                             /usr/lib/php/.channels  /usr/lib/php/.channels/.alias  \
-                             /usr/lib/php/.channels\__uri.reg \
-                             /usr/lib/php/.channels\pear.php.net.reg /usr/lib/php/.channels/pecl.php.net.reg \
-                             /usr/lib/php/.registry \
-                             /usr/lib/php/Archive/Tar.php \
-                             /usr/lib/php/Console/Getopt.php /usr/lib/php/OS/Guess.php \
-                             /usr/lib/php/.depdb /usr/lib/php/.depdblock /usr/lib/php/.filemap \
-                             /usr/lib/php/.lock"
+FILES_${PN}-cli            = "${bindir}/php"
 
-FILES_${PN}-dev            ="/usr/include/php /usr/include/build \
-                            /usr/bin/phpize /usr/bin/php-config"
+FILES_${PN}-pear            = "${bindir}/pear* ${bindir}/pecl \
+                             ${libdir}/php/PEAR \
+                             ${libdir}/php/PEAR.php \
+                             ${libdir}/php/System.php ${libdir}php/peclcmd.php ${libdir}/php/pearcmd.php \
+                             ${libdir}/php/.channels  ${libdir}/php/.channels/.alias  \
+                             ${libdir}/php/.channels\__uri.reg \
+                             ${libdir}/php/.channels\pear.php.net.reg ${libdir}/php/.channels/pecl.php.net.reg \
+                             ${libdir}/php/.registry \
+                             ${libdir}/php/Archive/Tar.php \
+                             ${libdir}/php/Console/Getopt.php ${libdir}/php/OS/Guess.php \
+                             ${sysconfdir}/pear.conf"
 
-FILES_${PN}                 ="/usr/lib/php"
-FILES_${PN}                +="/usr/bin"
 
-RDEPENDS_${PN}-pear         =${PN}
-RDEPENDS_${PN}-cli          =${PN}
-RDEPENDS_${PN}-dev          =${PN}
+FILES_${PN}-dev            = "${includedir}/php ${libdir}/build \
+                             ${bindir}/phpize ${bindir}/php-config \
+                             ${libdir}/php/.depdb ${libdir}/php/.depdblock ${libdir}/php/.filemap ${libdir}/php/.lock \
+                             ${libdir}/php/test "
+
+FILES_${PN}                 = "${libdir}/php"
+FILES_${PN}                += "${bindir}"
+
+RDEPENDS_${PN}-pear         = ${PN}
+RDEPENDS_${PN}-cli          = ${PN}
+RDEPENDS_${PN}-dev          = ${PN}
