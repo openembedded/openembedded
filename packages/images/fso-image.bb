@@ -107,7 +107,7 @@ PYTHON_INSTALL = "\
 ZHONE_INSTALL = "\
   gsm0710muxd \
   frameworkd \
-  fso-gspd \
+  fso-gpsd \
   zhone \
 "
 
