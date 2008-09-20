@@ -12,7 +12,7 @@ EXTRA_OECONF += " \
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
     ac_cv_path_DHCLIENT=/sbin/dhclient "
 
-SRC_URI  = "git://git.moblin.org/repos/projects/connman.git;proto=http \
+SRC_URI  = "git://git.moblin.org/repos/projects/connman.git;protocol=http \
             file://use_nm_in_cross_compiling.patch;patch=1\
             file://connman "
 
