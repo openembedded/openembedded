@@ -1,0 +1,32 @@
+--- kdenox/konq-embed/src/mainwindow_road.cc.old	2008-08-31 17:11:46.000000000 +0100
++++ kdenox/konq-embed/src/mainwindow_road.cc	2008-08-31 17:54:38.000000000 +0100
+@@ -396,8 +396,10 @@
+ 
+     bool exists = false;
+     int i = 0;
++    qDebug("setLocationBarURL 1");
+     if ( m_locationCombo->currentText().isEmpty() )
+         m_locationCombo->removeItem( m_locationCombo->currentItem() );
++    qDebug("setLocationBarURL 2");
+     for (; i < m_locationCombo->count(); ++i )
+         if ( m_locationCombo->text( i ) == url )
+         {
+@@ -409,14 +411,14 @@
+         m_locationCombo->setCurrentItem( i );
+     else
+     {
+-        URLCombo* filteringBox = dynamic_cast<URLCombo*>(m_locationCombo);
++/*        URLCombo* filteringBox = dynamic_cast<URLCombo*>(m_locationCombo);
+         if (filteringBox)
+-             filteringBox->addURL( url );
++            filteringBox->addURL( url );
+         else
+-        {
++        {*/
+             m_locationCombo->insertItem( url, 0 );
+             m_locationCombo->setCurrentItem( 0 );
+-        }
++        //}
+     }
+ }
+ 

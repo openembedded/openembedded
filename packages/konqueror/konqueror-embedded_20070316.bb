@@ -4,16 +4,18 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL GPL"
-PR = "r5"
+PR = "r6"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
 inherit autotools
 
-SRC_URI = "http://www.basyskom.de/uploads/175/35/kdenox_snapshot_Qt2_2007.02.12.tar.bz2 \
+SRC_URI = "http://www.basyskom.de/uploads/175/37/kdenox_snapshot_qt2_20070316.tar.bz2 \
 	   file://dont-use-kde-config.patch;patch=1 \
            file://konqe_new_opie.patch;patch=1 \
-	   file://konqe-kapplication.patch;patch=1"
+	   file://konqe-kapplication.patch;patch=1 \
+           file://fix_configure.patch;patch=1"
+#           file://fix_segfault.patch;patch=1"
 S = "${WORKDIR}/kdenox"
 
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"
@@ -21,7 +23,7 @@ export MOC = "${STAGING_BINDIR_NATIVE}/moc"
 export UIC = "${STAGING_BINDIR_NATIVE}/uic"
 #export exec_prefix = "${palmtopdir}"
 #export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DQT_NO_DOM -DENABLE_BOOKMARKS"
-export CXXFLAGS = "-fexceptions -fno-rtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DENABLE_BOOKMARKS"
+export CXXFLAGS = "-fexceptions -frtti -DKJS_VERBOSE=1 -DQT_THREAD_SUPPORT -DQ_OS_UNIX -DENABLE_BOOKMARKS"
 export PCRE_CONFIG = "invalid"
 # uncomment this for a static build
 # EXTRAFLAGS = "-lts"
@@ -46,7 +48,7 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--disable-static \
 	--enable-shared \
 	--disable-debug \
-	--with-gui=qpe \
+	--with-gui=road \
 	--with-ipv6-lookup=no \
 	--without-xinerama \
 #	--disable-scrollbars \
@@ -62,7 +64,7 @@ EXTRA_OECONF = '--prefix=${palmtopdir} \
 	--disable-selection \
 	--enable-final \
 	--enable-qt-embedded \
-#	--enable-rtti-embedded \
+	--enable-rtti-embedded \
 	--enable-mt \
 	--enable-qpe \
 	--enable-qt-mt \
