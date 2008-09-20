@@ -6,7 +6,7 @@ PE       = "1"
 PV       = "0.0+gitr${SRCREV}"
 S        = "${WORKDIR}/git"
 
-SRC_URI  = "git://moblin.org/repos/projects/libgdbus.git;proto=http"
+SRC_URI  = "git://git.moblin.org/repos/projects/libgdbus.git;protocol=http"
 
 inherit autotools pkgconfig
 
