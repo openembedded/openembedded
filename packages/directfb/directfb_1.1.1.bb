@@ -8,7 +8,7 @@ DEPENDS += "sysfsutils"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = " \
-    http://www.directfb.org/download/DirectFB/DirectFB-${PV}.tar.gz \
+    http://www.directfb.org/downloads/Old/DirectFB-${PV}.tar.gz \
     file://fix-pkgconfig-cflags.patch;patch=1 \
     file://fix-font-missing-char.patch;patch=1 \
     file://mkdfiff.patch;patch=1 \
