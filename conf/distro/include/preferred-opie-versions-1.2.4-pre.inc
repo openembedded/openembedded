@@ -221,7 +221,7 @@ PREFERRED_VERSION_opie-zsame = "${OPIE_VERSION}"
 PREFERRED_VERSION_opie-sh-snes = "${OPIE_VERSION}"
 PREFERRED_VERSION_opie-stumbler = "${OPIE_VERSION}"
 
-PREFERRED_VERSION_konqueror-embedded = "20070212"
+PREFERRED_VERSION_konqueror-embedded = "20070316"
 
 
 SRCDATE_opie-aboutapplet = "${OPIE_SRCDATE}"
