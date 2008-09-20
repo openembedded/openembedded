@@ -1,22 +1,24 @@
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
+MOZPV ?= "${PV}"
+
 PACKAGES =+ "${PN}-inspector"
 
 PACKAGES += "${PN}-sdk"
 
-FILES_${PN}-inspector = "	${libdir}/${PN}-${PV}/chrome/inspector* \
-				${libdir}/${PN}-${PV}/components/*nspector* \
-				${libdir}/${PN}-${PV}/extensions/inspector* \
-				${libdir}/${PN}-${PV}/defaults/preferences/inspector* \
+FILES_${PN}-inspector = "	${libdir}/${PN}-${MOZPV}/chrome/inspector* \
+				${libdir}/${PN}-${MOZPV}/components/*nspector* \
+				${libdir}/${PN}-${MOZPV}/extensions/inspector* \
+				${libdir}/${PN}-${MOZPV}/defaults/preferences/inspector* \
 				"
 FILES_${PN} = "${bindir}/${PN} \
                ${datadir}/applications/ \
 	       ${datadir}/pixmaps/ \
-	       ${libdir}/${PN}-${PV}/* \
-	       ${libdir}/${PN}-${PV}/.autoreg \
+	       ${libdir}/${PN}-${MOZPV}/* \
+	       ${libdir}/${PN}-${MOZPV}/.autoreg \
 	       ${bindir}/defaults"
 FILES_${PN}-dev += "${datadir}/idl ${bindir}/${PN}-config"
-FILES_${PN}-sdk += "${libdir}/${PN}-devel-${PV}"
+FILES_${PN}-sdk += "${libdir}/${PN}-devel-${MOZPV}"
 FILES_${PN}-dbg += "	${libdir}/${PN}-*/.debug \
 			${libdir}/${PN}-*/*/.debug \
 			${libdir}/${PN}-*/*/*/.debug \	
