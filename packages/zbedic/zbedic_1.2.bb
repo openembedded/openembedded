@@ -1,21 +1,23 @@
 DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
+HOMEPAGE = "http://bedic.sourceforge.net/"
+AUTHOR = "Rafal Mantiuk <rafm@users.sourceforge.net>"
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-0.tgz \
+SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-2.tgz \
            file://opie-icons.patch;patch=1 \
-           file://version.patch;patch=1 \
            file://qtopia17.patch;patch=1"
 
 S = "${WORKDIR}"
 
 inherit opie
 export OE_QMAKE_LINK="${CXX}"
+export OE_QMAKE_CXXFLAGS=" -DVERSION=\\"${PV}.2\\" -DPREFIX_PATH=\\"/usr\\""
 
 EXTRA_QMAKEVARS_POST += "INCLUDEPATH+=${STAGING_INCDIR}/libbedic LIBS+=-lbedic LIBS+=-lsqlite3 TARGET=zbedic"
 
@@ -38,5 +40,6 @@ do_install() {
 	rm ${D}${palmtopdir}/pics/zbedic/forward.png
 }
 
-PACKAGES =+ "zbedic-help-en"
-FILES_zbedic-help-en = "${palmtopdir}/help/html/*"
+PACKAGES = "${PN}-dbg ${PN}-doc ${PN} ${PN}-dev"
+
+FILES_${PN}-doc += "${palmtopdir}/help"
