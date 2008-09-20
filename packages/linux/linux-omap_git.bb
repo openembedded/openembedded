@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 SRCREV = "de1121fdb899f762"
 
 PV = "2.6.26+2.6.27-rc6+${PR}+git${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -42,6 +42,7 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
                              "
 
 SRC_URI_append_omap3evm = " \
+           file://OMAP3EVM_TWL4030-Keypad-irq-error-fix.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"
