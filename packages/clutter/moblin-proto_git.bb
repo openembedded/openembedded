@@ -3,7 +3,7 @@ DEPENDS = "clutter-box2d"
 PV = "0.0+git${SRCREV}"
 PR = "r1"
 
-SRC_URI = "git://moblin.org/repos/users/pippin/prototype.git/;protocol=http \
+SRC_URI = "git://git.moblin.org/repos/users/pippin/prototype.git/;protocol=http \
            file://paths.patch;patch=1"
 
 S = "${WORKDIR}/git"
