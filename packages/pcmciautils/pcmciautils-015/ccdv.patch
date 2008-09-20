@@ -1,0 +1,34 @@
+From: Olivier Blin <blino@mandriva.com>
+Date: Wed, 13 Aug 2008 20:30:14 +0000 (+0200)
+Subject: fix parallel build of ccdv
+X-Git-Url: http://git.kernel.org/?p=linux%2Fpcmcia%2Fpcmciautils.git;a=commitdiff_plain;h=ff72508f29567028597d8816bdf8b55c3c61a314
+
+fix parallel build of ccdv
+
+Parallel build was broken because ccdv was not necessarily built
+before the object files were built (occured with make -j4).
+
+Signed-off-by: Olivier Blin <blino@mandriva.com>
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+
+diff --git a/Makefile b/Makefile
+index cc30ae4..e1d7c85 100644
+--- a/Makefile
++++ b/Makefile
+@@ -208,11 +208,12 @@ UDEV_RULES += udev/rules-end
+ 
+ all: ccdv $(PCCARDCTL) $(PCMCIA_CHECK_BROKEN_CIS) $(PCMCIA_SOCKET_STARTUP_BUILD) udevrules
+ 
+-ccdv:
++ccdv: build/ccdv
++build/ccdv: build/ccdv.c
+ 	@echo "Building ccdv"
+-	@$(HOSTCC) -O1 build/ccdv.c -o build/ccdv
++	@$(HOSTCC) -O1 $< -o $@
+ 
+-.c.o:
++%.o : %.c ccdv
+ 	$(QUIET) $(CC) $(CFLAGS) -c -o $@ $<
+ 
+ %.c %.h : %.y
