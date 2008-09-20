@@ -79,6 +79,11 @@ TARGET_FPU_armv6 ?= "hard"
 TARGET_FPU_armv7a ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
+# webkit-gtk and cairo have alignment issues with double instructions on armv5 so
+# disable them here
+TARGET_CC_ARCH_pn-webkit-gtk_armv5te = "-march=armv4t"
+TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
+
 #Set the right arch for the feeds
 #Alphabetically sorted
 
