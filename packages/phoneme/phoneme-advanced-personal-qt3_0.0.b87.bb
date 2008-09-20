@@ -1,3 +1,5 @@
+PR = "r1"
+
 require phoneme-advanced.inc
 
 BUILDREV = "b87"

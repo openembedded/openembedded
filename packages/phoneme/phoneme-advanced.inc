@@ -41,9 +41,9 @@ do_install() {
 
 	unzip cdc/install/${PN}.zip -d ${D}/${libdir_jvm}
 
-	# Additional link named cvm
+	# Additional link named cvm-${PME_PROFILE}
 	install -d ${D}/${bindir}
-	ln -sf ${libdir_jvm}/${PN}/bin/cvm ${D}${bindir}/cvm
+	ln -sf ${libdir_jvm}/${PN}/bin/cvm ${D}${bindir}/cvm-${PME_PROFILE}
 }
 
 do_configure() {
