@@ -1,13 +1,14 @@
 DESCRIPTION = "Gives a fake root environment"
-HOMEPAGE = "http://joostje.op.het.net/fakeroot/index.html"
+HOMEPAGE = "http://fakeroot.alioth.debian.org/"
 SECTION = "base"
 LICENSE = "GPL"
 # fakeroot needs getopt which is provided by the util-linux package
 RDEPENDS = "util-linux"
 PR = "r1"
 
-SRC_URI = "http://openzaurus.org/mirror/fakeroot_${PV}.tar.gz"
-
+SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
+           file://configure-libtool.patch;patch=1"
+	    
 inherit autotools
 
 do_stage() {
