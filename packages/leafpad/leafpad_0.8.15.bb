@@ -4,7 +4,7 @@ HOMEPAGE = "http://tarot.freeshell.org/leafpad"
 AUTHOR = "Tarot Osuji <tarot@sdf.lonestar.org>"
 SECTION = "x11/applications"
 LICENSE = "GPLv2"
-DEPENDS = "gtk+"
+DEPENDS = "gtk+ intltool-native"
 SRC_URI = "http://savannah.nongnu.org/download/${PN}/${PN}-${PV}.tar.gz"
 
 PR = "r1"
