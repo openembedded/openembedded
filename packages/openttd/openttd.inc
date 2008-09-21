@@ -30,7 +30,7 @@ do_configure() {
     --prefix-dir=${prefix} \
     --binary-dir=bin \
     --with-midi=/bin/true \
-    --with-zlib \
+    --with-zlib=${STAGING_LIBDIR} \
     --with-png \
     --with-freetype \
     --cc-build=gcc \
