@@ -17,6 +17,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 KLIBC_ARCH = '${TARGET_ARCH}'
 KLIBC_ARCH_armeb = 'arm'
 KLIBC_ARCH_mipsel = 'mips'
+KLIBC_ARCH_x86 = 'i386'
+KLIBC_ARCH_i486 = 'i386'
+KLIBC_ARCH_i586 = 'i386'
+KLIBC_ARCH_i686 = 'i386'
+KLIBC_ARCH_pentium = 'i386'
 
 # the klibc code contains ARM instructions (for ARM), this
 # could be fixed, but for the moment:
