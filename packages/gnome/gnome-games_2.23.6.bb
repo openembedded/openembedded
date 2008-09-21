@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome distutils-base gconf
 
@@ -19,6 +19,11 @@ do_configure_prepend() {
 	done
 }
 
+do_configure_prepend() {
+	for i in $(find ${S} -name "Makefile") ; do
+		sed -i -e s:'-I /usr/include -I /usr/local/include'::g $i
+	done	
+}
 
 FILES_${PN}-doc += " ${datadir}/gnome/help"
 FILES_${PN}-dbg += " ${bindir}/.debug ${libdir}/gnome-games/.debug"
