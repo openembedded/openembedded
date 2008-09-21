@@ -3,9 +3,7 @@ inherit native
 DEPENDS = "zlib-native"
 
 do_stage () {
-        install -d ${STAGING_INCDIR}/curl
-        install -m 0644 ${S}/include/curl/*.h ${STAGING_INCDIR}/curl/
-        oe_libinstall -so -a -C lib libcurl ${STAGING_LIBDIR}
+	autotools_stage_all
 }
 
 do_install() {

@@ -1,6 +1,6 @@
 require gnash.inc
 
-PR = "r2"
+PR = "r3"
 
 EXTRA_OECONF += " --without-included-ltdl \
                   --with-ltdl-include=${STAGING_INCDIR} \

@@ -1,11 +1,13 @@
-DESCRIPTION = "A dictionary application for Qt/E based Palmtop Environments"
-SECTION = "opie/applications"
+DESCRIPTION = "Library for bedic dictionary"
+HOMEPAGE = "http://bedic.sourceforge.net/"
+AUTHOR = "Rafal Mantiuk <rafm@users.sourceforge.net>"
+SECTION = "opie/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "sqlite3"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/zbedic/misc"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/libbedic_${PV}-0.tgz"
 
@@ -16,7 +18,6 @@ inherit palmtop
 # pass VERSION as a string \\"${PV}.0\\"
 export OE_QMAKE_CXXFLAGS="-fexceptions -fno-rtti ${CXXFLAGS} -DVERSION=\\"${PV}.0\\""
 
-# no sharedlib, only as staticlib
 do_configure() {
         qmake -project && qmake -makefile -t lib -spec ${QMAKESPEC} CONFIG=console CONFIG+=staticlib CONFIG+=sharedlib -after \
         TARGET=bedic \
@@ -38,5 +39,4 @@ do_stage() {
     oe_libinstall -a libbedic ${STAGING_LIBDIR}
 }
 
-FILES_${PN} = "${libdir}"
-FILES_${PN}-dev = "${includedir}"
+FILES_${PN}-dev = "${includedir} ${libdir}"

@@ -10,7 +10,6 @@ DEPENDS = "zlib libtool classpath cacaoh-native virtual/javac-native"
 # and cannot be satisfied with a package that provides classpath.
 RDEPENDS = "classpath"
 
-PROVIDES = "cacao virtual/java"
 RPROVIDES_cacao = "java2-runtime"
 
 inherit java autotools update-alternatives
