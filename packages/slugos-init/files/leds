@@ -180,12 +180,22 @@ sysled(){
 #  does nothing if there is no beep executable, is very
 #  quiet in the presence of errors
 beep(){
-	local arg
+	local arg devices module
 	arg=
 	test "$1" = beep && shift
 	if test -x /bin/beep
 	then
-		test -c /dev/buzzer && arg="-e /dev/buzzer"
+		devices=`ls -d /sys/class/input/event*`
+		for device in $devices
+		do
+			module=`egrep PHYSDEVDRIVER $device'/uevent' | cut -d '=' -f 2`
+			if test "$module" = "ixp4xx-beeper";
+			then
+				devnode=`echo "$device" | cut -d '/' -f 5`
+				arg="-e /dev/input/"$devnode
+				break
+			fi
+		done
 		/bin/beep $arg "$@" 2>/dev/null
 	fi
 	return 0
