@@ -6,6 +6,8 @@ DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
 PR = "r1"
 
+PARALLEL_MAKE = ""
+
 inherit gnome flow-lossage
 
 SRC_URI += "file://remove-docs.patch;patch=1"
