@@ -15,7 +15,7 @@ SRC_URI = "\
 	file://${PV}-gcc43.patch;patch=1 \
 	"
 
-PR = "r0"
+PR = "r1"
 
 BJAM_TOOLS   = "--toolset=gcc \
 		'-sGCC=${CC} '${BJAM_CONF} \
@@ -38,4 +38,15 @@ BJAM_OPTS    = '${BJAM_TOOLS} \
 do_configure() {
   echo "import toolset : using ;" > tools/build/v2/user-config.jam
 	echo "using gcc : : ${CC} : <cflags>${CFLAGS} <cxxflags>${CXXFLAGS} <linkflags>${LDFLAGS} ;" >> tools/build/v2/user-config.jam
+}
+
+do_install_append() {
+	# Since boost does not provide library files in the form
+  # lib<name>.so.<abi> and a symlink pointing to this file
+  # we need to do this manually.
+	for F in `find ${D}${libdir} -name "*.so" -maxdepth 1`; do
+		echo renaming $F to $F.${PV}
+		mv $F $F.${PV}
+		ln -sf `basename $F`.${PV} $F
+	done
 }
