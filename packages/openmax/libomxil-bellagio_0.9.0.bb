@@ -2,7 +2,7 @@ DESCRIPTION = "OpenMAX Integration Layer (IL) is a standard API to access Multim
 LICENSE = "LGPLv2"
 DEPENDS = "libmad alsa-lib ffmpeg"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omxil/${PN}-${PV}.tar.gz"
 
