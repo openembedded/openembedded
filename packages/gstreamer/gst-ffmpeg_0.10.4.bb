@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
-PR = "r6"
+PR = "r7"
 
 inherit autotools pkgconfig
 
