@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/${APPNAME}"
 
@@ -25,6 +25,7 @@ do_install() {
 	install -m 0644 ${WORKDIR}/help/${APPNAME}/*.html ${D}${palmtopdir}/help/${APPNAME}/
 	install -d ${D}${palmtopdir}/share/config
 	install -m 0644 ${WORKDIR}/share/config/*.cfg  ${D}${palmtopdir}/share/config/
+	rm -f ${D}${palmtopdir}/pics/opie-sh-scripts/kbdctrl.png
 }
 
 PACKAGES += " opie-sh-microkbd opie-sh-diskfree opie-sh-fsmounter opie-sh-hostlist \
@@ -59,4 +60,5 @@ FILES_opie-sh-ssh-askpass = " ${palmtopdir}/bin/opie-sh-ssh-askpass.sh"
 FILES_opie-sh-stowawayctrl = " ${palmtopdir}/bin/stowctrl.sh ${palmtopdir}/apps/Opie-SH/stowctrl.desktop ${palmtopdir}/pics/opie-sh-scripts/stowctrl.png"
 FILES_opie-sh-usbnetctrl = " ${palmtopdir}/bin/usbnetctrl.sh ${palmtopdir}/apps/Opie-SH/usbnetctrl.desktop ${palmtopdir}/pics/opie-sh-scripts/usbnetctrl.png"
 FILES_opie-sh-wavelanchooser = " ${palmtopdir}/bin/opie-sh-wavelanchooser.sh ${palmtopdir}/apps/Opie-SH/opie-sh-wavelanchooser.desktop ${palmtopdir}/pics/opie-sh-scripts/qtwavelan.png"
-FILES_opie-sh = " ${palmtopdir}/bin/opie-sh-howto.sh ${palmtopdir}/bin/opie-sh ${palmtopdir}/apps/Opie-SH/opie-sh.desktop ${palmtopdir}/pics/opie-sh/*.png ${palmtopdir}/opie-sh/*.html"
+FILES_${PN} = " ${palmtopdir}/bin/opie-sh-howto.sh ${bindir}/opie-sh ${palmtopdir}/apps/Opie-SH/opie-sh.desktop ${palmtopdir}/pics/opie-sh/*.png ${palmtopdir}/help/opie-sh/*.html"
+

@@ -1,0 +1,214 @@
+Index: opie-sh/scripts/diskfree.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/diskfree.sh,v
+retrieving revision 1.3
+diff -u -d -r1.3 diskfree.sh
+--- opie-sh/scripts/diskfree.sh	14 Aug 2004 12:05:39 -0000	1.3
++++ opie-sh/scripts/diskfree.sh	21 Sep 2008 13:22:55 -0000
+@@ -17,7 +17,7 @@
+ # 20020524-5 - bugfix
+ # 20020524-1 - initial release
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ # there must be a better way to do this with sed, but i had no time
+ # time to look into this yet...
+Index: opie-sh/scripts/filesystem_mounter.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/filesystem_mounter.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 filesystem_mounter.sh
+--- opie-sh/scripts/filesystem_mounter.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/filesystem_mounter.sh	21 Sep 2008 13:22:55 -0000
+@@ -22,7 +22,7 @@
+ # 20020517-1 - nicer fullscreen, added about, tried icon
+ #
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ ######################################################################
+ # subroutines
+Index: opie-sh/scripts/killproc.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/killproc.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 killproc.sh
+--- opie-sh/scripts/killproc.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/killproc.sh	21 Sep 2008 13:22:55 -0000
+@@ -18,7 +18,7 @@
+ # 20020519-1 - added icon to output
+ # 20020517-1 - nicer fullscreen, added about, tried icon
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ ######################################################################
+ # subroutines
+Index: opie-sh/scripts/launcher_refresh.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/launcher_refresh.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 launcher_refresh.sh
+--- opie-sh/scripts/launcher_refresh.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/launcher_refresh.sh	21 Sep 2008 13:22:55 -0000
+@@ -14,7 +14,7 @@
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ launcher_refresh() {
+ (	echo "<img src=$OPIEDIR/pics/opie-sh-scripts/launcher_refresh.png>"
+@@ -36,9 +36,9 @@
+ #
+ # main
+ 
+-$OPIEDIR/bin/qcop QPE/TaskBar "reloadInputMethods()"
+-#$OPIEDIR/bin/qcop QPE/System "restart()"
+-$OPIEDIR/bin/qcop QPE/System "linkChanged(QString)"
++/usr/bin/qcop QPE/TaskBar "reloadInputMethods()"
++#/usr/bin/qcop QPE/System "restart()"
++/usr/bin/qcop QPE/System "linkChanged(QString)"
+ 
+ launcher_refresh
+ cleanup
+Index: opie-sh/scripts/logviewer.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/logviewer.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 logviewer.sh
+--- opie-sh/scripts/logviewer.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/logviewer.sh	21 Sep 2008 13:22:55 -0000
+@@ -17,7 +17,7 @@
+ # 20020526-1a - initial release...
+ #
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ INITPATH=/etc/init.d
+ 
+ ######################################################################
+Index: opie-sh/scripts/microkbd.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/microkbd.sh,v
+retrieving revision 1.1
+diff -u -d -r1.1 microkbd.sh
+--- opie-sh/scripts/microkbd.sh	18 Oct 2004 22:00:20 -0000	1.1
++++ opie-sh/scripts/microkbd.sh	21 Sep 2008 13:22:55 -0000
+@@ -19,7 +19,7 @@
+ # 20020517-2 - bugfixed fullscreen, added info about ifconfig
+ # 20020517-1 - added about, fullscreen and icon
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ ######################################################################
+ # subroutines
+Index: opie-sh/scripts/opie-sh-ssh-askpass.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/opie-sh-ssh-askpass.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 opie-sh-ssh-askpass.sh
+--- opie-sh/scripts/opie-sh-ssh-askpass.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/opie-sh-ssh-askpass.sh	21 Sep 2008 13:22:55 -0000
+@@ -2,7 +2,7 @@
+ 
+ # opie-sh-ssh-askpass -- ssh-askpass utility using opie-sh
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ exec $OPIE_SH -i -p -t "OpenSSH" -g -L "<SMALL>$@" 2>/dev/null
+ 
+Index: opie-sh/scripts/opie-sh-wavelanchooser.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/opie-sh-wavelanchooser.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 opie-sh-wavelanchooser.sh
+--- opie-sh/scripts/opie-sh-wavelanchooser.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/opie-sh-wavelanchooser.sh	21 Sep 2008 13:22:55 -0000
+@@ -19,7 +19,7 @@
+ # 20020524-1 - initial working release planned
+ #
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ about() {
+ 	( echo "<img src=$OPIEDIR/pics/opie-sh-scripts/qtwavelan.png>"
+Index: opie-sh/scripts/rsyncme.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/rsyncme.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 rsyncme.sh
+--- opie-sh/scripts/rsyncme.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/rsyncme.sh	21 Sep 2008 13:22:55 -0000
+@@ -18,7 +18,7 @@
+ #
+ 
+ CFG=$OPIEDIR/share/config/rsyncme.cfg
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ update_cfg() {
+ 	# check if dir is in CFG and if not add it
+Index: opie-sh/scripts/service_manager.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/service_manager.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 service_manager.sh
+--- opie-sh/scripts/service_manager.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/service_manager.sh	21 Sep 2008 13:22:55 -0000
+@@ -19,7 +19,7 @@
+ # 20020517-1 - added about and fullscreen
+ #
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ INITPATH=/etc/init.d
+ 
+ ######################################################################
+Index: opie-sh/scripts/stowctrl.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/stowctrl.sh,v
+retrieving revision 1.2
+diff -u -d -r1.2 stowctrl.sh
+--- opie-sh/scripts/stowctrl.sh	14 Aug 2004 12:05:39 -0000	1.2
++++ opie-sh/scripts/stowctrl.sh	21 Sep 2008 13:22:55 -0000
+@@ -19,7 +19,7 @@
+ # 20020517-2 - bugfixed fullscreen, added info about ifconfig
+ # 20020517-1 - added about, fullscreen and icon
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ ######################################################################
+ # subroutines
+Index: opie-sh/scripts/usbnetctrl.sh
+===================================================================
+RCS file: /cvs/opie/noncore/tools/opie-sh/scripts/usbnetctrl.sh,v
+retrieving revision 1.3
+diff -u -d -r1.3 usbnetctrl.sh
+--- opie-sh/scripts/usbnetctrl.sh	14 Aug 2004 12:05:39 -0000	1.3
++++ opie-sh/scripts/usbnetctrl.sh	21 Sep 2008 13:22:55 -0000
+@@ -18,7 +18,7 @@
+ # 20020517-2 - bugfixed fullscreen, added info about ifconfig
+ # 20020517-1 - added about, fullscreen and icon
+ 
+-OPIE_SH=$OPIEDIR/bin/opie-sh
++OPIE_SH=opie-sh
+ 
+ ######################################################################
+ # subroutines
+@@ -30,7 +30,7 @@
+ 	  echo "activate / deactivate the usbnet-driver (on ipaq)"
+ 	  echo "<p>"
+ 	  echo "To use it at first, you need to change the ifconfig"
+-	  echo "line in $OPIEDIR/bin/usbnetctrl.sh."
++	  echo "line in $0."
+         )  | $OPIE_SH -t "usbnet control" -f  &
+ 	SCREENCLEAN=$!
+ 	sleep 1

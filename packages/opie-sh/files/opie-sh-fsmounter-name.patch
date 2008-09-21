@@ -1,0 +1,11 @@
+--- ../../apps/Opie-SH/filesystem_mounter.desktop	7 Mar 2004 12:33:12 -0000	1.8
++++ ../../apps/Opie-SH/filesystem_mounter.desktop	21 Sep 2008 13:14:03 -0000
+@@ -2,7 +2,7 @@
+ Exec=filesystem_mounter.sh
+ Icon=opie-sh-scripts/fsmounter
+ Type=Application
+-Name=
++Name=Filesystem Mounter
+ Comment=Frontend to mount/unmount filesystems
+ Name[es]=Montador
+ Comment[es]=Interfaz para montar/desmontar sistemas de ficheros

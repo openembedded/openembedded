@@ -6,4 +6,6 @@ SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/tools/opie-sh \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/help \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/share \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \
-           ${HANDHELDS_CVS};tag=${TAG};module=opie/bin"
+           ${HANDHELDS_CVS};tag=${TAG};module=opie/bin \
+           file://opie-sh-path.patch;patch=1 \
+           file://opie-sh-fsmounter-name.patch;patch=1"
