@@ -2,7 +2,7 @@ SECTION = "x11/utils"
 inherit gpe
 LICENSE = "GPL"
 DESCRIPTION = "Clipboard management application"
-DEPENDS = "virtual/libx11"
+DEPENDS = "virtual/libx11 libxpm"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
 PR = "r2"
 

@@ -40,11 +40,11 @@ do_report_success() {
 for machine in efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 
 do
         BUILD_MACHINE=$machine
-	BUILD_CLEAN="qmake-native qmake2-native"
+	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free"
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
                        gdb gdbserver strace \
 		       usbutils pciutils mtd-utils usbview hal setserial \
-                       task-proper-tools mc screen findutils \
+                       task-proper-tools mc screen findutils fakeroot \
 	               mono jamvm perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany fennec minimo openmoko-browser2 \

@@ -1,16 +1,14 @@
-Index: zbedic/src/zbedic.cpp
-===================================================================
---- zbedic.orig/src/zbedic.cpp	2006-03-15 11:24:12.000000000 +0100
-+++ zbedic/src/zbedic.cpp	2006-03-15 11:30:21.000000000 +0100
-@@ -129,9 +129,9 @@
-   // ========== create actions
+--- zbedic/src/zbedic.cpp.old	2008-09-20 14:36:24.000000000 -0500
++++ zbedic/src/zbedic.cpp	2008-09-20 14:37:21.000000000 -0500
+@@ -142,9 +142,9 @@ ZBEDic::ZBEDic(QWidget *parent, const ch
    action[TB_SwitchDictionaries] = createAction( tr( "Switch dictionaries" ), "zbedic/switch_dictionary",
      SLOT(switchToPreviousDict()), CTRL+Key_S );
--  action[TB_Back] = createAction( tr( "History previous" ), "zbedic/back",
-+  action[TB_Back] = createAction( tr( "History previous" ), "back",
+   action[TB_ShowHistory] = createAction( tr( "Show history" ), "zbedic/history", SLOT(showHistoryPopup()), CTRL+Key_H );
+-  action[TB_Back] = createAction( tr( "Go back" ), "zbedic/back",
++  action[TB_Back] = createAction( tr( "Go back" ), "back",
      SLOT(navigationPrevious()), Key_End );
--  action[TB_Forward] = createAction( tr( "History next" ), "zbedic/forward",
-+  action[TB_Forward] = createAction( tr( "History next" ), "forward",
+-  action[TB_Forward] = createAction( tr( "Go forward" ), "zbedic/forward",
++  action[TB_Forward] = createAction( tr( "Go forward" ), "forward",
      SLOT(navigationNext()), Key_Home );
    action[TB_LookupSelection] = createAction( tr( "Lookup selection" ), "zbedic/lookup_selection",
      SLOT(lookupSelection()), CTRL+Key_L );

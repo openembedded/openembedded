@@ -1,4 +1,4 @@
-DESCRIPTION = "Library for bedic dictionary"
+DESCRIPTION = "Library to handle bedic dictionary"
 HOMEPAGE = "http://bedic.sourceforge.net/"
 AUTHOR = "Rafal Mantiuk <rafm@users.sourceforge.net>"
 SECTION = "opie/libs"
