@@ -19,7 +19,7 @@ do_configure_prepend() {
 	done
 }
 
-do_configure_prepend() {
+do_configure_append() {
 	for i in $(find ${S} -name "Makefile") ; do
 		sed -i -e s:'-I /usr/include -I /usr/local/include'::g $i
 	done	
