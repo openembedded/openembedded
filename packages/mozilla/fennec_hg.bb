@@ -2,10 +2,10 @@ DEPENDS += "cairo alsa-lib "
 
 # Yes, we'll need to bump PE later on :(
 PV = "1.0a1pre"
-PR = "r5"
+PR = "r6"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=31c03e2ff02d \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=bcea2e901482 \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7bfd2ee7016f \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=a48464d3ea42 \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
