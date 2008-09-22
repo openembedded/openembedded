@@ -6,7 +6,10 @@ PR = "r0"
 
 SRC_URI += "file://Makefile.in.patch;patch=1"
 
-EXTRA_OECONF = " --disable-gui --enable-largefile --without-subdirs "
+EXTRA_OECONF = " --disable-gui \
+                 --enable-largefile \
+                 --enable-gpe \
+                 --without-subdirs"
 
 LEAD_SONAME = "libwx_base-2.8.so"
 

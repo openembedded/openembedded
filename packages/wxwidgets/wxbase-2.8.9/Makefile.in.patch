@@ -1,6 +1,6 @@
---- wxBase-2.8.7/Makefile.in.old	2008-03-30 01:04:57.000000000 -0500
-+++ wxBase-2.8.7/Makefile.in	2008-03-30 01:05:58.000000000 -0500
-@@ -11331,13 +11331,11 @@ COND_WXUSE_REGEX_BUILTIN___LIB_REGEX_p =
+--- wxBase-2.8.9/Makefile.in.old	2008-09-22 10:13:30.000000000 -0500
++++ wxBase-2.8.9/Makefile.in	2008-09-22 10:17:44.000000000 -0500
+@@ -11339,13 +11339,11 @@ COND_WXUSE_REGEX_BUILTIN___LIB_REGEX_p =
  
  ### Targets: ###
  
@@ -12,7 +12,7 @@
  	$(INSTALL_DIR) $(DESTDIR)$(datadir)/aclocal
  	(cd $(srcdir) ; $(INSTALL_DATA)  wxwin.m4 $(DESTDIR)$(datadir)/aclocal)
 -	$(INSTALL_DIR) $(DESTDIR)$(datadir)/bakefile/presets
--	(cd $(srcdir)/build/bakefiles/wxpresets/presets/ ; $(INSTALL_DATA)  wx.bkl wx_unix.bkl wx_win32.bkl $(DESTDIR)$(datadir)/bakefile/presets)
+-	(cd $(srcdir)/build/bakefiles/wxpresets/presets ; $(INSTALL_DATA)  wx.bkl wx_unix.bkl wx_win32.bkl $(DESTDIR)$(datadir)/bakefile/presets)
  	$(INSTALL_DIR) $(DESTDIR)$(libdir)/wx/include/$(TOOLCHAIN_FULLNAME)/wx
  	for f in setup.h $(RCDEFS_H); do \
  	if test ! -d $(DESTDIR)$(libdir)/wx/include/$(TOOLCHAIN_FULLNAME)/wx/`dirname $$f` ; then \
