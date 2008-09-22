@@ -1,7 +1,7 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-PR = "r0"
+PR = "r1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://cross_compile.patch;patch=1"
 
@@ -40,6 +40,7 @@ do_stage () {
 	install -m 0755 libtoolize ${STAGING_BINDIR}/libtoolize
 
 	oe_libinstall -a -so -C libltdl libltdl ${STAGING_LIBDIR}
+	install -d ${STAGING_INCDIR}
 	install -m 0644 libltdl/ltdl.h ${STAGING_INCDIR}/
 
 	install -d ${STAGING_DATADIR}/libtool/config/
