@@ -9,7 +9,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "libsdl-net libpng zlib freetype fontconfig"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/openttd/openttd-${PV}-source.tar.bz2"
+SRC_URI = "http://binaries.openttd.org/releases/${PV}/${P}-source.tar.bz2"
 
 APPIMAGE = "media/openttd.48.png"
 
