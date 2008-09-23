@@ -18,6 +18,7 @@ do_configure_prepend () {
 }
 
 export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
+export JAVACFLAGS="-nowarn"
 
 # Note: the --with-ecj options seems redundant but is
 # for compatibility with older classpath versions.
