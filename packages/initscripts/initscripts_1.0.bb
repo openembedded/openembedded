@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r107"
+PR = "r108"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -124,4 +124,9 @@ do_install () {
 	fi
 
 	install -m 0755		${WORKDIR}/device_table.txt		${D}${sysconfdir}/device_table
+}
+
+# Angstrom doesn't support devfs
+do_install_append_angstrom () {
+	rm ${D}${sysconfdir}/init.d/devices ${D}${sysconfdir}/rcS.d/S05devices
 }
