@@ -5,14 +5,13 @@ LICENSE = "GPL"
 
 DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/${PN}-${PV}.tar.bz2"
 
 EXTRA_OECONF = "\
 	--enable-tinygui \
 	--enable-editor \
-	--enable-lite \
 	--enable-lowmem \
 	--with-boost=${STAGING_INCDIR} \
 	--with-freetype=${STAGING_INCDIR} \
@@ -22,14 +21,22 @@ EXTRA_OECONF = "\
 
 inherit autotools
 
-PACKAGES = "wesnoth-editor wesnoth-doc wesnoth-music \
+PACKAGES = "wesnoth-editor wesnoth-doc wesnoth-music wesnoth-sounds \
 	wesnoth-aoi wesnoth-did wesnoth-ei wesnoth-httt wesnoth-l \
 	wesnoth-nr wesnoth-sof wesnoth-sotbe wesnoth-thot wesnoth-trow \
 	wesnoth-tsg wesnoth-tb wesnoth-utbs \
 	wesnoth-data \
+	wesnoth-all-campaigns \
 	wesnoth-all \
 	wesnoth wesnoth-dbg \
 	"
+
+DESCRIPTION_wesnoth-editor = "Map Editor for The Battle for Wesnoth"
+DESCRIPTION_wesnoth-all = "The Battle for Wesnoth with all campaigns, music and sounds"
+DESCRIPTION_wesnoth-all-campaigns = "The Battle for Wesnoth with all campaigns."
+DESCRIPTION_wesnoth-sounds = "Optional sound package for The Battle for Wesnoth"
+DESCRIPTION_wesnoth-music = "Optional music package for The Battle for Wesnoth"
+DESCRIPTION_wesnoth-data = "Mandatory data package for The Battle for Wesnoth"
 
 do_install_append() {
 	# icons directory should not be packaged/installed
@@ -42,20 +49,24 @@ RDEPENDS_wesnoth = "wesnoth-data"
 
 RDEPENDS_wesnoth-editor = "wesnoth-data"
 
-RDEPENDS_wesnoth-all = "wesnoth wesnoth-music \
+RDEPENDS_wesnoth-all-campaigns = "wesnoth \
 	wesnoth-aoi wesnoth-did wesnoth-ei wesnoth-httt wesnoth-l \
 	wesnoth-nr wesnoth-sof wesnoth-sotbe wesnoth-thot wesnoth-trow \
 	wesnoth-tsg wesnoth-tb wesnoth-utbs"
 
 # Installing wesnoth-all should pull everything in (like in Debian).
-ALLOW_EMPTY_${PN}-all = "1"
+RDEPENDS_wesnoth-all = "wesnoth wesnoth-sounds wesnoth-music"
 
 FILES_wesnoth-music = "\
 	${datadir}/wesnoth/data/core/music \
 "
 
+FILES_wesnoth-sounds = "\
+	${datadir}/wesnoth/data/core/sounds \
+"
+
 # Picks up remaining translations and data. Must be packaged after
-# wesnoth-music and all campaigns.
+# wesnoth-music, wesnoth-sounds and all campaigns.
 FILES_wesnoth-data = "\
   ${datadir}/wesnoth/sounds \
   ${datadir}/wesnoth/images \
