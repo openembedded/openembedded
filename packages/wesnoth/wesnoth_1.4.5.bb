@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/${PN}-${PV}.tar.bz2"
 
@@ -32,7 +32,8 @@ PACKAGES = "wesnoth-editor wesnoth-doc wesnoth-music \
 	"
 
 do_install_append() {
-	if [ -f ${D}${datadir}/wesnoth/icons ]; then
+	# icons directory should not be packaged/installed
+	if [ -d ${D}${datadir}/wesnoth/icons ]; then
 		rm -rf ${D}${datadir}/wesnoth/icons
 	fi
 }
