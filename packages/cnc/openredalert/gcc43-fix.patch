@@ -1,0 +1,13 @@
+Index: openredalert-0.0+svnr438-r0/src/misc/Compression.h
+===================================================================
+--- openredalert-0.0+svnr438-r0.orig/src/misc/Compression.h	2008-09-21 15:20:33.000000000 +0200
++++ openredalert-0.0+svnr438-r0/src/misc/Compression.h	2008-09-21 15:21:10.000000000 +0200
+@@ -20,6 +20,8 @@
+ 
+ #include "SDL/SDL_types.h"
+ 
++#include <cstring>
++
+ /** 
+  * Various decompression routines for format80, format40, and 
+  * format20 type graphics
