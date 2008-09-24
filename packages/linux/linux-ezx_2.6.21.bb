@@ -8,6 +8,8 @@ require linux.inc
 
 RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 
+CFLAGS += "-DPATH_MAX=256"
+
 SRC_URI = " \
     ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
     file://logo_linux_clut224.ppm \
