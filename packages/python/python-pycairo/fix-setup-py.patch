@@ -1,0 +1,24 @@
+diff -urN pycairo-1.4.0.orig/setup.py pycairo-1.4.0/setup.py
+--- pycairo-1.4.0.orig/setup.py	2007-03-14 10:53:30.000000000 +0100
++++ pycairo-1.4.0/setup.py	2008-09-23 18:55:25.000000000 +0200
+@@ -37,20 +37,6 @@
+     runtime_library_dirs = pkg_config_parse('--libs-only-L', 'cairo')
+ 
+ pkgconfig_file='pycairo.pc'
+-print 'creating %s' % pkgconfig_file
+-fo = open (pkgconfig_file, 'w')
+-fo.write ("""\
+-prefix=%s
+-
+-Name: Pycairo
+-Description: Python bindings for cairo
+-Version: %s
+-Requires: cairo
+-Cflags: -I${prefix}/include/pycairo
+-Libs:
+-""" % (sys.prefix, pycairo_version)
+-          )
+-fo.close()
+ 
+ cairo = dic.Extension(
+     name = 'cairo._cairo',

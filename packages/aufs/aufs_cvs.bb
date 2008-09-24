@@ -28,7 +28,6 @@ EXTRA_OEMAKE = "KDIR=${STAGING_KERNEL_DIR} -f local.mk"
 # I suggest you to read http://osdir.com/ml/linux.kernel.tracing/2006-12/msg00020.html
 
 do_configure() {
-echo ${S} > /home/nice/sdir
 	K_VERSION=$(echo ${KERNEL_VERSION} | awk 'BEGIN{FS="."}{print $3}')
 	cd ${S}
 	if [ $K_VERSION -ge 24 ] ; then	
@@ -59,4 +58,3 @@ else
 	depmod -ae
 fi
 }
-

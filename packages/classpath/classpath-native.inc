@@ -2,15 +2,15 @@ DESCRIPTION = "GNU Classpath standard Java libraries - For native Java-dependent
 HOMEPAGE = "http://www.gnu.org/software/classpath/"
 LICENSE = "Classpath"
 
-S = "${WORKDIR}/classpath-${PV}"
-
-SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
-	  
+inherit autotools native
 
 DEPENDS = "ecj-initial fastjar-native zip-native gettext-native"
 
-inherit autotools native
+SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
+S = "${WORKDIR}/classpath-${PV}"
+
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/classpath-${PV}"
 
 do_configure_prepend () {
 
@@ -18,6 +18,7 @@ do_configure_prepend () {
 }
 
 export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
+export JAVACFLAGS="-nowarn"
 
 # Note: the --with-ecj options seems redundant but is
 # for compatibility with older classpath versions.

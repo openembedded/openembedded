@@ -13,6 +13,12 @@ inherit autotools pkgconfig
 
 FILES_${PN} += " ${libdir}/X11/fonts"
 
+do_configure_prepend() {
+        if [ -f "${S}"/configure.ac ] ; then
+                sed -i "s#^MAPFILES_PATH=.*#MAPFILES_PATH=\"${STAGING_DIR_TARGET}/\$(pkg-config --variable=mapdir fontutil)\"#g" "${S}"/configure.ac
+        fi
+}
+
 do_install_append() {
 	find ${D}${libdir}/X11/fonts -type f -name fonts.dir | xargs rm -f
 	find ${D}${libdir}/X11/fonts -type f -name fonts.scale | xargs rm -f

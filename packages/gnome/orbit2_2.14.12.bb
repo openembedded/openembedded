@@ -1,9 +1,10 @@
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 DESCRIPTION = "CORBA ORB"
 SECTION = "x11/gnome/libs"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.14/ORBit2-${PV}.tar.bz2 \
            file://configure-lossage.patch;patch=1;pnum=1 \
+           file://pkgconfig-fix.patch;patch=1 \
 	   file://gtk-doc.m4 \
 	   file://gtk-doc.make"
 DEPENDS = "libidl popt orbit2-native gtk-doc"
@@ -26,16 +27,6 @@ do_configure_prepend() {
 	mkdir -p m4
 	install ${WORKDIR}/gtk-doc.m4 ./m4/
 	install ${WORKDIR}/gtk-doc.make ./
-}
-
-do_compile_append () {
-        cp ORBit-2.0.pc ORBit-2.0.pc.old
-        sed 's:^orbit_idl=.*/:orbit_idl=${STAGING_BINDIR_NATIVE}/:' < ORBit-2.0.pc > ORBit-2.0.pc.new
-        mv ORBit-2.0.pc.new ORBit-2.0.pc
-}
-
-do_install_append () {
-        mv ORBit-2.0.pc.old ORBit-2.0.pc
 }
 
 do_stage() {

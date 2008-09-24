@@ -275,8 +275,8 @@ Recipes:    jikes-native, jikes-initial, ecj-initial, ecj-bootstrap-native
 Recipes:    classpath*, cacao*, jamvm*
 Recipes:    miglayout, javasqlite*, sqlitejbdc
 Recipes:    swt-gtk, rxtx, dbus-java, libmatthew, kxml2, xmlpull
-Recipes:    woodstox2
+Recipes:    woodstox2, phoneme-advanced-*
 Recipes:    midpath*, logic-analyze
-Recipes:    kobodeluxe
+Recipes:    kobodeluxe, wesnoth
 Recipes:    hildon-thumbnail, libhildon*, libosso*, mce-dev, libconic
 Recipes:    libgpsbt, libgpsmgr, osso-gnome-vfs2, osso-gwconnect, osso-ic-oss

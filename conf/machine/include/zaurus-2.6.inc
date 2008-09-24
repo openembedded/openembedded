@@ -52,7 +52,7 @@ zaurus_make_installkit () {
     mkdir ${IMAGE_NAME}-installkit/
 
     # Get the latest kernel using the zImage-<machine>.bin symlink
-    if [ "${@base_contains('MACHINE_FEATURES', 'kexecboot', 'true', 'false',d)}" ]; then
+    if [ "${@base_contains('MACHINE_FEATURES', 'kexecboot', 'true', 'false',d)}" = "true" ]; then
 	    [ -f "zImage-kexecboot-${MACHINE}.bin" ] && cp zImage-kexecboot-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
 	    # we need also tgz for mmc or cf cards
 	    cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/image.tgz

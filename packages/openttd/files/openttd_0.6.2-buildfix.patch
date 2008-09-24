@@ -1,0 +1,25 @@
+Index: openttd-0.6.2/config.lib
+===================================================================
+--- openttd-0.6.2.orig/config.lib	2008-08-02 01:52:22.000000000 +0200
++++ openttd-0.6.2/config.lib	2008-09-23 08:57:53.000000000 +0200
+@@ -1247,7 +1247,7 @@
+ 		if [ -z "$6" ]; then
+ 			compiler="$3"
+ 		else
+-			compiler="$3-$6"
++			compiler="$4"
+ 		fi
+ 		machine=`eval $compiler $9 2>/dev/null`
+ 		ret=$?
+@@ -1263,11 +1263,6 @@
+ 			exit 1
+ 		fi
+ 
+-		if [ "$machine" != "$3" ] && ( [ "$8" = "0" ] || [ "$8" = "1" ] ); then
+-			log 1 "checking $1... expected $3, found $machine"
+-			log 1 "the compiler suggests it doesn't build code for the machine you specified"
+-			exit 1
+-		fi
+ 	elif [ -n "$4" ]; then
+ 		# Check for manual compiler
+ 		machine=`$4 $9 2>/dev/null`

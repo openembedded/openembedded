@@ -21,6 +21,8 @@ SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
 S = "${WORKDIR}/${PBN}-${PV}"
 
+export JAVA = "java"
+
 EXTRA_OECONF = "\
   --with-glibj \
   --with-ecj=javac \

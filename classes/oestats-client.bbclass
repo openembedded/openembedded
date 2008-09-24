@@ -108,6 +108,7 @@ def oestats_stop(server, d, failures):
 def oestats_task(server, d, task, status):
 	import bb
 	import glob
+	import os.path
 	import time
 
 	# retrieve build id
@@ -129,6 +130,13 @@ def oestats_task(server, d, task, status):
 			files['log'] = {
 				'filename': 'log.txt',
 				'content': file(log).read(),
+				'content-type': 'text/plain'}
+	if task == 'do_package':
+		qalog = "%s/log.qa_package" % bb.data.getVar('T', d, True)
+		if os.path.exists(qalog):
+			files['qalog'] = {
+				'filename': 'qalog.txt',
+				'content': file(qalog).read(),
 				'content-type': 'text/plain'}
 	
 	# prepare report

@@ -1,2 +1,4 @@
 require zlib_${PV}.bb
-require zlib-sdk.inc
+LIB_EXTRA = ""
+
+inherit sdk
