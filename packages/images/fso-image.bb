@@ -80,7 +80,7 @@ GTK_INSTALL = "\
   openmoko-calculator2 \
   openmoko-terminal2 \
   gpe-scap \
-  tangogps-fso \
+  tangogps \
 "
 
 GAMES_INSTALL = "\
