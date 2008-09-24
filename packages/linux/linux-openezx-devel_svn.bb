@@ -55,6 +55,7 @@ CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDL
 
 do_prepatch() {
         mv ${WORKDIR}/${KERNEL_PATCHES}/defconfig-${MACHINE} ${WORKDIR}/defconfig
+#        mv ${WORKDIR}/defconfig-${MACHINE} ${WORKDIR}/defconfig
         mv ${WORKDIR}/${KERNEL_PATCHES} ${S}/patches && cd ${S} && quilt push -av
         mv patches patches.openezx
         mv .pc .pc.old
