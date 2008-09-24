@@ -1,4 +1,3 @@
 require tangogps.inc
+PR = "r3"
 
-DEPENDS += "sqlite3"
-PR = "r1"
