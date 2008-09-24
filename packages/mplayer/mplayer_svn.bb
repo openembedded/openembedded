@@ -2,29 +2,28 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
-DEPENDS_append_c7x0 = " libw100 "
-DEPENDS_append_hx4700 = " libw100 "
+DEPENDS = "virtual/libsdl ffmpeg xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-           file://vo_w100.c \
-           file://vo_w100_api.h \
-           file://vo_w100_fb.h \
-           file://vo_pxa.c \
-           file://vo_pxa.h \
-	   file://simple_idct_armv5te.S \
            file://Makefile-codec-cfg.patch;patch=1 \
-           file://w100-configure-svn.patch;patch=1 \
-           file://w100-video_out.patch;patch=1 \
-           file://w100-mplayer.patch;patch= \
            file://pld-onlyarm5.patch;patch=1 \
            file://makefile-nostrip-svn.patch;patch=1 \
-           file://mplayer-imageon-svn.patch;patch=1 \
-           file://imageon-video_out.patch;patch=1 \
-           file://pxa_configure.patch;patch=1 \
-           file://pxa-video_out.patch;patch=1 "
+           file://mru-neon-put-pixels.diff;patch=1 \
+           file://mru-neon-simple-idct.diff;patch=1 \
+	   file://mru-neon-h264-chrome.diff;patch=1 \
+	   file://mru-neon-h264-loopfilter.diff;patch=1 \
+	   file://mru-neon-h264-qpel.diff;patch=1 \
+	   file://mru-neon-h264idctadd.diff;patch=1 \
+	   file://mru-neon-h264idct-dc.diff;patch=1 \
+	   file://mru-neon-float-to-int16.diff;patch=1 \
+	   file://mru-neon-vorbis-inverse.diff;patch=1 \
+	   file://mru-neon-vector-fmul-window.diff;patch=1 \
+	   file://mru-neon-vector-fmul.diff;patch=1 \
+	   file://configh \
+           file://configmak \
+          "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -42,6 +41,7 @@ RREPLACES_${PN} = "mplayer-atty"
 PV = "0.0+1.0rc2+svnr${SRCREV}"
 PR = "r5"
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_armv7a = "1"
 
 PARALLEL_MAKE = ""
 
@@ -68,12 +68,11 @@ EXTRA_OECONF = " \
         --disable-joystick \
         --disable-vm \
         --disable-xf86keysym \
-	--disable-tv \
-        --disable-tv-v4l2 \
+	--enable-tv \
+        --enable-tv-v4l2 \
         --disable-tv-bsdbt848 \
 	--enable-rtc \
         --enable-network \
-        --disable-winsock2 \
 	--disable-smb \
         --disable-live \
 	--disable-dvdnav \
@@ -87,7 +86,6 @@ EXTRA_OECONF = " \
         --disable-fribidi \
         --disable-enca \
         --disable-macosx \
-        --disable-macosx-finder-support \
         --disable-macosx-bundle \
         --disable-ftp \
         --disable-vstream \
@@ -173,8 +171,6 @@ EXTRA_OECONF = " \
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
-EXTRA_OECONF_append_c7x0 = " --enable-imageon "
-EXTRA_OECONF_append_hx4700 = " --enable-imageon "
 
 EXTRA_OECONF_append_armv6 = " --enable-armv6 "
 EXTRA_OECONF_append_armv7a = "--enable-armv6 "
@@ -188,7 +184,7 @@ PACKAGE_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', 'iwmmxt', '${MY_A
 MY_TARGET_CC_ARCH := "${TARGET_CC_ARCH}"
 TARGET_CC_ARCH = "${@base_contains('MACHINE_FEATURES', 'iwmmxt', '-march=iwmmxt -mtune=iwmmxt', '${MY_TARGET_CC_ARCH}',d)}"
 
-EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', '--enable-pxa --enable-iwmmxt', '',d)} "
+EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'iwmmxt', ' --enable-iwmmxt', '',d)} "
 EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-runtime-cpudetection', '',d)} "
 
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
@@ -196,19 +192,16 @@ FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-f
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
 do_configure() {
-	cp ${WORKDIR}/vo_w100.c ${S}/libvo
-	cp ${WORKDIR}/vo_w100_api.h ${S}/libvo
-	cp ${WORKDIR}/vo_w100_fb.h ${S}/libvo
-	cp ${WORKDIR}/vo_pxa.c ${S}/libvo
-	cp ${WORKDIR}/vo_pxa.h ${S}/libvo
-	cp ${WORKDIR}/simple_idct_armv5te.S ${S}/libavcodec/armv4l/
-
 	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
 
         ./configure ${EXTRA_OECONF}
+        
+	cat ${WORKDIR}/configh >> ${S}/config.h
+	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
+
 }
 
 do_compile () {
