@@ -3,7 +3,7 @@ SECTION = "openmoko/base"
 ALLOW_EMPTY = "1"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 LICENSE = "MIT"
-PR = "r0.03"
+PR = "r0.04"
 
 inherit task
 
@@ -13,9 +13,14 @@ DESCRIPTION_task-openmoko-qtopia-x11 = "Openmoko: Provide Window Manager, Om-set
 RDEPENDS_task-openmoko-basic = "\
            readline \
            connman \
-           connman-plugin-connman-resolvconf \
-           connman-plugin-connman-dhclient \
-           connman-plugin-connman-80211 \
+           connman-plugin-dhclient \
+           connman-plugin-hal \
+           connman-plugin-ipv4 \
+           connman-plugin-netdev \
+           connman-plugin-resolvconf \
+           connman-plugin-resolvfile \
+           connman-plugin-rtnllink \
+           connman-plugin-wifi \
            connman-script-dhclient \
            libnotify \
 # X
