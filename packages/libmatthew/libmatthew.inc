@@ -3,7 +3,7 @@ AUTHOR = "Matthew Johnson <web@matthew.ath.cx>"
 HOMEPAGE = "http://www.matthew.ath.cx/projects/java"
 SECTION = "libs"
 LICENSE = "LGPL"
-DEPENDS = "classpath-native classpath fastjar-native virtual/javac-native"
+DEPENDS = "classpath-tools-native classpath"
 
 S = "${WORKDIR}/libmatthew-java-${PV}"
 

@@ -5,7 +5,7 @@ HOMEPAGE = "http://rxtx.org"
 
 PR = "r1"
 
-DEPENDS = "classpath classpath-native virtual/javac-native"
+DEPENDS = "classpath classpath-tools-native"
 
 inherit autotools java-library
 

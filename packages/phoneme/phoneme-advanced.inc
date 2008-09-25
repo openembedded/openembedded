@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "https://phoneme.dev.java.net"
 AUTHOR = "Sun Microsystems, Inc."
 
-DEPENDS = "classpath-native virtual/javac-native linux-libc-headers"
+DEPENDS = "classpath-tools-native virtual/javac-native linux-libc-headers"
 
 inherit java update-alternatives
 
