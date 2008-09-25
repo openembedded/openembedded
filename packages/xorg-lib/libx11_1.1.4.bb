@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "Base X libs."
 DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
-            libxdmcp xf86bigfontproto kbproto inputproto"
+            libxdmcp xf86bigfontproto kbproto inputproto xproto-native"
 PROVIDES = "virtual/libx11"
 PE = "1"
 PR = "r3"
@@ -17,7 +17,9 @@ EXTRA_OECONF += "--without-xcb --with-keysymdef=${STAGING_INCDIR}/X11/keysymdef.
 do_compile() {
 	(
 		unset CC LD CXX CCLD CFLAGS CPPFLAGS LDFLAGS CXXFLAGS
-		cd src/util; touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} makekeys.c -o makekeys
+		cd src/util; 
+		mv makekeys.c.orig makekeys.c || true
+		touch makekeys-makekeys.o ; ${BUILD_CC} ${BUILD_CFLAGS} -I${STAGING_INCDIR_NATIVE} makekeys.c -o makekeys
 		# mv to stop it getting rebuilt
 		mv makekeys.c makekeys.c.orig
 		cd ../../
