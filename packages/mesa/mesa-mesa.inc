@@ -1,4 +1,4 @@
-include mesa-common.inc
+include mesa-common-old.inc
 
 PACKAGES =+ "libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
 
