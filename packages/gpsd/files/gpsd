@@ -10,6 +10,7 @@
 #. /etc/rc.d/init.d/functions
 
 RETVAL=0
+DAEMON=/usr/sbin/gpsd
 prog="gpsd"
 
 test -f /etc/default/$prog && . /etc/default/$prog
@@ -40,29 +41,24 @@ start() {
 	
 	if [ -e "${GPS_DEV}" ]
 	then
-	    gpsd ${GPSD_OPTS} ${GPS_DEV}
-	     echo "success"
+	    start-stop-daemon -S -x ${DAEMON} -- ${GPSD_OPTS} ${GPS_DEV}
+	    echo "success"
 	else
 	    # User needs to symlink ${GPS_DEV} to the right thing
 	    echo "No ${GPS_DEV} GPS device, aborting gpsd startup. Check /etc/default/$prog"
 	fi
 	RETVAL=$?
 	echo
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/gpsd
 	return $RETVAL
 }
 
 stop() {
 	# Stop daemons.
 	echo -n "Shutting down $prog: "
-        killall gpsd
+        start-stop-daemon -K -x ${DAEMON}
 #        killproc gpsd
 	RETVAL=$?
 	echo
-	if [ $RETVAL -eq 0 ]
-	then
-	    rm -f /var/lock/subsys/gpsd;
-	fi
 	return $RETVAL
 }
 
@@ -79,19 +75,12 @@ case "$1" in
 	start
 	RETVAL=$?
 	;;
-  condrestart)
-	if [ -f /var/lock/subsys/gpsd ]; then
-	    stop
-	    start
-	    RETVAL=$?
-	fi
-	;;
   status)
 #	status gpsd
 #	RETVAL=$?
 	;;
   *)
-	echo "Usage: $0 {start|stop|restart|condrestart|status}"
+	echo "Usage: $0 {start|stop|restart|status}"
 	exit 1
 esac
 
