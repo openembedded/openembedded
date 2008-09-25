@@ -6,10 +6,10 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
-SRCREV = "c434c15d28c82d92e55897bd265c423e9ab69362"
+SRCREV = "9d1dff8638c9e96a401e1885f9948662e9ff9636"
 
 PV = "2.6.26+2.6.27-rc6+${PR}+git${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -37,7 +37,8 @@ temporarely-disabled = " \
 "
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
-                             "
+                               file://beagle-asoc.diff;patch=1 \
+			     "
 
 SRC_URI_append_omap3evm = " \
            file://OMAP3EVM_TWL4030-Keypad-irq-error-fix.patch;patch=1 \
