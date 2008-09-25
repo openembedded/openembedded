@@ -1,8 +1,8 @@
 Index: liboil-0.3.15/configure.ac
 ===================================================================
 --- liboil-0.3.15.orig/configure.ac	2008-07-01 06:45:53.000000000 +0200
-+++ liboil-0.3.15/configure.ac	2008-09-24 20:37:24.963143501 +0200
-@@ -187,15 +187,33 @@
++++ liboil-0.3.15/configure.ac	2008-09-25 13:44:18.633758105 +0200
+@@ -187,16 +187,6 @@
      true)
  fi
  
@@ -13,34 +13,9 @@ Index: liboil-0.3.15/configure.ac
 -  #AS_COMPILER_FLAG(["-Wa,-mfloat-abi=softfp"],
 -  #  [VFP_CFLAGS="$VFP_CFLAGS -mfloat-abi=softfp"],
 -  #  true)
-+dnl macro taken from cacao
-+dnl check if softfloat should be used
-+
-+AC_DEFUN([AC_CHECK_SOFTFLOAT],[
-+AC_MSG_CHECKING(whether softfloat should be used)
-+AC_ARG_ENABLE([softfloat],
-+              [AS_HELP_STRING(--enable-softfloat,use softfloat [[default=no]])],
-+              [case "${enableval}" in
-+                  yes)
-+                      ENABLE_SOFTFLOAT=yes
-+                      ;;
-+                  *)
-+                      ENABLE_SOFTFLOAT=no
-+                      ;;
-+              esac],
-+              [ENABLE_SOFTFLOAT=no])
-+AC_MSG_RESULT(${ENABLE_SOFTFLOAT})
-+
-+if test x"${ENABLE_SOFTFLOAT}" = "xyes"; then
-+	VFP_CFLAGS="$VFP_CFLAGS -mfloat-abi=softfp"
-+else
-+	VFP_CFLAGS="$VFP_CFLAGS -mfpu=vfp"
- fi
+-fi
 -AC_SUBST(VFP_CFLAGS)
-+AC_SUBST([VFP_CFLAGS])
-+])
-+
-+AC_CHECK_SOFTFLOAT
- 
+-
  #AS_COMPILER_FLAG(["-fasm-blocks"], HAVE_ASM_BLOCKS=yes, HAVE_ASM_BLOCKS=no)
  HAVE_ASM_BLOCKS=no
+ if test "x$HAVE_ASM_BLOCKS" = "xyes"
