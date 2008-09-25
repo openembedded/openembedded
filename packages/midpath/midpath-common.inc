@@ -5,7 +5,7 @@ LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
 
-DEPENDS = "virtual/javac-native classpath-native classpath fastjar-native"
+DEPENDS = "virtual/javac-native classpath-tools-native classpath fastjar-native"
 
 GLIBJ_ZIP = "${STAGING_DATADIR}/classpath/glibj.zip"
 
