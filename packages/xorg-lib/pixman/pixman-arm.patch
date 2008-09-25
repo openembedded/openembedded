@@ -1,8 +1,14 @@
-diff --git a/configure.ac b/configure.ac
-index 702bed0..59e0d99 100644
+From: Jeff Muizelaar <jmuizelaar@mozilla.com>
+Date: Wed, 17 Sep 2008 19:53:20 +0000 (-0400)
+Subject: Add support for ARMv6 SIMD fastpaths.
+X-Git-Url: http://gitweb.freedesktop.org/?p=pixman.git;a=commitdiff;h=d0b181f347ef4720d130beee3f03196afbd28aba
+
+Add support for ARMv6 SIMD fastpaths.
+---
+
 --- a/configure.ac
 +++ b/configure.ac
-@@ -301,6 +301,44 @@ AC_SUBST(VMX_CFLAGS)
+@@ -277,6 +277,44 @@ AC_SUBST(VMX_CFLAGS)
  
  AM_CONDITIONAL(USE_VMX, test $have_vmx_intrinsics = yes)
  
@@ -47,12 +53,10 @@ index 702bed0..59e0d99 100644
  AC_ARG_ENABLE(gtk,
     [AC_HELP_STRING([--enable-gtk],
                     [enable tests using GTK+ [default=auto]])],
-diff --git a/pixman/Makefile.am b/pixman/Makefile.am
-index 4f046f1..2cad71a 100644
 --- a/pixman/Makefile.am
 +++ b/pixman/Makefile.am
-@@ -77,3 +77,16 @@ libpixman_sse_la_LIBADD = $(DEP_LIBS)
- libpixman_1_la_LIBADD += libpixman-sse.la
+@@ -79,3 +79,15 @@ libpixman_sse2_la_LIBADD = $(DEP_LIBS)
+ libpixman_1_la_LIBADD += libpixman-sse2.la
  endif
  
 +# arm code
@@ -60,22 +64,18 @@ index 4f046f1..2cad71a 100644
 +noinst_LTLIBRARIES += libpixman-arm.la
 +libpixman_arm_la_SOURCES = \
 +	pixman-arm.c \
-+	pixman-arm.h \
-+	pixman-combine32.h
++	pixman-arm.h
 +libpixman_arm_la_CFLAGS = $(DEP_CFLAGS) $(ARM_CFLAGS)
 +libpixman_arm_la_LIBADD = $(DEP_LIBS)
 +libpixman_1_la_LIBADD += libpixman-arm.la
 +endif
 +
 +
-diff --git a/pixman/pixman-arm.c b/pixman/pixman-arm.c
-new file mode 100644
-index 0000000..5ea65cb
 --- /dev/null
 +++ b/pixman/pixman-arm.c
-@@ -0,0 +1,433 @@
+@@ -0,0 +1,409 @@
 +/*
-+ * Copyright � 2008 Mozilla Corporation
++ * Copyright Â© 2008 Mozilla Corporation
 + *
 + * Permission to use, copy, modify, distribute, and sell this software and its
 + * documentation for any purpose is hereby granted without fee, provided that
@@ -104,7 +104,6 @@ index 0000000..5ea65cb
 +#endif
 +
 +#include "pixman-arm.h"
-+#include "pixman-combine32.h"
 +
 +void
 +fbCompositeSrcAdd_8000x8000arm (pixman_op_t op,
@@ -125,7 +124,6 @@ index 0000000..5ea65cb
 +    int	dstStride, srcStride;
 +    uint16_t	w;
 +    uint8_t	s, d;
-+    uint16_t	t;
 +
 +    fbComposeGetStart (pSrc, xSrc, ySrc, uint8_t, srcStride, srcLine, 1);
 +    fbComposeGetStart (pDst, xDst, yDst, uint8_t, dstStride, dstLine, 1);
@@ -142,10 +140,8 @@ index 0000000..5ea65cb
 +	{
 +	    s = *src;
 +	    d = *dst;
-+	    t = d + s;
-+	    /* s = t | (0 - (t >> 8)); */
-+	    asm("usat %0, #8, %1" : "=r"(s) : "r"(t));
-+	    *dst = s;
++	    asm("uqadd8 %0, %1, %2" : "+r"(d) : "r"(s));
++	    *dst = d;
 +
 +	    dst++;
 +	    src++;
@@ -164,10 +160,8 @@ index 0000000..5ea65cb
 +	{
 +	    s = *src;
 +	    d = *dst;
-+	    t = d + s;
-+	    /* s = t | (0 - (t >> 8)); */
-+	    asm("usat %0, #8, %1" : "=r"(s) : "r"(t));
-+	    *dst = s;
++	    asm("uqadd8 %0, %1, %2" : "+r"(d) : "r"(s));
++	    *dst = d;
 +
 +	    dst++;
 +	    src++;
@@ -195,8 +189,8 @@ index 0000000..5ea65cb
 +    uint32_t	*srcLine, *src;
 +    int	dstStride, srcStride;
 +    uint16_t	w;
-+    uint32_t component_mask = 0xff00ff;
 +    uint32_t component_half = 0x800080;
++    uint32_t upper_component_mask = 0xff00ff00;
 +    uint32_t alpha_mask = 0xff;
 +
 +    fbComposeGetStart (pDst, xDst, yDst, uint32_t, dstStride, dstLine, 1);
@@ -235,24 +229,19 @@ index 0000000..5ea65cb
 +			/* = 255 - alpha */
 +			"sub r8, %[alpha_mask], r5, lsr #24\n\t"
 +#endif
-+			"and r6, %[component_mask], r4\n\t"
-+			"and r7, %[component_mask], r4, lsr #8\n\t"
++			"uxtb16 r6, r4\n\t"
++			"uxtb16 r7, r4, ror #8\n\t"
 +
 +			/* multiply by 257 and divide by 65536 */
 +			"mla r6, r6, r8, %[component_half]\n\t"
 +			"mla r7, r7, r8, %[component_half]\n\t"
 +
-+			"and r8, %[component_mask], r6, lsr #8\n\t"
-+			"and r9, %[component_mask], r7, lsr #8\n\t"
++			"uxtab16 r6, r6, r6, ror #8\n\t"
++			"uxtab16 r7, r7, r7, ror #8\n\t"
 +
-+			"add r6, r6, r8\n\t"
-+			"add r7, r7, r9\n\t"
-+
-+			"and r6, %[component_mask], r6, lsr #8\n\t"
-+			"and r7, %[component_mask], r7, lsr #8\n\t"
-+
-+			/* recombine */
-+			"orr r6, r6, r7, lsl #8\n\t"
++			/* recombine the 0xff00ff00 bytes of r6 and r7 */
++			"and r7, %[upper_component_mask]\n\t"
++			"uxtab16 r6, r7, r6, ror #8\n\t"
 +
 +			"uqadd8 r5, r6, r5\n\t"
 +
@@ -266,9 +255,9 @@ index 0000000..5ea65cb
 +			"bne	1b\n\t"
 +			"2:\n\t"
 +			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
-+			: [component_half] "r" (component_half), [component_mask] "r" (component_mask),
++			: [component_half] "r" (component_half), [upper_component_mask] "r" (upper_component_mask),
 +			  [alpha_mask] "r" (alpha_mask)
-+			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
++			: "r4", "r5", "r6", "r7", "r8", "cc", "memory"
 +			);
 +    }
 +}
@@ -292,7 +281,6 @@ index 0000000..5ea65cb
 +    uint32_t	mask;
 +    int	dstStride, srcStride;
 +    uint16_t	w;
-+    uint32_t component_mask = 0xff00ff;
 +    uint32_t component_half = 0x800080;
 +    uint32_t alpha_mask = 0xff;
 +
@@ -327,27 +315,24 @@ index 0000000..5ea65cb
 +#endif
 +			"ldr r4, [%[dest]] \n\t"
 +
-+			"and r6, %[component_mask], r5\n\t"
-+			"and r7, %[component_mask], r5, lsr #8\n\t"
++			"uxtb16 r6, r5\n\t"
++			"uxtb16 r7, r5, ror #8\n\t"
 +
 +			/* multiply by alpha (r8) then by 257 and divide by 65536 */
 +			"mla r6, r6, %[mask_alpha], %[component_half]\n\t"
 +			"mla r7, r7, %[mask_alpha], %[component_half]\n\t"
 +
-+			"and r8, %[component_mask], r6, lsr #8\n\t"
-+			"and r9, %[component_mask], r7, lsr #8\n\t"
++			"uxtab16 r6, r6, r6, ror #8\n\t"
++			"uxtab16 r7, r7, r7, ror #8\n\t"
 +
-+			"add r6, r6, r8\n\t"
-+			"add r7, r7, r9\n\t"
-+
-+			"and r6, %[component_mask], r6, lsr #8\n\t"
-+			"and r7, %[component_mask], r7, lsr #8\n\t"
++			"uxtb16 r6, r6, ror #8\n\t"
++			"uxtb16 r7, r7, ror #8\n\t"
 +
 +			/* recombine */
 +			"orr r5, r6, r7, lsl #8\n\t"
 +
-+			"and r6, %[component_mask], r4\n\t"
-+			"and r7, %[component_mask], r4, lsr #8\n\t"
++			"uxtb16 r6, r4\n\t"
++			"uxtb16 r7, r4, ror #8\n\t"
 +
 +			/* 255 - alpha */
 +			"sub r8, %[alpha_mask], r5, lsr #24\n\t"
@@ -356,14 +341,11 @@ index 0000000..5ea65cb
 +			"mla r6, r6, r8, %[component_half]\n\t"
 +			"mla r7, r7, r8, %[component_half]\n\t"
 +
-+			"and r8, %[component_mask], r6, lsr #8\n\t"
-+			"and r9, %[component_mask], r7, lsr #8\n\t"
++			"uxtab16 r6, r6, r6, ror #8\n\t"
++			"uxtab16 r7, r7, r7, ror #8\n\t"
 +
-+			"add r6, r6, r8\n\t"
-+			"add r7, r7, r9\n\t"
-+
-+			"and r6, %[component_mask], r6, lsr #8\n\t"
-+			"and r7, %[component_mask], r7, lsr #8\n\t"
++			"uxtb16 r6, r6, ror #8\n\t"
++			"uxtb16 r7, r7, ror #8\n\t"
 +
 +			/* recombine */
 +			"orr r6, r6, r7, lsl #8\n\t"
@@ -380,7 +362,7 @@ index 0000000..5ea65cb
 +			"bne	1b\n\t"
 +			"2:\n\t"
 +			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src)
-+			: [component_half] "r" (component_half), [component_mask] "r" (component_mask), [mask_alpha] "r" (mask),
++			: [component_half] "r" (component_half), [mask_alpha] "r" (mask),
 +			  [alpha_mask] "r" (alpha_mask)
 +			: "r4", "r5", "r6", "r7", "r8", "r9", "cc", "memory"
 +			);
@@ -453,20 +435,17 @@ index 0000000..5ea65cb
 +			"mla r6, %[src_lo], r5, %[component_half]\n\t"
 +			"mla r7, %[src_hi], r5, %[component_half]\n\t"
 +
-+			"and r8, %[component_mask], r6, lsr #8\n\t"
-+			"and r5, %[component_mask], r7, lsr #8\n\t"
++			"uxtab16 r6, r6, r6, ror #8\n\t"
++			"uxtab16 r7, r7, r7, ror #8\n\t"
 +
-+			"add r6, r6, r8\n\t"
-+			"add r7, r7, r5\n\t"
-+
-+			"and r6, %[component_mask], r6, lsr #8\n\t"
-+			"and r7, %[component_mask], r7, lsr #8\n\t"
++			"uxtb16 r6, r6, ror #8\n\t"
++			"uxtb16 r7, r7, ror #8\n\t"
 +
 +			/* recombine */
 +			"orr r5, r6, r7, lsl #8\n\t"
 +
-+			"and r6, %[component_mask], r4\n\t"
-+			"and r7, %[component_mask], r4, lsr #8\n\t"
++			"uxtb16 r6, r4\n\t"
++			"uxtb16 r7, r4, ror #8\n\t"
 +
 +			/* we could simplify this to use 'sub' if we were
 +			 * willing to give up a register for alpha_mask */
@@ -477,14 +456,11 @@ index 0000000..5ea65cb
 +			"mla r6, r6, r8, %[component_half]\n\t"
 +			"mla r7, r7, r8, %[component_half]\n\t"
 +
-+			"and r8, %[component_mask], r6, lsr #8\n\t"
-+			"and r4, %[component_mask], r7, lsr #8\n\t"
++			"uxtab16 r6, r6, r6, ror #8\n\t"
++			"uxtab16 r7, r7, r7, ror #8\n\t"
 +
-+			"add r6, r6, r8\n\t"
-+			"add r7, r7, r4\n\t"
-+
-+			"and r6, %[component_mask], r6, lsr #8\n\t"
-+			"and r7, %[component_mask], r7, lsr #8\n\t"
++			"uxtb16 r6, r6, ror #8\n\t"
++			"uxtb16 r7, r7, ror #8\n\t"
 +
 +			/* recombine */
 +			"orr r6, r6, r7, lsl #8\n\t"
@@ -501,20 +477,17 @@ index 0000000..5ea65cb
 +			"bne	1b\n\t"
 +			"2:\n\t"
 +			: [w] "+r" (w), [dest] "+r" (dst), [src] "+r" (src), [mask] "+r" (mask)
-+			: [component_half] "r" (component_half), [component_mask] "r" (component_mask),
++			: [component_half] "r" (component_half),
 +			  [src_hi] "r" (src_hi), [src_lo] "r" (src_lo)
 +			: "r4", "r5", "r6", "r7", "r8", "cc", "memory"
 +			);
 +    }
 +}
-diff --git a/pixman/pixman-arm.h b/pixman/pixman-arm.h
-new file mode 100644
-index 0000000..258054a
 --- /dev/null
 +++ b/pixman/pixman-arm.h
 @@ -0,0 +1,94 @@
 +/*
-+ * Copyright � 2008 Mozilla Corporation
++ * Copyright Â© 2008 Mozilla Corporation
 + *
 + * Permission to use, copy, modify, distribute, and sell this software and its
 + * documentation for any purpose is hereby granted without fee, provided that
@@ -607,19 +580,17 @@ index 0000000..258054a
 +
 +
 +#endif /* USE_ARM */
-diff --git a/pixman/pixman-pict.c b/pixman/pixman-pict.c
-index b918219..e59e904 100644
 --- a/pixman/pixman-pict.c
 +++ b/pixman/pixman-pict.c
 @@ -34,6 +34,7 @@
  #include "pixman-mmx.h"
  #include "pixman-vmx.h"
- #include "pixman-sse.h"
+ #include "pixman-sse2.h"
 +#include "pixman-arm.h"
  #include "pixman-combine32.h"
  
  #ifdef __GNUC__
-@@ -1479,6 +1480,26 @@ static const FastPathInfo vmx_fast_paths[] =
+@@ -1479,6 +1480,26 @@ static const FastPathInfo vmx_fast_paths
  };
  #endif
  
@@ -646,12 +617,12 @@ index b918219..e59e904 100644
  
  static const FastPathInfo c_fast_paths[] =
  {
-@@ -1829,6 +1850,12 @@ pixman_image_composite (pixman_op_t      op,
+@@ -1829,6 +1850,12 @@ pixman_image_composite (pixman_op_t     
  	if (!info && pixman_have_vmx())
  	    info = get_fast_path (vmx_fast_paths, op, pSrc, pMask, pDst, pixbuf);
  #endif
-+#ifdef USE_ARM
 +
++#ifdef USE_ARM
 +	if (!info && pixman_have_arm())
 +	    info = get_fast_path (arm_fast_paths, op, pSrc, pMask, pDst, pixbuf);
 +#endif

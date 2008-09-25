@@ -1,14 +1,14 @@
-commit 8507756d8868b8d8c7a149bd2427a04262638156
-Author: Vladimir Vukicevic <vladimir@slide.(none)>
-Date:   Sat Sep 6 17:46:52 2008 -0700
+From: Vladimir Vukicevic <vladimir@slide.(none)>
+Date: Wed, 17 Sep 2008 20:01:31 +0000 (-0400)
+Subject: Add SRC x888x0565 C fast path
+X-Git-Url: http://gitweb.freedesktop.org/?p=pixman.git;a=commitdiff;h=7180230d4d87c55dfef1e17a0cc3b125d45aa3a0
 
-    Add SRC x888x0565 C fast path
+Add SRC x888x0565 C fast path
+---
 
-diff --git a/pixman/pixman-pict.c b/pixman/pixman-pict.c
-index eeefa33..b5fb0ff 100644
 --- a/pixman/pixman-pict.c
 +++ b/pixman/pixman-pict.c
-@@ -759,6 +759,46 @@ fbCompositeSrc_8888x0565 (pixman_op_t op,
+@@ -759,6 +759,46 @@ fbCompositeSrc_8888x0565 (pixman_op_t op
      }
  }
  
@@ -55,7 +55,7 @@ index eeefa33..b5fb0ff 100644
  void
  fbCompositeSrcAdd_8000x8000 (pixman_op_t	op,
  			     pixman_image_t * pSrc,
-@@ -1568,6 +1608,10 @@ static const FastPathInfo c_fast_paths[] =
+@@ -1568,6 +1608,10 @@ static const FastPathInfo c_fast_paths[]
      { PIXMAN_OP_SRC, PIXMAN_r5g6b5,    PIXMAN_null,     PIXMAN_r5g6b5,   fbCompositeSrcSrc_nxn, 0 },
      { PIXMAN_OP_SRC, PIXMAN_b5g6r5,    PIXMAN_null,     PIXMAN_b5g6r5,   fbCompositeSrcSrc_nxn, 0 },
  #endif
