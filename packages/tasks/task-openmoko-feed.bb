@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r48"
+PR = "r49"
 
 inherit task
 
@@ -103,6 +103,7 @@ RDEPENDS_task-openmoko-feed = "\
   epdfview \
   midori \
   microcom \
+  zhone \
   emacs \
 # for werner \
   net-tools \
