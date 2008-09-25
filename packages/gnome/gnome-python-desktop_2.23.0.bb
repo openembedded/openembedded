@@ -7,6 +7,8 @@ inherit gnome distutils-base
 
 SRC_URI += "file://acinclude.m4"
 
+EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
+
 do_configure_prepend() {
         install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
 }

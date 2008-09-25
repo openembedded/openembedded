@@ -6,12 +6,12 @@ DEPENDS = "compositeproto damageproto fixesproto recordproto resourceproto \
            libxau libxext libxdmcp libxfont libxrandr tslib virtual/libx11 \
            xtrans libxkbfile libxcalibrate"
 DEPENDS += "libxkbfile libxcalibrate"
-RDEPENDS_${PN} = "xserver-kdrive"
+RDEPENDS_${PN} = "xserver-security-policy"
 PROVIDES = "virtual/xserver"
 
 PE = "1"
 PV = "1.3.0.0+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta02'
