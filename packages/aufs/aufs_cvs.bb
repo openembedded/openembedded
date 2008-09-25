@@ -1,12 +1,14 @@
 DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which unifies several directories and provides a merged single directory."
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
-RDEPENDS = "kernel (${KERNEL_VERSION})"
-DEPENDS = "virtual/kernel sed-native"
 PV = "cvs${SRCDATE}"
-PR = "r0"
-S = "${WORKDIR}/aufs"
+PR = "r1"
+
+RSUGGESTS_${PN} = "${PN}-tools"
+
 inherit module
+
+S = "${WORKDIR}/aufs"
 
 # We do not create the manpage for aufs because we do not install it anyway.
 # If you want to have the manpage created you will need to add host cc to
@@ -38,23 +40,16 @@ do_configure() {
 	fi
 }
 
-do_compile(){
-	LDFLAGS=""
-	oe_runmake 
-}
-
 do_install() {
-	install -m 500 -p mount.aufs umount.aufs auplink aulchown ${D}/${sbindir}
-	mkdir -p ${D}/etc/default	
+	install -d ${D}/${sbindir}
+	install -m 0500 mount.aufs umount.aufs auplink aulchown ${D}/${sbindir}
+	install -d ${D}/etc/default	
 	echo FLUSH=ALL > ${D}/etc/default/auplink
-	mkdir -p ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/	
-	cp aufs.ko ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/
+	install -d ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/	
+	install -m 0644 aufs.ko ${D}/${base_libdir}/modules/${KERNEL_VERSION}/drivers/extra/
 }
 
-pkg_postinst() {
-if test "x$D" != "x"; then
-       exit 1
-else
-	depmod -ae
-fi
-}
+
+FILES_${PN} = "/lib/modules"
+PACKAGES += "${PN}-tools"
+FILES_${PN}-tools = "${sbindir} /etc/default/auplink"
