@@ -6,16 +6,15 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
-SRCREV = "de1121fdb899f762"
+SRCREV = "c434c15d28c82d92e55897bd265c423e9ab69362"
 
 PV = "2.6.26+2.6.27-rc6+${PR}+git${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append = " \
-           file://timer-suppression.patch;patch=1 \
            file://no-empty-flash-warnings.patch;patch=1 \
            file://oprofile-0.9.3.armv7.diff;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
@@ -31,7 +30,6 @@ SRC_URI_append = " \
            file://mru-improve-pixclock-config.diff;patch=1 \
            file://mru-make-video-timings-selectable.diff;patch=1 \
            file://mru-enable-overlay-optimalization.diff;patch=1 \
-           file://strongly-ordered-memory.diff;patch=1 \
 "
 
 temporarely-disabled = " \
