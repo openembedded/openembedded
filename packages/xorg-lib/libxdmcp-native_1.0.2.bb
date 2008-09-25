@@ -5,5 +5,6 @@ PR = "r1"
 PE = "1"
 
 XORG_PN = "libXdmcp"
+PROVIDES = ""
 
 inherit native
