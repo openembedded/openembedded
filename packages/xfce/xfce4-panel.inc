@@ -1,12 +1,12 @@
 # xfce4-panel OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
-# Released under the MIT license (see packages/COPYING)
+# Released under the MIT license (see COPYING.MIT)
 
 DESCRIPTION = "XFCE4 Panel"
 SECTION = "x11"
 DEPENDS = "startup-notification virtual/libx11 libxfcegui4 libxfce4mcs xfce-mcs-manager libxml2"
 
-inherit pkgconfig xfce
+inherit  xfce
 
 EXTRA_OECONF += " --enable-startup-notification"
 

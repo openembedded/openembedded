@@ -1,12 +1,12 @@
 # libxfce4mcs OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
-# Released under the MIT license (see packages/COPYING)
+# Released under the MIT license (see COPYING.MIT)
 
 DESCRIPTION="Settings management library used by most XFce 4 modules"
 DEPENDS="libxfce4util"
 SECTION = "x11/libs"
 
-inherit xfce pkgconfig
+inherit xfce 
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/xfce4/libxfce4mcs

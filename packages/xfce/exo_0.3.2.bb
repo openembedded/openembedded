@@ -1,7 +1,7 @@
 
 DEPENDS = "libxfce4util xfce-mcs-manager hal liburi-perl-native python-native"
 
-inherit pkgconfig xfce
+inherit  xfce
 
 SRC_URI = "http://www.us.xfce.org/archive/xfce-4.4.1/src/exo-0.3.2.tar.bz2"
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Xfce4 development tools"
 SECTION = "x11/libs"
 LICENSE = "GPL"
 
-inherit xfce pkgconfig
+inherit xfce 
 
 do_stage() {
 	install -d ${STAGING_DATADIR}/aclocal

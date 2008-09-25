@@ -1,13 +1,13 @@
 # libxfce4util OE build file
 # Copyright (C) 2004, Advanced Micro Devices, Inc.  All Rights Reserved
-# Released under the MIT license (see packages/COPYING)
+# Released under the MIT license (see COPYING.MIT)
 
 DESCRIPTION = "Basic utility library for Xfce4"
 SECTION = "x11/libs"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 xfce4-dev-tools"
 
-inherit xfce pkgconfig
+inherit xfce 
 
 MACROS="m4/X11.m4 m4/debug.m4 m4/depends.m4 m4/i18n.m4"
 
