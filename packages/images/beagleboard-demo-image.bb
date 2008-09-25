@@ -24,18 +24,21 @@ IMAGE_INSTALL = "\
     gpe-scap \
     psplash \
     e-wm exhibit \
-    xterm xmms epiphany-firefox-replacement \
+    xterm xmms \
+    epiphany firefox midori \
     swfdec-mozilla \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
     abiword \
-#    gnumeric \
-#    gimp \
+    gnumeric \
+    gimp \
     powertop oprofile \
     pidgin \
 #    irssi \
     mplayer omapfbplay \
     gnome-games \
+    rt73-firmware zd1211-firmware \
+    stalonetray \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
