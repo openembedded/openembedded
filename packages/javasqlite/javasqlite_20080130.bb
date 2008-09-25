@@ -8,7 +8,7 @@ SRC_URI = "\
   http://www.ch-werner.de/javasqlite/javasqlite-${PV}.tar.gz \
   file://build-fix.patch;patch=1"
 
-DEPENDS = "virtual/javac-native fastjar-native classpath-native javasqlite-mkconst-native classpath sqlite sqlite3"
+DEPENDS = "virtual/javac-native fastjar-native classpath-tools-native javasqlite-mkconst-native classpath sqlite sqlite3"
 RDEPENDS_${JPN} = "lib${PN}-jni"
 
 inherit java-library autotools

@@ -2,7 +2,7 @@ DESCRIPTION = "Illume theme for the freesmartphone.org project"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
-PV = "0.0+gitr${SRCREV}"
+PV = "0.0+${PR}-gitr${SRCREV}"
 PR = "r2"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/artwork.git;protocol=git;branch=master"

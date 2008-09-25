@@ -1,4 +1,4 @@
-PR = "r0"
+PR = "r1"
 
 inherit sdk
 
@@ -20,8 +20,3 @@ EXTRA_OECONF += " \
 CFLAGS = ""
 CXXFLAGS = ""
 LDFLAGS = ""
-
-# Hack till we fix *libc properly
-do_install_append() {
-        cp -a ${D}${gcclibdir}/${TARGET_SYS}/${BINV}/include-fixed/* ${D}${gcclibdir}/${TARGET_SYS}/${BINV}/include/
-}

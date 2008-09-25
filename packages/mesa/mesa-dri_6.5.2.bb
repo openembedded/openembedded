@@ -1,4 +1,4 @@
-include mesa-common.inc
+include mesa-common-old.inc
 
 SRC_URI += " file://mklib-cross.patch;patch=1"
 

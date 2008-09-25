@@ -12,7 +12,7 @@ S = "${WORKDIR}/${PN}-v${PV}"
 
 inherit java-library
 
-DEPENDS = "classpath-native fastjar-native sqlite3 classpath"
+DEPENDS = "classpath-tools-native sqlite3 classpath"
 RDEPENDS_${JPN} = "libsqlitejdbc-jni"
 
 do_unpackpost() {

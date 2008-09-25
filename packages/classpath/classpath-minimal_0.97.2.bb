@@ -1,5 +1,7 @@
 require classpath.inc
 
+FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/${PBN}-${PV}"
+
 SRC_URI += "\
   file://netif_16.patch;patch=1;pnum=0 \
   file://SimpleName.diff;patch=1;pnum=0 \

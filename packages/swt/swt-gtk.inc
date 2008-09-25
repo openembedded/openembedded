@@ -3,7 +3,7 @@ LICENSE = "CPL MPL LGPL"
 
 inherit java-library
 
-DEPENDS = "classpath-native cairo gtk+ atk libxtst"
+DEPENDS = "classpath-tools-native cairo gtk+ atk libxtst"
 
 S = "${WORKDIR}/swt-source"
 
