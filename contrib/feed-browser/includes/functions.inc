@@ -1,6 +1,6 @@
 <?php
 /*
- * (c) Koen Kooi 2006, 2007
+ * (c) Koen Kooi 2006, 2007, 2008
  * (c) Marcin Juszkiewicz 2006, 2007
  *
  * This program is free software; you can redistribute it and/or  modify it under
@@ -195,7 +195,13 @@ function pkgdetails ($package)
 		$details .= "<dl>";
 
 		$details .= sprintf ("\n<dt>Maintainer:</dt><dd>%s</dd>", str_replace(array('@',', '), array(' at ', '<br />'), htmlentities($package['packages.p_maintainer'])));
-		
+
+		$scapfile = "img/packages/".$package['packages.p_name'][0]."/".$package['packages.p_name'].".png";
+		if(file_exists(FB_BASE_DIR.$scapfile))
+		{
+			$details .= sprintf ("\n<dt>Screenshot:</dt><dd><a href='%s'><img src='%s' width='320px' noborder></a></dd>", $scapfile, $scapfile);
+		}
+
 		if($package['packages.p_homepage']) 
 		{
 			$details .= sprintf ("\n<dt>Homepage:</dt><dd>%s</dd>", $package['packages.p_homepage']);
