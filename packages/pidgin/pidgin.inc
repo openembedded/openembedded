@@ -25,7 +25,7 @@ OE_LT_RPATH_ALLOW[export]="1"
 PACKAGES =+ "libpurple-dbg libpurple-dev libpurple libgnt-dbg libgnt libgnt-dev finch-dbg finch finch-dev ${PN}-data"
 
 LEAD_SONAME = "libpurple.so.0"
-FILES_libpurple     = "${libdir}/libpurple*.so.* ${libdir}/purple-2 ${bindir}/purple-* ${sysconfdir}/gconf/schemas/purple*"
+FILES_libpurple     = "${libdir}/libpurple*.so.* ${libdir}/purple-2 ${bindir}/purple-* ${sysconfdir}/gconf/schemas/purple* ${datadir}/purple/ca-certs"
 FILES_libpurple-dev = "${libdir}/libpurple*.la \
                        ${libdir}/libpurple*.so \
                        ${libdir}/purple-2/*.la \
@@ -44,6 +44,7 @@ FILES_finch-dbg     = "${bindir}/.debug/finch \
 
 FILES_${PN} = "${bindir} ${datadir}/${PN} ${libdir}/${PN}/*.so \
 	       ${datadir}/applications"
+RRECOMMENDS_${PN{ += "${PN}-data "
 FILES_${PN}-data = "${datadir}/pixmaps ${datadir}/sounds ${datadir}/icons"
 FILES_${PN}-dev += "${libdir}/${PN}/*.la"
 
