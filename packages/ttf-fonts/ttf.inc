@@ -4,10 +4,7 @@ RRECOMMENDS += "font-update-common"
 
 do_install() {
     install -d ${D}${datadir}/fonts/truetype/
-    for f in *.ttf *.ttc
-       do
-          [ -f $f ] && install -m 0644 $f ${D}${datadir}/fonts/truetype/
-       done
+    find ./ -name "*.ttf" -or -name "*.ttc" -exec install -m 0644 {} ${D}${datadir}/fonts/truetype/ \;
 }
 
 pkg_postinst_append() {
