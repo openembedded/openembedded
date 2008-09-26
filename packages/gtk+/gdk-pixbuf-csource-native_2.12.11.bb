@@ -11,8 +11,7 @@ RRECOMMENDS_${PN}_linux = "  "
 RRECOMMENDS_${PN}_linux-gnueabi = " "
 
 EXTRA_OECONF = "\
-  --without-x \
-  --with-gdktarget=linux-fb \
+  --with-gdktarget=x11 \
   --without-libtiff \
   --with-libjpeg \
   --with-libpng \

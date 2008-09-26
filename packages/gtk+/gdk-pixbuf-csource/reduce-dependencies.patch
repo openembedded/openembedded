@@ -3,21 +3,29 @@
 # to build gdk-pixbuf-csource.
 # -- Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 #
-Index: gtk+-2.10.14/configure.in
-===================================================================
---- gtk+-2.10.14.orig/configure.in
-+++ gtk+-2.10.14/configure.in
-@@ -32,9 +32,6 @@ m4_define([gtk_binary_version], [2.10.0]
+---
+# configure.in |  116 ++---------------------------------------------------------
+# 1 file changed, 5 insertions(+), 111 deletions(-)
+#
+--- gtk+-2.12.7.orig/configure.in
++++ gtk+-2.12.7/configure.in
+@@ -30,13 +30,10 @@ m4_define([gtk_api_version], [2.0])
+ #GTK_BINARY_VERSION=$GTK_MAJOR_VERSION.$GTK_MINOR_VERSION.$LT_CURRENT
+ m4_define([gtk_binary_version], [2.10.0])
  
  # required versions of other packages
- m4_define([glib_required_version], [2.12.0])
--m4_define([pango_required_version], [1.12.0])
+ m4_define([glib_required_version], [2.13.5])
+-m4_define([pango_required_version], [1.17.3])
 -m4_define([atk_required_version], [1.9.0])
 -m4_define([cairo_required_version], [1.2.0])
  
  
  AC_INIT([gtk+], [gtk_version],
-@@ -343,10 +340,7 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+         [http://bugzilla.gnome.org/enter_bug.cgi?product=gtk%2B],
+ 	[gtk+])
+@@ -347,14 +344,11 @@ ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+ ## Later on we actually use the cflags/libs from separate pkg-config
+ ## calls. Oh, also the later pkg-config calls don't include 
  ## the version requirements since those make the module lists 
  ## annoying to construct
  PKG_CHECK_MODULES(BASE_DEPENDENCIES,
@@ -29,7 +37,61 @@ Index: gtk+-2.10.14/configure.in
  
  if test "$os_win32" != yes; then
      # libtool option to control which symbols are exported
-@@ -1437,48 +1431,6 @@ else
+     # right now, symbols starting with _ are not exported
+     LIBTOOL_EXPORT_OPTIONS='-export-symbols-regex "^[[^_]].*"'
+@@ -1059,27 +1053,19 @@ GDK_PIXBUF_DEP_CFLAGS="`$PKG_CONFIG --cf
+ 
+ GDK_PIXBUF_XLIB_PACKAGES=
+ GDK_PIXBUF_XLIB_EXTRA_CFLAGS=
+ GDK_PIXBUF_XLIB_EXTRA_LIBS=
+ 	
+-X_PACKAGES=fontconfig
++X_PACKAGES=
+ GDK_EXTRA_LIBS="$GDK_WLIBS"
+ GDK_EXTRA_CFLAGS=
+ 	
+ # GTK+ uses some X calls, so needs to link against X directly
+ GTK_DEP_PACKAGES_FOR_X=
+ GTK_DEP_LIBS_FOR_X=
+ 
+ if test "x$gdktarget" = "xx11"; then
+-  #
+-  # We use fontconfig very peripherally when decoding the default
+-  # settings.
+-  #
+-  if $PKG_CONFIG --exists fontconfig; then : ; else
+-    AC_MSG_ERROR([
+-*** fontconfig (http://www.fontconfig.org) is required by the X11 backend.])
+-  fi
+ 
+   #
+   # Check for basic X packages; we use pkg-config if available
+   #
+   if $PKG_CONFIG --exists x11 xext xrender; then
+@@ -1122,20 +1108,10 @@ if test "x$gdktarget" = "xx11"; then
+   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
+ 
+   gtk_save_LIBS=$LIBS
+   LIBS="$x_libs_for_checks $LIBS"
+   
+-  # Sanity check for the X11 and Xext libraries. While everything we need from
+-  # Xext is optional, the chances a system has *none* of these things is so
+-  # small that we just unconditionally require it.
+-  AC_CHECK_FUNC(XOpenDisplay, :,
+-                AC_MSG_ERROR([*** libX11 not found. Check 'config.log' for more details.]))
+-  AC_CHECK_FUNC(XextFindDisplay, :,
+-                AC_MSG_ERROR([*** libXext not found. Check 'config.log' for more details.]))
+-  AC_CHECK_FUNC(XRenderQueryExtension, :,
+-                AC_MSG_ERROR([*** libXrender not found. Check 'config.log' for more details.]))
+-
+   # Check for xReply
+ 
+   AC_MSG_CHECKING([if <X11/extensions/XIproto.h> is needed for xReply])
+   AC_TRY_COMPILE([#include <X11/Xlibint.h>],
+       [xReply *rep;],
+@@ -1416,104 +1392,33 @@ if test "x$gdktarget" = "xdirectfb"; the
+   AM_CONDITIONAL(USE_DIRECTFB, true)
+ else
    AM_CONDITIONAL(USE_DIRECTFB, false)
  fi
  
@@ -78,7 +140,8 @@ Index: gtk+-2.10.14/configure.in
  GDK_DEP_LIBS="$GDK_EXTRA_LIBS `$PKG_CONFIG --libs $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_LIBS"
  GDK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS"
  
-@@ -1487,7 +1439,7 @@ GDK_DEP_CFLAGS="`$PKG_CONFIG --cflags  g
+ #
+ # If we aren't writing explicit dependencies, then don't put the extra libraries we need
  # into the pkg-config files
  #
  if test $enable_explicit_deps != yes ; then
@@ -87,7 +150,10 @@ Index: gtk+-2.10.14/configure.in
    GDK_EXTRA_LIBS=
  fi
  
-@@ -1498,39 +1450,10 @@ AC_SUBST(GDK_DEP_LIBS)
+ AC_SUBST(GDK_PACKAGES)
+ AC_SUBST(GDK_EXTRA_LIBS)
+ AC_SUBST(GDK_EXTRA_CFLAGS)
+ AC_SUBST(GDK_DEP_LIBS)
  AC_SUBST(GDK_DEP_CFLAGS)
  
  
@@ -129,7 +195,11 @@ Index: gtk+-2.10.14/configure.in
  GTK_DEP_CFLAGS="`$PKG_CONFIG --cflags  gthread-2.0 $GDK_PIXBUF_PACKAGES $GDK_PACKAGES $GTK_PACKAGES` $GDK_PIXBUF_EXTRA_CFLAGS $GDK_EXTRA_CFLAGS $GTK_EXTRA_CFLAGS"
  
  if test x"$os_win32" = xyes; then
-@@ -1584,17 +1507,6 @@ AM_CONDITIONAL(HAVE_CUPS, test "x$CUPS_C
+   GTK_EXTRA_CFLAGS="$msnative_struct"
+ fi
+@@ -1567,21 +1472,10 @@ LIBS="$CUPS_LIBS"
+ AC_CHECK_FUNCS(httpGetAuthString)
+ LIBS="$gtk_save_libs"
  
  gtk_save_cppflags="$CPPFLAGS"
  CPPFLAGS="$CPPFLAGS $GTK_DEP_CFLAGS"
@@ -147,3 +217,5 @@ Index: gtk+-2.10.14/configure.in
  CPPFLAGS="$gtk_save_cppflags"
       
  			  	
+ AC_ARG_ENABLE(test-print-backend,
+               [AC_HELP_STRING([--enable-test-print-backend],
