@@ -13,7 +13,7 @@ resourceproto xineramaproto xtrans evieext libxkbfile libxfont libxau \
 libfontenc libxdmcp libxxf86vm libxaw libxmu libxt libxpm libxext libx11 \
 libxkbui libxxf86misc libxi libdmx libxtst libxres mesa"
 
-RDEPENDS_${PN} = "hal rgb xorg-minimal-fonts"
+RDEPENDS_${PN} = "hal"
 
 XORG_PN = "xorg-server"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2 \
@@ -25,7 +25,7 @@ inherit autotools pkgconfig
 
 PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
-RRECOMMENDS_${PN} += "xserver-security-policy"
+RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb"
 
 PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils"
 
