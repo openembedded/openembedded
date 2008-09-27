@@ -9,6 +9,7 @@ SRC_URI = "\
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
   file://fix-install-daemon.patch;patch=1 \
+  file://sanitize-reply-timeout.patch;patch=1 \
   file://dbus-1.init \
 "
 
