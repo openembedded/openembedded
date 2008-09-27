@@ -7,7 +7,7 @@ SECTION = "x11/libs"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 xfce4-dev-tools"
 
-inherit xfce
+inherit xfce pkgconfig
 
 MACROS="m4/X11.m4 m4/debug.m4 m4/depends.m4 m4/i18n.m4"
 
