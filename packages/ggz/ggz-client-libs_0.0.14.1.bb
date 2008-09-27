@@ -2,11 +2,16 @@ DESCRIPTION = " Client libraries for GamingZone"
 LICENSE = "LGPLv2"
 DEPENDS = "libggz" 
 
-SRC_URI = "http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${PN}-${PV}.tar.gz"
+PR = "r1"
+
+SRC_URI = "http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${PN}-${PV}.tar.gz \
+           file://ggz-unbreak-m4.patch;patch=1 \
+          "
 
 inherit autotools
 
-EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
+EXTRA_OECONF = "--with-ggz-dir=${STAGING_INCDIR}/../ \
+                --with-libggz-includes=${STAGING_INCDIR} \
                 --with-libggz-libraries=${STAGING_LIBDIR} \
                "
 
