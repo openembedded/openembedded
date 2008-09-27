@@ -1,5 +1,5 @@
 LICENSE = "LGPL"
-DEPENDS = "libgnome"
+DEPENDS = "libgnome libsoup-2.4"
 
 inherit gnome
 
