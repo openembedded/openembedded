@@ -1,0 +1,40 @@
+#! /bin/sh
+#
+# fso-gpsd -- This shell script starts and stops the freemsmartphone.org gpsd compatibility daemon
+#
+# chkconfig: 345 70 30
+# description: fso-gpsd is the freesmartphone.org gpsd compatibility daemon
+# processname: fso-gpsd
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+NAME=fso-gpsd
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+case "$1" in
+    start)
+        echo -n "Starting freesmartphone.org gpsd compatibility daemon: "
+        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile -x /usr/sbin/fso-gpsd
+        if [ $? = 0 ]; then
+            echo "(ok)"
+        else
+            echo "(failed)"
+        fi
+        ;;
+    stop)
+        echo -n "Stopping freesmartphone.org gpsd compatibility daemon: "
+        start-stop-daemon --stop --pidfile /var/run/${NAME}.pid --oknodo
+        rm -f /var/run/${NAME}.pid
+        echo "(done)"
+        ;;
+    restart|force-reload)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Usage: /etc/init.d/fso-gpsd {start|stop|restart|force-reload}"
+        exit 1
+        ;;
+esac
+
+exit 0
