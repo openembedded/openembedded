@@ -3,9 +3,10 @@ HOMEPAGE = "http://www.gnu.org/software/grub"
 SECTION = "bootloaders"
 PRIORITY = "optional"
 RDEPENDS = "diffutils"
-PR = "r2"
+PR = "r3"
 
-SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz"
+SRC_URI = "ftp://alpha.gnu.org/gnu/grub/grub-${PV}.tar.gz \
+           file://automake-1.10.patch;patch=1"
 
 inherit autotools
 
