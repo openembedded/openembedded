@@ -20,7 +20,8 @@ FILES_${PN} = "${bindir}/* \
 	       ${sysconfdir}/gconf/ \
 	       ${datadir}/themes/blondie/matchbox \
 	       ${datadir}/themes/Default/matchbox \
-	       ${datadir}/themes/MBOpus/matchbox"
+	       ${datadir}/themes/MBOpus/matchbox \
+               /var/lib/*"
 
 ALTERNATIVE_NAME = "x-window-manager"
 ALTERNATIVE_LINK = "${bindir}/x-window-manager"
@@ -39,6 +40,6 @@ do_configure_prepend () {
 }
 
 do_install_prepend() {
+    install -d ${D}/var/lib/dbus
     install ${WORKDIR}/kbdconfig ${S}/data/kbdconfig
 }
-
