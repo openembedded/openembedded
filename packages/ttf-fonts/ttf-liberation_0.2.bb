@@ -3,7 +3,7 @@ require ttf.inc
 DESCRIPTION = "Liberation fonts - TTF Version"
 HOMEPAGE = "https://www.redhat.com/promo/fonts/"
 LICENSE = "Liberation"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://www.redhat.com/f/fonts/liberation-fonts-ttf-3.tar.gz"
 S = "${WORKDIR}/liberation-fonts-${PV}"
