@@ -15,7 +15,7 @@ prog="pulseaudio"
 start() {
     echo -n "Starting audio server: "
     # FIXME once alsa/shm permissions have been fixed, supply --system
-    start-stop-daemon -S -x /usr/bin/pulseaudio -- --no-cpu-limit --resample-method=trivial -D -nF /etc/pulse/session
+    start-stop-daemon -S -x /usr/bin/pulseaudio -- --no-cpu-limit --resample-method=sinc-fastest -D -nF /etc/pulse/session
 
     if [ $? = 0 ]; then
         echo "$prog (warning ignores)." # FIXME remove comment on warning
