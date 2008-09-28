@@ -5,19 +5,24 @@ RDEPENDS = "\
   pulseaudio-module-alsa-sink \
   pulseaudio-module-alsa-source \
   pulseaudio-module-cli \
+  pulseaudio-module-default-device-restore \
+  pulseaudio-module-detect\
   pulseaudio-module-esound-protocol-unix \
   pulseaudio-module-simple-protocol-tcp \
   pulseaudio-module-native-protocol-unix \
   pulseaudio-module-cli-protocol-unix \
+  pulseaudio-module-rescue-streams\
   pulseaudio-module-suspend-on-idle \
+  pulseaudio-module-volue-restore \
   gst-plugin-pulse \
   libasound-module-ctl-pulse \
   libasound-module-pcm-pulse \
 "
-PR = "r1"
+PR = "r2"
 
 inherit update-rc.d
 
+export TARGET_PFPU = "${TARGET_FPU}"
 INITSCRIPT_NAME = "pulseaudio"
 INITSCRIPT_PARAMS = "defaults 35"
 
@@ -34,11 +39,16 @@ do_install() {
     install -d ${D}/${sysconfdir}/pulse
 	install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/pulse/session
 	install -m 0644 ${WORKDIR}/asound.conf ${D}/${sysconfdir}
+
+    if [ "x${TARGET_PFPU}" == "xsoft" ] ; then
+         sed -i -e s:resample-method=sinc-fastest:resample-method=trivial: ${D}${sysconfdir}/init.d/pulseaudio
+    fi
 }
 
-PACKAGE_ARCH = "all"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CONFFILES_${PN} = "\
+  ${sysconfdir}/init.d/pulseaudio \
   ${sysconfdir}/pulse/session \
   ${sysconfdir}/asound.conf \
 "
