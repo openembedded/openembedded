@@ -46,6 +46,11 @@ X_INSTALL = "\
   \
 "
 
+X_INSTALL_append_om-gta02 = "\
+  ttf-arphic-uming \
+  \
+"
+
 # useful command line tools
 TOOLS_INSTALL = "\
 #  bash \
