@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
 PV = "0.6+${PR}+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-gpsd.git;protocol=git;branch=master \
@@ -13,7 +13,7 @@ S = "${WORKDIR}/git"
 
 inherit autotools update-rc.d
 
-INITSCRIPT_NAME = "gpsd"
+INITSCRIPT_NAME = "fso-gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
 
 do_install_append() {
