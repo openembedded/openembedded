@@ -237,8 +237,10 @@ SRCREV_pn-python-ewl ?= "${EFL_SRCREV}"
 SRCREV_pn-python-etk ?= "${EFL_SRCREV}"
 
 # Enlightenment Applications
-SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
 SRCREV_pn-edje-editor ?= "${EFL_SRCREV}"
+#SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
+SRCREV_pn-edje-player ?= "36296"
+SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
 SRCREV_pn-emphasis ?= "${EFL_SRCREV}"
 SRCREV_pn-ephoto ?= "${EFL_SRCREV}"
 SRCREV_pn-examine ?= "${EFL_SRCREV}"
