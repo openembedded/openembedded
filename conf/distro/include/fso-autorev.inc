@@ -1,4 +1,5 @@
 SRCREV_pn-frameworkd = "${AUTOREV}"
+SRCREV_pn-fso-gpsd = "${AUTOREV}"
 SRCREV_pn-fso-sounds = "${AUTOREV}"
 SRCREV_pn-gsm0710muxd = "${AUTOREV}"
 SRCREV_pn-gsmd2 = "${AUTOREV}"
