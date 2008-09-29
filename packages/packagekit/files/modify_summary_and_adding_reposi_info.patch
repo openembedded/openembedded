@@ -1,0 +1,69 @@
+diff --git a/backends/opkg/pk-backend-opkg.c b/backends/opkg/pk-backend-opkg.c
+index 9e71b90..92da8b0 100644
+--- a/backends/opkg/pk-backend-opkg.c
++++ b/backends/opkg/pk-backend-opkg.c
+@@ -281,6 +281,7 @@ pk_opkg_package_list_cb (opkg_t *opkg, opkg_package_t *pkg, void *data)
+ {
+ 	SearchParams *params;
+ 	gchar *uid;
++        gchar *summary;
+ 	gchar *haystack;
+ 	gint status, match;
+ 	PkFilterEnum filters;
+@@ -327,8 +328,14 @@ pk_opkg_package_list_cb (opkg_t *opkg, opkg_package_t *pkg, void *data)
+ 			break;
+ 	}
+ 
+-	uid = g_strdup_printf ("%s;%s;%s;",
+-		pkg->name, pkg->version, pkg->architecture);
++	uid = g_strdup_printf ("%s;%s;%s;%s",
++		pkg->name, pkg->version, pkg->architecture, pkg->repository);
++
++        if (!pkg->tags) 
++                summary = g_strdup_printf("%s", pkg->description);
++        else 
++                summary = g_strdup_printf("%s ;; %s", pkg->tags, pkg->description);
++                
+ 
+ 	if (pkg->installed)
+ 		status = PK_INFO_ENUM_INSTALLED;
+@@ -350,10 +357,11 @@ pk_opkg_package_list_cb (opkg_t *opkg, opkg_package_t *pkg, void *data)
+ 	if ((filters & PK_FILTER_ENUM_NOT_INSTALLED) && (pkg->installed))
+ 		goto end_handle;
+ 
+-	pk_backend_package (params->backend, status, uid, pkg->description);
++	pk_backend_package (params->backend, status, uid, summary);
+ 
+ end_handle:
+ 	g_free(uid);
++        g_free(summary);
+ }
+ 
+ static gboolean
+@@ -713,6 +721,7 @@ backend_get_details_thread (PkBackend *backend)
+ 	int group_index;
+ 	PkGroupEnum group = 0;
+ 	opkg_package_t *pkg;
++        gchar *summary;
+ 	gchar *newid;
+ 
+ 	package_id = pk_backend_get_string (backend, "package_id");
+@@ -746,13 +755,17 @@ backend_get_details_thread (PkBackend *backend)
+ 			if (opkg_check_tag(pkg, (gchar *)pk_group_enum_to_text(group))) 
+ 				break;
+ 		}
++                summary = g_strdup_printf("%s ;; %s", pkg->tags, pkg->description);
+ 	}
++        else 
++                summary = g_strdup_printf("%s", pkg->description);
+ 
+-	pk_backend_details (backend, newid, NULL, group, pkg->description, pkg->url, pkg->size);
++	pk_backend_details (backend, newid, NULL, group, summary, pkg->url, pkg->size);
+ 	pk_backend_finished (backend);
+ 	opkg_thread_unlock();
+ 
+ 	g_free (newid);
++        g_free (summary);
+ 	opkg_package_free(pkg);
+ 	return TRUE;
+ }
