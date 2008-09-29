@@ -44,13 +44,13 @@ do
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
                        gdb gdbserver strace \
 		       usbutils pciutils mtd-utils usbview hal setserial \
-                       task-proper-tools mc screen findutils fakeroot \
+                       task-proper-tools mc screen findutils fakeroot gzip \
 	               mono jamvm perl python ruby \
 		       gtk+ qt-x11-free qt4-x11-free \
 		       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany fennec minimo openmoko-browser2 \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
-		       gpe-sketchbook gpe-gallery gpe-scap notecase task-gpe-pim \
+		       gpe-sketchbook gpe-gallery gpe-scap notecase leafpad task-gpe-pim \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit viking \
 		       ffmpeg xmms totem mplayer quasar vlc-gpe gnome-mplayer \
@@ -65,6 +65,7 @@ do
 		       asterisk \
 		       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
+                       rdesktop x11vnc tightvnc \
 		       tzdata \
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \

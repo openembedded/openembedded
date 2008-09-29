@@ -4,8 +4,9 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-DEPENDS = "libtool gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+PR = "r1"
 
+DEPENDS = "libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
 SRC_URI = "http://videolan.mirror.technotop.nl/vlc/0.9.2/vlc-${PV}.tar.bz2"
 
@@ -18,15 +19,18 @@ EXTRA_OECONF = "\
 	--disable-wxwidgets \
 	--enable-x11 --enable-xvideo \ 
 	--disable-screen --disable-caca \
-	--disable-httpd --disable-vlm \
+	--enable-httpd --enable-vlm \
 	--enable-freetype \
 	--enable-sdl \ 
 	--enable-png \
 	--enable-live555 --enable-tremor \
 	--enable-v4l2 --disable-aa --enable-wma --disable-faad \
 	--enable-dbus \
+	--enable-hal \	
 	--without-contrib \
 	ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}/moc4 \
+	ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}/rcc4 \
+	ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}/uic4 \
 "
 
 
