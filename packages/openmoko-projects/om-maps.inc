@@ -1,5 +1,6 @@
-DESCRIPTION = "Map of ${MAP_NAME}, for use with Locations application"
-HOMEPAGE = "http://diversity.projects.openmoko.org/"
+DESCRIPTION = "Map of ${MAP_NAME}, for use with Locations application. \
+               Data from OpenStreetMap.org, licenced CC-by-SA."
+HOMEPAGE = "http://wiki.openmoko.org/wiki/Om_2008.8_Locations"
 SECTION = "network/misc"
 LICENSE = "Creative Commons Attribution-ShareAlike 2.0"
 
