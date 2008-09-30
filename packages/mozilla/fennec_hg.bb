@@ -1,11 +1,13 @@
+DESCRIPTION = "Mozilla Mobile browser"
 DEPENDS += "cairo alsa-lib "
 
-# Yes, we'll need to bump PE later on :(
-PV = "1.0a1pre"
-PR = "r6"
+PV = "0.8+0.9pre"
+MOZPV = "0.9pre"
+PR = "r8"
+PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=7bfd2ee7016f \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=a48464d3ea42 \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=aa4d3083995f \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=31f56bf4590a \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
@@ -48,7 +50,7 @@ do_install() {
 	cd ${S}/objdir/mobile/
 	oe_runmake package
 	install -d ${D}/${libdir}
-	tar xjf ${S}/objdir/mobile/dist/fennec-${PV}*.tar.bz2 -C ${D}/${libdir}
+	tar xjf ${S}/objdir/mobile/dist/fennec-${MOZPV}*.tar.bz2 -C ${D}/${libdir}
 	# remove x86 binary
 	rm ${D}/${libdir}/fennec/xulrunner/nsinstall
         install -d ${D}${datadir}/applications
