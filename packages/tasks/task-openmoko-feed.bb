@@ -53,6 +53,7 @@ RDEPENDS_task-openmoko-feed = "\
   om-maps-buenos-aires \
   om-maps-hong-kong \
   om-maps-london \
+  om-maps-low-levels \
   om-maps-new-york \
   om-maps-paris \
   om-maps-providence \

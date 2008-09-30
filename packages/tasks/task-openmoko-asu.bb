@@ -23,6 +23,7 @@ RDEPENDS_task-openmoko-asu = "\
   assassin \
   diversity-daemon \
   om-locations \
+  om-maps-low-levels \
   ${XSERVER} \
   xserver-kdrive-common \
   xserver-nodm-init \
