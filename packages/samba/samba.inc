@@ -24,6 +24,7 @@ FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
 do_configure_prepend () {
 	./script/mkversion.sh
 	if [ ! -e acinclude.m4 ]; then
+		touch aclocal.m4	
 		cat aclocal.m4 > acinclude.m4
 	fi
 }
