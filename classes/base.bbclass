@@ -559,7 +559,10 @@ python base_do_fetch() {
 		try:
 			if type == "http" or type == "https" or type == "ftp" or type == "ftps":
 				if not base_chk_file(parser, pn, pv,uri, localpath, d):
-					bb.note("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS",d, True):
+						bb.fatal("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+					else:
+						bb.note("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
