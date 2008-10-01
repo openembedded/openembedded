@@ -8,7 +8,6 @@ EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
                 --with-ggzmod-includes=${STAGING_INCDIR} \
 		--with-ggzmod-libraries=${STAGING_LIBDIR} \
 	        --enable-scalable \
-		--enable-omitgames=aisleriot \
 	       "
 
 do_configure_prepend() {
