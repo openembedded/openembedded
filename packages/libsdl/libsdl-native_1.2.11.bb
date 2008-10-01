@@ -11,6 +11,8 @@ S = "${WORKDIR}/SDL-${PV}"
 
 inherit autotools binconfig pkgconfig native
 
+PARALLEL_MAKE = ""
+
 EXTRA_OECONF = "--disable-debug --disable-cdrom --enable-threads --enable-timers --enable-endian \
                 --enable-file --disable-oss --disable-alsa --disable-esd --disable-arts \
                 --disable-diskaudio --disable-nas --disable-esd-shared --disable-esdtest \

@@ -19,7 +19,6 @@ inherit autotools pkgconfig
 
 EXTRA_OECONF="--enable-gui=gtk \
                 --enable-renderer=agg \
-                --enable-media=none \
                 --enable-agg \
                 --enable-gui=fb \
                 --enable-z \
@@ -37,6 +36,7 @@ EXTRA_OECONF="--enable-gui=gtk \
                 --enable-maintainer-mode \
                 --enable-fps-debug \
                 --enable-allstatic \
+                --enable-static \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 --disable-ltdl-install \
                 --without-included-ltdl \
@@ -46,7 +46,7 @@ EXTRA_OECONF="--enable-gui=gtk \
 
 # the test for error_t is wrong for uclibc, needs _GNU_SOURCE for correct
 # detection because uclibc does not have argz.h which enables error_t 
-CFLAGS += " -D_GNU_SOURCE  -I${S}/libltdl  -I${STAGING_INCDIR}/libltdl"
+CFLAGS += " -D_GNU_SOURCE  -I${S}/libltdl  -I${STAGING_INCDIR}/libltdl $(pkgconfig --cflags gstreamer)"
 
 PACKAGES =+ "libgnashnet libgnashamf libgnashbase libgnashserver libgnashmedia"
 

@@ -63,8 +63,8 @@ do_stage_append() {
         # We need a hostperl link for building perl
         ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
         # Store native config in non-versioned directory
-        install -d ${STAGING_DIR}/${HOST_SYS}/perl
-        install config.sh ${STAGING_DIR}/${HOST_SYS}/perl
+        install -d ${STAGING_DIR_HOST}/perl
+        install config.sh ${STAGING_DIR_HOST}/perl
 }
 
 PARALLEL_MAKE = ""
