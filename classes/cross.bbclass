@@ -3,8 +3,11 @@
 EXCLUDE_FROM_WORLD = "1"
 
 # Save PACKAGE_ARCH before changing HOST_ARCH
-OLD_PACKAGE_ARCH := ${PACKAGE_ARCH}
-PACKAGE_ARCH = ${OLD_PACKAGE_ARCH}
+OLD_PACKAGE_ARCH := "${PACKAGE_ARCH}"
+PACKAGE_ARCH = "${OLD_PACKAGE_ARCH}"
+# Also save BASE_PACKAGE_ARCH since HOST_ARCH can influence it
+OLD_BASE_PACKAGE_ARCH := "${BASE_PACKAGE_ARCH}"
+BASE_PACKAGE_ARCH = "${OLD_BASE_PACKAGE_ARCH}"
 
 PACKAGES = ""
 
@@ -49,8 +52,8 @@ bindir = "${exec_prefix}/bin"
 sbindir = "${exec_prefix}/bin"
 libexecdir = "${exec_prefix}/libexec"
 libdir = "${exec_prefix}/lib"
-includedir = "${STAGING_DIR_TARGET}/${layout_includedir}"
-oldincludedir = "${STAGING_DIR_TARGET}/${layout_includedir}"
+includedir = "${exec_prefix}/include"
+oldincludedir = "${exec_prefix}/include"
 
 do_stage () {
 	oe_runmake install
