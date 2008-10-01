@@ -1,0 +1,241 @@
+Index: cacao-0.99.3/src/vm/jit/arm/linux/md-os.c
+===================================================================
+--- cacao-0.99.3.orig/src/vm/jit/arm/linux/md-os.c	2008-07-07 13:36:19.000000000 +0200
++++ cacao-0.99.3/src/vm/jit/arm/linux/md-os.c	2008-09-24 17:15:23.191805889 +0200
+@@ -2,6 +2,7 @@
+ 
+    Copyright (C) 1996-2005, 2006, 2007, 2008
+    CACAOVM - Verein zur Foerderung der freien virtuellen Maschine CACAO
++   Copyright (C) 2008 Theobroma Systems Ltd.
+ 
+    This file is part of CACAO.
+ 
+@@ -60,7 +61,7 @@
+ #include "vm/jit/executionstate.h"
+ #include "vm/jit/stacktrace.h"
+ #include "vm/jit/trap.h"
+-
++#include "vm/jit/patcher-common.h"
+ 
+ /* md_signal_handler_sigsegv ***************************************************
+ 
+@@ -126,56 +127,52 @@
+ 
+ void md_signal_handler_sigill(int sig, siginfo_t *siginfo, void *_p)
+ {
+-	ucontext_t     *_uc;
+-	scontext_t     *_sc;
+-	u1             *pv;
+-	u1             *sp;
+-	u1             *ra;
+-	u1             *xpc;
+-	u4              mcode;
+-	int             type;
+-	intptr_t        val;
+-	void           *p;
+-
+-	_uc = (ucontext_t*) _p;
+-	_sc = &_uc->uc_mcontext;
+-
+-	/* ATTENTION: glibc included messed up kernel headers we needed a
+-	   workaround for the ucontext structure. */
+-
+-	pv  = (u1 *) _sc->arm_ip;
+-	sp  = (u1 *) _sc->arm_sp;
+-	ra  = (u1 *) _sc->arm_lr;                    /* this is correct for leafs */
+-	xpc = (u1 *) _sc->arm_pc;
+-
+-	/* get exception-throwing instruction */
+-
+-	mcode = *((u4 *) xpc);
+-
+-	/* check for undefined instruction we use */
+-
+-	if ((mcode & 0x0ff000f0) != 0x07f000f0) {
+-		log_println("md_signal_handler_sigill: unknown illegal instruction: inst=%x", mcode);
+-#if defined(ENABLE_DISASSEMBLER)
+-		DISASSINSTR(xpc);
+-#endif
+-		vm_abort("Aborting...");
+-	}
+-
+-	type = (mcode >> 8) & 0x0fff;
+-	val  = *((s4 *) _sc + OFFSET(scontext_t, arm_r0)/4 + (mcode & 0x0f));
+-
+-	/* Handle the trap. */
+-
+-	p = trap_handle(type, val, pv, sp, ra, xpc, _p);
+-
+-	/* set registers if we have an exception, continue execution
+-	   otherwise (this is needed for patchers to work) */
+-
+-	if (p != NULL) {
+-		_sc->arm_r10 = (uintptr_t) p;
+-		_sc->arm_fp  = (uintptr_t) xpc;
+-		_sc->arm_pc  = (uintptr_t) asm_handle_exception;
++	int type;
++	intptr_t val;
++	void *p;
++ 	ucontext_t* _uc = (ucontext_t*) _p;
++ 	scontext_t* _sc = &_uc->uc_mcontext;
++  
++  	/* ATTENTION: glibc included messed up kernel headers we needed a
++  	   workaround for the ucontext structure. */
++  
++ 	void* pv  = (void*) _sc->arm_ip;
++ 	void* sp  = (void*) _sc->arm_sp;
++ 	void* ra  = (void*) _sc->arm_lr; // The RA is correct for leaf methods.
++ 	void* xpc = (void*) _sc->arm_pc;
++  
++ 	// Get the exception-throwing instruction.
++ 	uint32_t mcode = *((uint32_t*) xpc);
++  
++ 	// Check if the trap instruction is valid.
++ 	// TODO Move this into patcher_handler.
++ 	if (patcher_is_valid_trap_instruction_at(xpc) == false) {
++ 		// Check if the PC has been patched during our way to this
++ 		// signal handler (see PR85).
++ 		// NOTE: ARM uses SIGILL for other traps too, but it's OK to
++ 		// do this check anyway because it will fail.
++ 		if (patcher_is_patched_at(xpc) == true)
++ 			return;
++  
++ 		// We have a problem...
++  		log_println("md_signal_handler_sigill: Unknown illegal instruction 0x%x at 0x%x", mcode, xpc);
++  #if defined(ENABLE_DISASSEMBLER)
++ 		(void) disassinstr(xpc);
++  #endif
++  		vm_abort("Aborting...");
++  	}
++  
++ 	type = (mcode >> 8) & 0x0fff;
++ 	val  = *((int32_t*) _sc + OFFSET(scontext_t, arm_r0)/4 + (mcode & 0x0f));
++  
++ 	// Handle the trap.
++ 	p = trap_handle(type, val, pv, sp, ra, xpc, _p);
++  
++ 	// Set registers if we have an exception, continue execution
++ 	// otherwise.
++  	if (p != NULL) {
++  		_sc->arm_r10 = (uintptr_t) p;
++  		_sc->arm_fp  = (uintptr_t) xpc;
+ 	}
+ }
+ 
+Index: cacao-0.99.3/src/vm/jit/arm/patcher.c
+===================================================================
+--- cacao-0.99.3.orig/src/vm/jit/arm/patcher.c	2008-04-27 23:44:08.000000000 +0200
++++ cacao-0.99.3/src/vm/jit/arm/patcher.c	2008-09-24 17:05:17.003795314 +0200
+@@ -2,6 +2,7 @@
+ 
+    Copyright (C) 1996-2005, 2006, 2007, 2008
+    CACAOVM - Verein zur Foerderung der freien virtuellen Maschine CACAO
++   Copyright (C) 2008 Theobroma Systems Ltd.
+ 
+    This file is part of CACAO.
+ 
+@@ -76,6 +77,25 @@
+ 	PATCH_BACK_ORIGINAL_MCODE;
+ }
+ 
++ 
++/**
++ * Check if the trap instruction at the given PC is valid.
++ *
++ * @param pc Program counter.
++ *
++ * @return true if valid, false otherwise.
++ */
++bool patcher_is_valid_trap_instruction_at(void* pc)
++{
++	uint32_t mcode = *((uint32_t*) pc);
++ 
++ 	// Check for the undefined instruction we use.
++ 	if ((mcode & 0x0ff000f0) != 0x07f000f0) {
++ 		return false;
++ 	}
++ 
++ 	return true;
++}
+ 
+ /* patcher_get_putstatic *******************************************************
+ 
+Index: cacao-0.99.3/src/vm/jit/patcher-common.c
+===================================================================
+--- cacao-0.99.3.orig/src/vm/jit/patcher-common.c	2008-04-28 21:52:41.000000000 +0200
++++ cacao-0.99.3/src/vm/jit/patcher-common.c	2008-09-24 17:05:17.047796037 +0200
+@@ -2,6 +2,7 @@
+ 
+    Copyright (C) 2007, 2008
+    CACAOVM - Verein zur Foerderung der freien virtuellen Maschine CACAO
++   Copyright (C) 2008 Theobroma Systems Ltd.
+ 
+    This file is part of CACAO.
+ 
+@@ -254,6 +255,49 @@
+ }
+ 
+ 
++/**
++ * Check if the patcher is already patched.  This is done by comparing
++ * the machine instruction.
++ *
++ * @param pr Patcher structure.
++ *
++ * @return true if patched, false otherwise.
++ */
++bool patcher_is_patched(patchref_t* pr)
++{
++	// Validate the instruction at the patching position is the same
++	// instruction as the patcher structure contains.
++	uint32_t mcode = *((uint32_t*) pr->mpc);
++
++	if (mcode != pr->mcode) {
++		// The code differs.
++		return false;
++	}
++
++	return true;
++}
++
++
++/**
++ *
++ */
++bool patcher_is_patched_at(void* pc)
++{
++	codeinfo* code = code_find_codeinfo_for_pc(pc);
++
++	// Get the patcher for the given PC.
++	patchref_t* pr = patcher_list_find(code, pc);
++
++	if (pr == NULL) {
++		// The given PC is not a patcher position.
++		return false;
++	}
++
++	// Validate the instruction.
++	return patcher_is_patched(pr);
++}
++
++
+ /* patcher_handler *************************************************************
+ 
+    Handles the request to patch JIT code at the given patching
+Index: cacao-0.99.3/src/vm/jit/patcher-common.h
+===================================================================
+--- cacao-0.99.3.orig/src/vm/jit/patcher-common.h	2008-04-27 23:44:08.000000000 +0200
++++ cacao-0.99.3/src/vm/jit/patcher-common.h	2008-09-24 17:05:17.115800331 +0200
+@@ -73,6 +73,12 @@
+ 
+ void patcher_resolve(jitdata* jd);
+ 
++bool patcher_is_patched(patchref_t* pr);
++bool patcher_is_patched_at(void* pc);
++
++// MD function.
++bool patcher_is_valid_trap_instruction_at(void* pc);
++
+ java_handle_t *patcher_handler(u1 *pc);
+ 
+ 

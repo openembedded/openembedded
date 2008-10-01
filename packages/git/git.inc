@@ -8,9 +8,9 @@ SRC_URI = "http://www.kernel.org/pub/software/scm/git/git-${PV}.tar.bz2 \
 	   "
 S = "${WORKDIR}/git-${PV}"
 
-EXTRA_OEMAKE = "NO_TCLTK=1"
-
 inherit autotools
+
+EXTRA_OEMAKE = "NO_TCLTK=1"
 
 do_install () {
 	oe_runmake install DESTDIR="${D}" bindir=${bindir} \

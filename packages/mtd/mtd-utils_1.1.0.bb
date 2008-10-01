@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
 PR = "r3"
 
-SRC_URI = "ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.1.0.tar.bz2 \
+SRC_URI = "ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-${PV}.tar.bz2 \
            file://add-exclusion-to-mkfs-jffs2-git.patch;patch=1 \
 	   file://fix-ignoreerrors-git.patch;patch=1 \
 	   file://lzo_1x.patch;patch=1"
