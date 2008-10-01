@@ -1,9 +1,10 @@
 DESCRIPTION = "The Openmoko Address Book"
 SECTION = "openmoko/pim"
+PKG_TAGS_${PN} = "group::communication alias::Om_Contacts2"
 DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS = "libedata-book"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit openmoko2
 

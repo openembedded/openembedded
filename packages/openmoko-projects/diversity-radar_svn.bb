@@ -15,4 +15,4 @@ inherit setuptools
 
 FILES_${PN} += "${prefix}/share/*"
 
-PKG_TAGS_${PN} = "group::communication"
+PKG_TAGS_${PN} = "group::communication alias::Diversity_Radar"

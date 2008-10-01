@@ -1,7 +1,7 @@
-PR = "r1"
-
-require om-maps.inc
+PR = "r2"
 
 MAP_NAME = "London"
+require om-maps.inc
+
 MAP_FN = "om-maps-london-${PV}.eet"
 MAP_VER = "${PV}"
