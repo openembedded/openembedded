@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "python-evas python-edje python-ecore"
 RDEPENDS = "python-evas python-edje python-ecore"
 PV = "0.0.2+svnr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=pyefl-sudoku;proto=http"
 
@@ -17,4 +17,4 @@ PACKAGES = "${PN}"
 
 FILES_${PN} += "${prefix}/share/*"
 
-PKG_TAGS_${PN} = "group::games"
+PKG_TAGS_${PN} = "group::games alias::Pyefl_Sudoku"
