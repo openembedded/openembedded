@@ -18,7 +18,8 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.bz2 \
 S = "${WORKDIR}/${QTVER}"
 
 # we need the real target system here
-CROSS_SYS := "${TARGET_SYS}"
+CROSS_SYS := "${MULTIMACH_TARGET_SYS}"
+
 inherit autotools  
 
 export QTDIR = "${S}"
@@ -53,7 +54,7 @@ do_configure() {
     export OE_QMAKE_RCC="non-existant"
     export OE_QMAKE_QMAKE="${STAGING_BINDIR_NATIVE}/qmake"
     export OE_QMAKE_RPATH="-Wl,-rpath-link,"
-    echo yes | ./configure -prefix ${STAGING_DIR}/${CROSS_SYS}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
+    echo yes | ./configure -prefix ${STAGING_DIR_TARGET}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
 }
 
 do_compile() {
@@ -61,8 +62,10 @@ do_compile() {
 }
 
 do_stage() {
-    install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake2
-    install -m 0755 bin/qmake ${STAGING_BINDIR}/qmake-qt4
+	install -d ${STAGING_BINDIR_NATIVE}	
+	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
+    install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake-qt4
+
     install -d ${CROSS_DATADIR}/qt4
     cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
 }
