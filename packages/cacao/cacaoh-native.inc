@@ -9,9 +9,6 @@ S = "${WORKDIR}/cacao-${PV}"
 inherit autotools native
 
 EXTRA_OECONF = " \
-  --with-classpath-includedir=${STAGING_INCDIR}/classpath \
-  --with-classpath-classes=${STAGING_DATADIR}/classpath/glibj.zip \
-  \
   --with-java-runtime-library-classes=${STAGING_DATADIR}/classpath/glibj.zip \
   --with-jni_md_h=${STAGING_INCDIR}/classpath \
   --with-jni_h=${STAGING_INCDIR}/classpath \

@@ -1,6 +1,6 @@
 require cacao.inc
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2 \
 	   file://cacao-codegen-arm1.patch;patch=1 \
@@ -8,5 +8,3 @@ SRC_URI = "http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-
 	   file://cacao-arm-race.patch;patch=1 \
 	   file://vfp-compat.patch;patch=1 \
      "
-
-EXTRA_OECONF += "--enable-disassembler"
