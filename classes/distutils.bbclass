@@ -8,6 +8,8 @@ DISTUTILS_INSTALL_ARGS ?= "--prefix=${D}/${prefix} \
     --install-data=${D}/${datadir}"
 
 distutils_do_compile() {
+         STAGING_INCDIR=${STAGING_INCDIR} \
+         STAGING_LIBDIR=${STAGING_LIBDIR} \
          BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
          ${STAGING_BINDIR_NATIVE}/python setup.py build ${DISTUTILS_BUILD_ARGS} || \
          oefatal "python setup.py build_ext execution failed."
@@ -21,6 +23,8 @@ distutils_stage_headers() {
 }
 
 distutils_stage_all() {
+        STAGING_INCDIR=${STAGING_INCDIR} \
+        STAGING_LIBDIR=${STAGING_LIBDIR} \
         install -d ${STAGING_DIR_HOST}${layout_libdir}/${PYTHON_DIR}/site-packages
         PYTHONPATH=${STAGING_DIR_HOST}${layout_libdir}/${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
@@ -30,6 +34,8 @@ distutils_stage_all() {
 
 distutils_do_install() {
         install -d ${D}${libdir}/${PYTHON_DIR}/site-packages
+        STAGING_INCDIR=${STAGING_INCDIR} \
+        STAGING_LIBDIR=${STAGING_LIBDIR} \
         PYTHONPATH=${D}/${libdir}/${PYTHON_DIR}/site-packages \
         BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
         ${STAGING_BINDIR_NATIVE}/python setup.py install ${DISTUTILS_INSTALL_ARGS} || \
