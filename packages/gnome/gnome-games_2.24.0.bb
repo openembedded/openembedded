@@ -27,6 +27,8 @@ do_configure_append() {
 	done	
 }
 
+CFLAGS_append = " -lguile -lgmp -lcrypt -lm -lltdl"
+
 FILES_${PN}-doc += " ${datadir}/gnome/help"
 FILES_${PN}-dbg += " ${bindir}/.debug ${libdir}/gnome-games/.debug"
 
