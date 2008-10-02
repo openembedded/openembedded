@@ -18,7 +18,7 @@ HOMEPAGE = "http://www.kernel.org/pub/linux/libs/pam"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-PR = "r1"
+PR = "r2"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters
@@ -35,6 +35,9 @@ SRC_URI += " file://libpam-config.patch;patch=1"
 SRC_URI += " file://libpam-make.patch;patch=1"
 
 inherit autotools
+
+# maintain the pam default layout
+EXTRA_OECONF += " --includedir=${includedir}/security"
 
 # EXTRA_OECONF += " --enable-static-libpam"
 # Disable building of the documentation - it requires too many different
