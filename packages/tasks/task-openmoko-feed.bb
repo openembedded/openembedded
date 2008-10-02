@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r50"
+PR = "r51"
 
 inherit task
 
@@ -38,10 +38,10 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
-#  libswt3.4-gtk-java \
-#  cacao \
-#  jamvm \
-#  classpath \
+  libswt3.4-gtk-java \
+  cacao \
+  jamvm \
+  classpath \
 #  gpsdrive \
   gpsd \
   asterisk \
