@@ -1,4 +1,4 @@
-DESCRIPTION = "Set the root password."
+DESCRIPTION = "Set a root password for your Neo."
 SUMMARY = "On installation you will be prompted to set a root password. With \
 this password you can then log into the machine."
 LICENSE = "GPL"

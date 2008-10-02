@@ -1,4 +1,4 @@
-DESCRIPTION = "The Openmoko Dialer"
+DESCRIPTION = "Legacy Om dialer."
 SECTION = "openmoko/pim"
 DEPENDS = "libgsmd libjana libmokoui2 libmokojournal2 pulseaudio libnotify"
 PV = "0.1.0+svnr${SRCREV}"

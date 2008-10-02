@@ -1,4 +1,4 @@
-DESCRIPTION = "xterm app"
+DESCRIPTION = "xterm is the standard terminal emulator for the X Window System."
 SECTION = "x11/applications"
 LICENSE = "MIT-X"
 

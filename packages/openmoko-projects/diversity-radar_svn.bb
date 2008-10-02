@@ -1,4 +1,4 @@
-DESCRIPTION = "Diversity_radar - a GPS location based communicative application"
+DESCRIPTION = "Diversity Radar is a GPS location based communicative application"
 HOMEPAGE = "http://diversity.projects.openmoko.org/"
 SECTION = "openmoko/applications"
 LICENSE = "GPL"

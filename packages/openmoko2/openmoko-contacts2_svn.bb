@@ -1,4 +1,4 @@
-DESCRIPTION = "The Openmoko Address Book"
+DESCRIPTION = "Legacy Om address book application."
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS = "libedata-book"

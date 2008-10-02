@@ -1,4 +1,4 @@
-DESCRIPTION = "Configuration files for online package repositories of Openmoko community repository feeds"
+DESCRIPTION = "Configuration files for online package repositories of the Openmoko community repository feeds."
 PR = "r0.03"
 
 do_compile() {
