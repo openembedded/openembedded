@@ -4,7 +4,7 @@ LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
 
-DEPENDS = "zlib libtool classpath cacaoh-native virtual/javac-native"
+DEPENDS = "zlib libtool classpath binutils cacaoh-native virtual/javac-native"
 
 # Avoid version number here, otherwise dpkg will expect a package name
 # and cannot be satisfied with a package that provides classpath.
