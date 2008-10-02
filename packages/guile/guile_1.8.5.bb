@@ -5,7 +5,7 @@ SECTION = "devel/scheme"
 DEPENDS = "guile-native gmp"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch;patch=1 "
@@ -25,6 +25,9 @@ do_compile() {
         
         sed -i -e s:${STAGING_DIR_TARGET}::g \
                -e s:/${TARGET_SYS}::g \
+               -e s:-L/usr/lib::g \
+               -e s:-isystem/usr/include::g \
+               -e s:,/usr/lib:,\$\{libdir\}:g \
                   guile-1.8.pc
 }
 
