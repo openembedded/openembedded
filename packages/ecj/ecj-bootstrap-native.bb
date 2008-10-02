@@ -9,13 +9,15 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "EPL"
 
-DEPENDS = "libecj-bootstrap"
+DEPENDS = "libecj-bootstrap virtual/java-native"
 
 PROVIDES = "virtual/javac-native"
 
 SRC_URI = "file://ecj.in"
 
 S = "${WORKDIR}"
+
+PR = "r1"
 
 JAR = "ecj-bootstrap.jar"
 
