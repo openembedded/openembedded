@@ -9,7 +9,7 @@ SRC_URI = "\
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
   file://fix-install-daemon.patch;patch=1 \
-  file://sanitize-reply-timeout.patch;patch=1 \
+  file://0001-Make-the-default-DBus-reply-timeout-configurable.patch;patch=1 \
   file://dbus-1.init \
 "
 
@@ -27,6 +27,7 @@ EXTRA_OECONF = "\
   --disable-doxygen-docs \
   --with-xml=expat \
   --with-x \
+  --with-dbus-default-reply-timeout=60000 \
 "
 
 do_install_append() {
