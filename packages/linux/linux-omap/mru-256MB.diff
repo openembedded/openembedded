@@ -1,0 +1,24 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Thu, 2 Oct 2008 00:05:33 +0000 (+0100)
+Subject: OMAP: Increase VMALLOC_END to allow 256MB RAM
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=355a0ce968e4a7b0c8d8203f4517296e932e373d
+
+OMAP: Increase VMALLOC_END to allow 256MB RAM
+
+This increases VMALLOC_END to 0x18000000, making room for 256MB
+RAM with the default 128MB vmalloc region.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/arch/arm/plat-omap/include/mach/vmalloc.h b/arch/arm/plat-omap/include/mach/vmalloc.h
+index d8515cb..b97dfaf 100644
+--- a/arch/arm/plat-omap/include/mach/vmalloc.h
++++ b/arch/arm/plat-omap/include/mach/vmalloc.h
+@@ -17,5 +17,5 @@
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+  */
+-#define VMALLOC_END	  (PAGE_OFFSET + 0x17000000)
++#define VMALLOC_END	  (PAGE_OFFSET + 0x18000000)
+ 

@@ -1,0 +1,16 @@
+# DBus is from the desktop world, systems are _FAST_ there
+# On Embedded, some things might take a bit longer
+# Default session bus timeout is 300 seconds(!), whereas default
+# system bus timeout is only 25 seconds. This increases it to 60.
+# Signed off: Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+Index: dbus-1.2.1/bus/system.conf
+===================================================================
+--- dbus-1.2.1.orig/bus/system.conf.in
++++ dbus-1.2.1/bus/system.conf.in
+@@ -65,4 +65,6 @@
+ 
+   <include if_selinux_enabled="yes" selinux_root_relative="yes">contexts/dbus_contexts</include>
+ 
++  <limit name="reply_timeout">60000</limit>
++
+ </busconfig>
