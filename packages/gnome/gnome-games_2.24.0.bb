@@ -3,10 +3,15 @@ DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui l
 
 inherit gnome distutils-base gconf
 
+PR = "r1"
+
+SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
+           "
+
 EXTRA_OECONF = "--with-libggz-includes=${STAGING_INCDIR} \
                 --with-libggz-libraries=${STAGING_LIBDIR} \
                 --with-ggzmod-includes=${STAGING_INCDIR} \
-		--with-ggzmod-libraries=${STAGING_LIBDIR} \
+                --with-ggzmod-libraries=${STAGING_LIBDIR} \
 	        --enable-scalable \
 	       "
 
