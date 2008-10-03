@@ -37,7 +37,7 @@ do_report_success() {
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder-feed.log
 }
 
-for machine in efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 
+for machine in beagleboard efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free"
