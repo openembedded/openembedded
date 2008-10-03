@@ -1,9 +1,9 @@
 require jamvm.inc 
 
-DEPENDS = "zlib-native classpath-native virtual/javac-native"
+DEPENDS = "zlib-native classpath-native ecj-initial"
 RDEPENDS = ""
 
-PROVIDES_jamvm = "virtual/java-native"
+PROVIDES = "virtual/java-native"
 
 RPROVIDES_jamvm = ""
 
@@ -17,3 +17,7 @@ S = "${WORKDIR}/jamvm-${PV}"
 do_install_append() {
   ln -sf jamvm ${STAGING_BINDIR}/java
 }
+
+# Enforce usage of ecj-initial.
+export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
+
