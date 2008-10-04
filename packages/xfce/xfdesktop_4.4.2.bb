@@ -7,6 +7,9 @@ SECTION = "x11/base"
 DEPENDS = "virtual/libx11 libxfcegui4 libxfce4mcs libxml2 xfce4-panel"
 
 inherit xfce
+
+SRC_URI += " file://relocation-and-memleak.patch;patch=1 "
+
 PACKAGES += "xfdesktop-backdrops ${PN}-mcs-plugins"
 
 FILES_xfdesktop-backdrops="${datadir}/xfce4/backdrops/*"
