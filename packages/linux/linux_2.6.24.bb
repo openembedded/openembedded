@@ -10,10 +10,11 @@ DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
-PR = "r14"
+PR = "r15"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
+	   file://time.h.patch;patch=1 \
            file://defconfig"
 
 # Moved away temporarely until committed properly (work in progress).
