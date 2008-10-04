@@ -75,7 +75,17 @@ do
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
-		       task-opie \
+		       task-opie task-opie-games \
+		       opie-bartender opie-calculator opie-checkbook opie-embeddedkonsole opie-keypebble opie-sheet opie-wellenreiter opie-write opie-zsafe opie-oxygen opie-eye opie-ftp qpdf2 \
+		       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
+		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui \
+		       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
+		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
+		       qmatrix qfish2 froot \
+		       opie-today-weatherplugin \
+		       opie-datebook-nationalholidayplugin opie-datebook-chrisholidayplugin \
+		       opie-style-liquid opie-style-metal opie-theme \
+		       opie-dvorak opie-unikeyboard opie-keyview \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       hildon-1 hildon-base-lib hildon-lgpl hildon-libs hildon-thumbnail libconic libgpsbt libgpsmgr libhildonfm libhildonhelp libhildonmime libosso-gsf libosso-help libosso mce-dev osso-gwconnect osso-ic-oss osso-thumbnail outo \
 		       kbdd \
