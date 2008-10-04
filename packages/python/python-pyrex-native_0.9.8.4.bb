@@ -2,7 +2,6 @@ require python-pyrex_${PV}.bb
 inherit native
 DEPENDS = "python-native"
 RDEPENDS = ""
-PR = "r1"
 
 do_stage() {
 	BUILD_SYS=${BUILD_SYS} HOST_SYS=${HOST_SYS} \
