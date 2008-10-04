@@ -255,6 +255,8 @@ def fast_import(ops, revision):
     # could probably happen if we have more than one parent (on a merge)?
 
     cmd = []
+    if len(revision["parent"]) == 0:
+        cmd += ["reset refs/heads/%s" % branch]
     cmd += ["commit refs/heads/%s" % branch]
     cmd += ["mark :%s" % get_mark(revision["revision"])]
     cmd += ["author  <%s> %s" % (revision["author"], get_git_date(revision))]
