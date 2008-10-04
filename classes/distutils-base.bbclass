@@ -2,6 +2,9 @@ EXTRA_OEMAKE = ""
 DEPENDS  += "${@["python-native python", ""][(bb.data.getVar('PACKAGES', d, 1) == '')]}"
 RDEPENDS += "python-core"
 
+export STAGING_INCDIR
+export STAGING_LIBDIR
+
 def python_dir(d):
 	import os, bb
 	staging_incdir = bb.data.getVar( "STAGING_INCDIR", d, 1 )
