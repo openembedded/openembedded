@@ -59,6 +59,9 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
+SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
+		      "
+
 # Language Overrides
 FORTRAN = ""
 JAVA = ""
