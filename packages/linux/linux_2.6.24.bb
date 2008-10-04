@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -28,7 +28,7 @@ SRC_URI_append_simpad = "\
            file://linux-2.6.24-SIMpad-cs3-simpad.patch;patch=1 \
            file://linux-2.6.24-SIMpad-mq200.patch;patch=1 \
            file://linux-2.6.24-SIMpad-pcmcia.patch;patch=1 \
-           file://linux-2.6.24-SIMpad-serial-gpio_keys-and-cs3-ro.patch;patch=1 \
+           file://linux-2.6.24-SIMpad-serial-gpio_keys-and-cs3-ro.patch.v2;patch=1 \ 
            file://linux-2.6.24-SIMpad-ucb1x00-switches.patch;patch=1 \
            file://linux-2.6.24-SIMpad-ucb1x00-ts-supend-and-accuracy.patch;patch=1 \
            file://linux-2.6.24-SIMpad-hostap_cs-shared-irq.patch;patch=1 \
