@@ -1,0 +1,21 @@
+Index: opencv-1.0.0/interfaces/swig/python/Makefile.am
+===================================================================
+--- opencv-1.0.0.orig/interfaces/swig/python/Makefile.am	2008-06-09 00:03:26.000000000 +0000
++++ opencv-1.0.0/interfaces/swig/python/Makefile.am	2008-06-09 00:04:02.000000000 +0000
+@@ -105,14 +105,14 @@
+                     pycvseq.hpp cvshadow.cpp cvshadow.h \
+                     cv.i imagedata.i cvarr.i nointpb.i pytypemaps.i cvseq.i cvshadow.i
+ _cv_la_CXXFLAGS   = $(PYTHON_CSPEC)
+-_cv_la_LIBADD     = $(top_builddir)/cv/src/libcv.la
++_cv_la_LIBADD     = $(top_builddir)/cv/src/libcv.la $(top_builddir)/cxcore/src/libcxcore.la
+ _cv_la_LDFLAGS    = -module -avoid-version -no-undefined $(PYTHON_LSPEC) \
+                     -L$(SWIG_PYTHON_LIBS)
+ 
+ _highgui_la_SOURCES    = _highgui.cpp pyhelpers.cpp pyhelpers.h \
+                          highgui.i
+ _highgui_la_CXXFLAGS     = $(PYTHON_CSPEC)
+-_highgui_la_LIBADD       = $(top_builddir)/otherlibs/highgui/libhighgui.la
++_highgui_la_LIBADD       = $(top_builddir)/otherlibs/highgui/libhighgui.la $(top_builddir)/cv/src/libcv.la $(top_builddir)/cxcore/src/libcxcore.la
+ _highgui_la_LDFLAGS      = -module -avoid-version -no-undefined $(PYTHON_LSPEC) \
+                            -L$(SWIG_PYTHON_LIBS)
+ 

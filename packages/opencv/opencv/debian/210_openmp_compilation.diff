@@ -1,0 +1,61 @@
+Index: opencv-1.0.0/cv/src/cvdistransform.cpp
+===================================================================
+--- opencv-1.0.0.orig/cv/src/cvdistransform.cpp	2006-05-04 18:36:15.000000000 +0200
++++ opencv-1.0.0/cv/src/cvdistransform.cpp	2008-04-27 18:24:22.000000000 +0200
+@@ -532,7 +532,7 @@
+     }
+ 
+ #ifdef _OPENMP
+-    #pragma omp parallel for num_threads(thread_count), schedule(dynamic)
++    #pragma omp parallel for num_threads(thread_count) schedule(dynamic)
+ #endif
+     for( i = 0; i < m; i++ )
+     {
+Index: opencv-1.0.0/cv/src/cvhaar.cpp
+===================================================================
+--- opencv-1.0.0.orig/cv/src/cvhaar.cpp	2006-06-26 18:29:26.000000000 +0200
++++ opencv-1.0.0/cv/src/cvhaar.cpp	2008-04-27 18:25:13.000000000 +0200
+@@ -521,7 +521,7 @@
+     {
+ #ifdef _OPENMP
+     int max_threads = cvGetNumThreads();
+-    #pragma omp parallel for num_threads(max_threads), schedule(dynamic) 
++    #pragma omp parallel for num_threads(max_threads) schedule(dynamic) 
+ #endif // _OPENMP
+     for( i = 0; i < _cascade->count; i++ )
+     {
+@@ -1089,7 +1089,7 @@
+             for( pass = 0; pass < npass; pass++ )
+             {
+ #ifdef _OPENMP
+-    #pragma omp parallel for num_threads(max_threads), schedule(dynamic)
++    #pragma omp parallel for num_threads(max_threads) schedule(dynamic)
+ #endif
+                 for( int _iy = 0; _iy < stop_height; _iy++ )
+                 {
+Index: opencv-1.0.0/cv/src/cvlkpyramid.cpp
+===================================================================
+--- opencv-1.0.0.orig/cv/src/cvlkpyramid.cpp	2006-08-31 18:14:36.000000000 +0200
++++ opencv-1.0.0/cv/src/cvlkpyramid.cpp	2008-04-27 18:25:43.000000000 +0200
+@@ -410,7 +410,7 @@
+ 
+         {
+ #ifdef _OPENMP
+-        #pragma omp parallel for num_threads(threadCount), schedule(dynamic) 
++        #pragma omp parallel for num_threads(threadCount) schedule(dynamic) 
+ #endif // _OPENMP
+         /* find flow for each given point */
+         for( i = 0; i < count; i++ )
+Index: opencv-1.0.0/cvaux/src/vs/blobtrackingmsfg.cpp
+===================================================================
+--- opencv-1.0.0.orig/cvaux/src/vs/blobtrackingmsfg.cpp	2006-08-03 19:50:08.000000000 +0200
++++ opencv-1.0.0/cvaux/src/vs/blobtrackingmsfg.cpp	2008-04-27 18:33:20.000000000 +0200
+@@ -919,7 +919,7 @@
+ #endif
+ 
+ #ifdef _OPENMP
+-#pragma omp parallel for num_threads(m_ThreadNum),schedule(runtime)
++#pragma omp parallel for num_threads(m_ThreadNum) schedule(runtime)
+ #endif
+         for(p=0;p<m_ParticleNum;++p)
+         {/* calc weights for particles */

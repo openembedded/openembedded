@@ -1,0 +1,15 @@
+Index: opencv-1.0.0/Makefile.am
+===================================================================
+--- opencv-1.0.0.orig/Makefile.am	2006-07-20 14:34:09.000000000 +0200
++++ opencv-1.0.0/Makefile.am	2006-11-14 10:14:17.000000000 +0100
+@@ -6,8 +6,10 @@
+ ## Any directories that you want built and installed should go here.
+ if BUILD_APPS
+   APPS_DIR = apps
++  NO_APPS_DIR =
+ else
+   APPS_DIR =
++  NO_APPS_DIR = apps
+ endif
+ SUBDIRS = cxcore cv cvaux ml otherlibs utils interfaces $(APPS_DIR) tests samples data docs
+ 

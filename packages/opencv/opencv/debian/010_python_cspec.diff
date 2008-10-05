@@ -1,0 +1,13 @@
+Index: opencv-1.0.0/configure.in
+===================================================================
+--- opencv-1.0.0.orig/configure.in	2006-11-14 10:47:47.000000000 +0100
++++ opencv-1.0.0/configure.in	2006-11-14 10:50:22.000000000 +0100
+@@ -656,6 +656,8 @@
+         with_swig=yes
+     fi
+     
++    PYTHON_CSPEC="$PYTHON_CSPEC -fno-strict-aliasing"
++
+     ### almost ok... just need to check if we have the Python headers ###
+ 
+     # first, save the CPPFLAGS

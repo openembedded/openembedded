@@ -1,0 +1,183 @@
+Index: opencv-0.9.7/opencv.pc.in
+===================================================================
+--- opencv-0.9.7.orig/opencv.pc.in	2005-07-25 14:25:20.000000000 +0200
++++ opencv-0.9.7/opencv.pc.in	2006-05-14 05:24:18.000000000 +0200
+@@ -8,5 +8,5 @@
+ Name: OpenCV
+ Description: Intel(R) Open Source Computer Vision Library
+ Version: @VERSION@
+-Libs: -L${libdir} -lcxcore -lcv -lhighgui -lcvaux
++Libs: -L${libdir} -lcxcore0.9.7 -lcv0.9.7 -lhighgui0.9.7 -lcvaux0.9.7
+ Cflags: -I${includedir}
+Index: opencv-0.9.7/apps/haartraining/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/apps/haartraining/src/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/apps/haartraining/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -2,10 +2,10 @@
+ 
+ bin_PROGRAMS = opencv-haartraining opencv-createsamples opencv-performance
+ 
+-ALL_CV_LIBS =                                           \
+-	$(top_builddir)/otherlibs/highgui/libhighgui.la \
+-	$(top_builddir)/cv/src/libcv.la                 \
+-	$(top_builddir)/cxcore/src/libcxcore.la         \
++ALL_CV_LIBS =                                                \
++	$(top_builddir)/otherlibs/highgui/libhighgui0.9.7.la \
++	$(top_builddir)/cv/src/libcv0.9.7.la                 \
++	$(top_builddir)/cxcore/src/libcxcore0.9.7.la         \
+ 	libcvhaartraining.a
+ 
+ libcvhaartraining_a_SOURCES = \
+Index: opencv-0.9.7/cv/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/cv/src/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/cv/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -1,6 +1,6 @@
+-lib_LTLIBRARIES = libcv.la
++lib_LTLIBRARIES = libcv0.9.7.la
+ 
+-libcv_la_SOURCES = \
++libcv0_9_7_la_SOURCES = \
+     cvaccum.cpp cvadapthresh.cpp cvapprox.cpp cvcalccontrasthistogram.cpp \
+     cvcalcimagehomography.cpp cvcalibinit.cpp cvcalibration.cpp \
+     cvcamshift.cpp cvcanny.cpp cvcolor.cpp cvcondens.cpp cvcontours.cpp \
+@@ -19,8 +19,8 @@
+ noinst_HEADERS = _cv.h _cvgeom.h _cvimgproc.h _cvipp.h _cvlist.h _cvmatrix.h
+ EXTRA_DIST = cv.dsp cv.vcproj cv.rc resource.h
+ 
+-libcv_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
+-libcv_la_LIBADD  = $(top_builddir)/cxcore/src/libcxcore.la
++libcv0_9_7_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
++libcv0_9_7_la_LIBADD  = $(top_builddir)/cxcore/src/libcxcore0.9.7.la
+ 
+ LIBS = -ldl -lpthread -lm
+ 
+Index: opencv-0.9.7/cvaux/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/cvaux/src/Makefile.am	2005-07-25 14:56:45.000000000 +0200
++++ opencv-0.9.7/cvaux/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -1,6 +1,6 @@
+-lib_LTLIBRARIES = libcvaux.la
++lib_LTLIBRARIES = libcvaux0.9.7.la
+ 
+-libcvaux_la_SOURCES = \
++libcvaux0_9_7_la_SOURCES = \
+     camshift.cpp cv3dtracker.cpp cvaux.cpp cvauxutils.cpp \
+     cvbgfg_acmmm2003.cpp cvbgfg_common.cpp cvbgfg_gaussmix.cpp \
+     cvcalibfilter.cpp cvclique.cpp cvcorrespond.cpp cvcorrimages.cpp \
+@@ -19,7 +19,7 @@
+ include_HEADERS =
+ noinst_HEADERS = _cvaux.h _cvfacedetection.h _cvvectrack.h _cvvm.h
+ 
+-libcvaux_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
+-libcvaux_la_LIBADD  = $(top_builddir)/cv/src/libcv.la
++libcvaux0_9_7_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
++libcvaux0_9_7_la_LIBADD  = $(top_builddir)/cv/src/libcv0.9.7.la
+ 
+ INCLUDES = -I. -I$(top_srcdir)/cvaux/include -I$(top_srcdir)/cxcore/include -I$(top_srcdir)/cv/include -I$(top_srcdir)/cv/src -I$(top_srcdir)
+Index: opencv-0.9.7/cxcore/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/cxcore/src/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/cxcore/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -1,6 +1,6 @@
+-lib_LTLIBRARIES = libcxcore.la
++lib_LTLIBRARIES = libcxcore0.9.7.la
+ 
+-libcxcore_la_SOURCES = cxalloc.cpp cxarithm.cpp cxarray.cpp cxcmp.cpp \
++libcxcore0_9_7_la_SOURCES = cxalloc.cpp cxarithm.cpp cxarray.cpp cxcmp.cpp \
+     cxconvert.cpp cxcopy.cpp cxdatastructs.cpp cxdrawing.cpp \
+     cxdxt.cpp cxerror.cpp cxjacobieigens.cpp cxlogic.cpp cxlut.cpp \
+     cxmathfuncs.cpp cxmatmul.cpp cxmatrix.cpp cxmean.cpp \
+@@ -13,7 +13,7 @@
+ 
+ EXTRA_DIST = cxcore.dsp cxcore.vcproj cxcore.rc  resource.h
+ 
+-libcxcore_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
++libcxcore0_9_7_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
+ 
+ LIBS = -ldl -lpthread -lm
+ 
+Index: opencv-0.9.7/interfaces/swig/python/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/interfaces/swig/python/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/interfaces/swig/python/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -37,14 +37,14 @@
+                     ../filtered/constants.h \
+                     cv.i imagedata.i
+ _cv_la_CXXFLAGS   = $(PYTHON_CSPEC)
+-_cv_la_LIBADD     = $(top_builddir)/cv/src/libcv.la
++_cv_la_LIBADD     = $(top_builddir)/cv/src/libcv0.9.7.la
+ _cv_la_LDFLAGS    = -module -avoid-version -no-undefined $(PYTHON_LSPEC) \
+                     -L$(SWIG_PYTHON_LIBS)
+ 
+ _highgui_la_SOURCES    = _highgui.cpp ../../../otherlibs/highgui/highgui.h \
+                          highgui.i
+ _highgui_la_CXXFLAGS   = $(PYTHON_CSPEC)
+-_highgui_la_LIBADD     = $(top_builddir)/otherlibs/highgui/libhighgui.la
++_highgui_la_LIBADD     = $(top_builddir)/otherlibs/highgui/libhighgui0.9.7.la
+ _highgui_la_LDFLAGS    = -module -avoid-version -no-undefined $(PYTHON_LSPEC) \
+                          -L$(SWIG_PYTHON_LIBS)
+ 
+Index: opencv-0.9.7/otherlibs/highgui/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/otherlibs/highgui/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/otherlibs/highgui/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -1,6 +1,6 @@
+-lib_LTLIBRARIES = libhighgui.la
++lib_LTLIBRARIES = libhighgui0.9.7.la
+ 
+-libhighgui_la_SOURCES = bitstrm.cpp cvcap.cpp cvcap_dc1394.cpp \
++libhighgui0_9_7_la_SOURCES = bitstrm.cpp cvcap.cpp cvcap_dc1394.cpp \
+     cvcap_v4l.cpp grfmt_base.cpp grfmt_bmp.cpp grfmt_jpeg.cpp \
+     grfmt_png.cpp grfmt_pxm.cpp grfmt_sunras.cpp grfmt_tiff.cpp \
+     image.cpp loadsave.cpp precomp.cpp utils.cpp window_lnx.cpp \
+@@ -14,8 +14,8 @@
+ 
+ noinst_HEADERS = _highgui.h bitstrm.h grfmt_base.h grfmt_bmp.h grfmt_jpeg.h grfmt_pxm.h grfmt_png.h grfmt_sunras.h grfmt_tiff.h grfmts.h utils.h
+ 
+-libhighgui_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
++libhighgui0_9_7_la_LDFLAGS = -no-undefined -version-info @LT_VERSION@ @LDFLAGS@
+ 
+-libhighgui_la_LIBADD  = $(top_builddir)/cv/src/libcv.la @GTK_LIBS@ @IMAGELIBS@ @FFMPEGLIBS@ @IEEE1394LIBS@
++libhighgui0_9_7_la_LIBADD  = $(top_builddir)/cv/src/libcv0.9.7.la @GTK_LIBS@ @IMAGELIBS@ @FFMPEGLIBS@ @IEEE1394LIBS@
+ 
+ INCLUDES = -I. -I$(top_srcdir)/cxcore/include -I$(top_srcdir)/cv/include @GTK_CFLAGS@
+Index: opencv-0.9.7/tests/cv/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/tests/cv/src/Makefile.am	2005-07-26 15:56:15.000000000 +0200
++++ opencv-0.9.7/tests/cv/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -27,12 +27,12 @@
+     athresh.cpp ats.cpp canny.cpp cvtest.cpp \
+     tsysa.cpp ucontours.cpp ugraphics.cpp uiplutils.cpp ureadfile.cpp
+ 
+-cvtest_LDADD =                                          \
+-	$(top_builddir)/cv/src/libcv.la                 \
+-	$(top_builddir)/cxcore/src/libcxcore.la         \
+-	$(top_builddir)/tests/trs/libtrs.a              \
+-	$(top_builddir)/tests/cxts/libcxts.a            \
+-	$(top_builddir)/cvaux/src/libcvaux.la           \
+-	$(top_builddir)/otherlibs/highgui/libhighgui.la
++cvtest_LDADD =                                               \
++	$(top_builddir)/cv/src/libcv0.9.7.la                 \
++	$(top_builddir)/cxcore/src/libcxcore0.9.7.la         \
++	$(top_builddir)/tests/trs/libtrs.a                   \
++	$(top_builddir)/tests/cxts/libcxts.a                 \
++	$(top_builddir)/cvaux/src/libcvaux0.9.7.la           \
++	$(top_builddir)/otherlibs/highgui/libhighgui0.9.7.la
+ 
+ EXTRA_DIST = cvtest.dsp cvtest.vcproj
+Index: opencv-0.9.7/tests/cxcore/src/Makefile.am
+===================================================================
+--- opencv-0.9.7.orig/tests/cxcore/src/Makefile.am	2005-07-25 14:25:44.000000000 +0200
++++ opencv-0.9.7/tests/cxcore/src/Makefile.am	2006-05-14 05:24:18.000000000 +0200
+@@ -11,8 +11,8 @@
+ 	adxt.cpp            \
+ 	amath.cpp           \
+ 	cxcoretest_main.cpp
+-cxcoretest_LDADD =                              \
+-	$(top_builddir)/cxcore/src/libcxcore.la \
++cxcoretest_LDADD =                                   \
++	$(top_builddir)/cxcore/src/libcxcore0.9.7.la \
+ 	$(top_builddir)/tests/cxts/libcxts.a
+ 
+ EXTRA_DIST = precomp.cpp cxcoretest.dsp cxcoretest.vcproj

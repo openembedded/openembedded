@@ -1,0 +1,13 @@
+Index: opencv-1.0.0/otherlibs/highgui/cvcap_ffmpeg.cpp
+===================================================================
+--- opencv-1.0.0.orig/otherlibs/highgui/cvcap_ffmpeg.cpp	2008-06-08 14:42:29.000000000 +0000
++++ opencv-1.0.0/otherlibs/highgui/cvcap_ffmpeg.cpp	2008-06-08 14:42:34.000000000 +0000
+@@ -781,7 +781,7 @@
+ 
+ 	if (!(mywriter->fmt->flags & AVFMT_NOFILE)) {
+ 		/* close the output file */
+-		url_fclose(&mywriter->oc->pb);
++		url_fclose(mywriter->oc->pb);
+ 	}
+ 
+ 	/* free the stream */

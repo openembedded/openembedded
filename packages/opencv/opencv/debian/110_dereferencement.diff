@@ -1,0 +1,164 @@
+Index: opencv-0.9.7/cv/include/cvcompat.h
+===================================================================
+--- opencv-0.9.7.orig/cv/include/cvcompat.h	2005-05-27 13:49:53.000000000 +0200
++++ opencv-0.9.7/cv/include/cvcompat.h	2006-06-12 13:38:01.000000000 +0200
+@@ -164,12 +164,15 @@
+ CV_INLINE void cvFillImage( CvArr* mat, double color )
+ {
+     CvPoint left_top = { 0, 0 }, right_bottom = { 0, 0 };
++    union { CvPoint p; CvSize s; } tmp;
+ 
+-    cvGetRawData( mat, 0, 0, (CvSize*)&right_bottom );
+-    right_bottom.x--;
++    tmp.p = right_bottom;
++
++    cvGetRawData( mat, 0, 0, &tmp.s );
++    tmp.p.x--;
+     right_bottom.y--;
+ 
+-    cvRectangle( mat, left_top, right_bottom,
++    cvRectangle( mat, left_top, tmp.p,
+                  cvColorToScalar( color, cvGetElemType(mat)),
+                  CV_FILLED, 8, 0 );
+ }
+@@ -429,8 +432,6 @@
+     vect1->y = pt[1].y - pt[0].y;
+     vect2->x = pt[3].x - pt[0].x;
+     vect2->y = pt[3].y - pt[0].y;
+-
+-    CV_UNREFERENCED( (left, bottom, right, top) );
+ }
+ 
+ typedef int CvDisType;
+@@ -777,29 +778,29 @@
+                                 const float* A, const float* k,
+                                 int CV_UNREFERENCED(interpolate) )
+ {
+-    float* data;
++    union { float *f; uchar *u; } data;
+     CvSize sz;
+-    cvGetRawData( undistortion_map, (uchar**)&data, 0, &sz );
++    cvGetRawData( undistortion_map, &data.u, 0, &sz );
+     assert( sz.width >= 8 );
+     /* just save the intrinsic parameters to the map */
+-    data[0] = A[0]; data[1] = A[4];
+-    data[2] = A[2]; data[3] = A[5];
+-    data[4] = k[0]; data[5] = k[1];
+-    data[6] = k[2]; data[7] = k[3];
++    data.f[0] = A[0]; data.f[1] = A[4];
++    data.f[2] = A[2]; data.f[3] = A[5];
++    data.f[4] = k[0]; data.f[5] = k[1];
++    data.f[6] = k[2]; data.f[7] = k[3];
+ }
+ 
+ CV_INLINE void  cvUnDistort( const CvArr* src, CvArr* dst,
+                              const CvArr* undistortion_map,
+                              int CV_UNREFERENCED(interpolate) )
+ {
+-    float* data;
++    union { float *f; uchar *u; } data;
+     float a[] = {0,0,0,0,0,0,0,0,1};
+     CvSize sz;
+-    cvGetRawData( undistortion_map, (uchar**)&data, 0, &sz );
++    cvGetRawData( undistortion_map, &data.u, 0, &sz );
+     assert( sz.width >= 8 );
+-    a[0] = data[0]; a[4] = data[1];
+-    a[2] = data[2]; a[5] = data[3];
+-    cvUnDistortOnce( src, dst, a, data + 4, 1 ); 
++    a[0] = data.f[0]; a[4] = data.f[1];
++    a[2] = data.f[2]; a[5] = data.f[3];
++    cvUnDistortOnce( src, dst, a, data.f + 4, 1 ); 
+ }
+ 
+ 
+@@ -836,13 +837,15 @@
+                                   int mask CV_DEFAULT(CV_GRAPH_ALL_ITEMS))
+ {
+     CvGraphScanner* temp_scanner;
++    void *tmp;
+     
+     if( !scanner )
+         cvError( CV_StsNullPtr, "cvStartScanGraph", "Null scanner pointer", "cvcompat.h", 0 );
+ 
+     temp_scanner = cvCreateGraphScanner( graph, vtx, mask );
+     *scanner = *temp_scanner;
+-    cvFree( (void**)&temp_scanner );
++    tmp = (void *)temp_scanner;
++    cvFree( &tmp );
+ }
+ 
+ 
+Index: opencv-0.9.7/cxcore/include/cxcore.h
+===================================================================
+--- opencv-0.9.7.orig/cxcore/include/cxcore.h	2005-07-05 17:59:49.000000000 +0200
++++ opencv-0.9.7/cxcore/include/cxcore.h	2006-06-12 13:37:05.000000000 +0200
+@@ -153,7 +153,10 @@
+         CvMat* mat = (CvMat*)arr; /* the first few fields of CvMat and CvMatND are the same */
+         mat->data.ptr = NULL;
+         if( mat->refcount != NULL && --*mat->refcount == 0 )
+-            cvFree( (void**)&mat->refcount );
++        {
++            void *tmp = (void *)mat->refcount;
++            cvFree( &tmp );
++        }
+         mat->refcount = NULL;
+     }
+ }
+Index: opencv-0.9.7/cxcore/include/cxtypes.h
+===================================================================
+--- opencv-0.9.7.orig/cxcore/include/cxtypes.h	2006-06-12 13:37:05.000000000 +0200
++++ opencv-0.9.7/cxcore/include/cxtypes.h	2006-06-12 13:37:05.000000000 +0200
+@@ -219,9 +219,10 @@
+     int i = _mm_cvtsd_si32(t);
+     return i - _mm_movemask_pd(_mm_cmplt_sd(t,_mm_cvtsi32_sd(t,i)));
+ #else
++    union { int i; float f; } tmp;
+     int temp = cvRound(value);
+-    float diff = (float)(value - temp);
+-    return temp - (*(int*)&diff < 0);
++    tmp.f = (float)(value - temp);
++    return temp - (tmp.i < 0);
+ #endif
+ }
+ 
+@@ -233,9 +234,10 @@
+     int i = _mm_cvtsd_si32(t);
+     return i + _mm_movemask_pd(_mm_cmpgt_sd(t,_mm_cvtsi32_sd(t,i)));
+ #else
++    union { int i; float f; } tmp;
+     int temp = cvRound(value);
+-    float diff = (float)(temp - value);
+-    return temp + (*(int*)&diff < 0);
++    tmp.f = (float)(temp - value);
++    return temp + (tmp.i < 0);
+ #endif
+ }
+ 
+@@ -249,8 +251,11 @@
+ #elif defined __GNUC__
+     return isnan(value);
+ #else*/
+-    unsigned lo = (unsigned)*(uint64*)&value;
+-    unsigned hi = (unsigned)(*(uint64*)&value >> 32);
++    union { uint64 i; double d; } tmp;
++    unsigned lo, hi;
++    tmp.d = value;
++    lo = (unsigned)tmp.i;
++    hi = (unsigned)(tmp.i >> 32);
+     return (hi & 0x7fffffff) + (lo != 0) > 0x7ff00000;
+ #endif
+ }
+@@ -263,8 +268,11 @@
+ #elif defined __GNUC__
+     return isinf(value);
+ #else*/
+-    unsigned lo = (unsigned)*(uint64*)&value;
+-    unsigned hi = (unsigned)(*(uint64*)&value >> 32);
++    union { uint64 i; double d; } tmp;
++    unsigned lo, hi;
++    tmp.d = value;
++    lo = (unsigned)tmp.i;
++    hi = (unsigned)(tmp.i >> 32);
+     return (hi & 0x7fffffff) == 0x7ff00000 && lo == 0;
+ #endif
+ }
