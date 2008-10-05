@@ -25,6 +25,8 @@ INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
 
 export LDFLAGS = "-L${STAGING_LIBDIR} -lm"
+export STAGING_INCDIR
+export STAGING_LIBDIR
 
 do_compile_prepend() {
     export BUILD_SYS="${BUILD_SYS}"

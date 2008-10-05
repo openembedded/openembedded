@@ -1,0 +1,11 @@
+--- library/library.pro.old	2008-10-01 23:43:30.000000000 +0100
++++ library/library.pro	2008-10-01 23:43:49.000000000 +0100
+@@ -134,8 +134,6 @@
+ DESTDIR		= $(OPIEDIR)/lib$(PROJMAK)
+ VERSION		= 1.5.0.1
+ 
+-include( $(OPIEDIR)/include.pro )
+-
+ contains( CONFIG, LIBQPE_WITHROHFEEDBACK ){
+     DEFINES += OPIE_WITHROHFEEDBACK
+     SOURCES += backend/rohfeedback.cpp
