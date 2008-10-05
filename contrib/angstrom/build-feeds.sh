@@ -76,9 +76,9 @@ do
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
 		       task-opie task-opie-games \
-		       opie-bartender opie-calculator opie-checkbook opie-embeddedkonsole opie-keypebble opie-sheet opie-wellenreiter opie-write opie-zsafe opie-oxygen opie-eye opie-ftp qpdf2 \
+		       opie-bartender opie-calculator opie-checkbook opie-embeddedkonsole opie-keypebble opie-rdesktop opie-sheet opie-wellenreiter opie-write opie-zsafe opie-oxygen opie-eye opie-ftp qpdf2 \
 		       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
-		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui \
+		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui qpe-nmap \
 		       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
 		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
 		       qmatrix qfish2 froot \
