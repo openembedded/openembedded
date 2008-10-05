@@ -83,9 +83,10 @@ do
 		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
 		       qmatrix qfish2 froot \
 		       opie-today-weatherplugin \
+		       opie-notesapplet opie-networkapplet opie-lockapplet \
 		       opie-datebook-nationalholidayplugin opie-datebook-chrisholidayplugin \
 		       opie-style-liquid opie-style-metal opie-theme \
-		       opie-dvorak opie-unikeyboard opie-keyview \
+		       opie-dvorak opie-unikeyboard opie-keyview opie-jumpx opie-kjumpx \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       hildon-1 hildon-base-lib hildon-lgpl hildon-libs hildon-thumbnail libconic libgpsbt libgpsmgr libhildonfm libhildonhelp libhildonmime libosso-gsf libosso-help libosso mce-dev osso-gwconnect osso-ic-oss osso-thumbnail outo \
 		       kbdd \
