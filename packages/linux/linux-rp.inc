@@ -95,11 +95,14 @@ do_configure() {
 
 	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
-		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	else 
 		echo "# CONFIG_AEABI is not set"        >> ${S}/.config
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
 	fi
+
+        # Misc fixups:
+	echo "CONFIG_FUSE_FS=m"		>> ${S}/.config
 
 	if [ "${DISTRO}" = "poky" -a "${MACHINE}" != "collie" ]; then
 		echo "CONFIG_LOGO=y"                          >> ${S}/.config
@@ -130,6 +133,7 @@ do_configure() {
 	    -e '/CONFIG_LOGO_OZ240_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ480_CLUT224=/d' \
 	    -e '/CONFIG_LOGO_OZ640_CLUT224=/d' \
+	    -e '/CONFIG_FUSE_FS/d' \
 	    '${WORKDIR}/${KERNEL_DEFCONFIG}' >>'${S}/.config'
 
 	yes '' | oe_runmake oldconfig

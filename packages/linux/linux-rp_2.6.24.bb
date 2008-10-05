@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+PR = "r9"
 
 DEFAULT_PREFERENCE = "-1"
 #DEFAULT_PREFERENCE_collie = "1"
@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE_akita = "1"
 DEFAULT_PREFERENCE_c7x0 = "1"
 DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_tosa = "1"
-
+DEFAULT_PREFERENCE_poodle = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -201,6 +201,10 @@ SRC_URI_append_htcuniversal ="\
 SRC_URI_append_zylonite ="\
 	file://pxa_fb_overlay.patch;patch=1 \
 	file://zylonite-boot.patch;patch=1 \
+	"
+
+SRC_URI_append_c7x0 ="\
+	file://pxa2xx_udc-clock.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/linux-2.6.24"

@@ -1,10 +1,7 @@
-DESCRIPTION = "Rdesktop rdp client for X"
-DEPENDS = "virtual/libx11 openssl"
-HOMEPAGE = "http://www.rdesktop.org"
-SECTION = "x11/network"
-LICENSE = "GPL"
-PV = "1.5.0+cvs${SRCDATE}"
-PR = "r3"
+require rdesktop.inc
+
+PV = "1.6.0+cvs${SRCDATE}"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 SRC_URI = "cvs://anonymous@rdesktop.cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
 S = "${WORKDIR}/rdesktop"

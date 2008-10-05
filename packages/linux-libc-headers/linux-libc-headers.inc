@@ -3,3 +3,7 @@ SECTION = "devel"
 LICENSE = "GPL"
 
 DEPENDS = "cross-linkage"
+
+do_install_append() {
+	rm -rf ${D}${includedir}/scsi
+}

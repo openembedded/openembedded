@@ -38,14 +38,14 @@ do_report_success() {
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder-feed.log
 }
 
-for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
+for machine in efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad fic-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700  
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="libtool-cross qmake-native qmake2-native"
         BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
                        man \
 		       usbutils pciutils mtd-utils usbview hal setserial \
-                       task-proper-tools mc screen findutils \
+                       task-proper-tools mc screen findutils fakeroot gzip \
 		       mono perl \
 		       python python-pygtk \
 		       ruby \
@@ -54,7 +54,7 @@ do
 		       gpe-mini-browser midori minimo openmoko-browser2 webkit-gtklauncher \
 		       samba meta-nas-server \
 		       apache2 boa cherokee lighttpd thttpd \
-		       rox-filer gpe-gallery gpe-scap notecase \
+		       rox-filer gpe-gallery gpe-scap notecase leafpad \
 		       pidgin irssi \
 		       roadmap-gtk2 gpsdrive navit gpsbabel \
 		       xmms mplayer quasar vlc-gpe gnome-mplayer \
@@ -70,22 +70,13 @@ do
 		       asterisk \
 		       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
 		       gphoto2 gqview imagemagick ufraw \
-		       rdesktop \
+		       rdesktop x11vnc \
 		       tzdata \
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
-		       task-opie task-opie-games \
-		       opie-bartender opie-calculator opie-checkbook opie-embeddedkonsole opie-keypebble opie-sheet opie-wellenreiter opie-write opie-zsafe opie-oxygen opie-eye opie-ftp qpdf2 \
-		       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
-		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui \
-		       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
-		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
-		       qmatrix qfish2 froot \
-		       opie-today-weatherplugin \
-		       opie-datebook-nationalholidayplugin opie-datebook-chrisholidayplugin \
-		       opie-style-liquid opie-style-metal opie-theme \
-		       opie-dvorak opie-unikeyboard opie-keyview \
+		       task-opie \
+                       task-gpe-apps task-gpe-pim task-gpe-settings task-gpe-connectivity \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       hildon-1 hildon-base-lib hildon-lgpl hildon-libs hildon-thumbnail libconic libgpsbt libgpsmgr libhildonfm libhildonhelp libhildonmime libosso-gsf libosso-help libosso mce-dev osso-gwconnect osso-ic-oss osso-thumbnail outo \
 		       kbdd \

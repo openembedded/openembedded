@@ -3,10 +3,8 @@ HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
-SRC_URI = "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
-	file://only-the-utils.patch;patch=1 \
+SRC_URI = "file://only-the-utils.patch;patch=1 \
 	file://wlan-ng.modutils \
 	file://wlan.agent \
 	file://usbctl \
@@ -61,8 +59,8 @@ do_install() {
 	install -m 0755 ${WORKDIR}/usbctl ${D}${base_sbindir}/usbctl
 	install -d ${D}${mandir}/man1
 	install -m 0644 ${S}/man/*.1 ${D}${mandir}/man1/
+	rm -rf ${D}/usr/local/man
 }
 
-FILES_${PN}-doc += "/usr/local/man"
 FILES_${PN}-dbg += "/sbin/.debug"
 FILES_${PN} = "/etc /sbin"
