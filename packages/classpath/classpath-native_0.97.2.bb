@@ -1,6 +1,6 @@
 require classpath-native.inc
 
-PR = "r2"
+PR = "r3"
 
 # The code affected by the javanet-local patch
 # is usually not compiled. However if someone changes
@@ -15,4 +15,17 @@ SRC_URI += "\
   file://decimalformat.patch;patch=1 \
   file://cp-byte-loophelper.patch;patch=1;pnum=0 \
   "
+
+do_unpackpost() {
+  # Kind of patch: Moves package "org.w3c.dom.html2" to "org.w3c.dom.html"
+	mv external/w3c_dom/org/w3c/dom/html2 \
+			external/w3c_dom/org/w3c/dom/html
+
+	find gnu/classpath/examples/html gnu/xml/dom/html2 external/w3c_dom/org/w3c/dom/html -name "*.java" \
+		-exec sed -i -e"s|org.w3c.dom.html2|org.w3c.dom.html|" {} \;
+
+	sed -i -e"s|org/w3c/dom/html2|org/w3c/dom/html|" external/w3c_dom/Makefile.am
+}
+
+addtask unpackpost after do_unpack before do_patch
 

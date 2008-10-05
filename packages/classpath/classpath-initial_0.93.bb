@@ -5,7 +5,7 @@ require classpath-native.inc
 
 DESCRIPTION="Java1.4-compatible GNU Classpath variant that is used as bootclasspath for jikes-native."
 
-PR = "r3"
+PR = "r4"
 
 DEPENDS = "zip-native fastjar-native jikes-native gettext-native"
 
@@ -23,7 +23,7 @@ EXTRA_OECONF = "\
   --disable-dssi \
   --disable-examples \
   --disable-tools \
-  --with-glibj-dir=${STAGING_DATADIR}/classpath-initial \
-  --with-native-libdir=${STAGING_LIBDIR}/classpath-initial \
-  --includedir=${STAGING_INCDIR}/classpath-initial \
+  --with-glibj-dir=${STAGING_DATADIR_NATIVE}/classpath-initial \
+  --with-native-libdir=${STAGING_LIBDIR_NATIVE}/classpath-initial \
+  --includedir=${STAGING_INCDIR_NATIVE}/classpath-initial \
   "
