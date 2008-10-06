@@ -14,7 +14,7 @@ echo 13 > /proc/progress
 swapon -a
 echo 14 > /proc/progress
 
-for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd; do
+for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd cdfs; do
 	modprobe $mod 2> /dev/null ;
 done
 
@@ -49,7 +49,7 @@ for i in 0 1; do
 done
 
 echo 18 > /proc/progress
-for i in dreambox_rc2 fp info; do
+for i in dreambox_keyboard fp info; do
 	modprobe $i;
 done
 

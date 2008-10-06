@@ -38,7 +38,7 @@ echo 38 > /proc/progress
 modprobe xilleon
 
 echo 44 > /proc/progress
-for mod in dreambox_keyboard fp rt73 zd1211b rfmod; do
+for mod in dreambox_keyboard fp rt73 zd1211b rfmod info; do
 	modprobe $mod 2> /dev/null ;
 done
 

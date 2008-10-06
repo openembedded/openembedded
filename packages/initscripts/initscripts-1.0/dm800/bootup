@@ -37,7 +37,7 @@ hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc || /bin/true;
 hdparm -M 128 /dev/ide/host0/bus0/target0/lun0/disc || /bin/true;
 
 echo 18 > /proc/progress
-for i in dreambox_rc2 fp info; do
+for i in dreambox_keyboard fp info; do
 	modprobe $i;
 done
 

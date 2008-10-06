@@ -6,6 +6,9 @@ DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
 PR = "r11"
+PR_dm7025 = "r12"
+PR_dm8000 = "r12"
+PR_dm800 = "r12"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
