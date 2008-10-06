@@ -14,7 +14,7 @@ PACKAGES = "task-opie-applets task-opie-inputmethods task-opie-styles \
 # all OPIE stuff
 #
 RDEPENDS_task-opie-applets = "opie-aboutapplet opie-autorotateapplet opie-batteryapplet \
-                     opie-bluetoothapplet opie-brightnessapplet opie-cardmon \
+                     opie-bluetoothapplet opie-brightnessapplet \ 
                      opie-clipboardapplet opie-clockapplet opie-homeapplet \
                      opie-irdaapplet opie-lockapplet opie-logoutapplet \
                      opie-mailapplet opie-memoryapplet opie-multikeyapplet \

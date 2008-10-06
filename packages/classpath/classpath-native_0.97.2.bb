@@ -21,7 +21,7 @@ do_unpackpost() {
 	mv external/w3c_dom/org/w3c/dom/html2 \
 			external/w3c_dom/org/w3c/dom/html
 
-	find gnu/classpath/examples/html gnu/xml/dom/html2 external/w3c_dom/org/w3c/dom/html -name "*.java" \
+	find examples/gnu/classpath/examples/html gnu/xml/dom/html2 external/w3c_dom/org/w3c/dom/html -name "*.java" \
 		-exec sed -i -e"s|org.w3c.dom.html2|org.w3c.dom.html|" {} \;
 
 	sed -i -e"s|org/w3c/dom/html2|org/w3c/dom/html|" external/w3c_dom/Makefile.am
