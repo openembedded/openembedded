@@ -4,9 +4,7 @@ PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-# until we have tested the new showiframe with the dm7025
-PV_dm7025 = "1.2"
-PV = "1.4"
+PV = "1.5"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/dreambox-dvb-tools-v3-${PV}.tar.gz"
