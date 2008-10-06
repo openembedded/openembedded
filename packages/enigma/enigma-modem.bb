@@ -5,9 +5,9 @@ LICENSE = "GPL"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/opendreambox/enigma/enigma-modem-${PV}.tar.gz"
 
-PV = "0.2"
+PV = "0.3"
 PN = "enigma-modem"
-PR = "r1"
+PR = "r0"
 
 PACKAGES = "enigma-modem"
 
