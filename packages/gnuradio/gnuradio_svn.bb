@@ -1,6 +1,6 @@
 require gnuradio.inc
 
-#DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE = "-1"
 
 PV = "3.1.3+svnr${SRCREV}"
 PR = "r4"
