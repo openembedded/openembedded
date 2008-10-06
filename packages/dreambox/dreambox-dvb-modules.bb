@@ -13,7 +13,7 @@ def get_modules_extension(bb, d):
 	return ""
 
 KV_dm7025 = "2.6.12.6"
-PV_dm7025 = "${KV}-20080430${@get_modules_extension(bb, d)}"
+PV_dm7025 = "${KV}-20081001${@get_modules_extension(bb, d)}"
 
 KV_dm600pvr = "2.6.12"
 PV_dm600pvr = "${KV}-20071026"
