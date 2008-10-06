@@ -70,7 +70,12 @@ do
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
-		       task-opie task-opie-all \
+		       task-opie task-opie-games task-opie-apps task-opie-all \
+		       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
+		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui qpe-nmap \
+		       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
+		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
+		       qmatrix qfish2 froot \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       gsm0710muxd frameworkd zhone \
                gnome-games \
