@@ -1,0 +1,19 @@
+Index: opencv-0.9.7/interfaces/swig/python/__init__.py
+===================================================================
+--- opencv-0.9.7.orig/interfaces/swig/python/__init__.py	2005-03-21 09:28:17.000000000 +0100
++++ opencv-0.9.7/interfaces/swig/python/__init__.py	2006-05-14 05:24:24.000000000 +0200
+@@ -1,4 +1,3 @@
+-#! /usr/bin/env python
+ # opencv/__init__.py
+ 
+ # 2004-03-16, Mark Asbach       <asbach@ient.rwth-aachen.de>
+Index: opencv-0.9.7/interfaces/swig/python/adaptors.py
+===================================================================
+--- opencv-0.9.7.orig/interfaces/swig/python/adaptors.py	2005-03-21 09:28:18.000000000 +0100
++++ opencv-0.9.7/interfaces/swig/python/adaptors.py	2006-05-14 05:24:24.000000000 +0200
+@@ -1,5 +1,3 @@
+-#! /usr/bin/env python
+-
+ #########################################################################################
+ #
+ #  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.

@@ -1,0 +1,118 @@
+Index: opie-console/profiledialogwidget.h
+===================================================================
+--- opie-console.orig/profiledialogwidget.h	2002-10-21 23:43:44.000000000 +0200
++++ opie-console/profiledialogwidget.h	2008-08-26 16:22:31.618071081 +0200
+@@ -13,7 +13,7 @@
+         Terminal,
+         Keyboard
+     };
+-    ProfileDialogWidget( const QString& name, QWidget* parent, const char* name = 0l);
++    ProfileDialogWidget( const QString& name, QWidget* parent, const char* na = 0l);
+     ~ProfileDialogWidget();
+ 
+     /*
+@@ -34,7 +34,7 @@
+     Q_OBJECT
+ public:
+     ProfileDialogTerminalWidget( const QString& name, QWidget* widget,
+-                                 const char* name  =0l);
++                                 const char* na  =0l);
+     ~ProfileDialogTerminalWidget();
+     Type type()const;
+ };
+@@ -42,7 +42,7 @@
+     Q_OBJECT
+ public:
+     ProfileDialogConnectionWidget( const QString& name, QWidget* parent,
+-                                   const char* name =0l);
++                                   const char* na =0l);
+     ~ProfileDialogConnectionWidget();
+     Type type() const;
+ 
+@@ -51,7 +51,7 @@
+     Q_OBJECT
+ public:
+     ProfileDialogKeyWidget( const QString &name, QWidget* parent,
+-                           const char *name =0l);
++                           const char *na =0l);
+     ~ProfileDialogKeyWidget();
+     Type type() const;
+ };
+Index: opie-console/function_keyboard.h
+===================================================================
+--- opie-console.orig/function_keyboard.h	2007-08-27 01:49:15.000000000 +0200
++++ opie-console/function_keyboard.h	2008-08-26 16:22:31.618071081 +0200
+@@ -86,7 +86,7 @@
+     Q_OBJECT
+ 
+ public:
+-    FunctionKeyboardConfig(const QString& name, QWidget *wid, const char* name = 0l );
++    FunctionKeyboardConfig(const QString& name, QWidget *wid, const char* na = 0l );
+     ~FunctionKeyboardConfig();
+ 
+     void load(const Profile&);
+Index: opie-console/serialconfigwidget.h
+===================================================================
+--- opie-console.orig/serialconfigwidget.h	2002-10-09 01:13:17.000000000 +0200
++++ opie-console/serialconfigwidget.h	2008-08-26 16:22:31.618071081 +0200
+@@ -10,7 +10,7 @@
+ class SerialConfigWidget : public ProfileDialogConnectionWidget {
+     Q_OBJECT
+ public:
+-    SerialConfigWidget( const QString& name, QWidget* parent, const char* name = 0l );
++    SerialConfigWidget( const QString& name, QWidget* parent, const char* na = 0l );
+     ~SerialConfigWidget();
+ 
+     void load( const Profile& );
+Index: opie-console/irdaconfigwidget.h
+===================================================================
+--- opie-console.orig/irdaconfigwidget.h	2002-10-09 18:33:36.000000000 +0200
++++ opie-console/irdaconfigwidget.h	2008-08-26 16:22:31.618071081 +0200
+@@ -12,7 +12,7 @@
+     Q_OBJECT
+ 
+ public:
+-    IrdaConfigWidget( const QString& name, QWidget* parent, const char* name = 0l );
++    IrdaConfigWidget( const QString& name, QWidget* parent, const char* na = 0l );
+     ~IrdaConfigWidget();
+ 
+     void load( const Profile& );
+Index: opie-console/btconfigwidget.h
+===================================================================
+--- opie-console.orig/btconfigwidget.h	2002-10-17 16:16:03.000000000 +0200
++++ opie-console/btconfigwidget.h	2008-08-26 16:22:31.618071081 +0200
+@@ -14,7 +14,7 @@
+     Q_OBJECT
+ 
+ public:
+-    BTConfigWidget( const QString& name, QWidget* parent, const char* name = 0l );
++    BTConfigWidget( const QString& name, QWidget* parent, const char* na = 0l );
+     ~BTConfigWidget();
+ 
+     void load( const Profile& );
+Index: opie-console/modemconfigwidget.h
+===================================================================
+--- opie-console.orig/modemconfigwidget.h	2002-10-13 23:10:15.000000000 +0200
++++ opie-console/modemconfigwidget.h	2008-08-26 16:22:31.618071081 +0200
+@@ -15,7 +15,7 @@
+     Q_OBJECT
+ 
+ public:
+-    ModemConfigWidget( const QString& name, QWidget* parent, const char* name = 0l );
++    ModemConfigWidget( const QString& name, QWidget* parent, const char* na = 0l );
+     ~ModemConfigWidget();
+ 
+     void load( const Profile& );
+Index: opie-console/consoleconfigwidget.h
+===================================================================
+--- opie-console.orig/consoleconfigwidget.h	2008-08-26 16:23:08.198065869 +0200
++++ opie-console/consoleconfigwidget.h	2008-08-26 16:23:12.938066770 +0200
+@@ -11,7 +11,7 @@
+ class ConsoleConfigWidget : public ProfileDialogConnectionWidget {
+     Q_OBJECT
+ public:
+-    ConsoleConfigWidget( const QString& name, QWidget* parent, const char* name = 0l );
++    ConsoleConfigWidget( const QString& name, QWidget* parent, const char* na = 0l );
+     ~ConsoleConfigWidget();
+ 
+     void load( const Profile& );

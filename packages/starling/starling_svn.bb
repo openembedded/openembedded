@@ -2,8 +2,9 @@ DESCRIPTION = "Starling audio player for GPE"
 SECTION = "gpe/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad esound sqlite libsoup"
+DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad esound sqlite libsoup libhandoff"
 PV = "0.2+svnr${SRCREV}"
+PR = "r1"
 
 inherit gpe autotools
 

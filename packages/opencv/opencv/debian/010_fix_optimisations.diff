@@ -1,0 +1,41 @@
+Index: opencv-1.0.0/configure.in
+===================================================================
+--- opencv-1.0.0.orig/configure.in	2006-11-14 16:26:01.000000000 +0100
++++ opencv-1.0.0/configure.in	2006-11-14 16:26:41.000000000 +0100
+@@ -197,28 +197,35 @@
+             # apples g++ fails with '-march=i686' and there are no apple machines older than prescott/core anyway
+             CXXFLAGS="-g -march=prescott -ffast-math -fomit-frame-pointer $CXXFLAGS"
+         fi
++        CXXFLAGS="-O3 $CXXFLAGS"
+         ;;
+     i686-*-*)
+         if test x"$ac_cv_c_compiler_gnu" = "xyes"; then
+           # default to i686/pentiumpro -- people can override this
+           CXXFLAGS="-g -march=i686 -ffast-math -fomit-frame-pointer $CXXFLAGS"
+         fi
++        CXXFLAGS="-O3 $CXXFLAGS"
+         ;;
+     powerpc-*-*)
+         if test x"$ac_cv_c_compiler_gnu" = "xyes"; then
+             # default to G3 processors -- people can override this
+             CXXFLAGS="-g -mcpu=G3 -mtune=G5 -fomit-frame-pointer $CXXFLAGS"
+         fi
++        CXXFLAGS="-O3 $CXXFLAGS"
++        ;;
++    m68k-*-*)
++        CXXFLAGS="-O2 $CXXFLAGS"
+         ;;
+     *-*-*)
+         if test x"$ac_cv_c_compiler_gnu" = "xyes"; then
+             CXXFLAGS="-fomit-frame-pointer $CXXFLAGS"
+         fi
++        CXXFLAGS="-O3 $CXXFLAGS"
+         ;;
+     esac
+     
+     CPPFLAGS="-DNDEBUG $CPPFLAGS"
+-    CXXFLAGS="-O3 $CXXFLAGS"
++    CPPFLAGS="$CPPFLAGS -fno-strict-aliasing"
+ fi
+ 
+ if test x"$ac_cv_c_compiler_gnu" = "xyes"; then
