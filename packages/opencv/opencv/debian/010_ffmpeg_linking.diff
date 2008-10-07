@@ -1,0 +1,24 @@
+Index: opencv-1.0.0/configure.in
+===================================================================
+--- opencv-1.0.0.orig/configure.in	2006-11-14 10:11:29.000000000 +0100
++++ opencv-1.0.0/configure.in	2006-11-14 10:12:30.000000000 +0100
+@@ -435,18 +435,11 @@
+     fi
+     if test x"$with_ffmpeg" = "xyes"; then
+         AC_CHECK_HEADER(ffmpeg/avcodec.h,
+-                        AC_CHECK_LIB(avcodec, avcodec_decode_video,
+-                                     [
+-                                       AC_CHECK_LIB(avformat, av_open_input_file,
+                                                     [
+                                                       have_ffmpeg=yes
+                                                       AC_DEFINE(HAVE_FFMPEG,,[FFMpeg video library])
+-                                                      FFMPEGLIBS="-lavcodec -lavformat"
++                                                      FFMPEGLIBS="`pkg-config --libs libavcodec libavformat`"
+                                                     ],
+-                                                    [ have_ffmpeg=no ],
+-                                                    [-lavcodec])
+-                                     ],
+-                                     [ have_ffmpeg=no ]),
+                         [ have_ffmpeg=no ])
+     else
+         # if we get here then --with-ffmpeg was not called with 'yes','no' or 'auto'

@@ -1,0 +1,13 @@
+Index: opencv-1.0.0/Makefile.am
+===================================================================
+--- opencv-1.0.0.orig/Makefile.am	2008-06-08 23:35:37.000000000 +0000
++++ opencv-1.0.0/Makefile.am	2008-06-08 23:35:45.000000000 +0000
+@@ -50,7 +50,7 @@
+ 	cd src && $(MAKE) install-libLTLIBRARIES
+ 
+ # Run ldconfig after installing the library:
+-install-hook:
++install-exec-hook:
+ 	-ldconfig
+ 
+ 

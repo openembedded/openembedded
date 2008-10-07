@@ -3,6 +3,11 @@
 # Angstrom feed sorting script
 # This must be run in unstable/ directory 
 
+if [ $(basename $PWD) != "unsorted" ] ; then
+	echo "Not in feed dir! Exiting"
+	exit 1
+fi	
+
 rm Packages* >& /dev/null
 
 # Find ipkg files in unsorted/ and remove stale ones
@@ -64,6 +69,8 @@ case "$arch" in
 			machines="dht-walnut" ;;
 	"ppc603e")
 			machines="efika" ;;
+	"ppce300c3")
+			machines="mpc8313e-rdb mpc8315e-rdb" ;;
 	"sparc")
 			machines="" ;;
 esac
@@ -73,7 +80,7 @@ for i in `find . -name  "*.ipk"| grep $arch` ; do mkdir -p ../$archdir/base/ || 
         for machine in $machines ; do
                 for i in `find . -name  "*_$machine.ipk"| grep $machine` ; do mkdir -p ../$archdir/machine/$machine || true ;mv $i ../$archdir/machine/$machine ; done
 	done
-(cd ../$archdir && do_index )
+( mkdir -p ../$archdir ; cd ../$archdir && do_index )
 
 }
 
@@ -83,6 +90,7 @@ echo "Processing $(basename $PWD) packages...."
 
 BPWD=`pwd`
 
+mkdir -p base
 cd base
 
 mkdir -p ../debug ../perl ../python ../gstreamer ../locales/en || true
@@ -101,6 +109,7 @@ for i in ../* ; do
       echo " DONE"
   fi
 done
+mkdir -p  ${BPWD}/machine
 cd ${BPWD}/machine
 
 for i in ./* ; do
@@ -113,6 +122,7 @@ for i in ./* ; do
   fi
 done
 
+mkdir -p ${BPWD}/locales/en/
 cd ${BPWD}/locales/en/
 echo -n "building index for locales:"
 for i in ../* ; do
@@ -132,7 +142,7 @@ echo " DONE"
 
 echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
- (cd ../all && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )  
+ (mkdir -p ../all ; cd ../all && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )  
 
 for arch in arm-oabi armv4t armv5teb armv5te armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort
@@ -143,4 +153,4 @@ if [ "$1" != "--skip-sorted-list" ]; then
     for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
 fi
 
-(cd ~/website/repo ; php update.php)
+#(cd ~/website/repo ; php update.php)

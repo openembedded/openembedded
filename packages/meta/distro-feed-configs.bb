@@ -2,7 +2,7 @@ DESCRIPTION = "Configuration files for online package repositories aka feeds"
 PR = "r0"
 
 DISTRO_FEED_PREFIX ?= "remote"
-DISTRO_FEED_URI ?= "http://my-distribution.org/remote-feed/"
+DISTRO_FEED_URI ?= "http://my-distribution.example/remote-feed/"
 
 do_compile() {
     mkdir -p ${S}/${sysconfdir}/opkg

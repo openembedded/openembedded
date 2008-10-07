@@ -63,6 +63,11 @@ PACKAGE_ARCH_ep93xx = "${MACHINE_ARCH}"
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
 
+SRC_URI_append_sh4  = " file://sh_unwind.patch;patch=1 \
+			file://cppdefault_cross.patch;patch=1 \
+		      "
+
+
 # Language Overrides
 FORTRAN = ""
 FORTRAN_linux-gnueabi = ",fortran"

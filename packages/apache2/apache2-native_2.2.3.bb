@@ -3,7 +3,7 @@ DEPENDS = "expat pcre"
 
 inherit cross 
 
-PR="r6"
+PR="r7"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"
@@ -13,6 +13,7 @@ do_configure () {
 }
 
 do_stage () {
+	install -d ${STAGING_BINDIR}
 	cp srclib/pcre/dftables ${STAGING_BINDIR}
 	cp server/gen_test_char ${STAGING_BINDIR}
 	cp srclib/apr/apr-1-config ${STAGING_BINDIR}
