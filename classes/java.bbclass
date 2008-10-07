@@ -99,7 +99,7 @@ oe_makeclasspath() {
 				oefatal "oe_makeclasspath: Jar file for '$1' not found at $file"
 			fi
 
-      classpath=$classpath$file
+      classpath=$classpath$delimiter$file
       delimiter=":"
       ;;
     esac
