@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = " guile-native fftwf python libusb-compat virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native"
+DEPENDS = " guile-native fftwf python libusb virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native"
 
 RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils"
 RDEPENDS_gnuradio-usrp = "python-core"
@@ -22,6 +22,7 @@ EXTRA_OECONF = " \
                 --enable-gr-audio-oss \
                 --enable-mblock \
 	        --disable-html-docs \
+                PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/python2.5 \
 		"
 
 do_configure_append() {
@@ -55,7 +56,7 @@ FILES_${PN}-dbg += "${libdir}/python*/site-packages/gnuradio/.debug \
 		   "
 
 FILES_gnuradio-usrp = "${libdir}/python*/site-packages/usrpm/* \
-                       ${datadir}/usrp"
+                       ${datadir}/usrp/*/*"
 FILES_gnuradio-usrp-dbg = "${libdir}/python*/site-packages/usrpm/.debug"
 
 
