@@ -1,0 +1,12 @@
+Index: opencv-1.0.0/configure.in
+===================================================================
+--- opencv-1.0.0.orig/configure.in	2006-11-03 16:54:33.000000000 +0100
++++ opencv-1.0.0/configure.in	2006-11-14 10:11:29.000000000 +0100
+@@ -48,7 +48,6 @@
+ 
+ # disable building static libraries,
+ # allow Cygwin to build DLLs
+-AC_DISABLE_STATIC
+ AC_LIBTOOL_WIN32_DLL
+ 
+ # does the user want to build universal binaries on Mac OS X?

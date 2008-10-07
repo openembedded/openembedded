@@ -1,0 +1,13 @@
+Index: opencv-1.0.0/cxcore/include/cxtypes.h
+===================================================================
+--- opencv-1.0.0.orig/cxcore/include/cxtypes.h	2006-09-08 17:36:30.000000000 +0200
++++ opencv-1.0.0/cxcore/include/cxtypes.h	2006-11-14 10:18:21.000000000 +0100
+@@ -63,7 +63,7 @@
+   #endif
+ 
+   #if defined WIN64 && defined EM64T && (defined _MSC_VER || defined CV_ICC) \
+-      || defined __SSE2__ || defined _MM_SHUFFLE2
++      || defined __SSE2__ || defined _MM_SHUFFLE2 || defined __x86_64__
+     #include <emmintrin.h>
+     #define CV_SSE2 1
+   #else

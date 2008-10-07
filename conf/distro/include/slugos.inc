@@ -152,6 +152,11 @@ IGNORE_STRIP_ERRORS = ""
 
 PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
 
+# New pango and older glib-2.0 versions don't mix,
+# so specify exactly what we would like to build.
+PREFERRED_VERSION_pango    ?= 1.20.5
+PREFERRED_VERSION_glib-2.0 ?= 2.16.1
+
 # we don't ship gtk-directfb by default
 PREFERRED_PROVIDER_gtk+                   ?= "gtk+"
 PREFERRED_PROVIDER_gdk-pixbuf-loader-ani  ?= "gtk+"

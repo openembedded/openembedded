@@ -2,7 +2,7 @@ DEPENDS += "cairo"
 
 PV = "3.0.1+3.1a2"
 MOZPV = "3.1a2"
-
+PR = "r1"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build1/firefox-${MOZPV}-source.tar.bz2 \
 	file://jsautocfg.h \

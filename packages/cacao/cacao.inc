@@ -4,7 +4,7 @@ LICENSE  = "GPL"
 PRIORITY = "optional"
 SECTION  = "interpreters"
 
-DEPENDS = "zlib libtool classpath binutils cacaoh-native virtual/javac-native"
+DEPENDS = "zlib libtool classpath cacaoh-native virtual/javac-native"
 
 # Avoid version number here, otherwise dpkg will expect a package name
 # and cannot be satisfied with a package that provides classpath.
@@ -18,7 +18,6 @@ inherit java autotools update-alternatives
 EXTRA_OECONF = "\
 	${@['','--enable-softfloat'][bb.data.getVar('TARGET_FPU',d,1) == 'soft']} \
 	--enable-debug \
-	--enable-disassembler \
 	--with-vm-zip=${datadir}/cacao/vm.zip \
 	--with-cacaoh=${STAGING_BINDIR_NATIVE}/cacaoh-${PV} \
     --with-build-java-runtime-library-classes=${STAGING_DATADIR}/classpath/glibj.zip \

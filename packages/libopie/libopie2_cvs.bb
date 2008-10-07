@@ -1,11 +1,12 @@
 require ${PN}.inc
 
 PV = "${OPIE_CVS_PV}"
-PR = "r11"
+PR = "r12"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/libopie2 \
+           file://c7x0_w100_disable.patch;patch=1 \
            file://include.pro"
 
 # Patches merged upstream, keep for reference (for 1.2.2)
