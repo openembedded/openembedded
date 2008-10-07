@@ -1,0 +1,21 @@
+Index: opencv-1.0.0/otherlibs/highgui/cvcap_dc1394.cpp
+===================================================================
+--- opencv-1.0.0.orig/otherlibs/highgui/cvcap_dc1394.cpp	2006-11-14 16:21:10.000000000 +0100
++++ opencv-1.0.0/otherlibs/highgui/cvcap_dc1394.cpp	2006-11-14 16:23:25.000000000 +0100
+@@ -680,6 +680,7 @@
+ 			return f;
+ 		}
+ 	}
++	return 0;
+ }
+ 
+ static int
+@@ -793,7 +794,7 @@
+ 
+ 			// now check if the auto is on.
+ 			if( dc1394_is_feature_auto(capture->handle, capture->camera->node, feature_id, &isAutoOn ) == DC1394_FAILURE ) {
+-				fprintf(stderr, "error determining if feature %d has auto on!\n", index);
++				fprintf(stderr, "error determining if feature %d has auto on!\n", feature_id);
+ 				return 0;
+ 			}
+ 		}

@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r41"
+PR = "r42"
 
 inherit task
 
@@ -42,12 +42,13 @@ RDEPENDS_task-openmoko-feed = "\
 #  cacao \
 #  jamvm \
 #  classpath \
-  gpsdrive \
+#  gpsdrive \
+  gpsd \
   asterisk \
 #  gnash \
   mono \
-  diversity-daemon \
-  diversity-maps-taipei \
+#  diversity-daemon \
+#  diversity-maps-taipei \
 #  om-maps-berlin \
 #  om-maps-buenos-aires \
 #  om-maps-london \

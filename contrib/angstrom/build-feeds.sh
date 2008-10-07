@@ -37,7 +37,7 @@ do_report_success() {
 	echo "$(date -u +%s) $target $BUILD_MODE $machine" >> autobuilder-feed.log
 }
 
-for machine in efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 
+for machine in beagleboard efika dht-walnut omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 
 do
         BUILD_MACHINE=$machine
 	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free"
@@ -70,7 +70,12 @@ do
 		       xserver-kdrive xserver-xorg \
 		       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
 		       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
-		       task-opie task-opie-all \
+		       task-opie task-opie-games task-opie-apps task-opie-all \
+		       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
+		       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui qpe-nmap \
+		       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
+		       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
+		       qmatrix qfish2 froot \
 		       task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-feed task-openmoko-games task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
 		       gsm0710muxd frameworkd zhone \
                gnome-games \

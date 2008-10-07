@@ -1,0 +1,450 @@
+Index: opencv-1.0.0/docs/ref/opencvref_cv.htm
+===================================================================
+--- opencv-1.0.0.orig/docs/ref/opencvref_cv.htm	2006-10-17 15:53:35.000000000 +0200
++++ opencv-1.0.0/docs/ref/opencvref_cv.htm	2006-11-14 10:27:01.000000000 +0100
+@@ -465,7 +465,7 @@
+ <pre>
+ dst(x&#146;,y&#146;)&lt;-src(x,y)
+ (x&#146;,y&#146;)<sup>T</sup>=map_matrix&bull;(x,y,1)<sup>T</sup>+b if CV_WARP_INVERSE_MAP is not set,
+-(x, y)<sup>T</sup>=map_matrix&bull;(x&#146;,y&apos,1)<sup>T</sup>+b otherwise
++(x, y)<sup>T</sup>=map_matrix&bull;(x&#146;,y&amp;apos,1)<sup>T</sup>+b otherwise
+ </pre>
+ <p>
+ The function is similar to <a href="#decl_cvGetQuadrangleSubPix">cvGetQuadrangleSubPix</a> but they are
+@@ -543,7 +543,7 @@
+ <pre>
+ dst(x&#146;,y&#146;)&lt;-src(x,y)
+ (t&bull;x&#146;,t&bull;y&#146;,t)<sup>T</sup>=map_matrix&bull;(x,y,1)<sup>T</sup>+b if CV_WARP_INVERSE_MAP is not set,
+-(t&bull;x, t&bull;y, t)<sup>T</sup>=map_matrix&bull;(x&#146;,y&apos,1)<sup>T</sup>+b otherwise
++(t&bull;x, t&bull;y, t)<sup>T</sup>=map_matrix&bull;(x&#146;,y&amp;apos,1)<sup>T</sup>+b otherwise
+ </pre>
+ <p>
+ For a sparse set of points
+@@ -642,12 +642,12 @@
+ {
+     IplImage* src;
+ 
+-    if( argc == 2 && (src=cvLoadImage(argv[1],1) != 0 )
++    if( argc == 2 &amp;&amp; (src=cvLoadImage(argv[1],1) != 0 )
+     {
+         IplImage* dst = cvCreateImage( cvSize(256,256), 8, 3 );
+         IplImage* src2 = cvCreateImage( cvGetSize(src), 8, 3 );
+-        cvLogPolar( src, dst, cvPoint2D32f(src->width/2,src->height/2), 40, CV_INTER_LINEAR+CV_WARP_FILL_OUTLIERS );
+-        cvLogPolar( dst, src2, cvPoint2D32f(src->width/2,src->height/2), 40, CV_INTER_LINEAR+CV_WARP_FILL_OUTLIERS+CV_WARP_INVERSE_MAP );
++        cvLogPolar( src, dst, cvPoint2D32f(src-&gt;width/2,src-&gt;height/2), 40, CV_INTER_LINEAR+CV_WARP_FILL_OUTLIERS );
++        cvLogPolar( dst, src2, cvPoint2D32f(src-&gt;width/2,src-&gt;height/2), 40, CV_INTER_LINEAR+CV_WARP_FILL_OUTLIERS+CV_WARP_INVERSE_MAP );
+         cvNamedWindow( "log-polar", 1 );
+         cvShowImage( "log-polar", dst );
+         cvNamedWindow( "inverse log-polar", 1 );
+@@ -951,8 +951,8 @@
+ <li>Transformations within RGB space like adding/removing alpha channel, reversing the channel order,
+ conversion to/from 16-bit RGB color (R5:G6:B5 or R5:G5:B5) color, as well as conversion to/from grayscale using:
+ <pre>
+-RGB[A]->Gray: Y&lt;-0.299*R + 0.587*G + 0.114*B
+-Gray->RGB[A]: R&lt;-Y G&lt;-Y B&lt;-Y A&lt;-0
++RGB[A]-&gt;Gray: Y&lt;-0.299*R + 0.587*G + 0.114*B
++Gray-&gt;RGB[A]: R&lt;-Y G&lt;-Y B&lt;-Y A&lt;-0
+ </pre>
+ <li>RGB&lt;=&gt;CIE XYZ.Rec 709 with D65 white point (<code>CV_BGR2XYZ, CV_RGB2XYZ, CV_XYZ2BGR, CV_XYZ2RGB</code>):
+ <pre>
+@@ -1102,7 +1102,7 @@
+ document at Charles Poynton site.
+ 
+ <p></p>
+-<li>Bayer=>RGB (<code>CV_BayerBG2BGR, CV_BayerGB2BGR, CV_BayerRG2BGR, CV_BayerGR2BGR,<br>
++<li>Bayer=&gt;RGB (<code>CV_BayerBG2BGR, CV_BayerGB2BGR, CV_BayerRG2BGR, CV_BayerGR2BGR,<br>
+                 CV_BayerBG2RGB, CV_BayerGB2RGB, CV_BayerRG2RGB, CV_BayerGR2RGB</code>)
+ <p>Bayer pattern is widely used in CCD and CMOS cameras. It allows to get color picture
+ out of a single plane where R,G and B pixels (sensors of a particular component) are interleaved like
+@@ -1524,7 +1524,7 @@
+ input image (or down-sized input image, see below) the function executes meanshift iterations,
+ that is, the pixel <code>(X,Y)</code> neighborhood in the joint space-color
+ hyperspace is considered:
+-<pre>{(x,y): X-sp&le;x&le;X+sp && Y-sp&le;y&le;Y+sp && ||(R,G,B)-(r,g,b)|| &le; sr},</pre>
++<pre>{(x,y): X-sp&le;x&le;X+sp &amp;&amp; Y-sp&le;y&le;Y+sp &amp;&amp; ||(R,G,B)-(r,g,b)|| &le; sr},</pre>
+ where <code>(R,G,B)</code> and <code>(r,g,b)</code> are the vectors of color components
+ at <code>(X,Y)</code> and <code>(x,y)</code>, respectively (though, the algorithm does not depend
+ on the color space used, so any 3-component color space can be used instead).
+@@ -1732,7 +1732,7 @@
+ int main(int argc, char** argv)
+ {
+     IplImage* src;
+-    if( argc == 2 && (src=cvLoadImage(argv[1], 0))!= 0)
++    if( argc == 2 &amp;&amp; (src=cvLoadImage(argv[1], 0))!= 0)
+     {
+         IplImage* dst = cvCreateImage( cvGetSize(src), 8, 1 );
+         IplImage* color_dst = cvCreateImage( cvGetSize(src), 8, 3 );
+@@ -1832,15 +1832,15 @@
+ int main(int argc, char** argv)
+ {
+     IplImage* img;
+-    if( argc == 2 && (img=cvLoadImage(argv[1], 1))!= 0)
++    if( argc == 2 &amp;&amp; (img=cvLoadImage(argv[1], 1))!= 0)
+     {
+         IplImage* gray = cvCreateImage( cvGetSize(img), 8, 1 );
+         CvMemStorage* storage = cvCreateMemStorage(0);
+         cvCvtColor( img, gray, CV_BGR2GRAY );
+         cvSmooth( gray, gray, CV_GAUSSIAN, 9, 9 ); // smooth it, otherwise a lot of false circles may be detected
+-        CvSeq* circles = cvHoughCircles( gray, storage, CV_HOUGH_GRADIENT, 2, gray->height/4, 200, 100 );
++        CvSeq* circles = cvHoughCircles( gray, storage, CV_HOUGH_GRADIENT, 2, gray-&gt;height/4, 200, 100 );
+         int i;
+-        for( i = 0; i < circles->total; i++ )
++        for( i = 0; i &lt; circles-&gt;total; i++ )
+         {
+              float* p = (float*)cvGetSeqElem( circles, i );
+              cvCircle( img, cvPoint(cvRound(p[0]),cvRound(p[1])), 3, CV_RGB(0,255,0), -1, 8, 0 );
+@@ -2076,13 +2076,13 @@
+ <p class="Blurb">Queries value of histogram bin</p>
+ <pre>
+ #define cvQueryHistValue_1D( hist, idx0 ) \
+-    cvGetReal1D( (hist)->bins, (idx0) )
++    cvGetReal1D( (hist)-&gt;bins, (idx0) )
+ #define cvQueryHistValue_2D( hist, idx0, idx1 ) \
+-    cvGetReal2D( (hist)->bins, (idx0), (idx1) )
++    cvGetReal2D( (hist)-&gt;bins, (idx0), (idx1) )
+ #define cvQueryHistValue_3D( hist, idx0, idx1, idx2 ) \
+-    cvGetReal3D( (hist)->bins, (idx0), (idx1), (idx2) )
++    cvGetReal3D( (hist)-&gt;bins, (idx0), (idx1), (idx2) )
+ #define cvQueryHistValue_nD( hist, idx ) \
+-    cvGetRealND( (hist)->bins, (idx) )
++    cvGetRealND( (hist)-&gt;bins, (idx) )
+ </pre><p><dl>
+ <dt>hist<dd>Histogram.
+ <dt>idx0, idx1, idx2, idx3<dd>Indices of the bin.
+@@ -2098,13 +2098,13 @@
+ <p class="Blurb">Returns pointer to histogram bin</p>
+ <pre>
+ #define cvGetHistValue_1D( hist, idx0 ) \
+-    ((float*)(cvPtr1D( (hist)->bins, (idx0), 0 ))
++    ((float*)(cvPtr1D( (hist)-&gt;bins, (idx0), 0 ))
+ #define cvGetHistValue_2D( hist, idx0, idx1 ) \
+-    ((float*)(cvPtr2D( (hist)->bins, (idx0), (idx1), 0 ))
++    ((float*)(cvPtr2D( (hist)-&gt;bins, (idx0), (idx1), 0 ))
+ #define cvGetHistValue_3D( hist, idx0, idx1, idx2 ) \
+-    ((float*)(cvPtr3D( (hist)->bins, (idx0), (idx1), (idx2), 0 ))
++    ((float*)(cvPtr3D( (hist)-&gt;bins, (idx0), (idx1), (idx2), 0 ))
+ #define cvGetHistValue_nD( hist, idx ) \
+-    ((float*)(cvPtrND( (hist)->bins, (idx), 0 ))
++    ((float*)(cvPtrND( (hist)-&gt;bins, (idx), 0 ))
+ </pre><p><dl>
+ <dt>hist<dd>Histogram.
+ <dt>idx0, idx1, idx2, idx3<dd>Indices of the bin.
+@@ -2237,7 +2237,7 @@
+ int main( int argc, char** argv )
+ {
+     IplImage* src;
+-    if( argc == 2 && (src=cvLoadImage(argv[1], 1))!= 0)
++    if( argc == 2 &amp;&amp; (src=cvLoadImage(argv[1], 1))!= 0)
+     {
+         IplImage* h_plane = cvCreateImage( cvGetSize(src), 8, 1 );
+         IplImage* s_plane = cvCreateImage( cvGetSize(src), 8, 1 );
+@@ -2259,7 +2259,7 @@
+         cvCvtPixToPlane( hsv, h_plane, s_plane, v_plane, 0 );
+         hist = cvCreateHist( 2, hist_size, CV_HIST_ARRAY, ranges, 1 );
+         cvCalcHist( planes, hist, 0, 0 );
+-        cvGetMinMaxHistValue( hist, 0, &max_value, 0, 0 );
++        cvGetMinMaxHistValue( hist, 0, &amp;max_value, 0, 0 );
+         cvZero( hist_img );
+ 
+         for( h = 0; h &lt; h_bins; h++ )
+@@ -2374,8 +2374,8 @@
+ the two histograms as:</p>
+ <pre>
+ dist_hist(I)=0      if hist1(I)==0
+-             scale  if hist1(I)!=0 && hist2(I)&gt;hist1(I)
+-             hist2(I)*scale/hist1(I) if hist1(I)!=0 && hist2(I)&lt;=hist1(I)
++             scale  if hist1(I)!=0 &amp;&amp; hist2(I)&gt;hist1(I)
++             hist2(I)*scale/hist1(I) if hist1(I)!=0 &amp;&amp; hist2(I)&lt;=hist1(I)
+ </pre>
+ <p>
+ So the destination histogram bins are within less than scale.
+@@ -2666,7 +2666,7 @@
+                 <li>is_closed=0 - the curve is assumed to be unclosed.
+                 <li>is_closed&gt;0 - the curve is assumed to be closed.
+                 <li>is_closed&lt;0 - if curve is sequence, the flag CV_SEQ_FLAG_CLOSED of
+-                    ((CvSeq*)curve)->flags is checked to determine if the curve is closed or not,
++                    ((CvSeq*)curve)-&gt;flags is checked to determine if the curve is closed or not,
+                      otherwise (curve is represented by array (CvMat*) of points) it is assumed
+                      to be unclosed.
+ </ul>
+@@ -2927,12 +2927,12 @@
+ 
+         for( i = 0; i &lt; count; i++ )
+         {
+-            pt0.x = rand() % (img->width/2) + img->width/4;
+-            pt0.y = rand() % (img->height/2) + img->height/4;
+-            cvSeqPush( ptseq, &pt0 );
++            pt0.x = rand() % (img-&gt;width/2) + img-&gt;width/4;
++            pt0.y = rand() % (img-&gt;height/2) + img-&gt;height/4;
++            cvSeqPush( ptseq, &amp;pt0 );
+         }
+         hull = cvConvexHull2( ptseq, 0, CV_CLOCKWISE, 0 );
+-        hullcount = hull->total;
++        hullcount = hull-&gt;total;
+ #else
+         CvPoint* points = (CvPoint*)malloc( count * sizeof(points[0]));
+         int* hull = (int*)malloc( count * sizeof(hull[0]));
+@@ -2941,11 +2941,11 @@
+ 
+         for( i = 0; i &lt; count; i++ )
+         {
+-            pt0.x = rand() % (img->width/2) + img->width/4;
+-            pt0.y = rand() % (img->height/2) + img->height/4;
++            pt0.x = rand() % (img-&gt;width/2) + img-&gt;width/4;
++            pt0.y = rand() % (img-&gt;height/2) + img-&gt;height/4;
+             points[i] = pt0;
+         }
+-        cvConvexHull2( &point_mat, &hull_mat, CV_CLOCKWISE, 0 );
++        cvConvexHull2( &amp;point_mat, &amp;hull_mat, CV_CLOCKWISE, 0 );
+         hullcount = hull_mat.cols;
+ #endif
+         cvZero( img );
+@@ -3552,7 +3552,7 @@
+ <dt>criteria<dd>Criteria applied to determine when the window search should be
+ finished.
+ <dt>comp<dd>Resultant structure that contains converged search window coordinates
+-(<code>comp->rect</code> field) and sum of all pixels inside the window (<code>comp->area</code> field).
++(<code>comp-&gt;rect</code> field) and sum of all pixels inside the window (<code>comp-&gt;area</code> field).
+ </dl></p><p>
+ The function <code>cvMeanShift</code> iterates to find the object center given its back projection and
+ initial position of search window. The iterations are made until the search window
+@@ -3573,7 +3573,7 @@
+ <dt>criteria<dd>Criteria applied to determine when the window search should be
+ finished.
+ <dt>comp<dd>Resultant structure that contains converged search window coordinates
+-(<code>comp->rect</code> field) and sum of all pixels inside the window (<code>comp->area</code> field).
++(<code>comp-&gt;rect</code> field) and sum of all pixels inside the window (<code>comp-&gt;area</code> field).
+ <dt>box<dd>Circumscribed box for the object. If not <code>NULL</code>, contains object size and
+ orientation.
+ </dl></p><p>
+@@ -3648,7 +3648,7 @@
+ <dt>criteria<dd>Criteria of termination of velocity computing.
+ </dl></p><p>
+ The function <code>cvCalcOpticalFlowHS</code> computes flow for every pixel of the first input image using
+-Horn & Schunck algorithm <a href="#paper_horn81">[Horn81]</a>.
++Horn &amp; Schunck algorithm <a href="#paper_horn81">[Horn81]</a>.
+ </p>
+ 
+ 
+@@ -3667,7 +3667,7 @@
+             32-bit floating-point, single-channel.
+ </dl></p><p>
+ The function <code>cvCalcOpticalFlowLK</code> computes flow for every pixel of the first input image using
+-Lucas & Kanade algorithm <a href="#paper_lucas81">[Lucas81]</a>.
++Lucas &amp; Kanade algorithm <a href="#paper_lucas81">[Lucas81]</a>.
+ </p>
+ 
+ 
+@@ -3685,7 +3685,7 @@
+ <dt>max_range<dd>Size of the scanned neighborhood in pixels around block.
+ <dt>use_previous<dd>Uses previous (input) velocity field.
+ <dt>velx<dd>Horizontal component of the optical flow of<br>
+-            floor((prev->width - block_size.width)/shiftSize.width) &times; floor((prev->height - block_size.height)/shiftSize.height) size,
++            floor((prev-&gt;width - block_size.width)/shiftSize.width) &times; floor((prev-&gt;height - block_size.height)/shiftSize.height) size,
+             32-bit floating-point, single-channel.
+ <dt>vely<dd>Vertical component of the optical flow of the same size <code>velx</code>,
+             32-bit floating-point, single-channel.
+@@ -3766,17 +3766,17 @@
+ 
+     /* backward compatibility fields */
+ #if 1
+-    float* PosterState;         /* =state_pre->data.fl */
+-    float* PriorState;          /* =state_post->data.fl */
+-    float* DynamMatr;           /* =transition_matrix->data.fl */
+-    float* MeasurementMatr;     /* =measurement_matrix->data.fl */
+-    float* MNCovariance;        /* =measurement_noise_cov->data.fl */
+-    float* PNCovariance;        /* =process_noise_cov->data.fl */
+-    float* KalmGainMatr;        /* =gain->data.fl */
+-    float* PriorErrorCovariance;/* =error_cov_pre->data.fl */
+-    float* PosterErrorCovariance;/* =error_cov_post->data.fl */
+-    float* Temp1;               /* temp1->data.fl */
+-    float* Temp2;               /* temp2->data.fl */
++    float* PosterState;         /* =state_pre-&gt;data.fl */
++    float* PriorState;          /* =state_post-&gt;data.fl */
++    float* DynamMatr;           /* =transition_matrix-&gt;data.fl */
++    float* MeasurementMatr;     /* =measurement_matrix-&gt;data.fl */
++    float* MNCovariance;        /* =measurement_noise_cov-&gt;data.fl */
++    float* PNCovariance;        /* =process_noise_cov-&gt;data.fl */
++    float* KalmGainMatr;        /* =gain-&gt;data.fl */
++    float* PriorErrorCovariance;/* =error_cov_pre-&gt;data.fl */
++    float* PosterErrorCovariance;/* =error_cov_post-&gt;data.fl */
++    float* Temp1;               /* temp1-&gt;data.fl */
++    float* Temp2;               /* temp2-&gt;data.fl */
+ #endif
+ 
+     CvMat* state_pre;           /* predicted state (x'(k)):
+@@ -3872,17 +3872,17 @@
+                should be NULL iff there is no external control (<code>control_params</code>=0).
+ </dl></p><p>
+ The function <code>cvKalmanPredict</code> estimates the subsequent stochastic model state
+-by its current state and stores it at <code>kalman->state_pre</code>:</p>
++by its current state and stores it at <code>kalman-&gt;state_pre</code>:</p>
+ <pre>
+     x'<sub>k</sub>=A&bull;x<sub>k</sub>+B&bull;u<sub>k</sub>
+     P'<sub>k</sub>=A&bull;P<sub>k-1</sub>*A<sup>T</sup> + Q,
+ where
+-x'<sub>k</sub> is predicted state (kalman->state_pre),
+-x<sub>k-1</sub> is corrected state on the previous step (kalman->state_post)
++x'<sub>k</sub> is predicted state (kalman-&gt;state_pre),
++x<sub>k-1</sub> is corrected state on the previous step (kalman-&gt;state_post)
+                 (should be initialized somehow in the beginning, zero vector by default),
+ u<sub>k</sub> is external control (<code>control</code> parameter),
+-P'<sub>k</sub> is priori error covariance matrix (kalman->error_cov_pre)
+-P<sub>k-1</sub> is posteriori error covariance matrix on the previous step (kalman->error_cov_post)
++P'<sub>k</sub> is priori error covariance matrix (kalman-&gt;error_cov_pre)
++P<sub>k-1</sub> is posteriori error covariance matrix on the previous step (kalman-&gt;error_cov_post)
+                 (should be initialized somehow in the beginning, identity matrix by default),
+ </pre>
+ The function returns the estimated state.
+@@ -3909,7 +3909,7 @@
+ K<sub>k</sub> - Kalman "gain" matrix.
+ </pre>
+ <p>
+-The function stores adjusted state at <code>kalman->state_post</code> and returns it on output.
++The function stores adjusted state at <code>kalman-&gt;state_post</code> and returns it on output.
+ </p>
+ 
+ <h4>Example. Using Kalman filter to track a rotating point</h4>
+@@ -3933,51 +3933,51 @@
+     CvRandState rng;
+     int code = -1;
+ 
+-    cvRandInit( &rng, 0, 1, -1, CV_RAND_UNI );
++    cvRandInit( &amp;rng, 0, 1, -1, CV_RAND_UNI );
+ 
+     cvZero( measurement );
+     cvNamedWindow( "Kalman", 1 );
+ 
+     for(;;)
+     {
+-        cvRandSetRange( &rng, 0, 0.1, 0 );
++        cvRandSetRange( &amp;rng, 0, 0.1, 0 );
+         rng.disttype = CV_RAND_NORMAL;
+ 
+-        cvRand( &rng, state );
++        cvRand( &amp;rng, state );
+ 
+-        memcpy( kalman->transition_matrix->data.fl, A, sizeof(A));
+-        cvSetIdentity( kalman->measurement_matrix, cvRealScalar(1) );
+-        cvSetIdentity( kalman->process_noise_cov, cvRealScalar(1e-5) );
+-        cvSetIdentity( kalman->measurement_noise_cov, cvRealScalar(1e-1) );
+-        cvSetIdentity( kalman->error_cov_post, cvRealScalar(1));
++        memcpy( kalman-&gt;transition_matrix-&gt;data.fl, A, sizeof(A));
++        cvSetIdentity( kalman-&gt;measurement_matrix, cvRealScalar(1) );
++        cvSetIdentity( kalman-&gt;process_noise_cov, cvRealScalar(1e-5) );
++        cvSetIdentity( kalman-&gt;measurement_noise_cov, cvRealScalar(1e-1) );
++        cvSetIdentity( kalman-&gt;error_cov_post, cvRealScalar(1));
+         /* choose random initial state */
+-        cvRand( &rng, kalman->state_post );
++        cvRand( &ramp;ng, kalman-&gt;state_post );
+ 
+         rng.disttype = CV_RAND_NORMAL;
+ 
+         for(;;)
+         {
+             #define calc_point(angle)                                      \
+-                cvPoint( cvRound(img->width/2 + img->width/3*cos(angle)),  \
+-                         cvRound(img->height/2 - img->width/3*sin(angle)))
++                cvPoint( cvRound(img-&gt;width/2 + img-&gt;width/3*cos(angle)),  \
++                         cvRound(img-&gt;height/2 - img-&gt;width/3*sin(angle)))
+ 
+-            float state_angle = state->data.fl[0];
++            float state_angle = state-&gt;data.fl[0];
+             CvPoint state_pt = calc_point(state_angle);
+ 
+             /* predict point position */
+             const CvMat* prediction = cvKalmanPredict( kalman, 0 );
+-            float predict_angle = prediction->data.fl[0];
++            float predict_angle = prediction-&gt;data.fl[0];
+             CvPoint predict_pt = calc_point(predict_angle);
+             float measurement_angle;
+             CvPoint measurement_pt;
+ 
+-            cvRandSetRange( &rng, 0, sqrt(kalman->measurement_noise_cov->data.fl[0]), 0 );
+-            cvRand( &rng, measurement );
++            cvRandSetRange( &amp;rng, 0, sqrt(kalman-&gt;measurement_noise_cov-&gt;data.fl[0]), 0 );
++            cvRand( &amp;rng, measurement );
+ 
+             /* generate measurement */
+-            cvMatMulAdd( kalman->measurement_matrix, state, measurement, measurement );
++            cvMatMulAdd( kalman-&gt;measurement_matrix, state, measurement, measurement );
+ 
+-            measurement_angle = measurement->data.fl[0];
++            measurement_angle = measurement-&gt;data.fl[0];
+             measurement_pt = calc_point(measurement_angle);
+ 
+             /* plot points */
+@@ -3996,14 +3996,14 @@
+             /* adjust Kalman filter state */
+             cvKalmanCorrect( kalman, measurement );
+ 
+-            cvRandSetRange( &rng, 0, sqrt(kalman->process_noise_cov->data.fl[0]), 0 );
+-            cvRand( &rng, process_noise );
+-            cvMatMulAdd( kalman->transition_matrix, state, process_noise, state );
++            cvRandSetRange( &amp;rng, 0, sqrt(kalman-&gt;process_noise_cov-&gt;data.fl[0]), 0 );
++            cvRand( &amp;rng, process_noise );
++            cvMatMulAdd( kalman-&gt;transition_matrix, state, process_noise, state );
+ 
+             cvShowImage( "Kalman", img );
+             code = cvWaitKey( 100 );
+ 
+-            if( code > 0 ) /* break current simulation by pressing a key */
++            if( code &gt; 0 ) /* break current simulation by pressing a key */
+                 break;
+         }
+         if( code == 27 ) /* exit by ESCAPE */
+@@ -4641,7 +4641,7 @@
+ 
+ <pre>
+ sum_i((x'<sub>i</sub>-(h11*x<sub>i</sub> + h12*y<sub>i</sub> + h13)/(h31*x<sub>i</sub> + h32*y<sub>i</sub> + h33))<sup>2</sup>+
+-      (y'<sub>i</sub>-(h21*x<sub>i</sub> + h22*y<sub>i</sub> + h23)/(h31*x<sub>i</sub> + h32*y<sub>i</sub> + h33))<sup>2</sup>) -> min
++      (y'<sub>i</sub>-(h21*x<sub>i</sub> + h22*y<sub>i</sub> + h23)/(h31*x<sub>i</sub> + h32*y<sub>i</sub> + h33))<sup>2</sup>) -&gt; min
+ </pre>
+ 
+ The function is used to find initial intrinsic and extrinsic matrices.
+@@ -4978,9 +4978,9 @@
+                            (7-point method may return up to 3 matrices).
+ <dt>method<dd>Method for computing the fundamental matrix
+           <dd>CV_FM_7POINT - for 7-point algorithm. N == 7
+-          <dd>CV_FM_8POINT - for 8-point algorithm. N >= 8
+-          <dd>CV_FM_RANSAC - for RANSAC  algorithm. N >= 8
+-          <dd>CV_FM_LMEDS  - for LMedS   algorithm. N >= 8
++          <dd>CV_FM_8POINT - for 8-point algorithm. N &gt;= 8
++          <dd>CV_FM_RANSAC - for RANSAC  algorithm. N &gt;= 8
++          <dd>CV_FM_LMEDS  - for LMedS   algorithm. N &gt;= 8
+ <dt>param1<dd>The parameter is used for RANSAC or LMedS methods only.
+             It is the maximum distance from point to epipolar line in pixels,
+             beyond which the point is considered an outlier and is not used
+@@ -5030,10 +5030,10 @@
+ /* Fill the points here ... */
+ for( i = 0; i &lt; point_count; i++ )
+ {
+-    points1->data.db[i*2] = &lt;x<sub>1,i</sub>&gt;;
+-    points1->data.db[i*2+1] = &lt;y<sub>1,i</sub>&gt;;
+-    points2->data.db[i*2] = &lt;x<sub>2,i</sub>&gt;;
+-    points2->data.db[i*2+1] = &lt;y<sub>2,i</sub>&gt;;
++    points1-&gt;data.db[i*2] = &lt;x<sub>1,i</sub>&gt;;
++    points1-&gt;data.db[i*2+1] = &lt;y<sub>1,i</sub>&gt;;
++    points2-&gt;data.db[i*2] = &lt;x<sub>2,i</sub>&gt;;
++    points2-&gt;data.db[i*2+1] = &lt;y<sub>2,i</sub>&gt;;
+ }
+ 
+ fundamental_matrix = cvCreateMat(3,3,CV_32FC1);
+@@ -5115,7 +5115,7 @@
+ In case if the input array dimensionality is larger than the output,
+ each point coordinates are divided by the last coordinate:
+ <pre>
+-(x,y[,z],w) -> (x',y'[,z']):
++(x,y[,z],w) -&gt; (x',y'[,z']):
+ 
+ x' = x/w
+ y' = y/w
+@@ -5124,7 +5124,7 @@
+ 
+ If the output array dimensionality is larger, an extra 1 is appended to each point.
+ <pre>
+-(x,y[,z]) -> (x,y[,z],1)
++(x,y[,z]) -&gt; (x,y[,z],1)
+ </pre>
+ 
+ Otherwise, the input array is simply copied (with optional tranposition) to the output.
