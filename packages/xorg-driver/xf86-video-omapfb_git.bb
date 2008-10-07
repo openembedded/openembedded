@@ -2,7 +2,7 @@ require xorg-driver-video.inc
 
 DESCRIPTION = "X.Org X server -- OMAP display driver"
 
-PR ="r1"
+PR ="r3"
 
 SRCREV = "afb03099adc621fa7857a9bf26342d6380cbc2eb"
 PV = "0.0.1+${PR}+git${SRCREV}"
