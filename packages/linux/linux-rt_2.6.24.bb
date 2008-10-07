@@ -35,8 +35,8 @@ KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb_default.dts"
 # use here. -- Leon Woestenberg
 
 SRC_URI_append_mpc8315e-rdb = " \
-${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.3.bz2;patch=1;p=1 \
-${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.3-rt3.bz2;patch=1;p=1 \
+${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
+${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.7-rt3.bz2;patch=1;p=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-platform-support.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-add-all-interrupts.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Realtek-821x-phy.patch;patch=1 \
