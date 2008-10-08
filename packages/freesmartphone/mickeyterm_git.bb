@@ -2,7 +2,7 @@ DESCRIPTION = "Mickey's Terminal Program"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 LICENSE = "GPLv2"
-PV = "2.9.0+gitr${SRCREV}"
+PV = "2.9.1+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
