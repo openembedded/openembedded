@@ -196,7 +196,7 @@ SRCREV_pn-zhone ?= "11392b1d2ee3a0622dc324e1805699e4301249c4"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "36204"
+EFL_SRCREV ?= "36520"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
@@ -240,8 +240,7 @@ SRCREV_pn-python-etk ?= "${EFL_SRCREV}"
 
 # Enlightenment Applications
 SRCREV_pn-edje-editor ?= "${EFL_SRCREV}"
-#SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
-SRCREV_pn-edje-player ?= "36296"
+SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
 SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
 SRCREV_pn-emphasis ?= "${EFL_SRCREV}"
 SRCREV_pn-ephoto ?= "${EFL_SRCREV}"
@@ -255,6 +254,12 @@ SRCREV_pn-e-utils ?= "${EFL_SRCREV}"
 SRCREV_pn-e-wm ?= "${EFL_SRCREV}"
 SRCREV_pn-enna ?= "${EFL_SRCREV}"
 SRCREV_pn-exquisite ?= "${EFL_SRCREV}"
+SRCREV_pn-exquisite-theme-illume ?= "${EFL_SRCREV}"
 SRCREV_pn-rage ?= "${EFL_SRCREV}"
-
 SRCREV_pn-illume ?= "${EFL_SRCREV}"
+SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
+
+# Enlightenment ST
+SRCREV_pn-alarm ?= "${EFL_SRCREV}"
+SRCREV_pn-waker ?= "${EFL_SRCREV}"
+SRCREV_pn-elementary ?= "${EFL_SRCREV}"
