@@ -26,6 +26,7 @@ do_install_append() {
 RDEPENDS_${PN} += "\
   python-dbus \
   python-datetime \
+  python-pprint \
   python-pygobject \
   python-pyrtc \
   python-pyserial \

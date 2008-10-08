@@ -15,4 +15,5 @@ do_install() {
 
 RDEPENDS_${PN} = "\
   python-dbus \
+  python-pprint \
 "
