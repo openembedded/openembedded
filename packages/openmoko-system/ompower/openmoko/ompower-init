@@ -1,0 +1,7 @@
+#!/bin/sh 
+
+. /etc/init.d/functions
+
+# xset need to be able to reach our display
+export DISPLAY=:0
+ompower &
