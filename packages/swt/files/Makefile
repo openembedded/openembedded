@@ -5,8 +5,8 @@ CLEANFILES=*.files *.jar *.so* *-stamp
 RELEASE=OE_SWT_RELEASE
 SONAME_VERSION=OE_SWT_API_VERSION
 
-GCJ=gcj
-JAR=gjar
+GCJ=false
+JAR=fastjar
 JAVAC=javac -classpath .
 LDCONFIG=/sbin/ldconfig
 LN_S=ln -s
