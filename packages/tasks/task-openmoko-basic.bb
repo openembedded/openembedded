@@ -1,12 +1,11 @@
 DESCRIPTION = "Openmoko: Tasks for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
-ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 LICENSE = "MIT"
-PR = "r0.04"
+PR = "r0.05"
 
 inherit task
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = "task-openmoko-basic"
 
 DESCRIPTION_task-openmoko-qtopia-x11 = "Openmoko: Provide Window Manager, Om-settings and Om-installer"
