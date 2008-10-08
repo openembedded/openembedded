@@ -2,9 +2,8 @@ DESCRIPTION = "Zhone: Zen Phone"
 LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "edje-native python-pyrex-native python-cython-native"
-RDEPENDS = "task-python-efl python-textutils python-dbus python-pycairo"
 PV = "0.0.0+${PR}-gitr${SRCREV}"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"
@@ -18,3 +17,10 @@ do_install_append() {
 }
 
 FILES_${PN} += "${datadir} ${sysconfdir}"
+
+RDEPENDS = "\
+  task-python-efl \
+  python-textutils \
+  python-dbus \
+  python-pycairo \
+"

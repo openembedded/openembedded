@@ -26,8 +26,8 @@ exec_prefix = "${STAGING_DIR_NATIVE}/${layout_exec_prefix}"
 
 EXTRA_OECONF = "--with-threads --with-pymalloc --with-cyclic-gc \
                 --without-cxx --with-signal-module --with-wctype-functions"
-EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS="" STAGING_LIBDIR=${STAGING_LIBDIR} \
-		STAGING_INCDIR=${STAGING_INCDIR}'
+EXTRA_OEMAKE = 'BUILD_SYS="" HOST_SYS="" STAGING_LIBDIR=${STAGING_LIBDIR_NATIVE} \
+		STAGING_INCDIR=${STAGING_INCDIR_NATIVE}'
 
 do_stage_append() {
 	install -m 0755 Parser/pgen ${STAGING_BINDIR_NATIVE}/

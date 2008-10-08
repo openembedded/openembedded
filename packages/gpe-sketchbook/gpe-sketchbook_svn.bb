@@ -1,17 +1,22 @@
 DESCRIPTION = "A GPE notebook to sketch your notes"
 SECTION = "gpe"
-SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libgpewidget"
-PV = "0.2.9+svn-${SRCDATE}"
+DEPENDS = "libgpewidget sqlite"
+PV = "0.2.9+svnr${SRCREV}"
+
+DEFAULT_PREFERENCE = "-1"
 
 inherit pkgconfig autotools
 
-SRC_URI = "${GPE_SVN} \
-	   file://svn-build.patch;patch=1"
-
+SRC_URI = "\
+  ${GPE_SVN} \
+  file://svn-build.patch;patch=1 \
+"
 S = "${WORKDIR}/${PN}"
+
+export CVSBUILD = "no"
+CFLAGS += "-D_GNU_SOURCE"
 
 do_compile () {
         oe_runmake PREFIX=${prefix}
@@ -23,10 +28,3 @@ do_install () {
 
 FILES_${PN} = "${bindir} ${datadir}/pixmaps ${datadir}/applications"
 FILES_${PN} += " ${datadir}/gpe/pixmaps"
-
-export CVSBUILD = "no"
-
-CFLAGS += "-D_GNU_SOURCE"
-
-DEFAULT_PREFERENCE = "-1"
-

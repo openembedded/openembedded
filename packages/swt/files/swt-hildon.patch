@@ -1,7 +1,7 @@
-Index: swt/swt-source/make_linux.mak
+Index: swt-source/make_linux.mak
 ===================================================================
---- swt.orig/swt-source/make_linux.mak	2007-06-20 12:01:22.000000000 +0200
-+++ swt/swt-source/make_linux.mak	2008-02-14 11:32:49.000000000 +0100
+--- swt-source.orig/make_linux.mak	2007-06-20 12:01:22.000000000 +0200
++++ swt-source/make_linux.mak	2008-10-08 01:36:56.000000000 +0200
 @@ -45,8 +45,8 @@
  CAIROLIBS = `pkg-config --libs-only-L cairo` -lcairo
  
@@ -31,10 +31,10 @@ Index: swt/swt-source/make_linux.mak
  		-fPIC \
  		${SWT_PTR_CFLAGS}
  LIBS = -shared -fPIC
-Index: swt/swt-source/os.c
+Index: swt-source/os.c
 ===================================================================
---- swt.orig/swt-source/os.c	2007-10-30 16:24:28.000000000 +0100
-+++ swt/swt-source/os.c	2008-02-14 09:32:49.000000000 +0100
+--- swt-source.orig/os.c	2008-06-05 13:31:52.000000000 +0200
++++ swt-source/os.c	2008-10-08 01:36:56.000000000 +0200
 @@ -17,6 +17,9 @@
  #include "os_structs.h"
  #include "os_stats.h"
@@ -45,7 +45,7 @@ Index: swt/swt-source/os.c
  #define OS_NATIVE(func) Java_org_eclipse_swt_internal_gtk_OS_##func
  
  #ifndef NO_Call
-@@ -7015,9 +7018,18 @@
+@@ -7133,9 +7136,18 @@
  JNIEXPORT void JNICALL OS_NATIVE(_1gtk_1container_1add)
  	(JNIEnv *env, jclass that, jint arg0, jint arg1)
  {
@@ -66,7 +66,7 @@ Index: swt/swt-source/os.c
  }
  #endif
  
-@@ -9121,9 +9133,12 @@
+@@ -9375,9 +9387,12 @@
  JNIEXPORT jint JNICALL OS_NATIVE(_1gtk_1menu_1bar_1new)
  	(JNIEnv *env, jclass that)
  {
@@ -80,7 +80,7 @@ Index: swt/swt-source/os.c
  	OS_NATIVE_EXIT(env, that, _1gtk_1menu_1bar_1new_FUNC);
  	return rc;
  }
-@@ -15464,8 +15479,23 @@
+@@ -15849,8 +15864,23 @@
  	(JNIEnv *env, jclass that, jint arg0)
  {
  	jint rc = 0;
@@ -105,11 +105,11 @@ Index: swt/swt-source/os.c
  	OS_NATIVE_EXIT(env, that, _1gtk_1window_1new_FUNC);
  	return rc;
  }
-Index: swt/swt-source/org/eclipse/swt/widgets/Menu.java
+Index: swt-source/org/eclipse/swt/widgets/Menu.java
 ===================================================================
---- swt.orig/swt-source/org/eclipse/swt/widgets/Menu.java	2007-05-31 18:03:50.000000000 +0200
-+++ swt/swt-source/org/eclipse/swt/widgets/Menu.java	2008-02-14 09:05:04.000000000 +0100
-@@ -259,9 +259,17 @@
+--- swt-source.orig/org/eclipse/swt/widgets/Menu.java	2008-06-05 13:31:08.000000000 +0200
++++ swt-source/org/eclipse/swt/widgets/Menu.java	2008-10-08 01:36:56.000000000 +0200
+@@ -287,9 +287,17 @@
  	if ((style & SWT.BAR) != 0) {
  		handle = OS.gtk_menu_bar_new ();
  		if (handle == 0) error (SWT.ERROR_NO_HANDLES);
@@ -127,11 +127,11 @@ Index: swt/swt-source/org/eclipse/swt/widgets/Menu.java
  	} else {
  		handle = OS.gtk_menu_new ();
  		if (handle == 0) error (SWT.ERROR_NO_HANDLES);
-Index: swt/swt-source/org/eclipse/swt/internal/gtk/OS.java
+Index: swt-source/org/eclipse/swt/internal/gtk/OS.java
 ===================================================================
---- swt.orig/swt-source/org/eclipse/swt/internal/gtk/OS.java	2007-10-30 16:06:36.000000000 +0100
-+++ swt/swt-source/org/eclipse/swt/internal/gtk/OS.java	2008-02-14 09:05:04.000000000 +0100
-@@ -471,6 +471,11 @@
+--- swt-source.orig/org/eclipse/swt/internal/gtk/OS.java	2008-06-05 13:32:08.000000000 +0200
++++ swt-source/org/eclipse/swt/internal/gtk/OS.java	2008-10-08 01:36:56.000000000 +0200
+@@ -473,6 +473,11 @@
  	public static final byte[] window_state_event = ascii("window-state-event");
  	
  	/** Properties */
@@ -143,11 +143,11 @@ Index: swt/swt-source/org/eclipse/swt/internal/gtk/OS.java
  	public static final byte[] active = ascii("active");
  	public static final byte[] background_gdk = ascii("background-gdk");
  	public static final byte[] button_relief = ascii("button-relief");
-Index: swt/swt-source/org/eclipse/swt/widgets/Shell.java
+Index: swt-source/org/eclipse/swt/widgets/Shell.java
 ===================================================================
---- swt.orig/swt-source/org/eclipse/swt/widgets/Shell.java	2007-11-01 11:31:12.000000000 +0100
-+++ swt/swt-source/org/eclipse/swt/widgets/Shell.java	2008-02-14 10:51:37.000000000 +0100
-@@ -1028,6 +1028,14 @@
+--- swt-source.orig/org/eclipse/swt/widgets/Shell.java	2008-06-05 13:31:10.000000000 +0200
++++ swt-source/org/eclipse/swt/widgets/Shell.java	2008-10-08 01:36:56.000000000 +0200
+@@ -1067,6 +1067,14 @@
  int /*long*/ gtk_size_allocate (int /*long*/ widget, int /*long*/ allocation) {
  	int width = OS.GTK_WIDGET_WIDTH (shellHandle);
  	int height = OS.GTK_WIDGET_HEIGHT (shellHandle);
@@ -162,7 +162,7 @@ Index: swt/swt-source/org/eclipse/swt/widgets/Shell.java
  	if (!resized || oldWidth != width || oldHeight != height) {
  		oldWidth = width;
  		oldHeight = height;
-@@ -1384,14 +1392,53 @@
+@@ -1472,14 +1480,53 @@
  	if ((state & FOREIGN_HANDLE) != 0) return;
  	Monitor monitor = getMonitor ();
  	Rectangle rect = monitor.getClientArea ();
@@ -216,10 +216,10 @@ Index: swt/swt-source/org/eclipse/swt/widgets/Shell.java
  public void setMaximized (boolean maximized) {
  	checkWidget();
  	super.setMaximized (maximized);
-Index: swt/swt-source/os_custom.c
+Index: swt-source/os_custom.c
 ===================================================================
---- swt.orig/swt-source/os_custom.c	2007-05-31 18:04:22.000000000 +0200
-+++ swt/swt-source/os_custom.c	2008-02-14 13:55:49.000000000 +0100
+--- swt-source.orig/os_custom.c	2008-06-05 13:31:50.000000000 +0200
++++ swt-source/os_custom.c	2008-10-08 01:36:56.000000000 +0200
 @@ -13,6 +13,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
