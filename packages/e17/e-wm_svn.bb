@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.043+svnr${SRCREV}"
-PR = "r13"
+PR = "r14"
 
 inherit e update-alternatives
 
@@ -10,7 +10,6 @@ RDEPENDS += "shared-mime-info mime-support"
 
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
-  file://disable-e-cursor.patch;patch=1 \
   file://enlightenment_start.oe \
   file://applications.menu \
 "
