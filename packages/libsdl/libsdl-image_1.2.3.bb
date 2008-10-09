@@ -1,15 +1,10 @@
-DESCRIPTION = "Simple DirectMedia Layer image library."
-SECTION = "libs"
-PRIORITY = "optional"
-DEPENDS = "zlib libpng jpeg virtual/libsdl"
-LICENSE = "LGPL"
+require libsdl-image.inc
+
 PR = "r2"
 
-SRC_URI = "\
-  http://www.libsdl.org/projects/SDL_image/release/SDL_image-${PV}.tar.gz \
+SRC_URI += "\
   file://autotools.patch;patch=1 \
 "
-S = "${WORKDIR}/SDL_image-${PV}"
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
