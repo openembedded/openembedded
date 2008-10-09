@@ -1,0 +1,15 @@
+Index: pmount-0.9.17/src/Makefile.am
+===================================================================
+--- pmount-0.9.17.orig/src/Makefile.am	2008-10-09 01:22:41.668067209 +0200
++++ pmount-0.9.17/src/Makefile.am	2008-10-09 01:23:22.144725902 +0200
+@@ -36,8 +36,8 @@
+ 
+ install-data-hook:
+ 	test -z $(INSTALL_DIR) || mkdir -p -- $(INSTALL_DIR)
+-	$(INSTALL_DATA) -o root -g root -m 4755 -D $(INSTALL_SRC)/pmount $(INSTALL_DIR)/pmount
+-	$(INSTALL_DATA) -o root -g root -m 4755 -D $(INSTALL_SRC)/pumount $(INSTALL_DIR)/pumount
++	$(INSTALL_DATA)  -m 4755 -D $(INSTALL_SRC)/pmount $(INSTALL_DIR)/pmount
++	$(INSTALL_DATA)  -m 4755 -D $(INSTALL_SRC)/pumount $(INSTALL_DIR)/pumount
+ 
+ uninstall-hook:
+ 	rm -f $(INSTALL_DIR)/pmount
