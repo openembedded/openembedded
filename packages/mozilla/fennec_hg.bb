@@ -3,11 +3,11 @@ DEPENDS += "cairo alsa-lib "
 
 PV = "0.8+0.9pre"
 MOZPV = "0.9pre"
-PR = "r8"
+PR = "r9"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=aa4d3083995f \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=31f56bf4590a \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=3a9a64e5bedc \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=53d19b4b249a \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
