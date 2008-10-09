@@ -1,0 +1,22 @@
+--- kdenox/configure.in	2008-08-02 19:02:36.000000000 +0100
++++ kdenox/configure.in	2008-08-02 18:59:40.000000000 +0100
+@@ -6,6 +6,8 @@
+ # I lifted it in some mater. (Stephan Kulow)
+ # I used much code from Janos Farkas
+ 
++m4_pattern_allow([_AC_PATH_X_XMKMF])
++
+ dnl Process this file with autoconf to produce a configure script.
+ 
+ AC_INIT(acinclude.m4) dnl a source file from your sub dir
+--- kdenox/configure.in.in	2008-08-02 19:02:50.000000000 +0100
++++ kdenox/configure.in.in	2008-08-02 19:03:30.000000000 +0100
+@@ -2,6 +2,8 @@
+ # I lifted it in some mater. (Stephan Kulow)
+ # I used much code from Janos Farkas
+ 
++m4_pattern_allow([_AC_PATH_X_XMKMF])
++
+ dnl Process this file with autoconf to produce a configure script.
+ 
+ AC_INIT(acinclude.m4) dnl a source file from your sub dir
