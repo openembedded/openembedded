@@ -1,4 +1,4 @@
-DEPENDS =+ "gettext-native virtual/libiconv virtual/libintl"
+DEPENDS =+ "gettext-native"
 EXTRA_OECONF += "--enable-nls"
 
 def gettext_after_parse(d):
