@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 SRCREV = "e1c49d7d22af768188e2a54c167ed79919361e55"
 
 PV = "2.6.26+2.6.27-rc7+${PR}+git${SRCREV}"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -35,6 +35,7 @@ SRC_URI_append = " \
            file://mru-256MB.diff;patch=1 \
            file://musb-fix-endpoints.diff;patch=1 \
            file://dvb-fix-dma.diff;patch=1 \
+           file://fix-irq33.diff;patch=1 \
 "
 
 
