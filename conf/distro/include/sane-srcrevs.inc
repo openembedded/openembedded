@@ -196,7 +196,7 @@ SRCREV_pn-zhone ?= "2cccdc592d10c15509d974dfbba493e95a776530"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "36520"
+EFL_SRCREV ?= "36540"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
