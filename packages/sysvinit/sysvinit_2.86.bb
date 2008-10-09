@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r41"
+PR = "r42"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -98,6 +98,7 @@ EOF
 	mv ${D}${base_sbindir}/halt ${D}${base_sbindir}/halt.${PN}
 	mv ${D}${base_sbindir}/reboot ${D}${base_sbindir}/reboot.${PN}
 	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
+	mv ${D}${base_sbindir}/poweroff ${D}${base_sbindir}/poweroff.${PN}	
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/mesg ${D}${bindir}/mesg.${PN}
 	mv ${D}${bindir}/wall ${D}${bindir}/wall.${PN}
@@ -108,6 +109,7 @@ pkg_postinst_${PN} () {
 update-alternatives --install ${base_sbindir}/halt halt halt.${PN} 200
 update-alternatives --install ${base_sbindir}/reboot reboot reboot.${PN} 200
 update-alternatives --install ${base_sbindir}/shutdown shutdown shutdown.${PN} 200
+update-alternatives --install ${base_sbindir}/poweroff poweroff poweroff.${PN} 200
 update-alternatives --install ${bindir}/last last last.${PN} 200
 update-alternatives --install ${bindir}/mesg mesg mesg.${PN} 200
 update-alternatives --install ${bindir}/wall wall wall.${PN} 200
