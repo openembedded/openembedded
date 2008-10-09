@@ -6,15 +6,18 @@ and instant schema evolution."
 LICENSE = "MetaKit"
 HOMEPAGE = "http://www.equi4.com/metakit.html"
 
-SRC_URI = "http://www.equi4.com/pub/mk/older/metakit-${PV}.tar.gz \
+SRC_URI = "http://www.equi4.com/pub/mk/metakit-${PV}.tar.gz \
 	   file://metakit-2.4.9.3.patch;patch=1"
-PR = "r1"
+PR = "r2"
+
+FILES_${PN} += " ${libdir}/*.so"
 
 do_configure_prepend() {
 
 	cp ${STAGING_DATADIR}/libtool/*.* ${S}/unix/scripts/
 
 }
+
 do_configure () {
 
 	cd builds
@@ -41,10 +44,8 @@ do_configure () {
 
 }
 
-
 do_stage() {
-#	oe_libinstall  -a  -C builds/.libs libmk4  ${STAGING_LIBDIR}
-	cp builds/.libs/libmk4.a ${STAGING_LIBDIR}
+	oe_libinstall -a -so -C builds/.libs libmk4 ${STAGING_LIBDIR}
 	install -d ${STAGING_INCDIR}/
 	for X in mk4.h mk4.inl
 	do
@@ -53,14 +54,12 @@ do_stage() {
 
 }
 
-
-
 do_compile () {
 	cd builds
 	oe_runmake
 }
 
 do_install() {
-
-	:
+	oe_libinstall -so -C builds/.libs libmk4 ${D}${libdir}
 }
+
