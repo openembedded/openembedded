@@ -5,7 +5,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -35,8 +35,8 @@ KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb_default.dts"
 # use here. -- Leon Woestenberg
 
 SRC_URI_append_mpc8315e-rdb = " \
-${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
-${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.7-rt3.bz2;patch=1;p=1 \
+${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.3.bz2;patch=1;p=1 \
+${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.3-rt3.bz2;patch=1;p=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-platform-support.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-add-all-interrupts.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Realtek-821x-phy.patch;patch=1 \
@@ -77,4 +77,3 @@ http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-default-configuratio
 #http://www.bitshrine.org/gpp/linux-2.6.24-Openswan-2.4.12.patch;patch=1 \
 #http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-openswan-sysctl.patch;patch=1 \
 #"
-

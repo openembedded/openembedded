@@ -26,7 +26,7 @@ FILES_util-linux-ng-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
 FILES_util-linux-ng-losetup = "/sbin/losetup.${PN}"
 FILES_util-linux-ng-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-ng-umount = "/bin/umount.${PN}"
-FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile"
+FILES_util-linux-ng-readprofile = "/usr/sbin/readprofile.${PN}"
 
 RRECOMMENDS_${PN} = "util-linux-ng-fdisk util-linux-ng-cfdisk util-linux-ng-sfdisk util-linux-ng-mount util-linux-ng-readprofile "
 RDEPENDS_${PN} = "util-linux-ng-umount util-linux-ng-swaponoff util-linux-ng-losetup"
@@ -109,6 +109,8 @@ do_install () {
 	mv ${D}${sbindir}/cfdisk ${D}${base_sbindir}/
 	mv ${D}${sbindir}/ctrlaltdel ${D}${base_sbindir}/
 
+	mv ${D}${sbindir}/readprofile ${D}${sbindir}/readprofile.${PN}
+	
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
@@ -207,3 +209,12 @@ pkg_prerm_util-linux-ng-swaponoff () {
 	update-alternatives --remove swapoff swapoff.${PN}
 	update-alternatives --remove swapon swapon.${PN}
 }
+
+pkg_postinst_util-linux-ng-readprofile() {
+    update-alternatives --install ${sbindir}/readprofile readprofile readprofile.${PN} 100
+}
+
+pkg_prerm_util-linux-ng-readprofile () {
+    update-alternatives --remove readprofile readprofile.${PN} 100
+}
+
