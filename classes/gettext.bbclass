@@ -1,3 +1,4 @@
+DEPENDS =+ "gettext-native"
 def gettext_after_parse(d):
     import bb
     # Remove the NLS bits if USE_NLS is no.
