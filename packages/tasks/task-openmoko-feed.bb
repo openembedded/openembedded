@@ -105,6 +105,7 @@ RDEPENDS_task-openmoko-feed = "\
   zhone \
   frameworkd \
   emacs \
+  gpe-scap \
 # for werner \
   net-tools \
   iproute2 \
