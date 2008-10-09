@@ -15,7 +15,7 @@ export PERL_ARCHLIB = "${STAGING_LIBDIR_NATIVE}/perl/${@get_perl_version(d)}"
 cpan_do_configure () {
 	yes '' | perl Makefile.PL ${EXTRA_CPANFLAGS}
 	if [ "${BUILD_SYS}" != "${HOST_SYS}" ]; then
-		. ${STAGING_DIR}/${TARGET_SYS}/perl/config.sh
+		. ${STAGING_DIR_TARGET}/perl/config.sh
 		if [ "${IS_NEW_PERL}" = "yes" ]; then
 			sed -i -e "s:\(SITELIBEXP = \).*:\1${sitelibexp}:" \
 				-e "s:\(SITEARCHEXP = \).*:\1${sitearchexp}:" \

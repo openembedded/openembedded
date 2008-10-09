@@ -70,19 +70,27 @@ oe_jarinstall() {
 
 oe_makeclasspath() {
   # Purpose: Generate a classpath variable from the given Jar file names
-  # where the ".jar" has been omitted.
+  # where the ".jar" has been omitted. The string is stored in the script
+  # variable whose name is given in the first argument to this function.
   #
-  # oe_makeclasspath foo baz bar
-  # Prints ${datadir_java}/foo.jar:${datadir_java}/baz.jar:${datadir_java}/bar.jar
+  # oe_makeclasspath cp foo baz bar
+  # Stores ${datadir_java}/foo.jar:${datadir_java}/baz.jar:${datadir_java}/bar.jar
+	# in variable "cp".
   #
-  # oe_makeclasspath -s foo baz bar
-  # Prints ${STAGING_DATADIR_JAVA}/foo.jar:${STAGING_DATADIR_JAVA}/baz.jar:${STAGING_DATADIR_JAVA}/bar.jar
-  #
+  # oe_makeclasspath bootcp -s foo baz bar
+  # Stores ${STAGING_DATADIR_JAVA}/foo.jar:${STAGING_DATADIR_JAVA}/baz.jar:${STAGING_DATADIR_JAVA}/bar.jar
+	# in variable "bootcp".
+	# 
   # Provide the -s at the beginning otherwise strange things happen.
-  #
+	# If -s is given the function checks whether the requested jar file exists
+	#	and exits with an error message if it cannot be found.
+	#
   dir=${datadir_java}
 	classpath=
 	delimiter=
+	retval=$1
+
+	shift
 
   while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -95,18 +103,18 @@ oe_makeclasspath() {
     *)
       file=$dir/$1.jar
 
-			if [ ! -f $file ]; then
+			if [ -z "$dir" -a ! -f $file ]; then
 				oefatal "oe_makeclasspath: Jar file for '$1' not found at $file"
 			fi
 
-      classpath=$classpath$file
+      classpath=$classpath$delimiter$file
       delimiter=":"
       ;;
     esac
     shift
   done
 
-	echo $classpath
+	eval $retval="$classpath"
 }
 
 # Creates a simple wrapper script for your Java program.

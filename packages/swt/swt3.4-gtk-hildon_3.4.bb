@@ -1,7 +1,7 @@
 require swt3.4-gtk_${PV}.bb
 
-PR = "r3"
+PR = "r0"
 
 DEPENDS += "libhildon libhildonfm"
 
-SRC_URI += "file://swt-hildon.patch;patch=1;pnum=2"
+SRC_URI += "file://swt-hildon.patch;patch=1"
