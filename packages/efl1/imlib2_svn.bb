@@ -4,11 +4,9 @@ LICENSE = "BSD"
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PROVIDES = "virtual/imlib2"
 PV = "1.4.1.001+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 inherit efl
-
-SRC_URI += "file://remove-local-includes-20080421.patch;patch=1;mindate=20080420 "
 
 EXTRA_OECONF = "--with-x"
 
