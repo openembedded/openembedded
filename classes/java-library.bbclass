@@ -25,6 +25,18 @@ def java_package_name(d):
 
   return pre + pn + post
 
+def java_base_package_name(d):
+  import bb;
+
+  pre=""
+  post=""
+
+  pn = bb.data.getVar('PN', d, 1)
+  if pn.endswith("-native"):
+		pn = pn[0:-7]
+
+  return pn
+
 JPN ?= "${@java_package_name(d)}"
 
 DEPENDS_prepend = "virtual/javac-native fastjar-native "
@@ -35,11 +47,26 @@ PACKAGE_ARCH_${JPN} = "all"
 
 FILES_${JPN} = "${datadir_java}"
 
+# Base package name
+# Automatically derives "foo" from "foo-native"
+BPN ?= ""${@java_base_package_name(d)}""
+
+BP ?= "${BPN}-${PV}"
+
 # File name of the libraries' main Jar file
-JARFILENAME = "${P}.jar"
+JARFILENAME = "${BP}.jar"
 
 # Space-separated list of alternative file names.
-ALTJARFILENAMES = "${PN}.jar"
+ALTJARFILENAMES = "${BPN}.jar"
+
+# Java "source" distributions often contain precompiled things
+# we want to delete first.
+do_removebinaries() {
+  find ${WORKDIR} -name "*.jar" -exec rm {} \;
+  find ${WORKDIR} -name "*.class" -exec rm {} \;
+}
+
+addtask removebinaries after do_unpack before do_patch
 
 java_install() {
   oe_jarinstall ${JARFILENAME} ${ALTJARFILENAMES}

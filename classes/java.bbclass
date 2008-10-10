@@ -17,6 +17,10 @@ STAGING_DATADIR_JAVA ?= ${STAGING_DATADIR}/java
 STAGING_LIBDIR_JNI ?= ${STAGING_LIBDIR}/jni
 STAGING_LIBDIR_JVM ?= ${STAGING_LIBDIR}/jvm
 
+STAGING_DATADIR_JAVA_NATIVE ?= ${STAGING_DATADIR_NATIVE}/java
+STAGING_LIBDIR_JNI_NATIVE ?= ${STAGING_LIBDIR_NATIVE}/jni
+STAGING_LIBDIR_JVM_NATIVE ?= ${STAGING_LIBDIR_NATIVE}/jvm
+
 oe_jarinstall() {
   # Purpose: Install a jar file and create all the given symlinks to it.
   # Example:
@@ -34,7 +38,12 @@ oe_jarinstall() {
   while [ "$#" -gt 0 ]; do
     case "$1" in
     -s)
-      dir=${STAGING_DATADIR_JAVA}
+			# put jar files to native staging if this is a -native recipe
+			if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
+	      dir=${STAGING_DATADIR_JAVA_NATIVE}
+			else
+	      dir=${STAGING_DATADIR_JAVA}
+			fi
       ;;
     -r)
       shift
@@ -95,7 +104,12 @@ oe_makeclasspath() {
   while [ "$#" -gt 0 ]; do
     case "$1" in
     -s)
-      dir=${STAGING_DATADIR_JAVA}
+			# take jar files from native staging if this is a -native recipe
+			if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
+	      dir=${STAGING_DATADIR_JAVA_NATIVE}
+			else
+	      dir=${STAGING_DATADIR_JAVA}
+			fi
       ;;
     -*)
       oefatal "oe_makeclasspath: unknown option: $1"
