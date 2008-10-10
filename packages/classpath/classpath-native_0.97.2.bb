@@ -1,6 +1,6 @@
 require classpath-native.inc
 
-PR = "r3"
+PR = "r4"
 
 # The code affected by the javanet-local patch
 # is usually not compiled. However if someone changes
@@ -14,6 +14,7 @@ SRC_URI += "\
   file://autotools.patch;patch=1 \
   file://decimalformat.patch;patch=1 \
   file://cp-byte-loophelper.patch;patch=1;pnum=0 \
+  file://miscompilation.patch;patch=1 \
   "
 
 do_unpackpost() {
