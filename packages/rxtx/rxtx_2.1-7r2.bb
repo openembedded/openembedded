@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 HOMEPAGE = "http://rxtx.org"
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "classpath classpath-tools-native"
 
@@ -14,13 +14,18 @@ SRC_URI = "\
     file://rxtx-fixes-from-debian.patch;patch=1 \
     "
 
+do_removebinaries_append() {
+	rm acinclude.m4
+}
+
 do_compile() {
   # Whatever configure detected it is completely unusable. So we override heavily.
   oe_runmake \
     JAVAH="gjavah -classpath \$(CLASSPATH) -d \$(DEST) -jni" \
     JAR=gjar \
     JAVAC="javac -classpath \$(CLASSPATH) -d \$(TOP)/ -O -source 1.3 -target 1.3" \
-    JAVAINCLUDEDIR=${STAGING_INCDIR}/classpath
+    JAVAINCLUDEDIR=${STAGING_INCDIR}/classpath \
+		GLIBTOOL="${TARGET_SYS}-libtool"
 }
 
 do_install() {
@@ -28,8 +33,9 @@ do_install() {
   install -d ${D}/${datadir_java}
 
   oe_runmake install \
-    RXTX_PATH=${D}/${libdir_jni} \
-    JHOME=${D}/${datadir_java}
+    RXTX_PATH="${D}/${libdir_jni}" \
+    JHOME="${D}/${datadir_java}" \
+		GLIBTOOL="${TARGET_SYS}-libtool"
 }
 
 do_stage() {
