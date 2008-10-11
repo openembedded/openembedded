@@ -1,0 +1,80 @@
+http://bugs.gentoo.org/show_bug.cgi?id=169593
+  	 iulica@box.co.uk
+This patch tests also for a storage if it is hotpluggable and mounts it
+automatically. A reason of creating the patch can be found here:
+http://lists.freedesktop.org/archives/hal/2005-October/003441.html
+
+--- a/src/IvmConfig/IvmConfigCommon.c.old	2007-03-05 15:28:49.000000000 +0100
++++ b/src/IvmConfig/IvmConfigCommon.c		2007-03-05 15:34:36.000000000 +0100
+@@ -146,7 +146,9 @@
+                volume.policy.should_mount does not exist
+                AND { storage.policy.should_mount == TRUE on block.storage_device
+                      OR { storage.policy.should_mount does not exist on
+-                          block.storage_device AND storage.removable == TRUE on
++                          block.storage_device AND { storage.removable == TRUE 
++                                                     OR storage.hotpluggable == TRUE 
++                                                   } on
+                           block.storage_device
+                         }
+                    }
+@@ -216,14 +218,16 @@
+         {
+ 	    ivm_check_dbus_error(&dbus_error);
+             // OK, so no storage policy was specified anywhere.  Now we'll mount
+-            // if parent device is removable.
++            // if parent device is removable or hotpluggable.
+             if (
+-              !libhal_device_property_exists( hal_ctx, new_udi, "storage.removable", NULL ) ||
+-              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.removable", NULL )
++              (!libhal_device_property_exists( hal_ctx, new_udi, "storage.removable", NULL ) ||
++              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.removable", NULL )) &&
++              (!libhal_device_property_exists( hal_ctx, new_udi, "storage.hotpluggable", NULL ) ||
++              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.hotpluggable", NULL ))
+             ) {
+                 DEBUG(_("\
+ Device %s won't be mounted because no mount policy was specified on \
+-volume or storage device and storage device does not appear to be removable"), device
++volume or storage device and storage device does not appear to be removable or hotpluggable"), device
+                 );
+                 libhal_free_string( device );
+                 libhal_free_string( new_udi );
+http://bugs.gentoo.org/show_bug.cgi?id=169593
+  	 iulica@box.co.uk
+This patch tests also for a storage if it is hotpluggable and mounts it
+automatically. A reason of creating the patch can be found here:
+http://lists.freedesktop.org/archives/hal/2005-October/003441.html
+
+--- a/src/IvmConfig/IvmConfigCommon.c.old	2007-03-05 15:28:49.000000000 +0100
++++ b/src/IvmConfig/IvmConfigCommon.c		2007-03-05 15:34:36.000000000 +0100
+@@ -146,7 +146,9 @@
+                volume.policy.should_mount does not exist
+                AND { storage.policy.should_mount == TRUE on block.storage_device
+                      OR { storage.policy.should_mount does not exist on
+-                          block.storage_device AND storage.removable == TRUE on
++                          block.storage_device AND { storage.removable == TRUE 
++                                                     OR storage.hotpluggable == TRUE 
++                                                   } on
+                           block.storage_device
+                         }
+                    }
+@@ -216,14 +218,16 @@
+         {
+ 	    ivm_check_dbus_error(&dbus_error);
+             // OK, so no storage policy was specified anywhere.  Now we'll mount
+-            // if parent device is removable.
++            // if parent device is removable or hotpluggable.
+             if (
+-              !libhal_device_property_exists( hal_ctx, new_udi, "storage.removable", NULL ) ||
+-              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.removable", NULL )
++              (!libhal_device_property_exists( hal_ctx, new_udi, "storage.removable", NULL ) ||
++              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.removable", NULL )) &&
++              (!libhal_device_property_exists( hal_ctx, new_udi, "storage.hotpluggable", NULL ) ||
++              !libhal_device_get_property_bool( hal_ctx, new_udi, "storage.hotpluggable", NULL ))
+             ) {
+                 DEBUG(_("\
+ Device %s won't be mounted because no mount policy was specified on \
+-volume or storage device and storage device does not appear to be removable"), device
++volume or storage device and storage device does not appear to be removable or hotpluggable"), device
+                 );
+                 libhal_free_string( device );
+                 libhal_free_string( new_udi );
