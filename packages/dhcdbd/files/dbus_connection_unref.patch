@@ -1,0 +1,20 @@
+--- a/src/dbus_service.c.old	2006-11-29 08:32:03.390681525 +0100
++++ b/src/dbus_service.c	2006-11-29 08:32:18.847562363 +0100
+@@ -1216,7 +1216,7 @@
+     return (cs);
+ 
+ give_up:
+-    dbus_connection_close(connection);
++    dbus_connection_unref(connection);
+     dbus_shutdown();
+ 
+     return (0L);
+@@ -1250,7 +1250,7 @@
+     tdestroy(cs->roots, free_root);
+     cs->roots = 0L;
+ 
+-    dbus_connection_close(cs->connection);
++    dbus_connection_unref(cs->connection);
+     dbus_shutdown();
+     free(cs);
+ }

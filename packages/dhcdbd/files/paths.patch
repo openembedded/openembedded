@@ -1,0 +1,25 @@
+--- a/include/dhcdbd.h.orig	2006-08-24 18:34:47.000000000 +0200
++++ b/include/dhcdbd.h	2006-09-28 19:48:59.000000000 +0200
+@@ -40,11 +40,11 @@
+ #endif
+ 
+ #ifndef DHCDBD_DHCLIENT_LEASE_DIR
+-#define DHCDBD_DHCLIENT_LEASE_DIR "/var/lib/dhclient/"
++#define DHCDBD_DHCLIENT_LEASE_DIR "/var/lib/dhcp/"
+ #endif
+ 
+ #ifndef DHCDBD_DHCLIENT_LEASE_PFX
+-#define DHCDBD_DHCLIENT_LEASE_PFX "dhclient-"
++#define DHCDBD_DHCLIENT_LEASE_PFX "dhclient."
+ #endif
+ 
+ #ifndef DHCDBD_DHCLIENT_LEASE_SFX
+@@ -56,7 +56,7 @@
+ #endif
+ 
+ #ifndef DHCDBD_DHCLIENT_PID_PFX
+-#define DHCDBD_DHCLIENT_PID_PFX "/var/run/dhclient-"
++#define DHCDBD_DHCLIENT_PID_PFX "/var/run/dhclient."
+ #endif
+ 
+ #ifndef DHCDBD_DHCLIENT_PID_SFX
