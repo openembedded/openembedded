@@ -274,6 +274,9 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-pickle", "Python Persistence Support", "python-core python-codecs python-io python-re",
     "pickle.* shelve.* lib-dynload/cPickle.so" )
 
+    m.addPackage( 0, "python-pkgutil", "Python Package Extension Utility Support", "python-core",
+    "pkgutil.*")
+
     m.addPackage( 0, "python-pprint", "Python Pretty-Print Support", "python-core",
     "pprint.*" )
 

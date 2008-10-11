@@ -1,12 +1,12 @@
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: './generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: 'generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
 
-PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
-PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 PR_python-profile="ml0"
@@ -272,6 +272,11 @@ DESCRIPTION_python-debugger="Python Debugger"
 PR_python-debugger="ml1"
 RDEPENDS_python-debugger="python-core python-io python-lang python-re python-stringold python-shell python-pprint"
 FILES_python-debugger="${libdir}/python2.5/bdb.* ${libdir}/python2.5/pdb.* "
+
+DESCRIPTION_python-pkgutil="Python Package Extension Utility Support"
+PR_python-pkgutil="ml0"
+RDEPENDS_python-pkgutil="python-core"
+FILES_python-pkgutil="${libdir}/python2.5/pkgutil.* "
 
 DESCRIPTION_python-shell="Python Shell-Like Functionality"
 PR_python-shell="ml1"
