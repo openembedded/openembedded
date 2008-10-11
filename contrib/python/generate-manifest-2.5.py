@@ -237,11 +237,11 @@ if __name__ == "__main__":
     "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so "
     "pipes.* socket.* tempfile.* StringIO.* " )
 
-    m.addPackage( 0, "python-lang", "Python Low-Level Language Support", "python-core",
+    m.addPackage( 1, "python-lang", "Python Low-Level Language Support", "python-core",
     "lib-dynload/array.so lib-dynload/parser.so lib-dynload/operator.so lib-dynload/_weakref.so " +
     "lib-dynload/itertools.so lib-dynload/collections.so lib-dynload/_bisect.so lib-dynload/_heapq.so " +
-    "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* repr.* token.* tokenize.* " + 
-    "traceback.* linecache.* weakref.*" )
+    "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* symbol.* repr.* token.* " +
+    " tokenize.* traceback.* linecache.* weakref.*" )
 
     m.addPackage( 1, "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
     "logging" ) # package
@@ -333,5 +333,13 @@ if __name__ == "__main__":
 
     m.addPackage( 0, "python-mailbox", "Python Mailbox Format Support", "python-core python-mime",
     "mailbox.*" )
+
+    # FIXME consider adding to python-compression
+    m.addPackage( 0, "python-bzip2", "Python bzip2 support", "python-core",
+    "lib-dynload/bz2.so" )
+
+    # FIXME consider adding to some higher level package
+    m.addPackage( 0, "python-elementtree", "Python elementree", "python-core",
+    "lib-dynload/_elementtree.so" )
 
     m.make()

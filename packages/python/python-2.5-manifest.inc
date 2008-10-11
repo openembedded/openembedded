@@ -4,9 +4,9 @@
 
  
 
-PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
-PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 PR_python-profile="ml0"
@@ -42,6 +42,11 @@ DESCRIPTION_python-pickle="Python Persistence Support"
 PR_python-pickle="ml0"
 RDEPENDS_python-pickle="python-core python-codecs python-io python-re"
 FILES_python-pickle="${libdir}/python2.5/pickle.* ${libdir}/python2.5/shelve.* ${libdir}/python2.5/lib-dynload/cPickle.so "
+
+DESCRIPTION_python-bzip2="Python bzip2 support"
+PR_python-bzip2="ml0"
+RDEPENDS_python-bzip2="python-core"
+FILES_python-bzip2="${libdir}/python2.5/lib-dynload/bz2.so "
 
 DESCRIPTION_python-datetime="Python Calendar and Time support"
 PR_python-datetime="ml0"
@@ -152,6 +157,11 @@ DESCRIPTION_python-gdbm="Python GNU Database Support"
 PR_python-gdbm="ml0"
 RDEPENDS_python-gdbm="python-core"
 FILES_python-gdbm="${libdir}/python2.5/lib-dynload/gdbm.so "
+
+DESCRIPTION_python-elementtree="Python elementree"
+PR_python-elementtree="ml0"
+RDEPENDS_python-elementtree="python-core"
+FILES_python-elementtree="${libdir}/python2.5/lib-dynload/_elementtree.so "
 
 DESCRIPTION_python-fcntl="Python's fcntl Interface"
 PR_python-fcntl="ml0"
@@ -299,9 +309,9 @@ RDEPENDS_python-idle="python-core python-tkinter"
 FILES_python-idle="${bindir}/idle ${libdir}/python2.5/idlelib "
 
 DESCRIPTION_python-lang="Python Low-Level Language Support"
-PR_python-lang="ml0"
+PR_python-lang="ml1"
 RDEPENDS_python-lang="python-core"
-FILES_python-lang="${libdir}/python2.5/lib-dynload/array.so ${libdir}/python2.5/lib-dynload/parser.so ${libdir}/python2.5/lib-dynload/operator.so ${libdir}/python2.5/lib-dynload/_weakref.so ${libdir}/python2.5/lib-dynload/itertools.so ${libdir}/python2.5/lib-dynload/collections.so ${libdir}/python2.5/lib-dynload/_bisect.so ${libdir}/python2.5/lib-dynload/_heapq.so ${libdir}/python2.5/atexit.* ${libdir}/python2.5/bisect.* ${libdir}/python2.5/code.* ${libdir}/python2.5/codeop.* ${libdir}/python2.5/dis.* ${libdir}/python2.5/heapq.* ${libdir}/python2.5/inspect.* ${libdir}/python2.5/keyword.* ${libdir}/python2.5/opcode.* ${libdir}/python2.5/repr.* ${libdir}/python2.5/token.* ${libdir}/python2.5/tokenize.* ${libdir}/python2.5/traceback.* ${libdir}/python2.5/linecache.* ${libdir}/python2.5/weakref.* "
+FILES_python-lang="${libdir}/python2.5/lib-dynload/array.so ${libdir}/python2.5/lib-dynload/parser.so ${libdir}/python2.5/lib-dynload/operator.so ${libdir}/python2.5/lib-dynload/_weakref.so ${libdir}/python2.5/lib-dynload/itertools.so ${libdir}/python2.5/lib-dynload/collections.so ${libdir}/python2.5/lib-dynload/_bisect.so ${libdir}/python2.5/lib-dynload/_heapq.so ${libdir}/python2.5/atexit.* ${libdir}/python2.5/bisect.* ${libdir}/python2.5/code.* ${libdir}/python2.5/codeop.* ${libdir}/python2.5/dis.* ${libdir}/python2.5/heapq.* ${libdir}/python2.5/inspect.* ${libdir}/python2.5/keyword.* ${libdir}/python2.5/opcode.* ${libdir}/python2.5/symbol.* ${libdir}/python2.5/repr.* ${libdir}/python2.5/token.* ${libdir}/python2.5/tokenize.* ${libdir}/python2.5/traceback.* ${libdir}/python2.5/linecache.* ${libdir}/python2.5/weakref.* "
 
 DESCRIPTION_python-audio="Python Audio Handling"
 PR_python-audio="ml0"
