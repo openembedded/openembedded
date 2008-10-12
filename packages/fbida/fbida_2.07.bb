@@ -8,9 +8,9 @@ DESCRIPTION = "frame buffer image and doc viewer tools"
 AUTHOR = "Gerd Knorr"
 LICENSE = "GPL2"
 SECTION = "utils"
-PR = "r1"
+PR = "r2"
 
-DEPENDS = "libiconv jpeg fontconfig freetype libexif"
+DEPENDS = "virtual/libiconv jpeg fontconfig freetype libexif"
 RDEPENDS = "ttf-dejavu-sans-mono"
 
 SRC_URI = "http://dl.bytesex.org/releases/fbida/fbida-${PV}.tar.gz \
