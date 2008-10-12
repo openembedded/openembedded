@@ -1,0 +1,13 @@
+Index: fbida-2.07/exiftran.c
+===================================================================
+--- fbida-2.07/exiftran.c	2006-06-13 14:47:24.000000000 +0200
++++ fbida-2.07/exiftran.c.mod	2008-10-07 01:43:07.000000000 +0200
+@@ -16,6 +16,8 @@
+ #include "jpegtools.h"
+ #include "genthumbnail.h"
+ 
++#define HAVE_NEW_EXIF
++
+ /* ---------------------------------------------------------------------- */
+ 
+ static void dump_exif(FILE *out, ExifData *ed)
