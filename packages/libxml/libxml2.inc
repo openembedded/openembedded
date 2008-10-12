@@ -26,4 +26,4 @@ DEBIANNAME_${PN} = "libxml2"
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-utils ${PN} ${PN}-doc ${PN}-locale"
 
 FILES_${PN}-dev += "${bindir}/*-config"
-FILES_${PN}-utils += "${bindir}/*"
+FILES_${PN}-utils += "${bindir}/* ${libdir}/*.sh"
