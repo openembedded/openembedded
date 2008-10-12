@@ -1,5 +1,7 @@
 require gtk+.inc
 
+PR = "r1"
+
 DEPENDS += "cairo jasper"
 
 # disabled per default - this uses as little patches as possible
@@ -11,6 +13,7 @@ SRC_URI = "http://download.gnome.org/sources/gtk+/2.14/gtk+-${PV}.tar.bz2 \
            file://hardcoded_libtool.patch;patch=1 \
            file://no-demos.patch;patch=1 \
            file://toggle-font.diff;patch=1;pnum=0 \
+           file://smallscreen_filechooser.patch;patch=1 \
           "
 
 EXTRA_OECONF = "--with-libtiff --disable-xkb --disable-glibtest --enable-display-migration gio_can_sniff=yes"
