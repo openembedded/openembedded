@@ -1,0 +1,24 @@
+Index: fbida-2.07/fbi.c
+===================================================================
+--- fbida-2.07/GNUmakefile	2008-10-10 22:27:58.000000000 +0200
++++ fbida-2.07/GNUmakefile.mod	2008-10-10 22:31:07.000000000 +0200
+@@ -181,16 +181,16 @@
+ install: build
+ 	$(INSTALL_DIR) $(bindir)
+ 	$(INSTALL_DIR) $(mandir)/man1
+-	$(INSTALL_BINARY) exiftran $(bindir)
++	$(INSTALL_SCRIPT) exiftran $(bindir)
+ 	$(INSTALL_DATA) $(srcdir)/exiftran.man $(mandir)/man1/exiftran.1
+ ifeq ($(HAVE_LINUX_FB_H),yes)
+-	$(INSTALL_BINARY) fbi $(bindir)
++	$(INSTALL_SCRIPT) fbi $(bindir)
+ 	$(INSTALL_SCRIPT) fbgs $(bindir)
+ 	$(INSTALL_DATA) $(srcdir)/fbi.man $(mandir)/man1/fbi.1
+ 	$(INSTALL_DATA) $(srcdir)/fbgs.man $(mandir)/man1/fbgs.1
+ endif
+ ifeq ($(HAVE_MOTIF),yes)
+-	$(INSTALL_BINARY) ida $(bindir)
++	$(INSTALL_SCRIPT) ida $(bindir)
+ 	$(INSTALL_DATA) $(srcdir)/ida.man $(mandir)/man1/ida.1
+ 	$(INSTALL_DIR) $(resdir)/app-defaults
+ 	$(INSTALL_DATA) $(srcdir)/Ida.ad $(resdir)/app-defaults/Ida

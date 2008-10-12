@@ -1,0 +1,13 @@
+Index: fbida-2.07/GNUmakefile
+===================================================================
+--- fbida-2.07/GNUmakefile	2006-06-13 15:35:48.000000000 +0200
++++ fbida-2.07/GNUmakefile.mod	2008-10-07 22:55:51.000000000 +0200
+@@ -181,7 +181,7 @@
+ install: build
+ 	$(INSTALL_DIR) $(bindir)
+ 	$(INSTALL_DIR) $(mandir)/man1
+-	$(INSTALL_BINARY) exiftran $(bindir)
++	$(INSTALL_SCRIPT) exiftran $(bindir)
+ 	$(INSTALL_DATA) $(srcdir)/exiftran.man $(mandir)/man1/exiftran.1
+ ifeq ($(HAVE_LINUX_FB_H),yes)
+ 	$(INSTALL_SCRIPT) fbi $(bindir)
