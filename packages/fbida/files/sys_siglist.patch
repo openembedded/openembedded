@@ -1,0 +1,12 @@
+Index: fbida-2.07/fbtools.c
+===================================================================
+--- fbida-2.07.orig/fbtools.c	2008-10-11 12:49:38.676243745 +0200
++++ fbida-2.07/fbtools.c	2008-10-11 12:50:08.286262765 +0200
+@@ -519,6 +519,6 @@
+ 
+     /* cleanup */
+     fb_cleanup();
+-    fprintf(stderr,"Oops: %s\n",sys_siglist[termsig]);
++    fprintf(stderr,"Oops: %s\n",strsignal(termsig));
+     exit(42);
+ }

@@ -8,14 +8,16 @@ DESCRIPTION = "frame buffer image and doc viewer tools"
 AUTHOR = "Gerd Knorr"
 LICENSE = "GPL2"
 SECTION = "utils"
-DEPENDS = "jpeg fontconfig freetype libexif ttf-dejavu"
+PR = "r1"
+
+DEPENDS = "libiconv jpeg fontconfig freetype libexif"
+RDEPENDS = "ttf-dejavu-sans-mono"
 
 SRC_URI = "http://dl.bytesex.org/releases/fbida/fbida-${PV}.tar.gz \
 	   file://exiftran.c.patch;patch=1 \
 	   file://fbi.c.patch;patch=1 \
-	   file://GNUmakefile.patch;patch=1"
+	   file://GNUmakefile.patch;patch=1 \
+	   file://sys_siglist.patch;patch=1 \
+	  "
 
-inherit autotools
-
-#CFLAGS_append = " ${LDFLAGS}"
 EXTRA_OECONF = "--disable-magick --without-x"
