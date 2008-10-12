@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mumpot t@h
+Comment=Mumpot t@h
+Exec=mumpot-tah
+Terminal=0
+Type=Application
+Categories=Application;PIM;GTK
+StartupNotify=True
