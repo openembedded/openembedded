@@ -13,3 +13,4 @@ do_stage() {
 	autotools_stage_all
 }
 
+FILES_${PN}-doc += ${datadir}/devhelp
