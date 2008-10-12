@@ -147,3 +147,18 @@ IMAGE_LINGUAS = " "
 export IPKG_INSTALL = '${RDEPENDS}'
 
 inherit image_ipk
+export NFO = '${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfo'
+addtask nfo after do_rootfs before do_build
+
+do_nfo() {
+      e2vers=`grep -i version "${IMAGE_ROOTFS}/usr/lib/ipkg/info/enigma2.control"`
+      echo -e "Enigma2:\tExperimental Release ${e2vers:9:3}" > ${NFO}
+      echo -e "Machine:\tDreambox ${MACHINE}" >> ${NFO}
+      echo -e "Date:\t$(date +%Y-%m-%d' '%H':'%M)" >> ${NFO}
+      echo -e "Issuer:\tDream Multimedia TV" >> ${NFO}
+      distrover=${DISTRO_VERSION}
+      echo -e "Link:\thttp://dreamboxupdate.com/${DISTRO}/${distrover:0:3}/${MACHINE}/experimental" >> ${NFO}
+      echo -ne "md5sum:\t" >> ${NFO}
+      cd ${DEPLOY_DIR_IMAGE}
+      md5sum ${IMAGE_NAME}.nfi >> ${NFO}
+}
