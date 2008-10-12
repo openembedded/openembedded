@@ -1,0 +1,13 @@
+Index: e2fsprogs-1.38/MCONFIG.in
+===================================================================
+--- e2fsprogs-1.38.orig/MCONFIG.in	2008-10-12 22:09:11.946856497 +0200
++++ e2fsprogs-1.38/MCONFIG.in	2008-10-12 22:09:30.540187422 +0200
+@@ -59,7 +59,7 @@
+ INSTALL_PROGRAM = @INSTALL_PROGRAM@
+ INSTALL_DATA = @INSTALL_DATA@
+ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+-MKINSTALLDIRS = @MKINSTALLDIRS@
++MKINSTALLDIRS = @MKDIR_P@
+ 
+ #
+ # Library definitions
