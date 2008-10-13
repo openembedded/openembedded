@@ -49,7 +49,7 @@ for i in 0 1; do
 done
 
 echo 18 > /proc/progress
-for i in dreambox_keyboard fp info; do
+for i in dreambox_keyboard fp info bcm7400; do
 	modprobe $i;
 done
 
