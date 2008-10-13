@@ -43,7 +43,7 @@ TARGET_FPU = "soft"
 USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
 
-INHERIT += "package_ipk debian testlab"
+INHERIT += "package_ipk debian testlab packaged-staging"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
@@ -157,9 +157,12 @@ PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
 PREFERRED_VERSION_pango    ?= 1.20.5
 PREFERRED_VERSION_glib-2.0 ?= 2.16.1
 
-# Stick with an older gettext
-#PREFERRED_VERSION_gettext ?= "0.14.1"
-#PREFERRED_VERSION_gettext-native ?= "0.14.1"
+# Stick with an older gettext and e2fsprogs stuff
+PREFERRED_VERSION_gettext          ?= "0.14.1"
+PREFERRED_VERSION_gettext-native   ?= "0.14.1"
+PREFERRED_VERSION_e2fsprogs-libs   ?= "1.39"
+PREFERRED_VERSION_e2fsprogs        ?= "1.38"
+PREFERRED_VERSION_e2fsprogs-native ?= "1.38"
 
 # we don't ship gtk-directfb by default
 PREFERRED_PROVIDER_gtk+                   ?= "gtk+"

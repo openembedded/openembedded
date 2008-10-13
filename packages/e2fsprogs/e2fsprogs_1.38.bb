@@ -1,10 +1,18 @@
 require e2fsprogs.inc
 
-PR = "r14"
+PR = "r15"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1 \
 	    file://mkinstalldirs.patch;patch=1 \
 	   "
+
+# Temporary solution; the mkinstalldirs patch kills SlugOS builds regardless
+# of version of gettext in use -- the lines below need to be removed when
+# the feeds are frozen and SlugOS is upgraded.
+SRC_URI_slugos = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-${PV}.tar.gz \
+	          file://no-hardlinks.patch;patch=1 \
+		 "
+
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
