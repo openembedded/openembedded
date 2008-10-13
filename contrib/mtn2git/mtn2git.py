@@ -59,24 +59,11 @@ def get_mark(revision):
     status.last_mark += 1
     status.marks[revision] = status.last_mark
     print >> status.mark_file, "%d: %s" % (status.last_mark, revision)
+    status.mark_file.flush()
     return status.last_mark
 
 def has_mark(revision):
     return revision in status.marks
-
-
-def mark_empty_revision(revision, parent):
-    """Git does not like empty merges, just skip the revision"""
-    # TODO, FIXME, XXX, We might want to add a reset cmd here
-    print >> sys.stderr, "Found an empty revision, skipping '%s'" % revision
-    parent_mark = status.marks[parent]
-    status.marks[revision] = parent_mark
-
-    # There is another mtn revision that is using this mark!
-    if not parent_mark in status.same_revisions:
-        status.same_revisions[parent_mark] = []
-    status.same_revisions[parent_mark].append(revision)
-
 
 def get_branch_name(revision):
     """
@@ -88,7 +75,7 @@ def get_branch_name(revision):
         branch = revision["branch"]
     else:
         #branch = "initial-%s" % revision["revision"]
-        branch = "mtn-unnamed-branch"
+        branch = "mtn-rev-%s" % revision["revision"]
     return branch
 
 def reset_git(ops, revision):
@@ -103,6 +90,15 @@ def reset_git(ops, revision):
     cmd += [""]
     print "\n".join(cmd)
 
+def checkpoint():
+    """
+    Force git to checkpoint the import
+    """
+    cmd = [] 
+    cmd += ["checkpoint"]
+    cmd += [""]
+    print "\n".join(cmd)
+    
 def get_git_date(revision):
     """
     Convert the "date" cert of monotone to a time understandable by git. No timezone
@@ -119,7 +115,6 @@ def is_executable_attribute_set(attributes, rev):
             if attributes[i] == "attr" and attributes[i+1] == "mtn:execute" and attributes[i+2] == "true":
                 return True
     return False
-
 
 def build_tree(manifest, rev):
     """Assemble a filesystem tree from a given manifest"""
@@ -192,9 +187,7 @@ def diff_manifest(old_tree, new_tree):
         if old != new:
             modified.add((file, new_tree.files[file][0]))
             
-
     return (added, modified, deleted)
-
 
 def fast_import(ops, revision):
     """Import a revision into git using git-fast-import.
@@ -207,48 +200,21 @@ def fast_import(ops, revision):
     assert("committer" in revision)
     assert("parent" in revision)
 
-
     branch = get_branch_name(revision)
 
-    # Okay: We sometimes have merged where the old manifest is the new one
-    # I have no idea how this can happen but there are at least two examples in the
-    # net.venge.monotone history.
-    # The problem ist git-fast-import will not let us create the same manifest again.
-    # So if we are in a merge, propagation and the old manifest is the new one we will
-    # do a git-reset.
-    # Examples in the mtn history: 6dc36d2cba722f500c06f33e225367461059d90e, dc661f0c25ee96a5a5cf5b5b60deafdf8ccaf286
-    # and 7b8331681bf77cd8329662dbffed0311765e7547, 13b1a1e617a362c5735002937fead98d788737f7
-    # aa05aa9171bac92766b769bbb703287f53e08693 is a merge of the same manifest...
-    # so we will just go with one of the two revisions..
-    # We will have the same manifest if we propagate something from one branch to another. git does
-    # not have a special revision showing that copy but will only change the head.
-    # We will do the same and reset the branch to this revision.
-    for parent in revision["parent"]:
-        manifest_version = parse_revision(ops, parent)["manifest"]
-        if manifest_version == revision["manifest"]:
-            mark_empty_revision(revision["revision"], parent)
-            reset_git(ops, revision)
-            return
-        
     # Use the manifest to find dirs and files
     current_tree = get_and_cache_tree(ops, revision["revision"])
 
-    all_added = set()
-    all_modifications = set()
-    all_deleted = set()
-
     # Now diff the manifests
-    for parent in revision["parent"]:
-        (added, modified, deleted) = diff_manifest(get_and_cache_tree(ops, parent), current_tree)
-        all_added = all_added.union(added)
-        all_modifications = all_modifications.union(modified)
-        all_deleted = all_deleted.union(deleted) 
-
     if len(revision["parent"]) == 0:
+        merge_from = None
+        merge_other = []
         (added, modified, deleted) = diff_manifest(build_tree([],""), current_tree)
-        all_added = all_added.union(added)
-        all_modifications = all_modifications.union(modified)
-        all_deleted = all_deleted.union(deleted) 
+    else:
+        # The first parent is our from.
+        merge_from = revision["parent"][0]
+        merge_other = revision["parent"][1:]
+        (added, modified, deleted) = diff_manifest(get_and_cache_tree(ops, merge_from), current_tree)
 
     # TODO:
     # Readd the sanity check to see if we deleted and modified an entry. This
@@ -264,27 +230,25 @@ def fast_import(ops, revision):
     cmd += ["data  %d" % len(revision["changelog"])]
     cmd += ["%s" % revision["changelog"]]
 
-    if len(revision["parent"]) != 0:
-        cmd += ["from :%s" % get_mark(revision["parent"][0])]
+    if not merge_from is None:
+        cmd += ["from :%s" % get_mark(merge_from)]
 
-    # The first parent is our from.
-    for parent in revision["parent"][1:]:
+    for parent in merge_other:
         cmd += ["merge :%s" % get_mark(parent)]
 
-
-    for dir_name in all_added:
+    for dir_name in added:
         cmd += ["M 644 inline %s" % os.path.join(dir_name, ".mtn2git_empty")]
         cmd += ["data <<EOF"]
         cmd += ["EOF"]
         cmd += [""]
 
-    for (file_name, file_revision) in all_modifications:
+    for (file_name, file_revision) in modified:
         (mode, file) = get_file_and_mode(ops, current_tree, file_name, file_revision, revision["revision"])
         cmd += ["M %d inline %s" % (mode, file_name)]
         cmd += ["data %d" % len(file)]
         cmd += ["%s" % file]
 
-    for (path, is_dir) in all_deleted:
+    for (path, is_dir) in deleted:
         if is_dir:
             cmd += ["D %s" % os.path.join(path, ".mtn2git_empty")]
         else:
@@ -292,7 +256,6 @@ def fast_import(ops, revision):
 
     cmd += [""]
     print "\n".join(cmd)
-
 
 def is_trusted(operations, revision):
     for cert in operations.certs(revision):
@@ -315,7 +278,6 @@ def get_file_and_mode(operations, file_tree, file_name, _file_revision, rev = No
 
     file = "".join([file for file in operations.get_file(file_revision)])
     return (mode, file)
-
 
 def parse_revision(operations, revision):
     """
@@ -375,7 +337,6 @@ def parse_revision(operations, revision):
 
     return revision_description
                 
-
 def tests(ops, revs):
     """Load a bunch of revisions and exit"""
     for rev in revs:
@@ -434,7 +395,7 @@ def main(mtn_cli, db, rev):
             all_revs += ops.ancestry_difference(head, old_heads)
         status.former_heads[branch] = heads
 
-    
+    counter = 0
     sorted_revs = [rev for rev in ops.toposort(all_revs)]
     for rev in sorted_revs:
         if has_mark(rev):
@@ -442,6 +403,9 @@ def main(mtn_cli, db, rev):
         else:
             print >> sys.stderr, "Going to import revision ", rev
             fast_import(ops, parse_revision(ops, rev))
+            if counter % 1000 == 0:
+                checkpoint()
+            counter += 1
 
 if __name__ == "__main__":
     import optparse
