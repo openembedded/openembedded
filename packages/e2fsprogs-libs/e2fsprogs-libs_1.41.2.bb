@@ -1,6 +1,6 @@
 require e2fsprogs-libs.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/e2fsprogs/e2fsprogs-libs-${PV}.tar.gz \
 	   file://mkinstalldirs.patch;patch=1 \
