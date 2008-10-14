@@ -83,7 +83,7 @@ all_names = {
     "John Bowler"        : (["jbowler@nslu2-linux.org", "kalmiopsis!jbowler"], "jbowler@nslu2-linux.org"),
     "John Lee"           : (["john_lee@openembedded.org", "john_lee@openmoko.com"], "john_lee@openmoko.org"),
     "Jonathan McDowell"  : (["noodles@openembedded.org", "orange!noodles"], "noodles@earth.li"),
-    "Jordan Crouse"      : (["amd.com!jcrouse"], ""),
+    "Jordan Crouse"      : (["amd.com!jcrouse"], "jordan.crouse@amd.com"),
     "Jorik Jonker"       : (["jorik@kippendief.biz"], "jorik@kippendief.biz"),
     "José Bernardo de Bandos Rodrigues da Silva" : (["jbs@bandos.homelinux.com"], "jbs@bandos.homelinux.com"),
     "Joseph Cole"        : (["jnc@openembedded.org"], "jnc@unknown.openembedded.org"),
