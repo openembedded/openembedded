@@ -45,7 +45,7 @@
 +INCLUDES=-I$(QTDIR)/include
 +CXXFLAGS += $(INCLUDES) -DQWS -fno-rtti -fno-exceptions
 +LDFLAGS +=-L $(QTDIR)/lib/
-+LIBS=-lqte -lqpe
++
 + 
  SOURCES = main.cpp corsair.cpp feeds.cpp download.cpp info.cpp
  MOCS = corsair_moc.cpp download_moc.cpp feeds_moc.cpp info_moc.cpp

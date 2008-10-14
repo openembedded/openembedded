@@ -5,6 +5,8 @@ AUTHOR = "Joe Rumsey <joe@rumsey.org>"
 HOMEPAGE = "http://corsair.sf.net/"
 RDEPENDS = "opie-pics"
 
+PR = "r1"
+
 inherit palmtop
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/corsair/corsair-${PV}.tar.gz \
@@ -13,6 +15,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/corsair/corsair-${PV}.tar.gz \
 S = "${WORKDIR}/corsair"
 
 do_configure() {
+}
+
+do_compile() {
+	oe_runmake LIBS="-l${QT_LIBRARY} -lqpe"
 }
 
 do_install() {
