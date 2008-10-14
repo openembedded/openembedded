@@ -111,7 +111,7 @@ all_names = {
     "Matthew Allum"      : (["(none)!mallum"], "mallum@openedhand.com"),
     "Matthias Goebl"     : (["mgoebl@openembedded.org"], "oe@m.goebl.net"),
     "Matthias Hentges"   : (["coredump2@openembedded.org", "coredump@openembedded.org", "local!CoreDump", "handhelds.org!CoreDump", "local!mhentges"], "oe@hentges.net"),
-    "Matt Reimer"        : (["mreimer@openembedded.org"], "mattjreimer@gmail.com"),
+    "Matt Reimer"        : (["mreimer@openembedded.org", "mattjreimer@gmail.com"], "mattjreimer@gmail.com"),
     "Michael Krelin"     : (["polyonymous", "polyonymous@klever.net", "polyonymous@openembedded.org"], "hacker@klever.net"),
     "Michael Lauer"      : (["mickeyl", "mickeyl@openembedded.org", "uni-frankfurt.de!mickeyl", "uni-frankfurt.de!mickey", "uni-frankfurt.de!patch", "vanille.de!mickey", "vanille.de!mickeyl", "de[mickey]!mickey", "de[mickey]!mickeyl"], "mickey@vanille-media.de"),
     "Michael-Luke Jones" : (["blaster8@nslu2-linux.org"], "mlj28@cam.ac.uk"),
@@ -136,7 +136,7 @@ all_names = {
     "Paul Sokolovsky"    : (["pfalcon@openembedded.org", "pmiscml@gmail.com"], "pmiscml@gmail.com"),
     "Peter Urbanec"      : (["peteru@openembedded.org"], "toppy@urbanec.net"),
     "Petr Stetiar"       : (["ynezz@true.cz", "PetrŠtetiar"], "ynezz@true.cz"),
-    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb"], "philb@gnu.org"),
+    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb", "uni-frankfurt.de!pb_"], "philb@gnu.org"),
     "Philip Balister"    : (["crofton@openembedded.org"], "philip@balister.org"),
     "Philippe De Swert"  : (["philippe@openembedded.org"], "philippedeswert@scarlet.be"),
     "Philipp Zabel"      : (["ph5@openembedded.org", "pH5@openembedded.org"], "philipp.zabel@gmail.com"),
@@ -174,7 +174,7 @@ all_names = {
     "Todd Blumer"        : (["todd@openembedded.org", "todd@sdgsystems.com"], "todd@sdgsystems.com"),
     "Tom King"           : (["ka6sox@nslu2-linux.org"], "ka6sox@nslu2-linux.org"),
     "Tom Kirkpatrick"    : (["Tom Kirkpatrck", "stv@kirkconsulting.co.uk", "Tom Kirkpatrick <stv@kirkconsulting.co.uk>"], "stv@kirkconsulting.co.uk"),
-    "Tom Rini"           : (["TomRini", "Tom Rini", "trini@embeddedalley.com"], "trini@embeddedalley.com"),
+    "Tom Rini"           : (["TomRini", "Tom Rini", "trini@embeddedalley.com", "trini@kernel.crashing.org"], "trini@embeddedalley.com"),
     "Tom Walsh"          : (["Tom Walsh <tom@openhardware.net>"], "tom@openhardware.net"),
     "Valentin Longchamp" : (["valentin.longchamp@epfl.ch"], "valentin.longchamp@epfl.ch"),
     "Wolfson Key"        : (["wolfson@openembedded.org"], "linux@wolfsonmicro.com"),
@@ -229,7 +229,7 @@ for name, (ids, email) in all_names.items():
         assert not id in reverse
         reverse[id] = (name, email)
 
-rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.!])* <([a-zA-Z0-9\[\]\(\)\-\.\@!]+)> (.+)\n$")
+rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.\_!])* <([a-zA-Z0-9\[\]\(\)\-\.\_\@!]+)> (.+)\n$")
 
 last = ""
 
