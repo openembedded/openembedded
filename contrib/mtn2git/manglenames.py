@@ -136,7 +136,7 @@ all_names = {
     "Paul Sokolovsky"    : (["pfalcon@openembedded.org", "pmiscml@gmail.com"], "pmiscml@gmail.com"),
     "Peter Urbanec"      : (["peteru@openembedded.org"], "toppy@urbanec.net"),
     "Petr Stetiar"       : (["ynezz@true.cz", "PetrŠtetiar"], "ynezz@true.cz"),
-    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb"], "pb@reciva.com"),
+    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb"], "philb@gnu.org"),
     "Philip Balister"    : (["crofton@openembedded.org"], "philip@balister.org"),
     "Philippe De Swert"  : (["philippe@openembedded.org"], "philippedeswert@scarlet.be"),
     "Philipp Zabel"      : (["ph5@openembedded.org", "pH5@openembedded.org"], "philipp.zabel@gmail.com"),
