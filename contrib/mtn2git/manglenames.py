@@ -51,7 +51,7 @@ all_names = {
     "Eblis"              : (["eblis102@gmail.com"], "eblis102@gmail.com"),
     "Erik Hovland"       : (["erik@openembedded.org", "erik@hovland.org"], "erik@hovland.org"),
     "Esben Haabendal"    : (["eha@doredevelopment.dk"], "eha@doredevelopment.dk"),
-    "Fabrice Aeschbacher": (["Fabrice.Aeschbacher@siemens.com"], "Fabrice.Aeschbacher@siemens.com"),
+    "Fabrice Aeschbacher": (["Fabrice.Aeschbacher@siemens.com"], "fabrice.aeschbacher@siemens.com"),
     "Felix Domke"        : (["tmbinc@openembedded.org"], "tmbinc@elitedvb.ne"),
     "Florian Boor"       : (["florian@openembedded.org"], "florian.boor@kernelconcepts.de"),
     "Frans Meulenbroeks" : (["eFfeM@openembedded.org"], "fransmeulenbroeks@yahoo.com"),
@@ -103,7 +103,7 @@ all_names = {
     "Lorn Potter"        : (["trolltech.com.au!lpotter", "(none)!lpotter"], "lpotter@trolltech.com"), 
     "Lukas Gorris"       : (["Lukas Gorris", "lukas.gorris@gmx.de"], "lukas.gorris@gmx.de"),
     "Manuel Teira"       : (["Manuel Teira <manuel.teira@telefonica.net>", "manuel.teira@telefonica.net", "sirfred@openembedded.org"], "manuel.teira@telefonica.net"),
-    "Marcin Juszkiewicz" : (["Marcin", "Marcin Juszkiewicz <openembedded@hrw.one.pl>", "Marcin Juzkiewicz <hrw@openembedded.org>", "hrw@openedhand.com", "hrw@openembedded.org", "local!szczepan", "hrw.one.pl!szczepan", "hrw.one.pl!hrw", "local!hrw"], "openembedded@hrw.one.pl"),
+    "Marcin Juszkiewicz" : (["Marcin", "Marcin Juszkiewicz <openembedded@hrw.one.pl>", "Marcin Juzkiewicz <hrw@openembedded.org>", "hrw@openedhand.com", "hrw@openembedded.org", "local!szczepan", "hrw.one.pl!szczepan", "hrw.one.pl!hrw", "local!hrw"], "hrw@openembedded.org"),
     "Marek Vasut"        : (["MarekVasut", "marek.vasut@gmail.com", "Marek Vasut <marek.vasut@gmail.com>", "Marek Vašut <marek.vasut@gmail.com>"], "marek.vasut@gmail.com"),
     "Mark Brown"         : (["broonie@sirena.org.uk", "broonie"], "broonie@sirena.org.uk"),
     "Martin Dietze"      : (["MartinDietze@openembedded.org"], "di@fh-wedel.de"),
@@ -111,7 +111,7 @@ all_names = {
     "Matthew Allum"      : (["(none)!mallum"], "mallum@openedhand.com"),
     "Matthias Goebl"     : (["mgoebl@openembedded.org"], "oe@m.goebl.net"),
     "Matthias Hentges"   : (["coredump2@openembedded.org", "coredump@openembedded.org", "local!CoreDump", "handhelds.org!CoreDump", "local!mhentges"], "oe@hentges.net"),
-    "Matt Reimer"        : (["mreimer@openembedded.org"], "mattjreimer@gmail.com"),
+    "Matt Reimer"        : (["mreimer@openembedded.org", "mattjreimer@gmail.com"], "mattjreimer@gmail.com"),
     "Michael Krelin"     : (["polyonymous", "polyonymous@klever.net", "polyonymous@openembedded.org"], "hacker@klever.net"),
     "Michael Lauer"      : (["mickeyl", "mickeyl@openembedded.org", "uni-frankfurt.de!mickeyl", "uni-frankfurt.de!mickey", "uni-frankfurt.de!patch", "vanille.de!mickey", "vanille.de!mickeyl", "de[mickey]!mickey", "de[mickey]!mickeyl"], "mickey@vanille-media.de"),
     "Michael-Luke Jones" : (["blaster8@nslu2-linux.org"], "mlj28@cam.ac.uk"),
@@ -125,7 +125,7 @@ all_names = {
     "Oliver Fels"        : (["oliver.fels@gmx.net", "Oliver Fels <oliver.fels@gmx.net>"], "oliver.fels@gmx.net"),
     "Ondrej Sokol"       : (["Ondrej Sokol <o.sokol@seznam.cz>"], "o.sokol@seznam.cz"),
     "OpenEmbedded Project"     : (["oe@openembedded.org"], "openembedded-devel@lists.openembedded.org"),
-    "OpenMoko anonymizer key"  : (["openmoko@openembedded.org"], "devel@lists.openmoko.org"),
+    "Openmoko anonymizer key"  : (["openmoko@openembedded.org"], "devel@lists.openmoko.org"),
     "Otavio Salvador"    : (["otavio@ossystems.com.br", "Otavio Salvador <otavio@debian.org>", "Otavio Salvador <otavio@ossystems.com.br>"], "otavio@ossystems.com.br"),
     "Ovidiu Sas"         : (["osas@nslu2-linux.org"], "sip.nslu@gmail.com"),
     "Oyvind Repvik"      : (["nail@nslu2-linux.org", "oyvind@repvik.org"], "nail@nslu2-linux.org"),
@@ -136,7 +136,7 @@ all_names = {
     "Paul Sokolovsky"    : (["pfalcon@openembedded.org", "pmiscml@gmail.com"], "pmiscml@gmail.com"),
     "Peter Urbanec"      : (["peteru@openembedded.org"], "toppy@urbanec.net"),
     "Petr Stetiar"       : (["ynezz@true.cz", "PetrŠtetiar"], "ynezz@true.cz"),
-    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb"], "philb@gnu.org"),
+    "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb", "uni-frankfurt.de!pb_"], "philb@gnu.org"),
     "Philip Balister"    : (["crofton@openembedded.org"], "philip@balister.org"),
     "Philippe De Swert"  : (["philippe@openembedded.org"], "philippedeswert@scarlet.be"),
     "Philipp Zabel"      : (["ph5@openembedded.org", "pH5@openembedded.org"], "philipp.zabel@gmail.com"),
@@ -174,7 +174,7 @@ all_names = {
     "Todd Blumer"        : (["todd@openembedded.org", "todd@sdgsystems.com"], "todd@sdgsystems.com"),
     "Tom King"           : (["ka6sox@nslu2-linux.org"], "ka6sox@nslu2-linux.org"),
     "Tom Kirkpatrick"    : (["Tom Kirkpatrck", "stv@kirkconsulting.co.uk", "Tom Kirkpatrick <stv@kirkconsulting.co.uk>"], "stv@kirkconsulting.co.uk"),
-    "Tom Rini"           : (["TomRini", "Tom Rini", "trini@embeddedalley.com"], "trini@embeddedalley.com"),
+    "Tom Rini"           : (["TomRini", "Tom Rini", "trini@embeddedalley.com", "trini@kernel.crashing.org"], "trini@embeddedalley.com"),
     "Tom Walsh"          : (["Tom Walsh <tom@openhardware.net>"], "tom@openhardware.net"),
     "Valentin Longchamp" : (["valentin.longchamp@epfl.ch"], "valentin.longchamp@epfl.ch"),
     "Wolfson Key"        : (["wolfson@openembedded.org"], "linux@wolfsonmicro.com"),
@@ -229,7 +229,7 @@ for name, (ids, email) in all_names.items():
         assert not id in reverse
         reverse[id] = (name, email)
 
-rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.!])* <([a-zA-Z0-9\[\]\(\)\-\.\@!]+)> (.+)\n$")
+rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.\_!])* <([a-zA-Z0-9\[\]\(\)\-\.\_\@!]+)> (.+)\n$")
 
 last = ""
 
