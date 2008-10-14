@@ -20,12 +20,12 @@ all_names = {
     "Antonio ospite"     : (["ospite@studenti.unina.it"], "ospite@studenti.unina.it"),
     "Antti Andreimann"   : (["antti.andreimann@mail.ee", "mailto:antti.andreimann@mail.ee"], "antti.andreimann@mail.ee"),
     "araimondi"          : (["araimondi@gmx.net"], "araimondi@gmx.net"),
-    "Arjan Schrijver"    : (["arjan@openembedded.org"], "arjan@unknown.openembedded.org"),
+    "Arjan Schrijver"    : (["arjan@openembedded.org"], "arjan@anymore.nl"),
     "Bastian Ballmann"   : (["balle@chaostal.de", "Bastian Ballmann <balle@chaostal.de>"], "balle@chaostal.de"),
     "Bernhard Guillon"   : (["Bernhard.Guillon@opensimpad.org", "Bernhard Guillon <Bernhard.Guillon@opensimpad.org>", "Bernhard Guillon <Bernhard.Guillon@opensimpad.org> - close #1874"], "Bernhard.Guillon@opensimpad.org"),
     "Bernhard Rosenkraenzer" : (["bero@arklinux.org"], "bero@arklinux.org"),
     "Bignaux Ronan"      : (["ronan@aimao.org"], "ronan@aimao.org"),
-    "Bruno Randolf"      : (["br1@openembedded.org", "(none)!br1"], "br1@unknown.openembedded.org"),
+    "Bruno Randolf"      : (["br1@openembedded.org", "(none)!br1"], "br1@subnet.at"),
     "Carsten Schneider"  : (["Carsten Schneider <zcarsten@gmx.net>"], "zcarsten@gmx.net"),
     "ccsmart"            : (["ccsmart@openembedded.org", "ccsmart@smartpal.de"], "ccsmart@smartpal.de"),
     "Cesar Eduardo Barros"     : (["cesarb@cesarb.net"], "cesarb@cesarb.net"),
@@ -43,7 +43,7 @@ all_names = {
     "David Karlstrom"    : (["daka@nslu2-linux.org", "daka@thg.se"], "daka@thg.se"),
     "Denys Dmytriyenko"  : (["denis@denix.org"], "denis@denix.org"),
     "Derek Young"        : (["dyoung@nslu2-linux.org", "(none)!dereky", "(none)!dyoung"], "dyoung@nslu2-linux.org"),
-    "Dirk Opfer"         : (["dirk@openembedded.org", "opfer.lan!dirk"], "dirk@unknown.openembedded.org"),
+    "Dirk Opfer"         : (["dirk@openembedded.org", "opfer.lan!dirk"], "dirk@opfer-online.de"),
     "Dmitry Artamonow"   : (["DmitryArtamonow", "mad_soft@inbox.ru"], "mad_soft@inbox.ru"),
     "Dmitry Baryshkov"   : (["Dmitry Baryshkov <dbaryshkov@gmail.com>", "dbaryshkov@gmail.com"], "dbaryshkov@gmail.com"),
     "Dojii Seketeli"     : (["dodji@openedhand.com"], "dodji@openedhand.com"),
@@ -52,7 +52,7 @@ all_names = {
     "Erik Hovland"       : (["erik@openembedded.org", "erik@hovland.org"], "erik@hovland.org"),
     "Esben Haabendal"    : (["eha@doredevelopment.dk"], "eha@doredevelopment.dk"),
     "Fabrice Aeschbacher": (["Fabrice.Aeschbacher@siemens.com"], "Fabrice.Aeschbacher@siemens.com"),
-    "Felix Domke"        : (["tmbinc@openembedded.org"], "tmbinc@unknown.openembedded.org"),
+    "Felix Domke"        : (["tmbinc@openembedded.org"], "tmbinc@elitedvb.ne"),
     "Florian Boor"       : (["florian@openembedded.org"], "florian.boor@kernelconcepts.de"),
     "Frans Meulenbroeks" : (["eFfeM@openembedded.org"], "effem@unknown.openembedded.org"),
     "Frederic Bompart"   : (["frederic@openembedded.org"], "frederic@unknown.openembedded.org"),
@@ -87,31 +87,30 @@ all_names = {
     "Jorik Jonker"       : (["jorik@kippendief.biz"], "jorik@kippendief.biz"),
     "José Bernardo de Bandos Rodrigues da Silva" : (["jbs@bandos.homelinux.com"], "jbs@bandos.homelinux.com"),
     "Joseph Cole"        : (["jnc@openembedded.org"], "jnc@unknown.openembedded.org"),
-    "Joshua Wise"        : (["joshuawise.com!joshua"], ""),
+    "Joshua Wise"        : (["joshuawise.com!joshua"], "joshua@joshuawise.com"),
     "jp30"               : (["jp30@nslu2-linux.org"], "jp30@nslu2-linux.org"),
     "Junqian Gordon Xu"  : (["xjqian@gmail.com", "xjqian@openembedded.org"], "xjqian@gmail.com"),
-    "Justin Patrin"      : (["justinp@openembedded.org"], "justinp@unknown.openembedded.org"),
+    "Justin Patrin"      : (["justinp@openembedded.org"], "papercrane@gmail.com"),
     "Kalev Lember"       : (["kalev@smartlink.ee"], "kalev@smartlink.ee"),
     "Karol Sokolowski"   : (["Karol Sokolowski <sokoowpwr@o2.pl>"], "sokoowpwr@o2.pl"),
     "Khem Raj"           : (["khem@openembedded.org", "KhemRaj", "raj.khem@gmail.com"], "raj.khem@gmail.com"),
     "Koen Kooi"          : (["koen@openembedded.org", "(none)!koen", "utwente.nl!koen", "void!koen"], "koen@openembedded.org"),
     "kolla"              : (["kolla@uninett.no"], "kolla@uninett.no"),
-    "Kristoffer Ericson" : (["kristoffer@openembedded.org"], "kristoffer@unknown.openembedded.org"),
+    "Kristoffer Ericson" : (["kristoffer@openembedded.org"], "kristoffer_e1@hotmail.com"),
     "Leon Woestenberg"   : (["likewise@gmx.net", "likewise@openembedded.org"], "leon.woestenberg@gmail.com"),
-    "Leon Zhang"         : (["Leon Zhang"], "leon.zhang@unknown.openembedded.org"),
+    "Leon Zhang"         : (["Leon Zhang"], "leoncamel@gmail.com"),
     "Liam Girdwood"      : (["lrg@openembedded.org"], "liam.girdwood@wolfsonmicro.com"),
-    "Lorn Potter"        : (["trolltech.com.au!lpotter", "(none)!lpotter"], ""), 
+    "Lorn Potter"        : (["trolltech.com.au!lpotter", "(none)!lpotter"], "lpotter@trolltech.com"), 
     "Lukas Gorris"       : (["Lukas Gorris", "lukas.gorris@gmx.de"], "lukas.gorris@gmx.de"),
     "Manuel Teira"       : (["Manuel Teira <manuel.teira@telefonica.net>", "manuel.teira@telefonica.net", "sirfred@openembedded.org"], "manuel.teira@telefonica.net"),
     "Marcin Juszkiewicz" : (["Marcin", "Marcin Juszkiewicz <openembedded@hrw.one.pl>", "Marcin Juzkiewicz <hrw@openembedded.org>", "hrw@openedhand.com", "hrw@openembedded.org", "local!szczepan", "hrw.one.pl!szczepan", "hrw.one.pl!hrw", "local!hrw"], "openembedded@hrw.one.pl"),
     "Marek Vasut"        : (["MarekVasut", "marek.vasut@gmail.com", "Marek Vasut <marek.vasut@gmail.com>", "Marek Vašut <marek.vasut@gmail.com>"], "marek.vasut@gmail.com"),
     "Mark Brown"         : (["broonie@sirena.org.uk", "broonie"], "broonie@sirena.org.uk"),
-    "Martin Dietze"      : (["MartinDietze@openembedded.org"], "martin.dietze@unknown.openembedded.org"),
-    "mas"                : (["mas@ecs.soton.ac.uk"], "mas@ecs.soton.ac.uk"),
-    "mattaw"             : (["mattaw"], "mattaw@unknown.openembedded.org"),
+    "Martin Dietze"      : (["MartinDietze@openembedded.org"], "di@fh-wedel.de"),
+    "Matthew Swabey"     : (["mas@ecs.soton.ac.uk", "mattaw"], "mas@ecs.soton.ac.uk"),
     "Matthew Allum"      : (["(none)!mallum"], "mallum@openedhand.com"),
     "Matthias Goebl"     : (["mgoebl@openembedded.org"], "mgoebl@unknown.openembedded.org"),
-    "Matthias Hentges"   : (["coredump2@openembedded.org", "coredump@openembedded.org", "local!CoreDump", "handhelds.org!CoreDump", "local!mhentges"], "coredump@unknown.openembedded.org"),
+    "Matthias Hentges"   : (["coredump2@openembedded.org", "coredump@openembedded.org", "local!CoreDump", "handhelds.org!CoreDump", "local!mhentges"], "oe@hentges.net"),
     "Matt Reimer"        : (["mreimer@openembedded.org"], "mreimer@unknown.openembedded.org"),
     "Michael Krelin"     : (["polyonymous", "polyonymous@klever.net", "polyonymous@openembedded.org"], "hacker@klever.net"),
     "Michael Lauer"      : (["mickeyl", "mickeyl@openembedded.org", "uni-frankfurt.de!mickeyl", "uni-frankfurt.de!mickey", "uni-frankfurt.de!patch", "vanille.de!mickey", "vanille.de!mickeyl", "de[mickey]!mickey", "de[mickey]!mickeyl"], "mickey@vanille-media.de"),
@@ -245,14 +244,14 @@ for line in sys.stdin:
         replacement = reverse[g[2]]
     except:
         replacement = None
-        sys.stderr.write("id unkown %s\n" % repr(g[2]))
+        sys.stderr.write("id unknown %s\n" % repr(g[2]))
     if replacement is None:
         if '!' in g[2]:
             replacement = (g[2], g[2] + "@bk.openembedded.invalid")
         elif '@' in g[2]:
             replacement = (g[2], g[2])
         else:
-            raise "id unkown %s" % repr(replacement)
+            raise "id unknown %s" % repr(replacement)
     line = m.expand(r"\1 %s <%s> \4\n" % replacement )
     sys.stdout.write(line)
 
