@@ -1,4 +1,4 @@
-DESCRIPTION ? = "Browser made by mozilla"
+DESCRIPTION ?= "Browser made by mozilla"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
 PARALLEL_MAKE = ""
