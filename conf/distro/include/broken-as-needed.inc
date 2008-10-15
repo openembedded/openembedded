@@ -1,0 +1,10 @@
+# Packages that break when trying to link with --as-needed
+TARGET_ASNEEDED_pn-console-tools = ""
+TARGET_ASNEEDED_pn-dialer = ""
+TARGET_ASNEEDED_pn-distcc = ""
+TARGET_ASNEEDED_pn-icu = ""
+TARGET_ASNEEDED_pn-minimo = ""
+TARGET_ASNEEDED_pn-openobex = ""
+TARGET_ASNEEDED_pn-pciutils = ""
+TARGET_ASNEEDED_pn-puzzles = ""
+TARGET_ASNEEDED_pn-xserver-kdrive-xomap = ""

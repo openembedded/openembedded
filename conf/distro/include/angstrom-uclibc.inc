@@ -32,6 +32,9 @@ BUILD_OPTIMIZATION = "-Os"
 #Note that this testing was done without the gcc-pr32889.patch.
 FULL_OPTIMIZATION_avr32 = "-Os -fomit-frame-pointer"
 
+TARGET_ASNEEDED = "-Wl,--as-needed"
+
+DISTRO_PR = ".1"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"
 

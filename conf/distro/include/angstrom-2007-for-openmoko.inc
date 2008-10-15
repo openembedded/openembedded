@@ -11,6 +11,7 @@ DISTRO_REVISION = "51"
 
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc
+require conf/distro/include/broken-as-needed.inc
 
 #Images built can have to modes:
 # 'debug': empty rootpassword, strace included

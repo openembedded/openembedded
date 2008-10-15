@@ -34,7 +34,9 @@ BUILD_OPTIMIZATION_pn-glibc = "-O2"
 BUILD_OPTIMIZATION_sparc = "-O2"
 
 TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
-DISTRO_PR = ".1"
+TARGET_ASNEEDED = "-Wl,--as-needed"
+
+DISTRO_PR = ".2"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
