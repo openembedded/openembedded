@@ -1,3 +1,3 @@
 require gpsd.inc
 
-PR = "r9"
+FILE_PR = "r9"

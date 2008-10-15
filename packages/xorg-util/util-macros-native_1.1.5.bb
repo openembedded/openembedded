@@ -2,7 +2,7 @@ require util-macros_${PV}.bb
 
 inherit native
 
-PR = "r1"
+FILE_PR = "r1"
 
 XORG_PN = "util-macros"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for Opie TTF support"
 SECTION = "opie/fonts"
 DEPENDS = "freetype"
-PR = "r5"
+FILE_PR = "r5"
 
 SRC_URI = "file://update-qtttffontdir.c \
            file://02qtttffont-update"

@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 # fakeroot needs getopt which is provided by the util-linux package
 RDEPENDS = "util-linux"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fakeroot/fakeroot_${PV}.tar.gz \
            file://configure-libtool.patch;patch=1"

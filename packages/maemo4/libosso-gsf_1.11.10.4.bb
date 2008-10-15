@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "glib-2.0 zlib"
 

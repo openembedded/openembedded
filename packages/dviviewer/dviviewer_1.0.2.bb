@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www013.upp.so-net.ne.jp/hn43o/dviviewer/"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://www013.upp.so-net.ne.jp/hn43o/dviviewer/dviviewer-${PV}.tar.gz"
 S = "${WORKDIR}/dviviewer"

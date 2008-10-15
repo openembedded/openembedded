@@ -6,7 +6,7 @@ SRCREV ?= "12186"
 
 PE = "1"
 PV = "0.4.9+svnr${SRCREV}" 
-PR = "r0"
+FILE_PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

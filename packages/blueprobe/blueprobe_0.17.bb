@@ -1,6 +1,6 @@
 require blueprobe.inc
 
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI += "file://hx4700.patch;patch=1 \
 	    file://h2200-fixup.patch;patch=1 \

@@ -2,7 +2,7 @@ require popt.inc
 
 DEPENDS = "gettext virtual/libintl"
 
-PR = "r5"
+FILE_PR = "r5"
 
 inherit autotools
 

@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "zlib jpeg"
-PR = "r1"
+FILE_PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

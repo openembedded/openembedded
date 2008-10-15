@@ -1,5 +1,5 @@
 DESCRIPTION = "Set framebuffer mode during boot"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "file://fbset.sh file://default-fbset"
 

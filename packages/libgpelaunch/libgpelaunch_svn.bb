@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ startup-notification"
 PV = "0.14+svn${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit autotools pkgconfig
 

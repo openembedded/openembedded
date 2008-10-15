@@ -1,6 +1,6 @@
 inherit qt4x11 cmake
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS += "clucene-core pidgin expat gamin"
 

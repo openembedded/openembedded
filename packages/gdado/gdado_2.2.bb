@@ -3,7 +3,7 @@ HOMEPAGE = "http://gdado.sf.net"
 SECTION = "x11/games"
 LICENSE = "GPLv2"
 DEPENDS = "libgnomeui gtk+"
-PR = "r1"
+FILE_PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/gdado/gdado-${PV}.tar.gz"
 
 inherit autotools

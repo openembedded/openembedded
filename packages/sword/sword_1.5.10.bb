@@ -6,7 +6,7 @@ SECTION = "libs"
 HOMEPAGE = "http://www.e-sword.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz"
 

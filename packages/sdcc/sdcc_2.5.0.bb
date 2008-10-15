@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "devel"
 HOMEPAGE = "http://sdcc.sourceforge.net"
 DEPENDS = "sdcc-native"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sdcc/sdcc-${PV}.tar.gz \
            file://gcc4.patch;patch=1 \

@@ -1,6 +1,6 @@
 DESCRIPTION = "Minimal statically compiled Hello world!"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 S = "${WORKDIR}/${P}"
 

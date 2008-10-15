@@ -1,6 +1,6 @@
 require libpng.inc
 
-PR = "r6"
+FILE_PR = "r6"
 
 SRC_URI += "file://makefile_fix.patch;patch=1"
 

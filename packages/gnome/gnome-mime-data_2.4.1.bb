@@ -2,4 +2,4 @@ LICENSE = "GPL"
 inherit gnome
 
 DEPENDS += "intltool-native"
-PR = "r1"
+FILE_PR = "r1"

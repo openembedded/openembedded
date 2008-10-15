@@ -1,7 +1,7 @@
 DESCRIPTION = "RPC program number mapper."
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 COMPATIBLE_MACHINE = "nslu2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/p/portmap/portmap_5.orig.tar.gz \

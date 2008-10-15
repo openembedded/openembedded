@@ -4,7 +4,7 @@ scan detection."
 LICENSE = "GPL"
 SECTION = "libs"
 DEPENDS = "libnet-1.0 libpcap"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libnids/libnids-${PV}.tar.gz \

@@ -1,5 +1,5 @@
 DESCRIPTION = "Connectivity task packages for GPE Palmtop Environment"
-PR = "r6"
+FILE_PR = "r6"
 LICENSE = "MIT"
 
 inherit task

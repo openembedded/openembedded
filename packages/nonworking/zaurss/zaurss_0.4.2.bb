@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.daionet.gr.jp/~knok/software/zaurss/"
 APPNAME = "zaurss"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.daionet.gr.jp/~knok/software/zaurss/zaurss-${PV}.tar.gz"
 

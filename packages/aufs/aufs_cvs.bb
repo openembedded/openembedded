@@ -2,7 +2,7 @@ DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
 PV = "cvs${SRCDATE}"
-PR = "r1"
+FILE_PR = "r1"
 
 RSUGGESTS_${PN} = "${PN}-tools"
 

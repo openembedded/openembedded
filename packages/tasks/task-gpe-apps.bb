@@ -1,5 +1,5 @@
 DESCRIPTION = "Application task package for GPE Palmtop Environment"
-PR = "r6"
+FILE_PR = "r6"
 LICENSE = "MIT"
 
 inherit task

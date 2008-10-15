@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${GPE_MIRROR}/libmimedir-snapshot-20040307.tar.gz"
 S = "${WORKDIR}/libmimedir"

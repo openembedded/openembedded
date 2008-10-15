@@ -1,5 +1,5 @@
 SECTION = "base"
-PR = "r2"
+FILE_PR = "r2"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"

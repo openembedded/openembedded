@@ -5,7 +5,7 @@ LICENSE = "GPL"
 APPNAME = "opieplayer2"
 RPROVIDES = "opie-mediaplayer2-skin"
 PV = "${OPIE_CVS_PV}"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/pics"
 

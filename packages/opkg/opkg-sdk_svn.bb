@@ -1,7 +1,7 @@
 require opkg.inc
 
 DEPENDS = "curl-sdk"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit sdk
 

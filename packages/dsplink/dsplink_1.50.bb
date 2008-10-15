@@ -1,6 +1,6 @@
 require dsplink.inc
 
-PR = "r10"
+FILE_PR = "r10"
 PE = "1"
 PV = "1.50"
 

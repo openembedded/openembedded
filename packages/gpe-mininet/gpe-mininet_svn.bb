@@ -3,7 +3,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget gpe-icons gpe-conf"
 RRECOMMENDS = "gpe-conf"
-PR = "r0"
+FILE_PR = "r0"
 PV = "0.7+svn-${SRCDATE}"
 
 inherit autotools pkgconfig

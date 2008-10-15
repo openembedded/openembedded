@@ -1,7 +1,7 @@
 DESCRIPTION = "Firmware for Spectrum Wireless LAN cards"
 DEPENDS += " unzip-native "
 LICENSE = "unknown"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "file://get_symbol_fw \
            file://parse_symbol_fw"

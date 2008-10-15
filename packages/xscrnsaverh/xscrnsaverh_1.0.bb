@@ -1,5 +1,5 @@
 
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "libxext"
 SECTION = "x11"

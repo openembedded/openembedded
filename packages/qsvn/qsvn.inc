@@ -5,7 +5,7 @@ AUTHOR = "Andreas Richter, Rajko Albrecht"
 LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "apr-util subversion"
-PR = "r0"
+FILE_PR = "r0"
 
 def vars_from_file(filename):
     import os

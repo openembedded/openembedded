@@ -2,7 +2,7 @@ require kanjipad.inc
 
 DEPENDS += "perl-native"
 PV = "2.0.0+svn${SRCDATE}"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "svn://svn.gnome.org/svn/${PN}/;module=trunk"
 S = "${WORKDIR}/trunk"

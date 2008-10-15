@@ -2,7 +2,7 @@ DESCRIPTION = "GPE terminal wrapper"
 SECTION = "gpe"
 LICENSE = "GPL"
 RRECOMMENDS = "rxvt-unicode"
-PR = "r1"
+FILE_PR = "r1"
 PV = "1.1+svn-${SRCDATE}" 
 
 DEFAULT_PREFERENCE = "-1"

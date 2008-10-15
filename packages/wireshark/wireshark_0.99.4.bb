@@ -4,7 +4,7 @@ SECTION = "x11/network"
 LICENSE = "GPL"
 DEPENDS = "perl-native gtk+ gnutls libpcap pcre expat"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
            file://use-our-lemon.patch;patch=1 \

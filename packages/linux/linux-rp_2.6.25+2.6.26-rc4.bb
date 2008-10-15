@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r5"
+FILE_PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "1"

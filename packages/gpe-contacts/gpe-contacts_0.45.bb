@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 inherit gpe autotools
 
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus-glib"
 SECTION = "gpe"

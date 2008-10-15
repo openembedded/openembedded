@@ -1,6 +1,6 @@
 DESCRIPTION = "Dummy package to get uboot env image into deploy"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit kernel-arch
 

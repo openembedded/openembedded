@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"

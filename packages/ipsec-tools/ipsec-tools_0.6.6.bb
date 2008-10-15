@@ -1,3 +1,3 @@
-PR = "r1"
+FILE_PR = "r1"
 
 require ipsec-tools.inc

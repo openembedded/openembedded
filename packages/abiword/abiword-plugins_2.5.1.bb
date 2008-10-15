@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

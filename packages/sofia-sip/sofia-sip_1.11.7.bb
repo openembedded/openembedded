@@ -1,3 +1,3 @@
 require sofia-sip.inc
 
-PR = "r2"
+FILE_PR = "r2"

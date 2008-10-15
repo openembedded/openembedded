@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "framebuffer screenshot program"
 LICENSE = "GPL"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = " zlib libpng "
 

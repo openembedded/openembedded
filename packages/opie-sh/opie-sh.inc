@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "opie-sh"
 APPTYPE = "binary"
-PR = "r3"
+FILE_PR = "r3"
 
 S = "${WORKDIR}/${APPNAME}"
 

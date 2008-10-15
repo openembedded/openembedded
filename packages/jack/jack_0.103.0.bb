@@ -5,7 +5,7 @@ themselves."
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL"
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "alsa-lib"
 

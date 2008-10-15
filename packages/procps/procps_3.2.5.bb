@@ -1,6 +1,6 @@
 require procps.inc
 
-PR = "r5"
+FILE_PR = "r5"
 
 SRC_URI += "file://procmodule.patch;patch=1 \
             file://psmodule.patch;patch=1"

@@ -4,7 +4,7 @@ portable framework for low-level network packet shaping, \
 handling, and injection."
 SECTION = "libs/network"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.0"

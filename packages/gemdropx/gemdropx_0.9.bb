@@ -2,7 +2,7 @@ DESCRIPTION = "Classic arcade puzzle game - SDL edition."
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.newbreedsoftware.com/gemdropx/"
-PR = "r4"
+FILE_PR = "r4"
 
 APPIMAGE = "${WORKDIR}/gemdropx.png"
 

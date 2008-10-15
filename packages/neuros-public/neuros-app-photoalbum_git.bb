@@ -2,7 +2,7 @@ DESCRIPTION = "Neuros photoalbum app"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "qt-embedded"
 

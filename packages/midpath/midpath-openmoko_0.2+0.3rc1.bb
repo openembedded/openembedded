@@ -1,6 +1,6 @@
 require midpath.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 # The patch fixes the system_properties file only deployed in this recipe.
 SRC_URI = "\
@@ -10,7 +10,7 @@ SRC_URI = "\
 
 S = "${WORKDIR}/midpath-0.3rc1"
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI += "file://configuration_openmoko.cfg"
 

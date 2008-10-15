@@ -5,7 +5,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "ncurses"
 
-PR = "r3"
+FILE_PR = "r3"
 PARALLEL_MAKE = ""
 
 SRC_URI = "ftp://arcana.linux.it/pub/gpm/gpm-${PV}.tar.bz2 \

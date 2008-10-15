@@ -2,7 +2,7 @@ DESCRIPTION = "Plugin system for GPE applications"
 AUTHOR = "Luce DeCicco <ldecicco@gmail.com>"
 DEPENDS = "gtk+ libgpewidget"
 PV = "0.0+svn${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit autotools pkgconfig
 

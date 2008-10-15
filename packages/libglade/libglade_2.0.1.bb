@@ -1,6 +1,6 @@
 require libglade.inc
 
-PR = "r1"
+FILE_PR = "r1"
 DEPENDS += "libxml2"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglade/2.0/libglade-${PV}.tar.bz2 \

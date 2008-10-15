@@ -1,3 +1,3 @@
 require portmap.inc
 
-PR = "r5"
+FILE_PR = "r5"

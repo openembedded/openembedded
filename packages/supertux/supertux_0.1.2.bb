@@ -3,7 +3,7 @@ in a style similar to the original SuperMario games."
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r4"
+FILE_PR = "r4"
 
 APPIMAGE = "${WORKDIR}/supertux.png"
 APPDESKTOP = "${WORKDIR}/supertux.desktop"

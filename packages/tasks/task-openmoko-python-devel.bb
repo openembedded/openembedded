@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Python Development Tools"
 SECTION = "openmoko/devel"
 LICENSE = "MIT"
-PR = "r3"
+FILE_PR = "r3"
 
 inherit task
 

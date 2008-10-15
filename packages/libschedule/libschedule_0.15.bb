@@ -1,5 +1,5 @@
 LICENSE = "LGPL"
-PR = "r3"
+FILE_PR = "r3"
 DESCRIPTION = "RTC alarm handling library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"

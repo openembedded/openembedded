@@ -3,7 +3,7 @@ SECTION = "openmoko/base"
 RREPLACES = "openmoko-sound-theme-standard"
 RPROVIDES = "openmoko-sound-theme-standard"
 PV = "0.1+svnr${SRCREV}"
-PR = "r3"
+FILE_PR = "r3"
 
 inherit openmoko2 autotools
 

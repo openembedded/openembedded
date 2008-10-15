@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.insecure.org/nmap/"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "libpcap libpcre"
-PR = "r2"
+FILE_PR = "r2"
 
 inherit autotools
 

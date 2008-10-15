@@ -5,7 +5,7 @@ AUTHOR = "Space Telescope Science Institute"
 RDEPENDS = "python-numarray"
 SECTION = "devel/python"
 LICENSE = "AURA"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://www.stsci.edu/resources/software_hardware/pyfits/pyfits-${PV}.tar.gz"
 S = "${WORKDIR}/pyfits"

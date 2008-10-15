@@ -4,7 +4,7 @@ DEPENDS = "fuse"
 
 PV = "0.0+cvs${SRCDATE}"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "cvs://anonymous@fuse.cvs.sourceforge.net/cvsroot/fuse;module=python"
 

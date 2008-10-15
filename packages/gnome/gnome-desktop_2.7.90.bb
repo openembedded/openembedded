@@ -1,6 +1,6 @@
 require gnome-desktop.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 inherit gnome
 

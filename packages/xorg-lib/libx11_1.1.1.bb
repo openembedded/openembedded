@@ -1,6 +1,6 @@
 require xorg-lib-common.inc
 PE = "1"
-PR = "r5"
+FILE_PR = "r5"
 
 DESCRIPTION = "Base X libs."
 DEPENDS += " bigreqsproto xproto xextproto xtrans libxau xcmiscproto \

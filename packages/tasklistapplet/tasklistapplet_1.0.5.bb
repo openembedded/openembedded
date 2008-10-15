@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/tasklist-105.tar.gz"
 

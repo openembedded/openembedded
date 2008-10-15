@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.etpan.org"
 SECTION = "libs"
 DEPENDS = "gnutls"
 LICENSE = "BSD"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
            file://honor-oe-lflags.patch;patch=1"

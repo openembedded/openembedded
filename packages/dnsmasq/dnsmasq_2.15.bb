@@ -1,3 +1,3 @@
-PR = "r2"
+FILE_PR = "r2"
 
 require dnsmasq.inc

@@ -2,7 +2,7 @@ DESCRIPTION = "mISDN kernel packages"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

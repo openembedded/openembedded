@@ -3,7 +3,7 @@ SECTION = "openmoko/daemons"
 DEPENDS = "gtk+ pulseaudio apmd"
 RDEPENDS = "gpe-scap xrandr alsa-utils-amixer apm dbus"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r6"
+FILE_PR = "r6"
 
 inherit openmoko2 gconf
 

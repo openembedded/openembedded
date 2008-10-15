@@ -1,6 +1,6 @@
 require ../binutils/binutils.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = \
     "${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \

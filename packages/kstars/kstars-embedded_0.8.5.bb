@@ -5,7 +5,7 @@ LICENSE = "GPL"
 APPNAME = "kstars"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/apps/Applications"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://kstars.sourceforge.net/kstars-embedded-${PV}.tar.gz"
 S = "${WORKDIR}/kstars"

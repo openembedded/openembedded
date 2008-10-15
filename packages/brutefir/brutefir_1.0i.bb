@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "alsa-lib fftw fftwf fftwl"
 
-PR = "r1"
+FILE_PR = "r1"
 
 # The unbreak-makefile disables the SSE2, MMX and jack support, feel free 
 # to add back SSE and MMX after fixing the makefile to not use uname to check for cpu 

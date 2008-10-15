@@ -6,7 +6,7 @@ SECTION = "console/network"
 
 LICENSE = "GPL"
 
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/${PN}/${PN}_${PV}.orig.tar.gz \
 	   file://CVE-2007-4565.patch;patch=1 \

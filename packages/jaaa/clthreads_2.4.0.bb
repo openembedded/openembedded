@@ -2,7 +2,7 @@ DESCRIPTION = "clthreads library from http://www.kokkinizita.net/linuxaudio/"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = ""
 

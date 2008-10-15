@@ -3,7 +3,7 @@ require orinoco-modules.inc
 DEPENDS = "orinoco-conf spectrum-fw"
 RDEPENDS += "orinoco-conf"
 RDEPENDS_orinoco-modules-cs += "orinoco-modules spectrum-fw"
-PR = "r10"
+FILE_PR = "r10"
 
 SRC_URI += "\
            file://makefile_fix.patch;patch=1 \

@@ -3,7 +3,7 @@ SECTION = "console"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.vanheusden.com/setpwc/"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://www.vanheusden.com/setpwc/setpwc-${PV}.tgz \
 	   file://Makefile.patch;patch=1"

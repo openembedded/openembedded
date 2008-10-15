@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+FILE_PR = "r1"
 DESCRIPTION = "A powerful object-oriented display"
 inherit gnome
 

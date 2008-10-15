@@ -4,7 +4,7 @@ AUTHOR = "Paul V. Borza"
 LICENSE = "GPL"
 DEPENDS = "libnotify"
 PV = "0.2+svn${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "svn://accelges.googlecode.com/svn/;module=trunk;proto=http"
 S = "${WORKDIR}/trunk"

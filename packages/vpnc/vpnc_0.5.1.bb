@@ -1,6 +1,6 @@
 require vpnc.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.unix-ag.uni-kl.de/~massar/vpnc/vpnc-${PV}.tar.gz \
            file://makeman.patch;patch=1 \

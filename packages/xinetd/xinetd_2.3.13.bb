@@ -1,6 +1,6 @@
 DEPENDS = ""
 DESCRIPTION = "Highly configurable, modular and secure inetd"
-PR="r4"
+FILE_PR ="r4"
 
 SRC_URI = "http://www.xinetd.org/xinetd-${PV}.tar.gz \
 	  file://xinetd.init \

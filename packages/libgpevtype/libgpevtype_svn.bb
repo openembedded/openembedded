@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libmimedir libeventdb libtododb"
 PV = "0.50+svn${SRCDATE}"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit pkgconfig gpe autotools
 

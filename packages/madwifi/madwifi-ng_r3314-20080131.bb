@@ -11,4 +11,4 @@ SRC_URI += " \
 	"
 
 # PR set after the include, to override what's set in the included file.
-PR = "r6"
+FILE_PR = "r6"

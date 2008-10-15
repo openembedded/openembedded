@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "libxtst"
 SECTION = "x11/wm"
 PV = "0.2+svnr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
 	   file://configure-fix.patch;patch=1"

@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
 PV = "0.3+svn${SRCDATE}"
-PR = "r5"
+FILE_PR = "r5"
 
 inherit autotools
 

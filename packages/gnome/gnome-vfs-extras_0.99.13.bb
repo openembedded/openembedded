@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

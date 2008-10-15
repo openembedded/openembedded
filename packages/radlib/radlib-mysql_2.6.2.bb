@@ -1,3 +1,3 @@
 require radlib-common.inc
 require radlib-mysql.inc
-PR = "r1"
+FILE_PR = "r1"

@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://xptcstubs.patch;patch=1 \

@@ -1,4 +1,4 @@
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://clay.ll.pl/download/${PN}-${PV}.tar.gz file://${PN}.desktop"
 

@@ -3,7 +3,7 @@ DEPENDS += "cairo alsa-lib "
 
 PV = "0.8+0.9pre"
 MOZPV = "0.9pre"
-PR = "r10"
+FILE_PR = "r10"
 PE = "1"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=3a9a64e5bedc \

@@ -1,4 +1,4 @@
-PR = "r1"
+FILE_PR = "r1"
 LICENSE= "MIT"
 DESCRIPTION = "X Server Nokia 770 extensions library"
 SECTION = "x11/libs"

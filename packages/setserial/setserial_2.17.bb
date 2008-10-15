@@ -4,7 +4,7 @@ HOMEPAGE = "http://setserial.sourceforge.net"
 AUTHOR = "Theodore Ts'o >tytso@mit.edu>"
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR = "r3"
+FILE_PR = "r3"
 
 inherit autotools
 

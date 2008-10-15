@@ -5,7 +5,7 @@ HOMEPAGE = "http://pyvisa.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "BSD"
 SRCNAME = "PyVISA"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyvisa/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

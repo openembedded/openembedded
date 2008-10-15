@@ -5,7 +5,7 @@
 # X demo
 # xorg.conf
 
-PR = "r3"
+FILE_PR = "r3"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 

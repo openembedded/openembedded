@@ -2,7 +2,7 @@ DESCRIPTION = "clalsadrv library from http://www.kokkinizita.net/linuxaudio/"
 SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "alsa-lib"
 

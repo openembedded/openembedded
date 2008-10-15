@@ -1,4 +1,4 @@
-PR = "r0"
+FILE_PR = "r0"
 
 require diversity-maps.inc
 

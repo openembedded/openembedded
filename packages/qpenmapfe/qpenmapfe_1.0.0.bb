@@ -6,7 +6,7 @@ AUTHOR = "Dennis Webb"
 APPNAME = "qpenmapfe"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://home.midsouth.rr.com/zaurus/qpenmapfe_${PV}_src.tar.gz \
            file://qpenmapfe.desktop \

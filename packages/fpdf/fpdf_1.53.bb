@@ -3,7 +3,7 @@ SECTION = "libs"
 DEPENDS = ""
 RDEPENDS = "php"
 LICENSE = "FREEWARE"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.fpdf.org/en/download/fpdf153.tgz \
 	   "

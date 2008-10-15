@@ -1,2 +1,2 @@
 require libsexy.inc
-PR = "r1"
+FILE_PR = "r1"

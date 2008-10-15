@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "BSD-X"
 DEPENDS = "virtual/libx11"
 PV = "0.11+svn${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit gpe
 

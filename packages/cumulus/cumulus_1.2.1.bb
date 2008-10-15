@@ -5,7 +5,7 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_downloads/${PV}/cumulus-${PV}.src.tar.bz2"
 S = "${WORKDIR}/cumulus_${PV}/cumulus"

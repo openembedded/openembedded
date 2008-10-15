@@ -2,7 +2,7 @@ DESCRIPTION = "A C64 emulator based on SDL."
 SECTION = "opie/applications"
 DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://frodo.cebix.net/downloads/FrodoV4_1b.Src.tar.gz \
            file://frodo-qte.diff;patch=1 \

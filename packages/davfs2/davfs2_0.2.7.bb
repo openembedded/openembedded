@@ -6,7 +6,7 @@ DEPENDS = "neon-0.24.7"
 RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
            file://no-func-checks.patch;patch=1 \

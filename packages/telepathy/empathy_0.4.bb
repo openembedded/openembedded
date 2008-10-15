@@ -5,7 +5,7 @@ DEPENDS = "libgnomeui telepathy-mission-control libtelepathy gtk+ gconf libglade
 RDEPENDS = "telepathy-mission-control"
 RRECOMMENDS = "telepathy-gabble"
 
-PR="r0"
+FILE_PR ="r0"
 
 inherit gnome
 

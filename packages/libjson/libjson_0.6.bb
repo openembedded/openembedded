@@ -3,7 +3,7 @@ HOMEPAGE = "http://oss.metaparadigm.com/json-c/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "BSD"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://oss.metaparadigm.com/json-c/json-c-${PV}.tar.gz"
 S = "${WORKDIR}/json-c-${PV}"

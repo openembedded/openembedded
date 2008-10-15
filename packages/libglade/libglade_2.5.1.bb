@@ -1,6 +1,6 @@
 require libglade.inc
 
-PR = "r2"
+FILE_PR = "r2"
 
 inherit gnome
 

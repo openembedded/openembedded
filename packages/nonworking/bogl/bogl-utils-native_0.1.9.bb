@@ -2,7 +2,7 @@ DESCRIPTION = "Utilities for Ben's Own Graphics Library"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "gd-native"
-PR = "2"
+FILE_PR = "2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/b/bogl/bogl_${PV}-${PR}.tar.gz"
 S = "${WORKDIR}/bogl"

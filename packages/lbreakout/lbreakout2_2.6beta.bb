@@ -3,7 +3,7 @@ HOMEPAGE = "http://lgames.sourceforge.net/index.php?project=LBreakout2"
 SECTION = "games/arcade"
 LICENSE = "GPL"
 DEPENDS = "virtual/libsdl libsdl-mixer libsdl-net"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lgames/lbreakout2-2.6beta.tar.gz"
 

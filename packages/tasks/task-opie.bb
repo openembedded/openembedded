@@ -2,7 +2,7 @@ DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
 LICENSE = "MIT"
 
-PR = "r12"
+FILE_PR = "r12"
 
 inherit task
 

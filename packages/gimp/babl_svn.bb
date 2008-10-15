@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 
 SRCREV = "349"
 PV = "0.0.23+svn${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

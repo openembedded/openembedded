@@ -1,6 +1,6 @@
 require xproto_${PV}.bb
 
-PR = "r1"
+FILE_PR = "r1"
 
 XORG_PN = "xproto"
 

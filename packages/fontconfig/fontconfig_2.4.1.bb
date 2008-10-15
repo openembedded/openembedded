@@ -1,6 +1,6 @@
 require fontconfig.inc
 
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI += "https://stage.maemo.org/svn/maemo/projects/haf/trunk/fontconfig/device_symbols.h \
 	    file://configure_fix.patch;patch=1 "

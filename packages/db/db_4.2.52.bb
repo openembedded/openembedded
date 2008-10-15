@@ -1,4 +1,4 @@
-PR = "r8"
+FILE_PR = "r8"
 
 #major version number
 PVM = "4.2"

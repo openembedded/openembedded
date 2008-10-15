@@ -1,6 +1,6 @@
 require gtk+.inc
 
-PR = "r3"
+FILE_PR = "r3"
 
 DEPENDS += "cairo"
 

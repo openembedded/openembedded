@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "rtaudio"
 HOMEPAGE = "http://www.music.mcgill.ca/~gary/rtaudio"
 DEPENDS = "alsa-lib"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://music.mcgill.ca/~gary/rtaudio/release/rtaudio-${PV}.tar.gz"
 S = "${WORKDIR}/rtaudio-${PV}"

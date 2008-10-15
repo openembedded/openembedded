@@ -5,7 +5,7 @@ mechanisms) and StartTLS SMTP extensions."
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "libesmtp"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/esmtp/esmtp-${PV}.tar.bz2"
 

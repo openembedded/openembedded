@@ -1,7 +1,7 @@
 inherit gpe pkgconfig
 LICENSE = "GPL"
 
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = "virtual/libx11 xcursor-transparent-theme xrdb"
 SECTION = "gpe"

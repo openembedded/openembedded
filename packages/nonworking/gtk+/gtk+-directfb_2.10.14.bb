@@ -1,6 +1,6 @@
 require gtk-2.10.inc
 
-PR = "r2"
+FILE_PR = "r2"
 
 # disable per default - untested and not all patches included.
 DEFAULT_PREFERENCE = "-1"

@@ -1,4 +1,4 @@
-PR = "r5"
+FILE_PR = "r5"
 
 require util-linux.inc
 

@@ -1,6 +1,6 @@
 require midpath-backend-gtk_${PV}.bb
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
 

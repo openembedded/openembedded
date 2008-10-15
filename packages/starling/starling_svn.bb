@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ gstreamer gst-plugins-good gst-plugins-bad esound sqlite libsoup libhandoff"
 PV = "0.2+svnr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gpe autotools
 

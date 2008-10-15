@@ -3,7 +3,7 @@ SECTION = "x11/utils"
 LICENSE = "LGPL"
 DEPENDS = "gtk+ glib-2.0 gnome-vfs gconf-dbus libtinymail"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r2"
+FILE_PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

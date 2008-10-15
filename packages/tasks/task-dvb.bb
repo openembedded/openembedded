@@ -1,5 +1,5 @@
 DESCRIPTION = "Meta-package for DVB application"
-PR = "r6"
+FILE_PR = "r6"
 
 inherit task
 

@@ -1,6 +1,6 @@
 require gpe-ownerinfo.inc
 
-PR = "r1"
+FILE_PR = "r1"
 PV = "0.28+svn-${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"

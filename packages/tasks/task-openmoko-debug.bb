@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Debugging and Benchmarking Tools"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r59"
+FILE_PR = "r59"
 
 inherit task
 

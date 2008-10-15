@@ -2,7 +2,7 @@ SECTION = "base"
 require e2fsprogs.inc
 inherit native
 
-PR = "r1"
+FILE_PR = "r1"
 
 EXTRA_OECONF = ""
 

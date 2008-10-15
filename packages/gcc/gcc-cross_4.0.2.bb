@@ -1,4 +1,4 @@
-PR = "r13"
+FILE_PR = "r13"
 
 require gcc-${PV}.inc
 require gcc-cross4.inc

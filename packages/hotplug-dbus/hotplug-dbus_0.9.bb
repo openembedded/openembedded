@@ -1,4 +1,4 @@
-PR = "r1"
+FILE_PR = "r1"
 SECTION = "base"
 DESCRIPTION = "D-BUS glue for hotplug system"
 # DEPENDS = "dbus hotplug"

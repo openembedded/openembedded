@@ -1,6 +1,6 @@
 require qpegps.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 do_configure_prepend() {
          mv ${S}/Place.cpp ${S}/place.cpp

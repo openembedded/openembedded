@@ -5,7 +5,7 @@ DEPENDS = ""
 SECTION = "base"
 PRIORITY = "optional"
 PACKAGES = ""
-PR = "r1"
+FILE_PR = "r1"
 
 inherit native
 

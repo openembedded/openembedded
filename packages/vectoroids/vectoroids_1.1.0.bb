@@ -2,7 +2,7 @@ DESCRIPTION = "Clone of the classic arcade game Asteroids - SDL edition."
 SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 
 APPIMAGE = "data/images/icon.png"
 APPNAME = "vectoroids-${PV}"

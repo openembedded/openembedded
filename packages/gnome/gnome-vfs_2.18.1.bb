@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DEPENDS = "libxml2 gconf gnutls avahi dbus bzip2 gnome-mime-data zlib"
 RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

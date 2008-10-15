@@ -1,7 +1,7 @@
 DESCRIPTION = "Drop-in Esound replacement"
 LICENSE = "GPLv2"
 
-PR = "r1"
+FILE_PR = "r1"
 
 RCONFLICTS = "esd"
 RREPLACES = "esd"

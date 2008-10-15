@@ -12,7 +12,7 @@ SRC_URI += "\
   file://cp-byte-loophelper.patch;patch=1;pnum=0 \
   "
 
-PR = "r3"
+FILE_PR = "r3"
 
 PROVIDES = "${PN} classpath"
 

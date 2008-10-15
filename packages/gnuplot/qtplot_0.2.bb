@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "gnuplot"
 RDEPDENDS_${PN} = "gnuplot"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI  = "http://www.mneuroth.de/privat/zaurus/qtplot-${PV}.tar.gz"
 

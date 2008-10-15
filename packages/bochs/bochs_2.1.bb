@@ -1,7 +1,7 @@
 DESCRIPTION = "An x86 Emulator based on SDL."
 HOMEPAGE = "http://bochs.sf.net"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 # needs a patch for recent g++
 BROKEN = "1"

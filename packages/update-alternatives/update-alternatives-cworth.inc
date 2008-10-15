@@ -4,4 +4,4 @@ SRC_URI = "${HANDHELDS_CVS};module=familiar/dist/ipkg;tag=${@'V' + bb.data.getVa
 S = "${WORKDIR}/ipkg/C"
 PACKAGE_ARCH = "all"
 
-PR = "r1"
+FILE_PR = "r1"

@@ -2,7 +2,7 @@ DESCRIPTION = "GPE application launcher"
 DEPENDS = "libgpewidget libgpelaunch cairo libxsettings-client"
 SECTION = "gpe"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gpe
 

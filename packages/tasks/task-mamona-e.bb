@@ -1,6 +1,6 @@
 DESCRIPTION = "Necessary packages for Enlightenment on Mamona"
 LICENSE = "MIT"
-PR = "r2"
+FILE_PR = "r2"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"

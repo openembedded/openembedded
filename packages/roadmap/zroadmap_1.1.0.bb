@@ -1,6 +1,6 @@
 require zroadmap.inc
 
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/roadmap/roadmap-${PV}-src.tar.gz \
            file://cross.patch;patch=1;pnum=2 \

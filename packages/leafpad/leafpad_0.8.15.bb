@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 DEPENDS = "gtk+ intltool-native"
 SRC_URI = "http://savannah.nongnu.org/download/${PN}/${PN}-${PV}.tar.gz"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit autotools pkgconfig
 

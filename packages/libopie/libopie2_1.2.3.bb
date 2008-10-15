@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-PR = "r6"
+FILE_PR = "r6"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/libopie2 \
            file://include.pro \

@@ -1,3 +1,3 @@
 require hal.inc
-PR = "r8"
+FILE_PR = "r8"
 

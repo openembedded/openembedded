@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for PXA25x based devices."
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 
 KERNEL_CCSUFFIX = "-3.3.4"

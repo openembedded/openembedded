@@ -1,5 +1,5 @@
 require qte-common_${PV}.inc
-PR = "r8"
+FILE_PR = "r8"
 
 DEFAULT_PREFERENCE = "-1"
 

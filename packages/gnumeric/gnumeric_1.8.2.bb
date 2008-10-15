@@ -4,7 +4,7 @@ S = "${WORKDIR}/gnumeric-${PV}"
 DEPENDS = "libgsf gtk+ libxml2 goffice libglade libart-lgpl intltool-native libgnomecanvas libgnomeprint libgnomeprintui libbonoboui orbit2-native"
 DESCRIPTION = "Gnumeric spreadsheet for GNOME"
 
-PR = "r1"
+FILE_PR = "r1"
 
 PARALLEL_MAKE = ""
 

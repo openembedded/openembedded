@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 
 PE = "1"
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "libusb1"
 

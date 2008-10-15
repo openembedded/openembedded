@@ -6,7 +6,7 @@ DESCRIPTION="A flexible audio communication utility"
 SECTION = "console/telephony"
 LICENSE="GPL"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI="ftp://ftp.cm.nu/pub/people/shane/intercom/intercom-${PV}.tar.gz"
 

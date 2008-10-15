@@ -10,6 +10,6 @@ RDEPENDS = "\
   python-epsilon-examples \
   python-math python-textutils \
 "
-PR = "ml4"
+FILE_PR = "ml4"
 
 ALLOW_EMPTY = "1"

@@ -6,7 +6,7 @@ HOMEPAGE = "http://trevp.net/tlslite/"
 PRIORITY = "optional"
 LICENSE = "PD"
 SRCNAME = "tlslite"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://trevp.net/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

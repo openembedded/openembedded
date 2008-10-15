@@ -1,6 +1,6 @@
 DESCRIPTION = "micro_evtd daemon for ARM Linkstations"
 SECTION = "console/network"
-PR = "r2"
+FILE_PR = "r2"
 LICENSE = "GPL"
 COMPATIBLE_MACHINE = "(lsarm)"
 

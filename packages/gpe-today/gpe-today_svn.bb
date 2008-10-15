@@ -2,7 +2,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 DEPENDS = "gtk+ libxrandr libxsettings libxsettings-client libgpewidget libdisplaymigration libeventdb libgpepimc libtododb"
 PV = "0.11+svn-${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit gpe
 

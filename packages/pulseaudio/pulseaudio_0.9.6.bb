@@ -1,4 +1,4 @@
 require pulseaudio.inc
 
-PR = "r8"
+FILE_PR = "r8"
 

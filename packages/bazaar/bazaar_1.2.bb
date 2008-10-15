@@ -13,7 +13,7 @@ HOMEPAGE = "http://bazaar.canonical.com/"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "devel"
-PR = "r2"
+FILE_PR = "r2"
 RDEPENDS_${PN} += "patch"
 RSUGGESTS_${PN} += "gnupg"
 

@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python-core"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://downloads.emperorlinux.com/contrib/pywpa/pywpa-${PV}.tbz2 \
            file://Makefile \

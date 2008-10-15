@@ -1,5 +1,5 @@
 require libopieobex0.inc
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/core/obex \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/pics \

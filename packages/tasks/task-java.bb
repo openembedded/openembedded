@@ -1,5 +1,5 @@
 DESCRIPTION = "Base task package for Java"
-PR = "r2"
+FILE_PR = "r2"
 LICENSE = "MIT"
 
 inherit task

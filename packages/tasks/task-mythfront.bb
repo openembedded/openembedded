@@ -1,5 +1,5 @@
 DESCRIPTION = "Meta-package for MythTV diskless frontend"
-PR = "r16"
+FILE_PR = "r16"
 
 inherit task
 

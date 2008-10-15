@@ -4,7 +4,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-image"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "http://www.chipx86.com/packages/ipkg/billiardz-${PV}.tar.gz \
            file://gcc4.patch;patch=1"

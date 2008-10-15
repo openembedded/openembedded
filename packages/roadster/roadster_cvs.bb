@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://linuxadvocate.org/projects/roadster/"
 SECTION = "x11/navigation"
 PV = "0.0+cvs${SRCDATE}"
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "tcp-wrappers mysql gpsd gtk+ cairo libxml2 libgnomeui libglade"
 RDEPENDS = "gpsd gtk+ cairo libxml2"

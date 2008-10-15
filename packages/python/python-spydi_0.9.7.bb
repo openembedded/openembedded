@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.spyron.org/spydi.html"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://lsc.fie.umich.mx/%7esadit/spyro/download/SPyDI-${PV}.tar.gz"
 S = "${WORKDIR}/SPyDI-${PV}"

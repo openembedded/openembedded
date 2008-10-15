@@ -1,5 +1,5 @@
 DESCRIPTION = "GNOME Mobile & Embedded Initiative"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit task
 

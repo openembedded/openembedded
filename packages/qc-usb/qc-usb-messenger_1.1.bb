@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for QuickCam Messenger and Communicate usb cameras"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://home.mag.cx/messenger/source/${PN}-${PV}.tar.gz"
 

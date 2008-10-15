@@ -1,6 +1,6 @@
 DESCRIPTION="Gnome Office Library"
 LICENSE="GPLv2"
-PR="r1"
+FILE_PR ="r1"
 
 DEFAULT_PREFERENCE = "-1"
 

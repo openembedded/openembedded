@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK task for Scratchbox rootstraps incuding GPE/GTK bits"
-PR = "r0"
+FILE_PR = "r0"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

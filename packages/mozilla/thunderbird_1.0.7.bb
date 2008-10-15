@@ -1,7 +1,7 @@
 SECTION = "x11/utils"
 DEPENDS += "gnupg"
 RRECOMMENDS += "gnupg"
-PR = "r1"
+FILE_PR = "r1"
 
 EMVER="0.92.0"
 IPCVER="1.1.3"

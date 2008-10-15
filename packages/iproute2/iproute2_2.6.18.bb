@@ -1,4 +1,4 @@
-PR = "r3"
+FILE_PR = "r3"
 
 require iproute2.inc
 

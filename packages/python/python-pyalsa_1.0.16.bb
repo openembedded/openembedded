@@ -4,7 +4,7 @@ DEPENDS = "alsa-lib"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "pyalsa"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.bz2"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

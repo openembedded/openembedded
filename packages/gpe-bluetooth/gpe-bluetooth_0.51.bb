@@ -1,6 +1,6 @@
 require gpe-bluetooth.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 do_configure () {
 	autotools_do_configure

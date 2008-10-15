@@ -1,7 +1,7 @@
 # This package builds the NIS ypbind daemon
 # The source package is utils/net/NIS/ypbind-mt
 #
-PR = "r0"
+FILE_PR = "r0"
 DESCRIPTION="\
 Multithreaded NIS bind service (ypbind-mt).  \
 ypbind-mt is a complete new implementation of a NIS \

@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 DESCRIPTION = "Not an MP3 encoder"
 LICENSE = "LGPL"
-PR = "r4"
+FILE_PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lame/lame-${PV}.tar.gz \
 	file://no-gtk1.patch;patch=1 \

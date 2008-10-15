@@ -1,5 +1,5 @@
 LICENSE = 	"LGPL"
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = 	"glib-2.0 dbus outo"
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/libo/libosso/libosso_${PV}-1.tar.gz"

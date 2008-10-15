@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS += "gtk-doc-native"
-PR="r1"
+FILE_PR ="r1"
 
 EXTRA_OECONF = "--disable-debug"
 

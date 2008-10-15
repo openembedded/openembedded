@@ -1,5 +1,5 @@
 require apt.inc
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI += "file://autofoo.patch;patch=1"
 

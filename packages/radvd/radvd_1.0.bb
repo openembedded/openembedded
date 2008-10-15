@@ -1,4 +1,4 @@
-PR = "r1"
+FILE_PR = "r1"
 
 require radvd.inc
 

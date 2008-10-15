@@ -6,6 +6,6 @@ DEPENDS = "gtk+ libgpewidget libxrandr"
 
 inherit autotools
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.telefonica.net/web2/mteirap/gpe-snes-${PV}.tar.gz"

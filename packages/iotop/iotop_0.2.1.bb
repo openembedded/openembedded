@@ -1,6 +1,6 @@
 HOMEPAGE = "http://guichaz.free.fr/iotop/"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 
 RDEPENDS = "python-distutils python-curses python-setuptools python-textutils"
 

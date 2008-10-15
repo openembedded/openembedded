@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common gnome-python-desktop"
 
-PR = "r2"
+FILE_PR = "r2"
 
 inherit gnome distutils-base gconf
 

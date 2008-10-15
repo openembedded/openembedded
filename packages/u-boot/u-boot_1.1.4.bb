@@ -1,6 +1,6 @@
 require u-boot.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

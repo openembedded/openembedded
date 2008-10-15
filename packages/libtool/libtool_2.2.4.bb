@@ -1,6 +1,6 @@
 require libtool.inc
 
-PR = "r14"
+FILE_PR = "r14"
 
 DEFAULT_PREFERENCE = "-1"
 

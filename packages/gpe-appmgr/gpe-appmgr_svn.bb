@@ -3,7 +3,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget libgpelaunch cairo libxsettings-client"
 PV = "2.8+svn${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit gpe
 

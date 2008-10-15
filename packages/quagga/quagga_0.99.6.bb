@@ -1,4 +1,4 @@
-PR = "r2"
+FILE_PR = "r2"
 
 require quagga.inc
 

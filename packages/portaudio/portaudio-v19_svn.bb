@@ -3,7 +3,7 @@ SECTION = "libs/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PV = "v19+svnr${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "svn://www.portaudio.com/repos/portaudio;module=trunk;proto=http"
 S = "${WORKDIR}/trunk"

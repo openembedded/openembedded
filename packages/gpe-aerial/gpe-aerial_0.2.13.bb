@@ -1,6 +1,6 @@
 inherit gpe pkgconfig
 
-PR = "r1"
+FILE_PR = "r1"
 
 
 DESCRIPTION = "GPE wireless LAN communication applet"

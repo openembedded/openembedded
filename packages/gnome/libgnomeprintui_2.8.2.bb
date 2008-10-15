@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+FILE_PR = "r1"
 DEPENDS = "libgnomeprint gtk+ libgnomecanvas gnome-icon-theme gnome-common"
 
 inherit gnome pkgconfig

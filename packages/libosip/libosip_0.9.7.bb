@@ -2,7 +2,7 @@ SECTION = "libs"
 SRC_URI = "http://handhelds.org/packages/libosip/libosip-0.9.7-hh2.tar.gz"
 DESCRIPTION = "Session Initiation Protocol (SIP) library"
 LEAD_SONAME = "libosip\..*"
-PR = "hh2r0"
+FILE_PR = "hh2r0"
 LICENSE = "LGPL"
 S = "${WORKDIR}/libosip-0.9.7-hh2"
 

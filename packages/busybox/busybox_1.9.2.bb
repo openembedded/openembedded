@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://udhcpscript.patch;patch=1 \

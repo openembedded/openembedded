@@ -3,7 +3,7 @@ HOMEPAGE = "http://sourceforge.net/projects/ogl-es/"
 LICENSE = "BSD"
 
 PV = "0.0+svn${SRCDATE}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "svn://ogl-es.svn.sourceforge.net/svnroot/ogl-es/branches;module=linux_nokia_770;proto=https"
 

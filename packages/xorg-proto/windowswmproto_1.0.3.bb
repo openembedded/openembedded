@@ -1,4 +1,4 @@
 require xorg-proto-common.inc
 
-PR = "r1"
+FILE_PR = "r1"
 PE = "1"

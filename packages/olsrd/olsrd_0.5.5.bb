@@ -1,5 +1,5 @@
 require olsrd.inc
-PR = "r0"
+FILE_PR = "r0"
 
 # Oddity in the 0.5.5 source tarball.
 S = "${WORKDIR}/olsrd-a5b9cf969979"

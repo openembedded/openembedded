@@ -5,7 +5,7 @@
 DESCRIPTION="XFCE4 Settings manager."
 DEPENDS="libxfcegui4 libxfce4mcs intltool-native"
 SECTION = "x11"
-PR = "r2"
+FILE_PR = "r2"
 
 inherit xfce 
 

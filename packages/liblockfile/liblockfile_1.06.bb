@@ -1,7 +1,7 @@
 DESCRIPTION = "File locking library."
 SECTION = "libs"
 LICENSE = "LGPL"
-PR="r1"
+FILE_PR ="r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libl/liblockfile/liblockfile_${PV}.tar.gz \
 	   file://install.patch;patch=1 \

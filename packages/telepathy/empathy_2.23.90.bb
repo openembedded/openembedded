@@ -8,7 +8,7 @@ RRECOMMENDS = "telepathy-gabble"
 inherit gnome
 
 PARALLEL_MAKE = ""
-PR = "r1"
+FILE_PR = "r1"
 
 PACKAGES =+ "empathy-scrollkeeper-junk"
 FILES_empathy-scrollkeeper-junk = "/var/lib/scrollkeeper"

@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 HOMEPAGE = "http://argtable.sourceforge.net/"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "libtool-cross"
 

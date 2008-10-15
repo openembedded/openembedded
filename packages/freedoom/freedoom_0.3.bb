@@ -8,7 +8,7 @@ LICENSE = "GPL"
 
 SRC_URI = "http://ovh.dl.sourceforge.net/sourceforge/freedoom/freedoom-iwad-0.3.zip"
 
-PR = "r1"
+FILE_PR = "r1"
 
 FILES_${PN} = "/usr/share/games/doom/*"
 FILES_${PN}-doc = "/usr/share/doc/freedoom/*"

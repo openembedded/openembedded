@@ -5,7 +5,7 @@ RDEPENDS = "update-modules"
 
 inherit module
 
-PR = "r7"
+FILE_PR = "r7"
 PV = "2.10"
 
 # Get CE tarball from TI website, place in sources and calculate

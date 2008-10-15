@@ -1,7 +1,7 @@
 DESCRIPTION = "Gnome application programming libraries"
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

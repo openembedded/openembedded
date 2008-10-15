@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "alsa-lib pulseaudio"
 PROVIDES = "libao-alsa libao-alsa-plugin"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://downloads.xiph.org/releases/ao/libao-${PV}.tar.gz"
 

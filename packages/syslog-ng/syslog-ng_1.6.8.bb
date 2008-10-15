@@ -1,4 +1,4 @@
-PR = "r9"
+FILE_PR = "r9"
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol flex"
 

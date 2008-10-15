@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for Cirrus Logic ep39xx compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 COMPATIBLE_MACHINE = "ep93xx"
 

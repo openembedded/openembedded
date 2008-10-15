@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: PIM for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r72"
+FILE_PR = "r72"
 
 inherit task
 

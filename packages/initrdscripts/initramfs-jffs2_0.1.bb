@@ -1,5 +1,5 @@
 SRC_URI = "file://jffs2boot.sh"
-PR = "r3"
+FILE_PR = "r3"
 RRECOMMENDS = "kernel-module-mtdblock kernel-module-mtdram"
 
 do_install() {

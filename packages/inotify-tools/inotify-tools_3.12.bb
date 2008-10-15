@@ -3,7 +3,7 @@ Linux inotify filesystem change notification system."
 LICENSE = "GPL"
 AUTHOR = "Rohan McGovern"
 HOMEPAGE = "http://inotify-tools.sourceforge.net/"
-PR = "r0"
+FILE_PR = "r0"
 
 EXTRA_OECONF = "--disable-doxygen"
 

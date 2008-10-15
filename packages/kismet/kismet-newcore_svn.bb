@@ -3,7 +3,7 @@ require kismet.inc
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI = "svn://svn.kismetwireless.net/code/branch/;module=kismet-newcore;proto=http"
 

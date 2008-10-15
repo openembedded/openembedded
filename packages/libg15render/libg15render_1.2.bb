@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libg15"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/g15tools/libg15render-${PV}.tar.bz2"
 

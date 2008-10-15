@@ -1,5 +1,5 @@
 require apt-native.inc
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI += "file://nodoc.patch;patch=1 \
             file://noconfigure.patch;patch=1"

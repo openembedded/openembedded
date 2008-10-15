@@ -5,7 +5,7 @@ RDEPENDS = "gcc-symlinks g++-symlinks cpp-symlinks binutils-symlinks \
 	    make virtual-libc-dev \
 	    flex flex-dev bison gawk sed grep autoconf automake make \
 	    patch patchutils diffstat diffutils libstdc++-dev"
-PR = "r3"
+FILE_PR = "r3"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"

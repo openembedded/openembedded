@@ -1,6 +1,6 @@
 require avahi.inc
 
-PR = "r7"
+FILE_PR = "r7"
 
 DEPENDS += "avahi gtk+"
 

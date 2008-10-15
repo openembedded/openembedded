@@ -1,7 +1,7 @@
 require orinoco-modules.inc
 
 RDEPENDS_orinoco-modules-cs += "orinoco-modules"
-PR = "r5"
+FILE_PR = "r5"
 
 SRC_URI += "\
            file://crosscompile.patch;patch=1 \

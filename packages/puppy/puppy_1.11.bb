@@ -3,7 +3,7 @@ SECTION = "network"
 PRIORITY = "optional"
 HOMEPAGE = "http://sf.net/projects/puppy/"
 LICENSE = "GPL"
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI = "cvs://anonymous:@puppy.cvs.sourceforge.net/cvsroot/puppy;module=puppy;tag=PUPPY_1_11 \
 	   file://usb-header.patch;patch=1"

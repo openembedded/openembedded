@@ -1,6 +1,6 @@
 require fuse.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI += "file://preserve_CC_with_2_4_kernel.patch;patch=1"
 

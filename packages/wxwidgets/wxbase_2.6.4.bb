@@ -1,6 +1,6 @@
 require wxbase.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 EXTRA_OECONF = "--enable-largefile"
 

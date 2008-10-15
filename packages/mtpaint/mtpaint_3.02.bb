@@ -2,7 +2,7 @@ DESCRIPTION = "mtPaint is a simple painting program"
 SECTION = "x11/graphics"
 DEPENDS = "gtk+ jpeg"
 HOMEPAGE = "http://mtpaint.sf.net"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mtpaint/mtpaint-3.02.tar.bz2"
 

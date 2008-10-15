@@ -1,7 +1,7 @@
 require uim.inc
 DEPENDS = "gtk+ anthy intltool-native"
 inherit native autotools pkgconfig
-PR = "r2"
+FILE_PR = "r2"
 
 S = "${WORKDIR}/uim-${PV}"
 

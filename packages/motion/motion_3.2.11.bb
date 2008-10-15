@@ -7,7 +7,7 @@ DEPENDS = "jpeg ffmpeg mysql postgresql"
 
 RSUGGESTS = "mysql-client postgresql-client"
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz"
 

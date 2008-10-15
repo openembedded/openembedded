@@ -9,7 +9,7 @@ DEPENDS += "qemu-native"
 
 PV = "22.0.50+cvs${SRCDATE}" 
 PE = "1"
-PR = "r9"
+FILE_PR = "r9"
 
 DEFAULT_PREFERENCE = "-1"
 

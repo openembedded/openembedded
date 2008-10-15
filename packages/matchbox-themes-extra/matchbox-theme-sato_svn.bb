@@ -6,7 +6,7 @@ SECTION = "x11/wm"
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.1+svnr${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 PACKAGE_ARCH = "all"
 

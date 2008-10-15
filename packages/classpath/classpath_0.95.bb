@@ -6,7 +6,7 @@ SRC_URI += "\
   file://javanet-local.patch;patch=1;pnum=0 \
   "
 
-PR = "r5"
+FILE_PR = "r5"
 
 DEPENDS += "gtk+ gconf libxtst"
 

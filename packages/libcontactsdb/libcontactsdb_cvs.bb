@@ -8,7 +8,7 @@ LICENSE = "GPL"
 
 S = "${WORKDIR}/${PN}"
 PV = "0.3+cvs${SRCDATE}"
-PR = "r1"
+FILE_PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

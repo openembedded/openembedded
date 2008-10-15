@@ -1,7 +1,7 @@
 DESCRIPTION = "HFS file system utilities"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 
 inherit autotools pkgconfig
 

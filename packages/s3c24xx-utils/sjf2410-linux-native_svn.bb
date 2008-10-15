@@ -3,7 +3,7 @@ SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 PV = "0.1+svnr${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=sjf2410-linux;proto=https"
 S = "${WORKDIR}/sjf2410-linux"

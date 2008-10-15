@@ -1,4 +1,4 @@
-PR = "r15"
+FILE_PR = "r15"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
            file://makefile_tweak.patch;patch=1 \

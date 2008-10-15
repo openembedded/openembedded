@@ -1,6 +1,6 @@
 DESCRIPTION = "NPE firmware for the IXP4xx line of devices"
 LICENSE = "Intel Public Licence"
-PR = "r6"
+FILE_PR = "r6"
 DEPENDS = "ixp4xx-npe-native"
 
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_1.zip"

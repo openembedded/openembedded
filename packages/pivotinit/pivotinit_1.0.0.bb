@@ -2,7 +2,7 @@ DESCRIPTION = "Dedicated /sbin/init for pivot root images"
 SECTION = "base"
 PRIORITY = "required"
 LICENSE = "MIT"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "file://init"
 

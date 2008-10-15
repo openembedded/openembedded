@@ -4,7 +4,7 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = ""
-PR = "r2"
+FILE_PR = "r2"
 
 EXCLUDE_FROM_WORLD = "1"
 

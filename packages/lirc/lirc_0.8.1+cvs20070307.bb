@@ -15,7 +15,7 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
-PR = "r1"
+FILE_PR = "r1"
 
 # enable cvs version since until compilation issues for other packages have been fixed (cf. bug 2284 et al).
 #DEFAULT_PREFERENCE = "-1"

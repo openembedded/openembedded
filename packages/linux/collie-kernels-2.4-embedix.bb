@@ -2,7 +2,7 @@ DESCRIPTION = "Build all collie kernels in one go"
 SECTION = "kernel"
 LICENSE = "GPL"
 PROVIDES = "virtual/kernel"
-PR = "r2"
+FILE_PR = "r2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 

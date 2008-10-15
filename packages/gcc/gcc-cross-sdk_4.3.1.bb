@@ -1,4 +1,4 @@
-PR = "r11"
+FILE_PR = "r11"
 
 inherit sdk
 

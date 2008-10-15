@@ -2,7 +2,7 @@ DESCRIPTION = "XCB: an X protocol C binding"
 SECTION = "x11/libs"
 LICENSE = "MIT-X"
 HOMEPAGE = "http://xcb.freedesktop.org"
-PR = "r0"
+FILE_PR = "r0"
 
 PARALLEL_MAKE = ""
 DEPENDS = "xcb-proto xproto libxau"

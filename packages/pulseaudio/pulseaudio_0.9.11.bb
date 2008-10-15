@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "dbus gdbm speex"
-PR = "r0"
+FILE_PR = "r0"
 
 # work in progress
 DEFAULT_PREFERENCE = "-1"

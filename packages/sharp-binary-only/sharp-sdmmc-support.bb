@@ -3,7 +3,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (${PV})"
-PR = "r23"
+FILE_PR = "r23"
 PACKAGE_ARCH = "${MACHINE}"
 
 COMPATIBLE_MACHINE = '(collie|poodle|tosa)'

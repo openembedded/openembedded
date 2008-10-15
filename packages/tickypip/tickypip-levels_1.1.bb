@@ -6,7 +6,7 @@ SRC_DISTRIBUTE_LICENSES += "${PN}"
 AUTHOR = "NetWalk Group <netwalkgroup@hotmail.com>"
 RDEPENDS = "tickypip"
 PACKAGE_ARCH = "all"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/tickypip-levels_${PV}.tar.bz2"
 

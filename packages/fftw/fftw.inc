@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RPROVIDES += "libfftw3"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://www.fftw.org/fftw-${PV}.tar.gz"
 

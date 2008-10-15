@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "etk"
 SRCNAME = "edje_editor"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit e
 

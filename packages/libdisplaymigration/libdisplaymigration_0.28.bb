@@ -3,7 +3,7 @@ DESCRIPTION = "Gtk+ display migration library"
 DEPENDS = "gtk+ libgcrypt"
 SECTION = "gpe"
 PRIORITY = "optional"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit pkgconfig gpe
 

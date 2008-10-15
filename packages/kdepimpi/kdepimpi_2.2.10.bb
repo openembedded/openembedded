@@ -3,4 +3,4 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/kdepimpi-${PV}.tar.gz \
 
 require kdepimpi-base.inc
 
-PR = "r0"
+FILE_PR = "r0"

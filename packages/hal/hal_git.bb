@@ -14,7 +14,7 @@ SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://99_hal"
 
 PV = "0.5.9.1+git${SRCDATE}"
-PR = "r6"
+FILE_PR = "r6"
 
 S = "${WORKDIR}/git"
 

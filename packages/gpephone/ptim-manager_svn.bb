@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers libiac"
 PV = "0.1+svnr-${SRCREV}"
-PR = "r2"
+FILE_PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

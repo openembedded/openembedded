@@ -4,7 +4,7 @@ SECTION = "devel/python"
 LICENSE = "GPL"
 BV = "0.4.6"
 PV = "${BV}+svnr${SRCREV}"
-PR = "ml1"
+FILE_PR = "ml1"
 
 inherit distutils
 

@@ -10,7 +10,7 @@ RDEPENDS_gpe-conf-panel = "gpe-conf"
 RPROVIDES_${PN} += " bl"
 RCONFLICTS_${PN} = "bl"
 
-PR = "r4"
+FILE_PR = "r4"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

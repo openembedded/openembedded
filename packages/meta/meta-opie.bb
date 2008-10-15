@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta-package for Opie"
 SECTION = "opie/base"
-PR = "r34"
+FILE_PR = "r34"
 LICENSE = "MIT"
 
 RDEPENDS = "task-opie-applets task-opie-apps task-opie-base \

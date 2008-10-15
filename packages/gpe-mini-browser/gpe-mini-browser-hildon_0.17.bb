@@ -1,6 +1,6 @@
 require gpe-mini-browser.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI      = "${GPE_MIRROR}/gpe-mini-browser-${PV}.tar.gz"
 DESCRIPTION  = "A lightweight webbrowser for the GPE platform (Hildon UI)"

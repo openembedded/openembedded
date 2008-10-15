@@ -4,7 +4,7 @@ SECTION = "devel"
 AUTHOR = "Daniel Ribeiro"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r4"
+FILE_PR = "r4"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace/;module=ezxd;proto=http \
            file://ezxd.init \

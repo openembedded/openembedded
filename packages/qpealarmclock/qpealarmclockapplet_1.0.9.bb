@@ -8,7 +8,7 @@ RDEPENDS = "qpealarmclock"
 RCONFLICTS = "opie-clockapplet"
 RREPLACES = "opie-clockapplet"
 
-PR = "r1"
+FILE_PR = "r1"
 
 APPNAME = "qpealarmclockapplet"
 APPTYPE = "binary"

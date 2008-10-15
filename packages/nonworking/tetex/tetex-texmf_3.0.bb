@@ -1,7 +1,7 @@
 DESCRIPTION = "teTeX data"
 LICENSE = "GPL"
 SECTION = "console/utils"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-texmf-${PV}.tar.gz"
 S = "${WORKDIR}"

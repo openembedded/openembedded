@@ -5,7 +5,7 @@ PRIORITY = "optional"
 
 DEPENDS = "matchbox xmodmap"
 
-PR = "r7"
+FILE_PR = "r7"
 
 SRC_URI = "file://xrandr-panelapp.sh \
 	   file://xrandr-panelapp.desktop \

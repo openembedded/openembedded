@@ -1,4 +1,4 @@
 include libxcb.inc
-PR = "r2"
+FILE_PR = "r2"
 
 PACKAGES =+ "libxcb-xinerama"

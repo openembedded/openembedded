@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gpe-bootsplash"
 RDEPENDS = "gpe-bootsplash"
-PR = "r1"
+FILE_PR = "r1"
 
 export THEME = "opie"
 

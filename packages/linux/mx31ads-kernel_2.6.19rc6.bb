@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the MX31ADS"
 LICENSE = "GPL"
-PR = "r3"
+FILE_PR = "r3"
 
 PV = "2.6.18+2.6.19-rc6"
 

@@ -16,6 +16,6 @@ RDEPENDS = "\
   etk \
   epdf \
 "
-PR = "r0"
+FILE_PR = "r0"
 
 ALLOW_EMPTY = "1"

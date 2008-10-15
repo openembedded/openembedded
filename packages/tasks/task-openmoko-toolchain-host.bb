@@ -4,7 +4,7 @@ DESCRIPTION = "Packages for a standalone Openmoko SDK or external toolchain"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-PR = "r0"
+FILE_PR = "r0"
 
 PACKAGES = "${PN}"
 

@@ -5,7 +5,7 @@ sending end."
 HOMEPAGE = "http://librsync.sourceforge.net/"
 SECTION = "libs"
 LICENSE = "LGPL"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/librsync/librsync-${PV}.tar.gz"
 

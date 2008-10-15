@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 SECTION = "console/utils"
 DESCRIPTION = "grep GNU utility"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/grep/grep-${PV}.tar.bz2 \
            file://uclibc-fix.patch;patch=1"

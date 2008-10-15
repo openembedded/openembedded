@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "zlib jpeg libpng libxext libxft"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ede/efltk-${PV}.tar.gz"
 S = "${WORKDIR}/efltk"

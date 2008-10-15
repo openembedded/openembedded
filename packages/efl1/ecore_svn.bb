@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r5"
+FILE_PR = "r5"
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \

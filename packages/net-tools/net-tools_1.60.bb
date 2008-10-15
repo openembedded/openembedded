@@ -1,6 +1,6 @@
 SUMMARY="Basic networking tools"
 LICENSE="GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 #
 # NOTE:

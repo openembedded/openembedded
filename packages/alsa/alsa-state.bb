@@ -7,7 +7,7 @@
 DESCRIPTION = "Default ALSA configuration"
 LICENSE = "GPL"
 PV = "0.1.0"
-PR = "r18"
+FILE_PR = "r18"
 
 SRC_URI = "\
   file://asound.conf \

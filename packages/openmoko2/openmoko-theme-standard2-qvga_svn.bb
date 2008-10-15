@@ -3,7 +3,7 @@ SECTION = "openmoko/base"
 RCONFLICTS = "openmoko-theme-standard"
 RPROVIDES = "openmoko-theme-standard-2"
 PV = "0.1.1+svnr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit openmoko2
 

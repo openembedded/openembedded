@@ -3,7 +3,7 @@ SECTION = "gpe/libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 sqlite libgpewidget"
-PR = "r0"
+FILE_PR = "r0"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

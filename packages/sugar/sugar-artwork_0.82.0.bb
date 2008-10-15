@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar artwork"
 LICENSE = "GPLv2"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "sugar icon-slicer-native"
 

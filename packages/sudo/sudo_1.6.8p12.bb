@@ -1,4 +1,4 @@
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI = "http://ftp.sudo.ws/sudo/dist/sudo-${PV}.tar.gz \
            file://nonrootinstall.patch;patch=1 \

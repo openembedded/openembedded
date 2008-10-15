@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic SDK development packages"
-PR = "r1"
+FILE_PR = "r1"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

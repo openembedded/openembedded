@@ -3,7 +3,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for AMCC's Sequoia dev board"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 #DEPENDS = "u-boot"
 
 COMPATIBLE_MACHINE = "sequoia"

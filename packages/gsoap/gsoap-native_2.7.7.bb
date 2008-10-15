@@ -1,7 +1,7 @@
 require gsoap_${PV}.bb
 
 DEPENDS = ""
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI += "file://use-just-built-binary.patch;patch=1"
 

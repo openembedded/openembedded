@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = ""
-PR="r2"
+FILE_PR ="r2"
 
 inherit autotools
 

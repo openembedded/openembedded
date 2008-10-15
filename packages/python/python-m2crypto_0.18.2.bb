@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "openssl swig-native"
 LICENSE = "BSD"
 SRCNAME = "M2Crypto"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://chandlerproject.org/pub/Projects/MeTooCrypto/m2crypto-${PV}.tar.gz \
            file://install.patch;patch=1"

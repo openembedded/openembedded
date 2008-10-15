@@ -3,7 +3,7 @@ HOMEPAGE = "http://dev.openbossa.org/trac/mamona/"
 SECTION = "utils"
 LICENSE = "GPL"
 RDEPENDS = "module-init-tools busybox"
-PR = "r1"
+FILE_PR = "r1"
 
 PACKAGES = "${PN}"
 

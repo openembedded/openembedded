@@ -1,2 +1,2 @@
 require gimp.inc
-PR = "r1"
+FILE_PR = "r1"

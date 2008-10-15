@@ -1,5 +1,5 @@
 require iptables.inc
-PR = "r4"
+FILE_PR = "r4"
 
 SRC_URI += "\
   file://getsockopt-failed.patch;patch=1 \

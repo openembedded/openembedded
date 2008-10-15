@@ -1,5 +1,5 @@
 require flex.inc
-PR = "r4"
+FILE_PR = "r4"
 
 SRC_URI += "file://include.patch;patch=1"
 

@@ -1,6 +1,6 @@
 require perl.inc
 
-PR = "r5"
+FILE_PR = "r5"
 
 SRC_URI += "file://uclibc.patch;patch=1 \
             file://config.sh-mipsel-linux \

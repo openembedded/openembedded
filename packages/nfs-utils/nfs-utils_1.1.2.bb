@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "console/network"
 LICENSE = "GPL"
 
-PR = "2"
+FILE_PR = "2"
 
 DEPENDS = "tcp-wrappers libevent"
 

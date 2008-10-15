@@ -4,7 +4,7 @@ SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab EM-X270 system"
 LICENSE = "GPL"
 DEPENDS = "u-boot-utils-native"
-PR = "r1"
+FILE_PR = "r1"
 
 KERNEL_IMAGETYPE = "uImage"
 

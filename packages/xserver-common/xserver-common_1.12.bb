@@ -1,6 +1,6 @@
 require xserver-common.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI_append = " file://setDPI.sh \
 	           file://rxvt-less-pink.diff;patch=1"

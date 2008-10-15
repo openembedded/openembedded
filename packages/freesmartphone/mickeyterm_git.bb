@@ -3,7 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 PV = "2.9.1+gitr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"

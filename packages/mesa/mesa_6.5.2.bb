@@ -1,4 +1,4 @@
-PR = "r1"
+FILE_PR = "r1"
 
 include mesa-mesa.inc
 

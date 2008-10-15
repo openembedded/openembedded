@@ -7,7 +7,7 @@ KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 PV = "${KERNEL_RELEASE}+${PR}+gitr${SRCREV}"
-PR = "r8"
+FILE_PR = "r8"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \

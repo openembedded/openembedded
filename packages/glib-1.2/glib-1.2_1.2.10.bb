@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-1.2-native"
-PR = "r2"
+FILE_PR = "r2"
 
 LEAD_SONAME = "libglib-1.2.*"
 

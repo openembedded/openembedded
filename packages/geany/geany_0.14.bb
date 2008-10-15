@@ -4,7 +4,7 @@ SECTION = "editors"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/geany/${P}.tar.bz2"
 

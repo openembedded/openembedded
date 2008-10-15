@@ -1,7 +1,7 @@
 require anki.inc
 
 RDEPENDS += "libanki"
-PR = "r1"
+FILE_PR = "r1"
 
 export PV := "${PV}"
 

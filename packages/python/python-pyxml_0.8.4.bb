@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "PSF"
 RDEPENDS = "python-xml python-netclient"
 SRCNAME = "pyxml"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyxml/PyXML-${PV}.tar.gz"
 S = "${WORKDIR}/PyXML-${PV}"

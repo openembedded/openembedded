@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Gstreamer package groups"
 DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r11"
+FILE_PR = "r11"
 
 PACKAGES = "${PN}-dbg \
     gst-meta-base \

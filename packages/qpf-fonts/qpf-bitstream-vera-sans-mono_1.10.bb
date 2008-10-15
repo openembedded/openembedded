@@ -2,7 +2,7 @@ require qpf.inc
 
 DESCRIPTION = "Bitstream Vera Monospaced Font, QPF for Qt/Embedded"
 LICENSE = "Bitstream Vera"
-PR = "r4"
+FILE_PR = "r4"
 
 PROVIDES += "qpf-bitstream-vera-sans-mono-small"
 PROVIDES += "qpf-bitstream-vera-sans-mono-larger"

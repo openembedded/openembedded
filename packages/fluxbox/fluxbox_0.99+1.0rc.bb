@@ -7,7 +7,7 @@ LICENSE = "MIT"
 REALPV = "1.0rc"
 
 PV = "0.99+${REALPV}"
-PR = "r1"
+FILE_PR = "r1"
 PE = "1" 
 
 

@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/libsdl virtual/libx11 zlib jpeg libxext"
 PROVIDES = "x11vnc"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/LibVNCServer-${PV}.tar.gz"
 S = "${WORKDIR}/LibVNCServer-${PV}"

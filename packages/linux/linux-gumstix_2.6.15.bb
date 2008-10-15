@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the Gumstix"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = "u-boot-utils-native"
 

@@ -8,5 +8,5 @@ PROVIDES += "gst-plugins"
 # a missing alsa plugin
 DEPENDS += "alsa-lib libsm"
 
-PR = "r3"
+FILE_PR = "r3"
 

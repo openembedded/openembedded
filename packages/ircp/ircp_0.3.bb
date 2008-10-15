@@ -1,6 +1,6 @@
 DEPENDS = "openobex"
 LICENSE = "GPL"
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/ircp-${PV}.tar.gz"
 

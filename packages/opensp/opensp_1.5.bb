@@ -4,7 +4,7 @@ XML documents."
 HOMEPAGE = "http://openjade.sourceforge.net/"
 SECTION = "libs"
 LICENSE = "MIT"
-PR = "r2"
+FILE_PR = "r2"
 
 # sh4/gcc3.4.4 with -O2 triggers internal compiler errors
 FULL_OPTIMIZATION_sh4 = "-O1"

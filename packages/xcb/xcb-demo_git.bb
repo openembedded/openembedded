@@ -5,7 +5,7 @@ SECTION = "x11"
 LICENSE = "MIT-X"
 HOMEPAGE = "http://xcb.freedesktop.org"
 PV = "0.1+git"
-PR = "r0"
+FILE_PR = "r0"
 
 DEPENDS = "libxcb xcb-util"
 

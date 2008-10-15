@@ -1,5 +1,5 @@
 DESCRIPTION = "Tasks for Enlightenment/X11"
-PR = "r10"
+FILE_PR = "r10"
 
 inherit task
 

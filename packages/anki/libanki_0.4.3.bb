@@ -1,5 +1,5 @@
 require anki.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 S = "${WORKDIR}/anki-${PV}/libanki"

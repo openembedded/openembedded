@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "sysfsutils"
 RRECOMMENDS = "kernel-module-bridge"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bridge/bridge-utils-${PV}.tar.gz"
 S = "${WORKDIR}/bridge-utils-${PV}"

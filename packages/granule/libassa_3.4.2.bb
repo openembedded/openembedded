@@ -4,7 +4,7 @@ HOMEPAGE = "http://libassa.sf.net"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r0"
+FILE_PR = "r0"
 
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}-2.tar.gz"

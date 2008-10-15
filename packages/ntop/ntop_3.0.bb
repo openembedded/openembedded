@@ -3,7 +3,7 @@ DESCRIPTION = "ntop is network top"
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "gdbm zlib libpcap libpng gd"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ntop/ntop-${PV}.tgz \
            file://${FILESDIR}/autotools.patch;patch=1 \

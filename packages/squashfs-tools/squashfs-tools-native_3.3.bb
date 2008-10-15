@@ -1,5 +1,5 @@
 require squashfs-tools_${PV}.bb
-PR = "r0"
+FILE_PR = "r0"
 
 inherit native
 

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "osb-nrcit gtk+ glib-2.0 libglade"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-ico gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png"
 PV = "0.5.0+svnr${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 inherit autotools
 

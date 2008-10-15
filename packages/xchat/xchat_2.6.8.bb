@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.xchat.org"
 SECTION = "x11/network"
 DEPENDS = "libgcrypt zlib gtk+"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.xchat.org/files/source/2.6/xchat-${PV}.tar.bz2"
 

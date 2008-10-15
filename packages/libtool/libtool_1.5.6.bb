@@ -1,7 +1,7 @@
 # Exists for compatibility with certain distributions (e.g. Maemo).
 
 require libtool.inc
-PR = "r2"
+FILE_PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

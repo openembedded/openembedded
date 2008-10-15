@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Portable Threads"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "ftp://ftp.ossp.org/pkg/lib/pth/pth-${PV}.tar.gz"
 

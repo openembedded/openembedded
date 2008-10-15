@@ -1,2 +1,2 @@
 require mc.inc
-PR = "r2"
+FILE_PR = "r2"

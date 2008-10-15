@@ -6,7 +6,7 @@ SECTION = "multimedia"
 
 SRCREV = "e712a114e04a1070f1afdf31ec668cb28eda513c"
 
-PR = "r5"
+FILE_PR = "r5"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 

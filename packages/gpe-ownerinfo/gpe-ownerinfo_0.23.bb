@@ -1,3 +1,3 @@
 require gpe-ownerinfo.inc
 
-PR = "r1"
+FILE_PR = "r1"

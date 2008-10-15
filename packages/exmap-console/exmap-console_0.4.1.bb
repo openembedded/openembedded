@@ -1,3 +1,3 @@
 require exmap-console.inc
 
-PR = "r5"
+FILE_PR = "r5"

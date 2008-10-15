@@ -2,7 +2,7 @@ DESCRIPTION = "GPE screenshot application"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "gpe"
-PR = "r1"
+FILE_PR = "r1"
 
 RREPLACES = "gpe-screenshot"
 

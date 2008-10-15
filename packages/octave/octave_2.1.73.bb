@@ -2,7 +2,7 @@ require octave.inc
 
 SRC_URI = "ftp://ftp.octave.org/pub/octave/obsolete/${PN}-${PV}.tar.gz"
 
-PR = "r1"
+FILE_PR = "r1"
 
 PACKAGES =+ "libcruft-dev liboctave-dev liboctinterp-dev"
 

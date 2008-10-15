@@ -6,7 +6,7 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "minimalist-gpe-image"
 
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = "task-boot"
 IMAGE_INSTALL = "\

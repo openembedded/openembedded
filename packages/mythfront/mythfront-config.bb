@@ -1,5 +1,5 @@
 PV = "1.10"
-PR = "r0"
+FILE_PR = "r0"
 
 RDEPENDS_${PN} = "font-misc-misc"
 LICENSE = "MIT"

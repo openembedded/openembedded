@@ -2,7 +2,7 @@
 # The source package is utils/net/NIS/pwdutils
 # The package requires -lpam
 #
-PR = "r1"
+FILE_PR = "r1"
 DESCRIPTION="\
 NIS PAM password management tools.  \
 This is a collection of utilities to manage the passwd \

@@ -18,7 +18,7 @@ RDEPENDS = "\
   libasound-module-ctl-pulse \
   libasound-module-pcm-pulse \
 "
-PR = "r3"
+FILE_PR = "r3"
 
 inherit update-rc.d
 

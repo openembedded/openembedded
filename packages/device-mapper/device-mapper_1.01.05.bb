@@ -3,7 +3,7 @@ DESCRIPTION = "The Device-mapper is a new component of the linux kernel \
 that supports logical volume management. It is required by LVM2 and EVMS. \
 The original LVM (included in stock 2.4 kernels) does not use it."
 LICENSE = "GPL"
-PR = "r3"
+FILE_PR = "r3"
 
 S = "${WORKDIR}/${PN}.${PV}"
 

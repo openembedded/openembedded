@@ -1,6 +1,6 @@
 DEFAULT_PREFERENCE = "-1"
 SECTION = "base"
-PR = "r1"
+FILE_PR = "r1"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 LICENSE = "GPL"

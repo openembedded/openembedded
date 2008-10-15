@@ -3,7 +3,7 @@ for the Python programming language."
 HOMEPAGE = "http://www.rhodesmill.org/brandon/projects/pyephem.html"
 LICENSE = "PSF"
 AUTHOR = "Brandon Craig Rhodes"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "http://www.rhodesmill.org/brandon/projects/pyephem-${PV}.tar.gz"
 S = "${WORKDIR}/pyephem-${PV}"

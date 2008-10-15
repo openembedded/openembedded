@@ -1,6 +1,6 @@
 require prboom_${PV}.bb
 
-PR = "r6"
+FILE_PR = "r6"
 
 S = "${WORKDIR}/prboom-${PV}"
 

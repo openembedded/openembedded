@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libassuan/libassuan-${PV}.tar.gz"
 

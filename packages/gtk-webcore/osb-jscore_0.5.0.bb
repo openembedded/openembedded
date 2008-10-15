@@ -3,7 +3,7 @@ DESCRIPTION = "Gtk+ WebCore - JavaScriptCore"
 HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
 SECTION = "gpe"
-PR = "r3"
+FILE_PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-jscore-${PV}.tar.gz \
            file://missing-includes.patch;patch=1 \

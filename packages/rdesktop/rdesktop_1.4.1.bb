@@ -1,6 +1,6 @@
 require rdesktop.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI += "file://strip.patch;patch=1"
 

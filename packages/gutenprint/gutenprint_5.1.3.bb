@@ -1,6 +1,6 @@
 require gutenprint.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "glib-2.0 ijs ncurses cups tiff jpeg libpng gutenprint-native espgs"
 

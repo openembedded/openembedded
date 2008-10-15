@@ -1,5 +1,5 @@
 include ipkg.inc
-PR = "r8"
+FILE_PR = "r8"
 
 S = "${WORKDIR}/ipkg-${PV}"
 

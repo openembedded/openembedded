@@ -1,3 +1,3 @@
 require libpcap.inc
 
-PR = "r2"
+FILE_PR = "r2"

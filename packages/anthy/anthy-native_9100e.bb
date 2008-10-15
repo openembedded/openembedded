@@ -2,7 +2,7 @@ require anthy_${PV}.bb
 
 DEPENDS = ""
 PACKAGES = ""
-PR = "r1"
+FILE_PR = "r1"
 
 S = "${WORKDIR}/anthy-${PV}"
 

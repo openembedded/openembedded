@@ -1,6 +1,6 @@
 require bluez-utils3.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
            file://hcid.conf \

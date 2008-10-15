@@ -7,7 +7,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python-core python-logilab-common python-pyxml"
 SRCNAME = "pyreverse"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz \
            file://fix-future.patch;patch=1"

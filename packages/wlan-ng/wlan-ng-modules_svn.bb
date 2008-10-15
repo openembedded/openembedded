@@ -1,6 +1,6 @@
 require wlan-ng-modules.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 PV = "0.2.8+svnr${SRCREV}"
 

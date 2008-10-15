@@ -2,7 +2,7 @@ DESCRIPTION = "The GNU internationalization library."
 HOMEPAGE = "http://www.gnu.org/software/gettext/gettext.html"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 DEPENDS = "gettext-native virtual/libiconv ncurses expat"
 PROVIDES = "virtual/libintl"
 

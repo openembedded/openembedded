@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "guile gtk+ libgnome libgnomeui librsvg gnome-vfs gconf libglade gnome-common"
-PR = "r2"
+FILE_PR = "r2"
 
 inherit gnome
 

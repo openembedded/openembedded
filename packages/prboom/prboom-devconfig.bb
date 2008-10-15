@@ -2,7 +2,7 @@ DESCRIPTION = "Device specific configuration for prboom"
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "file://prboom.cfg"
 

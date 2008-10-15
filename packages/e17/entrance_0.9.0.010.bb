@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
 # can also use pam and crypt
 DEPENDS = "evas ecore edje esmart bash keylaunch xserver-common login-manager"
 RDEPENDS += "glibc-gconv-iso8859-1 entrance-themes"
-PR = "r1"
+FILE_PR = "r1"
 
 inherit e
 

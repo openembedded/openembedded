@@ -2,7 +2,7 @@ DESCRIPTION = "Neuros window manager"
 LICENSE = "GPL"
 
 PV = "0.0+${PR}+gitr${SRCREV}"
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = "qt-embedded"
 

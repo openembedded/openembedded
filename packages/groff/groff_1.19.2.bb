@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r4"
+FILE_PR = "r4"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
 	           file://Makefile.in.patch;patch=1 \

@@ -1,5 +1,5 @@
 require libeventdb.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 headers = "event-db.h"

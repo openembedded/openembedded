@@ -2,7 +2,7 @@ require qpf.inc
 
 DESCRIPTION = "The Bitstream Vera fonts - QPF Edition"
 LICENSE = "Bitstream Vera"
-PR = "r3"
+FILE_PR = "r3"
 
 PROVIDES = "qpf-bitstream-vera-small qpf-bitstream-vera-large"
 

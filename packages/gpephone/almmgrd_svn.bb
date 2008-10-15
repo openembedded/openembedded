@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 libiac sqlite3 libcalenabler2 libalmmgr"
 PV = "0.0+svnr-${SRCREV}"
-PR = "r0"
+FILE_PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

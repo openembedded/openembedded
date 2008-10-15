@@ -1,5 +1,5 @@
 require gettext_${PV}.bb
-PR = "r2"
+FILE_PR = "r2"
 
 DEPENDS = ""
 PROVIDES = ""

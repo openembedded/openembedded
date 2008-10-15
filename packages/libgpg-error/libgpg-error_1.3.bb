@@ -1,3 +1,3 @@
 require libgpg-error.inc
 
-PR = "r1"
+FILE_PR = "r1"

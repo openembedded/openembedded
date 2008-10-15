@@ -3,7 +3,7 @@ HOMEPAGE = "http://thc.org/thc-hydra/"
 SECTION = "console/network"
 DEPENDS = "openssl"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://thc.org/releases/hydra-${PV}-src.tar.gz"
 S = "${WORKDIR}/hydra-${PV}-src"

@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 DEPENDS = "sqlite3"
 SRCNAME = "FormEncode"
 PV = "0.4+svnr${SRCREV}"
-PR = "ml1"
+FILE_PR = "ml1"
 
 inherit setuptools
 

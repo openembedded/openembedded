@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost qt4-x11-free"
 RSUGGESTS = "tetex"
 RDEPENDS = "python-shell python-textutils"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://lyx.cybermirror.org/stable/lyx-${PV}.tar.bz2"
 

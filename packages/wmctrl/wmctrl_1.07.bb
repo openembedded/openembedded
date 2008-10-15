@@ -8,7 +8,7 @@
 DESCRIPTION = "A UNIX/Linux command line tool to interact with an EWMH/NetWM compatible X Window Manager"
 HOMEPAGE = "http://sweb.cz/tripie/utils/wmctrl/"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 ######################################################################################
 

@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-PR = "r7"
+FILE_PR = "r7"
 
 SRC_URI = "file://*.map"
 

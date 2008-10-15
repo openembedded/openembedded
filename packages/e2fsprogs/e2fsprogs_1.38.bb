@@ -1,6 +1,6 @@
 require e2fsprogs.inc
 
-PR = "r16"
+FILE_PR = "r16"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1 \
 	    file://mkinstalldirs.patch;patch=1 \

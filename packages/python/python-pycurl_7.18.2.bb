@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "curl-${PV}"
 SRCNAME = "pycurl"
-PR = "ml0"
+FILE_PR = "ml0"
 
 SRC_URI = "\
   http://${SRCNAME}.sourceforge.net/download/${SRCNAME}-${PV}.tar.gz \

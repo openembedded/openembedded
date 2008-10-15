@@ -7,5 +7,5 @@ DESCRIPTION = "X font utils."
 DEPENDS = "encodings"
 RDEPENDS = "mkfontdir mkfontscale encodings"
 
-PR = "r1"
+FILE_PR = "r1"
 PE = "1"

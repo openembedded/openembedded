@@ -6,7 +6,7 @@ require openssl.inc
 export FULL_OPTIMIZATION = " "
 export BUILD_OPTIMIZATION = " "
 
-PR = "r2"
+FILE_PR = "r2"
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://armeb.patch;patch=1;pnum=0 \

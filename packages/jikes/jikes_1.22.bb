@@ -3,7 +3,7 @@ HOMEPAGE = "http://jikes.sourceforge.net/"
 PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "IBM"
-PR = "r1"
+FILE_PR = "r1"
 
 RDEPENDS = "classpath"
 

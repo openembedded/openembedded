@@ -2,7 +2,7 @@ SECTION = "base"
 SRC_URI = "${HANDHELDS_CVS};module=apps/chkhinge;date=${PV}"
 LICENSE = "MIT"
 S = "${WORKDIR}/chkhinge"
-PR = "r1"
+FILE_PR = "r1"
 
 FILES_${PN} = "/bin"
 

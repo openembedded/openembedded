@@ -1,3 +1,3 @@
 require util-linux.inc
 
-PR = "r8"
+FILE_PR = "r8"

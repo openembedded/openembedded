@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "libxml2 glib-2.0 pango libart-lgpl fontconfig popt gnome-common"
 

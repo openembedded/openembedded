@@ -1,6 +1,6 @@
 SECTION = "devel"
 DEPENDS += "python-native"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omniorb/omniORB-${PV}.tar.gz"
 

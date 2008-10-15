@@ -4,4 +4,4 @@ ARM_INSTRUCTION_SET = "arm"
 
 require util-linux.inc
 
-PR = "r7"
+FILE_PR = "r7"

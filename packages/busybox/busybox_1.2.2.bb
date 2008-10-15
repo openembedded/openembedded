@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r3"
+FILE_PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 

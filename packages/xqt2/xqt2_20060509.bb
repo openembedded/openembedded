@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
 APPNAME = "Xqt"
-PR = "r2"
+FILE_PR = "r2"
 
 inherit palmtop
 

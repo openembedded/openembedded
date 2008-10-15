@@ -1,6 +1,6 @@
 DESCRIPTION = "fantasy turn-based strategy game"
 PV = "0.01+svnr${SRCREV}"
-PR = "r1"
+FILE_PR = "r1"
 SECTION = "games"
 LICENSE = "GPL"
 DEPENDS += "libsdl-image libsdl-mixer libsdl-net"

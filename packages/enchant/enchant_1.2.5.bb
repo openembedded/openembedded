@@ -7,7 +7,7 @@ RDEPENDS    = "aspell"
 
 inherit autotools pkgconfig
 
-PR = "r1"
+FILE_PR = "r1"
 
 S = "${WORKDIR}/enchant-${PV}"
 

@@ -10,5 +10,5 @@ SRC_URI += " file://plucker-no-host-includes.patch;patch=1"
 PARALLEL_MAKE=""
 EXTRA_OEMAKE="RANLIB=${RANLIB}"
 
-PR = "r2"
+FILE_PR = "r2"
 

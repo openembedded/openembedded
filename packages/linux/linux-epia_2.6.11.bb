@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for VIA EPiA"
 LICENSE = "GPL"
-PR = "r0"
+FILE_PR = "r0"
 
 KERNEL_CCSUFFIX = "-3.3.4"
 

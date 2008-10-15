@@ -1,7 +1,7 @@
 LICENSE = "GPL LGPL"
 DEPENDS = "libxml2 libxslt libxslt-native"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

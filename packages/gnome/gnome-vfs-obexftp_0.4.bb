@@ -2,7 +2,7 @@ DESCRIPTION = "obex plugin for gnome-vfs"
 LICENSE = "GPLv2"
 DEPENDS = "openobex gnome-vfs bluez-utils"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit gnome
 

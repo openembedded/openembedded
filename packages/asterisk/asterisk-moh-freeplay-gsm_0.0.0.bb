@@ -3,7 +3,7 @@ HOMEPAGE="http://www.asterisk.org"
 SECTION = "voip"
 LICENSE="GPL"
 #DEPENDS="asterisk"
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI="http://downloads.digium.com/pub/telephony/sounds/releases/asterisk-moh-freeplay-gsm.tar.gz"
 

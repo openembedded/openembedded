@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r1"
+FILE_PR = "r1"
 DESCRIPTION = "CORBA ORB"
 SECTION = "x11/gnome/libs"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ORBit2/2.14/ORBit2-${PV}.tar.bz2 \

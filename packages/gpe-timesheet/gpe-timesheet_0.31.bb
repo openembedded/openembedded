@@ -1,3 +1,3 @@
 require gpe-timesheet.inc
 
-PR = "r1"
+FILE_PR = "r1"

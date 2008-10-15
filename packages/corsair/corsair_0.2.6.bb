@@ -5,7 +5,7 @@ AUTHOR = "Joe Rumsey <joe@rumsey.org>"
 HOMEPAGE = "http://corsair.sf.net/"
 RDEPENDS = "opie-pics"
 
-PR = "r1"
+FILE_PR = "r1"
 
 inherit palmtop
 

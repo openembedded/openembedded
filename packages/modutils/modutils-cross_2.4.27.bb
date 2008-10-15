@@ -1,6 +1,6 @@
 SECTION = "base"
 require modutils_${PV}.bb
-PR = "r9"
+FILE_PR = "r9"
 inherit cross
 S = "${WORKDIR}/modutils-${PV}"
 DEPENDS = ""

@@ -7,7 +7,7 @@ FILESPATH = "${FILE_DIRNAME}/mesa-${PV}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"
 
 PACKAGES_DYNAMIC = "mesa-dri-driver-*"
 
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS += "libdrm"
 # DRI is useless without the kernel drivers

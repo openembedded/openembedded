@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-PR = "r2"
+FILE_PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"

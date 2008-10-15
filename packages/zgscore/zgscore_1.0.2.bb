@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://nuke.cinlug.org/modules/Static_Docs/data/db/zgs/"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://www.cinlug.org/modules/Static_Docs/data/db/zgs/zgscore_${PV}_arm.src.tar.gz \
            file://qtopia17.patch;patch=1"

@@ -1,5 +1,5 @@
 require dpkg.inc
-PR = "r0"
+FILE_PR = "r0"
 DEPENDS += "zlib-native"
 SRC_URI += "file://noman.patch;patch=1"
 

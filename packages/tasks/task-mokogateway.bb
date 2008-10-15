@@ -1,7 +1,7 @@
 DESCRIPTION = "MokoGateway: Tasks for a companion server for the Openmoko Linux Distribution"
 LICENSE = "MIT"
 PROVIDES = "task-mokogateway-everything"
-PR = "r5"
+FILE_PR = "r5"
 
 inherit task
 

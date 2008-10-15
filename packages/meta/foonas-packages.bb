@@ -1,6 +1,6 @@
 DESCRIPTION = "Packages that are compatible with FooNAS"
 LICENSE = "MIT"
-PR = "r2"
+FILE_PR = "r2"
 CONFLICTS = "db3"
 PROVIDES += "${FOONAS_IMAGENAME}-packages"
 

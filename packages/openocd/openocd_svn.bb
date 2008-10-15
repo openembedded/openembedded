@@ -2,7 +2,7 @@ DESCRIPTION = "Free and Open On-Chip Debugging, In-System Programming and Bounda
 HOMEPAGE = "http://openocd.berlios.de/"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r3"
+FILE_PR = "r3"
 
 inherit autotools
 

@@ -2,7 +2,7 @@ require mono_1.2.6.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI += "file://configure.patch;patch=1"
 

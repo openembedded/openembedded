@@ -1,3 +1,3 @@
 require gnome-doc-utils.inc
 
-PR = "r1"
+FILE_PR = "r1"

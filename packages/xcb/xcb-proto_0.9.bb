@@ -1,2 +1,2 @@
 include xcb-proto.bb
-PR = "r0"
+FILE_PR = "r0"

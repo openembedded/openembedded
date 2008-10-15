@@ -1,6 +1,6 @@
 require libosso.inc
 
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "\
   http://repository.maemo.org/pool/maemo4.0/free/source/libo/${PN}/${PN}_${PV}-1.1fix.tar.gz \

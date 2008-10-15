@@ -1,6 +1,6 @@
 require libeventdb.inc
 
-PR = "r1"
+FILE_PR = "r1"
 PV = "0.90+svn${SRCDATE}"
 DEFAULT_PREFERENCE = "-1"
 

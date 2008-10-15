@@ -11,7 +11,7 @@ PROVIDES = "virtual/xserver"
 
 PE = "1"
 PV = "1.3.0.0+gitr${SRCREV}"
-PR = "r2"
+FILE_PR = "r2"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta02'

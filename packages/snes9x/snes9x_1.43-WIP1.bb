@@ -1,5 +1,5 @@
 SECTION = "x11/games"
-PR = "r3"
+FILE_PR = "r3"
 LICENSE = "snes9x"
 DEPENDS = "libxxf86dga libxxf86vm"
 DEPENDS_append_i686 = " nasm-native"

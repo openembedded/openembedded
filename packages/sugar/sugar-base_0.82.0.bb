@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-PR = "r10"
+FILE_PR = "r10"
 
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \

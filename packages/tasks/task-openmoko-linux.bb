@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Core system for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r71"
+FILE_PR = "r71"
 
 inherit task
 

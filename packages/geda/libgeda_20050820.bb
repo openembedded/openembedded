@@ -1,6 +1,6 @@
 LICENSE = "GPLv2"
 HOMEPAGE = "http://geda.seul.org"
-PR = "r1"
+FILE_PR = "r1"
 
 DEPENDS = "zlib gtk+ guile libpng"
 

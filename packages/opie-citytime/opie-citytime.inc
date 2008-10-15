@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RRECOMMENDS = "tzdata"
-PR = "r1"
+FILE_PR = "r1"
 
 APPNAME = "citytime"
 

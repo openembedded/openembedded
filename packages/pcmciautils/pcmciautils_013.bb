@@ -1,6 +1,6 @@
 require pcmciautils.inc
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI += "file://makefile_fix.patch;patch=1 \
             file://version_workaround.patch;patch=1 \

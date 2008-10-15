@@ -1,5 +1,5 @@
 require mono_1.9.1.inc
-PR = "r3"
+FILE_PR = "r3"
 DEPENDS = "glib-2.0-native perl-native"
 
 DEFAULT_PREFERENCE = "-1"

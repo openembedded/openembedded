@@ -4,7 +4,7 @@ DESCRIPTION="Builds cramfs filesystems for embedded systems"
 SECTION = "base"
 LICENSE="GPL"
 
-PR = "r1"
+FILE_PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/cramfs/cramfs-1.1.tar.gz \
 	file://makefile.patch;patch=1 \

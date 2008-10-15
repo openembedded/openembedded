@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RDEPENDS = "python-core sword"
 DEPENDS = "sword-${PV} swig-native"
 SRCNAME = "sword"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://crosswire.org/ftpmirror/pub/sword/source/v1.5/sword-${PV}.tar.gz"
 
