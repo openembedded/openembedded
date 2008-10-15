@@ -152,7 +152,7 @@ Recipes:    mx31ads-kernel*
 Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://blog.haerwu.biz/
-Machines:   tosa, progear, alix, nokia800, nokia770
+Machines:   progear, alix, nokia800, nokia770
 Distros:    Poky, OpenZaurus, Ångström
 Interests:  WiFi, Native SDK, Nokia tablets
 Recipes:    linux, linux-rp, linux-nokia*, gammu, ttf-fonts/* 
