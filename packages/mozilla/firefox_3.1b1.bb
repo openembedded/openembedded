@@ -1,16 +1,16 @@
 DEPENDS += "cairo"
 
-PV = "3.0.1+3.1a2"
-MOZPV = "3.1a2"
-PR = "r1"
+PV = "3.0.1+3.1b1"
+MOZPV = "3.1b1"
+PR = "r0"
 
-SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build1/firefox-${MOZPV}-source.tar.bz2 \
+SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/${MOZPV}-candidates/build2/source/firefox-${MOZPV}-source.tar.bz2 \
 	file://jsautocfg.h \
 	file://jsautocfg-dontoverwrite.patch;patch=1 \
 	file://random_to_urandom.diff;patch=1 \
 "
 
-S = "${WORKDIR}/"
+S = "${WORKDIR}/mozilla-central"
 
 DEFAULT_PREFERENCE = "-1"
 
