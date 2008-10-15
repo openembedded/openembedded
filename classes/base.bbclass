@@ -559,7 +559,10 @@ python base_do_fetch() {
 		try:
 			if type == "http" or type == "https" or type == "ftp" or type == "ftps":
 				if not base_chk_file(parser, pn, pv,uri, localpath, d):
-					bb.note("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+					if not bb.data.getVar("OE_ALLOW_INSECURE_DOWNLOADS",d, True):
+						bb.fatal("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
+					else:
+						bb.note("%s-%s: %s has no entry in conf/checksums.ini, not checking URI" % (pn,pv,uri))
 		except Exception:
 			raise bb.build.FuncFailed("Checksum of '%s' failed" % uri)
 }
@@ -736,8 +739,48 @@ def base_get_metadata_svn_revision(d):
 		pass
 	return revision
 
-METADATA_BRANCH ?= "${@base_get_metadata_monotone_branch(d)}"
-METADATA_REVISION ?= "${@base_get_metadata_monotone_revision(d)}"
+def base_get_metadata_git_branch(d):
+	import os
+	branch = os.popen('cd %s; git-branch | grep "^* " | tr -d "* "' % base_get_scmbasepath(d)).read()
+
+	if len(branch) != 0:
+		return branch
+	return "<unknown>"
+
+def base_get_metadata_git_revision(d):
+	import os
+	rev = os.popen("cd %s; git-log -n 1 --pretty=oneline --" % base_get_scmbasepath(d)).read().split(" ")[0]
+	if len(rev) != 0:
+		return rev
+	return "<unknown>"
+
+def base_detect_revision(d):
+	scms = [base_get_metadata_monotone_revision, \
+			base_get_metadata_svn_revision, \
+			base_get_metadata_git_revision]
+
+	for scm in scms:
+		rev = scm(d)
+		if rev <> "<unknown>":
+			return rev
+
+	return "<unknown>"	
+
+def base_detect_branch(d):
+	scms = [base_get_metadata_monotone_branch, \
+			base_get_metadata_git_branch]
+
+	for scm in scms:
+		rev = scm(d)
+		if rev <> "<unknown>":
+			return rev
+
+	return "<unknown>"	
+	
+	
+
+METADATA_BRANCH ?= "${@base_detect_branch(d)}"
+METADATA_REVISION ?= "${@base_detect_revision(d)}"
 
 addhandler base_eventhandler
 python base_eventhandler() {
