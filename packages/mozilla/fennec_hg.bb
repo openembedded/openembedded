@@ -3,7 +3,7 @@ DEPENDS += "cairo alsa-lib "
 
 PV = "0.8+0.9pre"
 MOZPV = "0.9pre"
-PR = "r9"
+PR = "r10"
 PE = "1"
 
 SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=3a9a64e5bedc \
@@ -22,6 +22,7 @@ export HOST_LIBIDL_CONFIG = "${STAGING_BINDIR_NATIVE}/libIDL-config-2"
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O2"
 
 export LIBXUL_DIST="${S}/objdir/xulrunner/dist/"
+CFLAGS_append = " -DMOZ_GFX_OPTIMIZE_MOBILE "
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/mobile-browser ] ; then
