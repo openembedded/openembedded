@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Native SDK"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-FILE_PR = "r58"
+PR = "r58"
 
 inherit task
 

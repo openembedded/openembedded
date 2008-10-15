@@ -8,7 +8,7 @@ KERNEL_RELEASE = "2.6.23.14"
 #PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
 
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${KERNEL_RELEASE}.bz2;patch=1 \

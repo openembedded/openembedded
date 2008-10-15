@@ -10,7 +10,7 @@ LICENSE = "GPL"
 APPNAME = "ubahnnav"
 APPTYPE = "binary"
 APPDESKTOP = "${S}/src/ubahnnav"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://ubahnstation.net/source/ubahnnav-${PV}.tar.gz \
 	   file://qmake.patch;patch=1"

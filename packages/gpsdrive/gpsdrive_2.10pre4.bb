@@ -3,7 +3,7 @@ require gpsdrive.inc
 DEPENDS += "libwww-perl-native libart-lgpl libxml2 cairo mysql"
 RDEPENDS_${PN} += "libwww-perl"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.gpsdrive.de/packages/${PN}-${PV}.tar.gz \
            file://gpsdrive_2.10pre4.desktop \

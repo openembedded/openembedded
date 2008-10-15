@@ -1,7 +1,7 @@
 SECTION = "console/utils"
 LICENSE = "GPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "openjade-native sgmlspl-native docbook-dsssl-stylesheets-native docbook-sgml-dtd-3.1-native"
 

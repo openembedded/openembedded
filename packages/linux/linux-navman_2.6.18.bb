@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 #DEPENDS = "u-boot"
 
-FILE_PR = "r0"
+PR = "r0"
 
 COMPATIBLE_MACHINE = "navman-icn330"
 

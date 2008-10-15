@@ -1,4 +1,4 @@
-FILE_PR = "r1"
+PR = "r1"
 
 TOOLCHAIN_TARGET_TASK = "task-openmoko-toolchain-target"
 TOOLCHAIN_HOST_TASK = "task-openmoko-toolchain-host"

@@ -3,7 +3,7 @@ DEPENDS = "openssl"
 DESCRIPTION = "Socat is a relay for bidirectional data \
 transfer between two independent data channels."
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.dest-unreach.org/socat/download/socat-${PV}.tar.bz2 \
            file://xioopen.patch;patch=1 \

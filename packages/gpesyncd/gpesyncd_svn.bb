@@ -7,7 +7,7 @@ DEPENDS =	"libgpevtype libtododb libcontactsdb libeventdb sqlite libmimedir glib
 
 S =		"${WORKDIR}/${PN}"
 PV =		"0.0+svn${SRCDATE}"
-FILE_PR =		"r0"
+PR =		"r0"
 
 inherit autotools
 

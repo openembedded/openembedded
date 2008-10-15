@@ -4,7 +4,7 @@ inherit image
 
 export IMAGE_BASENAME = "Neuros-OSD2-base-image"
 
-FILE_PR = "r1"
+PR = "r1"
 
 # Select which Secure Shell Daemon gets included into the rootfs
 DISTRO_SSH_DAEMON ?= "dropbear"

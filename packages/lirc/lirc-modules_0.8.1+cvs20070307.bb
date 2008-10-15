@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.lirc.org"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"
 RDEPENDS_nslu2 = "setserial"
-FILE_PR = "r0"
+PR = "r0"
 
 # enable this bb file until the other packages compile again
 #DEFAULT_PREFERENCE = "-1"

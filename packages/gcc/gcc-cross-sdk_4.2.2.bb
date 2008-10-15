@@ -1,4 +1,4 @@
-FILE_PR = "r6"
+PR = "r6"
 
 inherit sdk
 

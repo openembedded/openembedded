@@ -1,6 +1,6 @@
 DESCRIPTION = "Set of files to initialize bare system suitable for kernel, etc. testing."
 SRC_URI = "file://devimage.sh file://passwd file://dropbear_rsa_host_key"
-FILE_PR = "r4"
+PR = "r4"
 
 do_install() {
 	install -d ${D}/etc/dropbear

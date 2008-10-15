@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.xiph.org/ao/"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "alsa-lib libao"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://downloads.xiph.org/releases/ao/libao-${PV}.tar.gz"
 S = "${WORKDIR}/libao-${PV}"

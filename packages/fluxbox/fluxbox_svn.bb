@@ -5,7 +5,7 @@ HOMEPAGE = "http://fluxbox.sourceforge.net"
 LICENSE = "MIT"
 
 PV = "0.99+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1" 
 
 SRC_URI = "svn://svn.berlios.de/fluxbox;module=trunk \

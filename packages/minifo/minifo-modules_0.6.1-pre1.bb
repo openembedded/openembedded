@@ -2,7 +2,7 @@ DESCRIPTION = "The mini fanout overlay file system"
 HOMEPAGE = "http://www.denx.de/twiki/bin/view/Know/MiniFOHome"
 LICENSE = "GPL"
 SECTION = "kernel/modules"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.denx.de/twiki/pub/Know/MiniFOHome/mini_fo-0-6-1-pre1.tar.bz2"
 S = "${WORKDIR}/mini_fo"

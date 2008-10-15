@@ -4,7 +4,7 @@ SECTION = "devel/python"
 LICENSE = "MIT"
 DEPENDS = "libyaml python-cython-native"
 PV = "3.05+svnr${SRCREV}"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "\
   svn://svn.pyyaml.org/pyyaml;module=trunk;proto=http \

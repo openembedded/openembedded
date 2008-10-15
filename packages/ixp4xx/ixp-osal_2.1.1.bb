@@ -34,7 +34,7 @@ SRC_URI += "file://le.patch;patch=1"
 SRC_URI += "file://assert.patch;patch=1"
 
 S = "${WORKDIR}/ixp_osal"
-FILE_PR = "r0"
+PR = "r0"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"

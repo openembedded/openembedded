@@ -5,5 +5,5 @@ LICENSE= "BSD-X"
 
 DEPENDS += " libxrandr libxrender virtual/libx11"
 PE = "1"
-FILE_PR = "r2"
+PR = "r2"
 

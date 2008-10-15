@@ -1,6 +1,6 @@
 DESCRIPTION = "Forwards a socket to a tty"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://pty.c"
 

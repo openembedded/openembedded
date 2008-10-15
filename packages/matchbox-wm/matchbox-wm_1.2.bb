@@ -3,7 +3,7 @@ require matchbox-wm.inc
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf gconf-native "
 RDEPENDS = ""
 
-FILE_PR ="r4"
+PR ="r4"
 
 SRC_URI = "http://matchbox-project.org/sources/matchbox-window-manager/1.2/matchbox-window-manager-${PV}.tar.bz2 \
            file://configure_fix.patch;patch=1 \

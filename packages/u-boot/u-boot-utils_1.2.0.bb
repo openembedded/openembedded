@@ -3,7 +3,7 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
         file://fw_env.c.patch;patch=1 \

@@ -8,7 +8,7 @@ HOMEPAGE = "http://www.boost.org/"
 SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/boost/boost-jam-${PV}.tgz"
 S = "${WORKDIR}/boost-jam-${PV}"

@@ -2,7 +2,7 @@ require iqnotes.inc
 
 #upstream version
 UPV = "2.1.0rc1"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://download.berlios.de/iqnotes/iqnotes-${UPV}.tar.bz2 \
            file://pro.patch;patch=1"

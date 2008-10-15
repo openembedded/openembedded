@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libqtaux2"
 APPNAME = "tinykate"
-FILE_PR = "r2"
+PR = "r2"
 
 S = "${WORKDIR}/tinykate"
 

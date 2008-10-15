@@ -9,7 +9,7 @@ SECTION = "console/telephony"
 DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
 PV = "1.5.0+1.6.0beta8"
-FILE_PR = "r2"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

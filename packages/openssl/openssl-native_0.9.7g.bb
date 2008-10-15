@@ -2,7 +2,7 @@ inherit pkgconfig native
 
 require openssl.inc
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "file://debian.patch;patch=1 \
             file://armeb.patch;patch=1;pnum=0 \

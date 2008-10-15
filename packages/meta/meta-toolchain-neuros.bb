@@ -1,6 +1,6 @@
 # Toolchain for neuros-osd devices
 
-FILE_PR = "r3"
+PR = "r3"
 
 TOOLCHAIN_HOST_TASK = "task-sdk-host \
                        qmake2-sdk uicmoc4-sdk"

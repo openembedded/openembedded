@@ -1,6 +1,6 @@
 require expat.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 do_stage () {
 	install -m 0644 ${S}/lib/expat.h ${STAGING_INCDIR}/

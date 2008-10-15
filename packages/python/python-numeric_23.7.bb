@@ -2,7 +2,7 @@ DESCRIPTION = "A sophisticated Numeric Processing Package for Python"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "PSF"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/numpy/Numeric-${PV}.tar.gz \
            file://no-lapack.patch;patch=1"

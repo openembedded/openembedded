@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "x11/multimedia"
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 

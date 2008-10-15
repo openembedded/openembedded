@@ -1,7 +1,7 @@
 require zroadmap.inc
 
 PV = "0.0+cvs${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "cvs://anonymous:@roadmap.cvs.sf.net/cvsroot/roadmap;module=roadmap \
            file://cross.patch;patch=1;pnum=2 \

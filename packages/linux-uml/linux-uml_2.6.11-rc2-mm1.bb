@@ -5,7 +5,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 RCV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 MMV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 LV = "2.6.10"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${LV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KV}-${RCV}.bz2;patch=1 \

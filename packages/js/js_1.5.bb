@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "libs/network"
 DEPENDS = "readline"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/js/older-packages/js-1.5.tar.gz \
            file://jsautocfg.h"

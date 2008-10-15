@@ -1,3 +1,3 @@
 require clamav.inc
 
-FILE_PR = "r2"
+PR = "r2"

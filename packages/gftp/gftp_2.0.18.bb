@@ -6,7 +6,7 @@ DESCRIPTION = "Free multithreaded file transfer client (FTP/HTTP/SSH)."
 HOMEPAGE="http://www.gftp.org/"
 SECTION = "x11/network"
 LICENSE="GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI="http://www.gftp.org/gftp-${PV}.tar.bz2 \
 	 file://configure.patch;patch=1"

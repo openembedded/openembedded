@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for the Iomega storcenter platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "uboot-utils"
-FILE_PR = "r0"
+PR = "r0"
 
 # notes on iom def kernel:
 #

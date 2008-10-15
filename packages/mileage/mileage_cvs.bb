@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 #Change to form x.y.z+cvs${SRCDATE} when 4.2.0 changes in PV
 PV = "4.2.0-cvs-${SRCDATE}"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "cvs://anonymous@mileage.cvs.sourceforge.net/cvsroot/mileage;module=mileage"
 S = "${WORKDIR}/mileage"

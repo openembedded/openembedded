@@ -2,7 +2,7 @@ DESCRIPTION = "Panel applet to eject cards (from PdaXrom project)"
 LICENSE = "GPL"
 DEPENDS = "matchbox-wm libmatchbox"
 SECTION = "x11/wm"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://distro.ibiblio.org/pub/linux/distributions/pdaxrom/src/mb-applet-cards-${PV}.tar.bz2 \
 	file://oz-gpe.patch;patch=1 \

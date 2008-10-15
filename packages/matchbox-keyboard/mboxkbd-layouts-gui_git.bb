@@ -3,7 +3,7 @@ AUTHOR = "Sergey Lapin"
 SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
-FILE_PR = "r5"
+PR = "r5"
 
 PV = "0.0+git5b42aeff36d930dc3a9b75eedc74dacfec45f43f"
 

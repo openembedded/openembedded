@@ -1,6 +1,6 @@
 DESCRIPTION = "Random number generator daemon"
 LICENSE = "GPL"
-FILE_PR = "1"
+PR = "1"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/gkernel/${P}.tar.gz \
            file://init"

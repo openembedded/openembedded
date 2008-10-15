@@ -2,7 +2,7 @@ DESCRIPTION = "Philips USB Webcam driver for Linux that supports VGA resolution"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
 	   file://endian-fix.patch;patch=1 \

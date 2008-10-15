@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "libtool jpeg libusb libexif"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gphoto/libgphoto2-${PV}.tar.bz2"
 

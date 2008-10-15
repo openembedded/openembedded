@@ -3,6 +3,6 @@ DESCRIPTION = "Console text editor with good functionality, good choice for vi-h
 HOMEPAGE = "http://joe-editor.sourceforge.net/"
 LICENSE ="GPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/joe-editor/joe-${PV}.tar.gz"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools

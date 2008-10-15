@@ -9,7 +9,7 @@ SECTION_libanthy0 = "libs/inputmethods"
 SECTION_libanthy-dev = "devel/libs"
 LICENSE = "GPL"
 DEPENDS = "anthy-native"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://osdn.dl.sourceforge.jp/anthy/29142/anthy-9100e.tar.gz \
            file://not_build_elc.patch;patch=1 \

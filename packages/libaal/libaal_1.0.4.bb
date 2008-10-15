@@ -1,7 +1,7 @@
 # This is the support library for reiser4progs, required when
 # building that package.  The libraries from this build must
 # be installed on the system to use the reiser4progs programs
-FILE_PR = "r1"
+PR = "r1"
 DESCRIPTION = "Library for user-level code accessing Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
 SECTION = "base"

@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "unknown"
-FILE_PR = "r4"
+PR = "r4"
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/rhythmbox/0.8/rhythmbox-${PV}.tar.gz \
            file://ogg.m4 file://vorbis.m4 \
 	   file://omfmake.patch;patch=1"

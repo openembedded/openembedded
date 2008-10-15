@@ -2,7 +2,7 @@ DESCRIPTION = "Basic image for openprotium"
 HOMEPAGE = "http://www.openprotium.org"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit task
 

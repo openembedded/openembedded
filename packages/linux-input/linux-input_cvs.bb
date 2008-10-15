@@ -1,4 +1,4 @@
-FILE_PR = "r2"
+PR = "r2"
 PV = "0.0+cvs${SRCDATE}"
 
 SRC_URI = "cvs://anonymous@linuxconsole.cvs.sourceforge.net/cvsroot/linuxconsole;module=ruby \

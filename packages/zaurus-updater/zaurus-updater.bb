@@ -1,7 +1,7 @@
 DESCRIPTION = "Encrypted shellscript for the Zaurus ROM update"
 DEPENDS = "encdec-updater-native"
 LICENSE = "zaurus-updater"
-FILE_PR = "r21"
+PR = "r21"
 
 PACKAGES = ""
 PACKAGE_ARCH = "${MACHINE_ARCH}"

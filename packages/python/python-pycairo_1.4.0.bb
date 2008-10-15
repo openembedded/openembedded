@@ -3,7 +3,7 @@ SECTION = "python-devel"
 HOMEPAGE = "http://cairographics.org/pycairo"
 LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
-FILE_PR = "ml2"
+PR = "ml2"
 
 SRC_URI = "http://cairographics.org/releases/pycairo-${PV}.tar.gz \
            file://fix-setup-py.patch;patch=1"

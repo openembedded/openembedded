@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "libbedic"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}/misc"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/bedic/zbedic_${PV}-2.tgz \
            file://opie-icons.patch;patch=1 \

@@ -2,7 +2,7 @@ DESCRIPTION = "UUCP is used to transfer mail, news and random files between syst
 HOMEPAGE = "http://www.airs.com/ian/uucp.html"
 SECTION = "console/utils"
 LICENSE = "GPLv2"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools
 

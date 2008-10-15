@@ -3,7 +3,7 @@ SECTION = "x11/libs"
 HOMEPAGE = "http://www.libqanava.org/"
 # LGPL after 0.0.7
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.libqanava.org/dl/qanava-${PV}.tar.gz"
 S = "${WORKDIR}/qanava-${PV}"

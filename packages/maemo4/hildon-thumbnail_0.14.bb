@@ -2,7 +2,7 @@ require hildon-thumbnail.inc
 
 DEPENDS = "libhildon libosso osso-gnome-vfs2"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo4.0/free/source/h/${PN}/${PN}_${PV}.tar.gz \
           "

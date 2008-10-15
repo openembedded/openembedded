@@ -1,5 +1,5 @@
 DESCRIPTION = "Tool to edit the Redboot config from userspace"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://andrzejekiert.ovh.org/software/fconfig/fconfig-20060419.tar.gz"
 

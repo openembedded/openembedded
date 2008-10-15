@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libsdl"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://libmpeg2.sourceforge.net/files/mpeg2dec-${PV}.tar.gz"
 S = "${WORKDIR}/mpeg2dec-0.4.0"

@@ -2,7 +2,7 @@ DESCRIPTION = "Apache Portable Runtime (APR) library"
 SECTION = "libs"
 LICENSE = "Apache License, Version 2.0"
 
-FILE_PR = "r2"
+PR = "r2"
 
 # apache mirrors?
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2 \

@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "JLime Linux kernel for SuperH based Jornada 6xx"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRCREV = "${AUTOREV}"
 

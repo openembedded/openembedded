@@ -1,6 +1,6 @@
 require lua.inc
 
-FILE_PR = "r2"
+PR = "r2"
 DEPENDS += "readline-native"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 	   file://debian.patch;patch=1 \

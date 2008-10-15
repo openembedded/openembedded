@@ -4,7 +4,7 @@ SECTION = "net"
 LICENSE = "GPL"
 DEPENDS = "dbus"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://people.redhat.com/jvdias/dhcdbd/dhcdbd-${PV}.tar.gz \
            file://dhcdbd-1.14-pkgconfig_dbus.patch;patch=1 \

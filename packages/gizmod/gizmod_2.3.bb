@@ -8,7 +8,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/gizmod/gizmod-${PV}.tar.bz2 \
            file://fix-python-configure.patch;patch=1 \
            file://disable-bmp.patch;patch=1"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools
 

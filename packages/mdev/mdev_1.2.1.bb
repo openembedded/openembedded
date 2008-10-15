@@ -4,7 +4,7 @@ busybox. This adds a very small extra overhead in rootfs size      \
 (approx 4kB) but allows greater flexibility."
 HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
-FILE_PR = "r5"
+PR = "r5"
 
 S = "${WORKDIR}/busybox-${PV}"
 

@@ -10,7 +10,7 @@ SRC_URI = "http://www.intel.com/design/network/swsup/ixp400LinuxEthernetDriverPa
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://modprobe.conf"
-FILE_PR = "r15"
+PR = "r15"
 
 RDEPENDS = "ixp4xx-csr"
 

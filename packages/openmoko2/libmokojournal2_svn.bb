@@ -1,7 +1,7 @@
 SECTION = "openmoko/libs"
 DEPENDS = "eds-dbus"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit openmoko2 lib_package
 

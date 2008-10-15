@@ -4,7 +4,7 @@ SECTION = "openmoko/apps"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/openmoko-agpsui;module=trunk;proto=https"
 

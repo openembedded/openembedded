@@ -1,4 +1,4 @@
-FILE_PR = "r10"
+PR = "r10"
 
 # major version number
 PVM = "4.3"

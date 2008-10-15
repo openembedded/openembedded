@@ -1,6 +1,6 @@
 require gtkmm.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 # Hack! Remove once gtkmm likes libtool 2x
 do_configure() {

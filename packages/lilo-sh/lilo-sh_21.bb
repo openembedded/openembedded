@@ -12,7 +12,7 @@ the kernel. LILO can also boot other operating systems. LILO-sh is a \
 port of LILO to the SH processor."
 SECTION = "bootloaders"
 LICENSE = "MIT"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://twibble.org/dist/sh4/src/lilosh/lilo-21.tar.gz \
            file://lilo-0.21-include.patch;patch=1 \

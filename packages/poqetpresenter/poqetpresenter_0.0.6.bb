@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://poqetp.sourceforge.net/"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/poqetp/poqetp_${PV}_src.tar.gz"
 S = "${WORKDIR}/poqetp"

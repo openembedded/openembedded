@@ -4,7 +4,7 @@ SECTION = "libs"
 SRC_URI = "http://daniel.haxx.se/projects/c-ares/c-ares-${PV}.tar.gz"
 LICENSE = "MIT"
 S = "${WORKDIR}/c-ares-${PV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools
 

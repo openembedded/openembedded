@@ -1,7 +1,7 @@
 DESCRIPTION = "Metalog is a replacement for syslogd."
 DEPENDS = "libpcre"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/metalog/metalog-${PV}.tar.gz \
            file://crosscompile.patch;patch=1"

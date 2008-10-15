@@ -1,6 +1,6 @@
 require gpe-su.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN} \
            file://svn-build.patch;patch=1"

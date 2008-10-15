@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
 GPE_TARBALL_SUFFIX = "bz2"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit gpe autotools
 

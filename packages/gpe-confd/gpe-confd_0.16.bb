@@ -4,5 +4,5 @@ DEPENDS = "libxsettings glib-2.0 sqlite"
 SECTION = "gpe"
 DESCRIPTION = "GPE configuration daemon"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 

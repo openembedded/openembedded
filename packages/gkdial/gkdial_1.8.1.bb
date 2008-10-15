@@ -6,7 +6,7 @@ RDEPENDS = "ppp gconf-dbus gpe-su"
 SECTION = "gpe"
 PRIORITY = "optional"
 
-FILE_PR = "r3gpe1"
+PR = "r3gpe1"
 
 SRC_URI = "http://familiar.handhelds.org/source/v0.8.2/${PN}-${PV}.tar.gz \
            file://gkdial-pgpe.patch;patch=1 \

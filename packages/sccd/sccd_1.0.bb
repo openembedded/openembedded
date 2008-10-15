@@ -1,7 +1,7 @@
 DECSCRIPTION = "StorCenter Control Daemon controls leds, fans, softpower"
 SECTION = "utils"
 LICENSE = "BSD"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "file://scc.h \
 	   file://scc.c \

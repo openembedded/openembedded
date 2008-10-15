@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.4.2+gitr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit distutils update-rc.d
 

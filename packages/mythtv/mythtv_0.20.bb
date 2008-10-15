@@ -3,7 +3,7 @@ require mythtv.inc
 inherit qmake2 qt3x11
 
 DEPENDS += "openchrome"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI += "file://configure.patch;patch=1 \
             file://libmyth-libdir.patch;patch=1"

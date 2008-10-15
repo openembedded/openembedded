@@ -1,6 +1,6 @@
 require edje_${PV}.bb
 inherit native
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "evas-native ecore-native eet-native embryo-native"
 

@@ -1,7 +1,7 @@
 DEPENDS = "openssl"
 RPEDENDS = ""
 DESCRIPTION = "ISC Internet Domain Name Server"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.isc.org/isc/bind9/9.3.1/bind-9.3.1.tar.gz \
            file://lib_dns_Makefile.in.patch;patch=1 \

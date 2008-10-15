@@ -8,7 +8,7 @@ HOMEPAGE = "http://sourceforge.jp/projects/efont/"
 LICENSE = "${PN}"
 SRC_DISTRIBUTE_LICENSES += "${PN}"
 RPROVIDES = "virtual/japanese-font"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://download.sourceforge.jp/efont/10087/sazanami-20040629.tar.bz2"
 S = "${WORKDIR}/sazanami-20040629"

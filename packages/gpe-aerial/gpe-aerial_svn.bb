@@ -6,7 +6,7 @@ RDEPENDS = "prismstumbler"
 SECTION  = "gpe"
 PRIORITY = "optional"
 LICENSE  = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 PV = "0.3.0+svn${SRCDATE}"
 
 SRC_URI = "${GPE_EXTRA_SVN}"

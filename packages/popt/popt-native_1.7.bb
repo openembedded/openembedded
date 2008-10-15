@@ -2,7 +2,7 @@ require popt.inc
 
 DEPENDS = "gettext-native"
 
-FILE_PR = "r5"
+PR = "r5"
 
 inherit native autotools
 

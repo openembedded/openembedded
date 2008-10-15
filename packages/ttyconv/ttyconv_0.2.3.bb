@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.bedroomlan.org/~alexios/coding_ttyconv.html"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "console/utils"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.bedroomlan.org/~alexios/files/SOFTWARE/ttyconv/ttyconv_${PV}.tar.gz"
 S = "${WORKDIR}/ttyconv"

@@ -3,7 +3,7 @@ Linux inotify filesystem change notification system."
 LICENSE = "GPL"
 AUTHOR = "Rohan McGovern"
 HOMEPAGE = "http://rohanpm.net/inotify-tools"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://rohanpm.net/files/inotify-tools-2.1.tar.gz"
 

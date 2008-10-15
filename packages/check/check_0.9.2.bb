@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "devel"
 
-FILE_PR ="r2"
+PR ="r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/check/check-${PV}.tar.gz"
 S = "${WORKDIR}/check-${PV}"

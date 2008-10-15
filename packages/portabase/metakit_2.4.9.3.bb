@@ -8,7 +8,7 @@ HOMEPAGE = "http://www.equi4.com/metakit.html"
 
 SRC_URI = "http://www.equi4.com/pub/mk/metakit-${PV}.tar.gz \
 	   file://metakit-2.4.9.3.patch;patch=1"
-FILE_PR = "r3"
+PR = "r3"
 
 FILES_${PN} += " ${libdir}/*.so"
 

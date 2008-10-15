@@ -1,4 +1,4 @@
-FILE_PR = "r4"
+PR = "r4"
 
 require binutils.inc
 

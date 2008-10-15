@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS = "gtk+ shared-mime-info"
 RDEPENDS = "shared-mime-info"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/rox/${P}.tar.bz2 \
            file://no-strip-objcopy.patch;patch=1;pnum=3"

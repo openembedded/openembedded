@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE = "-1"
 #
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "ixp-osal"
 DEPENDS = "ixp4xx-csr"

@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION}) prism54-firmware (1.0.3.0) hotplug"
 RRECOMMENDS = "kernel-module-firmware-class"
 DEPENDS = "virtual/kernel prism54-firmware"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://prism54.org/pub/linux/testing/tars/2004-06/prism54-1.2.tar.bz2"
 

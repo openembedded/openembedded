@@ -1,7 +1,7 @@
 DESCRIPTION = "Rise of the Triad - an SDL based Doom clone - QtE based Palmtop Environments Edition"
 HOMEPAGE = "http://www.icculus.org/root"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 APPIMAGE = "${WORKDIR}/rott.jpg"
 

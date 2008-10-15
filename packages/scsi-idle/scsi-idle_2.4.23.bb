@@ -7,7 +7,7 @@ SECTION = "console/utils"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://packages.debian.org/unstable/admin/scsi-idle"
 AUTHOR = "Eduard Bloch <blade@debian.org>"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/s/scsi-idle/scsi-idle_${PV}-5.tar.gz \
 	file://makefile.patch;patch=1 \

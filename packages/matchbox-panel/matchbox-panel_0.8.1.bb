@@ -1,5 +1,5 @@
 SECTION = "x11/utils"
-FILE_PR = "r4"
+PR = "r4"
 DESCRIPTION = "Matchbox panel"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxpm apmd startup-notification virtual/kernel"

@@ -1,4 +1,4 @@
-FILE_PR = "r3"
+PR = "r3"
 DESCRIPTION = "A general purpose cryptographic library based on the code from GnuPG"
 SECTION = "libs"
 PRIORITY = "optional"

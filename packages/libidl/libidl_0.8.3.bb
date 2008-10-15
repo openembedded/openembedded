@@ -2,7 +2,7 @@ require libidl.inc
 
 DEPENDS = "glib-2.0"
 
-FILE_PR = "r3"
+PR = "r3"
 
 # Firefox uses the libIDL-config-2 script instead of pkgconfig (for some
 # strange reason - so we do some sed fu to fix the path there

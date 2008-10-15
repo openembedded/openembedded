@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
-FILE_PR = "r7"
+PR = "r7"
 
 FILESPATH = "${FILE_DIRNAME}/qemu-${PV}"
 FILESDIR = "${WORKDIR}"

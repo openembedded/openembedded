@@ -2,7 +2,7 @@ DESCRIPTION = "Freetype font rendering library"
 HOMEPAGE = "http://www.freetype.org"
 SECTION = "libs"
 LICENSE = "freetype"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/freetype/freetype-${PV}.tar.bz2 \
 	   file://configure.patch;patch=1 \

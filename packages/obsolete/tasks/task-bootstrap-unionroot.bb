@@ -1,7 +1,7 @@
 DESCRIPTION = "Core packages required for a basic installation with unionroot"
 PROVIDES = "task-bootstrap"
 RPROVIDES = "task-bootstrap"
-FILE_PR = "r2"
+PR = "r2"
 DEFAULT_PREFERENCE = "-1"
 
 # The BOOTSTRAP_EXTRA_ variables are often manipulated by the

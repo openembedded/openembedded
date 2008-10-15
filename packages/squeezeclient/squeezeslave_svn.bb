@@ -3,7 +3,7 @@ DESCRIPTION = "command line audio playback client for SlimServer"
 LICENSE = "GPL"
 DEPENDS += "libmad flac libvorbis"
 PV = "3.0+svn-${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://svn.slimdevices.com/repos/slim/trunk/;module=softsqueeze;proto=http \
            file://varinit.patch;patch=1 \

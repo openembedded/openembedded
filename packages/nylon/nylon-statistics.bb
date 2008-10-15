@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 SRCDATE = "20050909"
 PV = "1.0.0+cvs${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"
 S = "${WORKDIR}/${PN}"

@@ -3,7 +3,7 @@ SECTION = "libs/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libusb ncurses"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://download.berlios.de/emul/emul-${PV}.tar.gz"
 

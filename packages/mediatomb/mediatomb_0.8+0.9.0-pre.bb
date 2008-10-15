@@ -2,7 +2,7 @@ DESCRIPTION = "MediaTomb - UPnP AV MediaServer for Linux"
 HOMEPAGE = "http://mediatomb.cc/"
 LICENSE = "GPLv2"
 DEPENDS = "sqlite3 libexif js zlib file id3lib"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mediatomb/mediatomb-0.9.0-pre.tar.gz"
 

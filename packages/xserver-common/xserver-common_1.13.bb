@@ -1,6 +1,6 @@
 require xserver-common.inc
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI_append = " file://setDPI.sh \
                    file://xserver-imageon.patch;patch=1 \

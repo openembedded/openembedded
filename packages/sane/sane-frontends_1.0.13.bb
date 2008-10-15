@@ -2,7 +2,7 @@ DESCRIPTION = "Frontends for SANE"
 DEPENDS = "virtual/libx11 gimp sane-backends"
 LICENSE = "LGPL"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.sane-project.org/pub/sane/old-versions/sane-frontends-${PV}/sane-frontends-${PV}.tar.gz \
 	"

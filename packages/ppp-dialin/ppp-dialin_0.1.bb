@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Enables PPP dial-in through a serial connection"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
-FILE_PR = "r5"
+PR = "r5"
 LICENSE = "MIT"
 
 SRC_URI = "file://host-peer \

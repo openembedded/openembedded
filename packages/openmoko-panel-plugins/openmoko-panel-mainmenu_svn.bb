@@ -1,7 +1,7 @@
 DESCRIPTION = "Main menu applet for the Openmoko panel"
 DEPENDS += "pulseaudio startup-notification"
 PV = "0.1.0+svn${SVNREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit openmoko-panel-plugin
 

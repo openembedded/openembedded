@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "espeak flite pulseaudio libdotconf glib-2.0"
 RPROVIDES_${PN} += "speechd"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools update-rc.d
 

@@ -3,7 +3,7 @@ SECTION = "libs/network"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl"
 LICENSE = "LGPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_net/release/SDL_net-${PV}.tar.gz \
 	   file://libtool2.patch;patch=1 \

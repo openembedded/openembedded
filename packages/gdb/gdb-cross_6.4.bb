@@ -2,4 +2,4 @@ require gdb-cross.inc
 
 inherit cross
 
-FILE_PR = "r1"
+PR = "r1"

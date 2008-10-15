@@ -3,7 +3,7 @@ SECTION = "games"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl zlib"
 LICENSE = "snes9x"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.vanille.de/mirror/snes9x-sdl-${PV}.tar.bz2 \
 	   file://compile.patch;patch=1 \

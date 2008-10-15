@@ -3,7 +3,7 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Mainstone (PXA270 ref design)"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/v2.6.25/patch-2.6.25-rc4.bz2;patch=1 \

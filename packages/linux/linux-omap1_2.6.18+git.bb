@@ -1,6 +1,6 @@
 require linux-omap.inc
 
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "omap5912osk"
 

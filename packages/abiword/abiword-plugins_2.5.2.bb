@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "boost loudmouth libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
-FILE_PR = "r1"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "1"
 

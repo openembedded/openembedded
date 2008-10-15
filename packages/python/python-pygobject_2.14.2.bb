@@ -3,7 +3,7 @@ SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
 PE = "1"
-FILE_PR = "r2"
+PR = "r2"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 

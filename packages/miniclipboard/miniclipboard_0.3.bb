@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DESCRIPTION = "Clipboard management application"
 DEPENDS = "virtual/libx11 libxpm"
 RDEPENDS = "gdk-pixbuf-loader-xpm"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "file://miniclipboard.desktop \
             file://makefile.patch;patch=1;pnum=0"

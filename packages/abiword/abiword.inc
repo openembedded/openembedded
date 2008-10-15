@@ -6,7 +6,7 @@ DEPENDS     = "perl-native libgsf libgnomeprint libgnomeprintui libglade libfrib
 RDEPENDS    = "enchant "
 RDEPENDS_linux += "glibc-gconv-ibm850 glibc-gconv-cp1252 \
                    glibc-gconv-iso8859-15 glibc-gconv-iso8859-1"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz"
 S = "${WORKDIR}/abiword-${PV}/abi"

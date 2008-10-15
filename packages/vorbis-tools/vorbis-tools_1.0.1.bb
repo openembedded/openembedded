@@ -4,7 +4,7 @@ vorbiscomment (ogg comment editor)."
 LICENSE = "GPL"
 DEPENDS = "libogg libvorbis libao curl"
 SECTION = "console/multimedia"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/vorbis-tools-${PV}.tar.gz \
            file://m4.patch;patch=1 \

@@ -1,5 +1,5 @@
 require mono_1.2.5.inc
-FILE_PR = "r2"
+PR = "r2"
 DEPENDS = "glib-2.0-native perl-native"
 
 SRC_URI += "file://mono-fix-libdir-path.patch;patch=1"

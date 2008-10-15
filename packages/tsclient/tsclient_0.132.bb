@@ -2,7 +2,7 @@
 # Copyright (C) 2004-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-FILE_PR ="r1"
+PR ="r1"
 
 DESCRIPTION="Terminal Server Client (tsclient) is a frontend for rdesktop and other remote desktop tools"
 HOMEPAGE="http://www.gnomepro.com/tsclient/"

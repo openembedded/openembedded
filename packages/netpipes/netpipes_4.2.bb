@@ -2,7 +2,7 @@
 # Released under the MIT license (see packages/COPYING)
 DESCRIPTION = "A package to manipulate BSD TCP/IP stream sockets"
 SECTION = "console/network"
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "GPL"
 
 SRC_URI = "http://web.purplefrog.com/~thoth/netpipes/ftp/${PN}-${PV}-export.tar.gz"

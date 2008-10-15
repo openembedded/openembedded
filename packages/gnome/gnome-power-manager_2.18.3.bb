@@ -1,7 +1,7 @@
 LICENSE = "GPLv2"
 DEPENDS = "libnotify libgnomeui gnome-panel gnome-doc-utils libwnck gtk+ gnome-keyring libglade hal dbus-glib " 
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit gnome
 

@@ -3,4 +3,4 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_angstrom = "1"
 
 #keep in sync with qt-embedded_${PV}.bb
-FILE_PR = "r1"
+PR = "r1"

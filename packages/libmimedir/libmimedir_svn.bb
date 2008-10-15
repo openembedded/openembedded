@@ -7,7 +7,7 @@ DEPENDS = "intltool-native"
 DEFAULT_PREFERENCE = "-1"
 
 PV = "0.4.1+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN}"
 

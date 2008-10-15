@@ -1,6 +1,6 @@
 DESCRIPTION = "fmtools - programs for Video for Linux radio cards"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.stanford.edu/~blp/fmtools/fmtools-1.0.2.tar.gz \
            file://makefile.patch;patch=1"

@@ -4,7 +4,7 @@ DEPENDS = "libogg"
 DESCRIPTION = "tremor is a fixed point implementation of the vorbis codec."
 LICENSE = "BSD"
 SRCDATE = "${PV}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http"
 

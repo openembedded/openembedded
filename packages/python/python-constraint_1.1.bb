@@ -5,7 +5,7 @@ provided to work with finite domains only."
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://labix.org/download/python-constraint/python-constraint-${PV}.tar.bz2"
 

@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time gnutls"
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.webdav.org/${PN}/${P}.tar.gz \
 	file://gnutls-force-and-detect.patch;patch=1"

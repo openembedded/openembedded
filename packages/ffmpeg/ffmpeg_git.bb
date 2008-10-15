@@ -4,7 +4,7 @@ DEPENDS += "schroedinger libgsm"
 
 PE = "1"
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-FILE_PR = "r34"
+PR = "r34"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"

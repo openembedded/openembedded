@@ -5,7 +5,7 @@
 DESCRIPTION="xfce4 Desktop Background Manager"
 SECTION = "x11/base"
 DEPENDS = "virtual/libx11 libxfcegui4 libxfce4mcs libxml2 xfce4-panel thunar"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit xfce
 

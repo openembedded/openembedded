@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "Pyrex"
-FILE_PR = "ml1"
+PR = "ml1"
 
 SRC_URI = "http://nz.cosc.canterbury.ac.nz/~greg/python/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 

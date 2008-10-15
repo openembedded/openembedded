@@ -1,6 +1,6 @@
 SECTION = "base"
 DESCRIPTION = "modutils configuration files"
-FILE_PR = "r3"
+PR = "r3"
 LICENSE = "MIT"
 
 SRC_URI = "file://modules \

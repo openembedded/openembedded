@@ -7,7 +7,7 @@ DEPENDS = "gtk+ esound audiofile libgpewidget libxsettings libxsettings-client"
 RDEPENDS_${PN} = "xst xset ipaq-sleep ntpdate gpe-login gpe-icons tzdata"
 RDEPENDS_gpe-conf-panel = "gpe-conf"
 
-FILE_PR = "r1"
+PR = "r1"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

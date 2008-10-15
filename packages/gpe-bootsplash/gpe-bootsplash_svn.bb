@@ -2,7 +2,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+ libsvg-cairo"
-FILE_PR = "r1"
+PR = "r1"
 PV = "1.15+svn-${SRCDATE}"
 
 inherit autotools

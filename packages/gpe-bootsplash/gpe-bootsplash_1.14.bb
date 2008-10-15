@@ -4,7 +4,7 @@ DEPENDS = "gtk+ libsvg-cairo"
 SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI += "file://splash-p.svg file://splash-l.svg \
             file://c7x0-rotation.patch;patch=1 \

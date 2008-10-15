@@ -7,7 +7,7 @@ DEPENDS += "libxkbfile libxcalibrate"
 PROVIDES = "virtual/xserver"
 
 PE = "1"
-FILE_PR = "r6"
+PR = "r6"
 
 FILESPATH = "${FILE_DIRNAME}/xserver-kdrive-${PV}:${FILE_DIRNAME}/xserver-kdrive:${FILE_DIRNAME}/files"
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \

@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.cartel-info.fr/pbiondi/zaurus/"
 APPNAME = "zethereal"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools qmake_base
 

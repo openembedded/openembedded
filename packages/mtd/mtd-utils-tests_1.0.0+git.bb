@@ -6,7 +6,7 @@ require mtd-utils_1.0.0+git.bb
 
 SRC_URI = "git://git.infradead.org/mtd-utils.git;protocol=git;tag=${TAG}"
 
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}/git/tests/fs-tests"
 

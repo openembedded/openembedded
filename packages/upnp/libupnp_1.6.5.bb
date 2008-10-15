@@ -2,7 +2,7 @@ DESCRIPTION = "The portable SDK for UPnP* Devices (libupnp) provides developers 
 HOMEPAGE = "http://pupnp.sourceforge.net/"
 LICENSE = "BSD"
 
-FILE_PR = "r1"
+PR = "r1"
 
 LEAD_SONAME = "libupnp"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pupnp/${P}.tar.bz2"

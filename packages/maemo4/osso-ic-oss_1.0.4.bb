@@ -3,7 +3,7 @@ DESCRIPTION = "Nokia osso-ic library"
 
 DEPENDS = "dbus-glib glib-2.0 libosso"
 
-FILE_PR = "r1"
+PR = "r1"
 
 # No sources for that Maemo revision any more.
 SRC_URI = "http://repository.maemo.org/pool/bora/free/source/${PN}_${PV}.tar.gz \

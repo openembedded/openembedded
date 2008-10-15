@@ -2,7 +2,7 @@ DESCRIPTION = "Install one of these tasks to get support for truetype fonts."
 SECTION = "fonts"
 LICENSE = "MIT"
 PV = "1.0"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit task
 

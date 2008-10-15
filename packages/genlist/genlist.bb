@@ -1,7 +1,7 @@
 DESCRIPTION = "IP Address List Generator"
 SECTION = "utils"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://genlist.c \
 	   file://Makefile"

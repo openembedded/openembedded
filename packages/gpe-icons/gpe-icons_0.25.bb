@@ -7,7 +7,7 @@ RDEPENDS = "gdk-pixbuf-loader-png"
 
 inherit gpe
 
-FILE_PR = "r1"
+PR = "r1"
 
 #only icons present in the package
 PACKAGE_ARCH = "all"

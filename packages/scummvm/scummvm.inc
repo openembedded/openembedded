@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.scummvm.org"
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 

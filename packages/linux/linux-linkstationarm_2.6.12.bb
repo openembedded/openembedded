@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for ARM based Buffalo Linkstations"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS += "u-boot-utils-native"
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "lsarm"
 

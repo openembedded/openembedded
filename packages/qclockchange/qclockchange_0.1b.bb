@@ -5,7 +5,7 @@ LICENSE = "GPL"
 AUTHOR = "piro <piro400@occn.zaq.ne.jp>"
 HOMEPAGE = "http://piro.sytes.net/~piro/zaurus/"
 APPTYPE="binary"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://piro.sytes.net/~piro/zaurus/etc/qclockchange-${PV}.tar.gz \
 	   file://qclockchange.png \

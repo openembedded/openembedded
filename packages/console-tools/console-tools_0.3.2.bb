@@ -1,7 +1,7 @@
 SECTION = "base"
 LICENSE = "GPL"
 DESCRIPTION = "Allows you to set-up and manipulate the Linux console."
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lct/console-tools-${PV}.tar.gz \
            file://codepage.patch;patch=1 \

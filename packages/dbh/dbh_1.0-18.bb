@@ -4,7 +4,7 @@ DESCRIPTION ="Disk based hashes is a method to create multidimensional binary tr
 HOMEPAGE = "http://dbh.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "libs"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dbh/dbh_${PV}.tar.bz2 \
 	   file://${FILESDIR}/configure.patch;patch=1"

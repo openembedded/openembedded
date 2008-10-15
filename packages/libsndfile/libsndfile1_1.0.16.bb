@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.mega-nerd.com/libsndfile"
 AUTHOR = "Erik de Castro Lopo"
 SECTION = "libs/multimedia"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.mega-nerd.com/libsndfile/libsndfile-${PV}.tar.gz"
 S = "${WORKDIR}/libsndfile-${PV}"

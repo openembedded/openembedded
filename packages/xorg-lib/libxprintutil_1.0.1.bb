@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "Xprint printer utility client library"
 DEPENDS += "libxp libxt"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 XORG_PN = "libXprintUtil"

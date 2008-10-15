@@ -3,7 +3,7 @@ SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox"
 PV = "0.9.1+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

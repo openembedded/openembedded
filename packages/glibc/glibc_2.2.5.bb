@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-FILE_PR = "r18"
+PR = "r18"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 

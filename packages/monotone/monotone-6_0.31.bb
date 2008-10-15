@@ -22,7 +22,7 @@ inherit autotools
 #FIXME: remove the following
 ARM_INSTRUCTION_SET = "arm"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://venge.net/monotone/downloads/monotone-${PV}.tar.gz \
            file://txt2c-cross-post-0.22.patch;patch=1 \

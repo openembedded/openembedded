@@ -6,7 +6,7 @@ SECTION = "gpe"
 
 FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.5.0+cvs${FIXEDSRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "curl librsvg osb-nrcore"
 

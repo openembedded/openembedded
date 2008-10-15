@@ -2,7 +2,7 @@ DESCRIPTION = "Enhanced Driver for Ralink rt73 USB 802.11g WiFi sticks"
 HOMEPAGE = "http://homepages.tu-darmstadt.de/~p_larbig/wlan"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI= "http://homepages.tu-darmstadt.de/~p_larbig/wlan/rt73-k2wrlz-1.0.0.tar.bz2"
 inherit module

@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for Ralink rt73 USB 802.11g WiFi sticks found in the Chumb
 HOMEPAGE = "http://www.chumby.com"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI="http://files.chumby.com/source/ironforge/build396/${PN}-${PV}.tar.gz"
 

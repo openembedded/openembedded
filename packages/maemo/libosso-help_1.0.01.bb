@@ -1,5 +1,5 @@
 LICENSE = 	"LGPL"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = 	"libosso hildon-lgpl hildon-base-lib hildon-libs"
 SRC_URI =	"http://repository.maemo.org/pool/maemo/ossw/source/libo/${PN}/libosso-help_${PV}.tar.gz \

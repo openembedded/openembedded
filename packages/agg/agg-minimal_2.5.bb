@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "AGG License"
 DEPENDS = "freetype"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.antigrain.com/agg-${PV}.tar.gz"
 SRC_URI += "http://www.wxsvg.org/files/agg-2.5_cygming.patch;patch=1"

@@ -2,7 +2,7 @@ DESCRIPTION = "An LGPL implementation of RTP - RFC3550"
 LICENSE = "LGPL"
 DEPENDS = "glibc "
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig
 

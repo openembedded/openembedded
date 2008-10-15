@@ -4,7 +4,7 @@ DESCRIPTION = "Ogg Vorbis is a high-quality lossy audio codec \
 that is free of intellectual property restrictions. libvorbis \
 is the main vorbis codec library."
 LICENSE = "BSD"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.vorbis.com/files/${PV}/unix/libvorbis-${PV}.tar.gz \
 file://m4.patch;patch=1"

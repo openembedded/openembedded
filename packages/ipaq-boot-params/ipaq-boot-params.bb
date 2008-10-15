@@ -1,6 +1,6 @@
 DESCRIPTION = "Kernel boot parameters for HH.org bootldr"
 LICENSE = "MIT"
-FILE_PR = "r5"
+PR = "r5"
 
 COMPATIBLE_MACHINE = "(h3600|h3800|h3900|h5000|simpad)"
 

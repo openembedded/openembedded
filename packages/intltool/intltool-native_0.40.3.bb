@@ -1,6 +1,6 @@
 require intltool_${PV}.bb
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit native
 DEPENDS = "libxml-parser-perl-native"

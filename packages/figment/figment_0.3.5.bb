@@ -2,7 +2,7 @@ SECTION = "x11/utils"
 DESCRIPTION = "gtk2 outliner written by Matthew Allum"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ libxml2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://handhelds.org/~mallum/downloadables/figment/figment-${PV}.tar.gz \
 	file://dotdesktop-name-comment.patch;patch=1"

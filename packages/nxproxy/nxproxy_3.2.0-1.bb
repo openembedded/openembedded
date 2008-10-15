@@ -1,7 +1,7 @@
 DESCRIPTION = "The binary which uses libxcomp from nomachine"
 HOMEPAGE = "http://www.nomachine.com/"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "libxcomp"
 

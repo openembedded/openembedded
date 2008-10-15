@@ -2,7 +2,7 @@ DESCRIPTION = "Utility that enables basic Ethernet frame filtering on a Linux br
 PRIORITY = "optional"
 LICENSE = "GPL"
 SECTION = "console/network"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ebtables/ebtables-v${PV}.tar.gz \
            file://gcc34.patch;patch=1 \

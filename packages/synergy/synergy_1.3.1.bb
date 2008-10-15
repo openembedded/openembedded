@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "x11/utils"
 # NOTE: This depends on full x11, not diet-x11
 DEPENDS = "libx11 libxtst"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/synergy2/synergy-${PV}.tar.gz \
            file://synergy-1.3.1+gcc-4.3.patch;patch=1"

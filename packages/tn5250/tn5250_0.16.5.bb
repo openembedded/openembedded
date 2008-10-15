@@ -4,7 +4,7 @@ to IBM's AS/400 (now known as eServer iSeries) midrange computers."
 HOMEPAGE = "http://tn5250.sourceforge.net/"
 LICENSE = "LGPL"
 DEPENDS = "ncurses openssl"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tn5250/tn5250-${PV}.tar.gz \
 	   file://compile.patch;patch=1"

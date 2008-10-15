@@ -1,7 +1,7 @@
 # the binaries are statical linked against klibc
 require kexec-tools.inc
 
-FILE_PR = "r4"
+PR = "r4"
 DEPENDS = "klibc"
 
 SRC_URI += "file://kexec-klibc.patch;patch=1"

@@ -3,7 +3,7 @@ DEPENDS = "gnome-desktop gnome-vfs libgnomeui webkit-gtk iso-codes startup-notif
 RDEPENDS = "gnome-vfs-plugin-http"
 
 PV = "2.20.1+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gnome
 

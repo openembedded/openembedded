@@ -1,6 +1,6 @@
 DESCRIPTION="Asynchronous input/output library that uses the kernels native interface"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/liba/libaio/libaio_${PV}.orig.tar.gz \
            file://00_arches.patch;patch=1 \

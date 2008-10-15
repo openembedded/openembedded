@@ -6,7 +6,7 @@ HOMEPAGE="http://dvd.sourceforge.net/"
 DESCRIPTION="DVD navigation multimeda library"
 SECTION = "libs"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI="${SOURCEFORGE_MIRROR}/dvd/${PN}-${PV}.tar.gz"
 

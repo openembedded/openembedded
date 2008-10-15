@@ -5,7 +5,7 @@ DEPENDS = "etk"
 SRCNAME = "edje_editor"
 
 PV = "0.0.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit e
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "An easy-to-use virtual keyboard for small touchscreen displays"
 SECTION = "openmoko/inputmethods"
 DEPENDS = "ecore evas edje"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools
 

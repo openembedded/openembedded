@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 SECTION = "devel"
 DEPENDS = "readline"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.pengutronix.de/software/memedit/downloads/memedit-${PV}.tar.gz"
 

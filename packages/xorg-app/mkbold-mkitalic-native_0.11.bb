@@ -2,7 +2,7 @@ DESCRIPTION = "mkbold-mkitalic : make bold and italic fonts from normal fonts"
 HOMEPAGE = "http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html"
 PRIORITY = "optional"
 LICENSE = "MIT/X"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://hp.vector.co.jp/authors/VA013651/lib/mkbold-mkitalic-${PV}.tar.bz2 \
            file://makebifonts"

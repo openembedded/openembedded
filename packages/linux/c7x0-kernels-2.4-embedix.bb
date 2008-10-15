@@ -2,7 +2,7 @@ DESCRIPTION = "Build all c7x0 kernels in one go"
 SECTION = "kernel"
 LICENSE = "GPL"
 PROVIDES = "virtual/kernel"
-FILE_PR = "r1"
+PR = "r1"
 
 COMPATIBLE_HOST = "arm.*-linux"
 

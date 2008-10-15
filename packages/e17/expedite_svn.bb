@@ -3,7 +3,7 @@ DEPENDS = "eet evas"
 RDEPENDS = "libevas-engine-buffer libevas-engine-fb libevas-engine-software-generic libevas-engine-software-x11 libevas-loader-png"
 LICENSE = "MIT BSD"
 PV = "0.6.0+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit e
 

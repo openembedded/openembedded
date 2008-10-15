@@ -8,7 +8,7 @@ RDEPENDS += "openssl"
 
 require webkit.inc
 
-FILE_PR = "r6"
+PR = "r6"
 SRC_URI += " file://qt-api-changes.diff;patch=0;pnum=0 \
              file://qtwebkit-use-image-decoders.patch;patch=0 "
 

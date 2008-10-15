@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl libmikmod"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_mixer-${PV}"

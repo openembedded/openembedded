@@ -4,7 +4,7 @@ DESCRIPTION = "Lightweight Japanese font in 10 point suitable for 320x240 displa
 HOMEPAGE = "http://sourceforge.jp/projects/zaurus-ja/"
 LICENSE = "GPL"
 RPROVIDES = "virtual/japanese-font"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://osdn.dl.sourceforge.jp/zaurus-ja/773/unismall-${PV}.tar.gz"
 

@@ -3,7 +3,7 @@ SECTION = "console/network"
 HOMEPAGE = "http://dev.zuckschwerdt.org/openobex/wiki/ObexFtp"
 LICENSE = "GPL"
 DEPENDS = "openobex bluez-libs libusb virtual/libiconv"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openobex/obexftp-${PV}.tar.bz2 \
 	  "

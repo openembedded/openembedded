@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SRC_URI = "http://linuxsh.free.fr/tools/cetools-${PV}.tar.gz \
 	   file://sean-hsieh.patch;patch=1"
 S = "${WORKDIR}/cetools-${PV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools
 

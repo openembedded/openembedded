@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"
 DEPENDS = "libnl dbus dbus-glib hal gconf-dbus wireless-tools"
 RDEPENDS = "wpa-supplicant iproute2 dhcdbd"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager/0.6/NetworkManager-${PV}.tar.bz2 \
 	  file://NetworkManager \

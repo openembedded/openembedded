@@ -1,7 +1,7 @@
 # This package builds tools to manage NIS
 # The source package is utils/net/NIS/yp-tools
 #
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION="\
 Network Information Service tools.  \
 This package contains ypcat, ypmatch, ypset, \

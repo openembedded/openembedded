@@ -2,7 +2,7 @@ require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 

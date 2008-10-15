@@ -2,7 +2,7 @@ require wxbase.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI += "file://Makefile.in.patch;patch=1"
 

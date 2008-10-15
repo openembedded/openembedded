@@ -4,7 +4,7 @@ VisiScript runs on the Qtopia desktop environment of the Zaurus."
 SECTION = "opie/applications"
 DEPENDS = "qscintilla"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 APPNAME = "visiscript"
 APPTYPE = "binary"

@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.vanille-media.de/site/index.php/projects/efl/"
 LICENSE = "LGPL"
 DEPENDS = "evas ecore edje emotion esmart etk ewl libsigc++-2.0"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r1" 
+PR = "r1" 
 
 inherit efl
 

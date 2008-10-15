@@ -1,7 +1,7 @@
 DESCRIPTION = "Standard Gtk+ theme for the Openmoko distribution, qvga version"
 SECTION = "openmoko/base"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit openmoko-base
 

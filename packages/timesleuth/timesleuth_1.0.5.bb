@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 AUTHOR = "Dafydd Walters"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/applications-TimeSleuth.html"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/timesleuth_V1.05ern.tar.gz "
 

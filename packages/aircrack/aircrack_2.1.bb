@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.cr0.net:8040/code/network/aircrack/"
 LICENSE = "GPLv2"
 DEPENDS = ""
 PV="2.1"
-FILE_PR ="r0"
+PR ="r0"
 
 SRC_URI = "http://www.cr0.net:8040/code/network/aircrack-2.1.tgz \
 file://silent_patch.diff;patch=1;pnum=0"

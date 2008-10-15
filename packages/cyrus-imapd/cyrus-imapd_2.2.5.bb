@@ -1,6 +1,6 @@
 SECTION = "console/network"
 DEPENDS = "cyrus-sasl"
-FILE_PR = "r2"
+PR = "r2"
 LICENSE = "BSD"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/OLD-VERSIONS/imap/cyrus-imapd-${PV}.tar.gz \

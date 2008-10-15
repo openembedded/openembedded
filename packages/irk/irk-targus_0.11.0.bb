@@ -1,5 +1,5 @@
 require irk.inc
-FILE_PR = "r2"
+PR = "r2"
 
 DESCRIPTION += "(version with Targus support)"
 HOMEPAGE = "http://angela1.data-uncertain.co.uk/~zaurus/irk.php"

@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for the Iomega storcenter platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "u-boot-utils-native"
-FILE_PR = "r1"
+PR = "r1"
 
 COMPATIBLE_MACHINE = "storcenter"
 

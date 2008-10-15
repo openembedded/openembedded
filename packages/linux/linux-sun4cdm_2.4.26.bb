@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for sparc32/sun4c"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 DEPENDS += "elftoaout-native"
 
 KERNEL_CCSUFFIX = "-3.3.4"

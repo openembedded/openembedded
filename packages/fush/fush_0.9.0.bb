@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "readline"
 PRIORITY = "optional"
 SECTION = "base/shell"
-FILE_PR = "r3"
+PR = "r3"
 
 RV = "${@bb.data.getVar('PV', d, 1).replace('.', '-')}"
 SRC_URI = "${SOURCEFORGE_MIRROR}/foosh/fush-${RV}.tar.gz \

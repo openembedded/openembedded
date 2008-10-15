@@ -1,6 +1,6 @@
 LICENSE = "GPLv2"
 SRC_URI = "ftp://ftp.gnu.org/gnu/aspell/dict/pl/aspell6-pl-6.0_20061121-0.tar.bz2"
-FILE_PR ="r1"
+PR ="r1"
 
 require aspell-lang.inc
 

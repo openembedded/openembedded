@@ -2,7 +2,7 @@ DESCRIPTION = "GStreamer plugin for using pulse audio as sink and source"
 HOMEPAGE = "http://0pointer.de/lennart/projects/gst-pulse/"
 LICENSE = "GPL"
 DEPENDS = "gstreamer pulseaudio gst-plugins-base"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/gst-pulse/gst-pulse-${PV}.tar.gz \
 	file://dont-overload-pulseaudio.patch;patch=1"

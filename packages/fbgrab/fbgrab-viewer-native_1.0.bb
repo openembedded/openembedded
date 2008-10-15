@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "console/network"
 DEPENDS = "libpng-native"
 PV = "0.0+svn${SRCDATE}"
-FILE_PR = "r30"
+PR = "r30"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/userspace;module=fbgrab;proto=http"
 S = "${WORKDIR}/fbgrab"

@@ -6,7 +6,7 @@ HOMEPAGE = "http://www.pellicosystems.com/zaurus/applications/index.html"
 APPNAME = "resistorUI"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.pellicosystems.com/zaurus/applications/resistorUI_1.5.0-0.9_armSRC.zip"
 S = "${WORKDIR}/ResistorUI"

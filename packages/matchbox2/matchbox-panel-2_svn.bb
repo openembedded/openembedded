@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11/panels"
 DEPENDS = "gtk+ apmd startup-notification"
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r8"
+PR = "r8"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gelhaus.net/cgi-bin/showpage.py?zaurus/+sliderulez.html"
 AUTHOR = "Matthew Gelhaus"
 SECTION = "opie/applications"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 APPTYPE = "binary"
 APPDESKTOP = "pkg/opt/QtPalmtop/apps/Applications"

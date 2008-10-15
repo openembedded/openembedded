@@ -7,7 +7,7 @@ SRC_URI = "http://openredalert.googlecode.com/files/openredalert-${PV}-src.tar.g
            file://gcc43-fix.patch;patch=1 \
            file://openredalert-launcher"
 
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}"
 

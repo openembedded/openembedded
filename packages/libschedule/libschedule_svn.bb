@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 sqlite libgpewidget"
 PV = "0.16+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools pkgconfig gpe
 

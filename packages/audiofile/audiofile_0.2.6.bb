@@ -5,7 +5,7 @@ Research, Amiga IFF/8SVX, and NIST SPHERE."
 SECTION = "libs"
 LICENSE = "LGPL GPL"
 RPROVIDES_${PN} += "audiofile"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "http://www.68k.org/~michael/audiofile/audiofile-${PV}.tar.gz"
 

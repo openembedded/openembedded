@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS="jpeg"
 LICENSE = "GPLV2"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://mpx.freeshell.net/w3cam-0.7.2.tar.gz \
 	   file://staticpaths.patch;patch=1"

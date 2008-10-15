@@ -2,7 +2,7 @@ DESCRIPTION = " Client libraries for GamingZone"
 LICENSE = "LGPLv2"
 DEPENDS = "libggz" 
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.belnet.be/packages/ggzgamingzone/ggz/${PV}/${PN}-${PV}.tar.gz \
            file://ggz-unbreak-m4.patch;patch=1 \

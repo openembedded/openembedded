@@ -12,7 +12,7 @@ SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-tftp-${PV}.
 
 S = "${WORKDIR}/netkit-tftp-${PV}"
 
-FILE_PR = "r7"
+PR = "r7"
 
 EXTRA_OEMAKE = ""
 do_compile () {

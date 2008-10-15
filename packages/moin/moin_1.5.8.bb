@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "network"
 HOMEPAGE = "http://moinmoin.wikiwikiweb.de/"
 PRIORITY = "optional"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/moin/moin-${PV}.tar.gz"
 

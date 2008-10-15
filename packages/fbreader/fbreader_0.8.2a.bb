@@ -4,7 +4,7 @@ SECTION = "x11/utils"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ enca expat bzip2 libgpewidget virtual/libiconv"
-FILE_PR = "r5"
+PR = "r5"
 
 # The RESOLUTION is defined at compile time which makes
 # this package MACHINE specific.

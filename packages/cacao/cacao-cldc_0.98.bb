@@ -2,7 +2,7 @@
 
 require cacao-cldc.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "\
   http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2;md5sum=8b8907c8b925761c9410bcadb9705346 \

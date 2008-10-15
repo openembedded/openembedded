@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://justreader.sourceforge.net/"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/justreader/justreader_${PV}.tgz \
 file://correct-settings-path.patch;patch=1"

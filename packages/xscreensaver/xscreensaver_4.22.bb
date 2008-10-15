@@ -8,7 +8,7 @@ SECTION = "x11-misc"
 LICENSE = "BSD"
 DEPENDS = "intltool virtual/libx11 gtk+ libxml2 libglade"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.jwz.org/xscreensaver/xscreensaver-${PV}.tar.gz \
            file://fixes.patch;patch=1 \

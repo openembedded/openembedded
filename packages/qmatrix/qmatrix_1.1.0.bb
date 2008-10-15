@@ -2,7 +2,7 @@ DESCRIPTION = "A matrix Game, Qt/Embedded based Palmtop Environments Edition"
 SECTION = "opie/games"
 LICENSE = "GPL"
 PRIORITY = "optional"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.geocities.co.jp/SiliconValley-Oakland/8074/src/qmatrix-${PV}.tar.gz"
 S = "${WORKDIR}/qmatrix"

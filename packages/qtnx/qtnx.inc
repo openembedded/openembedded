@@ -2,7 +2,7 @@ DESCRIPTION = "This a the freesource nx client, build with qt"
 HOMEPAGE = "http://freenx.berlios.de/"
 SECTION = "libs"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "libnxcl"
 

@@ -1,5 +1,5 @@
 SECTION = "unknown"
-FILE_PR = "r4"
+PR = "r4"
 LICENSE = "GPL"
 INHIBIT_PACKAGE_STRIP = "1"
 

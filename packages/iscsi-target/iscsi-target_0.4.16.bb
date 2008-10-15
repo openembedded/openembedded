@@ -2,7 +2,7 @@
 DESCRIPTION = "iSCSI Enterprise Target is for building an iSCSI storage system on Linux"
 HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/iscsitarget/iscsitarget-${PV}.tar.gz \
 	   file://libs.patch;patch=1 \

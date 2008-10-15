@@ -6,7 +6,7 @@ DEPENDS = "gtk+-2.8.16 libglade"
 RDEPENDS = "python-shell"
 SRCNAME = "pygtk"
 LICENSE = "LGPL"
-FILE_PR = "r1"
+PR = "r1"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 SRC_URI = "ftp://ftp.gnome.org/pub/gnome/sources/pygtk/${MAJ_VER}/${SRCNAME}-${PV}.tar.bz2 \

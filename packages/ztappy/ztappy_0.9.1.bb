@@ -2,7 +2,7 @@ DESCRIPTION = "Puzzle Game for Qt/Embedded based palmtop environments."
 SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://user.cs.tu-berlin.de/~karlb/ztappy/ztappy.tar.gz"
 S = "${WORKDIR}/ztappy"

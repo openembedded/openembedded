@@ -2,7 +2,7 @@ DESCRIPTION = "Tracker is a tool designed to extract information and metadata ab
 LICENSE = "GPLv2"
 DEPENDS = "file gtk+ gstreamer gamin libgmime dbus poppler libexif libgsf"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.gnome.org/~jamiemcc/tracker/tracker-${PV}.tar.gz \
            file://no-ioprio.patch;patch=1" 

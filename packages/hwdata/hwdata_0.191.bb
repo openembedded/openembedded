@@ -1,7 +1,7 @@
 DESCRIPTION = "This package contains various hardware identification and configuration data, such as the pci.ids database, or the XFree86/xorg Cards database. It's needed for the kudzu hardware detection."
 LICENSE = "GPL + X11"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://archive.ubuntu.com/ubuntu/pool/main/h/hwdata/hwdata_0.191.orig.tar.gz \
            http://archive.ubuntu.com/ubuntu/pool/main/h/hwdata/hwdata_0.191-1.diff.gz;patch=1 \

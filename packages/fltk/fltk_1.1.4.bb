@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "jpeg libpng mesa zlib"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp-fourier.ujf-grenoble.fr/xcas/devel/sources/fltk-${PV}-device.tar.gz"
 

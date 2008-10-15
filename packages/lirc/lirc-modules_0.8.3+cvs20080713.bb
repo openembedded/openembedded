@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.lirc.org"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"
-FILE_PR = "r0"
+PR = "r0"
 
 SRCDATE=${@bb.data.getVar('PV', d, 1)[9:]}
 

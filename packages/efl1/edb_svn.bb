@@ -2,7 +2,7 @@ DESCRIPTION = "Edb is the Enlightenment database library"
 LICENSE = "MIT BSD"
 DEPENDS = "zlib"
 PV = "1.0.5.043+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit efl
 

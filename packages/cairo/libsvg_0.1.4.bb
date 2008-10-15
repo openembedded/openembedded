@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "expat jpeg zlib libpng"
 DESCRIPTION = "SVG parser library"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://cairographics.org/snapshots/libsvg-${PV}.tar.gz \
            file://configure_fix.patch;patch=1 \

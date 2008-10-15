@@ -2,7 +2,7 @@ DESCRIPTION = "Common Opie pictures usable from all applications"
 SECTION = "opie/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 S = "${WORKDIR}"
 

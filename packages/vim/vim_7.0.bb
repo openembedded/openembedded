@@ -2,7 +2,7 @@ VIMVER = "70"
 
 require vim.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 EXTRA_OECONF = "--enable-gui=none --disable-gtktest \
 		--disable-xim --with-features=big \

@@ -4,7 +4,7 @@ DEPENDS = "expat libusb-compat"
 HOMEPAGE = "http://gpsbabel.sf.net"
 LICENSE = "GPL"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.gpsbabel.org/plan9.php?dl=gpsbabel-${PV}.tar.gz"
 

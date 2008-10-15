@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gpe-bootsplash"
 RDEPENDS = "gpe-bootsplash"
-FILE_PR = "r0"
+PR = "r0"
 
 export THEME = "gpephone"
 

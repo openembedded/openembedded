@@ -3,7 +3,7 @@ require glib.inc
 # This version requires a newer libtool that isn't default yet 
 DEFAULT_PREFERENCE = "-1"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/glib/2.18/glib-${PV}.tar.bz2 \
            file://glibconfig-sysdefs.h \

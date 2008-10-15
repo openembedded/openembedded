@@ -1,4 +1,4 @@
-FILE_PR = "r1"
+PR = "r1"
 LICENSE = "GPL"
 SECTION = "x11/base"
 DESCRIPTION = "GTK theme engine Sapwood"

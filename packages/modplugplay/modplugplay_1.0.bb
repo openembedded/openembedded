@@ -3,7 +3,7 @@ HOMEPAGE = "http://gnu.ethz.ch/linuks.mine.nu/modplugplay/"
 LICENSE = "GPL"
 SECTION = "console/multimedia"
 DEPENDS = "libmodplug"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://gnu.ethz.ch/linuks.mine.nu/modplugplay/modplugplay-${PV}.tar.gz"
 

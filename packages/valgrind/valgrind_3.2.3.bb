@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.valgrind.org/"
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "virtual/libx11"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.valgrind.org/downloads/valgrind-${PV}.tar.bz2"
 

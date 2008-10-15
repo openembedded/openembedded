@@ -2,7 +2,7 @@ DESCRIPTION = "Hardware health monitoring applications"
 HOMEPAGE = "http://www.lm-sensors.org/"
 DEPENDS = "sysfsutils virtual/libiconv"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://dl.lm-sensors.org/lm-sensors/releases/lm_sensors-${PV}.tar.gz \
            file://prefix-fix.patch;patch=1 \

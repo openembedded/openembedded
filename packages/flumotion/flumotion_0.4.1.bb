@@ -9,7 +9,7 @@ RDEPENDS = "python-resource python-pprint python-threading \
             python-lang python-zopeinterface  python-textutils \
             python-gst python-misc"
 RDEPENDS_${PN}-gui = "${PN} python-pygtk python-pycairo"
-FILE_PR = "r10"
+PR = "r10"
 
 SRC_URI = "http://www.flumotion.net/src/flumotion/flumotion-${PV}.tar.bz2 \
            file://python-path.patch;patch=1 \

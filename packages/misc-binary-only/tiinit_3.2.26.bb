@@ -1,7 +1,7 @@
 DESCRIPTION = "TI Bluetooth init bits."
 SECTION = "base"
 LICENSE = "Unknown"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://sdgsystems.com/pub/ipaq/hx4700/src/TIInit_${PV}.bts"
 

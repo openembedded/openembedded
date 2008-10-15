@@ -2,7 +2,7 @@ DESCRIPTION = "Simple DirectMedia Layer - native Edition"
 HOMEPAGE = "http://www.libsdl.org"
 SECTION = "libs"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
 	   file://acinclude.m4 \

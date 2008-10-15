@@ -8,7 +8,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python-logilab-common"
 SRCNAME = "pylint"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "ftp://ftp.logilab.org/pub/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

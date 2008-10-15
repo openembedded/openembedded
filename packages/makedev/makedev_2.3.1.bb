@@ -1,5 +1,5 @@
 LICENSE = "makedev"
-FILE_PR = "r1"
+PR = "r1"
 SECTION = "base"
 DESCRIPTION = "The MAKEDEV executable is used to create \
 device files, often in /dev."

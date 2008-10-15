@@ -3,7 +3,7 @@ require linux.inc
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Mainstone (PXA270 ref design)"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.18.tar.bz2 \
            file://flash-unlock.patch;patch=1;pnum=0 \

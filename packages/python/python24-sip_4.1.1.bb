@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "virtual/libqte2 python24"
 RDEPENDS = "python-core"
-FILE_PR = "ml4"
+PR = "ml4"
 
 SRC_URI = "http://www.vanille.de/mirror/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"

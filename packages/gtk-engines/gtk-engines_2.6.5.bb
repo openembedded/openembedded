@@ -3,7 +3,7 @@ SECTION = "x11/base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gtk+"
-FILE_PR = "r1"
+PR = "r1"
 
 RDEPENDS_gtk-theme-redmond = "gtk-engine-redmond95"
 RDEPENDS_gtk-theme-metal = "gtk-engine-metal"

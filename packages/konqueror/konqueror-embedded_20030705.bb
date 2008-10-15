@@ -4,7 +4,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 DEPENDS = "libqpe-opie openssl libpcre"
 LICENSE = "LGPL GPL"
-FILE_PR = "r5"
+PR = "r5"
 
 # Note if this .bb files fails with the error:
 # "No rule to make target `-lpcre', needed by `konqueror'.  Stop."

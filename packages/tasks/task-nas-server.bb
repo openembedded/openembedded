@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for a Network Attached Storage server"
 LICENSE = "MIT"
 PROVIDES = "task-nas-server-everything"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit task
 

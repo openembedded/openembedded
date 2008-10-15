@@ -3,7 +3,7 @@ HOMEPAGE = "http://mediatomb.org/"
 LICENSE = "GPLv2"
 DEPENDS = "sqlite3 libexif js zlib file id3lib"
 PV = "0.8+0.9pre1+svn${SRCDATE}-sqlite"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "svn://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk;proto=https;module=mediatomb"
 

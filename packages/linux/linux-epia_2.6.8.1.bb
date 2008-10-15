@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for VIA EPiA"
 LICENSE = "GPL"
-FILE_PR = "r15"
+PR = "r15"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 	   http://www.epiawiki.org/files/epia_kernel/patch-2.6.8.1-epia1.bz2;patch=1 \

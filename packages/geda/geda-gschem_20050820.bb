@@ -1,6 +1,6 @@
 LICENSE = "GPLv2"
 HOMEPAGE = "http://geda.seul.org"
-FILE_PR = "r1"
+PR = "r1"
 FILES_${PN} += "${datadir}/gEDA"
 
 DEPENDS = "gtk+ libgeda"

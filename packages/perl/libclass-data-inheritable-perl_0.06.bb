@@ -1,7 +1,7 @@
 DESCRIPTION = "Class::Data::Inheritable - Inheritable, overridable class data"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/T/TM/TMTM/Class-Data-Inheritable-${PV}.tar.gz"
 

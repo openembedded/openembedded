@@ -3,7 +3,7 @@ SECTION = "libs"
 DEPENDS = "apr expat gdbm"
 LICENSE = "Apache"
 HOMEPAGE = "http://apr.apache.org"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.gz \
            file://gen_uri_delims.patch;patch=1 \

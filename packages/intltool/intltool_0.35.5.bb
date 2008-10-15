@@ -3,7 +3,7 @@ require intltool.inc
 DEPENDS = "libxml-parser-perl-native"
 RDEPENDS = "perl-module-text-wrap perl-module-re"
 
-FILE_PR = "r2"
+PR = "r2"
 
 RRECOMMENDS = "perl-modules"
 

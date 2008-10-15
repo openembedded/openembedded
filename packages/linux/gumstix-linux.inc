@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux kernel for custom configurations"
 SECTION = "kernel"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit kernel
 

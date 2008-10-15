@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "glib-1.2 jpeg libpng libxext"
 
-FILE_PR = "r1"
+PR = "r1"
 
 FILESPATH =+ "${FILE_DIRNAME}/gtk+-1.2-1.2.10:"
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \

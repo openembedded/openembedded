@@ -4,7 +4,7 @@ HOMEPAGE = "http://0pointer.de/lennart/projects/ifplugd/"
 SECTION = "network"
 DEPENDS = "libdaemon"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://0pointer.de/lennart/projects/ifplugd/ifplugd-${PV}.tar.gz \
  file://kernel-types.patch;patch=1 \

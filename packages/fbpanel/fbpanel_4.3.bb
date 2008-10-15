@@ -6,7 +6,7 @@ HOMEPAGE = "http://fbpanel.sourceforge.net/"
 SRC_URI = "${SOURCEFORGE_MIRROR}/fbpanel/fbpanel-${PV}.tgz \
            file://makefile.common.patch;patch=1 "
 
-FILE_PR = "r1"
+PR = "r1"
 
 LDFLAGS += "-Wl,--export-dynamic"
 

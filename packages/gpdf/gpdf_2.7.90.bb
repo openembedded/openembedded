@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/utils"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit gnome gettext
 

@@ -1,6 +1,6 @@
 require notecase.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 do_install() {
 	install -d ${D}${bindir}

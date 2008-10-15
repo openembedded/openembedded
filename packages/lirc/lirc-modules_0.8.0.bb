@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.lirc.org"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel fakeroot-native setserial"
 RDEPENDS_nslu2 = "setserial"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz"
 S = "${WORKDIR}/lirc-${PV}"

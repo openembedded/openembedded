@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 LICENSE = "GPL"
 SRCDATE = "20040801"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cebix.net/home/cvs/cebix;module=Frodo4 \
            file://configure.patch;patch=1 \

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/gsl/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${GNU_MIRROR}/gsl/gsl-${PV}.tar.gz"
 

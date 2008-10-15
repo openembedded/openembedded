@@ -1,6 +1,6 @@
 require genext2fs.inc
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/genext2fs/genext2fs_${PV}.orig.tar.gz \
 	   file://misc.patch;patch=1"

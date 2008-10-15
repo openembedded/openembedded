@@ -4,7 +4,7 @@ PACKAGES = ""
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = ""
 

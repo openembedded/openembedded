@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gpstk.org/"
 LICENSE = "LGPL"
 SECTION = "libs"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gpstk/gpstk-${PV}-src.tar.gz \
 	   file://configure.patch;patch=1"

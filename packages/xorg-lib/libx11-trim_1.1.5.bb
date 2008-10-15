@@ -9,7 +9,7 @@ DEPENDS += "libxcb xproto xextproto xtrans libxau kbproto inputproto xf86bigfont
 PROVIDES = "virtual/libx11"
 
 PE = "1"
-FILE_PR = "r1"
+PR = "r1"
 
 XORG_PN = "libX11"
 LEAD_SONAME = "libX11.so"

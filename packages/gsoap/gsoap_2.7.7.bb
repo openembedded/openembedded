@@ -3,7 +3,7 @@ for the development of SOAP Web Services and clients."
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "gsoap-native"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gsoap2/gsoap_${PV}.tar.gz"
 S = "${WORKDIR}/gsoap-2.7"

@@ -1,4 +1,4 @@
-FILE_PR = "r3"
+PR = "r3"
 SRCDATE_${PN} = "20050904"
 #Change to x.y.z+cvs${SRCDATE}-mco1 when 2.0.0 changes
 PV = "2.0.0-cvs-mco1-${SRCDATE}"

@@ -5,7 +5,7 @@ DESCRIPTION = "Unfreeze the bitbake files in the build"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "MIT"
-FILE_PR = "r1"
+PR = "r1"
 
 INHIBIT_DEFAULT_DEPS = "1"
 PATCH_DEPENDS = ""

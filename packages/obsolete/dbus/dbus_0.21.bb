@@ -1,5 +1,5 @@
 SECTION = "base"
-FILE_PR = "r4"
+PR = "r4"
 HOMEPAGE = "http://www.freedesktop.org/Software/dbus"
 DESCRIPTION = "message bus system for applications to talk to one another"
 DEPENDS = "expat glib-2.0 virtual/libintl"

@@ -4,7 +4,7 @@ HOMEPAGE = "http://pychecker.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "BSD"
 SRCNAME = "pychecker"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

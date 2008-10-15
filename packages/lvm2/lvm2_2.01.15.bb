@@ -1,7 +1,7 @@
 SECTION = "utils"
 DESCRIPTION = "LVM2 is a set of utilities to manage logical volumes in Linux."
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 DEPENDS = "device-mapper"
 
 S = "${WORKDIR}/LVM2.${PV}"

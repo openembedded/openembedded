@@ -1,6 +1,6 @@
 inherit gpe autotools
 
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION = "GPE wireless LAN communication applet"
 DEPENDS  = "gtk+ libgpewidget prismstumbler"
 RDEPENDS = "prismstumbler"

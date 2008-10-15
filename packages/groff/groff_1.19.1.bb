@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU roff"
 SECTION = "base"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://ftp.gnu.org/gnu/groff/groff-${PV}.tar.gz \
 	           file://groff.patch;patch=1"

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.gnu.org/software/automake/"
 SECTION = "devel"
 DEFAULT_PREFERENCE = "-1"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
 	${@['file://path_prog_fixes.patch;patch=1', ''][bb.data.inherits_class('native', d)]}"

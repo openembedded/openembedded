@@ -3,7 +3,7 @@ HOMEPAGE = "http://ulxmlrpcpp.sf.net"
 LICENSE = "LGPL"
 SECTION = "libs"
 DEPENDS = "expat"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ulxmlrpcpp/ulxmlrpcpp-${PV}-src.tar.bz2 \
            file://disable-docs.patch;patch=1 \

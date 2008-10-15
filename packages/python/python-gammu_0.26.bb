@@ -3,7 +3,7 @@ HOMEPAGE = "http://cihar.com/gammu/python"
 SECTION = "devel/python"
 DEPENDS = "gammu"
 LICENSE = "GPL"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://dl.cihar.com/python-gammu/latest/python-gammu-${PV}.tar.bz2"
 

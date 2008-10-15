@@ -1,6 +1,6 @@
 DESCRIPTION="Gnome Office Library"
 LICENSE="GPLv2"
-FILE_PR ="r0"
+PR ="r0"
 
 DEPENDS="glib-2.0 gtk+ pango cairo libgnomeprint libgsf libglade libpcre libxml2 libart-lgpl"
 

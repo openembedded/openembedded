@@ -3,7 +3,7 @@ DESCRIPTION = "slrn - console news reader"
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "slang"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/slrn/slrn-${PV}.tar.bz2 \
 	   file://m4.patch;patch=1 \

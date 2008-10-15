@@ -1,6 +1,6 @@
 require glibc.inc
 
-FILE_PR = "r19"
+PR = "r19"
 
 #add the hosts that are confirmed to be working to COMPATIBLE_HOSTi
 COMPATIBLE_HOST = '(i.86.*-linux|sh.*-linux)'

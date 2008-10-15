@@ -1,7 +1,7 @@
 DESCRIPTION = "Perl is a popular scripting language."
 HOMEPAGE = "http://www.perl.org/"
 LICENSE = "Artistic|GPL"
-FILE_PR = "r5"
+PR = "r5"
 
 SECTION = "libs"
 inherit native

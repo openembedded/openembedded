@@ -1,7 +1,7 @@
 # This package builds tools to manipulate Reiser4 file systems,
 # the libaal package must be built and installed as well to
 # run these tools.
-FILE_PR = "r1"
+PR = "r1"
 DESCRIPTION = "User-level tools for Reiser4 filesystems"
 HOMEPAGE = "http://www.namesys.com"
 SECTION = "base"

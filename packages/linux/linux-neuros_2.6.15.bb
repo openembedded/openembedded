@@ -1,7 +1,7 @@
 #require linux-omap.inc
 
 PV = "2.6.15-torfu"
-FILE_PR = "r5"
+PR = "r5"
 
 COMPATIBLE_MACHINE = "(neuros-osd)"
 

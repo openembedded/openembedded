@@ -3,7 +3,7 @@ SECTION = "console/network"
 DEPENDS = "bluez-libs cmake-native"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.gammu.org/"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://dl.cihar.com/gammu/releases/gammu-${PV}.tar.bz2 "
 

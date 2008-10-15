@@ -4,7 +4,7 @@ SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "openssl zlib sqlite3"
 PV = "0.9.99+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 SRC_URI = "svn://trac.aircrack-ng.org/svn/branch;module=1.0-dev;proto=http"
  
 S="${WORKDIR}/1.0-dev"

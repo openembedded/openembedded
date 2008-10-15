@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "matchbox-panel-2 openmoko-common2 openmoko-today2 openmoko-dialer2"
 RCONFLICTS_${PN} = "openmoko-session matchbox-common"
-FILE_PR = "r69"
+PR = "r69"
 
 SRC_URI = "\
   file://etc \

@@ -6,7 +6,7 @@ SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 S = "${WORKDIR}/uqm-${PV}"
 

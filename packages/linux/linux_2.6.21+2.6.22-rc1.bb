@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 KERNEL_VERSION = "2.6.22-rc1"
 KERNEL_RELEASE = "2.6.22-rc1"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.21.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.22-rc1.bz2;patch=1 \

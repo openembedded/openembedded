@@ -11,4 +11,4 @@ INHIBIT_PACKAGE_STRIP = "1"
 require madwifi-ng_r.inc
 
 # PR set after the include, to override what's set in the included file.
-FILE_PR = "r1"
+PR = "r1"

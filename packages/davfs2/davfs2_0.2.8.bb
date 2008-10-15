@@ -6,7 +6,7 @@ DEPENDS = "neon-0.25.5"
 RDEPENDS_${PN} = "kernel-module-coda"
 LICENSE = "GPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dav/${P}.tar.gz \
            file://Makefile.in.patch;patch=1 \

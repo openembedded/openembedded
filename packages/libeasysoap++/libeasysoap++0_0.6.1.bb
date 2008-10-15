@@ -2,7 +2,7 @@ DESCRIPTION = "C++ library for SOAP, the Simple Object Access Protocol"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://activecampus2.ucsd.edu/apt/sarge/easysoap++/easysoap++_${PV}.orig.tar.gz \
   http://activecampus2.ucsd.edu/apt/sarge/easysoap++/easysoap++_${PV}-5.diff.gz;patch=1 \

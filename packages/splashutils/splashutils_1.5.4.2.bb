@@ -1,7 +1,7 @@
 DESCRIPTION = "Framebuffer splash utilities."
 SECTION = "media-gfx"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://dev.gentoo.org/~spock/projects/gensplash/archive/splashutils-${PV}.tar.bz2"
 

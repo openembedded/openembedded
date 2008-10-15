@@ -2,7 +2,7 @@ DESCRIPTION = "Compression library for x-protocol from nomachine"
 HOMEPAGE = "http://www.nomachine.com/"
 SECTION = "libs"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "virtual/libx11 zlib jpeg libpng"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta-package for QPE stuff"
 SECTION = "opie/base"
 LICENSE = "MIT"
-FILE_PR = "r3"
+PR = "r3"
 
 RDEPENDS = " \
     task-qpe-applets \

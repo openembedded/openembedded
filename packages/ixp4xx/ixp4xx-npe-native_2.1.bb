@@ -1,6 +1,6 @@
 DESCRIPTION = "Firmware converter for the IXP4xx line of devices"
 LICENSE = "Intel Public Licence"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.intel.com/Please-Read-The-BB-File/IPL_ixp400NpeLibrary-2_1.zip"
 SRC_URI += "file://IxNpeMicrocode.h"

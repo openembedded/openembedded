@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.aa.alpha-net.ne.jp/satoshic/dw_zbnch.htm"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.vanille.de/mirror/zbench-${PV}.tar.bz2"
 

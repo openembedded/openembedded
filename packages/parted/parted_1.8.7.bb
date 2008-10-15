@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/parted/parted.html"
 LICENSE = "GPLv2"
 SECTION = "console/tools"
 DEPENDS = "readline e2fsprogs-libs"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
            file://syscalls.h \

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sidplayer.sourceforge.net/"
 DEPENDS = "libsidplay"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://sidplayer.sourceforge.net/sidplayer.tar.gz \
            file://use-external-libsidplay.patch;patch=1 \

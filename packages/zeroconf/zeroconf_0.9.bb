@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "net"
 PRIORITY = "optional"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.progsoc.org/~wildfire/zeroconf/download/${PN}-${PV}.tar.gz \
 	   file://zeroconf-default \

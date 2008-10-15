@@ -1,7 +1,7 @@
 require glib-2.0_${PV}.bb
 
 FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit native
 

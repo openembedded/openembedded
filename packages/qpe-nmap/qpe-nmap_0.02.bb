@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "nmap"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.bluelightning.org/qpe-nmap/files/qpe-nmap-${PV}.tar.bz2"
 

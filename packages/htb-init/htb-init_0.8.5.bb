@@ -1,7 +1,7 @@
 DESCRIPTION = "HTB.init is a shell script that allows for easy setup of HTB-based traffic control on Linux."
 HOMEPAGE = "http://sourceforge.net/projects/htbinit"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/htbinit/htb.init-v${PV} \
 	file://htb.init+ingress+predef+verbose.diff;patch=1;pnum=0 \

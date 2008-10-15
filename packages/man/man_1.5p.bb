@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
-FILE_PR = "r3"
+PR = "r3"
 RDEPENDS_${PN} = "less groff"
 
 # Note: The default man.conf uses wrong names for GNU eqn and troff,

@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-FILE_PR = "r26"
+PR = "r26"
 
 # Major part of version
 PVM = "5.8"

@@ -4,7 +4,7 @@ PROVIDES = "virtual/java-initial"
 
 DEPENDS = "zlib-native libtool-native fastjar-native classpath-initial jikes-initial"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
         http://www.complang.tuwien.ac.at/cacaojvm/download/cacao-${PV}/cacao-${PV}.tar.bz2; \

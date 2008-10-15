@@ -6,7 +6,7 @@ APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
 PV = "${OPIE_CVS_PV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/cumulus-snapshot.tbz"
 S = "${WORKDIR}/cumulus/cumulus"

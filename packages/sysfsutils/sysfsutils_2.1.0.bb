@@ -1,7 +1,7 @@
 DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz \
 	   file://get_mnt_path_check.patch;patch=1"

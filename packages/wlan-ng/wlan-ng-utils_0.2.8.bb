@@ -7,4 +7,4 @@ SRC_URI += "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.b
 
 S = "${WORKDIR}/linux-wlan-ng-${PV}"
 
-FILE_PR = "r2"
+PR = "r2"

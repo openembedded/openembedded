@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "PD"
 HOMEPAGE = "http://rabenfrost.net/mokopedia/opendir/"
 DEPENDS = "python-pyrex-native python-cython-native"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "\
   file://opendir.pyx \

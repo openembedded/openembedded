@@ -1,7 +1,7 @@
 DESCRIPTION = "Kf is a GTK+ instant messaging client."
 LICENSE = "GPL"
 DEPENDS = "libxml2 glib-2.0 gtk+ loudmouth"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://jabberstudio.2nw.net/${PN}/${PN}-${PV}.tar.gz \
            file://fix-configure.patch;patch=1 \

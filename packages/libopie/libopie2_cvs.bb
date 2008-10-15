@@ -1,7 +1,7 @@
 require ${PN}.inc
 
 PV = "${OPIE_CVS_PV}"
-FILE_PR = "r12"
+PR = "r12"
 
 DEFAULT_PREFERENCE = "-1"
 

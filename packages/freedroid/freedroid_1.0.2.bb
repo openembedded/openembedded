@@ -3,7 +3,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://freedroid.sourceforge.net/"
-FILE_PR = "r2"
+PR = "r2"
 
 APPIMAGE = "${WORKDIR}/freedroid.png"
 

@@ -2,7 +2,7 @@ DESCRIPTION = "gphoto2 is a command-line utility to fetch pictures from digital 
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "libtool libgphoto2 popt"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gphoto/gphoto2-${PV}.tar.bz2"
 

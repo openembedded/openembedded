@@ -3,7 +3,7 @@ SECTION = "gpe/multimedia"
 HOMEPAGE = "http://lineak.sourceforge.net"
 LICENSE = "GPLv2"
 DEPENDS = "virtual/libx11 libxext"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lineak/lineakd-${PV}.tar.gz \
            file://add-zaurus-remote-support.patch;patch=1"

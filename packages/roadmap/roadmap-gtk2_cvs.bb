@@ -1,7 +1,7 @@
 require roadmap-gtk2.inc
 
 PV = "0.0+cvs${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous:@roadmap.cvs.sf.net/cvsroot/roadmap;module=roadmap \
            file://cross.patch;patch=1;pnum=2 \

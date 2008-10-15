@@ -3,7 +3,7 @@ HOMEPAGE = "http://mission-control.sourceforge.net/"
 LICENSE = "LGPL"
 SECTION = "libs"
 DEPENDS = "libtelepathy dbus-glib gconf"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mission-control/telepathy-mission-control-${PV}.tar.gz"
 

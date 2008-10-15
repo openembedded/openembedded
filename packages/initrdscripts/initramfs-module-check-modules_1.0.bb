@@ -1,5 +1,5 @@
 SRC_URI = "file://90-check-modules.sh"
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION = "An initramfs module for checking that kernel modules exist in rootfs"
 RDEPENDS = "initramfs-uniboot"
 

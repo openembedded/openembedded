@@ -5,7 +5,7 @@ HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 DEPENDS_append_mtx-1 = " madwifi-modules"
 DEPENDS_append_mtx-2 = " madwifi-modules"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \

@@ -2,7 +2,7 @@ DESCRIPTION = "The Libcroco project is an effort to build a generic Cascading St
 SECTION = "x11/utils"
 DEPENDS = "glib-2.0 libxml2"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools pkgconfig gnome
 

@@ -3,7 +3,7 @@ LICENSE = "BSD-X"
 DESCRIPTION = "XCalibrate extension headers"
 
 PV = "0.0+gita1d5ef0c73fbef3e758c51b57ac69ba9567bae04"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "git://anongit.freedesktop.org/git/xorg/proto/calibrateproto;protocol=git;tag=a1d5ef0c73fbef3e758c51b57ac69ba9567bae04"
 S = "${WORKDIR}/git"

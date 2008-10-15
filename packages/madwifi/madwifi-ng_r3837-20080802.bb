@@ -15,4 +15,4 @@ WACKELF_SRC_URI_compulab-pxa270 = " file://20-xscale-VFP-wackelf-v2.patch;patch=
 SRCNAME = "madwifi-trunk"
 
 # PR set after the include, to override what's set in the included file.
-FILE_PR = "r1"
+PR = "r1"

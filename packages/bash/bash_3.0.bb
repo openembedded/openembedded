@@ -1,5 +1,5 @@
 require bash.inc
-FILE_PR = "r11"
+PR = "r11"
 
 SRC_URI += "\
   file://bash-3.0-fixes.patch;patch=1 \

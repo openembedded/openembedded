@@ -1,6 +1,6 @@
 require gtk+.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS += "cairo jasper"
 

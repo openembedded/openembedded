@@ -1,6 +1,6 @@
 require bluez-utils3.inc
 
-FILE_PR = "r3"
+PR = "r3"
 
 # see bluez-utils3.inc for the explanation of these option
 EXTRA_OECONF = " \

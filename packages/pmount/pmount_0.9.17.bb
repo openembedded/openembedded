@@ -1,7 +1,7 @@
 DESCRIPTION = "Policy based mounter that gives the ability to mount removable devices as a user"
 HOMEPAGE = "http://pmount.alioth.debian.org/"
 LICENSE = "GPLv2"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "hal e2fsprogs-libs sysfsutils"
 RDEPENDS_${PN}-hal = "${PN}"

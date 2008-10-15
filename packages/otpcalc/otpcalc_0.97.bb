@@ -3,7 +3,7 @@ DESCRIPTION = "An OTP and S/Key calculator for X"
 SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS = "gtk+ openssl"
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}/otpCalc-${PV}"
 

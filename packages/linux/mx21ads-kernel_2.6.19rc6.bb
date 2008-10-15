@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the MX21ADS"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 PV = "2.6.18+2.6.19-rc6"
 

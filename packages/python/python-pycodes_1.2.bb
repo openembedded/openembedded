@@ -5,7 +5,7 @@ HOMEPAGE = "http://web.mit.edu/~emin/www/source_code/pycodes/index.html"
 PRIORITY = "optional"
 LICENSE = "PYCODES"
 SRCNAME = "pycodes"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://web.mit.edu/~emin/www/source_code/pycodes/pycodes-1-2.tar.gz \
            file://no-docs.patch;patch=1"

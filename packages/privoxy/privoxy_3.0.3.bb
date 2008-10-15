@@ -5,7 +5,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "pcre"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ijbswa/privoxy-${PV}-stable-src.tar.gz \
           file://privoxy.conf \

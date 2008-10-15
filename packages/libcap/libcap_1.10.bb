@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "bison-native flex-native"
-FILE_PR = "r1"
+PR = "r1"
 
 CFLAGS_append = " -I${S}/libcap/include"
 

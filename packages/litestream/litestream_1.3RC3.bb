@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DESCRIPTION = "ShoutCast-compatible streamer"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.litestream.org/litestream/${P}.tar.gz"
 

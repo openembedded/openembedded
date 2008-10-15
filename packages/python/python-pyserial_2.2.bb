@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "PSF"
 SRCNAME = "pyserial"
 RDEPENDS = "python-fcntl python-io python-stringold"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.zip"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

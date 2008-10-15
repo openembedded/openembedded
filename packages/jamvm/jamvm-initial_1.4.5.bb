@@ -4,7 +4,7 @@ LICENSE = "GPL"
 
 DEPENDS = "zlib-native classpath-initial jikes-initial"
 
-FILE_PR = "r0"
+PR = "r0"
 
 PROVIDES = "virtual/java-initial"
 

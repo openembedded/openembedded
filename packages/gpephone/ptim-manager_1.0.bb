@@ -3,7 +3,7 @@ SECTION = "gpephone"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers libiac"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gpephone pkgconfig autotools
 

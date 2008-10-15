@@ -1,7 +1,7 @@
 DESCRIPTION = "A console URL download utility featuring HTTP, FTP, and more."
 SECTION = "console/network"
 DEPENDS = ""
-FILE_PR = "r7"
+PR = "r7"
 LICENSE = "GPL"
 
 SRC_URI = "${GNU_MIRROR}/wget/wget-${PV}.tar.gz \

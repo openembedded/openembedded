@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0 gnutls"
 RDEPENDS = "libgaim-plugins"
 LICENSE = "GPL"
 HOMEPAGE = "http://gaim.sourceforge.net/"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gaim/gaim-${PV}.tar.bz2 \
 	   file://dont-look-for-gtk.patch;patch=1        \

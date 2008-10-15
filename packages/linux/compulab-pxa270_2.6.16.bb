@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the Compulab PXA270 system"
 LICENSE = "GPL"
-FILE_PR = "r6"
+PR = "r6"
 
 # Note, the compulab package contains a binary NAND driver that is not
 # EABI compatible

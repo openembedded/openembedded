@@ -1,7 +1,7 @@
 DESCRIPTION = "HFS plus file system utilities"
 SECTION = "base"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 S="${WORKDIR}/${P}"
 

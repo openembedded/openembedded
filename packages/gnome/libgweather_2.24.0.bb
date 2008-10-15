@@ -1,7 +1,7 @@
 LICENSE = "LGPL"
 DEPENDS = "libgnome libsoup-2.4 gtk+"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit gnome
 

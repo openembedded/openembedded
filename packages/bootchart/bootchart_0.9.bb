@@ -1,7 +1,7 @@
 DESCRIPTION = "Bootchart is a tool for performance analysis and visualization of the GNU/Linux boot process."
 LICENSE = "GPLv2"
 HOMEPAGE = "http://www.bootchart.org/"
-FILE_PR = "r1"
+PR = "r1"
 
 #this only installs the loggers, you will need to run the renderers on your workstation
 #boot with 'init=/sbin/bootchartd' and do '/sbin/bootchartd stop' to end the logging

@@ -1,6 +1,6 @@
 require gpe-mini-browser.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI      = "${GPE_MIRROR}/gpe-mini-browser-${PV}.tar.gz"
 DEPENDS      = "osb-nrcit libosso hildon-lgpl hildon-fm libgpewidget"

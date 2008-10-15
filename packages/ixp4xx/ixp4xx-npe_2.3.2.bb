@@ -1,6 +1,6 @@
 DESCRIPTION = "NPE firmware for the IXP4xx line of devices"
 LICENSE = "Intel Public Licence"
-FILE_PR = "r1"
+PR = "r1"
 DEPENDS = "ixp4xx-npe-native"
 
 # You need to download the IPL_ixp400NpeLibrary-2_3_2.zip file (without crypto) from:

@@ -2,7 +2,7 @@ DESCRIPTION = "X mkfontdir app"
 SECTION = "x11/applications"
 LICENSE = "MIT-X"
 DEPENDS = "util-macros-native mkfontscale-native"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 S = "${WORKDIR}/mkfontdir-${PV}"

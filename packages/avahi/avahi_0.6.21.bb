@@ -1,6 +1,6 @@
 require avahi.inc
 
-FILE_PR = "r9"
+PR = "r9"
 
 SRC_URI += "file://dbus-pre-1.1.1-support.patch;patch=1"
 SRC_URI += "file://avr32-ipv6-fix.patch;patch=1"

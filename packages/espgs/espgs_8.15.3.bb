@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.cups.org/espgs/"
 SECTION = "libs"
 DEPENDS = "jpeg zlib libpng tiff fontconfig"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.rz.tu-bs.de/pub/mirror/ftp.easysw.com/ftp/pub/ghostscript/${PV}/espgs-${PV}-source.tar.bz2"
 

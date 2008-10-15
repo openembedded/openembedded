@@ -2,7 +2,7 @@ DESCRIPTION = "Enhanced mailx client."
 SECTION = "console/network"
 PRIORITY = "optional"
 DEPENDS = "openssl"
-FILE_PR = "r2"
+PR = "r2"
 LICENSE = "GPL"
 
 SRC_URI = "http://optusnet.dl.sourceforge.net/sourceforge/nail/nail-11.21.tar.bz2 \

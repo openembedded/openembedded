@@ -5,7 +5,7 @@ DEPENDS += "hal libxkbfile libxcalibrate pixman"
 DEFAULT_PREFERENCE = "-99" 
 
 PE = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \

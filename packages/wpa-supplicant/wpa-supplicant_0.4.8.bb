@@ -5,7 +5,7 @@ HOMEPAGE = "http://hostap.epitest.fi/wpa_supplicant/"
 DEPENDS = "openssl"
 RCONFLICTS_${PN} = "wpa-supplicant-nossl"
 RREPLACES_${PN} = "wpa-supplicant-nossl"
-FILE_PR = "r8"
+PR = "r8"
 
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://madwifi-bsd-fix.diff;patch=1;pnum=0 \

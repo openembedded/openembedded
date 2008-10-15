@@ -9,7 +9,7 @@ DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native fastjar-n
 RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java dbus-java-bin libmatthew-debug-java ${JPN}"
 RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java libmatthew-debug-java ${JPN}"
 RSUGGESTS_libdbus-java = "libunixsocket-java"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-java/dbus-java-${PV}.tar.gz"
 

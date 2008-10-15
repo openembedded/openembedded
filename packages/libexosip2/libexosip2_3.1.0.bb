@@ -6,7 +6,7 @@ DEPENDS = "libosip2"
 SRCNAME = "libeXosip2"
 LEAD_SONAME = "libeXosip2"
 
-FILE_PR = "r0"
+PR = "r0"
 SRC_URI = "http://download.savannah.nongnu.org/releases/exosip/${SRCNAME}-${PV}.tar.gz" 
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 

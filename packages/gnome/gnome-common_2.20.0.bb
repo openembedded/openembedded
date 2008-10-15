@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION = "Common macros for building GNOME applications"
 inherit gnome
 

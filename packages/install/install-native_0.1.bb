@@ -5,7 +5,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "MIT"
 INHIBIT_DEFAULT_DEPS = "1"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://install-sh"
 

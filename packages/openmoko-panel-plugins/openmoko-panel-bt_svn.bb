@@ -1,7 +1,7 @@
 DESCRIPTION = "Shows the bluetooth status in the Openmoko panel"
 DEPENDS = "bluez-libs libnotify"
 PV = "0.1.0+svn${SVNREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit openmoko-panel-plugin
 

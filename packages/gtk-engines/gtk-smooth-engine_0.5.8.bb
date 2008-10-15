@@ -3,7 +3,7 @@ SECTION = "x11/base"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/smooth-engine/${PN}-${PV}.tar.gz"
 

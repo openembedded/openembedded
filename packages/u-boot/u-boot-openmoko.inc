@@ -6,7 +6,7 @@ PRIORITY = "optional"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "+gitr${SRCREV}"
 PV = "1.3.1${LOCALVERSION}"
-FILE_PR = "r0"
+PR = "r0"
 
 UBOOT_MACHINES = "gta01bv2 gta01bv3 gta01bv4 gta02v2 gta02v4 gta02v5"
 

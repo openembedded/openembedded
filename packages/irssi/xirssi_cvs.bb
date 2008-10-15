@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS += "irssi gtk+"
 RDEPENDS_${PN} += "irssi-common"
 PV = "0.0+cvs${SRCDATE}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools
 

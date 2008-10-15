@@ -1,7 +1,7 @@
 require gtkhtml.inc
 
 DEPENDS = "gtk+ gail libgnomeprint orbit2-native"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://stag.mind.be/gtkhtml-lite-3.0.10.tar.bz2"
 FILES_${PN} += "${datadir}/gtkhtml-3.0 ${libdir}/gtkhtml/*.so"

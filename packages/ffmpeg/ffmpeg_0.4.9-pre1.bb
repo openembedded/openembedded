@@ -1,6 +1,6 @@
 require ffmpeg.inc
 
-FILE_PR = "r8"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ffmpeg/ffmpeg-${PV}.tar.gz \
            file://configure.patch;patch=0 \

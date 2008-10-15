@@ -2,7 +2,7 @@ DESCRIPTION = " dot.conf is an easy to use and powerful configuration file parse
 HOMEPAGE = "http://www.azzit.de/dotconf/"
 LICENSE = "LGPLv2"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools
 

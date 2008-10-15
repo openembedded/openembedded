@@ -2,7 +2,7 @@ DESCRIPTION = "ISC Internet Domain Name Server"
 SECTION = "console/network"
 HOMEPAGE = "http://www.isc.org/sw/bind/"
 LICENSE = "BSD"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "openssl"
 

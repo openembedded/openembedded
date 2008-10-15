@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Games for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-FILE_PR = "r72"
+PR = "r72"
 
 inherit task
 

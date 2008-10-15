@@ -1,6 +1,6 @@
 SECTION = "console/network"
 DESCRIPTION = "netkit-rpc includes rpcgen and rpcinfo."
-FILE_PR = "r1"
+PR = "r1"
 LICENSE = "GPL"
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-rpc-${PV}.tar.gz \
 	   file://gcc4.patch;patch=1 \

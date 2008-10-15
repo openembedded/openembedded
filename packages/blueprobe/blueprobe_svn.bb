@@ -1,5 +1,5 @@
 PV = "0.18+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit pkgconfig gpe autotools
 

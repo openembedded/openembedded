@@ -3,7 +3,7 @@
 DESCRIPTION = "A console utility to make a beep noise"
 SECTION = "console/utils"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 DEPENDS = "install-native"
 
 SRC_URI  = "http://johnath.com/beep/beep-${PV}.tar.gz"

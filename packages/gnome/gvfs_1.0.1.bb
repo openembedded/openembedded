@@ -1,7 +1,7 @@
 DESCRIPTION = "gvfs is a userspace virtual filesystem"
 LICENSE = "LGPL"
 DEPENDS = "glib-2.0 fuse"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gnome
 

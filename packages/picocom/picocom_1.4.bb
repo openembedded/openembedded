@@ -2,7 +2,7 @@ DESCRIPTION = "Lightweight and minimal (~20K) dumb-terminal emulation program."
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://efault.net/npat/hacks/picocom/dist/picocom-${PV}.tar.gz \
            file://nolock.patch;patch=1 \

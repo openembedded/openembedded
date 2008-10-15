@@ -8,7 +8,7 @@ SRCREV = "${DAVINCI_SRCREV}"
 
 PV = "2.6.25"
 #PV = "2.6.25+2.6.26-rc0+git${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
 

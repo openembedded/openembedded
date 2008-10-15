@@ -6,7 +6,7 @@ LICENSE = "BSD"
 PRIORITY = "optional"
 SECTION = "console/network"
 PV = "0.0+cvs${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "cvs://anoncvs@anoncvs.ca.openbsd.org/cvs;method=ext;module=src/usr.bin/cvs \
 	   file://linux.patch;patch=1"

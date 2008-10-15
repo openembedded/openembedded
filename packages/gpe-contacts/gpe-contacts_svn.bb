@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "libcontactsdb libgpewidget libgpepimc libdisplaymigration libgpevtype dbus"
 RDEPENDS = "gpe-icons"
 PV = "0.47+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools gpe
 

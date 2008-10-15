@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8323e-rdb = "1"
 DEFAULT_PREFERENCE_avr32 = "1"
 
-FILE_PR = "r12"
+PR = "r12"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   file://binutils-buildid-arm.patch;patch=1 \

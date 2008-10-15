@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit gnome
 

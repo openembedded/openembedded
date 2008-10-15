@@ -8,7 +8,7 @@ RDEPENDS = "opie-sh"
 RPROVIDES = "oz-compat"
 RCONFLICTS = "oz-compat"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 EXCLUDE_FROM_SHLIBS = "1"
 COMPATIBLE_HOST = "arm.*-linux"

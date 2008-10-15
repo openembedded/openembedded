@@ -1,5 +1,5 @@
 SECTION = "x11/wm"
-FILE_PR = "r1"
+PR = "r1"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 

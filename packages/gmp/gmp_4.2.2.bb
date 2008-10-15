@@ -1,4 +1,4 @@
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI_append += "file://02_noexec-stack.diff;patch=1 \
 		   file://03_gnu89-inline.diff;patch=1 \

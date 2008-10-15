@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_mx31moboard = "1"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-${PV}.bz2;patch=1 \

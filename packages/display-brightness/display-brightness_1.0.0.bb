@@ -2,7 +2,7 @@ DESCRIPTION = "display brightness utility"
 AUTHOR = "Patrick Steiner <patrick.steiner@a1.net>"
 DEPENDS = ""
 PRIORITY = "optional"
-FILE_PR = "r4"
+PR = "r4"
 LICENSE = "GPLv2"
 
 SRC_URI = "file://display-brightness.sh"

@@ -2,7 +2,7 @@ DESCRIPTION = "Tasks applet switcher for matchbox"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ libwnck libmatchbox"
 
-FILE_PR = "r1"
+PR = "r1"
 
 CFLAGS += "-I${STAGING_INCDIR} \
 	   -I${STAGING_INCDIR}/gtk-2.0 \

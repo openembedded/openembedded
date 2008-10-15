@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
            file://build-fixes-and-sanity.patch;patch=1 "

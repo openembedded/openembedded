@@ -6,7 +6,7 @@ SECTION = "gpe"
 
 FIXEDSRCDATE = "${@bb.data.getVar('FILE', d, 1).split('_')[-1].split('.')[0]}"
 PV = "0.5.0+cvs${FIXEDSRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@gtk-webcore.cvs.sourceforge.net/cvsroot/gtk-webcore;module=JavaScriptCore;date=${FIXEDSRCDATE} \
            file://libm.patch;patch=1"

@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS += "u-boot-mkimage-openmoko-native"
 
-FILE_PR = "r1"
+PR = "r1"
 
 GGSRC = "http://www.xora.org.uk/oe/patches/"
 

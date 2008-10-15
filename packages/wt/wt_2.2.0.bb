@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "boost"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
 	file://cmakelist.patch;patch=1"

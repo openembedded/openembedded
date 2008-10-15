@@ -4,7 +4,7 @@ HOMEPAGE = "http://imdbpy.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "IMDbPY"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/imdbpy/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

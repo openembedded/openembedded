@@ -3,7 +3,7 @@ SECTION = "x11"
 PRIORITY = "optional"
 LICENSE = "GPL"
 PACKAGE_ARCH = "all"
-FILE_PR = "r1"
+PR = "r1"
 RDEPENDS = "xkbd"
 
 #SRC_URI = "http://whitenoise.ssrlab.com/pda/xkbd/xkbd-ru-en-123_0.1.1.tar.gz" 

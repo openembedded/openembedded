@@ -1,5 +1,5 @@
 PV = "${DISTRO_VERSION}"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 PACKAGES = "${PN}"

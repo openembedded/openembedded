@@ -4,7 +4,7 @@ SECTION = "gpe/libs"
 PRIORITY = "optional"
 DEPENDS  = "glib-2.0"
 PV = "0.1+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 inherit pkgconfig gpe autotools

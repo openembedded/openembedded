@@ -3,7 +3,7 @@ AUTHOR = "Seth W. Klein"
 HOMEPAGE = "http://www.sethwklein.net/projects/iana-etc/"
 SECTION = "base"
 LICENSE = "OPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.sethwklein.net/projects/iana-etc/downloads/${P}.tar.bz2"
 

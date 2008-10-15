@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "libmatchbox startup-notification"
 SECTION = "x11/wm"
 
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/mb-applet-startup-monitor/${PV}/mb-applet-startup-monitor-${PV}.tar.gz \
     file://85mb-applet-startup-monitor"

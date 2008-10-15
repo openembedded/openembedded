@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.xmlpull.org"
 PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "public domain"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit java-library
 

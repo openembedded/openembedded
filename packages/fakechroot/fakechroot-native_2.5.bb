@@ -1,5 +1,5 @@
 SECTION = "base"
-FILE_PR = "r0"
+PR = "r0"
 require fakechroot_${PV}.bb
 inherit native
 

@@ -1,6 +1,6 @@
 require ntp.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ipv6only-workaround.patch;patch=1 \

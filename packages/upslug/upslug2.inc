@@ -1,6 +1,6 @@
 # This package builds the 'upslug2' binary upload/flash tool
 # for the NSLU2.  It is not useful for anything else.
-FILE_PR = "r1"
+PR = "r1"
 DESCRIPTION = "NSLU2 binary upload tool (version 2)"
 HOMEPAGE = "http://www.nslu2-linux.org/wiki/Main/UpSlug2"
 SECTION = "console/network"

@@ -1,5 +1,5 @@
 require changedfiles.inc
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "file://autofoo.patch;patch=1"
 

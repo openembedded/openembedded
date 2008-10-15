@@ -13,7 +13,7 @@ COMPATIBLE_MACHINE = "fillmein"
 
 inherit kernel
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "git://filip.eu.org/jlime-current.git;protocol=git \
            git://filip.eu.org/jlime.git;protocol=git"

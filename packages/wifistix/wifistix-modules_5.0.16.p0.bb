@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.gumstix.com"
 LICENSE = "GPL"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
 DEPENDS = "virtual/kernel"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://files.gumstix.com/cf8385-5.0.16.p0-26306.tbz \
 			file://wifistix.conf \

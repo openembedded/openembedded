@@ -1,5 +1,5 @@
 DESCRIPTION = "Tool to edit the Redboot FIS partition layout from userspace"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "svn://svn.nslu2-linux.org/svnroot/fis;module=trunk;proto=http;rev=6"
 S="${WORKDIR}/trunk"

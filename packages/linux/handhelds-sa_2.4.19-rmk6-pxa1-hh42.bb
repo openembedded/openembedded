@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "handhelds.org Linux kernel for StrongArm processor based devices."
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 KERNEL_CCSUFFIX = "-3.3.4"

@@ -2,4 +2,4 @@
 # Released under the MIT license (see packages/COPYING)
 
 require debianutils.inc
-FILE_PR ="r0"
+PR ="r0"

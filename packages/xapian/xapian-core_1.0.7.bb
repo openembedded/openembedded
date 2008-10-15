@@ -4,7 +4,7 @@ SECTION = "devel/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "zlib"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.oligarchy.co.uk/xapian/${PV}/xapian-core-${PV}.tar.gz"
 

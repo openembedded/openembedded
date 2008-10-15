@@ -2,7 +2,7 @@ DESCRIPTION =	"Galago is a desktop presence framework, designed to transmit pres
 HOMEPAGE =	"http://www.galago-project.org/"
 LICENSE =	"LGPL"
 DEPENDS = 	"gettext dbus glib-2.0"
-FILE_PR =		"r1"
+PR =		"r1"
 
 
 SRC_URI =	"http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \

@@ -4,7 +4,7 @@ LICENSE = "GPLv2""
 
 DEPENDS = "boost"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://geos.refractions.net/geos-3.0.0rc4.tar.bz2"
 

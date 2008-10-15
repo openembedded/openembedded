@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
            file://tcl-add-soname.patch;patch=1 \

@@ -1,7 +1,7 @@
 require ${PN}.inc
 
 PV = "${OPIE_CVS_PV}"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/library \
            file://fix-titleheight.patch;patch=1 \

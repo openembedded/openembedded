@@ -14,7 +14,7 @@ PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-libc-for-gcc \
   virtual/arm-linux-gcc-intermediate \
   virtual/arm-linux-gcc-initial "
-FILE_PR = "r2"
+PR = "r2"
 
 RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
 PACKAGES_DYNAMIC = "glibc-gconv-*"

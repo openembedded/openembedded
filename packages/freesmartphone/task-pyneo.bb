@@ -1,7 +1,7 @@
 DESCRIPTION = "Task for a FIC Neo SmartPhone environment"
 LICENSE = "MIT"
 SECTION = "devel/python"
-FILE_PR = "r2"
+PR = "r2"
 
 ALLOW_EMPTY = "1"
 

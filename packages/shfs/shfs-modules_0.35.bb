@@ -3,7 +3,7 @@ It supports some nice features like number of different caches for access speedu
 SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/shfs/shfs-${PV}.tar.gz"
 S = "${WORKDIR}/shfs-${PV}/shfs/Linux-2.4"

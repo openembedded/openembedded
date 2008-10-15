@@ -1,6 +1,6 @@
 require gnuradio.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/gnuradio-${PV}.tar.gz \
 #           file://gnuradio-libusb.patch;patch=1 \

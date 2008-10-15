@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
 LICENSE = "GPL"
 RDEPENDS = "kernel-module-usbcore"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "file://rex-cfu1.conf \
            file://Makefile \

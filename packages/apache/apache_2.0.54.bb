@@ -1,7 +1,7 @@
 SECTION = "net"
 DEPENDS = "openssl expat libpcre"
 
-FILE_PR = "r4"
+PR = "r4"
 
 # ------------------------------------------
 # NOTE: This package is currently only meant

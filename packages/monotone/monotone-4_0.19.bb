@@ -1,7 +1,7 @@
 require monotone.inc
 
 SUBV = "1"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.venge.net/monotone/downloads/monotone_${PV}-${SUBV}.tar.gz \
            file://txt2c-cross.patch;patch=1 \

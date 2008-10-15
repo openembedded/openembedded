@@ -8,7 +8,7 @@ used to detect the type of a file system and read its metadata."
 DESCRIPTION_libvolume-id-dev = "libvolume_id development headers, \
 needed to link programs with libvolume_id."
 
-FILE_PR = "r11"
+PR = "r11"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/udev-${PV}.tar.gz \
 	   file://noasmlinkage.patch;patch=1 \

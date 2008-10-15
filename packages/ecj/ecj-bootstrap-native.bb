@@ -17,7 +17,7 @@ SRC_URI = "file://ecj.in"
 
 S = "${WORKDIR}"
 
-FILE_PR = "r1"
+PR = "r1"
 
 JAR = "ecj-bootstrap.jar"
 

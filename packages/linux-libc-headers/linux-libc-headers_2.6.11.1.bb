@@ -7,7 +7,7 @@ HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 #   standard linux kernel license applies.
 # since we assume GPL for linux i think we can also assume it here
 INHIBIT_DEFAULT_DEPS = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1"

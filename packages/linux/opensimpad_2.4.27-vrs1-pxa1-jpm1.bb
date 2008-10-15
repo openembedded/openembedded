@@ -6,7 +6,7 @@ VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
 USBV= "usb20040610"
-FILE_PR = "r4"
+PR = "r4"
 
 COMPATIBLE_MACHINE = 'simpad'
 

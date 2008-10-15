@@ -5,7 +5,7 @@ SRCREV_FORMAT = "webcore-rwebkit"
 
 # Yes, this is wrong...
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libgpewidget libgpepimc sqlite"
 PV = "0.10+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit pkgconfig gpe autotools
 

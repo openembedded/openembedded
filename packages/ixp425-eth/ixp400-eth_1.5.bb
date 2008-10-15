@@ -3,7 +3,7 @@
 #
 HOMEPAGE = "http://www.intel.com/design/network/products/npfamily/ixp420.htm"
 LICENSE = "GPL"
-FILE_PR = "r15"
+PR = "r15"
 
 DEPENDS = "ixp-osal"
 DEPENDS = "ixp4xx-csr"

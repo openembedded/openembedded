@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 RDEPENDS = "python-curses"
 SRCNAME = "urwid"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://excess.org/urwid/urwid-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

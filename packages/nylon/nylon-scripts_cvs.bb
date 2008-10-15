@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPLv2"
 SRCDATE = "20060923"
 PV = "1.0.0+cvs${SRCDATE}"
-FILE_PR = "r2"
+PR = "r2"
 RDEPENDS = "bash"
 
 SRC_URI = "http://meshcube.org/download/${PN}_${SRCDATE}.tgz"

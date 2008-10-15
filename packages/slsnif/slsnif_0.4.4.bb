@@ -4,7 +4,7 @@ slsnif works transparently for both the device connected to the serial port \
 and the controlling software for this device."
 LICENSE = "GPL"
 SECTION = "console"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.dakotacom.net/~ymg/files/slsnif-${PV}.tar.gz"
 

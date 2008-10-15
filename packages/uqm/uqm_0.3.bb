@@ -6,7 +6,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}/uqm-${PV}"
 

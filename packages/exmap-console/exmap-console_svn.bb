@@ -1,7 +1,7 @@
 require exmap-console.inc
 
 PV = "0.4+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=exmap-console;proto=http"
 

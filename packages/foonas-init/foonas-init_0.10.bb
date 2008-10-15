@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://initscripts/fixfstab \
 	   file://initscripts/syslog.buffer \

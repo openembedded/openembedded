@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic|GPL"
 DEPENDS += "libsub-exporter-perl-native"
 RDEPENDS += "libsub-exporter-perl"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/S/SS/SSORICHE/Test-Output-${PV}.tar.gz"
 

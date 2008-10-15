@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "sip-native python-sip"
 RDEPENDS = "python-core"
 SRCNAME = "pyqt"
-FILE_PR = "ml1"
+PR = "ml1"
 
 SRC_URI = "\
   http://www.riverbankcomputing.com/Downloads/PyQt4/GPL/PyQt-x11-gpl-${PV}.tar.gz \

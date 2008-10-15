@@ -6,7 +6,7 @@ DEPENDS = "xmodmap xrandr xdpyinfo xtscal"
 PV = "1.12+svn${SRCDATE}"
 S = "${WORKDIR}/xserver-common"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${GPE_SVN} \
             file://Makefile.translation \

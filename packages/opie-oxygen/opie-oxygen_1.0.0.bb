@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 APPNAME = "oxygen"
-FILE_PR = "r0"
+PR = "r0"
 
 #cvsdate for 1.0.0 is 20050101
 SRCDATE = "20050101"

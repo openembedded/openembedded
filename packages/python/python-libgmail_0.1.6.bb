@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "python-core python-netclient python-email python-mime python-pprint python-re python-pickle"
 SRCNAME = "libgmail"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

@@ -2,7 +2,7 @@ DESCRIPTION = "ImageMagick is an image convertion tools"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "tiff"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.nluug.nl/pub/ImageMagick/ImageMagick-${PV}.tar.bz2 \
            file://PerlMagic_MakePatch;patch=1 \

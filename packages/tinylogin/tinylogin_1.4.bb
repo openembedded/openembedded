@@ -5,7 +5,7 @@ changing passwords, and otherwise maintaining users \
 and groups on an embedded system."
 HOMEPAGE = "http://tinylogin.tinylogin.net/"
 LICENSE = "GPL"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://tinylogin.tinylogin.net/downloads/tinylogin-${PV}.tar.bz2 \
 	file://cvs-20040608.patch;patch=1;pnum=1 \

@@ -2,7 +2,7 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0.042+svnr${SRCREV}"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit efl
 

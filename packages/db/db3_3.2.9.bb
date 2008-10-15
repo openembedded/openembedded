@@ -2,7 +2,7 @@ SECTION = "libs"
 DESCRIPTION = "Berkeley DB v3."
 HOMEPAGE = "http://www.oracle.com/technology/products/berkeley-db/db/index.html"
 LICENSE = "BSD"
-FILE_PR = "r3"
+PR = "r3"
 VIRTUAL_NAME ?= "virtual/db"
 CONFLICTS = "db"
 

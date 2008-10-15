@@ -3,7 +3,7 @@ DESCRIPTION = "A cross platform audio library"
 HOMEPAGE = "http://www.xiph.org/ao/"
 SECTION = "libs"
 PRIORITY = "optional"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.xiph.org/ao/src/libao-${PV}.tar.gz \
 	   file://configure.patch;patch=1"

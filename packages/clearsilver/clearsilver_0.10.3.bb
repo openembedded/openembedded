@@ -3,7 +3,7 @@ SECTION = "net"
 DESCRIPTION = "Clearsilver is a fast, powerful, and language-neutral HTML template system"
 LICENSE = "Neotonic ClearSilver License"
 DEPENDS = "python"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.clearsilver.net/downloads/${P}.tar.gz \
            file://crosscompile.patch;patch=1"

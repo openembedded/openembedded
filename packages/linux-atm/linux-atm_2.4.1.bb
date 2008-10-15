@@ -3,7 +3,7 @@ HOMEPAGE = "http://linux-atm.sourceforge.net/"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
-FILE_PR = "r1"
+PR = "r1"
 LICENSE = "GPL LGPL"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/linux-atm/linux-atm-${PV}.tar.gz \

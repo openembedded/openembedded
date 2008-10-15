@@ -7,7 +7,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "common"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "ftp://ftp.logilab.fr/pub/common/${SRCNAME}-${PV}.tar.gz \
            file://fix-future-in-setup.patch;patch=1"

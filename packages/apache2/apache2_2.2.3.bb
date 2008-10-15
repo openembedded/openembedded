@@ -3,7 +3,7 @@ DESCRIPTION = "The apache v2 web server"
 DEPENDS = "apache2-native openssl expat pcre"
 RDEPENDS += "openssl"
 
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://apache.mirrors.tds.net/httpd/httpd-2.2.3.tar.bz2 \
 	   file://dftables-makefile-patch;patch=1 \

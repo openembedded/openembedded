@@ -3,7 +3,7 @@ DESCRIPTION_dbench = "Filesystem load benchmark"
 DESCRIPTION_tbench = "TCP load benchmark"
 HOMEPAGE = "http://samba.org/ftp/tridge/dbench/"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
   http://samba.org/ftp/tridge/dbench/dbench-${PV}.tar.gz \

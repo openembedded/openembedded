@@ -1,5 +1,5 @@
 require u-boot.inc
-FILE_PR ="r18"
+PR ="r18"
 
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
 SRCREV_davinci-dvevm = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"

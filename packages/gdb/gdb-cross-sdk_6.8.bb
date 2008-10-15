@@ -4,7 +4,7 @@ DEPENDS = "ncurses-sdk"
 
 inherit sdk
 
-FILE_PR = "r1"
+PR = "r1"
 
 do_configure_prepend() {
 	for i in $(find ${S} -name "warning*m4") ; do 

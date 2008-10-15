@@ -1,4 +1,4 @@
-FILE_PR = "r2"
+PR = "r2"
 SECTION = "console/network"
 LICENSE = "GPL"
 DESCRIPTION = "Fetchmail is a free, full-featured, robust, \

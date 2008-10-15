@@ -1,6 +1,6 @@
 require midpath-common.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
 

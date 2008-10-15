@@ -4,7 +4,7 @@ AUTHOR = "Space Telescope Science Institute"
 RDEPENDS = "python-numarray"
 SECTION = "devel/python"
 LICENSE = "AURA"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "ftp://ra.stsci.edu/pub/pyraf/v2.5/pyraf-${PV}.tar.gz"
 S = "${WORKDIR}/pyraf"

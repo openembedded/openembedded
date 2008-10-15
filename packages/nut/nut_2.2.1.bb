@@ -1,7 +1,7 @@
 DESCRIPTION = "Network UPS Tools"
 LICENSE = "GPL"
 DEPENDS = "libusb"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools
 

@@ -5,7 +5,7 @@ LICENSE = "LGPL GPL"
 # file, or virtual/db.  FIXME: patch it to support that.
 # DEPENDS = "virtual/db popt file zlib"
 DEPENDS = "zlib"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.jbj.org/pub/rpm-4.4.x/rpm-4.4-1.src.rpm \
 	   file://fix_mypath.patch;patch=1 \

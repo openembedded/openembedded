@@ -5,7 +5,7 @@ HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 DEPENDS="ncurses zlib openssl curl alsa-lib libogg libvorbis speex"
 SECTION = "console/telephony"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz \
 	 file://uclibc-compat-getloadavg.patch;patch=1 \

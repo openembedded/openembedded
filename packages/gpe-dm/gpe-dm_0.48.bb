@@ -6,7 +6,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 DEPENDS = "glib-2.0 xserver-common"
 RDEPENDS_${PN} += "procps xserver-common"
-FILE_PR = "r3"
+PR = "r3"
 
 INITSCRIPT_NAME = "gpe-dm"
 INITSCRIPT_PARAMS = "start 99 5 2 . stop 20 0 1 6 ."

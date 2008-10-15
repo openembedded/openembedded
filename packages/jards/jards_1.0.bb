@@ -5,7 +5,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 RDEPENDS = "virtual/japanese-font qte-mt libpng (>= 1) kpengine"
-FILE_PR = "r7"
+PR = "r7"
 
 #  stuff that still needs fixing
 #) is the RDEPENDS line correct and sufficient?

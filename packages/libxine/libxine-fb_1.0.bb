@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "zlib libogg tremor libmad libmodplug libpng"
 PROVIDES = "virtual/libxine"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig gettext
 

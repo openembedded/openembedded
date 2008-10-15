@@ -4,7 +4,7 @@ IPv6 networks, including ndisc6, rdisc6, tcptraceroute6 and traceroute6."
 SECTION = "console/network"
 HOMEPAGE = "http://www.simphalempin.com/dev/ndisc6/"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 # The tcptraceroute6 and tracert6 commands depend on rltraceroute6 to
 # perform the actual trace operation.

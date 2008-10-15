@@ -2,7 +2,7 @@ DESCRIPTION = "libusb is a library to provide userspace \
 access to USB devices."
 SECTION = "libs"
 LICENSE = "LGPL"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.gz \
            file://debian-changes.patch;patch=1"

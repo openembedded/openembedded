@@ -8,7 +8,7 @@ CFLAGS =+ "-I${S}/include -I${STAGING_KERNEL_DIR}/include"
 
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
-FILE_PR ="r3"
+PR ="r3"
 
 inherit autotools module-base
 

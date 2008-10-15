@@ -1,7 +1,7 @@
 DESCRIPTION = "Devel::StackTrace - Stack trace and stack trace frame objects"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Devel-StackTrace-${PV}.tar.gz"
 

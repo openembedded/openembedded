@@ -3,7 +3,7 @@ HOMEPAGE = "http://asio.sf.net/"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "Boost Software License"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/asio/boost_asio_0_3_7.tar.bz2"
 

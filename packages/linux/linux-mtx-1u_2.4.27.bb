@@ -2,7 +2,7 @@ include linux-mtx-1_2.4.27.bb
 
 COMPATIBLE_MACHINE = "mtx-1u"
 
-FILE_PR = "r11"
+PR = "r11"
 
 SRC_URI += "\
 	file://22-umts.diff;patch=1 \

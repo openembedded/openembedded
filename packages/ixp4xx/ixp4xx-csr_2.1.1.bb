@@ -40,7 +40,7 @@ SRC_URI += "file://undefined-attribute.patch;patch=1"
 
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_HOST = "^arm.*-linux.*"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"

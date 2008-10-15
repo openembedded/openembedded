@@ -14,7 +14,7 @@ It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://sshd_config \

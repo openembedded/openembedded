@@ -2,7 +2,7 @@ DESCRIPTION = "TagLib is a library for reading and editing the meta-data of seve
 SECTION = "libs/multimedia"
 HOMEPAGE = "http://developer.kde.org/~wheeler/taglib.html"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://developer.kde.org/~wheeler/files/src/taglib-${PV}.tar.gz \
            file://taglib_1.4-8.diff.gz;patch=1"

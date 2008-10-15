@@ -8,7 +8,7 @@ SRC_URI += "file://makefile.patch;patch=1"
 SRC_URI += "file://2.6.13.patch;patch=1"
 SRC_URI += "file://2.6.14.patch;patch=1"
 SRC_URI += "file://modprobe.conf"
-FILE_PR = "r4"
+PR = "r4"
 
 DEPENDS = "ixp4xx-csr"
 RDEPENDS = "ixp4xx-csr"

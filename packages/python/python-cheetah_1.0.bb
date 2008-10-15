@@ -8,7 +8,7 @@ SRCNAME = "Cheetah"
 SRC_URI = "${SOURCEFORGE_MIRROR}/cheetahtemplate/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit distutils
 

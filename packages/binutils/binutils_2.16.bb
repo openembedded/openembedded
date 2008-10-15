@@ -1,4 +1,4 @@
-FILE_PR = "r10"
+PR = "r10"
 
 SRC_URI = \
     "${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \

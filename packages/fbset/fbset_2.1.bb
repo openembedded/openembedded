@@ -9,7 +9,7 @@ DESCRIPTION = "The fbset console tool"
 LICENSE = "GPL"
 RRECOMMENDS = "fbset-modes"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/f/fbset/fbset_2.1.orig.tar.gz \
            file://makefile.patch;patch=1"

@@ -1,5 +1,5 @@
 SECTION = "x11/base"
-FILE_PR = "r1"
+PR = "r1"
 # XXX Is this true?  These fonts are from X.org.
 LICENSE = "XFree86"
 

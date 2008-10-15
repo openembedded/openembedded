@@ -3,7 +3,7 @@ HOMEPAGE = "http://simh.trailing-edge.com/"
 SECTION = "console/misc"
 LICENSE = "as-is"
 DEPENDS = "libpcap"
-FILE_PR = "r0"
+PR = "r0"
 
 URIPV = "${@bb.data.getVar('PV',d,1).replace('.','')}"
 SRC_URI = "http://simh.trailing-edge.com/sources/simhv${URIPV}.zip \

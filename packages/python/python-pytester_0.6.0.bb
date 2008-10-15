@@ -6,7 +6,7 @@ HOMEPAGE = "http://oss.wxnet.org/pytester/index.html"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "pytester"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/meta-tools/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

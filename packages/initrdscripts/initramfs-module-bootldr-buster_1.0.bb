@@ -1,5 +1,5 @@
 SRC_URI = "file://01-bootldr-buster.sh"
-FILE_PR = "r2"
+PR = "r2"
 DESCRIPTION = "An initramfs module for ignoring bogus kernel commandline from Compaq bootldr"
 RDEPENDS = "initramfs-uniboot"
 

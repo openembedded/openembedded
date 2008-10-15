@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.ez-ipupdate.com/"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.ez-ipupdate.com/dist/ez-ipupdate-${PV}.tar.gz"
 SRC_URI += "file://configure.patch;patch=1"

@@ -4,7 +4,7 @@ DESCRIPTION = "tool for user-define static device labels"
 DEPENDS = "e2fsprogs-libs"
 RDEPENDS = "bash util-linux"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://linux.dell.com/devlabel/permalink/devlabel-${PV}.tar.gz"
 

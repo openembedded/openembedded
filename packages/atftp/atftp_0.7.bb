@@ -3,7 +3,7 @@ SECTION = "network"
 PRIORITY = "optional"
 HOMEPAGE = "http://packages.debian.org/atftp"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/atftp/atftp_${PV}.orig.tar.gz \
 	    ${DEBIAN_MIRROR}/main/a/atftp/atftp_${PV}.dfsg-3.diff.gz;patch=1 \

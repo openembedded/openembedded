@@ -5,7 +5,7 @@
 DESCRIPTION = "Linux AES Driver for the AMD Geode LX processor"
 HOMEPAGE = "http://www.amd.com/embedded"
 
-FILE_PR = "r0"
+PR = "r0"
 AMD_DRIVER_VERSION = "02.01.0100"
 AMD_DRIVER_LABEL = "AES_Linux_LX_${AMD_DRIVER_VERSION}"
 

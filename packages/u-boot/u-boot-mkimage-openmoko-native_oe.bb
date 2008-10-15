@@ -3,7 +3,7 @@ require u-boot-openmoko_git.bb
 inherit native
 
 PV = "1.2.0+git9912121f7ed804ea58fd62f3f230b5dcfc357d88svn2238"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git/;protocol=git;tag=9912121f7ed804ea58fd62f3f230b5dcfc357d88 \
 file://uboot-machtypes.patch;patch=1 \

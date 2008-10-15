@@ -4,7 +4,7 @@ HOMEPAGE = "http://linux-hotplug.sourceforge.net/"
 SECTION = "admin"
 LICENSE = "GPL"
 DEPENDS = "linux-libc-headers"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://dfn.dl.sourceforge.net/sourceforge/linux-hotplug/fxload-2002_04_11.tar.gz \
            file://usbheader.patch;patch=1"

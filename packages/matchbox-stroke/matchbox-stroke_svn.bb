@@ -4,7 +4,7 @@ DEPENDS = "libfakekey expat libxft"
 SECTION = "x11/wm"
 PV = "0.0+svnr${SRCREV}"
 
-FILE_PR ="r2"
+PR ="r2"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 

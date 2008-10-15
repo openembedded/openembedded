@@ -1,6 +1,6 @@
 DESCRIPTION = "Binary Chumby firmware for kexec"
 PACKAGES = "${PN}-k2 ${PN}-rfs2 ${PN}-bl ${PN}-psp ${PN}-k1 ${PN}-rfs1"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://files.chumby.com/resources/chumby_fw_1_2.zip"
 S = ${WORKDIR}

@@ -1,6 +1,6 @@
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-cvs"
 PV = "0.0+cvs${SRCDATE}"
-FILE_PR = "r3"
+PR = "r3"
 
 require binutils.inc
 

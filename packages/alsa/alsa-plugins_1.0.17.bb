@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "multimedia/alsa/plugins"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib pulseaudio"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/plugins/alsa-plugins-${PV}.tar.bz2"
 

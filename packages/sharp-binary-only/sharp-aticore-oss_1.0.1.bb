@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for the Ati W100 found on the Sharp Zaurus C[87]x0"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://mirror1.pdaxrom.org/source/src/AtiCore-1.0.1.tar.bz2 \
 		file://fixstretchblit.patch;patch=1 \

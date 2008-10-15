@@ -3,7 +3,7 @@ SECTION = "gpe/libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "gtk+ cairo libxrender gtk-doc"
-FILE_PR = "r2"
+PR = "r2"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "The Debian Almquist Shell is a POSIX compliant shell that is much smaller than 'bash'."
 PROVIDES = "virtual/sh"
 LICENSE = "BSD GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/d/dash/dash_${PV}.orig.tar.gz \
 	http://snapshot.debian.net/archive/2005/07/11/debian/pool/main/d/dash/dash_0.5.2-6.diff.gz;patch=1 \

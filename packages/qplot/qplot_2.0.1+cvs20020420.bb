@@ -6,7 +6,7 @@ HOMEPAGE = "http://qplot.sourceforge.net/"
 SRCDATE = "20020420"
 #Change to form x.y.z+cvs${SRCDATE} when 2.0.1 changes in PV
 PV = "2.0.1-cvs-${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@qplot.cvs.sourceforge.net/cvsroot/qplot;module=qplot \
 	   file://gcc3.patch;patch=1"

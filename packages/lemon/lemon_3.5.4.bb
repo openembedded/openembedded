@@ -1,6 +1,6 @@
 require lemon.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 do_install() {
 	install -d ${D}${bindir}

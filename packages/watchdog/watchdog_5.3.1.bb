@@ -1,6 +1,6 @@
 DESCRIPTION = "System watchdog daemon"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/daemons/watchdog/${PN}_${PV}.tar.gz"
 

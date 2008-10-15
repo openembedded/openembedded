@@ -1,5 +1,5 @@
 DESCRIPTION = "Task package for Java GTK applications"
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "MIT"
 
 inherit task

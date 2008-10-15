@@ -2,7 +2,7 @@ DESCRIPTION = "The Gallery v1 web image gallery"
 SECTION = "apps"
 LICENSE = "GPL"
 RDEPENDS = "apache2 modphp imagemagick jhead"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://{SOURCEFORGE_MIRROR}/sourceforge/gallery/gallery-${PV}-pl1.tar.gz"
 

@@ -1,5 +1,5 @@
 require ${PN}.inc
-FILE_PR = "r1"
+PR = "r1"
 
 PV = "${OPIE_CVS_PV}"
 

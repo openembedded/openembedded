@@ -2,7 +2,7 @@ DESCRIPTION = "Gnash is a GNU Flash movie player that supports many SWF v7 featu
 HOMEPAGE = "http://www.gnu.org/software/gnash"
 LICENSE = "GPL-2"
 DEPENDS = "libtool ffmpeg gtk+ cairo libxml2 libmad libsdl-mixer zlib boost jpeg pango curl freetype"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2 \
           "

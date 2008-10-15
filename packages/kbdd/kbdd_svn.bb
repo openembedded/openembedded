@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 DEPENDS = "virtual/kernel"
 RRECOMMENDS_${PN} = "kernel-module-keybdev kernel-module-uinput"
 PV = "0.12+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://projects.linuxtogo.org/svn/kbdd;module=trunk;proto=svn \
            file://kbdd.init \

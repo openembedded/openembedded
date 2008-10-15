@@ -3,7 +3,7 @@ DESCRIPTION = "Aircrack is a set of tools for wep key statistical cracking"
 HOMEPAGE = "http://www.cr0.net:8040/code/network/aircrack/"
 LICENSE = "GPLv2"
 DEPENDS = ""
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "http://www.wirelessdefence.org/Contents/Files/${P}.tgz \
 		file://oe.patch;patch=1;pnum=1"

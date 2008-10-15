@@ -7,7 +7,7 @@ RRECOMMENDS="${PN}-filter-html"
 
 SRCDATE = "20070601"
 PV = "1.2.2opie+cvs${SRCDATE}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${HANDHELDS_CVS};module=opie/noncore/apps/opie-reader \
            ${HANDHELDS_CVS};module=opie/pics \

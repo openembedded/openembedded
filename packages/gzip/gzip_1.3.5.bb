@@ -4,7 +4,7 @@ PRIORITY = "required"
 DESCRIPTION = "gzip (GNU zip) is a compression utility designed \
 to be a replacement for 'compress'. The GNU Project uses it as \
 the standard compression program for its system."
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/g/gzip/gzip_${PV}.orig.tar.gz \
 	   file://configure.patch;patch=1"

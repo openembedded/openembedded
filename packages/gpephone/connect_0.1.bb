@@ -3,7 +3,7 @@ LICENSE  = "GPL"
 SECTION = "gpe"
 PRIORITY = "optional"
 DEPENDS  = "glibc"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gpephone
 

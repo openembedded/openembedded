@@ -2,7 +2,7 @@ DESCRIPTION = "GTK plugin for stylus based systems"
 SECTION = "libs"
 DEPENDS = "gtk+"
 LICENSE = "LGPL"
-FILE_PR = "r5"
+PR = "r5"
 
 inherit autotools
 

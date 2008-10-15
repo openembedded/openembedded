@@ -8,7 +8,7 @@ LICENSE = "GPL"
 SRC_URI = "${HANDHELDS_CVS};module=rosetta \
 	file://rosetta-makefile.patch;patch=1"
 S = "${WORKDIR}/rosetta"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit pkgconfig gettext
 

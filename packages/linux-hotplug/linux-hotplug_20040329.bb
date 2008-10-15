@@ -6,7 +6,7 @@ LICENSE = "GPL"
 RPROVIDES_${PN} = "hotplug"
 RCONFLICTS_${PN} = "hotplug"
 RREPLACES_${PN} = "hotplug"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-2004_03_29.tar.gz \
 	   file://busybox.patch;patch=1 \

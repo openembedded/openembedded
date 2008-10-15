@@ -4,7 +4,7 @@ SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmikmod libmad flac audiofile virtual/libiconv"
 RDEPENDS = "libao-alsa"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
            file://mpd/save-volume-state.patch;patch=1 file://mpd/mpd.init"

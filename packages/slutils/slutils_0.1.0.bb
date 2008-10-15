@@ -5,7 +5,7 @@ DESCRIPTION_sltime = "A ustility to save and restore the time on Sharp Linux bas
 SECTION = "console/utils"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit qmake update-rc.d
 

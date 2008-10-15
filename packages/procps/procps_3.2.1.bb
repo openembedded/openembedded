@@ -1,6 +1,6 @@
 require procps.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "file://pagesz-not-constant.patch;patch=1"
 

@@ -4,7 +4,7 @@ DEPENDS = "libxfcegui4 exo dbus-glib libexif xfce4-panel libice libsm"
 inherit xfce pkgconfig
 
 SRC_URI = "http://www.us.xfce.org/archive/xfce-4.4.2/src/Thunar-${PV}.tar.bz2"
-FILE_PR = 'r1'
+PR = 'r1'
 
 S = "${WORKDIR}/Thunar-${PV}/"
 

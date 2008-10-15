@@ -1,6 +1,6 @@
 require altboot.inc
 
-FILE_PR = "r4"
+PR = "r4"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"
 SRC_URI = "svn://hentges.net/public/altboot/tags/;module=${TAG};proto=svn"

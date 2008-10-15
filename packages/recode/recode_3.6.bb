@@ -2,7 +2,7 @@ DESCRIPTION = "Charset converting utility"
 SECTION = "console/utils"
 LICENSE = "GPL"
 
-FILE_PR = "r1"
+PR = "r1"
 SRC_URI = "${GNU_MIRROR}/recode/recode-${PV}.tar.gz"
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/recode-${PV}', '${FILE_DIRNAME}' ], d)}"
 

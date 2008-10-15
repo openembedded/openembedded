@@ -2,7 +2,7 @@ DESCRIPTION = "GPG-Error library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/alpha/libgpg-error/libgpg-error-${PV}.tar.gz"
 

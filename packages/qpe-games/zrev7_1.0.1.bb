@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 AUTHOR = "Mario Weilguni"
 HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-ZRev7.html"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/zrev7_V1.0.1.tar.gz \
            file://zrev.patch;patch=1"

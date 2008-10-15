@@ -4,7 +4,7 @@ HOMEPAGE = "http://gtk-webcore.sourceforge.net/"
 PRIORITY = "optional"
 DEPENDS = "curl osb-nrcore"
 SECTION = "gpe"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gtk-webcore/osb-nrcit-${PV}.tar.gz"
 

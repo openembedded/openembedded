@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.pentest.co.uk/cgi-bin/viewcat.cgi?cat=downloads&section=01_bluetooth"
 DEPENDS = "bluez-libs gdbm ncurses libxml2"
-FILE_PR = "r2"
+PR = "r2"
 LICENSE = "GPLv2"
 
 SRC_URI = "http://www.pentest.co.uk/src/btscanner-${PV}.tar.bz2 \

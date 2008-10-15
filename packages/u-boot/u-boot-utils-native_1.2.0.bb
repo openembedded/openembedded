@@ -3,7 +3,7 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 ALLOW_EMPTY = "1"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 

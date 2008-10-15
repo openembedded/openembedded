@@ -2,7 +2,7 @@ SECTION = "base"
 PACKAGES = ""
 LICENSE = "GPL"
 INHIBIT_DEFAULT_DEPS = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://nslu.sf.net/downloads/${PN}-${PV}.tar.bz2"
 S = "${WORKDIR}/${PN}-${PV}"

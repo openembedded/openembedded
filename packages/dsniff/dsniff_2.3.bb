@@ -3,7 +3,7 @@ SECTION = "console/network"
 HOMEPAGE = "http://www.monkey.org/~dugsong/dsniff/"
 AUTHOR = "Dug Song <dugsong@monkey.org>"
 LICENSE = "BSD"
-FILE_PR = "r2"
+PR = "r2"
 
 # There is a significant API change beween 1.0.2a of libnet and
 # 1.1.x, dsniff will only work with the older and there is no

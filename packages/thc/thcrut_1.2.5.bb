@@ -3,7 +3,7 @@ SECTION = "console/network"
 DEPENDS = "libpcre openssl libnet libpcap"
 HOMEPAGE = "http://thc.org/thc-rut/"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://packetstorm.linuxsecurity.com/groups/thc/thcrut-1.2.5.tar.gz \
 	   file://configure_in.patch;patch=1;pnum=0"

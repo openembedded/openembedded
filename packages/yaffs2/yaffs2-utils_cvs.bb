@@ -3,7 +3,7 @@ SECTION = "base"
 HOMEPAGE = "http://www.yaffs.net"
 LICENSE = "GPLv2"
 PV = "0.0.0+cvs${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 #
 # NOTE: This needs pretty recent mtd-utils otherwise it fails to compile

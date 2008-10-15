@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.tug.org/tetex"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "tetex-native flex gd ncurses libpng t1lib virtual/libx11 libxau libxext libxt zlib"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "ftp://dante.ctan.org/tex-archive/systems/unix/teTeX/current/distrib/tetex-src-${PV}.tar.gz \
            file://configure.patch;patch=1"

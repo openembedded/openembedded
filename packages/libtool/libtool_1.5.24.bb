@@ -1,7 +1,7 @@
 DEFAULT_PREFERENCE = "-1"
 
 require libtool.inc
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz \
            file://autotools.patch;patch=1 \

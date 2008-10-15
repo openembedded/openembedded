@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl zlib"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://rcdrummond.net/uae/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1"

@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "tslib"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
            file://qconfig-oe.h \

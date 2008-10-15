@@ -3,7 +3,7 @@ LICENSE = "MIT"
 SECTION = "x11"
 DEPENDS = "gtk+ gconf intltool-native librsvg libowl"
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r5"
+PR = "r5"
 
 inherit autotools pkgconfig
 

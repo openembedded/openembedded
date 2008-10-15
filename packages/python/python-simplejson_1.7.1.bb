@@ -7,7 +7,7 @@ LICENSE = "MIT"
 # python-zlib is needed to unpack egg created by setuptools
 RDEPENDS = "python-core python-re python-io python-netserver python-zlib"
 SRCNAME = "simplejson"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/s/simplejson/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

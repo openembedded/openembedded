@@ -1,6 +1,6 @@
 require flac.inc
 
-FILE_PR = "r6"
+PR = "r6"
 
 do_configure_append () {
 	# removes '-read-only-relocs' which is enabled for PowerPC builds.

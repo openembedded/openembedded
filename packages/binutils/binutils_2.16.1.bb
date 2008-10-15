@@ -1,4 +1,4 @@
-FILE_PR = "r1"
+PR = "r1"
 
 CROSSTOOL_PATCH_URL = "http://www.kegel.com/crosstool/crosstool-0.43/patches/binutils-2.16.1/"
 SRC_URI = \

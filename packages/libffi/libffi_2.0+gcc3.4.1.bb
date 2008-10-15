@@ -2,7 +2,7 @@ SECTION = "libs"
 DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"
 PRIORITY = "optional"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools gettext
 

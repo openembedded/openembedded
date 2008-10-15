@@ -2,7 +2,7 @@ require libxsettings-client.inc
 
 DEPENDS += "gtk-doc"
 PV = "0.17+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"

@@ -2,7 +2,7 @@ DESCRIPTION = "Lightweight backlight saver daemon"
 SECTION = "base"
 LICENSE="GPL"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "file://Makefile \
     file://backsaver.c"

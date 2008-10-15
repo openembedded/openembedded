@@ -2,7 +2,7 @@ require autoconf.inc
 
 DEPENDS += "m4-native"
 RDEPENDS_${PN} = "m4 gnu-config"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI += "file://autoreconf-include.patch;patch=1 \
 	   file://autoreconf-exclude.patch;patch=1 \

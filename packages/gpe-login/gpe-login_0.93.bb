@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ libgpewidget gpe-ownerinfo xkbd"
 RDEPENDS = "xkbd gpe-theme-clearlooks"
 RPROVIDES_${PN} = "gpe-session-starter"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "1"
 

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.ntfs-3g.org/"
 LICENSE = "GPLv2"
 DEPENDS = "fuse"
 RDEPENDS = "fuse"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = http://www.ntfs-3g.org/ntfs-3g-${PV}.tgz
 

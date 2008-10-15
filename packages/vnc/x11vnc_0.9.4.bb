@@ -5,7 +5,7 @@ SECTION = "x11/utils"
 LICENSE = "GPL"
 DEPENDS = "openssl virtual/libx11 libxtst libxext avahi jpeg zlib"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libvncserver/x11vnc-${PV}.tar.gz"
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Network suspend/resume scripts"
 SECTION = "base"
 LICENSE = "GPL"
 PV = "1.1"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "file://ifupdown \
            file://usbnet"

@@ -3,5 +3,5 @@ require xorg-lib-common.inc
 DESCRIPTION = "X11 font encoding library"
 LICENSE = "BSD-X"
 DEPENDS += "zlib xproto"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"

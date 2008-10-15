@@ -1,3 +1,3 @@
 require gpe-su.inc
 
-FILE_PR = "r0"
+PR = "r0"

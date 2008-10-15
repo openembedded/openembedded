@@ -3,7 +3,7 @@ HOMEPAGE = "http://codespeak.net/lxml/"
 AUTHOR = "http://codespeak.net/mailman/listinfo/lxml-dev"
 LICENSE = "BSD"
 DEPENDS = "libxml2 libxslt"
-FILE_PR = "ml1"
+PR = "ml1"
 
 SRC_URI = "http://codespeak.net/lxml/lxml-${PV}.tgz \
            file://use-pkgconfig-to-detect.patch;patch=1"

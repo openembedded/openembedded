@@ -1,7 +1,7 @@
 SECTION = "x11/base"
 SRC_URI = "file://gtk-doc.m4"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 ALLOW_EMPTY_${PN} = "1"
 

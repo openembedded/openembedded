@@ -3,7 +3,7 @@ SECTION = "net"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://qolsr.lri.fr"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://qolsr.lri.fr/code/qolyester-${PV}.tar.bz2"
 

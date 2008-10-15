@@ -7,4 +7,4 @@ SRC_URI = "${GNU_MIRROR}/patch/patch-2.5.4.tar.gz \
            file://unified-reject-files.diff;patch=1 \
            file://global-reject-file.diff;patch=1 "
 S = "${WORKDIR}/patch-2.5.4"
-FILE_PR = "r2"
+PR = "r2"

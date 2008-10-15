@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the Openprotium on the iomega Storcenter"
 HOMEPAGE = "http://www.openprotium.org"
 LICENSE = "MIT"
-FILE_PR = "r4"
+PR = "r4"
 CONFLICTS = "db3"
 PROVIDES += "${OPENPROTIUM_IMAGENAME}-packages"
 

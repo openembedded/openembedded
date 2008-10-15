@@ -11,7 +11,7 @@ RRECOMMENDS = "\
 	kernel-module-snd-usb-audio \
 	"
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://download.devbase.at/voip/yeaphone-${PV}.tar.gz"
 

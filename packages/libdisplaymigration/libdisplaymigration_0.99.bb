@@ -3,7 +3,7 @@ DESCRIPTION = "Gtk+ display migration library (dummy version)"
 DEPENDS = "gtk+"
 SECTION = "gpe"
 PRIORITY = "optional"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit pkgconfig gpe
 

@@ -3,7 +3,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-mixer"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://linux.tlk.fr/games/Powermanga/download/powermanga-0.79.tgz \
 	   file://linuxroutines.cpp \

@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "gdbm"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.scrypt.net/~celer/kweb/Keyring-0.6.8.tgz \
 	   file://keyring-0.6.8-datatype.patch;patch=1"

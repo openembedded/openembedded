@@ -3,7 +3,7 @@ SECTION = "gpe"
 DESCRIPTION = "GPE windowlist applet"
 LICENSE = "GPL"
 
-FILE_PR = "r0"
+PR = "r0"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

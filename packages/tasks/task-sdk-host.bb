@@ -3,7 +3,7 @@
 #
 
 DESCRIPTION = "Host packages for the standalone SDK or external toolchain"
-FILE_PR = "r2"
+PR = "r2"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

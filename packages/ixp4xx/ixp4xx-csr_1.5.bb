@@ -23,7 +23,7 @@ SRC_URI += "http://www.intel.com/Please-Read-The-BB-File/ixp400NpeLibrary-1_5.zi
 SRC_URI += "file://2.6.patch;patch=1"
 DEPENDS = "ixp-osal"
 S = "${WORKDIR}/ixp400_xscale_sw"
-FILE_PR = "r1"
+PR = "r1"
 
 COMPATIBLE_HOST = "^armeb-linux.*"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"

@@ -4,7 +4,7 @@ DEPENDS = "curl dbus eet evas edje ecore edbus emotion"
 DEPENDS += "libmusicbrainz lightmediascanner libxml2 taglib"
 SECTION = "x11/multimedia"
 PV = "0.2.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit e
 

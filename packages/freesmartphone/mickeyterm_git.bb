@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 PV = "2.9.1+gitr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/python-helpers.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"

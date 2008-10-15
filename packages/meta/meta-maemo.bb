@@ -1,6 +1,6 @@
 DESCRIPTION = "Meta-package for maemo environment"
 LICENSE = "MIT"
-FILE_PR = "r0"
+PR = "r0"
 
 RDEPENDS = "\
     maemo-task-base \

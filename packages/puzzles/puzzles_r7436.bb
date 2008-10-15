@@ -1,7 +1,7 @@
 
 DEPENDS = "gtk+ libxt"
 
-FILE_PR = "r3"
+PR = "r3"
 
 SVN_REV = "${@bb.data.getVar('PV',d,1).replace('r', '')}"
 

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11 xft libxtst libxpm fltk"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "cvs://anoncvs@keithp.com/local/src/CVS;method=pserver;module=ipatience \
           file://fix-make.patch;patch=1"

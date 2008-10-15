@@ -2,7 +2,7 @@ DESCRIPTION = "The Openmoko Message application"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 libjana"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit openmoko2
 

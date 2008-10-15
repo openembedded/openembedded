@@ -1,6 +1,6 @@
 require gpsdrive.inc
 
-FILE_PR = "r2"
+PR = "r2"
 
 DESCRIPTION = "GPS navigation/map display software, PDA-optimized version"
 HOMEPAGE = "http://www.gedanken.demon.co.uk/gpsdrive-ipaq/"

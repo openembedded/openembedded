@@ -2,7 +2,7 @@ LICENSE = "GPL"
 DESCRIPTION = "Wiggle is a program for applying patches that patch cannot \
 apply because of conflicting changes."
 SECTION = "console/utils"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://cgi.cse.unsw.edu.au/~neilb/source/wiggle/wiggle-${PV}.tar.gz \
 	   file://001NoQuietTime;patch=1 \

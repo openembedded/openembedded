@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION ="tinc is a Virtual Private Network (VPN) daemon"
 HOMEPAGE = "http://www.tinc-vpn.org/"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI="http://www.tinc-vpn.org/packages/tinc-1.0.2.tar.gz \
 	file://mtu-vlan.diff;patch=1 \

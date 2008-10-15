@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 # We call 'moc' during the build 
 DEPENDS = "uicmoc4-native"

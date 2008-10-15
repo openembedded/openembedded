@@ -8,7 +8,7 @@ HOMEPAGE = "http://www.linux-solutions.at/projects/zaurus/games-Crossword.html"
 SRC_URI = "http://handhelds.org/~zecke/oe_packages/crossword_V0.0.3.tar.gz \
 	   file://crossword.patch;patch=1"
 
-FILE_PR = "r1"
+PR = "r1"
 
 PV = "0.0.3"
 S = "${WORKDIR}/crossword_V${PV}"
