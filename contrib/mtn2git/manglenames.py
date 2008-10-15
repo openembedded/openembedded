@@ -17,7 +17,7 @@ all_names = {
     "Andrew Wilcox"      : (["awilcox@openembedded.org"], "andy@protium.com"),
     "Angus Ainslie"      : (["angus@handheldshell.com"], "angus@handheldshell.com"),
     "ant"                : (["ant", "ant, Jay"], "ant@unknown.openembedded.org"),
-    "Antonio ospite"     : (["ospite@studenti.unina.it"], "ospite@studenti.unina.it"),
+    "Antonio Ospite"     : (["ospite@studenti.unina.it"], "ospite@studenti.unina.it"),
     "Antti Andreimann"   : (["antti.andreimann@mail.ee", "mailto:antti.andreimann@mail.ee"], "antti.andreimann@mail.ee"),
     "araimondi"          : (["araimondi@gmx.net"], "araimondi@gmx.net"),
     "Arjan Schrijver"    : (["arjan@openembedded.org"], "arjan@anymore.nl"),
@@ -127,6 +127,7 @@ all_names = {
     "OpenEmbedded Project"     : (["oe@openembedded.org"], "openembedded-devel@lists.openembedded.org"),
     "Openmoko anonymizer key"  : (["openmoko@openembedded.org"], "devel@lists.openmoko.org"),
     "Otavio Salvador"    : (["otavio@ossystems.com.br", "Otavio Salvador <otavio@debian.org>", "Otavio Salvador <otavio@ossystems.com.br>"], "otavio@ossystems.com.br"),
+    "Ottavio Campana"    : (["Ottavio Campana"], "ottavio@campana.vi.it"),
     "Ovidiu Sas"         : (["osas@nslu2-linux.org"], "sip.nslu@gmail.com"),
     "Oyvind Repvik"      : (["nail@nslu2-linux.org", "oyvind@repvik.org"], "nail@nslu2-linux.org"),
     "Patrick Ohly"       : (["pohly@openembedded.org"], "patrick.ohly@gmx.de"),
@@ -134,7 +135,7 @@ all_names = {
     "Patrik Gfeller"     : (["Patrik Gfeller <gfellerpatrik@gmx.net>", "gfellerpatrik@gmx.net"], "gfellerpatrik@gmx.net"),
     "Paul Eggleton"      : (["bluelightning", "bluelightning@bluelightning.org", "bluelightning@openembedded.org", "Paul Eggleton"], "bluelightning@bluelightning.org"),
     "Paul Sokolovsky"    : (["pfalcon@openembedded.org", "pmiscml@gmail.com"], "pmiscml@gmail.com"),
-    "Peter Urbanec"      : (["peteru@openembedded.org"], "toppy@urbanec.net"),
+    "Peter Urbanec"      : (["peteru@openembedded.org", "black.lan!peteru"], "toppy@urbanec.net"),
     "Petr Stetiar"       : (["ynezz@true.cz", "PetrŠtetiar"], "ynezz@true.cz"),
     "Phil Blundell"      : (["pb@openembedded.org", "nexus.co.uk!pb", "(none)!pb", "uk[pb]!pb", "reciva.com!pb", "uni-frankfurt.de!pb_"], "philb@gnu.org"),
     "Philip Balister"    : (["crofton@openembedded.org"], "philip@balister.org"),
@@ -187,7 +188,6 @@ reverse = {
     'bitkeeper.com!nslu2-linux.adm' : None,
     'bkbits.net!nslu2-linux.adm' : None,
     'bkbits.net!openembedded.adm' : None,
-    'black.lan!peteru' : None,
     '!ByronT' : None,
     'cambridgebroadband.com!rjt' : None,
     'conversagent.com!fontenot' : None,
@@ -229,7 +229,7 @@ for name, (ids, email) in all_names.items():
         assert not id in reverse
         reverse[id] = (name, email)
 
-rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.\_!])* <([a-zA-Z0-9\[\]\(\)\-\.\_\@!]+)> (.+)\n$")
+rx = re.compile(r"^(author|committer) ([a-zA-Z0-9\[\]\(\)\-\.\_!])* <(.+)> (.+)\n$")
 
 last = ""
 
@@ -246,7 +246,9 @@ for line in sys.stdin:
         sys.stderr.write("id unknown %s\n" % repr(g[2]))
     if replacement is None:
         if '!' in g[2]:
-            replacement = (g[2], g[2] + "@bk.openembedded.invalid")
+            domain, addr = g[2].split('!')
+            email = "%s@%s" % (addr, domain)
+            replacement = (email, email)
         elif '@' in g[2]:
             replacement = (g[2], g[2])
         else:
