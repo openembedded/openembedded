@@ -153,7 +153,7 @@ Person:     Marcin Juszkiewicz
 Mail:       hrw@openembedded.org
 Website:    http://blog.haerwu.biz/
 Machines:   progear, alix, nokia800, nokia770
-Distros:    Poky, OpenZaurus, Ångström
+Distros:    Poky, Ångström
 Interests:  WiFi, Native SDK, Nokia tablets
 Recipes:    linux, linux-rp, linux-nokia*, gammu, ttf-fonts/* 
 
