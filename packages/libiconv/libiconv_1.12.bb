@@ -1,3 +1,4 @@
+<<<<<<< HEAD:packages/libiconv/libiconv_1.12.bb
 DESCRIPTION = "GNU libiconv - libiconv is for you if your application needs to support \
 multiple character encodings, but that support lacks from your system."
 HOMEPAGE = "http://www.gnu.org/software/libiconv"
@@ -11,22 +12,16 @@ LICENSE = "LGPL"
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \
 	   file://preload.patch;patch=1"
+=======
+require libiconv.inc
+>>>>>>> libinconv: split up into .inc and version file:packages/libiconv/libiconv_1.12.bb
 
-S = "${WORKDIR}/libiconv-${PV}"
+PROVIDES = "virtual/libiconv"
+PR = "r1"
 
-inherit autotools
+#gettext.class cant be inherit here so use this hack
+DEPENDS = "${@['','gettext-native'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
 
-EXTRA_OECONF += "--enable-shared --enable-static --enable-relocatable --disable-rpath"
+EXTRA_OECONF +=  "${@['--disable-nls','--enable-nls'][bb.data.getVar('USE_NLS', d, 1) == 'yes']}"
 
-do_configure_append () {
-	        # Fix stupid libtool... handling. rpath handling can't be disabled and the Makefile's can't be regenerated..
-        # (GNU sed required)
-        sed -i s/^hardcode_libdir_flag_spec/#hardcode_libdir_flag_spec/ ${S}/*-libtool
-}
-
-do_stage () {
-	oe_libinstall -so -a -C lib libiconv ${STAGING_LIBDIR}
-	oe_libinstall -so -C lib libiconv_plug_linux ${STAGING_LIBDIR}
-	oe_libinstall -so -a -C libcharset/lib libcharset ${STAGING_LIBDIR}
-	autotools_stage_includes
-}
+LEAD_SONAME = "libiconv.so"
