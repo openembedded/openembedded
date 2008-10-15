@@ -1,6 +1,10 @@
+DESCRIPTION ?= "TrueType font package ${PN}"
 SECTION = "fonts"
 PRIORITY = "optional"
 RRECOMMENDS += "font-update-common"
+
+# we don't need a compiler nor a c library for these fonts
+INHIBIT_DEFAULT_DEPS = "1"
 
 do_install() {
     install -d ${D}${datadir}/fonts/truetype/
