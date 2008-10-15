@@ -17,6 +17,9 @@ TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 COMPATIBLE_HOST = "(arm|i.86).*-linux"
 COMPATIBLE_MACHINE = '(collie|poodle|c7x0|akita|spitz|tosa|hx2000|qemuarm|qemux86|bootcdx86|htcuniversal|zylonite)'
 
+# Enable OABI compat for people stuck with obsolete userspace
+ARM_KEEP_OABI ?= "1"
+
 KERNEL_DEFCONFIG ?= "defconfig-${MACHINE}"
 
 CMDLINE_CON = "console=ttyS0,115200n8 console=tty1 noinitrd"
@@ -119,7 +122,11 @@ do_configure() {
 
 	if [ "${TARGET_OS}" = "linux-gnueabi" -o "${TARGET_OS}" = "linux-uclibcgnueabi" ]; then
 		echo "CONFIG_AEABI=y"                   >> ${S}/.config
-		echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+		if [ "${ARM_KEEP_OABI}" = "1" ] ; then
+			echo "CONFIG_OABI_COMPAT=y"             >> ${S}/.config
+		else
+			echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
+		fi
 	else 
 		echo "# CONFIG_AEABI is not set"        >> ${S}/.config
 		echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
