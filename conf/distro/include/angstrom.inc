@@ -54,6 +54,10 @@ INHERIT += "testlab"
 ANGSTROM_PKG_FORMAT ?= "ipk"
 require conf/distro/include/angstrom-package-${ANGSTROM_PKG_FORMAT}.inc
 
+
+# We don't want to keep OABI compat
+ARM_KEEP_OABI = "0"
+
 #Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable
 PREFERRED_PROVIDER_qemu-native = "qemu-native"
 ENABLE_BINARY_LOCALE_GENERATION ?= "1"
