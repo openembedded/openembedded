@@ -8,9 +8,10 @@ SRC_URI += "\
   file://autotools.patch;patch=1 \
   file://decimalformat.patch;patch=1 \
   file://cp-byte-loophelper.patch;patch=1;pnum=0 \
+  file://drawpolyline.patch;patch=1;pnum=0 \
   "
 
-PR = "r4"
+PR = "r5"
 
 DEPENDS += "gtk+ gconf libxtst"
 
