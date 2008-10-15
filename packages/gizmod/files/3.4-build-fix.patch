@@ -1,0 +1,71 @@
+Index: gizmod-3.4/cmake/Modules/DefineCompilerFlags.cmake
+===================================================================
+--- gizmod-3.4.orig/cmake/Modules/DefineCompilerFlags.cmake
++++ gizmod-3.4/cmake/Modules/DefineCompilerFlags.cmake
+@@ -15,4 +15,4 @@ if (UNIX AND NOT WIN32)
+   #endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
+ endif (UNIX AND NOT WIN32)
+ 
+-add_definitions(-DHAVE_CONFIG_H -Wall -Werror)
++add_definitions(-DHAVE_CONFIG_H)
+Index: gizmod-3.4/libGizmod/Alsa.cpp
+===================================================================
+--- gizmod-3.4.orig/libGizmod/Alsa.cpp
++++ gizmod-3.4/libGizmod/Alsa.cpp
+@@ -149,10 +149,11 @@ void Alsa::onAlsaEventMixerElementAttach
+ **/
+ void Alsa::onAlsaEventMixerElementChange(AlsaEvent const & Event, AlsaSoundCard const & SoundCard, AlsaMixer const & Mixer) {
+ 	// override me
+-	if (Event.Type == ALSAEVENT_MIXERELEMENT_CHANGE) 
++	if (Event.Type == ALSAEVENT_MIXERELEMENT_CHANGE) {
+ 		cdbg2 << "Mixer Element Changed [" << Mixer.getName() << "] with Mask [" << stringconverter(Event.IsActiveChanged) << stringconverter(Event.ElementsChanged) << stringconverter(Event.VolumePlaybackChanged) << "] on Sound Card [" << SoundCard.getCardName() << "] " << Mixer.VolumePlaybackPercent << endl;
+-	else
++	} else {
+ 		cdbg2 << "Mixer Element Changed [" << Mixer.getName() << "] with Mask [" << stringconverter(Event.Mask) << "] on Sound Card [" << SoundCard.getCardName() << "]" << endl;
++	}
+ }
+ 
+ /**
+Index: gizmod-3.4/libGizmod/GizmoLinuxInputEvent.hpp
+===================================================================
+--- gizmod-3.4.orig/libGizmod/GizmoLinuxInputEvent.hpp
++++ gizmod-3.4/libGizmod/GizmoLinuxInputEvent.hpp
+@@ -54,7 +54,7 @@ namespace Gizmod {
+  * \struct GizmoTimeVal
+  * \brief  Wrapper for the C timeval struct (for exposure to Python)
+ **/
+-typedef struct GizmoTimeVal {
++struct GizmoTimeVal {
+ 	unsigned int Seconds;							///< Time in Seconds
+ 	unsigned int MicroSeconds;						///< Time remaining (after Seconds) in MicroSeconds
+ 	
+Index: gizmod-3.4/libH/FileEventWatcher.cpp
+===================================================================
+--- gizmod-3.4.orig/libH/FileEventWatcher.cpp
++++ gizmod-3.4/libH/FileEventWatcher.cpp
+@@ -453,11 +453,12 @@ void FileEventWatcher::handleEventsOnFil
+ 			// read from the inotify device
+ 			char ReadBuffer[NOTIFY_READ_BUF_SIZE];
+ 			int BytesRead = read(mInotifyFD, ReadBuffer, NOTIFY_READ_BUF_SIZE);
+-			if (BytesRead < 0)
++			if (BytesRead < 0) {
+ 				if (errno == EINTR)
+ 					return;
+ 				else
+ 					throw H::Exception("Failed to Read from Inotify Device!", __FILE__, __FUNCTION__, __LINE__);
++			}
+ 				
+ 			// loop through all of the returned inotify_event structures and produce events
+ 			int BytesHandled = 0;
+Index: gizmod-3.4/libH/Util.hpp
+===================================================================
+--- gizmod-3.4.orig/libH/Util.hpp
++++ gizmod-3.4/libH/Util.hpp
+@@ -36,6 +36,7 @@
+ #include "Debug.hpp"
+ #include <cstdlib>
+ #include <iostream>
++#include <algorithm>
+ 
+ //////////////////////////////////////////////////////////////////////////////
+ // Namespace
