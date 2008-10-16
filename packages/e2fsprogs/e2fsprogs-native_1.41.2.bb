@@ -3,6 +3,7 @@ require e2fsprogs.inc
 inherit native
 
 FILE_PR = "r1"
+DEFAULT_PREFERENCE = "-1"
 
 EXTRA_OECONF = ""
 
