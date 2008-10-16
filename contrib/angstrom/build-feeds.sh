@@ -62,50 +62,188 @@ for machine in simpad om-gta01 c7x0 nokia800 beagleboard dht-walnut efika
 do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python"
-	BUILD_TARGETS="texinfo flex bison gperf gcc binutils make automake autoconf m4 pkgconfig distcc \
-	               gdb gdbserver strace \
-		       usbutils pciutils mtd-utils usbview hal setserial \
-		       task-proper-tools mc screen findutils fakeroot gzip \
-		       mono jamvm perl python ruby \
-                       gtk+ qt-x11-free qt4-x11-free \
-                       gpe-mini-browser gpe-mini-browser2 netsurf midori firefox epiphany fennec minimo openmoko-browser2 \
-                       samba meta-nas-server \
-                       apache2 boa cherokee lighttpd thttpd \
-                       gpe-sketchbook gpe-gallery gpe-scap notecase leafpad task-gpe-pim \
-                       pidgin irssi \
-                       roadmap-gtk2 gpsdrive navit viking \
-                       ffmpeg xmms totem mplayer quasar vlc-gpe gnome-mplayer \
-                       wpa-gui wifi-radar kismet aircrack-ng dsniff \
-                       nmap iptables iperf openvpn vpnc \
-                       gpe-login ipaq-sleep \
-                       gpe-bluetooth bluez-gnome python-pybluez \
-                       abiword gnumeric evince epdfview gimp \
-                       scummvm \
-                       flite \
-                       ctorrent \
-                       asterisk \
-                       gnuradio gnuplot mpfr gmp fftw fftwf fftwl \
-                       gphoto2 gqview imagemagick ufraw \
-                       rdesktop x11vnc tightvnc \
-                       tzdata \
-                       xserver-kdrive xserver-xorg \
-                       xf86-video-fbdev xf86-video-ati xf86-video-vesa \
-                       xf86-input-evdev xf86-input-keyboard xf86-input-mouse \
-                       task-opie-games task-opie-apps \
-                       konqueror-embedded ubahnnav freenote inkwp opie-notes mileage pocketcellar timesleuth zgscore \
-                       zlapspeed zuc zddice camera-assistant slcalc sliderulez resistorui qpe-nmap \
-                       atomic checkers fish glider hexatrolic icebloxx labyrinth mahjongg maki nmm pairs pdamaze \
-                       pipeman shisensho sokoban tron win4 zauralign ziq zrev7 zsubhunt ztappy zudoku iaimaster \
-                       qmatrix qfish2 froot \
-                       gsm0710muxd frameworkd zhone \
-                       gnome-games \
-                       mythtv \
-                       ioquake3 quake2 quetoo sdlquake \
-                       prboom openredalert \
-                       e-wm \
-                       angstrom-zeroconf-audio
-                       task-openmoko-feed task-openmoko-games \
-                       "
+	BUILD_TARGETS=" \
+	              abiword \
+		      aircrack-ng \
+		      angstrom-zeroconf-audio \
+		      apache2 \
+		      asterisk \
+		      atomic \
+		      autoconf \
+		      automake \
+		      binutils \
+		      bison \
+		      bluez-gnome \
+		      boa \
+		      camera-assistant \
+		      checkers \
+		      cherokee \
+		      ctorrent \
+		      distcc \
+		      dsniff \
+		      e-wm \
+		      epdfview \
+		      epiphany \
+		      evince \
+		      fakeroot \
+		      fennec \
+		      ffmpeg \
+		      fftw \
+		      fftwf \
+		      fftwl \
+		      findutils \
+		      firefox \
+		      fish \
+		      flex \
+		      flite \
+		      frameworkd \
+		      freenote \
+		      froot \
+		      gcc \
+		      gdal" \
+		      gdb \
+		      gdbserver \
+		      gimp \
+		      glider \
+		      gmp \
+		      gnome-games \
+		      gnome-mplayer \
+		      gnumeric \
+		      gnuplot \
+		      gnuradio \
+		      gpe-bluetooth \
+		      gpe-gallery \
+		      gpe-login \
+		      gpe-mini-browser \
+		      gpe-mini-browser2 \
+		      gpe-scap \
+		      gpe-sketchbook \
+		      gperf \
+		      gphoto2 \
+		      gpsdrive \
+		      gqview \
+		      gsm0710muxd \
+		      gtk+ \
+		      gzip \
+		      hal \
+		      hexatrolic \
+		      iaimaster \
+		      icebloxx \
+		      imagemagick \
+		      inkwp \
+		      ioquake3 \
+		      ipaq-sleep \
+		      iperf \
+		      iptables \
+		      irssi \
+		      jamvm \
+		      kismet \
+		      konqueror-embedded \
+		      labyrinth \
+		      leafpad \
+		      lighttpd \
+		      m4 \
+		      mahjongg \
+		      make \
+		      maki \
+		      mc \
+		      meta-nas-server \
+		      midori \
+		      mileage \
+		      minimo \
+		      mono \
+		      mpfr \
+		      mplayer \
+		      mtd-utils \
+		      mythtv \
+		      navit \
+		      netsurf \
+		      nmap \
+		      nmm \
+		      notecase \
+		      openmoko-browser2 \
+		      openredalert \
+		      openvpn \
+		      opie-notes \
+		      pairs \
+		      pciutils \
+		      pdamaze \
+		      perl \
+		      pidgin \
+		      pipeman \
+		      pkgconfig \
+		      pocketcellar \
+		      prboom \
+		      python \
+		      python-pybluez \
+		      qfish2 \
+		      qmatrix \
+		      qpe-nmap \
+		      qt-x11-free \
+		      qt4-x11-free \
+		      quake2 \
+		      quasar \
+		      quetoo \
+		      rdesktop \
+		      resistorui \
+		      roadmap-gtk2 \
+		      ruby \
+		      samba \
+		      screen \
+		      scummvm \
+		      sdlquake \
+		      setserial \
+		      shisensho \
+		      slcalc \
+		      sliderulez \
+		      sokoban \
+		      strace \
+		      sugar \
+		      task-gpe-pim \
+		      task-openmoko-feed \
+		      task-openmoko-games \
+		      task-opie-apps \
+		      task-opie-games \
+		      task-proper-tools \
+		      texinfo \
+		      thttpd \
+		      tightvnc \
+		      timesleuth \
+		      totem \
+		      tron \
+		      tzdata \
+		      ubahnnav \
+		      ufraw \
+		      usbutils \
+		      usbview \
+		      viking \
+		      vlc-gpe \
+		      vpnc \
+		      wifi-radar \
+		      win4 \
+		      wpa-gui \
+		      x11vnc \
+		      xf86-input-evdev \
+		      xf86-input-keyboard \
+		      xf86-input-mouse \
+		      xf86-video-ati \
+		      xf86-video-fbdev \
+		      xf86-video-vesa \
+		      xmms \
+		      xserver-kdrive \
+		      xserver-xorg \
+		      zauralign \
+		      zddice \
+		      zgscore \
+		      zhone \
+		      ziq \
+		      zlapspeed \
+		      zrev7 \
+		      zsubhunt \
+		      ztappy \
+		      zuc \
+		      zudoku \
+	              "
 	do_build
 done	
 
