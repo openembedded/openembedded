@@ -1,11 +1,11 @@
-DESCRIPTION = "The freesmartphone.org Framework Daemon"
+DESCRIPTION = "The reference implementation of the freesmartphone.org framework APIs"
 HOMEPAGE = "http://www.freesmartphone.org"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.3+${PR}-gitr${SRCREV}"
-FILE_PR = "r1"
+PV = "0.8.4.0+gitr${SRCREV}"
+FILE_PR = "r0"
 
 inherit distutils update-rc.d
 
@@ -24,6 +24,7 @@ do_install_append() {
 }
 
 RDEPENDS_${PN} += "\
+  python-ctypes \
   python-dbus \
   python-datetime \
   python-pprint \
