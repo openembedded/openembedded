@@ -6,9 +6,9 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 FILE_PR = "r1"
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qtopia-core-opensource-src-${PV}.tar.gz \
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://configure-fix.patch;patch=1"
-S = "${WORKDIR}/qtopia-core-opensource-src-${PV}"
+S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
 EXTRA_OECONF = "-prefix ${STAGING_DIR_NATIVE}/qt4 \
                 -qt-libjpeg -qt-gif -system-zlib \
