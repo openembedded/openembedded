@@ -1,0 +1,29 @@
+Index: lesstif-0.95.0/Makefile.am
+===================================================================
+--- lesstif-0.95.0.orig/Makefile.am
++++ lesstif-0.95.0/Makefile.am
+@@ -7,9 +7,9 @@ MAINTAINERCLEANFILES=Makefile.in configu
+ 		     missing mkinstalldirs \
+ 		     BUG-REPORTING INSTALL.txt ReleaseNotes.txt
+ 
+-SUBDIRS	     = . scripts include lib clients doc @BuildTestDir@ autopackage
++SUBDIRS	     = . scripts include lib clients @BuildTestDir@ autopackage
+ 
+-DIST_SUBDIRS = scripts include lib clients doc test autopackage
++DIST_SUBDIRS = scripts include lib clients test autopackage
+ 
+ #
+ # Install some information files
+Index: lesstif-0.95.0/scripts/Makefile.am
+===================================================================
+--- lesstif-0.95.0.orig/scripts/Makefile.am
++++ lesstif-0.95.0/scripts/Makefile.am
+@@ -4,7 +4,7 @@
+ 
+ MAINTAINERCLEANFILES=Makefile.in typedefs.c
+ 
+-SUBDIRS= . FreeBSD RedHat Slackware autoconf OS2
++SUBDIRS= . FreeBSD RedHat Slackware OS2
+ 
+ EXTRA_DIST = LTsysinfo
+ 
