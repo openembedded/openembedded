@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "LGPLv2"
 
-FILE_PR = "r10"
+FILE_PR = "r11"
 
 DEPENDS = "python-pygtk sugar-toolkit"
 RDEPENDS = "librsvg-gtk \
@@ -33,6 +33,13 @@ SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar-base/${PN}-${PV}.tar.bz
 
 inherit autotools distutils-base
 
+SRC_URI += "file://acinclude.m4"
+
+EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
+
+do_configure_prepend() {
+	install -m 0644 ${WORKDIR}/acinclude.m4 ${S}/
+}
 
 FILES_${PN} += "${datadir}/${PN} \
 		${datadir}/dbus-1 \
