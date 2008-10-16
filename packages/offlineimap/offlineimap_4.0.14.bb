@@ -6,7 +6,7 @@ LICENSE = "GPL PSF"
 RDEPENDS = "python-re python-netclient python-lang \
             python-threading python-stringold python-crypt python-mailbox"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/o//offlineimap/offlineimap_${PV}.tar.gz"
+SRC_URI = "${DEBIAN_MIRROR}/main/o/offlineimap/offlineimap_${PV}.tar.gz"
 S = "${WORKDIR}/offlineimap"
 
 inherit distutils
