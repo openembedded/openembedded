@@ -1,4 +1,4 @@
-QTVERSION="4.4.1"
+QTVERSION="4.4.3"
 require qmake2-native.inc
 
 inherit sdk
