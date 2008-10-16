@@ -29,7 +29,14 @@ do_stage() {
         autotools_stage_all
 }
 
-FILES_${PN} += "${datadir}/icons \
+python populate_packages_prepend () {
+	cv_libdir = bb.data.expand('${libdir}', d)
+	do_split_packages(d, cv_libdir, '^lib(.*)\.so\.*', 'lib%s', 'GIMP %s library', extra_depends='', allow_links=True)
+}
+
+FILES_${PN} =  "${bindir} ${sysconfdir} ${datadir}/gimp* ${libdir}/gimp* \
+                ${datadir}/applications \
+                ${datadir}/icons \
                 ${datadir}/mime-info \
 		${datadir}/application-registry "
 

@@ -17,6 +17,7 @@ inherit autotools pkgconfig flow-lossage
 do_configure_prepend() {
 	install -d m4
 	rm -f ltconfig libtool ltmain.sh aclocal.m4
+	sed -i -e s:AM_LC_MESSAGES:gt_LC_MESSAGES:g acinclude.m4
 }
 
 FILES_${PN} += "${datadir}/themes"
