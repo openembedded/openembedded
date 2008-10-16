@@ -49,7 +49,7 @@ FILES_${JPN} = "${datadir_java}"
 
 # Base package name
 # Automatically derives "foo" from "foo-native"
-BPN ?= ""${@java_base_package_name(d)}""
+BPN ?= "${@java_base_package_name(d)}"
 
 BP ?= "${BPN}-${PV}"
 
