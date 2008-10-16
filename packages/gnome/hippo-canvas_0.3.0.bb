@@ -1,6 +1,8 @@
 DESCRIPTION = "Hippocanvas"
 LICENSE = "LGPLv2"
 
+DEPENDS = "librsvg python-pygtk2"
+
 inherit gnome
 
 do_configure_prepend() {
