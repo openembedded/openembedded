@@ -84,32 +84,32 @@ oe_makeclasspath() {
   #
   # oe_makeclasspath cp foo baz bar
   # Stores ${datadir_java}/foo.jar:${datadir_java}/baz.jar:${datadir_java}/bar.jar
-	# in variable "cp".
+  # in variable "cp".
   #
   # oe_makeclasspath bootcp -s foo baz bar
   # Stores ${STAGING_DATADIR_JAVA}/foo.jar:${STAGING_DATADIR_JAVA}/baz.jar:${STAGING_DATADIR_JAVA}/bar.jar
-	# in variable "bootcp".
-	# 
+  # in variable "bootcp".
+  # 
   # Provide the -s at the beginning otherwise strange things happen.
-	# If -s is given the function checks whether the requested jar file exists
-	#	and exits with an error message if it cannot be found.
-	#
+  # If -s is given the function checks whether the requested jar file exists
+  #	and exits with an error message if it cannot be found.
+  #
   dir=${datadir_java}
-	classpath=
-	delimiter=
-	retval=$1
+  classpath=
+  delimiter=
+  retval=$1
 
-	shift
+  shift
 
   while [ "$#" -gt 0 ]; do
     case "$1" in
     -s)
-			# take jar files from native staging if this is a -native recipe
-			if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
+		# take jar files from native staging if this is a -native recipe
+		if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
 	      dir=${STAGING_DATADIR_JAVA_NATIVE}
-			else
+		else
 	      dir=${STAGING_DATADIR_JAVA}
-			fi
+		fi
       ;;
     -*)
       oefatal "oe_makeclasspath: unknown option: $1"
@@ -117,9 +117,9 @@ oe_makeclasspath() {
     *)
       file=$dir/$1.jar
 
-			if [ -z "$dir" -a ! -f $file ]; then
-				oefatal "oe_makeclasspath: Jar file for '$1' not found at $file"
-			fi
+	  if [ -z "$dir" -a ! -f $file ]; then
+	    oefatal "oe_makeclasspath: Jar file for '$1' not found at $file"
+	  fi
 
       classpath=$classpath$delimiter$file
       delimiter=":"
@@ -128,7 +128,7 @@ oe_makeclasspath() {
     shift
   done
 
-	eval $retval="$classpath"
+  eval $retval="$classpath"
 }
 
 # Creates a simple wrapper script for your Java program.
