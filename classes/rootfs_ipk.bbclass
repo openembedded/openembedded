@@ -10,8 +10,18 @@ do_rootfs[recrdeptask] += "do_package_write_ipk"
 
 IPKG_ARGS = "-f ${IPKGCONF_TARGET} -o ${IMAGE_ROOTFS} ${@base_conditional("PACKAGE_INSTALL_NO_DEPS", "1", "-nodeps", "", d)}"
 
-DISTRO_EXTRA_RDEPENDS += " opkg opkg-collateral "
 PACKAGE_INSTALL_NO_DEPS ?= "0"
+
+# What support to provide for online management of packages at run time?
+#  full -> traditional system, opkg is installed with all metadata
+#  add -> opkg is installed with basic conf files but no status database; can add new packages at runtime but not modify existing ones
+#  none -> opkg not installed at all, no metadata or config files provided
+ONLINE_PACKAGE_MANAGEMENT ?= "full"
+
+# Which packages to not install on the basis of a recommendation
+BAD_RECOMMENDATIONS ?= ""
+
+DISTRO_EXTRA_RDEPENDS += "${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "opkg opkg-collateral", d)}"
 
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x
@@ -21,6 +31,16 @@ fakeroot rootfs_ipk_do_rootfs () {
 
 	mkdir -p ${T}
 	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg/
+
+	STATUS=${IMAGE_ROOTFS}${libdir}/opkg/status
+	# prime the status file with bits that we don't want
+	for i in ${BAD_RECOMMENDATIONS}; do
+		echo "Package: $i" >> $STATUS
+		echo "Architecture: ${TARGET_ARCH}" >> $STATUS
+		echo "Status: deinstall ok not-installed" >> $STATUS
+		echo >> $STATUS
+	done
+
 	opkg-cl ${IPKG_ARGS} update
 
 	# Uclibc builds don't provide this stuff...
@@ -42,7 +62,10 @@ fakeroot rootfs_ipk_do_rootfs () {
 	export OPKG_OFFLINE_ROOT=${IPKG_OFFLINE_ROOT}
 	
 	mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/opkg/
-	grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}${sysconfdir}/opkg/arch.conf
+
+	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
+		grep "^arch" ${IPKGCONF_TARGET} >${IMAGE_ROOTFS}${sysconfdir}/opkg/arch.conf
+	fi
 
 	for i in ${IMAGE_ROOTFS}${libdir}/opkg/info/*.preinst; do
 		if [ -f $i ] && ! sh $i; then
@@ -58,11 +81,20 @@ fakeroot rootfs_ipk_do_rootfs () {
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
 
-	rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
+	if [ "${ONLINE_PACKAGE_MANAGEMENT}" != "none" ]; then
+		if [ "${ONLINE_PACKAGE_MANAGEMENT}" == "add" ]; then
+			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/status
+			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/*/*
+		else
+			rm -f ${IMAGE_ROOTFS}${libdir}/opkg/lists/*
+		fi
 	
-	# Keep these lines until package manager selection is implemented
-	ln -s opkg ${IMAGE_ROOTFS}${sysconfdir}/ipkg
-	ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
+		# Keep these lines until package manager selection is implemented
+		ln -s opkg ${IMAGE_ROOTFS}${sysconfdir}/ipkg
+		ln -s opkg ${IMAGE_ROOTFS}${libdir}/ipkg
+	else
+		rm -rf ${IMAGE_ROOTFS}${libdir}/opkg
+	fi
 	
 	${ROOTFS_POSTPROCESS_COMMAND}
 	
