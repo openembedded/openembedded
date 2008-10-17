@@ -154,7 +154,6 @@ do
 		      meta-nas-server \
 		      midori \
 		      mileage \
-		      minimo \
 		      mono \
 		      mpfr \
 		      mplayer \
