@@ -1,6 +1,6 @@
 DESCRIPTION = "Duke Nukem 3D game engine"
 LICENSE = "GPLv2"
-DEPENDS = "libsdl libsdl-mixer"
+DEPENDS = "virtual/libsdl libsdl-mixer"
 
 SRCREV = "185"
 PV = "0.0+svnr${SRCREV}"
