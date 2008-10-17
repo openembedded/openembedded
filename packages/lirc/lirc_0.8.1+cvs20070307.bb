@@ -15,7 +15,7 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
-FILE_PR = "r1"
+FILE_PR = "r2"
 
 # enable cvs version since until compilation issues for other packages have been fixed (cf. bug 2284 et al).
 #DEFAULT_PREFERENCE = "-1"
@@ -65,7 +65,7 @@ PACKAGES =+ "lirc-x lirc-exec lirc-remotes"
 PACKAGES_prepend_nslu2 = "lirc-nslu2example "
 
 FILES_${PN}-dbg += "${bindir}/.debug ${sbindir}/.debug"
-FILES_${PN} = "${bindir} ${sbindir} ${libdir} ${sysconfdir}/init.d"
+FILES_${PN} = "${bindir} ${sbindir} ${libdir}/*.so.* ${sysconfdir}/init.d"
 FILES_lirc-x = "${bindir}/irxevent ${bindir}/xmode2"
 FILES_lirc-exec = "${bindir}/irexec ${sysconfdir}/init.d/lircexec"
 FILES_lirc-remotes = "${datadir}/lirc/remotes"
