@@ -15,47 +15,44 @@ BOOST_VER = "${@"_".join(bb.data.getVar("PV",d,1).split("."))}"
 BOOST_MAJ = "${@"_".join(bb.data.getVar("PV",d,1).split(".")[0:2])}"
 BOOST_P = "boost_${BOOST_VER}"
 
+BOOST_LIBS = "\
+	date_time \
+	filesystem \
+	graph \
+	iostreams \
+	program_options \
+	regex \
+	serialization \
+	signals \
+	system \
+	test \
+	thread \
+	"
+
 S = "${WORKDIR}/${BOOST_P}"
 
 # Make a package for each library, plus -dev and -python
-PACKAGES = "${PN}-dbg"
-BOOSTLIBS = ""
+PACKAGES = "${PN}-dbg ${BOOST_PACKAGES}"
+python __anonymous () {
+	import bb
 
-PACKAGES += "boost-date-time"
-FILES_boost-date-time = "${libdir}/libboost_date_time*.so*"
+	packages = []
+	extras = [] 
+	for lib in bb.data.getVar('BOOST_LIBS', d, 1).split( ):
+		pkg = "boost-%s" % lib.replace("_", "-")
+		extras.append("--with-%s" % lib)
+		packages.append(pkg)
+		if not bb.data.getVar("FILES_%s" % pkg, d, 1):
+			bb.data.setVar("FILES_%s" % pkg, "${libdir}/libboost_%s*.so*" % lib, d)
+	bb.data.setVar("BOOST_PACKAGES", " ".join(packages), d)
+	bb.data.setVar("BJAM_EXTRA", " ".join(extras), d)
+}
 
-BOOSTLIBS += "boost-filesystem"
-FILES_boost-filesystem = "${libdir}/libboost_filesystem*.so*"
-
-BOOSTLIBS += "boost-prg-exec-monitor"
-FILES_boost-prg-exec-monitor = "${libdir}/libboost_prg_exec_monitor*.so*"
-
-BOOSTLIBS += "boost-program-options"
-FILES_boost-program-options = "${libdir}/libboost_program_options*.so*"
-
-BOOSTLIBS += "boost-regex"
-FILES_boost-regex = "${libdir}/libboost_regex*.so*"
-
-BOOSTLIBS += "boost-signals"
-FILES_boost-signals = "${libdir}/libboost_signals*.so*"
-
-BOOSTLIBS += "boost-test-exec-monitor"
-FILES_boost-test-exec-monitor = "${libdir}/libboost_test_exec_monitor*.so*"
-
-BOOSTLIBS += "boost-thread-mt"
-FILES_boost-thread-mt = "${libdir}/libboost_thread-mt.so*"
-
-BOOSTLIBS += "boost-unit-test-framework"
-FILES_boost-unit-test-framework = "${libdir}/libboost_unit_test_framework*.so*"
-
-BOOSTLIBS += "boost-iostreams"
-FILES_boost-iostreams = "${libdir}/libboost_iostreams*.so*"
-
-BOOSTLIBS += "boost-serialization"
-FILES_boost-serialization = "${libdir}/libboost_serialization*.so*"
-
-BOOSTLIBS += "boost-wserialization"
-FILES_boost-wserialization = "${libdir}/libboost_wserialization*.so*"
+# Override the contents of specific packages
+FILES_boost-serialization = "${libdir}/libboost_serialization*.so* \
+	${libdir}/libboost_wserialization*.so*"
+FILES_boost-test = "${libdir}/libboost_prg_exec_monitor*.so \
+	${libdir}/libboost_unit_test_framework*.so*"
 
 # Python - remove this and set:
 #PYTHON_ROOT = "/dev/null"
@@ -64,10 +61,8 @@ DEPENDS += "python"
 PYTHON_ROOT = "${STAGING_DIR_HOST}/${layout_prefix}"
 PYTHON_VERSION = "2.5"
 
-BOOSTLIBS += "boost-python"
+PACKAGES += "boost-python"
 FILES_boost-python = "${libdir}/libboost_python*.so*"
-
-PACKAGES += "${BOOSTLIBS}"
 
 # -dev last to pick up the remaining stuff
 PACKAGES += "${PN}-dev"
@@ -75,7 +70,7 @@ FILES_${PN}-dev = "${includedir} ${libdir}/libboost_*.so ${libdir}/libboost_*.a"
 
 # "boost" is a metapackage which pulls in all boost librabries
 PACKAGES += "${PN}"
-RRECOMMENDS_${PN} += "${BOOSTLIBS}"
+RRECOMMENDS_${PN} += "${BOOST_PACKAGES}"
 
 # Oh yippee, a new build system, it's sooo cooool I could eat my own
 # foot.  inlining=on lets the compiler choose, I think.  At least this
@@ -121,12 +116,6 @@ BJAM_TOOLS   = "-sTOOLS=gcc \
 		'-sPYTHON_VERSION=${PYTHON_VERSION}' \
 		'--layout=system' \
 		"
-
-BJAM_EXTRA = '\
-              --with-thread \
-              --with-date_time \
-              --with-filesystem \
-             '
 
 BJAM_OPTS    = '${BJAM_TOOLS} \
 		--builddir=${S}/${TARGET_SYS} \
