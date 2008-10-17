@@ -8,10 +8,6 @@ DEPENDS = "ecj-initial fastjar-native zip-native gettext-native"
 
 SRC_URI = "${GNU_MIRROR}/classpath/classpath-${PV}.tar.gz"
 
-S = "${WORKDIR}/classpath-${PV}"
-
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/classpath-${PV}"
-
 do_configure_prepend () {
 
 	cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}
