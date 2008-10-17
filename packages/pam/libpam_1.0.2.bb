@@ -30,6 +30,7 @@ LEAD_SONAME = "libpam.so.*"
 # maintain the pam default layout
 EXTRA_OECONF += " --includedir=${includedir}/security"
 
+PACKAGES_DYNAMIC += " pam-plugin-*"
 python populate_packages_prepend () {
 	import os.path
 
