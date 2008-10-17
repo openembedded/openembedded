@@ -157,6 +157,23 @@ def base_both_contain(variable1, variable2, checkvalue, d):
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
+# Returns PN with various suffixes removed
+# or PN if no matching suffix was found.
+def base_package_name(d):
+  import bb;
+
+  pn = bb.data.getVar('PN', d, 1)
+  if pn.endswith("-native"):
+		pn = pn[0:-7]
+  elif pn.endswith("-cross"):
+		pn = pn[0:-6]
+  elif pn.endswith("-initial"):
+		pn = pn[0:-8]
+  elif pn.endswith("-intermediate"):
+		pn = pn[0:-13]
+
+  return pn
+
 def base_set_filespath(path, d):
 	import os, bb
 	filespath = []
