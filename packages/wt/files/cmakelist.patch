@@ -1,0 +1,8 @@
+diff -urN wt-2.2.0.orig/src/Wt/Ext/CMakeLists.txt wt-2.2.0/src/Wt/Ext/CMakeLists.txt
+--- wt-2.2.0.orig/src/Wt/Ext/CMakeLists.txt	2008-07-15 08:25:54.000000000 +0200
++++ wt-2.2.0/src/Wt/Ext/CMakeLists.txt	2008-10-17 22:37:38.000000000 +0200
+@@ -1,2 +1,3 @@
+-INSTALL_FILES(/include/Wt/Ext "...+[^Ch~]$")
++# avoid CMake* getting included
++INSTALL_FILES(/include/Wt/Ext "^[A-Z][a-z].*[^Ch~]$")
+ INSTALL_FILES(/include/Wt/Ext ExtDllDefs.h)
