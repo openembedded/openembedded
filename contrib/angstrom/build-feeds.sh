@@ -81,7 +81,9 @@ do
 		      ctorrent \
 		      distcc \
 		      dsniff \
+		      duke3d \
 		      e-wm \
+		      empathy \ 
 		      epdfview \
 		      epiphany \
 		      evince \
@@ -100,7 +102,7 @@ do
 		      freenote \
 		      froot \
 		      gcc \
-		      gdal" \
+		      gdal \
 		      gdb \
 		      gdbserver \
 		      gimp \
@@ -108,6 +110,8 @@ do
 		      gmp \
 		      gnome-games \
 		      gnome-mplayer \
+		      gnome-panel \
+		      gnome-system-monitor \
 		      gnumeric \
 		      gnuplot \
 		      gnuradio \
@@ -217,7 +221,7 @@ do
 		      usbutils \
 		      usbview \
 		      viking \
-		      vlc-gpe \
+		      vlc \
 		      vpnc \
 		      wifi-radar \
 		      win4 \
