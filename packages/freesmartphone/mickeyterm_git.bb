@@ -1,5 +1,6 @@
 DESCRIPTION = "Mickey's Terminal Program"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
+HOMEPAGE = "http://www.freesmartphone.org"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 PV = "2.9.1+gitr${SRCREV}"

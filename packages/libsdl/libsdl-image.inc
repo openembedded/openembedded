@@ -10,6 +10,8 @@ S = "${WORKDIR}/SDL_image-${PV}"
 
 inherit autotools
 
+export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
+
 do_stage() {
 	oe_libinstall -so libSDL_image ${STAGING_LIBDIR}
 	ln -sf libSDL_image.so ${STAGING_LIBDIR}/libSDL_image-1.2.so
