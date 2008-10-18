@@ -4,7 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.4.0+gitr${SRCREV}"
+PV = "0.8.4.2+gitr${SRCREV}"
 FILE_PR = "r0"
 
 inherit distutils update-rc.d
@@ -35,6 +35,7 @@ RDEPENDS_${PN} += "\
   python-shell \
   python-subprocess \
   python-syslog \
+  python-textutils \
   \
   ${PN}-config \
 "
@@ -49,10 +50,21 @@ RRECOMMENDS_${PN}_append_om-gta01 = "gsm0710muxd"
 RRECOMMENDS_${PN}_append_om-gta02 = "gsm0710muxd"
 
 PACKAGES =+ "${PN}-config"
-
 PACKAGE_ARCH_${PN}-config = "${MACHINE_ARCH}"
-FILES_${PN}-config = "${sysconfdir}/frameworkd.conf"
-CONFFILES_${PN}-config = "${sysconfdir}/frameworkd.conf"
+
+FILES_${PN}-config = "\
+  ${sysconfdir}/frameworkd.conf \
+  ${sysconfdir}/freesmartphone \
+"
+CONFFILES_${PN}-config = "\
+  ${sysconfdir}/frameworkd.conf \
+  ${sysconfdir}/freesmartphone/opreferences/conf/phone/silent.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/profiles/default.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/rules/silent.yaml \
+  ${sysconfdir}/freesmartphone/opreferences/conf/rules/default.yaml \
+  ${sysconfdir}/freesmartphone/oevents/rules.yaml \
+"
 
 PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
 FILES_${PN} += "${sysconfdir}/dbus-1 ${sysconfdir}/freesmartphone ${sysconfdir}/init.d ${datadir}"
