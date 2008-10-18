@@ -1,12 +1,12 @@
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: 'generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: './generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
 
-PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PROVIDES+="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
-PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-lib-old-and-deprecated python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
+PACKAGES="python-profile python-threading python-distutils python-doctest python-codecs python-ctypes python-pickle python-bzip2 python-datetime python-core python-io python-compiler python-compression python-re python-xmlrpc python-terminal python-email python-image python-tests python-core-dbg python-resource python-devel python-difflib python-math python-syslog python-hotshot python-unixadmin python-textutils python-tkinter python-gdbm python-elementtree python-fcntl python-netclient python-pprint python-netserver python-curses python-smtpd python-html python-readline python-subprocess python-pydoc python-logging python-mailbox python-xml python-mime python-sqlite3 python-sqlite3-tests python-unittest python-stringold python-robotparser python-compile python-debugger python-pkgutil python-shell python-bsddb python-mmap python-zlib python-db python-crypt python-idle python-lang python-audio "
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 PR_python-profile="ml0"
@@ -69,7 +69,7 @@ RDEPENDS_python-compiler="python-core"
 FILES_python-compiler="${libdir}/python2.5/compiler "
 
 DESCRIPTION_python-compression="Python High Level Compression Support"
-PR_python-compression="ml1"
+PR_python-compression="ml0"
 RDEPENDS_python-compression="python-core python-zlib"
 FILES_python-compression="${libdir}/python2.5/gzip.* ${libdir}/python2.5/zipfile.* ${libdir}/python2.5/tarfile.* "
 
@@ -214,7 +214,7 @@ RDEPENDS_python-pydoc="python-core python-lang python-stringold python-re"
 FILES_python-pydoc="${bindir}/pydoc ${libdir}/python2.5/pydoc.* "
 
 DESCRIPTION_python-logging="Python Logging Support"
-PR_python-logging="ml1"
+PR_python-logging="ml0"
 RDEPENDS_python-logging="python-core python-io python-lang python-pickle python-stringold"
 FILES_python-logging="${libdir}/python2.5/logging "
 
@@ -224,7 +224,7 @@ RDEPENDS_python-mailbox="python-core python-mime"
 FILES_python-mailbox="${libdir}/python2.5/mailbox.* "
 
 DESCRIPTION_python-xml="Python basic XML support."
-PR_python-xml="ml1"
+PR_python-xml="ml0"
 RDEPENDS_python-xml="python-core python-re"
 FILES_python-xml="${libdir}/python2.5/lib-dynload/pyexpat.so ${libdir}/python2.5/xml ${libdir}/python2.5/xmllib.* "
 
@@ -258,18 +258,13 @@ PR_python-robotparser="ml0"
 RDEPENDS_python-robotparser="python-core python-netclient"
 FILES_python-robotparser="${libdir}/python2.5/robotparser.* "
 
-DESCRIPTION_python-lib-old-and-deprecated="Python Deprecated Libraries"
-PR_python-lib-old-and-deprecated="ml0"
-RDEPENDS_python-lib-old-and-deprecated="python-core"
-FILES_python-lib-old-and-deprecated="${libdir}/python2.5/lib-old "
-
 DESCRIPTION_python-compile="Python Bytecode Compilation Support"
 PR_python-compile="ml0"
 RDEPENDS_python-compile="python-core"
 FILES_python-compile="${libdir}/python2.5/py_compile.* ${libdir}/python2.5/compileall.* "
 
 DESCRIPTION_python-debugger="Python Debugger"
-PR_python-debugger="ml1"
+PR_python-debugger="ml0"
 RDEPENDS_python-debugger="python-core python-io python-lang python-re python-stringold python-shell python-pprint"
 FILES_python-debugger="${libdir}/python2.5/bdb.* ${libdir}/python2.5/pdb.* "
 
@@ -279,12 +274,12 @@ RDEPENDS_python-pkgutil="python-core"
 FILES_python-pkgutil="${libdir}/python2.5/pkgutil.* "
 
 DESCRIPTION_python-shell="Python Shell-Like Functionality"
-PR_python-shell="ml1"
+PR_python-shell="ml0"
 RDEPENDS_python-shell="python-core python-re"
 FILES_python-shell="${libdir}/python2.5/cmd.* ${libdir}/python2.5/commands.* ${libdir}/python2.5/dircache.* ${libdir}/python2.5/fnmatch.* ${libdir}/python2.5/glob.* ${libdir}/python2.5/popen2.* ${libdir}/python2.5/shlex.* ${libdir}/python2.5/shutil.* "
 
 DESCRIPTION_python-bsddb="Python Berkeley Database Bindings"
-PR_python-bsddb="ml1"
+PR_python-bsddb="ml0"
 RDEPENDS_python-bsddb="python-core"
 FILES_python-bsddb="${libdir}/python2.5/bsddb ${libdir}/python2.5/lib-dynload/_bsddb.so "
 
@@ -304,7 +299,7 @@ RDEPENDS_python-db="python-core"
 FILES_python-db="${libdir}/python2.5/anydbm.* ${libdir}/python2.5/dumbdbm.* ${libdir}/python2.5/whichdb.* "
 
 DESCRIPTION_python-crypt="Python Basic Cryptographic and Hashing Support"
-PR_python-crypt="ml1"
+PR_python-crypt="ml0"
 RDEPENDS_python-crypt="python-core"
 FILES_python-crypt="${libdir}/python2.5/hashlib.* ${libdir}/python2.5/md5.* ${libdir}/python2.5/sha.* ${libdir}/python2.5/lib-dynload/crypt.so ${libdir}/python2.5/lib-dynload/_hashlib.so ${libdir}/python2.5/lib-dynload/_sha256.so ${libdir}/python2.5/lib-dynload/_sha512.so "
 
@@ -314,7 +309,7 @@ RDEPENDS_python-idle="python-core python-tkinter"
 FILES_python-idle="${bindir}/idle ${libdir}/python2.5/idlelib "
 
 DESCRIPTION_python-lang="Python Low-Level Language Support"
-PR_python-lang="ml1"
+PR_python-lang="ml0"
 RDEPENDS_python-lang="python-core"
 FILES_python-lang="${libdir}/python2.5/lib-dynload/array.so ${libdir}/python2.5/lib-dynload/parser.so ${libdir}/python2.5/lib-dynload/operator.so ${libdir}/python2.5/lib-dynload/_weakref.so ${libdir}/python2.5/lib-dynload/itertools.so ${libdir}/python2.5/lib-dynload/collections.so ${libdir}/python2.5/lib-dynload/_bisect.so ${libdir}/python2.5/lib-dynload/_heapq.so ${libdir}/python2.5/atexit.* ${libdir}/python2.5/bisect.* ${libdir}/python2.5/code.* ${libdir}/python2.5/codeop.* ${libdir}/python2.5/dis.* ${libdir}/python2.5/heapq.* ${libdir}/python2.5/inspect.* ${libdir}/python2.5/keyword.* ${libdir}/python2.5/opcode.* ${libdir}/python2.5/symbol.* ${libdir}/python2.5/repr.* ${libdir}/python2.5/token.* ${libdir}/python2.5/tokenize.* ${libdir}/python2.5/traceback.* ${libdir}/python2.5/linecache.* ${libdir}/python2.5/weakref.* "
 

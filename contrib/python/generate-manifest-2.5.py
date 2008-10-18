@@ -170,7 +170,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-audio", "Python Audio Handling", "python-core",
     "wave.* chunk.* sndhdr.* lib-dynload/ossaudiodev.so lib-dynload/audioop.so" )
 
-    m.addPackage( 1, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
+    m.addPackage( 0, "python-bsddb", "Python Berkeley Database Bindings", "python-core",
     "bsddb lib-dynload/_bsddb.so" ) # package
 
     m.addPackage( 0, "python-codecs", "Python Codecs, Encodings & i18n Support", "python-core python-lang",
@@ -182,10 +182,10 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-compiler", "Python Compiler Support", "python-core",
     "compiler" ) # package
 
-    m.addPackage( 1, "python-compression", "Python High Level Compression Support", "python-core python-zlib",
+    m.addPackage( 0, "python-compression", "Python High Level Compression Support", "python-core python-zlib",
     "gzip.* zipfile.* tarfile.*" )
 
-    m.addPackage( 1, "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
+    m.addPackage( 0, "python-crypt", "Python Basic Cryptographic and Hashing Support", "python-core",
     "hashlib.* md5.* sha.* lib-dynload/crypt.so lib-dynload/_hashlib.so lib-dynload/_sha256.so lib-dynload/_sha512.so" )
 
     m.addPackage( 0, "python-textutils", "Python Option Parsing, Text Wrapping and Comma-Separated-Value Support", "python-core python-io python-re python-stringold",
@@ -203,7 +203,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-db", "Python File-Based Database Support", "python-core",
     "anydbm.* dumbdbm.* whichdb.* " )
 
-    m.addPackage( 1, "python-debugger", "Python Debugger", "python-core python-io python-lang python-re python-stringold python-shell python-pprint",
+    m.addPackage( 0, "python-debugger", "Python Debugger", "python-core python-io python-lang python-re python-stringold python-shell python-pprint",
     "bdb.* pdb.*" )
 
     m.addPackage( 0, "python-difflib", "Python helpers for computing deltas between objects.", "python-lang python-re",
@@ -237,17 +237,14 @@ if __name__ == "__main__":
     "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so "
     "pipes.* socket.* tempfile.* StringIO.* " )
 
-    m.addPackage( 1, "python-lang", "Python Low-Level Language Support", "python-core",
+    m.addPackage( 0, "python-lang", "Python Low-Level Language Support", "python-core",
     "lib-dynload/array.so lib-dynload/parser.so lib-dynload/operator.so lib-dynload/_weakref.so " +
     "lib-dynload/itertools.so lib-dynload/collections.so lib-dynload/_bisect.so lib-dynload/_heapq.so " +
     "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* symbol.* repr.* token.* " +
     " tokenize.* traceback.* linecache.* weakref.*" )
 
-    m.addPackage( 1, "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
+    m.addPackage( 0, "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
     "logging" ) # package
-
-    m.addPackage( 0, "python-lib-old-and-deprecated", "Python Deprecated Libraries", "python-core",
-    "lib-old" ) # package
 
     m.addPackage( 0, "python-tkinter", "Python Tcl/Tk Bindings", "python-core",
     "lib-dynload/_tkinter.so lib-tk" ) # package
@@ -292,7 +289,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-resource", "Python Resource Control Interface", "python-core",
     "lib-dynload/resource.so" )
 
-    m.addPackage( 1, "python-shell", "Python Shell-Like Functionality", "python-core python-re",
+    m.addPackage( 0, "python-shell", "Python Shell-Like Functionality", "python-core python-re",
     "cmd.* commands.* dircache.* fnmatch.* glob.* popen2.* shlex.* shutil.*" )
 
     m.addPackage( 0, "python-robotparser", "Python robots.txt parser", "python-core python-netclient",
@@ -325,7 +322,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-unittest", "Python Unit Testing Framework", "python-core python-stringold python-lang",
     "unittest.*" )
 
-    m.addPackage( 1, "python-xml", "Python basic XML support.", "python-core python-re",
+    m.addPackage( 0, "python-xml", "Python basic XML support.", "python-core python-re",
     "lib-dynload/pyexpat.so xml xmllib.*" ) # package
 
     m.addPackage( 0, "python-xmlrpc", "Python XMLRPC Support", "python-core python-xml python-netserver python-lang",

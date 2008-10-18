@@ -1,0 +1,13 @@
+Index: python/Lib/urllib.py
+===================================================================
+--- python.orig/Lib/urllib.py	2007-03-06 17:16:49.000000000 -0300
++++ python/Lib/urllib.py	2007-03-06 17:17:05.000000000 -0300
+@@ -358,7 +358,7 @@
+         """Default error handler: close the connection and raise IOError."""
+         void = fp.read()
+         fp.close()
+-        raise IOError, ('http error', errcode, errmsg, headers)
++        raise IOError, ('http error', errcode, errmsg)
+ 
+     if hasattr(socket, "ssl"):
+         def open_https(self, url, data=None):
