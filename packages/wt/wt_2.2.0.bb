@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "boost"
-FILE_PR = "r1"
+FILE_PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
 	file://cmakelist.patch;patch=1"
@@ -14,6 +14,10 @@ FILES_${PN}-dev += "${datadir}/cmake-2.*"
 inherit cmake
 
 STAGE_TEMP = "${WORKDIR}/temp-staging"
+
+do_configure_append() {
+	${BUILD_CXX} ${BUILD_CXXFLAGS} -o src/filetostring src/web/skeleton/FileToString.C
+}
 
 do_stage() {
 	rm -rf ${STAGE_TEMP}

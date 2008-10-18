@@ -773,7 +773,7 @@ def base_detect_branch(d):
 	for scm in scms:
 		rev = scm(d)
 		if rev <> "<unknown>":
-			return rev
+			return rev.strip()
 
 	return "<unknown>"	
 	

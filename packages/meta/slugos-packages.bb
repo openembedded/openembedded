@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-FILE_PR = "r58"
+FILE_PR = "r59"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -92,7 +92,6 @@ SLUGOS_PACKAGES = "\
 	fuse \
 	gawk \
 	gcc \
-	gdb \
 	gdbm \
 	glib-2.0 \
 	gnu-config \
@@ -255,6 +254,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	ctorrent \
 	dsniff \
 	eciadsl \
+	gdb \
 	gspcav1 \
 	linphone \
 	lirc-modules lirc \
