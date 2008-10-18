@@ -131,7 +131,7 @@ python do_package_deb () {
             pass
         if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
             from bb import note
-            note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), bb.data.getVar('PR', localdata, 1)))
+            note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), build_package_revision(localdata)))
             bb.utils.unlockfile(lf)
             continue
 
@@ -149,9 +149,9 @@ python do_package_deb () {
         fields = []
         pe = bb.data.getVar('PE', d, 1)
         if pe and int(pe) > 0:
-            fields.append(["Version: %s:%s-%s\n", ['PE', 'PV', 'PR']])
+            fields.append(["Version: %s:%s-%s%s\n", ['PE', 'PV', 'PR', 'DISTRO_PR']])
         else:
-            fields.append(["Version: %s-%s\n", ['PV', 'PR']])
+            fields.append(["Version: %s-%s%s\n", ['PV', 'PR', 'DISTRO_PR']])
         fields.append(["Description: %s\n", ['DESCRIPTION']])
         fields.append(["Section: %s\n", ['SECTION']])
         fields.append(["Priority: %s\n", ['PRIORITY']])

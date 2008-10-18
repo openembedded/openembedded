@@ -4,6 +4,12 @@
 
 PKGDEST = "${WORKDIR}/install"
 
+def build_package_revision(d):
+	file_pr = bb.data.getVar('PR', d, True)
+	distro_pr = bb.data.getVar('DISTRO_PR', d, True) or ""
+	return "%s%s" % (file_pr, distro_pr)
+
+
 def legitimize_package_name(s):
 	"""
 	Make sure package names are legitimate strings
