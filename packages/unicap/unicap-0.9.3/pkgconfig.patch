@@ -1,0 +1,9 @@
+--- unicap-0.9.3/libucil/libucil.pc.in~	2008-10-17 21:40:01.000000000 +0200
++++ unicap-0.9.3/libucil/libucil.pc.in	2008-10-17 21:40:01.000000000 +0200
+@@ -5,5 +5,5 @@
+ Description: Unicap Imaging Library is a set of simple image processing functions
+ Version: @dist_version@
+ Libs: -L@libdir@ -lucil @GLIB_PACKAGE_LIBS@ @PANGO_PACKAGE_LIBS@ @AVCODEC_PACKAGE_LIBS@ @THEORA_PACKAGE_LIBS@ @PNG_PACKAGE_LIBS@ -lm
+-Cflags: -I@includedir@/unicap @GLIB_PACKAGE_CFLAGS@ @PANGO_PACKAGE_CFLAGS@ @AVCODEC_PACKAGE_CFLAGS@ @THEORA_PACKAGE_CFLAGS@ @PNG_PACKAGE_CFLAGS@
++Cflags: -I@includedir@/unicap 
+ Requires: libunicap pangoft2 glib-2.0

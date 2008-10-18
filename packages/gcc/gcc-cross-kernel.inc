@@ -9,6 +9,13 @@ do_install () {
 	:
 }
 
+do_compile () {
+	# This compiler is only for the kernel.  Don't bother running fixincludes.
+	mkdir -p gcc
+	touch gcc/stmp-fixinc
+	oe_runmake
+}
+
 do_stage () {
 	cd gcc
 	oe_runmake installdirs install-common install-headers install-libgcc

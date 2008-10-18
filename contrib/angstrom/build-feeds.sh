@@ -61,7 +61,7 @@ do_build
 for machine in simpad om-gta01 c7x0 nokia800 beagleboard dht-walnut efika
 do
 	BUILD_MACHINE=$machine
-	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python"
+	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python gnome-icon-theme"
 	BUILD_TARGETS=" \
 	              abiword \
 		      aircrack-ng \
@@ -87,7 +87,8 @@ do
 		      epdfview \
 		      epiphany \
 		      evince \
-		      fakeroot \
+		      exo \
+              fakeroot \
 		      fennec \
 		      ffmpeg \
 		      fftw \
@@ -154,9 +155,9 @@ do
 		      meta-nas-server \
 		      midori \
 		      mileage \
-		      minimo \
 		      mono \
-		      mpfr \
+		      mousepad \
+              mpfr \
 		      mplayer \
 		      mtd-utils \
 		      mythtv \
@@ -169,7 +170,8 @@ do
 		      openredalert \
 		      openvpn \
 		      opie-notes \
-		      pairs \
+		      orage \
+              pairs \
 		      pciutils \
 		      pdamaze \
 		      perl \
@@ -211,7 +213,8 @@ do
 		      task-proper-tools \
 		      texinfo \
 		      thttpd \
-		      tightvnc \
+		      thunar \
+              tightvnc \
 		      timesleuth \
 		      totem \
 		      tron \
@@ -233,7 +236,22 @@ do
 		      xf86-video-ati \
 		      xf86-video-fbdev \
 		      xf86-video-vesa \
-		      xmms \
+		      xfce-mcs-manager
+              xfce-mcs-manager \
+              xfce-mcs-plugins \
+              xfce-terminal \
+              xfce-utils \
+              xfce4-appfinder \
+              xfce4-dev-tools \
+              xfce4-icon-theme \
+              xfce4-mixer \
+              xfce4-panel \
+              xfce4-session \
+              xfdesktop \
+              xfprint \
+              xfwm4 \
+              xfwm4-themes \
+              xmms \
 		      xserver-kdrive \
 		      xserver-xorg \
 		      zauralign \

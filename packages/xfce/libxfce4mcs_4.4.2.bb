@@ -6,7 +6,7 @@ DESCRIPTION="Settings management library used by most XFce 4 modules"
 DEPENDS="libxfce4util"
 SECTION = "x11/libs"
 
-inherit xfce 
+inherit xfce pkgconfig
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/xfce4/libxfce4mcs

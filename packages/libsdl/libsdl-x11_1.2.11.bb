@@ -3,7 +3,7 @@ require libsdl.inc
 # extra-keys.patch is missing
 DEFAULT_PREFERENCE = "-1" 
 
-FILE_PR = "r6"
+FILE_PR = "r7"
 
 SRC_URI = "\
   http://www.libsdl.org/release/SDL-${PV}.tar.gz \
@@ -12,6 +12,7 @@ SRC_URI = "\
   file://pagesize.patch;patch=1 \
   file://kernel-asm-page.patch;patch=1 \
   file://sdl-cdfix.patch;patch=1 \
+  file://fixmfour.patch;patch=1 \
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \

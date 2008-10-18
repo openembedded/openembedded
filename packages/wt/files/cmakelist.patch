@@ -1,0 +1,26 @@
+diff -urN wt-2.2.0.orig/src/CMakeLists.txt wt-2.2.0/src/CMakeLists.txt
+--- wt-2.2.0.orig/src/CMakeLists.txt	2008-09-10 15:58:34.000000000 +0200
++++ wt-2.2.0/src/CMakeLists.txt	2008-10-18 11:12:20.000000000 +0200
+@@ -33,8 +33,12 @@
+ 
+ LINK_DIRECTORIES(${BOOST_LIB_DIRS})
+ 
+-ADD_EXECUTABLE(filetostring web/skeleton/FileToString.C)
+-GET_TARGET_PROPERTY(FILE_TO_STRING_EXE filetostring LOCATION)
++IF(CMAKE_CROSSCOMPILING)
++  ADD_EXECUTABLE(filetostring web/skeleton/FileToString.C)
++  GET_TARGET_PROPERTY(FILE_TO_STRING_EXE filetostring LOCATION)
++ELSE(CMAKE_CROSSCOMPILING)
++  SET(FILE_TO_STRING_EXE ${CMAKE_CURRENT_SOURCE_DIR}/filetostring)
++ENDIF(CMAKE_CROSSCOMPILING)
+ 
+ MACRO (FILE_TO_STRING infile outfile var)
+ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${outfile}
+diff -urN wt-2.2.0.orig/src/Wt/Ext/CMakeLists.txt wt-2.2.0/src/Wt/Ext/CMakeLists.txt
+--- wt-2.2.0.orig/src/Wt/Ext/CMakeLists.txt	2008-07-15 08:25:54.000000000 +0200
++++ wt-2.2.0/src/Wt/Ext/CMakeLists.txt	2008-10-17 22:37:38.000000000 +0200
+@@ -1,2 +1,3 @@
+-INSTALL_FILES(/include/Wt/Ext "...+[^Ch~]$")
++# avoid CMake* getting included
++INSTALL_FILES(/include/Wt/Ext "^[A-Z][a-z].*[^Ch~]$")
+ INSTALL_FILES(/include/Wt/Ext ExtDllDefs.h)

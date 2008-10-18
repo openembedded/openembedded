@@ -7,3 +7,6 @@ SECTION = "x11"
 
 DEPENDS="xfce4-panel"
 inherit xfce
+
+FILES_${PN}-dev += "${libdir}/xfce4/modules/libxfce4mixer.so"
+FILES_${PN}-dbg += "${libexecdir}/xfce4/panel-plugins/.debug/"

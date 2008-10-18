@@ -155,11 +155,6 @@ do_stage() {
 		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
 		install_dev install_runtime
 
-	# Install into the staging dir
-	oe_runmake PREFIX= DEVEL_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		RUNTIME_PREFIX=${UCLIBC_STAGE_PREFIX}/ \
-		install_utils
-
 	# We don't really need this
 	rm -f ${UCLIBC_STAGE_PREFIX}/include/.cvsignore
 

@@ -1,0 +1,49 @@
+Patch taken from Gentoo at http://overlays.gentoo.org/svn/proj/alt/trunk/prefix-overlay/xfce-base/xfdesktop/files/
+
+Included by: Otavio Salvador <otavio@ossystems.com.br>
+
+diff -ur xfdesktop-4.4.2.orig/modules/menu/desktop-menu-dentry.c xfdesktop-4.4.2/modules/menu/desktop-menu-dentry.c
+--- xfdesktop-4.4.2.orig/modules/menu/desktop-menu-dentry.c	2007-11-17 21:31:43.000000000 +0200
++++ xfdesktop-4.4.2/modules/menu/desktop-menu-dentry.c	2008-03-21 11:18:59.000000000 +0200
+@@ -173,7 +173,8 @@
+         if(cmpname && g_ascii_strcasecmp(name, cmpname) < 0)
+             break;
+     }
+-    
++    g_list_free(items);
++
+     gtk_menu_shell_insert(menu_shell, mi, i);
+     
+     return i;
+diff -ur xfdesktop-4.4.2.orig/modules/menu/desktop-menuspec.c xfdesktop-4.4.2/modules/menu/desktop-menuspec.c
+--- xfdesktop-4.4.2.orig/modules/menu/desktop-menuspec.c	2007-11-17 21:31:43.000000000 +0200
++++ xfdesktop-4.4.2/modules/menu/desktop-menuspec.c	2008-03-21 11:18:59.000000000 +0200
+@@ -203,7 +203,7 @@
+                 else
+                     foundcat = NULL;
+                 if(!foundcat) {
+-                    g_ptr_array_free(revpath, FALSE);
++                    g_ptr_array_free(revpath, TRUE);
+                     revpath = NULL;
+                     break;
+                 }
+@@ -220,7 +220,7 @@
+                 newpath[totlen] = 0;
+                 
+                 g_ptr_array_add(mtfpi->paths, newpath);
+-                g_ptr_array_free(revpath, FALSE);
++                g_ptr_array_free(revpath, TRUE);
+             }
+         }
+     }
+diff -ur xfdesktop-4.4.2.orig/modules/menu/desktop-menuspec.h xfdesktop-4.4.2/modules/menu/desktop-menuspec.h
+--- xfdesktop-4.4.2.orig/modules/menu/desktop-menuspec.h	2007-11-17 21:31:43.000000000 +0200
++++ xfdesktop-4.4.2/modules/menu/desktop-menuspec.h	2008-03-21 11:18:56.000000000 +0200
+@@ -82,6 +82,6 @@
+  * @param paths A GPtrArray obtained from either menuspec_get_path_simple() or
+  *              menuspec_get_path_multilevel().
+  */
+-G_INLINE_FUNC void desktop_menuspec_path_free(GPtrArray *paths);
++void desktop_menuspec_path_free(GPtrArray *paths);
+ 
+ #endif /* ifdef __MENUSPEC_H__ */

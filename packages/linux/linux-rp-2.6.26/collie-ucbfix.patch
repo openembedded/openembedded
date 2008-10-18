@@ -1,0 +1,28 @@
+commit 7f4ecbe6bd6515f65f2720117e5b7d69e1648960
+Author: Thomas Kunze <thommycheck@gmx.de>
+Date:   Sat Oct 18 00:27:36 2008 +0200
+
+    fix ucb driver
+
+Index: linux-2.6.26/drivers/mfd/mcp-sa11x0.c
+===================================================================
+--- linux-2.6.26.orig/drivers/mfd/mcp-sa11x0.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26/drivers/mfd/mcp-sa11x0.c	2008-10-18 01:48:40.964009879 +0200
+@@ -27,6 +27,7 @@
+ #include <asm/arch/mcp.h>
+ 
+ #include <asm/arch/assabet.h>
++#include <asm/arch/collie.h>
+ 
+ #include "mcp.h"
+ 
+@@ -169,6 +170,9 @@
+ 	if (machine_is_assabet()) {
+ 		ASSABET_BCR_set(ASSABET_BCR_CODEC_RST);
+ 	}
++	if (machine_is_collie()) {
++		GPSR |= COLLIE_GPIO_UCB1x00_RESET; 
++	}
+ 
+ 	/*
+ 	 * Setup the PPC unit correctly.
