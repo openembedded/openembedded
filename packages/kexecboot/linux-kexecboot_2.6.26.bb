@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-FILE_PR = "r4"
+FILE_PR = "r5"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
