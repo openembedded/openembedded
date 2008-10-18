@@ -6,7 +6,7 @@ DEPENDS = ""
 RDEPENDS = ""
 PN = "projectx"
 PV = "0.90.4.00"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/project-x/ProjectX_Source_eng_${PV}.zip \
            file://headless.patch;patch=1;pnum=0 \
@@ -37,7 +37,7 @@ do_compile_prepend() {
 			export GCJ_ARCHIVES="${GCJ_ARCHIVES} ${CROSS_LIBDIR}/$gcjarchives"
 		fi
 	done
-	if [ "${GCJ_ARCHIVES}" == "" ]; then
+	if [ "${GCJ_ARCHIVES}" = "" ]; then
 		echo gcj not found, downloading statically linked binary
 		exit
 	else
