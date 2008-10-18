@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-FILE_PR = "r2"
+FILE_PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
@@ -81,6 +81,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
 SRC_URI_append_collie = "\
 	file://collie.patch;patch=1 \
 	file://collie_keymap.patch;patch=1 \
+	file://collie-ucbfix.patch;patch=1 \
 "
 
 SRC_URI_append_poodle = "\
