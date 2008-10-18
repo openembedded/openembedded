@@ -151,18 +151,18 @@ inherit image_ipk
 export NFO = '${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfo'
 
 do_rootfs_append() {
-	e2vers=`grep -i version "${IMAGE_ROOTFS}/usr/lib/ipkg/info/enigma2.control"`
-	echo -e "Enigma2:\tExperimental ${e2vers:9:3}" > ${NFO}
-	echo -e "Machine:\tDreambox ${MACHINE}" >> ${NFO}
-	echo -e "Date:\t$(date +%Y-%m-%d' '%H':'%M)" >> ${NFO}
-	echo -e "Issuer:\tDream Multimedia TV" >> ${NFO}
-	distrover=${DISTRO_VERSION}
-	echo -e "Link:\thttp://dreamboxupdate.com/${DISTRO}/${distrover:0:3}/${MACHINE}/experimental" >> ${NFO}
+	VER=`grep Version: "${IMAGE_ROOTFS}/usr/lib/ipkg/info/enigma2.control" | cut -b 10-12`
+	printf "Enigma2: Experimental ${VER}\n" > ${NFO}
+	printf "Machine: Dreambox ${MACHINE}\n" >> ${NFO}
+	DATE=`date +%Y-%m-%d' '%H':'%M`
+	printf "Date: ${DATE}\n" >> ${NFO}
+	printf "Issuer: Dream Multimedia TV\n" >> ${NFO}
+	VER=`echo ${DISTRO_VERSION} | cut -b 1-3`
+	printf "Link: http://dreamboxupdate.com/${DISTRO}/${VER}/${MACHINE}/experimental\n" >> ${NFO}
 	if [ "${DESC}" != "" ]; then
-		echo -e "Description:\t${DESC}" >> ${NFO}
-		echo -e ${DESC} >> ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.desc
+		printf "Description: ${DESC}\n" >> ${NFO}
+		printf "${DESC}\n" >> ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.desc
 	fi
-	echo -e "md5sum:\t" >> ${NFO}
-	cd ${DEPLOY_DIR_IMAGE}
-	md5sum ${IMAGE_NAME}.nfi >> ${NFO}
+	MD5SUM=`md5sum ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.nfi | cut -b 1-32`
+	printf "MD5: ${MD5SUM}\n" >> ${NFO}
 }
