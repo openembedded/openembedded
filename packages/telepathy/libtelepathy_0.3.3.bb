@@ -1,5 +1,5 @@
 HOMEPAGE = "http://telepathy.freedesktop.org/wiki/"
-DEPENDS = "glib-2.0 dbus"
+DEPENDS = "telepathy-glib glib-2.0 dbus"
 LICENSE = "LGPL"
 FILE_PR = "r0"
 
