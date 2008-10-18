@@ -22,16 +22,24 @@ BOOST_LIBS = "\
 	iostreams \
 	program_options \
 	regex \
-	serialization \
 	signals \
 	system \
 	test \
 	thread \
 	"
 
+# FIXME: for some reason this fails on powerpc
+#BOOST_LIBS += "serialization"
+
+# To enable python, uncomment the following:
+#BOOST_LIBS += "python"
+#DEPENDS += "python"
+#PYTHON_ROOT = "${STAGING_DIR_HOST}/${layout_prefix}"
+#PYTHON_VERSION = "2.5"
+
 S = "${WORKDIR}/${BOOST_P}"
 
-# Make a package for each library, plus -dev and -python
+# Make a package for each library, plus -dev
 PACKAGES = "${PN}-dbg ${BOOST_PACKAGES}"
 python __anonymous () {
 	import bb
@@ -53,16 +61,6 @@ FILES_boost-serialization = "${libdir}/libboost_serialization*.so* \
 	${libdir}/libboost_wserialization*.so*"
 FILES_boost-test = "${libdir}/libboost_prg_exec_monitor*.so \
 	${libdir}/libboost_unit_test_framework*.so*"
-
-# Python - remove this and set:
-#PYTHON_ROOT = "/dev/null"
-# to remove the python build
-DEPENDS += "python"
-PYTHON_ROOT = "${STAGING_DIR_HOST}/${layout_prefix}"
-PYTHON_VERSION = "2.5"
-
-PACKAGES += "boost-python"
-FILES_boost-python = "${libdir}/libboost_python*.so*"
 
 # -dev last to pick up the remaining stuff
 PACKAGES += "${PN}-dev"
