@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 MAINTAINER = "Gerald Britton <gbritton@doomcom.org>"
-PR = "r3"
+PR = "r4"
 
 inherit autotools gettext
 
@@ -47,6 +47,10 @@ SRC_URI = \
      file://binutils-2.15.91.0.1-uclibc-100-conf.patch;patch=1 \
      file://binutils-2.15.90.0.3-uclibc-200-build_modules.patch;patch=1 \
      file://binutils-2.15-allow-gcc-4.0.patch;patch=1"
+
+# fix overflow in ar
+SRC_URI += "file://binutils-2.16-ar-overflow.patch;patch=1"
+
 S = "${WORKDIR}/binutils-${PV}"
 B = "${S}/build.${HOST_SYS}.${TARGET_SYS}"
 
