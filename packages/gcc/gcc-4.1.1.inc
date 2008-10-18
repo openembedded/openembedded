@@ -29,6 +29,7 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/gcc/gcc-4.1.1/gcc-4.1.1.tar.bz2 \
         file://gcc-ignore-cache.patch;patch=1 \
         file://gcc-4.1.1-e300cx.patch;patch=1 \
         file://pr34130.patch;patch=1 \
+	file://sed-fixinc-backslash.patch;patch=1 \
 	"
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
