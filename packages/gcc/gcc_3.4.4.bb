@@ -1,4 +1,4 @@
-PR = "r5"
+PR = "r6"
 DESCRIPTION = "The GNU cc and gcc C compilers."
 HOMEPAGE = "http://www.gnu.org/software/gcc/"
 SECTION = "devel"
@@ -29,5 +29,6 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 SRC_URI += "file://gcc34-configure.in.patch;patch=1"
 SRC_URI += "file://gcc34-thumb-support.patch;patch=1"
 SRC_URI_append_fail-fast = " file://zecke-no-host-includes.patch;patch=1 "
+SRC_URI += "file://libstdc++-v3-open_missing_mode.patch;patch=1"
 
 require gcc3-build.inc
