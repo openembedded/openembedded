@@ -190,6 +190,10 @@ autotools_stage_all() {
 		autotools_stage_dir ${STAGE_TEMP}/${base_bindir} ${STAGING_DIR_HOST}${layout_base_bindir}
 		autotools_stage_dir ${STAGE_TEMP}/${base_sbindir} ${STAGING_DIR_HOST}${layout_base_sbindir}
 		autotools_stage_dir ${STAGE_TEMP}/${libexecdir} ${STAGING_DIR_HOST}${layout_libexecdir}
+		if [ "${prefix}/lib" != "${libdir}" ]; then
+			# python puts its files in here, make sure they are staged as well
+			autotools_stage_dir ${STAGE_TEMP}/${prefix}/lib ${STAGING_DIR_HOST}${layout_prefix}/lib
+		fi
 	fi
 	if [ -d ${STAGE_TEMP}/${libdir} ]
 	then
