@@ -1,0 +1,11 @@
+--- s/configure.ac~	2008-07-27 10:50:51.000000000 +0100
++++ s/configure.ac	2008-07-27 10:57:25.000000000 +0100
+@@ -70,7 +70,7 @@
+ XORG_DRIVER_CHECK_EXT(DPMSExtension, xextproto)
+ 
+ # Checks for pkg-config packages
+-PKG_CHECK_MODULES(XORG, [xorg-server xproto xvmc fontsproto libdrm $REQUIRED_MODULES])
++PKG_CHECK_MODULES(XORG, [xorg-server xproto xvmc fontsproto libdrm xf86driproto $REQUIRED_MODULES])
+ sdkdir=$(pkg-config --variable=sdkdir xorg-server)
+ 
+ # Checks for libraries.
