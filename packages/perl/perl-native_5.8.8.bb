@@ -55,8 +55,10 @@ do_configure () {
         -Ud_csh \
         -Uusesfio \
         -Uusenm -des
-    sed 's!${STAGING_DIR}/bin!${STAGING_BINDIR}!;
-         s!${STAGING_DIR}/lib!${STAGING_LIBDIR}!' < config.sh > config.sh.new
+    sed "s!${STAGING_DIR}/bin!${STAGING_BINDIR}!;
+         s!${STAGING_DIR}/lib!${STAGING_LIBDIR}!;
+	 s!^installbin=.*!installbin=\'${STAGING_BINDIR}\'!;
+	 s!^installsitebin=.*!installsitebin=\'${STAGING_BINDIR}\'!" < config.sh > config.sh.new
     mv config.sh.new config.sh
 }
 do_stage_append() {

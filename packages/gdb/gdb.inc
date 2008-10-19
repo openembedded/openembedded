@@ -29,6 +29,11 @@ do_configure () {
 	# override this function to avoid the autoconf/automake/aclocal/autoheader
 	# calls for now
 	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
+
+	# Remove duplicate spaces to work around configure complaining about
+	# changed LDFLAGS.
+	LDFLAGS=$(echo "${LDFLAGS}" | sed "s/  / /")
+
         CPPFLAGS="" oe_runconf
 }
 

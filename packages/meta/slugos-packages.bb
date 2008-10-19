@@ -92,6 +92,7 @@ SLUGOS_PACKAGES = "\
 	fuse \
 	gawk \
 	gcc \
+	gdb \
 	gdbm \
 	glib-2.0 \
 	gnu-config \
@@ -254,7 +255,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	ctorrent \
 	dsniff \
 	eciadsl \
-	gdb \
 	gspcav1 \
 	linphone \
 	lirc-modules lirc \

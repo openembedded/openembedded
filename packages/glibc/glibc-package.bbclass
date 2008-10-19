@@ -26,12 +26,15 @@ ENABLE_BINARY_LOCALE_GENERATION ?= "0"
 # BINARY_LOCALE_ARCHES is a space separated list of regular expressions
 BINARY_LOCALE_ARCHES ?= "arm.*"
 
+# Set this to zero if you don't want ldconfig in the output package
+USE_LDCONFIG ?= "1"
+
 PACKAGES = "glibc-dbg glibc catchsegv sln nscd ldd localedef glibc-utils glibc-dev glibc-doc glibc-locale libsegfault glibc-extra-nss glibc-thread-db glibc-pcprofile"
 PACKAGES_DYNAMIC = "glibc-gconv-* glibc-charmap-* glibc-localedata-* locale-base-* glibc-binary-localedata-*"
 
 libc_baselibs = "/lib/libc* /lib/libm* /lib/ld* /lib/libpthread* /lib/libresolv* /lib/librt* /lib/libutil* /lib/libnsl* /lib/libnss_files* /lib/libnss_compat* /lib/libnss_dns* /lib/libdl* /lib/libanl* /lib/libBrokenLocale*"
 
-FILES_${PN} = "${sysconfdir} ${libc_baselibs} /sbin/ldconfig ${libexecdir}/* ${datadir}/zoneinfo"
+FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '/sbin/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "/lib/libSegFault*"
 FILES_glibc-extra-nss = "/lib/libnss*"
@@ -70,7 +73,6 @@ do_install() {
 		h=`echo $r|sed -e's,\.x$,.h,'`
 		install -m 0644 ${S}/sunrpc/rpcsvc/$h ${D}/${includedir}/rpcsvc/
 	done
-	install -m 0644 ${WORKDIR}/etc/ld.so.conf ${D}/${sysconfdir}/
 	install -d ${D}${libdir}/locale
 	make -f ${WORKDIR}/generate-supported.mk IN="${S}/localedata/SUPPORTED" OUT="${WORKDIR}/SUPPORTED"
 	# get rid of some broken files...
