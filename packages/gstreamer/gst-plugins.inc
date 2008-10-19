@@ -2,8 +2,8 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
-DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon"
-PR = "r0"
+DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon flac"
+PR = "r1"
 
 inherit autotools pkgconfig
 
