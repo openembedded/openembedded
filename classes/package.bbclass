@@ -594,6 +594,11 @@ python package_do_shlibs() {
 	else:
 		snap_symlinks = False
 
+	if (bb.data.getVar('USE_LDCONFIG', d, True) or "1") == "1":
+		use_ldconfig = True
+	else:
+		use_ldconfig = False
+
 	needed = {}
 	private_libs = bb.data.getVar('PRIVATE_LIBS', d, 1)
 	for pkg in packages.split():
@@ -647,7 +652,7 @@ python package_do_shlibs() {
 			fd.write(ver + '\n')
 			fd.close()
 			package_stagefile(shver_file, d)
-		if needs_ldconfig:
+		if needs_ldconfig and use_ldconfig:
 			bb.debug(1, 'adding ldconfig call to postinst for %s' % pkg)
 			postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, 1) or bb.data.getVar('pkg_postinst', d, 1)
 			if not postinst:
