@@ -1,10 +1,8 @@
 require busybox.inc
-FILE_PR = "r3"
+FILE_PR = "r0"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
-  http://busybox.net/downloads/fixes-1.11.1/busybox-1.11.1-basename.patch;patch=1 \
-  http://busybox.net/downloads/fixes-1.11.1/busybox-1.11.1-tar.patch;patch=1 \
   \
   file://udhcpscript.patch;patch=1 \
   file://busybox-cron \

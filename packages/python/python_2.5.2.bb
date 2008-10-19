@@ -6,19 +6,27 @@ PRIORITY = "optional"
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # bump this on every change in contrib/python/generate-manifest-2.5.py
-FILE_PR = "ml11"
+FILE_PR = "ml13"
 
 PYTHON_MAJMIN = "2.5"
 
-SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
-           file://bindir-libdir.patch;patch=1 \
-           file://crosscompile.patch;patch=1 \
-           file://fix-tkinter-detection.patch;patch=1 \
-           file://autohell.patch;patch=1 \
-           file://sitebranding.patch;patch=1 \
-           file://enable-ctypes-module.patch;patch=1 \
-           file://default-is-optimized.patch;patch=1 \
-           file://sitecustomize.py"
+SRC_URI = "\
+  http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
+  file://bindir-libdir.patch;patch=1 \
+  file://crosscompile.patch;patch=1 \
+  file://fix-tkinter-detection.patch;patch=1 \
+  file://autohell.patch;patch=1 \
+  file://sitebranding.patch;patch=1 \
+  file://enable-ctypes-module.patch;patch=1 \
+  file://default-is-optimized.patch;patch=1 \
+  \
+  file://05-install.patch;patch=1 \
+  file://06-fix-urllib-exception.patch;patch=1 \
+  file://16-bug1179-imageop.patch;patch=1 \
+  file://13-set-wakeup-fix.patch;patch=1 \
+  \
+  file://sitecustomize.py \
+"
 S = "${WORKDIR}/Python-${PV}"
 
 inherit autotools
