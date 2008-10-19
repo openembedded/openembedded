@@ -749,9 +749,6 @@ ftp://ftp.gnutls.org/pub/gnutls http://josefsson.org/gnutls/releases/
 
 
 
-ftp://.*/.*/	http://www.oesources.org/source/current/
-http://.*/.*/	http://www.oesources.org/source/current/
-
 http://.*/.*/	http://dreamboxupdate.com/sources-mirror/
 ftp://.*/.*/	http://dreamboxupdate.com/sources-mirror/
 }
