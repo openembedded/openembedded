@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-FILE_PR = "r4"
+FILE_PR = "r5"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
@@ -82,6 +82,7 @@ SRC_URI_append_collie = "\
 	file://collie.patch;patch=1 \
 	file://collie_keymap.patch;patch=1 \
 	file://collie-ucbfix.patch;patch=1 \
+	file://usb-gadget27bp.patch;patch=1 \
 "
 
 SRC_URI_append_poodle = "\
