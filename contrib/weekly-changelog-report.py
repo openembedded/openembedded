@@ -4,6 +4,10 @@
 # generates an OE changelog for last weeks activity (Mon-Sun) assuming it is run on
 # any day of the following week
 
+# TODO
+# - remove patch count as it does not match after we remove "Merge branch" statements
+# - add bugzilla info
+
 import datetime
 import os
 
@@ -19,6 +23,6 @@ start_day = end_day - datetime.timedelta(7)
 
 print "OE weekly changelog %s to %s\n" % (start_day.isoformat(), end_day.isoformat())
 
-os.system("git-shortlog --since=%s --until=%s" % (start_day.isoformat(), end_day.isoformat()))
+os.system("git-shortlog --since=%s --until=%s | grep -v \"Merge branch\"" % (start_day.isoformat(), end_day.isoformat()))
 
 
