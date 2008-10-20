@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.12-5.1-brcmstb-dm8000
-# Wed Jun 25 11:05:01 2008
+# Mon Oct 20 18:29:26 2008
 #
 CONFIG_MIPS=y
 
@@ -1004,7 +1004,9 @@ CONFIG_SERIO_LIBPS2=y
 #
 # Character devices
 #
-# CONFIG_VT is not set
+CONFIG_VT=y
+CONFIG_VT_CONSOLE=y
+CONFIG_HW_CONSOLE=y
 # CONFIG_SERIAL_NONSTANDARD is not set
 
 #
@@ -1264,6 +1266,13 @@ CONFIG_FB_SOFT_CURSOR=y
 # CONFIG_FB_E1356 is not set
 # CONFIG_FB_S1D13XXX is not set
 # CONFIG_FB_VIRTUAL is not set
+
+#
+# Console display driver support
+#
+# CONFIG_VGA_CONSOLE is not set
+CONFIG_DUMMY_CONSOLE=y
+# CONFIG_FRAMEBUFFER_CONSOLE is not set
 
 #
 # Logo configuration
