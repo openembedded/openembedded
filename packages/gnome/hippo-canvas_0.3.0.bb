@@ -5,6 +5,8 @@ DEPENDS = "librsvg python-pygtk2"
 
 inherit gnome
 
+DEPENDS += "librsvg"
+
 do_configure_prepend() {
 	sed -i -e s:'`$PKG_CONFIG --variable=defsdir pygtk-2.0`':\"${STAGING_DATADIR}/pygtk/2.0/defs\":g ${S}/configure.ac
 }
