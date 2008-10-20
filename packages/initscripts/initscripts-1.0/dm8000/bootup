@@ -1,9 +1,5 @@
-modprobe lcd
 echo 10 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
-
-mount -t proc proc /proc
-echo 11 > /proc/progress
 
 mount -t sysfs sysfs /sys
 echo 12 > /proc/progress
@@ -32,15 +28,11 @@ done
 echo 17 > /proc/progress
 
 # set UDMA66, enable dma
-for i in 0 1; do
-	hdparm -d 1 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
-	hdparm -X66 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
-done
+hdparm -d 1 /dev/discs/disc0/disc || /bin/true;
+hdparm -X66 /dev/discs/disc0/disc || /bin/true;
 
 # accustic management
-for i in 0 1; do
-	hdparm -M 128 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
-done
+hdparm -M 128 /dev/discs/disc0/disc || /bin/true;
 
 # disable dma for cd drive ... 
 # we remove this when the dma timeout problem is fixed!
@@ -49,7 +41,7 @@ for i in 0 1; do
 done
 
 echo 18 > /proc/progress
-for i in dreambox_keyboard fp info bcm7400; do
+for i in dreambox_keyboard fp bcm7400; do
 	modprobe $i;
 done
 
