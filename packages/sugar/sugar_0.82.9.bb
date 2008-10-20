@@ -4,7 +4,7 @@ LICENSE = "GPLv2"
 PR = "r3"
 
 DEPENDS = "sugar-toolkit libxml2 gtk+"
-RDEPENDS = "sugar-toolkit sugar-base"
+RDEPENDS = "sugar-toolkit sugar-base sugar-datastore gnome-python-desktop"
 
 SRC_URI = "http://dev.laptop.org/pub/sugar/sources/sugar/${PN}-${PV}.tar.bz2"
 
