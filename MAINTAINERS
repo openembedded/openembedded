@@ -213,6 +213,13 @@ Machines:   akita
 Recipes:    aircrack-ng, kismet, lorcon, mdk, rfakeap, rglueap, 
 Recipes:    rt2570-k2wrlz, void11
 
+Person:     Rodrigo 'vivijim' Vivi
+Mail:       rodrigo.vivi@openbossa.org
+Website:    http://blog.vivi.eng.br
+Interests:  Embedded Linux, Mamona, Nokia Tablets, Emulation
+Distros:    mamona
+Recipes:    bash-noemu, binutils-noemu, gcc-noemu, mamona-sound, usbnet
+
 Person:	    Rolf 'Laibsch' Leggewie
 Mail:       OE-recipes@rolf.leggewie.biz
 Website:    http://oz.leggewie.org
