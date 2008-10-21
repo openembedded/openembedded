@@ -1,13 +1,13 @@
 DESCRIPTION = "Mozilla Mobile browser"
 DEPENDS += "cairo alsa-lib "
 
-PV = "0.8+0.9pre"
-MOZPV = "0.9pre"
-FILE_PR = "r10"
+PV = "0.9+1.0a1"
+MOZPV = "1.0a1"
+FILE_PR = "r0"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=3a9a64e5bedc \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=53d19b4b249a \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=6c2f8bd79cbc \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=8f96b58057ad \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
@@ -28,6 +28,7 @@ do_configure_prepend() {
 	if [ -e ${WORKDIR}/mobile-browser ] ; then
 		mv ${WORKDIR}/mobile-browser ${S}/mobile
 	fi	
+	sed -i -e 's:head\ -1:head\ -n1:g' client.mk
 	oe_runmake -f client.mk CONFIGURE_ARGS="${EXTRA_OECONF}" configure
 }
 

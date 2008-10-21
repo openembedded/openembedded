@@ -1,9 +1,11 @@
 DESCRIPTION = "DMI (Desktop Management Interface) table related utilities"
 HOMEPAGE = "http://www.nongnu.org/dmidecode/"
 LICENSE = "GPLv2"
-PR = "r0"
+FILE_PR = "r0"
 
 SRC_URI = "http://savannah.nongnu.org/download/dmidecode/${P}.tar.bz2"
+
+COMPATIBLE_HOST = "i.86.*-linux"
 
 do_unpack_extra() {
 	sed -i \

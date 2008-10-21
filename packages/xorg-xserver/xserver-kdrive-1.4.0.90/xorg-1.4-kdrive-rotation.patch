@@ -1,0 +1,31 @@
+diff -rup a/hw/kdrive/src/kinput.c b/hw/kdrive/src/kinput.c
+--- a/hw/kdrive/src/kinput.c	2007-08-23 21:04:53.000000000 +0200
++++ b/hw/kdrive/src/kinput.c	2007-12-22 12:53:27.679853402 +0100
+@@ -2075,19 +2075,25 @@ KdEnqueuePointerEvent(KdPointerInfo *pi,
+ 
+     /* we don't need to transform z, so we don't. */
+     if (flags & KD_MOUSE_DELTA) {
++/* does it really make sense to transform relative coordinates depending on screen rotation??
+ 	if (pi->transformCoordinates) {
+ 	    x = matrix[0][0] * rx + matrix[0][1] * ry;
+ 	    y = matrix[1][0] * rx + matrix[1][1] * ry;
+ 	}
+-	else {
++	else {*/
+ 	    x = rx;
+ 	    y = ry;
+-	}
++/*	}*/
+     }
+     else {
+ 	if (pi->transformCoordinates) {
+ 	    x = matrix[0][0] * rx + matrix[0][1] * ry;
+ 	    y = matrix[1][0] * rx + matrix[1][1] * ry;
++/* negative absolute values indicate calculation from the oposite end of the axis */
++            if (x < 0)
++                x += matrix[0][2];
++            if (y < 0)
++                y += matrix[1][2];
+ 	}
+ 	else {
+ 	    x = rx;

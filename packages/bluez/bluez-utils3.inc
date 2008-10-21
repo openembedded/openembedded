@@ -76,9 +76,14 @@ OE_LT_RPATH_ALLOW[export]="1"
 
 do_install_append() {
 	install -d ${D}${base_sbindir} ${D}${base_bindir}/  ${D}${sysconfdir}/apm/event.d/
-	mv ${D}${sbindir}/* ${D}${base_sbindir}/
-	mv ${D}${bindir}/* ${D}${base_bindir}/
-	rmdir ${D}${bindir} ${D}${sbindir}
+	if [ "${sbindir}" != "${base_sbindir}" ]; then
+		mv ${D}${sbindir}/* ${D}${base_sbindir}/
+		rmdir ${D}${sbindir}
+	fi
+	if [ "${bindir}" != "${base_bindir}" ]; then
+		mv ${D}${bindir}/* ${D}${base_bindir}/
+		rmdir ${D}${bindir}
+	fi
 	chmod u+s ${D}${base_sbindir}/hciattach ${D}${base_sbindir}/hciconfig
 	install -m 0644 ${WORKDIR}/hcid.conf ${D}${sysconfdir}/bluetooth/
         install -m 0644 ${S}/rfcomm/rfcomm.conf ${D}${sysconfdir}/bluetooth/

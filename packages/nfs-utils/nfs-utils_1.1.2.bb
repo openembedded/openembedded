@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 FILE_PR = "2"
 
-DEPENDS = "tcp-wrappers libevent"
+DEPENDS = "e2fsprogs tcp-wrappers libevent"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
 	file://nfsserver \
