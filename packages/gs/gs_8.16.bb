@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "console/utils"
 HOMEPAGE = "http://www.gnu.org/software/ghostscript/ghostscript.html"
 DEPENDS = "jpeg zlib"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${GNU_MIRROR}/ghostscript/gnu-ghostscript-${PV}.tar.gz"
 S = "${WORKDIR}/gnu-ghostscript-${PV}"

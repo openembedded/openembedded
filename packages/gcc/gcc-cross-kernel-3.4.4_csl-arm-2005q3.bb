@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 require gcc-cross-initial_csl-arm-2005q3.bb
 require gcc-cross-kernel.inc
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI += "file://gcc-3.4.4-makefile-fix.patch;patch=1"
 

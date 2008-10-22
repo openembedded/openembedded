@@ -2,7 +2,7 @@ DESCRIPTION = "FusionSound for DirectFB"
 DEPENDS = "directfb"
 SECTION = "libs"
 LICENSE = "LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "git://git.directfb.org/git/directfb/core/FusionSound;protocol=git;tag=0b2162b570c8314fd1240b08d6ab4a8d074ccf37 \
 	   file://fix-pkgconfig-cflags.patch;patch=1 \

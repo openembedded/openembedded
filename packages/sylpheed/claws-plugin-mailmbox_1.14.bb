@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "Mail user agent plugins"
 DEPENDS = "claws-mail"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.claws-mail.org/downloads/plugins/mailmbox-${PV}.tar.gz"
 

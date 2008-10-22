@@ -4,7 +4,7 @@ SECTION = "utils"
 LICENSE = "GPLv2"
 DEPENDS = "libpng zlib"
 DEPENDS_rddtool-perl = "perl-module-lib perl-module-dynaloader"
-FILE_PR = "r2"
+PR = "r2"
 SRC_URI = "http://oss.oetiker.ch/rrdtool/pub/rrdtool-1.0.x/rdtool-${PV}.tar.gz \
 	file://perl-make-options.diff;patch=1;pnum=0"
 

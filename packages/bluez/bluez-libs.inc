@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-libs-${PV}.tar.gz"
 

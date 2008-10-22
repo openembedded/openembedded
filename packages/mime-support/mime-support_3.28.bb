@@ -5,7 +5,7 @@ DEPENDS = "file"
 RRECOMMENDS = "file"
 LICENSE = "PD"
 PACKAGE_ARCH = "all"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"

@@ -1,7 +1,7 @@
 DESCRIPTION = "Squashfs is a highly compressed read-only filesystem for Linux."
 SECTION = "base"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "zlib"
 

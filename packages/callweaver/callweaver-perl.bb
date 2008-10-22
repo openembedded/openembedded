@@ -4,7 +4,7 @@ SECTION = "libs"
 LICENSE = "GPL"
 DEPENDS = "install-native"
 RDEPENDS = "perl callweaver-ogi"
-FILE_PR = "r0"
+PR = "r0"
 S = "${WORKDIR}/callweaver-1.2-${CWRCV}/contrib/ogi-perl/callweaver-perl-0.0.1"
 
 CWRCV = "rc5"

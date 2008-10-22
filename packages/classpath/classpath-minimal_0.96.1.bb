@@ -1,6 +1,6 @@
 require classpath.inc
 
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI += "\
   file://gjar-prefix-patch.diff;patch=1;pnum=0 \

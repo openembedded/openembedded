@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages"
-FILE_PR = "r8"
+PR = "r8"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

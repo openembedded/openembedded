@@ -3,7 +3,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "recode-native recode"
 DEBV = "2"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/f/fortune-mod/fortune-mod_${PV}-${DEBV}.diff.gz;patch=1"

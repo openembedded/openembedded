@@ -5,7 +5,7 @@ LICENSE = "GPL"
 
 DEPENDS = "freetype libsdl-image libsdl-mixer libsdl-net libsdl-ttf zlib boost imagemagick-native"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/wesnoth/${PN}-${PV}.tar.bz2"
 

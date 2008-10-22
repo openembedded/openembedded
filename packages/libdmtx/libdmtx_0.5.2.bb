@@ -5,7 +5,7 @@ AUTHOR = "Mike Laughton"
 SECTION = "libs"
 PRIORITY = "optional"
 
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "libpng tiff"
 

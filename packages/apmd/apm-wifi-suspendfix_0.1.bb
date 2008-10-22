@@ -1,6 +1,6 @@
 DESCRIPTION = "Hacky workaround for bug 3664 (some wifi cards don't recover from suspend) until a real fix is found"
 AUTHOR = "Rolf Leggewie"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "file://90-wifi-off"
 

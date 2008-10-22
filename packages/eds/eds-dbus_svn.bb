@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool"
 
 PV = "1.4.0+svnr${SRCREV}"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \
            file://no_libdb.patch;patch=1 \

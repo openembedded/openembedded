@@ -2,7 +2,7 @@ DESCRIPTION = "Kernel based automounter for linux."
 SECTION = "base"
 LICENSE = "GPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1 \

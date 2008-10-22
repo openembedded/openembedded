@@ -2,7 +2,7 @@ DESCRIPTION = "Apache Portable Runtime (APR) library"
 SECTION = "libs"
 LICENSE = "Apache"
 HOMEPAGE = "http://apr.apache.org"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${APACHE_MIRROR}/apr/apr-${PV}.tar.bz2"
 

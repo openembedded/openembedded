@@ -3,7 +3,7 @@
 DESCRIPTION = "modular framework for implementing a CISCO-like CLI on a *NIX system"
 LICENSE = "GPL"
 SECTION = "console/utils"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clish/clish-0.7.1.tar.gz"
 

@@ -5,7 +5,7 @@ DEPENDS = "db openssl python-native xerces-c"
 LICENSE = "Apache"
 SRC_URI = "http://www.dtnrg.org/docs/code/dtn_${PV}.tgz \
            file://configure_fix.patch;patch=1"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit autotools
 

@@ -2,7 +2,7 @@ HOMEPAGE = "http://schrodinger.sourceforge.net/"
 LICENSE = "MPL GPL LGPL MIT"
 DEPENDS = "liboil gstreamer gst-plugins-base"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.diracvideo.org/download/schroedinger/${P}.tar.gz"
 

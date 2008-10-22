@@ -13,7 +13,7 @@ FILES_${PN}-control = "${bindir}/rxvtc"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
 	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit autotools update-alternatives
 

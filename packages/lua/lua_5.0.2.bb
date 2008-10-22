@@ -1,7 +1,7 @@
 require lua.inc
 
 DEPENDS += "readline"
-FILE_PR = "r4"
+PR = "r4"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
 	   file://debian.patch;patch=1 \
 	   file://make.patch;patch=1 \

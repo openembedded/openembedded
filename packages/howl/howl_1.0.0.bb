@@ -4,7 +4,7 @@ SRC_URI = "http://www.porchdogsoft.com/download/howl-${PV}.tar.gz \
 	file://mdnsresponder.init"
 LICENSE = "howl"
 
-FILE_PR = "r2"
+PR = "r2"
 
 INITSCRIPT_NAME = "mdnsresponder"
 INITSCRIPT_PARAMS = "defaults"

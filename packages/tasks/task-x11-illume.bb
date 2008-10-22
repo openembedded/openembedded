@@ -2,7 +2,7 @@ DESCRIPTION = "The Illume Windowing Environment -- install this task to get the 
 SECTION = "x11/wm"
 LICENSE = "MIT"
 PV = "1.0"
-FILE_PR = "r0"
+PR = "r0"
 
 # WORK IN PROGRESS
 

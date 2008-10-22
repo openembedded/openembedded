@@ -11,7 +11,7 @@ SRC_URI="ftp://ftp.openbios.org/pub/bootsplash/rpm-sources/bootsplash/bootsplash
 	 file://gcc-issues.patch;patch=1"
 
 DEPENDS="freetype libmng"
-FILE_PR = "r1"
+PR = "r1"
 
 EXTRA_OEMAKE += "-C Utilities \
 		CFLAGS='${CFLAGS} -I${STAGING_INCDIR}/freetype2/ -I${STAGING_INCDIR}' \

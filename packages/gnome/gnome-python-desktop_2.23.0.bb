@@ -1,7 +1,7 @@
 LICENSE = "GPL/LGPL"
 DEPENDS = "librsvg libwnck totem-pl-parser libgtop gnome-panel gnome-desktop eds-dbus python-pygtk"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit gnome distutils-base
 

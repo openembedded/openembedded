@@ -1,6 +1,6 @@
 require bash.inc
 
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI += "\
            file://builtins.patch;patch=1 \

@@ -3,7 +3,7 @@ SECTION = "console/utils"
 AUTHOR = "Werner Almesberger <werner@openmoko.org>"
 LICENSE = "GPL"
 PV = "1.0+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gpio;proto=http"
 S = "${WORKDIR}/gpio"

@@ -8,7 +8,7 @@ AUTHOR = "Bernd Lachner <dev@lachner-net.de>"
 APPTYPE = "binary"
 APPNAME = "zshopi"
 APPDESKTOP = "${WORKDIR}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.lachner-net.de/old/Frames/Software/zshopi_0.2.tar.bz2 \
 file://zshopi.desktop \

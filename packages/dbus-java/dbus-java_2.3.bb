@@ -7,7 +7,7 @@ SECTION = "libs"
 HOMEPAGE = "http://dbus.freedesktop.org/doc/dbus-java"
 AUTHOR = "Matthew Johnson <dbus@matthew.ath.cx>"
 
-FILE_PR = "r4"
+PR = "r4"
 
 inherit java-library
 

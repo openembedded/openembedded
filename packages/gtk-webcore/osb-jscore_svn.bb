@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 
 PV = "0.5.2+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=JavaScriptCore;proto=https \
            file://gcc4-fno-threadsafe-statics-JavaScriptCore.patch;patch=1"

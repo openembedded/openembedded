@@ -2,7 +2,7 @@ DESCRIPTION = "Freeciv is a free turn-based multiplayer strategy game, in which 
 SECTION = "x11/games"
 LICENSE = "GPL"
 DEPENDS = "gtk+ cairo esound zlib readline"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 

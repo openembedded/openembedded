@@ -1,5 +1,5 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-FILE_PR = "r6"
+PR = "r6"
 
 inherit task
 

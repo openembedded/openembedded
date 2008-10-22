@@ -3,7 +3,7 @@ DESCRIPTION = "Nokia osso help library"
 
 DEPENDS = "libhildonhelp libosso gtkhtml-3.8 libxml2 "
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://repository.maemo.org/pool/sardine-experimental/main.disabled/source/libo/libosso-help/libosso-help_${PV}-2.tar.gz"
 

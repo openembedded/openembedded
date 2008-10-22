@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "libxml2"
 LICENSE = "MIT"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxslt-${PV}.tar.gz \
            file://destdir.patch;patch=1"

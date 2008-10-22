@@ -2,7 +2,7 @@ HOMEPAGE = "http://xqt.sourceforge.jp"
 LICENSE = "GPL"
 SECTION = "x11"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRCDATE = "20041111"
 DEPENDS = "freetype libxi libxmu flex-native virtual/libqte2 libqpe-opie"

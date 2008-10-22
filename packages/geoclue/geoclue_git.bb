@@ -4,7 +4,7 @@ HOMEPAGE = "http://live.gnome.org/GeoClue"
 DEPENDS = "libgpsmgr libgpsbt  gtk+ gpsd libxml2 gconf-dbus libsoup dbus-glib"
 
 PV = "0.0+git${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 inherit autotools pkgconfig

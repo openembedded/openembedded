@@ -1,6 +1,6 @@
 require gpe-timesheet.inc
 
-FILE_PR = "r1"
+PR = "r1"
 PV = "0.31+svn-${SRCDATE}"
 
 SRC_URI = "${GPE_SVN}"

@@ -1,6 +1,6 @@
 require rsync.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "\
   file://m4.patch;patch=1 \

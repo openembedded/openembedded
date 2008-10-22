@@ -1,7 +1,7 @@
 DESCRIPTION = "The Gnome Virtual File System - OSSO Version"
 LICENSE = "GPL"
 SECTION = "x11/gnome"
-FILE_PR = "r4"
+PR = "r4"
 PROVIDES = "virtual/gnome-vfs"
 RPROVIDES = "gnome-vfs"
 

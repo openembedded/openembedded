@@ -4,7 +4,7 @@ HOMEPAGE = "http://rfakeap.tuxfamily.org/"
 LICENSE = "GPLv2"
 DEPENDS = "libpcap"
 PV="0.2"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "http://rfakeap.tuxfamily.org/rfakeap-0.2.tar.gz"
 

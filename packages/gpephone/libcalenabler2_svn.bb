@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 sqlite3 libical libalmmgr"
 PV = "0.0+svnr-${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 
 inherit gpephone pkgconfig autotools

@@ -1,7 +1,7 @@
 require tetex_${PV}.bb
 inherit native
 DEPENDS = ""
-FILE_PR = "r2"
+PR = "r2"
 
 PACKAGES=""
 RRECOMMENDS_${PN}=""

@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 

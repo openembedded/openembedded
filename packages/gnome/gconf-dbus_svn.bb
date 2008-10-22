@@ -6,7 +6,7 @@ PROVIDES = "gconf"
 RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
 PV = "2.16.0+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools pkgconfig
 

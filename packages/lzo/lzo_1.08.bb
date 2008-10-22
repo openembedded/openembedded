@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.oberhumer.com/opensource/lzo/"
 LICENSE = "GPLv2"
 SECTION = "libs"
 PRIORITY = "optional"
-FILE_PR = "r14"
+PR = "r14"
 
 SRC_URI = "http://www.oberhumer.com/opensource/lzo/download/lzo-${PV}.tar.gz"
 

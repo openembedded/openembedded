@@ -9,7 +9,7 @@ SRC_URI = "\
 	file://${PV}-build-fix.patch;patch=1 \
 	"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit cmake
 

@@ -1,5 +1,5 @@
 require busybox.inc
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \

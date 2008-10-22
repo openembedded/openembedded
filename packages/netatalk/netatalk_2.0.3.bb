@@ -1,5 +1,5 @@
 SECTION = "net"
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "GPL"
 
 DEPENDS = "cups db openssl libpam"

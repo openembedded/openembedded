@@ -3,7 +3,7 @@ SECTION = "openmoko/tools"
 DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
 RDEPENDS = "gst-meta-audio gconf openmoko-sound-system2"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit openmoko2
 

@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.pi-sync.net"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/kdepimpi/ktimetracker_pi097.tar.gz"
 

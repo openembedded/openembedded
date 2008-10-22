@@ -1,4 +1,4 @@
-FILE_PR = "r2"
+PR = "r2"
 SECTION = "base"
 DESCRIPTION = "System Utilities Based on Sysfs"
 HOMEPAGE = "http://linux-diag.sourceforge.net/Sysfsutils.html"

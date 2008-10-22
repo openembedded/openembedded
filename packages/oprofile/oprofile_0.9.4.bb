@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "popt binutils"
 RDEPENDS = "binutils-symlinks"
 RRECOMMENDS = "kernel-vmlinux"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \

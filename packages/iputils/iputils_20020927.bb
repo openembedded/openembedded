@@ -3,7 +3,7 @@ DESCRIPTION = "Utilities for the IP protocol, including traceroute6, \
 tracepath, tracepath6, ping, ping6 and arping."
 SECTION = "console/network"
 LICENSE ="BSD"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://www.tux.org/pub/people/alexey-kuznetsov/ip-routing/iputils-ss020927.tar.gz \
 	    file://debian-fixes.patch;patch=1 \

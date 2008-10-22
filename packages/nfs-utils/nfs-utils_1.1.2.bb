@@ -3,7 +3,7 @@ PRIORITY = "optional"
 SECTION = "console/network"
 LICENSE = "GPL"
 
-FILE_PR = "2"
+PR = "2"
 
 DEPENDS = "e2fsprogs tcp-wrappers libevent"
 

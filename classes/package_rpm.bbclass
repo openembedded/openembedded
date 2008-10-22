@@ -10,7 +10,6 @@ python write_specfile() {
 	out_vartranslate = {
 		"PKG": "Name",
 		"PV": "Version",
-		"PR": "Release",
 		"DESCRIPTION": "%description",
 		"ROOT": "BuildRoot",
 		"LICENSE": "License",
@@ -41,7 +40,7 @@ python write_specfile() {
 			pass
 	if not files:
 		from bb import note
-		note("Not creating empty archive for %s-%s-%s" % (bb.data.getVar('PKG',d, 1), bb.data.getVar('PV', d, 1), bb.data.getVar('PR', d, 1)))
+		note("Not creating empty archive for %s-%s-%s" % (bb.data.getVar('PKG',d, 1), bb.data.getVar('PV', d, 1), build_package_revision(d)))
 		return
 
 	# output .spec using this metadata store
@@ -58,6 +57,7 @@ python write_specfile() {
 		if out_vartranslate[var][0] == "%":
 			continue
 		fd.write("%s\t: %s\n" % (out_vartranslate[var], bb.data.getVar(var, d)))
+        fd.write("Release\t: %s\n" % build_package_revision(d))
 	fd.write("Summary\t: .\n")
 
 	for var in out_vartranslate.keys():
@@ -79,8 +79,8 @@ python write_specfile() {
 	bb.build.exec_func('BUILDSPEC', d)
 
 	# move the rpm into the pkgoutdir
-	rpm = bb.data.expand('${RPMBUILDPATH}/RPMS/${TARGET_ARCH}/${PKG}-${PV}-${PR}.${TARGET_ARCH}.rpm', d)
-	outrpm = bb.data.expand('${DEPLOY_DIR_RPM}/${PKG}-${PV}-${PR}.${TARGET_ARCH}.rpm', d)
+	rpm = bb.data.expand('${RPMBUILDPATH}/RPMS/${TARGET_ARCH}/${PKG}-${PV}-${PR}${DISTRO_PR}.${TARGET_ARCH}.rpm', d)
+	outrpm = bb.data.expand('${DEPLOY_DIR_RPM}/${PKG}-${PV}-${PR}${DISTRO_PR}.${TARGET_ARCH}.rpm', d)
 	bb.movefile(rpm, outrpm)
 }
 

@@ -2,7 +2,7 @@ DESCRIPTION = "ODE is an Open Source Physics Engine."
 SECTION = "libs"
 HOMEPAGE = "http://www.ode.org"
 LICENSE = "LGPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/opende/ode-src-${PV}.zip \
            file://install.patch;patch=1"

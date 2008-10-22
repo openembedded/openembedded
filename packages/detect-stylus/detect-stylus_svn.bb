@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libx11 xcursor-transparent-theme xrdb"
 RDEPENDS = "xrdb"
 PV = "0.13+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gpe pkgconfig
 

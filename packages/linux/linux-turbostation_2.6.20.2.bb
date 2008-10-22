@@ -2,7 +2,7 @@ DESCRIPTION = "Linux Kernel for the QNAP TurboStation platform"
 SECTION = "kernel"
 LICENSE = "GPL"
 DEPENDS = "u-boot-utils-native"
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "turbostation"
 

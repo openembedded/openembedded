@@ -5,7 +5,7 @@ DEPENDS += "bigreqsproto xproto xextproto xtrans libxau xcmiscproto \
             libxdmcp xf86bigfontproto kbproto inputproto xproto-native"
 PROVIDES = "virtual/libx11"
 PE = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 XORG_PN = "libX11"
 

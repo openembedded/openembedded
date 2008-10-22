@@ -1,6 +1,6 @@
 DESCRIPTION = "Squid is a caching proxy for the Web supporting HTTP, HTTPS, FTP, and more"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 DEPENDS = "squid-native-${PV}"
 
 SRC_URI = "http://www.squid-cache.org/Versions/v2/2.6/squid-${PV}.tar.bz2 \

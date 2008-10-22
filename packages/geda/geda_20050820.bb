@@ -2,7 +2,7 @@ DESCRIPTION = "GUI/Project Manager for teh gEDA suite"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://geda.seul.org"
 FILES_${PN} += "${datadir}/gEDA"
-FILE_PR ="r2"
+PR ="r2"
 
 DEPENDS = "libgeda gtk+"
 RRECOMMENDS = "geda-utils geda-gattrib geda-gnetlist geda-gschem geda-gsymcheck geda-symbols"

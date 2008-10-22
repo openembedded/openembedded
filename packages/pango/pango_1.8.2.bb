@@ -5,7 +5,7 @@ RRECOMMENDS_${PN} = "pango-module-basic-x pango-module-basic-fc"
 DESCRIPTION = "The goal of the Pango project is to provide an \
 Open Source framework for the layout and rendering of \
 internationalized text."
-FILE_PR = "r0"
+PR = "r0"
 
 # seems to go wrong with default cflags
 FULL_OPTIMIZATION_arm = "-O2"

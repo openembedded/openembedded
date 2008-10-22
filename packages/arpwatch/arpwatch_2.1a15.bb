@@ -3,7 +3,7 @@ HOMEPAGE = "http://www-nrg.ee.lbl.gov/"
 SECTION = "network"
 LICENSE = "BSD"
 RRECOMMENDS = "arpwatch-data"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.ee.lbl.gov/arpwatch-${PV}.tar.gz \
            file://05debian_fhs.patch;patch=1 \

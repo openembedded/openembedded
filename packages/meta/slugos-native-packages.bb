@@ -1,7 +1,7 @@
 # Only list packages which will not build 'cross' in here.
 DESCRIPTION = "Packages that are to be compiled natively for the SlugOS firmware"
 LICENSE = "MIT"
-FILE_PR = "r2"
+PR = "r2"
 
 INHIBIT_DEFAULT_DEPS = "1"
 EXCLUDE_FROM_WORLD = "1"

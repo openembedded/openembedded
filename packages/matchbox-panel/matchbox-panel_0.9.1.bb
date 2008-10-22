@@ -2,7 +2,7 @@ DESCRIPTION = "Matchbox Window Manager Panel"
 LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxpm apmd startup-notification virtual/kernel"
 SECTION = "x11/wm"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/0.9/${PN}-${PV}.tar.gz \
            file://allow-100-per-cent-battery.patch;patch=1 \

@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "glib-1.2 jpeg libpng libxext"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/v1.2/gtk+-${PV}.tar.gz \
            file://timezone-fix.patch;patch=1 \

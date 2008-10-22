@@ -2,7 +2,7 @@ DESCRIPTION = "Web server"
 SECTION = "net"
 LICENSE = "BSD"
 DEPENDS = "libpcre"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.lighttpd.net/download/lighttpd-${PV}.tar.gz \
 	   file://configure.in.patch;patch=1 \

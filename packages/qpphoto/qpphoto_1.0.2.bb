@@ -7,7 +7,7 @@ APPNAME = "qpPhoto"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit opie
 

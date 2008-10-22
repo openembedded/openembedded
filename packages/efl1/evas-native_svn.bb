@@ -1,7 +1,7 @@
 require evas.inc
 inherit native
 DEPENDS = "freetype-native libpng-native jpeg-native eet-native"
-FILE_PR = "r2"
+PR = "r2"
 
 EXTRA_OECONF = "\
 		--x-includes=${STAGING_INCDIR}/X11  \

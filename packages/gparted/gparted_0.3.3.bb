@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME Partition Manager"
 LICENSE = "GPL"
 DEPENDS = "gtkmm parted"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools
 

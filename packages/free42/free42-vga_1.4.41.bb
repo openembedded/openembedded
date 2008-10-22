@@ -2,7 +2,7 @@ DESCRIPTION = "Free42 RPN Calculator"
 HOMEPAGE = "http://free42.sf.net"
 SECTION = "openmoko/applications"
 DEPENDS = "gtk+"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/free42/free42.tgz \
            http://sense.net/zc/free42/42c_skins.tgz \

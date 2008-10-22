@@ -1,4 +1,4 @@
-FILE_PR = "r4"
+PR = "r4"
 
 require gcc-csl-arm-2006q1.inc
 require gcc-cross.inc

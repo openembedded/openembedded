@@ -1,6 +1,6 @@
 require tin.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.tin.org/pub/news/clients/tin/v1.9/tin-${PV}.tar.gz \
 	   file://m4.patch;patch=1"

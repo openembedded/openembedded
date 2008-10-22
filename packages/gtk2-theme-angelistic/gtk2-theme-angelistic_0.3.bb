@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SRC_URI = "file://gtkrc file://gtkrc-global"
 DEPENDS = "gnome-themes"
 RDEPENDS = "gtk-engine-mist"
-FILE_PR = "r3"
+PR = "r3"
 
 FILES_${PN} += "${datadir}/themes"
 

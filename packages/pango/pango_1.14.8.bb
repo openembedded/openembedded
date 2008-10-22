@@ -4,7 +4,7 @@ DEPENDS = "glib-2.0 fontconfig freetype zlib virtual/libx11 libxft gtk-doc cairo
 DESCRIPTION = "The goal of the Pango project is to provide an \
 Open Source framework for the layout and rendering of \
 internationalized text."
-FILE_PR = "r0"
+PR = "r0"
 
 PACKAGES_DYNAMIC = "pango-module-*"
 

@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "sqlite"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://teax.sourceforge.net/txdrug-${PV}.tar.gz \
            file://${FILESDIR}/opt/QtPalmtop"

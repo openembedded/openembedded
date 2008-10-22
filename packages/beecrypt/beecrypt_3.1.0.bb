@@ -6,7 +6,7 @@ DESCRIPTION="Beecrypt is a general-purpose cryptography library."
 HOMEPAGE="http://sourceforge.net/projects/beecrypt"
 SRC_URI="${SOURCEFORGE_MIRROR}/beecrypt/beecrypt-${PV}.tar.gz"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools
 acpaths=""

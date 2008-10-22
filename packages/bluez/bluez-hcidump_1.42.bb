@@ -3,7 +3,7 @@ SECTION = "console"
 PRIORITY = "optional"
 DEPENDS = "bluez-libs"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-hcidump-${PV}.tar.gz"
 S = "${WORKDIR}/bluez-hcidump-${PV}"

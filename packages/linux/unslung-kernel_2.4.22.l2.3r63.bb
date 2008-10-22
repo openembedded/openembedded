@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Vendor-compatible Linux kernel for the Linksys NSLU2 device"
 LICENSE = "GPL"
-FILE_PR = "r22"
+PR = "r22"
 
 COMPATIBLE_HOST = 'arm.*-linux'
 COMPATIBLE_MACHINE = "nslu2"

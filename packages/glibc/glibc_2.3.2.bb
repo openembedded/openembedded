@@ -1,6 +1,6 @@
 require glibc.inc
 
-FILE_PR = "r19"
+PR = "r19"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 

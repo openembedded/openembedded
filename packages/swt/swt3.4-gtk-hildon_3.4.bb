@@ -1,6 +1,6 @@
 require swt3.4-gtk_${PV}.bb
 
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS += "libhildon libhildonfm"
 

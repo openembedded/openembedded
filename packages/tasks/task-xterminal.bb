@@ -1,6 +1,6 @@
 PACKAGES = "task-xterminal"
 DESCRIPTION = "Meta-package for diskless X terminal"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit task
 

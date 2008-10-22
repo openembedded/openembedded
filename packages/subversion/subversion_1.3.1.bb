@@ -3,7 +3,7 @@ SECTION = "console/network"
 DEPENDS = "apr-util-0.9.12 neon"
 LICENSE = "Apache BSD"
 HOMEPAGE = "http://subversion.tigris.org"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://subversion.tigris.org/downloads/${P}.tar.bz2 \
            file://disable-revision-install.patch;patch=1 \

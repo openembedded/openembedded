@@ -1,6 +1,6 @@
 require iproute2.inc
 
-FILE_PR = "r1"
+PR = "r1"
 DATE = "070710"
 
 SRC_URI_append = " file://new-flex-fix.patch;patch=1 \

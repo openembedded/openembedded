@@ -6,7 +6,7 @@ DESCRIPTION = "A GTK2 based media player"
 HOMEPAGE = "http://www.gnome.org/projects/totem/"
 LICENSE = "GPL"
 
-FILE_PR = "r3"
+PR = "r3"
 
 DEPENDS = " totem-pl-parser gtk+ dbus bluez-libs libglade gconf libxml2 gst-ffmpeg gst-plugins-bad  gst-plugins-base" 
 RDEPENDS_${PN} += "iso-codes"

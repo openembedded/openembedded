@@ -1,4 +1,4 @@
-FILE_PR = "r3"
+PR = "r3"
 
 require gcc-${PV}.inc
 require gcc-configure-target.inc

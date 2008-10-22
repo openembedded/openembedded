@@ -1,3 +1,3 @@
 include dbus.inc
 
-FILE_PR = "r7"
+PR = "r7"

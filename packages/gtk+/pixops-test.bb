@@ -1,7 +1,7 @@
 DESCRIPTION = "Productive gtk+ devel prodder"
 DEPENDS = "gtk+"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit pkgconfig
 

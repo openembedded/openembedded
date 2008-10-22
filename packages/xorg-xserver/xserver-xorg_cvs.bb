@@ -1,7 +1,7 @@
 SECTION = "x11/base"
 LICENSE = "Xorg"
 PROVIDES = "virtual/xserver"
-FILE_PR = "r5"
+PR = "r5"
 PV = "6.8.1+cvs${SRCDATE}"
 
 DEPENDS = "fontconfig freetype libxi libxmu flex-2.5.4-native"

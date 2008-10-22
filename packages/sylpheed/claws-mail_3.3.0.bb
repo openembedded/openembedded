@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ libetpan openssl aspell"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/sylpheed-claws/claws-mail-${PV}.tar.bz2	\

@@ -1,4 +1,4 @@
-FILE_PR = "r3"
+PR = "r3"
 
 DESCRIPTION = "additional application registry files"
 DEPENDS = "shared-mime-info"

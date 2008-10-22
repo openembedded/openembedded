@@ -6,7 +6,7 @@ DESCRIPTION = "GPuTTY is a PuTTY clone using the Gnome environment"
 HOMEPAGE = "http://www.defora.org/index.php?page=gputty"
 LICENSE = "GPL"
 SECTION = "network"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://people.defora.org/~khorben/projects/gputty/gputty-${PV}.tar.gz \
            file://gputty"

@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Netcat"
 HOMEPAGE = "http://netcat.sourceforge.net"
 SECTION = "console/network"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/netcat/netcat-${PV}.tar.bz2"
 

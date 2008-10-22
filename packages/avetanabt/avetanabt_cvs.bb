@@ -7,7 +7,7 @@ HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 DEFAULT_PREFERENCE = "-1"
 
 PV = "20060413+cvs${SRCDATE}"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "cvs://anonymous@avetanabt.cvs.sourceforge.net/cvsroot/avetanabt;module=avetanabt"
 

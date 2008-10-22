@@ -5,7 +5,7 @@ LICENSE = "GPL"
 AUTHOR = "Christian Hammond"
 HOMEPAGE = "http://www.chipx86.com/projects/tickypip/"
 RRECOMMENDS = "tickypip-levels"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://www.chipx86.com/packages/ipkg/tickypip-0.1.2.tar.gz \
            file://tickypip.desktop \

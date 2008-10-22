@@ -4,7 +4,7 @@
 
 DESCRIPTION = "All packages required for an base XFCE installation"
 LICENSE = "MIT"
-FILE_PR = "r4"
+PR = "r4"
 
 inherit task
 

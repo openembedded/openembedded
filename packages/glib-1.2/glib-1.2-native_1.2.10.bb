@@ -1,4 +1,4 @@
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "LGPL"
 DESCRIPTION = "GLib 1.2 is a deprecated libray to \
 provide support for old glib 1.2 based applications"

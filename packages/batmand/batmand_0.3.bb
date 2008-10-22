@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "https://www.open-mesh.net/batman"
 
-FILE_PR = "r0"
+PR = "r0"
 
 RDEPENDS = "kernel-module-tun"
 

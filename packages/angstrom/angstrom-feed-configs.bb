@@ -1,7 +1,7 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
 
 #PV = "${DISTRO_VERSION}"
-FILE_PR = "r6"
+PR = "r6"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FEED_BASEPATH ?= "unstable/feed/"

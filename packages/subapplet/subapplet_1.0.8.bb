@@ -5,7 +5,7 @@ SECTION = "opie/applets"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/subapplet/"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/subapplet/subapplet-1.0.8.tar.gz \
 	file://toolbar-resize-fix.patch;patch=1"

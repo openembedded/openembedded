@@ -2,7 +2,7 @@ SECTION = "x11/base"
 DESCRIPTION = "Clearlooks theme engine for GTK"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clearlooks/clearlooks-0.6.2.tar.bz2"
 

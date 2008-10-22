@@ -3,7 +3,7 @@ HOMEPAGE = "http://sablevm.org"
 LICENSE = "Classpath"
 PRIORITY = "optional"
 SECTION = "libs"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "glib-2.0 gtk+ libart-lgpl pango libxtst virtual/javac-native fastjar-native"
 RDEPENDS_${PN} = "${PN}-native"

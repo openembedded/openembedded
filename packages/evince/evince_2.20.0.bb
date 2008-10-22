@@ -4,7 +4,7 @@ SECTION = "x11/office"
 DEPENDS = "tiff djvulibre libxt espgs gnome-doc-utils poppler libxml2 gtk+ gnome-vfs gconf libglade gnome-keyring "
 RDEPENDS = "espgs "
 RRECOMMENDS = "gnome-vfs-plugin-file"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit gnome pkgconfig gtk-icon-cache
 

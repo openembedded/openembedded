@@ -3,7 +3,7 @@ SECTION = "openmoko/examples"
 DEPENDS += "libmatchbox"
 PV = "0.0.1+svnr${SRCREV}"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit openmoko
 

@@ -2,7 +2,7 @@ require bison_${PV}.bb
 SECTION = "devel"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/bison-${PV}"
 S = "${WORKDIR}/bison-${PV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit native autotools
 

@@ -1,6 +1,6 @@
 require libbonobo.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI += "file://configure-gthread.patch;patch=1"
 

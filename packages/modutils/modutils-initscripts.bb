@@ -2,7 +2,7 @@ SECTION = "base"
 DESCRIPTION = "modutils configuration files"
 LICENSE = "PD"
 SRC_URI = "file://modutils.sh"
-FILE_PR = "r2"
+PR = "r2"
 
 INITSCRIPT_NAME = "modutils.sh"
 INITSCRIPT_PARAMS = "start 20 S ."

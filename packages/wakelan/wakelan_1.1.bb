@@ -1,6 +1,6 @@
 DESCRIPTION = "Wakelan sends a magic packet to wake up remote PC's"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.ibiblio.org/pub/Linux/system/network/misc/${PN}-${PV}.tar.gz"
 

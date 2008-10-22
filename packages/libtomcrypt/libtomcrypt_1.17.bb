@@ -7,7 +7,7 @@ routines."
 SECTION = "libs/network"
 PRIORITY = "optional"
 LICENSE = "PD"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://libtom.org/files/crypt-${PV}.tar.bz2"
 

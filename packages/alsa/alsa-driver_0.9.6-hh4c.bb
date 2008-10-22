@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "(h3600|h3900)"
 DESCRIPTION = "Alsa Drivers"
 SECTION = "base"
 LICENSE = "GPL"
-FILE_PR = "r6"
+PR = "r6"
 
 DEPENDS += "fakeroot-native"
 

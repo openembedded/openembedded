@@ -7,7 +7,7 @@ SECTION = "x11/base"
 DESCRIPTION = "X server from freedesktop.org"
 DESCRIPTION_xserver-kdrive-xomap = "X server for the OMAP in the Nokia 800"
 
-FILE_PR = "r2"
+PR = "r2"
 PE = "1"
 
 COMPATIBLE_MACHINE = "nokia(800|770)"

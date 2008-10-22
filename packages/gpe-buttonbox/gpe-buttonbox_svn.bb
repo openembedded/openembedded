@@ -2,7 +2,7 @@ DESCRIPTION = "Buttonbox for gpe"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget libgpelaunch"
 PV = "0.5+svn-${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools
 

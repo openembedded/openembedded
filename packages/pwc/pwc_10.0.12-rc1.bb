@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.saillard.org/linux/pwc"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.saillard.org/linux/pwc/files/pwc-${PV}.tar.bz2 \
            file://Makefile.patch;patch=1"

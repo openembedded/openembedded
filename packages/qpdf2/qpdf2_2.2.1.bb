@@ -7,7 +7,7 @@ DEPENDS = "t1lib freetype"
 APPNAME = "qpdf"
 APPTYPE = "binary"
 APPDESKTOP = "${S}/ipkg-render-freetype/opt/QtPalmtop/apps/Applications"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/qpdf2/qpdf2_2.2.1_20040217b.tgz \
            file://hack-the-hack.patch;patch=1 \

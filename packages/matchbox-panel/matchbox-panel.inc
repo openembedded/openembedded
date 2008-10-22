@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "libmatchbox virtual/libx11 libxext libxpm apmd startup-notification virtual/kernel wireless-tools"
 SECTION = "x11/wm"
 
-FILE_PR = "r3"
+PR = "r3"
 
 inherit autotools pkgconfig gettext
 

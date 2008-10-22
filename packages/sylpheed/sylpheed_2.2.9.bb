@@ -2,7 +2,7 @@ SECTION = "x11/network"
 DESCRIPTION = "Mail user agent"
 DEPENDS = "gtk+ gpgme gnutls"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://sylpheed.good-day.net/sylpheed/v2.2/sylpheed-${PV}.tar.bz2 \
 	file://sylpheed-2.2.2-libsylph-Makefile-am.patch;patch=1 \

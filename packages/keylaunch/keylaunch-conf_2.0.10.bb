@@ -6,7 +6,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 DESCRIPTION = "Device-specific keylaunch configuration"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = " file://keylaunchrc"
 SRC_URI += " file://80chvt-SUID"

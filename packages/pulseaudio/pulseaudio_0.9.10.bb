@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "dbus"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI += "\
   file://disable-using-glibc-tls.patch;patch=1 \

@@ -1,5 +1,5 @@
 require olsrd.inc
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "file://0.4.9-httpinfo-makefile.diff;patch=1"
 

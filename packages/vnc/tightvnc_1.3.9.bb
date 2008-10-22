@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.tightvnc.com/"
 DEPENDS = "virtual/libx11 zlib libxmu libxaw"
 LICENSE = "GPL"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/vnc-tight/${PN}-${PV}_unixsrc.tar.gz \
            file://Makefile"

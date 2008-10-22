@@ -4,7 +4,7 @@ AUTHOR = "Carsten 'Rasterman' Haitzler"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r13"
+PR = "r13"
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=illume;proto=http"
 S = "${WORKDIR}/${PN}"

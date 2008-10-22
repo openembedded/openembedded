@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.galago-project.org/"
 SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS = "gettext dbus gtk+ libsexy gconf libwnck"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.galago-project.org/files/releases/source/${PN}/${P}.tar.gz \
            file://dbus-glib-tool-prefix.patch;patch=1"

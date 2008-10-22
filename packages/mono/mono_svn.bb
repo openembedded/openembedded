@@ -2,7 +2,7 @@ require mono_svn.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-FILE_PR = "r0"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI += "file://configure-svnr87352.patch;patch=1"

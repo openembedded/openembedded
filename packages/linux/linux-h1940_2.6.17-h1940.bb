@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for h1940 devices."
 SECTION = "kernel"
 LICENSE = "GPL"
 
-FILE_PR = "r1"
+PR = "r1"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "h1940"

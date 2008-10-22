@@ -1,7 +1,7 @@
 require altboot.inc
 
 PV = "1.1.1+wip-${SRCDATE}"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "svn://hentges.net/public/altboot;module=trunk;proto=svn"
 

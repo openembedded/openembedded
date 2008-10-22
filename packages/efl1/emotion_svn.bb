@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
 # we no longer build the libxine backend, since the gstreamer backend seems more promising
 DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit efl
 

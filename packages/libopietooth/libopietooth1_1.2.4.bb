@@ -1,4 +1,4 @@
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/opietooth/lib"
-FILE_PR = "r0"
+PR = "r0"
 
 require libopietooth1.inc

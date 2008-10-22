@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for Psion/Teklogix netbookpro  compatible machines"
 SECTION = "kernel"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 COMPATIBLE_MACHINE = "netbook-pro"
 

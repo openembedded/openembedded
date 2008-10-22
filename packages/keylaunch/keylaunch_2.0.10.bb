@@ -11,7 +11,7 @@ DESCRIPTION = "A small utility for binding commands to a hot key.\
  computers. You can connect each key to a program of your choice; if the\
  program is already running, keylaunch can bring its window to the front\
  rather than just running another copy."
-FILE_PR = "r14"
+PR = "r14"
 
 SRC_URI += " file://makefile-fix.patch;patch=1 file://unbreak-keyevents.patch;patch=1"
 

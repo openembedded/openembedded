@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.soundtracker.org"
 DEPENDS = "gtk+-1.2"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-FILE_PR = "r0"
+PR = "r0"
 
 
 SRC_URI = "http://www.soundtracker.org/dl/v0.6/soundtracker-${PV}.tar.gz"

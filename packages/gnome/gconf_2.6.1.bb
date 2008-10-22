@@ -3,7 +3,7 @@ SECTION = "x11/gnome"
 LICENSE = "LGPL"
 DEPENDS = "orbit2 glib-2.0  libxml2"
 ORBIT_IDL_SRC = "${STAGING_BINDIR_NATIVE}/orbit-idl-2"
-FILE_PR = "r2"
+PR = "r2"
 
 S = "${WORKDIR}/GConf-${PV}"
 

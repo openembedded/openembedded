@@ -4,7 +4,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 DEPENDS = "virtual/kernel"
 LICENSE = "BSD"
-FILE_PR = "r1"
+PR = "r1"
 
 TARFILE = "wl_lkm_${PV}_release.tar.gz"
 

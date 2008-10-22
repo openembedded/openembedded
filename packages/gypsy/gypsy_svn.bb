@@ -6,4 +6,4 @@ SRC_URI = "svn://svn.o-hand.com/repos/${PN}/trunk;module=${PN};proto=http \
 S = "${WORKDIR}/${PN}"
 
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"

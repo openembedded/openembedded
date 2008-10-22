@@ -1,6 +1,6 @@
 DESCRIPTION = "Xanadux Blueangel kernel based on the hh 2.6.12"
 LICENSE = "GPL"
-FILE_PR ="r0"
+PR ="r0"
 
 SRC_URI = "cvs://anonymous@xanadux.cvs.sourceforge.net/cvsroot/xanadux;method=pserver;module=linux-2.6-xda;tag=K2-6-12-hh2-xda0-ba0"
 S = "${WORKDIR}/linux-2.6-xda"

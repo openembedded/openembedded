@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK packages for Opie"
-FILE_PR = "r7"
+PR = "r7"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

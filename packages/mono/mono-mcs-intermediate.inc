@@ -5,7 +5,7 @@
 # package in step 2.
 # See http://www.mono-project.com/Mono:ARM
 
-FILE_PR = "r0"
+PR = "r0"
 DEPENDS = "mono-native glib-2.0-native perl-native"
 
 PARALLEL_MAKE = ""

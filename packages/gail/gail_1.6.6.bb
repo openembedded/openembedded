@@ -1,6 +1,6 @@
 LICENSE = "LGPL"
 SECTION = "x11/libs"
-FILE_PR = "r1"
+PR = "r1"
 DESCRIPTION = "GNOME Accessibility Implementation Library"
 DEPENDS = "gtk+ libgnomecanvas"
 

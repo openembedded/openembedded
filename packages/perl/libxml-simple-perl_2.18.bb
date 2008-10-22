@@ -1,7 +1,7 @@
 SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS += "libxml-parser-perl"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/XML/XML-Simple-${PV}.tar.gz"
 

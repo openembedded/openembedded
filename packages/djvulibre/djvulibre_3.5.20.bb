@@ -1,7 +1,7 @@
 DESCRIPTION = "DjVuLibre is an open source (GPL'ed) implementation of DjVu, including viewers, browser plugins, decoders, simple encoders, and utilities."
 LICENSE = "GPL"
 DEPENDS = "jpeg libpng tiff"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/djvu/djvulibre-${PV}.tar.gz \
            file://fix-cross-configure.patch;patch=1"

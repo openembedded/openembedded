@@ -4,7 +4,7 @@ DEPENDS = "alsa-lib"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "pyalsaaudio"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyalsaaudio/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

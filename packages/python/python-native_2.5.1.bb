@@ -4,7 +4,7 @@ LICENSE = "PSF"
 DEPENDS = "openssl-native bzip2-full-native"
 SECTION = "devel/python"
 PRIORITY = "optional"
-FILE_PR = "ml5"
+PR = "ml5"
 
 EXCLUDE_FROM_WORLD = "1"
 

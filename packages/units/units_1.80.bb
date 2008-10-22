@@ -1,7 +1,7 @@
 DESCRIPTION = "GNU units converts between different systems of units."
 DEPENDS = "readline"
 SECTION = "console/utils"
-FILE_PR = "r1"
+PR = "r1"
 
 LICENSE = "GPL"
 SRC_URI = "${GNU_MIRROR}/units/units-${PV}.tar.gz \

@@ -2,7 +2,7 @@ require mpfr.inc
 
 DEPENDS = "gmp"
 PV = "0.0+svn${SRCDATE}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "svn://scm.gforge.inria.fr/svn/mpfr;module=trunk"
 S = "${WORKDIR}/trunk"

@@ -3,7 +3,7 @@ require linux.inc
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.23.tar.bz2 \
 	   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.24-rc6.bz2;patch=1 \

@@ -1,7 +1,7 @@
 require pulseaudio.inc
 
 DEPENDS += "dbus"
-FILE_PR = "r5"
+PR = "r5"
 
 # this is not correct (see below)
 SRC_URI += "\

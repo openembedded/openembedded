@@ -3,7 +3,7 @@ PRIORITY = "optional"
 DEPENDS = "virtual/libx11 libpng fontconfig libxrender"
 DESCRIPTION = "Cairo graphics library"
 LICENSE = "MPL LGPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
 	   file://0001-Add-autoconf-macro-AX_C_FLOAT_WORDS_BIGENDIAN.diff;patch=1 \

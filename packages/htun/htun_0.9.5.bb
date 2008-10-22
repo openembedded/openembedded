@@ -2,7 +2,7 @@ DESCRIPTION = "Http tunnelling daemon"
 SECTION = "network"
 HOMEPAGE = "http://htun.runslinux.net"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://htun.runslinux.net/dist/htun-${PV}.tar.gz"
 S = "${WORKDIR}/htun-${PV}/src"

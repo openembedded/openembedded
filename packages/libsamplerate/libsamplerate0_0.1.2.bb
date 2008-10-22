@@ -1,7 +1,7 @@
 DESCRIPTION = "An audio Sample Rate Conversion library"
 SECTION = "libs"
 LICENSE = "GPL libsamplerate"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.mega-nerd.com/SRC/libsamplerate-${PV}.tar.gz"
 S = "${WORKDIR}/libsamplerate-${PV}"

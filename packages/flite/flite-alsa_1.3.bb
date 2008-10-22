@@ -1,6 +1,6 @@
 require flite.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 EXTRA_OECONF = "--with-audio=alsa --enable-shared"
 

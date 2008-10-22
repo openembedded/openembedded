@@ -1,7 +1,7 @@
 DESCRIPTION = "The git revision control system used by the Linux kernel developers"
 SECTION = "console/utils"
 LICENSE = "GPL"
-FILE_PR ="r4"
+PR ="r4"
 
 inherit autotools
 

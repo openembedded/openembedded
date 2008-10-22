@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for MTX-2 (Surfbox2)"
 HOMEPAGE = "http://meshcube.org/meshwiki/"
 LICENSE = "GPL"
 KV = "${PV}"
-FILE_PR = "r11"
+PR = "r11"
 inherit module-base kernel
 
 PROVIDES = "virtual/kernel"

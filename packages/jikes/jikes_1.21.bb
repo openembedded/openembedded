@@ -3,7 +3,7 @@ HOMEPAGE = "http://jikes.sourceforge.net/"
 PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "IBM"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/jikes/jikes-${PV}.tar.bz2"
 

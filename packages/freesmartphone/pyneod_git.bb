@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python"
 LICENSE = "GPL"
 PV = "0.0.0+gitr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit update-rc.d
 

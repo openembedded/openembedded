@@ -1,7 +1,7 @@
 require qpegps.inc
 
 PV = "0.0+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://qpegps.svn.sourceforge.net/svnroot/;module=qpegps/trunk/qpegps;proto=https \
            file://qpegps.desktop \

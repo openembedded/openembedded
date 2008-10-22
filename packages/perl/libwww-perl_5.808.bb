@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "Artistic"
 DEPENDS = "liburi-perl-native"
 RDEPENDS = "liburi-perl"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/libwww-perl-${PV}.tar.gz"
 

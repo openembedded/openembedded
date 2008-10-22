@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome/libs"
-FILE_PR = "r1"
+PR = "r1"
 DEPENDS = "libgnome libgnomecanvas libbonoboui gnome-keyring"
 DESCRIPTION = "GNOME User Interface Library"
 

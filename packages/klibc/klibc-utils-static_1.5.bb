@@ -1,6 +1,6 @@
 require klibc-common.inc
 
-FILE_PR = "r11"
+PR = "r11"
 
 # We only want the static utils. klibc build both. So we install only what we want.				
 do_install() {

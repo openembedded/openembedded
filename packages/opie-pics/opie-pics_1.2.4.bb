@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '_')}"
 

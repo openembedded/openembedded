@@ -1,7 +1,7 @@
 HOMEPAGE = "http://telepathy.freedesktop.org/wiki/"
 DEPENDS = "glib-2.0 dbus"
 LICENSE = "LGPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://telepathy.freedesktop.org/releases/libtelepathy/libtelepathy-${PV}.tar.gz"
 

@@ -2,7 +2,7 @@ DESCRIPTION="Supplementary asterisk-sounds"
 HOMEPAGE="www.asterisk.org"
 LICENSE="GPL"
 DEPENDS="asterisk"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-${PV}.tar.gz"
 

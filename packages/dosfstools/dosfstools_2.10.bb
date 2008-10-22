@@ -8,7 +8,7 @@ SECTION = "base"
 PRIORITY = "optional"
 LICENSE = "GPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.uni-erlangen.de/pub/Linux/LOCAL/dosfstools/dosfstools-${PV}.src.tar.gz \
 	   file://alignment_hack.patch;patch=1 \

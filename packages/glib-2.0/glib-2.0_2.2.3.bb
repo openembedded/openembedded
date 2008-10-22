@@ -15,7 +15,7 @@ SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/glib/2.2/glib-${PV}.tar.bz2 \
            file://configure-libtool.patch;patch=1"
 
 S = "${WORKDIR}/glib-${PV}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools  pkgconfig gettext
 

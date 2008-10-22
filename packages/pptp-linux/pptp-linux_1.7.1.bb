@@ -7,7 +7,7 @@ HOMEPAGE = "http://pptpclient.sourceforge.net"
 SECTION = "network"
 LICENSE = "GPL"
 RDEPENDS = "ppp"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sourceforge/pptpclient/pptp-${PV}.tar.gz \
            file://options.pptp"

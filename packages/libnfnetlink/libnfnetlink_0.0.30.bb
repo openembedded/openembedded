@@ -7,7 +7,7 @@ management tools in userspace."
 SECTION = "devel/libs"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.netfilter.org/projects/libnfnetlink/index.html"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.netfilter.org/projects/libnfnetlink/files/libnfnetlink-${PV}.tar.bz2"
 

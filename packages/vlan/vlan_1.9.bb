@@ -1,6 +1,6 @@
 DESCRIPTION = "802.1q vlan support program"
 RRECOMMENDS = "kernel-module-8021q"
-FILE_PR = "r0"
+PR = "r0"
 
 S = "${WORKDIR}/vlan/"
 

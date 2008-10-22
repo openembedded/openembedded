@@ -4,7 +4,7 @@ AUTHOR = "Larry Doolittle <larry@doolittle.boa.org>"
 RDEPENDS = "busybox"
 SECTION = "admin"
 LICENSE = "GPLv2"
-FILE_PR = "r0"
+PR = "r0"
 # The ntpclient package uses version numbers that include an underscore :(
 PV = "2007_365"
 # ntpclient unpacks into a directory that doesn't include version info :(

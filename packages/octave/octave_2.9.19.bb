@@ -3,7 +3,7 @@ require octave.inc
 SRC_URI = "ftp://ftp.octave.org/pub/octave/${PN}-${PV}.tar.gz \
            file://configure.patch;patch=1"
 
-FILE_PR = "r1"
+PR = "r1"
 
 PACKAGES =+ "libcruft liboctave liboctinterp octave-oct \
 	     libcruft-dev liboctave-dev liboctinterp-dev \

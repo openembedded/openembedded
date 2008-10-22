@@ -1,6 +1,6 @@
 require gnuplot.inc
 
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gnuplot.info/pub/gnuplot/gnuplot-${PV}.tar.gz \
 	   file://subdirs.patch;patch=1 \

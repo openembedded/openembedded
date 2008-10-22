@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 PRIORITY = "optional"
 SECTION = "console/telephony"
 DEPENDS = "asterisk openssl curl"
-FILE_PR = "r1"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

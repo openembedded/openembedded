@@ -4,7 +4,7 @@ SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libsdl-gfx imagemagick-native pngcrush-native"
-FILE_PR = "r0.20"
+PR = "r0.20"
 
 APPIMAGE = "${WORKDIR}/supertux.png"
 APPDESKTOP = "${WORKDIR}/supertux.desktop"

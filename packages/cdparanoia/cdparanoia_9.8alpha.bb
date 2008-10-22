@@ -2,7 +2,7 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-FILE_PR ="r2"
+PR ="r2"
 LICENSE="GPL"
 
 SRC_URI="http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-alpha9.8.src.tgz \

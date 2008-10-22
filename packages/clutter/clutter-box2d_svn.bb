@@ -1,7 +1,7 @@
 require clutter-box2d.inc
 
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "svn://svn.o-hand.com/repos/clutter/trunk;module=${PN};proto=http"
 

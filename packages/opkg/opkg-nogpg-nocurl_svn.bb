@@ -6,7 +6,7 @@ PROVIDES += "opkg"
 SRC_URI += "file://opkg_wget.patch;patch=1 \
 	    file://reduce-nogpg-noise.patch;patch=1 \
 	   "
-FILE_PR = "r0"
+PR = "r0"
 
 SRCREV = "${SRCREV_pn-opkg}"
 

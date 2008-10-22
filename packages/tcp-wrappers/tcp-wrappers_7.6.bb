@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
 LICENSE = "tcp-wrappers"
 PRIORITY = "optional"
 SECTION = "console/network"
-FILE_PR ="r2"
+PR ="r2"
 
 
 PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"

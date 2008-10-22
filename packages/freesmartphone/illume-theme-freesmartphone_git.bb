@@ -3,7 +3,7 @@ HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 DEPENDS = "edje-native eet-native"
 PV = "0.0+${PR}-gitr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/artwork.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/illume"

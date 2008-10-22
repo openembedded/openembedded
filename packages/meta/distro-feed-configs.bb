@@ -1,5 +1,5 @@
 DESCRIPTION = "Configuration files for online package repositories aka feeds"
-FILE_PR = "r0"
+PR = "r0"
 
 DISTRO_FEED_PREFIX ?= "remote"
 DISTRO_FEED_URI ?= "http://my-distribution.example/remote-feed/"

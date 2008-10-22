@@ -1,7 +1,7 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-FILE_PR = "r1"
+PR = "r1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://cross_compile.patch;patch=1"
 

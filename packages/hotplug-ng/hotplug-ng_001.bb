@@ -5,7 +5,7 @@ LICENSE = "GPL"
 RPROVIDES = "hotplug"
 RCONFLICTS = "hotplug"
 RREPLACES = "hotplug"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/hotplug/hotplug-ng-${PV}.tar.gz \
 	   file://flags.patch;patch=1"

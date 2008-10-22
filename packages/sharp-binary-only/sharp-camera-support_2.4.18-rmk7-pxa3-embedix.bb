@@ -3,7 +3,7 @@ SECTION = "kernel/modules"
 PRIORITY = "optional"
 LICENSE = "CLOSED"
 RDEPENDS = "kernel (${KERNEL_VERSION})"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://openzaurus.sf.net/mirror/camera-modules-2.4.18-rmk7-pxa3-embedix.tar.bz2 \
            file://CE-AG06.dat \

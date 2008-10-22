@@ -15,7 +15,7 @@ RDEPENDS_lirc-x = "lirc"
 RDEPENDS_lirc-exec = "lirc"
 RDEPENDS_lirc-nslu2example = "lirc lirc-exec"
 RRECOMMENDS_lirc = "lirc-exec"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lirc/lirc-${PV}.tar.gz \
            file://lircd.init file://lircmd.init file://lircexec.init"

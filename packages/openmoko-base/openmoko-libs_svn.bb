@@ -3,7 +3,7 @@ SECTION = "openmoko/libs"
 LICENSE = "LGPL"
 DEPENDS += "gtk+ eds-dbus libgsmd libxosd"
 PV = "0.4+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit openmoko
 

@@ -5,5 +5,5 @@ DEFAULT_PREFERENCE = "-1"
 SRC_URI = "http://cairographics.org/releases/cairo-${PV}.tar.gz \
            file://configure_fix.patch;patch=1 "
 
-FILE_PR = "r4"
+PR = "r4"
 

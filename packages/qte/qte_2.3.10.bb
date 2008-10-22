@@ -1,3 +1,3 @@
 require qte-common_${PV}.inc
-FILE_PR = "r52"
+PR = "r52"
 

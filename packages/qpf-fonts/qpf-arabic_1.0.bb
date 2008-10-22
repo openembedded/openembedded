@@ -3,7 +3,7 @@ require qpf.inc
 DESCRIPTION = "Arabic fonts from Arabeyes.org"
 HOMEPAGE = "http://www.arabeyes.org"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/arabeyes/arabic-fonts-${PV}.tar.gz"
 S = "${WORKDIR}"

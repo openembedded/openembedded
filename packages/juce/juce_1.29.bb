@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.rawmaterialsoftware.com/juce"
 AUTHOR = "Julian Stoerer"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib freetype virtual/libx11"
-FILE_PR = "r0"
+PR = "r0"
 
 #FIXME the patches are a) HACKS and b) something's wrong with lineend conversion
 SRC_URI = "http://downloads.openmoko.org/sources/juce_${@bb.data.getVar('PV',d,1).split('.')[0]}_${@bb.data.getVar('PV',d,1).split('.')[1]}.zip \

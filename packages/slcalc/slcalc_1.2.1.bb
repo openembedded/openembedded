@@ -2,7 +2,7 @@ DESCRIPTION = "Scientific calculator with user definable constants and functions
 HOMEPAGE = "http://homepage3.nifty.com/cam/slcalc.htm"
 SECTION = "opie/applications"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 APPTYPE = "binary"
 APPDESKTOP = "${S}"

@@ -2,7 +2,7 @@ DESCRIPTION = "A library for loose coupling of C++ method calls"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libsigc++/1.2/libsigc++-${PV}.tar.bz2 \
 	   file://autofoo.patch;patch=1 \

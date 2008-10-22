@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 DESCRIPTION = "utility to allow middle and right clicking with a stylus"
 SECTION = "x11/utils"
 DEPENDS = "virtual/libx11 libxext libxpm libmatchbox"

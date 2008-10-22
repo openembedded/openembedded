@@ -4,7 +4,7 @@ SECTION = "x11/panels"
 DEPENDS = "gtk+ startup-notification"
 
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http"
 S = "${WORKDIR}/${PN}"

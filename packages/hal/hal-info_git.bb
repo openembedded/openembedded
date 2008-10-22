@@ -5,7 +5,7 @@ LICENSE = "GPL AFL"
 DEPENDS = "hal"
 
 PV = "${SRCDATE}+git"
-FILE_PR = "r2"
+PR = "r2"
 
 
 SRC_URI = "git://anongit.freedesktop.org/hal-info/;protocol=git;rev=HAL_INFO_20070831"

@@ -2,7 +2,7 @@ DESCRIPTION = "a C++ class library for generating and recognising sounds."
 HOMEPAGE = "http://www.gnu.org/software/ccaudio/"
 LICENSE = "GPL"
 SECTION = "libs"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/ccaudio/ccaudio2-${PV}.tar.gz \
 	file://01-ccaudio-fixed-point.diff;patch=1 \

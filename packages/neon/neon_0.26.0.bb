@@ -2,7 +2,7 @@ DESCRIPTION = "neon is an HTTP and WebDAV client library, with a C interface."
 SECTION = "libs"
 LICENSE = "LGPL"
 DEPENDS = "zlib libxml2 expat time gnutls"
-FILE_PR = "r2"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

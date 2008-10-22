@@ -5,7 +5,7 @@ DEPENDS = "flex"
 RCONFLICTS = "atd"
 RREPLACES = "atd"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
 	   file://configure.patch;patch=1 \

@@ -4,7 +4,7 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
 PV = "0.1+git${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "git://opensource.wolfsonmicro.com/alsa-scenario;branch=master;protocol=git"
 S = "${WORKDIR}/git"

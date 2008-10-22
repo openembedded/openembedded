@@ -2,7 +2,7 @@ DESCRIPTION = "Alsa OSS Compatibility Package"
 SECTION = "libs/multimedia"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-${PV}.tar.bz2 \
 	   file://libio.patch;patch=1 \

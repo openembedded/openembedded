@@ -5,7 +5,7 @@ require linux.inc
 
 DEFAULT_PREFERENCE_avr32 = "1"
 
-FILE_PR = "r0"
+PR = "r0"
 
 PARALLEL_MAKE=""
 

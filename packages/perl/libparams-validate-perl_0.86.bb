@@ -1,7 +1,7 @@
 DESCRIPTION = "Params::Validate - Validate method/function parameters"
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-FILE_PR = "r13"
+PR = "r13"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/Params-Validate-${PV}.tar.gz"
 

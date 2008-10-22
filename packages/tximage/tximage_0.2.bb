@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://community.zaurus.com/projects/tximage/"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.openzaurus.org/mirror/tximage-${PV}.tar.gz \
            file://gcc3.patch;patch=1 \

@@ -1,7 +1,7 @@
 SECTION = "libs"
 DESCRIPTION = "Session Initiation Protocol (SIP) library"
 LEAD_SONAME = "libosip2\..*"
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "LGPL"
 SRC_URI = "${GNU_MIRROR}/osip/libosip2-${PV}.tar.gz"
 

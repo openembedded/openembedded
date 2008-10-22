@@ -7,7 +7,7 @@ HOMEPAGE = "http://ep09.pld-linux.org/~mmazur/linux-libc-headers/"
 #   standard linux kernel license applies.
 # since we assume GPL for linux i think we can also assume it here
 INHIBIT_DEFAULT_DEPS = "1"
-FILE_PR = "r8"
+PR = "r8"
 
 # NOTE: no need to package these headers, since the c library includes them.
 PACKAGES = ""

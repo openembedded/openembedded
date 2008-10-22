@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/games"
 APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.vanille.de/mirror/zudoku-${PV}.tar.gz \
            file://zudoku.html \

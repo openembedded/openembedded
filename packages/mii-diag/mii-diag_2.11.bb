@@ -2,7 +2,7 @@ DESCRIPTION = "Examines and sets the MII registers of network cards."
 LICENSE = "GPL"
 SECTION = "console/network"
 PRIORITY = "optional"
-FILE_PR = "r3"
+PR = "r3"
 
 S = "${WORKDIR}/"
 

@@ -2,7 +2,7 @@ SECTION = "libs"
 LICENSE = "GD"
 DESCRIPTION = "gd is a library used to create PNG, JPEG, or WBMP images."
 DEPENDS = "libpng jpeg zlib"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.boutell.com/gd/http/gd-${PV}.tar.gz"
 S = "${WORKDIR}/gd-${PV}"

@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Xanadux HTC-Universal kernel based on the hh 2.6.12"
 LICENSE = "GPL"
-FILE_PR ="r2"
+PR ="r2"
 
 SRC_URI = "cvs://anonymous@xanadux.cvs.sourceforge.net/cvsroot/xanadux;method=pserver;module=linux-2.6-xda;tag=K2-6-12-hh2-xda0-un0"
 S = "${WORKDIR}/linux-2.6-xda"

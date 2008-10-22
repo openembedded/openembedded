@@ -8,7 +8,7 @@ DEPENDS = "libvncserver jpeg zlib gmp tslib"
 RRECOMMENDS = "kernel-modules-uinput kernel-module-keybdev"
 RCONFLICTS = "fbvncserver, fbvncserver-kmodule"
 PV = "0.0.0+cvs${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "cvs://anonymous@fbvncserver.cvs.sourceforge.net/cvsroot/fbvncserver;method=pserver;module=ipkg"
 S = "${WORKDIR}/ipkg/src/"

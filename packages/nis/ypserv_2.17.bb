@@ -1,7 +1,7 @@
 # This package builds the NIS server
 # The source package is utils/net/NIS/ypserv
 #
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION="NIS version 2 server for Linux."
 HOMEPAGE="http://www.linux-nis.org/nis/ypserv/index.html"
 

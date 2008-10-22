@@ -4,7 +4,7 @@ DEPENDS = "gdbm libconic sqlite3 gtk+ libhildonfm libosso osso-ic-oss libosso-he
 RDEPENDS = "bluez-utils"
 RRECOMMENDS = "gpsd flite"
 PV = "2.0.3+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "svn://garage.maemo.org/svn/maemo-mapper;proto=https;module=trunk \
            file://mapper-hildon1.diff;patch=1;maxrev=108" 

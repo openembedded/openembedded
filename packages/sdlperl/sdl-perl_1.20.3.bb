@@ -3,7 +3,7 @@ SECTION = "libs"
 HOMEPAGE = "http://sdl.perl.org/"
 LICENSE = "GPL"
 DEPENDS = "perl virtual/libsdl libsdl-image libsdl-gfx libsdl-ttf libsdl-mixer libsdl-net smpeg"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://bloodgate.com/perl/sdl/pub/SDL_perl-${PV}.tar.gz"
 S = "${WORKDIR}/SDL_perl-${PV}"

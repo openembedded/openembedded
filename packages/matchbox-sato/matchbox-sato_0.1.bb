@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS = "gtk-sato-engine matchbox-theme-sato gtk-theme-sato matchbox-panel-2 matchbox-desktop-sato"
 RCONFLICTS = "matchbox-common"
-FILE_PR = "r17"
+PR = "r17"
 
 SRC_URI = "file://etc file://matchbox-session"
 S = ${WORKDIR}

@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.x.org"
 SECTION = "x11/fonts"
 LICENSE = "MIT-X"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://misc"
 

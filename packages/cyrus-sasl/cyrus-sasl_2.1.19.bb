@@ -2,7 +2,7 @@ SECTION = "console/network"
 DEPENDS = "openssl virtual/db"
 DESCRIPTION = "Generic client/server library for SASL authentication."
 LICENSE = "BSD"
-FILE_PR = "r10"
+PR = "r10"
 
 SRC_URI = "ftp://ftp.andrew.cmu.edu/pub/cyrus-mail/cyrus-sasl-${PV}.tar.gz \
 	   file://berkdb.m4.patch;patch=1 \

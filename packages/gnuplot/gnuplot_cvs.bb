@@ -1,7 +1,7 @@
 require gnuplot.inc
 
 PV = "4.3.0+cvs${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

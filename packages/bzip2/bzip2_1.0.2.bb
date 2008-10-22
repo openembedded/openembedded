@@ -1,6 +1,6 @@
 DESCRIPTION = "Very high-quality data compression program."
 SECTION = "console/utils"
-FILE_PR = "r1"
+PR = "r1"
 
 LICENSE = "bzip2"
 SRC_URI = "ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \

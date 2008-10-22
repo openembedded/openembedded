@@ -2,7 +2,7 @@ DESCRIPTION = "A Java-based logical analyzer for home use."
 LICENSE = "GPL"
 HOMEPAGE = "http://sump.org/projects/analyzer/"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit java
 

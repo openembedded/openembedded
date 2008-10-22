@@ -7,7 +7,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/atmelwlandriver/atmelwlandriver-${PV}.tar.bz2 \
 	file://fix-kernel-version-test-for-hh.patch;patch=1"
 S = "${WORKDIR}/atmelwlandriver"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit module
 SECTION = "base"

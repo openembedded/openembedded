@@ -1,6 +1,6 @@
 DESCRIPTION = "Basic X clients (meta package)"
 LICENSE = "MIT"
-FILE_PR = "r1"
+PR = "r1"
 
 ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"

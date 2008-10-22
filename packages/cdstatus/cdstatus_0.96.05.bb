@@ -1,6 +1,6 @@
 # cdstatus OE build file
 
-FILE_PR ="r2"
+PR ="r2"
 LICENSE="GPL"
 HOMEPAGE = "http://cdstatus.sourceforge.net/"
 FILES_${PN} += "${datadir}/cdstatus.cfg"

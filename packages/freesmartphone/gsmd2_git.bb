@@ -6,7 +6,7 @@ DEPENDS = "dbus dbus-glib"
 RDEPENDS = "gsm0710muxd"
 LICENSE = "GPL"
 PV = "0.1.0+${PR}-gitr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/gsmd2.git;protocol=git;branch=master"
 S = "${WORKDIR}/git"

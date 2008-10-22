@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-FILE_PR = "r73"
+PR = "r73"
 
 inherit task
 

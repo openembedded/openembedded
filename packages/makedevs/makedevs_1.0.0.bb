@@ -6,7 +6,7 @@ PRIORITY = "required"
 SRC_URI = "file://makedevs.c"
 S = "${WORKDIR}/makedevs-${PV}"
 
-FILE_PR = "r6"
+PR = "r6"
 
 inherit update-alternatives
 

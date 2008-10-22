@@ -11,4 +11,4 @@ SRC_URI += "file://15_free_caps.patch;patch=1 \
 
 S = "${WORKDIR}/gnupg-${PV}"
 
-FILE_PR = "r2"
+PR = "r2"

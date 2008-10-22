@@ -1,5 +1,5 @@
 require u-boot.inc
-FILE_PR ="r1"
+PR ="r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://linux.omap.com/pub/bootloader/2430sdp/source/u-boot-SEP1106.tar.gz \

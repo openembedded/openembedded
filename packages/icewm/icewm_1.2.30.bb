@@ -3,7 +3,7 @@ SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr xft mkfontdir-native"
 RRECOMMENDS = "ttf-dejavu-sans"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/icewm/icewm-${PV}.tar.gz \

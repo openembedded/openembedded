@@ -1,6 +1,6 @@
 DESCRIPTION="mount removable devices as normal user"
 DEPENDS="sysfsutils"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI="http://www.piware.de/projects/pmount-0.9.4.tar.gz \
 	 file://mmc-fix.patch;patch=1 \

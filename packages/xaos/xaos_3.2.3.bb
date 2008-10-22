@@ -4,7 +4,7 @@ SECTION = "graphics"
 LICENSE = "GPLv2"
 DEPENDS = "aalib libx11 zlib libpng"
 RDEPENDS += "libxxf86dga"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://easynews.dl.sourceforge.net/sourceforge/xaos/XaoS-3.2.3.tar.gz \
            file://fix-build.patch;patch=1 \

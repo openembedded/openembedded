@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.spyron.org/"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://lsc.fie.umich.mx/%7esadit/spyro/download/SPyRO-${PV}.tar.gz"
 S="${WORKDIR}/SPyRO-${PV}"

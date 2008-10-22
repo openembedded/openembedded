@@ -1,7 +1,7 @@
 require osb-nrcore.inc
 
 PV = "0.5.2+svnr${SRCREV}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "svn://gtk-webcore.svn.sourceforge.net/svnroot/gtk-webcore/trunk;module=NRCore;proto=https \
            file://gcc4-fno-threadsafe-statics-NRCore.patch;patch=1 \

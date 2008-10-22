@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "PPP scripts for easy GPRS connection"
 LICENSE = "GPL"
 RDEPENDS = "ppp"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "file://peers/* file://chats/*"
 

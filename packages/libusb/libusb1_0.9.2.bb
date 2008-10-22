@@ -4,7 +4,7 @@ HOMEPAGE = "http://libusb.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/libusb/libusb-${PV}.tar.bz2 \

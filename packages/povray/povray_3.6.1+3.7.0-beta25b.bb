@@ -4,7 +4,7 @@ SECTION = "console/graphics"
 LICENSE = "povray"
 DEPENDS = "virtual/libx11 boost zlib jpeg libpng tiff"
 
-FILE_PR = "r1"
+PR = "r1"
 
 #We apply a patch that subverts the checks for jpeg, zlib, png and tiff because we know OE has the required versions, but it is still a hack.
 SRC_URI = "http://www.povray.org/redirect/www.povray.org/beta/source/povray-src-3.7.0.beta.25b.tar.bz2 \

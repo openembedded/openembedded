@@ -1,6 +1,6 @@
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://www.cpan.org/modules/by-module/NetServer/NetServer-Generic-${PV}.tar.gz"
 

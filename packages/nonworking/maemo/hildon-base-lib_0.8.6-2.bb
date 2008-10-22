@@ -1,4 +1,4 @@
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = 	"LGPL"
 
 DEPENDS = "gtk+-2.6.4-1.osso7 outo"

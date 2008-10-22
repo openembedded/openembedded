@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.bitlbee.org/"
 SECTION = "console/network"
 LICENSE = "GPLv2"
 DEPENDS = "glib-2.0 gnutls"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://get.bitlbee.org/src/${P}.tar.gz \
            file://configure.patch;patch=1 \

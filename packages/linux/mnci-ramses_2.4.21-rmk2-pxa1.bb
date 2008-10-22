@@ -6,7 +6,7 @@ COMPATIBLE_MACHINE = "mnci"
 KV = "2.4.21"
 RMKV = "2"
 PXAV = "1"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.4/linux-${KV}.tar.bz2 \
 	   http://ftp.linux.org.uk/pub/linux/arm/kernel/v2.4/patch-${KV}-rmk${RMKV}.bz2;patch=1 \

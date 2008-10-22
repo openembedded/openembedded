@@ -1,7 +1,7 @@
 require rdesktop.inc
 
 PV = "1.6.0+cvs${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 DEFAULT_PREFERENCE = "-1"
 SRC_URI = "cvs://anonymous@rdesktop.cvs.sourceforge.net/cvsroot/rdesktop;module=rdesktop"
 S = "${WORKDIR}/rdesktop"

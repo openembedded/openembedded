@@ -11,7 +11,7 @@ DEPENDS = "matchbox-wm matchbox-panel xtscal gpe-question matchbox-applet-inputm
 SRC_URI += "file://matchbox-session \
 	file://disable-composite.xsettings"
 
-FILE_PR = "r11"
+PR = "r11"
 
 #apply a patch to set the fontsize for bigdpi (200+) devices to 5
 SRC_URI_append_hx4700 = " file://highdpifontfix.patch;patch=1"

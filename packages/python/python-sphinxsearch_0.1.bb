@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.sphinxsearch.com/"
 SRCNAME = "sphinxsearch"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://pypi.python.org/packages/source/s/sphinxsearch/${SRCNAME}-${PV}.tar.gz" 
 S = "${WORKDIR}/${SRCNAME}-${PV}"

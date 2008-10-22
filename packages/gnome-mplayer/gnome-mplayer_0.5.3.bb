@@ -3,7 +3,7 @@ HOMEPAGE = "http://dekorte.homeip.net/download/gnome-mplayer/"
 LICENSE = "GPL"
 DEPENDS = "gtk+ gconf dbus-glib"
 RDEPENDS = "mplayer"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit autotools pkgconfig gconf
 

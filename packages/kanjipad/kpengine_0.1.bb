@@ -2,7 +2,7 @@ require kanjipad.inc
 
 DESCRIPTION = "Japanese HWR engine used by a number of programs. Original algorithms by Todd Ruddick."
 SECTION = "inputmethods"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "file://Makefile-kpengine-only.patch;patch=1"
 

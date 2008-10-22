@@ -3,7 +3,7 @@ HOMEPAGE = "http://aa-project.sourceforge.net/bb/"
 SECTION = "console/misc"
 LICENSE = "GPLv2"
 DEPENDS = "aalib"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://prdownloads.sourceforge.net/aa-project/bb-1.2.tar.gz \
            file://fix-compile.patch;patch=1"

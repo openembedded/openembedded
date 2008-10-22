@@ -1,6 +1,6 @@
 DESCRIPTION = "Tasks for SDL stuff"
 LICENSE = "MIT"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit task
 

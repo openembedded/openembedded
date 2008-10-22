@@ -9,7 +9,7 @@ LICENSE = "GPL"
 SRC_URI = "http://dist.schmorp.de/rxvt-unicode/Attic/rxvt-unicode-${PV}.tar.bz2 \
 	   file://xwc.patch;patch=1 \
 	   file://signedchar.patch;patch=1"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools update-alternatives
 

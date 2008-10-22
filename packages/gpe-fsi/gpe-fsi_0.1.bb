@@ -4,7 +4,7 @@ LICENSE = "gpl"
 inherit gpe
 
 SRC_URI = "http://dominion.kabel.utwente.nl/koen/pda/files/gpe-fsi.tar.bz2"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "libgpewidget fsi-client gtk+"
 SECTION = "gpe"

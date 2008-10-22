@@ -3,7 +3,7 @@ require xorg-xserver-common.inc
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman"
 PE = "1"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI += "file://drmfix.patch;patch=1 \
             file://pkgconfig_fix.patch;patch=1 \

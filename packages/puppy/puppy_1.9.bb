@@ -3,7 +3,7 @@ SECTION = "network"
 PRIORITY = "optional"
 HOMEPAGE = "http://sf.net/projects/puppy/"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous:@puppy.cvs.sourceforge.net/cvsroot/puppy;module=puppy;tag=PUPPY_1_9"
 S = "${WORKDIR}/puppy"

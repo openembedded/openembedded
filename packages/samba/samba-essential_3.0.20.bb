@@ -1,7 +1,7 @@
 require samba-essential.inc
 inherit update-rc.d
 
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "file://config-lfs.patch;patch=1 \
 	   file://init-essential \

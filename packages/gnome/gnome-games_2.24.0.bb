@@ -3,7 +3,7 @@ DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui l
 
 inherit gnome distutils-base gconf
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "

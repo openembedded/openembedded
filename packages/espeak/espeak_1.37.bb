@@ -3,7 +3,7 @@ require espeak.inc
 EXTRA_PHONEMES = '${@base_contains("SITEINFO_ENDIANESS", "be",  "espeak-data (= ${PV})", "", d)}'
 RDEPENDS_${PN} = "portaudio-v19 ${EXTRA_PHONEMES}"
 
-FILE_PR = "r0"
+PR = "r0"
 
 CXXFLAGS += "-DUSE_PORTAUDIO"
 

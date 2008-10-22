@@ -1,7 +1,7 @@
 DESCRIPTION = "Moko GTK+ theme engine"
 SECTION = "openmoko/libs"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit openmoko2
 

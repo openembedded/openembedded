@@ -3,7 +3,7 @@ HOMEPAGE = "http://kxml.sourceforge.net"
 PRIORITY = "optional"
 SECTION = "libs"
 LICENSE = "BSD CPL LGPL"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit java-library
 

@@ -1,4 +1,4 @@
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.soft-switch.org/downloads/spandsp/${PN}-0.0.4pre16.tgz"
 

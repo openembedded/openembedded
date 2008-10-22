@@ -1,7 +1,7 @@
 DESCRIPTION = "Bootloader firmware extractor for the h2200 iPAQ"
 RRECOMMENDS_${PN} = "kernel-module-mtdblock"
 ALLOW_EMPTY = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 COMPATIBLE_MACHINE = "h2200"
 #it is a shell script, but lets protect the innocent some more

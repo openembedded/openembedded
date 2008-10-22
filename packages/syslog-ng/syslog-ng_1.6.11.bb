@@ -1,6 +1,6 @@
 DESCRIPTION = "Alternative system logger daemon"
 DEPENDS = "libol flex"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.balabit.com/downloads/syslog-ng/1.6/src/${PN}-${PV}.tar.gz \
           file://syslog-ng.conf \

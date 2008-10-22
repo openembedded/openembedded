@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the BSQUARE PXA255 DevKitIDP"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 DEPENDS = "u-boot"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.19.tar.bz2 \

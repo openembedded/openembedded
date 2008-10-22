@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.bacula.org"
 LICENSE = "GPL"
-FILE_PR ="r1"
+PR ="r1"
 DEPENDS = "gmp openssl zlib readline"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/bacula/bacula-1.38.11.tar.gz \

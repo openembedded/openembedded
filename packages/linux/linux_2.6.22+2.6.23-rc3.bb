@@ -7,7 +7,7 @@ BASE_KERNEL_VERSION = "2.6.22"
 KERNEL_VERSION = "2.6.23-rc3"
 KERNEL_RELEASE = "2.6.23-rc3"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${BASE_KERNEL_VERSION}.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-${KERNEL_VERSION}.bz2;patch=1 \

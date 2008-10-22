@@ -3,7 +3,7 @@ SECTION = "x11/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-x11 libsdl-mixer libsdl-net zlib libxau"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://mirror1.pdaXrom.org/rc9/src/quake1src.tar.bz2 \
            http://mirror1.pdaxrom.org/source/src/pak0.tar.gz \

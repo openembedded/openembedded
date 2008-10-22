@@ -1,3 +1,3 @@
 require gdb.inc
 
-FILE_PR = "r4"
+PR = "r4"

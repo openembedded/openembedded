@@ -1,7 +1,7 @@
 DESCRIPTION = "miconapl daemon for ARM Linkstations"
 SECTION = "console/network"
 DEPENDS = ""
-FILE_PR = "r2"
+PR = "r2"
 LICENSE = "GPL"
 COMPATIBLE_MACHINE = "lsarm"
 

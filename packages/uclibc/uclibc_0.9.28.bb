@@ -1,5 +1,5 @@
 DEFAULT_PREFERENCE = "1"
-FILE_PR = "r17"
+PR = "r17"
 
 require uclibc.inc
 

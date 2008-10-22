@@ -1,6 +1,6 @@
 inherit gpe pkgconfig
 
-FILE_PR = "r1"
+PR = "r1"
 
 DESCRIPTION = "GPE wireless LAN communication applet"
 DEPENDS = "gtk+ libgpewidget prismstumbler"

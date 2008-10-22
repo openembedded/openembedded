@@ -7,7 +7,7 @@ LICENSE = "GPL"
 
 SRCREV = "d7ed933b578d9c4dec0e23a5a6f78c464b31c47c"
 
-FILE_PR = "r3"
+PR = "r3"
 PV = "2.6.25+2.6.26+${PR}+git${SRCREV}"
 
 COMPATIBLE_MACHINE = "xilinx-ml403"

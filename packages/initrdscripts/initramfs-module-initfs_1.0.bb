@@ -1,5 +1,5 @@
 SRC_URI = "file://10-initfs.sh"
-FILE_PR = "r4"
+PR = "r4"
 DESCRIPTION = "An initramfs module for initializing filesystems."
 RDEPENDS = "initramfs-uniboot"
 RRECOMMENDS = "kernel-module-vfat kernel-module-ext2"

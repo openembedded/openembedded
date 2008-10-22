@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.musicpd.org/gmpc.shtml"
 SECTION = "x11/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "gtk+ libglade gnome-vfs"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://mercury.chem.pitt.edu/~shank/gmpc-${PV}.tar.gz"
 

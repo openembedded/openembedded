@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.etpan.org"
 SECTION = "libs"
 DEPENDS = "gnutls"
 LICENSE = "BSD"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz"
 

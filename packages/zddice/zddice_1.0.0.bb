@@ -2,7 +2,7 @@ DESCRIPTION = "Zaurus D20 Gaming Dice for Qt/Embedded based Palmtop Environments
 SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.cinlug.org/modules/Static_Docs/data/db/zddice/zddice_${PV}_arm.src.tar.gz \
            file://qtopia17.patch;patch=1"

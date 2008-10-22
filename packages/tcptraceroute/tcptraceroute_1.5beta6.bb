@@ -6,7 +6,7 @@ HOMEPAGE = "http://michael.toren.net/code/tcptraceroute/"
 LICENSE = "GPL"
 PRIORITY = "optional"
 DEPENDS = "libnet-1.1"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://michael.toren.net/code/tcptraceroute/tcptraceroute-${PV}.tar.gz \
 	   file://configure.ac.patch;patch=1"

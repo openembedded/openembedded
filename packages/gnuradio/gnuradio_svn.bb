@@ -3,7 +3,7 @@ require gnuradio.inc
 DEFAULT_PREFERENCE = "-1"
 
 PV = "3.1.3+svnr${SRCREV}"
-FILE_PR = "r4"
+PR = "r4"
 
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable-usrp1 --disable--usrp2"
 

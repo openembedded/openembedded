@@ -5,7 +5,7 @@ AUTHOR = "Robert Woerle"
 SECTION = "gpe"
 DEPENDS = "libgpewidget gtk+ glib-2.0 alsa-lib dbus-glib"
 PV = "0.1.3+cvs${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig
 

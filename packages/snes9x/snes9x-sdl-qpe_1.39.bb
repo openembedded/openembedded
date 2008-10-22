@@ -3,7 +3,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 DEPENDS = "libsdl-qpe"
 LICENSE = "snes9x"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://www.vanille.de/mirror/snes9x-sdl-${PV}.tar.bz2 \
 	   file://compile.patch;patch=1"

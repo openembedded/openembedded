@@ -4,7 +4,7 @@ SECTION = "x11/office"
 DEPENDS = "tiff libxt espgs poppler gtk+ libgnomeui libgnomeprint libgnomeprintui"
 RDEPENDS = "espgs gconf"
 RRECOMMENDS = "gnome-vfs-plugin-file"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit gnome pkgconfig
 

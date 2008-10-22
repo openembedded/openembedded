@@ -2,7 +2,7 @@ DESCRIPTION = "This software provides support for the Tag Image File Format (TIF
 LICENSE = ""
 HOMEPAGE = "http://www.remotesensing.org/libtiff/"
 DEPENDS = "zlib jpeg lzo"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://dl.maptools.org/dl/libtiff/old/tiff-${PV}.tar.gz \
 	  file://configure.patch;patch=1"

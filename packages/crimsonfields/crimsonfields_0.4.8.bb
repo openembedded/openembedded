@@ -2,7 +2,7 @@ DESCRIPTION = "Crimson Fields is a tactical war game in the tradition of Battle 
 SECTION = "games"
 DEPENDS = "crimsonfields-native virtual/libsdl libsdl-mixer libsdl-ttf"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://crimson.seul.org/files/crimson-${PV}.tar.bz2 \
            file://native-tools.patch;patch=1"

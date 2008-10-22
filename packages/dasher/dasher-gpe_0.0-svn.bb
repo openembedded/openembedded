@@ -1,6 +1,6 @@
 LICENSE="GPL"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 DEPENDS = "libxsettings-client libglade libxtst gconf gtk+"
 SECTION = "gpe"
 SRC_URI = "svn://svn.gnome.org/svn/dasher;module=trunk \

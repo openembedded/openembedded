@@ -4,7 +4,7 @@ PRIORITY = "optional"
 #DEPENDS = ""
 LICENSE = "libgsm"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit pkgconfig gpe
 

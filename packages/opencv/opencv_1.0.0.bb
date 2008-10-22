@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
 #RDEPENDS = "python jpeg zlib libpng tiff glib-2.0"

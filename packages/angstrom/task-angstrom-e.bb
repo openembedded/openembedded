@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-FILE_PR = "r0"
+PR = "r0"
 ALLOW_EMPTY = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

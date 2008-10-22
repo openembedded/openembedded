@@ -4,7 +4,7 @@ APPNAME = "froot"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.cs.unc.edu/~scheuerm/froot/froot-${PV}.tar.gz"
 S = "${WORKDIR}/froot-${PV}"

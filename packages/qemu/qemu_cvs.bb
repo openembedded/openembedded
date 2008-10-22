@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 PV = "0.9.0+cvs${SRCDATE}"
-FILE_PR = "r4"
+PR = "r4"
 
 DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${WORKDIR}"

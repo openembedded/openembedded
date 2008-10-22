@@ -8,7 +8,7 @@ LICENSE = "GPLv2"
 DEPENDS += "ncurses"
 RPROVIDES_${PN} += "readline"
 LEAD_SONAME = "libreadline.so"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${GNU_MIRROR}/readline/readline-${PV}.tar.gz \
 	   file://shlink-termcap.patch;patch=1 \

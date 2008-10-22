@@ -3,7 +3,7 @@ HOMEPAGE = "http://prdownloads.sourceforge.net/tuxnes/tuxnes-0.75.tar.gz"
 LICENSE = "GPLv2"
 SECTION = "x/games"
 PRIORITY = "optional"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "http://heanet.dl.sourceforge.net/sourceforge/tuxnes/tuxnes-0.75.tar.gz"
 

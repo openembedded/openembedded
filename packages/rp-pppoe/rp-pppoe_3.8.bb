@@ -5,7 +5,7 @@ LICENSE = "GPLv2"
 RDEPENDS_${PN} = "ppp"
 RDEPENDS_${PN}-server = "${PN}"
 RRECOMMENDS_${PN} = "ppp-oe"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "http://www.roaringpenguin.com/files/download/${P}.tar.gz \
            file://top-autoconf.patch;patch=1 \

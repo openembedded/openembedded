@@ -4,7 +4,7 @@ DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
 DEFAULT_PREFERENCE = "-1"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI += "file://configure.patch;patch=1"
 

@@ -1,7 +1,7 @@
 require ecore.inc
 inherit native
 DEPENDS = "eet-native evas-native"
-FILE_PR = "r2"
+PR = "r2"
 
 EXTRA_OECONF = "\
                 --enable-ecore-txt \

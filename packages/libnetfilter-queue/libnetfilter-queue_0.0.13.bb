@@ -5,7 +5,7 @@ system that deprecates the old ip_queue / libipq mechanism."
 SECTION = "devel/libs"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.netfilter.org/projects/libnetfilter_queue/index.html"
-FILE_PR = "r0"
+PR = "r0"
 
 
 # This package requires libtool-cross-1.5.24 which is not the default libtool

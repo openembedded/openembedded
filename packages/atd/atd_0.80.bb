@@ -4,7 +4,7 @@ LICENSE = "GPLV2"
 RCONFLICTS = "at"
 RREPLACES = "at"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://projects.linuxtogo.org/frs/download.php/222/${P}.tar.gz"
 

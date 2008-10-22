@@ -1,6 +1,6 @@
 require ntp.inc
 
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.1/ntp-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \

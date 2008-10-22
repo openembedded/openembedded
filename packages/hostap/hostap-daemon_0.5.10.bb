@@ -4,7 +4,7 @@ SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "openssl ${@base_contains("COMBINED_FEATURES", "pci", "madwifi-ng", "",d)}"
-FILE_PR = "r1"
+PR = "r1"
 
 #we introduce MY_ARCH to get 'armv5te' as arch instead of the misleading 'arm' on armv5te builds
 MY_ARCH := "${PACKAGE_ARCH}"

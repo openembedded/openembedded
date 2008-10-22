@@ -3,7 +3,7 @@ PRIORITY = "optional"
 DEPENDS = "zlib"
 DESCRIPTION = "Library for interacting with ID3 tags."
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.mars.org/pub/mpeg/libid3tag-${PV}.tar.gz \
            file://id3tag.pc"

@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.busybox.net"
 LICENSE = "GPL"
 SECTION = "base"
 PRIORITY = "required"
-FILE_PR = "r3"
+PR = "r3"
 COMPATIBLE_MACHINE = "nslu2"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \

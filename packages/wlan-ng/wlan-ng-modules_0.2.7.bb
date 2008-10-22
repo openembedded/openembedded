@@ -1,6 +1,6 @@
 require wlan-ng-modules.inc
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "ftp://ftp.linux-wlan.org/pub/linux-wlan-ng/linux-wlan-ng-${PV}.tar.bz2 \
 	    file://2.6.22-fixes.patch;patch=1"

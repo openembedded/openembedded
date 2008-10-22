@@ -6,7 +6,7 @@ PROVIDES = "virtual/libsdl"
 LICENSE = "LGPL"
 
 # NOTE: make sure to keep PR in sync with libsdl-x11
-FILE_PR = "r9"
+PR = "r9"
 
 SRC_URI = "http://www.libsdl.org/release/SDL-${PV}.tar.gz \
            file://agawa-piro-mickey.patch;patch=1 \

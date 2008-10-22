@@ -2,7 +2,7 @@ SECTION = "unknown"
 LICENSE = "GPL"
 inherit gnome
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://icon-theme.freedesktop.org/releases/${P}.tar.gz"
 

@@ -5,7 +5,7 @@ RCONFLICTS = matchbox-keyboard-inputmethod
 RPROVIDES_${PN} = matchbox-keyboard-inputmethod
 SECTION = "x11"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR ="r7"
+PR ="r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=${PN};proto=http \
            file://smallscreen-fontsize.patch;patch=1 \

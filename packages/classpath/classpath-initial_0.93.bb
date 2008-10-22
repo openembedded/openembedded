@@ -5,7 +5,7 @@ require classpath-native.inc
 
 DESCRIPTION="Java1.4-compatible GNU Classpath variant that is used as bootclasspath for jikes-native."
 
-FILE_PR = "r4"
+PR = "r4"
 
 DEPENDS = "zip-native fastjar-native jikes-native gettext-native"
 

@@ -1,6 +1,6 @@
 SECTION = "libs"
 DEPENDS = ""
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/openjade/OpenSP-${PV}.tar.gz \
 		file://m4.patch;patch=1 \

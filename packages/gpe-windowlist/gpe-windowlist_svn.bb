@@ -3,7 +3,7 @@ SECTION = "gpe"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget libgpelaunch gtk+"
 PV = "0.1+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools 
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Klimt is a software OpenGL rendering library for Qt/Embedded base
 SECTION = "opie/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/klimt/klimt-src-${PV}.zip"
 S = "${WORKDIR}/klimt/build/LinuxQTE"

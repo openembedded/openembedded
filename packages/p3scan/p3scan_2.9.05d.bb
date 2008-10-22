@@ -6,7 +6,7 @@ SECTION = "network"
 LICENSE = "GPLv2"
 DEPENDS = "gmp bzip2 zlib clamav openssl"
 RDEPENDS_${PN} = "${PN}-templates-en"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/p3scan/p3scan-2.9.05d.tar.gz \
            file://libtool-fix.patch;patch=1 \

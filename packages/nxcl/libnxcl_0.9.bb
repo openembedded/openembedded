@@ -2,7 +2,7 @@ DESCRIPTION = "Backend library for the free nx-clients"
 HOMEPAGE = "http://freenx.berlios.de/"
 SECTION = "libs"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 RDEPENDS = "nxproxy ssh"
 

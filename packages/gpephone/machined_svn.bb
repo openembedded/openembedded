@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 dbus-glib gtk+"
 PV = "0.1+svnr-${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 DEFAULT_PREFERENCE = "-1"
 

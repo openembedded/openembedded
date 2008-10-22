@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "AGG License"
 DEPENDS = "virtual/libx11 virtual/libsdl freetype"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.antigrain.com/${P}.tar.gz"
 S = "${WORKDIR}/${P}"

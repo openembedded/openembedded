@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "x11/utils"
-FILE_PR = "r2"
+PR = "r2"
 
 DESCRIPTION = "SIP-based IP phone (GPE edition)"
 DEPENDS = "libosip gtk+ libogg libgnomeui"

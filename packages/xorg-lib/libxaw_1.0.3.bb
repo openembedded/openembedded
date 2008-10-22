@@ -3,7 +3,7 @@ require xorg-lib-common.inc
 DESCRIPTION = "X Athena Widget Set"
 DEPENDS += "xproto virtual/libx11 libxext xextproto libxt libxmu libxpm libxp printproto libxau"
 PROVIDES = "xaw"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 XORG_PN = "libXaw"

@@ -2,7 +2,7 @@ DESCRIPTION = "Linksys NSLU2 Stock Firmware Samba Code Pages."
 PACKAGE_ARCH = "nslu2"
 SECTION = "base"
 PRIORITY = "required"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://nslu.sf.net/downloads/nslu2-linksys-ramdisk-2.3r63-2.tar.bz2"
 

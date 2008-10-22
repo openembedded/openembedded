@@ -13,7 +13,7 @@ require linux-libc-headers.inc
 # since we assume GPL for linux i think we can also assume it here
 DEFAULT_PREFERENCE = "-1"
 INHIBIT_DEFAULT_DEPS = "1"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://ewi546.ewi.utwente.nl/OE/eabi/linux-libc-headers-${PV}.tar.bz2 \
 	file://keyboard.patch;patch=1 \

@@ -3,7 +3,7 @@ DEPENDS = "ecore evas edje fluidsynth"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
 PV = "0.3.1"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig
 

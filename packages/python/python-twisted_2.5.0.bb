@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/2.5/Twisted-${PV}.tar.bz2 \
            file://remove-zope-check.patch;patch=1"

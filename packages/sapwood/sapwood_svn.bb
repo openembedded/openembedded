@@ -2,7 +2,7 @@ DESCRIPTION = "GTK theme engine Sapwood"
 LICENSE = "LGPL"
 DEPENDS = "gtk+"
 PV = "2.43+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://stage.maemo.org/svn/maemo/projects/haf/trunk/;module=sapwood;proto=https \
 	   file://sockets.patch;patch=1 \

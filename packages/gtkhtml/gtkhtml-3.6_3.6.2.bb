@@ -4,7 +4,7 @@ DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui"
 
 SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.6/gtkhtml-${PV}.tar.bz2 \
 	file://cross-includedir.patch;patch=1"
-FILE_PR = "r1"
+PR = "r1"
 FILES_${PN} += "${datadir}/gtkhtml-3.6"
 
 do_stage() {

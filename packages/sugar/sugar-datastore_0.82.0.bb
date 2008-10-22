@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar datastore"
 LICENSE = "GPLv2"
 
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "sugar-toolkit python-xappy "
 RDEPENDS = "sugar-toolkit sugar-base python-xappy"

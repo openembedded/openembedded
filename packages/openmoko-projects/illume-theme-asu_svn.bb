@@ -2,7 +2,7 @@ DESCRIPTION = "Illume - Mobile UI module for Enlightenment"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/;module=illume;proto=http"
 S = "${WORKDIR}/illume"

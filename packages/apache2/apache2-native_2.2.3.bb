@@ -3,7 +3,7 @@ DEPENDS = "expat pcre"
 
 inherit cross 
 
-FILE_PR ="r7"
+PR ="r7"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"

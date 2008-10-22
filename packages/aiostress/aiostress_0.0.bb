@@ -1,7 +1,7 @@
 DESCRIPTION = "Asynchronous I/O stress util"
 LICENSE = "GPLv2"
 DEPENDS = "libaio"
-FILE_PR ="r1"
+PR ="r1"
 
 SRC_URI = "http://mirrors.easynews.com/linux/suse/people/mason/utils/aio-stress.c"
 

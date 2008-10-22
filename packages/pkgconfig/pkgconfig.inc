@@ -5,7 +5,7 @@ It replaces the ubiquitous *-config scripts you may have \
 seen with a single tool."
 HOMEPAGE = "http://pkg-config.freedesktop.org/wiki/"
 LICENSE = "GPL"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "http://pkgconfig.freedesktop.org/releases/pkg-config-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \

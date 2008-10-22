@@ -1,6 +1,6 @@
 DESCRIPTION = "Very high-quality data compression program."
 SECTION = "console/utils"
-FILE_PR = "r0"
+PR = "r0"
 
 LICENSE = "bzip2"
 SRC_URI = "http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz \

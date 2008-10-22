@@ -3,7 +3,7 @@ SECTION = "opie/games"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libsdl-qpe libsdl-mixer libsdl-image"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.billsgames.com/unix/agenda/brickout/src/brickout-${PV}.tar.gz \
            file://directories.patch;patch=1"

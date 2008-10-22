@@ -1,7 +1,7 @@
 require python-pygobject_${PV}.bb
 
 DEPENDS = "python-native glib-2.0-native"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit native
 

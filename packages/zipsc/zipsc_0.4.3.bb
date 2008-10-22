@@ -3,7 +3,7 @@ SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
 HOMEPAGE = "http://www.warmi.net/zaurus/zipsc.shtml"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.warmi.net/zaurus/files/zipsc_${PV}.tar.gz \
            file://gcc3.patch;patch=1"

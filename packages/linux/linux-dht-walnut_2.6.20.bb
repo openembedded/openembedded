@@ -4,7 +4,7 @@ require linux.inc
 
 DESCRIPTION = "Linux kernel for DHT-Walnut (ppc)  machine"
 
-FILE_PR = "r4"
+PR = "r4"
 DEPENDS = "u-boot"
 
 COMPATIBLE_MACHINE = "dht-walnut"

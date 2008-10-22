@@ -8,7 +8,7 @@ DESCRIPTION = "frame buffer image and doc viewer tools"
 AUTHOR = "Gerd Knorr"
 LICENSE = "GPL2"
 SECTION = "utils"
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "virtual/libiconv jpeg fontconfig freetype libexif"
 RDEPENDS = "ttf-dejavu-sans-mono"

@@ -2,7 +2,7 @@ require jamvm.inc
 
 SRC_URI += "file://debian-jni.patch;patch=1;pnum=0"
 
-FILE_PR = "r3"
+PR = "r3"
 
 do_configure_prepend() {
   # Replaces the placeholder OE_LIBDIR_JNI with the JNI library directory

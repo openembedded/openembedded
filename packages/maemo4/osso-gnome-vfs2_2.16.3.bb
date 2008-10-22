@@ -4,7 +4,7 @@ RRECOMMENDS = "gnome-vfs-plugin-file gnome-mime-data shared-mime-info"
 
 DESCRIPTION = "gnomevfs - osso variant"
 
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gnome
 

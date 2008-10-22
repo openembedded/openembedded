@@ -7,7 +7,7 @@ HOMEPAGE = "http://www.holtschneider.com/notez/"
 APPNAME = "notez"
 APPTYPE = "binary"
 APPDESKTOP = "${S}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.holtschneider.com/notez/notez-${PV}.tar.gz \
 file://use-homedir.patch;patch=1 \

@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-FILE_PR = "${EZX}-r24"
+PR = "${EZX}-r24"
 
 require linux.inc
 

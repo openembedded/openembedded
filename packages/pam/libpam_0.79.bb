@@ -18,7 +18,7 @@ HOMEPAGE = "http://www.kernel.org/pub/linux/libs/pam"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters

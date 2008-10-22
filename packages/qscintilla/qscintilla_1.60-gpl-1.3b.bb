@@ -1,7 +1,7 @@
 DESCRIPTION = "Qt/Embedded bindings for the Scintilla source code editor component"
 SECTION = "opie/libs"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://www.mneuroth.de/privat/zaurus/qscintilla-${PV}_zaurus.tar.gz"
 S = "${WORKDIR}/qscintilla-1.60-gpl-1.3/qt"

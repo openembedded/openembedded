@@ -4,7 +4,7 @@ inherit update-rc.d
 DESCRIPTION = "Initscript for login-managers"
 SECTION = "base"
 PRIORITY = "optional"
-FILE_PR = "r1"
+PR = "r1"
 
 INITSCRIPT_NAME = "login-manager"
 INITSCRIPT_PARAMS = "start 99 5 . stop 20 0 1 6 ."

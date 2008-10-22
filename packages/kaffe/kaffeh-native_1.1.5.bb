@@ -1,6 +1,6 @@
 SRC_URI = "http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development/kaffe-${PV}.tar.gz"
 S = "${WORKDIR}/kaffe-${PV}"
-FILE_PR = "r3"
+PR = "r3"
 
 require kaffe.inc
 

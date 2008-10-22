@@ -3,7 +3,7 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gnutls libxml2"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/2.4/libsoup-${PV}.tar.bz2"
 S = "${WORKDIR}/libsoup-${PV}"

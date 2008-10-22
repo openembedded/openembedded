@@ -9,7 +9,7 @@ DEFAULT_PREFERENCE = "-1"
 #RDEPENDS_${PN}_append_poodle = " kexec-tools"
 #RDEPENDS_${PN}-conf = "${PN}"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SVN_REV="65"
 #TAG = "${@'v' + bb.data.getVar('PV',d,1).replace('.', '-')}"

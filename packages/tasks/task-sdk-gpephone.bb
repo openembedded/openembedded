@@ -1,5 +1,5 @@
 DESCRIPTION = "SDK task for GPE Phone Edition"
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 

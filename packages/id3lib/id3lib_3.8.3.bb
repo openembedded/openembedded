@@ -3,7 +3,7 @@ SECTION = "libs/multimedia"
 PRIORITY = "optional"
 DEPENDS = "zlib"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools
 

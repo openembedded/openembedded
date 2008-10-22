@@ -3,7 +3,7 @@ SECTION = "gpe/base"
 LICENSE = "GPL"
 DEPENDS = "audiofile"
 PE = "1"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit gnome binconfig
 

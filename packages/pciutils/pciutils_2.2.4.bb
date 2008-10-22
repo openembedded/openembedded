@@ -13,7 +13,7 @@ SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.b
 
 PARALLEL_MAKE = ""
 
-FILE_PR ="r3"
+PR ="r3"
 
 do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})

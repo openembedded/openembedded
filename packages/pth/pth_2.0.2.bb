@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Portable Threads"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/pth/pth-${PV}.tar.gz \
 	   file://m4-warning.patch;patch=1 \

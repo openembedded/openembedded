@@ -4,7 +4,7 @@ suitable for your meal, and indicate those in your cellar that match."
 SECTION = "opie/applications"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.staikos.net/~staikos/pocketcellar/pocketcellar-${PV}.tar.gz \
            file://winedb.patch;patch=1 \

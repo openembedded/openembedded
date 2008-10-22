@@ -4,7 +4,7 @@ LICENSE = "BSD"
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PROVIDES = "virtual/imlib2"
 PV = "1.4.1.001+svnr${SRCREV}"
-FILE_PR = "r5"
+PR = "r5"
 
 inherit efl
 

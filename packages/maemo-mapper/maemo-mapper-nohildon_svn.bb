@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "sqlite3 gtk+ gnome-vfs dbus bluez-libs"
 RDEPENDS = "bluez-utils"
 PV = "1.2.4+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 # Only works with SRCDATE_maemo-mapper-nohildon = "20061114"
 SRC_URI = "svn://garage.maemo.org/svn/maemo-mapper;proto=https;module=trunk \

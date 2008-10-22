@@ -1,6 +1,6 @@
 require portmap.inc
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/portmap-6.0.tgz \
            file://destdir-no-strip.patch;patch=1 \

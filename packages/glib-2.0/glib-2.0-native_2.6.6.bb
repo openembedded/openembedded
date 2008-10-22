@@ -7,7 +7,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "gtk-doc-native"
-FILE_PR = "r4"
+PR = "r4"
 
 export PERL_PATH="/usr/bin/env perl"
 EXTRA_OECONF = "--disable-debug"

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libsdl-x11 libsdl-image libsdl-mixer libsdl-net libsdl-ttf smpeg python-numeric"
 SRCNAME = "pygame"
-FILE_PR = "ml1"
+PR = "ml1"
 
 SRC_URI = "\
   ftp://ftp.pygame.org/pub/pygame/${SRCNAME}-${PV}release.tar.gz \

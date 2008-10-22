@@ -5,7 +5,7 @@ HOMEPAGE = "http://dejavu.sourceforge.net/wiki/"
 LICENSE = "Bitstream Vera"
 RDEPENDS = "ttf-dejavu-common"
 RDEPENDS_ttf-dejavu-common = ""
-FILE_PR = "2"
+PR = "2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dejavu/dejavu-fonts-ttf-${PV}.tar.bz2 \
            file://30-dejavu-aliases.conf"

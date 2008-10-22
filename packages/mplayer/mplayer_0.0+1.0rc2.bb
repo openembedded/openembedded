@@ -42,7 +42,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-FILE_PR = "r8"
+PR = "r8"
 
 PARALLEL_MAKE = ""
 

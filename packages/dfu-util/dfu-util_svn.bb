@@ -3,7 +3,7 @@ SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 PV = "0.1+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "libusb usbpath"
 

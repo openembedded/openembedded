@@ -5,7 +5,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "libpng gettext glib-2.0"
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}/gtk+-${PV}"
 FILESPATH = "${FILE_DIRNAME}/gdk-pixbuf-csource:${FILE_DIRNAME}/gtk+-${PV}:${FILE_DIRNAME}/files"

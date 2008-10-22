@@ -3,7 +3,7 @@ require qpf.inc
 DESCRIPTION = "Qt/Embedded fonts version ${PV}"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.trolltech.com/pub/qt/source/qt-embedded-free-${PV}.tar.bz2"
 S = "${WORKDIR}/qt-embedded-free-${PV}"

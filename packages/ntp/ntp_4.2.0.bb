@@ -1,6 +1,6 @@
 require ntp.inc
 
-FILE_PR = "r9"
+PR = "r9"
 
 SRC_URI = "http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/${P}.tar.gz \
 	file://ntpdc.Makefile.am.maybe-layout.patch;patch=1 \

@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libmad"
 SRCNAME = "pymad"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://spacepants.org/src/pymad/download/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

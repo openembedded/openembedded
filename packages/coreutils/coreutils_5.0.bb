@@ -1,6 +1,6 @@
 require coreutils.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${GNU_MIRROR}/coreutils/coreutils-${PV}.tar.gz \
 	   file://malloc.patch;patch=1 \

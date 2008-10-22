@@ -1,6 +1,6 @@
 require classpath-native.inc
 
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI += "\
   file://gjar-prefix-patch.diff;patch=1;pnum=0 \

@@ -4,7 +4,7 @@ SECTION = "devel"
 AUTHOR = "Harald Welte <laforge@openmoko.org>"
 LICENSE = "GPL"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/host/;module=s3c2410_boot_usb;proto=https"
 S = "${WORKDIR}/s3c2410_boot_usb"

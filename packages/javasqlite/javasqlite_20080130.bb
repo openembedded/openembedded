@@ -2,7 +2,7 @@ DESCRIPTION = "JDBC driver for sqlite and sqlite3"
 HOMEPAGE = "http://www.ch-werner.de/javasqlite"
 LICENSE  = "BSD"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "\
   http://www.ch-werner.de/javasqlite/javasqlite-${PV}.tar.gz \

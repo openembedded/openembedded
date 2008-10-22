@@ -2,7 +2,7 @@ S = "${WORKDIR}/ipkg-${PV}"
 
 #require ipkg_${PV}.bb
 require ipkg-native.inc
-FILE_PR = "r6"
+PR = "r6"
 
 inherit autotools pkgconfig native
 

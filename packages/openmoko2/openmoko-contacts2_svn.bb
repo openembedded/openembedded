@@ -3,7 +3,7 @@ SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 dbus-glib"
 RDEPENDS = "libedata-book"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r5"
+PR = "r5"
 
 inherit openmoko2
 

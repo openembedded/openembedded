@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "20"
 DEFAULT_PREFERENCE_at91sam9261ek = "20"
 DEFAULT_PREFERENCE_at91sam9260ek = "20"
 
-FILE_PR = "r8"
+PR = "r8"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"

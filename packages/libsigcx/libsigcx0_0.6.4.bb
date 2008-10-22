@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libsigc++-1.2"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libsigcx/libsigcx-${PV}.tar.gz \
   file://libsigcx-0.6.4-add-missing-autogen-sh-swb.patch;patch=1 \

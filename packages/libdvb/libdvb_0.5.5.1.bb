@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.metzlerbros.org/dvb/index.html"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.metzlerbros.org/dvb/${P}.tar.gz \
           file://topf2ps.patch;patch=1"

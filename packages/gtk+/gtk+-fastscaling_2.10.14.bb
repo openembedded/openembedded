@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 
 PROVIDES = "gtk+"
 RPROVIDES_${PN} = "gtk+"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI += "file://lower-quality-scaling-in-pixbuf-engine.patch;patch=1"
 

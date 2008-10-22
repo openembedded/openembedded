@@ -2,7 +2,7 @@ require ttf.inc
 
 DESCRIPTION = "The Bitstream Vera fonts - TTF Edition"
 LICENSE = "Bitstream Vera"
-FILE_PR = "r6"
+PR = "r6"
 
 SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-${PV}.tar.bz2"
 

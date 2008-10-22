@@ -4,7 +4,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "MIT"          
 SRCNAME = "SQLAlchemy"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/sqlalchemy/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

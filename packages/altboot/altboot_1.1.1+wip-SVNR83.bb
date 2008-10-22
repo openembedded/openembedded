@@ -1,6 +1,6 @@
 require altboot.inc
 
-FILE_PR = "r0"
+PR = "r0"
 
 SVN_REV = "83"
 SRC_URI = "svn://hentges.net/public/altboot;module=trunk;rev=${SVN_REV} \

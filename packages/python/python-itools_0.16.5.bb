@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.ikaaro.org/itools"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 SRCNAME = "itools"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://download.ikaaro.org/itools/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

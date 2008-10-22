@@ -3,7 +3,7 @@ HOMEPAGE = "http://hostap.epitest.fi"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostap-utils-${PV}.tar.gz \
 	   file://hostap-fw-load.patch;patch=1"

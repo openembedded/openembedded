@@ -1,6 +1,6 @@
 require ${PN}.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${HANDHELDS_CVS};tag=${TAG};module=opie/noncore/net/opietooth/manager \
            ${HANDHELDS_CVS};tag=${TAG};module=opie/apps \

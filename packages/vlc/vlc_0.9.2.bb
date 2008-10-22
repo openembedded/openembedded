@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 

@@ -4,7 +4,7 @@ HOMEPAGE = "http://comsec.com/wiki?UniversalSoftwareRadioPeripheral"
 SECTION = "devel"
 DEPENDS = "swig-native sdcc-native libusb-compat python boost"
 RDEPENDS = "python-core"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.gnu.org/gnu/gnuradio/usrp-${PV}.tar.gz \
            file://fix_compile_h.patch;patch=1;pnum=3 \

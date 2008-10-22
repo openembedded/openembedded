@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.phildev.net/iptstate/"
 SECTION = "console/network"
 LICENSE = "zlib"
 DEPENDS = "ncurses"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/iptstate/iptstate-${PV}.tar.bz2"
 

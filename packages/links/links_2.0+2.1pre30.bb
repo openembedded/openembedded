@@ -2,7 +2,7 @@ require links.inc
 
 DEPENDS += "gpm"
 RCONFLICTS = "links-x11"
-FILE_PR = "r1"
+PR = "r1"
 
 EXTRA_OECONF = "--enable-javascript --with-libfl --enable-graphics \
 	        --with-ssl=${STAGING_LIBDIR}/.. --with-libjpeg \

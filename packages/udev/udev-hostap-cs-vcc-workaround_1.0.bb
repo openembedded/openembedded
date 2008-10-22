@@ -1,6 +1,6 @@
 DESCRIPTION = "A hack to force VCC to 5v for hostap_cs cards. This will fry your \
 card one sweet day."
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = " file://50-hostap_cs.rules "
 

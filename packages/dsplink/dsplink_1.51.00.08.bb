@@ -4,7 +4,7 @@ require dsplink.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
-FILE_PR = "r10"
+PR = "r10"
 PE = "1"
 PV = "1.51"
 

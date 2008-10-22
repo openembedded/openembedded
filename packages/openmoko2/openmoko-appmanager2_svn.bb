@@ -2,7 +2,7 @@ DESCRIPTION = "The Openmoko Application Manager"
 SECTION = "openmoko/applications"
 DEPENDS = "libmokoui2 libmokojournal2 startup-notification dbus-glib libice libsm opkg"
 PV = "0.1.0+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit openmoko2 
 

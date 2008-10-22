@@ -3,7 +3,7 @@ DESCRIPTION = "SIP-based IP phone"
 HOMEPAGE = "http://www.linphone.org/?lang=us"
 LICENSE = "GPLv2"
 DEPENDS = "libosip2 speex libogg alsa-lib readline"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/1.5.x/source/linphone-${PV}.tar.gz \
            file://linphone-1.5.0.patch;patch=1 \

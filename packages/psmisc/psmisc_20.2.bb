@@ -3,7 +3,7 @@ DESCRIPTION = "procfs tools"
 SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "ncurses"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/psmisc/psmisc-${PV}.tar.gz \
 	   file://gettext.patch;patch=1"

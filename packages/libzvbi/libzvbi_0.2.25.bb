@@ -5,7 +5,7 @@ HOMEPAGE = "http://zapping.sourceforge.net/ZVBI/index.html"
 LICENSE = "GPL"
 SECTION = "libs/multimedia"
 DEPENDS = "libpng"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/zapping/zvbi-${PV}.tar.bz2"
 S = "${WORKDIR}/zvbi-${PV}"

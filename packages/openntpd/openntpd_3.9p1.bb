@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.openntpd.org/"
 SECTION = "console/network"
 LICENSE = "BSD"
 DEPENDS += "openssl tzdata"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/${P}.tar.gz \
            file://adjtimex-${PV}.patch;patch=1 \

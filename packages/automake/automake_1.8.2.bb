@@ -4,7 +4,7 @@ SRC_URI = "${GNU_MIRROR}/automake/automake-${PV}.tar.bz2 \
 DESCRIPTION = "A tool for automatically generating Makefiles."
 SECTION = "devel"
 LICENSE = "GPL"
-FILE_PR = "r7"
+PR = "r7"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/automake-${PV}"
 

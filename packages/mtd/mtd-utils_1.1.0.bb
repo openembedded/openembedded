@@ -3,7 +3,7 @@ SECTION = "base"
 DEPENDS = "zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-${PV}.tar.bz2 \
            file://add-exclusion-to-mkfs-jffs2-git.patch;patch=1 \

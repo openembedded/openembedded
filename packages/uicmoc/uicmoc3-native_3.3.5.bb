@@ -4,7 +4,7 @@ SECTION = "devel"
 PRIORITY = "optional"
 LICENSE = "GPL QPL"
 DEPENDS = "qmake-native"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-free-${PV}.tar.bz2 \
            file://no-examples.patch;patch=1 \

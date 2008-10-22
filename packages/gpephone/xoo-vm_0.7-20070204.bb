@@ -6,7 +6,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libx11 libxtst gtk+ libglade"
 SRCDATE = 20070204
 PV = "0.7+svn${SRCDATE}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=Xoo;proto=http \
            file://gpephone-vm.patch;patch=1;pnum=0"

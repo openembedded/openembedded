@@ -6,7 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "wireless-tools"
 RDEPENDS = "python-core"
-FILE_PR = "ml0"
+PR = "ml0"
 
 inherit autotools pkgconfig distutils-base
 

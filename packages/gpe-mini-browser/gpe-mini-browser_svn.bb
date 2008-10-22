@@ -1,7 +1,7 @@
 DEPENDS = "sqlite gettext gtk+ glib-2.0 osb-nrcit libgpewidget"
 RRECOMMENDS = "gdk-pixbuf-loader-gif gdk-pixbuf-loader-png gdk-pixbuf-loader-jpeg"
 PV = "0.20+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools
 

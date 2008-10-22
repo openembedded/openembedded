@@ -3,7 +3,7 @@ SECTION = "x11/utils"
 DEPENDS = "gtk+ libcroco libart-lgpl libxml2 popt"
 LICENSE = "LGPL"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools pkgconfig gnome
 

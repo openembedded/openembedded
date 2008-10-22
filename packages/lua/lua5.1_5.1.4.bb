@@ -4,7 +4,7 @@ LICENSE = "MIT"
 HOMEPAGE = "http://www.lua.org/"
 
 DEPENDS += "readline"
-FILE_PR = "r0"
+PR = "r0"
 SRC_URI = "http://www.lua.org/ftp/lua-${PV}.tar.gz \
            file://makefile.patch;patch=1 \
            file://lua5.1.pc"

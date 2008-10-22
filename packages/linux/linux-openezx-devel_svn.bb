@@ -11,7 +11,7 @@ RPSRC = "http://www.rpsys.net/openzaurus/patches/archive"
 KERNEL_RELEASE = "2.6.25"
 KERNEL_PATCHES = "kernel-${KERNEL_RELEASE}.x-patches"
 PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "\
   ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${KERNEL_RELEASE}.tar.bz2 \

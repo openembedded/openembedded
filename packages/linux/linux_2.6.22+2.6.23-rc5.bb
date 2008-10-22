@@ -3,7 +3,7 @@ require linux.inc
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_ts72xx = "-1"
 
-FILE_PR = "r1"
+PR = "r1"
 
 BASE_KERNEL_VERSION = "2.6.22"
 KERNEL_VERSION = "2.6.23-rc5"

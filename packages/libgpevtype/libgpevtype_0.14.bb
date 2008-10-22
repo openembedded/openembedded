@@ -3,7 +3,7 @@ DESCRIPTION = "Data interchange library for GPE"
 SECTION = "gpe/libs"
 PRIORITY = "optional"
 DEPENDS = "libmimedir libeventdb"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit pkgconfig gpe autotools
 

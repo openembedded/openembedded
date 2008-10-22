@@ -1,6 +1,6 @@
 require mysql_${PV}.bb
 inherit native
-FILE_PR ="r0"
+PR ="r0"
 
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz"
 

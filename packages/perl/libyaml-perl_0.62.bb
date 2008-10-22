@@ -4,7 +4,7 @@ LICENSE = "Artistic|GPL"
 DEPENDS = "libdigest-sha1-perl-native liberror-perl-native \
            libipc-sharelite-perl-native"
 RDEPENDS = "libdigest-sha1-perl liberror-perl libipc-sharelite-perl"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/I/IN/INGY/YAML-${PV}.tar.gz"
 

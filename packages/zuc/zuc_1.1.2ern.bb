@@ -5,7 +5,7 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "zuc"
 APPDESKTOP = "${S}"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.linux-solutions.at/projects/zaurus/source/zuc_V${PV}.tar.gz \
            http://nick.kreucher.net/zuc/zuc_units"

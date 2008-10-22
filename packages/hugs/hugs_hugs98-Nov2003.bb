@@ -3,7 +3,7 @@ SRC_URI = "http://cvs.haskell.org/Hugs/downloads/Nov2003/${PV}.tar.gz \
            file://hugs.desktop \
            file://hugs.png"
 LICENSE = "BSD"
-FILE_PR = "r2"
+PR = "r2"
 
 S = "${WORKDIR}/${PV}/src/unix"
 

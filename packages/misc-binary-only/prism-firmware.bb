@@ -5,7 +5,7 @@ RDEPENDS = "hostap-utils"
 RREPLACES = "prism3-firmware prism3-support"
 RCONFLICTS = "prism3-firmware prism3-support"
 PACKAGE_ARCH = "all"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.red-bean.com/~proski/firmware/primary.tar.bz2 \
            http://www.red-bean.com/~proski/firmware/1.7.4.tar.bz2 \

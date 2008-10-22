@@ -2,7 +2,7 @@ DEFAULT_PREFERENCE = "-1"
 
 include libxcb.inc
 PV = "1.0+git"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS += "libpthread-stubs"
 

@@ -3,7 +3,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "qt4-x11-free"
 SRCNAME = "sailcut"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

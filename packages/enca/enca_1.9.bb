@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://trific.ath.cx/software/enca/"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.sourcefiles.org/Networking/Tools/Miscellanenous/enca-${PV}.tar.bz2 \
 	file://configure-hack.patch;patch=1 \

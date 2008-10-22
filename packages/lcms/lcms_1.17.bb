@@ -3,7 +3,7 @@ SECTION = "libs"
 LICENSE = "LGPL"
 SRC_URI = "${SOURCEFORGE_MIRROR}/lcms/lcms-${PV}.tar.gz"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools
 

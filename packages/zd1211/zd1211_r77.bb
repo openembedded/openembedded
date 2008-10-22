@@ -2,7 +2,7 @@ DESCRIPTION = "Driver for zd1211 family of wireless USB Dongles"
 PRIORITY = "optional"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 RDEPENDS = "wireless-tools"
 
 SRC_URI = "http://zd1211.ath.cx/download/zd1211-driver-${PV}.tgz \

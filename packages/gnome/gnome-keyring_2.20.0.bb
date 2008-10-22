@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome"
 
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools gnome pkgconfig
 

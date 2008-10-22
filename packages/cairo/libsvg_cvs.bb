@@ -6,7 +6,7 @@ DESCRIPTION = "SVG parser library"
 LICENSE = "LGPL"
 SRC_URI = "cvs://anoncvs:anoncvs@cvs.cairographics.org/cvs/cairo;module=libsvg"
 S = "${WORKDIR}/libsvg"
-FILE_PR = "r2"
+PR = "r2"
 
 EXTRA_OECONF = "--with-expat"
 

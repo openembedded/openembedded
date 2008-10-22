@@ -2,7 +2,7 @@ DESCRIPTION = "sipsak is a small command line tool for developers and administra
 of Session Initiation Protocol (SIP) applications."
 HOMEPAGE="sipsak.org"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 SRC_URI = "http://download.berlios.de/sipsak/sipsak-${PV}-1.tar.gz\
            file://sipsak.patch;patch=1"
 

@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit autotools pkgconfig gpe
 

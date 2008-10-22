@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 DEPENDS = "gtk+ cairo libxrender gtk-doc"
 PV = "0.114+svn${SRCDATE}"
-FILE_PR = "r1"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 

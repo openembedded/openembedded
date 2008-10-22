@@ -4,7 +4,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://www.lyx.org"
 DEPENDS = "boost"
 RRECOMMENDS = "tetex"
-FILE_PR = "r1"
+PR = "r1"
 
 # we're checking out from svn because the tarball doesn't contain the necessary stuff to run autoreconf
 SRC_URI = "svn://svn.lyx.org/lyx/lyx-devel/tags;module=lyx-1_4_1;rev=13847"

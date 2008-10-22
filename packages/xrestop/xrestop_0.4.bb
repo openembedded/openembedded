@@ -2,7 +2,7 @@ DESCRIPTION = "top-like statistics of X11 server resource usage by clients"
 SECTION = "x11/utils"
 HOMEPAGE = "http://www.freedesktop.org/wiki/Software/xrestop"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 DEPENDS = "libxres libxext virtual/libx11"
 

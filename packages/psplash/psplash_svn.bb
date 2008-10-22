@@ -3,7 +3,7 @@ HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-FILE_PR = "r13"
+PR = "r13"
 RDEPENDS = "initscripts"
 
 # You can create your own pslash-hand-img.h by doing

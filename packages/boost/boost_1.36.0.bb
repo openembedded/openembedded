@@ -2,7 +2,7 @@ include boost-36.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
            file://arm-intrinsics.patch;patch=1 \

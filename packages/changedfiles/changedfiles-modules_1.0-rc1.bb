@@ -1,6 +1,6 @@
 require changedfiles.inc
 
-FILE_PR = "r2"
+PR = "r2"
 B = "${WORKDIR}/changedfiles-${PV}/module"
 
 inherit module

@@ -1,6 +1,6 @@
 require bitbake.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://download.berlios.de/bitbake/bitbake-${PV}.tar.gz"
 

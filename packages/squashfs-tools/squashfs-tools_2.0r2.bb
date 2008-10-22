@@ -2,7 +2,7 @@ DESCRIPTION = "Squashfs is a highly compressed read-only filesystem for Linux."
 DEPENDS = "lzma"
 SECTION = "base"
 LICENSE = "GPLv2"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/squashfs/squashfs${@bb.data.getVar('PV',d,1).replace('r','-r')}.tar.gz \
 	   file://flags.patch;patch=1 \

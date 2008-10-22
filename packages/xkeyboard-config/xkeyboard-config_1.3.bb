@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 Keyboard layouts"
 LICENSE = "MIT"
 DEPENDS = "intltool xkbcomp-native"
 RDEPENDS = "xkbcomp"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://xlibs.freedesktop.org/xkbdesc/xkeyboard-config-${PV}.tar.bz2"
 

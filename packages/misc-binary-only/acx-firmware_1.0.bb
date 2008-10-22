@@ -1,7 +1,7 @@
 DESCRIPTION = "ACX (iPAQ HX4700/HTC Universal) wireless firmware."
 SECTION = "base"
 LICENSE = "Unknown"
-FILE_PR = "r2"
+PR = "r2"
 RRECOMMENDS = "kernel-module-firmware-class"
 
 SRC_URI = "http://sdgsystems.com/pub/ipaq/hx4700/src/RADIO0d.BIN \

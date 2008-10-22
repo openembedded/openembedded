@@ -1,5 +1,5 @@
 require glibc.inc
-FILE_PR = "r18"
+PR = "r18"
 
 ARM_INSTRUCTION_SET = "arm"
 

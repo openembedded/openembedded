@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS += "libxext scrnsaverproto"
 PROVIDES = "libxss"
 RREPLACES = "libxss"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 XORG_PN = "libXScrnSaver"

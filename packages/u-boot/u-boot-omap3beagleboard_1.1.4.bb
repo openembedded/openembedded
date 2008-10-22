@@ -1,5 +1,5 @@
 require u-boot.inc
-FILE_PR ="r1"
+PR ="r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://www.sakoman.net/omap3/u-boot.tar.gz \

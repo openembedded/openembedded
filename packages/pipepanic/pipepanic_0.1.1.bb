@@ -2,7 +2,7 @@ DESCRIPTION = "Pipepanic is a pipe connecting game using libSDL. \
 Connect as many different shaped pipes together as possible within the time given."
 HOMEPAGE = "http://www.users.waitrose.com/~thunor/pipepanic/"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.users.waitrose.com/~thunor/pipepanic/dload/pipepanic-${PV}-source.tar.gz \
            file://fix-datadir.patch;patch=1"

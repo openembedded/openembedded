@@ -2,7 +2,7 @@ DESCRIPTION = "Promiscuous mode IP Accounting package"
 HOMEPAGE = "http://www.ba.cnr.it/~paolo/pmacct/"
 LICENSE = "GPLv2"
 DEPENDS = "libpcap"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "http://www.ba.cnr.it/~paolo/pmacct/pmacct-${PV}.tar.gz \
 	file://pmacct.init \

@@ -3,7 +3,7 @@ HOMEPAGE = "http://dev.openbossa.org/trac/mamona/"
 #SECTION = "console/utils"
 LICENSE = "GPL"
 RDEPENDS = "dspgw-utils udev alsa-lib alsa-utils-alsactl alsa-state"
-FILE_PR = "r1"
+PR = "r1"
 
 PACKAGES = "${PN}"
 

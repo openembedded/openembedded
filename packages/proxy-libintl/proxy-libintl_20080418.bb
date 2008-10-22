@@ -3,7 +3,7 @@ HOMEPAGE = "http://ftp.gnome.org/pub/GNOME/binaries/win32/dependencies/"
 SECTION = "libs"
 LICENSE = "LGPL"
 
-FILE_PR = "r1"
+PR = "r1"
 PROVIDES = "virtual/libintl"
 
 

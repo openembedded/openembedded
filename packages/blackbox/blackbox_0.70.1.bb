@@ -2,7 +2,7 @@ DESCRIPTION = "Blackbox Window Manager"
 SECTION = "x11/wm"
 LICENSE = "GPL"
 DEPENDS = "libx11 libxext libxcomposite libxfixes libxdamage libxrender libxinerama libxpm xrandr xft"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/blackboxwm/blackbox-0.70.1.tar.gz \
   file://remove-host-includes.patch;patch=1"

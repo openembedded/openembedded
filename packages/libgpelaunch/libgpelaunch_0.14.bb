@@ -2,7 +2,7 @@ LICENSE = "LGPL"
 DESCRIPTION = "GPE program launcher library"
 SECTION = "libs"
 DEPENDS = "gtk+ startup-notification"
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig
 

@@ -6,7 +6,7 @@ SRC_URI = "http://www.angstrom-distribution.org/unstable/sources/xkbd-${PV}-CVS.
 	   file://differentiate-desktop-name.patch;patch=1 \
 	   file://xkbd.png"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 SECTION = "x11"
 DEPENDS = "libxpm libxtst libxft"

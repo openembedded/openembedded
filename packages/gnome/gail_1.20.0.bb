@@ -1,6 +1,6 @@
 LICENSE = "LGPL"
 SECTION = "x11/libs"
-FILE_PR = "r0"
+PR = "r0"
 DESCRIPTION = "GNOME Accessibility Implementation Library"
 DEPENDS = "gtk+"
 

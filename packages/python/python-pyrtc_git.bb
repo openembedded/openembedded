@@ -7,7 +7,7 @@ LICENSE = "GPLv2"
 SRCNAME = "pyrtc"
 DEPENDS = "python-cython-native"
 PV = "1.0.0+gitr${SRCREV}"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "git://git.freesmartphone.org/python-helpers.git;protocol=git;branch=master"
 S = "${WORKDIR}/git/${SRCNAME}"

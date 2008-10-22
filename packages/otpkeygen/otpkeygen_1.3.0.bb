@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.bitrot.de/pda_otpkeygen.html"
 AUTHOR = "Thomas Driemeyer <thomas@bitrot.de>"
 LICENSE = "GPL"
 APPTYPE="binary"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.bitrot.de/pub/otpkeygen/otpkeygen-src_${PV}.tar.gz"
 

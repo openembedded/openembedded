@@ -1,7 +1,7 @@
 DESCRIPTION = "Framebuffer VNC server keyboard events module"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://sdgsystems.com/download/fbvncserver-${PV}.tar.gz \
            file://libvncs0.6.patch;patch=1 \

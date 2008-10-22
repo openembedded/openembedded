@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 HOMEPAGE = "http://rxtx.org"
 
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "classpath classpath-tools-native"
 

@@ -1,5 +1,5 @@
 SECTION = "x11/base"
-FILE_PR = "r3"
+PR = "r3"
 LICENSE = "MIT"
 
 SRC_URI = "${FREEDESKTOP_CVS}/dri;module=drm;method=pserver \

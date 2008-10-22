@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ gtk-doc"
 PV = "1.0+svnr-${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 inherit gpephone pkgconfig autotools
 

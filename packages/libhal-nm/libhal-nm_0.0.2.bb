@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "glib-2.0"
 SRC_URI = "http://www.handhelds.org/~mmp/files/libhal-nm-${PV}.tar.gz"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools
 

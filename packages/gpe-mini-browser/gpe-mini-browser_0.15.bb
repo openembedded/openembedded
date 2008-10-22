@@ -1,6 +1,6 @@
 require gpe-mini-browser.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.handhelds.org/projects/gpe/source/gpe-mini-browser-${PV}.tar.gz"
 DEPENDS = "osb-nrcit libgpewidget"

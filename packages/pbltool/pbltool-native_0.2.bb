@@ -1,6 +1,6 @@
 DESCRIPTION = "Loader tool for Amstrad Delta (E3)"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://the.earth.li/pub/e3/pbltool-${PV}.c"
 

@@ -1,6 +1,6 @@
 require php.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://museum.php.net/php4/php-${PV}.tar.bz2 \
            file://${FILESDIR}/autotools.patch;patch=1 \

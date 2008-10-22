@@ -5,7 +5,7 @@ printing source line number information and demangled type names."
 SECTION = "devel/libs"
 LICENSE = "QPL"
 HOMEPAGE = "http://libcwd.sourceforge.net"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/libcwd/libcwd-${PV}.tar.gz"
 

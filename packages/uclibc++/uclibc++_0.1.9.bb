@@ -5,7 +5,7 @@ LICENSE = "LGPL"
 PRIORITY = "optional"
 SECTION = "libs"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://cxx.uclibc.org/src/uClibc++-${PV}.tbz2 \
 	   file://nobash.patch;patch=1 \

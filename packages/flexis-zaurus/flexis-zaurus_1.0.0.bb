@@ -2,7 +2,7 @@ DESCRIPTION = "A Qtopia/Opie Input Method plugin for the Flexis FX100 Keyboard."
 SECTION = "opie/inputmethods"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://www.Vanille.de/mirror/flexis-zaurus-${PV}.tar.bz2"
 S = "${WORKDIR}/flexis-zaurus"

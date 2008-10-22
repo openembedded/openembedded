@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gtkmm.org/"
 SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = "gtkmm libglade"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "ftp://ftp.gnome.org/pub/GNOME/sources/libglademm/2.4/libglademm-${PV}.tar.bz2"
 

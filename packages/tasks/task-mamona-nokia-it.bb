@@ -1,6 +1,6 @@
 DESCRIPTION = "Necessary packages for Mamona run on Nokia Internet Tablets"
 LICENSE = "MIT"
-FILE_PR = "r0"
+PR = "r0"
 ALLOW_EMPTY = "1"
 
 RDEPENDS = "\

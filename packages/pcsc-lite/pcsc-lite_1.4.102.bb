@@ -1,7 +1,7 @@
 DESCRIPTION = "PC/SC Lite smart card framework and applications"
 HOMEPAGE = "http://pcsclite.alioth.debian.org/"
 LICENSE = "BSD"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "hal"
 RDEPENDS_${PN} = "hal"

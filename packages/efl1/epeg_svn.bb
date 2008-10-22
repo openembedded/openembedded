@@ -2,7 +2,7 @@ DESCRIPTION = "Epeg is a small library for handling thumbnails."
 LICENSE = "MIT"
 DEPENDS = "jpeg"
 PV = "0.9.0+svnr${SRCREV}"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit efl
 

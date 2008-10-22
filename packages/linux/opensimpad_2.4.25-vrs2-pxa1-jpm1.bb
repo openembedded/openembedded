@@ -5,7 +5,7 @@ KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
 VRSV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
 PXAV = "${@bb.data.getVar('PV',d,True).split('-')[2]}"
 JPMV = "${@bb.data.getVar('PV',d,True).split('-')[3]}"
-FILE_PR = "r22"
+PR = "r22"
 
 COMPATIBLE_MACHINE = 'simpad'
 

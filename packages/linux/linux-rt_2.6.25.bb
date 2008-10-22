@@ -7,7 +7,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 DEFAULT_PREFERENCE_efika = "1"
 
-FILE_PR = "r4"
+PR = "r4"
 
 #KERNEL_IMAGETYPE_efika = "Image"
 

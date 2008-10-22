@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.speex.org"
 DEPENDS = "libogg"
 BETA = "1.2rc1"
 PV = "1.1+${BETA}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://downloads.us.xiph.org/releases/speex/speex-${BETA}.tar.gz"
 S = "${WORKDIR}/speex-${BETA}"

@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "gtk+"
 SECTION = "x11/wm"
 
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/${PN}/${PV}/${PN}-${PV}.tar.bz2"
 S = "${WORKDIR}/${PN}-${PV}"

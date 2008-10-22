@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "Linux kernel for the LogicPD Zoom(PXA270 ref design)"
 LICENSE = "GPL"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-2.6.17-rc5.tar.bz2 \
            file://linux-2.6.17-rc5.patch;pnum=0;patch=1 \

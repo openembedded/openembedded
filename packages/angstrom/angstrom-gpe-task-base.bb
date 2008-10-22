@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-FILE_PR = "r36"
+PR = "r36"
 
 inherit task
 

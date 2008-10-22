@@ -5,7 +5,7 @@ AUTHOR = "Phil Thompson"
 LICENSE = "GPL"
 DEPENDS = "python"
 RDEPENDS = "python-core"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "http://www.riverbankcomputing.com/Downloads/sip4/sip-${PV}.tar.gz"
 S = "${WORKDIR}/sip-${PV}/siplib"

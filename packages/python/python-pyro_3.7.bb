@@ -8,7 +8,7 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 RDEPENDS = "python-crypt python-io python-lang python-math python-netserver python-pickle \
 python-re python-shell python-stringold python-threading"
-FILE_PR = "ml0"
+PR = "ml0"
 
 SRC_URI = "cvs://anonymous:@pyro.cvs.sourceforge.net/cvsroot/pyro;module=Pyro;method=pserver;tag=pyro3_7 \
            file://pyro-unattended-install.patch;patch=1;pnum=0"

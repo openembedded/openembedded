@@ -4,7 +4,7 @@ PRIORITY = "optional"
 
 inherit autotools pkgconfig
 
-FILE_PR = "r0"
+PR = "r0"
 
 S = "${WORKDIR}/fribidi-${PV}"
 

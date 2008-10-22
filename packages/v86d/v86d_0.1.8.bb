@@ -3,7 +3,7 @@ SRC_URI = "http://dev.gentoo.org/~spock/projects/uvesafb/archive/v86d-${PV}.tar.
            file://fbsetup"
 DEPENDS = "virtual/kernel klibc"
 LICENSE = "GPLv2"
-FILE_PR = "r0"
+PR = "r0"
 
 RRECOMMENDS_${PN} = "kernel-module-uvesafb"
 

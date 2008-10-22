@@ -3,7 +3,7 @@ require matchbox-wm.inc
 DEPENDS = "libmatchbox virtual/libx11 libxext libxcomposite libxfixes libxdamage libxrender startup-notification expat gconf "
 RDEPENDS = ""
 PV = "1.1+svn${SRCDATE}"
-FILE_PR = "r4"
+PR = "r4"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "svn://svn.o-hand.com/repos/matchbox/trunk;module=matchbox-window-manager;proto=http \

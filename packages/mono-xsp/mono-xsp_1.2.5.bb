@@ -8,7 +8,7 @@ SECTION = "devel/mono"
 #
 
 
-FILE_PR = "r4"
+PR = "r4"
 
 DEPENDS = "mono"
 RDEPENDS = "mono"

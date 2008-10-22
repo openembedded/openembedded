@@ -2,7 +2,7 @@ DESCRIPTION = "JACK and ALSA Audio Analyzer from http://www.kokkinizita.net/linu
 SECTION = "x11/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "clthreads clxclient clalsadrv jack freetype fftwf"
 

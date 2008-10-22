@@ -4,7 +4,7 @@ SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl virtual/libx11 libxt"
 RDEPENDS = "tcl"
-FILE_PR = "r5"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
            file://disable-xim.patch;patch=1;pnum=0 \

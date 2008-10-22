@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.netsurf-browser.org/"
 SECTION = "x11/network"
 LICENSE = "GPLv2"
 PV = "1.1+svnr${SRCREV}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://svn.netsurf-browser.org/trunk;module=netsurf \
            file://netsurf.desktop"

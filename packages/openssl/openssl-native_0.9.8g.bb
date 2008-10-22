@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE = "-1"
 
 require openssl.inc
 
-FILE_PR = "r1"
+PR = "r1"
 
 # This flag can contain target options (e.g -mfpu=neon for armv7-a systems)
 export FULL_OPTIMIZATION = " "

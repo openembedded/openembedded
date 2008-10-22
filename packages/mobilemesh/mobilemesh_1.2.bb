@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.mitre.org/work/tech_transfer/mobilemesh/"
 LICENSE = "GPL"
 DEPENDS = "openssl"
 SRC_URI = "http://meshcube.org/download/mobilemesh_1.2.tgz"
-FILE_PR = "r1"
+PR = "r1"
 
 S = "${WORKDIR}/mobilemesh"
 

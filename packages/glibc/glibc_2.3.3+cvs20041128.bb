@@ -3,7 +3,7 @@ require glibc.inc
 DEFAULT_PREFERENCE_sh3 = "-99"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-FILE_PR = "r15"
+PR = "r15"
 
 GLIBC_ADDONS ?= "linuxthreads"
 

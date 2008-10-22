@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 inherit gpe autotools pkgconfig
 
-FILE_PR = "r0"
+PR = "r0"
 
 DEPENDS = "libgpewidget libdisplaymigration libgpevtype dbus"
 SECTION = "gpe"

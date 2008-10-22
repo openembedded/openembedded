@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for the EFIKA dev platform"
 SECTION = "kernel"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 PV = "2.6.21+git${SRCDATE}"
 
 DEFAULT_PREFERENCE = "-1"

@@ -2,7 +2,7 @@ DESCRIPTION = "PROJ.4 - Cartographic Projections Library"
 HOMEPAGE = "http://www.remotesensing.org/proj/"
 LICENSE = "MIT"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit autotools pkgconfig
 

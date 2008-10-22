@@ -1,6 +1,6 @@
 DESCRIPTION = "Tool to generate ready to flash .pkg files for neuros machines"
 LICENSE = "GPLv2"
-FILE_PR = "r3"
+PR = "r3"
 
 inherit native
 

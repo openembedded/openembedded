@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.openntpd.org/"
 SECTION = "console/network"
 LICENSE = "BSD"
 DEPENDS += "openssl tzdata"
-FILE_PR = "r14"
+PR = "r14"
 
 SRC_URI = "http://www.zip.com.au/~dtucker/openntpd/release/openntpd-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \

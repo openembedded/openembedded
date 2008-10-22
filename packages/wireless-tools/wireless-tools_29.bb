@@ -1,3 +1,3 @@
 require wireless-tools.inc
 
-FILE_PR = "r0"
+PR = "r0"

@@ -4,7 +4,7 @@ SECTION = "network/misc"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS= "bluez-libs alsa-lib"
-FILE_PR = "r0"
+PR = "r0"
 
 
 SRC_URI = "\

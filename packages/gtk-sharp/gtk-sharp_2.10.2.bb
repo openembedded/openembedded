@@ -1,5 +1,5 @@
 PV = "2.10.2"
-FILE_PR = "r1"
+PR = "r1"
 SDIRVER = "210"
 SEXT = "bz2"
 

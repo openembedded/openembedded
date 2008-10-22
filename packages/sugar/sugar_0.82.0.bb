@@ -1,7 +1,7 @@
 DESCRIPTION = "Sugar base system"
 LICENSE = "GPLv2"
 
-FILE_PR = "r3"
+PR = "r3"
 
 DEPENDS = "sugar-toolkit libxml2 gtk+"
 RDEPENDS = "sugar-toolkit sugar-base"

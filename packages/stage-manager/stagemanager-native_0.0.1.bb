@@ -1,5 +1,5 @@
 DESCRIPTION = "Helper script for packaged-staging.bbclass"
-FILE_PR = "r11"
+PR = "r11"
 
 SRC_URI = "file://stage-manager \
            file://stage-manager-ipkg \

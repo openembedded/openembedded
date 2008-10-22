@@ -2,7 +2,7 @@ DESCRIPTION = "GNU cpio is a program to manage archives of files."
 HOMEPAGE = "http://www.gnu.org/software/cpio/"
 SECTION = "console"
 LICENSE = "GPL"
-FILE_PR = "r4"
+PR = "r4"
 
 DEPENDS += " texinfo-native "
 

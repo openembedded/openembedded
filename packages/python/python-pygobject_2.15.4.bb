@@ -2,7 +2,7 @@ DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
-FILE_PR = "ml0"
+PR = "ml0"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 

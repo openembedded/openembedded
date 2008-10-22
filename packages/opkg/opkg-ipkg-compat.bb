@@ -1,7 +1,7 @@
 DESCRIPTION = "Files to make opkg and ipkg coexist"
 RDEPENDS = "opkg ipkg ipkg-collateral"
 
-FILE_PR = "r0"
+PR = "r0"
 PACKAGE_ARCH = "all"
 
 do_compile() {

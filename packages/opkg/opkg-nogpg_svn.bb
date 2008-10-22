@@ -4,7 +4,7 @@ DEPENDS = "curl"
 PROVIDES += "opkg"
 
 SRC_URI += "file://reduce-nogpg-noise.patch;patch=1"
-FILE_PR = "r1"
+PR = "r1"
 
 SRCREV = "${SRCREV_pn-opkg}"
 

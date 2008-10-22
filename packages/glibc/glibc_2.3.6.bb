@@ -1,6 +1,6 @@
 require glibc.inc
 
-FILE_PR = "r4"
+PR = "r4"
 
 #FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/glibc-2.3.6', '${FILE_DIRNAME}/orig/glibc', '${FILE_DIRNAME}/orig/files', '${FILE_DIRNAME}/orig' ], d)}"
 

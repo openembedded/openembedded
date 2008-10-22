@@ -3,7 +3,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native"
-FILE_PR = "r4"
+PR = "r4"
 
 # 0.3.1 has at least 2 known bugs which may lead to data corruption/loss:
 # 1. Arbitrary cutting off of NOTE field during parsing.

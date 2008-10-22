@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.caside.lancs.ac.uk/java_bt.php"
 SECTION = "console/network"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 openobex bluez-libs"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "http://www.caside.lancs.ac.uk/bt/obexpush.tar.gz \
            file://add-obextool.patch;patch=1 \

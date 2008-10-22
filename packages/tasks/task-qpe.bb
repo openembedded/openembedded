@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for programs running on Qt/Embedded based Palmtop Environents like Opie and Qtopia."
 SECTION = "opie/base"
 LICENSE = "MIT"
-FILE_PR = "r10"
+PR = "r10"
 
 inherit task
 

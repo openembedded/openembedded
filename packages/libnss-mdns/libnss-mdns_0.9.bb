@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 
 RRECOMMENDS_${PN} = "zeroconf"
-FILE_PR = "r0"
+PR = "r0"
 
 EXTRA_OECONF = "--libdir=/lib"
 S = "${WORKDIR}/nss-mdns-${PV}"

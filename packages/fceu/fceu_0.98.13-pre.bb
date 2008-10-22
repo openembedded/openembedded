@@ -4,7 +4,7 @@ SECTION = "games"
 LICENSE = "GPL"
 HOMEPAGE = "http://fceultra.sourceforge.net"
 DEPENDS = "virtual/libsdl"
-FILE_PR = "r1"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/fceultra/fceu-${PV}.src.tar.bz2 \
 	   file://fceu.patch;pnum=0;patch=1 \

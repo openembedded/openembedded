@@ -3,7 +3,7 @@ DESCRIPTION = "Transparent xcursor theme for handheld systems with visible watch
 SECTION = "x11/base"
 RREPLACES = "xcursor-transparent-theme"
 RPROVIDES = "xcursor-transparent-theme"
-FILE_PR ="r4"
+PR ="r4"
 
 SRC_URI = "http://projects.o-hand.com/matchbox/sources/utils/xcursor-transparent-theme-${PV}.tar.gz \
 	   file://use-relative-symlinks.patch;patch=1 \

@@ -4,7 +4,7 @@ HOMEPAGE = "N/A"
 LICENSE = "GPL"
 DEPENDS += "u-boot-utils-native"
 
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
            http://www.boundarydevices.com/boundary-2.6.22-2007-07-22.patch.bz2;patch=1 \

@@ -14,7 +14,7 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.22.tar.bz2 \
 
 S = "${WORKDIR}/linux-2.6.22"
 
-FILE_PR = "r2"
+PR = "r2"
 
 do_configure() {
 

@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Point-to-Point Protocol (PPP) daemon"
 HOMEPAGE = "http://samba.org/ppp/"
 LICENSE = "BSD GPLv2"
-FILE_PR = "r7"
+PR = "r7"
 
 SRC_URI = "http://ppp.samba.org/ftp/ppp/ppp-${PV}.tar.gz \
 	file://pppd.patch;patch=1 \

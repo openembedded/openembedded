@@ -5,7 +5,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://portabase.sourceforge.net/"
 DEPENDS = "metakit beecrypt"
 APPNAME = "portabase"
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/portabase/portabase_${PV}.tar.gz \
 	   file://qtopia.patch;patch=1 		\

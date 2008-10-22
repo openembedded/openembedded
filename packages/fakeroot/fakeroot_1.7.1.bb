@@ -3,7 +3,7 @@ SECTION = "base"
 LICENSE = "GPL"
 # fakeroot needs getopt which is provided by the util-linux package
 RDEPENDS = "util-linux"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "\
   ftp://ftp.gentoo.mesh-solutions.com/mirrors/gentoo/distfiles/fakeroot_1.7.1.tar.gz \

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.gnu.org/software/binutils/"
 SECTION = "devel"
 LICENSE = "GPL"
 DEFAULT_PREFERENCE = "-1"
-FILE_PR = "r2"
+PR = "r2"
 
 inherit autotools gettext
 

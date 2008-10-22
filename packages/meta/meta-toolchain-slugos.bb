@@ -1,4 +1,4 @@
-FILE_PR = "r0"
+PR = "r0"
 
 TOOLCHAIN_HOST_TASK = "task-slugos-toolchain-host"
 

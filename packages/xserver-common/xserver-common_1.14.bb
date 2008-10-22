@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-FILE_PR = "r2"
+PR = "r2"
 
 PACKAGE_ARCH = "all"
 

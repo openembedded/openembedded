@@ -1,7 +1,7 @@
 require libtool.inc
 require libtool_${PV}.bb
 
-FILE_PR = "r10"
+PR = "r10"
 PACKAGES = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libtool-${PV}"
 SRC_URI_append = " file://rpath-control.patch;patch=1 \

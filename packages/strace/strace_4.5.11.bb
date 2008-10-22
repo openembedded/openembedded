@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 SECTION = "console/utils"
-FILE_PR = "r2"
+PR = "r2"
 
 DESCRIPTION = "strace is a system call tracing tool."
 

@@ -4,7 +4,7 @@ SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv faad2 pulseaudio"
 PV = "0.12.1+svn${SRCDATE}"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
            file://mpd/mpd.init"

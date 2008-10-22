@@ -1,7 +1,7 @@
 DESCRIPTION = "Task package for maemo environment"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
-FILE_PR = "r0"
+PR = "r0"
 
 PACKAGES = "\
     maemo-task-base \

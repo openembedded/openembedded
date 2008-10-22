@@ -2,7 +2,7 @@ HOMEPAGE = "http://www.jcoppens.com/soft/cbrpager/index.en.php"
 DESCRIPTION = "A no-nonsense, simple to use, small viewer for cbr and cbz (comic book archive) files."
 SECTION = "x11/applications"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 DEPENDS = "gtk+ libgnomeui"
 RDEPENDS = "unzip"

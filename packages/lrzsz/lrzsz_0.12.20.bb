@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "standard"
 DESCRIPTION = "Tools for zmodem/xmodem/ymodem file transfer"
 DEPENDS = ""
-FILE_PR = "r4"
+PR = "r4"
 
 SRC_URI = "http://www.ohse.de/uwe/releases/lrzsz-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \

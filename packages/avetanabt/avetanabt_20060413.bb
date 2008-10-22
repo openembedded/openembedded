@@ -4,7 +4,7 @@ DEPENDS = "findutils-native virtual/javac-native kaffeh-native fastjar-native bl
 LICENSE = "GPL"
 HOMEPAGE = "http://sourceforge.net/projects/avetanabt/"
 
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/avetanabt/avetanaBluetooth-${PV}.tgz"
 

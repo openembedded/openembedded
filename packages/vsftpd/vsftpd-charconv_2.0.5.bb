@@ -1,7 +1,7 @@
 DESCRIPTION = "Secure ftp daemon with filename charconv"
 SECTION = "console/network"
 LICENSE = "GPL"
-FILE_PR = "r1"
+PR = "r1"
 
 FILESPATH_append = ":${@os.path.dirname(bb.data.getVar('FILE',d,1))}/vsftpd-2.0.5"
 

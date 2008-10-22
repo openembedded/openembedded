@@ -1,3 +1,3 @@
 require flac.inc
 
-FILE_PR = "r6"
+PR = "r6"

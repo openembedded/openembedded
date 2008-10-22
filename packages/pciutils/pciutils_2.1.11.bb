@@ -5,7 +5,7 @@ DESCRIPTION_pciutils-ids = 'The list of PCI IDs for pciutils'
 HOMEPAGE = "http://atrey.karlin.mff.cuni.cz/~mj/pciutils.shtml"
 LICENSE = "GPLv2"
 
-FILE_PR ="r3"
+PR ="r3"
 
 PARALLEL_MAKE = ""
 FILES_pciutils-ids="${prefix}/share/pci.ids"

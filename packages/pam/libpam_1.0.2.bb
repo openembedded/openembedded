@@ -12,7 +12,7 @@ LICENSE = "GPLv2"
 
 DEPENDS = "flex flex-native"
 
-FILE_PR = "r1"
+PR = "r1"
 
 # The project is actually called Linux-PAM but that gives
 # a bad OE package name because of the upper case characters

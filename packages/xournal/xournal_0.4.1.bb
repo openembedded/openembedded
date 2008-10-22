@@ -5,7 +5,7 @@ DEPENDS = "gtk+ libgnomecanvas libgnomeprintui"
 RDEPENDS = "poppler"
 SECTION = "x11"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "http://xournal.sourceforge.net/xournal-${PV}.tar.gz \
           "

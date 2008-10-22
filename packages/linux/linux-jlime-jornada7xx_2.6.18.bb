@@ -1,7 +1,7 @@
 SECTION = "kernel"
 DESCRIPTION = "JLime Linux kernel for Arm based Jornada 7xx"
 LICENSE = "GPL"
-FILE_PR = "r0"
+PR = "r0"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "jornada7xx"

@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "startup-notification libwnck orbit2 gtk+ libgnome libgnomeui gnome-desktop libglade gnome-menus orbit2-native"
 
-FILE_PR = "r1"
+PR = "r1"
 
 inherit gnome pkgconfig
 

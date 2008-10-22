@@ -2,7 +2,7 @@ require xorg-lib-common.inc
 
 DESCRIPTION = "X Printing Extension (Xprint) client library"
 DEPENDS += "libxext libxau printproto"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 XORG_PN = "libXp"

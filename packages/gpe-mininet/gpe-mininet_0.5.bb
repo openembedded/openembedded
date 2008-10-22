@@ -1,6 +1,6 @@
 inherit gpe pkgconfig
 
-FILE_PR = "r0"
+PR = "r0"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget gpe-icons gpe-conf matchbox-panel"
 SECTION = "gpe"

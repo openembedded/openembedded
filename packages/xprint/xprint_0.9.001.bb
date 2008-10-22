@@ -1,6 +1,6 @@
 SECTION = "x11/base"
 LICENSE = "BSD-X"
-FILE_PR = "r1"
+PR = "r1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/xprint/xprint_mozdev_org_source-2004-07-07-release_009_001.tar.gz \
 	file://imake-staging.patch;patch=1"
 

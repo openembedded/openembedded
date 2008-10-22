@@ -1,7 +1,7 @@
 require icu-3.6.inc
 
 DEPENDS += "icu-native"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI += "file://use-g++-for-linking.patch;patch=1"
 

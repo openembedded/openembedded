@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for GPE Palmtop Environment Phone Edition"
-FILE_PR = "r10"
+PR = "r10"
 LICENSE = "MIT"
 
 inherit task

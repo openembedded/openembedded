@@ -5,7 +5,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 DEPENDS = "glib-2.0 fuse"
-FILE_PR = "r0"
+PR = "r0"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/fuse/${P}.tar.gz"
 S = "${WORKDIR}/${P}"

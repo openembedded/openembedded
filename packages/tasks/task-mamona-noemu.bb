@@ -1,6 +1,6 @@
 DESCRIPTION = "Noemu packages are i386 packages thar run inside ARM chroot environment"
 LICENSE = "MIT"
-FILE_PR = "r1"
+PR = "r1"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"

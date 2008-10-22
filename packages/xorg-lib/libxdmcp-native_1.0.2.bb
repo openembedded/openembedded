@@ -1,7 +1,7 @@
 require libxdmcp_${PV}.bb
 
 DEPENDS = "xproto-native util-macros-native"
-FILE_PR = "r1"
+PR = "r1"
 PE = "1"
 
 XORG_PN = "libXdmcp"

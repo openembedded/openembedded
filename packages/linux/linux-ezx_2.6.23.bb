@@ -2,7 +2,7 @@ DESCRIPTION = "2.6 Linux Development Kernel for the Motorola GSM phones A780 and
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
 EZX = "ezxdev"
-FILE_PR = "${EZX}-r2"
+PR = "${EZX}-r2"
 
 # unstable branch, use 2.6.21 if you want something working
 DEFAULT_PREFERENCE = "-99"

@@ -3,7 +3,7 @@ SECTION = "network"
 PRIORITY = "optional"
 HOMEPAGE = "http://sf.net/project/miau/"
 LICENSE = "GPL"
-FILE_PR = "r2"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/miau/miau-${PV}.tar.gz \
            file://paths.patch;patch=1 \

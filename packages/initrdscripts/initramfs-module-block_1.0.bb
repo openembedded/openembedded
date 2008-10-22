@@ -1,5 +1,5 @@
 SRC_URI = "file://85-blockboot.sh"
-FILE_PR = "r3"
+PR = "r3"
 RDEPENDS = "initramfs-uniboot"
 DESCRIPTION = "An initramfs module for booting off normal block devices."
 

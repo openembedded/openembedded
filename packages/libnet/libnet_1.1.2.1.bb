@@ -6,7 +6,7 @@ LICENSE = "BSD"
 DEPENDS = "libpcap"
 # There are major API changes beween libnet v1.0 and libnet v1.1
 PROVIDES = "libnet-1.1"
-FILE_PR = "r3"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/libn/libnet/libnet_${PV}.orig.tar.gz \
            file://support-uclibc.patch;patch=1 \
