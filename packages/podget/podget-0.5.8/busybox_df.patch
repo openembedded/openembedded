@@ -1,0 +1,11 @@
+--- podget/podget~	2008-05-08 08:50:23.000000000 +0000
++++ podget/podget	2008-05-08 08:50:37.000000000 +0000
+@@ -535,7 +535,7 @@
+                     url_base=$(echo $url | sed -e 's/\(.*\/\)[^\/]\+/\1/')
+ 
+                     # Test for available space on library partition
+-                    avail_space=$(df -kP ${dir_library} | tail -n 1 | awk '{print $4}')
++                    avail_space=$(df -k ${dir_library} | tail -n 1 | awk '{print $4}')
+                     if [ ${avail_space} -le ${min_space} ] ; then
+                         echo -e "\nAvailable space on Library partition has dropped below allowed.\nStopping Session."
+                         exit 1
