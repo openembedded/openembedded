@@ -67,6 +67,8 @@ do_compile() {
 	export CE_INSTALL_DIR=${S}
 	export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
 	export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
+	export CGTOOLS_V5T="${CROSS_DIR}"
+	export CC_V5T="bin/${TARGET_PREFIX}gcc"
 
     sed -i -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3:${CROSS_DIR}:g \
         -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
@@ -77,7 +79,8 @@ do_compile() {
 
 	sed -i -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
 	        xdcpaths.mak
-
+	
+	unset CC
 	for i in codecs extensions servers apps ; do
 		make -e -C ${S}/examples/ti/sdo/ce/examples/$i clean	
 		make -e -C ${S}/examples/ti/sdo/ce/examples/$i
