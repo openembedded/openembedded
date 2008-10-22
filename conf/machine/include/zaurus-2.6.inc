@@ -2,7 +2,6 @@
 # Additionally, clamshell specific stuff in zaurus-clamshell.inc
 
 TARGET_ARCH = "arm"
-PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5e armv5te"
 PACKAGE_EXTRA_ARCHS_collie = ""
 
 MACHINE_KERNEL_VERSION = "2.6"
