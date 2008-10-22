@@ -16,7 +16,7 @@ require ti-paths.inc
 DSPLINKPLATFORM ?= "Davinci"
 
 DSPLINKPLATFORM_omap5912osk = "OMAP"
-DSPLINKPLATFORM_beagleboard = "OMAP"
+DSPLINKPLATFORM_beagleboard = "OMAP3530"
 DSPLINKPLATFORM_davinci-sffsdr = "Davinci"
 DSPLINKPLATFORM_davinci-dvevm = "Davinci"
 
@@ -32,21 +32,21 @@ KERNELARMFLAGS = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -W
                    -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
                    -mlittle-endian \
                    -D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi \
-                   -msoft-float -Uarm -mapcs                  \
+                   -Uarm                  \
                    -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
 KERNELARMFLAGS_armv6 = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
                    -Wno-trigraphs -fno-strict-aliasing -fno-common             \
                    -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
                    -mlittle-endian \
                    -D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s \
-                   -msoft-float -Uarm -mapcs                  \                   
+                   -Uarm                  \                   
                    -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
 KERNELARMFLAGS_armv7a = "-c -nostdinc -include $(BASE_OSINC)/linux/autoconf.h -isystem $(OSINC_PLATFORM)  -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
                    -Wno-trigraphs -fno-strict-aliasing -fno-common             \
                    -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \                                      
                    -mlittle-endian \
                    -D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8 \
-                   -msoft-float -Uarm -mapcs                  \ 
+                   -Uarm                  \ 
                    -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux \
                    -D__KERNEL__ -mno-thumb-interwork   -msoft-float -fno-optimize-sibling-calls -g  -fno-stack-protector -Wno-pointer-sign -g -DUSE_UDEV=1 -DOS_LINUX -DLINUX_KERNEL"
 
@@ -54,56 +54,38 @@ DSPFLAGS = "-q -pdr -pdv -pden -ml3 -mv64+ "
 
 export DSPLINKPLATFORM 
 export DSPLINKDSP
+export DSPLINKSOC
 
 do_configure () {
-	cp ${WORKDIR}/CURRENTCFG.MK ${S}/config
-	cp ${WORKDIR}/openembedded.mk ${S}/make/Linux
-	cp ${WORKDIR}/c64xx_5.xx_linux.mk ${S}/make/DspBios
 
-	sed -i 	-e s:SED_ME_SOURCEDIR:${S}:g \
-		-e s:SED_ME_GPPDISTRO:openembedded:g \
-		-e s:SED_ME_KERNELVERSION:${KERNEL_VERSION}:g \
-		-e s:SED_ME_DSPDISTRO:c64xx_5.xx_linux:g \
-		-e s:SED_ME_PLATFORM:${DSPLINKPLATFORM}:g \
-		-e s:SED_ME_DSP:${DSPLINKDSP}:g \
-		-e s:SED_ME_SOC:${DSPLINKSOC}:g \	
-    	${S}/config/CURRENTCFG.MK	
+# Run perl script to create appropriate makefiles (v1.60 and up)
+DSPLINK=${S} perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=OMAP3530SHMEM --dspos_0=DSPBIOS5XX  --gppos=OMAPLSP --comps=ponslrmc
 
-	sed -i	-e s:SED_ME_CROSS:${STAGING_INCDIR}:g \
-		-e s:SED_ME_STAGINGDIR:${STAGING_DIR_TARGET}:g \
-		-e s:SED_ME_TARGET_PREFIX:${TARGET_PREFIX}:g \
-		-e s:SED_ME_KERNELDIR:${STAGING_KERNEL_DIR}:g \
-		-e 's:SEDME_KERNEL_ARMFLAGS:${KERNELARMFLAGS}:g' \
-		-e 's:SEDME_USER_ARMFLAGS:${USERARMFLAGS}:g' \
-		${S}/make/Linux/openembedded.mk 
-
-	sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
-		-e s:SEDME_BIOSUNPACKDIR:${TIBIOSDIR}:g \	
-		-e s:SEDME_CGTOOLSDIR:${TICGTOOLSDIR}:g \	
-		-e 's:SEDME_DSPFLAGS:${DSPFLAGS}:g' \
-		${S}/make/DspBios/c64xx_5.xx_linux.mk
 }
 
 PARALLEL_MAKE = ""
 
 do_compile () {
-	ln -sf ${S}/gpp/src/api/*h ${S}/gpp/inc/
-	ln -sf ${S}/gpp/src/pmgr/Linux/2.6.18 ${S}/gpp/src/pmgr/Linux/${KERNEL_VERSION}
-	ln -sf ${S}/gpp/src/api/Linux/2.6.18 ${S}/gpp/src/api/Linux/${KERNEL_VERSION}
-	ln -sf ${S}/gpp/src/osal/Linux/2.6.18 ${S}/gpp/src/osal/Linux/${KERNEL_VERSION}
-	ln -sf ${S}/gpp/src/pmgr/Linux/drv_pmgr.h ${S}/gpp/inc/drv_pmgr.h
-	ln -sf ${S}/gpp/src/pmgr/pmgr_proc.h ${S}/gpp/inc/pmgr_proc.h
-
 	unset DISPLAY
-	
-	sed -i -e 's:gcc:gcc${KERNEL_CCSUFFIX}:' ${S}/make/Linux/openembedded.mk
-	oe_runmake CC="${KERNEL_CC}" LD="${KERNEL_LD}" -C ${S}/gpp/src all targets
-	
-	sed -i -e 's:gcc${KERNEL_CCSUFFIX}:gcc:' ${S}/make/Linux/openembedded.mk
-	oe_runmake -C ${S}/gpp/src/samples
+	sed -i -e s:armv7a:armv7-a:g make/Linux/omap3530_2.6.mk || true
 
-	oe_runmake -C ${S}/dsp/src
-	oe_runmake -C ${S}/dsp/src/samples
+	# export various settings to override the defaults in the makefiles	
+	export DSP_BASE_CGTOOLS=${TITOOLSDIR}/${TICGTOOLSDIR}
+	export DSP_BASE_BIOS=${TITOOLSDIR}/${TIBIOSDIR}
+	export DSP_BASE_RTDX=${TITOOLSDIR}/${TIBIOSDIR}/packages/ti/rtdx
+	export GPPTOOL_DIR=${CROSS_DIR}
+	export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
+	export LINK_INSTALL_DIR=${S}
+	export VARIANT=${DSPLINKSOC}
+	export PLATFORM=${DSPLINKPLATFORM}
+	export BASE_TOOLCHAIN=${CROSS_DIR}
+	export BASE_CGTOOLS=${BASE_TOOLCHAIN}/bin
+	export OSINC_PLATFORM1=${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include
+	export OSINC_TARGET=${BASE_TOOLCHAIN}/target/usr/include
+	export ARCHIVER_AR=${TARGET_PREFIX}ar
+	export BASE_SABIOS=${DSP_BASE_BIOS}
+	
+	make -e -f ${WORKDIR}/Makefile.dsplink
 }
 
 do_install () {
@@ -121,14 +103,9 @@ do_install () {
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/scalegpp          ${D}/${bindir}
 
 	install -d ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/loop.out          ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/messagemulti.out  ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/message.out       ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/mpcsxfer.out      ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/mplist.out        ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/readwrite.out     ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/ringio.out        ${D}/${datadir}/dsplink
-	install ${S}/dsp/BUILD/EXPORT/RELEASE/scale.out         ${D}/${datadir}/dsplink
+	for i in $(find ${S}/dsp/BUILD/ -name "*.out") ; do
+		install ${i}  ${D}/${datadir}/dsplink
+	done	
 
 	install -d ${D}/${libdir}
 	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib  ${D}/${libdir}

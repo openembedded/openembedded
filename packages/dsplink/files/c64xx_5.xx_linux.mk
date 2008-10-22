@@ -135,7 +135,7 @@ CC_SW_REL       := -o3
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler
 #   ----------------------------------------------------------------------------
-STD_CC_FLAGS    := SEDME_DSPFLAGS -d"CHIP_DM642"
+STD_CC_FLAGS    := SEDME_DSPFLAGS 
 
 #   ----------------------------------------------------------------------------
 #   Standard flags for the compiler when building an executable

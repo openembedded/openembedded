@@ -17,6 +17,7 @@ SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_51_00_08.tar.gz \
            file://c64xx_5.xx_linux.mk \
            file://openembedded.mk \
 	   file://prcs-fix-include.patch;patch=1;pnum=2 \
+		file://Makefile.dsplink \
 "
 
 SRC_URI_append_beagleboard = " \
