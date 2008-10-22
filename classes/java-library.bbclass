@@ -10,6 +10,9 @@
 
 inherit java
 
+# use java_stage for native packages
+JAVA_NATIVE_STAGE_INSTALL = "1"
+
 def java_package_name(d):
   import bb;
 
@@ -25,18 +28,6 @@ def java_package_name(d):
 
   return pre + pn + post
 
-def java_base_package_name(d):
-  import bb;
-
-  pre=""
-  post=""
-
-  pn = bb.data.getVar('PN', d, 1)
-  if pn.endswith("-native"):
-		pn = pn[0:-7]
-
-  return pn
-
 JPN ?= "${@java_package_name(d)}"
 
 DEPENDS_prepend = "virtual/javac-native fastjar-native "
@@ -46,12 +37,6 @@ PACKAGES = "${JPN}"
 PACKAGE_ARCH_${JPN} = "all"
 
 FILES_${JPN} = "${datadir_java}"
-
-# Base package name
-# Automatically derives "foo" from "foo-native"
-BPN ?= ""${@java_base_package_name(d)}""
-
-BP ?= "${BPN}-${PV}"
 
 # File name of the libraries' main Jar file
 JARFILENAME = "${BP}.jar"

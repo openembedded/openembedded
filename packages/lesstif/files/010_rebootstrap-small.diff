@@ -1,0 +1,456 @@
+Index: lesstif2-0.95.0/ac_debug.m4
+===================================================================
+--- lesstif2-0.95.0.orig/ac_debug.m4	2004-02-01 16:49:40.000000000 +0100
++++ lesstif2-0.95.0/ac_debug.m4	2006-07-11 11:11:36.000000000 +0200
+@@ -4,6 +4,90 @@
+ dnl Source code which depends on this is mostly in
+ dnl DebugUtil.c/.h
+ dnl
++AC_DEFUN(LT_WITH_DMALLOC,
++[AC_MSG_CHECKING(if malloc debugging is wanted)
++AC_ARG_WITH(dmalloc,
++[  --with-dmalloc[=path]   use dmalloc, see INSTALL(.html) for reference],
++[if test "$withval" = no; then
++  AC_MSG_RESULT(no)
++else
++dnl We overwrite the variables since we won't continue in
++dnl case of an error!
++dnl We modify CFLAGS, and also link libs (LDFLAGS) and programs (LIBS)
++  if test "$withval" != yes; then
++dnl  a path was given
++     CFLAGS="$CFLAGS -I$withval/include -DDMALLOC_FUNC_CHECK"
++
++     LDFLAGS="$LDFLAGS -L$withval/lib -ldmalloc"
++     LIBS="$LIBS -L$withval/lib -ldmalloc"
++  else
++dnl  no path was given
++     CFLAGS="$CFLAGS -DDMALLOC_FUNC_CHECK"
++     LDFLAGS="$LDFLAGS -ldmalloc"
++     LIBS="$LIBS -ldmalloc"
++  fi
++  AC_TRY_LINK(
++  [#include <dmalloc.h>],
++  [char *ptr;
++  ptr=malloc(1);
++  free(ptr);
++  ],
++  [AC_DEFINE(WITH_DMALLOC,1,
++            [Define if using the dmalloc debugging malloc package])
++  AC_MSG_RESULT(Using dmalloc)],
++  AC_MSG_ERROR(dmalloc not found)
++  )
++fi],
++[AC_MSG_RESULT(no)])
++])
++
++
++dnl
++dnl Enable another malloc checker for debugging purposes
++dnl Source code which depends on this is mostly in
++dnl DebugUtil.c/.h
++dnl
++AC_DEFUN(LT_WITH_DBMALLOC,
++[AC_MSG_CHECKING(if malloc debugging is wanted)
++AC_ARG_WITH(dbmalloc,
++[  --with-dbmalloc[=path]   use dbmalloc, see INSTALL(.html) for reference],
++[if test "$withval" = no; then
++  AC_MSG_RESULT(no)
++else
++dnl We overwrite the variables since we won't continue in
++dnl case of an error!
++dnl We modify CFLAGS, and also link libs (LDFLAGS) and programs (LIBS)
++  if test "$withval" != yes; then
++dnl  a path was given
++     CFLAGS="$CFLAGS -I$withval/include"
++
++     LDFLAGS="$LDFLAGS -L$withval/lib -ldbmalloc"
++     LIBS="$LIBS -L$withval/lib -ldbmalloc"
++  else
++dnl  no path was given
++     LDFLAGS="$LDFLAGS -ldbmalloc"
++     LIBS="$LIBS -ldbmalloc"
++  fi
++  AC_TRY_LINK(
++  [#include <dbmalloc.h>],
++  [char *ptr;
++  ptr=malloc(1);
++  free(ptr);
++  ],
++  [AC_DEFINE(WITH_DBMALLOC,1,
++            [Define if using the dbmalloc debugging malloc package])
++  AC_MSG_RESULT(Using dbmalloc)],
++  AC_MSG_ERROR(dbmalloc not found)
++  )
++fi],
++[AC_MSG_RESULT(no)])
++])
++dnl
++dnl Enable malloc checker for debugging purposes
++dnl See http://dmalloc.com, INSTALL(.html) for references to this.
++dnl Source code which depends on this is mostly in
++dnl DebugUtil.c/.h
++dnl
+ AC_DEFUN([LT_WITH_DMALLOC],
+ [AC_MSG_CHECKING(if malloc debugging is wanted)
+ AC_ARG_WITH(dmalloc,
+Index: lesstif2-0.95.0/ac_find_xft.m4
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ lesstif2-0.95.0/ac_find_xft.m4	2006-07-11 11:11:44.000000000 +0200
+@@ -0,0 +1,299 @@
++dnl
++dnl $Header: /home/kobras/cvsroot/debian/lesstif1-1/ac_find_xft.m4,v 1.1 2004/05/27 10:48:25 kobras Exp $
++dnl
++dnl $XFree86: xc/lib/fontconfig/configure.in,v 1.7 2002/08/01 15:57:25 keithp Exp $
++dnl
++dnl Copyright © 2002 Keith Packard, member of The XFree86 Project, Inc.
++dnl Manipulated into AC_FIND_XFT macro by Danny Backx (also © 2002).
++dnl
++dnl Permission to use, copy, modify, distribute, and sell this software and its
++dnl documentation for any purpose is hereby granted without fee, provided that
++dnl the above copyright notice appear in all copies and that both that
++dnl copyright notice and this permission notice appear in supporting
++dnl documentation, and that the name of Keith Packard not be used in
++dnl advertising or publicity pertaining to distribution of the software without
++dnl specific, written prior permission.  Keith Packard makes no
++dnl representations about the suitability of this software for any purpose.  It
++dnl is provided "as is" without express or implied warranty.
++dnl
++dnl KEITH PACKARD DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
++dnl INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO
++dnl EVENT SHALL KEITH PACKARD BE LIABLE FOR ANY SPECIAL, INDIRECT OR
++dnl CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
++dnl DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
++dnl TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
++dnl PERFORMANCE OF THIS SOFTWARE.
++dnl
++
++AC_DEFUN(AC_FIND_XFT,
++[
++AH_TEMPLATE([HAVE_FREETYPE], [We have the FreeType library])
++AH_TEMPLATE([HAVE_FONTCONFIG], [We have the fontconfig library])
++AH_TEMPLATE([HAVE_XRENDER], [We have the fontconfig library])
++AH_TEMPLATE([FC_DEFAULT_FONTS], [We have the fontconfig library])
++AH_TEMPLATE([X_FONT_DIR], [We have the fontconfig library])
++AH_TEMPLATE([CONFDIR], [We have the fontconfig library])
++AH_TEMPLATE([USE_XFT], [We have the fontconfig library])
++
++AC_ARG_WITH(freetype_includes, [  --with-freetype-includes=DIR  Use FreeType includes in DIR], freetype_includes=$withval, freetype_includes=yes)
++AC_ARG_WITH(freetype_lib,      [  --with-freetype-lib=DIR       Use FreeType library in DIR], freetype_lib=$withval, freetype_lib=yes)
++AC_ARG_WITH(freetype_config,   [  --with-freetype-config=PROG   Use FreeType configuration program PROG], freetype_config=$withval, freetype_config=yes)
++dnl AC_ARG_WITH(expat,             [  --with-expat=DIR              Use Expat in DIR], expat=$withval, expat=yes)
++dnl AC_ARG_WITH(expat_includes,    [  --with-expat-includes=DIR     Use Expat includes in DIR], expat_includes=$withval, expat_includes=yes)
++dnl AC_ARG_WITH(expat_lib,         [  --with-expat-lib=DIR          Use Expat library in DIR], expat_lib=$withval, expat_lib=yes)
++AC_ARG_WITH(default_fonts,     [  --with-default-fonts=DIR      Use fonts from DIR when config is busted], defaultfonts="$withval", default_fonts=yes)
++dnl AC_ARG_WITH(confdir,           [  --with-confdir=DIR            Use DIR to store configuration files (default /etc/fonts)], confdir="$withval", confdir=yes)
++AC_ARG_WITH(fontconfig_includes, [  --with-fontconfig-includes=DIR  Use Fontconfig includes in DIR], fontconfig_includes=$withval, fontconfig_includes=yes)
++AC_ARG_WITH(fontconfig_lib,      [  --with-fontconfig-lib=DIR       Use Fontconfig library in DIR], fontconfig_lib=$withval, fontconfig_lib=yes)
++AC_ARG_WITH(fontconfig_config,   [  --with-fontconfig-config=PROG  Use Fontconfig configuration program PROG], fontconfig_config=$withval, fontconfig_config=yes)
++AC_ARG_ENABLE(xrender,   [  --enable-xrender  Enable Xrender])
++
++# Using x libraries, set X font directory
++case "$no_x" in
++yes)
++	;;
++*)
++	X_FONT_DIR="$x_libraries/X11/fonts"
++	AC_DEFINE_UNQUOTED(X_FONT_DIR,$X_FONT_DIR)
++	;;
++esac
++AC_SUBST(X_FONT_DIR)
++
++#
++# Check freetype configuration
++#
++case "$freetype_config" in
++no)
++	;;
++yes)
++	AC_CHECK_PROG(ft_config,freetype-config,freetype-config,no)
++	;;
++*)
++	ft_config="$freetype_config"
++	;;
++esac
++
++case "$freetype_includes" in
++no)
++	FREETYPE_CFLAGS=""
++	;;
++yes)
++	case "$ft_config" in
++	no)
++		FREETYPE_CFLAGS=""
++		;;
++	*)
++		FREETYPE_CFLAGS="`$ft_config --cflags`"
++		;;
++	esac
++	;;
++*)
++	FREETYPE_CFLAGS="-I$freetype_includes"
++	;;
++esac
++
++case "$freetype_lib" in
++no)
++	freetype_lib=""
++	;;
++yes)
++	case "$ft_config" in
++	no)
++		freetype_lib=""
++		;;
++	*)
++		freetype_lib="`$ft_config --libs`"
++		;;
++	esac
++	;;
++*)
++	freetype_lib="-L$freetype_lib -lfreetype"
++	;;
++esac
++
++saved_LIBS="$LIBS"
++LIBS="$LIBS $freetype_lib"
++saved_CPPFLAGS="$CPPFLAGS"
++CPPFLAGS="$CPPFLAGS $FREETYPE_CFLAGS"
++AC_CHECK_HEADERS(freetype/freetype.h)
++
++HAVEFREETYPE="no"
++case "$ac_cv_header_freetype_freetype_h" in
++no)
++	CPPFLAGS="$saved_CPPFLAGS"
++	LIBS="$saved_LIBS"
++	;;
++yes)
++	AC_CHECK_FUNCS(FT_Init_FreeType)
++	case "$ac_cv_func_FT_Init_FreeType" in
++	no)
++		CPPFLAGS="$saved_CPPFLAGS"
++		LIBS="$saved_LIBS"
++		;;
++	yes)
++		HAVEFREETYPE="yes"
++		AC_DEFINE(HAVE_FREETYPE)
++		AC_SUBST(FREETYPE_CFLAGS)
++		;;
++	esac
++	;;
++esac
++
++case "$default_fonts" in
++yes)
++	FC_DEFAULT_FONTS="/usr/share/fonts"
++	AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "/usr/share/fonts")
++	;;
++*)
++	FC_DEFAULT_FONTS="$default_fonts"
++	AC_DEFINE_UNQUOTED(FC_DEFAULT_FONTS, "$default_fonts")
++	;;
++esac
++
++AC_SUBST(FC_DEFAULT_FONTS)
++
++#
++# Set CONFDIR and FONTCONFIG_PATH
++#
++
++case "$confdir" in
++no|yes)
++	confdir=/etc/fonts
++	;;
++*)
++	;;
++esac
++AC_SUBST(confdir)
++CONFDIR='${confdir}'
++AC_DEFINE_UNQUOTED(CONFDIR, "$CONFDIR")
++AC_SUBST(CONFDIR)
++
++#
++# Check X configuration
++#
++HAVEXRENDER="no"
++case "$enable_xrender" in
++no)
++	;;
++*)
++	XRENDER_CFLAGS="-I$x_includes"
++	XRENDER_LIBS="-L$x_libraries -lXft -lXrender"
++
++	saved_LIBS="$LIBS"
++	LIBS="$LIBS $XRENDER_LIBS"
++	saved_CPPFLAGS="$CPPFLAGS"
++	CPPFLAGS="$CPPFLAGS $XRENDER_CFLAGS"
++	AC_CHECK_HEADERS(X11/extensions/Xrender.h)
++
++	case "$ac_cv_header_X11_extensions_Xrender_h" in
++	no)
++		CPPFLAGS="$saved_CPPFLAGS"
++		LIBS="$saved_LIBS"
++		;;
++	yes)
++		AC_CHECK_FUNCS(XRenderParseColor)
++		case "$ac_cv_func_XRenderParseColor" in
++		no)
++			CPPFLAGS="$saved_CPPFLAGS"
++			LIBS="$saved_LIBS"
++			;;
++		yes)
++			HAVEXRENDER="yes"
++			AC_DEFINE(HAVE_XRENDER)
++			AC_SUBST(XRENDER_CFLAGS)
++			AC_SUBST(XRENDER_LIBS)
++			;;
++		esac
++		;;
++	esac
++
++	;;
++esac
++
++#
++# Check fontconfig configuration
++#
++case "$fontconfig_config" in
++no)
++	;;
++yes)
++	AC_CHECK_PROG(fc_config,fontconfig-config,fontconfig-config,no)
++	;;
++*)
++	fc_config="$fontconfig_config"
++	;;
++esac
++
++case "$fontconfig_includes" in
++no)
++	FONTCONFIG_CFLAGS=""
++	;;
++yes)
++	case "$fc_config" in
++	no)
++		FONTCONFIG_CFLAGS=""
++		;;
++	*)
++		FONTCONFIG_CFLAGS="`$fc_config --cflags`"
++		;;
++	esac
++	;;
++*)
++	FONTCONFIG_CFLAGS="-I$fontconfig_includes"
++	;;
++esac
++
++case "$fontconfig_lib" in
++no)
++	fontconfig_lib=""
++	;;
++yes)
++	case "$fc_config" in
++	no)
++		fontconfig_lib=""
++		;;
++	*)
++		FONTCONFIG_LIBS="`$fc_config --libs`"
++		;;
++	esac
++	;;
++*)
++	FONTCONFIG_LIBS="-L$fontconfig_lib -lfontconfig"
++	;;
++esac
++
++saved_LIBS="$LIBS"
++LIBS="$LIBS $FONTCONFIG_LIBS"
++saved_CPPFLAGS="$CPPFLAGS"
++CPPFLAGS="$CPPFLAGS $FONTCONFIG_CFLAGS"
++AC_CHECK_HEADERS(fontconfig/fontconfig.h)
++
++case "$ac_cv_header_fontconfig_fontconfig_h" in
++no)
++	CPPFLAGS="$saved_CPPFLAGS"
++	LIBS="$saved_LIBS"
++	;;
++yes)
++	AC_CHECK_FUNCS(FcInit)
++	case "$ac_cv_func_FcInit" in
++	no)
++		CPPFLAGS="$saved_CPPFLAGS"
++		LIBS="$saved_LIBS"
++		;;
++	yes)
++		AC_DEFINE(HAVE_FONTCONFIG)
++		AC_SUBST(FONTCONFIG_CFLAGS)
++		AC_SUBST(FONTCONFIG_LIBS)
++		;;
++	esac
++	;;
++esac
++
++dnl
++dnl Should this be conditionally defined ?
++dnl
++if test "$HAVEXRENDER" = "yes" -a "$HAVEFREETYPE" = "yes"
++then
++	AC_DEFINE(USE_XFT)
++fi
++])
+Index: lesstif2-0.95.0/ac_have_libxp.m4
+===================================================================
+--- lesstif2-0.95.0.orig/ac_have_libxp.m4	2004-02-01 16:49:40.000000000 +0100
++++ lesstif2-0.95.0/ac_have_libxp.m4	2006-07-11 11:11:36.000000000 +0200
+@@ -11,6 +11,52 @@
+ dnl Makefiles. Perhaps one should immediately add those libs
+ dnl to link commands which include libXm version2.1?!
+ dnl
++AC_DEFUN(LT_HAVE_LIBXP,
++[AC_REQUIRE([AC_PATH_X])
++AC_CACHE_CHECK(whether libXp is available, lt_cv_libxp,
++[lt_save_CFLAGS="$CFLAGS"
++lt_save_CPPFLAGS="$CPPFLAGS"
++lt_save_LIBS="$LIBS"
++LIBS="$X_LIBS -lXp -lXext -lXt $X_PRE_LIBS -lX11 $X_EXTRA_LIBS $LIBS"
++CFLAGS="$X_CFLAGS $CFLAGS"
++CPPFLAGS="$X_CFLAGS $CPPFLAGS"
++AC_TRY_LINK([
++#include <X11/Intrinsic.h>
++#include <X11/extensions/Print.h>
++],[
++Display *display=NULL;
++short   major_version, minor_version;
++Status rc;
++rc=XpQueryVersion(display, &major_version, &minor_version);
++],
++lt_cv_libxp=yes,
++lt_cv_libxp=no)
++])
++if test $lt_cv_libxp = yes; then
++  AC_DEFINE(HAVE_LIB_XP)
++  LT_HAVELIBXP=1
++else
++  LT_HAVELIBXP=0 
++fi
++AM_CONDITIONAL(Have_Libxp, test "$lt_cv_libxp" = "yes")
++AC_SUBST(LT_HAVELIBXP)
++CFLAGS="$lt_save_CFLAGS"
++CPPFLAGS="$lt_save_CPPFLAGS"
++LIBS="$lt_save_LIBS"
++])
++dnl
++dnl Check for libXp
++dnl In fact this check ensures that
++dnl  - <X11/extensions/Print.h> and
++dnl  - both libXp and libXext
++dnl are in place
++dnl Perhaps AC_CHECK_LIB() could be used as well, but
++dnl requires the same amount of work to get all linker
++dnl flags and additional libraries specified.
++dnl If the test succeeds 'Have_Libxp' will be defined within our 
++dnl Makefiles. Perhaps one should immediately add those libs
++dnl to link commands which include libXm version2.1?!
++dnl
+ AC_DEFUN([LT_HAVE_LIBXP],
+ [AC_REQUIRE([AC_PATH_X])
+ AC_CACHE_CHECK(whether libXp is available, lt_cv_libxp,

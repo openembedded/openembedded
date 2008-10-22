@@ -80,11 +80,14 @@ export oldincludedir = "${STAGING_DIR_NATIVE}${layout_includedir}"
 do_stage () {
 	if [ "${INHIBIT_NATIVE_STAGE_INSTALL}" != "1" ]
 	then
-		if [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" != "1" ]
+		if [ "${JAVA_NATIVE_STAGE_INSTALL}" = "1" ]
 		then
-			oe_runmake install
-		else
+			java_stage
+		elif [ "${AUTOTOOLS_NATIVE_STAGE_INSTALL}" = "1" ]
+		then
 			autotools_stage_all
+		else
+			oe_runmake install
 		fi
 	fi
 }
