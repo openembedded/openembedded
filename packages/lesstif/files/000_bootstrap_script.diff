@@ -1,0 +1,30 @@
+Index: lesstif1-1-0.93.94/bootstrap
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ lesstif1-1-0.93.94/bootstrap	2006-05-26 17:36:58.000000000 +0200
+@@ -0,0 +1,25 @@
++#! /bin/sh
++
++for x in aclocal.m4 configure config.guess config.log config.sub config.cache config.h.in config.h compile libtool.m4 ltoptions.m4 ltsugar.m4 ltversion.m4 ltmain.sh libtool ltconfig missing mkinstalldirs depcomp install-sh; do rm -f $x test/$x; done
++rm -Rf autom4te.cache
++
++# Explain what we are doing from now
++set -x
++
++libtoolize --copy --force
++aclocal-1.9 -I .
++autoconf
++autoheader
++automake-1.9 --foreign --add-missing --copy
++
++cd test
++
++libtoolize --copy --force
++aclocal-1.9 -I ..
++autoconf
++autoheader
++automake-1.9 --foreign --add-missing --copy
++
++# Remove cruft that we no longer want
++rm -Rf autom4te.cache
++

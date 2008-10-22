@@ -157,6 +157,23 @@ def base_both_contain(variable1, variable2, checkvalue, d):
 
 DEPENDS_prepend="${@base_dep_prepend(d)} "
 
+# Returns PN with various suffixes removed
+# or PN if no matching suffix was found.
+def base_package_name(d):
+  import bb;
+
+  pn = bb.data.getVar('PN', d, 1)
+  if pn.endswith("-native"):
+		pn = pn[0:-7]
+  elif pn.endswith("-cross"):
+		pn = pn[0:-6]
+  elif pn.endswith("-initial"):
+		pn = pn[0:-8]
+  elif pn.endswith("-intermediate"):
+		pn = pn[0:-13]
+
+  return pn
+
 def base_set_filespath(path, d):
 	import os, bb
 	filespath = []
@@ -167,7 +184,7 @@ def base_set_filespath(path, d):
 			filespath.append(os.path.join(p, o))
 	return ":".join(filespath)
 
-FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
+FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/${BP}", "${FILE_DIRNAME}/${BPN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
 def oe_filter(f, str, d):
 	from re import match
