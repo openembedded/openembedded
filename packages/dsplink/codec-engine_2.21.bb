@@ -7,54 +7,27 @@ inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
 PR = "r0"
-PV = "210"
+PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
 # md5sum
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/CE/index.html
 
-SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_10_01.tar.gz \
-           file://xdcpaths.mak \
+SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21_00_06.tar.gz \
           "
 
-S = "${WORKDIR}/codec_engine_2_10_01"
+S = "${WORKDIR}/codec_engine_2_21_00_06"
 
 require ti-paths.inc
 
 PARALLEL_MAKE = ""
-
-do_configure() {
-    cp ${WORKDIR}/xdcpaths.mak ${S}/examples/
-    sed -i -e s:SEDME_TITOOLS_BASEPATH:${TITOOLSDIR}:g \
-        -e s:SEDME_BIOSUNPACKDIR:${TITOOLSDIR}/${TIBIOSDIR}:g \
-        -e 's:SEDME_S:${S}:g' \
-        -e s:SEDME_XDCTOOLSUNPACKDIR:${TITOOLSDIR}/${TIXDCTOOLSDIR}:g \
-        -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
-        -e s:bin/arm_v5t_le-gcc:bin/${TARGET_PREFIX}gcc:g \
-        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
-        ${S}/examples/xdcpaths.mak
-
-    sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/mvl4.0-new/montavista/pro/devkit/arm/v5t_le:${CROSS_DIR}:g \
-        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
-        ${S}/examples/user.bld
-
-    for cfg in ${S}/examples/ti/sdo/ce/examples/apps/image_copy/package/cfg/*/*cfg ; do
-        sed -i -e s:arm_v5t_le-:${TAGET_PREFIX}:g $cfg
-    done
-
-	install -d ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/
-    echo -n "${CFLAGS} -I${TITOOLSDIR}/${TIXDCTOOLSDIR}/packages -I${S}/packages -I${S}/cetools/packages" > ${S}/examples/ti/sdo/ce/examples/apps/speech/linuxonly/app/compiler.opt
-}
-
 do_compile() {
+	echo "MVTOOL_PREFIX=${TARGET_PREFIX}" > ${S}/Rules.make		
+	echo "UCTOOL_PREFIX=${TARGET_PREFIX}" >> ${S}/Rules.make
+	echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
+
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
-	sed -i \
-		-e s:/db/toolsrc/library/vendors2005/mvl/arm/mvl4.0.1-root-new/montavista/pro/devkit/arm/v5t_le/bin/arm_v5t_le-:${TARGET_PREFIX}:g \
-		-e s:/db/toolsrc/library/vendors2005/opensource/buildroot/10122007/build_arm/staging_dir/usr/bin/arm-linux-:${TARGET_PREFIX}:g \
-		-e s:/db/toolsrc/library/vendors2005/mvl/arm/DaVinci-Linux-Rel_mvl401c/Linux:${STAGING_KERNEL_DIR}:g \
-		-e s:/opt/mv_pro_4.0/montavista/pro/devkit/arm/v5t_le/target/opt/dvevm:${D}:g \
-	Rules.make
 
 	oe_runmake clean
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
@@ -75,7 +48,40 @@ do_compile() {
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
            AR="${KERNEL_AR}" 
 
-#	oe_runmake -C ${S}/examples/ti/sdo/ce/examples/apps
+	cd ${S}/cetools/packages/ti/bios/power
+	if ! [ -e omap3530 ] ; then tar xf ti_bios_power,omap3530_bld.tar ; fi
+   	cd omap3530/lpm 
+	
+	sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/omap3/OMAP35x_SDK_0.9.7/src/linux/kernel_org/2.6_kernel:${STAGING_KERNEL_DIR}:g \
+           -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3/bin/arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
+           -e s:/db/atree/library/trees/power/power-d02x/imports:${STAGING_DIR_TARGET}:g \
+        Makefile
+
+	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+           KERNEL_VERSION=${KERNEL_VERSION}    \
+           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+           AR="${KERNEL_AR}"
+	
+	cd ${S}/examples
+	export CE_INSTALL_DIR=${S}
+	export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
+	export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
+
+    sed -i -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3:${CROSS_DIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
+        -e s:/db/toolsrc/library/tools/vendors/opensource/gcc/4.1.0/Linux/gcc-4.1.0-glibc-2.3.6/i686-unknown-linux-gnu:/usr:g \
+        -e s:arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
+        -e 's:true, // build for uC Linux:false,:g' \ 
+       ${S}/examples/user.bld
+
+	sed -i -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
+	        xdcpaths.mak
+
+	for i in codecs extensions servers apps ; do
+		make -e -C ${S}/examples/ti/sdo/ce/examples/$i clean	
+		make -e -C ${S}/examples/ti/sdo/ce/examples/$i
+	done	
 
 }
 

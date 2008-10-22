@@ -113,8 +113,8 @@ do_install () {
 
 
 do_stage() {
-	install -d ${STAGING_LIBDIR}
-	install -m 0755 ${S}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib ${STAGING_LIBDIR}/
+	install -d ${STAGING_DIR_TARGET}/dsplink
+	cp -pPr ${S}/* ${STAGING_DIR_TARGET}/dsplink/ 
 }
 
 pkg_postinst_${PN}-module () {
