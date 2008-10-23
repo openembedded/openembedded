@@ -161,7 +161,7 @@ do_stage() {
 INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGES =+ "ti-cmemk-module"
-FILES_cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
+FILES_ti-cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
 
 pkg_postinst_ti-cmemk-module () {
 		if [ -n "$D" ]; then        
