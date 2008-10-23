@@ -54,14 +54,14 @@ RDEPENDS = "\
 "
 
 RDEPENDS_append_nokia770 = " \
-    cx3110x \
+    cx3110x-770he \
     libasound-module-ctl-dsp-ctl \
     libasound-module-pcm-alsa-dsp \
     mamona-sound-n770 \
 "
 
 RDEPENDS_append_nokia800 = " \
-    cx3110x \
+    cx3110x-chinooke \
     libasound-module-ctl-dsp-ctl \
     libasound-module-pcm-alsa-dsp \
     mamona-sound-n800 \
