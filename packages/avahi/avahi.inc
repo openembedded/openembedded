@@ -4,7 +4,7 @@ HOMEPAGE = "http://avahi.org"
 SECTION = "network"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 DEPENDS = "expat libdaemon dbus glib-2.0"
 
@@ -14,7 +14,8 @@ RDEPENDS_avahi-daemon = "sysvinit-pidof update-rc.d"
 RDEPENDS_avahi-autoipd = "update-rc.d"
 
 SRC_URI = "http://avahi.org/download/avahi-${PV}.tar.gz \
-	   file://00avahi-autoipd file://99avahi-autoipd"
+	   file://00avahi-autoipd file://99avahi-autoipd \
+	   file://avahi-daemon.conf"
 
 inherit autotools pkgconfig update-rc.d
 # handle update-rc.d RDEPENDS manually, we don't need it on
@@ -104,6 +105,8 @@ do_install() {
 	install -d ${D}${sysconfdir}/udhcpc.d
 	install ${WORKDIR}/00avahi-autoipd ${D}${sysconfdir}/udhcpc.d
 	install ${WORKDIR}/99avahi-autoipd ${D}${sysconfdir}/udhcpc.d
+	install -d ${D}${sysconfdir}/avahi
+	install ${WORKDIR}/avahi-daemon.conf ${D}${sysconfdir}/avahi/avahi-daemon.conf
 }
 
 do_stage() {
