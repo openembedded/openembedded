@@ -1,4 +1,4 @@
-DESCRIPTION = "cx3110x wifi support as found in the Nokia 770/800"
+DESCRIPTION = "cx3110x wifi support as found in the Nokia 770"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 PR = "r0"
@@ -7,7 +7,7 @@ PACKAGES = "${PN}"
 
 FILES_${PN} += "/lib/modules/cx3110x.ko"
 
-COMPATIBLE_MACHINE = "(nokia770|nokia800)"
+COMPATIBLE_MACHINE = "(nokia770)"
 
 SRC_URI = "https://garage.maemo.org/frs/download.php/2443/cx3110x-0.8.1.tar.gz \
  http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-2005q3-2-arm-none-eabi-i686-pc-linux-gnu.tar.bz2 \
