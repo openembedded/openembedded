@@ -19,6 +19,7 @@ RDEPENDS = "\
     freetype \
     glib-2.0 \
     glibc \
+    glibc-utils \
     hal \
     intltool \
     libfontenc \
