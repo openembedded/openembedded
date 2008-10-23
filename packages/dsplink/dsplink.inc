@@ -13,53 +13,33 @@ export DSPLINK = "${S}"
 
 require ti-paths.inc
 
-DSPLINKPLATFORM ?= "Davinci"
-
+DSPLINKPLATFORM ?= "DAVINCI"
 DSPLINKPLATFORM_omap5912osk = "OMAP"
 DSPLINKPLATFORM_beagleboard = "OMAP3530"
-DSPLINKPLATFORM_davinci-sffsdr = "Davinci"
-DSPLINKPLATFORM_davinci-dvevm = "Davinci"
+DSPLINKPLATFORM_davinci-sffsdr = "DAVINCI"
+DSPLINKPLATFORM_davinci-dvevm = "DAVINCI"
 
 DSPLINKDSP ?= "C64XX"
-DSPLINKSOC ?= "DM6446"
 
+DSPLINKSOC ?= "DM6446"
 DSPLINKSOC_beagleboard = "3530"
 
+DSPCFG ?= "DM6446GEMSHMEM"
+DSPCFG_beagleboard ?= "OMAP3530SHMEM"
 
-USERARMFLAGS = "${TARGET_CC_ARCH}"
-KERNELARMFLAGS = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
-                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
-                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
-                   -mlittle-endian \
-                   -D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi \
-                   -Uarm                  \
-                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
-KERNELARMFLAGS_armv6 = "-include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
-                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
-                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
-                   -mlittle-endian \
-                   -D__LINUX_ARM_ARCH__=6 -march=armv6j -mtune=arm1136jf-s \
-                   -Uarm                  \                   
-                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux"
-KERNELARMFLAGS_armv7a = "-c -nostdinc -include $(BASE_OSINC)/linux/autoconf.h -isystem $(OSINC_PLATFORM)  -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
-                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
-                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \                                      
-                   -mlittle-endian \
-                   -D__LINUX_ARM_ARCH__=7 -march=armv7-a -mtune=cortex-a8 \
-                   -Uarm                  \ 
-                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux \
-                   -D__KERNEL__ -mno-thumb-interwork   -msoft-float -fno-optimize-sibling-calls -g  -fno-stack-protector -Wno-pointer-sign -g -DUSE_UDEV=1 -DOS_LINUX -DLINUX_KERNEL"
-
-DSPFLAGS = "-q -pdr -pdv -pden -ml3 -mv64+ "
+GPPOS ?= "DAVINCILSP"
+GPPOS_beagleboard = "OMAPLSP"
 
 export DSPLINKPLATFORM 
 export DSPLINKDSP
 export DSPLINKSOC
+export DSPCFG
+export GPPOS
 
 do_configure () {
 
 # Run perl script to create appropriate makefiles (v1.60 and up)
-DSPLINK=${S} perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=OMAP3530SHMEM --dspos_0=DSPBIOS5XX  --gppos=OMAPLSP --comps=ponslrmc
+DSPLINK=${S} perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
 
 }
 
@@ -93,7 +73,7 @@ do_install () {
 	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
 
 	install -d ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
+#	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagegpp        ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagemultigpp   ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp       ${D}/${bindir}
