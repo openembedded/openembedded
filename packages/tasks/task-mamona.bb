@@ -7,6 +7,11 @@ PACKAGES = "${PN}"
 
 RDEPENDS = "\
     task-mamona-base \
+    alsa-conf-base \
+    alsa-utils-alsamixer \
+    alsa-lib \
+    alsa-utils-alsactl \
+    alsa-state \
     dbus \
     dbus-glib \
     expat \
