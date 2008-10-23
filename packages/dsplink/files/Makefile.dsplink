@@ -6,27 +6,20 @@
 #include Rules.make
 
 PROJECT_BASE_DIR = $(shell pwd)
-LINUXKERNEL_INSTALL_DIR:=/home/rmonklocal/oe/angstrom-davinci-dvevm-tmp/staging/davinci-dvevm-angstrom-linux-gnueabi/kernel
-LINK_INSTALL_DIR := /home/rmonklocal/dsplink_1_51/dsplink
+LINUXKERNEL_INSTALL_DIR:=some-path/kernel
+LINK_INSTALL_DIR := some-path/dsplink_1_51/dsplink
 
 # The prefix to be added before the GNU compiler tools (optionally including
 # path), i.e. "arm_v5t_le-" or "/opt/bin/arm_v5t_le-".
-GPPTOOL_DIR:=/home/rmonklocal/oe/angstrom-davinci-dvevm-tmp/cross
+GPPTOOL_DIR:=some-path/cross
 
 # ---- DSP tools ----
-DSP_BASE_CGTOOLS    := /home/rmonklocal/opt/cg6x_6_0_19
-DSP_BASE_BIOS	    := /home/rmonklocal/opt/bios_5_32_03
-DSP_BASE_RTDX	    := /home/rmonklocal/opt/bios_5_32_03/packages/ti/rtdx
+DSP_BASE_CGTOOLS    := some-path/cg6x_6_0_19
+DSP_BASE_BIOS	    := some-path/bios_5_32_03
+DSP_BASE_RTDX	    := some-path/bios_5_32_03/packages/ti/rtdx
 OSINC_PLATFORM1     := something
 ARCHIVER_AR         := something
 
-# ---- get build host OS ----
-UNAME=$(shell uname)
-ifeq "$(UNAME)" "Linux"
-	BUILD_HOST_OS=Linux
-else
-	BUILD_HOST_OS=Solaris
-endif
 
 # ---- construct Link build make vars ----
 GPP_MAKE_OPTS :=  COMPILER=$(GPPTOOL_DIR)/bin/arm-angstrom-linux-gnueabi-gcc \
@@ -39,46 +32,6 @@ GPP_MAKE_OPTS :=  COMPILER=$(GPPTOOL_DIR)/bin/arm-angstrom-linux-gnueabi-gcc \
 		  BASE_TOOLCHAIN=$(GPPTOOL_DIR) \
 		  BASE_BUILDOS=$(LINUXKERNEL_INSTALL_DIR) \
 		  ARCHIVER=$(ARCHIVER_AR) OSINC_PLATFORM=$(OSINC_PLATFORM1) \
-		  #STD_KRNL_FLAGS=\
-		   -include linux/autoconf.h -c -iwithprefix include -Iinclude -Wall  -Wstrict-prototypes \
-                   -Wno-trigraphs -fno-strict-aliasing -fno-common             \
-                   -fno-omit-frame-pointer -mapcs -mno-sched-prolog            \
-                   -mlittle-endian \
-                   -D__LINUX_ARM_ARCH__=5 -march=armv5t -mtune=arm9tdmi \
-                   -msoft-float -Uarm -mapcs                  \
-                   -Wdeclaration-after-statement -Os -marm  -mabi=aapcs-linux
-
-		  #STD_KRNL_FLAGS=\
-			-nostdinc \
-			-isystem /home/rmonklocal/oe/angstrom-davinci-dvevm-tmp/cross/lib/gcc/arm-angstrom-linux-gnueabi/4.2.4/include \
-			-D__KERNEL__ \
-			-Iinclude -include include/linux/autoconf.h \
-			-mlittle-endian \
-			-Wall \
-			-Wundef \
-			-Wstrict-prototypes \
-			-Wno-trigraphs \
-			-fno-strict-aliasing \
-			-fno-common \
-			-Werror-implicit-function-declaration \
-			-Os \
-			-fno-stack-protector \
-			-marm \
-			-fno-omit-frame-pointer \
-			-mapcs \
-			-mno-sched-prolog \
-			-mabi=aapcs-linux \
-			-mno-thumb-interwork \
-			-D__LINUX_ARM_ARCH__=5 \
-			-march=armv5te \
-			-mtune=arm9tdmi \
-			-msoft-float \
-			-Uarm \
-			-fno-omit-frame-pointer \
-			-fno-optimize-sibling-calls \
-			-Wdeclaration-after-statement \
-			-Wno-pointer-sign \
-			-c
 
 DSP_MAKE_OPTS :=  DSPLINK=$(DSPLINK) \
                   DPPROOT=$(DSPLINK)/dsp \

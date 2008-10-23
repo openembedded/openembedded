@@ -6,7 +6,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r0"
+PR = "r1"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -14,17 +14,47 @@ PV = "221"
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/CE/index.html
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21_00_06.tar.gz \
+           file://Makefile.dsplink \
           "
 
 S = "${WORKDIR}/codec_engine_2_21_00_06"
 
 require ti-paths.inc
 
-DSPPOWERSOC ?= "dm6446"
-DSPPOWERSOC_beagleboard = "omap3530"
+export DSPLINK="${S}/cetools/packages/dsplink"
 
 PARALLEL_MAKE = ""
+
+do_configure () {
+	# Run perl script to create appropriate makefiles (v1.60 and up)
+	perl ${S}/cetools/packages/dsplink/config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
+}
+
 do_compile() {
+    unset DISPLAY
+    sed -i -e s:armv7a:armv7-a:g make/Linux/omap3530_2.6.mk || true
+
+    # export various settings to override the defaults in the makefiles
+    export DSP_BASE_CGTOOLS=${TITOOLSDIR}/${TICGTOOLSDIR}
+    export DSP_BASE_BIOS=${TITOOLSDIR}/${TIBIOSDIR}
+    export DSP_BASE_RTDX=${TITOOLSDIR}/${TIBIOSDIR}/packages/ti/rtdx
+    export GPPTOOL_DIR=${CROSS_DIR}
+    export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
+    export LINK_INSTALL_DIR=${DSPLINK}
+    export VARIANT=${DSPLINKSOC}
+    export PLATFORM=${DSPLINKPLATFORM}
+    export BASE_TOOLCHAIN=${CROSS_DIR}
+    export BASE_CGTOOLS=${BASE_TOOLCHAIN}/bin
+    # 'OSINC_PLATFORM' is used in both the dsp and gpp sides...
+    export OSINC_PLATFORM1=${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(${TARGET_PREFIX}gcc -dumpversion)/include
+    export OSINC_TARGET=${BASE_TOOLCHAIN}/target/usr/include
+
+    # 'ARCHIVER' is being used in the dsp side of the build as well as gpp
+    export ARCHIVER_AR=${TARGET_PREFIX}ar
+    export BASE_SABIOS=${DSP_BASE_BIOS}
+   
+    make -e -f ${WORKDIR}/Makefile.dsplink
+
 	echo "MVTOOL_PREFIX=${TARGET_PREFIX}" > ${S}/Rules.make		
 	echo "UCTOOL_PREFIX=${TARGET_PREFIX}" >> ${S}/Rules.make
 	echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
@@ -124,8 +154,8 @@ do_install() {
 }
 
 do_stage() {
-	# We'll probably need to stage the complete tree...
-	:
+    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine
+    cp -pPr ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/
 }
 
 INHIBIT_PACKAGE_STRIP = "1"
