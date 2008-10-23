@@ -6,7 +6,7 @@ RRECOMMENDS_${PN} = "${PN}-module"
 
 inherit module
 
-S = "${WORKDIR}/dsplink_1_50/dsplink"
+S = "${WORKDIR}/dsplink_1_60/dsplink"
 
 # Needed for buildscripts
 export DSPLINK = "${S}"
@@ -92,9 +92,10 @@ do_install () {
 }
 
 
+# Coded Engine and friends need a complete tree, so stage it all
 do_stage() {
-	install -d ${STAGING_DIR_TARGET}/dsplink
-	cp -pPr ${S}/* ${STAGING_DIR_TARGET}/dsplink/ 
+	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
+	cp -pPr ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink/ 
 }
 
 pkg_postinst_${PN}-module () {

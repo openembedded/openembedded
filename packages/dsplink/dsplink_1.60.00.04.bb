@@ -1,9 +1,7 @@
 require dsplink.inc
 
-DEFAULT_PREFERENCE_armv7a = "1"
-
 # The tconf tool breaks if there is a '.' in your pwd
-PR = "r1"
+PR = "r2"
 PE = "1"
 PV = "160"
 

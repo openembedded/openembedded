@@ -54,7 +54,7 @@ do_compile() {
 	
 	sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/omap3/OMAP35x_SDK_0.9.7/src/linux/kernel_org/2.6_kernel:${STAGING_KERNEL_DIR}:g \
            -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3/bin/arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
-           -e s:/db/atree/library/trees/power/power-d02x/imports:${STAGING_DIR_TARGET}:g \
+           -e s:/db/atree/library/trees/power/power-d02x/imports:${STAGING_DIR}/${MULTIMACH_TARGET_SYS}:g \
         Makefile
 
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
