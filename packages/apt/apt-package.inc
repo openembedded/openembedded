@@ -58,7 +58,7 @@ FILES_${PN} = "${bindir}/apt-cdrom ${bindir}/apt-get \
 	       ${libdir}/apt ${libdir}/libapt*.so.* \
 	       ${localstatedir} ${sysconfdir} \
 	       ${libdir}/dpkg"
-FILES_${PN}-dbg += = "${libdir}/apt/*/.debug"
+FILES_${PN}-dbg += "${libdir}/apt/*/.debug"
 FILES_${PN}-utils = "${bindir}/apt-sortpkgs ${bindir}/apt-extracttemplates"
 FILES_${PN}-doc = "${@get_files_apt_doc(d, bb, bb.data.getVar('apt-manpages', d, 1))} \
 		   ${docdir}/apt"
