@@ -6,6 +6,7 @@ ALLOW_EMPTY = "1"
 PACKAGES = "${PN}"
 
 RDEPENDS = "\
+  task-mamona \
   automake \
   bison \
   fakeroot \

@@ -35,10 +35,13 @@ RDEPENDS = "\
     libxrandr \
     libxrender \
     pointercal \
+    python-core \
     tslib \
     tslib-calibrate \
     udev \
     update-modules \
+    wireless-tools \
+    wpa-supplicant \
     xserver-kdrive-xomap \
     xserver-kdrive-common \
     xserver-nodm-init \
