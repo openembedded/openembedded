@@ -13,7 +13,7 @@ OPENDREAMBOX_COMMON_D = "util-linux e2fsprogs \
 
 OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	e2fsprogs-e2fsck ppp module-init-tools-depmod \
-	base-files-doc sambaserver"
+	base-files-doc sambaserver avahi-daemon"
 
 # experimental packages
 OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2"
