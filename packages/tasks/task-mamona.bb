@@ -1,6 +1,6 @@
 DESCRIPTION = "Task mamona: Build and Install Mamona Platform"
 LICENSE = "MIT"
-PR = "r4"
+PR = "r5"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -45,6 +45,7 @@ RDEPENDS = "\
     udev \
     wireless-tools \
     wpa-supplicant \
+    wpa-supplicant-passphrase \
     xserver-kdrive-xomap \
     xserver-kdrive-common \
     xserver-nodm-init \
