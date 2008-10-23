@@ -1,0 +1,62 @@
+--- /tmp/llseek.c	2006-11-21 11:31:31.000000000 +0100
++++ util-linux-2.12r/fdisk/llseek.c	2006-11-21 11:33:21.218554000 +0100
+@@ -31,9 +31,18 @@
+ 
+ #ifdef __NR__llseek
+ 
++#ifdef _syscall5
++
+ static _syscall5(int,_llseek,unsigned int,fd,unsigned long,offset_high,
+ 		 unsigned long, offset_low,long long *,result,
+ 		 unsigned int, origin)
++#else
++static int _llseek (unsigned int fd, unsigned long oh,
++                   unsigned long ol, long long *result,
++                   unsigned int origin) {
++       return syscall (__NR__llseek, fd, oh, ol, result, origin);
++}
++#endif /* _syscall5 */
+ 
+ #else
+ 
+--- /tmp/sfdisk.c	2006-11-21 11:36:13.000000000 +0100
++++ util-linux-2.12r/fdisk/sfdisk.c	2006-11-21 11:37:17.678554000 +0100
+@@ -177,9 +177,16 @@
+ #endif
+ 
+ #ifndef use_lseek
++#ifdef _syscall5
+ static __attribute__used
+ _syscall5(int,  _llseek,  unsigned int,  fd, ulong, hi, ulong, lo,
+        loff_t *, res, unsigned int, wh);
++#else
++int _llseek (unsigned int fd, ulong hi, ulong lo,
++       loff_t *res, unsigned int wh) {
++       return syscall (__NR__llseek, fd, hi, lo, res, wh);
++}
++#endif /* _syscall5 */
+ #endif
+ 
+ static int
+--- /tmp/cmos.c	2006-11-21 11:38:55.000000000 +0100
++++ util-linux-2.12r/hwclock/cmos.c	2006-11-21 11:41:45.458554000 +0100
+@@ -46,15 +46,16 @@
+ 
+ #include <unistd.h>		/* for geteuid() */
+ #include <fcntl.h>		/* for O_RDWR */
++#include <linux/version.h>
+ #include <errno.h>
+ #include "../defines.h"		/* for HAVE_sys_io_h */
+ #include "nls.h"
+ 
+ #if defined(__i386__)
+-#ifdef HAVE_sys_io_h
+-#include <sys/io.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
++#include <asm/io.h>
+ #else
+-#include <asm/io.h>		/* for inb, outb */
++#include <sys/io.h>		/* for inb, outb */
+ #endif
+ #elif defined(__alpha__)
+ /* <asm/io.h> fails to compile, probably because of u8 etc */

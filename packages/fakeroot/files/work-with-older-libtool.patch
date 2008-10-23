@@ -1,0 +1,11 @@
+--- fakeroot-1.7.1/configure.ac.orig	2007-08-09 16:03:34.000000000 -0500
++++ fakeroot-1.7.1/configure.ac	2007-08-09 18:26:11.000000000 -0500
+@@ -7,8 +7,6 @@
+ AC_CONFIG_HEADERS([config.h])
+ AC_PROG_MAKE_SET
+ AM_PROG_LIBTOOL
+-LT_INIT
+-LT_LANG(C)
+ 
+ AC_ARG_WITH([ipc],
+ 	    AS_HELP_STRING([--with-ipc@<:@=IPCTYPE@:>@],
