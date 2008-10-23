@@ -44,7 +44,7 @@ FILES_finch-dbg     = "${bindir}/.debug/finch \
 
 FILES_${PN} = "${bindir} ${datadir}/${PN} ${libdir}/${PN}/*.so \
 	       ${datadir}/applications"
-RRECOMMENDS_${PN{ += "${PN}-data "
+RRECOMMENDS_${PN} += "${PN}-data "
 FILES_${PN}-data = "${datadir}/pixmaps ${datadir}/sounds ${datadir}/icons"
 FILES_${PN}-dev += "${libdir}/${PN}/*.la"
 
