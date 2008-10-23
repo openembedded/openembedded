@@ -37,7 +37,6 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 
 #this packages dont exist with enigma2, enigma2-plugins 2.4
 OPENDREAMBOX_EXPERIMENTAL_R_append_dm8000 = " \
-	enigma2-plugin-systemplugins-defaultservicesscanner \
 	enigma2-defaultservices \
 	enigma2-plugin-systemplugins-networkwizard"
 

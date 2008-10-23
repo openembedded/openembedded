@@ -35,7 +35,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081013"
+SRCDATE = "20081016"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
