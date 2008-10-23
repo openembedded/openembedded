@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 10sparcumount.dpatch by Jeff Bailey <jbailey@ubuntu.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Sparc and Arm have umount2 in glibc.
+
+@DPATCH@
+--- util-linux/mount/umount.c	2005-05-20 11:39:07.000000000 +0000
++++ util-linux/mount/umount.c	2005-05-20 11:39:15.000000000 +0000
+@@ -31,7 +31,7 @@
+ #include <arpa/inet.h>
+ #endif
+ 
+-#if defined(MNT_FORCE) && !defined(__sparc__) && !defined(__arm__)
++#if defined(MNT_FORCE) 
+ /* Interesting ... it seems libc knows about MNT_FORCE and presumably
+    about umount2 as well -- need not do anything */
+ #else /* MNT_FORCE */

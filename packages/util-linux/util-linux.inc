@@ -23,7 +23,7 @@ FILES_util-linux-cfdisk = "/sbin/cfdisk"
 FILES_util-linux-sfdisk = "/sbin/sfdisk"
 FILES_util-linux-swaponoff = "/sbin/swapon.${PN} /sbin/swapoff.${PN}"
 FILES_util-linux-losetup = "/sbin/losetup.${PN}"
-FILES_util-linux-mount = "/bin/mount.${PN}"
+FILES_util-linux-mount = "/bin/mount.${PN} ${sysconfdir}/default/mountall"
 FILES_util-linux-umount = "/bin/umount.${PN}"
 FILES_util-linux-readprofile = "/usr/sbin/readprofile"
 
@@ -72,14 +72,17 @@ do_install () {
 		'OPT=${CFLAGS}' 'CC=${CC}' 'LD=${LD}' \
 		'LDFLAGS=${LDFLAGS}' 'DESTDIR=${D}' install
 
+	test -f ${D}${base_sbindir}/pivot_root && \
+	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
 	mv ${D}${base_bindir}/dmesg ${D}${base_bindir}/dmesg.${PN}
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}
 	mv ${D}${base_bindir}/more ${D}${base_bindir}/more.${PN}
 	mv ${D}${base_sbindir}/hwclock ${D}${base_sbindir}/hwclock.${PN}
 	mv ${D}${base_sbindir}/mkswap ${D}${base_sbindir}/mkswap.${PN}
-	mv ${D}${base_sbindir}/pivot_root ${D}${base_sbindir}/pivot_root.${PN}
 	mv ${D}${base_sbindir}/shutdown ${D}${base_sbindir}/shutdown.${PN}
 	mv ${D}${base_sbindir}/sln ${D}${base_sbindir}/sln.${PN}
+	mv ${D}${base_sbindir}/mkfs.minix ${D}${base_sbindir}/mkfs.minix.${PN}
+	mv ${D}${base_sbindir}/fsck.minix ${D}${base_sbindir}/fsck.minix.${PN}
 	mv ${D}${bindir}/hexdump ${D}${bindir}/hexdump.${PN}
 	mv ${D}${bindir}/last ${D}${bindir}/last.${PN}
 	mv ${D}${bindir}/logger ${D}${bindir}/logger.${PN}
@@ -92,6 +95,8 @@ do_install () {
 	mv ${D}${base_bindir}/umount ${D}${base_bindir}/umount.${PN}
 	mv ${D}${base_bindir}/mount ${D}${base_bindir}/mount.${PN}
 	mv ${D}${base_sbindir}/fdisk ${D}${base_sbindir}/fdisk.${PN}
+	install -d ${D}${sysconfdir}/default/
+	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
 	checklink swapon ${D}${base_sbindir}/swapoff ".${PN}"
 	checklink shutdown ${D}${base_sbindir}/reboot ".${PN}"
@@ -105,8 +110,11 @@ pkg_postinst_${PN} () {
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 100
 	update-alternatives --install ${base_bindir}/more more more.${PN} 100
 	update-alternatives --install ${base_sbindir}/mkswap mkswap mkswap.${PN} 100
+	test -x ${base_sbindir}/pivot_root.${PN} && \
 	update-alternatives --install ${base_sbindir}/pivot_root pivot_root pivot_root.${PN} 100
 	update-alternatives --install ${base_sbindir}/sln sln sln.${PN} 100
+	update-alternatives --install ${base_sbindir}/mkfs.minix mkfs.minix mkfs.minix.${PN} 100
+	update-alternatives --install ${base_sbindir}/fsck.minix fsck.minix fsck.minix.${PN} 100
 	update-alternatives --install ${bindir}/hexdump hexdump hexdump.${PN} 100
 	update-alternatives --install ${bindir}/last last last.${PN} 100
 	update-alternatives --install ${bindir}/logger logger logger.${PN} 100
@@ -123,16 +131,19 @@ pkg_postinst_${PN} () {
 }
 
 pkg_prerm_${PN} () {
+	test -x ${base_sbindir}/pivot_root.${PN} && \
+	update-alternatives --remove pivot_root pivot_root.${PN}
 	update-alternatives --remove dmesg dmesg.${PN}
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove more more.${PN}
 	update-alternatives --remove halt halt.${PN}
 	update-alternatives --remove hwclock hwclock.${PN}
 	update-alternatives --remove mkswap mkswap.${PN}
-	update-alternatives --remove pivot_root pivot_root.${PN}
 	update-alternatives --remove reboot reboot.${PN}
 	update-alternatives --remove shutdown shutdown.${PN}
 	update-alternatives --remove sln sln.${PN}
+	update-alternatives --remove mkfs.minix mkfs.minix.${PN}
+	update-alternatives --remove fsck.minix fsck.minix.${PN}
 	update-alternatives --remove hexdump hexdump.${PN}
 	update-alternatives --remove last last.${PN}
 	update-alternatives --remove logger logger.${PN}
