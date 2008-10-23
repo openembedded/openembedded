@@ -29,11 +29,13 @@ do_compile() {
 	echo "UCTOOL_PREFIX=${TARGET_PREFIX}" >> ${S}/Rules.make
 	echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
 
-	# Build the cmem kernel module	
+	# Build the cmem kernel module
+	# We unset CFLAGS because kernel modules need different ones, this is basically a verbatim copy of kernel.bbclass and module-base.bbclass	
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
 
 	oe_runmake clean
+	# We probably don't need to build all 3, but atm it doesn't hurt us	
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
            KERNEL_SRC=${STAGING_KERNEL_DIR}    \
            KERNEL_VERSION=${KERNEL_VERSION}    \
@@ -55,7 +57,7 @@ do_compile() {
 	# Build the DSP power manager kernel module
 	cd ${S}/cetools/packages/ti/bios/power
 
-	# Unpack all kernel sources for teh DSP power manager module
+	# Unpack all kernel sources for the DSP power manager module
 	for dsp in $(ls | grep bld | awk -F, '{print $2}' | awk -F_ '{print $1}') ; do
 		if ! [ -e $dsp ] ; then tar xf ti_bios_power,${dsp}_bld.tar ; fi
 	done		
@@ -64,7 +66,8 @@ do_compile() {
 
 	export KERNEL_DIR=${STAGING_KERNEL_DIR}
 	export TOOL_PREFIX=${TARGET_PREFIX} 
-	
+
+	# Different SoCs use different toolchains by default, we just want them to use the OE one, so replace the entries because they can't be overloaded within the environment
 	sed -i -e s:/db/toolsrc/library/tools/vendors/mvl/arm/omap3/OMAP35x_SDK_0.9.7/src/linux/kernel_org/2.6_kernel:${STAGING_KERNEL_DIR}:g \
            -e s:/db/toolsrc/library/tools/vendors/cs/arm/arm-2007q3/bin/arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
            -e s:/db/atree/library/trees/power/power-d02x/imports:${STAGING_DIR}/${MULTIMACH_TARGET_SYS}:g \
@@ -79,9 +82,12 @@ do_compile() {
            AR="${KERNEL_AR}"
 	
 	cd ${S}/examples
+	# export some more variable to point to external TI tools
+	# information is duplicated between the js and make based tools
 	export CE_INSTALL_DIR=${S}
 	export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
 	export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
+	# needed for configuro:
 	export CGTOOLS_V5T="${CROSS_DIR}"
 	export CC_V5T="bin/${TARGET_PREFIX}gcc"
 
@@ -100,7 +106,9 @@ do_compile() {
 	        xdcpaths.mak
 	
 	# Start building the CE examples: codecs, extensions, servers (codec bundles) and ARM side apps	
+	# the DSP side uses CC to point to the c6x codegen, but would get the gcc tool
 	unset CC
+	# Make clean doesn't do what you'd expect, it only cleans stuff you've enabled, so some cruft remains	
 	for i in codecs extensions servers apps ; do
 		make -e -C ${S}/examples/ti/sdo/ce/examples/$i clean	
 		make -e -C ${S}/examples/ti/sdo/ce/examples/$i
@@ -108,61 +116,24 @@ do_compile() {
 
 }
 
-export DSPLIBS = "${S}/packages/ti/sdo/ce/utils/trace/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/bioslog/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/video/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/audio/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/speech/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/lib/*.a* \
-                  ${S}/packages/ti/sdo/ce/alg/lib/*.a* \
-                  ${S}/cetools/packages/ti/sdo/fc/dman3/*.a* \
-                  ${S}/cetools/packages/ti/sdo/fc/acpy3/*.a* \
-		          ${S}/packages/ti/sdo/ce/osal/linux/lib/osal_linux_470.a* \ 
-                  ${S}/packages/ti/sdo/ce/utils/xdm/lib/*.a* \
-                  ${S}/cetools/packages/ti/sdo/utils/trace/lib/*.a* \
-                 "
 
 do_install() {
-		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-		cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
-		oe_runmake install
 		install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-		mv ${D}/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-		install -d ${D}/${base_sbindir}
-		cd ${D} ; mv apitest apitestd multi_process multi_processd translate translated ${D}/${base_sbindir}		
-
-
-		install -d ${D}/${libdir}
-		for i in ${DSPLIBS}; do
-			install -m 0755 $i ${D}/${libdir}/ || true
-		done
-        install -m 0755 ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ${D}/${libdir}
+		cp ${S}/cetools/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
+		cp ${S}/cetools/packages/ti/bios/power/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
 }
 
 do_stage() {
-		install -d ${STAGING_LIBDIR}	
-		for i in ${DSPLIBS} ; do
-			install -m 0755 $i ${STAGING_LIBDIR}/ 
-			ln -sf ${STAGING_LIBDIR}/$(basename $i | awk -F. '{print $1}').a470MV  ${STAGING_LIBDIR}/$(basename $i | awk -F. '{print $1}').a || true 
-		done
-
-        install -m 0755 ${S}/cetools/packages/ti/sdo/linuxutils/cmem/lib/*.a ${STAGING_LIBDIR}/
-
-		install -d ${STAGING_INCDIR}/codec-engine}
-		
-		for header in $(find ${S}/cetools/packages/ -name "*.h") ; do
-			install -d ${STAGING_INCDIR}/codec-engine/$(dirname $header | sed s:${S}::g)
-			cp -pPr  $header ${STAGING_INCDIR}/codec-engine/$(echo $header | sed s:${S}::g)
-		done
-	
-		for header in $(find ${S}/packages/ -name "*.h") ; do
-			install -d ${STAGING_INCDIR}/codec-engine/$(dirname $header | sed s:${S}::g)
-			cp -pPr  $header ${STAGING_INCDIR}/codec-engine/$(echo $header | sed s:${S}::g)
-		done
-	
+	# We'll probably need to stage the complete tree...
+	:
 }
 
-pkg_postinst_${PN}-module () {
+INHIBIT_PACKAGE_STRIP = "1"
+
+PACKAGES =+ "ti-cmemk-module"
+FILES_cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
+
+pkg_postinst_ti-cmemk-module () {
 		if [ -n "$D" ]; then        
                 exit 1
         fi
@@ -170,13 +141,25 @@ pkg_postinst_${PN}-module () {
         update-modules || true
 }
 
-pkg_postrm_${PN}-module () {
+pkg_postrm_ti-cmemk-module () {
         update-modules || true
 }
 
-PACKAGES =+ "dsplink-cmemk-module"
-FILES_dsplink-cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*ko"
-INHIBIT_PACKAGE_STRIP = "1"
+PACKAGES =+ "ti-lpm-module"
+FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
+
+pkg_postinst_ti-lpm-module () {
+        if [ -n "$D" ]; then
+                exit 1
+        fi
+        depmod -a
+        update-modules || true
+}
+
+pkg_postrm_ti-lpm-module () {
+        update-modules || true
+}
+
 
 FILES_${PN} = "${base_sbindir}"
 
