@@ -1,6 +1,6 @@
 DESCRIPTION = "Task mamona: Build and Install Mamona Platform"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
@@ -55,13 +55,16 @@ RDEPENDS = "\
 "
 
 RDEPENDS_append_nokia770 = " \
+    cx3110x \
     libasound-module-ctl-dsp-ctl \
     libasound-module-pcm-alsa-dsp \
     mamona-sound-n770 \
 "
 
 RDEPENDS_append_nokia800 = " \
+    cx3110x \
     libasound-module-ctl-dsp-ctl \
     libasound-module-pcm-alsa-dsp \
     mamona-sound-n800 \
 "
+
