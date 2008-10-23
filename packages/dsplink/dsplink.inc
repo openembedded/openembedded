@@ -27,7 +27,7 @@ DSPLINKSOC_beagleboard = "3530"
 DSPCFG ?= "DM6446GEMSHMEM"
 DSPCFG_beagleboard ?= "OMAP3530SHMEM"
 
-GPPOS ?= "DAVINCILSP"
+GPPOS ?= "MVL5G"
 GPPOS_beagleboard = "OMAPLSP"
 
 export DSPLINKPLATFORM 
@@ -80,7 +80,7 @@ do_install () {
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/mplistgpp         ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/readwritegpp      ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp         ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/scalegpp          ${D}/${bindir}
+	install ${S}/gpp/BUILD/EXPORT/RELEASE/scalegpp          ${D}/${bindir} || true
 
 	install -d ${D}/${datadir}/dsplink
 	for i in $(find ${S}/dsp/BUILD/ -name "*.out") ; do

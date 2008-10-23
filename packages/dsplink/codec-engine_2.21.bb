@@ -91,8 +91,8 @@ do_compile() {
         -e s:/db/toolsrc/library/tools/vendors/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
         -e s:/db/toolsrc/library/tools/vendors/opensource/gcc/4.1.0/Linux/gcc-4.1.0-glibc-2.3.6/i686-unknown-linux-gnu:/usr:g \
         -e s:arm-none-linux-gnueabi-:${TARGET_PREFIX}:g \
-        -e 's:true, // build for uC Linux:false,:g' \
-        -e 's:true, // build for PC Linux:false,:g' \ 
+        -e 's:true, // build for uC:false,:g' \
+        -e 's:true,  // build for PC:false,:g' \ 
        ${S}/examples/user.bld
 
 	# Fix path to c6x codegen
