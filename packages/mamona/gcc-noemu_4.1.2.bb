@@ -77,7 +77,7 @@ JAVA_arm = ""
 
 
 LANGUAGES = "c,c++${FORTRAN}${JAVA}"
-require ../gcc/gcc3-build.inc
+require packages/gcc/gcc-${PV}.inc
 
 
 EXTRA_OECONF += " --disable-libssp --with-slibdir=\"/lib\" "
