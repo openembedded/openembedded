@@ -6,4 +6,9 @@ SRC_URI += "\
 	file://configure_madness.patch;patch=1 \
 	"
 
+# fix wrong dependency
+do_configure_prepend() {
+    sed -i s,gcrypt,libgcrypt, lib/gnutls.pc.in
+}
+
 PR = "r6"

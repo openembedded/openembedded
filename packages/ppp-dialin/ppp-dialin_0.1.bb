@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Enables PPP dial-in through a serial connection"
 DEPENDS = "ppp"
 RDEPENDS = "ppp"
-PR = "r5"
+PR = "r6"
 LICENSE = "MIT"
 
 SRC_URI = "file://host-peer \
@@ -22,7 +22,7 @@ pkg_postinst() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s ${sbindir}/ppp-dialin ppp
+    grep "^ppp:" /etc/passwd > /dev/null || adduser --system --home /dev/null --no-create-home --empty-password --ingroup nogroup -s ${sbindir}/ppp-dialin ppp 
 fi
 }
 
@@ -30,6 +30,6 @@ pkg_postrm() {
 if test "x$D" != "x"; then
 	exit 1
 else
-	deluser ppp
+	deluser ppp || true
 fi
 }

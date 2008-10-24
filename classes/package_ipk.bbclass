@@ -16,7 +16,7 @@ python package_ipk_install () {
 	# Warning - this function is not multimachine safe (see stagingdir reference)!
 	#
 
-	import os, sys
+	import os, sys, bb
 	pkg = bb.data.getVar('PKG', d, 1)
 	pkgfn = bb.data.getVar('PKGFN', d, 1)
 	rootfs = bb.data.getVar('IMAGE_ROOTFS', d, 1)
@@ -118,7 +118,7 @@ package_generate_ipkg_conf () {
 }
 
 python do_package_ipk () {
-	import sys, re, copy
+	import sys, re, copy, bb
 
 	workdir = bb.data.getVar('WORKDIR', d, 1)
 	if not workdir:
@@ -305,6 +305,7 @@ python () {
 }
 
 python do_package_write_ipk () {
+	import bb
 	packages = bb.data.getVar('PACKAGES', d, True)
 	if not packages:
 		bb.debug(1, "No PACKAGES defined, nothing to package")
