@@ -6,7 +6,7 @@ LICENSE = "GPL"
 SRCDATE = "20070615"
 PV = "cvs-${SRCDATE}"
 PN = "enigma"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/enigma;method=ext \
            file://enigma.sh \
