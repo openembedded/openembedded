@@ -4,7 +4,7 @@ LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
@@ -24,7 +24,7 @@ EXTRA_OECONF = "\
 	--enable-sdl \ 
 	--enable-png \
 	--enable-live555 --enable-tremor \
-	--enable-v4l2 --enable-video4linux --disable-aa --enable-wma --disable-faad \
+	--enable-v4l2 --enable-v4l --disable-aa --enable-wma --disable-faad \
 	--enable-dbus \
 	--enable-hal \	
 	--without-contrib \
