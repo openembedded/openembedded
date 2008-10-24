@@ -9,11 +9,6 @@ inherit autotools binconfig pkgconfig
 
 EXTRA_OECONF = "--with-included-opencdk --with-included-libtasn1"
 
-# fix wrong dependency
-do_configure_prepend() {
-    sed -i s,gcrypt,libgcrypt, lib/gnutls.pc.in
-}
-
 do_stage() {
     oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}
     oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
