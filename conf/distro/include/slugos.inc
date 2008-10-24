@@ -158,6 +158,8 @@ PREFERRED_VERSION_pango    ?= 1.20.5
 PREFERRED_VERSION_glib-2.0 ?= 2.16.1
 
 # Stick with an older gettext and e2fsprogs stuff
+# and gnutls... (our autotools is too old at the moment)
+PREFERRED_VERSION_gnutls           ?= "1.6.3"
 PREFERRED_VERSION_gettext          ?= "0.14.1"
 PREFERRED_VERSION_gettext-native   ?= "0.14.1"
 PREFERRED_VERSION_e2fsprogs-libs   ?= "1.39"
