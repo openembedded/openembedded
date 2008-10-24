@@ -8,7 +8,7 @@ PR = "r0"
 
 DEPENDS = "libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
 
-SRC_URI = "http://videolan.mirror.technotop.nl/vlc/0.9.2/vlc-${PV}.tar.bz2"
+SRC_URI = "http://videolan.mirror.technotop.nl/vlc/${PV}/vlc-${PV}.tar.bz2"
 
 inherit autotools
 
