@@ -17,8 +17,9 @@ if [ "x$D" != "x" ]; then
 	# this happens at S98 where our good 'ole packages script used to run
 	echo "#!/bin/sh
 opkg-cl configure
+rm -f /${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
 " > ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
-	chmod 0755 ${IMAGE_ROOTFS}/${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
+	chmod 0755 ${IMAGE_ROOTFS}${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
 fi
 
 update-alternatives --install ${bindir}/opkg opkg ${bindir}/opkg-cl 100

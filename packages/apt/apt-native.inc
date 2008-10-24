@@ -1,10 +1,10 @@
 require apt.inc
 inherit native
 
-DEPENDS += "dpkg-native curl-native db-native"
+DEPENDS += "dpkg-native gettext-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/apt-${PV}"
 PACKAGES = ""
-USE_NLS = "no"
+USE_NLS = "yes"
 
 SRC_URI += "file://db_linking_hack.patch;patch=1"
 
@@ -37,7 +37,6 @@ do_stage_base () {
 	install -m 0755 bin/apt-get ${bindir}/
 	install -m 0755 bin/apt-config ${bindir}/
 	install -m 0755 bin/apt-cache ${bindir}/
-	install -m 0755 bin/apt-ftparchive ${bindir}/
 	install -m 0755 bin/apt-sortpkgs ${bindir}/
 	install -m 0755 bin/apt-extracttemplates ${bindir}/
 
@@ -60,4 +59,6 @@ do_stage_base () {
 	install -d ${sysconfdir}/apt
 	install -d ${localstatedir}/lib/apt/lists/partial
 	install -d ${localstatedir}/cache/apt/archives/partial
+
+	install -d ${localstatedir}/log/apt/
 }

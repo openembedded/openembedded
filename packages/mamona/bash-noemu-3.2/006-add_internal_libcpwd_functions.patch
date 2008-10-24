@@ -1,0 +1,752 @@
+Index: bash-3.2/libcnisint.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ bash-3.2/libcnisint.c	2008-08-01 17:52:42.000000000 -0300
+@@ -0,0 +1,296 @@
++#include "libcnisint.h"
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <errno.h>
++#include <string.h>
++
++# undef ENTDATA
++
++struct parser_data
++  {
++#ifdef ENTDATA
++    struct ENTDATA entdata;
++# define ENTDATA_DECL(data) struct ENTDATA *const entdata = &data->entdata;
++#else
++# define ENTDATA_DECL(data)
++#endif
++    char linebuffer[0];
++  };
++
++
++static FILE *stream = NULL;
++static struct passwd passwd;
++static char buffer[NSS_BUFLEN_PASSWD];
++
++# define STRING_FIELD(variable, terminator_p, swallow)  \
++  {                                                     \
++    variable = line;                                    \
++    while (*line != '\0' && !terminator_p (*line))      \
++      ++line;                                           \
++    if (*line != '\0')                                  \
++      {                                                 \
++    *line = '\0';                                       \
++    do                                                  \
++      ++line;                                           \
++    while (swallow && terminator_p (*line));            \
++      }                                                 \
++  }
++
++# define STRUCTURE	passwd
++# define TRAILING_LIST_PARSER
++
++# define LINE_PARSER(EOLSET, BODY)                     \
++int parse_line (char *line, struct STRUCTURE *result,  \
++        struct parser_data *data, size_t datalen)      \
++{                                                      \
++  ENTDATA_DECL (data)                                  \
++  char *p = strpbrk (line, EOLSET "\n");               \
++  if (p != NULL)                                       \
++    *p = '\0';                                         \
++  BODY;                                                \
++  TRAILING_LIST_PARSER;                                \
++  return 1;                                            \
++}
++
++# define INT_FIELD_MAYBE_NULL(variable, terminator_p, swallow, base, convert, default)  \
++  {                                                                                     \
++    char *endp;                                                                         \
++    if (*line == '\0')                                                                  \
++      /* We expect some more input, so don't allow the string to end here. */           \
++      return 0;                                                                         \
++    variable = convert (strtoul (line, &endp, base));                                   \
++    if (endp == line)                                                                   \
++      variable = default;                                                               \
++    if (terminator_p (*endp))                                                           \
++      do                                                                                \
++    ++endp;                                                                             \
++      while (swallow && terminator_p (*endp));                                          \
++    else if (*endp != '\0')                                                             \
++      return 0;                                                                         \
++    line = endp;                                                                        \
++  }
++
++# define INT_FIELD(variable, terminator_p, swallow, base, convert) \
++  {                                                                \
++    char *endp;                                                    \
++    variable = convert (strtoul (line, &endp, base));              \
++    if (endp == line)                                              \
++      return 0;                                                    \
++    else if (terminator_p (*endp))                                 \
++      do                                                           \
++    ++endp;                                                        \
++      while (swallow && terminator_p (*endp));                     \
++    else if (*endp != '\0')                                        \
++      return 0;                                                    \
++    line = endp;                                                   \
++  }
++
++# define ISCOLON(c) ((c) == ':')
++
++LINE_PARSER (,
++ STRING_FIELD (result->pw_name, ISCOLON, 0)
++ if (line[0] == '\0'
++     && (result->pw_name[0] == '+' || result->pw_name[0] == '-'))
++   {
++     /* This a special case.  We allow lines containing only a `+' sign
++    since this is used for nss_compat.  All other services will
++    reject this entry later.  Initialize all other fields now.  */
++     result->pw_passwd = NULL;
++     result->pw_uid = 0;
++     result->pw_gid = 0;
++     result->pw_gecos = NULL;
++     result->pw_dir = NULL;
++     result->pw_shell = NULL;
++   }
++ else
++   {
++     STRING_FIELD (result->pw_passwd, ISCOLON, 0)
++     if (result->pw_name[0] == '+' || result->pw_name[0] == '-')
++       {
++     INT_FIELD_MAYBE_NULL (result->pw_uid, ISCOLON, 0, 10, , 0)
++     INT_FIELD_MAYBE_NULL (result->pw_gid, ISCOLON, 0, 10, , 0)
++       }
++     else
++       {
++     INT_FIELD (result->pw_uid, ISCOLON, 0, 10,)
++     INT_FIELD (result->pw_gid, ISCOLON, 0, 10,)
++       }
++     STRING_FIELD (result->pw_gecos, ISCOLON, 0)
++     STRING_FIELD (result->pw_dir, ISCOLON, 0)
++     result->pw_shell = line;
++   }
++ )
++
++
++void internal_setpwent (void)
++{
++  if (stream == NULL)
++    {
++      stream = fopen ("/etc/passwd", "rme");
++
++      if (stream == NULL)
++        fprintf (stderr, "ERROR: Cannot fopen \"/etc/passwd\". Errno: %d", errno);
++    }
++  else
++    rewind (stream);
++
++}
++
++void internal_endpwent (void)
++{
++  if (stream != NULL)
++    {
++      fclose (stream);
++      stream = NULL;
++    }
++}
++
++struct passwd *internal_getpwent (void)
++{
++  struct parser_data *data = (void *) &buffer;
++  struct passwd *result = &passwd;
++  int buflen = NSS_BUFLEN_PASSWD;
++
++  while (1)
++    {
++      fpos_t pos;
++      char *p;
++      int parse_res;
++
++      do
++    {
++      /* We need at least 3 characters for one line.  */
++      if (buflen < 3)
++        {
++        erange:
++          fprintf (stderr, "ERROR: Range error");
++          return NULL;
++        }
++
++      fgetpos (stream, &pos);
++      buffer[buflen - 1] = '\xff';
++      p = fgets (buffer, buflen, stream);
++      if (p == NULL && feof (stream))
++        return NULL;
++
++      if (p == NULL || buffer[buflen - 1] != '\xff')
++        {
++        erange_reset:
++          fsetpos (stream, &pos);
++          goto erange;
++        }
++
++      /* Terminate the line for any case.  */
++      buffer[buflen - 1] = '\0';
++
++      /* Skip leading blanks.  */
++      while (isspace (*p))
++        ++p;
++    }
++      while (*p == '\0' || *p == '#' || /* Ignore empty and comment lines.  */
++              /* Parse the line.  If it is invalid, loop to
++                 get the next line of the file to parse.  */
++              !(parse_res = parse_line (p, result, data, buflen)));
++
++      if (parse_res == -1)
++          /* The parser ran out of space.  */
++          goto erange_reset;
++
++      if (result->pw_name[0] != '+' && result->pw_name[0] != '-')
++          /* This is a real entry.  */
++          break;
++
++      /* XXX Ignoring
++       *
++       *  -@netgroup
++       *  +@netgroup
++       *  -user
++       *  +user
++       *  +:...
++       *
++       * as we don't suppose to use them */
++
++    }
++
++  return result;
++
++}
++
++/* Searches in /etc/passwd and the NSS subsystem for a special user id */
++struct passwd *internal_getpwuid (uid_t uid)
++{
++  struct parser_data *data = (void *) buffer;
++  struct passwd *result = &passwd;
++  int buflen = NSS_BUFLEN_PASSWD;
++
++  internal_setpwent ();
++
++  while (1)
++    {
++      fpos_t pos;
++      char *p;
++      int parse_res;
++
++      do
++	{
++	  /* We need at least 3 characters for one line.  */
++	  if (buflen < 3)
++	    {
++	    erange:
++	      fprintf (stderr, "ERROR: Range error");
++	      return NULL;
++	    }
++
++	  fgetpos (stream, &pos);
++	  buffer[buflen - 1] = '\xff';
++	  p = fgets (buffer, buflen, stream);
++	  if (p == NULL && feof (stream))
++	    return NULL;
++
++	  if (p == NULL || buffer[buflen - 1] != '\xff')
++	    {
++	    erange_reset:
++	      fsetpos (stream, &pos);
++	      goto erange;
++	    }
++
++	  /* Terminate the line for any case.  */
++	  buffer[buflen - 1] = '\0';
++
++	  /* Skip leading blanks.  */
++	  while (isspace (*p))
++	    ++p;
++	}
++      while (*p == '\0' || *p == '#' ||	/* Ignore empty and comment lines.  */
++	     /* Parse the line.  If it is invalid, loop to
++	        get the next line of the file to parse.  */
++	     !(parse_res = parse_line (p, result, data, buflen)));
++
++      if (parse_res == -1)
++          /* The parser ran out of space.  */
++          goto erange_reset;
++
++      /* This is a real entry.  */
++      if (result->pw_name[0] != '+' && result->pw_name[0] != '-')
++      {
++          if (result->pw_uid == uid)
++              return result;
++          else
++              continue;
++      }
++
++      /* XXX Ignoring
++       *
++       *  -@netgroup
++       *  +@netgroup
++       *  -user
++       *  +user
++       *  +:...
++       *
++       * as we don't suppose to use them */
++
++    }
++  internal_endpwent ();
++  return result;
++}
+Index: bash-3.2/libcnisint.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ bash-3.2/libcnisint.h	2008-08-01 17:18:20.000000000 -0300
+@@ -0,0 +1,7 @@
++#include <pwd.h>
++
++void internal_setpwent (void);
++void internal_endpwent (void);
++struct passwd *internal_getpwent (void);
++struct passwd *internal_getpwuid (uid_t uid);
++
+Index: bash-3.2/examples/loadables/finfo.c
+===================================================================
+--- bash-3.2.orig/examples/loadables/finfo.c	2008-08-01 14:29:55.000000000 -0300
++++ bash-3.2/examples/loadables/finfo.c	2008-08-01 15:32:37.000000000 -0300
+@@ -9,7 +9,6 @@
+ #include <sys/types.h>
+ #include "posixstat.h"
+ #include <stdio.h>
+-#include <pwd.h>
+ #include <grp.h>
+ #include <errno.h>
+ 
+@@ -18,6 +17,8 @@
+ #include "builtins.h"
+ #include "common.h"
+ 
++#include "libcnisint.h"
++
+ #ifndef errno
+ extern int	errno;
+ #endif
+@@ -262,7 +263,7 @@
+ 	printf("Mode: (%o) ", (int) st->st_mode);
+ 	printmode((int) st->st_mode);
+ 	printf("Link count: %d\n", (int) st->st_nlink);
+-	pw = getpwuid(st->st_uid);
++	pw = internal_getpwuid(st->st_uid);
+ 	owner = pw ? pw->pw_name : "unknown";
+ 	printf("Uid of owner: %d (%s)\n", (int) st->st_uid, owner);
+ 	gr = getgrgid(st->st_gid);
+@@ -341,7 +342,7 @@
+ 	else if (flags & OPT_PMASK)
+ 		printf("%o\n", getperm(st->st_mode) & pmask);
+ 	else if (flags & OPT_UID) {
+-		pw = getpwuid(st->st_uid);
++		pw = internal_getpwuid(st->st_uid);
+ 		if (flags & OPT_ASCII)
+ 			printf("%s\n", pw ? pw->pw_name : "unknown");
+ 		else
+Index: bash-3.2/examples/loadables/id.c
+===================================================================
+--- bash-3.2.orig/examples/loadables/id.c	2008-08-01 14:17:24.000000000 -0300
++++ bash-3.2/examples/loadables/id.c	2008-08-01 14:51:23.000000000 -0300
+@@ -12,7 +12,6 @@
+ #include <config.h>
+ #include <stdio.h>
+ #include "bashtypes.h"
+-#include <pwd.h>
+ #include <grp.h>
+ #include "bashansi.h"
+ 
+@@ -22,9 +21,8 @@
+ #  include <sys/param.h>
+ #endif
+ 
+-#if !defined (HAVE_GETPW_DECLS)
+-extern struct passwd *getpwuid ();
+-#endif
++#include "libcnisint.h"
++
+ extern struct group *getgrgid ();
+ 
+ #include "shell.h"
+@@ -152,7 +150,7 @@
+   r = 0;
+   if (id_flags & ID_USENAME)
+     {
+-      pwd = getpwuid (uid);
++      pwd = internal_getpwuid (uid);
+       if (pwd == NULL)
+         r = 1;
+     }
+@@ -233,7 +231,7 @@
+ 
+   r = 0;
+   printf ("uid=%u", (unsigned) ruid);
+-  pwd = getpwuid (ruid);
++  pwd = internal_getpwuid (ruid);
+   if (pwd == NULL)
+     r = 1;
+   else
+@@ -249,7 +247,7 @@
+   if (euid != ruid)
+     { 
+       printf (" euid=%u", (unsigned) euid);
+-      pwd = getpwuid (euid);
++      pwd = internal_getpwuid (euid);
+       if (pwd == NULL)
+ 	r = 1;
+       else 
+Index: bash-3.2/lib/readline/complete.c
+===================================================================
+--- bash-3.2.orig/lib/readline/complete.c	2008-07-31 19:06:06.000000000 -0300
++++ bash-3.2/lib/readline/complete.c	2008-08-01 15:52:25.000000000 -0300
+@@ -48,9 +48,7 @@
+ extern int errno;
+ #endif /* !errno */
+ 
+-#if defined (HAVE_PWD_H)
+-#include <pwd.h>
+-#endif
++#include "libcnisint.h"
+ 
+ #include "posixdir.h"
+ #include "posixstat.h"
+@@ -79,12 +77,6 @@
+ /* Unix version of a hidden file.  Could be different on other systems. */
+ #define HIDDEN_FILE(fname)	((fname)[0] == '.')
+ 
+-/* Most systems don't declare getpwent in <pwd.h> if _POSIX_SOURCE is
+-   defined. */
+-#if defined (HAVE_GETPWENT) && (!defined (HAVE_GETPW_DECLS) || defined (_POSIX_SOURCE))
+-extern struct passwd *getpwent PARAMS((void));
+-#endif /* HAVE_GETPWENT && (!HAVE_GETPW_DECLS || _POSIX_SOURCE) */
+-
+ /* If non-zero, then this is the address of a function to call when
+    completing a word would normally display the list of possible matches.
+    This function is called instead of actually doing the display.
+@@ -1849,24 +1841,19 @@
+ 
+       username = savestring (&text[first_char_loc]);
+       namelen = strlen (username);
+-      setpwent ();
++      internal_setpwent ();
+     }
+ 
+-#if defined (HAVE_GETPWENT)
+-  while (entry = getpwent ())
++  while (entry = internal_getpwent ())
+     {
+       /* Null usernames should result in all users as possible completions. */
+       if (namelen == 0 || (STREQN (username, entry->pw_name, namelen)))
+ 	break;
+     }
+-#endif
+ 
+   if (entry == 0)
+     {
+-#if defined (HAVE_GETPWENT)
+-      endpwent ();
+-#endif
+-      return ((char *)NULL);
++      internal_endpwent ();
+     }
+   else
+     {
+Index: bash-3.2/lib/readline/shell.c
+===================================================================
+--- bash-3.2.orig/lib/readline/shell.c	2008-08-01 14:44:38.000000000 -0300
++++ bash-3.2/lib/readline/shell.c	2008-08-01 15:36:03.000000000 -0300
+@@ -51,9 +51,8 @@
+ #if defined (HAVE_FCNTL_H)
+ #include <fcntl.h>
+ #endif
+-#if defined (HAVE_PWD_H)
+-#include <pwd.h>
+-#endif
++
++#include "libcnisint.h"
+ 
+ #include <stdio.h>
+ 
+@@ -61,10 +60,6 @@
+ #include "rlshell.h"
+ #include "xmalloc.h"
+ 
+-#if defined (HAVE_GETPWUID) && !defined (HAVE_GETPW_DECLS)
+-extern struct passwd *getpwuid PARAMS((uid_t));
+-#endif /* HAVE_GETPWUID && !HAVE_GETPW_DECLS */
+-
+ #ifndef NULL
+ #  define NULL 0
+ #endif
+@@ -163,11 +158,9 @@
+   struct passwd *entry;
+ 
+   home_dir = (char *)NULL;
+-#if defined (HAVE_GETPWUID)
+-  entry = getpwuid (getuid ());
++  entry = internal_getpwuid (getuid ());
+   if (entry)
+     home_dir = entry->pw_dir;
+-#endif
+   return (home_dir);
+ }
+ 
+Index: bash-3.2/lib/readline/tilde.c
+===================================================================
+--- bash-3.2.orig/lib/readline/tilde.c	2008-07-31 19:09:19.000000000 -0300
++++ bash-3.2/lib/readline/tilde.c	2008-08-01 15:51:52.000000000 -0300
+@@ -42,10 +42,7 @@
+ #  include "ansi_stdlib.h"
+ #endif /* HAVE_STDLIB_H */
+ 
+-#include <sys/types.h>
+-#if defined (HAVE_PWD_H)
+-#include <pwd.h>
+-#endif
++#include "libcnisint.h"
+ 
+ #include "tilde.h"
+ 
+@@ -56,9 +53,6 @@
+ #endif /* TEST || STATIC_MALLOC */
+ 
+ #if !defined (HAVE_GETPW_DECLS)
+-#  if defined (HAVE_GETPWUID)
+-extern struct passwd *getpwuid PARAMS((uid_t));
+-#  endif
+ #  if defined (HAVE_GETPWNAM)
+ extern struct passwd *getpwnam PARAMS((const char *));
+ #  endif
+@@ -409,15 +403,11 @@
+       if (dirname == 0)
+ 	dirname = savestring (filename);
+     }
+-#if defined (HAVE_GETPWENT)
+   else
+     dirname = glue_prefix_and_suffix (user_entry->pw_dir, filename, user_len);
+-#endif
+ 
+   free (username);
+-#if defined (HAVE_GETPWENT)
+-  endpwent ();
+-#endif
++  internal_endpwent ();
+   return (dirname);
+ }
+ 
+Index: bash-3.2/lib/tilde/shell.c
+===================================================================
+--- bash-3.2.orig/lib/tilde/shell.c	2008-08-01 14:41:32.000000000 -0300
++++ bash-3.2/lib/tilde/shell.c	2008-08-01 15:32:49.000000000 -0300
+@@ -43,11 +43,7 @@
+ #  include <strings.h>
+ #endif /* !HAVE_STRING_H */
+ 
+-#include <pwd.h>
+-
+-#if !defined (HAVE_GETPW_DECLS)
+-extern struct passwd *getpwuid ();
+-#endif /* !HAVE_GETPW_DECLS */
++#include "libcnisint.h"
+ 
+ char *
+ get_env_value (varname)
+@@ -63,7 +59,7 @@
+   struct passwd *entry;
+ 
+   home_dir = (char *)NULL;
+-  entry = getpwuid (getuid ());
++  entry = internal_getpwuid (getuid ());
+   if (entry)
+     home_dir = entry->pw_dir;
+   return (home_dir);
+Index: bash-3.2/lib/tilde/tilde.c
+===================================================================
+--- bash-3.2.orig/lib/tilde/tilde.c	2008-08-01 15:41:27.000000000 -0300
++++ bash-3.2/lib/tilde/tilde.c	2008-08-01 15:51:13.000000000 -0300
+@@ -43,9 +43,8 @@
+ #endif /* HAVE_STDLIB_H */
+ 
+ #include <sys/types.h>
+-#if defined (HAVE_PWD_H)
+-#include <pwd.h>
+-#endif
++
++#include "libcnisint.h"
+ 
+ #include "tilde.h"
+ 
+@@ -56,9 +55,6 @@
+ #endif /* TEST || STATIC_MALLOC */
+ 
+ #if !defined (HAVE_GETPW_DECLS)
+-#  if defined (HAVE_GETPWUID)
+-extern struct passwd *getpwuid PARAMS((uid_t));
+-#  endif
+ #  if defined (HAVE_GETPWNAM)
+ extern struct passwd *getpwnam PARAMS((const char *));
+ #  endif
+@@ -409,15 +405,11 @@
+       if (dirname == 0)
+ 	dirname = savestring (filename);
+     }
+-#if defined (HAVE_GETPWENT)
+   else
+     dirname = glue_prefix_and_suffix (user_entry->pw_dir, filename, user_len);
+-#endif
+ 
+   free (username);
+-#if defined (HAVE_GETPWENT)
+-  endpwent ();
+-#endif
++  internal_endpwent ();
+   return (dirname);
+ }
+ 
+Index: bash-3.2/shell.c
+===================================================================
+--- bash-3.2.orig/shell.c	2008-07-31 19:10:00.000000000 -0300
++++ bash-3.2/shell.c	2008-08-01 15:46:10.000000000 -0300
+@@ -37,7 +37,8 @@
+ #include <signal.h>
+ #include <errno.h>
+ #include "filecntl.h"
+-#include <pwd.h>
++
++#include "libcnisint.h"
+ 
+ #if defined (HAVE_UNISTD_H)
+ #  include <unistd.h>
+@@ -78,10 +79,6 @@
+ #  include <opennt/opennt.h>
+ #endif
+ 
+-#if !defined (HAVE_GETPW_DECLS)
+-extern struct passwd *getpwuid ();
+-#endif /* !HAVE_GETPW_DECLS */
+-
+ #if !defined (errno)
+ extern int errno;
+ #endif
+@@ -1586,7 +1583,7 @@
+   /* Don't fetch this more than once. */
+   if (current_user.user_name == 0)
+     {
+-      entry = getpwuid (current_user.uid);
++      entry = internal_getpwuid (current_user.uid);
+       if (entry)
+ 	{
+ 	  current_user.user_name = savestring (entry->pw_name);
+@@ -1602,7 +1599,7 @@
+ 	  current_user.shell = savestring ("/bin/sh");
+ 	  current_user.home_dir = savestring ("/");
+ 	}
+-      endpwent ();
++      internal_endpwent ();
+     }
+ }
+ 
+Index: bash-3.2/config.h.in
+===================================================================
+--- bash-3.2.orig/config.h.in	2008-08-01 15:54:05.000000000 -0300
++++ bash-3.2/config.h.in	2008-08-01 15:54:34.000000000 -0300
+@@ -553,15 +553,9 @@
+ /* Define if you have the getpeername function.  */
+ #undef HAVE_GETPEERNAME
+ 
+-/* Define if you have the getpwent function. */
+-#undef HAVE_GETPWENT
+-
+ /* Define if you have the getpwnam function. */
+ #undef HAVE_GETPWNAM
+ 
+-/* Define if you have the getpwuid function. */
+-#undef HAVE_GETPWUID
+-
+ /* Define if you have the getrlimit function.  */
+ #undef HAVE_GETRLIMIT
+ 
+Index: bash-3.2/configure.in
+===================================================================
+--- bash-3.2.orig/configure.in	2008-08-01 15:55:19.000000000 -0300
++++ bash-3.2/configure.in	2008-08-01 15:56:12.000000000 -0300
+@@ -710,7 +710,7 @@
+ 
+ AC_CHECK_FUNCS(vsnprintf snprintf vasprintf asprintf)
+ AC_CHECK_FUNCS(isascii isblank isgraph isprint isspace isxdigit)
+-AC_CHECK_FUNCS(getpwent getpwnam getpwuid)
++AC_CHECK_FUNCS(getpwnam)
+ AC_REPLACE_FUNCS(getcwd memset strcasecmp strerror strftime strnlen strpbrk strstr)
+ AC_REPLACE_FUNCS(strtod strtol strtoul strtoll strtoull strtoimax strtoumax)
+ 
+@@ -790,12 +790,6 @@
+ BASH_FUNC_INET_ATON
+ fi
+ 
+-dnl libraries
+-dnl this is reportedly no longer necessary for irix[56].?
+-case "$host_os" in
+-irix4*)	AC_CHECK_LIB(sun, getpwent) ;;
+-esac
+-
+ dnl check for getpeername in the socket library only if it's not in libc
+ if test "$ac_cv_func_getpeername" = no; then
+ 	BASH_CHECK_LIB_SOCKET
+Index: bash-3.2/patchlevel.h
+===================================================================
+--- bash-3.2.orig/patchlevel.h	2008-08-01 16:24:52.000000000 -0300
++++ bash-3.2/patchlevel.h	2008-08-01 16:25:03.000000000 -0300
+@@ -25,6 +25,6 @@
+    regexp `^#define[ 	]*PATCHLEVEL', since that's what support/mkversion.sh
+    looks for to find the patch level (for the sccs version string). */
+ 
+-#define PATCHLEVEL 5
++#define PATCHLEVEL 6
+ 
+ #endif /* _PATCHLEVEL_H_ */
+Index: bash-3.2/Makefile.in
+===================================================================
+--- bash-3.2.orig/Makefile.in	2008-08-01 16:32:13.000000000 -0300
++++ bash-3.2/Makefile.in	2008-08-01 17:12:17.000000000 -0300
+@@ -405,7 +405,7 @@
+ 	   input.c bashhist.c array.c arrayfunc.c sig.c pathexp.c \
+ 	   unwind_prot.c siglist.c bashline.c bracecomp.c error.c \
+ 	   list.c stringlib.c locale.c findcmd.c redir.c \
+-	   pcomplete.c pcomplib.c syntax.c xmalloc.c
++	   pcomplete.c pcomplib.c syntax.c xmalloc.c libcnisint.c
+ 
+ HSOURCES = shell.h flags.h trap.h hashcmd.h hashlib.h jobs.h builtins.h \
+ 	   general.h variables.h config.h $(ALLOC_HEADERS) alias.h \
+@@ -413,7 +413,7 @@
+ 	   command.h input.h error.h bashansi.h dispose_cmd.h make_cmd.h \
+ 	   subst.h externs.h siglist.h bashhist.h bashline.h bashtypes.h \
+ 	   array.h arrayfunc.h sig.h mailcheck.h bashintl.h bashjmp.h \
+-	   execute_cmd.h parser.h pathexp.h pathnames.h pcomplete.h \
++	   execute_cmd.h parser.h pathexp.h pathnames.h pcomplete.h libcnisint.h \
+ 	   $(BASHINCFILES)
+ 
+ SOURCES	 = $(CSOURCES) $(HSOURCES) $(BUILTIN_DEFS)
+@@ -433,7 +433,7 @@
+ 	   trap.o input.o unwind_prot.o pathexp.o sig.o test.o version.o \
+ 	   alias.o array.o arrayfunc.o braces.o bracecomp.o bashhist.o \
+ 	   bashline.o $(SIGLIST_O) list.o stringlib.o locale.o findcmd.o redir.o \
+-	   pcomplete.o pcomplib.o syntax.o xmalloc.o $(SIGNAMES_O)
++	   pcomplete.o pcomplib.o syntax.o xmalloc.o libcnisint.o $(SIGNAMES_O)
+ 
+ # Where the source code of the shell builtins resides.
+ BUILTIN_SRCDIR=$(srcdir)/builtins
+@@ -978,7 +978,7 @@
+ shell.o: make_cmd.h subst.h sig.h pathnames.h externs.h 
+ shell.o: flags.h trap.h mailcheck.h builtins.h $(DEFSRC)/common.h
+ shell.o: jobs.h siglist.h input.h execute_cmd.h findcmd.h bashhist.h
+-shell.o: ${GLOB_LIBSRC}/strmatch.h ${BASHINCDIR}/posixtime.h
++shell.o: ${GLOB_LIBSRC}/strmatch.h ${BASHINCDIR}/posixtime.h libcnisint.h
+ sig.o: config.h bashtypes.h
+ sig.o: shell.h syntax.h config.h bashjmp.h ${BASHINCDIR}/posixjmp.h command.h ${BASHINCDIR}/stdc.h error.h
+ sig.o: general.h xmalloc.h bashtypes.h variables.h arrayfunc.h conftypes.h array.h hashlib.h

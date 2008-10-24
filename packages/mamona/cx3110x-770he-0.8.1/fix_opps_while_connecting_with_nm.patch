@@ -1,0 +1,128 @@
+Index: cx3110x-0.8.1/src/sm_drv_ioctl_umac.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_ioctl_umac.c
++++ cx3110x-0.8.1/src/sm_drv_ioctl_umac.c
+@@ -1085,28 +1085,31 @@ static int sm_drv_get_wap(struct net_dev
+ static int sm_drv_set_scan(struct net_device *dev, struct iw_request_info *info,
+ 			   struct iw_point *vwrq, char *extra)
+ {
+-	int ret = 0;
++	int ret = 0, l, msecs;
+ 	struct obj_ssid essid;
+ 	int16_t scan = -1;
+ 	uint32_t scan_mode, flush_bss_list = 1;
+ 	struct net_local *lp = dev->priv;
+ 	uint32_t bgr_scan_disable = 1;
+ 
++	memset(essid.octets, 0, sizeof(essid.octets));
++
+ 	if (vwrq == NULL)
+ 		return -EINVAL;
+ 
+ 	/* First we flush the UMAC's AP list*/
+-	ret = sm_drv_oid_set(dev, DOT11_OID_BSSLISTFLUSH, (void*)&flush_bss_list, sizeof(uint32_t));
++	ret = sm_drv_oid_set(dev, DOT11_OID_BSSLISTFLUSH,
++			     (void*)&flush_bss_list, sizeof(uint32_t));
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	if (vwrq->flags & IW_SCAN_THIS_ESSID) {
+ 		if (vwrq->length > 0) {
+-			essid.length = vwrq->length - 1;
+-			memcpy(essid.octets, vwrq->pointer, essid.length + 1);
++			l = vwrq->length;
++			essid.length = min(l, IW_ESSID_MAX_SIZE);
++			memcpy(essid.octets, vwrq->pointer, essid.length);
+ 		} else {
+ 			essid.length = 0;
+-			memset(essid.octets, 0, sizeof(essid.octets));
+ 		}
+ 		scan_mode = SCAN_MODE_ACTIVE;
+ 	} else {
+@@ -1114,48 +1117,76 @@ static int sm_drv_set_scan(struct net_de
+ 		scan_mode = SCAN_MODE_PASSIVE;
+ 	}
+ 
+-	ret = sm_drv_oid_set(dev, DOT11_OID_SCANMODE, (void*)&scan_mode, sizeof(uint32_t));
++	ret = sm_drv_oid_set(dev, DOT11_OID_SCANMODE, (void*)&scan_mode,
++			     sizeof(uint32_t));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = sm_drv_oid_set(dev, DOT11_OID_SCANSSID, (void*)&essid, sizeof(struct obj_ssid));
++	ret = sm_drv_oid_set(dev, DOT11_OID_SCANSSID, (void*)&essid,
++			     sizeof(struct obj_ssid));
+ 	if (ret < 0)
+ 		return ret;
++
++	spin_lock_bh(&lp->sm_lock);
+ 	
+ 	/* We let the background scanning work a bit...*/
+-	if (scan_mode == SCAN_MODE_PASSIVE && lp->link_state != DOT11_STATE_ASSOC)
+-		msleep(2000);
++	if (scan_mode == SCAN_MODE_PASSIVE
++	    && lp->link_state != DOT11_STATE_ASSOC)
++		msecs = 2000;
++	else
++		/* for active scan, the delay can be smaller */
++		msecs = 30;
++
++	spin_unlock_bh(&lp->sm_lock);
++
++	msleep(msecs);
++
++	spin_lock_bh(&lp->sm_lock);
+ 
+-	/* Let's start the scan timer in case UMAC doesn't trap the scan event */
++	/*
++	 * Let's start the scan timer in case UMAC doesn't trap the scan
++	 * event
++	 */
+ 	mod_timer(&lp->scan_timer, jiffies + 4 * HZ);
+ 	
+ 	if (lp->link_state != DOT11_STATE_ASSOC && 
+ 	    lp->bss_type != DOT11_BSSTYPE_IBSS) {
++		spin_unlock_bh(&lp->sm_lock);
+ 		ret = sm_drv_oid_set(dev, DOT11_OID_AUTOSCANDISABLE,
+ 				     (void*)&bgr_scan_disable,
+ 				     sizeof(uint32_t));
++		spin_lock_bh(&lp->sm_lock);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
++	spin_unlock_bh(&lp->sm_lock);
+ 
+ 	/* And finally we send the scan request */
+-	ret = sm_drv_oid_set(dev, DOT11_OID_SCAN, (void*)&scan, sizeof(int16_t));
++	ret = sm_drv_oid_set(dev, DOT11_OID_SCAN, (void*)&scan,
++			     sizeof(int16_t));
++
+ 	if (ret < 0) {
+ 		/* 
+ 		 * If we're associated, we haven't disable bgr scan,
+ 		 * so we don't need to go there.
+ 		 */
++		spin_lock_bh(&lp->sm_lock);
+ 		if (lp->link_state != DOT11_STATE_ASSOC &&
+-		    lp->bss_type != DOT11_BSSTYPE_IBSS)
++		    lp->bss_type != DOT11_BSSTYPE_IBSS) {
++			spin_unlock_bh(&lp->sm_lock);
+ 			goto scan_err_out;
++		}
++		spin_unlock_bh(&lp->sm_lock);
+ 	}
+-	
++
+ 	return 0;
+ 
+  scan_err_out:
+-	DEBUG(DBG_ALL, "Scanning failed (err: %d), turning background scanning on\n", ret);
++	DEBUG(DBG_ALL, "scanning failed (%d), enabling background scan.",
++			ret);
+ 	bgr_scan_disable = 0;
+-	sm_drv_oid_set(dev, DOT11_OID_AUTOSCANDISABLE, (void*)&bgr_scan_disable, sizeof(uint32_t));
++	sm_drv_oid_set(dev, DOT11_OID_AUTOSCANDISABLE,
++		       (void*)&bgr_scan_disable, sizeof(uint32_t));
+ 	
+ 	return ret;
+ }

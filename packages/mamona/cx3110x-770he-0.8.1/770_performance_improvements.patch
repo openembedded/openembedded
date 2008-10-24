@@ -1,0 +1,307 @@
+Index: cx3110x-0.8.1/src/sm_drv_spi.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_spi.c	2008-04-28 18:30:22.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_spi.c	2008-04-28 18:30:25.000000000 -0300
+@@ -99,10 +99,10 @@
+ 	struct net_local *lp = dev->priv;
+ 	uint32_t host_ints, host_ints_ack, target_ints;
+ 	unsigned long timeout;
+-	int result;
++	int result, pass = 1;
+ 	
+ 	DEBUG(DBG_BH, "w\n");
+-	
++again:
+ 	/* Here we wake the target up */
+ 	target_ints = SPI_TARGET_INT_WAKEUP; 
+ 	sm_spi_write(dev, SPI_ADRS_ARM_INTERRUPTS,
+@@ -117,6 +117,11 @@
+ 		if (time_after(jiffies, timeout)) {
+ 			printk(KERN_WARNING "We haven't got a READY interrupt"
+ 			       " from WAKEUP. (firmware crashed?)\n");
++			if (pass == 1) {
++				printk(KERN_WARNING "Try again...\n");
++				pass = 2;
++				goto again;
++			}
+ 			lp->device_state = DEVSTATE_DEAD;
+ 			result = -1;
+ 			goto exit;
+@@ -131,7 +136,10 @@
+ 		     (unsigned char *)&host_ints_ack, sizeof(host_ints_ack));
+ 
+ 	result = 0;
+-	
++
++	if (pass == 2) {
++		printk(KERN_WARNING "succeeded!!!\n");
++	}
+ exit:
+ 	DEBUG(DBG_BH, "W\n");
+ 	return result;
+@@ -150,49 +158,84 @@
+ 	return 0;
+ }
+ 
+-static int sm_drv_spi_rx(struct net_device *dev) 
++static int sm_drv_spi_is_rx_frame_available(struct net_device *dev)
++{
++	uint32_t host_ints, host_ints_ack;
++	sm_spi_read(dev, SPI_ADRS_HOST_INTERRUPTS, (unsigned char *)&host_ints, sizeof(host_ints));
++	if ((host_ints & SPI_HOST_INT_UPDATE) || (host_ints & SPI_HOST_INT_SW_UPDATE)) {
++		host_ints_ack = SPI_HOST_INT_UPDATE | SPI_HOST_INT_SW_UPDATE;
++		sm_spi_write(dev, SPI_ADRS_HOST_INT_ACK, (unsigned char *)&host_ints_ack, sizeof(host_ints_ack));
++		return 1;
++	}
++	return 0;
++}
++
++static struct s_ic_msg * sm_drv_spi_alloc_frame_and_start_rx_transfer(struct net_device *dev)
+ {
+ 	struct net_local *lp = dev->priv;
+-	struct spi_hif_local_data *hif_lp = HIF_LP(lp);
+ 	struct s_sm_frame *frame;
++	unsigned short length;
+ 	struct s_ic_msg *ic_msg;
++
++	frame = frame_skb_alloc(dev, lp->sm_descr.mtu + lp->sm_descr.rxoffset, 0);
++	if (frame == NULL) return NULL;
++
++	/* dummy read to flush SPI DMA controller bug */
++	sm_spi_read(dev, SPI_ADRS_GEN_PURP_1, (unsigned char *)&length, sizeof(length));
++
++	sm_spi_read(dev, SPI_ADRS_DMA_DATA, (unsigned char *)&length, sizeof(length));
++	DEBUG(DBG_BH, "%s: received frame len=%d\n", DRIVER_NAME, length);
++            
++	if (length > SPI_MAX_PACKET_SIZE) 
++		length = SPI_MAX_PACKET_SIZE;
++
++	sm_spi_dma_read_start(dev, SPI_ADRS_DMA_DATA, (unsigned char *) frame->data, length);
++
++	ic_msg = FRAME_ICMSG(frame);
++	ic_msg->frame = frame;
++	ic_msg->channel = 0; 
++	ic_msg->flags   = 0;
++	ic_msg->length  = length;
++	ic_msg->address = 0;
++	ic_msg->data    = frame->data;
++
++	return ic_msg;
++}
++
++static int sm_drv_spi_rx(struct net_device *dev) 
++{
++	struct net_local *lp = dev->priv;
++	struct spi_hif_local_data *hif_lp = HIF_LP(lp);
++	struct s_ic_msg *ic_msg, *ic_msg_next;
+ 	int result, err;
+-	unsigned short length;
+ 	int32_t callb_mask = 0;
+-			
++
+ 	err = sm_drv_spi_wakeup(dev);
+ 	if (err < 0) {
+ 		result = -1;
+ 		goto exit;
+ 	}
+ 	
+-	frame = frame_skb_alloc(dev, lp->sm_descr.mtu + lp->sm_descr.rxoffset,
+-				0);
+-	if (frame != NULL) {
+-		ic_msg = FRAME_ICMSG(frame);
+-		ic_msg->frame = frame;
+-            
+-		/* dummy read to flush SPI DMA controller bug */
+-		sm_spi_read(dev, SPI_ADRS_GEN_PURP_1, (unsigned char *)&length,
+-			    sizeof(length));
+-
+-		sm_spi_read(dev, SPI_ADRS_DMA_DATA, (unsigned char *)&length,
+-			    sizeof(length));
+-            
+-		DEBUG(DBG_BH, "%s: received frame len=%d\n", DRIVER_NAME,
+-		      length);
+-            
+-		if (length > SPI_MAX_PACKET_SIZE) 
+-			length = SPI_MAX_PACKET_SIZE;
++	ic_msg_next = sm_drv_spi_alloc_frame_and_start_rx_transfer(dev);
++	if (ic_msg_next == NULL) {
++		printk("Couldn't allocate RX frame\n");
++		result = -1;
++		goto exit;
++	}
+ 
+-		sm_spi_dma_read(dev, SPI_ADRS_DMA_DATA,
+-				(unsigned char *) frame->data, length);
+-			
+-		ic_msg->channel = 0; 
+-		ic_msg->flags   = 0;
+-		ic_msg->length  = length;
+-		ic_msg->address = 0;
+-		ic_msg->data    = frame->data;
++	while (ic_msg_next) {
++		sm_spi_dma_read_wait_for_completion();
++		ic_msg = ic_msg_next;
++		ic_msg_next = NULL;
++
++		if (sm_drv_spi_is_rx_frame_available(dev)) {
++			ic_msg_next = sm_drv_spi_alloc_frame_and_start_rx_transfer(dev);
++			if (ic_msg_next == NULL) {
++				printk("Couldn't allocate RX frame\n");
++				result = -1;
++				goto exit;
++			}
++		}
+ 			
+ 		hif_lp->spi_packets++;
+ 		spin_lock_bh(&lp->sm_lock);
+@@ -207,13 +250,14 @@
+ 			
+ 		DEBUG(DBG_IC,"Callback mask: %d\n", callb_mask);
+ 			
+-		if(callb_mask < 0)
++		if (callb_mask < 0) {
+ 			printk(KERN_WARNING "prism_interconnect_message_handle"
+ 			       "returned error %d\n", callb_mask);
+-	} else
+-		printk("Couldn't allocate RX frame\n");
+-
+-	handle_sm_callback(dev, callb_mask);
++			result = -1;
++			goto exit;
++		}
++		handle_sm_callback(dev, callb_mask);
++	}
+ 
+ 	result = 0;
+ 
+Index: cx3110x-0.8.1/src/sm_drv_spi_io.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_spi_io.c	2008-04-28 18:30:25.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_spi_io.c	2008-04-28 18:35:59.000000000 -0300
+@@ -120,7 +120,7 @@
+ }
+ 
+ 
+-int cx3110x_spi_dma_read(struct net_device *dev, unsigned long address, void * buffer, unsigned int length)
++int cx3110x_spi_dma_read_start(struct net_device *dev, unsigned long address, void * buffer, unsigned int length)
+ {
+ 	SPI_CS_ON();
+ 
+@@ -170,13 +170,22 @@
+ 	omap_start_dma(spi_dma.dma_rx_ch);
+ 	omap_start_dma(spi_dma.dma_tx_ch);
+ 
+-	/* Wait for reading to complete */
+-	while(!spi_dma.dma_rx_done) {
+-		udelay(5);
++	return 0;
++}
++
++int cx3110x_spi_dma_read_wait_for_completion()
++{
++	int wait_limit = 15000 * 5;
++	int wait_cycles = 0;
++
++	/* Wait for DMA reading to complete */
++	while ((!spi_dma.dma_rx_done || !spi_dma.dma_tx_done) && wait_cycles < wait_limit) {
++		wait_cycles++;
++		udelay(1);
+ 	}
+ 
+-	while(!spi_dma.dma_tx_done) {
+-		udelay(5);
++	if (wait_cycles >= wait_limit) {
++		printk("McBSP read DMA timeout, spi_dma.dma_rx_done=%d, spi_dma.dma_tx_done=%d\n", spi_dma.dma_rx_done, spi_dma.dma_tx_done);
+ 	}
+ 
+ 	spi_dma.dma_rx_done = 0;
+@@ -184,11 +193,14 @@
+ 
+ 	SPI_CS_OFF();
+ 
+-	return 0;
++	return wait_cycles;
+ }
+ 
+ int cx3110x_spi_dma_write(struct net_device *dev, unsigned long address, void * buffer, unsigned int length)
+ {
++	int wait_limit = 15000 * 5;
++	int wait_cycles = 0;
++
+ 	SPI_CS_ON();
+ 
+ 	omap_mcbsp_spi_master_xmit_word_poll(OMAP_MCBSP2, address << 8);
+@@ -239,16 +251,20 @@
+ 	omap_start_dma(spi_dma.dma_rx_ch);
+ 	omap_start_dma(spi_dma.dma_tx_ch);
+ 
+-	/* We don't want to turn CS off before transfer is done */
+-
+-        while(!spi_dma.dma_rx_done) {
+-                udelay(5);
++	/* Wait for DMA writing to complete */
++	while ((!spi_dma.dma_rx_done || !spi_dma.dma_tx_done) && wait_cycles < wait_limit) {
++		wait_cycles++;
++		udelay(1);
+         }
+ 
+ 	while(!spi_dma.dma_tx_done) {
+ 		udelay(5);
+ 	}
+ 
++	if (wait_cycles >= wait_limit) {
++		printk("McBSP write DMA timeout, spi_dma.dma_rx_done=%d, spi_dma.dma_tx_done=%d\n", spi_dma.dma_rx_done, spi_dma.dma_tx_done);
++	}
++
+ 	spi_dma.dma_rx_done = 0;
+ 	spi_dma.dma_tx_done = 0;
+ 
+@@ -320,7 +336,7 @@
+ int cx3110x_spi_start(struct net_device *dev)
+ {
+ 	struct omap_mcbsp_spi_cfg spi_cfg;
+-	int r, div = 1, rate_mhz, max_mhz = 14;
++	int r, div = 1, rate_mhz, max_mhz = 16;
+ 	struct net_local * lp;
+ 	struct spi_hif_local_data * spi_lp;
+ 
+@@ -368,11 +384,11 @@
+ 	
+ 	cx3110x_hw_reset();
+ 	
+-	while(rate_mhz/div >= max_mhz)
++	while(rate_mhz/(div+1) >= max_mhz)
+ 		div++;
+ 		
+-        printk("McBSP2: freq_limit=%dMHz, base_freq=%dMHz, divisor=%d (%d.%dMHz)\n",
+-                max_mhz, rate_mhz, div, rate_mhz / div, (rate_mhz * 10 / div) % 10);
++	printk("McBSP2: freq_limit=%dMHz, base_freq=%dMHz, div=%d (%d.%dMHz)\n",
++		max_mhz, rate_mhz, div, rate_mhz / (div+1), (rate_mhz * 10 / (div+1)) % 10);
+ 
+ 	spi_dma.dma_tx_done = 0;
+ 	spi_dma.dma_rx_done = 0;
+Index: cx3110x-0.8.1/src/sm_drv_spi_io.h
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_spi_io.h	2008-04-28 18:30:22.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_spi_io.h	2008-04-28 18:30:25.000000000 -0300
+@@ -27,15 +27,17 @@
+ 
+ int cx3110x_spi_read(struct net_device * dev, unsigned long address, unsigned char * buffer, unsigned int length);
+ int cx3110x_spi_write(struct net_device * dev, unsigned long address, unsigned char * buffer, unsigned int length);
+-int cx3110x_spi_dma_read(struct net_device *dev, unsigned long address, void * buffer, unsigned int length);
++int cx3110x_spi_dma_read_start(struct net_device *dev, unsigned long address, void * buffer, unsigned int length);
++int cx3110x_spi_dma_read_wait_for_completion(void);
+ int cx3110x_spi_dma_write(struct net_device *dev, unsigned long address, void * buffer, unsigned int length);
+ 
+ void cx3110x_dump_register(struct net_device * dev);
+ 
+-#define sm_spi_read(dev, addr, data, len)     cx3110x_spi_read(dev, (addr), (data), (len))  
++#define sm_spi_read(dev, addr, data, len)     cx3110x_spi_read(dev, (addr), (data), (len))
+ #define sm_spi_write(dev, addr, data, len)    cx3110x_spi_write(dev, (addr), (data), (len))
+ 
+-#define sm_spi_dma_read(dev, addr, data, len)     cx3110x_spi_dma_read(dev, (addr), (data), (len))
++#define sm_spi_dma_read_start(dev, addr, data, len)     cx3110x_spi_dma_read_start(dev, (addr), (data), (len))
++#define sm_spi_dma_read_wait_for_completion()        cx3110x_spi_dma_read_wait_for_completion()
+ #define sm_spi_dma_write(dev, addr, data, len)    cx3110x_spi_dma_write(dev, (addr), (data), (len))
+ 
+ #endif

@@ -1,15 +1,9 @@
 gcclibdir ?= "${libdir}/gcc"
 BINV ?= "${PV}"
 
-PACKAGES = "libgcc ${PN} ${PN}-symlinks \
+PACKAGES = "${PN} ${PN}-symlinks \
             g++-noemu g++-noemu-symlinks \
-	    cpp-noemu cpp-noemu-symlinks \
-            g77-noemu g77-noemu-symlinks \
-	    gcov-noemu gcov-noemu-symlinks \
-            libmudflap-noemu libmudflap-noemu-dev \
-	    libstdc++-noemu libg2c-noemu \
-	    libstdc++-noemu-dev libg2c-noemu-dev \
-            ${PN}-doc"
+	    cpp-noemu cpp-noemu-symlinks"
 
 FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
 	       ${bindir}/${TARGET_PREFIX}gccbug \
@@ -18,61 +12,20 @@ FILES_${PN} = "${bindir}/${TARGET_PREFIX}gcc \
 	       ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
 	       ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
 	       ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
-	       ${gcclibdir}/${TARGET_SYS}/${BINV}/include"
+	       ${gcclibdir}/${TARGET_SYS}/${BINV}/include \
+	       ${libdir}/gcc/${TARGET_SYS}/${BINV}/libgcc_s.so"
 FILES_${PN}-symlinks = "${bindir}/cc \
 			${bindir}/gcc \
 			${bindir}/gccbug"
-
-FILES_g77-noemu = "${bindir}/${TARGET_PREFIX}g77 \
-		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771"
-FILES_g77-noemu-symlinks = "${bindir}/g77 \
-			    ${bindir}/f77"
 
 FILES_cpp-noemu = "${bindir}/${TARGET_PREFIX}cpp \
 	     ${base_libdir}/cpp"
 FILES_cpp-noemu-symlinks = "${bindir}/cpp"
 
-FILES_gcov-noemu = "${bindir}/${TARGET_PREFIX}gcov"
-FILES_gcov-noemu-symlinks = "${bindir}/gcov"
-
-FILES_libgcc-noemu = "${base_libdir}/libgcc*.so.*"
-FILES_libgcc-noemu-dev = "${base_libdir}/libgcc*.so"
-
-# Called from within gcc-cross, so libdir is set wrong
-FILES_libg2c-noemu = "${target_libdir}/libg2c.so.*"
-FILES_libg2c-noemu-dev = "${libdir}/libg2c.so \
-		    ${libdir}/libg2c.a \
-		    ${libdir}/libfrtbegin.a"
-
 FILES_g++-noemu = "${bindir}/${TARGET_PREFIX}g++ \
 		   ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus"
 FILES_g++-noemu-symlinks = "${bindir}/c++ \
 			    ${bindir}/g++"
-
-FILES_libstdc++-noemu = "${libdir}/libstdc++.so.*"
-FILES_libstdc++-noemu-dev = "${includedir}/c++/${BINV} \
-		       ${libdir}/libstdc++.so \
-		       ${libdir}/libstdc++.la \
-		       ${libdir}/libstdc++.a \
-		       ${libdir}/libsupc++.la \
-		       ${libdir}/libsupc++.a"
-
-FILES_libmudflap-noemu = "${libdir}/libmudflap*.so.*"
-FILES_libmudflap-noemu-dev = "${libdir}/libmudflap*.so \
-                        ${libdir}/libmudflap*.a \
-                        ${libdir}/libmudflap*.a"
-
-
-FILES_${PN}-doc = "${infodir} \
-		   ${mandir} \
-		   ${gcclibdir}/${TARGET_SYS}/${BINV}/include/README"
-
-python do_package() {
-        if bb.data.getVar('DEBIAN_NAMES', d, 1):
-                bb.data.setVar('PKG_libgcc', 'libgcc1', d)
-        bb.build.exec_func('package_do_package', d)
-}
-
 
 do_install () {
 	autotools_do_install
@@ -85,14 +38,14 @@ do_install () {
 	test -f ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs && sed -i -e '/^*cross_compile:$/ { n; s/1/0/; }' ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/specs
 
 	# Using --with-slibdir instead of this hack below..
-	## Move libgcc_s into /lib
+	# Move libgcc_s into /lib
 	#mkdir -p ${D}${base_libdir}
 	#mv ${D}${libdir}/libgcc_s.so.* ${D}${base_libdir}
-	#rm -f ${D}${libdir}/libgcc_s.so
-	#ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
-	#	| tr -s / \
-	#	| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.1 \
-	#	      ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/libgcc_s.so
+	rm -f ${D}${libdir}/libgcc_s.so
+	ln -sf `echo ${libdir}/gcc/${TARGET_SYS}/${BINV} \
+		| tr -s / \
+		| sed -e 's,^/,,' -e 's,[^/]*,..,g'`/lib/libgcc_s.so.1 \
+		      ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/libgcc_s.so
 
 	# We don't need libtool libraries
 	rm -f ${D}${libdir}/libg2c.la &>/dev/null || true
@@ -115,10 +68,10 @@ do_install () {
 	rm -f ${TARGET_ARCH}-*${TARGET_ARCH}-*
 
 	# Symlinks so we can use these trivially on the target
-	ln -sf ${TARGET_SYS}-g77 g77
+#	ln -sf ${TARGET_SYS}-g77 g77
 	ln -sf ${TARGET_SYS}-g++ g++
 	ln -sf ${TARGET_SYS}-gcc gcc
-	ln -sf g77 f77
+#	ln -sf g77 f77
 	ln -sf g++ c++
 	ln -sf gcc cc
 	ln -sf ${bindir}/${TARGET_SYS}-cpp ${D}${base_libdir}/cpp

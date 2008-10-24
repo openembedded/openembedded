@@ -1,0 +1,11 @@
+Index: cx3110x-0.8.1/src/Makefile
+===================================================================
+--- cx3110x-0.8.1.orig/src/Makefile	2008-04-28 15:58:24.000000000 -0300
++++ cx3110x-0.8.1/src/Makefile	2008-04-28 15:58:28.000000000 -0300
+@@ -1,5 +1,5 @@
+ ifeq ($(KERNELRELEASE),)
+-STRIP = arm-linux-strip
++STRIP = $(CROSS_COMPILE)strip
+ PWD := $(shell pwd)
+ 
+ .PHONY: modules clean

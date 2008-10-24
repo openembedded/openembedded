@@ -1,0 +1,492 @@
+Index: cx3110x-0.8.1/src/sm_drv_ioctl_umac.c
+===================================================================
+--- cx3110x-0.8.1.orig/src/sm_drv_ioctl_umac.c	2007-10-15 08:56:20.000000000 -0300
++++ cx3110x-0.8.1/src/sm_drv_ioctl_umac.c	2008-04-22 15:50:45.000000000 -0300
+@@ -76,7 +76,7 @@
+ 	kfree(wrqu.data.pointer);
+ }
+ 
+-void send_wpa_ie_event(struct net_device *dev, char * bss_addr, char * wpa_ie, size_t wpa_ie_len, uint32_t event)
++void send_wpa_ie_event(struct net_device *dev, char * wpa_ie, size_t wpa_ie_len, uint32_t event)
+ {
+ 	union iwreq_data wrqu;
+ 	uint32_t we_event;
+@@ -97,15 +97,12 @@
+ 		return;
+ 	}
+ 
+-	wrqu.data.pointer = kzalloc(ETH_ALEN + 1 + wpa_ie_len, GFP_ATOMIC);
++	wrqu.data.pointer = kzalloc(wpa_ie_len, GFP_ATOMIC);
+ 	if (!wrqu.data.pointer)
+ 		return;
+ 
+-	memcpy(wrqu.data.pointer, bss_addr, ETH_ALEN);
+-	*((char *)(wrqu.data.pointer + ETH_ALEN)) = ':';	
+-	memcpy(wrqu.data.pointer + ETH_ALEN + 1, wpa_ie, wpa_ie_len);
+-	
+-	wrqu.data.length = ETH_ALEN + 1 + wpa_ie_len;
++	memcpy(wrqu.data.pointer, wpa_ie, wpa_ie_len);
++	wrqu.data.length = wpa_ie_len;
+ 
+ 	wireless_send_event(dev, we_event, &wrqu, wrqu.data.pointer);
+ 	kfree(wrqu.data.pointer);
+@@ -495,7 +492,7 @@
+ 	/* We send the event after parsing the association frame */
+ 	if ((lp->link_state == DOT11_STATE_ASSOCING || lp->link_state == DOT11_STATE_ASSOC)  
+ 	    && event)
+-		send_wpa_ie_event(dev, bssid, wpa_ie, wpa_ie_len, event);
++		send_wpa_ie_event(dev, wpa_ie, wpa_ie_len, event);
+ 			
+ 	/* try to use existing entry */
+ 	list_for_each_entry_safe(bss, safe, &lp->bss_wpa_list, list) {
+@@ -1782,6 +1779,435 @@
+ 	return sm_drv_oid_set(dev, DOT11_OID_STAKEY, (void *)&key, sizeof(struct obj_stakey));
+ }
+ 
++static int sm_drv_set_auth(struct net_device *dev,
++			   struct iw_request_info *info,
++			   union iwreq_data *wrqu, char *extra)
++{
++	struct net_local *priv = netdev_priv(dev);
++	struct iw_param *param = &wrqu->param;
++	u32 authen = 0, dot1x = 0;
++	u32 exunencrypt = 0, privinvoked = 0, wpa = 0;
++	u32 old_wpa;
++	int ret = 0;
++
++	DEBUG(DBG_IOCTL, "SET AUTH\n");
++
++	/* first get the flags */
++	down(&priv->wpa_sem);
++	wpa = old_wpa = priv->wpa;
++	up(&priv->wpa_sem);
++	ret = sm_drv_oid_get(dev, DOT11_OID_AUTHENABLE,
++			     (void *)&authen, sizeof(uint32_t));
++	ret |= sm_drv_oid_get(dev, DOT11_OID_PRIVACYINVOKED,
++			      (void *)&privinvoked, sizeof(uint32_t));
++	ret |= sm_drv_oid_get(dev, DOT11_OID_EXUNENCRYPTED,
++			      (void *)&exunencrypt, sizeof(uint32_t));
++	ret |= sm_drv_oid_get(dev, DOT11_OID_DOT1XENABLE,
++			      (void *)&dot1x, sizeof(uint32_t));
++
++	if (ret < 0)
++		goto out;
++
++	switch (param->flags & IW_AUTH_INDEX) {
++	case IW_AUTH_CIPHER_PAIRWISE:
++	case IW_AUTH_CIPHER_GROUP:
++	case IW_AUTH_KEY_MGMT:
++		break;
++
++	case IW_AUTH_WPA_ENABLED:
++		/* Do the same thing as IW_AUTH_WPA_VERSION */
++		if (param->value) {
++			wpa = DOT11_PRIV_INV_TKIP;
++			privinvoked = 1; /* For privacy invoked */
++			exunencrypt = 1; /* Filter out all unencrypted frames */
++			dot1x = 0x01; /* To enable eap filter */
++			authen = DOT11_AUTH_OS; /* Only WEP uses _SK and _BOTH */
++		} else {
++			wpa = DOT11_PRIV_INV_NONE;
++			privinvoked = 0;
++			exunencrypt = 0; /* Do not filter un-encrypted data */
++			dot1x = 0;
++		}
++		break;
++
++	case IW_AUTH_WPA_VERSION:
++		if (param->value & IW_AUTH_WPA_VERSION_DISABLED) {
++			wpa = DOT11_PRIV_INV_NONE;
++			privinvoked = 0;
++			exunencrypt = 0; /* Do not filter un-encrypted data */
++			dot1x = 0;
++		} else {
++			if (param->value & IW_AUTH_WPA_VERSION_WPA)
++				wpa = DOT11_PRIV_INV_TKIP;
++			else if (param->value & IW_AUTH_WPA_VERSION_WPA2)
++				wpa = DOT11_PRIV_INV_AES_CCMP;
++			privinvoked = 1; /* For privacy invoked */
++			exunencrypt = 1; /* Filter out all unencrypted frames */
++			dot1x = 0x01; /* To enable eap filter */
++			authen = DOT11_AUTH_OS; /* Only WEP uses _SK and _BOTH */
++		}
++		break;
++
++	case IW_AUTH_RX_UNENCRYPTED_EAPOL:
++		/* dot1x should be the opposite of RX_UNENCRYPTED_EAPOL;
++		 * turn off dot1x when allowing receipt of unencrypted EAPOL
++		 * frames, turn on dot1x when receipt should be disallowed
++		 */
++		dot1x = param->value ? 0 : 0x01;
++		break;
++
++	case IW_AUTH_PRIVACY_INVOKED:
++		privinvoked = param->value ? 1 : 0;
++		break;
++
++	case IW_AUTH_DROP_UNENCRYPTED:
++		exunencrypt = param->value ? 1 : 0;
++		break;
++
++	case IW_AUTH_80211_AUTH_ALG:
++		if (param->value & IW_AUTH_ALG_SHARED_KEY) {
++			/* Only WEP uses _SK and _BOTH */
++			if (wpa > 0) {
++				ret = -EINVAL;
++				goto out;
++			}
++			authen = DOT11_AUTH_SK;
++		} else if (param->value & IW_AUTH_ALG_OPEN_SYSTEM) {
++			authen = DOT11_AUTH_OS;
++		} else {
++			ret = -EINVAL;
++			goto out;
++		}
++		break;
++
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	/* Set all the values */
++	down(&priv->wpa_sem);
++	priv->wpa = wpa;
++	up(&priv->wpa_sem);
++
++	sm_drv_oid_set(dev, DOT11_OID_AUTHENABLE,
++		       (void *)&authen, sizeof(uint32_t));
++	sm_drv_oid_set(dev, DOT11_OID_PRIVACYINVOKED,
++		       (void *)&privinvoked, sizeof(uint32_t));
++	sm_drv_oid_set(dev, DOT11_OID_EXUNENCRYPTED,
++		       (void *)&exunencrypt, sizeof(uint32_t));
++	sm_drv_oid_set(dev, DOT11_OID_DOT1XENABLE,
++		       (void *)&dot1x, sizeof(uint32_t));
++
++ out:
++	return ret;
++}
++
++static int sm_drv_get_auth(struct net_device *dev,
++			   struct iw_request_info *info,
++			   union iwreq_data *wrqu, char *extra)
++{
++	struct net_local *priv = netdev_priv(dev);
++	struct iw_param *param = &wrqu->param;
++	u32 authen = 0, dot1x = 0;
++	u32 exunencrypt = 0, privinvoked = 0, wpa = 0;
++	int ret = 0;
++
++	DEBUG(DBG_IOCTL, "GET AUTH\n");
++
++	/* first get the flags */
++	down(&priv->wpa_sem);
++	wpa = priv->wpa;
++	up(&priv->wpa_sem);
++
++	switch (param->flags & IW_AUTH_INDEX) {
++	case IW_AUTH_CIPHER_PAIRWISE:
++	case IW_AUTH_CIPHER_GROUP:
++	case IW_AUTH_KEY_MGMT:
++		/*
++		 * wpa_supplicant will control these internally
++		 */
++		ret = -EOPNOTSUPP;
++		break;
++
++	case IW_AUTH_WPA_VERSION:
++		switch (wpa) {
++		case DOT11_PRIV_INV_TKIP:
++			param->value = IW_AUTH_WPA_VERSION_WPA;
++			break;
++		case DOT11_PRIV_INV_AES_CCMP:
++			param->value = IW_AUTH_WPA_VERSION_WPA2;
++			break;
++		default:
++			param->value = IW_AUTH_WPA_VERSION_DISABLED;
++			break;
++		}
++		break;
++
++	case IW_AUTH_DROP_UNENCRYPTED:
++		ret = sm_drv_oid_get(dev, DOT11_OID_EXUNENCRYPTED,
++				     (void *)&exunencrypt, sizeof(uint32_t));
++		if (ret >= 0)
++			param->value = exunencrypt > 0 ? 1 : 0;
++		break;
++
++	case IW_AUTH_80211_AUTH_ALG:
++		ret = sm_drv_oid_get(dev, DOT11_OID_AUTHENABLE,
++				     (void *)&authen, sizeof(uint32_t));
++		if (ret >= 0) {
++			switch (authen) {
++			case DOT11_AUTH_OS:
++				param->value = IW_AUTH_ALG_OPEN_SYSTEM;
++				break;
++			case DOT11_AUTH_BOTH:
++			case DOT11_AUTH_SK:
++				param->value = IW_AUTH_ALG_SHARED_KEY;
++			case DOT11_AUTH_NONE:
++			default:
++				param->value = 0;
++				break;
++			}
++		}
++		break;
++
++	case IW_AUTH_WPA_ENABLED:
++		param->value = wpa > 0 ? 1 : 0;
++		break;
++
++	case IW_AUTH_RX_UNENCRYPTED_EAPOL:
++		ret = sm_drv_oid_get(dev, DOT11_OID_DOT1XENABLE,
++				     (void *)&dot1x, sizeof(uint32_t));
++		if (ret >= 0)
++			param->value = dot1x > 0 ? 1 : 0;
++		break;
++
++	case IW_AUTH_PRIVACY_INVOKED:
++		ret = sm_drv_oid_get(dev, DOT11_OID_PRIVACYINVOKED,
++				     (void *)&privinvoked, sizeof(uint32_t));
++		if (ret >= 0)
++			param->value = privinvoked > 0 ? 1 : 0;
++		break;
++
++	default:
++		return -EOPNOTSUPP;
++	}
++	return ret;
++}
++
++#define KEY_SIZE_WEP104 13	/* 104/128-bit WEP keys */
++#define KEY_SIZE_WEP40  5	/* 40/64-bit WEP keys */
++#define KEY_SIZE_TKIP   32	/* TKIP keys */
++
++static int sm_drv_set_encodeext(struct net_device *dev,
++				struct iw_request_info *info,
++				union iwreq_data *wrqu,
++				char *extra)
++{
++	struct iw_point *encoding = &wrqu->encoding;
++	struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
++	int idx, alg = ext->alg, set_key = 1;
++	int authen = DOT11_AUTH_OS, invoke = 0, exunencrypt = 0;
++	int ret = 0;
++
++	DEBUG(DBG_IOCTL, "SET ENCODEEXT\n");
++
++	/* Determine and validate the key index */
++	idx = (encoding->flags & IW_ENCODE_INDEX) - 1;
++	if (idx) {
++		if (idx < 0 || idx > 3)
++			return -EINVAL;
++	} else {
++		ret = sm_drv_oid_get(dev, DOT11_OID_DEFKEYID,
++				     (void *)&idx, sizeof(uint32_t));
++		if (ret < 0)
++			goto out;
++	}
++
++	if (encoding->flags & IW_ENCODE_DISABLED)
++		alg = IW_ENCODE_ALG_NONE;
++
++	if (ext->ext_flags & IW_ENCODE_EXT_SET_TX_KEY) {
++		/* Only set transmit key index here, actual
++		 * key is set below if needed.
++		 */
++		ret = sm_drv_oid_set(dev, DOT11_OID_DEFKEYID,
++				     (void *)&idx, sizeof(uint32_t));
++		set_key = ext->key_len > 0 ? 1 : 0;
++	}
++
++	if (set_key) {
++		switch (alg) {
++		case IW_ENCODE_ALG_NONE:
++			break;
++		case IW_ENCODE_ALG_WEP: {
++			struct obj_key key = { DOT11_PRIV_WEP, 0, "" };
++			memset(key.key, 0, sizeof(key.key));
++			if (ext->key_len > KEY_SIZE_WEP104) {
++				ret = -EINVAL;
++				goto out;
++			}
++			if (ext->key_len > KEY_SIZE_WEP40)
++				key.length = KEY_SIZE_WEP104;
++			else
++				key.length = KEY_SIZE_WEP40;
++			memcpy(key.key, ext->key, ext->key_len);
++			ret = sm_drv_oid_set(dev, DOT11_OID_DEFKEYID + idx + 1,
++					     (void *)&key,
++					     sizeof(struct obj_key));
++			break;
++		}
++		case IW_ENCODE_ALG_TKIP:
++		case IW_ENCODE_ALG_CCMP: {
++			struct obj_stakey key;
++			memset(key.key, 0, sizeof(key.key));
++			if (alg == IW_ENCODE_ALG_TKIP)
++				key.type = DOT11_PRIV_TKIP;
++			else
++				key.type = DOT11_PRIV_AES_CCMP;
++			memcpy(key.address, ext->addr.sa_data, ETH_ALEN);
++			key.length = ext->key_len;
++			key.keyid = idx;
++			key.ext = 0;
++			memcpy(key.key, ext->key, ext->key_len);
++			ret = sm_drv_oid_set(dev, DOT11_OID_STAKEY,
++					     (void *)&key,
++					     sizeof(struct obj_stakey));
++			break;
++		}
++		default:
++			return -EINVAL;
++		}
++
++		if (ret < 0)
++			goto out;
++
++	}
++
++	/* Read the flags */
++	if (encoding->flags & IW_ENCODE_DISABLED) {
++		/* Encoding disabled,
++		 * authen = DOT11_AUTH_OS;
++		 * invoke = 0;
++		 * exunencrypt = 0; */
++	}
++	if (encoding->flags & IW_ENCODE_OPEN) {
++		/* Encode but accept non-encoded packets. No auth */
++		invoke = 1;
++	}
++	if (encoding->flags & IW_ENCODE_RESTRICTED) {
++		/* Refuse non-encoded packets. Auth */
++		authen = DOT11_AUTH_BOTH;
++		invoke = 1;
++		exunencrypt = 1;
++	}
++
++	/* do the change if requested  */
++	if (encoding->flags & IW_ENCODE_MODE) {
++		sm_drv_oid_set(dev, DOT11_OID_AUTHENABLE,
++			       (void *)&authen, sizeof(uint32_t));
++		sm_drv_oid_set(dev, DOT11_OID_PRIVACYINVOKED,
++			       (void *)&invoke, sizeof(uint32_t));
++		sm_drv_oid_set(dev, DOT11_OID_EXUNENCRYPTED,
++			       (void *)&exunencrypt, sizeof(uint32_t));
++	}
++
++ out:
++	return ret;
++}
++
++
++static int sm_drv_get_encodeext(struct net_device *dev,
++				struct iw_request_info *info,
++				union iwreq_data *wrqu,
++				char *extra)
++{
++	struct net_local *priv = netdev_priv(dev);
++	struct iw_point *encoding = &wrqu->encoding;
++	struct iw_encode_ext *ext = (struct iw_encode_ext *)extra;
++	int idx, max_key_len;
++	int authen = DOT11_AUTH_OS, invoke = 0, exunencrypt = 0, wpa = 0;
++	int ret = 0;
++
++	DEBUG(DBG_IOCTL, "GET ENCODEEXT\n");
++
++	/* first get the flags */
++	ret = sm_drv_oid_get(dev, DOT11_OID_AUTHENABLE,
++			     (void *)&authen, sizeof(uint32_t));
++	ret |= sm_drv_oid_get(dev, DOT11_OID_PRIVACYINVOKED,
++			      (void *)&invoke, sizeof(uint32_t));
++	ret |= sm_drv_oid_get(dev, DOT11_OID_EXUNENCRYPTED,
++			      (void *)&exunencrypt, sizeof(uint32_t));
++	if (ret < 0)
++		goto out;
++
++	max_key_len = encoding->length - sizeof(*ext);
++	if (max_key_len < 0)
++		return -EINVAL;
++
++	idx = (encoding->flags & IW_ENCODE_INDEX) - 1;
++	if (idx) {
++		if (idx < 0 || idx > 3)
++			return -EINVAL;
++	} else {
++		ret = sm_drv_oid_get(dev, DOT11_OID_DEFKEYID,
++				     (void *)&idx, sizeof(uint32_t));
++		if (ret < 0)
++			goto out;
++	}
++
++	encoding->flags = idx + 1;
++	memset(ext, 0, sizeof(*ext));
++
++	switch (authen) {
++	case DOT11_AUTH_BOTH:
++	case DOT11_AUTH_SK:
++		wrqu->encoding.flags |= IW_ENCODE_RESTRICTED;
++	case DOT11_AUTH_OS:
++	default:
++		wrqu->encoding.flags |= IW_ENCODE_OPEN;
++		break;
++	}
++
++	down(&priv->wpa_sem);
++	wpa = priv->wpa;
++	up(&priv->wpa_sem);
++
++	if (authen == DOT11_AUTH_OS && !exunencrypt && !invoke && !wpa) {
++		/* No encryption */
++		ext->alg = IW_ENCODE_ALG_NONE;
++		ext->key_len = 0;
++		wrqu->encoding.flags |= IW_ENCODE_DISABLED;
++	} else {
++		struct obj_key *key;
++
++		ret = sm_drv_oid_get(dev, DOT11_OID_DEFKEYID + idx + 1,
++				     (void *)&key, sizeof(struct obj_key));
++		if (ret < 0)
++			goto out;
++		if (max_key_len < key->length) {
++			ret = -E2BIG;
++			goto out;
++		}
++		memcpy(ext->key, key->key, key->length);
++		ext->key_len = key->length;
++
++		switch (key->type) {
++		case DOT11_PRIV_TKIP:
++			ext->alg = IW_ENCODE_ALG_TKIP;
++			break;
++		case DOT11_PRIV_AES_CCMP:
++			ext->alg = IW_ENCODE_ALG_CCMP;
++			break;
++		default:
++		case DOT11_PRIV_WEP:
++			ext->alg = IW_ENCODE_ALG_WEP;
++			break;
++		}
++		wrqu->encoding.flags |= IW_ENCODE_ENABLED;
++	}
++
++ out:
++	return ret;
++}
+ 
+ /* Private handlers */
+ 
+@@ -2155,10 +2581,10 @@
+ 	(iw_handler) NULL,			/* -- hole -- */
+ 	(iw_handler) sm_drv_set_genie,          /* SIOCSIWGENIE*/
+ 	(iw_handler) NULL,	                /* SIOCGIWGENIE */
+-	(iw_handler) NULL,	                /* SIOCSIWAUTH */
+-	(iw_handler) NULL,	                /* SIOCGIWAUTH */
+-	(iw_handler) NULL,	                /* SIOCSIWENCODEEXT */
+-	(iw_handler) NULL,	                /* SIOCGIWENCODEEXT */
++	(iw_handler) sm_drv_set_auth,	        /* SIOCSIWAUTH */
++	(iw_handler) sm_drv_get_auth,	        /* SIOCGIWAUTH */
++	(iw_handler) sm_drv_set_encodeext,      /* SIOCSIWENCODEEXT */
++	(iw_handler) sm_drv_get_encodeext,      /* SIOCGIWENCODEEXT */
+ 	(iw_handler) sm_drv_set_pmk,		/* SIOCSIWPMKSA */
+ };
+ 

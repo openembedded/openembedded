@@ -1,0 +1,7 @@
+fix_mem_corruption.patch
+fix_mem_allign.patch
+cx3110x.patch
+fix_cross_makefile.patch
+fix_ssid_data_length.patch
+770_performance_improvements.patch
+create_sysfs_link_for_wlan0.patch

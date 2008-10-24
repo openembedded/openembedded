@@ -1,0 +1,26 @@
+ dpkg-deb/build.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- dpkg-1.14.19.orig/dpkg-deb/build.c
++++ dpkg-1.14.19/dpkg-deb/build.c
+@@ -241,18 +241,18 @@ void do_build(const char *const *argv) {
+     if (checkedinfo->priority == pri_other) {
+       fprintf(stderr, _("warning, `%s' contains user-defined Priority value `%s'\n"),
+               controlfile, checkedinfo->otherpriority);
+       warns++;
+     }
+-    for (field= checkedinfo->available.arbs; field; field= field->next) {
++    /*for (field= checkedinfo->available.arbs; field; field= field->next) {
+       if (known_arbitrary_field(field))
+         continue;
+ 
+       fprintf(stderr, _("warning, `%s' contains user-defined field `%s'\n"),
+               controlfile, field->name);
+       warns++;
+-    }
++    }*/
+     checkversion(checkedinfo->available.version.version,"(upstream) version",&errs);
+     checkversion(checkedinfo->available.version.revision,"Debian revision",&errs);
+     if (errs) ohshit(_("%d errors in control file"),errs);
+ 
+     if (subdir) {

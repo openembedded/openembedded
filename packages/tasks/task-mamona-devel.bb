@@ -1,26 +1,26 @@
-DESCRIPTION = "Necessary packages for development"
+DESCRIPTION = "Necessary packages for development at runtime environment"
 LICENSE = "MIT"
-PR = "r1"
+PR = "r3"
 ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
 
 RDEPENDS = "\
-  automake \
-  bison \
-  fakeroot \
-  flex \
-  gcc \
-  gcc-symlinks \
-  g++ \
-  g++-symlinks \
+  task-mamona \
   gdb \
-  gettext \
-  groff \
-  libc6-dev \
-  libstdc++-dev \
-  make \
-  cvs \
-  subversion \
-  pkgconfig \
+  strace \
+  udev-usbserial \
+  usbnet \
+  openssh-sshd \
+  openssh-scp \
 "
+
+pkg_postinst () {
+	echo; echo
+	echo " ########################################################## "
+	echo " # WARNING: Please set your root password before use your # "
+	echo " #          usbnet package. It's required for ssh login.  # "
+	echo " ########################################################## "
+	echo; echo
+}
+

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+insmod /lib/modules/uinput.ko
+
+exit 0

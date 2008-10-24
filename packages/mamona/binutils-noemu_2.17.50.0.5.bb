@@ -2,6 +2,9 @@ require ../binutils/binutils.inc
 
 PR = "r1"
 
+RCONFLICTS = "binutils"
+RREPLACES = "binutils"
+
 SRC_URI = \
     "${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \
      file://binutils-2.16.91.0.6-objcopy-rename-errorcode.patch;patch=1 \
