@@ -1,0 +1,59 @@
+Index: stblinux-2.6.12/arch/mips/kernel/setup.c
+===================================================================
+--- stblinux-2.6.12.orig/arch/mips/kernel/setup.c	2008-04-15 02:13:42.000000000 +0200
++++ stblinux-2.6.12/arch/mips/kernel/setup.c	2008-04-15 02:25:13.000000000 +0200
+@@ -472,11 +472,29 @@
+  */
+ unsigned long get_RAM_size(void);
+ 
++extern int *_prom_envp;
++#define prom_envp(index) ((char *)(long)_prom_envp[(index)])
++static char *prom_getenv(char *envname)
++{
++	int i, index=0;
++
++	i = strlen(envname);
++
++	while (prom_envp(index)) {
++		if ((strncmp(envname, prom_envp(index), i) == 0) && (prom_envp(index)[i] == '='))
++			return(prom_envp(index) + i + 1);
++		index++;
++	}
++
++	return NULL;
++}
++
+ static inline void brcm_default_boot_mem(void)
+ {
+ 	int ramSizeMB = get_RAM_size() >> 20;
+ 	int size;
+ 	char msg[40];
++	const char *memsize_str;
+ 	
+ 	if (ramSizeMB <= 32) 
+ 	{
+@@ -502,11 +520,20 @@
+ 		size = 32;
+ #endif
+ 	}
+-	sprintf(msg, "Using %dMB for memory, overwrite by passing mem=xx\n", 
+-	                                size);
+-	uart_puts(msg);
+-        brcm_insert_ram_node(0, size<<20, BOOT_MEM_RAM, &brcm_bm);
+ 
++	memsize_str = prom_getenv("memsize");
++	if (memsize_str)
++	{
++		int memsize = simple_strtol(memsize_str, NULL, 0);
++		brcm_insert_ram_node(0, memsize<<20, BOOT_MEM_RAM, &brcm_bm);
++		printk("---> memsize from bootloader: %d\n", memsize);
++	} else
++	{
++		sprintf(msg, "Using %dMB for memory, overwrite by passing mem=xx\n", 
++		                                size);
++		uart_puts(msg);
++		brcm_insert_ram_node(0, size<<20, BOOT_MEM_RAM, &brcm_bm);
++	}
+ }
+ 
+ 
