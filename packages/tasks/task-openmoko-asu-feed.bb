@@ -6,7 +6,6 @@ PR = "r0.08"
 inherit task
 
 RDEPENDS_task-openmoko-asu-feed = "\
-        illume-config \
         xterm \
         openmoko-agpsui \
         task-openmoko-net \
