@@ -38,6 +38,13 @@ RDEPENDS_gst-meta-audio = "\
     gst-plugin-id3demux \
     gst-plugin-wavparse"
 
+RDEPENDS_gst-meta-audio_openmoko = "\
+    gst-meta-base \
+    gst-plugin-ivorbis \
+    gst-plugin-ogg \
+    gst-plugin-id3demux \
+    gst-plugin-wavparse"
+
 RDEPENDS_gst-meta-debug = "\
     gst-meta-base \
     gst-plugin-debug \

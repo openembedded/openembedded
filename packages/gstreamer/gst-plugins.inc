@@ -1,6 +1,7 @@
 require gst-common.inc
 DESCRIPTION = "Plugins for GStreamer"
 DEPENDS = "gstreamer libmikmod libmad liboil libogg tremor libvorbis libid3tag"
+DEPENDS_openmoko = "gstreamer libmikmod liboil libogg tremor libvorbis libid3tag"
 
 PACKAGES_DYNAMIC = "gst-plugin-*"
 
