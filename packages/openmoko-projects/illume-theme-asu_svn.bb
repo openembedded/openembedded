@@ -1,6 +1,7 @@
 DESCRIPTION = "Illume - Mobile UI module for Enlightenment"
 HOMEPAGE = "http://illume.projects.openmoko.org/"
 LICENSE = "MIT/BSD"
+DEPENDS = "edje-native eet-native"
 RPROVIDES_${PN} = "illume-theme"
 RCONFLICTS = "illume-config"
 PV = "0.0+svnr${SRCREV}"
