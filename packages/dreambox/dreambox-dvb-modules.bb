@@ -16,10 +16,10 @@ KV_dm7025 = "2.6.12.6"
 PV_dm7025 = "${KV}-20081001${@get_modules_extension(bb, d)}"
 
 KV_dm600pvr = "2.6.12"
-PV_dm600pvr = "${KV}-20071026"
+PV_dm600pvr = "${KV}-20080822"
 
 KV_dm500plus = "2.6.12"
-PV_dm500plus = "${KV}-20071026"
+PV_dm500plus = "${KV}-20080822"
 
 KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
 PV_dm800 = "${KV}-20081003"
