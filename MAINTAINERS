@@ -118,6 +118,14 @@ Interests:  OpenZaurus, E17, PHP
 Recipes:    efl/*, e17/*, musicpd/*, parted, netcat, emacs
 Recipes:    elitaire, synergy, lineak
 
+Person:     Khem Raj
+Mail:       raj.khem@gmail.com
+Website:    http://sakrah.homelinux.org
+Machines:   omap5912osk, qemuarm
+Distros:    Ångström
+Interests:  All Toolchains, kernels
+Recipes:    gcc, binutils, gdb, glibc, eglibc, uclibc, linux
+
 Person:     Koen Kooi
 Mail:       koen@openembedded.org
 Website:    http://dominion.kabel.utwente.nl/koen/cms
