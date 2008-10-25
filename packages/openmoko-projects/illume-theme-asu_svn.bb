@@ -4,7 +4,7 @@ LICENSE = "MIT/BSD"
 RPROVIDES_${PN} = "illume-theme"
 RCONFLICTS = "illume-config"
 PV = "0.0+svnr${SRCREV}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target/themes/;module=illume-theme-asu;proto=http"
 
@@ -28,7 +28,7 @@ do_install() {
     echo 'E_PROFILE="-profile asu"' > ${D}${sysconfdir}/enlightenment/default_profile
     install -m 0644 ${S}/misc-data/asu/asu.edj ${D}${datadir}/enlightenment/data/themes/asu.edj
     install -m 0644 ${S}/misc-data/asu_init/asu_init.edj ${D}${datadir}/enlightenment/data/init/asu_init.edj
-    install -m 0644 ${S}/config/*.cfg -t ${D}${datadir}/enlightenment/data/config/asu/
+    install -m 0644 ${S}/config/*.cfg ${D}${datadir}/enlightenment/data/config/asu
 }
 
 PACKAGE_ARCH_${PN} = "all"
