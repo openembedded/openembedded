@@ -7,7 +7,7 @@ PV_dm7025 = "61"
 PV_dm600pvr = "66"
 PV_dm500plus = "66"
 PV_dm8000 = "66"
-PV_dm800 = "66"
+PV_dm800 = "67"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
