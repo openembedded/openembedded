@@ -1,0 +1,18 @@
+--- flashrom/Makefile.orig	2008-10-25 12:13:21.000000000 +0300
++++ flashrom/Makefile		2008-10-25 12:14:04.000000000 +0300
+@@ -17,7 +17,6 @@
+ LDFLAGS = -lpci -lz
+ else
+ LDFLAGS = -lpci -lz
+-STRIP_ARGS = -s
+ endif
+ ifeq ($(OS_ARCH), FreeBSD)
+ CFLAGS += -I/usr/local/include
+@@ -40,7 +39,6 @@
+ 
+ $(PROGRAM): $(OBJS)
+ 	$(CC) -o $(PROGRAM) $(OBJS) $(LDFLAGS)
+-	$(STRIP) $(STRIP_ARGS) $(PROGRAM)
+ 
+ flashrom.o: flashrom.c
+ 	$(CC) -c $(CFLAGS) $(SVNDEF) $(CPPFLAGS) $< -o $@
