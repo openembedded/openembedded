@@ -9,7 +9,7 @@ ARM_INSTRUCTION_SET ?= "arm"
 #    but requires more instructions (140% for 70% smaller code) so may be
 #    slower.
 
-THUMB_INTERWORK ?= "yes"
+THUMB_INTERWORK ?= "no"
 # "yes" "no"
 #    Whether to compile with code to allow interworking between the two
 #    instruction sets.  This allows thumb code to be executed on a primarily
