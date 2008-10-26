@@ -131,6 +131,8 @@ def check_sanity(e):
 		if (f.read().strip() != tmpdir):
 			messages = messages + "Error, TMPDIR has changed location. You need to either move it back to %s or rebuild\n" % tmpdir
 	else:
+		import bb
+		bb.mkdirhier(tmpdir)
 		f = file(checkfile, "w")
 		f.write(tmpdir)
 	f.close()
