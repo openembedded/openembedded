@@ -422,6 +422,7 @@ def package_qa_check_rdepends(pkg, workdir, d):
 
 # The PACKAGE FUNC to scan each package
 python do_package_qa () {
+    import bb
     bb.note("DO PACKAGE QA")
     workdir = bb.data.getVar('WORKDIR', d, True)
     packages = bb.data.getVar('PACKAGES',d, True)
