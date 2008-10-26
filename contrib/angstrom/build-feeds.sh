@@ -63,7 +63,7 @@ do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python gnome-icon-theme"
 	BUILD_TARGETS=" \
-	              abiword \
+              abiword \
 		      aircrack-ng \
 		      angstrom-zeroconf-audio \
 		      apache2 \
@@ -78,7 +78,8 @@ do
 		      camera-assistant \
 		      checkers \
 		      cherokee \
-		      ctorrent \
+		      claws-mail \
+              ctorrent \
 		      distcc \
 		      dsniff \
 		      duke3d \
@@ -147,7 +148,8 @@ do
 		      labyrinth \
 		      leafpad \
 		      lighttpd \
-		      m4 \
+		      links-x11 \
+              m4 \
 		      mahjongg \
 		      make \
 		      maki \
@@ -160,7 +162,8 @@ do
               mpfr \
 		      mplayer \
 		      mtd-utils \
-		      mythtv \
+		      mutt \
+              mythtv \
 		      navit \
 		      netsurf \
 		      nmap \
@@ -176,7 +179,8 @@ do
 		      pdamaze \
 		      perl \
 		      pidgin \
-		      pipeman \
+		      pine \
+              pipeman \
 		      pkgconfig \
 		      pocketcellar \
 		      prboom \
@@ -205,7 +209,8 @@ do
 		      sokoban \
 		      strace \
 		      sugar \
-		      task-gpe-pim \
+		      sylpheed \
+              task-gpe-pim \
 		      task-openmoko-feed \
 		      task-openmoko-games \
 		      task-opie-apps \
