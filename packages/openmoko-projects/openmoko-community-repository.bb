@@ -14,7 +14,7 @@ do_install () {
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-CONFFILES_${PN} += "${sysconfdir}/opkg/Multiverse-feed.conf"
+CONFFILES_${PN} += "${sysconfdir}/opkg/community-repository-feed.conf"
 
 PKG_TAGS_${PN} = "group::repos alias::Om_Multiverse"
 
