@@ -19,4 +19,4 @@ do_configure_prepend() {
        autopoint --force
 }
 
-PKG_TAGS_${PN} = "group::communication alias::Om_Locations"
+PKG_TAGS_${PN} = "group::communication"
