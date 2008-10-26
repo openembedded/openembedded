@@ -1,6 +1,6 @@
 PREFERRED_VERSION_automake-native = "1.10"
 PREFERRED_VERSION_busybox 	= "1.11.3"
-PREFERRED_VERSION_cairo		= "1.7.6"
+PREFERRED_VERSION_cairo		= "1.8.0"
 PREFERRED_VERSION_dbus 		= "1.2.1"
 PREFERRED_VERSION_dropbear      = "0.51"
 PREFERRED_VERSION_fontconfig	= "2.4.1"
