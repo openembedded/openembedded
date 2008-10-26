@@ -50,10 +50,13 @@ CONFFILES_${PN} = "${sysconfdir}/syslog.conf"
 # This disables the syslog startup links in slugos (see slugos-init)
 INITSCRIPT_PARAMS_${PN}_slugos = "start 20 ."
 
+# Use gcc for linking so LDFLAGS actually makes sense
+LD = "${CC} -nostdlib"
+
 inherit cml1 update-rc.d
 
 do_compile() {
-	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	unset CFLAGS CPPFLAGS CXXFLAGS
 	base_do_compile
 }
 
@@ -65,7 +68,7 @@ do_install () {
         elif [ "${layout_prefix}" != "/usr" ]; then
 		echo "warning, busybox.links will lose with this prefix"
 	fi
-	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	unset CFLAGS CPPFLAGS CXXFLAGS
 	install -d ${D}${sysconfdir}/init.d
 	oe_runmake "PREFIX=${D}" install
 	cp -pPR ${S}/_install/* ${D}/
