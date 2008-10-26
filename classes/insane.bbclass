@@ -325,6 +325,38 @@ def package_qa_check_desktop(path, name, d):
 
     return sane
 
+def package_qa_hash_style(path, name, d):
+    """
+    Check if the binary has the right hash style...
+    """
+    import bb, os
+
+    if os.path.islink(path):
+        return True
+
+    gnu_hash = "--hash-style=gnu" in bb.data.getVar('LDFLAGS', d, True)
+    if not gnu_hash:
+        gnu_hash = "--hash-style=both" in bb.data.getVar('LDFLAGS', d, True)
+
+    objdump = bb.data.getVar('OBJDUMP', d, True)
+    env_path = bb.data.getVar('PATH', d, True)
+
+    sane = True
+    elf = False
+    # A bit hacky. We do not know if path is an elf binary or not
+    # we will search for 'Program Header' as this should be printed...
+    for line in os.popen("LC_ALL=C PATH=%s %s -p '%s' 2> /dev/null" % (env_path, objdump, path), "r"):
+        if "Program Header:" in line:
+            sane = False
+            elf = True
+        if "GNU_HASH" in line:
+            sane = True
+
+    if elf and not sane:
+        bb.note("No GNU_HASH in the elf binary: '%s'" % path)
+
+    return sane
+
 def package_qa_check_staged(path,d):
     """
     Check staged la and pc files for sanity
@@ -433,7 +465,7 @@ python do_package_qa () {
 
     checks = [package_qa_check_rpath, package_qa_check_devdbg,
               package_qa_check_perm, package_qa_check_arch,
-              package_qa_check_desktop]
+              package_qa_check_desktop, package_qa_hash_style]
     walk_sane = True
     rdepends_sane = True
     for package in packages.split():
