@@ -1,5 +1,5 @@
 DESCRIPTION = "Configuration files for online package repositories of Openmoko community repository feeds"
-PR = "r0.02"
+PR = "r0.01"
 
 do_compile() {
     mkdir -p ${S}/${sysconfdir}/opkg
@@ -18,4 +18,4 @@ CONFFILES_${PN} += "${sysconfdir}/opkg/community-repository-feed.conf"
 
 PKG_TAGS_${PN} = "group::repos"
 
-OPENMOKO_URI = "http://downloads.openmoko.org/repository"
+OPENMOKO_URI = "http://downloads.openmoko.org/repository/"
