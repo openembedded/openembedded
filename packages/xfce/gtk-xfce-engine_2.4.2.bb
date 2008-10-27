@@ -1,4 +1,5 @@
 DESCRIPTION = "XFCE theme for GTK"
+DEPENDS += "gtk+"
 
 inherit xfce
 XFCE_VERSION = 4.4.2
