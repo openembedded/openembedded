@@ -6,6 +6,9 @@ LICENSE = "BSD"
 SRCDATE = "${PV}"
 PR = "r1"
 
+# tremor makes heavy use of non-thumb-compatible inline asm.
+ARM_INSTRUCTION_SET = "arm"
+
 SRC_URI = "svn://svn.xiph.org/trunk;module=Tremor;rev=4573;proto=http"
 
 S = "${WORKDIR}/Tremor"
