@@ -4,7 +4,8 @@ HOMEPAGE = "http://www.gtk.org"
 SECTION = "libs"
 LICENSE = "LGPL"
 PRIORITY = "optional"
-DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups"
+DEPENDS = "glib-2.0 tiff pango atk jpeg libpng libxext libxcursor gtk-doc libgcrypt cups \
+           libxrandr libxdamage libxrender libxcomposite"
 
 inherit autotools pkgconfig
 
