@@ -1,0 +1,12 @@
+Index: setup.py
+===================================================================
+--- setup.py	(Revision 62)
++++ setup.py	(Arbeitskopie)
+@@ -27,7 +27,6 @@
+     setup_requires=['python-evas>=0.2.1'],
+     data_files=[('applications', 'src/exposure.desktop']),
+ 	('exposure', ['data/themes/exposure.edj']),
+-	('images', ['data/image/exposure.jpg']),
+ 	('/etc/X11/Xsession.d/', ['src/80app-launcher-bootup']),
+         ]
+ )
