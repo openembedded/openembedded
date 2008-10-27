@@ -40,7 +40,7 @@ python write_specfile() {
 			pass
 	if not files:
 		from bb import note
-		note("Not creating empty archive for %s-%s-%s" % (bb.data.getVar('PKG',d, 1), bb.data.getVar('PV', d, 1), build_package_revision(d)))
+		note("Not creating empty archive for %s" % (bb.data.expand('${PKG}-${PV}-${PR}${DISTRO_PR}', d, True))
 		return
 
 	# output .spec using this metadata store
@@ -57,7 +57,7 @@ python write_specfile() {
 		if out_vartranslate[var][0] == "%":
 			continue
 		fd.write("%s\t: %s\n" % (out_vartranslate[var], bb.data.getVar(var, d)))
-        fd.write("Release\t: %s\n" % build_package_revision(d))
+        fd.write("Release\t: %s\n" % bb.data.expand('${PR}${DISTRO_PR}', d, True)
 	fd.write("Summary\t: .\n")
 
 	for var in out_vartranslate.keys():

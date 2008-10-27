@@ -131,7 +131,7 @@ python do_package_deb () {
             pass
         if not g and bb.data.getVar('ALLOW_EMPTY', localdata) != "1":
             from bb import note
-            note("Not creating empty archive for %s-%s-%s" % (pkg, bb.data.getVar('PV', localdata, 1), build_package_revision(localdata)))
+            note("Not creating empty archive for %s-%s" % (pkg, bb.data.expand('${PV}-${PR}${DISTRO_PR}', localdata, True)))
             bb.utils.unlockfile(lf)
             continue
 
