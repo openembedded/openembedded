@@ -156,6 +156,7 @@ PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
 # so specify exactly what we would like to build.
 PREFERRED_VERSION_pango    ?= 1.20.5
 PREFERRED_VERSION_glib-2.0 ?= 2.16.1
+PREFERRED_VERSION_cairo    ?= 1.4.8
 
 # Stick with an older gettext and e2fsprogs stuff
 # and gnutls... (our autotools is too old at the moment)
