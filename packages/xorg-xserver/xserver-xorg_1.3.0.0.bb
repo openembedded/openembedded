@@ -2,7 +2,7 @@ MESA_VER = "6.5.2"
 
 require xorg-xserver-common.inc
 PE = "1"
-PR = "r6"
+PR = "r7"
 
 SRC_URI += "file://drmfix.patch;patch=1 \
             file://glyphstr.patch;patch=1"
