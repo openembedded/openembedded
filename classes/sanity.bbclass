@@ -172,6 +172,16 @@ def check_sanity(e):
 		f.write(distro_pr)
 	f.close()
 
+
+	#
+	# Check there aren't duplicates in PACKAGE_ARCHS
+	#
+	archs = data.getVar('PACKAGE_ARCHS', e.data, True).split()
+	for arch in archs:
+		if archs.count(arch) != 1:
+			messages = messages + "Error, Your PACKAGE_ARCHS field contains duplicates. Perhaps you set EXTRA_PACKAGE_ARCHS twice accidently through some tune file?\n"
+			break
+
 	if messages != "":
 		raise_sanity_error(messages)
 
