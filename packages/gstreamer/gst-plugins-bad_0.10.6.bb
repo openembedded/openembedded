@@ -1,7 +1,8 @@
 require gst-plugins.inc
 
 SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
-            file://gst-plugins-directfb-fix.patch;patch=1;pnum=2"
+            file://gst-plugins-directfb-fix.patch;patch=1;pnum=2 \
+            file://ivorbis-thumb.patch;patch=1"
 DEPENDS += "gst-plugins-base directfb"
 
 do_compile_prepend() {

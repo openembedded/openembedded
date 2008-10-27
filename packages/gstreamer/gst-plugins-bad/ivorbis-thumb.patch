@@ -1,0 +1,11 @@
+--- bad/ext/ivorbis/vorbisdec.c~	2008-01-22 09:55:22.000000000 +0000
++++ bad/ext/ivorbis/vorbisdec.c	2008-10-27 20:12:43.000000000 +0000
+@@ -792,7 +792,7 @@
+ }
+ 
+ /* Taken from Tremor, misc.h */
+-#ifdef _ARM_ASSEM_
++#if defined(_ARM_ASSEM_) && !defined(__thumb__)
+ static inline ogg_int32_t
+ CLIP_TO_15 (ogg_int32_t x)
+ {
