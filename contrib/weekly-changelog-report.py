@@ -23,6 +23,6 @@ start_day = end_day - datetime.timedelta(7)
 
 print "OE weekly changelog %s to %s\n" % (start_day.isoformat(), end_day.isoformat())
 
-os.system("git-shortlog --since=%s --until=%s | grep -v \"Merge branch\"" % (start_day.isoformat(), end_day.isoformat()))
+os.system("git-shortlog --since=%s --until=%s | grep -v \"Merge branch\" | grep -v \"Merge commit\"" % (start_day.isoformat(), end_day.isoformat()))
 
 
