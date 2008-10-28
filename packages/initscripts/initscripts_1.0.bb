@@ -16,7 +16,7 @@ SRC_URI = "file://functions \
            file://hostname.sh \
            file://mountall.sh \
            file://banner \
-           file://finish \
+           file://finish.sh \
            file://bootmisc.sh \
            file://mountnfs.sh \
            file://reboot \
@@ -56,7 +56,7 @@ do_install () {
 	install -m 0755    ${WORKDIR}/functions		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/bootmisc.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/checkroot.sh	${D}${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/finish		${D}${sysconfdir}/init.d
+	install -m 0755    ${WORKDIR}/finish.sh		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/halt		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/hostname.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/mountall.sh	${D}${sysconfdir}/init.d
@@ -113,7 +113,7 @@ do_install () {
 	ln -sf		../init.d/mountnfs.sh	${D}${sysconfdir}/rcS.d/S45mountnfs.sh
 	ln -sf		../init.d/bootmisc.sh	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	ln -sf		../init.d/urandom	${D}${sysconfdir}/rcS.d/S55urandom
-	ln -sf		../init.d/finish	${D}${sysconfdir}/rcS.d/S99finish
+	ln -sf		../init.d/finish.sh	${D}${sysconfdir}/rcS.d/S99finish.sh
 	ln -sf		../init.d/devices	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rcS.d/S03sysfs

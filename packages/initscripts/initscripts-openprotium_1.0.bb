@@ -74,7 +74,7 @@ do_install_append() {
 	rm	${D}${sysconfdir}/rcS.d/S45mountnfs.sh
 	rm	${D}${sysconfdir}/rcS.d/S55bootmisc.sh
 #	rm	${D}${sysconfdir}/rcS.d/S55urandom
-	rm	${D}${sysconfdir}/rcS.d/S99finish
+	rm	${D}${sysconfdir}/rcS.d/S99finish.sh
 	rm	${D}${sysconfdir}/rcS.d/S05devices
 	# udev will run at S04 if installed
 	rm	${D}${sysconfdir}/rcS.d/S03sysfs
@@ -136,7 +136,7 @@ do_install_append() {
 	# urandom is currently disabled from S 55 (and won't work with tmpfs /var)
 
 	# ipkg-cl configure runs at S 98
-	update-rc.d -r ${D} finish		start 99 S .
+	update-rc.d -r ${D} finish.sh		start 99 S .
 
 	#
 	# User (2-5) links - UNCHANGED
