@@ -2,7 +2,7 @@ DESCRIPTION = "The freesmartphone.org framework -- install this task to make you
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r0"
+PR = "r1"
 
 inherit task
 
@@ -13,4 +13,6 @@ RDEPENDS_${PN} = "\
 
 RRECOMMENDS_${PN} = "\
   gsm0710muxd \
+  \
+  tzdata \
 "
