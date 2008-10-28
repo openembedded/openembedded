@@ -27,6 +27,7 @@ RDEPENDS_${PN} += "\
   python-ctypes \
   python-dbus \
   python-datetime \
+  python-difflib \
   python-pprint \
   python-pygobject \
   python-pyrtc \
@@ -42,6 +43,7 @@ RDEPENDS_${PN} += "\
 
 RRECOMMENDS_${PN} += "\
   alsa-utils-amixer \
+  python-gst \
   ppp \
 "
 
