@@ -53,4 +53,5 @@ do_install_append () {
 	install -d ${D}/${sysconfdir}/X11
 	install -m 0644 ${WORKDIR}/xorg.conf ${D}/${sysconfdir}/X11/
 	ln -sf ${datadir}/fonts/X11 ${D}/${libdir}/X11/fonts
+	chmod u+s ${D}/usr/bin/Xorg
 }
