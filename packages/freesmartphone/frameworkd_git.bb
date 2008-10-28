@@ -12,7 +12,7 @@ inherit distutils update-rc.d
 INITSCRIPT_NAME = "frameworkd"
 INITSCRIPT_PARAMS = "defaults 29"
 
-SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
+SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=stabilization/milestone4 \
            file://frameworkd \
            file://frameworkd.conf"
 S = "${WORKDIR}/git"
