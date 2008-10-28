@@ -1,9 +1,5 @@
-modprobe lcd
 echo 4 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
-
-mount -t proc proc /proc
-echo 8 > /proc/progress
 
 mount -t sysfs sysfs /sys
 echo 12 > /proc/progress
@@ -15,31 +11,28 @@ swapon -a
 echo 18 > /proc/progress
 
 for mod in cifs nfsd usb-storage sd autofs4 vfat; do
-	modprobe $mod 2> /dev/null ;
+	modprobe $mod
 done
 echo 22 > /proc/progress
 
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
-echo 44 > /proc/progress
+mount -at nonfs,nosmbfs,noncpfs
+echo 24 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
 echo 28 > /proc/progress
 
 # sleep after 10min
-hdparm -S120 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -S 120 /dev/discs/disc0/disc
 echo 32 > /proc/progress
 # set UDMA66
-hdparm -X66 /dev/ide/host0/bus0/target0/lun0/disc
+hdparm -X66 /dev/discs/disc0/disc
 echo 34 > /proc/progress
 # accustic management
-hdparm -M128 /dev/ide/host0/bus0/target0/lun0/disc
-
-echo 38 > /proc/progress
-modprobe xilleon
+hdparm -M 128 /dev/discs/disc0/disc
 
 echo 44 > /proc/progress
-for mod in dreambox_keyboard fp rt73 zd1211b rfmod info; do
-	modprobe $mod 2> /dev/null ;
+for mod in xilleon dreambox_keyboard fp rt73 zd1211b rfmod; do
+	modprobe $mod
 done
 
 echo 50 > /proc/progress
@@ -58,8 +51,7 @@ echo 70 > /proc/progress
 ifup -a
 
 echo 78 > /proc/progress
-# network mounts should be done here.
-mount -at nfs,smbfs,cpfs 2>/dev/null
+mount -at nfs,smbfs,cpfs
 
 echo 82 > /proc/progress
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"

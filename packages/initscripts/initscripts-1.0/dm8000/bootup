@@ -11,38 +11,34 @@ swapon -a
 echo 14 > /proc/progress
 
 for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd cdfs; do
-	modprobe $mod 2> /dev/null ;
+	modprobe $mod
 done
 
-mount -at nonfs,nosmbfs,noncpfs 2>/dev/null
+mount -at nonfs,nosmbfs,noncpfs
 echo 15 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
 echo 16 > /proc/progress
 
 # sleep after 10min
-for i in 0 1; do
-	hdparm -S 120 /dev/ide/host0/bus$i/target0/lun0/disc || /bin/true;
-done
+hdparm -S 120 /dev/discs/disc0/disc
 
 echo 17 > /proc/progress
 
 # set UDMA66, enable dma
-hdparm -d 1 /dev/discs/disc0/disc || /bin/true;
-hdparm -X66 /dev/discs/disc0/disc || /bin/true;
+hdparm -d 1 /dev/discs/disc0/disc
+hdparm -X66 /dev/discs/disc0/disc
 
 # accustic management
-hdparm -M 128 /dev/discs/disc0/disc || /bin/true;
+hdparm -M 128 /dev/discs/disc0/disc
 
-# disable dma for cd drive ... 
+# disable dma for cd drive ...
 # we remove this when the dma timeout problem is fixed!
-for i in 0 1; do
-	hdparm -d 0 /dev/ide/host0/bus$i/target0/lun0/cd || /bin/true;
-done
+hdparm -d 0 /dev/ide/host0/bus0/target0/lun0/cd
 
 echo 18 > /proc/progress
-for i in dreambox_keyboard fp bcm7400; do
-	modprobe $i;
+for mod in dreambox_keyboard fp bcm7400; do
+	modprobe $mod
 done
 
 echo 19 > /proc/progress
@@ -52,16 +48,16 @@ cat /etc/videomode > /proc/stb/video/videomode
 echo 20 > /proc/progress
 
 for mod in rt73 zd1211b; do
-	modprobe $mod 2> /dev/null ;
+	modprobe $mod
 done
 
 echo "loading madwifi modules"
 for x in wlan ath_rate; do
-	for mod in `ls /lib/modules/$(uname -r)/net | grep $x | cut -d . -f 0`; do 
-		modprobe $mod 2> /dev/null ;
+	for mod in `ls /lib/modules/$(uname -r)/net | grep $x | cut -d . -f 0`; do
+		modprobe $mod
 	done
 done
-modprobe ath_pci 2> /dev/null
+modprobe ath_pci
 
 echo 21 > /proc/progress
 
@@ -78,7 +74,7 @@ echo 23 > /proc/progress
 ifup -a
 
 echo 24 > /proc/progress
-mount -at nfs,smbfs,cpfs 2>/dev/null
+mount -at nfs,smbfs,cpfs
 
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 
