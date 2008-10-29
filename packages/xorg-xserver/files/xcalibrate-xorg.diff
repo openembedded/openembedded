@@ -1,0 +1,11 @@
+--- /tmp/configure.ac	2008-10-29 18:53:23.000000000 +0100
++++ xorg-server-1.4.2/configure.ac	2008-10-29 18:53:40.000000000 +0100
+@@ -865,7 +865,7 @@
+        FONTPATH="built-ins"
+ fi
+ 
+-if test "x$XCALIBRATE" = xyes && test "$KDRIVE" = yes; then
++if test "x$XCALIBRATE" = xyes ; then
+    AC_DEFINE(XCALIBRATE, 1, [Build XCalibrate extension])
+    REQUIRED_MODULES="$REQUIRED_MODULES xcalibrateproto"
+ else
