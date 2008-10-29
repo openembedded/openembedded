@@ -6,15 +6,10 @@ PR = "r14"
 
 COMPATIBLE_MACHINE = "(palmld|palmtc|palmtt3|palmtt5|palmtx|palmz31|palmz72|palmt650)"
 
-SRC_URI = "git://git.hackndev.com/linux-hnd;protocol=git \
+SRC_URI = "git://git.hackndev.com/linux-hnd;protocol=git;tag=master \
 	   file://defconfig"
 
-SRC_URI_append_palmtx += "http://www.busybox.net/downloads/busybox-1.1.0.tar.bz2 \
-			  file://init \
-                          file://initramfs_list \
-                          file://busybox-config"
-
-S = "${WORKDIR}/trunk"
+S = "${WORKDIR}/git"
 
 K_MAJOR = "2"
 K_MINOR = "6"
@@ -25,6 +20,7 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 inherit kernel
 
 do_configure() {
+	echo "working in $PWD"
 
 	if [ -f ${WORKDIR}/defconfig ]; then
 		install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "No configuration for ${MACHINE} available."
