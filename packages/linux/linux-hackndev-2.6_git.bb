@@ -20,6 +20,7 @@ PV = "${K_MAJOR}.${K_MINOR}.${K_MICRO}-${HHV}"
 inherit kernel
 
 do_configure() {
+	echo "working in $PWD"
 
 	if [ -f ${WORKDIR}/defconfig ]; then
 		install -m 0644 ${WORKDIR}/defconfig ${S}/.config || die "No configuration for ${MACHINE} available."
