@@ -1,0 +1,1 @@
+DROPBEAR_PORT=`ip addr list usb0 | awk 'BEGIN { FS="[ /]+" } /inet / { print  $3 }'`:22

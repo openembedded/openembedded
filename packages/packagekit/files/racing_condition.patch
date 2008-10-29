@@ -1,0 +1,244 @@
+diff --git a/backends/opkg/pk-backend-opkg.c b/backends/opkg/pk-backend-opkg.c
+index a7b5244..9e71b90 100644
+--- a/backends/opkg/pk-backend-opkg.c
++++ b/backends/opkg/pk-backend-opkg.c
+@@ -20,6 +20,7 @@
+  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+  */
+ 
++#include <unistd.h>
+ #include <gmodule.h>
+ #include <glib.h>
+ #include <string.h>
+@@ -47,6 +48,22 @@ typedef struct {
+ 	PkBackend *backend;
+ } SearchParams;
+ 
++static int __opkg_lock__ = 0;
++static inline void opkg_thread_lock() 
++{
++	while ( __opkg_lock__ ) 
++		usleep(500);
++	__opkg_lock__ = 1;
++}
++
++static inline void opkg_thread_unlock() 
++{
++	if (! __opkg_lock__ ) {
++		pk_debug("Warning: opkg_thread_unlock  without lock before!!\n");
++	}
++	__opkg_lock__ = 0;
++}
++
+ static void
+ opkg_unknown_error (PkBackend *backend, gint error_code, gchar *failed_cmd)
+ {
+@@ -236,6 +253,7 @@ backend_refresh_cache_thread (PkBackend *backend)
+ 			opkg_unknown_error (backend, ret, "Refreshing cache");
+ 	}
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 
+ 	return (ret == 0);
+ }
+@@ -246,6 +264,7 @@ backend_refresh_cache_thread (PkBackend *backend)
+ static void
+ backend_refresh_cache (PkBackend *backend, gboolean force)
+ {
++	opkg_thread_lock();
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_REFRESH_CACHE);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 
+@@ -260,15 +279,26 @@ backend_refresh_cache (PkBackend *backend, gboolean force)
+ static void
+ pk_opkg_package_list_cb (opkg_t *opkg, opkg_package_t *pkg, void *data)
+ {
+-	SearchParams *params = (SearchParams*) data;
++	SearchParams *params;
+ 	gchar *uid;
+ 	gchar *haystack;
+ 	gint status, match;
+-	PkFilterEnum filters = params->filters;
++	PkFilterEnum filters;
+ 
++	if (!opkg) {
++		pk_debug("opkg is NULL!!\n");
++		return;
++	}
++	if (!data) {
++		pk_debug("data is NULL!!\n");
++		return;
++	}
+ 	if (!pkg->name)
+ 		return;
+ 
++	params = (SearchParams*) data;
++	filters = params->filters;
++
+ 	switch (params->search_type)
+ 	{
+ 		case SEARCH_NAME:
+@@ -336,6 +366,7 @@ backend_search_thread (PkBackend *backend)
+ 	opkg_list_packages (opkg, pk_opkg_package_list_cb, params);
+ 
+ 	pk_backend_finished (params->backend);
++	opkg_thread_unlock();
+ 
+ 	g_free (params->needle);
+ 	g_free (params);
+@@ -348,6 +379,7 @@ backend_search_name (PkBackend *backend, PkFilterEnum filters, const gchar *sear
+ {
+ 	SearchParams *params;
+ 
++	opkg_thread_lock();
+ 
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_QUERY);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+@@ -370,6 +402,7 @@ backend_search_description (PkBackend *backend, PkFilterEnum filters, const gcha
+ {
+ 	SearchParams *params;
+ 
++	opkg_thread_lock();
+ 
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_QUERY);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+@@ -389,6 +422,7 @@ backend_search_group (PkBackend *backend, PkFilterEnum filters, const gchar *sea
+ {
+ 	SearchParams *params;
+ 
++	opkg_thread_lock();
+ 
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_QUERY);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+@@ -431,12 +465,15 @@ backend_install_packages_thread (PkBackend *backend)
+ 	}
+ 
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 	return (err == 0);
+ }
+ 
+ static void
+ backend_install_packages (PkBackend *backend, gchar **package_ids)
+ {
++	opkg_thread_lock();
++
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_INSTALL);
+ 
+@@ -493,6 +530,7 @@ backend_remove_packages_thread (PkBackend *backend)
+ 	}
+ 
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 	return (err == 0);
+ }
+ 
+@@ -500,6 +538,8 @@ static void
+ backend_remove_packages (PkBackend *backend, gchar **package_ids, gboolean allow_deps, gboolean autoremove)
+ {
+ 	gpointer *params;
++	
++	opkg_thread_lock();
+ 
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_REMOVE);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+@@ -540,12 +580,15 @@ backend_update_system_thread (PkBackend *backend)
+ 		opkg_unknown_error (backend, err, "Upgrading system");
+ 
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 	return (err != 0);
+ }
+ 
+ static void
+ backend_update_system (PkBackend *backend)
+ {
++	opkg_thread_lock();
++
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_UPDATE);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 
+@@ -571,6 +614,7 @@ backend_update_package_thread (PkBackend *backend)
+ 				"Package not found");
+ 		pk_package_id_free (pi);
+ 		pk_backend_finished (backend);
++		opkg_thread_unlock();
+ 		return FALSE;
+ 	}
+ 
+@@ -581,6 +625,7 @@ backend_update_package_thread (PkBackend *backend)
+ 
+ 	pk_package_id_free (pi);
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 	return (err != 0);
+ }
+ 
+@@ -589,10 +634,12 @@ backend_update_packages (PkBackend *backend, gchar **package_ids)
+ {
+ 	gint i;
+ 
+-	pk_backend_set_status (backend, PK_STATUS_ENUM_UPDATE);
+-	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+-
+ 	for (i = 0; package_ids[i]; i++) {
++
++		opkg_thread_lock();
++
++		pk_backend_set_status (backend, PK_STATUS_ENUM_UPDATE);
++		pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 		pk_backend_set_string (backend, "pkgid", package_ids[i]);
+ 		pk_backend_thread_create (backend, backend_update_package_thread);
+ 	}
+@@ -626,12 +673,14 @@ backend_get_updates_thread (PkBackend *backend)
+ {
+ 	opkg_list_upgradable_packages (opkg, pk_opkg_list_upgradable_cb, backend);
+ 	pk_backend_finished (backend);
++	opkg_thread_unlock();
+ 	return TRUE;
+ }
+ 
+ static void
+ backend_get_updates (PkBackend *backend, PkFilterEnum filters)
+ {
++	opkg_thread_lock();
+ 	pk_backend_set_status (backend, PK_STATUS_ENUM_UPDATE);
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 
+@@ -672,6 +721,7 @@ backend_get_details_thread (PkBackend *backend)
+ 	{
+ 		pk_backend_error_code (backend, PK_ERROR_ENUM_PACKAGE_ID_INVALID, "invalid package id");
+ 		pk_backend_finished (backend);
++		opkg_thread_unlock();
+ 		return FALSE;
+ 	}
+ 
+@@ -683,6 +733,7 @@ backend_get_details_thread (PkBackend *backend)
+ 	{
+ 		pk_backend_error_code (backend, PK_ERROR_ENUM_PACKAGE_NOT_FOUND, NULL);
+ 		pk_backend_finished (backend);
++		opkg_thread_unlock();
+ 		return FALSE;
+ 	}
+ 
+@@ -698,15 +749,18 @@ backend_get_details_thread (PkBackend *backend)
+ 	}
+ 
+ 	pk_backend_details (backend, newid, NULL, group, pkg->description, pkg->url, pkg->size);
++	pk_backend_finished (backend);
++	opkg_thread_unlock();
++
+ 	g_free (newid);
+ 	opkg_package_free(pkg);
+-	pk_backend_finished (backend);
+ 	return TRUE;
+ }
+ 
+ static void
+ backend_get_details (PkBackend *backend, const gchar *package_id)
+ {
++	opkg_thread_lock();
+ 	pk_backend_set_percentage (backend, PK_BACKEND_PERCENTAGE_INVALID);
+ 	pk_backend_thread_create (backend, backend_get_details_thread);
+ }

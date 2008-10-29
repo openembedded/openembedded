@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 DEPENDS = "libtool-cross"
 LICENSE = "GPL"
-PR = "r11"
+PR = "r11.01"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/a/apmd/apmd_${PV}.orig.tar.gz \
            file://debian.patch;patch=1 \
@@ -55,6 +55,10 @@ do_install() {
 	install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/apmd
 	oe_libinstall -so libapm ${D}${libdir}
 	install -m 0644 apm.h ${D}${includedir}
+        for i in `find ${D} -name "*.la"` ; do \
+                sed -i -e s:${STAGING_LIBDIR}:${libdir}:g $i
+                sed -i -e s:${STAGING_DIR_HOST}::g $i
+        done
 
 	cat ${WORKDIR}/init | sed -e 's,/usr/sbin,${sbindir},g; s,/etc,${sysconfdir},g;' > ${D}${sysconfdir}/init.d/apmd
 	chmod 755 ${D}${sysconfdir}/init.d/apmd
