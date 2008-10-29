@@ -6,6 +6,7 @@ DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-nat
 RDEPENDS_${PN} = "opkg"
 PV = "0.2.3+gitr${SRCREV}"
 PR = "r16"
+PE = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
            file://disable-docbook2man.patch;patch=1 \
