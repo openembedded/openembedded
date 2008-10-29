@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for OPIE stuff"
 SECTION = "opie/base"
 LICENSE = "MIT"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -34,7 +34,7 @@ RDEPENDS_task-opie-styles = "opie-style-flat opie-style-fresh opie-style-liquid 
 RDEPENDS_task-opie-decorations = "opie-deco-flat opie-deco-liquid opie-deco-polished"
 
 RDEPENDS_task-opie-multimedia = "opie-mediaplayer1 \
-                        opie-mediaplayer1-libmadplugin \
+                        ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'opie-mediaplayer1-libmadplugin', d)} \
                         opie-mediaplayer1-libmodplugin \
                         opie-mediaplayer1-libtremorplugin \
                         opie-mediaplayer1-libwavplugin \

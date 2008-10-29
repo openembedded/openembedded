@@ -2,7 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl ffmpeg xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS = "virtual/libsdl ffmpeg xsp zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
@@ -39,7 +40,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 

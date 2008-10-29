@@ -2,9 +2,10 @@ DESCRIPTION = "Music Player Daemon (mpd). This version is configured for alsa su
 HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
-DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmikmod libmad flac audiofile virtual/libiconv"
+DEPENDS = "libvorbis libogg libao-alsa zlib libmikmod flac audiofile virtual/libiconv \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 RDEPENDS = "libao-alsa"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.gz \
            file://mpd/save-volume-state.patch;patch=1 file://mpd/mpd.init"

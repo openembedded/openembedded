@@ -3,9 +3,10 @@ HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "x11/multimedia"
-PR = "r5"
+PR = "r6"
 
-DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+DEPENDS = "gtk+ freetype gnutls tremor faad2 ffmpeg flac \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.gz \
 	file://fix-pda.patch;patch=1 \

@@ -1,8 +1,10 @@
 # Based on its sibling on Poky which is copyright (C) 2006,2007  OpenedHand LTD
 
 DESCRIPTION = "Gstreamer package groups"
-DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good gst-plugins-ugly"
-PR = "r11"
+DEPENDS = "gstreamer gst-plugins-base gst-plugins-bad gst-plugins-good \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugins-ugly', d)}"
+
+PR = "r12"
 
 PACKAGES = "${PN}-dbg \
     gst-meta-base \
@@ -34,14 +36,7 @@ RDEPENDS_gst-meta-audio = "\
     gst-meta-base \
     gst-plugin-ivorbis \
     gst-plugin-ogg \
-    gst-plugin-mad \
-    gst-plugin-id3demux \
-    gst-plugin-wavparse"
-
-RDEPENDS_gst-meta-audio_openmoko = "\
-    gst-meta-base \
-    gst-plugin-ivorbis \
-    gst-plugin-ogg \
+    ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
     gst-plugin-id3demux \
     gst-plugin-wavparse"
 
@@ -55,10 +50,7 @@ RDEPENDS_gst-meta-video = "\
     gst-meta-base \
     gst-plugin-avi \
     gst-plugin-matroska \
-    gst-plugin-mpegstream \
-    gst-plugin-mpegaudioparse \
-    gst-plugin-mpegvideoparse \
-    gst-plugin-mpeg2dec"
+    ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mpegstream gst-plugin-mpegaudioparse gst-plugin-mpegvideoparse gst-plugin-mpeg2dec', d)}"
 
 RRECOMMENDS_gst-meta-video = "\
     gst-meta-audio"

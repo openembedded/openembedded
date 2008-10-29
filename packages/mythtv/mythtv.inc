@@ -2,7 +2,8 @@ DESCRIPTION = "A full featured personal video recorder system."
 HOMEPAGE = "http://www.mythtv.org"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-DEPENDS = "jack alsa-lib lame libxinerama libxv libxxf86vm libxvmc lirc"
+DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}"
 #RDEPENDS_${PN} = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2"

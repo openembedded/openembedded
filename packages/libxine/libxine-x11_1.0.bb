@@ -3,9 +3,10 @@ This version is configued for the usage with X11"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "zlib libogg libvorbis tremor libmad libmodplug esound virtual/libx11 libxext libpng"
+DEPENDS = "zlib libogg libvorbis tremor libmodplug esound virtual/libx11 libxext libpng \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
 PROVIDES = "virtual/libxine"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gettext binconfig
 
