@@ -1,5 +1,6 @@
 require dbus.inc
 
+PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 inherit native
@@ -11,6 +12,7 @@ SRC_URI = "\
   http://freedesktop.org/software/dbus/releases/dbus/dbus-${PV}.tar.gz \
   file://cross.patch;patch=1 \
   file://tmpdir.patch;patch=1 \
+  file://fedora-compile-fix.patch;patch=1 \
   file://dbus-1.init \
 "
 

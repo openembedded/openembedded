@@ -1,11 +1,11 @@
 DESCRIPTION = "Basic image for openprotium"
 HOMEPAGE = "http://www.openprotium.org"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 ALLOW_EMPTY = "1"
 PR = "r1"
 
 inherit task
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 # be sure to build the kernel:
 DEPENDS = "virtual/kernel"
 

@@ -13,9 +13,9 @@ EXTRA_OECONF += " --disable-mcs-build "
 
 do_install_prepend() {
 	install -d ${D}
-	pushd ${D}
+	cd ${D}
 	tar -xzf ${STAGING_DATADIR_NATIVE}/mono-mcs/mono-mcs-${PV}.tar.gz
-	popd
+	cd ${S}
 }
 
 do_install_append() {
@@ -23,11 +23,11 @@ do_install_append() {
 	# however, jay is not being cross-compiled and thus only
 	# available for the buildhost architecture, so remove it
 	# entirely
-	pushd ${D}
+	cd ${D}
 	rm -rf ./usr/share/man/man1/jay.1 ./usr/share/jay \
 	    ./usr/share/jay/README.jay \
 	    ./usr/bin/jay
-	popd
+	cd ${S}
 
 	# Not packaged with the default rules and apparently
 	# not used for anything

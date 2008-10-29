@@ -2,12 +2,12 @@ DESCRIPTION = "Openmoko: Om 2008.8 August Software Update"
 
 SECTION = "openmoko/base"
 ALLOW_EMPTY = "1"
-PACKAGE_ARCH = "${MACHINE_ARCH}"
 LICENSE = "MIT"
-PR = "r2.02"
+PR = "r2.03"
 
 inherit task
 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = "task-openmoko-asu"
 RDEPENDS_task-openmoko-asu = "\
   bluez-hcidump \
