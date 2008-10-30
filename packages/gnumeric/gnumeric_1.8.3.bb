@@ -14,7 +14,7 @@ SRC_URI += "file://remove-docs.patch;patch=1"
 
 EXTRA_OECONF=" --without-perl "
 
-PACKAGES_DYNAMIC = "gnumeric-plugin-*"
+PACKAGES_DYNAMIC += "gnumeric-plugin-*"
 
 FILES_${PN}-dbg += "${libdir}/gnumeric/${PV}/plugins/*/.debug"
 FILES_gnumeric_append = " /usr/lib/libspreadsheet-${PV}.so "
