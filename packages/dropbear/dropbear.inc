@@ -59,8 +59,9 @@ do_install() {
 				  -e 's,/usr/bin,${bindir},g' \
 				  -e 's,/usr,${prefix},g' > ${D}${sysconfdir}/init.d/dropbear
 	chmod 755 ${D}${sysconfdir}/init.d/dropbear
-	test -e ${WORKDIR}/default && \
-	install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/dropbear
+	if test -e ${WORKDIR}/default ; then
+		install -m 0644 ${WORKDIR}/default ${D}${sysconfdir}/default/dropbear
+	fi
 }
 
 pkg_postinst () {
