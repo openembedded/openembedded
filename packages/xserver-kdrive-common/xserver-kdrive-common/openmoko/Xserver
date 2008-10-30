@@ -98,6 +98,11 @@ case `module_id` in
 		  PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
 		fi
                 ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor $PPM vt1" ;;
+        "Palm Treo 650")
+	        if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
+		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
+		fi
+                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor $PPM" ;;
         "Motorola Ezx Platform")
 	        if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
 		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
