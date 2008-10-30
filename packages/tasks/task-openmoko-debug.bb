@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Debugging and Benchmarking Tools"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r59"
+PR = "r59.01"
 
 inherit task
 
@@ -19,7 +19,6 @@ RDEPENDS_task-openmoko-debug = "\
   fstests \
   gdb \
   gdbserver \
-  madplay \
   lrzsz \
   lsof \
   ltrace \
@@ -35,4 +34,5 @@ RDEPENDS_task-openmoko-debug = "\
   vorbis-tools \
   x11perf \
   xev \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'madplay', d)} \
 "
