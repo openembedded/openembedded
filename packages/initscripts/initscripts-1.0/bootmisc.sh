@@ -9,7 +9,9 @@
 #
 if test "$DELAYLOGIN" = yes
 then
-  echo "System bootup in progress - please wait" > /etc/nologin
+### Should not be done here but in another initscript as this messes with
+### bootsplashes and just filsl the console with junk
+#  echo "System bootup in progress - please wait" > /etc/nologin
   cp /etc/nologin /etc/nologin.boot
 fi
 
@@ -39,12 +41,13 @@ fi
 #
 # Update /etc/motd.
 #
-if test "$EDITMOTD" != no
-then
-	uname -a > /etc/motd.tmp
-	sed 1d /etc/motd >> /etc/motd.tmp
-	mv /etc/motd.tmp /etc/motd
-fi
+### useless as the motd is empty anyway
+#if test "$EDITMOTD" != no
+#then
+#	uname -a > /etc/motd.tmp
+#	sed 1d /etc/motd >> /etc/motd.tmp
+#	mv /etc/motd.tmp /etc/motd
+#fi
 
 #
 # This is as good a place as any for a sanity check
@@ -59,7 +62,8 @@ fi
 #
 # Update dynamic library cache
 #
-/sbin/ldconfig
+### useless as the package manager should have done this and slows boot a lot
+#/sbin/ldconfig
 
 # Set the system clock from hardware clock
 # If the timestamp is 1 day or more recent than the current time,
