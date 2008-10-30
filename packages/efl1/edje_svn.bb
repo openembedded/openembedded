@@ -6,8 +6,9 @@ PR = "r5"
 
 inherit efl
 
-# gain some extra performance at the expense of RAM
-EXTRA_OECONF = "--enable-edje-program-cache"
+# gain some extra performance at the expense of RAM - generally i'd say bad
+# and a possible source of bugs
+#EXTRA_OECONF = "--enable-edje-program-cache"
 
 PACKAGES =+ "${PN}-utils"
 RDEPENDS_${PN}-utils = "cpp cpp-symlinks embryo-tests"
