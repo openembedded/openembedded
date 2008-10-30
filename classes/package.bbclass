@@ -551,7 +551,9 @@ emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
-	[ -x /sbin/ldconfig ] && [ -e /etc/ld.so.conf ] && /sbin/ldconfig
+	if [ -e /etc/ld.so.conf ] ; then
+		[ -x /sbin/ldconfig ] && /sbin/ldconfig
+	fi
 fi
 }
 
