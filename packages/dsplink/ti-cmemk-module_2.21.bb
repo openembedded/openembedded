@@ -15,7 +15,8 @@ PV = "221"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21_00_06.tar.gz \
            file://Makefile.dsplink \
-          "
+           file://cmemk-fix-class-device-api.diff;patch=1 \
+"
 
 S = "${WORKDIR}/codec_engine_2_21_00_06"
 
@@ -37,25 +38,11 @@ do_compile() {
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
 
 	oe_runmake clean
-	# We probably don't need to build all 3, but atm it doesn't hurt us	
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
            KERNEL_SRC=${STAGING_KERNEL_DIR}    \
            KERNEL_VERSION=${KERNEL_VERSION}    \
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" \
-           release
-	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-           KERNEL_VERSION=${KERNEL_VERSION}    \
-           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" \
-           debug
-	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-           KERNEL_VERSION=${KERNEL_VERSION}    \
-           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" 
-
+           AR="${KERNEL_AR}"
 }
 
 
