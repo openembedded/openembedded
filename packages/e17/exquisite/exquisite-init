@@ -33,8 +33,8 @@ export EXQUISITE_IPC=$EXDIR/exquisite
 mount tmpfs -t tmpfs $EXDIR -o,size=40k
 exquisite -fb -fs $args &
 
-exquisite-write -wait 20
+exquisite-write -wait 40
 exquisite-write "PULSATE"
 
-# kill off exquisite in 180 seconds if its not gone yet
-(sleep 180; exquisite-write "QUIT")&
+# kill off exquisite in 300 seconds if its not gone yet
+(sleep 300; exquisite-write "QUIT")&
