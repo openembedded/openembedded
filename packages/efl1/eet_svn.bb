@@ -1,5 +1,5 @@
 DESCRIPTION = "EET is the Enlightenment data storage library"
-DEPENDS = "zlib jpeg openssl"
+DEPENDS = "zlib jpeg openssl eina"
 LICENSE = "MIT BSD"
 PV = "1.0.1+svnr${SRCREV}"
 PR = "r3"
