@@ -239,7 +239,8 @@ do
 		      xf86-input-evdev \
 		      xf86-input-keyboard \
 		      xf86-input-mouse \
-		      xf86-video-ati \
+		      xf86-input-tslib \
+              xf86-video-ati \
 		      xf86-video-fbdev \
 		      xf86-video-vesa \
 		      xfce-mcs-manager
