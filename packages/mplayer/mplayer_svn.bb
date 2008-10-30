@@ -39,7 +39,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -69,7 +69,8 @@ EXTRA_OECONF = " \
         --disable-vm \
         --disable-xf86keysym \
 	--enable-tv \
-        --enable-tv-v4l2 \
+	--enable-tv-v4l1 \     
+	--enable-tv-v4l2 \
         --disable-tv-bsdbt848 \
 	--enable-rtc \
         --enable-network \
