@@ -3,7 +3,6 @@
 #
 
 TARGET_ARCH = "arm"
-PACKAGE_EXTRA_ARCHS = "arm armv4t armv5te"
 
 SERIAL_CONSOLE = "115200 ttyS0"
 
