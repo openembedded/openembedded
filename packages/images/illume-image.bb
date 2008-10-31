@@ -12,7 +12,7 @@ BASE_INSTALL = "\
   sysfsutils \
   modutils-initscripts \
   module-init-tools-depmod \
-  prelink \
+#  prelink \
   exquisite \
   exquisite-themes \
   exquisite-theme-illume \
