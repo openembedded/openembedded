@@ -57,9 +57,11 @@ then
 fi
 
 #
-# Update dynamic library cache
+# Update dynamic library cache, but only if ld.so.conf is present
 #
-/sbin/ldconfig
+if [ -e /etc/ld.so.conf ] ; then
+	/sbin/ldconfig
+fi
 
 # Set the system clock from hardware clock
 # If the timestamp is 1 day or more recent than the current time,
