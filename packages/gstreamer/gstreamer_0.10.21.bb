@@ -1,0 +1,1 @@
+require gstreamer_0.10.20.bb
