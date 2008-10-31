@@ -10,7 +10,7 @@ SRCREV = "2a3408be17f287fdb5809c9b6c68e7ad96d25b74"
 
 #PV = "2.6.26+2.6.27-rc7+${PR}+gitr${SRCREV}"
 PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -35,6 +35,7 @@ SRC_URI_append = " \
            file://musb-fix-endpoints.diff;patch=1 \
            file://dvb-fix-dma.diff;patch=1 \
            file://0001-Removed-resolution-check-that-prevents-scaling-when.patch;patch=1 \
+           file://0001-Implement-downsampling-with-debugs.patch;patch=1 \
 "
 
 
