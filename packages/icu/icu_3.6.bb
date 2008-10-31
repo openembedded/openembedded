@@ -1,7 +1,7 @@
 require icu-3.6.inc
 
 DEPENDS += "icu-native"
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://use-g++-for-linking.patch;patch=1"
 
@@ -34,6 +34,11 @@ FILES_libicuio = "${libdir}/libicuio.so.*"
 
 do_stage() {
         autotools_stage_all
+}
+
+# We need to append this so it runs *after* binconfig.do_stage
+do_stage_append() {
+        sed -i -e s:^prefix=:prefix=\"${STAGING_DIR_TARGET}/usr\": ${STAGING_BINDIR_CROSS}/icu-config
 }	
 
 
