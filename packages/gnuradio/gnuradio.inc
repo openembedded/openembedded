@@ -2,9 +2,12 @@ DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = " guile-native fftwf python libusb virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native"
+DEPENDS = " guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-nativei python-numpy"
 
-RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils"
+RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils python-shell python-pickle python-comp
+iler python-pkgutil python-pydoc python-mmap python-netclient python-unittest py
+thon-difflib python-pprint python-numpy"
+
 RDEPENDS_gnuradio-usrp = "python-core"
 
 inherit autotools pkgconfig
