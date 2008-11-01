@@ -1,0 +1,14 @@
+Index: findutils-4.2.29/po/Makefile.in.in
+===================================================================
+--- findutils-4.2.29.orig/po/Makefile.in.in	2008-11-01 22:45:48.466060774 +0100
++++ findutils-4.2.29/po/Makefile.in.in	2008-11-01 22:46:18.000751035 +0100
+@@ -29,8 +29,7 @@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
+-MKINSTALLDIRS = @MKINSTALLDIRS@
+-mkinstalldirs = $(SHELL) $(MKINSTALLDIRS)
++mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+ 
+ GMSGFMT = @GMSGFMT@
+ MSGFMT = @MSGFMT@
