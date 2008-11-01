@@ -198,7 +198,9 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-ru
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
-
+# FIXME: Temporarily disable debugging to work-around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37987
+DEBUG_OPTIMIZATION_spitz = "-O -fomit-frame-pointer -g"
+DEBUG_OPTIMIZATION_akita = "-O -fomit-frame-pointer -g"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
