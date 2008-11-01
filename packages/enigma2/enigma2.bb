@@ -8,7 +8,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac"
+	gst-plugin-flac gst-plugin-fluendo-mpegdemux"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
@@ -49,6 +49,7 @@ TAG = ";tag=enigma2_rel${REL_MAJOR}${REL_MINOR}"
 
 REL_MINOR_dm8000="5"
 TAG_dm8000=""
+PR_dm8000="r1"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
