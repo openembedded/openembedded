@@ -5,7 +5,7 @@ LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 PV = "1.0"
-PR = "r2"
+PR = "r1"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo_${MACHINE}.elf \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo_${MACHINE}.mvi \
