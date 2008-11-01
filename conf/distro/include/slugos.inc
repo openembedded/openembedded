@@ -158,6 +158,9 @@ PREFERRED_VERSION_pango    ?= 1.20.5
 PREFERRED_VERSION_glib-2.0 ?= 2.16.1
 PREFERRED_VERSION_cairo    ?= 1.4.8
 
+# Stay with older hal because of udev dependency
+PREFERRED_VERSION_hal      ?= 0.5.9
+
 # Stick with an older gettext and e2fsprogs stuff
 # and gnutls... (our autotools is too old at the moment)
 PREFERRED_VERSION_gnutls           ?= "1.6.3"
