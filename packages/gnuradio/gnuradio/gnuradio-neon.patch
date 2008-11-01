@@ -1,0 +1,943 @@
+Index: gnuradio-core/src/lib/runtime/gr_dispatcher.cc
+===================================================================
+--- gnuradio-core/src/lib/runtime/gr_dispatcher.cc	(revision 9831)
++++ gnuradio-core/src/lib/runtime/gr_dispatcher.cc	(working copy)
+@@ -28,6 +28,7 @@
+ #include <math.h>
+ #include <errno.h>
+ #include <stdio.h>
++#include <string.h>
+ 
+ #ifdef HAVE_SELECT
+ #  ifdef HAVE_SYS_SELECT_H
+Index: gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.c
+===================================================================
+--- gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.c	(revision 0)
++++ gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.c	(revision 0)
+@@ -0,0 +1,85 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++#include <dotprod_fff_cortex_a8.h>
++
++/*!
++ * \param x any value
++ * \param pow2 must be a power of 2
++ * \returns \p x rounded down to a multiple of \p pow2.
++ */
++static inline size_t
++gr_p2_round_down(size_t x, size_t pow2)
++{
++  return x & -pow2;
++}
++
++
++#if 0
++
++float
++dotprod_fff_cortex_a8(const float *a, const float *b, size_t n)
++{
++  float	sum = 0;
++  size_t i;
++  for (i = 0; i < n; i++){
++    sum += a[i] * b[i];
++  }
++  return sum;
++}
++
++#else
++
++/*
++ *  preconditions:
++ *
++ *    n > 0 and a multiple of 4
++ *    a   4-byte aligned
++ *    b  16-byte aligned
++ */
++float
++dotprod_fff_cortex_a8(const float *a, const float *b, size_t n)
++{
++     float s = 0;
++
++    asm ("vmov.f32  q8, #0.0                  \n\t"
++         "vmov.f32  q9, #0.0                  \n\t"
++         "1:                                  \n\t"
++         "subs      %3, %3, #8                \n\t"
++         "vld1.32   {d0,d1,d2,d3}, [%1]!      \n\t"
++         "vld1.32   {d4,d5,d6,d7}, [%2]!      \n\t"
++         "vmla.f32  q8, q0, q2                \n\t"
++         "vmla.f32  q9, q1, q3                \n\t"
++         "bgt       1b                        \n\t"
++         "vadd.f32  q8, q8, q9                \n\t"
++         "vpadd.f32 d0, d16, d17              \n\t"
++         "vadd.f32  %0, s0, s1                \n\t"
++         : "=w"(s), "+r"(a), "+r"(b), "+r"(n)
++         :: "q0", "q1", "q2", "q3", "q8", "q9");
++
++    return s;
++
++}
++
++#endif
+Index: gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.h
+===================================================================
+--- gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.h	(revision 0)
++++ gnuradio-core/src/lib/filter/dotprod_fff_cortex_a8.h	(revision 0)
+@@ -0,0 +1,49 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++#ifndef INCLUDED_DOTPROD_FFF_CORTEX_A8_H
++#define INCLUDED_DOTPROD_FFF_CORTEX_A8_H
++
++#include <stddef.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/*!
++ * <pre>
++ *
++ *  preconditions:
++ *
++ *    n > 0 and a multiple of 4
++ *    a   4-byte aligned
++ *    b  16-byte aligned
++ *
++ * </pre>
++ */
++float 
++dotprod_fff_cortex_a8(const float *a, const float *b, size_t n);
++
++#ifdef __cplusplus
++}
++#endif
++
++
++#endif /* INCLUDED_DOTPROD_FFF_CORTEX_A8_H */
+Index: gnuradio-core/src/lib/filter/Makefile.am
+===================================================================
+--- gnuradio-core/src/lib/filter/Makefile.am	(revision 9831)
++++ gnuradio-core/src/lib/filter/Makefile.am	(working copy)
+@@ -177,7 +177,16 @@
+ powerpc_qa_CODE = \
+ 	qa_dotprod_powerpc.cc
+ 
++cortex_a8_CODE = \
++	sysconfig_cortex_a8.cc \
++	gr_fir_sysconfig_cortex_a8.cc \
++	gr_cpu_cortex_a8.cc \
++	gr_fir_fff_cortex_a8.cc \
++	dotprod_fff_cortex_a8.c
+ 
++cortex_a8_qa_CODE = \
++	qa_dotprod_cortex_a8.cc
++
+ #
+ # include each <foo>_CODE entry here...
+ #
+@@ -189,7 +198,9 @@
+ 	$(x86_64_SUBCODE)		\
+ 	$(x86_qa_CODE)			\
+ 	$(powerpc_CODE)			\
+-	$(powerpc_qa_CODE)
++	$(powerpc_qa_CODE)		\
++	$(cortex_a8_CODE)		\
++	$(cortex_a8_qa_CODE)
+ 
+ 
+ EXTRA_DIST = 					\
+@@ -254,7 +265,12 @@
+ libfilter_qa_la_SOURCES = $(libfilter_qa_la_common_SOURCES) $(powerpc_qa_CODE)
+ endif
+ 
++if MD_CPU_cortex_a8
++libfilter_la_SOURCES = $(libfilter_la_common_SOURCES) $(cortex_a8_CODE)
++libfilter_qa_la_SOURCES = $(libfilter_qa_la_common_SOURCES) $(cortex_a8_qa_CODE)
++endif
+ 
++
+ grinclude_HEADERS = 			\
+ 	$(GENERATED_H)			\
+ 	complex_dotprod_generic.h	\
+@@ -296,6 +312,7 @@
+ noinst_HEADERS = 			\
+ 	assembly.h			\
+ 	dotprod_fff_altivec.h		\
++	dotprod_fff_cortex_a8.h		\
+ 	gr_fir_scc_simd.h		\
+ 	gr_fir_scc_x86.h		\
+ 	gr_fir_fcc_simd.h		\
+@@ -305,6 +322,7 @@
+ 	gr_fir_ccc_simd.h		\
+ 	gr_fir_ccc_x86.h		\
+ 	gr_fir_fff_altivec.h		\
++	gr_fir_fff_cortex_a8.h		\
+ 	gr_fir_fff_simd.h		\
+ 	gr_fir_fff_x86.h		\
+ 	gr_fir_fsf_simd.h		\
+Index: gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.cc	(revision 0)
++++ gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.cc	(revision 0)
+@@ -0,0 +1,340 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2002,2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License
++ * along with GNU Radio; see the file COPYING.  If not, write to
++ * the Free Software Foundation, Inc., 51 Franklin Street,
++ * Boston, MA 02110-1301, USA.
++ */
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++#include <gr_fir_sysconfig_cortex_a8.h>
++#include <gr_cpu.h>
++
++#include <gr_fir_ccf.h>
++#include <gr_fir_ccf_generic.h>
++//#include <gr_fir_ccf_altivec.h>
++#include <gr_fir_fcc.h>
++#include <gr_fir_fcc_generic.h>
++//#include <gr_fir_fcc_altivec.h>
++#include <gr_fir_fff.h>
++#include <gr_fir_fff_generic.h>
++#include <gr_fir_fff_cortex_a8.h>
++#include <gr_fir_fsf.h>
++#include <gr_fir_fsf_generic.h>
++//#include <gr_fir_fsf_powerpc.h>
++#include <gr_fir_ccc.h>
++#include <gr_fir_ccc_generic.h>
++//#include <gr_fir_ccc_altivec.h>
++#include <gr_fir_scc.h>
++#include <gr_fir_scc_generic.h>
++//#include <gr_fir_scc_altivec.h>
++
++#include <iostream>
++using std::cerr;
++
++/*
++ * ----------------------------------------------------------------
++ * static functions that serve as constructors...
++ * ----------------------------------------------------------------
++ */
++
++#if 0
++static gr_fir_ccf *
++make_gr_fir_ccf_altivec(const std::vector<float> &taps)
++{
++  return new gr_fir_ccf_altivec(taps);
++}
++
++static gr_fir_fcc *
++make_gr_fir_fcc_altivec(const std::vector<gr_complex> &taps)
++{
++  return new gr_fir_fcc_altivec(taps);
++}
++
++static gr_fir_ccc *
++make_gr_fir_ccc_altivec (const std::vector<gr_complex> &taps)
++{
++  return new gr_fir_ccc_altivec (taps);
++}
++#endif
++
++static gr_fir_fff *
++make_gr_fir_fff_cortex_a8 (const std::vector<float> &taps)
++{
++  return new gr_fir_fff_cortex_a8 (taps);
++}
++
++#if 0
++static gr_fir_fsf *
++make_gr_fir_fsf_altivec (const std::vector<float> &taps)
++{
++  return new gr_fir_fsf_altivec (taps);
++}
++
++static gr_fir_scc *
++make_gr_fir_scc_altivec(const std::vector<gr_complex> &taps)
++{
++  return new gr_fir_scc_altivec(taps);
++}
++#endif
++
++/*
++ * ----------------------------------------------------------------
++ * Return instances of the fastest powerpc versions of these classes.
++ *
++ * check CPUID, if has altivec, return altivec version,
++ *		else return generic version.
++ * ----------------------------------------------------------------
++ */
++
++gr_fir_ccf *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_ccf (const std::vector<float> &taps)
++{
++  static bool first = true;
++
++#if 0
++  if (gr_cpu::has_altivec ()){
++    if (first){
++      cerr << ">>> gr_fir_ccf: using altivec\n";
++      first = false;
++    }
++    return make_gr_fir_ccf_altivec (taps);
++  }
++#endif
++
++  if (0 && first){
++    cerr << ">>> gr_fir_ccf: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_ccf (taps);
++}
++
++gr_fir_fcc *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_fcc (const std::vector<gr_complex> &taps)
++{
++  static bool first = true;
++
++#if 0
++  if (gr_cpu::has_altivec ()){
++    if (first){
++      cerr << ">>> gr_fir_fcc: using altivec\n";
++      first = false;
++    }
++    return make_gr_fir_fcc_altivec (taps);
++  }
++#endif
++
++  if (0 && first){
++    cerr << ">>> gr_fir_fcc: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_fcc (taps);
++}
++
++gr_fir_ccc *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_ccc (const std::vector<gr_complex> &taps)
++{
++  static bool first = true;
++
++#if 0
++  if (gr_cpu::has_altivec ()){
++    if (first){
++      cerr << ">>> gr_fir_ccc: using altivec\n";
++      first = false;
++    }
++    return make_gr_fir_ccc_altivec (taps);
++  }
++#endif
++  
++  if (0 && first){
++    cerr << ">>> gr_fir_ccc: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_ccc (taps);
++}
++
++gr_fir_fff *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_fff (const std::vector<float> &taps)
++{
++  static bool first = true;
++
++  if (gr_cpu::has_cortex_a8 ()){
++    if (first){
++      cerr << ">>> gr_fir_fff: using cortex_a8\n";
++      first = false;
++    }
++    return make_gr_fir_fff_cortex_a8 (taps);
++  }
++  
++  if (0 && first){
++    cerr << ">>> gr_fir_fff: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_fff (taps);
++}
++
++gr_fir_fsf *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_fsf (const std::vector<float> &taps)
++{
++  static bool first = true;
++
++#if 0
++  if (gr_cpu::has_altivec ()){
++    if (first){
++      cerr << ">>> gr_fir_fsf: using altivec\n";
++      first = false;
++    }
++    return make_gr_fir_fsf_altivec (taps);
++  }
++#endif
++  
++  if (0 && first){
++    cerr << ">>> gr_fir_fsf: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_fsf (taps);
++}
++
++
++gr_fir_scc *
++gr_fir_sysconfig_cortex_a8::create_gr_fir_scc (const std::vector<gr_complex> &taps)
++{
++  static bool first = true;
++
++#if 0
++  if (gr_cpu::has_altivec ()){
++    if (first){
++      cerr << ">>> gr_fir_scc: using altivec\n";
++      first = false;
++    }
++    return make_gr_fir_scc_altivec (taps);
++  }
++#endif
++
++  if (0 && first){
++    cerr << ">>> gr_fir_scc: handing off to parent class\n";
++    first = false;
++  }
++  return gr_fir_sysconfig_generic::create_gr_fir_scc (taps);
++}
++
++/*
++ * ----------------------------------------------------------------
++ *         Return info about available implementations
++ * ----------------------------------------------------------------
++ */
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_ccf_info (std::vector<gr_fir_ccf_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_ccf_info (info);
++
++#if 0  
++  // add our stuff...
++  gr_fir_ccf_info	t;
++  if (gr_cpu::has_altivec ()){
++    t.name = "altivec";
++    t.create = make_gr_fir_ccf_altivec;
++    (*info).push_back (t);
++  }
++#endif
++}
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_fcc_info (std::vector<gr_fir_fcc_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_fcc_info (info);
++
++#if 0
++  // add our stuff...
++  gr_fir_fcc_info	t;
++  if (gr_cpu::has_altivec ()){
++    t.name = "altivec";
++    t.create = make_gr_fir_fcc_altivec;
++    (*info).push_back (t);
++  }
++#endif
++}
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_ccc_info (std::vector<gr_fir_ccc_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_ccc_info (info);
++
++#if 0
++  // add our stuff...
++  gr_fir_ccc_info	t;
++  if (gr_cpu::has_altivec ()){
++    t.name = "altivec";
++    t.create = make_gr_fir_ccc_altivec;
++    (*info).push_back (t);
++  }
++#endif
++}
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_fff_info (std::vector<gr_fir_fff_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_fff_info (info);
++
++  // add our stuff...
++  gr_fir_fff_info	t;
++  if (gr_cpu::has_cortex_a8 ()){
++    t.name = "cortex_a8";
++    t.create = make_gr_fir_fff_cortex_a8;
++    (*info).push_back (t);
++  }
++}
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_fsf_info (std::vector<gr_fir_fsf_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_fsf_info (info);
++
++#if 0
++  // add our stuff...
++  gr_fir_fsf_info	t;
++  if (gr_cpu::has_altivec ()){
++    t.name = "altivec";
++    t.create = make_gr_fir_fsf_altivec;
++    (*info).push_back (t);
++  }
++#endif
++}
++
++void 
++gr_fir_sysconfig_cortex_a8::get_gr_fir_scc_info (std::vector<gr_fir_scc_info> *info)
++{
++  // invoke parent..
++  gr_fir_sysconfig_generic::get_gr_fir_scc_info (info);
++
++#if 0
++  // add our stuff...
++  gr_fir_scc_info	t;
++  if (gr_cpu::has_altivec ()){
++    t.name = "altivec";
++    t.create = make_gr_fir_scc_altivec;
++    (*info).push_back (t);
++  }
++#endif
++}
+Index: gnuradio-core/src/lib/filter/gr_cpu.h
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_cpu.h	(revision 9831)
++++ gnuradio-core/src/lib/filter/gr_cpu.h	(working copy)
+@@ -34,6 +34,7 @@
+   static bool has_3dnow ();
+   static bool has_3dnowext ();
+   static bool has_altivec ();
++  static bool has_cortex_a8 ();
+ };
+ 
+ #endif /* _GR_CPU_H_ */
+Index: gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.h
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.h	(revision 0)
++++ gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.h	(revision 0)
+@@ -0,0 +1,45 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++#ifndef INCLUDED_GR_FIR_FFF_CORTEX_A8_H
++#define INCLUDED_GR_FIR_FFF_CORTEX_A8_H
++
++#include <gr_fir_fff_generic.h>
++
++/*!
++ * \brief altivec version of gr_fir_fff
++ */
++class gr_fir_fff_cortex_a8 : public gr_fir_fff_generic
++{
++protected:
++
++  size_t    d_naligned_taps;  // number of taps (multiple of 4)
++  float	   *d_aligned_taps;   // 16-byte aligned, and zero padded to multiple of 4
++
++public:
++  gr_fir_fff_cortex_a8();
++  gr_fir_fff_cortex_a8(const std::vector<float> &taps);
++  ~gr_fir_fff_cortex_a8();
++
++  virtual void set_taps (const std::vector<float> &taps);
++  virtual float filter (const float input[]);
++};
++
++#endif /* INCLUDED_GR_FIR_FFF_CORTEX_A*_H */
+Index: gnuradio-core/src/lib/filter/gr_cpu_x86.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_cpu_x86.cc	(revision 9831)
++++ gnuradio-core/src/lib/filter/gr_cpu_x86.cc	(working copy)
+@@ -111,3 +111,10 @@
+ {
+   return false;
+ }
++
++bool
++gr_cpu::has_cortex_a8 ()
++{
++  return false;
++}
++
+Index: gnuradio-core/src/lib/filter/gr_cpu_cortex_a8.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_cpu_cortex_a8.cc	(revision 0)
++++ gnuradio-core/src/lib/filter/gr_cpu_cortex_a8.cc	(revision 0)
+@@ -0,0 +1,59 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2002, 2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License
++ * along with GNU Radio; see the file COPYING.  If not, write to
++ * the Free Software Foundation, Inc., 51 Franklin Street,
++ * Boston, MA 02110-1301, USA.
++ */
++
++#include <gr_cpu.h>
++
++bool
++gr_cpu::has_mmx ()
++{
++  return false;
++}
++
++bool
++gr_cpu::has_sse ()
++{
++  return false;
++}
++
++bool
++gr_cpu::has_sse2 ()
++{
++  return false;
++}
++
++bool
++gr_cpu::has_3dnow ()
++{
++  return false;
++}
++
++bool
++gr_cpu::has_3dnowext ()
++{
++  return false;
++}
++
++bool
++gr_cpu::has_cortex_a8 ()
++{
++  return true;
++}
+Index: gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.cc	(revision 0)
++++ gnuradio-core/src/lib/filter/gr_fir_fff_cortex_a8.cc	(revision 0)
+@@ -0,0 +1,85 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++#include <gr_fir_fff_cortex_a8.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdexcept>
++#include <assert.h>
++#include <gr_math.h>
++#include <dotprod_fff_cortex_a8.h>
++
++#define FLOATS_PER_VEC 8
++
++gr_fir_fff_cortex_a8::gr_fir_fff_cortex_a8()
++  : gr_fir_fff_generic(),
++    d_naligned_taps(0), d_aligned_taps(0)
++{
++}
++
++gr_fir_fff_cortex_a8::gr_fir_fff_cortex_a8 (const std::vector<float> &new_taps)
++  : gr_fir_fff_generic(new_taps),
++    d_naligned_taps(0), d_aligned_taps(0)
++{
++  set_taps(new_taps);
++}
++
++gr_fir_fff_cortex_a8::~gr_fir_fff_cortex_a8()
++{
++  if (d_aligned_taps){
++    free(d_aligned_taps);
++    d_aligned_taps = 0;
++  }
++}
++
++void
++gr_fir_fff_cortex_a8::set_taps(const std::vector<float> &inew_taps)
++{
++  gr_fir_fff_generic::set_taps(inew_taps);	// call superclass
++  d_naligned_taps = gr_p2_round_up(ntaps(), FLOATS_PER_VEC);
++
++  if (d_aligned_taps){
++    free(d_aligned_taps);
++    d_aligned_taps = 0;
++  }
++  void *p;
++  int r = posix_memalign(&p,  sizeof(float), d_naligned_taps * sizeof(d_aligned_taps[0]));
++  if (r != 0){
++    throw std::bad_alloc();
++  }
++  d_aligned_taps = (float *) p;
++  memcpy(d_aligned_taps, &d_taps[0], ntaps() * sizeof(d_aligned_taps[0]));
++  for (size_t i = ntaps(); i < d_naligned_taps; i++)
++    d_aligned_taps[i] = 0.0;
++}
++
++
++float 
++gr_fir_fff_cortex_a8::filter (const float input[])
++{
++  if (d_naligned_taps == 0)
++    return 0.0;
++  
++  return dotprod_fff_cortex_a8(input, d_aligned_taps, d_naligned_taps);
++}
+Index: gnuradio-core/src/lib/filter/qa_dotprod_cortex_a8.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/qa_dotprod_cortex_a8.cc	(revision 0)
++++ gnuradio-core/src/lib/filter/qa_dotprod_cortex_a8.cc	(revision 0)
+@@ -0,0 +1,32 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2003 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License
++ * along with GNU Radio; see the file COPYING.  If not, write to
++ * the Free Software Foundation, Inc., 51 Franklin Street,
++ * Boston, MA 02110-1301, USA.
++ */
++#include "qa_dotprod.h"
++
++CppUnit::TestSuite *
++qa_dotprod_suite ()
++{
++  CppUnit::TestSuite *s = new CppUnit::TestSuite ("dotprod");
++
++  // empty test suite
++
++  return s;
++}
+Index: gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.h
+===================================================================
+--- gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.h	(revision 0)
++++ gnuradio-core/src/lib/filter/gr_fir_sysconfig_cortex_a8.h	(revision 0)
+@@ -0,0 +1,46 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2002,2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License
++ * along with GNU Radio; see the file COPYING.  If not, write to
++ * the Free Software Foundation, Inc., 51 Franklin Street,
++ * Boston, MA 02110-1301, USA.
++ */
++#ifndef INCLUDED_GR_FIR_SYSCONFIG_CORTEX_A8_H
++#define INCLUDED_GR_FIR_SYSCONFIG_CORTEX_A8_H
++
++#include <gr_fir_sysconfig_generic.h>
++
++class gr_fir_sysconfig_cortex_a8 : public gr_fir_sysconfig_generic {
++public:
++  virtual gr_fir_ccf *create_gr_fir_ccf (const std::vector<float> &taps);
++  virtual gr_fir_fcc *create_gr_fir_fcc (const std::vector<gr_complex> &taps);
++  virtual gr_fir_fff *create_gr_fir_fff (const std::vector<float> &taps);
++  virtual gr_fir_fsf *create_gr_fir_fsf (const std::vector<float> &taps);
++  virtual gr_fir_scc *create_gr_fir_scc (const std::vector<gr_complex> &taps);
++  virtual gr_fir_ccc *create_gr_fir_ccc (const std::vector<gr_complex> &taps);
++//virtual gr_fir_sss *create_gr_fir_sss (const std::vector<short> &taps);
++
++  virtual void get_gr_fir_ccf_info (std::vector<gr_fir_ccf_info> *info);
++  virtual void get_gr_fir_fcc_info (std::vector<gr_fir_fcc_info> *info);
++  virtual void get_gr_fir_fff_info (std::vector<gr_fir_fff_info> *info);
++  virtual void get_gr_fir_fsf_info (std::vector<gr_fir_fsf_info> *info);
++  virtual void get_gr_fir_scc_info (std::vector<gr_fir_scc_info> *info);
++  virtual void get_gr_fir_ccc_info (std::vector<gr_fir_ccc_info> *info);
++//virtual void get_gr_fir_sss_info (std::vector<gr_fir_sss_info> *info);
++};
++
++#endif
+Index: gnuradio-core/src/lib/filter/sysconfig_cortex_a8.cc
+===================================================================
+--- gnuradio-core/src/lib/filter/sysconfig_cortex_a8.cc	(revision 0)
++++ gnuradio-core/src/lib/filter/sysconfig_cortex_a8.cc	(revision 0)
+@@ -0,0 +1,38 @@
++/* -*- c++ -*- */
++/*
++ * Copyright 2002,2008 Free Software Foundation, Inc.
++ * 
++ * This file is part of GNU Radio
++ * 
++ * GNU Radio is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3, or (at your option)
++ * any later version.
++ * 
++ * GNU Radio is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ * 
++ * You should have received a copy of the GNU General Public License
++ * along with GNU Radio; see the file COPYING.  If not, write to
++ * the Free Software Foundation, Inc., 51 Franklin Street,
++ * Boston, MA 02110-1301, USA.
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++#include <gr_fir_sysconfig_cortex_a8.h>
++
++gr_fir_sysconfig *
++gr_fir_sysconfig_singleton ()
++{
++  static gr_fir_sysconfig *singleton = 0;
++
++  if (singleton)
++    return singleton;
++
++  singleton = new gr_fir_sysconfig_cortex_a8 ();
++  return singleton;
++}
+Index: config/gr_set_md_cpu.m4
+===================================================================
+--- config/gr_set_md_cpu.m4	(revision 9831)
++++ config/gr_set_md_cpu.m4	(working copy)
+@@ -35,6 +35,7 @@
+   case "$cf_with_md_cpu" in
+    x86 | i[[3-7]]86)	MD_CPU=x86	MD_SUBCPU=x86 ;;
+    x86_64)		MD_CPU=x86	MD_SUBCPU=x86_64 ;;
++   arm)			MD_CPU=cortex_a8 ;;
+    powerpc*)            MD_CPU=powerpc ;;
+    *)           	MD_CPU=generic ;;
+   esac
+@@ -59,5 +60,6 @@
+   AM_CONDITIONAL(MD_CPU_x86,     test "$MD_CPU" = "x86")
+   AM_CONDITIONAL(MD_SUBCPU_x86_64,  test "$MD_SUBCPU" = "x86_64")
+   AM_CONDITIONAL(MD_CPU_powerpc, test "$MD_CPU" = "powerpc")
++  AM_CONDITIONAL(MD_CPU_cortex_a8,  test "$MD_CPU" = "cortex_a8")
+   AM_CONDITIONAL(MD_CPU_generic, test "$MD_CPU" = "generic")
+ ])
