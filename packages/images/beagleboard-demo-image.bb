@@ -39,6 +39,8 @@ IMAGE_INSTALL = "\
     gnome-games \
     rt73-firmware zd1211-firmware \
     stalonetray \
+	synergy \
+	x11vnc \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
