@@ -151,6 +151,8 @@ APPS_INSTALL = "\
 #  vagalume \
 #  starling \
    elementary-alarm \
+   gpe-scap \
+   openmoko-calculator2 \
 "
 
 IMAGE_INSTALL = "\
