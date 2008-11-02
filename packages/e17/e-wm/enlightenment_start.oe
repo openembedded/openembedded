@@ -5,4 +5,4 @@ if [ -r /etc/enlightenment/default_profile ]; then
   . /etc/enlightenment/default_profile
 fi
 
-exec enlightenment_start $E_PROFILE
+exec nice -n -10 enlightenment_start $E_PROFILE
