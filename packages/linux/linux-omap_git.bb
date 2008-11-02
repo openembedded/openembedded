@@ -43,6 +43,7 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 			     "
 
 SRC_URI_append_omap3evm = " \
+	file://evm-mcspi-ts.diff;patch=1 \
 "
 
 S = "${WORKDIR}/git"
