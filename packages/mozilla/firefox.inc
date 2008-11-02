@@ -47,3 +47,34 @@ do_stage() {
 	autotools_stage_all
 }
 
+# We don't build XUL as system shared lib, so we can mark all libs as private
+PRIVATE_LIBS = "libnssckbi.so \
+                libxpcom.so \
+                libplc4.so \
+                libssl3.so \
+                libfreebl3.so \
+                libnss3.so \
+                libnspr4.so \
+                libmozjs.so \
+                libxul.so \
+                libplds4.so \
+                libnssutil3.so \
+                libsqlite3.so \
+                libsoftokn3.so \
+                libnssdbm3.so \
+                libsmime3.so \
+                libnullplugin.so \
+                libimgicon.so \
+                libdbusservice.so \
+                libbrowserdirprovider.so \
+                libbrowsercomps.so \
+                libnptest.so \
+                libMyService.so \
+                libmozgnome.so \
+                libtestdynamic.so \
+                libnkgnomevfs.so \
+                libxpcomsample.so \
+                libunixprintplugin.so \
+"
+
+

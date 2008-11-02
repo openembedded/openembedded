@@ -12,6 +12,7 @@ MOZDATE = "20070626"
 
 PV = "0.02+cvs${MOZDATE}"
 PE = "1"
+PR = "r1"
 
 SRC_URI = "cvs://anonymous@${CVSSVR}/cvsroot;module=mozilla;tag=${BRTAG};date=${MOZDATE} \
 	   file://minimo.patch;patch=1 \
@@ -148,6 +149,36 @@ do_install() {
 	install -m 0644 res/html/gopher-text.gif ${D}${mozdir}/res/html
 	install -m 0644 res/html/gopher-unknown.gif ${D}${mozdir}/res/html
 }
+
+# We don't build XUL as system shared lib, so we can mark all libs as private
+PRIVATE_LIBS = "libnssckbi.so \
+                libxpcom.so \
+                libplc4.so \
+                libssl3.so \
+                libfreebl3.so \
+                libnss3.so \
+                libnspr4.so \
+                libmozjs.so \
+                libxul.so \
+                libplds4.so \
+                libnssutil3.so \
+                libsqlite3.so \
+                libsoftokn3.so \
+                libnssdbm3.so \
+                libsmime3.so \
+                libnullplugin.so \
+                libimgicon.so \
+                libdbusservice.so \
+                libbrowserdirprovider.so \
+                libbrowsercomps.so \
+                libnptest.so \
+                libMyService.so \
+                libmozgnome.so \
+                libtestdynamic.so \
+                libnkgnomevfs.so \
+                libxpcomsample.so \
+                libunixprintplugin.so \
+"
 
 FILES_${PN}-dbg += "${libdir}/mozilla-minimo/.debug*"
 FILES_${PN} += "${mozdir}"
