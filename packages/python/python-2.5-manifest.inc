@@ -10,7 +10,7 @@ PACKAGES="python-profile python-threading python-distutils python-doctest python
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 PR_python-profile="ml0"
-RDEPENDS_python-profile="python-core python-re"
+RDEPENDS_python-profile="python-core python-textutils"
 FILES_python-profile="${libdir}/python2.5/profile.* ${libdir}/python2.5/pstats.* ${libdir}/python2.5/cProfile.* ${libdir}/python2.5/lib-dynload/_lsprof.so "
 
 DESCRIPTION_python-threading="Python Threading & Synchronization Support"

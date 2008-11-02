@@ -277,7 +277,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-pprint", "Python Pretty-Print Support", "python-core",
     "pprint.*" )
 
-    m.addPackage( 0, "python-profile", "Python Basic Profiling Support", "python-core python-re",
+    m.addPackage( 0, "python-profile", "Python Basic Profiling Support", "python-core python-textutils",
     "profile.* pstats.* cProfile.* lib-dynload/_lsprof.so" )
 
     m.addPackage( 0, "python-re", "Python Regular Expression APIs", "python-core",
