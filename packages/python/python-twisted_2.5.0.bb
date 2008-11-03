@@ -37,7 +37,7 @@ FILES_python-twisted-test = " \
 "
 
 FILES_python-twisted-protocols = " \
-  ${libdir}/${PYTHON_DIR}/site-packages/twisted/python/protocols/ \
+  ${libdir}/${PYTHON_DIR}/site-packages/twisted/protocols/ \
 "
 
 FILES_python-twisted-zsh = " \
