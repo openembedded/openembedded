@@ -8,12 +8,12 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac"
+	gst-plugin-flac gst-plugin-fluendo-mpegdemux"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
-	gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse"
+	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse"
 RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
@@ -35,7 +35,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081013"
+SRCDATE = "20081101"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -52,6 +52,7 @@ MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
 REL_MINOR_dm8000="5"
 SUBDIR_dm8000=
 MODULE_dm8000=trunk
+PR_dm8000="r1"
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \

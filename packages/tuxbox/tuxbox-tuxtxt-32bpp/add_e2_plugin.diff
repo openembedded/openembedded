@@ -43,7 +43,7 @@ diff -Naur tuxtxt_32bpp/python/plugin.py tuxtxt/python/plugin.py
 +        	self.skin = ShellStarter.skin
 +		Screen.__init__(self, session)
 +		self.container=eConsoleAppContainer()
-+		self.container.appClosed.get().append(self.finished)
++		self.container.appClosed.append(self.finished)
 +		self.runapp()
 +		
 +	def runapp(self):
