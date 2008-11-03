@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.tightvnc.com/"
 DEPENDS = "virtual/libx11 zlib libxmu libxaw"
 LICENSE = "GPL"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/vnc-tight/${PN}-${PV}_unixsrc.tar.gz \
            file://Makefile"
@@ -22,4 +22,13 @@ do_compile () {
 do_install () {
 	install -d ${D}${bindir}
 	install ${PN}viewer ${D}${bindir}
+}
+
+pkg_postinst_${PN}-viewer () {
+        update-alternatives --install ${bindir}/vncviewer vncviewer tightvncviewer 100
+}
+
+
+pkg_prerm_${PN}-viewer () {
+        update-alternatives --remove ${bindir}/vncviewer vncviewer tightvncviewer 100
 }
