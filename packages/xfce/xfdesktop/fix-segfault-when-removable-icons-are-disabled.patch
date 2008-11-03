@@ -1,0 +1,16 @@
+diff -Nur xfdesktop-4.4.2-BKP/src/xfdesktop-file-icon-manager.c xfdesktop-4.4.2/src/xfdesktop-file-icon-manager.c
+--- xfdesktop-4.4.2-BKP/src/xfdesktop-file-icon-manager.c	2008-11-03 16:19:46.000000000 -0200
++++ xfdesktop-4.4.2/src/xfdesktop-file-icon-manager.c	2008-11-03 16:20:45.000000000 -0200
+@@ -2046,8 +2046,10 @@
+     
+     g_hash_table_foreach(fmanager->priv->icons,
+                          file_icon_hash_write_icons, rcfile);
+-    g_hash_table_foreach(fmanager->priv->removable_icons,
+-                         file_icon_hash_write_icons, rcfile);
++    if(fmanager->priv->show_removable_media) {
++        g_hash_table_foreach(fmanager->priv->removable_icons,
++                             file_icon_hash_write_icons, rcfile);
++    }
+     g_hash_table_foreach(fmanager->priv->special_icons,
+                          file_icon_hash_write_icons, rcfile);
+     
