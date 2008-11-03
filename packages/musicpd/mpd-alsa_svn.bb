@@ -2,7 +2,8 @@ DESCRIPTION = "Music Player Daemon (mpd). This version is configured for alsa su
 HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
-DEPENDS = "libvorbis libogg libid3tag libao-alsa zlib libmad flac audiofile virtual/libiconv faad2"
+DEPENDS = "libvorbis libogg libao-alsa zlib flac audiofile virtual/libiconv faad2 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 RDEPENDS = "libao-alsa"
 PV = "0.11.5+svnr${SRCREV}"
 PR = "r2"

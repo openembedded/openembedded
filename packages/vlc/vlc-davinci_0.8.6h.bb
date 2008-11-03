@@ -6,11 +6,12 @@ SECTION = "multimedia"
 
 SRCREV = "e712a114e04a1070f1afdf31ec668cb28eda513c"
 
-PR = "r5"
+PR = "r6"
 
 PV = "0.8.6h+${PR}+gitr${SRCREV}"
 
-DEPENDS = "codec-engine dbus libxml2 gnutls tremor faad2 ffmpeg flac liba52 libid3tag libmad mpeg2dec"
+DEPENDS = "codec-engine dbus libxml2 gnutls tremor faad2 ffmpeg flac  \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "git://git.videolan.org/vlc.git;protocol=git;branch=0.8.6-neuros"
 

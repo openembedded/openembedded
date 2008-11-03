@@ -3,9 +3,10 @@ This version is configured for the usage with framebuffer based environments"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "zlib libogg tremor libmad libmodplug libpng"
+DEPENDS = "zlib libogg tremor libmodplug libpng \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
 PROVIDES = "virtual/libxine"
-PR = "r1"
+PR = "r2"
 
 inherit autotools pkgconfig gettext
 

@@ -75,9 +75,8 @@ AUDIO_INSTALL = "\
   alsa-utils-aplay \
   alsa-utils-amixer \
   gst-meta-audio \
-  gst-plugin-mad \
   gst-plugin-modplug \
-  gst-plugin-sid \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad gst-plugin-sid', d)} \
   fso-sounds \
 "
 

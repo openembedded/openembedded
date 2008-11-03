@@ -2,9 +2,10 @@ DESCRIPTION = "Music Player Daemon (mpd)"
 HOMEPAGE = "http://www.musicpd.org"
 SECTION = "console/multimedia"
 LICENSE = "GPLv2"
-DEPENDS = "libvorbis libogg libid3tag libao zlib libmikmod libmad flac audiofile virtual/libiconv faad2 pulseaudio"
+DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 PV = "0.12.1+svn${SRCDATE}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
            file://mpd/mpd.init"

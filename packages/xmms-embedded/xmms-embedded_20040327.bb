@@ -1,8 +1,9 @@
 DESCRIPTION = "XMMS embedded - lightweight audio player with video and codec plugins"
 SECTION = "opie/multimedia"
-DEPENDS = "zlib tremor libmad libid3tag libsidplay glib-2.0 libmikmod"
+DEPENDS = "zlib tremor glib-2.0 libmikmod \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libsidplay libmad libid3tag', d)}"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "cvs://anonymous@xmms-embedded.cvs.sourceforge.net/cvsroot/xmms-embedded;module=xmms-embedded;date=${PV} \
            file://bogusincdir.patch;patch=1 \

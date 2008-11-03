@@ -2,7 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS = "virtual/libsdl xsp zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 DEPENDS_append_c7x0 = " libw100 "
 DEPENDS_append_hx4700 = " libw100 "
 
@@ -42,7 +43,7 @@ PACKAGE_ARCH_hx4700 = "hx4700"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r8"
+PR = "r9"
 
 PARALLEL_MAKE = ""
 

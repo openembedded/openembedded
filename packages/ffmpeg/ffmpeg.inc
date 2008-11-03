@@ -5,7 +5,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
-DEPENDS = "zlib libogg libvorbis faac faad2 liba52 lame"
+DEPENDS = "zlib libogg libvorbis faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
 inherit autotools pkgconfig

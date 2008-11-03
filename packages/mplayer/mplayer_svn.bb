@@ -2,7 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl ffmpeg xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS = "virtual/libsdl ffmpeg xsp zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
