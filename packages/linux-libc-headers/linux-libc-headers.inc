@@ -3,7 +3,7 @@ SECTION = "devel"
 LICENSE = "GPL"
 
 RDEPENDS_${PN}-dev = ""
-RRECOMMENDS_${PN}-dbg = "${PN}-dev (= ${DEBPV})"
+RRECOMMENDS_${PN}-dbg = "${PN}-dev (= ${EXTENDPV})"
 
 do_install_append() {
 	rm -rf ${D}${includedir}/scsi
