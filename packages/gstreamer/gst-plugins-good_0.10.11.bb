@@ -1,5 +1,5 @@
 require gst-plugins.inc
-PR = "r0"
+PR = "r1"
 
 SRC_URI += "file://v4l2src_fixformats.patch;patch=1;pnum=0 \
 	file://disable_doc.patch;patch=1;pnum=1"
