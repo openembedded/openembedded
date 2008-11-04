@@ -1,0 +1,10 @@
+Index: gloox-0.8.9/gloox.pc.in
+===================================================================
+--- gloox-0.8.9.orig/gloox.pc.in	2008-11-04 04:20:26.896779618 +0300
++++ gloox-0.8.9/gloox.pc.in	2008-11-04 04:20:32.665427239 +0300
+@@ -7,4 +7,4 @@ Name: gloox
+ Description: A high-level XMPP/Jabber library for C++
+ Version: @VERSION@
+ Libs: -L${libdir} -lgloox @LIBS@
+-Cflags: -I${includedir} @CFLAGS@
++Cflags: -I${includedir}
