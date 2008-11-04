@@ -8,7 +8,7 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac gst-plugin-fluendo-mpegdemux"
+	gst-plugin-flac gst-plugin-fluendo-mpegdemux gst-plugin-neonhttpsrc"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
