@@ -6,6 +6,8 @@ DEPENDS = "libdvdread"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/dvdauthor/dvdauthor-${PV}.tar.gz \
 	file://dvdauthor-fix-fribidi.patch;patch=1;pnum=1 \
+	file://dvdauthor-flush-progress.patch;patch=1;pnum=1 \
 	file://dvdauthor-fix-old-freetype.patch;patch=1;pnum=1"
 
+PR="r1"
 inherit autotools
