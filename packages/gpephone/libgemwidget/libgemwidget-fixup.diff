@@ -1,0 +1,43 @@
+Index: libgemwidget-1.0/src/gemfilechooser.c
+===================================================================
+--- libgemwidget-1.0.orig/src/gemfilechooser.c	2008-11-04 14:04:26.428221184 +0300
++++ libgemwidget-1.0/src/gemfilechooser.c	2008-11-04 14:41:58.755239494 +0300
+@@ -46,6 +46,7 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdkkeysyms.h>
+ #include <libgnomevfs/gnome-vfs.h>
++#include <libgnomevfs/gnome-vfs-mime-handlers.h>
+ #include "gemfilechooser.h"
+ #include "gemresource.h"
+ #include "gemenv.h"
+@@ -304,7 +305,7 @@ gem_file_chooser_finalize (GObject *obje
+ }
+
+ static void
+-gem_file_chooser_file_info_print (GtkFileInfo		*info)
++gem_file_chooser_file_info_print (GFileInfo		*info)
+ {
+	struct tm loacl_time;
+	time_t time;
+@@ -331,10 +332,10 @@ gem_file_chooser_file_info_print (GtkFil
+					(gtk_file_info_get_is_folder(info) ? "TRUE" : "FALSE"));
+	g_print("%s():|- Hidden        : %s\n",
+					__FUNCTION__,
+-					(gtk_file_info_get_is_hidden(info) ? "TRUE" : "FALSE"));
++					(g_file_info_get_is_hidden(info) ? "TRUE" : "FALSE"));
+	g_print("%s():|- MIME Type     : %s\n",
+					__FUNCTION__,
+-					gtk_file_info_get_mime_type(info));
++					g_file_info_get_mime_type(info));
+	g_print("%s():|- Modified Time : %04d/%02d/%02d %02d:%02d:%02d\n",
+					__FUNCTION__,
+					loacl_time.tm_year + 1900,
+@@ -345,7 +346,7 @@ gem_file_chooser_file_info_print (GtkFil
+					loacl_time.tm_sec);
+	g_print("%s():`- Size          : %lld\n",
+					__FUNCTION__,
+-					gtk_file_info_get_size(info));
++					g_file_info_get_size(info));
+
+	g_print("\n");
+	return;
