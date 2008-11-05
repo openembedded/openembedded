@@ -1,0 +1,13 @@
+Index: contacts-0.8/src/contacts-utils.h
+===================================================================
+--- contacts-0.8.orig/src/contacts-utils.h	2008-10-30 13:42:03.527971013 +0300
++++ contacts-0.8/src/contacts-utils.h	2008-10-30 13:42:08.140177662 +0300
+@@ -22,8 +22,6 @@
+ #include <libebook/e-book.h>
+ #include "contacts-defs.h"
+
+-char *e_util_unicode_get_utf8 (const char *text, gunichar * out);
+-
+ const char *kozo_utf8_strstrcasestrip (const char *haystack,
+				       const gunichar * needle);
+
