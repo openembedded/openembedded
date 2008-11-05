@@ -1,0 +1,27 @@
+Index: libsvg-cairo/configure.in
+===================================================================
+--- libsvg-cairo.orig/configure.in	2008-11-04 13:38:51.795236755 +0300
++++ libsvg-cairo/configure.in	2008-11-04 13:40:44.503218844 +0300
+@@ -8,18 +8,18 @@ LIBSVG_CAIRO_VERSION=0.1.5-head
+ # libtool shared library version
+
+ # Increment if the interface has additions, changes, removals.
+-LT_CURRENT=1
++LV_CURRENT=1
+
+ # Increment any time the source changes; set to
+ # 0 if you increment CURRENT
+-LT_REVISION=1
++LV_REVISION=1
+
+ # Increment if any interfaces have been added; set to 0
+ # if any interfaces have been removed. removal has
+ # precedence over adding, so set to 0 if both happened.
+-LT_AGE=0
++LV_AGE=0
+
+-VERSION_INFO="$LT_CURRENT:$LT_REVISION:$LT_AGE"
++VERSION_INFO="$LV_CURRENT:$LV_REVISION:$LV_AGE"
+ AC_SUBST(VERSION_INFO)
+
+ dnl ===========================================================================
