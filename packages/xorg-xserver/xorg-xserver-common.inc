@@ -23,6 +23,7 @@ S = "${WORKDIR}/${XORG_PN}-${PV}"
 inherit autotools pkgconfig
 
 EXTRA_OECONF += " --enable-xcalibrate \
+                  --with-default-font-path="/usr/share/fonts/X11/misc" \
                   ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
 EXTRA_OECONF_append_arm = " ac_cv_header_linux_apm_bios_h=no "
