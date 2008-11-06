@@ -10,7 +10,7 @@ SRC_URI = "http://www.xmms.org/files/1.2.x/xmms-${PV}.tar.bz2 \
            file://xmms-config-dequote.patch;patch=1 \
 	   file://acinclude.m4 \
            file://xmms.sh"
-PR = "r3"
+PR = "r4"
 
 RRECOMMENDS_${PN} = "xmms-plugin-output-oss xmms-plugin-output-alsa \
                     xmms-mad xmms-tremor"
@@ -38,6 +38,7 @@ do_install_append() {
 	install -d ${D}${datadir}/applications
 	install xmms/xmms.desktop ${D}${datadir}/applications
 	sed -i "s/Exec=xmms/Exec=xmms.sh/" ${D}${datadir}/applications/xmms.desktop
+	sed -i "s/Type=Application/Type=Application\nCategories=AudioVideo;/" ${D}${datadir}/applications/xmms.desktop
 	install -d ${D}${datadir}/pixmaps
 	install xmms/xmms_mini.xpm ${D}${datadir}/pixmaps
 }
