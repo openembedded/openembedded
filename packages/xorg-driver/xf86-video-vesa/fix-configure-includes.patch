@@ -1,0 +1,13 @@
+Index: xf86-video-vesa-2.0.0/configure.ac
+===================================================================
+--- xf86-video-vesa-2.0.0.orig/configure.ac	2008-11-06 15:13:02.000000000 +0000
++++ xf86-video-vesa-2.0.0/configure.ac	2008-11-06 15:13:16.000000000 +0000
+@@ -69,7 +69,7 @@
+ AM_CONDITIONAL(XSERVER_LIBPCIACCESS, test "x$XSERVER_LIBPCIACCESS" = xyes)
+ 
+ CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
+-INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src'
++INCLUDES="$XORG_INCS "'-I$(top_srcdir)/src'
+ AC_SUBST([CFLAGS])
+ AC_SUBST([INCLUDES])
+ 
