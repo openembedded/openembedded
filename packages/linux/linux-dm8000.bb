@@ -1,13 +1,13 @@
 DESCRIPTION = "Linux kernel for Dreambox DM8000"
 LICENSE = "GPL"
-PN = "linux-dm8000"
+PN = "linux-${MACHINE}"
 KV = "2.6.12"
 PV = "2.6.12"
 PR = "r7"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
-	file://dm8000_defconfig \
+	file://${MACHINE}_defconfig \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-brcm-5.1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update_dvbapi-r1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1 \
@@ -17,7 +17,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-add-ioprio.patch.bz2;patch=1;pnum=1 \
 	file://linux-2.6.12-dvbapi-support-more-demux.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-misc.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-dm8000-nand.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-${MACHINE}-nand.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-mtd-blkdevfs-fix.diff;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-fix-usb-for-revb0.diff;patch=1;pnum=1 \
@@ -54,7 +54,7 @@ do_munge() {
 addtask munge before do_patch after do_unpack
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/dm8000_defconfig ${S}/.config
+	oe_machinstall -m 0644 ${WORKDIR}/${MACHINE}_defconfig ${S}/.config
 	if [ -d ${WORKDIR}/cdfs-${PV} ]; then
 		mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
 		cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
