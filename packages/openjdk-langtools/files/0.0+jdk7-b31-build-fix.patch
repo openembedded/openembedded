@@ -1,0 +1,114 @@
+Index: icepick-0.0+hg20080118/Makefile.am
+===================================================================
+--- icepick-0.0+hg20080118.orig/Makefile.am
++++ icepick-0.0+hg20080118/Makefile.am
+@@ -19,55 +19,61 @@ else
+ JCOMPILER = echo "No compiler found" 1>&2; exit 1 
+ endif
+ 
+-# All our example java source files
++# Go into $(LANGTOOLS_SRC_DIR)/src/share/classes and set
++# TOOLS_JAVA_FILES to the output of
++# find . -mindepth 2 -type d -and -not -wholename "*resources" -printf \$\(OPENJDK_CLASSES\)/%P/\*.java' \\'\\n
++# (btw: xclip is your friend)
+ OPENJDK_CLASSES = $(LANGTOOLS_SRC_DIR)/src/share/classes
+-TOOLS_JAVA_FILES = $(OPENJDK_CLASSES)/com/sun/tools/apt/Main.java \
+-	$(OPENJDK_CLASSES)/com/sun/javadoc/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/comp/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/main/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/util/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/apt/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/type/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/util/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/declaration/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/api/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/jvm/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/sym/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/code/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/comp/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/main/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/tree/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/util/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/model/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/parser/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/processing/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javac/zip/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javah/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/javadoc/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/mirror/apt/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/mirror/type/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/mirror/util/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/mirror/declaration/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/source/tree/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/source/util/*.java \
+-	$(OPENJDK_CLASSES)/javax/lang/model/type/*.java \
+-	$(OPENJDK_CLASSES)/javax/lang/model/util/*.java \
+-	$(OPENJDK_CLASSES)/javax/lang/model/*.java \
+-	$(OPENJDK_CLASSES)/javax/lang/model/element/*.java \
+-	$(OPENJDK_CLASSES)/javax/tools/*.java \
+-	$(OPENJDK_CLASSES)/javax/annotation/processing/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/formats/html/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/formats/html/markup/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/builders/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/taglets/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/util/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/util/links/*.java \
+-	$(OPENJDK_CLASSES)/com/sun/tools/doclets/standard/*.java \
+-	$(OPENJDK_CLASSES)/sun/tools/javap/*.java
++TOOLS_JAVA_FILES = \
++		$(OPENJDK_CLASSES)/sun/tools/javap/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javap/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javadoc/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/comp/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/main/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/declaration/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/apt/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/apt/mirror/type/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javah/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/comp/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/file/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/model/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/code/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/tree/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/api/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/jvm/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/processing/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/parser/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/sym/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/javac/main/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/classfile/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/standard/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/builders/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/util/links/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/internal/toolkit/taglets/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/formats/html/*.java \
++		$(OPENJDK_CLASSES)/com/sun/tools/doclets/formats/html/markup/*.java \
++		$(OPENJDK_CLASSES)/com/sun/javadoc/*.java \
++		$(OPENJDK_CLASSES)/com/sun/source/tree/*.java \
++		$(OPENJDK_CLASSES)/com/sun/source/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/mirror/declaration/*.java \
++		$(OPENJDK_CLASSES)/com/sun/mirror/apt/*.java \
++		$(OPENJDK_CLASSES)/com/sun/mirror/util/*.java \
++		$(OPENJDK_CLASSES)/com/sun/mirror/type/*.java \
++		$(OPENJDK_CLASSES)/javax/tools/*.java \
++		$(OPENJDK_CLASSES)/javax/annotation/processing/*.java \
++		$(OPENJDK_CLASSES)/javax/lang/model/*.java \
++		$(OPENJDK_CLASSES)/javax/lang/model/element/*.java \
++		$(OPENJDK_CLASSES)/javax/lang/model/util/*.java \
++		$(OPENJDK_CLASSES)/javax/lang/model/type/*.java
+ 
+ # The zip files with classes we want to produce.
+ TOOLS_ZIP = tools.jar
