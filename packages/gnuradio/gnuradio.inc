@@ -2,7 +2,7 @@ DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = " guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-nativei python-numpy"
+DEPENDS = " guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 
 RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils \
                   python-shell python-pickle python-compiler python-pkgutil python-pydoc python-mmap \
