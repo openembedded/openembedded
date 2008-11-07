@@ -81,7 +81,8 @@ do
 		      cherokee \
 		      claws-mail \
               ctorrent \
-		      distcc \
+		      cvs \
+              distcc \
 		      dsniff \
 		      duke3d \
 		      e-wm \
@@ -125,7 +126,8 @@ do
 		      gpe-mini-browser2 \
 		      gpe-scap \
 		      gpe-sketchbook \
-		      gperf \
+		      git \
+              gperf \
 		      gphoto2 \
 		      gpsdrive \
 		      gqview \
@@ -151,7 +153,8 @@ do
 		      lighttpd \
 		      links-x11 \
               m4 \
-		      mahjongg \
+		      madplay \
+              mahjongg \
 		      make \
 		      maki \
 		      mc \
@@ -161,7 +164,8 @@ do
 		      mono \
 		      mousepad \
               mpfr \
-		      mplayer \
+		      mpg123 \
+              mplayer \
 		      mtd-utils \
 		      mutt \
               mythtv \
@@ -209,7 +213,8 @@ do
 		      sliderulez \
 		      sokoban \
 		      strace \
-		      sugar \
+		      subversion \
+              sugar \
 		      sylpheed \
               task-gpe-pim \
 		      task-openmoko-feed \
