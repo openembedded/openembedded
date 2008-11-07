@@ -49,6 +49,7 @@ RDEPENDS_${PN}-x11 = "${PN}"
 RRECOMMENDS_${PN}-lib = "${PN}"
 RCONFLICTS_${PN} = "dbus-1"
 RREPLACES_${PN} = "dbus-1"
+RPROVIDES_${PN} = "dbus-1"
 
 PACKAGES =+ "${PN}-lib ${PN}-x11"
 
