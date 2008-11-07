@@ -5,7 +5,7 @@ SRCREV_FORMAT = "webcore-rwebkit"
 
 # Yes, this is wrong...
 PV = "0.1+svnr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -34,6 +34,11 @@ EXTRA_OECONF = "\
                 --enable-icon-database=yes \
 		--with-http-backend=curl \
                "
+
+# Dolt gets used on x86 and ppc and hardcodes 'libtool'
+do_configure_append() {
+	cp ${TARGET_PREFIX}libtool libtool || true
+}
 
 do_compile_prepend() {
         mkdir -p ${S}/WebKitBuilds/Debug/JavaScriptCore/pcre/tmp/
