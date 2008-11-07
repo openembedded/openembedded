@@ -58,6 +58,7 @@ SRC_URI = "\
   file://glibc-use-isystem-include-fixed.patch;patch=1 \
   file://glibc-arm-no-asm-page.patch;patch=1 \
   file://armv4t-interworking.patch;patch=1 \
+  file://march-i686.patch;patch=1;pnum=0 \
 "
 
 # Build fails on sh3 and sh4 without additional patches
