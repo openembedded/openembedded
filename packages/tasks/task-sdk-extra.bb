@@ -28,7 +28,7 @@ RDEPENDS_task-sdk-x11-ext = "\
     libxrandr-dev \
     libxrender-dev \
     libxsettings-client-dev \
-    randrext-dev \
+    randrproto-dev \
     libxau-dev \
     xcalibrateext-dev \
     libxcomposite-dev \
