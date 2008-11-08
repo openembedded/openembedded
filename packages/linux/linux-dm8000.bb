@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for Dreambox DM8000"
 LICENSE = "GPL"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r7"
+PR = "r8"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -28,7 +28,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-fix-minipci.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-fix-bcmemac-ioctl.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-bcmemac-ethtool.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 

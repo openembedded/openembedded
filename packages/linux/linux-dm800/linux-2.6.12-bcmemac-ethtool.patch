@@ -1,0 +1,132 @@
+--- stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.c.orig	2008-11-08 04:43:11.569970189 +0100
++++ stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.c	2008-11-08 04:43:52.589140084 +0100
+@@ -66,6 +66,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/skbuff.h>
++#include <linux/ethtool.h>
++#include <linux/mii.h>
+ 
+ #include <asm/mipsregs.h>
+ 
+@@ -139,7 +141,7 @@
+ typedef enum {
+     MII_EXTERNAL = 0,
+     MII_INTERNAL = 1,
+-}   MII_PHYADDR;
++}   BCM_MII_PHYADDR;
+ 
+ typedef enum {
+     MII_100MBIT     = 0x0001,
+@@ -2989,6 +2991,48 @@
+ 	memcpy(dev->dev_addr, ((unsigned char*)addr)+2, 6);
+ }
+ 
++static int bcmemac_get_settings(struct net_device *netdev,
++				struct ethtool_cmd *cmd)
++{
++	BcmEnet_devctrl *dev = netdev_priv(netdev);
++	return mii_ethtool_gset(&dev->mii, cmd);
++}
++
++static void bcmemac_get_drvinfo(struct net_device *netdev,
++				struct ethtool_drvinfo *info)
++{
++	strcpy(info->driver, CARDNAME);
++	strcpy(info->version, VERSION);
++}
++
++static int bcmemac_nway_reset(struct net_device *netdev)
++{
++	BcmEnet_devctrl *dev = netdev_priv(netdev);
++	return mii_nway_restart(&dev->mii);
++}
++
++static u32 bcmemac_get_link(struct net_device *netdev)
++{
++	BcmEnet_devctrl *dev = netdev_priv(netdev);
++	return mii_link_ok(&dev->mii);
++}
++
++static struct ethtool_ops bcmemac_ethtool_ops = {
++	.get_settings = bcmemac_get_settings,
++	.get_drvinfo = bcmemac_get_drvinfo,
++	.nway_reset = bcmemac_nway_reset,
++	.get_link = bcmemac_get_link,
++};
++
++static int mdio_read(struct net_device *netdev, int addr, int reg)
++{
++	return mii_read(addr, reg);
++}
++
++static void mdio_write(struct net_device *netdev, int addr, int reg, int data)
++{
++	mii_write(addr, reg, data);
++}
+ 
+ static void bcmemac_dev_setup(struct net_device *dev)
+ {
+@@ -3128,6 +3172,7 @@
+ 	dev->set_mac_address 	= bcm_set_mac_addr;
+ 	dev->set_multicast_list	= bcm_set_multicast_list;
+ 	dev->do_ioctl           	= &bcmemac_enet_ioctl;
++	SET_ETHTOOL_OPS(dev, &bcmemac_ethtool_ops);
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+ 	dev->poll_controller    = &bcmemac_poll;
+ #endif
+@@ -3154,6 +3199,12 @@
+ 
+ 	SET_MODULE_OWNER(dev);
+ 
++	pDevContext->mii.phy_id_mask = 0x1F;
++	pDevContext->mii.reg_num_mask = 0x1F;
++	pDevContext->mii.dev = dev;
++	pDevContext->mii.mdio_read = mdio_read;
++	pDevContext->mii.mdio_write = mdio_write;
++	pDevContext->mii.phy_id = pDevContext->phyAddr;
+ }
+ 
+ 
+@@ -3348,28 +3399,11 @@
+     }
+ }
+ 
+-static int bcmemac_enet_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
++static int bcmemac_enet_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
+ {
+-    BcmEnet_devctrl *pDevCtrl = (BcmEnet_devctrl *)dev->priv;
+-    int *data=(int*)rq->ifr_data;
+-    int status;
++	BcmEnet_devctrl *dev = netdev_priv(netdev);
+ 
+-    /* we can add sub-command in ifr_data if we need to in the future */
+-    switch (cmd)
+-    {
+-    case SIOCGLINKSTATE:
+-        status = bcmIsEnetUp(((BcmEnet_devctrl *)dev->priv)->phyAddr);
+-        if (copy_to_user((void*)data, (void*)&status, sizeof(int))) {
+-            return -EFAULT;
+-        }
+-        break;
+-
+-    case SIOCSCLEARMIBCNTR:
+-        ASSERT(pDevCtrl != NULL);
+-        memset(&pDevCtrl->stats, 0, sizeof(struct net_device_stats));
+-        break;
+-    }
+-    return 0;
++	return generic_mii_ioctl(&dev->mii, if_mii(ifr), cmd, NULL);
+ }
+ 
+ int __init bcmemac_module_init(void)
+--- stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.h.orig	2008-11-08 04:05:16.885121556 +0100
++++ stblinux-2.6.12/drivers/net/brcmint7038/bcmemac.h	2008-11-08 04:06:06.849144777 +0100
+@@ -195,6 +195,7 @@
+     int             rxIrq;              /* rx dma irq */
+     int             phyAddr;            /* 1 - external MII, 0 - internal MII (default after reset) */
+     PM_Addr         pmAddr[MAX_PMADDR]; /* perfect match address */
++    struct mii_if_info mii;
+ #ifdef USE_BH
+     struct tq_struct task;              /* task queue */
+ #endif
