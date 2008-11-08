@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.0"
-PR = "r1"
+PR = "r2"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -12,7 +12,7 @@ BASE_INSTALL = "\
   task-base \
 "
 
-ILLUME_THEME = "illume-theme-fso"
+ILLUME_THEME = "illume-theme-freesmartphone"
 
 X_INSTALL = "\
   task-x11-illume \
