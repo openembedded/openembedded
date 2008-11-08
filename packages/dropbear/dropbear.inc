@@ -51,7 +51,7 @@ do_install() {
 	
 	for i in ${SBINCOMMANDS}
 	do
-		ln -s ./dropbearmulti ${D}${sbindir}/$i
+		ln -sf ./dropbearmulti ${D}${sbindir}/$i
 	done
 	cat ${WORKDIR}/init | sed -e 's,/etc,${sysconfdir},g' \
 				  -e 's,/usr/sbin,${sbindir},g' \
