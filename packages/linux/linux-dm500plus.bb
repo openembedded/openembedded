@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel for Dreambox DM500PLUS"
 LICENSE = "GPL"
-PN = "linux-dm500plus"
 PV = "2.6.12"
 PR = "r1"
 

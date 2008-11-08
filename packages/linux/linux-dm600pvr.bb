@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel for Dreambox DM7020"
 LICENSE = "GPL"
-PN = "linux-dm600pvr"
 PV = "2.6.12"
 PR = "r4"
 

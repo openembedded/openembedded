@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel for Dreambox DM800"
 LICENSE = "GPL"
-PN = "linux-${MACHINE}"
 KV = "2.6.12"
 PV = "2.6.12"
 PR = "r10"
