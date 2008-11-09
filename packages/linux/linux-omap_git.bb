@@ -10,7 +10,7 @@ SRCREV = "f7429fd378a29cf6947c2613e0fd6e6e36165167"
 
 PV = "2.6.27+2.6.28-rc3+${PR}+gitr${SRCREV}"
 #PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -50,6 +50,7 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \
+	file://omap3evm-lcd-redtint.diff;patch=1 \
 "
 
 S = "${WORKDIR}/git"
