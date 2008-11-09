@@ -1,7 +1,7 @@
 require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
-DEPENDS += "pixman libpciaccess"
+DEPENDS += "pixman libpciaccess openssl"
 PE = "1"
 PR = "r0"
 
