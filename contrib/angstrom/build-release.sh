@@ -3,36 +3,33 @@
 DO_UCLIBC=1
 
 do_build() {
-	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
-
         if [ $DO_UCLIBC = 1 ]
         then
                 BUILD_MODE="uclibc"
-                echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+                echo 'ANGSTROM_MODE = "uclibc"' > conf/auto.conf
 
                 if [ "$BUILD_CLEAN" != "" ]
                 then
-                        bitbake -c clean $BUILD_CLEAN
+                        MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
                 fi
 
                 for target in $BUILD_TARGETS
                 do
-                        bitbake $target && do_report_success
+                        MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
                 done
         fi
 
 	BUILD_MODE="glibc"
-        echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
-        echo 'ANGSTROM_MODE = "glibc"' >> conf/auto.conf
+        echo 'ANGSTROM_MODE = "glibc"' > conf/auto.conf
 
 	if [ "$BUILD_CLEAN" != "" ]
 	then
-		bitbake -c clean $BUILD_CLEAN
+		MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
 	fi
 
 	for target in $BUILD_TARGETS
 	do
-		bitbake $target && do_report_success
+		MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
 	done
 }
 
