@@ -7,7 +7,7 @@ PV = "0.0+svnr${SRCREV}"
 PR = "r14"
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=illume;proto=http \
-           file://gsm-segfault.patch;patch=1;pnum=0"
+           file://gsm-segfault.patch;patch=1;pnum=1"
 S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig
