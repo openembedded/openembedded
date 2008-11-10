@@ -21,12 +21,17 @@ fi
 
 panel_user="`ps aux|grep matchbox-panel|grep -v grep | awk '{print $1}'`"
 
+STATE=$1
+
 # touch ~/.norot can disable rotation.
 if test -f /home/$panel_user/.norot ; then
+  if [ $STATE = "3" ]; then
+	. /etc/zaurusd/hinge-close.d/00-backlight-off
+  else
+	. /etc/zaurusd/hinge-landscape.d/00-backlight-on
+  fi
   exit
 fi
-
-STATE=$1
 
 if [ $STATE = "3" ]; then
 
