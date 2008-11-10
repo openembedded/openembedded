@@ -4,9 +4,10 @@ AUTHOR = "Carsten 'Rasterman' Haitzler"
 LICENSE = "MIT/BSD"
 DEPENDS = "e-wm eet evas ecore edje embryo efreet edbus edje-native embryo-native eet-native"
 PV = "0.0+svnr${SRCREV}"
-PR = "r13"
+PR = "r14"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=illume;proto=http"
+SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=illume;proto=http \
+           file://gsm-segfault.patch;patch=1;pnum=0"
 S = "${WORKDIR}/${PN}"
 
 inherit autotools pkgconfig
