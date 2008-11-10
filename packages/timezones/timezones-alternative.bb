@@ -4,7 +4,10 @@ PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 LICENSE = "GPL"
 
-SRC_URI = "http://sources.dreamboxupdate.com/zoneinfo.tar.bz2"
+PV = "2008i"
+PR = "r0"
+
+SRC_URI = "file://zoneinfo.tar.bz2"
 S = "${WORKDIR}/zoneinfo"
 
 FILES_${PN} = "usr/share/zoneinfo/[A-Z]*"
