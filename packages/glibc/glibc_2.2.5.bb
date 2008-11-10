@@ -1,7 +1,7 @@
 require glibc.inc
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-cvs"
-PR = "r19"
+PR = "r20"
 
 DEFAULT_PREFERENCE_sh3 = "-99"
 
@@ -199,7 +199,7 @@ require glibc-package.bbclass
 
 # Unslung distribution specific packages follow ...
 
-PACKAGES_unslung = "libc6-unslung"
+PACKAGES_unslung = "libc6-unslung libsegfault"
 PACKAGE_ARCH_unslung = "nslu2"
 PACKAGE_NO_GCONV_unslung = "1"
 RDEPENDS_libc6-unslung = "nslu2-linksys-libs"
