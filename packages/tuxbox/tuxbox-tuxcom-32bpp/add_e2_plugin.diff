@@ -1,0 +1,66 @@
+diff -Naur tuxcom_cvs/configure.ac tuxcom/configure.ac
+--- tuxcom/configure.ac	2008-11-03 14:19:50.000000000 +0100
++++ tuxcom/configure.ac	2008-11-03 14:20:00.329914467 +0100
+@@ -16,3 +16,4 @@
+ 
+ AC_OUTPUT(Makefile)
+ AC_OUTPUT(font/Makefile)
++AC_OUTPUT(python/Makefile)
+--- tuxcom/Makefile.am	2008-11-03 14:18:28.000000000 +0100
++++ tuxcom/Makefile.am	2008-11-03 14:18:52.353917804 +0100
+@@ -1,6 +1,6 @@
+ INCLUDES = -I$(top_srcdir)/include
+ 
+-SUBDIRS = font
++SUBDIRS = font python
+ 
+ bin_PROGRAMS = tuxcom
+ 
+diff -Naur tuxcom_cvs/python/Makefile.am tuxcom/python/Makefile.am
+--- tuxcom_cvs/python/Makefile.am	1970-01-01 01:00:00.000000000 +0100
++++ tuxcom/python/Makefile.am	2008-11-03 13:56:54.425916639 +0100
+@@ -0,0 +1,5 @@
++installdir = $(LIBDIR)/enigma2/python/Plugins/Extensions/Tuxcom
++
++install_DATA = \
++	plugin.py \
++	__init__.py
+diff -Naur tuxcom_cvs/python/plugin.py tuxcom/python/plugin.py
+--- tuxcom_cvs/python/plugin.py	1970-01-01 01:00:00.000000000 +0100
++++ tuxcom/python/plugin.py	2008-11-03 14:22:15.705918505 +0100
+@@ -0,0 +1,35 @@
++from enigma import *
++from Screens.Screen import Screen
++from Plugins.Plugin import PluginDescriptor
++
++class TuxComStarter(Screen):
++	skin = """
++		<screen position="1,1" size="1,1" title="TuxCom" >
++                </screen>"""
++
++        def __init__(self, session, args = None):
++        	self.skin = TuxComStarter.skin
++		Screen.__init__(self, session)
++		self.container=eConsoleAppContainer()
++		self.container.appClosed.append(self.finished)
++		self.runapp()
++		
++	def runapp(self):
++		eDBoxLCD.getInstance().lock()
++		eRCInput.getInstance().lock()
++		fbClass.getInstance().lock()
++		if self.container.execute("/usr/plugins/tuxcom"):
++			self.finished(-1)
++
++	def finished(self,retval):
++		fbClass.getInstance().unlock()
++		eRCInput.getInstance().unlock()
++		eDBoxLCD.getInstance().unlock()
++		self.close()
++
++def main(session, **kwargs):
++	session.open(TuxComStarter)
++
++def Plugins(**kwargs):
++	return PluginDescriptor(name="TuxCom", description="TuxBox Commander", where = PluginDescriptor.WHERE_PLUGINMENU, fnc=main)
++	
