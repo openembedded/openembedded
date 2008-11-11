@@ -35,7 +35,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081101"
+SRCDATE = "20081111"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
@@ -52,7 +52,7 @@ MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
 REL_MINOR_dm8000="5"
 SUBDIR_dm8000=
 MODULE_dm8000=trunk
-PR_dm8000="r1"
+PR_dm8000="r0"
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
