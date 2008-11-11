@@ -11,7 +11,7 @@ BINARY_VERSION_dm800 = "2"
 BINARY_VERSION_dm8000 = "2"
 
 PV = "${BINARY_VERSION}.${IMAGES_VERSION}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${BINARY_VERSION}.elf \
 	http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.mvi \
@@ -49,6 +49,22 @@ do_install_dm800() {
 
 do_install_dm8000() {
 	do_install_dm800
+}
+
+pkg_preinst() {
+	[ -d /proc/stb ] && mount -o rw,remount /boot
+}
+
+pkg_postinst() {
+	[ -d /proc/stb ] && mount -o ro,remount /boot
+}
+
+pkg_prerm() {
+	[ -d /proc/stb ] && mount -o rw,remount /boot
+}
+
+pkg_postrm() {
+	[ -d /proc/stb ] && mount -o ro,remount /boot
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
