@@ -2,9 +2,10 @@ require xorg-driver-input.inc
 
 DESCRIPTION = "X.Org X server -- tslib input driver"
 RRECOMMENDS += "hal"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "http://www.pengutronix.de/software/xf86-input-tslib/download/xf86-input-tslib-${PV}.tar.bz2 \
+           file://use-hal-for-device.diff;patch=1 \
            file://10-x11-input-tslib.fdi"
 
 do_configure_prepend() {

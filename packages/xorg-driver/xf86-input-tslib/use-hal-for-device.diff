@@ -1,0 +1,45 @@
+From: Markku Vire markku.vire@movial.fi <mvire@movial.fi>
+Date: Tue, 9 Oct 2007 07:29:08 +0000 (+0300)
+Subject: Changed tslib device path to use the data provided by
+X-Git-Url: http://linux.onarm.com/gitweb/?p=generic%2Fsource%2Fxf86-input-tslib.git;a=commitdiff_plain;h=9ead96bb85857c0122b7a1a4653a5863f187d511
+
+Changed tslib device path to use the data provided by
+automatic device detection.
+---
+
+--- /tmp/tslib.c	2008-11-11 13:05:57.000000000 +0100
++++ xf86-input-tslib-0.0.5/src/tslib.c	2008-11-11 13:10:55.000000000 +0100
+@@ -72,11 +72,6 @@
+ 	int width;
+ };
+ 
+-static const char *DEFAULTS[] = {
+-	"TslibDevice", "/dev/event0",
+-	NULL
+-};
+-
+ static void
+ BellProc(int percent, DeviceIntPtr pDev, pointer ctrl, int unused)
+ {
+@@ -308,7 +303,7 @@
+ 	pInfo->private = priv;
+ 
+ 	/* Collect the options, and process the common options. */
+-	xf86CollectInputOptions(pInfo, DEFAULTS, NULL);
++	xf86CollectInputOptions(pInfo, NULL, NULL);
+ 	xf86ProcessCommonOptions(pInfo, pInfo->options);
+ 
+ 	priv->screen_num = xf86SetIntOption(pInfo->options, "ScreenNumber", 0 );
+@@ -334,8 +329,10 @@
+ 		priv->rotate = TSLIB_ROTATE_NONE;
+ 	}
+ 
+-	s = xf86SetStrOption(pInfo->options, "TslibDevice", NULL);
+-
++ 	s = xf86CheckStrOption(dev->commonOptions, "path", NULL);
++  	if (!s)
++		s = xf86CheckStrOption(dev->commonOptions, "Device", NULL);
++ 
+ 	priv->ts = ts_open(s, 0);
+ 	if (!priv->ts) {
+ 		ErrorF("ts_open failed (device=%s)\n",s);
