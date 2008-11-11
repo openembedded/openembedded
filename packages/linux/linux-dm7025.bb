@@ -1,6 +1,5 @@
 DESCRIPTION = "Linux kernel for Dreambox DM7025"
 LICENSE = "GPL"
-PN = "linux-dm7025"
 KV = "2.6.12"
 PV = "2.6.12.6"
 PR = "s4"
