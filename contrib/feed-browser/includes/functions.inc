@@ -428,7 +428,7 @@ function check_database()
 {
 	$db_exists = FALSE;
 
-	if(file_exists(DB_FILENAME) AND $db = sqlite_open(DB_FILENAME))
+	if($db = sqlite_open(DB_FILENAME))
 	{
 		$db_exists = TRUE;
 
@@ -461,7 +461,7 @@ function check_database()
 				f_id         int(8),
 				f_name       varchar(32),
 				f_uri        varchar(100),
-				f_type		 varchar(16)
+				f_type		 varchar(16),
 				f_comments   varchar(500))");
 
 			insert_feeds ($db) ;
