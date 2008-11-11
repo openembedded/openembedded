@@ -1,4 +1,4 @@
-From 69302d06679f25f940f5ee3cb8c51c1becf46e52 Mon Sep 17 00:00:00 2001
+From b51518d69d562d275afc830373710417e507c613 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 20 Oct 2008 13:13:15 +0300
 Subject: [PATCH] DSS: support for OMAP3 SDP board
@@ -13,7 +13,7 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  create mode 100644 drivers/video/omap2/panel-sdp3430.c
 
 diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-index 8773698..b910bc6 100644
+index 7ee85e9..f226a55 100644
 --- a/arch/arm/mach-omap2/board-3430sdp.c
 +++ b/arch/arm/mach-omap2/board-3430sdp.c
 @@ -40,6 +40,8 @@
@@ -25,7 +25,7 @@ index 8773698..b910bc6 100644
  
  #include <asm/io.h>
  #include <asm/delay.h>
-@@ -239,14 +241,224 @@ static struct spi_board_info sdp3430_spi_board_info[] __initdata = {
+@@ -240,14 +242,224 @@ static struct spi_board_info sdp3430_spi_board_info[] __initdata = {
  	},
  };
  
@@ -71,20 +71,20 @@ index 8773698..b910bc6 100644
 +static int lcd_enabled;
 +static int dvi_enabled;
 +
-+static void __init display_init(void)
++static void __init sdp3430_display_init(void)
 +{
 +	int r;
 +
 +	enable_gpio    = SDP3430_LCD_PANEL_ENABLE_GPIO;
 +	backlight_gpio = SDP3430_LCD_PANEL_BACKLIGHT_GPIO;
 +
-+	r = gpio_request(enable_gpio, "OMAP SDP LCD Reset GPIO");
++	r = gpio_request(enable_gpio, "LCD reset");
 +	if (r) {
 +		printk(KERN_ERR "failed to get LCD reset GPIO\n");
 +		goto err0;
 +	}
 +
-+	r = gpio_request(backlight_gpio, "OMAP SDP LCD Backlight GPIO");
++	r = gpio_request(backlight_gpio, "LCD Backlight");
 +	if (r) {
 +		printk(KERN_ERR "failed to get LCD backlight GPIO\n");
 +		goto err1;
@@ -101,7 +101,7 @@ index 8773698..b910bc6 100644
 +}
 +
 +
-+static int panel_enable_lcd(struct omap_display *display)
++static int sdp3430_panel_enable_lcd(struct omap_display *display)
 +{
 +	u8 ded_val, ded_reg;
 +	u8 grp_val, grp_reg;
@@ -136,7 +136,7 @@ index 8773698..b910bc6 100644
 +	return 0;
 +}
 +
-+static void panel_disable_lcd(struct omap_display *display)
++static void sdp3430_panel_disable_lcd(struct omap_display *display)
 +{
 +	lcd_enabled = 0;
 +
@@ -150,16 +150,16 @@ index 8773698..b910bc6 100644
 +	}
 +}
 +
-+static struct omap_display_data sdp_display_data = {
++static struct omap_display_data sdp3430_display_data = {
 +	.type = OMAP_DISPLAY_TYPE_DPI,
 +	.name = "lcd",
 +	.panel_name = "panel-sdp3430",
 +	.u.dpi.data_lines = 16,
-+	.panel_enable = panel_enable_lcd,
-+	.panel_disable = panel_disable_lcd,
++	.panel_enable = sdp3430_panel_enable_lcd,
++	.panel_disable = sdp3430_panel_disable_lcd,
 +};
 +
-+static int panel_enable_dvi(struct omap_display *display)
++static int sdp3430_panel_enable_dvi(struct omap_display *display)
 +{
 +	if (lcd_enabled) {
 +		printk(KERN_ERR "cannot enable DVI, LCD is enabled\n");
@@ -178,7 +178,7 @@ index 8773698..b910bc6 100644
 +	return 0;
 +}
 +
-+static void panel_disable_dvi(struct omap_display *display)
++static void sdp3430_panel_disable_dvi(struct omap_display *display)
 +{
 +	dvi_enabled = 0;
 +
@@ -190,16 +190,16 @@ index 8773698..b910bc6 100644
 +}
 +
 +
-+static struct omap_display_data sdp_display_data_dvi = {
++static struct omap_display_data sdp3430_display_data_dvi = {
 +	.type = OMAP_DISPLAY_TYPE_DPI,
 +	.name = "dvi",
 +	.panel_name = "panel-dvi",
 +	.u.dpi.data_lines = 24,
-+	.panel_enable = panel_enable_dvi,
-+	.panel_disable = panel_disable_dvi,
++	.panel_enable = sdp3430_panel_enable_dvi,
++	.panel_disable = sdp3430_panel_disable_dvi,
 +};
 +
-+static int panel_enable_tv(struct omap_display *display)
++static int sdp3430_panel_enable_tv(struct omap_display *display)
 +{
 +#define ENABLE_VDAC_DEDICATED           0x03
 +#define ENABLE_VDAC_DEV_GRP             0x20
@@ -213,7 +213,7 @@ index 8773698..b910bc6 100644
 +	return 0;
 +}
 +
-+static void panel_disable_tv(struct omap_display *display)
++static void sdp3430_panel_disable_tv(struct omap_display *display)
 +{
 +	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
 +			TWL4030_VDAC_DEDICATED);
@@ -221,20 +221,20 @@ index 8773698..b910bc6 100644
 +			TWL4030_VDAC_DEV_GRP);
 +}
 +
-+static struct omap_display_data sdp_display_data_tv = {
++static struct omap_display_data sdp3430_display_data_tv = {
 +	.type = OMAP_DISPLAY_TYPE_VENC,
 +	.name = "tv",
 +	.u.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
-+	.panel_enable = panel_enable_tv,
-+	.panel_disable = panel_disable_tv,
++	.panel_enable = sdp3430_panel_enable_tv,
++	.panel_disable = sdp3430_panel_disable_tv,
 +};
 +
 +static struct omap_dss_platform_data sdp3430_dss_data = {
 +	.num_displays = 3,
 +	.displays = {
-+		&sdp_display_data,
-+		&sdp_display_data_dvi,
-+		&sdp_display_data_tv,
++		&sdp3430_display_data,
++		&sdp3430_display_data_dvi,
++		&sdp3430_display_data_tv,
 +	}
 +};
 +
@@ -254,7 +254,7 @@ index 8773698..b910bc6 100644
  };
  
  static inline void __init sdp3430_init_smc91x(void)
-@@ -293,13 +505,11 @@ static struct omap_uart_config sdp3430_uart_config __initdata = {
+@@ -294,13 +506,11 @@ static struct omap_uart_config sdp3430_uart_config __initdata = {
  	.enabled_uarts	= ((1 << 0) | (1 << 1) | (1 << 2)),
  };
  
@@ -271,20 +271,20 @@ index 8773698..b910bc6 100644
  };
  
  static int sdp3430_batt_table[] = {
-@@ -450,8 +660,6 @@ static void __init omap_3430sdp_init(void)
+@@ -467,8 +677,6 @@ static void __init omap_3430sdp_init(void)
  {
  	omap3430_i2c_init();
  	platform_add_devices(sdp3430_devices, ARRAY_SIZE(sdp3430_devices));
 -	omap_board_config = sdp3430_config;
 -	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
- 	if (system_rev > OMAP3430_REV_ES1_0)
+ 	if (omap_rev() > OMAP3430_REV_ES1_0)
  		ts_gpio = OMAP34XX_TS_GPIO_IRQ_SDPV2;
  	else
-@@ -466,10 +674,14 @@ static void __init omap_3430sdp_init(void)
+@@ -483,10 +691,14 @@ static void __init omap_3430sdp_init(void)
  	usb_musb_init();
  	usb_ehci_init();
- 	hsmmc_init();
-+	display_init();
+ 	hsmmc_init(mmc);
++	sdp3430_display_init();
  }
  
  static void __init omap_3430sdp_map_io(void)
@@ -296,10 +296,10 @@ index 8773698..b910bc6 100644
  	omap2_map_common_io();
  }
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 4584e1b..95691ad 100644
+index 996f047..f4e450d 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
-@@ -45,5 +45,10 @@ config PANEL_DVI_VERYHIGHRES
+@@ -48,5 +48,10 @@ config PANEL_DVI_VERYHIGHRES
  
  endchoice
  

@@ -1,6 +1,6 @@
-From e62e58fbb6adfb288da56c949bdb6211c695a263 Mon Sep 17 00:00:00 2001
+From 36e83ecf4db86b61cec3bc9817d658d3ef218967 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
-Date: Mon, 20 Oct 2008 13:12:33 +0300
+Date: Tue, 11 Nov 2008 13:52:56 +0200
 Subject: [PATCH] DSS: Add generic DVI panel
 
 For some reason we can't allocate enough mem for 1280x1024x24bpp, even if
@@ -8,20 +8,18 @@ there should be enough continuous mem. So 1280x1024 mode defaults to
 16bpp for now.
 
 You also need DSI PLL to generate pix clock for 1280x1024.
-
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
- drivers/video/omap2/Kconfig     |   20 +++++++
+ drivers/video/omap2/Kconfig     |   23 ++++++
  drivers/video/omap2/Makefile    |    2 +
- drivers/video/omap2/panel-dvi.c |  121 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 143 insertions(+), 0 deletions(-)
+ drivers/video/omap2/panel-dvi.c |  150 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 175 insertions(+), 0 deletions(-)
  create mode 100644 drivers/video/omap2/panel-dvi.c
 
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 4b72479..4584e1b 100644
+index 4b72479..996f047 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
-@@ -24,6 +24,26 @@ config FB_OMAP2_FORCE_AUTO_UPDATE
+@@ -24,6 +24,29 @@ config FB_OMAP2_FORCE_AUTO_UPDATE
  menu "OMAP2/3 Display Device Drivers"
          depends on OMAP2_DSS
  
@@ -34,6 +32,9 @@ index 4b72479..4584e1b 100644
 +	prompt "Default DVI Mode"
 +	depends on PANEL_DVI
 +	default PANEL_DVI_HIGHRES
++
++config PANEL_DVI_LOWLOWRES
++	bool "640 x 480 @ 60"
 +
 +config PANEL_DVI_LOWRES
 +	bool "800 x 600 @ 60"
@@ -59,10 +60,10 @@ index 51c2e00..7c75340 100644
 +obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
 diff --git a/drivers/video/omap2/panel-dvi.c b/drivers/video/omap2/panel-dvi.c
 new file mode 100644
-index 0000000..2d053df
+index 0000000..541f588
 --- /dev/null
 +++ b/drivers/video/omap2/panel-dvi.c
-@@ -0,0 +1,121 @@
+@@ -0,0 +1,150 @@
 +/*
 + * DVI panel support
 + *
@@ -108,6 +109,17 @@ index 0000000..2d053df
 +		display->hw_config.panel_disable(display);
 +}
 +
++static int dvi_panel_suspend(struct omap_display *display)
++{
++	dvi_panel_disable(display);
++	return 0;
++}
++
++static int dvi_panel_resume(struct omap_display *display)
++{
++	return dvi_panel_enable(display);
++}
++
 +static struct omap_panel dvi_panel = {
 +	.owner		= THIS_MODULE,
 +	.name		= "panel-dvi",
@@ -115,11 +127,29 @@ index 0000000..2d053df
 +	/*.remove	= dvi_cleanup, */
 +	.enable		= dvi_panel_enable,
 +	.disable	= dvi_panel_disable,
++	.suspend	= dvi_panel_suspend,
++	.resume		= dvi_panel_resume,
 +	/*.set_mode	= dvi_set_mode, */
 +
-+#if defined(CONFIG_PANEL_DVI_LOWRES)
++#if defined(CONFIG_PANEL_DVI_LOWLOWRES)
 +	.timings = {
-+		/* 800 x 600 @ 60 Hz  Reduced blanking VESA CVT 0.48M3-R */
++		/* 640 x 480 @ 60 hz  reduced blanking vesa
++		 * (dunno if these are correct) */
++		.pixel_clock	= 23500,
++		.hfp		= 48,
++		.hsw		= 32,
++		.hbp		= 80,
++		.vfp		= 3,
++		.vsw		= 4,
++		.vbp		= 11,
++	},
++
++	.x_res		= 640,
++	.y_res		= 480,
++	.bpp		= 24,
++#elif defined(CONFIG_PANEL_DVI_LOWRES)
++	.timings = {
++		/* 800 x 600 @ 60 hz  reduced blanking vesa cvt 0.48m3-r */
 +		.pixel_clock	= 35500,
 +		.hfp		= 48,
 +		.hsw		= 32,

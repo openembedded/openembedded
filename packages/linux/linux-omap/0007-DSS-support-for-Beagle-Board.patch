@@ -1,15 +1,15 @@
-From 25b99d79100db8142de061954704fdabd76672d2 Mon Sep 17 00:00:00 2001
+From c5e43b2e4bc191feaab30e364c462a47aa3cc0a3 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 29 Sep 2008 17:03:36 +0300
 Subject: [PATCH] DSS: support for Beagle Board
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
- arch/arm/mach-omap2/board-omap3beagle.c |  121 +++++++++++++++++++++++++++----
- 1 files changed, 108 insertions(+), 13 deletions(-)
+ arch/arm/mach-omap2/board-omap3beagle.c |  123 +++++++++++++++++++++++++++----
+ 1 files changed, 107 insertions(+), 16 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index ce6c7b4..a6fe63d 100644
+index c1de795..cd0c776 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
 @@ -42,6 +42,8 @@
@@ -20,8 +20,8 @@ index ce6c7b4..a6fe63d 100644
 +#include <mach/display.h>
  
  #include "twl4030-generic-scripts.h"
- 
-@@ -186,15 +188,6 @@ static void __init omap3_beagle_init_irq(void)
+ #include "mmc-twl4030.h"
+@@ -200,15 +202,6 @@ static void __init omap3_beagle_init_irq(void)
  	omap_gpio_init();
  }
  
@@ -37,7 +37,7 @@ index ce6c7b4..a6fe63d 100644
  static struct gpio_led gpio_leds[] = {
  	{
  		.name			= "beagleboard::usr0",
-@@ -248,13 +241,114 @@ static struct platform_device keys_gpio = {
+@@ -262,13 +255,113 @@ static struct platform_device keys_gpio = {
  	},
  };
  
@@ -68,7 +68,7 @@ index ce6c7b4..a6fe63d 100644
 +};
 +
 +
-+static int panel_enable_tv(struct omap_display *display)
++static int beagle_panel_enable_tv(struct omap_display *display)
 +{
 +#define ENABLE_VDAC_DEDICATED           0x03
 +#define ENABLE_VDAC_DEV_GRP             0x20
@@ -82,7 +82,7 @@ index ce6c7b4..a6fe63d 100644
 +	return 0;
 +}
 +
-+static void panel_disable_tv(struct omap_display *display)
++static void beagle_panel_disable_tv(struct omap_display *display)
 +{
 +	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
 +			TWL4030_VDAC_DEDICATED);
@@ -94,8 +94,8 @@ index ce6c7b4..a6fe63d 100644
 +	.type = OMAP_DISPLAY_TYPE_VENC,
 +	.name = "tv",
 +	.u.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
-+	.panel_enable = panel_enable_tv,
-+	.panel_disable = panel_disable_tv,
++	.panel_enable = beagle_panel_enable_tv,
++	.panel_disable = beagle_panel_disable_tv,
 +};
 +
 +static struct omap_dss_platform_data beagle_dss_data = {
@@ -118,10 +118,9 @@ index ce6c7b4..a6fe63d 100644
 +{
 +	int r;
 +
-+	r = gpio_request(beagle_display_data_dvi.panel_reset_gpio, "DVI reset GPIO");
-+	if(r < 0) {
++	r = gpio_request(beagle_display_data_dvi.panel_reset_gpio, "DVI reset");
++	if (r < 0)
 +		printk(KERN_ERR "Unable to get DVI reset GPIO\n");
-+	}
 +}
 +
 +static struct omap_fbmem_config beagle_fbmem0_config = {
@@ -154,7 +153,7 @@ index ce6c7b4..a6fe63d 100644
  	&leds_gpio,
  	&keys_gpio,
  };
-@@ -302,8 +396,6 @@ static void __init omap3_beagle_init(void)
+@@ -316,22 +409,20 @@ static void __init omap3_beagle_init(void)
  	omap3_beagle_i2c_init();
  	platform_add_devices(omap3_beagle_devices,
  			ARRAY_SIZE(omap3_beagle_devices));
@@ -162,8 +161,11 @@ index ce6c7b4..a6fe63d 100644
 -	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
  	omap_serial_init();
  
- 	omap_cfg_reg(AH8_34XX_GPIO29);
-@@ -319,10 +411,13 @@ static void __init omap3_beagle_init(void)
+ 	omap_cfg_reg(J25_34XX_GPIO170);
+-	gpio_request(170, "DVI_nPD");
+-	/* REVISIT leave DVI powered down until it's needed ... */
+-	gpio_direction_output(170, true);
+ 
  	usb_musb_init();
  	usb_ehci_init();
  	omap3beagle_flash_init();
