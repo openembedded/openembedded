@@ -80,7 +80,6 @@ do
 		      checkers \
 		      cherokee \
 		      claws-mail \
-              ctorrent \
 		      cvs \
               distcc \
 		      dsniff \
@@ -202,6 +201,7 @@ do
 		      rdesktop \
 		      resistorui \
 		      roadmap-gtk2 \
+		      rtorrent \
 		      ruby \
 		      samba \
 		      screen \
