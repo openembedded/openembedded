@@ -3,7 +3,7 @@ DESCRIPTION = "LiPS instant messenger library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 libgpg-error libgcrypt gnutls libidn iksemel gloox dbus-glib liblipsevent"
-PR          = "r0"
+PR          = "r1"
 
 inherit gpephone pkgconfig autotools
 
