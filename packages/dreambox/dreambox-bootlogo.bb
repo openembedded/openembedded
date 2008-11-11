@@ -60,11 +60,11 @@ pkg_postinst() {
 }
 
 pkg_prerm() {
-	pkg_preinst
+	[ -d /proc/stb ] && mount -o rw,remount /boot
 }
 
 pkg_postrm() {
-	pkg_postinst
+	[ -d /proc/stb ] && mount -o ro,remount /boot
 }
 
 PACKAGE_ARCH := "${MACHINE_ARCH}"
