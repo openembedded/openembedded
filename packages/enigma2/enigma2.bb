@@ -36,7 +36,7 @@ RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081111"
+SRCDATE = "20081113"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
