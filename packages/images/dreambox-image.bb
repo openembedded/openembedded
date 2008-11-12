@@ -31,7 +31,7 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
-	enigma2-streamproxy \
+	enigma2-streamproxy ethtool \
 	twisted-web2 twisted python-crypt python-crypto \
 	python-netserver python-pickle dreambox-blindscan-utils"
 

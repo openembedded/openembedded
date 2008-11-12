@@ -3,6 +3,7 @@ SECTION = "base"
 PRIORITY = "required"
 LICENSE = "proprietary"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
+RDEPENDS_dm8000 = "dreambox-secondstage"
 
 KV_dm7020 = "2.6.9"
 PV_dm7020 = "${KV}-20060622"
@@ -25,7 +26,7 @@ KV_dm800 = "2.6.12-5.1-brcmstb-dm800"
 PV_dm800 = "${KV}-20081003"
 
 KV_dm8000 = "2.6.12-5.1-brcmstb-dm8000"
-PV_dm8000 = "${KV}-20081110"
+PV_dm8000 = "${KV}-20081112"
 
 RDEPENDS = "kernel (${KV})"
 PR = "r0"

@@ -1,4 +1,4 @@
-DESCRIPTION = "Dreambox DM702x second stage bootloader"
+DESCRIPTION = "Dreambox second stage bootloader"
 SECTION = "base"
 PRIORITY = "required"
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
@@ -6,11 +6,13 @@ PV_dm7020 = "35"
 PV_dm7025 = "61"
 PV_dm600pvr = "66"
 PV_dm500plus = "66"
-PV_dm8000 = "68"
+PV_dm8000 = "69"
 PV_dm800 = "67"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
+SRC_URI_append_dm8000 = " http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.nfi \
+	http://sources.dreamboxupdate.com/download/7020/writenfi-${MACHINE}-r0"
 
 S = "${WORKDIR}"
 
@@ -28,4 +30,20 @@ do_stage_dm800() {
 do_stage_dm8000() {
 	install -d ${STAGING_LIBDIR}/dreambox-secondstage
 	cp ${S}/secondstage-${MACHINE}-${PV}.bin ${STAGING_LIBDIR}/dreambox-secondstage/main.bin.gz
+}
+
+do_install_dm8000() {
+	install -d ${D}/tmp
+	install ${WORKDIR}/secondstage-${MACHINE}-${PV}.nfi ${D}/tmp/secondstage.nfi
+	install -m 0755 ${WORKDIR}/writenfi-${MACHINE}-r0 ${D}/tmp/writenfi
+}
+
+FILES_${PN}_dm8000 = "/tmp"
+PACKAGE_ARCH := "${MACHINE_ARCH}"
+
+pkg_postinst_dm8000() {
+	if [ -d /proc/stb ]; then
+		/tmp/writenfi /tmp/secondstage.nfi;
+		rm /tmp/writenfi /tmp/secondstage.nfi;
+	fi
 }

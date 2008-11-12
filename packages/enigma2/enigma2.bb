@@ -32,10 +32,11 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-satfinder = "helps you to align 
 DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu with selectable skins."
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
+RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081111"
+SRCDATE = "20081113"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
