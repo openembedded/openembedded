@@ -1,7 +1,8 @@
-DESCRIPTION = "CLucene is a C++ port of Lucene: the high-performance, full-featured text search engine written in Java."
+DESCRIPTION = "CLucene is a C++ port of Lucene: the high-performance, \
+full-featured text search engine written in Java."
+HOMEPAGE = "http://clucene.sf.net"
 SECTION = "libs"
 LICENSE = "LGPL"
-
 DEPENDS = "libtool"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clucene/clucene-core-${PV}.tar.bz2"
