@@ -32,7 +32,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/opencvlibrary/opencv-${PV}.tar.gz \
 
 inherit distutils-base autotools pkgconfig
 
-EXTRA_OECONF = "--disable-debug --without-python --disable-apps az_python_cspec=${STAGING_INCDIR}/${PYTHON_DIR}"
+EXTRA_OECONF = "--disable-debug  --without-gtk --without-python --disable-apps az_python_cspec=${STAGING_INCDIR}/${PYTHON_DIR}"
 
 export BUILD_SYS
 export HOST_SYS
