@@ -191,6 +191,7 @@ PREFERRED_VERSION_libxxf86dga ?= "1.0.2"
 PREFERRED_VERSION_libxxf86misc ?= "1.0.1"
 PREFERRED_VERSION_libxxf86vm ?= "1.0.2"
 PREFERRED_VERSION_xtrans ?= "1.2.1"
+PREFERRED_VERSION_mesa ?= "7.2"
 
 # proto
 PREFERRED_VERSION_applewmproto ?= "1.0.3"
