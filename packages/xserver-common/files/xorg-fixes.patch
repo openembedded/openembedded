@@ -1,0 +1,25 @@
+Index: xserver-common-1.22/X11/Xserver
+===================================================================
+--- xserver-common-1.22.orig/X11/Xserver	2008-11-12 09:14:55.000000000 +0000
++++ xserver-common-1.22/X11/Xserver	2008-11-12 09:16:22.000000000 +0000
+@@ -48,6 +48,7 @@
+ 
+ ARGS="-br -pn $INPUT_EXTRA_ARGS"
+ 
++if [ "$XSERVER" != "Xorg" ] ; then
+ # use ucb 1x00 touchscreen if present
+ if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
+   ARGS="$ARGS -mouse /dev/touchscreen/ucb1x00"
+@@ -58,10 +59,11 @@
+ if [ -e "$TSLIB_TSDEVICE" ] ; then
+   ARGS="$ARGS -mouse tslib"
+ else
+-  if  [ -e /dev/input/mice ] && [ "$XSERVER" != "Xorg" ] ; then
++  if  [ -e /dev/input/mice ] ; then
+     ARGS="$ARGS -mouse mouse"
+   fi
+ fi
++fi
+ 
+ # start off server in conventional location.
+ case `module_id` in

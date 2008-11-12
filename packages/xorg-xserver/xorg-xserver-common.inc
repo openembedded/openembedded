@@ -16,8 +16,7 @@ libxkbui libxxf86misc libxi libdmx libxtst libxres mesa libxcalibrate"
 RECOMMENDS_${PN} = "hal"
 
 XORG_PN = "xorg-server"
-SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2 \
-	file://xorg.conf"
+SRC_URI = "${XORG_MIRROR}/individual/xserver/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"
 
@@ -26,9 +25,11 @@ inherit autotools pkgconfig
 EXTRA_OECONF += " --enable-xcalibrate \
                   ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
+EXTRA_OECONF_append_arm = " ac_cv_header_linux_apm_bios_h=no "
+
 PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
-RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb"
+RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb xserver-xorg-conf"
 
 PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils"
 
@@ -43,14 +44,10 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 		    ${libdir}/xorg/modules/*/*/.debug \
 		    "
 
-CONFFILES_${PN} += "${sysconfdir}/X11/xorg.conf"
-
 do_stage() {
 	autotools_stage_all
 }
 
 do_install_append () {
-	install -d ${D}/${sysconfdir}/X11
-	install -m 0644 ${WORKDIR}/xorg.conf ${D}/${sysconfdir}/X11/
 	ln -sf ${datadir}/fonts/X11 ${D}/${libdir}/X11/fonts
 }
