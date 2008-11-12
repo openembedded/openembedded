@@ -44,8 +44,7 @@ AUDIO_INSTALL = "\
 
 GTK_INSTALL = "\
   openmoko-calculator2 \
-  gpe-terminal \
-  openmoko-terminal2 \
+  vala-terminal \
   gpe-scap \
   tangogps \
 "
