@@ -31,7 +31,7 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
-	enigma2-streamproxy \
+	enigma2-streamproxy ethtool \
 	twisted-web2 twisted python-crypt python-crypto \
 	python-netserver python-pickle dreambox-blindscan-utils"
 
@@ -129,8 +129,7 @@ OPENDREAMBOX_COMMON_MACHINE_dm8000 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EX
 OPENDREAMBOX_COMMON_MACHINE_R_dm8000 += "${OPENDREAMBOX_EXPERIMENTAL_R} \
 	${WLAN_SUPPORT_R} ${WLAN_MADWIFI_R} ${DVDPLAYER_SUPPORT_R} \
 	${DVDBURN_SUPPORT_R}  enigma2-plugin-systemplugins-videomode \
-	${CDPLAYER_SUPPORT_R} \
-	dreambox-secondstage"
+	${CDPLAYER_SUPPORT_R}"
 OPENDREAMBOX_COMMON_MACHINE_D_dm8000 += ""
 
 # collect the stuff into OPENDREAMBOX_COMMON
