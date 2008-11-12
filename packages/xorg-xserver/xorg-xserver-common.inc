@@ -26,6 +26,8 @@ inherit autotools pkgconfig
 EXTRA_OECONF += " --enable-xcalibrate \
                   ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
+EXTRA_OECONF_append_arm = " ac_cv_header_linux_apm_bios_h=no "
+
 PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
 RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb"
