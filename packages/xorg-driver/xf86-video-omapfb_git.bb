@@ -2,9 +2,9 @@ require xorg-driver-video.inc
 
 DESCRIPTION = "X.Org X server -- OMAP display driver"
 
-PR ="r12"
+PR ="r13"
 
-SRCREV = "c1d44a1b11bb4e60331dd39f2deb9b3df9149e37"
+SRCREV = "e33601fe4c4c5e0d093321f86a633047056c7445"
 PV = "0.0.1+${PR}+git${SRCREV}"
 
 SRC_URI = "git://git.pingu.fi/xf86-video-omapfb.git;protocol=http"
