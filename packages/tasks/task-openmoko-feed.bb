@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r47"
+PR = "r48"
 
 inherit task
 
@@ -22,7 +22,7 @@ RDEPENDS_task-openmoko-feed = "\
   kbdd \
   kexec-tools \
   midori \
-  mplayer \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)} \
   mtpaint \
   mysql \
   nano \
