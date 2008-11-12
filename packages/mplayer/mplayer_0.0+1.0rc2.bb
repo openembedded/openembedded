@@ -45,7 +45,7 @@ ARM_INSTRUCTION_SET = "ARM"
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r10"
+PR = "r11"
 
 PARALLEL_MAKE = ""
 
@@ -121,7 +121,7 @@ EXTRA_OECONF = " \
         --disable-faac \
         --disable-ladspa \
         --disable-libdv \
-        --enable-mad \
+        ${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-mad', '--enable-mad', d)} \
         --disable-toolame \
         --disable-twolame \
         --disable-xmms \
