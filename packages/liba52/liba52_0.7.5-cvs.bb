@@ -5,16 +5,21 @@ SECTION = "libs"
 PRIORITY = "optional"
 DEPENDS = ""
 
+SRCDATE = "20081101"
+PV = "0.7.5+cvs${SRCDATE}"
+PR = "r0"
+
 inherit autotools
 
-SRC_URI = "http://liba52.sourceforge.net/files/a52dec-snapshot.tar.gz"
-S="${WORKDIR}/a52dec-${PV}"
+SRC_URI = "cvs://anonymous@liba52.cvs.sourceforge.net/cvsroot/liba52;module=a52dec;date=${SRCDATE}"
+
+S="${WORKDIR}/a52dec"
 
 EXTRA_OECONF = " --enable-shared --enable-fixed"
 
 PACKAGES = "${PN} ${PN}-dev a52dec a52dec-doc"
 
-FILES_${PN} = " ${libdir}/liba52.so.0 ${libdir}/liba52.so.0.0.0 " 
+FILES_${PN} = " ${libdir}/liba52.so.0 ${libdir}/liba52.so.0.0.0 "
 FILES_${PN}-dev = " ${includedir}/a52dec/*.h ${libdir}/liba52.so ${libdir}/liba52.la ${libdir}/liba52.a "
 FILES_a52dec = " ${bindir}/* "
 FILES_a52dec-doc = " ${mandir}/man1/* "
