@@ -1,4 +1,4 @@
-From 36e83ecf4db86b61cec3bc9817d658d3ef218967 Mon Sep 17 00:00:00 2001
+From ce4676f5a466d991bccfeac2c32316053e86b9a1 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 11 Nov 2008 13:52:56 +0200
 Subject: [PATCH] DSS: Add generic DVI panel

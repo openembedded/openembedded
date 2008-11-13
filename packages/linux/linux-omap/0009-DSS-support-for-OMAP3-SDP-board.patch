@@ -1,4 +1,4 @@
-From b51518d69d562d275afc830373710417e507c613 Mon Sep 17 00:00:00 2001
+From 0938c1e91fe69da535e06d092bdec6fcc95ad650 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 20 Oct 2008 13:13:15 +0300
 Subject: [PATCH] DSS: support for OMAP3 SDP board
@@ -13,7 +13,7 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  create mode 100644 drivers/video/omap2/panel-sdp3430.c
 
 diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-index 7ee85e9..f226a55 100644
+index 7ee85e9..3a644b1 100644
 --- a/arch/arm/mach-omap2/board-3430sdp.c
 +++ b/arch/arm/mach-omap2/board-3430sdp.c
 @@ -40,6 +40,8 @@
@@ -111,7 +111,7 @@ index 7ee85e9..f226a55 100644
 +		return -EINVAL;
 +	}
 +
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEDICATED,
 +				TWL4030_VPLL2_DEDICATED);
 +		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEV_GRP,
@@ -143,7 +143,7 @@ index 7ee85e9..f226a55 100644
 +	gpio_direction_output(enable_gpio, 0);
 +	gpio_direction_output(backlight_gpio, 0);
 +
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEDICATED);
 +		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEV_GRP);
 +		mdelay(4);
@@ -166,7 +166,7 @@ index 7ee85e9..f226a55 100644
 +		return -EINVAL;
 +	}
 +
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEDICATED,
 +				TWL4030_VPLL2_DEDICATED);
 +		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEV_GRP,
@@ -182,7 +182,7 @@ index 7ee85e9..f226a55 100644
 +{
 +	dvi_enabled = 0;
 +
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEDICATED);
 +		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEV_GRP);
 +		mdelay(4);

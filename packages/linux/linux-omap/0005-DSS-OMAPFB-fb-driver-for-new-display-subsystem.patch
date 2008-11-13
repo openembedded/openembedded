@@ -1,4 +1,4 @@
-From 538201a6cc52913c8165644d8c5ee1dd2c2b2a95 Mon Sep 17 00:00:00 2001
+From e2aaa3251054eecf92b8936e704a3581de69bdc7 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 4 Nov 2008 15:12:21 +0200
 Subject: [PATCH] DSS: OMAPFB: fb driver for new display subsystem
@@ -92,11 +92,11 @@ index 90d63c5..1e34304 100644
  
  struct omapfb_update_window {
 diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
-index 0f13448..4b45731 100644
+index 3f3ce13..689a3b1 100644
 --- a/drivers/video/Kconfig
 +++ b/drivers/video/Kconfig
-@@ -2084,6 +2084,7 @@ config FB_METRONOME
- 	  and could also have been called by some vendors as PVI-nnnn.
+@@ -2116,6 +2116,7 @@ config FB_PRE_INIT_FB
+ 	  the bootloader.
  
  source "drivers/video/omap/Kconfig"
 +source "drivers/video/omap2/Kconfig"
@@ -104,7 +104,7 @@ index 0f13448..4b45731 100644
  source "drivers/video/backlight/Kconfig"
  source "drivers/video/display/Kconfig"
 diff --git a/drivers/video/Makefile b/drivers/video/Makefile
-index 248bddc..4d69355 100644
+index e39e33e..3d9d50e 100644
 --- a/drivers/video/Makefile
 +++ b/drivers/video/Makefile
 @@ -120,6 +120,7 @@ obj-$(CONFIG_FB_SM501)            += sm501fb.o
@@ -114,7 +114,7 @@ index 248bddc..4d69355 100644
 +obj-$(CONFIG_OMAP2_DSS)           += omap2/
  obj-$(CONFIG_XEN_FBDEV_FRONTEND)  += xen-fbfront.o
  obj-$(CONFIG_FB_CARMINE)          += carminefb.o
- 
+ obj-$(CONFIG_FB_MB862XX)	  += mb862xx/
 diff --git a/drivers/video/omap/Kconfig b/drivers/video/omap/Kconfig
 index c355b59..541fab3 100644
 --- a/drivers/video/omap/Kconfig

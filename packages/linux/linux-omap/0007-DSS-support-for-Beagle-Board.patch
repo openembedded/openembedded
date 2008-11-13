@@ -1,4 +1,4 @@
-From c5e43b2e4bc191feaab30e364c462a47aa3cc0a3 Mon Sep 17 00:00:00 2001
+From eaadaa1e6192ef58079fb6149136e4f267f771b0 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 29 Sep 2008 17:03:36 +0300
 Subject: [PATCH] DSS: support for Beagle Board
