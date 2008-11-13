@@ -82,6 +82,9 @@ do_configure () {
 	linux-sparc)
 		target=linux-sparcv8
 		;;
+	darwin-i386)
+		target=darwin-i386-cc
+		;;
 	esac
 	# inject machine-specific flags
 	sed -i -e "s|^\(\"$target\",\s*\"[^:]\+\):\([^:]\+\)|\1:${CFLAG}|g" Configure
