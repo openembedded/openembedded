@@ -12,6 +12,7 @@ inherit autotools native
 
 PATCHTOOL = "patch"
 EXTRA_OECONF = "--disable-nls"
+EXTRA_OECONF_append_darwin = " --without-getopt"
 
 do_configure () {
 	oe_runconf
