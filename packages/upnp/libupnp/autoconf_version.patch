@@ -1,0 +1,11 @@
+--- libupnp-1.6.0/configure.ac.orig	2008-03-24 17:49:15.000000000 +0100
++++ libupnp-1.6.0/configure.ac	2008-03-24 17:49:24.000000000 +0100
+@@ -7,8 +7,6 @@
+ # (C) Copyright 2005-2006 Rémi Turboult <r3mi@users.sourceforge.net>
+ #
+ 
+-AC_PREREQ(2.60)
+-
+ AC_INIT([libupnp], [1.6.0], [mroberto@users.sourceforge.net])
+ # *Independently* of the above libupnp package version, the libtool version
+ # of the 3 libraries need to be updated whenever there is a change released :
