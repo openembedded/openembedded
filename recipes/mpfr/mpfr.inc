@@ -6,3 +6,9 @@ BBCLASSEXTEND = "native nativesdk"
 INC_PR = "r3"
 
 inherit autotools
+
+do_fixup() {
+	rm ${S}/PATCHES || true
+}
+
+addtask fixup after do_unpack before do_patch
