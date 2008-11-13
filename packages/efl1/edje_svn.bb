@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
 DEPENDS = "eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
 PV = "0.5.0.043+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit efl
 
