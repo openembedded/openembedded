@@ -37,7 +37,7 @@ do_stage () {
 	install -c -m 0644 ${S}/libltdl/m4/argz.m4 ${STAGING_DATADIR}/aclocal/
 
 	install -d ${STAGING_DATADIR}/libtool/libltdl
-	cp -pfPr  ${S}/libltdl/* ${STAGING_DATADIR}/libtool/libltdl/
+	cp -pfPR  ${S}/libltdl/* ${STAGING_DATADIR}/libtool/libltdl/
 }
 
 do_install () {
