@@ -1,12 +1,8 @@
-DESCRIPTION = "EET is the Enlightenment data storage library"
-DEPENDS = ""
+DESCRIPTION = "Eina is the Enlightenment data library"
 LICENSE = "LGPL"
 PV = "0.0.1+svnr${SRCREV}"
-PR = "r1"
+PR = "r0"
 
 inherit efl
-
-EXTRA_OECONF = "\
-"
 
 FILES_${PN} += "${libdir}/eina"
