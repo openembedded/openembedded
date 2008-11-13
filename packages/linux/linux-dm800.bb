@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for Dreambox DM800"
 LICENSE = "GPL"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r11"
+PR = "r12"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
@@ -69,16 +69,20 @@ do_install_append () {
 
 pkg_preinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
 
 pkg_prerm_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postrm_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
