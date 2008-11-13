@@ -3,7 +3,7 @@ DEPENDS = " guile libggz ggz-client-libs python-pygtk gtk+ libgnome libgnomeui l
 
 inherit gnome distutils-base gconf
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://ggz-unbreak-m4.patch;patch=1 \
            "
@@ -37,6 +37,9 @@ CFLAGS_append = " -lguile -lgmp -lcrypt -lm -lltdl"
 
 FILES_${PN}-doc += " ${datadir}/gnome/help"
 FILES_${PN}-dbg += " ${bindir}/.debug ${libdir}/gnome-games/.debug"
+
+ALLOW_EMPTY_${PN} = "1"
+RDEPENDS_${PN} += "gnome-games-aisleriot gnome-games-blackjack gnome-games-cards gnome-games-glchess gnome-games-glines gnome-games-gnect gnome-games-gnibbles gnome-games-gnobots2 gnome-games-gnometris gnome-games-gnomine gnome-games-gnotravex gnome-games-gnotski gnome-games-gtali gnome-games-iagno gnome-games-mahjongg gnome-games-same-gnome gnome-games-sudoku "
 
 PACKAGES =+ "gnome-games-common"
 DESCRIPTION_gnome-games-common = "GNOME games common resources"
