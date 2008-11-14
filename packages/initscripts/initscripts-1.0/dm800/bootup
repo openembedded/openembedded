@@ -7,14 +7,14 @@ echo 12 > /proc/progress
 depmod -Ae
 echo 13 > /proc/progress
 
-swapon -a
-echo 14 > /proc/progress
-
 for mod in cifs nfsd usb-storage sd autofs4 vfat; do
 	modprobe $mod
 done
 
 mount -at nonfs,nosmbfs,noncpfs,nocifs
+echo 14 > /proc/progress
+
+swapon -a
 echo 15 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /

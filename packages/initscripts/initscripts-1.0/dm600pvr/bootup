@@ -2,8 +2,8 @@ modprobe lcd
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 depmod -Ae
-swapon -a
 mount -at nonfs,nosmbfs,noncpfs,nocifs 2>/dev/null
+swapon -a
 tar xzf /etc/var.tar.gz -C /
 # sleep after 10min
 hdparm -S120 /dev/ide/host0/bus0/target0/lun0/disc
