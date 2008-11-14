@@ -23,6 +23,7 @@ PARALLEL_MAKE = ""
 do_compile () {
 	unset DISPLAY
 	sed -i -e s:armv7a:armv7-a:g make/Linux/omap3530_2.6.mk || true
+    sed -i -e s:armv7a:armv7-a:g cetools/packages/dsplink/make/Linux/omap3530_2.6.mk || true 
 
 	# export various settings to override the defaults in the makefiles	
 	export DSP_BASE_CGTOOLS=${TITOOLSDIR}/${TICGTOOLSDIR}
