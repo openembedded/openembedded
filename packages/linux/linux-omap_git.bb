@@ -6,11 +6,11 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
-SRCREV = "444fcab6e8f8bad4ffc50feb91516c246d91e901"
+SRCREV = "5ecf98b76fa95078277c9037bb01640fd3de5e2c"
 
-PV = "2.6.27+2.6.28-rc3+${PR}+gitr${SRCREV}"
+PV = "2.6.27+2.6.28-rc4+${PR}+gitr${SRCREV}"
 #PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r3"
+PR = "r0"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -40,8 +40,11 @@ SRC_URI_append = " \
            file://0006-DSS-Add-generic-DVI-panel.patch;patch=1 \
            file://0007-DSS-support-for-Beagle-Board.patch;patch=1 \
            file://0008-DSS-BEAGLE-Enable-DSS-in-beagle-defconfig.patch;patch=1 \
-           file://0009-DSS-support-for-OMAP3-SDP-board.patch;patch=1 \
-           file://fix-asoc.diff;patch=1 \
+           file://0009-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
+           file://0010-DSS-Support-for-OMAP3-SDP-board.patch;patch=1 \
+           file://0011-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
+#           file://fix-asoc.diff;patch=1 \
+           file://fix-mmc.diff;patch=1 \
 "
 
 
@@ -50,7 +53,7 @@ SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \
-	file://omap3evm-lcd-redtint.diff;patch=1 \
+#	file://omap3evm-lcd-redtint.diff;patch=1 \
 "
 
 S = "${WORKDIR}/git"

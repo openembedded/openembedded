@@ -21,6 +21,32 @@ CACHE = "${TMPDIR}/cache/${ANGSTROM_MODE}/${MACHINE}"
 DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROM_MODE}"
 require conf/distro/include/angstrom-${ANGSTROM_MODE}.inc
 
+# ARM920T and up can use thumb mode to decrease binary size at the expense of speed
+# (the complete story is a bit more nuanced due to cache starvation)
+# Angstrom turns on thumb for armv4t machine according to this RFC:
+# http://lists.linuxtogo.org/pipermail/angstrom-distro-devel/2008-October/002714.html
+
+# We can't do ARM_INSTRUCTION_SET_armv4t since that will un-overridable in recipes like gcc
+ANGSTROM_ARM_INSTRUCTION_SET ?= "arm"
+ANGSTROM_ARM_INSTRUCTION_SET_armv4t = "thumb"
+
+ARM_INSTRUCTION_SET = "${ANGSTROM_ARM_INSTRUCTION_SET}"
+# "arm" "thumb"
+#    The instruction set the compiler should use when generating application
+#    code.  The kernel is always compiled with arm code at present.  arm code
+#    is the original 32 bit ARM instruction set, thumb code is the 16 bit
+#    encoded RISC sub-set.  Thumb code is smaller (maybe 70% of the ARM size)
+#    but requires more instructions (140% for 70% smaller code) so may be
+#    slower.
+
+THUMB_INTERWORK = "yes"
+# "yes" "no"
+#    Whether to compile with code to allow interworking between the two
+#    instruction sets.  This allows thumb code to be executed on a primarily
+#    arm system and vice versa.  It is strongly recommended that DISTROs not
+#    turn this off - the actual cost is very small.
+
+
 #Use this variable in feeds and other parts that need a URI
 ANGSTROM_URI ?= "http://www.angstrom-distribution.org"
 

@@ -1,0 +1,155 @@
+From 436d6597311770af1d3a6d42560f34d6342a1c2f Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 14 Nov 2008 15:47:19 +0200
+Subject: [PATCH] DSS: Sharp LS037V7DW01 LCD Panel driver
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ drivers/video/omap2/Kconfig                   |    7 ++-
+ drivers/video/omap2/Makefile                  |    1 +
+ drivers/video/omap2/panel-sharp-ls037v7dw01.c |  108 +++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+), 1 deletions(-)
+ create mode 100644 drivers/video/omap2/panel-sharp-ls037v7dw01.c
+
+diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
+index 11ca6fe..4bd3f87 100644
+--- a/drivers/video/omap2/Kconfig
++++ b/drivers/video/omap2/Kconfig
+@@ -48,5 +48,10 @@ config PANEL_DVI_1280X1024
+ 
+ endchoice
+ 
+-endmenu
++config PANEL_SHARP_LS037V7DW01
++        tristate "Sharp LS037V7DW01 LCD Panel"
++        depends on OMAP2_DSS
++        help
++          LCD Panel used in TI's SDP3430 and EVM boards
+ 
++endmenu
+diff --git a/drivers/video/omap2/Makefile b/drivers/video/omap2/Makefile
+index 7c75340..b86dd0b 100644
+--- a/drivers/video/omap2/Makefile
++++ b/drivers/video/omap2/Makefile
+@@ -2,3 +2,4 @@ obj-$(CONFIG_FB_OMAP2) += omapfb.o
+ omapfb-y := omapfb-main.o omapfb-sysfs.o omapfb-ioctl.o
+ 
+ obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
++obj-$(CONFIG_PANEL_SHARP_LS037V7DW01) += panel-sharp-ls037v7dw01.o
+diff --git a/drivers/video/omap2/panel-sharp-ls037v7dw01.c b/drivers/video/omap2/panel-sharp-ls037v7dw01.c
+new file mode 100644
+index 0000000..b4270df
+--- /dev/null
++++ b/drivers/video/omap2/panel-sharp-ls037v7dw01.c
+@@ -0,0 +1,108 @@
++/*
++ * LCD panel driver for Sharp LS037V7DW01
++ *
++ * Copyright (C) 2008 Nokia Corporation
++ * Author: Tomi Valkeinen <tomi.valkeinen@nokia.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++
++#include <mach/display.h>
++
++static int sharp_ls_panel_init(struct omap_display *display)
++{
++	return 0;
++}
++
++static void sharp_ls_panel_cleanup(struct omap_display *display)
++{
++}
++
++static int sharp_ls_panel_enable(struct omap_display *display)
++{
++	int r = 0;
++
++	if (display->hw_config.panel_enable)
++		r = display->hw_config.panel_enable(display);
++
++	return r;
++}
++
++static void sharp_ls_panel_disable(struct omap_display *display)
++{
++	if (display->hw_config.panel_disable)
++		display->hw_config.panel_disable(display);
++}
++
++static int sharp_ls_panel_suspend(struct omap_display *display)
++{
++	sharp_ls_panel_disable(display);
++	return 0;
++}
++
++static int sharp_ls_panel_resume(struct omap_display *display)
++{
++	return sharp_ls_panel_enable(display);
++}
++
++static struct omap_panel sharp_ls_panel = {
++	.owner		= THIS_MODULE,
++	.name		= "sharp-ls037v7dw01",
++	.init		= sharp_ls_panel_init,
++	.cleanup	= sharp_ls_panel_cleanup,
++	.enable		= sharp_ls_panel_enable,
++	.disable	= sharp_ls_panel_disable,
++	.suspend	= sharp_ls_panel_suspend,
++	.resume		= sharp_ls_panel_resume,
++	/*.set_mode	= sharp_ls_set_mode, */
++
++	.timings = {
++		.pixel_clock	= 19200,
++
++		.hsw		= 2,
++		.hfp		= 1,
++		.hbp		= 28,
++
++		.vsw		= 1,
++		.vfp		= 1,
++		.vbp		= 1,
++	},
++
++	.acb		= 0x28,
++
++	.config		= OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
++		OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IPC,
++
++	.x_res = 480,
++	.y_res = 640,
++	.bpp = 16,
++};
++
++
++static int __init sharp_ls_panel_drv_init(void)
++{
++	omap_dss_register_panel(&sharp_ls_panel);
++	return 0;
++}
++
++static void __exit sharp_ls_panel_drv_exit(void)
++{
++	omap_dss_unregister_panel(&sharp_ls_panel);
++}
++
++module_init(sharp_ls_panel_drv_init);
++module_exit(sharp_ls_panel_drv_exit);
++MODULE_LICENSE("GPL");
+-- 
+1.5.6.3
+

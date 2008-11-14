@@ -1,4 +1,4 @@
-From adf1ac7680926ca94f1b36ae8c643f74c8a47253 Mon Sep 17 00:00:00 2001
+From 53561526e1e9bf20dd9e17b66f2a1b1c6cfec935 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 7 Nov 2008 16:54:01 +0200
 Subject: [PATCH] DSS: BEAGLE: Enable DSS in beagle defconfig

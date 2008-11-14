@@ -134,7 +134,7 @@ autotools_do_configure() {
 	;;
 	esac
 	if [ -e ${S}/configure ]; then
-		oe_runconf
+		oe_runconf $@
 	else
 		oenote "nothing to configure"
 	fi
