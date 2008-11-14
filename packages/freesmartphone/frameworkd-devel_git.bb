@@ -1,5 +1,5 @@
 require frameworkd_git.bb
-FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/frameworkd"
+FILESPATH = "${FILE_DIRNAME}/frameworkd"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
