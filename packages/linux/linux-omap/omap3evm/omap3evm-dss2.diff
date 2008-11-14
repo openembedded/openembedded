@@ -146,7 +146,7 @@ index 42ab826..e244fa7 100644
 +		printk(KERN_ERR "cannot enable LCD, DVI is enabled\n");
 +		return -EINVAL;
 +	}
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
 +			ENABLE_VPLL2_DEDICATED, TWL4030_VPLL2_DEDICATED);
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
@@ -159,20 +159,20 @@ index 42ab826..e244fa7 100644
 +
 +static void panel_disable_lcd(struct omap_display *display)
 +{
-+	if (system_rev > OMAP3430_REV_ES1_0) {
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
 +				TWL4030_VPLL2_DEDICATED);
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
 +				TWL4030_VPLL2_DEV_GRP);
 +	}
-+	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 1);
++	gpio_set_value(LCD_PANEL_ENABLE_GPIO, 1);
 +	lcd_enabled = 0;
 +}
 +
 +static struct omap_display_data evm_display_data = {
 +	.type = OMAP_DISPLAY_TYPE_DPI,
 +	.name = "lcd",
-+	.panel_name = "panel-evm",
++	.panel_name = "panel-sdp3430",
 +	.u.dpi.data_lines = 16,
 +	.panel_enable = panel_enable_lcd,
 +	.panel_disable = panel_disable_lcd,
