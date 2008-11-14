@@ -218,7 +218,7 @@ DISTRO_EXTRA_DEPENDS += " \
 
 DISTRO_EXTRA_RDEPENDS += "\
     update-modules \
-    ${@base_contains("MACHINE_FEATURES", "screen", "psplash", "",d)} \   
+    ${@base_contains("MACHINE_FEATURES", "screen", "exquisite", "",d)} \
     angstrom-version \
     opkg opkg-collateral distro-feed-configs \
     util-linux-mount util-linux-umount \
