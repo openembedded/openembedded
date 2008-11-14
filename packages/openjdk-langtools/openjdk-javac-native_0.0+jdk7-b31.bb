@@ -8,6 +8,8 @@ DEPENDS = "openjdk-langtools-native"
 
 PROVIDES = "virtual/javac-native"
 
+inherit native
+
 do_stage() {
 	ln -sf ${bindir}/sun-javac ${bindir}/javac
 }
