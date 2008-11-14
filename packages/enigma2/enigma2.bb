@@ -2,13 +2,14 @@ DESCRIPTION = "Enigma2 is an experimental, but useful framebuffer-based frontend
 MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 DEPENDS = "jpeg libungif libmad libpng libsigc++-1.2 gettext-native \
 	dreambox-dvbincludes freetype libdvbsi++ python swig-native  \
+	gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
 	libfribidi gstreamer libxmlccwrap libdreamdvd"
 RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	python-xml python-fcntl gst-plugin-decodebin python-stringold \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac gst-plugin-fluendo-mpegdemux gst-plugin-neonhttpsrc"
+	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux gst-plugin-neonhttpsrc"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
@@ -35,7 +36,7 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
 PN = "enigma2"
-PR = "r0"
+PR = "r1"
 SRCDATE = "20081113"
 
 # if you want experimental, use:
