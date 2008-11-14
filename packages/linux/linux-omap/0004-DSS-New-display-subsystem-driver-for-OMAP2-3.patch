@@ -1,4 +1,4 @@
-From 04b4d27af34373bbb65df19c2c084f117fe54213 Mon Sep 17 00:00:00 2001
+From 6bec28d7c3d7cf97d644c610beadfef354fa596e Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Thu, 13 Nov 2008 15:38:15 +0200
 Subject: [PATCH] DSS: New display subsystem driver for OMAP2/3
@@ -9,7 +9,7 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  arch/arm/plat-omap/Makefile               |    2 +
  arch/arm/plat-omap/dss/Kconfig            |   66 +
  arch/arm/plat-omap/dss/Makefile           |    6 +
- arch/arm/plat-omap/dss/dispc.c            | 1720 ++++++++++++++++
+ arch/arm/plat-omap/dss/dispc.c            | 1722 ++++++++++++++++
  arch/arm/plat-omap/dss/display.c          |  775 ++++++++
  arch/arm/plat-omap/dss/dpi.c              |  323 +++
  arch/arm/plat-omap/dss/dsi.c              | 3020 +++++++++++++++++++++++++++++
@@ -19,7 +19,7 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  arch/arm/plat-omap/dss/sdi.c              |  157 ++
  arch/arm/plat-omap/dss/venc.c             |  515 +++++
  arch/arm/plat-omap/include/mach/display.h |  458 +++++
- 14 files changed, 9086 insertions(+), 0 deletions(-)
+ 14 files changed, 9088 insertions(+), 0 deletions(-)
  create mode 100644 arch/arm/plat-omap/dss/Kconfig
  create mode 100644 arch/arm/plat-omap/dss/Makefile
  create mode 100644 arch/arm/plat-omap/dss/dispc.c
@@ -142,10 +142,10 @@ index 0000000..e98c6c1
 +omap-dss-$(CONFIG_OMAP2_DSS_DSI) += dsi.o
 diff --git a/arch/arm/plat-omap/dss/dispc.c b/arch/arm/plat-omap/dss/dispc.c
 new file mode 100644
-index 0000000..6d06082
+index 0000000..3738cf3
 --- /dev/null
 +++ b/arch/arm/plat-omap/dss/dispc.c
-@@ -0,0 +1,1720 @@
+@@ -0,0 +1,1722 @@
 +/*
 + * linux/arch/arm/plat-omap/dss/dispc.c
 + *
@@ -1261,8 +1261,10 @@ index 0000000..6d06082
 +
 +		for (cur_pd = pcd_min; cur_pd <= 255; ++cur_pd) {
 +			unsigned long pck = lck / cur_pd;
++			long old_delta = abs(best_pck - req_pck);
++			long new_delta = abs(pck - req_pck);
 +
-+			if (abs(pck - req_pck) < abs(best_pck - req_pck)) {
++			if (best_pck == 0 || new_delta < old_delta) {
 +				best_pck = pck;
 +				best_ld = cur_ld;
 +				best_pd = cur_pd;

@@ -1,4 +1,4 @@
-From ce4676f5a466d991bccfeac2c32316053e86b9a1 Mon Sep 17 00:00:00 2001
+From ff78ff9513a40be30649420bc9833793a6e70b75 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 11 Nov 2008 13:52:56 +0200
 Subject: [PATCH] DSS: Add generic DVI panel
@@ -16,7 +16,7 @@ You also need DSI PLL to generate pix clock for 1280x1024.
  create mode 100644 drivers/video/omap2/panel-dvi.c
 
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 4b72479..996f047 100644
+index 4b72479..11ca6fe 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
 @@ -24,6 +24,29 @@ config FB_OMAP2_FORCE_AUTO_UPDATE
@@ -31,18 +31,18 @@ index 4b72479..996f047 100644
 +choice
 +	prompt "Default DVI Mode"
 +	depends on PANEL_DVI
-+	default PANEL_DVI_HIGHRES
++	default PANEL_DVI_1024X768
 +
-+config PANEL_DVI_LOWLOWRES
++config PANEL_DVI_640X480
 +	bool "640 x 480 @ 60"
 +
-+config PANEL_DVI_LOWRES
++config PANEL_DVI_800X600
 +	bool "800 x 600 @ 60"
 +
-+config PANEL_DVI_HIGHRES
++config PANEL_DVI_1024X768
 +	bool "1024 x 768 @ 60"
 +
-+config PANEL_DVI_VERYHIGHRES
++config PANEL_DVI_1280X1024
 +	bool "1280 x 1024 @ 57"
 +
 +endchoice
@@ -60,7 +60,7 @@ index 51c2e00..7c75340 100644
 +obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
 diff --git a/drivers/video/omap2/panel-dvi.c b/drivers/video/omap2/panel-dvi.c
 new file mode 100644
-index 0000000..541f588
+index 0000000..393eaf1
 --- /dev/null
 +++ b/drivers/video/omap2/panel-dvi.c
 @@ -0,0 +1,150 @@
@@ -131,7 +131,7 @@ index 0000000..541f588
 +	.resume		= dvi_panel_resume,
 +	/*.set_mode	= dvi_set_mode, */
 +
-+#if defined(CONFIG_PANEL_DVI_LOWLOWRES)
++#if defined(CONFIG_PANEL_DVI_640X480)
 +	.timings = {
 +		/* 640 x 480 @ 60 hz  reduced blanking vesa
 +		 * (dunno if these are correct) */
@@ -147,7 +147,7 @@ index 0000000..541f588
 +	.x_res		= 640,
 +	.y_res		= 480,
 +	.bpp		= 24,
-+#elif defined(CONFIG_PANEL_DVI_LOWRES)
++#elif defined(CONFIG_PANEL_DVI_800X600)
 +	.timings = {
 +		/* 800 x 600 @ 60 hz  reduced blanking vesa cvt 0.48m3-r */
 +		.pixel_clock	= 35500,
@@ -162,7 +162,7 @@ index 0000000..541f588
 +	.x_res		= 800,
 +	.y_res		= 600,
 +	.bpp		= 24,
-+#elif defined(CONFIG_PANEL_DVI_HIGHRES)
++#elif defined(CONFIG_PANEL_DVI_1024X768)
 +	.timings = {
 +		/* 1024 x 768 @ 60 Hz Reduced blanking */
 +		.pixel_clock	= 56000,
@@ -177,7 +177,7 @@ index 0000000..541f588
 +	.x_res		= 1024,
 +	.y_res		= 768,
 +	.bpp		= 24,
-+#elif defined(CONFIG_PANEL_DVI_VERYHIGHRES)
++#elif defined(CONFIG_PANEL_DVI_1280X1024)
 +	.timings = {
 +		/* 1280 x 1024 @ 57 Hz Reduced blanking */
 +		.pixel_clock	= 86500,
