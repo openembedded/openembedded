@@ -52,6 +52,7 @@ SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
   file://enlightenment_start.oe \
   file://applications.menu \
+  file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
 "
 S = "${WORKDIR}/e"
 
