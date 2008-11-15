@@ -9,7 +9,12 @@ PV = "221"
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://Makefile.dsplink \
           "
+inherit module
 
 S = "${WORKDIR}/codec_engine_2_21"
+
+do_compile() {
+	:
+}
 
 require lpm.inc

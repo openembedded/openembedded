@@ -27,6 +27,7 @@ S = "${WORKDIR}/"
 
 inherit autotools pkgconfig lib_package
 
+ARM_INSTRUCTION_SET = "arm"
 # FIXME: Segfaulting without --with-http-backend=curl
 EXTRA_OECONF = "\
                 --enable-debug=no \

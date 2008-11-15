@@ -40,10 +40,12 @@ PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
 PACKAGE_ARCH_hx4700 = "hx4700"
 
+ARM_INSTRUCTION_SET = "ARM"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r9"
+PR = "r10"
 
 PARALLEL_MAKE = ""
 

@@ -173,7 +173,8 @@ do
 		      nmap \
 		      nmm \
 		      notecase \
-		      openmoko-browser2 \
+		      numptyphysics \
+	          openmoko-browser2 \
 		      openredalert \
 		      openvpn \
 		      opie-notes \
