@@ -2,8 +2,8 @@
 # freesmartphone.org Image Recipe
 #------------------------------------------------------
 
-PV = "1.0"
-PR = "r2"
+PV = "1.1"
+PR = "r0"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -43,6 +43,7 @@ AUDIO_INSTALL = "\
 "
 
 GTK_INSTALL = "\
+  tango-icon-theme \
   openmoko-calculator2 \
   vala-terminal \
   gpe-scap \
@@ -122,6 +123,7 @@ fso_rootfs_postprocess() {
     # minimal gtk theme foo
     mkdir -p ./etc/gtk-2.0/
     echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
+    echo 'gtk-icon-theme-name = "Tango"' >> ./etc/gtk-2.0/gtkrc
     # fix strange iconv/gconf bug
     ln -s libc.so.6 ./lib/libc.so
     # set sensible DNS entries

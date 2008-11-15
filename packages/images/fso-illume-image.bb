@@ -4,8 +4,8 @@
 
 require fso-image.bb
 
-PV = "1.0"
-PR = "r1"
+PV = "1.1"
+PR = "r0"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -45,7 +45,8 @@ AUDIO_INSTALL = "\
 "
 
 GTK_INSTALL = "\
-  xterm \
+  tango-icon-theme \
+  vala-terminal \
   gpe-scap \
 "
 
