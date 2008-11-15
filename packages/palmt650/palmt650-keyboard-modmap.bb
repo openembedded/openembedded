@@ -1,7 +1,7 @@
 DESCRIPTION = "A X keyboard modifier mapping for the Treo650"
 LICENSE = "GPL"
 PV = "0.0.3"
-PR = "r0.01"
+PR = "r0.02"
 
 SRC_URI = "\
   file://60xXmodmap \
@@ -19,5 +19,5 @@ do_install() {
 
 PACKAGE_ARCH = "all"
 
-FILES_${PN} += "${bindir}/* ${libdir}/lib*.so.*"
-FILES_${PN} += "/etc/X11/Xsession.d/80x-enlightenment-wakerd"
+FILES_${PN} += "/etc/X11/Xmodmap"
+FILES_${PN} += "/etc/X11/Xsession.d/60xXmodmap"
