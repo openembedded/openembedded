@@ -37,9 +37,11 @@ SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 PACKAGE_ARCH_mplayer_collie = "collie"
 PACKAGE_ARCH_mencoder_collie = "collie"
 
+ARM_INSTRUCTION_SET = "ARM"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r17"
+PR = "r18"
 
 PARALLEL_MAKE = ""
 

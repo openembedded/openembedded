@@ -36,11 +36,13 @@ PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
 PACKAGE_ARCH_hx4700 = "hx4700"
 
+ARM_INSTRUCTION_SET = "ARM"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r6"
+PR = "r7"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
