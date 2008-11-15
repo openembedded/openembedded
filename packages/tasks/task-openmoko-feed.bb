@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r45"
+PR = "r46"
 
 inherit task
 
@@ -104,4 +104,14 @@ RDEPENDS_task-openmoko-feed = "\
   midori \
   microcom \
   emacs \
+# for werner \
+  net-tools \
+  iproute2 \
+  iputils \
+  psmisc \
+  tar \
+  coreutils \
+  debianutils \
+  tcptraceroute \
+# dnsutils/bind-tools for dig, nslookup is still missing \
 "
