@@ -23,7 +23,7 @@ Index: u-boot/cpu/arm920t/s3c24x0/mmc.c
 @@ -0,0 +1,531 @@
 +/*
 + * u-boot S3C2410 MMC/SD card driver
-+ * (C) Copyright 2006 by OpenMoko, Inc.
++ * (C) Copyright 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on u-boot pxa MMC driver and linux/drivers/mmc/s3c2410mci.c

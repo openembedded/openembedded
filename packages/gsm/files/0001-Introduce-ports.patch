@@ -505,7 +505,7 @@ index 0000000..22a4a5c
 @@ -0,0 +1,202 @@
 +/* Wrapper for the physical UART in a struct gsmd_port abstraction.
 + *
-+ * Copyright (C) 2007 OpenMoko, Inc.
++ * Copyright (C) 2007 Openmoko, Inc.
 + * Written by Andrzej Zaborowski <andrew@openedhand.com>
 + *
 + * This program is free software; you can redistribute it and/or

@@ -207,7 +207,7 @@ Index: u-boot/include/configs/smdk2440.h
 +#define CONFIG_USBD_VENDORID		0x1457	/* FIC */
 +#define CONFIG_USBD_PRODUCTID_GSERIAL	0x5120	/* gserial */
 +#define CONFIG_USBD_PRODUCTID_CDCACM	0x511b	/* SMDK2440 CDC ACM */
-+#define CONFIG_USBD_MANUFACTURER	"OpenMoko, Inc."
++#define CONFIG_USBD_MANUFACTURER	"Openmoko, Inc."
 +#define CONFIG_USBD_PRODUCT_NAME	"S3C2440 Bootloader " U_BOOT_VERSION
 +#define CONFIG_EXTRA_ENV_SETTINGS	"usbtty=cdc_acm\0"
 +#define CONFIG_USBD_DFU			1

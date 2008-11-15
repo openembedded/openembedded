@@ -101,7 +101,7 @@ Index: u-boot/drivers/usbdfu.c
 +++ u-boot/drivers/usbdfu.c
 @@ -0,0 +1,1069 @@
 +/*
-+ * (C) 2007 by OpenMoko, Inc.
++ * (C) 2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on existing SAM7DFU code from OpenPCD:
@@ -1328,7 +1328,7 @@ Index: u-boot/include/configs/neo1973_gta01.h
  #endif
  
 @@ -184,6 +184,10 @@
- #define CONFIG_USBD_MANUFACTURER	"OpenMoko, Inc"
+ #define CONFIG_USBD_MANUFACTURER	"Openmoko, Inc"
  #define CONFIG_USBD_PRODUCT_NAME	"Neo1973 Bootloader " U_BOOT_VERSION
  #define CONFIG_EXTRA_ENV_SETTINGS 	"usbtty=cdc_acm\0"
 +#define CONFIG_USBD_DFU			1
@@ -1347,7 +1347,7 @@ Index: u-boot/include/usb_dfu.h
 +#define _DFU_H
 +
 +/* USB Device Firmware Update Implementation for u-boot
-+ * (C) 2007 by OpenMoko, Inc.
++ * (C) 2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on: USB Device Firmware Update Implementation for OpenPCD
@@ -1651,7 +1651,7 @@ Index: u-boot/tools/mkudfu.c
 @@ -0,0 +1,314 @@
 +/*
 + * USB DFU file trailer tool
-+ * (C) Copyright by OpenMoko, Inc.
++ * (C) Copyright by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on mkimage.c, copyright information as follows:

@@ -15,7 +15,7 @@ Index: u-boot/include/configs/neo1973_gta01.h
  
 @@ -181,11 +181,14 @@
  #define CONFIG_USBD_PRODUCTID_CDCACM 	0x5119    /* CDC ACM */
- #define CONFIG_USBD_MANUFACTURER	"OpenMoko, Inc"
+ #define CONFIG_USBD_MANUFACTURER	"Openmoko, Inc"
  #define CONFIG_USBD_PRODUCT_NAME	"Neo1973 Bootloader " U_BOOT_VERSION
 -#define CONFIG_EXTRA_ENV_SETTINGS 	"usbtty=cdc_acm\0"
  #define CONFIG_USBD_DFU			1

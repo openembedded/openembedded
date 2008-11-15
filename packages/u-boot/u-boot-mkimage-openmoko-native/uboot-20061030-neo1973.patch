@@ -182,7 +182,7 @@ Index: u-boot/include/pcf50606.h
 +#define _PCF50606_H
 +
 +/* Philips PCF50606 Power Managemnt Unit (PMU) driver
-+ * (C) 2006-2007 by OpenMoko, Inc.
++ * (C) 2006-2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + */
@@ -457,7 +457,7 @@ Index: u-boot/board/neo1973/common/cmd_neo1973.c
 +++ u-boot/board/neo1973/common/cmd_neo1973.c
 @@ -0,0 +1,99 @@
 +/*
-+ * (C) Copyright 2006 by OpenMoko, Inc.
++ * (C) Copyright 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this
@@ -562,7 +562,7 @@ Index: u-boot/board/neo1973/common/jbt6k74.c
 @@ -0,0 +1,420 @@
 +/* u-boot driver for the tpo JBT6K74-AS LCM ASIC
 + *
-+ * Copyright (C) 2006-2007 by OpenMoko, Inc.
++ * Copyright (C) 2006-2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + * All rights reserved.
 + *
@@ -1288,7 +1288,7 @@ Index: u-boot/board/neo1973/gta01/gta01.c
 +++ u-boot/board/neo1973/gta01/gta01.c
 @@ -0,0 +1,422 @@
 +/*
-+ * (C) 2006 by OpenMoko, Inc.
++ * (C) 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on existing S3C2410 startup code in u-boot:
@@ -1945,7 +1945,7 @@ Index: u-boot/include/configs/neo1973_gta01.h
 +++ u-boot/include/configs/neo1973_gta01.h
 @@ -0,0 +1,265 @@
 +/*
-+ * (C) Copyright 2006 OpenMoko, Inc.
++ * (C) Copyright 2006 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * Configuation settings for the FIC Neo1973 GTA01 Linux GSM phone

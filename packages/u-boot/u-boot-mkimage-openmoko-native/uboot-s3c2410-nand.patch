@@ -22,7 +22,7 @@ Index: u-boot/cpu/arm920t/s3c24x0/nand.c
 +++ u-boot/cpu/arm920t/s3c24x0/nand.c	2007-03-01 14:30:27.000000000 +0100
 @@ -0,0 +1,225 @@
 +/*
-+ * (C) Copyright 2006 OpenMoko, Inc.
++ * (C) Copyright 2006 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * This program is free software; you can redistribute it and/or
@@ -264,7 +264,7 @@ Index: u-boot/cpu/arm920t/s3c24x0/nand_read.c
 + * Author: Hwang, Chideok <hwang@mizi.com>
 + * Date  : $Date: 2004/02/04 10:37:37 $
 + *
-+ * u-boot integration and bad-block skipping (C) 2006 by OpenMoko, Inc.
++ * u-boot integration and bad-block skipping (C) 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + */
 +
@@ -359,7 +359,7 @@ Index: u-boot/cpu/arm920t/start.S
   *
 + * S3C2410 NAND portions
 + *  Copyright (c) 2001  MIZI Research, Inc.
-+ *  Copyright (c) 2006  OpenMoko, Inc. (Harald Welte <laforge@openmmoko.org>
++ *  Copyright (c) 2006  Openmoko, Inc. (Harald Welte <laforge@openmmoko.org>
 + *
   * See file CREDITS for list of people who contributed to this
   * project.

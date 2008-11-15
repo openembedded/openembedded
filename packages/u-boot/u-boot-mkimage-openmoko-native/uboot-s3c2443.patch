@@ -149,7 +149,7 @@ Index: u-boot/include/s3c2443.h
 +++ u-boot/include/s3c2443.h
 @@ -0,0 +1,106 @@
 +/*
-+ * (C) Copyright 2007 OpenMoko, Inc.
++ * (C) Copyright 2007 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this

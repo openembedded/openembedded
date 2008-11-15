@@ -725,7 +725,7 @@ Index: u-boot/board/qt2410/qt2410.c
 +++ u-boot/board/qt2410/qt2410.c
 @@ -0,0 +1,152 @@
 +/*
-+ * (C) 2006 by OpenMoko, Inc.
++ * (C) 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on existing S3C2410 startup code in u-boot:

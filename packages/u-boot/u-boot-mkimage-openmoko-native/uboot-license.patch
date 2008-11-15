@@ -17,7 +17,7 @@ Index: u-boot/common/cmd_license.c
 +++ u-boot/common/cmd_license.c
 @@ -0,0 +1,57 @@
 +/*
-+ * (C) Copyright 2007 by OpenMoko, Inc.
++ * (C) Copyright 2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this
