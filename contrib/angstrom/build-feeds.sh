@@ -175,6 +175,7 @@ do
 		      notecase \
 		      numptyphysics \
 	          opencv \
+              opencv-samples \
               openmoko-browser2 \
 		      openredalert \
 		      openvpn \
