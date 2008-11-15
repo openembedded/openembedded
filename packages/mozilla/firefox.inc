@@ -2,6 +2,7 @@ DESCRIPTION ?= "Browser made by mozilla"
 SRC_URI += "file://mozilla-${PN}.png file://mozilla-${PN}.desktop"
 
 PARALLEL_MAKE = ""
+ARM_INSTRUCTION_SET = "arm"
 
 MOZPV ?= "${PV}"
 
