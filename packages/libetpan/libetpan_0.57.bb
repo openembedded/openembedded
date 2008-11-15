@@ -6,7 +6,8 @@ DEPENDS = "gnutls"
 LICENSE = "BSD"
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/libetpan/libetpan-${PV}.tar.gz \
+	   file://libetpan-autoreconf.patch;patch=1"
 
 inherit autotools pkgconfig gettext binconfig
 
