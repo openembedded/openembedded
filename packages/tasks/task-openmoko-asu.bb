@@ -17,9 +17,7 @@ RDEPENDS_task-openmoko-asu = "\
   connman-plugin-connman-dhclient \
   connman-plugin-connman-80211 \
   connman-script-dhclient \
-  e-wm \
-  illume \
-  illume-theme \
+  task-x11-illume \
   assassin \
   diversity-daemon \
   om-locations \
