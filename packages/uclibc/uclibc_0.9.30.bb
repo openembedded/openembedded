@@ -15,9 +15,11 @@ require uclibc.inc
 PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
-                file://arm-linuxthreads.patch;patch=1 \
-                file://linuxthreads-changes.patch;patch=1 \
+            file://arm-linuxthreads.patch;patch=1 \
+            file://linuxthreads-changes.patch;patch=1 \
 	   "
+SRC_URI_append_arm = " file://ldso_hash_arm.patch;patch=1 "
+SRC_URI_append_armeb = " file://ldso_hash_arm.patch;patch=1 "
 
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
