@@ -9,7 +9,7 @@ PR = "r0"
 inherit task
 
 # Default illume theme
-# ILLUME_THEME ?= "illume-theme-illume"
+ILLUME_THEME ?= "e-wm-theme-illume"
 
 RDEPENDS_${PN} = "\
   task-x11-server \
@@ -18,5 +18,5 @@ RDEPENDS_${PN} = "\
   \
   e-wm \
   e-wm-config-illume \
-#  ${ILLUME_THEME} \
+  ${ILLUME_THEME} \
 "
