@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=numptyphysics
+Comment=Physics Game
+Note=Simulate Objects
+Exec=xrandr -o 3 && numptyphysics -geometry 640x480; xrandr -o 0
+Icon=star.png
+Type=Application
+Categories=Games
+
