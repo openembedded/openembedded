@@ -6,7 +6,7 @@ PRIORITY = "optional"
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
 # bump this on every change in contrib/python/generate-manifest-2.5.py
-PR = "ml14"
+PR = "ml16"
 
 PYTHON_MAJMIN = "2.5"
 

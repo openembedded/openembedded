@@ -1,5 +1,7 @@
 inherit siteinfo
 
+ARM_INSTRUCTION_SET = "arm"
+
 def qt_arch(d):
     import bb, re
     arch = bb.data.getVar('TARGET_ARCH', d, 1)

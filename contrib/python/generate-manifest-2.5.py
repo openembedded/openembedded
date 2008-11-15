@@ -13,7 +13,7 @@ VERSION = "2.5.2"
 BASEREV = 0
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20080722"
+__version__ = "20081102"
 
 class MakefileMaker:
 
@@ -277,8 +277,8 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-pprint", "Python Pretty-Print Support", "python-core",
     "pprint.*" )
 
-    m.addPackage( 0, "python-profile", "Python Basic Profiling Support", "python-core",
-    "profile.* pstats.*" )
+    m.addPackage( 0, "python-profile", "Python Basic Profiling Support", "python-core python-textutils",
+    "profile.* pstats.* cProfile.* lib-dynload/_lsprof.so" )
 
     m.addPackage( 0, "python-re", "Python Regular Expression APIs", "python-core",
     "re.* sre.* sre_compile.* sre_constants* sre_parse.*" ) # _sre is builtin

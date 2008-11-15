@@ -2,10 +2,10 @@ DESCRIPTION = "Guile is an interpreter for the Scheme programming language, \
 packaged as a library which can be incorporated into your programs."
 HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
 SECTION = "devel/scheme"
-DEPENDS = "guile-native gmp"
+DEPENDS = "guile-native gmp libtool"
 LICENSE = "GPL"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch;patch=1 "

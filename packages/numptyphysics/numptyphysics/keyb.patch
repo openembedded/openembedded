@@ -1,0 +1,189 @@
+diff -ur oldÃ_Game.cppGame.cpp
+--- old_Game.cpp	2008-11-01 08:56:50.000000000 +0200
++++ Game.cpp	2008-11-01 10:48:33.000000000 +0200
+@@ -896,6 +896,7 @@
+   Window            m_window;
+   Overlay          *m_pauseOverlay;
+   Overlay          *m_editOverlay;
++  Overlay          *m_keyboardOverlay;
+   //  DemoOverlay       m_demoOverlay;
+   Os               *m_os;
+ public:
+@@ -905,6 +906,7 @@
+     m_window(width,height,"Numpty Physics","NPhysics"),
+     m_pauseOverlay( NULL ),
+     m_editOverlay( NULL ),
++    m_keyboardOverlay( NULL ),
+     m_os( Os::get() )
+     //,m_demoOverlay( *this )
+   {
+@@ -1038,6 +1040,14 @@
+       && m_overlays.indexOf( m_pauseOverlay ) >= 0;
+   }
+ 
++  void togglePause() 
++  {
++     if ( !m_pauseOverlay ) {
++       m_pauseOverlay = createIconOverlay( *this, "pause.png", 50, 50 );
++     }
++     toggleOverlay( m_pauseOverlay );
++  }
++
+   void edit( bool doEdit )
+   {
+     if ( m_edit != doEdit ) {
+@@ -1080,10 +1090,7 @@
+       case SDLK_SPACE:
+       case SDLK_KP_ENTER:
+       case SDLK_RETURN:
+-	if ( !m_pauseOverlay ) {
+-	  m_pauseOverlay = createIconOverlay( *this, "pause.png", 50, 50 );
+-	}
+-	toggleOverlay( m_pauseOverlay );
++   togglePause();
+ 	break;
+       case SDLK_s:
+       case SDLK_F4: 
+@@ -1094,6 +1191,10 @@
+ 	edit( !m_edit );
+ 	break;
+       case SDLK_d:
++   if ( !m_keyboardOverlay ) {
++     m_keyboardOverlay = createKeyboardOverlay(*this);
++   }
++   toggleOverlay( m_keyboardOverlay );
+ 	//toggleOverlay( m_demoOverlay );
+ 	break;
+       case SDLK_r:
+@@ -1154,6 +1165,19 @@
+     return false;
+   }
+ 
++  void undoLastStroke() 
++  {
++     if ( m_createStroke ) {
++     m_scene.deleteStroke( m_createStroke );
++     m_createStroke = NULL;
++    } else {
++      m_scene.deleteStroke( m_scene.strokes().at(m_scene.strokes().size()-1) );
++    }
++    m_refresh = true;
++  }
++
++
++
+   bool handlePlayEvent( SDL_Event &ev )
+   {
+     switch( ev.type ) {      
+@@ -1197,13 +1221,7 @@
+       break;
+     case SDL_KEYDOWN:
+       if ( ev.key.keysym.sym == SDLK_ESCAPE ) {
+-	if ( m_createStroke ) {
+-	  m_scene.deleteStroke( m_createStroke );
+-	  m_createStroke = NULL;
+-	} else {
+-	  m_scene.deleteStroke( m_scene.strokes().at(m_scene.strokes().size()-1) );
+-	}
+-	m_refresh = true;
++         undoLastStroke();
+       }
+       break;
+     default:
+@@ -1250,6 +1268,10 @@
+   {
+     Overlay *completedOverlay = createNextLevelOverlay(*this);
+ 
++    //toggle onScreenKeyboard ON
++    m_keyboardOverlay = createKeyboardOverlay(*this);
++    toggleOverlay( m_keyboardOverlay );
++
+     m_scene.draw( m_window, FULLSCREEN_RECT );
+     m_window.update( FULLSCREEN_RECT );
+ 
+diff -ur old_Game.h Game.h
+--- old_Game.h	2008-11-01 08:56:50.000000000 +0200
++++ Game.h	2008-11-01 09:27:22.000000000 +0200
+@@ -41,6 +41,9 @@
+   virtual void gotoLevel( int l, bool replay=false ) {}
+   Levels& levels() { return m_levels; }
+   virtual bool  renderScene( Canvas& c, int level ) =0; 
++  virtual void togglePause() {} 
++  virtual void undoLastStroke() {}
++  virtual void edit( bool editting ) {}
+   bool  m_quit;
+   bool  m_edit;
+   bool  m_refresh;
+diff -ur old_Overlay.cpp Overlay.cpp
+--- old_Overlay.cpp	2008-11-01 08:56:50.000000000 +0200
++++ Overlay.cpp	2008-11-01 09:45:57.000000000 +0200
+@@ -311,7 +311,51 @@
+   }
+ };
+ 
++class KeyboardOverlay : public IconOverlay
++{
++  int m_saving, m_sending;
++public:
++  KeyboardOverlay( GameControl& game )
++    : IconOverlay(game,"keyb.png",0,0,true),
++      m_saving(0),
++      m_sending(0)
++  {}
++
++  int index( int x, int y ) 
++  {
++    //these values correspond with keyb.png (in pixels)
++    int sizeOfElement = 20;
++
++    int colum = x/sizeOfElement;
++    int row   = y/sizeOfElement;
++    return row*3+colum;
++  }
++
++  virtual void draw( Canvas& screen )
++  {
++    IconOverlay::draw( screen );
++  }
+ 
++  virtual bool onClick( int x, int y )
++  {
++    int i = index(x,y);
++    //printf("i= %d\n",i); return 0;
++    switch (i) {
++    case -1: return false;
++    case  0: m_game.undoLastStroke(); break;
++    case  1: m_game.togglePause(); break;
++    case  2: m_game.m_quit=true; break;
++    case  3: break;
++    case  4: m_game.edit( !m_game.m_edit ); break;
++    case  5: break;
++    case  6: m_game.gotoLevel(m_game.m_level-1); break;
++    case  7: m_game.gotoLevel(m_game.m_level); break;
++    case  8: m_game.gotoLevel(m_game.m_level+1); break;
++    default: break;
++    }
++    return true;
++  }
++};
+ 
+ 
+ Overlay* createIconOverlay( GameControl& game, const char* file,
+@@ -330,3 +383,8 @@
+ {
+   return new NextLevelOverlay( game );
+ }
++
++extern Overlay* createKeyboardOverlay( GameControl& game )
++{
++  return new KeyboardOverlay( game );
++}
+diff -ur old_Overlay.h Overlay.h
+--- old_Overlay.h	2008-11-01 08:56:50.000000000 +0200
++++ Overlay.h	2008-11-01 09:44:16.000000000 +0200
+@@ -45,4 +45,5 @@
+ 
+ extern Overlay* createNextLevelOverlay( GameControl& game );
+ 
++extern Overlay* createKeyboardOverlay( GameControl& game );
+ #endif //OVERLAY_H

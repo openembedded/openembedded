@@ -91,12 +91,17 @@ kernel_do_compile() {
 }
 kernel_do_compile[depends] = "${INITRAMFS_TASK}"
 
-
 kernel_do_stage() {
 	ASMDIR=`readlink include/asm`
 
 	mkdir -p ${STAGING_KERNEL_DIR}/include/$ASMDIR
 	cp -fR include/$ASMDIR/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+	# Kernel 2.6.27 moved headers from includes/asm-${ARCH} to arch/${ARCH}/include/asm	
+	if [ -e arch/${ARCH}/include/asm/ ] ; then 
+		cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
+		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}/include
+		cp -fR arch/${ARCH}/include/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/include/	
+	fi
 	rm -f $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 

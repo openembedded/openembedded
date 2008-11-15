@@ -1,0 +1,219 @@
+From ff78ff9513a40be30649420bc9833793a6e70b75 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 11 Nov 2008 13:52:56 +0200
+Subject: [PATCH] DSS: Add generic DVI panel
+
+For some reason we can't allocate enough mem for 1280x1024x24bpp, even if
+there should be enough continuous mem. So 1280x1024 mode defaults to
+16bpp for now.
+
+You also need DSI PLL to generate pix clock for 1280x1024.
+---
+ drivers/video/omap2/Kconfig     |   23 ++++++
+ drivers/video/omap2/Makefile    |    2 +
+ drivers/video/omap2/panel-dvi.c |  150 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 175 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/video/omap2/panel-dvi.c
+
+diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
+index 4b72479..11ca6fe 100644
+--- a/drivers/video/omap2/Kconfig
++++ b/drivers/video/omap2/Kconfig
+@@ -24,6 +24,29 @@ config FB_OMAP2_FORCE_AUTO_UPDATE
+ menu "OMAP2/3 Display Device Drivers"
+         depends on OMAP2_DSS
+ 
++config PANEL_DVI
++        tristate "DVI Panel"
++        help
++          DVI output, for Beagle and OMAP3 SDP
++
++choice
++	prompt "Default DVI Mode"
++	depends on PANEL_DVI
++	default PANEL_DVI_1024X768
++
++config PANEL_DVI_640X480
++	bool "640 x 480 @ 60"
++
++config PANEL_DVI_800X600
++	bool "800 x 600 @ 60"
++
++config PANEL_DVI_1024X768
++	bool "1024 x 768 @ 60"
++
++config PANEL_DVI_1280X1024
++	bool "1280 x 1024 @ 57"
++
++endchoice
+ 
+ endmenu
+ 
+diff --git a/drivers/video/omap2/Makefile b/drivers/video/omap2/Makefile
+index 51c2e00..7c75340 100644
+--- a/drivers/video/omap2/Makefile
++++ b/drivers/video/omap2/Makefile
+@@ -1,2 +1,4 @@
+ obj-$(CONFIG_FB_OMAP2) += omapfb.o
+ omapfb-y := omapfb-main.o omapfb-sysfs.o omapfb-ioctl.o
++
++obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
+diff --git a/drivers/video/omap2/panel-dvi.c b/drivers/video/omap2/panel-dvi.c
+new file mode 100644
+index 0000000..393eaf1
+--- /dev/null
++++ b/drivers/video/omap2/panel-dvi.c
+@@ -0,0 +1,150 @@
++/*
++ * DVI panel support
++ *
++ * Copyright (C) 2008 Nokia Corporation
++ * Author: Tomi Valkeinen <tomi.valkeinen@nokia.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <linux/module.h>
++#include <linux/delay.h>
++
++#include <mach/display.h>
++
++static int dvi_panel_init(struct omap_display *display)
++{
++	return 0;
++}
++
++static int dvi_panel_enable(struct omap_display *display)
++{
++	int r = 0;
++
++	if (display->hw_config.panel_enable)
++		r = display->hw_config.panel_enable(display);
++
++	return r;
++}
++
++static void dvi_panel_disable(struct omap_display *display)
++{
++	if (display->hw_config.panel_disable)
++		display->hw_config.panel_disable(display);
++}
++
++static int dvi_panel_suspend(struct omap_display *display)
++{
++	dvi_panel_disable(display);
++	return 0;
++}
++
++static int dvi_panel_resume(struct omap_display *display)
++{
++	return dvi_panel_enable(display);
++}
++
++static struct omap_panel dvi_panel = {
++	.owner		= THIS_MODULE,
++	.name		= "panel-dvi",
++	.init		= dvi_panel_init,
++	/*.remove	= dvi_cleanup, */
++	.enable		= dvi_panel_enable,
++	.disable	= dvi_panel_disable,
++	.suspend	= dvi_panel_suspend,
++	.resume		= dvi_panel_resume,
++	/*.set_mode	= dvi_set_mode, */
++
++#if defined(CONFIG_PANEL_DVI_640X480)
++	.timings = {
++		/* 640 x 480 @ 60 hz  reduced blanking vesa
++		 * (dunno if these are correct) */
++		.pixel_clock	= 23500,
++		.hfp		= 48,
++		.hsw		= 32,
++		.hbp		= 80,
++		.vfp		= 3,
++		.vsw		= 4,
++		.vbp		= 11,
++	},
++
++	.x_res		= 640,
++	.y_res		= 480,
++	.bpp		= 24,
++#elif defined(CONFIG_PANEL_DVI_800X600)
++	.timings = {
++		/* 800 x 600 @ 60 hz  reduced blanking vesa cvt 0.48m3-r */
++		.pixel_clock	= 35500,
++		.hfp		= 48,
++		.hsw		= 32,
++		.hbp		= 80,
++		.vfp		= 3,
++		.vsw		= 4,
++		.vbp		= 11,
++	},
++
++	.x_res		= 800,
++	.y_res		= 600,
++	.bpp		= 24,
++#elif defined(CONFIG_PANEL_DVI_1024X768)
++	.timings = {
++		/* 1024 x 768 @ 60 Hz Reduced blanking */
++		.pixel_clock	= 56000,
++		.hfp		= 48,
++		.hsw		= 32,
++		.hbp		= 80,
++		.vfp		= 3,
++		.vsw		= 4,
++		.vbp		= 15,
++	},
++
++	.x_res		= 1024,
++	.y_res		= 768,
++	.bpp		= 24,
++#elif defined(CONFIG_PANEL_DVI_1280X1024)
++	.timings = {
++		/* 1280 x 1024 @ 57 Hz Reduced blanking */
++		.pixel_clock	= 86500,
++		.hfp		= 48,
++		.hsw		= 32,
++		.hbp		= 80,
++		.vfp		= 3,
++		.vsw		= 4,
++		.vbp		= 15,
++	},
++
++	.x_res		= 1280,
++	.y_res		= 1024,
++	.bpp		= 16,
++#else
++#error Undefined default mode
++#endif
++
++	.config		= OMAP_DSS_LCD_TFT,
++};
++
++
++static int __init dvi_panel_drv_init(void)
++{
++	omap_dss_register_panel(&dvi_panel);
++	return 0;
++}
++
++static void __exit dvi_panel_drv_exit(void)
++{
++	omap_dss_unregister_panel(&dvi_panel);
++}
++
++module_init(dvi_panel_drv_init);
++module_exit(dvi_panel_drv_exit);
++MODULE_LICENSE("GPL");
+-- 
+1.5.6.3
+

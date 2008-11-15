@@ -65,8 +65,25 @@ do_stage_append() {
         # We need a hostperl link for building perl
         ln -sf ${STAGING_BINDIR_NATIVE}/perl${PV} ${STAGING_BINDIR_NATIVE}/hostperl
         # Store native config in non-versioned directory
-        install -d ${STAGING_DIR_HOST}/perl
+        install -d ${STAGING_DIR_HOST}/perl \
+                   ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE \
+                   ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils
         install config.sh ${STAGING_DIR_HOST}/perl
+	# target configuration
+        install lib/Config.pm       ${STAGING_LIBDIR_NATIVE}/perl/${PV}/
+	install lib/ExtUtils/typemap ${STAGING_DATADIR_NATIVE}/perl/${PV}/ExtUtils/
+        # perl shared library headers
+        for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
+                 uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \
+                 perliol.h pp_proto.h regnodes.h unixish.h config.h EXTERN.h \
+                 hv.h malloc_ctl.h pad.h perlsdio.h proto.h scope.h utf8.h \
+                 cop.h fakesdio.h INTERN.h mg.h patchlevel.h perlsfio.h \
+                 reentr.h sv.h utfebcdic.h cv.h fakethr.h intrpvar.h \
+                 nostdio.h perlapi.h perlvars.h reentr.inc thrdvar.h util.h \
+                 dosish.h form.h iperlsys.h opcode.h perl.h perly.h regcomp.h \
+                 thread.h warnings.h; do
+            install $i ${STAGING_LIBDIR_NATIVE}/perl/${PV}/CORE
+        done
 }
 
 PARALLEL_MAKE = ""

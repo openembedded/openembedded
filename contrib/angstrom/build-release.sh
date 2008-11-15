@@ -3,36 +3,33 @@
 DO_UCLIBC=1
 
 do_build() {
-	echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
-
         if [ $DO_UCLIBC = 1 ]
         then
                 BUILD_MODE="uclibc"
-                echo 'ANGSTROM_MODE = "uclibc"' >> conf/auto.conf
+                echo 'ANGSTROM_MODE = "uclibc"' > conf/auto.conf
 
                 if [ "$BUILD_CLEAN" != "" ]
                 then
-                        bitbake -c clean $BUILD_CLEAN
+                        MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
                 fi
 
                 for target in $BUILD_TARGETS
                 do
-                        bitbake $target && do_report_success
+                        MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
                 done
         fi
 
 	BUILD_MODE="glibc"
-        echo "MACHINE = \"$BUILD_MACHINE\"" > conf/auto.conf
-        echo 'ANGSTROM_MODE = "glibc"' >> conf/auto.conf
+        echo 'ANGSTROM_MODE = "glibc"' > conf/auto.conf
 
 	if [ "$BUILD_CLEAN" != "" ]
 	then
-		bitbake -c clean $BUILD_CLEAN
+		MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
 	fi
 
 	for target in $BUILD_TARGETS
 	do
-		bitbake $target && do_report_success
+		MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
 	done
 }
 
@@ -52,10 +49,10 @@ do_report_success() {
 
 
 # No graphics
-for machine in ep93xx gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
+for machine in gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
 do
 	BUILD_MACHINE=$machine
-	BUILD_CLEAN="libtool-cross base-files"
+	BUILD_CLEAN="base-files"
 	BUILD_TARGETS="base-image console-image"
 	do_build
 done
@@ -78,7 +75,7 @@ do
 done  
 
 # graphics, flash storage
-for machine in om-gta01 a780 at91sam9263ek qemuarm h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
+for machine in beagleboard omap3evm om-gta01 om-gta02 a780 at91sam9263ek qemuarm qemux86 h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -87,7 +84,7 @@ do
 done
 
 # graphics, disk storage	
-for machine in spitz 
+for machine in spitz beagleboard omap3evm 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -96,18 +93,17 @@ do
 done 
 
 #phones
-for machine in om-gta01 a780 
+for machine in om-gta01 om-gta02 a780  
 do
 	BUILD_MACHINE=$machine
-	BUILD_TARGETS="minimal-openmoko-image openmoko-image"
+	BUILD_TARGETS="minimal-openmoko-image openmoko-image fso-console-image fso-illume-image fso-image-light fso-image-nox fso-image"
 	do_build
 done	
 
-# populate feeds
-#for machine in ep93xx a780 efika collie ixp4xxbe
-#do
-#        BUILD_MACHINE=$machine
-#        BUILD_TARGETS="meta-angstrom-2007"
-#	do_build
-#done
-
+# omap3 boards
+for machine in beagleboard omap3evm
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="beagleboard-demo-image"
+	do_build
+done

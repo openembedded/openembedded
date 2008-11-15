@@ -1,10 +1,10 @@
---- opkg/libopkg/opkg_cmd.c.orig	2008-08-21 22:18:43.000000000 -0500
-+++ opkg/libopkg/opkg_cmd.c	2008-08-21 22:19:20.000000000 -0500
-@@ -288,7 +288,7 @@ static int opkg_update_cmd(opkg_conf_t *
+--- opkg/libopkg/opkg_cmd.c.old	2008-11-12 02:32:20.000000000 +0100
++++ opkg/libopkg/opkg_cmd.c	2008-11-12 02:30:20.000000000 +0100
+@@ -288,7 +288,7 @@
  	  free (tmp_file_name);
  	  free (url);
  #else
--	  opkg_message (conf, OPKG_NOTICE, "Signiture check for %s skipped "
+-	  opkg_message (conf, OPKG_NOTICE, "Signature check for %s skipped "
 +	  opkg_message (conf, OPKG_INFO, "Signature check for %s skipped "
                "because GPG support was not enabled in this build\n", src->name);
  #endif

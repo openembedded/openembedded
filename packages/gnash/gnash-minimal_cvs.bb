@@ -1,7 +1,7 @@
 require gnash-minimal.inc
 
 
-PR = "r2"
+PR = "r3"
 
 PV = "0.8.3+cvs${SRCDATE}"
 

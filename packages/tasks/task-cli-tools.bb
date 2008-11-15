@@ -2,17 +2,17 @@ DESCRIPTION = "A set of command line tools"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r0"
+PR = "r1"
 
 inherit task
+
+PACKAGES += "${PN}-python"
 
 RDEPENDS_${PN} = "\
   dosfstools \
   htop \
   iptables \
   lsof \
-  mickeydbus \
-  mickeyterm \
   mtd-utils \
   nano \
   powertop \
@@ -27,3 +27,7 @@ RDEPENDS_${PN}_append_om-gta02 = "\
   s3c24xx-gpio \
 "
 
+RDEPENDS_${PN}-python = "\
+  mickeydbus \
+  mickeyterm \
+"

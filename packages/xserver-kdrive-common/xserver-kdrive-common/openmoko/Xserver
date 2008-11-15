@@ -2,7 +2,6 @@
 #
 
 # note xinit needs full server path
-XSERVER=/usr/bin/Xipaq
 if [ -f /usr/bin/Xfbdev ]; then
   XSERVER=/usr/bin/Xfbdev
 fi
@@ -11,12 +10,6 @@ if [ -f /usr/bin/Xepson ]; then
 fi
 if [ -f /usr/bin/Xorg ]; then
   XSERVER=/usr/bin/Xorg
-fi
-if [ -f /usr/bin/Xomap ]; then
-  XSERVER=/usr/bin/Xomap
-fi
-if [ -f /usr/bin/Xglamo ]; then
-  XSERVER=/usr/bin/Xglamo
 fi
 
 . /etc/profile
@@ -29,6 +22,13 @@ fallback_screen_arg() {
     echo -n "${w}x${h}x${b}"
 }
 
+screen_width() {
+    geom=`fbset | grep geometry`
+    w=`echo $geom | awk '{ print $2 }'`
+    echo -n "${w}"
+}
+
+
 module_id() {
     ## used to read from assets, but sometimes assets is corrupted
     # grep "Module ID" /proc/hal/assets | sed "s/.*://"
@@ -39,7 +39,9 @@ module_id() {
 
 export USER=root
 
-ARGS=" -pn"
+SCREEN_SIZE=`fallback_screen_arg`
+
+ARGS=" -br -pn"
 
 # use ucb 1x00 touchscreen if present
 if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
@@ -55,57 +57,82 @@ fi
 # start off server in conventional location.
 case `module_id` in
         "HP iPAQ H3100" | "HP iPAQ H3800")
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90" ;;
+                ARGS="$ARGS -dpi 100 -rgba vrgb -screen ${SCREEN_SIZE}@90" ;;
         "HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")
-                ARGS="$ARGS -br -dpi 100 -rgba vbgr -screen 320x240@270" ;;
+                ARGS="$ARGS -dpi 100 -rgba vbgr -screen ${SCREEN_SIZE}@270" ;;
         "HP iPAQ H5400" | "HP iPAQ H2200")
-                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;
+                ARGS="$ARGS -dpi 100 -rgba rgb" ;;
         "HP iPAQ HX4700")
-                ARGS="$ARGS -br -dpi 200"
+                ARGS="$ARGS -dpi 200"
                 IMAGEON="w3220"
                 ;;
         "Ramses")
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@90 vt2" ;;
+                # What is this "vt2" in aid of?
+                ARGS="$ARGS -dpi 100 -rgba vrgb -screen ${SCREEN_SIZE}@90 vt2" ;;
         # both 'Sharp-Collie' and just 'Collie' have been reported
         *Poodle)
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
+                ARGS="$ARGS -dpi 100 -rgba vrgb -screen ${SCREEN_SIZE}@270" ;;
         *Collie)
-                ARGS="$ARGS -br -dpi 100 -rgba vrgb -screen 320x240@270" ;;
+                ARGS="$ARGS -dpi 100 -rgba vrgb -screen ${SCREEN_SIZE}@270" ;;
         "SHARP Shepherd" | "SHARP Husky" | "SHARP Corgi")
-                ARGS="$ARGS -br -dpi 200 -rgba rgb"
+                if [ `screen_width` -gt 330 ] ; then
+                     DPI=200
+                else
+                     DPI=100
+                fi 
+                ARGS="$ARGS -dpi ${DPI} -rgba rgb"
                 IMAGEON="w100"
                 ;;
         "SHARP Spitz" | "SHARP Akita" | "SHARP Borzoi")
-                ARGS="$ARGS -br -dpi 200 -rgba rgb -screen 480x640@270" ;;
+                ARGS="$ARGS -dpi 200 -rgba rgb -screen ${SCREEN_SIZE}@270" ;;
         "Simpad")
-                ARGS="$ARGS -br -dpi 100 -rgba rgb" ;;
+                ARGS="$ARGS -dpi 100 -rgba rgb" ;;
         "Generic OMAP1510/1610/1710")
-                ARGS="$ARGS -br -dpi 220 -mouse /dev/input/event0" ;;
+                ARGS="$ARGS -dpi 220 -mouse /dev/input/event0" ;;
         "Cellon C8000 Board")
-                ARGS="$ARGS -br -dpi 100 -screen 240x320,10,1" ;;
+                ARGS="$ARGS -dpi 100 -screen ${SCREEN_SIZE},10,1" ;;
         "HTC Magician")
-                ARGS="$ARGS -br -dpi 142" ;;
+                ARGS="$ARGS -dpi 142" ;;
         "HTC Universal")
-                ARGS="$ARGS -br -dpi 225 -screen 480x640@270" ;;
+                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE}@270" ;;
         "ARM-IntegratorCP" | "ARM-Versatile PB")
-                ARGS="$ARGS -br -rgba vrgb" ;;
+                ARGS="$ARGS -rgba vrgb" ;;
         "Compulab CM-x270")
                 modprobe mbxfb
-                ARGS="$ARGS -br -fb /dev/fb1" ;;
-        "GTA01" | "GTA02")
-                ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
-        "Motorola Ezx Platform")
-                ARGS="$ARGS -dpi 170 -screen 240x320 -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
+                ARGS="$ARGS -fb /dev/fb1" ;;
+        "GTA01")
+                if [ `screen_width` -gt 330 ] ; then
+                     DPI=285
+                else
+                     DPI=140
+                fi 
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" ;;
+       "GTA02")
+                if [ `screen_width` -gt 330 ] ; then
+                     DPI=285
+                else 
+                     DPI=140
+                fi 
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-vga.ppm vt1" 
+		XSERVER=/usr/bin/Xglamo 
+		;;
+	"Nokia N770")
+                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
+                XSERVER=/usr/bin/Xomap ;;
         "Nokia N800")
-                ARGS="$ARGS -br -dpi 225 -screen 800x480x16 -mouse tslib" ;;
+                ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
+                XSERVER=/usr/bin/Xomap ;;
+        "Motorola Ezx Platform")
+                ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
         "Freescale MX21ADS")
          # That's what /proc/cpuinfo shows as hardware on the chumby
                 ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
+
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
                 # it will default to trying to achieve 1024x768
-                S=`fallback_screen_arg`
+                S=${SCREEN_SIZE}
                 ARGS="$ARGS -screen $S" ;;
 esac
 

@@ -3,7 +3,7 @@ DESCRIPTION = "LiPS message backend library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 dbus-glib librecord sqlite3"
-PR          = "r1"
+PR          = "r2"
 
 GPE_TARBALL_SUFFIX = "bz2"
 

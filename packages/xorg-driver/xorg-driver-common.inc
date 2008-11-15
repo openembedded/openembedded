@@ -25,10 +25,10 @@ do_stage() {
 # Of course this will blow up when cross compiling.
 
 do_configure_prepend() {
-	incdir=${STAGING_INCDIR}/xorg
-	for f in dri.h sarea.h dristruct.h exa.h damage.h; do
+	incdir=${layout_includedir}/xorg
+	for f in dri.h sarea.h dristruct.h exa.h damage.h xf86Module.h; do
 		path="$incdir/$f"
-		if [ -f "$path" ]; then
+		if [ -f "${STAGING_DIR_HOST}/$path" ]; then
 			p=`echo "$path" | sed 'y%*+%pp%;s%[^_[:alnum:]]%_%g'`
 			eval "export ac_cv_file_$p=yes"
 		fi

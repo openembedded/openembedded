@@ -2,7 +2,7 @@ DESCRIPTION = "System-V like init."
 SECTION = "base"
 LICENSE = "GPL"
 HOMEPAGE = "http://freshmeat.net/projects/sysvinit/"
-PR = "r42"
+PR = "r44"
 
 # USE_VT and SERIAL_CONSOLE are generally defined by the MACHINE .conf.
 # Set PACKAGE_ARCH appropriately.
@@ -36,7 +36,7 @@ inherit update-alternatives
 ALTERNATIVE_NAME = "init"
 ALTERNATIVE_LINK = "${base_sbindir}/init"
 ALTERNATIVE_PATH = "${base_sbindir}/init.sysvinit"
-ALTERNATIVE_PRIORITY = "50"
+ALTERNATIVE_PRIORITY = "60"
 
 PACKAGES =+ "sysvinit-pidof sysvinit-sulogin"
 FILES_${PN} += "${base_sbindir}/* ${base_bindir}/*"

@@ -1,0 +1,22 @@
+--- old_Config.h	2008-11-05 13:45:25.000000000 +0200
++++ Config.h	2008-11-05 13:45:44.000000000 +0200
+@@ -36,14 +36,15 @@
+ #  define SELECT_TOLERANCE  8.0f //PIXELS_PER_METREf)
+ #  define CLICK_TOLERANCE   16 //PIXELs 
+ #else
+-#  define ITERATION_RATE    60 //fps
+-#  define RENDER_RATE       20 //fps
+-#  define SOLVER_ITERATIONS 10
++#  define ITERATION_RATE    30 //fps
++#  define RENDER_RATE       10 //fps
++#  define SOLVER_ITERATIONS 5
+ #  define JOINT_TOLERANCE   4.0f //PIXELs
+ #  define SELECT_TOLERANCE  5.0f //PIXELS_PER_METREf)
+-#  define CLICK_TOLERANCE   4 //PIXELs 
++#  define CLICK_TOLERANCE   16 //PIXELs
+ #endif
+ 
++
+ #define ITERATION_TIMESTEPf  (1.0f / (float)ITERATION_RATE)
+ #define RENDER_INTERVAL (1000/RENDER_RATE)
+ 

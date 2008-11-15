@@ -1,8 +1,9 @@
 DESCRIPTION = "OpenMAX Integration Layer (IL) is a standard API to access Multimedia Components on mobile platforms. It has been defined by the Khronos group."
 LICENSE = "LGPLv2"
-DEPENDS = "libmad alsa-lib ffmpeg"
+DEPENDS = "alsa-lib ffmpeg \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad', d)}"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/omxil/${PN}-${PV}.tar.gz"
 

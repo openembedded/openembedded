@@ -5,11 +5,14 @@ require classpath-native.inc
 
 DESCRIPTION="Java1.4-compatible GNU Classpath variant that is used as bootclasspath for jikes-native."
 
-PR = "r4"
+PR = "r6"
 
 DEPENDS = "zip-native fastjar-native jikes-native gettext-native"
 
-SRC_URI += "file://autotools.patch;patch=1"
+SRC_URI += "\
+	file://autotools.patch;patch=1 \
+	file://miscompilation-0.93.patch;patch=1 \
+	"
 
 EXTRA_OECONF = "\
   --with-jikes=jikes \

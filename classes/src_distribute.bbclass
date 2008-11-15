@@ -8,7 +8,9 @@ python do_distribute_sources () {
 	import re
 	for license in licenses:
 		for entry in license.split("|"):
-			for s in (bb.data.getVar('A', d, 1) or "").split():
+			for url in ((bb.data.getVar('SRC_URI', d, 1) or '').split()):
+				bb.fetch.init([url], d)
+				s = bb.fetch.localpath(url, d)
 				s = re.sub(';.*$', '', s)
 				cmd = bb.data.getVar('SRC_DISTRIBUTECOMMAND', d, 1)
 				if not cmd:

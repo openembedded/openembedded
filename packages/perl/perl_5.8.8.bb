@@ -139,11 +139,15 @@ do_install() {
 do_stage() {
         install -d ${STAGING_DIR_HOST}/perl \
                    ${STAGING_LIBDIR_NATIVE}/perl/${PV} \
-                   ${STAGING_LIBDIR}/perl/${PV}/CORE
+                   ${STAGING_LIBDIR}/perl/${PV}/CORE \
+                   ${STAGING_DATADIR}/perl/${PV}/ExtUtils
         # target config, used by cpan.bbclass to extract version information
         install config.sh ${STAGING_DIR_HOST}/perl/
         # target configuration, used by native perl when cross-compiling
         install lib/Config_heavy.pl ${STAGING_LIBDIR_NATIVE}/perl/${PV}/Config_heavy-target.pl
+	# target configuration
+        install lib/Config.pm       ${STAGING_LIBDIR}/perl/${PV}/
+	install lib/ExtUtils/typemap ${STAGING_DATADIR}/perl/${PV}/ExtUtils/
         # perl shared library headers
         for i in av.h embed.h gv.h keywords.h op.h perlio.h pp.h regexp.h \
                  uconfig.h XSUB.h cc_runtime.h embedvar.h handy.h opnames.h \

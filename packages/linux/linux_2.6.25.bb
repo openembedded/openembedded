@@ -12,6 +12,7 @@ DEFAULT_PREFERENCE_alix = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_at91-l9260 = "1"
 DEFAULT_PREFERENCE_db1200 = "1"
+DEFAULT_PREFERENCE_m8050 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.25.tar.bz2 \
            file://defconfig"
@@ -39,6 +40,8 @@ SRC_URI_append_at32stk1000 = " \
 SRC_URI_append_at91-l9260 = " \
 	http://maxim.org.za/AT91RM9200/2.6/2.6.25-at91.patch.gz;patch=1 \
 "
+
+SRC_URI_append_m8050 = " file://m8050.diff;patch=1 file://update-mach-types.diff;patch=1"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 

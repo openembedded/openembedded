@@ -459,7 +459,7 @@ python populate_packages () {
 	for pkg in package_list:
 		rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
 
-		remstr = "${PN} (= ${DEBPV})"
+		remstr = "${PN} (= ${EXTENDPV})"
 		if main_is_empty and remstr in rdepends:
 			rdepends.remove(remstr)
 		for l in dangling_links[pkg]:
@@ -551,7 +551,9 @@ emit_pkgdata[dirs] = "${PKGDATA_DIR}/runtime"
 
 ldconfig_postinst_fragment() {
 if [ x"$D" = "x" ]; then
-	[ -x /sbin/ldconfig ] && [ -e /etc/ld.so.conf ] && /sbin/ldconfig
+	if [ -e /etc/ld.so.conf ] ; then
+		[ -x /sbin/ldconfig ] && /sbin/ldconfig
+	fi
 fi
 }
 

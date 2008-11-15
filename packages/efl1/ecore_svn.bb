@@ -1,5 +1,5 @@
 require ecore.inc
-PR = "r5"
+PR = "r6"
 
 EXTRA_OECONF = "\
   --x-includes=${STAGING_INCDIR}/X11 \
@@ -15,8 +15,7 @@ EXTRA_OECONF = "\
   --disable-ecore-sdl \
   --enable-ecore-fb \
   --enable-ecore-evas \
-  --enable-ecore-evas-x11-16 \
-  --enable-ecore-evas-16-x11 \
+  --enable-ecore-evas-software-16-x11 \
   --disable-ecore-evas-x11-gl \
   --enable-ecore-evas-xrender \
   --disable-ecore-evas-dfb \

@@ -1,10 +1,11 @@
 DESCRIPTION = "File manager for the Xfce Desktop Environment"
-DEPENDS = "libxfcegui4 exo dbus-glib libexif xfce4-panel libice libsm"
+DEPENDS = "libxfcegui4 exo dbus-glib libexif xfce4-panel libice libsm gamin"
+RRECOMMENDS = "shared-mime-info"
 
 inherit xfce pkgconfig
 
 SRC_URI = "http://www.us.xfce.org/archive/xfce-4.4.2/src/Thunar-${PV}.tar.bz2"
-PR = 'r1'
+PR = 'r3'
 
 S = "${WORKDIR}/Thunar-${PV}/"
 

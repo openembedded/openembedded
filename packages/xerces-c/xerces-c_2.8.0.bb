@@ -5,7 +5,7 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 PR = "r1"
 
-SRC_URI = "http://mirror.serversupportforum.de/apache/xerces/c/sources/xerces-c-src_2_8_0.tar.gz"
+SRC_URI = "http://mirror.serversupportforum.de/apache/xerces/c/2/sources/xerces-c-src_2_8_0.tar.gz"
 S = "${WORKDIR}/xerces-c-src_2_8_0/src/xercesc"
 
 inherit autotools pkgconfig

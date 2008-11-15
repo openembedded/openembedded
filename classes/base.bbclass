@@ -758,7 +758,7 @@ def base_get_metadata_svn_revision(d):
 
 def base_get_metadata_git_branch(d):
 	import os
-	branch = os.popen('cd %s; git-branch | grep "^* " | tr -d "* "' % base_get_scmbasepath(d)).read()
+	branch = os.popen('cd %s; git branch | grep "^* " | tr -d "* "' % base_get_scmbasepath(d)).read()
 
 	if len(branch) != 0:
 		return branch
@@ -766,7 +766,7 @@ def base_get_metadata_git_branch(d):
 
 def base_get_metadata_git_revision(d):
 	import os
-	rev = os.popen("cd %s; git-log -n 1 --pretty=oneline --" % base_get_scmbasepath(d)).read().split(" ")[0]
+	rev = os.popen("cd %s; git log -n 1 --pretty=oneline --" % base_get_scmbasepath(d)).read().split(" ")[0]
 	if len(rev) != 0:
 		return rev
 	return "<unknown>"

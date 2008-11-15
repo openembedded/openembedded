@@ -5,11 +5,12 @@
 DESCRIPTION="xfce4 Desktop Background Manager"
 SECTION = "x11/base"
 DEPENDS = "virtual/libx11 libxfcegui4 libxfce4mcs libxml2 xfce4-panel thunar"
-PR = "r1"
+PR = "r2"
 
 inherit xfce
 
-SRC_URI += " file://relocation-and-memleak.patch;patch=1 "
+SRC_URI += " file://relocation-and-memleak.patch;patch=1 \
+             file://fix-segfault-when-removable-icons-are-disabled.patch;patch=1"
 
 PACKAGES += "xfdesktop-backdrops ${PN}-mcs-plugins"
 

@@ -1,6 +1,8 @@
 DISTRO_SSH_DAEMON ?= "dropbear"
 DISTRO_PACKAGE_MANAGER ?= "opkg-nogpg opkg-collateral"
 
+XSERVER ?= "xserver-kdrive-fbdev"
+
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 IMAGE_INSTALL = "\
@@ -13,7 +15,7 @@ IMAGE_INSTALL = "\
 	matchbox-desktop \
 	${XSERVER} \
 	xserver-kdrive-common xserver-nodm-init \
-	ttf-liberation \
+	ttf-liberation-sans ttf-liberation-serif ttf-liberation-mono \
 	xauth xhost xset xrandr \
 	matchbox-sato \
 	matchbox-config-gtk \

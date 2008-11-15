@@ -34,7 +34,7 @@ RDEPENDS = "\
     libiw-dev \
     libmimedir-dev \
     libpcap-dev \
-    libpixman-dev \
+    pixman-dev \
     libpng-dev \
     libschedule-dev \
     libsm-dev \

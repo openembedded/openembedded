@@ -8,6 +8,8 @@ SRC_URI = "http://www.hpl.hp.com/research/linux/atomic_ops/download/libatomic_op
 
 S = "${WORKDIR}/libatomic_ops-${PV}"
 
+ARM_INSTRUCTION_SET = "arm"
+
 inherit autotools pkgconfig
 
 do_stage() {

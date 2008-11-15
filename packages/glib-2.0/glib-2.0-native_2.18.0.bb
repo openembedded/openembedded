@@ -1,7 +1,7 @@
 require glib-2.0_${PV}.bb
 
 FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
-PR = "r2"
+PR = "r3"
 
 inherit native
 
@@ -25,6 +25,7 @@ do_stage () {
 	oe_libinstall -so -C gmodule libgmodule-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C gthread libgthread-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C gobject libgobject-2.0 ${STAGING_LIBDIR}
+	oe_libinstall -so -C gio libgio-2.0 ${STAGING_LIBDIR}
 	autotools_stage_includes
 	install -d ${STAGING_INCDIR}/glib-2.0/glib
 	install -m 0755 ${S}/glibconfig.h ${STAGING_INCDIR}/glib-2.0/glibconfig.h

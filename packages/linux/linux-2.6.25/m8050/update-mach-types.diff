@@ -1,0 +1,13 @@
+---
+ arch/arm/tools/mach-types              |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- linux-2.6.25.orig/arch/arm/tools/mach-types
++++ linux-2.6.25/arch/arm/tools/mach-types
+@@ -1609,5 +1609,6 @@ tnb			MACH_TNB		TNB			1610
+ toepath			MACH_TOEPATH		TOEPATH			1611
+ kb9263			MACH_KB9263		KB9263			1612
+ mt7108			MACH_MT7108		MT7108			1613
+ smtr2440		MACH_SMTR2440		SMTR2440		1614
+ manao			MACH_MANAO		MANAO			1615
++aml_m8050		MACH_AML_M8050		AML_M8050		1644

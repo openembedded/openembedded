@@ -2,70 +2,32 @@
 # freesmartphone.org Image Recipe
 #------------------------------------------------------
 
+PV = "1.0"
+PR = "r2"
+
+# no languages for now
 IMAGE_LINGUAS = ""
 
-# getting the base system up
 BASE_INSTALL = "\
-  ${MACHINE_TASK_PROVIDER} \
-  netbase \
-  sysfsutils \
-  module-init-tools-depmod \
-  rsync \
-  screen \
-  fbset \
-  fbset-modes \
+  task-base \
 "
 
-# Some machines don't set a *runtime* provider for X, so default to Xfbdev here
-# virtual/xserver won't work, since the kdrive recipes will build multiple xserver packages
-XSERVER ?= "xserver-kdrive-fbdev"
+ILLUME_THEME = "illume-theme-freesmartphone"
 
-# getting an X window system up
 X_INSTALL = "\
-  e-wm \
-  illume \
-  illume-config-illume \
-  illume-dicts-english-us \
-  illume-keyboards-default \
-  illume-keyboards-numbers \
-  illume-keyboards-terminal \
-  illume-theme-freesmartphone \
-  ${XSERVER} \
-  xserver-kdrive-common \
-  xserver-nodm-init \
-  xauth \
-  xhost \
-  xset \
-  xrandr \
-  \
-  fontconfig-utils \
-  \
-  ttf-dejavu-common \
-  ttf-dejavu-sans \
-  ttf-dejavu-serif \
-  \
+  task-x11-illume \
+  task-fonts-truetype-core \
 "
 
 X_INSTALL_append_om-gta02 = "\
-  ttf-arphic-uming \
-  \
+  task-fonts-truetype-chinese \
+  task-fonts-truetype-japanese \
 "
 
-# useful command line tools
+# tools
 TOOLS_INSTALL = "\
-#  bash \
-  dosfstools \
-  htop \
-  iptables \
-  lsof \
-  mickeydbus \
-  mickeyterm \
-  mtd-utils \
-  nano \
-  powertop \
-  s3c24xx-gpio \
-  sysstat \
-  tcpdump \
+  task-cli-tools \
+  task-cli-tools-python \
 "
 
 # audio
@@ -75,15 +37,14 @@ AUDIO_INSTALL = "\
   alsa-utils-aplay \
   alsa-utils-amixer \
   gst-meta-audio \
-  gst-plugin-mad \
   gst-plugin-modplug \
-  gst-plugin-sid \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad gst-plugin-sid', d)} \
   fso-sounds \
 "
 
 GTK_INSTALL = "\
   openmoko-calculator2 \
-  openmoko-terminal2 \
+  vala-terminal \
   gpe-scap \
   tangogps \
 "
@@ -108,11 +69,9 @@ PYTHON_INSTALL = "\
   python-gst \
 "
 
-# zhone
+# fso+zhone
 ZHONE_INSTALL = "\
-  gsm0710muxd \
-  frameworkd \
-  fso-gpsd \
+  task-fso-compliance \
   zhone \
 "
 
@@ -140,7 +99,7 @@ IMAGE_INSTALL = "\
 
 inherit image
 
-# perform some convenience tweaks to the rootfs
+# perform some convenience tweaks to the rootfs to improve the out-of-the-box experience :M:
 fso_rootfs_postprocess() {
     curdir=$PWD
     cd ${IMAGE_ROOTFS}
@@ -165,6 +124,10 @@ fso_rootfs_postprocess() {
     echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
     # fix strange iconv/gconf bug
     ln -s libc.so.6 ./lib/libc.so
+    # set sensible DNS entries
+    echo "nameserver 208.67.222.222" > ./etc/resolv.conf
+    echo "nameserver 208.67.220.220" >> ./etc/resolv.conf
+    # back on track
     cd $curdir
 }
 

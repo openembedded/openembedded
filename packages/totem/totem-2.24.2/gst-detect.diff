@@ -1,0 +1,28 @@
+--- /tmp/configure.in	2008-08-10 15:27:06.000000000 +0200
++++ totem-2.23.4/configure.in	2008-08-10 20:37:08.743198000 +0200
+@@ -142,11 +142,7 @@
+ 		if $gst010_inspect $base_element >/dev/null 2>/dev/null; then
+ 			AC_MSG_RESULT([yes])
+ 		else
+-			AC_MSG_RESULT([no])
+-			AC_MSG_ERROR([
+-				Cannot find required GStreamer-0.10 plugin '$base_element'.
+-				It should be part of gst-plugins-base. Please install it.
+-			])
++			AC_MSG_RESULT([yes, we assume OE has already built them])
+ 		fi
+ 	done
+ 
+@@ -157,11 +153,7 @@
+ 		if $gst010_inspect $good_element >/dev/null 2>/dev/null; then
+ 			AC_MSG_RESULT([yes])
+ 		else
+-			AC_MSG_RESULT([no])
+-			AC_MSG_ERROR([
+-				Cannot find required GStreamer-0.10 plugin '$good_element'.
+-				It should be part of gst-plugins-good. Please install it.
+-			])
++			AC_MSG_RESULT([yes, we assume OE has already built them])
+ 		fi
+ 	done
+ 

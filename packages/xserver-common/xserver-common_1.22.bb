@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r7"
+PR = "r8"
 
 PACKAGE_ARCH = "all"
 
@@ -11,6 +11,8 @@ inherit gpe
 
 SRC_URI_append = " file://setDPI.sh "
 SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch;patch=1 \
+                            file://xorg-fixes.patch;patch=1 \
+			    file://gta-xorg-fixes.patch;patch=1 \
                             file://default.xmodmap "
 
 do_install_append() {

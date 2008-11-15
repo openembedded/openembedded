@@ -28,7 +28,6 @@ mixer src/mixer.c $(SDL) $(MIXER) $(DEBUG)
 mixer_music src/music.c $(SDL) $(MIXER) $(DEBUG)
 _numericsurfarray src/_numericsurfarray.c $(SDL) $(DEBUG)
 _numericsndarray src/_numericsndarray.c $(SDL) $(MIXER) $(DEBUG)
-movie src/movie.c $(SDL) $(SMPEG) $(DEBUG)
 scrap src/scrap.c $(SDL) $(SCRAP) $(DEBUG)
 
 #experimental new movie movie. requires libavcodec and libavformat.

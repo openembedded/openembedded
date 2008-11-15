@@ -1,5 +1,5 @@
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: './generate-manifest-2.5.py' Version 20080722 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: './generate-manifest-2.5.py' Version 20081102 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
@@ -10,8 +10,8 @@ PACKAGES="python-profile python-threading python-distutils python-doctest python
 
 DESCRIPTION_python-profile="Python Basic Profiling Support"
 PR_python-profile="ml0"
-RDEPENDS_python-profile="python-core"
-FILES_python-profile="${libdir}/python2.5/profile.* ${libdir}/python2.5/pstats.* "
+RDEPENDS_python-profile="python-core python-textutils"
+FILES_python-profile="${libdir}/python2.5/profile.* ${libdir}/python2.5/pstats.* ${libdir}/python2.5/cProfile.* ${libdir}/python2.5/lib-dynload/_lsprof.so "
 
 DESCRIPTION_python-threading="Python Threading & Synchronization Support"
 PR_python-threading="ml0"

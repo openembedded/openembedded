@@ -1,0 +1,166 @@
+--- old_Game.cpp	2008-10-30 15:46:15.000000000 +0200
++++ Game.cpp	2008-10-30 15:49:14.000000000 +0200
+@@ -1197,100 +1197,9 @@
+   }
+ };
+ 
+-class DemoRecorder
+-{
+-public:
+-
+-  void start() 
+-  {
+-    m_running = true;
+-    m_log.empty();
+-    m_log.capacity(512);
+-    m_lastTick = 0;
+-    m_lastTickTime = SDL_GetTicks();
+-  }
+ 
+-  void stop()  
+-  { 
+-    printf("stop recording: %d events\n",m_log.size());
+-    m_running = false; 
+-  }
+ 
+-  void tick() 
+-  {
+-    if ( m_running ) {
+-      m_lastTick++;
+-      m_lastTickTime = SDL_GetTicks();
+-    }
+-  }
+ 
+-  void record( SDL_Event& ev )
+-  {
+-    if ( m_running ) {
+-      m_log.append( m_lastTick, SDL_GetTicks()-m_lastTickTime, ev );
+-    }
+-  }
+-  
+-  DemoLog& getLog() { return m_log; }
+-
+-private:
+-  bool          m_running;
+-  DemoLog       m_log;
+-  int 		m_lastTick;
+-  int 		m_lastTickTime;
+-};
+-
+-
+-class DemoPlayer
+-{
+-public:
+-
+-  void start( const DemoLog* log ) 
+-  {
+-    m_playing = true;
+-    m_log = log;
+-    m_index = 0;
+-    m_lastTick = 0;
+-    m_lastTickTime = SDL_GetTicks();
+-    printf("start playback: %d events\n",m_log->size());
+-  }
+-
+-  bool isRunning() { return m_playing; }
+-
+-  void stop()  
+-  { 
+-    m_playing = false; 
+-    m_log = NULL;
+-  }
+-
+-  void tick() 
+-  {
+-    if ( m_playing ) {
+-      m_lastTick++;
+-      m_lastTickTime = SDL_GetTicks();
+-    }
+-  }
+-
+-  bool fetchEvent( SDL_Event& ev )
+-  {
+-    if ( m_playing
+-	 && m_index < m_log->size()
+-	 && m_log->at(m_index).t <= m_lastTick
+-	 && m_log->at(m_index).o <= SDL_GetTicks()-m_lastTickTime ) {
+-      ev = m_log->at(m_index).e;
+-      m_index++;
+-      return true;
+-    }
+-    return false;
+-  }
+-  
+-private:
+-  bool           m_playing;
+-  const DemoLog* m_log;
+-  int            m_index;
+-  int  		 m_lastTick;
+-  int  		 m_lastTickTime;
+-};
+ 
+ 
+ class Game : public GameParams
+@@ -1303,8 +1212,6 @@
+   IconOverlay       m_pauseOverlay;
+   EditOverlay       m_editOverlay;
+   //  DemoOverlay       m_demoOverlay;
+-  DemoRecorder      m_recorder;
+-  DemoPlayer        m_player;
+   Os               *m_os;
+ public:
+   Game( int width, int height ) 
+@@ -1328,15 +1235,11 @@
+       if ( m_edit ) {
+ 	m_scene.protect(0);
+       }
+-      m_recorder.stop();
+-      m_player.stop();
+       if ( replay ) {
+ 	// for ( int i=0; i<m_recorder.getLog().size(); i++ ) {
+ // 	  printf("DEMO: %s\n",m_recorder.getLog().asString(i).c_str());
+ // 	}
+-	m_player.start( &m_recorder.getLog() );
+       } else {
+-	m_recorder.start();
+       }
+       return true;
+     }
+@@ -1659,26 +1562,23 @@
+       while ( iterateCounter < ITERATION_RATE ) {
+ 	if ( !isPaused() ) {
+ 	  m_scene.step();
+-	  m_recorder.tick();
+-	  m_player.tick();
+ 	}
+ 
+ 	SDL_Event ev;
+ 	bool more = true;
+ 	while ( more ) {
+ 	  more = SDL_PollEvent(&ev);
+-	  if ( m_player.isRunning() 
++	  if ( 0 
+ 	       && ( ev.type==SDL_MOUSEMOTION || 
+ 		    ev.type==SDL_MOUSEBUTTONDOWN || 
+ 		    ev.type==SDL_MOUSEBUTTONUP ) ) {
+ 	    more = false; //discard
+ 	  }
+ 	  if (!more) {
+-	    more = m_player.fetchEvent(ev);
++	    more = 0;
+ 	  }
+ 	  if ( more ) {
+ 	    bool handled = false;
+-	    m_recorder.record( ev );
+ 	    for ( int i=m_overlays.size()-1; i>=0 && !handled; i-- ) {
+ 	      handled = m_overlays[i]->handleEvent(ev);
+ 	    }
+@@ -1703,8 +1603,6 @@
+       if ( m_scene.isCompleted() != isComplete && !m_edit ) {
+ 	isComplete = m_scene.isCompleted();
+ 	if ( isComplete ) {
+-	  m_player.stop();
+-	  m_recorder.stop();
+ 	  showOverlay( completedOverlay );
+ 	} else {
+ 	  hideOverlay( completedOverlay );

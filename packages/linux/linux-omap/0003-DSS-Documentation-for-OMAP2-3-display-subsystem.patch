@@ -1,0 +1,259 @@
+From e8cc995ace5ef4c8e920ccac6bacc1a0129ad2c4 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Tue, 4 Nov 2008 15:08:07 +0200
+Subject: [PATCH] DSS: Documentation for OMAP2/3 display subsystem
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ Documentation/arm/OMAP/DSS |  239 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 239 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/arm/OMAP/DSS
+
+diff --git a/Documentation/arm/OMAP/DSS b/Documentation/arm/OMAP/DSS
+new file mode 100644
+index 0000000..387bb73
+--- /dev/null
++++ b/Documentation/arm/OMAP/DSS
+@@ -0,0 +1,239 @@
++OMAP2/3 Display Subsystem
++-------------------------
++
++This is an almost total rewrite of the OMAP FB driver in drivers/video/omap
++(let's call it DSS1). The main differences between DSS1 and DSS2 are DSI,
++TV-out and multiple display support.
++
++The DSS2 driver (omap-dss module) is in arch/arm/plat-omap/dss/, and the FB,
++panel and controller drivers are in drivers/video/omap2/. DSS1 and DSS2 live
++currently side by side, you can choose which one to use.
++
++Features
++--------
++
++Working and tested features include:
++
++- MIPI DPI (parallel) output
++- MIPI DSI output in command mode
++- MIPI DBI (RFBI) output (not tested for a while, might've gotten broken)
++- SDI output
++- TV output
++- All pieces can be compiled as a module or inside kernel
++- Use DISPC to update any of the outputs
++- Use CPU to update RFBI or DSI output
++- OMAP DISPC planes
++- RGB16, RGB24 packed, RGB24 unpacked
++- YUV2, UYVY
++- Scaling
++- Adjusting DSS FCK to find a good pixel clock
++- Use DSI DPLL to create DSS FCK
++
++omap-dss driver
++------------
++
++The DSS driver does not itself have any support for Linux framebuffer, V4L or
++such like the current ones, but it has an internal kernel API that upper level
++drivers can use.
++
++The DSS driver models OMAP's overlays, overlay managers and displays in a
++flexible way to enable non-common multi-display configuration. In addition to
++modelling the hardware overlays, omap-dss supports virtual overlays and overlay
++managers. These can be used when updating a display with CPU or system DMA.
++
++Panel and controller drivers
++----------------------------
++
++The drivers implement panel or controller specific functionality and are not
++visible to users except through omapfb driver.  They register themselves to the
++DSS driver.
++
++omapfb driver
++-------------
++
++The omapfb driver implements arbitrary number of standard linux framebuffers.
++These framebuffers can be routed flexibly to any overlays, thus allowing very
++dynamic display architecture.
++
++The driver exports some omapfb specific ioctls, which are compatible with the
++ioctls in the old driver.
++
++The rest of the non standard features are exported via sysfs. Whether the final
++implementation will use sysfs, or ioctls, is still open.
++
++V4L2 drivers
++------------
++
++Currently there are no V4L2 display drivers planned, but it is possible to
++implement such either to omapfb driver, or as a separate one. From omap-dss
++point of view the V4L2 drivers should be similar to framebuffer driver.
++
++Architecture
++--------------------
++
++Some clarification what the different components do:
++
++    - Framebuffer is a memory area inside OMAP's SDRAM that contains the pixel
++      data for the image. Framebuffer has width and height and color depth.
++    - Overlay defines where the pixels are read from and where they go on the
++      screen. The overlay may be smaller than framebuffer, thus displaying only
++      part of the framebuffer. The position of the overlay may be changed if
++      the overlay is smaller than the display.
++    - Overlay manager combines the overlays in to one image and feeds them to
++      display.
++    - Display is the actual physical display device.
++
++A framebuffer can be connected to multiple overlays to show the same pixel data
++on all of the overlays. Note that in this case the overlay input sizes must be
++the same, but, in case of video overlays, the output size can be different. Any
++framebuffer can be connected to any overlay.
++
++An overlay can be connected to one overlay manager. Also DISPC overlays can be
++connected only to DISPC overlay managers, and virtual overlays can be only
++connected to virtual overlays.
++
++An overlay manager can be connected to one display. There are certain
++restrictions which kinds of displays an overlay manager can be connected:
++
++    - DISPC TV overlay manager can be only connected to TV display.
++    - Virtual overlay managers can only be connected to DBI or DSI displays.
++    - DISPC LCD overlay manager can be connected to all displays, except TV
++      display.
++
++Sysfs
++-----
++The sysfs interface is a hack, but works for testing. I don't think sysfs
++interface is the best for this in the final version, but I don't quite know
++what would be the best interfaces for these things.
++
++In /sys/devices/platform/omapfb we have four files: framebuffers,
++overlays, managers and displays. You can read them so see the current
++setup, and change them by writing to it in the form of
++"<item-id> <opt1>:<val1> <opt2>:<val2>..."
++
++"framebuffers" lists all framebuffers. Its format is:
++	<fb number>
++	t:<target overlay>
++
++"overlays" lists all overlays. Its format is:
++	<overlay name>
++	t:<target manager>
++	x:<xpos>
++	y:<ypos>
++	iw:<input width, read only>
++	ih:<input height, read only>
++	w:<output width>
++	h:<output height>
++	e:<enabled>
++
++"managers" lists all overlay managers. Its format is:
++	<manager name>
++	t:<target display>
++
++"displays" lists all displays. Its format is:
++	<display name>
++	w:<width>
++	h:<height>
++	e:<enabled>
++	u:<update mode>
++	t:<tear sync on/off>
++
++There is also a debug sysfs file at /sys/devices/platform/omap-dss/clk which
++shows how DSS has configured the clocks.
++
++Examples
++--------
++
++In the example scripts "omapfb" is a symlink to /sys/devices/platform/omapfb/.
++
++Default setup on OMAP3 SDP
++--------------------------
++
++Here's the default setup on OMAP3 SDP board. All planes go to LCD. DVI
++and TV-out are not in use. The columns from left to right are:
++framebuffers, overlays, overlay managers, displays. Framebuffers are
++handled by omapfb, and the rest by the DSS.
++
++FB0 --- GFX  -\            DVI
++FB1 --- VID1 --+- LCD ---- LCD
++FB2 --- VID2 -/   TV ----- TV
++
++Switch from LCD to DVI
++----------------------
++
++dviline=`cat omapfb/displays |grep dvi`
++w=`echo $dviline | cut -d " " -f 2 | cut -d ":" -f 2`
++h=`echo $dviline | cut -d " " -f 3 | cut -d ":" -f 2`
++
++echo "lcd e:0" > omapfb/displays
++echo "lcd t:none" > omapfb/managers
++fbset -fb /dev/fb0 -xres $w -yres $h
++# at this point you have to switch the dvi/lcd dip-switch from the omap board
++echo "lcd t:dvi" > omapfb/managers
++echo "dvi e:1" > omapfb/displays
++
++After this the configuration looks like:
++
++FB0 --- GFX  -\         -- DVI
++FB1 --- VID1 --+- LCD -/   LCD
++FB2 --- VID2 -/   TV ----- TV
++
++Clone GFX overlay to LCD and TV
++-------------------------------
++
++tvline=`cat /sys/devices/platform/omapfb/displays |grep tv`
++w=`echo $tvline | cut -d " " -f 2 | cut -d ":" -f 2`
++h=`echo $tvline | cut -d " " -f 3 | cut -d ":" -f 2`
++
++echo "1 t:none" > omapfb/framebuffers
++echo "0 t:gfx,vid1" > omapfb/framebuffers
++echo "gfx e:1" > omapfb/overlays
++echo "vid1 t:tv w:$w h:$h e:1" > omapfb/overlays
++echo "tv e:1" > omapfb/displays
++
++After this the configuration looks like (only relevant parts shown):
++
++FB0 +-- GFX  ---- LCD ---- LCD
++     \- VID1 ---- TV  ---- TV
++
++Misc notes
++----------
++
++OMAP FB allocates the framebuffer memory when it starts using
++dma_alloc_writecombine(). This requires large continuous physical memory areas
++and you can pre-reserve that area with "Consistent DMA memory size" Kconfig
++option.
++
++Using DSI DPLL to generate pixel clock it is possible produce the pixel clock
++of 86.5MHz (max possible), and with that you get 1280x1024@57 output from DVI.
++
++TODO
++----
++
++OMAP2 not tested for some time
++- DSS2 did work on OMAP2, but I haven't been able to test it for some time.
++
++DSS locking
++
++Error checking
++- Lots of checks are missing or implemented just as BUG()
++
++Rotate (external FB)
++Rotate (VRFB)
++Rotate (SMS)
++
++System DMA update for DSI
++- Can be used for RGB16 and RGB24P modes. Probably not for RGB24U (how
++  to skip the empty byte?)
++
++Power management
++- Context saving
++
++Resolution change
++- The x/y res of the framebuffer are not display resolutions, but the size
++  of the overlay.
++- The display resolution affects all planes on the display.
++
++OMAP1 support
++- Not sure if needed
++
+-- 
+1.5.6.3
+

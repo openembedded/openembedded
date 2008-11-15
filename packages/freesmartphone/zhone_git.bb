@@ -2,7 +2,7 @@ DESCRIPTION = "A phone UI based on the freesmartphone.org framework"
 LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "edje-native python-pyrex-native python-cython-native"
-PV = "0.0.1+gitr${SRCREV}"
+PV = "0.0.2+gitr${SRCREV}"
 PR = "r10"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \

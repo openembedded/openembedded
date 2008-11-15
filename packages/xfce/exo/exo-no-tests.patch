@@ -1,0 +1,14 @@
+The tests/ subdir consists of stuff trying to run a generated file ('exo-csource'), which doesn't work on host systems
+
+--- /tmp/Makefile.am	2008-10-30 09:23:41.000000000 +0100
++++ exo-0.3.4/Makefile.am	2008-10-30 09:24:03.011124000 +0100
+@@ -23,8 +23,7 @@
+ 	pixmaps								\
+ 	po								\
+ 	po-doc								\
+-	$(PYTHON_SUBDIR)						\
+-	tests
++	$(PYTHON_SUBDIR)
+ 
+ AUTOMAKE_OPTIONS =							\
+ 	1.8								\

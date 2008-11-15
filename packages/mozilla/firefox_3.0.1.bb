@@ -1,5 +1,5 @@
 DEPENDS += "cairo"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/firefox-${PV}-source.tar.bz2 \
 	file://jsautocfg.h \

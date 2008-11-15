@@ -9,7 +9,7 @@ PR = "r0"
 inherit task
 
 # Default illume theme
-ILLUME_THEME ?= "illume-theme-illume"
+ILLUME_THEME ?= "e-wm-theme-illume"
 
 RDEPENDS_${PN} = "\
   task-x11-server \
@@ -17,11 +17,6 @@ RDEPENDS_${PN} = "\
 #  xserver-kdrive-splash-illume \
   \
   e-wm \
-  illume \
-  illume-config-illume \
-  illume-dicts-english-us \
-  illume-keyboards-default \
-  illume-keyboards-numbers \
-  illume-keyboards-terminal \
+  e-wm-config-illume \
   ${ILLUME_THEME} \
 "

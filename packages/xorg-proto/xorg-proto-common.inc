@@ -5,6 +5,8 @@ LICENSE = "MIT-X"
 
 XORG_PN = "${PN}"
 
+ALLOW_EMPTY = "1"
+
 SRC_URI = "${XORG_MIRROR}/individual/proto/${XORG_PN}-${PV}.tar.bz2"
 
 S = "${WORKDIR}/${XORG_PN}-${PV}"

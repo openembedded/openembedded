@@ -13,7 +13,7 @@ RDEPENDS = "\
   pulseaudio-module-cli-protocol-unix \
   pulseaudio-module-rescue-streams\
   pulseaudio-module-suspend-on-idle \
-  pulseaudio-module-volue-restore \
+  pulseaudio-module-volume-restore \
   gst-plugin-pulse \
   libasound-module-ctl-pulse \
   libasound-module-pcm-pulse \

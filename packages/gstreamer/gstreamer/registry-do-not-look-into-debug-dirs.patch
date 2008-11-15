@@ -1,0 +1,39 @@
+Work around a glibc 2.6.1 bug with dlopen. We try to dlopen a .so file that
+only contains debug symbols (e.g. no architecture is set in the elf header)
+
+
+#0  0x4000a88c in _dl_relocate_object () from /lib/ld-linux.so.3
+(gdb) bt
+#0  0x4000a88c in _dl_relocate_object () from /lib/ld-linux.so.3
+#1  0x40011f68 in dl_open_worker () from /lib/ld-linux.so.3
+#2  0x4000d7e4 in _dl_catch_error () from /lib/ld-linux.so.3
+#3  0x400117d8 in _dl_open () from /lib/ld-linux.so.3
+#4  0x402fba84 in dlopen_doit () from /lib/libdl.so.2
+#5  0x4000d7e4 in _dl_catch_error () from /lib/ld-linux.so.3
+#6  0x402fbf50 in _dlerror_run () from /lib/libdl.so.2
+#7  0x402fb9bc in dlopen@@GLIBC_2.4 () from /lib/libdl.so.2
+#8  0x402f2790 in g_module_open () from /usr/lib/libgmodule-2.0.so.0
+#9  0x40078784 in gst_plugin_load_file (
+    filename=0x10a6c8 "/usr/lib/gstreamer-0.10/.debug/libgstcoreindexers.so", 
+    error=0x0) at gstplugin.c:481
+#10 0x4007e3c4 in gst_registry_scan_path_level (registry=0x27828, 
+    path=0x10a6a0 "/usr/lib/gstreamer-0.10/.debug", level=1) at gstregistry.c:891
+#11 0x4007df04 in gst_registry_scan_path_level (registry=0x27828, 
+
+
+Index: gstreamer-0.10.17/gst/gstregistry.c
+===================================================================
+--- gstreamer-0.10.17.orig/gst/gstregistry.c	2008-11-14 23:30:48.000000000 +0100
++++ gstreamer-0.10.17/gst/gstregistry.c	2008-11-14 23:32:39.000000000 +0100
+@@ -813,7 +813,10 @@
+     GST_LOG_OBJECT (registry, "examining file: %s", filename);
+ 
+     if (g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+-      if (level > 0) {
++      if (g_str_has_suffix (filename, ".debug")) {
++        GST_LOG_OBJECT (registry,
++            "found directory, not descending into .debug directory");
++      } else if (level > 0) {
+         GST_LOG_OBJECT (registry, "found directory, recursing");
+         changed |= gst_registry_scan_path_level (registry, filename, level - 1);
+       } else {

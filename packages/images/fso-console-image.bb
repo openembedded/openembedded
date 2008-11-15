@@ -1,13 +1,12 @@
 #------------------------------------------------------
-# freesmartphone.org Console Image Recipe
+# FSO compliant Console Image Recipe
 #------------------------------------------------------
 
 require fso-image.bb
 
 IMAGE_INSTALL = "\
-  ${BASE_INSTALL} \
-  ${AUDIO_INSTALL} \
-  ${TOOLS_INSTALL} \
-  ${PYTHON_INSTALL} \
-  frameworkd \
+  task-base \
+  task-fso-compliance \
+  task-cli-tools \
+  task-cli-tools-python \
 "

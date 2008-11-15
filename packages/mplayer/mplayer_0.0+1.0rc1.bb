@@ -2,7 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS = "virtual/libsdl zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "http://www1.mplayerhq.hu/MPlayer/releases/MPlayer-1.0rc1.tar.bz2 \
@@ -36,9 +37,11 @@ SRC_URI_append_collie = "file://disable-executable-stack-test.patch;patch=1"
 PACKAGE_ARCH_mplayer_collie = "collie"
 PACKAGE_ARCH_mencoder_collie = "collie"
 
+ARM_INSTRUCTION_SET = "ARM"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
-PR = "r16"
+PR = "r18"
 
 PARALLEL_MAKE = ""
 

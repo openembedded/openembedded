@@ -10,9 +10,9 @@ inherit java update-alternatives
 # The PhoneME Advanced build system is documented here: http://java.sun.com/javame/reference/docs/cdc_build_system.pdf
 # NOTE: We need to provide an empty password. pswd='' seems not to be the correct way.
 SRC_URI = "\
-	svn://phoneme.dev.java.net/svn/phoneme/builds/phoneme_advanced-mr2-dev-${BUILDREV};module=cdc;proto=https;localdir=cdc;user=guest;pswd='' \
-	svn://phoneme.dev.java.net/svn/phoneme/builds/phoneme_advanced-mr2-dev-${BUILDREV};module=tools;proto=https;localdir=tools;user=guest;pswd='' \
-	svn://phoneme.dev.java.net/svn/phoneme;module=legal;localdir=legal;proto=https;user=guest;pswd='' \
+	svn://guest:''@phoneme.dev.java.net/svn/phoneme/builds/phoneme_advanced-mr2-dev-${BUILDREV};module=cdc;proto=https;localdir=cdc \
+	svn://guest:''@phoneme.dev.java.net/svn/phoneme/builds/phoneme_advanced-mr2-dev-${BUILDREV};module=tools;proto=https;localdir=tools \
+	svn://guest:''@phoneme.dev.java.net/svn/phoneme;module=legal;localdir=legal;proto=https \
 	"
 
 PROVIDES = "virtual/java-cdc java-cdc-runtime"

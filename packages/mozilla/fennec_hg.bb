@@ -2,12 +2,12 @@ DESCRIPTION = "Mozilla Mobile browser"
 DEPENDS += "cairo alsa-lib "
 
 PV = "0.9+1.0a1"
-MOZPV = "1.0a1"
-PR = "r0"
+MOZPV = "1.0a2pre"
+PR = "r1"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=6c2f8bd79cbc \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=8f96b58057ad \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=30a69fb5df8e \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=b6dd20dc72fa \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "

@@ -1,0 +1,296 @@
+From 06675e403dfe6fd9471513fb7db77db69c38c91d Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Fri, 14 Nov 2008 15:47:55 +0200
+Subject: [PATCH] DSS: Support for OMAP3 SDP board
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/mach-omap2/board-3430sdp.c |  234 +++++++++++++++++++++++++++++++++--
+ 1 files changed, 223 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
+index b7d2e92..ac4f806 100644
+--- a/arch/arm/mach-omap2/board-3430sdp.c
++++ b/arch/arm/mach-omap2/board-3430sdp.c
+@@ -40,6 +40,8 @@
+ #include <mach/keypad.h>
+ #include <mach/dma.h>
+ #include <mach/gpmc.h>
++#include <mach/omapfb.h>
++#include <mach/display.h>
+ 
+ #include <asm/io.h>
+ #include <asm/delay.h>
+@@ -240,14 +242,224 @@ static struct spi_board_info sdp3430_spi_board_info[] __initdata = {
+ 	},
+ };
+ 
+-static struct platform_device sdp3430_lcd_device = {
+-	.name		= "sdp2430_lcd",
+-	.id		= -1,
++static struct omap_fbmem_config sdp3430_fbmem0_config = {
++	.size = 1024*768*4,
++	.start = OMAPFB_MEMTYPE_SDRAM,
++};
++
++static struct omap_fbmem_config sdp3430_fbmem1_config = {
++	.size = 640*480*4,
++	.start = OMAPFB_MEMTYPE_SDRAM,
+ };
+ 
++static struct omap_fbmem_config sdp3430_fbmem2_config = {
++	.size = 640*480*4,
++	.start = OMAPFB_MEMTYPE_SDRAM,
++};
++
++
++#define SDP2430_LCD_PANEL_BACKLIGHT_GPIO	91
++#define SDP2430_LCD_PANEL_ENABLE_GPIO		154
++#define SDP3430_LCD_PANEL_BACKLIGHT_GPIO	24
++#define SDP3430_LCD_PANEL_ENABLE_GPIO		28
++
++#define PM_RECEIVER             TWL4030_MODULE_PM_RECEIVER
++#define ENABLE_VAUX2_DEDICATED  0x09
++#define ENABLE_VAUX2_DEV_GRP    0x20
++#define ENABLE_VAUX3_DEDICATED	0x03
++#define ENABLE_VAUX3_DEV_GRP	0x20
++
++#define ENABLE_VPLL2_DEDICATED	0x05
++#define ENABLE_VPLL2_DEV_GRP	0xE0
++#define TWL4030_VPLL2_DEV_GRP	0x33
++#define TWL4030_VPLL2_DEDICATED	0x36
++
++#define t2_out(c, r, v) twl4030_i2c_write_u8(c, r, v)
++
++static unsigned backlight_gpio;
++static unsigned enable_gpio;
++static int lcd_enabled;
++static int dvi_enabled;
++
++static void __init sdp3430_display_init(void)
++{
++	int r;
++
++	enable_gpio    = SDP3430_LCD_PANEL_ENABLE_GPIO;
++	backlight_gpio = SDP3430_LCD_PANEL_BACKLIGHT_GPIO;
++
++	r = gpio_request(enable_gpio, "LCD reset");
++	if (r) {
++		printk(KERN_ERR "failed to get LCD reset GPIO\n");
++		goto err0;
++	}
++
++	r = gpio_request(backlight_gpio, "LCD Backlight");
++	if (r) {
++		printk(KERN_ERR "failed to get LCD backlight GPIO\n");
++		goto err1;
++	}
++
++	gpio_direction_output(enable_gpio, 0);
++	gpio_direction_output(backlight_gpio, 0);
++
++	return;
++err1:
++	gpio_free(enable_gpio);
++err0:
++	return;
++}
++
++
++static int sdp3430_panel_enable_lcd(struct omap_display *display)
++{
++	u8 ded_val, ded_reg;
++	u8 grp_val, grp_reg;
++
++	if (dvi_enabled) {
++		printk(KERN_ERR "cannot enable LCD, DVI is enabled\n");
++		return -EINVAL;
++	}
++
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
++		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEDICATED,
++				TWL4030_VPLL2_DEDICATED);
++		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEV_GRP,
++				TWL4030_VPLL2_DEV_GRP);
++	}
++
++	ded_reg = TWL4030_VAUX3_DEDICATED;
++	ded_val = ENABLE_VAUX3_DEDICATED;
++	grp_reg = TWL4030_VAUX3_DEV_GRP;
++	grp_val = ENABLE_VAUX3_DEV_GRP;
++
++	gpio_direction_output(enable_gpio, 1);
++	gpio_direction_output(backlight_gpio, 1);
++
++	if (0 != t2_out(PM_RECEIVER, ded_val, ded_reg))
++		return -EIO;
++	if (0 != t2_out(PM_RECEIVER, grp_val, grp_reg))
++		return -EIO;
++
++	lcd_enabled = 1;
++
++	return 0;
++}
++
++static void sdp3430_panel_disable_lcd(struct omap_display *display)
++{
++	lcd_enabled = 0;
++
++	gpio_direction_output(enable_gpio, 0);
++	gpio_direction_output(backlight_gpio, 0);
++
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
++		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEDICATED);
++		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEV_GRP);
++		mdelay(4);
++	}
++}
++
++static struct omap_display_data sdp3430_display_data = {
++	.type = OMAP_DISPLAY_TYPE_DPI,
++	.name = "lcd",
++	.panel_name = "sharp-ls037v7dw01",
++	.u.dpi.data_lines = 16,
++	.panel_enable = sdp3430_panel_enable_lcd,
++	.panel_disable = sdp3430_panel_disable_lcd,
++};
++
++static int sdp3430_panel_enable_dvi(struct omap_display *display)
++{
++	if (lcd_enabled) {
++		printk(KERN_ERR "cannot enable DVI, LCD is enabled\n");
++		return -EINVAL;
++	}
++
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
++		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEDICATED,
++				TWL4030_VPLL2_DEDICATED);
++		t2_out(PM_RECEIVER, ENABLE_VPLL2_DEV_GRP,
++				TWL4030_VPLL2_DEV_GRP);
++	}
++
++	dvi_enabled = 1;
++
++	return 0;
++}
++
++static void sdp3430_panel_disable_dvi(struct omap_display *display)
++{
++	dvi_enabled = 0;
++
++	if (omap_rev() > OMAP3430_REV_ES1_0) {
++		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEDICATED);
++		t2_out(PM_RECEIVER, 0x0, TWL4030_VPLL2_DEV_GRP);
++		mdelay(4);
++	}
++}
++
++
++static struct omap_display_data sdp3430_display_data_dvi = {
++	.type = OMAP_DISPLAY_TYPE_DPI,
++	.name = "dvi",
++	.panel_name = "panel-dvi",
++	.u.dpi.data_lines = 24,
++	.panel_enable = sdp3430_panel_enable_dvi,
++	.panel_disable = sdp3430_panel_disable_dvi,
++};
++
++static int sdp3430_panel_enable_tv(struct omap_display *display)
++{
++#define ENABLE_VDAC_DEDICATED           0x03
++#define ENABLE_VDAC_DEV_GRP             0x20
++
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEDICATED,
++			TWL4030_VDAC_DEDICATED);
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER,
++			ENABLE_VDAC_DEV_GRP, TWL4030_VDAC_DEV_GRP);
++
++	return 0;
++}
++
++static void sdp3430_panel_disable_tv(struct omap_display *display)
++{
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEDICATED);
++	twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x00,
++			TWL4030_VDAC_DEV_GRP);
++}
++
++static struct omap_display_data sdp3430_display_data_tv = {
++	.type = OMAP_DISPLAY_TYPE_VENC,
++	.name = "tv",
++	.u.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
++	.panel_enable = sdp3430_panel_enable_tv,
++	.panel_disable = sdp3430_panel_disable_tv,
++};
++
++static struct omap_dss_platform_data sdp3430_dss_data = {
++	.num_displays = 3,
++	.displays = {
++		&sdp3430_display_data,
++		&sdp3430_display_data_dvi,
++		&sdp3430_display_data_tv,
++	}
++};
++
++static struct platform_device sdp3430_dss_device = {
++	.name          = "omap-dss",
++	.id            = -1,
++	.dev            = {
++		.platform_data = &sdp3430_dss_data,
++	},
++};
++
++
+ static struct platform_device *sdp3430_devices[] __initdata = {
+ 	&sdp3430_smc91x_device,
+-	&sdp3430_lcd_device,
++	&sdp3430_dss_device,
+ };
+ 
+ static inline void __init sdp3430_init_smc91x(void)
+@@ -294,13 +506,11 @@ static struct omap_uart_config sdp3430_uart_config __initdata = {
+ 	.enabled_uarts	= ((1 << 0) | (1 << 1) | (1 << 2)),
+ };
+ 
+-static struct omap_lcd_config sdp3430_lcd_config __initdata = {
+-	.ctrl_name	= "internal",
+-};
+-
+ static struct omap_board_config_kernel sdp3430_config[] __initdata = {
+ 	{ OMAP_TAG_UART,	&sdp3430_uart_config },
+-	{ OMAP_TAG_LCD,		&sdp3430_lcd_config },
++	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem0_config },
++	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem1_config },
++	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem2_config },
+ };
+ 
+ static int sdp3430_batt_table[] = {
+@@ -467,8 +677,6 @@ static void __init omap_3430sdp_init(void)
+ {
+ 	omap3430_i2c_init();
+ 	platform_add_devices(sdp3430_devices, ARRAY_SIZE(sdp3430_devices));
+-	omap_board_config = sdp3430_config;
+-	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
+ 	if (omap_rev() > OMAP3430_REV_ES1_0)
+ 		ts_gpio = OMAP34XX_TS_GPIO_IRQ_SDPV2;
+ 	else
+@@ -483,10 +691,14 @@ static void __init omap_3430sdp_init(void)
+ 	usb_musb_init();
+ 	usb_ehci_init();
+ 	hsmmc_init(mmc);
++	sdp3430_display_init();
+ }
+ 
+ static void __init omap_3430sdp_map_io(void)
+ {
++	omap_board_config = sdp3430_config;
++	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
++
+ 	omap2_set_globals_343x();
+ 	omap2_map_common_io();
+ }
+-- 
+1.5.6.3
+

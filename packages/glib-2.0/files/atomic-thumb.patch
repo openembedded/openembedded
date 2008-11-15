@@ -1,8 +1,10 @@
 # gatomic.c uses SWP, which doesn't work in Thumb mode.
 # Put that source file into a separate convenience library which is always built as ARM.
 
---- glib/glib/Makefile.am~	2008-07-01 23:30:12.000000000 +0100
-+++ glib/glib/Makefile.am	2008-10-27 10:03:42.000000000 +0000
+Index: glib-2.16.4/glib/Makefile.am
+===================================================================
+--- glib-2.16.4.orig/glib/Makefile.am	2008-11-06 00:53:11.253367291 +0100
++++ glib-2.16.4/glib/Makefile.am	2008-11-06 00:54:13.453356583 +0100
 @@ -80,6 +80,7 @@
  	galiasdef.c
  
@@ -27,12 +29,14 @@
  	gbacktrace.c		\
  	gbase64.c		\
  	gbookmarkfile.c 	\
-@@ -285,7 +290,7 @@
+@@ -285,8 +290,8 @@
  pcre_inc =
  endif
  
 -libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ $(pcre_lib)
+-libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) @GLIB_DEF@
 +libglib_2_0_la_LIBADD = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ @ICONV_LIBS@ @G_LIBS_EXTRA@ $(pcre_lib) libgatomic.la
- libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) @GLIB_DEF@
++libglib_2_0_la_DEPENDENCIES = libcharset/libcharset.la $(printf_la) @GIO@ @GSPAWN@ @PLATFORMDEP@ $(glib_win32_res) @GLIB_DEF@ libgatomic.la
  
  libglib_2_0_la_LDFLAGS = \
+ 	 $(glib_win32_res_ldflag) \

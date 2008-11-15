@@ -2,7 +2,8 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11"
+DEPENDS = "virtual/libsdl xsp zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 DEPENDS_append_c7x0 = " libw100 "
 DEPENDS_append_hx4700 = " libw100 "
 
@@ -39,10 +40,12 @@ PACKAGE_ARCH_collie = "collie"
 PACKAGE_ARCH_c7x0 = "c7x0"
 PACKAGE_ARCH_hx4700 = "hx4700"
 
+ARM_INSTRUCTION_SET = "ARM"
+
 RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
-PR = "r8"
+PR = "r10"
 
 PARALLEL_MAKE = ""
 
@@ -197,7 +200,9 @@ EXTRA_OECONF_append = " ${@base_contains('MACHINE_FEATURES', 'x86', '--enable-ru
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O4 -ffast-math"
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
-
+# FIXME: Temporarily disable debugging to work-around http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37987
+DEBUG_OPTIMIZATION_spitz = "-O -fomit-frame-pointer -g"
+DEBUG_OPTIMIZATION_akita = "-O -fomit-frame-pointer -g"
 
 do_configure() {
 	cp ${WORKDIR}/vo_w100.c ${S}/libvo
