@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r46"
+PR = "r47"
 
 inherit task
 
@@ -114,4 +114,39 @@ RDEPENDS_task-openmoko-feed = "\
   debianutils \
   tcptraceroute \
 # dnsutils/bind-tools for dig, nslookup is still missing \
+  font-adobe-100dpi \
+  font-adobe-75dpi \
+  font-adobe-utopia-100dpi \
+  font-adobe-utopia-75dpi \
+  font-adobe-utopia-type1 \
+  font-arabic-misc \
+  font-bh-100dpi \
+  font-bh-75dpi \
+  font-bh-lucidatypewriter-100dpi \
+  font-bh-lucidatypewriter-75dpi \
+  font-bh-ttf \
+  font-bh-type1 \
+  font-bitstream-100dpi \
+  font-bitstream-75dpi \
+  font-bitstream-speedo \
+  font-bitstream-type1 \
+  font-cronyx-cyrillic \
+  font-cursor-misc \
+  font-daewoo-misc \
+  font-dec-misc \
+  font-ibm-type1 \
+  font-isas-misc \
+  font-jis-misc \
+  font-micro-misc \
+  font-misc-cyrillic \
+  font-misc-ethiopic \
+  font-misc-meltho \
+  font-misc-misc \
+  font-mutt-misc \
+  font-schumacher-misc \
+  font-screen-cyrillic \
+  font-sony-misc \
+  font-sun-misc \
+  font-winitzki-cyrillic \
+  font-xfree86-type1 \
 "
