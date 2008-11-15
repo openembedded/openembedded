@@ -27,10 +27,8 @@ RDEPENDS_task-openmoko-basic = "\
 # illume-theme-asu should be first than illume
 # to let opkg install illume-theme-asu first than illume-theme-freesmartphone
 # then we have ASU theme but not FSO theme in default.
+           task-x11-illume \
            illume-theme-asu \
-           illume-theme-illume \
-           illume \
-           e-wm \
            ${XSERVER} \
            xserver-kdrive-common \
            xserver-nodm-init \
