@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r51"
+PR = "r52"
 
 inherit task
 
@@ -42,13 +42,12 @@ RDEPENDS_task-openmoko-feed = "\
   cacao \
   jamvm \
   classpath \
-#  gpsdrive \
+  gpsdrive \
   gpsd \
   asterisk \
-#  gnash \
+  gnash \
   mono \
-#  diversity-daemon \
-#  diversity-maps-taipei \
+  diversity-daemon \
   om-maps-berlin \
   om-maps-buenos-aires \
   om-maps-hong-kong \
@@ -63,13 +62,13 @@ RDEPENDS_task-openmoko-feed = "\
   om-locations \
   om-settings \
   assassin \
-#  assassin-thumbnail \
+  assassin-thumbnail \
   tangogps \
-#  pyefl-sudoku \
+  pyefl-sudoku \
   minicom \
   vim \
-#  iotop \
-#  evince \
+  iotop \
+  evince \
   epdf \
   xprop \
   xev \
@@ -81,7 +80,7 @@ RDEPENDS_task-openmoko-feed = "\
   tcpdump \
   gdb \
   lsof \
-#  openmoko-set-root-password \
+  openmoko-set-root-password \
 #  qtopia-phone-enable-debug \
   git \
   navit \
