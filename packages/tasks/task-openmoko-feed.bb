@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r54"
+PR = "r55"
 
 inherit task
 
@@ -66,7 +66,6 @@ RDEPENDS_task-openmoko-feed = "\
   tangogps \
   pyefl-sudoku \
   minicom \
-  vim \
   iotop \
   evince \
   epdfview \
@@ -110,10 +109,9 @@ RDEPENDS_task-openmoko-feed = "\
   iproute2 \
   iputils \
   psmisc \
-  tar \
-  coreutils \
   debianutils \
   tcptraceroute \
+  task-proper-tools \
 # dnsutils/bind-tools for dig, nslookup is still missing \
   font-adobe-100dpi \
   font-adobe-75dpi \
