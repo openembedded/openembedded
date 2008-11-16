@@ -4,8 +4,9 @@ DESCRIPTION = "Linux kernel for Neuros OSD devices"
 
 SRCREV = "2eaa4a30d599203ceed1b5a42d713b29151a39eb"
 
-PV = "2.6.23-${PR}+git${SRCREV}"
+PV = "2.6.23-${PR}+gitr${SRCREV}"
 PR = "r13"
+PE = "1"
 
 COMPATIBLE_MACHINE = "(neuros-osd|neuros-osd2)"
 

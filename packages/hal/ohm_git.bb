@@ -8,7 +8,8 @@ SRC_URI = "git://anongit.freedesktop.org/git/ohm/;protocol=git \
            file://fix_configure.patch;patch=1"
 
 SRCREV = "edfe25d49d67884bf004de7ae0724c162bb5e65e"
-PV = "0.1.2+${PR}+git${SRCREV}"
+PV = "0.1.2+${PR}+gitr${SRCREV}"
+PE = "1"
 
 S = "${WORKDIR}/git"
 

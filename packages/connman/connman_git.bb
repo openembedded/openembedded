@@ -1,7 +1,8 @@
 HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SUMMARY  = "Moblin Connection Manager"
-PV       = "0.0+git${SRCREV}"
+PV       = "0.0+gitr${SRCREV}"
 PR       = "r4.02"
+PE       = "1"
 S        = "${WORKDIR}/git"
 LICENSE  = "GPL"
 

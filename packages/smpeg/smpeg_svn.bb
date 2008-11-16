@@ -4,7 +4,8 @@ LICENSE = "LGPL"
 SECTION = "libs/multimedia"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
-PV = "0.4.5+rsvn${SRCREV}"
+PV = "0.4.5+svnr${SRCREV}"
+PE = "1"
 SRCREV = "370"
 
 SRC_URI = "svn://svn.icculus.org/smpeg/;module=trunk  \
