@@ -191,7 +191,8 @@ do
 		      pkgconfig \
 		      pocketcellar \
 		      prboom \
-		      python \
+		      pushover \
+              python \
 		      python-pybluez \
 		      qfish2 \
 		      qmatrix \
