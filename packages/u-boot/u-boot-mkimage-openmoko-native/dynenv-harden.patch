@@ -30,7 +30,7 @@ Index: u-boot/include/util.h
 +/*
 + * util.h - Convenience functions
 + *
-+ * (C) Copyright 2006-2007 OpenMoko, Inc.
++ * (C) Copyright 2006-2007 Openmoko, Inc.
 + * Author: Werner Almesberger <werner@openmoko.org>
 + *
 + * This program is free software; you can redistribute it and/or

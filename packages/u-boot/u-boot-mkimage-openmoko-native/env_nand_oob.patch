@@ -112,7 +112,7 @@ Index: u-boot/common/cmd_dynenv.c
 +++ u-boot/common/cmd_dynenv.c
 @@ -0,0 +1,85 @@
 +/*
-+ * (C) Copyright 2006-2007 OpenMoko, Inc.
++ * (C) Copyright 2006-2007 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * This program is free software; you can redistribute it and/or

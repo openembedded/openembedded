@@ -28,7 +28,7 @@ Index: u-boot/board/neo1973/common/bootmenu.c
 +/*
 + * bootmenu.c - Boot menu
 + *
-+ * Copyright (C) 2006-2007 by OpenMoko, Inc.
++ * Copyright (C) 2006-2007 by Openmoko, Inc.
 + * Written by Werner Almesberger <werner@openmoko.org>
 + * All Rights Reserved
 + *
@@ -370,7 +370,7 @@ Index: u-boot/common/bootmenu.c
 +/*
 + * bootmenu.c - Boot menu
 + *
-+ * Copyright (C) 2006-2007 by OpenMoko, Inc.
++ * Copyright (C) 2006-2007 by Openmoko, Inc.
 + * Written by Werner Almesberger <werner@openmoko.org>
 + * All Rights Reserved
 + *
@@ -686,7 +686,7 @@ Index: u-boot/include/bootmenu.h
 +/*
 + * bootmenu.h - Boot menu
 + *
-+ * Copyright (C) 2006-2007 by OpenMoko, Inc.
++ * Copyright (C) 2006-2007 by Openmoko, Inc.
 + * Written by Werner Almesberger <werner@openmoko.org>
 + * All Rights Reserved
 + *

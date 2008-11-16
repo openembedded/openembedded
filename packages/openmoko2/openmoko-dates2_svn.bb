@@ -3,7 +3,7 @@ SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus libjana"
 RDEPENDS = "libedata-cal"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit openmoko2 pkgconfig
 
@@ -16,4 +16,4 @@ do_configure_prepend() {
 	touch gtk-doc.make
 }
 
-
+PKG_TAGS_${PN} = "group::communication alias::Om_Dates2"

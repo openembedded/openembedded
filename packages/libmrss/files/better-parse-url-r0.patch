@@ -2,7 +2,7 @@ upstream: mailed to bakunin_at_autistici_dot_org by Laibsch
 status: committed in upstream CVS on Feb 26th 2008
 comment: API addition to not manually setup the CURL connection and still
 be able to get the transfered feed and save it to secondary storage. done
-by zecke for the OpenMoko RSS reader.
+by zecke for the Openmoko RSS reader.
 
 
 Index: libmrss-0.17.2/src/mrss.h

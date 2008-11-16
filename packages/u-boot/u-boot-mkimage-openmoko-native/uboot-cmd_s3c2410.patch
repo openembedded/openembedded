@@ -22,7 +22,7 @@ Index: u-boot/cpu/arm920t/s3c24x0/cmd_s3c2410.c
 +++ u-boot/cpu/arm920t/s3c24x0/cmd_s3c2410.c	2007-02-24 15:22:17.000000000 +0100
 @@ -0,0 +1,152 @@
 +/*
-+ * (C) Copyright 2006 by OpenMoko, Inc.
++ * (C) Copyright 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this

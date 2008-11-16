@@ -1,5 +1,5 @@
 DESCRIPTION = "Configuration files for online package repositories of Openmoko community repository feeds"
-PR = "r0.02"
+PR = "r0.03"
 
 do_compile() {
     mkdir -p ${S}/${sysconfdir}/opkg
@@ -16,6 +16,6 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CONFFILES_${PN} += "${sysconfdir}/opkg/Multiverse-feed.conf"
 
-PKG_TAGS_${PN} = "group::repos"
+PKG_TAGS_${PN} = "group::repos alias::Om_Multiverse"
 
 OPENMOKO_URI = "http://downloads.openmoko.org/repository"

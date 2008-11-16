@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r47"
+PR = "r54"
 
 inherit task
 
@@ -22,13 +22,13 @@ RDEPENDS_task-openmoko-feed = "\
   kbdd \
   kexec-tools \
   midori \
-  mplayer \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)} \
   mtpaint \
   mysql \
   nano \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
-  python python-pygtk python-pyserial python-gst \
+  python python-pygtk python-pyserial python-gst python-pygame \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
@@ -38,17 +38,16 @@ RDEPENDS_task-openmoko-feed = "\
   vnc \
   wxwidgets \
   x11vnc \
-#  libswt3.4-gtk-java \
-#  cacao \
-#  jamvm \
-#  classpath \
-#  gpsdrive \
+  libswt3.4-gtk-java \
+  cacao \
+  jamvm \
+  classpath \
+  gpsdrive \
   gpsd \
   asterisk \
-#  gnash \
+  gnash \
   mono \
-#  diversity-daemon \
-#  diversity-maps-taipei \
+  diversity-daemon \
   om-maps-berlin \
   om-maps-buenos-aires \
   om-maps-hong-kong \
@@ -63,14 +62,14 @@ RDEPENDS_task-openmoko-feed = "\
   om-locations \
   om-settings \
   assassin \
-#  assassin-thumbnail \
+  assassin-thumbnail \
   tangogps \
-#  pyefl-sudoku \
+  pyefl-sudoku \
   minicom \
   vim \
-#  iotop \
-#  evince \
-  epdf \
+  iotop \
+  evince \
+  epdfview \
   xprop \
   xev \
   xwininfo \
@@ -81,7 +80,7 @@ RDEPENDS_task-openmoko-feed = "\
   tcpdump \
   gdb \
   lsof \
-#  openmoko-set-root-password \
+  openmoko-set-root-password \
 #  qtopia-phone-enable-debug \
   git \
   navit \
@@ -103,6 +102,8 @@ RDEPENDS_task-openmoko-feed = "\
   epdfview \
   midori \
   microcom \
+  zhone \
+  frameworkd \
   emacs \
 # for werner \
   net-tools \

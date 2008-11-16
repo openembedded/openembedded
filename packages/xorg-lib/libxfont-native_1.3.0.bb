@@ -2,6 +2,7 @@ require libxfont_${PV}.bb
 
 DEPENDS = "xproto-native zlib-native fontcacheproto-native fontsproto-native \
            libfontenc-native xtrans-native freetype-native util-macros-native"
+PROVIDES = "${P} ${PF} ${PN}"
 PE = "1"
 
 # no need for patch used in libxfont

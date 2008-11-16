@@ -90,7 +90,7 @@ Index: u-boot/board/smdk2443/smdk2443.c
 +++ u-boot/board/smdk2443/smdk2443.c
 @@ -0,0 +1,147 @@
 +/*
-+ * (C) Copyright 2006 OpenMoko, Inc.
++ * (C) Copyright 2006 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this
@@ -305,7 +305,7 @@ Index: u-boot/include/configs/smdk2443.h
 +++ u-boot/include/configs/smdk2443.h
 @@ -0,0 +1,289 @@
 +/*
-+ * (C) Copyright 2007 OpenMoko, Inc.
++ * (C) Copyright 2007 Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * Configuation settings for the SAMSUNG SMDK2443 board.
@@ -688,7 +688,7 @@ Index: u-boot/board/smdk2443/lowlevel_init.S
 +/*
 + * SMDK2443 Memory Setup
 + *
-+ * Copyright (C) 2007 by OpenMoko, Inc.
++ * Copyright (C) 2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * See file CREDITS for list of people who contributed to this

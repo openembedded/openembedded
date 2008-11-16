@@ -138,7 +138,7 @@ Index: u-boot/board/neo1973/gta01/nand.c
 +/*
 + * nand.c - Board-specific NAND setup
 + *
-+ * Copyright (C) 2007 by OpenMoko, Inc.
++ * Copyright (C) 2007 by Openmoko, Inc.
 + * Written by Werner Almesberger <werner@openmoko.org>
 + * All Rights Reserved
 + *
@@ -264,7 +264,7 @@ Index: u-boot/board/neo1973/gta02/nand.c
 +/*
 + * nand.c - Board-specific NAND setup
 + *
-+ * Copyright (C) 2007 by OpenMoko, Inc.
++ * Copyright (C) 2007 by Openmoko, Inc.
 + * Written by Werner Almesberger <werner@openmoko.org>
 + * All Rights Reserved
 + *

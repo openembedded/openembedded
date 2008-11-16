@@ -17,7 +17,7 @@ Index: u-boot/drivers/s3c2410_fb.c
 +++ u-boot/drivers/s3c2410_fb.c
 @@ -0,0 +1,166 @@
 +/*
-+ * (C) Copyright 2006 by OpenMoko, Inc.
++ * (C) Copyright 2006 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * This program is free software; you can redistribute it and/or

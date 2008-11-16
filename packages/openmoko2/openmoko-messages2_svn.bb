@@ -2,7 +2,8 @@ DESCRIPTION = "The Openmoko Message application"
 SECTION = "openmoko/pim"
 DEPENDS = "libmokogsmd2 libmokoui2 libmokojournal2 libjana"
 PV = "0.1.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
+PKG_TAGS_${PN} = "group::communication alias::Om_Messages2"
 
 inherit openmoko2
 

@@ -20,7 +20,7 @@ Index: u-boot/drivers/usbdcore_s3c2410.c
 @@ -0,0 +1,730 @@
 +/* S3C2410 USB Device Controller Driver for u-boot
 + *
-+ * (C) Copyright 2007 by OpenMoko, Inc.
++ * (C) Copyright 2007 by Openmoko, Inc.
 + * Author: Harald Welte <laforge@openmoko.org>
 + *
 + * based on Linux' s3c2410_udc.c, which is
@@ -1137,7 +1137,7 @@ Index: u-boot/include/configs/neo1973_gta01.h
 +#define CONFIG_USBD_VENDORID 		0x1457     /* Linux/NetChip */
 +#define CONFIG_USBD_PRODUCTID_GSERIAL	0x5120    /* gserial */
 +#define CONFIG_USBD_PRODUCTID_CDCACM 	0x5119    /* CDC ACM */
-+#define CONFIG_USBD_MANUFACTURER	"OpenMoko, Inc"
++#define CONFIG_USBD_MANUFACTURER	"Openmoko, Inc"
 +#define CONFIG_USBD_PRODUCT_NAME	"Neo1973 Bootloader " U_BOOT_VERSION
 +#define CONFIG_EXTRA_ENV_SETTINGS 	"usbtty=cdc_acm\0"
 +
