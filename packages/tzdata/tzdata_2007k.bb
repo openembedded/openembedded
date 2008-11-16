@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r3"
+PR = "r3.01"
 
 RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
@@ -19,6 +19,8 @@ TZONES= "africa antarctica asia australasia europe northamerica southamerica  \
 #        pacificnew \
         "
 
+CONFFILES_${PN} = "${sysconfdir}/timezone ${sysconfdir}/localtime"
+
 do_compile () {
         for zone in ${TZONES}; do \
             ${STAGING_BINDIR_NATIVE}/zic -d ${WORKDIR}${datadir}/zoneinfo -L /dev/null \
@@ -33,6 +35,11 @@ do_compile () {
 do_install () {
         install -d ${D}/usr ${D}${datadir}/zoneinfo
         cp -pPR ${S}/usr ${D}/
+
+        # Install a sane default for timezones
+        install -d ${D}${sysconfdir}
+        echo "Europe/London" > ${D}${sysconfdir}/timezone
+        cp -pPR ${S}/usr/share/zoneinfo/Europe/London ${D}${sysconfdir}/localtime
 }
 
 # Packages primarily organized by directory with a major city
@@ -157,4 +164,6 @@ FILES_${PN} += "${datadir}/zoneinfo/Pacific/Honolulu     \
                 ${datadir}/zoneinfo/W-SU                 \
                 ${datadir}/zoneinfo/WET                  \
                 ${datadir}/zoneinfo/Zulu                 \
-                ${datadir}/zoneinfo/Etc/*"
+                ${datadir}/zoneinfo/Etc/*                \
+                ${sysconfdir}/localtime                  \
+                ${sysconfdir}/timezone                   "
