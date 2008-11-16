@@ -6,7 +6,7 @@ SECTION = "multimedia"
 
 PR = "r2"
 
-DEPENDS = "libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac \
+DEPENDS = "libfribidi libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "http://videolan.mirror.technotop.nl/vlc/${PV}/vlc-${PV}.tar.bz2"
@@ -29,6 +29,7 @@ EXTRA_OECONF = "\
 	--enable-dbus \
 	--enable-hal \	
 	--without-contrib \
+	--disable-opengl --disable-glx \
 	ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}/moc4 \
 	ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}/rcc4 \
 	ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}/uic4 \

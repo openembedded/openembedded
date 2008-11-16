@@ -45,6 +45,7 @@ SRC_URI_append = " \
            file://0011-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
 #           file://fix-asoc.diff;patch=1 \
            file://fix-mmc.diff;patch=1 \
+		http://www.bat.org/~tomba/git/0001-debug-prints.patch;patch=1 \
 "
 
 
