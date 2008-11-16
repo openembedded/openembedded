@@ -174,7 +174,9 @@ do
 		      nmm \
 		      notecase \
 		      numptyphysics \
-	          openmoko-browser2 \
+	          opencv \
+              opencv-samples \
+              openmoko-browser2 \
 		      openredalert \
 		      openvpn \
 		      opie-notes \

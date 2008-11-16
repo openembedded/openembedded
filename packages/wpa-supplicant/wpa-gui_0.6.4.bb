@@ -12,6 +12,7 @@ SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz "
 S = "${WORKDIR}/wpa_supplicant-${PV}/wpa_supplicant/wpa_gui"
 
 inherit qt4x11
+ARM_INSTRUCTION_SET = "arm"
 
 EXTRA_QMAKEVARS_POST += "CONFIG+=thread"
 

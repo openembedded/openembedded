@@ -1,7 +1,8 @@
 require linux.inc
 
-PV = "2.6.24+git${SRCREV}"
+PV = "2.6.24+gitr${SRCREV}"
 PR = "r1"
+PE = "1"
 
 COMPATIBLE_MACHINE = "htckaiser|htcpolaris"
 

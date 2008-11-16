@@ -1,0 +1,14 @@
+:M:
+Index: vagalume-0.5.1/Makefile.am
+===================================================================
+--- vagalume-0.5.1.orig/Makefile.am
++++ vagalume-0.5.1/Makefile.am
+@@ -42,7 +42,7 @@ themesmallicondir = $(appdatadir)/icons/
+ themesmallicon_DATA = data/buttons/small/*.png
+ else
+ themeicondir = $(appdatadir)/icons/hicolor/scalable/actions
+-themeicon_DATA = data/buttons/big/*.svg data/buttons/small/*.svg
++themeicon_DATA = data/buttons/big/*.png data/buttons/small/*.png
+ endif
+ 
+ if HAVE_DBUS_SUPPORT

@@ -3,7 +3,8 @@ LICENSE = "LGPL"
 DEPENDS = "babl librsvg glib-2.0 gtk+ pango cairo expat zlib libpng jpeg virtual/libsdl"
 
 SRCREV = "2543"
-PV = "0.0.19+svn${SRCREV}"
+PV = "0.0.19+svnr${SRCREV}"
+PE = "1"
 
 inherit gnome
 

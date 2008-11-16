@@ -4,26 +4,25 @@ PRIORITY = "optional"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"
-PR = "r3"
+PR = "r5"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
-
 S = "${WORKDIR}/Zope-${PV}"
+
+inherit distutils-base
 
 do_configure() {
 	./configure --with-python=${STAGING_BINDIR_NATIVE}/python --prefix=${prefix} --force
 }
 
 do_compile() {
-	oe_runmake HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
+	oe_runmake HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS} STAGING_INCDIR=${STAGING_INCDIR}
 }
 
-PYTHON_MAJMIN = "2.4"
-
 do_install() {
-	install -d ${D}${libdir}/python${PYTHON_MAJMIN}
+	install -d ${D}${libdir}/${PYTHON_DIR}
 	oe_runmake install prefix=${D}${prefix} HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
-	mv ${D}${libdir}/python/* ${D}${libdir}/python${PYTHON_MAJMIN} 
+	mv ${D}${libdir}/python/* ${D}${libdir}/${PYTHON_DIR} 
 }
 
 PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
@@ -31,15 +30,15 @@ PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
 FILES_${PN} = "${prefix}"
 FILES_${PN}_doc = "${prefix}/doc"
 FILES_${PN}-dbg += "\
-${libdir}/python${PYTHON_MAJMIN}/BTrees/.debug \
-${libdir}/python${PYTHON_MAJMIN}/persistent/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/proxy/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/thread/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/security/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/hookable/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/app/container/.debug \
-${libdir}/python${PYTHON_MAJMIN}/zope/i18nmessageid/.debug \
-${libdir}/python${PYTHON_MAJMIN}/ZODB/.debug"
-FILES_python-zopeinterface-dbg += "${libdir}/python${PYTHON_MAJMIN}/zope/interface/.debug "
+${libdir}/${PYTHON_DIR}/BTrees/.debug \
+${libdir}/${PYTHON_DIR}/persistent/.debug \
+${libdir}/${PYTHON_DIR}/zope/proxy/.debug \
+${libdir}/${PYTHON_DIR}/zope/thread/.debug \
+${libdir}/${PYTHON_DIR}/zope/security/.debug \
+${libdir}/${PYTHON_DIR}/zope/hookable/.debug \
+${libdir}/${PYTHON_DIR}/zope/app/container/.debug \
+${libdir}/${PYTHON_DIR}/zope/i18nmessageid/.debug \
+${libdir}/${PYTHON_DIR}/ZODB/.debug"
+FILES_python-zopeinterface-dbg += "${libdir}/${PYTHON_DIR}/zope/interface/.debug "
 
-FILES_python-zopeinterface = "${libdir}/python${PYTHON_MAJMIN}/zope/interface/*.* ${libdir}/python${PYTHON_MAJMIN}/zope/interface/common"
+FILES_python-zopeinterface = "${libdir}/${PYTHON_DIR}/zope/interface/*.* ${libdir}/${PYTHON_DIR}/zope/interface/common"
