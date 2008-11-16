@@ -1,7 +1,7 @@
 DESCRIPTION = "Icculus.org quake2 engine"
 LICENSE = "GPL"
 
-DEPENDS = "libsdl-x11" 
+DEPENDS = "libsdl-x11 libxxf86dga" 
 
 SRCREV = "205"
 PV = "0.16.1+svnr${SRCREV}"
