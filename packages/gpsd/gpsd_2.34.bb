@@ -1,4 +1,4 @@
 require gpsd.inc
 
-PR = "r9.02"
+PR = "r10"
 
