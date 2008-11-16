@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r53"
+PR = "r54"
 
 inherit task
 
@@ -114,6 +114,7 @@ RDEPENDS_task-openmoko-feed = "\
   coreutils \
   debianutils \
   tcptraceroute \
+  wget \
 # dnsutils/bind-tools for dig, nslookup is still missing \
   font-adobe-100dpi \
   font-adobe-75dpi \
