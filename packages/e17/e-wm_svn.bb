@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.043+svnr${SRCREV}"
-PR = "r17"
+PR = "r18"
 
 inherit e update-alternatives
 
@@ -93,6 +93,8 @@ FILES_${PN} = "\
   ${datadir}/enlightenment/data/icons \
   ${datadir}/enlightenment/data/input_methods \
   ${datadir}/enlightenment/data/config/profile.cfg \
+  ${datadir}/enlightenment/AUTHORS \
+  ${datadir}/enlightenment/COPYING \
   ${sysconfdir} \
 "
 FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"
