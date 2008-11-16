@@ -12,7 +12,7 @@ IMAGE = -lSDL_image
 MIXER = -lSDL_mixer
 SMPEG = -lsmpeg 
 PNG = -lpng
-JPEG = ljpeg
+JPEG = -ljpeg
 SCRAP = -lX11
 
 #DEBUG = -C-W -C-Wall

@@ -1,12 +1,11 @@
 DESCRIPTION = "Python libSDL Bindings"
 SECTION = "devel/python"
 HOMEPAGE = "http://www.pygame.org"
-PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libsdl-x11 libsdl-image libsdl-mixer libsdl-net libsdl-ttf python-numeric"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'smpeg', d)}"
 SRCNAME = "pygame"
-PR = "ml2"
+PR = "ml3"
 
 SRC_URI = "\
   ftp://ftp.pygame.org/pub/pygame/${SRCNAME}-${PV}release.tar.gz \
