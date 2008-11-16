@@ -13,7 +13,7 @@ RDEPENDS = "\
 "
 RREPLACES = "openmoko-sound-system"
 RPROVIDES = "openmoko-sound-system"
-PR = "r5"
+PR = "r5.01"
 
 inherit openmoko-base update-rc.d
 
@@ -28,7 +28,7 @@ do_install() {
     install -d ${D}/${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/pulseaudio ${D}/${sysconfdir}/init.d/
     install -d ${D}/${sysconfdir}/pulse
-	install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/pulse/session
+    install -m 0755 ${WORKDIR}/session ${D}/${sysconfdir}/pulse/session
 }
 
 PACKAGE_ARCH = "all"

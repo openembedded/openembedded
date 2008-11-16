@@ -1,0 +1,3 @@
+# If you must specify a non-NMEA driver, uncomment and modify the next line
+#GPSD_OPTS=
+GPS_DEV="/dev/ttySAC1"

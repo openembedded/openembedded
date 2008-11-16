@@ -6,7 +6,6 @@ add-autoload-source input module-alsa-source source_name=input
 
 # Load several protocols
 load-module module-esound-protocol-unix
-load-module module-simple-protocol-tcp
 load-module module-native-protocol-unix
 load-module module-cli-protocol-unix
 
