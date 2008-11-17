@@ -38,11 +38,13 @@ AUDIO_INSTALL = "\
   alsa-utils-amixer \
   gst-meta-audio \
   gst-plugin-modplug \
-  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad gst-plugin-sid', d)} \
+  gst-plugin-sid \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
   fso-sounds \
 "
 
 GTK_INSTALL = "\
+  hicolor-icon-theme \
   tango-icon-theme \
   openmoko-calculator2 \
   vala-terminal \
