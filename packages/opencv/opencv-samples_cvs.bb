@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "opencv"
 
