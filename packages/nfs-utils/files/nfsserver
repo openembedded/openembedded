@@ -65,6 +65,7 @@ stop_mountd(){
 #nfsd
 start_nfsd(){
 	echo -n "starting $1 nfsd kernel threads: "
+	modprobe nfsd
 	start-stop-daemon --start --exec "$NFS_NFSD" -- "$@"
 	echo done
 }

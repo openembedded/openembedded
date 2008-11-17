@@ -1,0 +1,11 @@
+--- /src/mime.c~	2008-04-06 21:29:30.000000000 +0200
++++ /src/mime.c	2008-04-06 21:29:30.000000000 +0200
+@@ -60,7 +60,7 @@
+   { "m4v",   "MPEG4_P2_TS_ASP_MPEG1_L3", UPNP_VIDEO, "http-get:*:video/mp4:"},
+   { "m4p",   "MPEG4_P2_TS_ASP_MPEG1_L3", UPNP_VIDEO, "http-get:*:video/mp4:"},
+   { "mp4ps", "MPEG4_P2_TS_ASP_MPEG1_L3", UPNP_VIDEO, "http-get:*:video/x-nerodigital-ps:"},
+-  { "ts",    "MPEG_TS_SD_NA",            UPNP_VIDEO, "http-get:*:video/mpeg2:"},
++  { "ts",    "MPEG_TS_SD_NA",            UPNP_VIDEO, "http-get:*:video/ts:"},
+   { "ogm",   NULL,                       UPNP_VIDEO, "http-get:*:video/mpeg:"},
+   { "mkv",   NULL,                       UPNP_VIDEO, "http-get:*:video/mpeg:"},
+   { "rmvb",  NULL,                       UPNP_VIDEO, "http-get:*:video/mpeg:"},

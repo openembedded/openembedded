@@ -2,14 +2,14 @@ DESCRIPTION = "GNOME XML library"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "MIT"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz \
 		   file://no-testapi_${PV}.patch;patch=1"
 
 inherit autotools pkgconfig binconfig
 
-EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --without-c14n"
+EXTRA_OECONF = "--without-python --without-debug --without-legacy --without-catalog --without-docbook --with-c14n"
 
 do_stage() {
 	autotools_stage_all

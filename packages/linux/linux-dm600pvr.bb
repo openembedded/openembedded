@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux kernel for Dreambox DM7020"
 LICENSE = "GPL"
 PV = "2.6.12"
-PR = "r4"
+PR = "r5"
 
 # -rX is the patch revision - it's not related to this package's PR
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-2.6.12.tar.bz2 \
@@ -30,11 +30,22 @@ do_install_append () {
 	echo "/flash/zImage.elf" >> ${D}/boot/autoexec.bat
 }
 
-pkg_postinst_kernel () {
+pkg_preinst_kernel-image () {
+	[ -d /proc/stb ] && mount -o rw,remount /boot
 	true
 }
 
-pkg_postrm_kernel () {
+pkg_postinst_kernel-image () {
+	[ -d /proc/stb ] && mount -o ro,remount /boot
 	true
 }
 
+pkg_prerm_kernel-image () {
+	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
+}
+
+pkg_postrm_kernel-image () {
+	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
+}
