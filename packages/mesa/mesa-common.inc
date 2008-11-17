@@ -12,7 +12,7 @@ PROVIDES = "virtual/libgl"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = "--disable-glu \
+EXTRA_OECONF = "--enable-glu \
                 --disable-glw \
                 --disable-glut \
                 --enable-glx-tls"
