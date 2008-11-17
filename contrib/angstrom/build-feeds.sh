@@ -62,7 +62,7 @@ do_build
 for machine in simpad om-gta01 c7x0 nokia800 beagleboard dht-walnut efika qemux86
 do
 	BUILD_MACHINE=$machine
-	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native gnome-icon-theme"
+	BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
 	BUILD_TARGETS=" \
               abiword \
 		      aircrack-ng \
