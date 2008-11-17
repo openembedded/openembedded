@@ -8,6 +8,7 @@ DEFAULT_PREFERENCE_simpad = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
+DEFAULT_PREFERENCE_oxe810 = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
 PR = "r17"
@@ -81,6 +82,10 @@ SRC_URI_append_ts72xx = "\
 	file://ts72xx-watchdog.patch;patch=1 \
 	file://ts72xx-use-cpld-reset.patch;patch=1 \
 	file://ts72xx-rs485.patch;patch=1"
+
+SRC_URI_append_oxe810 = " \
+	file://oxe810.diff;patch=1 \
+	"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"
 
