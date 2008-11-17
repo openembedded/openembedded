@@ -6,9 +6,7 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "ml0"
 
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "http://www.riverbankcomputing.co.uk/static/Downloads/sip4/sip-${PV}.tar.gz"
+SRC_URI = "http://cvs.fedora.redhat.com/repo/pkgs/sip/sip-4.7.7.tar.gz/9cabe6a0f61b73582cfc38b903576211/sip-4.7.7.tar.gz"
 S = "${WORKDIR}/sip-${PV}/sipgen"
 
 inherit qt4x11 native
