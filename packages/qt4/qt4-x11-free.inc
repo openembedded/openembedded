@@ -5,7 +5,7 @@ HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
 DEPENDS += "virtual/libx11 fontconfig xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r10"
+PR = "r10.01"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://0001-cross-compile.patch;patch=1 \
@@ -15,7 +15,7 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 
-QT_CONFIG_FLAGS += "-no-xinerama -no-tablet -no-xkb -no-opengl"
+QT_CONFIG_FLAGS += "-no-xinerama -no-tablet -no-xkb -no-opengl -webkit"
 QT_BASE_NAME = "qt4"
 QT_BASE_LIB  = "libqt"
 QT_DIR_NAME = "qt4"
