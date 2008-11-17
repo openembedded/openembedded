@@ -175,7 +175,8 @@ do
 		      nmm \
 		      notecase \
 		      numptyphysics \
-	          opencv \
+	          octave \
+              opencv \
               opencv-samples \
               openmoko-browser2 \
 		      openredalert \
