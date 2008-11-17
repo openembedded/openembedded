@@ -84,7 +84,8 @@ do
               distcc \
 		      dsniff \
 		      duke3d \
-		      e-wm \
+		      e-uae \
+              e-wm \
 		      empathy \ 
 		      epdfview \
 		      epiphany \
