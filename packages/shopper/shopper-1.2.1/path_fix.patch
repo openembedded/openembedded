@@ -1,0 +1,23 @@
+--- Shopper/shoplist.cpp	2008-11-17 21:09:26.000000000 +0000
++++ Shopper/shoplist.cpp	2008-11-17 22:21:12.000000000 +0000
+@@ -38,6 +38,7 @@
+ #include <qmessagebox.h>
+ #include <qregexp.h>
+ 
++#include <stdlib.h>
+ 
+ // TODO: Somewhere it should say:
+ //  if (mode == ShoppingItem::Left && nothing_left) {
+@@ -229,6 +230,12 @@
+   QString fileName = Global::applicationFileName("ShoppingListQt", "shoppinglist.xml");
+ 
+   QFile file( fileName );
++  if ( ! file.exists() ) {
++    // Ugly hack
++    QString cmd = QString("cp " SHOPPER_DATADIR "/shoppinglist.xml ") + fileName;
++    system(cmd);
++  }
++
+   _startCategory = static_cast<CategoryItem*>(_showAllAction);
+   // If there's a file - read it. If not then we drop through to do
+   // other initialisation.
