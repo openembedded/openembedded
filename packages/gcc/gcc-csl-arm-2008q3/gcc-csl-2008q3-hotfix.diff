@@ -1,0 +1,2106 @@
+diff -Nurd gcc-4.3/ChangeLog.csl gcc-4.3-new/ChangeLog.csl
+--- gcc-4.3/ChangeLog.csl	2008-10-01 14:56:28.000000000 +0200
++++ gcc-4.3-new/ChangeLog.csl	2008-10-18 13:08:51.000000000 +0200
+@@ -1,3 +1,190 @@
++2008-10-16  Nathan Froyd  <froydnj@codesourcery.com>
++
++	gcc/
++	* config.gcc (powerpc-*-eabi*): Add rs6000/t-cs-eabi when
++	--enable-extra-sgxx-multilibs is passed to configure.
++	* config/rs6000/t-ppcgas (MULTILIB_OPTIONS): Remove te500mc.
++	(MULTILIB_DIRNAMES): Likewise.
++	(MULTILIB_EXCEPTIONS): Likewise.
++	* config/rs6000/t-cs-eabi: New file.
++
++2008-10-16  Julian Brown  <julian@codesourcery.com>
++
++	Issue #4039
++
++	gcc/
++	* config/arm/neon.md (movmisalign<mode>): Use expander/unnamed insn
++	for both D & Q variants. Don't permit both operands to be mems.
++	* release-notes-csl.xml (Misaligned NEON memory accesses): Add note.
++
++2008-10-15  Catherine Moore  <clm@codesourcery.com>
++
++	gcc/testsuite/
++	* gcc-target/mips/octeon-1.c (dg-mips-options): Use -mno-abicalls.
++	* gcc-target/mips/octeon-5.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-6.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-18.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-19.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-23.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-28.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-34.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-37.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-43.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-44.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-49.c (dg-mips-options): Likewise.
++	* gcc-target/mips/octeon-54.c (dg-mips-options): Likewise.
++
++2008-10-14  Sandra Loosemore  <sandra@codesourcery.com>
++
++	Issue #4017
++
++	* release-notes-csl.xml (Linker script option syntax): New note.
++
++	gcc/
++	* config.gcc (powerpc-*): Make t-ppcgas imply usegas.h.
++	* config/svr4.h (SVR4_ASM_SPEC): New.
++	(ASM_SPEC): Inherit from SVR4_ASM_SPEC.
++	* config/rs6000/sysv4.h (ASM_SPEC): Inherit from SVR4_ASM_SPEC.
++	
++	gcc/doc/
++	* invoke.texi (Option Summary): Add -T to linker options.
++	(Link Options): Document -T.
++	
++2008-10-13  Nathan Froyd  <froydnj@codesourcery.com>
++
++	gcc/
++	* config/rs6000/rs6000.c (rs6000_file_start): Output gnu
++	attribute for struct return convention.
++
++2008-10-13  Paul Brook  <paul@codesourcery.com>
++
++	gcc/
++	* config/arm/arm.h (fputype): Remove stray comma.
++
++2008-10-13  Andrew Stubbs  <ams@codesourcery.com>
++
++	Issue #3884
++
++	gcc/
++	* doc/invoke.texi (PowerPC Options): -meabi option no longer places
++	__eabi function in main.
++
++2008-10-12  Mark Mitchell  <mark@codesourcery.com>
++
++	Issue #3224
++	* release-notes-csl.xml: Mention OpenMP add-on.
++
++2008-10-12  Catherine Moore  <clm@codesourcery.com>
++
++	Issue # 3903
++
++	Backport:
++
++	2008-07-28  Ilie Garbacea  <ilie@mips.com>
++	            Chao-ying Fu  <fu@mips.com>
++
++	* configure.tgt: Enable futex for MIPS.
++	* config/linux/mips/futex.h: New file.
++
++2008-10-12  Catherine Moore  <clm@codesourcery.com>
++
++	gcc/
++	* config/mips/mips.opt (muclibc): New option entry.
++	* config/mips/mips.c (mips_override_options): Disable
++	__thread support when the -muclibc option is used.
++
++2008-10-11  Maxim Kuvyrkov  <maxim@codesourcery.com>
++
++	gcc/
++	* config/m68k/lb1sf68.asm (PICCALL, PICJUMP): Use GOT instead of
++	PC-relative addressing when compiling for uclinux PIC.
++
++2008-10-09  Catherine Moore  <clm@codesourcery.com>
++
++	Issue #3312
++
++	gcc/
++	* config/mips/mips.h ( DSP_CTRL_REG_FIRST): Define.
++	(DSP_CTRL_REG_LAST): Define.
++	* config/mips/mips.c (mips_conditional_register_usage): Handle
++	DSP registers.
++
++2008-10-08  Maxim Kuvyrkov  <maxim@codesourcery.com>
++
++	* release-notes-csl.xml: Fix typo.
++
++2008-10-08  Nathan Sidwell  <nathan@codesourcery.com>
++	    Maxim Kuvyrkov  <maxim@codesourcery.com>
++
++	* release-notes-csl.xml (Shared Libraries bug fix): New.
++
++	gcc/
++	* config/m68k/lb1sf68.asm (__cmpdf_internal, __cmpsf_internal): Hide.
++	(__cmpdf, __cmpsf): Use PIC call sequence.
++
++2008-10-07  Nathan Froyd  <froydnj@codesourcery.com>
++
++	Issue #3988
++
++	* release-notes-csl.xml (Dynamic libraries and -Os bug fix): New.
++
++	gcc/
++	* config/rs6000/ppc-asm.h (HIDDEN_FUNC): New macro.
++	* config/rs6000/crtresfpr.asm, config/rs6000/crtresgpr.asm,
++	config/rs6000/crtresxfpr.asm, config/rs6000/crtresxgpr.asm,
++	config/rs6000/crtsavfpr.asm, config/rs6000/crtsavgpr.asm,
++	config/rs6000/e500crtres32gpr.asm,
++	config/rs6000/e500crtres64gpr.asm,
++	config/rs6000/e500crtres64gprctr.asm,
++	config/rs6000/e500crtrest32gpr.asm,
++	config/rs6000/e500crtrest64gpr.asm,
++	config/rs6000/e500crtresx32gpr.asm,
++	config/rs6000/e500crtresx64gpr.asm,
++	config/rs6000/e500crtsav32gpr.asm,
++	config/rs6000/e500crtsav64gpr.asm,
++	config/rs6000/e500crtsav64gprctr.asm,
++	config/rs6000/e500crtsavg32gpr.asm,
++	config/rs6000/e500crtsavg64gpr.asm,
++	config/rs6000/e500crtsavg64gprctr.asm: Use it.
++
++2008-10-07  Nathan Sidwell  <nathan@codesourcery.com>
++
++	* release-notes-csl.xml: Document it.
++
++	gcc/
++	* doc/invoke.texi (MIPS Options): Add ice9 arch.
++	* config/mips/mips.c (mips_cpu_info_table): Add ice9 arch.
++
++2008-10-03  Catherine Moore  <clm@codesourcery.com>
++
++        gcc/testsuite/
++	* gcc.target/mips/fix-ice9a-1.c: Disable for soft-float
++	multilibs.
++	* gcc.target/mips/fix-ice9a-1.c: Likewise.
++
++2008-10-03  Kazu Hirata  <kazu@codesourcery.com>
++
++	Backport:
++	gcc/testsuite/
++	2008-09-23  Eric Botcazou  <ebotcazou@adacore.com>
++
++	* gcc.dg/pragma-init-fini.c: Use dg-warning in lieu of dg-error.
++	* gcc.dg/pragma-align-2.c: Likewise.
++	* gcc.dg/format/cmn-err-1.c: Likewise.
++
++2008-10-02  Catherine Moore  <clm@codesourcery.com>
++
++	gcc/testsuite/
++	* gcc.target/mips/lazy-binding-1.c: Compile with -fpic.
++
++2008-10-02  Maciej W. Rozycki  <macro@codesourcery.com>
++
++	Issue #3673
++	gcc/testsuite/
++	* lib/target-supports.exp
++	(check_effective_target_arm_iwmmxt_ok): New procedure.
++	* gcc.dg/arm-mmx-1.c: Only run if arm_iwmmxt_ok.
++
+ 2008-09-29  Joseph Myers  <joseph@codesourcery.com>
+ 
+ 	Backport:
+diff -Nurd gcc-4.3/gcc/config/arm/arm.h gcc-4.3-new/gcc/config/arm/arm.h
+--- gcc-4.3/gcc/config/arm/arm.h	2008-10-01 14:51:02.000000000 +0200
++++ gcc-4.3-new/gcc/config/arm/arm.h	2008-10-18 12:44:43.000000000 +0200
+@@ -329,7 +329,7 @@
+   /* Neon.  */
+   FPUTYPE_NEON,
+   /* Neon with half-precision float extensions.  */
+-  FPUTYPE_NEON_FP16,
++  FPUTYPE_NEON_FP16
+ };
+ 
+ /* Recast the floating point class to be the floating point attribute.  */
+diff -Nurd gcc-4.3/gcc/config/arm/neon.md gcc-4.3-new/gcc/config/arm/neon.md
+--- gcc-4.3/gcc/config/arm/neon.md	2008-10-01 14:51:02.000000000 +0200
++++ gcc-4.3-new/gcc/config/arm/neon.md	2008-10-18 12:44:43.000000000 +0200
+@@ -659,21 +659,36 @@
+   neon_disambiguate_copy (operands, dest, src, 4);
+ })
+ 
+-(define_insn "movmisalign<mode>"
++(define_expand "movmisalign<mode>"
++  [(set (match_operand:VDQX 0 "nonimmediate_operand"         "")
++	(unspec:VDQX [(match_operand:VDQX 1 "general_operand" "")]
++		     UNSPEC_MISALIGNED_ACCESS))]
++  "TARGET_NEON && !BYTES_BIG_ENDIAN"
++{
++  if (!s_register_operand (operands[0], <MODE>mode)
++      && !s_register_operand (operands[1], <MODE>mode))
++    FAIL;
++})
++
++(define_insn "*movmisalign<mode>_neon"
+   [(set (match_operand:VDX 0 "nonimmediate_operand"         "=Um,w")
+ 	(unspec:VDX [(match_operand:VDX 1 "general_operand" " w, Um")]
+ 		    UNSPEC_MISALIGNED_ACCESS))]
+-  "TARGET_NEON && !BYTES_BIG_ENDIAN"
++  "TARGET_NEON && !BYTES_BIG_ENDIAN
++   && (   s_register_operand (operands[0], <MODE>mode)
++       || s_register_operand (operands[1], <MODE>mode))"
+   "@
+   vst1.<V_sz_elem>\t{%P1}, %A0
+   vld1.<V_sz_elem>\t{%P0}, %A1"
+   [(set_attr "neon_type" "neon_vst1_1_2_regs_vst2_2_regs,neon_vld1_1_2_regs")])
+ 
+-(define_insn "movmisalign<mode>"
++(define_insn "*movmisalign<mode>_neon"
+   [(set (match_operand:VQX 0 "nonimmediate_operand"         "=Um,w")
+ 	(unspec:VQX [(match_operand:VQX 1 "general_operand" " w, Um")]
+ 		    UNSPEC_MISALIGNED_ACCESS))]
+-  "TARGET_NEON && !BYTES_BIG_ENDIAN"
++  "TARGET_NEON && !BYTES_BIG_ENDIAN
++   && (   s_register_operand (operands[0], <MODE>mode)
++       || s_register_operand (operands[1], <MODE>mode))"
+   "@
+   vst1.<V_sz_elem>\t{%q1}, %A0
+   vld1.<V_sz_elem>\t{%q0}, %A1"
+diff -Nurd gcc-4.3/gcc/config/m68k/lb1sf68.asm gcc-4.3-new/gcc/config/m68k/lb1sf68.asm
+--- gcc-4.3/gcc/config/m68k/lb1sf68.asm	2008-10-01 14:50:48.000000000 +0200
++++ gcc-4.3-new/gcc/config/m68k/lb1sf68.asm	2008-10-18 12:43:53.000000000 +0200
+@@ -129,30 +129,6 @@
+ 
+ #else /* __PIC__ */
+ 
+-	/* Common for Linux and uClinux, the latter with either
+-	   -mid-shared-library or -msep-data.  */
+-
+-	.macro PICCALL addr
+-#if defined (__mcoldfire__) && !defined (__mcfisab__) && !defined (__mcfisac__)
+-	lea	\addr-.-8,a0
+-	jsr	pc@(a0)
+-#else
+-	bsr	\addr
+-#endif
+-	.endm
+-
+-	.macro PICJUMP addr
+-	/* ISA C has no bra.l instruction, and since this assembly file
+-	   gets assembled into multiple object files, we avoid the
+-	   bra instruction entirely.  */
+-#if defined (__mcoldfire__) && !defined (__mcfisab__)
+-	lea	\addr-.-8,a0
+-	jmp	pc@(a0)
+-#else
+-	bra	\addr
+-#endif
+-	.endm
+-
+ # if defined (__uClinux__)
+ 
+ 	/* Versions for uClinux */
+@@ -171,6 +147,16 @@
+ 	movel	\sym@GOT(\areg), sp@-
+ 	.endm
+ 
++	.macro PICCALL addr
++	PICLEA	\addr,a0
++	jsr	a0@
++	.endm
++
++	.macro PICJUMP addr
++	PICLEA	\addr,a0
++	jmp	a0@
++	.endm
++
+ #  else /* !__ID_SHARED_LIBRARY__ */
+ 
+ 	/* Versions for -msep-data */
+@@ -183,6 +169,27 @@
+ 	movel	\sym@GOT(a5), sp@-
+ 	.endm
+ 
++	.macro PICCALL addr
++#if defined (__mcoldfire__) && !defined (__mcfisab__) && !defined (__mcfisac__)
++	lea	\addr-.-8,a0
++	jsr	pc@(a0)
++#else
++	bsr	\addr
++#endif
++	.endm
++
++	.macro PICJUMP addr
++	/* ISA C has no bra.l instruction, and since this assembly file
++	   gets assembled into multiple object files, we avoid the
++	   bra instruction entirely.  */
++#if defined (__mcoldfire__) && !defined (__mcfisab__)
++	lea	\addr-.-8,a0
++	jmp	pc@(a0)
++#else
++	bra	\addr
++#endif
++	.endm
++
+ #  endif
+ 
+ # else /* !__uClinux__ */
+@@ -201,6 +208,27 @@
+ 	movel	\sym@GOT(\areg), sp@-
+ 	.endm
+ 
++	.macro PICCALL addr
++#if defined (__mcoldfire__) && !defined (__mcfisab__) && !defined (__mcfisac__)
++	lea	\addr-.-8,a0
++	jsr	pc@(a0)
++#else
++	bsr	\addr
++#endif
++	.endm
++
++	.macro PICJUMP addr
++	/* ISA C has no bra.l instruction, and since this assembly file
++	   gets assembled into multiple object files, we avoid the
++	   bra instruction entirely.  */
++#if defined (__mcoldfire__) && !defined (__mcfisab__)
++	lea	\addr-.-8,a0
++	jmp	pc@(a0)
++#else
++	bra	\addr
++#endif
++	.endm
++
+ # endif
+ #endif /* __PIC__ */
+ 
+@@ -648,6 +676,7 @@
+ 	.globl SYM (__negdf2)
+ 	.globl SYM (__cmpdf2)
+ 	.globl SYM (__cmpdf2_internal)
++	.hidden SYM (__cmpdf2_internal)
+ 
+ 	.text
+ 	.even
+@@ -2410,7 +2439,7 @@
+ 	movl	a6@(16),sp@-
+ 	movl	a6@(12),sp@-
+ 	movl	a6@(8),sp@-
+-	bsr	SYM (__cmpdf2_internal)
++	PICCALL	SYM (__cmpdf2_internal)
+ 	unlk	a6
+ 	rts
+ 
+@@ -2562,6 +2591,7 @@
+ 	.globl SYM (__negsf2)
+ 	.globl SYM (__cmpsf2)
+ 	.globl SYM (__cmpsf2_internal)
++	.hidden SYM (__cmpsf2_internal)
+ 
+ | These are common routines to return and signal exceptions.	
+ 
+@@ -3816,7 +3846,7 @@
+ 	pea	1
+ 	movl	a6@(12),sp@-
+ 	movl	a6@(8),sp@-
+-	bsr (__cmpsf2_internal)
++	PICCALL SYM (__cmpsf2_internal)
+ 	unlk	a6
+ 	rts
+ 
+diff -Nurd gcc-4.3/gcc/config/mips/mips.c gcc-4.3-new/gcc/config/mips/mips.c
+--- gcc-4.3/gcc/config/mips/mips.c	2008-10-01 14:51:08.000000000 +0200
++++ gcc-4.3-new/gcc/config/mips/mips.c	2008-10-18 12:45:05.000000000 +0200
+@@ -657,6 +657,7 @@
+   { "sr71000", PROCESSOR_SR71000, 64, PTF_AVOID_BRANCHLIKELY },
+   { "xlr", PROCESSOR_XLR, 64, 0 },
+   { "octeon", PROCESSOR_OCTEON, 64, 0 },
++  { "ice9", PROCESSOR_5KF, 64 }, /* May diverge from 5kf in future. */
+ };
+ 
+ /* Default costs.  If these are used for a processor we should look
+@@ -12577,6 +12578,10 @@
+   /* Function to allocate machine-dependent function status.  */
+   init_machine_status = &mips_init_machine_status;
+ 
++  /* __thread_support is not supported by uClibc.  */
++  if (building_for_uclibc)
++    targetm.have_tls = 0;
++
+   /* Default to working around R4000 errata only if the processor
+      was selected explicitly.  */
+   if ((target_flags_explicit & MASK_FIX_R4000) == 0
+@@ -12629,18 +12634,24 @@
+ #undef SWAP_STRING
+ #undef SWAP_INT
+ }
+-
+-/* Implement CONDITIONAL_REGISTER_USAGE.  */
+-
+ void
+ mips_conditional_register_usage (void)
+ {
++
++  /* These DSP control register fields are global.  */
++  if (ISA_HAS_DSP)
++    {
++      global_regs[CCDSP_PO_REGNUM] = 1;
++      global_regs[CCDSP_SC_REGNUM] = 1;
++    }
+   if (!ISA_HAS_DSP)
+     {
+       int regno;
+ 
+       for (regno = DSP_ACC_REG_FIRST; regno <= DSP_ACC_REG_LAST; regno++)
+ 	fixed_regs[regno] = call_used_regs[regno] = 1;
++      for (regno = DSP_CTRL_REG_FIRST; regno <= DSP_CTRL_REG_LAST; regno++)
++	fixed_regs[regno] = call_used_regs[regno] = 1;
+     }
+   if (!TARGET_HARD_FLOAT)
+     {
+diff -Nurd gcc-4.3/gcc/config/mips/mips.h gcc-4.3-new/gcc/config/mips/mips.h
+--- gcc-4.3/gcc/config/mips/mips.h	2008-10-01 14:51:08.000000000 +0200
++++ gcc-4.3-new/gcc/config/mips/mips.h	2008-10-18 12:45:05.000000000 +0200
+@@ -1615,6 +1615,9 @@
+ #define DSP_ACC_REG_LAST 181
+ #define DSP_ACC_REG_NUM (DSP_ACC_REG_LAST - DSP_ACC_REG_FIRST + 1)
+ 
++#define DSP_CTRL_REG_FIRST 182
++#define DSP_CTRL_REG_LAST 187
++
+ #define AT_REGNUM	(GP_REG_FIRST + 1)
+ #define HI_REGNUM	(TARGET_BIG_ENDIAN ? MD_REG_FIRST : MD_REG_FIRST + 1)
+ #define LO_REGNUM	(TARGET_BIG_ENDIAN ? MD_REG_FIRST + 1 : MD_REG_FIRST)
+diff -Nurd gcc-4.3/gcc/config/mips/mips.opt gcc-4.3-new/gcc/config/mips/mips.opt
+--- gcc-4.3/gcc/config/mips/mips.opt	2008-10-01 14:51:08.000000000 +0200
++++ gcc-4.3-new/gcc/config/mips/mips.opt	2008-10-18 12:45:05.000000000 +0200
+@@ -272,6 +272,10 @@
+ Target RejectNegative Joined Var(mips_tune_string)
+ -mtune=PROCESSOR	Optimize the output for PROCESSOR
+ 
++muclibc
++Target RejectNegative Var(building_for_uclibc)
++Building with -muclibc
++
+ muninit-const-in-rodata
+ Target Report Var(TARGET_UNINIT_CONST_IN_RODATA)
+ Put uninitialized constants in ROM (needs -membedded-data)
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtresfpr.asm gcc-4.3-new/gcc/config/rs6000/crtresfpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtresfpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtresfpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -49,24 +49,24 @@
+ /* Called with r11 pointing to the stack header word of the caller of the */
+ /* function, just beyond the end of the floating point save area.  */
+ 
+-FUNC_START(_restfpr_14)	lfd	14,-144(11)	/* restore fp registers */
+-FUNC_START(_restfpr_15)	lfd	15,-136(11)
+-FUNC_START(_restfpr_16)	lfd	16,-128(11)
+-FUNC_START(_restfpr_17)	lfd	17,-120(11)
+-FUNC_START(_restfpr_18)	lfd	18,-112(11)
+-FUNC_START(_restfpr_19)	lfd	19,-104(11)
+-FUNC_START(_restfpr_20)	lfd	20,-96(11)
+-FUNC_START(_restfpr_21)	lfd	21,-88(11)
+-FUNC_START(_restfpr_22)	lfd	22,-80(11)
+-FUNC_START(_restfpr_23)	lfd	23,-72(11)
+-FUNC_START(_restfpr_24)	lfd	24,-64(11)
+-FUNC_START(_restfpr_25)	lfd	25,-56(11)
+-FUNC_START(_restfpr_26)	lfd	26,-48(11)
+-FUNC_START(_restfpr_27)	lfd	27,-40(11)
+-FUNC_START(_restfpr_28)	lfd	28,-32(11)
+-FUNC_START(_restfpr_29)	lfd	29,-24(11)
+-FUNC_START(_restfpr_30)	lfd	30,-16(11)
+-FUNC_START(_restfpr_31)	lfd	31,-8(11)
++HIDDEN_FUNC(_restfpr_14)	lfd	14,-144(11)	/* restore fp registers */
++HIDDEN_FUNC(_restfpr_15)	lfd	15,-136(11)
++HIDDEN_FUNC(_restfpr_16)	lfd	16,-128(11)
++HIDDEN_FUNC(_restfpr_17)	lfd	17,-120(11)
++HIDDEN_FUNC(_restfpr_18)	lfd	18,-112(11)
++HIDDEN_FUNC(_restfpr_19)	lfd	19,-104(11)
++HIDDEN_FUNC(_restfpr_20)	lfd	20,-96(11)
++HIDDEN_FUNC(_restfpr_21)	lfd	21,-88(11)
++HIDDEN_FUNC(_restfpr_22)	lfd	22,-80(11)
++HIDDEN_FUNC(_restfpr_23)	lfd	23,-72(11)
++HIDDEN_FUNC(_restfpr_24)	lfd	24,-64(11)
++HIDDEN_FUNC(_restfpr_25)	lfd	25,-56(11)
++HIDDEN_FUNC(_restfpr_26)	lfd	26,-48(11)
++HIDDEN_FUNC(_restfpr_27)	lfd	27,-40(11)
++HIDDEN_FUNC(_restfpr_28)	lfd	28,-32(11)
++HIDDEN_FUNC(_restfpr_29)	lfd	29,-24(11)
++HIDDEN_FUNC(_restfpr_30)	lfd	30,-16(11)
++HIDDEN_FUNC(_restfpr_31)	lfd	31,-8(11)
+ 			blr
+ FUNC_END(_restfpr_31)
+ FUNC_END(_restfpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtresgpr.asm gcc-4.3-new/gcc/config/rs6000/crtresgpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtresgpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtresgpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -49,24 +49,24 @@
+ /* Called with r11 pointing to the stack header word of the caller of the */
+ /* function, just beyond the end of the integer restore area.  */
+ 
+-FUNC_START(_restgpr_14)	lwz	14,-72(11)	/* restore gp registers */
+-FUNC_START(_restgpr_15)	lwz	15,-68(11)
+-FUNC_START(_restgpr_16)	lwz	16,-64(11)
+-FUNC_START(_restgpr_17)	lwz	17,-60(11)
+-FUNC_START(_restgpr_18)	lwz	18,-56(11)
+-FUNC_START(_restgpr_19)	lwz	19,-52(11)
+-FUNC_START(_restgpr_20)	lwz	20,-48(11)
+-FUNC_START(_restgpr_21)	lwz	21,-44(11)
+-FUNC_START(_restgpr_22)	lwz	22,-40(11)
+-FUNC_START(_restgpr_23)	lwz	23,-36(11)
+-FUNC_START(_restgpr_24)	lwz	24,-32(11)
+-FUNC_START(_restgpr_25)	lwz	25,-28(11)
+-FUNC_START(_restgpr_26)	lwz	26,-24(11)
+-FUNC_START(_restgpr_27)	lwz	27,-20(11)
+-FUNC_START(_restgpr_28)	lwz	28,-16(11)
+-FUNC_START(_restgpr_29)	lwz	29,-12(11)
+-FUNC_START(_restgpr_30)	lwz	30,-8(11)
+-FUNC_START(_restgpr_31)	lwz	31,-4(11)
++HIDDEN_FUNC(_restgpr_14)	lwz	14,-72(11)	/* restore gp registers */
++HIDDEN_FUNC(_restgpr_15)	lwz	15,-68(11)
++HIDDEN_FUNC(_restgpr_16)	lwz	16,-64(11)
++HIDDEN_FUNC(_restgpr_17)	lwz	17,-60(11)
++HIDDEN_FUNC(_restgpr_18)	lwz	18,-56(11)
++HIDDEN_FUNC(_restgpr_19)	lwz	19,-52(11)
++HIDDEN_FUNC(_restgpr_20)	lwz	20,-48(11)
++HIDDEN_FUNC(_restgpr_21)	lwz	21,-44(11)
++HIDDEN_FUNC(_restgpr_22)	lwz	22,-40(11)
++HIDDEN_FUNC(_restgpr_23)	lwz	23,-36(11)
++HIDDEN_FUNC(_restgpr_24)	lwz	24,-32(11)
++HIDDEN_FUNC(_restgpr_25)	lwz	25,-28(11)
++HIDDEN_FUNC(_restgpr_26)	lwz	26,-24(11)
++HIDDEN_FUNC(_restgpr_27)	lwz	27,-20(11)
++HIDDEN_FUNC(_restgpr_28)	lwz	28,-16(11)
++HIDDEN_FUNC(_restgpr_29)	lwz	29,-12(11)
++HIDDEN_FUNC(_restgpr_30)	lwz	30,-8(11)
++HIDDEN_FUNC(_restgpr_31)	lwz	31,-4(11)
+ 			blr
+ FUNC_END(_restgpr_31)
+ FUNC_END(_restgpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtresxfpr.asm gcc-4.3-new/gcc/config/rs6000/crtresxfpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtresxfpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtresxfpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -51,24 +51,24 @@
+ /* In addition to restoring the fp registers, it will return to the caller's */
+ /* caller */
+ 
+-FUNC_START(_restfpr_14_x)	lfd	14,-144(11)	/* restore fp registers */
+-FUNC_START(_restfpr_15_x)	lfd	15,-136(11)
+-FUNC_START(_restfpr_16_x)	lfd	16,-128(11)
+-FUNC_START(_restfpr_17_x)	lfd	17,-120(11)
+-FUNC_START(_restfpr_18_x)	lfd	18,-112(11)
+-FUNC_START(_restfpr_19_x)	lfd	19,-104(11)
+-FUNC_START(_restfpr_20_x)	lfd	20,-96(11)
+-FUNC_START(_restfpr_21_x)	lfd	21,-88(11)
+-FUNC_START(_restfpr_22_x)	lfd	22,-80(11)
+-FUNC_START(_restfpr_23_x)	lfd	23,-72(11)
+-FUNC_START(_restfpr_24_x)	lfd	24,-64(11)
+-FUNC_START(_restfpr_25_x)	lfd	25,-56(11)
+-FUNC_START(_restfpr_26_x)	lfd	26,-48(11)
+-FUNC_START(_restfpr_27_x)	lfd	27,-40(11)
+-FUNC_START(_restfpr_28_x)	lfd	28,-32(11)
+-FUNC_START(_restfpr_29_x)	lfd	29,-24(11)
+-FUNC_START(_restfpr_30_x)	lfd	30,-16(11)
+-FUNC_START(_restfpr_31_x)	lwz	0,4(11)
++HIDDEN_FUNC(_restfpr_14_x)	lfd	14,-144(11)	/* restore fp registers */
++HIDDEN_FUNC(_restfpr_15_x)	lfd	15,-136(11)
++HIDDEN_FUNC(_restfpr_16_x)	lfd	16,-128(11)
++HIDDEN_FUNC(_restfpr_17_x)	lfd	17,-120(11)
++HIDDEN_FUNC(_restfpr_18_x)	lfd	18,-112(11)
++HIDDEN_FUNC(_restfpr_19_x)	lfd	19,-104(11)
++HIDDEN_FUNC(_restfpr_20_x)	lfd	20,-96(11)
++HIDDEN_FUNC(_restfpr_21_x)	lfd	21,-88(11)
++HIDDEN_FUNC(_restfpr_22_x)	lfd	22,-80(11)
++HIDDEN_FUNC(_restfpr_23_x)	lfd	23,-72(11)
++HIDDEN_FUNC(_restfpr_24_x)	lfd	24,-64(11)
++HIDDEN_FUNC(_restfpr_25_x)	lfd	25,-56(11)
++HIDDEN_FUNC(_restfpr_26_x)	lfd	26,-48(11)
++HIDDEN_FUNC(_restfpr_27_x)	lfd	27,-40(11)
++HIDDEN_FUNC(_restfpr_28_x)	lfd	28,-32(11)
++HIDDEN_FUNC(_restfpr_29_x)	lfd	29,-24(11)
++HIDDEN_FUNC(_restfpr_30_x)	lfd	30,-16(11)
++HIDDEN_FUNC(_restfpr_31_x)	lwz	0,4(11)
+ 				lfd	31,-8(11)
+ 				mtlr	0
+ 				mr	1,11
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtresxgpr.asm gcc-4.3-new/gcc/config/rs6000/crtresxgpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtresxgpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtresxgpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -49,24 +49,24 @@
+ /* Called with r11 pointing to the stack header word of the caller of the */
+ /* function, just beyond the end of the integer restore area.  */
+ 
+-FUNC_START(_restgpr_14_x)	lwz	14,-72(11)	/* restore gp registers */
+-FUNC_START(_restgpr_15_x)	lwz	15,-68(11)
+-FUNC_START(_restgpr_16_x)	lwz	16,-64(11)
+-FUNC_START(_restgpr_17_x)	lwz	17,-60(11)
+-FUNC_START(_restgpr_18_x)	lwz	18,-56(11)
+-FUNC_START(_restgpr_19_x)	lwz	19,-52(11)
+-FUNC_START(_restgpr_20_x)	lwz	20,-48(11)
+-FUNC_START(_restgpr_21_x)	lwz	21,-44(11)
+-FUNC_START(_restgpr_22_x)	lwz	22,-40(11)
+-FUNC_START(_restgpr_23_x)	lwz	23,-36(11)
+-FUNC_START(_restgpr_24_x)	lwz	24,-32(11)
+-FUNC_START(_restgpr_25_x)	lwz	25,-28(11)
+-FUNC_START(_restgpr_26_x)	lwz	26,-24(11)
+-FUNC_START(_restgpr_27_x)	lwz	27,-20(11)
+-FUNC_START(_restgpr_28_x)	lwz	28,-16(11)
+-FUNC_START(_restgpr_29_x)	lwz	29,-12(11)
+-FUNC_START(_restgpr_30_x)	lwz	30,-8(11)
+-FUNC_START(_restgpr_31_x)	lwz	0,4(11)
++HIDDEN_FUNC(_restgpr_14_x)	lwz	14,-72(11)	/* restore gp registers */
++HIDDEN_FUNC(_restgpr_15_x)	lwz	15,-68(11)
++HIDDEN_FUNC(_restgpr_16_x)	lwz	16,-64(11)
++HIDDEN_FUNC(_restgpr_17_x)	lwz	17,-60(11)
++HIDDEN_FUNC(_restgpr_18_x)	lwz	18,-56(11)
++HIDDEN_FUNC(_restgpr_19_x)	lwz	19,-52(11)
++HIDDEN_FUNC(_restgpr_20_x)	lwz	20,-48(11)
++HIDDEN_FUNC(_restgpr_21_x)	lwz	21,-44(11)
++HIDDEN_FUNC(_restgpr_22_x)	lwz	22,-40(11)
++HIDDEN_FUNC(_restgpr_23_x)	lwz	23,-36(11)
++HIDDEN_FUNC(_restgpr_24_x)	lwz	24,-32(11)
++HIDDEN_FUNC(_restgpr_25_x)	lwz	25,-28(11)
++HIDDEN_FUNC(_restgpr_26_x)	lwz	26,-24(11)
++HIDDEN_FUNC(_restgpr_27_x)	lwz	27,-20(11)
++HIDDEN_FUNC(_restgpr_28_x)	lwz	28,-16(11)
++HIDDEN_FUNC(_restgpr_29_x)	lwz	29,-12(11)
++HIDDEN_FUNC(_restgpr_30_x)	lwz	30,-8(11)
++HIDDEN_FUNC(_restgpr_31_x)	lwz	0,4(11)
+ 				lwz	31,-4(11)
+ 				mtlr	0
+ 				mr	1,11
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtsavfpr.asm gcc-4.3-new/gcc/config/rs6000/crtsavfpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtsavfpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtsavfpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -49,24 +49,24 @@
+ /* Called with r11 pointing to the stack header word of the caller of the */
+ /* function, just beyond the end of the floating point save area.  */
+ 
+-FUNC_START(_savefpr_14)	stfd	14,-144(11)	/* save fp registers */
+-FUNC_START(_savefpr_15)	stfd	15,-136(11)
+-FUNC_START(_savefpr_16)	stfd	16,-128(11)
+-FUNC_START(_savefpr_17)	stfd	17,-120(11)
+-FUNC_START(_savefpr_18)	stfd	18,-112(11)
+-FUNC_START(_savefpr_19)	stfd	19,-104(11)
+-FUNC_START(_savefpr_20)	stfd	20,-96(11)
+-FUNC_START(_savefpr_21)	stfd	21,-88(11)
+-FUNC_START(_savefpr_22)	stfd	22,-80(11)
+-FUNC_START(_savefpr_23)	stfd	23,-72(11)
+-FUNC_START(_savefpr_24)	stfd	24,-64(11)
+-FUNC_START(_savefpr_25)	stfd	25,-56(11)
+-FUNC_START(_savefpr_26)	stfd	26,-48(11)
+-FUNC_START(_savefpr_27)	stfd	27,-40(11)
+-FUNC_START(_savefpr_28)	stfd	28,-32(11)
+-FUNC_START(_savefpr_29)	stfd	29,-24(11)
+-FUNC_START(_savefpr_30)	stfd	30,-16(11)
+-FUNC_START(_savefpr_31)	stfd	31,-8(11)
++HIDDEN_FUNC(_savefpr_14)	stfd	14,-144(11)	/* save fp registers */
++HIDDEN_FUNC(_savefpr_15)	stfd	15,-136(11)
++HIDDEN_FUNC(_savefpr_16)	stfd	16,-128(11)
++HIDDEN_FUNC(_savefpr_17)	stfd	17,-120(11)
++HIDDEN_FUNC(_savefpr_18)	stfd	18,-112(11)
++HIDDEN_FUNC(_savefpr_19)	stfd	19,-104(11)
++HIDDEN_FUNC(_savefpr_20)	stfd	20,-96(11)
++HIDDEN_FUNC(_savefpr_21)	stfd	21,-88(11)
++HIDDEN_FUNC(_savefpr_22)	stfd	22,-80(11)
++HIDDEN_FUNC(_savefpr_23)	stfd	23,-72(11)
++HIDDEN_FUNC(_savefpr_24)	stfd	24,-64(11)
++HIDDEN_FUNC(_savefpr_25)	stfd	25,-56(11)
++HIDDEN_FUNC(_savefpr_26)	stfd	26,-48(11)
++HIDDEN_FUNC(_savefpr_27)	stfd	27,-40(11)
++HIDDEN_FUNC(_savefpr_28)	stfd	28,-32(11)
++HIDDEN_FUNC(_savefpr_29)	stfd	29,-24(11)
++HIDDEN_FUNC(_savefpr_30)	stfd	30,-16(11)
++HIDDEN_FUNC(_savefpr_31)	stfd	31,-8(11)
+ 			blr
+ FUNC_END(_savefpr_31)
+ FUNC_END(_savefpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/crtsavgpr.asm gcc-4.3-new/gcc/config/rs6000/crtsavgpr.asm
+--- gcc-4.3/gcc/config/rs6000/crtsavgpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/crtsavgpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -49,24 +49,24 @@
+ /* Called with r11 pointing to the stack header word of the caller of the */
+ /* function, just beyond the end of the integer save area.  */
+ 
+-FUNC_START(_savegpr_14)	stw	14,-72(11)	/* save gp registers */
+-FUNC_START(_savegpr_15)	stw	15,-68(11)
+-FUNC_START(_savegpr_16)	stw	16,-64(11)
+-FUNC_START(_savegpr_17)	stw	17,-60(11)
+-FUNC_START(_savegpr_18)	stw	18,-56(11)
+-FUNC_START(_savegpr_19)	stw	19,-52(11)
+-FUNC_START(_savegpr_20)	stw	20,-48(11)
+-FUNC_START(_savegpr_21)	stw	21,-44(11)
+-FUNC_START(_savegpr_22)	stw	22,-40(11)
+-FUNC_START(_savegpr_23)	stw	23,-36(11)
+-FUNC_START(_savegpr_24)	stw	24,-32(11)
+-FUNC_START(_savegpr_25)	stw	25,-28(11)
+-FUNC_START(_savegpr_26)	stw	26,-24(11)
+-FUNC_START(_savegpr_27)	stw	27,-20(11)
+-FUNC_START(_savegpr_28)	stw	28,-16(11)
+-FUNC_START(_savegpr_29)	stw	29,-12(11)
+-FUNC_START(_savegpr_30)	stw	30,-8(11)
+-FUNC_START(_savegpr_31)	stw	31,-4(11)
++HIDDEN_FUNC(_savegpr_14)	stw	14,-72(11)	/* save gp registers */
++HIDDEN_FUNC(_savegpr_15)	stw	15,-68(11)
++HIDDEN_FUNC(_savegpr_16)	stw	16,-64(11)
++HIDDEN_FUNC(_savegpr_17)	stw	17,-60(11)
++HIDDEN_FUNC(_savegpr_18)	stw	18,-56(11)
++HIDDEN_FUNC(_savegpr_19)	stw	19,-52(11)
++HIDDEN_FUNC(_savegpr_20)	stw	20,-48(11)
++HIDDEN_FUNC(_savegpr_21)	stw	21,-44(11)
++HIDDEN_FUNC(_savegpr_22)	stw	22,-40(11)
++HIDDEN_FUNC(_savegpr_23)	stw	23,-36(11)
++HIDDEN_FUNC(_savegpr_24)	stw	24,-32(11)
++HIDDEN_FUNC(_savegpr_25)	stw	25,-28(11)
++HIDDEN_FUNC(_savegpr_26)	stw	26,-24(11)
++HIDDEN_FUNC(_savegpr_27)	stw	27,-20(11)
++HIDDEN_FUNC(_savegpr_28)	stw	28,-16(11)
++HIDDEN_FUNC(_savegpr_29)	stw	29,-12(11)
++HIDDEN_FUNC(_savegpr_30)	stw	30,-8(11)
++HIDDEN_FUNC(_savegpr_31)	stw	31,-4(11)
+ 			blr
+ FUNC_END(_savegpr_31)
+ FUNC_END(_savegpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtres32gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtres32gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtres32gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtres32gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for restoring 32-bit integer registers, called by the compiler.  */
+ /* "Bare" versions that simply return to their caller.  */
+ 
+-FUNC_START(_rest32gpr_14)	lwz 14,-72(11)
+-FUNC_START(_rest32gpr_15)	lwz 15,-68(11)
+-FUNC_START(_rest32gpr_16)	lwz 16,-64(11)
+-FUNC_START(_rest32gpr_17)	lwz 17,-60(11)
+-FUNC_START(_rest32gpr_18)	lwz 18,-56(11)
+-FUNC_START(_rest32gpr_19)	lwz 19,-52(11)
+-FUNC_START(_rest32gpr_20)	lwz 20,-48(11)
+-FUNC_START(_rest32gpr_21)	lwz 21,-44(11)
+-FUNC_START(_rest32gpr_22)	lwz 22,-40(11)
+-FUNC_START(_rest32gpr_23)	lwz 23,-36(11)
+-FUNC_START(_rest32gpr_24)	lwz 24,-32(11)
+-FUNC_START(_rest32gpr_25)	lwz 25,-28(11)
+-FUNC_START(_rest32gpr_26)	lwz 26,-24(11)
+-FUNC_START(_rest32gpr_27)	lwz 27,-20(11)
+-FUNC_START(_rest32gpr_28)	lwz 28,-16(11)
+-FUNC_START(_rest32gpr_29)	lwz 29,-12(11)
+-FUNC_START(_rest32gpr_30)	lwz 30,-8(11)
+-FUNC_START(_rest32gpr_31)	lwz 31,-4(11)
++HIDDEN_FUNC(_rest32gpr_14)	lwz 14,-72(11)
++HIDDEN_FUNC(_rest32gpr_15)	lwz 15,-68(11)
++HIDDEN_FUNC(_rest32gpr_16)	lwz 16,-64(11)
++HIDDEN_FUNC(_rest32gpr_17)	lwz 17,-60(11)
++HIDDEN_FUNC(_rest32gpr_18)	lwz 18,-56(11)
++HIDDEN_FUNC(_rest32gpr_19)	lwz 19,-52(11)
++HIDDEN_FUNC(_rest32gpr_20)	lwz 20,-48(11)
++HIDDEN_FUNC(_rest32gpr_21)	lwz 21,-44(11)
++HIDDEN_FUNC(_rest32gpr_22)	lwz 22,-40(11)
++HIDDEN_FUNC(_rest32gpr_23)	lwz 23,-36(11)
++HIDDEN_FUNC(_rest32gpr_24)	lwz 24,-32(11)
++HIDDEN_FUNC(_rest32gpr_25)	lwz 25,-28(11)
++HIDDEN_FUNC(_rest32gpr_26)	lwz 26,-24(11)
++HIDDEN_FUNC(_rest32gpr_27)	lwz 27,-20(11)
++HIDDEN_FUNC(_rest32gpr_28)	lwz 28,-16(11)
++HIDDEN_FUNC(_rest32gpr_29)	lwz 29,-12(11)
++HIDDEN_FUNC(_rest32gpr_30)	lwz 30,-8(11)
++HIDDEN_FUNC(_rest32gpr_31)	lwz 31,-4(11)
+ 				blr
+ FUNC_END(_rest32gpr_31)
+ FUNC_END(_rest32gpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtres64gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtres64gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtres64gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtres64gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for restoring 64-bit integer registers, called by the compiler.  */
+ /* "Bare" versions that return to their caller.  */
+ 
+-FUNC_START(_rest64gpr_14)	evldd 14,0(11)
+-FUNC_START(_rest64gpr_15)	evldd 15,8(11)
+-FUNC_START(_rest64gpr_16)	evldd 16,16(11)
+-FUNC_START(_rest64gpr_17)	evldd 17,24(11)
+-FUNC_START(_rest64gpr_18)	evldd 18,32(11)
+-FUNC_START(_rest64gpr_19)	evldd 19,40(11)
+-FUNC_START(_rest64gpr_20)	evldd 20,48(11)
+-FUNC_START(_rest64gpr_21)	evldd 21,56(11)
+-FUNC_START(_rest64gpr_22)	evldd 22,64(11)
+-FUNC_START(_rest64gpr_23)	evldd 23,72(11)
+-FUNC_START(_rest64gpr_24)	evldd 24,80(11)
+-FUNC_START(_rest64gpr_25)	evldd 25,88(11)
+-FUNC_START(_rest64gpr_26)	evldd 26,96(11)
+-FUNC_START(_rest64gpr_27)	evldd 27,104(11)
+-FUNC_START(_rest64gpr_28)	evldd 28,112(11)
+-FUNC_START(_rest64gpr_29)	evldd 29,120(11)
+-FUNC_START(_rest64gpr_30)	evldd 30,128(11)
+-FUNC_START(_rest64gpr_31)	evldd 31,136(11)
++HIDDEN_FUNC(_rest64gpr_14)	evldd 14,0(11)
++HIDDEN_FUNC(_rest64gpr_15)	evldd 15,8(11)
++HIDDEN_FUNC(_rest64gpr_16)	evldd 16,16(11)
++HIDDEN_FUNC(_rest64gpr_17)	evldd 17,24(11)
++HIDDEN_FUNC(_rest64gpr_18)	evldd 18,32(11)
++HIDDEN_FUNC(_rest64gpr_19)	evldd 19,40(11)
++HIDDEN_FUNC(_rest64gpr_20)	evldd 20,48(11)
++HIDDEN_FUNC(_rest64gpr_21)	evldd 21,56(11)
++HIDDEN_FUNC(_rest64gpr_22)	evldd 22,64(11)
++HIDDEN_FUNC(_rest64gpr_23)	evldd 23,72(11)
++HIDDEN_FUNC(_rest64gpr_24)	evldd 24,80(11)
++HIDDEN_FUNC(_rest64gpr_25)	evldd 25,88(11)
++HIDDEN_FUNC(_rest64gpr_26)	evldd 26,96(11)
++HIDDEN_FUNC(_rest64gpr_27)	evldd 27,104(11)
++HIDDEN_FUNC(_rest64gpr_28)	evldd 28,112(11)
++HIDDEN_FUNC(_rest64gpr_29)	evldd 29,120(11)
++HIDDEN_FUNC(_rest64gpr_30)	evldd 30,128(11)
++HIDDEN_FUNC(_rest64gpr_31)	evldd 31,136(11)
+ 				blr
+ FUNC_END(_rest64gpr_31)
+ FUNC_END(_rest64gpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtres64gprctr.asm gcc-4.3-new/gcc/config/rs6000/e500crtres64gprctr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtres64gprctr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtres64gprctr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,41 +43,41 @@
+ /* Routines for restoring 64-bit integer registers where the number of
+    registers to be restored is passed in CTR, called by the compiler.  */
+ 
+-FUNC_START(_rest64gpr_ctr_14)	evldd 14,0(11)
++HIDDEN_FUNC(_rest64gpr_ctr_14)	evldd 14,0(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_15)	evldd 15,8(11)
++HIDDEN_FUNC(_rest64gpr_ctr_15)	evldd 15,8(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_16)	evldd 16,16(11)
++HIDDEN_FUNC(_rest64gpr_ctr_16)	evldd 16,16(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_17)	evldd 17,24(11)
++HIDDEN_FUNC(_rest64gpr_ctr_17)	evldd 17,24(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_18)	evldd 18,32(11)
++HIDDEN_FUNC(_rest64gpr_ctr_18)	evldd 18,32(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_19)	evldd 19,40(11)
++HIDDEN_FUNC(_rest64gpr_ctr_19)	evldd 19,40(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_20)	evldd 20,48(11)
++HIDDEN_FUNC(_rest64gpr_ctr_20)	evldd 20,48(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_21)	evldd 21,56(11)
++HIDDEN_FUNC(_rest64gpr_ctr_21)	evldd 21,56(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_22)	evldd 22,64(11)
++HIDDEN_FUNC(_rest64gpr_ctr_22)	evldd 22,64(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_23)	evldd 23,72(11)
++HIDDEN_FUNC(_rest64gpr_ctr_23)	evldd 23,72(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_24)	evldd 24,80(11)
++HIDDEN_FUNC(_rest64gpr_ctr_24)	evldd 24,80(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_25)	evldd 25,88(11)
++HIDDEN_FUNC(_rest64gpr_ctr_25)	evldd 25,88(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_26)	evldd 26,96(11)
++HIDDEN_FUNC(_rest64gpr_ctr_26)	evldd 26,96(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_27)	evldd 27,104(11)
++HIDDEN_FUNC(_rest64gpr_ctr_27)	evldd 27,104(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_28)	evldd 28,112(11)
++HIDDEN_FUNC(_rest64gpr_ctr_28)	evldd 28,112(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_29)	evldd 29,120(11)
++HIDDEN_FUNC(_rest64gpr_ctr_29)	evldd 29,120(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_30)	evldd 30,128(11)
++HIDDEN_FUNC(_rest64gpr_ctr_30)	evldd 30,128(11)
+ 				bdz _rest64_gpr_ctr_done
+-FUNC_START(_rest64gpr_ctr_31)	evldd 31,136(11)
++HIDDEN_FUNC(_rest64gpr_ctr_31)	evldd 31,136(11)
+ _rest64gpr_ctr_done:		blr
+ 
+ #endif
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtrest32gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtrest32gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtrest32gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtrest32gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for restoring 32-bit integer registers, called by the compiler.  */
+ /* "Tail" versions that perform a tail call.  */
+ 
+-FUNC_START(_rest32gpr_14_t)	lwz 14,-72(11)
+-FUNC_START(_rest32gpr_15_t)	lwz 15,-68(11)
+-FUNC_START(_rest32gpr_16_t)	lwz 16,-64(11)
+-FUNC_START(_rest32gpr_17_t)	lwz 17,-60(11)
+-FUNC_START(_rest32gpr_18_t)	lwz 18,-56(11)
+-FUNC_START(_rest32gpr_19_t)	lwz 19,-52(11)
+-FUNC_START(_rest32gpr_20_t)	lwz 20,-48(11)
+-FUNC_START(_rest32gpr_21_t)	lwz 21,-44(11)
+-FUNC_START(_rest32gpr_22_t)	lwz 22,-40(11)
+-FUNC_START(_rest32gpr_23_t)	lwz 23,-36(11)
+-FUNC_START(_rest32gpr_24_t)	lwz 24,-32(11)
+-FUNC_START(_rest32gpr_25_t)	lwz 25,-28(11)
+-FUNC_START(_rest32gpr_26_t)	lwz 26,-24(11)
+-FUNC_START(_rest32gpr_27_t)	lwz 27,-20(11)
+-FUNC_START(_rest32gpr_28_t)	lwz 28,-16(11)
+-FUNC_START(_rest32gpr_29_t)	lwz 29,-12(11)
+-FUNC_START(_rest32gpr_30_t)	lwz 30,-8(11)
+-FUNC_START(_rest32gpr_31_t)	lwz 31,-4(11)
++HIDDEN_FUNC(_rest32gpr_14_t)	lwz 14,-72(11)
++HIDDEN_FUNC(_rest32gpr_15_t)	lwz 15,-68(11)
++HIDDEN_FUNC(_rest32gpr_16_t)	lwz 16,-64(11)
++HIDDEN_FUNC(_rest32gpr_17_t)	lwz 17,-60(11)
++HIDDEN_FUNC(_rest32gpr_18_t)	lwz 18,-56(11)
++HIDDEN_FUNC(_rest32gpr_19_t)	lwz 19,-52(11)
++HIDDEN_FUNC(_rest32gpr_20_t)	lwz 20,-48(11)
++HIDDEN_FUNC(_rest32gpr_21_t)	lwz 21,-44(11)
++HIDDEN_FUNC(_rest32gpr_22_t)	lwz 22,-40(11)
++HIDDEN_FUNC(_rest32gpr_23_t)	lwz 23,-36(11)
++HIDDEN_FUNC(_rest32gpr_24_t)	lwz 24,-32(11)
++HIDDEN_FUNC(_rest32gpr_25_t)	lwz 25,-28(11)
++HIDDEN_FUNC(_rest32gpr_26_t)	lwz 26,-24(11)
++HIDDEN_FUNC(_rest32gpr_27_t)	lwz 27,-20(11)
++HIDDEN_FUNC(_rest32gpr_28_t)	lwz 28,-16(11)
++HIDDEN_FUNC(_rest32gpr_29_t)	lwz 29,-12(11)
++HIDDEN_FUNC(_rest32gpr_30_t)	lwz 30,-8(11)
++HIDDEN_FUNC(_rest32gpr_31_t)	lwz 31,-4(11)
+ 				lwz 0,4(11)
+ 				mr 1,11
+ 				blr
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtrest64gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtrest64gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtrest64gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtrest64gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -42,24 +42,24 @@
+ 
+ /* "Tail" versions that perform a tail call.  */
+ 
+-FUNC_START(_rest64gpr_14_t)	evldd 14,0(11)
+-FUNC_START(_rest64gpr_15_t)	evldd 15,8(11)
+-FUNC_START(_rest64gpr_16_t)	evldd 16,16(11)
+-FUNC_START(_rest64gpr_17_t)	evldd 17,24(11)
+-FUNC_START(_rest64gpr_18_t)	evldd 18,32(11)
+-FUNC_START(_rest64gpr_19_t)	evldd 19,40(11)
+-FUNC_START(_rest64gpr_20_t)	evldd 20,48(11)
+-FUNC_START(_rest64gpr_21_t)	evldd 21,56(11)
+-FUNC_START(_rest64gpr_22_t)	evldd 22,64(11)
+-FUNC_START(_rest64gpr_23_t)	evldd 23,72(11)
+-FUNC_START(_rest64gpr_24_t)	evldd 24,80(11)
+-FUNC_START(_rest64gpr_25_t)	evldd 25,88(11)
+-FUNC_START(_rest64gpr_26_t)	evldd 26,96(11)
+-FUNC_START(_rest64gpr_27_t)	evldd 27,104(11)
+-FUNC_START(_rest64gpr_28_t)	evldd 28,112(11)
+-FUNC_START(_rest64gpr_29_t)	evldd 29,120(11)
+-FUNC_START(_rest64gpr_30_t)	evldd 30,128(11)
+-FUNC_START(_rest64gpr_31_t)	lwz 0,148(11)
++HIDDEN_FUNC(_rest64gpr_14_t)	evldd 14,0(11)
++HIDDEN_FUNC(_rest64gpr_15_t)	evldd 15,8(11)
++HIDDEN_FUNC(_rest64gpr_16_t)	evldd 16,16(11)
++HIDDEN_FUNC(_rest64gpr_17_t)	evldd 17,24(11)
++HIDDEN_FUNC(_rest64gpr_18_t)	evldd 18,32(11)
++HIDDEN_FUNC(_rest64gpr_19_t)	evldd 19,40(11)
++HIDDEN_FUNC(_rest64gpr_20_t)	evldd 20,48(11)
++HIDDEN_FUNC(_rest64gpr_21_t)	evldd 21,56(11)
++HIDDEN_FUNC(_rest64gpr_22_t)	evldd 22,64(11)
++HIDDEN_FUNC(_rest64gpr_23_t)	evldd 23,72(11)
++HIDDEN_FUNC(_rest64gpr_24_t)	evldd 24,80(11)
++HIDDEN_FUNC(_rest64gpr_25_t)	evldd 25,88(11)
++HIDDEN_FUNC(_rest64gpr_26_t)	evldd 26,96(11)
++HIDDEN_FUNC(_rest64gpr_27_t)	evldd 27,104(11)
++HIDDEN_FUNC(_rest64gpr_28_t)	evldd 28,112(11)
++HIDDEN_FUNC(_rest64gpr_29_t)	evldd 29,120(11)
++HIDDEN_FUNC(_rest64gpr_30_t)	evldd 30,128(11)
++HIDDEN_FUNC(_rest64gpr_31_t)	lwz 0,148(11)
+ 				evldd 31,136(11)
+ 				addi 1,11,144
+ 				blr
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtresx32gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtresx32gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtresx32gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtresx32gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for restoring 32-bit integer registers, called by the compiler.  */
+ /* "Exit" versions that return to the caller's caller.  */
+ 
+-FUNC_START(_rest32gpr_14_x)	lwz 14,-72(11)
+-FUNC_START(_rest32gpr_15_x)	lwz 15,-68(11)
+-FUNC_START(_rest32gpr_16_x)	lwz 16,-64(11)
+-FUNC_START(_rest32gpr_17_x)	lwz 17,-60(11)
+-FUNC_START(_rest32gpr_18_x)	lwz 18,-56(11)
+-FUNC_START(_rest32gpr_19_x)	lwz 19,-52(11)
+-FUNC_START(_rest32gpr_20_x)	lwz 20,-48(11)
+-FUNC_START(_rest32gpr_21_x)	lwz 21,-44(11)
+-FUNC_START(_rest32gpr_22_x)	lwz 22,-40(11)
+-FUNC_START(_rest32gpr_23_x)	lwz 23,-36(11)
+-FUNC_START(_rest32gpr_24_x)	lwz 24,-32(11)
+-FUNC_START(_rest32gpr_25_x)	lwz 25,-28(11)
+-FUNC_START(_rest32gpr_26_x)	lwz 26,-24(11)
+-FUNC_START(_rest32gpr_27_x)	lwz 27,-20(11)
+-FUNC_START(_rest32gpr_28_x)	lwz 28,-16(11)
+-FUNC_START(_rest32gpr_29_x)	lwz 29,-12(11)
+-FUNC_START(_rest32gpr_30_x)	lwz 30,-8(11)
+-FUNC_START(_rest32gpr_31_x)	lwz 0,4(11)
++HIDDEN_FUNC(_rest32gpr_14_x)	lwz 14,-72(11)
++HIDDEN_FUNC(_rest32gpr_15_x)	lwz 15,-68(11)
++HIDDEN_FUNC(_rest32gpr_16_x)	lwz 16,-64(11)
++HIDDEN_FUNC(_rest32gpr_17_x)	lwz 17,-60(11)
++HIDDEN_FUNC(_rest32gpr_18_x)	lwz 18,-56(11)
++HIDDEN_FUNC(_rest32gpr_19_x)	lwz 19,-52(11)
++HIDDEN_FUNC(_rest32gpr_20_x)	lwz 20,-48(11)
++HIDDEN_FUNC(_rest32gpr_21_x)	lwz 21,-44(11)
++HIDDEN_FUNC(_rest32gpr_22_x)	lwz 22,-40(11)
++HIDDEN_FUNC(_rest32gpr_23_x)	lwz 23,-36(11)
++HIDDEN_FUNC(_rest32gpr_24_x)	lwz 24,-32(11)
++HIDDEN_FUNC(_rest32gpr_25_x)	lwz 25,-28(11)
++HIDDEN_FUNC(_rest32gpr_26_x)	lwz 26,-24(11)
++HIDDEN_FUNC(_rest32gpr_27_x)	lwz 27,-20(11)
++HIDDEN_FUNC(_rest32gpr_28_x)	lwz 28,-16(11)
++HIDDEN_FUNC(_rest32gpr_29_x)	lwz 29,-12(11)
++HIDDEN_FUNC(_rest32gpr_30_x)	lwz 30,-8(11)
++HIDDEN_FUNC(_rest32gpr_31_x)	lwz 0,4(11)
+ 				lwz 31,-4(11)
+ 				mr 1,11
+ 				mtlr 0
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtresx64gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtresx64gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtresx64gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtresx64gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -42,24 +42,24 @@
+ 
+ /* "Exit" versions that return to their caller's caller.  */
+ 
+-FUNC_START(_rest64gpr_14_x)	evldd 14,0(11)
+-FUNC_START(_rest64gpr_15_x)	evldd 15,8(11)
+-FUNC_START(_rest64gpr_16_x)	evldd 16,16(11)
+-FUNC_START(_rest64gpr_17_x)	evldd 17,24(11)
+-FUNC_START(_rest64gpr_18_x)	evldd 18,32(11)
+-FUNC_START(_rest64gpr_19_x)	evldd 19,40(11)
+-FUNC_START(_rest64gpr_20_x)	evldd 20,48(11)
+-FUNC_START(_rest64gpr_21_x)	evldd 21,56(11)
+-FUNC_START(_rest64gpr_22_x)	evldd 22,64(11)
+-FUNC_START(_rest64gpr_23_x)	evldd 23,72(11)
+-FUNC_START(_rest64gpr_24_x)	evldd 24,80(11)
+-FUNC_START(_rest64gpr_25_x)	evldd 25,88(11)
+-FUNC_START(_rest64gpr_26_x)	evldd 26,96(11)
+-FUNC_START(_rest64gpr_27_x)	evldd 27,104(11)
+-FUNC_START(_rest64gpr_28_x)	evldd 28,112(11)
+-FUNC_START(_rest64gpr_29_x)	evldd 29,120(11)
+-FUNC_START(_rest64gpr_30_x)	evldd 30,128(11)
+-FUNC_START(_rest64gpr_31_x)	lwz 0,148(11)
++HIDDEN_FUNC(_rest64gpr_14_x)	evldd 14,0(11)
++HIDDEN_FUNC(_rest64gpr_15_x)	evldd 15,8(11)
++HIDDEN_FUNC(_rest64gpr_16_x)	evldd 16,16(11)
++HIDDEN_FUNC(_rest64gpr_17_x)	evldd 17,24(11)
++HIDDEN_FUNC(_rest64gpr_18_x)	evldd 18,32(11)
++HIDDEN_FUNC(_rest64gpr_19_x)	evldd 19,40(11)
++HIDDEN_FUNC(_rest64gpr_20_x)	evldd 20,48(11)
++HIDDEN_FUNC(_rest64gpr_21_x)	evldd 21,56(11)
++HIDDEN_FUNC(_rest64gpr_22_x)	evldd 22,64(11)
++HIDDEN_FUNC(_rest64gpr_23_x)	evldd 23,72(11)
++HIDDEN_FUNC(_rest64gpr_24_x)	evldd 24,80(11)
++HIDDEN_FUNC(_rest64gpr_25_x)	evldd 25,88(11)
++HIDDEN_FUNC(_rest64gpr_26_x)	evldd 26,96(11)
++HIDDEN_FUNC(_rest64gpr_27_x)	evldd 27,104(11)
++HIDDEN_FUNC(_rest64gpr_28_x)	evldd 28,112(11)
++HIDDEN_FUNC(_rest64gpr_29_x)	evldd 29,120(11)
++HIDDEN_FUNC(_rest64gpr_30_x)	evldd 30,128(11)
++HIDDEN_FUNC(_rest64gpr_31_x)	lwz 0,148(11)
+ 				evldd 31,136(11)
+ 				addi 1,11,144
+ 				mtlr 0
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsav32gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsav32gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsav32gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsav32gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for saving 32-bit integer registers, called by the compiler.  */
+ /* "Bare" versions that simply return to their caller.  */
+ 
+-FUNC_START(_save32gpr_14)	stw 14,-72(11)
+-FUNC_START(_save32gpr_15)	stw 15,-68(11)
+-FUNC_START(_save32gpr_16)	stw 16,-64(11)
+-FUNC_START(_save32gpr_17)	stw 17,-60(11)
+-FUNC_START(_save32gpr_18)	stw 18,-56(11)
+-FUNC_START(_save32gpr_19)	stw 19,-52(11)
+-FUNC_START(_save32gpr_20)	stw 20,-48(11)
+-FUNC_START(_save32gpr_21)	stw 21,-44(11)
+-FUNC_START(_save32gpr_22)	stw 22,-40(11)
+-FUNC_START(_save32gpr_23)	stw 23,-36(11)
+-FUNC_START(_save32gpr_24)	stw 24,-32(11)
+-FUNC_START(_save32gpr_25)	stw 25,-28(11)
+-FUNC_START(_save32gpr_26)	stw 26,-24(11)
+-FUNC_START(_save32gpr_27)	stw 27,-20(11)
+-FUNC_START(_save32gpr_28)	stw 28,-16(11)
+-FUNC_START(_save32gpr_29)	stw 29,-12(11)
+-FUNC_START(_save32gpr_30)	stw 30,-8(11)
+-FUNC_START(_save32gpr_31)	stw 31,-4(11)
++HIDDEN_FUNC(_save32gpr_14)	stw 14,-72(11)
++HIDDEN_FUNC(_save32gpr_15)	stw 15,-68(11)
++HIDDEN_FUNC(_save32gpr_16)	stw 16,-64(11)
++HIDDEN_FUNC(_save32gpr_17)	stw 17,-60(11)
++HIDDEN_FUNC(_save32gpr_18)	stw 18,-56(11)
++HIDDEN_FUNC(_save32gpr_19)	stw 19,-52(11)
++HIDDEN_FUNC(_save32gpr_20)	stw 20,-48(11)
++HIDDEN_FUNC(_save32gpr_21)	stw 21,-44(11)
++HIDDEN_FUNC(_save32gpr_22)	stw 22,-40(11)
++HIDDEN_FUNC(_save32gpr_23)	stw 23,-36(11)
++HIDDEN_FUNC(_save32gpr_24)	stw 24,-32(11)
++HIDDEN_FUNC(_save32gpr_25)	stw 25,-28(11)
++HIDDEN_FUNC(_save32gpr_26)	stw 26,-24(11)
++HIDDEN_FUNC(_save32gpr_27)	stw 27,-20(11)
++HIDDEN_FUNC(_save32gpr_28)	stw 28,-16(11)
++HIDDEN_FUNC(_save32gpr_29)	stw 29,-12(11)
++HIDDEN_FUNC(_save32gpr_30)	stw 30,-8(11)
++HIDDEN_FUNC(_save32gpr_31)	stw 31,-4(11)
+ 				blr
+ FUNC_END(_save32gpr_31)
+ FUNC_END(_save32gpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsav64gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsav64gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsav64gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsav64gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -42,24 +42,24 @@
+ 
+ /* Routines for saving 64-bit integer registers, called by the compiler.  */
+ 
+-FUNC_START(_save64gpr_14)	evstdd 14,0(11)
+-FUNC_START(_save64gpr_15)	evstdd 15,8(11)
+-FUNC_START(_save64gpr_16)	evstdd 16,16(11)
+-FUNC_START(_save64gpr_17)	evstdd 17,24(11)
+-FUNC_START(_save64gpr_18)	evstdd 18,32(11)
+-FUNC_START(_save64gpr_19)	evstdd 19,40(11)
+-FUNC_START(_save64gpr_20)	evstdd 20,48(11)
+-FUNC_START(_save64gpr_21)	evstdd 21,56(11)
+-FUNC_START(_save64gpr_22)	evstdd 22,64(11)
+-FUNC_START(_save64gpr_23)	evstdd 23,72(11)
+-FUNC_START(_save64gpr_24)	evstdd 24,80(11)
+-FUNC_START(_save64gpr_25)	evstdd 25,88(11)
+-FUNC_START(_save64gpr_26)	evstdd 26,96(11)
+-FUNC_START(_save64gpr_27)	evstdd 27,104(11)
+-FUNC_START(_save64gpr_28)	evstdd 28,112(11)
+-FUNC_START(_save64gpr_29)	evstdd 29,120(11)
+-FUNC_START(_save64gpr_30)	evstdd 30,128(11)
+-FUNC_START(_save64gpr_31)	evstdd 31,136(11)
++HIDDEN_FUNC(_save64gpr_14)	evstdd 14,0(11)
++HIDDEN_FUNC(_save64gpr_15)	evstdd 15,8(11)
++HIDDEN_FUNC(_save64gpr_16)	evstdd 16,16(11)
++HIDDEN_FUNC(_save64gpr_17)	evstdd 17,24(11)
++HIDDEN_FUNC(_save64gpr_18)	evstdd 18,32(11)
++HIDDEN_FUNC(_save64gpr_19)	evstdd 19,40(11)
++HIDDEN_FUNC(_save64gpr_20)	evstdd 20,48(11)
++HIDDEN_FUNC(_save64gpr_21)	evstdd 21,56(11)
++HIDDEN_FUNC(_save64gpr_22)	evstdd 22,64(11)
++HIDDEN_FUNC(_save64gpr_23)	evstdd 23,72(11)
++HIDDEN_FUNC(_save64gpr_24)	evstdd 24,80(11)
++HIDDEN_FUNC(_save64gpr_25)	evstdd 25,88(11)
++HIDDEN_FUNC(_save64gpr_26)	evstdd 26,96(11)
++HIDDEN_FUNC(_save64gpr_27)	evstdd 27,104(11)
++HIDDEN_FUNC(_save64gpr_28)	evstdd 28,112(11)
++HIDDEN_FUNC(_save64gpr_29)	evstdd 29,120(11)
++HIDDEN_FUNC(_save64gpr_30)	evstdd 30,128(11)
++HIDDEN_FUNC(_save64gpr_31)	evstdd 31,136(11)
+ 				blr
+ FUNC_END(_save64gpr_31)
+ FUNC_END(_save64gpr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsav64gprctr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsav64gprctr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsav64gprctr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsav64gprctr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -44,41 +44,41 @@
+    registers to be saved is passed in CTR, called by the compiler.  */
+ /* "Bare" versions that return to their caller.  */
+ 
+-FUNC_START(_save64gpr_ctr_14)	evstdd 14,0(11)
++HIDDEN_FUNC(_save64gpr_ctr_14)	evstdd 14,0(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_15)	evstdd 15,8(11)
++HIDDEN_FUNC(_save64gpr_ctr_15)	evstdd 15,8(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_16)	evstdd 16,16(11)
++HIDDEN_FUNC(_save64gpr_ctr_16)	evstdd 16,16(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_17)	evstdd 17,24(11)
++HIDDEN_FUNC(_save64gpr_ctr_17)	evstdd 17,24(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_18)	evstdd 18,32(11)
++HIDDEN_FUNC(_save64gpr_ctr_18)	evstdd 18,32(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_19)	evstdd 19,40(11)
++HIDDEN_FUNC(_save64gpr_ctr_19)	evstdd 19,40(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_20)	evstdd 20,48(11)
++HIDDEN_FUNC(_save64gpr_ctr_20)	evstdd 20,48(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_21)	evstdd 21,56(11)
++HIDDEN_FUNC(_save64gpr_ctr_21)	evstdd 21,56(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_22)	evstdd 22,64(11)
++HIDDEN_FUNC(_save64gpr_ctr_22)	evstdd 22,64(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_23)	evstdd 23,72(11)
++HIDDEN_FUNC(_save64gpr_ctr_23)	evstdd 23,72(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_24)	evstdd 24,80(11)
++HIDDEN_FUNC(_save64gpr_ctr_24)	evstdd 24,80(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_25)	evstdd 25,88(11)
++HIDDEN_FUNC(_save64gpr_ctr_25)	evstdd 25,88(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_26)	evstdd 26,96(11)
++HIDDEN_FUNC(_save64gpr_ctr_26)	evstdd 26,96(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_27)	evstdd 27,104(11)
++HIDDEN_FUNC(_save64gpr_ctr_27)	evstdd 27,104(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_28)	evstdd 28,112(11)
++HIDDEN_FUNC(_save64gpr_ctr_28)	evstdd 28,112(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_29)	evstdd 29,120(11)
++HIDDEN_FUNC(_save64gpr_ctr_29)	evstdd 29,120(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_30)	evstdd 30,128(11)
++HIDDEN_FUNC(_save64gpr_ctr_30)	evstdd 30,128(11)
+ 				bdz _save64_gpr_ctr_done
+-FUNC_START(_save64gpr_ctr_31)	evstdd 31,136(11)
++HIDDEN_FUNC(_save64gpr_ctr_31)	evstdd 31,136(11)
+ _save64gpr_ctr_done:		blr
+ FUNC_END(_save64gpr_ctr_31)
+ FUNC_END(_save64gpr_ctr_30)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsavg32gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsavg32gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsavg32gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsavg32gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for saving 32-bit integer registers, called by the compiler.  */
+ /* "GOT" versions that load the address of the GOT into lr before returning.  */
+ 
+-FUNC_START(_save32gpr_14_g)	stw 14,-72(11)
+-FUNC_START(_save32gpr_15_g)	stw 15,-68(11)
+-FUNC_START(_save32gpr_16_g)	stw 16,-64(11)
+-FUNC_START(_save32gpr_17_g)	stw 17,-60(11)
+-FUNC_START(_save32gpr_18_g)	stw 18,-56(11)
+-FUNC_START(_save32gpr_19_g)	stw 19,-52(11)
+-FUNC_START(_save32gpr_20_g)	stw 20,-48(11)
+-FUNC_START(_save32gpr_21_g)	stw 21,-44(11)
+-FUNC_START(_save32gpr_22_g)	stw 22,-40(11)
+-FUNC_START(_save32gpr_23_g)	stw 23,-36(11)
+-FUNC_START(_save32gpr_24_g)	stw 24,-32(11)
+-FUNC_START(_save32gpr_25_g)	stw 25,-28(11)
+-FUNC_START(_save32gpr_26_g)	stw 26,-24(11)
+-FUNC_START(_save32gpr_27_g)	stw 27,-20(11)
+-FUNC_START(_save32gpr_28_g)	stw 28,-16(11)
+-FUNC_START(_save32gpr_29_g)	stw 29,-12(11)
+-FUNC_START(_save32gpr_30_g)	stw 30,-8(11)
+-FUNC_START(_save32gpr_31_g)	stw 31,-4(11)
++HIDDEN_FUNC(_save32gpr_14_g)	stw 14,-72(11)
++HIDDEN_FUNC(_save32gpr_15_g)	stw 15,-68(11)
++HIDDEN_FUNC(_save32gpr_16_g)	stw 16,-64(11)
++HIDDEN_FUNC(_save32gpr_17_g)	stw 17,-60(11)
++HIDDEN_FUNC(_save32gpr_18_g)	stw 18,-56(11)
++HIDDEN_FUNC(_save32gpr_19_g)	stw 19,-52(11)
++HIDDEN_FUNC(_save32gpr_20_g)	stw 20,-48(11)
++HIDDEN_FUNC(_save32gpr_21_g)	stw 21,-44(11)
++HIDDEN_FUNC(_save32gpr_22_g)	stw 22,-40(11)
++HIDDEN_FUNC(_save32gpr_23_g)	stw 23,-36(11)
++HIDDEN_FUNC(_save32gpr_24_g)	stw 24,-32(11)
++HIDDEN_FUNC(_save32gpr_25_g)	stw 25,-28(11)
++HIDDEN_FUNC(_save32gpr_26_g)	stw 26,-24(11)
++HIDDEN_FUNC(_save32gpr_27_g)	stw 27,-20(11)
++HIDDEN_FUNC(_save32gpr_28_g)	stw 28,-16(11)
++HIDDEN_FUNC(_save32gpr_29_g)	stw 29,-12(11)
++HIDDEN_FUNC(_save32gpr_30_g)	stw 30,-8(11)
++HIDDEN_FUNC(_save32gpr_31_g)	stw 31,-4(11)
+ 				b _GLOBAL_OFFSET_TABLE_-4
+ FUNC_END(_save32gpr_31_g)
+ FUNC_END(_save32gpr_30_g)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsavg64gpr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsavg64gpr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsavg64gpr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsavg64gpr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,24 +43,24 @@
+ /* Routines for saving 64-bit integer registers, called by the compiler.  */
+ /* "GOT" versions that load the address of the GOT into lr before returning.  */
+ 
+-FUNC_START(_save64gpr_14_g)	evstdd 14,0(11)
+-FUNC_START(_save64gpr_15_g)	evstdd 15,8(11)
+-FUNC_START(_save64gpr_16_g)	evstdd 16,16(11)
+-FUNC_START(_save64gpr_17_g)	evstdd 17,24(11)
+-FUNC_START(_save64gpr_18_g)	evstdd 18,32(11)
+-FUNC_START(_save64gpr_19_g)	evstdd 19,40(11)
+-FUNC_START(_save64gpr_20_g)	evstdd 20,48(11)
+-FUNC_START(_save64gpr_21_g)	evstdd 21,56(11)
+-FUNC_START(_save64gpr_22_g)	evstdd 22,64(11)
+-FUNC_START(_save64gpr_23_g)	evstdd 23,72(11)
+-FUNC_START(_save64gpr_24_g)	evstdd 24,80(11)
+-FUNC_START(_save64gpr_25_g)	evstdd 25,88(11)
+-FUNC_START(_save64gpr_26_g)	evstdd 26,96(11)
+-FUNC_START(_save64gpr_27_g)	evstdd 27,104(11)
+-FUNC_START(_save64gpr_28_g)	evstdd 28,112(11)
+-FUNC_START(_save64gpr_29_g)	evstdd 29,120(11)
+-FUNC_START(_save64gpr_30_g)	evstdd 30,128(11)
+-FUNC_START(_save64gpr_31_g)	evstdd 31,136(11)
++HIDDEN_FUNC(_save64gpr_14_g)	evstdd 14,0(11)
++HIDDEN_FUNC(_save64gpr_15_g)	evstdd 15,8(11)
++HIDDEN_FUNC(_save64gpr_16_g)	evstdd 16,16(11)
++HIDDEN_FUNC(_save64gpr_17_g)	evstdd 17,24(11)
++HIDDEN_FUNC(_save64gpr_18_g)	evstdd 18,32(11)
++HIDDEN_FUNC(_save64gpr_19_g)	evstdd 19,40(11)
++HIDDEN_FUNC(_save64gpr_20_g)	evstdd 20,48(11)
++HIDDEN_FUNC(_save64gpr_21_g)	evstdd 21,56(11)
++HIDDEN_FUNC(_save64gpr_22_g)	evstdd 22,64(11)
++HIDDEN_FUNC(_save64gpr_23_g)	evstdd 23,72(11)
++HIDDEN_FUNC(_save64gpr_24_g)	evstdd 24,80(11)
++HIDDEN_FUNC(_save64gpr_25_g)	evstdd 25,88(11)
++HIDDEN_FUNC(_save64gpr_26_g)	evstdd 26,96(11)
++HIDDEN_FUNC(_save64gpr_27_g)	evstdd 27,104(11)
++HIDDEN_FUNC(_save64gpr_28_g)	evstdd 28,112(11)
++HIDDEN_FUNC(_save64gpr_29_g)	evstdd 29,120(11)
++HIDDEN_FUNC(_save64gpr_30_g)	evstdd 30,128(11)
++HIDDEN_FUNC(_save64gpr_31_g)	evstdd 31,136(11)
+ 				b _GLOBAL_OFFSET_TABLE_-4
+ FUNC_END(_save64gpr_31_g)
+ FUNC_END(_save64gpr_30_g)
+diff -Nurd gcc-4.3/gcc/config/rs6000/e500crtsavg64gprctr.asm gcc-4.3-new/gcc/config/rs6000/e500crtsavg64gprctr.asm
+--- gcc-4.3/gcc/config/rs6000/e500crtsavg64gprctr.asm	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/e500crtsavg64gprctr.asm	2008-10-18 12:44:16.000000000 +0200
+@@ -43,41 +43,41 @@
+ /* Routines for saving 64-bit integer registers, called by the compiler.  */
+ /* "GOT" versions that load the address of the GOT into lr before returning.  */
+ 
+-FUNC_START(_save64gpr_ctr_14_g)	evstdd 14,0(11)
++HIDDEN_FUNC(_save64gpr_ctr_14_g)	evstdd 14,0(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_15_g)	evstdd 15,8(11)
++HIDDEN_FUNC(_save64gpr_ctr_15_g)	evstdd 15,8(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_16_g)	evstdd 16,16(11)
++HIDDEN_FUNC(_save64gpr_ctr_16_g)	evstdd 16,16(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_17_g)	evstdd 17,24(11)
++HIDDEN_FUNC(_save64gpr_ctr_17_g)	evstdd 17,24(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_18_g)	evstdd 18,32(11)
++HIDDEN_FUNC(_save64gpr_ctr_18_g)	evstdd 18,32(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_19_g)	evstdd 19,40(11)
++HIDDEN_FUNC(_save64gpr_ctr_19_g)	evstdd 19,40(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_20_g)	evstdd 20,48(11)
++HIDDEN_FUNC(_save64gpr_ctr_20_g)	evstdd 20,48(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_21_g)	evstdd 21,56(11)
++HIDDEN_FUNC(_save64gpr_ctr_21_g)	evstdd 21,56(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_22_g)	evstdd 22,64(11)
++HIDDEN_FUNC(_save64gpr_ctr_22_g)	evstdd 22,64(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_23_g)	evstdd 23,72(11)
++HIDDEN_FUNC(_save64gpr_ctr_23_g)	evstdd 23,72(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_24_g)	evstdd 24,80(11)
++HIDDEN_FUNC(_save64gpr_ctr_24_g)	evstdd 24,80(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_25_g)	evstdd 25,88(11)
++HIDDEN_FUNC(_save64gpr_ctr_25_g)	evstdd 25,88(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_26_g)	evstdd 26,96(11)
++HIDDEN_FUNC(_save64gpr_ctr_26_g)	evstdd 26,96(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_27_g)	evstdd 27,104(11)
++HIDDEN_FUNC(_save64gpr_ctr_27_g)	evstdd 27,104(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_28_g)	evstdd 28,112(11)
++HIDDEN_FUNC(_save64gpr_ctr_28_g)	evstdd 28,112(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_29_g)	evstdd 29,120(11)
++HIDDEN_FUNC(_save64gpr_ctr_29_g)	evstdd 29,120(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_30_g)	evstdd 30,128(11)
++HIDDEN_FUNC(_save64gpr_ctr_30_g)	evstdd 30,128(11)
+ 				bdz _save64_gpr_ctr_g_done
+-FUNC_START(_save64gpr_ctr_31_g)	evstdd 31,136(11)
++HIDDEN_FUNC(_save64gpr_ctr_31_g)	evstdd 31,136(11)
+ _save64gpr_ctr_g_done:		b _GLOBAL_OFFSET_TABLE_-4
+ FUNC_END(_save64gpr_ctr_31_g)
+ FUNC_END(_save64gpr_ctr_30_g)
+diff -Nurd gcc-4.3/gcc/config/rs6000/ppc-asm.h gcc-4.3-new/gcc/config/rs6000/ppc-asm.h
+--- gcc-4.3/gcc/config/rs6000/ppc-asm.h	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/ppc-asm.h	2008-10-18 12:44:16.000000000 +0200
+@@ -110,6 +110,11 @@
+ 	.globl GLUE(.,name); \
+ GLUE(.,name):
+ 
++#define HIDDEN_FUNC(name) \
++  FUNC_START(name) \
++  .hidden name;	\
++  .hidden GLUE(.,name);
++
+ #define FUNC_END(name) \
+ GLUE(.L,name): \
+ 	.size GLUE(.,name),GLUE(.L,name)-GLUE(.,name)
+@@ -136,6 +141,11 @@
+ 	.globl GLUE(.,name); \
+ GLUE(.,name):
+ 
++#define HIDDEN_FUNC(name) \
++  FUNC_START(name) \
++  .hidden name; \
++  .hidden GLUE(.,name);
++
+ #define FUNC_END(name) \
+ GLUE(.L,name): \
+ 	.size GLUE(.,name),GLUE(.L,name)-GLUE(.,name)
+@@ -153,6 +163,10 @@
+ 	.globl FUNC_NAME(name); \
+ FUNC_NAME(name):
+ 
++#define HIDDEN_FUNC(name) \
++  FUNC_START(name) \
++  .hidden FUNC_NAME(name);
++
+ #define FUNC_END(name) \
+ GLUE(.L,name): \
+ 	.size FUNC_NAME(name),GLUE(.L,name)-FUNC_NAME(name)
+diff -Nurd gcc-4.3/gcc/config/rs6000/rs6000.c gcc-4.3-new/gcc/config/rs6000/rs6000.c
+--- gcc-4.3/gcc/config/rs6000/rs6000.c	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/rs6000.c	2008-10-18 12:44:16.000000000 +0200
+@@ -2476,6 +2476,8 @@
+ 	       (TARGET_ALTIVEC_ABI ? 2
+ 		: TARGET_SPE_ABI ? 3
+ 		: 1));
++      fprintf (file, "\t.gnu_attribute 12, %d\n",
++	       aix_struct_return ? 2 : 1);
+     }
+ #endif
+ 
+diff -Nurd gcc-4.3/gcc/config/rs6000/sysv4.h gcc-4.3-new/gcc/config/rs6000/sysv4.h
+--- gcc-4.3/gcc/config/rs6000/sysv4.h	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/sysv4.h	2008-10-18 12:44:16.000000000 +0200
+@@ -585,9 +585,9 @@
+ /* Override svr4.h definition.  */
+ #undef	ASM_SPEC
+ #define	ASM_SPEC "%(asm_cpu) \
+-%{,assembler|,assembler-with-cpp: %{mregnames} %{mno-regnames}} \
+-%{v:-V} %{Qy:} %{!Qn:-Qy} %{n} %{T} %{Ym,*} %{Yd,*} %{Wa,*:%*} \
+-%{mrelocatable} %{mrelocatable-lib} %{fpic|fpie|fPIC|fPIE:-K PIC} \
++%{,assembler|,assembler-with-cpp: %{mregnames} %{mno-regnames}}" \
++SVR4_ASM_SPEC \
++"%{mrelocatable} %{mrelocatable-lib} %{fpic|fpie|fPIC|fPIE:-K PIC} \
+ %{memb|msdata|msdata=eabi: -memb} \
+ %{mlittle|mlittle-endian:-mlittle; \
+   mbig|mbig-endian      :-mbig;    \
+diff -Nurd gcc-4.3/gcc/config/rs6000/t-cs-eabi gcc-4.3-new/gcc/config/rs6000/t-cs-eabi
+--- gcc-4.3/gcc/config/rs6000/t-cs-eabi	1970-01-01 01:00:00.000000000 +0100
++++ gcc-4.3-new/gcc/config/rs6000/t-cs-eabi	2008-10-18 12:44:16.000000000 +0200
+@@ -0,0 +1,17 @@
++# Multilibs for powerpc embedded ELF targets.
++
++MULTILIB_OPTIONS	= te500v1/te500v2/te600/te500mc \
++			  msoft-float
++
++MULTILIB_DIRNAMES	= te500v1 te500v2 te600 te500mc \
++			  nof
++
++MULTILIB_EXCEPTIONS	= *te600*/*msoft-float* \
++			  *te500v1*/*msoft-float* \
++			  *te500v2*/*msoft-float* \
++			  *te500mc*/*msoft-float*
++
++MULTILIB_EXTRA_OPTS	= mno-eabi mstrict-align
++
++MULTILIB_MATCHES	= ${MULTILIB_MATCHES_FLOAT} \
++			  ${MULTILIB_MATCHES_ENDIAN}
+diff -Nurd gcc-4.3/gcc/config/rs6000/t-ppcgas gcc-4.3-new/gcc/config/rs6000/t-ppcgas
+--- gcc-4.3/gcc/config/rs6000/t-ppcgas	2008-10-01 14:50:54.000000000 +0200
++++ gcc-4.3-new/gcc/config/rs6000/t-ppcgas	2008-10-18 12:44:16.000000000 +0200
+@@ -1,15 +1,14 @@
+ # Multilibs for powerpc embedded ELF targets.
+ 
+-MULTILIB_OPTIONS	= te500v1/te500v2/te600/te500mc \
++MULTILIB_OPTIONS	= te500v1/te500v2/te600 \
+ 			  msoft-float
+ 
+-MULTILIB_DIRNAMES	= te500v1 te500v2 te600 te500mc \
++MULTILIB_DIRNAMES	= te500v1 te500v2 te600 \
+ 			  nof
+ 
+ MULTILIB_EXCEPTIONS	= *te600*/*msoft-float* \
+ 			  *te500v1*/*msoft-float* \
+-			  *te500v2*/*msoft-float* \
+-			  *te500mc*/*msoft-float*
++			  *te500v2*/*msoft-float*
+ 
+ MULTILIB_EXTRA_OPTS	= mno-eabi mstrict-align
+ 
+diff -Nurd gcc-4.3/gcc/config/svr4.h gcc-4.3-new/gcc/config/svr4.h
+--- gcc-4.3/gcc/config/svr4.h	2008-10-01 14:51:13.000000000 +0200
++++ gcc-4.3-new/gcc/config/svr4.h	2008-10-18 12:45:26.000000000 +0200
+@@ -55,7 +55,8 @@
+   && strcmp (STR, "Tdata") && strcmp (STR, "Ttext")	\
+   && strcmp (STR, "Tbss"))
+ 
+-/* Provide an ASM_SPEC appropriate for svr4.  Here we try to support as
++/* Provide an ASM_SPEC appropriate for svr4.
++   If we're not using GAS, we try to support as
+    many of the specialized svr4 assembler options as seems reasonable,
+    given that there are certain options which we can't (or shouldn't)
+    support directly due to the fact that they conflict with other options
+@@ -74,9 +75,16 @@
+    read its stdin.
+ */
+ 
+-#undef  ASM_SPEC
+-#define ASM_SPEC \
++#ifdef USE_GAS
++#define SVR4_ASM_SPEC \
++  "%{v:-V} %{Wa,*:%*}"
++#else
++#define SVR4_ASM_SPEC \
+   "%{v:-V} %{Qy:} %{!Qn:-Qy} %{n} %{T} %{Ym,*} %{Yd,*} %{Wa,*:%*}"
++#endif
++
++#undef  ASM_SPEC
++#define ASM_SPEC SVR4_ASM_SPEC
+ 
+ #define AS_NEEDS_DASH_FOR_PIPED_INPUT
+ 
+diff -Nurd gcc-4.3/gcc/config.gcc gcc-4.3-new/gcc/config.gcc
+--- gcc-4.3/gcc/config.gcc	2008-10-01 14:51:16.000000000 +0200
++++ gcc-4.3-new/gcc/config.gcc	2008-10-18 12:45:36.000000000 +0200
+@@ -2027,12 +2027,12 @@
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcendian rs6000/t-ppccomm"
+ 	;;
+ powerpc-*-eabisim*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/eabi.h rs6000/e500.h rs6000/eabisim.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/eabi.h rs6000/e500.h rs6000/eabisim.h"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	;;
+ powerpc-*-elf*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	use_fixproto=yes
+@@ -2043,9 +2043,12 @@
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcendian rs6000/t-ppccomm"
+ 	;;
+ powerpc-*-eabi*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/eabi.h rs6000/e500.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/eabi.h rs6000/e500.h"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
++	if test x$enable_extra_sgxx_multilibs = xyes; then
++	  tmake_file="${tmake_file} rs6000/t-cs-eabi"
++	fi
+ 	;;
+ powerpc-*-rtems*)
+ 	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/eabi.h rs6000/e500.h rs6000/rtems.h rtems.h"
+@@ -2132,7 +2135,7 @@
+ 	esac
+ 	;;
+ powerpc-wrs-windiss*)  # Instruction-level simulator for VxWorks.
+-	tm_file="${tm_file} elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/windiss.h"
++	tm_file="${tm_file} elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/windiss.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	thread_file=""
+@@ -2156,28 +2159,28 @@
+ 	use_fixproto=yes
+ 	;;
+ powerpcle-*-elf*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	use_fixproto=yes
+ 	;;
+ powerpcle-*-eabisim*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h rs6000/eabi.h rs6000/e500.h rs6000/eabisim.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h rs6000/eabi.h rs6000/e500.h rs6000/eabisim.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	;;
+ powerpcle-*-eabi*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h rs6000/eabi.h rs6000/e500.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h rs6000/eabi.h rs6000/e500.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	;;
+ powerpc-*-kaos*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h kaos.h rs6000/kaos-ppc.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h kaos.h rs6000/kaos-ppc.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	;;
+ powerpcle-*-kaos*)
+-	tm_file="${tm_file} dbxelf.h elfos.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h kaos.h rs6000/kaos-ppc.h"
++	tm_file="${tm_file} dbxelf.h elfos.h usegas.h svr4.h freebsd-spec.h rs6000/sysv4.h rs6000/sysv4le.h kaos.h rs6000/kaos-ppc.h"
+ 	tmake_file="rs6000/t-fprules rs6000/t-fprules-fpbit rs6000/t-ppcgas rs6000/t-ppccomm"
+ 	extra_options="${extra_options} rs6000/sysv4.opt"
+ 	;;
+diff -Nurd gcc-4.3/gcc/doc/invoke.texi gcc-4.3-new/gcc/doc/invoke.texi
+--- gcc-4.3/gcc/doc/invoke.texi	2008-10-01 14:39:48.000000000 +0200
++++ gcc-4.3-new/gcc/doc/invoke.texi	2008-10-18 12:02:55.000000000 +0200
+@@ -389,7 +389,7 @@
+ @gccoptlist{@var{object-file-name}  -l@var{library} @gol
+ -nostartfiles  -nodefaultlibs  -nostdlib -pie -rdynamic @gol
+ -s  -static  -static-libgcc  -shared  -shared-libgcc  -symbolic @gol
+--Wl,@var{option}  -Xlinker @var{option} @gol
++-T @var{script}  -Wl,@var{option}  -Xlinker @var{option} @gol
+ -u @var{symbol}}
+ 
+ @item Directory Options
+@@ -7619,6 +7619,14 @@
+ option @samp{-Xlinker -z -Xlinker defs}).  Only a few systems support
+ this option.
+ 
++@item -T @var{script}
++@opindex T
++@cindex linker script
++Use @var{script} as the linker script.  This option is supported by most
++systems using the GNU linker.  On some targets, such as bare-board
++targets without an operating system, the @option{-T} option may be required 
++when linking to avoid references to undefined symbols.
++
+ @item -Xlinker @var{option}
+ @opindex Xlinker
+ Pass @var{option} as an option to the linker.  You can use this to
+@@ -11971,6 +11979,7 @@
+ @samp{24kec}, @samp{24kef2_1}, @samp{24kef1_1},
+ @samp{34kc}, @samp{34kf2_1}, @samp{34kf1_1},
+ @samp{74kc}, @samp{74kf2_1}, @samp{74kf1_1}, @samp{74kf3_2},
++@samp{ice9},
+ @samp{m4k},
+ @samp{orion},
+ @samp{r2000}, @samp{r3000}, @samp{r3900}, @samp{r4000}, @samp{r4400},
+@@ -13600,12 +13609,11 @@
+ On System V.4 and embedded PowerPC systems do (do not) adhere to the
+ Embedded Applications Binary Interface (eabi) which is a set of
+ modifications to the System V.4 specifications.  Selecting @option{-meabi}
+-means that the stack is aligned to an 8 byte boundary, a function
+-@code{__eabi} is called to from @code{main} to set up the eabi
+-environment, and the @option{-msdata} option can use both @code{r2} and
++means that the stack is aligned to an 8 byte boundary,
++and the @option{-msdata} option can use both @code{r2} and
+ @code{r13} to point to two separate small data areas.  Selecting
+ @option{-mno-eabi} means that the stack is aligned to a 16 byte boundary,
+-do not call an initialization function from @code{main}, and the
++and the
+ @option{-msdata} option will only use @code{r13} to point to a single
+ small data area.  The @option{-meabi} option is on by default if you
+ configured GCC using one of the @samp{powerpc*-*-eabi*} options.
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.dg/arm-mmx-1.c gcc-4.3-new/gcc/testsuite/gcc.dg/arm-mmx-1.c
+--- gcc-4.3/gcc/testsuite/gcc.dg/arm-mmx-1.c	2008-10-01 14:44:19.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.dg/arm-mmx-1.c	2008-10-18 12:19:00.000000000 +0200
+@@ -7,6 +7,7 @@
+ /* { dg-skip-if "" { *-*-* } { "-march=*" } { "-march=iwmmxt" } } */
+ /* { dg-options "-O -mno-apcs-frame -mcpu=iwmmxt -mabi=iwmmxt" } */
+ /* { dg-require-effective-target arm32 } */
++/* { dg-require-effective-target arm_iwmmxt_ok } */
+ /* { dg-final { scan-assembler "ldmfd\[ 	]sp!.*ip,\[ ]*pc" } } */
+ 
+ /* This function uses all the call-saved registers, namely r4, r5, r6,
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.dg/format/cmn-err-1.c gcc-4.3-new/gcc/testsuite/gcc.dg/format/cmn-err-1.c
+--- gcc-4.3/gcc/testsuite/gcc.dg/format/cmn-err-1.c	2008-10-01 14:44:18.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.dg/format/cmn-err-1.c	2008-10-18 12:18:58.000000000 +0200
+@@ -27,12 +27,12 @@
+   cmn_err_func (0, "%p", string);
+   cmn_err_func (0, "%16b", i, "\01Foo");
+ 
+-  cmn_err_func (0, "%i", i);		/* { dg-error "unknown|too many" } */
+-  cmn_err_func (0, "%d", l);		/* { dg-error "expects type" } */
+-  cmn_err_func (0, "%b");		/* { dg-error "too few" } */
+-  cmn_err_func (0, "%b", i);		/* { dg-error "too few" } */
+-  cmn_err_func (0, "%b", i, i);		/* { dg-error "expects type" } */
+-  cmn_err_func (0, "%b", string, i);	/* { dg-error "expects type" } */
+-  cmn_err_func (0, "%p", 3);            /* { dg-error "expects type" } */
++  cmn_err_func (0, "%i", i);		/* { dg-warning "unknown|too many" } */
++  cmn_err_func (0, "%d", l);		/* { dg-warning "expects type" } */
++  cmn_err_func (0, "%b");		/* { dg-warning "too few" } */
++  cmn_err_func (0, "%b", i);		/* { dg-warning "too few" } */
++  cmn_err_func (0, "%b", i, i);		/* { dg-warning "expects type" } */
++  cmn_err_func (0, "%b", string, i);	/* { dg-warning "expects type" } */
++  cmn_err_func (0, "%p", 3);		/* { dg-warning "expects type" } */
+   return 0;
+ }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.dg/pragma-align-2.c gcc-4.3-new/gcc/testsuite/gcc.dg/pragma-align-2.c
+--- gcc-4.3/gcc/testsuite/gcc.dg/pragma-align-2.c	2008-10-01 14:44:19.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.dg/pragma-align-2.c	2008-10-18 12:19:00.000000000 +0200
+@@ -19,15 +19,15 @@
+ 
+ #pragma align 8(not_defined)
+ 
+-#pragma align 9(odd_align)	/* { dg-error "invalid alignment" } */
+-#pragma align 256(high_align)	/* { dg-error "invalid alignment" } */
+-#pragma align -1(neg_align)	/* { dg-error "malformed" } */
+-#pragma align bad_align		/* { dg-error "malformed" } */
+-#pragma align 1(bad_align	/* { dg-error "malformed" } */
++#pragma align 9(odd_align)	/* { dg-warning "invalid alignment" } */
++#pragma align 256(high_align)	/* { dg-warning "invalid alignment" } */
++#pragma align -1(neg_align)	/* { dg-warning "malformed" } */
++#pragma align bad_align		/* { dg-warning "malformed" } */
++#pragma align 1(bad_align	/* { dg-warning "malformed" } */
+ 
+ int x, x1, x2, x4, x8, y8, z8, x16, x32, x64, x128, y128, z128;
+ 
+-#pragma align 16(x)		/* { dg-error "must appear before" } */
++#pragma align 16(x)		/* { dg-warning "must appear before" } */
+ 
+ int
+ main ()
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.dg/pragma-init-fini.c gcc-4.3-new/gcc/testsuite/gcc.dg/pragma-init-fini.c
+--- gcc-4.3/gcc/testsuite/gcc.dg/pragma-init-fini.c	2008-10-01 14:44:19.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.dg/pragma-init-fini.c	2008-10-18 12:19:00.000000000 +0200
+@@ -4,13 +4,13 @@
+ 
+ extern void abort ();
+ 
+-#pragma init		/* { dg-error "malformed" } */
+-#pragma init ()		/* { dg-error "malformed" } */
+-#pragma init init_func	/* { dg-error "malformed" } */
++#pragma init		/* { dg-warning "malformed" } */
++#pragma init ()		/* { dg-warning "malformed" } */
++#pragma init init_func	/* { dg-warning "malformed" } */
+ 
+-#pragma fini		/* { dg-error "malformed" } */
+-#pragma fini ()		/* { dg-error "malformed" } */
+-#pragma fini fini_func	/* { dg-error "malformed" } */
++#pragma fini		/* { dg-warning "malformed" } */
++#pragma fini ()		/* { dg-warning "malformed" } */
++#pragma fini fini_func	/* { dg-warning "malformed" } */
+ 
+ #pragma init (init_func, init_static_func)
+ 
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/fix-ice9a-1.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/fix-ice9a-1.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/fix-ice9a-1.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/fix-ice9a-1.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,6 +1,7 @@
+ /* Check that nops are inserted before and after the fp operations.  */
+ /* { dg-do compile } */
+ /* { dg-options "-mfix-ice9a -O3" } */
++/* { dg-mips-options "-mhard-float" } */
+ 
+ typedef double TYPE;
+ #include "fix-ice9a.h"
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/fix-ice9a-2.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/fix-ice9a-2.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/fix-ice9a-2.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/fix-ice9a-2.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,6 +1,7 @@
+ /* Check that nops are inserted before and after the fp operations.  */
+ /* { dg-do compile } */
+ /* { dg-options "-mfix-ice9a -O3" } */
++/* { dg-mips-options "-mhard-float" } */
+ 
+ typedef float TYPE;
+ #include "fix-ice9a.h"
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/lazy-binding-1.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/lazy-binding-1.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/lazy-binding-1.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/lazy-binding-1.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* { dg-do compile { target nomips16 } } */
+-/* { dg-mips-options "-mabicalls -mshared -mexplicit-relocs -O2 -fno-delayed-branch" } */
++/* { dg-mips-options "-mabicalls -mshared -mexplicit-relocs -O2 -fno-delayed-branch -fpic" } */
+ 
+ void bar (void);
+ 
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-18.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-18.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-18.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-18.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,4 +1,4 @@
+ /* Check the *extendhisi2_hw pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls" } */
+ unsigned int f1 (unsigned int x) { return (short) x; }
+ /* { dg-final { scan-assembler "\tjr?\t\\\$31\n\tseh\t\\\$2,\\\$4\n" } } */
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-19.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-19.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-19.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-19.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,4 +1,4 @@
+ /* Check the *extendqisi2_hw pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls" } */
+ unsigned int f1 (unsigned int x) { return (signed char) x; }
+ /* { dg-final { scan-assembler "\tjr?\t\\\$31\n\tseb\t\\\$2,\\\$4\n" } } */
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-1.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-1.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-1.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-1.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,4 +1,4 @@
+ /* Check the *baddu_si pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -meb" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -meb -mno-abicalls" } */
+ unsigned int f1 (unsigned int x, unsigned int y) { return (x + y) & 0xff; }
+ /* { dg-final { scan-assembler "\tjr?\t\\\$31\n\tbaddu\t\\\$2,\\\$\[45\],\\\$\[45\]\n" } } */
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-23.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-23.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-23.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-23.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the extzvsi pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls" } */
+ #ifdef _MIPSEB
+ struct s1 { unsigned int x1 : 3, x2 : 10; };
+ struct s2 { unsigned int x1 : 5, x2 : 14; };
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-28.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-28.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-28.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-28.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the extvsi pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls" } */
+ #ifdef _MIPSEB
+ struct s1 { int x1 : 3, x2 : 10; };
+ struct s2 { int x1 : 5, x2 : 14; };
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-34.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-34.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-34.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-34.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the insvsi pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -fno-tree-sra" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mno-abicalls -mgp32 -fno-tree-sra" } */
+ #ifdef _MIPSEB
+ struct s1 { unsigned int x1 : 3, x2 : 20; };
+ struct s2 { unsigned int x1 : 5, x2 : 10; };
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-37.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-37.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-37.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-37.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the mov_u[ls]w patterns.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mocteon-useun -meb" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mno-abi-calls -mgp32 -mocteon-useun -meb" } */
+ struct __attribute__((packed)) s { unsigned int x; };
+ unsigned int f1 (struct s *s) { return s[0].x; };
+ void f2 (struct s *s, unsigned long x) { s[10].x = x; }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-43.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-43.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-43.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-43.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the *branch_bit pattern.  */
+-/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -mno-abicalls -Os -mabi=eabi -mgp32" } */
+ int foo (void);
+ int f1 (unsigned int x) { if (x & (1UL << 30)) foo (); return 1; }
+ int f2 (unsigned int x) { if (x & (1UL << 1)) foo (); return 1; }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-44.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-44.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-44.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-44.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the *branch_bit pattern.  */
+-/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32 -mno-abicalls" } */
+ int foo (void);
+ int f1 (unsigned int x) { if ((x & (1UL << 30)) == 0) foo (); return 1; }
+ int f2 (unsigned int x) { if ((x & (1UL << 1)) == 0) foo (); return 1; }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-49.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-49.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-49.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-49.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the *seq_si_seq pattern.  */
+-/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32 -mno-abicalls" } */
+ int f1 (int x) { return x == -513; }
+ int f2 (int x) { return x == -512; }
+ int f3 (int x) { return x == -1; }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-54.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-54.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-54.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-54.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the *sne_si_sne pattern.  */
+-/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -Os -mabi=eabi -mgp32 -mno-abicalls" } */
+ int f1 (int x) { return x != -513; }
+ int f2 (int x) { return x != -512; }
+ int f3 (int x) { return x != -1; }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-5.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-5.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-5.c	2008-10-01 14:42:02.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-5.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,5 +1,5 @@
+ /* Check the *baddu_si pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -meb" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls -meb" } */
+ unsigned int
+ f1 (unsigned int x, unsigned int y)
+ { return (unsigned char) (x + y); }
+diff -Nurd gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-6.c gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-6.c
+--- gcc-4.3/gcc/testsuite/gcc.target/mips/octeon-6.c	2008-10-01 14:42:01.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/gcc.target/mips/octeon-6.c	2008-10-18 12:10:17.000000000 +0200
+@@ -1,4 +1,4 @@
+ /* Check the popcountsi2 pattern.  */
+-/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32" } */
++/* { dg-mips-options "-march=octeon -O2 -mabi=eabi -mgp32 -mno-abicalls" } */
+ unsigned int f1 (unsigned int x) { return __builtin_popcount (x); }
+ /* { dg-final { scan-assembler "\tjr?\t\\\$31\n\tpop\t\\\$2,\\\$4\n" } } */
+diff -Nurd gcc-4.3/gcc/testsuite/lib/target-supports.exp gcc-4.3-new/gcc/testsuite/lib/target-supports.exp
+--- gcc-4.3/gcc/testsuite/lib/target-supports.exp	2008-10-01 14:47:31.000000000 +0200
++++ gcc-4.3-new/gcc/testsuite/lib/target-supports.exp	2008-10-18 12:32:27.000000000 +0200
+@@ -1367,6 +1367,19 @@
+     }]
+ }
+ 
++# Return 1 if this is an ARM target supporting -mcpu=iwmmxt.
++# Some multilibs may be incompatible with this option.
++
++proc check_effective_target_arm_iwmmxt_ok { } {
++    if { [check_effective_target_arm32] } {
++	return [check_no_compiler_messages arm_iwmmxt_ok object {
++	    int dummy;
++	} "-mcpu=iwmmxt"]
++    } else {
++	return 0
++    }
++}
++
+ # Return 1 if this is a PowerPC target with floating-point registers.
+ 
+ proc check_effective_target_powerpc_fprs { } {
+diff -Nurd gcc-4.3/libgomp/config/linux/mips/futex.h gcc-4.3-new/libgomp/config/linux/mips/futex.h
+--- gcc-4.3/libgomp/config/linux/mips/futex.h	1970-01-01 01:00:00.000000000 +0100
++++ gcc-4.3-new/libgomp/config/linux/mips/futex.h	2008-10-18 12:02:42.000000000 +0200
+@@ -0,0 +1,75 @@
++/* Copyright (C) 2005, 2008 Free Software Foundation, Inc.
++   Contributed by Ilie Garbacea <ilie@mips.com>, Chao-ying Fu <fu@mips.com>.
++
++   This file is part of the GNU OpenMP Library (libgomp).
++
++   Libgomp is free software; you can redistribute it and/or modify it
++   under the terms of the GNU Lesser General Public License as published by
++   the Free Software Foundation; either version 2.1 of the License, or
++   (at your option) any later version.
++
++   Libgomp is distributed in the hope that it will be useful, but WITHOUT ANY
++   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++   FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
++   more details.
++
++   You should have received a copy of the GNU Lesser General Public License 
++   along with libgomp; see the file COPYING.LIB.  If not, write to the
++   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
++   MA 02110-1301, USA.  */
++
++/* As a special exception, if you link this library with other files, some
++   of which are compiled with GCC, to produce an executable, this library
++   does not by itself cause the resulting executable to be covered by the
++   GNU General Public License.  This exception does not however invalidate
++   any other reasons why the executable file might be covered by the GNU
++   General Public License.  */
++
++/* Provide target-specific access to the futex system call.  */
++
++#include <sys/syscall.h>
++#define FUTEX_WAIT 0
++#define FUTEX_WAKE 1
++
++static inline void
++sys_futex0 (int *addr, int op, int val)
++{
++  register unsigned long __v0 asm("$2") = (unsigned long) SYS_futex;
++  register unsigned long __a0 asm("$4") = (unsigned long) addr;
++  register unsigned long __a1 asm("$5") = (unsigned long) op;
++  register unsigned long __a2 asm("$6") = (unsigned long) val;
++  register unsigned long __a3 asm("$7") = 0;
++
++  __asm volatile ("syscall"
++		  /* returns $a3 (errno), $v0 (return value) */
++		  : "=r" (__v0), "=r" (__a3)
++		  /* arguments in v0 (syscall) a0-a3 */
++		  : "r" (__v0), "r" (__a0), "r" (__a1), "r" (__a2), "r" (__a3)
++		  /* clobbers at, v1, t0-t9, memory */
++		  : "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13", "$14",
++		    "$15", "$24", "$25", "memory");
++}
++
++static inline void
++futex_wait (int *addr, int val)
++{
++  sys_futex0 (addr, FUTEX_WAIT, val);
++}
++
++static inline void
++futex_wake (int *addr, int count)
++{
++  sys_futex0 (addr, FUTEX_WAKE, count);
++}
++
++static inline void
++cpu_relax (void)
++{
++  __asm volatile ("" : : : "memory");
++}
++
++static inline void
++atomic_write_barrier (void)
++{
++  __sync_synchronize ();
++}
+diff -Nurd gcc-4.3/libgomp/configure.tgt gcc-4.3-new/libgomp/configure.tgt
+--- gcc-4.3/libgomp/configure.tgt	2008-10-01 14:39:39.000000000 +0200
++++ gcc-4.3-new/libgomp/configure.tgt	2008-10-18 12:02:43.000000000 +0200
+@@ -35,6 +35,10 @@
+ 	config_path="linux/ia64 linux posix"
+ 	;;
+ 
++    mips*-*-linux*)
++	config_path="linux/mips linux posix"
++	;;
++
+     powerpc*-*-linux*)
+ 	config_path="linux/powerpc linux posix"
+ 	;;
+diff -Nurd gcc-4.3/release-notes-csl.xml gcc-4.3-new/release-notes-csl.xml
+--- gcc-4.3/release-notes-csl.xml	2008-10-01 14:56:28.000000000 +0200
++++ gcc-4.3-new/release-notes-csl.xml	2008-10-18 13:08:51.000000000 +0200
+@@ -5,6 +5,86 @@
+      relevant; it may be removed if it is relevant to all targets.
+  -->
+ 
++      <!-- UUID: a38e2a96-4845-410f-ba68-6f1091446123 -->
++      <!-- TARGET: arm* -->
++      <formalpara>
++        <title>Misaligned NEON memory accesses</title>
++        <para>
++	  A bug has been fixed that caused the compiler to use aligned
++	  NEON load/store instructions to access misaligned data when
++	  autovectorizing certain loops.  The bug affected code compiled
++	  with <option>-mfpu=neon</option> and loop vectorization enabled
++	  with <option>-O3</option> or <option>-ftree-vectorize</option>.
++	</para>
++      </formalpara>
++
++      <!-- UUID: 75802745-041d-4357-b48f-31fd30c58adc -->
++      <!-- TARGET: powerpc-* -->
++      <formalpara>
++        <title>Linker script option syntax</title>
++        <para>
++	  GCC now accepts <option>-T <replaceable>script</replaceable></option>
++	  (with whitespace before the <replaceable>script</replaceable>)
++	  as well as <option>-T<replaceable>script</replaceable></option>
++	  (with no whitespace) to specify a linker script on the command line.
++        </para>
++      </formalpara>
++
++      <!-- UUID: e4838603-bc80-40fe-add0-cb5aba3a235d -->
++      <!-- TARGET: arm*-linux* mips*-linux* i?86*-linux* -->
++      <formalpara features="openmp_addon">
++        <title>OpenMP support</title>
++        <para>
++          Support for the OpenMP application programming interface is
++	  now available in &csl_sgxx; Professional Edition.  To
++	  compile programs that use OpenMP features, use the
++	  <option>-fopenmp</option> command-line option.  For more
++	  information about using OpenMP with &csl_sgxx;, see <xref
++	  linkend="sec-openmp"/>.  For more information about the
++	  OpenMP API, see <uri>http://www.openmp.org/</uri>.
++        </para>
++      </formalpara>
++
++      <!-- UUID: 934d8fb3-d31c-4051-aad3-f85fc72e7576 -->
++      <!-- TARGET: m68k-*uclinux -->
++      <formalpara>
++        <title>Shared libraries bug fix</title>
++        <para>
++          A bug has been fixed that caused
++          <literal>Invalid instruction</literal> errors in applications
++          compiled with <option>-mid-shared-library</option> for CPUs
++          without hardware floating point.  The problem was caused by
++          incorrect linker attributes on internal compiler-generated
++          symbols in the shared library; you must rebuild both
++          the application and shared libraries to pick up the fix.
++        </para>
++      </formalpara>
++
++      <!-- UUID: 62a77a44-3f36-4d0c-aca2-eb327dce9ca0 -->
++      <!-- TARGET: powerpc-linux-gnu -->
++      <formalpara>
++        <title>Compiling dynamic libraries with <option>-Os</option></title>
++        <para>
++          A bug has been fixed that affected dynamic libraries compiled
++          with <option>-Os</option>.  The bug caused runtime errors such
++          as segmentation faults in applications using the library, as a
++          result of incorrect linker attributes on internal
++          compiler-generated symbols in the library.  You must rebuild
++          both the affected shared libraries and the applications that
++          use them to pick up this fix.
++        </para>
++      </formalpara>
++
++      <!-- UUID: 53bf0593-1f5d-4047-8e74-ad8889a3a1cb -->
++      <!-- TARGET: mips*-sicortex-* -->
++      <formalpara>
++        <title>SiCortex architecture option</title>
++        <para>
++          A new architecture option, <option>-march=ice9</option>, is
++	  now available to target the SiCortex ICE9 architecture.
++        </para>
++      </formalpara>
++
+       <!-- UUID: e2f7a383-48cd-48b3-9a7c-a157f722414f -->
+       <!-- TARGET: m68k-* -->
+       <formalpara>
