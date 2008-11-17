@@ -3,7 +3,7 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "virtual/libsdl zlib"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://rcdrummond.net/uae/e-uae-${PV}/e-uae-${PV}.tar.bz2 \
            file://configure.patch;patch=1"
@@ -20,6 +20,10 @@ CFLAGS_append = " -DSTAT_STATFS2_BSIZE=1 "
 CXXFLAGS_append = " -DSTAT_STATFS2_BSIZE=1 "
 PARALLEL_MAKE = ""
 
+export S
+export PKG_CONFIG="${STAGING_BINDIR_NATIVE}/pkg-config"
+
 do_configure_prepend () {
+	sed -i -e s:getline:etline:g ./src/gui-none/nogui.c
 	touch NEWS AUTHORS ChangeLog
 }

@@ -5,5 +5,5 @@
    export CFLAGS=$CFLAGS_FOR_BUILD
    mkdir -p src/tools
 -  cd  src/tools && ../../"$srcdir"/src/tools/configure --cache-file=/dev/null --host=$build --target=$host
-+  cd  src/tools && "$srcdir"/src/tools/configure --cache-file=/dev/null --host=$build --target=$host
++  cd  src/tools && "$S"/src/tools/configure --cache-file=/dev/null --host=$build --target=$host
  fi
