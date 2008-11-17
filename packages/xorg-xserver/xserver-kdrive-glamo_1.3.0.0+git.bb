@@ -11,7 +11,7 @@ PROVIDES = "virtual/xserver"
 
 PE = "1"
 PV = "1.3.0.0+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = 'om-gta02'
@@ -37,6 +37,10 @@ EXTRA_OECONF = "--enable-composite --enable-kdrive \
 do_configure_prepend() {
     sed -i -e 's/tslib-0.0/tslib-1.0/' ${S}/configure.ac
 }
+
+PACKAGES =+ "xserver-security-policy"
+FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
+RRECOMMENDS_${PN} += "xserver-security-policy"
 
 FILES_${PN} = "${bindir}/Xglamo"
 FILES_${PN}-dbg = "${bindir}/.debug/Xglamo"
