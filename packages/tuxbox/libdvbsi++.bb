@@ -4,7 +4,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/dvb/libdvbsi++;method=ext"
 
-SRCDATE = "20060329"
+SRCDATE = "20081118"
 PR = "r0"
 PV = "0.0+cvs${SRCDATE}"
 
