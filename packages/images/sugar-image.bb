@@ -1,9 +1,6 @@
-ANGSTROM_EXTRA_INSTALL += " \
-                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer2", "",d)} \
-			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 
-export IMAGE_BASENAME = "x11-image"
+export IMAGE_BASENAME = "sugar-image"
 
 DEPENDS = "task-base"
 IMAGE_INSTALL = "\
