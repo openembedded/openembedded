@@ -162,7 +162,7 @@ index bc44cb5..edecfd3 100644
 +	.type = OMAP_DISPLAY_TYPE_DPI,
 +	.name = "lcd",
 +	.panel_name = "sharp-ls037v7dw01",
-+	.u.dpi.data_lines = 16,
++	.u.dpi.data_lines = 18,
 +	.panel_enable = evm_panel_enable_lcd,
 +	.panel_disable = evm_panel_disable_lcd,
 +};
