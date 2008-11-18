@@ -19,6 +19,8 @@ EXTRA_OECONF = "--enable-glu \
 
 do_stage() {
         autotools_stage_all
+		install -d ${STAGING_INCDIR}/GL/	
+		cp -pPr ${S}/include/GL/internal* ${STAGING_INCDIR}/GL/
 }
 
 

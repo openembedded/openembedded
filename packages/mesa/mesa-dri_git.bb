@@ -17,5 +17,5 @@ S = "${WORKDIR}/git"
 FILES_${PN} += "${libdir}/dri/*.so"
 FILES_${PN}-dbg += "${libdir}/dri/.debug/*"
 
-EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=${MACHINE_DRI_MODULES}"
+EXTRA_OECONF += "--with-driver=dri --with-dri-drivers=swrast,${MACHINE_DRI_MODULES}"
 
