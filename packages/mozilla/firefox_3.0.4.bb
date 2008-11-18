@@ -16,7 +16,8 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 
 S = "${WORKDIR}/mozilla"
 
-#DEFAULT_PREFERENCE = "-1"
+# This is missing the wchart.diff patch and can't be compiled with a recent gcc
+DEFAULT_PREFERENCE = "-1"
 
 inherit mozilla
 require firefox.inc
