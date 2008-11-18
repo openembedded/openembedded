@@ -184,10 +184,9 @@ Index: gcc-4.3.2/Makefile.def
 -	stage_cflags='$(STAGE3_CFLAGS) -fprofile-use' ; };
 +	stage_cflags='$(STAGE3_CFLAGS) -fprofile-use' ;
 +	stage_libcflags='$(STAGE3_LIBCFLAGS) -fprofile-use' ; };
-Index: gcc-4.3.2/Makefile.tpl
-===================================================================
---- gcc-4.3.2.orig/Makefile.tpl	2008-08-28 18:05:25.000000000 -0700
-+++ gcc-4.3.2/Makefile.tpl	2008-08-28 18:18:37.000000000 -0700
+
+--- /tmp/Makefile.tpl	2008-11-18 10:06:14.000000000 +0100
++++ gcc-4.3/Makefile.tpl	2008-11-18 10:10:01.000000000 +0100
 @@ -23,6 +23,14 @@
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  #
@@ -238,7 +237,7 @@ Index: gcc-4.3.2/Makefile.tpl
  	GCJ="$(GCJ_FOR_TARGET)"; export GCJ; \
  	GFORTRAN="$(GFORTRAN_FOR_TARGET)"; export GFORTRAN; \
  	DLLTOOL="$(DLLTOOL_FOR_TARGET)"; export DLLTOOL; \
-@@ -323,7 +339,6 @@
+@@ -324,7 +340,6 @@
  LIBCFLAGS = $(CFLAGS)
  CXXFLAGS = @CXXFLAGS@
  LIBCXXFLAGS = $(CXXFLAGS) -fno-implicit-templates
@@ -246,7 +245,7 @@ Index: gcc-4.3.2/Makefile.tpl
  
  # Only build the C compiler for stage1, because that is the only one that
  # we can guarantee will build with the native compiler, and also it is the
-@@ -331,14 +346,19 @@
+@@ -332,14 +347,19 @@
  # MAKEINFO and MAKEINFOFLAGS are explicitly passed here to make them
  # overrideable (for a bootstrap build stage1 also builds gcc.info).
  
@@ -267,7 +266,7 @@ Index: gcc-4.3.2/Makefile.tpl
  do-compare = @do_compare@
  do-compare3 = $(do-compare)
  do-compare-debug = $(SHELL) $(srcdir)/contrib/compare-debug $$f1 $$f2
-@@ -377,22 +397,14 @@
+@@ -378,22 +398,14 @@
  COMPILER_LD_FOR_TARGET=@COMPILER_LD_FOR_TARGET@
  COMPILER_NM_FOR_TARGET=@COMPILER_NM_FOR_TARGET@
  
@@ -288,13 +287,12 @@ Index: gcc-4.3.2/Makefile.tpl
 +
  LIBCFLAGS_FOR_TARGET = $(CFLAGS_FOR_TARGET)
  LIBCXXFLAGS_FOR_TARGET = $(CXXFLAGS_FOR_TARGET) -fno-implicit-templates
--LDFLAGS_FOR_TARGET = @LDFLAGS@ 
+ LDFLAGS_FOR_TARGET = 
 -PICFLAG_FOR_TARGET = 
-+LDFLAGS_FOR_TARGET = @LDFLAGS@
  
  # ------------------------------------
  # Miscellaneous targets and flag lists
-@@ -492,19 +504,20 @@
+@@ -493,19 +505,20 @@
  # Flags to pass down to makes which are built with the target environment.
  # The double $ decreases the length of the command line; those variables
  # are set in BASE_FLAGS_TO_PASS, and the sub-make will expand them.  The
@@ -320,7 +318,7 @@ Index: gcc-4.3.2/Makefile.tpl
  	'NM=$(COMPILER_NM_FOR_TARGET)' \
  	'OBJDUMP=$$(OBJDUMP_FOR_TARGET)' \
  	'RANLIB=$$(RANLIB_FOR_TARGET)' \
-@@ -852,9 +865,11 @@
+@@ -854,9 +867,11 @@
  	fi; \
  	[+ ENDIF check_multilibs +]test ! -f [+subdir+]/[+module+]/Makefile || exit 0; \
  	[+exports+][+ IF prev +] \
@@ -334,7 +332,7 @@ Index: gcc-4.3.2/Makefile.tpl
  	echo Configuring stage [+id+] in [+subdir+]/[+module+] ; \
  	$(SHELL) $(srcdir)/mkinstalldirs [+subdir+]/[+module+] ; \
  	cd [+subdir+]/[+module+] || exit 1; \
-@@ -891,7 +906,8 @@
+@@ -893,7 +908,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	[+exports+] \
  	(cd [+subdir+]/[+module+] && \
@@ -344,7 +342,7 @@ Index: gcc-4.3.2/Makefile.tpl
  @endif [+prefix+][+module+]
  
  [+ IF bootstrap +]
-@@ -911,8 +927,11 @@
+@@ -913,8 +929,11 @@
  	[+exports+][+ IF prev +] \
  	[+poststage1_exports+][+ ENDIF prev +] \
  	cd [+subdir+]/[+module+] && \
@@ -358,7 +356,7 @@ Index: gcc-4.3.2/Makefile.tpl
  		IF prev +][+poststage1_args+][+ ENDIF prev
  		+] [+extra_make_flags+] \
  		$(TARGET-stage[+id+]-[+prefix+][+module+])
-@@ -945,7 +964,8 @@
+@@ -947,7 +966,8 @@
  	     target_alias=(get "target" "${target_alias}")
  	     args="$(BUILD_CONFIGARGS)" no-config-site=true +]
  
@@ -368,7 +366,7 @@ Index: gcc-4.3.2/Makefile.tpl
  [+ ENDFOR build_module +]
  
  # --------------------------------------
-@@ -962,7 +982,7 @@
+@@ -964,7 +984,7 @@
  [+ all prefix="" subdir="$(HOST_SUBDIR)"
         exports="$(HOST_EXPORTS)"
         poststage1_exports="$(POSTSTAGE1_HOST_EXPORTS)"
@@ -377,7 +375,7 @@ Index: gcc-4.3.2/Makefile.tpl
         poststage1_args="$(POSTSTAGE1_FLAGS_TO_PASS)" +]
  
  .PHONY: check-[+module+] maybe-check-[+module+]
-@@ -1060,7 +1080,7 @@
+@@ -1062,7 +1082,7 @@
  
  [+ all prefix="target-" subdir="$(TARGET_SUBDIR)"
         exports="$(RAW_CXX_TARGET_EXPORTS)"
@@ -386,7 +384,7 @@ Index: gcc-4.3.2/Makefile.tpl
  [+ ELSE +]
  [+ configure prefix="target-" subdir="$(TARGET_SUBDIR)"
  	     check_multilibs=true
-@@ -1071,7 +1091,7 @@
+@@ -1073,7 +1093,7 @@
  
  [+ all prefix="target-" subdir="$(TARGET_SUBDIR)"
         exports="$(NORMAL_TARGET_EXPORTS)"
@@ -395,7 +393,7 @@ Index: gcc-4.3.2/Makefile.tpl
  [+ ENDIF +]
  
  .PHONY: check-target-[+module+] maybe-check-target-[+module+]
-@@ -1301,7 +1321,7 @@
+@@ -1303,7 +1323,7 @@
  
  # Bubble a bug fix through all the stages up to stage [+id+].  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -404,7 +402,7 @@ Index: gcc-4.3.2/Makefile.tpl
  .PHONY: stage[+id+]-bubble
  stage[+id+]-bubble:: [+ IF prev +]stage[+prev+]-bubble[+ ENDIF +]
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -1440,11 +1460,11 @@
+@@ -1442,11 +1462,11 @@
  	@if test -f stage_last; then $(unstage); else $(MAKE) stage1-start; fi
  
  .PHONY: restrap
@@ -418,7 +416,7 @@ Index: gcc-4.3.2/Makefile.tpl
  @endif gcc-bootstrap
  
  # --------------------------------------
-@@ -1475,7 +1495,7 @@
+@@ -1477,7 +1497,7 @@
  
  [+ ;; These Scheme functions build the bulk of the dependencies.
     ;; dep-target builds a string like "maybe-all-MODULE_KIND-gcc",
@@ -427,7 +425,7 @@ Index: gcc-4.3.2/Makefile.tpl
     ;; is taken from VAR-NAME.
     (define dep-target (lambda (module-kind var-name hard)
        (string-append
-@@ -1633,7 +1653,8 @@
+@@ -1635,7 +1655,8 @@
  
  # Rebuilding configure.
  AUTOCONF = autoconf
@@ -524,10 +522,8 @@ Index: gcc-4.3.2/gcc/doc/install.texi
  comparison fail if it differs between the @code{stage1} and
  @code{stage2} compilations.  The option @option{-save-temps} forces a
  fixed name to be used for the assembler input file, instead of a
-Index: gcc-4.3.2/Makefile.in
-===================================================================
---- gcc-4.3.2.orig/Makefile.in	2008-08-28 18:05:25.000000000 -0700
-+++ gcc-4.3.2/Makefile.in	2008-08-28 18:18:37.000000000 -0700
+--- /tmp/Makefile.in	2008-11-18 10:20:44.000000000 +0100
++++ gcc-4.3/Makefile.in	2008-11-18 10:22:47.000000000 +0100
 @@ -20,6 +20,14 @@
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  #
@@ -578,7 +574,7 @@ Index: gcc-4.3.2/Makefile.in
  	GCJ="$(GCJ_FOR_TARGET)"; export GCJ; \
  	GFORTRAN="$(GFORTRAN_FOR_TARGET)"; export GFORTRAN; \
  	DLLTOOL="$(DLLTOOL_FOR_TARGET)"; export DLLTOOL; \
-@@ -320,7 +336,6 @@
+@@ -321,7 +337,6 @@
  LIBCFLAGS = $(CFLAGS)
  CXXFLAGS = @CXXFLAGS@
  LIBCXXFLAGS = $(CXXFLAGS) -fno-implicit-templates
@@ -586,7 +582,7 @@ Index: gcc-4.3.2/Makefile.in
  
  # Only build the C compiler for stage1, because that is the only one that
  # we can guarantee will build with the native compiler, and also it is the
-@@ -328,14 +343,19 @@
+@@ -329,14 +344,19 @@
  # MAKEINFO and MAKEINFOFLAGS are explicitly passed here to make them
  # overrideable (for a bootstrap build stage1 also builds gcc.info).
  
@@ -607,7 +603,7 @@ Index: gcc-4.3.2/Makefile.in
  do-compare = @do_compare@
  do-compare3 = $(do-compare)
  do-compare-debug = $(SHELL) $(srcdir)/contrib/compare-debug $$f1 $$f2
-@@ -374,22 +394,14 @@
+@@ -375,22 +395,14 @@
  COMPILER_LD_FOR_TARGET=@COMPILER_LD_FOR_TARGET@
  COMPILER_NM_FOR_TARGET=@COMPILER_NM_FOR_TARGET@
  
@@ -628,13 +624,12 @@ Index: gcc-4.3.2/Makefile.in
 +
  LIBCFLAGS_FOR_TARGET = $(CFLAGS_FOR_TARGET)
  LIBCXXFLAGS_FOR_TARGET = $(CXXFLAGS_FOR_TARGET) -fno-implicit-templates
--LDFLAGS_FOR_TARGET = @LDFLAGS@ 
+ LDFLAGS_FOR_TARGET = 
 -PICFLAG_FOR_TARGET = 
-+LDFLAGS_FOR_TARGET = @LDFLAGS@
  
  # ------------------------------------
  # Miscellaneous targets and flag lists
-@@ -496,6 +508,7 @@
+@@ -498,6 +510,7 @@
  	"INSTALL_DATA=$(INSTALL_DATA)" \
  	"INSTALL_PROGRAM=$(INSTALL_PROGRAM)" \
  	"INSTALL_SCRIPT=$(INSTALL_SCRIPT)" \
@@ -642,7 +637,7 @@ Index: gcc-4.3.2/Makefile.in
  	"LEX=$(LEX)" \
  	"M4=$(M4)" \
  	"MAKE=$(MAKE)" \
-@@ -592,19 +605,20 @@
+@@ -594,19 +607,20 @@
  # Flags to pass down to makes which are built with the target environment.
  # The double $ decreases the length of the command line; those variables
  # are set in BASE_FLAGS_TO_PASS, and the sub-make will expand them.  The
@@ -668,7 +663,7 @@ Index: gcc-4.3.2/Makefile.in
  	'NM=$(COMPILER_NM_FOR_TARGET)' \
  	'OBJDUMP=$$(OBJDUMP_FOR_TARGET)' \
  	'RANLIB=$$(RANLIB_FOR_TARGET)' \
-@@ -2738,7 +2752,8 @@
+@@ -2741,7 +2755,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/libiberty && \
@@ -678,7 +673,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-libiberty
  
  
-@@ -2793,7 +2808,8 @@
+@@ -2796,7 +2811,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/bison && \
@@ -688,7 +683,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-bison
  
  
-@@ -2848,7 +2864,8 @@
+@@ -2851,7 +2867,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/byacc && \
@@ -698,7 +693,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-byacc
  
  
-@@ -2903,7 +2920,8 @@
+@@ -2906,7 +2923,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/flex && \
@@ -708,7 +703,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-flex
  
  
-@@ -2958,7 +2976,8 @@
+@@ -2961,7 +2979,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/m4 && \
@@ -718,7 +713,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-m4
  
  
-@@ -3013,7 +3032,8 @@
+@@ -3016,7 +3035,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/texinfo && \
@@ -728,7 +723,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-texinfo
  
  
-@@ -3068,7 +3088,8 @@
+@@ -3071,7 +3091,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(BUILD_EXPORTS) \
  	(cd $(BUILD_SUBDIR)/fixincludes && \
@@ -738,7 +733,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif build-fixincludes
  
  
-@@ -3127,7 +3148,8 @@
+@@ -3130,7 +3151,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/ash && \
@@ -748,7 +743,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif ash
  
  
-@@ -3551,7 +3573,8 @@
+@@ -3554,7 +3576,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/autoconf && \
@@ -758,7 +753,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif autoconf
  
  
-@@ -3975,7 +3998,8 @@
+@@ -3978,7 +4001,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/automake && \
@@ -768,7 +763,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif automake
  
  
-@@ -4399,7 +4423,8 @@
+@@ -4402,7 +4426,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/bash && \
@@ -778,7 +773,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif bash
  
  
-@@ -4816,9 +4841,9 @@
+@@ -4819,9 +4844,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
@@ -790,7 +785,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -4847,9 +4872,9 @@
+@@ -4850,9 +4875,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -802,7 +797,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -4878,9 +4903,9 @@
+@@ -4881,9 +4906,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -814,7 +809,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -4909,9 +4934,9 @@
+@@ -4912,9 +4937,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -826,7 +821,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -4940,9 +4965,9 @@
+@@ -4943,9 +4968,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -838,7 +833,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -4971,9 +4996,9 @@
+@@ -4974,9 +4999,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -850,7 +845,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -5002,9 +5027,9 @@
+@@ -5005,9 +5030,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -862,7 +857,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -5033,9 +5058,9 @@
+@@ -5036,9 +5061,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/bfd/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -874,7 +869,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/bfd ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/bfd ; \
  	cd $(HOST_SUBDIR)/bfd || exit 1; \
-@@ -5070,7 +5095,8 @@
+@@ -5073,7 +5098,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/bfd && \
@@ -884,7 +879,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif bfd
  
  
-@@ -5089,8 +5115,11 @@
+@@ -5092,8 +5118,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -898,7 +893,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-bfd)
  
  maybe-clean-stage1-bfd: clean-stage1-bfd
-@@ -5103,7 +5132,7 @@
+@@ -5106,7 +5135,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -907,7 +902,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif bfd-bootstrap
  
-@@ -5123,8 +5152,11 @@
+@@ -5126,8 +5155,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -921,7 +916,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-bfd)
  
  maybe-clean-stage2-bfd: clean-stage2-bfd
-@@ -5137,7 +5169,7 @@
+@@ -5140,7 +5172,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -930,7 +925,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5158,8 +5190,11 @@
+@@ -5161,8 +5193,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -944,7 +939,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-bfd)
  
  maybe-clean-stageb2g0-bfd: clean-stageb2g0-bfd
-@@ -5172,7 +5207,7 @@
+@@ -5175,7 +5210,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -953,7 +948,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5193,8 +5228,11 @@
+@@ -5196,8 +5231,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -967,7 +962,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-bfd)
  
  maybe-clean-stage3-bfd: clean-stage3-bfd
-@@ -5207,7 +5245,7 @@
+@@ -5210,7 +5248,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -976,7 +971,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5228,8 +5266,11 @@
+@@ -5231,8 +5269,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -990,7 +985,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-bfd)
  
  maybe-clean-stageb3g2-bfd: clean-stageb3g2-bfd
-@@ -5242,7 +5283,7 @@
+@@ -5245,7 +5286,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -999,7 +994,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5263,8 +5304,11 @@
+@@ -5266,8 +5307,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1013,7 +1008,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-bfd)
  
  maybe-clean-stage4-bfd: clean-stage4-bfd
-@@ -5277,7 +5321,7 @@
+@@ -5280,7 +5324,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1022,7 +1017,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5298,8 +5342,11 @@
+@@ -5301,8 +5345,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1036,7 +1031,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-bfd)
  
  maybe-clean-stageprofile-bfd: clean-stageprofile-bfd
-@@ -5312,7 +5359,7 @@
+@@ -5315,7 +5362,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1045,7 +1040,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5333,8 +5380,11 @@
+@@ -5336,8 +5383,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1059,7 +1054,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-bfd)
  
  maybe-clean-stagefeedback-bfd: clean-stagefeedback-bfd
-@@ -5347,7 +5397,7 @@
+@@ -5350,7 +5400,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/bfd && \
@@ -1068,7 +1063,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif bfd-bootstrap
-@@ -5754,9 +5804,9 @@
+@@ -5757,9 +5807,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
@@ -1080,7 +1075,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5785,9 +5835,9 @@
+@@ -5788,9 +5838,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1092,7 +1087,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5816,9 +5866,9 @@
+@@ -5819,9 +5869,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1104,7 +1099,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5847,9 +5897,9 @@
+@@ -5850,9 +5900,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1116,7 +1111,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5878,9 +5928,9 @@
+@@ -5881,9 +5931,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1128,7 +1123,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5909,9 +5959,9 @@
+@@ -5912,9 +5962,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1140,7 +1135,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5940,9 +5990,9 @@
+@@ -5943,9 +5993,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1152,7 +1147,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -5971,9 +6021,9 @@
+@@ -5974,9 +6024,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/opcodes/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1164,7 +1159,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/opcodes ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/opcodes ; \
  	cd $(HOST_SUBDIR)/opcodes || exit 1; \
-@@ -6008,7 +6058,8 @@
+@@ -6011,7 +6061,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/opcodes && \
@@ -1174,7 +1169,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif opcodes
  
  
-@@ -6027,8 +6078,11 @@
+@@ -6030,8 +6081,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1188,7 +1183,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-opcodes)
  
  maybe-clean-stage1-opcodes: clean-stage1-opcodes
-@@ -6041,7 +6095,7 @@
+@@ -6044,7 +6098,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1197,7 +1192,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif opcodes-bootstrap
  
-@@ -6061,8 +6115,11 @@
+@@ -6064,8 +6118,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1211,7 +1206,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-opcodes)
  
  maybe-clean-stage2-opcodes: clean-stage2-opcodes
-@@ -6075,7 +6132,7 @@
+@@ -6078,7 +6135,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1220,7 +1215,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6096,8 +6153,11 @@
+@@ -6099,8 +6156,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1234,7 +1229,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-opcodes)
  
  maybe-clean-stageb2g0-opcodes: clean-stageb2g0-opcodes
-@@ -6110,7 +6170,7 @@
+@@ -6113,7 +6173,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1243,7 +1238,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6131,8 +6191,11 @@
+@@ -6134,8 +6194,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1257,7 +1252,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-opcodes)
  
  maybe-clean-stage3-opcodes: clean-stage3-opcodes
-@@ -6145,7 +6208,7 @@
+@@ -6148,7 +6211,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1266,7 +1261,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6166,8 +6229,11 @@
+@@ -6169,8 +6232,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1280,7 +1275,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-opcodes)
  
  maybe-clean-stageb3g2-opcodes: clean-stageb3g2-opcodes
-@@ -6180,7 +6246,7 @@
+@@ -6183,7 +6249,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1289,7 +1284,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6201,8 +6267,11 @@
+@@ -6204,8 +6270,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1303,7 +1298,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-opcodes)
  
  maybe-clean-stage4-opcodes: clean-stage4-opcodes
-@@ -6215,7 +6284,7 @@
+@@ -6218,7 +6287,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1312,7 +1307,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6236,8 +6305,11 @@
+@@ -6239,8 +6308,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1326,7 +1321,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-opcodes)
  
  maybe-clean-stageprofile-opcodes: clean-stageprofile-opcodes
-@@ -6250,7 +6322,7 @@
+@@ -6253,7 +6325,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1335,7 +1330,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6271,8 +6343,11 @@
+@@ -6274,8 +6346,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1349,7 +1344,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-opcodes)
  
  maybe-clean-stagefeedback-opcodes: clean-stagefeedback-opcodes
-@@ -6285,7 +6360,7 @@
+@@ -6288,7 +6363,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/opcodes && \
@@ -1358,7 +1353,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif opcodes-bootstrap
-@@ -6692,9 +6767,9 @@
+@@ -6695,9 +6770,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
@@ -1370,7 +1365,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6723,9 +6798,9 @@
+@@ -6726,9 +6801,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1382,7 +1377,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6754,9 +6829,9 @@
+@@ -6757,9 +6832,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1394,7 +1389,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6785,9 +6860,9 @@
+@@ -6788,9 +6863,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1406,7 +1401,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6816,9 +6891,9 @@
+@@ -6819,9 +6894,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1418,7 +1413,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6847,9 +6922,9 @@
+@@ -6850,9 +6925,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1430,7 +1425,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6878,9 +6953,9 @@
+@@ -6881,9 +6956,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1442,7 +1437,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6909,9 +6984,9 @@
+@@ -6912,9 +6987,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/binutils/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1454,7 +1449,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/binutils ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/binutils ; \
  	cd $(HOST_SUBDIR)/binutils || exit 1; \
-@@ -6946,7 +7021,8 @@
+@@ -6949,7 +7024,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/binutils && \
@@ -1464,7 +1459,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif binutils
  
  
-@@ -6965,8 +7041,11 @@
+@@ -6968,8 +7044,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1478,7 +1473,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-binutils)
  
  maybe-clean-stage1-binutils: clean-stage1-binutils
-@@ -6979,7 +7058,7 @@
+@@ -6982,7 +7061,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1487,7 +1482,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif binutils-bootstrap
  
-@@ -6999,8 +7078,11 @@
+@@ -7002,8 +7081,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1501,7 +1496,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-binutils)
  
  maybe-clean-stage2-binutils: clean-stage2-binutils
-@@ -7013,7 +7095,7 @@
+@@ -7016,7 +7098,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1510,7 +1505,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7034,8 +7116,11 @@
+@@ -7037,8 +7119,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1524,7 +1519,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-binutils)
  
  maybe-clean-stageb2g0-binutils: clean-stageb2g0-binutils
-@@ -7048,7 +7133,7 @@
+@@ -7051,7 +7136,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1533,7 +1528,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7069,8 +7154,11 @@
+@@ -7072,8 +7157,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1547,7 +1542,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-binutils)
  
  maybe-clean-stage3-binutils: clean-stage3-binutils
-@@ -7083,7 +7171,7 @@
+@@ -7086,7 +7174,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1556,7 +1551,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7104,8 +7192,11 @@
+@@ -7107,8 +7195,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1570,7 +1565,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-binutils)
  
  maybe-clean-stageb3g2-binutils: clean-stageb3g2-binutils
-@@ -7118,7 +7209,7 @@
+@@ -7121,7 +7212,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1579,7 +1574,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7139,8 +7230,11 @@
+@@ -7142,8 +7233,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1593,7 +1588,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-binutils)
  
  maybe-clean-stage4-binutils: clean-stage4-binutils
-@@ -7153,7 +7247,7 @@
+@@ -7156,7 +7250,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1602,7 +1597,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7174,8 +7268,11 @@
+@@ -7177,8 +7271,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1616,7 +1611,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-binutils)
  
  maybe-clean-stageprofile-binutils: clean-stageprofile-binutils
-@@ -7188,7 +7285,7 @@
+@@ -7191,7 +7288,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1625,7 +1620,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7209,8 +7306,11 @@
+@@ -7212,8 +7309,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1639,7 +1634,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-binutils)
  
  maybe-clean-stagefeedback-binutils: clean-stagefeedback-binutils
-@@ -7223,7 +7323,7 @@
+@@ -7226,7 +7326,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/binutils && \
@@ -1648,7 +1643,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif binutils-bootstrap
-@@ -7637,7 +7737,8 @@
+@@ -7640,7 +7740,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/bison && \
@@ -1658,7 +1653,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif bison
  
  
-@@ -8064,7 +8165,8 @@
+@@ -8067,7 +8168,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/byacc && \
@@ -1668,7 +1663,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif byacc
  
  
-@@ -8491,7 +8593,8 @@
+@@ -8494,7 +8596,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/bzip2 && \
@@ -1678,7 +1673,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif bzip2
  
  
-@@ -8915,7 +9018,8 @@
+@@ -8918,7 +9021,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/dejagnu && \
@@ -1688,7 +1683,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif dejagnu
  
  
-@@ -9339,7 +9443,8 @@
+@@ -9342,7 +9446,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/diff && \
@@ -1698,7 +1693,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif diff
  
  
-@@ -9763,7 +9868,8 @@
+@@ -9766,7 +9871,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/dosutils && \
@@ -1708,7 +1703,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif dosutils
  
  
-@@ -10181,7 +10287,8 @@
+@@ -10184,7 +10290,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/etc && \
@@ -1718,7 +1713,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif etc
  
  
-@@ -10605,7 +10712,8 @@
+@@ -10608,7 +10715,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/fastjar && \
@@ -1728,7 +1723,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif fastjar
  
  
-@@ -11032,7 +11140,8 @@
+@@ -11035,7 +11143,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/fileutils && \
@@ -1738,7 +1733,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif fileutils
  
  
-@@ -11456,7 +11565,8 @@
+@@ -11459,7 +11568,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/findutils && \
@@ -1748,7 +1743,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif findutils
  
  
-@@ -11880,7 +11990,8 @@
+@@ -11883,7 +11993,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/find && \
@@ -1758,7 +1753,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif find
  
  
-@@ -12304,7 +12415,8 @@
+@@ -12307,7 +12418,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/fixincludes && \
@@ -1768,7 +1763,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif fixincludes
  
  
-@@ -12712,7 +12824,8 @@
+@@ -12715,7 +12827,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/flex && \
@@ -1778,7 +1773,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif flex
  
  
-@@ -13132,9 +13245,9 @@
+@@ -13135,9 +13248,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
@@ -1790,7 +1785,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13163,9 +13276,9 @@
+@@ -13166,9 +13279,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1802,7 +1797,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13194,9 +13307,9 @@
+@@ -13197,9 +13310,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1814,7 +1809,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13225,9 +13338,9 @@
+@@ -13228,9 +13341,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1826,7 +1821,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13256,9 +13369,9 @@
+@@ -13259,9 +13372,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1838,7 +1833,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13287,9 +13400,9 @@
+@@ -13290,9 +13403,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1850,7 +1845,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13318,9 +13431,9 @@
+@@ -13321,9 +13434,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1862,7 +1857,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13349,9 +13462,9 @@
+@@ -13352,9 +13465,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gas/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -1874,7 +1869,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/gas ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gas ; \
  	cd $(HOST_SUBDIR)/gas || exit 1; \
-@@ -13386,7 +13499,8 @@
+@@ -13389,7 +13502,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gas && \
@@ -1884,7 +1879,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gas
  
  
-@@ -13405,8 +13519,11 @@
+@@ -13408,8 +13522,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1898,7 +1893,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-gas)
  
  maybe-clean-stage1-gas: clean-stage1-gas
-@@ -13419,7 +13536,7 @@
+@@ -13422,7 +13539,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1907,7 +1902,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif gas-bootstrap
  
-@@ -13439,8 +13556,11 @@
+@@ -13442,8 +13559,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1921,7 +1916,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-gas)
  
  maybe-clean-stage2-gas: clean-stage2-gas
-@@ -13453,7 +13573,7 @@
+@@ -13456,7 +13576,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1930,7 +1925,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13474,8 +13594,11 @@
+@@ -13477,8 +13597,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1944,7 +1939,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-gas)
  
  maybe-clean-stageb2g0-gas: clean-stageb2g0-gas
-@@ -13488,7 +13611,7 @@
+@@ -13491,7 +13614,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1953,7 +1948,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13509,8 +13632,11 @@
+@@ -13512,8 +13635,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1967,7 +1962,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-gas)
  
  maybe-clean-stage3-gas: clean-stage3-gas
-@@ -13523,7 +13649,7 @@
+@@ -13526,7 +13652,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1976,7 +1971,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13544,8 +13670,11 @@
+@@ -13547,8 +13673,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1990,7 +1985,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-gas)
  
  maybe-clean-stageb3g2-gas: clean-stageb3g2-gas
-@@ -13558,7 +13687,7 @@
+@@ -13561,7 +13690,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -1999,7 +1994,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13579,8 +13708,11 @@
+@@ -13582,8 +13711,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2013,7 +2008,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-gas)
  
  maybe-clean-stage4-gas: clean-stage4-gas
-@@ -13593,7 +13725,7 @@
+@@ -13596,7 +13728,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2022,7 +2017,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13614,8 +13746,11 @@
+@@ -13617,8 +13749,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2036,7 +2031,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-gas)
  
  maybe-clean-stageprofile-gas: clean-stageprofile-gas
-@@ -13628,7 +13763,7 @@
+@@ -13631,7 +13766,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2045,7 +2040,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -13649,8 +13784,11 @@
+@@ -13652,8 +13787,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2059,7 +2054,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-gas)
  
  maybe-clean-stagefeedback-gas: clean-stagefeedback-gas
-@@ -13663,7 +13801,7 @@
+@@ -13666,7 +13804,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gas && \
@@ -2068,7 +2063,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gas-bootstrap
-@@ -14070,9 +14208,9 @@
+@@ -14073,9 +14211,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
@@ -2080,7 +2075,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14101,9 +14239,9 @@
+@@ -14104,9 +14242,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2092,7 +2087,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14132,9 +14270,9 @@
+@@ -14135,9 +14273,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2104,7 +2099,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14163,9 +14301,9 @@
+@@ -14166,9 +14304,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2116,7 +2111,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14194,9 +14332,9 @@
+@@ -14197,9 +14335,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2128,7 +2123,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14225,9 +14363,9 @@
+@@ -14228,9 +14366,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2140,7 +2135,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14256,9 +14394,9 @@
+@@ -14259,9 +14397,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2152,7 +2147,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14287,9 +14425,9 @@
+@@ -14290,9 +14428,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gcc/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2164,7 +2159,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/gcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gcc ; \
  	cd $(HOST_SUBDIR)/gcc || exit 1; \
-@@ -14324,7 +14462,8 @@
+@@ -14327,7 +14465,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gcc && \
@@ -2174,7 +2169,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gcc
  
  
-@@ -14343,8 +14482,11 @@
+@@ -14346,8 +14485,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2188,7 +2183,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-gcc)
  
  maybe-clean-stage1-gcc: clean-stage1-gcc
-@@ -14357,7 +14499,7 @@
+@@ -14360,7 +14502,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2197,7 +2192,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
  
-@@ -14377,8 +14519,11 @@
+@@ -14380,8 +14522,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2211,7 +2206,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-gcc)
  
  maybe-clean-stage2-gcc: clean-stage2-gcc
-@@ -14391,7 +14536,7 @@
+@@ -14394,7 +14539,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2220,7 +2215,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14412,8 +14557,11 @@
+@@ -14415,8 +14560,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2234,7 +2229,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-gcc)
  
  maybe-clean-stageb2g0-gcc: clean-stageb2g0-gcc
-@@ -14426,7 +14574,7 @@
+@@ -14429,7 +14577,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2243,7 +2238,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14447,8 +14595,11 @@
+@@ -14450,8 +14598,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2257,7 +2252,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-gcc)
  
  maybe-clean-stage3-gcc: clean-stage3-gcc
-@@ -14461,7 +14612,7 @@
+@@ -14464,7 +14615,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2266,7 +2261,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14482,8 +14633,11 @@
+@@ -14485,8 +14636,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2280,7 +2275,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-gcc)
  
  maybe-clean-stageb3g2-gcc: clean-stageb3g2-gcc
-@@ -14496,7 +14650,7 @@
+@@ -14499,7 +14653,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2289,7 +2284,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14517,8 +14671,11 @@
+@@ -14520,8 +14674,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2303,7 +2298,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-gcc)
  
  maybe-clean-stage4-gcc: clean-stage4-gcc
-@@ -14531,7 +14688,7 @@
+@@ -14534,7 +14691,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2312,7 +2307,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14552,8 +14709,11 @@
+@@ -14555,8 +14712,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2326,7 +2321,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-gcc)
  
  maybe-clean-stageprofile-gcc: clean-stageprofile-gcc
-@@ -14566,7 +14726,7 @@
+@@ -14569,7 +14729,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2335,7 +2330,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -14587,8 +14747,11 @@
+@@ -14590,8 +14750,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2349,7 +2344,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-gcc)
  
  maybe-clean-stagefeedback-gcc: clean-stagefeedback-gcc
-@@ -14601,7 +14764,7 @@
+@@ -14604,7 +14767,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gcc && \
@@ -2358,7 +2353,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		$(EXTRA_GCC_FLAGS) clean
  @endif gcc-bootstrap
-@@ -15015,7 +15178,8 @@
+@@ -15018,7 +15181,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gawk && \
@@ -2368,7 +2363,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gawk
  
  
-@@ -15439,7 +15603,8 @@
+@@ -15442,7 +15606,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gettext && \
@@ -2378,7 +2373,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gettext
  
  
-@@ -15856,9 +16021,9 @@
+@@ -15859,9 +16024,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
@@ -2390,7 +2385,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -15887,9 +16052,9 @@
+@@ -15890,9 +16055,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2402,7 +2397,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -15918,9 +16083,9 @@
+@@ -15921,9 +16086,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2414,7 +2409,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -15949,9 +16114,9 @@
+@@ -15952,9 +16117,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2426,7 +2421,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -15980,9 +16145,9 @@
+@@ -15983,9 +16148,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2438,7 +2433,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -16011,9 +16176,9 @@
+@@ -16014,9 +16179,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2450,7 +2445,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -16042,9 +16207,9 @@
+@@ -16045,9 +16210,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2462,7 +2457,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -16073,9 +16238,9 @@
+@@ -16076,9 +16241,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/gmp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2474,7 +2469,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/gmp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/gmp ; \
  	cd $(HOST_SUBDIR)/gmp || exit 1; \
-@@ -16110,7 +16275,8 @@
+@@ -16113,7 +16278,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gmp && \
@@ -2484,7 +2479,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gmp
  
  
-@@ -16129,8 +16295,11 @@
+@@ -16132,8 +16298,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2498,7 +2493,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-gmp)
  
  maybe-clean-stage1-gmp: clean-stage1-gmp
-@@ -16143,7 +16312,7 @@
+@@ -16146,7 +16315,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2507,7 +2502,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif gmp-bootstrap
  
-@@ -16163,8 +16332,11 @@
+@@ -16166,8 +16335,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2521,7 +2516,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-gmp)
  
  maybe-clean-stage2-gmp: clean-stage2-gmp
-@@ -16177,7 +16349,7 @@
+@@ -16180,7 +16352,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2530,7 +2525,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16198,8 +16370,11 @@
+@@ -16201,8 +16373,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2544,7 +2539,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-gmp)
  
  maybe-clean-stageb2g0-gmp: clean-stageb2g0-gmp
-@@ -16212,7 +16387,7 @@
+@@ -16215,7 +16390,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2553,7 +2548,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16233,8 +16408,11 @@
+@@ -16236,8 +16411,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2567,7 +2562,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-gmp)
  
  maybe-clean-stage3-gmp: clean-stage3-gmp
-@@ -16247,7 +16425,7 @@
+@@ -16250,7 +16428,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2576,7 +2571,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16268,8 +16446,11 @@
+@@ -16271,8 +16449,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2590,7 +2585,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-gmp)
  
  maybe-clean-stageb3g2-gmp: clean-stageb3g2-gmp
-@@ -16282,7 +16463,7 @@
+@@ -16285,7 +16466,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2599,7 +2594,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16303,8 +16484,11 @@
+@@ -16306,8 +16487,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2613,7 +2608,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-gmp)
  
  maybe-clean-stage4-gmp: clean-stage4-gmp
-@@ -16317,7 +16501,7 @@
+@@ -16320,7 +16504,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2622,7 +2617,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16338,8 +16522,11 @@
+@@ -16341,8 +16525,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2636,7 +2631,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-gmp)
  
  maybe-clean-stageprofile-gmp: clean-stageprofile-gmp
-@@ -16352,7 +16539,7 @@
+@@ -16355,7 +16542,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2645,7 +2640,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16373,8 +16560,11 @@
+@@ -16376,8 +16563,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2659,7 +2654,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-gmp)
  
  maybe-clean-stagefeedback-gmp: clean-stagefeedback-gmp
-@@ -16387,7 +16577,7 @@
+@@ -16390,7 +16580,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/gmp && \
@@ -2668,7 +2663,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif gmp-bootstrap
-@@ -16788,9 +16978,9 @@
+@@ -16791,9 +16981,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
@@ -2680,7 +2675,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16819,9 +17009,9 @@
+@@ -16822,9 +17012,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2692,7 +2687,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16850,9 +17040,9 @@
+@@ -16853,9 +17043,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2704,7 +2699,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16881,9 +17071,9 @@
+@@ -16884,9 +17074,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2716,7 +2711,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16912,9 +17102,9 @@
+@@ -16915,9 +17105,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2728,7 +2723,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16943,9 +17133,9 @@
+@@ -16946,9 +17136,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2740,7 +2735,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -16974,9 +17164,9 @@
+@@ -16977,9 +17167,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2752,7 +2747,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -17005,9 +17195,9 @@
+@@ -17008,9 +17198,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/mpfr/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -2764,7 +2759,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/mpfr ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/mpfr ; \
  	cd $(HOST_SUBDIR)/mpfr || exit 1; \
-@@ -17042,7 +17232,8 @@
+@@ -17045,7 +17235,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/mpfr && \
@@ -2774,7 +2769,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif mpfr
  
  
-@@ -17061,8 +17252,11 @@
+@@ -17064,8 +17255,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2788,7 +2783,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-mpfr)
  
  maybe-clean-stage1-mpfr: clean-stage1-mpfr
-@@ -17075,7 +17269,7 @@
+@@ -17078,7 +17272,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2797,7 +2792,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif mpfr-bootstrap
  
-@@ -17095,8 +17289,11 @@
+@@ -17098,8 +17292,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2811,7 +2806,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-mpfr)
  
  maybe-clean-stage2-mpfr: clean-stage2-mpfr
-@@ -17109,7 +17306,7 @@
+@@ -17112,7 +17309,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2820,7 +2815,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17130,8 +17327,11 @@
+@@ -17133,8 +17330,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2834,7 +2829,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-mpfr)
  
  maybe-clean-stageb2g0-mpfr: clean-stageb2g0-mpfr
-@@ -17144,7 +17344,7 @@
+@@ -17147,7 +17347,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2843,7 +2838,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17165,8 +17365,11 @@
+@@ -17168,8 +17368,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2857,7 +2852,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-mpfr)
  
  maybe-clean-stage3-mpfr: clean-stage3-mpfr
-@@ -17179,7 +17382,7 @@
+@@ -17182,7 +17385,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2866,7 +2861,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17200,8 +17403,11 @@
+@@ -17203,8 +17406,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2880,7 +2875,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-mpfr)
  
  maybe-clean-stageb3g2-mpfr: clean-stageb3g2-mpfr
-@@ -17214,7 +17420,7 @@
+@@ -17217,7 +17423,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2889,7 +2884,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17235,8 +17441,11 @@
+@@ -17238,8 +17444,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2903,7 +2898,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-mpfr)
  
  maybe-clean-stage4-mpfr: clean-stage4-mpfr
-@@ -17249,7 +17458,7 @@
+@@ -17252,7 +17461,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2912,7 +2907,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17270,8 +17479,11 @@
+@@ -17273,8 +17482,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2926,7 +2921,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-mpfr)
  
  maybe-clean-stageprofile-mpfr: clean-stageprofile-mpfr
-@@ -17284,7 +17496,7 @@
+@@ -17287,7 +17499,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2935,7 +2930,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17305,8 +17517,11 @@
+@@ -17308,8 +17520,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2949,7 +2944,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-mpfr)
  
  maybe-clean-stagefeedback-mpfr: clean-stagefeedback-mpfr
-@@ -17319,7 +17534,7 @@
+@@ -17322,7 +17537,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/mpfr && \
@@ -2958,7 +2953,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif mpfr-bootstrap
-@@ -17727,7 +17942,8 @@
+@@ -17730,7 +17945,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gnuserv && \
@@ -2968,7 +2963,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gnuserv
  
  
-@@ -18151,7 +18367,8 @@
+@@ -18154,7 +18370,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gprof && \
@@ -2978,7 +2973,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gprof
  
  
-@@ -18575,7 +18792,8 @@
+@@ -18578,7 +18795,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gzip && \
@@ -2988,7 +2983,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gzip
  
  
-@@ -18999,7 +19217,8 @@
+@@ -19002,7 +19220,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/hello && \
@@ -2998,7 +2993,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif hello
  
  
-@@ -19423,7 +19642,8 @@
+@@ -19426,7 +19645,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/indent && \
@@ -3008,7 +3003,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif indent
  
  
-@@ -19840,9 +20060,9 @@
+@@ -19843,9 +20063,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
@@ -3020,7 +3015,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -19871,9 +20091,9 @@
+@@ -19874,9 +20094,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3032,7 +3027,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -19902,9 +20122,9 @@
+@@ -19905,9 +20125,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3044,7 +3039,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -19933,9 +20153,9 @@
+@@ -19936,9 +20156,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3056,7 +3051,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -19964,9 +20184,9 @@
+@@ -19967,9 +20187,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3068,7 +3063,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -19995,9 +20215,9 @@
+@@ -19998,9 +20218,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3080,7 +3075,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -20026,9 +20246,9 @@
+@@ -20029,9 +20249,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3092,7 +3087,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -20057,9 +20277,9 @@
+@@ -20060,9 +20280,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/intl/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3104,7 +3099,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/intl ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/intl ; \
  	cd $(HOST_SUBDIR)/intl || exit 1; \
-@@ -20094,7 +20314,8 @@
+@@ -20097,7 +20317,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/intl && \
@@ -3114,7 +3109,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif intl
  
  
-@@ -20113,8 +20334,11 @@
+@@ -20116,8 +20337,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3128,7 +3123,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-intl)
  
  maybe-clean-stage1-intl: clean-stage1-intl
-@@ -20127,7 +20351,7 @@
+@@ -20130,7 +20354,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3137,7 +3132,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif intl-bootstrap
  
-@@ -20147,8 +20371,11 @@
+@@ -20150,8 +20374,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3151,7 +3146,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-intl)
  
  maybe-clean-stage2-intl: clean-stage2-intl
-@@ -20161,7 +20388,7 @@
+@@ -20164,7 +20391,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3160,7 +3155,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20182,8 +20409,11 @@
+@@ -20185,8 +20412,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3174,7 +3169,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-intl)
  
  maybe-clean-stageb2g0-intl: clean-stageb2g0-intl
-@@ -20196,7 +20426,7 @@
+@@ -20199,7 +20429,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3183,7 +3178,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20217,8 +20447,11 @@
+@@ -20220,8 +20450,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3197,7 +3192,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-intl)
  
  maybe-clean-stage3-intl: clean-stage3-intl
-@@ -20231,7 +20464,7 @@
+@@ -20234,7 +20467,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3206,7 +3201,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20252,8 +20485,11 @@
+@@ -20255,8 +20488,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3220,7 +3215,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-intl)
  
  maybe-clean-stageb3g2-intl: clean-stageb3g2-intl
-@@ -20266,7 +20502,7 @@
+@@ -20269,7 +20505,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3229,7 +3224,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20287,8 +20523,11 @@
+@@ -20290,8 +20526,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3243,7 +3238,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-intl)
  
  maybe-clean-stage4-intl: clean-stage4-intl
-@@ -20301,7 +20540,7 @@
+@@ -20304,7 +20543,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3252,7 +3247,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20322,8 +20561,11 @@
+@@ -20325,8 +20564,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3266,7 +3261,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-intl)
  
  maybe-clean-stageprofile-intl: clean-stageprofile-intl
-@@ -20336,7 +20578,7 @@
+@@ -20339,7 +20581,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3275,7 +3270,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20357,8 +20599,11 @@
+@@ -20360,8 +20602,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3289,7 +3284,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-intl)
  
  maybe-clean-stagefeedback-intl: clean-stagefeedback-intl
-@@ -20371,7 +20616,7 @@
+@@ -20374,7 +20619,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/intl && \
@@ -3298,7 +3293,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif intl-bootstrap
-@@ -20785,7 +21030,8 @@
+@@ -20788,7 +21033,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/tcl && \
@@ -3308,7 +3303,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif tcl
  
  
-@@ -21194,7 +21440,8 @@
+@@ -21197,7 +21443,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/itcl && \
@@ -3318,7 +3313,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif itcl
  
  
-@@ -21611,9 +21858,9 @@
+@@ -21614,9 +21861,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
@@ -3330,7 +3325,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21642,9 +21889,9 @@
+@@ -21645,9 +21892,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3342,7 +3337,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21673,9 +21920,9 @@
+@@ -21676,9 +21923,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3354,7 +3349,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21704,9 +21951,9 @@
+@@ -21707,9 +21954,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3366,7 +3361,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21735,9 +21982,9 @@
+@@ -21738,9 +21985,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3378,7 +3373,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21766,9 +22013,9 @@
+@@ -21769,9 +22016,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3390,7 +3385,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21797,9 +22044,9 @@
+@@ -21800,9 +22047,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3402,7 +3397,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21828,9 +22075,9 @@
+@@ -21831,9 +22078,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/ld/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3414,7 +3409,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/ld ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/ld ; \
  	cd $(HOST_SUBDIR)/ld || exit 1; \
-@@ -21865,7 +22112,8 @@
+@@ -21868,7 +22115,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/ld && \
@@ -3424,7 +3419,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif ld
  
  
-@@ -21884,8 +22132,11 @@
+@@ -21887,8 +22135,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3438,7 +3433,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-ld)
  
  maybe-clean-stage1-ld: clean-stage1-ld
-@@ -21898,7 +22149,7 @@
+@@ -21901,7 +22152,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3447,7 +3442,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif ld-bootstrap
  
-@@ -21918,8 +22169,11 @@
+@@ -21921,8 +22172,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3461,7 +3456,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-ld)
  
  maybe-clean-stage2-ld: clean-stage2-ld
-@@ -21932,7 +22186,7 @@
+@@ -21935,7 +22189,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3470,7 +3465,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -21953,8 +22207,11 @@
+@@ -21956,8 +22210,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3484,7 +3479,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-ld)
  
  maybe-clean-stageb2g0-ld: clean-stageb2g0-ld
-@@ -21967,7 +22224,7 @@
+@@ -21970,7 +22227,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3493,7 +3488,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -21988,8 +22245,11 @@
+@@ -21991,8 +22248,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3507,7 +3502,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-ld)
  
  maybe-clean-stage3-ld: clean-stage3-ld
-@@ -22002,7 +22262,7 @@
+@@ -22005,7 +22265,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3516,7 +3511,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -22023,8 +22283,11 @@
+@@ -22026,8 +22286,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3530,7 +3525,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-ld)
  
  maybe-clean-stageb3g2-ld: clean-stageb3g2-ld
-@@ -22037,7 +22300,7 @@
+@@ -22040,7 +22303,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3539,7 +3534,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -22058,8 +22321,11 @@
+@@ -22061,8 +22324,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3553,7 +3548,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-ld)
  
  maybe-clean-stage4-ld: clean-stage4-ld
-@@ -22072,7 +22338,7 @@
+@@ -22075,7 +22341,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3562,7 +3557,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -22093,8 +22359,11 @@
+@@ -22096,8 +22362,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3576,7 +3571,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-ld)
  
  maybe-clean-stageprofile-ld: clean-stageprofile-ld
-@@ -22107,7 +22376,7 @@
+@@ -22110,7 +22379,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3585,7 +3580,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -22128,8 +22397,11 @@
+@@ -22131,8 +22400,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3599,7 +3594,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-ld)
  
  maybe-clean-stagefeedback-ld: clean-stagefeedback-ld
-@@ -22142,7 +22414,7 @@
+@@ -22145,7 +22417,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/ld && \
@@ -3608,7 +3603,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif ld-bootstrap
-@@ -22549,9 +22821,9 @@
+@@ -22552,9 +22824,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
@@ -3620,7 +3615,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22580,9 +22852,9 @@
+@@ -22583,9 +22855,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3632,7 +3627,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22611,9 +22883,9 @@
+@@ -22614,9 +22886,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3644,7 +3639,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22642,9 +22914,9 @@
+@@ -22645,9 +22917,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3656,7 +3651,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22673,9 +22945,9 @@
+@@ -22676,9 +22948,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3668,7 +3663,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22704,9 +22976,9 @@
+@@ -22707,9 +22979,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3680,7 +3675,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22735,9 +23007,9 @@
+@@ -22738,9 +23010,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3692,7 +3687,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22766,9 +23038,9 @@
+@@ -22769,9 +23041,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libcpp/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3704,7 +3699,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/libcpp ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libcpp ; \
  	cd $(HOST_SUBDIR)/libcpp || exit 1; \
-@@ -22803,7 +23075,8 @@
+@@ -22806,7 +23078,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libcpp && \
@@ -3714,7 +3709,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libcpp
  
  
-@@ -22822,8 +23095,11 @@
+@@ -22825,8 +23098,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3728,7 +3723,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-libcpp)
  
  maybe-clean-stage1-libcpp: clean-stage1-libcpp
-@@ -22836,7 +23112,7 @@
+@@ -22839,7 +23115,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3737,7 +3732,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif libcpp-bootstrap
  
-@@ -22856,8 +23132,11 @@
+@@ -22859,8 +23135,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3751,7 +3746,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-libcpp)
  
  maybe-clean-stage2-libcpp: clean-stage2-libcpp
-@@ -22870,7 +23149,7 @@
+@@ -22873,7 +23152,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3760,7 +3755,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -22891,8 +23170,11 @@
+@@ -22894,8 +23173,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3774,7 +3769,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-libcpp)
  
  maybe-clean-stageb2g0-libcpp: clean-stageb2g0-libcpp
-@@ -22905,7 +23187,7 @@
+@@ -22908,7 +23190,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3783,7 +3778,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -22926,8 +23208,11 @@
+@@ -22929,8 +23211,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3797,7 +3792,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-libcpp)
  
  maybe-clean-stage3-libcpp: clean-stage3-libcpp
-@@ -22940,7 +23225,7 @@
+@@ -22943,7 +23228,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3806,7 +3801,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -22961,8 +23246,11 @@
+@@ -22964,8 +23249,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3820,7 +3815,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-libcpp)
  
  maybe-clean-stageb3g2-libcpp: clean-stageb3g2-libcpp
-@@ -22975,7 +23263,7 @@
+@@ -22978,7 +23266,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3829,7 +3824,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -22996,8 +23284,11 @@
+@@ -22999,8 +23287,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3843,7 +3838,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-libcpp)
  
  maybe-clean-stage4-libcpp: clean-stage4-libcpp
-@@ -23010,7 +23301,7 @@
+@@ -23013,7 +23304,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3852,7 +3847,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -23031,8 +23322,11 @@
+@@ -23034,8 +23325,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3866,7 +3861,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-libcpp)
  
  maybe-clean-stageprofile-libcpp: clean-stageprofile-libcpp
-@@ -23045,7 +23339,7 @@
+@@ -23048,7 +23342,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3875,7 +3870,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -23066,8 +23360,11 @@
+@@ -23069,8 +23363,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3889,7 +3884,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-libcpp)
  
  maybe-clean-stagefeedback-libcpp: clean-stagefeedback-libcpp
-@@ -23080,7 +23377,7 @@
+@@ -23083,7 +23380,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libcpp && \
@@ -3898,7 +3893,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libcpp-bootstrap
-@@ -23487,9 +23784,9 @@
+@@ -23490,9 +23787,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
@@ -3910,7 +3905,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23518,9 +23815,9 @@
+@@ -23521,9 +23818,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3922,7 +3917,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23549,9 +23846,9 @@
+@@ -23552,9 +23849,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3934,7 +3929,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23580,9 +23877,9 @@
+@@ -23583,9 +23880,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3946,7 +3941,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23611,9 +23908,9 @@
+@@ -23614,9 +23911,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3958,7 +3953,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23642,9 +23939,9 @@
+@@ -23645,9 +23942,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3970,7 +3965,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23673,9 +23970,9 @@
+@@ -23676,9 +23973,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3982,7 +3977,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23704,9 +24001,9 @@
+@@ -23707,9 +24004,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libdecnumber/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -3994,7 +3989,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/libdecnumber ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libdecnumber ; \
  	cd $(HOST_SUBDIR)/libdecnumber || exit 1; \
-@@ -23741,7 +24038,8 @@
+@@ -23744,7 +24041,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4004,7 +3999,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libdecnumber
  
  
-@@ -23760,8 +24058,11 @@
+@@ -23763,8 +24061,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4018,7 +4013,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-libdecnumber)
  
  maybe-clean-stage1-libdecnumber: clean-stage1-libdecnumber
-@@ -23774,7 +24075,7 @@
+@@ -23777,7 +24078,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4027,7 +4022,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif libdecnumber-bootstrap
  
-@@ -23794,8 +24095,11 @@
+@@ -23797,8 +24098,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4041,7 +4036,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-libdecnumber)
  
  maybe-clean-stage2-libdecnumber: clean-stage2-libdecnumber
-@@ -23808,7 +24112,7 @@
+@@ -23811,7 +24115,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4050,7 +4045,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -23829,8 +24133,11 @@
+@@ -23832,8 +24136,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4064,7 +4059,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-libdecnumber)
  
  maybe-clean-stageb2g0-libdecnumber: clean-stageb2g0-libdecnumber
-@@ -23843,7 +24150,7 @@
+@@ -23846,7 +24153,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4073,7 +4068,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -23864,8 +24171,11 @@
+@@ -23867,8 +24174,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4087,7 +4082,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-libdecnumber)
  
  maybe-clean-stage3-libdecnumber: clean-stage3-libdecnumber
-@@ -23878,7 +24188,7 @@
+@@ -23881,7 +24191,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4096,7 +4091,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -23899,8 +24209,11 @@
+@@ -23902,8 +24212,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4110,7 +4105,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-libdecnumber)
  
  maybe-clean-stageb3g2-libdecnumber: clean-stageb3g2-libdecnumber
-@@ -23913,7 +24226,7 @@
+@@ -23916,7 +24229,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4119,7 +4114,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -23934,8 +24247,11 @@
+@@ -23937,8 +24250,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4133,7 +4128,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-libdecnumber)
  
  maybe-clean-stage4-libdecnumber: clean-stage4-libdecnumber
-@@ -23948,7 +24264,7 @@
+@@ -23951,7 +24267,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4142,7 +4137,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -23969,8 +24285,11 @@
+@@ -23972,8 +24288,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4156,7 +4151,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-libdecnumber)
  
  maybe-clean-stageprofile-libdecnumber: clean-stageprofile-libdecnumber
-@@ -23983,7 +24302,7 @@
+@@ -23986,7 +24305,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4165,7 +4160,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -24004,8 +24323,11 @@
+@@ -24007,8 +24326,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4179,7 +4174,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-libdecnumber)
  
  maybe-clean-stagefeedback-libdecnumber: clean-stagefeedback-libdecnumber
-@@ -24018,7 +24340,7 @@
+@@ -24021,7 +24343,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libdecnumber && \
@@ -4188,7 +4183,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libdecnumber-bootstrap
-@@ -24432,7 +24754,8 @@
+@@ -24435,7 +24757,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libgui && \
@@ -4198,7 +4193,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libgui
  
  
-@@ -24849,9 +25172,9 @@
+@@ -24852,9 +25175,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
@@ -4210,7 +4205,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -24880,9 +25203,9 @@
+@@ -24883,9 +25206,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4222,7 +4217,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -24911,9 +25234,9 @@
+@@ -24914,9 +25237,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4234,7 +4229,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -24942,9 +25265,9 @@
+@@ -24945,9 +25268,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4246,7 +4241,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -24973,9 +25296,9 @@
+@@ -24976,9 +25299,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4258,7 +4253,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -25004,9 +25327,9 @@
+@@ -25007,9 +25330,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4270,7 +4265,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -25035,9 +25358,9 @@
+@@ -25038,9 +25361,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4282,7 +4277,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -25066,9 +25389,9 @@
+@@ -25069,9 +25392,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/libiberty/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4294,7 +4289,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/libiberty ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/libiberty ; \
  	cd $(HOST_SUBDIR)/libiberty || exit 1; \
-@@ -25103,7 +25426,8 @@
+@@ -25106,7 +25429,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libiberty && \
@@ -4304,7 +4299,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libiberty
  
  
-@@ -25122,8 +25446,11 @@
+@@ -25125,8 +25449,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4318,7 +4313,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-libiberty)
  
  maybe-clean-stage1-libiberty: clean-stage1-libiberty
-@@ -25136,7 +25463,7 @@
+@@ -25139,7 +25466,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4327,7 +4322,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif libiberty-bootstrap
  
-@@ -25156,8 +25483,11 @@
+@@ -25159,8 +25486,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4341,7 +4336,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-libiberty)
  
  maybe-clean-stage2-libiberty: clean-stage2-libiberty
-@@ -25170,7 +25500,7 @@
+@@ -25173,7 +25503,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4350,7 +4345,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25191,8 +25521,11 @@
+@@ -25194,8 +25524,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4364,7 +4359,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-libiberty)
  
  maybe-clean-stageb2g0-libiberty: clean-stageb2g0-libiberty
-@@ -25205,7 +25538,7 @@
+@@ -25208,7 +25541,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4373,7 +4368,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25226,8 +25559,11 @@
+@@ -25229,8 +25562,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4387,7 +4382,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-libiberty)
  
  maybe-clean-stage3-libiberty: clean-stage3-libiberty
-@@ -25240,7 +25576,7 @@
+@@ -25243,7 +25579,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4396,7 +4391,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25261,8 +25597,11 @@
+@@ -25264,8 +25600,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4410,7 +4405,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-libiberty)
  
  maybe-clean-stageb3g2-libiberty: clean-stageb3g2-libiberty
-@@ -25275,7 +25614,7 @@
+@@ -25278,7 +25617,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4419,7 +4414,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25296,8 +25635,11 @@
+@@ -25299,8 +25638,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4433,7 +4428,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-libiberty)
  
  maybe-clean-stage4-libiberty: clean-stage4-libiberty
-@@ -25310,7 +25652,7 @@
+@@ -25313,7 +25655,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4442,7 +4437,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25331,8 +25673,11 @@
+@@ -25334,8 +25676,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4456,7 +4451,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-libiberty)
  
  maybe-clean-stageprofile-libiberty: clean-stageprofile-libiberty
-@@ -25345,7 +25690,7 @@
+@@ -25348,7 +25693,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4465,7 +4460,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25366,8 +25711,11 @@
+@@ -25369,8 +25714,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4479,7 +4474,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-libiberty)
  
  maybe-clean-stagefeedback-libiberty: clean-stagefeedback-libiberty
-@@ -25380,7 +25728,7 @@
+@@ -25383,7 +25731,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/libiberty && \
@@ -4488,7 +4483,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif libiberty-bootstrap
-@@ -25794,7 +26142,8 @@
+@@ -25797,7 +26145,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libtool && \
@@ -4498,7 +4493,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libtool
  
  
-@@ -26218,7 +26567,8 @@
+@@ -26221,7 +26570,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/m4 && \
@@ -4508,7 +4503,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif m4
  
  
-@@ -26642,7 +26992,8 @@
+@@ -26645,7 +26995,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/make && \
@@ -4518,7 +4513,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif make
  
  
-@@ -27066,7 +27417,8 @@
+@@ -27069,7 +27420,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/mmalloc && \
@@ -4528,7 +4523,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif mmalloc
  
  
-@@ -27484,7 +27836,8 @@
+@@ -27487,7 +27839,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/patch && \
@@ -4538,7 +4533,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif patch
  
  
-@@ -27908,7 +28261,8 @@
+@@ -27911,7 +28264,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/perl && \
@@ -4548,7 +4543,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif perl
  
  
-@@ -28332,7 +28686,8 @@
+@@ -28335,7 +28689,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/prms && \
@@ -4558,7 +4553,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif prms
  
  
-@@ -28756,7 +29111,8 @@
+@@ -28759,7 +29114,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/rcs && \
@@ -4568,7 +4563,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif rcs
  
  
-@@ -29180,7 +29536,8 @@
+@@ -29183,7 +29539,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/readline && \
@@ -4578,7 +4573,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif readline
  
  
-@@ -29604,7 +29961,8 @@
+@@ -29607,7 +29964,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/release && \
@@ -4588,7 +4583,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif release
  
  
-@@ -30016,7 +30374,8 @@
+@@ -30019,7 +30377,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/recode && \
@@ -4598,7 +4593,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif recode
  
  
-@@ -30440,7 +30799,8 @@
+@@ -30443,7 +30802,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/sed && \
@@ -4608,7 +4603,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif sed
  
  
-@@ -30864,7 +31224,8 @@
+@@ -30867,7 +31227,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/send-pr && \
@@ -4618,7 +4613,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif send-pr
  
  
-@@ -31288,7 +31649,8 @@
+@@ -31291,7 +31652,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/shellutils && \
@@ -4628,7 +4623,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif shellutils
  
  
-@@ -31712,7 +32074,8 @@
+@@ -31715,7 +32077,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/sid && \
@@ -4638,7 +4633,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif sid
  
  
-@@ -32136,7 +32499,8 @@
+@@ -32139,7 +32502,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/sim && \
@@ -4648,7 +4643,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif sim
  
  
-@@ -32560,7 +32924,8 @@
+@@ -32563,7 +32927,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/tar && \
@@ -4658,7 +4653,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif tar
  
  
-@@ -32984,7 +33349,8 @@
+@@ -32987,7 +33352,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/texinfo && \
@@ -4668,7 +4663,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif texinfo
  
  
-@@ -33402,7 +33768,8 @@
+@@ -33405,7 +33771,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/textutils && \
@@ -4678,7 +4673,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif textutils
  
  
-@@ -33826,7 +34193,8 @@
+@@ -33829,7 +34196,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/time && \
@@ -4688,7 +4683,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif time
  
  
-@@ -34250,7 +34618,8 @@
+@@ -34253,7 +34621,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/uudecode && \
@@ -4698,7 +4693,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif uudecode
  
  
-@@ -34674,7 +35043,8 @@
+@@ -34677,7 +35046,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/wdiff && \
@@ -4708,7 +4703,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif wdiff
  
  
-@@ -35098,7 +35468,8 @@
+@@ -35101,7 +35471,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/zip && \
@@ -4718,7 +4713,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif zip
  
  
-@@ -35518,9 +35889,9 @@
+@@ -35521,9 +35892,9 @@
  	@r=`${PWD_COMMAND}`; export r; \
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
@@ -4730,7 +4725,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35549,9 +35920,9 @@
+@@ -35552,9 +35923,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4742,7 +4737,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35580,9 +35951,9 @@
+@@ -35583,9 +35954,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4754,7 +4749,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35611,9 +35982,9 @@
+@@ -35614,9 +35985,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4766,7 +4761,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35642,9 +36013,9 @@
+@@ -35645,9 +36016,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4778,7 +4773,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35673,9 +36044,9 @@
+@@ -35676,9 +36047,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4790,7 +4785,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35704,9 +36075,9 @@
+@@ -35707,9 +36078,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4802,7 +4797,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35735,9 +36106,9 @@
+@@ -35738,9 +36109,9 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	test ! -f $(HOST_SUBDIR)/zlib/Makefile || exit 0; \
  	$(HOST_EXPORTS) \
@@ -4814,7 +4809,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(HOST_SUBDIR)/zlib ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(HOST_SUBDIR)/zlib ; \
  	cd $(HOST_SUBDIR)/zlib || exit 1; \
-@@ -35772,7 +36143,8 @@
+@@ -35775,7 +36146,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/zlib && \
@@ -4824,7 +4819,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif zlib
  
  
-@@ -35791,8 +36163,11 @@
+@@ -35794,8 +36166,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4838,7 +4833,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-zlib)
  
  maybe-clean-stage1-zlib: clean-stage1-zlib
-@@ -35805,7 +36180,7 @@
+@@ -35808,7 +36183,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4847,7 +4842,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif zlib-bootstrap
  
-@@ -35825,8 +36200,11 @@
+@@ -35828,8 +36203,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4861,7 +4856,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-zlib)
  
  maybe-clean-stage2-zlib: clean-stage2-zlib
-@@ -35839,7 +36217,7 @@
+@@ -35842,7 +36220,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4870,7 +4865,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -35860,8 +36238,11 @@
+@@ -35863,8 +36241,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4884,7 +4879,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-zlib)
  
  maybe-clean-stageb2g0-zlib: clean-stageb2g0-zlib
-@@ -35874,7 +36255,7 @@
+@@ -35877,7 +36258,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4893,7 +4888,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -35895,8 +36276,11 @@
+@@ -35898,8 +36279,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4907,7 +4902,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-zlib)
  
  maybe-clean-stage3-zlib: clean-stage3-zlib
-@@ -35909,7 +36293,7 @@
+@@ -35912,7 +36296,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4916,7 +4911,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -35930,8 +36314,11 @@
+@@ -35933,8 +36317,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4930,7 +4925,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-zlib)
  
  maybe-clean-stageb3g2-zlib: clean-stageb3g2-zlib
-@@ -35944,7 +36331,7 @@
+@@ -35947,7 +36334,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4939,7 +4934,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -35965,8 +36352,11 @@
+@@ -35968,8 +36355,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4953,7 +4948,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-zlib)
  
  maybe-clean-stage4-zlib: clean-stage4-zlib
-@@ -35979,7 +36369,7 @@
+@@ -35982,7 +36372,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4962,7 +4957,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -36000,8 +36390,11 @@
+@@ -36003,8 +36393,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4976,7 +4971,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-zlib)
  
  maybe-clean-stageprofile-zlib: clean-stageprofile-zlib
-@@ -36014,7 +36407,7 @@
+@@ -36017,7 +36410,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4985,7 +4980,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -36035,8 +36428,11 @@
+@@ -36038,8 +36431,11 @@
  	$(HOST_EXPORTS) \
  	$(POSTSTAGE1_HOST_EXPORTS) \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -4999,7 +4994,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-zlib)
  
  maybe-clean-stagefeedback-zlib: clean-stagefeedback-zlib
-@@ -36049,7 +36445,7 @@
+@@ -36052,7 +36448,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(HOST_SUBDIR)/zlib && \
@@ -5008,7 +5003,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(POSTSTAGE1_FLAGS_TO_PASS)  \
  		 clean
  @endif zlib-bootstrap
-@@ -36451,7 +36847,8 @@
+@@ -36454,7 +36850,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gdb && \
@@ -5018,7 +5013,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gdb
  
  
-@@ -36875,7 +37272,8 @@
+@@ -36878,7 +37275,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/expect && \
@@ -5028,7 +5023,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif expect
  
  
-@@ -37299,7 +37697,8 @@
+@@ -37302,7 +37700,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/guile && \
@@ -5038,7 +5033,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif guile
  
  
-@@ -37723,7 +38122,8 @@
+@@ -37726,7 +38125,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/tk && \
@@ -5048,7 +5043,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif tk
  
  
-@@ -38147,7 +38547,8 @@
+@@ -38150,7 +38550,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/libtermcap && \
@@ -5058,7 +5053,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif libtermcap
  
  
-@@ -38505,7 +38906,8 @@
+@@ -38508,7 +38909,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/utils && \
@@ -5068,7 +5063,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif utils
  
  
-@@ -38923,7 +39325,8 @@
+@@ -38926,7 +39328,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(HOST_EXPORTS) \
  	(cd $(HOST_SUBDIR)/gnattools && \
@@ -5078,7 +5073,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gnattools
  
  
-@@ -39368,7 +39771,8 @@
+@@ -39371,7 +39774,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(RAW_CXX_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libstdc++-v3 && \
@@ -5088,7 +5083,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libstdc++-v3
  
  
-@@ -39809,7 +40213,8 @@
+@@ -39812,7 +40216,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libmudflap && \
@@ -5098,7 +5093,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libmudflap
  
  
-@@ -40250,7 +40655,8 @@
+@@ -40253,7 +40658,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libssp && \
@@ -5108,7 +5103,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libssp
  
  
-@@ -40691,7 +41097,8 @@
+@@ -40694,7 +41100,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/newlib && \
@@ -5118,7 +5113,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-newlib
  
  
-@@ -41137,9 +41544,9 @@
+@@ -41140,9 +41547,9 @@
  	  mv $(TARGET_SUBDIR)/libgcc/multilib.tmp $(TARGET_SUBDIR)/libgcc/multilib.out; \
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
@@ -5131,7 +5126,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 1 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41180,9 +41587,9 @@
+@@ -41183,9 +41590,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5144,7 +5139,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 2 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41223,9 +41630,9 @@
+@@ -41226,9 +41633,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5157,7 +5152,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b2g0 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41266,9 +41673,9 @@
+@@ -41269,9 +41676,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5170,7 +5165,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 3 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41309,9 +41716,9 @@
+@@ -41312,9 +41719,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5183,7 +5178,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage b3g2 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41352,9 +41759,9 @@
+@@ -41355,9 +41762,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5196,7 +5191,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage 4 in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41395,9 +41802,9 @@
+@@ -41398,9 +41805,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5209,7 +5204,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage profile in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41438,9 +41845,9 @@
+@@ -41441,9 +41848,9 @@
  	fi; \
  	test ! -f $(TARGET_SUBDIR)/libgcc/Makefile || exit 0; \
  	$(NORMAL_TARGET_EXPORTS) \
@@ -5222,7 +5217,7 @@ Index: gcc-4.3.2/Makefile.in
  	echo Configuring stage feedback in $(TARGET_SUBDIR)/libgcc ; \
  	$(SHELL) $(srcdir)/mkinstalldirs $(TARGET_SUBDIR)/libgcc ; \
  	cd $(TARGET_SUBDIR)/libgcc || exit 1; \
-@@ -41475,7 +41882,8 @@
+@@ -41478,7 +41885,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libgcc && \
@@ -5232,7 +5227,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libgcc
  
  
-@@ -41494,8 +41902,11 @@
+@@ -41497,8 +41905,11 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5246,7 +5241,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage1-target-libgcc)
  
  maybe-clean-stage1-target-libgcc: clean-stage1-target-libgcc
-@@ -41508,7 +41919,7 @@
+@@ -41511,7 +41922,7 @@
  	  $(MAKE) stage1-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5255,7 +5250,7 @@ Index: gcc-4.3.2/Makefile.in
  		 clean
  @endif target-libgcc-bootstrap
  
-@@ -41528,8 +41939,11 @@
+@@ -41531,8 +41942,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5269,7 +5264,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage2-target-libgcc)
  
  maybe-clean-stage2-target-libgcc: clean-stage2-target-libgcc
-@@ -41542,7 +41956,7 @@
+@@ -41545,7 +41959,7 @@
  	  $(MAKE) stage2-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5278,7 +5273,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41563,8 +41977,11 @@
+@@ -41566,8 +41980,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5292,7 +5287,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb2g0-target-libgcc)
  
  maybe-clean-stageb2g0-target-libgcc: clean-stageb2g0-target-libgcc
-@@ -41577,7 +41994,7 @@
+@@ -41580,7 +41997,7 @@
  	  $(MAKE) stageb2g0-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5301,7 +5296,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41598,8 +42015,11 @@
+@@ -41601,8 +42018,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5315,7 +5310,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage3-target-libgcc)
  
  maybe-clean-stage3-target-libgcc: clean-stage3-target-libgcc
-@@ -41612,7 +42032,7 @@
+@@ -41615,7 +42035,7 @@
  	  $(MAKE) stage3-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5324,7 +5319,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41633,8 +42053,11 @@
+@@ -41636,8 +42056,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5338,7 +5333,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageb3g2-target-libgcc)
  
  maybe-clean-stageb3g2-target-libgcc: clean-stageb3g2-target-libgcc
-@@ -41647,7 +42070,7 @@
+@@ -41650,7 +42073,7 @@
  	  $(MAKE) stageb3g2-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5347,7 +5342,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41668,8 +42091,11 @@
+@@ -41671,8 +42094,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5361,7 +5356,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stage4-target-libgcc)
  
  maybe-clean-stage4-target-libgcc: clean-stage4-target-libgcc
-@@ -41682,7 +42108,7 @@
+@@ -41685,7 +42111,7 @@
  	  $(MAKE) stage4-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5370,7 +5365,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41703,8 +42129,11 @@
+@@ -41706,8 +42132,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5384,7 +5379,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stageprofile-target-libgcc)
  
  maybe-clean-stageprofile-target-libgcc: clean-stageprofile-target-libgcc
-@@ -41717,7 +42146,7 @@
+@@ -41720,7 +42149,7 @@
  	  $(MAKE) stageprofile-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5393,7 +5388,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -41738,8 +42167,11 @@
+@@ -41741,8 +42170,11 @@
  	$(NORMAL_TARGET_EXPORTS) \
  	 \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5407,7 +5402,7 @@ Index: gcc-4.3.2/Makefile.in
  		$(TARGET-stagefeedback-target-libgcc)
  
  maybe-clean-stagefeedback-target-libgcc: clean-stagefeedback-target-libgcc
-@@ -41752,7 +42184,7 @@
+@@ -41755,7 +42187,7 @@
  	  $(MAKE) stagefeedback-start; \
  	fi; \
  	cd $(TARGET_SUBDIR)/libgcc && \
@@ -5416,7 +5411,7 @@ Index: gcc-4.3.2/Makefile.in
  		  \
  		 clean
  @endif target-libgcc-bootstrap
-@@ -42191,7 +42623,8 @@
+@@ -42194,7 +42626,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libgfortran && \
@@ -5426,7 +5421,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libgfortran
  
  
-@@ -42632,7 +43065,8 @@
+@@ -42635,7 +43068,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libobjc && \
@@ -5436,7 +5431,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libobjc
  
  
-@@ -43073,7 +43507,8 @@
+@@ -43076,7 +43510,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libtermcap && \
@@ -5446,7 +5441,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libtermcap
  
  
-@@ -43449,7 +43884,8 @@
+@@ -43452,7 +43887,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/winsup && \
@@ -5456,7 +5451,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-winsup
  
  
-@@ -43890,7 +44326,8 @@
+@@ -43893,7 +44329,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libgloss && \
@@ -5466,7 +5461,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libgloss
  
  
-@@ -44326,7 +44763,8 @@
+@@ -44329,7 +44766,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libiberty && \
@@ -5476,7 +5471,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libiberty
  
  
-@@ -44767,7 +45205,8 @@
+@@ -44770,7 +45208,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/gperf && \
@@ -5486,7 +5481,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-gperf
  
  
-@@ -45208,7 +45647,8 @@
+@@ -45211,7 +45650,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/examples && \
@@ -5496,7 +5491,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-examples
  
  
-@@ -45639,7 +46079,8 @@
+@@ -45642,7 +46082,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libffi && \
@@ -5506,7 +5501,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libffi
  
  
-@@ -46080,7 +46521,8 @@
+@@ -46083,7 +46524,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(RAW_CXX_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libjava && \
@@ -5516,7 +5511,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libjava
  
  
-@@ -46521,7 +46963,8 @@
+@@ -46524,7 +46966,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/zlib && \
@@ -5526,7 +5521,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-zlib
  
  
-@@ -46962,7 +47405,8 @@
+@@ -46965,7 +47408,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/boehm-gc && \
@@ -5536,7 +5531,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-boehm-gc
  
  
-@@ -47403,7 +47847,8 @@
+@@ -47406,7 +47850,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/qthreads && \
@@ -5546,7 +5541,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-qthreads
  
  
-@@ -47844,7 +48289,8 @@
+@@ -47847,7 +48292,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/rda && \
@@ -5556,7 +5551,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-rda
  
  
-@@ -48285,7 +48731,8 @@
+@@ -48288,7 +48734,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libada && \
@@ -5566,7 +5561,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libada
  
  
-@@ -48726,7 +49173,8 @@
+@@ -48729,7 +49176,8 @@
  	s=`cd $(srcdir); ${PWD_COMMAND}`; export s; \
  	$(NORMAL_TARGET_EXPORTS) \
  	(cd $(TARGET_SUBDIR)/libgomp && \
@@ -5576,7 +5571,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif target-libgomp
  
  
-@@ -49359,7 +49807,7 @@
+@@ -49362,7 +49810,7 @@
  
  # Bubble a bug fix through all the stages up to stage 1.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5585,7 +5580,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stage1-bubble
  stage1-bubble:: 
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -49570,7 +50018,7 @@
+@@ -49573,7 +50021,7 @@
  
  # Bubble a bug fix through all the stages up to stage 2.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5594,7 +5589,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stage2-bubble
  stage2-bubble:: stage1-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -49802,7 +50250,7 @@
+@@ -49805,7 +50253,7 @@
  
  # Bubble a bug fix through all the stages up to stage b2g0.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5603,7 +5598,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stageb2g0-bubble
  stageb2g0-bubble:: stage1-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -50034,7 +50482,7 @@
+@@ -50037,7 +50485,7 @@
  
  # Bubble a bug fix through all the stages up to stage 3.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5612,7 +5607,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stage3-bubble
  stage3-bubble:: stage2-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -50320,7 +50768,7 @@
+@@ -50323,7 +50771,7 @@
  
  # Bubble a bug fix through all the stages up to stage b3g2.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5621,7 +5616,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stageb3g2-bubble
  stageb3g2-bubble:: stageb2g0-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -50606,7 +51054,7 @@
+@@ -50609,7 +51057,7 @@
  
  # Bubble a bug fix through all the stages up to stage 4.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5630,7 +5625,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stage4-bubble
  stage4-bubble:: stage3-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -50881,7 +51329,7 @@
+@@ -50884,7 +51332,7 @@
  
  # Bubble a bug fix through all the stages up to stage profile.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5639,7 +5634,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stageprofile-bubble
  stageprofile-bubble:: stage1-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -51092,7 +51540,7 @@
+@@ -51095,7 +51543,7 @@
  
  # Bubble a bug fix through all the stages up to stage feedback.  They are
  # remade, but not reconfigured.  The next stage (if any) will not be
@@ -5648,7 +5643,7 @@ Index: gcc-4.3.2/Makefile.in
  .PHONY: stagefeedback-bubble
  stagefeedback-bubble:: stageprofile-bubble
  	@r=`${PWD_COMMAND}`; export r; \
-@@ -51175,10 +51623,10 @@
+@@ -51178,10 +51626,10 @@
  	@if test -f stage_last; then $(unstage); else $(MAKE) stage1-start; fi
  
  .PHONY: restrap
@@ -5661,7 +5656,7 @@ Index: gcc-4.3.2/Makefile.in
  @endif gcc-bootstrap
  
  # --------------------------------------
-@@ -52004,7 +52452,8 @@
+@@ -52007,7 +52455,8 @@
  
  # Rebuilding configure.
  AUTOCONF = autoconf
@@ -5671,67 +5666,6 @@ Index: gcc-4.3.2/Makefile.in
  	cd $(srcdir) && $(AUTOCONF)
  
  # ------------------------------
-Index: gcc-4.3.2/configure
-===================================================================
---- gcc-4.3.2.orig/configure	2008-02-01 19:29:30.000000000 -0800
-+++ gcc-4.3.2/configure	2008-08-28 18:18:37.000000000 -0700
-@@ -272,7 +272,7 @@
- PACKAGE_BUGREPORT=
- 
- ac_unique_file="move-if-change"
--ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os build_noncanonical host_noncanonical target_noncanonical host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN LN_S TOPLEVEL_CONFIGURE_ARGUMENTS build_libsubdir build_subdir host_subdir target_subdir CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX GNATBIND ac_ct_GNATBIND GNATMAKE ac_ct_GNATMAKE do_compare gmplibs gmpinc stage1_languages SYSROOT_CFLAGS_FOR_TARGET DEBUG_PREFIX_CFLAGS_FOR_TARGET RPATH_ENVVAR tooldir build_tooldir CONFIGURE_GDB_TK GDB_TK INSTALL_GDB_TK build_configargs build_configdirs host_configargs configdirs target_configargs AR_FOR_BUILD AS_FOR_BUILD CC_FOR_BUILD CFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CXX_FOR_BUILD DLLTOOL_FOR_BUILD GCJ_FOR_BUILD GFORTRAN_FOR_BUILD LDFLAGS_FOR_BUILD LD_FOR_BUILD NM_FOR_BUILD RANLIB_FOR_BUILD WINDMC_FOR_BUILD WINDRES_FOR_BUILD config_shell YACC BISON M4 LEX FLEX MAKEINFO EXPECT RUNTEST AR AS DLLTOOL LD LIPO NM RANLIB STRIP WINDRES WINDMC OBJCOPY OBJDUMP CC_FOR_TARGET CXX_FOR_TARGET GCC_FOR_TARGET GCJ_FOR_TARGET GFORTRAN_FOR_TARGET AR_FOR_TARGET AS_FOR_TARGET DLLTOOL_FOR_TARGET LD_FOR_TARGET LIPO_FOR_TARGET NM_FOR_TARGET OBJDUMP_FOR_TARGET RANLIB_FOR_TARGET STRIP_FOR_TARGET WINDRES_FOR_TARGET WINDMC_FOR_TARGET RAW_CXX_FOR_TARGET FLAGS_FOR_TARGET COMPILER_AS_FOR_TARGET COMPILER_LD_FOR_TARGET COMPILER_NM_FOR_TARGET MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT stage1_cflags stage1_checking stage2_werror_flag datarootdir docdir pdfdir htmldir LIBOBJS LTLIBOBJS'
-+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os build_noncanonical host_noncanonical target_noncanonical host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN LN_S TOPLEVEL_CONFIGURE_ARGUMENTS build_libsubdir build_subdir host_subdir target_subdir CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX GNATBIND ac_ct_GNATBIND GNATMAKE ac_ct_GNATMAKE do_compare gmplibs gmpinc stage1_languages SYSROOT_CFLAGS_FOR_TARGET DEBUG_PREFIX_CFLAGS_FOR_TARGET CFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET RPATH_ENVVAR tooldir build_tooldir CONFIGURE_GDB_TK GDB_TK INSTALL_GDB_TK build_configargs build_configdirs host_configargs configdirs target_configargs AR_FOR_BUILD AS_FOR_BUILD CC_FOR_BUILD CFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CXX_FOR_BUILD DLLTOOL_FOR_BUILD GCJ_FOR_BUILD GFORTRAN_FOR_BUILD LDFLAGS_FOR_BUILD LD_FOR_BUILD NM_FOR_BUILD RANLIB_FOR_BUILD WINDMC_FOR_BUILD WINDRES_FOR_BUILD config_shell YACC BISON M4 LEX FLEX MAKEINFO EXPECT RUNTEST AR AS DLLTOOL LD LIPO NM RANLIB STRIP WINDRES WINDMC OBJCOPY OBJDUMP CC_FOR_TARGET CXX_FOR_TARGET GCC_FOR_TARGET GCJ_FOR_TARGET GFORTRAN_FOR_TARGET AR_FOR_TARGET AS_FOR_TARGET DLLTOOL_FOR_TARGET LD_FOR_TARGET LIPO_FOR_TARGET NM_FOR_TARGET OBJDUMP_FOR_TARGET RANLIB_FOR_TARGET STRIP_FOR_TARGET WINDRES_FOR_TARGET WINDMC_FOR_TARGET RAW_CXX_FOR_TARGET FLAGS_FOR_TARGET COMPILER_AS_FOR_TARGET COMPILER_LD_FOR_TARGET COMPILER_NM_FOR_TARGET MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT stage1_cflags stage1_checking stage2_werror_flag datarootdir docdir pdfdir htmldir LIBOBJS LTLIBOBJS'
- ac_subst_files='serialization_dependencies host_makefile_frag target_makefile_frag alphaieee_frag ospace_frag'
- 
- # Initialize some variables set by options.
-@@ -5147,6 +5147,38 @@
- fi;
- 
- 
-+# During gcc bootstrap, if we use some random cc for stage1 then CFLAGS
-+# might be empty or "-g".  We don't require a C++ compiler, so CXXFLAGS
-+# might also be empty (or "-g", if a non-GCC C++ compiler is in the path).
-+# We want to ensure that TARGET libraries (which we know are built with
-+# gcc) are built with "-O2 -g", so include those options when setting
-+# CFLAGS_FOR_TARGET and CXXFLAGS_FOR_TARGET.
-+if test "x$CFLAGS_FOR_TARGET" = x; then
-+  CFLAGS_FOR_TARGET=$CFLAGS
-+  case " $CFLAGS " in
-+    *" -O2 "*) ;;
-+    *) CFLAGS_FOR_TARGET="-O2 $CFLAGS" ;;
-+  esac
-+  case " $CFLAGS " in
-+    *" -g "* | *" -g3 "*) ;;
-+    *) CFLAGS_FOR_TARGET="-g $CFLAGS" ;;
-+  esac
-+fi
-+
-+
-+if test "x$CXXFLAGS_FOR_TARGET" = x; then
-+  CXXFLAGS_FOR_TARGET=$CXXFLAGS
-+  case " $CXXFLAGS " in
-+    *" -O2 "*) ;;
-+    *) CXXFLAGS_FOR_TARGET="-O2 $CXXFLAGS" ;;
-+  esac
-+  case " $CXXFLAGS " in
-+    *" -g "* | *" -g3 "*) ;;
-+    *) CXXFLAGS_FOR_TARGET="-g $CXXFLAGS" ;;
-+  esac
-+fi
-+
-+
- # Handle --with-headers=XXX.  If the value is not "yes", the contents of
- # the named directory are copied to $(tooldir)/sys-include.
- if test x"${with_headers}" != x && test x"${with_headers}" != xno ; then
-@@ -12825,6 +12857,8 @@
- s,@stage1_languages@,$stage1_languages,;t t
- s,@SYSROOT_CFLAGS_FOR_TARGET@,$SYSROOT_CFLAGS_FOR_TARGET,;t t
- s,@DEBUG_PREFIX_CFLAGS_FOR_TARGET@,$DEBUG_PREFIX_CFLAGS_FOR_TARGET,;t t
-+s,@CFLAGS_FOR_TARGET@,$CFLAGS_FOR_TARGET,;t t
-+s,@CXXFLAGS_FOR_TARGET@,$CXXFLAGS_FOR_TARGET,;t t
- s,@RPATH_ENVVAR@,$RPATH_ENVVAR,;t t
- s,@tooldir@,$tooldir,;t t
- s,@build_tooldir@,$build_tooldir,;t t
 Index: gcc-4.3.2/libiberty/Makefile.in
 ===================================================================
 --- gcc-4.3.2.orig/libiberty/Makefile.in	2007-07-24 23:26:45.000000000 -0700
@@ -6503,189 +6437,127 @@ Index: gcc-4.3.2/libiberty/configure.ac
  
  # record if we want to build shared libs.
  if [[ "${shared}" = "yes" ]]; then
-Index: gcc-4.3.2/gcc/Makefile.in
-===================================================================
---- gcc-4.3.2.orig/gcc/Makefile.in	2008-08-28 18:05:19.000000000 -0700
-+++ gcc-4.3.2/gcc/Makefile.in	2008-08-28 18:18:37.000000000 -0700
-@@ -672,7 +672,7 @@
- BUILD_CFLAGS= @BUILD_CFLAGS@ -DGENERATOR_FILE
+--- /tmp/configure	2008-11-18 10:35:33.000000000 +0100
++++ gcc-4.3/configure	2008-11-18 10:36:16.000000000 +0100
+@@ -272,7 +272,7 @@
+ PACKAGE_BUGREPORT=
+ 
+ ac_unique_file="move-if-change"
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os build_noncanonical host_noncanonical target_noncanonical host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN LN_S TOPLEVEL_CONFIGURE_ARGUMENTS build_libsubdir build_subdir host_subdir target_subdir CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX GNATBIND ac_ct_GNATBIND GNATMAKE ac_ct_GNATMAKE do_compare gmplibs gmpinc stage1_languages SYSROOT_CFLAGS_FOR_TARGET DEBUG_PREFIX_CFLAGS_FOR_TARGET RPATH_ENVVAR tooldir build_tooldir CONFIGURE_GDB_TK GDB_TK INSTALL_GDB_TK build_configargs build_configdirs host_configargs configdirs target_configargs AR_FOR_BUILD AS_FOR_BUILD CPPFLAGS_FOR_BUILD CC_FOR_BUILD CFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CXX_FOR_BUILD DLLTOOL_FOR_BUILD GCJ_FOR_BUILD GFORTRAN_FOR_BUILD LDFLAGS_FOR_BUILD LD_FOR_BUILD NM_FOR_BUILD RANLIB_FOR_BUILD WINDMC_FOR_BUILD WINDRES_FOR_BUILD config_shell YACC BISON M4 LEX FLEX MAKEINFO EXPECT RUNTEST AR AS DLLTOOL LD LIPO NM RANLIB STRIP WINDRES WINDMC OBJCOPY OBJDUMP CC_FOR_TARGET CXX_FOR_TARGET GCC_FOR_TARGET GCJ_FOR_TARGET GFORTRAN_FOR_TARGET AR_FOR_TARGET AS_FOR_TARGET DLLTOOL_FOR_TARGET LD_FOR_TARGET LIPO_FOR_TARGET NM_FOR_TARGET OBJDUMP_FOR_TARGET RANLIB_FOR_TARGET STRIP_FOR_TARGET WINDRES_FOR_TARGET WINDMC_FOR_TARGET RAW_CXX_FOR_TARGET FLAGS_FOR_TARGET COMPILER_AS_FOR_TARGET COMPILER_LD_FOR_TARGET COMPILER_NM_FOR_TARGET MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT stage1_cflags stage1_checking stage2_werror_flag datarootdir docdir pdfdir htmldir LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os build_noncanonical host_noncanonical target_noncanonical host host_cpu host_vendor host_os target target_cpu target_vendor target_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN LN_S TOPLEVEL_CONFIGURE_ARGUMENTS build_libsubdir build_subdir host_subdir target_subdir CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX GNATBIND ac_ct_GNATBIND GNATMAKE ac_ct_GNATMAKE do_compare gmplibs gmpinc stage1_languages SYSROOT_CFLAGS_FOR_TARGET DEBUG_PREFIX_CFLAGS_FOR_TARGET CFLAGS_FOR_TARGET CXXFLAGS_FOR_TARGET RPATH_ENVVAR tooldir build_tooldir CONFIGURE_GDB_TK GDB_TK INSTALL_GDB_TK build_configargs build_configdirs host_configargs configdirs target_configargs AR_FOR_BUILD AS_FOR_BUILD CPPFLAGS_FOR_BUILD CC_FOR_BUILD CFLAGS_FOR_BUILD CXXFLAGS_FOR_BUILD CXX_FOR_BUILD DLLTOOL_FOR_BUILD GCJ_FOR_BUILD GFORTRAN_FOR_BUILD LDFLAGS_FOR_BUILD LD_FOR_BUILD NM_FOR_BUILD RANLIB_FOR_BUILD WINDMC_FOR_BUILD WINDRES_FOR_BUILD config_shell YACC BISON M4 LEX FLEX MAKEINFO EXPECT RUNTEST AR AS DLLTOOL LD LIPO NM RANLIB STRIP WINDRES WINDMC OBJCOPY OBJDUMP CC_FOR_TARGET CXX_FOR_TARGET GCC_FOR_TARGET GCJ_FOR_TARGET GFORTRAN_FOR_TARGET AR_FOR_TARGET AS_FOR_TARGET DLLTOOL_FOR_TARGET LD_FOR_TARGET LIPO_FOR_TARGET NM_FOR_TARGET OBJDUMP_FOR_TARGET RANLIB_FOR_TARGET STRIP_FOR_TARGET WINDRES_FOR_TARGET WINDMC_FOR_TARGET RAW_CXX_FOR_TARGET FLAGS_FOR_TARGET COMPILER_AS_FOR_TARGET COMPILER_LD_FOR_TARGET COMPILER_NM_FOR_TARGET MAINTAINER_MODE_TRUE MAINTAINER_MODE_FALSE MAINT stage1_cflags stage1_checking stage2_werror_flag datarootdir docdir pdfdir htmldir LIBOBJS LTLIBOBJS'
+ ac_subst_files='serialization_dependencies host_makefile_frag target_makefile_frag alphaieee_frag ospace_frag'
+ 
+ # Initialize some variables set by options.
+@@ -5147,6 +5147,38 @@
+ fi;
+ 
+ 
++# During gcc bootstrap, if we use some random cc for stage1 then CFLAGS
++# might be empty or "-g".  We don't require a C++ compiler, so CXXFLAGS
++# might also be empty (or "-g", if a non-GCC C++ compiler is in the path).
++# We want to ensure that TARGET libraries (which we know are built with
++# gcc) are built with "-O2 -g", so include those options when setting
++# CFLAGS_FOR_TARGET and CXXFLAGS_FOR_TARGET.
++if test "x$CFLAGS_FOR_TARGET" = x; then
++  CFLAGS_FOR_TARGET=$CFLAGS
++  case " $CFLAGS " in
++    *" -O2 "*) ;;
++    *) CFLAGS_FOR_TARGET="-O2 $CFLAGS" ;;
++  esac
++  case " $CFLAGS " in
++    *" -g "* | *" -g3 "*) ;;
++    *) CFLAGS_FOR_TARGET="-g $CFLAGS" ;;
++  esac
++fi
++
++
++if test "x$CXXFLAGS_FOR_TARGET" = x; then
++  CXXFLAGS_FOR_TARGET=$CXXFLAGS
++  case " $CXXFLAGS " in
++    *" -O2 "*) ;;
++    *) CXXFLAGS_FOR_TARGET="-O2 $CXXFLAGS" ;;
++  esac
++  case " $CXXFLAGS " in
++    *" -g "* | *" -g3 "*) ;;
++    *) CXXFLAGS_FOR_TARGET="-g $CXXFLAGS" ;;
++  esac
++fi
++
++
+ # Handle --with-headers=XXX.  If the value is not "yes", the contents of
+ # the named directory are copied to $(tooldir)/sys-include.
+ if test x"${with_headers}" != x && test x"${with_headers}" != xno ; then
+@@ -12827,6 +12859,8 @@
+ s,@stage1_languages@,$stage1_languages,;t t
+ s,@SYSROOT_CFLAGS_FOR_TARGET@,$SYSROOT_CFLAGS_FOR_TARGET,;t t
+ s,@DEBUG_PREFIX_CFLAGS_FOR_TARGET@,$DEBUG_PREFIX_CFLAGS_FOR_TARGET,;t t
++s,@CFLAGS_FOR_TARGET@,$CFLAGS_FOR_TARGET,;t t
++s,@CXXFLAGS_FOR_TARGET@,$CXXFLAGS_FOR_TARGET,;t t
+ s,@RPATH_ENVVAR@,$RPATH_ENVVAR,;t t
+ s,@tooldir@,$tooldir,;t t
+ s,@build_tooldir@,$build_tooldir,;t t
+--- /tmp/Makefile.in	2008-11-18 10:38:27.000000000 +0100
++++ gcc-4.3/gcc/Makefile.in	2008-11-18 10:41:43.000000000 +0100
+@@ -689,7 +689,7 @@
  
  # Native linker and preprocessor flags.  For x-fragment overrides.
+ ifeq ($(host),$(build))
 -BUILD_LDFLAGS=$(LDFLAGS)
 +BUILD_LDFLAGS=@BUILD_LDFLAGS@
- BUILD_CPPFLAGS=$(ALL_CPPFLAGS)
+ else
+ BUILD_LDFLAGS=
+ endif
+--- /tmp/configure.ac	2008-11-18 10:44:09.000000000 +0100
++++ gcc-4.3/gcc/configure.ac	2008-11-18 10:46:45.000000000 +0100
+@@ -1484,6 +1484,7 @@
+ 	esac
+ 	saved_CFLAGS="${CFLAGS}"
+ 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" LDFLAGS="" \
++	LDFLAGS="${LDFLAGS_FOR_BUILD}" \
+ 	${realsrcdir}/configure \
+ 		--enable-languages=${enable_languages-all} \
+ 		--target=$target_alias --host=$build_alias --build=$build_alias
+@@ -1785,6 +1786,7 @@
+ CC_FOR_BUILD='$(CC)'		AC_SUBST(CC_FOR_BUILD)
+ BUILD_CFLAGS='$(ALL_CFLAGS)'	AC_SUBST(BUILD_CFLAGS)
+ BUILD_CPPFLAGS='$(ALL_CPPFLAGS)'   AC_SUBST(BUILD_CPPFLAGS)
++BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
+ STMP_FIXINC=stmp-fixinc		AC_SUBST(STMP_FIXINC)
  
- # Actual name to use when installing a native compiler.
-Index: gcc-4.3.2/gcc/configure
-===================================================================
---- gcc-4.3.2.orig/gcc/configure	2008-08-28 18:05:26.000000000 -0700
-+++ gcc-4.3.2/gcc/configure	2008-08-28 18:19:35.000000000 -0700
+ # Possibly disable fixproto, on a per-target basis.
+--- /tmp/configure	2008-11-18 10:48:48.000000000 +0100
++++ gcc-4.3/gcc/configure	2008-11-18 10:54:03.000000000 +0100
 @@ -458,7 +458,7 @@
  # include <unistd.h>
  #endif"
  
--ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
-+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS BUILD_LDFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical licensedir build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS BUILD_CPPFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os target target_cpu target_vendor target_os target_noncanonical licensedir build_libsubdir build_subdir host_subdir target_subdir GENINSRC CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT NO_MINUS_C_MINUS_O OUTPUT_OPTION CPP EGREP loose_warn cxx_compat_warn strict_warn warn_cflags nocommon_flag TREEBROWSER valgrind_path valgrind_path_defines valgrind_command coverage_flags enable_multilib enable_decimal_float enable_fixed_point enable_shared TARGET_SYSTEM_ROOT TARGET_SYSTEM_ROOT_DEFINE CROSS_SYSTEM_HEADER_DIR onestep PKGVERSION REPORT_BUGS_TO REPORT_BUGS_TEXI datarootdir docdir htmldir SET_MAKE AWK LN_S LN RANLIB ac_ct_RANLIB ranlib_flags INSTALL INSTALL_PROGRAM INSTALL_DATA make_compare_target have_mktemp_command MAKEINFO BUILD_INFO GENERATED_MANPAGES FLEX BISON NM AR COLLECT2_LIBS GNAT_LIBEXC LDEXP_LIB TARGET_GETGROUPS_T LIBICONV LTLIBICONV LIBICONV_DEP manext objext gthread_flags extra_modes_file extra_opt_files USE_NLS LIBINTL LIBINTL_DEP INCINTL XGETTEXT GMSGFMT POSUB CATALOGS DATADIRNAME INSTOBJEXT GENCAT CATOBJEXT host_cc_for_libada CROSS ALL SYSTEM_HEADER_DIR inhibit_libc CC_FOR_BUILD BUILD_CFLAGS BUILD_LDFLAGS BUILD_CPPFLAGS STMP_FIXINC STMP_FIXPROTO collect2 LIBTOOL SED FGREP GREP LD DUMPBIN ac_ct_DUMPBIN ac_ct_AR STRIP ac_ct_STRIP lt_ECHO objdir enable_fast_install gcc_cv_as ORIGINAL_AS_FOR_TARGET gcc_cv_ld ORIGINAL_LD_FOR_TARGET gcc_cv_nm ORIGINAL_NM_FOR_TARGET gcc_cv_objdump libgcc_visibility GGC zlibdir zlibinc MAINT gcc_tooldir dollar slibdir subdirs srcdir all_compilers all_gtfiles all_lang_makefrags all_lang_makefiles all_languages all_selected_languages build_exeext build_install_headers_dir build_xm_file_list build_xm_include_list build_xm_defines build_file_translate check_languages cpp_install_dir xmake_file tmake_file extra_gcc_objs extra_headers_list extra_objs extra_parts extra_passes extra_programs float_h_file gcc_config_arguments gcc_gxx_include_dir host_exeext host_xm_file_list host_xm_include_list host_xm_defines out_host_hook_obj install lang_opt_files lang_specs_files lang_tree_files local_prefix md_file objc_boehm_gc out_file out_object_file thread_file tm_file_list tm_include_list tm_defines tm_p_file_list tm_p_include_list xm_file_list xm_include_list xm_defines c_target_objs cxx_target_objs target_cpu_default GMPLIBS GMPINC LIBOBJS LTLIBOBJS'
  ac_subst_files='language_hooks'
  
  # Initialize some variables set by options.
-@@ -12972,6 +12972,7 @@
+@@ -13046,7 +13046,7 @@
+ 	*) realsrcdir=../${srcdir};;
  	esac
  	saved_CFLAGS="${CFLAGS}"
- 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
-+	LDFLAGS="${LDFLAGS_FOR_BUILD}" \
- 	CONFIG_SITE= ${realsrcdir}/configure --cache-file=./other.cache \
+-	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" LDFLAGS="" \
++	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" LDFLAGS="${LDFLAGS_FOR_BUILD}" \
+ 	${realsrcdir}/configure \
  		--enable-languages=${enable_languages-all} \
  		--target=$target_alias --host=$build_alias --build=$build_alias
-@@ -13469,6 +13470,7 @@
+@@ -13550,6 +13550,7 @@
  # These are the normal (build=host) settings:
  CC_FOR_BUILD='$(CC)'
  BUILD_CFLAGS='$(ALL_CFLAGS)'
 +BUILD_LDFLAGS='$(LDFLAGS)'
+ BUILD_CPPFLAGS='$(ALL_CPPFLAGS)'
  STMP_FIXINC=stmp-fixinc
  
- # Possibly disable fixproto, on a per-target basis.
-@@ -13486,6 +13488,7 @@
- if test x$build != x$host || test "x$coverage_flags" != x
- then
-     BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
-+    BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
- 
-     if test "x$TARGET_SYSTEM_ROOT" = x; then
- 	if test "x$STMP_FIXPROTO" != x; then
-@@ -14064,13 +14067,13 @@
- else
-   lt_cv_nm_interface="BSD nm"
-   echo "int some_variable = 0;" > conftest.$ac_ext
--  (eval echo "\"\$as_me:14067: $ac_compile\"" >&5)
-+  (eval echo "\"\$as_me:14070: $ac_compile\"" >&5)
-   (eval "$ac_compile" 2>conftest.err)
-   cat conftest.err >&5
--  (eval echo "\"\$as_me:14070: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
-+  (eval echo "\"\$as_me:14073: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
-   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
-   cat conftest.err >&5
--  (eval echo "\"\$as_me:14073: output\"" >&5)
-+  (eval echo "\"\$as_me:14076: output\"" >&5)
-   cat conftest.out >&5
-   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
-     lt_cv_nm_interface="MS dumpbin"
-@@ -15125,7 +15128,7 @@
-   ;;
- *-*-irix6*)
-   # Find out which ABI we are using.
--  echo '#line 15128 "configure"' > conftest.$ac_ext
-+  echo '#line 15131 "configure"' > conftest.$ac_ext
-   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-   (eval $ac_compile) 2>&5
-   ac_status=$?
-@@ -15745,11 +15748,11 @@
-    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
-    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
-    -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:15748: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:15751: $lt_compile\"" >&5)
-    (eval "$lt_compile" 2>conftest.err)
-    ac_status=$?
-    cat conftest.err >&5
--   echo "$as_me:15752: \$? = $ac_status" >&5
-+   echo "$as_me:15755: \$? = $ac_status" >&5
-    if (exit $ac_status) && test -s "$ac_outfile"; then
-      # The compiler can only warn and ignore the option if not recognized
-      # So say no if there are warnings other than the usual output.
-@@ -16067,11 +16070,11 @@
-    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
-    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
-    -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:16070: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:16073: $lt_compile\"" >&5)
-    (eval "$lt_compile" 2>conftest.err)
-    ac_status=$?
-    cat conftest.err >&5
--   echo "$as_me:16074: \$? = $ac_status" >&5
-+   echo "$as_me:16077: \$? = $ac_status" >&5
-    if (exit $ac_status) && test -s "$ac_outfile"; then
-      # The compiler can only warn and ignore the option if not recognized
-      # So say no if there are warnings other than the usual output.
-@@ -16172,11 +16175,11 @@
-    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
-    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
-    -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:16175: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:16178: $lt_compile\"" >&5)
-    (eval "$lt_compile" 2>out/conftest.err)
-    ac_status=$?
-    cat out/conftest.err >&5
--   echo "$as_me:16179: \$? = $ac_status" >&5
-+   echo "$as_me:16182: \$? = $ac_status" >&5
-    if (exit $ac_status) && test -s out/conftest2.$ac_objext
-    then
-      # The compiler can only warn and ignore the option if not recognized
-@@ -16227,11 +16230,11 @@
-    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
-    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
-    -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:16230: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:16233: $lt_compile\"" >&5)
-    (eval "$lt_compile" 2>out/conftest.err)
-    ac_status=$?
-    cat out/conftest.err >&5
--   echo "$as_me:16234: \$? = $ac_status" >&5
-+   echo "$as_me:16237: \$? = $ac_status" >&5
-    if (exit $ac_status) && test -s out/conftest2.$ac_objext
-    then
-      # The compiler can only warn and ignore the option if not recognized
-@@ -19024,7 +19027,7 @@
-   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
-   lt_status=$lt_dlunknown
-   cat > conftest.$ac_ext <<_LT_EOF
--#line 19027 "configure"
-+#line 19030 "configure"
- #include "confdefs.h"
- 
- #if HAVE_DLFCN_H
-@@ -19124,7 +19127,7 @@
-   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
-   lt_status=$lt_dlunknown
-   cat > conftest.$ac_ext <<_LT_EOF
--#line 19127 "configure"
-+#line 19130 "configure"
- #include "confdefs.h"
- 
- #if HAVE_DLFCN_H
-@@ -23934,6 +23937,7 @@
- s,@inhibit_libc@,$inhibit_libc,;t t
+@@ -24035,6 +24036,7 @@
  s,@CC_FOR_BUILD@,$CC_FOR_BUILD,;t t
  s,@BUILD_CFLAGS@,$BUILD_CFLAGS,;t t
+ s,@BUILD_CPPFLAGS@,$BUILD_CPPFLAGS,;t t
 +s,@BUILD_LDFLAGS@,$BUILD_LDFLAGS,;t t
  s,@STMP_FIXINC@,$STMP_FIXINC,;t t
  s,@STMP_FIXPROTO@,$STMP_FIXPROTO,;t t
  s,@collect2@,$collect2,;t t
-Index: gcc-4.3.2/gcc/configure.ac
-===================================================================
---- gcc-4.3.2.orig/gcc/configure.ac	2008-08-28 18:05:26.000000000 -0700
-+++ gcc-4.3.2/gcc/configure.ac	2008-08-28 18:18:37.000000000 -0700
-@@ -1480,6 +1480,7 @@
- 	esac
- 	saved_CFLAGS="${CFLAGS}"
- 	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
-+	LDFLAGS="${LDFLAGS_FOR_BUILD}" \
- 	CONFIG_SITE= ${realsrcdir}/configure --cache-file=./other.cache \
- 		--enable-languages=${enable_languages-all} \
- 		--target=$target_alias --host=$build_alias --build=$build_alias
-@@ -1776,6 +1777,7 @@
- # These are the normal (build=host) settings:
- CC_FOR_BUILD='$(CC)'		AC_SUBST(CC_FOR_BUILD)
- BUILD_CFLAGS='$(ALL_CFLAGS)'	AC_SUBST(BUILD_CFLAGS)
-+BUILD_LDFLAGS='$(LDFLAGS)'	AC_SUBST(BUILD_LDFLAGS)
- STMP_FIXINC=stmp-fixinc		AC_SUBST(STMP_FIXINC)
- 
- # Possibly disable fixproto, on a per-target basis.
-@@ -1793,6 +1795,7 @@
- if test x$build != x$host || test "x$coverage_flags" != x
- then
-     BUILD_CFLAGS='$(INTERNAL_CFLAGS) $(T_CFLAGS) $(CFLAGS_FOR_BUILD)'
-+    BUILD_LDFLAGS='$(LDFLAGS_FOR_BUILD)'
- 
-     if test "x$TARGET_SYSTEM_ROOT" = x; then
- 	if test "x$STMP_FIXPROTO" != x; then
