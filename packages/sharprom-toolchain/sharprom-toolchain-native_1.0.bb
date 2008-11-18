@@ -6,6 +6,7 @@ DEPENDS = "linux-libc-headers cross-linkage staging-linkage"
 PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-gcc-2.95 \
   virtual/arm-linux-libc-for-gcc \
+  virtual/arm-linux-libc-initial \
   virtual/arm-linux-binutils \
   virtual/libc \
   virtual/libintl \
@@ -14,7 +15,7 @@ PROVIDES_sharprom-compatible = "\
   virtual/arm-linux-libc-for-gcc \
   virtual/arm-linux-gcc-intermediate \
   virtual/arm-linux-gcc-initial "
-PR = "r2"
+PR = "r3"
 
 RPROVIDES = "glibc-utils libsegfault glibc-thread-db libgcc-dev libstdc++-dev libstdc++"
 PACKAGES_DYNAMIC = "glibc-gconv-*"
