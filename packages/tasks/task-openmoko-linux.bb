@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Core system for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r71"
+PR = "r72"
 
 inherit task
 
@@ -11,14 +11,9 @@ inherit task
 DESCRIPTION_task-openmoko-linux = "Openmoko: Linux Core Services"
 RDEPENDS_task-openmoko-linux = "\
   task-base \
-  netbase \
-  sysfsutils \
-  modutils-initscripts \
-  module-init-tools-depmod \
+  udev-static-devices \
   rsync \
   screen \
-  psplash \
   fbset \
   fbset-modes \
-#  update-alternatives \
 "
