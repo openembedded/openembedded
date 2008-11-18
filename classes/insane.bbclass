@@ -219,10 +219,13 @@ def package_qa_handle_error(error_class, error_msg, name, path, d):
     package_qa_write_error(error_class, name, path, d)
     return not package_qa_make_fatal_error(error_class, name, path, d)
 
-def package_qa_check_rpath(file,name,d):
+def package_qa_check_rpath(file,name,d, elf):
     """
     Check for dangerous RPATHs
     """
+    if not elf:
+        return True
+
     import bb, os
     sane = True
     scanelf = os.path.join(bb.data.getVar('STAGING_BINDIR_NATIVE',d,True),'scanelf')
@@ -243,7 +246,7 @@ def package_qa_check_rpath(file,name,d):
 
     return sane
 
-def package_qa_check_devdbg(path, name,d):
+def package_qa_check_devdbg(path, name,d, elf):
     """
     Check for debug remains inside the binary or
     non dev packages containing
@@ -266,17 +269,20 @@ def package_qa_check_devdbg(path, name,d):
 
     return sane
 
-def package_qa_check_perm(path,name,d):
+def package_qa_check_perm(path,name,d, elf):
     """
     Check the permission of files
     """
     sane = True
     return sane
 
-def package_qa_check_arch(path,name,d):
+def package_qa_check_arch(path,name,d, elf):
     """
     Check if archs are compatible
     """
+    if not elf:
+        return True
+
     import bb, os
     sane = True
     target_os   = bb.data.getVar('TARGET_OS',   d, True)
@@ -294,11 +300,6 @@ def package_qa_check_arch(path,name,d):
     #if this will throw an exception, then fix the dict above
     (machine, osabi, abiversion, littleendian, bits32) \
         = package_qa_get_machine_dict()[target_os][target_arch]
-    elf = package_qa_get_elf(path, bits32)
-    try:
-        elf.open()
-    except:
-        return True
 
     # Check the architecture and endiannes of the binary
     if not machine == elf.machine():
@@ -312,7 +313,7 @@ def package_qa_check_arch(path,name,d):
 
     return sane
 
-def package_qa_check_desktop(path, name, d):
+def package_qa_check_desktop(path, name, d, elf):
     """
     Run all desktop files through desktop-file-validate.
     """
@@ -326,11 +327,14 @@ def package_qa_check_desktop(path, name, d):
 
     return sane
 
-def package_qa_hash_style(path, name, d):
+def package_qa_hash_style(path, name, d, elf):
     """
     Check if the binary has the right hash style...
     """
     import bb, os
+
+    if not elf:
+        return True
 
     if os.path.islink(path):
         return True
@@ -408,14 +412,25 @@ def package_qa_check_staged(path,d):
 
 # Walk over all files in a directory and call func
 def package_qa_walk(path, funcs, package,d):
-    import os
+    import bb, os
     sane = True
+
+    #if this will throw an exception, then fix the dict above
+    target_os   = bb.data.getVar('TARGET_OS',   d, True)
+    target_arch = bb.data.getVar('TARGET_ARCH', d, True)
+    (machine, osabi, abiversion, littleendian, bits32) \
+        = package_qa_get_machine_dict()[target_os][target_arch]
 
     for root, dirs, files in os.walk(path):
         for file in files:
             path = os.path.join(root,file)
+            elf = package_qa_get_elf(path, bits32)
+            try:
+                elf.open()
+            except:
+                elf = None
             for func in funcs:
-                if not func(path, package,d):
+                if not func(path, package,d, elf):
                     sane = False
 
     return sane
