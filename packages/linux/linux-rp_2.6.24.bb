@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r15"
+PR = "r16"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"
@@ -181,6 +181,8 @@ SRC_URI_append_tosa = "\
            file://tosa/0043-Use-clocklib-for-sa1100-sub-arch.patch;patch=1 \
            file://tosa/0056-Support-resetting-by-asserting-GPIO-pin.patch;patch=1 \
            file://tosa/0057-Clean-up-tosa-resetting.patch;patch=1 \
+           file://tosa/0001-pxa2xx-ac97-switch-AC-unit-to-correct-state-before.patch;patch=1 \
+	   file://tosa/tosa-bl-fixup.diff;patch=1 \
            "
 #           file://tosa/0017-Convert-pxa2xx-UDC-to-use-debugfs.patch;patch=1 \
 #           file://tosa/0018-Fix-the-pxa2xx_udc-to-balance-calls-to-clk_enable-cl.patch;patch=1 \
