@@ -159,7 +159,8 @@ do
 		      maki \
 		      mc \
 		      meta-nas-server \
-		      midori \
+		      meta-toolchain \
+              midori \
 		      mileage \
 		      mono \
 		      mousepad \
