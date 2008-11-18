@@ -193,7 +193,8 @@ do
               pipeman \
 		      pkgconfig \
 		      pocketcellar \
-		      prboom \
+		      povray \
+              prboom \
 		      pushover \
               python \
 		      python-pybluez \
