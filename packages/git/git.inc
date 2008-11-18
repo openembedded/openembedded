@@ -4,7 +4,6 @@ LICENSE = "GPL"
 
 SRC_URI = "http://www.kernel.org/pub/software/scm/git/git-${PV}.tar.bz2 \
            file://autotools.patch;patch=1 \
-           file://git-gui-install-mode-arg-spaces.patch;patch=1 \
 	   "
 S = "${WORKDIR}/git-${PV}"
 
