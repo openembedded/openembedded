@@ -1,0 +1,56 @@
+From 688df15bb534519e0698cc8e4a4d9234afd32105 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 7 Nov 2008 15:50:39 +0300
+Subject: [PATCH] pxa2xx-ac97: switch AC unit to correct state before probing
+
+If AC97 unit is in partially enabled state, early request_irq can trigger
+IRQ storm or even full hang up. Workaround this by forcibly switching ACLINK off
+at the start of the probe.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ sound/soc/pxa/pxa2xx-ac97.c |   30 +++++++++++++++++-------------
+ 1 files changed, 17 insertions(+), 13 deletions(-)
+
+Index: linux-2.6.24/sound/soc/pxa/pxa2xx-ac97.c
+===================================================================
+--- linux-2.6.24.orig/sound/soc/pxa/pxa2xx-ac97.c	2008-01-25 01:58:37.000000000 +0300
++++ linux-2.6.24/sound/soc/pxa/pxa2xx-ac97.c	2008-11-15 20:02:45.396976363 +0300
+@@ -284,10 +284,6 @@ static int pxa2xx_ac97_probe(struct plat
+ {
+	int ret;
+
+-	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
+-	if (ret < 0)
+-		goto err;
+-
+	pxa_gpio_mode(GPIO31_SYNC_AC97_MD);
+	pxa_gpio_mode(GPIO30_SDATA_OUT_AC97_MD);
+	pxa_gpio_mode(GPIO28_BITCLK_AC97_MD);
+@@ -296,15 +292,23 @@ static int pxa2xx_ac97_probe(struct plat
+	/* Use GPIO 113 as AC97 Reset on Bulverde */
+	pxa_gpio_mode(113 | GPIO_ALT_FN_2_OUT);
+ #endif
++	GCR = GCR_ACLINK_OFF;
++
+	pxa_set_cken(CKEN_AC97, 1);
++
++	ret = request_irq(IRQ_AC97, pxa2xx_ac97_irq, IRQF_DISABLED, "AC97", NULL);
++	if (ret < 0)
++		goto err;
++
++
+	return 0;
+
+- err:
+-	if (CKEN & (1 << CKEN_AC97)) {
++err:
++/*	if (CKEN & (1 << CKEN_AC97)) {*/
+		GCR |= GCR_ACLINK_OFF;
+		free_irq(IRQ_AC97, NULL);
+		pxa_set_cken(CKEN_AC97, 0);
+-	}
++/*	}*/
+	return ret;
+ }
+

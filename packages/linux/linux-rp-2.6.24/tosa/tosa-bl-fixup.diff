@@ -1,0 +1,103 @@
+Index: linux-2.6.24/drivers/video/backlight/tosa_bl.c
+===================================================================
+--- linux-2.6.24.orig/drivers/video/backlight/tosa_bl.c	2008-11-15 22:59:51.592985003 +0300
++++ linux-2.6.24/drivers/video/backlight/tosa_bl.c	2008-11-18 04:08:13.021416618 +0300
+@@ -76,6 +76,8 @@ static void pxa_nssp_output(struct tosa_
+
+ static void tosa_set_backlight(struct tosa_bl_data *data, int brightness)
+ {
++	pr_debug("tosa_set_backlight\n");
++
+	/* SetBacklightDuty */
+	i2c_smbus_write_byte_data(&data->client, DAC_CH2, (unsigned char)brightness);
+
+@@ -91,7 +93,7 @@ static void tosa_set_backlight(struct to
+
+ static void tosa_lcd_tg_init(struct tosa_bl_data *data)
+ {
+-	dev_dbg(&data->bl_dev->dev, "tosa_lcd_init\n");
++	pr_debug("tosa_lcd_init\n");
+
+	/* L3V On */
+	set_scoop_gpio( &tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC6393XB_L3V_ON);
+@@ -116,7 +118,7 @@ static void tosa_lcd_tg_on(struct tosa_b
+
+	tosa_lcd_tg_init(data);
+
+-	dev_dbg(&data->bl_dev->dev, "tosa_lcd_on: %04x (%d)\n", value, mode->yres);
++	pr_debug("tosa_lcd_on: %04x (%d)\n", value, mode->yres);
+	pxa_nssp_output(data, TG_PNLCTL, value);
+
+	/* TG LCD pannel power up */
+@@ -129,12 +131,15 @@ static void tosa_lcd_tg_on(struct tosa_b
+
+	/* set common voltage */
+	i2c_smbus_write_byte_data(&data->client, DAC_CH1, data->comadj);
++
++	tosa_set_backlight(data, data->bl_dev->props.brightness);
++
+ }
+
+ static void tosa_lcd_tg_off(struct tosa_bl_data *data)
+ {
+	tosa_set_backlight(data, 0);
+-	dev_dbg(&data->bl_dev->dev, "tosa_lcd_off\n");
++	pr_debug("tosa_lcd_off\n");
+	/* TG LCD VHSA off */
+	pxa_nssp_output(data, TG_PINICTL,0x4);
+	mdelay(50);
+@@ -158,8 +163,6 @@ static int tosa_bl_update_status(struct
+	struct tosa_bl_data *data = dev_get_drvdata(&dev->dev);
+	int new_power = max(props->power, props->fb_blank);
+
+-	tosa_set_backlight(data, props->brightness);
+-
+	if (new_power)
+		tosa_lcd_tg_off(data);
+	else
+@@ -223,22 +226,26 @@ static int tosa_bl_detect_client(struct
+
+	err = gpio_request(TOSA_TC6393XB_BL_C20MA, "backlight");
+	if (err) {
+-		dev_dbg(&data->bl_dev->dev, "Unable to request gpio!\n");
++		printk(KERN_ERR "tosa-bl; Unable to request gpio!\n");
+		goto err_gpio_bl;
+	}
+
+	err = gpio_request(TOSA_TC6393XB_TG_ON, "tg");
+	if (err) {
+-		dev_dbg(&data->bl_dev->dev, "Unable to request gpio!\n");
++		printk(KERN_ERR "tosa-bl: Unable to request gpio!\n");
+		goto err_gpio_tg;
+	}
+
+	err = ssp_init(&data->nssp_dev,2,0);
+	if (err) {
+-		dev_err(&data->bl_dev->dev, "Unable to register NSSP handler!\n");
++		printk(KERN_ERR "tosa-bl: Unable to register NSSP handler!\n");
+		goto err_ssp_init;
+	}
+
++	pxa_gpio_mode(GPIO83_NSSP_TX);
++	pxa_gpio_mode(GPIO81_NSSP_CLK_OUT);
++	pxa_gpio_mode(GPIO82_NSSP_FRM_OUT);
++
+	/* Tell the i2c layer a new client has arrived */
+	err = i2c_attach_client(client);
+	if (err)
+@@ -269,7 +276,6 @@ static int tosa_bl_detect_client(struct
+ err_fb_register:
+	backlight_device_unregister(data->bl_dev);
+ err_bl_register:
+-	tosa_set_backlight(data, 0);
+	tosa_lcd_tg_off(data);
+
+	err = i2c_detach_client(client);
+@@ -296,7 +302,6 @@ static int tosa_bl_detach_client(struct
+
+	backlight_device_unregister(data->bl_dev);
+
+-	tosa_set_backlight(data, 0);
+	tosa_lcd_tg_off(data);
+
+	/* Try to detach the client from i2c space */
