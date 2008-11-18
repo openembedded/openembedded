@@ -4,7 +4,7 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
-PR = "r0"
+PR = "r1"
 
 DEPENDS = "libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
 
@@ -18,11 +18,16 @@ S = "${WORKDIR}/opencv"
 
 inherit distutils-base autotools pkgconfig
 
-EXTRA_OECONF = "--disable-debug  --with-gtk --enable-apps --with-python az_python_cspec=${STAGING_INCDIR}/${PYTHON_DIR}"
+EXTRA_OECONF = " \
+		--disable-debug \
+		--with-gtk \
+		--enable-apps \
+		--with-python az_python_cspec=${STAGING_INCDIR}/${PYTHON_DIR} \
+		"
 
 export BUILD_SYS
 export HOST_SYS
-export PYTHON_CSPEC=${STAGING_INCDIR}/${PYTHON_DIR}
+export PYTHON_CSPEC="-I${STAGING_INCDIR}/${PYTHON_DIR}"
 
 do_configure_prepend() {
 	cp ${WORKDIR}/acinclude.m4 ${S}
