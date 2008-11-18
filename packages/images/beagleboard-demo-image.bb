@@ -41,6 +41,7 @@ IMAGE_INSTALL = "\
     stalonetray \
 	synergy \
 	x11vnc \
+	angstrom-gnome-icon-theme-enable \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
