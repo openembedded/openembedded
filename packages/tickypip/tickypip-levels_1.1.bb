@@ -8,7 +8,7 @@ RDEPENDS = "tickypip"
 PACKAGE_ARCH = "all"
 PR = "r1"
 
-SRC_URI = "http://ewi546.ewi.utwente.nl/mirror/hrw-oe-sources/tickypip-levels_${PV}.tar.bz2"
+SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/tickypip-levels_${PV}.tar.bz2"
 
 S = "${WORKDIR}/"
 

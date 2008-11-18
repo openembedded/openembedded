@@ -5,9 +5,10 @@ LICENSE = "GPL"
 AUTHOR = "Christian Hammond"
 HOMEPAGE = "http://www.chipx86.com/projects/tickypip/"
 RRECOMMENDS = "tickypip-levels"
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "http://www.chipx86.com/packages/ipkg/tickypip-0.1.2.tar.gz \
+SRC_URI = "http://www.openzaurus.org/download/3.5.4/sources/tickypip-0.1.2.tar.gz \
+           file://path_fix.patch;patch=1 \
            file://tickypip.desktop \
            file://tickypip.png"
 
@@ -16,7 +17,7 @@ APPTYPE = "binary"
 APPDESKTOP = "${WORKDIR}"
 
 QMAKE_PROFILES = "tickypip.pro"
-EXTRA_QMAKEVARS_POST += "DEFINES-=LOCAL_COMPILE"
+EXTRA_QMAKEVARS_POST += "DEFINES-=LOCAL_COMPILE DEFINES+=DATA_BASEDIR='\"${palmtopdir}\"'"
 
 do_install () {
 	install -d ${D}${palmtopdir}/pics/${APPNAME}/

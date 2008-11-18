@@ -1,0 +1,11 @@
+--- tickypip/src/base.h	2008-11-18 21:49:58.000000000 +0000
++++ tickypip/src/base.h	2008-11-18 21:54:00.000000000 +0000
+@@ -7,7 +7,7 @@
+ #ifdef LOCAL_COMPILE
+ # define DATA_PREFIX "./"
+ #else
+-# define DATA_PREFIX "/opt/QtPalmtop/share/tickypip/"
++# define DATA_PREFIX DATA_BASEDIR "/share/tickypip/"
+ #endif
+ 
+ #include "BorderLayout.h"
