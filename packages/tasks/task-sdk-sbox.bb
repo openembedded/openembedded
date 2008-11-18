@@ -1,5 +1,5 @@
-DESCRIPTION = "SDK task for Scratchbox rootstraps incuding GPE/GTK bits"
-PR = "r6"
+DESCRIPTION = "SDK task for Scratchbox rootstraps"
+PR = "r7"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -8,6 +8,6 @@ RDEPENDS = "\
     gdb \
     sbrsh \
     fakeroot \
-    ipkg \
-    ipkg-utils \
+    opkg-nogpg \
+    opkg-utils \
     "
