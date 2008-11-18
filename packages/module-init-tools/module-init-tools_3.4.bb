@@ -4,6 +4,8 @@ the same function that the modutils package serves for Linux 2.4."
 LICENSE = "GPL"
 SECTION = "base"
 
+PR = "r1"
+
 PACKAGES =+ "module-init-tools-insmod-static module-init-tools-depmod"
 RDEPENDS_${PN} += "module-init-tools-depmod"
 
@@ -21,6 +23,10 @@ bindir = "/bin"
 sbindir = "/sbin"
 
 inherit autotools
+
+do_configure_prepend() {
+	sed -i -e /MAN5\ =/d -e /MAN8\ =/d Makefile.am 
+}
 
 do_install() {
 	autotools_do_install
