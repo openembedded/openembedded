@@ -170,7 +170,8 @@ do
 		      mtd-utils \
 		      mutt \
               mythtv \
-		      navit \
+		      nautilus \
+              navit \
 		      netsurf \
 		      nmap \
 		      nmm \
