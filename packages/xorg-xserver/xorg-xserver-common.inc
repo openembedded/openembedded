@@ -26,6 +26,9 @@ inherit autotools pkgconfig
 EXTRA_OECONF += " --enable-xcalibrate \
                   --enable-kdrive \
                   --enable-xephyr \
+                  --disable-xfbdev \
+                  --disable-xnest \
+                  --disable-kdrive-vesa \
                   --with-default-font-path="/usr/share/fonts/X11/misc" \
                   ac_cv_file__usr_share_sgml_X11_defs_ent=no"
 
