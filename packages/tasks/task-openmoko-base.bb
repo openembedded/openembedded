@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Base Task for the Openmoko Linux Distribution"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r73"
+PR = "r74"
 
 inherit task
 
@@ -17,7 +17,7 @@ RDEPENDS_task-openmoko-base = "\
 #  matchbox-keyboard-applet \
   matchbox-stroke \
   multitap-pad \
-  openmoko-terminal2 \
+  vala-terminal \
 #  openmoko-keyboard \
   openmoko-panel-battery \
   openmoko-panel-clock \
