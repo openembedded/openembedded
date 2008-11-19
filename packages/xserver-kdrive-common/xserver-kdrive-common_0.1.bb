@@ -1,8 +1,7 @@
 DESCRIPTION = "Common X11 scripts"
 LICENSE = "GPL"
 SECTION = "x11"
-RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
-PR = "r30"
+PR = "r31"
 
 SRC_URI = "\
   file://Xdefaults \
@@ -14,11 +13,7 @@ SRC_URI = "\
   file://60xXDefaults \
   file://90xXWindowManager \
   "
-
-SRC_URI_append_openmoko = "\
-  file://xsplash-vga.ppm \
-  file://xsplash-qvga.ppm \
-"
+S = "${WORKDIR}"
 
 etcFiles = "\
   Xdefaults \
@@ -32,8 +27,6 @@ sessionFiles = "\
   90xXWindowManager \
   "
 
-S = "${WORKDIR}"
-
 do_install() {
     install -d ${D}/${sysconfdir}/X11/Xsession.d
     for i in ${etcFiles}; do
@@ -42,14 +35,9 @@ do_install() {
     for i in ${sessionFiles}; do
         install -m 0755 ${WORKDIR}/$i ${D}/${sysconfdir}/X11/Xsession.d/
     done
-
-    # branding-foo. yes, /usr/share/pixmaps is hardcoded here, since it's
-    # also hardcoded in the Xserver script...
-    if [ "x${DISTRO}" = "xopenmoko" ]; then
-        install -d ${D}/usr/share/pixmaps
-        install -m 0755 ${WORKDIR}/*.ppm ${D}/usr/share/pixmaps
-	fi
 }
 
 PACKAGE_ARCH = "all"
-
+RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
+# openmoko uses a splash image for kdrive
+RRECOMMENDS_${PN}_openmoko = "xserver-kdrive-splash"
