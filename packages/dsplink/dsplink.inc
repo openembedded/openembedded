@@ -47,6 +47,21 @@ do_compile () {
 	make -e -f ${WORKDIR}/Makefile.dsplink
 }
 
+dsplink-kbuild-compile() {	
+	mkdir -p ${S}/dsplink-kbuild-test	
+	cp ${WORKDIR}/Makefile-dsplink-kbuild  ${S}/dsplink-kbuild-test/Makefile
+    cd ${S}/dsplink-kbuild-test/
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+    oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+           KDIR=${STAGING_KERNEL_DIR}	\
+           KERNEL_VERSION=${KERNEL_VERSION}    \
+           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+           AR="${KERNEL_AR}" \
+           V=1        ${MAKE_TARGETS}
+
+}
+
 do_install () {
 	install -d ${D}/${bindir}
 #	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
