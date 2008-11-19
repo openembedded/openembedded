@@ -5,9 +5,10 @@ LICENSE = "GPL"
 APPTYPE = "binary"
 APPNAME = "cumulus"
 APPDESKTOP = "${S}"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_downloads/${PV}/cumulus-${PV}.src.tar.bz2"
+SRC_URI = "http://www.kflog.org/fileadmin/user_upload/cumulus_downloads/${PV}/cumulus-${PV}.src.tar.bz2 \
+	file://open_max.patch;patch=1"
 S = "${WORKDIR}/cumulus_${PV}/cumulus"
 
 inherit opie
@@ -29,7 +30,8 @@ do_compile() {
 do_install() {
         install -d ${D}${palmtopdir}/pics/mapicons \
                    ${D}${palmtopdir}/pics/mapicons/small \
-                   ${D}${palmtopdir}/pics/mapicons/windarrows
+                   ${D}${palmtopdir}/pics/mapicons/windarrows \
+                   ${D}${palmtopdir}/bin
         install -m 0644 ../cumulus.png ${D}${palmtopdir}/pics/cumulus.png
         install -m 0644 map-icons/*.png ${D}${palmtopdir}/pics/mapicons
         install -m 0644 map-icons/*.xpm ${D}${palmtopdir}/pics/mapicons

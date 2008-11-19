@@ -1,0 +1,11 @@
+--- cumulus/gpscon.cpp.old	2008-11-18 23:39:12.000000000 +0000
++++ cumulus/gpscon.cpp	2008-11-18 23:43:32.000000000 +0000
+@@ -416,7 +416,7 @@
+       
+       if( maxOpenFds == -1 ) // call failed
+ 	{
+-	  maxOpenFds = OPEN_MAX; // normal default from limits.h
++	  maxOpenFds = sysconf(_SC_OPEN_MAX);
+ 	}
+       else
+ 	{
