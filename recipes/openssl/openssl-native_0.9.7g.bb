@@ -14,3 +14,4 @@ do_install() {
 	:
 }
 
+PACKAGES = ""
