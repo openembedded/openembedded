@@ -11,12 +11,10 @@ SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRC_URI_beagleboard = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;protocol=git" 
 SRCREV_beagleboard = "1e329ec630b31803ee191d2ee335214662b5bfea"
 PV_beagleboard = "2008.10+${PR}+gitr${SRCREV}"
-UBOOT_MACHINE_beagleboard = "omap3_beagle_config"
 
 SRC_URI_omap3evm = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;protocol=git" 
 SRCREV_omap3evm = "1e329ec630b31803ee191d2ee335214662b5bfea"
 PV_omap3evm = "2008.10+${PR}+gitr${SRCREV}"
-UBOOT_MACHINE_omap3evm = "omap3_evm_config"
 
 SRC_URI_neuros-osd2 = "git://git.neurostechnology.com/git/u-boot;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "df6de5f4ff79dc43ba2a79a3afa975d22ec273b5"
