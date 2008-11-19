@@ -39,5 +39,3 @@ do_install() {
 
 PACKAGE_ARCH = "all"
 RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
-# openmoko uses a splash image for kdrive
-RRECOMMENDS_${PN}_openmoko = "xserver-kdrive-splash"

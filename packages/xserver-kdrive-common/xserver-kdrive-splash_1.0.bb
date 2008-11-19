@@ -6,6 +6,7 @@ PR = "r0"
 SRC_URI = "\
   file://xsplash-vga.ppm \
   file://xsplash-qvga.ppm \
+  file://xsplash-qvga-square.ppm \
 "
 S = "${WORKDIR}"
 
