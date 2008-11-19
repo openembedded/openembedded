@@ -13,7 +13,7 @@ do_stage() {
     oe_libinstall -C lib/.libs -so -a libgnutls ${STAGING_LIBDIR}
     oe_libinstall -C libextra/.libs -so -a libgnutls-extra ${STAGING_LIBDIR}
     oe_libinstall -C libextra/.libs -so -a libgnutls-openssl ${STAGING_LIBDIR}
-    autotools_stage_all
+    autotools_stage_includes
 
     install -d ${STAGING_DATADIR}/aclocal
     cp ${S}/lib/libgnutls.m4 ${STAGING_DATADIR}/aclocal/
