@@ -72,7 +72,16 @@ do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="altboot-console-image"
 	do_build
-done  
+done 
+
+# build kexecboot kernels for supported machines
+for machine in poodle collie
+do
+	BUILD_MACHINE=$machine
+	BUILD_TARGETS="linux-kexecboot"
+	do_build
+done 
+
 
 # Make uclibc initramfs-bootmenu-image for ipaqs, this should move to more generic klibc stuff, but till then:
 DO_UCLIBC=1
