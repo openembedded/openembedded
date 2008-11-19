@@ -1,6 +1,6 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
-DEPENDS = "virtual/kernel perl-native"
+DEPENDS = "virtual/kernel dsplink-module perl-native"
 RDEPENDS_${PN}-module = "update-modules"
 RRECOMMENDS_${PN} = "${PN}-module"
 
@@ -48,9 +48,6 @@ do_compile () {
 }
 
 do_install () {
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-	cp ${S}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/
-
 	install -d ${D}/${bindir}
 #	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagegpp        ${D}/${bindir}

@@ -19,6 +19,7 @@ PV = "221"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://Makefile.dsplink \
+           file://Makefile-dsplink-kbuild \
 "
 
 S = "${WORKDIR}/codec_engine_2_21"

@@ -11,6 +11,7 @@ PV = "160"
 
 SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_60.tar.gz \
 		file://Makefile.dsplink \
+		file://Makefile-dsplink-kbuild \
 "
 
 S = "${WORKDIR}/dsplink_1_60/dsplink"
