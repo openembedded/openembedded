@@ -1,7 +1,7 @@
 require gst-plugins.inc
 DEPENDS += "gst-plugins-base libsidplay"
 PROVIDES += "gst-plugin-sid"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-${PV}.tar.bz2 \
@@ -15,6 +15,3 @@ python() {
 	if enterprise != "1":
 		raise bb.parse.SkipPackage("gst-plugins-ugly-sid will only build if ENTERPRISE_DISTRO == 1")
 }
-
-# FIXME for some reason gst-plugin-sid does not pick up the ldso dependency to libsidplay
-RDEPENDS_gst-plugin-sid += "libsidplay"
