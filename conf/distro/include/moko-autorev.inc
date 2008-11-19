@@ -67,3 +67,5 @@ SRCREV_pn-u-boot-openmoko ?= "${AUTOREV}"
 SRCREV_pn-u-boot-openmoko-devel ?= "${AUTOREV}"
 SRCREV_pn-usbpath ?= "${AUTOREV}"
 SRCREV_pn-usbpath-native ?= "${AUTOREV}"
+SRCREV_pn-wmiconfig ?= "${AUTOREV}"
+
