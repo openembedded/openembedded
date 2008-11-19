@@ -5,7 +5,6 @@
 # Don't edit this file unless you *really* know what you are doing!
 
 TARGET_ARCH = "arm"
-PACKAGE_EXTRA_ARCHS = "armv4 armv4t armv5e armv5te "
 
 #Compile with armv5te optimizations, incompatible with armv4(t) cpus
 require conf/machine/include/tune-xscale.inc
