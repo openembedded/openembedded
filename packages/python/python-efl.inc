@@ -2,9 +2,10 @@ DESCRIPTION = "${PN} bindings"
 LICENSE = "BSD"
 AUTHOR = "Gustavo Sverzut Barbieri <barbieri@gmail.com>"
 HOMEPAGE = "http://www.enlightenment.org"
-# somewhere is a bug. cython should be self-contained, but somehow this
-# does not compile unless pyrex has been built
-DEPENDS = "python-cython-native python-pyrex-native python-numeric"
+# NOTE: Due to a bug in distutils, even if we don't use pyrex but cython,
+# we need to build pyrex otherwise cython doesn't get called to build
+# the extension modules.
+DEPENDS = "python-cython-native python-pyrex-native python-numeric eina"
 RDEPENDS += "python-lang"
 
 inherit setuptools
@@ -33,4 +34,3 @@ FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/*.egg/*/*/.debug"
 
 PACKAGES += "${PN}-examples"
 FILES_${PN}-examples = "${datadir}/${PN}/examples"
-

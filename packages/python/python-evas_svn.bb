@@ -1,5 +1,5 @@
 require python-efl.inc
-DEPENDS += "evas eina"
+DEPENDS += "evas"
 PV = "0.3.0+svnr${SRCREV}"
 PR = "r0"
 
