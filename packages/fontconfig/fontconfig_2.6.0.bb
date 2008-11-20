@@ -24,7 +24,7 @@ inherit autotools pkgconfig
 
 export HASDOCBOOK="no"
 
-EXTRA_OECONF = " --disable-docs --with-arch=${HOST_ARCH}"
+EXTRA_OECONF = " --disable-docs --with-arch=${HOST_ARCH} --with-cache-dir=/var/lib/fontconfig"
 EXTRA_OEMAKE = "FC_LANG=fc-lang FC_GLYPHNAME=fc-glyphname"
 
 # The tarball has some of the patched files as read only, which
