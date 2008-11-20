@@ -528,7 +528,7 @@ python base_do_distclean() {
 				if os.path.exists(local):
 					os.remove(local)
 			except OSError, e:
-				bb.note("Error in removal: %s" % (local, e))
+				bb.note("Error in removal: %s" % e)
 }
 
 SCENEFUNCS += "base_scenefunction"
