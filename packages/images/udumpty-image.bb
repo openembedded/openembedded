@@ -42,6 +42,7 @@ IMAGE_INSTALL = "\
 	gnome-panel \
 	gnome-control-center \
 	gnome-settings-daemon \
+	gnome-session \
 "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
