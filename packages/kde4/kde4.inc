@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 
-inherit qt4x11 cmake
+inherit qt4x11 cmake mime
 
 PV = "4.1+svnr${SRCREV}"
 SRCREV = "856719"
@@ -30,7 +30,7 @@ do_install_append() {
 }
 
 FILES_${PN} += "${libdir}/qt4 \
-                ${datadir}/mime \
+                ${datadir}/mime/packages \
 		${datadir}/dbus-1 \
 		${datadir}/config \
                "
