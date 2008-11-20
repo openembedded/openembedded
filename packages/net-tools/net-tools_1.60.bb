@@ -1,6 +1,6 @@
 SUMMARY="Basic networking tools"
 LICENSE="GPL"
-PR = "r1"
+PR = "r2"
 
 #
 # NOTE:
@@ -86,4 +86,27 @@ do_compile() {
 do_install() {
     oe_runmake 'BASEDIR=${D}' -n install
     oe_runmake 'BASEDIR=${D}' install
+
+	for app in ${D}/${base_sbindir}/* ${D}/${base_bindir}/*; do
+		mv $app $app.net-tools 
+	done
+}
+
+pkg_postinst_${PN} () {
+#!/bin/sh
+for app in arp ifconfig ipmaddr iptunnel mii-tool nameif plipconfig rarp route slattach ; do
+    update-alternatives --install ${base_sbindir}/$app $app $app.${PN} 100
+done
+
+for app in dnsdomainname domainname hostname netstat nisdomainname ypdomainname ; do
+    update-alternatives --install ${base_bindir}/$app $app $app.${PN} 100
+done
+}
+
+pkg_prerm_${PN} () {
+ #!/bin/sh
+
+for app in arp ifconfig ipmaddr iptunnel mii-tool nameif plipconfig rarp route slattach dnsdomainname domainname hostname netstat nisdomainname ypdomainname ; do
+   update-alternatives --remove $app $app.${PN}
+done
 }
