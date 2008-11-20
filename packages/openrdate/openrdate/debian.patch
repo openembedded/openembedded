@@ -1,0 +1,205 @@
+--- rdate-1.1.3.orig/src/ntp.c
++++ rdate-1.1.3/src/ntp.c
+@@ -110,8 +110,8 @@
+ 	u_int64_t	xmitck;
+ };
+ 
+-void	ntp_client(const char *, int, struct timeval *, struct timeval *, int);
+-int	sync_ntp(int, const struct sockaddr *, double *, double *);
++void	ntp_client(const char *, int, struct timeval *, struct timeval *, int, int, int);
++int	sync_ntp(int, const struct sockaddr *, double *, double *, int);
+ int	write_packet(int, struct ntp_data *);
+ int	read_packet(int, struct ntp_data *, double *, double *);
+ void	unpack_ntp(struct ntp_data *, u_char *);
+@@ -126,7 +126,7 @@
+ 
+ void
+ ntp_client(const char *hostname, int family, struct timeval *new,
+-    struct timeval *adjust, int leapflag)
++    struct timeval *adjust, int leapflag, int port, int verbose)
+ {
+ 	struct addrinfo hints, *res0, *res;
+ 	double offset, error;
+@@ -135,7 +135,7 @@
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = family;
+ 	hints.ai_socktype = SOCK_DGRAM;
+-	ierror = getaddrinfo(hostname, "ntp", &hints, &res0);
++	ierror = getaddrinfo(hostname, port ? NULL : "ntp", &hints, &res0);
+ 	if (ierror) {
+ 		errx(1, "%s: %s", hostname, gai_strerror(ierror));
+ 		/*NOTREACHED*/
+@@ -150,8 +150,12 @@
+ 		s = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+ 		if (s < 0)
+ 			continue;
++		
++		if (port) {
++			((struct sockaddr_in*)res->ai_addr)->sin_port = htons(port);
++		}
+ 
+-		ret = sync_ntp(s, res->ai_addr, &offset, &error);
++		ret = sync_ntp(s, res->ai_addr, &offset, &error, verbose);
+ 		if (ret < 0) {
+ #ifdef DEBUG
+ 			fprintf(stderr, "try the next address\n");
+@@ -177,7 +181,8 @@
+ }
+ 
+ int
+-sync_ntp(int fd, const struct sockaddr *peer, double *offset, double *error)
++sync_ntp(int fd, const struct sockaddr *peer, double *offset, double *error,
++    int verbose)
+ {
+ 	int attempts = 0, accepts = 0, rejects = 0;
+ 	int delay = MAX_DELAY, ret;
+@@ -196,6 +201,10 @@
+ 	}
+ 
+ 	while (accepts < MAX_QUERIES && attempts < 2 * MAX_QUERIES) {
++		if (verbose >= 2) {
++			fprintf(stderr, ".\n");
++			fflush(stderr);
++		}
+ 		memset(&data, 0, sizeof(data));
+ 
+ 		if (current_time(JAN_1970) > deadline) {
+@@ -429,7 +438,7 @@
+ 	data->transmit = d / NTP_SCALE;
+ 
+ 	/* See write_packet for why this isn't an endian problem. */
+-	data->recvck = *(u_int64_t *)(packet + NTP_ORIGINATE);
++	memcpy(&data->recvck,packet+NTP_ORIGINATE,8);
+ }
+ 
+ /*
+--- rdate-1.1.3.orig/src/rfc868time.c
++++ rdate-1.1.3/src/rfc868time.c
+@@ -69,7 +69,7 @@
+ 
+ void
+ rfc868time_client (const char *hostname, int family, struct timeval *new,
+-    struct timeval *adjust, int leapflag)
++    struct timeval *adjust, int leapflag, int useudp, int port)
+ {
+ 	struct addrinfo hints, *res0, *res;
+ 	struct timeval old;
+@@ -80,10 +80,10 @@
+ 
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = family;
+-	hints.ai_socktype = SOCK_STREAM;
++	hints.ai_socktype = useudp ? SOCK_DGRAM : SOCK_STREAM;
+ 	/* XXX what about rfc868 UDP
+ 	 * probably not due to the Y2038 issue  -mirabile */
+-	error = getaddrinfo(hostname, "time", &hints, &res0);
++	error = getaddrinfo(hostname, port ? NULL : "time", &hints, &res0);
+ 	if (error) {
+ 		errx(1, "%s: %s", hostname, gai_strerror(error));
+ 		/*NOTREACHED*/
+@@ -95,6 +95,10 @@
+ 		if (s < 0)
+ 			continue;
+ 
++		if (port) {
++			((struct sockaddr_in*)res->ai_addr)->sin_port = htons(port);
++		}
++
+ 		if (connect(s, res->ai_addr, res->ai_addrlen) < 0) {
+ 			close(s);
+ 			s = -1;
+@@ -107,6 +111,10 @@
+ 		err(1, "Could not connect socket");
+ 	freeaddrinfo(res0);
+ 
++	/* UDP requires us to send an empty datagram first */
++	if (useudp)
++		send(s, NULL, 0, 0);
++
+ 	if (read(s, &tim, sizeof(tim)) != sizeof(tim))
+ 		err(1, "Could not read data");
+ 
+--- rdate-1.1.3.orig/src/rdate.c
++++ rdate-1.1.3/src/rdate.c
+@@ -55,6 +55,7 @@
+ #include <sys/time.h>
+ 
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <ctype.h>
+ #include <err.h>
+ #include <string.h>
+@@ -68,22 +69,24 @@
+ #define logwtmp(a,b,c)
+ #endif
+ 
+-void rfc868time_client (const char *, int, struct timeval *, struct timeval *, int);
+-void ntp_client (const char *, int, struct timeval *, struct timeval *, int);
++void rfc868time_client (const char *, int, struct timeval *, struct timeval *, int, int, int);
++void ntp_client (const char *, int, struct timeval *, struct timeval *, int, int, int);
+ 
+ extern char    *__progname;
+ 
+ void
+ usage(void)
+ {
+-	(void) fprintf(stderr, "Usage: %s [-46acnpsv] host\n", __progname);
++	(void) fprintf(stderr, "Usage: %s [-46acnpsv] [-o port] host\n", __progname);
+ 	(void) fprintf(stderr, "  -4: use IPv4 only\n");
+ 	(void) fprintf(stderr, "  -6: use IPv6 only\n");
+ 	(void) fprintf(stderr, "  -a: use adjtime instead of instant change\n");
+ 	(void) fprintf(stderr, "  -c: correct leap second count\n");
+ 	(void) fprintf(stderr, "  -n: use SNTP instead of RFC868 time protocol\n");
++	(void) fprintf(stderr, "  -o num: override time port with num\n");
+ 	(void) fprintf(stderr, "  -p: just print, don't set\n");
+ 	(void) fprintf(stderr, "  -s: just set, don't print\n");
++	(void) fprintf(stderr, "  -u: use UDP instead of TCP as transport\n");
+ 	(void) fprintf(stderr, "  -v: verbose output\n");
+ }
+ 
+@@ -91,15 +94,16 @@
+ main(int argc, char **argv)
+ {
+ 	int             pr = 0, silent = 0, ntp = 0, verbose = 0;
+-	int		slidetime = 0, corrleaps = 0;
++	int		slidetime = 0, corrleaps = 0, useudp = 0;
+ 	char           *hname;
+ 	extern int      optind;
+ 	int             c;
+ 	int		family = PF_UNSPEC;
++	int		port = 0;
+ 
+ 	struct timeval new, adjust;
+ 
+-	while ((c = getopt(argc, argv, "46psancv")) != -1)
++	while ((c = getopt(argc, argv, "46psancvuo:")) != -1)
+ 		switch (c) {
+ 		case '4':
+ 			family = PF_INET;
+@@ -133,6 +137,14 @@
+ 			verbose++;
+ 			break;
+ 
++		case 'u':
++			useudp++;
++			break;
++
++		case 'o':
++			port = atoi(optarg);
++			break;
++
+ 		default:
+ 			usage();
+ 			return 1;
+@@ -145,9 +157,9 @@
+ 	hname = argv[optind];
+ 
+ 	if (ntp)
+-		ntp_client(hname, family, &new, &adjust, corrleaps);
++		ntp_client(hname, family, &new, &adjust, corrleaps, port, verbose);
+ 	else
+-		rfc868time_client(hname, family, &new, &adjust, corrleaps);
++		rfc868time_client(hname, family, &new, &adjust, corrleaps, useudp, port);
+ 
+ 	if (!pr) {
+ 		if (!slidetime) {
