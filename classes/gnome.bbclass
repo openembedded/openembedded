@@ -8,10 +8,12 @@ SRC_URI = "${GNOME_MIRROR}/${PN}/${@gnome_verdir("${PV}")}/${PN}-${PV}.tar.bz2"
 
 DEPENDS += "gnome-common"
 
-FILES_${PN} += "${datadir}/application-registry ${datadir}/mime-info \
+FILES_${PN} += "${datadir}/application-registry  \
+	${datadir}/mime-info \
+	${datadir}/mime/packages \	
 	${datadir}/gnome-2.0"
 
-inherit autotools pkgconfig gconf
+inherit autotools pkgconfig gconf mime
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
