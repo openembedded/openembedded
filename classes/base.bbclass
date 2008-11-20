@@ -499,6 +499,32 @@ python base_do_mrproper() {
 	bb.build.exec_func('do_clean', d)
 }
 
+addtask distclean
+do_distclean[dirs] = "${TOPDIR}"
+do_distclean[nostamp] = "1"
+python base_do_distclean() {
+	"""clear downloaded sources, build and temp directories"""
+	import os
+
+	bb.build.exec_func('do_clean', d)
+
+	src_uri = bb.data.getVar('SRC_URI', d, 1)
+	if not src_uri:
+		return
+
+	for uri in src_uri.split()
+		if type == "file":
+			continue
+
+		try:
+			local = bb.data.expand(bb.fetch.localpath(uri, d), d)
+			bb.note("removing %s" % local)
+			os.remove(local)
+			os.remove(local + ".md5")
+		except bb.MalformedUrl, e:
+			raise FuncFailed('Unable to generate local path for %s' % e)
+}
+
 SCENEFUNCS += "base_scenefunction"
 											
 python base_do_setscene () {
@@ -1145,7 +1171,7 @@ inherit patch
 # Move to autotools.bbclass?
 inherit siteinfo
 
-EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
+EXPORT_FUNCTIONS do_setscene do_clean do_mrproper do_distclean do_fetch do_unpack do_configure do_compile do_install do_package do_populate_pkgs do_stage do_rebuild do_fetchall
 
 MIRRORS[func] = "0"
 MIRRORS () {
