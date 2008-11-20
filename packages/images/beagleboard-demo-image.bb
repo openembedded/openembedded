@@ -7,6 +7,8 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
+E_CONFIG ? = "e-wm-config-standard, e-wm-config-default"
+
 ANGSTROM_EXTRA_INSTALL ?= ""
 
 export IMAGE_BASENAME = "Beagleboard-demo-image"
@@ -23,7 +25,7 @@ IMAGE_INSTALL = "\
     angstrom-led-config \ 
     gpe-scap \
     psplash \
-    e-wm exhibit \
+    e-wm ${E_CONFIG}exhibit \
     xterm xmms \
     epiphany firefox midori \
     swfdec-mozilla \
