@@ -16,3 +16,5 @@ SRC_URI = "\
   file://defconfig \
 "
 S = "${WORKDIR}/git"
+
+CMDLINE = "root=/dev/mmcblk0p1 rootdelay=5"
