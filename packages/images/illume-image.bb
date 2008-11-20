@@ -150,6 +150,8 @@ APPS_INSTALL = "\
 #  gpe-filemanager \
 #  vagalume \
 #  starling \
+   rxvt-unicode \
+   gpe-terminal \
    elementary-alarm \
    gpe-scap \
    openmoko-calculator2 \
