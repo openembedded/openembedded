@@ -3,7 +3,7 @@ LICENSE = "GPL"
 
 PR = "r1"
 
-DEPENDS = "gstreamer libcanberra gnome-settings-daemon libgnomeui gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
+DEPENDS = "eel gstreamer libcanberra gnome-settings-daemon libgnomeui gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
 inherit gnome
 
