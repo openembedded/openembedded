@@ -136,6 +136,7 @@ do
 		      gzip \
 		      hal \
 		      hexatrolic \
+		      i2c-tools \
 		      iaimaster \
 		      icebloxx \
 		      imagemagick \
@@ -208,6 +209,7 @@ do
 		      quasar \
 		      quetoo \
 		      rdesktop \
+		      read-edid \
 		      resistorui \
 		      roadmap-gtk2 \
 		      rtorrent \
