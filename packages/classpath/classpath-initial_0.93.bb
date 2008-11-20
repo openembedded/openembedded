@@ -18,6 +18,7 @@ EXTRA_OECONF = "\
   --with-jikes=jikes \
   --with-fastjar=fastjar \
   --with-glibj \
+  --disable-Werror \
   --disable-local-sockets \
   --disable-alsa \
   --disable-gconf-peer \
