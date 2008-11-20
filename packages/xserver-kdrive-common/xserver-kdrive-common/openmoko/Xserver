@@ -122,6 +122,11 @@ case `module_id` in
         "Nokia N800")
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
                 XSERVER=/usr/bin/Xomap ;;
+        "Palm Treo 650")
+	        if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
+		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
+		fi
+                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor $PPM" ;;
         "Motorola Ezx Platform")
                 ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE} -hide-cursor -root-ppm /usr/share/pixmaps/xsplash-qvga.ppm vt1" ;;
         "Freescale MX21ADS")
