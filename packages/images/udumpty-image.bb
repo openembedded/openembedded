@@ -24,7 +24,7 @@ IMAGE_INSTALL = "\
     gpe-scap \
     psplash \
     metacity \
-    xterm 
+    xterm \ 
     epiphany \
     swfdec-mozilla \
     hicolor-icon-theme gnome-icon-theme \
