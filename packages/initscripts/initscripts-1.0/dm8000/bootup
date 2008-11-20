@@ -7,7 +7,7 @@ echo 12 > /proc/progress
 depmod -Ae
 echo 13 > /proc/progress
 
-for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd cdfs; do
+for mod in isofs cifs usb-storage sd_mod autofs4 vfat ide-cd cdfs; do
 	modprobe $mod
 done
 
