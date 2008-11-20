@@ -4,12 +4,12 @@ LICENSE = "GPL"
 SECTION = "x11/applications"
 DEPENDS = "gtk+ shared-mime-info"
 RDEPENDS = "shared-mime-info"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/rox/${P}.tar.bz2 \
            file://no-strip-objcopy.patch;patch=1;pnum=3"
 
-inherit pkgconfig
+inherit mime pkgconfig
 
 S = "${WORKDIR}/${P}/ROX-Filer/src/"
 
@@ -53,4 +53,4 @@ do_install() {
  	done
 }
 
-FILES_${PN} += "${datadir}/rox/ ${datadir}/mime/"
+FILES_${PN} += "${datadir}/rox/ ${datadir}/mime/packages"
