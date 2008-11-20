@@ -512,17 +512,23 @@ python base_do_distclean() {
 	if not src_uri:
 		return
 
-	for uri in src_uri.split()
-		if type == "file":
+	for uri in src_uri.split():
+		if bb.decodeurl(uri)[0] == "file":
 			continue
 
 		try:
 			local = bb.data.expand(bb.fetch.localpath(uri, d), d)
-			bb.note("removing %s" % local)
-			os.remove(local)
-			os.remove(local + ".md5")
 		except bb.MalformedUrl, e:
-			raise FuncFailed('Unable to generate local path for %s' % e)
+			bb.debug(1, 'Unable to generate local path for malformed uri: %s' % e)
+		else:
+			bb.note("removing %s" % local)
+			try:
+				if os.path.exists(local + ".md5"):
+					os.remove(local + ".md5")
+				if os.path.exists(local):
+					os.remove(local)
+			except OSError, e:
+				bb.note("Error in removal: %s" % (local, e))
 }
 
 SCENEFUNCS += "base_scenefunction"
