@@ -7,7 +7,7 @@ XSERVER ?= "xserver-xorg \
            xf86-input-keyboard \
 "
 
-E_CONFIG ? = "e-wm-config-standard, e-wm-config-default"
+E_CONFIG ?= "e-wm-config-standard, e-wm-config-default"
 
 ANGSTROM_EXTRA_INSTALL ?= ""
 
