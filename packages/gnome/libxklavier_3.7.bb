@@ -1,5 +1,5 @@
 DESCRIPTION = "Helper lib for keyboard management"
-LICENSE = "GPL"
+LICENSE = "LGPL"
 
 DEPENDS = "gtk+"
 
