@@ -109,7 +109,8 @@ do
 		      gdal \
 		      gdb \
 		      gdbserver \
-		      gimp \
+		      gdm \
+              gimp \
 		      glider \
 		      gmp \
 		      gnome-games \
@@ -162,6 +163,7 @@ do
 		      mc \
 		      meta-nas-server \
 		      meta-toolchain \
+              metacity \
               midori \
 		      mileage \
 		      mono \
