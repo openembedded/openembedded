@@ -1,7 +1,9 @@
 DESCRIPTION = "Helper lib for keyboard management"
 LICENSE = "LGPL"
 
-DEPENDS = "gtk+"
+PR = "r1"
+
+DEPENDS = "xkbcomp gtk+"
 
 inherit gnome
 
@@ -16,5 +18,7 @@ do_compile_append() {
                   libxklavier.pc
 }
 
-
+do_stage() {
+	autotools_stage_all
+}
 
