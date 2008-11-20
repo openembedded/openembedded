@@ -132,7 +132,8 @@ do
 		      gpsdrive \
 		      gqview \
 		      gsm0710muxd \
-		      gtk+ \
+		      gspcav1 \
+              gtk+ \
 		      gzip \
 		      hal \
 		      hexatrolic \
