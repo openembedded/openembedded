@@ -1,6 +1,8 @@
 DESCRIPTION = "GNOME control center"
 LICENSE = "GPL"
 
+PR = "r1"
+
 DEPENDS = "gstreamer libcanberra gnome-settings-daemon libgnomeui gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
 inherit gnome
@@ -17,10 +19,6 @@ FILES_${PN} += "${datadir}/icon* \
                "
 FILES_${PN}-dbg += "${libdir}/window-manager-settings/.debug"
 FILES_${PN}-dev += "${libdir}/window-manager-settings/*a"
-
-PACKAGES += "${PN}-mime"
-FILES_${PN}-mime = "${datadir}/mime"
-
 
 
 
