@@ -12,6 +12,7 @@ SRC_URI = "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/${PV}/source/
 	file://jemalloc-tls.patch;patch=1 \
 	file://0001-Remove-Werror-from-build.patch;patch=1 \
 	file://0002-Fix-security-cross-compile-cpu-detection-error.patch;patch=1 \
+	file://plugins-dir.patch;patch=1 \
 "
 
 S = "${WORKDIR}/mozilla"

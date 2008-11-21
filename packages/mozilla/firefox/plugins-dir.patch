@@ -1,0 +1,14 @@
+--- mozilla/browser/app/mozilla.in.orig 2007-10-05 10:29:26.000000000 +0300
++++ mozilla/browser/app/mozilla.in      2008-08-26 17:21:20.000000000 +0300
+@@ -54,6 +54,11 @@
+
+ moz_libdir=%MOZAPPDIR%
+
++if test -d /usr/lib/mozilla/plugins; then
++       MOZ_PLUGIN_PATH="${MOZ_PLUGIN_PATH:+"$MOZ_PLUGIN_PATH:"}/usr/lib/mozilla/plugins"
++       export MOZ_PLUGIN_PATH
++fi
++
+ # Use run-mozilla.sh in the current dir if it exists
+ # If not, then start resolving symlinks until we find run-mozilla.sh
+ found=0
