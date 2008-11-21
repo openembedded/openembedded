@@ -29,7 +29,7 @@ EXTRA_OECONF_omap-3430sdp = "${BASE_CONF} --with-flavour=eglx"
 PACKAGE_ARCH_omap-3430sdp = "${MACHINE_ARCH}"
 
 DEPENDS_beagleboard = "${STDDEPENDS} libgles-omap3 tslib"
-EXTRA_OECONF_beagleboard = "${BASE_CONF} --with-flavour=eglx"
+EXTRA_OECONF_beagleboard = "${BASE_CONF} --with-flavour=eglx --with-gles=2.0"
 PACKAGE_ARCH_beagleboard = "${MACHINE_ARCH}"
 
 DEPENDS_mx31ads = "${STDDEPENDS} libgles-mx31 tslib"
