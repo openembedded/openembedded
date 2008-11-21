@@ -2,7 +2,7 @@ DESCRIPTION = "Clutter graphics library"
 HOMEPAGE = "http://www.clutter-project.org/"
 LICENSE = "LGPL"
 
-COMPATIBLE_MACHINE = "(zylonite|mx31litekit|omap-3430ldp|omap-34030sdp|mx31ads|qemuarm|qemux86|ipodtouch|beagleboard|overo|omap3evm)"
+COMPATIBLE_MACHINE = "(zylonite|mx31litekit|omap-3430ldp|omap-3430sdp|mx31ads|qemuarm|qemux86|ipodtouch|beagleboard|overo|omap3evm)"
 
 STDDEPENDS = "virtual/libx11 gtk-doc-native pango glib-2.0 libxfixes gtk+"
 BASE_CONF = "--disable-gtk-doc ${@get_clutter_fpu_setting(bb, d)}"
@@ -27,6 +27,10 @@ PACKAGE_ARCH_omap-3430ldp = "${MACHINE_ARCH}"
 DEPENDS_omap-3430sdp = "${STDDEPENDS} libgles-omap3 tslib"
 EXTRA_OECONF_omap-3430sdp = "${BASE_CONF} --with-flavour=eglx"
 PACKAGE_ARCH_omap-3430sdp = "${MACHINE_ARCH}"
+
+DEPENDS_beagleboard = "${STDDEPENDS} libgles-omap3 tslib"
+EXTRA_OECONF_beagleboard = "${BASE_CONF} --with-flavour=eglx"
+PACKAGE_ARCH_beagleboard = "${MACHINE_ARCH}"
 
 DEPENDS_mx31ads = "${STDDEPENDS} libgles-mx31 tslib"
 EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
