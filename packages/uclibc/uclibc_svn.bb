@@ -6,9 +6,10 @@
 # UCLIBC_BASE can be set in a distro file, but whether this works depends
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
-UCLIBC_BASE ?= "0.9.29"
+UCLIBC_BASE ?= "0.9.30"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
-PR = "r17"
+PR = "r0"
+#DEFAULT_PREFERENCE = "2"
 #DEFAULT_PREFERENCE is 0 (empty), releases have a preference of 1 so take
 # precedence.
 
@@ -25,14 +26,13 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-svn', '${FILE_DIRNA
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
 SRC_URI += "svn://uclibc.org/trunk;module=uClibc \
-			file://uClibc.machine \
-			file://uClibc.distro \
-			file://uclibc-arm-ftruncate64.patch;patch=1 \
-			file://arm_fix_alignment.patch;patch=1 \
-			file://unistd_arm.patch;patch=1 \
-			file://arm-linuxthreads.patch;patch=1 \
-			file://linuxthreads-changes.patch;patch=1 \
-			file://uclibc_mathc99.patch;patch=1 \
-           "
+	file://uClibc.machine \
+	file://uClibc.distro \
+	file://uclibc-arm-ftruncate64.patch;patch=1 \
+	file://arm_fix_alignment.patch;patch=1 \
+	file://arm-linuxthreads.patch;patch=1 \
+	file://linuxthreads-changes.patch;patch=1 \
+	file://uclibc_enable_log2_test.patch;patch=1 \
+	"
 
 S = "${WORKDIR}/uClibc"
