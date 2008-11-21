@@ -1,0 +1,23 @@
+#diff -u -r1.89 fusermount.c
+--- /util/fusermount.c	27 Apr 2007 18:08:15 -0000	1.89
++++ /util/fusermount.c	3 Jun 2007 14:26:50 -0000
+@@ -30,7 +30,7 @@
+ #define FUSE_COMMFD_ENV         "_FUSE_COMMFD"
+ 
+ #define FUSE_DEV_OLD "/proc/fs/fuse/dev"
+-#define FUSE_DEV_NEW "/dev/fuse"
++#define FUSE_DEV_NEW "/dev/misc/fuse"
+ #define FUSE_VERSION_FILE_OLD "/proc/fs/fuse/version"
+ #define FUSE_CONF "/etc/fuse.conf"
+ 
+--- /lib/mount.c.orig	2008-03-27 11:25:33.000000000 +0100
++++ /lib/mount.c	2008-03-27 11:25:44.000000000 +0100
+@@ -389,7 +389,7 @@
+ 			  const char *mnt_opts)
+ {
+ 	char tmp[128];
+-	const char *devname = "/dev/fuse";
++	const char *devname = "/dev/misc/fuse";
+ 	char *source = NULL;
+ 	char *type = NULL;
+ 	struct stat stbuf;
