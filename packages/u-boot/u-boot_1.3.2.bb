@@ -17,6 +17,19 @@ SRC_URI_append_mpc8313e-rdb = "\
            file://mpc8313e-rdb-mtdparts.patch;patch=1 \
            "
 
+SRC_URI_append_boc01 = "\
+           file://mpc8313e-rdb-nand.patch;patch=1 \
+           file://mpc8313e-rdb-eeprom.patch;patch=1 \
+           file://mpc8313e-rdb-lm75.patch;patch=1 \
+           file://001_01_u-boot-1.3.2_SPI.patch;patch=1 \
+           file://002_02_u-boot-1.3.2_GPIO.patch;patch=1 \
+           file://004_01_u-boot-1.3.2_WATCHDOG.patch;patch=1 \
+           file://006_01_u-boot-1.3.2_EEPROM_INTERSIL.patch;patch=1 \
+           file://007_01_u-boot-1.3.2_CAPSENSE.patch;patch=1 \
+           file://008_02_u-boot-1.3.2_TSEC.patch;patch=1 \
+           file://009_03_u-boot-1.3.2_Extender_IO.patch;patch=1 \
+           "
+
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy_append_mpc8313e-rdb () {
