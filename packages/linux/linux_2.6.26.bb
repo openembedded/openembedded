@@ -1,11 +1,12 @@
 require linux.inc
 
-PR = "r1"
+PR = "r2"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
+DEFAULT_PREFERENCE_canyonlands = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            file://defconfig"
