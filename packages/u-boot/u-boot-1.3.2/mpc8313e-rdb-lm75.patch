@@ -1,23 +1,23 @@
 Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
 ===================================================================
---- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h	2008-09-12 18:52:58.000000000 +0200
-+++ u-boot-1.3.2/include/configs/MPC8313ERDB.h	2008-09-12 18:53:10.000000000 +0200
-@@ -370,6 +370,7 @@
- #define CONFIG_CMD_PCI
- #define CONFIG_CMD_NAND
- #define CONFIG_CMD_SPI
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h	2008-11-21 15:00:28.000000000 +0100
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h	2008-11-21 15:01:10.000000000 +0100
+@@ -364,6 +364,7 @@
+ #define CONFIG_CMD_PING
+ #define CONFIG_CMD_DHCP
+ #define CONFIG_CMD_I2C
 +#define CONFIG_CMD_DTT
- 
- #if defined(CFG_RAMBOOT)
-     #undef CONFIG_CMD_ENV
-@@ -392,6 +393,10 @@
- #define MTDPARTS_DEFAULT	"mtdparts=physmap-flash.0:384k(uboot),64k(env)"
- 
+ #define CONFIG_CMD_MII
+ #define CONFIG_CMD_DATE
+ #define CONFIG_CMD_PCI
+@@ -390,6 +391,10 @@
+ #define CFG_BARGSIZE	CFG_CBSIZE	/* Boot Argument Buffer Size */
+ #define CFG_HZ		1000		/* decrementer freq: 1ms ticks */
  
 +/* Digital Thermometer and Thermostat */
 +#define CONFIG_DTT_LM75		1
 +#define CONFIG_DTT_SENSORS	{ 0x48 }
 +
  /*
-  * Miscellaneous configurable options
-  */
+  * For booting Linux, the board info and command line data
+  * have to be in the first 8 MB of memory, since this is
