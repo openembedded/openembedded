@@ -122,8 +122,15 @@ case `module_id` in
         "Nokia N800")
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
                 XSERVER=/usr/bin/Xomap ;;
+	"Palm Treo 650")
+		ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor" ;;
         "Motorola Ezx Platform")
                 ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE}" ;;
+	"Glofiish M800")
+                ARGS="$ARGS -dpi 285 -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor" ;;
+        "Freescale MX21ADS")
+	# That's what /proc/cpuinfo shows as hardware on the chumby
+                 ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib" ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
