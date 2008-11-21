@@ -4,10 +4,16 @@ PR = "r1"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            file://defconfig"
+
+SRC_URI_append_boc01 = "\
+	file://boc01.dts \
+	file://mpc831x-nand.patch;patch=1 \
+	"
 
 SRC_URI_append_mpc8313e-rdb = "\
 	file://mpc831x-nand.patch;patch=1 \
