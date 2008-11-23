@@ -1,0 +1,3443 @@
+--- netkit-telnet-0.17.orig/Makefile
++++ netkit-telnet-0.17/Makefile
+@@ -1,8 +1,7 @@
+ # You can do "make SUB=blah" to make only a few, or edit here, or both
+ # You can also run make directly in the subdirs you want.
+ 
+-SUB =   telnet telnetd
+-# not yet: telnetlogin
++SUB =   telnet telnetd telnetlogin
+ 
+ %.build:
+ 	(cd $(patsubst %.build, %, $@) && $(MAKE))
+--- netkit-telnet-0.17.orig/configure
++++ netkit-telnet-0.17/configure
+@@ -67,7 +67,7 @@
+ 
+ ##################################################
+ 
+-WARNINGS='-Wall -W -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Winline '
++WARNINGS='-Wall -Wno-trigraphs '
+ 
+ cat << EOF > __conftest.c
+     int main() { int class=0; return class; }
+@@ -117,7 +117,7 @@
+ 
+ cat << EOF > __conftest.cc
+     template <class T> class fnord { public: T x; fnord(T y) { x=y; }};
+-    int main() { fnord<int> a(0); return a.x; }
++    int main() { fnord<int> *a = new fnord<int>(0); return a->x; }
+ EOF
+ 
+ if [ x"$CXX" = x ]; then
+--- netkit-telnet-0.17.orig/telnet/defines.h
++++ netkit-telnet-0.17/telnet/defines.h
+@@ -50,3 +50,5 @@
+ #define	MODE_COMMAND_LINE(m)	((m)==-1)
+ 
+ #define	CONTROL(x)	((x)&0x1f)		/* CTRL(x) is not portable */
++
++#define MODE_OUT8	0x8000			/* binary mode sans -opost */
+--- netkit-telnet-0.17.orig/telnet/main.cc
++++ netkit-telnet-0.17/telnet/main.cc
+@@ -45,7 +45,10 @@
+ 
+ #include <sys/types.h>
+ #include <getopt.h>
++#include <stdlib.h>
+ #include <string.h>
++#include <netdb.h>
++#include <errno.h>
+ 
+ #include "ring.h"
+ #include "externs.h"
+@@ -80,12 +83,13 @@
+ void usage(void) {
+     fprintf(stderr, "Usage: %s %s%s%s%s\n",
+ 	    prompt,
+-	    " [-8] [-E] [-L] [-a] [-d] [-e char] [-l user] [-n tracefile]",
+-	    "\n\t",
++	    "[-4] [-6] [-8] [-E] [-L] [-a] [-d] [-e char] [-l user]",
++	    "\n\t[-n tracefile] [ -b addr ]",
+ #ifdef TN3270
++	    "\n\t"
+ 	    "[-noasynch] [-noasynctty] [-noasyncnet] [-r] [-t transcom]\n\t",
+ #else
+-	    "[-r] ",
++	    " [-r] ",
+ #endif
+ 	    "[host-name [port]]"
+ 	);
+@@ -102,7 +106,8 @@
+ 	extern char *optarg;
+ 	extern int optind;
+ 	int ch;
+-	char *user;
++	char *user, *srcaddr;
++	int family;
+ 
+ 	tninit();		/* Clear out things */
+ #if	defined(CRAY) && !defined(__STDC__)
+@@ -110,21 +115,38 @@
+ #endif
+ 
+ 	TerminalSaveState();
++	if ((old_tc.c_cflag & (CSIZE|PARENB)) != CS8)
++		eight = 0;
+ 
+ 	if ((prompt = strrchr(argv[0], '/'))!=NULL)
+ 		++prompt;
+ 	else
+ 		prompt = argv[0];
+ 
+-	user = NULL;
++	user = srcaddr = NULL;
++	family = 0;
+ 
+ 	rlogin = (strncmp(prompt, "rlog", 4) == 0) ? '~' : _POSIX_VDISABLE;
+ 	autologin = -1;
+ 
+-	while ((ch = getopt(argc, argv, "8EKLS:X:ade:k:l:n:rt:x")) != EOF) {
++	while ((ch = getopt(argc, argv,
++			    "4678EKLS:X:ab:de:k:l:n:rt:x")) != EOF) {
+ 		switch(ch) {
++		case '4':
++			family = AF_INET;
++			break;
++		case '6':
++#ifdef AF_INET6
++			family = AF_INET6;
++#else
++			fputs("IPv6 unsupported\n", stderr);
++#endif
++			break;
++		case '7':
++			eight = 0;	/* 7-bit ouput and input */
++			break;
+ 		case '8':
+-			eight = 3;	/* binary output and input */
++			binary = 3;	/* binary output and input */
+ 			break;
+ 		case 'E':
+ 			rlogin = escapechar = _POSIX_VDISABLE;
+@@ -133,23 +155,26 @@
+ 		        //autologin = 0;
+ 			break;
+ 		case 'L':
+-			eight |= 2;	/* binary output only */
++			binary |= 2;	/* binary output only */
+ 			break;
+ 		case 'S':
+ 		    {
+-#ifdef	HAS_GETTOS
+ 			extern int tos;
++			int num;
+ 
+-			if ((tos = parsetos(optarg, "tcp")) < 0)
++#ifdef	HAS_GETTOS
++			if ((num = parsetos(optarg, "tcp")) < 0) {
++#else
++			errno = 0;
++			num = strtol(optarg, 0, 0);
++			if (errno) {
++#endif
+ 				fprintf(stderr, "%s%s%s%s\n",
+ 					prompt, ": Bad TOS argument '",
+ 					optarg,
+ 					"; will try to use default TOS");
+-#else
+-			fprintf(stderr,
+-			   "%s: Warning: -S ignored, no parsetos() support.\n",
+-								prompt);
+-#endif
++			} else
++				tos = num;
+ 		    }
+ 			break;
+ 		case 'X':
+@@ -210,6 +235,9 @@
+ 				"%s: -x ignored, no encryption support.\n",
+ 				prompt);
+ 			break;
++		case 'b':
++			srcaddr = optarg;
++			break;
+ 		case '?':
+ 		default:
+ 			usage();
+@@ -233,6 +261,13 @@
+ 			*argp++ = "-l";
+ 			*argp++ = user;
+ 		}
++		if (srcaddr) {
++			*argp++ = "-b";
++			*argp++ = srcaddr;
++		}
++		if (family) {
++			*argp++ = family == AF_INET ? "-4" : "-6";
++		}
+ 		*argp++ = argv[0];		/* host */
+ 		if (argc > 1)
+ 			*argp++ = argv[1];	/* port */
+--- netkit-telnet-0.17.orig/telnet/netlink.cc
++++ netkit-telnet-0.17/telnet/netlink.cc
+@@ -79,22 +79,61 @@
+ 	shutdown(net, 2);
+     }
+     ::close(net);
++    net = -1;
+ }
+ 
+-int netlink::connect(int debug, struct hostent *host, 
+-		     struct sockaddr_in *sn, 
+-		     char *srcroute, int srlen, int tos) 
++int netlink::bind(struct addrinfo *addr)
+ {
+-    int on=1;
++    int res;
++
++    res = socket(addr->ai_family);
++    if (res < 2) {
++	if (res == 1)
++	    perror("telnet: socket");
++	return -1;
++    }
++
++    if (::bind(net, addr->ai_addr, addr->ai_addrlen) < 0) {
++	perror("telnet: bind");
++	return -1;
++    }
++
++    return 0;
++}
++
++int netlink::socket(int family)
++{
++    if (this->family != family)
++	close(0);
+ 
+-    net = socket(AF_INET, SOCK_STREAM, 0);
+     if (net < 0) {
+-	perror("telnet: socket");
+-	return 0;
++	this->family = family;
++	net = ::socket(family, SOCK_STREAM, 0);
++	if (net < 0) {
++	    if (errno == EAFNOSUPPORT)
++		return 1;
++	    perror("telnet: socket");
++	    return 0;
++	}
+     }
+ 
++    return 2;
++}
++
++int netlink::connect(int debug, struct addrinfo *addr, 
++		     char *srcroute, int srlen, int tos) 
++{
++    int on=1;
++    int res;
++
++    res = socket(addr->ai_family);
++    if (res < 2)
++	return res;
++
+ #if defined(IP_OPTIONS) && defined(HAS_IPPROTO_IP)
+     if (srcroute) {
++	if (addr->ai_family != AF_INET)
++	    fputs("Source route is only supported for IPv4\n", stderr);
+ 	if (setsockopt(net, IPPROTO_IP, IP_OPTIONS, srcroute, srlen) < 0)
+ 	    perror("setsockopt (IP_OPTIONS)");
+     }
+@@ -108,7 +147,7 @@
+ #endif
+     if (tos < 0) tos = 020;	/* Low Delay bit */
+     if (tos && (setsockopt(net, IPPROTO_IP, IP_TOS, &tos, sizeof(int)) < 0)
+-	&& (errno != ENOPROTOOPT))
++	&& (errno != ENOPROTOOPT) && (errno != EOPNOTSUPP))
+ 	perror("telnet: setsockopt (IP_TOS) (ignored)");
+ #endif	/* defined(IPPROTO_IP) && defined(IP_TOS) */
+ 
+@@ -116,27 +155,8 @@
+ 	perror("setsockopt (SO_DEBUG)");
+     }
+     
+-    if (::connect(net, (struct sockaddr *)sn, sizeof(*sn)) < 0) {
+-#if defined(h_addr)		/* In 4.3, this is a #define */
+-	if (host && host->h_addr_list[1]) {
+-	    int oerrno = errno;
+-	    
+-	    fprintf(stderr, "telnet: connect to address %s: ",
+-		    inet_ntoa(sn->sin_addr));
+-	    errno = oerrno;
+-	    perror(NULL);
+-	    host->h_addr_list++;
+-	    if (host->h_length > (int)sizeof(sn->sin_addr)) {
+-		host->h_length = sizeof(sn->sin_addr);
+-	    }
+-	    memcpy(&sn->sin_addr, host->h_addr_list[0], host->h_length);
+-	    close(net);
+-	    return 1;
+-	}
+-#endif	/* defined(h_addr) */
+-
+-	perror("telnet: Unable to connect to remote host");
+-	return 0;
++    if (::connect(net, addr->ai_addr, addr->ai_addrlen) < 0) {
++	return 1;
+     }
+     return 2;
+ }
+--- netkit-telnet-0.17.orig/telnet/netlink.h
++++ netkit-telnet-0.17/telnet/netlink.h
+@@ -1,13 +1,16 @@
+ 
+ class netlink {
++ private:
++    int family;
+  protected:
+     int net;
+  public:
+     netlink();
+     ~netlink();
+ 
+-    int connect(int debug, struct hostent *host, 
+-		struct sockaddr_in *sin, 
++    int bind(struct addrinfo *hostaddr);
++    int socket(int family);
++    int connect(int debug, struct addrinfo *hostaddr, 
+ 		char *srcroute, int srlen,
+ 		int tos);
+     void close(int doshutdown);
+--- netkit-telnet-0.17.orig/telnet/network.cc
++++ netkit-telnet-0.17/telnet/network.cc
+@@ -40,6 +40,7 @@
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <sys/time.h>
++#include <stdlib.h>
+ #include <errno.h>
+ #include <arpa/telnet.h>
+ 
+--- netkit-telnet-0.17.orig/telnet/proto.h
++++ netkit-telnet-0.17/telnet/proto.h
+@@ -13,7 +13,7 @@
+ void auth_encrypt_user(char *);
+ void auth_name(unsigned char *, int);
+ void auth_printsub(unsigned char *, int, unsigned char *, int);
+-void cmdrc(const char *m1, const char *m2);
++void cmdrc(const char *, const char *, const char *);
+ void env_init(void);
+ int getconnmode(void);
+ void init_network(void);
+--- netkit-telnet-0.17.orig/telnet/ring.cc
++++ netkit-telnet-0.17/telnet/ring.cc
+@@ -165,7 +165,7 @@
+ 
+ /////////////////////////////////////////////////// supply //////////////
+ 
+-void ringbuf::printf(const char *format, ...) {
++void ringbuf::xprintf(const char *format, ...) {
+     char xbuf[256];
+     va_list ap;
+     va_start(ap, format);
+--- netkit-telnet-0.17.orig/telnet/ring.h
++++ netkit-telnet-0.17/telnet/ring.h
+@@ -83,7 +83,7 @@
+     // manual supply
+     void putch(char c) { write(&c, 1); }
+     void write(const char *buffer, int ct);
+-    void printf(const char *format, ...);
++    void xprintf(const char *format, ...);
+     int empty_count() { return size - count; }
+ 
+     // automatic supply
+--- netkit-telnet-0.17.orig/telnet/sys_bsd.cc
++++ netkit-telnet-0.17/telnet/sys_bsd.cc
+@@ -189,18 +189,25 @@
+  * Various signal handling routines.
+  */
+ 
++#if 0
+ static void deadpeer(int /*sig*/) {
+     setcommandmode();
+     siglongjmp(peerdied, -1);
+ }
++#endif
+ 
+ static void intr(int /*sig*/) {
+     if (localchars) {
+ 	intp();
+     }
+     else {
++#if 0
+         setcommandmode();
+ 	siglongjmp(toplevel, -1);
++#else
++	signal(SIGINT, SIG_DFL);
++	raise(SIGINT);
++#endif
+     }
+ }
+ 
+@@ -214,6 +221,8 @@
+ 	    sendabort();
+ 	return;
+     }
++    signal(SIGQUIT, SIG_DFL);
++    raise(SIGQUIT);
+ }
+ 
+ #ifdef	SIGWINCH
+@@ -238,7 +247,9 @@
+ void sys_telnet_init(void) {
+     signal(SIGINT, intr);
+     signal(SIGQUIT, intr2);
++#if 0
+     signal(SIGPIPE, deadpeer);
++#endif
+ #ifdef	SIGWINCH
+     signal(SIGWINCH, sendwin);
+ #endif
+--- netkit-telnet-0.17.orig/telnet/telnet.1
++++ netkit-telnet-0.17/telnet/telnet.1
+@@ -42,8 +42,9 @@
+ protocol
+ .Sh SYNOPSIS
+ .Nm telnet
+-.Op Fl 8ELadr
++.Op Fl 468ELadr
+ .Op Fl S Ar tos
++.Op Fl b Ar address
+ .Op Fl e Ar escapechar
+ .Op Fl l Ar user
+ .Op Fl n Ar tracefile
+@@ -68,6 +69,10 @@
+ .Pp
+ Options:
+ .Bl -tag -width indent
++.It Fl 4
++Force IPv4 address resolution.
++.It Fl 6
++Force IPv6 address resolution.
+ .It Fl 8
+ Request 8-bit operation. This causes an attempt to negotiate the
+ .Dv TELNET BINARY
+@@ -89,6 +94,8 @@
+ option if supported by the remote system. The username is retrieved
+ via
+ .Xr getlogin 3 .
++.It Fl b Ar address
++Use bind(2) on the local socket to bind it to a specific local address.
+ .It Fl d
+ Sets the initial value of the
+ .Ic debug
+@@ -474,17 +481,29 @@
+ placing a dash before the port number.
+ .Pp
+ After establishing a connection, any commands associated with the
+-remote host in the user's
++remote host in
++.Pa /etc/telnetrc
++and the user's
+ .Pa .telnetrc
+-file are executed.
++file are executed, in that order.
+ .Pp
+-The format of the .telnetrc file is as follows: Lines beginning with a
++The format of the telnetrc files is as follows: Lines beginning with a
+ #, and blank lines, are ignored.  The rest of the file should consist
+ of hostnames and sequences of
+ .Nm telnet
+ commands to use with that host. Commands should be one per line,
+ indented by whitespace; lines beginning without whitespace are
+-interpreted as hostnames. Upon connecting to a particular host, the
++interpreted as hostnames.  Lines beginning with the special hostname
++.Ql DEFAULT
++will apply to all hosts.  Hostnames including
++.Ql DEFAULT
++may be followed immediately by a colon and a port number or string.
++If a port is specified it must match exactly with what is specified
++on the command line.  If no port was specified on the command line,
++then the value
++.Ql telnet
++is used.
++Upon connecting to a particular host, the
+ commands associated with that host are executed.
+ .It Ic quit
+ Close any open session and exit
+@@ -1184,9 +1203,7 @@
+ When the skiprc toggle is
+ .Dv TRUE ,
+ .Tn telnet
+-does not read the 
+-.Pa \&.telnetrc
+-file.  The initial value for this toggle is
++does not read the telnetrc files.  The initial value for this toggle is
+ .Dv FALSE.
+ .It Ic termdata
+ Toggles the display of all terminal data (in hexadecimal format).
+@@ -1239,7 +1256,9 @@
+ .Dv TELNET ENVIRON
+ option.
+ .Sh FILES
+-.Bl -tag -width ~/.telnetrc -compact
++.Bl -tag -width /etc/telnetrc -compact
++.It Pa /etc/telnetrc
++global telnet startup values
+ .It Pa ~/.telnetrc
+ user customized telnet startup values
+ .El
+--- netkit-telnet-0.17.orig/telnet/terminal.cc
++++ netkit-telnet-0.17/telnet/terminal.cc
+@@ -45,6 +45,8 @@
+ #include <signal.h>
+ #include <errno.h>
+ #include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
+ 
+ #include "ring.h"
+ #include "defines.h"
+@@ -155,9 +157,11 @@
+     if (localflow)
+ 	mode |= MODE_FLOW;
+ 
+-    if (my_want_state_is_will(TELOPT_BINARY))
++    if ((eight & 1) || my_want_state_is_will(TELOPT_BINARY))
+ 	mode |= MODE_INBIN;
+ 
++    if (eight & 2)
++	mode |= MODE_OUT8;
+     if (his_want_state_is_will(TELOPT_BINARY))
+ 	mode |= MODE_OUTBIN;
+ 
+@@ -449,10 +453,13 @@
+ 		// breaks SunOS.
+ 	 	tmp_tc.c_iflag |= ISTRIP;
+ 	}
+-	if (f & MODE_OUTBIN) {
++	if (f & (MODE_OUTBIN|MODE_OUT8)) {
+ 		tmp_tc.c_cflag &= ~(CSIZE|PARENB);
+ 		tmp_tc.c_cflag |= CS8;
+-		tmp_tc.c_oflag &= ~OPOST;
++		if (f & MODE_OUTBIN)
++			tmp_tc.c_oflag &= ~OPOST;
++		else
++			tmp_tc.c_oflag |= OPOST;
+ 	} else {
+ 		tmp_tc.c_cflag &= ~(CSIZE|PARENB);
+ 		tmp_tc.c_cflag |= old_tc.c_cflag & (CSIZE|PARENB);
+@@ -468,7 +475,7 @@
+ 
+ #ifdef	SIGINFO
+ 	signal(SIGINFO, ayt);
+-#endif	SIGINFO
++#endif	/* SIGINFO */
+ 
+ #if defined(NOKERNINFO)
+ 	tmp_tc.c_lflag |= NOKERNINFO;
+@@ -504,7 +511,7 @@
+ 
+ #ifdef	SIGINFO
+ 	signal(SIGINFO, ayt_status);
+-#endif	SIGINFO
++#endif	/* SIGINFO */
+ 
+ #ifdef	SIGTSTP
+ 	signal(SIGTSTP, SIG_DFL);
+--- netkit-telnet-0.17.orig/telnet/utilities.cc
++++ netkit-telnet-0.17/telnet/utilities.cc
+@@ -47,6 +47,8 @@
+ #include <sys/socket.h>
+ #include <unistd.h>
+ #include <ctype.h>
++#include <string.h>
++#include <stdlib.h>
+ 
+ #include "ring.h"
+ #include "defines.h"
+--- netkit-telnet-0.17.orig/telnet/commands.cc
++++ netkit-telnet-0.17/telnet/commands.cc
+@@ -86,10 +86,6 @@
+ 
+ #define HELPINDENT ((int) sizeof ("connect"))
+ 
+-#ifndef       MAXHOSTNAMELEN
+-#define       MAXHOSTNAMELEN 64
+-#endif        MAXHOSTNAMELEN
+-
+ #if	defined(HAS_IPPROTO_IP) && defined(IP_TOS)
+ int tos = -1;
+ #endif	/* defined(HAS_IPPROTO_IP) && defined(IP_TOS) */
+@@ -98,7 +94,7 @@
+ 
+ 
+ char	*hostname;
+-static char _hostname[MAXHOSTNAMELEN];
++static char *_hostname;
+ 
+ //typedef int (*intrtn_t)(int argc, const char *argv[]);
+ 
+@@ -161,7 +157,7 @@
+ 	assert(argc>=1);
+ 	if (nargs>=0 && argc!=nargs+1) {
+ 	    fprintf(stderr, "Wrong number of arguments for command.\n");
+-	    fprintf(stderr, "Try %s ? for help\n", argv[0]);
++	    fprintf(stderr, "Try ? %s for help\n", argv[0]);
+ 	    return 0;    /* is this right? */
+ 	}
+ 	if (nargs==-2) {
+@@ -480,6 +476,7 @@
+ int send_tncmd(int (*func)(int, int), const char *cmd, const char *name) {
+     char **cpp;
+     extern char *telopts[];
++    long opt;
+ 
+     if (isprefix(name, "help") || isprefix(name, "?")) {
+ 	register int col, len;
+@@ -506,16 +503,23 @@
+ 					name, cmd);
+ 	return 0;
+     }
++
++    opt = cpp - telopts;
+     if (cpp == 0) {
+-	fprintf(stderr, "'%s': unknown argument ('send %s ?' for help).\n",
++	char *end;
++
++	opt = strtol(name, &end, 10);
++	if (*end || opt < 0 || opt > 255) {
++	    fprintf(stderr, "'%s': unknown argument ('send %s ?' for help).\n",
+ 					name, cmd);
+-	return 0;
++	    return 0;
++	}
+     }
+     if (!connected) {
+ 	printf("?Need to be connected first.\n");
+ 	return 0;
+     }
+-    (*func)(cpp - telopts, 1);
++    (*func)(opt, 1);
+     return 1;
+ }
+ 
+@@ -689,9 +693,9 @@
+       "print encryption debugging information" },
+ #endif
+ 
+-    { "skiprc", "don't read ~/.telnetrc file",
++    { "skiprc", "don't read the telnetrc files",
+       NULL, &skiprc,
+-      "read ~/.telnetrc file" },
++      "read the telnetrc files" },
+     { "binary",
+       "sending and receiving of binary data",
+       togbinary, NULL,
+@@ -1615,15 +1619,20 @@
+ #endif
+ 
+ int tn(int argc, const char *argv[]) {
+-    register struct hostent *host = 0;
+     struct sockaddr_in sn;
+-    struct servent *sp = 0;
+     char *srp = NULL;
+     int srlen;
+-
+-    const char *cmd, *volatile user = 0;
++    int family = 0;
++    const char *cmd, *volatile user = 0, *srchostp = 0;
+     const char *portp = NULL;
+     char *hostp = NULL;
++    char *resolv_hostp;
++    struct addrinfo hints;
++    struct addrinfo *hostaddr = 0;
++    int res;
++    char name[NI_MAXHOST];
++    char service[NI_MAXSERV];
++    struct addrinfo *tmpaddr;
+ 
+     /* clear the socket address prior to use */
+     memset(&sn, 0, sizeof(sn));
+@@ -1632,6 +1641,10 @@
+ 	printf("?Already connected to %s\n", hostname);
+ 	return 0;
+     }
++    if (_hostname) {
++	delete[] _hostname;
++	_hostname = 0;
++    }
+     if (argc < 2) {
+ 	(void) strcpy(line, "open ");
+ 	printf("(to) ");
+@@ -1657,11 +1670,33 @@
+ 	    --argc;
+ 	    continue;
+ 	}
++	if (strcmp(*argv, "-b") == 0) {
++	    --argc; ++argv;
++	    if (argc == 0)
++		goto usage;
++	    srchostp = *argv++;
++	    --argc;
++	    continue;
++	}
+ 	if (strcmp(*argv, "-a") == 0) {
+ 	    --argc; ++argv;
+ 	    autologin = 1;
+ 	    continue;
+ 	}
++	if (strcmp(*argv, "-6") == 0) {
++	    --argc; ++argv;
++#ifdef AF_INET6
++	    family = AF_INET6;
++#else
++	    puts("IPv6 unsupported");
++#endif
++	    continue;
++	}
++	if (strcmp(*argv, "-4") == 0) {
++	    --argc; ++argv;
++	    family = AF_INET;
++	    continue;
++	}
+ 	if (hostp == 0) {
+ 	    /* this leaks memory - FIXME */
+ 	    hostp = strdup(*argv++);
+@@ -1680,6 +1715,8 @@
+     if (hostp == 0)
+ 	goto usage;
+ 
++    resolv_hostp = hostp;
++
+ #if defined(IP_OPTIONS) && defined(HAS_IPPROTO_IP)
+     if (hostp[0] == '@' || hostp[0] == '!') {
+ 	if ((hostname = strrchr(hostp, ':')) == NULL)
+@@ -1696,78 +1733,122 @@
+ 	} else {
+ 	    sn.sin_addr.s_addr = temp;
+ 	    sn.sin_family = AF_INET;
++	    /*
++	     * For source route we just make sure to get the IP given
++	     * on the command line when looking up the port.
++	     */
++	    resolv_hostp = inet_ntoa(sn.sin_addr);
+ 	}
+     } 
+-    else {
+-#endif
+-	if (inet_aton(hostp, &sn.sin_addr)) {
+-	    sn.sin_family = AF_INET;
+-	    strcpy(_hostname, hostp);
+-	    hostname = _hostname;
+-	} 
+-	else {
+-	    host = gethostbyname(hostp);
+-	    if (host) {
+-		sn.sin_family = host->h_addrtype;
+-		if (host->h_length > (int)sizeof(sn.sin_addr)) {
+-		    host->h_length = sizeof(sn.sin_addr);
+-		}
+-#if	defined(h_addr)		/* In 4.3, this is a #define */
+-		memcpy((caddr_t)&sn.sin_addr,
+-				host->h_addr_list[0], host->h_length);
+-#else	/* defined(h_addr) */
+-		memcpy((caddr_t)&sn.sin_addr, host->h_addr, host->h_length);
+-#endif	/* defined(h_addr) */
+-		strncpy(_hostname, host->h_name, sizeof(_hostname));
+-		_hostname[sizeof(_hostname)-1] = '\0';
+-		hostname = _hostname;
+-	    } else {
+-		herror(hostp);
+-		return 0;
+-	    }
+-	}
+-#if defined(IP_OPTIONS) && defined(HAS_IPPROTO_IP)
+-    }
+ #endif
++
++    /* User port or the default name of telnet. */
+     if (portp) {
+ 	if (*portp == '-') {
+ 	    portp++;
+ 	    telnetport = 1;
+-	} else
++	} else {
+ 	    telnetport = 0;
+-	sn.sin_port = atoi(portp);
+-	if (sn.sin_port == 0) {
+-	    sp = getservbyname(portp, "tcp");
+-	    if (sp)
+-		sn.sin_port = sp->s_port;
+-	    else {
+-		printf("%s: bad port number\n", portp);
+-		return 0;
++	    if (*portp >='0' && *portp<='9') {
++	       char *end;
++	       long int p;
++
++	       p=strtol(portp, &end, 10);
++	       if (ERANGE==errno && (LONG_MIN==p || LONG_MAX==p)) {
++	          fprintf(stderr, "telnet: port %s overflows\n", portp);
++		  return 0;
++	       } else if (p<=0 || p>=65536) {
++	          fprintf(stderr, "telnet: port %s out of range\n", portp);
++		  return 0;
++	       }
+ 	    }
+-	} 
+-	else {
+-	    sn.sin_port = htons(sn.sin_port);
+ 	}
+-    } 
++    }
+     else {
+-	if (sp == 0) {
+-	    sp = getservbyname("telnet", "tcp");
+-	    if (sp == 0) {
+-		fprintf(stderr, "telnet: tcp/telnet: unknown service\n");
+-		return 0;
+-	    }
+-	    sn.sin_port = sp->s_port;
+-	}
++	portp = "telnet";
+ 	telnetport = 1;
+     }
+-    printf("Trying %s...\n", inet_ntoa(sn.sin_addr));
++
++    /* We only understand SOCK_STREAM sockets. */
++    memset(&hints, 0, sizeof(hints));
++    hints.ai_socktype = SOCK_STREAM;
++    hints.ai_flags = AI_NUMERICHOST;
++    hints.ai_family = family;
++
++    if (srchostp) {
++	res = getaddrinfo(srchostp, "0", &hints, &hostaddr);
++	if (res) {
++	    fprintf(stderr, "telnet: could not resolve %s: %s\n", srchostp,
++		    gai_strerror(res));
++	    return 0;
++	}
++	hints.ai_family = hostaddr->ai_family;
++	res = nlink.bind(hostaddr);
++	freeaddrinfo(hostaddr);
++	if (res < 0)
++	    return 0;
++    }
++        
++    /* Resolve both the host and service simultaneously. */
++    res = getaddrinfo(resolv_hostp, portp, &hints, &hostaddr);
++    if (res == EAI_NONAME) {
++	hints.ai_flags = AI_CANONNAME;
++	res = getaddrinfo(resolv_hostp, portp, &hints, &hostaddr);
++    } else if (hostaddr) {
++	hostaddr->ai_canonname = 0;
++    }
++    if (res || !hostaddr) {
++	fprintf(stderr, "telnet: could not resolve %s/%s: %s\n", resolv_hostp, portp, gai_strerror(res));
++	return 0;
++    }
++     
++    /* Try to connect to every listed round robin IP. */
++    tmpaddr = hostaddr;
++    errno = 0;
+     do {
+-	int x = nlink.connect(debug, host, &sn, srp, srlen, tos);
+-	if (!x) return 0;
+-	else if (x==1) continue;
++	int x;
++
++	if (!tmpaddr) {
++	    if (errno)
++		perror("telnet: Unable to connect to remote host");
++	    else
++		fputs("telnet: Unable to connect to remote host: "
++		      "Bad port number\n", stderr);
++err:
++	    freeaddrinfo(hostaddr);
++	    return 0;
++	}
++
++	if (tmpaddr->ai_family == AF_UNIX) {
++nextaddr:
++	    tmpaddr = tmpaddr->ai_next;
++	    continue;
++	}
++
++	getnameinfo(tmpaddr->ai_addr, tmpaddr->ai_addrlen,
++		    name, sizeof(name), service, sizeof(service),
++		    NI_NUMERICHOST | NI_NUMERICSERV);
++
++	printf("Trying %s...\n", name);
++	x = nlink.connect(debug, tmpaddr, srp, srlen, tos);
++	if (!x)
++	    goto err;
++	else if (x==1)
++	    goto nextaddr;
++
+ 	connected++;
+     } while (connected == 0);
+-    cmdrc(hostp, hostname);
++    if (tmpaddr->ai_canonname == 0) {
++	hostname = new char[strlen(hostp)+1];
++	strcpy(hostname, hostp);
++    }
++    else {
++	hostname = new char[strlen(tmpaddr->ai_canonname)+1];
++	strcpy(hostname, tmpaddr->ai_canonname);
++    }
++
++    cmdrc(hostp, hostname, portp);
++    freeaddrinfo(hostaddr);
+     if (autologin && user == NULL) {
+ 	struct passwd *pw;
+ 
+@@ -2013,30 +2094,21 @@
+     return 0;
+ }
+ 
+-static char *rcname = 0;
+-static char rcbuf[128];
+-
+-void cmdrc(const char *m1, const char *m2) {
++static void readrc(const char *m1, const char *m2, const char *port,
++		   const char *rcname)
++{
+     FILE *rcfile;
+     int gotmachine = 0;
+     int l1 = strlen(m1);
+     int l2 = strlen(m2);
+-    char m1save[64];
+-
+-    if (skiprc) return;
++    int lport = strlen(port);
++    char m1save[l1 + 1];
++    char portsave[lport + 1];
+ 
+     strcpy(m1save, m1);
+     m1 = m1save;
+-
+-    if (rcname == 0) {
+-	rcname = getenv("HOME");
+-	if (rcname)
+-	    strcpy(rcbuf, rcname);
+-	else
+-	    rcbuf[0] = '\0';
+-	strcat(rcbuf, "/.telnetrc");
+-	rcname = rcbuf;
+-    }
++    strcpy(portsave, port);
++    port = portsave;
+ 
+     rcfile = fopen(rcname, "r");
+     if (!rcfile) return;
+@@ -2061,6 +2133,13 @@
+ 		strncpy(line, &line[7], sizeof(line) - 7);
+ 	    else
+ 		continue;
++
++	    if (line[0] == ':') {
++		if (!strncasecmp(&line[1], port, lport))
++		    continue;
++		strncpy(line, &line[lport + 1], sizeof(line) - lport - 1);
++	    }
++
+ 	    if (line[0] != ' ' && line[0] != '\t' && line[0] != '\n')
+ 		continue;
+ 	    gotmachine = 1;
+@@ -2073,6 +2152,21 @@
+     fclose(rcfile);
+ }
+ 
++void cmdrc(const char *m1, const char *m2, const char *port) {
++    char *rcname = NULL;
++
++    if (skiprc) return;
++
++    readrc(m1, m2, port, "/etc/telnetrc");
++    if (asprintf (&rcname, "%s/.telnetrc", getenv ("HOME")) == -1)
++      {
++        perror ("asprintf");
++        return;
++      }
++    readrc(m1, m2, port, rcname);
++    free (rcname);
++}
++
+ #if defined(IP_OPTIONS) && defined(HAS_IPPROTO_IP)
+ 
+ /*
+--- netkit-telnet-0.17.orig/telnet/externs.h
++++ netkit-telnet-0.17/telnet/externs.h
+@@ -48,9 +48,7 @@
+ typedef unsigned char cc_t;
+ #endif
+ 
+-#ifdef __linux__
+ #include <unistd.h>   /* get _POSIX_VDISABLE */
+-#endif
+ 
+ #ifndef	_POSIX_VDISABLE
+ #error "Please fix externs.h to define _POSIX_VDISABLE"
+@@ -60,7 +58,8 @@
+ 
+ extern int autologin;		/* Autologin enabled */
+ extern int skiprc;		/* Don't process the ~/.telnetrc file */
+-extern int eight;		/* use eight bit mode (binary in and/or out */
++extern int eight;		/* use eight bit mode (binary in and/or out) */
++extern int binary;		/* use binary option (in and/or out) */
+ extern int flushout;		/* flush output */
+ extern int connected;		/* Are we connected to the other side? */
+ extern int globalmode;		/* Mode tty should be in */
+@@ -225,6 +224,8 @@
+ 
+ //#if 0
+ extern struct termios new_tc;
++extern struct termios old_tc;
++
+ 
+ #define termEofChar		new_tc.c_cc[VEOF]
+ #define termEraseChar		new_tc.c_cc[VERASE]
+--- netkit-telnet-0.17.orig/telnet/telnet.cc
++++ netkit-telnet-0.17/telnet/telnet.cc
+@@ -88,7 +88,8 @@
+ char	will_wont_resp[256];
+ 
+ int
+-eight = 0,
++  eight = 3,
++  binary = 0,
+   autologin = 0,	/* Autologin anyone? */
+   skiprc = 0,
+   connected,
+@@ -639,14 +640,14 @@
+   if (resettermname) {
+     resettermname = 0;
+     tname = env_getvalue("TERM", 0);
+-    if (!tname || my_setupterm(tname, 1, &err)) {
++    if (!tname /* || my_setupterm(tname, 1, &err) */) {
+       termbuf[0] = 0;
+       tname = "UNKNOWN";
+     }
+     mklist(termbuf, tname, termtypes);
+     next = 0;
+   }
+-  if (next==termtypes.num()) next = 0;
++  if (next==termtypes.num()-1) next = 0;
+   return termtypes[next++];
+ }
+ /*
+@@ -681,7 +682,7 @@
+       }
+ #endif /* TN3270 */
+       name = gettermname();
+-      netoring.printf("%c%c%c%c%s%c%c", IAC, SB, TELOPT_TTYPE,
++      netoring.xprintf("%c%c%c%c%s%c%c", IAC, SB, TELOPT_TTYPE,
+ 		      TELQUAL_IS, name, IAC, SE);
+     }
+     break;
+@@ -693,7 +694,7 @@
+     if (SB_GET() == TELQUAL_SEND) {
+       long oospeed, iispeed;
+       TerminalSpeeds(&iispeed, &oospeed);
+-      netoring.printf("%c%c%c%c%ld,%ld%c%c", IAC, SB, TELOPT_TSPEED, 
++      netoring.xprintf("%c%c%c%c%ld,%ld%c%c", IAC, SB, TELOPT_TSPEED, 
+ 		      TELQUAL_IS, oospeed, iispeed, IAC, SE);
+     }
+     break;
+@@ -780,7 +781,7 @@
+ 	send_wont(TELOPT_XDISPLOC, 1);
+ 	break;
+       }
+-      netoring.printf("%c%c%c%c%s%c%c", IAC, SB, TELOPT_XDISPLOC,
++      netoring.xprintf("%c%c%c%c%s%c%c", IAC, SB, TELOPT_XDISPLOC,
+ 		      TELQUAL_IS, dp, IAC, SE);
+     }
+     break;
+@@ -798,7 +799,7 @@
+     return;
+   }
+   
+-  netoring.printf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, 
++  netoring.xprintf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, 
+ 		  DONT, cmd[0], IAC, SE);
+ }
+ 
+@@ -815,7 +816,7 @@
+     /*@*/	printf("lm_do: no command!!!\n");	/* Should not happen... */
+     return;
+   }
+-  netoring.printf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, 
++  netoring.xprintf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, 
+ 		  WONT, cmd[0], IAC, SE);
+ }
+ 
+@@ -838,7 +839,7 @@
+     k |= MODE_ACK;
+   }
+   
+-  netoring.printf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, LM_MODE,
++  netoring.xprintf("%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE, LM_MODE,
+ 		  k, IAC, SE);
+   
+   setconnmode(0);	/* set changed mode */
+@@ -933,11 +934,11 @@
+ 
+ void slc_import(int def) {
+   if (def) {
+-    netoring.printf("%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE,
++    netoring.xprintf("%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE,
+ 		    LM_SLC, 0, SLC_DEFAULT, 0, IAC, SE);
+   }
+   else {
+-    netoring.printf("%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE,
++    netoring.xprintf("%c%c%c%c%c%c%c%c%c", IAC, SB, TELOPT_LINEMODE,
+ 		    LM_SLC, 0, SLC_VARIABLE, 0, IAC, SE);
+   }
+ }
+@@ -1050,6 +1051,7 @@
+ 
+ 
+ unsigned char slc_reply[128];
++unsigned char const * const slc_reply_eom = &slc_reply[sizeof(slc_reply)];
+ unsigned char *slc_replyp;
+ 
+ void slc_start_reply(void) {
+@@ -1061,6 +1063,14 @@
+ }
+ 
+ void slc_add_reply(int func, int flags, int value) {
++  /* A sequence of up to 6 bytes my be written for this member of the SLC
++   * suboption list by this function.  The end of negotiation command,
++   * which is written by slc_end_reply(), will require 2 additional
++   * bytes.  Do not proceed unless there is sufficient space for these
++   * items.
++   */
++  if (&slc_replyp[6+2] > slc_reply_eom)
++    return;
+   if ((*slc_replyp++ = func) == IAC)
+     *slc_replyp++ = IAC;
+   if ((*slc_replyp++ = flags) == IAC)
+@@ -1142,6 +1152,7 @@
+   }
+ }
+ 
++/* OPT_REPLY_SIZE must be a multiple of 2. */
+ #define	OPT_REPLY_SIZE	256
+ unsigned char *opt_reply;
+ unsigned char *opt_replyp;
+@@ -1173,6 +1184,7 @@
+ 
+ void env_opt_add(const char *ep) {
+   const char *vp;
++  const unsigned char *tp;
+   unsigned char c;
+   
+   if (opt_reply == NULL)		/*XXX*/
+@@ -1185,11 +1197,12 @@
+     return;
+   }
+   vp = env_getvalue(ep, 1);
+-  if (opt_replyp + (vp ? strlen(vp) : 0) + strlen(ep) + 6 > opt_replyend)
++  tp = opt_replyp + (vp ? strlen(vp) * 2 : 0) + strlen(ep) * 2 + 6;
++  if (tp > opt_replyend)
+     {
+       register int len;
+-      opt_replyend += OPT_REPLY_SIZE;
+-      len = opt_replyend - opt_reply;
++      len = ((tp - opt_reply) + OPT_REPLY_SIZE - 1) & ~(OPT_REPLY_SIZE - 1);
++      opt_replyend = opt_reply + len;
+       opt_reply = (unsigned char *)realloc(opt_reply, len);
+       if (opt_reply == NULL) {
+ 	/*@*/			printf("env_opt_add: realloc() failed!!!\n");
+@@ -1740,8 +1753,8 @@
+     send_do(TELOPT_STATUS, 1);
+     if (env_getvalue("DISPLAY", 0))
+       send_will(TELOPT_XDISPLOC, 1);
+-    if (eight)
+-      tel_enter_binary(eight);
++    if (binary)
++      tel_enter_binary(binary);
+   }
+ #endif /* !defined(TN3270) */
+   
+--- netkit-telnet-0.17.orig/telnet/Makefile
++++ netkit-telnet-0.17/telnet/Makefile
+@@ -7,7 +7,7 @@
+ 
+ # -DAUTHENTICATE
+ CXXFLAGS += -DUSE_TERMIO -DKLUDGELINEMODE
+-LIBS += $(LIBTERMCAP)
++LIBS = $(LIBTERMCAP)
+ 
+ SRCS = commands.cc main.cc network.cc ring.cc sys_bsd.cc telnet.cc \
+ 	terminal.cc tn3270.cc utilities.cc genget.cc environ.cc netlink.cc
+@@ -22,7 +22,7 @@
+ 	$(CXX) $(CXXFLAGS) -MM $(SRCS) >depend.mk
+ 
+ install: telnet
+-	install -s -m$(BINMODE) telnet $(INSTALLROOT)$(BINDIR)
++	install -m$(BINMODE) telnet $(INSTALLROOT)$(BINDIR)
+ 	install -m$(MANMODE) telnet.1 $(INSTALLROOT)$(MANDIR)/man1
+ 
+ clean:
+--- netkit-telnet-0.17.orig/telnetd/authenc.c
++++ netkit-telnet-0.17/telnetd/authenc.c
+@@ -42,18 +42,6 @@
+     return(0);
+ }
+ 
+-void
+-net_encrypt()
+-{
+-#if	defined(ENCRYPT)
+-    char *s = (nclearto > nbackp) ? nclearto : nbackp;
+-    if (s < nfrontp && encrypt_output) {
+-	(*encrypt_output)((unsigned char *)s, nfrontp - s);
+-    }
+-    nclearto = nfrontp;
+-#endif
+-}
+-
+ int
+ telnet_spin()
+ {
+--- netkit-telnet-0.17.orig/telnetd/defs.h
++++ netkit-telnet-0.17/telnetd/defs.h
+@@ -55,10 +55,11 @@
+ #include <fcntl.h>
+ #include <sys/file.h>
+ #include <sys/stat.h>
+-#include <sys/time.h>
++#include <time.h>
+ #include <sys/ioctl.h>
+ #include <netinet/in.h>
+ #include <arpa/telnet.h>
++#include <sys/uio.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <signal.h>
+--- netkit-telnet-0.17.orig/telnetd/global.c
++++ netkit-telnet-0.17/telnetd/global.c
+@@ -87,11 +87,10 @@
+ 
+ char	netibuf[BUFSIZ], *netip;
+ 
+-char	netobuf[BUFSIZ+NETSLOP], *nfrontp, *nbackp;
+-char	*neturg;		/* one past last bye of urgent data */
+-
+ int	pcc, ncc;
+ 
++FILE	*netfile;
++
+ int	pty, net;
+ int	SYNCHing;		/* we are in TELNET SYNCH mode */
+ 
+--- netkit-telnet-0.17.orig/telnetd/issue.net.5
++++ netkit-telnet-0.17/telnetd/issue.net.5
+@@ -40,4 +40,4 @@
+ .Sh FILES
+ .Pa /etc/issue.net
+ .Sh "SEE ALSO"
+-.Xr telnetd 8
++.Xr in.telnetd 8
+--- netkit-telnet-0.17.orig/telnetd/setproctitle.c
++++ netkit-telnet-0.17/telnetd/setproctitle.c
+@@ -139,7 +139,7 @@
+ 	(void) strcpy(Argv[0], buf);
+ 	p = &Argv[0][i];
+ 	while (p < LastArgv)
+-		*p++ = ' ';
++		*p++ = '\0';
+ 	Argv[1] = NULL;
+ }
+ 
+--- netkit-telnet-0.17.orig/telnetd/state.c
++++ netkit-telnet-0.17/telnetd/state.c
+@@ -179,6 +179,7 @@
+ 		   */
+ 	      case AO:
+ 		  {
++		      static const char msg[] = { IAC, DM };
+ 		      DIAG(TD_OPTIONS, printoption("td: recv IAC", c));
+ 		      ptyflush();	/* half-hearted */
+ 		      init_termbuf();
+@@ -191,9 +192,7 @@
+ 		      }
+ 
+ 		      netclear();	/* clear buffer back */
+-		      *nfrontp++ = (char)IAC;
+-		      *nfrontp++ = (char)DM;
+-		      neturg = nfrontp-1; /* off by one XXX */
++		      sendurg(msg, sizeof(msg));
+ 		      DIAG(TD_OPTIONS, printoption("td: send IAC", DM));
+ 		      break;
+ 		  }
+--- netkit-telnet-0.17.orig/telnetd/sys_term.c
++++ netkit-telnet-0.17/telnetd/sys_term.c
+@@ -41,8 +41,6 @@
+ 
+ #include "telnetd.h"
+ #include "pathnames.h"
+-#include "logout.h"
+-#include "logwtmp.h"
+ 
+ #if defined(__GLIBC__) && (__GLIBC__ >= 2)
+ /* mmm, nonstandard */
+@@ -206,17 +204,17 @@
+  *
+  * Returns the file descriptor of the opened pty.
+  */
+-static char linedata[PATH_MAX];
+-char *line = linedata;
++const char *line;
+ 
+ static int ptyslavefd=-1;
+ 
+ int getpty(void) {
+     int masterfd;
+ 
+-    if (openpty(&masterfd, &ptyslavefd, line, NULL, NULL)) {
++    if (openpty(&masterfd, &ptyslavefd, NULL, NULL, NULL)) {
+ 	return -1;
+     }
++    line = ttyname(ptyslavefd);
+     return masterfd;
+ }
+ 
+@@ -681,7 +679,9 @@
+     memcpy(&argvfoo, &avs.argv, sizeof(argvfoo));
+     execv(loginprg, argvfoo);
+ 
++    openlog("telnetd", LOG_PID | LOG_ODELAY, LOG_DAEMON);
+     syslog(LOG_ERR, "%s: %m\n", loginprg);
++    closelog();
+     fatalperror(net, loginprg);
+ }
+ 
+@@ -720,25 +720,11 @@
+  * clean up anything that needs to be cleaned up.
+  */
+ void cleanup(int sig) {
+-    char *p;
++    const char *p;
+     (void)sig;
+ 
+     p = line + sizeof("/dev/") - 1;
+     if (logout(p)) logwtmp(p, "", "");
+-#ifdef PARANOID_TTYS
+-    /*
+-     * dholland 16-Aug-96 chmod the tty when not in use
+-     * This will make it harder to attach unwanted stuff to it
+-     * (which is a security risk) but will break some programs.
+-     */
+-    chmod(line, 0600);
+-#else
+-    chmod(line, 0666);
+-#endif
+-    chown(line, 0, 0);
+-    *p = 'p';
+-    chmod(line, 0666);
+-    chown(line, 0, 0);
+     shutdown(net, 2);
+     exit(0);
+ }
+--- netkit-telnet-0.17.orig/telnetd/telnetd.8
++++ netkit-telnet-0.17/telnetd/telnetd.8
+@@ -161,7 +161,7 @@
+ .It Fl L Ar loginprg
+ This option may be used to specify a different login program.
+ By default, 
+-.Pa /bin/login
++.Pa /usr/lib/telnetlogin
+ is used.
+ .It Fl n
+ Disable
+@@ -406,6 +406,7 @@
+ indicates a willingness to decrypt
+ the data stream.
+ .Xr issue.net 5 ) .
++.El
+ .Sh FILES
+ .Pa /etc/services ,
+ .Pa /etc/issue.net
+@@ -458,6 +459,7 @@
+ Telnet Environment Option Interoperability Issues
+ .It Cm RFC-1572
+ Telnet Environment Option
++.El
+ .Sh BUGS
+ Some
+ .Tn TELNET
+--- netkit-telnet-0.17.orig/telnetd/telnetd.c
++++ netkit-telnet-0.17/telnetd/telnetd.c
+@@ -43,12 +43,16 @@
+ 
+ #include "../version.h"
+ 
++#include <sys/socket.h>
+ #include <netdb.h>
+ #include <termcap.h>
+ #include <netinet/in.h>
+ /* #include <netinet/ip.h> */ /* Don't think this is used at all here */
+ #include <arpa/inet.h>
+ #include <assert.h>
++#include <poll.h>
++#include <fcntl.h>
++#include <unistd.h>
+ #include "telnetd.h"
+ #include "pathnames.h"
+ #include "setproctitle.h"
+@@ -68,7 +72,7 @@
+ #define HAS_IPPROTO_IP
+ #endif
+ 
+-static void doit(struct sockaddr_in *who);
++static void doit(struct sockaddr *who, socklen_t who_len);
+ static int terminaltypeok(const char *s);
+ 
+ /*
+@@ -82,15 +86,119 @@
+ 
+ int debug = 0;
+ int keepalive = 1;
++#ifdef LOGIN_WRAPPER
++char *loginprg = LOGIN_WRAPPER;
++#else
+ char *loginprg = _PATH_LOGIN;
+-char *progname;
++#endif
+ 
+ extern void usage(void);
+ 
++static void
++wait_for_connection(const char *service)
++{
++	struct addrinfo hints;
++	struct addrinfo *res, *addr;
++	struct pollfd *fds, *fdp;
++	int nfds;
++	int i;
++	int error;
++	int on = 1;
++
++	memset(&hints, 0, sizeof(hints));
++	hints.ai_family = PF_UNSPEC;
++	hints.ai_flags = AI_PASSIVE;
++	hints.ai_socktype = SOCK_STREAM;
++	error = getaddrinfo(NULL, service, &hints, &res);
++	if (error) {
++		char *p;
++		error = asprintf(&p, "getaddrinfo: %s\n", gai_strerror(error));
++		fatal(2, error >= 0 ? p : "");
++	}
++
++	for (addr = res, nfds = 0; addr; addr = addr->ai_next, nfds++)
++		;
++	fds = malloc(sizeof(struct pollfd) * nfds);
++	for (addr = res, fdp = fds; addr; addr = addr->ai_next, fdp++) {
++		int s;
++
++		if (addr->ai_family == AF_LOCAL) {
++nextaddr:
++			fdp--;
++			nfds--;
++			continue;
++		}
++
++		s = socket(addr->ai_family, SOCK_STREAM, 0);
++		if (s < 0) {
++			if (errno == EAFNOSUPPORT || errno == EINVAL) {
++				goto nextaddr;
++			}
++			fatalperror(2, "socket");
++		}
++		if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
++			fatalperror(2, "setsockopt");
++		}
++		if (bind(s, addr->ai_addr, addr->ai_addrlen)) {
++#ifdef linux
++			if (fdp != fds && errno == EADDRINUSE) {
++				close(s);
++				goto nextaddr;
++			}
++#endif
++			fatalperror(2, "bind");
++		}
++		if (listen(s, 1)) {
++			fatalperror(2, "listen");
++		}
++		if (fcntl(s, F_SETFL, O_NONBLOCK)) {
++			fatalperror(2, "fcntl");
++		}
++
++		fdp->fd = s;
++		fdp->events = POLLIN;
++	}
++
++	freeaddrinfo(res);
++
++	while (1) {
++		if (poll(fds, nfds, -1) < 0) {
++			if (errno == EINTR) {
++				continue;
++			}
++			fatalperror(2, "poll");
++		}
++
++		for (i = 0, fdp = fds; i < nfds; i++, fdp++) {
++			int fd;
++
++			if (!(fdp->revents & POLLIN)) {
++				continue;
++			}
++
++			fd = accept(fdp->fd, 0, 0);
++			if (fd >= 0) {
++				dup2(fd, 0);
++				close(fd);
++				goto out;
++			}
++			if (errno != EAGAIN) {
++				fatalperror(2, "accept");
++			}
++		}
++	}
++
++out:
++	for (i = 0, fdp = fds; i < nfds; i++, fdp++) {
++		close(fdp->fd);
++	}
++	free(fds);
++}
++
+ int
+ main(int argc, char *argv[], char *env[])
+ {
+-	struct sockaddr_in from;
++	struct sockaddr_storage from;
+ 	int on = 1;
+ 	socklen_t fromlen;
+ 	register int ch;
+@@ -103,12 +211,6 @@
+ 
+ 	pfrontp = pbackp = ptyobuf;
+ 	netip = netibuf;
+-	nfrontp = nbackp = netobuf;
+-#if	defined(ENCRYPT)
+-	nclearto = 0;
+-#endif
+-
+-	progname = *argv;
+ 
+ 	while ((ch = getopt(argc, argv, "d:a:e:lhnr:I:D:B:sS:a:X:L:")) != EOF) {
+ 		switch(ch) {
+@@ -249,74 +351,18 @@
+ 	argv += optind;
+ 
+ 	if (debug) {
+-	    int s, ns;
+-	    socklen_t foo;
+-	    struct servent *sp;
+-	    struct sockaddr_in sn;
+-
+-	    memset(&sn, 0, sizeof(sn));
+-	    sn.sin_family = AF_INET;
+-
+-	    if (argc > 1) {
+-		usage();
+-		/* NOTREACHED */
+-	    } else if (argc == 1) {
+-		    if ((sp = getservbyname(*argv, "tcp"))!=NULL) {
+-			sn.sin_port = sp->s_port;
+-		    } 
+-		    else {
+-			int pt = atoi(*argv);
+-			if (pt <= 0) {
+-			    fprintf(stderr, "telnetd: %s: bad port number\n",
+-				    *argv);
+-			    usage();
+-			    /* NOTREACHED */
+-			}
+-			sn.sin_port = htons(pt);
+-		   }
+-	    } else {
+-		sp = getservbyname("telnet", "tcp");
+-		if (sp == 0) {
+-		    fprintf(stderr, "telnetd: tcp/telnet: unknown service\n");
+-		    exit(1);
++		if (argc > 1) {
++			usage();
++			/* NOTREACHED */
+ 		}
+-		sn.sin_port = sp->s_port;
+-	    }
+ 
+-	    s = socket(AF_INET, SOCK_STREAM, 0);
+-	    if (s < 0) {
+-		    perror("telnetd: socket");;
+-		    exit(1);
+-	    }
+-	    (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+-	    if (bind(s, (struct sockaddr *)&sn, sizeof(sn)) < 0) {
+-		perror("bind");
+-		exit(1);
+-	    }
+-	    if (listen(s, 1) < 0) {
+-		perror("listen");
+-		exit(1);
+-	    }
+-	    foo = sizeof(sn);
+-	    ns = accept(s, (struct sockaddr *)&sn, &foo);
+-	    if (ns < 0) {
+-		perror("accept");
+-		exit(1);
+-	    }
+-	    (void) dup2(ns, 0);
+-	    (void) close(ns);
+-	    (void) close(s);
+-	} else if (argc > 0) {
+-		usage();
+-		/* NOT REACHED */
++		wait_for_connection((argc == 1) ? *argv : "telnet");
+ 	}
+ 
+ 	openlog("telnetd", LOG_PID | LOG_ODELAY, LOG_DAEMON);
+ 	fromlen = sizeof (from);
+ 	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
+-		fprintf(stderr, "%s: ", progname);
+-		perror("getpeername");
+-		_exit(1);
++		fatalperror(2, "getpeername");
+ 	}
+ 	if (keepalive &&
+ 	    setsockopt(0, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof (on)) < 0) {
+@@ -339,7 +385,8 @@
+ 	}
+ #endif	/* defined(HAS_IPPROTO_IP) && defined(IP_TOS) */
+ 	net = 0;
+-	doit(&from);
++	netopen();
++	doit((struct sockaddr *)&from, fromlen);
+ 	/* NOTREACHED */
+ 	return 0;
+ }  /* end of main */
+@@ -354,7 +401,7 @@
+ #ifdef BFTPDAEMON
+ 	fprintf(stderr, " [-B]");
+ #endif
+-	fprintf(stderr, " [-debug]");
++	fprintf(stderr, " [-debug port]");
+ #ifdef DIAGNOSTICS
+ 	fprintf(stderr, " [-D (options|report|exercise|netdata|ptydata)]\n\t");
+ #endif
+@@ -373,7 +420,7 @@
+ #ifdef	AUTHENTICATE
+ 	fprintf(stderr, " [-X auth-type]");
+ #endif
+-	fprintf(stderr, " [port]\n");
++	fprintf(stderr, "\n");
+ 	exit(1);
+ }
+ 
+@@ -608,54 +655,45 @@
+  * Get a pty, scan input lines.
+  */
+ static void
+-doit(struct sockaddr_in *who)
++doit(struct sockaddr *who, socklen_t who_len)
+ {
+ 	const char *host;
+-	struct hostent *hp;
+ 	int level;
+ 	char user_name[256];
++	int i;
++	struct addrinfo hints, *res;
+ 
+ 	/*
+ 	 * Find an available pty to use.
+ 	 */
+ 	pty = getpty();
+ 	if (pty < 0)
+-		fatal(net, "All network ports in use");
++		fatalperror(net, "getpty");
+ 
+ 	/* get name of connected client */
+-	hp = gethostbyaddr((char *)&who->sin_addr, sizeof (struct in_addr),
+-		who->sin_family);
+-	if (hp)
+-		host = hp->h_name;
+-	else
+-		host = inet_ntoa(who->sin_addr);
+-
+-	/*
+-	 * We must make a copy because Kerberos is probably going
+-	 * to also do a gethost* and overwrite the static data...
+-	 */
+-	{
+-		int i;
+-		strncpy(remote_host_name, host, sizeof(remote_host_name)-1);
+-		remote_host_name[sizeof(remote_host_name)-1] = 0;
+-
+-		/* Disallow funnies. */
+-		for (i=0; remote_host_name[i]; i++) {
+-		    if (remote_host_name[i]<=32 || remote_host_name[i]>126) 
+-			remote_host_name[i] = '?';
+-		}
++	if (getnameinfo(who, who_len, remote_host_name,
++			sizeof(remote_host_name), 0, 0, 0)) {
++		syslog(LOG_ERR, "doit: getnameinfo: %m");
++		*remote_host_name = 0;
++        }
++
++	/* Disallow funnies. */
++	for (i=0; remote_host_name[i]; i++) {
++	    if (remote_host_name[i]<=32 || remote_host_name[i]>126) 
++		remote_host_name[i] = '?';
+ 	}
+ 	host = remote_host_name;
+ 
+ 	/* Get local host name */
+-	{
+-		struct hostent *h;
+-		gethostname(host_name, sizeof(host_name));
+-		h = gethostbyname(host_name);
+-		if (h) {
+-		    strncpy(host_name, h->h_name, sizeof(host_name));
+-		    host_name[sizeof(host_name)-1] = 0;
+-		}
++	gethostname(host_name, sizeof(host_name));
++	memset(&hints, 0, sizeof(hints));
++	hints.ai_family = PF_UNSPEC;
++	hints.ai_flags = AI_CANONNAME;
++	if ((i = getaddrinfo(host_name, 0, &hints, &res)))
++		syslog(LOG_WARNING, "doit: getaddrinfo: %s", gai_strerror(i));
++	else {
++		strncpy(host_name, res->ai_canonname, sizeof(host_name)-1);
++		host_name[sizeof(host_name)-1] = 0;
+ 	}
+ 
+ #if	defined(AUTHENTICATE) || defined(ENCRYPT)
+@@ -892,7 +930,7 @@
+ 	 * Never look for input if there's still
+ 	 * stuff in the corresponding output buffer
+ 	 */
+-	if (nfrontp - nbackp || pcc > 0) {
++	if (netbuflen(1) || pcc > 0) {
+ 	    FD_SET(f, &obits);
+ 	    if (f >= hifd) hifd = f+1;
+ 	} 
+@@ -1033,6 +1071,7 @@
+ 		}
+ #endif	/* LINEMODE */
+ 		if (ptyibuf[0] & TIOCPKT_FLUSHWRITE) {
++		    static const char msg[] = { IAC, DM };
+ 		    netclear();	/* clear buffer back */
+ #ifndef	NO_URGENT
+ 		    /*
+@@ -1041,8 +1080,7 @@
+ 		     * royally if we send them urgent
+ 		     * mode data.
+ 		     */
+-		    netoprintf("%c%c", IAC, DM);
+-		    neturg = nfrontp-1; /* off by one XXX */
++		    sendurg(msg, sizeof(msg));
+ #endif
+ 		}
+ 		if (his_state_is_will(TELOPT_LFLOW) &&
+@@ -1058,23 +1096,21 @@
+ 	    }
+ 	}
+ 	
+-	while (pcc > 0) {
+-	    if ((&netobuf[BUFSIZ] - nfrontp) < 2)
+-		break;
++	while (pcc > 0 && !netbuflen(0)) {
+ 	    c = *ptyip++ & 0377, pcc--;
+ 	    if (c == IAC)
+-		*nfrontp++ = c;
+-	    *nfrontp++ = c;
++		putc(c, netfile);
++	    putc(c, netfile);
+ 	    if ((c == '\r'  ) && (my_state_is_wont(TELOPT_BINARY))) {
+ 		if (pcc > 0 && ((*ptyip & 0377) == '\n')) {
+-		    *nfrontp++ = *ptyip++ & 0377;
++		    putc(*ptyip++ & 0377, netfile);
+ 		    pcc--;
+ 		} 
+-		else *nfrontp++ = '\0';
++		else putc('\0', netfile);
+ 	    }
+ 	}
+ 
+-	if (FD_ISSET(f, &obits) && (nfrontp - nbackp) > 0)
++	if (FD_ISSET(f, &obits))
+ 	    netflush();
+ 	if (ncc > 0)
+ 	    telrcv();
+--- netkit-telnet-0.17.orig/telnetd/utility.c
++++ netkit-telnet-0.17/telnetd/utility.c
+@@ -41,6 +41,7 @@
+ 
+ #include <stdarg.h>
+ #include <sys/utsname.h>
++#include <sys/time.h>
+ 
+ #ifdef AUTHENTICATE
+ #include <libtelnet/auth.h>
+@@ -48,34 +49,19 @@
+ 
+ #include "telnetd.h"
+ 
+-/*
+- * utility functions performing io related tasks
+- */
+-
+-void
+-netoprintf(const char *fmt, ...)
+-{
+-   int len, maxsize;
+-   va_list ap;
+-   int done=0;
+-
+-   while (!done) {
+-      maxsize = sizeof(netobuf) - (nfrontp - netobuf);
+-
+-      va_start(ap, fmt);
+-      len = vsnprintf(nfrontp, maxsize, fmt, ap);
+-      va_end(ap);
+-
+-      if (len<0 || len==maxsize) {
+-	 /* didn't fit */
+-	 netflush();
+-      }
+-      else {
+-	 done = 1;
+-      }
+-   }
+-   nfrontp += len;
+-}
++struct buflist {
++	struct buflist *next;
++	char *buf;
++	size_t len;
++};
++
++static struct buflist head = { next: &head, buf: 0, len: 0 };
++static struct buflist *tail = &head;
++static size_t skip;
++static int trailing;
++static size_t listlen;
++static int doclear;
++static struct buflist *urg;
+ 
+ /*
+  * ttloop
+@@ -92,9 +78,7 @@
+ 
+     DIAG(TD_REPORT, netoprintf("td: ttloop\r\n"););
+ 		     
+-    if (nfrontp-nbackp) {
+-	netflush();
+-    }
++    netflush();
+     ncc = read(net, netibuf, sizeof(netibuf));
+     if (ncc < 0) {
+ 	syslog(LOG_INFO, "ttloop: read: %m\n");
+@@ -168,33 +152,64 @@
+  * character.
+  */
+ static
+-char *
+-nextitem(char *current)
+-{
+-    if ((*current&0xff) != IAC) {
+-	return current+1;
+-    }
+-    switch (*(current+1)&0xff) {
+-    case DO:
+-    case DONT:
+-    case WILL:
+-    case WONT:
+-	return current+3;
+-    case SB:		/* loop forever looking for the SE */
+-	{
+-	    register char *look = current+2;
+-
+-	    for (;;) {
+-		if ((*look++&0xff) == IAC) {
+-		    if ((*look++&0xff) == SE) {
+-			return look;
+-		    }
++const char *
++nextitem(
++	const unsigned char *current, const unsigned char *end,
++	const unsigned char *next, const unsigned char *nextend
++) {
++	if (*current++ != IAC) {
++		while (current < end && *current++ != IAC)
++			;
++		goto out;
++	}
++
++	if (current >= end) {
++		current = next;
++		if (!current) {
++			return 0;
+ 		}
+-	    }
++		end = nextend;
++		next = 0;
+ 	}
+-    default:
+-	return current+2;
+-    }
++
++	switch (*current++) {
++	case DO:
++	case DONT:
++	case WILL:
++	case WONT:
++		current++;
++		break;
++	case SB:		/* loop forever looking for the SE */
++		for (;;) {
++			int iac;
++
++			while (iac = 0, current < end) {
++				if (*current++ == IAC) {
++					if (current >= end) {
++						iac = 1;
++						break;
++					}
++iac:
++					if (*current++ == SE) {
++						goto out;
++					}
++				}
++			}
++
++			current = next;
++			if (!current) {
++				return 0;
++			}
++			end = nextend;
++			next = 0;
++			if (iac) {
++				goto iac;
++			}
++		}
++	}
++
++out:
++	return next ? next + (current - end) : current;
+ }  /* end of nextitem */
+ 
+ 
+@@ -216,145 +231,103 @@
+  */
+ void netclear(void)
+ {
+-    register char *thisitem, *next;
+-    char *good;
+-#define	wewant(p)	((nfrontp > p) && ((*p&0xff) == IAC) && \
+-				((*(p+1)&0xff) != EC) && ((*(p+1)&0xff) != EL))
++	doclear++;
++	netflush();
++	doclear--;
++}  /* end of netclear */
+ 
+-#if	defined(ENCRYPT)
+-    thisitem = nclearto > netobuf ? nclearto : netobuf;
+-#else
+-    thisitem = netobuf;
+-#endif
++static void
++netwritebuf(void)
++{
++	struct iovec *vector;
++	struct iovec *v;
++	struct buflist *lp;
++	ssize_t n;
++	size_t len;
++	int ltrailing = trailing;
+ 
+-    while ((next = nextitem(thisitem)) <= nbackp) {
+-	thisitem = next;
+-    }
++	if (!listlen)
++		return;
++
++	vector = malloc(listlen * sizeof(struct iovec));
++	if (!vector) {
++		return;
++	}
+ 
+-    /* Now, thisitem is first before/at boundary. */
++	len = listlen - (doclear & ltrailing);
++	v = vector;
++	lp = head.next;
++	while (lp != &head) {
++		if (lp == urg) {
++			len = v - vector;
++			if (!len) {
++				n = send(net, lp->buf, 1, MSG_OOB);
++				if (n > 0) {
++					urg = 0;
++				}
++				goto epi;
++			}
++			break;
++		}
++		v->iov_base = lp->buf;
++		v->iov_len = lp->len;
++		v++;
++		lp = lp->next;
++	}
+ 
+-#if	defined(ENCRYPT)
+-    good = nclearto > netobuf ? nclearto : netobuf;
+-#else
+-    good = netobuf;	/* where the good bytes go */
+-#endif
++	vector->iov_base = (char *)vector->iov_base + skip;
++	vector->iov_len -= skip;
++
++	n = writev(net, vector, len);
++
++epi:
++	free(vector);
+ 
+-    while (nfrontp > thisitem) {
+-	if (wewant(thisitem)) {
+-	    int length;
+-
+-	    next = thisitem;
+-	    do {
+-		next = nextitem(next);
+-	    } while (wewant(next) && (nfrontp > next));
+-	    length = next-thisitem;
+-	    bcopy(thisitem, good, length);
+-	    good += length;
+-	    thisitem = next;
+-	} else {
+-	    thisitem = nextitem(thisitem);
++	if (n < 0) {
++		if (errno != EWOULDBLOCK && errno != EINTR)
++			cleanup(0);
++		return;
+ 	}
+-    }
+ 
+-    nbackp = netobuf;
+-    nfrontp = good;		/* next byte to be sent */
+-    neturg = 0;
+-}  /* end of netclear */
++	len = n + skip;
+ 
+-/*
+- *  netflush
+- *		Send as much data as possible to the network,
+- *	handling requests for urgent data.
+- */
+-extern int not42;
+-void
+-netflush(void)
+-{
+-    int n;
++	lp = head.next;
++	while (lp->len <= len) {
++		if (lp == tail && ltrailing) {
++			break;
++		}
+ 
+-    if ((n = nfrontp - nbackp) > 0) {
+-	DIAG(TD_REPORT,
+-	    { netoprintf("td: netflush %d chars\r\n", n);
+-	      n = nfrontp - nbackp;  /* update count */
+-	    });
+-#if	defined(ENCRYPT)
+-	if (encrypt_output) {
+-		char *s = nclearto ? nclearto : nbackp;
+-		if (nfrontp - s > 0) {
+-			(*encrypt_output)((unsigned char *)s, nfrontp-s);
+-			nclearto = nfrontp;
++		len -= lp->len;
++
++		head.next = lp->next;
++		listlen--;
++		free(lp->buf);
++		free(lp);
++
++		lp = head.next;
++		if (lp == &head) {
++			tail = &head;
++			break;
+ 		}
+ 	}
+-#endif
+-	/*
+-	 * if no urgent data, or if the other side appears to be an
+-	 * old 4.2 client (and thus unable to survive TCP urgent data),
+-	 * write the entire buffer in non-OOB mode.
+-	 */
+-	if ((neturg == 0) || (not42 == 0)) {
+-	    n = write(net, nbackp, n);	/* normal write */
+-	} else {
+-	    n = neturg - nbackp;
+-	    /*
+-	     * In 4.2 (and 4.3) systems, there is some question about
+-	     * what byte in a sendOOB operation is the "OOB" data.
+-	     * To make ourselves compatible, we only send ONE byte
+-	     * out of band, the one WE THINK should be OOB (though
+-	     * we really have more the TCP philosophy of urgent data
+-	     * rather than the Unix philosophy of OOB data).
+-	     */
+-	    if (n > 1) {
+-		n = send(net, nbackp, n-1, 0);	/* send URGENT all by itself */
+-	    } else {
+-		n = send(net, nbackp, n, MSG_OOB);	/* URGENT data */
+-	    }
+-	}
+-    }
+-    if (n < 0) {
+-	if (errno == EWOULDBLOCK || errno == EINTR)
+-		return;
+-	cleanup(0);
+-    }
+-    nbackp += n;
+-#if	defined(ENCRYPT)
+-    if (nbackp > nclearto)
+-	nclearto = 0;
+-#endif
+-    if (nbackp >= neturg) {
+-	neturg = 0;
+-    }
+-    if (nbackp == nfrontp) {
+-	nbackp = nfrontp = netobuf;
+-#if	defined(ENCRYPT)
+-	nclearto = 0;
+-#endif
+-    }
+-    return;
+-}  /* end of netflush */
+ 
++	skip = len;
++}
+ 
+ /*
+- * writenet
+- *
+- * Just a handy little function to write a bit of raw data to the net.
+- * It will force a transmit of the buffer if necessary
+- *
+- * arguments
+- *    ptr - A pointer to a character string to write
+- *    len - How many bytes to write
++ *  netflush
++ *             Send as much data as possible to the network,
++ *     handling requests for urgent data.
+  */
+-void writenet(register unsigned char *ptr, register int len)
++void
++netflush(void)
+ {
+-	/* flush buffer if no room for new data) */
+-	if ((&netobuf[BUFSIZ] - nfrontp) < len) {
+-		/* if this fails, don't worry, buffer is a little big */
+-		netflush();
++	if (fflush(netfile)) {
++		/* out of memory? */
++		cleanup(0);
+ 	}
+-
+-	bcopy(ptr, nfrontp, len);
+-	nfrontp += len;
+-
+-}  /* end of writenet */
++	netwritebuf();
++}
+ 
+ 
+ /*
+@@ -391,18 +364,30 @@
+ 	fatal(f, buf);
+ }
+ 
+-char editedhost[32];
++char *editedhost;
+ struct utsname kerninfo;
+ 
+ void
+ edithost(const char *pat, const char *host)
+ {
+-	char *res = editedhost;
++	char *res;
+ 
+ 	uname(&kerninfo);
+ 
+ 	if (!pat)
+ 		pat = "";
++
++	res = realloc(editedhost, strlen(pat) + strlen(host) + 1);
++	if (!res) {
++		if (editedhost) {
++			free(editedhost);
++			editedhost = 0;
++		}
++		fprintf(stderr, "edithost: Out of memory\n");
++		return;
++	}
++	editedhost = res;
++
+ 	while (*pat) {
+ 		switch (*pat) {
+ 
+@@ -420,18 +405,12 @@
+ 			*res++ = *pat;
+ 			break;
+ 		}
+-		if (res == &editedhost[sizeof editedhost - 1]) {
+-			*res = '\0';
+-			return;
+-		}
+ 		pat++;
+ 	}
+ 	if (*host)
+-		(void) strncpy(res, host,
+-				sizeof editedhost - (res - editedhost) -1);
++		(void) strcpy(res, host);
+ 	else
+ 		*res = '\0';
+-	editedhost[sizeof editedhost - 1] = '\0';
+ }
+ 
+ static char *putlocation;
+@@ -475,7 +454,9 @@
+ 			break;
+ 
+ 		case 'h':
+-			putstr(editedhost);
++			if (editedhost) {
++				putstr(editedhost);
++			}
+ 			break;
+ 
+ 		case 'd':
+@@ -1118,11 +1099,6 @@
+ 	char xbuf[30];
+ 
+ 	while (cnt) {
+-		/* flush net output buffer if no room for new data) */
+-		if ((&netobuf[BUFSIZ] - nfrontp) < 80) {
+-			netflush();
+-		}
+-
+ 		/* add a line of output */
+ 		netoprintf("%s: ", tag);
+ 		for (i = 0; i < 20 && cnt; i++) {
+@@ -1143,3 +1119,154 @@
+ 	} 
+ }
+ #endif /* DIAGNOSTICS */
++
++static struct buflist *
++addbuf(const char *buf, size_t len)
++{
++	struct buflist *bufl;
++
++	bufl = malloc(sizeof(struct buflist));
++	if (!bufl) {
++		return 0;
++	}
++	bufl->next = tail->next;
++	bufl->buf = malloc(len);
++	if (!bufl->buf) {
++		free(bufl);
++		return 0;
++	}
++	bufl->len = len;
++
++	tail = tail->next = bufl;
++	listlen++;
++
++	memcpy(bufl->buf, buf, len);
++	return bufl;
++}
++
++static ssize_t
++netwrite(void *cookie, const char *buf, size_t len)
++{
++	size_t ret;
++	const char *const end = buf + len;
++	int ltrailing = trailing;
++	int ldoclear = doclear;
++
++#define	wewant(p)	((*p&0xff) == IAC) && \
++				((*(p+1)&0xff) != EC) && ((*(p+1)&0xff) != EL)
++
++	ret = 0;
++
++	if (ltrailing) {
++		const char *p;
++		size_t l;
++		size_t m = tail->len;
++
++		p = nextitem(tail->buf, tail->buf + tail->len, buf, end);
++		ltrailing = !p;
++		if (ltrailing) {
++			p = end;
++		}
++
++		l = p - buf;
++		tail->len += l;
++		tail->buf = realloc(tail->buf, tail->len);
++		if (!tail->buf) {
++			return -1;
++		}
++
++		memcpy(tail->buf + m, buf, l);
++		buf += l;
++		len -= l;
++		ret += l;
++		trailing = ltrailing;
++	}
++
++	if (ldoclear) {
++		struct buflist *lpprev;
++
++		skip = 0;
++		lpprev = &head;
++		for (;;) {
++			struct buflist *lp;
++
++			lp = lpprev->next;
++
++			if (lp == &head) {
++				tail = lpprev;
++				break;
++			}
++
++			if (lp == tail && ltrailing) {
++				break;
++			}
++
++			if (!wewant(lp->buf)) {
++				lpprev->next = lp->next;
++				listlen--;
++				free(lp->buf);
++				free(lp);
++			} else {
++				lpprev = lp;
++			}
++		}
++	}
++
++	while (len) {
++		const char *p;
++		size_t l;
++
++		p = nextitem(buf, end, 0, 0);
++		ltrailing = !p;
++		if (ltrailing) {
++			p = end;
++		} else if (ldoclear) {
++			if (!wewant(buf)) {
++				l = p - buf;
++				goto cont;
++			}
++		}
++
++		l = p - buf;
++		if (!addbuf(buf, l)) {
++			return ret ? ret : -1;
++		}
++		trailing = ltrailing;
++
++cont:
++		buf += l;
++		len -= l;
++		ret += l;
++	}
++
++	netwritebuf();
++	return ret;
++}
++
++void
++netopen() {
++	static const cookie_io_functions_t funcs = {
++		read: 0, write: netwrite, seek: 0, close: 0
++	};
++
++	netfile = fopencookie(0, "w", funcs);
++}
++
++extern int not42;
++void
++sendurg(const char *buf, size_t len) {
++	if (!not42) {
++		fwrite(buf, 1, len, netfile);
++		return;
++	}
++
++	urg = addbuf(buf, len);
++}
++
++size_t
++netbuflen(int flush) {
++	if (flush) {
++		netflush();
++	}
++	return listlen != 1 ? listlen : tail->len - skip;
++}
+--- netkit-telnet-0.17.orig/telnetd/ext.h
++++ netkit-telnet-0.17/telnetd/ext.h
+@@ -81,22 +81,21 @@
+  */
+ extern char ptyobuf[BUFSIZ+NETSLOP], *pfrontp, *pbackp;
+ extern char netibuf[BUFSIZ], *netip;
+-extern char netobuf[BUFSIZ+NETSLOP], *nfrontp, *nbackp;
+-extern char *neturg;		/* one past last byte of urgent data */
+ extern int pcc, ncc;
++extern FILE *netfile;
+ 
+ /* printf into netobuf */
+-void netoprintf(const char *fmt, ...) __attribute((format (printf, 1, 2))); 
++#define netoprintf(fmt, ...) fprintf(netfile, fmt, ## __VA_ARGS__)
+ 
+ extern int pty, net;
+-extern char *line;
++extern const char *line;
+ extern int SYNCHing;		/* we are in TELNET SYNCH mode */
+ 
+ void _termstat(void);
+ void add_slc(int, int, int);
+ void check_slc(void);
+ void change_slc(int, int, int);
+-void cleanup(int);
++void cleanup(int) __attribute__ ((noreturn));
+ void clientstat(int, int, int);
+ void copy_termbuf(char *, int);
+ void deferslc(void);
+@@ -106,8 +105,8 @@
+ void dooption(int);
+ void dontoption(int);
+ void edithost(const char *, const char *);
+-void fatal(int, const char *);
+-void fatalperror(int, const char *);
++void fatal(int, const char *) __attribute__ ((noreturn));
++void fatalperror(int, const char *) __attribute__ ((noreturn));
+ void get_slc_defaults(void);
+ void init_env(void);
+ void init_termbuf(void);
+@@ -115,6 +114,8 @@
+ void localstat(void);
+ void netclear(void);
+ void netflush(void);
++size_t netbuflen(int);
++void sendurg(const char *, size_t);
+ 
+ #ifdef DIAGNOSTICS
+ void printoption(const char *, int);
+@@ -182,10 +183,11 @@
+ void tty_tspeed(int);
+ void willoption(int);
+ void wontoption(int);
+-void writenet(unsigned char *, int);
++#define writenet(b, l) fwrite(b, 1, l, netfile)
++void netopen(void);
+ 
+ #if defined(ENCRYPT)
+-extern void (*encrypt_output)(unsigned char *, int);
++extern void (*encrypt_output)(const unsigned char *, int);
+ extern int (*decrypt_input)(int);
+ extern char *nclearto;
+ #endif
+--- netkit-telnet-0.17.orig/telnetd/Makefile
++++ netkit-telnet-0.17/telnetd/Makefile
+@@ -9,7 +9,8 @@
+ # take out -DPARANOID_TTYS.
+ 
+ CFLAGS += '-DISSUE_FILE="/etc/issue.net"' -DPARANOID_TTYS \
+-	   -DNO_REVOKE -DKLUDGELINEMODE -DDIAGNOSTICS
++	   -DNO_REVOKE -DKLUDGELINEMODE -DDIAGNOSTICS \
++	   -DLOGIN_WRAPPER=\"/usr/lib/telnetlogin\"
+ # LIBS += $(LIBTERMCAP)
+ 
+ OBJS = telnetd.o state.o termstat.o slc.o sys_term.o utility.o \
+@@ -27,7 +28,7 @@
+ telnetd.o: ../version.h
+ 
+ install: telnetd
+-	install -s -m$(DAEMONMODE) telnetd $(INSTALLROOT)$(SBINDIR)/in.telnetd
++	install -m$(DAEMONMODE) telnetd $(INSTALLROOT)$(SBINDIR)/in.telnetd
+ 	install -m$(MANMODE) issue.net.5 $(INSTALLROOT)$(MANDIR)/man5/
+ 	install -m$(MANMODE) telnetd.8 $(INSTALLROOT)$(MANDIR)/man8/in.telnetd.8
+ 	ln -sf in.telnetd.8 $(INSTALLROOT)$(MANDIR)/man8/telnetd.8
+--- netkit-telnet-0.17.orig/telnetlogin/telnetlogin.8
++++ netkit-telnet-0.17/telnetlogin/telnetlogin.8
+@@ -40,6 +40,7 @@
+ .Nm telnetlogin
+ .Op Fl h Ar host
+ .Op Fl p
++.Op Ar username
+ .Sh DESCRIPTION
+ .Nm telnetlogin
+ is a setuid wrapper that runs
+@@ -62,10 +63,8 @@
+ .Nm telnetd 8
+ normally provides them in.
+ .Nm telnetlogin
+-also only accepts the environment variables
++also does sanity checks on the environment variables
+ .Ev TERM , 
+-.Ev DISPLAY , 
+-.Ev POSIXLY_CORRECT ,
+ and
+ .Ev REMOTEHOST .
+ It also insists that the standard input, output, and error streams are
+@@ -83,7 +82,7 @@
+ .Nm telnetlogin
+ does not permit the
+ .Fl f
+-option to login, and does not permit passing a username, so will not
++option to login, so will not
+ work with telnetds that perform authentication via Kerberos or SSL.
+ .Pp
+ THIS IS PRESENTLY EXPERIMENTAL CODE; USE WITH CAUTION.
+--- netkit-telnet-0.17.orig/telnetlogin/telnetlogin.c
++++ netkit-telnet-0.17/telnetlogin/telnetlogin.c
+@@ -51,20 +51,24 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <stdio.h>
++#include <syslog.h>
+ 
+ #ifndef _PATH_LOGIN
+ #define _PATH_LOGIN "/bin/login"
+ #endif
+ 
++extern char **environ;
++
+ static const char *remhost = NULL;
+ 
++static void die(const char *, ...) __attribute__ ((noreturn));
++
+ static void die(const char *fmt, ...) {
+    va_list ap;
+-   fprintf(stderr, "telnetlogin: ");
++   openlog("telnetlogin", LOG_PID, LOG_AUTHPRIV);
+    va_start(ap, fmt);
+-   vfprintf(stderr, fmt, ap);
++   vsyslog(LOG_CRIT, fmt, ap);
+    va_end(ap);
+-   fprintf(stderr, "\n");
+    exit(1);
+ }
+ 
+@@ -86,41 +90,6 @@
+    return 0;
+ }
+ 
+-static int check_display(char *disp) {
+-   char *colon, *s;
+-   struct hostent *hp;
+-   int num;
+-
+-   colon = strchr(disp, ':');
+-   if (!colon) return -1;
+-   *colon = 0;  /* temporarily */
+-
+-   if (check_a_hostname(disp)) return -1;
+-
+-   hp = gethostbyname(disp);
+-   if (!hp) return -1;
+-
+-   *colon = ':';
+-   s = colon+1;
+-   while (*s && isdigit(*s)) s++;
+-   if (*s) {
+-      if (*s!='.') return -1;
+-      s++;
+-      while (*s && isdigit(*s)) s++;
+-   }
+-   if (*s) return -1;
+-
+-   num = atoi(colon+1);
+-   if (num<0 || num>99) return -1;
+-
+-   return 0;
+-}
+-
+-static int check_posixly_correct(char *val) {
+-   if (strlen(val)==0 || !strcmp(val, "1")) return 0;
+-   return -1;
+-}
+-
+ static int check_remotehost(char *val) {
+    if (check_a_hostname(val)) return -1;
+    if (remhost && strcmp(val, remhost)) return -1;
+@@ -132,8 +101,6 @@
+    int (*validator)(char *);
+ } legal_envs[] = {
+    { "TERM", check_term },
+-   { "DISPLAY", check_display },
+-   { "POSIXLY_CORRECT", check_posixly_correct },
+    { "REMOTEHOST", check_remotehost },
+    { NULL, NULL }
+ };
+@@ -166,10 +133,7 @@
+    static char argv0[] = "login";
+    int argn, i, j;
+    const char *rh = NULL;
+-   char **envs = __environ;
+-
+-   /* make as sure as possible no library routines or anything can use it */
+-   __environ = NULL;
++   char **envs = environ;
+ 
+    /* first, make sure our stdin/stdout/stderr are aimed somewhere */
+    i = open("/", O_RDONLY);
+@@ -194,6 +158,9 @@
+    if (argn < argc && !strcmp(argv[argn], "-p")) {
+       argn++;
+    }
++   if (argn < argc && argv[argn][0] != '-') {
++      argn++;
++   }
+    if (argn < argc) die("Illegal args: too many args");
+    argv[0] = argv0;
+ 
+@@ -201,21 +168,22 @@
+    if (envs) for (i=0; envs[i]; i++) {
+       char *testenv = envs[i];
+       size_t testlen = strlen(testenv);
+-      int ok = 0;
+-      for (j=0; legal_envs[j].name && !ok; j++) {
++      for (j=0; legal_envs[j].name; j++) {
+ 	 const char *okenv = legal_envs[j].name;
+ 	 size_t oklen = strlen(okenv);
++	 int sign;
+ 
+ 	 if (testlen < oklen) continue;
+ 	 if (testenv[oklen]!='=') continue;
+-	 if (memcmp(testenv, okenv, oklen)) continue;
++	 if ((sign = memcmp(testenv, okenv, oklen)) < 0) {
++	    continue;
++	 } else if (sign > 0) {
++	    break;
++	 }
+ 	 if (legal_envs[j].validator(testenv+oklen+1)) {
+ 	    die("Invalid environment: bad value for %s", okenv);
+ 	 }
+-	 ok = 1;
+-      }
+-      if (!ok) {
+-	 die("Illegal environment: forbidden variable");
++	 break;
+       }
+    }
+ 
+@@ -234,6 +202,13 @@
+     * but, should we insist that ruid==nobody?
+     */
+ 
++#ifdef debian
++   /*
++    * Debian's /bin/login doesn't work properly unless we're really root.
++    */
++   setuid(0);
++#endif
++
+    /*
+     * don't do anything with limits, itimers, or process priority either
+     */
+--- netkit-telnet-0.17.orig/telnetlogin/Makefile
++++ netkit-telnet-0.17/telnetlogin/Makefile
+@@ -11,7 +11,7 @@
+ $(OBJS): ../version.h
+ 
+ install: telnetlogin
+-	install -s -m4750 -oroot -gtelnetd telnetlogin $(INSTALLROOT)$(SBINDIR)
++	install -m4750 -oroot -gtelnetd telnetlogin $(INSTALLROOT)$(SBINDIR)
+ 	install -m$(MANMODE) telnetlogin.8 $(INSTALLROOT)$(MANDIR)/man8
+ 
+ clean:
+--- netkit-telnet-0.17.orig/debian/copyright
++++ netkit-telnet-0.17/debian/copyright
+@@ -0,0 +1,18 @@
++This package was split from netstd by Herbert Xu herbert@debian.org on
++Mon, 28 Sep 1998 16:50:43 +1000.
++
++netstd was created by Peter Tobias tobias@et-inf.fho-emden.de on
++Wed, 20 Jul 1994 17:23:21 +0200.
++
++It was downloaded from ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/.
++
++Copyright:
++
++Copyright (c) 1988, 1993 The Regents of the University of California.
++Copyright (c) 1995 David A. Holland
++Copyright (c) 1994 Peter Tobias (issue.net(5))
++Copyright (c) 1983, 1995 Eric P. Allman (setproctitle.[ch])
++
++The license can be found at /usr/share/common-licenses/BSD.
++
++$Id: copyright,v 1.4 2001/02/18 20:28:33 herbert Exp $
+--- netkit-telnet-0.17.orig/debian/dirs
++++ netkit-telnet-0.17/debian/dirs
+@@ -0,0 +1,3 @@
++usr/bin
++usr/share/doc/telnet
++usr/share/man/man1
+--- netkit-telnet-0.17.orig/debian/docs
++++ netkit-telnet-0.17/debian/docs
+@@ -0,0 +1,2 @@
++BUGS
++README 
+--- netkit-telnet-0.17.orig/debian/postinst
++++ netkit-telnet-0.17/debian/postinst
+@@ -0,0 +1,8 @@
++#!/bin/sh -e
++# $Id: postinst,v 1.4 2000/08/23 10:08:42 herbert Exp $
++
++update-alternatives --install /usr/bin/telnet telnet /usr/bin/telnet.netkit \
++		    100 --slave /usr/share/man/man1/telnet.1.gz telnet.1.gz \
++				/usr/share/man/man1/telnet.netkit.1.gz
++
++#DEBHELPER#
+--- netkit-telnet-0.17.orig/debian/prerm
++++ netkit-telnet-0.17/debian/prerm
+@@ -0,0 +1,7 @@
++#!/bin/sh
++
++if [ "$1" = remove ] || [ "$1" = deconfigure ]; then
++	update-alternatives --remove telnet /usr/bin/telnet.netkit
++fi
++
++#DEBHELPER#
+--- netkit-telnet-0.17.orig/debian/telnetd.dirs
++++ netkit-telnet-0.17/debian/telnetd.dirs
+@@ -0,0 +1,4 @@
++usr/lib
++usr/share/man/man5
++usr/share/man/man8
++usr/sbin
+--- netkit-telnet-0.17.orig/debian/telnetd.docs
++++ netkit-telnet-0.17/debian/telnetd.docs
+@@ -0,0 +1,2 @@
++BUGS
++README 
+--- netkit-telnet-0.17.orig/debian/telnetd.prerm
++++ netkit-telnet-0.17/debian/telnetd.prerm
+@@ -0,0 +1,6 @@
++#!/bin/sh -e
++# $Id: telnetd.prerm,v 1.3 2001/03/15 20:38:36 herbert Exp $
++
++update-inetd --disable telnet
++
++#DEBHELPER#
+--- netkit-telnet-0.17.orig/debian/telnetd.postinst
++++ netkit-telnet-0.17/debian/telnetd.postinst
+@@ -0,0 +1,57 @@
++#!/bin/sh -e
++# $Id: telnetd.postinst,v 1.15 2003/10/24 12:52:18 herbert Exp $
++
++update_inetd_entry() {
++	if [ $2 ]; then
++		update-inetd --remove ".*telnet"
++		update-inetd --group STANDARD --add "$telnetdent"
++	else
++		update-inetd --remove ".*telnet"
++		update-inetd --group STANDARD --add "$rootent"
++	fi
++}
++
++if ! id -u telnetd >/dev/null 2>&1; then
++	if sg telnetd -c true 2>/dev/null; then
++		adduser --quiet --no-create-home --disabled-password --system --ingroup telnetd --home /nonexistent telnetd
++	else
++		adduser --quiet --no-create-home --disabled-password --system --group --home /nonexistent telnetd
++	fi
++fi
++adduser --quiet telnetd utmp
++
++if [ -z "$(dpkg-statoverride --list /usr/lib/telnetlogin)" ]; then
++	chown root:telnetd /usr/lib/telnetlogin
++	chmod 4754 /usr/lib/telnetlogin
++fi
++
++rootent="telnet		stream	tcp	nowait	root	/usr/sbin/tcpd	/usr/sbin/in.telnetd"
++telnetdent="telnet		stream	tcp	nowait	telnetd	/usr/sbin/tcpd	/usr/sbin/in.telnetd"
++
++if egrep -q "^(devpts /dev/pts|devfs /dev) " /proc/mounts; then
++	devpts=yes
++else
++	devpts=
++fi
++
++case "$1" in
++abort-upgrade | abort-deconfigure | abort-remove)
++	update-inetd --enable telnet
++	;;
++configure)
++	if [ -z "$2" ] || 
++       dpkg --compare-versions "$2" lt 0.17-13 ||
++       fgrep -q telnetd-ssl /etc/inetd.conf
++    then
++		update_inetd_entry "$2" $devpts
++	else
++		update-inetd --enable telnet
++	fi
++	;;
++*)
++	printf "$0: incorrect arguments: $*\n" >&2
++	exit 1
++	;;
++esac
++
++#DEBHELPER#
+--- netkit-telnet-0.17.orig/debian/telnetd.preinst
++++ netkit-telnet-0.17/debian/telnetd.preinst
+@@ -0,0 +1,12 @@
++#!/bin/sh -e
++
++case "$1" in
++upgrade)
++	## change the HOME dir of telnetd to something not /
++	if [ -n "$2" ] && dpkg --compare-versions "$2" lt 0.17-27; then
++		usermod -d /nonexistent telnetd 
++	fi
++	;;
++esac
++
++#DEBHELPER#
+--- netkit-telnet-0.17.orig/debian/telnetd.postrm
++++ netkit-telnet-0.17/debian/telnetd.postrm
+@@ -0,0 +1,52 @@
++#!/bin/sh -e
++# $Id: telnetd.postrm,v 1.10 2002/09/22 04:51:49 herbert Exp $
++
++case "$1" in
++abort-install | abort-upgrade | upgrade | failed-upgrade)
++	;;
++remove | disappear)
++	home=~telnetd
++	set +e
++	userdel telnetd
++	err=$?
++	set -e
++	case $err in
++	0)
++		if [ "$home" = /usr/lib/telnetd ]; then
++			rmdir --ignore-fail-on-non-empty /usr/lib/telnetd || true
++		fi
++		;;
++	6)
++		;;
++	*)
++		exit $err
++		;;
++	esac
++
++	set +e
++	groupdel telnetd
++	err=$?
++	set -e
++	case $err in
++	0 | 6)
++		;;
++	*)
++		exit $err
++		;;
++	esac
++	;;
++purge)
++	# If netbase is not installed, then we don't need to do the remove.
++	if command -v update-inetd >/dev/null 2>&1; then
++		update-inetd --remove "#<off># telnet"
++	fi
++	;;
++*)
++	echo "$0: incorrect arguments: $*" >&2
++	exit 1
++	;;
++esac
++
++#DEBHELPER#
++
++exit 0
+--- netkit-telnet-0.17.orig/debian/postrm.debhelper
++++ netkit-telnet-0.17/debian/postrm.debhelper
+@@ -0,0 +1,3 @@
++# Automatically added by dh_installmenu
++if [ -x "`which update-menus 2>/dev/null`" ]; then update-menus ; fi
++# End automatically added section
+--- netkit-telnet-0.17.orig/debian/compat
++++ netkit-telnet-0.17/debian/compat
+@@ -0,0 +1 @@
++4
+--- netkit-telnet-0.17.orig/debian/rules
++++ netkit-telnet-0.17/debian/rules
+@@ -0,0 +1,78 @@
++#!/usr/bin/make -f
++# $Id: rules,v 1.12 2003/10/18 03:37:54 herbert Exp $
++# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
++
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++build:
++	dh_testdir
++
++	if [ ! -f MCONFIG ]; then \
++		./configure; \
++		sed -e 's/^CFLAGS=\(.*\)$$/CFLAGS= -Ddebian -D_GNU_SOURCE -g \1/' \
++		    -e 's/^CXXFLAGS=\(.*\)$$/CXXFLAGS= -Ddebian -D_GNU_SOURCE -g \1/' \
++		    MCONFIG > MCONFIG.new; \
++		mv MCONFIG.new MCONFIG; \
++	fi
++	$(MAKE)
++
++clean:
++	dh_testdir
++	dh_testroot
++
++	-$(MAKE) distclean
++
++	dh_clean
++
++install: build
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++	dh_installdirs
++
++	$(MAKE) -C telnet INSTALLROOT=`pwd`/debian/telnet MANDIR=/usr/share/man \
++		install
++	mv debian/telnet/usr/bin/telnet debian/telnet/usr/bin/telnet.netkit
++	mv debian/telnet/usr/share/man/man1/telnet.1 \
++	   debian/telnet/usr/share/man/man1/telnet.netkit.1
++	cp telnet/README debian/telnet/usr/share/doc/telnet/README.telnet
++	cp telnet/README.old debian/telnet/usr/share/doc/telnet/README.telnet.old
++	$(MAKE) -C telnetd INSTALLROOT=`pwd`/debian/telnetd \
++		MANDIR=/usr/share/man install
++	cp telnetlogin/telnetlogin.8 debian/telnetd/usr/share/man/man8
++	cp telnetlogin/telnetlogin debian/telnetd/usr/lib
++
++# Build architecture-independent files here.
++binary-indep: build install
++# We have nothing to do by default.
++
++# Build architecture-dependent files here.
++binary-arch: build install
++#	dh_testversion
++	dh_testdir
++	dh_testroot
++	dh_installdocs
++	dh_installexamples
++	dh_installmenu
++#	dh_installemacsen
++#	dh_installinit
++	dh_installcron
++#	dh_installmanpages
++#	dh_undocumented
++	dh_installchangelogs ChangeLog
++	dh_strip
++	dh_compress
++	dh_fixperms
++	dh_installdeb
++	dh_shlibdeps
++	dh_gencontrol
++#	dh_makeshlibs
++	dh_md5sums
++	dh_builddeb
++
++source diff:                                                                  
++	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
++
++binary: binary-indep binary-arch
++.PHONY: build clean binary-indep binary-arch binary
+--- netkit-telnet-0.17.orig/debian/control
++++ netkit-telnet-0.17/debian/control
+@@ -0,0 +1,27 @@
++Source: netkit-telnet
++Section: net
++Priority: standard
++Maintainer: Alberto Gonzalez Iniesta <agi@inittab.org>
++Standards-Version: 3.7.2.2
++Build-Depends: debhelper (>> 4.0.1), libncurses-dev
++
++Package: telnet
++Architecture: any
++Depends: netbase, ${shlibs:Depends}
++Replaces: netstd
++Provides: telnet-client
++Description: The telnet client
++ The telnet command is used for interactive communication with another host
++ using the TELNET protocol.
++
++Package: telnetd
++Architecture: any
++Priority: optional
++Depends: adduser, openbsd-inetd | inet-superserver, passwd, ${shlibs:Depends}
++Replaces: netstd
++Provides: telnet-server
++Conflicts: suidmanager (<< 0.50)
++Description: The telnet server
++ The in.telnetd program is a server which supports the DARPA telnet interactive
++ communication protocol.
++
+--- netkit-telnet-0.17.orig/debian/postinst.debhelper
++++ netkit-telnet-0.17/debian/postinst.debhelper
+@@ -0,0 +1,5 @@
++# Automatically added by dh_installmenu
++if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then
++	update-menus
++fi
++# End automatically added section
+--- netkit-telnet-0.17.orig/debian/menu
++++ netkit-telnet-0.17/debian/menu
+@@ -0,0 +1,6 @@
++?package(telnet): \
++	needs="text" \
++	section="Applications/Network/Communication" \
++	title="Telnet" \
++	command="/usr/bin/telnet" \
++	hints="Terminal"
+--- netkit-telnet-0.17.orig/debian/changelog
++++ netkit-telnet-0.17/debian/changelog
+@@ -0,0 +1,430 @@
++netkit-telnet (0.17-36) unstable; urgency=low
++
++  [ Ian Beckwith ]
++  * telnetd.postinst:
++    + Fix update-inetd --remove regexp.
++    + Drop group from telnetd-ssl regexp.
++  * telnetd.postrm: Only remove inetd entry if it is disabled.
++  * telnetd Depends:
++    + Replace netbase Depends: with openbsd-inetd | inet-superserver
++      to pull in update-inetd (Closes: #473262).
++    + Remove versioned dependencies on versions of dpkg and base-files
++      that long predate oldstable.
++
++  [ Alberto Gonzalez Iniesta ]
++  * Upload Ian's patch (Closes: #486123)
++  * Patched telnet.cc to avoid unsetting the TERM variable when is not
++    known in the local host. Thanks Philippe Troin for the patch.
++    (Closes: #237324)
++  * Updated debian/menu. Thanks Hideki Yamane. (Closes: #483829)
++  * Removed stripping options from Makefiles. (Closes: #437618)
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Tue, 22 Jul 2008 17:38:26 +0200
++
++netkit-telnet (0.17-35) unstable; urgency=low
++
++  * The 'this does not need to depend on update-inetd' release
++  * debian/control: Removed Depends on update-inetd.
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Wed, 13 Dec 2006 08:39:28 +0100
++
++netkit-telnet (0.17-34) unstable; urgency=low
++
++  * The 'update-inetd' batch release.
++  * debian/control: Added Depends on update-inetd 
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Sat, 18 Nov 2006 10:18:50 +0100
++
++netkit-telnet (0.17-33) unstable; urgency=low
++
++  * Patched telnetd.postinst to fix removal of telnetd-ssl.
++    Thanks Ian Beckwith for the patch. (Closes: #389278)
++  * Changed telnetd.telnetd to telnetd in inetd configuration.
++    Former format not supported by inetutils-inetd.
++  * Bumped Standards-Version to 3.7.2.2. No change
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Fri, 20 Oct 2006 13:21:38 +0200
++
++netkit-telnet (0.17-32) unstable; urgency=low
++
++  * telnet/commands.cc: Patched to reject invalid port numbers.
++    Thanks a lot Justin Pryzby for the patch (Closes: #300273)
++  * Bumped Standards-Version to 3.6.2.0. No change
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Sun,  9 Oct 2005 18:17:12 +0200
++
++netkit-telnet (0.17-31) unstable; urgency=low
++
++  * Build against new libstdc++6.
++  * Moved to debhelper compatability 4. Created debian/compat.
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Sat, 17 Sep 2005 13:04:06 +0200
++
++netkit-telnet (0.17-30) unstable; urgency=low
++
++  * telnetd.postrm. Added '|| true' to rmdir of old directories.
++    This will allow removal of the package when home dir of the 
++    telnetd user is already gone. (Closes: #308439)
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Fri,  8 Jul 2005 16:58:11 +0200
++
++netkit-telnet (0.17-29) unstable; urgency=high
++
++  * The 'Brown Paper Bag' release.
++  * Don't create /nonexistent when adding telned user. (Closes: #302395)
++  * urgency set to high since this has to go into sarge.
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Thu, 31 Mar 2005 18:47:21 +0200
++
++netkit-telnet (0.17-28) unstable; urgency=high
++
++  * telnet/telnet.cc: Fixed buffer overflow in the handling of the
++    LINEMODE suboptions in telnet clients (CAN-2005-0469).
++    Thanks Martin 'Joey' Schulze for the patch.
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Tue, 29 Mar 2005 11:10:01 +0200
++
++netkit-telnet (0.17-27) unstable; urgency=low
++
++  * New maintainer
++  * debian/control. Removed full stops from packages descriptions to shut
++    lintian up.
++  * Changed $HOME of telnetd user to /nonexistent. (Closes: #272312)
++  * debian/menu. Set full path to telnet in command field.
++
++ -- Alberto Gonzalez Iniesta <agi@inittab.org>  Sat, 12 Mar 2005 13:07:06 +0100
++
++netkit-telnet (0.17-26) unstable; urgency=high
++
++  * telnetd/utility.c: Fix remote DOS hole (CAN-2004-0911). Thanks Herbert Xu.
++    (Closes: #273694)
++
++ -- Robert Millan <rmh@debian.org>  Tue, 28 Sep 2004 00:22:59 +0200
++
++netkit-telnet (0.17-25) unstable; urgency=low
++
++  * telnet/commands.cc: Fix buffer overflow when $HOME is too big.  Thanks
++    Josh Martin. (Closes: #264846)
++
++ -- Robert Millan <rmh@debian.org>  Fri, 13 Aug 2004 04:21:36 +0200
++
++netkit-telnet (0.17-24) unstable; urgency=low
++
++  * New maintainer. (Closes: #249714)
++    - control (Maintainer): Set myself.
++
++ -- Robert Millan <rmh@debian.org>  Wed, 19 May 2004 02:10:38 +0200
++
++netkit-telnet (0.17-23) unstable; urgency=low
++
++  * Accept numeric telnet options in telnet (closes: #242018).
++  * Added telnet dependency on netbase for /etc/services.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 15 May 2004 17:13:42 +1000
++
++netkit-telnet (0.17-22) unstable; urgency=low
++
++  * Use colon as separator for chown (closes: #217404).
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  6 Dec 2003 08:45:30 +1100
++
++netkit-telnet (0.17-21) unstable; urgency=low
++
++  * Removed build-stamp/install-stamp from debian/rules.
++  * Removed obsolete warning options from configure.
++  * Disable 8-bit mode if parity bit is enabled (closes: #203544).
++  * Disabled trigraph warnings.
++  * Commented out tokens after endif.
++  * Added -b option to telnet (closes: #194736).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 18 Oct 2003 14:38:04 +1000
++
++netkit-telnet (0.17-20) unstable; urgency=low
++
++  * Use 8-bit mode without binary option as default (OpenBSD via
++    Xisco Calafat).
++  * Added port specification to telnetrc (closes: #144921).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 25 May 2003 19:02:35 +1000
++
++netkit-telnet (0.17-19) unstable; urgency=low
++
++  * Applied Hurd patch (Robert Millan, closes: #149325).
++  * Fixed telnetlogin path in telnetd manpage (closes: #150812).
++  * Do not abort if user/group does not exist in prerm (closes: #149181).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 22 Sep 2002 15:05:20 +1000
++
++netkit-telnet (0.17-18) unstable; urgency=low
++
++  * Added missing El's in telnetd(8).
++  * -S now accepts a number (closes: #136804).
++  * Show the machine we are connected instead of the first (closes: #137554).
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  7 Apr 2002 09:41:12 +1000
++
++netkit-telnet (0.17-17) unstable; urgency=high
++
++  * Provide telnet-server (closes: #120180).
++  * Fixed IAC+SB crash (closes: #122313, #128988).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 18 Jan 2002 20:13:23 +1100
++
++netkit-telnet (0.17-16) unstable; urgency=low
++
++  * Set resolv_hostp outside the source routing ifdef in telnetd.
++  * Documented telnet options -4 and -6 (closes: #109636).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 16 Sep 2001 14:38:05 +1000
++
++netkit-telnet (0.17-15) unstable; urgency=low
++
++  * Don't ignore all EADDRINUSE errors in telnet.
++  * Don't clear the environment in telnetlogin (closes: #108872).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 16 Aug 2001 19:38:11 +1000
++
++netkit-telnet (0.17-14) unstable; urgency=high
++
++  * Fixed netobuf buffer overflows.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 11 Aug 2001 17:52:25 +1000
++
++netkit-telnet (0.17-13) unstable; urgency=medium
++
++  * Updated devpts check to include devfs as well.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 19 May 2001 15:33:41 +1000
++
++netkit-telnet (0.17-12) unstable; urgency=low
++
++  * Added include <sys/time.h> to telnetd/utility.c (closes: #96803).
++
++ -- Herbert Xu <herbert@debian.org>  Wed,  9 May 2001 21:17:12 +1000
++
++netkit-telnet (0.17-11) unstable; urgency=low
++
++  * Added exit 0 to telnetd.postrm (closes: #93934).
++  * Changed misleading help message (closes: #94231).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 21 Apr 2001 22:52:11 +1000
++
++netkit-telnet (0.17-10) unstable; urgency=low
++
++  * Renamed member printf to xprintf (closes: #91351).
++  * Use new in C++ compiler test (closes: #91353).
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 13 Apr 2001 19:34:12 +1000
++
++netkit-telnet (0.17-9) unstable; urgency=low
++
++  * Fixed path to license file (Christoph Martin, closes: #86476).
++  * Added missing #DEBHELPER# tag to telnet.prerm (Hiroyuki YAMAMORI,
++    closes: #86894).
++  * Only call update-alternatives in prerm if removing or deconfiguring
++    (closes: #87330).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 25 Feb 2001 00:00:59 +1100
++
++netkit-telnet (0.17-8) unstable; urgency=low
++
++  * Removed remnant of suidregister from telnetd (closes: #85882).
++  * Fixed handling of sockaddr lengths (closes: #86177).
++  * Dynamically allocate editedhost (closes: #86080).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 17 Feb 2001 12:53:11 +1100
++
++netkit-telnet (0.17-7) unstable; urgency=low
++
++  * Added includes for gcc 2.97 (Randolph Chung, closes: #83337).
++  * Avoid DNS lookups if the address is numerical (closes: #83828).
++  * Added menu hint (closes: #80161).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 29 Jan 2001 21:10:59 +1100
++
++netkit-telnet (0.17-6) unstable; urgency=low
++
++  * Added menu entry for telnet (closes: #74845).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 21 Oct 2000 11:08:44 +1100
++
++netkit-telnet (0.17-5) unstable; urgency=low
++
++  * Fixed a memory allocation bug.
++
++ -- Herbert Xu <herbert@debian.org>  Fri, 22 Sep 2000 23:12:57 +1100
++
++netkit-telnet (0.17-4) unstable; urgency=low
++
++  * Relaxed telnetlogin a bit.
++  * Provide telnet-client (closes: #70549).
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  9 Sep 2000 17:42:53 +1100
++
++netkit-telnet (0.17-3) unstable; urgency=low
++
++  * Check for EAFNOSUPPORT after calling socket(2) in telnet.
++  * Added IPv6 support for telnetd.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 27 Aug 2000 11:28:48 +1100
++
++netkit-telnet (0.17-2) unstable; urgency=low
++
++  * Install telnetlogin ourselves (closes: #69773).
++  * Fixed alternatives typo (closes: #69597).
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 23 Aug 2000 20:01:38 +1000
++
++netkit-telnet (0.17-1) unstable; urgency=low
++
++  * New upstream release.
++  * Applied a modified version of Jason Gunthorpe's IPv6 patch for telnet
++    (closes: #68998).
++  * Read /etc/telnetrc before .telnetrc if it exists.  The idea was from
++    Robert Luberda.  Documented the special hostname DEFAULT (closes: #69113).
++  * Use alternatives for /usr/bin/telnet (closes: #56754).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 19 Aug 2000 14:06:48 +1000
++
++netkit-telnet (0.16-6) unstable; urgency=low
++
++  * Handle localchars correctly (closes: #66039).
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 26 Jun 2000 15:01:42 +1000
++
++netkit-telnet (0.16-5) unstable; urgency=low
++
++  * Fixed a bug in responses to TTYPE queries where a (null) could be sent
++    instead of the correct terminal type (closes: #63155).
++
++ -- Herbert Xu <herbert@debian.org>  Sat,  6 May 2000 09:42:58 +1000
++
++netkit-telnet (0.16-4) frozen unstable; urgency=low
++
++  * Disabled signal handling that does not work (closes: #62388).  Patches
++    that provide correct signal handling are welcome.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 24 Apr 2000 16:58:22 +1000
++
++netkit-telnet (0.16-3) frozen unstable; urgency=medium
++
++  * Restored the default to not being 8-bit clean since it breaks SunOS
++    (closes: #60352, #60386).  People who need 8-bit cleanness should use -8.
++  * Made FHS compliant.
++
++ -- Herbert Xu <herbert@debian.org>  Wed, 15 Mar 2000 10:39:00 +1100
++
++netkit-telnet (0.16-2) frozen unstable; urgency=low
++
++  * Recompiled with libncurses5.
++  * Changed the permission of /usr/lib/telnetd/login to 4754 (closes: #58786).
++  * telnet is now 8-bit clean by default since it appeared to be so in slink,
++    albeit unintentionally (closes: #57685).
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 12 Mar 2000 21:10:47 +1100
++
++netkit-telnet (0.16-1) frozen unstable; urgency=low
++
++  * New upstream release with security fixes.
++  * Run as root if devpts is not present.
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  3 Feb 2000 13:42:29 +1100
++
++netkit-telnet (0.14-9) unstable; urgency=low
++
++  * Compile login with -g -O2 -Wall.
++  * Fixed path to default login in in.telnetd(8).
++  * Fixed usage() output (closes: #51498).
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 30 Nov 1999 22:43:39 +1100
++
++netkit-telnet (0.14-8) unstable; urgency=low
++
++  * Call fatalperror() instead of fatal() when getpty() fails.
++  * Delete telnetd group before creating telnetd (closes: #46659).
++
++ -- Herbert Xu <herbert@debian.org>  Tue,  5 Oct 1999 17:52:36 +1000
++
++netkit-telnet (0.14-7) unstable; urgency=low
++
++  * Redirect stderr for group existence check to /dev/null.
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 25 Sep 1999 22:00:31 +1000
++
++netkit-telnet (0.14-6) unstable; urgency=low
++
++  * Check for existence of user/group before removing (fixes #45651).
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 21 Sep 1999 21:07:18 +1000
++
++netkit-telnet (0.14-5) unstable; urgency=low
++
++  * Depend on base-files (>= 2.1.8) for group utmp (fixes #44687).
++
++ -- Herbert Xu <herbert@debian.org>  Sat, 11 Sep 1999 12:53:08 +1000
++
++netkit-telnet (0.14-4) unstable; urgency=low
++
++  * Rebuilt with working fakeroot (fixes #44043, #44044).
++
++ -- Herbert Xu <herbert@debian.org>  Fri,  3 Sep 1999 20:32:28 +1000
++
++netkit-telnet (0.14-3) unstable; urgency=medium
++
++  * telnetd is now a member of utmp (fixes #43543).
++  * Call adduser with --quiet (fixes #43587).
++  * configure now works with egcs 2.95 (fixes #43580, #43747)
++
++ -- Herbert Xu <herbert@debian.org>  Thu,  2 Sep 1999 21:18:06 +1000
++
++netkit-telnet (0.14-2) unstable; urgency=low
++
++  * telnetd now depends on adduser and passwd (fixes #43515).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 26 Aug 1999 14:49:25 +1000
++
++netkit-telnet (0.14-1) unstable; urgency=low
++
++  * New upstream release.
++  * Installed the login wrapper (fixes #42092).
++  * Reopen logging if necessary (fixes #36149).
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 24 Aug 1999 09:17:24 +1000
++
++netkit-telnet (0.12-6) unstable; urgency=low
++
++  * Applied patch from Matt McLean for openpty support (fixes #35629).
++  * Use glibc versions of logout/logwtmp.
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 29 Jun 1999 14:16:14 +1000
++
++netkit-telnet (0.12-5) unstable; urgency=low
++
++  * Fixed a bug with hostnames longer than 64 characters (fixes #33559).
++
++ -- Herbert Xu <herbert@debian.org>  Tue, 16 Mar 1999 15:24:36 +1100
++
++netkit-telnet (0.12-4) frozen unstable; urgency=low
++
++  * Uploaded to slink.
++
++ -- Herbert Xu <herbert@debian.org>  Sun, 15 Nov 1998 15:04:40 +1100
++
++netkit-telnet (0.12-3) unstable; urgency=low
++
++  * Rebuilt with libncurses4.
++
++ -- Herbert Xu <herbert@debian.org>  Sun,  1 Nov 1998 19:38:49 +1100
++
++netkit-telnet (0.12-2) unstable; urgency=low
++
++  * Rebuilt with libstdc++2.9 (fixes #27789).
++
++ -- Herbert Xu <herbert@debian.org>  Thu, 15 Oct 1998 22:32:04 +1000
++
++netkit-telnet (0.12-1) unstable; urgency=low
++
++  * Initial Release.
++
++ -- Herbert Xu <herbert@debian.org>  Mon, 28 Sep 1998 16:50:43 +1000
++
