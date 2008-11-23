@@ -42,6 +42,9 @@
 #
 # 2007.12.25 Matthias 'CoreDump' Hentges
 # -Add support for installing / updating u-boot
+#
+# 2008.11.23 Dmitry 'lumag' Baryshkov
+# - Add support for reflashing home partitions
 
 # Set to "yes" to enable
 ENABLE_UBOOT_UPDATER="no"
@@ -53,6 +56,7 @@ TMPHEAD=$TMPPATH/tmphead.bin
 
 FLASHED_KERNEL=0
 FLASHED_ROOTFS=0
+FLASHED_HOMEFS=0
 UNPACKED_ROOTFS=0   # spitz only
 
 RO_MTD_LINE=`cat /proc/mtd | grep "root" | tail -n 1`
@@ -62,6 +66,14 @@ fi
 RO_MTD_NO=`echo $RO_MTD_LINE | cut -d: -f1 | cut -dd -f2`
 RO_MTD=/dev/mtd$RO_MTD_NO
 ROOTFS_SIZE=`echo $RO_MTD_LINE | cut -d" " -f2`
+
+RW_MTD_LINE=`cat /proc/mtd | grep "home" | tail -n 1`
+if [ "$RW_MTD_LINE" = "" ]; then
+    RW_MTD_LINE=`cat /proc/mtd | grep "\<NAND\>.*\<2\>" | tail -n 1`
+fi
+RW_MTD_NO=`echo $RW_MTD_LINE | cut -d: -f1 | cut -dd -f2`
+RW_MTD=/dev/mtd$RW_MTD_NO
+HOMEFS_SIZE=`echo $RO_MTD_LINE | cut -d" " -f2`
 
 LOGOCAL_MTD=/dev/mtd1
 
@@ -381,7 +393,7 @@ mkdir -p $TMPPATH > /dev/null 2>&1
 
 cd $DATAPATH/
 
-for TARGETFILE in u-boot.bin U-BOOT.BIN zimage zImage zImage.bin zimage.bin ZIMAGE ZIMAGE.BIN initrd.bin INITRD.BIN hdimage1.tgz HDIMAGE1.TGZ
+for TARGETFILE in u-boot.bin U-BOOT.BIN zimage zImage zImage.bin zimage.bin ZIMAGE ZIMAGE.BIN initrd.bin INITRD.BIN hdimage1.tgz HDIMAGE1.TGZ home.bin HOME.BIN
 do
     if [ ! -e $TARGETFILE ]
     then
@@ -438,6 +450,28 @@ do
         FLASH_TYPE=""
         ;;
 
+    home.bin)
+        if [ $FLASHED_HOMEFS != 0 ]
+        then
+            continue
+        fi
+        echo 'home file system'
+        FLASHED_HOMEFS=1
+        ISLOGICAL=0
+        ADDR=0
+        ISFORMATTED=0
+        MTD_PART_SIZE="0x$HOMEFS_SIZE"
+        ADDR=0
+        ISFORMATTED=0
+        TARGET_MTD=$RW_MTD
+        DATAPOS=0
+        ONESIZE=1048576
+        FLASH_TYPE="home"
+        /sbin/bcut -s 16 -o $TMPHEAD $TARGETFILE
+        do_flashing
+        FLASH_TYPE=""
+        ;;
+
     hdimage1.tgz)
         if [ $UNPACKED_ROOTFS = 0 ]
         then
@@ -446,7 +480,7 @@ do
         ;;
     
     u-boot.bin)
-    	if [ FLASHED_UBOOT != 1 ]
+        if [ $FLASHED_UBOOT != 1 ]
 	then
 		update_uboot "$TARGETFILE"
 		FLASHED_UBOOT="1"
