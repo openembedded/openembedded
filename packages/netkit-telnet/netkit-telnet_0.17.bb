@@ -2,7 +2,7 @@ SECTION = "base"
 DESCRIPTION = "netkit-telnet includes the telnet daemon and client."
 DEPENDS = "ncurses"
 LICENSE = "BSD"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.uk.linux.org/pub/linux/Networking/netkit/netkit-telnet-${PV}.tar.gz \
            file://netkit-telnet-debian_0.17-36.diff;patch=1 \
@@ -22,6 +22,16 @@ do_compile () {
 
 do_install () {
     install -d ${D}${bindir}
-    install -m 0755 telnet/telnet ${D}${bindir}/telnet
+    install -m 0755 telnet/telnet ${D}${bindir}/telnet.${PN}
+}
+
+pkg_postinst_${PN} () {
+#!/bin/sh
+    update-alternatives --install ${bindir}/telnet telnet telnet.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+ #!/bin/sh
+   update-alternatives --remove telnet telnet.${PN} 100
 }
 
