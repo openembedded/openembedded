@@ -100,7 +100,7 @@ kernel_do_stage() {
 	if [ -e arch/${ARCH}/include/asm/ ] ; then 
 		cp -fR arch/${ARCH}/include/asm/* ${STAGING_KERNEL_DIR}/include/$ASMDIR/
 		install -d ${STAGING_KERNEL_DIR}/arch/${ARCH}/include
-		cp -fR arch/${ARCH}/include/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/include/	
+		cp -fR arch/${ARCH}/* ${STAGING_KERNEL_DIR}/arch/${ARCH}/	
 	fi
 	rm -f $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
 	ln -sf $ASMDIR ${STAGING_KERNEL_DIR}/include/asm
