@@ -24,7 +24,9 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://mru-neon-vector-fmul.diff;patch=1 \
 	   file://configh \
            file://configmak \
-           file://omapfb.patch;patch=1 \
+           "
+
+SRC_URI_append_armv7a = " file://omapfb.patch;patch=1 \
            file://vo_omapfb.c \
            file://yuv.S \
           "
@@ -201,16 +203,18 @@ FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-reg
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations  -ftree-vectorize -fomit-frame-pointer -O4 -ffast-math"
 BUILD_OPTIMIZATION = "${FULL_OPTIMIZATION}"
 
+do_configure_prepend_armv7a() {
+	cp ${WORKDIR}/yuv.S ${S}/libvo
+ 	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
+	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
+ 	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
+}
+
 do_configure() {
 	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
-
-	cp ${WORKDIR}/yuv.S ${S}/libvo
-	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
-	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
-	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
 
         ./configure ${EXTRA_OECONF}
         
