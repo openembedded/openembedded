@@ -2,7 +2,7 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl ffmpeg xsp zlib libpng jpeg freetype fontconfig alsa-lib lzo ncurses libxv virtual/libx11 \
+DEPENDS = "virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS = "mplayer-common"
@@ -24,6 +24,9 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   file://mru-neon-vector-fmul.diff;patch=1 \
 	   file://configh \
            file://configmak \
+           file://omapfb.patch;patch=1 \
+           file://vo_omapfb.c \
+           file://yuv.S \
           "
 
 # This is required for the collie machine only as all stacks in that
@@ -42,7 +45,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r7"
+PR = "r8"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -56,6 +59,9 @@ FILES_${PN} = "${bindir}/mplayer ${libdir}"
 FILES_mencoder = "${bindir}/mencoder"
 
 inherit autotools pkgconfig
+
+# We want a kernel header for armv7a, but we don't want to make mplayer machine specific for that
+STAGING_KERNEL_DIR = "${STAGING_DIR}/${MACHINE_ARCH}${TARGET_VENDOR}-${TARGET_OS}/kernel"
 
 EXTRA_OECONF = " \
         --prefix=/usr \
@@ -176,8 +182,8 @@ EXTRA_OECONF = " \
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
 			    --disable-encoder=vorbis_encoder"
 
-EXTRA_OECONF_append_armv6 = " --enable-armv6 "
-EXTRA_OECONF_append_armv7a = "--enable-armv6 "
+EXTRA_OECONF_append_armv6 = " --enable-armv6"
+EXTRA_OECONF_append_armv7a = " --enable-armv6"
 
 
 #build with support for the iwmmxt instruction and pxa270fb overlay support (pxa270 and up)
@@ -200,6 +206,11 @@ do_configure() {
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
+
+	cp ${WORKDIR}/yuv.S ${S}/libvo
+	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
+	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
+	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
 
         ./configure ${EXTRA_OECONF}
         
