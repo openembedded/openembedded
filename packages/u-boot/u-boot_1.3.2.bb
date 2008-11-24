@@ -28,6 +28,7 @@ SRC_URI_append_boc01 = "\
            file://007_01_u-boot-1.3.2_CAPSENSE.patch;patch=1 \
            file://008_02_u-boot-1.3.2_TSEC.patch;patch=1 \
            file://009_03_u-boot-1.3.2_Extender_IO.patch;patch=1 \
+           file://010_04_u-boot-1.3.2_LCD.patch;patch=1 \
            "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
