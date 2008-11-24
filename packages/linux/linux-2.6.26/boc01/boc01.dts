@@ -19,10 +19,8 @@
 	#size-cells = <1>;
 
 	aliases {
-		ethernet0 = &enet0;
 		ethernet1 = &enet1;
 		serial0 = &serial0;
-		serial1 = &serial1;
 		pci0 = &pci0;
 	};
 
@@ -80,17 +78,17 @@
 			             "fsl,elbc-fcm-nand";
 			reg = <0x1 0x0 0x2000>;
 
-			u-boot@0 {
-				reg = <0x0 0x100000>;
+			kernel@0 {
+				reg = <0x0 0x400000>;
 				read-only;
 			};
 
-			kernel@100000 {
-				reg = <0x100000 0x300000>;
+			fs@400000 {
+				reg = <0x400000 0x4000000>;
 			};
 
-			fs@400000 {
-				reg = <0x400000 0x1c00000>;
+			appli@4400000 {
+				reg = <0x4400000 0x3c00000>;
 			};
 		};
 	};
@@ -119,9 +117,9 @@
 			interrupts = <14 0x8>;
 			interrupt-parent = <&ipic>;
 			dfsrr;
-			rtc@68 {
-				compatible = "dallas,ds1339";
-				reg = <0x68>;
+			rtc@6f {
+				compatible = "isl12024";
+				reg = <0x6f>;
 			};
 		};
 
@@ -137,8 +135,10 @@
 		};
 
 		spi@7000 {
+			device_type = "spi";
 			cell-index = <0>;
-			compatible = "fsl,spi";
+			//compatible = "fsl,spi";
+			compatible = "mpc83xx_spi";
 			reg = <0x7000 0x1000>;
 			interrupts = <16 0x8>;
 			interrupt-parent = <&ipic>;
@@ -161,30 +161,13 @@
 			#size-cells = <0>;
 			compatible = "fsl,gianfar-mdio";
 			reg = <0x24520 0x20>;
-			phy1: ethernet-phy@1 {
-				interrupt-parent = <&ipic>;
-				interrupts = <19 0x8>;
-				reg = <0x1>;
-				device_type = "ethernet-phy";
-			};
 			phy4: ethernet-phy@4 {
 				interrupt-parent = <&ipic>;
 				interrupts = <20 0x8>;
 				reg = <0x4>;
 				device_type = "ethernet-phy";
 			};
-		};
 
-		enet0: ethernet@24000 {
-			cell-index = <0>;
-			device_type = "network";
-			model = "eTSEC";
-			compatible = "gianfar";
-			reg = <0x24000 0x1000>;
-			local-mac-address = [ 00 00 00 00 00 00 ];
-			interrupts = <37 0x8 36 0x8 35 0x8>;
-			interrupt-parent = <&ipic>;
-			phy-handle = < &phy1 >;
 		};
 
 		enet1: ethernet@25000 {
@@ -199,18 +182,8 @@
 			phy-handle = < &phy4 >;
 		};
 
-		serial0: serial@4500 {
+		serial0: serial@4600 {
 			cell-index = <0>;
-			device_type = "serial";
-			compatible = "ns16550";
-			reg = <0x4500 0x100>;
-			clock-frequency = <0>;
-			interrupts = <9 0x8>;
-			interrupt-parent = <&ipic>;
-		};
-
-		serial1: serial@4600 {
-			cell-index = <1>;
 			device_type = "serial";
 			compatible = "ns16550";
 			reg = <0x4600 0x100>;
@@ -253,17 +226,11 @@
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
 
-				/* IDSEL 0x0E -mini PCI */
-				 0x7000 0x0 0x0 0x1 &ipic 18 0x8
-				 0x7000 0x0 0x0 0x2 &ipic 18 0x8
-				 0x7000 0x0 0x0 0x3 &ipic 18 0x8
-				 0x7000 0x0 0x0 0x4 &ipic 18 0x8
-
 				/* IDSEL 0x0F - PCI slot */
-				 0x7800 0x0 0x0 0x1 &ipic 17 0x8
-				 0x7800 0x0 0x0 0x2 &ipic 18 0x8
-				 0x7800 0x0 0x0 0x3 &ipic 17 0x8
-				 0x7800 0x0 0x0 0x4 &ipic 18 0x8>;
+				 0x7800 0x0 0x0 0x1 &ipic 48 0x8
+				 0x7800 0x0 0x0 0x2 &ipic 48 0x8
+				 0x7800 0x0 0x0 0x3 &ipic 48 0x8
+				 0x7800 0x0 0x0 0x4 &ipic 48 0x8>;
 		interrupt-parent = <&ipic>;
 		interrupts = <66 0x8>;
 		bus-range = <0x0 0x0>;

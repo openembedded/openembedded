@@ -13,7 +13,16 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
 
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
-	file://mpc831x-nand.patch;patch=1 \
+	file://002-081105-headers.patch;patch=1 \
+	file://003-081124-nand.patch;patch=1 \
+	file://004-081105-usb.patch;patch=1 \
+	file://005-081105-isl12024.patch;patch=1 \
+	file://006-081105-at24c32.patch;patch=1 \
+	file://007-081105-lm73.patch;patch=1 \
+	file://008-081105-spi.patch;patch=1 \
+	file://010-081105-mii.patch;patch=1 \
+	file://011-081105-gpio.patch;patch=1 \
+	file://012-081121-cy3218-btns.patch;patch=1 \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\

@@ -1,0 +1,284 @@
+diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/at24c32.c /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/at24c32.c
+--- linux-2.6.26-officiel/drivers/i2c/chips/at24c32.c	1970-01-01 01:00:00.000000000 +0100
++++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/at24c32.c	2008-11-06 10:45:30.000000000 +0100
+@@ -0,0 +1,268 @@
++/*
++ * at24c32.c - Based on eeprom.c
++ *
++ * Copyright (C) 2007, CenoSYS (www.cenosys.com).
++ * Guillaume Ligneul
++ * Guillaume.ligneul@gmail.com
++ *
++ * Code is based on eeprom.c
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/jiffies.h>
++#include <linux/i2c.h>
++#include <linux/mutex.h>
++
++/* Addresses to scan */
++static const unsigned short normal_i2c[] = { 0x50, 0x51, 0x52, 0x53, 0x54,
++					0x55, 0x56, I2C_CLIENT_END };
++
++/* Insmod parameters */
++I2C_CLIENT_INSMOD_1(eeprom);
++
++
++/* Size of EEPROM in bytes */
++#define EEPROM_SIZE		32768
++
++/* possible types of eeprom devices */
++enum eeprom_nature {
++	UNKNOWN,
++	VAIO,
++};
++
++/* Each client has this additional data */
++struct eeprom_data {
++	struct i2c_client client;
++	struct mutex update_lock;
++	u8 valid;			/* bitfield, bit!=0 if slice is valid */
++	unsigned long last_updated[8];	/* In jiffies, 8 slices */
++	u8 data[EEPROM_SIZE];		/* Register values */
++	enum eeprom_nature nature;
++};
++
++
++static int eeprom_attach_adapter(struct i2c_adapter *adapter);
++static int eeprom_detect(struct i2c_adapter *adapter, int address, int kind);
++static int eeprom_detach_client(struct i2c_client *client);
++
++/* This is the driver that will be inserted */
++static struct i2c_driver eeprom_driver = {
++	.driver = {
++		.name	= "eeprom",
++	},
++	.attach_adapter	= eeprom_attach_adapter,
++	.detach_client	= eeprom_detach_client,
++};
++
++static ssize_t eeprom_write(struct kobject *kobj, struct bin_attribute *bin_attr,
++			   char *buf, loff_t off, size_t count)
++{
++	struct i2c_client *client = kobj_to_i2c_client(kobj);
++	struct eeprom_data *data = i2c_get_clientdata(client);
++	int ret;
++	u8 i2c_buf[256];
++
++	if (off >= 32)
++		return -ENOSPC;
++
++	if (off + count > 32)
++		count = 32 - off;
++
++	mutex_unlock(&data->update_lock);
++
++	struct i2c_msg msgs[1] = {
++			{
++					.addr	= client->addr,
++					.flags	= 0,
++					.len	= count+2,
++					.buf	= i2c_buf,
++			},
++	};
++
++	i2c_buf[0] = 0;
++	i2c_buf[1] = off;
++
++
++	memcpy(&i2c_buf[2], &buf[0], count );
++
++
++	ret = i2c_transfer(client->adapter, msgs, 1);
++
++	if(ret<0)
++	{
++		mutex_unlock(&data->update_lock);
++		return -EIO;
++	}
++
++	mutex_unlock(&data->update_lock);
++	return count;
++}
++
++int
++i2c_read(struct i2c_client *client, u8 reg, u8 buf[],
++		       unsigned len)
++{
++	int ret;
++	u8  dt_addr[2];
++
++	struct i2c_msg msgs[2] = {
++			{
++					.addr	= client->addr,
++					.flags	= 0,
++					.len	= 2,
++					.buf	= dt_addr,
++			},
++			{
++					.addr	= client->addr,
++					.flags	= I2C_M_RD,
++					.len	= len ,
++					.buf	= buf ,
++			},
++	};
++
++	dt_addr[0] = 0;
++	dt_addr[1] = reg;
++
++	ret = i2c_transfer(client->adapter, msgs, 2);
++	if ( ret < 0) {
++		dev_err(&client->dev, "read error\n");
++		return -EIO;
++	}
++	return ret;
++}
++
++static ssize_t eeprom_read(struct kobject *kobj, struct bin_attribute *bin_attr,
++			   char *buf, loff_t off, size_t count)
++{
++	struct i2c_client *client = to_i2c_client(container_of(kobj, struct device, kobj));
++	struct eeprom_data *data = i2c_get_clientdata(client);
++	int rc;
++
++	mutex_lock(&data->update_lock);
++
++	if (off >= EEPROM_SIZE)
++		return 0;
++
++	if (off + count > EEPROM_SIZE)
++		count = EEPROM_SIZE - off;
++
++	rc = i2c_read(client,off,buf,count);
++	if (rc < 0){
++		mutex_unlock(&data->update_lock);
++		return -EIO;
++	}
++
++	mutex_unlock(&data->update_lock);
++	return count;
++}
++
++static struct bin_attribute eeprom_attr = {
++	.attr = {
++		.name = "eeprom",
++		.mode = S_IRUGO,
++	},
++	.size = EEPROM_SIZE,
++	.read = eeprom_read,
++	.write = eeprom_write,
++
++};
++
++static int eeprom_attach_adapter(struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, eeprom_detect);
++}
++
++/* This function is called by i2c_probe */
++static int eeprom_detect(struct i2c_adapter *adapter, int address, int kind)
++{
++	struct i2c_client *new_client;
++	struct eeprom_data *data;
++	int err = 0;
++
++	/* There are three ways we can read the EEPROM data:
++	   (1) I2C block reads (faster, but unsupported by most adapters)
++	   (2) Consecutive byte reads (100% overhead)
++	   (3) Regular byte data reads (200% overhead)
++	   The third method is not implemented by this driver because all
++	   known adapters support at least the second. */
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_READ_BYTE_DATA
++					    | I2C_FUNC_SMBUS_BYTE))
++		goto exit;
++
++	if (!(data = kzalloc(sizeof(struct eeprom_data), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	new_client = &data->client;
++	memset(data->data, 0xff, EEPROM_SIZE);
++	i2c_set_clientdata(new_client, data);
++	new_client->addr = address;
++	new_client->adapter = adapter;
++	new_client->driver = &eeprom_driver;
++	new_client->flags = 0;
++
++	/* Fill in the remaining client fields */
++	strlcpy(new_client->name, "eeprom", I2C_NAME_SIZE);
++	data->valid = 0;
++	mutex_init(&data->update_lock);
++	data->nature = 0x00;
++
++	/* Tell the I2C layer a new client has arrived */
++	if ((err = i2c_attach_client(new_client)))
++		goto exit_kfree;
++
++	/* create the sysfs eeprom file */
++	err = sysfs_create_bin_file(&new_client->dev.kobj, &eeprom_attr);
++	if (err)
++		goto exit_detach;
++
++	return 0;
++
++exit_detach:
++	i2c_detach_client(new_client);
++exit_kfree:
++	kfree(data);
++exit:
++	return err;
++}
++
++static int eeprom_detach_client(struct i2c_client *client)
++{
++	int err;
++
++	sysfs_remove_bin_file(&client->dev.kobj, &eeprom_attr);
++
++	err = i2c_detach_client(client);
++	if (err)
++		return err;
++
++	kfree(i2c_get_clientdata(client));
++
++	return 0;
++}
++
++static int __init eeprom_init(void)
++{
++	return i2c_add_driver(&eeprom_driver);
++
++}
++
++static void __exit eeprom_exit(void)
++{
++	i2c_del_driver(&eeprom_driver);
++}
++
++
++MODULE_AUTHOR("Guillaume Ligneul guillaume.ligneul@gmail.com");
++MODULE_DESCRIPTION("I2C EEPROM driver for AT24C32");
++MODULE_LICENSE("GPL");
++
++module_init(eeprom_init);
++module_exit(eeprom_exit);
+diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/Makefile /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Makefile
+--- linux-2.6.26-officiel/drivers/i2c/chips/Makefile	2008-11-06 11:12:07.000000000 +0100
++++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Makefile	2008-11-06 11:18:20.000000000 +0100
+@@ -9,7 +9,7 @@
+ # * I/O expander drivers go to drivers/gpio
+ #
+ 
+-
++obj-$(CONFIG_AT24C32)		+= at24c32.o
+ obj-$(CONFIG_ISL12024EEPROM)		+= isl12024-eeprom.o
+ obj-$(CONFIG_DS1682)		+= ds1682.o
+ obj-$(CONFIG_SENSORS_EEPROM)	+= eeprom.o

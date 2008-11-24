@@ -1,0 +1,519 @@
+diff -Nru linux-2.6.26/drivers/net/gianfar.c linux-2.6.26.modified/drivers/net/gianfar.c
+--- linux-2.6.26/drivers/net/gianfar.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/gianfar.c	2008-10-24 13:45:54.000000000 +0200
+@@ -442,10 +442,10 @@
+ static int init_phy(struct net_device *dev)
+ {
+ 	struct gfar_private *priv = netdev_priv(dev);
+-	uint gigabit_support =
+-		priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_GIGABIT ?
+-		SUPPORTED_1000baseT_Full : 0;
+-	struct phy_device *phydev;
++//	uint gigabit_support =
++//		priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_GIGABIT ?
++//		SUPPORTED_1000baseT_Full : 0;
++//	struct phy_device *phydev;
+ 	char phy_id[BUS_ID_SIZE];
+ 	phy_interface_t interface;
+ 
+@@ -455,23 +455,23 @@
+ 
+ 	snprintf(phy_id, BUS_ID_SIZE, PHY_ID_FMT, priv->einfo->bus_id, priv->einfo->phy_id);
+ 
+-	interface = gfar_get_interface(dev);
++	interface = PHY_INTERFACE_MODE_MII;//gfar_get_interface(dev);
+ 
+-	phydev = phy_connect(dev, phy_id, &adjust_link, 0, interface);
++//	phydev = phy_connect(dev, phy_id, &adjust_link, 0, interface);
+ 
+-	if (interface == PHY_INTERFACE_MODE_SGMII)
+-		gfar_configure_serdes(dev);
++//	if (interface == PHY_INTERFACE_MODE_SGMII)
++//		gfar_configure_serdes(dev);
+ 
+-	if (IS_ERR(phydev)) {
+-		printk(KERN_ERR "%s: Could not attach to PHY\n", dev->name);
+-		return PTR_ERR(phydev);
+-	}
++//	if (IS_ERR(phydev)) {
++//		printk(KERN_ERR "%s: Could not attach to PHY\n", dev->name);
++//		return PTR_ERR(phydev);
++//	}
+ 
+ 	/* Remove any features not supported by the controller */
+-	phydev->supported &= (GFAR_SUPPORTED | gigabit_support);
+-	phydev->advertising = phydev->supported;
++//	phydev->supported &= (GFAR_SUPPORTED | gigabit_support);
++//	phydev->advertising = phydev->supported;
+ 
+-	priv->phydev = phydev;
++	//priv->phydev = phydev;
+ 
+ 	return 0;
+ }
+@@ -586,7 +586,7 @@
+ 	struct gfar __iomem *regs = priv->regs;
+ 	unsigned long flags;
+ 
+-	phy_stop(priv->phydev);
++	//phy_stop(priv->phydev);
+ 
+ 	/* Lock it down */
+ 	spin_lock_irqsave(&priv->txlock, flags);
+@@ -857,7 +857,7 @@
+ 		}
+ 	}
+ 
+-	phy_start(priv->phydev);
++	//phy_start(priv->phydev);
+ 
+ 	/* Configure the coalescing support */
+ 	if (priv->txcoalescing)
+@@ -928,7 +928,7 @@
+ tx_irq_fail:
+ 	free_irq(priv->interruptError, dev);
+ err_irq_fail:
+-err_rxalloc_fail:	
++err_rxalloc_fail:
+ rx_skb_fail:
+ 	free_skb_resources(priv);
+ tx_skb_fail:
+@@ -1135,8 +1135,8 @@
+ 	stop_gfar(dev);
+ 
+ 	/* Disconnect from the PHY */
+-	phy_disconnect(priv->phydev);
+-	priv->phydev = NULL;
++	//phy_disconnect(priv->phydev);
++	//priv->phydev = NULL;
+ 
+ 	netif_stop_queue(dev);
+ 
+@@ -1723,81 +1723,82 @@
+  * function converts those variables into the appropriate
+  * register values, and can bring down the device if needed.
+  */
+-static void adjust_link(struct net_device *dev)
+-{
+-	struct gfar_private *priv = netdev_priv(dev);
+-	struct gfar __iomem *regs = priv->regs;
+-	unsigned long flags;
+-	struct phy_device *phydev = priv->phydev;
+-	int new_state = 0;
+-
+-	spin_lock_irqsave(&priv->txlock, flags);
+-	if (phydev->link) {
+-		u32 tempval = gfar_read(&regs->maccfg2);
+-		u32 ecntrl = gfar_read(&regs->ecntrl);
+-
+-		/* Now we make sure that we can be in full duplex mode.
+-		 * If not, we operate in half-duplex mode. */
+-		if (phydev->duplex != priv->oldduplex) {
+-			new_state = 1;
+-			if (!(phydev->duplex))
+-				tempval &= ~(MACCFG2_FULL_DUPLEX);
+-			else
+-				tempval |= MACCFG2_FULL_DUPLEX;
+-
+-			priv->oldduplex = phydev->duplex;
+-		}
+-
+-		if (phydev->speed != priv->oldspeed) {
+-			new_state = 1;
+-			switch (phydev->speed) {
+-			case 1000:
+-				tempval =
+-				    ((tempval & ~(MACCFG2_IF)) | MACCFG2_GMII);
+-				break;
+-			case 100:
+-			case 10:
+-				tempval =
+-				    ((tempval & ~(MACCFG2_IF)) | MACCFG2_MII);
+-
+-				/* Reduced mode distinguishes
+-				 * between 10 and 100 */
+-				if (phydev->speed == SPEED_100)
+-					ecntrl |= ECNTRL_R100;
+-				else
+-					ecntrl &= ~(ECNTRL_R100);
+-				break;
+-			default:
+-				if (netif_msg_link(priv))
+-					printk(KERN_WARNING
+-						"%s: Ack!  Speed (%d) is not 10/100/1000!\n",
+-						dev->name, phydev->speed);
+-				break;
+-			}
+-
+-			priv->oldspeed = phydev->speed;
+-		}
+-
+-		gfar_write(&regs->maccfg2, tempval);
+-		gfar_write(&regs->ecntrl, ecntrl);
+-
+-		if (!priv->oldlink) {
+-			new_state = 1;
+-			priv->oldlink = 1;
+-			netif_schedule(dev);
+-		}
+-	} else if (priv->oldlink) {
+-		new_state = 1;
+-		priv->oldlink = 0;
+-		priv->oldspeed = 0;
+-		priv->oldduplex = -1;
+-	}
+-
+-	if (new_state && netif_msg_link(priv))
+-		phy_print_status(phydev);
+-
+-	spin_unlock_irqrestore(&priv->txlock, flags);
+-}
++//static void adjust_link(struct net_device *dev)
++//{
++//	struct gfar_private *priv = netdev_priv(dev);
++//	struct gfar __iomem *regs = priv->regs;
++//	unsigned long flags;
++//	struct phy_device *phydev = priv->phydev;
++//	int new_state = 0;
++//
++//
++//	spin_lock_irqsave(&priv->txlock, flags);
++//	if (phydev->link) {
++//		u32 tempval = gfar_read(&regs->maccfg2);
++//		u32 ecntrl = gfar_read(&regs->ecntrl);
++//
++//		/* Now we make sure that we can be in full duplex mode.
++//		 * If not, we operate in half-duplex mode. */
++//		if (phydev->duplex != priv->oldduplex) {
++//			new_state = 1;
++//			if (!(phydev->duplex))
++//				tempval &= ~(MACCFG2_FULL_DUPLEX);
++//			else
++//				tempval |= MACCFG2_FULL_DUPLEX;
++//
++//			priv->oldduplex = phydev->duplex;
++//		}
++//
++//		if (phydev->speed != priv->oldspeed) {
++//			new_state = 1;
++//			switch (phydev->speed) {
++//			case 1000:
++//				tempval =
++//				    ((tempval & ~(MACCFG2_IF)) | MACCFG2_GMII);
++//				break;
++//			case 100:
++//			case 10:
++//				tempval =
++//				    ((tempval & ~(MACCFG2_IF)) | MACCFG2_MII);
++//
++//				/* Reduced mode distinguishes
++//				 * between 10 and 100 */
++//				if (phydev->speed == SPEED_100)
++//					ecntrl |= ECNTRL_R100;
++//				else
++//					ecntrl &= ~(ECNTRL_R100);
++//				break;
++//			default:
++//				if (netif_msg_link(priv))
++//					printk(KERN_WARNING
++//						"%s: Ack!  Speed (%d) is not 10/100/1000!\n",
++//						dev->name, phydev->speed);
++//				break;
++//			}
++//
++//			priv->oldspeed = phydev->speed;
++//		}
++//
++//		gfar_write(&regs->maccfg2, tempval);
++//		gfar_write(&regs->ecntrl, ecntrl);
++//
++//		if (!priv->oldlink) {
++//			new_state = 1;
++//			priv->oldlink = 1;
++//			netif_schedule(dev);
++//		}
++//	} else if (priv->oldlink) {
++//		new_state = 1;
++//		priv->oldlink = 0;
++//		priv->oldspeed = 0;
++//		priv->oldduplex = -1;
++//	}
++//
++//	if (new_state && netif_msg_link(priv))
++//		phy_print_status(phydev);
++//
++//	spin_unlock_irqrestore(&priv->txlock, flags);
++//}
+ 
+ /* Update the hash table based on the current list of multicast
+  * addresses we subscribe to.  Also, change the promiscuity of
+diff -Nru linux-2.6.26/drivers/net/gianfar_ethtool.c linux-2.6.26.modified/drivers/net/gianfar_ethtool.c
+--- linux-2.6.26/drivers/net/gianfar_ethtool.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/gianfar_ethtool.c	2008-10-24 13:45:49.000000000 +0200
+@@ -182,13 +182,13 @@
+ 
+ static int gfar_ssettings(struct net_device *dev, struct ethtool_cmd *cmd)
+ {
+-	struct gfar_private *priv = netdev_priv(dev);
+-	struct phy_device *phydev = priv->phydev;
+-
+-	if (NULL == phydev)
+-		return -ENODEV;
+-
+-	return phy_ethtool_sset(phydev, cmd);
++//	struct gfar_private *priv = netdev_priv(dev);
++//	struct phy_device *phydev = priv->phydev;
++//
++//	if (NULL == phydev)
++//		return -ENODEV;
++//
++	return 0;//phy_ethtool_sset(phydev, cmd);
+ }
+ 
+ 
+@@ -196,15 +196,15 @@
+ static int gfar_gsettings(struct net_device *dev, struct ethtool_cmd *cmd)
+ {
+ 	struct gfar_private *priv = netdev_priv(dev);
+-	struct phy_device *phydev = priv->phydev;
+-
+-	if (NULL == phydev)
+-		return -ENODEV;
++//	struct phy_device *phydev = priv->phydev;
++//
++//	if (NULL == phydev)
++//		return -ENODEV;
+ 
+ 	cmd->maxtxpkt = priv->txcount;
+ 	cmd->maxrxpkt = priv->rxcount;
+ 
+-	return phy_ethtool_gset(phydev, cmd);
++	return 0;//phy_ethtool_gset(phydev, cmd);
+ }
+ 
+ /* Return the length of the register structure */
+@@ -232,19 +232,19 @@
+ 	unsigned int count;
+ 
+ 	/* The timer is different, depending on the interface speed */
+-	switch (priv->phydev->speed) {
+-	case SPEED_1000:
+-		count = GFAR_GBIT_TIME;
+-		break;
+-	case SPEED_100:
++//	switch (priv->phydev->speed) {
++//	case SPEED_1000:
++//		count = GFAR_GBIT_TIME;
++//		break;
++//	case SPEED_100:
++//		count = GFAR_100_TIME;
++//		break;
++//	case SPEED_10:
++//	default:
+ 		count = GFAR_100_TIME;
+-		break;
+-	case SPEED_10:
+-	default:
+-		count = GFAR_10_TIME;
+-		break;
+-	}
+-
++//		break;
++//	}
++//
+ 	/* Make sure we return a number greater than 0
+ 	 * if usecs > 0 */
+ 	return ((usecs * 1000 + count - 1) / count);
+@@ -256,19 +256,19 @@
+ 	unsigned int count;
+ 
+ 	/* The timer is different, depending on the interface speed */
+-	switch (priv->phydev->speed) {
+-	case SPEED_1000:
+-		count = GFAR_GBIT_TIME;
+-		break;
+-	case SPEED_100:
++//	switch (priv->phydev->speed) {
++//	case SPEED_1000:
++//		count = GFAR_GBIT_TIME;
++//		break;
++//	case SPEED_100:
++//		count = GFAR_100_TIME;
++//		break;
++//	case SPEED_10:
++//	default:
+ 		count = GFAR_100_TIME;
+-		break;
+-	case SPEED_10:
+-	default:
+-		count = GFAR_10_TIME;
+-		break;
+-	}
+-
++//		break;
++//	}
++//
+ 	/* Make sure we return a number greater than 0 */
+ 	/* if ticks is > 0 */
+ 	return ((ticks * count) / 1000);
+@@ -283,8 +283,8 @@
+ 	if (!(priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_COALESCE))
+ 		return -EOPNOTSUPP;
+ 
+-	if (NULL == priv->phydev)
+-		return -ENODEV;
++//	if (NULL == priv->phydev)
++//		return -ENODEV;
+ 
+ 	cvals->rx_coalesce_usecs = gfar_ticks2usecs(priv, priv->rxtime);
+ 	cvals->rx_max_coalesced_frames = priv->rxcount;
+@@ -342,8 +342,8 @@
+ 	else
+ 		priv->rxcoalescing = 1;
+ 
+-	if (NULL == priv->phydev)
+-		return -ENODEV;
++//	if (NULL == priv->phydev)
++//		return -ENODEV;
+ 
+ 	/* Check the bounds of the values */
+ 	if (cvals->rx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
+diff -Nru linux-2.6.26/drivers/net/gianfar.h linux-2.6.26.modified/drivers/net/gianfar.h
+--- linux-2.6.26/drivers/net/gianfar.h	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/gianfar.h	2008-10-24 13:45:55.000000000 +0200
+@@ -161,7 +161,7 @@
+ #define MACCFG1_SYNCD_TX_EN	0x00000002
+ #define MACCFG1_TX_EN		0x00000001
+ 
+-#define MACCFG2_INIT_SETTINGS	0x00007205
++#define MACCFG2_INIT_SETTINGS	0x00007105
+ #define MACCFG2_FULL_DUPLEX	0x00000001
+ #define MACCFG2_IF              0x00000300
+ #define MACCFG2_MII             0x00000100
+@@ -751,7 +751,7 @@
+ 	struct gianfar_platform_data *einfo;
+ 
+ 	/* PHY stuff */
+-	struct phy_device *phydev;
++//	struct phy_device *phydev;
+ 	struct mii_bus *mii_bus;
+ 	int oldspeed;
+ 	int oldduplex;
+diff -Nru linux-2.6.26/drivers/net/gianfar_mii.c linux-2.6.26.modified/drivers/net/gianfar_mii.c
+--- linux-2.6.26/drivers/net/gianfar_mii.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/gianfar_mii.c	2008-10-24 13:45:45.000000000 +0200
+@@ -216,24 +216,24 @@
+ 		r = get_phy_id(new_bus, i, &phy_id);
+ 		if (r)
+ 			return r;
+-
+-		if (phy_id == 0xffffffff)
+-			break;
++printk(KERN_INFO "0x%8X\n",phy_id);
++//		if (phy_id == 0xffffffff)
++//			break;
+ 	}
+ 
+ 	/* The bus is full.  We don't support using 31 PHYs, sorry */
+-	if (i == 0)
+-		return -EBUSY;
+-
+-	gfar_write(&enet_regs->tbipa, i);
+-
+-	err = mdiobus_register(new_bus);
+-
+-	if (0 != err) {
+-		printk (KERN_ERR "%s: Cannot register as MDIO bus\n",
+-				new_bus->name);
+-		goto bus_register_fail;
+-	}
++//	if (i == 0)
++//		return -EBUSY;
++//
++//	gfar_write(&enet_regs->tbipa, i);
++//
++//	err = mdiobus_register(new_bus);
++//
++//	if (0 != err) {
++//		printk (KERN_ERR "%s: Cannot register as MDIO bus\n",
++//				new_bus->name);
++//		goto bus_register_fail;
++//	}
+ 
+ 	return 0;
+ 
+diff -Nru linux-2.6.26/drivers/net/gianfar_mii.h linux-2.6.26.modified/drivers/net/gianfar_mii.h
+--- linux-2.6.26/drivers/net/gianfar_mii.h	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/gianfar_mii.h	2008-10-24 13:45:45.000000000 +0200
+@@ -25,9 +25,6 @@
+ 
+ #define GFAR_SUPPORTED (SUPPORTED_10baseT_Half \
+ 		| SUPPORTED_10baseT_Full \
+-		| SUPPORTED_100baseT_Half \
+-		| SUPPORTED_100baseT_Full \
+-		| SUPPORTED_Autoneg \
+ 		| SUPPORTED_MII)
+ 
+ struct gfar_mii {
+--- linux-2.6.26/drivers/net/phy/mdio_bus.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/phy/mdio_bus.c	2008-10-24 13:45:39.000000000 +0200
+@@ -135,6 +135,9 @@
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 	struct phy_driver *phydrv = to_phy_driver(drv);
+ 
++	if (phydrv->detect)
++		return (phydrv->detect(phydev->bus, phydev->addr));
++
+ 	return ((phydrv->phy_id & phydrv->phy_id_mask) ==
+ 		(phydev->phy_id & phydrv->phy_id_mask));
+ }
+diff -Nru linux-2.6.26/drivers/net/phy/phy_device.c linux-2.6.26.modified/drivers/net/phy/phy_device.c
+--- linux-2.6.26/drivers/net/phy/phy_device.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/drivers/net/phy/phy_device.c	2008-10-24 13:45:39.000000000 +0200
+@@ -281,7 +281,9 @@
+ 	if (IS_ERR(phydev))
+ 		return phydev;
+ 
+-	phy_prepare_link(phydev, handler);
++	//cenoys
++	//phy_prepare_link(phydev, handler);
++	phydev->link = 1;
+ 
+ 	phy_start_machine(phydev, NULL);
+ 
+@@ -302,7 +304,7 @@
+ 		phy_stop_interrupts(phydev);
+ 
+ 	phy_stop_machine(phydev);
+-	
++
+ 	phydev->adjust_link = NULL;
+ 
+ 	phy_detach(phydev);
+@@ -438,7 +440,7 @@
+ 	if (adv < 0)
+ 		return adv;
+ 
+-	adv &= ~(ADVERTISE_ALL | ADVERTISE_100BASE4 | ADVERTISE_PAUSE_CAP | 
++	adv &= ~(ADVERTISE_ALL | ADVERTISE_100BASE4 | ADVERTISE_PAUSE_CAP |
+ 		 ADVERTISE_PAUSE_ASYM);
+ 	if (advertise & ADVERTISED_10baseT_Half)
+ 		adv |= ADVERTISE_10HALF;
+@@ -503,7 +505,7 @@
+ 
+ 	if (DUPLEX_FULL == phydev->duplex)
+ 		ctl |= BMCR_FULLDPLX;
+-	
++
+ 	err = phy_write(phydev, MII_BMCR, ctl);
+ 
+ 	if (err < 0)
+@@ -671,7 +673,7 @@
+ 				phydev->duplex = DUPLEX_FULL;
+ 		} else if (lpa & (LPA_100FULL | LPA_100HALF)) {
+ 			phydev->speed = SPEED_100;
+-			
++
+ 			if (lpa & LPA_100FULL)
+ 				phydev->duplex = DUPLEX_FULL;
+ 		} else
