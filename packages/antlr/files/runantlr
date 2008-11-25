@@ -1,0 +1,11 @@
+#!/bin/sh
+echo Running 'java antlr.Tool $*' with @JAR_FILE@ appended to the CLASSPATH variable
+
+export CLASSPATH
+CLASSPATH=$CLASSPATH:@JAR_FILE@
+
+if [ ! $JAVA ];then
+	JAVA=java
+fi
+
+$JAVA antlr.Tool $*
