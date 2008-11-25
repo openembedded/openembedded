@@ -1,0 +1,15 @@
+#check if we are already running
+if test -f /var/run/Xqt ;then
+        qcop QPE/TaskBar "message(QString)" "Xqt is already running!"
+else
+        qcop QPE/TaskBar "message(QString)" "start Xqt server..."
+        #create run file
+        touch /var/run/Xqt
+        #setup environment - FIXME: check QTDIR first
+        export QTDIR=/usr/lib/opie
+        export DISPLAY=:0.0
+        #start the server
+        Xqt -fp /usr/lib/X11/fonts/misc
+        #remove run file
+        rm /var/run/Xqt 
+fi
