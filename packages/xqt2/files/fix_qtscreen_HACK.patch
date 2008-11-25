@@ -1,0 +1,55 @@
+diff -Nur xc/../xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc xc/../xqt2/xfree86/xqt-driver/qtscreen.cc
+--- xc/../xqt2.vanilla/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:18:44.000000000 +0200
++++ xc/../xqt2/xfree86/xqt-driver/qtscreen.cc	2008-09-25 14:28:30.000000000 +0200
+@@ -109,6 +109,7 @@
+ 	desktopSize = newSize;
+ 	fullScrSize = desktopSize;
+ 	normalScrSize = fullScrSize;
++	/* FIXME: get taskbar size from opie
+ 	if (normalScrSize.height() >= 400) {
+ 		normalScrSize.setHeight( normalScrSize.height() - 38);
+ 	} else {
+@@ -117,7 +118,7 @@
+ 
+ 	if (!g_fFullScreen) {
+ 		fullScrSize = normalScrSize;
+-	}
++	}*/
+ 
+ #ifdef DEBUG_SCR
+ 	normalScrSize.setHeight(640);
+@@ -128,6 +129,7 @@
+ 	setDisplaySize();
+ 
+ #ifdef QWS
++	/* FIXME: fix this more general
+ 	// zaurus hack
+ 	if (desktopSize.width() > desktopSize.height()) {
+ 		shadow.setScrRandr(270);
+@@ -136,6 +138,10 @@
+ 		shadow.setScrRandr(0);
+ 		qtRandRRotate(0);
+ 	}
++	*/
++	// until that
++	shadow.setScrRandr(0);
++	qtRandRRotate(0);
+ #endif
+ }	
+ 
+@@ -148,6 +154,7 @@
+ 	*h = fullScrSize.height();
+ 
+ #ifdef QWS
++	/* FIXME: dix this more general
+ 	// zaurus hack
+ 	if (*w > *h) {
+ 		// rotate!
+@@ -155,6 +162,7 @@
+ 		*w = *h;
+ 		*h = sw;
+ 	}
++	*/
+ 
+ 	*depth = 16;	// 16bpp ¸ÇÄê
+ 	*bits = NULL;
