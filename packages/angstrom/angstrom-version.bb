@@ -1,3 +1,5 @@
+LICENSE = "MIT"
+
 PV = "${DISTRO_VERSION}"
 PR = "r1"
 PE = "1"
