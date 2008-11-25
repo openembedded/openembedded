@@ -39,7 +39,8 @@ addtask preconfigure after do_patch before do_configure
 
 EXTRA_OECONF = "\
 	--with-gnu-ld --disable-verbose --disable-build-12 --disable-build-20 \
-	--enable-build-21 --enable-xrender --enable-production \
+	--enable-build-21 --enable-xrender --enable-production --without-motif \
+	--x-includes=. \
 "
 
 PACKAGES += "${PN}-bin"
