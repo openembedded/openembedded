@@ -1,8 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r55"
-PR_dm7025 = "r56"
+PR = "r56"
 
 LICENSE = "GPL"
 
