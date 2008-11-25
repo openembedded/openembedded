@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for Dreambox DM7025"
 LICENSE = "GPL"
 KV = "2.6.12"
 PV = "2.6.12.6"
-PR = "s5"
+PR = "s6"
 
 DEPENDS = "zlib-native"
 

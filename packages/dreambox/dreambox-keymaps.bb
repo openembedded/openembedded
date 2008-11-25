@@ -4,7 +4,7 @@ MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
 
 SRC_URI = "file://dream-de.info file://dream-de.kmap file://eng.info file://eng.kmap"
 
-PR = "r0"
+PR = "r1"
 
 FILES_${PN} = "/"
 
