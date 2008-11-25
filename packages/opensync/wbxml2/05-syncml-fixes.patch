@@ -1,0 +1,124 @@
+diff -ru wbxml2-0.9.2-original/src/wbxml_encoder.c wbxml2-0.9.2/src/wbxml_encoder.c
+--- wbxml2-0.9.2-original/src/wbxml_encoder.c	2006-07-11 13:47:45.000000000 +0200
++++ wbxml2-0.9.2/src/wbxml_encoder.c	2008-06-20 11:24:17.000000000 +0200
+@@ -1936,7 +1936,8 @@
+ #if defined( WBXML_SUPPORT_SYNCML )
+         /* If this is a SyncML document ? */
+         if ((encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML10) ||
+-            (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML11))
++            (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML11) ||
++            (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML12))
+         {
+             /** @todo We must check too if we are in a <Type> */
+ 
+@@ -4019,7 +4020,8 @@
+ #if defined( WBXML_SUPPORT_SYNCML )
+         /* Change text in <Type> from "application/vnd.syncml-devinf+wbxml" to "application/vnd.syncml-devinf+xml" */
+         if (((encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML10) ||
+-             (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML11)) &&
++             (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML11) ||
++             (encoder->lang->langID == WBXML_LANG_SYNCML_SYNCML12)) &&
+             (encoder->current_tag != NULL) &&
+             (encoder->current_tag->wbxmlCodePage == 0x01 ) &&
+             (encoder->current_tag->wbxmlToken == 0x13 ) &&
+diff -ru wbxml2-0.9.2-original/src/wbxml_tables.c wbxml2-0.9.2/src/wbxml_tables.c
+--- wbxml2-0.9.2-original/src/wbxml_tables.c	2006-07-11 13:47:45.000000000 +0200
++++ wbxml2-0.9.2/src/wbxml_tables.c	2008-06-20 11:28:18.000000000 +0200
+@@ -1601,21 +1601,21 @@
+ #if defined( WBXML_SUPPORT_SYNCML )
+ 
+ const WBXMLNameSpaceEntry sv_syncml_syncml10_ns_table[] = {
+-    { "syncml:SYNCML1.0",   0x00 },     /**< Code Page 0: SYNCML1.0 */
++    { "SYNCML:SYNCML1.0",   0x00 },     /**< Code Page 0: SYNCML1.0 */
+     { "syncml:metinf",      0x01 },     /**< Code Page 1: metinf */
+     { NULL,                 0x00 }
+ };
+ 
+ 
+ const WBXMLNameSpaceEntry sv_syncml_syncml11_ns_table[] = {
+-    { "syncml:SYNCML1.1",   0x00 },     /**< Code Page 0: SYNCML1.1 */
++    { "SYNCML:SYNCML1.1",   0x00 },     /**< Code Page 0: SYNCML1.1 */
+     { "syncml:metinf",      0x01 },     /**< Code Page 1: metinf */
+     { NULL,                 0x00 }
+ };
+ 
+ 
+ const WBXMLNameSpaceEntry sv_syncml_syncml12_ns_table[] = {
+-    { "syncml:SYNCML1.2",   0x00 },     /**< Code Page 0: SYNCML1.2 */
++    { "SYNCML:SYNCML1.2",   0x00 },     /**< Code Page 0: SYNCML1.2 */
+     { "syncml:metinf",      0x01 },     /**< Code Page 1: metinf */
+     { NULL,                 0x00 }
+ };
+diff -ru wbxml2-0.9.2-original/src/wbxml_tree.c wbxml2-0.9.2/src/wbxml_tree.c
+--- wbxml2-0.9.2-original/src/wbxml_tree.c	2006-07-11 13:47:45.000000000 +0200
++++ wbxml2-0.9.2/src/wbxml_tree.c	2008-06-20 11:33:54.000000000 +0200
+@@ -244,7 +244,10 @@
+     }
+     else {
+         if ((ret = wbxml_tree_clb_ctx.error) != WBXML_OK)
++        {
++            WBXML_ERROR((WBXML_CONV, "xml2wbxml conversion failed - context error %i", ret));
+             wbxml_tree_destroy(wbxml_tree_clb_ctx.tree);
++        }
+         else
+             *tree = wbxml_tree_clb_ctx.tree;
+     }
+@@ -798,11 +801,20 @@
+         {
+             /* Check <Type> value */
+             if ((tmp_node->children != NULL) && (tmp_node->children->type == WBXML_TREE_TEXT_NODE)) {
++                /* This function is used by wbxml and xml callbacks.
++                 * So content types must be handled for both situations.
++                 */
++
+                 /* application/vnd.syncml-devinf+wbxml */
+                 if (wbxml_buffer_compare_cstr(tmp_node->children->content, "application/vnd.syncml-devinf+wbxml") == 0) {
+                     return WBXML_SYNCML_DATA_TYPE_WBXML;
+                 }
+                 
++                /* application/vnd.syncml-devinf+xml */
++                if (wbxml_buffer_compare_cstr(tmp_node->children->content, "application/vnd.syncml-devinf+xml") == 0) {
++                    return WBXML_SYNCML_DATA_TYPE_NORMAL;
++                }
++
+                 /* text/clear */
+                 if (wbxml_buffer_compare_cstr(tmp_node->children->content, "text/clear") == 0) {
+                     return WBXML_SYNCML_DATA_TYPE_CLEAR;
+diff -ru wbxml2-0.9.2-original/src/wbxml_tree_clb_xml.c wbxml2-0.9.2/src/wbxml_tree_clb_xml.c
+--- wbxml2-0.9.2-original/src/wbxml_tree_clb_xml.c	2006-07-11 13:47:46.000000000 +0200
++++ wbxml2-0.9.2/src/wbxml_tree_clb_xml.c	2008-06-20 11:39:27.000000000 +0200
+@@ -142,7 +142,7 @@
+ #if defined( WBXML_SUPPORT_SYNCML )
+ 
+     /* If this is an embedded (not root) "DevInf" document, skip it */
+-    if ((WBXML_STRCMP(localName, "DevInf") == 0) &&
++    if ((WBXML_STRCMP(localName, "syncml:devinf:DevInf") == 0) &&
+         (tree_ctx->current != NULL))
+     {
+         tree_ctx->skip_start = XML_GetCurrentByteIndex(tree_ctx->xml_parser);
+@@ -192,7 +192,7 @@
+             /* End of skipped node */
+ 
+ #if defined( WBXML_SUPPORT_SYNCML )
+-            if (WBXML_STRCMP(localName, "DevInf") == 0) {
++            if (WBXML_STRCMP(localName, "syncml:devinf:DevInf") == 0) {
+                 /* Get embedded DevInf Document */
+                 devinf_doc = wbxml_buffer_create(tree_ctx->input_buff + tree_ctx->skip_start, 
+                                                  XML_GetCurrentByteIndex(tree_ctx->xml_parser) - tree_ctx->skip_start,
+@@ -210,6 +210,16 @@
+                     return;
+                 }
+ 
++                /* Add doctype to give the XML parser a chance
++                 * SyncML 1.2 is downward compatible to older versions.
++                 */
++                if (!wbxml_buffer_insert_cstr(devinf_doc, "<!DOCTYPE DevInf PUBLIC '-//SYNCML//DTD DevInf 1.2//EN' 'http://www.openmobilealliance.org/tech/DTD/OMA-SyncML-Device_Information-DTD-1.2.dtd' >\n", 0))
++                {
++                    tree_ctx->error = WBXML_ERROR_NOT_ENOUGH_MEMORY;
++                    wbxml_buffer_destroy(devinf_doc);
++                    return;
++                }
++
+                 WBXML_DEBUG((WBXML_PARSER, "\t DevInf Doc : '%s'", wbxml_buffer_get_cstr(devinf_doc)));
+ 
+                 /* Parse 'DevInf' Document */

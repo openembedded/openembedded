@@ -1,0 +1,24 @@
+diff -urN wbxml2-0.9.2.orig/src/Makefile.am wbxml2-0.9.2/src/Makefile.am
+--- wbxml2-0.9.2.orig/src/Makefile.am	2006-07-11 13:47:44.000000000 +0200
++++ wbxml2-0.9.2/src/Makefile.am	2008-11-25 08:26:35.000000000 +0100
+@@ -1,7 +1,7 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+ INCLUDES =\
+-	 -I. -I/usr/include
++	 -I.
+ 
+ CFLAGS =\
+ 	 -DHAVE_CONFIG_H\
+diff -urN wbxml2-0.9.2.orig/tools/Makefile.am wbxml2-0.9.2/tools/Makefile.am
+--- wbxml2-0.9.2.orig/tools/Makefile.am	2006-07-11 13:47:46.000000000 +0200
++++ wbxml2-0.9.2/tools/Makefile.am	2008-11-25 08:36:54.000000000 +0100
+@@ -1,7 +1,7 @@
+ ##  Process this file with automake to produce Makefile.in
+ 
+ INCLUDES =\
+-	 -I. -I../src -I/usr/include
++	 -I. -I../src
+ 
+ CFLAGS =\
+ 	 -DHAVE_CONFIG_H\

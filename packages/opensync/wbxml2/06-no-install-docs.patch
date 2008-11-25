@@ -1,0 +1,14 @@
+diff -urP wbxml2-0.9.2/Makefile.am wbxml2-0.9.2.x/Makefile.am
+--- wbxml2-0.9.2/Makefile.am	2006-07-11 14:47:43.000000000 +0300
++++ wbxml2-0.9.2.x/Makefile.am	2006-08-08 22:26:18.000000000 +0300
+@@ -24,10 +24,6 @@
+ 	TODO\
+ 	doxygen.h
+ 
+-install-data-local:
+-	$(mkinstalldirs) $(DESTDIR)$(wbxmldocdir)/manual
+-	cp -Rp doc/* $(DESTDIR)$(wbxmldocdir)/manual
+-
+ dist-bz2: distdir
+ 	sed -e "s/tar.gz/tar.bz2/g" $(distdir)/wbxml2.spec > $(distdir)/wbxml2.spec.aux
+ 	mv $(distdir)/wbxml2.spec.aux $(distdir)/wbxml2.spec

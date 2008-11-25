@@ -1,0 +1,17 @@
+#libwbxml2-0: Size changed to MaxSize in OMA DS 1.2 DevInf
+#
+#The normale Size tag was changed to MaxSize in OMA DS 1.2 Device
+#Information. The number in the stringtable does not changed. So
+#the order looks a little bit "funny".
+
+--- src/wbxml_tables.c.orig	2008-09-01 15:05:22.000000000 +0200
++++ src/wbxml_tables.c	2008-09-01 15:05:58.000000000 +0200
+@@ -1891,7 +1891,7 @@
+     { "Rx",             0x00, 0x19 },
+     { "Rx-Pref",        0x00, 0x1a },
+     { "SharedMem",      0x00, 0x1b },
+-    { "Size",           0x00, 0x1c },
++    { "MaxSize",        0x00, 0x1c },
+     { "SourceRef",      0x00, 0x1d },
+     { "SwV",            0x00, 0x1e },
+     { "SyncCap",        0x00, 0x1f },

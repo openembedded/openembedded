@@ -1,0 +1,90 @@
+diff --git a/src/wbxml_parser.c b/src/wbxml_parser.c
+index c022e00..bea2062 100644
+--- a/src/wbxml_parser.c
++++ b/src/wbxml_parser.c
+@@ -43,6 +43,7 @@
+  */
+ 
+ #include "wbxml.h"
++#include <assert.h>
+ 
+ 
+ /* Memory management related defines */
+@@ -56,10 +57,6 @@
+ /** For unknown Tag Name or Attribute Name (in Best Effort Mode) */
+ #define WBXML_PARSER_UNKNOWN_STRING ((WB_UTINY *)"unknown")
+ 
+-/** If you want to modify this define, change the 'entcode' variable length in parse_entity() too please */
+-#define WBXML_PARSER_MAX_ENTITY_CODE 999999
+-
+-
+ /**
+  * @brief The WBXML Application Token types
+  */
+@@ -1661,7 +1658,6 @@ static WBXMLError parse_extension(WBXMLParser *parser, WBXMLTokenType code_space
+  */
+ static WBXMLError parse_entity(WBXMLParser *parser, WBXMLBuffer **result)
+ {
+-    WB_TINY    entity[10];
+     WB_ULONG   code   = 0;
+     WBXMLError ret    = WBXML_OK;
+   
+@@ -1674,23 +1670,44 @@ static WBXMLError parse_entity(WBXMLParser *parser, WBXMLBuffer **result)
+         return ret;
+     }
+   
+-    /* Build Entity */
+-    if ( code > WBXML_PARSER_MAX_ENTITY_CODE )  {
+-        return WBXML_ERROR_ENTITY_CODE_OVERFLOW;
+-    }
+-  
+-    /**
+-     * WARNING: If you change the entity variable length (10 chars), change too
+-     *          'WBXML_PARSER_MAX_ENTITY_CODE' defined in this file !
++    /*
++     * Convert the UCS-4 code to a UTF-8 encoded string.
+      */
+-    sprintf(entity, "&#%u;", code);
+ 
+-    /* Create result buffer */
+-    if ( (*result = wbxml_buffer_create_from_cstr(entity)) == NULL ) {
+-        return WBXML_ERROR_NOT_ENOUGH_MEMORY;
++    assert(code < 0x80000000);
++
++    if (code < 0x80)
++    {
++        /* For codes under 0x80, we don't need any fancy formatting. */
++        WB_TINY entity[2] = {(WB_TINY)code, 0};
++
++        /* Create result buffer */
++        if ( (*result = wbxml_buffer_create_from_cstr(entity)) == NULL ) {
++            return WBXML_ERROR_NOT_ENOUGH_MEMORY;
++        }
++      
++        return WBXML_OK;
++    }
++    else
++    {
++        WB_TINY masks[5] = {0xFC, 0xF8, 0xF0, 0xE0, 0xC0};
++        WB_TINY entity[7] = {0, 0, 0, 0, 0, 0, 0};
++
++        int index = 5;
++        while (code >= 0x40)
++        {
++            entity[index] = 0x80 | (code & 0x3F);
++            code >>= 6; index--;
++        }
++        entity[index] = masks[index] | code;
++
++        /* Create result buffer */
++        if ( (*result = wbxml_buffer_create_from_cstr(entity + index)) == NULL ) {
++            return WBXML_ERROR_NOT_ENOUGH_MEMORY;
++        }
++      
++        return WBXML_OK;        
+     }
+-  
+-  return WBXML_OK;
+ }
+ 
+ 

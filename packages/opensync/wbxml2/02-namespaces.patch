@@ -1,0 +1,164 @@
+diff -Nru wbxml2-0.9.2.patched/src/wbxml_tables.c wbxml2-0.9.2/src/wbxml_tables.c
+--- wbxml2-0.9.2.patched/src/wbxml_tables.c	2008-01-10 19:05:45.000000000 +0000
++++ wbxml2-0.9.2/src/wbxml_tables.c	2008-01-10 19:04:55.000000000 +0000
+@@ -2806,6 +2806,46 @@
+     { NULL,                     0x00, 0x00 }
+ };
+ 
++/* NOTE:
++ * These namespace names differ from the Microsoft-assigned namespaces.  The
++ * reason for the difference is that the Microsoft-assigned names are not
++ * valid URI's and hence produce warning messages when processed by some
++ * libraries.  The mapping is as follows:
++ * 
++ *   Microsoft	          Ours
++ *   ---------            ----
++ *   AirSync:             http://synce.org/formats/airsync_wm5/airsync
++ *   POOMCONTACTS:        http://synce.org/formats/airsync_wm5/contacts
++ *   POOMMAIL:            http://synce.org/formats/airsync_wm5/mail
++ *   AirNotify:           http://synce.org/formats/airsync_wm5/airnotify
++ *   POOMCAL:             http://synce.org/formats/airsync_wm5/calendar
++ *   Move:                http://synce.org/formats/airsync_wm5/move
++ *   GetItemEstimate:     http://synce.org/formats/airsync_wm5/getitemestimate
++ *   FolderHierarchy:     http://synce.org/formats/airsync_wm5/folderhierarchy
++ *   MeetingResponse:     http://synce.org/formats/airsync_wm5/meetingresponse
++ *   POOMTASKS:           http://synce.org/formats/airsync_wm5/tasks
++ *   ResolveRecipients:   http://synce.org/formats/airsync_wm5/resolverecipients
++ *   ValidateCert:        http://synce.org/formats/airsync_wm5/validatecert
++ *   POOMCONTACTS2:       http://synce.org/formats/airsync_wm5/contacts2
++ *
++ */
++const WBXMLNameSpaceEntry sv_airsync_ns_table[] = {
++    { "http://synce.org/formats/airsync_wm5/airsync",           0x00 },     /**< Code Page 0 */
++    { "http://synce.org/formats/airsync_wm5/contacts",          0x01 },     /**< Code Page 1 */
++    { "http://synce.org/formats/airsync_wm5/mail",              0x02 },     /**< Code Page 2 */
++    { "http://synce.org/formats/airsync_wm5/airnotify",         0x03 },     /**< Code Page 3 */
++    { "http://synce.org/formats/airsync_wm5/calendar",          0x04 },     /**< Code Page 4 */
++    { "http://synce.org/formats/airsync_wm5/move",              0x05 },     /**< Code Page 5 */
++    { "http://synce.org/formats/airsync_wm5/getitemestimate",   0x06 },     /**< Code Page 6 */
++    { "http://synce.org/formats/airsync_wm5/folderhierarchy",   0x07 },     /**< Code Page 7 */
++    { "http://synce.org/formats/airsync_wm5/meetingresponse",   0x08 },     /**< Code Page 8 */
++    { "http://synce.org/formats/airsync_wm5/tasks",             0x09 },     /**< Code Page 9 */
++    { "http://synce.org/formats/airsync_wm5/resolverecipients", 0x0a },     /**< Code Page 10 */
++    { "http://synce.org/formats/airsync_wm5/validatecert",      0x0b },     /**< Code Page 11 */
++    { "http://synce.org/formats/airsync_wm5/contacts2",         0x0c },     /**< Code Page 12 */
++    { NULL,                                                     0x00 }
++};
++
+ #endif /* WBXML_SUPPORT_AIRSYNC */
+ 
+ 
+@@ -2885,7 +2925,7 @@
+ #endif /* WBXML_SUPPORT_WV */
+ 
+ #if defined( WBXML_SUPPORT_AIRSYNC )
+-    { WBXML_LANG_AIRSYNC,           &sv_airsync_public_id,          sv_airsync_tag_table,           NULL,                           NULL,                       NULL,                           NULL },
++    { WBXML_LANG_AIRSYNC,           &sv_airsync_public_id,          sv_airsync_tag_table,           sv_airsync_ns_table,            NULL,                       NULL,                           NULL },
+ #endif /* WBXML_SUPPORT_AIRSYNC */
+ 
+     { WBXML_LANG_UNKNOWN,           NULL,                           NULL,                           NULL,                           NULL,                       NULL,                           NULL }
+@@ -3169,3 +3209,21 @@
+ 
+     return NULL;
+ }
++
++WBXML_DECLARE(WB_UTINY) wbxml_tables_get_code_page(const WBXMLNameSpaceEntry *ns_table, const WB_TINY* xmlns)
++{
++    WB_ULONG i = 0;
++
++    if (ns_table == NULL)
++        return NULL;
++
++    while (ns_table[i].xmlNameSpace != NULL)
++    {
++        if (strcmp(ns_table[i].xmlNameSpace, xmlns) == 0)
++            return ns_table[i].wbxmlCodePage;
++
++        i++;
++    }
++
++    return NULL;
++}
+diff -Nru wbxml2-0.9.2.patched/src/wbxml_tables.h wbxml2-0.9.2/src/wbxml_tables.h
+--- wbxml2-0.9.2.patched/src/wbxml_tables.h	2008-01-10 19:05:45.000000000 +0000
++++ wbxml2-0.9.2/src/wbxml_tables.h	2008-01-10 19:04:55.000000000 +0000
+@@ -310,6 +310,9 @@
+ WBXML_DECLARE(const WB_TINY *) wbxml_tables_get_xmlns(const WBXMLNameSpaceEntry *ns_table,
+                                                       WB_UTINY code_page);
+ 
++WBXML_DECLARE(WB_UTINY) wbxml_tables_get_code_page(const WBXMLNameSpaceEntry *ns_table,
++                                                   const WB_TINY* xmlns);
++
+ /** @} */
+ 
+ #ifdef __cplusplus
+diff -Nru wbxml2-0.9.2.patched/src/wbxml_tree.c wbxml2-0.9.2/src/wbxml_tree.c
+--- wbxml2-0.9.2.patched/src/wbxml_tree.c	2008-01-10 19:05:45.000000000 +0000
++++ wbxml2-0.9.2/src/wbxml_tree.c	2008-01-10 19:04:55.000000000 +0000
+@@ -34,6 +34,7 @@
+ 
+ #include "wbxml.h"
+ 
++#define WBXML_NAMESPACE_SEPARATOR ':'
+ 
+ /***************************************************
+  *    Public Functions
+@@ -201,9 +202,9 @@
+         *tree = NULL;
+ 
+     /* Create Expat XML Parser */
+-    if ((xml_parser = XML_ParserCreate(NULL)) == NULL)
++    if ((xml_parser = XML_ParserCreateNS(NULL, WBXML_NAMESPACE_SEPARATOR)) == NULL)
+         return WBXML_ERROR_NOT_ENOUGH_MEMORY;
+-    
++
+     /* Init context */
+     wbxml_tree_clb_ctx.current = NULL;
+     wbxml_tree_clb_ctx.error = WBXML_OK;
+@@ -1091,9 +1092,32 @@
+     const WBXMLTagEntry *tag_entry = NULL;
+     WBXMLTreeNode *node = NULL;
+     WBXMLTag *tag = NULL;
+-    
++    WB_UTINY *sep = NULL;
++    const WB_UTINY *namespace_name = NULL;
++    const WB_UTINY *element_name = NULL;
++
++    /* Separate the namespace from the element name */
++    sep = (WB_UTINY *)strrchr((const WB_TINY *) name, WBXML_NAMESPACE_SEPARATOR);
++    if (sep != NULL) {
++        /* Temporarily split the string by changing the separater to a null-terminator */
++        *sep = '\0';
++        
++        namespace_name = name;
++        element_name = sep+1;
++    }
++    else {
++        /* No namespace, so just set it to an empty string (specifically, the null-terminator at the end of the elemet name */
++        namespace_name = name + strlen((const WB_TINY *) name);
++        element_name = name;
++    }
++
++    WBXML_DEBUG((WBXML_CONV, "Parsed element name: Namespace='%s', Element='%s'", namespace_name, element_name));
++
++    /* Update the current code page to match the one specified by the namespace */
++    tree->cur_code_page = wbxml_tables_get_code_page(tree->lang->nsTable, (const WB_TINY *) namespace_name);
++
+     /* Search for XML Tag Name in Table */
+-    if ((tag_entry = wbxml_tables_get_tag_from_xml(tree->lang, tree->cur_code_page, (const WB_UTINY *) name)) != NULL) {
++    if ((tag_entry = wbxml_tables_get_tag_from_xml(tree->lang, tree->cur_code_page, element_name)) != NULL) {
+         tree->cur_code_page = tag_entry->wbxmlCodePage;
+ 
+         /* Found : token tag */
+@@ -1104,6 +1128,11 @@
+         tag = wbxml_tag_create_literal(name);
+     }
+ 
++    if (sep != NULL) {
++        /* We are done with the element and namespace names, so put the separator character back */
++        *sep = WBXML_NAMESPACE_SEPARATOR;
++    }
++    
+     if (tag == NULL)
+         return NULL;
+ 

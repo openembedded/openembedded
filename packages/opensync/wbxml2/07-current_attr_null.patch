@@ -1,0 +1,22 @@
+--- wbxml2-0.9.2/src/wbxml_encoder.orig.c	2008-01-20 01:25:46.000000000 +0100
++++ wbxml2-0.9.2/src/wbxml_encoder.c	2008-01-20 01:26:25.000000000 +0100
+@@ -1875,6 +1875,9 @@
+ #if defined( WBXML_SUPPORT_SI )
+         case WBXML_LANG_SI10:
+             /* SI 1.0: Encode date for 'created' and 'si-expires' attributes */
++            if (encoder->current_attr == NULL)
++                break;
++
+             if ((encoder->current_attr->wbxmlCodePage == 0x00) &&
+                 ((encoder->current_attr->wbxmlToken == 0x0a) || (encoder->current_attr->wbxmlToken == 0x10)))
+             {
+@@ -1886,6 +1889,9 @@
+ #if defined( WBXML_SUPPORT_EMN )
+         case WBXML_LANG_EMN10:
+             /* EMN 1.0: Encode date for 'timestamp' attribute */
++            if (encoder->current_attr == NULL)
++                break;
++
+             if ((encoder->current_attr->wbxmlCodePage == 0x00) && (encoder->current_attr->wbxmlToken == 0x05))
+             {
+                 return wbxml_encode_datetime(encoder, buffer);
