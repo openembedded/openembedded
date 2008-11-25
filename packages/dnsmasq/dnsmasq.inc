@@ -20,7 +20,7 @@ do_install () {
                    "MANDIR=${D}${mandir}" \
                    install
         install -d ${D}${sysconfdir}/ ${D}${sysconfdir}/init.d ${D}${sysconfdir}/dnsmasq.d
-        install -m 0755 ${WORKDIR}/dnsmasq.conf ${D}${sysconfdir}/
+        install -m 644 ${WORKDIR}/dnsmasq.conf ${D}${sysconfdir}/
         install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/dnsmasq
 }
 
