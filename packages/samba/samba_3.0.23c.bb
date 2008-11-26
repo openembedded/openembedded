@@ -33,8 +33,6 @@ EXTRA_OECONF += "\
 
 do_install_append() {
 	install -d "${D}${localstatedir}/log"
-	rm -f ${D}/sbin/mount.smbfs
-	ln -sf smbmount ${D}${sbindir}/mount.smbfs
 	install -d "${D}${sysconfdir}/init.d"
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
 	install -d "${D}${sysconfdir}/samba"
