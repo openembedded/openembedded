@@ -3,7 +3,7 @@ SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "dbus-glib ncurses python"
-RDEPENDS_${PN} = "gpsd-conf gpsd-gpsctl"
+PROVIDES = "virtual/gpsd"
 
 EXTRA_OECONF = "--x-includes=${STAGING_INCDIR}/X11 \
                 --x-libraries=${STAGING_LIBDIR} \
@@ -75,10 +75,13 @@ PACKAGES =+ "libgps python-pygps gpsd-conf gpsd-gpsctl gps-utils"
 
 PACKAGE_ARCH_gpsd-conf = "${MACHINE_ARCH}"
 
+RDEPENDS_${PN} = "gpsd-conf gpsd-gpsctl"
+
 FILES_libgps = "${libdir}/*.so.*"
 FILES_gpsd-conf = "${sysconfdir}"
 FILES_gpsd-gpsctl = "${bindir}/gpsctl"
 FILES_gps-utils = "${bindir}/*"
+
 # might split them up even more fine granular
 RDEPENDS_gps-utils = "python-pygps"
 
