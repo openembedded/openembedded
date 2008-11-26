@@ -4,7 +4,7 @@ DEPENDS += "schroedinger libgsm"
 
 PE = "1"
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r35"
+PR = "r36"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv5te = "1"
@@ -17,7 +17,7 @@ FFBRANCH ?= "master"
 
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
 SRCREV = "b06c88bbec744970e023a03abed314f10d6936da"
-SRCREV_arm = "afb98868e19e63cbca6c9f0ed9e6cfa48d40277d"
+SRCREV_arm = "6df54822e5ce736f688f8cfef9c1e665b8758fcd"
 SRC_URI = "git://git.mansr.com/ffmpeg.mru;protocol=git;branch=${FFBRANCH} \
 "
 
