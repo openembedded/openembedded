@@ -1,0 +1,11 @@
+--- a/drivers/usb/host/ehci-q.c.orig	2008-10-30 15:17:27.000000000 +0100
++++ b/drivers/usb/host/ehci-q.c	2008-10-30 15:23:41.000000000 +0100
+@@ -799,7 +799,7 @@
+ 			 * to help them do so.  So now people expect to use
+ 			 * such nonconformant devices with Linux too; sigh.
+ 			 */
+-			info1 |= max_packet(maxp) << 16;
++			info1 |= 256 << 16;
+ 			info2 |= (EHCI_TUNE_MULT_HS << 30);
+ 		} else {		/* PIPE_INTERRUPT */
+ 			info1 |= max_packet (maxp) << 16;

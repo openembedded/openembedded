@@ -23,6 +23,7 @@ SRC_URI_append_boc01 = "\
 	file://010-081105-mii.patch;patch=1 \
 	file://011-081105-gpio.patch;patch=1 \
 	file://012-081121-cy3218-btns.patch;patch=1 \
+	file://020-cdc-ether-hack.patch;patch=1 \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
