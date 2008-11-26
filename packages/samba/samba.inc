@@ -14,7 +14,7 @@ EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
 	      --without-ads --without-automount --with-smbmount'
 
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc smbfs smbfs-doc"
-FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt"
+FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt ${base_sbindir}/mount.smbfs ${base_sbindir}/mount.smb"
 FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
 FILES_cifs = "${base_sbindir}/mount.cifs ${base_sbindir}/umount.cifs"
 FILES_cifs-doc = "${mandir}/man8/mount.cifs.8 ${mandir}/man8/umount.cifs.8"
