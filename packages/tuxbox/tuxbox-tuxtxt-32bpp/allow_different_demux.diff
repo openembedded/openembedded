@@ -1,0 +1,109 @@
+diff -Naur tuxtxt_org/python/plugin.py tuxtxt/python/plugin.py
+--- tuxtxt_org/python/plugin.py	2008-11-25 22:34:34.000000000 +0100
++++ tuxtxt/python/plugin.py	2008-11-25 22:24:59.000000000 +0100
+@@ -7,24 +7,28 @@
+ 		<screen position="1,1" size="1,1" title="TuxTXT" >
+                 </screen>"""
+ 
+-        def __init__(self, session, args = None):
+-        	self.skin = ShellStarter.skin
++	def __init__(self, session, args = None):
++		self.skin = ShellStarter.skin
+ 		Screen.__init__(self, session)
+ 		self.container=eConsoleAppContainer()
+ 		self.container.appClosed.append(self.finished)
+ 		self.runapp()
+-		
++
+ 	def runapp(self):
+ 		service = self.session.nav.getCurrentService()
+-		if service is not None:
+-			self.info = service.info()
+-		else:
+-			self.info = None
++		info = service and service.info()
++		txtpid = info and "%d" %(info.getInfo(iServiceInformation.sTXTPID)) or ""
++
++		stream = service and service.stream()
++		demux = stream and stream.getStreamingData()
++		demux = demux.get("demux", -1)
++		demux = demux > -1 and "%d" %(demux) or ""
+ 
+ 		eDBoxLCD.getInstance().lock()
+ 		eRCInput.getInstance().lock()
+ 		fbClass.getInstance().lock()
+-		if self.container.execute("/usr/bin/tuxtxt "+self.getValue(iServiceInformation.sTXTPID)):
++
++		if self.container.execute("/usr/bin/tuxtxt " + demux + " " + txtpid):
+ 			self.finished(-1)
+ 
+ 	def finished(self,retval):
+@@ -33,15 +37,6 @@
+ 		eDBoxLCD.getInstance().unlock()
+ 		self.close()
+ 
+-	def getValue(self, what):
+-		if self.info is None:
+-			return ""
+-		
+-		v = "%d" % (self.info.getInfo(what))
+-
+-		return v
+-
+-
+ def main(session, **kwargs):
+ 	session.open(ShellStarter)
+ 
+diff -Naur tuxtxt_org/tuxtxt.c tuxtxt/tuxtxt.c
+--- tuxtxt_org/tuxtxt.c	2008-11-25 18:29:04.000000000 +0100
++++ tuxtxt/tuxtxt.c	2008-11-25 22:24:17.000000000 +0100
+@@ -1490,27 +1490,39 @@
+ 	char cvs_revision[] = "$Revision: 1.95 $";
+ 
+ 	int cnt=0, rc_num=0;
+-#if !TUXTXT_CFG_STANDALONE
+-	int initialized = tuxtxt_init();
+-	if ( initialized )
+-		tuxtxt_cache.page = 0x100;
+-#endif
+ 
+ 	/* show versioninfo */
+ 	sscanf(cvs_revision, "%*s %s", versioninfo);
+ 	printf("TuxTxt %s\n", versioninfo);
+ 	printf("for 32bpp framebuffer\n");
+ 
++#if !TUXTXT_CFG_STANDALONE
++	int initialized = tuxtxt_init();
++	if ( initialized )
++		tuxtxt_cache.page = 0x100;
++#endif
++
+ 	/* get params */
+-	if (argc==1)
++	if (argc < 2)
+ 	{
+-		printf("\nUSAGE: tuxtxt vtpid\n");
+-		printf("No PID given, so scanning for PIDs ...\n\n");
+-		tuxtxt_cache.vtxtpid=0;
++		printf("\nUSAGE: tuxtxt demux [vtpid]\n");
++		printf("No Demux given... abort!!\n");
++		return -1;
+ 	}
+ 	else 
+ 	{
+-		tuxtxt_cache.vtxtpid = atoi(argv[1]);
++		if (argc==2)
++		{
++			printf("No PID given, so scanning for PIDs ...\n\n");
++			tuxtxt_cache.vtxtpid=0;
++		}
++		else
++			tuxtxt_cache.vtxtpid = atoi(argv[2]);
++#if HAVE_DVB_API_VERSION < 3
++		snprintf(tuxtxt_cache.demux, 64, "/dev/dvb/card0/demux%c", argv[1][0]);
++#else
++		snprintf(tuxtxt_cache.demux, 64, "/dev/dvb/adapter0/demux%c", argv[1][0]);
++#endif
+ 	}
+ 
+ 	/* open Framebuffer */
