@@ -1,4 +1,4 @@
-DEPLOY_DIR_SRC ?= "${DEPLOY_DIR}/source"
+DEPLOY_DIR_SRC ?= "${DEPLOY_DIR}/sources"
 EXCLUDE_FROM ?= ".pc autom4te.cache"
 
 # used as part of a path. make sure it's set
