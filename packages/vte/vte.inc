@@ -1,6 +1,7 @@
 DESCRIPTION = "vte is a virtual terminal emulator"
 LICENSE = "LGPL"
 DEPENDS += " glib-2.0 gtk+ intltool-native ncurses "
+PR = "r1"
 
 inherit gnome
 
@@ -13,6 +14,6 @@ do_stage() {
 }
 
 PACKAGES =+ "libvte vte-termcap"
-FILES_libvte = "${libdir}/*.so*"
+FILES_libvte = "${libdir}/*.so* ${libexecdir}/gnome-pty-helper"
 RDEPENDS_libvte = "vte-termcap"
 FILES_vte-termcap = "${datadir}/vte/termcap"
