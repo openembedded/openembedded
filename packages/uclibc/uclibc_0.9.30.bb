@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-PR = "r1"
+PR = "r2"
 DEFAULT_PREFERENCE = "1"
 
 require uclibc.inc
@@ -20,7 +20,6 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
 	   "
 SRC_URI_append_arm = " file://ldso_hash.patch;patch=1 "
 SRC_URI_append_armeb = " file://ldso_hash.patch;patch=1 "
-SRC_URI_append_avr32 = " file://ldso_hash.patch;patch=1 "
 
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
