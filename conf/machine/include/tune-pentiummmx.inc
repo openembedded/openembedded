@@ -1,0 +1,4 @@
+TARGET_CC_ARCH = "-march=pentium-mmx"
+BASE_PACKAGE_ARCH = "i586"
+FEED_ARCH = "i586"
+PACKAGE_EXTRA_ARCHS += "i386 i486"
