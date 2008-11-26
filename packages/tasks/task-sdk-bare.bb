@@ -5,7 +5,7 @@ ALLOW_EMPTY = "1"
 
 PACKAGES = "${PN}"
 
-RDEPENDS_${PN} = "\
+GLIBC_PKGS = "\
     glibc \
     glibc-dbg \
     glibc-dev \
@@ -18,6 +18,16 @@ RDEPENDS_${PN} = "\
     glibc-gconv-iso8859-1 \
     glibc-gconv-iso8859-15 \
     locale-base-en-gb \
+    "
+
+LIBC_PKGS_linux = "${GLIBC_PKGS}"
+LIBC_PKGS_linux-gnueabi = "${GLIBC_PKGS}"
+LIBC_PKGS_linux-uclibc = "uclibc uclibc-dev"
+LIBC_PKGS_linux-uclibcgnueabi = "uclibc uclibc-dev"
+
+RDEPENDS_${PN} = "\
+    ${LIBC_PKGS} \
     libgcc \
     libstdc++ \
+    libstdc++-dev \
 "
