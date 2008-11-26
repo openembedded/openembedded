@@ -16,7 +16,7 @@ EXTRA_OECONF='--disable-cups --with-readline=${STAGING_LIBDIR}/.. \
 PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc smbfs smbfs-doc"
 FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt"
 FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
-FILES_cifs = "${sbindir}/mount.cifs ${sbindir}/umount.cifs"
+FILES_cifs = "${base_sbindir}/mount.cifs ${base_sbindir}/umount.cifs"
 FILES_cifs-doc = "${mandir}/man8/mount.cifs.8 ${mandir}/man8/umount.cifs.8"
 FILES_libsmbclient = "${libdir}/libsmbclient.so.*"
 FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
@@ -44,7 +44,9 @@ do_install_append() {
 	ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smbfs
 	rm -f ${D}${bindir}/*.old
 	rm -f ${D}${sbindir}/*.old
-	install -c -m 755 mount.cifs  ${D}${bindir}/mount.cifs
+	install -c -m 755 mount.cifs  ${D}${base_sbindir}/mount.cifs
+	[ -f ${D}${sbindir}/mount.cifs ] && mv ${D}${sbindir}/mount.cifs ${D}${base_sbindir}/
+	[ -f ${D}${sbindir}/umount.cifs ] && mv ${D}${sbindir}/umount.cifs ${D}${base_sbindir}/
 }
 
 do_stage() {
