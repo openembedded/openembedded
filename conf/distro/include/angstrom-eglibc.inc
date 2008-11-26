@@ -30,7 +30,6 @@ BUILD_OPTIMIZATION_pn-perl = "-O1"
 BUILD_OPTIMIZATION_sparc = "-O2"
 
 TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
-DISTRO_PR = ".1"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
