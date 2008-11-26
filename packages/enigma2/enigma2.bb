@@ -36,25 +36,20 @@ RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
 PN = "enigma2"
-PR = "r1"
-SRCDATE = "20081113"
+PR = "r0"
+SRCDATE = "20081127"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
-#REL_MINOR="5"
+#REL_MINOR="6"
 #SUBDIR=
 #MODULE=trunk
 
-# if you want a 2.4-based release, use
+# if you want a 2.5-based release, use
 REL_MAJOR="2"
-REL_MINOR="4"
+REL_MINOR="5"
 SUBDIR=/branches
 MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
-
-REL_MINOR_dm8000="5"
-SUBDIR_dm8000=
-MODULE_dm8000=trunk
-PR_dm8000="r0"
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \

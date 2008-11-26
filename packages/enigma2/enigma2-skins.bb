@@ -5,16 +5,13 @@ SRCDATE = "20081101"
 
 # if you want experimental, use:
 #REL_MAJOR="2"
-#REL_MINOR="5"
+#REL_MINOR="6"
 #TAG = ""
 
-# if you want a 2.4-based release, use
+# if you want a 2.5-based release, use
 REL_MAJOR="2"
-REL_MINOR="4"
+REL_MINOR="5"
 TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
-
-REL_MINOR_dm8000="5"
-TAG_dm8000=""
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
