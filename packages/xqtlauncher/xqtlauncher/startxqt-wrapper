@@ -1,0 +1,5 @@
+startxqt &
+sleep 3
+#read and start defaultwm from /etc/X11/defaultwm
+$(cat /etc/X11/defaultwm) &
+sleep 2

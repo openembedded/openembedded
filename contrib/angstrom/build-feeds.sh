@@ -161,7 +161,8 @@ do
 		      make \
 		      maki \
 		      mc \
-		      meta-nas-server \
+		      mediatomb \
+              meta-nas-server \
 		      meta-toolchain \
               metacity \
               midori \
@@ -248,7 +249,8 @@ do
 		      ufraw \
 		      usbutils \
 		      usbview \
-		      viking \
+		      ushare \
+              viking \
 		      vlc \
 		      vpnc \
 		      wifi-radar \

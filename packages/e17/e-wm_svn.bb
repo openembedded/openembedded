@@ -2,17 +2,18 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.043+svnr${SRCREV}"
-PR = "r20"
+PR = "r21"
 
 inherit e update-alternatives
 
-RDEPENDS += "shared-mime-info mime-support edje-utils"
+E_RDEPENDS = "shared-mime-info mime-support edje-utils"
 
 # Uclibc build don't have 'glibc-utils'
 # I suspect the workaround below breaks eglibc, though. Koen - 20081125
-RDEPENDS_${PN}_append_linux = " glibc-utils "
-RDEPENDS_${PN}_append_linux-uclibc = " uclibc-utils "
-RDEPENDS_${PN}_append_linux-uclibcgnueabi = " uclibc-utils "
+RDEPENDS_${PN}_append_linux = " ${E_RDEPENDS} glibc-utils "
+RDEPENDS_${PN}_append_linux-gnueabi = " ${E_RDEPENDS} glibc-utils "
+RDEPENDS_${PN}_append_linux-uclibc = " ${E_RDEPENDS} uclibc-utils "
+RDEPENDS_${PN}_append_linux-uclibcgnueabi = " ${E_RDEPENDS} uclibc-utils "
 
 PACKAGES =+ "\
   ${PN}-config-default \

@@ -2,7 +2,7 @@ DESCRIPTION = "An EFL based Alarm app"
 LICENSE = "MIT BSD"
 DEPENDS = "evas ecore edje eet edbus"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
 
@@ -11,6 +11,12 @@ S = "${WORKDIR}/elementary"
 
 RDEPENDS = "elementary-themes"
 RRECOMMENDS = "elementary-tests"
+
+do_compile_append() {
+        sed -i -e s:${STAGING_DIR_TARGET}::g \
+               -e s:/${TARGET_SYS}::g \
+                  elementary.pc
+}
 
 FILES_${PN}-themes = "\
   ${datadir}/elementary/themes \

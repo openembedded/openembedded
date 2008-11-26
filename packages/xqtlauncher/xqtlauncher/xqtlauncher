@@ -1,0 +1,45 @@
+#set DISPLAY
+export DISPLAY=:0.0
+#check if the application is installed
+if which $1 ; then
+        echo start $1
+        #is Xqt running?        
+        if test ! -f /var/run/Xqt ;then
+                #start Xqt              
+                startxqt-wrapper
+        fi
+        #do we have atomate access? FIXME: make a function out of this and loop it
+        if test -f /var/lock/xqtlauncher; then
+                qcop QPE/TaskBar "message(QString)" "Was not able to lock access. Try again or remove /var/lock/xqtlauncher"
+        else
+                #lock access
+                touch /var/lock/xqtlauncher
+                if test -f /var/run/xqtlauncher; then
+                        #atomate write nuber of applications running in xqt +1
+                        echo $(($(cat /var/run/xqtlauncher ) + 1)) > /var/run/xqtlauncher
+                else
+                        echo 1 > /var/run/xqtlauncher
+                fi              
+                #remove lock
+                rm /var/lock/xqtlauncher
+                #start application
+                $1
+                #do we have atomate access? FIXME: make a function out of this and loop it
+                if test -f /var/lock/xqtlauncher; then
+                        qcop QPE/TaskBar "message(QString)" "Was not able to lock access. Try again or remove /var/lock/xqtlauncher" 
+                else
+                        #lock access
+                        touch /var/lock/xqtlauncher
+                        COUNTXQT=$(($(cat /var/run/xqtlauncher ) -1))
+                        echo $COUNTXQT > /var/run/xqtlauncher 
+                        if [ $COUNTXQT -le 0 ] ; then
+                                #kill Xqt if there is no application running.
+                                killall Xqt
+                        fi
+                        #remove lock                                            
+                        rm /var/lock/xqtlauncher
+                fi
+        fi
+else
+        qcop QPE/TaskBar "message(QString)" "Application not found"
+fi

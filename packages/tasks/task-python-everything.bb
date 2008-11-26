@@ -1,7 +1,7 @@
 DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
-PR = "ml36"
+PR = "ml38"
 
 RDEPENDS = "\
 		python-ao 		\
@@ -12,7 +12,7 @@ RDEPENDS = "\
 		python-dialog		\
 		task-python-efl			\
 		task-python-efl-examples		\
-		python-fam			\
+#		python-fam			\
 		python-fnorb		\
 		python-formencode	\
 		python-fpconst		\
@@ -76,6 +76,7 @@ RDEPENDS = "\
 		python-pyxml		\
 		python-pyxmlrpc		\
 		python-pyyaml		\
+		python-rpyc			\
 		python-scapy		\
 		python-scons		\
 		python-setuptools	\
@@ -89,7 +90,7 @@ RDEPENDS = "\
 		python-spyro		\
 		python-sqlalchemy	\
 		python-sqlobject	\
-		python-sword		\
+#		python-sword		\
 		python-tlslite		\
 		python-urwid		\
 		python-vmaps		\

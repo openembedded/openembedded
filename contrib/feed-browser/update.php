@@ -32,6 +32,7 @@ require_once 'includes/functions.inc';
    Section: net
    Architecture: armv5te
    Maintainer: Angstrom Developers <angstrom-dev@handhelds.org>
+   License: GPL
    MD5Sum: b8bd197224e24759d2162091a0fa727f
    Size: 12346
    Filename: zeroconf_0.9-r0_armv5te.ipk
