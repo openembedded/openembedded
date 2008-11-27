@@ -12,6 +12,9 @@ TARGET_VENDOR = "-angstrom"
 # Add FEED_ARCH to overrides
 OVERRIDES .= ":${FEED_ARCH}"
 
+# Put links to sources in deploy/sources to make it easier for people to be GPL compliant
+INHERIT += "src_distribute_local"
+SRC_DIST_LOCAL ?= "symlink"
 
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROM_MODE ?= "glibc"
