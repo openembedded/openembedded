@@ -5,11 +5,11 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r11"
-PR_dm7020 = "r12"
-PR_dm7025 = "r13"
-PR_dm8000 = "r15"
-PR_dm800 = "r13"
+PR = "r12"
+PR_dm7020 = "r13"
+PR_dm7025 = "r14"
+PR_dm8000 = "r16"
+PR_dm800 = "r14"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -21,6 +21,7 @@ SRC_URI = "file://halt \
            file://sendsigs \
            file://rmnologin \
            file://umountnfs.sh \
+           file://netmount.sh \
            file://var.tar.gz.default \
            file://bootup"
 
@@ -60,6 +61,7 @@ do_install () {
 		ln -sf /usr/bin/showshutdownpic ${D}${sysconfdir}/rc0.d/S89showshutdownpic
 	else
 		install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
+		install -m 0755 ${WORKDIR}/netmount.sh	${D}${sysconfdir}/network/if-up.d/02netmount
 	fi
 
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc2.d/S99rmnologin
