@@ -9,7 +9,7 @@ PR_dm7025 = "r1"
 
 inherit autotools pkgconfig
 
-SRCDATE = "20081127"
+SRCDATE = "20081128"
 SRCDATA_dm7025 = "20080907"
 
 SRC_URI = "cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/dvbmediasink;module=dvbmediasink;method=pserver"
