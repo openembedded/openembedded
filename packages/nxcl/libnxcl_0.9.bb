@@ -2,9 +2,9 @@ DESCRIPTION = "Backend library for the free nx-clients"
 HOMEPAGE = "http://freenx.berlios.de/"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
-RDEPENDS = "nxproxy ssh"
+RDEPENDS = "nxproxy nxssh"
 
 SRC_URI = "http://download.berlios.de/freenx/freenx-client-${PV}.tar.bz2 \
 	   file://gcc4.3-ftbfs.patch;patch=1 \
