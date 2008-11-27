@@ -1,0 +1,164 @@
+---
+ drivers/power/Kconfig      |    5 +
+ drivers/power/Makefile     |    1 
+ drivers/power/progear_ac.c |  132 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 138 insertions(+)
+
+--- linux-2.6.27.orig/drivers/power/Kconfig
++++ linux-2.6.27/drivers/power/Kconfig
+@@ -60,6 +60,11 @@ config BATTERY_PALMTX
+ 	tristate "Palm T|X battery"
+ 	depends on MACH_PALMTX
+ 	help
+ 	  Say Y to enable support for the battery in Palm T|X.
+ 
++config PROGEAR_POWER
++	tristate "Frontpath Progear AC/Battery"
++	depends on PCI && X86
++	help
++	  Say Y to enable support for the AC/battery in Frontpath Progear
+ endif # POWER_SUPPLY
+--- linux-2.6.27.orig/drivers/power/Makefile
++++ linux-2.6.27/drivers/power/Makefile
+@@ -20,5 +20,6 @@ obj-$(CONFIG_APM_POWER)		+= apm_power.o
+ obj-$(CONFIG_BATTERY_DS2760)	+= ds2760_battery.o
+ obj-$(CONFIG_BATTERY_PMU)	+= pmu_battery.o
+ obj-$(CONFIG_BATTERY_OLPC)	+= olpc_battery.o
+ obj-$(CONFIG_BATTERY_TOSA)	+= tosa_battery.o
+ obj-$(CONFIG_BATTERY_PALMTX)	+= palmtx_battery.o
++obj-$(CONFIG_PROGEAR_POWER)	+= progear_ac.o
+--- /dev/null
++++ linux-2.6.27/drivers/power/progear_ac.c
+@@ -0,0 +1,132 @@
++/*
++ * linux/drivers/power/progear_ac.c
++ *
++ * AC detection driver for Frontpath Progear
++ *
++ * based on palmtx_battery.c
++ * based on tosa_battery.c
++ *
++ * Copyright (C) 2008 Marcin Juszkiewicz <marcin@haerwu.biz>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/power_supply.h>
++#include <linux/pci.h>
++
++int ac_status = 0;
++
++struct pci_dev *pmu_dev=NULL;
++
++#define PMU_CFG_RSM8 0xC0
++
++static void progear_ac_update()
++{
++	u8 temp;
++
++	pci_read_config_byte(pmu_dev, PMU_CFG_RSM8, &temp);
++
++	ac_status = (temp & 0x10) ? 1: 0;
++}
++
++static int progear_ac_get_property(struct power_supply *bat_ps,
++			    enum power_supply_property psp,
++			    union power_supply_propval *val)
++{
++	switch (psp) {
++	case POWER_SUPPLY_PROP_PRESENT:
++		progear_ac_update();
++		val->intval = ac_status;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static void progear_ac_external_power_changed(struct power_supply *bat_ps)
++{
++	progear_ac_update();
++}
++
++static enum power_supply_property progear_ac_main_props[] = {
++	POWER_SUPPLY_PROP_PRESENT,
++};
++
++struct power_supply bat_ps = {
++	.name			= "main-battery",
++	.type			= POWER_SUPPLY_TYPE_MAINS,
++	.properties		= progear_ac_main_props,
++	.num_properties		= ARRAY_SIZE(progear_ac_main_props),
++	.get_property		= progear_ac_get_property,
++	.external_power_changed = progear_ac_external_power_changed,
++	.use_for_apm		= 1,
++};
++
++static int __devinit progear_ac_probe(struct platform_device *dev)
++{
++	int ret = 0;
++
++	pmu_dev = pci_get_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101, NULL);
++	if(!pmu_dev) {
++		printk("ALI M7101 PMU not found.\n");
++		return -ENODEV;
++	}
++
++	return power_supply_register(&dev->dev, &bat_ps);
++}
++
++static int __devexit progear_ac_remove(struct platform_device *dev)
++{
++	power_supply_unregister(&bat_ps);
++	return 0;
++}
++
++static struct platform_driver progear_ac_driver = {
++	.driver = {
++		.name = "progear-ac",
++		.owner= THIS_MODULE,
++	},
++	.probe		= progear_ac_probe,
++	.remove		= progear_ac_remove,
++};
++
++static struct platform_device *progear_ac_device;
++
++static int __init progear_ac_init(void)
++{
++	int ret = platform_driver_register(&progear_ac_driver);
++
++	if (ret)
++		return ret;
++
++	progear_ac_device = platform_device_register_simple("progear-ac", -1,
++								NULL, 0);
++	if (IS_ERR(progear_ac_device)) {
++		platform_driver_unregister(&progear_ac_driver);
++		return PTR_ERR(progear_ac_device);
++	}
++
++	return 0;
++}
++
++static void __exit progear_ac_exit(void)
++{
++	pci_dev_put(pmu_dev);
++
++	platform_device_unregister(progear_ac_device);
++	platform_driver_unregister(&progear_ac_driver);
++}
++
++module_init(progear_ac_init);
++module_exit(progear_ac_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Marcin Juszkiewicz <marcin@haerwu.biz>");
++MODULE_DESCRIPTION("Frontpath Progear AC driver");
