@@ -1,0 +1,13 @@
+Index: nxssh/log.h
+===================================================================
+--- nxssh.orig/log.h	2008-11-28 00:10:52.817729265 +0100
++++ nxssh/log.h	2008-11-28 00:11:12.842702590 +0100
+@@ -15,6 +15,8 @@
+ #ifndef SSH_LOG_H
+ #define SSH_LOG_H
+ 
++#include <stdarg.h>
++
+ /* Supported syslog facilities and levels. */
+ typedef enum {
+ 	SYSLOG_FACILITY_DAEMON,
