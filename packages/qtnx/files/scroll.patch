@@ -1,6 +1,3 @@
-patch by Henning Heinold, so the configure-widget is
-scrollable
-
 Index: qtnx-0.9/settingsdialog.ui
 ===================================================================
 --- qtnx-0.9.orig/settingsdialog.ui	2008-09-03 21:32:51.716503112 +0200

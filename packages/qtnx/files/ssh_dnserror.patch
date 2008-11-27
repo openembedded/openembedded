@@ -1,0 +1,51 @@
+Index: qtnx-0.9/qtnxwindow.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.cpp	2008-11-05 18:53:29.000000000 +0100
++++ qtnx-0.9/qtnxwindow.cpp	2008-11-05 18:54:39.000000000 +0100
+@@ -271,6 +271,15 @@
+     reinitialiseClient();
+ }
+ 
++void QtNXWindow::dnsFailed()
++{
++    QMessageBox::critical(this, tr("DNS Lookup Failure"),
++            tr("Are you really connected to the network?"), QMessageBox::Ok, QMessageBox::NoButton,
++            QMessageBox::NoButton);
++
++    reinitialiseClient();
++}
++
+ void QtNXWindow::handleAtCapacity()
+ {
+     QMessageBox::critical(this, tr("Server at capacity"),
+@@ -381,6 +390,7 @@
+     publicKey = binaryPath + "/id.key";
+ #endif
+ 
++    cout << "invoke backend" << endl;
+     m_NXClient->invokeNXSSH(publicKey, config.serverHost, config.encryption, "",
+             config.serverPort);
+ 
+@@ -602,6 +612,10 @@
+         case NXCL_PROCESS_ERROR:
+ 	    handleStatus(tr("An error occurred running a helper program"));
+             break;
++	 case NXCL_DNS_ERROR:
++	    handleStatus(tr("DNS error occurred"));
++	    dnsFailed();
++	    break;
+         default:
+             break;
+     }
+Index: qtnx-0.9/qtnxwindow.h
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.h	2008-11-05 18:53:29.000000000 +0100
++++ qtnx-0.9/qtnxwindow.h	2008-11-05 18:53:29.000000000 +0100
+@@ -122,6 +122,7 @@
+         void resumeResumePressed(QString);
+         void sshContinue(QString);
+         void failedLogin();
++	void dnsFailed();
+         void showLogWindow();
+         void quit();
+     private:

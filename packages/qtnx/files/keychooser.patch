@@ -1,0 +1,126 @@
+Index: qtnx-0.9/qtnxwindow.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.cpp	2008-10-14 10:43:03.000000000 +0200
++++ qtnx-0.9/qtnxwindow.cpp	2008-10-14 10:43:03.000000000 +0200
+@@ -304,6 +304,7 @@
+ void QtNXWindow::startConnect()
+ {
+     string key = "";
++    string publicKey = "/usr/share/qtnx/id.key";
+ 
+     if (ui_lg.session->currentText() == tr("Create new session")) {
+         QMessageBox::critical(this, tr("Unconfigured"),
+@@ -345,11 +346,14 @@
+     else if (ui_lg.link->currentText() == tr("LAN"))
+         session.linkType = "lan";
+ 
+-    if (!config.key.empty()) {
+-        key = config.key;
++    if (!config.publicKey.empty()) {
++        publicKey = config.publicKey;
+         session.key = "supplied";
+     } else
++    {
+         session.key = "default";
++	publicKey = "/usr/share/qtnx/id.key";
++    }
+ 
+     if (config.sessionType == "unix-application")
+         session.customCommand = config.customCommand;
+@@ -365,13 +369,12 @@
+ 
+     m_NXClient->setDepth(getDepth());
+ 
+-    QString keyPath = "/usr/share/qtnx/id.key";
+ 
+ #ifdef Q_WS_MAC
+-    keyPath = binaryPath + "/id.key";
++    publicKey = binaryPath + "/id.key";
+ #endif
+ 
+-    m_NXClient->invokeNXSSH(keyPath.toStdString(), config.serverHost, config.encryption, "",
++    m_NXClient->invokeNXSSH(publicKey, config.serverHost, config.encryption, "",
+             config.serverPort);
+ 
+     processProbe->start(30);
+Index: qtnx-0.9/qtnxsettings.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxsettings.cpp	2008-10-14 10:43:03.000000000 +0200
++++ qtnx-0.9/qtnxsettings.cpp	2008-10-14 10:43:03.000000000 +0200
+@@ -17,6 +17,7 @@
+ 
+ #include <QFile>
+ #include <QDir>
++#include <QFileDialog>
+ 
+ #include "qtnxsettings.h"
+ 
+@@ -82,7 +83,7 @@
+         ui_sd.hostname->setText(QString::fromStdString(config.serverHost));
+         ui_sd.port->setValue(config.serverPort);
+ 
+-        if (config.key.empty())
++        if (config.publicKey.empty())
+             ui_sd.defaultKey->setChecked(true);
+         else {
+             ui_sd.defaultKey->setChecked(false);
+@@ -221,7 +222,7 @@
+ void QtNXSettings::keyChanged(int state)
+ {
+     if (state == Qt::Checked) {
+-        config.key = "";
++        config.publicKey = "";
+         ui_sd.setAuthKeyButton->setEnabled(false);
+     } else
+         ui_sd.setAuthKeyButton->setEnabled(true);
+@@ -265,15 +266,11 @@
+ 
+ void QtNXSettings::authKeyPressed()
+ {
+-    keyDialog = 0;
+-    delete keyDialog;
+-    keyDialog = new QDialog(this);
+-    ui_kd.setupUi(keyDialog);
+-    keyDialog->show();
+-    QTextDocument *doc_key = new QTextDocument(QString::fromStdString(config.key));
+-    ui_kd.key->setDocument(doc_key);
+-
+-    connect(keyDialog, SIGNAL(accepted()), this, SLOT(keyDialogAccept()));
++	QString publicKey = QFileDialog::getOpenFileName(this,
++							 tr("Open File"),
++			                                 ".qtnx",
++							 tr("Keyfiles (*.key )"));
++	config.publicKey = publicKey.toStdString();
+ }
+ 
+ void QtNXSettings::keyDialogAccept()
+Index: qtnx-0.9/nxwritexml.cpp
+===================================================================
+--- qtnx-0.9.orig/nxwritexml.cpp	2008-10-14 10:43:03.000000000 +0200
++++ qtnx-0.9/nxwritexml.cpp	2008-10-14 10:43:03.000000000 +0200
+@@ -123,6 +123,10 @@
+         escape(QString::fromStdString(sessionData.key)) <<
+         "\"></option>\n";
+ 
++    xml << "<option key=\"Public Authentication Key\" value=\"" <<
++        escape(QString::fromStdString(sessionData.publicKey)) <<
++        "\"></option>\n";
++
+     if (sessionData.encryption == true)
+         xml << "<option key=\"Use SSL Tunnelling\" value=\"True\">" <<
+             "</option>\n";
+Index: qtnx-0.9/nxparsexml.cpp
+===================================================================
+--- qtnx-0.9.orig/nxparsexml.cpp	2008-10-14 10:43:03.000000000 +0200
++++ qtnx-0.9/nxparsexml.cpp	2008-10-14 10:43:03.000000000 +0200
+@@ -119,6 +119,10 @@
+         sessionData->key = attributes.value("value").toStdString();
+     }
+ 
++    if (attributes.value("key") == "Public Authentication Key") {
++        sessionData->publicKey = attributes.value("value").toStdString();
++    }
++
+     if (attributes.value("key") == "Use SSL Tunnelling") {
+         if (attributes.value("value") == "True")
+             sessionData->encryption = true;

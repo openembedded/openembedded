@@ -1,0 +1,1919 @@
+Index: qtnx-0.9/keyboards
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ qtnx-0.9/keyboards	2008-10-14 10:43:03.000000000 +0200
+@@ -0,0 +1,86 @@
++al,0x041C,Albanian
++ar,0x0001,Arabic
++am,,Armenian
++az,,Azerbaijani
++bg,0x0402,Bulgarian
++by,0x0423,Belarusian
++be,,Belgian
++ben,,Bengali
++bs,,Bosnian
++mm,,Burmese
++hr,0x041A,Croatian
++hr_US,,Croatian (US)
++cz,0x0405,Czech
++cz_qwerty,,Czech (QWERTY)
++dk,0x0406,Danish
++nl,0x0413,Dutch (Netherlands)
++dvorak,,Dvorak
++us,0x0009,English
++en_US,0x0409,English (United States)
++gb,0x0809,English (United Kingdom)
++ca,0x1009,English (Canada)
++ee,0x0425,Estonian
++fi,0x040B,Finnish
++fr,0x040C,French (France)
++fr_latin9,,French (Alternative)
++ca_enhanced,0x0C0C,French (Canada)
++ge_la,,Georgian (latin)
++ge_ru,,Georgian (russian)
++de,0x0407,German (Germany)
++el,0x0408,Greek
++guj,,Gujarati
++gur,,Gurmukhi
++dev,0x0439,Hindi
++hu,0x040E,Hungarian
++hu_US,,Hungarian (US)
++hu_qwerty,,Hungarian (qwerty)
++is,0x040F,Icelandic
++iu,,Inuktitut
++ir,,Iranian
++ie,,Irish
++il,,Israeli
++il_phonetic,,Israeli (phonetic)
++it,0x0410,Italian (Italy)
++jp,0x0411,Japanese
++kan,,Kannada
++ko,0x0412,Korean
++la,,Latin America
++lv,0x0426,Latvian
++lt,0x0427,Lithuanian
++lt_std,,Lithuanian azerty standard
++mk,0x042F,FYRO Macedonian
++ml,0x043E,Malay (Malaysia)
++mt_US,,Maltese (US layout)
++ogham,,Ogham
++oriya,,Oriya
++no,0x0814,Norwegian
++pl,0x0415,Polish
++pl2,,Polish (qwertz)
++br,0x0416,Portuguese (Brazil)
++pt,0x0816,Portuguese (Portugal)
++ro,0x0418,Romanian
++ru,0x0419,Russian
++ru_yawerty,,Russian (cyrillic phonetic)
++se_FI,,Northern Saami (Finland)
++se_NO,,Northern Saami (Norway)
++se_SE,,Northern Saami (Sweden)
++sr,0x081A,Serbian
++sk,0x041B,Slovak
++si,0x0424,Slovenian
++es,0x040A,Spanish (Traditional Sort)
++se,0x041D,Swedish
++fr_CH,0x100c,Swiss French
++de_CH,0x0807,Swiss German
++syr,,Syriac
++tj,,Tajik
++tml,,Tamil
++tel,,Telugu
++th,0x041E,Thai
++th_tis,0x041E,Thai (TIS-820.2538)
++th_pat,,Thai (Pattachote)
++tr,0x041F,Turkish
++ua,0x0422,Ukrainian
++vn,0x042A,Vietnamese
++yu,,Yugoslavian
++fo,0x0438,Faroese
++nl-be,0x0813,Dutch (Belgian)
+Index: qtnx-0.9/qtnxsettings.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxsettings.cpp	2008-10-14 10:43:02.000000000 +0200
++++ qtnx-0.9/qtnxsettings.cpp	2008-10-14 14:02:04.000000000 +0200
+@@ -45,6 +45,8 @@
+     connect(ui_sd.imageCompressionType, SIGNAL(currentIndexChanged(QString)), this, SLOT(compressionChanged(QString)));
+     connect(ui_sd.keyboard, SIGNAL(currentIndexChanged(QString)), this, SLOT(keyboardChanged(QString)));
+     connect(ui_sd.defaultKey, SIGNAL(stateChanged(int)), this, SLOT(keyChanged(int)));
++    connect(ui_sd.useProxy, SIGNAL(stateChanged(int)), this, SLOT(proxyChanged(int)));
++    connect(ui_sd.proxyAuthenticated, SIGNAL(stateChanged(int)), this, SLOT(proxyAuthChanged(int)));
+     connect(ui_sd.applyButton, SIGNAL(pressed()), this, SLOT(applyPressed()));
+     connect(ui_sd.okButton, SIGNAL(pressed()), this, SLOT(okPressed()));
+     connect(ui_sd.cancelButton, SIGNAL(pressed()), this, SLOT(cancelPressed()));
+@@ -58,6 +60,14 @@
+ void QtNXSettings::parseFile()
+ {
+     if (!fileName.isEmpty()) {
++
++        config.useProxy = false;
++        config.proxyHost = "";
++        config.proxyPort = 8080;
++        config.proxyAuthenticated = false;
++        config.proxyPass = "";
++        config.proxyUser = "";
++
+         NXParseXML handler;
+         handler.setData(&config);
+ 
+@@ -145,6 +155,24 @@
+             }
+         }
+ 
++        if (config.useProxy == true) {
++            ui_sd.useProxy->setChecked(true);
++            ui_sd.proxyHost->setEnabled(true);
++            ui_sd.proxyPort->setEnabled(true);
++            ui_sd.proxyAuthenticated->setEnabled(true);
++        }
++
++        if (config.proxyAuthenticated == true) {
++            ui_sd.proxyAuthenticated->setChecked(true);
++            ui_sd.proxyUser->setEnabled(true);
++            ui_sd.proxyPass->setEnabled(true);
++        }
++
++        ui_sd.proxyHost->setText(QString::fromStdString(config.proxyHost));
++        ui_sd.proxyPort->setValue(config.proxyPort);
++        ui_sd.proxyUser->setText(QString::fromStdString(config.proxyUser));
++        ui_sd.proxyPass->setText(QString::fromStdString(config.proxyPass));
++
+         ui_sd.encryption->setChecked(config.encryption);
+         ui_sd.memoryCache->setValue(config.cache);
+         ui_sd.diskCache->setValue(config.images);
+@@ -199,6 +227,30 @@
+         ui_sd.setAuthKeyButton->setEnabled(true);
+ }
+ 
++void QtNXSettings::proxyChanged(int state)
++{
++    if (state == Qt::Checked) {
++        ui_sd.proxyHost->setEnabled(true);
++        ui_sd.proxyPort->setEnabled(true);
++        ui_sd.proxyAuthenticated->setEnabled(true);
++    } else {
++        ui_sd.proxyHost->setEnabled(false);
++        ui_sd.proxyPort->setEnabled(false);
++        ui_sd.proxyAuthenticated->setEnabled(false);
++    }
++}
++
++void QtNXSettings::proxyAuthChanged(int state)
++{
++    if (state == Qt::Checked) {
++        ui_sd.proxyUser->setEnabled(true);
++        ui_sd.proxyPass->setEnabled(true);
++    } else {
++        ui_sd.proxyUser->setEnabled(false);
++        ui_sd.proxyPass->setEnabled(false);
++    }
++}
++
+ void QtNXSettings::cancelPressed()
+ {
+     close();
+@@ -315,6 +367,25 @@
+     else
+         config.render = false;
+ 
++    if (ui_sd.useProxy->checkState() == Qt::Checked) {
++        config.useProxy = true;
++
++        if (ui_sd.proxyAuthenticated->checkState() == Qt::Checked)
++	{
++            config.proxyAuthenticated = true;
++        } else
++	{
++            config.proxyAuthenticated = false;
++	}
++        config.proxyHost = ui_sd.proxyHost->text().toStdString();
++        config.proxyPort = ui_sd.proxyPort->value();
++        config.proxyUser = ui_sd.proxyUser->text().toStdString();
++        config.proxyPass = ui_sd.proxyPass->text().toStdString();
++    } else
++    {
++        config.useProxy = false;
++    }
++
+     NXWriteXML writeData;
+     writeData.setSessionData(config);
+     writeData.write(QDir::homePath() + "/.qtnx/" + ui_sd.sessionName->text() + ".nxml");
+Index: qtnx-0.9/qtnxsettings.h
+===================================================================
+--- qtnx-0.9.orig/qtnxsettings.h	2008-10-14 10:43:02.000000000 +0200
++++ qtnx-0.9/qtnxsettings.h	2008-10-14 10:43:03.000000000 +0200
+@@ -34,13 +34,15 @@
+         QtNXSettings(QString);
+         ~QtNXSettings();
+         void parseFile();
+-        public slots:
+-            void resolutionChanged(QString);
++    public slots:
++        void resolutionChanged(QString);
+         void compressionChanged(QString);
+         void platformChanged(QString);
+ 	void keyboardChanged(QString);
+         void typeChanged(QString);
+         void keyChanged(int);
++        void proxyAuthChanged(int);
++        void proxyChanged(int);
+         void applyPressed();
+         void cancelPressed();
+         void okPressed();
+@@ -48,7 +50,7 @@
+         void authKeyPressed();
+         void keyDialogAccept();
+         void keyDialogReject();
+-signals:
++    signals:
+         void closing(QString);
+     private:
+         Ui::SettingsDialog ui_sd;
+Index: qtnx-0.9/qtnxwindow.cpp
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.cpp	2008-10-14 10:43:02.000000000 +0200
++++ qtnx-0.9/qtnxwindow.cpp	2008-10-14 14:02:04.000000000 +0200
+@@ -28,6 +28,10 @@
+     #include <CoreFoundation/CFBundle.h>
+ #endif
+ 
++#ifdef Q_CYGWIN_WIN
++    #include <Windows.h>
++#endif
++
+ using namespace nxcl;
+ using namespace std;
+ 
+@@ -125,16 +129,72 @@
+ 
+ #ifdef Q_CYGWIN_WIN
+     QString filePath = qApp->applicationDirPath();
++    QString tempPath = filePath;
+ 
+     // On Windows QtNX will ship with the NX system components in NX/ relative to the
+     // QtNX binary
+     filePath.append("/NX");
+     setenv("NX_SYSTEM", filePath.toStdString().c_str(), 1);
+     filePath.append("/bin");
++    tempPath.append("/NX/tmp/");
++    setenv("NX_TEMP", tempPath.toStdString().c_str(), 1);
++    setenv("TEMP", tempPath.toStdString().c_str(), 1);
+     m_NXClient->setCustomPath(filePath.toStdString());
+ #endif
++
++#ifdef Q_WS_X11
++    binaryPath = qApp->applicationDirPath();
++    QString libPath = binaryPath;
++
++    binaryPath.append("/bin");
++
++    m_NXClient->setCustomPath(binaryPath.toStdString());
++
++    libPath.append("/lib:");
++    libPath.append(getenv("LD_LIBRARY_PATH"));
++
++    cout << libPath.toStdString() << endl;
++    setenv("LD_LIBRARY_PATH", libPath.toStdString().c_str(), 1);
++#endif
++
+ }
+ 
++QString QtNXWindow::keyboardLayout()
++{
++#ifdef Q_CYGWIN_WIN
++    HKL dwlayout = GetKeyboardLayout(0);
++
++    WORD layout = LOWORD(dwlayout);
++
++    // On Windows QtNX will ship with the keyboards file in NX/ relative to the
++    // QtNX binary
++    QString filePath = qApp->applicationDirPath();
++    filePath.append("/NX/keyboards");
++
++    QFile keymaps(filePath);
++
++    bool ok;
++
++    if (keymaps.open(QIODevice::ReadOnly)) {
++        QTextStream stream(&keymaps);
++        QString line;
++
++        while (!stream.atEnd()) {
++            line = stream.readLine();
++
++            if (line.startsWith("#"))
++                continue;
++
++            if (line.section(",", 1, 1).toInt(&ok, 16) == (int)layout)
++                return line.section(",", 0, 0);
++        }
++        keymaps.close();
++    }
++#endif
++    return "defkeymap";
++}
++
++
+ void QtNXWindow::setupUI()
+ {
+     logWindow = new QDialog(0);
+@@ -259,6 +319,21 @@
+ 
+     setDefaultData();
+ 
++    if (config.useProxy) {
++        string proxyUsername("");
++        string proxyPassword("");
++
++        if (config.proxyAuthenticated) {
++            proxyUsername = config.proxyUser;
++            proxyPassword = config.proxyPass;
++        }
++
++        m_NXClient->setProxy(config.proxyHost,
++                             proxyUsername,
++			     proxyPassword,
++			     config.proxyPort);
++    }
++
+     if (ui_lg.link->currentText() == tr("Modem"))
+         session.linkType = "modem";
+     else if (ui_lg.link->currentText() == tr("ISDN"))
+@@ -425,6 +500,8 @@
+ 
+     ui_lg.session->setCurrentIndex(
+             ui_lg.session->findText(sessionName));
++
++    parseXML();
+ }
+ 
+ void QtNXWindow::resumeNewPressed()
+@@ -482,16 +559,16 @@
+ 
+     switch (id) {
+         case NXCL_PROCESS_STARTED:
+-            handleStatus(tr("Process started"));
++	    handleStatus(tr("Starting login process"));
+             break;
+         case NXCL_PROCESS_EXITED:
+-            handleStatus(tr("Process exited"));
++	    handleStatus(tr(""));
+             break;
+         case NXCL_AUTH_FAILED:
+             handleStatus(tr("Invalid authentication key"));
+             break;
+         case NXCL_AUTHENTICATING:
+-            handleStatus(tr("Authenticating client"));
++	    handleStatus(tr("Authenticating"));
+             break;
+         case NXCL_LOGIN_FAILED:
+             handleStatus(tr("Invalid username or password"));
+@@ -501,7 +578,7 @@
+             handleStatus(tr("Host key verification failed"));
+             break;
+         case NXCL_INVOKE_PROXY:
+-            handleStatus(tr("Starting NX proxy"));
++            handleStatus(tr("Loading remote desktop"));
+             break;
+         case NXCL_STARTING:
+             handleStatus(tr("Starting session"));
+@@ -510,10 +587,10 @@
+             handleStatus(tr("Finished connecting"));
+             break;
+         case NXCL_ALIVE:
+-            handleStatus(tr("NX session active"));
++	    handleStatus(tr("Session running"));
+             break;
+         case NXCL_PROCESS_ERROR:
+-            handleStatus(tr("Process error"));
++	    handleStatus(tr("An error occurred running a helper program"));
+             break;
+         default:
+             break;
+Index: qtnx-0.9/nxparsexml.cpp
+===================================================================
+--- qtnx-0.9.orig/nxparsexml.cpp	2008-10-14 10:11:40.000000000 +0200
++++ qtnx-0.9/nxparsexml.cpp	2008-10-14 14:02:04.000000000 +0200
+@@ -133,6 +133,36 @@
+             sessionData->fullscreen = false;
+     }
+ 
++    if (attributes.value("key") == "Use Proxy") {
++        if (attributes.value("value") == "True")
++            sessionData->useProxy = true;
++        else
++            sessionData->useProxy = false;
++    }
++
++    if (attributes.value("key") == "Proxy Host") {
++        sessionData->proxyHost = attributes.value("value").toStdString();
++    }
++
++    if (attributes.value("key") == "Proxy Port") {
++        sessionData->proxyPort = attributes.value("value").toInt();
++    }
++
++    if (attributes.value("key") == "Use Proxy Authentication") {
++        if (attributes.value("value") == "True")
++            sessionData->proxyAuthenticated = true;
++        else
++            sessionData->proxyAuthenticated = false;
++    }
++
++    if (attributes.value("key") == "Proxy Username") {
++        sessionData->proxyUser = attributes.value("value").toStdString();
++    }
++
++    if (attributes.value("key") == "Proxy Password") {
++        sessionData->proxyPass = attributes.value("value").toStdString();
++    }
++
+     return true;
+ }
+ 
+Index: qtnx-0.9/nxwritexml.cpp
+===================================================================
+--- qtnx-0.9.orig/nxwritexml.cpp	2008-10-14 10:11:40.000000000 +0200
++++ qtnx-0.9/nxwritexml.cpp	2008-10-14 14:02:04.000000000 +0200
+@@ -130,6 +130,36 @@
+         xml << "<option key=\"Use SSL Tunnelling\" value=\"False\">" <<
+             "</option>\n";
+ 
++    if (sessionData.useProxy == true)
++        xml << "<option key=\"Use Proxy\" value=\"True\">" <<
++            "</option>\n";
++    else
++        xml << "<option key=\"Use Proxy\" value=\"False\">" <<
++            "</option>\n";
++
++    xml << "<option key=\"Proxy Host\" value=\"" <<
++        escape(QString::fromStdString(sessionData.proxyHost)) <<
++        "\"></option>\n";
++
++    xml << "<option key=\"Proxy Port\" value=\"" <<
++        escape(QString::number(sessionData.proxyPort)) <<
++        "\"></option>\n";
++
++    if (sessionData.proxyAuthenticated == true)
++        xml << "<option key=\"Use Proxy Authentication\" value=\"True\">" <<
++            "</option>\n";
++    else
++        xml << "<option key=\"Use Proxy Authentication\" value=\"False\">" <<
++            "</option>\n";
++
++    xml << "<option key=\"Proxy Username\" value=\"" <<
++        escape(QString::fromStdString(sessionData.proxyUser)) <<
++        "\"></option>\n";
++
++    xml << "<option key=\"Proxy Password\" value=\"" <<
++        escape(QString::fromStdString(sessionData.proxyPass)) <<
++        "\"></option>\n";
++
+     if (sessionData.fullscreen == true)
+         xml << "<option key=\"Enable Fullscreen Desktop\" value=\"True\">" <<
+             "</option>\n";
+Index: qtnx-0.9/qtnxwindow.h
+===================================================================
+--- qtnx-0.9.orig/qtnxwindow.h	2008-10-14 10:11:40.000000000 +0200
++++ qtnx-0.9/qtnxwindow.h	2008-10-14 10:43:03.000000000 +0200
+@@ -126,11 +126,13 @@
+ 
+         // Decided to split up the code
+         void setupUI();
++        void parseXML();
+         void setDefaultData();
+         void initialiseClient();
+-        void parseXML();
+         void reinitialiseClient();
+ 
++	QString keyboardLayout();
++
+         int getWidth();
+         int getHeight();
+         int getDepth();
+@@ -160,4 +162,5 @@
+ 
+         QString binaryPath;
+ };
++
+ #endif
+Index: qtnx-0.9/settingsdialog.ui
+===================================================================
+--- qtnx-0.9.orig/settingsdialog.ui	2008-10-14 10:43:02.000000000 +0200
++++ qtnx-0.9/settingsdialog.ui	2008-10-14 14:02:04.000000000 +0200
+@@ -5,8 +5,8 @@
+    <rect>
+     <x>0</x>
+     <y>0</y>
+-    <width>480</width>
+-    <height>543</height>
++    <width>454</width>
++    <height>559</height>
+    </rect>
+   </property>
+   <property name="windowTitle" >
+@@ -15,13 +15,7 @@
+   <property name="modal" >
+    <bool>true</bool>
+   </property>
+-  <layout class="QVBoxLayout" >
+-   <property name="spacing" >
+-    <number>6</number>
+-   </property>
+-   <property name="margin" >
+-    <number>9</number>
+-   </property>
++  <layout class="QVBoxLayout" name="verticalLayout_3" >
+    <item>
+     <widget class="QScrollArea" name="scrollArea" >
+      <property name="widgetResizable" >
+@@ -32,13 +26,25 @@
+        <rect>
+         <x>0</x>
+         <y>0</y>
+-        <width>458</width>
+-        <height>521</height>
++        <width>432</width>
++        <height>501</height>
+        </rect>
+       </property>
++      <property name="sizePolicy" >
++       <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
++        <horstretch>0</horstretch>
++        <verstretch>0</verstretch>
++       </sizepolicy>
++      </property>
+       <layout class="QVBoxLayout" name="verticalLayout" >
+        <item>
+         <widget class="QTabWidget" name="layoutTabs" >
++         <property name="sizePolicy" >
++          <sizepolicy vsizetype="Expanding" hsizetype="Maximum" >
++           <horstretch>0</horstretch>
++           <verstretch>0</verstretch>
++          </sizepolicy>
++         </property>
+          <property name="currentIndex" >
+           <number>0</number>
+          </property>
+@@ -46,548 +52,564 @@
+           <attribute name="title" >
+            <string>Basic</string>
+           </attribute>
+-          <layout class="QVBoxLayout" name="_2" >
+-           <property name="spacing" >
+-            <number>6</number>
++          <widget class="QGroupBox" name="generalGroup" >
++           <property name="geometry" >
++            <rect>
++             <x>9</x>
++             <y>9</y>
++             <width>391</width>
++             <height>72</height>
++            </rect>
+            </property>
+-           <property name="margin" >
+-            <number>9</number>
++           <property name="title" >
++            <string>General</string>
+            </property>
+-           <item>
+-            <widget class="QGroupBox" name="generalGroup" >
+-             <property name="title" >
+-              <string>General</string>
+-             </property>
+-             <layout class="QVBoxLayout" name="_3" >
++           <layout class="QVBoxLayout" >
++            <property name="spacing" >
++             <number>6</number>
++            </property>
++            <property name="margin" >
++             <number>9</number>
++            </property>
++            <item>
++             <layout class="QHBoxLayout" >
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <property name="margin" >
+-               <number>9</number>
++               <number>0</number>
+               </property>
+               <item>
+-               <layout class="QHBoxLayout" name="_4" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QLabel" name="sessionNameLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>Session Name:</string>
+                 </property>
+-                <item>
+-                 <widget class="QLabel" name="sessionNameLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Session Name:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QLineEdit" name="sessionName" />
+-                </item>
+-               </layout>
++               </widget>
++              </item>
++              <item>
++               <widget class="QLineEdit" name="sessionName" />
+               </item>
+              </layout>
+-            </widget>
+-           </item>
+-           <item>
+-            <widget class="QGroupBox" name="serverGroup" >
+-             <property name="title" >
+-              <string>Server</string>
+-             </property>
+-             <layout class="QVBoxLayout" name="_5" >
++            </item>
++           </layout>
++          </widget>
++          <widget class="QGroupBox" name="serverGroup" >
++           <property name="geometry" >
++            <rect>
++             <x>9</x>
++             <y>87</y>
++             <width>391</width>
++             <height>106</height>
++            </rect>
++           </property>
++           <property name="title" >
++            <string>Server</string>
++           </property>
++           <layout class="QVBoxLayout" >
++            <property name="spacing" >
++             <number>6</number>
++            </property>
++            <property name="margin" >
++             <number>9</number>
++            </property>
++            <item>
++             <layout class="QHBoxLayout" >
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <property name="margin" >
+-               <number>9</number>
++               <number>0</number>
+               </property>
+               <item>
+-               <layout class="QHBoxLayout" name="_6" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QLabel" name="hostnameLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>Hostname:</string>
+                 </property>
+-                <item>
+-                 <widget class="QLabel" name="hostnameLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Hostname:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QLineEdit" name="hostname" />
+-                </item>
+-                <item>
+-                 <widget class="QLabel" name="portLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Port:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QSpinBox" name="port" >
+-                  <property name="minimum" >
+-                   <number>1</number>
+-                  </property>
+-                  <property name="maximum" >
+-                   <number>65535</number>
+-                  </property>
+-                  <property name="value" >
+-                   <number>22</number>
+-                  </property>
+-                 </widget>
+-                </item>
+-               </layout>
++               </widget>
+               </item>
+               <item>
+-               <layout class="QHBoxLayout" name="_7" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QLineEdit" name="hostname" />
++              </item>
++              <item>
++               <widget class="QLabel" name="portLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>Port:</string>
+                 </property>
+-                <item>
+-                 <widget class="QCheckBox" name="defaultKey" >
+-                  <property name="text" >
+-                   <string>Use default key</string>
+-                  </property>
+-                  <property name="checked" >
+-                   <bool>true</bool>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QPushButton" name="setAuthKeyButton" >
+-                  <property name="enabled" >
+-                   <bool>false</bool>
+-                  </property>
+-                  <property name="text" >
+-                   <string>&amp;Set Authentication Key...</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-               </layout>
++               </widget>
++              </item>
++              <item>
++               <widget class="QSpinBox" name="port" >
++                <property name="minimum" >
++                 <number>1</number>
++                </property>
++                <property name="maximum" >
++                 <number>65535</number>
++                </property>
++                <property name="value" >
++                 <number>22</number>
++                </property>
++               </widget>
+               </item>
+              </layout>
+-            </widget>
+-           </item>
+-           <item>
+-            <widget class="QGroupBox" name="desktopGroup" >
+-             <property name="title" >
+-              <string>Desktop</string>
+-             </property>
+-             <layout class="QVBoxLayout" name="_8" >
++            </item>
++            <item>
++             <layout class="QHBoxLayout" >
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <property name="margin" >
+-               <number>9</number>
++               <number>0</number>
+               </property>
+               <item>
+-               <layout class="QHBoxLayout" name="_9" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QCheckBox" name="defaultKey" >
++                <property name="text" >
++                 <string>Use default key</string>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="checked" >
++                 <bool>true</bool>
+                 </property>
+-                <item>
+-                 <widget class="QLabel" name="platformLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Platform:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QComboBox" name="platform" >
+-                  <item>
+-                   <property name="text" >
+-                    <string>UNIX</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>Windows</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>VNC Proxy</string>
+-                   </property>
+-                  </item>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QLabel" name="typeLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Type:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QComboBox" name="type" >
+-                  <item>
+-                   <property name="text" >
+-                    <string>KDE</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>GNOME</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>CDE</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>XDM</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>Custom</string>
+-                   </property>
+-                  </item>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QLabel" name="linkLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Link:</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-                <item>
+-                 <widget class="QComboBox" name="link" >
+-                  <item>
+-                   <property name="text" >
+-                    <string>Modem</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>ISDN</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>ADSL</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>WAN</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>LAN</string>
+-                   </property>
+-                  </item>
+-                 </widget>
+-                </item>
+-               </layout>
++               </widget>
+               </item>
+               <item>
+-               <layout class="QHBoxLayout" name="_10" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QPushButton" name="setAuthKeyButton" >
++                <property name="enabled" >
++                 <bool>false</bool>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>&amp;Set Authentication Key...</string>
+                 </property>
+-                <item>
+-                 <spacer>
+-                  <property name="orientation" >
+-                   <enum>Qt::Horizontal</enum>
+-                  </property>
+-                  <property name="sizeHint" stdset="0" >
+-                   <size>
+-                    <width>173</width>
+-                    <height>20</height>
+-                   </size>
+-                  </property>
+-                 </spacer>
+-                </item>
+-                <item>
+-                 <widget class="QPushButton" name="desktopSettingButton" >
+-                  <property name="enabled" >
+-                   <bool>false</bool>
+-                  </property>
+-                  <property name="text" >
+-                   <string>&amp;Settings...</string>
+-                  </property>
+-                 </widget>
+-                </item>
+-               </layout>
++               </widget>
+               </item>
+              </layout>
+-            </widget>
+-           </item>
+-           <item>
+-            <widget class="QGroupBox" name="groupBox" >
+-             <property name="title" >
+-              <string>Geometry</string>
+-             </property>
+-             <layout class="QVBoxLayout" name="_11" >
++            </item>
++           </layout>
++          </widget>
++          <widget class="QGroupBox" name="desktopGroup" >
++           <property name="geometry" >
++            <rect>
++             <x>9</x>
++             <y>199</y>
++             <width>391</width>
++             <height>105</height>
++            </rect>
++           </property>
++           <property name="title" >
++            <string>Desktop</string>
++           </property>
++           <layout class="QVBoxLayout" >
++            <property name="spacing" >
++             <number>6</number>
++            </property>
++            <property name="margin" >
++             <number>9</number>
++            </property>
++            <item>
++             <layout class="QHBoxLayout" >
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+               <property name="margin" >
+-               <number>9</number>
++               <number>0</number>
+               </property>
+               <item>
+-               <layout class="QHBoxLayout" name="_12" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QLabel" name="platformLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>Platform:</string>
+                 </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QComboBox" name="platform" >
+                 <item>
+-                 <widget class="QLabel" name="resolutionLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Resolution:</string>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>UNIX</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QComboBox" name="resolution" >
+-                  <item>
+-                   <property name="text" >
+-                    <string>640x480</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>800x600</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>1024x768</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>Fullscreen</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>Custom</string>
+-                   </property>
+-                  </item>
+-                 </widget>
++                 <property name="text" >
++                  <string>Windows</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QLabel" name="compressionLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Compression:</string>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>VNC Proxy</string>
++                 </property>
+                 </item>
++               </widget>
++              </item>
++              <item>
++               <widget class="QLabel" name="typeLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>Type:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QComboBox" name="type" >
+                 <item>
+-                 <widget class="QComboBox" name="imageCompressionType" >
+-                  <item>
+-                   <property name="text" >
+-                    <string>PNG</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>JPEG</string>
+-                   </property>
+-                  </item>
+-                  <item>
+-                   <property name="text" >
+-                    <string>Raw X11</string>
+-                   </property>
+-                  </item>
+-                 </widget>
++                 <property name="text" >
++                  <string>KDE</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>GNOME</string>
++                 </property>
+                 </item>
+-               </layout>
++                <item>
++                 <property name="text" >
++                  <string>CDE</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>XDM</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>Custom</string>
++                 </property>
++                </item>
++               </widget>
+               </item>
+               <item>
+-               <layout class="QHBoxLayout" name="_13" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QLabel" name="linkLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>Link:</string>
+                 </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QComboBox" name="link" >
+                 <item>
+-                 <widget class="QLabel" name="qualityLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>JPEG Quality:</string>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>Modem</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QSlider" name="imageQualityLevel" >
+-                  <property name="enabled" >
+-                   <bool>false</bool>
+-                  </property>
+-                  <property name="minimum" >
+-                   <number>1</number>
+-                  </property>
+-                  <property name="maximum" >
+-                   <number>9</number>
+-                  </property>
+-                  <property name="pageStep" >
+-                   <number>9</number>
+-                  </property>
+-                  <property name="value" >
+-                   <number>6</number>
+-                  </property>
+-                  <property name="orientation" >
+-                   <enum>Qt::Horizontal</enum>
+-                  </property>
+-                  <property name="tickPosition" >
+-                   <enum>QSlider::TicksBelow</enum>
+-                  </property>
+-                  <property name="tickInterval" >
+-                   <number>1</number>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>ISDN</string>
++                 </property>
+                 </item>
+-               </layout>
++                <item>
++                 <property name="text" >
++                  <string>ADSL</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>WAN</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>LAN</string>
++                 </property>
++                </item>
++               </widget>
++              </item>
++             </layout>
++            </item>
++            <item>
++             <layout class="QHBoxLayout" >
++              <property name="spacing" >
++               <number>6</number>
++              </property>
++              <property name="margin" >
++               <number>0</number>
++              </property>
++              <item>
++               <spacer>
++                <property name="orientation" >
++                 <enum>Qt::Horizontal</enum>
++                </property>
++                <property name="sizeHint" stdset="0" >
++                 <size>
++                  <width>173</width>
++                  <height>20</height>
++                 </size>
++                </property>
++               </spacer>
+               </item>
+               <item>
+-               <layout class="QHBoxLayout" name="_14" >
+-                <property name="spacing" >
+-                 <number>6</number>
++               <widget class="QPushButton" name="desktopSettingButton" >
++                <property name="enabled" >
++                 <bool>false</bool>
+                 </property>
+-                <property name="margin" >
+-                 <number>0</number>
++                <property name="text" >
++                 <string>&amp;Settings...</string>
+                 </property>
++               </widget>
++              </item>
++             </layout>
++            </item>
++           </layout>
++          </widget>
++          <widget class="QGroupBox" name="groupBox" >
++           <property name="geometry" >
++            <rect>
++             <x>9</x>
++             <y>310</y>
++             <width>391</width>
++             <height>133</height>
++            </rect>
++           </property>
++           <property name="title" >
++            <string>Geometry</string>
++           </property>
++           <layout class="QVBoxLayout" >
++            <property name="spacing" >
++             <number>6</number>
++            </property>
++            <property name="margin" >
++             <number>9</number>
++            </property>
++            <item>
++             <layout class="QHBoxLayout" >
++              <property name="spacing" >
++               <number>6</number>
++              </property>
++              <property name="margin" >
++               <number>0</number>
++              </property>
++              <item>
++               <widget class="QLabel" name="resolutionLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>Resolution:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QComboBox" name="resolution" >
+                 <item>
+-                 <widget class="QCheckBox" name="render" >
+-                  <property name="text" >
+-                   <string>Use RENDER Extension</string>
+-                  </property>
+-                  <property name="checked" >
+-                   <bool>true</bool>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>640x480</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QLabel" name="widthLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Width:</string>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>800x600</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QSpinBox" name="width" >
+-                  <property name="enabled" >
+-                   <bool>false</bool>
+-                  </property>
+-                  <property name="maximum" >
+-                   <number>9999</number>
+-                  </property>
+-                  <property name="value" >
+-                   <number>800</number>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>1024x768</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QLabel" name="heightLabel" >
+-                  <property name="sizePolicy" >
+-                   <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+-                    <horstretch>0</horstretch>
+-                    <verstretch>0</verstretch>
+-                   </sizepolicy>
+-                  </property>
+-                  <property name="text" >
+-                   <string>Height:</string>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>Fullscreen</string>
++                 </property>
+                 </item>
+                 <item>
+-                 <widget class="QSpinBox" name="height" >
+-                  <property name="enabled" >
+-                   <bool>false</bool>
+-                  </property>
+-                  <property name="maximum" >
+-                   <number>9999</number>
+-                  </property>
+-                  <property name="value" >
+-                   <number>600</number>
+-                  </property>
+-                 </widget>
++                 <property name="text" >
++                  <string>Custom</string>
++                 </property>
+                 </item>
+-               </layout>
++               </widget>
++              </item>
++              <item>
++               <widget class="QLabel" name="compressionLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>Compression:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QComboBox" name="imageCompressionType" >
++                <item>
++                 <property name="text" >
++                  <string>PNG</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>JPEG</string>
++                 </property>
++                </item>
++                <item>
++                 <property name="text" >
++                  <string>Raw X11</string>
++                 </property>
++                </item>
++               </widget>
+               </item>
+              </layout>
+-            </widget>
+-           </item>
+-          </layout>
++            </item>
++            <item>
++             <layout class="QHBoxLayout" >
++              <property name="spacing" >
++               <number>6</number>
++              </property>
++              <property name="margin" >
++               <number>0</number>
++              </property>
++              <item>
++               <widget class="QLabel" name="qualityLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>JPEG Quality:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QSlider" name="imageQualityLevel" >
++                <property name="enabled" >
++                 <bool>false</bool>
++                </property>
++                <property name="minimum" >
++                 <number>1</number>
++                </property>
++                <property name="maximum" >
++                 <number>9</number>
++                </property>
++                <property name="pageStep" >
++                 <number>9</number>
++                </property>
++                <property name="value" >
++                 <number>6</number>
++                </property>
++                <property name="orientation" >
++                 <enum>Qt::Horizontal</enum>
++                </property>
++                <property name="tickPosition" >
++                 <enum>QSlider::TicksBelow</enum>
++                </property>
++                <property name="tickInterval" >
++                 <number>1</number>
++                </property>
++               </widget>
++              </item>
++             </layout>
++            </item>
++            <item>
++             <layout class="QHBoxLayout" >
++              <property name="spacing" >
++               <number>6</number>
++              </property>
++              <property name="margin" >
++               <number>0</number>
++              </property>
++              <item>
++               <widget class="QCheckBox" name="render" >
++                <property name="text" >
++                 <string>Use RENDER Extension</string>
++                </property>
++                <property name="checked" >
++                 <bool>true</bool>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QLabel" name="widthLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>Width:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QSpinBox" name="width" >
++                <property name="enabled" >
++                 <bool>false</bool>
++                </property>
++                <property name="maximum" >
++                 <number>9999</number>
++                </property>
++                <property name="value" >
++                 <number>800</number>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QLabel" name="heightLabel" >
++                <property name="sizePolicy" >
++                 <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
++                  <horstretch>0</horstretch>
++                  <verstretch>0</verstretch>
++                 </sizepolicy>
++                </property>
++                <property name="text" >
++                 <string>Height:</string>
++                </property>
++               </widget>
++              </item>
++              <item>
++               <widget class="QSpinBox" name="height" >
++                <property name="enabled" >
++                 <bool>false</bool>
++                </property>
++                <property name="maximum" >
++                 <number>9999</number>
++                </property>
++                <property name="value" >
++                 <number>600</number>
++                </property>
++               </widget>
++              </item>
++             </layout>
++            </item>
++           </layout>
++          </widget>
+          </widget>
+          <widget class="QWidget" name="advancedTab" >
+           <attribute name="title" >
+@@ -599,22 +621,24 @@
+              <property name="title" >
+               <string>Network</string>
+              </property>
+-             <widget class="QCheckBox" name="encryption" >
+-              <property name="geometry" >
+-               <rect>
+-                <x>11</x>
+-                <y>28</y>
+-                <width>396</width>
+-                <height>22</height>
+-               </rect>
+-              </property>
+-              <property name="text" >
+-               <string>Use SSH Tunneling</string>
++             <layout class="QVBoxLayout" name="_2" >
++              <property name="spacing" >
++               <number>6</number>
+               </property>
+-              <property name="checked" >
+-               <bool>true</bool>
++              <property name="margin" >
++               <number>9</number>
+               </property>
+-             </widget>
++              <item>
++               <widget class="QCheckBox" name="encryption" >
++                <property name="text" >
++                 <string>Use SSH Tunneling</string>
++                </property>
++                <property name="checked" >
++                 <bool>true</bool>
++                </property>
++               </widget>
++              </item>
++             </layout>
+             </widget>
+            </item>
+            <item>
+@@ -622,7 +646,7 @@
+              <property name="title" >
+               <string>Cache</string>
+              </property>
+-             <layout class="QVBoxLayout" name="_17" >
++             <layout class="QVBoxLayout" >
+               <property name="spacing" >
+                <number>6</number>
+               </property>
+@@ -630,7 +654,7 @@
+                <number>9</number>
+               </property>
+               <item>
+-               <layout class="QHBoxLayout" name="_18" >
++               <layout class="QHBoxLayout" >
+                 <property name="spacing" >
+                  <number>6</number>
+                 </property>
+@@ -703,13 +727,13 @@
+             </widget>
+            </item>
+            <item>
+-            <widget class="QGroupBox" name="groupBox_2" >
++            <widget class="QGroupBox" name="keyboardGroup" >
+              <property name="title" >
+               <string>Keyboard</string>
+              </property>
+-             <layout class="QHBoxLayout" name="horizontalLayout" >
++             <layout class="QHBoxLayout" >
+               <item>
+-               <layout class="QHBoxLayout" name="_21" >
++               <layout class="QHBoxLayout" >
+                 <property name="spacing" >
+                  <number>6</number>
+                 </property>
+@@ -746,7 +770,7 @@
+                </layout>
+               </item>
+               <item>
+-               <layout class="QHBoxLayout" name="_22" >
++               <layout class="QHBoxLayout" >
+                 <property name="spacing" >
+                  <number>6</number>
+                 </property>
+@@ -789,7 +813,7 @@
+                </layout>
+               </item>
+               <item>
+-               <spacer name="horizontalSpacer" >
++               <spacer>
+                 <property name="orientation" >
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+@@ -805,7 +829,126 @@
+             </widget>
+            </item>
+            <item>
+-            <spacer>
++            <widget class="QGroupBox" name="proxyGroup" >
++             <property name="title" >
++              <string>Proxy Settings</string>
++             </property>
++             <layout class="QHBoxLayout" >
++              <item>
++               <layout class="QVBoxLayout" >
++                <item>
++                 <widget class="QCheckBox" name="useProxy" >
++                  <property name="text" >
++                   <string>Use proxy to connect</string>
++                  </property>
++                 </widget>
++                </item>
++                <item>
++                 <layout class="QHBoxLayout" >
++                  <item>
++                   <widget class="QLabel" name="label_4" >
++                    <property name="text" >
++                     <string>Hostname:</string>
++                    </property>
++                   </widget>
++                  </item>
++                  <item>
++                   <widget class="QLineEdit" name="proxyHost" >
++                    <property name="enabled" >
++                     <bool>false</bool>
++                    </property>
++                   </widget>
++                  </item>
++                 </layout>
++                </item>
++                <item>
++                 <layout class="QHBoxLayout" >
++                  <item>
++                   <widget class="QLabel" name="label_3" >
++                    <property name="text" >
++                     <string>Port:</string>
++                    </property>
++                   </widget>
++                  </item>
++                  <item>
++                   <widget class="QSpinBox" name="proxyPort" >
++                    <property name="enabled" >
++                     <bool>false</bool>
++                    </property>
++                    <property name="maximum" >
++                     <number>32768</number>
++                    </property>
++                    <property name="value" >
++                     <number>8080</number>
++                    </property>
++                   </widget>
++                  </item>
++                 </layout>
++                </item>
++               </layout>
++              </item>
++              <item>
++               <layout class="QVBoxLayout" >
++                <item>
++                 <widget class="QCheckBox" name="proxyAuthenticated" >
++                  <property name="enabled" >
++                   <bool>false</bool>
++                  </property>
++                  <property name="text" >
++                   <string>Proxy requires authentication</string>
++                  </property>
++                 </widget>
++                </item>
++                <item>
++                 <layout class="QHBoxLayout" >
++                  <item>
++                   <layout class="QVBoxLayout" >
++                    <item>
++                     <widget class="QLabel" name="label" >
++                      <property name="text" >
++                       <string>Username:</string>
++                      </property>
++                     </widget>
++                    </item>
++                    <item>
++                     <widget class="QLabel" name="label_2" >
++                      <property name="text" >
++                       <string>Password:</string>
++                      </property>
++                     </widget>
++                    </item>
++                   </layout>
++                  </item>
++                  <item>
++                   <layout class="QVBoxLayout" >
++                    <item>
++                     <widget class="QLineEdit" name="proxyUser" >
++                      <property name="enabled" >
++                       <bool>false</bool>
++                      </property>
++                     </widget>
++                    </item>
++                    <item>
++                     <widget class="QLineEdit" name="proxyPass" >
++                      <property name="enabled" >
++                       <bool>false</bool>
++                      </property>
++                      <property name="echoMode" >
++                       <enum>QLineEdit::Password</enum>
++                      </property>
++                     </widget>
++                    </item>
++                   </layout>
++                  </item>
++                 </layout>
++                </item>
++               </layout>
++              </item>
++             </layout>
++            </widget>
++           </item>
++           <item>
++            <spacer name="verticalSpacer" >
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+@@ -821,63 +964,60 @@
+          </widget>
+         </widget>
+        </item>
+-       <item>
+-        <layout class="QHBoxLayout" name="bottomLayout" >
+-         <property name="spacing" >
+-          <number>6</number>
+-         </property>
+-         <property name="margin" >
+-          <number>0</number>
+-         </property>
+-         <item>
+-          <widget class="QPushButton" name="cancelButton" >
+-           <property name="text" >
+-            <string>&amp;Cancel</string>
+-           </property>
+-          </widget>
+-         </item>
+-         <item>
+-          <spacer name="spacer" >
+-           <property name="orientation" >
+-            <enum>Qt::Horizontal</enum>
+-           </property>
+-           <property name="sizeHint" stdset="0" >
+-            <size>
+-             <width>40</width>
+-             <height>20</height>
+-            </size>
+-           </property>
+-          </spacer>
+-         </item>
+-         <item>
+-          <widget class="QPushButton" name="okButton" >
+-           <property name="text" >
+-            <string>&amp;OK</string>
+-           </property>
+-           <property name="autoDefault" >
+-            <bool>false</bool>
+-           </property>
+-           <property name="default" >
+-            <bool>true</bool>
+-           </property>
+-          </widget>
+-         </item>
+-         <item>
+-          <widget class="QPushButton" name="applyButton" >
+-           <property name="text" >
+-            <string>&amp;Apply</string>
+-           </property>
+-           <property name="autoDefault" >
+-            <bool>false</bool>
+-           </property>
+-          </widget>
+-         </item>
+-        </layout>
+-       </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
++   <item>
++    <layout class="QHBoxLayout" name="horizontalLayout" >
++     <property name="sizeConstraint" >
++      <enum>QLayout::SetMinimumSize</enum>
++     </property>
++     <item>
++      <widget class="QPushButton" name="cancelButton" >
++       <property name="text" >
++        <string>&amp;Cancel</string>
++       </property>
++      </widget>
++     </item>
++     <item>
++      <spacer>
++       <property name="orientation" >
++        <enum>Qt::Horizontal</enum>
++       </property>
++       <property name="sizeHint" stdset="0" >
++        <size>
++         <width>40</width>
++         <height>20</height>
++        </size>
++       </property>
++      </spacer>
++     </item>
++     <item>
++      <widget class="QPushButton" name="okButton" >
++       <property name="text" >
++        <string>&amp;OK</string>
++       </property>
++       <property name="autoDefault" >
++        <bool>false</bool>
++       </property>
++       <property name="default" >
++        <bool>true</bool>
++       </property>
++      </widget>
++     </item>
++     <item>
++      <widget class="QPushButton" name="applyButton" >
++       <property name="text" >
++        <string>&amp;Apply</string>
++       </property>
++       <property name="autoDefault" >
++        <bool>false</bool>
++       </property>
++      </widget>
++     </item>
++    </layout>
++   </item>
+   </layout>
+  </widget>
+  <resources/>

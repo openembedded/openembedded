@@ -2,7 +2,7 @@ DESCRIPTION = "This a the freesource nx client, build with qt"
 HOMEPAGE = "http://freenx.berlios.de/"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "libnxcl"
 
@@ -10,6 +10,11 @@ SRC_URI = "http://download.berlios.de/freenx/freenx-client-${PV}.tar.bz2 \
 	   file://pro.patch;patch=1 \
 	   file://id-path.patch;patch=1 \
 	   file://scroll.patch;patch=1 \
+           file://keymap.patch;patch=1 \
+           file://dodnx.patch;patch=1 \
+           file://keychooser.patch;patch=1 \
+           file://sessionfiles.patch;patch=1 \
+           file://ssh_dnserror.patch;patch=1 \
 	  "
 
 S = "${WORKDIR}/freenx-client-${PV}/qtnx"
