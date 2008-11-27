@@ -1,0 +1,329 @@
+Index: nxcl-0.9/lib/notQt.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/notQt.cpp	2008-10-10 20:09:53.000000000 +0200
++++ nxcl-0.9/lib/notQt.cpp	2008-10-10 20:10:26.000000000 +0200
+@@ -443,6 +443,9 @@
+     void
+ notQtUtilities::splitString (string& line, char token, vector<string>& rtn)
+ {
++    if (line.size() < 1)
++        return;
++
+     rtn.clear();
+     unsigned int i=0;
+     while (i < (line.size())-1) {
+@@ -459,6 +462,9 @@
+     void
+ notQtUtilities::splitString (string& line, char token, list<string>& rtn)
+ {
++    if (line.size() < 1)
++        return;
++
+     rtn.clear();
+     unsigned int i=0;
+     while (i < (line.size())-1) {
+Index: nxcl-0.9/lib/nxclientlib.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/nxclientlib.cpp	2008-10-10 20:09:53.000000000 +0200
++++ nxcl-0.9/lib/nxclientlib.cpp	2008-10-10 20:10:26.000000000 +0200
+@@ -152,6 +152,8 @@
+     this->sessionRunning = false;
+     this->proxyData.encrypted = false;
+     this->password = false;
++    this->useHttpProxy = false;
++    this->httpProxyAuthenticated = false;
+ 
+     dbgln ("In NXClientLib constructor");
+ 
+@@ -172,6 +174,22 @@
+     dbgln ("In NXClientLib destructor");
+ }
+ 
++void NXClientLib::setProxy (string proxyHost,
++                    string proxyUser,
++                    string proxyPass,
++                    int proxyPort)
++{
++    useHttpProxy = true;
++    httpProxyHost = proxyHost;
++
++    if (!httpProxyUser.empty())
++        httpProxyAuthenticated = true;
++
++    httpProxyUser = proxyUser;
++    httpProxyPass = proxyPass;
++    httpProxyPort = proxyPort;
++}
++
+ void NXClientLib::invokeNXSSH (string publicKey, string serverHost,
+         bool encryption, string key, int port)
+ {
+@@ -228,6 +246,21 @@
+     arguments.push_back ("-oRhostsRSAAuthentication no");
+     arguments.push_back ("-oPubkeyAuthentication yes");
+ 
++    // Proxy support
++
++    if (useHttpProxy) {
++        arguments.push_back("-P");
++
++        argtmp.str("");
++
++        if (httpProxyAuthenticated)
++            argtmp << this->httpProxyUser << ":" << this->httpProxyPass << "@";
++
++        argtmp << this->httpProxyHost << ":" << this->httpProxyPort;
++
++        arguments.push_back(argtmp.str());
++    }
++
+     if (encryption == true) {
+         arguments.push_back("-B");
+         session.setEncryption (true);
+@@ -785,7 +818,7 @@
+     nxwinArguments.push_back(fontPath.str());
+ 
+     nxwinArguments.push_back("-name");
+-    nxwinArguments.push_back("NXWin");
++    nxwinArguments.push_back("DoD");
+     nxwinArguments.push_back(":0");
+ 
+     nxwinArguments.push_back("-screen");
+Index: nxcl-0.9/lib/nxclientlib.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxclientlib.h	2008-10-10 20:09:53.000000000 +0200
++++ nxcl-0.9/lib/nxclientlib.h	2008-10-10 20:10:26.000000000 +0200
+@@ -178,6 +178,21 @@
+                     int port = 22);
+ 
+             /*!
++             * Set proxy server settings for nxssh.
++             *
++             * \param proxyHost is the hostname
++             *
++             * \param proxyUser is the username (null if not necessary)
++             *
++             * \param proxyPass is the password
++             *
++             * \param proxyPort is the port
++             */
++            void setProxy (string proxyHost,
++                    string proxyUser,
++                    string proxyPass,
++                    int proxyPort);
++            /*!
+              * Overloaded to give callback data on write.
+              * 
+              * Writes data to this->nxsshProcess stdin and also
+@@ -453,6 +468,31 @@
+              * Password for the connection
+              */
+             string nxpass;
++            /*!
++             * Whether to use an http proxy for nxssh
++             */
++            bool useHttpProxy;
++            /*!
++             * A proxy server to be used with nxssh
++             */
++            string httpProxyHost;
++            /*!
++             * Whether to use authentication
++             */
++            bool httpProxyAuthenticated;
++            /*!
++             * Username for the http proxy
++             */
++            string httpProxyUser;
++            /*!
++             * Password for the http proxy
++             */
++            string httpProxyPass;
++            /*!
++             * Port for the http proxy
++             */
++            int httpProxyPort;
++
+     };
+ 
+ } // namespace
+Index: nxcl-0.9/lib/nxdata.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxdata.h	2008-10-10 20:09:53.000000000 +0200
++++ nxcl-0.9/lib/nxdata.h	2008-10-10 20:10:26.000000000 +0200
+@@ -1,12 +1,12 @@
+ /***************************************************************************
+-                                nxdata.h
+-                             -------------------
+-    begin                : Wednesday 9th August 2006
+-    modifications        : July 2007
+-    copyright            : (C) 2006 by George Wright
+-    modifications        : (C) 2007 Embedded Software Foundry Ltd. (U.K.)
+-                         :     Author: Sebastian James
+-    email                : seb@esfnet.co.uk, gwright@kde.org
++  nxdata.h
++  -------------------
++begin                : Wednesday 9th August 2006
++modifications        : July 2007
++copyright            : (C) 2006 by George Wright
++modifications        : (C) 2007 Embedded Software Foundry Ltd. (U.K.)
++:     Author: Sebastian James
++email                : seb@esfnet.co.uk, gwright@kde.org
+  ***************************************************************************/
+ 
+ /***************************************************************************
+@@ -43,77 +43,83 @@
+ 
+ namespace nxcl {
+ 
+-	struct NXConfigData {
+-		string serverHost;
+-		int serverPort;
+-		string sessionUser;
+-		string sessionPass;
+-		string sessionName;
+-		string sessionType;
+-		int cache;
+-		int images;
+-		string linkType;
+-		bool render;
+-		string backingstore;
+-		int imageCompressionMethod;
+-		int imageCompressionLevel;
+-		string geometry;
+-		string keyboard;
+-		string kbtype;
+-		bool media;
+-		string agentServer;
+-		string agentUser;
+-		string agentPass;
+-		int cups;
+-		string key;
+-		bool encryption;
+-		bool fullscreen;
+-		bool virtualDesktop;
+-		string customCommand;
+-	};
+-
+-	struct NXSessionData {
+-		string sessionName;
+-		string sessionType;
+-		int cache;
+-		int images;
+-		string linkType;
+-		bool render;
+-		string backingstore;
+-		int imageCompressionMethod;
+-		int imageCompressionLevel;
+-		string geometry;
+-		string keyboard;
+-		string kbtype;
+-		bool media;
+-		string agentServer;
+-		string agentUser;
+-		string agentPass;
+-		int cups;
+-		string id;
+-		string key;
+-		bool encryption;
+-		bool fullscreen;
+-		bool virtualDesktop;
+-		string customCommand;
+-		bool suspended;
+-		int xRes;
+-		int yRes;
+-		int depth;
+-		int display;
+-		bool terminate;
+-	};
+-
+-	struct NXResumeData {
+-		int display;
+-		string sessionType;
+-		string sessionID;
+-		string options;
+-		int depth;
+-		string screen;
+-		string available;
+-		string sessionName;
+-	};
++    struct NXConfigData {
++        string serverHost;
++        int serverPort;
++        string sessionUser;
++        string sessionPass;
++        string sessionName;
++        string sessionType;
++        int cache;
++        int images;
++        string linkType;
++        bool render;
++        string backingstore;
++        int imageCompressionMethod;
++        int imageCompressionLevel;
++        string geometry;
++        string keyboard;
++        string kbtype;
++        bool media;
++        string agentServer;
++        string agentUser;
++        string agentPass;
++        int cups;
++        string key;
++        bool encryption;
++        bool fullscreen;
++        bool virtualDesktop;
++        string customCommand;
++        bool useProxy;
++        string proxyHost;
++        int proxyPort;
++        bool proxyAuthenticated;
++        string proxyUser;
++        string proxyPass;
++    };
++
++    struct NXSessionData {
++        string sessionName;
++        string sessionType;
++        int cache;
++        int images;
++        string linkType;
++        bool render;
++        string backingstore;
++        int imageCompressionMethod;
++        int imageCompressionLevel;
++        string geometry;
++        string keyboard;
++        string kbtype;
++        bool media;
++        string agentServer;
++        string agentUser;
++        string agentPass;
++        int cups;
++        string id;
++        string key;
++        bool encryption;
++        bool fullscreen;
++        bool virtualDesktop;
++        string customCommand;
++        bool suspended;
++        int xRes;
++        int yRes;
++        int depth;
++        int display;
++        bool terminate;
++    };
++
++    struct NXResumeData {
++        int display;
++        string sessionType;
++        string sessionID;
++        string options;
++        int depth;
++        string screen;
++        string available;
++        string sessionName;
++    };
+ 
+ } // namespace
+ #endif

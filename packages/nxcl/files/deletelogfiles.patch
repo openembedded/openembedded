@@ -1,0 +1,136 @@
+Index: nxcl-0.9/lib/nxclientlib.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/nxclientlib.cpp	2008-10-15 15:09:17.000000000 +0200
++++ nxcl-0.9/lib/nxclientlib.cpp	2008-10-15 15:30:33.000000000 +0200
+@@ -27,6 +27,8 @@
+ #include "../config.h"
+ 
+ #include <fstream>
++#include <iostream>
++#include <string>
+ 
+ extern "C" {
+     #include <errno.h>
+@@ -966,4 +968,68 @@
+     free (buf);
+     return path;
+ }
++
++int NXClientLib::fmatch(const struct dirent *direntry)
++{
++        if (strncmp(direntry->d_name, "S", 1) == 0){
++                return 1;
++        }
++        return 0;
++}
++
++
++bool NXClientLib::deleteAllSessionfiles()
++{
++    struct dirent **filelist;
++    DIR *Directory;
++    int filescount = 0;
++    int i;
++    ifstream sessionfile;
++    string line, rmsesdir;
++
++    char * home;
++    stringstream ss;
++    string nxdir;
++
++    home = getenv ("HOME");
++
++    ss << home;
++
++    nxdir = ss.str() + "/.nx";
++
++    Directory = opendir(nxdir.c_str());
++
++    if( Directory )
++    {
++       filescount = scandir(nxdir.c_str(), &filelist, fmatch, alphasort);
++
++       for (i=0; i < filescount; i++)
++       {
++                rmsesdir = nxdir + "/" + string(filelist[i]->d_name) + "/";
++                sessionfile.open((rmsesdir + "session").c_str());
++
++                if ( sessionfile.is_open() )
++                {
++                    while( !sessionfile.eof() )
++                    {
++                        getline(sessionfile,line);
++                        if ( (line.find("Session terminated") != string::npos) ||
++				(line.find("Exiting keeper") != string::npos) )
++                        {
++                                // lazy deletion but it works
++                                remove( (rmsesdir + "errors").c_str() );
++                                remove( (rmsesdir + "options").c_str() );
++                                remove( (rmsesdir + "session").c_str() );
++                                remove( (rmsesdir + "stats").c_str() );
++                                remove(rmsesdir.c_str());
++                                break;
++                        }
++                    }
++                }
++       }
++       return true;
++     }
++     return false;
++}
++
+ //@}
+Index: nxcl-0.9/lib/nxclientlib.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxclientlib.h	2008-10-15 15:09:17.000000000 +0200
++++ nxcl-0.9/lib/nxclientlib.h	2008-10-15 15:09:17.000000000 +0200
+@@ -25,10 +25,14 @@
+ #define _NXCLIENTLIB_H_
+ 
+ #include <iostream>
+-#include "nxsession.h"
+ #include <list>
++
++#include "nxsession.h"
+ #include "notQt.h"
+ 
++extern "C" {
++	    #include <dirent.h>
++}
+ 
+ using namespace std;
+ 
+@@ -375,6 +379,11 @@
+             {
+                 return this->sessionRunning;
+             }
++
++	    // static function so we do not need an explicit object
++	    // for deleting the session files
++	    static bool deleteAllSessionfiles(void);
++
+             //@}
+ 
+         private:
+@@ -493,6 +502,7 @@
+              */
+             int httpProxyPort;
+ 
++	    static int fmatch(const struct dirent *direntry);
+     };
+ 
+ } // namespace
+Index: nxcl-0.9/lib/nxdata.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxdata.h	2008-10-15 15:09:17.000000000 +0200
++++ nxcl-0.9/lib/nxdata.h	2008-10-15 15:09:17.000000000 +0200
+@@ -77,6 +77,9 @@
+         bool proxyAuthenticated;
+         string proxyUser;
+         string proxyPass;
++	// small hack for storing this
++	// easier than workaround in the client
++	bool delSessionfiles;
+     };
+ 
+     struct NXSessionData {

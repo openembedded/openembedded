@@ -1,0 +1,12 @@
+Index: nxcl-0.9/lib/nxdata.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxdata.h	2008-10-13 16:36:53.000000000 +0200
++++ nxcl-0.9/lib/nxdata.h	2008-10-13 16:40:32.000000000 +0200
+@@ -66,6 +66,7 @@
+         string agentPass;
+         int cups;
+         string key;
++	string publicKey;
+         bool encryption;
+         bool fullscreen;
+         bool virtualDesktop;

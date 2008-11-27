@@ -1,0 +1,25 @@
+Index: nxcl-0.9/lib/nxsession.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/nxsession.cpp	2008-10-10 14:17:04.000000000 +0200
++++ nxcl-0.9/lib/nxsession.cpp	2008-10-10 14:20:27.000000000 +0200
+@@ -284,9 +284,9 @@
+                             << "\" "
+                         // FIXME: This may be some other OS if you compile it on
+                         // Sun, Windows, etc.
+-                        << "--client=\"linux\" "
+-                        << "--keyboard=\"" << this->sessionData->keyboard
+-                            << "\" "
++                        //<< "--client=\"linux\" "
++                        << "--keyboard=\"" << this->sessionData->keyboard << "\" "
++			<< "--kbtype=\"" << this->sessionData->kbtype << "\" "
+                         << "--id=\"" << this->sessionData->id << "\" "
+                         // This may be the key?
+                         << "--display=\"0\" "
+@@ -334,6 +334,7 @@
+                         "M\" --images=\"" << this->sessionData->images <<
+                         "M\" --cookie=\"" << generateCookie() <<
+                         "\" --link=\"" << this->sessionData->linkType <<
++			"\" --keyboard=\"" << this->sessionData->keyboard <<
+                         "\" --kbtype=\"" << this->sessionData->kbtype <<
+                         "\" --nodelay=\"1\" --encryption=\""
+                             << this->sessionData->encryption <<

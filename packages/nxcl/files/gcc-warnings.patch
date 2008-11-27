@@ -1,0 +1,16 @@
+Index: nxcl-0.9/lib/nxsession.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/nxsession.cpp     2008-09-26 10:42:51.000000000 +0200
++++ nxcl-0.9/lib/nxsession.cpp  2008-09-26 10:43:37.000000000 +0200
+@@ -44,9 +44,9 @@
+ using namespace nxcl;
+
+ NXSession::NXSession() :
+-    devurand_fd(-1),
+-    stage(HELLO_NXCLIENT),
+     sessionDataSet(false),
++    stage(HELLO_NXCLIENT),
++    devurand_fd(-1),
+     nxUsername("nouser"),
+     nxPassword("nopass")
+ {

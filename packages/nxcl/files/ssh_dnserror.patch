@@ -1,0 +1,31 @@
+Index: nxcl-0.9/lib/nxclientlib.cpp
+===================================================================
+--- nxcl-0.9.orig/lib/nxclientlib.cpp	2008-11-05 18:26:26.000000000 +0100
++++ nxcl-0.9/lib/nxclientlib.cpp	2008-11-05 18:27:18.000000000 +0100
+@@ -512,7 +512,13 @@
+                 (NXCL_HOST_KEY_VERIFAILED,
+                  _("SSH host key verification failed"));
+             this->isFinished = true;
+-        }
++        } else if ((*msgiter).find
++		("Temporary failure in name resolution") != string::npos ) {
++	    this->externalCallbacks->write
++		(NXCL_DNS_ERROR,
++		 _("DNS namelookup failed"));
++	    this->isFinished = true;
++	}
+     }
+ }
+ 
+Index: nxcl-0.9/lib/nxdata.h
+===================================================================
+--- nxcl-0.9.orig/lib/nxdata.h	2008-11-05 18:26:26.000000000 +0100
++++ nxcl-0.9/lib/nxdata.h	2008-11-05 18:26:26.000000000 +0100
+@@ -38,6 +38,7 @@
+ #define NXCL_FINISHED               1000009
+ #define NXCL_ALIVE                  1000010
+ #define NXCL_PROCESS_ERROR          1000011
++#define NXCL_DNS_ERROR              1000012
+ 
+ using namespace std;
+ 

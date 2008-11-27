@@ -22,8 +22,8 @@ Index: nxcl/lib/nxclientlib.cpp
      #include <sys/types.h>
      #include <sys/stat.h>
      #include <unistd.h>
-+    #include <stdlib.h>
-+    #include <string.h>
++    #include <cstdlib>
++    #include <cstring>
  }
  
  /*
@@ -35,7 +35,7 @@ Index: nxcl/nxcl/nxcl.cpp
  extern "C" {
  #include <dbus/dbus.h>
  #include <X11/Xlib.h>
-+#include <stdlib.h>
++#include <cstdlib>
  }
  
  using namespace nxcl;
