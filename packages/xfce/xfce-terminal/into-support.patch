@@ -1,0 +1,94 @@
+diff --git a/terminal/terminal-app.c b/terminal/terminal-app.c
+index 4b7ae6f..a581a85 100644
+--- a/terminal/terminal-app.c
++++ b/terminal/terminal-app.c
+@@ -37,6 +37,8 @@
+ #include <string.h>
+ #endif
+ 
++#include <gdk/gdkx.h>
++
+ #include <terminal/terminal-accel-map.h>
+ #include <terminal/terminal-app.h>
+ #include <terminal/terminal-config.h>
+@@ -565,7 +567,8 @@ terminal_app_open_window (TerminalApp         *app,
+           g_free (geometry);
+ 
+           /* show the window */
+-          gtk_widget_show (window);
++          if (!attr->embed_window)
++            gtk_widget_show (window);
+         }
+ 
+       terminal_screen_launch_child (TERMINAL_SCREEN (terminal));
+@@ -584,6 +587,14 @@ terminal_app_open_window (TerminalApp         *app,
+       g_signal_connect (G_OBJECT (app->session_client), "save-yourself",
+                         G_CALLBACK (terminal_app_save_yourself), app);
+     }
++
++  if (attr->embed_window)
++    {
++      GdkDrawable* win = GDK_DRAWABLE(window->window);
++	  XReparentWindow(GDK_DRAWABLE_XDISPLAY(win), GDK_DRAWABLE_XID(win), attr->embed_window, 0, 0);
++	  XMapWindow(GDK_DRAWABLE_XDISPLAY(win), GDK_DRAWABLE_XID(win));
++      gtk_widget_show(window);
++    }
+ }
+ 
+ 
+diff --git a/terminal/terminal-options.c b/terminal/terminal-options.c
+index ec6a934..ad9dace 100644
+--- a/terminal/terminal-options.c
++++ b/terminal/terminal-options.c
+@@ -30,6 +30,8 @@
+ #include <string.h>
+ #endif
+ 
++#include <stdlib.h>
++
+ #include <libxfce4util/libxfce4util.h>
+ 
+ #include <terminal/terminal-options.h>
+@@ -454,6 +456,31 @@ terminal_options_parse (gint              argc,
+           g_free (default_directory);
+           default_directory = g_strdup (s);
+         }
++      else if (strncmp ("--into", argv[n], 6) == 0)
++        {
++          s = argv[n] + 6;
++
++          if (*s == '=')
++            {
++              ++s;
++            }
++          else if (n + 1 >= argc)
++            {
++              g_set_error (error, G_SHELL_ERROR, G_SHELL_ERROR_FAILED,
++                           _("Option \"--into\" requires specifying "
++                             "the window id as its parameter"));
++              goto failed;
++            }
++          else
++            {
++              s = argv[++n];
++            }
++
++          if (win_attr != NULL)
++            {
++              win_attr->embed_window = strtoul(s, NULL, 0);
++            }
++        }
+       else
+         {
+           g_set_error (error, G_SHELL_ERROR, G_SHELL_ERROR_FAILED,
+diff --git a/terminal/terminal-options.h b/terminal/terminal-options.h
+index b047269..4783596 100644
+--- a/terminal/terminal-options.h
++++ b/terminal/terminal-options.h
+@@ -65,5 +65,6 @@ struct _TerminalWindowAttr
+   TerminalVisibility   borders;
+   TerminalVisibility   toolbars;
++  guint32              embed_window;
+ };
+ 
+ gboolean  terminal_options_parse    (gint                 argc,
