@@ -68,18 +68,19 @@ automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
 hostname -F /etc/hostname
 
 echo 22 > /proc/progress
+
 /usr/bin/wdog /usr/bin/dccamd -
 
 echo 23 > /proc/progress
-ifup -a
 
-echo 24 > /proc/progress
-mount -at nfs,smbfs,cpfs,cifs
+ifup -a
 
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 
-echo 25 > /proc/progress
+echo 24 > /proc/progress
 
 ldconfig
+
+echo 25 > /proc/progress
 
 ipkg-cl configure

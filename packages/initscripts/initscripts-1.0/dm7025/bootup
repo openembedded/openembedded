@@ -51,7 +51,6 @@ echo 70 > /proc/progress
 ifup -a
 
 echo 78 > /proc/progress
-mount -at nfs,smbfs,cpfs,cifs
 
 echo 82 > /proc/progress
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
