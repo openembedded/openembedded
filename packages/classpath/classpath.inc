@@ -41,11 +41,13 @@ do_configure_prepend () {
 
 do_stage() {
 	install -d ${STAGING_INCDIR}/classpath
-	install -m 0644 include/jni* ${STAGING_INCDIR}/classpath
-  	install -m 0644 include/jni_md.h ${STAGING_INCDIR}/classpath/
+	install -m 0644 include/jni.h ${STAGING_INCDIR}/classpath
+ 	install -m 0644 include/jni_md.h ${STAGING_INCDIR}/classpath/
+	install -m 0644 include/jawt.h ${STAGING_INCDIR}/classpath
+ 	install -m 0644 include/jawt_md.h ${STAGING_INCDIR}/classpath/
 
-  	install -d ${STAGING_DATADIR}/classpath
-  	install -m 0644 lib/glibj.zip ${STAGING_DATADIR}/classpath  
+ 	install -d ${STAGING_DATADIR}/classpath
+ 	install -m 0644 lib/glibj.zip ${STAGING_DATADIR}/classpath  
 }
 
 do_install() {
