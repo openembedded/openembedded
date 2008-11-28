@@ -9,7 +9,6 @@ PR = "r6"
 DEPENDS = "expat libdaemon dbus glib-2.0"
 
 # uclibc has no nss
-RRECOMMENDS_avahi-daemon_append_linux = "libnss-mdns"
 RDEPENDS_avahi-daemon = "sysvinit-pidof update-rc.d"
 RDEPENDS_avahi-autoipd = "update-rc.d"
 
