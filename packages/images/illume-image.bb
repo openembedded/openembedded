@@ -154,7 +154,6 @@ APPS_INSTALL = "\
    gpe-terminal \
    elementary-alarm \
    gpe-scap \
-   openmoko-calculator2 \
 "
 
 IMAGE_INSTALL = "\

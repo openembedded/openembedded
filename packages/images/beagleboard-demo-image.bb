@@ -1,6 +1,6 @@
 # Demo image for beagleboard
 
-IMAGE_LINGUAS = "de-de fr-fr en-gb pt-br es-es"
+IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es"
 
 XSERVER ?= "xserver-xorg \
            xf86-input-evdev \
