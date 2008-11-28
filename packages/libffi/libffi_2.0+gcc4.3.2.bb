@@ -5,11 +5,13 @@ PRIORITY = "optional"
 
 inherit autotools gettext
 
+PR = "r1"
+
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
 FILES_${PN} = "${libdir}/libffi.so.*"
 
-FILES_${PN}-dev = "${includedir}/ffi* \
+FILES_${PN}-dev = "${includedir}/${TARGET_SYS}/ffi* \
 		   ${libdir}/libffi.a \
 		   ${libdir}/libffi.la \
 		   ${libdir}/libffi.so"
@@ -48,8 +50,15 @@ do_configure () {
 }
 
 do_install_append() {
-	# follow debian and move this to $includedir
-	mv ${D}${libdir}/gcc/${TARGET_SYS}/${GCC_VER}/include/libffi/ffitarget.h ${D}${includedir}/
+	install_libffi_headers
+}
+
+# Separate function which can be disabled in the -native recipe.
+install_libffi_headers() {
+	# follow Debian and move this to $includedir/${TARGET_SYS}
+	install -d ${D}${includedir}/${TARGET_SYS}
+	mv ${D}${libdir}/gcc/${TARGET_SYS}/${GCC_VER}/include/ffitarget.h ${D}${includedir}/${TARGET_SYS}
+	mv ${D}${libdir}/gcc/${TARGET_SYS}/${GCC_VER}/include/ffi.h ${D}${includedir}/${TARGET_SYS}
 }
 
 ffi_include = "ffi.h ffitarget.h"
