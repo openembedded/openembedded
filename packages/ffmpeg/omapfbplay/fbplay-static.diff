@@ -8,3 +8,14 @@
 +LDLIBS = -lavformat -lavcodec -lavutil -lz -ldl -lbz2 -lfaac -lgsm -lmp3lame -lm -lpthread -lrt
  
  all: omapfbplay
+--- /tmp/omapfbplay.c	2008-11-28 10:28:21.000000000 +0100
++++ git/omapfbplay.c	2008-11-28 10:28:47.000000000 +0100
+@@ -37,7 +37,7 @@
+ #include <semaphore.h>
+ 
+ #include <linux/fb.h>
+-#include <mach/omapfb.h>
++#include "omapfb.h"
+ 
+ #include <libavformat/avformat.h>
+ #include <libavcodec/avcodec.h>
