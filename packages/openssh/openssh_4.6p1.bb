@@ -14,7 +14,7 @@ It is intended as a replacement for rlogin, rsh and rcp, and can be \
 used to provide applications with a secure communication channel."
 HOMEPAGE = "http://www.openssh.org/"
 LICENSE = "BSD"
-PR = "r4"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-${PV}.tar.gz \
            file://sftp-server-nolibcrypto.patch;patch=1 \
@@ -70,7 +70,7 @@ FILES_ssh-keygen = "${bindir}/ssh-keygen"
 
 RDEPENDS_openssh += " openssh-scp openssh-ssh openssh-sshd ssh-keygen "
 DEPENDS_openssh-sshd += " update-rc.d"
-RDEPENDS_openssh-sshd += " update-rc.d"
+RDEPENDS_openssh-sshd += " update-rc.d ssh-keygen "
 
 pkg_postinst_openssh-sshd() {
 if test "x$D" != "x"; then
