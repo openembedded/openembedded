@@ -16,5 +16,4 @@ do_install() {
 
 PACKAGE_ARCH_${PN} = "all"
 RDEPENDS_${PN} = "python-dbus frameworkd"
-RPROVIDES_${PN} = "apm"
 RCONFLICTS_${PN} = "apm"
