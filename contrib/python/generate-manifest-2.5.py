@@ -13,7 +13,7 @@ VERSION = "2.5.2"
 BASEREV = 0
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20081102"
+__version__ = "20081209"
 
 class MakefileMaker:
 
@@ -22,7 +22,7 @@ class MakefileMaker:
         self.packages = {}
         self.targetPrefix = "${libdir}/python%s/" % VERSION[:3]
         self.output = outfile
-        self.out( """\
+        self.out( """
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
 # Generator: '%s' Version %s (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
@@ -273,7 +273,7 @@ if __name__ == "__main__":
 
     m.addPackage( 0, "python-netclient", "Python Internet Protocol Clients", "python-core python-crypt python-datetime python-io python-lang python-logging python-mime",
     "*Cookie*.* " + 
-    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.*" )
+    "base64.* cookielib.* ftplib.* gopherlib.* hmac.* httplib.* mimetypes.* nntplib.* poplib.* smtplib.* telnetlib.* urllib.* urllib2.* urlparse.* uuid.*" )
 
     m.addPackage( 0, "python-netserver", "Python Internet Protocol Servers", "python-core python-netclient",
     "cgi.* BaseHTTPServer.* SimpleHTTPServer.* SocketServer.*" )
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     m.addPackage( 0, "python-subprocess", "Python Subprocess Support", "python-core python-io python-re python-fcntl python-pickle",
     "subprocess.*" )
 
-    m.addPackage( 2, "python-sqlite3", "Python Sqlite3 Database Support", "python-core python-datetime python-lang python-crypt python-io python-threading python-zlib",
+    m.addPackage( 0, "python-sqlite3", "Python Sqlite3 Database Support", "python-core python-datetime python-lang python-crypt python-io python-threading python-zlib",
     "lib-dynload/_sqlite3.so sqlite3/dbapi2.* sqlite3/__init__.*" )
 
     m.addPackage( 0, "python-sqlite3-tests", "Python Sqlite3 Database Support Tests", "python-core python-sqlite3",

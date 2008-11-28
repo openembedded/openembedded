@@ -1,5 +1,5 @@
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
-# Generator: 'generate-manifest-2.5.py' Version 20081102 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
+# Generator: './generate-manifest-2.5.py' Version 20081209 (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
 
  
@@ -171,7 +171,7 @@ FILES_python-fcntl="${libdir}/python2.5/lib-dynload/fcntl.so "
 DESCRIPTION_python-netclient="Python Internet Protocol Clients"
 PR_python-netclient="ml0"
 RDEPENDS_python-netclient="python-core python-crypt python-datetime python-io python-lang python-logging python-mime"
-FILES_python-netclient="${libdir}/python2.5/*Cookie*.* ${libdir}/python2.5/base64.* ${libdir}/python2.5/cookielib.* ${libdir}/python2.5/ftplib.* ${libdir}/python2.5/gopherlib.* ${libdir}/python2.5/hmac.* ${libdir}/python2.5/httplib.* ${libdir}/python2.5/mimetypes.* ${libdir}/python2.5/nntplib.* ${libdir}/python2.5/poplib.* ${libdir}/python2.5/smtplib.* ${libdir}/python2.5/telnetlib.* ${libdir}/python2.5/urllib.* ${libdir}/python2.5/urllib2.* ${libdir}/python2.5/urlparse.* "
+FILES_python-netclient="${libdir}/python2.5/*Cookie*.* ${libdir}/python2.5/base64.* ${libdir}/python2.5/cookielib.* ${libdir}/python2.5/ftplib.* ${libdir}/python2.5/gopherlib.* ${libdir}/python2.5/hmac.* ${libdir}/python2.5/httplib.* ${libdir}/python2.5/mimetypes.* ${libdir}/python2.5/nntplib.* ${libdir}/python2.5/poplib.* ${libdir}/python2.5/smtplib.* ${libdir}/python2.5/telnetlib.* ${libdir}/python2.5/urllib.* ${libdir}/python2.5/urllib2.* ${libdir}/python2.5/urlparse.* ${libdir}/python2.5/uuid.* "
 
 DESCRIPTION_python-pprint="Python Pretty-Print Support"
 PR_python-pprint="ml0"
@@ -234,7 +234,7 @@ RDEPENDS_python-mime="python-core python-io"
 FILES_python-mime="${libdir}/python2.5/mimetools.* ${libdir}/python2.5/uu.* ${libdir}/python2.5/quopri.* ${libdir}/python2.5/rfc822.* "
 
 DESCRIPTION_python-sqlite3="Python Sqlite3 Database Support"
-PR_python-sqlite3="ml2"
+PR_python-sqlite3="ml0"
 RDEPENDS_python-sqlite3="python-core python-datetime python-lang python-crypt python-io python-threading python-zlib"
 FILES_python-sqlite3="${libdir}/python2.5/lib-dynload/_sqlite3.so ${libdir}/python2.5/sqlite3/dbapi2.* ${libdir}/python2.5/sqlite3/__init__.* "
 
