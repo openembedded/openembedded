@@ -1,7 +1,7 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r56"
+PR = "r57"
 
 LICENSE = "GPL"
 
@@ -166,3 +166,12 @@ CONFFILES_${PN} = "${sysconfdir}/fstab ${sysconfdir}/hostname"
 CONFFILES_${PN}_nylon = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 CONFFILES_${PN}_slugos = "${sysconfdir}/resolv.conf ${sysconfdir}/fstab ${sysconfdir}/hostname"
 
+pkg_preinst_base-files () {
+	[ -d /proc/stb ] && [ -f /etc/resolv.conf ] && mv /etc/resolv.conf /etc/resolv.conf.old
+	true
+}
+
+pkg_postinst_base-files () {
+	[ -d /proc/stb ] && [ -f /etc/resolv.conf.old ] && mv /etc/resolv.conf.old /etc/resolv.conf
+	true
+}
