@@ -1,0 +1,13 @@
+Index: liblinebreak/Makefile
+===================================================================
+--- liblinebreak.orig/Makefile	2008-11-23 15:47:09.713701530 +0300
++++ liblinebreak/Makefile	2008-11-23 15:48:12.081703050 +0300
+@@ -86,7 +86,7 @@ AR  = ar
+ LD  = $(CXX) $(CXXFLAGS) $(TARGET_ARCH)
+
+ INCLUDE  = -I. $(patsubst %,-I%,$(VPATH))
+-CFLAGS   = -W -Wall $(INCLUDE)
++CFLAGS   = -W -Wall $(INCLUDE) -fPIC -D_REENTRANT
+ CXXFLAGS = $(CFLAGS)
+ DBGFLAGS = -D_DEBUG -g
+ RELFLAGS = -DNDEBUG -O2
