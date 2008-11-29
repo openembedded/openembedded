@@ -7,12 +7,16 @@ PV_dm7025 = "61"
 PV_dm600pvr = "66"
 PV_dm500plus = "66"
 PV_dm8000 = "69"
-PV_dm800 = "67"
+PV_dm800 = "69"
 PR = "r0"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
-SRC_URI_append_dm8000 = " http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.nfi \
+
+SECONDSTAGE_UPDATE_SRC = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.nfi \
 	http://sources.dreamboxupdate.com/download/7020/writenfi-${MACHINE}-r0"
+
+SRC_URI_append_dm8000 = " ${SECONDSTAGE_UPDATE_SRC}"
+SRC_URI_append_dm800 = " ${SECONDSTAGE_UPDATE_SRC}"
 
 S = "${WORKDIR}"
 
@@ -22,10 +26,6 @@ do_stage() {
 }
 
 # the dm{800,8000} secondstage is already compressed (and encrypted)
-do_stage_dm800() {
-	install -d ${STAGING_LIBDIR}/dreambox-secondstage
-	cp ${S}/secondstage-${MACHINE}-${PV}.bin ${STAGING_LIBDIR}/dreambox-secondstage/main.bin.gz
-}
 
 do_stage_dm8000() {
 	install -d ${STAGING_LIBDIR}/dreambox-secondstage
@@ -38,12 +38,22 @@ do_install_dm8000() {
 	install -m 0755 ${WORKDIR}/writenfi-${MACHINE}-r0 ${D}/tmp/writenfi
 }
 
-FILES_${PN}_dm8000 = "/tmp"
+do_stage_dm800() {
+	do_stage_dm8000
+}
+
+do_install_dm800() {
+	do_install_dm8000
+}
+
+FILES_${PN} = "/tmp"
 PACKAGE_ARCH := "${MACHINE_ARCH}"
 
-pkg_postinst_dm8000() {
+pkg_postinst() {
 	if [ -d /proc/stb ]; then
-		/tmp/writenfi /tmp/secondstage.nfi;
-		rm /tmp/writenfi /tmp/secondstage.nfi;
+		if [ -f /tmp/writenfi ]; then
+			/tmp/writenfi /tmp/secondstage.nfi;
+			rm /tmp/writenfi /tmp/secondstage.nfi;
+		fi
 	fi
 }
