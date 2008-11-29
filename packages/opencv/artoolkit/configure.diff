@@ -1,0 +1,53 @@
+--- /tmp/Configure	2008-11-28 23:58:06.000000000 +0100
++++ ARToolKit/Configure	2008-11-28 23:59:59.000000000 +0100
+@@ -55,8 +55,7 @@
+ 			exit 0
+ 		fi	
+         VIDEO_DRIVER="VideoLinuxV4L"
+-        CFLAG="-O -I/usr/X11R6/include"
+-        LDFLAG="-L/usr/X11R6/lib"
++        CFLAG="-O "
+         ARFLAG="rs"
+         RANLIB=""
+         LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+@@ -78,8 +77,7 @@
+ 			exit 0
+ 		fi		
+         VIDEO_DRIVER="VideoLinuxV4L"
+-        CFLAG="-O -I/usr/X11R6/include -DUSE_EYETOY"
+-        LDFLAG="-L/usr/X11R6/lib"
++        CFLAG="-O -DUSE_EYETOY"
+         ARFLAG="rs"
+         RANLIB=""
+         LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -ljpeg"
+@@ -87,8 +85,7 @@
+     elif [ "$ANS" = "3" ]
+     then
+         VIDEO_DRIVER="VideoLinuxDV"
+-        CFLAG="-O -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include"
+-        LDFLAG="-L/usr/X11R6/lib -L/usr/local/lib"
++        CFLAG="-O "
+         ARFLAG="rs"
+         RANLIB=""
+         LIBS="-lraw1394 -ldv -lpthread -lglut -lGLU -lGL -lXi -lXmu -lX11 -lm"
+@@ -96,8 +93,7 @@
+     elif [ "$ANS" = "4" ]
+     then
+         VIDEO_DRIVER="VideoLinux1394Cam"
+-        CFLAG="-O -I/usr/X11R6/include"
+-        LDFLAG="-L/usr/X11R6/lib"
++        CFLAG="-O "
+         ARFLAG="rs"
+         RANLIB=""
+         LIBS="-lglut -lGLU -lGL -lXi -lXmu -lX11 -lm -lraw1394 -ldc1394_control"
+@@ -108,8 +104,8 @@
+ 		GST_INCLUDE=`pkg-config --cflags gstreamer-0.10`
+ 		GST_LIBS=`pkg-config --libs gstreamer-0.10`
+ 		
+-		CFLAG="-O $GST_INCLUDE -I/usr/X11R6/include"
+-        LDFLAG="$GST_LIBS -L/usr/X11R6/lib -L/usr/local/lib"
++		CFLAG="-O $GST_INCLUDE "
++        LDFLAG="$GST_LIBS "
+         ARFLAG="rs"
+         RANLIB=""
+         LIBS="-lpthread -lglut -lGLU -lGL -lXi -lX11 -lm"

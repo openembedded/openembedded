@@ -1,0 +1,12 @@
+--- /tmp/paddleDemo.c	2008-11-29 11:12:11.000000000 +0100
++++ ARToolKit/examples/paddleDemo/paddleDemo.c	2008-11-29 11:12:27.000000000 +0100
+@@ -54,9 +54,6 @@
+ GLfloat   lightZeroColor[]  = {0.9, 0.9, 0.9, 0.1};
+ 
+ 
+-PaddleItemInfo myPaddleItem;
+-ItemList myListItem;
+-
+ static int    draw_paddle( ARPaddleInfo *paddleInfo, PaddleItemInfo *myPaddleItem);
+ static void   init(void);
+ static void   cleanup(void);
