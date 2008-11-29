@@ -295,3 +295,8 @@ Recipes:    midpath*, logic-analyze
 Recipes:    kobodeluxe, wesnoth
 Recipes:    hildon-thumbnail, libhildon*, libosso*, mce-dev, libconic
 Recipes:    libgpsbt, libgpsmgr, osso-gnome-vfs2, osso-gwconnect, osso-ic-oss
+
+Person:     Sergey Lapin
+Mail:       slapin@ossfans.org
+Machines:   palm*, afeb9260
+Recipes:    at91bootstrap
