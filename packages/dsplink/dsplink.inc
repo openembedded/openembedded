@@ -15,7 +15,10 @@ require ti-paths.inc
 
 do_configure () {
 	# Run perl script to create appropriate makefiles (v1.60 and up)
+	(
+	cd ${DSPLINK}
 	perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
+	)
 }
 
 PARALLEL_MAKE = ""
