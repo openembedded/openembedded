@@ -1,7 +1,7 @@
 # To build the DSP applications you need to have DSP/BIOS, xdctools and codegen installed. Get these from:
 # https://www-a.ti.com/downloads/sds_support/targetcontent/bios/bios_5_33/sabios-j05/bios_setuplinux_5_33_02.bin
 # https://www-a.ti.com/downloads/sds_support/targetcontent/rtsc/xdctools_3_10_03/exports/xdctools_setuplinux_3_10_03.bin
-# <url for codegen>
+# https://www-a.ti.com/downloads/sds_support/targetcontent/LinuxDspTools/download.html
 
 # Path to the dir where the TI tools are unpacked
 TITOOLSDIR ?= "/OE/TI"
