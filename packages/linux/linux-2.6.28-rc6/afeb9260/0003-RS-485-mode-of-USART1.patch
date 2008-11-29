@@ -1,0 +1,41 @@
+From 5374be6a8f2644e33e436b1864188442e1b2c156 Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Fri, 4 Jul 2008 01:53:23 +0400
+Subject: [PATCH] RS-485 mode of USART1
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ drivers/serial/atmel_serial.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/serial/atmel_serial.c b/drivers/serial/atmel_serial.c
+index 1fee12c..20ced47 100644
+--- a/drivers/serial/atmel_serial.c
++++ b/drivers/serial/atmel_serial.c
+@@ -233,8 +233,12 @@ static void atmel_set_mctrl(struct uart_port *port, u_int mctrl)
+ 	mode = UART_GET_MR(port) & ~ATMEL_US_CHMODE;
+ 	if (mctrl & TIOCM_LOOP)
+ 		mode |= ATMEL_US_CHMODE_LOC_LOOP;
+-	else
++	else {
++		if (port->mapbase == AT91SAM9260_BASE_US1)
++			mode |= ATMEL_US_USMODE_RS485;
++
+ 		mode |= ATMEL_US_CHMODE_NORMAL;
++	}
+ 	UART_PUT_MR(port, mode);
+ }
+ 
+@@ -1094,6 +1098,9 @@ static void atmel_set_termios(struct uart_port *port, struct ktermios *termios,
+ 	/* disable receiver and transmitter */
+ 	UART_PUT_CR(port, ATMEL_US_TXDIS | ATMEL_US_RXDIS);
+ 
++	if (port->mapbase == AT91SAM9260_BASE_US1) 
++		mode |= ATMEL_US_USMODE_RS485;
++
+ 	/* set the parity, stop bits and data size */
+ 	UART_PUT_MR(port, mode);
+ 
+-- 
+1.5.4.1
+
