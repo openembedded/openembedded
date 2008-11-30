@@ -3,7 +3,7 @@ LICENSE = "MIT BSD"
 DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver libxdamage libxrandr libxcursor libxprintutil"
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
-PV = "0.9.9.043+svnr${SRCREV}"
+PV = "0.9.9.050+svnr${SRCREV}"
 PR = "r1"
 
 inherit efl
