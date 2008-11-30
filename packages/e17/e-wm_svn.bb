@@ -55,7 +55,7 @@ PACKAGE_ARCH_${PN}-images = "all"
 PACKAGE_ARCH_${PN}-icons = "all"
 PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
-PACKAGE_ARCH_${PN}-sysactions = "${MACHINE_ARCH}" # sysactions are supposed to be arch dependent
+PACKAGE_ARCH_${PN}-sysactions = "${MACHINE_ARCH}"
 
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
