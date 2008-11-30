@@ -2,8 +2,8 @@ DESCRIPTION = "The Enlightenment multimedia library"
 LICENSE = "MIT BSD"
 # we no longer build the libxine backend, since the gstreamer backend seems more promising
 DEPENDS = "eet evas ecore edje gstreamer gst-plugins-base"
-PV = "0.1.0+svnr${SRCREV}"
-PR = "r3"
+PV = "0.1.0.042+svnr${SRCREV}"
+PR = "r1"
 
 inherit efl
 
