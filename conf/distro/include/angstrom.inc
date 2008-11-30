@@ -99,6 +99,7 @@ LOCALE_UTF8_ONLY = "1"
 
 #qemu doesn't like armv6/eabi/vfp
 ENABLE_BINARY_LOCALE_GENERATION_armv6 = "0"
+ENABLE_BINARY_LOCALE_GENERATION_armv6-novfp = "0"
 ENABLE_BINARY_LOCALE_GENERATION_armv7a = "0"
 
 #qemu has taken a dislike to armeb as well
