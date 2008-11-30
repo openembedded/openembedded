@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r5"
 
 # We call 'moc' during the build 
 DEPENDS = "uicmoc4-native"
@@ -29,7 +29,7 @@ do_configure() {
     # Make sure we regenerate all Makefiles 
     find ${S} -name "Makefile" | xargs rm
     # Install the OE build templates
-    for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++
+    for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++ linux-uclibcgnueabi-oe-g++
     do
         install -d ${S}/mkspecs/$template
         install -m 0644 ${WORKDIR}/linux-oe-qmake.conf ${S}/mkspecs/$template/qmake.conf

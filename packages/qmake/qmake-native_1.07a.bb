@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL QPL"
-PR = "r4"
+PR = "r5"
 
 QTEVER = "qt-embedded-free-3.3.5"
 
@@ -18,7 +18,7 @@ EXTRA_OEMAKE = "-e"
 
 do_configure() {
 	# Install the OE build templates
-	for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++
+	for template in linux-oe-g++ linux-uclibc-oe-g++ linux-gnueabi-oe-g++ linux-uclibcgnueabi-oe-g++
 	do
 		install -d ${S}/mkspecs/$template
 		install -m 0644 ${WORKDIR}/linux-oe-qmake.conf ${S}/mkspecs/$template/qmake.conf
