@@ -113,6 +113,7 @@ TARGET_FPU_ixp4xx ?= "soft"
 TARGET_FPU_ppc405 ?= "soft"
 
 TARGET_FPU_armv6 ?= "hard"
+TARGET_FPU_armv6-novfp ?= "soft"
 TARGET_FPU_armv7a ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
