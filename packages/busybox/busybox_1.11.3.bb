@@ -1,10 +1,11 @@
 require busybox.inc
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   \
   file://udhcpscript.patch;patch=1 \
+  file://fdisk_lineedit_segfault.patch;patch=1 \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
