@@ -113,10 +113,10 @@ PYTHON_INSTALL = "\
 
 # zhone
 ZHONE_INSTALL = "\
-#  gsm0710muxd \
-#  frameworkd \
-#  fso-gpsd \
-##  zhone \
+  gsm0710muxd \
+  frameworkd \
+  fso-gpsd \
+#  zhone \
 "
 
 # additional apps
@@ -131,6 +131,8 @@ APPS_INSTALL = "\
    gpe-terminal \
    elementary-alarm \
    gpe-scap \
+   libefso \
+   essential-dialer \
 "
 
 IMAGE_INSTALL = "\
