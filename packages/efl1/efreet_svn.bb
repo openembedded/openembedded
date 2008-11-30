@@ -1,8 +1,8 @@
 DESCRIPTION = "The Enlightenment freedesktop.org library"
 DEPENDS = "ecore"
 LICENSE = "MIT BSD"
-PV = "0.5.0.043+svnr${SRCREV}"
-PR = "r2"
+PV = "0.5.0.050+svnr${SRCREV}"
+PR = "r1"
 
 inherit efl
 
