@@ -6,6 +6,8 @@ DEPENDS = "readline ncurses fftw"
 RDEPENDS = "libfftw3"
 # fftw compiled with --disable-fortran
 
+ARM_INSTRUCTION_SET = "arm"
+
 inherit autotools
 
 EXTRA_OECONF = "--without-hdf5 --without-glpk -without-umfpack \
