@@ -40,8 +40,8 @@ module_id() {
 export USER=root
 
 SCREEN_SIZE=`fallback_screen_arg`
-PPM=""
-ARGS=" -br -pn"
+PPM="-br"
+ARGS=" -pn"
 
 # use ucb 1x00 touchscreen if present
 if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
