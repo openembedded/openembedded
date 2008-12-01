@@ -1,12 +1,19 @@
 #!/bin/bash
 
 # Angstrom feed sorting script
-# This must be run in unstable/ directory 
+# This must be run in unsorted/ directory 
 
 if [ $(basename $PWD) != "unsorted" ] ; then
 	echo "Not in feed dir! Exiting"
 	exit 1
 fi	
+
+if [ $(find . -name "*.ipk" | wc -l) -gt 0 ] ; then
+	echo "Unsorted packages found"
+else
+	echo "No unsorted packages found. Exiting"
+	exit 1
+fi
 
 rm Packages* >& /dev/null
 
