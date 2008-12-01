@@ -1,7 +1,7 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 PV = "0.9.1+svnr${SRCREV}"
-PR = "r13"
+PR = "r14"
 
 FILESPATH = "${FILE_DIRNAME}/qemu-${PV}/:${FILE_DIRNAME}/qemu-0.9.1+svn/"
 
@@ -34,6 +34,7 @@ SRC_URI = "\
     file://fix_protection_bits.patch;patch=1 \
     file://revert_arm_tcg.patch.gz;patch=1;minrev=4242 \
     file://qemu-n800-support.patch;patch=1 \
+    file://fix_baum_c_compilation.patch;patch=1 \
     file://fix_dirent_h_include.patch;patch=1"
 
 S = "${WORKDIR}/trunk"
