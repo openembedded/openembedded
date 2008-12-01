@@ -1,10 +1,10 @@
 require linux.inc
 
-KERNELVERSION = "2.6.28rc6"
-PV = "2.6.27+${KERNEL_VERSION}"
+KERNEL_RELEASE = "2.6.28rc6"
+PV = "2.6.27+${KERNEL_RELEASE}"
 PR = "r1"
 
-S = "${WORKDIR}/linux-${KERNEL_VERSION}"
+S = "${WORKDIR}/linux-${KERNEL_RELEASE}"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
