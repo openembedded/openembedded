@@ -1,7 +1,7 @@
 Index: gnu/java/awt/peer/gtk/FreetypeGlyphVector.java
 ===================================================================
 --- gnu/java/awt/peer/gtk/FreetypeGlyphVector.java.orig	2007-04-12 22:18:09.000000000 +0200
-+++ gnu/java/awt/peer/gtk/FreetypeGlyphVector.java	2008-11-21 16:45:33.000000000 +0100
++++ gnu/java/awt/peer/gtk/FreetypeGlyphVector.java	2008-11-28 18:29:50.000000000 +0100
 @@ -247,7 +247,8 @@
    /**
     * Returns the kerning of a glyph pair
@@ -36,7 +36,7 @@ Index: gnu/java/awt/peer/gtk/FreetypeGlyphVector.java
 Index: include/gnu_java_awt_peer_gtk_FreetypeGlyphVector.h
 ===================================================================
 --- include/gnu_java_awt_peer_gtk_FreetypeGlyphVector.h.orig	2008-06-06 04:10:00.000000000 +0200
-+++ include/gnu_java_awt_peer_gtk_FreetypeGlyphVector.h	2008-11-21 16:45:33.000000000 +0100
++++ include/gnu_java_awt_peer_gtk_FreetypeGlyphVector.h	2008-11-28 18:29:50.000000000 +0100
 @@ -13,7 +13,7 @@
  JNIEXPORT void JNICALL Java_gnu_java_awt_peer_gtk_FreetypeGlyphVector_dispose (JNIEnv *env, jobject, jlongArray);
  JNIEXPORT jlong JNICALL Java_gnu_java_awt_peer_gtk_FreetypeGlyphVector_getNativeFontPointer (JNIEnv *env, jobject, jint);
@@ -49,7 +49,7 @@ Index: include/gnu_java_awt_peer_gtk_FreetypeGlyphVector.h
 Index: native/jni/gtk-peer/gnu_java_awt_peer_gtk_FreetypeGlyphVector.c
 ===================================================================
 --- native/jni/gtk-peer/gnu_java_awt_peer_gtk_FreetypeGlyphVector.c.orig	2007-04-25 16:53:03.000000000 +0200
-+++ native/jni/gtk-peer/gnu_java_awt_peer_gtk_FreetypeGlyphVector.c	2008-11-21 16:47:12.000000000 +0100
++++ native/jni/gtk-peer/gnu_java_awt_peer_gtk_FreetypeGlyphVector.c	2008-11-28 18:29:50.000000000 +0100
 @@ -169,15 +169,13 @@
    (*env)->ReleaseLongArrayElements (env, fonts, fontArray, 0);
  }
@@ -86,3 +86,62 @@ Index: native/jni/gtk-peer/gnu_java_awt_peer_gtk_FreetypeGlyphVector.c
  }
  
  JNIEXPORT jdoubleArray JNICALL 
+Index: gnu/java/awt/peer/gtk/GtkFileDialogPeer.java
+===================================================================
+--- gnu/java/awt/peer/gtk/GtkFileDialogPeer.java.orig	2008-12-01 07:51:00.000000000 +0100
++++ gnu/java/awt/peer/gtk/GtkFileDialogPeer.java	2008-12-01 07:52:04.000000000 +0100
+@@ -67,7 +67,7 @@
+ 
+     FileDialog fd = (FileDialog) awtComponent;
+     
+-    nativeSetDirectory(System.getProperty("user.dir"));
++    nativeSetDirectory(System.getProperty("user.dir", "."));
+     setDirectory(fd.getDirectory());
+     setFile(fd.getFile());
+ 
+@@ -108,18 +108,26 @@
+     if (fileName == null || fileName.equals (""))
+       {
+         currentFile = "";
+-        nativeSetFile ("");
++        nativeSetFile (new File("").getAbsolutePath());
+         return;
+       }
+ 
+     // GtkFileChooser requires absolute filenames. If the given filename
+     // is not absolute, let's construct it based on current directory.
+     currentFile = fileName;
+-    if (fileName.indexOf(FS) == 0)
++    File f = new File(fileName);
++    if (f.isAbsolute())
+       nativeSetFile(fileName);
+     else
+-      nativeSetFile(nativeGetDirectory() + FS + fileName);
+-  }
++    {
++      // Try with gtk API.
++      String temp = nativeGetDirectory();
++      if (temp != null)
++        f = new File(temp, fileName);
++
++      nativeSetFile(f.getAbsolutePath());
++    }
++}
+ 
+   public void setDirectory (String directory)
+   {
+Index: native/jni/gtk-peer/gnu_java_awt_peer_gtk_GtkScrollPanePeer.c
+===================================================================
+--- native/jni/gtk-peer/gnu_java_awt_peer_gtk_GtkScrollPanePeer.c.orig	2008-12-01 07:53:00.000000000 +0100
++++ native/jni/gtk-peer/gnu_java_awt_peer_gtk_GtkScrollPanePeer.c	2008-12-01 07:53:17.000000000 +0100
+@@ -58,6 +58,10 @@
+   gtkpeer_set_global_ref (env, obj);
+ 
+   sw = gtk_scrolled_window_new (NULL, NULL);
++
++  /* Sanitize width and height. gtk+ does not accept anything below -1. */
++  width = (width < -1 ? 0 : width);
++  height = (height < -1 ? 0 : height);
+   gtk_widget_set_size_request (sw, width, height);
+   eventbox = gtk_event_box_new ();
+   gtk_container_add (GTK_CONTAINER (eventbox), sw);
