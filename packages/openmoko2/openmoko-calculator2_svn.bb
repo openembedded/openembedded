@@ -5,6 +5,7 @@ PV = "0.1.0+svnr${SRCREV}"
 PR = "r1"
 
 inherit openmoko2
+LICENSE = "GPL"
 SRC_URI += " file://openmoko-calculator.png "
 
 do_install_append_openmoko() {
