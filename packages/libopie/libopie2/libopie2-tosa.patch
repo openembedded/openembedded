@@ -1,0 +1,14 @@
+Index: libopie2/opiecore/device/odevice_zaurus.cpp
+===================================================================
+--- libopie2.orig/opiecore/device/odevice_zaurus.cpp	2008-12-01 06:38:14.670256416 +0300
++++ libopie2/opiecore/device/odevice_zaurus.cpp	2008-12-01 07:47:16.045256590 +0300
+@@ -286,6 +286,9 @@ void Zaurus::init(const QString& cpu_inf
+         case Model_Zaurus_SL5500:
+             m_backlightdev = "/sys/class/backlight/locomo-bl/";
+             break;
++	case Model_Zaurus_SL6000:
++            m_backlightdev = "/sys/class/backlight/tosa_bl/";
++            break;
+         default:
+             m_backlightdev = "/sys/class/backlight/corgi-bl/";
+     }
