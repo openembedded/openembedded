@@ -54,12 +54,13 @@ do_build
 # * armv4t:    om-gta01
 # * armv5te:   c7x0
 # * armv6:     nokia800
+# * armv6-novfp: htckaiser
 # * armv7a:    beagleboard
 # * ppc405:    dht-walnut
 # * ppc603e:   efika
 # * i586:      qemux86
 
-for machine in simpad om-gta01 c7x0 nokia800 beagleboard dht-walnut efika qemux86
+for machine in simpad om-gta01 c7x0 nokia800 htckaiser beagleboard dht-walnut efika qemux86
 do
         BUILD_MACHINE=$machine
         BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
