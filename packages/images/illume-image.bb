@@ -2,10 +2,11 @@
 # Rasterman Illume Image Recipe
 #------------------------------------------------------
 
-IMAGE_LINGUAS = ""
+IMAGE_LINGUAS = "en-us de-de fr-fr pt-br ca-es zh-cn zh-tw bg-bg cs-cz da-dk nl-nl fi-fi hu-hu it-it ja-jp ko-kr nb-no pl-pl ru-ru sk-sk sl-si es-ar sv-se"
 
 # getting the base system up
 BASE_INSTALL = "\
+  angstrom-libc-fixup-hack \
   ${MACHINE_TASK_PROVIDER} \
   task-base \
   netbase \
@@ -28,31 +29,7 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 # getting an X window system up
 X_INSTALL = "\
-  glibc-utils \
   glibc-charmap-utf-8 \
-  glibc-binary-localedata-en-us \
-  glibc-binary-localedata-de-de \
-  glibc-binary-localedata-fr-fr \
-  glibc-binary-localedata-pt-br \
-  glibc-binary-localedata-ca-es \
-  glibc-binary-localedata-zh-cn \
-  glibc-binary-localedata-zh-tw \
-  glibc-binary-localedata-bg-bg \
-  glibc-binary-localedata-cs-cz \
-  glibc-binary-localedata-da-dk \
-  glibc-binary-localedata-nl-nl \
-  glibc-binary-localedata-fi-fi \
-  glibc-binary-localedata-hu-hu \
-  glibc-binary-localedata-it-it \
-  glibc-binary-localedata-ja-jp \
-  glibc-binary-localedata-ko-kr \
-  glibc-binary-localedata-nb-no \
-  glibc-binary-localedata-pl-pl \
-  glibc-binary-localedata-ru-ru \
-  glibc-binary-localedata-sk-sk \
-  glibc-binary-localedata-sl-si \
-  glibc-binary-localedata-es-ar \
-  glibc-binary-localedata-sv-se \
   e-wm \
   e-wm-config-illume \
   e-wm-config-standard \
@@ -195,8 +172,6 @@ fso_rootfs_postprocess() {
     # minimal gtk theme foo
     mkdir -p ./etc/gtk-2.0/
     echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
-    # fix strange iconv/gconf bug
-    ln -s libc.so.6 ./lib/libc.so
     cd $curdir
 }
 
