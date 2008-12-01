@@ -4,6 +4,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPLv2"
 
+ARM_INSTRUCTION_SET = "arm"
+
 PR = "r1"
 
 DEPENDS = "libtool swig swig-native python jpeg zlib libpng tiff glib-2.0"
