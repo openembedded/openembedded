@@ -3,6 +3,7 @@ SECTION = "libs"
 LICENSE = "BSD"
 DEPENDS = "expat freetype freetype-native zlib"
 
+PR = "r1"
 # Work around past breakage in debian.bbclass
 RPROVIDES_fontconfig-utils = "libfontconfig-utils"
 RREPLACES_fontconfig-utils = "libfontconfig-utils"

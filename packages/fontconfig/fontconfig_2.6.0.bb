@@ -3,6 +3,8 @@ LICENSE = "BSD"
 DESCRIPTION = "A library for configuring and customizing font access."
 DEPENDS = "expat freetype zlib"
 
+PR = "r1"
+
 SRC_URI = "http://fontconfig.org/release/fontconfig-${PV}.tar.gz \
            file://fix-pkgconfig.patch;patch=1"
 
