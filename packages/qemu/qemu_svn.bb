@@ -3,6 +3,8 @@ DEPENDS = "zlib"
 PV = "0.9.1+svnr${SRCREV}"
 PR = "r14"
 
+DEFAULT_PREFERENCE = "-99"
+
 FILESPATH = "${FILE_DIRNAME}/qemu-${PV}/:${FILE_DIRNAME}/qemu-0.9.1+svn/"
 
 SRC_URI = "\
