@@ -2,11 +2,11 @@ DESCRIPTION = "Python applets manager"
 SECTION = "x11"
 LICENSE = "GPL"
 DEPENDS += "python-pygame virtual/libsdl libsdl-image python-dbus python-pygobject"                                   
-PV = "0.1+svnr${SRCREV}"
-PR = "r0.01"
+PV = "0.2+gitr${SRCREV}"
+PR = "r0"
 
-SRC_URI = "svn://svn.projects.openmoko.org/svnroot;module=tichy;proto=http"
-S = "${WORKDIR}/tichy"
+SRC_URI = "git://git.openmoko.org/git/tichy.git;protocol=git"
+S = "${WORKDIR}/git"
 
 inherit distutils
 
