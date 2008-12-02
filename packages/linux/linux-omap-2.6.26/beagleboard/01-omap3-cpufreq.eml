@@ -1,0 +1,319 @@
+CPUFreq driver for OMAP3
+
+Signed-off-by: Rajendra Nayak <rnayak@ti.com>
+---
+ arch/arm/configs/omap_3430sdp_defconfig |   19 +++++++
+ arch/arm/mach-omap2/clock34xx.c         |   42 ++++++++++++++++-
+ arch/arm/mach-omap2/resource34xx.c      |    6 --
+ arch/arm/plat-omap/cpu-omap.c           |   78 ++++++++++++++++++++++++++++++--
+ drivers/cpufreq/cpufreq.c               |    2
+ 5 files changed, 136 insertions(+), 11 deletions(-)
+
+Index: linux-omap-2.6/arch/arm/mach-omap2/clock34xx.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/mach-omap2/clock34xx.c	2008-08-11
+17:21:57.000000000 +0530
++++ linux-omap-2.6/arch/arm/mach-omap2/clock34xx.c	2008-08-11
+17:36:53.000000000 +0530
+@@ -31,6 +31,7 @@
+ #include <asm/arch/sram.h>
+ #include <asm/div64.h>
+ #include <asm/bitops.h>
++#include <linux/cpufreq.h>
+
+ #include <asm/arch/sdrc.h>
+ #include "clock.h"
+@@ -637,6 +638,35 @@ static void omap3_clkoutx2_recalc(struct
+  */
+ #if defined(CONFIG_ARCH_OMAP3)
+
++#ifdef CONFIG_CPU_FREQ
++static struct cpufreq_frequency_table freq_table[MAX_VDD1_OPP+1];
++
++void omap2_clk_init_cpufreq_table(struct cpufreq_frequency_table **table)
++{
++	struct vdd_prcm_config *prcm;
++	int i = 0;
++
++	prcm = vdd1_rate_table + MAX_VDD1_OPP;
++	for (; prcm->speed; prcm--) {
++		freq_table[i].index = i;
++		freq_table[i].frequency = prcm->speed / 1000;
++		i++;
++	}
++
++	if (i == 0) {
++		printk(KERN_WARNING "%s: failed to initialize frequency \
++								table\n",
++								__func__);
++		return;
++	}
++
++	freq_table[i].index = i;
++	freq_table[i].frequency = CPUFREQ_TABLE_END;
++
++	*table = &freq_table[0];
++}
++#endif
++
+ static struct clk_functions omap2_clk_functions = {
+ 	.clk_enable		= omap2_clk_enable,
+ 	.clk_disable		= omap2_clk_disable,
+@@ -644,6 +674,9 @@ static struct clk_functions omap2_clk_fu
+ 	.clk_set_rate		= omap2_clk_set_rate,
+ 	.clk_set_parent		= omap2_clk_set_parent,
+ 	.clk_disable_unused	= omap2_clk_disable_unused,
++#ifdef CONFIG_CPU_FREQ
++	.clk_init_cpufreq_table = omap2_clk_init_cpufreq_table,
++#endif
+ };
+
+ /*
+@@ -793,12 +826,11 @@ inline unsigned int get_opp(struct vdd_p
+
+ 	if (prcm_config->speed <= freq)
+ 		return prcm_config->opp; /* Return the Highest OPP */
+-	for (; prcm_config->speed; prcm_config--) {
++	for (; prcm_config->speed; prcm_config--)
+ 		if (prcm_config->speed < freq)
+ 			return (prcm_config+1)->opp;
+ 		else if (prcm_config->speed == freq)
+ 			return prcm_config->opp;
+-	}
+ 	/* Return the least OPP */
+ 	return (prcm_config+1)->opp;
+ }
+@@ -878,6 +910,10 @@ static int omap3_select_table_rate(struc
+ 		clk_set_rate(dpll1_clk, prcm_vdd->speed);
+ 		clk_set_rate(dpll2_clk, iva2_rate_table[index].speed);
+ 		curr_vdd1_prcm_set = prcm_vdd;
++		omap2_clksel_recalc(&mpu_ck);
++		propagate_rate(&mpu_ck);
++		omap2_clksel_recalc(&iva2_ck);
++		propagate_rate(&iva2_ck);
+ #ifndef CONFIG_CPU_FREQ
+ 		/*Update loops_per_jiffy if processor speed is being changed*/
+ 		loops_per_jiffy = compute_lpj(loops_per_jiffy,
+@@ -886,6 +922,8 @@ static int omap3_select_table_rate(struc
+ 	} else {
+ 		clk_set_rate(dpll3_clk, prcm_vdd->speed);
+ 		curr_vdd2_prcm_set = prcm_vdd;
++		omap2_clksel_recalc(&core_ck);
++		propagate_rate(&core_ck);
+ 	}
+ 	return 0;
+ }
+Index: linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/mach-omap2/resource34xx.c	2008-08-11
+17:36:52.000000000 +0530
++++ linux-omap-2.6/arch/arm/mach-omap2/resource34xx.c	2008-08-11
+17:36:53.000000000 +0530
+@@ -278,11 +278,7 @@ int set_freq(struct shared_resource *res
+ 	else if (strcmp(resp->name, "dsp_freq") == 0)
+ 		vdd1_opp = get_opp(iva2_rate_table + MAX_VDD1_OPP,
+ 							target_level);
+-
+-	if (vdd1_opp == MIN_VDD1_OPP)
+-		resource_release("vdd1_opp", &dummy_srf_dev);
+-	else
+-		resource_request("vdd1_opp", &dummy_srf_dev, vdd1_opp);
++	resource_request("vdd1_opp", &dummy_srf_dev, vdd1_opp);
+
+ 	resp->curr_level = target_level;
+ #endif
+Index: linux-omap-2.6/arch/arm/plat-omap/cpu-omap.c
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/plat-omap/cpu-omap.c	2008-08-11
+17:21:57.000000000 +0530
++++ linux-omap-2.6/arch/arm/plat-omap/cpu-omap.c	2008-08-11 17:36:53.000000000
++0530
+@@ -8,6 +8,10 @@
+  *
+  *  Based on cpu-sa1110.c, Copyright (C) 2001 Russell King
+  *
++ * Copyright (C) 2007-2008 Texas Instruments, Inc.
++ * Updated to support OMAP3
++ * Rajendra Nayak <rnayak@ti.com>
++ *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+@@ -25,6 +29,9 @@
+ #include <asm/io.h>
+ #include <asm/system.h>
+ #include <asm/arch/clock.h>
++#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++#include <asm/arch/omap-pm.h>
++#endif
+
+ #define VERY_HI_RATE	900000000
+
+@@ -32,12 +39,34 @@ static struct cpufreq_frequency_table *f
+
+ #ifdef CONFIG_ARCH_OMAP1
+ #define MPU_CLK		"mpu"
++#elif CONFIG_ARCH_OMAP3
++#define MPU_CLK		"virt_vdd1_prcm_set"
+ #else
+ #define MPU_CLK		"virt_prcm_set"
+ #endif
+
+ static struct clk *mpu_clk;
+
++#ifdef CONFIG_MACH_OMAP_3430SDP
++extern struct vdd_prcm_config vdd1_rate_table[];
++extern struct vdd_prcm_config vdd2_rate_table[];
++extern struct vdd_prcm_config iva2_rate_table[];
++#endif
++
++#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++int cpufreq_pre_func(struct notifier_block *n, unsigned long event, void *ptr);
++int cpufreq_post_func(struct notifier_block *n, unsigned long event, void *ptr);
++static struct notifier_block cpufreq_pre = {
++	cpufreq_pre_func,
++	NULL,
++};
++
++static struct notifier_block cpufreq_post = {
++	cpufreq_post_func,
++	NULL,
++};
++#endif
++
+ /* TODO: Add support for SDRAM timing changes */
+
+ int omap_verify_speed(struct cpufreq_policy *policy)
+@@ -89,7 +118,7 @@ static int omap_target(struct cpufreq_po
+
+ 	if (freqs.old == freqs.new)
+ 		return ret;
+-
++#ifdef CONFIG_ARCH_OMAP1
+ 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
+ #ifdef CONFIG_CPU_FREQ_DEBUG
+ 	printk(KERN_DEBUG "cpufreq-omap: transition: %u --> %u\n",
+@@ -97,10 +126,50 @@ static int omap_target(struct cpufreq_po
+ #endif
+ 	ret = clk_set_rate(mpu_clk, freqs.new * 1000);
+ 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+-
++#elif defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)\
++	&& defined(CONFIG_MACH_OMAP_3430SDP)
++	{
++		int ind;
++		for (ind = 1; ind <= MAX_VDD1_OPP; ind++) {
++			if (vdd1_rate_table[ind].speed/1000 >= freqs.new) {
++				omap_pm_cpu_set_freq
++					(vdd1_rate_table[ind].speed);
++				break;
++			}
++		}
++	}
++#endif
+ 	return ret;
+ }
+
++#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++static struct cpufreq_freqs freqs_notify;
++int cpufreq_pre_func(struct notifier_block *n, unsigned long event, void *ptr)
++{
++	struct clk_notifier_data *cnd;
++
++	cnd = (struct clk_notifier_data *)ptr;
++	freqs_notify.old = cnd->old_rate/1000;
++	freqs_notify.new = cnd->new_rate/1000;
++	/* HACK: The clk_notify_post_rate_chg currently
++	 * returns a zero for old_rate at bootup
++	 */
++	if (freqs_notify.old == 0)
++		freqs_notify.old = 500000;
++	cpufreq_notify_transition(&freqs_notify, CPUFREQ_PRECHANGE);
++	return 0;
++}
++
++int cpufreq_post_func(struct notifier_block *n, unsigned long event, void *ptr)
++{
++	struct clk_notifier_data *cnd;
++
++	cnd = (struct clk_notifier_data *)ptr;
++	cpufreq_notify_transition(&freqs_notify, CPUFREQ_POSTCHANGE);
++	return 0;
++}
++#endif
++
+ static int __init omap_cpu_init(struct cpufreq_policy *policy)
+ {
+ 	int result = 0;
+@@ -128,7 +197,10 @@ static int __init omap_cpu_init(struct c
+
+ 	/* FIXME: what's the actual transition time? */
+ 	policy->cpuinfo.transition_latency = 10 * 1000 * 1000;
+-
++#if defined(CONFIG_ARCH_OMAP3) && !defined(CONFIG_OMAP_PM_NONE)
++	clk_notifier_register(mpu_clk, &cpufreq_pre);
++	clk_notifier_register(mpu_clk, &cpufreq_post);
++#endif
+ 	return 0;
+ }
+
+Index: linux-omap-2.6/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-omap-2.6.orig/drivers/cpufreq/cpufreq.c	2008-08-11 17:21:57.000000000
++0530
++++ linux-omap-2.6/drivers/cpufreq/cpufreq.c	2008-08-11 17:36:53.000000000 +0530
+@@ -321,7 +321,9 @@ void cpufreq_notify_transition(struct cp
+ {
+ 	struct cpufreq_policy *policy;
+
++#if 0 /*This causes an issue if clk_notify_post_rate_chg is used*/
+ 	BUG_ON(irqs_disabled());
++#endif
+
+ 	freqs->flags = cpufreq_driver->flags;
+ 	dprintk("notification %u of frequency transition to %u kHz\n",
+Index: linux-omap-2.6/arch/arm/configs/omap_3430sdp_defconfig
+===================================================================
+--- linux-omap-2.6.orig/arch/arm/configs/omap_3430sdp_defconfig	2008-08-11
+17:36:43.000000000 +0530
++++ linux-omap-2.6/arch/arm/configs/omap_3430sdp_defconfig	2008-08-11
+17:37:33.000000000 +0530
+@@ -193,6 +193,9 @@ CONFIG_OMAP_LL_DEBUG_UART1=y
+ # CONFIG_OMAP_LL_DEBUG_UART2 is not set
+ # CONFIG_OMAP_LL_DEBUG_UART3 is not set
+ CONFIG_OMAP_SERIAL_WAKE=y
++# CONFIG_OMAP_PM_NONE is not set
++# CONFIG_OMAP_PM_NOOP is not set
++CONFIG_OMAP_PM_SRF=y
+ CONFIG_ARCH_OMAP34XX=y
+ CONFIG_ARCH_OMAP3430=y
+
+@@ -288,7 +291,21 @@ CONFIG_CMDLINE="root=/dev/nfs nfsroot=19
+ #
+ # CPU Frequency scaling
+ #
+-# CONFIG_CPU_FREQ is not set
++CONFIG_CPU_FREQ=y
++CONFIG_CPU_FREQ_TABLE=y
++# CONFIG_CPU_FREQ_DEBUG is not set
++CONFIG_CPU_FREQ_STAT=y
++CONFIG_CPU_FREQ_STAT_DETAILS=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=y
++# CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_ONDEMAND is not set
++# CONFIG_CPU_FREQ_DEFAULT_GOV_CONSERVATIVE is not set
++CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
++# CONFIG_CPU_FREQ_GOV_POWERSAVE is not set
++# CONFIG_CPU_FREQ_GOV_USERSPACE is not set
++CONFIG_CPU_FREQ_GOV_ONDEMAND=y
++# CONFIG_CPU_FREQ_GOV_CONSERVATIVE is not set
+
+ #
+ # Floating point emulation
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

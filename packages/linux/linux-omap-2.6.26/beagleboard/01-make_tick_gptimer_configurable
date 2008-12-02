@@ -1,0 +1,58 @@
+OMAP2/3 GPTIMER: allow system tick GPTIMER to be configurable at build
+
+From: Paul Walmsley <paul@pwsan.com>
+
+Add Kbuild code to allow the builder to select which GPTIMER block to use
+for the Linux clockevents timer.  Practical choices at this point are
+GPTIMER1 or GPTIMER12.  Both of these timers are in the WKUP powerdomain,
+and so are unaffected by chip power management.  GPTIMER1 can use sys_clk
+as a source, for applications where a high-resolution timer is more important
+than power management.  GPTIMER12 has the special property that it has
+the secure 32kHz oscillator as its source clock, which may be less prone
+to glitches than the off-chip 32kHz oscillator.
+
+At this point, it appears that most boards are fine with GPTIMER1,
+but Beagle should use GPTIMER12.
+---
+
+ arch/arm/mach-omap2/Kconfig    |   16 ++++++++++++++++
+ arch/arm/mach-omap2/timer-gp.c |    2 +-
+ 2 files changed, 17 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kconfig
+index bb6d695..0002cb6 100644
+--- a/arch/arm/mach-omap2/Kconfig
++++ b/arch/arm/mach-omap2/Kconfig
+@@ -122,3 +122,19 @@ config MACH_OMAP3EVM
+ config MACH_OMAP3_BEAGLE
+ 	bool "OMAP3 BEAGLE board"
+ 	depends on ARCH_OMAP3 && ARCH_OMAP34XX
++
++config OMAP_TICK_GPTIMER
++	int "GPTIMER used for system tick timer"
++	depends on ARCH_OMAP2 || ARCH_OMAP3
++	range 1 12
++	default 1
++	help
++	  Linux uses one of the twelve on-board OMAP GPTIMER blocks to generate
++	  system tick interrupts.  The twelve GPTIMERs have slightly
++	  different powerdomain, source clock, and security properties
++	  (mostly documented in the OMAP3 TRMs) that can affect the selection
++	  of which GPTIMER to use.  The historical default is GPTIMER1.
++	  If CONFIG_OMAP_32K_TIMER is selected, Beagle may require GPTIMER12 
++	  due to hardware sensitivity to glitches on the OMAP 32kHz clock
++	  input. 
++
+diff --git a/arch/arm/mach-omap2/timer-gp.c b/arch/arm/mach-omap2/timer-gp.c
+index 557603f..ec80af5 100644
+--- a/arch/arm/mach-omap2/timer-gp.c
++++ b/arch/arm/mach-omap2/timer-gp.c
+@@ -99,7 +99,7 @@ static void __init omap2_gp_clockevent_init(void)
+ {
+ 	u32 tick_rate;
+ 
+-	gptimer = omap_dm_timer_request_specific(1);
++	gptimer = omap_dm_timer_request_specific(CONFIG_OMAP_TICK_GPTIMER);
+ 	BUG_ON(gptimer == NULL);
+ 
+ #if defined(CONFIG_OMAP_32K_TIMER)
