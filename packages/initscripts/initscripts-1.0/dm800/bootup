@@ -49,8 +49,6 @@ done
 
 echo 21 > /proc/progress
 
-automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
-
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
 
 hostname -F /etc/hostname
@@ -60,8 +58,6 @@ echo 22 > /proc/progress
 /usr/bin/wdog /usr/bin/dccamd -
 
 echo 23 > /proc/progress
-
-ifup -a
 
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 

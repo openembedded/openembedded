@@ -36,7 +36,6 @@ for mod in xilleon dreambox_keyboard fp rt73 zd1211b rfmod; do
 done
 
 echo 50 > /proc/progress
-automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
 
 echo 54 > /proc/progress
 [ -e /etc/dropbear/dropbear_rsa_host_key ] && /usr/bin/showiframe /boot/bootlogo.mvi || /usr/bin/showiframe /boot/bootlogo_wait.mvi
@@ -48,7 +47,6 @@ echo 66 > /proc/progress
 /usr/bin/wdog /usr/bin/dccamd -
 
 echo 70 > /proc/progress
-ifup -a
 
 echo 78 > /proc/progress
 
