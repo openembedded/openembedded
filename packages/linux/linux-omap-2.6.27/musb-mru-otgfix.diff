@@ -1,0 +1,43 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Sat, 6 Sep 2008 15:11:00 +0000 (+0100)
+Subject: usb: musb: fix something
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=1e5bc41773bb981b3a89bd762becf98c72be5e4c
+
+usb: musb: fix something
+
+This makes USB work on the Beagleboard.  I don't know why.
+---
+
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index e07cad8..4d6ff26 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1819,6 +1819,9 @@ allocate_instance(struct device *dev, void __iomem *mbase)
+ 		ep->epnum = epnum;
+ 	}
+ 
++#ifdef CONFIG_USB_MUSB_OTG
++	otg_set_transceiver(&musb->xceiv);
++#endif
+ 	musb->controller = dev;
+ 	return musb;
+ }
+diff --git a/drivers/usb/musb/omap2430.c b/drivers/usb/musb/omap2430.c
+index 9d2dcb1..51af80b 100644
+--- a/drivers/usb/musb/omap2430.c
++++ b/drivers/usb/musb/omap2430.c
+@@ -215,12 +215,14 @@ void musb_platform_set_mode(struct musb *musb, u8 musb_mode)
+ 
+ int __init musb_platform_init(struct musb *musb)
+ {
++	struct otg_transceiver *xceiv = otg_get_transceiver();
+ 	u32 l;
+ 
+ #if defined(CONFIG_ARCH_OMAP2430)
+ 	omap_cfg_reg(AE5_2430_USB0HS_STP);
+ #endif
+ 
++	musb->xceiv = *xceiv;
+ 	musb_platform_resume(musb);
+ 
+ 	l = omap_readl(OTG_SYSCONFIG);

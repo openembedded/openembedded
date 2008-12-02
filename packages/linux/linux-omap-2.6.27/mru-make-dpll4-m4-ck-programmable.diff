@@ -1,0 +1,27 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Fri, 29 Aug 2008 01:52:42 +0000 (+0100)
+Subject: OMAP: Make dpll4_m4_ck programmable with clk_set_rate()
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=feab5b628c06619196044c15d9d2a113df173eee
+
+OMAP: Make dpll4_m4_ck programmable with clk_set_rate()
+
+Filling the set_rate and round_rate fields of dpll4_m4_ck makes
+this clock programmable through clk_set_rate().  This is needed
+to give omapfb control over the dss1_alwon_fck rate.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/arch/arm/mach-omap2/clock34xx.h b/arch/arm/mach-omap2/clock34xx.h
+index 41f91f8..9c8e0c8 100644
+--- a/arch/arm/mach-omap2/clock34xx.h
++++ b/arch/arm/mach-omap2/clock34xx.h
+@@ -877,6 +877,8 @@ static struct clk dpll4_m4_ck = {
+ 				PARENT_CONTROLS_CLOCK,
+ 	.clkdm		= { .name = "dpll4_clkdm" },
+ 	.recalc		= &omap2_clksel_recalc,
++	.set_rate	= &omap2_clksel_set_rate,
++	.round_rate	= &omap2_clksel_round_rate,
+ };
+ 
+ /* The PWRDN bit is apparently only available on 3430ES2 and above */

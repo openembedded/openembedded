@@ -1,0 +1,117 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Fri, 29 Aug 2008 01:45:26 +0000 (+0100)
+Subject: OMAP: Enable overlay optimisation
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=7e052af7e4c73dc450412486ad37eb529e725dc7
+
+OMAP: Enable overlay optimisation
+
+This enables the overlay optimisation feature when the video
+overlay is active. This reduces memory bandwidth used by the
+display subsystem, improving overall performance.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/dispc.c b/drivers/video/omap/dispc.c
+index 888d2c2..0f0b2e5 100644
+--- a/drivers/video/omap/dispc.c
++++ b/drivers/video/omap/dispc.c
+@@ -315,6 +315,60 @@ void omap_dispc_enable_digit_out(int enable)
+ }
+ EXPORT_SYMBOL(omap_dispc_enable_digit_out);
+ 
++#define MIN(a, b) ((a)<(b)?(a):(b))
++#define MAX(a, b) ((a)>(b)?(a):(b))
++
++static void setup_overlay_opt(void)
++{
++	struct fb_info **fbi = dispc.fbdev->fb_info;
++	struct omapfb_plane_struct *gfx, *vid;
++	struct fb_var_screeninfo *gvar;
++	unsigned gx, gx2, gy, gy2, gw, gh;
++	unsigned vx, vx2, vy, vy2, vw, vh;
++	unsigned bpp, skip;
++	static unsigned last_skip;
++
++	if (!fbi[0] || !fbi[1])
++		return;
++
++	gfx = fbi[0]->par;
++	vid = fbi[1]->par;
++	gvar = &fbi[0]->var;
++
++	gx = gfx->info.pos_x;
++	gy = gfx->info.pos_y;
++	gw = gfx->info.out_width;
++	gh = gfx->info.out_height;
++	vx = vid->info.pos_x;
++	vy = vid->info.pos_y;
++	vw = vid->info.out_width;
++	vh = vid->info.out_height;
++	gx2 = gx + gw;
++	gy2 = gy + gh;
++	vx2 = vx + vw;
++	vy2 = vy + vh;
++	bpp = gvar->bits_per_pixel / 8;
++
++	if (!gfx->info.enabled || !vid->info.enabled ||
++	    dispc.color_key.key_type != OMAPFB_COLOR_KEY_DISABLED) {
++		skip = 0;
++	} else if (vx <= gx && vx2 >= gx2) {
++		unsigned y = MIN(gy2, vy2) - MAX(gy, vy);
++		skip = y * gvar->xres_virtual * bpp;
++	} else if (vx <= gx || vx2 >= gx2) {
++		unsigned x = MIN(gx2, vx2) - MAX(gx, vx);
++		skip = x * bpp;
++	} else {
++		skip = vw * bpp + 1;
++	}
++
++	if (skip != last_skip) {
++		last_skip = skip;
++		dispc_write_reg(DISPC_GFX_WINDOW_SKIP, skip);
++		MOD_REG_FLD(DISPC_CONTROL, 1<<12, !!skip<<12);
++	}
++}
++
+ static inline int _setup_plane(int plane, int channel_out,
+ 				  u32 paddr, int screen_width,
+ 				  int pos_x, int pos_y, int width, int height,
+@@ -437,6 +491,9 @@ static inline int _setup_plane(int plane, int channel_out,
+ 
+ 	dispc_write_reg(ri_reg[plane], (screen_width - width) * bpp / 8 + 1);
+ 
++	if (plane < 2)
++		setup_overlay_opt();
++
+ 	MOD_REG_FLD(DISPC_CONTROL, 1<<5, 1<<5);
+ 
+ 	return height * screen_width * bpp / 8;
+@@ -585,11 +642,19 @@ static int omap_dispc_enable_plane(int plane, int enable)
+ 	const u32 at_reg[] = { DISPC_GFX_ATTRIBUTES,
+ 				DISPC_VID1_BASE + DISPC_VID_ATTRIBUTES,
+ 				DISPC_VID2_BASE + DISPC_VID_ATTRIBUTES };
++	struct omapfb_plane_struct *pi;
++
+ 	if ((unsigned int)plane > dispc.mem_desc.region_cnt)
+ 		return -EINVAL;
+ 
++	pi = dispc.fbdev->fb_info[plane]->par;
++	pi->info.enabled = enable;
++
+ 	enable_lcd_clocks(1);
+ 	MOD_REG_FLD(at_reg[plane], 1, enable ? 1 : 0);
++	if (plane < 2)
++		setup_overlay_opt();
++	MOD_REG_FLD(DISPC_CONTROL, 1<<5, 1<<5);
+ 	enable_lcd_clocks(0);
+ 
+ 	return 0;
+@@ -633,6 +698,7 @@ static int omap_dispc_set_color_key(struct omapfb_color_key *ck)
+ 	if (val != 0)
+ 		dispc_write_reg(tr_reg, ck->trans_key);
+ 	dispc_write_reg(df_reg, ck->background);
++	setup_overlay_opt();
+ 	enable_lcd_clocks(0);
+ 
+ 	dispc.color_key = *ck;
