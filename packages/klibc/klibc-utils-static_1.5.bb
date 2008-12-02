@@ -1,10 +1,11 @@
 require klibc-common.inc
 
-PR = "r11"
+PR = "r12"
 
 # We only want the static utils. klibc build both. So we install only what we want.				
 do_install() {
         install -d ${D}${base_bindir}
+        install -d ${D}${base_sbindir}
         install -m 755 usr/dash/sh ${D}${base_bindir}
         install -m 755 usr/gzip/gzip ${D}${base_bindir}
 	install -m 755 usr/kinit/kinit ${D}${base_bindir}
@@ -36,7 +37,7 @@ do_install() {
         install -m 755 usr/utils/static/true ${D}${base_bindir}
         install -m 755 usr/utils/static/umount ${D}${base_bindir}
         install -m 755 usr/utils/static/uname ${D}${base_bindir}
-	install -m 755 usr/utils/static/modprobe ${D}${base_bindir}
+	install -m 755 usr/utils/static/modprobe ${D}${base_sbindir}
 	install -m 755 usr/utils/static/losetup ${D}${base_bindir}
 	install -m 755 usr/utils/static/wc ${D}${base_bindir}
         cd ${D}${base_bindir}
@@ -94,6 +95,6 @@ FILES_klibc-utils-static-sleep = "${base_bindir}/sleep"
 FILES_klibc-utils-static-true = "${base_bindir}/true"
 FILES_klibc-utils-static-umount = "${base_bindir}/umount"
 FILES_klibc-utils-static-uname = "${base_bindir}/uname"
-FILES_klibc-utils-static-modprobe = "${base_bindir}/modprobe"
+FILES_klibc-utils-static-modprobe = "${base_sbindir}/modprobe"
 FILES_klibc-utils-static-losetup = "${base_bindir}/losetup"
 FILES_klibc-utils-static-wc = "${base_bindir}/wc"
