@@ -147,6 +147,16 @@ path=`expr "$sel" : '[^/]*\([^ ]*\).*'`
 fstype=`expr "$sel" : '[^ ]* *\(.*\)'`
 
 if [ "$dev" == "Shell" ]; then
+    if [ -x /usr/sbin/dropbear ]; then
+	modprobe g_ether
+	ifconfig usb0 192.168.2.202
+	mkdir -p /dev/pts
+	mount -t devpts devpts /dev/pts
+	export PATH=$PATH:/usr/sbin
+	/usr/sbin/dropbear -E
+	echo "Started dropbear @192.168.2.202"
+    fi
+
     exec /bin/sh
 elif [ "$dev" == "NFS" ]; then
     ROOT_DEVICE="/dev/nfs"
