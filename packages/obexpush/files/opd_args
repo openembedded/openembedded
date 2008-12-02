@@ -1,0 +1,1 @@
+OPD_ARGS="--mode OBEX --path /var/obexpush --channel 10 --sdp --metadata"
