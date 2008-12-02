@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "opkg"
 PV = "0.2.3+gitr${SRCREV}"
-PR = "r17"
+PR = "r18"
 PE = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
@@ -31,7 +31,9 @@ EXTRA_OECONF = "--with-security-framework=dummy \
 
 do_configure_prepend() {
         echo "EXTRA_DIST=" > gtk-doc.make
+        sed -i -e s:0\.1\.5:0\.1\.6:g configure.ac
 }
+
 do_stage () {
         autotools_stage_all
 }
