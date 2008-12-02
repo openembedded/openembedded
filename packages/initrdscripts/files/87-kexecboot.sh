@@ -11,9 +11,9 @@ if [ -n "$BOOT_ROOT" -a -f "$BOOT_ROOT/boot/zImage" ]; then
 	    ls -l "$BOOT_ROOT/boot/initramfs.bin"
     	    initramfs="--initrd=$BOOT_ROOT/boot/initramfs.bin"
         fi
-	echo /usr/sbin/kexec -f "$BOOT_ROOT/boot/zImage" $initramfs --command-line="$CMDLINE nokexec" >$CONSOLE
+	echo /usr/sbin/kexec $initramfs --command-line="$CMDLINE nokexec" -f "$BOOT_ROOT/boot/zImage" >$CONSOLE
         sleep 10
-	/usr/sbin/kexec -f "$BOOT_ROOT/boot/zImage" $initramfs --command-line="$CMDLINE nokexec"
+	/usr/sbin/kexec $initramfs --command-line="$CMDLINE nokexec" -f "$BOOT_ROOT/boot/zImage"
         sleep 10000
     fi
 fi
