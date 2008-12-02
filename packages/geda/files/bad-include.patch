@@ -1,0 +1,13 @@
+Index: geda-gschem-1.4.1/src/Makefile.am
+===================================================================
+--- geda-gschem-1.4.1.orig/src/Makefile.am	2008-09-28 20:59:54.000000000 +0000
++++ geda-gschem-1.4.1/src/Makefile.am	2008-12-02 17:06:43.000000000 +0000
+@@ -30,7 +30,7 @@
+ AM_CFLAGS = -Wall
+ endif
+ 
+-INCLUDES = -I$(prefix)/include -I$(top_srcdir)/intl -I$(top_srcdir)/include @GSCHEM_CFLAGS@
++INCLUDES = -I$(top_srcdir)/intl -I$(top_srcdir)/include @GSCHEM_CFLAGS@
+ gschem_LDADD = -L$(prefix)/lib @GSCHEM_LDFLAGS@ @LIBINTL@
+ 
+ localedir = @datadir@/locale
