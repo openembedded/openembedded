@@ -4,6 +4,9 @@ HOMEPAGE = "http://www.gnu.org/software/guile/guile.html"
 SECTION = "devel/scheme"
 DEPENDS = "guile-native gmp libtool"
 LICENSE = "GPL"
+PACKAGES =+ "${PN}-el"
+FILES_${PN}-el = "${datadir}/emacs"
+DESCRIPTION_${PN}-el = "Emacs lisp files for Guile"
 
 PR = "r4"
 
