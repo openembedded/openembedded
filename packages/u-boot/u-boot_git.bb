@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r19"
+PR ="r20"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
@@ -17,8 +17,8 @@ SRC_URI_omap3evm = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;prot
 SRCREV_omap3evm = "1e329ec630b31803ee191d2ee335214662b5bfea"
 PV_omap3evm = "2008.10+${PR}+gitr${SRCREV}"
 
-SRC_URI_neuros-osd2 = "git://git.neurostechnology.com/git/u-boot;protocol=git;branch=neuros"
-SRCREV_neuros-osd2 = "df6de5f4ff79dc43ba2a79a3afa975d22ec273b5"
+SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
+SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 
 SRC_URI_sequoia = "git://www.denx.de/git/u-boot.git;protocol=git"
 SRCREV_sequoa = "cf3b41e0c1111dbb865b6e34e9f3c3d3145a6093"
