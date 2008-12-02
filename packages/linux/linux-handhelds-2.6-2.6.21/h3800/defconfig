@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.21-hh20
-# Fri Feb 15 01:08:07 2008
+# Tue Dec  2 15:32:04 2008
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -754,7 +754,10 @@ CONFIG_HW_CONSOLE=y
 #
 # Serial drivers
 #
-# CONFIG_SERIAL_8250 is not set
+CONFIG_SERIAL_8250=m
+CONFIG_SERIAL_8250_NR_UARTS=4
+CONFIG_SERIAL_8250_RUNTIME_UARTS=4
+# CONFIG_SERIAL_8250_EXTENDED is not set
 
 #
 # Non-8250 serial port support
@@ -852,6 +855,7 @@ CONFIG_ADC_ASIC2=y
 # CONFIG_MFD_SM501 is not set
 CONFIG_HTC_ASIC2=y
 # CONFIG_HTC_ASIC3 is not set
+# CONFIG_ATI_W228x is not set
 # CONFIG_HTC_PASIC3 is not set
 # CONFIG_HTC_EGPIO is not set
 # CONFIG_HTC_BBKEYS is not set
