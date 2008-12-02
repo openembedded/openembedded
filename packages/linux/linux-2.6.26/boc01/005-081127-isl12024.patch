@@ -327,10 +327,10 @@ diff -Nru linux-2.6.26-officiel/drivers/rtc/Makefile /home/guilig/workspace/kern
  obj-$(CONFIG_RTC_DRV_M41T80)	+= rtc-m41t80.o
  obj-$(CONFIG_RTC_DRV_M48T59)	+= rtc-m48t59.o
  obj-$(CONFIG_RTC_DRV_M48T86)	+= rtc-m48t86.o
-diff -Nru linux-2.6.26-officiel/drivers/rtc/rtc-isl12024.c /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/rtc-isl12024.c
---- linux-2.6.26-officiel/drivers/rtc/rtc-isl12024.c	1970-01-01 01:00:00.000000000 +0100
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/rtc-isl12024.c	2008-10-21 10:41:51.000000000 +0200
-@@ -0,0 +1,564 @@
+diff -Nru linux-2.6.26/drivers/rtc/rtc-isl12024.c linux-2.6.26.mod/drivers/rtc/rtc-isl12024.c
+--- linux-2.6.26/drivers/rtc/rtc-isl12024.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.26.mod/drivers/rtc/rtc-isl12024.c	2008-11-27 12:05:37.000000000 +0100
+@@ -0,0 +1,516 @@
 +/*
 + * Intersil ISL12024 class driver
 + *
@@ -550,54 +550,6 @@ diff -Nru linux-2.6.26-officiel/drivers/rtc/rtc-isl12024.c /home/guilig/workspac
 +	return 0;
 +}
 +
-+//static int isl12024_get_datetime(struct i2c_client *client, struct rtc_time *tm,
-+//				unsigned char reg_base)
-+//{
-+//	unsigned char dt_addr[2] = { 0, reg_base };
-+//	unsigned char buf[8];
-+//	int i;
-+//
-+//	struct i2c_msg msgs[] = {
-+//		{ client->addr, 0, 2, dt_addr },	/* setup read ptr */
-+//		{ client->addr, I2C_M_RD, 8, buf },	/* read date */
-+//	};
-+//
-+//	/* read date registers */
-+//	if (i2c_transfer(client->adapter, &msgs[0], 2) != 2) {
-+//		dev_err(&client->dev, "%s: read error\n", __func__);
-+//		return -EIO;
-+//	}
-+//
-+//	dev_dbg(&client->dev,
-+//		"%s: raw read data - sec=%02x, min=%02x, hr=%02x, "
-+//		"mday=%02x, mon=%02x, year=%02x, wday=%02x, y2k=%02x\n",
-+//		__func__,
-+//		buf[0], buf[1], buf[2], buf[3],
-+//		buf[4], buf[5], buf[6], buf[7]);
-+//
-+//	/* Mask out the enable bits if these are alarm registers */
-+//	if (reg_base < ISL12024_CCR_BASE)
-+//		for (i = 0; i <= 4; i++)
-+//			buf[i] &= 0x7F;
-+//
-+//	tm->tm_sec = BCD2BIN(buf[CCR_SEC]);
-+//	tm->tm_min = BCD2BIN(buf[CCR_MIN]);
-+//	tm->tm_hour = BCD2BIN(buf[CCR_HOUR] & 0x3F); /* hr is 0-23 */
-+//	tm->tm_mday = BCD2BIN(buf[CCR_MDAY]);
-+//	tm->tm_mon = BCD2BIN(buf[CCR_MONTH]) - 1; /* mon is 0-11 */
-+//	tm->tm_year = BCD2BIN(buf[CCR_YEAR])
-+//			+ (BCD2BIN(buf[CCR_Y2K]) * 100) - 1900;
-+//	tm->tm_wday = buf[CCR_WDAY];
-+//
-+//	dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
-+//		"mday=%d, mon=%d, year=%d, wday=%d\n",
-+//		__func__,
-+//		tm->tm_sec, tm->tm_min, tm->tm_hour,
-+//		tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
-+//
-+//	return 0;
-+//}
-+
 +static int isl12024_set_datetime(struct i2c_client *client, struct rtc_time *tm,
 +			int datetoo, u8 reg_base, unsigned char alm_enable)
 +{
@@ -634,7 +586,7 @@ diff -Nru linux-2.6.26-officiel/drivers/rtc/rtc-isl12024.c /home/guilig/workspac
 +		buf[CCR_MDAY] = BIN2BCD(tm->tm_mday);
 +
 +		/* month, 1 - 12 */
-+		buf[CCR_MONTH] = BIN2BCD(tm->tm_mon + 1);
++		buf[CCR_MONTH] = BIN2BCD(tm->tm_mon);
 +
 +		/* year, since the rtc epoch*/
 +		buf[CCR_YEAR] = BIN2BCD(tm->tm_year % 100);

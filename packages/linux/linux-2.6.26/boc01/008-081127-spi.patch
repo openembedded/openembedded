@@ -1,0 +1,327 @@
+--- linux-2.6.26.orig/drivers/spi/spi_mpc83xx.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26/drivers/spi/spi_mpc83xx.c	2008-11-26 11:32:07.000000000 +0100
+@@ -27,6 +27,8 @@
+ #include <asm/irq.h>
+ #include <asm/io.h>
+ 
++//#define DBG_SPI 1
++
+ /* SPI Controller registers */
+ struct mpc83xx_spi_reg {
+ 	u8 res1[0x20];
+@@ -114,6 +116,7 @@
+ 
+ static inline void mpc83xx_spi_write_reg(__be32 __iomem * reg, u32 val)
+ {
++
+ 	out_be32(reg, val);
+ }
+ 
+@@ -157,11 +160,17 @@
+ 
+ 	mpc83xx_spi = spi_master_get_devdata(spi->master);
+ 
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_chipselect (163)\n");
++#endif DBG_SPI
++
+ 	if (value == BITBANG_CS_INACTIVE) {
+ 		if (mpc83xx_spi->deactivate_cs)
+ 			mpc83xx_spi->deactivate_cs(spi->chip_select, pol);
+ 	}
+-
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_chipselect (171)\n");
++#endif DBG_SPI
+ 	if (value == BITBANG_CS_ACTIVE) {
+ 		u32 regval = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
+ 
+@@ -171,6 +180,9 @@
+ 		mpc83xx_spi->get_tx = cs->get_tx;
+ 
+ 		if (cs->hw_mode != regval) {
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_chipselect (184)\n");
++#endif DBG_SPI
+ 			unsigned long flags;
+ 			void *tmp_ptr = &mpc83xx_spi->base->mode;
+ 
+@@ -184,6 +196,9 @@
+ 			mpc83xx_spi_write_reg(tmp_ptr, regval);
+ 			local_irq_restore(flags);
+ 		}
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_chipselect (196)\n");
++#endif DBG_SPI
+ 		if (mpc83xx_spi->activate_cs)
+ 			mpc83xx_spi->activate_cs(spi->chip_select, pol);
+ 	}
+@@ -266,26 +281,38 @@
+ 
+ 	cs->hw_mode |= SPMODE_LEN(bits_per_word);
+ 
+-	if ((mpc83xx_spi->spibrg / hz) >= 64) {
++	/*if ((mpc83xx_spi->spibrg / hz) >= 64) {
+ 		pm = mpc83xx_spi->spibrg / (hz * 64) - 1;
+-		if (pm > 0x0f) {
++		if (pm > 0x0f) {*/
++	if ((mpc83xx_spi->spibrg / hz) > 64) {
++		cs->hw_mode |= SPMODE_DIV16;
++		pm = mpc83xx_spi->spibrg / (hz * 64);
++		if (pm > 16) {
+ 			dev_err(&spi->dev, "Requested speed is too "
+ 				"low: %d Hz. Will use %d Hz instead.\n",
+ 				hz, mpc83xx_spi->spibrg / 1024);
+-			pm = 0x0f;
++			pm = 16;
+ 		}
+-		cs->hw_mode |= SPMODE_PM(pm) | SPMODE_DIV16;
+-	} else {
++		//cs->hw_mode |= SPMODE_PM(pm) | SPMODE_DIV16;
++	} else 
+ 		pm = mpc83xx_spi->spibrg / (hz * 4);
+-		if (pm)
+-			pm--;
+-		cs->hw_mode |= SPMODE_PM(pm);
+-	}
++	if (pm)
++	pm--;
++	cs->hw_mode = 0x0F700000;
++	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
+ 	regval =  mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
++#ifdef DBG_SPI
++printk("mpc83xx_spi_setup_transfer regval=%4X\n",regval);
++#endif
++
++
++
+ 	if (cs->hw_mode != regval) {
+ 		unsigned long flags;
+ 		void *tmp_ptr = &mpc83xx_spi->base->mode;
+-
++#ifdef DBG_SPI
++printk("mpc83xx_spi_setup_transfer cs->hw_mode=%4X\n",cs->hw_mode);
++#endif
+ 		regval = cs->hw_mode;
+ 		/* Turn off IRQs locally to minimize time
+ 		 * that SPI is disabled
+@@ -322,15 +349,24 @@
+ 	/* enable rx ints */
+ 	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mask, SPIM_NE);
+ 
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_bufs (338)\n");
++#endif
++
+ 	/* transmit word */
+ 	word = mpc83xx_spi->get_tx(mpc83xx_spi);
+-	mpc83xx_spi_write_reg(&mpc83xx_spi->base->transmit, word);
+ 
++	mpc83xx_spi_write_reg(&mpc83xx_spi->base->transmit, word);
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_bufs (345)\n");
++#endif
+ 	wait_for_completion(&mpc83xx_spi->done);
+ 
+ 	/* disable rx ints */
+ 	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mask, 0);
+-
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_bufs (352)\n");
++#endif
+ 	return mpc83xx_spi->count;
+ }
+ 
+@@ -360,15 +396,22 @@
+ 			if (t->bits_per_word || t->speed_hz) {
+ 				/* Don't allow changes if CS is active */
+ 				status = -EINVAL;
+-
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_work (366)\n");
++#endif
+ 				if (cs_change)
+ 					status = mpc83xx_spi_setup_transfer(spi, t);
+ 				if (status < 0)
+ 					break;
+ 			}
+-
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_work (374)\n");
++#endif
+ 			if (cs_change)
+ 				mpc83xx_spi_chipselect(spi, BITBANG_CS_ACTIVE);
++#ifdef DBG_SPI
++printk(KERN_INFO "mpc83xx_spi_work (379)\n");
++#endif
+ 			cs_change = t->cs_change;
+ 			if (t->len)
+ 				status = mpc83xx_spi_bufs(spi, t);
+@@ -439,26 +482,39 @@
+ 	cs->hw_mode = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
+ 	/* mask out bits we are going to set */
+ 	cs->hw_mode &= ~(SPMODE_CP_BEGIN_EDGECLK | SPMODE_CI_INACTIVEHIGH
+-			 | SPMODE_REV | SPMODE_LOOP);
+-
+-	if (spi->mode & SPI_CPHA)
++			 | SPMODE_REV);
++#ifdef DBG_SPI
++printk("mpc83xx_spi_setup (475) cs->hw_mode=0x%4X\n",cs->hw_mode);
++#endif
++	/*if (spi->mode & SPI_CPHA)
+ 		cs->hw_mode |= SPMODE_CP_BEGIN_EDGECLK;
+ 	if (spi->mode & SPI_CPOL)
+ 		cs->hw_mode |= SPMODE_CI_INACTIVEHIGH;
+ 	if (!(spi->mode & SPI_LSB_FIRST))
+-		cs->hw_mode |= SPMODE_REV;
+-	if (spi->mode & SPI_LOOP)
+-		cs->hw_mode |= SPMODE_LOOP;
++		cs->hw_mode |= SPMODE_REV;*/
++	//if (spi->mode & SPI_LOOP)
++	//	cs->hw_mode |= SPMODE_LOOP;
++cs->hw_mode = 0x0F700000;
++mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
++cs->hw_mode = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
++
+ 
++#ifdef DBG_SPI
++printk("mpc83xx_spi_setup (486) cs->hw_mode=0x%4X\n",cs->hw_mode);
++#endif
+ 	retval = mpc83xx_spi_setup_transfer(spi, NULL);
+ 	if (retval < 0) {
++#ifdef DBG_SPI
++printk("mpc83xx_spi_setup (491) ");
++#endif
+ 		cs->hw_mode = hw_mode; /* Restore settings */
+ 		return retval;
+ 	}
+-
+-	dev_dbg(&spi->dev, "%s, mode %d, %u bits/w, %u Hz\n",
++#ifdef DBG_SPI
++	printk(KERN_INFO "%s, mode %d, %u bits/w, %u Hz\n",
+ 		__func__, spi->mode & (SPI_CPOL | SPI_CPHA),
+ 		spi->bits_per_word, spi->max_speed_hz);
++#endif
+ #if 0 /* Don't think this is needed */
+ 	/* NOTE we _need_ to call chipselect() early, ideally with adapter
+ 	 * setup, unless the hardware defaults cooperate to avoid confusion
+@@ -518,7 +574,9 @@
+ {
+ 	struct mpc83xx_spi *mpc83xx_spi = spi_master_get_devdata(spi->master);
+ 	unsigned long flags;
+-
++#ifdef DBG_SPI
++printk(KERN_INFO "Debut_transfert\n");
++#endif
+ 	m->actual_length = 0;
+ 	m->status = -EINPROGRESS;
+ 
+@@ -600,10 +658,12 @@
+ 		goto unmap_io;
+ 	}
+ 
++printk(KERN_INFO "irq_spi : 0x%2X\n", mpc83xx_spi->irq);
++
+ 	/* Register for SPI Interrupt */
+ 	ret = request_irq(mpc83xx_spi->irq, mpc83xx_spi_irq,
+ 			  0, "mpc83xx_spi", mpc83xx_spi);
+-
++printk(KERN_INFO "irq_spi : 0x%2X\n", mpc83xx_spi->irq);
+ 	if (ret != 0)
+ 		goto unmap_io;
+ 
+@@ -628,7 +688,7 @@
+ 	INIT_LIST_HEAD(&mpc83xx_spi->queue);
+ 
+ 	mpc83xx_spi->workqueue = create_singlethread_workqueue(
+-		master->dev.parent->bus_id);
++		dev->dev.bus_id);
+ 	if (mpc83xx_spi->workqueue == NULL) {
+ 		ret = -EBUSY;
+ 		goto free_irq;
+--- linux-2.6.26/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.mod/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2008-11-27 11:55:52.000000000 +0100
+@@ -15,16 +15,82 @@
+ 
+ #include <linux/pci.h>
+ #include <linux/of_platform.h>
+-
++#include <linux/interrupt.h>
++#include <linux/spi/spi.h>
++#include <linux/spi/mmc_spi.h>
++#include <linux/mmc/host.h>
++#include <linux/of_platform.h>
++#include <sysdev/fsl_soc.h>
++#include <asm/qe.h>
++#include <asm/qe_ic.h>
++#include <asm/time.h>
++#include <asm/ipic.h>
++#include <asm/udbg.h>
+ #include <asm/time.h>
+ #include <asm/ipic.h>
+ #include <asm/udbg.h>
++#include <sysdev/fsl_soc.h>
++
+ 
+ #include "mpc83xx.h"
+ 
+ /*
+  * Setup the architecture
+  */
++
++struct gpio {
++	__be32 gpdir;
++	__be32 gpodr;
++	__be32 gpdat;
++	__be32 gpier;
++	__be32 gpimr;
++	__be32 gpicr;
++} __attribute__ ((packed));
++static struct gpio *gpio_regs;
++
++static void mpc83xx_spi_activate_cs(u8 cs, u8 polarity)
++{
++	if (polarity)
++		setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++	else
++		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++}
++
++static void mpc83xx_spi_deactivate_cs(u8 cs, u8 polarity)
++{
++	if (polarity)
++		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14) );
++	else
++		setbits32(&gpio_regs->gpdat, 1 << (31 - 14) );
++
++}
++
++static struct spi_board_info mpc8313_spi_boardinfo = {
++	.bus_num = 0x7000,
++	.chip_select = 0,
++	.max_speed_hz = 50000000,
++	.modalias = "spidev",
++};
++
++static int __init mpc8313_spi_init(void)
++{
++	/* System I/O Configuration Register Low */
++	gpio_regs = ioremap(get_immrbase() + 0xc00, 0x20);
++	if ( !gpio_regs)
++		return -ENOMEM;
++
++	/* set GPIO14 as output */
++	setbits32(&gpio_regs->gpdir, 1 << (31 - 14));
++	clrbits32(&gpio_regs->gpodr, 1 << (31 - 14));
++	setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++
++	return fsl_spi_init(&mpc8313_spi_boardinfo, 1,
++			mpc83xx_spi_activate_cs,
++			mpc83xx_spi_deactivate_cs);
++}
++
++device_initcall(mpc8313_spi_init);
++
+ static void __init mpc831x_rdb_setup_arch(void)
+ {
+ #ifdef CONFIG_PCI

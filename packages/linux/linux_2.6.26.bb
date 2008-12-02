@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r2"
+PR = "r3"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -17,13 +17,14 @@ SRC_URI_append_boc01 = "\
 	file://fsl-elbc-nand-backport.patch;patch=1 \
 	file://002-081105-headers.patch;patch=1 \
 	file://004-081105-usb.patch;patch=1 \
-	file://005-081105-isl12024.patch;patch=1 \
+	file://005-081127-isl12024.patch;patch=1 \
 	file://006-081105-at24c32.patch;patch=1 \
-	file://007-081105-lm73.patch;patch=1 \
-	file://008-081105-spi.patch;patch=1 \
+	file://007-081127-lm73.patch;patch=1 \
+	file://008-081127-spi.patch;patch=1 \
 	file://010-081105-mii.patch;patch=1 \
 	file://011-081105-gpio.patch;patch=1 \
 	file://012-081121-cy3218-btns.patch;patch=1 \
+	file://013-081127-lcd.patch;patch=1 \
 	"
 
 SRC_URI_append_mpc8313e-rdb = "\
