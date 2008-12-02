@@ -1,5 +1,5 @@
 DESCRIPTION = "Image for development testing"
-PR = "r4"
+PR = "r5"
 LICENSE = "MIT"
 
 inherit task
@@ -19,6 +19,7 @@ RDEPENDS = "\
     "
 
 RRECOMMENDS = "\
+    kernel \
     kernel-image \
     kernel-module-msdos \
     kernel-module-vfat \
