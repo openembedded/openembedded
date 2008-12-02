@@ -5,12 +5,12 @@ SECTION = "devel/scheme"
 DEPENDS = "guile-native gmp libtool"
 LICENSE = "GPL"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch;patch=1 "
 
-inherit autotools binconfig
+inherit autotools
 
 acpaths = "-I ${S}/guile-config"
 
@@ -33,5 +33,11 @@ do_compile() {
 
 do_stage() {
 	autotools_stage_all
+	# Create guile-config returning target values instead of native values
+	install -d ${STAGING_BINDIR_CROSS}
+	echo '#!'`which guile`$' \\\n-e main -s\n!#\n(define %guile-build-info '\'\( >guile-config.cross
+	sed -n $'s:-isystem[^ ]* ::;s:-Wl,-rpath-link,[^ ]* ::;s:^[ \t]*{[ \t]*":  (:;s:",[ \t]*": . ":;s:" *}, *\\\\:"):;/^  (/p' <libguile/libpath.h >>guile-config.cross
+	echo '))' >>guile-config.cross
+	cat guile-config/guile-config >>guile-config.cross
+	install guile-config.cross ${STAGING_BINDIR_CROSS}/guile-config
 }
-
