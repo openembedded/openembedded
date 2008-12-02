@@ -37,7 +37,11 @@ do_configure() {
 
 	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" = "glibc" ]; then
 		if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
-		    echo "${KERNEL_INITRAMFS_PATH} does not exist, you may need to bitbake it separately"
+		    echo "Kernel is requested to be built with internal initramfs."
+		    echo "The initramfs image must exist prior to building the kernel, but it does not 
+		    echo "exist at the specified path ${KERNEL_INITRAMFS_PATH}. You may need to bitbake"
+		    echo "it separately, possibly, with a different set of bitbake options. Please"
+		    echo "consult documentation for your distro."
 		    exit 1
 		fi
 
@@ -81,7 +85,7 @@ gen_haret_startup() {
 # This is startup file for HaRET, Linux bootloader for WinCE
 # http://handhelds.org/wiki/HaRET
 
-set kernel "${KERNEL_IMAGE_BASE_NAME}"
+set kernel "${KERNEL_IMAGE_BASE_NAME}.bin"
 
 # Boot choices. Uncomment 'set' statements in exactly one section
 
