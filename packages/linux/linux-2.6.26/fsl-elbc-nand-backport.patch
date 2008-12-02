@@ -1,40 +1,36 @@
-diff -Nru linux-2.6.26/drivers/mtd/nand/fsl_elbc_nand.c linux-2.6.26.modified/drivers/mtd/nand/fsl_elbc_nand.c
 --- linux-2.6.26/drivers/mtd/nand/fsl_elbc_nand.c	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26.modified/drivers/mtd/nand/fsl_elbc_nand.c	2008-10-24 13:43:30.000000000 +0200
-@@ -89,7 +89,7 @@
++++ linux-2.6.27/drivers/mtd/nand/fsl_elbc_nand.c	2008-10-10 00:13:53.000000000 +0200
+@@ -89,7 +89,6 @@
  	.eccbytes = 3,
  	.eccpos = {6, 7, 8},
  	.oobfree = { {0, 5}, {9, 7} },
 -	.oobavail = 12,
-+//	.oobavail = 12,
  };
  
  /* Small Page FLASH with FMR[ECCM] = 1 */
-@@ -97,7 +97,7 @@
+@@ -97,7 +96,6 @@
  	.eccbytes = 3,
  	.eccpos = {8, 9, 10},
  	.oobfree = { {0, 5}, {6, 2}, {11, 5} },
 -	.oobavail = 12,
-+	//.oobavail = 12,
  };
  
  /* Large Page FLASH with FMR[ECCM] = 0 */
-@@ -105,7 +105,7 @@
+@@ -105,7 +103,6 @@
  	.eccbytes = 12,
  	.eccpos = {6, 7, 8, 22, 23, 24, 38, 39, 40, 54, 55, 56},
  	.oobfree = { {1, 5}, {9, 13}, {25, 13}, {41, 13}, {57, 7} },
 -	.oobavail = 48,
-+	//.oobavail = 48,
  };
  
  /* Large Page FLASH with FMR[ECCM] = 1 */
-@@ -113,7 +113,48 @@
+@@ -113,7 +110,48 @@
  	.eccbytes = 12,
  	.eccpos = {8, 9, 10, 24, 25, 26, 40, 41, 42, 56, 57, 58},
  	.oobfree = { {1, 7}, {11, 13}, {27, 13}, {43, 13}, {59, 5} },
 -	.oobavail = 48,
-+//	.oobavail = 48,
 +};
++
 +/*
 + * fsl_elbc_oob_lp_eccm* specify that LP NAND's OOB free area starts at offset
 + * 1, so we have to adjust bad block pattern. This pattern should be used for
@@ -78,19 +74,17 @@ diff -Nru linux-2.6.26/drivers/mtd/nand/fsl_elbc_nand.c linux-2.6.26.modified/dr
  };
  
  /*=================================*/
-@@ -687,8 +728,9 @@
+@@ -687,8 +725,7 @@
  			chip->ecc.layout = (priv->fmr & FMR_ECCM) ?
  			                   &fsl_elbc_oob_lp_eccm1 :
  			                   &fsl_elbc_oob_lp_eccm0;
 -			mtd->ecclayout = chip->ecc.layout;
 -			mtd->oobavail = chip->ecc.layout->oobavail;
-+			//mtd->ecclayout = chip->ecc.layout;
-+			//mtd->oobavail = chip->ecc.layout->oobavail;
 +			chip->badblock_pattern = &largepage_memorybased;
  		}
  	} else {
  		dev_err(ctrl->dev,
-@@ -752,8 +794,12 @@
+@@ -752,8 +789,12 @@
  	chip->cmdfunc = fsl_elbc_cmdfunc;
  	chip->waitfunc = fsl_elbc_wait;
  
@@ -99,9 +93,46 @@ diff -Nru linux-2.6.26/drivers/mtd/nand/fsl_elbc_nand.c linux-2.6.26.modified/dr
 +
  	/* set up nand options */
 -	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR;
-+	//chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR;
-+	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR | NAND_USE_FLASH_BBT;
++	chip->options = NAND_NO_READRDY | NAND_NO_AUTOINCR |
++			NAND_USE_FLASH_BBT;
  
  	chip->controller = &ctrl->controller;
  	chip->priv = priv;
-
+@@ -795,8 +836,8 @@
+ 	return 0;
+ }
+ 
+-static int fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+-                               struct device_node *node)
++static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
++					 struct device_node *node)
+ {
+ 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+ 	struct fsl_elbc_mtd *priv;
+@@ -846,7 +887,7 @@
+ 		goto err;
+ 	}
+ 
+-	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", res.start);
++	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
+ 		goto err;
+@@ -917,7 +958,7 @@
+ 	return 0;
+ }
+ 
+-static int __devexit fsl_elbc_ctrl_remove(struct of_device *ofdev)
++static int fsl_elbc_ctrl_remove(struct of_device *ofdev)
+ {
+ 	struct fsl_elbc_ctrl *ctrl = dev_get_drvdata(&ofdev->dev);
+ 	int i;
+@@ -1041,7 +1082,7 @@
+ 	},
+ 	.match_table = fsl_elbc_match,
+ 	.probe = fsl_elbc_ctrl_probe,
+-	.remove = __devexit_p(fsl_elbc_ctrl_remove),
++	.remove = fsl_elbc_ctrl_remove,
+ };
+ 
+ static int __init fsl_elbc_init(void)

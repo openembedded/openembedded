@@ -14,8 +14,8 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
 	file://cdc-ether-hack.patch;patch=1 \
+	file://fsl-elbc-nand-backport.patch;patch=1 \
 	file://002-081105-headers.patch;patch=1 \
-	file://003-081124-nand.patch;patch=1 \
 	file://004-081105-usb.patch;patch=1 \
 	file://005-081105-isl12024.patch;patch=1 \
 	file://006-081105-at24c32.patch;patch=1 \
@@ -28,7 +28,7 @@ SRC_URI_append_boc01 = "\
 
 SRC_URI_append_mpc8313e-rdb = "\
 	file://cdc-ether-hack.patch;patch=1 \
-	file://mpc831x-nand.patch;patch=1 \
+	file://fsl-elbc-nand-backport.patch;patch=1 \
 	file://mpc8313e-rdb-leds.patch;patch=1 \
 	file://mpc8313e-rdb-cardbus.patch;patch=1 \
 	file://mpc8313e-rdb-eth-fixed.patch;patch=1 \
