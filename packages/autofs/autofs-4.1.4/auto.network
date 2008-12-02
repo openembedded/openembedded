@@ -2,8 +2,3 @@
 # do NOT change manually!
 #Test2	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	255.254.253.252:/media/hdd/movie
 #Video1	-fstype=cifs,rw,soft,rsize=8192,wsize=8192,user=Username,pass=Password	://192.168.0.10/VIDEO1
-MEDIA	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	192.168.0.5:/home/acid-burn/media
-#TES4	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	192.168.0.5:/home/acid-burn/test
-#TE34	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	192.168.0.5:/home/acid-burn/test
-#TEST	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	192.168.0.5:/home/acid-burn/test
-#MUSIK	-fstype=nfs,rw,soft,tcp,nolock,rsize=8192,wsize=8192	192.168.0.20:/media/hdd/movie
