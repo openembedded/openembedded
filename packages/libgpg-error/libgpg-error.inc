@@ -3,6 +3,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL LGPL FDL"
 
+DEPENDS += "virtual/libiconv"
+
 SRC_URI = "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-${PV}.tar.gz \
 	   file://pkgconfig.patch;patch=1"
 
