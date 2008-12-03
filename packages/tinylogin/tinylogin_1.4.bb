@@ -5,7 +5,7 @@ changing passwords, and otherwise maintaining users \
 and groups on an embedded system."
 HOMEPAGE = "http://tinylogin.tinylogin.net/"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://tinylogin.tinylogin.net/downloads/tinylogin-${PV}.tar.bz2 \
 	file://cvs-20040608.patch;patch=1;pnum=1 \
@@ -33,6 +33,20 @@ pkg_postinst_${PN} () {
     if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/tinylogin";; /bin/*) to="tinylogin";; /*/*) to="../bin/tinylogin";; esac; ln -s $to $link; fi; done </etc/tinylogin.links; fi
 
     # This adds the links, remember that this has to work when building an image too, hence the $D
-    while read link; do case "$link" in /*/*/*) to="../../bin/tinylogin";; /bin/*) to="tinylogin";; /*/*) to="../bin/tinylogin";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 40; done <$D/etc/tinylogin.links
+    while read link; do case "$link" in /*/*/*) to="../../bin/tinylogin";; /bin/*) to="tinylogin";; /*/*) to="../bin/tinylogin";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 60; done <$D/etc/tinylogin.links
+}
+
+
+pkg_prerm_${PN} () {
+    while read link
+    do  
+        case "$link" in
+            /*/*/*) to="../../bin/tinylogin";;
+            /bin/*) to="tinylogin";;
+            /*/*) to="../bin/tinylogin";;
+        esac
+        bn=`basename $link`
+        sh /usr/bin/update-alternatives --remove $bn $to
+    done < /etc/tinylogin.links
 }
 
