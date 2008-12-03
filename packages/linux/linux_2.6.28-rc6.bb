@@ -1,8 +1,8 @@
 require linux.inc
 
-KERNEL_RELEASE = "2.6.28rc6"
+KERNEL_RELEASE = "2.6.28-rc6"
 PV = "2.6.27+${KERNEL_RELEASE}"
-PR = "r1"
+PR = "r3"
 
 S = "${WORKDIR}/linux-${KERNEL_RELEASE}"
 
@@ -10,7 +10,7 @@ S = "${WORKDIR}/linux-${KERNEL_RELEASE}"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_afeb9260 = "1"
 
-SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-${PV}.tar.bz2 \
+SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-${KERNEL_RELEASE}.tar.bz2 \
            file://defconfig"
 
 SRC_URI_append_afeb9260 = " \
