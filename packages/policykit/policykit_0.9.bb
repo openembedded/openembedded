@@ -1,7 +1,7 @@
 HOMEPAGE = "http://www.packagekit.org/"
 DEPENDS = "libpam expat dbus-glib"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://hal.freedesktop.org/releases/PolicyKit-${PV}.tar.gz"
 
@@ -24,7 +24,7 @@ pkg_postinst_${PN} () {
     if [ "x$D" != "x" ]; then
         exit 1
     fi
-    grep "^polkituser:" /etc/group > /dev/null || addgroup polkituser    grep "^polkituser:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/run/polkit polkituser --ingroup polkituser -g Avahi
+    grep "^polkituser:" /etc/group > /dev/null || addgroup polkituser    grep "^polkituser:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/run/polkit polkituser --ingroup polkituser -g polkituser 
     DBUSPID=`pidof dbus-daemon`
     if [ "x$DBUSPID" != "x" ]; then
         /etc/init.d/dbus-1 force-reload
