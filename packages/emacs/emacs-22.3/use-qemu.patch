@@ -1,0 +1,93 @@
+Warning: When editing the patch, see the ugly hack (removal of pwd) when calling temacs and emacs.
+For unknown reason, qemu-arm is not able to recognize binary correctly.
+
+Index: emacs-22.3/lib-src/Makefile.in
+===================================================================
+--- emacs-22.3.orig/lib-src/Makefile.in	2008-04-24 05:38:12.000000000 +0000
++++ emacs-22.3/lib-src/Makefile.in	2008-11-21 15:51:14.000000000 +0000
+@@ -24,7 +24,7 @@
+ SHELL = /bin/sh
+ 
+ # Following ../lisp/Makefile.in.
+-EMACS = ../src/emacs
++EMACS = ${QEMU} emacs
+ EMACSOPT = -batch --no-site-file --multibyte
+ 
+ # ==================== Things `configure' will edit ====================
+@@ -388,7 +388,7 @@
+    clobbered too.  */
+ test-distrib${EXEEXT}: ${srcdir}/test-distrib.c
+ 	$(CC) ${ALL_CFLAGS} -o test-distrib ${srcdir}/test-distrib.c
+-	./test-distrib ${srcdir}/testfile
++	${QEMU} ./test-distrib ${srcdir}/testfile
+ 
+ /* We need the following in order to create a <getopt.h> when the system
+    doesn't have one that works with the given compiler.  */
+Index: emacs-22.3/lisp/Makefile.in
+===================================================================
+--- emacs-22.3.orig/lisp/Makefile.in	2008-08-12 18:35:42.000000000 +0000
++++ emacs-22.3/lisp/Makefile.in	2008-11-21 15:54:38.000000000 +0000
+@@ -63,7 +63,7 @@
+ 
+ # The actual Emacs command run in the targets below.
+ 
+-emacs = EMACSLOADPATH=$(lisp) $(EMACS) $(EMACSOPT)
++emacs = EMACSLOADPATH=$(lisp) ${QEMU} emacs $(EMACSOPT)
+ 
+ # Common command to find subdirectories
+ 
+Index: emacs-22.3/src/Makefile.in
+===================================================================
+--- emacs-22.3.orig/src/Makefile.in	2008-07-11 08:52:53.000000000 +0000
++++ emacs-22.3/src/Makefile.in	2008-11-21 15:52:09.000000000 +0000
+@@ -497,7 +497,7 @@
+    this with the shell''s ``for'' construct.
+    Note that some people do not have '.'  in their paths, so we must
+    use ./prefix-args.  */
+-#define YMF_PASS_LDFLAGS(flags) `./prefix-args -Xlinker flags`
++#define YMF_PASS_LDFLAGS(flags) `${QEMU} ./prefix-args -Xlinker flags`
+ #else
+ #define YMF_PASS_LDFLAGS(flags) flags
+ #endif
+@@ -949,7 +949,7 @@
+ #define OBJECTS_MACHINE
+ #endif
+ 
+-RUN_TEMACS = ./temacs
++RUN_TEMACS = ${QEMU} temacs
+ 
+ all: emacs${EXEEXT} OTHER_FILES
+ 
+@@ -964,7 +964,7 @@
+ 	LC_ALL=C $(RUN_TEMACS) -batch -l loadup dump
+ #endif /* ! defined (HAVE_SHM) */
+ #endif /* ! defined (CANNOT_DUMP) */
+-	-./emacs -q -batch -f list-load-path-shadows
++	-${QEMU} emacs -q -batch -f list-load-path-shadows
+ 
+ /* We run make-docfile twice because the command line may get too long
+    on some systems.  */
+@@ -976,8 +976,8 @@
+    Likewise for ${SOME_MACHINE_LISP}.  */
+ ${etc}DOC: ${libsrc}make-docfile${EXEEXT} ${obj} ${shortlisp} ${SOME_MACHINE_LISP}
+ 	-rm -f ${etc}DOC
+-	${libsrc}make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
+-	${libsrc}make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
++	${QEMU} ${libsrc}make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
++	${QEMU} ${libsrc}make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
+ 
+ ${libsrc}make-docfile${EXEEXT}:
+ 	cd ${libsrc}; ${MAKE} ${MFLAGS} make-docfile${EXEEXT}
+Index: emacs-22.3/leim/Makefile.in
+===================================================================
+--- emacs-22.3.orig/leim/Makefile.in	2008-01-07 08:09:43.000000000 +0000
++++ emacs-22.3/leim/Makefile.in	2008-11-21 15:52:50.000000000 +0000
+@@ -51,7 +51,7 @@
+ 
+ # How to run Emacs.
+ RUN-EMACS = EMACSLOADPATH=$(buildlisppath) LC_ALL=C\
+-	${BUILT-EMACS} -batch --no-init-file --no-site-file --multibyte
++	${QEMU} emacs -batch --no-init-file --no-site-file --multibyte
+ 
+ # Subdirectories to be made if ${srcdir} is different from the current
+ # directory.
