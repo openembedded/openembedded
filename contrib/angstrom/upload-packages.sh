@@ -17,13 +17,13 @@ mkdir -p upload-queue || true
 echo "Deleting morgue directories"
 find ipk/ -name "morgue" -exec rm -rf \{\} \;
 
-# Copy all packages to an upload queue
-echo "Copying packages to upload queue"
-find ipk/ -name "*.ipk" -exec cp \{\} upload-queue/ \;
+# Copy symlink packages to an upload queue
+echo "Symlink packages to upload queue"
+find ipk/ -name "*.ipk" -exec ln -sf ${PWD}/\{\} upload-queue/ \;
 
 # Find file already present on webserver
 echo "Getting file list from server"
-scp $REMOTEM:$REMOTED/unsorted/files-sorted files-remote
+scp -C $REMOTEM:$REMOTED/unsorted/files-sorted files-remote
 ls upload-queue/ | grep -v morgue > files-local
 
 # Check for files already present on webserver
@@ -33,7 +33,7 @@ cat files-uniq files-local | sort | uniq -d > files-trans
 
 # Copy over non-duplicate files
 echo "Starting rsync..."
-rsync -avz --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
+rsync -vz --copy-links --progress --files-from=files-trans upload-queue/ $REMOTEM:$REMOTED/unsorted/
 
 # Clean up temporary files
 echo "Removing upload queue"
