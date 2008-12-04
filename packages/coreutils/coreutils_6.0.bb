@@ -1,5 +1,7 @@
 require coreutils.inc
 
+PR = "r1"
+
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
@@ -8,7 +10,7 @@ SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
 	   file://onceonly.m4"
 
 # [ gets a special treatment and is not included in this
-bindir_progs = "basename cksum comm csplit cut dir dircolors dirname du \
+bindir_progs = "basename cksum comm csplit cut df dir dircolors dirname du \
 		env expand expr factor fmt fold groups head hostid id install \
 		join link logname md5sum mkfifo nice nl nohup od paste pathchk \
 		pinky pr printenv printf ptx readlink seq sha1sum shred sort \
