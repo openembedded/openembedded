@@ -17,10 +17,6 @@ BASE_INSTALL = "\
   exquisite \
   exquisite-themes \
   exquisite-theme-illume \
-#  rsync \
-#  screen \
-#  fbset \
-#  fbset-modes \
 "
 
 # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
@@ -30,7 +26,10 @@ XSERVER ?= "xserver-kdrive-fbdev"
 # getting an X window system up
 X_INSTALL = "\
   glibc-charmap-utf-8 \
+  shared-mime-info \
+  mime-support \
   e-wm \
+  e-wm-sysactions \
   e-wm-config-illume \
   e-wm-config-standard \
   e-wm-config-netbook \
@@ -57,18 +56,14 @@ X_INSTALL = "\
 
 # useful command line tools
 TOOLS_INSTALL = "\
-#  bash \
   dosfstools \
-#  iptables \
   lsof \
   mickeydbus \
-  mickeyterm \
   mtd-utils \
   nano \
   powertop \
   s3c24xx-gpio \
   sysstat \
-#  tcpdump \
 "
 
 # audio
@@ -116,23 +111,15 @@ ZHONE_INSTALL = "\
   fso-gsm0710muxd \
   frameworkd \
   fso-gpsd \
-#  zhone \
+  zhone \
 "
 
 # additional apps
 APPS_INSTALL = "\
-#  tichy \
-#  gpe-gallery \
-#  gpe-sketchbook \
-#  gpe-filemanager \
-#  vagalume \
-#  starling \
-   rxvt-unicode \
-   gpe-terminal \
    elementary-alarm \
    gpe-scap \
-   libefso \
-   essential-dialer \
+#   libefso \
+#   essential-dialer \
 "
 
 IMAGE_INSTALL = "\
@@ -156,7 +143,6 @@ fso_rootfs_postprocess() {
     date "+%m%d%H%M%Y" >./etc/timestamp
     # alias foo
     echo "alias pico=nano" >>./etc/profile
-#    echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
     # dns
     echo "nameserver 208.67.222.222" >>./etc/resolv.conf
