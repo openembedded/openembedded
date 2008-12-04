@@ -4,6 +4,7 @@ RDEPENDS += "shared-mime-info"
 mime_postinst() {
 if [ "$1" = configure ]; then
 	if [ -x ${bindir}/update-mime-database ] ; then
+		echo "Updating MIME database... this may take a while."
 		update-mime-database $D${datadir}/mime
 	else
 		echo "Missing ${bindir}/update-mime-database, update of mime database failed!"
@@ -15,6 +16,7 @@ fi
 mime_postrm() {
 if [ "$1" = remove ] || [ "$1" = upgrade ]; then
 	if [ -x ${bindir}/update-mime-database ] ; then
+		echo "Updating MIME database... this may take a while."
 		update-mime-database $D${datadir}/mime
 	else
 		echo "Missing ${bindir}/update-mime-database, update of mime database failed!"
