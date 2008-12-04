@@ -4,7 +4,7 @@ LICENSE = "GPL+LGPL"
 DEPENDS = "dbus-glib gconf libnotify gtk+"
 RRECOMMENDS = "gnome-icon-theme"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "http://bluez.sourceforge.net/download/${P}.tar.gz"
 

@@ -2,7 +2,7 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome
 LICENSE="GPL"
