@@ -1,7 +1,7 @@
 DESCRIPTION = "ltrace shows runtime library call information for dynamically linked executables."
 HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
-DEPENDS = "binutils libelf"
+DEPENDS = "libelf"
 LICENSE = "GPL"
 PR = "r0"
 PN = "ltrace"
