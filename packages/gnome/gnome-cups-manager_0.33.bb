@@ -7,8 +7,7 @@ DEPENDS="glib-2.0 gtk+ pango libgnomecups"
 
 inherit gnome pkgconfig
 
-FILES += "${datadir}/icons/hicolor/48x48/stock/data/emblem-*.png \
-	  ${datadir}/icons/hicolor/48x48/devices/gnome-dev-printer-new.png"
+FILES_${PN} += "${datadir}/icons/"
 
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/gnome-cups-manager/${PV}/gnome-cups-manager-${PV}.tar.bz2"
 
