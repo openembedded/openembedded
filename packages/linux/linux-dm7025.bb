@@ -1,9 +1,8 @@
 DESCRIPTION = "Linux kernel for Dreambox DM7025"
 LICENSE = "GPL"
-PN = "linux-dm7025"
 KV = "2.6.12"
 PV = "2.6.12.6"
-PR = "s4"
+PR = "s6"
 
 DEPENDS = "zlib-native"
 
@@ -128,16 +127,20 @@ do_stage_append() {
 
 pkg_preinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
 
 pkg_prerm_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postrm_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }

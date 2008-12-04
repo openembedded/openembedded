@@ -1,33 +1,33 @@
-DESCRIPTION = "Linux kernel for Dreambox DM8000"
+DESCRIPTION = "Linux kernel for Dreambox DM800"
 LICENSE = "GPL"
-PN = "linux-dm800"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r9"
+PR = "r12"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
-	file://dm800_defconfig \
+	file://${MACHINE}_defconfig \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-brcm-5.1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update_dvbapi-r1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-core-fix-several-locking-problems.patch.bz2;patch=1;pnum=1 \
-	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvbapi-pilot-rolloff-extension-r0.patch.bz2;patch=1;pnum=1\
-	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update-wireless.patch.bz2;patch=1;pnum=1\
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvbapi-pilot-rolloff-extension-r0.patch.bz2;patch=1;pnum=1 \
+	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update-wireless.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-add-ioprio.patch.bz2;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-misc.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fix-serial.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-dm800-flash-layout.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-${MACHINE}-flash-layout.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-mtd-blkdevfs-fix.diff;patch=1;pnum=1 \
 	file://linux-2.6.12-set-custom-extraversion.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-7401C0-enable-llsc.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-prom-args.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-7401C0-enable-llsc.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-fadvise.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-fix-futex.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-bcmemac-ethtool.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 
 S = "${WORKDIR}/stblinux-2.6.12"
@@ -51,11 +51,11 @@ do_munge() {
 addtask munge before do_patch after do_unpack
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/dm800_defconfig ${S}/.config
-        if [ -d ${WORKDIR}/cdfs-${PV} ]; then
-                mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
-                cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
-        fi;
+	oe_machinstall -m 0644 ${WORKDIR}/${MACHINE}_defconfig ${S}/.config
+	if [ -d ${WORKDIR}/cdfs-${PV} ]; then
+		mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
+		cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
+	fi;
 	oe_runmake oldconfig
 }
 
@@ -69,16 +69,20 @@ do_install_append () {
 
 pkg_preinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
 
 pkg_prerm_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postrm_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }

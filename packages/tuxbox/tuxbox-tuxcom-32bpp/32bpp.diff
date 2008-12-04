@@ -1,0 +1,922 @@
+diff -u tuxcom_cvs/tuxcom.c tuxcom/tuxcom.c
+--- tuxcom_cvs/tuxcom.c	2008-11-03 13:15:00.000000000 +0100
++++ tuxcom/tuxcom.c	2006-06-29 23:44:21.000000000 +0200
+@@ -27,7 +27,7 @@
+  * GetRCCode  (Code from Tuxmail)
+  ******************************************************************************/
+ 
+-#ifndef HAVE_DREAMBOX_HARDWARE
++
+ 
+ int GetRCCode(int mode)
+ {
+@@ -63,9 +63,9 @@
+ 				case KEY_GREEN:		rccode = RC_GREEN;		break;
+ 				case KEY_YELLOW:	rccode = RC_YELLOW;		break;
+ 				case KEY_BLUE:		rccode = RC_BLUE;		break;
+-				case KEY_HELP:		rccode = RC_HELP;		break;
+-				case KEY_SETUP:		rccode = RC_DBOX;		break;
+-				case KEY_HOME:		rccode = RC_HOME;		break;
++				case KEY_INFO:		rccode = RC_HELP;		break;
++				case KEY_MENU:		rccode = RC_DBOX;		break;
++				case KEY_EXIT:		rccode = RC_HOME;		break;
+ 				case KEY_POWER:		rccode = RC_STANDBY;	break;
+ 				default:
+ 					if( ev.code > 0x7F )
+@@ -118,176 +118,94 @@
+ 		}
+ 	}
+ 
+-		rccode = -1;
+-		usleep(1000000/100);
+-		return 0;
+-}
+-
+-#else
+-
+-int GetRCCode(int mode)
+-{
+-	static int count = 0;
+-	//get code
+-	static unsigned short LastKey = -1;
+-	static char LastKBCode = 0x00;
+-	rccode = -1;
+-	int bytesavail = 0;
+-	int bytesread = read(rc, &rccode, 2);
+-	unsigned short tmprc;
+-	kbcode = 0;
+-
+-	if (bytesread == 2)
+-	{
+-		if (read(rc, &tmprc, 2) == 2)
+-		{
+-			if (rccode == tmprc && count >= 0)
+-				count++;
+-		}
+-	}
+-
+-
+-	// Tastaturabfrage
+-	ioctl(kb, FIONREAD, &bytesavail);
+-	if (bytesavail>0)
+-	{
+-		char tch[100];
+-		if (bytesavail > 99) bytesavail = 99;
+-		read(kb,tch,bytesavail);
+-		tch[bytesavail] = 0x00;
+-		kbcode = tch[0];
+-		LastKBCode = kbcode;
+-		if (bytesavail == 1 && kbcode == 0x1b) { LastKey = RC_HOME ; rccode = -1  ; count = -1; return 1;} // ESC-Taste
+-		if (bytesavail == 1 && kbcode == '\n') { LastKey = RC_OK   ; rccode = -1  ; count = -1; return 1;} // Enter-Taste
+-		if (bytesavail == 1 && kbcode == '+' ) { LastKey = RC_PLUS ; rccode = -1  ; count = -1; return 1;}
+-		if (bytesavail == 1 && kbcode == '-' ) { LastKey = RC_MINUS; rccode = -1  ; count = -1; return 1;}
+-		if (bytesavail >= 3 && tch[0] == 0x1b && tch[1] == 0x5b)
+-		{
+-			if (tch[2] == 0x41 )                                    { kbcode = LastKBCode = 0x00; rccode = RC_UP        ; LastKey = rccode; count = -1; return 1; }// Cursortasten
+-			if (tch[2] == 0x42 )                                    { kbcode = LastKBCode = 0x00; rccode = RC_DOWN      ; LastKey = rccode; count = -1; return 1; }// Cursortasten
+-			if (tch[2] == 0x43 )                                    { kbcode = LastKBCode = 0x00; rccode = RC_RIGHT     ; LastKey = rccode; count = -1; return 1; }// Cursortasten
+-			if (tch[2] == 0x44 )                                    { kbcode = LastKBCode = 0x00; rccode = RC_LEFT      ; LastKey = rccode; count = -1; return 1; }// Cursortasten
+-			if (tch[2] == 0x33 && tch[3] == 0x7e)                   { kbcode = LastKBCode = 0x00; rccode = RC_MINUS     ; LastKey = rccode; count = -1; return 1; }// entf-Taste
+-			if (tch[2] == 0x32 && tch[3] == 0x7e)                   { kbcode = LastKBCode = 0x00; rccode = RC_PLUS      ; LastKey = rccode; count = -1; return 1; }// einf-Taste
+-			if (tch[2] == 0x35 && tch[3] == 0x7e)                   { kbcode = LastKBCode = 0x00; rccode = RC_PLUS      ; LastKey = rccode; count = -1; return 1; }// PgUp-Taste
+-			if (tch[2] == 0x36 && tch[3] == 0x7e)                   { kbcode = LastKBCode = 0x00; rccode = RC_MINUS     ; LastKey = rccode; count = -1; return 1; }// PgDn-Taste
+-			if (tch[2] == 0x5b && tch[3] == 0x45)                   { kbcode = LastKBCode = 0x00; rccode = RC_RED       ; LastKey = rccode; count = -1; return 1; }// F5-Taste
+-			if (tch[2] == 0x31 && tch[3] == 0x37 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_GREEN     ; LastKey = rccode; count = -1; return 1; }// F6-Taste
+-			if (tch[2] == 0x31 && tch[3] == 0x38 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_YELLOW    ; LastKey = rccode; count = -1; return 1; }// F7-Taste
+-			if (tch[2] == 0x31 && tch[3] == 0x39 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_BLUE      ; LastKey = rccode; count = -1; return 1; }// F8-Taste
+-			if (tch[2] == 0x32 && tch[3] == 0x30 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_DBOX      ; LastKey = rccode; count = -1; return 1; }// F9-Taste
+-			if (tch[2] == 0x32 && tch[3] == 0x31 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_HELP      ; LastKey = rccode; count = -1; return 1; }// F10-Taste
+-			if (tch[2] == 0x32 && tch[3] == 0x33 && tch[4] == 0x7e) { kbcode = LastKBCode = 0x00; rccode = RC_MUTE      ; LastKey = rccode; count = -1; return 1; }// F11-Taste
+-		}
+-		if (mode == RC_EDIT)
+-		{
+-/*
+-			char tmsg[100];
+-			int i;
+-			sprintf(tmsg,"KeyboardCode:avail:%d, char:%c, rccode:%x ",bytesavail,(kbcode == 0x00 ? '*' : kbcode ),rccode);
+-			for (i = 0; i < bytesavail; i++) sprintf(tmsg,"%s%x",tmsg,tch[i]);
+-			MessageBox(tmsg,"",NOBUTTON);
+-*/
+-			LastKey = rccode;
+-			count = -1;
+-			switch (rccode)
+-			{
+-				case KEY_0:
+-				case KEY_1:
+-				case KEY_2:
+-				case KEY_3:
+-				case KEY_4:
+-				case KEY_5:
+-				case KEY_6:
+-				case KEY_7:
+-				case KEY_8:
+-				case KEY_9:
+-					// SMS-Style verhindern
+-					rccode = -1;
+-					break;
+-			}
+-			return 1;
+-		}
+-		else if (bytesread <= 0)
+-		{
+-			if (kbcode == '0') { kbcode = 0x00;rccode = RC_0  ; LastKey = rccode; return 1;}
+-			if (kbcode == '1') { kbcode = 0x00;rccode = RC_1  ; LastKey = rccode; return 1;}
+-			if (kbcode == '2') { kbcode = 0x00;rccode = RC_2  ; LastKey = rccode; return 1;}
+-			if (kbcode == '3') { kbcode = 0x00;rccode = RC_3  ; LastKey = rccode; return 1;}
+-			if (kbcode == '4') { kbcode = 0x00;rccode = RC_4  ; LastKey = rccode; return 1;}
+-			if (kbcode == '5') { kbcode = 0x00;rccode = RC_5  ; LastKey = rccode; return 1;}
+-			if (kbcode == '6') { kbcode = 0x00;rccode = RC_6  ; LastKey = rccode; return 1;}
+-			if (kbcode == '7') { kbcode = 0x00;rccode = RC_7  ; LastKey = rccode; return 1;}
+-			if (kbcode == '8') { kbcode = 0x00;rccode = RC_8  ; LastKey = rccode; return 1;}
+-			if (kbcode == '9') { kbcode = 0x00;rccode = RC_9  ; LastKey = rccode; return 1;}
+-		}
+-	}
+-	if (bytesread == 2)
++	count=0;
++	if(read(kb, &ev, sizeof(ev)) == sizeof(ev))
+ 	{
+-		if (rccode == LastKey && LastKBCode != 0x00 && LastKBCode == kbcode)
+-		{
+-				return 1;
+-		}
+-		LastKBCode = 0x00;
+-		if (rccode == LastKey)
++		if(ev.value)
+ 		{
+-			if (count < REPEAT_TIMER)
++			if(ev.code == rc_last_key)
+ 			{
+-				if (count >= 0)
++				if (count < REPEAT_TIMER)
++				{
+ 					count++;
+-				rccode = -1;
+-				return 1;
++					rccode = -1;
++					return 1;
++				}
+ 			}
+-		}
+-		else
+-			count = 0;
+-		LastKey = rccode;
+-		if ((rccode & 0xFF00) == 0x5C00)
+-		{
+-			kbcode = 0;
+-			switch(rccode)
++			else
++				count = 0;
++			rc_last_key = ev.code;
++			switch(ev.code)
+ 			{
+ 				case KEY_UP:		rccode = RC_UP;			break;
+ 				case KEY_DOWN:		rccode = RC_DOWN;		break;
+ 				case KEY_LEFT:		rccode = RC_LEFT;		break;
+ 				case KEY_RIGHT:		rccode = RC_RIGHT;		break;
+ 				case KEY_OK:		rccode = RC_OK;			break;
+-				case KEY_0:			rccode = RC_0;			break;
+-				case KEY_1:			rccode = RC_1;			break;
+-				case KEY_2:			rccode = RC_2;			break;
+-				case KEY_3:			rccode = RC_3;			break;
+-				case KEY_4:			rccode = RC_4;			break;
+-				case KEY_5:			rccode = RC_5;			break;
+-				case KEY_6:			rccode = RC_6;			break;
+-				case KEY_7:			rccode = RC_7;			break;
+-				case KEY_8:			rccode = RC_8;			break;
+-				case KEY_9:			rccode = RC_9;			break;
+ 				case KEY_RED:		rccode = RC_RED;		break;
+ 				case KEY_GREEN:		rccode = RC_GREEN;		break;
+ 				case KEY_YELLOW:	rccode = RC_YELLOW;		break;
+ 				case KEY_BLUE:		rccode = RC_BLUE;		break;
+-				case KEY_VOLUMEUP:	rccode = RC_PLUS;		break;
+-				case KEY_VOLUMEDOWN:rccode = RC_MINUS;		break;
+-				case KEY_MUTE:		rccode = RC_MUTE;		break;
+-				case KEY_HELP:		rccode = RC_HELP;		break;
+-				case KEY_SETUP:		rccode = RC_DBOX;		break;
+-				case KEY_HOME:		rccode = RC_HOME;		break;
++				case KEY_INFO:		rccode = RC_HELP;		break;
++				case KEY_MENU:		rccode = RC_DBOX;		break;
++				case KEY_EXIT:		rccode = RC_HOME;		break;
+ 				case KEY_POWER:		rccode = RC_STANDBY;	break;
++				default:
++					if( ev.code > 0x7F )
++					{
++						rccode = 0;
++						if( ev.code == 0x110 )
++						{
++							rccode = RC_ON;
++						}
++					}
++					else
++					{
++						rccode = rctable[ev.code & 0x7F];
++					}
++					if( rc_last_code == RC_LSHIFT )
++					{
++						if( ev.code <= 0x56 )  //(sizeof(rcshifttable)/sizeof(int)-1)
++						{
++							rccode = rcshifttable[ev.code];
++						}
++					}
++					else if( rc_last_code == RC_ALTGR )
++					{
++						if( ev.code <= 0x56 )  //(sizeof(rcaltgrtable)/sizeof(int)-1)
++						{
++							rccode = rcaltgrtable[ev.code];
++						}
++					}
++					else if( rc_last_code == RC_ALT )
++					{
++						if((ev.code >=2) && ( ev.code <= 11 ))
++						{
++							rccode = (ev.code-1) | 0x0200;
++						}
++					}
++//					if( !rccode )
++					{
++//						rccode = -1;
++					}
++
+ 			}
++			rc_last_code = rccode;
+ 			return 1;
+ 		}
+ 		else
+ 		{
+-			rccode &= 0x003F;
++			rccode = -1;
++			rc_last_key = KEY_RESERVED;
++			rc_last_code = KEY_RESERVED;
+ 		}
+-		return 0;
+ 	}
+ 
+ 		rccode = -1;
+ 		usleep(1000000/100);
+ 		return 0;
+ }
+-#endif
++
+ 
+ /******************************************************************************
+  * MyFaceRequester
+@@ -316,6 +234,8 @@
+ 	FT_Vector kerning;
+ 	FT_Error error;
+ 
++	currentchar=currentchar & 0xFF;
++
+ 	if (currentchar == '\r') // display \r in windows edited files
+ 	{
+ 		if(color != -1)
+@@ -331,19 +251,15 @@
+ 	}
+ 	//load char
+ 
+-		if(!(glyphindex = FT_Get_Char_Index(face, currentchar)))
++		if(!(glyphindex = FT_Get_Char_Index(face, (int)currentchar)))
+ 		{
+ 			printf("TuxCom <FT_Get_Char_Index for Char \"%c\" failed\n", (int)currentchar);
+ 			return 0;
+ 		}
+ 
+ 
+-#if FREETYPE_MAJOR == 2 && FREETYPE_MINOR == 0
++
+ 		if((error = FTC_SBit_Cache_Lookup(cache, &desc, glyphindex, &sbit)))
+-#else
+-		FTC_Node anode;
+-		if((error = FTC_SBitCache_Lookup(cache, &desc, glyphindex, &sbit, &anode)))
+-#endif
+ 		{
+ 			printf("TuxCom <FTC_SBitCache_Lookup for Char \"%c\" failed with Errorcode 0x%.2X>\n", (int)currentchar, error);
+ 			return 0;
+@@ -376,7 +292,7 @@
+ 					{
+ 						if(pitch*8 + 7-bit >= sbit->width) break; /* render needed bits only */
+ 
+-						if((sbit->buffer[row * sbit->pitch + pitch]) & 1<<bit) *(lbb + StartX + sx + sbit->left + kerning.x + x + var_screeninfo.xres*(StartY + sy - sbit->top + y)) = color;
++						if((sbit->buffer[row * sbit->pitch + pitch]) & 1<<bit) memcpy(lbb + StartX*4 + sx*4 + (sbit->left + kerning.x + x)*4 + fix_screeninfo.line_length*(StartY + sy - sbit->top + y),bgra[color],4);
+ 
+ 						x++;
+ 					}
+@@ -481,38 +397,36 @@
+ void RenderBox(int sx, int sy, int ex, int ey, int mode, int color)
+ {
+ 	int loop;
++	int tx;
+ 	if(mode == FILL)
+ 	{
+ 		for(; sy <= ey; sy++)
+ 		{
+-			memset(lbb + StartX + sx + var_screeninfo.xres*(StartY + sy), color, ex-sx + 1);
++		for(tx=0; tx <= (ex-sx); tx++)	
++			{
++			memcpy(lbb + StartX*4 + sx*4 + (tx*4) + fix_screeninfo.line_length*(StartY + sy),bgra[color],4);
++			}
+ 		}
+ 	}
+ 	else
+ 	{
+-		//hor lines
+-
+-			for(loop = sx; loop <= ex; loop++)
+-			{
+-				*(lbb + StartX+loop + var_screeninfo.xres*(sy+StartY)) = color;
+-				*(lbb + StartX+loop + var_screeninfo.xres*(sy+1+StartY)) = color;
+-
+-				*(lbb + StartX+loop + var_screeninfo.xres*(ey-1+StartY)) = color;
+-				*(lbb + StartX+loop + var_screeninfo.xres*(ey+StartY)) = color;
+-			}
+-
+-		//ver lines
+-
+-			for(loop = sy; loop <= ey; loop++)
+-			{
+-				*(lbb + StartX+sx + var_screeninfo.xres*(loop+StartY)) = color;
+-				*(lbb + StartX+sx+1 + var_screeninfo.xres*(loop+StartY)) = color;
+-
+-				*(lbb + StartX+ex-1 + var_screeninfo.xres*(loop+StartY)) = color;
+-				*(lbb + StartX+ex + var_screeninfo.xres*(loop+StartY)) = color;
+-			}
++		for(loop = sx; loop <= ex; loop++)
++		{
++			memcpy(lbb + StartX*4+loop*4 + fix_screeninfo.line_length*(sy+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+loop*4 + fix_screeninfo.line_length*(sy+1+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+loop*4 + fix_screeninfo.line_length*(ey-1+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+loop*4 + fix_screeninfo.line_length*(ey+StartY), bgra[color], 4);
++		}
++		for(loop = sy; loop <= ey; loop++)
++		{
++			memcpy(lbb + StartX*4+sx*4 + fix_screeninfo.line_length*(loop+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+(sx+1)*4 + fix_screeninfo.line_length*(loop+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+(ex-1)*4 + fix_screeninfo.line_length*(loop+StartY), bgra[color], 4);
++			memcpy(lbb + StartX*4+ex*4 + fix_screeninfo.line_length*(loop+StartY), bgra[color], 4);
++		}
+ 	}
+ }
++
+ void SetLanguage()
+ {
+ 	if (langselect == BTN_AUTO)
+@@ -540,7 +454,7 @@
+  * plugin_exec                                                                *
+  ******************************************************************************/
+ 
+-void plugin_exec(PluginParam *par)
++int main()
+ {
+ 	FT_Error error;
+ 
+@@ -552,9 +466,67 @@
+ 	//get params
+ 
+ 
+-	fb = rc = sx = ex = sy = ey = -1;
++	kb = fb = rc = sx = ex = sy = ey = -1;
++
++	/* open Framebuffer */
++	fb=open("/dev/fb/0", O_RDWR);
++
++	/* open Remote Control */
++	int cnt=0;
++	while(1)
++	{
++		struct stat s;
++		char tmp[128];
++		sprintf(tmp, "/dev/input/event%d", cnt);
++		if (stat(tmp, &s))
++			break;
++		/* open Remote Control */
++		if ((rc=open(tmp, O_RDONLY)) == -1)
++		{
++			perror("TuxCom <open remote control>");
++			return 0;
++		}
++		if (ioctl(rc, EVIOCGNAME(128), tmp) < 0)
++			perror("EVIOCGNAME failed");
++		if (strstr(tmp, "remote control"))
++			break;
++		close(rc);
++		rc=-1;
++		++cnt;
++	}
++	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
++
++	/* open dream ir keyboard */
++	cnt=0;
++	while(1)
++	{
++		struct stat s;
++		char tmp[128];
++		sprintf(tmp, "/dev/input/event%d", cnt);
++		if (stat(tmp, &s))
++			break;
++		/* open keyboard */
++		if ((kb=open(tmp, O_RDONLY)) == -1)
++		{
++			perror("TuxCom <open ir keyboard>");
++			return 0;
++		}
++		if (ioctl(kb, EVIOCGNAME(128), tmp) < 0)
++			perror("EVIOCGNAME failed");
++		if (strstr(tmp, "dreambox ir keyboard"))
++			break;
++		close(kb);
++		kb=-1;
++		++cnt;
++	}
++	fcntl(kb, F_SETFL, fcntl(kb, F_GETFL) | O_EXCL | O_NONBLOCK);
++
++	sx = 50;
++	ex = 670;
++	sy = 50;
++	ey = 526;
+ 
+-	for(; par; par = par->next)
++/*	for(; par; par = par->next)
+ 	{
+ 		if	(!strcmp(par->id, P_ID_FBUFFER)) fb = atoi(par->val);
+ 		else if	(!strcmp(par->id, P_ID_RCINPUT)) rc = atoi(par->val);
+@@ -563,9 +535,7 @@
+ 		else if	(!strcmp(par->id, P_ID_OFF_Y))   sy = atoi(par->val);
+ 		else if	(!strcmp(par->id, P_ID_END_Y))   ey = atoi(par->val);
+ 	}
+-#ifdef HAVE_DREAMBOX_HARDWARE
+-	kb=open("/dev/vc/0", O_RDONLY);
+-#endif
++*/
+ 
+ 	if(fb == -1 || rc == -1 || sx == -1 || ex == -1 || sy == -1 || ey == -1)
+ 	{
+@@ -643,17 +613,14 @@
+ 
+ 	use_kerning = FT_HAS_KERNING(face);
+ 
+-#if FREETYPE_MAJOR  == 2 && FREETYPE_MINOR == 0
++
+ 	desc.image_type = ftc_image_mono;
+-#else
+-	desc.flags = FT_LOAD_MONOCHROME;
+-#endif
+ 
+ 
+ 
+ 	//init backbuffer
+ 
+-	if(!(lbb = malloc(var_screeninfo.xres*var_screeninfo.yres)))
++	if(!(lbb = malloc(fix_screeninfo.line_length*var_screeninfo.yres)))
+ 	{
+ 		printf("TuxCom <allocating of Backbuffer failed>\n");
+ 		FTC_Manager_Done(manager);
+@@ -661,11 +628,11 @@
+ 		munmap(lfb, fix_screeninfo.smem_len);
+ 		return;
+ 	}
+-	memset(lbb, 0, var_screeninfo.xres*var_screeninfo.yres);
++	memset(lbb, 0, fix_screeninfo.line_length*var_screeninfo.yres);
+ 	RenderBox(0,0,var_screeninfo.xres,var_screeninfo.yres,FILL,BLACK);
+ 
+ 	//open avs
+-	if((avs = open(AVS, O_RDWR)) == -1)
++/*	if((avs = open(AVS, O_RDWR)) == -1)
+ 	{
+ 		printf("TuxCom <open AVS>");
+ 		return;
+@@ -678,7 +645,7 @@
+ 		printf("TuxCom <open SAA>");
+ 		return;
+ 	}
+-
++*/
+ 
+ 
+ 	//init data
+@@ -723,19 +690,15 @@
+ 
+ 	SetLanguage();
+ 
+-	ioctl(saa, SAAIOGWSS, &saa_old);
+-	ioctl(saa, SAAIOSWSS, &saamodes[screenmode]);
++//	ioctl(saa, SAAIOGWSS, &saa_old);
++//	ioctl(saa, SAAIOSWSS, &saamodes[screenmode]);
+ 	// setup screen
+ 	RenderFrame(LEFTFRAME);
+ 	RenderFrame(RIGHTFRAME);
+-	memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++	memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 	printf("TuxCom init successful\n");
+ 
+-#ifdef HAVE_DREAMBOX_HARDWARE
+- 	fcntl(rc, F_SETFL, O_NONBLOCK);
+-#else
+-	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) &~ O_NONBLOCK);
+-#endif
++//	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) &~ O_NONBLOCK);
+ 
+ 	int dosave = autosave;
+ 	int firstentry = 1;
+@@ -762,20 +725,11 @@
+ 				if (strcmp(szP,szPass) != 0) break;
+ 				RenderFrame(LEFTFRAME);
+ 				RenderFrame(RIGHTFRAME);
+-				memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++				memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			}
+ 		}
+ 		firstentry = 0;
+ 
+-#ifdef HAVE_DREAMBOX_HARDWARE
+-		if (kbcode != 0)
+-		{
+-			if (kbcode == 0x09) // tab
+-			{
+-				rccode = (curframe == 1 ? RC_LEFT : RC_RIGHT);
+-			}
+-		}
+-#endif
+ 		switch(rccode)
+ 		{
+ 				case RC_HELP:
+@@ -1332,7 +1286,7 @@
+ 			finfo[curframe].first     = finfo[curframe].selected - framerows+1;
+ 		RenderFrame(LEFTFRAME);
+ 		RenderFrame(RIGHTFRAME);
+-		memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++		memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 
+ 	}while(rccode != RC_HOME);
+ 
+@@ -1348,12 +1302,14 @@
+ 	munmap(lfb, fix_screeninfo.smem_len);
+ 
+ 	//restore videoformat
+-	ioctl(avs, AVSIOSSCARTPIN8, &fnc_old);
+-	ioctl(saa, SAAIOSWSS, &saa_old);
+-	close(avs);
+-	close(saa);
+-
+- 	fcntl(rc, F_SETFL, O_NONBLOCK);
++//	ioctl(avs, AVSIOSSCARTPIN8, &fnc_old);
++//	ioctl(saa, SAAIOSWSS, &saa_old);
++//	close(avs);
++//	close(saa);
++
++// 	fcntl(rc, F_SETFL, O_NONBLOCK);
++	close(rc);
++	close(kb);
+ 
+ 	ClearEntries   (LEFTFRAME );
+ 	ClearEntries   (RIGHTFRAME);
+@@ -1361,9 +1317,6 @@
+ 	ClearMarker    (RIGHTFRAME);
+ 	ClearZipEntries(LEFTFRAME );
+ 	ClearZipEntries(RIGHTFRAME);
+-#ifdef HAVE_DREAMBOX_HARDWARE
+-	if (kb != -1) close(kb);
+-#endif
+ 	return;
+ }
+ 
+@@ -1415,7 +1368,7 @@
+ 		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
+ 	}
+ 	if (refresh == YES)
+-		memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++		memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 
+ }
+ 
+@@ -1701,7 +1654,7 @@
+ 
+ 					RenderBox(viewx/2 + 2* BORDERSIZE               , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + 2* BORDERSIZE +BUTTONWIDTH   ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, (sel == 1 ? WHITE : GREEN));
+ 					RenderBox(viewx/2 + 2* BORDERSIZE             +1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + 2* BORDERSIZE +BUTTONWIDTH -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == 1 ? WHITE : GREEN));
+-					memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++					memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 					break;
+ 				case 2:
+ 					RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 - 4* BORDERSIZE  - BUTTONWIDTH/2              ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, (sel == 0 ? WHITE : RED  ));
+@@ -1712,7 +1665,7 @@
+ 
+ 					RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2                , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2  ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, (sel == 2 ? BLACK : YELLOW ));
+ 					RenderBox(viewx/2 + 4* BORDERSIZE + BUTTONWIDTH/2              +1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2-1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == 2 ? BLACK : YELLOW ));
+-					memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++					memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 					break;
+ 				case 4:
+ 					RenderBox(viewx/2 - 4* BORDERSIZE - BUTTONWIDTH - BUTTONWIDTH/2  , viewy-(viewy-he)/2 - 4*BORDERSIZE - 2*BUTTONHEIGHT  , viewx/2 - 4* BORDERSIZE  - BUTTONWIDTH/2              ,viewy-(viewy-he)/2- 4* BORDERSIZE - BUTTONHEIGHT  , GRID, (sel == 0 ? WHITE : RED    ));
+@@ -1729,7 +1682,7 @@
+ 
+ 					RenderBox(viewx/2 + 2* BORDERSIZE                                , viewy-(viewy-he)/2 - 2*BORDERSIZE -   BUTTONHEIGHT  , viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2  ,viewy-(viewy-he)/2- 2* BORDERSIZE                 , GRID, (sel == 4 ? WHITE : BLUE2  ));
+ 					RenderBox(viewx/2 + 2* BORDERSIZE                              +1, viewy-(viewy-he)/2 - 2*BORDERSIZE -   BUTTONHEIGHT+1, viewx/2 + 4* BORDERSIZE +BUTTONWIDTH + BUTTONWIDTH/2-1,viewy-(viewy-he)/2- 2* BORDERSIZE               -1, GRID, (sel == 4 ? WHITE : BLUE2  ));
+-					memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++					memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 					break;
+ 			}
+ 			drawsel = 0;
+@@ -1812,7 +1765,7 @@
+ 			RenderBox((viewx-BUTTONWIDTH)/2 , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT, viewx - (viewx-BUTTONWIDTH)/2,viewy-(viewy-he)/2 - 2*BORDERSIZE , GRID, WHITE);
+ 			break;
+ 	}
+-	memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++	memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ }
+ 
+ /******************************************************************************
+@@ -1953,7 +1906,7 @@
+ 			RenderBox(viewx/2 - 2* BORDERSIZE -BUTTONWIDTH+1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 - 2* BORDERSIZE             -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == YES ? WHITE : RED  ));
+ 			RenderBox(viewx/2 + 2* BORDERSIZE               , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + 2* BORDERSIZE +BUTTONWIDTH  ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, (sel == NO ? WHITE : GREEN));
+ 			RenderBox(viewx/2 + 2* BORDERSIZE             +1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + 2* BORDERSIZE +BUTTONWIDTH-1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == NO ? WHITE : GREEN));
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			drawsel = 0;
+ 		}
+ 
+@@ -2097,7 +2050,7 @@
+ 			RenderBox(viewx/2 - 2* BORDERSIZE -BUTTONWIDTH+1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 - 2* BORDERSIZE             -1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == YES ? WHITE : RED  ));
+ 			RenderBox(viewx/2 + 2* BORDERSIZE               , viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT  , viewx/2 + 2* BORDERSIZE +BUTTONWIDTH  ,viewy-(viewy-he)/2- 2* BORDERSIZE  , GRID, (sel == NO ? WHITE : GREEN));
+ 			RenderBox(viewx/2 + 2* BORDERSIZE             +1, viewy-(viewy-he)/2 - 2*BORDERSIZE - BUTTONHEIGHT+1, viewx/2 + 2* BORDERSIZE +BUTTONWIDTH-1,viewy-(viewy-he)/2- 2* BORDERSIZE-1, GRID, (sel == NO ? WHITE : GREEN));
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			drawsel = 0;
+ 		}
+ 		if (end == YES)
+@@ -2156,7 +2109,7 @@
+ 		}
+ 		RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, CENTER, BIG, WHITE);
+ 	}
+-	memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++	memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 	int drawsel = 0;
+ 	do{
+ 		GetRCCode(RC_NORMAL);
+@@ -2175,8 +2128,8 @@
+ 								return;
+ 							case 2:
+ 								screenmode = 1-screenmode;
+-								ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screenmode]);
+-								ioctl(saa, SAAIOSWSS, &saamodes[screenmode]);
++								//ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screenmode]);
++								//ioctl(saa, SAAIOSWSS, &saamodes[screenmode]);
+ 								return;
+ 							case 3:
+ 								SetPassword();
+@@ -2275,7 +2228,7 @@
+ 				}
+ 				RenderString(szEntry,(viewx-wi)/2+ BORDERSIZE , (viewy-he)/2 + BORDERSIZE + (i+1)*FONTHEIGHT_BIG-FONT_OFFSET , wi, CENTER, BIG, WHITE);
+ 			}
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			drawsel = 0;
+ 		}
+ 	}while(1);
+@@ -2372,7 +2325,7 @@
+ 	colortool[3] = (pass == NO ? ACTION_INSTEXT  : ACTION_NOACTION);
+ 	RenderMenuLine(-1, EDIT);
+ 
+-	memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++	memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 
+ 	do{
+ 		while (GetRCCode(RC_EDIT) == 0);
+@@ -2688,7 +2641,7 @@
+ 			colortool[3] = ACTION_NOACTION;
+ 		}
+ 		RenderMenuLine(-1, EDIT);
+-		memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++		memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 	}while(1);
+ 
+ 	rccode = -1;
+@@ -3741,7 +3694,7 @@
+ 	            p = p1+1;
+ 			}
+ 			pStop = p;
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			while (GetRCCode(RC_NORMAL) == 0);
+ 			switch (rccode)
+ 			{
+@@ -4160,7 +4113,7 @@
+ 			}
+ 			RenderBox(  viewx/6 +3*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG  ,   viewx/6 + 4*BORDERSIZE, viewy-MENUSIZE             , FILL, WHITE);
+ 			RenderBox(  viewx/3 -2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG  ,   viewx/3 -   BORDERSIZE, viewy-MENUSIZE             , FILL, WHITE);
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			while (GetRCCode(RC_NORMAL) == 0);
+ 			switch (rccode)
+ 			{
+@@ -4666,7 +4619,7 @@
+ 
+ 		if (row > framerows - 2)
+ 		{
+-			memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++			memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 			while (1)
+ 			{
+ 				GetRCCode(RC_NORMAL);
+@@ -4687,7 +4640,7 @@
+ 	}
+ 	if (row>0)
+ 	{
+-		memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
++		memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+ 		while (1)
+ 		{
+ 			GetRCCode(RC_NORMAL);
+@@ -4773,10 +4726,10 @@
+ 	finfo[LEFTFRAME].sort = SORT_UP;
+ 	finfo[RIGHTFRAME].sort = SORT_UP;
+ 
+-	fp = fopen( CONFIGDIR "/tuxcom.conf", "r" );
++	fp = fopen( "/etc/tuxbox/tuxcom.conf", "r" );
+ 	if ( !fp )
+ 	{
+-		printf("tuxcom: could not open " CONFIGDIR "/tuxcom.conf !!!\n");
++		printf("tuxcom: could not open /etc/tuxbox/tuxcom.conf !!!\n");
+ 	}
+ 	else
+ 	{
+@@ -4890,10 +4843,10 @@
+ 	FILE *fp;
+ 
+ 
+-	fp = fopen( CONFIGDIR "/tuxcom.conf", "w" );
++	fp = fopen( "/etc/tuxbox/tuxcom.conf", "w" );
+ 	if ( !fp )
+ 	{
+-		printf("tuxcom: could not open " CONFIGDIR "/tuxcom.conf !!!\n");
++		printf("tuxcom: could not open /etc/tuxbox/tuxcom.conf !!!\n");
+ 	}
+ 	else
+ 	{
+diff -u tuxcom_cvs/tuxcom.h tuxcom/tuxcom.h
+--- tuxcom_cvs/tuxcom.h	2008-11-03 13:15:00.000000000 +0100
++++ tuxcom/tuxcom.h	2006-06-29 23:44:25.000000000 +0200
+@@ -22,7 +22,7 @@
+ 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA
+ */
+ 
+-#include <config.h>
++//#include <config.h>
+ #include <errno.h>
+ #include <locale.h>
+ #include <fcntl.h>
+@@ -37,10 +37,10 @@
+ #include <sys/mman.h>
+ #include <sys/dir.h>
+ #include <sys/stat.h>
+-#include <plugin.h>
++//#include <plugin.h>
+ 
+-#include <dbox/avs_core.h>
+-#include <dbox/saa7126_core.h>
++//#include <dbox/avs_core.h>
++//#include <dbox/saa7126_core.h>
+ 
+ #include <netinet/in.h>
+ #include <netdb.h>
+@@ -53,12 +53,10 @@
+ #include FT_CACHE_SMALL_BITMAPS_H
+ 
+ 
+-#ifndef HAVE_DREAMBOX_HARDWARE
+ #include <linux/input.h>
+-#endif
+ 
+-#define AVS "/dev/dbox/avs0"
+-#define SAA "/dev/dbox/saa0"
++//#define AVS "/dev/dbox/avs0"
++//#define SAA "/dev/dbox/saa0"
+ 
+ #define MENUROWS      10
+ #define MENUITEMS     10
+@@ -80,64 +78,6 @@
+ #define MSG_VERSION    "Tuxbox Commander Version 1.13\n"
+ #define MSG_COPYRIGHT  "© dbluelle 2004-2005"
+ 
+-#ifdef HAVE_DREAMBOX_HARDWARE
+-
+-//rc codes
+-#define KEY_0		0x5C00
+-#define KEY_1		0x5C01
+-#define KEY_2		0x5C02
+-#define KEY_3		0x5C03
+-#define KEY_4		0x5C04
+-#define KEY_5		0x5C05
+-#define KEY_6		0x5C06
+-#define KEY_7		0x5C07
+-#define KEY_8		0x5C08
+-#define KEY_9		0x5C09
+-#define KEY_POWER	0x5C0C
+-#define KEY_UP		0x5C0E
+-#define KEY_DOWN	0x5C0F
+-#define KEY_VOLUMEUP	0x5C16
+-#define KEY_VOLUMEDOWN	0x5C17
+-#define KEY_HOME	0x5C20
+-#define KEY_SETUP	0x5C27
+-#define KEY_MUTE	0x5C28
+-#define KEY_RED		0x5C2D
+-#define KEY_RIGHT	0x5C2E
+-#define KEY_LEFT	0x5C2F
+-#define KEY_OK		0x5C30
+-#define KEY_BLUE	0x5C3B
+-#define KEY_YELLOW	0x5C52
+-#define KEY_GREEN	0x5C55
+-#define KEY_HELP	0x5C82
+-
+-#define	RC_0		0x00
+-#define	RC_1		0x01
+-#define	RC_2		0x02
+-#define	RC_3		0x03
+-#define	RC_4		0x04
+-#define	RC_5		0x05
+-#define	RC_6		0x06
+-#define	RC_7		0x07
+-#define	RC_8		0x08
+-#define	RC_9		0x09
+-#define	RC_RIGHT	0x0A
+-#define	RC_LEFT		0x0B
+-#define	RC_UP		0x0C
+-#define	RC_DOWN		0x0D
+-#define	RC_OK		0x0E
+-#define	RC_MUTE		0x0F
+-#define	RC_STANDBY	0x10
+-#define	RC_GREEN	0x11
+-#define	RC_YELLOW	0x12
+-#define	RC_RED		0x13
+-#define	RC_BLUE		0x14
+-#define	RC_PLUS		0x15
+-#define	RC_MINUS	0x16
+-#define	RC_HELP		0x17
+-#define	RC_DBOX		0x18
+-#define	RC_HOME		0x1F
+-
+-#else
+ // rc codes
+ #define	RC_0			'0'
+ #define	RC_1			'1'
+@@ -247,12 +187,13 @@
+ #define KBC_PAGEDOWN	0x0C
+ #define KBC_RETURN	0x0D
+ 
+-#endif
++
+ 
+ 
+ //freetype stuff
+ 
+-#define FONT FONTDIR "/pakenham.ttf"
++//#define FONT "/usr/share/fonts/md_khmurabi_10.ttf"
++#define FONT "/usr/share/fonts/pakenham.ttf"
+ // if font is not in usual place, we look here:
+ #define FONT2 "/var/tuxbox/config/enigma/fonts/pakenham.ttf"
+ 
+@@ -265,11 +206,7 @@
+ FTC_Manager		manager;
+ FTC_SBitCache		cache;
+ FTC_SBit		sbit;
+-#if FREETYPE_MAJOR  == 2 && FREETYPE_MINOR == 0
+ FTC_Image_Desc		desc;
+-#else
+-FTC_ImageTypeRec	desc;
+-#endif
+ FT_Face			face;
+ FT_UInt			prev_glyphindex;
+ FT_Bool			use_kerning;
+@@ -296,6 +233,14 @@
+ struct fb_fix_screeninfo fix_screeninfo;
+ struct fb_var_screeninfo var_screeninfo;
+ 
++unsigned char bgra[][4] = { 
++"\x00\x00\x00\x00", "\xFF\xFF\xFF\xFF", "\x00\x00\x00\xFF", "\x80\x00\x00\xFF",
++"\xFF\x80\x00\xFF", "\x00\xC0\xFF\xFF", "\x00\xD0\x00\xFF", "\x00\xE8\xE8\xFF",
++"\x00\x00\xFF\xFF", "\xB0\xB0\xB0\xFF", "\x00\xFF\x00\xFF", "\x50\x50\x50\xFF",
++"\x80\x00\x00\xC0", "\x50\x50\x50\xC0", "\xFF\x40\x00\xFf" };
++
++
++
+ unsigned short rd[] = {0xFF<<8, 0x00<<8, 0x00<<8, 0x00<<8, 0xFF<<8, 0x00<<8, 0xE8<<8, 0xFF<<8, 0xb0<<8, 0x00<<8, 0x50<<8, 0x00<<8, 0x50<<8, 0x00<<8};
+ unsigned short gn[] = {0xFF<<8, 0x00<<8, 0x00<<8, 0x80<<8, 0xC0<<8, 0xd0<<8, 0xE8<<8, 0x00<<8, 0xb0<<8, 0xff<<8, 0x50<<8, 0x00<<8, 0x50<<8, 0x40<<8};
+ unsigned short bl[] = {0xFF<<8, 0x00<<8, 0x80<<8, 0xFF<<8, 0x00<<8, 0x00<<8, 0x00<<8, 0x00<<8, 0xb0<<8, 0x00<<8, 0x50<<8, 0x80<<8, 0x50<<8, 0xff<<8};
+@@ -306,9 +251,7 @@
+ int trans_map     [] = {BLUE1,BLUE_TRANSP,TRANSP};
+ int trans_map_mark[] = {GRAY2,GRAY_TRANSP,GRAY_TRANSP};
+ 
+-#ifndef HAVE_DREAMBOX_HARDWARE
+ struct input_event ev;
+-#endif
+ 
+ unsigned short rccode;
+ char kbcode;
+@@ -338,8 +281,8 @@
+ char szPass[20];
+ long commandsize;
+ 
+-int fncmodes[] = {AVS_FNCOUT_EXT43, AVS_FNCOUT_EXT169};
+-int saamodes[] = {SAA_WSS_43F, SAA_WSS_169F};
++//int fncmodes[] = {AVS_FNCOUT_EXT43, AVS_FNCOUT_EXT169};
++//int saamodes[] = {SAA_WSS_43F, SAA_WSS_169F};
+ 
+ FILE *conf;
+ int language, langselect, autosave;

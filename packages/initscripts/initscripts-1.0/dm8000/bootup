@@ -7,14 +7,14 @@ echo 12 > /proc/progress
 depmod -Ae
 echo 13 > /proc/progress
 
-swapon -a
-echo 14 > /proc/progress
-
-for mod in isofs cifs nfsd usb-storage sd autofs4 vfat ide-cd cdfs; do
+for mod in isofs cifs usb-storage sd_mod autofs4 vfat ide-cd cdfs; do
 	modprobe $mod
 done
 
 mount -at nonfs,nosmbfs,noncpfs,nocifs
+echo 14 > /proc/progress
+
+swapon -a
 echo 15 > /proc/progress
 
 tar xzf /etc/var.tar.gz -C /
@@ -68,18 +68,19 @@ automount --ghost --timeout=1 /autofs file /etc/auto.hotplug
 hostname -F /etc/hostname
 
 echo 22 > /proc/progress
+
 /usr/bin/wdog /usr/bin/dccamd -
 
 echo 23 > /proc/progress
-ifup -a
 
-echo 24 > /proc/progress
-mount -at nfs,smbfs,cpfs
+ifup -a
 
 [ -e "/etc/sysctl.conf" ] && /sbin/sysctl -p "/etc/sysctl.conf"
 
-echo 25 > /proc/progress
+echo 24 > /proc/progress
 
 ldconfig
+
+echo 25 > /proc/progress
 
 ipkg-cl configure

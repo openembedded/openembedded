@@ -1,0 +1,42 @@
+diff -Naur libs-org/libtuxtxt/libtuxtxt.c libs/libtuxtxt/libtuxtxt.c
+--- libs-org/libtuxtxt/libtuxtxt.c	2008-11-25 21:47:38.000000000 +0100
++++ libs/libtuxtxt/libtuxtxt.c	2008-11-25 22:27:04.000000000 +0100
+@@ -49,6 +49,13 @@
+ 	tuxtxt_cache.vtxtpid = -1;
+ 	tuxtxt_cache.thread_id = 0;
+ 	tuxtxt_cache.dmx = -1;
++
++#if HAVE_DVB_API_VERSION < 3
++	strcpy(tuxtxt_cache.demux, "/dev/dvb/card0/demux0");
++#else
++	strcpy(tuxtxt_cache.demux, "/dev/dvb/adapter0/demux0");
++#endif
++
+ 	return 1;//tuxtxt_init_demuxer();
+ }
+ 
+diff -Naur libs-org/libtuxtxt/tuxtxt_def.h libs/libtuxtxt/tuxtxt_def.h
+--- libs-org/libtuxtxt/tuxtxt_def.h	2008-11-25 21:47:38.000000000 +0100
++++ libs/libtuxtxt/tuxtxt_def.h	2008-11-25 22:25:23.000000000 +0100
+@@ -14,12 +14,11 @@
+  #define pes_type pesType
+  #define dmx_sct_filter_params dmxSctFilterParams
+  #include <ost/dmx.h>
+- #define DMX "/dev/dvb/card0/demux0"
+ #else
+  #include <linux/dvb/dmx.h>
+- #define DMX "/dev/dvb/adapter0/demux0"
+ #endif
+ 
++#define DMX tuxtxt_cache.demux
+ 
+ #define FLOFSIZE 4
+ 
+@@ -108,6 +107,7 @@
+ 	short flofpages[0x900][FLOFSIZE];
+ 	unsigned char adip[0x900][13];
+ 	unsigned char subpagetable[0x900];
++	char demux[64];
+ 	int dmx;
+ 	int vtxtpid;
+ 	int cached_pages, page, subpage, pageupdate,page_receiving, current_page[9], current_subpage[9];

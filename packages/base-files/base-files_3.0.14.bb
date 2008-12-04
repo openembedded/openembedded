@@ -1,7 +1,8 @@
 DESCRIPTION = "Miscellaneous files for the base system."
 SECTION = "base"
 PRIORITY = "required"
-PR = "r55"
+PR = "r56"
+
 LICENSE = "GPL"
 
 SRC_URI = " \

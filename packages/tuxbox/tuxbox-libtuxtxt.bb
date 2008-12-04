@@ -4,8 +4,9 @@ MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox;module=apps/tuxbox/libs;method=ext \
            file://acinclude.m4"
 
-SRC_URI_append_dm7025 = " file://libtuxtxt_bugfix.patch;patch=1"
-SRC_URI_append_dm800 = " file://libtuxtxt_bugfix.patch;patch=1"
+SRC_URI_append_dm7025 = " file://libtuxtxt_bugfix.patch;patch=1 file://libtuxtxt_allow_different_demux.diff;patch=1"
+SRC_URI_append_dm800 = " file://libtuxtxt_bugfix.patch;patch=1 file://libtuxtxt_allow_different_demux.diff;patch=1"
+SRC_URI_append_dm8000 = " file://libtuxtxt_bugfix.patch;patch=1 file://libtuxtxt_allow_different_demux.diff;patch=1"
 
 SRCDATE_dm600pvr = "20070307"
 SRCDATE_dm500plus = "20070307"
@@ -15,7 +16,7 @@ SRCDATE_dm8000 = "20050912"
 SRCDATE_dm7020 = "20070307"
 
 PN = "libtuxtxt"
-PR = "r1"
+PR = "r2"
 
 PV = "0.0+cvs${SRCDATE}"
 S = "${WORKDIR}/libs"

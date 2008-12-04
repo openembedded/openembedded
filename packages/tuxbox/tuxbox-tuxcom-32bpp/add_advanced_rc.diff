@@ -1,0 +1,83 @@
+--- tuxcom/tuxcom.c	2006-06-29 23:44:21.000000000 +0200
++++ tuxcom/tuxcom.c	2008-10-22 22:34:16.000000000 +0200
+@@ -36,7 +36,8 @@
+ 	struct input_event ev;
+ 	static __u16 rc_last_key = KEY_RESERVED;
+ 	static __u16 rc_last_code = KEY_RESERVED;
+-	if(read(rc, &ev, sizeof(ev)) == sizeof(ev))
++	if ((read(rc[0], &ev, sizeof(ev)) == sizeof(ev)) ||
++	    (rc[1] != -1 && read(rc[1], &ev, sizeof(ev)) == sizeof(ev)))
+ 	{
+ 		if(ev.value)
+ 		{
+@@ -466,14 +467,16 @@
+ 	//get params
+ 
+ 
+-	kb = fb = rc = sx = ex = sy = ey = -1;
++	kb = fb = sx = ex = sy = ey = -1;
+ 
+ 	/* open Framebuffer */
+ 	fb=open("/dev/fb/0", O_RDWR);
+ 
+ 	/* open Remote Control */
+-	int cnt=0;
+-	while(1)
++	int cnt=0, rc_num=0;
++	rc[0]=rc[1]=-1;
++	
++	while(rc_num < 2)
+ 	{
+ 		struct stat s;
+ 		char tmp[128];
+@@ -481,20 +484,20 @@
+ 		if (stat(tmp, &s))
+ 			break;
+ 		/* open Remote Control */
+-		if ((rc=open(tmp, O_RDONLY)) == -1)
++		if ((rc[rc_num]=open(tmp, O_RDONLY | O_EXCL | O_NONBLOCK)) == -1)
+ 		{
+ 			perror("TuxCom <open remote control>");
+ 			return 0;
+ 		}
+-		if (ioctl(rc, EVIOCGNAME(128), tmp) < 0)
++		if (ioctl(rc[rc_num], EVIOCGNAME(128), tmp) < 0)
+ 			perror("EVIOCGNAME failed");
+-		if (strstr(tmp, "remote control"))
+-			break;
+-		close(rc);
+-		rc=-1;
++		if (!strstr(tmp, "remote control"))
++			close(rc[rc_num]);
++		else
++			++rc_num;
+ 		++cnt;
+ 	}
+-	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
++//	fcntl(rc, F_SETFL, fcntl(rc, F_GETFL) | O_EXCL | O_NONBLOCK);
+ 
+ 	/* open dream ir keyboard */
+ 	cnt=0;
+@@ -1308,7 +1311,10 @@
+ //	close(saa);
+ 
+ // 	fcntl(rc, F_SETFL, O_NONBLOCK);
+-	close(rc);
++	if (rc[0] != -1)
++			close(rc[0]);
++	if (rc[1] != -1)
++			close(rc[1]);
+ 	close(kb);
+ 
+ 	ClearEntries   (LEFTFRAME );
+--- tuxcom/tuxcom.h	2006-06-29 23:44:25.000000000 +0200
++++ tuxcom/tuxcom.h	2008-10-22 22:29:15.000000000 +0200
+@@ -259,7 +259,7 @@
+ //some data
+ 
+ int avs, saa, fnc_old, saa_old, screenmode;
+-int rc, fb, kb;
++int rc[2], fb, kb;
+ int sx, ex, sy, ey;
+ int PosX, PosY, StartX, StartY, FrameWidth, NameWidth, SizeWidth;
+ int curframe, cursort, curvisibility;

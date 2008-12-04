@@ -1,13 +1,12 @@
 DESCRIPTION = "Linux kernel for Dreambox DM8000"
 LICENSE = "GPL"
-PN = "linux-dm8000"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r7"
+PR = "r9"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
-	file://dm8000_defconfig \
+	file://${MACHINE}_defconfig \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-brcm-5.1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-update_dvbapi-r1.patch.bz2;patch=1;pnum=1 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-dvb-multipid-r4.patch.bz2;patch=1;pnum=1 \
@@ -17,7 +16,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	http://sources.dreamboxupdate.com/download/kernel-patches/linux-2.6.12-add-ioprio.patch.bz2;patch=1;pnum=1 \
 	file://linux-2.6.12-dvbapi-support-more-demux.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-misc.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-dm8000-nand.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-${MACHINE}-nand.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-dream-temp.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-mtd-blkdevfs-fix.diff;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-fix-usb-for-revb0.diff;patch=1;pnum=1 \
@@ -29,7 +28,7 @@ SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
 	file://linuxmips-2.6.12-gcc4-compile-fix.patch;patch=1;pnum=1 \
 	file://linuxmips-2.6.12-gdb-fix.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-brcm-fix-minipci.patch;patch=1;pnum=1 \
-	file://linux-2.6.12-fix-bcmemac-ioctl.patch;patch=1;pnum=1 \
+	file://linux-2.6.12-bcmemac-ethtool.patch;patch=1;pnum=1 \
 	file://linux-2.6.12-fixup-memsize.patch;patch=1;pnum=1 \
 	http://trappist.elis.ugent.be/~mronsse/cdfs/download/cdfs-2.6.12.tar.bz2"
 
@@ -54,7 +53,7 @@ do_munge() {
 addtask munge before do_patch after do_unpack
 
 do_configure_prepend() {
-	oe_machinstall -m 0644 ${WORKDIR}/dm8000_defconfig ${S}/.config
+	oe_machinstall -m 0644 ${WORKDIR}/${MACHINE}_defconfig ${S}/.config
 	if [ -d ${WORKDIR}/cdfs-${PV} ]; then
 		mv ${WORKDIR}/cdfs-${PV} ${S}/fs/cdfs
 		cd ${S} & patch -p0 < ${S}/fs/cdfs/patch.cdfs
@@ -72,16 +71,20 @@ do_install_append () {
 
 pkg_preinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postinst_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
 
 pkg_prerm_kernel-image () {
 	[ -d /proc/stb ] && mount -o rw,remount /boot
+	true
 }
 
 pkg_postrm_kernel-image () {
 	[ -d /proc/stb ] && mount -o ro,remount /boot
+	true
 }
