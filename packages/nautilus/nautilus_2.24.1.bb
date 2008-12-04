@@ -2,15 +2,14 @@
 # Copyright (C) 2005, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-PR = "r3"
+PR = "r4"
 
 inherit gnome
 LICENSE="GPL"
 
-DEPENDS = "librsvg libexif eel esound gnome-desktop"
-RRECOMMENDS = "shared-mime-info"
+DEPENDS += " tracker librsvg libexif eel esound gnome-desktop"
 
-EXTRA_OECONF = "--disable-gtk-doc"
+EXTRA_OECONF = " --disable-gtk-doc  --disable-update-mimedb "
 
 PACKAGES += " libnautilus"
 
