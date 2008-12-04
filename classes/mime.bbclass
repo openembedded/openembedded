@@ -1,5 +1,4 @@
 DEPENDS += "shared-mime-info-native shared-mime-info"
-RDEPENDS += "shared-mime-info"
 
 mime_postinst() {
 if [ "$1" = configure ]; then
@@ -39,16 +38,19 @@ python populate_packages_append () {
 				if mime_re.match(f):
 					mimes.append(f)
 		if mimes != []:
-			bb.note("adding mime postinst and prerm scripts to %s" % pkg)
+			bb.note("adding mime postinst and postrm scripts to %s" % pkg)
 			postinst = bb.data.getVar('pkg_postinst_%s' % pkg, d, 1) or bb.data.getVar('pkg_postinst', d, 1)
 			if not postinst:
 				postinst = '#!/bin/sh\n'
 			postinst += bb.data.getVar('mime_postinst', d, 1)
 			bb.data.setVar('pkg_postinst_%s' % pkg, postinst, d)
-			prerm = bb.data.getVar('pkg_prerm_%s' % pkg, d, 1) or bb.data.getVar('pkg_prerm', d, 1)
-			if not prerm:
-				prerm = '#!/bin/sh\n'
-			prerm += bb.data.getVar('mime_prerm', d, 1)
-			bb.data.setVar('pkg_prerm_%s' % pkg, prerm, d)
-
+			postrm = bb.data.getVar('pkg_postrm_%s' % pkg, d, 1) or bb.data.getVar('pkg_postrm', d, 1)
+			if not postrm:
+				postrm = '#!/bin/sh\n'
+			postrm += bb.data.getVar('mime_postrm', d, 1)
+			bb.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
+			bb.note("adding shared-mime-info dependency to %s" % pkg)
+			rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
+			rdepends.append("freedesktop-mime-info")
+			bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
 }
