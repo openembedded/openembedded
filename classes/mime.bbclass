@@ -2,13 +2,23 @@ DEPENDS += "shared-mime-info-native shared-mime-info"
 
 mime_postinst() {
 if [ "$1" = configure ]; then
-	update-mime-database $D${datadir}/mime
+	if [ -x ${bindir}/update-mime-database ] ; then
+		update-mime-database $D${datadir}/mime
+	else
+		echo "Missing ${bindir}/update-mime-database, update of mime database failed!"
+		exit 1
+	fi
 fi
 }
 
-mime_prerm() {
+mime_postrm() {
 if [ "$1" = remove ] || [ "$1" = upgrade ]; then
-    update-mime-database $D${datadir}/mime
+	if [ -x ${bindir}/update-mime-database ] ; then
+		update-mime-database $D${datadir}/mime
+	else
+		echo "Missing ${bindir}/update-mime-database, update of mime database failed!"
+		exit 1
+	fi
 fi
 }
 
