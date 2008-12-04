@@ -1,8 +1,8 @@
-Index: openttd-0.6.2/config.lib
+Index: openttd-0.6.3/config.lib
 ===================================================================
---- openttd-0.6.2.orig/config.lib	2008-08-02 01:52:22.000000000 +0200
-+++ openttd-0.6.2/config.lib	2008-09-23 08:57:53.000000000 +0200
-@@ -1247,7 +1247,7 @@
+--- openttd-0.6.3.orig/config.lib	2008-10-01 19:00:50.000000000 +0200
++++ openttd-0.6.3/config.lib	2008-12-04 19:04:29.000000000 +0100
+@@ -1341,7 +1341,7 @@
  		if [ -z "$6" ]; then
  			compiler="$3"
  		else
@@ -11,7 +11,7 @@ Index: openttd-0.6.2/config.lib
  		fi
  		machine=`eval $compiler $9 2>/dev/null`
  		ret=$?
-@@ -1263,11 +1263,6 @@
+@@ -1357,11 +1357,6 @@
  			exit 1
  		fi
  
