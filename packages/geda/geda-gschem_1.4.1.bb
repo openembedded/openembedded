@@ -8,3 +8,5 @@ SRC_URI = "http://geda.seul.org/release/v1.4/${PV}/${P}.tar.gz \
 	   file://bad-include.patch;patch=1"
 
 inherit autotools pkgconfig
+
+EXTRA_OECONF = "--disable-update-desktop-database"

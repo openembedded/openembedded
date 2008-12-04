@@ -1,4 +1,4 @@
-DESCRIPTION = "GUI/Project Manager for teh gEDA suite"
+DESCRIPTION = "Virtual package including the whole gEDA suite"
 LICENSE = "GPLv2"
 HOMEPAGE = "http://geda.seul.org"
 
