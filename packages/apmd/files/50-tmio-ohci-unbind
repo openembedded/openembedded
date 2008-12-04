@@ -1,0 +1,19 @@
+#!/bin/sh
+
+TOPATH=/sys/bus/platform/drivers/tmio-ohci
+
+case "$1" in
+	suspend)
+		if [ -d $TOPATH ]
+		then
+			echo -n tmio-ohci >  $TOPATH/unbind
+		fi
+		;;
+	resume)
+		if [ -d $TOPATH ]
+		then
+			echo -n tmio-ohci >  $TOPATH/bind
+		fi
+		;;
+esac
+

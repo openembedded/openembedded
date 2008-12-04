@@ -1,0 +1,22 @@
+Index: gphoto2-2.4.2/m4m/gp-check-popt.m4
+===================================================================
+--- gphoto2-2.4.2.orig/m4m/gp-check-popt.m4	2008-12-04 01:46:40.000000000 +0300
++++ gphoto2-2.4.2/m4m/gp-check-popt.m4	2008-12-04 01:47:03.000000000 +0300
+@@ -69,7 +69,7 @@
+		if test -n "${popt_prefix}"; then
+			:
+		elif test -d "${popt_prefix}/include"; then
+-			CPPFLAGS="-I${popt_prefix}/include ${CPPFLAGS}"
++			CPPFLAGS="-I${popt_prefix}/include ${CPPFLAGS_save}"
+		else
+			continue
+		fi
+@@ -113,7 +113,7 @@
+			if test "${popt_libdir}" = "/"; then
+				popt_libdir=""
+			elif test -d "${popt_libdir}"; then
+-				LDFLAGS="-L${popt_libdir} ${LDFLAGS}"
++				LDFLAGS="-L${popt_libdir} ${LDFLAGS_save}"
+			else
+				continue
+			fi
