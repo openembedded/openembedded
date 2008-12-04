@@ -1,9 +1,9 @@
 DESCRIPTION="AiO screen grabber for dreambox stbs"
 LICENSE = "GPL"
 
-PR = "r1"
+PR = "r0"
 PV = "0.8cvs${SRCDATE}"
-SRCDATE = "20081204"
+SRCDATE = "20081205"
 SRC_URI="cvs://anonymous@cvs.schwerkraft.elitedvb.net/cvsroot/aio-grab;module=aio-grab;method=pserver"
 
 S = "${WORKDIR}/aio-grab"
