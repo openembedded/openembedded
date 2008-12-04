@@ -10,7 +10,7 @@ LICENSE = "Boost Software License"
 
 DEPENDS = "python boost-jam-native zlib bzip2"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \
@@ -50,6 +50,7 @@ do_configure() {
 
   echo "import toolset : using ;" > tools/build/v2/user-config.jam
 	echo "using gcc : : ${CC} : <cflags>${CFLAGS} <cxxflags>${CXXFLAGS} $platform_config<linkflags>${LDFLAGS} ;" >> tools/build/v2/user-config.jam
+	echo "using python : 2.5 : : ${STAGING_INCDIR}/python2.5 : ${STAGING_LIBDIR}/python2.5 : : ; " >> tools/build/v2/user-config.jam
 }
 
 do_compile() {
