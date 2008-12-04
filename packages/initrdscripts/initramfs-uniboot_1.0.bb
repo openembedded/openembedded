@@ -1,5 +1,5 @@
 SRC_URI = "file://init.sh"
-PR = "r9"
+PR = "r10"
 DESCRIPTON = "A modular initramfs init script system."
 RRECOMMENDS = "kernel-module-mtdblock"
 
