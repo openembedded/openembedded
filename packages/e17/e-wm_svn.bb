@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 inherit e update-alternatives
 
