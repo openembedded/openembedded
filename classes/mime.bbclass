@@ -1,4 +1,5 @@
 DEPENDS += "shared-mime-info-native shared-mime-info"
+RDEPENDS += "shared-mime-info"
 
 mime_postinst() {
 if [ "$1" = configure ]; then
