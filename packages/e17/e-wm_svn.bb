@@ -43,6 +43,7 @@ RRECOMMENDS_${PN} = "\
   ${PN}-icons \
   ${PN}-other \
   ${PN}-input-methods \
+  ${PN}-sysactions \
 "
 
 PACKAGE_ARCH_${PN}-config-default = "all"
@@ -59,7 +60,7 @@ PACKAGE_ARCH_${PN}-images = "all"
 PACKAGE_ARCH_${PN}-icons = "all"
 PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
-PACKAGE_ARCH_${PN}-sysactions = "${MACHINE_ARCH}"
+PACKAGE_ARCH_${PN}-sysactions = "all"
 
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
@@ -140,8 +141,6 @@ FILES_${PN}-dbg += "\
   ${libdir}/enlightenment/modules/*/*/.debug/ \
   ${libdir}/enlightenment/preload/.debug/ \
 "
-FILES_${PN}-dev += "${libdir}/enlightenment/preload/*.?a"
-
 CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
