@@ -24,6 +24,7 @@ RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 #PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
+RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
 DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
 DESCRIPTION_append_enigma2-plugin-extensions-pictureplayer = "displays photos on the TV."
 DESCRIPTION_append_enigma2-plugin-systemplugins-configurationbackup = "backs up your configuration and restores them optionally."
