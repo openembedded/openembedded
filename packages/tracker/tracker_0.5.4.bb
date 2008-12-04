@@ -2,7 +2,7 @@ DESCRIPTION = "Tracker is a tool designed to extract information and metadata ab
 LICENSE = "GPLv2"
 DEPENDS = "file gtk+ gstreamer gamin libgmime dbus poppler libexif libgsf"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://www.gnome.org/~jamiemcc/tracker/tracker-${PV}.tar.gz \
            file://no-ioprio.patch;patch=1" 
@@ -10,7 +10,11 @@ SRC_URI = "http://www.gnome.org/~jamiemcc/tracker/tracker-${PV}.tar.gz \
 inherit autotools pkgconfig
 
 do_install_append() {
-	cp -dPr ${D}${STAGING_DATADIR}/* ${D}${datadir}/ 
+	cp -dPr ${D}${STAGING_DATADIR}/* ${D}${datadir}/ || true 
+}
+
+do_stage() {
+	autotools_stage_all
 }
 
 FILES_${PN} += "${datadir}/dbus-1/"
