@@ -2,9 +2,9 @@ DESCRIPTION = "MIDPath is a Java library which provides a MIDP2 implementation"
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
 require midpath-common.inc
 

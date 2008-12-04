@@ -1,7 +1,25 @@
 #!/bin/sh
 
 if [ ! $LAUNCHER_CLASS ]; then
-  LAUNCHER_CLASS=org.thenesis.midpath.main.MIDletLauncher
+  if [ $# -lt 2 ]; then
+    echo "Usage :"
+    echo "  $(basename $0) <classpath> <midlet-class> [midlet-name]"
+    echo "  $(basename $0) -jar <jar-file>"
+    exit 1
+  fi
+
+  LAUNCHER_CLASS=org.thenesis.midpath.main.MIDletLauncherSE
+
+  # Add the MIDlet jar to the classpath  (must be loaded by the main classloader)
+  if [ $1 = "-jar" ]; then
+    CP=$2
+    ARGS="$1 $2"
+  else
+    CP=$1
+    ARGS="$2 $3"
+  fi
+else
+  ARGS="$@"
 fi
 
 if [ ! $JAVA ]; then
@@ -15,7 +33,7 @@ MIDPATH_HOME=/usr/share/midpath
 JLP=/usr/lib/jni
 
 # Set the classpath
-CP=\
+CP=$CP:\
 $MIDPATH_HOME/configuration:\
 $MIDPATH_HOME/midpath.jar:\
 $MIDPATH_HOME/microbackend.jar:\
@@ -25,6 +43,8 @@ $MIDPATH_HOME/jlayerme-cldc.jar:\
 $MIDPATH_HOME/jorbis-cldc.jar:\
 $MIDPATH_HOME/avetanabt-cldc.jar:\
 $MIDPATH_HOME/jgl-cldc.jar:\
+$MIDPATH_HOME/jsr172-jaxp.jar:\
+$MIDPATH_HOME/jsr172-jaxrpc.jar:\
 $MIDPATH_HOME/jsr239-opengles-jgl.jar:\
 $MIDPATH_HOME/jsr239-opengles-core.jar:\
 $MIDPATH_HOME/jsr239-opengles-nio.jar:\
@@ -43,8 +63,5 @@ then
   CP=$CP:$CLASSPATH
 fi
 
-# Add the MIDlet jar to the classpath  (must be loaded by the main classloader)
-CP=$CP:$MIDPATH_HOME/repository/midpath-demos.jar
-
-$JAVA -cp $CP -Djava.library.path=$JLP $LAUNCHER_CLASS "$@"
+$JAVA -cp $CP -Djava.library.path=$JLP $LAUNCHER_CLASS $ARGS
 

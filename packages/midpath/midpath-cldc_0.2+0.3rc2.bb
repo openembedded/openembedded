@@ -2,9 +2,9 @@ require midpath-common.inc
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
 DESCRIPTION = "Implementation of the CLDC profile for use in the MIDPath library"
 RPROVIDES  = "midpath-cldc java-cldc1.1"

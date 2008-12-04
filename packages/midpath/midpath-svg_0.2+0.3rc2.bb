@@ -2,21 +2,22 @@ require midpath-common.inc
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
-DEPENDS += "midpath-core midpath-jgl"
-RDEPENDS_${PN} = "midpath-core midpath-jgl ${PN}-core ${PN}-nio"
+DEPENDS += "midpath-core midpath-webservices"
+RDEPENDS_${PN}-midp = "${PN}"
+RDEPENDS_${PN}-awt = "${PN}"
 
-DESCRIPTION = "Implementation of the JSR239 OpenGL ES API for use in the MIDPath library"
+DESCRIPTION = "Implementation of the JSR226 SVG API for use in the MIDPath library"
 
-JAR = "jsr239-opengles-jgl.jar"
-JAR2 = "jsr239-opengles-core.jar"
-JAR3 = "jsr239-opengles-nio.jar"
+JAR = "jsr226-svg-core.jar"
+JAR2 = "jsr226-svg-midp2.jar"
+JAR3 = "jsr226-svg-core.jar"
 
 do_compile() {
-  # Only OpenGL ES API is enabled.
+  # Only SVG API is enabled.
   midpath_build \
     --disable-midpath \
     --disable-cldc \
@@ -24,15 +25,16 @@ do_compile() {
     --disable-escher-cldc \
     --disable-jlayerme-cldc \
     --disable-jorbis-cldc \
-    --disable-jgl-cldc \
     --disable-avetanabt-cldc \
+    --disable-jgl-cldc \
     --disable-web_services-api \
     --disable-location-api \
     --disable-messaging-api \
-    --disable-svg-api \
+    --disable-opengl-api \
     --disable-m3g-api \
     --disable-demos \
-    --with-jgl-cldc-jar=${STAGING_DATADIR}/midpath/jgl-cldc.jar
+    --enable-svg-api-awt \
+    --with-jaxp-jar=${STAGING_DATADIR}/midpath/jsr172-jaxp.jar
 }
 
 do_install() {
@@ -49,8 +51,10 @@ do_stage() {
 	install -m 0644 dist/${JAR3} ${STAGING_DATADIR}/midpath
 }
 	
-PACKAGES = "${PN} ${PN}-core ${PN}-nio"
+PACKAGES = "${PN} ${PN}-midp ${PN}-awt"
 
-FILES_${PN} = "${datadir}/midpath/${JAR}"
-FILES_${PN}-core = "${datadir}/midpath/${JAR2}"
-FILES_${PN}-nio = "${datadir}/midpath/${JAR3}"
+FILES_${PN}  = "${datadir}/midpath/${JAR}"
+
+FILES_${PN}-midp  = "${datadir}/midpath/${JAR2}"
+
+FILES_${PN}-awt  = "${datadir}/midpath/${JAR3}"

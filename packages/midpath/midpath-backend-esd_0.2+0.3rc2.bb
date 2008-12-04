@@ -2,14 +2,14 @@ require midpath-common.inc
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
-DEPENDS = "classpath gtk+"
+DEPENDS = "classpath esound"
 
 do_compile() {
-  # Only native gtk backend library is enabled
+  # Only native esd backend library is enabled
   midpath_build \
     --disable-cldc \
     --disable-midpath \
@@ -26,11 +26,11 @@ do_compile() {
     --disable-opengl-api \
     --disable-m3g-api \
     --disable-demos \
-    --gtk
+    --esd
 }
 
 do_install() {
-	oe_libinstall -C dist -so libmicrobackendgtk ${D}${libdir_jni}
+	oe_libinstall -C dist -so libmidpathesd ${D}${libdir_jni}
 }
 
 do_stage() {

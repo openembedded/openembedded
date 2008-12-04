@@ -2,17 +2,14 @@ require midpath-common.inc
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
-DEPENDS = "classpath qte-mt"
-RCONFLICTS = "midpath-backend-qt3"
-
-inherit qt3e
+DEPENDS = "classpath pulseaudio"
 
 do_compile() {
-  # Only native qt3 backend library is enabled
+  # Only native pulseaudio backend library is enabled
   midpath_build \
     --disable-cldc \
     --disable-midpath \
@@ -29,11 +26,11 @@ do_compile() {
     --disable-opengl-api \
     --disable-m3g-api \
     --disable-demos \
-    --qte
+    --pulse
 }
 
 do_install() {
-	oe_libinstall -C dist -so libmidpathqt ${D}${libdir_jni}
+	oe_libinstall -C dist -so libmidpathpulse ${D}${libdir_jni}
 }
 
 do_stage() {

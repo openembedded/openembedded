@@ -2,15 +2,13 @@ require midpath-common.inc
 
 PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc1.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/midpath/midpath-0.3rc2.tar.gz"
 
-S = "${WORKDIR}/midpath-0.3rc1"
+S = "${WORKDIR}/midpath-0.3rc2"
 
-DEPENDS += "midpath-core"
+DESCRIPTION = "Implementation of the JSR179 Location API for use in the MIDPath library"
 
-DESCRIPTION = "Implementation of the JSR205 Wireless Messaging API for use in the MIDPath library"
-
-JAR = "jsr205-messaging.jar"
+JAR = "jsr179-location.jar"
 
 do_compile() {
   # Only location API is enabled.
@@ -24,11 +22,12 @@ do_compile() {
     --disable-avetanabt-cldc \
     --disable-jgl-cldc \
     --disable-web_services-api \
-    --disable-location-api \
+    --disable-messaging-api \
     --disable-svg-api \
     --disable-opengl-api \
     --disable-m3g-api \
-    --disable-demos
+    --disable-demos \
+    --with-avetanabt-cldc-jar=${STAGING_DATADIR}/midpath/avetanabt-cldc.jar
 }
 
 do_install() {
