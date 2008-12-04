@@ -8,6 +8,7 @@ DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
 
 SRC_URI = "http://www.mythtv.org/mc/mythtv-${PV}.tar.bz2"
 
+ARM_INSTRUCTION_SET = "arm"
 
 QMAKE_PROFILES = "mythtv.pro"
 
