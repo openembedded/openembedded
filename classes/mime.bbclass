@@ -49,7 +49,7 @@ python populate_packages_append () {
 				postrm = '#!/bin/sh\n'
 			postrm += bb.data.getVar('mime_postrm', d, 1)
 			bb.data.setVar('pkg_postrm_%s' % pkg, postrm, d)
-			bb.note("adding shared-mime-info dependency to %s" % pkg)
+			bb.note("adding freedesktop-mime-info dependency to %s" % pkg)
 			rdepends = explode_deps(bb.data.getVar('RDEPENDS_' + pkg, d, 0) or bb.data.getVar('RDEPENDS', d, 0) or "")
 			rdepends.append("freedesktop-mime-info")
 			bb.data.setVar('RDEPENDS_' + pkg, " " + " ".join(rdepends), d)
