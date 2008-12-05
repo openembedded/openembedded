@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=QTNX
+Name[en_GB]=QTNX
+Comment=Client for NX remote desktop
+Comment[en_GB]=Client for NX remote desktop
+Exec=/usr/bin/qtnx
+Terminal=false
+Type=Application
+Categories=Network;Qt;RemoteAccess;
