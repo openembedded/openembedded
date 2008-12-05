@@ -8,7 +8,7 @@ DEPENDS = "sed-native gdk-pixbuf-csource-native libart-lgpl gtk+ jpeg libpng lib
 SRC_URI = "ftp://ftp.gimp.org/pub/gimp/v2.3/gimp-${PV}.tar.bz2 \
                  file://configure-libwmf.patch;patch=1"
 
-inherit autotools pkgconfig
+inherit gnome
 
 FILES_gimp-dbg =+ "${libdir}/gimp/2.0/modules/.debug \
                    ${libdir}/gimp/2.0/plug-ins/.debug"
