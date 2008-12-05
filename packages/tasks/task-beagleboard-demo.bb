@@ -1,5 +1,7 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
+PR = "r0"
+
 inherit task 
 
 ECONFIG ?= "e-wm-config-standard e-wm-config-default"
@@ -32,4 +34,5 @@ RDEPENDS_${PN} = "\
 	synergy \
 	x11vnc \
 	angstrom-gnome-icon-theme-enable \
+	openssh-scp openssh-ssh \
 "
