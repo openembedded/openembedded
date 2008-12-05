@@ -29,7 +29,7 @@ BUILD_OPTIMIZATION = "-Os"
 BUILD_OPTIMIZATION_pn-perl = "-O1"
 BUILD_OPTIMIZATION_sparc = "-O2"
 
-TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
+TARGET_LINK_HASH_STYLE = "${@['-Wl,--hash-style=gnu',''][bb.data.getVar('TARGET_ARCH',d,1) in ['mips', 'mipsel']]}"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
