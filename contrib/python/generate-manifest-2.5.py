@@ -22,7 +22,7 @@ class MakefileMaker:
         self.packages = {}
         self.targetPrefix = "${libdir}/python%s/" % VERSION[:3]
         self.output = outfile
-        self.out( """ \
+        self.out( """\
 # WARNING: This file is AUTO GENERATED: Manual edits will be lost next time I regenerate the file.
 # Generator: '%s' Version %s (C) 2002-2008 Michael 'Mickey' Lauer <mlauer@vanille-media.de>
 # Visit the Python for Embedded Systems Site => http://www.Vanille.de/projects/python.spy
@@ -80,7 +80,7 @@ class MakefileMaker:
         packageLine = 'PACKAGES="'
         for name in self.packages:
             packageLine += "%s " % name
-        packageLine += '"'
+        packageLine += ' python-modules"'
 
         self.out( packageLine )
         self.out( "" )
@@ -119,6 +119,16 @@ class MakefileMaker:
             line += '"'
             self.out( line )
             self.out( "" )
+
+        self.out( 'DESCRIPTION_python-modules="All Python modules"' )
+        line = 'RDEPENDS_python-modules="'
+
+        for name, data in self.packages.iteritems():
+            if name != 'python-core-dbg':
+                line += "%s " % name
+
+        self.out( "%s \"" % line )
+        self.out( 'ALLOW_EMPTY_python-modules = "1"' )
 
     def doEpilog( self ):
         self.out( """""" )
