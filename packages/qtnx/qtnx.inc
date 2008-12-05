@@ -2,7 +2,7 @@ DESCRIPTION = "This a the freesource nx client, build with qt"
 HOMEPAGE = "http://freenx.berlios.de/"
 SECTION = "libs"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "libnxcl"
 
@@ -30,7 +30,7 @@ do_configure_prepend () {
 do_install () {
        install -d ${D}${bindir}/
        install -s -m 0755 qtnx ${D}${bindir}/
-       install -d ${D}${datadir}/
-       install -m 0644 id.key ${D}${datadir}/ 
+       install -d ${D}${datadir}/qtnx
+       install -m 0644 id.key ${D}${datadir}/qtnx
 }
 
