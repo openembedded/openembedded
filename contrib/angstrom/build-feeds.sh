@@ -112,6 +112,15 @@ do
                       gdb \
                       gdbserver \
                       gdm \
+                      geda \
+                      geda-docs \
+                      geda-examples \
+                      geda-gattrib \
+                      geda-gnetlist \
+                      geda-gschem \
+                      geda-gsymcheck \
+                      geda-symbols \
+                      geda-utils \
                       gimp \
                       glider \
                       gmp \
