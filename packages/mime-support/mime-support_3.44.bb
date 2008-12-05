@@ -5,8 +5,6 @@ LICENSE = "PD"
 DEPENDS = "file"
 RRECOMMENDS = "file"
 
-PR = "r3"
-
 SRC_URI = "${DEBIAN_MIRROR}/main/m/mime-support/mime-support_${PV}-1.tar.gz"
 S = "${WORKDIR}/${PN}"
 
