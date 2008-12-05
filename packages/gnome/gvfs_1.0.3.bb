@@ -5,7 +5,7 @@ PR = "r0"
 
 inherit gnome
 
-EXTRA_OECONF = "--disable-samba"
+EXTRA_OECONF = "--disable-samba  --with-archive-includes=${STAGING_INCDIR}"
 
 PACKAGES =+ "gvfsd-ftp gvfsd-sftp gvfsd-trash"
 
