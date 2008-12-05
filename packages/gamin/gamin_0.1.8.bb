@@ -4,6 +4,8 @@ LICENSE = "LGPL"
 SRC_URI = "http://www.gnome.org/~veillard/gamin/sources/gamin-${PV}.tar.gz \
            file://no-abstract-sockets.patch;patch=1"
 
+EXTRA_OECONF = " --without-python " 
+
 inherit autotools pkgconfig
 
 do_stage() {
