@@ -5,11 +5,13 @@ AUTHOR = "Matthew Johnson <dbus@matthew.ath.cx>"
 HOMEPAGE = "http://dbus.freedesktop.org/doc/dbus-java"
 SECTION = "libs"
 LICENSE = "LGPLv2 AFL"
+
 DEPENDS = "libmatthew docbook-utils-native docbook-sgml-dtd-4.1-native fastjar-native"
 RDEPENDS_dbus-java-viewer = "java2-runtime libunixsocket-java dbus-java-bin libmatthew-debug-java ${JPN}"
 RDEPENDS_dbus-java-bin = "java2-runtime libunixsocket-java libmatthew-debug-java ${JPN}"
 RSUGGESTS_libdbus-java = "libunixsocket-java"
-PR = "r1"
+
+PR = "r0"
 
 SRC_URI = "http://dbus.freedesktop.org/releases/dbus-java/dbus-java-${PV}.tar.gz"
 
