@@ -35,3 +35,7 @@ do_configure () {
 #  --with-qt-includes      where the Qt includes are.
 #  --with-qt-libraries     where the Qt library is installed.
 
+OPROFILE_ARCH = "${TARGET_ARCH}"
+OPROFILE_ARCH_i586 = "i386"
+
+FILES_${PN} = "${bindir} ${datadir}/oprofile/rtc ${datadir}/oprofile/stl.pat ${datadir}/oprofile/${OPROFILE_ARCH}"

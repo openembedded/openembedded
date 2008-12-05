@@ -2,7 +2,7 @@ require oprofile.inc
 
 RDEPENDS += "binutils-symlinks"
 RRECOMMENDS += "kernel-vmlinux"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
