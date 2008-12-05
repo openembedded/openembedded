@@ -1,13 +1,22 @@
 Index: midpath-0.3rc2/components/core/src/org/thenesis/midpath/io/backend/j2se/FileHandlerImpl.java
 ===================================================================
 --- midpath-0.3rc2.orig/components/core/src/org/thenesis/midpath/io/backend/j2se/FileHandlerImpl.java	2008-12-04 21:10:39.000000000 +0100
-+++ midpath-0.3rc2/components/core/src/org/thenesis/midpath/io/backend/j2se/FileHandlerImpl.java	2008-12-04 21:12:11.000000000 +0100
-@@ -182,7 +182,7 @@
++++ midpath-0.3rc2/components/core/src/org/thenesis/midpath/io/backend/j2se/FileHandlerImpl.java	2008-12-05 12:29:47.000000000 +0100
+@@ -181,10 +181,13 @@
+ 
  	public void openForRead() throws IOException {
  		if (randomAccessFile == null) {
- 			//stream = new FileRandomAccessStream(file);
+-			//stream = new FileRandomAccessStream(file);
 -			randomAccessFile = new RandomAccessFile(file, "rws");
-+			randomAccessFile = new RandomAccessFile(file, "r");
- 		}
- 	}
+-		}
+-	}
++			// Try to get maximum rights to avoid closing the stream if openForWrite is called next
++			if (file.canWrite()) {
++				randomAccessFile = new RandomAccessFile(file, "rws");
++			} else {
++				randomAccessFile = new RandomAccessFile(file, "r");
++			}
++  }
  
+ 	public void openForWrite() throws IOException {
+ 		if (randomAccessFile == null) {
