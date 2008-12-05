@@ -1,0 +1,129 @@
+http://patches.ubuntu.com/g/gdb/extracted/gcc-4.3-build-error.patch
+
+--- gdb/cli/cli-cmds.c~	2008-06-24 16:07:25.000000000 +0200
++++ gdb/cli/cli-cmds.c	2008-06-24 16:22:31.000000000 +0200
+@@ -323,7 +323,8 @@
+ {
+   if (args)
+     error (_("The \"pwd\" command does not take an argument: %s"), args);
+-  getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
++  if (!getcwd (gdb_dirbuf, sizeof (gdb_dirbuf)))
++    error (_("Unable to determine current directory"));
+ 
+   if (strcmp (gdb_dirbuf, current_directory) != 0)
+     printf_unfiltered (_("Working directory %s\n (canonically %s).\n"),
+--- gdb/linux-nat.c~	2008-01-29 23:47:20.000000000 +0100
++++ gdb/linux-nat.c	2008-06-24 16:18:57.000000000 +0200
+@@ -2876,7 +2876,8 @@
+       sprintf (fname1, "/proc/%lld/cmdline", pid);
+       if ((procfile = fopen (fname1, "r")) != NULL)
+ 	{
+-	  fgets (buffer, sizeof (buffer), procfile);
++	  if (!fgets (buffer, sizeof (buffer), procfile))
++	    error(_("Unable to read '%s'"), fname1);
+ 	  printf_filtered ("cmdline = '%s'\n", buffer);
+ 	  fclose (procfile);
+ 	}
+--- gdb/inflow.c~	2008-01-01 23:53:11.000000000 +0100
++++ gdb/inflow.c	2008-06-24 16:32:10.000000000 +0200
+@@ -512,7 +512,7 @@
+ void
+ new_tty (void)
+ {
+-  int tty;
++  int tty, rv;
+ 
+   if (inferior_thisrun_terminal == 0)
+     return;
+@@ -545,17 +545,17 @@
+   if (tty != 0)
+     {
+       close (0);
+-      dup (tty);
++      rv = dup (tty);
+     }
+   if (tty != 1)
+     {
+       close (1);
+-      dup (tty);
++      rv = dup (tty);
+     }
+   if (tty != 2)
+     {
+       close (2);
+-      dup (tty);
++      rv = dup (tty);
+     }
+   if (tty > 2)
+     close (tty);
+--- gdb/mi/mi-cmd-env.c~	2008-01-01 23:53:14.000000000 +0100
++++ gdb/mi/mi-cmd-env.c	2008-06-24 16:23:25.000000000 +0200
+@@ -78,7 +78,8 @@
+      
+   /* Otherwise the mi level is 2 or higher.  */
+ 
+-  getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
++  if (!getcwd (gdb_dirbuf, sizeof (gdb_dirbuf)))
++    error (_("Unable to determine current directory"));
+   ui_out_field_string (uiout, "cwd", gdb_dirbuf);
+ 
+   return MI_CMD_DONE;
+--- gdb/utils.c~	2008-01-01 23:53:13.000000000 +0100
++++ gdb/utils.c	2008-06-24 16:29:13.000000000 +0200
+@@ -688,6 +688,7 @@
+   static int dejavu;
+   int quit_p;
+   int dump_core_p;
++  int rv;
+   char *reason;
+ 
+   /* Don't allow infinite error/warning recursion.  */
+@@ -704,7 +705,7 @@
+ 	abort ();	/* NOTE: GDB has only three calls to abort().  */
+       default:
+ 	dejavu = 3;
+-	write (STDERR_FILENO, msg, sizeof (msg));
++	rv = write (STDERR_FILENO, msg, sizeof (msg));
+ 	exit (1);
+       }
+   }
+--- gdb/top.c~	2008-01-01 23:53:13.000000000 +0100
++++ gdb/top.c	2008-06-24 16:26:51.000000000 +0200
+@@ -1628,7 +1628,8 @@
+ 
+   /* Run the init function of each source file */
+ 
+-  getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
++  if (!getcwd (gdb_dirbuf, sizeof (gdb_dirbuf)))
++    error (_("Unable to determine current directory"));
+   current_directory = gdb_dirbuf;
+ 
+ #ifdef __MSDOS__
+--- gdb/ui-file.c~	2008-01-01 23:53:13.000000000 +0100
++++ gdb/ui-file.c	2008-06-24 16:30:16.000000000 +0200
+@@ -477,11 +477,12 @@
+ static void
+ stdio_file_write (struct ui_file *file, const char *buf, long length_buf)
+ {
++  int rv;
+   struct stdio_file *stdio = ui_file_data (file);
+   if (stdio->magic != &stdio_file_magic)
+     internal_error (__FILE__, __LINE__,
+ 		    _("stdio_file_write: bad magic number"));
+-  fwrite (buf, length_buf, 1, stdio->file);
++  rv = fwrite (buf, length_buf, 1, stdio->file);
+ }
+ 
+ static void
+--- gdb/main.c~	2008-06-24 16:07:25.000000000 +0200
++++ gdb/main.c	2008-06-24 16:25:05.000000000 +0200
+@@ -188,7 +188,8 @@
+   line[0] = '\0';		/* Terminate saved (now empty) cmd line */
+   instream = stdin;
+ 
+-  getcwd (gdb_dirbuf, sizeof (gdb_dirbuf));
++  if (!getcwd (gdb_dirbuf, sizeof (gdb_dirbuf)))
++    error (_("Unable to determine current directory"));
+   current_directory = gdb_dirbuf;
+ 
+   gdb_stdout = stdio_fileopen (stdout);

@@ -1,22 +1,12 @@
 require gdb-cross.inc
 
+SRC_URI += "file://gcc-4.3-build-error.patch;patch=1;pnum=0"
+
 DEPENDS = "ncurses-sdk"
 
 inherit sdk
 
-PR = "r1"
-
-do_configure_prepend() {
-	for i in $(find ${S} -name "warning*m4") ; do 
-		sed -i -e s:-Werror::g $i 
-	done
-    for i in $(find ${S} -name "configure.ac") ; do
-		sed -i -e s:-Werror::g $i
-	done
-	for i in $(find ${S} -name "configure") ; do
-		sed -i -e s:-Werror::g $i
-	done
-}
+PR = "r2"
 
 do_stage() {
 	:
