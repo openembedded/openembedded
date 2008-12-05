@@ -8,9 +8,12 @@ LICENSE = "GPLv2"
 DEPENDS += "ncurses"
 RPROVIDES_${PN} += "readline"
 LEAD_SONAME = "libreadline.so"
+PR = "r4"
 
-SRC_URI = "${GNU_MIRROR}/readline/readline-${PV}.tar.gz \
-	   file://acinclude.m4"
+SRC_URI = "ftp://ftp.gnu.org/gnu/readline/readline-${PV}.tar.gz \
+           file://configure_fix.patch;patch=1 \
+           file://acinclude.m4"
+
 S = "${WORKDIR}/readline-${PV}"
 
 inherit autotools
