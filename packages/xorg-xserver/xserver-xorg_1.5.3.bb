@@ -2,7 +2,7 @@ require xorg-xserver-common.inc
 
 DESCRIPTION = "the X.Org X server"
 DEPENDS += "pixman libpciaccess openssl"
-PE = "1"
+PE = "2"
 PR = "r1"
 
 SRC_URI += "file://drmfix.patch;patch=1 \

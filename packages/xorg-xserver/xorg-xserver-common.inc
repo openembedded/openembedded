@@ -38,8 +38,9 @@ PACKAGES =+ "xserver-security-policy"
 FILES_xserver-security-policy += "${libdir}/xserver/SecurityPolicy"
 RRECOMMENDS_${PN} += "xserver-security-policy xkeyboard-config xorg-minimal-fonts rgb xserver-xorg-conf"
 
-PACKAGES =+ "${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xephyr"
+PACKAGES =+ "${PN}-fbdev ${PN}-xprint ${PN}-xvfb ${PN}-utils ${PN}-xephyr"
 
+FILES_${PN}-fbdev = "${bindir}/Xfbdev"
 FILES_${PN}-xprint = "${libdir}/X11/xserver/*/print"
 FILES_${PN}-xvfb = "${bindir}/Xvfb"
 FILES_${PN}-utils = "${bindir}/scanpci ${bindir}/pcitweak ${bindir}/ioport ${bindir}/in[bwl] ${bindir}/out[bwl] ${bindir}/mmap[rw] ${bindir}/gtf ${bindir}/getconfig ${bindir}/getconfig.pl"
