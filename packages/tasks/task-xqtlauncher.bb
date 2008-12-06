@@ -1,7 +1,7 @@
 DESCRIPTION = "Tasks for xqtlauncher stuff"
 SECTION = "opie/base"
 LICENSE = "MIT"
-PR = "r0"
+PR = "r1"
 
 inherit task
 
@@ -9,8 +9,8 @@ PACKAGES = "task-xqtlauncher task-xqtlauncher-blackbox"
 
 #xkbd is currently needed becuse of a bug at xqt2
 RDEPENDS_task-xqtlauncher = "xqtlauncher \
-                             xqtlauncher-xkbd-desktop \
-                            "
+                                                   xkbd \
+                                                   "
 
 #
 # xqtlauncher with blackbox as wm
