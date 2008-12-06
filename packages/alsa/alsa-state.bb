@@ -4,15 +4,16 @@
 #
 # Filename: alsa-state.bb
 
-DESCRIPTION = "Default ALSA configuration"
-LICENSE = "GPL"
-PV = "0.1.0"
-PR = "r18"
+DESCRIPTION = "Alsa Scenario Files"
+LICENSE = "MIT"
+PV = "0.2.0"
+PR = "r0"
 
 SRC_URI = "\
   file://asound.conf \
   file://asound.state \
   file://alsa-state \
+  file://*.state \
 "
 
 inherit update-rc.d

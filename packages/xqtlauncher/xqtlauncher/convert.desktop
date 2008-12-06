@@ -1,0 +1,5 @@
+[Desktop Entry]
+Exec=/etc/init.d/xqtlauncher-convert.sh
+Icon=Xqt.png
+Type=Application
+Name=Create Icons
