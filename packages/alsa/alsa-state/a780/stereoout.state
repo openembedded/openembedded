@@ -1,0 +1,55 @@
+state.EZX {
+	control.1 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 15'
+		iface MIXER
+		name 'Master Playback Volume'
+		value 6
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Stereo
+		comment.item.1 Mono
+		comment.item.2 BP
+		iface MIXER
+		name 'DAI Select'
+		value Stereo
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 31'
+		iface MIXER
+		name 'Capture Volume'
+		value 14
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 '2->1ch'
+		comment.item.2 '2->1ch -3db'
+		comment.item.3 '2->1ch -6db'
+		iface MIXER
+		name Downmixer
+		value Off
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 Off
+		comment.item.1 Loudspeaker
+		comment.item.2 Earpiece
+		comment.item.3 Headset
+		iface MIXER
+		name 'Output mode'
+		value Loudspeaker
+	}
+}
