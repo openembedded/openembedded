@@ -1,8 +1,8 @@
 require linux.inc
 
-PV = "2.6.25+gitr${SRCREV}"
-PV_htckaiser = "2.6.24+gitr${SRCREV}"
-PV_htcpolaris = "2.6.24+gitr${SRCREV}"
+PV = "2.6.25+${PR}+gitr${SRCREV}"
+PV_htckaiser = "2.6.24+${PR}+gitr${SRCREV}"
+PV_htcpolaris = "2.6.24+${PR}+gitr${SRCREV}"
 
 PR = "r1"
 
