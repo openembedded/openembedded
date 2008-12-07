@@ -6,7 +6,7 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 SRCREV = "2a3408be17f287fdb5809c9b6c68e7ad96d25b74"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -32,6 +32,11 @@ SRC_URI_append = " \
            file://dvb-fix-dma.diff;patch=1 \
            file://0001-Removed-resolution-check-that-prevents-scaling-when.patch;patch=1 \
            file://0001-Implement-downsampling-with-debugs.patch;patch=1 \
+           file://openvz/0001-arm-introduce-MAP_EXECPRIO-define.patch;patch=1 \
+           file://openvz/0002-arm-export-arm-version-of-show_mem.patch;patch=1 \
+           file://openvz/0003-arm-wire-OpenVZ-syscalls.patch;patch=1 \
+           file://openvz/0004-arm-add-openvz-and-bc-Kconfigs.patch;patch=1 \
+           file://openvz/openvz-2.6.27.diff;patch=1 \
 "
 
 

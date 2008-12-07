@@ -1,0 +1,45 @@
+From ce4ad508dc8ec3f8ee8cc604ce2b36dec641cdd0 Mon Sep 17 00:00:00 2001
+From: Kir Kolyshkin <kir@openvz.org>
+Date: Fri, 24 Oct 2008 18:03:54 +0400
+Subject: [PATCH] arm: wire OpenVZ syscalls
+
+Leave some safety gap for future syscall expansion; hope it's enough.
+
+Signed-off-by: Kir Kolyshkin <kir@openvz.org>
+---
+ arch/arm/kernel/calls.S |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/kernel/calls.S b/arch/arm/kernel/calls.S
+index 09a061c..dd1c00b 100644
+--- a/arch/arm/kernel/calls.S
++++ b/arch/arm/kernel/calls.S
+@@ -370,6 +370,25 @@
+ 		CALL(sys_dup3)
+ 		CALL(sys_pipe2)
+ /* 360 */	CALL(sys_inotify_init1)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++/* 365 */	CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++		CALL(sys_ni_syscall)
++/* 370 */	CALL(sys_fairsched_vcpus)	/* OpenVZ */
++		CALL(sys_fairsched_mknod)
++		CALL(sys_fairsched_rmnod)
++		CALL(sys_fairsched_chwt)
++		CALL(sys_fairsched_mvpr)
++/* 375 */	CALL(sys_fairsched_rate)
++		CALL(sys_getluid)
++		CALL(sys_setluid)
++		CALL(sys_setublimit)
++		CALL(sys_ubstat)
+ #ifndef syscalls_counted
+ .equ syscalls_padding, ((NR_syscalls + 3) & ~3) - NR_syscalls
+ #define syscalls_counted
+-- 
+1.5.5.1
+

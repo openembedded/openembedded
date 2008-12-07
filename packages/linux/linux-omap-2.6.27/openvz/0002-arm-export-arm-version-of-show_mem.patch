@@ -1,0 +1,35 @@
+From e7b3c23fd50bf2d377384af721b8a6077ea4400a Mon Sep 17 00:00:00 2001
+From: Kir Kolyshkin <kir@openvz.org>
+Date: Fri, 24 Oct 2008 18:01:40 +0400
+Subject: [PATCH] arm: export arm version of show_mem()
+
+Needed for vzwdog module.
+
+Signed-off-by: Kir Kolyshkin <kir@openvz.org>
+---
+ arch/arm/mm/init.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
+index 30a69d6..c9332cc 100644
+--- a/arch/arm/mm/init.c
++++ b/arch/arm/mm/init.c
+@@ -15,6 +15,7 @@
+ #include <linux/mman.h>
+ #include <linux/nodemask.h>
+ #include <linux/initrd.h>
++#include <linux/module.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/setup.h>
+@@ -86,6 +87,7 @@ void show_mem(void)
+ 	printk("%d pages shared\n", shared);
+ 	printk("%d pages swap cached\n", cached);
+ }
++EXPORT_SYMBOL_GPL(show_mem);
+ 
+ /*
+  * FIXME: We really want to avoid allocating the bootmap bitmap
+-- 
+1.5.5.1
+

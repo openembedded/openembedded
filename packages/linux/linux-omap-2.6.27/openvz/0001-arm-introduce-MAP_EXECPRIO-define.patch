@@ -1,0 +1,25 @@
+From da5282caf3967d200781969350b0fdd5366662db Mon Sep 17 00:00:00 2001
+From: Kir Kolyshkin <kir@openvz.org>
+Date: Fri, 24 Oct 2008 18:00:26 +0400
+Subject: [PATCH] arm: introduce MAP_EXECPRIO define
+
+Signed-off-by: Kir Kolyshkin <kir@openvz.org>
+---
+ arch/arm/include/asm/mman.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/include/asm/mman.h b/arch/arm/include/asm/mman.h
+index 54570d2..10b4b4d 100644
+--- a/arch/arm/include/asm/mman.h
++++ b/arch/arm/include/asm/mman.h
+@@ -10,6 +10,7 @@
+ #define MAP_NORESERVE	0x4000		/* don't check for reservations */
+ #define MAP_POPULATE	0x8000		/* populate (prefault) page tables */
+ #define MAP_NONBLOCK	0x10000		/* do not block on IO */
++#define MAP_EXECPRIO	0x40000		/* soft ubc charge */
+ 
+ #define MCL_CURRENT	1		/* lock all current mappings */
+ #define MCL_FUTURE	2		/* lock all future mappings */
+-- 
+1.5.5.1
+
