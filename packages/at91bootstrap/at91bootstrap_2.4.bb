@@ -1,11 +1,14 @@
 DESCRIPTION = "at91bootstrap"
 SRC_URI = "ftp://www.at91.com/pub/buildroot/${PN}-${PV}.tar.bz2 \
-           file://at91bootstrap-${PV}.4.patch;patch=1 \
            "
-PR = "r3"
+SRC_URI_append_afeb9260 = " file://0001-Generic-code-changes.patch;patch=1 \
+           file://0002-Making-image-directly-flashable.patch;patch=1 \
+           file://0003-AFEB9260-board-support.patch;patch=1 \
+           file://0004-AFEB9260-133-board-support.patch;patch=1"
+
+PR = "r4"
 SECTION = "bootloaders"
 
-AT91BOOTSTRAP_MACHINE = "at91sam9260ek"
 AT91BOOTSTRAP_MACHINE ?= "${MACHINE}"
 AT91BOOTSTRAP_FLAGS ?= ""
 AT91BOOTSTRAP_MEMORY ?= "dataflash"
@@ -26,11 +29,13 @@ do_compile () {
 	rm -Rf ${S}/binaries
 	oe_runmake ${AT91BOOTSTRAP_MACHINE}_defconfig
 	oe_runmake AT91_CUSTOM_FLAGS="${AT91BOOTSTRAP_FLAGS}"
+	chmod +x ${S}/fixboot.py
+	${S}/fixboot.py ${S}/binaries/${AT91BOOTSTRAP_MACHINE}-${AT91BOOTSTRAP_MEMORY}boot-${PV}.bin
 }
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
-	install ${S}/binaries/${AT91BOOTSTRAP_MACHINE}-${AT91BOOTSTRAP_MEMORY}boot-${PV}.bin \
+	install ${S}/binaries/${AT91BOOTSTRAP_MACHINE}-${AT91BOOTSTRAP_MEMORY}boot-${PV}.bin.fixboot \
 		${DEPLOY_DIR_IMAGE}/${AT91BOOTSTRAP_IMAGE}
 	package_stagefile_shell ${DEPLOY_DIR_IMAGE}/${AT91BOOTSTRAP_IMAGE}
 	cd ${DEPLOY_DIR_IMAGE}
