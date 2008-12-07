@@ -1,0 +1,20 @@
+--- /tmp/Makefile.in	2008-12-07 14:52:59.000000000 +0100
++++ xscreensaver-5.07/hacks/glx/Makefile.in	2008-12-07 14:53:25.000000000 +0100
+@@ -409,7 +409,7 @@
+ 
+ $(UTIL_OBJS):
+ 	cd $(UTILS_BIN) ; \
+-	$(MAKE) $(@F) CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
++	$(MAKE) $(@F) CC="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+ 
+ $(HACK_BIN)/xlockmore.o: $(HACK_SRC)/xlockmore.c
+ 	cd $(HACK_BIN)  ; $(MAKE) $(@F) CC="$(CC)" CFLAGS="$(CFLAGS)"
+@@ -426,7 +426,7 @@
+ HELPER_OBJS = xscreensaver-gl-helper.o $(UTILS_BIN)/visual-gl.o \
+ 	      $(UTILS_BIN)/visual.o $(UTILS_BIN)/resources.o
+ xscreensaver-gl-helper: $(HELPER_OBJS)
+-	$(CC) $(LDFLAGS) -o $@ $(HELPER_OBJS) $(LIBS) $(X_LIBS) $(HACK_POST2)
++	$(CXX) $(LDFLAGS) -o $@ $(HELPER_OBJS) $(LIBS) $(X_LIBS) $(HACK_POST2)
+ 
+ 
+ # These hacks use a slightly-differently-compiled variant of xlockmore.c.
