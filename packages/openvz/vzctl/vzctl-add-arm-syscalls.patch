@@ -1,0 +1,23 @@
+diff --git a/include/vzsyscalls.h b/include/vzsyscalls.h
+index 55a4c28..34ea544 100644
+--- a/include/vzsyscalls.h
++++ b/include/vzsyscalls.h
+@@ -52,6 +52,18 @@
+ #else
+ #define __NR_ioprio_set		289
+ #endif
++#elif __arm__
++#define __NR_fairsched_vcpus	(__NR_SYSCALL_BASE+370)
++#define __NR_fairsched_mknod	(__NR_SYSCALL_BASE+371)
++#define __NR_fairsched_rmnod	(__NR_SYSCALL_BASE+372)
++#define __NR_fairsched_chwt	(__NR_SYSCALL_BASE+373)
++#define __NR_fairsched_mvpr	(__NR_SYSCALL_BASE+374)
++#define __NR_fairsched_rate	(__NR_SYSCALL_BASE+375)
++#define __NR_setluid		(__NR_SYSCALL_BASE+377)
++#define __NR_setublimit		(__NR_SYSCALL_BASE+378)
++#ifndef __NR_ioprio_set
++#define __NR_ioprio_set		(__NR_SYSCALL_BASE+314)
++#endif
+ #else
+ #error "no syscall for this arch"
+ #endif
