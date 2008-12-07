@@ -1,12 +1,12 @@
 DESCRIPTION = "EFL FSO wrapper library"
-SECTION = "base"
+SECTION = "e/libs"
 LICENSE = "GPLv2"
 DEPENDS = "ecore edbus"
 PV = "0.0.0+svnr${SRCREV}"
 PR = "r2"
 
 SRC_URI = "svn://svn.om.vptt.ch/trunk/;proto=http;module=libefso"
-S= "${WORKDIR}/libefso"
+S = "${WORKDIR}/libefso"
 
 inherit autotools pkgconfig
 
