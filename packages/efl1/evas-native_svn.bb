@@ -1,6 +1,6 @@
 require evas.inc
 inherit native
-DEPENDS = "freetype-native libpng-native jpeg-native eet-native"
+DEPENDS = "freetype-native libpng-native jpeg-native eet-native eina-native"
 PR = "r0"
 
 EXTRA_OECONF = "\
