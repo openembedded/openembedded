@@ -1,0 +1,226 @@
+Index: linux-2.6.27/drivers/pcmcia/cs.c
+===================================================================
+--- linux-2.6.27.orig/drivers/pcmcia/cs.c	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/drivers/pcmcia/cs.c	2008-12-04 01:10:04.236701484 +0100
+@@ -10,6 +10,8 @@
+  * are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
+  *
+  * (C) 1999		David A. Hinds
++ *
++ * mrdata: -added suspend fix
+  */
+ 
+ #include <linux/module.h>
+@@ -57,6 +59,10 @@
+ INT_MODULE_PARM(unreset_delay,	10);		/* centiseconds */
+ INT_MODULE_PARM(unreset_check,	10);		/* centiseconds */
+ INT_MODULE_PARM(unreset_limit,	30);		/* unreset_check's */
++// INT_MODULE_PARM(unreset_delay,	20);		/* centiseconds */
++// INT_MODULE_PARM(unreset_check,	100);		/* centiseconds */
++// INT_MODULE_PARM(unreset_limit,	300);		/* unreset_check's */
++
+ 
+ /* Access speed for attribute memory windows */
+ INT_MODULE_PARM(cis_speed,	300);		/* ns */
+@@ -362,6 +368,7 @@
+ 	skt->ops->set_socket(skt, &skt->socket);
+ 
+ 	msleep(unreset_delay * 10);
++
+ 	for (i = 0; i < unreset_limit; i++) {
+ 		skt->ops->get_status(skt, &status);
+ 
+@@ -826,7 +833,7 @@
+ int pcmcia_resume_card(struct pcmcia_socket *skt)
+ {
+ 	int ret;
+-    
++
+ 	cs_dbg(skt, 1, "waking up socket\n");
+ 
+ 	mutex_lock(&skt->skt_mutex);
+@@ -854,7 +861,7 @@
+ int pcmcia_eject_card(struct pcmcia_socket *skt)
+ {
+ 	int ret;
+-    
++
+ 	cs_dbg(skt, 1, "user eject request\n");
+ 
+ 	mutex_lock(&skt->skt_mutex);
+Index: linux-2.6.27/drivers/pcmcia/sa1100_generic.c
+===================================================================
+--- linux-2.6.27.orig/drivers/pcmcia/sa1100_generic.c	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/drivers/pcmcia/sa1100_generic.c	2008-12-04 01:03:33.558818180 +0100
+@@ -28,6 +28,9 @@
+     the provisions above, a recipient may use your version of this
+     file under either the MPL or the GPL.
+     
++    2007 mrnice: added thesings changes from device_driver
++            to platform_driver - many thx to thesing
++
+ ======================================================================*/
+ 
+ #include <linux/module.h>
+@@ -81,13 +84,15 @@
+ 	return ret;
+ }
+ 
+-static struct device_driver sa11x0_pcmcia_driver = {
+-	.probe		= sa11x0_drv_pcmcia_probe,
+-	.remove		= soc_common_drv_pcmcia_remove,
+-	.name		= "sa11x0-pcmcia",
+-	.bus		= &platform_bus_type,
+-	.suspend 	= pcmcia_socket_dev_suspend,
+-	.resume 	= pcmcia_socket_dev_resume,
++static struct platform_driver sa11x0_pcmcia_driver = {
++       .driver        = {
++              .name   = "sa11x0-pcmcia",
++              .probe = sa11x0_drv_pcmcia_probe,
++              .remove        = soc_common_drv_pcmcia_remove,
++              .suspend= pcmcia_socket_dev_suspend,
++              .resume        = pcmcia_socket_dev_resume,
++              //.bus = &platform_bus_type,
++       },
+ };
+ 
+ /* sa11x0_pcmcia_init()
+@@ -100,7 +105,7 @@
+  */
+ static int __init sa11x0_pcmcia_init(void)
+ {
+-	return driver_register(&sa11x0_pcmcia_driver);
++        return platform_driver_register(&sa11x0_pcmcia_driver);
+ }
+ 
+ /* sa11x0_pcmcia_exit()
+@@ -110,7 +115,7 @@
+  */
+ static void __exit sa11x0_pcmcia_exit(void)
+ {
+-	driver_unregister(&sa11x0_pcmcia_driver);
++        platform_driver_unregister(&sa11x0_pcmcia_driver);
+ }
+ 
+ MODULE_AUTHOR("John Dorsey <john+@cs.cmu.edu>");
+Index: linux-2.6.27/drivers/pcmcia/sa1100_simpad.c
+===================================================================
+--- linux-2.6.27.orig/drivers/pcmcia/sa1100_simpad.c	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/drivers/pcmcia/sa1100_simpad.c	2008-12-04 01:10:21.458773451 +0100
+@@ -8,15 +8,17 @@
+ #include <linux/kernel.h>
+ #include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/delay.h>
+ 
+ #include <mach/hardware.h>
+ #include <asm/mach-types.h>
+ #include <asm/irq.h>
+ #include <mach/simpad.h>
+ #include "sa1100_generic.h"
+- 
++
++extern long get_cs3_ro(void);
+ extern long get_cs3_shadow(void);
+-extern void set_cs3_bit(int value); 
++extern void set_cs3_bit(int value);
+ extern void clear_cs3_bit(int value);
+ 
+ static struct pcmcia_irqs irqs[] = {
+@@ -25,8 +27,15 @@
+ 
+ static int simpad_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
+ {
++	clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1|PCMCIA_RESET);
++
++	set_cs3_bit(PCMCIA_BUFF_DIS);
++
++	msleep(10);
++
++	clear_cs3_bit(PCMCIA_BUFF_DIS);
+ 
+-	clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
++	msleep(5);
+ 
+ 	skt->irq = IRQ_GPIO_CF_IRQ;
+ 
+@@ -38,8 +47,8 @@
+ 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
+ 
+ 	/* Disable CF bus: */
+-	//set_cs3_bit(PCMCIA_BUFF_DIS);
+-	clear_cs3_bit(PCMCIA_RESET);       
++	set_cs3_bit(PCMCIA_BUFF_DIS);
++	clear_cs3_bit(PCMCIA_RESET);
+ }
+ 
+ static void
+@@ -47,21 +56,17 @@
+ 			   struct pcmcia_state *state)
+ {
+ 	unsigned long levels = GPLR;
+-	long cs3reg = get_cs3_shadow();
+ 
+-	state->detect=((levels & GPIO_CF_CD)==0)?1:0;
+-	state->ready=(levels & GPIO_CF_IRQ)?1:0;
+-	state->bvd1=1; /* Not available on Simpad. */
+-	state->bvd2=1; /* Not available on Simpad. */
+-	state->wrprot=0; /* Not available on Simpad. */
+-  
+-	if((cs3reg & 0x0c) == 0x0c) {
+-		state->vs_3v=0;
+-		state->vs_Xv=0;
+-	} else {
+-		state->vs_3v=1;
+-		state->vs_Xv=0;
+-	}
++	state->detect = ((levels & GPIO_CF_CD) == 0) ? 1 : 0 ;
++	state->ready  = (levels & GPIO_CF_IRQ) ? 1 : 0 ;
++
++	long cs3_ro_reg = get_cs3_ro();
++
++	state->bvd1   = (cs3_ro_reg & PCMCIA_BVD1) ? 1 : 0 ; /* old: =1 Not available on Simpad. */
++	state->bvd2   = (cs3_ro_reg & PCMCIA_BVD2) ? 1 : 0 ; /* old: =1 Not available on Simpad. */
++	state->wrprot = 0 ;                                  /* Not available on Simpad. */
++	state->vs_3v  = (cs3_ro_reg & PCMCIA_VS1) ? 0 : 1 ;
++	state->vs_Xv  = (cs3_ro_reg & PCMCIA_VS2) ? 0 : 1 ;
+ }
+ 
+ static int
+@@ -78,7 +83,7 @@
+ 		clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
+ 		break;
+ 
+-	case 33:  
++	case 33:
+ 		clear_cs3_bit(VCC_3V_EN|EN1);
+ 		set_cs3_bit(VCC_5V_EN|EN0);
+ 		break;
+@@ -96,6 +101,10 @@
+ 		return -1;
+ 	}
+ 
++	if (state->flags & SS_RESET)
++		set_cs3_bit(PCMCIA_RESET);
++	else
++		clear_cs3_bit(PCMCIA_RESET);
+ 
+ 	local_irq_restore(flags);
+ 
+@@ -104,6 +113,7 @@
+ 
+ static void simpad_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
+ {
++	clear_cs3_bit(PCMCIA_RESET);
+ 	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
+ }
+ 
+@@ -113,7 +123,7 @@
+ 	set_cs3_bit(PCMCIA_RESET);
+ }
+ 
+-static struct pcmcia_low_level simpad_pcmcia_ops = { 
++static struct pcmcia_low_level simpad_pcmcia_ops = {
+ 	.owner			= THIS_MODULE,
+ 	.hw_init		= simpad_pcmcia_hw_init,
+ 	.hw_shutdown		= simpad_pcmcia_hw_shutdown,
