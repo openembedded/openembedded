@@ -2,7 +2,21 @@ DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "opkg-native ipkg-utils-native fakeroot-native sed-native"
 
+# NOTE: We need to save and restore PACKAGE_ARCHS, because sdk.bbclass
+# will change HOST_ARCH, which can result in SITEINFO_ENDIANESS (which
+# is computed in siteinfo.bbclass) in changing if the original HOST_ARCH
+# endianess differs from the new HOST_ARCH endianess.  SITEINFO_ENDIANNESS
+# is used in a number of places, including the construction of the
+# PACKAGE_EXTRA_ARCHS list for machines that are capable of running in
+# either endianess.  There may be better ways to fix this.
+
+# Save value of PACKAGE_ARCHS (note the ":=" syntax to force immediate eval)
+REAL_PACKAGE_ARCHS := "${PACKAGE_ARCHS}"
+
 inherit sdk meta
+
+# Restore PACKAGE_ARCHS (sdk.bbclass may have caused it to change)
+PACKAGE_ARCHS := "${REAL_PACKAGE_ARCHS}"
 
 SDK_DIR = "${WORKDIR}/sdk"
 SDK_OUTPUT = "${SDK_DIR}/image"
