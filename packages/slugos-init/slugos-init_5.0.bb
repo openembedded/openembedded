@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -34,7 +34,7 @@ SBINPROGS = ""
 USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
 SCRIPTS = "turnup leds sysconf"
-BOOTSCRIPTS = "flash disk nfs ram kexec network udhcpc.script"
+BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
 	leds_startup rmrecovery sysconfsetup umountinitrd.sh\
 	fixfstab loadmodules.sh"
