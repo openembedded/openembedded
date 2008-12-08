@@ -74,6 +74,12 @@ do_configure_prepend() {
                 echo "# CONFIG_OABI_COMPAT is not set"  >> ${S}/.config
         fi
 
+        # When enabling thumb for userspace we also need thumb support in the kernel
+        if [ "${ARM_INSTRUCTION_SET}" = "thumb" ] ; then
+            sed -i -e /CONFIG_ARM_THUMB/d ${WORKDIR}/defconfig 
+            echo "CONFIG_ARM_THUMB=y" >> ${S}/.config
+        fi
+
 	#
 	# endian support
 	#
