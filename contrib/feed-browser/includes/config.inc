@@ -707,6 +707,22 @@ $feeds = array(
 												'url'=>'armv6/python',
 										     ),
                                                                                 array(
+                                                                                                'name'=>'armv6-novfp architecture base feed',
+                                                                                                'url'=>'armv6-novfp/base',
+                                                                                     ),
+                                                                                array(
+                                                                                                'name'=>'armv6-novfp architecture gstreamer feed',
+                                                                                                'url'=>'armv6-novfp/gstreamer',
+                                                                                     ),
+                                                                                array(
+                                                                                                'name'=>'armv6-novfp architecture perl feed',
+                                                                                                'url'=>'armv6-novfp/perl',
+                                                                                     ),
+                                                                                array(
+                                                                                                'name'=>'armv6-novfp architecture python feed',
+                                                                                                'url'=>'armv6-novfp/python',
+                                                                                     ),
+                                                                                array(
                                                                                                 'name'=>'armv7-a architecture base feed',
                                                                                                 'url'=>'armv7a/base',
                                                                                      ),
