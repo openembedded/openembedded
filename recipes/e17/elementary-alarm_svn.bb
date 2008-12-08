@@ -8,11 +8,11 @@ PR = "r1"
 inherit e
 
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk/TMP/st;module=elementary-alarm;proto=http"
-S = "${WORKDIR}/elementary-alarm"
+S = "${WORKDIR}/${PN}"
 
 RDEPENDS = "waker"
 FILES_${PN} += "${bindir}/*"
 FILES_${PN} += "${datadir}/${PN}"
 FILES_${PN} += "${datadir}/icons/*"
 FILES_${PN} += "${datadir}/applications/*"
-FILES_${PN} += "${datadir}/${PN}/sounds/*"
+FILES_${PN} += "${datadir}/alarm/sounds/*"
