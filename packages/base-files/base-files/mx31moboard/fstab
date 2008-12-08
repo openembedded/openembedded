@@ -1,0 +1,14 @@
+rootfs               /                    auto       defaults              1  1
+proc                 /proc                proc       defaults              0  0
+devpts               /dev/pts             devpts     mode=0620,gid=5       0  0
+usbfs                /proc/bus/usb        usbfs      defaults              0  0
+tmpfs                /var/volatile        tmpfs      defaults              0  0
+tmpfs                /dev/shm             tmpfs      mode=0777             0  0
+tmpfs                /media/ram           tmpfs      defaults              0  0
+
+# uncomment this if your device has a SD/MMC/Transflash slot
+/dev/mmcblk0p1       /media/card0         auto       defaults,sync,noauto  0  0
+/dev/mmcblk1p1       /media/card1         auto       defaults,sync,noauto  0  0
+
+192.168.0.200:/usr/local/OE/angstrom-tmp/deploy/glibc/ipk	/media/feeds	nfs	defaults,ro,noauto	0  0
+

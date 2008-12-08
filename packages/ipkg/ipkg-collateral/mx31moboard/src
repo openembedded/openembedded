@@ -1,0 +1,4 @@
+src/gz local-all file:/media/feeds/all
+src/gz local-armv6 file:/media/feeds/armv6
+src/gz local-mx31moboard file:/media/feeds/mx31moboard
+
