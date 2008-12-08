@@ -46,6 +46,7 @@ def get_siteinfo_list(d):
                "mips-linux-uclibc":       "endian-big bit-32 common-linux common-uclibc",\
                "powerpc-darwin":          "endian-big bit-32 common-darwin",\
                "ppc-linux":               "endian-big bit-32 common-linux common-glibc powerpc-common",\ 
+               "ppc64-linux":             "endian-big bit-64 common-linux common-glibc powerpc-common",\ 
 	       "powerpc-linux":           "endian-big bit-32 common-linux common-glibc powerpc-common",\
 	       "powerpc-linux-gnuspe":    "endian-big bit-32 common-linux common-glibc powerpc-common",\
                "powerpc-linux-uclibc":    "endian-big bit-32 common-linux common-uclibc powerpc-common",\
