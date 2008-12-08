@@ -2,15 +2,18 @@ DESCRIPTION="Network performance benchmark including tests for TCP, UDP, sockets
 SECTION = "console/network"
 HOMEPAGE = "http://www.netperf.org/"
 LICENSE = "netperf"
+PR = "r1"
 
 SRC_URI="ftp://ftp.netperf.org/netperf/netperf-${PV}.tar.bz2 \
+         file://cpu_set.patch;patch=1 \
          file://init"
 
 inherit update-rc.d autotools
 
 S = "${WORKDIR}/netperf-${PV}"
 
-CFLAGS_append = " -DDO_UNIX -DDO_IPV6"
+# cpu_set.patch plus _GNU_SOURCE makes src/netlib.c compile with CPU_ macros
+CFLAGS_append = " -DDO_UNIX -DDO_IPV6 -D_GNU_SOURCE"
 
 do_install() {
         install -d ${D}${sbindir} ${D}${bindir} ${D}${sysconfdir}/init.d
