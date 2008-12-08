@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 SECTION = "libs"
 HOMEPAGE = "http://rxtx.org"
 
-PR = "r2"
+PR = "r3"
 
 DEPENDS = "classpath classpath-tools-native"
 
@@ -25,7 +25,7 @@ do_compile() {
     JAR=gjar \
     JAVAC="javac -classpath \$(CLASSPATH) -d \$(TOP)/ -O -source 1.3 -target 1.3" \
     JAVAINCLUDEDIR=${STAGING_INCDIR}/classpath \
-		GLIBTOOL="${TARGET_SYS}-libtool"
+		GLIBTOOL="${TARGET_SYS}-libtool --tag=CC"
 }
 
 do_install() {
@@ -45,5 +45,5 @@ do_stage() {
 PACKAGES = "${JPN} lib${PN}-jni lib${PN}-dev lib${PN}-jni-dbg"
 
 FILES_lib${PN}-jni = "${libdir_jni}/lib*.so"
-FILES_lib${PN}-dev = "${libdir_jni}/lib*.la"
+FILES_lib${PN}-dev = "${libdir_jni}/lib*.la ${libdir_jni}/lib*.a"
 FILES_lib${PN}-jni-dbg = "${libdir_jni}/.debug/lib*.so"
