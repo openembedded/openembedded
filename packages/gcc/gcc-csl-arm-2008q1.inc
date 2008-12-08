@@ -25,7 +25,7 @@ SRC_URI = "http://www.codesourcery.com/public/gnu_toolchain/arm-none-eabi/arm-20
            file://arm-nolibfloat.patch;patch=1 \
            file://arm-softfloat.patch;patch=1 \
            file://zecke-xgcc-cpp.patch;patch=1 \
-#           file://gfortran.patch;patch=1 \
+#           file://gfortran-4.3.x.patch;patch=1 \
 #           file://fortran-static-linking.patch;patch=1 \
 #           file://gcc-configure-no-fortran.patch;patch=1;pnum=1 \
 #           file://gcc-new-makeinfo.patch;patch=1 \
