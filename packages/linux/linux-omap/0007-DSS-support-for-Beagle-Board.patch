@@ -1,18 +1,18 @@
-From 1a63704f218e5ec0bc6f94fc0629ab96f3d6ab34 Mon Sep 17 00:00:00 2001
+From eed2f51a01acd47ab83000bf6870d8b24829fa30 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 29 Sep 2008 17:03:36 +0300
 Subject: [PATCH] DSS: support for Beagle Board
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
- arch/arm/mach-omap2/board-omap3beagle.c |  123 +++++++++++++++++++++++++++----
- 1 files changed, 107 insertions(+), 16 deletions(-)
+ arch/arm/mach-omap2/board-omap3beagle.c |  109 +++++++++++++++++++++++++++----
+ 1 files changed, 95 insertions(+), 14 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index c1de795..cd0c776 100644
+index fe97bab..f3ef73e 100644
 --- a/arch/arm/mach-omap2/board-omap3beagle.c
 +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -42,6 +42,8 @@
+@@ -43,6 +43,8 @@
  #include <mach/gpmc.h>
  #include <mach/nand.h>
  #include <mach/mux.h>
@@ -21,7 +21,7 @@ index c1de795..cd0c776 100644
  
  #include "twl4030-generic-scripts.h"
  #include "mmc-twl4030.h"
-@@ -200,15 +202,6 @@ static void __init omap3_beagle_init_irq(void)
+@@ -238,15 +240,6 @@ static void __init omap3_beagle_init_irq(void)
  	omap_gpio_init();
  }
  
@@ -37,7 +37,7 @@ index c1de795..cd0c776 100644
  static struct gpio_led gpio_leds[] = {
  	{
  		.name			= "beagleboard::usr0",
-@@ -262,13 +255,113 @@ static struct platform_device keys_gpio = {
+@@ -300,13 +293,94 @@ static struct platform_device keys_gpio = {
  	},
  };
  
@@ -123,28 +123,9 @@ index c1de795..cd0c776 100644
 +		printk(KERN_ERR "Unable to get DVI reset GPIO\n");
 +}
 +
-+static struct omap_fbmem_config beagle_fbmem0_config = {
-+	.size = 1024*768*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
-+};
-+
-+static struct omap_fbmem_config beagle_fbmem1_config = {
-+	.size = 1024*768*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
-+};
-+
-+static struct omap_fbmem_config beagle_fbmem2_config = {
-+	.size = 1024*768*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
-+};
-+
-+
  static struct omap_board_config_kernel omap3_beagle_config[] __initdata = {
  	{ OMAP_TAG_UART,	&omap3_beagle_uart_config },
 -	{ OMAP_TAG_LCD,		&omap3_beagle_lcd_config },
-+	{ OMAP_TAG_FBMEM,       &beagle_fbmem0_config },
-+	{ OMAP_TAG_FBMEM,       &beagle_fbmem1_config },
-+	{ OMAP_TAG_FBMEM,       &beagle_fbmem2_config },
  };
  
  static struct platform_device *omap3_beagle_devices[] __initdata = {
@@ -153,12 +134,7 @@ index c1de795..cd0c776 100644
  	&leds_gpio,
  	&keys_gpio,
  };
-@@ -316,22 +409,20 @@ static void __init omap3_beagle_init(void)
- 	omap3_beagle_i2c_init();
- 	platform_add_devices(omap3_beagle_devices,
- 			ARRAY_SIZE(omap3_beagle_devices));
--	omap_board_config = omap3_beagle_config;
--	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
+@@ -359,18 +433,25 @@ static void __init omap3_beagle_init(void)
  	omap_serial_init();
  
  	omap_cfg_reg(J25_34XX_GPIO170);
@@ -172,13 +148,21 @@ index c1de795..cd0c776 100644
 +	beagle_display_init();
  }
  
++static struct omap_fbmem_config omap3_beagle_vram_config[] = {
++	{
++		.size = 1280 * 1024 * 4 * 3,
++		.start = OMAPFB_MEMTYPE_SDRAM,
++	},
++};
++
  static void __init omap3_beagle_map_io(void)
  {
-+	omap_board_config = omap3_beagle_config;
-+	omap_board_config_size = ARRAY_SIZE(omap3_beagle_config);
  	omap2_set_globals_343x();
++	omapfb_set_vram_config(omap3_beagle_vram_config,
++			ARRAY_SIZE(omap3_beagle_vram_config));
  	omap2_map_common_io();
  }
+ 
 -- 
 1.5.6.3
 

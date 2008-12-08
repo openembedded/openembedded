@@ -1,13 +1,11 @@
-From ff78ff9513a40be30649420bc9833793a6e70b75 Mon Sep 17 00:00:00 2001
+From 51d884828725c9e1d1c69c3a061fb5aa9d3d9814 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 11 Nov 2008 13:52:56 +0200
 Subject: [PATCH] DSS: Add generic DVI panel
 
-For some reason we can't allocate enough mem for 1280x1024x24bpp, even if
-there should be enough continuous mem. So 1280x1024 mode defaults to
-16bpp for now.
-
 You also need DSI PLL to generate pix clock for 1280x1024.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
  drivers/video/omap2/Kconfig     |   23 ++++++
  drivers/video/omap2/Makefile    |    2 +
@@ -16,10 +14,10 @@ You also need DSI PLL to generate pix clock for 1280x1024.
  create mode 100644 drivers/video/omap2/panel-dvi.c
 
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 4b72479..11ca6fe 100644
+index bfa1617..ab6a5fc 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
-@@ -24,6 +24,29 @@ config FB_OMAP2_FORCE_AUTO_UPDATE
+@@ -33,6 +33,29 @@ config FB_OMAP2_NUM_FBS
  menu "OMAP2/3 Display Device Drivers"
          depends on OMAP2_DSS
  
@@ -60,7 +58,7 @@ index 51c2e00..7c75340 100644
 +obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
 diff --git a/drivers/video/omap2/panel-dvi.c b/drivers/video/omap2/panel-dvi.c
 new file mode 100644
-index 0000000..393eaf1
+index 0000000..7a90773
 --- /dev/null
 +++ b/drivers/video/omap2/panel-dvi.c
 @@ -0,0 +1,150 @@
@@ -191,7 +189,7 @@ index 0000000..393eaf1
 +
 +	.x_res		= 1280,
 +	.y_res		= 1024,
-+	.bpp		= 16,
++	.bpp		= 24,
 +#else
 +#error Undefined default mode
 +#endif

@@ -1,52 +1,32 @@
-From 0938c1e91fe69da535e06d092bdec6fcc95ad650 Mon Sep 17 00:00:00 2001
+From fc87accafe1f6266f85142ade5fc81886ba4685d Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
-Date: Mon, 20 Oct 2008 13:13:15 +0300
-Subject: [PATCH] DSS: support for OMAP3 SDP board
+Date: Fri, 14 Nov 2008 15:47:55 +0200
+Subject: [PATCH] DSS: Support for OMAP3 SDP board
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
- arch/arm/mach-omap2/board-3430sdp.c |  234 +++++++++++++++++++++++++++++++++--
- drivers/video/omap2/Kconfig         |    7 +-
- drivers/video/omap2/Makefile        |    1 +
- drivers/video/omap2/panel-sdp3430.c |  110 ++++++++++++++++
- 4 files changed, 340 insertions(+), 12 deletions(-)
- create mode 100644 drivers/video/omap2/panel-sdp3430.c
+ arch/arm/mach-omap2/board-3430sdp.c |  210 +++++++++++++++++++++++++++++++++--
+ 1 files changed, 201 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-index 7ee85e9..3a644b1 100644
+index ade186b..725b2d9 100644
 --- a/arch/arm/mach-omap2/board-3430sdp.c
 +++ b/arch/arm/mach-omap2/board-3430sdp.c
-@@ -40,6 +40,8 @@
+@@ -39,6 +39,7 @@
  #include <mach/keypad.h>
  #include <mach/dma.h>
  #include <mach/gpmc.h>
-+#include <mach/omapfb.h>
 +#include <mach/display.h>
  
  #include <asm/io.h>
  #include <asm/delay.h>
-@@ -240,14 +242,224 @@ static struct spi_board_info sdp3430_spi_board_info[] __initdata = {
+@@ -238,14 +239,209 @@ static struct spi_board_info sdp3430_spi_board_info[] __initdata = {
  	},
  };
  
 -static struct platform_device sdp3430_lcd_device = {
 -	.name		= "sdp2430_lcd",
 -	.id		= -1,
-+static struct omap_fbmem_config sdp3430_fbmem0_config = {
-+	.size = 1024*768*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
-+};
-+
-+static struct omap_fbmem_config sdp3430_fbmem1_config = {
-+	.size = 640*480*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
- };
- 
-+static struct omap_fbmem_config sdp3430_fbmem2_config = {
-+	.size = 640*480*4,
-+	.start = OMAPFB_MEMTYPE_SDRAM,
-+};
-+
 +
 +#define SDP2430_LCD_PANEL_BACKLIGHT_GPIO	91
 +#define SDP2430_LCD_PANEL_ENABLE_GPIO		154
@@ -153,7 +133,7 @@ index 7ee85e9..3a644b1 100644
 +static struct omap_display_data sdp3430_display_data = {
 +	.type = OMAP_DISPLAY_TYPE_DPI,
 +	.name = "lcd",
-+	.panel_name = "panel-sdp3430",
++	.panel_name = "sharp-ls037v7dw01",
 +	.u.dpi.data_lines = 16,
 +	.panel_enable = sdp3430_panel_enable_lcd,
 +	.panel_disable = sdp3430_panel_disable_lcd,
@@ -227,8 +207,8 @@ index 7ee85e9..3a644b1 100644
 +	.u.venc.type = OMAP_DSS_VENC_TYPE_SVIDEO,
 +	.panel_enable = sdp3430_panel_enable_tv,
 +	.panel_disable = sdp3430_panel_disable_tv,
-+};
-+
+ };
+ 
 +static struct omap_dss_platform_data sdp3430_dss_data = {
 +	.num_displays = 3,
 +	.displays = {
@@ -254,7 +234,7 @@ index 7ee85e9..3a644b1 100644
  };
  
  static inline void __init sdp3430_init_smc91x(void)
-@@ -294,13 +506,11 @@ static struct omap_uart_config sdp3430_uart_config __initdata = {
+@@ -292,13 +488,8 @@ static struct omap_uart_config sdp3430_uart_config __initdata = {
  	.enabled_uarts	= ((1 << 0) | (1 << 1) | (1 << 2)),
  };
  
@@ -265,177 +245,17 @@ index 7ee85e9..3a644b1 100644
  static struct omap_board_config_kernel sdp3430_config[] __initdata = {
  	{ OMAP_TAG_UART,	&sdp3430_uart_config },
 -	{ OMAP_TAG_LCD,		&sdp3430_lcd_config },
-+	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem0_config },
-+	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem1_config },
-+	{ OMAP_TAG_FBMEM,       &sdp3430_fbmem2_config },
  };
  
  static int sdp3430_batt_table[] = {
-@@ -467,8 +677,6 @@ static void __init omap_3430sdp_init(void)
- {
- 	omap3430_i2c_init();
- 	platform_add_devices(sdp3430_devices, ARRAY_SIZE(sdp3430_devices));
--	omap_board_config = sdp3430_config;
--	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
- 	if (omap_rev() > OMAP3430_REV_ES1_0)
- 		ts_gpio = OMAP34XX_TS_GPIO_IRQ_SDPV2;
- 	else
-@@ -483,10 +691,14 @@ static void __init omap_3430sdp_init(void)
+@@ -481,6 +672,7 @@ static void __init omap_3430sdp_init(void)
  	usb_musb_init();
  	usb_ehci_init();
- 	hsmmc_init(mmc);
+ 	twl4030_mmc_init(mmc);
 +	sdp3430_display_init();
  }
  
  static void __init omap_3430sdp_map_io(void)
- {
-+	omap_board_config = sdp3430_config;
-+	omap_board_config_size = ARRAY_SIZE(sdp3430_config);
-+
- 	omap2_set_globals_343x();
- 	omap2_map_common_io();
- }
-diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 996f047..f4e450d 100644
---- a/drivers/video/omap2/Kconfig
-+++ b/drivers/video/omap2/Kconfig
-@@ -48,5 +48,10 @@ config PANEL_DVI_VERYHIGHRES
- 
- endchoice
- 
--endmenu
-+config PANEL_SDP3430
-+        tristate "SDP3430 Panel"
-+        depends on OMAP2_DSS
-+        help
-+          SDP3430 LCD
- 
-+endmenu
-diff --git a/drivers/video/omap2/Makefile b/drivers/video/omap2/Makefile
-index 7c75340..73ab1c0 100644
---- a/drivers/video/omap2/Makefile
-+++ b/drivers/video/omap2/Makefile
-@@ -2,3 +2,4 @@ obj-$(CONFIG_FB_OMAP2) += omapfb.o
- omapfb-y := omapfb-main.o omapfb-sysfs.o omapfb-ioctl.o
- 
- obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
-+obj-$(CONFIG_PANEL_SDP3430) += panel-sdp3430.o
-diff --git a/drivers/video/omap2/panel-sdp3430.c b/drivers/video/omap2/panel-sdp3430.c
-new file mode 100644
-index 0000000..40fe6f2
---- /dev/null
-+++ b/drivers/video/omap2/panel-sdp3430.c
-@@ -0,0 +1,110 @@
-+/*
-+ * LCD panel support for the TI 3430SDP board
-+ *
-+ * Copyright (C) 2008 Nokia Corporation
-+ * Author: Tomi Valkeinen <tomi.valkeinen@nokia.com>
-+ *
-+ * Derived from drivers/video/omap/lcd_2430sdp.c
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but WITHOUT
-+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-+ * more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/delay.h>
-+
-+#include <mach/display.h>
-+
-+static int sdp3430_panel_init(struct omap_display *display)
-+{
-+	return 0;
-+}
-+
-+static void sdp3430_panel_cleanup(struct omap_display *display)
-+{
-+}
-+
-+static int sdp3430_panel_enable(struct omap_display *display)
-+{
-+	int r = 0;
-+
-+	if (display->hw_config.panel_enable)
-+		r = display->hw_config.panel_enable(display);
-+
-+	return r;
-+}
-+
-+static void sdp3430_panel_disable(struct omap_display *display)
-+{
-+	if (display->hw_config.panel_disable)
-+		display->hw_config.panel_disable(display);
-+}
-+
-+static int sdp3430_panel_suspend(struct omap_display *display)
-+{
-+	sdp3430_panel_disable(display);
-+	return 0;
-+}
-+
-+static int sdp3430_panel_resume(struct omap_display *display)
-+{
-+	return sdp3430_panel_enable(display);
-+}
-+
-+static struct omap_panel sdp3430_panel = {
-+	.owner		= THIS_MODULE,
-+	.name		= "panel-sdp3430",
-+	.init		= sdp3430_panel_init,
-+	.cleanup	= sdp3430_panel_cleanup,
-+	.enable		= sdp3430_panel_enable,
-+	.disable	= sdp3430_panel_disable,
-+	.suspend	= sdp3430_panel_suspend,
-+	.resume		= sdp3430_panel_resume,
-+	/*.set_mode	= sdp3430_set_mode, */
-+
-+	.timings = {
-+		.pixel_clock	= 19200,
-+
-+		.hsw		= 4,
-+		.hfp		= 4,
-+		.hbp		= 40,
-+
-+		.vsw		= 2,
-+		.vfp		= 1,
-+		.vbp		= 1,
-+	},
-+
-+	.acb		= 0x28,
-+
-+	.config		= OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
-+		OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IPC,
-+
-+	.x_res = 480,
-+	.y_res = 640,
-+	.bpp = 16,
-+};
-+
-+
-+static int __init sdp3430_panel_drv_init(void)
-+{
-+	omap_dss_register_panel(&sdp3430_panel);
-+	return 0;
-+}
-+
-+static void __exit sdp3430_panel_drv_exit(void)
-+{
-+	omap_dss_unregister_panel(&sdp3430_panel);
-+}
-+
-+module_init(sdp3430_panel_drv_init);
-+module_exit(sdp3430_panel_drv_exit);
-+MODULE_LICENSE("GPL");
 -- 
 1.5.6.3
 

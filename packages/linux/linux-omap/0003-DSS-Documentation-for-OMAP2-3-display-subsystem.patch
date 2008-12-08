@@ -1,4 +1,4 @@
-From e8cc995ace5ef4c8e920ccac6bacc1a0129ad2c4 Mon Sep 17 00:00:00 2001
+From 66fad2b53d3427962407b40af79e227635aed780 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 4 Nov 2008 15:08:07 +0200
 Subject: [PATCH] DSS: Documentation for OMAP2/3 display subsystem

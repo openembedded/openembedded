@@ -1,8 +1,9 @@
-From 53561526e1e9bf20dd9e17b66f2a1b1c6cfec935 Mon Sep 17 00:00:00 2001
+From 64421d1bbb3aadb91fedc6c0f0093e0496f2c0bf Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 7 Nov 2008 16:54:01 +0200
 Subject: [PATCH] DSS: BEAGLE: Enable DSS in beagle defconfig
 
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
  arch/arm/configs/omap3_beagle_defconfig |  149 +++++++++++++++++++++----------
  1 files changed, 102 insertions(+), 47 deletions(-)

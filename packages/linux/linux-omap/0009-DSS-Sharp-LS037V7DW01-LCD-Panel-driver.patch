@@ -1,4 +1,4 @@
-From 436d6597311770af1d3a6d42560f34d6342a1c2f Mon Sep 17 00:00:00 2001
+From 2262ea3226ee073fefa37d5706f09205ae74580d Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 14 Nov 2008 15:47:19 +0200
 Subject: [PATCH] DSS: Sharp LS037V7DW01 LCD Panel driver
@@ -12,10 +12,10 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  create mode 100644 drivers/video/omap2/panel-sharp-ls037v7dw01.c
 
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index 11ca6fe..4bd3f87 100644
+index ab6a5fc..392f251 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
-@@ -48,5 +48,10 @@ config PANEL_DVI_1280X1024
+@@ -57,5 +57,10 @@ config PANEL_DVI_1280X1024
  
  endchoice
  

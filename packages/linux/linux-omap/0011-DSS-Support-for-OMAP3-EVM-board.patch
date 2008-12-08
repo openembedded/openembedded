@@ -1,4 +1,4 @@
-From 21156e8a6473c293d260b18565a382283d227ef4 Mon Sep 17 00:00:00 2001
+From c50a7b6c9ceb75c1bc49bc596556fdf6b1960306 Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 14 Nov 2008 16:03:34 +0200
 Subject: [PATCH] DSS: Support for OMAP3 EVM board
@@ -11,10 +11,10 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  1 files changed, 215 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
-index bc44cb5..edecfd3 100644
+index e4e60e2..7756dd8 100644
 --- a/arch/arm/mach-omap2/board-omap3evm.c
 +++ b/arch/arm/mach-omap2/board-omap3evm.c
-@@ -37,6 +37,8 @@
+@@ -36,6 +36,8 @@
  #include <mach/usb-ehci.h>
  #include <mach/common.h>
  #include <mach/mcspi.h>
@@ -23,7 +23,7 @@ index bc44cb5..edecfd3 100644
  
  #include "sdram-micron-mt46h32m32lf-6.h"
  #include "twl4030-generic-scripts.h"
-@@ -161,14 +163,215 @@ static int __init omap3_evm_i2c_init(void)
+@@ -159,14 +161,215 @@ static int __init omap3_evm_i2c_init(void)
  	omap_register_i2c_bus(3, 400, NULL, 0);
  	return 0;
  }
@@ -154,7 +154,7 @@ index bc44cb5..edecfd3 100644
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
 +				TWL4030_VPLL2_DEV_GRP);
 +	}
-+	gpio_set_value(LCD_PANEL_ENABLE_GPIO, 1);
++	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 1);
 +	lcd_enabled = 0;
 +}
 +
@@ -244,7 +244,7 @@ index bc44cb5..edecfd3 100644
  };
  
  static void ads7846_dev_init(void)
-@@ -227,11 +430,13 @@ static void __init omap3_evm_init_irq(void)
+@@ -225,11 +428,13 @@ static void __init omap3_evm_init_irq(void)
  
  static struct omap_board_config_kernel omap3_evm_config[] __initdata = {
  	{ OMAP_TAG_UART,	&omap3_evm_uart_config },
@@ -260,7 +260,7 @@ index bc44cb5..edecfd3 100644
  	&omap3evm_smc911x_device,
  };
  
-@@ -250,8 +455,6 @@ static void __init omap3_evm_init(void)
+@@ -248,8 +453,6 @@ static void __init omap3_evm_init(void)
  	omap3_evm_i2c_init();
  
  	platform_add_devices(omap3_evm_devices, ARRAY_SIZE(omap3_evm_devices));
@@ -269,7 +269,7 @@ index bc44cb5..edecfd3 100644
  
  	spi_register_board_info(omap3evm_spi_board_info,
  				ARRAY_SIZE(omap3evm_spi_board_info));
-@@ -262,10 +465,13 @@ static void __init omap3_evm_init(void)
+@@ -260,10 +463,13 @@ static void __init omap3_evm_init(void)
  	usb_ehci_init();
  	omap3evm_flash_init();
  	ads7846_dev_init();
