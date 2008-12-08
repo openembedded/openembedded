@@ -214,6 +214,7 @@ do
                       pocketcellar \
                       povray \
                       prboom \
+                      prelink \
                       pushover \
                       python \
                       python-pybluez \
