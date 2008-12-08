@@ -11,9 +11,17 @@ leds beep
 . /etc/default/functions
 leds boot system
 
-test -x /sbin/init && exec /sbin/init
+if [ -x /sbin/init ]
+then
+	umount /proc 2>/dev/null
+	umount /sys 2>/dev/null
+	exec /sbin/init
+fi
 
 # fallback if /sbin/init has been deleted (bad!)
+# Mount required filesystems if necessary
+[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+[ -e /sys/class    ] || mount -t sysfs sysfs /sys
 leds boot system panic
 exec <>/dev/console >&0 2>&0
 test -x /sbin/sulogin && exec /sbin/sulogin
