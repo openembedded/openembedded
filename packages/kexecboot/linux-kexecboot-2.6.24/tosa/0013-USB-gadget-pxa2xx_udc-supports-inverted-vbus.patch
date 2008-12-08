@@ -1,0 +1,61 @@
+From 18c1a92a09faf75ebdac7ac471c741a6622cf3e2 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 9 Jan 2008 01:27:49 +0300
+Subject: [PATCH 13/64] USB: gadget: pxa2xx_udc supports inverted vbus
+
+Some boards (like e.g. Tosa) invert the VBUS-detection signal:
+it's low when a host is supplying VBUS, and high otherwise.
+Allow specifying whether gpio_vbus value is inverted.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+ drivers/usb/gadget/pxa2xx_udc.c   |    9 +++++++--
+ include/asm-arm/mach/udc_pxa2xx.h |    2 ++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/gadget/pxa2xx_udc.c b/drivers/usb/gadget/pxa2xx_udc.c
+index 3173b39..4f7d4ef 100644
+--- a/drivers/usb/gadget/pxa2xx_udc.c
++++ b/drivers/usb/gadget/pxa2xx_udc.c
+@@ -127,8 +127,10 @@ static int is_vbus_present(void)
+ {
+ 	struct pxa2xx_udc_mach_info		*mach = the_controller->mach;
+ 
+-	if (mach->gpio_vbus)
+-		return gpio_get_value(mach->gpio_vbus);
++	if (mach->gpio_vbus) {
++		int value = gpio_get_value(mach->gpio_vbus);
++		return mach->gpio_vbus_inverted ? !value : value;
++	}
+ 	if (mach->udc_is_connected)
+ 		return mach->udc_is_connected();
+ 	return 1;
+@@ -1397,6 +1399,9 @@ static irqreturn_t udc_vbus_irq(int irq, void *_dev)
+ 	struct pxa2xx_udc	*dev = _dev;
+ 	int			vbus = gpio_get_value(dev->mach->gpio_vbus);
+ 
++	if (dev->mach->gpio_vbus_inverted)
++		vbus = !vbus;
++
+ 	pxa2xx_udc_vbus_session(&dev->gadget, vbus);
+ 	return IRQ_HANDLED;
+ }
+diff --git a/include/asm-arm/mach/udc_pxa2xx.h b/include/asm-arm/mach/udc_pxa2xx.h
+index ff0a957..f191e14 100644
+--- a/include/asm-arm/mach/udc_pxa2xx.h
++++ b/include/asm-arm/mach/udc_pxa2xx.h
+@@ -19,7 +19,9 @@ struct pxa2xx_udc_mach_info {
+ 	 * with on-chip GPIOs not Lubbock's wierd hardware, can have a sane
+ 	 * VBUS IRQ and omit the methods above.  Store the GPIO number
+ 	 * here; for GPIO 0, also mask in one of the pxa_gpio_mode() bits.
++	 * Note that sometimes the signals go through inverters...
+ 	 */
++	bool	gpio_vbus_inverted;
+ 	u16	gpio_vbus;			/* high == vbus present */
+ 	u16	gpio_pullup;			/* high == pullup activated */
+ };
+-- 
+1.5.3.8
+

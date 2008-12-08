@@ -1,0 +1,57 @@
+From 5bae1fab16c7b14a458aa90e5654fe3a1d8d960f Mon Sep 17 00:00:00 2001
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Date: Sun, 20 Jan 2008 00:06:06 +0300
+Subject: [PATCH 38/64] Don't lock the codec list in snd_soc_dapm_new_widgets()
+
+On Wed, Jan 16, 2008 at 02:40:55AM +0300, Dmitry wrote:
+
+> I'm sorry, but I tested this patch only now. And I just got another
+> message from lockdep:
+
+Could you give this patch a try, please?
+---
+ sound/soc/soc-core.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e6a67b5..7f3ed9f 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1090,7 +1090,6 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
+ 	struct snd_soc_machine *machine = socdev->machine;
+ 	int ret = 0, i, ac97 = 0, err = 0;
+ 
+-	mutex_lock(&codec->mutex);
+ 	for(i = 0; i < machine->num_links; i++) {
+ 		if (socdev->machine->dai_link[i].init) {
+ 			err = socdev->machine->dai_link[i].init(codec);
+@@ -1116,12 +1115,14 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
+ 		goto out;
+ 	}
+ 
++	mutex_lock(&codec->mutex);
+ #ifdef CONFIG_SND_SOC_AC97_BUS
+ 	if (ac97) {
+ 		ret = soc_ac97_dev_register(codec);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "asoc: AC97 device register failed\n");
+ 			snd_card_free(codec->card);
++			mutex_unlock(&codec->mutex);
+ 			goto out;
+ 		}
+ 	}
+@@ -1134,8 +1135,10 @@ int snd_soc_register_card(struct snd_soc_device *socdev)
+ 	err = device_create_file(socdev->dev, &dev_attr_codec_reg);
+ 	if (err < 0)
+ 		printk(KERN_WARNING "asoc: failed to add codec sysfs entries\n");
+-out:
++
+ 	mutex_unlock(&codec->mutex);
++
++out:
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_register_card);
+-- 
+1.5.3.8
+

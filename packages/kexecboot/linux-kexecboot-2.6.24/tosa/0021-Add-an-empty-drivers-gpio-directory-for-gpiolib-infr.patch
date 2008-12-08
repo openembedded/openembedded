@@ -1,0 +1,121 @@
+From b77665c545bc260d2b93add129413e4a724d7e6e Mon Sep 17 00:00:00 2001
+From: David Brownell <dbrownell@users.sourceforge.net>
+Date: Fri, 18 Jan 2008 00:35:00 +0300
+Subject: [PATCH 21/64] Add an empty drivers/gpio directory for gpiolib infrastructure and GPIO
+ expanders.  It will be populated by later patches.
+
+This won't be the only place to hold such gpio_chip code.  Many external chips
+add a few GPIOs as secondary functionality (such as MFD drivers) and platform
+code frequently needs to closely integrate GPIO and IRQ support.
+
+This is placed *early* in the build/link sequence since it's common for other
+drivers to depend on GPIOs to do their work, so they must be initialized early
+in the device_initcall() sequence.
+
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+Acked-by: Jean Delvare <khali@linux-fr.org>
+Cc: Eric Miao <eric.miao@marvell.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Ben Gardner <bgardner@wabtec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ arch/arm/Kconfig      |    2 ++
+ drivers/Kconfig       |    2 ++
+ drivers/Makefile      |    1 +
+ drivers/gpio/Kconfig  |   32 ++++++++++++++++++++++++++++++++
+ drivers/gpio/Makefile |    3 +++
+ 5 files changed, 40 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/gpio/Kconfig
+ create mode 100644 drivers/gpio/Makefile
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 10faf9c..06ca241 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1042,6 +1042,8 @@ source "drivers/i2c/Kconfig"
+ 
+ source "drivers/spi/Kconfig"
+ 
++source "drivers/gpio/Kconfig"
++
+ source "drivers/w1/Kconfig"
+ 
+ source "drivers/power/Kconfig"
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index f4076d9..90e295a 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -52,6 +52,8 @@ source "drivers/i2c/Kconfig"
+ 
+ source "drivers/spi/Kconfig"
+ 
++source "drivers/gpio/Kconfig"
++
+ source "drivers/w1/Kconfig"
+ 
+ source "drivers/power/Kconfig"
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 8cb37e3..8e5101f 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -5,6 +5,7 @@
+ # Rewritten to use lists instead of if-statements.
+ #
+ 
++obj-$(CONFIG_HAVE_GPIO_LIB)	+= gpio/
+ obj-$(CONFIG_PCI)		+= pci/
+ obj-$(CONFIG_PARISC)		+= parisc/
+ obj-$(CONFIG_RAPIDIO)		+= rapidio/
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+new file mode 100644
+index 0000000..560687c
+--- /dev/null
++++ b/drivers/gpio/Kconfig
+@@ -0,0 +1,32 @@
++#
++# GPIO infrastructure and expanders
++#
++
++config HAVE_GPIO_LIB
++	bool
++	help
++	  Platforms select gpiolib if they use this infrastructure
++	  for all their GPIOs, usually starting with ones integrated
++	  into SOC processors.
++
++menu "GPIO Support"
++	depends on HAVE_GPIO_LIB
++
++config DEBUG_GPIO
++	bool "Debug GPIO calls"
++	depends on DEBUG_KERNEL
++	help
++	  Say Y here to add some extra checks and diagnostics to GPIO calls.
++	  The checks help ensure that GPIOs have been properly initialized
++	  before they are used and that sleeping calls aren not made from
++	  nonsleeping contexts.  They can make bitbanged serial protocols
++	  slower.  The diagnostics help catch the type of setup errors
++	  that are most common when setting up new platforms or boards.
++
++# put expanders in the right section, in alphabetical order
++
++comment "I2C GPIO expanders:"
++
++comment "SPI GPIO expanders:"
++
++endmenu
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+new file mode 100644
+index 0000000..cdbba6b
+--- /dev/null
++++ b/drivers/gpio/Makefile
+@@ -0,0 +1,3 @@
++# gpio support: dedicated expander chips, etc
++
++ccflags-$(CONFIG_DEBUG_GPIO)	+= -DDEBUG
+-- 
+1.5.3.8
+

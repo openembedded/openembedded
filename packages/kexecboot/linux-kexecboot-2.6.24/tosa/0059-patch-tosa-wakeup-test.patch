@@ -1,0 +1,46 @@
+From 00f6e9b946d1f653fc776d71c86a1f6a7534cd1d Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 25 Jan 2008 19:16:20 +0300
+Subject: [PATCH 59/64] patch tosa-wakeup-test
+
+---
+ arch/arm/mach-pxa/tosa.c |   18 +++++++++++++++++-
+ 1 files changed, 17 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 2b4aef7..7008919 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -260,12 +260,28 @@ static struct platform_device tosakbd_device = {
+ };
+ 
+ static struct gpio_keys_button tosa_gpio_keys[] = {
++	/*
++	 * Two following keys are directly tied to "ON" button of tosa. Why?
++	 * The first one can be used as a wakeup source, the second can't:
++	 * it's outside of permitted area.
++	 */
++	{
++		.type	= EV_PWR,
++		.code	= KEY_RESERVED,
++		.gpio	= TOSA_GPIO_POWERON,
++		.desc	= "Poweron",
++		.wakeup	= 1,
++		.active_low = 1,
++	},
+ 	{
+ 		.type	= EV_PWR,
+ 		.code	= KEY_SUSPEND,
+ 		.gpio	= TOSA_GPIO_ON_KEY,
+ 		.desc	= "On key",
+-		.wakeup	= 1,
++		/*
++		 * can't be used as wakeup
++		 * .wakeup	= 1,
++		 */
+ 		.active_low = 1,
+ 	},
+ 	{
+-- 
+1.5.3.8
+

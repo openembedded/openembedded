@@ -1,0 +1,72 @@
+From df0801d2cd6a7081700c79f437d1185cbe1960a7 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 9 Jan 2008 02:08:18 +0300
+Subject: [PATCH 28/64] Add suspend/resume/wakeup support for pda_power.
+ Now with device_init_wakeup.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/power/pda_power.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 files changed, 34 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/power/pda_power.c b/drivers/power/pda_power.c
+index d98622f..28360e8 100644
+--- a/drivers/power/pda_power.c
++++ b/drivers/power/pda_power.c
+@@ -207,6 +207,8 @@ static int pda_power_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	device_init_wakeup(&pdev->dev, 1);
++
+ 	return 0;
+ 
+ usb_irq_failed:
+@@ -239,12 +241,44 @@ static int pda_power_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_PM
++static int pda_power_suspend(struct platform_device *pdev, pm_message_t state)
++{
++	if (device_may_wakeup(&pdev->dev)) {
++		if (ac_irq)
++			enable_irq_wake(ac_irq->start);
++		if (usb_irq)
++			enable_irq_wake(usb_irq->start);
++	}
++
++	return 0;
++}
++
++static int pda_power_resume(struct platform_device *pdev)
++{
++	if (device_may_wakeup(&pdev->dev)) {
++		if (usb_irq)
++			disable_irq_wake(usb_irq->start);
++		if (ac_irq)
++			disable_irq_wake(ac_irq->start);
++	}
++
++	return 0;
++}
++#else
++#define pda_power_suspend	NULL
++#define pda_power_resume	NULL
++#endif
++
++
+ static struct platform_driver pda_power_pdrv = {
+ 	.driver = {
+ 		.name = "pda-power",
+ 	},
+ 	.probe = pda_power_probe,
+ 	.remove = pda_power_remove,
++	.suspend = pda_power_suspend,
++	.resume = pda_power_resume,
+ };
+ 
+ static int __init pda_power_init(void)
+-- 
+1.5.3.8
+

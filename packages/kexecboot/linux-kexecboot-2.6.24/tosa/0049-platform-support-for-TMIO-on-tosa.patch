@@ -1,0 +1,373 @@
+From 30588bdd5c5cdd9fbe269643f582862a76f09efb Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Tue, 12 Feb 2008 04:52:48 +0300
+Subject: [PATCH 49/64] platform support for TMIO on tosa
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ arch/arm/mach-pxa/tosa.c        |  179 ++++++++++++++++++++++++++++++++++++++-
+ include/asm-arm/arch-pxa/irqs.h |    1 +
+ include/asm-arm/arch-pxa/tosa.h |   45 ++++++++--
+ sound/soc/pxa/tosa.c            |    3 +-
+ 4 files changed, 216 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 5268e94..e2eec0f 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -18,7 +18,13 @@
+ #include <linux/major.h>
+ #include <linux/fs.h>
+ #include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/fb.h>
+ #include <linux/mmc/host.h>
++#include <linux/mfd/tc6393xb.h>
++#include <linux/mfd/tmio.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/pm.h>
+ #include <linux/delay.h>
+ #include <linux/gpio_keys.h>
+@@ -298,12 +304,183 @@ static struct platform_device tosaled_device = {
+     .id     = -1,
+ };
+ 
++/*
++ * Toshiba Mobile IO Controller
++ */
++static struct resource tc6393xb_resources[] = {
++	[0] = {
++		.start	= TOSA_LCDC_PHYS,
++		.end	= TOSA_LCDC_PHYS + 0x3ffffff,
++		.flags	= IORESOURCE_MEM,
++	},
++
++	[1] = {
++		.start	= TOSA_IRQ_GPIO_TC6393XB_INT,
++		.end	= TOSA_IRQ_GPIO_TC6393XB_INT,
++		.flags	= IORESOURCE_IRQ,
++	},
++};
++
++
++static int tosa_tc6393xb_enable(struct platform_device *dev)
++{
++
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_SUSPEND);
++	reset_scoop_gpio(&tosascoop_device.dev, TOSA_SCOOP_TC6393XB_REST_IN);      /* #PCLR */
++	pxa_gpio_mode(GPIO11_3_6MHz_MD);
++	pxa_gpio_mode(GPIO18_RDY_MD);
++	mdelay(1);
++	set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_SUSPEND);
++	mdelay(10);
++	set_scoop_gpio(&tosascoop_device.dev, TOSA_SCOOP_TC6393XB_REST_IN);        /* #PCLR */
++	set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++
++	return 0;
++}
++
++static int tosa_tc6393xb_disable(struct platform_device *dev)
++{
++
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_SUSPEND);
++	reset_scoop_gpio(&tosascoop_device.dev, TOSA_SCOOP_TC6393XB_REST_IN);      /* #PCLR */
++	pxa_gpio_mode(GPIO11_3_6MHz_MD|GPIO_OUT);
++	GPSR0 = GPIO_bit(GPIO11_3_6MHz);
++
++	return 0;
++}
++
++static int tosa_tc6393xb_resume(struct platform_device *dev)
++{
++
++	pxa_gpio_mode(GPIO11_3_6MHz_MD);
++	pxa_gpio_mode(GPIO18_RDY_MD);
++	mdelay(1);
++	set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_SUSPEND);
++	mdelay(10);
++	set_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++	mdelay(10);
++
++	return 0;
++}
++
++static int tosa_tc6393xb_suspend(struct platform_device *dev)
++{
++
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_L3V_ON);
++	reset_scoop_gpio(&tosascoop_jc_device.dev, TOSA_SCOOP_JC_TC6393XB_SUSPEND);
++	pxa_gpio_mode(GPIO11_3_6MHz_MD|GPIO_OUT);
++	GPSR0 = GPIO_bit(GPIO11_3_6MHz);
++
++	return 0;
++}
++
++static struct mtd_partition tosa_nand_partition[] = {
++	{
++		.name = "smf",
++		.offset = 0,
++		.size = 7 * 1024 * 1024,
++	},
++	{
++		.name = "root",
++		.offset = MTDPART_OFS_APPEND,
++		.size = 28 * 1024 * 1024,
++	},
++	{
++		.name = "home",
++		.offset = MTDPART_OFS_APPEND,
++		.size = MTDPART_SIZ_FULL,
++	},
++};
++
++static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
++
++static struct nand_bbt_descr tosa_tc6393xb_nand_bbt = {
++	.options = 0,
++	.offs = 4,
++	.len = 2,
++	.pattern = scan_ff_pattern
++};
++
++static struct tmio_nand_data tosa_tc6393xb_nand_config = {
++	.num_partitions = ARRAY_SIZE(tosa_nand_partition),
++	.partition = tosa_nand_partition,
++	.badblock_pattern = &tosa_tc6393xb_nand_bbt,
++};
++
++static struct fb_videomode tosa_tc6393xb_lcd_mode[] = {
++	{
++		.xres = 480,
++		.yres = 640,
++		.pixclock = 0x002cdf00,/* PLL divisor */
++		.left_margin = 0x004c,
++		.right_margin = 0x005b,
++		.upper_margin = 0x0001,
++		.lower_margin = 0x000d,
++		.hsync_len = 0x0002,
++		.vsync_len = 0x0001,
++		.sync = FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		.vmode = FB_VMODE_NONINTERLACED,
++	},{
++		.xres = 240,
++		.yres = 320,
++		.pixclock = 0x00e7f203,/* PLL divisor */
++		.left_margin = 0x0024,
++		.right_margin = 0x002f,
++		.upper_margin = 0x0001,
++		.lower_margin = 0x000d,
++		.hsync_len = 0x0002,
++		.vsync_len = 0x0001,
++		.sync = FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
++		.vmode = FB_VMODE_NONINTERLACED,
++	}
++};
++
++static struct tmio_fb_data tosa_tc6393xb_fb_config = {
++	.lcd_set_power	= tc6393xb_lcd_set_power,
++	.lcd_mode	= tc6393xb_lcd_mode,
++	.num_modes	= ARRAY_SIZE(tosa_tc6393xb_lcd_mode),
++	.modes		= &tosa_tc6393xb_lcd_mode[0],
++};
++
++static struct tc6393xb_platform_data tosa_tc6393xb_setup = {
++	.scr_pll2cr	= 0x0cc1,
++	.scr_ccr = TC6393XB_CCR_UNK1 | TC6393XB_CCR_HCLK_48,
++	.scr_gper	= 0x3300,
++	.scr_gpo_dsr	= TOSA_TC6393XB_CARD_VCC_ON | TOSA_TC6393XB_CHARGE_OFF_JC,
++	.scr_gpo_doecr	= TOSA_TC6393XB_GPO_OE,
++
++	.irq_base	= IRQ_BOARD_START,
++
++	.enable		= tosa_tc6393xb_enable,
++	.disable	= tosa_tc6393xb_disable,
++	.suspend	= tosa_tc6393xb_suspend,
++	.resume		= tosa_tc6393xb_resume,
++
++	.nand_data	= &tosa_tc6393xb_nand_config,
++	.fb_data	= &tosa_tc6393xb_fb_config,
++};
++
++
++struct platform_device tc6393xb_device = {
++	.name	= "tc6393xb",
++	.id	= -1,
++	.dev	= {
++		.platform_data	= &tosa_tc6393xb_setup,
++	},
++	.num_resources	= ARRAY_SIZE(tc6393xb_resources),
++	.resource	= tc6393xb_resources,
++};
++EXPORT_SYMBOL(tc6393xb_device);
++
+ static struct platform_device *devices[] __initdata = {
+ 	&tosascoop_device,
+ 	&tosascoop_jc_device,
+ 	&tosakbd_device,
+ 	&tosa_gpio_keys_device,
+ 	&tosaled_device,
++	&tc6393xb_device,
+ };
+ 
+ static void tosa_poweroff(void)
+@@ -332,7 +509,7 @@ static void __init tosa_init(void)
+ 	arm_pm_restart = tosa_restart;
+ 
+ 	pxa_gpio_mode(TOSA_GPIO_ON_RESET | GPIO_IN);
+-	pxa_gpio_mode(TOSA_GPIO_TC6393_INT | GPIO_IN);
++	pxa_gpio_mode(TOSA_GPIO_TC6393XB_INT | GPIO_IN);
+ 	pxa_gpio_mode(TOSA_GPIO_USB_IN | GPIO_IN);
+ 
+ 	/* setup sleep mode values */
+diff --git a/include/asm-arm/arch-pxa/irqs.h b/include/asm-arm/arch-pxa/irqs.h
+index b76ee6d..bf622d8 100644
+--- a/include/asm-arm/arch-pxa/irqs.h
++++ b/include/asm-arm/arch-pxa/irqs.h
+@@ -180,6 +180,7 @@
+ #define NR_IRQS			(IRQ_LOCOMO_SPI_TEND + 1)
+ #elif defined(CONFIG_ARCH_LUBBOCK) || \
+       defined(CONFIG_MACH_LOGICPD_PXA270) || \
++      defined(CONFIG_MACH_TOSA) || \
+       defined(CONFIG_MACH_MAINSTONE)
+ #define NR_IRQS			(IRQ_BOARD_END)
+ #else
+diff --git a/include/asm-arm/arch-pxa/tosa.h b/include/asm-arm/arch-pxa/tosa.h
+index c05e4fa..1b202b2 100644
+--- a/include/asm-arm/arch-pxa/tosa.h
++++ b/include/asm-arm/arch-pxa/tosa.h
+@@ -20,11 +20,35 @@
+ /* Jacket Scoop */
+ #define TOSA_SCOOP_PHYS  	(PXA_CS5_PHYS + 0x00800000)
+ 
++#define TC6393XB_GPIO(i)		(1 << (i))
++/*
++ * TC6393 GPIOs
++ */
++#define TOSA_TC6393XB_TG_ON  		TC6393XB_GPIO(0)
++#define TOSA_TC6393XB_L_MUTE  		TC6393XB_GPIO(1)
++#define TOSA_TC6393XB_BL_C20MA		TC6393XB_GPIO(3)
++#define TOSA_TC6393XB_CARD_VCC_ON 	TC6393XB_GPIO(4)
++#define TOSA_TC6393XB_CHARGE_OFF 		TC6393XB_GPIO(6)
++#define TOSA_TC6393XB_CHARGE_OFF_JC 	TC6393XB_GPIO(7)
++#define TOSA_TC6393XB_BAT0_V_ON 		TC6393XB_GPIO(9)
++#define TOSA_TC6393XB_BAT1_V_ON 		TC6393XB_GPIO(10)
++#define TOSA_TC6393XB_BU_CHRG_ON 		TC6393XB_GPIO(11)
++#define TOSA_TC6393XB_BAT_SW_ON 		TC6393XB_GPIO(12)
++#define TOSA_TC6393XB_BAT0_TH_ON 		TC6393XB_GPIO(14)
++#define TOSA_TC6393XB_BAT1_TH_ON 		TC6393XB_GPIO(15)
++
++#define TOSA_TC6393XB_GPO_OE (TOSA_TC6393XB_TG_ON | TOSA_TC6393XB_L_MUTE | TOSA_TC6393XB_BL_C20MA | \
++		TOSA_TC6393XB_CARD_VCC_ON | TOSA_TC6393XB_CHARGE_OFF | \
++		TOSA_TC6393XB_CHARGE_OFF_JC | TOSA_TC6393XB_BAT0_V_ON | \
++		TOSA_TC6393XB_BAT1_V_ON | TOSA_TC6393XB_BU_CHRG_ON | \
++		TOSA_TC6393XB_BAT_SW_ON | TOSA_TC6393XB_BAT0_TH_ON | \
++		TOSA_TC6393XB_BAT1_TH_ON)
++
+ /*
+  * SCOOP2 internal GPIOs
+  */
+ #define TOSA_SCOOP_PXA_VCORE1		SCOOP_GPCR_PA11
+-#define TOSA_SCOOP_TC6393_REST_IN	SCOOP_GPCR_PA12
++#define TOSA_SCOOP_TC6393XB_REST_IN	SCOOP_GPCR_PA12
+ #define TOSA_SCOOP_IR_POWERDWN		SCOOP_GPCR_PA13
+ #define TOSA_SCOOP_SD_WP		SCOOP_GPCR_PA14
+ #define TOSA_SCOOP_PWR_ON		SCOOP_GPCR_PA15
+@@ -34,11 +58,11 @@
+ #define TOSA_SCOOP_AC_IN_OL		SCOOP_GPCR_PA19
+ 
+ /* GPIO Direction   1 : output mode / 0:input mode */
+-#define TOSA_SCOOP_IO_DIR     ( TOSA_SCOOP_PXA_VCORE1 | TOSA_SCOOP_TC6393_REST_IN | \
++#define TOSA_SCOOP_IO_DIR     ( TOSA_SCOOP_PXA_VCORE1 | TOSA_SCOOP_TC6393XB_REST_IN | \
+ 		TOSA_SCOOP_IR_POWERDWN | TOSA_SCOOP_PWR_ON | TOSA_SCOOP_AUD_PWR_ON |\
+ 		TOSA_SCOOP_BT_RESET | TOSA_SCOOP_BT_PWR_EN )
+ /* GPIO out put level when init   1: Hi */
+-#define TOSA_SCOOP_IO_OUT     ( TOSA_SCOOP_TC6393_REST_IN )
++#define TOSA_SCOOP_IO_OUT     ( TOSA_SCOOP_TC6393XB_REST_IN )
+ 
+ /*
+  * SCOOP2 jacket GPIOs
+@@ -47,8 +71,8 @@
+ #define TOSA_SCOOP_JC_NOTE_LED		SCOOP_GPCR_PA12
+ #define TOSA_SCOOP_JC_CHRG_ERR_LED	SCOOP_GPCR_PA13
+ #define TOSA_SCOOP_JC_USB_PULLUP	SCOOP_GPCR_PA14
+-#define TOSA_SCOOP_JC_TC6393_SUSPEND	SCOOP_GPCR_PA15
+-#define TOSA_SCOOP_JC_TC3693_L3V_ON	SCOOP_GPCR_PA16
++#define TOSA_SCOOP_JC_TC6393XB_SUSPEND	SCOOP_GPCR_PA15
++#define TOSA_SCOOP_JC_TC6393XB_L3V_ON	SCOOP_GPCR_PA16
+ #define TOSA_SCOOP_JC_WLAN_DETECT	SCOOP_GPCR_PA17
+ #define TOSA_SCOOP_JC_WLAN_LED		SCOOP_GPCR_PA18
+ #define TOSA_SCOOP_JC_CARD_LIMIT_SEL	SCOOP_GPCR_PA19
+@@ -56,7 +80,7 @@
+ /* GPIO Direction   1 : output mode / 0:input mode */
+ #define TOSA_SCOOP_JC_IO_DIR ( TOSA_SCOOP_JC_BT_LED | TOSA_SCOOP_JC_NOTE_LED | \
+ 		TOSA_SCOOP_JC_CHRG_ERR_LED | TOSA_SCOOP_JC_USB_PULLUP | \
+-		TOSA_SCOOP_JC_TC6393_SUSPEND | TOSA_SCOOP_JC_TC3693_L3V_ON | \
++		TOSA_SCOOP_JC_TC6393XB_SUSPEND | TOSA_SCOOP_JC_TC6393XB_L3V_ON | \
+ 		TOSA_SCOOP_JC_WLAN_LED | TOSA_SCOOP_JC_CARD_LIMIT_SEL )
+ /* GPIO out put level when init   1: Hi */
+ #define TOSA_SCOOP_JC_IO_OUT ( 0 )
+@@ -94,13 +118,13 @@
+ #define TOSA_GPIO_JACKET_DETECT		(7)
+ #define TOSA_GPIO_nSD_DETECT		(9)
+ #define TOSA_GPIO_nSD_INT		(10)
+-#define TOSA_GPIO_TC6393_CLK		(11)
++#define TOSA_GPIO_TC6393XB_CLK		(11)
+ #define TOSA_GPIO_BAT1_CRG		(12)
+ #define TOSA_GPIO_CF_CD			(13)
+ #define TOSA_GPIO_BAT0_CRG		(14)
+-#define TOSA_GPIO_TC6393_INT		(15)
++#define TOSA_GPIO_TC6393XB_INT		(15)
+ #define TOSA_GPIO_BAT0_LOW		(17)
+-#define TOSA_GPIO_TC6393_RDY		(18)
++#define TOSA_GPIO_TC6393XB_RDY		(18)
+ #define TOSA_GPIO_ON_RESET		(19)
+ #define TOSA_GPIO_EAR_IN		(20)
+ #define TOSA_GPIO_CF_IRQ		(21)	/* CF slot0 Ready */
+@@ -147,7 +171,7 @@
+ #define TOSA_IRQ_GPIO_BAT1_CRG      	IRQ_GPIO(TOSA_GPIO_BAT1_CRG)
+ #define TOSA_IRQ_GPIO_CF_CD         	IRQ_GPIO(TOSA_GPIO_CF_CD)
+ #define TOSA_IRQ_GPIO_BAT0_CRG      	IRQ_GPIO(TOSA_GPIO_BAT0_CRG)
+-#define TOSA_IRQ_GPIO_TC6393_INT    	IRQ_GPIO(TOSA_GPIO_TC6393_INT)
++#define TOSA_IRQ_GPIO_TC6393XB_INT    	IRQ_GPIO(TOSA_GPIO_TC6393XB_INT)
+ #define TOSA_IRQ_GPIO_BAT0_LOW      	IRQ_GPIO(TOSA_GPIO_BAT0_LOW)
+ #define TOSA_IRQ_GPIO_EAR_IN        	IRQ_GPIO(TOSA_GPIO_EAR_IN)
+ #define TOSA_IRQ_GPIO_CF_IRQ        	IRQ_GPIO(TOSA_GPIO_CF_IRQ)
+@@ -161,6 +185,7 @@
+ 
+ #define TOSA_IRQ_GPIO_MAIN_BAT_LOW 	IRQ_GPIO(TOSA_GPIO_MAIN_BAT_LOW)
+ 
++extern struct platform_device tc6393xb_device;
+ extern struct platform_device tosascoop_jc_device;
+ extern struct platform_device tosascoop_device;
+ 
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index 5504e30..21c51b5 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -32,7 +32,6 @@
+ #include <sound/soc-dapm.h>
+ 
+ #include <asm/mach-types.h>
+-#include <asm/hardware/tmio.h>
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/hardware.h>
+ #include <asm/arch/audio.h>
+@@ -138,10 +137,12 @@ static int tosa_set_spk(struct snd_kcontrol *kcontrol,
+ /* tosa dapm event handlers */
+ static int tosa_hp_event(struct snd_soc_dapm_widget *w, int event)
+ {
++#if 0
+ 	if (SND_SOC_DAPM_EVENT_ON(event))
+ 		set_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
+ 	else
+ 		reset_tc6393_gpio(&tc6393_device.dev,TOSA_TC6393_L_MUTE);
++#endif
+ 	return 0;
+ }
+ 
+-- 
+1.5.3.8
+

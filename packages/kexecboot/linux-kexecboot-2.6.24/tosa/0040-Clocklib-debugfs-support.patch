@@ -1,0 +1,108 @@
+From cae12d96586dac77d223559d686487ea2d457a41 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Mon, 4 Feb 2008 03:01:05 +0300
+Subject: [PATCH 40/64] Clocklib debugfs support
+
+Provide /sys/kernel/debug/clock to ease debugging.
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ include/linux/clklib.h |    5 +++
+ kernel/clklib.c        |   68 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 73 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/clklib.h b/include/linux/clklib.h
+index 4bd9b4a..f916693 100644
+--- a/include/linux/clklib.h
++++ b/include/linux/clklib.h
+@@ -28,6 +28,11 @@ struct clk {
+ 	int (*setrate)	(struct clk *, unsigned long);
+ 	long (*roundrate) (struct clk *, unsigned long);
+ 
++	/*
++	 * format any additional info
++	 */
++	int (*format)	(struct clk *, struct seq_file *);
++
+ 	void		*priv;
+ };
+ 
+diff --git a/kernel/clklib.c b/kernel/clklib.c
+index 203af3d..b782220 100644
+--- a/kernel/clklib.c
++++ b/kernel/clklib.c
+@@ -293,3 +293,71 @@ out:
+ 	return rc;
+ }
+ EXPORT_SYMBOL(clk_alloc_function);
++
++#ifdef CONFIG_DEBUG_FS
++
++#include <linux/debugfs.h>
++#include <linux/seq_file.h>
++static void dump_clocks(struct seq_file *s, struct clk *parent, int nest)
++{
++	struct clk *clk;
++	int i;
++
++	list_for_each_entry(clk, &clocks, node) {
++		if (clk->parent == parent) {
++			for (i = 0; i < nest; i++)
++				seq_putc(s, ' ');
++			seq_puts(s, clk->name);
++
++			i = nest + strlen(clk->name);
++			if (i >= 16)
++				i = 15;
++			for (; i < 16; i++)
++				seq_putc(s, ' ');
++			seq_printf(s, "%c use=%d rate=%lu KHz",
++				clk->set_parent ? '*' : ' ',
++				clk->users,
++				__clk_get_rate(clk));
++			if (clk->format)
++				clk->format(clk, s);
++			seq_putc(s, '\n');
++
++			dump_clocks(s, clk, nest + 1);
++		}
++	}
++}
++
++static int clocklib_show(struct seq_file *s, void *unused)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&clocks_lock, flags);
++
++	dump_clocks(s, NULL, 0);
++
++	spin_unlock_irqrestore(&clocks_lock, flags);
++
++	return 0;
++}
++
++static int clocklib_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, clocklib_show, NULL);
++}
++
++static struct file_operations clocklib_operations = {
++	.open		= clocklib_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++
++static int __init clocklib_debugfs_init(void)
++{
++	debugfs_create_file("clock", S_IFREG | S_IRUGO,
++				NULL, NULL, &clocklib_operations);
++	return 0;
++}
++subsys_initcall(clocklib_debugfs_init);
++
++#endif /* DEBUG_FS */
+-- 
+1.5.3.8
+

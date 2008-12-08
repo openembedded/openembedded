@@ -1,0 +1,260 @@
+From 8e95f90487d2fb46fd862744ddb34f47c30b0c5a Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Fri, 4 Jan 2008 18:27:50 +0000
+Subject: [PATCH 02/64] Modify dma_alloc_coherent on ARM so that it supports device local DMA.
+
+---
+ arch/arm/mm/consistent.c      |  125 +++++++++++++++++++++++++++++++++++++++++
+ include/asm-arm/dma-mapping.h |   37 +++++++------
+ 2 files changed, 145 insertions(+), 17 deletions(-)
+
+diff --git a/arch/arm/mm/consistent.c b/arch/arm/mm/consistent.c
+index 333a82a..3da0f94 100644
+--- a/arch/arm/mm/consistent.c
++++ b/arch/arm/mm/consistent.c
+@@ -3,6 +3,8 @@
+  *
+  *  Copyright (C) 2000-2004 Russell King
+  *
++ *  Device local coherent memory support added by Ian Molton (spyro@f2s.com)
++ *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
+@@ -20,6 +22,7 @@
+ 
+ #include <asm/memory.h>
+ #include <asm/cacheflush.h>
++#include <asm/io.h>
+ #include <asm/tlbflush.h>
+ #include <asm/sizes.h>
+ 
+@@ -35,6 +38,13 @@
+ #define CONSISTENT_PTE_INDEX(x) (((unsigned long)(x) - CONSISTENT_BASE) >> PGDIR_SHIFT)
+ #define NUM_CONSISTENT_PTES (CONSISTENT_DMA_SIZE >> PGDIR_SHIFT)
+ 
++struct dma_coherent_mem {
++	void		*virt_base;
++	u32		device_base;
++	int		size;
++	int		flags;
++	unsigned long	*bitmap;
++};
+ 
+ /*
+  * These are the page tables (2MB each) covering uncached, DMA consistent allocations
+@@ -153,6 +163,13 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
+ 	unsigned long order;
+ 	u64 mask = ISA_DMA_THRESHOLD, limit;
+ 
++	/* Following is a work-around (a.k.a. hack) to prevent pages
++	 * with __GFP_COMP being passed to split_page() which cannot
++	 * handle them.  The real problem is that this flag probably
++	 * should be 0 on ARM as it is not supported on this
++	 * platform--see CONFIG_HUGETLB_PAGE. */
++	gfp &= ~(__GFP_COMP);
++
+ 	if (!consistent_pte[0]) {
+ 		printk(KERN_ERR "%s: not initialised\n", __func__);
+ 		dump_stack();
+@@ -160,6 +177,26 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
+ 	}
+ 
+ 	if (dev) {
++
++		if (dev->dma_mem) {
++			unsigned long flags;
++			int pgnum;
++			void *ret;
++
++			spin_lock_irqsave(&consistent_lock, flags);
++			pgnum = bitmap_find_free_region(dev->dma_mem->bitmap,
++						       dev->dma_mem->size,
++						       get_order(size));
++			spin_unlock_irqrestore(&consistent_lock, flags);
++
++			if (pgnum >= 0) {
++				*handle = dev->dma_mem->device_base + (pgnum << PAGE_SHIFT);
++				ret = dev->dma_mem->virt_base + (pgnum << PAGE_SHIFT);
++				memset(ret, 0, size);
++				return ret;
++			}
++		}
++
+ 		mask = dev->coherent_dma_mask;
+ 
+ 		/*
+@@ -177,6 +214,9 @@ __dma_alloc(struct device *dev, size_t size, dma_addr_t *handle, gfp_t gfp,
+ 				 mask, (unsigned long long)ISA_DMA_THRESHOLD);
+ 			goto no_page;
+ 		}
++
++		if (dev->dma_mem && dev->dma_mem->flags & DMA_MEMORY_EXCLUSIVE)
++			return NULL;
+ 	}
+ 
+ 	/*
+@@ -359,6 +399,8 @@ void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr
+ 	pte_t *ptep;
+ 	int idx;
+ 	u32 off;
++	struct dma_coherent_mem *mem = dev ? dev->dma_mem : NULL;
++	unsigned long order;
+ 
+ 	WARN_ON(irqs_disabled());
+ 
+@@ -368,6 +410,15 @@ void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr
+ 	}
+ 
+ 	size = PAGE_ALIGN(size);
++	order = get_order(size);
++
++	/* What if mem is valid and the range is not? */
++	if (mem && cpu_addr >= mem->virt_base && cpu_addr < (mem->virt_base + (mem->size << PAGE_SHIFT))) {
++		int page = (cpu_addr - mem->virt_base) >> PAGE_SHIFT;
++
++		bitmap_release_region(mem->bitmap, page, order);
++		return;
++	}
+ 
+ 	spin_lock_irqsave(&consistent_lock, flags);
+ 	c = vm_region_find(&consistent_head, (unsigned long)cpu_addr);
+@@ -437,6 +488,80 @@ void dma_free_coherent(struct device *dev, size_t size, void *cpu_addr, dma_addr
+ }
+ EXPORT_SYMBOL(dma_free_coherent);
+ 
++int dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
++				dma_addr_t device_addr, size_t size, int flags)
++{
++	void __iomem *mem_base;
++	int pages = size >> PAGE_SHIFT;
++	int bitmap_size = (pages + 31)/32;
++
++	if ((flags & (DMA_MEMORY_MAP | DMA_MEMORY_IO)) == 0)
++		goto out;
++	if (!size)
++		goto out;
++	if (dev->dma_mem)
++		goto out;
++
++	/* FIXME: this routine just ignores DMA_MEMORY_INCLUDES_CHILDREN */
++	mem_base = ioremap_nocache(bus_addr, size);
++	if (!mem_base)
++		goto out;
++
++	dev->dma_mem = kzalloc(sizeof(struct dma_coherent_mem), GFP_KERNEL);
++	if (!dev->dma_mem)
++		goto out;
++	memset(dev->dma_mem, 0, sizeof(struct dma_coherent_mem));
++	dev->dma_mem->bitmap = kzalloc(bitmap_size, GFP_KERNEL);
++	if (!dev->dma_mem->bitmap)
++		goto free1_out;
++
++	dev->dma_mem->virt_base = mem_base;
++	dev->dma_mem->device_base = device_addr;
++	dev->dma_mem->size = pages;
++	dev->dma_mem->flags = flags;
++
++	if (flags & DMA_MEMORY_MAP)
++		return DMA_MEMORY_MAP;
++
++	return DMA_MEMORY_IO;
++
++ free1_out:
++	kfree(dev->dma_mem->bitmap);
++ out:
++	return 0;
++}
++EXPORT_SYMBOL(dma_declare_coherent_memory);
++
++void dma_release_declared_memory(struct device *dev)
++{
++	struct dma_coherent_mem *mem = dev->dma_mem;
++
++	if (!mem)
++		return;
++	dev->dma_mem = NULL;
++	kfree(mem->bitmap);
++	kfree(mem);
++}
++EXPORT_SYMBOL(dma_release_declared_memory);
++
++void *dma_mark_declared_memory_occupied(struct device *dev,
++					dma_addr_t device_addr, size_t size)
++{
++	struct dma_coherent_mem *mem = dev->dma_mem;
++	int pages = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
++	int pos, err;
++
++	if (!mem)
++		return ERR_PTR(-EINVAL);
++
++	pos = (device_addr - mem->device_base) >> PAGE_SHIFT;
++	err = bitmap_allocate_region(mem->bitmap, pos, get_order(pages));
++	if (err != 0)
++		return ERR_PTR(err);
++	return mem->virt_base + (pos << PAGE_SHIFT);
++}
++EXPORT_SYMBOL(dma_mark_declared_memory_occupied);
++
+ /*
+  * Initialise the consistent memory allocation.
+  */
+diff --git a/include/asm-arm/dma-mapping.h b/include/asm-arm/dma-mapping.h
+index e99406a..f18ba05 100644
+--- a/include/asm-arm/dma-mapping.h
++++ b/include/asm-arm/dma-mapping.h
+@@ -7,6 +7,19 @@
+ 
+ #include <linux/scatterlist.h>
+ 
++#define ARCH_HAS_DMA_DECLARE_COHERENT_MEMORY
++extern int
++dma_declare_coherent_memory(struct device *dev, dma_addr_t bus_addr,
++                            dma_addr_t device_addr, size_t size, int flags);
++
++extern void
++dma_release_declared_memory(struct device *dev);
++
++extern void *
++dma_mark_declared_memory_occupied(struct device *dev,
++                                  dma_addr_t device_addr, size_t size);
++
++
+ /*
+  * DMA-consistent mapping functions.  These allocate/free a region of
+  * uncached, unwrite-buffered mapped memory space for use with DMA
+@@ -433,23 +446,13 @@ extern int dmabounce_register_dev(struct device *, unsigned long, unsigned long)
+  */
+ extern void dmabounce_unregister_dev(struct device *);
+ 
+-/**
+- * dma_needs_bounce
+- *
+- * @dev: valid struct device pointer
+- * @dma_handle: dma_handle of unbounced buffer
+- * @size: size of region being mapped
+- *
+- * Platforms that utilize the dmabounce mechanism must implement
+- * this function.
+- *
+- * The dmabounce routines call this function whenever a dma-mapping
+- * is requested to determine whether a given buffer needs to be bounced
+- * or not. The function must return 0 if the buffer is OK for
+- * DMA access and 1 if the buffer needs to be bounced.
+- *
+- */
+-extern int dma_needs_bounce(struct device*, dma_addr_t, size_t);
++typedef int (*dmabounce_check)(struct device *dev, dma_addr_t dma, size_t size, void *data);
++extern int dmabounce_register_checker(dmabounce_check, void *data);
++extern void dmabounce_remove_checker(dmabounce_check, void *data);
++#ifdef CONFIG_PLATFORM_DMABOUNCE
++extern int platform_dma_needs_bounce(struct device *dev, dma_addr_t dma, size_t size, void *data);
++#endif
++
+ #endif /* CONFIG_DMABOUNCE */
+ 
+ #endif /* __KERNEL__ */
+-- 
+1.5.3.8
+

@@ -6,7 +6,7 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
 DEFAULT_PREFERENCE_poodle = "1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
-DEFAULT_PREFERENCE_tosa = "-1"
+DEFAULT_PREFERENCE_tosa = "1"
 
 # Handy URLs
 # git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git;protocol=git;tag=ef7d1b244fa6c94fb76d5f787b8629df64ea4046
@@ -121,8 +121,6 @@ SRC_URI_append_tosa = "\
            file://tosa/0014-tosa_udc_use_gpio_vbus.patch.patch;patch=1 \
            file://tosa/0015-sharpsl-export-params.patch;patch=1 \
            file://tosa/0016-This-patch-fixes-the-pxa25x-clocks-definitions-to-ad.patch;patch=1 \
-           file://tosa/0017-Convert-pxa2xx-UDC-to-use-debugfs.patch;patch=1 \
-           file://tosa/0018-Fix-the-pxa2xx_udc-to-balance-calls-to-clk_enable-cl.patch;patch=1 \
            file://tosa/0026-I-don-t-think-we-should-check-for-IRQs-when-determin.patch;patch=1 \
            file://tosa/0027-Add-LiMn-one-of-the-most-common-for-small-non-recha.patch;patch=1 \
            file://tosa/0028-Add-suspend-resume-wakeup-support-for-pda_power.patch;patch=1 \
@@ -173,7 +171,12 @@ SRC_URI_append_tosa = "\
            file://tosa/0043-Use-clocklib-for-sa1100-sub-arch.patch;patch=1 \
            file://tosa/0056-Support-resetting-by-asserting-GPIO-pin.patch;patch=1 \
            file://tosa/0057-Clean-up-tosa-resetting.patch;patch=1 \
+           file://tosa/0001-pxa2xx-ac97-switch-AC-unit-to-correct-state-before.patch;patch=1 \
+	   file://tosa/tosa-bl-fixup.diff;patch=1 \
+           file://tosa/tmiofb-fix-unaccel.patch;patch=1 \
            "
+#           file://tosa/0017-Convert-pxa2xx-UDC-to-use-debugfs.patch;patch=1 \
+#           file://tosa/0018-Fix-the-pxa2xx_udc-to-balance-calls-to-clk_enable-cl.patch;patch=1 \
 
 SRC_URI_append_htcuniversal ="\
 	file://htcuni-acx.patch;patch=1;status=external \
