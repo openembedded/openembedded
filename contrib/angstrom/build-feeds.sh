@@ -253,6 +253,7 @@ do
                       thunar \
                       tightvnc \
                       timesleuth \
+                      tofrodos \
                       totem \
                       tron \
                       tzdata \
