@@ -10,7 +10,7 @@ SRCREV = "014ba70469e889ebb74516052c43fd06a419b17b"
 
 PV = "2.6.27+2.6.28-rc7+${PR}+gitr${SRCREV}"
 #PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -39,6 +39,7 @@ SRC_URI_append = " \
            file://0011-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
 		   http://www.bat.org/~tomba/git/0001-DSS-OMAPFB-Check-that-var-pixclock-is-not-zero.patch;patch=1 \
            file://twl-asoc-fix-record.diff;patch=1 \
+           file://tick-schedc-suppress-needless-timer-reprogramming.patch;patch=1 \
 "
 
 
