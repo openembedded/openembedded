@@ -199,17 +199,18 @@ minimaldevnodes(){
 #  NOTE: the arguments must be paths relative to /, bad things
 #  will happen if the arguments themselves start with /
 #  Pivot to a new root.  This does all the fancy pivot_root stuff
-#  including closing streams and does a umount /proc - it doesn't
-#  matter if this fails (failure codes are ignored), but if /proc
-#  was mounted it must be restored by the caller on return.
-#  Normally this function never returns!
+#  including closing streams and does a umount of /proc and /sys -
+#  it doesn't matter if this fails (failure codes are ignored),
+#  but if /proc and/or /sys was mounted it must be restored by the
+#  caller on return.  Normally this function never returns!
 #  On return 0,1,2 are connected to /dev/console - this may not
 #  have been true before!
 swivel(){
 	cd "$1"
 	exec <&- >&- 2>&-
-	# This is just-in-case the called mounted /proc and was
-	# unable to close it because of the streams
+	# This is just-in-case the caller mounted either /proc or
+	# /sys, and was unable to close them
+	umount /sys  2>/dev/null
 	umount /proc 2>/dev/null
 	if pivot_root . "$2"
 	then
@@ -241,11 +242,17 @@ swivel(){
 			test -x sbin/init && exec sbin/init
 			test -x etc/init && exec etc/init
 			test -x bin/init && exec bin/init
+			# Problematic failure! The chroot worked, but the
+			# exec failed.  Nothing to do but blink the LEDs.
+			# (Use a wildcard because the LED names depend on
+			# the version of the kernel in use.)
 			mount -t sysfs sysfs /mnt
-			echo -n timer >/mnt/class/leds/ready/trigger
-			echo -n timer >/mnt/class/leds/status/trigger
-			echo -n 80 >/mnt/class/leds/ready/frequency
-			echo -n 80 >/mnt/class/leds/status/frequency
+			for i in /mnt/class/leds/*[ready\|status]
+			do
+				echo -n timer >$i/trigger
+				echo -n 60    >$i/delay_on
+				echo -n 30    >$i/delay_off
+			done
 			umount /mnt
 			sync;sync;sync
 			exit 1"

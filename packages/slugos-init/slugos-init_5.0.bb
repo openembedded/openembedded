@@ -4,13 +4,12 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
 	   file://boot/nfs \
 	   file://boot/ram \
-	   file://boot/kexec \
 	   file://boot/network \
 	   file://boot/udhcpc.script \
 	   file://initscripts/fixfstab \

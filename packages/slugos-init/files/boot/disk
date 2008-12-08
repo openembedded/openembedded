@@ -2,22 +2,24 @@
 # boot from the hard disk partition "$1" (which
 # must be given) using options from the rest of
 # the command line.
-#
+
 # Use the standard init path (see /etc/init.d/rcS)
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
-#
+
+# Mount required fileystems if necessary
+[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+[ -e /sys/class    ] || mount -t sysfs sysfs /sys
+
 # Load the helper functions
 . /etc/default/functions
 . /etc/default/modulefunctions
-#
+
 leds boot system
-#
+
 if test -n "$1"
 then
 	device="$1"
 	shift
-        # proc is needed for UUID mount and module load
-        mount -t proc proc /proc
         # load USB & SCSI storage modules (/proc required!)
         echo "boot: loading modules required for disk boot"
         loaddiskmods
@@ -39,10 +41,10 @@ then
 			mdadm -As --auto=md $device
 		fi
 	fi
-	#
+
 	# fire the boot
 	echo "boot: rootfs: mount $* $device [$UUID]"
-	#
+
 	# Mount read-write because before exec'ing init
 	# If a UUID is given (in the environment) this
 	# is used in preference to the device, but if
@@ -70,8 +72,12 @@ then
 		fi
 		# Failure: unmount the partition
 		umount /mnt
+		# Remount /proc and /sys if necessary
+		[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+		[ -e /sys/class    ] || mount -t sysfs sysfs /sys
 	fi
 fi
+
 # fallback - use the flash boot
 leds beep -f 1000 -r 2
 exec /boot/flash

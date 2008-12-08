@@ -3,27 +3,21 @@
 # netconsole logging and NFS boot.  This runs out
 # of flash, but that's ok because the script doesn't
 # leave any process running.
-#
+
 # NOTE: /etc/default/functions defines ifup as a shell
 # function!
 . /etc/default/functions
-#
-# /proc is needed for the module loading, and /sys is
-# necessary to load firmware (if required).
-mount -t proc  proc  /proc
-mount -t sysfs sysfs /sys
-#
+
 # We may need to load the network driver modules here
 . /etc/default/modulefunctions
 loadnetmods
-#
-#
+
 # Now all the information for booting should be in the configuration
 # file.  Config the loopback and network interfaces.
 ifconfig lo 127.0.0.1 up
 iface="$(config iface)"
 test -z "$iface" && exit 1 
-#
+
 # Fire up a process in the background to load the firmware if necessary.
 # If this system doesn't require the NPE-B firmware, no problem, the
 # background process will simply go away in two seconds.  If it requires
@@ -42,10 +36,6 @@ sysf="/sys/class/firmware/$iface"
 ) &
 # Trigger the firmware load proactively
 ifconfig "$iface" up
-#
-# Unmount /sys and /proc before we leave
-umount /sys
-umount /proc
-#
+
 ifup "$iface"
 # exit code is true only if the interface config has succeeded

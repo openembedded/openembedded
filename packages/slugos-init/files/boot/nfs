@@ -2,15 +2,20 @@
 # boot from the nfs partition "$1" (which
 # must be given) using options from the rest of
 # the command line.
-#
+
 # Use the standard init path (see /etc/init.d/rcS)
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
-#
+
+# Mount required fileystems if necessary
+[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+[ -e /sys/class    ] || mount -t sysfs sysfs /sys
+
+# Load the helper functions
 . /etc/default/functions
 . /etc/default/modulefunctions
-#
+
 leds boot system
-#
+
 if /boot/network
 then
 	# load the nfs kernel module
@@ -20,6 +25,7 @@ then
 	# now succeed (possibly), use /boot/disk
 	exec /boot/disk "$@"
 fi
+
 # fallback - use the flash boot
 leds beep -f 1000 -r 2
 exec /boot/flash

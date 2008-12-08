@@ -2,22 +2,26 @@
 # boot from the hard disk partition "$1" (which
 # must be given) using options from the rest of
 # the command line.
-#
+
 # Use the standard init path (see /etc/init.d/rcS)
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
-#
+
+# Mount required fileystems if necessary
+[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+[ -e /sys/class    ] || mount -t sysfs sysfs /sys
+
 # Load the helper functions
 . /etc/default/functions
-#
+
 leds beep -r 2
 leds boot system
-#
+
 if test -n "$1"
 then
 	device="$1"
 	shift
 	echo "boot: rootfs: mount $* $device"
-	#
+
 	# prepare the device.  This uses tmpfs to avoid dependency
 	# on non-built-in file systems and because tmpfs can expand
 	# to bigger than the 10MByte ram0 partition used before.
@@ -26,27 +30,35 @@ then
 	then
 		cd /
 		# filter out boot (with zimage), linuxrc and anything
-		# below /var, keep dev or the boot will fail (note that
-		# nothing is mounted this early in the bootstrap).
+		# below /var, keep dev or the boot will fail. Take
+		# care that nothing is mounted at this point!
+		umount /proc
+		umount /sys
 		find . -xdev -print |
 		sed '\@^./boot/@d;\@^./boot$@d;\@^./linuxrc@d;\@^./var/@d' |
 		cpio -p -d -m -u /mnt
 		# busybox find with -xdev will not print the name of the
 		# mountpoint, so create the empty dir manually if required.
 		test -d /mnt/mnt || mkdir /mnt/mnt
-		# checkmount checks for sh, init and no .recovery plus
-		# either mnt or initrd, mnt must exist!
-		if checkmount /mnt
+		# checkmount checks for sh, chroot, init, /dev
+		# and /mnt (i.e. /mnt/mnt in this case).
+		# minimaldevnodes checks (and creates if required)
+		# a few mandatory /dev nodes we may need.
+		if checkmount /mnt && minimaldevnodes /mnt
 		then
 			# pivot to /mnt
 			cd /
 			swivel mnt mnt
 			# swivel failed
 		fi
-		# Failure: unmount the partition.
+		# Failure: unmount the partition
 		umount /mnt
+		# Remount /proc and /sys if necessary
+		[ -e /proc/cpuinfo ] || mount -t proc  proc  /proc
+		[ -e /sys/class    ] || mount -t sysfs sysfs /sys
 	fi
 fi
+
 # fallback - use the flash boot
 leds beep -f 1000 -r 2
 exec /boot/flash
