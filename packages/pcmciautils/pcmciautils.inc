@@ -4,6 +4,7 @@ RDEPENDS = "udev module-init-tools"
 HOMEPAGE = "http://kernel.org/pub/linux/utils/kernel/pcmcia/pcmcia.html"
 SECTION = "kernel/userland"
 PRIORITY = "optional"
+LICENSE = "GPLv2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/kernel/pcmcia/pcmciautils-${PV}.tar.bz2"
 
