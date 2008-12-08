@@ -16,7 +16,7 @@ SRC_URI = "http://www.freebsoft.org/pub/projects/speechd/${PN}-${PV}.tar.gz \
 	   file://configSpeechd.conf.in_00.patch;patch=1"
 
 LEAD_SONAME = "libspeechd.so"
-EXTRA_OECONF = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa --with-pulse "
+EXTRA_OECONF = " --with-espeak --with-flite --without-ibmtts --without-nas --with-alsa "
 
 INITSCRIPT_NAME = "speech-dispatcher"
 INITSCRIPT_PARAMS = "defaults 45"
