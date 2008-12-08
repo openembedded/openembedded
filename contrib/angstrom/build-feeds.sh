@@ -25,12 +25,12 @@ do_build() {
                 
                 if [ "$BUILD_CLEAN" != "" ]
                 then
-                        ANGSTROM_MODE=uclibc MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
+                        ANGSTROMLIBC=uclibc MACHINE=$BUILD_MACHINE bitbake -c clean $BUILD_CLEAN
                 fi
                 
                 for target in $BUILD_TARGETS
                 do
-                        ANGSTROM_MODE=uclibc MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
+                        ANGSTROMLIBC=uclibc MACHINE=$BUILD_MACHINE bitbake $target && do_report_success
                 done
         fi
 }

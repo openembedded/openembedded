@@ -1,5 +1,5 @@
 # LiveRamdisk image
-# Building with ANGSTROM_MODE=uclibc is recommended
+# Building with ANGSTROMLIBC=uclibc is recommended
 #
 # LiveRamdisk concept/implementation by Paul Sokolovsky
 LICENSE = "MIT"

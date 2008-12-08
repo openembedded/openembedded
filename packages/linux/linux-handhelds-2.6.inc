@@ -35,7 +35,7 @@ do_configure() {
 		die "No default configuration for ${MACHINE} available."
 	fi
 
-	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" = "glibc" ]; then
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROMLIBC}" = "glibc" ]; then
 		if [ ! -f ${KERNEL_INITRAMFS_PATH} ]; then
 		    echo "Kernel is requested to be built with internal initramfs."
 		    echo "The initramfs image must exist prior to building the kernel, but it does not"
@@ -74,7 +74,7 @@ do_deploy_append() {
 	echo "${MACHINE}-kernel-${DATETIME} ${KERNEL_IMAGE_BASE_NAME} - kernel" >> ${DEPLOY_DIR_IMAGE}/reflash.ctl
 	gen_haret_startup
 
-	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROM_MODE}" == "glibc" ]; then
+	if [ -n "${KERNEL_INITRAMFS_PATH}" -a "${ANGSTROMLIBC}" == "glibc" ]; then
 		cp ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}-$(basename ${KERNEL_INITRAMFS_PATH} | awk -F. '{print $1}')-${PV}-${PR}-${MACHINE}.bin 
 	fi
 }   

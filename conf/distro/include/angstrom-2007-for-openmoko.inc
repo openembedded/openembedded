@@ -29,7 +29,7 @@ DISTRO_TYPE ?= "debug"
 IMAGE_LINGUAS = '${@base_less_or_equal("ROOT_FLASH_SIZE", "16", "", "en-gb", d)}'
 
 # set feed path variables
-FEED_BASEPATH = "feeds/2007/${ANGSTROM_PKG_FORMAT}/${ANGSTROM_MODE}/"
+FEED_BASEPATH = "feeds/2007/${ANGSTROM_PKG_FORMAT}/${ANGSTROMLIBC}/"
 
 
 #The angstrom-mirrors.bbclass should have everything, but we can use this as a fallback

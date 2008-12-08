@@ -6,7 +6,7 @@ do_build() {
         if [ $DO_UCLIBC = 1 ]
         then
                 BUILD_MODE="uclibc"
-                echo 'ANGSTROM_MODE = "uclibc"' > conf/auto.conf
+                echo 'ANGSTROMLIBC = "uclibc"' > conf/auto.conf
 
                 if [ "$BUILD_CLEAN" != "" ]
                 then
@@ -20,7 +20,7 @@ do_build() {
         fi
 
 	BUILD_MODE="glibc"
-        echo 'ANGSTROM_MODE = "glibc"' > conf/auto.conf
+        echo 'ANGSTROMLIBC = "glibc"' > conf/auto.conf
 
 	if [ "$BUILD_CLEAN" != "" ]
 	then
