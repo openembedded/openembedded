@@ -1,0 +1,51 @@
+--- /tmp/Makefile	2008-12-08 11:02:39.000000000 +0100
++++ tofrodos/src/Makefile	2008-12-08 11:07:13.000000000 +0100
+@@ -23,13 +23,11 @@
+ endif
+ 
+ # programs
+-CC = gcc
+ CD = cd
+ CP = cp
+ GZIP = gzip
+ INSTALL = install
+ LN = ln
+-LD = gcc
+ MAKE = make
+ MKDIR = mkdir
+ MV = mv
+@@ -38,7 +36,7 @@
+ ZIP = zip
+ 
+ # flags
+-CFLAGS = $(DEFINES) $(TFLAG) $(CDEBUG) -c -Wall
++CCFLAGS = $(DEFINES) $(TFLAG) $(CDEBUG) -c -Wall
+ GZIPFLAGS = -9
+ INSTALLBINFLAGS = -m 755
+ INSTALLDATAFLAGS = -m 644
+@@ -96,7 +94,7 @@
+ 
+ # implicit rules
+ .c.o:
+-	$(CC) $(CFLAGS) $<
++	$(CC) $(CCFLAGS) $(CFLAGS) $<
+ 
+ # user visible rules
+ all: $(FROMDOS) $(TODOS)
+@@ -119,12 +117,12 @@
+ 	$(RM) $(RMRECURFLAGS) $(DISTDIR)
+ 
+ install: installman
+-	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(BINDIR)
+-	($(CD) $(BINDIR) ; $(LN) $(LNFLAGS) fromdos todos)
++	$(INSTALL) $(INSTALLBINFLAGS) $(FROMDOS) $(DESTDIR)$(BINDIR)
++	($(CD) $(DESTDIR)$(BINDIR) ; $(LN) $(LNFLAGS) fromdos todos)
+ 
+ installman: $(FROMDOSMAN)
+-	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(MANDIR)
+-	($(CD) $(MANDIR) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
++	$(INSTALL) $(INSTALLDATAFLAGS) $(FROMDOSMAN) $(DESTDIR)$(MANDIR)
++	($(CD) $(DESTDIR)$(MANDIR) ; $(LN) $(LNFLAGS) fromdos.1 todos.1)
+ 
+ save:
+ 	$(ZIP) $(ZIPSRCFLAGS) $(ZIPSRCNAME) *
