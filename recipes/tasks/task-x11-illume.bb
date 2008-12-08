@@ -2,11 +2,13 @@ DESCRIPTION = "The Illume Windowing Environment -- install this task to get the 
 SECTION = "x11/wm"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r0"
+PR = "r1"
 
 # WORK IN PROGRESS
 
 inherit task
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 # Default illume theme
 ILLUME_THEME ?= "e-wm-theme-illume"
