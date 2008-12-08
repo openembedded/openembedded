@@ -180,6 +180,8 @@ do
                       mileage \
                       mono \
                       mousepad \
+                      mpc \
+                      mpd \
                       mpfr \
                       mpg123 \
                       mplayer \
