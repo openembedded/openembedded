@@ -1,0 +1,46 @@
+--- kernel-2.6.27.orig/drivers/video/omap/dispc.c
++++ kernel-2.6.27/drivers/video/omap/dispc.c
+@@ -314,6 +319,32 @@
+ }
+ EXPORT_SYMBOL(omap_dispc_enable_digit_out);
+ 
++extern void omap_dispc_set_plane_base(int plane, u32 paddr)
++{
++	u32 reg;
++	u32 val;
++
++	switch (plane) {
++	case 0:
++		reg = DISPC_GFX_BA0;
++		break;
++	case 1:
++		reg = DISPC_VID1_BASE + DISPC_VID_BA0;
++		break;
++	case 2:
++		reg = DISPC_VID2_BASE + DISPC_VID_BA0;
++		break;
++	default:
++		BUG();
++		return;
++	}
++
++	dispc_write_reg(reg, paddr);
++	val = dispc_read_reg(DISPC_CONTROL) | (1 << 5); /* GOLCD */
++	dispc_write_reg(DISPC_CONTROL, val);
++}
++EXPORT_SYMBOL(omap_dispc_set_plane_base);
++
+ static inline int _setup_plane(int plane, int channel_out,
+ 				  u32 paddr, int screen_width,
+ 				  int pos_x, int pos_y, int width, int height,
+--- /tmp/dispc.h	2008-12-09 15:13:12.000000000 +0100
++++ git/drivers/video/omap/dispc.h	2008-12-09 15:13:36.000000000 +0100
+@@ -32,6 +32,8 @@
+ #define DISPC_TFT_DATA_LINES_18		2
+ #define DISPC_TFT_DATA_LINES_24		3
+ 
++extern void omap_dispc_set_plane_base(int plane, u32 paddr);
++
+ extern void omap_dispc_set_lcd_size(int width, int height);
+ 
+ extern void omap_dispc_enable_lcd_out(int enable);
