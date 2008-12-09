@@ -18,6 +18,6 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 
 do_configure_prepend() {
-	install -m 644 cp ./arch/arm/configs/gta02_defconfig ${WORKDIR}/defconfig-oe 
+	install -m 644 ./arch/arm/configs/gta02-moredrivers-defconfig ${WORKDIR}/defconfig-oe 
 }
 
