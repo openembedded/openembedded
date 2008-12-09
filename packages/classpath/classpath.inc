@@ -29,6 +29,7 @@ EXTRA_OECONF = "\
   --with-fastjar=fastjar \
   --includedir=${includedir}/classpath \
   --with-vm=java \
+  --disable-Werror \
   "
 
 inherit autotools

@@ -23,6 +23,7 @@ EXTRA_OECONF = "\
   --with-glibj \
   --with-fastjar=fastjar \
   --enable-local-sockets \
+  --disable-Werror \
   --disable-alsa \
   --disable-gconf-peer \
   --disable-gtk-peer \
