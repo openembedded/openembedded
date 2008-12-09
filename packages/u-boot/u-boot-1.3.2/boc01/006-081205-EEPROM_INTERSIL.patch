@@ -1,0 +1,16 @@
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h	2008-12-09 16:30:51.000000000 +0100
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h	2008-12-09 16:31:01.000000000 +0100
+@@ -269,9 +269,9 @@
+  */
+ #define CONFIG_CMD_EEPROM
+ #define CFG_I2C_EEPROM_ADDR_LEN		2	/* 16-bit EEPROM address */
+-#define CFG_I2C_EEPROM_ADDR		0x50	/* Atmel: AT24C256*/
++#define CFG_I2C_EEPROM_ADDR		0x57	/* Intersil 12024 (eeprom)*/
+ #define CFG_EEPROM_PAGE_WRITE_DELAY_MS	10	/* 10ms of delay */
+-#define CFG_EEPROM_PAGE_WRITE_BITS	6	/* 64-Byte Page Write Mode */
++#define CFG_EEPROM_PAGE_WRITE_BITS	4	/* 16-Byte Page Write Mode */
+ #define CFG_EEPROM_PAGE_WRITE_ENABLE
+ 
+ /* TSEC */

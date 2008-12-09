@@ -2,7 +2,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
@@ -22,15 +22,15 @@ SRC_URI_append_boc01 = "\
            file://mpc8313e-rdb-nand.patch;patch=1 \
            file://mpc8313e-rdb-mtdparts.patch;patch=1 \
            file://mpc8313e-rdb-eeprom.patch;patch=1 \
-           file://000_01_u-boot-1.3.2_LM73.patch;patch=1 \
-           file://001_01_u-boot-1.3.2_SPI.patch;patch=1 \
-           file://002_02_u-boot-1.3.2_GPIO.patch;patch=1 \
-           file://004_01_u-boot-1.3.2_WATCHDOG.patch;patch=1 \
-           file://006_01_u-boot-1.3.2_EEPROM_INTERSIL.patch;patch=1 \
-           file://007_01_u-boot-1.3.2_CAPSENSE.patch;patch=1 \
-           file://008_02_u-boot-1.3.2_TSEC.patch;patch=1 \
-           file://009_03_u-boot-1.3.2_Extender_IO.patch;patch=1 \
-           file://010_04_u-boot-1.3.2_LCD.patch;patch=1 \
+           file://001-081209-SPI.patch;patch=1 \
+           file://002-081204-GPIO.patch;patch=1 \
+           file://003-081205-DTT_LM73.patch;patch=1 \
+           file://004-081205-WATCHDOG.patch;patch=1 \
+           file://006-081205-EEPROM_INTERSIL.patch;patch=1 \
+           file://007-081205-CAPSENSE.patch;patch=1 \
+           file://008-081205-TSEC.patch;patch=1 \
+           file://009-081205-EXIO.patch;patch=1 \
+           file://010-081205-LCD.patch;patch=1 \
            "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

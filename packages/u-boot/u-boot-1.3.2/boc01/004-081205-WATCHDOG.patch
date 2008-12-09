@@ -1,0 +1,15 @@
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h	2008-12-09 16:30:51.000000000 +0100
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h	2008-12-09 16:30:51.000000000 +0100
+@@ -470,6 +470,10 @@
+ 	HRCWH_BIG_ENDIAN |\
+ 	HRCWH_LALE_NORMAL)
+ 
++
++#define CONFIG_WATCHDOG
++#define CFG_WATCHDOG_VALUE 0xFFFF
++
+ /* System IO Config */
+ #define CFG_SICRH	(SICRH_TSOBI1 | SICRH_TSOBI2)	/* RGMII */
+ #define CFG_SICRL	(SICRL_USBDR	|SICRL_LBC)		/* Enable Internal USB Phy  */
