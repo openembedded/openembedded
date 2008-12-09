@@ -1,5 +1,5 @@
 DESCRIPTION = "Full versions of tools provided by busybox"
-PR = "r7"
+PR = "r8"
 
 inherit task
 
@@ -7,6 +7,7 @@ RDEPENDS_${PN} = "\
 		coreutils \
 		findutils \
 		util-linux-ng \
+		grep \
 		gawk \
 		sed \
 		wget \
@@ -24,7 +25,7 @@ RDEPENDS_${PN} = "\
 		psmisc \
 		debianutils \
 		tcptraceroute \
-	    "
+		"
 #
 # binutils-symlinks provide ar in a way which conflict with busybox - #1465 for more info
 #
