@@ -16,7 +16,7 @@
 #TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "5.0"
+SLUGOS_VERSION = "5.1"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -94,6 +94,9 @@ DISTRO_EXTRA_RRECOMMENDS ?= ""
 # necessary to define which gets generated first, glibc or the kernel, and
 # this is done by selecting the provider of libc (in this case it needs the
 # kernel, so there has to be a non-libc gcc to build the kernel!)
+
+# Our preferred kernel version:
+PREFERRED_VERSION_linux-ixp4xx ?= "2.6.27.8+svnr${SRCREV}"
 
 # Virtuals:
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial = "gcc-cross-initial"
