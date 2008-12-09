@@ -5,6 +5,26 @@
 # WARNING: this file should not be used directly, use one of
 # the supported slugos-derived distributions instead.
 
+#===============================================================================#
+#===============================================================================#
+#===============================================================================#
+#                              NOTE NOTE NOTE
+#
+# This *forces* the preferred kernel version; making it unable to be overridden
+# in the local.conf file.  This is a Very Bad Thing.  This is temporary, and
+# is intended to facilitate some SlugOS-specific testing without disturbing
+# other distros that use the ixp4xx machine type (which is currently where the
+# preferred kernel version is set).
+#
+# This *must* be removed after initial testing is completed.  MJW 08-Dec-2008
+#
+PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV}"
+#
+#===============================================================================#
+#===============================================================================#
+#===============================================================================#
+
+
 #----------------------------------------------------------------------------------
 # STANDARD SLUGOS DEFINITIONS
 #----------------------------------------------------------------------------------
@@ -94,9 +114,6 @@ DISTRO_EXTRA_RRECOMMENDS ?= ""
 # necessary to define which gets generated first, glibc or the kernel, and
 # this is done by selecting the provider of libc (in this case it needs the
 # kernel, so there has to be a non-libc gcc to build the kernel!)
-
-# Our preferred kernel version:
-PREFERRED_VERSION_linux-ixp4xx ?= "2.6.27.8+svnr${SRCREV}"
 
 # Virtuals:
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-initial = "gcc-cross-initial"
