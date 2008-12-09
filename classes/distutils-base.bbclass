@@ -8,9 +8,8 @@ export STAGING_LIBDIR
 def python_dir(d):
 	import os, bb
 	staging_incdir = bb.data.getVar( "STAGING_INCDIR", d, 1 )
-	if os.path.exists( "%s/python2.5" % staging_incdir ): return "python2.5"
-	if os.path.exists( "%s/python2.4" % staging_incdir ): return "python2.4"
-	if os.path.exists( "%s/python2.3" % staging_incdir ): return "python2.3"
+	for majmin in "2.6 2.5 2.4 2.3".split():
+		if os.path.exists( "%s/python%s" % ( staging_incdir, majmin ) ): return "python%s" % majmin
 	raise "No Python in STAGING_INCDIR. Forgot to build python-native ?"
 
 PYTHON_DIR = "${@python_dir(d)}"
