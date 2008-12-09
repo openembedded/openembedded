@@ -33,7 +33,7 @@ do_install () {
 	install -d ${D}${sysconfdir}/opkg
 	install -m 0644  ${S}/${sysconfdir}/opkg/* ${D}${sysconfdir}/opkg/
 }
-r}
+
 FILES_${PN} = "${sysconfdir}/opkg/base-feed.conf \
                     ${sysconfdir}/opkg/debug-feed.conf \
                     ${sysconfdir}/opkg/perl-feed.conf \
