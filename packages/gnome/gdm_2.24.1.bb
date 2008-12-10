@@ -1,9 +1,9 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
+DEPENDS = "grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
-PR = "r2"
+PR = "r3"
 
 inherit gnome update-rc.d
 
