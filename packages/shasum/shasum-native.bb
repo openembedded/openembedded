@@ -8,5 +8,5 @@ PATCHTOOL = "patch"
 do_fetch[depends] = ""
 do_stage() {
     install -d ${STAGING_BINDIR}
-    install ${S}/oe_sha256sum ${STAGING_BINDIR}
+    install -m 0755 ${S}/oe_sha256sum ${STAGING_BINDIR}
 }
