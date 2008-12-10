@@ -180,6 +180,7 @@ python populate_packages_prepend() {
 	qtopia_split('imageformats','imageformat', '^libq(.*)\.so$')
 	qtopia_split('inputmethods','inputmethod', '^libq(.*)\.so$')
 	qtopia_split('sqldrivers',  'sqldriver',   '^libq(.*)\.so$')
+	qtopia_split('script',      'script',      '^libqtscript(.*)\.so$')
 	qtopia_split('styles',      'style',       '^libq(.*)\.so$')
 }
 

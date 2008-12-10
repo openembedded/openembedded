@@ -1,16 +1,21 @@
 DESCRIPTION = "Graphical login manager"
 LICENSE = "GPL"
 
-DEPENDS = "libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
+DEPENDS = "grep consolekit libpam gnome-doc-utils gtk+ libglade libgnomecanvas librsvg libxml2 libart-lgpl"
 
-PR = "r1"
+PR = "r3"
 
 inherit gnome update-rc.d
 
-SRC_URI += "file://%gconf-tree.xml \
+SRC_URI += "file://cross-xdetection.diff;patch=1 \
+            file://%gconf-tree.xml \
             file://gdm.conf \
             file://gdm \
            "
+
+EXTRA_OECONF = " --enable-authentication-scheme=shadow \
+                 --with-console-kit \
+                 --disable-scrollkeeper "
 
 do_install_prepend() {
 	mkdir -p ${D}/var/lib/gdm/.gconf.mandatory

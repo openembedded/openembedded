@@ -1,8 +1,6 @@
 #Angstrom X11 image
 
-ANGSTROM_EXTRA_INSTALL += " \
-                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer2", "",d)} \
-			  " 
+ANGSTROM_EXTRA_INSTALL ?= ""
 XSERVER ?= "xserver-kdrive-fbdev"
 
 export IMAGE_BASENAME = "x11-image"
