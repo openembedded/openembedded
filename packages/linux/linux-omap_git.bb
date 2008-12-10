@@ -6,11 +6,11 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 
-SRCREV = "014ba70469e889ebb74516052c43fd06a419b17b"
+SRCREV = "694653afe8eb75191734cd4e6477c3182cf880b7"
 
 PV = "2.6.27+2.6.28-rc7+${PR}+gitr${SRCREV}"
 #PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"

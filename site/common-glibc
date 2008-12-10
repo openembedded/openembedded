@@ -50,3 +50,8 @@ ac_cv_epoll_works=${ac_cv_epoll_works=yes}
 ac_cv_fread_reads_directories=${ac_cv_fread_reads_directories=yes}
 # pth
 ac_cv_check_sjlj=ssjlj
+
+# va_copy and _va_copy
+ac_cv_va_copy=${ac_cv_va_copy=yes}
+ac_cv___va_copy=${ac_cv___va_copy=yes}
+
