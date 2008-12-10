@@ -63,7 +63,13 @@ do_install () {
 	fi
      
        # Link gfortran to g77 to satisfy not-so-smart configure or hard coded g77
-       # gfortran is fully backwards compatible. This is a safe and practical solution. 
-       ln -sf ${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ${CROSS_DIR}/bin/${TARGET_PREFIX}g77 || true
-       ln -sf ${CROSS_DIR}/${TARGET_SYS}/bin/gfortran ${CROSS_DIR}/${TARGET_SYS}/bin/g77 || true
+       # gfortran is fully backwards compatible. This is a safe and practical solution.
+       if [ -f ${CROSS_DIR}/bin/${TARGET_PREFIX}gfortran ]; then
+              currdir = $PWD
+              cd ${CROSS_DIR}/bin/
+              ln -sf ${TARGET_PREFIX}gfortran ${TARGET_PREFIX}g77 || true
+              cd ${CROSS_DIR}/${TARGET_SYS}/bin/
+              ln -sf gfortran g77 || true
+              cd $currdir
+       fi
 }
