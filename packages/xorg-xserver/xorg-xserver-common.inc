@@ -66,7 +66,7 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 
 PACKAGES =+ "${PN}-extension-dri \
              ${PN}-extension-glx \
-             ${PN}-module-libint10 
+             ${PN}-module-libint10 \
              ${PN}-module-libafb \
              ${PN}-module-libwfb  \
              ${PN}-module-libmfb \
