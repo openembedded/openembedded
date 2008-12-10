@@ -64,11 +64,21 @@ FILES_${PN}-dbg += "${libdir}/xorg/modules/.debug \
 #  124.0k  libxf1bpp.so
 #  84.0k   libxf4bpp.so
 
-PACKAGES =+ "${PN}-extension-dri ${PN}-extension-glx ${PN}-module-libint10 ${PN}-module-libwfb ${PN}-module-libmfb ${PN}-module-libcfb ${PN}-module-xaa ${PN}-module-libxf1bpp ${PN}-module-libxf4bpp"
+PACKAGES =+ "${PN}-extension-dri \
+             ${PN}-extension-glx \
+             ${PN}-module-libint10 
+             ${PN}-module-libafb \
+             ${PN}-module-libwfb  \
+             ${PN}-module-libmfb \
+             ${PN}-module-libcfb \
+             ${PN}-module-xaa \
+             ${PN}-module-libxf1bpp \
+             ${PN}-module-libxf4bpp"
 
 FILES_${PN}-extension-dri = "${libdir}/xorg/modules/extensions/libdri.so"
 FILES_${PN}-extension-glx = "${libdir}/xorg/modules/extensions/libglx.so"
 FILES_${PN}-module-libint10 = "${libdir}/xorg/modules/libint10.*"
+FILES_${PN}-module-libafb = "${libdir}/xorg/modules/libafb.*"
 FILES_${PN}-module-libwfb = "${libdir}/xorg/modules/libwfb.*"
 FILES_${PN}-module-libmfb = "${libdir}/xorg/modules/libmfb.*"
 FILES_${PN}-module-libcfb = "${libdir}/xorg/modules/libcfb.*"
