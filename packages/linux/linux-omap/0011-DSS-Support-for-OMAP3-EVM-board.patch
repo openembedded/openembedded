@@ -154,7 +154,7 @@ index e4e60e2..7756dd8 100644
 +		twl4030_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, 0x0,
 +				TWL4030_VPLL2_DEV_GRP);
 +	}
-+	omap_set_gpio_dataout(LCD_PANEL_ENABLE_GPIO, 1);
++	gpio_direction_output(LCD_PANEL_ENABLE_GPIO, 1);
 +	lcd_enabled = 0;
 +}
 +
