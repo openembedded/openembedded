@@ -1,0 +1,42 @@
+Index: geda-xgsch2pcb-0.1.2/configure.ac
+===================================================================
+--- geda-xgsch2pcb-0.1.2.orig/configure.ac	2008-01-11 05:16:07.000000000 +0000
++++ geda-xgsch2pcb-0.1.2/configure.ac	2008-12-09 15:03:31.000000000 +0000
+@@ -39,15 +39,7 @@
+ 
+ AC_DEFUN([AC_PYTHON_MODULE],[
+     AC_MSG_CHECKING([for python module $1])
+-    $PYTHON -c "import $1" > /dev/null 2>&1
+-    if test $? -eq 0; then
+-        AC_MSG_RESULT(yes)
+-    else
+-        AC_MSG_RESULT(no)
+-        if test -n "$2"; then
+-            AC_MSG_ERROR([python module $1 is required])
+-        fi
+-    fi
++    AC_MSG_RESULT(skipping)
+ ])
+ 
+ 
+@@ -135,20 +127,6 @@
+ AC_MSG_CHECKING(for gtk+ >= $GTK_WANTVERSION)
+ cat > conftest.py <<[EOF
+ import sys
+-try:
+-    import gtk
+-    ver = gtk.gtk_version
+-    sys.stdout.write(".".join(map(str, ver)))
+-    if len(sys.argv) > 1:
+-        wantver = sys.argv[1].split(".")
+-        wantver = map(int, wantver)
+-        for i in range(len(wantver)):
+-            if i > len(ver):
+-                break
+-            if wantver[i] > ver[i]:
+-                sys.exit(1)
+-except:
+-    sys.exit(1)
+ sys.exit(0)
+ EOF]
+ 
