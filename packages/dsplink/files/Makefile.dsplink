@@ -45,7 +45,7 @@ all: $(LINK_INSTALL_DIR)/packages/dsplink/gpp/export/BIN/Linux/Davinci/RELEASE/d
 
 $(LINK_INSTALL_DIR)/packages/dsplink/gpp/export/BIN/Linux/Davinci/RELEASE/dsplinkk.ko:
 	@echo Building DSPLINK GPP driver, libs
-	make -s -C $(LINK_INSTALL_DIR)/gpp/src $(GPP_MAKE_OPTS) 
+	#make -s -C $(LINK_INSTALL_DIR)/gpp/src $(GPP_MAKE_OPTS) 
 	make -s -C $(DSPLINK)/gpp/src/samples $(GPP_MAKE_OPTS) 
 	@echo Building DSPLINK DSP libs and message sample for DaVinci...
 	make -C $(DSPLINK)/dsp/src $(DSP_MAKE_OPTS) 

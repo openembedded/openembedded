@@ -52,10 +52,6 @@ do_compile () {
 	export ARCHIVER_AR=${TARGET_PREFIX}ar
 	export BASE_SABIOS=${DSP_BASE_BIOS}
 	
-	make -e -f ${WORKDIR}/Makefile.dsplink
-}
-
-dsplink-kbuild-compile() {	
 	mkdir -p ${S}/dsplink-kbuild-test	
 	cp ${WORKDIR}/Makefile-dsplink-kbuild  ${S}/dsplink-kbuild-test/Makefile
     cd ${S}/dsplink-kbuild-test/
@@ -67,6 +63,8 @@ dsplink-kbuild-compile() {
            CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
            AR="${KERNEL_AR}" \
            V=1        ${MAKE_TARGETS}
+
+    make -e -f ${WORKDIR}/Makefile.dsplink
 
 }
 
