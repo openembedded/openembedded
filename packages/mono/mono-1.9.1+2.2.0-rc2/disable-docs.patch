@@ -1,0 +1,13 @@
+Index: mono-2.2/Makefile.am
+===================================================================
+--- mono-2.2.orig/Makefile.am	2008-12-10 16:25:14.000000000 -0500
++++ mono-2.2/Makefile.am	2008-12-10 16:25:24.000000000 -0500
+@@ -1,7 +1,7 @@
+ AUTOMAKE_OPTIONS = foreign
+ ACLOCAL_AMFLAGS = -I .
+ 
+-SUBDIRS = po $(libgc_dir) $(eglib_dir) mono $(ikvm_native_dir) support data runtime scripts man samples web msvc docs
++SUBDIRS = po $(libgc_dir) $(eglib_dir) mono $(ikvm_native_dir) support data runtime scripts man samples web msvc 
+ 
+ # Keep in sync with SUBDIRS
+ ## 'tools' is not normally built

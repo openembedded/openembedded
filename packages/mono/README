@@ -1,6 +1,12 @@
 Notes on Mono support in OE.
 
 ===============================
+Mono 2.2 rc2 status
+- builds OK -- having a strange issue with a recent kernel:
+  http://thread.gmane.org/gmane.comp.gnome.mono.devel/29990
+- still needs quite a bit of packaging TLC
+
+===============================
 Mono 1.9.1 status
 
 - mono-native and mono-mcs-intermediate error out during compile, but in a

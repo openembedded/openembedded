@@ -165,6 +165,7 @@ ac_cv_file___dev_ptc_=yes
 
 #mono
 mono_cv_uscore=${mono_cv_uscore=no}
+mono_cv_sizeof_sunpath=${mono_cv_sizeof_sunpath=108}
 
 # guile
 ac_cv_func_pthread_attr_getstack=${ac_cv_func_pthread_attr_getstack=yes}
