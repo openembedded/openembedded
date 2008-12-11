@@ -1,5 +1,5 @@
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r3"
+PR = "r4"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate

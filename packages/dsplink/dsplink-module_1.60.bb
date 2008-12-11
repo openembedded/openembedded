@@ -1,5 +1,5 @@
 # The tconf tool breaks if there is a '.' in your pwd
-PR = "r4"
+PR = "r5"
 PE = "1"
 PV = "160"
 

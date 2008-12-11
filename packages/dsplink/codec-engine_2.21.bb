@@ -10,7 +10,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r2"
+PR = "r3"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate

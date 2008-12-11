@@ -1,7 +1,7 @@
 require dsplink.inc
 
 # The tconf tool breaks if there is a '.' in your pwd
-PR = "r3"
+PR = "r4"
 PE = "1"
 PV = "160"
 
