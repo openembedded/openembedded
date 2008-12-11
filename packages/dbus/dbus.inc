@@ -47,7 +47,6 @@ do_stage() {
 
 RDEPENDS_${PN}-x11 = "${PN}"
 RRECOMMENDS_${PN}-lib = "${PN}"
-RRECOMMENDS_${PN} = "${PN}-x11"
 RCONFLICTS_${PN} = "dbus-1"
 RREPLACES_${PN} = "dbus-1"
 
