@@ -16,6 +16,10 @@ do_compile_append() {
 	# Build the DSP power manager kernel module
 	cd ${S}/cetools/packages/ti/bios/power/modules/${DSPPOWERSOC}/lpm
 
+    if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 26 ] ; then
+        sed -i -e s:asm/semaphore:linux/semaphore: lpm_driver.c
+    fi
+
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
 	rm -f *o
 	make   KERNEL_PATH=${STAGING_KERNEL_DIR} \
