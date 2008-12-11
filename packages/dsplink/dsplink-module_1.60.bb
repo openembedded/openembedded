@@ -26,6 +26,11 @@ do_configure() {
     
 	mkdir -p ${S}/dsplink-kbuild-test
     cp ${WORKDIR}/Makefile-dsplink-kbuild  ${S}/dsplink-kbuild-test/Makefile
+
+    if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 26 ] ; then
+        sed -i -e s:asm/semaphore:linux/semaphore: ${S}/gpp/src/osal/Linux/user.c
+        sed -i -e s:asm/semaphore:linux/semaphore: ${S}/gpp/src/osal/Linux/2.6.18/sync.c
+    fi
 }
 
 do_compile_prepend() {

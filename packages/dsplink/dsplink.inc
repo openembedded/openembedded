@@ -19,6 +19,11 @@ do_configure () {
 	cd ${DSPLINK}
 	perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
 	)
+
+	if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 26 ] ; then
+		sed -i -e s:asm/semaphore:linux/semaphore: ${S}/gpp/src/osal/Linux/user.c
+		sed -i -e s:asm/semaphore:linux/semaphore: ${S}/gpp/src/osal/Linux/2.6.18/sync.c
+	fi
 }
 
 PARALLEL_MAKE = ""
