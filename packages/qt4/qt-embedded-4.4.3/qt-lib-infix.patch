@@ -1,0 +1,15 @@
+diff -urN qt-embedded-linux-opensource-src-4.4.3.orig/tools/designer/src/uitools/uitools.pro qt-embedded-linux-opensource-src-4.4.3/tools/designer/src/uitools/uitools.pro
+--- qt-embedded-linux-opensource-src-4.4.3.orig/tools/designer/src/uitools/uitools.pro	2008-09-27 11:01:30.000000000 +0200
++++ qt-embedded-linux-opensource-src-4.4.3/tools/designer/src/uitools/uitools.pro	2008-12-11 19:56:34.000000000 +0100
+@@ -1,5 +1,5 @@
+ TEMPLATE = lib
+-TARGET = $$qtLibraryTarget(QtUiTools)
++TARGET = QtUiTools
+ QT += xml
+ CONFIG += qt staticlib
+ DESTDIR = ../../../../lib
+@@ -38,3 +38,4 @@
+    QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+ }
+ 
++TARGET = $$qtLibraryTarget($$TARGET$$QT_LIBINFIX) #do this towards the end
