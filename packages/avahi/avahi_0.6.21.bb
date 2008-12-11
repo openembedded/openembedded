@@ -1,5 +1,5 @@
 require avahi.inc
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://dbus-pre-1.1.1-support.patch;patch=1"
 
