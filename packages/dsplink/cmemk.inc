@@ -11,6 +11,7 @@ export DSPLINK="${S}/cetools/packages/dsplink"
 
 PARALLEL_MAKE = ""
 
+SRC_URI += "file://cmemk-class-device-27.diff"
 
 do_compile_append() {
 	echo "MVTOOL_PREFIX=${TARGET_PREFIX}" > ${S}/Rules.make		
@@ -22,6 +23,12 @@ do_compile_append() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 	cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
 
+	# This sadly breaks doing -c compile more than once, but I don't have a better solution	
+	if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 26 ] ; then
+		patch -p0 < ${WORKDIR}/cmemk-class-device-27.diff
+	fi
+
+	
 	oe_runmake clean
 	oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
            KERNEL_SRC=${STAGING_KERNEL_DIR}    \

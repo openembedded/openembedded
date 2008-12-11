@@ -1,0 +1,11 @@
+--- /tmp/cmemk.c	2008-12-11 12:21:22.000000000 +0100
++++ src/module/cmemk.c	2008-12-11 12:22:39.000000000 +0100
+@@ -1710,7 +1710,7 @@
+ #ifdef USE_CLASS_DEVICE
+     class_device_create(cmem_class, NULL, MKDEV(cmem_major, 0), NULL, "cmem");
+ #else
+-    device_create(cmem_class, NULL, MKDEV(cmem_major, 0), "cmem");
++    device_create(cmem_class, NULL, MKDEV(cmem_major, 0), NULL, "cmem");
+ #endif // USE_CLASS_DEVICE
+ #endif // USE_CLASS_SIMPLE
+ #endif // USE_UDEV
