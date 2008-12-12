@@ -10,8 +10,8 @@ PV = "160"
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/link/link_1_60/index.html
 
 SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_60.tar.gz \
-		file://Makefile.dsplink \
-		file://Makefile-dsplink-kbuild \
+		file://Makefile-dsplink-gpp \
+		file://Makefile-dsplink-dsp \
 "
 
 S = "${WORKDIR}/dsplink_1_60/dsplink"

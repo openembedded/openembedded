@@ -52,31 +52,38 @@ do_compile () {
 	export ARCHIVER_AR=${TARGET_PREFIX}ar
 	export BASE_SABIOS=${DSP_BASE_BIOS}
 	
-	mkdir -p ${S}/dsplink-kbuild-test	
-	cp ${WORKDIR}/Makefile-dsplink-kbuild  ${S}/dsplink-kbuild-test/Makefile
-    cd ${S}/dsplink-kbuild-test/
+	if [ ! -d ${S}/gpp/BUILD/EXPORT/RELEASE ] ; then 
+		install -d ${S}/gpp/BUILD/EXPORT/RELEASE
+	fi
+
+	cp ${WORKDIR}/Makefile-dsplink-gpp ${S}/gpp/BUILD/EXPORT/RELEASE/Makefile
+	cd ${S}/gpp/BUILD/EXPORT/RELEASE/
+
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-    oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-           KDIR=${STAGING_KERNEL_DIR}	\
-           KERNEL_VERSION=${KERNEL_VERSION}    \
-           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-           AR="${KERNEL_AR}" \
-           V=1        ${MAKE_TARGETS}
 
-    make -e -f ${WORKDIR}/Makefile.dsplink
+#    oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+#           KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+#           KDIR=${STAGING_KERNEL_DIR}	\
+#           KERNEL_VERSION=${KERNEL_VERSION}    \
+#           CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+#           AR="${KERNEL_AR}" \
+#           V=1        ${MAKE_TARGETS}
 
+	export KDIR=${STAGING_KERNEL_DIR}
+	make -e all
+
+	make -e -f ${WORKDIR}/Makefile-dsplink-dsp
 }
 
 do_install () {
 	install -d ${D}/${bindir}
 #	install ${S}/gpp/BUILD/EXPORT/RELEASE/loopgpp           ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagegpp        ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagemultigpp   ${D}/${bindir}
+#	install ${S}/gpp/BUILD/EXPORT/RELEASE/messagemultigpp   ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/mpcsxfergpp       ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/mplistgpp         ${D}/${bindir}
+#	install ${S}/gpp/BUILD/EXPORT/RELEASE/mplistgpp         ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/readwritegpp      ${D}/${bindir}
-	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp         ${D}/${bindir}
+#	install ${S}/gpp/BUILD/EXPORT/RELEASE/ringiogpp         ${D}/${bindir}
 	install ${S}/gpp/BUILD/EXPORT/RELEASE/scalegpp          ${D}/${bindir} || true
 
 	install -d ${D}/${datadir}/dsplink
@@ -89,7 +96,7 @@ do_install () {
 }
 
 
-# Coded Engine and friends need a complete tree, so stage it all
+# Codec Engine and friends need a complete tree, so stage it all
 do_stage() {
 	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
 	cp -pPr ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink/ 
