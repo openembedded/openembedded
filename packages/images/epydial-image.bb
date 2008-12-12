@@ -17,8 +17,8 @@ BASE_INSTALL = "\
 
 # getting an X window system up
 X_INSTALL = "\
-	e-wm \
 	${XSERVER}\
+	matchbox-wm\
 	xserver-kdrive-common\
 	xserver-nodm-init\
 	xauth\
@@ -61,10 +61,8 @@ IMAGE_INSTALL = "\
 	${X_INSTALL}\
 	${MEDIA_INSTALL}\
 	${TOOLS_INSTALL}\
-    exquisite\
-	pyneod\
+	euphony\
 	epydial\
-	illume \
 "
 
 inherit image
