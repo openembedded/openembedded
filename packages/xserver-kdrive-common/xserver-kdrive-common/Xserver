@@ -56,6 +56,8 @@ fi
 
 # start off server in conventional location.
 case `module_id` in
+        "AML M8050")
+                ARGS="$ARGS -dpi 100 -screen 320x240@270" ;;
         "HP iPAQ H3100" | "HP iPAQ H3800")
                 ARGS="$ARGS -dpi 100 -rgba vrgb -screen ${SCREEN_SIZE}@90" ;;
         "HP iPAQ H3600" | "HP iPAQ H3700" | "HP iPAQ H3900")

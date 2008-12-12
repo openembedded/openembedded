@@ -1,7 +1,7 @@
 DESCRIPTION = "Common X11 scripts"
 LICENSE = "GPL"
 SECTION = "x11"
-PR = "r33"
+PR = "r34"
 
 SRC_URI = "\
   file://Xdefaults \
