@@ -1,4 +1,3 @@
-MACHINE = "shepherd"
 COMPATIBLE_MACHINE = "shepherd"
 COMPATIBLE_HOST = "arm.*-linux"
 
