@@ -27,6 +27,10 @@ inherit autotools pkgconfig update-rc.d
 do_configure_append() {
 	install -m 0644 ${WORKDIR}/psplash-hand-img.h ${S}/
 	install -m 0644 ${WORKDIR}/psplash-bar-img.h ${S}/
+
+	if [ -e "${WORKDIR}/psplash.h" ]; then
+		install -m 0644 ${WORKDIR}/psplash.h ${S}/
+	fi
 }
 
 do_install_prepend() {
