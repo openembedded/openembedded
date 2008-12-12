@@ -4,7 +4,7 @@ LICENSE = "PSF"
 SECTION = "devel/python"
 PRIORITY = "optional"
 # bump this on every change in contrib/python/generate-manifest-2.6.py
-PR = "ml0"
+PR = "ml1"
 
 DEFAULT_PREFERENCE = "-26"
 
