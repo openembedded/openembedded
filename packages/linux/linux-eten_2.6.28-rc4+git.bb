@@ -18,4 +18,4 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-CMDLINE = "root=/dev/mmcblk0p1 rootdelay=5"
+CMDLINE = "root=/dev/mmcblk0p1 rootdelay=5 ro"

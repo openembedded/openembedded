@@ -59,7 +59,14 @@ do_install () {
 	install -d ${D}${sysconfdir}/wpa_supplicant
 	install -m 755 ${WORKDIR}/ifupdown.sh ${D}${sysconfdir}/wpa_supplicant/
 	install -m 755 ${WORKDIR}/functions.sh ${D}${sysconfdir}/wpa_supplicant
-	
+
+	install -d ${D}/${sysconfdir}/dbus-1/system.d
+	install -m 644 ${S}/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
+	install -d ${D}/${datadir}/dbus-1/system-services
+	install -m 644 ${S}/dbus-wpa_supplicant.service ${D}/${datadir}/dbus-1/system-services
+
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-pre-up.d/wpasupplicant
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-post-down.d/wpasupplicant
 }
+
+FILES_${PN} += "${datadir}/dbus-1/system-services/*"
