@@ -1,9 +1,9 @@
-DESCRIPTION = "Boots a Motorola EZX device with a user supplied kernel zImage"
+DESCRIPTION = "Boot a Motorola EZX device with a user supplied kernel"
 DEPENDS = "libusb-native virtual/kernel"
 SECTION = "devel"
 AUTHOR = "Team OpenEZX <openezx-devel@lists.openezx.org>"
 LICENSE = "GPL"
-PV = "0.2.0+svnr${SRCREV}"
+PV = "0.3.0+svnr${SRCREV}"
 
 SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http" 
 S = "${WORKDIR}/boot_usb"
