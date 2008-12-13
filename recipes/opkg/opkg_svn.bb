@@ -18,7 +18,9 @@ if [ "x$D" != "x" ]; then
 	install -d $D${sysconfdir}/rcS.d
 	# this happens at S98 where our good 'ole packages script used to run
 	echo "#!/bin/sh
-opkg-cl configure
+if ! test -f /etc/.configured; then
+	opkg-cl configure
+fi
 rm -f ${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
 " > $D${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
 	chmod 0755 $D${sysconfdir}/rcS.d/S${OPKG_INIT_POSITION}configure
