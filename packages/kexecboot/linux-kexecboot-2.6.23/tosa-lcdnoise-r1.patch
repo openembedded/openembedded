@@ -1,0 +1,158 @@
+From 564b757ba44b517ac6d693b94a177708bb5d3887 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 19 Oct 2007 17:30:30 +0400
+Subject: [PATCH] tosa-lcdnoise-r1.patch
+
+---
+ drivers/input/touchscreen/Kconfig   |   13 +++++
+ drivers/input/touchscreen/Makefile  |    1 +
+ drivers/input/touchscreen/tosa_ts.c |  102 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 116 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index 3ac01b4..6862e8f 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -219,6 +219,19 @@ config TOUCHSCREEN_USB_DMC_TSC10
+ 	bool "DMC TSC-10/25 device support" if EMBEDDED
+ 	depends on TOUCHSCREEN_USB_COMPOSITE
+ 
++config TOUCHSCREEN_TOSA
++    tristate "Sharp Tosa touchscreen driver"
++    depends on TOUCHSCREEN_WM97XX && MACH_TOSA
++    default n
++    help
++      Say Y here to enable the driver for the touchscreen on the
++      Sharp Tosa PDA.
++      depends on TOUCHSCREEN_WM97XX && MACH_TOSA
++      If unsure, say N.
++
++      To compile this driver as a module, choose M here: the
++      module will be called tosa_ts.
++
+ config TOUCHSCREEN_TSC2101
+ 	tristate "TI TSC2101 touchscreen input driver"
+ 	depends on MACH_HX2750 && INPUT && INPUT_TOUCHSCREEN
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index f64d1a5..4fc0e17 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -22,6 +22,7 @@ obj-$(CONFIG_TOUCHSCREEN_UCB1400)	+= ucb1400_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_TSC2101)	+= tsc2101_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX)    	+= wm97xx-ts.o
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX_PXA)    += pxa-wm97xx.o
++obj-$(CONFIG_TOUCHSCREEN_TOSA)        	+= tosa_ts.o
+ 
+ ifeq ($(CONFIG_TOUCHSCREEN_WM9713),y)
+ wm97xx-ts-objs += wm9713.o
+diff --git a/drivers/input/touchscreen/tosa_ts.c b/drivers/input/touchscreen/tosa_ts.c
+new file mode 100644
+index 0000000..bc733e9
+--- /dev/null
++++ b/drivers/input/touchscreen/tosa_ts.c
+@@ -0,0 +1,102 @@
++/*
++ * tosa_ts.c  --  Touchscreen driver for Sharp SL-6000 (Tosa).
++ *
++ * Copyright 2006 Wolfson Microelectronics PLC.
++ * Author: Mike Arthur
++ *         linux@wolfsonmicro.com
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  Revision history
++ *     1st Sep 2006  Initial version.
++ *
++ */
++
++#include <linux/wm97xx.h>
++#include <asm/arch/tosa.h>
++#include <asm/arch/hardware.h>
++#include <asm/arch/pxa-regs.h>
++
++/* Taken from the Sharp 2.4 kernel code */
++#define CCNT(a)     asm volatile ("mrc p14, 0, %0, C1, C1, 0" : "=r"(a))
++#define CCNT_ON()   asm("mcr p14, 0, %0, C0, C0, 0" : : "r"(1))
++#define CCNT_OFF()  asm("mcr p14, 0, %0, C0, C0, 0" : : "r"(1))
++
++static inline void tosa_lcd_wait_hsync(void)
++{
++	/* Waits for a rising edge on the VGA line */
++	while((GPLR(TOSA_GPIO_VGA_LINE) & GPIO_bit(TOSA_GPIO_VGA_LINE)) == 0);
++	while((GPLR(TOSA_GPIO_VGA_LINE) & GPIO_bit(TOSA_GPIO_VGA_LINE)) != 0);
++}
++
++/* On the Sharp SL-6000 (Tosa), due to a noisy LCD, we need to perform a wait
++ * before sampling the Y axis of the touchscreen */
++void tosa_lcd_sync_on(int adcsel) {
++	unsigned long timer1 = 0, timer2 = 0, wait_time = 0;
++	if (adcsel == WM97XX_ADCSEL_Y) {
++		wait_time = tosa_lcd_get_hsync_time();
++		CCNT_ON();
++
++		if (wait_time) {
++			/* wait for LCD rising edge */
++			tosa_lcd_wait_hsync();
++			/* get clock */
++			CCNT(timer1);
++			CCNT(timer2);
++
++			while ((timer2 - timer1) < wait_time) {
++				CCNT(timer2);
++			}
++		}
++	}
++}
++
++void tosa_lcd_sync_off(void) {
++	CCNT_OFF();
++}
++
++static struct wm97xx_mach_ops tosa_mach_ops = {
++	.pre_sample =  tosa_lcd_sync_on,
++	.post_sample = tosa_lcd_sync_off,
++};
++
++int tosa_ts_probe(struct device *dev) {
++	struct wm97xx *wm = dev->driver_data;
++	return wm97xx_register_mach_ops (wm, &tosa_mach_ops);
++}
++
++
++int tosa_ts_remove(struct device *dev) {
++	struct wm97xx *wm = dev->driver_data;
++	wm97xx_unregister_mach_ops (wm);
++	return 0;
++}
++
++static struct device_driver tosa_ts_driver = {
++	.name = "wm97xx-touchscreen",
++	.bus = &wm97xx_bus_type,
++	.owner = THIS_MODULE,
++	.probe = tosa_ts_probe,
++	.remove = tosa_ts_remove,
++};
++
++static int __init tosa_ts_init(void)
++{
++	return driver_register(&tosa_ts_driver);
++}
++
++static void __exit tosa_ts_exit(void)
++{
++	driver_unregister(&tosa_ts_driver);
++}
++
++module_init(tosa_ts_init);
++module_exit(tosa_ts_exit);
++
++/* Module information */
++MODULE_AUTHOR("Mike Arthur, mike@mikearthur.co.uk, www.wolfsonmicro.com");
++MODULE_DESCRIPTION("Sharp SL6000 Tosa Touch Screen Driver");
++MODULE_LICENSE("GPL");
+-- 
+1.4.4.4
+

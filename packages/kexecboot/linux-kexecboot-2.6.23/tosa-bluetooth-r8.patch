@@ -1,0 +1,194 @@
+Index: linux-2.6.17/arch/arm/mach-pxa/Makefile
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/Makefile	2006-06-20 11:45:51.252467944 +0200
++++ linux-2.6.17/arch/arm/mach-pxa/Makefile	2006-06-20 11:46:33.619027248 +0200
+@@ -16,7 +16,7 @@
+ obj-$(CONFIG_PXA_SHARP_Cxx00)	+= spitz.o corgi_ssp.o corgi_lcd.o sharpsl_pm.o spitz_pm.o
+ obj-$(CONFIG_MACH_AKITA)	+= akita-ioexp.o
+ obj-$(CONFIG_MACH_POODLE)	+= poodle.o corgi_ssp.o sharpsl_pm.o poodle_pm.o
+-obj-$(CONFIG_MACH_TOSA)         += tosa.o sharpsl_pm.o tosa_pm.o tosa_lcd.o
++obj-$(CONFIG_MACH_TOSA)         += tosa.o sharpsl_pm.o tosa_pm.o tosa_lcd.o tosa_bt.o
+ obj-$(CONFIG_MACH_EM_X270) += em-x270.o
+ obj-$(CONFIG_MACH_HX2750)	+= hx2750.o hx2750_test.o
+ 
+Index: linux-2.6.17/arch/arm/mach-pxa/tosa_bt.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.17/arch/arm/mach-pxa/tosa_bt.c	2006-06-20 11:46:08.107905528 +0200
+@@ -0,0 +1,128 @@
++/*
++ *  Bluetooth control code for Sharp SL-6000x (tosa)
++ *
++ *  Copyright (c) 2005		Dirk Opfer
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++#include <asm/hardware.h>
++
++#include <asm/hardware/scoop.h>
++#include <asm/arch/tosa.h>
++#include <asm/arch/pxa-regs.h>
++
++
++static int tosa_bluetooth_power(int on)
++{
++	
++	if (!on) { //off
++
++		set_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_RESET);
++		pxa_gpio_mode(GPIO42_BTRXD|GPIO_IN);
++		pxa_gpio_mode(GPIO43_BTTXD|GPIO_IN);
++		pxa_gpio_mode(GPIO44_BTCTS|GPIO_IN);
++		pxa_gpio_mode(GPIO45_BTRTS|GPIO_IN);
++		mdelay(10); // wait 10ms
++		reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_RESET);
++		reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_PWR_EN);
++		reset_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_BT_LED); // turn off BT LED
++
++	} else { // on
++		
++		reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_RESET);
++		set_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_PWR_EN);
++		pxa_gpio_mode(GPIO42_HWRXD_MD);
++		pxa_gpio_mode(GPIO43_HWTXD_MD);
++		pxa_gpio_mode(GPIO44_HWCTS_MD);
++		pxa_gpio_mode(GPIO45_HWRTS_MD);
++
++		set_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_RESET);
++    		mdelay(20); // wait 20ms
++		reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_RESET);
++		set_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_BT_LED); // turn BT LED on
++	}
++	return 0;
++}
++
++/*
++ *  Support Routines
++ */
++int __init tosa_bluetooth_probe(struct platform_device *dev)
++{
++	int ret = 0;
++	pxa_gpio_mode(GPIO42_BTRXD|GPIO_IN);
++	pxa_gpio_mode(GPIO43_BTTXD|GPIO_IN);
++	pxa_gpio_mode(GPIO44_BTCTS|GPIO_IN);
++	pxa_gpio_mode(GPIO45_BTRTS|GPIO_IN);
++	set_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_PWR_EN);
++	mdelay(5);
++
++	if ( (GPLR(GPIO42_BTRXD) & GPIO_bit(GPIO42_BTRXD))==0 &&
++	     (GPLR(GPIO44_BTCTS) & GPIO_bit(GPIO44_BTCTS))==0) {
++		printk(KERN_INFO "No Bluetooth Device found!\n");
++		ret = ENODEV; // no bluetooth
++	} else {
++		printk(KERN_INFO "Tosa Bluetooth Device found on ttyS3!\n");
++	}
++	reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_BT_PWR_EN);
++	
++	tosa_bluetooth_power(1);		// Power on
++	return ret;
++}
++
++static int tosa_bluetooth_remove(struct platform_device *dev)
++{
++	tosa_bluetooth_power(0);		// Power off
++	return 0;
++}
++
++#ifdef CONFIG_PM
++static int tosa_bluetooth_suspend(struct platform_device *dev, pm_message_t state)
++{
++	tosa_bluetooth_power(0);	// Power off
++	return 0;
++}
++
++static int tosa_bluetooth_resume(struct platform_device *dev)
++{
++	tosa_bluetooth_power(1);	// Power on
++	return 0;
++}
++#else
++#define tosa_bluetooth_suspend NULL
++#define tosa_bluetooth_resume NULL
++#endif
++
++static struct platform_driver tosa_bluetooth_driver = {
++	.probe		= tosa_bluetooth_probe,
++	.remove		= tosa_bluetooth_remove,
++	.suspend	= tosa_bluetooth_suspend,
++	.resume		= tosa_bluetooth_resume,
++        .driver         = {
++	                    .name   = "tosa-bluetooth",
++	},
++};
++
++int __init tosa_bluetooth_init(void)
++{
++	return platform_driver_register(&tosa_bluetooth_driver);
++}
++
++void __exit tosa_bluetooth_cleanup(void)
++{
++ 	platform_driver_unregister(&tosa_bluetooth_driver);
++}
++
++module_init(tosa_bluetooth_init);
++module_exit(tosa_bluetooth_cleanup);
+Index: linux-2.6.17/arch/arm/mach-pxa/tosa.c
+===================================================================
+--- linux-2.6.17.orig/arch/arm/mach-pxa/tosa.c	2006-06-20 11:45:51.254467640 +0200
++++ linux-2.6.17/arch/arm/mach-pxa/tosa.c	2006-06-20 11:46:08.112904768 +0200
+@@ -288,7 +288,7 @@
+ 
+ static void tosa_tc6393_enable(struct device *dev)
+ {
+-
++	printk("!!tosa_tc6393_enable!!\n");
+ 	reset_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC3693_L3V_ON);
+ 	reset_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC6393_SUSPEND);
+ 	reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_TC6393_REST_IN);      //#PCLR
+@@ -303,7 +303,7 @@
+ 
+ static void tosa_tc6393_disable(struct device *dev)
+ {
+-
++	printk("!!tosa_tc6393_disable!!\n");
+ 	reset_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC3693_L3V_ON);
+ 	reset_scoop_gpio(&tosascoop_jc_device.dev,TOSA_SCOOP_JC_TC6393_SUSPEND);
+ 	reset_scoop_gpio(&tosascoop_device.dev,TOSA_SCOOP_TC6393_REST_IN);      //#PCLR
+@@ -428,6 +428,17 @@
+     },
+ };
+ 
++/*
++ * Tosa Blueooth
++ */
++static struct platform_device tosa_bluetooth_device = {
++	.name		= "tosa-bluetooth",
++	.id		= -1,
++	.dev		= {
++		.parent 	= &tosascoop_jc_device.dev,
++	},
++};
++
+ static struct platform_device *devices[] __initdata = {
+ 	&tosascoop_device,
+ 	&tosascoop_jc_device,
+@@ -435,6 +446,7 @@
+ 	&tosaled_device,
+ 	&tc6393_device,
+ 	&tosalcd_device,
++	&tosa_bluetooth_device,
+ };
+ 
+ static void tosa_poweroff(void)
