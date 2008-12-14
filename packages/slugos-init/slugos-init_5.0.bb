@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -28,6 +28,7 @@ SRC_URI = "file://boot/flash \
 	   file://sysconf \
 	   file://leds \
 	   file://turnup \
+	   file://reflash \
 	   "
 
 SBINPROGS = ""
@@ -103,6 +104,9 @@ do_install() {
 
 	# Configuration files
 	install -m 0644 conffiles ${D}${sysconfdir}/default
+
+	# Developer-only tools, tucked away
+	install -m 0755 reflash ${D}${sysconfdir}/default
 
 	set +ex
 }
