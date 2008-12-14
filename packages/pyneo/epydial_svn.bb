@@ -3,21 +3,12 @@ HOMEPAGE = "http://neo1973-germany.de/epydial"
 AUTHOR = "fgau"
 LICENSE = "GPL3"
 SECTION = "python/ui"
-MAINTAINER = "fgau"
-PRIORITY = "optional"
-PV = "1.0"
-PR = "r4"
-SRC_URI = "svn://neo1973-germany.de/svn/;proto=http;module=epydial"
-S = "${WORKDIR}/${PN}"
-PACKAGES = "${PN}"
-SRCREV = "${AUTOREV}"
-FILES_${PN} = "/"
 DEPENDS = "edje"
-RDEPENDS = "\
-	task-python-efl \
-	pyneod \
-	pyneo \
-	"
+PV = "1.0+svnr${SRCREV}"
+PR = "r0"
+
+SRC_URI = "svn://neo1973-germany.de/svn;proto=http;module=epydial"
+S = "${WORKDIR}/${PN}"
 
 do_compile() {
 	./compile_theme
@@ -35,3 +26,9 @@ do_install() {
 		install -m 0644 ${S}/$n ${D}/usr/share/${PN}/`dirname $n`
 	done
 }
+
+RDEPENDS = "\
+  task-python-efl \
+  pyneod \
+  pyneo \
+"
