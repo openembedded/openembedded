@@ -3,7 +3,7 @@ NONDEV_PACKAGES += "${QT_BASE_LIB}core4 ${QT_BASE_LIB}gui4 ${QT_BASE_LIB}network
              ${QT_BASE_LIB}designer4 ${QT_BASE_LIB}designercomponents4 \
              ${QT_BASE_LIB}3support4 ${QT_BASE_LIB}assistantclient4 ${QT_BASE_LIB}script4 \
              ${QT_BASE_LIB}dbus4 ${QT_BASE_LIB}opengl4 \
-             ${QT_BASE_LIB}help ${QT_BASE_LIB}clucene ${QT_BASE_LIB}webkit \
+             ${QT_BASE_LIB}help ${QT_BASE_LIB}clucene ${QT_BASE_LIB}webkit ${QT_BASE_LIB}phonon\
              ${QT_BASE_NAME}-assistant ${QT_BASE_NAME}-common \
              ${QT_BASE_NAME}-designer \
              ${QT_BASE_NAME}-demos ${QT_BASE_NAME}-examples \
@@ -29,6 +29,7 @@ DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
              ${QT_BASE_LIB}help-dev \
              ${QT_BASE_LIB}clucene-dev \
              ${QT_BASE_LIB}webkit-dev \
+             ${QT_BASE_LIB}phonon-dev \
              "
 
 DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
@@ -48,6 +49,7 @@ DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
              ${QT_BASE_LIB}help-dbg \
              ${QT_BASE_LIB}clucene-dbg \
              ${QT_BASE_LIB}webkit-dbg \
+             ${QT_BASE_LIB}phonon-dbg \
              "
 
 
@@ -122,6 +124,9 @@ FILES_${QT_BASE_LIB}clucene-dbg             = "${libdir}/.debug/libQtCLucene*"
 FILES_${QT_BASE_LIB}webkit                  = "${libdir}/libQtWebKit${QT_LIBINFIX}.so.*"
 FILES_${QT_BASE_LIB}webkit-dev              = "${@qt_default_dev('WebKit')}"
 FILES_${QT_BASE_LIB}webkit-dbg              = "${libdir}/.debug/libQtWebKit*"
+FILES_${QT_BASE_LIB}phonon                  = "${libdir}/libphonon*.so.*"
+FILES_${QT_BASE_LIB}phonon-dev              = "${includedir}/qt4/phonon ${libdir}/libphonon.* ${libdir}/pkgconfig/phonon.pc"
+FILES_${QT_BASE_LIB}phonon-dbg              = "${libdir}/.debug/libphonon*"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
 FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
@@ -183,6 +188,7 @@ python populate_packages_prepend() {
 	qtopia_split('sqldrivers',  'sqldriver',   '^libq(.*)\.so$')
 	qtopia_split('script',      'script',      '^libqtscript(.*)\.so$')
 	qtopia_split('styles',      'style',       '^libq(.*)\.so$')
+	qtopia_split('phonon_backend',      'phonon-backend',       '^libphonon_(.*)\.so$')
 }
 
 
