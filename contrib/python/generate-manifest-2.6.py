@@ -10,10 +10,9 @@ import sys
 import time
 
 VERSION = "2.6.1"
-BASEREV = 0
 
 __author__ = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
-__version__ = "20081209"
+__version__ = "20081214"
 
 class MakefileMaker:
 
@@ -153,7 +152,7 @@ if __name__ == "__main__":
     #
 
     m.addPackage( "python-core", "Python Interpreter and core modules (needed!)", "",
-    "__future__.* copy.* copy_reg.* ConfigParser.* " +
+    "__future__.* _abcoll.* abc.* copy.* copy_reg.* ConfigParser.* " +
     "genericpath.* getopt.* linecache.* new.* " +
     "os.* posixpath.* struct.* " +
     "warnings.* site.* stat.* " +
@@ -243,14 +242,14 @@ if __name__ == "__main__":
     "colorsys.* imghdr.* lib-dynload/imageop.so lib-dynload/rgbimg.so" )
 
     m.addPackage( "python-io", "Python Low-Level I/O", "python-core python-math",
-    "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so "
+    "lib-dynload/_socket.so lib-dynload/_ssl.so lib-dynload/select.so lib-dynload/termios.so lib-dynload/cStringIO.so " +
     "pipes.* socket.* tempfile.* StringIO.* " )
 
     m.addPackage( "python-lang", "Python Low-Level Language Support", "python-core",
-    "lib-dynload/array.so lib-dynload/parser.so lib-dynload/operator.so lib-dynload/_weakref.so " +
-    "lib-dynload/itertools.so lib-dynload/collections.so lib-dynload/_bisect.so lib-dynload/_heapq.so " +
-    "atexit.* bisect.* code.* codeop.* dis.* heapq.* inspect.* keyword.* opcode.* symbol.* repr.* token.* " +
-    " tokenize.* traceback.* linecache.* weakref.*" )
+    "lib-dynload/_bisect.so lib-dynload/_collections.so lib-dynload/_heapq.so lib-dynload/_weakref.so lib-dynload/_functools.so " +
+    "lib-dynload/array.so lib-dynload/itertools.so lib-dynload/operator.so lib-dynload/parser.so " +
+    "atexit.* bisect.* code.* codeop.* collections.* dis.* functools.* heapq.* inspect.* keyword.* opcode.* symbol.* repr.* token.* " +
+    "tokenize.* traceback.* linecache.* weakref.*" )
 
     m.addPackage( "python-logging", "Python Logging Support", "python-core python-io python-lang python-pickle python-stringold",
     "logging" ) # package
