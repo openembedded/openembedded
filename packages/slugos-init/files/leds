@@ -185,7 +185,7 @@ beep(){
 	test "$1" = beep && shift
 	if test -x /bin/beep
 	then
-		devices=`ls -d /sys/class/input/event*`
+		devices=`ls -d /sys/class/input/event* 2>&1`
 		for device in $devices
 		do
 			module=`egrep PHYSDEVDRIVER $device'/uevent' | cut -d '=' -f 2`
