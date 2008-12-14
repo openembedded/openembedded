@@ -496,6 +496,8 @@ boot_rootfs() {
 			return 1
 		};;
 	ram)	{	echo '#!/bin/sh'
+			echo 'mount -t proc  proc  /proc'
+			echo 'mount -t sysfs sysfs /sys'
 			echo 'leds beep'
 			echo 'rm -f /linuxrc.new'
 			echo 'ln -s boot/flash /linuxrc.new'
@@ -508,6 +510,8 @@ boot_rootfs() {
 			return 1
 		};;
 	*)	{	echo '#!/bin/sh'
+			echo 'mount -t proc  proc  /proc'
+			echo 'mount -t sysfs sysfs /sys'
 			echo 'leds beep'
 			test "$sleep" -gt 0 && echo -n "sleep='$sleep' "
 			test -n "$uuid" && echo -n "UUID='$uuid' "
