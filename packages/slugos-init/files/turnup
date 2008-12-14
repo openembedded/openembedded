@@ -324,7 +324,7 @@ setup_var() {
 
 	# populate /var.  We just need to create the /var/volatile mount
 	# point, the populate-volatile script does the work at boot time.
-	echo "turnup: ensuring /var/volatile mountpoint exists"
+	#QUIET: echo "turnup: ensuring /var/volatile mountpoint exists" >&2
 	test -d "$1"/var/volatile || mkdir "$1"/var/volatile
 
 	# we need to put in place the correct configuration file for
@@ -343,7 +343,7 @@ setup_var() {
 	# remove the /var tmpfs entry from the new /etc/fstab, if it is
 	# present in the first place.
 	sed -i '\@[ 	]/var[ 	][ 	]*tmpfs[ 	]@d' "$1"/etc/fstab
-	echo "turnup: ensuring tmpfs will not be mounted on /var" >&2
+	#QUIET: echo "turnup: ensuring tmpfs will not be mounted on /var" >&2
 	#
 	return 0
 }
@@ -367,9 +367,9 @@ setup_syslog() {
 			sed -i 's!DESTINATION="buffer"!DESTINATION="file"!
 				/^ROTATESIZE=/d
 				/^ROTATEGENS=/d' "$1"/etc/syslog.conf
-			echo "turnup: /etc/syslog.conf: changed to file buffering" >&2
-			echo " Old (buffer) version in /etc/syslog.conf.sav" >&2
-			echo " Log messages will be in /var/log/messages" >&2
+			#QUIET: echo "turnup: /etc/syslog.conf: changed to file buffering" >&2
+			#QUIET: echo " Old (buffer) version in /etc/syslog.conf.sav" >&2
+			#QUIET: echo " Log messages will be in /var/log/messages" >&2
 		else
 			echo "turnup: /etc/syslog.conf: failed to make a copy" >&2
 			echo " syslog will log to a buffer" >&2
