@@ -38,14 +38,10 @@ do_configure_prepend() {
                 echo -n "fixing up configuration for Openmoko GTA01..."
                 sed -i -e s,CONFIG_S3C_LOWLEVEL_UART_PORT=2,CONFIG_S3C_LOWLEVEL_UART_PORT=0, ${WORKDIR}/defconfig
                 sed -i -e s,CONFIG_DEBUG_S3C_UART=2,CONFIG_DEBUG_S3C_UART=0, ${WORKDIR}/defconfig
-                echo "# CONFIG_BATTERY_BQ27000_HDQ is not set" >>${WORKDIR}/defconfig
-                echo "CONFIG_BATTERY_GTA01=y" >>${WORKDIR}/defconfig
                 echo "done"
         fi
         if [ ${MACHINE} == "om-gta02" ]; then
                 echo -n "fixing up configuration for Openmoko GTA02..."
-                echo "CONFIG_BATTERY_BQ27000_HDQ=y" >>${WORKDIR}/defconfig
-                echo "# CONFIG_BATTERY_GTA01 is not set" >>${WORKDIR}/defconfig
                 echo "done"
         fi                                                                       
 }
