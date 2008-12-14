@@ -1,0 +1,16 @@
+#! /bin/sh
+#
+# reboot	Execute the reboot command.
+#
+# Version:      @(#)reboot  2.75  22-Jun-1998  miquels@cistron.nl
+#
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+echo "Rebooting... "
+if [ -x /usr/sbin/kexec ] ; then
+	echo " trying kexec..."
+	kexec -f -e -x
+fi
+echo " normal reboot..."
+reboot -d -f -i
