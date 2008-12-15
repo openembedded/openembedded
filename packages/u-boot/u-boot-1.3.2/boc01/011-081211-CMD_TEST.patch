@@ -1,0 +1,454 @@
+Index: u-boot-1.3.2/common/Makefile
+===================================================================
+--- u-boot-1.3.2.orig/common/Makefile
++++ u-boot-1.3.2/common/Makefile
+@@ -95,6 +95,8 @@ COBJS-$(CONFIG_CMD_TERMINAL) += cmd_term
+ COBJS-$(CONFIG_CMD_UNIVERSE) += cmd_universe.o
+ COBJS-$(CONFIG_CMD_USB) += cmd_usb.o
+ COBJS-$(CONFIG_CMD_LCD) +=cmd_lcd.o
++COBJS-$(CONFIG_CMD_FLTEST) += cmd_fltest.o
++COBJS-$(CONFIG_CMD_NANDTEST) += cmd_nandtest.o
+ COBJS-y += cmd_vfd.o
+ COBJS-y += command.o
+ COBJS-y += console.o
+Index: u-boot-1.3.2/common/cmd_fltest.c
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/common/cmd_fltest.c
+@@ -0,0 +1,198 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CenoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <command.h>
++
++#define DEFAULT_RAM_ADDR 0x200000
++static const ulong bitpattern[] = {
++		0x11111111,	/* single bit */
++		0x33333333,	/* two adjacent bits */
++		0x77777777,	/* three adjacent bits */
++		0x0F0F0F0F,	/* four adjacent bits */
++		0x05050505,	/* two non-adjacent bits */
++		0x15151515,	/* three non-adjacent bits */
++		0x00550055,	/* four non-adjacent bits */
++		0xaaaaaaaa,	/* alternating 1/0 */
++	};
++
++#define SECTOR_SIZE	0x10000
++extern int cmd_get_data_size (char *arg, int default_size);
++extern flash_info_t flash_info[];	/* info for FLASH chips */
++static void fill_ram(ulong pattern)
++{
++	//fill ram with patern
++	ulong size=SECTOR_SIZE/4;
++	ulong ram, writeval;
++	char *s;
++	if ((s = getenv("loadaddr")) != NULL)
++	{
++		ram = simple_strtoul(s, NULL, 16);
++	}
++	else
++	{
++		ram=DEFAULT_RAM_ADDR;
++	}
++	writeval = pattern;
++	while (size-- > 0)
++	{
++		*((ulong  *)ram) = (ulong )writeval;
++		ram += 4;
++	}
++	size=SECTOR_SIZE/4;
++	while (size-- > 0)
++	{
++		*((ulong  *)ram) = (ulong )0xFFFFFFFF;
++		ram += 4;
++	}
++}
++
++static int test_sector(ulong start,ulong patern)
++{
++    int rc;
++    ulong addr1, addr2, count;
++	char *s;
++	if ((s = getenv("loadaddr")) != NULL)
++	{
++		addr1 = simple_strtoul(s, NULL, 16);
++	}
++	else
++	{
++		addr1=DEFAULT_RAM_ADDR;
++	}
++    rc = flash_write ((char *)addr1, start, SECTOR_SIZE);
++	if (rc != 0)
++	{
++		flash_perror (rc);
++	}
++	addr2 = start;
++	count=(SECTOR_SIZE/4);
++	while (count-- > 0)
++	{
++		ulong word1 = *(ulong *)addr1;
++		ulong word2 = *(ulong *)addr2;
++		if (word1 != word2)
++		{
++			printf("word at 0x%08lx (0x%08lx)!=patern (0x%08lx) count = %ld \n",addr2, word2,word1,count);
++				break;
++		}
++		addr1 += 4;
++		addr2 += 4;
++	}
++	return (0);
++}
++
++int do_fltest ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	ulong	start,  patern, nb_sector;
++	int i,prot=0;
++	flash_info_t *info = flash_info;
++	int idxtstptrn=0;
++	char forever=0;
++
++	switch(argc)
++	{
++	case 1 :
++		start = 0;
++		nb_sector = info->sector_count-1;
++		patern=bitpattern[0];
++		break;
++	case 2 :
++		start = 0;
++		nb_sector = info->sector_count-1;
++		patern=bitpattern[idxtstptrn];
++		if (!strncmp(argv[1], "forever", 7))
++		{
++			printf("Test nor flash forever\n");
++			forever =1;
++		}
++		else
++		{
++			printf ("Usage:\n%s\n", cmdtp->usage);
++			return 1;
++		}
++		break;
++	case 4 :
++		start = simple_strtoul(argv[1], NULL, 16);
++		nb_sector = simple_strtoul(argv[2], NULL, 16);
++		patern = simple_strtoul(argv[3], NULL, 16);
++		break;
++
++	default :
++		printf ("Usage:\n%s\n", cmdtp->usage);
++		return 1;
++		break;
++	}
++
++	if((info->sector_count-1)<(start+nb_sector))
++	{
++		printf ("Usage:\n%s\nnot enought sector on this flash\n", cmdtp->usage);
++		return 1;
++	}
++
++	for (i = start; i < (start+nb_sector); ++i)
++	{
++		if (info->protect[i])
++		{
++			prot++;
++		}
++	}
++	if (prot)
++	{
++		printf ("- Warning: %d protected sectors will not be tested!\n", prot);
++	}
++	do
++	{
++		printf("Test start at sector[%d]=%08lX end at  sector[%d]=%08lX with patern=%08lX\n",start,info->start[start],start+nb_sector,info->start[start+nb_sector],patern);
++		//Erasing flash
++		flash_erase (info, start, start+nb_sector);
++		for (i = start; i < (start+nb_sector); ++i)
++		{
++			if(!info->protect[i])
++			{
++				printf("\rtest at sector[%d]=%08lX with patern=%08lX\t",i,info->start[i],patern);
++				//fill ram with patern
++				fill_ram(patern);
++				//test flash sector
++				test_sector(info->start[i],patern);
++			}
++		}
++		printf("\r                                                         \n");
++		//change patern if test forever
++		idxtstptrn++;
++		if(idxtstptrn>7)
++		{
++			idxtstptrn=0;
++		}
++		patern=bitpattern[idxtstptrn];
++		prot=0;
++	}while(forever);
++	return 0;
++}
++U_BOOT_CMD(
++	fltest,    4,    1,    do_fltest,
++	"fltest  - flash memory test\n",
++	"fltest start end patern\n    - test flash memory from sector start to sector end with partern patern \n"
++	"fltest\n    - test entire flash memory\n"
++	"fltest forever\n    - loop test entire flash memory\n"
++);
+Index: u-boot-1.3.2/common/cmd_nandtest.c
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/common/cmd_nandtest.c
+@@ -0,0 +1,219 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CenoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++#include <common.h>
++#include <command.h>
++#include <nand.h>
++#define DEFAULT_RAM_ADDR 0x200000
++static const ulong bitpattern[] = {
++		0x11111111,	/* single bit */
++		0x33333333,	/* two adjacent bits */
++		0x77777777,	/* three adjacent bits */
++		0x0F0F0F0F,	/* four adjacent bits */
++		0x05050505,	/* two non-adjacent bits */
++		0x15151515,	/* three non-adjacent bits */
++		0x00550055,	/* four non-adjacent bits */
++		0xaaaaaaaa,	/* alternating 1/0 */
++	};
++
++static void fill_ram(nand_info_t *nand,ulong pattern)
++{
++	//fill ram with patern
++	ulong size=nand->erasesize/4;
++	ulong ram, writeval;
++	char *s;
++	if ((s = getenv("loadaddr")) != NULL)
++	{
++		ram = simple_strtoul(s, NULL, 16);
++	}
++	else
++	{
++		ram=DEFAULT_RAM_ADDR;
++	}
++
++	writeval = pattern;
++
++	while (size-- > 0)
++	{
++		*((ulong  *)ram) = (ulong )writeval;
++		ram += 4;
++	}
++	size=nand->erasesize/4;
++	while (size-- > 0)
++	{
++		*((ulong  *)ram) = (ulong )0xFFFFFFFF;
++		ram += 4;
++	}
++}
++
++static int test_sector(nand_info_t *nand,ulong start,ulong patern)
++{
++    int rc;
++    ulong addr1, addr2, count;
++	char *s;
++	if ((s = getenv("loadaddr")) != NULL)
++	{
++		addr1 = simple_strtoul(s, NULL, 16);
++	}
++	else
++	{
++		addr1=DEFAULT_RAM_ADDR;
++	}
++	nand_write_options_t opts;
++	memset(&opts, 0, sizeof(opts));
++	opts.buffer	= (u_char*) addr1;
++	opts.length	= nand->erasesize-sizeof(long);
++	opts.offset	= start;
++	opts.pad	= 1;
++	opts.blockalign = 1;
++	opts.quiet      = 1;
++	rc = nand_write_opts(nand, &opts);
++	if (rc != 0)
++	{
++		printf(" %d bytes written:ERROR \n", nand->erasesize);
++	}
++	/* read */
++	nand_read_options_t optsr;
++	memset(&optsr, 0, sizeof(optsr));
++	optsr.buffer	= (u_char*) (addr1+nand->erasesize);
++	optsr.length	= nand->erasesize-sizeof(long);
++	optsr.offset	= start;
++	optsr.quiet      = 1;
++	rc = nand_read_opts(nand, &optsr);
++	if (rc != 0)
++	{
++		printf(" %d bytes read :ERROR \n", nand->erasesize);
++	}
++	addr2 = addr1+nand->erasesize;
++	count=((nand->erasesize-sizeof(long))/4);
++	while (count-- > 0)
++	{
++		ulong word1 = *(ulong *)addr1;
++		ulong word2 = *(ulong *)addr2;
++		if (word1 != word2)
++		{
++			printf("word at 0x%08lx (0x%08lx)!=patern (0x%08lx) count = %ld \n",addr2, word2,word1,count);
++			break;
++		}
++		addr1 += 4;
++		addr2 += 4;
++	}
++	return (0);
++}
++
++int do_nandtest ( cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
++{
++	ulong	start,  patern, nb_sector,sector;
++	int prot=0;
++	int idxtstptrn=0;
++	char forever=0;
++	int ret;
++	nand_info_t *nand;
++	nand = &nand_info[nand_curr_device];
++	switch(argc)
++	{
++	case 1 :
++		start = 0;
++		nb_sector = (nand->size/nand->erasesize);
++		patern=bitpattern[0];
++		break;
++
++	case 2 :
++		start = 0;
++		nb_sector = (nand->size/nand->erasesize);
++		patern=bitpattern[idxtstptrn];
++		if (!strncmp(argv[1], "forever", 7))
++		{
++			printf("Test nor flash forever\n");
++			forever =1;
++		}
++		else
++		{
++			printf ("Usage:\n%s\n", cmdtp->usage);
++			return 1;
++		}
++		break;
++	case 4 :
++		start = simple_strtoul(argv[1], NULL, 16);
++		nb_sector = simple_strtoul(argv[2], NULL, 16);
++		patern = simple_strtoul(argv[3], NULL, 16);
++		break;
++
++	default :
++		printf ("Usage:\n%s\n", cmdtp->usage);
++		return 1;
++		break;
++	}
++
++
++	if((nb_sector+start) > (nand->size/nand->erasesize))
++	{
++		printf ("Not enought sector on this nand flash\n");
++		nb_sector=(nand->size/nand->erasesize)-start;
++	}
++	do
++	{
++		printf("Test start at sector[%d]=%08lX end at  sector[%d]=%08lX with patern=%08lX\n",start,start*nand->erasesize ,start+nb_sector,(start+nb_sector)*nand->erasesize ,patern);
++		for (sector = start; sector < nb_sector; sector ++ )
++		{
++			printk("\rtest sector %d end at %d with patern=%08lX\t",sector,nb_sector-1,patern);
++			//fill ram with patern
++			fill_ram(nand,patern);
++			//test flash sector
++			if(nand_block_isbad(nand, sector*nand->erasesize))
++			{
++				printf("Bad block\n", nand);
++			}
++			else
++			{
++				//Erasing nand flash
++				nand_erase_options_t opts;
++				memset(&opts, 0, sizeof(opts));
++				opts.offset = sector*nand->erasesize;
++				opts.length = nand->erasesize;
++				opts.quiet  = 1;
++				ret = nand_erase_opts(nand, &opts);
++				//Test nand sector
++				test_sector(nand,sector*nand->erasesize,patern);
++			}
++		}
++		printf("\r                                                         \n");
++		//change patern if test forever
++		idxtstptrn++;
++		if(idxtstptrn>7)
++		{
++			idxtstptrn=0;
++		}
++		patern=bitpattern[idxtstptrn];
++		prot=0;
++	}while(forever);
++	return 0;
++}
++U_BOOT_CMD(
++	nandtest,    4,    1,    do_nandtest,
++	"nandtest- nand flash memory test\n",
++	"nandtest start nb_sector patern\n    - test nbsector sector(s) nand flash memory at sector start with partern patern \n"
++	"nandtest\n    - test entire nand flash memory\n"
++	"nandtest forever\n    - loop test entire nand flash memory\n"
++);
++
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
+@@ -376,6 +376,9 @@
+ #define CONFIG_CMD_GPIO
+ #define CONFIG_CMD_EXIO
+ #define CONFIG_CMD_LCD
++#define CONFIG_CMD_FLTEST
++#define CONFIG_CMD_NANDTEST
++
+ 
+ #if defined(CFG_RAMBOOT)
+     #undef CONFIG_CMD_ENV

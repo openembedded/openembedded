@@ -2,7 +2,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
@@ -25,12 +25,15 @@ SRC_URI_append_boc01 = "\
            file://001-081209-SPI.patch;patch=1 \
            file://002-081204-GPIO.patch;patch=1 \
            file://003-081205-DTT_LM73.patch;patch=1 \
-           file://004-081205-WATCHDOG.patch;patch=1 \
-           file://006-081205-EEPROM_INTERSIL.patch;patch=1 \
+           file://006-081211-EEPROM_M24C32.patch;patch=1 \
            file://007-081205-CAPSENSE.patch;patch=1 \
-           file://008-081205-TSEC.patch;patch=1 \
+           file://008-081211-TSEC.patch;patch=1 \
            file://009-081205-EXIO.patch;patch=1 \
            file://010-081205-LCD.patch;patch=1 \
+           file://011-081211-CMD_TEST.patch;patch=1 \
+           file://012-081209-BUG_SETENV.patch;patch=1 \
+           file://013-081211-FIX_OOB_8BITS_LARGEPAGE_NAND.patch;patch=1 \
+           file://014-081211-BOOT_RESCUE.patch;patch=1 \
            "
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
