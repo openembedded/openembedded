@@ -1,6 +1,6 @@
 require eglibc.inc
 
-SRCREV = "${AUTOREV}"
+SRCREV = "7542"
 # DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.9+svnr${SRCREV}"
