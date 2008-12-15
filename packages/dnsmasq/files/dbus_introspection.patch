@@ -1,0 +1,63 @@
+diff -urN dnsmasq-2.46.orig/src/dbus.c dnsmasq-2.46/src/dbus.c
+--- dnsmasq-2.46.orig/src/dbus.c	2008-11-14 21:02:08.000000000 +0100
++++ dnsmasq-2.46/src/dbus.c	2008-12-15 10:45:48.000000000 +0100
+@@ -21,6 +21,42 @@
+ #define DBUS_API_SUBJECT_TO_CHANGE
+ #include <dbus/dbus.h>
+ 
++const char* introspection_xml =
++"<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\"\n"
++"\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"
++"<node name=\"" DNSMASQ_PATH "\">\n"
++"  <interface name=\"org.freedesktop.DBus.Introspectable\">\n"
++"    <method name=\"Introspect\">\n"
++"      <arg name=\"data\" direction=\"out\" type=\"s\"/>\n"
++"    </method>\n"
++"  </interface>\n"
++"  <interface name=\"" DNSMASQ_SERVICE "\">\n"
++"    <method name=\"ClearCache\">\n"
++"    </method>\n"
++"    <method name=\"GetVersion\">\n"
++"      <arg name=\"version\" direction=\"out\" type=\"s\"/>\n"
++"    </method>\n"
++"    <method name=\"SetServers\">\n"
++"      <arg name=\"servers\" direction=\"in\" type=\"av\"/>\n"
++"    </method>\n"
++"    <signal name=\"DhcpLeaseAdded\">\n"
++"      <arg name=\"ipaddr\" type=\"s\"/>\n"
++"      <arg name=\"hwaddr\" type=\"s\"/>\n"
++"      <arg name=\"hostname\" type=\"s\"/>\n"
++"    </signal>\n"
++"    <signal name=\"DhcpLeaseDeleted\">\n"
++"      <arg name=\"ipaddr\" type=\"s\"/>\n"
++"      <arg name=\"hwaddr\" type=\"s\"/>\n"
++"      <arg name=\"hostname\" type=\"s\"/>\n"
++"    </signal>\n"
++"    <signal name=\"DhcpLeaseUpdated\">\n"
++"      <arg name=\"ipaddr\" type=\"s\"/>\n"
++"      <arg name=\"hwaddr\" type=\"s\"/>\n"
++"      <arg name=\"hostname\" type=\"s\"/>\n"
++"    </signal>\n"
++"  </interface>\n"
++"</node>\n";
++
+ struct watch {
+   DBusWatch *watch;      
+   struct watch *next;
+@@ -229,7 +265,15 @@
+ {
+   char *method = (char *)dbus_message_get_member(message);
+    
+-  if (strcmp(method, "GetVersion") == 0)
++  if (dbus_message_is_method_call(message, DBUS_INTERFACE_INTROSPECTABLE, "Introspect"))
++    {
++      DBusMessage *reply = dbus_message_new_method_return(message);
++
++      dbus_message_append_args(reply, DBUS_TYPE_STRING, &introspection_xml, DBUS_TYPE_INVALID);
++      dbus_connection_send (connection, reply, NULL);
++      dbus_message_unref (reply);
++    }
++  else if (strcmp(method, "GetVersion") == 0)
+     {
+       char *v = VERSION;
+       DBusMessage *reply = dbus_message_new_method_return(message);
