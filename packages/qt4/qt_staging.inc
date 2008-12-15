@@ -44,7 +44,7 @@ do_stage() {
         oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}
     done
 
-    for i in libQtAssistantClient${QT_LIBINFIX} libQtDesignerComponents${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtDesigner${QT_LIBINFIX}
+    for i in libQtAssistantClient${QT_LIBINFIX} libQtDesignerComponents${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtDesigner${QT_LIBINFIX}
     do
         sed -i -e "s,-L${libdir},-L${STAGING_LIBDIR},g" $i.prl || true
         cp ${STAGE_TEMP}/${libdir}/$i.prl ${STAGING_LIBDIR} || true
