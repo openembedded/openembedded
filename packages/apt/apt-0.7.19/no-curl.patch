@@ -1,0 +1,40 @@
+---
+ configure.in     |    6 ------
+ methods/makefile |    7 -------
+ 2 files changed, 13 deletions(-)
+
+Index: apt-0.7.19/configure.in
+===================================================================
+--- apt-0.7.19.orig/configure.in	2008-12-15 13:44:44.000000000 +0000
++++ apt-0.7.19/configure.in	2008-12-15 13:57:16.000000000 +0000
+@@ -86,12 +86,6 @@
+ 
+ LIBS="$saveLIBS"
+ 
+-AC_CHECK_LIB(curl, curl_easy_init,
+-     [AC_CHECK_HEADER(curl/curl.h,
+-        curl_ok=yes,
+-        curl_ok=no)],
+-     AC_MSG_ERROR([failed: I need CURL due https support]),
+-)
+ 
+ AC_SUBST(BDBLIB)
+ 
+Index: apt-0.7.19/methods/makefile
+===================================================================
+--- apt-0.7.19.orig/methods/makefile	2008-11-24 09:32:23.000000000 +0000
++++ apt-0.7.19/methods/makefile	2008-12-15 13:57:44.000000000 +0000
+@@ -52,13 +52,6 @@
+ SOURCE = http.cc rfc2553emu.cc connect.cc
+ include $(PROGRAM_H)
+ 
+-# The https method
+-PROGRAM=https
+-SLIBS = -lapt-pkg -lcurl $(INTLLIBS)
+-LIB_MAKES = apt-pkg/makefile
+-SOURCE = https.cc
+-include $(PROGRAM_H)
+-
+ # The ftp method
+ PROGRAM=ftp
+ SLIBS = -lapt-pkg $(SOCKETLIBS) $(INTLLIBS)
