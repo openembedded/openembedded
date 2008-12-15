@@ -1,0 +1,47 @@
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Index: linux-2.6.23/drivers/usb/host/ohci-hcd.c
+===================================================================
+--- linux-2.6.23.orig/drivers/usb/host/ohci-hcd.c	2007-11-12 12:36:12.598560065 +0300
++++ linux-2.6.23/drivers/usb/host/ohci-hcd.c	2007-11-12 12:36:16.614310504 +0300
+@@ -930,6 +930,7 @@
+ 	!defined(PLATFORM_DRIVER) &&	\
+ 	!defined(OF_PLATFORM_DRIVER) &&	\
+ 	!defined(SA1111_DRIVER) &&	\
++	!defined(DEVICE_DRIVER) &&	\
+ 	!defined(PS3_SYSTEM_BUS_DRIVER)
+ #error "missing bus glue for ohci-hcd"
+ #endif
+@@ -969,6 +970,12 @@
+ 		goto error_sa1111;
+ #endif
+ 
++#ifdef DEVICE_DRIVER
++	retval = driver_register(&DEVICE_DRIVER);
++	if (retval < 0)
++		goto error_device;
++#endif
++
+ #ifdef PCI_DRIVER
+ 	retval = pci_register_driver(&PCI_DRIVER);
+ 	if (retval < 0)
+@@ -981,6 +988,10 @@
+ #ifdef PCI_DRIVER
+  error_pci:
+ #endif
++#ifdef DEVICE_DRIVER
++ error_device:
++	driver_unregister(&DEVICE_DRIVER);
++#endif
+ #ifdef SA1111_DRIVER
+ 	sa1111_driver_unregister(&SA1111_DRIVER);
+  error_sa1111:
+@@ -1006,6 +1017,9 @@
+ #ifdef PCI_DRIVER
+ 	pci_unregister_driver(&PCI_DRIVER);
+ #endif
++#ifdef DEVICE_DRIVER
++	driver_unregister(&DEVICE_DRIVER);
++#endif
+ #ifdef SA1111_DRIVER
+ 	sa1111_driver_unregister(&SA1111_DRIVER);
+ #endif

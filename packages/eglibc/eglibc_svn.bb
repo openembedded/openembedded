@@ -1,14 +1,16 @@
 require eglibc.inc
 
+SRCREV = "${AUTOREV}"
 # DEFAULT_PREFERENCE = "-1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.9+svnr${SRCREV}"
 PR = "r0"
+EGLIBC_BRANCH="trunk"
 SRC_URI = "svn://svn.eglibc.org;module=trunk \
            file://eglibc-svn-arm-lowlevellock-include-tls.patch;patch=1 \
            file://etc/ld.so.conf \
            file://generate-supported.mk"
-S = "${WORKDIR}/trunk/libc"
+S = "${WORKDIR}/${EGLIBC_BRANCH}/libc"
 B = "${WORKDIR}/build-${TARGET_SYS}"
 
 PACKAGES_DYNAMIC = "libc6*"
@@ -54,10 +56,10 @@ do_unpack_append() {
 }
 
 do_move_ports() {
-        if test -d ${WORKDIR}/trunk/ports ; then
+        if test -d ${WORKDIR}/${EGLIBC_BRANCH}/ports ; then
 	    rm -rf ${S}/ports
-	    mv ${WORKDIR}/trunk/ports ${S}/
-	fi    
+	    mv ${WORKDIR}/${EGLIBC_BRANCH}/ports ${S}/
+	fi
 }
 
 do_configure () {

@@ -10,6 +10,7 @@ CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M fbcon=rotate:1"
 CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_c7x0 = "console=tty0"
 
 PACKAGES = ""
 PROVIDES = ""
@@ -27,6 +28,14 @@ KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
 
 do_compile[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
+
+do_configure_append() {
+sed -i -e /CONFIG_BLK_DEV_INITRD/d -e /CONFIG_INITRAMFS_SOURCE/d ${S}/.config
+echo 'CONFIG_BLK_DEV_INITRD=y 
+CONFIG_INITRAMFS_SOURCE="initramfs.cpio.gz"' >> ${S}/.config
+
+        yes '' | oe_runmake oldconfig
+}
 
 do_stage() {
 }

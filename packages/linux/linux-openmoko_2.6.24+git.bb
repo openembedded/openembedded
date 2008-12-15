@@ -6,7 +6,7 @@ DESCRIPTION = "The Linux kernel for the Openmoko devices GTA01 (Neo1973) and GTA
 KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
-OEV = "oe2"
+OEV = "oe3"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
 PR = "r0"
 
@@ -20,6 +20,7 @@ SRC_URI = "\
   file://0005-squashfs-Makefile.patch;patch=1 \
   \
   file://openwrt-ledtrig-netdev.patch;patch=1 \
+  file://gta01-fix-battery-class-name.patch;patch=1 \
   \
   file://defconfig-oe \
 "

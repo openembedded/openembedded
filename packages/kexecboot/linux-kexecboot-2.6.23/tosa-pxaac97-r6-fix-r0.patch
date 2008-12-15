@@ -1,0 +1,29 @@
+From 005693333f4b3e0495bb80cc3cfd812e3e6f0a30 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 19 Oct 2007 00:48:42 +0400
+Subject: [PATCH] tosa-pxaac97-r6.patch fixes
+
+---
+ arch/arm/mach-pxa/tosa.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 059fa07..61536d4 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -310,10 +310,10 @@ static void __init tosa_init(void)
+ 	PMCR = 0x01;
+ 
+         // AC97 Disable all IRQ's
+-        pxa_set_cken(CKEN2_AC97, 1);
++        pxa_set_cken(CKEN_AC97, 1);
+         GCR &= ~(GCR_CDONE_IE | GCR_SDONE_IE | GCR_SECRDY_IEN | GCR_PRIRDY_IEN | GCR_SECRES_IEN | GCR_PRIRES_IEN);
+         GSR = GSR;
+-	pxa_set_cken(CKEN2_AC97, 0);
++	pxa_set_cken(CKEN_AC97, 0);
+ 									
+ 	pxa_set_mci_info(&tosa_mci_platform_data);
+ 	pxa_set_udc_info(&udc_info);
+-- 
+1.4.4.4
+
