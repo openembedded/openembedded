@@ -9,11 +9,9 @@ SRCREV = "${DAVINCI_SRCREV}"
 PV = "2.6.27"
 PR = "r0"
 
-COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
+COMPATIBLE_MACHINE = "(davinci-dvevm)"
 
 SRC_URI = "git://source.mvista.com/git/linux-davinci-2.6.git;protocol=git \
            file://defconfig"
-
-SRC_URI_append_davinci-sffsdr = " file://sffsdr.patch;patch=1"
 
 S = "${WORKDIR}/git"
