@@ -43,6 +43,9 @@ TOBUILD = "\
   src/network \
   src/gui \
   src/tools/uic3 \
+"
+
+TOBUILD2 = "\
   tools/linguist/lrelease \
   tools/linguist/lupdate \
 "
@@ -52,6 +55,12 @@ do_compile() {
     for i in ${TOBUILD};
     do
         cd ${S}/$i && oe_runmake CC="${CC}" CXX="${CXX}"
+    done
+    for i in ${TOBUILD2};
+    do
+        cd ${S}/$i && \
+	${S}/bin/qmake -spec ${S}/mkspecs/linux-g++  && \
+	oe_runmake CC="${CC}" CXX="${CXX}"
     done
 }
 
