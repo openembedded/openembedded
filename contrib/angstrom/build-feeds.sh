@@ -242,6 +242,7 @@ do
                       slcalc \
                       sliderulez \
                       sokoban \
+                      squeakvm \
                       strace \
                       subversion \
                       sugar \
