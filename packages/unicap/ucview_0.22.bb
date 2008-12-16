@@ -2,9 +2,10 @@ DESCRIPTION = "Simple camera capture GUI based on unicap."
 SECTION = "graphics"
 LICENSE = "GPL"
 DEPENDS = "intltool-native gtk+ libpng unicap gconf libglade gdk-pixbuf-csource-native"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.unicap-imaging.org/downloads/${P}.tar.gz"
+SRC_URI = "http://www.unicap-imaging.org/downloads/${P}.tar.gz \
+           file://cross.patch;patch=1"
 
 inherit autotools pkgconfig
 
