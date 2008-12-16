@@ -9,6 +9,7 @@ inherit task
 RDEPENDS_${PN} = "\
   frameworkd \
   fso-gpsd \
+  connman \
 "
 
 RRECOMMENDS_${PN} = "\
