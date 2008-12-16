@@ -1,8 +1,6 @@
 require connman.inc
 PR       = "r0"
 
-DEFAULT_PREFERENCE = "-1"
-
 EXTRA_OECONF += " \
 	--disable-gtk-doc "
 
