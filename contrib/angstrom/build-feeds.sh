@@ -77,6 +77,7 @@ do
                       binutils \
                       bison \
                       bluez-gnome \
+                      bluez-hcidump \
                       boa \
                       camera-assistant \
                       checkers \
