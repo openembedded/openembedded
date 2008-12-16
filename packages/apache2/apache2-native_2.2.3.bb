@@ -3,7 +3,7 @@ DEPENDS = "expat pcre"
 
 inherit cross 
 
-PR ="r7"
+PR ="r8"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"
@@ -13,13 +13,13 @@ do_configure () {
 }
 
 do_stage () {
-	install -d ${STAGING_BINDIR}
-	cp srclib/pcre/dftables ${STAGING_BINDIR}
-	cp server/gen_test_char ${STAGING_BINDIR}
-	cp srclib/apr/apr-1-config ${STAGING_BINDIR}
-	cp srclib/apr-util/apu-1-config ${STAGING_BINDIR}
-	cp support/apxs ${STAGING_BINDIR}
-	chmod 755 ${STAGING_BINDIR}/apxs
+	install -d ${STAGING_BINDIR_NATIVE}
+	cp srclib/pcre/dftables ${STAGING_BINDIR_NATIVE}
+	cp server/gen_test_char ${STAGING_BINDIR_NATIVE}
+	cp srclib/apr/apr-1-config ${STAGING_BINDIR_NATIVE}
+	cp srclib/apr-util/apu-1-config ${STAGING_BINDIR_NATIVE}
+	cp support/apxs ${STAGING_BINDIR_NATIVE}
+	chmod 755 ${STAGING_BINDIR_NATIVE}/apxs
 	mkdir -p ${STAGING_DIR}/build
 	cp build/*.mk ${STAGING_DIR}/build
 	cat build/config_vars.mk | \
@@ -28,7 +28,7 @@ do_stage () {
 		sed -e 's,staging/bin,staging/${HOST_SYS}/bin,' > \
 			${STAGING_DIR}/build/config_vars.mk
 	cp build/instdso.sh ${STAGING_DIR}/build
-	cp .libs/httpd ${STAGING_BINDIR}
+	cp .libs/httpd ${STAGING_BINDIR_NATIVE}
 
 	(cd srclib/apr/.libs; tar -cf - libapr-*.so* ) |
 	  (cd ${STAGING_LIBDIR}; tar -xf - )
@@ -40,6 +40,6 @@ do_stage () {
 	cp os/unix/os.h ${STAGING_INCDIR}/apache2
 	cp os/unix/unixd.h ${STAGING_INCDIR}/apache2
 
-  	cp support/envvars-std ${STAGING_BINDIR}/envvars
-    	chmod 755 ${STAGING_BINDIR}/envvars
+  	cp support/envvars-std ${STAGING_BINDIR_NATIVE}/envvars
+    	chmod 755 ${STAGING_BINDIR_NATIVE}/envvars
 }
