@@ -5,7 +5,7 @@ FILES_${PN} += "${datadir}/icons"
 
 DEPENDS = "python-native"
 # python-codecs for gettext.py
-RDEPENDS = "geda-utils python-codecs python-dbus python-pygtk python-subprocess"
+RDEPENDS = "geda-gschem geda-utils pcb python-codecs python-dbus python-pygtk python-subprocess"
 
 SRC_URI = "http://geda.seul.org/dist/${P}.tar.gz \
            file://skip-python-checks.patch;patch=1"
