@@ -1,3 +1,4 @@
+require packages/gcc/gcc-common.inc
 SECTION = "libs"
 DESCRIPTION = "Foreign Function Interface library"
 LICENSE = "libffi"
@@ -39,10 +40,23 @@ EXTRA_OECONF = "--with-gnu-ld \
                 --enable-long-long \
                 --enable-symvers=gnu \
                 --program-prefix=${TARGET_PREFIX} \
+                ${EXTRA_OECONF_FPU} \
                 ${EXTRA_OECONF_PATHS}"
 
 EXTRA_OECONF_PATHS = "--with-local-prefix=${prefix}/local \
                       --with-gxx-include-dir=${includedir}/c++/${PV}"
+
+# Build uclibc compilers without cxa_atexit support
+EXTRA_OECONF_append_linux               = " --enable-__cxa_atexit"
+EXTRA_OECONF_append_linux-gnueabi       = " --enable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibc        = " --disable-__cxa_atexit"
+EXTRA_OECONF_append_linux-uclibcgnueabi = " --disable-__cxa_atexit"
+EXTRA_OECONF_FPU = "${@get_gcc_fpu_setting(bb, d)}"
+
+#Somehow gcc doesn't set __SOFTFP__ when passing -mfloatabi=softp :(
+TARGET_CC_ARCH_append_armv6 = " -D__SOFTFP__"
+TARGET_CC_ARCH_append_armv7a = " -D__SOFTFP__"
+
 
 do_configure () {
 	(cd ${S}/.. && gnu-configize) || die "failure running gnu-configize"
