@@ -30,9 +30,18 @@ KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
 do_compile[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 
 do_configure_append() {
-sed -i -e /CONFIG_BLK_DEV_INITRD/d -e /CONFIG_INITRAMFS_SOURCE/d ${S}/.config
+sed -i -e /CONFIG_BLK_DEV_INITRD/d \
+       -e /CONFIG_INITRAMFS_SOURCE/d \
+       -e /=m/d \
+       -e /CONFIG_MODULES/d \
+       -e /CONFIG_DEBUG_ERRORS/d \
+       -e /CONFIG_DEBUG_BUGVERBOSE/d \
+       -e /CONFIG_DEBUG_KERNEL/d \
+       ${S}/.config
+
 echo 'CONFIG_BLK_DEV_INITRD=y 
-CONFIG_INITRAMFS_SOURCE="initramfs.cpio.gz"' >> ${S}/.config
+CONFIG_INITRAMFS_SOURCE="initramfs.cpio.gz"
+CONFIG_MODULES=n' >> ${S}/.config
 
         yes '' | oe_runmake oldconfig
 }
