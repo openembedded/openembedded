@@ -1,4 +1,4 @@
-From 0eceac2ba3548ae41200403a8dae9907ab788fd0 Mon Sep 17 00:00:00 2001
+From 491d4b0389fb95e43017b7d4d07d866b114f6c7d Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Mon, 8 Dec 2008 13:43:36 +0200
 Subject: [PATCH] DSS: New display subsystem driver for OMAP2/3
@@ -13,13 +13,13 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
  arch/arm/plat-omap/dss/display.c          |  765 +++++++
  arch/arm/plat-omap/dss/dpi.c              |  320 +++
  arch/arm/plat-omap/dss/dsi.c              | 3135 +++++++++++++++++++++++++++++
- arch/arm/plat-omap/dss/dss.c              |  784 +++++++
+ arch/arm/plat-omap/dss/dss.c              |  789 ++++++++
  arch/arm/plat-omap/dss/dss.h              |  268 +++
  arch/arm/plat-omap/dss/rfbi.c             | 1225 +++++++++++
  arch/arm/plat-omap/dss/sdi.c              |  150 ++
  arch/arm/plat-omap/dss/venc.c             |  501 +++++
  arch/arm/plat-omap/include/mach/display.h |  463 +++++
- 14 files changed, 9708 insertions(+), 0 deletions(-)
+ 14 files changed, 9713 insertions(+), 0 deletions(-)
  create mode 100644 arch/arm/plat-omap/dss/Kconfig
  create mode 100644 arch/arm/plat-omap/dss/Makefile
  create mode 100644 arch/arm/plat-omap/dss/dispc.c
@@ -6407,10 +6407,10 @@ index 0000000..7f7db32
 +
 diff --git a/arch/arm/plat-omap/dss/dss.c b/arch/arm/plat-omap/dss/dss.c
 new file mode 100644
-index 0000000..e585fcd
+index 0000000..cc402dc
 --- /dev/null
 +++ b/arch/arm/plat-omap/dss/dss.c
-@@ -0,0 +1,784 @@
+@@ -0,0 +1,789 @@
 +/*
 + * linux/arch/arm/plat-omap/dss/dss.c
 + *
@@ -6488,21 +6488,6 @@ index 0000000..e585fcd
 +	u32		ctx[DSS_SZ_REGS / sizeof(u32)];
 +} dss;
 +
-+/* PM TESTING */
-+#if 1
-+static unsigned last_tr_id;
-+
-+unsigned get_last_off_on_transaction_id(struct device *dev)
-+{
-+	return last_tr_id;
-+}
-+
-+void inc_last_off_on_transaction_id(void)
-+{
-+	last_tr_id++;
-+}
-+#endif
-+
 +static void dss_clk_enable_all_no_ctx(void);
 +static void dss_clk_disable_all_no_ctx(void);
 +static void dss_clk_enable_no_ctx(enum dss_clock clks);
@@ -6543,16 +6528,36 @@ index 0000000..e585fcd
 +#undef SR
 +#undef RR
 +
++/* PM TESTING */
++#if 0
++static unsigned last_tr_id;
++
++unsigned get_last_off_on_transaction_id(struct device *dev)
++{
++	return last_tr_id;
++}
++
++void inc_last_off_on_transaction_id(void)
++{
++	last_tr_id++;
++}
++
 +unsigned get_last_off_on_transaction_id(struct device *dev);
 +
-+unsigned dss_get_id(void)
++unsigned dss_get_ctx_id(void)
 +{
 +	return get_last_off_on_transaction_id(&dss.pdev->dev);
 +}
++#else
++static unsigned dss_get_ctx_id(void)
++{
++	return 0;
++}
++#endif
 +
 +static void save_all_ctx(void)
 +{
-+	//printk("save context\n");
++	DSSDBG("save context\n");
 +
 +	dss_clk_enable_no_ctx(DSS_CLK_ICK | DSS_CLK_FCK1);
 +
@@ -6567,7 +6572,7 @@ index 0000000..e585fcd
 +
 +static void restore_all_ctx(void)
 +{
-+	//printk("restore context\n");
++	DSSDBG("restore context\n");
 +
 +	dss_clk_enable_all_no_ctx();
 +
@@ -6782,10 +6787,10 @@ index 0000000..e585fcd
 +
 +	dss_clk_enable_no_ctx(clks);
 +
-+	id = dss_get_id();
++	id = dss_get_ctx_id();
 +
 +	if (id != dss.ctx_id) {
-+		printk("old id %u, new id %u\n",
++		DSSDBG("ctx id %u -> id %u\n",
 +				dss.ctx_id, id);
 +		restore_all_ctx();
 +		dss.ctx_id = id;
@@ -7072,8 +7077,8 @@ index 0000000..e585fcd
 +
 +	dss_clk_enable_all_no_ctx();
 +
-+	dss.ctx_id = dss_get_id();
-+	printk("initial id %u\n", dss.ctx_id);
++	dss.ctx_id = dss_get_ctx_id();
++	DSSDBG("initial ctx id %u\n", dss.ctx_id);
 +
 +	r = dss_init();
 +	if (r) {

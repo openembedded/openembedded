@@ -1,4 +1,4 @@
-From 2262ea3226ee073fefa37d5706f09205ae74580d Mon Sep 17 00:00:00 2001
+From b4718ad31fb4ba43e7f3058b42f3c7c01ee1596a Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 14 Nov 2008 15:47:19 +0200
 Subject: [PATCH] DSS: Sharp LS037V7DW01 LCD Panel driver

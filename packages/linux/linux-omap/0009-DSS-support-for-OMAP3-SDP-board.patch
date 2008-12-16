@@ -1,4 +1,4 @@
-From fc87accafe1f6266f85142ade5fc81886ba4685d Mon Sep 17 00:00:00 2001
+From 782177389d60fd3e5444d0a8ecf4f73343ca7e1d Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 14 Nov 2008 15:47:55 +0200
 Subject: [PATCH] DSS: Support for OMAP3 SDP board

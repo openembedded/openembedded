@@ -10,13 +10,13 @@ DEFAULT_PREFERENCE_omap3evm = "1"
 DEFAULT_PREFERENCE_omap3-pandora = "1"
 
 
-SRCREV = "694653afe8eb75191734cd4e6477c3182cf880b7"
+SRCREV = "9d211b761b3cdf7736602ecf7e68f8a298c13278"
 
-PV = "2.6.27+2.6.28-rc7+${PR}+gitr${SRCREV}"
+PV = "2.6.27+2.6.28-rc8+${PR}+gitr${SRCREV}"
 #PV = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r8"
+PR = "r0"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=pm;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append = " \
@@ -41,9 +41,10 @@ SRC_URI_append = " \
            file://0008-DSS-BEAGLE-Enable-DSS-in-beagle-defconfig.patch;patch=1 \
            file://0009-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
            file://0011-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
+           file://0012-DSS-OMAPFB-PAGE_ALIGN-sizes-in-mem-alloc.patch;patch=1 \
+           file://0013-Refreshed-and-Cleaned-up-as-per-the-latest-Tomi-s-DS.patch;patch=1 \
            file://twl-asoc-fix-record.diff;patch=1 \
            file://tick-schedc-suppress-needless-timer-reprogramming.patch;patch=1 \
-           file://fix-dpll-m4.diff;patch=1 \
 "
 
 

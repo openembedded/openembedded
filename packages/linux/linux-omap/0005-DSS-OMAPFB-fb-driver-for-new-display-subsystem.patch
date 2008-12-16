@@ -1,4 +1,4 @@
-From ecdfbac90a49f517c7d5132e44522b089123b413 Mon Sep 17 00:00:00 2001
+From a2bd3b5934be26656ba88ac1083cb76c9665822e Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Tue, 4 Nov 2008 15:12:21 +0200
 Subject: [PATCH] DSS: OMAPFB: fb driver for new display subsystem
