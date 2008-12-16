@@ -3,7 +3,6 @@ SUMMARY = "On installation you will be prompted to set a root password. With \
 this password you can then log into the machine."
 LICENSE = "GPL"
 DEPENDS = "gtk+"
-PKG_TAGS_${PN} = "group::programming alias::Root_Password"
 
 SRC_URI = "svn://svn.openmoko.org/developers/zecke/;module=root-password;proto=http"
 S = "${WORKDIR}/root-password"

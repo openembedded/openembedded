@@ -18,5 +18,3 @@ EXTRA_OECONF = "--with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc"
 do_configure_prepend() {
        autopoint --force
 }
-
-PKG_TAGS_${PN} = "group::communication alias::Om_Locations"

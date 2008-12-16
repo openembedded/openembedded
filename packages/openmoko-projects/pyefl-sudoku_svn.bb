@@ -16,5 +16,3 @@ inherit setuptools
 PACKAGES = "${PN}"
 
 FILES_${PN} += "${prefix}/share/*"
-
-PKG_TAGS_${PN} = "group::games alias::Pyefl_Sudoku"
