@@ -4,6 +4,10 @@ LICENSE = "MIT BSD"
 DEPENDS = "eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig"
 PV = "0.9.9.050+svnr${SRCREV}"
 
+
+# disable thumb mode for arm
+ARM_INSTRUCTION_SET = "arm"
+
 inherit efl
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/evas"
