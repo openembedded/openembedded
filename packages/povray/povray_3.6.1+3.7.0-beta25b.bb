@@ -17,7 +17,9 @@ S = "${WORKDIR}/povray-3.7.0.beta.25b"
 inherit autotools pkgconfig
 
 EXTRA_OECONF = " --with-boost-thread=boost_thread-mt \
-                COMPILED_BY=${MAINTAINER} "
+                 --x-includes=${STAGING_INCDIR} \
+                 --disable-vsnprintf-check \
+                 COMPILED_BY=${MAINTAINER} "
 
 FULL_OPTIMIZATION_armv7a = "-fexpensive-optimizations -frename-registers -fomit-frame-pointer -O3 -ftree-vectorize  -ffast-math -fno-math-errno "
 
