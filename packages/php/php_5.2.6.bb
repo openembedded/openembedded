@@ -2,7 +2,7 @@ require php.inc
 
 DEPENDS = "zlib libxml2 virtual/libiconv php-native"
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
@@ -42,6 +42,7 @@ do_install_append() {
 
 PACKAGES = "${PN}-dbg \
             ${PN}-cli \
+            ${PN}-cgi \
             ${PN}-pear \
             ${PN}-dev \
             ${PN}-doc \
@@ -54,6 +55,7 @@ FILES_${PN}-dbg            =+ "${bindir}/.debug"
 FILES_${PN}-doc            += "${libdir}/php/doc" 
 
 FILES_${PN}-cli            = "${bindir}/php"
+FILES_${PN}-cgi            = "${bindir}/php-cgi"
 
 FILES_${PN}-pear            = "${bindir}/pear* ${bindir}/pecl \
                              ${libdir}/php/PEAR \
