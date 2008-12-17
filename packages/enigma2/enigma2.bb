@@ -9,13 +9,15 @@ RDEPENDS = "python-codecs python-core python-lang python-re python-threading \
 	gst-plugin-id3demux gst-plugin-mad gst-plugin-ogg gst-plugin-playbin \
 	gst-plugin-typefindfunctions gst-plugin-ivorbis gst-plugin-audioconvert \
 	gst-plugin-wavparse python-netclient gst-plugin-mpegstream gst-plugin-selector \
-	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux gst-plugin-neonhttpsrc"
+	gst-plugin-flac gst-plugin-dvbmediasink gst-plugin-fluendo-mpegdemux \
+	gst-plugin-neonhttpsrc gst-plugin-mpegaudioparse gst-plugin-subparse \
+	glibc-gconv-iso8859-15"
 
 RDEPENDS_append_dm7020 = " gst-plugin-ossaudio"
 RDEPENDS_append_dm7025 = " gst-plugin-alsa alsa-conf"
 RDEPENDS_append_dm8000 = " gst-plugin-alsa alsa-conf gst-plugin-avi gst-plugin-matroska \
-	gst-plugin-qtdemux gst-plugin-subparse glibc-gconv-iso8859-15 gst-plugin-cdxaparse"
-RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
+	gst-plugin-qtdemux gst-plugin-cdxaparse"
+RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf gst-plugin-matroska gst-plugin-qtdemux"
 
 # 'forward depends' - no two providers can have the same PACKAGES_DYNAMIC, however both
 # enigma2 and enigma2-plugins produce enigma2-plugin-*.
@@ -23,6 +25,7 @@ RDEPENDS_append_dm800 = " gst-plugin-alsa alsa-conf"
 #PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut your movies."
+RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
 DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
 DESCRIPTION_append_enigma2-plugin-extensions-pictureplayer = "displays photos on the TV."
 DESCRIPTION_append_enigma2-plugin-systemplugins-configurationbackup = "backs up your configuration and restores them optionally."
@@ -37,7 +40,7 @@ RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20081127"
+SRCDATE = "20081212"
 
 # if you want experimental, use:
 #REL_MAJOR="2"

@@ -16,7 +16,7 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 	base-files-doc sambaserver avahi-daemon"
 
 # experimental packages
-OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2"
+OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2 aio-grab"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
 	enigma2-plugin-systemplugins-softwareupdate \
 	enigma2-plugin-systemplugins-positionersetup \
@@ -31,15 +31,11 @@ OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrad
 	enigma2-plugin-extensions-pictureplayer \
 	enigma2-plugin-extensions-mediaplayer \
 	enigma2-plugin-systemplugins-hotplug \
+	enigma2-plugin-systemplugins-networkwizard \
 	enigma2-streamproxy ethtool \
+	enigma2-defaultservices \
 	twisted-web2 twisted python-crypt python-crypto \
 	python-netserver python-pickle dreambox-blindscan-utils"
-
-#this packages dont exist with enigma2, enigma2-plugins 2.4
-OPENDREAMBOX_EXPERIMENTAL_R_append_dm8000 = " \
-	enigma2-plugin-systemplugins-defaultservicesscanner \
-	enigma2-defaultservices \
-	enigma2-plugin-systemplugins-networkwizard"
 
 # legacy tuxbox stuff (enigma, plugins, ...)
 OPENDREAMBOX_TUXBOX = "enigma ipkgpl"
