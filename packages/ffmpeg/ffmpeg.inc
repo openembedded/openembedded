@@ -5,6 +5,8 @@ SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 
+ARM_INSTRUCTION_SET = "arm"
+
 DEPENDS = "zlib libogg libvorbis faac faad2 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame liba52', d)}"
 RSUGGESTS = "mplayer"
 
