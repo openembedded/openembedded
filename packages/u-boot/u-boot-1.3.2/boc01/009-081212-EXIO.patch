@@ -1,0 +1,139 @@
+Index: u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+===================================================================
+--- u-boot-1.3.2.orig/board/freescale/mpc8313erdb/mpc8313erdb.c
++++ u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+@@ -49,6 +49,7 @@ int misc_init_f(void)
+ {
+ 	uchar value;
+ 	uchar i;
++	ulong	addr;
+ 
+ #ifdef PRE_INIT_GPIO
+ 	value=PRE_INIT_GPIO;
+@@ -84,6 +85,18 @@ int misc_init_f(void)
+ 	puts("GPIO: ready\n");
+ #endif
+ 
++#ifdef PRE_INIT_EXIO
++	addr = ADDR_EXIO;
++	*((u_char *)addr) = PRE_INIT_EXIO;
++	udelay(1000);
++#endif
++
++#ifdef INIT_EXIO
++	addr = ADDR_EXIO;
++	*((u_char *)addr) = INIT_EXIO;
++	puts("EXIO:  ready\n");
++#endif
++
+ 	return 0;
+ }
+ 
+Index: u-boot-1.3.2/common/cmd_exio.c
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/common/cmd_exio.c
+@@ -0,0 +1,67 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CenoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++
++#include <common.h>
++#include <config.h>
++#include <command.h>
++
++extern void init_exio(char value);
++
++int do_exio (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
++{
++	unsigned char ucExio;
++	ulong	addr;
++	if (argc < 2)
++		goto usage;
++
++	if (!strncmp(argv[1], "get", 3))
++	{
++		addr = ADDR_EXIO;
++		ucExio=*((u_char *)addr);
++		printf("%s  = 0x%02x\n",argv[0],ucExio);
++	}
++	else
++	{
++		ucExio = simple_strtoul (argv[1], NULL, 10);
++
++		addr = ADDR_EXIO;
++		*((u_char *)addr) = ucExio;
++
++		printf("%s 0x%2x\n",argv[0],ucExio);
++	}
++	return 0;
++
++usage :
++	printf ("Usage:\n%s\n", cmdtp->usage);
++	return 1;
++}	/* do_gpio() */
++
++/***************************************************/
++
++U_BOOT_CMD(
++	  exio,	2,	1,	do_exio,
++	  "exio     - Extender io Output\n",
++	  "        - Set or clear extender io  Output.\n"
++	  "exio value -  \n"
++);
+Index: u-boot-1.3.2/common/Makefile
+===================================================================
+--- u-boot-1.3.2.orig/common/Makefile
++++ u-boot-1.3.2/common/Makefile
+@@ -52,6 +52,7 @@ COBJS-$(CONFIG_CMD_DOC) += cmd_doc.o
+ COBJS-$(CONFIG_CMD_DTT) += cmd_dtt.o
+ COBJS-$(CONFIG_CMD_CAPSENSE) += cmd_capsense.o
+ COBJS-$(CONFIG_CMD_GPIO) += cmd_gpio.o
++COBJS-$(CONFIG_CMD_EXIO) += cmd_exio.o
+ COBJS-y += cmd_eeprom.o
+ COBJS-$(CONFIG_CMD_ELF) += cmd_elf.o
+ COBJS-$(CONFIG_CMD_EXT2) += cmd_ext2.o
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
+@@ -374,6 +374,7 @@
+ #define CONFIG_CMD_SPI
+ #define CONFIG_CMD_DTT
+ #define CONFIG_CMD_GPIO
++#define CONFIG_CMD_EXIO
+ 
+ #if defined(CFG_RAMBOOT)
+     #undef CONFIG_CMD_ENV
+@@ -415,6 +416,11 @@
+ #define CONFIG_CAPSENSE_LEDS			{0x02,0x0F} // port 0-{1} port 1-{0,1,2,3}
+ #define CONFIG_CAPSENSE_SENSORS			{0x1D,0x10} // port 0-{0,2,3,4} port 1-{4}
+ 
++/* Extender io */
++#define ADDR_EXIO	0xFA000000
++#define PRE_INIT_EXIO	0x18
++#define INIT_EXIO		0x58
++
+ /*
+  * Miscellaneous configurable options
+  */
