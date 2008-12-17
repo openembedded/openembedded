@@ -6,9 +6,10 @@ PRIORITY = "optional"
 LICENSE = "GPL"
 PR = "r6"
 
-DEPENDS = "expat libdaemon dbus glib-2.0"
+DEPENDS = "expat libdaemon dbus glib-2.0 libnss-mdns"
 
 # uclibc has no nss
+RRECOMMENDS_avahi-daemon_append_linux = " libavahi-client zeroconf"
 RDEPENDS_avahi-daemon = "sysvinit-pidof update-rc.d"
 RDEPENDS_avahi-autoipd = "update-rc.d"
 
