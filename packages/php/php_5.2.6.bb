@@ -1,8 +1,8 @@
 require php.inc
 
-DEPENDS = "zlib libxml2 virtual/libiconv php-native"
+DEPENDS = "zlib libxml2 virtual/libiconv php-native lemon-native"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://pear-makefile.patch;patch=1 "
 
