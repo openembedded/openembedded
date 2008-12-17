@@ -1,6 +1,7 @@
-diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/isl12024-eeprom.c /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/isl12024-eeprom.c
---- linux-2.6.26-officiel/drivers/i2c/chips/isl12024-eeprom.c	1970-01-01 01:00:00.000000000 +0100
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/isl12024-eeprom.c	2008-11-06 10:41:46.000000000 +0100
+Index: linux-2.6.26-NEW/drivers/i2c/chips/isl12024-eeprom.c
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/drivers/i2c/chips/isl12024-eeprom.c
 @@ -0,0 +1,254 @@
 +/*
 + * Intersil ISL12024 EEPROM class driver
@@ -256,23 +257,11 @@ diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/isl12024-eeprom.c /home/guilig
 +
 +module_init(eeprom_init);
 +module_exit(eeprom_exit);
-diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/Kconfig /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Kconfig
---- linux-2.6.26-officiel/drivers/i2c/chips/Kconfig	2008-07-13 23:51:29.000000000 +0200
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Kconfig	2008-11-05 15:49:03.000000000 +0100
-@@ -4,6 +4,12 @@
- 
- menu "Miscellaneous I2C Chip support"
- 
-+config AT24C32
-+	tristate "24C32 EEPROM"
-+	depends on SYSFS && EXPERIMENTAL
-+	help
-+	  help not needed :)
-+	  
- config DS1682
- 	tristate "Dallas DS1682 Total Elapsed Time Recorder with Alarm"
- 	depends on EXPERIMENTAL
-@@ -14,6 +20,15 @@
+Index: linux-2.6.26-NEW/drivers/i2c/chips/Kconfig
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/i2c/chips/Kconfig
++++ linux-2.6.26-NEW/drivers/i2c/chips/Kconfig
+@@ -14,6 +14,15 @@ config DS1682
  	  This driver can also be built as a module.  If so, the module
  	  will be called ds1682.
  
@@ -288,9 +277,10 @@ diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/Kconfig /home/guilig/workspace
  config SENSORS_EEPROM
  	tristate "EEPROM reader"
  	depends on EXPERIMENTAL
-diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/Makefile /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Makefile
---- linux-2.6.26-officiel/drivers/i2c/chips/Makefile	2008-07-13 23:51:29.000000000 +0200
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/i2c/chips/Makefile	2008-11-06 11:04:27.000000000 +0100
+Index: linux-2.6.26-NEW/drivers/i2c/chips/Makefile
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/i2c/chips/Makefile
++++ linux-2.6.26-NEW/drivers/i2c/chips/Makefile
 @@ -9,6 +9,8 @@
  # * I/O expander drivers go to drivers/gpio
  #
@@ -300,10 +290,11 @@ diff -Nru linux-2.6.26-officiel/drivers/i2c/chips/Makefile /home/guilig/workspac
  obj-$(CONFIG_DS1682)		+= ds1682.o
  obj-$(CONFIG_SENSORS_EEPROM)	+= eeprom.o
  obj-$(CONFIG_SENSORS_MAX6875)	+= max6875.o
-diff -Nru linux-2.6.26-officiel/drivers/rtc/Kconfig /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/Kconfig
---- linux-2.6.26-officiel/drivers/rtc/Kconfig	2008-07-13 23:51:29.000000000 +0200
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/Kconfig	2008-09-26 13:53:16.000000000 +0200
-@@ -124,6 +124,12 @@
+Index: linux-2.6.26-NEW/drivers/rtc/Kconfig
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/rtc/Kconfig
++++ linux-2.6.26-NEW/drivers/rtc/Kconfig
+@@ -124,6 +124,12 @@ comment "I2C RTC drivers"
  
  if I2C
  
@@ -316,10 +307,11 @@ diff -Nru linux-2.6.26-officiel/drivers/rtc/Kconfig /home/guilig/workspace/kerne
  config RTC_DRV_DS1307
  	tristate "Dallas/Maxim DS1307/37/38/39/40, ST M41T00"
  	help
-diff -Nru linux-2.6.26-officiel/drivers/rtc/Makefile /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/Makefile
---- linux-2.6.26-officiel/drivers/rtc/Makefile	2008-07-13 23:51:29.000000000 +0200
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/drivers/rtc/Makefile	2008-09-26 14:25:25.000000000 +0200
-@@ -33,6 +33,7 @@
+Index: linux-2.6.26-NEW/drivers/rtc/Makefile
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/rtc/Makefile
++++ linux-2.6.26-NEW/drivers/rtc/Makefile
+@@ -33,6 +33,7 @@ obj-$(CONFIG_RTC_DRV_DS1742)	+= rtc-ds17
  obj-$(CONFIG_RTC_DRV_EP93XX)	+= rtc-ep93xx.o
  obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
  obj-$(CONFIG_RTC_DRV_ISL1208)	+= rtc-isl1208.o
@@ -327,9 +319,10 @@ diff -Nru linux-2.6.26-officiel/drivers/rtc/Makefile /home/guilig/workspace/kern
  obj-$(CONFIG_RTC_DRV_M41T80)	+= rtc-m41t80.o
  obj-$(CONFIG_RTC_DRV_M48T59)	+= rtc-m48t59.o
  obj-$(CONFIG_RTC_DRV_M48T86)	+= rtc-m48t86.o
-diff -Nru linux-2.6.26/drivers/rtc/rtc-isl12024.c linux-2.6.26.mod/drivers/rtc/rtc-isl12024.c
---- linux-2.6.26/drivers/rtc/rtc-isl12024.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26.mod/drivers/rtc/rtc-isl12024.c	2008-11-27 12:05:37.000000000 +0100
+Index: linux-2.6.26-NEW/drivers/rtc/rtc-isl12024.c
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/drivers/rtc/rtc-isl12024.c
 @@ -0,0 +1,516 @@
 +/*
 + * Intersil ISL12024 class driver
@@ -847,9 +840,10 @@ diff -Nru linux-2.6.26/drivers/rtc/rtc-isl12024.c linux-2.6.26.mod/drivers/rtc/r
 +
 +module_init(isl12024_init);
 +module_exit(isl12024_exit);
-diff -Nru linux-2.6.26-officiel/include/i2c/isl12024.h /home/guilig/workspace/kernel-goobie-2.6.26/src/include/linux/i2c/isl12024.h
---- linux-2.6.26-officiel/include/i2c/isl12024.h	1970-01-01 01:00:00.000000000 +0100
-+++ /home/guilig/workspace/kernel-goobie-2.6.26/src/include/linux/i2c/isl12024.h	2008-10-21 10:36:19.000000000 +0200
+Index: linux-2.6.26-NEW/include/i2c/isl12024.h
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/include/i2c/isl12024.h
 @@ -0,0 +1,93 @@
 +#ifndef ISL12024_H_
 +#define ISL12024_H_

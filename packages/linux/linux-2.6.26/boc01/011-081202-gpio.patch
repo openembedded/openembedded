@@ -1,0 +1,365 @@
+diff -Nru linux-2.6.26-010/drivers/char/Kconfig linux-2.6.26-011/drivers/char/Kconfig
+--- linux-2.6.26-010/drivers/char/Kconfig	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26-011/drivers/char/Kconfig	2008-12-02 09:45:08.000000000 +0100
+@@ -1006,6 +1006,23 @@
+ 	tristate "NEC VR4100 series General-purpose I/O Unit support"
+ 	depends on CPU_VR41XX
+ 
++config GPIO_MPC8313
++	tristate "mpc8313e gpio"
++	depends on PPC_MPC831x
++	select INPUT
++	default y
++	help
++	  Give userspace access to the GPIO pins on the MPC8313E devices.
++	  
++config EXIO_MPC8313
++	tristate "mpc8313e exio"
++	depends on PPC_MPC831x
++	select INPUT
++	default y
++	help
++	  Give userspace access to the Extenrder IO pins on the CPE board.
++
++	  
+ config RAW_DRIVER
+ 	tristate "RAW driver (/dev/raw/rawN)"
+ 	depends on BLOCK
+diff -Nru linux-2.6.26-010/drivers/char/Makefile linux-2.6.26-011/drivers/char/Makefile
+--- linux-2.6.26-010/drivers/char/Makefile	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26-011/drivers/char/Makefile	2008-12-02 09:45:25.000000000 +0100
+@@ -111,6 +111,8 @@
+ obj-$(CONFIG_PS3_FLASH)		+= ps3flash.o
+ 
+ obj-$(CONFIG_JS_RTC)		+= js-rtc.o
++obj-$(CONFIG_GPIO_MPC8313)			+= mpc8313e_gpio.o
++obj-$(CONFIG_EXIO_MPC8313)			+= mpc8313e_exio.o
+ js-rtc-y = rtc.o
+ 
+ # Files generated that shall be removed upon make clean
+diff -Nru linux-2.6.26-010/drivers/char/mpc8313e_exio.c linux-2.6.26-011/drivers/char/mpc8313e_exio.c
+--- linux-2.6.26-010/drivers/char/mpc8313e_exio.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.26-011/drivers/char/mpc8313e_exio.c	2008-12-02 10:46:31.000000000 +0100
+@@ -0,0 +1,170 @@
++/*
++* CPE Extender io driver
++*
++*
++* Copyright (C) 2007, CenoSYS (www.cenosys.com).
++* Alexandre Coffignal
++* alexandre.coffignal@cenosys.com
++*
++* This software program is licensed subject to the GNU General Public License
++* (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++* 
++* Allows a user space process to control the EXIO pins.
++* 
++*/
++
++#include <linux/fs.h>
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <asm/uaccess.h>
++#include <asm/io.h>
++#include <linux/of_platform.h>
++#include <sysdev/fsl_soc.h>
++#include <linux/cdev.h>
++
++static char module_name[] = "exio";
++
++
++#define NB_EXIO		8
++#define DEFAULT_STATE 0x58
++#define EXIO_BASE 0xfa000000
++#define EXIO_SIZE 0x2
++
++static int major = 0;
++static u8 exio_state = DEFAULT_STATE;
++static void *exio_io = NULL;
++static struct resource *exio_mem = NULL;
++
++static ssize_t mpc8313e_exio_write(struct file *file, const char __user *data, size_t len, loff_t *ppos)
++{
++	unsigned m = iminor(file->f_path.dentry->d_inode);
++	size_t i;
++	char mask;
++	int err = 0;
++
++	for (i = 0; i < len; ++i) {
++		char c;
++		if (get_user(c, data + i))
++			return -EFAULT;
++		//TODO write
++
++		mask=(1<<(7-m));
++		switch (c) {
++		case '0':
++			/*Clear exio level */ 
++			exio_state&=~mask;
++			iowrite8(exio_state, exio_io);
++			break;
++		case '1':
++			/*Set exio level */ 
++			exio_state|=mask;
++			iowrite8(exio_state, exio_io);
++			break;
++		default:
++			printk(KERN_DEBUG "exio%2d bad setting: chr<0x%2x>\n",
++				m, (int)c);
++			err++;
++		}
++	}
++	if (err)
++		return -EINVAL;	
++
++	return len;
++}
++
++
++static ssize_t mpc8313e_exio_read(struct file *file, char __user * buf, 
++		size_t len, loff_t * ppos)
++{
++	unsigned m = iminor(file->f_path.dentry->d_inode);
++	int value;
++	char mask;
++	char state=ioread8(exio_io);
++
++	mask=(1<<(7-m));
++	value=state&mask;
++	if (put_user(value ? '1' : '0', buf))
++		return -EFAULT;
++	return 1;
++
++}
++
++static int mpc8313e_exio_open(struct inode *inode, struct file *file)
++{
++    return 0;
++}
++
++static int mpc8313e_exio_close(struct inode *inode, struct file *file)
++{
++    printk(KERN_DEBUG "close()\n");
++    return 0;
++}
++
++struct file_operations mpc8313e_exio_fops =
++{
++	.owner =	THIS_MODULE,
++    .read = mpc8313e_exio_read,
++    .write = mpc8313e_exio_write,
++    .open = mpc8313e_exio_open,
++    .release = mpc8313e_exio_close  /* correspond a close */
++};
++
++static struct class * exio_class;
++
++static int __init mpc8313e_exio_init(void)
++{
++	int rc,i;
++
++	rc = register_chrdev(major, module_name, &mpc8313e_exio_fops);
++	if (rc < 0) {
++		return rc;
++	}
++	
++	if (major == 0) {
++		major = rc;  /* accept dynamic major number */
++ 		printk(KERN_INFO "%s: successfully loaded with major %d\n",module_name, major);
++	}
++	
++	exio_class = class_create(THIS_MODULE, "exio");	
++	
++	for (i = 0; i < NB_EXIO; i++)
++	{
++		device_create(exio_class, NULL,	MKDEV(major, i)	, "%s%i", module_name,i);
++   
++	}
++
++	/* System I/O Configuration Register Low */
++	if (!(exio_mem = request_mem_region(EXIO_BASE, EXIO_SIZE, "mpc8313-exio")))
++		return -ENOMEM;
++	
++	if (!(exio_io = ioremap(EXIO_BASE, EXIO_SIZE)))
++	{
++		release_mem_region(EXIO_BASE, EXIO_SIZE);
++		exio_mem = NULL;
++		return -ENOMEM;
++	}
++	iowrite8(exio_state, exio_io);
++
++	return 0;
++}
++
++static void __exit mpc8313e_exio_cleanup(void)
++{
++	if (exio_mem) release_mem_region(EXIO_BASE, EXIO_SIZE);
++	exio_mem = NULL;
++	
++    unregister_chrdev(major, module_name);
++}
++
++module_param(major, int, 0644);
++MODULE_PARM_DESC(major, "Static major number (none = dynamic)");
++MODULE_AUTHOR("Alexandre Coffignal <alexandre.coffignal@cenosys.com>");
++MODULE_DESCRIPTION("mpc8313e exio");
++MODULE_LICENSE("GPL");
++
++module_init(mpc8313e_exio_init);
++module_exit(mpc8313e_exio_cleanup);
++
++
+diff -Nru linux-2.6.26-010/drivers/char/mpc8313e_gpio.c linux-2.6.26-011/drivers/char/mpc8313e_gpio.c
+--- linux-2.6.26-010/drivers/char/mpc8313e_gpio.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.26-011/drivers/char/mpc8313e_gpio.c	2008-12-02 10:46:35.000000000 +0100
+@@ -0,0 +1,148 @@
++/*
++* mpc8313e gpio driver
++*
++*
++* Copyright (C) 2007, CenoSYS (www.cenosys.com).
++* Alexandre Coffignal
++* alexandre.coffignal@cenosys.com
++*
++* This software program is licensed subject to the GNU General Public License
++* (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++* 
++* Allows a user space process to control the GPIO pins.
++* 
++*/
++
++#include <linux/fs.h>
++#include <linux/module.h>
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <asm/uaccess.h>
++#include <asm/io.h>
++#include <linux/of_platform.h>
++#include <sysdev/fsl_soc.h>
++
++static char module_name[] = "gpio";
++#define NB_GPIO	8
++static int major = 0;
++struct gpio {
++	__be32 gpdir;
++	__be32 gpodr;
++	__be32 gpdat;
++	__be32 gpier;
++	__be32 gpimr;
++	__be32 gpicr;
++} __attribute__ ((packed));
++static struct gpio *gpio_regs;
++
++static ssize_t mpc8313e_gpio_write(struct file *file, const char __user *data, size_t len, loff_t *ppos)
++{
++	unsigned m = iminor(file->f_path.dentry->d_inode);
++	size_t i;
++	int err = 0;
++
++	for (i = 0; i < len; ++i) {
++		char c;
++		if (get_user(c, data + i))
++			return -EFAULT;
++		/* set GPIO as output */
++		setbits32(&gpio_regs->gpdir, 1 << (31 - m));
++		clrbits32(&gpio_regs->gpodr, 1 << (31 - m));
++		switch (c) {
++		case '0':
++			/*Set GPIO level */ 
++			clrbits32(&gpio_regs->gpdat, 1 << (31 - m));
++			break;
++		case '1':
++			/*Set GPIO level */ 
++			setbits32(&gpio_regs->gpdat, 1 << (31 - m));
++			break;
++		default:
++			printk(KERN_DEBUG "io%2d bad setting: chr<0x%2x>\n",
++				m, (int)c);
++			err++;
++		}
++	}
++	if (err)
++		return -EINVAL;	
++
++	return len;
++}
++
++static ssize_t mpc8313e_gpio_read(struct file *file, char __user * buf, size_t len, loff_t * ppos)
++{
++	unsigned m = iminor(file->f_path.dentry->d_inode);
++	int value;
++	value=in_be32(&gpio_regs->gpdat)&(1 << (31 - m));
++	if (put_user(value ? '1' : '0', buf))
++		return -EFAULT;
++	return 1;
++	
++	
++}
++
++
++
++static int mpc8313e_gpio_open(struct inode *inode, struct file *file)
++{
++    return 0;
++}
++
++static int mpc8313e_gpio_close(struct inode *inode, struct file *file)
++{
++    return 0;
++}
++
++struct file_operations mpc8313e_gpio_fops =
++{
++	.owner =	THIS_MODULE,
++    .read = mpc8313e_gpio_read,
++    .write = mpc8313e_gpio_write,
++    .open = mpc8313e_gpio_open,
++    .release = mpc8313e_gpio_close 
++};
++static struct class * gpio_class;
++static int __init mpc8313e_gpio_init(void)
++{
++	int rc,i;
++
++	rc = register_chrdev(major, module_name, &mpc8313e_gpio_fops);
++	if (rc < 0) {
++		return rc;
++	}
++	
++	if (major == 0) {
++		major = rc;  /* accept dynamic major number */
++ 		printk(KERN_INFO "%s: successfully loaded with major %d\n",module_name, major);
++
++	}
++	gpio_class = class_create(THIS_MODULE, "gpio");	
++	
++	for (i = 0; i < NB_GPIO; i++)
++	{
++		device_create(gpio_class, NULL,	MKDEV(major, i)	, "%s%i", module_name,i);
++   
++	}
++    
++	/* System I/O Configuration Register Low */
++	gpio_regs = ioremap(get_immrbase() + 0xc00, 0x20);
++	if (!gpio_regs)
++		return -ENOMEM;
++    return 0;
++}
++
++static void __exit mpc8313e_gpio_cleanup(void)
++{
++    unregister_chrdev(major, module_name);
++}
++module_param(major, int, 0644);
++MODULE_PARM_DESC(major, "Static major number (none = dynamic)");
++MODULE_AUTHOR("Alexandre Coffignal <alexandre.coffignal@cenosys.com>");
++MODULE_DESCRIPTION("mpc8313e GPIO");
++MODULE_LICENSE("GPL");
++
++module_init(mpc8313e_gpio_init);
++module_exit(mpc8313e_gpio_cleanup);
++
++

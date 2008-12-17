@@ -1,6 +1,7 @@
-diff -uNr linux-2.6.26_orig/drivers/video/Kconfig linux-2.6.26/drivers/video/Kconfig
---- linux-2.6.26_orig/drivers/video/Kconfig	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26/drivers/video/Kconfig	2008-11-27 18:54:42.000000000 +0100
+Index: linux-2.6.26/drivers/video/Kconfig
+===================================================================
+--- linux-2.6.26.orig/drivers/video/Kconfig	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26/drivers/video/Kconfig	2008-12-09 10:01:14.000000000 +0100
 @@ -480,6 +480,17 @@
  	  this driver, say Y or M; otherwise say N. You must specify the
  	  GPIO IO address to be used for setting control and data.
@@ -15,13 +16,14 @@ diff -uNr linux-2.6.26_orig/drivers/video/Kconfig linux-2.6.26/drivers/video/Kco
 +	help
 +	  This enables support for the Nova 7506 Monochrome LCD board. The board
 +	  is based on the NT7506 lcd controller.
-+	  
++
  config FB_ATARI
  	bool "Atari native chipset support"
  	depends on (FB = y) && ATARI
-diff -uNr linux-2.6.26_orig/drivers/video/Makefile linux-2.6.26/drivers/video/Makefile
---- linux-2.6.26_orig/drivers/video/Makefile	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26/drivers/video/Makefile	2008-11-27 18:54:57.000000000 +0100
+Index: linux-2.6.26/drivers/video/Makefile
+===================================================================
+--- linux-2.6.26.orig/drivers/video/Makefile	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26/drivers/video/Makefile	2008-12-09 10:01:14.000000000 +0100
 @@ -13,8 +13,8 @@
  
  obj-$(CONFIG_VT)		  += console/
@@ -29,14 +31,15 @@ diff -uNr linux-2.6.26_orig/drivers/video/Makefile linux-2.6.26/drivers/video/Ma
 -obj-y				  += backlight/ display/
 -
 +obj-y				 			+= backlight/ display/
-+obj-$(CONFIG_FB_NOVA)    	   += N7506fb.o	
++obj-$(CONFIG_FB_NOVA)    	   += N7506fb.o
  obj-$(CONFIG_FB_CFB_FILLRECT)  += cfbfillrect.o
  obj-$(CONFIG_FB_CFB_COPYAREA)  += cfbcopyarea.o
  obj-$(CONFIG_FB_CFB_IMAGEBLIT) += cfbimgblt.o
-diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N7506fb.c
---- linux-2.6.26_orig/drivers/video/N7506fb.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26/drivers/video/N7506fb.c	2008-11-27 18:41:29.000000000 +0100
-@@ -0,0 +1,550 @@
+Index: linux-2.6.26/drivers/video/N7506fb.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.26/drivers/video/N7506fb.c	2008-12-09 10:03:34.000000000 +0100
+@@ -0,0 +1,631 @@
 +/*
 + * linux/drivers/video/N7506fb.c -- FB driver for Nova NT7506 monochrome LCD board
 + *
@@ -48,14 +51,14 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 + *
 + * Layout is based on arcfb.c by Jaya Kumar
 + *
-+ * This driver was written to be used with the Nova 7506 LCD board. 
-+ * 
-+ * 
-+ * 
-+ * 
++ * This driver was written to be used with the Nova 7506 LCD board.
++ *
++ *
++ *
++ *
 + * Nova uses a
-+ * set of NT7506 chips that control individual 128x128 LCD matrices. 
-+ * The interface between the board and the host is TTL based GPIO. 
++ * set of NT7506 chips that control individual 128x128 LCD matrices.
++ * The interface between the board and the host is TTL based GPIO.
 + *
 + * General notes:
 + * - User must set tuhold. It's in microseconds. According to the 108 spec,
@@ -107,6 +110,9 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +static unsigned long tuhold;
 +struct fb_info *info;
 +static struct timer_list fb_timer;
++static char _refresh;
++static char _fps =FRAME_PER_SECOND;
++static char _backlight=1;
 +
 +struct novafb_par {
 +	atomic_t ref_count;
@@ -139,45 +145,56 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +
 +static void NT7506_init_lcd(char ael);
 +
-+static void NT7506_writeb_ctl(unsigned char value)
++static void NT7506_writeb_ctl(unsigned char value,char backlight)
 +{
 +	unsigned short svalue;
-+	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERDN | LCD_BCKLIGH;
++	char bl;
++	if(backlight)
++		bl=LCD_BCKLIGH;
++	else
++		bl=LCD_BCKLIGHN;
++
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERDN | bl;
 +	iowrite16(svalue, _lcd_io);
 +	udelay(tuhold);
 +	//The data on DB0/7 are latched at the falling edge of the E_RD signal
-+	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERD | LCD_BCKLIGH;
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERD | bl;
 +	iowrite16(svalue, _lcd_io);
 +	udelay(tuhold);
 +}
 +
-+static void NT7506_writeb_data(unsigned char value)
++static void NT7506_writeb_data(unsigned char value,char backlight)
 +{
 +	unsigned short svalue;
-+	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERD | LCD_BCKLIGH ;
++	char bl;
++	if(backlight)
++		bl=LCD_BCKLIGH;
++	else
++		bl=LCD_BCKLIGHN;
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERD | bl ;
 +	iowrite16(svalue, _lcd_io);
 +	udelay(tuhold);
 +	//The data on DB0/7 are latched at the falling edge of the E_RD signal
-+	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERDN | LCD_BCKLIGH;
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERDN | bl;
 +	iowrite16(svalue, _lcd_io);
 +	udelay(tuhold);
 +}
 +
 +static void NT7506_set_start_line(unsigned char y)
 +{
-+	NT7506_writeb_ctl(NT_START_LINE);
-+	NT7506_writeb_ctl(y);
++	NT7506_writeb_ctl(NT_START_LINE,_backlight);
++	NT7506_writeb_ctl(y,_backlight);
 +}
 +
 +static void NT7506_set_yaddr(unsigned char y)
 +{
-+	NT7506_writeb_ctl(NT_PAGE_ADDR+y);
++	NT7506_writeb_ctl(NT_PAGE_ADDR+y,_backlight);
 +}
 +
 +static void NT7506_set_xaddr(unsigned char x)
 +{
-+	NT7506_writeb_ctl(NT_COL_MSB | (x >> 0x04) ); //Send high nibble 
-+	NT7506_writeb_ctl(NT_COL_LSB | (x & 0x0F) ); //Send low nibble 
++	NT7506_writeb_ctl(NT_COL_MSB | (x >> 0x04),_backlight); //Send high nibble
++	NT7506_writeb_ctl(NT_COL_LSB | (x & 0x0F) ,_backlight); //Send low nibble
 +}
 +
 +/* main novafb functions */
@@ -203,8 +220,8 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +				struct fb_info *info)
 +{
 +	if ((var->vmode & FB_VMODE_YWRAP) && (var->yoffset < 128)
-+		&& (info->var.yres <= 128)) 
-+	{	
++		&& (info->var.yres <= 128))
++	{
 +		NT7506_set_start_line(var->yoffset);
 +		info->var.yoffset = var->yoffset;
 +		return 0;
@@ -227,12 +244,12 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +		dest[i]=0;
 +	}
 +	for(x=0;x<128/*(width)*/;x++)
-+	{	
++	{
 +		for(y=0;y<16/*height/8*/;y++)
 +		{
 +			xfb=x/8;
 +			yfb=y*8;
-+			
++
 +			for(bit=0;bit<8;yfb++,bit++)
 +			{
 +				mask = (1<<(7-(x%8)));
@@ -240,31 +257,31 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +					value=1;
 +				else
 +					value=0;
-+				
++
 +				dest[y*128+x]+= (value<<bit);
 +			}
 +		}
 +	}
-+	
++
 +	height=16;
 +	width=128;
-+	
++
 +	for (y = 0; y < height; y++)
 +	{
 +		NT7506_set_yaddr(y);
 +		NT7506_set_xaddr(0);
 +		for (x = 0; x < width; x++)
 +		{
-+			NT7506_writeb_data(dest[y*128+x]);
-+			NT7506_writeb_data(0x00);
++			NT7506_writeb_data(dest[y*128+x],_backlight);
++			NT7506_writeb_data(0x00,_backlight);
 +		}
-+		NT7506_writeb_data((unsigned char)0);
++		NT7506_writeb_data((unsigned char)0,_backlight);
 +	}
 +}
 +
 +static void novafb_fillrect(struct fb_info *info,  const struct fb_fillrect *rect)
 +{
-+	
++
 +//	sys_fillrect(info, rect);
 +
 +}
@@ -281,7 +298,7 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +static void novafb_imageblit(struct fb_info *info, const struct fb_image *image)
 +{
 +	struct novafb_par *par = info->par;
-+	
++
 +	int xfb,yfb,i=0;
 +	char * src = (unsigned char __force *) par->info->screen_base;
 +
@@ -289,10 +306,10 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +	{
 +		for(xfb=(image->dx)/8;xfb<(image->dx+image->width)/8;xfb++)
 +		{
-+			src[yfb*16+xfb]=image->data[i++];		
-+		}	
++			src[yfb*16+xfb]=image->data[i++];
++		}
 +	}
-+	
++
 +}
 +
 +/*
@@ -312,7 +329,7 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +	par = info->par;
 +	xres = info->var.xres;
 +	fbmemlength = (xres * info->var.yres)/8;
-+		
++
 +	if (p > fbmemlength)
 +	{
 +		return -ENOSPC;
@@ -370,6 +387,59 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +	return 0;
 +
 +}
++static int novafb_ioctl(struct fb_info *info,
++			  unsigned int cmd, unsigned long arg)
++{
++	unsigned char contrast;
++	unsigned char frame_rate;
++	unsigned char backlight;
++	switch (cmd)
++	{
++		case FBIO_FRAMERATE:
++		{
++
++			if (get_user(frame_rate, (unsigned char *)arg))
++				return -EFAULT;
++			printk(KERN_INFO "fb0: framerate=%d Hz\n",frame_rate);
++			_fps=frame_rate;
++			return 0;
++		}
++		case FBIO_CONTRAST:
++		{
++			_refresh=0;
++			if (get_user(contrast, (unsigned char *)arg))
++				return -EFAULT;
++			printk(KERN_INFO "fb0: contrast=%d\n",contrast);
++			NT7506_writeb_ctl(NT_ELEC_VOL,_backlight);	NT7506_writeb_ctl(contrast,_backlight);
++			_refresh=1;
++			return 0;
++		}
++		case FBIO_BACKLIGHT:
++		{
++			_refresh=0;
++			if (get_user(backlight, (unsigned char *)arg))
++				return -EFAULT;
++			if(backlight)
++			{
++				printk(KERN_INFO "fb0: Backlight ON\n");
++				_backlight=1;
++			}
++			else
++			{
++				printk(KERN_INFO "fb0: Backlight OFF\n");
++				_backlight=0;
++			}
++			_refresh=1;
++			return 0;
++
++		}
++
++
++		default:
++			return -EINVAL;
++	}
++
++}
 +
 +static struct fb_ops novafb_ops = {
 +	.owner		= THIS_MODULE,
@@ -381,21 +451,29 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +	.fb_fillrect	= novafb_fillrect,
 +	.fb_copyarea	= novafb_copyarea,
 +	.fb_imageblit	= novafb_imageblit,
-+//	.fb_ioctl 	= novafb_ioctl,
++	.fb_ioctl 		= novafb_ioctl,
 +	.fb_mmap		=novafb_mmap,
 +};
 +
 +
-+static void 
++static void
 +novafb_refresh(int ignore_me )
 +{
 +	struct novafb_par *par = info->par;
-+	novafb_lcd_update(par, 0, 0, 128,128);
-+	fb_timer.expires = jiffies + (HZ/FRAME_PER_SECOND);
-+	add_timer(&fb_timer);
++	if(_refresh)
++	{
++		novafb_lcd_update(par, 0, 0, 128,128);
++		fb_timer.expires = jiffies + (HZ/_fps);
++		add_timer(&fb_timer);
++	}
++	else
++	{
++		fb_timer.expires = jiffies + (HZ/_fps);
++		add_timer(&fb_timer);
++	}
 +}
 +
-+static int 
++static int
 +__init novafb_probe(struct platform_device *dev)
 +{
 +
@@ -424,8 +502,8 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +
 +	info->var = novafb_var;
 +	info->fix = novafb_fix;
-+	info->fix.smem_start=(unsigned long)videomemory;	
-+	info->fix.smem_len	= videomemorysize;				
++	info->fix.smem_start=(unsigned long)videomemory;
++	info->fix.smem_len	= videomemorysize;
 +
 +	par = info->par;
 +	par->info = info;
@@ -442,10 +520,10 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +	retval = register_framebuffer(info);
 +	if (retval < 0)
 +		goto err1;
-+	
++
 +	init_timer(&fb_timer);
 +	fb_timer.function = novafb_refresh;
-+	fb_timer.expires = jiffies + (HZ / FRAME_PER_SECOND);
++	fb_timer.expires = jiffies + (HZ / _fps);
 +	add_timer(&fb_timer);
 +
 +	printk(KERN_INFO
@@ -485,10 +563,10 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +{
 +	int ret;
 +
-+	
++
 +	if (!(lcd_mem = request_mem_region(LCD_BASE, LCD_SIZE, "mpc8313-lcd")))
 +		return -ENOMEM;
-+	
++
 +	if (!(_lcd_io = ioremap(LCD_BASE, LCD_SIZE)))
 +	{
 +		release_mem_region(LCD_BASE, LCD_SIZE);
@@ -496,26 +574,26 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +		return -ENOMEM;
 +	}
 +	ret = platform_driver_register(&novafb_driver);
-+	
++
 +	if (!ret) {
 +		novafb_device = platform_device_alloc("novafb", 0);
-+		if (novafb_device) 
++		if (novafb_device)
 +		{
 +			ret = platform_device_add(novafb_device);
-+		} 
-+		else 
++		}
++		else
 +		{
 +			ret = -ENOMEM;
 +		}
-+		if (ret) 
++		if (ret)
 +		{
 +			platform_device_put(novafb_device);
 +			platform_driver_unregister(&novafb_driver);
 +		}
-+		
++
 +	}
-+	
-+	
++
++
 +	return ret;
 +
 +}
@@ -524,53 +602,59 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +static void NT7506_init_lcd(char ael)
 +{
 +	/* this resets the lcd*/
-+	iowrite16(LCD_RSTN | LCD_ERD | LCD_BCKLIGH, _lcd_io);
++	char bl;
++	if(_backlight)
++		bl=LCD_BCKLIGH;
++	else
++		bl=LCD_BCKLIGHN;
++
++	iowrite16(LCD_RSTN | LCD_ERD | bl, _lcd_io);
 +	udelay(100);
-+	iowrite16(LCD_RST| LCD_ERD | LCD_BCKLIGH, _lcd_io);
++	iowrite16(LCD_RST| LCD_ERD | bl, _lcd_io);
 +	udelay(200);
 +	/* Soft reset*/
-+	NT7506_writeb_ctl(NT_RESET);	
++	NT7506_writeb_ctl(NT_RESET,_backlight);
 +	/* Disable ICON display*/
-+	NT7506_writeb_ctl(NT_ICON|OFF);	
++	NT7506_writeb_ctl(NT_ICON|OFF,_backlight);
 +	/* Sets the duty ratio 1/128*/
-+	NT7506_writeb_ctl(NT_DUTY);		NT7506_writeb_ctl(DUTY_1_128);
++	NT7506_writeb_ctl(NT_DUTY,_backlight);		NT7506_writeb_ctl(DUTY_1_128,_backlight);
 +	/* Sets reverse direction between RAM column address and segment driver*/
-+	NT7506_writeb_ctl(NT_ADC_REV);
-+	NT7506_writeb_ctl(NT_SHL_NOR);
++	NT7506_writeb_ctl(NT_ADC_REV,_backlight);
++	NT7506_writeb_ctl(NT_SHL_NOR,_backlight);
 +	/* Enales the built in Oscillator circuit.*/
-+	NT7506_writeb_ctl(NT_OSC);
++	NT7506_writeb_ctl(NT_OSC,_backlight);
 +	/* Set Initial row to 0*/
-+	NT7506_writeb_ctl(NT_COM0);		NT7506_writeb_ctl(0);
++	NT7506_writeb_ctl(NT_COM0,_backlight);		NT7506_writeb_ctl(0,_backlight);
 +	/* Sets DC-DC*/
-+	NT7506_writeb_ctl(NT_DCDC|TIME6);
++	NT7506_writeb_ctl(NT_DCDC|TIME6,_backlight);
 +	/* Selects resistance ratio of the internal resistor*/
-+	NT7506_writeb_ctl(NT_REG_RES|RES_7_2);
++	NT7506_writeb_ctl(NT_REG_RES|RES_7_2,_backlight);
 +	/* set Reference Voltage mode*/
-+	NT7506_writeb_ctl(NT_ELEC_VOL);	NT7506_writeb_ctl(ael);	
++	NT7506_writeb_ctl(NT_ELEC_VOL,_backlight);	NT7506_writeb_ctl(ael,_backlight);
 +	/* Selects LCD bias ratio*/
-+	NT7506_writeb_ctl(NT_BIAS|BIAS_1_11);
++	NT7506_writeb_ctl(NT_BIAS|BIAS_1_11,_backlight);
 +
-+	NT7506_writeb_ctl(NT_DATA_DIR);	NT7506_writeb_ctl(0);
-+	NT7506_writeb_ctl(NT_FRC_PWM|PWM15);
++	NT7506_writeb_ctl(NT_DATA_DIR,_backlight);	NT7506_writeb_ctl(0,_backlight);
++	NT7506_writeb_ctl(NT_FRC_PWM|PWM15,_backlight);
 +	/* Select power circuit functions */
-+	NT7506_writeb_ctl(NT_POWER|VC);
++	NT7506_writeb_ctl(NT_POWER|VC,_backlight);
 +	udelay(5000);
-+	NT7506_writeb_ctl(NT_POWER|VC|VR);
++	NT7506_writeb_ctl(NT_POWER|VC|VR,_backlight);
 +	udelay(5000);
-+	NT7506_writeb_ctl(NT_POWER|VC|VR|VF);
++	NT7506_writeb_ctl(NT_POWER|VC|VR|VF,_backlight);
 +	udelay(5000);
 +	/* Reverses the display status on LCD panel */
-+	NT7506_writeb_ctl(NT_REV_DISP|OFF);
++	NT7506_writeb_ctl(NT_REV_DISP|OFF,_backlight);
 +	/* Forces the whole LCD points to be turned on regardless of the contents of the display data RAM*/
-+	NT7506_writeb_ctl(NT_DISP|ON);
++	NT7506_writeb_ctl(NT_DISP|ON,_backlight);
 +	/* Set Initial Start Line Address */
-+	NT7506_writeb_ctl(NT_START_LINE);	NT7506_writeb_ctl(0x00);
-+
++	NT7506_writeb_ctl(NT_START_LINE,_backlight);	NT7506_writeb_ctl(0x00,_backlight);
++	_refresh=1;
 +}
 +
 +static void __exit novafb_exit(void)
 +{
-+	if (lcd_mem) 
++	if (lcd_mem)
 +		release_mem_region(LCD_BASE, LCD_SIZE);
 +	lcd_mem = NULL;
 +	platform_device_unregister(novafb_device);
@@ -587,10 +671,11 @@ diff -uNr linux-2.6.26_orig/drivers/video/N7506fb.c linux-2.6.26/drivers/video/N
 +MODULE_AUTHOR("Alexandre Coffignal");
 +MODULE_LICENSE("GPL");
 +
-diff -uNr linux-2.6.26_orig/include/linux/NT7506.h linux-2.6.26/include/linux/NT7506.h
---- linux-2.6.26_orig/include/linux/NT7506.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26/include/linux/NT7506.h	2008-11-13 12:46:05.000000000 +0100
-@@ -0,0 +1,70 @@
+Index: linux-2.6.26/include/linux/NT7506.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.26/include/linux/NT7506.h	2008-12-09 10:04:16.000000000 +0100
+@@ -0,0 +1,73 @@
 +
 +/*
 + * (C) Copyright 2008
@@ -649,7 +734,7 @@ diff -uNr linux-2.6.26_orig/include/linux/NT7506.h linux-2.6.26/include/linux/NT
 +#define	NT_OSC			0xAB
 +#define NT_RESET		0xE2
 +#define NT_DATA_DIR		0xe8
-+#define NT_FRC_PWM		0x90		
++#define NT_FRC_PWM		0x90
 +#define PWM15				0x03
 +
 +#define ON		0x01
@@ -657,6 +742,9 @@ diff -uNr linux-2.6.26_orig/include/linux/NT7506.h linux-2.6.26/include/linux/NT
 +
 +
 +
++#define FBIO_FRAMERATE		_IOR('f', 1, char)
++#define FBIO_CONTRAST		_IOR('f', 2, char)
++#define FBIO_BACKLIGHT		_IOR('f', 3, char)
 +
 +
 +#endif

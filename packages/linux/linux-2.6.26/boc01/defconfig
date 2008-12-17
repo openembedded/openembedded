@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.26
-# Tue Dec  9 15:33:40 2008
+# Wed Dec 17 12:15:19 2008
 #
 # CONFIG_PPC64 is not set
 
@@ -1038,6 +1038,7 @@ CONFIG_HW_RANDOM=y
 # CONFIG_R3964 is not set
 # CONFIG_APPLICOM is not set
 CONFIG_GPIO_MPC8313=y
+CONFIG_EXIO_MPC8313=y
 # CONFIG_RAW_DRIVER is not set
 # CONFIG_TCG_TPM is not set
 CONFIG_DEVPORT=y
@@ -1077,7 +1078,6 @@ CONFIG_I2C_MPC=y
 #
 # Miscellaneous I2C Chip support
 #
-CONFIG_AT24C32=y
 # CONFIG_DS1682 is not set
 CONFIG_ISL12024EEPROM=y
 # CONFIG_SENSORS_EEPROM is not set
@@ -1086,6 +1086,7 @@ CONFIG_ISL12024EEPROM=y
 # CONFIG_SENSORS_PCF8591 is not set
 # CONFIG_SENSORS_MAX6875 is not set
 # CONFIG_SENSORS_TSL2550 is not set
+CONFIG_EEPROM_RW=y
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set
@@ -1282,8 +1283,7 @@ CONFIG_FB_NOVA=y
 #
 # Console display driver support
 #
-CONFIG_VGA_CONSOLE=y
-# CONFIG_VGACON_SOFT_SCROLLBACK is not set
+# CONFIG_VGA_CONSOLE is not set
 CONFIG_DUMMY_CONSOLE=y
 CONFIG_FRAMEBUFFER_CONSOLE=y
 CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y

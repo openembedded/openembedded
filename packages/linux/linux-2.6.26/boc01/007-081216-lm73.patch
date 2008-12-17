@@ -1,7 +1,8 @@
-diff -Nru linux-2.6.26/drivers/hwmon/Kconfig linux-2.6.26.mod/drivers/hwmon/Kconfig
---- linux-2.6.26/drivers/hwmon/Kconfig	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26.mod/drivers/hwmon/Kconfig	2008-11-18 11:54:04.000000000 +0100
-@@ -390,6 +390,15 @@
+Index: linux-2.6.26-NEW/drivers/hwmon/Kconfig
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/hwmon/Kconfig
++++ linux-2.6.26-NEW/drivers/hwmon/Kconfig
+@@ -390,6 +390,15 @@ config SENSORS_LM70
  	  This driver can also be built as a module.  If so, the module
  	  will be called lm70.
  
@@ -17,9 +18,22 @@ diff -Nru linux-2.6.26/drivers/hwmon/Kconfig linux-2.6.26.mod/drivers/hwmon/Kcon
  config SENSORS_LM75
  	tristate "National Semiconductor LM75 and compatibles"
  	depends on I2C
-diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.c
---- linux-2.6.26/drivers/hwmon/lm73.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26.mod/drivers/hwmon/lm73.c	2008-11-27 11:46:31.000000000 +0100
+Index: linux-2.6.26-NEW/drivers/hwmon/Makefile
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/hwmon/Makefile
++++ linux-2.6.26-NEW/drivers/hwmon/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_SENSORS_IT87)	+= it87.o
+ obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
+ obj-$(CONFIG_SENSORS_LM63)	+= lm63.o
+ obj-$(CONFIG_SENSORS_LM70)	+= lm70.o
++obj-$(CONFIG_SENSORS_LM73)	+= lm73.o
+ obj-$(CONFIG_SENSORS_LM75)	+= lm75.o
+ obj-$(CONFIG_SENSORS_LM77)	+= lm77.o
+ obj-$(CONFIG_SENSORS_LM78)	+= lm78.o
+Index: linux-2.6.26-NEW/drivers/hwmon/lm73.c
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/drivers/hwmon/lm73.c
 @@ -0,0 +1,241 @@
 + /*
 + * LM73 Sensor driver
@@ -112,7 +126,7 @@ diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.
 +	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 +	struct i2c_client *client = to_i2c_client(dev);
 +	int nr = attr->index;
-+	
++
 +	long tmp = simple_strtol(buf, NULL, 10);
 +
 +	lm73_write_value(client, LM73_REG_TEMP[nr], tmp);
@@ -156,7 +170,7 @@ diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.
 +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
 +				     I2C_FUNC_SMBUS_WORD_DATA))
 +		goto exit;
-+	
++
 +	if (!(data = kzalloc(sizeof(struct lm73_data), GFP_KERNEL))) {
 +		err = -ENOMEM;
 +		goto exit;
@@ -215,23 +229,24 @@ diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.
 +static int lm73_read_value(struct i2c_client *client, u8 reg)
 +{
 +	short sVal;
-+	
++
 +	if (reg == LM73_REG_CONF)
 +		return i2c_smbus_read_byte_data(client, reg);
 +	else
 +	{
 +		sVal = swab16(i2c_smbus_read_word_data(client, reg));
 +		sVal = sVal >> 7;
-+			
-+		if(sVal & 0xFFFF)
-+		{
++
++		if ( sVal & 0xFFFF ) {
 +			sVal = sVal - 0x1;
 +			sVal = ~sVal;
-+			
++
 +			return -sVal;
 +		}
++		else {
++			return sVal;
++		}
 +	}
-+	
 +}
 +
 +static int lm73_write_value(struct i2c_client *client, u8 reg, short value)
@@ -239,10 +254,9 @@ diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.
 +	if (reg == LM73_REG_CONF)
 +		return i2c_smbus_write_byte_data(client, reg, value);
 +	else
-+	{		
-+		value = value<<7;	
++	{
++		value = value<<7;
 +		return i2c_smbus_write_word_data(client, reg, swab16(value));
-+		
 +	}
 +}
 +
@@ -262,14 +276,3 @@ diff -Nru linux-2.6.26/drivers/hwmon/lm73.c linux-2.6.26.mod/drivers/hwmon/lm73.
 +
 +module_init(sensors_lm73_init);
 +module_exit(sensors_lm73_exit);
-diff -Nru linux-2.6.26/drivers/hwmon/Makefile linux-2.6.26.mod/drivers/hwmon/Makefile
---- linux-2.6.26/drivers/hwmon/Makefile	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26.mod/drivers/hwmon/Makefile	2008-11-18 11:54:04.000000000 +0100
-@@ -47,6 +47,7 @@
- obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
- obj-$(CONFIG_SENSORS_LM63)	+= lm63.o
- obj-$(CONFIG_SENSORS_LM70)	+= lm70.o
-+obj-$(CONFIG_SENSORS_LM73)	+= lm73.o
- obj-$(CONFIG_SENSORS_LM75)	+= lm75.o
- obj-$(CONFIG_SENSORS_LM77)	+= lm77.o
- obj-$(CONFIG_SENSORS_LM78)	+= lm78.o
