@@ -56,9 +56,14 @@ do_deploy_append() {
 RDEPENDS_kernel-image += "mtd-utils"
 
 pkg_postinst_kernel-image () {
+
+# Get the lastest root file system value of boot args
+boot_arg=`cat /proc/cmdline |tr " " "\n"|grep "root=" |tail -n 1`
+has_mtdblock=`echo $boot_arg |grep mtdblock`
+
 if test "x$D" != "x"; then
         exit 1
-else
+elif test "empty$has_mtdblock" != "empty"; then
 	if [ -f ${sysconfdir}/default/flashkernel ] ; then
 		echo "Upgrading Kernel in Flash"
 		echo "DO NOT stop this process"
@@ -79,6 +84,8 @@ else
 	else
 		touch ${sysconfdir}/default/flashkernel
 	fi
+else
+        echo "You are not booting from NAND, don't flash kernel into mtdblock."
 fi
 }
 
