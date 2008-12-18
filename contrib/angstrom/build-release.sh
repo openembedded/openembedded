@@ -39,13 +39,24 @@ do_report_success() {
 }
 
 #cross toolchain
-#for machine in ep93xx a780 efika collie ixp4xxbe
-#do
-#        BUILD_MACHINE=$machine
-#        BUILD_TARGETS="meta-toolchain"
-#       BUILD_CLEAN="meta-toolchain"
-#        do_build
-#done
+# Architectures:
+# * arm-oabi:  simpad
+# * armv4t:    om-gta01
+# * armv5te:   c7x0
+# * armv6:     nokia800
+# * armv6-novfp: htckaiser
+# * armv7a:    beagleboard
+# * ppc405:    dht-walnut
+# * ppc603e:   efika
+# * i586:      qemux86
+
+for machine in simpad om-gta01 c7x0 nokia800 htckaiser beagleboard dht-walnut efika qemux86
+do
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="meta-toolchain"
+        BUILD_CLEAN="meta-toolchain"
+        do_build
+done
 
 
 # No graphics
