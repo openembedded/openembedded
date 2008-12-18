@@ -10,13 +10,14 @@ RDEPENDS_gpe-conf-panel = "gpe-conf"
 RPROVIDES_${PN} += " bl"
 RCONFLICTS_${PN} = "bl"
 
-PR = "r1"
+PR = "r2"
 
 GPE_TARBALL_SUFFIX = "bz2"
 
 inherit gpe autotools pkgconfig
 
-SRC_URI += "file://poweroff.patch;patch=1"
+SRC_URI += "file://poweroff.patch;patch=1 \
+            file://wifi-key.patch;patch=1;pnum=0"
 
 PACKAGES += "gpe-conf-panel"
 
