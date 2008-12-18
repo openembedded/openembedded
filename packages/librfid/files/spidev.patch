@@ -1,0 +1,24 @@
+Index: librfid-0.2.0/utils/common.c
+===================================================================
+--- librfid-0.2.0.orig/utils/common.c
++++ librfid-0.2.0/utils/common.c
+@@ -72,15 +72,11 @@ struct rfid_protocol_handle *ph;
+ 
+ int reader_init(void) 
+ {
+-	printf("opening reader handle OpenPCD, CM5x21\n");
+-	rh = rfid_reader_open(NULL, RFID_READER_OPENPCD);
++	printf("opening reader handle SPIDEV\n");
++	rh = rfid_reader_open("/dev/spidev", RFID_READER_SPIDEV);
+ 	if (!rh) {
+-		fprintf(stderr, "No OpenPCD found\n");
+-		rh = rfid_reader_open(NULL, RFID_READER_CM5121);
+-		if (!rh) {
+-			fprintf(stderr, "No Omnikey Cardman 5x21 found\n");
+-			return -1;
+-		}
++		fprintf(stderr, "No spidev RFID found\n");
++		return -1;
+ 	}
+ 	return 0;
+ }
