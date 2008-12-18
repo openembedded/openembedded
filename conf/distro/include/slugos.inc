@@ -179,7 +179,7 @@ PREFERRED_VERSION_pango    ?= "1.20.5"
 PREFERRED_VERSION_glib-2.0 ?= "2.16.1"
 PREFERRED_VERSION_cairo    ?= "1.4.8"
 
-PREFERRED_VERSION_udev	   ?= "124"
+PREFERRED_VERSION_udev	   ?= "118"
 
 # Stick with an older gettext and e2fsprogs stuff
 # and gnutls... (our autotools is too old at the moment)
