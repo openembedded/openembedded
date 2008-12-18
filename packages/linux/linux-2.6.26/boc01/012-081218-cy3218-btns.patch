@@ -70,11 +70,11 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +}
 +
 +unsigned short keymap[5] = {
-+		KEY_A,
-+		KEY_B,
-+		KEY_C,
-+		KEY_D,
-+		KEY_E,
++		KEY_UP,
++		KEY_F1,
++		KEY_ENTER,
++		KEY_DOWN,
++		KEY_BACKSPACE,
 +};
 +
 +static void handle_buttons(struct input_polled_dev *dev)
@@ -89,7 +89,7 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +	if(uValue == MASK0)
 +	{
 +		report_key(idev, keymap[0]);
-+		printk("Bouton A\n");
++		printk("Bouton UP\n");
 +	}
 +
 +	uValue = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP0);
@@ -97,24 +97,24 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +	if(uValue == MASK0)
 +	{
 +		report_key(idev, keymap[1]);
-+		printk("Bouton E\n");
++		printk("Bouton HELP\n");
 +	}
 +
 +	if(uValue == MASK1)
 +	{
 +		report_key(idev, keymap[2]);
-+		printk("Bouton B\n");
++		printk("Bouton OK\n");
 +	}
 +
 +	if(uValue == MASK2)
 +	{
 +		report_key(idev, keymap[3]);
-+		printk("Bouton C\n");
++		printk("Bouton DOWN\n");
 +	}
 +	if(uValue == MASK3)
 +	{
 +		report_key(idev, keymap[4]);
-+		printk("Bouton D\n");
++		printk("Bouton BACK\n");
 +	}
 +}
 +
@@ -167,8 +167,8 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +	set_bit(EV_KEY, ipdev->input->evbit);
 +
 +
-+	for (i = 0; i < 3; i++)
-+			set_bit(keymap[i], ipdev->input->keybit);
++	for (i = 0; i < ARRAY_SIZE(keymap); i++)
++		set_bit(keymap[i], ipdev->input->keybit);
 +
 +	rc = input_register_polled_device(ipdev);
 +	if(rc)
