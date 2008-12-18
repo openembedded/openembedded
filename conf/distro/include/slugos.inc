@@ -175,12 +175,11 @@ PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
 
 # New pango and older glib-2.0 versions don't mix,
 # so specify exactly what we would like to build.
-PREFERRED_VERSION_pango    ?= 1.20.5
-PREFERRED_VERSION_glib-2.0 ?= 2.16.1
-PREFERRED_VERSION_cairo    ?= 1.4.8
+PREFERRED_VERSION_pango    ?= "1.20.5"
+PREFERRED_VERSION_glib-2.0 ?= "2.16.1"
+PREFERRED_VERSION_cairo    ?= "1.4.8"
 
-# Stay with older hal because of udev dependency
-PREFERRED_VERSION_hal      ?= 0.5.9
+PREFERRED_VERSION_udev	   ?= "124"
 
 # Stick with an older gettext and e2fsprogs stuff
 # and gnutls... (our autotools is too old at the moment)
