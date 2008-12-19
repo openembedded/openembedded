@@ -25,11 +25,13 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-nptl', '${FILE_DIRN
 #however: we can't depend on virtual/kernel when nptl hits due to depends deadlocking ....
 KERNEL_SOURCE = "${CROSS_DIR}/${TARGET_SYS}"
 
-SRC_URI += "svn://uclibc.org/branches/;module=uClibc-nptl \
+SRC_URI += "svn://uclibc.org/branches/;module=uClibc-nptl;rev=${SRCREV} \
             file://uClibc.machine \
             file://uClibc.distro \
             file://uclibc-arm-ftruncate64.patch;patch=1 \
             file://arm_fix_alignment.patch;patch=1 \
             "
+SRC_URI_append_arm = " file://ldso_hash.patch;patch=1 "
+SRC_URI_append_armeb = " file://ldso_hash.patch;patch=1 "
 
 S = "${WORKDIR}/uClibc-nptl"

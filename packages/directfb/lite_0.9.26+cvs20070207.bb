@@ -9,7 +9,7 @@ LICENSE = "LGPL"
 
 # this is a CVS only release
 
-SRC_URI = "cvs://anonymous@cvs.directfb.org/cvs/directfb;method=pserver;module=lite;date=${@bb.data.getVar('PV', d, 1)[9:]}"
+SRC_URI = "cvs://anonymous@cvs.directfb.org/cvs/directfb;method=pserver;module=lite;date=${@bb.data.getVar('PV', d, 1)[10:]}"
 
 S = "${WORKDIR}/lite"
 

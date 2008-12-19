@@ -16,6 +16,4 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 CONFFILES_${PN} += "${sysconfdir}/opkg/Multiverse-feed.conf"
 
-PKG_TAGS_${PN} = "group::repos alias::Om_Multiverse"
-
 OPENMOKO_URI = "http://downloads.openmoko.org/repository"

@@ -15,5 +15,3 @@ EXTRA_OECONF = "--with-frontend=openmoko"
 do_configure_prepend() {
 	touch gtk-doc.make
 }
-
-PKG_TAGS_${PN} = "group::communication alias::Om_Dates2"

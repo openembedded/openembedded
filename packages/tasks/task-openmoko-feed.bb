@@ -29,6 +29,8 @@ RDEPENDS_task-openmoko-feed = "\
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial python-gst python-pygame \
+  python-lightblue python-pybluez \
+  obexpush \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
@@ -94,6 +96,7 @@ RDEPENDS_task-openmoko-feed = "\
   irssi \
   zsh \
   fbreader \
+  gzip \
   zip \
   firefox \
   tichy \
@@ -104,6 +107,7 @@ RDEPENDS_task-openmoko-feed = "\
   zhone \
   frameworkd \
   emacs \
+  gpe-scap \
 # for werner \
   net-tools \
   iproute2 \

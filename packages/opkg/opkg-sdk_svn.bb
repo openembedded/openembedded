@@ -1,8 +1,8 @@
 require opkg.inc
 
 DEPENDS = "curl-sdk"
-PR = "r1"
-
+PR = "r2"
+target_libdir := "${libdir}"
 inherit sdk
 
-EXTRA_OECONF += "--with-opkglibdir=${target_libdir}/opkg --disable-gpg"
+EXTRA_OECONF += "--with-opkglibdir=${target_libdir} --disable-gpg"

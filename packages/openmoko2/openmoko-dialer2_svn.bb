@@ -1,6 +1,5 @@
 DESCRIPTION = "The Openmoko Dialer"
 SECTION = "openmoko/pim"
-PKG_TAGS_${PN} = "group::communication alias::Om_Dialer2"
 DEPENDS = "libgsmd libjana libmokoui2 libmokojournal2 pulseaudio libnotify"
 PV = "0.1.0+svnr${SRCREV}"
 PR = "r9"

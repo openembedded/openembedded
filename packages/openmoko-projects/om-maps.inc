@@ -11,8 +11,6 @@ FILES_${PN} = "${MAP_DIR}/${MAP_FN}"
 
 PACKAGES = "${PN}"
 PACKAGE_ARCH = "all"
-ALIAS_NAME_${PN}= "${@bb.data.getVar('MAP_NAME', d, 1).replace(' ','_')}"
-PKG_TAGS_${PN} = "group::maps alias::${ALIAS_NAME_${PN}}"
 
 do_install() {
         install -d ${D}${MAP_DIR}
