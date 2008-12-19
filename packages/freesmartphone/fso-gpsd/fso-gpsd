@@ -14,7 +14,8 @@ NAME=fso-gpsd
 case "$1" in
     start)
         echo -n "Starting freesmartphone.org gpsd compatibility daemon: "
-        start-stop-daemon --start --pidfile /var/run/${NAME}.pid --make-pidfile -x /usr/sbin/fso-gpsd
+        start-stop-daemon --start /usr/sbin/fso-gpsd -S localhost:gpsd -P /var/run/${NAME}.pid
+
         if [ $? = 0 ]; then
             echo "(ok)"
         else
