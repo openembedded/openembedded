@@ -1,0 +1,10 @@
+--- a/keycodes/evdev
++++ b/keycodes/evdev
+@@ -311,6 +311,7 @@ xkb_keycodes "jp106" {
+ // For brazilian ABNT2 keyboard.
+ xkb_keycodes "abnt2" {
+     include "evdev(evdev)"
++    <KPPT> = 129;
+ };
+ 
+ // PC98
