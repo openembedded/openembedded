@@ -31,46 +31,60 @@
 
 #define ADDRESS 0x1a
 
-int
-main (int argc, char **argv)
+int main(int argc, char **argv)
 {
 
-  int fd = 0;
+	int fd = 0;
 
-  /* Attempt to open I2C device (/dev/i2c-3) */
-  fd = open ("/dev/i2c-3", O_RDWR);
-  if (fd == -1)
-    {
-      fprintf (stderr, "Failed to open pico DLP I2C device: %m\n");
-      exit (0);
-    }
+	/* Attempt to open I2C device (/dev/i2c-3) */
+	fd = open("/dev/i2c-3", O_RDWR);
+	if (fd == -1) {
+		fprintf(stderr, "Failed to open pico DLP I2C device: %m\n");
+		exit(0);
+	}
 
-  /* Set the slave address of type I2C_SLAVE */
-  if (ioctl (fd, I2C_SLAVE, ADDRESS) < 0)
-    {
-      fprintf (stderr, "Failed to access pico DLp: %m\n");
-      exit (0);
-    }
+	/* Set the slave address of type I2C_SLAVE */
+	if (ioctl(fd, I2C_SLAVE, ADDRESS) < 0) {
+		fprintf(stderr, "Failed to access pico DLp: %m\n");
+		exit(0);
+	}
 
-  /* Attempt to enable checksumming */
-  if (ioctl (fd, I2C_PEC, 1) < 0)
-    {
-      fprintf (stderr, "Failed to enable PEC\n");
-      exit (0);
-    }
+	/* Attempt to enable checksumming */
+	if (ioctl(fd, I2C_PEC, 1) < 0) {
+		fprintf(stderr, "Failed to enable PEC\n");
+		exit(0);
+	}
 
-  uint16_t hflip;		/* The horizontal flip bit */
-  uint16_t vflip;		/* The vertical flip bit */
+	uint16_t hflip;		/* The horizontal flip bit */
+	uint16_t vflip;		/* The vertical flip bit */
 
-  /* Read the status bits for horizontal and vertical vlip */
-  hflip = i2c_smbus_read_word_data (fd, 0x08);
-  vflip = i2c_smbus_read_word_data (fd, 0x09);
+	/* Read the status bits for horizontal and vertical vlip */
+	fprintf(stdout, "Getting flip bits \n");
+	hflip = i2c_smbus_read_word_data(fd, 0x08);
+	vflip = i2c_smbus_read_word_data(fd, 0x09);
 
+	/* set flip bits to 0 */
+	fprintf(stdout, "Setting flip bits to zero\n");
+	i2c_smbus_write_word_data(fd, 0x08, 0);
+	i2c_smbus_write_word_data(fd, 0x08, 0);
 
+	sleep(2);
 
-  /* Output the values to stdout */
-  fprintf (stdout, "hflip: %d - vflip: %d\n", hflip, vflip);
+	/* set flip bits to 1 */
+	fprintf(stdout, "Getting flip bits to one\n");
+	i2c_smbus_write_word_data(fd, 0x08, 1);
+	i2c_smbus_write_word_data(fd, 0x08, 1);
 
-  return 0;
+	sleep(2);
+
+	/* restore values */
+	fprintf(stdout, "Restoring flip bits \n");
+	i2c_smbus_write_word_data(fd, 0x08, hflip);
+	i2c_smbus_write_word_data(fd, 0x08, vflip);
+
+	/* Output the values to stdout */
+	fprintf(stdout, "hflip: %d - vflip: %d\n", hflip, vflip);
+
+	return 0;
 
 }

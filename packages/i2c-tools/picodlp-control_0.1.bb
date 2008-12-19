@@ -13,6 +13,6 @@ do_compile() {
 
 do_install() {
 	install -d ${D}/${bindir}
-	install -m -755 ${S}/${PN} {D}/${bindir}
+	install -m 0755 ${S}/${PN} ${D}/${bindir}
 }
 
