@@ -11,8 +11,8 @@ RDEPENDS_gpe-conf-panel = "gpe-conf"
 
 inherit autotools gpe
 
-PV = "0.2.5+svn${SRCDATE}"
-PR = "r1"
+PV = "0.2.7+svnr${SRCREV}"
+PR = "r0"
 
 SRC_URI = "${GPE_SVN}"
 S = "${WORKDIR}/${PN}"
