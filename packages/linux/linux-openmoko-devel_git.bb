@@ -8,9 +8,9 @@ DEFAULT_PREFERENCE = "-1"
 KERNEL_RELEASE = "2.6.27"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
-OEV = "oe2"
+OEV = "oe3"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
