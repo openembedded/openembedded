@@ -66,21 +66,21 @@ int main(int argc, char **argv)
 	/* set flip bits to 0 */
 	fprintf(stdout, "Setting flip bits to zero\n");
 	i2c_smbus_write_word_data(fd, 0x08, 0);
-	i2c_smbus_write_word_data(fd, 0x08, 0);
+	i2c_smbus_write_word_data(fd, 0x09, 0);
 
 	sleep(2);
 
 	/* set flip bits to 1 */
 	fprintf(stdout, "Getting flip bits to one\n");
 	i2c_smbus_write_word_data(fd, 0x08, 1);
-	i2c_smbus_write_word_data(fd, 0x08, 1);
+	i2c_smbus_write_word_data(fd, 0x09, 1);
 
 	sleep(2);
 
 	/* restore values */
 	fprintf(stdout, "Restoring flip bits \n");
 	i2c_smbus_write_word_data(fd, 0x08, hflip);
-	i2c_smbus_write_word_data(fd, 0x08, vflip);
+	i2c_smbus_write_word_data(fd, 0x09, vflip);
 
 	/* Output the values to stdout */
 	fprintf(stdout, "hflip: %d - vflip: %d\n", hflip, vflip);

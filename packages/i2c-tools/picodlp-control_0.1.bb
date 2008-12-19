@@ -1,5 +1,6 @@
 DESCRIPTION = "Small application to control the pico DLP over I2C"
 LICENSE = "GPLv3"
+PR = "r1"
 
 SRC_URI = "file://${PN}.c file://i2c-dev.h"
 
