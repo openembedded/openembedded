@@ -1,0 +1,10 @@
+--- /tmp/rtl8187_dev.c	2008-12-20 19:41:30.000000000 +0100
++++ git/drivers/net/wireless/rtl8187_dev.c	2008-12-20 19:42:01.000000000 +0100
+@@ -45,6 +45,7 @@
+ 	{USB_DEVICE(0x03f0, 0xca02), .driver_info = DEVICE_RTL8187},
+ 	/* Sitecom */
+ 	{USB_DEVICE(0x0df6, 0x000d), .driver_info = DEVICE_RTL8187},
++	{USB_DEVICE(0x0df6, 0x0028), .driver_info = DEVICE_RTL8187B},
+ 	{}
+ };
+ 

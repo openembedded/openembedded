@@ -6,7 +6,7 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm"
 
 SRCREV = "2a3408be17f287fdb5809c9b6c68e7ad96d25b74"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -39,6 +39,7 @@ SRC_URI_append = " \
 #           file://openvz/openvz-2.6.27.diff;patch=1 \
            file://pvr/pvr-add.patch;patch=1 \
            file://pvr/dispc.patch;patch=1 \
+           file://sitecomwl168-support.diff;patch=1 \
 "
 
 
