@@ -4,7 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de> et. al."
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.4.4+gitr${SRCREV}"
+PV = "0.8.4.5+gitr${SRCREV}"
 PR = "r0"
 
 inherit distutils update-rc.d
