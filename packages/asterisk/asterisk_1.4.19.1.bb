@@ -7,7 +7,7 @@ PRIORITY = "optional"
 SECTION = "console/telephony"
 DEPENDS = "speex readline zlib openssl curl popt gnutls sqlite libogg libvorbis"
 #RRECOMMENDS_${PN} = "logrotate"
-PR = "r1"
+PR = "r2"
 
 
 SRC_URI="http://ftp.digium.com/pub/asterisk/releases/asterisk-${PV}.tar.gz\
@@ -68,8 +68,8 @@ do_configure_prepend () {
 do_configure () {
 	# Looks like rebuilding configure doesn't work, so we are skipping
 	# that and are just using the shipped one
-	gnu-configize
-	libtoolize --force
+	# gnu-configize
+	# libtoolize --force
 	oe_runconf
 }
 
