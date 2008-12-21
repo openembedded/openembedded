@@ -1,5 +1,5 @@
 require u-boot.inc
-PR ="r21"
+PR ="r22"
 
 SRC_URI = "git://www.denx.de/git/u-boot.git;protocol=git "
 SRCREV_davinci-sffsdr = "4b50cd12a3b3c644153c4cf393f4a4c12289e5aa"
@@ -9,8 +9,8 @@ SRCREV_spitz = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_c7x0 = "9bf86baaa3b35b25baa2d664e2f7f6cafad689ee"
 SRCREV_afeb9260 = "2077e348c2a84901022ad95311b47b70361e6daa"
 
-SRC_URI_beagleboard = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;protocol=git" 
-SRCREV_beagleboard = "1e329ec630b31803ee191d2ee335214662b5bfea"
+SRC_URI_beagleboard = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git" 
+SRCREV_beagleboard = "b7038cff739684bb95853eb5bee924c2574a222e"
 PV_beagleboard = "2008.10+${PR}+gitr${SRCREV}"
 
 SRC_URI_omap3evm = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;protocol=git" 
