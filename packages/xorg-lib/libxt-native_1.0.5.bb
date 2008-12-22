@@ -1,7 +1,8 @@
 require libxt_${PV}.bb
 
-inherit native
-
 DEPENDS = "libx11-native libsm-native kbproto-native"
+PROVIDES = "xt-native"
+
+inherit native
 
 XORG_PN = "libXt"
