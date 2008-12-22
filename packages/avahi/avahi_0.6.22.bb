@@ -1,6 +1,6 @@
 require avahi.inc
 
 DEPENDS += "intltool-native"
-PR = "r9"
+PR = "r10"
 
 PACKAGES =+ "libavahi-gobject"

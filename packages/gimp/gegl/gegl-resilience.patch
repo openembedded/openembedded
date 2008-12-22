@@ -1,0 +1,11 @@
+--- trunk/operations/external/ff-load.c	2008-12-20 13:37:05.000000000 -0800
++++ trunk/operations/external/ff-load.c	2008-12-20 13:37:22.000000000 -0800
+@@ -278,7 +278,7 @@
+       p->enc = p->video_st->codec;
+       p->codec = avcodec_find_decoder (p->enc->codec_id);
+ 
+-      p->enc->error_resilience = 2;
++      p->enc->error_recognition = 2;
+       p->enc->error_concealment = 3;
+       p->enc->workaround_bugs = FF_BUG_AUTODETECT;
+ 

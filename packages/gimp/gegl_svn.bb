@@ -5,10 +5,12 @@ DEPENDS = "babl librsvg glib-2.0 gtk+ pango cairo expat zlib libpng jpeg virtual
 SRCREV = "2543"
 PV = "0.0.19+svnr${SRCREV}"
 PE = "1"
+PR = "r1"
 
 inherit gnome
 
-SRC_URI = "svn://svn.gnome.org/svn/${PN};module=trunk"
+SRC_URI = "svn://svn.gnome.org/svn/${PN};module=trunk \
+           file://gegl-resilience.patch;patch=1"
 
 S = "${WORKDIR}/trunk"
 

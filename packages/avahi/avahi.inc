@@ -76,10 +76,11 @@ pkg_postinst_avahi-daemon () {
 	grep "^avahi:" /etc/group > /dev/null || addgroup avahi
 	grep "^avahi:" /etc/passwd > /dev/null || adduser --disabled-password --system --home /var/run/avahi-daemon --no-create-home avahi --ingroup avahi -g Avahi
 
-	DBUSPID=`pidof dbus-daemon`
-
-	if [ "x$DBUSPID" != "x" ]; then
-		/etc/init.d/dbus-1 force-reload
+	DBUSPID="/var/run/dbus/pid"
+	if [ -f $DBUSPID ]; then
+		if ps `cat $DBUSPID` > /dev/null; then
+			/etc/init.d/dbus-1 force-reload
+		fi
 	fi
 }
 
