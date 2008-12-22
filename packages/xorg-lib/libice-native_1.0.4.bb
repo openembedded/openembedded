@@ -1,7 +1,8 @@
 require libice_${PV}.bb
 
-inherit native
+DEPENDS = "libx11-native xproto-native xtrans-native"
+PROVIDES = "ice-native"
 
-DEPENDS += "libx11-native xproto-native xtrans-native"
+inherit native
 
 XORG_PN = "libICE"
