@@ -65,8 +65,8 @@ pkg_postinst_append() {
                 if test "$mp" = "/"
                 then
                         root_partition="$dev"
-                        echo "$root_partition" >> ${sysconfdir}/udev/mount.blacklist
+                        echo "$root_partition" >> $D${sysconfdir}/udev/mount.blacklist
                 fi
-        done < ${sysconfdir}/fstab
+        done < $D${sysconfdir}/fstab
 }
 
