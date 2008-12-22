@@ -1,0 +1,119 @@
+Index: librfid-svn/src/rfid_asic_rc632.c
+===================================================================
+--- librfid-svn.orig/src/rfid_asic_rc632.c	2008-03-12 13:02:52.000000000 +0100
++++ librfid-svn/src/rfid_asic_rc632.c	2008-03-12 15:15:34.000000000 +0100
+@@ -149,9 +149,15 @@
+ }
+ 
+ static int
+-rc632_clear_irqs(struct rfid_asic_handle *handle, u_int8_t bits)
++rc632_clear_spec_bits(struct rfid_asic_handle *handle, u_int8_t reg, u_int8_t bits)
+ {
+-	return rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, (~RC632_INT_SET)&bits);
++	return rc632_reg_write(handle, reg, (0x3f)&bits);
++}
++
++static int
++rc632_set_spec_bits(struct rfid_asic_handle *handle, u_int8_t reg, u_int8_t bits)
++{
++	return rc632_reg_write(handle, reg, (0x80)|bits);
+ }
+ 
+ static int 
+@@ -258,13 +264,10 @@
+ 
+ 	/* clear timer irq bit */
+ 	/*FIXME: is this right? maybe use write function and set bit 8 to zero and timer_bit to 1 to clear*/
+-	//ret = rc632_set_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_TIMER);
+-	//ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_TIMER);
+-	ret = rc632_clear_irqs(handle, RC632_IRQ_TIMER);
++	ret = rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_TIMER);
+ 
+ 	/* enable timer IRQ */
+-	//ret |= rc632_set_bits(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_TIMER);
+-	ret |= rc632_reg_write(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_SET | RC632_IRQ_TIMER);
++	ret |= rc632_set_spec_bits(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_TIMER);
+ 
+ 	ret |= rc632_reg_write(handle, RC632_REG_TIMER_RELOAD, divisor);
+ 
+@@ -282,10 +285,10 @@
+ 		return ret;
+ 	DEBUGP_INTERRUPT_FLAG("irq_en",irq);
+ 
+-	ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_SET
+-				| RC632_IRQ_TIMER
++	ret = rc632_set_spec_bits(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_TIMER
+ 				| RC632_IRQ_IDLE
+-				| RC632_IRQ_RX );
++				| RC632_IRQ_RX
++				 );
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -312,7 +315,7 @@
+ 
+ 			if (irq & RC632_IRQ_TIMER && !(irq & RC632_IRQ_RX)) {
+ 				DEBUGP("timer expired before RX!!\n");
+-				rc632_clear_irqs(handle, RC632_IRQ_TIMER);
++				rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_TIMER);
+ 				return -ETIMEDOUT;
+ 			}
+ 		}
+@@ -322,7 +325,7 @@
+ 			return ret;
+ 
+ 		if (cmd == 0){
+-			rc632_clear_irqs(handle, RC632_IRQ_RX);
++			rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_RX);
+ 			return 0;
+ 		}
+ 
+@@ -361,7 +364,7 @@
+ 				ret = rc632_reg_read(handle, RC632_REG_INTERRUPT_RQ, &foo);
+ 				DEBUGP_INTERRUPT_FLAG("irq_rq",foo);
+ 				/* clear all interrupts */
+-				rc632_clear_irqs(handle, 0xff);
++				rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_IRQ_ALL);
+ 			}
+ 		}
+ 		if (cmd == 0) {
+@@ -455,7 +458,7 @@
+ 
+ 	ret = rc632_reg_write(handle, RC632_REG_COMMAND, RC632_CMD_IDLE);
+ 	/* clear all interrupts */
+-	ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, 0x3f);
++	rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_INT_ALL);
+ 
+ 	{ u_int8_t tmp;
+ 	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+@@ -549,7 +552,7 @@
+ 	DEBUGP("timeout=%u, rx_len=%u\n", timer, *rx_len);
+ 	ret = rc632_reg_write(handle, RC632_REG_COMMAND, 0x00); /* IDLE */
+ 	/* clear all interrupts */
+-	ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, 0x7f);
++	rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_INT_ALL);
+ 
+ 	ret = rc632_timer_set(handle, timer);
+ 	if (ret < 0)
+Index: librfid-svn/src/rfid_asic_rc632.h
+===================================================================
+--- librfid-svn.orig/src/rc632.h	2008-03-12 13:01:43.000000000 +0100
++++ librfid-svn/src/rc632.h	2008-03-12 12:42:59.000000000 +0100
+@@ -106,6 +106,8 @@
+ 	RC632_INT_RX			= 0x08,
+ 	RC632_INT_TX			= 0x10,
+ 	RC632_INT_TIMER			= 0x20,
++ 	RC632_INT_ALL			= 0x3f,
++
+ 	RC632_INT_SET			= 0x80,
+ };
+ 
+@@ -261,6 +263,7 @@
+ 	RC632_IRQ_RX			= 0x08,
+ 	RC632_IRQ_TX			= 0x10,
+ 	RC632_IRQ_TIMER			= 0x20,
++ 	RC632_IRQ_ALL			= 0x3f,
+ 
+ 	RC632_IRQ_SET			= 0x80,
+ };
+

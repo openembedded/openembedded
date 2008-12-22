@@ -1,0 +1,15 @@
+Index: librfid-svn/src/rc632.h
+===================================================================
+--- librfid-svn.orig/src/rc632.h	2008-01-31 13:27:49.000000000 -0500
++++ librfid-svn/src/rc632.h	2008-02-23 19:18:51.000000000 -0500
+@@ -70,8 +70,8 @@
+ enum rc632_reg_status {
+ 	RC632_STAT_LOALERT		= 0x01,
+ 	RC632_STAT_HIALERT		= 0x02,
+-	RC632_STAT_IRQ			= 0x04,
+-	RC632_STAT_ERR			= 0x08,
++	RC632_STAT_ERR			= 0x04,
++	RC632_STAT_IRQ			= 0x08,
+ #define RC632_STAT_MODEM_MASK		0x70
+ 	RC632_STAT_MODEM_IDLE		= 0x00,
+ 	RC632_STAT_MODEM_TXSOF		= 0x10,

@@ -1,0 +1,16 @@
+Index: utils/librfid-tool.c
+===================================================================
+--- x/utils/librfid-tool.c	(revision 2089)
++++ x/utils/librfid-tool.c	(working copy)
+@@ -456,6 +456,10 @@
+ 
+ 	if (rh->reader->l2_supported & (1 << layer2)) {
+ 		l2h = rfid_layer2_init(rh, layer2);
++		if (!l2h) {
++			printf("error during layer2(%d)_init (0=14a,1=14b,3=15)\n",layer2);
++			return;
++		}
+ 		printf("Layer2 init ok\n");
+ 		rc = rfid_layer2_open(l2h);
+ 	} else {
+

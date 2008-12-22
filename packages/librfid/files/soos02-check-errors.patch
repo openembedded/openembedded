@@ -1,0 +1,36 @@
+diff --git a/src/rfid_asic_rc632.c b/src/rfid_asic_rc632.c
+index b9b1aff..f0948c6 100644
+--- a/src/rfid_asic_rc632.c
++++ b/src/rfid_asic_rc632.c
+@@ -297,7 +297,9 @@ static int rc632_wait_idle_timer(struct rfid_asic_handle *handle)
+ 		DEBUGP_STATUS_FLAG(stat);
+ 		if (stat & RC632_STAT_ERR) {
+ 			u_int8_t err;
+-			rc632_reg_read(handle, RC632_REG_ERROR_FLAG, &err);
++			ret = rc632_reg_read(handle, RC632_REG_ERROR_FLAG, &err);
++			if (ret < 0) 
++				return ret;
+ 			DEBUGP_ERROR_FLAG(err);
+ 			if (err & (RC632_ERR_FLAG_COL_ERR |
+ 				   RC632_ERR_FLAG_PARITY_ERR |
+@@ -457,14 +459,16 @@ rc632_transceive(struct rfid_asic_handle *handle,
+ 
+ 
+ 	ret = rc632_reg_write(handle, RC632_REG_COMMAND, RC632_CMD_IDLE);
++	if (ret < 0)
++		return ret;
+ 	/* clear all interrupts */
+-	rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_INT_ALL);
++	ret = rc632_clear_spec_bits(handle, RC632_REG_INTERRUPT_RQ, RC632_INT_ALL);
++	if (ret < 0)
++		return ret;
+ 
+ 	{ u_int8_t tmp;
+ 	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+ 	DEBUGP_STATUS_FLAG(tmp);
+-	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+-	DEBUGP_STATUS_FLAG(tmp);
+ 	rc632_reg_read(handle, RC632_REG_ERROR_FLAG, &tmp);
+ 	DEBUGP_ERROR_FLAG(tmp);
+ 	}
+

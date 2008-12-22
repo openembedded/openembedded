@@ -1,0 +1,19 @@
+diff --git a/src/rfid_asic_rc632.c b/src/rfid_asic_rc632.c
+index f0948c6..fbc4c2a 100644
+--- a/src/rfid_asic_rc632.c
++++ b/src/rfid_asic_rc632.c
+@@ -285,13 +285,6 @@ static int rc632_wait_idle_timer(struct rfid_asic_handle *handle)
+ 		return ret;
+ 	DEBUGP_INTERRUPT_FLAG("irq_en",irq);
+ 
+-	ret = rc632_set_spec_bits(handle, RC632_REG_INTERRUPT_EN, RC632_IRQ_TIMER
+-				| RC632_IRQ_IDLE
+-				| RC632_IRQ_RX
+-				 );
+-	if (ret < 0)
+-		return ret;
+-
+ 	while (1) {
+ 		rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &stat);
+ 		DEBUGP_STATUS_FLAG(stat);
+

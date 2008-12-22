@@ -1,0 +1,25 @@
+Index: librfid-svn/src/rfid_asic_rc632.c
+===================================================================
+--- librfid-svn.orig/src/rfid_asic_rc632.c	2008-02-26 10:18:00.000000000 -0500
++++ librfid-svn/src/rfid_asic_rc632.c	2008-02-26 10:26:10.000000000 -0500
+@@ -453,18 +453,15 @@
+ 		cur_tx_len = tx_len;
+ 
+ 
+-	ret = rc632_reg_write(handle, RC632_REG_COMMAND, 0x00);
++	ret = rc632_reg_write(handle, RC632_REG_COMMAND, RC632_CMD_IDLE);
+ 	/* clear all interrupts */
+-	ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, 0x7f);
+-	ret = rc632_reg_write(handle, RC632_REG_ERROR_FLAG, 0xff);
++	ret = rc632_reg_write(handle, RC632_REG_INTERRUPT_RQ, 0x3f);
+ 
+ 	{ u_int8_t tmp;
+ 	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+ 	DEBUGP_STATUS_FLAG(tmp);
+ 	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+ 	DEBUGP_STATUS_FLAG(tmp);
+-	rc632_reg_read(handle, RC632_REG_PRIMARY_STATUS, &tmp);
+-	DEBUGP_STATUS_FLAG(tmp);
+ 	rc632_reg_read(handle, RC632_REG_ERROR_FLAG, &tmp);
+ 	DEBUGP_ERROR_FLAG(tmp);
+ 	}
