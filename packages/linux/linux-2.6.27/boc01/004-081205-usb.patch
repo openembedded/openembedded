@@ -1,0 +1,16 @@
+--- linux-2.6.27.orig/arch/powerpc/platforms/83xx/usb.c	2008-12-05 14:50:43.000000000 +0100
++++ linux-2.6.27.modif/arch/powerpc/platforms/83xx/usb.c	2008-12-05 14:51:17.000000000 +0100
+@@ -172,10 +172,10 @@
+ 		     !strcmp(prop, "utmi"))) {
+ 		u32 refsel;
+ 
+-		if (of_device_is_compatible(immr_node, "fsl,mpc8315-immr"))
++//		if (of_device_is_compatible(immr_node, "fsl,mpc8315-immr"))
+ 			refsel = CONTROL_REFSEL_24MHZ;
+-		else
+-			refsel = CONTROL_REFSEL_48MHZ;
++//		else
++//			refsel = CONTROL_REFSEL_48MHZ;
+ 		/* Set UTMI_PHY_EN and REFSEL */
+ 		out_be32(usb_regs + FSL_USB2_CONTROL_OFFS,
+ 				CONTROL_UTMI_PHY_EN | refsel);

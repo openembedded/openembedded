@@ -1,0 +1,269 @@
+Index: linux-2.6.27/drivers/hwmon/Kconfig
+===================================================================
+--- linux-2.6.27.orig/drivers/hwmon/Kconfig
++++ linux-2.6.27/drivers/hwmon/Kconfig
+@@ -416,6 +416,15 @@ config SENSORS_LM70
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called lm70.
+ 
++config SENSORS_LM73
++	tristate "National Semiconductor LM73"
++	depends on I2C
++	help
++	  If you say yes here you get support for National Semiconductor LM73
++	  sensor chips
++	  This driver can also be built as a module.  If so, the module
++	  will be called lm73.
++
+ config SENSORS_LM75
+ 	tristate "National Semiconductor LM75 and compatibles"
+ 	depends on I2C
+Index: linux-2.6.27/drivers/hwmon/lm73.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/hwmon/lm73.c
+@@ -0,0 +1,232 @@
++ /*
++ * LM73 Sensor driver
++ * Based on LM75
++ *
++ *
++ * Copyright (C) 2007, CenoSYS (www.cenosys.com).
++ * Guillaume Ligneul
++ * Guillaume.ligneul@gmail.com
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/jiffies.h>
++#include <linux/i2c.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/err.h>
++#include <linux/mutex.h>
++
++
++/* Addresses to scan */
++static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c,
++					0x4d, 0x4e, 0x4f, I2C_CLIENT_END };
++
++/* Insmod parameters */
++I2C_CLIENT_INSMOD_1(lm73);
++
++/* LM73 registers */
++#define LM73_REG_INPUT		0x00
++#define LM73_REG_CONF		0x01
++#define LM73_REG_T_HIGH		0x02
++#define LM73_REG_T_LOW		0x03
++
++static const u8 LM73_REG_TEMP[3] = {
++	LM73_REG_INPUT,		/* input */
++	LM73_REG_T_HIGH,	/* max */
++	LM73_REG_T_LOW,		/* min	*/
++};
++
++/* Each client has this additional data */
++struct lm73_data {
++	struct i2c_client	client;
++	struct device *hwmon_dev;
++	struct mutex		update_lock;
++	char			valid;		/* !=0 if following fields are valid */
++	unsigned long		last_updated;	/* In jiffies */
++	u16			temp[3];	/* Register values,
++						   0 = input
++						   1 = max
++						   2 = min */
++};
++
++static int lm73_attach_adapter(struct i2c_adapter *adapter);
++static int lm73_detect(struct i2c_adapter *adapter, int address, int kind);
++static int lm73_detach_client(struct i2c_client *client);
++static int lm73_read_value(struct i2c_client *client, u8 reg);
++static int lm73_write_value(struct i2c_client *client, u8 reg, short value);
++
++/* This is the driver that will be inserted */
++static struct i2c_driver lm73_driver = {
++	.driver = {
++		.name	= "lm73",
++	},
++	.attach_adapter	= lm73_attach_adapter,
++	.detach_client	= lm73_detach_client,
++};
++
++static ssize_t show_temp(struct device *dev, struct device_attribute *da,
++			 char *buf)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
++	struct i2c_client *client = to_i2c_client(dev);
++	int iTemp = 0;
++
++	iTemp = lm73_read_value(client, LM73_REG_TEMP[attr->index]);
++
++	return sprintf(buf, "%d\n", iTemp);
++
++
++}
++
++static ssize_t set_temp(struct device *dev, struct device_attribute *da,
++			const char *buf, size_t count)
++{
++	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
++	struct i2c_client *client = to_i2c_client(dev);
++	int nr = attr->index;
++
++	long tmp = simple_strtol(buf, NULL, 10);
++
++	lm73_write_value(client, LM73_REG_TEMP[nr], tmp);
++	return count;
++}
++
++static SENSOR_DEVICE_ATTR(temp1_max, S_IWUSR | S_IRUGO,
++			show_temp, set_temp, 1);
++static SENSOR_DEVICE_ATTR(temp1_min, S_IWUSR | S_IRUGO,
++			show_temp, set_temp, 2);
++static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp, NULL, 0);
++
++static int lm73_attach_adapter(struct i2c_adapter *adapter)
++{
++	if (!(adapter->class & I2C_CLASS_HWMON))
++		return 0;
++
++	return i2c_probe(adapter, &addr_data, lm73_detect);
++}
++
++static struct attribute *lm73_attributes[] = {
++	&sensor_dev_attr_temp1_input.dev_attr.attr,
++	&sensor_dev_attr_temp1_max.dev_attr.attr,
++	&sensor_dev_attr_temp1_min.dev_attr.attr,
++
++	NULL
++};
++
++static const struct attribute_group lm73_group = {
++	.attrs = lm73_attributes,
++};
++
++/* This function is called by i2c_probe */
++static int lm73_detect(struct i2c_adapter *adapter, int address, int kind)
++{
++	struct i2c_client *new_client;
++	struct lm73_data *data;
++	int err = 0;
++	const char *name = "";
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA |
++				     I2C_FUNC_SMBUS_WORD_DATA))
++		goto exit;
++
++	if (!(data = kzalloc(sizeof(struct lm73_data), GFP_KERNEL))) {
++		err = -ENOMEM;
++		goto exit;
++	}
++
++	new_client = &data->client;
++	i2c_set_clientdata(new_client, data);
++	new_client->addr = address;
++	new_client->adapter = adapter;
++	new_client->driver = &lm73_driver;
++	new_client->flags = 0;
++
++	name = "lm73";
++
++	/* Fill in the remaining client fields and put it into the global list */
++	strlcpy(new_client->name, name, I2C_NAME_SIZE);
++	data->valid = 0;
++	mutex_init(&data->update_lock);
++
++	/* Tell the I2C layer a new client has arrived */
++	if ((err = i2c_attach_client(new_client)))
++		goto exit_free;
++
++	/* Register sysfs hooks */
++	if ((err = sysfs_create_group(&new_client->dev.kobj, &lm73_group)))
++		goto exit_detach;
++
++	data->hwmon_dev = hwmon_device_register(&new_client->dev);
++	if (IS_ERR(data->hwmon_dev)) {
++		err = PTR_ERR(data->hwmon_dev);
++		goto exit_remove;
++	}
++
++	return 0;
++
++exit_remove:
++	sysfs_remove_group(&new_client->dev.kobj, &lm73_group);
++exit_detach:
++	i2c_detach_client(new_client);
++exit_free:
++	kfree(data);
++exit:
++	return err;
++}
++
++static int lm73_detach_client(struct i2c_client *client)
++{
++	struct lm73_data *data = i2c_get_clientdata(client);
++	hwmon_device_unregister(data->hwmon_dev);
++	sysfs_remove_group(&client->dev.kobj, &lm73_group);
++	i2c_detach_client(client);
++	kfree(data);
++	return 0;
++}
++
++static int lm73_read_value(struct i2c_client *client, u8 reg)
++{
++	short sVal;
++
++	if (reg == LM73_REG_CONF)
++		return i2c_smbus_read_byte_data(client, reg);
++	else
++	{
++		sVal = swab16(i2c_smbus_read_word_data(client, reg));
++		sVal = sVal >> 7;
++		return sVal;
++	}
++}
++
++static int lm73_write_value(struct i2c_client *client, u8 reg, short value)
++{
++	if (reg == LM73_REG_CONF)
++		return i2c_smbus_write_byte_data(client, reg, value);
++	else
++	{
++		value = value<<7;
++		return i2c_smbus_write_word_data(client, reg, swab16(value));
++	}
++}
++
++static int __init sensors_lm73_init(void)
++{
++	return i2c_add_driver(&lm73_driver);
++}
++
++static void __exit sensors_lm73_exit(void)
++{
++	i2c_del_driver(&lm73_driver);
++}
++
++MODULE_AUTHOR("Ligneul Guillaume <guillaume.ligneul@gmail.com>");
++MODULE_DESCRIPTION("LM73 driver");
++MODULE_LICENSE("GPL");
++
++module_init(sensors_lm73_init);
++module_exit(sensors_lm73_exit);
+Index: linux-2.6.27/drivers/hwmon/Makefile
+===================================================================
+--- linux-2.6.27.orig/drivers/hwmon/Makefile
++++ linux-2.6.27/drivers/hwmon/Makefile
+@@ -49,6 +49,7 @@ obj-$(CONFIG_SENSORS_IT87)	+= it87.o
+ obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
+ obj-$(CONFIG_SENSORS_LM63)	+= lm63.o
+ obj-$(CONFIG_SENSORS_LM70)	+= lm70.o
++obj-$(CONFIG_SENSORS_LM73)	+= lm73.o
+ obj-$(CONFIG_SENSORS_LM75)	+= lm75.o
+ obj-$(CONFIG_SENSORS_LM77)	+= lm77.o
+ obj-$(CONFIG_SENSORS_LM78)	+= lm78.o

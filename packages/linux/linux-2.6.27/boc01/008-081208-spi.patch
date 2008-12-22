@@ -1,0 +1,143 @@
+--- linux-2.6.27.orig/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/arch/powerpc/platforms/83xx/mpc831x_rdb.c	2008-12-12 09:45:19.000000000 +0100
+@@ -15,17 +15,87 @@
+ 
+ #include <linux/pci.h>
+ #include <linux/of_platform.h>
++#include <linux/spi/spi.h>
+ 
+ #include <asm/time.h>
+ #include <asm/ipic.h>
+ #include <asm/udbg.h>
+ #include <sysdev/fsl_pci.h>
++#include <sysdev/fsl_soc.h>
++#include <linux/interrupt.h>
+ 
+ #include "mpc83xx.h"
+ 
+ /*
+  * Setup the architecture
+  */
++struct gpio {
++	__be32 gpdir;
++	__be32 gpodr;
++	__be32 gpdat;
++	__be32 gpier;
++	__be32 gpimr;
++	__be32 gpicr;
++} __attribute__ ((packed));
++static struct gpio *gpio_regs;
++
++static void mpc83xx_spi_activate_cs(u8 cs, u8 polarity)
++{
++	//printk(KERN_INFO "%s %d %d\n", __func__, cs, polarity);
++	if (polarity)
++		setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++	else
++		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++}
++
++static void mpc83xx_spi_deactivate_cs(u8 cs, u8 polarity)
++{
++//printk(KERN_INFO "%s %d %d\n", __func__, cs, polarity);
++	if (polarity)
++		clrbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++	else
++		setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++
++}
++
++//static struct mmc_spi_platform_data mpc8313_mmc_pdata = {
++//	.ocr_mask = MMC_VDD_33_34,
++//};
++
++static struct spi_board_info mpc8313_spi_boardinfo = {
++	.bus_num = 0x7000,
++	.chip_select = 0,
++	.max_speed_hz = 50000000,
++	.modalias = "spidev",
++//	.platform_data = &mpc8313_mmc_pdata,
++};
++
++static int __init mpc8313_spi_init(void)
++{
++	__be32 __iomem *psicrl;
++
++	/* System I/O Configuration Register Low */
++	psicrl = ioremap(get_immrbase() + MPC83XX_SICRL_OFFS, 0x4);
++	gpio_regs = ioremap(get_immrbase() + 0xc00, 0x20);
++	if (!psicrl || !gpio_regs)
++		return -ENOMEM;
++
++	clrbits32(psicrl, 0x03F00000);
++	setbits32(psicrl, 0x30000000);
++	iounmap(psicrl);
++
++	/* set GPIO13 as output */
++	setbits32(&gpio_regs->gpdir, 1 << (31 - 14));
++	clrbits32(&gpio_regs->gpodr, 1 << (31 - 14));
++	setbits32(&gpio_regs->gpdat, 1 << (31 - 14));
++
++	return fsl_spi_init(&mpc8313_spi_boardinfo, 1,
++			mpc83xx_spi_activate_cs,
++			mpc83xx_spi_deactivate_cs);
++}
++
++device_initcall(mpc8313_spi_init);
++
+ static void __init mpc831x_rdb_setup_arch(void)
+ {
+ #ifdef CONFIG_PCI
+@@ -40,6 +110,8 @@
+ 		mpc83xx_add_bridge(np);
+ #endif
+ 	mpc831x_usb_cfg();
++
++	mpc8313_spi_init();
+ }
+ 
+ void __init mpc831x_rdb_init_IRQ(void)
+--- linux-2.6.27.orig/drivers/spi/spi_mpc83xx.c	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27.modif/drivers/spi/spi_mpc83xx.c	2008-12-08 14:45:12.000000000 +0100
+@@ -280,7 +280,9 @@
+ 	if (pm)
+ 		pm--;
+ 
+-	cs->hw_mode |= SPMODE_PM(pm);
++	cs->hw_mode = 0x0F700000;
++	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
++
+ 	regval =  mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
+ 	if (cs->hw_mode != regval) {
+ 		unsigned long flags;
+@@ -448,7 +450,7 @@
+ 	cs->hw_mode = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
+ 	/* mask out bits we are going to set */
+ 	cs->hw_mode &= ~(SPMODE_CP_BEGIN_EDGECLK | SPMODE_CI_INACTIVEHIGH
+-			 | SPMODE_REV | SPMODE_LOOP);
++			 | SPMODE_REV );
+ 
+ 	if (spi->mode & SPI_CPHA)
+ 		cs->hw_mode |= SPMODE_CP_BEGIN_EDGECLK;
+@@ -456,8 +458,10 @@
+ 		cs->hw_mode |= SPMODE_CI_INACTIVEHIGH;
+ 	if (!(spi->mode & SPI_LSB_FIRST))
+ 		cs->hw_mode |= SPMODE_REV;
+-	if (spi->mode & SPI_LOOP)
+-		cs->hw_mode |= SPMODE_LOOP;
++
++	cs->hw_mode = 0x0F700000;
++	mpc83xx_spi_write_reg(&mpc83xx_spi->base->mode,cs->hw_mode);
++	cs->hw_mode = mpc83xx_spi_read_reg(&mpc83xx_spi->base->mode);
+ 
+ 	retval = mpc83xx_spi_setup_transfer(spi, NULL);
+ 	if (retval < 0) {
+@@ -637,7 +641,7 @@
+ 	INIT_LIST_HEAD(&mpc83xx_spi->queue);
+ 
+ 	mpc83xx_spi->workqueue = create_singlethread_workqueue(
+-		master->dev.parent->bus_id);
++			dev->dev.bus_id);
+ 	if (mpc83xx_spi->workqueue == NULL) {
+ 		ret = -EBUSY;
+ 		goto free_irq;

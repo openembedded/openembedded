@@ -1,0 +1,112 @@
+diff -Nru /opt/Bollore/dev/oe/build/tmp/work/mpc8313e-rdb-angstrom-linux/linux-2.6.26-r1.1/linux-2.6.26/include/linux/i2c/isl12024.h ../linux-2.6.26.modified/include/linux/i2c/isl12024.h
+--- /opt/Bollore/dev/oe/build/tmp/work/mpc8313e-rdb-angstrom-linux/linux-2.6.26-r1.1/linux-2.6.26/include/linux/i2c/isl12024.h	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.26.modified/include/linux/i2c/isl12024.h	2008-10-21 10:36:19.000000000 +0200
+@@ -0,0 +1,93 @@
++#ifndef ISL12024_H_
++#define ISL12024_H_
++
++
++
++#define ISL12024_REG_SR		0x3F	/* status register */
++#define ISL12024_REG_Y2K		0x37
++#define ISL12024_REG_DW		0x36
++#define ISL12024_REG_YR		0x35
++#define ISL12024_REG_MO		0x34
++#define ISL12024_REG_DT		0x33
++#define ISL12024_REG_HR		0x32
++#define ISL12024_REG_MN		0x31
++#define ISL12024_REG_SC		0x30
++#define ISL12024_REG_DTR		0x13
++#define ISL12024_REG_ATR		0x12
++#define ISL12024_REG_INT		0x11
++#define ISL12024_REG_0		0x10
++#define ISL12024_REG_Y2K1		0x0F
++#define ISL12024_REG_DWA1		0x0E
++#define ISL12024_REG_YRA1		0x0D
++#define ISL12024_REG_MOA1		0x0C
++#define ISL12024_REG_DTA1		0x0B
++#define ISL12024_REG_HRA1		0x0A
++#define ISL12024_REG_MNA1		0x09
++#define ISL12024_REG_SCA1		0x08
++#define ISL12024_REG_Y2K0		0x07
++#define ISL12024_REG_DWA0		0x06
++#define ISL12024_REG_YRA0		0x05
++#define ISL12024_REG_MOA0		0x04
++#define ISL12024_REG_DTA0		0x03
++#define ISL12024_REG_HRA0		0x02
++#define ISL12024_REG_MNA0		0x01
++#define ISL12024_REG_SCA0		0x00
++
++#define ISL12024_CCR_BASE		0x30	/* Base address of CCR */
++#define ISL12024_ALM0_BASE		0x00	/* Base address of ALARM0 */
++
++#define ISL12024_SR_RTCF		0x01	/* Clock failure */
++#define ISL12024_SR_WEL		0x02	/* Write Enable Latch */
++#define ISL12024_SR_RWEL		0x04	/* Register Write Enable */
++#define ISL12024_SR_AL0		0x20	/* Alarm 0 match */
++
++#define ISL12024_DTR_DTR0		0x01
++#define ISL12024_DTR_DTR1		0x02
++#define ISL12024_DTR_DTR2		0x04
++
++#define ISL12024_HR_MIL		0x80	/* Set in ccr.hour for 24 hr mode */
++
++#define ISL12024_INT_AL0E		0x20	/* Alarm 0 enable */
++/* I2C ADDRESS */
++#define ISL12024_I2C_ADDR 0xDE
++#define ISL12024_I2C_EEPROM_ADDR 0x57
++/* device id section */
++#define ISL12024_REG_ID 0x20
++/* Register map */
++/* rtc section */
++//#define ISL12024_REG_MSB 0x00
++//#define ISL12024_REG_SC  0x30 /* Seconds */
++//#define ISL12024_REG_MN  0x31 /* Minutes */
++//#define ISL12024_REG_HR  0x32 /* Hours */
++#define ISL12024_REG_HR_MIL     (1<<7) /* 24h/12h mode */
++#define ISL12024_REG_HR_PM      (1<<5) /* PM/AM bit in 12h mode */
++//#define ISL12024_REG_DT  0x33  /* Date */
++//#define ISL12024_REG_MO  0x34  /* Month */
++//#define ISL12024_REG_YR  0x35  /* Year */
++//#define ISL12024_REG_DW  0x36
++//#define ISL12024_REG_Y2K 0x37
++#define ISL12024_RTC_SECTION_LEN 8
++
++
++
++/* control/status section */
++//#define ISL12024_REG_SR  0x3F
++//#define ISL12024_REG_SR_BAT    (1<<7) /* battery */
++//#define ISL12024_REG_SR_AL1    (1<<6) /* alarm 0 */
++//#define ISL12024_REG_SR_AL0    (1<<5) /* alarm 1 */
++//#define ISL12024_REG_SR_OSCF   (1<<4) /* oscillator fail */
++//#define ISL12024_REG_SR_RWEL   (1<<2) /* register write enable latch */
++//#define ISL12024_REG_SR_WEL    (1<<1) /* write enable latch */
++//#define ISL12024_REG_SR_RTCF    (1<<0) /* rtc fail */
++//#define ISL12024_REG_INT 0x11
++
++#define CCR_SEC			0
++#define CCR_MIN			1
++#define CCR_HOUR		2
++#define CCR_MDAY		3
++#define CCR_MONTH		4
++#define CCR_YEAR		5
++#define CCR_WDAY		6
++#define CCR_Y2K			7
++
++#endif /*ISL12024_H_*/
+diff -Nru /opt/Bollore/dev/oe/build/tmp/work/mpc8313e-rdb-angstrom-linux/linux-2.6.26-r1.1/linux-2.6.26/include/linux/phy.h ../linux-2.6.26.modified/include/linux/phy.h
+--- /opt/Bollore/dev/oe/build/tmp/work/mpc8313e-rdb-angstrom-linux/linux-2.6.26-r1.1/linux-2.6.26/include/linux/phy.h	2008-07-13 23:51:29.000000000 +0200
++++ linux-2.6.26.modified/include/linux/phy.h	2008-10-14 15:12:02.000000000 +0200
+@@ -339,6 +339,11 @@
+ 	u32 features;
+ 	u32 flags;
+ 
++	 /* Called during discovery to test if the
++	  * device can attach to the bus, even if
++        phy id and mask do not match */
++	bool (*detect)(struct mii_bus *bus, int addr);
++
+ 	/*
+ 	 * Called to initialize the PHY,
+ 	 * including after a reset

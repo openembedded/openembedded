@@ -1,0 +1,735 @@
+Index: linux-2.6.26-NEW/drivers/video/Kconfig
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/video/Kconfig
++++ linux-2.6.26-NEW/drivers/video/Kconfig
+@@ -480,6 +480,17 @@ config FB_ARC
+ 	  this driver, say Y or M; otherwise say N. You must specify the
+ 	  GPIO IO address to be used for setting control and data.
+ 
++config FB_NOVA
++	tristate "Nova 7506 Monochrome LCD board support"
++	depends on FB
++	select FB_SYS_FILLRECT
++	select FB_SYS_COPYAREA
++	select FB_SYS_IMAGEBLIT
++	select FB_SYS_FOPS
++	help
++	  This enables support for the Nova 7506 Monochrome LCD board. The board
++	  is based on the NT7506 lcd controller.
++
+ config FB_ATARI
+ 	bool "Atari native chipset support"
+ 	depends on (FB = y) && ATARI
+Index: linux-2.6.26-NEW/drivers/video/Makefile
+===================================================================
+--- linux-2.6.26-NEW.orig/drivers/video/Makefile
++++ linux-2.6.26-NEW/drivers/video/Makefile
+@@ -13,8 +13,8 @@ fb-objs                           := $(f
+ 
+ obj-$(CONFIG_VT)		  += console/
+ obj-$(CONFIG_LOGO)		  += logo/
+-obj-y				  += backlight/ display/
+-
++obj-y				 			+= backlight/ display/
++obj-$(CONFIG_FB_NOVA)    	   += N7506fb.o
+ obj-$(CONFIG_FB_CFB_FILLRECT)  += cfbfillrect.o
+ obj-$(CONFIG_FB_CFB_COPYAREA)  += cfbcopyarea.o
+ obj-$(CONFIG_FB_CFB_IMAGEBLIT) += cfbimgblt.o
+Index: linux-2.6.26-NEW/drivers/video/N7506fb.c
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/drivers/video/N7506fb.c
+@@ -0,0 +1,655 @@
++/*
++ * linux/drivers/video/N7506fb.c -- FB driver for Nova NT7506 monochrome LCD board
++ *
++ * Copyright (C) 2008, Alexandre Coffignal <alexandre.coffignal@cenosys.com>
++ *
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License. See the file COPYING in the main directory of this archive for
++ * more details.
++ *
++ * Layout is based on arcfb.c by Jaya Kumar
++ *
++ * This driver was written to be used with the Nova 7506 LCD board.
++ *
++ *
++ *
++ *
++ * Nova uses a
++ * set of NT7506 chips that control individual 128x128 LCD matrices.
++ * The interface between the board and the host is TTL based GPIO.
++ *
++ * General notes:
++ * - User must set tuhold. It's in microseconds. According to the 108 spec,
++ *   the hold time is supposed to be at least 1 microsecond.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/string.h>
++#include <linux/mm.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/fb.h>
++#include <linux/init.h>
++#include <linux/NT7506.h>
++#include <linux/platform_device.h>
++
++#include <linux/uaccess.h>
++
++#define floor8(a) (a&(~0x07))
++#define floorXres(a,xres) (a&(~(xres - 1)))
++#define iceil8(a) (((int)((a+7)/8))*8)
++#define ceil128(a) (a|0x7F)
++#define ceilXres(a,xres) (a|(xres - 1))
++
++//NT7506 Hardware
++#define LCD_RST			0x08
++#define LCD_RSTN		0x00
++#define LCD_BCKLIGH		0x04
++#define LCD_BCKLIGHN	0x00
++#define LCD_RS			0x02
++#define LCD_RSN			0x00
++#define LCD_ERD			0x01
++#define LCD_ERDN		0x00
++
++//Base address
++#define LCD_BASE 0xf0000000
++#define LCD_SIZE 0x2
++
++//NT7506 Instructions
++#define NT_ICON	0xA2
++#define NT_PAGE_ADDR 		0xB0
++#define NT_COL_MSB		0x10
++#define NT_COL_LSB		0x00
++#define NT_DISP			0xAE
++#define NT_START_LINE		0x40
++#define	NT_COM0			0x44
++#define	NT_DUTY			0x48
++#define DUTY_1_128			0x80
++#define NT_REV_DISP		0xA6
++#define NT_POWER		0x28
++#define VC				0x04
++#define VR				0x02
++#define VF				0x01
++#define	NT_DCDC			0x64
++#define	TIME6				0x03
++#define	NT_REG_RES		0x20
++#define	RES_7_2				0x07
++#define	NT_ELEC_VOL		0x81
++#define	NT_BIAS			0x50
++#define BIAS_1_11			0x06
++#define	NT_ADC_NOR		0xA0
++#define	NT_ADC_REV		0xA1
++#define	NT_SHL_NOR		0xC0
++#define	NT_SHL_REV		0xC8
++#define	NT_OSC			0xAB
++#define NT_RESET		0xE2
++#define NT_DATA_DIR		0xe8
++#define NT_FRC_PWM		0x90
++#define PWM15				0x03
++
++#define ON		0x01
++#define OFF		0x00
++
++// Geometric settings
++#define LCD_WIDTH  128
++#define LCD_HEIGHT 128
++#define LCD_NPAGES (LCD_HEIGHT/8)    /* LCD pages of 8 vertical pixels */
++
++#define LINE_LENGTH (LCD_WIDTH/8)    /* FB line size, 8 pixels per byte */
++
++#define CONTRASTE 0xF
++#define FRAME_PER_SECOND 5
++
++static struct resource *lcd_mem = NULL;
++static void * _lcd_io = NULL;
++static unsigned long tuhold;
++struct fb_info *info;
++static struct timer_list fb_timer;
++static char _refresh;
++static char _fps = FRAME_PER_SECOND;
++static char _backlight=1;
++
++struct novafb_par {
++	atomic_t ref_count;
++	unsigned char cslut[9];
++	struct fb_info *info;
++	unsigned int irq;
++	spinlock_t lock;
++};
++
++static struct fb_fix_screeninfo novafb_fix __initdata = {
++	.id =		"novafb",
++	.type =		FB_TYPE_PACKED_PIXELS,
++	.visual =	FB_VISUAL_MONO01,
++	.xpanstep =	1,
++	.ypanstep =	1,
++	.ywrapstep =	0,
++	.line_length =  LINE_LENGTH,
++	.accel =	FB_ACCEL_NONE,
++};
++
++static struct fb_var_screeninfo novafb_var __initdata = {
++	.xres		= LCD_WIDTH,
++	.yres		= LCD_HEIGHT,
++	.xres_virtual	= LCD_WIDTH,
++	.yres_virtual	= LCD_HEIGHT,
++	.bits_per_pixel	= 1,
++	.nonstd		= 1,
++};
++
++
++static void NT7506_init_lcd(char ael);
++
++static void NT7506_writeb_ctl(unsigned char value)
++{
++	unsigned short svalue;
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERDN | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++	//The data on DB0/7 are latched at the falling edge of the E_RD signal
++	svalue=value<<8 | LCD_RSN | LCD_RST | LCD_ERD | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++}
++
++static void NT7506_writeb_data(unsigned char value)
++{
++	unsigned short svalue;
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERD | bl ;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++	//The data on DB0/7 are latched at the falling edge of the E_RD signal
++	svalue=value<<8|LCD_RS |LCD_RST | LCD_ERDN | bl;
++	iowrite16(svalue, _lcd_io);
++	udelay(tuhold);
++}
++
++static void NT7506_set_start_line(unsigned char y)
++{
++	NT7506_writeb_ctl(NT_START_LINE);
++	NT7506_writeb_ctl(y);
++}
++
++static void NT7506_set_yaddr(unsigned char y)
++{
++	NT7506_writeb_ctl(NT_PAGE_ADDR+y);
++}
++
++static void NT7506_set_xaddr(unsigned char x)
++{
++	NT7506_writeb_ctl(NT_COL_MSB | (x >> 0x04)); //Send high nibble
++	NT7506_writeb_ctl(NT_COL_LSB | (x & 0x0F) ); //Send low nibble
++}
++
++/* main novafb functions */
++
++static int novafb_open(struct fb_info *info, int user)
++{
++	struct novafb_par *par = info->par;
++	atomic_inc(&par->ref_count);
++	return 0;
++}
++
++static int novafb_release(struct fb_info *info, int user)
++{
++	struct novafb_par *par = info->par;
++	int count = atomic_read(&par->ref_count);
++	if (!count)
++		return -EINVAL;
++	atomic_dec(&par->ref_count);
++	return 0;
++}
++
++static int novafb_pan_display(struct fb_var_screeninfo *var,
++				struct fb_info *info)
++{
++	if ((var->vmode & FB_VMODE_YWRAP) && (var->yoffset < LCD_HEIGHT)
++		&& (info->var.yres <= LCD_HEIGHT))
++	{
++		NT7506_set_start_line(var->yoffset);
++		info->var.yoffset = var->yoffset;
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
++static void novafb_lcd_update(struct novafb_par *par, unsigned int dx,
++			unsigned int dy, unsigned int w, unsigned int h)
++{
++	int bit,x,y,xfb,yfb,i;
++	char mask=0;
++	char dest[LCD_WIDTH * LCD_NPAGES];
++	char * src;
++	char value;
++	src = (unsigned char __force *) par->info->screen_base;
++	for(i=0;i<sizeof(dest);i++)
++	{
++		dest[i]=0;
++	}
++	for (x = 0; x < LCD_WIDTH; x++) {
++		xfb = x/8;
++
++		for(y = 0; y < LCD_NPAGES; y++) {
++			yfb = y*8;
++
++			for(bit=0;bit<8;yfb++,bit++)
++			{
++				mask = (1<<(7-(x%8)));
++				if(((src[yfb*LINE_LENGTH+xfb]&mask)))
++					value=1;
++				else
++					value=0;
++
++				dest[y*LCD_WIDTH+x]+= (value<<bit);
++			}
++		}
++	}
++
++	for (y = 0; y < LCD_NPAGES; y++)
++	{
++		NT7506_set_yaddr(y);
++		NT7506_set_xaddr(0);
++		for (x = 0; x < LCD_WIDTH; x++)
++		{
++			NT7506_writeb_data(dest[y*LCD_WIDTH+x]);
++			NT7506_writeb_data(0x00);
++		}
++		NT7506_writeb_data((unsigned char)0);
++	}
++}
++
++static void novafb_fillrect(struct fb_info *info,  const struct fb_fillrect *rect)
++{
++
++//	sys_fillrect(info, rect);
++
++}
++
++
++
++static void novafb_copyarea(struct fb_info *info,
++			   const struct fb_copyarea *area)
++{
++//	sys_copyarea(info, area);
++}
++
++
++static void novafb_imageblit(struct fb_info *info, const struct fb_image *image)
++{
++	struct novafb_par *par = info->par;
++
++	int xfb,yfb,i=0;
++	char * src = (unsigned char __force *) par->info->screen_base;
++
++	for(yfb=image->dy;yfb<(image->height+image->dy);yfb++)
++	{
++		for(xfb=(image->dx)/8;xfb<(image->dx+image->width)/8;xfb++)
++		{
++			src[yfb*16+xfb]=image->data[i++];
++		}
++	}
++
++}
++
++/*
++ * this is the access path from userspace. they can seek and write to
++ * the fb. it's inefficient for them to do anything less than 128*8
++ * writes since we update the lcd in each write() anyway.
++ */
++static ssize_t novafb_write(struct fb_info *info, const char __user *buf,
++			   size_t count, loff_t *ppos)
++{
++	unsigned long p;
++	int err=-EINVAL;
++	unsigned int fbmemlength   ;
++	struct novafb_par *par;
++	unsigned int xres;
++	p = *ppos;
++	par = info->par;
++	xres = info->var.xres;
++	fbmemlength = (xres * info->var.yres)/8;
++
++	if (p > fbmemlength)
++	{
++		return -ENOSPC;
++	}
++	err = 0;
++	if ((count + p) > fbmemlength) {
++		count = fbmemlength - p;
++		err = -ENOSPC;
++	}
++
++	if (count) {
++		char *base_addr;
++		base_addr = (char __force *)info->screen_base;
++		count -= copy_from_user(base_addr + p, buf, count);
++		*ppos += count;
++		err = -EFAULT;
++	}
++	if (count)
++	{
++		return count;
++	}
++	return err;
++}
++
++static int novafb_mmap(struct fb_info *info, struct vm_area_struct *vma)
++{
++	unsigned long off;
++	unsigned long start;
++	u32 len;
++
++	if (vma->vm_end - vma->vm_start == 0)
++		return 0;
++	if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
++		return -EINVAL;
++	off = vma->vm_pgoff << PAGE_SHIFT;
++	start = info->fix.smem_start;
++	len = info->fix.smem_len;
++	if (off >= len)
++	{
++		return -EINVAL;
++
++	}
++	if ((vma->vm_end - vma->vm_start + off) > len)
++	{
++			return -EINVAL;
++	}
++	off += start;
++	vma->vm_pgoff = off >> PAGE_SHIFT;
++	if (remap_pfn_range(vma, vma->vm_start, virt_to_phys((void *)info->fix.smem_start) >> PAGE_SHIFT,
++			info->fix.smem_len, vma->vm_page_prot))
++
++	{
++		return -EAGAIN;
++	}
++	return 0;
++
++}
++
++
++static int novafb_ioctl(struct fb_info *info,
++			  unsigned int cmd, unsigned long arg)
++{
++	unsigned char contrast;
++	unsigned char frame_rate;
++	unsigned char backlight;
++	switch (cmd)
++	{
++		case FBIO_FRAMERATE:
++		{
++
++			if (get_user(frame_rate, (unsigned char *)arg))
++				return -EFAULT;
++			printk(KERN_INFO "fb%d: framerate=%d Hz\n", info->node, frame_rate);
++			_fps=frame_rate;
++			return 0;
++		}
++		case FBIO_CONTRAST:
++		{
++			_refresh=0;
++			if (get_user(contrast, (unsigned char *)arg))
++				return -EFAULT;
++			printk(KERN_INFO "fb%d: contrast=%d\n", info->node, contrast);
++			NT7506_writeb_ctl(NT_ELEC_VOL);	NT7506_writeb_ctl(contrast);
++			_refresh=1;
++			return 0;
++		}
++		case FBIO_BACKLIGHT:
++		{
++			_refresh=0;
++			if (get_user(backlight, (unsigned char *)arg))
++				return -EFAULT;
++			if(backlight)
++			{
++			  printk(KERN_INFO "fb%d: Backlight ON\n", info->node);
++				_backlight=1;
++			}
++			else
++			{
++			  printk(KERN_INFO "fb%d: Backlight OFF\n", info->node);
++				_backlight=0;
++			}
++			_refresh=1;
++			return 0;
++
++		}
++
++
++		default:
++			return -EINVAL;
++	}
++
++}
++
++static struct fb_ops novafb_ops = {
++	.owner		= THIS_MODULE,
++	.fb_open	= novafb_open,
++	.fb_read        = fb_sys_read,
++	.fb_write	= novafb_write,
++	.fb_release	= novafb_release,
++	.fb_pan_display	= novafb_pan_display,
++	.fb_fillrect	= novafb_fillrect,
++	.fb_copyarea	= novafb_copyarea,
++	.fb_imageblit	= novafb_imageblit,
++	.fb_ioctl 		= novafb_ioctl,
++	.fb_mmap		=novafb_mmap,
++};
++
++
++static void
++novafb_refresh(unsigned long ignore_me)
++{
++	struct novafb_par *par = info->par;
++	if ( _refresh )	{
++		novafb_lcd_update(par, 0, 0, LCD_WIDTH, LCD_HEIGHT);
++	}
++
++	fb_timer.expires = jiffies + (HZ/_fps);
++	add_timer(&fb_timer);
++}
++
++static int
++__init novafb_probe(struct platform_device *dev)
++{
++
++	int retval = -ENOMEM;
++	char * src;
++	int i;
++
++	struct novafb_par *par;
++	static unsigned char *videomemory;
++	static 	int videomemorysize;
++
++	NT7506_init_lcd(CONTRASTE);
++
++	videomemorysize = (LCD_WIDTH * LINE_LENGTH) * 2;
++
++	if (!(videomemory = kmalloc(videomemorysize,GFP_ATOMIC)))
++		return retval;
++	memset(videomemory, 0, videomemorysize);
++
++	info = framebuffer_alloc(sizeof(struct novafb_par), &dev->dev);
++
++	if (!info)
++		goto err;
++	info->screen_base = (char __iomem *)videomemory;
++	info->fbops = &novafb_ops;
++
++	info->var = novafb_var;
++	info->fix = novafb_fix;
++	info->fix.smem_start=(unsigned long)videomemory;
++	info->fix.smem_len	= videomemorysize;
++
++	par = info->par;
++	par->info = info;
++	par->cslut[0] = 0x00;
++	par->cslut[1] = 0x06;
++	src = (unsigned char __force *) par->info->screen_base;
++	for(i=0;i<videomemorysize;i++)
++	{
++		src[i]=0;
++	}
++	info->flags = FBINFO_FLAG_DEFAULT;
++	spin_lock_init(&par->lock);
++	platform_set_drvdata(dev, info);
++	retval = register_framebuffer(info);
++	if (retval < 0)
++		goto err1;
++
++	init_timer(&fb_timer);
++	fb_timer.function = novafb_refresh;
++	fb_timer.expires = jiffies + (HZ / _fps);
++	add_timer(&fb_timer);
++
++	printk(KERN_INFO
++	       "fb%d: nova frame buffer device, using %dK of video memory\n",
++	       info->node, videomemorysize >> 10);
++	return 0;
++err1:
++	framebuffer_release(info);
++err:
++	vfree(videomemory);
++	return retval;
++}
++
++static int novafb_remove(struct platform_device *dev)
++{
++	struct fb_info *info = platform_get_drvdata(dev);
++
++	if (info) {
++		unregister_framebuffer(info);
++		vfree((void __force *)info->screen_base);
++		framebuffer_release(info);
++	}
++	return 0;
++}
++
++static struct platform_driver novafb_driver = {
++	.probe	= novafb_probe,
++	.remove = novafb_remove,
++	.driver	= {
++		.name	= "novafb",
++	},
++};
++
++static struct platform_device *novafb_device;
++
++static int __init novafb_init(void)
++{
++	int ret;
++
++
++	if (!(lcd_mem = request_mem_region(LCD_BASE, LCD_SIZE, "mpc8313-lcd")))
++		return -ENOMEM;
++
++	if (!(_lcd_io = ioremap(LCD_BASE, LCD_SIZE)))
++	{
++		release_mem_region(LCD_BASE, LCD_SIZE);
++		lcd_mem = NULL;
++		return -ENOMEM;
++	}
++	ret = platform_driver_register(&novafb_driver);
++
++	if (!ret) {
++		novafb_device = platform_device_alloc("novafb", 0);
++		if (novafb_device)
++		{
++			ret = platform_device_add(novafb_device);
++		}
++		else
++		{
++			ret = -ENOMEM;
++		}
++		if (ret)
++		{
++			platform_device_put(novafb_device);
++			platform_driver_unregister(&novafb_driver);
++		}
++
++	}
++
++
++	return ret;
++
++}
++
++
++static void NT7506_init_lcd(char ael)
++{
++	/* this resets the lcd*/
++	char bl = _backlight ? LCD_BCKLIGH : LCD_BCKLIGHN;
++
++	iowrite16(LCD_RSTN | LCD_ERD | bl, _lcd_io);
++	udelay(100);
++	iowrite16(LCD_RST| LCD_ERD | bl, _lcd_io);
++	udelay(200);
++	/* Soft reset*/
++	NT7506_writeb_ctl(NT_RESET);
++	/* Disable ICON display*/
++	NT7506_writeb_ctl(NT_ICON|OFF);
++	/* Sets the duty ratio 1/128*/
++	NT7506_writeb_ctl(NT_DUTY);		NT7506_writeb_ctl(DUTY_1_128);
++	/* Sets reverse direction between RAM column address and segment driver*/
++	NT7506_writeb_ctl(NT_ADC_REV);
++	NT7506_writeb_ctl(NT_SHL_NOR);
++	/* Enales the built in Oscillator circuit.*/
++	NT7506_writeb_ctl(NT_OSC);
++	/* Set Initial row to 0*/
++	NT7506_writeb_ctl(NT_COM0);		NT7506_writeb_ctl(0);
++	/* Sets DC-DC*/
++	NT7506_writeb_ctl(NT_DCDC|TIME6);
++	/* Selects resistance ratio of the internal resistor*/
++	NT7506_writeb_ctl(NT_REG_RES|RES_7_2);
++	/* set Reference Voltage mode*/
++	NT7506_writeb_ctl(NT_ELEC_VOL);	NT7506_writeb_ctl(ael);
++	/* Selects LCD bias ratio*/
++	NT7506_writeb_ctl(NT_BIAS|BIAS_1_11);
++
++	NT7506_writeb_ctl(NT_DATA_DIR);	NT7506_writeb_ctl(0);
++	NT7506_writeb_ctl(NT_FRC_PWM|PWM15);
++	/* Select power circuit functions */
++	NT7506_writeb_ctl(NT_POWER|VC);
++	udelay(5000);
++	NT7506_writeb_ctl(NT_POWER|VC|VR);
++	udelay(5000);
++	NT7506_writeb_ctl(NT_POWER|VC|VR|VF);
++	udelay(5000);
++	/* Reverses the display status on LCD panel */
++	NT7506_writeb_ctl(NT_REV_DISP|OFF);
++	/* Forces the whole LCD points to be turned on regardless of the contents of the display data RAM*/
++	NT7506_writeb_ctl(NT_DISP|ON);
++	/* Set Initial Start Line Address */
++	NT7506_writeb_ctl(NT_START_LINE);	NT7506_writeb_ctl(0x00);
++	_refresh=1;
++}
++
++static void __exit novafb_exit(void)
++{
++	if (lcd_mem)
++		release_mem_region(LCD_BASE, LCD_SIZE);
++	lcd_mem = NULL;
++	platform_device_unregister(novafb_device);
++	platform_driver_unregister(&novafb_driver);
++}
++
++module_param(tuhold, ulong, 0);
++MODULE_PARM_DESC(tuhold, "Time to hold between strobing data to Nova board");
++
++module_init(novafb_init);
++module_exit(novafb_exit);
++
++MODULE_DESCRIPTION("fbdev driver for nova NT7506 monochrome LCD board");
++MODULE_AUTHOR("Alexandre Coffignal");
++MODULE_LICENSE("GPL");
++
+Index: linux-2.6.26-NEW/include/linux/NT7506.h
+===================================================================
+--- /dev/null
++++ linux-2.6.26-NEW/include/linux/NT7506.h
+@@ -0,0 +1,33 @@
++
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ */
++
++#ifndef __LINUX_NOVAFB_H__
++#define __LINUX_NOVAFB_H__
++
++#define FBIO_FRAMERATE		_IOR('f', 1, char)
++#define FBIO_CONTRAST		_IOR('f', 2, char)
++#define FBIO_BACKLIGHT		_IOR('f', 3, char)
++
++#endif
