@@ -191,7 +191,6 @@ SLUGOS_PACKAGES = "\
 	procps \
 	psmisc \
 	puppy \
-	pvrusb2-mci \
 	python \
 	quilt \
 	reiserfsprogs reiser4progs \
@@ -263,6 +262,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	netatalk \
 	openldap \
 	postfix \
+	pvrusb2-mci \
 	pwc \
 	qc-usb-messenger \
 	task-native-sdk \
