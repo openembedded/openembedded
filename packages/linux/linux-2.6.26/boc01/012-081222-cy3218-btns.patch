@@ -1,14 +1,15 @@
-diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/drivers/input/misc/cy3218-btns.c
+diff -urN linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/drivers/input/misc/cy3218-btns.c
 --- linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26/drivers/input/misc/cy3218-btns.c	2008-11-21 12:11:43.000000000 +0100
-@@ -0,0 +1,215 @@
++++ linux-2.6.26/drivers/input/misc/cy3218-btns.c	2008-12-22 07:50:48.000000000 +0100
+@@ -0,0 +1,201 @@
 +/*
 + * CAPSENSE Interface driver
 + *
 + *
 + * Copyright (C) 2007, CenoSYS (www.cenosys.com).
-+ * Guillaume Ligneul
-+ * Guillaume.ligneul@gmail.com
++ *
++ * Guillaume Ligneul <guillaume.ligneul@gmail.com>
++ * Jeremy Lainé <jeremy.laine@bolloretelecom.eu>
 + *
 + * This software program is licensed subject to the GNU General Public License
 + * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
@@ -58,64 +59,50 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +struct cy3218 {
 +	struct input_polled_dev *ipdev;
 +	struct i2c_client client;
++	unsigned char key_state;
 +};
 +
-+static void report_key(struct input_dev *input, unsigned keycode)
-+{
-+	input_report_key(input, keycode, 1);
-+	input_sync(input);
-+
-+	input_report_key(input, keycode, 0);
-+	input_sync(input);
-+}
-+
 +unsigned short keymap[5] = {
-+		KEY_UP,
-+		KEY_F1,
-+		KEY_ENTER,
-+		KEY_DOWN,
-+		KEY_BACKSPACE,
++	KEY_UP,
++	KEY_F1,
++	KEY_ENTER,
++	KEY_DOWN,
++	KEY_BACKSPACE,
 +};
 +
 +static void handle_buttons(struct input_polled_dev *dev)
 +{
 +	u8 uValue;
 +	struct cy3218 *capsense = dev->private;
-+	struct input_dev *idev = dev->input;
-+
++	unsigned char new_state = 0;
++	unsigned char changed;
++	int i;
 +
 +	uValue = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP1);
 +
 +	if(uValue == MASK0)
-+	{
-+		report_key(idev, keymap[0]);
-+		printk("Bouton UP\n");
-+	}
++		new_state |= 1;
 +
 +	uValue = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP0);
 +
 +	if(uValue == MASK0)
-+	{
-+		report_key(idev, keymap[1]);
-+		printk("Bouton HELP\n");
-+	}
++		new_state |= 2;
 +
 +	if(uValue == MASK1)
-+	{
-+		report_key(idev, keymap[2]);
-+		printk("Bouton OK\n");
-+	}
++		new_state |= 4;
 +
 +	if(uValue == MASK2)
-+	{
-+		report_key(idev, keymap[3]);
-+		printk("Bouton DOWN\n");
-+	}
++		new_state |= 8;
++
 +	if(uValue == MASK3)
-+	{
-+		report_key(idev, keymap[4]);
-+		printk("Bouton BACK\n");
-+	}
++		new_state |= 16;
++
++	changed = capsense->key_state ^ new_state;
++	for (i = 0; i < ARRAY_SIZE(keymap); i++)
++		if (changed & (1 << i))
++			input_report_key(dev->input, keymap[i], (new_state & (1 << i)));
++	capsense->key_state = new_state;
++	input_sync(dev->input);
 +}
 +
 +static int
@@ -138,6 +125,7 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +		if (!ipdev)
 +			goto failout;
 +
++	capsense->key_state = 0;
 +	capsense->ipdev = ipdev;
 +	capsense->client.adapter = adapter;
 +	capsense->client.addr = addr;
@@ -166,7 +154,6 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +	input_set_capability(input, EV_MSC, MSC_SCAN);
 +	set_bit(EV_KEY, ipdev->input->evbit);
 +
-+
 +	for (i = 0; i < ARRAY_SIZE(keymap); i++)
 +		set_bit(keymap[i], ipdev->input->keybit);
 +
@@ -183,7 +170,6 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +failout:
 +	return err;
 +}
-+
 +
 +static int
 +capsense_attach_adapter (struct i2c_adapter *adapter)
@@ -217,9 +203,9 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +MODULE_LICENSE("GPL");
 +module_init(capsense_buttons_init);
 +module_exit(capsense_buttons_exit);
-diff -Nru linux-2.6.26.orig/drivers/input/misc/Kconfig linux-2.6.26/drivers/input/misc/Kconfig
+diff -urN linux-2.6.26.orig/drivers/input/misc/Kconfig linux-2.6.26/drivers/input/misc/Kconfig
 --- linux-2.6.26.orig/drivers/input/misc/Kconfig	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26/drivers/input/misc/Kconfig	2008-11-21 10:50:56.000000000 +0100
++++ linux-2.6.26/drivers/input/misc/Kconfig	2008-12-22 07:47:08.000000000 +0100
 @@ -197,4 +197,12 @@
  	  Say Y here if you want to support the built-in real time clock
  	  of the HP SDC controller.
@@ -233,9 +219,9 @@ diff -Nru linux-2.6.26.orig/drivers/input/misc/Kconfig linux-2.6.26/drivers/inpu
 +	  To change poll interval, invoque poll parameter in msecs.
 +
  endif
-diff -Nru linux-2.6.26.orig/drivers/input/misc/Makefile linux-2.6.26/drivers/input/misc/Makefile
+diff -urN linux-2.6.26.orig/drivers/input/misc/Makefile linux-2.6.26/drivers/input/misc/Makefile
 --- linux-2.6.26.orig/drivers/input/misc/Makefile	2008-07-13 23:51:29.000000000 +0200
-+++ linux-2.6.26/drivers/input/misc/Makefile	2008-11-21 10:50:56.000000000 +0100
++++ linux-2.6.26/drivers/input/misc/Makefile	2008-12-22 07:47:19.000000000 +0100
 @@ -19,3 +19,4 @@
  obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o
  obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
