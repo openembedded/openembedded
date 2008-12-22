@@ -33,6 +33,7 @@ EXTRA_OEMAKE_prepend_ixp4xxbe = "TARGET=xscale-be-elf "
 
 
 do_compile() {
+	unset LDFLAGS
 	oe_runmake all
 }
 
@@ -45,6 +46,7 @@ do_stage() {
 
 do_install() {
 	install -d ${D}${sbindir}
+	unset LDFLAGS
 	oe_runmake DESTDIR=${D} BINDIR=${sbindir} install
 }
 
