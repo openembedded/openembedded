@@ -21,7 +21,12 @@ fi
 }
 
 updatercd_postrm() {
-update-rc.d $D ${INITSCRIPT_NAME} remove
+if test "x$D" != "x"; then
+	OPT="-r $D"
+else
+	OPT=""
+fi
+update-rc.d $OPT ${INITSCRIPT_NAME} remove
 }
 
 
