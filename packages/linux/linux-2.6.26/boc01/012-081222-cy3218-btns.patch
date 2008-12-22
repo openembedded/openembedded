@@ -1,7 +1,7 @@
 diff -urN linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/drivers/input/misc/cy3218-btns.c
 --- linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.26/drivers/input/misc/cy3218-btns.c	2008-12-22 07:50:48.000000000 +0100
-@@ -0,0 +1,201 @@
++++ linux-2.6.26/drivers/input/misc/cy3218-btns.c	2008-12-22 12:54:47.000000000 +0100
+@@ -0,0 +1,195 @@
 +/*
 + * CAPSENSE Interface driver
 + *
@@ -43,7 +43,7 @@ diff -urN linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +MODULE_PARM_DESC(poll, "poll interval in msec (30=default)");
 +
 +static const unsigned short normal_i2c[] = {
-+		CAPSENSE_I2C_ADDR , I2C_CLIENT_END
++	CAPSENSE_I2C_ADDR , I2C_CLIENT_END
 +};
 +I2C_CLIENT_INSMOD;
 +
@@ -62,41 +62,35 @@ diff -urN linux-2.6.26.orig/drivers/input/misc/cy3218-btns.c linux-2.6.26/driver
 +	unsigned char key_state;
 +};
 +
-+unsigned short keymap[5] = {
-+	KEY_UP,
++unsigned short keymap[] = {
++	// GP0
 +	KEY_F1,
 +	KEY_ENTER,
 +	KEY_DOWN,
 +	KEY_BACKSPACE,
++	// GP1
++	KEY_UP,
 +};
 +
 +static void handle_buttons(struct input_polled_dev *dev)
 +{
-+	u8 uValue;
 +	struct cy3218 *capsense = dev->private;
-+	unsigned char new_state = 0;
-+	unsigned char changed;
++	u8 port_value;
++	u8 new_state = 0;
++	u8 changed;
 +	int i;
 +
-+	uValue = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP1);
++	// read status
++	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP0);
++	if (port_value & MASK0) new_state |= 0x01;
++	if (port_value & MASK1) new_state |= 0x02;
++	if (port_value & MASK2) new_state |= 0x04;
++	if (port_value & MASK3) new_state |= 0x08;
 +
-+	if(uValue == MASK0)
-+		new_state |= 1;
++	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP1);
++	if (port_value & MASK0) new_state |= 0x10;
 +
-+	uValue = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP0);
-+
-+	if(uValue == MASK0)
-+		new_state |= 2;
-+
-+	if(uValue == MASK1)
-+		new_state |= 4;
-+
-+	if(uValue == MASK2)
-+		new_state |= 8;
-+
-+	if(uValue == MASK3)
-+		new_state |= 16;
-+
++	// update keyboard state
 +	changed = capsense->key_state ^ new_state;
 +	for (i = 0; i < ARRAY_SIZE(keymap); i++)
 +		if (changed & (1 << i))
