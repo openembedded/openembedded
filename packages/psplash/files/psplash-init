@@ -10,19 +10,19 @@ for x in $(cat /proc/cmdline); do
 done
 
 . /etc/init.d/functions
+. /etc/default/psplash
 
-psplash_args=''
 case `machine_id` in
     "hp_ipaq_h3100"|"hp_ipaq_h3800") 
-	pspash_args='-a 90' ;;
+	PARAMS='-a 90' ;;
     "hp_ipaq_3600"|"hp_ipaq_3700"|"hp_ipaq_h3900"|"htc_universal"|*collie|*poodle|*akita|*spitz|*borzoi)
-	psplash_args='-a 270' ;;
+	PARAMS='-a 270' ;;
 esac
 
 export TMPDIR=/mnt/.psplash
 mount tmpfs -t tmpfs $TMPDIR -o,size=40k
 
-/usr/bin/psplash $psplash_args &
+/usr/bin/psplash $PARAMS &
 
 # Timetrap against hanging with splash hiding console messages.
 (sleep 120; psplash-write "QUIT") &

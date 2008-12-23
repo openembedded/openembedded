@@ -3,7 +3,7 @@ HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
 PV = "0.0+svnr${SRCREV}"
-PR = "r13"
+PR = "r14"
 RDEPENDS = "initscripts"
 
 # You can create your own pslash-hand-img.h by doing
@@ -15,6 +15,7 @@ RDEPENDS = "initscripts"
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-hand-img.h \
           file://psplash-bar-img.h \
+          file://psplash-default \
           file://psplash-init"
 S = "${WORKDIR}/psplash"
 
@@ -36,6 +37,8 @@ do_configure_append() {
 
 do_install_prepend() {
 	install -d ${D}/mnt/.psplash/
+	install -d ${D}${sysconfdir}/default/
+	install -m 0644 ${WORKDIR}/psplash-default ${D}${sysconfdir}/default/psplash
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/psplash-init ${D}${sysconfdir}/init.d/psplash
 }
