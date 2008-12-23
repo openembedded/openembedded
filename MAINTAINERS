@@ -240,7 +240,7 @@ Recipes:    eb*, tomoe, offline-wikipedia
 
 Person:     Shane Volpe
 Mail:       shanevolpe@gmail.com
-Machines:   logicpd-pxa270
+Machines:   logicpd-pxa270, at91-l9260
 Recipes:    directfb, php
 
 Person:     Stelios Koroneos
