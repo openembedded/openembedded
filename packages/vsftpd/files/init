@@ -3,7 +3,7 @@ DAEMON=/usr/sbin/vsftpd
 NAME=vsftpd
 DESC="FTP Server"
 ARGS=""
-FTPDIR=/var/tmp/ftp
+FTPDIR=/var/lib/ftp
 
 test -f $DAEMON || exit 0
 
@@ -12,30 +12,30 @@ set -e
 case "$1" in
     start)
         echo -n "* starting $DESC: $NAME... "
-	if ! test -d $FTPDIR; then
-		mkdir -p $FTPDIR/in
-		chown ftp $FTPDIR -R
-		chmod a-w $FTPDIR
-		chmod u+w $FTPDIR/in
-	fi
-	start-stop-daemon -S -b -x $DAEMON -- $ARGS
-	echo "done."
-	;;
+        if ! test -d $FTPDIR; then
+            mkdir -p $FTPDIR/in
+            chown ftp $FTPDIR -R
+            chmod a-w $FTPDIR
+            chmod u+w $FTPDIR/in
+        fi
+        start-stop-daemon -S -b -x $DAEMON -- $ARGS
+        echo "done."
+        ;;
     stop)
         echo -n "* stopping $DESC: $NAME... "
-	start-stop-daemon -K -x $DAEMON
-	echo "done."
-	;;
+        start-stop-daemon -K -x $DAEMON
+        echo "done."
+        ;;
     restart)
         echo "* restarting $DESC: $NAME... "
- 	$0 stop
-	$0 start
-	echo "done."
-	;;
+        $0 stop
+        $0 start
+        echo "done."
+        ;;
     *)
-	echo "Usage: $0 {start|stop|restart}"
-	exit 1
-	;;
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
 esac
 
 exit 0
