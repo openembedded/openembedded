@@ -6,7 +6,7 @@ HOMEPAGE = "http://lftp.yar.ru"
 SECTION = "console/network"
 DEPENDS = "readline gnutls"
 
-SRC_URI = "ftp://ftp.wiretapped.net/pub/mirrors/lftp/old/lftp-3.5.1.tar.bz2"
+SRC_URI = "http://ftp.yars.free.net/pub/source/lftp/old/lftp-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--disable-largefile --disable-rpath --with-included-readline=no"
 
