@@ -10,7 +10,7 @@ inherit autotools pkgconfig binconfig
 do_prepsources () {
   make clean distclean || true
 }
-addtask prepsources after do_fetch before do_unpack
+addtask prepsources after do_patch before do_configure
 
 do_configure_append() {
         find ${S} -name Makefile | xargs sed -i s:'-I$(includedir)':'-I.':g
