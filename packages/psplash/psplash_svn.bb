@@ -21,6 +21,7 @@ S = "${WORKDIR}/psplash"
 # This really should be default, but due yo openmoko hack below, can't be easily
 SRC_URI_append_angstrom = " file://logo-math.patch;patch=1 "
 SRC_URI_append_openmoko = " file://configurability.patch;patch=1 "
+SRC_URI_append_boc01 = " file://psplash_1bpp.patch;patch=1 "
 
 inherit autotools pkgconfig update-rc.d
 

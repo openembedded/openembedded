@@ -1,0 +1,33 @@
+--- orig/psplash-fb.c	(revision 249)
++++ new/psplash-fb.c	(working copy)
+@@ -62,7 +62,7 @@
+       goto fail;
+     }
+   
+-  if (fb_var.bits_per_pixel < 16)
++  if (fb_var.bits_per_pixel != 1 && fb_var.bits_per_pixel < 16)
+     {
+       fprintf(stderr,
+ 	      "Error, no support currently for %i bpp frame buffers\n",
+@@ -143,7 +143,7 @@
+   return NULL;
+ }
+ 
+-#define OFFSET(fb,x,y) (((y) * (fb)->stride) + ((x) * ((fb)->bpp >> 3)))
++#define OFFSET(fb,x,y) (((fb)->bpp == 1) ? (((y) * ((fb)->stride << 3)) + (x)) : (((y) * (fb)->stride) + ((x) * ((fb)->bpp >> 3))))
+ 
+ inline void
+ psplash_fb_plot_pixel (PSplashFB    *fb, 
+@@ -188,6 +188,12 @@
+       *(volatile uint16 *) (fb->data + off) 
+ 	= ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
+       break;
++    case 1:
++      if ((red + green + blue) > 384)
++        *(fb->data + (off >> 3)) |= (1 << (7 - (off & 0x07)));
++      else
++        *(fb->data + (off >> 3)) ^= (1 << (7 - (off & 0x07)));
++      break;
+     default:
+       /* depth not supported yet */
+       break;
