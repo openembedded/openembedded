@@ -48,6 +48,9 @@ do_stage() {
 	autotools_stage_all
 }
 
+# Force feed mozilla our ldflags
+TARGET_CC_ARCH += " ${LDFLAGS} "
+
 # We don't build XUL as system shared lib, so we can mark all libs as private
 PRIVATE_LIBS = "libnssckbi.so \
                 libxpcom.so \
