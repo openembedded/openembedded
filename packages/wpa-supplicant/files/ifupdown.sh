@@ -78,7 +78,7 @@ if [ -n "$IF_WPA_CONF" ]; then
 		wpa_msg stderr "cannot read contents of $IF_WPA_CONF"
 		exit 1
 	fi	
-	WPA_SUP_CONF_CTRL_DIR=$(sed --quiet \
+	WPA_SUP_CONF_CTRL_DIR=$(sed -n \
 		's/[[:space:]]*#.*//g;s/[[:space:]]\+.*$//g;s/^\(ctrl_interface\|DIR\)=\(.*\)/\2/p' "$IF_WPA_CONF")
 	if [ -n "$WPA_SUP_CONF_CTRL_DIR" ]; then
 		WPA_CTRL_DIR="$WPA_SUP_CONF_CTRL_DIR"

@@ -767,7 +767,7 @@ ifup () {
 		
 		local WPA_MAP_STDIN
 		
-		WPA_MAP_STDIN=$(set | sed --quiet 's/^\(IF_WPA_MAP[0-9]*\)=.*/echo \$\1/p')
+		WPA_MAP_STDIN=$(set | sed -n 's/^\(IF_WPA_MAP[0-9]*\)=.*/echo \$\1/p')
 		
 		if [ -n "$WPA_MAP_STDIN" ]; then
 			WPA_LOGICAL_IFACE=$(eval "$WPA_MAP_STDIN" | "$IF_WPA_MAPPING_SCRIPT" "$WPA_IFACE")
@@ -797,7 +797,7 @@ ifup () {
 			
 			echo "ifup $WPA_IFACE=$WPA_LOGICAL_IFACE"
 			
-			if grep --quiet "^$WPA_IFACE=$WPA_IFACE" "$IFSTATE_FILE"; then
+			if grep -q "^$WPA_IFACE=$WPA_IFACE" "$IFSTATE_FILE"; then
 				# Force settings over the unconfigured "master" IFACE
 				/sbin/ifup --force "$WPA_IFACE=$WPA_LOGICAL_IFACE"
 			else
@@ -816,7 +816,7 @@ ifup () {
 # Check IFACE state and ifdown as requested.
 #
 ifdown () {
-	if grep --quiet "^$WPA_IFACE" "$IFSTATE_FILE"; then
+	if grep -q "^$WPA_IFACE" "$IFSTATE_FILE"; then
 		echo "ifdown $WPA_IFACE"
 		/sbin/ifdown "$WPA_IFACE"
 	else
