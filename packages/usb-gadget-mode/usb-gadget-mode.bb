@@ -1,5 +1,3 @@
-#! /bin/sh
-#
 # Copyright Matthias Hentges <devel@hentges.net> (c) 2007
 # License: MIT (see http://www.opensource.org/licenses/mit-license.php 
 #               for a copy of the license)
@@ -10,23 +8,14 @@
 DESCRIPTION = "Manage the default USB gadget mode"
 SECTION = "console/network"
 LICENSE = "GPL"
-
-######################################################################################
-
 PV = "0.0.2"
-PR = "r0"
+PR = "r1"
 
-######################################################################################
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-######################################################################################
-
-SRC_URI = "file://usb-gadget.conf \
-	   file://usb-gadget \
-	   file://usb-gadget.init"
-	   
-######################################################################################
+SRC_URI = "\
+  file://usb-gadget.conf \
+  file://usb-gadget \
+  file://usb-gadget.init \
+"
 
 do_install() {
 	install -d ${D}${sysconfdir}
@@ -39,12 +28,14 @@ do_install() {
 	install -m 0755 ${WORKDIR}/usb-gadget ${D}${bindir}
 }
 
-pkg_postinst() {	
-	
+pkg_postinst_${PN}() {
 	test -n "$D" && opt="-r $D"
 	update-rc.d $opt usb-gadget defaults 50
 }
 
-pkg_postrm() {
+pkg_postrm_${PN}() {
 	update-rc.d -f usb-gadget remove
 }
+
+PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
+
