@@ -1,0 +1,15 @@
+--- libtopfield/usb_io.h.orig	2008-12-26 23:11:08.000000000 -0600
++++ libtopfield/usb_io.h	2008-12-26 23:24:02.000000000 -0600
+@@ -36,7 +36,12 @@
+ 
+ /* linux/usb_ch9.h wasn't separated out until 2.4.23 */
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,23)
++/* and then moved to linux/usb/ch9.h at 2.6.23. */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,23)
++#include <linux/usb/ch9.h>
++#else
+ #include <linux/usb_ch9.h>
++#endif
+ #else
+ #include <linux/usb.h>
+ #endif
