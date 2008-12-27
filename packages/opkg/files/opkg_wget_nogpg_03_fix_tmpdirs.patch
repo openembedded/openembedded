@@ -1,0 +1,186 @@
+# Further compounding the problem on small-memory machines is that
+# opkg does not really honor the TMPDIR environment variable nor
+# the command-line option to select the temporary file directory.
+# The result is that when /tmp is an in-memory filesystem, the temp
+# files it creates further reduce the amount of available memory.
+#
+# Mike Westerhof, Dec 2008
+
+--- orig/libopkg/opkg.c	2008-12-20 15:07:04.000000000 -0600
++++ opkg/libopkg/opkg.c	2008-12-21 21:41:07.000000000 -0600
+@@ -773,15 +773,17 @@
+     }
+   }
+ 
+-  tmp = strdup ("/tmp/opkg.XXXXXX");
++  sprintf_alloc(&tmp, "%s-XXXXXX", opkg->conf->tmp_dir);
+ 
+   if (mkdtemp (tmp) == NULL)
+   {
+     /* XXX: Error: could not create temporary file name */
++    perror("mkdtemp()");
+     free (lists_dir);
+     free (tmp);
+     return 1;
+   }
++  /* printf("%s: Using tmp_dir %s\n", __FUNCTION__, tmp); */
+ 
+   /* count the number of sources so we can give some progress updates */
+   sources_list_count = 0;
+--- orig/libopkg/pkg_extract.c	2008-07-27 16:41:58.000000000 -0500
++++ opkg/libopkg/pkg_extract.c	2008-12-21 23:32:32.000000000 -0600
+@@ -24,6 +24,8 @@
+ #include "file_util.h"
+ #include "sprintf_alloc.h"
+ 
++extern char *opkg_conf_tmp_name;        /* Hack - workaround tmpfile issue */
++
+ /* assuage libb functions */
+ const char *applet_name = "opkg";
+ 
+@@ -91,6 +93,8 @@
+      char *line, *data_file;
+      FILE *file;
+      FILE *tmp;
++     char *tmp_fname;
++     int tmp_f;
+ 
+      file = fopen(file_name, "w");
+      if (file == NULL) {
+@@ -99,7 +103,19 @@
+ 	  return EINVAL;
+      }
+ 
+-     tmp = tmpfile();
++//     tmp = tmpfile();
++     sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
++     tmp_f = mkstemp(tmp_fname);
++     if (tmp_f == 0) {
++             perror("mkstemp()");
++             free(tmp_fname);
++             return errno;
++     }
++     /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
++     unlink(tmp_fname);
++     free(tmp_fname);
++     tmp = fdopen(tmp_f, "w");
++
+      if (pkg->installed_files) {
+ 	  str_list_elt_t *elt;
+ 	  for (elt = pkg->installed_files->head; elt; elt = elt->next) {
+--- orig/libopkg/opkg_conf.c	2008-12-20 15:06:50.000000000 -0600
++++ opkg/libopkg/opkg_conf.c	2008-12-21 21:41:07.000000000 -0600
+@@ -101,6 +101,8 @@
+      }
+ }
+ 
++char *opkg_conf_tmp_name;
++
+ int opkg_conf_init(opkg_conf_t *conf, const args_t *args)
+ {
+      int err;
+@@ -153,6 +155,8 @@
+ 		  __FUNCTION__, conf->tmp_dir, strerror(errno));
+ 	  return OPKG_CONF_ERR_TMP_DIR;
+      }
++     /* printf("%s: Using tmp_dir %s\n", __FUNCTION__, conf->tmp_dir); */
++     opkg_conf_tmp_name = strdup(conf->tmp_dir);
+ 
+      pkg_hash_init("pkg-hash", &conf->pkg_hash, OPKG_CONF_DEFAULT_HASH_LEN);
+      hash_table_init("file-hash", &conf->file_hash, OPKG_CONF_DEFAULT_HASH_LEN);
+--- orig/libopkg/pkg.c	2008-12-20 15:06:50.000000000 -0600
++++ opkg/libopkg/pkg.c	2008-12-21 23:31:39.000000000 -0600
+@@ -34,6 +34,8 @@
+ #include "xsystem.h"
+ #include "opkg_conf.h"
+ 
++extern char *opkg_conf_tmp_name;	/* Hack - workaround tmpfile issue */
++
+ typedef struct enum_map enum_map_t;
+ struct enum_map
+ {
+@@ -278,13 +280,27 @@
+      int err;
+      char **raw;
+      FILE *control_file;
++     char *tmp_fname;
++     int tmp_f;
+ 
+      err = pkg_init(pkg);
+      if (err) { return err; }
+ 
+      pkg->local_filename = strdup(filename);
+     
+-     control_file = tmpfile();
++//     control_file = tmpfile();
++     sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
++     tmp_f = mkstemp(tmp_fname);
++     if (tmp_f == 0) {
++	     perror("mkstemp()");
++	     free(tmp_fname);
++	     return errno;
++     }
++     /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
++     unlink(tmp_fname);
++     free(tmp_fname);
++     control_file = fdopen(tmp_f, "w");
++
+      err = pkg_extract_control_file_to_stream(pkg, control_file);
+      if (err) { return err; }
+ 
+@@ -1302,6 +1318,8 @@
+      char *line;
+      char *installed_file_name;
+      int rootdirlen;
++     char *tmp_fname;
++     int tmp_f;
+ 
+      pkg->installed_files_ref_cnt++;
+ 
+@@ -1326,7 +1344,19 @@
+ 	     file. In other words, change deb_extract so that it can
+ 	     simply return the file list as a char *[] rather than
+ 	     insisting on writing in to a FILE * as it does now. */
+-	  list_file = tmpfile();
++//	  list_file = tmpfile();
++	  sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
++	  tmp_f = mkstemp(tmp_fname);
++	  if (tmp_f == 0) {
++		  perror("mkstemp()");
++		  free(tmp_fname);
++		  return pkg->installed_files;
++	  }
++	  /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
++	  unlink(tmp_fname);
++	  free(tmp_fname);
++	  list_file = fdopen(tmp_f, "w");
++
+ 	  err = pkg_extract_data_file_names_to_stream(pkg, list_file);
+ 	  if (err) {
+ 	       fclose(list_file);
+--- orig/libopkg/opkg_cmd.c	2008-12-20 15:07:04.000000000 -0600
++++ opkg/libopkg/opkg_cmd.c	2008-12-21 21:41:07.000000000 -0600
+@@ -210,12 +210,13 @@
+      failures = 0;
+ 
+ 
+-     tmp = strdup ("/tmp/opkg.XXXXXX");
++     sprintf_alloc(&tmp, "%s-XXXXXX", conf->tmp_dir);
+ 
+      if (mkdtemp (tmp) == NULL) {
+ 	 perror ("mkdtemp");
+ 	 failures++;
+      }
++     /* printf("%s: Using tmp_dir %s\n", __FUNCTION__, tmp); */
+ 
+ 
+      for (iter = conf->pkg_src_list.head; iter; iter = iter->next) {
+@@ -334,7 +335,7 @@
+     
+     gen = 0;
+  retry:
+-    sprintf_alloc (&ctx->statedir, "/tmp/opkg-intercept-%d-%d", getpid (), gen);
++    sprintf_alloc (&ctx->statedir, "%s-intercept-%d-%d", conf->tmp_dir, getpid (), gen);
+     if (mkdir (ctx->statedir, 0770) < 0) {
+ 	if (errno == EEXIST) {
+ 	    free (ctx->statedir);

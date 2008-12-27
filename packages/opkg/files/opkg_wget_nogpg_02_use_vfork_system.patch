@@ -1,0 +1,200 @@
+# This patchset implements the suggestion found in xsystem.c in the
+# original opkg sources -- use vfork and exec instead of system().
+#
+# This, like the preceding patch in this patchset is vital to dodging
+# the OOM killer on small-memory machines.
+#
+# Mike Westerhof, Dec 2008
+
+--- orig/libopkg/opkg.c	2008-12-20 15:07:04.000000000 -0600
++++ opkg/libopkg/opkg.c	2008-12-21 21:41:07.000000000 -0600
+@@ -31,6 +31,7 @@
+ 
+ #include "sprintf_alloc.h"
+ #include "file_util.h"
++#include "xsystem.h"
+ 
+ #include <libbb/libbb.h>
+ 
+--- orig/libopkg/xsystem.h	2008-03-01 12:55:29.000000000 -0600
++++ opkg/libopkg/xsystem.h	2008-12-21 21:41:07.000000000 -0600
+@@ -29,6 +29,7 @@
+    as defined in <sys/wait.h>.
+ */
+ int xsystem(const char *cmd);
++int xvsystem(const char *cmd, char *const argv[]);
+ 
+ #endif
+ 	 
+--- orig/libopkg/xsystem.c	2008-04-17 11:00:51.000000000 -0500
++++ opkg/libopkg/xsystem.c	2008-12-21 21:41:07.000000000 -0600
+@@ -62,3 +62,58 @@
+     return -1;
+ }
+ 	 
++int xvsystem(const char *cmd, char *const argv[])
++{
++    int err;
++    pid_t pid;
++
++#ifdef DO_DEBUG
++    int i = 0;
++    char *p;
++    printf("DEBUG: xvsystem: execute ");
++    while (p = argv[i++]) {
++	    printf("\"%s\" ", p);
++    }
++    printf("\n");
++#endif
++
++    pid = vfork();
++
++    if (pid == 0) {		/* Child */
++	execvp(cmd, argv);
++	_exit(1);
++
++    } else if (pid == -1) {	/* Error on fork() */
++	perror("vfork()");
++	fprintf(stderr, "%s: ERROR: fork failed before execution: `%s'\n",
++		__FUNCTION__, cmd);
++	return -1;
++
++    } else {			/* Parent */
++	if (waitpid(pid, &err, 0) != pid) {	/* wait for child */
++	    perror("waitpid()");
++	    fprintf(stderr, "%s: ERROR: failed to execute: `%s'\n",
++		    __FUNCTION__, cmd);
++	    return -1;
++	}
++    }
++
++#ifdef DO_DEBUG
++    printf("DEBUG: xvsystem: child exit status %d\n", err);
++#endif
++
++    if (WIFSIGNALED(err)) {
++	fprintf(stderr, "%s: ERROR: Child process died due to signal %d: `%s'\n",
++		__FUNCTION__, WTERMSIG(err), cmd);
++	return -1;
++    }
++
++    if (WIFEXITED(err)) {
++	/* Normal child exit */
++	return WEXITSTATUS(err);
++    }
++
++    fprintf(stderr, "%s: ERROR: Received unintelligible return value from system: %d",
++	    __FUNCTION__, err);
++    return -1;
++}
+--- orig/libopkg/opkg_conf.c	2008-12-20 15:06:50.000000000 -0600
++++ opkg/libopkg/opkg_conf.c	2008-12-21 21:41:07.000000000 -0600
+@@ -316,10 +320,8 @@
+      err = rmdir(conf->tmp_dir);
+      if (err) {
+ 	  if (errno == ENOTEMPTY) {
+-	       char *cmd;
+-	       sprintf_alloc(&cmd, "rm -fr %s\n", conf->tmp_dir);
+-	       err = xsystem(cmd);
+-	       free(cmd);
++	       char *argv[] = {"rm", "-fr", conf->tmp_dir, NULL};
++	       err = xvsystem(argv[0], argv);
+ 	  }
+ 	  if (err)
+ 	       fprintf(stderr, "WARNING: Unable to remove temporary directory: %s: %s\n", conf->tmp_dir, strerror(errno));
+--- orig/libopkg/opkg_install.c	2008-12-20 15:06:51.000000000 -0600
++++ opkg/libopkg/opkg_install.c	2008-12-21 21:41:07.000000000 -0600
+@@ -1617,13 +1617,9 @@
+ 	  }
+ 
+ 	  if (strcmp(response, "d") == 0) {
+-	       char *cmd;
+-
++	       char *argv[] = {"diff", "-u", backup, file_name, NULL};
+ 	       free(response);
+-	       /* XXX: BUG rewrite to use exec or busybox's internal diff */
+-	       sprintf_alloc(&cmd, "diff -u %s %s", backup, file_name);
+-	       xsystem(cmd);
+-	       free(cmd);
++	       xvsystem(argv[0], argv);
+ 	       printf("    [Press ENTER to continue]\n");
+ 	       response = file_read_line_alloc(stdin);
+ 	       free(response);
+--- orig/libopkg/pkg.c	2008-12-20 15:06:50.000000000 -0600
++++ opkg/libopkg/pkg.c	2008-12-21 23:31:39.000000000 -0600
+@@ -1534,7 +1564,12 @@
+      sprintf_alloc(&cmd, "%s %s", path, args);
+      free(path);
+ 
+-     err = xsystem(cmd);
++//     err = xsystem(cmd);
++     {
++	char *argv[] = {"sh", "-c", cmd, NULL};
++	err = xvsystem(argv[0], argv);
++     }
++
+      free(cmd);
+ 
+      if (err) {
+--- orig/libopkg/opkg_cmd.c	2008-12-20 15:07:04.000000000 -0600
++++ opkg/libopkg/opkg_cmd.c	2008-12-21 21:41:07.000000000 -0600
+@@ -33,6 +33,7 @@
+ #include "libbb/libbb.h"
+ #include "opkg_utils.h"
+ #include "opkg_defines.h"
++#include "xsystem.h"
+ 
+ #include <fnmatch.h>
+ 
+@@ -371,7 +373,7 @@
+ 	    
+ 	    sprintf_alloc (&path, "%s/%s", ctx->statedir, de->d_name);
+ 	    if (access (path, X_OK) == 0) {
+-		if (system (path)) {
++		if (system (path)) {   /* FIXME FIXME */
+ 		    err = errno;
+ 		    perror (de->d_name);
+ 		}
+@@ -382,7 +384,7 @@
+ 	perror (ctx->statedir);
+ 	
+     sprintf_alloc (&cmd, "rm -rf %s", ctx->statedir);
+-    err = system (cmd);
++    err = system (cmd);  /* FIXME FIXME */
+     free (cmd);
+ 
+     free (ctx->statedir);
+--- orig/libopkg/opkg_download.c	2008-12-20 15:07:04.000000000 -0600
++++ opkg/libopkg/opkg_download.c	2008-12-21 21:44:30.000000000 -0600
+@@ -129,16 +129,21 @@
+ #else
+     {
+       int res;
+-      char *wgetcmd;
+-      char *wgetopts;
+-      wgetopts = getenv("OPKG_WGETOPTS");
+-      sprintf_alloc(&wgetcmd, "wget -q %s%s -O \"%s\" \"%s\"",
+-		    (conf->http_proxy || conf->ftp_proxy) ? "-Y on " : "",
+-		    (wgetopts!=NULL) ? wgetopts : "",
+-		    tmp_file_location, src);
+-      opkg_message(conf, OPKG_INFO, "Executing: %s\n", wgetcmd);
+-      res = xsystem(wgetcmd);
+-      free(wgetcmd);
++      char *argv[16];
++      int i = 0;
++
++      argv[i++] = "wget";
++      argv[i++] = "-q";
++      if (conf->http_proxy || conf->ftp_proxy) {
++	 argv[i++] = "-Y";
++	 argv[i++] = "on";
++      }
++      argv[i++] = "-O";
++      argv[i++] = tmp_file_location;
++      argv[i++] = src;
++      argv[i++] = NULL;
++      res = xvsystem(argv[0], argv);
++
+       if (res) {
+ 	opkg_message(conf, OPKG_ERROR, "Failed to download %s, error %d\n", src, res);
+ 	free(tmp_file_location);

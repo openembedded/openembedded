@@ -1,0 +1,163 @@
+# This patchset updates the libbb stuff to use a vfork() version of
+# gz_open, called gzvopen.  This is done because a standard fork will
+# duplicate the entire address space.  This will invoke the OOM
+# (out of memory) killer on small-memory machines, because most often
+# by the time we unzip any package, we've read the entire package
+# database into memory already.  By using vfork() and immediatly
+# execing the external gunzip utility, we avoid the need to clone the
+# entire address space.
+#
+# Yes, this is actually **LESS** efficient than the original way!
+# But there is no way to (currently) dodge the OOM killer on a
+# per-process basis, so the alternatives are to either change the
+# OOM killer behavior system-wide, or to use this workaround.
+#
+# Mike Westerhof, Dec 2008
+
+--- orig/libbb/gz_open.c	2008-03-01 12:55:33.000000000 -0600
++++ opkg/libbb/gz_open.c	2008-12-21 21:41:13.000000000 -0600
+@@ -56,3 +56,78 @@
+ 	}
+ 	return(fdopen(unzip_pipe[0], "r"));
+ }
++
++/* gz_open implementation using gunzip and a vfork/exec -- dodges OOM killer */
++extern FILE *gzvopen(FILE *compressed_file, int *pid)
++{
++	int unzip_pipe[2];
++	off_t floc;
++	int cfile;
++
++	/* create a new file descriptor for the input stream
++	 * (it *must* be associated with a file)
++	 * and seek to the same position in that fd as the stream.
++	 */
++	cfile = dup(fileno(compressed_file));
++	floc = ftello(compressed_file);
++	lseek(cfile, floc, SEEK_SET);
++
++	/* create the pipe */
++	if (pipe(unzip_pipe)!=0) {
++		error_msg("gzvopen(): pipe error");
++		return(NULL);
++	}
++
++	*pid = vfork();
++
++	if (*pid < 0) {
++		error_msg("gzvopen(): fork failed");
++		return(NULL);
++	}
++
++	if (*pid==0) {
++		/* child process - reads STDIN, writes to pipe */
++
++		/* close unused read end of pipe */
++		close(unzip_pipe[0]);
++
++		/* connect child's stdout to the pipe write end */
++		dup2(unzip_pipe[1], 1);
++
++		/* connect child's stdin to the fd passed in to us */
++		dup2(cfile, 0);
++
++		/* execute the gunzip utility */
++		execlp("gunzip","gunzip",NULL);
++
++		/* if we get here, we had a failure - since we are
++		 * using vfork(), we cannot call exit(), must call _exit().
++		 */
++		_exit(-1);
++	}
++
++	/* Parent process is executing here */
++
++	/* we have no more need of the duplicate fd */
++	close(cfile);
++
++	/* close the write end of the pipe */
++	close(unzip_pipe[1]);
++
++	/* return the read end of the pipe as a FILE */
++	return(fdopen(unzip_pipe[0], "r"));
++}
++
++extern void gzvclose(int gunzip_pid)
++{
++        if (kill(gunzip_pid, SIGTERM) == -1) {
++		perror("gzvclose()");
++                fprintf(stderr,"%s: unable to kill gunzip pid.\n",
++			__FUNCTION__);
++        }
++
++        if (waitpid(gunzip_pid, NULL, 0) == -1) {
++                fprintf(stderr,"%s: unable to wait on gunzip pid.\n",
++			__FUNCTION__);
++        }
++}
+--- orig/libbb/libbb.h	2008-12-20 15:06:51.000000000 -0600
++++ opkg/libbb/libbb.h	2008-12-21 21:41:13.000000000 -0600
+@@ -270,6 +270,8 @@
+ extern int unzip(FILE *l_in_file, FILE *l_out_file);
+ extern void gz_close(int gunzip_pid);
+ extern FILE *gz_open(FILE *compressed_file, int *pid);
++extern void gzvclose(int gunzip_pid);
++extern FILE *gzvopen(FILE *compressed_file, int *pid);
+ 
+ extern struct hostent *xgethostbyname(const char *name);
+ extern int create_icmp_socket(void);
+--- orig/libbb/unarchive.c	2008-09-10 11:48:23.000000000 -0500
++++ opkg/libbb/unarchive.c	2008-12-21 21:41:13.000000000 -0600
+@@ -749,7 +749,7 @@
+ 		while ((ar_header = get_header_ar(deb_stream)) != NULL) {
+ 			if (strcmp(ared_file, ar_header->name) == 0) {
+ 				/* open a stream of decompressed data */
+-				uncompressed_stream = gz_open(deb_stream, &gunzip_pid);
++				uncompressed_stream = gzvopen(deb_stream, &gunzip_pid);
+ 				archive_offset = 0;
+ 				output_buffer = unarchive(uncompressed_stream, out_stream, get_header_tar, free_header_tar, extract_function, prefix, file_list);
+ 			}
+@@ -757,7 +757,7 @@
+ 			free (ar_header->name);
+ 			free (ar_header);
+ 		}
+-		gz_close(gunzip_pid);
++		gzvclose(gunzip_pid);
+ 		fclose(deb_stream);
+ 		fclose(uncompressed_stream);
+ 		free(ared_file);
+@@ -769,7 +769,7 @@
+ 		file_header_t *tar_header;
+ 		archive_offset = 0;
+ 		fseek(deb_stream, 0, SEEK_SET);
+-		unzipped_opkg_stream = gz_open(deb_stream, &unzipped_opkg_pid);
++		unzipped_opkg_stream = gzvopen(deb_stream, &unzipped_opkg_pid);
+ 		
+                 /*fprintf(stderr, __FUNCTION__ ": processing opkg %s -- ared_file=%s\n", package_filename, ared_file);*/
+ 		/* walk through outer tar file to find ared_file */
+@@ -779,7 +779,7 @@
+                                 name_offset = 2;
+ 			if (strcmp(ared_file, tar_header->name+name_offset) == 0) {
+ 				/* open a stream of decompressed data */
+-				uncompressed_stream = gz_open(unzipped_opkg_stream, &gunzip_pid);
++				uncompressed_stream = gzvopen(unzipped_opkg_stream, &gunzip_pid);
+ 				archive_offset = 0;
+                                 /*fprintf(stderr, __FUNCTION__ ":%d: here -- found file\n", __LINE__);*/
+ 				output_buffer = unarchive(uncompressed_stream, 
+@@ -791,14 +791,14 @@
+ 							  file_list);
+                                 /*fprintf(stderr, __FUNCTION__ ":%d: unarchive complete\n", __LINE__);*/
+ 				free_header_tar(tar_header);
+-				gz_close(gunzip_pid);
++				gzvclose(gunzip_pid);
+ 				fclose(uncompressed_stream);
+ 				break;
+ 			}
+ 			seek_sub_file(unzipped_opkg_stream, tar_header->size);
+ 			free_header_tar(tar_header);
+ 		}
+-		gz_close(unzipped_opkg_pid);
++		gzvclose(unzipped_opkg_pid);
+ 		fclose(unzipped_opkg_stream);
+ 		fclose(deb_stream);
+ 		free(ared_file);
