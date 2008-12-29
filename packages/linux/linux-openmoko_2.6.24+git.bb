@@ -6,9 +6,9 @@ DESCRIPTION = "The Linux kernel for the Openmoko devices GTA01 (Neo1973) and GTA
 KERNEL_RELEASE = "2.6.24"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
-OEV = "oe3"
+OEV = "oe4"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=stable \
