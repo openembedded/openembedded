@@ -1,0 +1,49 @@
+From: Mans Rullgard <mans@mansr.com>
+Date: Fri, 29 Aug 2008 01:18:48 +0000 (+0100)
+Subject: OMAP: Fix omapfb display panning
+X-Git-Url: http://git.mansr.com/?p=linux-omap;a=commitdiff_plain;h=2ea46e9f28ff57a32d87bc380457a584c913fe78
+
+OMAP: Fix omapfb display panning
+
+This makes the FBIOPAN_DISPLAY ioctl work with omapfb.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+
+diff --git a/drivers/video/omap/dispc.c b/drivers/video/omap/dispc.c
+index ce4c4de..64bf333 100644
+--- a/drivers/video/omap/dispc.c
++++ b/drivers/video/omap/dispc.c
+@@ -436,6 +436,8 @@ static inline int _setup_plane(int plane, int channel_out,
+ 
+ 	dispc_write_reg(ri_reg[plane], (screen_width - width) * bpp / 8 + 1);
+ 
++	MOD_REG_FLD(DISPC_CONTROL, 1<<5, 1<<5);
++
+ 	return height * screen_width * bpp / 8;
+ }
+ 
+diff --git a/drivers/video/omap/omapfb_main.c b/drivers/video/omap/omapfb_main.c
+index e7f3462..e9ffb92 100644
+--- a/drivers/video/omap/omapfb_main.c
++++ b/drivers/video/omap/omapfb_main.c
+@@ -207,8 +207,8 @@ static int ctrl_change_mode(struct fb_info *fbi)
+ 	struct omapfb_device *fbdev = plane->fbdev;
+ 	struct fb_var_screeninfo *var = &fbi->var;
+ 
+-	offset = var->yoffset * fbi->fix.line_length +
+-		 var->xoffset * var->bits_per_pixel / 8;
++	offset = (var->yoffset * var->xres_virtual + var->xoffset) *
++		var->bits_per_pixel / 8;
+ 
+ 	if (fbdev->ctrl->sync)
+ 		fbdev->ctrl->sync();
+@@ -426,6 +426,8 @@ static void set_fb_fix(struct fb_info *fbi)
+ 	}
+ 	fix->accel		= FB_ACCEL_OMAP1610;
+ 	fix->line_length	= var->xres_virtual * bpp / 8;
++	fix->xpanstep		= 1;
++	fix->ypanstep		= 1;
+ }
+ 
+ static int set_color_mode(struct omapfb_plane_struct *plane,

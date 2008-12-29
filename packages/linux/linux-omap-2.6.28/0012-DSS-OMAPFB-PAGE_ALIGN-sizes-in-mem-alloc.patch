@@ -1,0 +1,36 @@
+From aebae68fd82a47e5d7c83176cf14720559300e2b Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Mon, 15 Dec 2008 14:33:11 +0200
+Subject: [PATCH] DSS: OMAPFB: PAGE_ALIGN sizes in mem alloc
+
+Sizes in omapfb region struct were not page aligned, and that caused
+mmap to fail.
+---
+ drivers/video/omap2/omapfb-main.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-main.c b/drivers/video/omap2/omapfb-main.c
+index 89ad631..bca0e28 100644
+--- a/drivers/video/omap2/omapfb-main.c
++++ b/drivers/video/omap2/omapfb-main.c
+@@ -874,6 +874,8 @@ static int omapfb_alloc_fbmem(struct omapfb2_device *fbdev, int fbnum,
+ 	unsigned long paddr;
+ 	void *vaddr;
+ 
++	size = PAGE_ALIGN(size);
++
+ 	ofbi = FB2OFB(fbdev->fbs[fbnum]);
+ 	rg = &ofbi->region;
+ 	memset(rg, 0, sizeof(*rg));
+@@ -906,6 +908,8 @@ int omapfb_realloc_fbmem(struct omapfb2_device *fbdev, int fbnum,
+ 	unsigned old_size = rg->size;
+ 	int r;
+ 
++	size = PAGE_ALIGN(size);
++
+ 	omapfb_free_fbmem(fbdev, fbnum);
+ 
+ 	if (size == 0)
+-- 
+1.5.6.3
+
