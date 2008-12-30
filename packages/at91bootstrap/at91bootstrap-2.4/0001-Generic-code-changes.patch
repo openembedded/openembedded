@@ -1,0 +1,781 @@
+From c73e4e2ebd5c818c8c1d70d0376d3b01630d97f4 Mon Sep 17 00:00:00 2001
+From: Sergey Lapin <slapin@ossfans.org>
+Date: Sat, 6 Dec 2008 20:57:03 +0300
+Subject: [PATCH] Generic code changes
+
+* Thumb mode binary
+* cp15 setting from assembler part
+* removed some of unused code
+* cloenup of code
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+---
+ .config            |    7 --
+ Makefile           |   11 ++--
+ crt0_gnu.S         |    7 ++
+ driver/dataflash.c |  167 +++++++++++++++++++++++++++++++++++++++------------
+ driver/debug.c     |   46 ++++++++++++++
+ driver/driver.mk   |    2 +-
+ driver/gpio.c      |    2 +
+ driver/nandflash.c |    5 +-
+ driver/sdramc.c    |   27 +-------
+ include/debug.h    |   18 ++++++
+ include/nand_ids.h |    1 +
+ main.c             |  167 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 12 files changed, 376 insertions(+), 84 deletions(-)
+ delete mode 100644 .config
+
+diff --git a/.config b/.config
+deleted file mode 100644
+index 85a177f..0000000
+--- a/.config
++++ /dev/null
+@@ -1,7 +0,0 @@
+-BOARDNAME=at91sam9263ek
+-BOARD=at91sam9263ek
+-PROJECT=dataflash
+-CONFIG_DATAFLASH=y
+-SPI_MODE=SPI_MODE_0
+-SPI_BOOT=SPI_BOOT_CS0
+-SPI_CLK=5000000
+diff --git a/Makefile b/Makefile
+index 5bed79d..475784e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -10,7 +10,7 @@ TOPDIR	:=	$(CURDIR)
+ 
+ VERSION:=2.4
+ 
+-include	.config
++-include	.config
+ 
+ ifeq	($(CONFIG_SPI_MODE),)
+ CONFIG_SPI_MODE=SPI_MODE_0
+@@ -58,15 +58,15 @@ endif
+ SRCS	:= $(COBJS-y:.o=.c)
+ OBJS	:= $(addprefix $(obj),$(SOBJS-y) $(COBJS-y))
+ 
+-INCL=board/$(BOARD)/$(PROJECT)
++INCL=-Iboard/$(BOARD)/$(PROJECT) -Iboard/$(BOARD)
+ 
+-CPPFLAGS=-g -mcpu=arm9 -Os -Wall -D$(TARGET)		\
+-	-I$(INCL) -Iinclude				\
++CPPFLAGS=-g -march=armv5te -mtune=arm926ej-s -mthumb -mthumb-interwork -Os -Wall -D$(TARGET)		\
++	$(INCL) -Iinclude				\
+ 	-DTOP_OF_MEM=$(TOP_OF_MEMORY) 			\
+ 	-D$(SPI_MODE) -D$(SPI_BOOT) -DSPI_CLK=$(SPI_CLK) \
+ 	$(AT91_CUSTOM_FLAGS)
+ 
+-ASFLAGS=-g -mcpu=arm9 -Os -Wall -D$(TARGET) -I$(INCL) -Iinclude -DTOP_OF_MEM=$(TOP_OF_MEMORY)
++ASFLAGS=-g -mcpu=arm9 -Os -Wall -D$(TARGET) $(INCL) -Iinclude -DTOP_OF_MEM=$(TOP_OF_MEMORY)
+ 
+ # Linker flags.
+ #  -Wl,...:     tell GCC to pass this to linker.
+@@ -77,6 +77,7 @@ ASFLAGS=-g -mcpu=arm9 -Os -Wall -D$(TARGET) -I$(INCL) -Iinclude -DTOP_OF_MEM=$(T
+ LDFLAGS+=-nostartfiles -Map=result/$(BOOT_NAME).map --cref
+ #LDFLAGS+=-lc -lgcc
+ LDFLAGS+=-T elf32-littlearm.lds -Ttext $(LINK_ADDR)
++LDFLAGS+= --gc-sections
+ 
+ all: 	binaries/$(BOOT_NAME).bin
+ 
+diff --git a/crt0_gnu.S b/crt0_gnu.S
+index 4811eef..e8379d7 100644
+--- a/crt0_gnu.S
++++ b/crt0_gnu.S
+@@ -115,6 +115,7 @@ _enable_mosc:
+ 	
+ /* Test if MCK == SLOW CLOCK */
+ _switch_to_mosc:
++#if 0
+ 	ldr 	r0,=AT91C_PMC_MCKR
+ 	ldr 	r1,=AT91C_PMC_CSS
+ 	ldr 	r2, [r0]
+@@ -123,6 +124,9 @@ _switch_to_mosc:
+ 	cmp    	r1, r2
+ /* No => Do nothing */
+ 	bne	_init_bss
++#else
++	ldr 	r0,=AT91C_PMC_MCKR
++#endif
+ /* Yes => Switch to the main oscillator */
+ 	ldr 	r1,=AT91C_PMC_CSS_MAIN_CLK
+ 	ldr 	r2,=AT91C_PMC_PRES_CLK
+@@ -147,6 +151,9 @@ _init_bss:
+ 
+ /* Branch on C code Main function (with interworking) */
+ _branch_main:
++	mrc	p15, 0, r4, c1, c0, 0
++	orr	r4, #(1 << 12)
++	mcr	p15, 0, r4, c1, c0, 0
+ 	ldr     r4, = main
+ 	mov     lr, pc
+ 	bx      r4
+diff --git a/driver/dataflash.c b/driver/dataflash.c
+index baf7575..0f0388a 100644
+--- a/driver/dataflash.c
++++ b/driver/dataflash.c
+@@ -59,6 +59,64 @@ static inline unsigned int read_spi(unsigned int offset)
+ 	return readl(offset + AT91C_BASE_SPI);
+ }
+ 
++
++static void msg_df_print(int i)
++{
++	msg_print(MSG_DATAFLASH);
++	msg_print(MSG_SPACE);
++	msg_print(i);
++	msg_print(MSG_NEWLINE);
++}
++static void msg_df_detect(int i)
++{
++	char * pn;
++	msg_print(MSG_DATAFLASH);
++	msg_print(MSG_SPACE);
++	msg_print(MSG_CODE);
++	msg_print(MSG_SPACE);
++	dbg_print_hex(i);
++	msg_print(MSG_AT45);
++	msg_print(MSG_DB);
++	switch(i) {
++		case AT45DB011B:
++			pn = "011B";
++			break;
++		case AT45DB021B:
++			pn = "021B";
++			break;
++		case AT45DB041B:
++			pn = "041B";
++			break;
++		case AT45DB081B:
++			pn = "081B";
++			break;
++		case AT45DB161B:
++			pn = "161B";
++			break;
++		case AT45DB321B:
++			pn = "321B";
++			break;
++		case AT45DB642:
++			pn = "642";
++			break;
++		case AT45DB1282:
++			pn = "1282";
++			break;
++		case AT45DB2562:
++			pn = "2562";
++			break;
++		case AT45DB5122:
++			pn = "5122";
++			break;
++		default:
++			pn = "????";
++			break;
++	}
++	dbg_print(pn);
++	msg_print(MSG_SPACE);
++	msg_print(MSG_DETECTED);
++	msg_print(MSG_NEWLINE);
++}
+ /*------------------------------------------------------------------------------*/
+ /* \fn    df_spi_init								*/
+ /* \brief Configure SPI								*/
+@@ -202,6 +260,42 @@ static char df_wait_ready(AT91PS_DF pDataFlash)
+ 
+ 	return FAILURE;
+ }
++
++void df_write(	AT91PS_DF pDf,
++	unsigned int addr,
++	int size, unsigned long offset)
++{
++	char rxBuffer[268];
++	int i, j;
++	i = offset;
++	if(offset == 0)
++		*((unsigned long *)(addr + 0x14)) = size;
++	while(size > 0) {
++		for(j = 0; j< ((size >268) ? 268 : size); j++)
++			rxBuffer[j] = *((unsigned char *)(addr +i+j));
++		df_page_write(pDf, rxBuffer, ((size <= AT91C_PAGE_SIZE(pDf)) ? size : AT91C_PAGE_SIZE(pDf)), i);
++		df_wait_ready(pDf);
++		i += AT91C_PAGE_SIZE(pDf);
++		size -= AT91C_PAGE_SIZE(pDf);
++	}
++#if 1
++#define LONG_VAL(addr) *((unsigned long *)(addr))
++
++	for(j=0; j < 0x1000;j+=32) {
++		df_continuous_read(pDf, (char *)rxBuffer, 32, j);
++		for(i = 0; i < 32; i+=4) {
++			if(!(i & 4)) dbg_print_hex(i+j);
++			if(LONG_VAL(0x200000+i+j) == LONG_VAL(&rxBuffer[i]))
++				msg_print(MSG_SPACE);
++			else
++				msg_print(MSG_EXCLAMATION);
++			dbg_print_hex(LONG_VAL(&rxBuffer[i]));
++			if(i & 4) msg_print(MSG_NEWLINE);
++		}
++	}
++#endif
++}
++
+ volatile	int loop;
+ /*------------------------------------------------------------------------------*/
+ /* \fn    df_read								*/
+@@ -226,14 +320,14 @@ static int df_read(
+ 			dbg_print(".");
+ 			if(--page_counter <= 0) {
+ 				page_counter = 32;
+-				dbg_print("\r\n");
++				msg_print(MSG_NEWLINE);
+ 			}
+ 			size -= SizeToRead;
+ 			addr += SizeToRead;
+ 			buffer += SizeToRead;
+ 		} else {
+ 			/* We got a timeout */
+-			dbg_print("Timeout while waiting for dataflash ready\n");
++			msg_df_print(MSG_TIMEOUT);
+ 			return FAILURE;
+ 		}
+ 	}
+@@ -246,17 +340,18 @@ static int df_read(
+ /*----------------------------------------------------------------------*/
+ static int df_download(AT91PS_DF pDf, unsigned int img_addr, unsigned int img_size, unsigned int img_dest)
+ {
+-	dbg_print(">Loading from Dataflash[");
+-	dbg_print_hex(img_addr);
+-	dbg_print("] to SDRAM[");
+-	dbg_print_hex(img_dest);
+-	dbg_print("]\r\n");
++	msg_print(MSG_LOADING);
++	msg_print(MSG_SPACE);
++	msg_print(MSG_FROM);
++	msg_print(MSG_DATAFLASH);
++	msg_print_num(img_addr);
+ 	/* read bytes in the dataflash */
+ 	if(df_read(pDf, img_addr,(unsigned char *)img_dest, img_size) == FAILURE)
+ 		return FAILURE;
+-	dbg_print("\r\n>Loading complete, [");
+-	dbg_print_hex(IMG_SIZE);
+-	dbg_print("] bytes\r\n");
++	msg_print(MSG_COMPLETE);
++	msg_print_num(img_size);
++	msg_print(MSG_BYTES);
++	msg_print(MSG_NEWLINE);
+ 	/* wait the dataflash ready status */
+ 	return df_wait_ready(pDf);
+ }
+@@ -288,7 +383,7 @@ static int df_init (AT91PS_DF pDf)
+ 	pDf->dfDescription.page_offset = 10;
+ 
+ 	dfcode = df_probe (pDf);
+-
++	msg_df_detect(dfcode);
+ 	switch (dfcode)
+ 	{
+ /*		case AT45DB011B:
+@@ -296,46 +391,41 @@ static int df_init (AT91PS_DF pDf)
+ 			pDf->dfDescription.pages_size = 264;
+ 			pDf->dfDescription.page_offset = 9;
+ 			break;
+-
++*/
+ 		case AT45DB021B:
+ 			pDf->dfDescription.pages_number = 1024;
+ 			pDf->dfDescription.pages_size = 264;
+ 			pDf->dfDescription.page_offset = 9;
+ 			break;
+-
++/*
+ 		case AT45DB041B:
+ 			pDf->dfDescription.pages_number = 2048;
+ 			pDf->dfDescription.pages_size = 264;
+ 			pDf->dfDescription.page_offset = 9;
+ 			break;
+-
++*/
+ 		case AT45DB081B:
+ 			pDf->dfDescription.pages_number = 4096;
+ 			pDf->dfDescription.pages_size = 264;
+ 			pDf->dfDescription.page_offset = 9;
+ 			break;
+-*/
+-		case AT45DB161B:
++/*		case AT45DB161B:
+ 			pDf->dfDescription.pages_number = 4096;
+ 			pDf->dfDescription.pages_size = 528;
+ 			pDf->dfDescription.page_offset = 10;
+-			dbg_print(">AT45DB161D detected\r\n");
+ 			break;
+ 
+ 		case AT45DB321B:
+ 			pDf->dfDescription.pages_number = 8192;
+ 			pDf->dfDescription.pages_size = 528;
+ 			pDf->dfDescription.page_offset = 10;
+-			dbg_print(">AT45DB321D detected\r\n");
+ 			break;
+ 
+ 		case AT45DB642:
+ 			pDf->dfDescription.pages_number = 8192;
+ 			pDf->dfDescription.pages_size = 1056;
+ 			pDf->dfDescription.page_offset = 11;
+-			dbg_print(">AT45DB642D detected\r\n");
+ 			break;
+-/*
+ 		case AT45DB1282:
+ 			pDf->dfDescription.pages_number = 16384;
+ 			pDf->dfDescription.pages_size = 1056;
+@@ -368,21 +458,22 @@ static int df_init (AT91PS_DF pDf)
+ /*------------------------------------------------------------------------------*/
+ static unsigned int df_is_boot_valid(unsigned char *buffer)
+ {
+-	int i = 3;
++    	return SUCCESS;
++}
+ 
+- 	/* Verify if the 28 first bytes of the sram correspond to ARM vectors
+-	   The sixth ARM vector contain the size of the code */
+-    	while(i < 28)
+-    	{
+-		if (i != 23)
+-		{
+-			if ((buffer[i] != 0xEA) && (buffer[i] != 0xE5) )
+-				return FAILURE;
+-		}
+-		i+=4;
+-    	}
++int burn_df(unsigned int pcs, unsigned int addr, unsigned int size, unsigned int offset)
++{
++    	AT91S_DF sDF;
++    	AT91PS_DF pDf = (AT91PS_DF)&sDF;
++    	pDf->bSemaphore = UNLOCKED;
+ 
+-    	return SUCCESS;
++    	df_spi_init(pcs, DF_CS_SETTINGS);
++
++    	if (df_init(pDf) == FAILURE)
++        	return FAILURE;
++	df_write(pDf, addr, size, offset);
++	
++	return SUCCESS;
+ }
+ 
+ /*------------------------------------------------------------------------------*/
+@@ -403,17 +494,13 @@ int load_df(unsigned int pcs, unsigned int img_addr, unsigned int img_size, unsi
+     	if (df_init(pDf) == FAILURE)
+         	return FAILURE;
+ 
+-#ifdef AT91SAM9260
+-	/* Test if a button has been pressed or not */
+-	/* Erase Page 0 to avoid infinite loop */
+-	df_recovery(pDf);
+-#endif
+-
+     	df_continuous_read(pDf, (char *)rxBuffer, 32, img_addr);
+ 	df_wait_ready(pDf);
+ 
+ 	if (df_is_boot_valid((unsigned char*)rxBuffer) == FAILURE) {
+-		dbg_print(">Invalid Boot Area...\n\r");
++		msg_print(MSG_INVALID);
++		msg_print(MSG_BOOT);
++		msg_print(MSG_NEWLINE);
+ 		return FAILURE;
+ 	}
+ 
+diff --git a/driver/debug.c b/driver/debug.c
+index e30e883..762f33e 100644
+--- a/driver/debug.c
++++ b/driver/debug.c
+@@ -106,3 +106,49 @@ void dbg_print_hex(unsigned int data)
+ }
+ 
+ 
++#ifdef CFG_DEBUG
++static char * messages[] = {
++	"detected",
++	"\r\n",
++	" ",
++	"!",
++	"dataflash",
++	"timeout",
++	"AT45",
++	"DB",
++	"invalid",
++	"boot",
++	"loading",
++	"from",
++	"code",
++	"complete",
++	"bytes",
++/*		case AT45DB011B:
++		case AT45DB021B:
++		case AT45DB041B:
++		case AT45DB081B:
++		case AT45DB161B:
++		case AT45DB321B:
++		case AT45DB642:
++		case AT45DB1282:
++		case AT45DB2562:
++		case AT45DB5122:
++*/
++};
++#endif
++
++void msg_print(int i)
++{
++#ifdef CFG_DEBUG
++	dbg_print(messages[i]);
++#endif
++}
++
++void msg_print_num(int n)
++{
++#ifdef CFG_DEBUG
++	dbg_print("[");
++	dbg_print_hex(n);
++	dbg_print("]");
++#endif
++}
+diff --git a/driver/driver.mk b/driver/driver.mk
+index 559d538..13d0e23 100644
+--- a/driver/driver.mk
++++ b/driver/driver.mk
+@@ -1,7 +1,7 @@
+ # Makefile for AT91-Bootstrap drivers directory
+ 
+ COBJS-y				+=	driver/debug.o
+-COBJS-y				+=	driver/gpio.o
++# COBJS-y				+=	driver/gpio.o
+ COBJS-y				+=	driver/pmc.o
+ COBJS-y				+=	driver/sdramc.o
+ COBJS-y				+=	driver/string.o
+diff --git a/driver/gpio.c b/driver/gpio.c
+index 9f17305..752b7c1 100644
+--- a/driver/gpio.c
++++ b/driver/gpio.c
+@@ -208,6 +208,7 @@ int pio_get_value(unsigned pin)
+ 	return (pdsr & mask) != 0;
+ }
+ 
++#if 0
+ /*------------------------------------------------------------------------------*/
+ /* \fn    pio_device_pio_setup							*/
+ /* \brief Configure PIO in periph mode according to the platform informations	*/
+@@ -248,3 +249,4 @@ int pio_setup (const struct pio_desc *pio_desc)
+         }
+         return pin;
+ }
++#endif
+\ No newline at end of file
+diff --git a/driver/nandflash.c b/driver/nandflash.c
+index b4e3e70..081fa69 100644
+--- a/driver/nandflash.c
++++ b/driver/nandflash.c
+@@ -126,6 +126,9 @@ static PSNandInitInfo AT91F_NandReadID(void)
+ 	NAND_DISABLE_CE();
+ 
+ 	uChipID = (bManufacturerID << 8) | bDeviceID;
++	dbg_print("NAND id:");
++	dbg_print_hex(uChipID);
++	dbg_print("\r\n");
+ 	
+ 	/* Search in NandFlash_InitInfo[] */
+ 	while (NandFlash_InitInfo[i].uNandID != 0)
+@@ -398,7 +401,7 @@ int load_nandflash(unsigned int img_addr, unsigned int img_size, unsigned int im
+ 	if (!pNandInitInfo)
+  	{
+ #ifdef CFG_DEBUG	
+-	   	dbg_print("\n\r-E- No NandFlash detected !!!\n\r");
++	   	dbg_print("\n\r-E- No NandFlash\n\r");
+ #endif
+ 		return -1;
+     	}
+diff --git a/driver/sdramc.c b/driver/sdramc.c
+index 3e5715b..9940f67 100644
+--- a/driver/sdramc.c
++++ b/driver/sdramc.c
+@@ -73,29 +73,10 @@ int sdram_init(unsigned int sdramc_cr, unsigned int sdramc_tr)
+ 
+ 	for (i =0; i< 10000;i++);
+ 
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 1st CBR
+-	writel(0x00000001, AT91C_SDRAM+4);						// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 2 CBR
+-	writel(0x00000002, AT91C_SDRAM+8);						// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 3 CBR
+-	writel(0x00000003, AT91C_SDRAM+0xc);					// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 4 CBR
+-	writel(0x00000004, AT91C_SDRAM+0x10);					// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 5 CBR
+-	writel(0x00000005, AT91C_SDRAM+0x14);					// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 6 CBR
+-	writel(0x00000006, AT91C_SDRAM+0x18);					// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 7 CBR
+-	writel(0x00000007, AT91C_SDRAM+0x1C);					// Perform CBR
+-
+-	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);	// Set 8 CBR
+-	writel(0x00000008, AT91C_SDRAM+0x20);					// Perform CBR
++	for (i = 0; i < 8; i++) {
++		write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_RFSH_CMD);  // 8 x CBR
++		writel(0x00000001 + i, AT91C_SDRAM + 4 + 4 * i);						// Perform CBR
++	}
+ 
+ 	write_sdramc(SDRAMC_MR, AT91C_SDRAMC_MODE_LMR_CMD);		// Set LMR operation
+ 	writel(0xcafedede, AT91C_SDRAM+0x24);					// Perform LMR burst=1, lat=2
+diff --git a/include/debug.h b/include/debug.h
+index 686294a..be7fe89 100644
+--- a/include/debug.h
++++ b/include/debug.h
+@@ -47,4 +47,22 @@ extern void dbg_init(unsigned int);
+ extern void dbg_print(const char *ptr);
+ extern void dbg_print_hex(unsigned int data);
+ 
++#define MSG_DETECTED 0
++#define MSG_NEWLINE 1
++#define MSG_SPACE 2
++#define MSG_EXCLAMATION 3
++#define MSG_DATAFLASH 4
++#define MSG_TIMEOUT 5
++#define MSG_AT45 6
++#define MSG_DB 7
++#define MSG_INVALID 8
++#define MSG_BOOT 9
++#define MSG_LOADING 10
++#define MSG_FROM 11
++#define MSG_CODE 12
++#define MSG_COMPLETE 13
++#define MSG_BYTES 14
++
++void msg_print(int i);
++void msg_print_num(int n);
+ #endif /*_DEBUG_H_*/
+diff --git a/include/nand_ids.h b/include/nand_ids.h
+index 5aa8753..c659b07 100644
+--- a/include/nand_ids.h
++++ b/include/nand_ids.h
+@@ -42,6 +42,7 @@
+ /* Supported NandFlash devices */
+ static struct SNandInitInfo NandFlash_InitInfo[] = {
+ 	{0xecda, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0M 256Mb\0"},
++	{0xecaa, 0x800, 0x20000, 0x800, 0x40, 0x0, "Samsung K9F2G08U0A 256Mb\0"},
+ 	{0x2cca, 0x800, 0x20000, 0x800, 0x40, 0x1, "Micron MT29F2G16AAB 256Mb\0"},	
+ 	{0,}
+ };
+diff --git a/main.c b/main.c
+index ed750c2..e55e2fc 100644
+--- a/main.c
++++ b/main.c
+@@ -41,18 +41,149 @@
+ #include "include/flash.h"
+ #include "include/nandflash.h"
+ 
+-int test(void)
+-{
+-
+-}
+ /*------------------------------------------------------------------------------*/
+ /* Function Name       : main							*/
+ /* Object              : Main function						*/
+ /* Input Parameters    : none							*/
+ /* Output Parameters   : True							*/
+ /*------------------------------------------------------------------------------*/
++static unsigned long rand_next = 1;
++
++unsigned long stupid_rand(void)
++{
++	rand_next = rand_next * 1103515245 + 12345;
++	return (rand_next/131072) % 65536;
++}
++void stupid_srand(unsigned long seed)
++{
++	rand_next = seed;
++}
++
++unsigned long il, ij, k;
++unsigned char tbuf[128];
++void writeall()
++{
++    burn_df(AT91C_SPI_PCS_DATAFLASH, 0x200000, 0x1000, 0);
++    burn_df(AT91C_SPI_PCS_DATAFLASH, JUMP_ADDR, IMG_SIZE, IMG_ADDRESS);
++    while(1);
++}
++
++void dbg_cr(void)
++{
++	dbg_print("\r\n");
++}
++
++void dbg_printnum(char * s, unsigned long no)
++{
++	dbg_print(s);
++	dbg_print(" ");
++	dbg_print_hex(no);
++}
++
++void dbg_printnum_cr(char * s, unsigned long no)
++{
++	dbg_printnum(s, no);
++	dbg_cr();
++}
++void dbg_print_cr(char * s)
++{
++	dbg_print(s);
++	dbg_cr();
++}
++
++void test_pass(int pass, int mode, unsigned long start, unsigned long size, unsigned long step)
++{
++	unsigned long k, bad;
++	k = 0;
++	bad = 0;
++	stupid_srand(6);
++#if 0
++	if(pass == 7) {
++		unsigned long r1, j, l, *a1, *a2;
++		r1 = stupid_rand();
++		for(j = 0; (1 << j) < size; j++) {
++			a1 = start + j;
++			for(l = 1; l < size; l <<= 1) {
++				a2 = start + l;
++				if(j != l) {
++					*a1 = r1;
++					*a2 = r1 + 1;
++					for(k=0; k<100000; k++);
++					if(*a1 != r1 ||	*a2 != (r1 + 1) || *a1 == *a2) {
++							dbg_printnum("bad locations:", a2);
++							dbg_printnum_cr(" ", a1);
++							bad++;
++						}
++				}
++			}
++		}
++	}
++	else 
++#endif
++	for (ij = 0; ij < size; ij+=step) {
++		unsigned long wval = 0;
++		unsigned long rval;
++		unsigned long tmp;
++		unsigned long randval;
++		for(il=(start+ij); il<(start+step+ij);il+=4) {
++#if 1
++			randval = stupid_rand() & 0xffff;
++#endif
++			switch(pass)
++			{
++				case 0:
++					wval |= 0x1 << (k & 0x1f);
++					break;
++				case 1:
++					wval = (0x1 << (k & 0x1f)) | 1;
++					break;
++				case 2:
++					wval = 0x1 << (k & 0x1f);
++					break;
++				case 3:
++					wval = 0;
++					break;
++				case 4:
++					wval = 0xffffffff;
++					break;
++#if 1
++				case 5: {
++						wval = (randval << 16) + randval;
++					}
++					break;
++#endif
++			}
++			if(!(mode & 1)) {
++				*((unsigned long *)il) = wval;
++			}
++			else if(mode & 1) {
++				rval = (mode & 2) ? *((unsigned long *)il) & 0xffff : ((mode & 4) ? *((unsigned long *)il) & 0xffff0000 : *((unsigned long *)il));
++				tmp = wval;
++				wval = (mode & 2) ? wval & 0xffff: ((mode & 4) ? wval & 0xffff0000: wval);
++				if(wval != rval) {
++					dbg_print_hex(il);
++					dbg_printnum(": rd", rval);
++					dbg_printnum_cr("!= wr", wval);
++					bad++;
++				}
++				wval = tmp;
++			}
++			k++;
++			if(k > 95) {k = k & 95; if(pass == 0) wval = 0;}
++		}
++	}
++	if(mode & 1) {
++		dbg_printnum_cr("bad locations:", bad);
++	}
++	dbg_cr();
++}
++
+ int main(void)
+ {
++#undef LONG_TEST
++#ifdef LONG_TEST
++	int g, h, i;
++#endif
+ 
+ /* ================== 1st step: Hardware Initialization ================= */
+ 	/* Performs the hardware initialization */
+@@ -60,6 +191,27 @@ int main(void)
+ 	hw_init();
+ #endif
+ 
++#ifdef CFG_SDRAM
++#ifdef LONG_TEST
++	for(h = 0; h < 100; h++) {
++		dbg_printnum_cr("pass", h);
++		for(g = 0; g < 6; g++) {
++			dbg_printnum_cr("test", g);
++			test_pass(g, 0, 0x20000000, 0x2000000, 0x80);
++			for(i=0;i < 100000;i++);
++			dbg_print_cr("both chips");
++			test_pass(g, 1, 0x20000000, 0x2000000, 0x80);
++			dbg_print_cr("low chip");
++			test_pass(g, 3, 0x20000000, 0x2000000, 0x80);
++			dbg_print_cr("high chip");
++			test_pass(g, 5, 0x20000000, 0x2000000, 0x80);
++		}
++	}
++	dbg_print_cr("END");
++	while(1);
++#endif
++#endif
++
+ /* ==================== 2nd step: Load from media ==================== */
+ 	/* Load from Dataflash in RAM */
+ #ifdef CFG_DATAFLASH
+@@ -72,10 +224,10 @@ int main(void)
+ 
+ 	/* Load from Nandflash in RAM */
+ #ifdef CFG_NANDFLASH
+-	load_nandflash(IMG_ADDRESS, IMG_SIZE, JUMP_ADDR);
+-	dbg_print(">NANDflash ready\r\n");
++	//load_nandflash(IMG_ADDRESS, IMG_SIZE, JUMP_ADDR);
++	load_nandflash(IMG_ADDRESS, 128, tbuf);
+ #endif
+-
++#if 0
+ /* ==================== 3rd step:  Process the Image =================== */
+ 	/* Uncompress the image */
+ #ifdef GUNZIP
+@@ -95,5 +247,6 @@ int main(void)
+ 	dbg_print("]\r\n");
+ 	{ volatile unsigned int loop; for(loop = 200000; loop > 0; loop--);}
+ 	/* Jump to the Image Address */
++#endif
+ 	return JUMP_ADDR;
+ }
+-- 
+1.5.6.5
+
