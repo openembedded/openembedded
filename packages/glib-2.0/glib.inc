@@ -38,6 +38,10 @@ do_configure_prepend () {
 	install -m 0644 ${WORKDIR}/glibconfig-sysdefs.h .
 }
 
+do_install_append() {
+	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums
+}
+
 do_stage () {
 	autotools_stage_all
 	install -d ${STAGING_INCDIR}/glib-2.0/glib
