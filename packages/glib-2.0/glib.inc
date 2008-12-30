@@ -39,7 +39,7 @@ do_configure_prepend () {
 }
 
 do_install_append() {
-	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums
+	sed -i -e s:${STAGING_BINDIR_NATIVE}:${bindir}:g ${D}${bindir}/glib-mkenums || true
 }
 
 do_stage () {
