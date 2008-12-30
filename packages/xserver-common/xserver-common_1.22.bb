@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r8"
+PR = "r10"
 
 PACKAGE_ARCH = "all"
 
@@ -13,10 +13,12 @@ SRC_URI_append = " file://setDPI.sh "
 SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch;patch=1 \
                             file://xorg-fixes.patch;patch=1 \
 			    file://gta-xorg-fixes.patch;patch=1 \
-                            file://default.xmodmap "
+                            file://default.xmodmap \
+                            file://98keymap-fixup "
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
+	install -m 0755 "${WORKDIR}/98keymap-fixup" "${D}/etc/X11/Xinit.d/"
 }
 
 do_install_append_angstrom() {
