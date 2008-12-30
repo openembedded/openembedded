@@ -66,8 +66,6 @@ SLUGOS_PACKAGES = "\
 	cups \
 	curl \
 	cvs \
-	cyrus-imapd \
-	cyrus-sasl \
 	db \
 	devio \
 	devlabel \
@@ -252,6 +250,8 @@ SLUGOS_PACKAGES = "\
 # Packages currently broken on all platforms
 SLUGOS_BROKEN_PACKAGES = "\
 	ctorrent \
+	cyrus-imapd \
+	cyrus-sasl \
 	dsniff \
 	eciadsl \
 	gspcav1 \
