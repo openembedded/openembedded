@@ -2,7 +2,7 @@ DESCRIPTION = "A full featured personal video recorder system."
 HOMEPAGE = "http://www.mythtv.org"
 LICENSE = "GPL"
 SECTION = "x11/multimedia"
-DEPENDS = "jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
+DEPENDS = "fftw fftwf fftwl jack alsa-lib libxinerama libxv libxxf86vm libxvmc lirc \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'lame', d)}"
 #RDEPENDS_${PN} = "qt-x11-plugins-sqldrivers qt-x11-plugins-imageformats"
 

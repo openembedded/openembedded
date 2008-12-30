@@ -5,7 +5,7 @@ inherit qmake qt3x11
 PR = "${SRCREV}+r4"
 REALPV = "0.21"
 
-SRCREV = "17789"
+SRCREV = "19479"
 SRC_URI = "svn://svn.mythtv.org/svn/branches/release-0-21-fixes;module=mythtv;proto=http"
 
 SRC_URI += " \
