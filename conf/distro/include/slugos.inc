@@ -243,5 +243,11 @@ PREFERRED_VERSION_m4-native             ?= "1.4.8"
 PREFERRED_VERSION_pkgconfig             ?= "0.23"
 PREFERRED_VERSION_pkgconfig-native      ?= "0.23"
 
+# Hack alert - selecting this version of libusb effectively selects
+# the use of libusb1 and libusb-compat in the case that something
+# still depends on libusb.  This is required because otherwise
+# libusb will overwrite libusb-compat in staging.
+PREFERRED_VERSION_libusb                ?= "0.0.0"
+
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc
