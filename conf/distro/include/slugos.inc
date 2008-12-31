@@ -36,7 +36,7 @@ PREFERRED_VERSION_linux-ixp4xx = "2.6.27.8+svnr${SRCREV}"
 #TARGET_OS "linux" or "linux-uclibc"
 
 # The following may be overridden to make sub-versions
-SLUGOS_VERSION = "5.1"
+SLUGOS_VERSION = "5.2"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
@@ -62,13 +62,27 @@ TARGET_FPU = "soft"
 # glib-2.0 builds require USE_NLS to be overridden
 USE_NLS_glib-2.0 = "yes"
 USE_NLS_glib-2.0-native = "yes"
-USEE_NLS_gcc-cross = "no"
+USE_NLS_gcc-cross = "no"
 
 INHERIT += "package_ipk debian testlab packaged-staging"
 
 # FULL_OPTIMIZATION
 #    Optimization settings.  Os works fine and is significantly better than O2.
 FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -Os"
+
+# We need to keep OABI compat for things like madwifi-ng.
+ARM_KEEP_OABI = "1"
+
+# We may wish to experiment with this as a further performance improvement, but
+# small steps at a time are the best strategy.
+#TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
+
+CXXFLAGS += "-fvisibility-inlines-hidden"
+
+# There is a problem of sorts with Perl.  This needs a better home eventually,
+# but for now put it in this file.
+FULL_OPTIMIZATION_pn-perl = "-fexpensive-optimizations -fomit-frame-pointer -frename-registers -O1"
+BUILD_OPTIMIZATION_pn-perl = "-O1"
 
 #----------------------------------------------------------------------------------
 # FEEDS
@@ -126,24 +140,27 @@ PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++ = "gcc-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc = "glibc"
 PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc       = "glibc"
 PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc     = "glibc"
+PREFERRED_PROVIDER_virtual/arm-linux-gnueabi-libc-for-gcc    = "glibc"
+PREFERRED_PROVIDER_virtual/armeb-linux-gnueabi-libc-for-gcc  = "glibc"
 
 # Set the preferred provider for a few toolchain-related items, otherwise
 # these may be selected from the external-toolchain instead.
+PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils = "binutils-cross"
 PREFERRED_PROVIDER_virtual/arm-linux-binutils       = "binutils-cross"
 PREFERRED_PROVIDER_virtual/armeb-linux-binutils     = "binutils-cross"
 PREFERRED_PROVIDER_linux-libc-headers               = "linux-libc-headers"
 
 # compiler/binary/library versions
-PREFERRED_VERSION_binutils           ?= "2.18"
-PREFERRED_VERSION_binutils-cross     ?= "2.18"
-PREFERRED_VERSION_binutils-cross-sdk ?= "2.18"
-PREFERRED_VERSION_gcc                ?= "4.1.2"
-PREFERRED_VERSION_gcc-cross          ?= "4.1.2"
-PREFERRED_VERSION_gcc-cross-sdk      ?= "4.1.2"
-PREFERRED_VERSION_gcc-cross-initial  ?= "4.1.2"
-PREFERRED_VERSION_gcc-cross-intermediate  ?= "4.1.2"
-PREFERRED_VERSION_glibc              ?= "2.5"
-PREFERRED_VERSION_glibc-initial      ?= "2.5"
+PREFERRED_VERSION_binutils               ?= "2.18.50.0.7"
+PREFERRED_VERSION_binutils-cross         ?= "2.18.50.0.7"
+PREFERRED_VERSION_binutils-cross-sdk     ?= "2.18.50.0.7"
+PREFERRED_VERSION_gcc                    ?= "4.2.4"
+PREFERRED_VERSION_gcc-cross              ?= "4.2.4"
+PREFERRED_VERSION_gcc-cross-sdk          ?= "4.2.4"
+PREFERRED_VERSION_gcc-cross-initial      ?= "4.2.4"
+PREFERRED_VERSION_gcc-cross-intermediate ?= "4.2.4"
+PREFERRED_VERSION_glibc                  ?= "2.6.1"
+PREFERRED_VERSION_glibc-initial          ?= "2.6.1"
 
 # Select the smallest provider of x11 libraries
 PREFERRED_PROVIDER_virtual/libx11 ?= "diet-x11"
@@ -171,24 +188,24 @@ PREFERRED_VERSION_ipkg-native ?= "0.99.163"
 #FIXME: HACK: REMOVE THIS
 IGNORE_STRIP_ERRORS = ""
 
-PREFERRED_VERSION_linux-libc-headers ?= "2.6.20"
+PREFERRED_VERSION_linux-libc-headers ?= "2.6.23"
 
 # New pango and older glib-2.0 versions don't mix,
 # so specify exactly what we would like to build.
-PREFERRED_VERSION_pango    ?= "1.20.5"
-PREFERRED_VERSION_glib-2.0 ?= "2.16.1"
-PREFERRED_VERSION_cairo    ?= "1.4.8"
+#PREFERRED_VERSION_pango    ?= "1.20.5"
+#PREFERRED_VERSION_glib-2.0 ?= "2.16.1"
+#PREFERRED_VERSION_cairo    ?= "1.4.8"
 
 PREFERRED_VERSION_udev	   ?= "118"
 
 # Stick with an older gettext and e2fsprogs stuff
 # and gnutls... (our autotools is too old at the moment)
-PREFERRED_VERSION_gnutls           ?= "1.6.3"
-PREFERRED_VERSION_gettext          ?= "0.14.1"
-PREFERRED_VERSION_gettext-native   ?= "0.14.1"
-PREFERRED_VERSION_e2fsprogs-libs   ?= "1.39"
-PREFERRED_VERSION_e2fsprogs        ?= "1.38"
-PREFERRED_VERSION_e2fsprogs-native ?= "1.38"
+#PREFERRED_VERSION_gnutls           ?= "1.6.3"
+#PREFERRED_VERSION_gettext          ?= "0.14.1"
+#PREFERRED_VERSION_gettext-native   ?= "0.14.1"
+#PREFERRED_VERSION_e2fsprogs-libs   ?= "1.39"
+#PREFERRED_VERSION_e2fsprogs        ?= "1.38"
+#PREFERRED_VERSION_e2fsprogs-native ?= "1.38"
 
 # we don't ship gtk-directfb by default
 PREFERRED_PROVIDER_gtk+                   ?= "gtk+"
@@ -208,6 +225,23 @@ PREFERRED_PROVIDER_gdk-pixbuf-loader-xpm  ?= "gtk+"
 
 PREFERRED_PROVIDER_avahi  ?= "avahi"
 PREFERRED_PROVIDER_gconf  ?= "gconf"
+
+# These shouldn't be here either -- these versions should
+# be pulled from a separate include file.  But they can
+# go here for now.
+PREFERRED_VERSION_automake-native       ?= "1.10"
+PREFERRED_VERSION_busybox               ?= "1.11.3"
+PREFERRED_VERSION_dbus                  ?= "1.2.1"
+PREFERRED_VERSION_glib-2.0              ?= "2.18.3"
+PREFERRED_VERSION_glib-2.0-native       ?= "2.18.0"
+PREFERRED_VERSION_libtool               ?= "1.5.10"
+PREFERRED_VERSION_libtool-native        ?= "1.5.10"
+PREFERRED_VERSION_libtool-cross         ?= "1.5.10"
+PREFERRED_VERSION_libtool-sdk           ?= "1.5.10"
+PREFERRED_VERSION_m4                    ?= "1.4.8"
+PREFERRED_VERSION_m4-native             ?= "1.4.8"
+PREFERRED_VERSION_pkgconfig             ?= "0.23"
+PREFERRED_VERSION_pkgconfig-native      ?= "0.23"
 
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc
