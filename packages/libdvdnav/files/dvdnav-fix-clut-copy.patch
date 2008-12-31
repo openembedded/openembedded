@@ -1,0 +1,11 @@
+--- libdvdnav-0.1.10/src/dvdnav.c.org	2008-08-13 16:48:39.000000000 +0200
++++ libdvdnav-0.1.10/src/dvdnav.c	2008-12-29 13:27:03.000000000 +0100
+@@ -642,7 +642,7 @@
+     fprintf(MSG_OUT, "libdvdnav: SPU_CLUT_CHANGE\n");
+ #endif
+     (*len) = 16 * sizeof(uint32_t);
+-    memcpy(*buf, &(state->pgc->palette), 16 * sizeof(uint32_t));
++    memcpy(*buf, (state->pgc->palette), 16 * sizeof(uint32_t));
+     this->spu_clut_changed = 0;
+     pthread_mutex_unlock(&this->vm_lock); 
+     return DVDNAV_STATUS_OK;
