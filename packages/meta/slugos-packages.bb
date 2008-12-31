@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r59"
+PR = "r60"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -129,7 +129,7 @@ SLUGOS_PACKAGES = "\
 	libpng \
 	libtool \
 	libupnp \
-	libusb \
+	libusb1 libusb-compat \
 	libvorbis \
 	libxml2 \
 	lighttpd \
