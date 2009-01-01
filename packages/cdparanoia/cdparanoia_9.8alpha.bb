@@ -11,6 +11,8 @@ SRC_URI="http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-alpha9.8.s
 
 S="${WORKDIR}/cdparanoia-III-alpha9.8"
 
+PARALLEL_MAKE = ""
+
 inherit autotools
 
 do_install() {
