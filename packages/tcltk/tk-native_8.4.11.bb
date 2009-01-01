@@ -1,6 +1,6 @@
-DEPENDS = "tcl-native"
 inherit native
 include tk_8.4.11.bb
+DEPENDS = "tcl-native"
 
 do_stage() {
         oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
