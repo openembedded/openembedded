@@ -13,6 +13,7 @@ test -x $DAEMON || exit 0
 test -d $CONFIG_DIR || exit 0
 
 start_vpn () {
+    modprobe tun >/dev/null 2>&1 || true
     $DAEMON --daemon --writepid /var/run/openvpn.$NAME.pid \
             --config $CONFIG_DIR/$NAME.conf --cd $CONFIG_DIR || echo -n " FAILED->"
     echo -n " $NAME"
