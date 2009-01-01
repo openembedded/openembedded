@@ -5,6 +5,8 @@ SRC_URI = "http://ftp.gnu.org/pub/gnu/guile/guile-${PV}.tar.gz \
            file://configure-fix.patch;patch=1 \
 "
 
+PR = "r1"
+
 inherit autotools native
 
 S="${WORKDIR}/guile-${PV}"
@@ -128,3 +130,8 @@ do_stage() {
 	oe_libinstall -C guile-readline -so -a libguilereadline-v-17 ${STAGING_LIBDIR}
 	oe_libinstall -C libguile -so -a libguile ${STAGING_LIBDIR}
 }
+
+do_configure_append() {
+        find ${S} -name Makefile | xargs sed -i s:'-Werror':'':g
+}
+
