@@ -5,6 +5,8 @@ LICENSE = "GPLv2"
 DEPENDS = "asio boost loudmouth libwpd librsvg goffice poppler libglade"
 RDEPENDS = "abiword"
 
+PR = "r1"
+
 SRC_URI = "http://www.abiword.org/downloads/abiword/${PV}/source/abiword-plugins-${PV}.tar.gz \
            http://www.abiword.org/downloads/abiword/${PV}/source/abiword-${PV}.tar.gz \
 #           file://abiword-cxx-for-ld-fix.patch;patch=1 \
@@ -33,6 +35,21 @@ python populate_packages_prepend () {
 	abiword_libdir    = bb.data.expand('${libdir}/abiword-2.6/plugins', d)
 	do_split_packages(d, abiword_libdir, '^libAbi(.*)\.so$', 'abiword-plugin-%s', 'Abiword plugin for %s', extra_depends='')
         do_split_packages(d, abiword_libdir, '^libAbi(.*)\.la$', 'abiword-plugin-%s-dev', 'Abiword plugin for %s', extra_depends='')
+
+	metapkg = "abiword-plugins"
+	bb.data.setVar('ALLOW_EMPTY_' + metapkg, "1", d)
+	bb.data.setVar('FILES_' + metapkg, "", d)
+	blacklist = [ 'abiword-plugins-dbg', 'abiword-plugins', 'abiword-plugins-doc', 'abiword-plugins-dev', 'abiword-plugins-locale' ]
+	metapkg_rdepends = []
+	packages = bb.data.getVar('PACKAGES', d, 1).split()
+	for pkg in packages[1:]:
+		if not pkg in blacklist and not pkg in metapkg_rdepends:
+			print "Modifying ", pkg
+			metapkg_rdepends.append(pkg)
+	bb.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
+	bb.data.setVar('DESCRIPTION_' + metapkg, 'abiword-plugin meta package', d)
+	packages.append(metapkg)
+	bb.data.setVar('PACKAGES', ' '.join(packages), d)
 }
 
 
