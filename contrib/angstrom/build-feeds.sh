@@ -96,6 +96,7 @@ do
                       exo \
                       fakeroot \
                       fennec \
+                      flame \
                       ffmpeg \
                       fftw \
                       fftwf \
@@ -192,6 +193,7 @@ do
                       nautilus \
                       navit \
                       netsurf \
+                      news \
                       nmap \
                       nmm \
                       notecase \
@@ -212,6 +214,7 @@ do
                       pine \
                       pipeman \
                       pkgconfig \
+                      places \
                       pocketcellar \
                       povray \
                       prboom \
@@ -227,6 +230,7 @@ do
                       quake2 \
                       quasar \
                       quetoo \
+                      rain \
                       rdesktop \
                       read-edid \
                       resistorui \
