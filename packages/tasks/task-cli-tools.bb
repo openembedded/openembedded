@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r2"
+PR = "r3"
 
 inherit task
 
@@ -16,6 +16,7 @@ RDEPENDS_${PN} = "\
   mtd-utils \
   nano \
   powertop \
+  screen \
   sysstat \
   tcpdump \
   s3c24xx-gpio \
