@@ -2,11 +2,12 @@ DESCRIPTION = "The freesmartphone.org framework -- install this task to make you
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r1"
+PR = "r2"
 
 inherit task
 
 RDEPENDS_${PN} = "\
+  dbus-hlid \
   frameworkd \
   fso-gpsd \
   connman \
