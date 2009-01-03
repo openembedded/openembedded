@@ -1,6 +1,6 @@
 DESCRIPTION = "DSP Link for TI ARM/DSP processors"
 
-DEPENDS = "virtual/kernel dsplink-module perl-native"
+DEPENDS = "virtual/kernel perl-native"
 
 inherit module
 
