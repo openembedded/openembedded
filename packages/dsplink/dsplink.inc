@@ -13,8 +13,8 @@ require ti-paths.inc
 
 do_configure () {
 	# Clean up stale binaries
-	find ${S} -name "*.ko" | xargs rm || true
-	find ${S} -name "*.o" | xargs rm || true
+	find ${S} -name "*.ko" -exec rm {} \; || true
+	find ${S} -name "*.o" -exec rm {} \; || true
 
 	# Run perl script to create appropriate makefiles (v1.60 and up)
 	(
