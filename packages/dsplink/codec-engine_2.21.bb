@@ -34,14 +34,6 @@ PARALLEL_MAKE = ""
 # the include files on top define do_compile for the submodules 
 do_compile_append() {
 	cd ${S}/examples
-	# export some more variable to point to external TI tools
-	# information is duplicated between the js and make based tools
-	export CE_INSTALL_DIR=${S}
-	export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
-	export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
-	# needed for configuro:
-	export CGTOOLS_V5T="${CROSS_DIR}"
-	export CC_V5T="bin/${TARGET_PREFIX}gcc"
 
 	# Fix paths to arm crosstools, c6x codegen and x86 gcc
 	# Also disable uclibc and x86 builds

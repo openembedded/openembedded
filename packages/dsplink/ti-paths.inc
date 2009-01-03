@@ -11,12 +11,28 @@ TIXDCTOOLSDIR ?= "${TITOOLSDIR}/xdctools_3_10_03"
 # Path under TITOOLSDIR where the dsp toolchain is unpacked
 TICGTOOLSDIR ?= "cg6x_6_0_16"
 
+# export some more variable to point to external TI tools
+# information is duplicated between the js and make based tools
+export CE_INSTALL_DIR=${S}
+export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
+export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
+# needed for configuro:
+export CGTOOLS_V5T="${CROSS_DIR}"
+export CC_V5T="bin/${TARGET_PREFIX}gcc"
+
 DSPLINKPLATFORM ?= "DAVINCI"
 DSPLINKPLATFORM_omap5912osk = "OMAP"
 DSPLINKPLATFORM_beagleboard = "OMAP3530"
 DSPLINKPLATFORM_omap3evm = "OMAP3530"
 DSPLINKPLATFORM_davinci-sffsdr = "DAVINCI"
 DSPLINKPLATFORM_davinci-dvevm = "DAVINCI"
+
+PLATFORM ?= "dm6446"
+PLATFORM_omap5912osk = "OMAP"
+PLATFORM_beagleboard = "omap3530"
+PLATFORM_omap3evm = "omap3530"
+PLATFORM_davinci-sffsdr = "dm6446"
+PLATFORM_davinci-dvevm = "dm6446"
 
 DSPLINKDSP ?= "C64XX"
 
@@ -37,6 +53,7 @@ export DSPLINKDSP
 export DSPLINKSOC
 export DSPCFG
 export GPPOS
+export PLATFORM
 
 DSPPOWERSOC ?= "dm6446"
 DSPPOWERSOC_beagleboard = "omap3530"
