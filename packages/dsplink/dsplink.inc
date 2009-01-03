@@ -151,9 +151,9 @@ pkg_postrm_dsplink-module () {
 	update-modules || true
 }
 
-PACKAGES =+ "dsplink dsplink-module ti-lpm-module ti-cmemk-module"
+PACKAGES =+ "dsplink-apps dsplink-module ti-lpm-module ti-cmemk-module"
 FILES_dsplink-module  = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/dsplinkk.ko"
-FILES_dsplink = "${bindir}/* ${datadir}/dsplink/* ${libdir}/dsplink.lib"
+FILES_dsplink-apps = "${bindir}/* ${datadir}/dsplink/* ${libdir}/dsplink.lib"
 
 FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
 
