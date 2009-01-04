@@ -1,0 +1,20 @@
+#!/bin/sh
+
+rmmod bc_example
+rmmod omaplfb
+rmmod pvrsrvkm
+
+insmod $(find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
+modprobe -f bc_example
+modprobe -f omaplfb
+
+pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
+
+if [ -e /dev/pvrsrvkm ] ; then 
+	rm -f /dev/pvrsrvkm
+fi
+
+mknod /dev/pvrsrvkm c $pvr_maj 0 
+
+/usr/bin/pvrsrvinit
+
