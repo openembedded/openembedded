@@ -1,5 +1,7 @@
 require clutter.inc
 
+DEFAULT_PREFERENCE = "-1"
+
 PV = "0.8.0+svnr${SRCREV}"
 PR = "r0"
 
