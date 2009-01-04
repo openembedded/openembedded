@@ -1,9 +1,11 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
-PR = "r4"
+PR = "r5"
 
 # Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin" in the same directory as this recipe
-SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin"
+SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin \
+           file://rc.pvr \
+          "
 
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_3_00_00_01"
 
@@ -57,7 +59,7 @@ do_install () {
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
 	
 	install -d ${D}${sysconfdir}/init.d/
-	cp -pP ${S}/gfx_rel/rc.pvr ${D}${sysconfdir}/init.d/pvr-init
+	cp -pP ${WORKDIR}/rc.pvr ${D}${sysconfdir}/init.d/pvr-init
 }
 
 do_stage () {
