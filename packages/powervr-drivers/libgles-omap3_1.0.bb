@@ -1,6 +1,6 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
-PR = "r5"
+PR = "r6"
 
 # Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin" in the same directory as this recipe
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin \
@@ -71,6 +71,9 @@ do_stage () {
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
 }
 
+# Quality control is really poor on these SDKs, so hack around the latest madness:
+FILES_${PN} += "${libdir}/*.so"
+FILES_${PN}-dev = "${includedir}"
 
 pkg_postinst() {
 #!/bin/sh
