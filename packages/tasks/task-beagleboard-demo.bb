@@ -1,10 +1,10 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r1"
+PR = "r2"
 
 inherit task 
 
-ECONFIG ?= "e-wm-config-standard e-wm-config-default"
+ECONFIG ?= "e-wm-config-angstrom e-wm-config-default"
 
 RDEPENDS_${PN} = "\
     task-base-extended \
