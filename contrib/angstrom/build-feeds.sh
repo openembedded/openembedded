@@ -182,6 +182,7 @@ do
                       midori \
                       mileage \
                       mono \
+                      motion \
                       mousepad \
                       mpc \
                       mpd \
@@ -207,6 +208,7 @@ do
                       openvpn \
                       opie-notes \
                       orage \
+                      palantir \
                       pairs \
                       pciutils \
                       pdamaze \
