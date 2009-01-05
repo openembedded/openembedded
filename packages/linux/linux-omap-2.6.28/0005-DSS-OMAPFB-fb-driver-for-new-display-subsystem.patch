@@ -1372,10 +1372,10 @@ index 0000000..89ad631
 +	case 0:
 +		break;
 +	case OMAPFB_COLOR_YUV422:
-+		return OMAP_DSS_COLOR_YUV2;
++		return OMAP_DSS_COLOR_UYVY;
 +
 +	case OMAPFB_COLOR_YUY422:
-+		return OMAP_DSS_COLOR_UYVY;
++		return OMAP_DSS_COLOR_YUV2;
 +
 +	case OMAPFB_COLOR_ARGB16:
 +		return OMAP_DSS_COLOR_ARGB16;

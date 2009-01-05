@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "401b285465488f515290e0f9111872b94e1cf922"
 
 PV = "2.6.28"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
