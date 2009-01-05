@@ -1,4 +1,4 @@
-DESCRIPTION = "DMA interface for codec-engine"
+DESCRIPTION = "Davinci (and OMAP) Multimedia Application Interface"
 DEPENDS = "virtual/kernel codec-engine"
 LICENCE = "unknown"
 
