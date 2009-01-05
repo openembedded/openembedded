@@ -1,16 +1,17 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
-PR = "r6"
 
-# Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin" in the same directory as this recipe
-SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin \
+# Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_05.bin" in the same directory as this recipe
+SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
           "
+S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}"
 
-S = "${WORKDIR}/OMAP35x_Graphics_SDK_3_00_00_01"
 
-PACKAGES =+ " ${PN}-tests"
+PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests"
 
+FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${bindir}/pvrsrvinit"
+FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
 FILES_${PN}-tests = "${bindir}/*"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -30,7 +31,7 @@ do_accept_license() {
 	export HOME="${WORKDIR}"
 	echo "Y
 Y
-${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_3_00_00_01.bin
+${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin
 }
 
 addtask accept_license after do_unpack before do_compile
@@ -70,10 +71,6 @@ do_stage () {
 	install -d ${STAGING_INCDIR}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
 }
-
-# Quality control is really poor on these SDKs, so hack around the latest madness:
-FILES_${PN} += "${libdir}/*.so"
-FILES_${PN}-dev = "${includedir}"
 
 pkg_postinst() {
 #!/bin/sh
