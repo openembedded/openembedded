@@ -1,10 +1,10 @@
 DESCRIPTION = "Connectivity task packages for GPE Palmtop Environment"
-PR = "r6"
+PR = "r7"
 LICENSE = "MIT"
 
 inherit task
 
 RDEPENDS_${PN} = "\
-    gpe-mini-browser \
+    gpe-mini-browser2 \
     gpe-irc"
 
