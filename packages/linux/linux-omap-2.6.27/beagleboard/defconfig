@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.27-omap1
-# Sun Jan  4 17:13:56 2009
+# Tue Jan  6 10:27:42 2009
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -630,9 +630,10 @@ CONFIG_SCSI_PROC_FS=y
 CONFIG_BLK_DEV_SD=y
 # CONFIG_CHR_DEV_ST is not set
 # CONFIG_CHR_DEV_OSST is not set
-# CONFIG_BLK_DEV_SR is not set
+CONFIG_BLK_DEV_SR=m
+# CONFIG_BLK_DEV_SR_VENDOR is not set
 CONFIG_CHR_DEV_SG=m
-# CONFIG_CHR_DEV_SCH is not set
+CONFIG_CHR_DEV_SCH=m
 
 #
 # Some SCSI devices (e.g. CD jukebox) support multiple LUNs
@@ -648,11 +649,11 @@ CONFIG_SCSI_WAIT_SCAN=m
 #
 # CONFIG_SCSI_SPI_ATTRS is not set
 # CONFIG_SCSI_FC_ATTRS is not set
-# CONFIG_SCSI_ISCSI_ATTRS is not set
+CONFIG_SCSI_ISCSI_ATTRS=m
 # CONFIG_SCSI_SAS_LIBSAS is not set
 # CONFIG_SCSI_SRP_ATTRS is not set
 CONFIG_SCSI_LOWLEVEL=y
-# CONFIG_ISCSI_TCP is not set
+CONFIG_ISCSI_TCP=m
 # CONFIG_SCSI_DEBUG is not set
 # CONFIG_SCSI_DH is not set
 # CONFIG_ATA is not set
@@ -1563,7 +1564,7 @@ CONFIG_USB_LED=m
 # CONFIG_USB_LD is not set
 # CONFIG_USB_TRANCEVIBRATOR is not set
 # CONFIG_USB_IOWARRIOR is not set
-# CONFIG_USB_TEST is not set
+CONFIG_USB_TEST=m
 # CONFIG_USB_ISIGHTFW is not set
 CONFIG_USB_GADGET=y
 # CONFIG_USB_GADGET_DEBUG is not set

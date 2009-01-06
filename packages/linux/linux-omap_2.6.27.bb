@@ -39,6 +39,7 @@ SRC_URI_append = " \
 #           file://openvz/openvz-2.6.27.diff;patch=1 \
            file://pvr/pvr-add.patch;patch=1 \
            file://pvr/dispc.patch;patch=1 \
+           file://pvr/nokia-TI.diff;patch=1 \
            file://sitecomwl168-support.diff;patch=1 \
 "
 
