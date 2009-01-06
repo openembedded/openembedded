@@ -1,6 +1,6 @@
 require oprofile.inc
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
 	   file://no_arm_mapping_syms.patch;patch=1 \

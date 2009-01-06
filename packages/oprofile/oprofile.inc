@@ -37,5 +37,8 @@ do_configure () {
 
 OPROFILE_ARCH = "${TARGET_ARCH}"
 OPROFILE_ARCH_i586 = "i386"
+# note this excludes the ppc64 directory 
+# but we do not support ppc64 targets yet.
+OPROFILE_ARCH_powerpc = "ppc"
 
 FILES_${PN} = "${bindir} ${datadir}/oprofile/rtc ${datadir}/oprofile/stl.pat ${datadir}/oprofile/${OPROFILE_ARCH}"

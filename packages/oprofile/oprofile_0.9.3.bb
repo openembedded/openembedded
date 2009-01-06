@@ -2,7 +2,7 @@ require oprofile.inc
 
 RDEPENDS += "binutils-symlinks"
 RRECOMMENDS += "kernel-vmlinux"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/oprofile/oprofile-${PV}.tar.gz \
            file://armv6_fix.patch;patch=1 \
