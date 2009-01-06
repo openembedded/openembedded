@@ -1,9 +1,9 @@
 DESCRIPTION = "Basic SDK development packages"
-PR = "r1"
+PR = "r2"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
-DEPENDS = "task-sdk"
+DEPENDS = "task-sdk-bare"
 
 RDEPENDS = "\
     task-sdk-bare \
