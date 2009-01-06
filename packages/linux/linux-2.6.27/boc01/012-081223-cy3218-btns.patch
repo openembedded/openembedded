@@ -2,15 +2,16 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6.27/drivers/input/misc/cy3218-btns.c
-@@ -0,0 +1,195 @@
+@@ -0,0 +1,301 @@
 +/*
 + * CAPSENSE Interface driver
 + *
 + *
-+ * Copyright (C) 2007, CenoSYS (www.cenosys.com).
++ * Copyright (C) 2008, CenoSYS (www.cenosys.com).
 + *
 + * Guillaume Ligneul <guillaume.ligneul@gmail.com>
 + * Jeremy Lainé <jeremy.laine@bolloretelecom.eu>
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
 + *
 + * This software program is licensed subject to the GNU General Public License
 + * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
@@ -21,23 +22,30 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +#include <linux/ioport.h>
 +#include <linux/module.h>
 +#include <linux/i2c.h>
++#include <linux/leds.h>
 +
 +static int capsense_attach_adapter(struct i2c_adapter *adapter);
 +static int capsense_detach_client(struct i2c_client *client);
 +
 +#define CAPSENSE_NAME "Capsense"
++
 +/* i2c configuration */
 +#define CAPSENSE_I2C_ADDR 0x25
 +// To debug (may be add in include/linux/i2c-id.h)
 +#define I2C_DRIVERID_CAPSENSE   98
++
 +#define BUTTONS_POLL_INTERVAL	30	/* msec */
-+#define CAP_STATE_GP0			0x88
-+#define CAP_STATE_GP1 			0x89
++
++#define CAP_OUTPUT_PORT(port)   (0x04+(port))
++#define CAP_OP_SEL(port,bit)    (0x1C+(25*(port))+(5*(bit)))
++#define CAP_READ_STATUS(port)	(0x88+(port))
++
 +#define MASK0 			0x10
 +#define MASK1			0x4
 +#define MASK2			0x8
 +#define MASK3			0x1
 +
++#define CAP_NLEDS               5
 +
 +static int poll_interval = BUTTONS_POLL_INTERVAL;
 +module_param_named(poll, poll_interval, uint, 0);
@@ -57,13 +65,23 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	.detach_client	= &capsense_detach_client,
 +};
 +
++struct cy3218_led {
++	struct led_classdev cdev;
++	struct cy3218 *capsense;
++	int port;
++	unsigned char mask;
++};
++
 +struct cy3218 {
 +	struct input_polled_dev *ipdev;
 +	struct i2c_client client;
 +	unsigned char key_state;
++	struct cy3218_led leds[CAP_NLEDS];
++	unsigned char led_state[2];
++	struct mutex mutex;
 +};
 +
-+unsigned short keymap[] = {
++static unsigned short keymap[] = {
 +	// GP0
 +	KEY_F1,
 +	KEY_ENTER,
@@ -71,6 +89,19 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	KEY_BACKSPACE,
 +	// GP1
 +	KEY_UP,
++};
++
++struct cy3218_ledmap {
++	char *name;
++	int port, bit;
++};
++
++static struct cy3218_ledmap ledmap[CAP_NLEDS] = {
++	{ "capsense:blue:back", 0, 1 },
++	{ "capsense:blue:info", 1, 0 },
++	{ "capsense:blue:down", 1, 1 },
++	{ "capsense:blue:ok",   1, 2 },
++	{ "capsense:blue:up",   1, 3 },
 +};
 +
 +static void handle_buttons(struct input_polled_dev *dev)
@@ -81,15 +112,19 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	u8 changed;
 +	int i;
 +
++	mutex_lock(&capsense->mutex);
++
 +	// read status
-+	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP0);
++	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_READ_STATUS(0));
 +	if (port_value & MASK0) new_state |= 0x01;
 +	if (port_value & MASK1) new_state |= 0x02;
 +	if (port_value & MASK2) new_state |= 0x04;
 +	if (port_value & MASK3) new_state |= 0x08;
 +
-+	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_STATE_GP1);
++	port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_READ_STATUS(1));
 +	if (port_value & MASK0) new_state |= 0x10;
++
++	mutex_unlock(&capsense->mutex);
 +
 +	// update keyboard state
 +	changed = capsense->key_state ^ new_state;
@@ -99,6 +134,69 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	capsense->key_state = new_state;
 +	input_sync(dev->input);
 +}
++
++
++static void
++capsense_led_set(struct led_classdev *led_cdev,
++		 enum led_brightness value)
++{
++	struct cy3218_led *led = (struct cy3218_led *) led_cdev;
++	struct cy3218 *capsense = led->capsense;
++	int port = led->port;
++
++	if ( value )
++		capsense->led_state[port] |= led->mask;
++	else
++		capsense->led_state[port] &= ~led->mask;
++
++	mutex_lock(&capsense->mutex);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(port), capsense->led_state[port]);
++	mutex_unlock(&capsense->mutex);
++}
++
++static int
++capsense_led_init(struct cy3218 *capsense)
++{
++	int i;
++	int ret;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		struct cy3218_led *led = &(capsense->leds[i]);
++
++		led->cdev.name = ledmap[i].name;
++		led->cdev.brightness_set = capsense_led_set;
++		led->capsense = capsense;
++		led->port = ledmap[i].port;
++		led->mask = (1 << ledmap[i].bit);
++
++		ret = led_classdev_register(&capsense->ipdev->input->dev, &led->cdev);
++		if ( ret < 0 )
++			return -1;
++
++		i2c_smbus_write_byte_data(&capsense->client, CAP_OP_SEL(led->port, ledmap[i].bit), 0x00);
++	}
++
++	/* Switch all leds off */
++	capsense->led_state[0] = 0x00;
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(0), 0x00);
++
++	capsense->led_state[1] = 0x00;
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(1), 0x00);
++
++	return 0;
++}
++
++
++static void
++capsense_led_exit(struct cy3218 *capsense)
++{
++	int i;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		led_classdev_unregister(&capsense->leds[i].cdev);
++	}
++}
++
 +
 +static int
 +capsense_probe(struct i2c_adapter *adapter, int addr, int kind)
@@ -111,6 +209,8 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	capsense = kzalloc(sizeof(*capsense), GFP_KERNEL);
 +		if (!capsense)
 +			goto failout;
++
++	mutex_init(&capsense->mutex);
 +
 +	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
 +		goto failout;
@@ -156,8 +256,13 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +	if(rc)
 +		goto out_polled;
 +
++	if ( capsense_led_init(capsense) )
++		goto out_registered;
++
 +	return 0;
 +
++out_registered:
++	input_unregister_polled_device(ipdev);
 +out_polled:
 +	i2c_detach_client(&capsense->client);
 +out_attach:
@@ -177,6 +282,7 @@ Index: linux-2.6.27/drivers/input/misc/cy3218-btns.c
 +{
 +	struct cy3218 *capsense = i2c_get_clientdata(client);
 +
++	capsense_led_exit(capsense);
 +	input_unregister_polled_device(capsense->ipdev);
 +	i2c_detach_client(&capsense->client);
 +	input_free_polled_device(capsense->ipdev);
@@ -202,13 +308,14 @@ Index: linux-2.6.27/drivers/input/misc/Kconfig
 ===================================================================
 --- linux-2.6.27.orig/drivers/input/misc/Kconfig
 +++ linux-2.6.27/drivers/input/misc/Kconfig
-@@ -207,4 +207,12 @@ config HP_SDC_RTC
+@@ -207,4 +207,13 @@ config HP_SDC_RTC
  	  Say Y here if you want to support the built-in real time clock
  	  of the HP SDC controller.
  
 +config INPUT_CAPSENSE_BTNS
 +	tristate "CAPSENSE CY3218 button interface"
 +	select INPUT_POLLDEV
++	select LEDS_CLASS
 +	help
 +	  To compile this driver as a module, choose M here: the
 +	  module will be called cy3218-btns.
