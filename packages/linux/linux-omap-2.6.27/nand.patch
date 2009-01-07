@@ -1,0 +1,35 @@
+On Fri, Nov 7, 2008 at 1:30 PM, David Brownell <david-b@pacbell.net> wrote:
+> On Friday 07 November 2008, Steve Sakoman wrote:
+>> On Fri, Nov 7, 2008 at 12:46 PM, David Brownell <david-b@pacbell.net> wrote:
+>> > On Friday 07 November 2008, Steve Sakoman wrote:
+>> >> I'm having little success.  It used to work back in 2.6.26 timeframe
+>> >> but seems to have broken sometime during 2.6.27.
+>> >
+>> > There's a patch floating around making the omap2 NAND driver
+>> > use readsw not readsl, which might explain that problem...
+>>
+>> Do you recall where you saw that patch?  Here or linux-mtd?  My
+>> initial search efforts weren't successful.
+>
+> On linux-omap.  Or just look at the driver to see the
+> readsl()... it's a one-liner.
+
+Yes, that one line change did indeed fix the issue!
+
+Is that patch currently in the queue somewhere?
+
+For the record:
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 2ede116..d18a8c9 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -196,7 +196,7 @@ static void omap_read_buf16(struct mtd_info *mtd, u_char *buf, int len)
+ {
+ 	struct nand_chip *nand = mtd->priv;
+
+-	__raw_readsl(nand->IO_ADDR_R, buf, len / 2);
++	readsw(nand->IO_ADDR_R, buf, len / 2);
+ }
+
+ /*
