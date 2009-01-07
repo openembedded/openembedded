@@ -1,4 +1,4 @@
-From b4718ad31fb4ba43e7f3058b42f3c7c01ee1596a Mon Sep 17 00:00:00 2001
+From b0d997fcd65c4389e3d4a5e375774e51ebe6186a Mon Sep 17 00:00:00 2001
 From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 Date: Fri, 14 Nov 2008 15:47:19 +0200
 Subject: [PATCH] DSS: Sharp LS037V7DW01 LCD Panel driver
@@ -7,17 +7,17 @@ Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
 ---
  drivers/video/omap2/Kconfig                   |    7 ++-
  drivers/video/omap2/Makefile                  |    1 +
- drivers/video/omap2/panel-sharp-ls037v7dw01.c |  108 +++++++++++++++++++++++++
- 3 files changed, 115 insertions(+), 1 deletions(-)
+ drivers/video/omap2/panel-sharp-ls037v7dw01.c |  109 +++++++++++++++++++++++++
+ 3 files changed, 116 insertions(+), 1 deletions(-)
  create mode 100644 drivers/video/omap2/panel-sharp-ls037v7dw01.c
 
 diff --git a/drivers/video/omap2/Kconfig b/drivers/video/omap2/Kconfig
-index ab6a5fc..392f251 100644
+index be00882..b54c955 100644
 --- a/drivers/video/omap2/Kconfig
 +++ b/drivers/video/omap2/Kconfig
-@@ -57,5 +57,10 @@ config PANEL_DVI_1280X1024
- 
- endchoice
+@@ -43,5 +43,10 @@ config PANEL_GENERIC
+ 	  Generic panel driver.
+ 	  Used for DVI output for Beagle and OMAP3 SDP.
  
 -endmenu
 +config PANEL_SHARP_LS037V7DW01
@@ -28,20 +28,20 @@ index ab6a5fc..392f251 100644
  
 +endmenu
 diff --git a/drivers/video/omap2/Makefile b/drivers/video/omap2/Makefile
-index 7c75340..b86dd0b 100644
+index f471a2b..fe6858e 100644
 --- a/drivers/video/omap2/Makefile
 +++ b/drivers/video/omap2/Makefile
 @@ -2,3 +2,4 @@ obj-$(CONFIG_FB_OMAP2) += omapfb.o
  omapfb-y := omapfb-main.o omapfb-sysfs.o omapfb-ioctl.o
  
- obj-$(CONFIG_PANEL_DVI) += panel-dvi.o
+ obj-$(CONFIG_PANEL_GENERIC) += panel-generic.o
 +obj-$(CONFIG_PANEL_SHARP_LS037V7DW01) += panel-sharp-ls037v7dw01.o
 diff --git a/drivers/video/omap2/panel-sharp-ls037v7dw01.c b/drivers/video/omap2/panel-sharp-ls037v7dw01.c
 new file mode 100644
-index 0000000..b4270df
+index 0000000..7d67b6d
 --- /dev/null
 +++ b/drivers/video/omap2/panel-sharp-ls037v7dw01.c
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,109 @@
 +/*
 + * LCD panel driver for Sharp LS037V7DW01
 + *
@@ -114,6 +114,9 @@ index 0000000..b4270df
 +	/*.set_mode	= sharp_ls_set_mode, */
 +
 +	.timings = {
++		.x_res = 480,
++		.y_res = 640,
++
 +		.pixel_clock	= 19200,
 +
 +		.hsw		= 2,
@@ -130,8 +133,6 @@ index 0000000..b4270df
 +	.config		= OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IVS |
 +		OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IPC,
 +
-+	.x_res = 480,
-+	.y_res = 640,
 +	.bpp = 16,
 +};
 +

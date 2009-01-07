@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "401b285465488f515290e0f9111872b94e1cf922"
 
 PV = "2.6.28"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -29,18 +29,16 @@ SRC_URI_append = " \
            file://dvb-fix-dma.diff;patch=1 \
            file://0001-Removed-resolution-check-that-prevents-scaling-when.patch;patch=1 \
            file://0001-Implement-downsampling-with-debugs.patch;patch=1 \
-           file://0003-DSS-Documentation-for-OMAP2-3-display-subsystem.patch;patch=1 \
-           file://0004-DSS-New-display-subsystem-driver-for-OMAP2-3.patch;patch=1 \
-           file://0005-DSS-OMAPFB-fb-driver-for-new-display-subsystem.patch;patch=1 \
-           file://0006-DSS-Add-generic-DVI-panel.patch;patch=1 \
-           file://0007-DSS-support-for-Beagle-Board.patch;patch=1 \
-           file://0008-DSS-BEAGLE-Enable-DSS-in-beagle-defconfig.patch;patch=1 \
-           file://0009-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
-           file://0011-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
-           file://0012-DSS-OMAPFB-PAGE_ALIGN-sizes-in-mem-alloc.patch;patch=1 \
-           file://0013-Refreshed-and-Cleaned-up-as-per-the-latest-Tomi-s-DS.patch;patch=1 \
            file://twl-asoc-fix-record.diff;patch=1 \
            file://tick-schedc-suppress-needless-timer-reprogramming.patch;patch=1 \
+           file://0001-DSS-New-display-subsystem-driver-for-OMAP2-3.patch;patch=1 \
+           file://0002-DSS-OMAPFB-fb-driver-for-new-display-subsystem.patch;patch=1 \
+           file://0003-DSS-Add-generic-DVI-panel.patch;patch=1 \
+           file://0004-DSS-support-for-Beagle-Board.patch;patch=1 \
+           file://0005-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
+           file://0006-DSS-Support-for-OMAP3-SDP-board.patch;patch=1 \
+           file://0007-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
+           file://0008-DSS-Hacked-N810-support.patch;patch=1 \
 "
 
 
