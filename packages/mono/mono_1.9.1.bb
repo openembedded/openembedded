@@ -4,7 +4,10 @@ DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r1"
+PR = "r2"
+
+# mono makes use of non-thumb-compatible inline asm.
+ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI += "file://configure.patch;patch=1"
 

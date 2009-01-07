@@ -2,7 +2,10 @@ require mono_1.2.5.inc
 
 DEPENDS = "mono-native mono-mcs-intermediate glib-2.0 perl-native"
 
-PR = "r4"
+PR = "r5"
+
+# mono makes use of non-thumb-compatible inline asm.
+ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI += "file://configure.patch;patch=1 \
 	file://genmdesc-cpp.patch;patch=1 \
