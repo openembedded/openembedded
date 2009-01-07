@@ -1,0 +1,35 @@
+Index: llvm-2.4/Makefile.rules
+===================================================================
+--- llvm-2.4.orig/Makefile.rules	2009-01-05 16:16:53.693946445 +0100
++++ llvm-2.4/Makefile.rules	2009-01-05 16:17:18.149945262 +0100
+@@ -436,7 +436,7 @@
+ ifdef EXAMPLE_TOOL
+   LD.Flags += -rpath $(ExmplDir) -export-dynamic
+ else
+-  LD.Flags += -rpath $(ToolDir) -export-dynamic
++  LD.Flags += -export-dynamic
+ endif
+ endif
+ 
+Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
+===================================================================
+--- llvm-2.4.orig/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-05 15:36:34.901945895 +0100
++++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-05 15:39:21.580362436 +0100
+@@ -65,7 +65,7 @@
+ }
+ 
+ 
+-#if defined (__GNUC__)
++#if defined (__GNUC__) && ! defined (__ARM_EABI__)
+  
+ // libgcc defines the __register_frame function to dynamically register new
+ // dwarf frames for exception handling. This functionality is not portable
+@@ -225,7 +225,7 @@
+   }
+   
+   // Register routine for informing unwinding runtime about new EH frames
+-#if defined(__GNUC__)
++#if defined(__GNUC__) && ! defined(__ARM_EABI__)
+ #if defined(__APPLE__)
+   struct LibgccObjectInfo* LOI = (struct LibgccObjectInfo*)
+     _keymgr_get_and_lock_processwide_ptr(KEYMGR_GCC3_DW2_OBJ_LIST);
