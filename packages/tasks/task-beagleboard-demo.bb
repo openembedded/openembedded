@@ -1,10 +1,10 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r2"
+PR = "r3"
 
 inherit task 
 
-ECONFIG ?= "e-wm-config-angstrom e-wm-config-default"
+ECONFIG ?= "places e-wm-config-angstrom e-wm-config-default"
 
 RDEPENDS_${PN} = "\
     task-base-extended \
@@ -32,7 +32,7 @@ RDEPENDS_${PN} = "\
     rt73-firmware zd1211-firmware \
     stalonetray \
 	synergy \
-	x11vnc \
+	x11vnc angstrom-x11vnc-xinit \
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
 "
