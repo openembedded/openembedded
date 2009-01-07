@@ -12,6 +12,7 @@ ARM_INSTRUCTION_SET = "arm"
 SRC_URI += "file://configure.patch;patch=1 \
             file://disable-docs.patch;patch=1 \
             file://disable-monoburg.patch;patch=1 \
+            file://fix-eabi-syscall.patch;patch=1 \
 	   "
 
 # Per http://www.mono-project.com/Mono:ARM

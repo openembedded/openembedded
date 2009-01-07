@@ -2,7 +2,7 @@ DESCRIPTION = "Mono Programming Language"
 SECTION = "devel/mono"
 LICENSE = "GPL LGPL X11"
 
-SRC_URI = "http://bec-systems.com/pub/mono/mono-2.2-rc2.tar.bz2 \
+SRC_URI = "http://bec-systems.com/pub/mono/mono-2.2-rc1.tar.bz2 \
 		"
 
 #	   file://mono-libgc-configure.patch;patch=1"
