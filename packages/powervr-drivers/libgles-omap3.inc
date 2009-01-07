@@ -7,6 +7,7 @@ SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
           "
 S = "${WORKDIR}/OMAP35x_Graphics_SDK_${SGXPV}"
 
+BINLOCATION ?= "${S}/gfx_rel"
 
 PACKAGES += " xserver-kdrive-powervrsgx ${PN}-tests"
 
@@ -17,10 +18,7 @@ FILES_${PN}-tests = "${bindir}/*"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 RRECOMMENDS_${PN} = "${PN}-tests \
-                     kernel-module-pvr2d \
-                     kernel-module-pvrsrvkm \
-                     kernel-module-omaplfb \
-                    "
+                     omap3-sgx-modules"
 
 inherit update-rc.d
 
@@ -43,18 +41,18 @@ do_compile () {
 do_install () {
 
 	install -d ${D}${libdir}
-	cp -pR ${S}/gfx_rel/*.so* ${D}${libdir}
+	cp -pR ${BINLOCATION}/*.so* ${D}${libdir}
 
 	install -d ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/*_test ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/gl2info ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/gles1test1 ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/gles1_texture_stream ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/gles2test1 ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/pvrsrvinit ${D}${bindir}/
-	cp -pP ${S}/gfx_rel/xgles1test1 ${D}${bindir}/
+	cp -pP ${BINLOCATION}/*_test ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gl2info ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gles1test1 ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gles1_texture_stream ${D}${bindir}/
+	cp -pP ${BINLOCATION}/gles2test1 ${D}${bindir}/
+	cp -pP ${BINLOCATION}/pvrsrvinit ${D}${bindir}/
+	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
-	cp -pP ${S}/gfx_rel/freedesktop/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/
+	cp -pP ${BINLOCATION}/freedesktop/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/
 
 	install -d ${D}${includedir}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
@@ -65,8 +63,8 @@ do_install () {
 
 do_stage () {
 	install -d ${STAGING_LIBDIR}/
-	cp -pP ${S}/gfx_rel/*.so* ${STAGING_LIBDIR}
-	cp -pP ${S}/gfx_rel/*.a ${STAGING_LIBDIR}
+	cp -pP ${BINLOCATION}*.so* ${STAGING_LIBDIR}
+	cp -pP ${BINLOCATION}*.a ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
