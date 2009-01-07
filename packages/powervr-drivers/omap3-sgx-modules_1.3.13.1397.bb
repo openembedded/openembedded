@@ -1,7 +1,7 @@
 DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoCs"
 LICENSE = "GPLv2"
 
-PR = "r1"
+PR = "r2"
 
 inherit module
 
@@ -12,6 +12,6 @@ S = ${WORKDIR}/${PN}-${PV}/eurasiacon/build/linux/omap3430_linux/kbuild/
 MAKE_TARGETS = "BUILD=debug"
 
 do_install() {
-	mkdir -p ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu
-	cp ${WORKDIR}/${PN}-${PV}/eurasiacon/binary_omap3430_linux_debug/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu	
+	mkdir -p ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu/pvr
+	cp ${WORKDIR}/${PN}-${PV}/eurasiacon/binary_omap3430_linux_debug/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/gpu/pvr
 }
