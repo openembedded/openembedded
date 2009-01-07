@@ -1,0 +1,27 @@
+From 36d6e7edd70d16ad57ed745a1c48694805035dc7 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 7 Jan 2009 17:17:08 +0200
+Subject: [PATCH] OMAPFB: fix GFX_SYNC to be compatible with DSS1
+
+DSS1 never returned an error from GFX_SYNC ioctl. So we neither.
+---
+ drivers/video/omap2/omapfb-ioctl.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-ioctl.c b/drivers/video/omap2/omapfb-ioctl.c
+index bb5f791..0cb0370 100644
+--- a/drivers/video/omap2/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb-ioctl.c
+@@ -314,7 +314,8 @@ int omapfb_ioctl(struct fb_info *fbi, unsigned int cmd, unsigned long arg)
+ 	switch (cmd) {
+ 	case OMAPFB_SYNC_GFX:
+ 		if (!display || !display->sync) {
+-			r = -EINVAL;
++			/* DSS1 never returns an error here, so we neither */
++			/*r = -EINVAL;*/
+ 			break;
+ 		}
+ 
+-- 
+1.5.6.3
+
