@@ -5,9 +5,12 @@ DEPENDS = "glib-2.0 dbus"
 HOMEPAGE = "http://live.gnome.org/Vala"
 LICENSE = "LGPL"
 
+SRC_URI = "http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2"
 S = "${WORKDIR}/vala-${PV}"
 
 inherit autotools lib_package
+
+EXTRA_OECONF = "--enable-vapigen"
 
 do_stage() {
 	autotools_stage_all
