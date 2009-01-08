@@ -10,8 +10,8 @@ group "Fileman_Config" struct {
   value "view.link_drop" uchar: 0;
   value "view.fit_custom_pos" uchar: 0;
   value "view.show_full_path" uchar: 0;
-  value "view.show_desktop_icons" uchar: 1;
-  value "view.show_toolbar" uchar: 0;
+  value "view.show_desktop_icons" uchar: 0;
+  value "view.show_toolbar" uchar: 1;
   value "icon.icon.w" int: 48;
   value "icon.icon.h" int: 48;
   value "icon.list.w" int: 16;

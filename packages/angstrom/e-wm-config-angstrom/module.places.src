@@ -1,7 +1,8 @@
 group "Config" struct {
   value "version" int: 65679;
-  value "auto_mount" uchar: 0;
-  value "auto_open" uchar: 0;
+  value "fm" string: "";
+  value "auto_mount" uchar: 1;
+  value "auto_open" uchar: 1;
   group "conf_items" list {
     group "Config_Item" struct {
       value "id" string: "Places.1";
