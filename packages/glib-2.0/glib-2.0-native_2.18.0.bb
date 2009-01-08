@@ -1,12 +1,11 @@
 require glib-2.0_${PV}.bb
 
 FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
-PR = "r3"
+DEPENDS = "gettext-native gtk-doc-native"
+EXTRA_OECONF = ""
+PR = "r4"
 
 inherit native
-
-DEPENDS = "gettext-native gtk-doc-native"
-
 
 do_configure_prepend() {
     if [ -e ${S}/${TARGET_SYS}-libtool ] ; then

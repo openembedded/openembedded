@@ -2,7 +2,8 @@ require glib-2.0_${PV}.bb
 
 FILESPATH = "${FILE_DIRNAME}/glib-2.0-${PV}:${FILE_DIRNAME}/files"
 DEPENDS = "gtk-doc-native"
-PR = "r2"
+EXTRA_OECONF = ""
+PR = "r3"
 
 inherit native
 
