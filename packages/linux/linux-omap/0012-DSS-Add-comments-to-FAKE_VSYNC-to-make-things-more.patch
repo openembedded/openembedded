@@ -1,0 +1,27 @@
+From 942267b679b7f60b33e034ee29e313925cfbcae0 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 7 Jan 2009 17:20:24 +0200
+Subject: [PATCH] DSS: Add comments to FAKE_VSYNC to make things more clear
+
+---
+ arch/arm/plat-omap/dss/Kconfig |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-omap/dss/Kconfig b/arch/arm/plat-omap/dss/Kconfig
+index 6b342df..f0b1f1c 100644
+--- a/arch/arm/plat-omap/dss/Kconfig
++++ b/arch/arm/plat-omap/dss/Kconfig
+@@ -46,7 +46,9 @@ config OMAP2_DSS_FAKE_VSYNC
+ 	default n
+ 	help
+ 	  If this is selected, DSI will fake a DISPC VSYNC interrupt
+-	  when DSI has sent a frame.
++	  when DSI has sent a frame. This is only needed with DSI or
++	  RFBI displays using manual mode, and you want VSYNC to time,
++	  for example, animation.
+ 
+ config OMAP2_DSS_MIN_FCK_PER_PCK
+ 	int "Minimum FCK/PCK ratio (for scaling)"
+-- 
+1.5.6.3
+
