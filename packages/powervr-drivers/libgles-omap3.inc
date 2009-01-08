@@ -63,8 +63,8 @@ do_install () {
 
 do_stage () {
 	install -d ${STAGING_LIBDIR}/
-	cp -pP ${BINLOCATION}*.so* ${STAGING_LIBDIR}
-	cp -pP ${BINLOCATION}*.a ${STAGING_LIBDIR}
+	cp -pP ${BINLOCATION}/*.so* ${STAGING_LIBDIR}
+	cp -pP ${BINLOCATION}/*.a ${STAGING_LIBDIR}
 
 	install -d ${STAGING_INCDIR}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
