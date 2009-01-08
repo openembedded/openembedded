@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r1"
+PR = "r2"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -133,6 +133,9 @@ fso_rootfs_postprocess() {
     echo "nameserver 208.67.220.220" >> ./etc/resolv.conf
     # remove autostart of gspd (if installed), we have fso-gpsd and this conflicts
     rm -f ./etc/init.d/gpsd
+    # silence printk
+    echo "echo 0 0 0 0 >/proc/sys/kernel/printk" >./etc/profile.d/printk.sh
+    chmod a+rx ./etc/profile.d/printk.sh
     # back on track
     cd $curdir
 }

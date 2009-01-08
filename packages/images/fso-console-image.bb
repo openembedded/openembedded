@@ -1,5 +1,5 @@
 #------------------------------------------------------
-# FSO compliant Console Image Recipe
+# FSO-compliant Console Image Recipe
 #------------------------------------------------------
 
 require fso-image.bb

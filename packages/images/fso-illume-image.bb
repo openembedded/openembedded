@@ -1,11 +1,11 @@
 #------------------------------------------------------
-# FSO compliant Illume Image Recipe
+# FSO-compliant Illume Image Recipe
 #------------------------------------------------------
 
 require fso-image.bb
 
 PV = "1.1"
-PR = "r0"
+PR = "r1"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -62,7 +62,6 @@ AUDIO_INSTALL_append_om-gta02 = "\
 
 # python
 PYTHON_INSTALL = "\
-  task-python-efl \
   python-codecs \
   python-gst \
 "
