@@ -17,6 +17,10 @@ SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd.conf"
 S = "${WORKDIR}/git"
 
+do_configure_append() {
+	echo "version=\"${PV}\"" >framework/__version__.py
+}
+
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/frameworkd ${D}${sysconfdir}/init.d/
