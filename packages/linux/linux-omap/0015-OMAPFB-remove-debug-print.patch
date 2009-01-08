@@ -1,0 +1,25 @@
+From 73f2a252fc273b6d3ee7daab9681728a915f7236 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Thu, 8 Jan 2009 12:02:07 +0200
+Subject: [PATCH] OMAPFB: remove debug print
+
+---
+ drivers/video/omap2/omapfb-main.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-main.c b/drivers/video/omap2/omapfb-main.c
+index 9dbff42..d043c43 100644
+--- a/drivers/video/omap2/omapfb-main.c
++++ b/drivers/video/omap2/omapfb-main.c
+@@ -973,8 +973,6 @@ static int omapfb_allocate_all_fbs(struct omapfb2_device *fbdev)
+ 		while ((tok = strsep(&s, ","))) {
+ 			unsigned long size;
+ 
+-			printk("param '%s'\n", tok);
+-
+ 			size = memparse(tok, NULL);
+ 
+ 			if (size == 0) {
+-- 
+1.5.6.3
+
