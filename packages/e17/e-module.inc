@@ -1,5 +1,6 @@
 DESCRIPTION = "E17 ${PN} module"
 SECTION = "x11/multimedia"
+DEPENDS = "e-wm"
 
 SRCREV = "${EFL_SRCREV}"
 
