@@ -1,6 +1,8 @@
 #
 # Copyright 2006-2007 Openedhand Ltd.
 #
+ROOTFS_PKGMANAGE = "run-postinsts dpkg"
+ROOTFS_PKGMANAGE_BOOTSTRAP  = "run-postinsts"
 
 do_rootfs[depends] += "dpkg-native:do_populate_staging apt-native:do_populate_staging"
 do_rootfs[recrdeptask] += "do_package_write_deb"
@@ -14,7 +16,7 @@ fakeroot rootfs_deb_do_rootfs () {
 	rm -f ${STAGING_ETCDIR_NATIVE}/apt/preferences
 	> ${IMAGE_ROOTFS}/var/dpkg/status
 	> ${IMAGE_ROOTFS}/var/dpkg/available
-	# > ${STAGING_DIR}/var/dpkg/status
+	mkdir -p ${IMAGE_ROOTFS}/var/dpkg/alternatives
 
 	priority=1
 	for arch in ${PACKAGE_ARCHS}; do
@@ -39,16 +41,14 @@ fakeroot rootfs_deb_do_rootfs () {
 	tac ${STAGING_ETCDIR_NATIVE}/apt/sources.list.rev > ${STAGING_ETCDIR_NATIVE}/apt/sources.list
 
 	cat "${STAGING_ETCDIR_NATIVE}/apt/apt.conf.sample" \
-		| sed -e 's#Architecture ".*";#Architecture "${TARGET_ARCH}";#' \
+		| sed -e 's#Architecture ".*";#Architecture "${DPKG_ARCH}";#' \
 		> "${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 
 	export APT_CONFIG="${STAGING_ETCDIR_NATIVE}/apt/apt-rootfs.conf"
 	export D=${IMAGE_ROOTFS}
 	export OFFLINE_ROOT=${IMAGE_ROOTFS}
 	export IPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
-	export OPKG_OFFLINE_ROOT=${IPKG_OFFLINE_ROOT}
-
-	mkdir -p ${IMAGE_ROOTFS}/var/lib/dpkg/alternatives
+	export OPKG_OFFLINE_ROOT=${IMAGE_ROOTFS}
 
 	apt-get update
 
@@ -80,11 +80,19 @@ fakeroot rootfs_deb_do_rootfs () {
 			if [ $? -ne 0 ]; then
 				exit 1
 			fi
-			find ${IMAGE_ROOTFS} -name \*.dpkg-new | for i in `cat`; do
-				mv $i `echo $i | sed -e's,\.dpkg-new$,,'`
-			done
 		done
 	fi
+
+	rm ${WORKDIR}/temp/log.do_$target-attemptonly.${PID}
+	if [ ! -z "${PACKAGE_INSTALL_ATTEMPTONLY}" ]; then
+		for i in ${PACKAGE_INSTALL_ATTEMPTONLY}; do
+			apt-get install $i --force-yes --allow-unauthenticated >> ${WORKDIR}/temp/log.do_rootfs-attemptonly.${PID} || true
+		done
+	fi
+
+	find ${IMAGE_ROOTFS} -name \*.dpkg-new | for i in `cat`; do
+		mv $i `echo $i | sed -e's,\.dpkg-new$,,'`
+	done
 
 	install -d ${IMAGE_ROOTFS}/${sysconfdir}
 	echo ${BUILDNAME} > ${IMAGE_ROOTFS}/${sysconfdir}/version
@@ -110,22 +118,14 @@ fakeroot rootfs_deb_do_rootfs () {
 
 	set -e
 
-	# Hacks to make dpkg/opkg coexist for now
-	mv ${IMAGE_ROOTFS}/var/dpkg ${IMAGE_ROOTFS}/usr/
-	if [ -e ${IMAGE_ROOTFS}/usr/dpkg/alternatives ]; then
-		rmdir ${IMAGE_ROOTFS}/usr/dpkg/alternatives
+	# Hacks to allow opkg's update-alternatives and opkg to coexist for now
+	mkdir -p ${IMAGE_ROOTFS}/usr/lib/opkg
+	if [ -e ${IMAGE_ROOTFS}/var/dpkg/alternatives ]; then
+		rmdir ${IMAGE_ROOTFS}/var/dpkg/alternatives
 	fi
-        if [ ! -e ${IMAGE_ROOTFS}${libdir}/opkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg
-        fi
-
-        if [ ! -e ${IMAGE_ROOTFS}${sysconfdir}/opkg ] ; then
-                mkdir -p ${IMAGE_ROOTFS}${sysconfdir}/opkg
-        fi
- 
-	ln -sf ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/usr/dpkg/alternatives
-	ln -sf /usr/dpkg/info ${IMAGE_ROOTFS}${libdir}/opkg/info
-	ln -sf /usr/dpkg/status ${IMAGE_ROOTFS}${libdir}/opkg/status
+	ln -s /usr/lib/opkg/alternatives ${IMAGE_ROOTFS}/var/dpkg/alternatives
+	ln -s /var/dpkg/info ${IMAGE_ROOTFS}/usr/lib/opkg/info
+	ln -s /var/dpkg/status ${IMAGE_ROOTFS}/usr/lib/opkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
@@ -142,7 +142,7 @@ rootfs_deb_log_check() {
 		if (echo "$lf_txt" | grep -v log_check | grep "$keyword_die") >/dev/null 2>&1
 		then
 			echo "log_check: There were error messages in the logfile"
-			printf "log_check: Matched keyword: [$keyword_die]\n"
+			echo -e "log_check: Matched keyword: [$keyword_die]\n"
 			echo "$lf_txt" | grep -v log_check | grep -C 5 -i "$keyword_die"
 			echo ""
 			do_exit=1
@@ -153,6 +153,6 @@ rootfs_deb_log_check() {
 }
 
 remove_packaging_data_files() {
-	rm -rf ${IMAGE_ROOTFS}${libdir}/opkg/
+	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg/
 	rm -rf ${IMAGE_ROOTFS}/usr/dpkg/
 }
