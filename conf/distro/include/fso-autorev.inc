@@ -1,6 +1,9 @@
+# FSO
+SRCREV_pn-dbus-hlid = "${AUTOREV}"
 SRCREV_pn-frameworkd = "${AUTOREV}"
 SRCREV_pn-frameworkd-devel = "${AUTOREV}"
 SRCREV_pn-fsod = "${AUTOREV}"
+SRCREV_pn-fso-apm = "${AUTOREV}"
 SRCREV_pn-fso-gpsd = "${AUTOREV}"
 SRCREV_pn-fso-sounds = "${AUTOREV}"
 SRCREV_pn-gsm0710muxd = "${AUTOREV}"
@@ -11,3 +14,7 @@ SRCREV_pn-mickeydbus = "${AUTOREV}"
 SRCREV_pn-mickeyterm = "${AUTOREV}"
 SRCREV_pn-python-pytrc = "${AUTOREV}"
 SRCREV_pn-zhone = "${AUTOREV}"
+
+# Deps
+SRCREV_pn-python-connexion = "${AUTOREV}"
+
