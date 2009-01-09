@@ -14,7 +14,7 @@ SRCREV = "818862e11bad091dc635baedace58265a126b5c8"
 
 #PV = "2.6.27+2.6.28-rc8+${PR}+gitr${SRCREV}"
 PV = "2.6.28+${PR}+gitr${SRCREV}"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
