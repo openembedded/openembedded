@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
 PV = "0.8+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-gpsd.git;protocol=git;branch=master \
@@ -24,4 +24,6 @@ do_install_append() {
 FILES_${PN} += "${sysconfdir}"
 RDEPENDS_${PN} = "frameworkd"
 RPROVIDES_${PN} = "gpsd"
-RCONFLICTS_${PN} = "gpsd"
+# Disabled as we always got gpsd but not fso-gpsd in the fso-image. Needs
+# fixing.
+#RCONFLICTS_${PN} = "gpsd"
