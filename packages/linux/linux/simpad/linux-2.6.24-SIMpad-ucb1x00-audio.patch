@@ -1,0 +1,1622 @@
+Index: linux-2.6.24/sound/arm/sa11xx-ucb1x00.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24/sound/arm/sa11xx-ucb1x00.c	2008-12-25 23:23:38.000000000 +0100
+@@ -0,0 +1,829 @@
++/*
++ *  Driver for Philips UCB1300 on Siemens Simpad
++ *  Copyright (C) 2008 Thomas Schätzlein <thomas@pnxs.de>
++ *
++ *   This program is free software; you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License.
++ *
++ */
++
++#include <sound/driver.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/platform_device.h>
++#include <linux/errno.h>
++#include <linux/ioctl.h>
++#include <linux/delay.h>
++#include <linux/slab.h>
++
++#ifdef CONFIG_PM
++#include <linux/pm.h>
++#endif
++
++#include <asm/dma.h>
++
++#include <sound/core.h>
++#include <sound/control.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/info.h>
++
++#include <linux/mfd/ucb1x00.h>
++
++#undef DEBUG_MODE
++#undef DEBUG_FUNCTION_NAMES
++
++#define AUDIO_RATE_DEFAULT  44100
++
++MODULE_AUTHOR("Thomas Schätzlein <thomas@pnxs.de>");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("SA1100/SA1111 + UCB1300 driver for ALSA");
++MODULE_SUPPORTED_DEVICE("{{UCB1x00,Simpad}}");
++
++static char *id;	/* ID for this card */
++
++module_param(id, charp, 0444);
++MODULE_PARM_DESC(id, "ID string for SA1100/SA1111 + UCB1x00 soundcard.");
++
++struct audio_stream {
++	char *id;		/* identification string */
++	int stream_id;		/* numeric identification */	
++	dma_device_t dma_dev;	/* device identifier for DMA */
++	dma_regs_t *dma_regs;	/* points to our DMA registers */
++	unsigned int active:1;	/* we are using this stream for transfer now */
++	int period;		/* current transfer period */
++	int periods;		/* current count of periods registerd in the DMA engine */
++	unsigned int old_offset;
++	spinlock_t dma_lock;	/* for locking in DMA operations (see dma-sa1100.c in the kernel) */
++	struct snd_pcm_substream *stream;
++};
++
++struct sa11xx_ucb1x00 {
++	struct snd_card*    card;
++	struct snd_pcm*     pcm;
++    struct ucb1x00_dev* ucb1x00;
++    struct device*      pdev;
++	long                samplerate;
++	struct audio_stream s[2];	/* playback & capture */
++};
++
++#if 0
++static unsigned int rates[] = {
++	8000,  10666, 10985, 14647,
++	16000, 21970, 22050, 24000,
++	29400, 32000, 44100, 48000,
++};
++
++static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
++	.count	= ARRAY_SIZE(rates),
++	.list	= rates,
++	.mask	= 0,
++};
++#endif
++
++#define UCB1x00_SINGLE(xname, where, reg, shift, mask, invert) \
++{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .info = snd_ucb1x00_info_single, \
++  .get = snd_ucb1x00_get_single, .put = snd_ucb1x00_put_single, \
++  .private_value = where | (reg << 5) | (shift << 9) | (mask << 13) | (invert << 19) \
++}
++
++#define UCB1x00_SINGLE_WHERE(value) (value & 31)
++#define UCB1x00_SINGLE_REG(value) ((value >> 5) & 15)
++#define UCB1x00_SINGLE_SHIFT(value) ((value >> 9) & 15)
++#define UCB1x00_SINGLE_MASK(value) ((value >> 13) & 63)
++#define UCB1x00_SINGLE_INV(value) ((value >> 19) & 1)
++
++static int snd_ucb1x00_info_single(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_info *uinfo)
++{
++	int mask = UCB1x00_SINGLE_MASK(kcontrol->private_value);
++
++//    printk(KERN_INFO "snd_ucb1x00_info_single called\n");
++
++	uinfo->type = mask == 1 ? SNDRV_CTL_ELEM_TYPE_BOOLEAN : SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = mask;
++	return 0;
++}
++
++static int snd_ucb1x00_get_single(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++    struct sa11xx_ucb1x00* chip = snd_kcontrol_chip(kcontrol);
++    struct ucb1x00 *ucb = chip->ucb1x00->ucb;
++    unsigned int retval;
++
++    int reg   = UCB1x00_SINGLE_REG(kcontrol->private_value);
++    int shift = UCB1x00_SINGLE_SHIFT(kcontrol->private_value);
++	int mask  = UCB1x00_SINGLE_MASK(kcontrol->private_value);
++	int invert= UCB1x00_SINGLE_INV(kcontrol->private_value);
++    
++//    printk(KERN_INFO "snd_ucb1x00_get_single called\n");
++
++    retval = (ucb1x00_reg_read(ucb, reg) >> shift) & mask;
++    
++//    printk(KERN_INFO "ucb1x00_reg_read reg=%02X value=%08X\n", reg, retval);
++
++	ucontrol->value.integer.value[0] = retval;
++	if (invert) {
++		ucontrol->value.integer.value[0] = mask - ucontrol->value.integer.value[0];
++    }
++
++	return 0;
++}
++
++static int snd_ucb1x00_put_single(struct snd_kcontrol *kcontrol,
++				  struct snd_ctl_elem_value *ucontrol)
++{
++    struct sa11xx_ucb1x00* chip = snd_kcontrol_chip(kcontrol);
++    struct ucb1x00 *ucb = chip->ucb1x00->ucb;
++    int reg   = UCB1x00_SINGLE_REG(kcontrol->private_value);
++    int shift = UCB1x00_SINGLE_SHIFT(kcontrol->private_value);
++	int mask  = UCB1x00_SINGLE_MASK(kcontrol->private_value);
++	int invert= UCB1x00_SINGLE_INV(kcontrol->private_value);
++	unsigned short val;
++    unsigned int regval;
++
++	val = (ucontrol->value.integer.value[0] & mask);
++	if (invert)
++		val = mask - val;
++
++//    printk(KERN_INFO "snd_ucb1x00_put_single called val=%d\n", val);
++
++    regval = ucb1x00_reg_read(ucb, reg);
++    regval &= ~(mask << shift);
++    regval |= val << shift;
++//    printk(KERN_INFO "snd_ucb1x00_put_single write regval=%08X to reg %d\n", regval, reg);
++    ucb1x00_reg_write(ucb, reg, regval);
++    return 0;
++}
++
++enum ucb1x00_config {
++    CMD_OMUTE = 0, 
++	CMD_VOLUME,
++    CMD_IGAIN,
++    CMD_IMUTE,
++    CMD_LOOPBACK,
++    CMD_CLIP,
++    CMD_OENA,
++};
++
++static struct snd_kcontrol_new snd_ucb1x00_controls[] = {
++	UCB1x00_SINGLE("Master Playback Switch", CMD_OMUTE, UCB_AC_B, 13, 0x01, 1),
++	UCB1x00_SINGLE("Master Playback Volume", CMD_VOLUME, UCB_AC_B, 0, 0x1F, 1),
++
++	UCB1x00_SINGLE("Input Gain", CMD_IGAIN, UCB_AC_A, 7, 0x1F, 1),
++//	UCB1x00_SINGLE("Input Mute", CMD_IMUTE, UCB_AC_B, 14, 1, 1),
++//    UCB1x00_SINGLE("Output Enabled", CMD_OENA, UCB_AC_B, 15, 1, 1),
++
++	UCB1x00_SINGLE("Audio Loopback", CMD_LOOPBACK, UCB_AC_B, 8, 1, 0),
++};
++
++static void sa11xx_ucb1x00_set_samplerate(struct sa11xx_ucb1x00 *sa11xx_ucb1x00, long rate)
++{
++    struct ucb1x00 *ucb = sa11xx_ucb1x00->ucb1x00->ucb;
++    unsigned int div_rate = ucb1x00_clkrate(ucb) / 32;
++    unsigned int div;
++    unsigned int reg;
++
++//    printk(KERN_INFO "sa11xx_ucb1x00_set_samplerate called rate=%d div_rate=%d\n", rate, div_rate);
++
++    div = (div_rate + (rate / 2)) / rate;
++    if (div < 6) {
++        div = 6;
++    }
++    if (div > 127) {
++        div = 127;
++    }
++/*
++    printk(KERN_INFO "ucb=%08X\n", ucb);
++    printk(KERN_INFO "ucb1x00_set_audio_divisor(%d)\n", div*32);
++    printk(KERN_INFO "ucb1x00_reg_write(reg=%d, div=%d)\n", UCB_AC_A, div);
++*/    
++    reg = ucb1x00_reg_read(ucb, UCB_AC_B);
++    reg &= ~(UCB_AC_B_IN_ENA | UCB_AC_B_OUT_ENA);
++    ucb1x00_reg_write(ucb, UCB_AC_B, reg);
++
++ //   ucb1x00_reg_write(ucb, UCB_AC_B, 0);
++    ucb1x00_set_audio_divisor(ucb, div*32); /* set divisor in MCP */
++
++    reg = ucb1x00_reg_read(ucb, UCB_AC_A);
++    reg &= ~(0x1F);
++    reg |= div;
++    ucb1x00_reg_write(ucb, UCB_AC_A, reg); /* set divisor in UCB1x00 */
++    
++    reg = ucb1x00_reg_read(ucb, UCB_AC_B);
++    reg |= UCB_AC_B_IN_ENA | UCB_AC_B_OUT_ENA;
++    ucb1x00_reg_write(ucb, UCB_AC_B, reg);
++
++	sa11xx_ucb1x00->samplerate = div_rate / div;
++
++//    printk(KERN_INFO "sa11xx_ucb1x00_set_samplerate done\n");
++}
++
++/* HW init and shutdown */
++static void sa11xx_ucb1x00_audio_init(struct sa11xx_ucb1x00 *sa11xx_ucb1x00)
++{
++	//unsigned long flags;
++
++	/* Setup DMA stuff */
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_PLAYBACK].id = "UCB1x00 out";
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_PLAYBACK].stream_id = SNDRV_PCM_STREAM_PLAYBACK;
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_PLAYBACK].dma_dev = sa11xx_ucb1x00->ucb1x00->ucb->mcp->dma_audio_wr;
++
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_CAPTURE].id = "UCB1x00 in";
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_CAPTURE].stream_id = SNDRV_PCM_STREAM_CAPTURE;
++	sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_CAPTURE].dma_dev = sa11xx_ucb1x00->ucb1x00->ucb->mcp->dma_audio_rd;
++}
++
++#if 0
++static void sa11xx_ucb1x00_audio_shutdown(struct sa11xx_ucb1x00 *sa11xx_ucb1x00)
++{
++	/* mute on */
++//	set_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
++	
++	/* disable the audio power and all signals leading to the audio chip */
++//	l3_close(sa11xx_uda1341->uda1341);
++//	Ser4SSCR0 = 0;
++//	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_CODEC_NRESET);
++
++	/* power off and mute off */
++	/* FIXME - is muting off necesary??? */
++
++//	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_AUDIO_ON);
++//	clr_sa11xx_uda1341_egpio(IPAQ_EGPIO_QMUTE);
++}
++#endif
++
++/* DMA stuff */
++
++/*
++ * these are the address and sizes used to fill the xmit buffer
++ * so we can get a clock in record only mode
++ */
++//#define FORCE_CLOCK_ADDR		(dma_addr_t)FLUSH_BASE_PHYS
++//#define FORCE_CLOCK_SIZE		4096 // was 2048
++
++// FIXME Why this value exactly - wrote comment
++#define DMA_BUF_SIZE	8176	/* <= MAX_DMA_SIZE from asm/arch-sa1100/dma.h */
++
++static int audio_dma_request(struct audio_stream *s, void (*callback)(void *))
++{
++	int ret;
++
++//    printk(KERN_INFO "audio_dma_request stream=%08X\n", s);
++
++	ret = sa1100_request_dma(s->dma_dev, s->id, callback, s, &s->dma_regs);
++	if (ret < 0)
++		printk(KERN_ERR "unable to grab audio dma 0x%x\n", s->dma_dev);
++	return ret;
++}
++
++static void audio_dma_free(struct audio_stream *s)
++{
++//    printk(KERN_INFO "audio_dma_free stream=%08X\n", s);
++	sa1100_free_dma(s->dma_regs);
++	s->dma_regs = 0;
++}
++
++static u_int audio_get_dma_pos(struct audio_stream *s)
++{
++	struct snd_pcm_substream *substream = s->stream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int offset;
++	unsigned long flags;
++	dma_addr_t addr;
++	
++	// this must be called w/ interrupts locked out see dma-sa1100.c in the kernel
++	spin_lock_irqsave(&s->dma_lock, flags);
++	addr = sa1100_get_dma_pos((s)->dma_regs);
++	offset = addr - runtime->dma_addr;
++	spin_unlock_irqrestore(&s->dma_lock, flags);
++
++//    printk(KERN_INFO "audio_get_dma_pos real_offset=%d\n", offset);
++	
++	offset = bytes_to_frames(runtime,offset);
++	if (offset >= runtime->buffer_size)
++		offset = 0;
++
++//    printk(KERN_INFO "audio_get_dma_pos stream=%08X pos=%d\n", s, offset);
++
++	return offset;
++}
++
++/*
++ * this stops the dma and clears the dma ptrs
++ */
++static void audio_stop_dma(struct audio_stream *s)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&s->dma_lock, flags);	
++	s->active = 0;
++	s->period = 0;
++	/* this stops the dma channel and clears the buffer ptrs */
++	sa1100_clear_dma(s->dma_regs);	
++	spin_unlock_irqrestore(&s->dma_lock, flags);
++}
++
++static void audio_process_dma(struct audio_stream *s)
++{
++	struct snd_pcm_substream *substream = s->stream;
++	struct snd_pcm_runtime *runtime;
++	unsigned int dma_size;		
++	unsigned int offset;
++	int ret;
++
++//    printk(KERN_ERR "audio_process_dma called periods=%d period=%d\n", s->periods, s->period);
++                
++	/* must be set here - only valid for running streams, not for forced_clock dma fills  */
++	runtime = substream->runtime;
++	while (s->active && s->periods < runtime->periods) {
++		dma_size = frames_to_bytes(runtime, runtime->period_size);
++		if (s->old_offset) {
++			/* a little trick, we need resume from old position */
++			offset = frames_to_bytes(runtime, s->old_offset - 1);
++			s->old_offset = 0;
++			s->periods = 0;
++			s->period = offset / dma_size;
++			offset %= dma_size;
++			dma_size = dma_size - offset;
++			if (!dma_size)
++				continue;		/* special case */
++		} else {
++			offset = dma_size * s->period;
++			snd_assert(dma_size <= DMA_BUF_SIZE, );
++		}
++//        printk(KERN_INFO "start addr=%08X size=%d\n", runtime->dma_addr + offset, dma_size); 
++		ret = sa1100_start_dma((s)->dma_regs, runtime->dma_addr + offset, dma_size);
++		if (ret) {
++//			printk(KERN_ERR "audio_process_dma: cannot queue DMA buffer (%i)\n", ret);
++			return;
++		}
++
++		s->period++;
++		s->period %= runtime->periods;
++		s->periods++;
++	}
++}
++
++static void audio_dma_callback(void *data)
++{
++	struct audio_stream *s = data;
++
++//    printk(KERN_INFO "audio_dma_callback called stream=%08X\n", s);
++        
++	/* 
++	 * If we are getting a callback for an active stream then we inform
++	 * the PCM middle layer we've finished a period
++	 */
++ 	if (s->active) {
++//        printk(KERN_INFO "audio_dma_callback period elapsed\n");
++		snd_pcm_period_elapsed(s->stream);
++    }
++
++	spin_lock(&s->dma_lock);
++    if (s->periods > 0) {
++        s->periods--;
++    }
++	audio_process_dma(s);
++	spin_unlock(&s->dma_lock);
++}
++
++static void sa11xx_ucb1x00_enable_audio(struct ucb1x00* ucb) 
++{
++    uint32_t reg;
++    reg = ucb1x00_reg_read(ucb, UCB_AC_B);
++    reg |= UCB_AC_B_OUT_ENA;
++    ucb1x00_reg_write(ucb, UCB_AC_B, reg);
++}
++
++static void sa11xx_ucb1x00_disable_audio(struct ucb1x00* ucb) 
++{
++    uint32_t reg;
++    reg = ucb1x00_reg_read(ucb, UCB_AC_B);
++    reg &= ~(UCB_AC_B_OUT_ENA);
++    ucb1x00_reg_write(ucb, UCB_AC_B, reg);
++}
++
++/* PCM setting */
++
++/* trigger & timer */
++static int snd_sa11xx_ucb1x00_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++    struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++    int stream_id = substream->pstr->stream;
++    struct audio_stream *s = &chip->s[stream_id];
++    int err = 0;
++
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_trigger called\n");
++
++    /* note local interrupts are already disabled in the midlevel code */
++    spin_lock(&s->dma_lock);
++    switch (cmd) {
++        case SNDRV_PCM_TRIGGER_START:
++            /* requested stream startup */
++            s->active = 1;
++            sa11xx_ucb1x00_enable_audio(chip->ucb1x00->ucb);
++            audio_process_dma(s);
++            break;
++        case SNDRV_PCM_TRIGGER_STOP:
++            /* requested stream shutdown */
++            sa11xx_ucb1x00_disable_audio(chip->ucb1x00->ucb);
++            audio_stop_dma(s);
++            break;
++        case SNDRV_PCM_TRIGGER_SUSPEND:
++            s->active = 0;
++            sa1100_stop_dma(s->dma_regs);
++            s->old_offset = audio_get_dma_pos(s) + 1;
++#ifdef HH_VERSION		
++            sa1100_dma_flush_all(s->dma_regs);
++#else
++            //FIXME - DMA API
++#endif		
++            s->periods = 0;
++            break;
++        case SNDRV_PCM_TRIGGER_RESUME:
++            s->active = 1;
++            audio_process_dma(s);
++            break;
++        case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++            sa1100_stop_dma(s->dma_regs);
++            s->active = 0;
++        case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++            s->active = 1;
++            if (s->old_offset) {
++                audio_process_dma(s);
++                break;
++            }
++            sa1100_resume_dma(s->dma_regs);
++            break;
++        default:
++            err = -EINVAL;
++            break;
++    }
++    spin_unlock(&s->dma_lock);	
++    return err;
++}
++
++static int snd_sa11xx_ucb1x00_prepare(struct snd_pcm_substream *substream)
++{
++	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct audio_stream *s = &chip->s[substream->pstr->stream];
++
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_prepare called\n");
++        
++	/* set requested samplerate */
++	sa11xx_ucb1x00_set_samplerate(chip, runtime->rate);
++
++	s->period = 0;
++	s->periods = 0;
++        
++	return 0;
++}
++
++static snd_pcm_uframes_t snd_sa11xx_ucb1x00_pointer(struct snd_pcm_substream *substream)
++{
++	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_pointer called\n");
++	return audio_get_dma_pos(&chip->s[substream->pstr->stream]);
++}
++
++static struct snd_pcm_hardware snd_sa11xx_ucb1x00_hw =
++{
++	.info			= (SNDRV_PCM_INFO_INTERLEAVED |
++				   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				   SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++				   SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
++/*	.rates			= (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
++				   SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |\
++				   SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
++				   SNDRV_PCM_RATE_KNOT),*/
++	.rate_min		= 5000,
++	.rate_max		= 48000,
++	.channels_min		= 1,
++	.channels_max		= 1,
++	.buffer_bytes_max	= 64*1024,
++	.period_bytes_min	= 4096,
++	.period_bytes_max	= DMA_BUF_SIZE,
++	.periods_min		= 2,
++	.periods_max		= 255,
++	.fifo_size		= 0,
++};
++
++#if 0
++static struct snd_pcm_hardware snd_sa11xx_ucb1x00_playback =
++{
++	.info			= (SNDRV_PCM_INFO_INTERLEAVED |
++				   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				   SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
++				   SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
++	.rates			= (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
++                                   SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |\
++				   SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
++				   SNDRV_PCM_RATE_KNOT),
++	.rate_min		= 8000,
++	.rate_max		= 48000,
++	.channels_min		= 2,
++	.channels_max		= 2,
++	.buffer_bytes_max	= 64*1024,
++	.period_bytes_min	= 128,
++	.period_bytes_max	= DMA_BUF_SIZE,
++	.periods_min		= 2,
++	.periods_max		= 8,
++	.fifo_size		= 0,
++};
++#endif
++
++static int snd_card_sa11xx_ucb1x00_open(struct snd_pcm_substream *substream)
++{
++	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int stream_id = substream->pstr->stream;
++	//int err;
++
++	chip->s[stream_id].stream = substream;
++
++//    printk(KERN_INFO "snd_card_sa11xx_ucb1x00_open called substream=%08X\n", substream);
++
++    runtime->hw = snd_sa11xx_ucb1x00_hw;
++	if (stream_id == SNDRV_PCM_STREAM_PLAYBACK) {
++    }
++	else {
++    }
++/*
++	if ((err = snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) < 0) {
++		return err;
++    }
++*/
++/*	if ((err = snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_constraints_rates)) < 0) {
++		return err;
++    }
++*/
++	return 0;
++}
++
++static int snd_card_sa11xx_ucb1x00_close(struct snd_pcm_substream *substream)
++{
++	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++
++	chip->s[substream->pstr->stream].stream = NULL;
++//    printk(KERN_INFO "snd_card_sa11xx_ucb1x00_close called substream=%08X\n", substream);
++	return 0;
++}
++
++/* HW params & free */
++
++static int snd_sa11xx_ucb1x00_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *hw_params)
++{
++//	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++//    struct ucb1x00* ucb = chip->ucb1x00->ucb;
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_hw_params called substream=%08X\n", substream);
++
++        
++	return snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
++}
++
++static int snd_sa11xx_ucb1x00_hw_free(struct snd_pcm_substream *substream)
++{
++//	struct sa11xx_ucb1x00 *chip = snd_pcm_substream_chip(substream);
++//    struct ucb1x00* ucb = chip->ucb1x00->ucb;
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_hw_free called substream=%08X\n", substream);
++
++	return snd_pcm_lib_free_pages(substream);
++}
++
++static struct snd_pcm_ops snd_card_sa11xx_ucb1x00_playback_ops = {
++	.open			= snd_card_sa11xx_ucb1x00_open,
++	.close			= snd_card_sa11xx_ucb1x00_close,
++	.ioctl			= snd_pcm_lib_ioctl,
++	.hw_params	    = snd_sa11xx_ucb1x00_hw_params,
++	.hw_free	    = snd_sa11xx_ucb1x00_hw_free,
++	.prepare		= snd_sa11xx_ucb1x00_prepare,
++	.trigger		= snd_sa11xx_ucb1x00_trigger,
++	.pointer		= snd_sa11xx_ucb1x00_pointer,
++};
++
++static struct snd_pcm_ops snd_card_sa11xx_ucb1x00_capture_ops = {
++	.open			= snd_card_sa11xx_ucb1x00_open,
++	.close			= snd_card_sa11xx_ucb1x00_close,
++	.ioctl			= snd_pcm_lib_ioctl,
++	.hw_params	    = snd_sa11xx_ucb1x00_hw_params,
++	.hw_free	    = snd_sa11xx_ucb1x00_hw_free,
++	.prepare		= snd_sa11xx_ucb1x00_prepare,
++	.trigger		= snd_sa11xx_ucb1x00_trigger,
++	.pointer		= snd_sa11xx_ucb1x00_pointer,
++};
++
++static int __init snd_card_sa11xx_ucb1x00_pcm(struct sa11xx_ucb1x00 *sa11xx_ucb1x00, int device)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	if ((err = snd_pcm_new(sa11xx_ucb1x00->card, "UCB1x00 PCM", device, 1, 1, &pcm)) < 0) {
++		return err;
++    }
++	
++    sa11xx_ucb1x00_audio_init(sa11xx_ucb1x00);
++
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_card_sa11xx_ucb1x00_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_card_sa11xx_ucb1x00_capture_ops);
++	pcm->private_data = sa11xx_ucb1x00;
++	pcm->info_flags = 0;
++	strcpy(pcm->name, "UCB1x00 PCM");
++	
++    err = snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV, 
++					      NULL, 64*1024, 64*1024);
++//    printk(KERN_INFO "snd_pcm_lib_preallocate_pages_for_all returns %d\n", err);
++
++
++	/* setup DMA controller */
++	audio_dma_request(&sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_PLAYBACK], audio_dma_callback);
++	audio_dma_request(&sa11xx_ucb1x00->s[SNDRV_PCM_STREAM_CAPTURE], audio_dma_callback);
++
++	sa11xx_ucb1x00->pcm = pcm;
++
++	return 0;
++}
++
++#if 0
++#ifdef CONFIG_PM
++
++static int snd_sa11xx_ucb1x00_suspend(struct platform_device *devptr,
++				      pm_message_t state)
++{
++	struct snd_card *card = platform_get_drvdata(devptr);
++	struct sa11xx_ucb1x00 *chip = card->private_data;
++
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
++	snd_pcm_suspend_all(chip->pcm);
++#ifdef HH_VERSION
++	sa1100_dma_sleep(chip->s[SNDRV_PCM_STREAM_PLAYBACK].dmach);
++	sa1100_dma_sleep(chip->s[SNDRV_PCM_STREAM_CAPTURE].dmach);
++#else
++	//FIXME
++#endif
++	l3_command(chip->ucb1x00, CMD_SUSPEND, NULL);
++	sa11xx_uda1341_audio_shutdown(chip);
++
++	return 0;
++}
++
++static int snd_sa11xx_ucb1x00_resume(struct platform_device *devptr)
++{
++	struct snd_card *card = platform_get_drvdata(devptr);
++	struct sa11xx_ucb1x00 *chip = card->private_data;
++
++	sa11xx_ucb1x00_audio_init(chip);
++	l3_command(chip->ucb1x00, CMD_RESUME, NULL);
++#ifdef HH_VERSION	
++	sa1100_dma_wakeup(chip->s[SNDRV_PCM_STREAM_PLAYBACK].dmach);
++	sa1100_dma_wakeup(chip->s[SNDRV_PCM_STREAM_CAPTURE].dmach);
++#else
++	//FIXME
++#endif
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	return 0;
++}
++#endif /* COMFIG_PM */
++#endif
++
++void snd_sa11xx_ucb1x00_free(struct snd_card *card)
++{
++	struct sa11xx_ucb1x00 *chip = card->private_data;
++    
++//    printk(KERN_INFO "snd_sa11xx_ucb1x00_free called\n");
++
++    if (&chip->s[SNDRV_PCM_STREAM_PLAYBACK]) {
++	    audio_dma_free(&chip->s[SNDRV_PCM_STREAM_PLAYBACK]);
++    }
++	if (&chip->s[SNDRV_PCM_STREAM_CAPTURE]) {
++	    audio_dma_free(&chip->s[SNDRV_PCM_STREAM_CAPTURE]);
++    }
++}
++
++static int ucb1x00_dev_free(struct snd_device *device)
++{
++	return 0;
++}
++
++static int snd_chip_ucb1x00_mixer_new(struct snd_card *card)
++{
++    static struct snd_device_ops ops = {
++        .dev_free =     ucb1x00_dev_free,
++    };
++
++    struct sa11xx_ucb1x00 *chip = card->private_data;
++    int idx;
++    int err;
++
++    snd_assert(card != NULL, return -EINVAL);
++
++    for (idx = 0; idx < ARRAY_SIZE(snd_ucb1x00_controls); idx++) {
++        if ((err = snd_ctl_add(card, snd_ctl_new1(&snd_ucb1x00_controls[idx], chip))) < 0) {
++            return err;
++        }
++    }
++
++    if ((err = snd_device_new(card, SNDRV_DEV_CODEC, chip, &ops)) < 0) {
++        return err;
++    }
++
++    strcpy(card->mixername, "UCB1x00 Mixer");
++    //	((struct ucb1x00_dev *)clnt->driver_data)->card = card;
++
++    return 0;
++}
++
++static int __init sa11xx_ucb1x00_audio_add(struct ucb1x00_dev* dev)
++{
++	int err;
++	struct snd_card *card;
++	struct sa11xx_ucb1x00 *chip;
++
++	/* register the soundcard */
++	card = snd_card_new(-1, id, THIS_MODULE, sizeof(struct sa11xx_ucb1x00));
++	if (card == NULL) {
++		return -ENOMEM;
++    }
++    
++    ucb1x00_enable(dev->ucb);
++
++	chip = card->private_data;
++	spin_lock_init(&chip->s[0].dma_lock);
++	spin_lock_init(&chip->s[1].dma_lock);
++
++	card->private_free = snd_sa11xx_ucb1x00_free;
++	chip->card = card;
++	chip->samplerate = AUDIO_RATE_DEFAULT;
++    chip->ucb1x00 = dev;
++    chip->pdev = &dev->ucb->mcp->attached_device;
++    dev->priv = chip;
++
++	// mixer
++	if ((err = snd_chip_ucb1x00_mixer_new(card)))
++		goto nodev;
++
++	// PCM
++	if ((err = snd_card_sa11xx_ucb1x00_pcm(chip, 0)) < 0)
++		goto nodev;
++        
++	strcpy(card->driver, "UCB1x00");
++	strcpy(card->shortname, "Simpad UCB1x00");
++	sprintf(card->longname, "Siemens Simpad with Philips UCB1x00");
++        
++	snd_card_set_dev(card, chip->pdev);
++
++	if ((err = snd_card_register(card)) == 0) {
++		printk( KERN_INFO "Simpad audio support initialized 2\n" );
++		return 0;
++	}
++        
++ nodev:
++	snd_card_free(card);
++	return err;
++}
++
++static void sa11xx_ucb1x00_audio_remove(struct ucb1x00_dev* dev)
++{
++    struct sa11xx_ucb1x00* chip = dev->priv;
++    printk(KERN_INFO "sa11xx_ucb1x00_audio_remove called\n");
++    ucb1x00_disable(dev->ucb);
++    snd_card_free(chip->card);
++}
++
++static int sa11xx_ucb1x00_audio_resume(struct ucb1x00_dev* dev)
++{
++    printk(KERN_INFO "sa11xx_ucb1x00_audio_resume called\n");
++    return 0;
++}
++
++/* ---- GOOD ----------------------------------------------------- */
++
++static struct ucb1x00_driver sa11xx_ucb1x00_audio_driver = {
++	.add	= sa11xx_ucb1x00_audio_add,
++	.remove	= sa11xx_ucb1x00_audio_remove,
++	.resume = sa11xx_ucb1x00_audio_resume,
++};
++
++static int __init sa11xx_ucb1x00_init(void)
++{
++    return ucb1x00_register_driver(&sa11xx_ucb1x00_audio_driver);
++}
++
++static void __exit sa11xx_ucb1x00_exit(void)
++{
++    ucb1x00_unregister_driver(&sa11xx_ucb1x00_audio_driver);
++}
++
++module_init(sa11xx_ucb1x00_init);
++module_exit(sa11xx_ucb1x00_exit);
++
+Index: linux-2.6.24/drivers/mfd/ucb1x00.h
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00.h	2008-12-23 22:00:03.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,255 +0,0 @@
+-/*
+- *  linux/drivers/mfd/ucb1x00.h
+- *
+- *  Copyright (C) 2001 Russell King, All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License.
+- */
+-#ifndef UCB1200_H
+-#define UCB1200_H
+-
+-#define UCB_IO_DATA	0x00
+-#define UCB_IO_DIR	0x01
+-
+-#define UCB_IO_0		(1 << 0)
+-#define UCB_IO_1		(1 << 1)
+-#define UCB_IO_2		(1 << 2)
+-#define UCB_IO_3		(1 << 3)
+-#define UCB_IO_4		(1 << 4)
+-#define UCB_IO_5		(1 << 5)
+-#define UCB_IO_6		(1 << 6)
+-#define UCB_IO_7		(1 << 7)
+-#define UCB_IO_8		(1 << 8)
+-#define UCB_IO_9		(1 << 9)
+-
+-#define UCB_IE_RIS	0x02
+-#define UCB_IE_FAL	0x03
+-#define UCB_IE_STATUS	0x04
+-#define UCB_IE_CLEAR	0x04
+-#define UCB_IE_ADC		(1 << 11)
+-#define UCB_IE_TSPX		(1 << 12)
+-#define UCB_IE_TSMX		(1 << 13)
+-#define UCB_IE_TCLIP		(1 << 14)
+-#define UCB_IE_ACLIP		(1 << 15)
+-
+-#define UCB_IRQ_TSPX		12
+-
+-#define UCB_TC_A	0x05
+-#define UCB_TC_A_LOOP		(1 << 7)	/* UCB1200 */
+-#define UCB_TC_A_AMPL		(1 << 7)	/* UCB1300 */
+-
+-#define UCB_TC_B	0x06
+-#define UCB_TC_B_VOICE_ENA	(1 << 3)
+-#define UCB_TC_B_CLIP		(1 << 4)
+-#define UCB_TC_B_ATT		(1 << 6)
+-#define UCB_TC_B_SIDE_ENA	(1 << 11)
+-#define UCB_TC_B_MUTE		(1 << 13)
+-#define UCB_TC_B_IN_ENA		(1 << 14)
+-#define UCB_TC_B_OUT_ENA	(1 << 15)
+-
+-#define UCB_AC_A	0x07
+-#define UCB_AC_B	0x08
+-#define UCB_AC_B_LOOP		(1 << 8)
+-#define UCB_AC_B_MUTE		(1 << 13)
+-#define UCB_AC_B_IN_ENA		(1 << 14)
+-#define UCB_AC_B_OUT_ENA	(1 << 15)
+-
+-#define UCB_TS_CR	0x09
+-#define UCB_TS_CR_TSMX_POW	(1 << 0)
+-#define UCB_TS_CR_TSPX_POW	(1 << 1)
+-#define UCB_TS_CR_TSMY_POW	(1 << 2)
+-#define UCB_TS_CR_TSPY_POW	(1 << 3)
+-#define UCB_TS_CR_TSMX_GND	(1 << 4)
+-#define UCB_TS_CR_TSPX_GND	(1 << 5)
+-#define UCB_TS_CR_TSMY_GND	(1 << 6)
+-#define UCB_TS_CR_TSPY_GND	(1 << 7)
+-#define UCB_TS_CR_MODE_INT	(0 << 8)
+-#define UCB_TS_CR_MODE_PRES	(1 << 8)
+-#define UCB_TS_CR_MODE_POS	(2 << 8)
+-#define UCB_TS_CR_BIAS_ENA	(1 << 11)
+-#define UCB_TS_CR_TSPX_LOW	(1 << 12)
+-#define UCB_TS_CR_TSMX_LOW	(1 << 13)
+-
+-#define UCB_ADC_CR	0x0a
+-#define UCB_ADC_SYNC_ENA	(1 << 0)
+-#define UCB_ADC_VREFBYP_CON	(1 << 1)
+-#define UCB_ADC_INP_TSPX	(0 << 2)
+-#define UCB_ADC_INP_TSMX	(1 << 2)
+-#define UCB_ADC_INP_TSPY	(2 << 2)
+-#define UCB_ADC_INP_TSMY	(3 << 2)
+-#define UCB_ADC_INP_AD0		(4 << 2)
+-#define UCB_ADC_INP_AD1		(5 << 2)
+-#define UCB_ADC_INP_AD2		(6 << 2)
+-#define UCB_ADC_INP_AD3		(7 << 2)
+-#define UCB_ADC_EXT_REF		(1 << 5)
+-#define UCB_ADC_START		(1 << 7)
+-#define UCB_ADC_ENA		(1 << 15)
+-
+-#define UCB_ADC_DATA	0x0b
+-#define UCB_ADC_DAT_VAL		(1 << 15)
+-#define UCB_ADC_DAT(x)		(((x) & 0x7fe0) >> 5)
+-
+-#define UCB_ID		0x0c
+-#define UCB_ID_1200		0x1004
+-#define UCB_ID_1300		0x1005
+-#define UCB_ID_TC35143          0x9712
+-
+-#define UCB_MODE	0x0d
+-#define UCB_MODE_DYN_VFLAG_ENA	(1 << 12)
+-#define UCB_MODE_AUD_OFF_CAN	(1 << 13)
+-
+-#include "mcp.h"
+-
+-struct ucb1x00_irq {
+-	void *devid;
+-	void (*fn)(int, void *);
+-};
+-
+-struct ucb1x00 {
+-	spinlock_t		lock;
+-	struct mcp		*mcp;
+-	unsigned int		irq;
+-	struct semaphore	adc_sem;
+-	spinlock_t		io_lock;
+-	u16			id;
+-	u16			io_dir;
+-	u16			io_out;
+-	u16			adc_cr;
+-	u16			irq_fal_enbl;
+-	u16			irq_ris_enbl;
+-	struct ucb1x00_irq	irq_handler[16];
+-	struct class_device	cdev;
+-	struct list_head	node;
+-	struct list_head	devs;
+-};
+-
+-struct ucb1x00_driver;
+-
+-struct ucb1x00_dev {
+-	struct list_head	dev_node;
+-	struct list_head	drv_node;
+-	struct ucb1x00		*ucb;
+-	struct ucb1x00_driver	*drv;
+-	void			*priv;
+-};
+-
+-struct ucb1x00_driver {
+-	struct list_head	node;
+-	struct list_head	devs;
+-	int	(*add)(struct ucb1x00_dev *dev);
+-	void	(*remove)(struct ucb1x00_dev *dev);
+-	int	(*suspend)(struct ucb1x00_dev *dev, pm_message_t state);
+-	int	(*resume)(struct ucb1x00_dev *dev);
+-};
+-
+-#define classdev_to_ucb1x00(cd)	container_of(cd, struct ucb1x00, cdev)
+-
+-int ucb1x00_register_driver(struct ucb1x00_driver *);
+-void ucb1x00_unregister_driver(struct ucb1x00_driver *);
+-
+-/**
+- *	ucb1x00_clkrate - return the UCB1x00 SIB clock rate
+- *	@ucb: UCB1x00 structure describing chip
+- *
+- *	Return the SIB clock rate in Hz.
+- */
+-static inline unsigned int ucb1x00_clkrate(struct ucb1x00 *ucb)
+-{
+-	return mcp_get_sclk_rate(ucb->mcp);
+-}
+-
+-/**
+- *	ucb1x00_enable - enable the UCB1x00 SIB clock
+- *	@ucb: UCB1x00 structure describing chip
+- *
+- *	Enable the SIB clock.  This can be called multiple times.
+- */
+-static inline void ucb1x00_enable(struct ucb1x00 *ucb)
+-{
+-	mcp_enable(ucb->mcp);
+-}
+-
+-/**
+- *	ucb1x00_disable - disable the UCB1x00 SIB clock
+- *	@ucb: UCB1x00 structure describing chip
+- *
+- *	Disable the SIB clock.  The SIB clock will only be disabled
+- *	when the number of ucb1x00_enable calls match the number of
+- *	ucb1x00_disable calls.
+- */
+-static inline void ucb1x00_disable(struct ucb1x00 *ucb)
+-{
+-	mcp_disable(ucb->mcp);
+-}
+-
+-/**
+- *	ucb1x00_reg_write - write a UCB1x00 register
+- *	@ucb: UCB1x00 structure describing chip
+- *	@reg: UCB1x00 4-bit register index to write
+- *	@val: UCB1x00 16-bit value to write
+- *
+- *	Write the UCB1x00 register @reg with value @val.  The SIB
+- *	clock must be running for this function to return.
+- */
+-static inline void ucb1x00_reg_write(struct ucb1x00 *ucb, unsigned int reg, unsigned int val)
+-{
+-	mcp_reg_write(ucb->mcp, reg, val);
+-}
+-
+-/**
+- *	ucb1x00_reg_read - read a UCB1x00 register
+- *	@ucb: UCB1x00 structure describing chip
+- *	@reg: UCB1x00 4-bit register index to write
+- *
+- *	Read the UCB1x00 register @reg and return its value.  The SIB
+- *	clock must be running for this function to return.
+- */
+-static inline unsigned int ucb1x00_reg_read(struct ucb1x00 *ucb, unsigned int reg)
+-{
+-	return mcp_reg_read(ucb->mcp, reg);
+-}
+-/**
+- *	ucb1x00_set_audio_divisor - 
+- *	@ucb: UCB1x00 structure describing chip
+- *	@div: SIB clock divisor
+- */
+-static inline void ucb1x00_set_audio_divisor(struct ucb1x00 *ucb, unsigned int div)
+-{
+-	mcp_set_audio_divisor(ucb->mcp, div);
+-}
+-
+-/**
+- *	ucb1x00_set_telecom_divisor -
+- *	@ucb: UCB1x00 structure describing chip
+- *	@div: SIB clock divisor
+- */
+-static inline void ucb1x00_set_telecom_divisor(struct ucb1x00 *ucb, unsigned int div)
+-{
+-	mcp_set_telecom_divisor(ucb->mcp, div);
+-}
+-
+-void ucb1x00_io_set_dir(struct ucb1x00 *ucb, unsigned int, unsigned int);
+-void ucb1x00_io_write(struct ucb1x00 *ucb, unsigned int, unsigned int);
+-unsigned int ucb1x00_io_read(struct ucb1x00 *ucb);
+-
+-#define UCB_NOSYNC	(0)
+-#define UCB_SYNC	(1)
+-
+-unsigned int ucb1x00_adc_read(struct ucb1x00 *ucb, int adc_channel, int sync);
+-void ucb1x00_adc_enable(struct ucb1x00 *ucb);
+-void ucb1x00_adc_disable(struct ucb1x00 *ucb);
+-
+-/*
+- * Which edges of the IRQ do you want to control today?
+- */
+-#define UCB_RISING	(1 << 0)
+-#define UCB_FALLING	(1 << 1)
+-
+-int ucb1x00_hook_irq(struct ucb1x00 *ucb, unsigned int idx, void (*fn)(int, void *), void *devid);
+-void ucb1x00_enable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
+-void ucb1x00_disable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
+-int ucb1x00_free_irq(struct ucb1x00 *ucb, unsigned int idx, void *devid);
+-
+-#endif
+Index: linux-2.6.24/sound/arm/Kconfig
+===================================================================
+--- linux-2.6.24.orig/sound/arm/Kconfig	2008-12-23 21:48:54.000000000 +0100
++++ linux-2.6.24/sound/arm/Kconfig	2008-12-23 21:50:13.000000000 +0100
+@@ -14,6 +14,16 @@
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-sa11xx-uda1341.
+ 
++config SND_SA11XX_UCB1X00
++    tristate "SA11xx UCB1x00 driver (Simpad)"
++    depends on ARCH_SA1100 && SND
++    select SND_PCM
++    help
++      Say Y here if you have a Simpad handheld computer
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-sa11xx-ucb1x00.
++
+ config SND_ARMAACI
+ 	tristate "ARM PrimeCell PL041 AC Link support"
+ 	depends on SND && ARM_AMBA
+Index: linux-2.6.24/sound/arm/Makefile
+===================================================================
+--- linux-2.6.24.orig/sound/arm/Makefile	2008-12-23 21:48:56.000000000 +0100
++++ linux-2.6.24/sound/arm/Makefile	2008-12-23 21:57:32.000000000 +0100
+@@ -5,6 +5,9 @@
+ obj-$(CONFIG_SND_SA11XX_UDA1341) += snd-sa11xx-uda1341.o 
+ snd-sa11xx-uda1341-objs		:= sa11xx-uda1341.o
+ 
++obj-$(CONFIG_SND_SA11XX_UCB1X00) += snd-sa11xx-ucb1x00.o
++snd-sa11xx-ucb1x00-objs		:= sa11xx-ucb1x00.o
++
+ obj-$(CONFIG_SND_ARMAACI)	+= snd-aaci.o
+ snd-aaci-objs			:= aaci.o devdma.o
+ 
+Index: linux-2.6.24/drivers/mfd/ucb1x00-assabet.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00-assabet.c	2008-12-23 22:03:30.000000000 +0100
++++ linux-2.6.24/drivers/mfd/ucb1x00-assabet.c	2008-12-23 22:03:50.000000000 +0100
+@@ -17,7 +17,7 @@
+ 
+ #include <asm/dma.h>
+ 
+-#include "ucb1x00.h"
++#include <linux/ucb1x00.h>
+ 
+ #define UCB1X00_ATTR(name,input)\
+ static ssize_t name##_show(struct class_device *dev, char *buf)	\
+Index: linux-2.6.24/drivers/mfd/ucb1x00-core.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00-core.c	2008-12-23 22:03:02.000000000 +0100
++++ linux-2.6.24/drivers/mfd/ucb1x00-core.c	2008-12-23 22:09:00.000000000 +0100
+@@ -28,7 +28,7 @@
+ #include <asm/dma.h>
+ #include <asm/hardware.h>
+ 
+-#include "ucb1x00.h"
++#include <linux/mfd/ucb1x00.h>
+ 
+ static DEFINE_MUTEX(ucb1x00_mutex);
+ static LIST_HEAD(ucb1x00_drivers);
+Index: linux-2.6.24/drivers/mfd/ucb1x00-switches.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00-switches.c	2008-12-23 22:03:36.000000000 +0100
++++ linux-2.6.24/drivers/mfd/ucb1x00-switches.c	2008-12-23 22:09:19.000000000 +0100
+@@ -35,7 +35,7 @@
+ 
+ #include <asm/dma.h>
+ 
+-#include "ucb1x00.h"
++#include <linux/mfd/ucb1x00.h>
+ 
+ #define KEY_PRESS 1
+ #define KEY_RELEASE 0
+Index: linux-2.6.24/drivers/mfd/ucb1x00-ts.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00-ts.c	2008-12-23 22:03:40.000000000 +0100
++++ linux-2.6.24/drivers/mfd/ucb1x00-ts.c	2008-12-23 22:09:11.000000000 +0100
+@@ -40,7 +40,7 @@
+ #include <asm/arch/collie.h>
+ #include <asm/mach-types.h>
+ 
+-#include "ucb1x00.h"
++#include <linux/mfd/ucb1x00.h>
+ 
+ 
+ struct ucb1x00_ts {
+Index: linux-2.6.24/include/linux/mfd/mcp.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24/include/linux/mfd/mcp.h	2008-12-23 22:06:04.000000000 +0100
+@@ -0,0 +1,66 @@
++/*
++ *  linux/drivers/mfd/mcp.h
++ *
++ *  Copyright (C) 2001 Russell King, All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License.
++ */
++#ifndef MCP_H
++#define MCP_H
++
++struct mcp_ops;
++
++struct mcp {
++	struct module	*owner;
++	struct mcp_ops	*ops;
++	spinlock_t	lock;
++	int		use_count;
++	unsigned int	sclk_rate;
++	unsigned int	rw_timeout;
++	dma_device_t	dma_audio_rd;
++	dma_device_t	dma_audio_wr;
++	dma_device_t	dma_telco_rd;
++	dma_device_t	dma_telco_wr;
++	struct device	attached_device;
++};
++
++struct mcp_ops {
++	void		(*set_telecom_divisor)(struct mcp *, unsigned int);
++	void		(*set_audio_divisor)(struct mcp *, unsigned int);
++	void		(*reg_write)(struct mcp *, unsigned int, unsigned int);
++	unsigned int	(*reg_read)(struct mcp *, unsigned int);
++	void		(*enable)(struct mcp *);
++	void		(*disable)(struct mcp *);
++};
++
++void mcp_set_telecom_divisor(struct mcp *, unsigned int);
++void mcp_set_audio_divisor(struct mcp *, unsigned int);
++void mcp_reg_write(struct mcp *, unsigned int, unsigned int);
++unsigned int mcp_reg_read(struct mcp *, unsigned int);
++void mcp_enable(struct mcp *);
++void mcp_disable(struct mcp *);
++#define mcp_get_sclk_rate(mcp)	((mcp)->sclk_rate)
++
++struct mcp *mcp_host_alloc(struct device *, size_t);
++int mcp_host_register(struct mcp *);
++void mcp_host_unregister(struct mcp *);
++
++struct mcp_driver {
++	struct device_driver drv;
++	int (*probe)(struct mcp *);
++	void (*remove)(struct mcp *);
++	int (*suspend)(struct mcp *, pm_message_t);
++	int (*resume)(struct mcp *);
++};
++
++int mcp_driver_register(struct mcp_driver *);
++void mcp_driver_unregister(struct mcp_driver *);
++
++#define mcp_get_drvdata(mcp)	dev_get_drvdata(&(mcp)->attached_device)
++#define mcp_set_drvdata(mcp,d)	dev_set_drvdata(&(mcp)->attached_device, d)
++
++#define mcp_priv(mcp)		((void *)((mcp)+1))
++
++#endif
+Index: linux-2.6.24/drivers/mfd/mcp.h
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/mcp.h	2008-12-23 22:06:30.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,66 +0,0 @@
+-/*
+- *  linux/drivers/mfd/mcp.h
+- *
+- *  Copyright (C) 2001 Russell King, All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License.
+- */
+-#ifndef MCP_H
+-#define MCP_H
+-
+-struct mcp_ops;
+-
+-struct mcp {
+-	struct module	*owner;
+-	struct mcp_ops	*ops;
+-	spinlock_t	lock;
+-	int		use_count;
+-	unsigned int	sclk_rate;
+-	unsigned int	rw_timeout;
+-	dma_device_t	dma_audio_rd;
+-	dma_device_t	dma_audio_wr;
+-	dma_device_t	dma_telco_rd;
+-	dma_device_t	dma_telco_wr;
+-	struct device	attached_device;
+-};
+-
+-struct mcp_ops {
+-	void		(*set_telecom_divisor)(struct mcp *, unsigned int);
+-	void		(*set_audio_divisor)(struct mcp *, unsigned int);
+-	void		(*reg_write)(struct mcp *, unsigned int, unsigned int);
+-	unsigned int	(*reg_read)(struct mcp *, unsigned int);
+-	void		(*enable)(struct mcp *);
+-	void		(*disable)(struct mcp *);
+-};
+-
+-void mcp_set_telecom_divisor(struct mcp *, unsigned int);
+-void mcp_set_audio_divisor(struct mcp *, unsigned int);
+-void mcp_reg_write(struct mcp *, unsigned int, unsigned int);
+-unsigned int mcp_reg_read(struct mcp *, unsigned int);
+-void mcp_enable(struct mcp *);
+-void mcp_disable(struct mcp *);
+-#define mcp_get_sclk_rate(mcp)	((mcp)->sclk_rate)
+-
+-struct mcp *mcp_host_alloc(struct device *, size_t);
+-int mcp_host_register(struct mcp *);
+-void mcp_host_unregister(struct mcp *);
+-
+-struct mcp_driver {
+-	struct device_driver drv;
+-	int (*probe)(struct mcp *);
+-	void (*remove)(struct mcp *);
+-	int (*suspend)(struct mcp *, pm_message_t);
+-	int (*resume)(struct mcp *);
+-};
+-
+-int mcp_driver_register(struct mcp_driver *);
+-void mcp_driver_unregister(struct mcp_driver *);
+-
+-#define mcp_get_drvdata(mcp)	dev_get_drvdata(&(mcp)->attached_device)
+-#define mcp_set_drvdata(mcp,d)	dev_set_drvdata(&(mcp)->attached_device, d)
+-
+-#define mcp_priv(mcp)		((void *)((mcp)+1))
+-
+-#endif
+Index: linux-2.6.24/drivers/mfd/mcp-core.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/mcp-core.c	2008-12-23 22:07:01.000000000 +0100
++++ linux-2.6.24/drivers/mfd/mcp-core.c	2008-12-23 22:07:23.000000000 +0100
+@@ -21,7 +21,7 @@
+ #include <asm/dma.h>
+ #include <asm/system.h>
+ 
+-#include "mcp.h"
++#include <linux/mfd/mcp.h>
+ 
+ #define to_mcp(d)		container_of(d, struct mcp, attached_device)
+ #define to_mcp_driver(d)	container_of(d, struct mcp_driver, drv)
+Index: linux-2.6.24/drivers/mfd/mcp-sa11x0.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/mcp-sa11x0.c	2008-12-23 22:07:06.000000000 +0100
++++ linux-2.6.24/drivers/mfd/mcp-sa11x0.c	2008-12-23 22:07:33.000000000 +0100
+@@ -28,7 +28,7 @@
+ 
+ #include <asm/arch/assabet.h>
+ 
+-#include "mcp.h"
++#include <linux/mfd/mcp.h>
+ 
+ struct mcp_sa11x0 {
+ 	u32	mccr0;
+Index: linux-2.6.24/include/linux/mfd/ucb1x00.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24/include/linux/mfd/ucb1x00.h	2008-12-23 22:08:46.000000000 +0100
+@@ -0,0 +1,255 @@
++/*
++ *  linux/drivers/mfd/ucb1x00.h
++ *
++ *  Copyright (C) 2001 Russell King, All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License.
++ */
++#ifndef UCB1200_H
++#define UCB1200_H
++
++#define UCB_IO_DATA	0x00
++#define UCB_IO_DIR	0x01
++
++#define UCB_IO_0		(1 << 0)
++#define UCB_IO_1		(1 << 1)
++#define UCB_IO_2		(1 << 2)
++#define UCB_IO_3		(1 << 3)
++#define UCB_IO_4		(1 << 4)
++#define UCB_IO_5		(1 << 5)
++#define UCB_IO_6		(1 << 6)
++#define UCB_IO_7		(1 << 7)
++#define UCB_IO_8		(1 << 8)
++#define UCB_IO_9		(1 << 9)
++
++#define UCB_IE_RIS	0x02
++#define UCB_IE_FAL	0x03
++#define UCB_IE_STATUS	0x04
++#define UCB_IE_CLEAR	0x04
++#define UCB_IE_ADC		(1 << 11)
++#define UCB_IE_TSPX		(1 << 12)
++#define UCB_IE_TSMX		(1 << 13)
++#define UCB_IE_TCLIP		(1 << 14)
++#define UCB_IE_ACLIP		(1 << 15)
++
++#define UCB_IRQ_TSPX		12
++
++#define UCB_TC_A	0x05
++#define UCB_TC_A_LOOP		(1 << 7)	/* UCB1200 */
++#define UCB_TC_A_AMPL		(1 << 7)	/* UCB1300 */
++
++#define UCB_TC_B	0x06
++#define UCB_TC_B_VOICE_ENA	(1 << 3)
++#define UCB_TC_B_CLIP		(1 << 4)
++#define UCB_TC_B_ATT		(1 << 6)
++#define UCB_TC_B_SIDE_ENA	(1 << 11)
++#define UCB_TC_B_MUTE		(1 << 13)
++#define UCB_TC_B_IN_ENA		(1 << 14)
++#define UCB_TC_B_OUT_ENA	(1 << 15)
++
++#define UCB_AC_A	0x07
++#define UCB_AC_B	0x08
++#define UCB_AC_B_LOOP		(1 << 8)
++#define UCB_AC_B_MUTE		(1 << 13)
++#define UCB_AC_B_IN_ENA		(1 << 14)
++#define UCB_AC_B_OUT_ENA	(1 << 15)
++
++#define UCB_TS_CR	0x09
++#define UCB_TS_CR_TSMX_POW	(1 << 0)
++#define UCB_TS_CR_TSPX_POW	(1 << 1)
++#define UCB_TS_CR_TSMY_POW	(1 << 2)
++#define UCB_TS_CR_TSPY_POW	(1 << 3)
++#define UCB_TS_CR_TSMX_GND	(1 << 4)
++#define UCB_TS_CR_TSPX_GND	(1 << 5)
++#define UCB_TS_CR_TSMY_GND	(1 << 6)
++#define UCB_TS_CR_TSPY_GND	(1 << 7)
++#define UCB_TS_CR_MODE_INT	(0 << 8)
++#define UCB_TS_CR_MODE_PRES	(1 << 8)
++#define UCB_TS_CR_MODE_POS	(2 << 8)
++#define UCB_TS_CR_BIAS_ENA	(1 << 11)
++#define UCB_TS_CR_TSPX_LOW	(1 << 12)
++#define UCB_TS_CR_TSMX_LOW	(1 << 13)
++
++#define UCB_ADC_CR	0x0a
++#define UCB_ADC_SYNC_ENA	(1 << 0)
++#define UCB_ADC_VREFBYP_CON	(1 << 1)
++#define UCB_ADC_INP_TSPX	(0 << 2)
++#define UCB_ADC_INP_TSMX	(1 << 2)
++#define UCB_ADC_INP_TSPY	(2 << 2)
++#define UCB_ADC_INP_TSMY	(3 << 2)
++#define UCB_ADC_INP_AD0		(4 << 2)
++#define UCB_ADC_INP_AD1		(5 << 2)
++#define UCB_ADC_INP_AD2		(6 << 2)
++#define UCB_ADC_INP_AD3		(7 << 2)
++#define UCB_ADC_EXT_REF		(1 << 5)
++#define UCB_ADC_START		(1 << 7)
++#define UCB_ADC_ENA		(1 << 15)
++
++#define UCB_ADC_DATA	0x0b
++#define UCB_ADC_DAT_VAL		(1 << 15)
++#define UCB_ADC_DAT(x)		(((x) & 0x7fe0) >> 5)
++
++#define UCB_ID		0x0c
++#define UCB_ID_1200		0x1004
++#define UCB_ID_1300		0x1005
++#define UCB_ID_TC35143          0x9712
++
++#define UCB_MODE	0x0d
++#define UCB_MODE_DYN_VFLAG_ENA	(1 << 12)
++#define UCB_MODE_AUD_OFF_CAN	(1 << 13)
++
++#include "mcp.h"
++
++struct ucb1x00_irq {
++	void *devid;
++	void (*fn)(int, void *);
++};
++
++struct ucb1x00 {
++	spinlock_t		lock;
++	struct mcp		*mcp;
++	unsigned int		irq;
++	struct semaphore	adc_sem;
++	spinlock_t		io_lock;
++	u16			id;
++	u16			io_dir;
++	u16			io_out;
++	u16			adc_cr;
++	u16			irq_fal_enbl;
++	u16			irq_ris_enbl;
++	struct ucb1x00_irq	irq_handler[16];
++	struct class_device	cdev;
++	struct list_head	node;
++	struct list_head	devs;
++};
++
++struct ucb1x00_driver;
++
++struct ucb1x00_dev {
++	struct list_head	dev_node;
++	struct list_head	drv_node;
++	struct ucb1x00		*ucb;
++	struct ucb1x00_driver	*drv;
++	void			*priv;
++};
++
++struct ucb1x00_driver {
++	struct list_head	node;
++	struct list_head	devs;
++	int	(*add)(struct ucb1x00_dev *dev);
++	void	(*remove)(struct ucb1x00_dev *dev);
++	int	(*suspend)(struct ucb1x00_dev *dev, pm_message_t state);
++	int	(*resume)(struct ucb1x00_dev *dev);
++};
++
++#define classdev_to_ucb1x00(cd)	container_of(cd, struct ucb1x00, cdev)
++
++int ucb1x00_register_driver(struct ucb1x00_driver *);
++void ucb1x00_unregister_driver(struct ucb1x00_driver *);
++
++/**
++ *	ucb1x00_clkrate - return the UCB1x00 SIB clock rate
++ *	@ucb: UCB1x00 structure describing chip
++ *
++ *	Return the SIB clock rate in Hz.
++ */
++static inline unsigned int ucb1x00_clkrate(struct ucb1x00 *ucb)
++{
++	return mcp_get_sclk_rate(ucb->mcp);
++}
++
++/**
++ *	ucb1x00_enable - enable the UCB1x00 SIB clock
++ *	@ucb: UCB1x00 structure describing chip
++ *
++ *	Enable the SIB clock.  This can be called multiple times.
++ */
++static inline void ucb1x00_enable(struct ucb1x00 *ucb)
++{
++	mcp_enable(ucb->mcp);
++}
++
++/**
++ *	ucb1x00_disable - disable the UCB1x00 SIB clock
++ *	@ucb: UCB1x00 structure describing chip
++ *
++ *	Disable the SIB clock.  The SIB clock will only be disabled
++ *	when the number of ucb1x00_enable calls match the number of
++ *	ucb1x00_disable calls.
++ */
++static inline void ucb1x00_disable(struct ucb1x00 *ucb)
++{
++	mcp_disable(ucb->mcp);
++}
++
++/**
++ *	ucb1x00_reg_write - write a UCB1x00 register
++ *	@ucb: UCB1x00 structure describing chip
++ *	@reg: UCB1x00 4-bit register index to write
++ *	@val: UCB1x00 16-bit value to write
++ *
++ *	Write the UCB1x00 register @reg with value @val.  The SIB
++ *	clock must be running for this function to return.
++ */
++static inline void ucb1x00_reg_write(struct ucb1x00 *ucb, unsigned int reg, unsigned int val)
++{
++	mcp_reg_write(ucb->mcp, reg, val);
++}
++
++/**
++ *	ucb1x00_reg_read - read a UCB1x00 register
++ *	@ucb: UCB1x00 structure describing chip
++ *	@reg: UCB1x00 4-bit register index to write
++ *
++ *	Read the UCB1x00 register @reg and return its value.  The SIB
++ *	clock must be running for this function to return.
++ */
++static inline unsigned int ucb1x00_reg_read(struct ucb1x00 *ucb, unsigned int reg)
++{
++	return mcp_reg_read(ucb->mcp, reg);
++}
++/**
++ *	ucb1x00_set_audio_divisor - 
++ *	@ucb: UCB1x00 structure describing chip
++ *	@div: SIB clock divisor
++ */
++static inline void ucb1x00_set_audio_divisor(struct ucb1x00 *ucb, unsigned int div)
++{
++	mcp_set_audio_divisor(ucb->mcp, div);
++}
++
++/**
++ *	ucb1x00_set_telecom_divisor -
++ *	@ucb: UCB1x00 structure describing chip
++ *	@div: SIB clock divisor
++ */
++static inline void ucb1x00_set_telecom_divisor(struct ucb1x00 *ucb, unsigned int div)
++{
++	mcp_set_telecom_divisor(ucb->mcp, div);
++}
++
++void ucb1x00_io_set_dir(struct ucb1x00 *ucb, unsigned int, unsigned int);
++void ucb1x00_io_write(struct ucb1x00 *ucb, unsigned int, unsigned int);
++unsigned int ucb1x00_io_read(struct ucb1x00 *ucb);
++
++#define UCB_NOSYNC	(0)
++#define UCB_SYNC	(1)
++
++unsigned int ucb1x00_adc_read(struct ucb1x00 *ucb, int adc_channel, int sync);
++void ucb1x00_adc_enable(struct ucb1x00 *ucb);
++void ucb1x00_adc_disable(struct ucb1x00 *ucb);
++
++/*
++ * Which edges of the IRQ do you want to control today?
++ */
++#define UCB_RISING	(1 << 0)
++#define UCB_FALLING	(1 << 1)
++
++int ucb1x00_hook_irq(struct ucb1x00 *ucb, unsigned int idx, void (*fn)(int, void *), void *devid);
++void ucb1x00_enable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
++void ucb1x00_disable_irq(struct ucb1x00 *ucb, unsigned int idx, int edges);
++int ucb1x00_free_irq(struct ucb1x00 *ucb, unsigned int idx, void *devid);
++
++#endif
+Index: linux-2.6.24/drivers/mfd/ucb1x00-simpad.c
+===================================================================
+--- linux-2.6.24.orig/drivers/mfd/ucb1x00-simpad.c	2008-12-23 22:09:59.000000000 +0100
++++ linux-2.6.24/drivers/mfd/ucb1x00-simpad.c	2008-12-23 22:10:12.000000000 +0100
+@@ -26,7 +26,7 @@
+ #include <asm/arch/simpad.h>
+ #include <asm/arch-sa1100/simpad_pm.h>
+ 
+-#include "ucb1x00.h"
++#include <linux/mfd/ucb1x00.h>
+ #include "ucb1x00-simpad.h"
+ 
+ #define UCB1X00_ATTR(name,input,designation) \
