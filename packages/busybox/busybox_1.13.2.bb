@@ -1,11 +1,14 @@
 require busybox.inc
 
+PR = "r1"
+
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   \
   file://udhcpscript.patch;patch=1 \
   file://B921600.patch;patch=1 \
   file://mdev-fix.patch;patch=1 \
+  file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
   file://busybox-udhcpd \
@@ -30,6 +33,8 @@ do_configure () {
 do_install_append() {
     install -m 0644 ${WORKDIR}/mdev.conf ${D}${sysconfdir}/
     install -d ${D}${sysconfdir}/init.d/
+    install -d ${D}${sysconfdir}/mdev
+    install -m 0755 ${WORKDIR}/find-touchscreen.sh ${D}${sysconfdir}/mdev/
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
 }
 
