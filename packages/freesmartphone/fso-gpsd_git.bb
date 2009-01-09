@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "network"
 DEPENDS = "dbus-glib"
 PV = "0.8+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-gpsd.git;protocol=git;branch=master \
