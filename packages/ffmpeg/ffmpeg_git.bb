@@ -18,6 +18,7 @@ FFBRANCH ?= "master"
 # When bumping SRCREV make sure you bump PR here and in dependant recipes (gst-ffmpeg, gnash, omxil, etc) to account for SOVERSION changes
 SRCREV = "ffbaebee2114d4dc98125959be102b95c60d6c83"
 SRCREV_arm = "48518fbebda89c8f30146696a0be7c4ffa45465c"
+SRCREV_libswscale = "83327f385bf51acc4527fe72b73dd29b4b93ad7d"
 SRC_URI = "git://git.mansr.com/ffmpeg.mru;protocol=git;branch=${FFBRANCH} \
 "
 
@@ -59,7 +60,11 @@ EXTRA_OECONF = " \
 
 do_configure() {
         sed -i -e s:'check_cflags -std=c99'::g ${S}/configure
-        cd ${S} ; git clone git://git.mplayerhq.hu/libswscale || true  
+        cd ${S}
+	git clone git://git.mplayerhq.hu/libswscale || true
+	cd libswscale
+	git checkout ${SRCREV_libswscale} || true
+	cd ${S}
         mkdir -p ${B}
         cd ${B}
         ${S}/configure ${EXTRA_OECONF}
