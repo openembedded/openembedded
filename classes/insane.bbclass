@@ -289,8 +289,9 @@ def package_qa_check_arch(path,name,d, elf):
     target_arch = bb.data.getVar('TARGET_ARCH', d, True)
 
     # FIXME: Cross package confuse this check, so just skip them
-    if bb.data.inherits_class('cross', d) or bb.data.inherits_class('sdk', d):
-        return True
+    for s in ['cross', 'sdk', 'canadian-cross', 'canadian-sdk']:
+        if bb.data.inherits_class(s, d):
+            return True
 
     # avoid following links to /usr/bin (e.g. on udev builds)
     # we will check the files pointed to anyway...
@@ -381,8 +382,11 @@ def package_qa_check_staged(path,d):
     workdir = os.path.join(tmpdir, "work")
 
     installed = "installed=yes"
-    if bb.data.inherits_class("native", d) or bb.data.inherits_class("cross", d):
-        pkgconfigcheck = workdir
+    iscrossnative = False
+    for s in ['cross', 'native', 'canadian-cross', 'canadian-native']:
+        if bb.data.inherits_class(s, d):
+            pkgconfigcheck = workdir
+            iscrossnative = True
     else:
         pkgconfigcheck = tmpdir
 
@@ -395,7 +399,7 @@ def package_qa_check_staged(path,d):
             if file[-2:] == "la":
                 file_content = open(path).read()
                 # Don't check installed status for native/cross packages
-                if not bb.data.inherits_class("native", d) and not bb.data.inherits_class("cross", d):
+                if not iscrossnative:
                     if installed in file_content:
                         error_msg = "%s failed sanity test (installed) in path %s" % (file,root)
                         sane = package_qa_handle_error(5, error_msg, "staging", path, d)
