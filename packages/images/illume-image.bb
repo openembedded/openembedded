@@ -14,9 +14,9 @@ BASE_INSTALL = "\
   modutils-initscripts \
   module-init-tools-depmod \
 #  prelink \
-  exquisite \
-  exquisite-themes \
-  exquisite-theme-illume \
+#  exquisite \
+#  exquisite-themes \
+#  exquisite-theme-illume \
 "
 
 # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
@@ -118,6 +118,8 @@ ZHONE_INSTALL = "\
 APPS_INSTALL = "\
    elementary-alarm \
    gpe-scap \
+   expedite \
+   expedite-themes \
 #   libefso \
 #   essential-dialer \
 "
