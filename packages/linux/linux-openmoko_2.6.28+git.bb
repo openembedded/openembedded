@@ -10,7 +10,7 @@ FILESPATH = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/linux-openmoko-${KE
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
