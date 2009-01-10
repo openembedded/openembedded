@@ -1,19 +1,20 @@
 DESCRIPTION = "Small application to control the pico DLP over I2C"
 LICENSE = "GPLv3"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "file://${PN}.c file://i2c-dev.h"
+SRC_URI = "file://*.c file://*.h file://${PN}"
 
 do_configure() {
-	cp ${WORKDIR}/*.[ch] ${S}
+	cp ${WORKDIR}/*.[ch] ${WORKDIR}/${PN} ${S}
 }
 
 do_compile() {
-	${CC} -o ${PN} ${PN}.c ${CFGLAGS} ${LDFLAGS}
+	${CC} -o bus3-i2c *.c ${CFLAGS} ${LDFLAGS}
 }
 
 do_install() {
 	install -d ${D}/${bindir}
 	install -m 0755 ${S}/${PN} ${D}/${bindir}
+	install -m 0755 ${S}/bus3-i2c ${D}/${bindir}
 }
 

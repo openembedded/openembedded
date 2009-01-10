@@ -1,0 +1,47 @@
+#!/bin/sh
+
+I2C_APP="/usr/bin/bus3-i2c"
+WORD_ON="0xf0000000"
+WORD_OFF="0x00000001"
+PICO_ADDRESS="0x1b"
+
+PICO_OPTION="$1"
+PICO_OPTION_VALUE="$2"
+
+case ${PICO_OPTION_VALUE} in
+"0")
+			;;
+"1")
+			;;
+*)
+			echo "Invalid value" ; PICO_OPTION="invalid-as-well";;
+esac
+
+case ${PICO_OPTION} in
+"hflip")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x08 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x08 ${WORD_OFF}
+			fi;;
+
+"vflip")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x09 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x09 ${WORD_OFF}
+			fi;;
+
+"temporal-enhance")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x26 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x26 ${WORD_OFF}
+			fi;;
+
+*)
+			echo "Usage: $0 vflip|hflip|temporal-enhance 0/1";;
+esac
+
+
+
