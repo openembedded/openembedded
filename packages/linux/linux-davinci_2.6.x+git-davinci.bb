@@ -12,7 +12,7 @@ PV = "2.6.27+2.6.28-rc6+gitr${SRCREV}"
 
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
 
-SRC_URI = "git://source.mvista.com/git/linux-davinci-2.6.git;protocol=git \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
            file://defconfig"
 
 S = "${WORKDIR}/git"
