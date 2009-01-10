@@ -383,12 +383,11 @@ def package_qa_check_staged(path,d):
 
     installed = "installed=yes"
     iscrossnative = False
+    pkgconfigcheck = tmpdir
     for s in ['cross', 'native', 'canadian-cross', 'canadian-native']:
         if bb.data.inherits_class(s, d):
             pkgconfigcheck = workdir
             iscrossnative = True
-    else:
-        pkgconfigcheck = tmpdir
 
     # find all .la and .pc files
     # read the content
