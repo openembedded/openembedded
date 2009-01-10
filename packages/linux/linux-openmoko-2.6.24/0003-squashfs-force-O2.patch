@@ -1,0 +1,17 @@
+The kernel patch from the squashfs-3.1r2 release did not compile on my
+armeb-linux-gcc 4.1.1 when optimizing for size (-Os). This works around
+that problem by using optimization flag -O2 instead for these two files.
+
+Signed-off-by: Leon Woestenberg <leonw@mailcan.com>
+
+Index: linux-2.6.19/fs/squashfs/Makefile
+===================================================================
+--- linux-2.6.19.orig/fs/squashfs/Makefile
++++ linux-2.6.19/fs/squashfs/Makefile
+@@ -5,3 +5,6 @@
+ obj-$(CONFIG_SQUASHFS) += squashfs.o
+ squashfs-y += inode.o
+ squashfs-y += squashfs2_0.o
++
++CFLAGS_squashfs2_0.o = "-O2"
++CFLAGS_inode.o = "-O2"
