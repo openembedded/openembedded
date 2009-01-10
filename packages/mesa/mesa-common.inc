@@ -15,7 +15,10 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "--enable-glu \
                 --disable-glw \
                 --disable-glut \
-                --enable-glx-tls"
+	       "
+
+require mesa-tls.inc
+EXTRA_OECONF += "${@get_tls_setting(bb, d)} "
 
 PACKAGES =+ "libglu libglu-dev libosmesa libosmesa-dev libgl libgl-dev"
 FILES_libgl = "${libdir}/libGL.so.*"
