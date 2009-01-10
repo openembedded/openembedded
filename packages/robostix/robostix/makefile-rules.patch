@@ -1,0 +1,25 @@
+--- robostix/Rules.mk.orig	2008-03-08 10:36:37.000000000 -0700
++++ robostix/Rules.mk	2008-03-08 10:37:14.000000000 -0700
+@@ -24,21 +24,7 @@
+ vpath %.c ../Common ../Shared
+ vpath %.S ../Common ../Shared
+ 
+-CFLAGS += -Os \
+-	-Wall \
+-	-Werror \
+-	-Wimplicit \
+-	-Wpointer-arith \
+-	-Wswitch \
+-	-Wredundant-decls \
+-	-Wreturn-type \
+-	-Wshadow \
+-	-Wunused \
+-	-Wcast-qual \
+-	-Wnested-externs \
+-	-Wmissing-prototypes \
+-	-Wstrict-prototypes \
+-	-Wmissing-declarations
++CFLAGS += -Os
+ 
+ CPPFLAGS += $(AVR_MCU_FLAGS) -I . -I ../Common -I ../Shared
+ LDFLAGS  += $(AVR_MCU_FLAGS) -Wl,-Map,$(basename $@).map

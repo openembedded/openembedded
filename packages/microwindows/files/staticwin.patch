@@ -1,0 +1,11 @@
+--- microwindows-0.91/src/demos/nanowm/wlist-orig.c	2001-11-15 14:49:18.000000000 -0800
++++ microwindows-0.91/src/demos/nanowm/wlist.c	2008-02-12 09:56:59.000000000 -0800
+@@ -13,7 +13,7 @@
+ 
+ #include "nanowm.h"
+ 
+-static win *windows = NULL;
++win *windows = NULL;
+ 
+ /*
+  * Find the windowlist entry for the specified window ID and return a pointer

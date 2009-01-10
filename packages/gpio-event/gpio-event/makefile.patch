@@ -1,0 +1,26 @@
+--- gpio-event/Makefile.orig	2008-03-09 13:59:07.000000000 -0600
++++ gpio-event/Makefile	2008-03-09 13:59:51.000000000 -0600
+@@ -19,10 +19,10 @@
+ 
+ PWD       := $(shell pwd)
+ 
+-GUMSTIX_BUILDROOT	= $(PWD)/../cx-1575
+-BUILD_ARM		= $(wildcard $(GUMSTIX_BUILDROOT)/build_arm*)
+-KERNELDIR 		?= $(wildcard $(BUILD_ARM)/linux-*)
+-CROSS_COMPILE		= $(BUILD_ARM)/staging_dir/bin/arm-linux-
++#GUMSTIX_BUILDROOT	= $(PWD)/../cx-1575
++#BUILD_ARM		= $(wildcard $(GUMSTIX_BUILDROOT)/build_arm*)
++#KERNELDIR 		?= $(wildcard $(BUILD_ARM)/linux-*)
++#CROSS_COMPILE		= $(BUILD_ARM)/staging_dir/bin/arm-linux-
+ 
+ default: user-apps kernel-module
+ 
+@@ -31,7 +31,7 @@
+ user-apps: gpio-event
+ 
+ TARGET_ARCH=-Os -march=armv5te -mtune=xscale -Wa,-mcpu=xscale
+-CC = $(CROSS_COMPILE)gcc
++#CC = $(CROSS_COMPILE)gcc
+ 
+ CPPFLAGS	+= 
+ CFLAGS		+= -Wall

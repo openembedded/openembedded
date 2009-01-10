@@ -1,0 +1,11 @@
+--- nxlib-0.45/Xlcint.h-orig	2008-02-13 20:46:56.000000000 -0800
++++ nxlib-0.45/Xlcint.h	2008-02-13 20:47:16.000000000 -0800
+@@ -71,7 +71,7 @@
+ #include "Xresource.h"
+ #include "Xutil.h"
+ /*#include "Xvarargs.h"*/
+-#include "varargs.h"
++#include "stdarg.h"
+ 
+ typedef Bool (*XFilterEventProc)(
+ #if NeedFunctionPrototypes

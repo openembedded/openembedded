@@ -1,0 +1,26 @@
+--- robostix/gumstix/Makefile.orig	2008-03-08 11:37:50.000000000 -0700
++++ robostix/gumstix/Makefile	2008-03-08 11:36:55.000000000 -0700
+@@ -32,10 +32,10 @@
+ 
+ PWD       := $(shell pwd)
+ 
+-GUMSTIX_BUILDROOT	= $(PWD)/../../gumstix-buildroot
+-BUILD_ARM		= $(GUMSTIX_BUILDROOT)/build_arm_nofpu
+-KERNELDIR 		?= $(wildcard $(BUILD_ARM)/linux-*)
+-CROSS_COMPILE		= $(BUILD_ARM)/staging_dir/bin/arm-linux-
++#GUMSTIX_BUILDROOT	= $(PWD)/../../gumstix-buildroot
++#BUILD_ARM		= $(GUMSTIX_BUILDROOT)/build_arm_nofpu
++#KERNELDIR 		?= $(wildcard $(BUILD_ARM)/linux-*)
++#CROSS_COMPILE		= $(BUILD_ARM)/staging_dir/bin/arm-linux-
+ 
+ default: svn-version.h user-app kernel-module
+ 
+@@ -47,7 +47,7 @@
+ user-app: robostix sertest
+ 
+ TARGET_ARCH=-Os -march=armv5te -mtune=xscale -Wa,-mcpu=xscale
+-CC = $(CROSS_COMPILE)gcc
++#CC = $(CROSS_COMPILE)gcc
+ 
+ robostix: robostix.c
+ 

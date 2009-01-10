@@ -1,0 +1,10 @@
+--- microwindows-0.90/src/nanox/clientfb-orig.c	2008-02-08 20:27:09.000000000 -0800
++++ microwindows-0.90/src/nanox/clientfb.c	2008-02-08 20:24:49.000000000 -0800
+@@ -16,6 +16,7 @@
+ #include "nano-X.h"
+ #include "lock.h"
+ 
++#define PAGE_SIZE (1UL << 12)
+ #define CG6_RAM    	0x70016000	/* for Sun systems*/
+ 
+ LOCK_EXTERN(nxGlobalLock);	/* global lock for threads safety*/

@@ -1,0 +1,34 @@
+--- char-driver/char-driver.c.orig	2008-03-09 13:05:30.000000000 -0600
++++ char-driver/char-driver.c	2008-03-09 13:04:33.000000000 -0600
+@@ -26,7 +26,6 @@
+ /* ---- Include Files ---------------------------------------------------- */
+ 
+ #include <linux/module.h>
+-#include <linux/config.h>
+ #include <linux/init.h>
+ #include <linux/fs.h>
+ #include <linux/spinlock.h>
+@@ -426,12 +425,17 @@
+     printk( "sample driver allocated major:%d minor:%d\n", MAJOR( gSampleDevNum ), MINOR( gSampleDevNum ));
+ 
+     // Register our proc entries.
+-
+-    gSysCtlHeader = register_sysctl_table( gSysCtl, 0 );
+-    if ( gSysCtlHeader != NULL )
+-    {
+-        gSysCtlHeader->ctl_table->child->de->owner = THIS_MODULE;
+-    }
++#if USE_SYSCTL
++    #if ( LINUX_VERSION_CODE <= KERNEL_VERSION( 2, 6, 20 ))
++        gSysCtlHeader = register_sysctl_table( gSysCtl, 0 );
++        if ( gSysCtlHeader != NULL )
++        {
++            gSysCtlHeader->ctl_table->child->de->owner = THIS_MODULE;
++        }
++    #else
++        gSysCtlHeader = register_sysctl_table( gSysCtl );
++    #endif
++#endif
+ 
+     // Register our device. The device becomes "active" as soon as cdev_add 
+     // is called.
