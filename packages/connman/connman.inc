@@ -1,9 +1,8 @@
+DESCRIPTION = "The Moblin Connection Manager"
 HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
-SUMMARY  = "Moblin Connection Manager"
-LICENSE  = "GPL"
-
+SECTION = "libs/network"
+LICENSE = "GPL"
 DEPENDS  = "dbus glib-2.0"
-RDEPENDS = "dhcp-client wpa-supplicant resolvconf"
 
 EXTRA_OECONF += " \
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
@@ -18,6 +17,18 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
 }
 
+do_stage() {
+	autotools_stage_all
+}
+
+python populate_packages_prepend() {
+	plugin_dir = bb.data.expand('${libdir}/connman/plugins/', d)
+	plugin_name = bb.data.expand('${PN}-plugin-%s', d)
+	do_split_packages(d, plugin_dir, '^(.*).so$', plugin_name, '${PN} plugin for %s', extra_depends='' )
+}
+
+RDEPENDS = "dhcp-client wpa-supplicant resolvconf"
+
 PACKAGES_DYNAMIC = "${PN}-plugin-*"
 PACKAGES += "${PN}-script-dhclient"
 FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
@@ -31,12 +42,3 @@ FILES_${PN}-script-dhclient += "${libdir}/connman/scripts/dhclient*"
 FILES_${PN}-dbg += "${libdir}/connman/plugins/.debug \
                     ${libdir}/connman/scripts/.debug"
 
-python populate_packages_prepend() {
-	plugin_dir = bb.data.expand('${libdir}/connman/plugins/', d)
-	plugin_name = bb.data.expand('${PN}-plugin-%s', d)
-        do_split_packages(d, plugin_dir, '^(.*).so$', plugin_name, '${PN} plugin for %s', extra_depends='' )
-}
-
-do_stage() {
-    autotools_stage_all
-}
