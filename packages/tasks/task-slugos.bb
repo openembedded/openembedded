@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r21"
+PR = "r22"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx)"
 ALLOW_EMPTY = "1"
@@ -140,13 +140,14 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## is replaced by a trimmed-down version of opkg (no package signatures,
 ## and it uses the busybox wget command instead of libcurl - MJW
 ## SlugOS 5.0 - module-init-tools replaced by busybox as well - MJW
+## SlugOS 5.2 - module-init-tools reinstated due to busybox bugs - MJW
 
 RDEPENDS += "\
 	kernel ixp4xx-npe \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
-	modutils-initscripts \
+	module-init-tools modutils-initscripts \
         opkg-collateral opkg-nogpg-nocurl \
 	libgcc \
 	beep \
