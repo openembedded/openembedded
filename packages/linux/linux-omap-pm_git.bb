@@ -9,8 +9,8 @@ DEFAULT_PREFERENCE = "-1"
 
 SRCREV = "b5d11429ffe91c26903ff206e4c7ce5dd3ec4806"
 
-PV = "2.6.28"
-PR = "r5"
+PV = "2.6.28-pm1+gitr${SRCREV}"
+PR = "r6"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-next \
 	   file://defconfig"
@@ -43,6 +43,7 @@ SRC_URI_append = " \
 #           file://0010-DSS-OMAPFB-remove-extra-omapfb_setup_overlay-call.patch;patch=1 \
 #           file://0011-DSS-OMAPFB-fix-GFX_SYNC-to-be-compatible-with-DSS1.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
+           file://beagle-cpufreq.diff;patch=1 \
 "
 
 
