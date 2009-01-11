@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts and support files"
 LICENSE = "GPL"
 SECTION = "x11"
 RDEPENDS_${PN} = "xmodmap xrandr xdpyinfo"
-PR = "r10"
+PR = "r11"
 
 PACKAGE_ARCH = "all"
 
@@ -18,9 +18,9 @@ SRC_URI_append_angstrom = " file://kdrive-1.4-fixes.patch;patch=1 \
 
 do_install_append() {
 	install -m 0755 "${WORKDIR}/setDPI.sh" "${D}/etc/X11/Xinit.d/50setdpi"
-	install -m 0755 "${WORKDIR}/98keymap-fixup" "${D}/etc/X11/Xinit.d/"
 }
 
 do_install_append_angstrom() {
         install -m 0644 ${WORKDIR}/default.xmodmap ${D}/etc/X11/
+	install -m 0755 ${WORKDIR}/98keymap-fixup  ${D}/etc/X11/Xinit.d/
 }
