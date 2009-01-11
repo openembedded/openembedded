@@ -4,9 +4,11 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "fam"
-RDEPENDS = "fam python-core python-io"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${P}.tar.gz"
 
 inherit distutils
+
+RDEPENDS = "fam python-core python-io"
 
