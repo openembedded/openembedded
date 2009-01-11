@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-PR = "r4"
+PR = "r5"
 DEFAULT_PREFERENCE = "1"
 
 require uclibc.inc
@@ -17,6 +17,7 @@ PROVIDES += "virtual/${TARGET_PREFIX}libc-for-gcc"
 SRC_URI += "file://uClibc.machine file://uClibc.distro \
             file://arm-linuxthreads.patch;patch=1 \
             file://linuxthreads-changes.patch;patch=1 \
+	    file://pthread_atfork.patch;patch=1 \
 	   "
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
