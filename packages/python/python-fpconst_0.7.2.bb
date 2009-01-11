@@ -7,8 +7,9 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "fpconst"
+PR = "ml0"
 
-SRC_URI = "http://ftp.iasi.roedu.net/mirrors/gentoo.org/distfiles/${SRCNAME}-${PV}.tar.gz"
+SRC_URI = "http://pypi.python.org/packages/source/f/fpconst/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
