@@ -5,10 +5,9 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "Cython"
-PR = "ml1"
+PR = "ml0"
 
 SRC_URI = "http://www.cython.org/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
-
