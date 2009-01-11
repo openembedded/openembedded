@@ -3,7 +3,7 @@ SECTION = "base"
 DEPENDS = "zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r1"
 
 # This is the default package, thus we lock to a specific git version so 
 # upstream changes will not break builds.
@@ -71,7 +71,16 @@ mtd_utils = " docfdisk \
 	ubi-utils/pfiflash \
 	ubi-utils/ubigen \
 	ubi-utils/ubimirror \
-	ubi-utils/unubi"
+	ubi-utils/unubi \
+	ubi-utils/new-utils/ubiattach \
+	ubi-utils/new-utils/ubicrc32 \
+	ubi-utils/new-utils/ubidetach \
+	ubi-utils/new-utils/ubiformat \
+	ubi-utils/new-utils/ubimkvol \
+	ubi-utils/new-utils/ubinfo \
+	ubi-utils/new-utils/ubinize \
+	ubi-utils/new-utils/ubirmvol \
+	ubi-utils/new-utils/ubiupdatevol"
 
 
 
