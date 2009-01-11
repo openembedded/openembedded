@@ -5,7 +5,8 @@
 # files it creates further reduce the amount of available memory.
 #
 # Mike Westerhof, Dec 2008
-
+#
+# Patch updated Jan 2009
 --- orig/libopkg/opkg.c	2008-12-20 15:07:04.000000000 -0600
 +++ opkg/libopkg/opkg.c	2008-12-21 21:41:07.000000000 -0600
 @@ -773,15 +773,17 @@
@@ -55,7 +56,7 @@
 +//     tmp = tmpfile();
 +     sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
 +     tmp_f = mkstemp(tmp_fname);
-+     if (tmp_f == 0) {
++     if (tmp_f < 0) {
 +             perror("mkstemp()");
 +             free(tmp_fname);
 +             return errno;
@@ -63,7 +64,7 @@
 +     /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
 +     unlink(tmp_fname);
 +     free(tmp_fname);
-+     tmp = fdopen(tmp_f, "w");
++     tmp = fdopen(tmp_f, "w+");
 +
       if (pkg->installed_files) {
  	  str_list_elt_t *elt;
@@ -115,7 +116,7 @@
 +//     control_file = tmpfile();
 +     sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
 +     tmp_f = mkstemp(tmp_fname);
-+     if (tmp_f == 0) {
++     if (tmp_f < 0) {
 +	     perror("mkstemp()");
 +	     free(tmp_fname);
 +	     return errno;
@@ -123,7 +124,7 @@
 +     /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
 +     unlink(tmp_fname);
 +     free(tmp_fname);
-+     control_file = fdopen(tmp_f, "w");
++     control_file = fdopen(tmp_f, "w+");
 +
       err = pkg_extract_control_file_to_stream(pkg, control_file);
       if (err) { return err; }
@@ -145,7 +146,7 @@
 +//	  list_file = tmpfile();
 +	  sprintf_alloc(&tmp_fname, "%s-XXXXXX", opkg_conf_tmp_name);
 +	  tmp_f = mkstemp(tmp_fname);
-+	  if (tmp_f == 0) {
++	  if (tmp_f < 0) {
 +		  perror("mkstemp()");
 +		  free(tmp_fname);
 +		  return pkg->installed_files;
@@ -153,7 +154,7 @@
 +	  /* printf("%s: Using tmp_fname %s\n", __FUNCTION__, tmp_fname); */
 +	  unlink(tmp_fname);
 +	  free(tmp_fname);
-+	  list_file = fdopen(tmp_f, "w");
++	  list_file = fdopen(tmp_f, "w+");
 +
  	  err = pkg_extract_data_file_names_to_stream(pkg, list_file);
  	  if (err) {
