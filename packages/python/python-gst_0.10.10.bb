@@ -2,7 +2,7 @@ DESCRIPTION = "Python Gstreamer bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "gstreamer gst-plugins-base python-pygobject"
-PR = "ml2"
+PR = "ml3"
 
 SRC_URI = "\
   http://gstreamer.freedesktop.org/src/gst-python/gst-python-${PV}.tar.bz2 \
@@ -33,4 +33,3 @@ FILES_${PN}-dev += "\
 "
 FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/gst-0.10/gst/.debug/"
 FILES_${PN}-examples = "${datadir}/gst-python/0.10/examples"
-
