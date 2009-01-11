@@ -3,6 +3,7 @@ HOMEPAGE = "http://fusil.hachoir.org/"
 SECTION = "devel/python"
 LICENSE = "GPLv2"
 SRCNAME = "fusil"
+PR = "r1"
 
 SRC_URI = "http://pypi.python.org/packages/source/f/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
