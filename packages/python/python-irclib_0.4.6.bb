@@ -3,7 +3,7 @@ SECTION = "devel/python"
 HOMEPAGE = "http://python-irclib.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/python-irclib/python-irclib-${PV}.tar.gz"
 
