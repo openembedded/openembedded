@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r58"
+PR = "r59"
 
 inherit task
 
@@ -9,7 +9,7 @@ RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   openmoko-agpsui \
   gypsy \
-  gsm0710muxd \
+  fso-gsm0710muxd \
   ppp \
   bluez-hcidump \
   bootchart \

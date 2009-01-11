@@ -2,19 +2,21 @@ DESCRIPTION = "The freesmartphone.org framework -- install this task to make you
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r4"
+PR = "r5"
 
 inherit task
 
 RDEPENDS_${PN} = "\
   dbus-hlid \
   frameworkd \
+#  fso-apmd \
   fso-gpsd \
+#  fso-monitord \
   connman \
 "
 
 RRECOMMENDS_${PN} = "\
-  gsm0710muxd \
+  fso-gsm0710muxd \
   wmiconfig \
   \
   tzdata \
