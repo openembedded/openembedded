@@ -1,12 +1,13 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r3"
+PR = "r4"
 
 inherit task 
 
 ECONFIG ?= "places e-wm-config-angstrom e-wm-config-default"
 
 RDEPENDS_${PN} = "\
+    task-proper-tools \
     task-base-extended \
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
