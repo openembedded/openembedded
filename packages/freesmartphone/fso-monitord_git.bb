@@ -11,7 +11,7 @@ S = "${WORKDIR}/git"
 
 inherit autotools update-rc.d
 
-INITSCRIPT_NAME = "fso-gpsd"
+INITSCRIPT_NAME = "fso-monitord"
 INITSCRIPT_PARAMS = "defaults 35"
 
 RDEPENDS_${PN} = "frameworkd"
