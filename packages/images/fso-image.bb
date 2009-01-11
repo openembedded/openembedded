@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r2"
+PR = "r3"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -134,6 +134,7 @@ fso_rootfs_postprocess() {
     # remove autostart of gspd (if installed), we have fso-gpsd and this conflicts
     rm -f ./etc/init.d/gpsd
     # silence printk
+    mkdir -p ./etc/profile.d/
     echo "echo 0 0 0 0 >/proc/sys/kernel/printk" >./etc/profile.d/printk.sh
     chmod a+rx ./etc/profile.d/printk.sh
     # back on track
