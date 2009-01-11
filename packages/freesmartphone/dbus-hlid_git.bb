@@ -1,5 +1,5 @@
 DESCRIPTION = "High Level DBus Introspection Daemon"
-AUTHOR = "M. Lauer"
+AUTHOR = "M. Lauer et. al."
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib"
 LICENSE = "GPL"
