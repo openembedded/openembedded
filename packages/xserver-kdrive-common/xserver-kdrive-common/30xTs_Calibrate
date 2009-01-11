@@ -1,6 +1,6 @@
 #!/bin/sh
 
-while [ ! -z $TSLIB_TSDEVICE ] && [ ! -f /etc/pointercal ]
+while [ ! -z $TSLIB_TSDEVICE ] && [ -f $TSLIB_TSDEVICE] && [ ! -f /etc/pointercal ]
 do
    /usr/bin/xtscal
 done
