@@ -1,0 +1,121 @@
+From bd4fd1dd3be7ff31a6cf779f0683d617280ac92e Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 7 Jan 2009 16:44:17 +0200
+Subject: [PATCH] DSS: OMAPFB: allocate fbmem only for fb0, or if spesified in vram arg
+
+---
+ drivers/video/omap2/omapfb-main.c |   65 +++++++++++++++++++-----------------
+ 1 files changed, 34 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-main.c b/drivers/video/omap2/omapfb-main.c
+index 76bd416..9dbff42 100644
+--- a/drivers/video/omap2/omapfb-main.c
++++ b/drivers/video/omap2/omapfb-main.c
+@@ -939,11 +939,12 @@ static int omapfb_alloc_fbmem_display(struct omapfb2_device *fbdev, int fbnum,
+ 		break;
+ 	}
+ 
+-	size = display->panel->timings.x_res * display->panel->timings.y_res *
+-		bytespp;
+-
+-	if (def_vram > size)
++	if (def_vram)
+ 		size = def_vram;
++	else
++		size = display->panel->timings.x_res *
++			display->panel->timings.y_res *
++			bytespp;
+ 
+ 	return omapfb_alloc_fbmem(fbdev, fbnum, size);
+ }
+@@ -956,13 +957,25 @@ static int omapfb_allocate_all_fbs(struct omapfb2_device *fbdev)
+ 	memset(vrams, 0, sizeof(vrams));
+ 
+ 	if (def_vram) {
+-		char *p = def_vram;
++		char str[64];
++		char *tok, *s;
++
++		if (strlen(def_vram) > sizeof(str) - 1) {
++			dev_err(fbdev->dev, "Illegal vram parameters\n");
++			return -EINVAL;
++		}
++
++		strcpy(str, def_vram);
++
++		s = str;
+ 		i = 0;
+ 
+-		while (true) {
++		while ((tok = strsep(&s, ","))) {
+ 			unsigned long size;
+ 
+-			size = memparse(p, &p);
++			printk("param '%s'\n", tok);
++
++			size = memparse(tok, NULL);
+ 
+ 			if (size == 0) {
+ 				dev_err(fbdev->dev, "illegal vram size\n");
+@@ -970,19 +983,18 @@ static int omapfb_allocate_all_fbs(struct omapfb2_device *fbdev)
+ 			}
+ 
+ 			vrams[i++] = size;
+-
+-			if (*p != ',')
+-				break;
+-
+-			p++;
+ 		}
+ 	}
+ 
+ 	for (i = 0; i < fbdev->num_fbs; i++) {
+-		r = omapfb_alloc_fbmem_display(fbdev, i, vrams[i]);
++		/* allocate memory automatically only for fb0, or if
++		 * excplicitly defined with vram option */
++		if (i == 0 || vrams[i] != 0) {
++			r = omapfb_alloc_fbmem_display(fbdev, i, vrams[i]);
+ 
+-		if (r)
+-			return r;
++			if (r)
++				return r;
++		}
+ 	}
+ 
+ 	for (i = 0; i < fbdev->num_fbs; i++) {
+@@ -1167,24 +1179,15 @@ static int omapfb_create_framebuffers(struct omapfb2_device *fbdev)
+ 			dev_err(fbdev->dev, "failed to change mode\n");
+ 	}
+ 
+-	/* Enable the first framebuffer that has overlay that is connected
+-	 * to display. Usually this would be the GFX plane. */
+-	r = 0;
+-	for (i = 0; i < fbdev->num_fbs; i++) {
+-		struct omapfb_info *ofbi = FB2OFB(fbdev->fbs[i]);
+-		int t;
++	/* Enable fb0 */
++	if (fbdev->num_fbs > 0) {
++		struct omapfb_info *ofbi = FB2OFB(fbdev->fbs[0]);
+ 
+-		for (t = 0; t < ofbi->num_overlays; t++) {
+-			struct omap_overlay *ovl = ofbi->overlays[t];
+-			if (ovl->manager && ovl->manager->display) {
+-				ovl->enable(ovl, 1);
+-				r = 1;
+-				break;
+-			}
+-		}
++		if (ofbi->num_overlays > 0 ) {
++			struct omap_overlay *ovl = ofbi->overlays[0];
+ 
+-		if (r)
+-			break;
++			ovl->enable(ovl, 1);
++		}
+ 	}
+ 
+ 	DBG("create_framebuffers done\n");
+-- 
+1.5.6.3
+

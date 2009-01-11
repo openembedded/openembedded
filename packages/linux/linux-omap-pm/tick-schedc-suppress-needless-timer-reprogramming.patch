@@ -1,0 +1,81 @@
+From: "Woodruff, Richard" <r-woodruff2@ti.com>
+
+In my device I get many interrupts from a high speed USB device in a very
+short period of time.  The system spends a lot of time reprogramming the
+hardware timer which is in a slower timing domain as compared to the CPU. 
+This results in the CPU spending a huge amount of time waiting for the
+timer posting to be done.  All of this reprogramming is useless as the
+wake up time has not changed.
+
+As measured using ETM trace this drops my reprogramming penalty from
+almost 60% CPU load down to 15% during high interrupt rate.  I can send
+traces to show this.
+
+
+Suppress setting of duplicate timer event when timer already stopped. 
+Timer programming can be very costly and can result in long cpu stall/wait
+times.
+
+[akpm@linux-foundation.org: coding-style fixes]
+Signed-off-by: Richard Woodruff <r-woodruff2@ti.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+
+On Wed, 24 Sep 2008 18:31:29 +0200 (CEST) Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> No, we only fall trrough into raise_softirq() when the reprogram code
+> detects that the event already expired. So you change the flow :)
+>
+> It does also not deal with delta_jiffies >= NEXT_TIMER_MAX_DELTA :(
+>
+> I have a closer look on that.
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/time/tick-sched.c |   19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff -puN kernel/time/tick-sched.c~tick-schedc-suppress-needless-timer-reprogramming kernel/time/tick-sched.c
+--- a/kernel/time/tick-sched.c~tick-schedc-suppress-needless-timer-reprogramming
++++ a/kernel/time/tick-sched.c
+@@ -282,6 +282,17 @@ void tick_nohz_stop_sched_tick(int inidl
+ 	/* Schedule the tick, if we are at least one jiffie off */
+ 	if ((long)delta_jiffies >= 1) {
+ 
++		/*
++		* calculate the expiry time for the next timer wheel
++		* timer
++		*/
++		expires = ktime_add_ns(last_update, tick_period.tv64 *
++				   delta_jiffies);
++
++		/* Skip reprogram of event if its not changed */
++		if (ts->tick_stopped && ktime_equal(expires, dev->next_event))
++			goto out2;
++
+ 		if (delta_jiffies > 1)
+ 			cpu_set(cpu, nohz_cpu_mask);
+ 		/*
+@@ -332,12 +343,7 @@ void tick_nohz_stop_sched_tick(int inidl
+ 			goto out;
+ 		}
+ 
+-		/*
+-		 * calculate the expiry time for the next timer wheel
+-		 * timer
+-		 */
+-		expires = ktime_add_ns(last_update, tick_period.tv64 *
+-				       delta_jiffies);
++		/* Mark expiries */
+ 		ts->idle_expires = expires;
+ 
+ 		if (ts->nohz_mode == NOHZ_MODE_HIGHRES) {
+@@ -356,6 +362,7 @@ void tick_nohz_stop_sched_tick(int inidl
+ 		tick_do_update_jiffies64(ktime_get());
+ 		cpu_clear(cpu, nohz_cpu_mask);
+ 	}
++out2:
+ 	raise_softirq_irqoff(TIMER_SOFTIRQ);
+ out:
+ 	ts->next_jiffies = next_jiffies;
+_
