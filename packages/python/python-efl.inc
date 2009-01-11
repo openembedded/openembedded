@@ -7,6 +7,8 @@ HOMEPAGE = "http://www.enlightenment.org"
 # the extension modules.
 DEPENDS = "python-cython-native python-pyrex-native python-numeric eina"
 RDEPENDS += "python-lang"
+PV = "0.3.1+svnr${SRCREV}"
+PR = "ml0"
 
 inherit setuptools
 
