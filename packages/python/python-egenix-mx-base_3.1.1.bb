@@ -5,7 +5,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "EGENIX"
 SRCNAME = "egenix-mx-base"
-PR = "r0"
+PR = "ml0"
 
 SRC_URI = "http://downloads.egenix.com/python/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
