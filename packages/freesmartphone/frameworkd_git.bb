@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.4.9+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit distutils update-rc.d
 
@@ -53,8 +53,8 @@ RRECOMMENDS_${PN} += "\
 
 # machine specific stuff, should ideally be elsewhere
 # - recommend MUXer on platforms that require one
-RDEPENDS_${PN}_append_om-gta01 = " gsm0710muxd"
-RDEPENDS_${PN}_append_om-gta02 = " gsm0710muxd"
+RDEPENDS_${PN}_append_om-gta01 = " fso-gsm0710muxd"
+RDEPENDS_${PN}_append_om-gta02 = " fso-gsm0710muxd"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
 
