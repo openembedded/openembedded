@@ -1,13 +1,13 @@
 require busybox.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   \
   file://udhcpscript.patch;patch=1 \
   file://B921600.patch;patch=1 \
-  file://mdev-fix.patch;patch=1 \
+  file://r24785.patch;patch=1;status=merged \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
