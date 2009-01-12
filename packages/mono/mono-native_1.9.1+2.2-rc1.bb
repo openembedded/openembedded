@@ -8,8 +8,6 @@ DEFAULT_PREFERENCE = "-1"
 #	    file://libgc_cppflags.patch;patch=1 \
 #           "
 
-PARALLEL_MAKE = ""
-
 inherit native
 
 do_stage_prepend() {

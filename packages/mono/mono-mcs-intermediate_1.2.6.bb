@@ -8,3 +8,6 @@
 require mono_1.2.6.inc
 require mono-mcs-intermediate.inc
 
+PARALLEL_MAKE = ""
+
+
