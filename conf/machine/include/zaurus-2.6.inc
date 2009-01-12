@@ -11,7 +11,10 @@ ERASEBLOCKSIZE_akita = "0x20000"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --faketime -n" 
 IMAGE_CMD_jffs2 = "mkfs.jffs2 -x lzo --root=${IMAGE_ROOTFS} --output=${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 ${EXTRA_IMAGECMD}"
-EXTRA_IMAGEDEPENDS += "zaurus-updater"
+
+ZAURUS-UPDATER_collie = ""
+ZAURUS-UPDATER = "zaurus-updater"
+EXTRA_IMAGEDEPENDS += "${ZAURUS-UPDATER}"
 
 SERIAL_CONSOLE = "115200 ttyS0"
 SERIAL_CONSOLE_collie = "115200 ttySA0"
