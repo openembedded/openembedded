@@ -3,7 +3,6 @@ SECTION = "devel/python"
 HOMEPAGE = "http://libgmail.sourceforge.net/"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = "python-core python-netclient python-email python-mime python-pprint python-re python-pickle"
 SRCNAME = "libgmail"
 PR = "ml0"
 
@@ -19,3 +18,14 @@ do_install() {
 		install -m 0755 ${file} ${D}${libdir}/${PYTHON_DIR}
 	done
 }
+
+RDEPENDS = "\
+  python-core \
+  python-netclient \
+  python-email \
+  python-mime \
+  python-pprint \
+  python-re \
+  python-pickle \
+"
+
