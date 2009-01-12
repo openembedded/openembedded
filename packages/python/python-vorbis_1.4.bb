@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "libvorbis python-ogg"
 SRCNAME = "pyvorbis"
+PR = "ml0"
 
 SRC_URI = "http://www.andrewchatham.com/pyogg/download/${SRCNAME}-${PV}.tar.gz \
            file://disable-oggcheck.patch;patch=1"
