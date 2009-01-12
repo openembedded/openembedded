@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "MIT"
 HOMEPAGE = "http://www.makotemplates.org/"
 SRCNAME = "Mako"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://pypi.python.org/packages/source/M/Mako/Mako-${PV}.tar.gz" 
 S = "${WORKDIR}/${SRCNAME}-${PV}"
