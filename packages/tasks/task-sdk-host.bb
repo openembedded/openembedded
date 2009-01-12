@@ -3,7 +3,7 @@
 #
 
 DESCRIPTION = "Host packages for the standalone SDK or external toolchain"
-PR = "r2"
+PR = "r3"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
 
@@ -17,4 +17,5 @@ RDEPENDS_${PN} = "\
     gdb-cross-sdk \
     pkgconfig-sdk \
     opkg-sdk \
+    libtool-sdk \
     "

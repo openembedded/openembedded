@@ -34,6 +34,24 @@ TOOLCHAIN_OUTPUTNAME ?= "${DISTRO}-${DISTRO_VERSION}-${FEED_ARCH}-${TARGET_OS}-$
 
 RDEPENDS = "${TOOLCHAIN_TARGET_TASK} ${TOOLCHAIN_HOST_TASK}"
 
+TOOLCHAIN_FEED_URI ?= "${DISTRO_FEED_URI}"
+
+modify_opkg_conf () {
+        OUTPUT_OPKGCONF_TARGET="${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/opkg.conf"
+        OUTPUT_OPKGCONF_HOST="${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/${layout_sysconfdir}/opkg-sdk.conf"
+        OUTPUT_OPKGCONF_SDK="${SDK_OUTPUT}/${sysconfdir}/opkg-sdk.conf"
+        rm ${OUTPUT_OPKGCONF_TARGET}
+        rm ${OUTPUT_OPKGCONF_HOST}
+        rm ${OUTPUT_OPKGCONF_SDK}
+        opkgarchs="${PACKAGE_ARCHS}"
+        priority=1
+        for arch in ${opkgarchs}; do
+                echo "arch ${arch} ${priority}" >> ${OUTPUT_OPKGCONF_TARGET};
+                echo "src/gz ${arch} ${TOOLCHAIN_FEED_URI}/${arch}" >> ${OUTPUT_OPKGCONF_TARGET};
+                priority=$(expr ${priority} + 5);
+        done
+}
+
 do_populate_sdk() {
 	rm -rf ${SDK_OUTPUT}
 	mkdir -p ${SDK_OUTPUT}
@@ -120,6 +138,7 @@ do_populate_sdk() {
 	script=${SDK_OUTPUT}/${prefix}/environment-setup
 	touch $script
 	echo 'export PATH=${prefix}/bin:$PATH' >> $script
+	echo 'export LIBTOOL_SYSROOT_PATH=${prefix}/${TARGET_SYS}' >> $script
 	echo 'export PKG_CONFIG_SYSROOT_DIR=${prefix}/${TARGET_SYS}' >> $script
 	echo 'export PKG_CONFIG_PATH=${prefix}/${TARGET_SYS}${layout_libdir}/pkgconfig' >> $script
 	echo 'export CONFIG_SITE=${prefix}/site-config' >> $script
@@ -133,6 +152,8 @@ do_populate_sdk() {
 	echo 'Distro Version: ${DISTRO_VERSION}' >> $versionfile
 	echo 'Metadata Revision: ${METADATA_REVISION}' >> $versionfile
 	echo 'Timestamp: ${DATETIME}' >> $versionfile
+
+	modify_opkg_conf
 
 	# Package it up
 	mkdir -p ${SDK_DEPLOY}
