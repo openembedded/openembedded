@@ -7,7 +7,7 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   file://asound.conf \
@@ -19,7 +19,7 @@ SRC_URI = "\
 inherit update-rc.d
 
 INITSCRIPT_NAME = "alsa-state"
-INITSCRIPT_PARAMS = "defaults 10"
+INITSCRIPT_PARAMS = "start 39 S ."
 
 do_install() {
     install -d ${D}${sysconfdir}/init.d
@@ -50,5 +50,9 @@ pkg_postinst_${PN}() {
 		then
 			/usr/sbin/alsactl -f ${sysconfdir}/asound.state restore
 		fi
+		# INITSCRIPT_PARAMS changed, so remove the old and
+		# install the new setting.
+		update-rc.d -f ${INITSCRIPT_NAME} remove
+		update-rc.d ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
 	fi
 }

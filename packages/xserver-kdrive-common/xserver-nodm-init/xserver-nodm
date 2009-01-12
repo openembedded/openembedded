@@ -19,18 +19,13 @@ done
 
 case "$1" in
   start)
-    # We don't want this script to block the rest of the boot process
-    if [ "$2" != "background" ]; then
-      $0 $1 background &
-    else
-       . /etc/profile
-       [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
-       [ -z $HOME ] && export HOME=/home/$LOGNAME
+        . /etc/profile
+        [ -z $LOGNAME ] && export LOGNAME=root && export HOME=/home/root
+        [ -z $HOME ] && export HOME=/home/$LOGNAME
 
 
-       echo "Starting Xserver"
-       /etc/X11/Xserver &
-    fi 
+        echo "Starting Xserver"
+        /etc/X11/Xserver &
   ;;
 
   stop)
