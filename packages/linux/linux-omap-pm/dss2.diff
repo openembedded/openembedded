@@ -1,0 +1,9 @@
+--- /tmp/Makefile	2009-01-12 15:50:04.000000000 +0100
++++ git/arch/arm/plat-omap/Makefile	2009-01-12 15:50:25.000000000 +0100
+@@ -32,3 +32,6 @@
+ obj-$(CONFIG_OMAP_PM_NOOP) += omap-pm-noop.o
+ obj-$(CONFIG_OMAP_PM_SRF) += omap-pm-srf.o \
+ 				resource.o
++
++# OMAP2/3 Display Subsystem
++obj-y += dss/

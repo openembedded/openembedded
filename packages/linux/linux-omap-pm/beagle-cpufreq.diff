@@ -1,12 +1,14 @@
---- /tmp/board-omap3beagle.c	2009-01-11 18:41:58.000000000 +0100
-+++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-01-11 18:47:03.000000000 +0100
-@@ -41,12 +41,71 @@
+--- /tmp/board-omap3beagle.c	2009-01-12 15:46:26.000000000 +0100
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-01-12 15:46:28.000000000 +0100
+@@ -41,14 +41,73 @@
  #include <mach/usb-ehci.h>
  #include <mach/common.h>
  #include <mach/gpmc.h>
 +#include <mach/omap-pm.h>
  #include <mach/nand.h>
  #include <mach/mux.h>
+ #include <mach/omapfb.h>
+ #include <mach/display.h>
 +#include <mach/clock.h>
 +
  
@@ -72,7 +74,24 @@
  
  #define GPMC_CS0_BASE  0x60
  #define GPMC_CS_SIZE   0x30
-@@ -233,7 +292,8 @@
+@@ -142,7 +201,15 @@
+ 	 * power switch and overcurrent detect
+ 	 */
+ 
+-        /* TODO: This needs to be modified to not rely on u-boot */
++	gpio_request(gpio + 1, "EHCI_nOC");
++	gpio_direction_input(gpio + 1);
++
++	/* TWL4030_GPIO_MAX + 0 == ledA, EHCI nEN_USB_PWR (out, active low) */
++	gpio_request(gpio + TWL4030_GPIO_MAX, "nEN_USB_PWR");
++	gpio_direction_output(gpio + TWL4030_GPIO_MAX, 1);
++
++	/* TWL4030_GPIO_MAX + 1 == ledB, PMU_STAT (out, active low LED) */
++	gpio_leds[2].gpio = gpio + TWL4030_GPIO_MAX + 1;
+ 
+ 	return 0;
+ }
+@@ -227,7 +294,8 @@
  
  static void __init omap3_beagle_init_irq(void)
  {

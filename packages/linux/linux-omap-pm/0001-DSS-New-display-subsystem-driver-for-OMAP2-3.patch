@@ -320,16 +320,6 @@ index 2465aea..cd7d9e2 100644
  endmenu
  
  endif
-diff --git a/arch/arm/plat-omap/Makefile b/arch/arm/plat-omap/Makefile
-index 1259846..2740497 100644
---- a/arch/arm/plat-omap/Makefile
-+++ b/arch/arm/plat-omap/Makefile
-@@ -29,3 +29,5 @@ obj-$(CONFIG_OMAP_MMU_FWK) += mmu.o
- # OMAP mailbox framework
- obj-$(CONFIG_OMAP_MBOX_FWK) += mailbox.o
- 
-+# OMAP2/3 Display Subsystem
-+obj-y += dss/
 diff --git a/arch/arm/plat-omap/dss/Kconfig b/arch/arm/plat-omap/dss/Kconfig
 new file mode 100644
 index 0000000..6b342df

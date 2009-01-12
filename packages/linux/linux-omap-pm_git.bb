@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "b5d11429ffe91c26903ff206e4c7ce5dd3ec4806"
+SRCREV = "24b64c62777f483bff45176accc187381e7cd7a7"
 
-PV = "2.6.28-pm1+gitr${SRCREV}"
-PR = "r6"
+PV = "2.6.27+2.6.28rc8-pm1+gitr${SRCREV}"
+PR = "r0"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-next \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-prev \
 	   file://defconfig"
 
 SRC_URI_append = " \
@@ -31,19 +31,20 @@ SRC_URI_append = " \
            file://0001-Implement-downsampling-with-debugs.patch;patch=1 \
            file://twl-asoc-fix-record.diff;patch=1 \
            file://tick-schedc-suppress-needless-timer-reprogramming.patch;patch=1 \
-#           file://0001-DSS-New-display-subsystem-driver-for-OMAP2-3.patch;patch=1 \
-#           file://0002-DSS-OMAPFB-fb-driver-for-new-display-subsystem.patch;patch=1 \
-#           file://0003-DSS-Add-generic-DVI-panel.patch;patch=1 \
-#           file://0004-DSS-support-for-Beagle-Board.patch;patch=1 \
-#           file://0005-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
-#           file://0006-DSS-Support-for-OMAP3-SDP-board.patch;patch=1 \
-#           file://0007-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
-#           file://0008-DSS-Hacked-N810-support.patch;patch=1 \
-#           file://0009-DSS-OMAPFB-allocate-fbmem-only-for-fb0-or-if-spes.patch;patch=1 \
-#           file://0010-DSS-OMAPFB-remove-extra-omapfb_setup_overlay-call.patch;patch=1 \
-#           file://0011-DSS-OMAPFB-fix-GFX_SYNC-to-be-compatible-with-DSS1.patch;patch=1 \
+           file://0001-DSS-New-display-subsystem-driver-for-OMAP2-3.patch;patch=1 \
+           file://0002-DSS-OMAPFB-fb-driver-for-new-display-subsystem.patch;patch=1 \
+           file://0003-DSS-Add-generic-DVI-panel.patch;patch=1 \
+           file://0004-DSS-support-for-Beagle-Board.patch;patch=1 \
+           file://0005-DSS-Sharp-LS037V7DW01-LCD-Panel-driver.patch;patch=1 \
+           file://0007-DSS-Support-for-OMAP3-EVM-board.patch;patch=1 \
+           file://0008-DSS-Hacked-N810-support.patch;patch=1 \
+           file://0009-DSS-OMAPFB-allocate-fbmem-only-for-fb0-or-if-spes.patch;patch=1 \
+           file://0010-DSS-OMAPFB-remove-extra-omapfb_setup_overlay-call.patch;patch=1 \
+           file://0011-DSS-OMAPFB-fix-GFX_SYNC-to-be-compatible-with-DSS1.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://beagle-cpufreq.diff;patch=1 \
+           file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
+           file://dss2.diff;patch=1 \
 "
 
 
