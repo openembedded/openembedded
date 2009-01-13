@@ -29,6 +29,15 @@ Index: openssl-0.9.8j/Makefile.org
  				export CC FIPSLD_CC; \
  			fi; \
  			$(MAKE) -e SHLIBDIRS='crypto' build-shared; \
+@@ -371,7 +371,7 @@
+ 	@if [ "$(SHLIB_TARGET)" != "" ]; then \
+ 		shlibdeps=-lcrypto; \
+ 		[ "$(FIPSCANLIB)" = "libfips" ] && shlibdeps="$$shlibdeps -lfips"; \
+-		$(MAKE) SHLIBDIRS=ssl SHLIBDEPS="$$shlibdeps" build-shared; \
++		$(MAKE) -e SHLIBDIRS=ssl SHLIBDEPS="$$shlibdeps" build-shared; \
+ 	else \
+ 		echo "There's no support for shared libraries on this platform" >&2 ; \
+ 		exit 1; \
 @@ -380,7 +380,7 @@
  fips/fipscanister.o:	build_fips
  libfips$(SHLIB_EXT):		fips/fipscanister.o
