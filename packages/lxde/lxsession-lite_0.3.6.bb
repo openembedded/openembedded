@@ -1,6 +1,7 @@
 DESCRIPTION = "LXDE Session"
 SECTION = "x11"
-DEPENDS = ""
+DEPENDS = "gtk+"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/lxde/${PN}-${PV}.tar.gz"
 
