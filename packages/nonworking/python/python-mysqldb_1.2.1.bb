@@ -7,10 +7,11 @@ SRCNAME = "MySQL-python"
 
 inherit distutils
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/mysql-python/MySQL-python-${PV}_p2.tar.gz \
-file://mysqlpath.patch;patch=1 \
-file://site.patch;patch=1"
-
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/mysql-python/MySQL-python-${PV}_p2.tar.gz \
+  file://mysqlpath.patch;patch=1 \
+  file://site.patch;patch=1 \
+"
 S = "${WORKDIR}/${SRCNAME}-${PV}_p2"
 
 do_install_append() {
