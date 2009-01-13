@@ -6,15 +6,14 @@ LICENSE = "GPL LGPL AFL"
 DEFAULT_PREFERENCE = "-1"
 
 DEPENDS = "virtual/kernel dbus-glib udev intltool-native expat libusb-compat"
-RDEPENDS_${PN} += "udev hal-info"
-RRECOMMENDS_${PN} += "udev-utils"
+RDEPENDS_${PN} += "udev-utils hal-info"
 
 SRC_URI = "git://anongit.freedesktop.org/hal/;protocol=git \
         file://20hal \
         file://99_hal"
 
 PV = "0.5.9.1+git${SRCDATE}"
-PR = "r6"
+PR = "r7"
 
 S = "${WORKDIR}/git"
 
