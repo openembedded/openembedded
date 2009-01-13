@@ -4,7 +4,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
@@ -18,7 +18,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
@@ -32,7 +32,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
@@ -46,7 +46,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
@@ -60,7 +60,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
@@ -74,7 +74,7 @@
      . /etc/dhcp/dhclient-exit-hooks
    fi
  # probably should do something with exit status of the local script
-+  if [ x$dhc_dbus != x -a $exit_status -eq 0 ]; then
++  if [ x$dhc_dbus != x ]; then
 +    dbus-send --system --dest=com.redhat.dhcp \
 +      --type=method_call /com/redhat/dhcp/$interface com.redhat.dhcp.set \
 +      'string:'"`env | grep -Ev '^(PATH|SHLVL|_|PWD|dhc_dbus)\='`"
