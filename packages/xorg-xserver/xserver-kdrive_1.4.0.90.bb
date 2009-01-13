@@ -1,9 +1,10 @@
 require xserver-kdrive-common.inc
 
 DEPENDS += "hal libxkbfile libxcalibrate pixman"
+RDEPENDS += "hal"
 
 PE = "1"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "${XORG_MIRROR}/individual/xserver/xorg-server-${PV}.tar.bz2 \
 	${KDRIVE_COMMON_PATCHES} \
