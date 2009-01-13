@@ -5,6 +5,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "ode"
 SRCNAME = "PyODE"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyode/${SRCNAME}-${PV}.tar.bz2 \
            file://install.patch;patch=1"
