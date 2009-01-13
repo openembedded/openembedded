@@ -1,8 +1,0 @@
-# Simple Makefile
-
-libwpa: wpa_ctrl.c wpa_ctrl.h
-	@echo "Building our small WPA Control Library..."
-	$(CC) -c -W -Wall -g wpa_ctrl.c
-
-clean:
-	@rm -rf *.o
