@@ -1,9 +1,13 @@
 require psplash.inc
 require psplash-ua.inc
 
-ALTERNATIVE_PRIORITY = "10"
+ALTERNATIVE_PRIORITY = "30"
 
-PR = "r14"
+# You can create your own pslash-hand-img.h by doing
+# ./make-image-header.sh <file>.png HAND
+# and rename the resulting .h to pslash-hand-img.h (for the logo)
+# respectively psplash-bar-img.h (BAR) for the bar.
+# You might also want to patch the colors (see patch)
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-hand-img.h \
@@ -12,8 +16,4 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-init"
 S = "${WORKDIR}/psplash"
 
-# This really should be default, but due yo openmoko hack below, can't be easily
-SRC_URI_append_angstrom = " file://logo-math.patch;patch=1 "
 SRC_URI_append_openmoko = " file://configurability.patch;patch=1 "
-SRC_URI_append_boc01 = " file://psplash_1bpp.patch;patch=1 "
-
