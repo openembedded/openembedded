@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## dhclient-script-exit-status.dpatch by  <apollock@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Use exit status 2, rather than 1, to indicate that binding failed,
+## DP: so that unrelated errors do not result in DHCPDECLINE
+
+@DPATCH@
+diff -urNad dhcp3-3.0.2/client/dhclient.c /tmp/dpep.DiNW3N/dhcp3-3.0.2/client/dhclient.c
+--- dhcp3-3.0.2/client/dhclient.c	2004-11-25 04:39:14.000000000 +1100
++++ /tmp/dpep.DiNW3N/dhcp3-3.0.2/client/dhclient.c	2005-06-15 12:51:38.952349445 +1000
+@@ -869,7 +869,7 @@
+ 	/* If the BOUND/RENEW code detects another machine using the
+ 	   offered address, it exits nonzero.  We need to send a
+ 	   DHCPDECLINE and toss the lease. */
+-	if (script_go (client)) {
++	if (script_go (client) == 2) {
+ 		make_decline (client, client -> new);
+ 		send_decline (client);
+ 		destroy_client_lease (client -> new);

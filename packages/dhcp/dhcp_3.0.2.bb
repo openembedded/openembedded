@@ -2,10 +2,11 @@ SECTION = "console/network"
 DESCRIPTION = "Internet Software Consortium DHCP package"
 HOMEPAGE = "http://www.isc.org/"
 LICENSE = "BSD"
-PR = "r6"
+PR = "r7"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://noattrmode.patch;patch=1 \
 	   file://fixincludes.patch;patch=1 \
+           file://dhclient-script-exit-status.dpatch;patch=1 \
 	   file://dhcp-3.0.3-dhclient-dbus.patch;patch=1;pnum=0 \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
