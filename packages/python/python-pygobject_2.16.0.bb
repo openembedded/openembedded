@@ -4,6 +4,8 @@ LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native"
 PR = "ml0"
 
+DEFAULT_PREFERENCE = "-1"
+
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
 SRC_URI = "\
@@ -17,8 +19,8 @@ FILESPATH = "${FILE_DIRNAME}/python-pygobject:${FILE_DIRNAME}/files"
 inherit autotools distutils-base pkgconfig
 
 # necessary to let the call for python-config succeed
-export BUILD_SYS := "${BUILD_SYS}"
-export HOST_SYS := "${HOST_SYS}"
+export BUILD_SYS
+export HOST_SYS
 
 do_stage() {
 	autotools_stage_all
