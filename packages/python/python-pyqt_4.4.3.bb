@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "sip-native python-sip"
 RDEPENDS = "python-core"
 SRCNAME = "pyqt"
-PR = "ml3"
+PR = "ml4"
 
 PYQT_OE_VERSION = "Qt_4_4_1"
 
