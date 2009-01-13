@@ -66,7 +66,7 @@ do_stage () {
 
 PACKAGES =+ "udev-utils libvolume-id libvolume-id-dev"
 FILES_libvolume-id-dev = "${includedir}/libvolume_id.h ${libdir}/libvolume_id.a ${libdir}/libvolume_id.so ${libdir}/pkgconfig/libvolume_id.pc"
-FILES_udev-utils = "${usrbindir}/udevinfo ${usrbindir}/udevtest"
+FILES_udev-utils = "${usrbindir}/udevinfo ${sbindir}/udevadm ${usrbindir}/udevtest"
 FILES_libvolume-id = "${base_libdir}/libvolume_id.so.*"
-FILES_${PN} += "${usrbindir}/* ${usrsbindir}/*"
+FILES_${PN} += "${usrbindir}/* ${usrsbindir}/udevd"
 FILES_${PN}-dbg += "${usrbindir}/.debug ${usrsbindir}/.debug"
