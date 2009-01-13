@@ -3,8 +3,9 @@ for Layer 1, 2 and 3. It uses floating point math (unlike libmad)."
 LICENSE = "LGPL"
 DESCRIPTION = "multimedia"
 HOMEPAGE = "http://www.mpg123.de"
-RCONFLICTS = "mpg321"
-RREPLACES = "mpg321"
+RCONFLICTS_${PN} = "mpg321"
+RREPLACES_${PN} = "mpg321"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/mpg123/mpg123-${PV}.tar.bz2"
 
