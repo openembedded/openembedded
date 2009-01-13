@@ -4,7 +4,7 @@ DEPENDS = "bluez-libs"
 LICENSE = "GPL"
 PR = "ml0"
 
-SRC_URI = "http://org.csail.mit.edu/pybluez/release/pybluez-src-${PV}.tar.gz"
-S = "${WORKDIR}/pybluez-${PV}"
+SRC_URI = "http://pybluez.googlecode.com/files/PyBluez-0.15.tar.gz"
+S = "${WORKDIR}/PyBluez-${PV}"
 
 inherit distutils
