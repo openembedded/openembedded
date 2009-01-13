@@ -2,7 +2,7 @@ DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
 PV = "cvs${SRCDATE}"
-PR = "r1"
+PR = "r2"
 
 RSUGGESTS_${PN} = "${PN}-tools"
 
@@ -52,4 +52,5 @@ do_install() {
 
 FILES_${PN} = "/lib/modules"
 PACKAGES += "${PN}-tools"
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 FILES_${PN}-tools = "${sbindir} /etc/default/auplink"
