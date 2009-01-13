@@ -3,7 +3,9 @@ SECTION = "base"
 DEPENDS = "e2fsprogs-libs zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r1"
+PR = "r2"
+
+ARM_INSTRUCTION_SET = "arm"
 
 # This is the default package, thus we lock to a specific git version so 
 # upstream changes will not break builds.
