@@ -5,11 +5,12 @@ LICENSE = "LGPL"
 DEPENDS = "libsdl-x11 libsdl-image libsdl-mixer libsdl-net libsdl-ttf python-numeric"
 DEPENDS += "${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'smpeg', d)}"
 SRCNAME = "pygame"
-PR = "ml3"
+PR = "ml4"
 
 SRC_URI = "\
   ftp://ftp.pygame.org/pub/pygame/${SRCNAME}-${PV}release.tar.gz \
-  file://Setup"
+  file://Setup \
+"
 S = "${WORKDIR}/${SRCNAME}-${PV}release"
 
 inherit distutils
