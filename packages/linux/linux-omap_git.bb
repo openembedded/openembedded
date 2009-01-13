@@ -10,11 +10,11 @@ DEFAULT_PREFERENCE_omap3evm = "1"
 DEFAULT_PREFERENCE_omap3-pandora = "1"
 
 
-SRCREV = "818862e11bad091dc635baedace58265a126b5c8"
+SRCREV = "0ec95b96fd77036a13398c66901e11cd301190d0"
 
 #PV = "2.6.27+2.6.28-rc8+${PR}+gitr${SRCREV}"
 PV = "2.6.28+${PR}+gitr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
