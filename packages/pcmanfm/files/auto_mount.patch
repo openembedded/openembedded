@@ -1,0 +1,10 @@
+--- a/src/vfs/vfs-volume-hal.c	2008-12-16 17:39:21.000000000 -0200
++++ b/src/vfs/vfs-volume-hal.c	2008-12-16 17:37:07.000000000 -0200
+@@ -1237,6 +1237,7 @@
+                     {
+                       /* add the volume to the volume manager */
+                       vfs_volume_add (volume);
++                      vfs_volume_mount (volume, NULL);
+                     }
+                   /* release the HAL drive */
+                   libhal_drive_free (hd);

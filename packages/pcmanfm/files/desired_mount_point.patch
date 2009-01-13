@@ -1,0 +1,91 @@
+--- a/src/vfs/vfs-volume-hal.c	2008-06-11 15:38:25.000000000 -0300
++++ b/src/vfs/vfs-volume-hal.c	2008-12-16 10:20:18.000000000 -0200
+@@ -944,7 +944,7 @@
+           if (G_LIKELY (desired_mount_point != NULL && *desired_mount_point != '\0'))
+             {
+               filename = g_build_filename (mount_root, desired_mount_point, NULL);
+-              volume->mount_point = filename;
++              volume->mount_point = g_strdup( desired_mount_point );
+             }
+           libhal_free_string (desired_mount_point);
+         }
+@@ -954,8 +954,7 @@
+         {
+           /* <mount-root>/<device> looks like a good idea */
+           basename = g_path_get_basename (volume->device_file);
+-          filename = g_build_filename (mount_root, basename, NULL);
+-          volume->mount_point = filename;
++          volume->mount_point = g_strdup( basename );
+           g_free (basename);
+         }
+ 
+@@ -2310,7 +2309,7 @@
+ }
+ 
+ gboolean
+-vfs_volume_hal_mount (ExoMountHalDevice *device,
++vfs_volume_hal_mount (VFSVolume *vol,
+                             GError           **error)
+ {
+   DBusMessage *message;
+@@ -2323,8 +2322,13 @@
+   const gchar       *uuid = NULL, *label = NULL;
+   gint         m, n = 0;
+     VFSVolumeOptions opts;
++  ExoMountHalDevice* device = NULL;
++
++  g_return_val_if_fail (vol != NULL, FALSE);
++
++  if (!(device = vfs_volume_hal_from_udi( vol->udi, error )))
++    return FALSE;
+ 
+-  g_return_val_if_fail (device != NULL, FALSE);
+   g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+ 
+     if( device->volume != NULL) {
+@@ -2472,16 +2476,23 @@
+         }
+     }
+ 
+-  /* try to determine a usable mount point */
+-  if (G_LIKELY (device->volume != NULL))
++  if (G_LIKELY (vol->mount_point == NULL))
+     {
+-      /* maybe we can use the volume's label... */
+-      mount_point = g_strdup( libhal_volume_get_label (device->volume) );
++      /* try to determine a usable mount point */
++      if (G_LIKELY (device->volume != NULL))
++        {
++          /* maybe we can use the volume's label... */
++          mount_point = g_strdup( libhal_volume_get_label (device->volume) );
++        }
++      else
++        {
++          /* maybe we can use the the textual type... */
++          mount_point = g_strdup( libhal_drive_get_type_textual (device->drive) );
++        }
+     }
+   else
+     {
+-      /* maybe we can use the the textual type... */
+-      mount_point = g_strdup( libhal_drive_get_type_textual (device->drive) );
++      mount_point = g_strdup( vol->mount_point );
+     }
+ 
+     /* However, the label may contain G_DIR_SEPARATOR so just replace these
+@@ -2825,13 +2836,10 @@
+ 
+ gboolean vfs_volume_mount( VFSVolume* vol, GError** err )
+ {
+-    ExoMountHalDevice* device;
+     gboolean ret = FALSE;
+-    device = vfs_volume_hal_from_udi( vol->udi, err );
+-    if( device )
++    if( vol )
+     {
+-        ret = vfs_volume_hal_mount( device, err );
+-        vfs_volume_hal_free( device );
++        ret = vfs_volume_hal_mount( vol, err );
+     }
+     return ret;
+ }
