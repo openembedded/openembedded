@@ -10,4 +10,6 @@ PR = "ml0"
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyvisa/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit distutils
+inherit setuptools
+
+export HOME=/tmp/foo
