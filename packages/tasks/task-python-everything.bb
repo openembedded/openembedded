@@ -107,6 +107,7 @@ RDEPENDS = "\
   python-xappy \
   python-xlib \
   \
+  dtn \
   iotop \
   moin \
   plone	\
