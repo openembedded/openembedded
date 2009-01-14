@@ -5,11 +5,12 @@ SECTION = "devel/python"
 HOMEPAGE = "http://www.sqlobject.org/"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-RDEPENDS = "python-formencode"
 SRCNAME = "SQLObject"
-PR = "ml1"
+PR = "ml0"
 
 SRC_URI = "http://cheeseshop.python.org/packages/source/S/SQLObject/SQLObject-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit setuptools
+
+RDEPENDS = "python-formencode"
