@@ -3,7 +3,7 @@ require qtopia-core.inc
 PROVIDES += "qtopia-core"
 RPROVIDES_${PN} = "qtopia-core"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://qconfig-oe.h \
@@ -18,6 +18,7 @@ S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 SRC_URI += " \
            file://0006-freetype-host-includes.patch;patch=1 \
            file://0007-openssl-host-includes.patch;patch=1 \
+           file://support-2bpp.patch;patch=1 \
 #           file://allow-configure-plugins.patch;patch=1 \
 "
 
