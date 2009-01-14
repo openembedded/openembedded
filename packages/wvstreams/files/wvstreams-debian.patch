@@ -1,0 +1,49 @@
+--- wvstreams.old/include/wvvector.h	2005-11-24 19:46:46.000000000 +0000
++++ wvstreams-4.2.2/include/wvvector.h	2007-07-24 06:35:55.000000000 +0000
+@@ -358,7 +358,7 @@
+ 	/** Returns a pointer to the current element */
+ 	T *ptr() const
+ 	{
+-	    return static_cast<T *>(cur()->data);
++	    return static_cast<T *>(this->cur()->data);
+ 	}
+ 
+ 	WvIterStuff(T);
+@@ -368,7 +368,7 @@
+ 	 */
+ 	bool get_autofree() const
+ 	{
+-	    return link->get_autofree();
++	    return this->link->get_autofree();
+ 	}
+ 
+ 	/**
+@@ -376,7 +376,7 @@
+ 	 */
+ 	void set_autofree(bool autofree)
+ 	{
+-	    link->set_autofree(autofree);
++	    this->link->set_autofree(autofree);
+ 	}
+ 
+         /**
+@@ -386,7 +386,7 @@
+          */
+         void remove(bool destroy = true)
+         {
+-	    WvVector::vec.remove(i, destroy);
++	    WvVector::vec.remove(this->i, destroy);
+         }
+ 
+         /**
+@@ -404,8 +404,8 @@
+          */
+ 	void xremove(bool destroy = true)
+ 	{
+-	    WvVector::vec.remove(i, destroy);
+-	    prev();
++	    WvVector::vec.remove(this->i, destroy);
++	    this->prev();
+ 	}
+     };
+ };
