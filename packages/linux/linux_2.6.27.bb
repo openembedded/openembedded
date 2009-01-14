@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r1"
+PR = "r2"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -21,7 +21,7 @@ SRC_URI_append_boc01 = "\
 	file://010-081208-mii.patch;patch=1 \
 	file://011-081218-gpio.patch;patch=1 \
 	file://012-081223-cy3218-btns.patch;patch=1 \
-	file://013-081224-lcd.patch;patch=1 \
+	file://013-090114-lcd.patch;patch=1 \
 	"
 
 SRC_URI_append_progear = "file://progear-bl.patch;patch=1\
