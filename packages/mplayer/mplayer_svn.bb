@@ -2,34 +2,24 @@ DESCRIPTION = "Open Source multimedia player."
 SECTION = "multimedia"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.mplayerhq.hu/"
-DEPENDS = "virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
-           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
+DEPENDS = "libdvdread libtheora virtual/libsdl ffmpeg xsp zlib libpng jpeg liba52 freetype fontconfig alsa-lib lzo ncurses lame libxv virtual/libx11 virtual/kernel \
+	   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad liba52 lame', d)}"
 
 RDEPENDS = "mplayer-common"
 LICENSE = "GPL"
 SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
-           file://Makefile-codec-cfg.patch;patch=1 \
-           file://pld-onlyarm5.patch;patch=1 \
-           file://makefile-nostrip-svn.patch;patch=1 \
-           file://mru-neon-put-pixels.diff;patch=1 \
-           file://mru-neon-simple-idct.diff;patch=1 \
-	   file://mru-neon-h264-chrome.diff;patch=1 \
-	   file://mru-neon-h264-loopfilter.diff;patch=1 \
-	   file://mru-neon-h264-qpel.diff;patch=1 \
-	   file://mru-neon-h264idctadd.diff;patch=1 \
-	   file://mru-neon-h264idct-dc.diff;patch=1 \
-	   file://mru-neon-float-to-int16.diff;patch=1 \
-	   file://mru-neon-vorbis-inverse.diff;patch=1 \
-	   file://mru-neon-vector-fmul-window.diff;patch=1 \
-	   file://mru-neon-vector-fmul.diff;patch=1 \
+	   file://Makefile-codec-cfg.patch;patch=1 \
+	   file://pld-onlyarm5-svn.patch;patch=1 \
+	   file://makefile-nostrip-svn.patch;patch=1 \
 	   file://configh \
-           file://configmak \
-           "
+	   file://configmak \
+	   "
 
-SRC_URI_append_armv7a = " file://omapfb.patch;patch=1 \
-           file://vo_omapfb.c \
-           file://yuv.S \
-          "
+SRC_URI_append_armv7a = " \
+#		file://omapfb.patch;patch=1 \
+	   file://vo_omapfb.c \
+	   file://yuv.S \
+	  "
 
 # This is required for the collie machine only as all stacks in that
 # machine seem to be set to executable by the toolchain. If someone
@@ -47,7 +37,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r8"
+PR = "r9"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -66,9 +56,9 @@ inherit autotools pkgconfig
 STAGING_KERNEL_DIR = "${STAGING_DIR}/${MACHINE_ARCH}${TARGET_VENDOR}-${TARGET_OS}/kernel"
 
 EXTRA_OECONF = " \
-        --prefix=/usr \
+	--prefix=/usr \
 	--mandir=${mandir} \
-        --target=${TARGET_SYS} \
+	--target=${SIMPLE_TARGET_SYS} \
 	\
 	--enable-mencoder \
 	--disable-gui \
@@ -76,113 +66,113 @@ EXTRA_OECONF = " \
 	--disable-linux-devfs \
 	--disable-lirc \
 	--disable-lircc \
-        --disable-joystick \
-        --disable-vm \
-        --disable-xf86keysym \
+	--disable-joystick \
+	--disable-vm \
+	--disable-xf86keysym \
 	--enable-tv \
-	--enable-tv-v4l1 \     
+	--enable-tv-v4l1 \	 
 	--enable-tv-v4l2 \
-        --disable-tv-bsdbt848 \
+	--disable-tv-bsdbt848 \
 	--enable-rtc \
-        --enable-network \
+	--enable-network \
 	--disable-smb \
-        --disable-live \
+	--disable-live \
 	--disable-dvdnav \
-        --disable-dvdread \
-	--disable-libdvdcss-internal \
+	--enable-dvdread \
 	--disable-dvdread-internal \
-        --disable-cdparanoia \
-        --enable-freetype \
-        --disable-menu \
-        --enable-sortsub \
-        --disable-fribidi \
-        --disable-enca \
-        --disable-macosx \
-        --disable-macosx-bundle \
-        --disable-ftp \
-        --disable-vstream \
-        \
-        --disable-gif \
-        --enable-png \
-        --enable-jpeg \
-        --disable-libcdio \
-        --disable-liblzo \
-        --disable-qtx \
-        --disable-xanim \
-        --disable-real \
-        --disable-xvid \
-        --disable-x264 \
-        \
-        --disable-libavutil_so \
-        --disable-libavcodec_so \
-        --disable-libavformat_so \
-        --disable-libpostproc_so \
-        \
-	--enable-tremor-low \
-        \
-        --disable-speex \
-        --disable-theora \
-        --disable-faac \
-        --disable-ladspa \
-        --disable-libdv \
-        --enable-mad \
-        --disable-toolame \
-        --disable-twolame \
-        --disable-xmms \
-	--disable-mp3lib \
-        --enable-libmpeg2 \
-        --disable-musepack \
+	--enable-libdvdcss-internal \
+	--disable-cdparanoia \
+	--enable-freetype \
+	--enable-menu \
+	--enable-sortsub \
+	--disable-fribidi \
+	--disable-enca \
+	--disable-macosx \
+	--disable-macosx-bundle \
+	--disable-ftp \
+	--disable-vstream \
 	\
-        --disable-gl \
-        --disable-vesa \
-        --disable-svga \
+	--disable-gif \
+	--enable-png \
+	--enable-jpeg \
+	--disable-libcdio \
+	--disable-liblzo \
+	--disable-qtx \
+	--disable-xanim \
+	--disable-real \
+	--disable-xvid \
+	--disable-x264 \
+	\
+	--disable-libavutil_so \
+	--disable-libavcodec_so \
+	--disable-libavformat_so \
+	--disable-libpostproc_so \
+	\
+	--enable-tremor-low \
+	\
+	--disable-speex \
+	--enable-theora \
+	--disable-faac \
+	--disable-ladspa \
+	--disable-libdv \
+	--enable-mad \
+	--disable-toolame \
+	--disable-twolame \
+	--disable-xmms \
+	--disable-mp3lib \
+	--enable-libmpeg2 \
+	--disable-musepack \
+	\
+	--disable-gl \
+	--disable-vesa \
+	--disable-svga \
 	--enable-sdl \
-        --disable-aa \
-        --disable-caca \
-        --disable-ggi \
-        --disable-ggiwmh \
-        --disable-directx \
-        --disable-dxr2 \
-        --disable-dxr3 \
-        --disable-dvb \
-        --disable-dvbhead \
-        --disable-mga \
-        --disable-xmga \
-        --enable-xv \
-        --disable-xvmc \
-        --disable-vm \
-        --disable-xinerama \
-        --enable-x11 \
+	--disable-aa \
+	--disable-caca \
+	--disable-ggi \
+	--disable-ggiwmh \
+	--disable-directx \
+	--disable-dxr2 \
+	--disable-dxr3 \
+	--disable-dvb \
+	--disable-dvbhead \
+	--disable-mga \
+	--disable-xmga \
+	--enable-xv \
+	--disable-xvmc \
+	--disable-vm \
+	--disable-xinerama \
+	--enable-x11 \
 	--enable-fbdev \
-        --disable-mlib \
-        --disable-3dfx \
-        --disable-tdfxfb \
-        --disable-s3fb \
-        --disable-directfb \
-        --disable-zr \
-        --disable-bl \
-        --disable-tdfxvid \
-        --disable-tga \
-        --disable-pnm \
-        --disable-md5sum \
-        \
-        --enable-alsa \
-        --enable-ossaudio \
-        --disable-arts \
-        --disable-esd \
-        --disable-pulse \
-        --disable-jack \
-        --disable-openal \
-        --disable-nas \
-        --disable-sgiaudio \
-        --disable-sunaudio \
-        --disable-win32waveout \
-        --enable-select \
-        \
-        "
+	--disable-mlib \
+	--disable-3dfx \
+	--disable-tdfxfb \
+	--disable-s3fb \
+	--disable-directfb \
+	--disable-zr \
+	--disable-bl \
+	--disable-tdfxvid \
+	--disable-tga \
+	--disable-pnm \
+	--disable-md5sum \
+	\
+	--enable-alsa \
+	--enable-ossaudio \
+	--disable-arts \
+	--disable-esd \
+	--disable-pulse \
+	--disable-jack \
+	--disable-openal \
+	--disable-nas \
+	--disable-sgiaudio \
+	--disable-sunaudio \
+	--disable-win32waveout \
+	--enable-select \
+	\
+	"
 
 EXTRA_OECONF_append_arm = " --disable-decoder=vorbis_decoder \
-			    --disable-encoder=vorbis_encoder"
+				--disable-encoder=vorbis_encoder"
 
 EXTRA_OECONF_append_armv6 = " --enable-armv6"
 EXTRA_OECONF_append_armv7a = " --enable-armv6"
@@ -210,14 +200,17 @@ do_configure_prepend_armv7a() {
  	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
 }
 
+CFLAGS_append = " -I${S}/libdvdread4 "
+
 do_configure() {
 	sed -i 's|/usr/include|${STAGING_INCDIR}|g' ${S}/configure
 	sed -i 's|/usr/lib|${STAGING_LIBDIR}|g' ${S}/configure
 	sed -i 's|/usr/\S*include[\w/]*||g' ${S}/configure
 	sed -i 's|/usr/\S*lib[\w/]*||g' ${S}/configure
 
-        ./configure ${EXTRA_OECONF}
-        
+	export SIMPLE_TARGET_SYS="$(echo ${TARGET_SYS} | sed s:${TARGET_VENDOR}::g)"
+	./configure ${EXTRA_OECONF}
+	
 	cat ${WORKDIR}/configh >> ${S}/config.h
 	cat ${WORKDIR}/configmak  ${OPTSMAK} >> ${S}/config.mak
 
