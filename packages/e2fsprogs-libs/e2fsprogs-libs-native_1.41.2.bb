@@ -4,3 +4,5 @@ inherit native
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/e2fsprogs-libs-${PV}', '${FILE_DIRNAME}/e2fsprogs-libs', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 PACKAGES = ""
+
+DEPENDS = "gettext-native"
