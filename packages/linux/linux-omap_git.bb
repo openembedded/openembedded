@@ -10,11 +10,11 @@ DEFAULT_PREFERENCE_omap3evm = "1"
 DEFAULT_PREFERENCE_omap3-pandora = "1"
 
 
-SRCREV = "0ec95b96fd77036a13398c66901e11cd301190d0"
+SRCREV = "15f75b6226c2d3b82062bb721e7cb9a1d6f35efd"
 
 #PV = "2.6.27+2.6.28-rc8+${PR}+gitr${SRCREV}"
 PV = "2.6.28+${PR}+gitr${SRCREV}"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -50,6 +50,7 @@ SRC_URI_append = " \
            file://0013-DSS-OMAPFB-remove-extra-spaces.patch;patch=1 \
            file://0014-DSS-fix-clk_get_usecount.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
+           file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
 "
 
 
