@@ -6,10 +6,9 @@ HOMEPAGE = "http://trevp.net/tlslite/"
 PRIORITY = "optional"
 LICENSE = "PD"
 SRCNAME = "tlslite"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://trevp.net/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
-
