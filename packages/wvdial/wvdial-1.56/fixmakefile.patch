@@ -1,0 +1,11 @@
+--- wvdial-1.56/Makefile~	2009-01-13 21:03:10.000000000 +0100
++++ wvdial-1.56/Makefile	2009-01-13 21:03:10.000000000 +0100
+@@ -38,7 +38,7 @@
+ ifeq ($(WVSTREAMS_LIB),)
+  LIBUNICONF:=-luniconf
+ endif
+-wvdial wvdialconf papchaptest pppmon: wvdial.a $(LIBUNICONF)
++wvdial wvdialconf papchaptest pppmon: wvdial.a
+ 
+ install-bin: all
+ 	[ -d ${BINDIR}      ] || install -d ${BINDIR}
