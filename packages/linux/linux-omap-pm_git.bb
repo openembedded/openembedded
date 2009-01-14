@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "24b64c62777f483bff45176accc187381e7cd7a7"
+SRCREV = "998bd5675a1e9ef646be771fbade01c585800765"
 
-PV = "2.6.27+2.6.28rc8-pm1+gitr${SRCREV}"
+PV = "2.6.28-pm1+gitr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-prev \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
 	   file://defconfig"
 
 SRC_URI_append = " \
@@ -41,6 +41,7 @@ SRC_URI_append = " \
            file://0009-DSS-OMAPFB-allocate-fbmem-only-for-fb0-or-if-spes.patch;patch=1 \
            file://0010-DSS-OMAPFB-remove-extra-omapfb_setup_overlay-call.patch;patch=1 \
            file://0011-DSS-OMAPFB-fix-GFX_SYNC-to-be-compatible-with-DSS1.patch;patch=1 \
+           file://0014-DSS-fix-clk_get_usecount.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
            file://dss2.diff;patch=1 \
