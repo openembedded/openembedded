@@ -22,6 +22,7 @@ SRC_URI_append_boc01 = "\
 	file://011-081218-gpio.patch;patch=1 \
 	file://012-081223-cy3218-btns.patch;patch=1 \
 	file://013-090114-lcd.patch;patch=1 \
+	file://014-090114-sqn11x0-usb-hack.patch;patch=1 \
 	"
 
 SRC_URI_append_progear = "file://progear-bl.patch;patch=1\
