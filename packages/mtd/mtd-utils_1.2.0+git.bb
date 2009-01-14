@@ -3,14 +3,14 @@ SECTION = "base"
 DEPENDS = "e2fsprogs-libs zlib lzo"
 HOMEPAGE = "http://www.linux-mtd.infradead.org/"
 LICENSE = "GPLv2"
-PR = "r2"
+PR = "r3"
 
 ARM_INSTRUCTION_SET = "arm"
 
 # This is the default package, thus we lock to a specific git version so 
 # upstream changes will not break builds.
 
-TAG = "149d3c8ac8d32c05836ed8add1324561ce0952ad"
+TAG = "ea429635388f7bb53f62c41ec3d5ccf5fa207370"
 
 SRC_URI = "git://git.infradead.org/mtd-utils.git;protocol=git;tag=${TAG} \
 	   file://add-exclusion-to-mkfs-jffs2-git-2.patch;patch=1 \
