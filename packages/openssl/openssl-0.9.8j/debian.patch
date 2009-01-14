@@ -192,22 +192,6 @@ Index: openssl-0.9.8j/Configure
  	elsif	(/^#((define)|(undef))\s+OPENSSL_EXPORT_VAR_AS_FUNCTION/)
  		{ printf OUT "#undef OPENSSL_EXPORT_VAR_AS_FUNCTION\n"
  			if $export_var_as_fn;
-Index: openssl-0.9.8j/Makefile.shared
-===================================================================
---- openssl-0.9.8j.orig/Makefile.shared	2008-09-17 17:56:40.000000000 +0200
-+++ openssl-0.9.8j/Makefile.shared	2009-01-12 14:59:15.000000000 +0100
-@@ -149,9 +149,9 @@
- 	SHLIB_SUFFIX=; \
- 	ALLSYMSFLAGS='-Wl,--whole-archive'; \
- 	NOALLSYMSFLAGS='-Wl,--no-whole-archive'; \
--	SHAREDFLAGS="$(CFLAGS) $(SHARED_LDFLAGS) -shared -Wl,-Bsymbolic -Wl,-soname=$$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX"
-+	SHAREDFLAGS="$(CFLAGS) $(SHARED_LDFLAGS) -shared -Wl,-soname=$$SHLIB$$SHLIB_SOVER$$SHLIB_SUFFIX"
- 
--DO_GNU_APP=LDFLAGS="$(CFLAGS) -Wl,-rpath,$(LIBRPATH)"
-+DO_GNU_APP=LDFLAGS="$(CFLAGS)"
- 
- #This is rather special.  It's a special target with which one can link
- #applications without bothering with any features that have anything to
 Index: openssl-0.9.8j/config
 ===================================================================
 --- openssl-0.9.8j.orig/config	2007-08-01 13:21:35.000000000 +0200
