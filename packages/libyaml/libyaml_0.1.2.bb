@@ -1,4 +1,4 @@
-DESCRIPTION = "LibYAML is a YAML 1.1 parser and emitter written in C."
+DESCRIPTION = "LibYAML is a YAML parser and emitter written in C."
 HOMEPAGE = "http://pyyaml.org/wiki/LibYAML"
 SECTION = "libs/devel"
 LICENSE = "MIT"
