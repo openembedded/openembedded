@@ -1,5 +1,6 @@
---- orig/psplash-fb.c	(revision 249)
-+++ new/psplash-fb.c	(working copy)
+diff -urN psplash.orig/psplash-fb.c psplash/psplash-fb.c
+--- psplash.orig/psplash-fb.c	2007-08-29 20:27:49.000000000 +0200
++++ psplash/psplash-fb.c	2009-01-14 19:14:15.000000000 +0100
 @@ -62,7 +62,7 @@
        goto fail;
      }
@@ -23,10 +24,10 @@
  	= ((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3);
        break;
 +    case 1:
-+      if ((red + green + blue) > 384)
++      if (((11*red + 16*green + 5*blue) >> 5) >= 128)
 +        *(fb->data + (off >> 3)) |= (1 << (7 - (off & 0x07)));
 +      else
-+        *(fb->data + (off >> 3)) ^= (1 << (7 - (off & 0x07)));
++        *(fb->data + (off >> 3)) &= ~(1 << (7 - (off & 0x07)));
 +      break;
      default:
        /* depth not supported yet */
