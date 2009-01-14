@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
 S = "${WORKDIR}/Zope-${PV}"
