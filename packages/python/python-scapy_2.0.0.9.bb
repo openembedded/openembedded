@@ -6,8 +6,8 @@ SECTION = "devel/python"
 HOMEPAGE = "http://www.secdev.org/projects/scapy/"
 LICENSE = "GPL"
 PRIORITY = "optional"
-RDEPENDS = "python-netclient python-netserver"
 SRCNAME = "scapy"
+PR = "ml0"
 
 SRC_URI = "http://www.secdev.org/projects/scapy/files/scapy-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
@@ -16,5 +16,10 @@ do_install() {
 	install -d ${D}${libdir}/${PYTHON_DIR}
 	install -m 0755 ${S}/scapy.py ${D}${libdir}/${PYTHON_DIR}/
 }
+
+RDEPENDS = "\
+  python-netclient \
+  python-netserver \
+"
 
 FILES_${PN} = "${libdir}/${PYTHON_DIR}/"
