@@ -3,11 +3,8 @@ HOMEPAGE = "http://sourceforge.net/projects/python-xlib/"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
-RDEPENDS = ""
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
-
-SRCNAME = "python-xlib"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz"
 
 inherit distutils
