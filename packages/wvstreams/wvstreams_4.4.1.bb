@@ -3,12 +3,12 @@ LICENSE = "LGPL"
 DESCRIPTION = "WvStreams is a network programming library in C++"
 DEPENDS = "zlib openssl (>= 0.9.8)"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://wvstreams.googlecode.com/files/${PN}-${PV}.tar.gz \
            file://build-fixes-and-sanity.patch;patch=1 "
 
-inherit autotools
+inherit autotools pkgconfig
 
 LDFLAGS_append = " -Wl,-rpath-link,${CROSS_DIR}/${TARGET_SYS}/lib"
 
