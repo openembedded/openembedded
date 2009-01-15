@@ -17,7 +17,6 @@ OE_LT_RPATH_ALLOW[export]="1"
 LIBV = "0.10"
 
 python populate_packages_prepend () {
-	import string
 	gst_libdir = bb.data.expand('${libdir}/gstreamer-${LIBV}', d)
 	postinst = bb.data.getVar('plugin_postinst', d, 1)
 
@@ -32,7 +31,7 @@ python populate_packages_prepend () {
 	metapkg_rdepends = []
 	packages = bb.data.getVar('PACKAGES', d, 1).split()
 	for pkg in packages[1:]:
-		if not pkg in blacklist and not pkg in metapkg_rdepends and not string.count(pkg, 'dev') and not string.count(pkg,'locale'):
+		if not pkg in blacklist and not pkg in metapkg_rdepends and not pkg.count('dev') and not pkg.count( 'locale' ):
 			metapkg_rdepends.append(pkg)
 	bb.data.setVar('RDEPENDS_' + metapkg, ' '.join(metapkg_rdepends), d)
 	bb.data.setVar('DESCRIPTION_' + metapkg, pn + ' meta package', d)
