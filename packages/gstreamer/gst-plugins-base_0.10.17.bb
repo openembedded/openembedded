@@ -8,5 +8,5 @@ PROVIDES += "gst-plugins"
 # a missing alsa plugin
 DEPENDS += "alsa-lib libsm virtual/libx11 freetype gnome-vfs libxv"
 
-PR = "r4"
+PR = "r5"
 
