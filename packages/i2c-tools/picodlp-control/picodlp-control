@@ -8,6 +8,10 @@ PICO_ADDRESS="0x1b"
 PICO_OPTION="$1"
 PICO_OPTION_VALUE="$2"
 
+# Reading a register needs something like:
+#   bus3-i2c 0x1b wb 0x15 0x08
+#   bus3-i2c 0x1b vb4
+
 case ${PICO_OPTION_VALUE} in
 "0")
 			;;
