@@ -5,9 +5,10 @@ DEPENDS = "virtual/libintl ncurses"
 
 SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz"
 
-SRC_URI_beagleboard += "file::/omap.patch;patch=1;pnum=0"
+SRC_URI_append_beagleboard = "file://omap.patch;patch=1;pnum=0"
 
 CFLAGS += "${LDFLAGS}"
+CFLAGS_beagleboard += "-DOMAP3"
 
 do_configure() {
     # We do not build ncurses with wide char support
