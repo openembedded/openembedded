@@ -5,7 +5,7 @@ SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
 PV = "0.8.4.9+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit distutils update-rc.d
 
@@ -32,6 +32,7 @@ RDEPENDS_${PN} += "\
   python-dbus \
   python-datetime \
   python-difflib \
+  python-logging \
   python-pprint \
   python-pygobject \
   python-pyrtc \
