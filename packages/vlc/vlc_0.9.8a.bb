@@ -1,12 +1,14 @@
-DESCRIPTION = "Video player and streamer - davinci edition"
+DESCRIPTION = "Video player and streamer"
 HOMEPAGE = "http://www.videolan.org"
 LICENSE = "GPL"
 PRIORITY = "optional"
 SECTION = "multimedia"
 
+PR = "r1"
+
 # ffmpeg from git (library version => 52) is required
 # libtool-native must be >= 2.2.4
-DEPENDS = "libfribidi libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac \
+DEPENDS = "libdvdcss libdvdread libfribidi libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
 
 SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.bz2"
@@ -16,10 +18,11 @@ inherit autotools
 EXTRA_OECONF = "\
 	--enable-libtool \
 	--with-contrib \
-	--disable-dvdread \
+	--enable-dvdread \
 	--disable-wxwidgets \
 	--enable-x11 --enable-xvideo \ 
 	--disable-screen --disable-caca \
+	--enable-run-as-root \
 	--enable-httpd --enable-vlm \
 	--enable-freetype \
 	--enable-sdl \ 
