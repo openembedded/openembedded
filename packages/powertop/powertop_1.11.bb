@@ -5,6 +5,8 @@ DEPENDS = "virtual/libintl ncurses"
 
 SRC_URI = "http://www.lesswatts.org/projects/powertop/download/powertop-${PV}.tar.gz"
 
+SRC_URI_beagleboard += "file::/omap.patch;patch=1;pnum=0"
+
 CFLAGS += "${LDFLAGS}"
 
 do_configure() {
