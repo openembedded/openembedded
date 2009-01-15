@@ -77,14 +77,14 @@ PACKAGES =+ "${PN}-extension-dri \
 
 FILES_${PN}-extension-dri = "${libdir}/xorg/modules/extensions/libdri.so"
 FILES_${PN}-extension-glx = "${libdir}/xorg/modules/extensions/libglx.so"
-FILES_${PN}-module-libint10 = "${libdir}/xorg/modules/libint10.*"
-FILES_${PN}-module-libafb = "${libdir}/xorg/modules/libafb.*"
-FILES_${PN}-module-libwfb = "${libdir}/xorg/modules/libwfb.*"
-FILES_${PN}-module-libmfb = "${libdir}/xorg/modules/libmfb.*"
-FILES_${PN}-module-libcfb = "${libdir}/xorg/modules/libcfb.*"
-FILES_${PN}-module-xaa = "${libdir}/xorg/modules/libxaa.*"
-FILES_${PN}-module-libxf1bpp = "${libdir}/xorg/modules/libxf1bpp.*"
-FILES_${PN}-module-libxf4bpp = "${libdir}/xorg/modules/libxf4bpp.*"
+FILES_${PN}-module-libint10 = "${libdir}/xorg/modules/libint10.so"
+FILES_${PN}-module-libafb = "${libdir}/xorg/modules/libafb.so"
+FILES_${PN}-module-libwfb = "${libdir}/xorg/modules/libwfb.so"
+FILES_${PN}-module-libmfb = "${libdir}/xorg/modules/libmfb.so"
+FILES_${PN}-module-libcfb = "${libdir}/xorg/modules/libcfb.so"
+FILES_${PN}-module-xaa = "${libdir}/xorg/modules/libxaa.so"
+FILES_${PN}-module-libxf1bpp = "${libdir}/xorg/modules/libxf1bpp.so"
+FILES_${PN}-module-libxf4bpp = "${libdir}/xorg/modules/libxf4bpp.so"
 
 PACKAGES =+ "${PN}-multimedia-modules"
 
