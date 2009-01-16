@@ -155,7 +155,11 @@ case `module_id` in
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
                 fi
                 ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib ${PPM} vt1" ;;
-
+        "OMAP3 Beagle Board")
+                ARGS="$ARGS -br"
+# 32bpp - we'll enable it once newer kernels are.. working.
+#                 ARGS="$ARGS -fbbpp32"
+                XSERVER=/usr/bin/Xorg ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
