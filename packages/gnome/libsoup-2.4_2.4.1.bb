@@ -3,12 +3,10 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "glib-2.0 gnutls libxml2"
 
-PR = "r1"
+inherit gnome
 
-SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/${PN}/2.4/libsoup-${PV}.tar.bz2"
+SRC_URI = "${GNOME_MIRROR}/libsoup/${@gnome_verdir("${PV}")}/libsoup-${PV}.tar.bz2"
 S = "${WORKDIR}/libsoup-${PV}"
-
-inherit autotools
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
