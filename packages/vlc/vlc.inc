@@ -16,7 +16,7 @@ ARM_INSTRUCTION_SET = "arm"
 EXTRA_OECONF = "\
 	--enable-libtool \
 	--with-contrib \
-	--disable-dvdread \
+	--enable-run-as-root \
 	--disable-wxwidgets \
 	--enable-x11 --enable-xvideo \ 
 	--disable-screen --disable-caca \
