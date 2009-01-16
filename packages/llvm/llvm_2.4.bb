@@ -12,14 +12,13 @@ DEPENDS = "llvm-native"
 inherit autotools
 
 do_compile() {
-	# tblgen doesnt want to link correctly. Pull the one in we have in staging.
+	# The build wants these binaries, together with the build-fix patch
+  # they are not compiled again (which would not work).
+  # Most important aspect is removing BUILD_TARGET_DIRS variable.
 	install -d Release/Build/bin
 	cp ${STAGING_BINDIR_NATIVE}/tblgen Release/Build/bin
 	cp ${STAGING_BINDIR_NATIVE}/fpcmp Release/Build/bin
 	cp ${STAGING_BINDIR_NATIVE}/llvm-PerfectShuffle Release/Build/bin
-	install -d Release/Build/lib
-	touch Release/Build/lib/libLLVMSupport.a
-	touch Release/Build/lib/libLLVMSystem.a
 	
 	oe_runmake
 }

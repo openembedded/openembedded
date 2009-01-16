@@ -1,8 +1,21 @@
 Index: llvm-2.4/Makefile.rules
 ===================================================================
---- llvm-2.4.orig/Makefile.rules	2009-01-05 16:16:53.693946445 +0100
-+++ llvm-2.4/Makefile.rules	2009-01-05 16:17:18.149945262 +0100
-@@ -436,7 +436,7 @@
+--- llvm-2.4.orig/Makefile.rules	2008-10-03 23:24:52.000000000 +0200
++++ llvm-2.4/Makefile.rules	2009-01-16 03:19:06.000000000 +0100
+@@ -309,11 +309,7 @@
+ #--------------------------------------------------------------------
+ TargetMode :=
+ ifeq ($(LLVM_CROSS_COMPILING),1)
+-  ifeq ($(BUILD_COMPONENT),1)
+-    TargetMode := Build
+-  else
+-    TargetMode := Host
+-  endif
++  TargetMode := Host
+   BuildLLVMToolDir := $(LLVM_OBJ_ROOT)/$(BuildMode)/Build/bin
+ endif
+ 
+@@ -436,7 +432,7 @@
  ifdef EXAMPLE_TOOL
    LD.Flags += -rpath $(ExmplDir) -export-dynamic
  else
@@ -13,8 +26,8 @@ Index: llvm-2.4/Makefile.rules
  
 Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
 ===================================================================
---- llvm-2.4.orig/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-05 15:36:34.901945895 +0100
-+++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-05 15:39:21.580362436 +0100
+--- llvm-2.4.orig/lib/ExecutionEngine/JIT/JIT.cpp	2008-09-24 18:25:55.000000000 +0200
++++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-16 03:16:27.000000000 +0100
 @@ -65,7 +65,7 @@
  }
  
@@ -33,3 +46,20 @@ Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
  #if defined(__APPLE__)
    struct LibgccObjectInfo* LOI = (struct LibgccObjectInfo*)
      _keymgr_get_and_lock_processwide_ptr(KEYMGR_GCC3_DW2_OBJ_LIST);
+Index: llvm-2.4/Makefile
+===================================================================
+--- llvm-2.4.orig/Makefile	2009-01-16 03:16:48.000000000 +0100
++++ llvm-2.4/Makefile	2009-01-16 03:17:15.000000000 +0100
+@@ -27,9 +27,9 @@
+ 
+ # When cross-compiling, there are some things (tablegen) that need to
+ # be build for the build system.
+-ifeq ($(LLVM_CROSS_COMPILING),1)
+-  BUILD_TARGET_DIRS := lib/System lib/Support utils
+-endif
++#ifeq ($(LLVM_CROSS_COMPILING),1)
++#  BUILD_TARGET_DIRS := lib/System lib/Support utils
++#endif
+ 
+ # llvm-gcc4 doesn't need runtime libs.  llvm-gcc4 is the only supported one.
+ # FIXME: Remove runtime entirely once we have an understanding of where
