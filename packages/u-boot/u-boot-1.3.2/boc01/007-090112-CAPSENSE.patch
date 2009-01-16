@@ -1,0 +1,546 @@
+Index: u-boot-1.3.2/common/cmd_capsense.c
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/common/cmd_capsense.c
+@@ -0,0 +1,105 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ *
++ * CapSense Express touch-sensing buttons
++ */
++
++#include <common.h>
++#include <config.h>
++#include <command.h>
++
++#include <capsense.h>
++#include <i2c.h>
++
++#define ARG_SENSOR_NUMBER	1
++
++#define ARG_CMD		1
++#define ARG_OLD_ADDRESS	2
++
++
++int do_capsense (cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
++{
++	int i;
++	unsigned char sensors[] = CONFIG_CAPSENSE_SENSORS;
++	int old_bus, old_address;
++	char port[2];
++	/* switch to correct I2C bus */
++	old_bus = I2C_GET_BUS();
++	I2C_SET_BUS(CFG_CAPSENSE_BUS_NUM);
++
++	/*
++	 * Loop through sensors, read
++	 * state, and output it.
++	 */
++	if(argc==1)
++	{
++		port[0]=capsense_get_state(CONFIG_CAPSENSE_I2C_ADDRESS,0);
++		port[1]=capsense_get_state(CONFIG_CAPSENSE_I2C_ADDRESS,1);
++		capsense_get_state(CONFIG_CAPSENSE_I2C_ADDRESS,1);
++		printf ("P0 0x%02x 0x%02x\n",port[0],port[1]);
++		for (i = 0; i < 8; i++)
++		{
++			if(sensors[0]&(1<<i))
++			{
++				printf ("GP0[%d]: %i\n",i,port[0]&(1<<i)?1:0);
++			}
++			if(sensors[1]&(1<<i))
++			{
++				printf ("GP1[%d]: %i\n",i,port[1]&(1<<i)?1:0);
++			}
++
++		}
++	}
++	else
++	{
++		if ( strncmp(argv[ARG_CMD], "config", 3) == 0 ) {
++			if ( argc == 3 ) {
++				old_address=simple_strtoul (argv[ARG_OLD_ADDRESS], NULL, 10);
++				if ( capsense_change_i2c_address(old_address, CONFIG_CAPSENSE_I2C_ADDRESS) != 0 )
++					printf("failed to change i2c address\n");
++				else
++					printf("i2c address changed to 0x%02X\n", CONFIG_CAPSENSE_I2C_ADDRESS);
++			}
++
++			capsense_config(CONFIG_CAPSENSE_I2C_ADDRESS);
++			capsense_store_nvm(CONFIG_CAPSENSE_I2C_ADDRESS);
++		}
++		else {
++			printf ("Usage:\n%s\n", cmdtp->help);
++		}
++	}
++
++	/* switch back to original I2C bus */
++	I2C_SET_BUS(old_bus);
++
++	return 0;
++}	/* do_capsense() */
++
++
++/***************************************************/
++
++U_BOOT_CMD(
++	  capsense,	4,	1,	do_capsense,
++	  "capsense - CapSense Express touch-sensing buttons\n",
++	  "capsense\n  Read state of the CapSense Express touch-sensing buttons.\n"
++	  "capsense config [<old i2c address>]\n  Setup default capsense configuration.\n"
++	  );
+Index: u-boot-1.3.2/common/Makefile
+===================================================================
+--- u-boot-1.3.2.orig/common/Makefile
++++ u-boot-1.3.2/common/Makefile
+@@ -50,6 +50,7 @@ endif
+ COBJS-$(CONFIG_CMD_DISPLAY) += cmd_display.o
+ COBJS-$(CONFIG_CMD_DOC) += cmd_doc.o
+ COBJS-$(CONFIG_CMD_DTT) += cmd_dtt.o
++COBJS-$(CONFIG_CMD_CAPSENSE) += cmd_capsense.o
+ COBJS-$(CONFIG_CMD_GPIO) += cmd_gpio.o
+ COBJS-y += cmd_eeprom.o
+ COBJS-$(CONFIG_CMD_ELF) += cmd_elf.o
+Index: u-boot-1.3.2/drivers/i2c/CY8C201xx.c
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/drivers/i2c/CY8C201xx.c
+@@ -0,0 +1,289 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USA
++ */
++
++/*
++ * CapSense Express touch-sensing buttons
++ */
++
++#include <common.h>
++
++#ifdef CONFIG_CAPSENSE_CY8C201XX
++
++#include <i2c.h>
++#include <capsense.h>
++
++int capsense_read(int address, int reg)
++{
++	int dlen;
++	uchar data[2];
++
++	/*
++	 * Validate 'reg' param
++	 */
++	if ( (reg < 0) || (reg > 0xA1) )
++		return -1;
++
++	/*
++	 * Prepare to handle 1 byte result.
++	 */
++	dlen = 1;
++
++	/*
++	 * Now try to read the register.
++	 */
++	if (i2c_read(address, reg, 1, data, dlen) != 0)
++		return -1;
++
++	return (int)data[0];
++}
++
++
++int capsense_write(int address, int reg, int val)
++{
++	int dlen;
++	uchar data[2];
++
++	/*
++	 * Validate 'reg' param
++	 */
++	if((reg < 0) || (reg > 0xA1))
++		return -1;
++
++	/*
++	 * Handle 1 byte values.
++	 */
++ 	dlen = 1;
++	data[0] = (char)(val & 0xff);
++
++	/*
++	 * Write value to register.
++	 */
++	if (i2c_write(address, reg, 1, data, dlen) != 0)
++		return 1;
++
++	return 0;
++}
++
++
++int capsense_write_N(int address, int reg,  char *data, int dlen)
++{
++	/*
++	 * Validate 'reg' param
++	 */
++	if ( (reg < 0) || (reg > 0xA1) )
++		return -1;
++
++	/*
++	 * Write value to register.
++	 */
++	if ( i2c_write(address, reg, 1, data, dlen) != 0 )
++		return 1;
++
++	return 0;
++}
++
++
++int capsense_get_state(int address,char port)
++{
++	return capsense_read(address,CAPSENSE_REG_READ_STATUS+port);
++}
++
++
++int capsense_change_i2c_address(char old_address,char new_address)
++{
++	unsigned char data[4];
++	int read_address;
++	printf("capsense change i2c address\n");
++	//checking if the I2C address is in the limits ( I2C address can have a value from 0 to 127 )
++	if((old_address>0x7F)||(new_address>0x7F))
++	{
++		printf("I2C address is not in the limits\n");
++		return 1;
++	}
++
++	//reading old capsence address
++	read_address=capsense_read(old_address, CAPSENSE_REG_I2C_ADDR_DM);
++	if(read_address==0xFFFFFFFF)
++	{
++		printf("error reading old capsence address\n");
++		return 1;	//capsense do not respond at new address
++	}
++
++	if((read_address&0x7F)!=old_address)
++	{
++		printf("reading old capsence address failed\n");
++		return 1;	//Capsense not respond correctly
++	}
++
++	//writing command for unlocking the I2C device address lock
++	data[0]=0x3C;
++	data[1]=0xA5;
++	data[2]=0x69;
++	if(capsense_write_N(old_address, CAPSENSE_REG_I2C_DEV_LOCK, data , 3)!=0)
++	{
++		printf("writing command for unlocking the I2C device address lock failed\n");
++		return 1;
++	}
++
++	//writing the new I2C address to the device I2C address register
++	if(capsense_write(old_address, CAPSENSE_REG_I2C_ADDR_DM,new_address|0x80)!=0)
++	{
++		printf("writing the new I2C address to the device I2C address register failed\n");
++		return 1;
++	}
++
++	//writing command for locking the I2C device address lock
++	data[0]=0x96;
++	data[1]=0x5A;
++	data[2]=0xC3;
++	if(capsense_write_N(old_address, CAPSENSE_REG_I2C_DEV_LOCK, data , 3)!=0)
++	{
++		printf("writing command for locking the I2C device failed\n");
++		return 1;
++	}
++
++	//reading new capsence address
++	read_address=capsense_read(new_address, CAPSENSE_REG_I2C_ADDR_DM);
++	if(read_address==0xFFFFFFFF)
++	{
++		printf("capsense do not respond at new address\n");
++		return 1;	//capsense do not respond at new address
++	}
++
++	return 0;
++}
++
++
++static char data_GPIO_ENABLE[] = {
++	0x00, 0x00   // GPIO_ENABLE
++};
++
++static char data_CS_ENABLE[] = {
++	0x1D, 0x10,  // CS_ENABLE
++	0x02, 0x0F,  // GPIO_ENABLE
++	0x00, 0x00,  // INVERSION_MASK
++	0x00, 0x00,  // INT_MASK
++	0x1F, 0x1F,  // STATUS_HOLD_MSK
++	0x00, 0x02, 0x00, 0x00,  // DM_PULL_UP0, DM_STRONG0, DM_HIGHZ0, DM_OD_LOW0
++	0x00, 0x0F, 0x00, 0x00,  // DM_PULL_UP1, DM_STRONG1, DM_HIGHZ1, DM_OD_LOW1
++};
++
++static char data_OUTPUT_PORT[] = {
++	0x00, 0x00   // OUTPUT_PORT
++};
++
++static char data_OP_SEL[] = {
++	0x00, 0x00, 0x00, 0x00, 0x00,   // OP_SEL_00
++	0x80, 0x01, 0x00, 0x00, 0x00,   // OP_SEL_01
++	0x00, 0x00, 0x00, 0x00, 0x00,   // OP_SEL_02
++	0x00, 0x00, 0x00, 0x00, 0x00,   // OP_SEL_03
++	0x00, 0x00, 0x00, 0x00, 0x00,   // OP_SEL_04
++	0x80, 0x10, 0x00, 0x00, 0x00,   // OP_SEL_10
++	0x80, 0x08, 0x00, 0x00, 0x00,   // OP_SEL_11
++	0x80, 0x04, 0x00, 0x00, 0x00,   // OP_SEL_12
++	0x80, 0x00, 0x10, 0x00, 0x00,   // OP_SEL_13
++	0x00, 0x00, 0x00, 0x00, 0x00,   // OP_SEL_14
++};
++
++static char data_CS_NOISE_TH[] = {
++	0x28,   // CS_NOISE_TH
++	0x64,   // CS_BL_UPD_TH
++	0xA0,   // CS_SETL_TIME
++	0x22,   // CS_OTH_SET
++	0x0A,   // CS_HYSTERESIS
++	0x03,   // CS_DEBOUNCE
++	0x14,   // CS_NEG_NOISE_TH
++	0x14,   // CS_LOW_BL_RST
++	0x00,   // CS_FILTERING
++};
++
++static char data_CS_SCAN_POS[] = {
++	0x00, 0x00, 0x00, 0x00, 0x00,   // CS_SCAN_POS_0x
++	0x00, 0x00, 0x00, 0x00, 0x00,   // CS_SCAN_POS_1x
++	0x32, 0x00, 0x32, 0x32, 0x32,   // CS_FINGER_TH_0x
++	0x00, 0x00, 0x00, 0x00, 0x32,   // CS_FINGER_TH_1x
++	0x08, 0x00, 0x08, 0x08, 0x08,   // CS_IDAC_0x
++	0x00, 0x00, 0x00, 0x00, 0x08    // CS_IDAC_1x
++};
++
++static char data_SLEEP[] = {
++	0x00,   // SLEEP_PIN
++	0x20,   // SLEEP_CTRL
++	0x00,   // SLEEP_SA_CTR
++};
++
++int capsense_config(char address)
++{
++	printf("Setting default capsense configuration at i2c address 0x%02X...\n", address);
++
++	//entering setup operation mode
++	if ( capsense_write(address, CAPSENSE_COMMAND_REG, CAPSENSE_CMD_SETUP_OPERATION_MODE) != 0 ) {
++		printf("CAPSENSE_COMMAND_REG SETUP_OPERATION_MODE\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_GPIO_ENABLE, data_GPIO_ENABLE, sizeof(data_GPIO_ENABLE)) != 0 ) {
++		printf("CAPSENSE_REG_GPIO_ENABLE\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_CS_ENABLE, data_CS_ENABLE, sizeof(data_CS_ENABLE)) != 0 ) {
++		printf("CAPSENSE_REG_CS_ENABLE\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_OUTPUT_PORT, data_OUTPUT_PORT, sizeof(data_OUTPUT_PORT)) != 0 ) {
++		printf("CAPSENSE_REG_OUTPUT_PORT\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_OP_SEL_0, data_OP_SEL, sizeof(data_OP_SEL)) != 0 ) {
++		printf("CAPSENSE_REG_OP_SEL_0\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_CS_NOISE_TH, data_CS_NOISE_TH, sizeof(data_CS_NOISE_TH)) != 0 ) {
++		printf("CAPSENSE_REG_CS_NOISE_TH\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_CS_SCAN_POS, data_CS_SCAN_POS, sizeof(data_CS_SCAN_POS)) != 0 ) {
++		printf("CAPSENSE_REG_CS_SCAN_POS\n");
++		return 1;
++   	}
++	if ( capsense_write_N(address, CAPSENSE_REG_SLEEP_PIN, data_SLEEP, sizeof(data_SLEEP)) != 0 ) {
++		printf("CAPSENSE_REG_SLEEP_PIN\n");
++		return 1;
++   	}
++	if ( capsense_write(address, CAPSENSE_COMMAND_REG, CAPSENSE_CMD_NORMAL_OPERATION_MODE) != 0 ) {
++		printf("CAPSENSE_COMMAND_REG NORMAL_OPERATION_MODE\n");
++		return 1;
++   	}
++
++	printf("...done.\n");
++
++	return 0;
++}
++
++void capsense_store_nvm(char address)
++{
++	//storing the new current configuration to NVM
++	printf("Storing capsense configuration to NVM\n");
++	capsense_write(address, CAPSENSE_COMMAND_REG, CAPSENSE_CMD_STORE_TO_NVM);
++}
++
++#endif /* CONFIG_CAPSENSE_CY8C201XX */
+Index: u-boot-1.3.2/drivers/i2c/Makefile
+===================================================================
+--- u-boot-1.3.2.orig/drivers/i2c/Makefile
++++ u-boot-1.3.2/drivers/i2c/Makefile
+@@ -29,6 +29,7 @@ COBJS-y += fsl_i2c.o
+ COBJS-y += omap1510_i2c.o
+ COBJS-y += omap24xx_i2c.o
+ COBJS-y += tsi108_i2c.o
++COBJS-y += CY8C201xx.o
+ 
+ COBJS	:= $(COBJS-y)
+ SRCS 	:= $(COBJS:.o=.c)
+Index: u-boot-1.3.2/include/capsense.h
+===================================================================
+--- /dev/null
++++ u-boot-1.3.2/include/capsense.h
+@@ -0,0 +1,95 @@
++/*
++ * (C) Copyright 2008
++ * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
++ *
++ * See file CREDITS for list of people who contributed to this
++ * project.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++ * MA 02111-1307 USCY8C201xx.c:234:A
++ */
++
++/*
++ * CapSense Express touch-sensing buttons.
++ */
++#ifndef _CAPSENSE_H_
++#define _CAPSENSE_H_
++
++#if defined(CONFIG_CAPSENSE_CY8C201XX)
++
++#define CONFIG_CAPSENSE				/* We have a Capsense */
++
++#ifndef CONFIG_CAPSENSE_SENSORS
++/*config for CY3218-CAPEXP1*/
++#define CONFIG_CAPSENSE_LED				{0x05,0x02} // port 0-{0,3} port 1-{2}
++#define CONFIG_CAPSENSE_SENSOR			{0x02,0x0C} // port 0-{2} port 1-{3,4}
++#endif
++#endif /* CONFIG_CAPSENSE_SENSORS */
++
++extern int capsense_read(int address, int reg);
++extern int capsense_write(int address, int reg, int val);
++extern int capsense_get_state(int address,char port);
++extern int capsense_change_i2c_address(char old_address,char new_address);
++extern int capsense_config(char address);
++extern void capsense_store_nvm(char address);
++#endif
++
++#if !defined(CFG_CAPSENSE_BUS_NUM)
++#define CFG_CAPSENSE_BUS_NUM		1
++
++//-----------------------------------------------
++// Register Map and corresponding constants
++//-----------------------------------------------
++
++
++#define CAPSENSE_REG_STATUS_PORT                          0x02
++#define CAPSENSE_REG_OUTPUT_PORT                          0x04
++#define CAPSENSE_REG_CS_ENABLE                            0x06
++#define CAPSENSE_REG_GPIO_ENABLE                          0x08
++#define CAPSENSE_REG_INVERSION_MASK                       0x0A
++#define CAPSENSE_REG_INT_MASK                             0x0C
++#define CAPSENSE_REG_STATUS_HOLD_MSK                      0x0E
++#define CAPSENSE_REG_DRIVE_MODE                           0x10
++#define CAPSENSE_REG_OP_SEL_0                             0x1C
++#define CAPSENSE_REG_OP_SEL_1                             0x35
++#define CAPSENSE_REG_CS_NOISE_TH                          0x4E
++#define CAPSENSE_REG_CS_SETL_TIME                         0x50
++#define CAPSENSE_REG_CS_OTH_SET                           0x51
++#define CAPSENSE_REG_CS_HYSTERESIS                        0x52
++#define CAPSENSE_REG_CS_DEBOUNCE                          0x53
++#define CAPSENSE_REG_CS_NEG_NOISE_TH                      0x54
++#define CAPSENSE_REG_CS_SCAN_POS			  0x57
++#define CAPSENSE_REG_CS_FINGER_TH                         0x61
++#define CAPSENSE_REG_CS_IDAC                              0x6B
++#define CAPSENSE_REG_CS_SLID_CONFIG                       0x75
++#define CAPSENSE_REG_CS_SLID_MUL                          0x77
++#define CAPSENSE_REG_I2C_DEV_LOCK			  0x79
++#define CAPSENSE_REG_DEVICE_ID                            0x7A
++#define CAPSENSE_REG_I2C_ADDR_DM		          0x7C
++#define CAPSENSE_REG_SLEEP_PIN                            0x7E
++#define CAPSENSE_REG_SLEEP_CTRL                           0x7F
++#define CAPSENSE_REG_SLEEP_SA_CTR                         0x80
++#define CAPSENSE_REG_CS_READ_BUTTON                       0x81
++#define CAPSENSE_REG_CS_READ_BL                           0x82
++#define CAPSENSE_REG_READ_STATUS                          0x88
++#define CAPSENSE_REG_READ_CEN_POS                         0x8A
++
++#define CAPSENSE_COMMAND_REG                              0xA0
++
++#define CAPSENSE_CMD_STORE_TO_NVM                          0x01
++#define CAPSENSE_CMD_NORMAL_OPERATION_MODE                 0x07
++#define CAPSENSE_CMD_SETUP_OPERATION_MODE                  0x08
++
++#endif /* _CAPSENSE_H_ */
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
+@@ -407,6 +407,13 @@
+ #define CFG_DTT_MAX_TEMP        70
+ #define CFG_DTT_MIN_TEMP        -30
+ 
++/*Capsense touch sensing buttons (Cpe board)*/
++#define CONFIG_CMD_CAPSENSE
++#define CONFIG_CAPSENSE_CY8C201XX		1
++#define CONFIG_CAPSENSE_I2C_ADDRESS		0x25
++#define CONFIG_CAPSENSE_LEDS			{0x02,0x0F} // port 0-{1} port 1-{0,1,2,3}
++#define CONFIG_CAPSENSE_SENSORS			{0x1D,0x10} // port 0-{0,2,3,4} port 1-{4}
++
+ /*
+  * Miscellaneous configurable options
+  */

@@ -1,0 +1,157 @@
+Index: u-boot-1.3.2/drivers/net/tsec.c
+===================================================================
+--- u-boot-1.3.2.orig/drivers/net/tsec.c	2008-03-09 16:20:02.000000000 +0100
++++ u-boot-1.3.2/drivers/net/tsec.c	2009-01-07 15:09:40.000000000 +0100
+@@ -179,6 +179,12 @@
+ 	priv->regs->maccfg1 |= MACCFG1_SOFT_RESET;
+ 	priv->regs->maccfg1 &= ~(MACCFG1_SOFT_RESET);
+ 
++	/* Init MACCFG2 */
++	priv->regs->maccfg2 = MACCFG2_INIT_SETTINGS;
++
++	/* Init ECNTRL */
++	priv->regs->ecntrl = ECNTRL_INIT_SETTINGS;
++
+ #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII) \
+ 	&& !defined(BITBANGMII)
+ 	miiphy_register(dev->name, tsec_miiphy_read, tsec_miiphy_write);
+@@ -204,7 +210,7 @@
+ 	/* Make sure the controller is stopped */
+ 	tsec_halt(dev);
+ 
+-	/* Init MACCFG2.  Defaults to GMII */
++	/* Init MACCFG2 */
+ 	regs->maccfg2 = MACCFG2_INIT_SETTINGS;
+ 
+ 	/* Init ECNTRL */
+@@ -868,7 +874,11 @@
+ 	if(priv->phyinfo)
+ 		phy_run_commands(priv, priv->phyinfo->startup);
+ 
++#ifdef CONFIG_TSEC_NON_MANAGEABLE_PHY
++	priv->link = 1;
++#else
+ 	adjust_link(dev);
++#endif
+ 
+ 	/* Enable Transmit and Receive */
+ 	regs->maccfg1 |= (MACCFG1_RX_EN | MACCFG1_TX_EN);
+@@ -1318,6 +1328,21 @@
+ 	}
+ };
+ 
++/* a non-manageable PHY interface  */
++struct phy_info phy_info_null =  {
++	0,
++	"Non-manageable PHY",
++	0,
++	(struct phy_cmd[]) { /* config */
++		{miim_end,}
++	},
++	(struct phy_cmd[]) { /* startup */
++		{miim_end,}
++	},
++	(struct phy_cmd[]) { /* shutdown */
++		{miim_end,}
++	}
++};
+ 
+ uint mii_parse_lxt971_sr2(uint mii_reg, struct tsec_private *priv)
+ {
+@@ -1473,6 +1498,10 @@
+  */
+ struct phy_info *get_phy_info(struct eth_device *dev)
+ {
++#ifdef CONFIG_TSEC_NON_MANAGEABLE_PHY
++	debug("%s: Using non-manageable PHY interface\n", dev->name);
++	return &phy_info_null;
++#else
+ 	struct tsec_private *priv = (struct tsec_private *)dev->priv;
+ 	uint phy_reg, phy_ID;
+ 	int i;
+@@ -1503,6 +1532,7 @@
+ 	}
+ 
+ 	return theInfo;
++#endif  // CONFIG_TSEC_NON_MANAGEABLE_PHY
+ }
+ 
+ /* Execute the given series of commands on the given device's
+Index: u-boot-1.3.2/drivers/net/tsec.h
+===================================================================
+--- u-boot-1.3.2.orig/drivers/net/tsec.h	2008-03-09 16:20:02.000000000 +0100
++++ u-boot-1.3.2/drivers/net/tsec.h	2009-01-07 15:09:40.000000000 +0100
+@@ -56,11 +56,11 @@
+ #define MACCFG1_SYNCD_TX_EN	0x00000002
+ #define MACCFG1_TX_EN		0x00000001
+ 
+-#define MACCFG2_INIT_SETTINGS	0x00007205
+ #define MACCFG2_FULL_DUPLEX	0x00000001
+ #define MACCFG2_IF              0x00000300
+ #define MACCFG2_GMII		0x00000200
+ #define MACCFG2_MII             0x00000100
++#define MACCFG2_INIT_SETTINGS	(0x00007005 | MACCFG2_MII)
+ 
+ #define ECNTRL_INIT_SETTINGS	0x00001000
+ #define ECNTRL_TBI_MODE         0x00000020
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h	2009-01-07 15:09:39.000000000 +0100
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h	2009-01-07 15:11:17.000000000 +0100
+@@ -246,8 +246,8 @@
+ #define CFG_BAUDRATE_TABLE	\
+ 	{300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 115200}
+ 
+-#define CFG_NS16550_COM1	(CFG_IMMR+0x4500)
+-#define CFG_NS16550_COM2	(CFG_IMMR+0x4600)
++#define CFG_NS16550_COM1	(CFG_IMMR+0x4600)
++#define CFG_NS16550_COM2	(CFG_IMMR+0x4500)
+ 
+ /* Use the HUSH parser */
+ #define CFG_HUSH_PARSER
+@@ -302,6 +302,7 @@
+  * TSEC configuration
+  */
+ #define CONFIG_TSEC_ENET		/* TSEC ethernet support */
++#define CONFIG_TSEC_NON_MANAGEABLE_PHY  /* Non-manageable PHY interface */
+ 
+ #ifndef CONFIG_NET_MULTI
+ #define CONFIG_NET_MULTI		1
+@@ -313,12 +314,12 @@
+ #define CONFIG_TSEC1_NAME	"TSEC0"
+ #define CONFIG_TSEC2		1
+ #define CONFIG_TSEC2_NAME	"TSEC1"
+-#define TSEC1_PHY_ADDR			0x1c
+-#define TSEC2_PHY_ADDR			4
+-#define TSEC1_FLAGS			TSEC_GIGABIT
+-#define TSEC2_FLAGS			TSEC_GIGABIT
++#define TSEC1_PHY_ADDR			0 //0x1c
++#define TSEC2_PHY_ADDR			0 //4
++#define TSEC1_FLAGS			TSEC_REDUCED //TSEC_GIGABIT
++#define TSEC2_FLAGS			TSEC_REDUCED //TSEC_GIGABIT
+ #define TSEC1_PHYIDX			0
+-#define TSEC2_PHYIDX			0
++#define TSEC2_PHYIDX			1 //0
+ 
+ /* Options are: TSEC[0-1] */
+ #define CONFIG_ETHPRIME			"TSEC1"
+@@ -472,8 +473,8 @@
+ 	HRCWH_SW_WATCHDOG_DISABLE |\
+ 	HRCWH_ROM_LOC_LOCAL_16BIT |\
+ 	HRCWH_RL_EXT_LEGACY |\
+-	HRCWH_TSEC1M_IN_RGMII |\
+-	HRCWH_TSEC2M_IN_RGMII |\
++	HRCWH_TSEC1M_IN_MII |\
++	HRCWH_TSEC2M_IN_MII |\
+ 	HRCWH_BIG_ENDIAN |\
+ 	HRCWH_LALE_NORMAL)
+ 
+@@ -482,7 +483,7 @@
+ #define CFG_WATCHDOG_VALUE 0xFFFF
+ 
+ /* System IO Config */
+-#define CFG_SICRH	(SICRH_TSOBI1 | SICRH_TSOBI2)	/* RGMII */
++#define CFG_SICRH	0 //(SICRH_TSOBI1 | SICRH_TSOBI2)	/* RGMII */
+ #define CFG_SICRL	(SICRL_USBDR	|SICRL_LBC)		/* Enable Internal USB Phy  */
+ 
+ #define CFG_HID0_INIT	0x000000000
