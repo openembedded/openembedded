@@ -27,6 +27,7 @@ S = "${WORKDIR}/"
 
 inherit autotools pkgconfig lib_package
 
+export BISON="${STAGING_BINDIR_NATIVE}/bison"
 ARM_INSTRUCTION_SET = "arm"
 # FIXME: Segfaulting without --with-http-backend=curl
 EXTRA_OECONF = "\
@@ -61,10 +62,10 @@ do_stage() {
 	autotools_stage_all
 }
 
-PACKAGES =+ "${PN}launcher-dbg ${PN}launcher libjavascriptcore"
+PACKAGES =+ "${PN}-webinspector ${PN}launcher-dbg ${PN}launcher libjavascriptcore"
 FILES_${PN}launcher = "${bindir}/GtkLauncher"
 FILES_${PN}launcher-dbg = "${bindir}/.debug/GtkLauncher"
 FILES_libjavascriptcore = "${libdir}/libJavaScriptCore.so.*"
-
+FILES_${PN}-webinspector = "${datadir}/webkit-1.0/webinspector/"
 
 

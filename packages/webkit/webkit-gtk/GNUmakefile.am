@@ -34,7 +34,7 @@ GENSOURCES := $(top_builddir)/DerivedSources
 GENPROGRAMS := $(top_builddir)/Programs
 
 # Script for creating hash tables
-CREATE_HASH_TABLE = $(srcdir)/JavaScriptCore/kjs/create_hash_table
+CREATE_HASH_TABLE = $(srcdir)/JavaScriptCore/create_hash_table
 
 # Libraries and support components
 bin_PROGRAMS :=
@@ -58,24 +58,26 @@ global_cflags := \
 	-Wall -W -Wcast-align -Wchar-subscripts -Wreturn-type \
 	-Wformat -Wformat-security -Wno-format-y2k -Wundef \
 	-Wmissing-format-attribute -Wpointer-arith -Wwrite-strings \
-	-Wno-unused-parameter -Wno-parentheses
+	-Wno-unused-parameter -Wno-parentheses \
+	-fno-exceptions
 
 global_cxxflags := \
-	$(SYMBOL_VISIBILITY_INLINES)
+	$(SYMBOL_VISIBILITY_INLINES) \
+	-fno-rtti
 
 if !ENABLE_DEBUG
 global_cflags += \
-	-fno-exceptions \
 	$(SYMBOL_VISIBILITY)
-
-global_cxxflags += \
-	-fno-rtti
 endif
 
 # -no-undefined required for building DLLs on Windows
 # It breaks the build on other platforms, so we use it conditionally
 if OS_WIN32
 no_undefined = -no-undefined
+endif
+
+if OS_GNU
+version_script = -Wl,--version-script,$(srcdir)/symbols.filter
 endif
 
 # Shared libraries
@@ -99,8 +101,8 @@ javascriptcore_dist :=
 javascriptcore_cppflags += \
 	-I$(srcdir)/JavaScriptCore \
 	-I$(srcdir)/JavaScriptCore/ForwardingHeaders \
+	-I$(srcdir)/JavaScriptCore/parser \
 	-I$(srcdir)/JavaScriptCore/wtf \
-	-I$(srcdir)/JavaScriptCore/kjs \
 	-I$(top_builddir)/DerivedSources
 
 # The variables above are already included below so no need to touch
@@ -123,12 +125,8 @@ libJavaScriptCore_la_LIBADD = \
 	-lpthread
 
 libJavaScriptCore_la_CXXFLAGS = \
-	-fstrict-aliasing \
-	-O3 \
 	$(global_cxxflags) \
-	$(global_cflags) \
-	$(GLOBALDEPS_CFLAGS) \
-	$(UNICODE_CFLAGS)
+	$(libJavaScriptCore_la_CFLAGS)
 
 libJavaScriptCore_la_CFLAGS = \
 	-fstrict-aliasing \
@@ -152,6 +150,9 @@ webcore_dist :=
 webcoregtk_cppflags :=
 webcoregtk_sources :=
 
+nodist_EXTRA_libWebCore_la_SOURCES = \
+	$(webcore_built_nosources)
+
 nodist_libWebCore_la_SOURCES = \
 	$(webcore_built_sources)
 
@@ -160,30 +161,18 @@ libWebCore_la_SOURCES = \
 	$(webcoregtk_sources)
 
 libWebCore_la_CXXFLAGS = \
-	-fno-strict-aliasing \
-	-O2 \
 	$(global_cxxflags) \
-	$(global_cflags) \
-	$(GLOBALDEPS_CFLAGS) \
-	$(UNICODE_CFLAGS) \
-	$(WEBKITDEPS_CFLAGS) \
-	$(XT_CFLAGS) \
-	$(LIBCURL_CFLAGS) \
-	$(LIBSOUP_CFLAGS) \
-	$(FREETYPE_CFLAGS) \
-	$(SQLITE3_CFLAGS) \
-	$(GSTREAMER_CFLAGS) \
-	$(LIBXSLT_CFLAGS) \
-	$(COVERAGE_CFLAGS) \
-	$(HILDON_CFLAGS)
+	$(libWebCore_la_CFLAGS)
 
 libWebCore_la_CFLAGS = \
 	-fno-strict-aliasing \
-	-O2 \
 	$(global_cflags) \
 	$(GLOBALDEPS_CFLAGS) \
 	$(UNICODE_CFLAGS) \
-	$(WEBKITDEPS_CFLAGS) \
+	$(LIBXML_CFLAGS) \
+	$(CAIRO_CFLAGS) \
+	$(PANGO_CFLAGS) \
+	$(GTK_CFLAGS) \
 	$(XT_CFLAGS) \
 	$(LIBCURL_CFLAGS) \
 	$(LIBSOUP_CFLAGS) \
@@ -203,9 +192,13 @@ libWebCore_la_CPPFLAGS = \
 
 libWebCore_la_LIBADD = \
 	libJavaScriptCore.la \
+	libWebCoreJS.la \
 	$(webcore_libadd) \
 	$(GLOBALDEPS_LIBS) \
-	$(WEBKITDEPS_LIBS) \
+	$(LIBXML_LIBS) \
+	$(CAIRO_LIBS) \
+	$(PANGO_LIBS) \
+	$(GTK_LIBS) \
 	$(XT_LIBS) \
 	$(LIBCURL_LIBS) \
 	$(LIBSOUP_LIBS) \
@@ -216,6 +209,7 @@ libWebCore_la_LIBADD = \
 	$(LIBXSLT_LIBS) \
 	$(HILDON_LIBS) \
 	$(JPEG_LIBS) \
+	$(PNG_LIBS) \
 	-lpthread
 
 # WebKit
@@ -250,7 +244,7 @@ libwebkit_1_0_la_CPPFLAGS = \
 libwebkit_1_0_la_LDFLAGS = \
 	$(COVERAGE_LDFLAGS) \
 	-version-info @LIBWEBKITGTK_VERSION@ \
-	-Wl,--version-script,$(srcdir)/symbols.filter \
+	$(version_script) \
 	$(no_undefined)
 
 libwebkit_1_0_la_LIBADD = \
@@ -313,7 +307,11 @@ webkitgtk_h_api += \
 	WebKit/gtk/webkit/webkitwebbackforwardlist.h \
 	WebKit/gtk/webkit/webkitwebframe.h \
 	WebKit/gtk/webkit/webkitwebhistoryitem.h \
+	WebKit/gtk/webkit/webkitwebinspector.h \
+	WebKit/gtk/webkit/webkitwebnavigationaction.h \
+	WebKit/gtk/webkit/webkitwebpolicydecision.h \
 	WebKit/gtk/webkit/webkitwebsettings.h \
+	WebKit/gtk/webkit/webkitwebwindowfeatures.h \
 	WebKit/gtk/webkit/webkitwebview.h
 
 webkitgtk_built_sources += \
@@ -344,8 +342,12 @@ webkitgtk_sources += \
 	WebKit/gtk/webkit/webkitwebbackforwardlist.cpp \
 	WebKit/gtk/webkit/webkitwebframe.cpp \
 	WebKit/gtk/webkit/webkitwebhistoryitem.cpp \
+	WebKit/gtk/webkit/webkitwebinspector.cpp \
+	WebKit/gtk/webkit/webkitwebnavigationaction.cpp \
+	WebKit/gtk/webkit/webkitwebpolicydecision.cpp \
 	WebKit/gtk/webkit/webkitwebsettings.cpp \
-	WebKit/gtk/webkit/webkitwebview.cpp
+	WebKit/gtk/webkit/webkitwebview.cpp \
+	WebKit/gtk/webkit/webkitwebwindowfeatures.cpp
 
 webkitgtk_cppflags += \
 	-DBUILDING_WEBKIT \
@@ -356,7 +358,8 @@ webkitgtk_cppflags += \
 
 webkitgtk_cleanfiles += \
 	$(top_builddir)/Programs/GtkLauncher \
-	$(top_builddir)/WebKit/gtk/webkit-1.0.pc
+	$(top_builddir)/WebKit/gtk/webkit-1.0.pc \
+	$(top_builddir)/WebKit/gtk/webkit/webkitenumtypes.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = WebKit/gtk/webkit-1.0.pc
@@ -447,13 +450,14 @@ DerivedSources/webkitenumtypes.cpp: $(webkitgtk_h_api) GNUmakefile
 #
 # Files that will be distributed
 EXTRA_DIST = \
+	WebKit/LICENSE \
 	$(javascriptcore_dist) \
 	$(webcore_dist) \
 	symbols.filter
 
 # Files that will be cleaned
 MAINTAINERCLEANFILES := $(stamp_files) $(BUILT_SOURCES)
-DISTCLEANFILES := $(stamp_files) $(BUILT_SOURCES)
+DISTCLEANFILES := $(stamp_files) $(BUILT_SOURCES) doltcompile doltlibtool
 CLEANFILES := $(stamp_files) $(BUILT_SOURCES)
 
 # Include module makefiles
@@ -461,8 +465,30 @@ include JavaScriptCore/GNUmakefile.am
 include WebCore/GNUmakefile.am
 include WebKitTools/GNUmakefile.am
 
+# Build unit test
+noinst_PROGRAMS += Programs/UnitTests
+Programs_UnitTests_CPPFLAGS = \
+	-I$(srcdir)/WebKit/gtk \
+	-I$(top_builddir)/WebKit/gtk \
+	$(global_cppflags) \
+	$(javascriptcore_cppflags)
+
+Programs_UnitTests_SOURCES = \
+	WebKit/gtk/tests/main.c
+
+Programs_UnitTests_CFLAGS = \
+	-fno-strict-aliasing \
+	-O2 \
+	$(global_cflags) \
+	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS)
+
+Programs_UnitTests_LDADD = \
+	libwebkit-1.0.la \
+	$(GTK_LIBS)
+
 # Autogenerated sources
-BUILT_SOURCES = \
+BUILT_SOURCES := \
 	$(javascriptcore_built_sources) \
 	$(javascriptcore_built_nosources) \
 	$(webcore_built_sources) \
@@ -481,6 +507,11 @@ MAINTAINERCLEANFILES += \
 	GNUmakefile.in \
 	INSTALL \
 	README
+
+# Older automake versions (1.7) place Plo files in a different place so we need
+# to create the output directory manually.
+all-local:
+	mkdir -p $(top_builddir)/$(DEPDIR)/DerivedSources
 
 # remove built sources and program directories
 clean-local:

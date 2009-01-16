@@ -29,6 +29,9 @@ i?86-*-linux*|x86_64-*-linux*|powerpc-*-linux* \
 i?86-apple-darwin*)
     pic_options='-fno-common'
     ;;
+*mingw32*)
+    pic_options='-DDLL_EXPORT'
+    ;;
 *)
     dolt_supported=no
     ;;
@@ -157,7 +160,7 @@ for arg in "$[]@"; do
     case "$arg" in
         --mode=compile) modeok=true ;;
         --tag=CC|--tag=CXX) tagok=true ;;
-        *) args+=("$arg")
+        *) args@<:@${#args[@]}@:>@="$arg" ;;
     esac
 done
 if $modeok && $tagok ; then
