@@ -1,12 +1,13 @@
-diff -urN linux-2.6.27.orig/drivers/video/Kconfig linux-2.6.27/drivers/video/Kconfig
---- linux-2.6.27.orig/drivers/video/Kconfig	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27/drivers/video/Kconfig	2009-01-14 12:50:33.000000000 +0100
-@@ -480,6 +480,19 @@
+Index: linux-2.6.27/drivers/video/Kconfig
+===================================================================
+--- linux-2.6.27.orig/drivers/video/Kconfig
++++ linux-2.6.27/drivers/video/Kconfig
+@@ -480,6 +480,28 @@ config FB_ARC
  	  this driver, say Y or M; otherwise say N. You must specify the
  	  GPIO IO address to be used for setting control and data.
  
 +config FB_NT7506
-+	tristate "Novatek 7506 Monochrome LCD board support"
++	tristate "Novatek 7506 LCD board support"
 +	depends on FB
 +	select FB_SYS_FILLRECT
 +	select FB_SYS_COPYAREA
@@ -15,16 +16,26 @@ diff -urN linux-2.6.27.orig/drivers/video/Kconfig linux-2.6.27/drivers/video/Kco
 +	select FB_BACKLIGHT
 +	select LCD_CLASS_DEVICE
 +	help
-+	  This enables support for the Novatek 7506 Monochrome LCD board.
++	  This is the frame buffer device driver for the Novatek 7506 Monochrome/Grayscale LCD board.
 +	  The board is based on the NT7506 LCD controller.
++
++config FB_NT7506_GRAYSCALE
++	bool "Novatek 7506 Grayscale mode"
++	depends on FB_NT7506
++	default y
++	help
++	  This option switches the Monochrome/Grayscale mode for the Novatek 7506 LCD board.
++	  Say Y to enable 4-levels Grayscale mode (2 bpp).
++	  Say N to enable Monochrome mode (1 bpp).
 +
  config FB_ATARI
  	bool "Atari native chipset support"
  	depends on (FB = y) && ATARI
-diff -urN linux-2.6.27.orig/drivers/video/Makefile linux-2.6.27/drivers/video/Makefile
---- linux-2.6.27.orig/drivers/video/Makefile	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27/drivers/video/Makefile	2009-01-14 12:50:27.000000000 +0100
-@@ -31,6 +31,7 @@
+Index: linux-2.6.27/drivers/video/Makefile
+===================================================================
+--- linux-2.6.27.orig/drivers/video/Makefile
++++ linux-2.6.27/drivers/video/Makefile
+@@ -31,6 +31,7 @@ obj-$(CONFIG_FB_DEFERRED_IO)   += fb_def
  obj-$(CONFIG_FB_AMIGA)            += amifb.o c2p.o
  obj-$(CONFIG_FB_AM200EPD)         += am200epd.o
  obj-$(CONFIG_FB_ARC)              += arcfb.o
@@ -32,10 +43,11 @@ diff -urN linux-2.6.27.orig/drivers/video/Makefile linux-2.6.27/drivers/video/Ma
  obj-$(CONFIG_FB_CLPS711X)         += clps711xfb.o
  obj-$(CONFIG_FB_CYBER2000)        += cyber2000fb.o
  obj-$(CONFIG_FB_PM2)              += pm2fb.o
-diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/nt7506fb.c
---- linux-2.6.27.orig/drivers/video/nt7506fb.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.27/drivers/video/nt7506fb.c	2009-01-14 12:51:02.000000000 +0100
-@@ -0,0 +1,794 @@
+Index: linux-2.6.27/drivers/video/nt7506fb.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/video/nt7506fb.c
+@@ -0,0 +1,847 @@
 +/*
 + * linux/drivers/video/nt7506fb.c -- FB driver for NT7506 monochrome LCD board
 + *
@@ -67,10 +79,9 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +#include <linux/errno.h>
 +#include <linux/string.h>
 +#include <linux/mm.h>
-+#include <linux/slab.h>
 +#include <linux/vmalloc.h>
 +#include <linux/delay.h>
-+#include <linux/interrupt.h>
++#include <linux/timer.h>
 +#include <linux/fb.h>
 +#include <linux/init.h>
 +#include <linux/platform_device.h>
@@ -122,7 +133,9 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +#define	NT_ADC_REV	0xA1
 +#define	NT_SHL_NOR	0xC0
 +#define	NT_SHL_REV	0xC8
++#define NT_SET_PWRSAVE  0xA8
 +#define	NT_OSC		0xAB
++#define NT_RLS_PWRSAVE  0xE1
 +#define NT_RESET	0xE2
 +#define NT_DATA_DIR	0xe8
 +#define NT_FRC_PWM	0x90
@@ -146,8 +159,6 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +#define LCD_HEIGHT	128
 +#define LCD_NPAGES	(LCD_HEIGHT/8)    /* LCD pages of 8 vertical pixels */
 +
-+#define LCD_GRAYSCALE
-+
 +#define DEFAULT_CONTRAST	20
 +#define DEFAULT_FPS	5
 +
@@ -156,7 +167,6 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +static unsigned long tuhold;
 +struct fb_info *info;
 +static struct timer_list fb_timer;
-+static char _refresh = 0;
 +static char _fps = DEFAULT_FPS;
 +static char _backlight = 1;
 +
@@ -165,13 +175,14 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	struct fb_info *info;
 +	spinlock_t lock;
 +	struct lcd_device *lcd_dev;
++	int power;
 +	int contrast;
 +};
 +
 +static struct fb_fix_screeninfo nt7506fb_fix __initdata = {
 +	.id =		DRIVER_NAME,
 +	.type =		FB_TYPE_PACKED_PIXELS,
-+#ifdef LCD_GRAYSCALE
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	.visual =	FB_VISUAL_STATIC_PSEUDOCOLOR,
 +	.line_length =  LCD_WIDTH / 4,
 +#else
@@ -190,7 +201,7 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	.xres_virtual	= LCD_WIDTH,
 +	.yres_virtual	= LCD_HEIGHT,
 +	.nonstd		= 1,
-+#ifdef LCD_GRAYSCALE
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	.bits_per_pixel	= 2,
 +	.grayscale	= 1,
 +	.red		= { 0, 2, 0 },
@@ -315,19 +326,39 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +/*
 + * Backlight device management
 + */
++static void nt7506fb_start_timer(void);
 +
 +static int
 +nt7506fb_bl_update_status(struct backlight_device *bd)
 +{
-+	_refresh = 0;
++	struct nt7506fb_par *par = bl_get_data(bd);
++	int power_on = (bd->props.power != FB_BLANK_POWERDOWN);
 +
-+	if (bd->props.power != FB_BLANK_UNBLANK ||
-+	    bd->props.fb_blank != FB_BLANK_UNBLANK)
-+		_backlight = 0;
-+	else
-+		_backlight = bd->props.brightness;
++	_backlight = bd->props.brightness & power_on;
 +
-+	_refresh = 1;
++	printk(KERN_INFO DRIVER_NAME ": backlight=%d power_on=%d\n", _backlight, power_on);
++
++	if ( bd->props.power != par->power ) {
++		par->power = bd->props.power;
++
++		if ( power_on ) {
++			/* Power LCD device on */
++			NT7506_writeb_ctl(NT_SET_PWRSAVE|OFF);
++			NT7506_writeb_ctl(NT_RLS_PWRSAVE);
++
++			/* Restart refresh timer */
++			if ( ! timer_pending(&fb_timer) )
++				nt7506fb_start_timer();
++		}
++		else {
++			/* Throttle refresh timer */
++			del_timer(&fb_timer);
++
++			/* Put LCD device in power save mode */
++			NT7506_writeb_ctl(NT_SET_PWRSAVE|ON);
++			NT7506_writeb_ctl(NT_RLS_PWRSAVE);
++		}
++	}
 +
 +	//printk(KERN_INFO DRIVER_NAME": backlight = %d\n", _backlight);
 +	return 0;
@@ -362,6 +393,8 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	bd->props.max_brightness = 1;
 +	bd->props.power = FB_BLANK_UNBLANK;
 +	bd->props.brightness = 1;
++	par->power = bd->props.power;
++
 +	nt7506fb_bl_update_status(bd);
 +
 +	printk(KERN_INFO DRIVER_NAME ": Backlight control initialized\n");
@@ -587,15 +620,17 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +
 +
 +static void
-+nt7506fb_refresh(unsigned long ignore_me)
++nt7506fb_start_timer(void)
 +{
-+	struct nt7506fb_par *par = info->par;
-+	if ( _refresh )	{
-+		nt7506fb_lcd_update(par);
-+	}
-+
 +	fb_timer.expires = jiffies + (HZ/_fps);
 +	add_timer(&fb_timer);
++}
++
++static void
++nt7506fb_refresh(unsigned long data)
++{
++	nt7506fb_lcd_update(info->par);
++	nt7506fb_start_timer();
 +}
 +
 +static int __init
@@ -634,7 +669,7 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	spin_lock_init(&par->lock);
 +	platform_set_drvdata(dev, info);
 +
-+#ifdef LCD_GRAYSCALE
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	/* Allocate cmap */
 +	retval = fb_alloc_cmap(&info->cmap, 4, 0);
 +	if (retval < 0) {
@@ -654,10 +689,7 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	if (retval < 0)
 +		goto out_register;
 +
-+	init_timer(&fb_timer);
-+	fb_timer.function = nt7506fb_refresh;
-+	fb_timer.expires = jiffies + (HZ / _fps);
-+	add_timer(&fb_timer);
++	setup_timer(&fb_timer, nt7506fb_refresh, (unsigned long) par);
 +
 +	printk(KERN_INFO
 +	       "fb%d: nt7506 frame buffer device, using %dK of video memory\n",
@@ -666,6 +698,8 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	/* Initialize backlight and contrast control (do not abort driver if it fails) */
 +	nt7506fb_bl_init(par);
 +	nt7506fb_lcd_init(par);
++
++	nt7506fb_start_timer();
 +
 +	return 0;
 +
@@ -681,6 +715,8 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +{
 +	struct fb_info *info = platform_get_drvdata(dev);
 +
++	del_timer(&fb_timer);
++
 +	if (info) {
 +		nt7506fb_lcd_exit(info->par);
 +		nt7506fb_bl_exit(info);
@@ -691,9 +727,39 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	return 0;
 +}
 +
++#ifdef CONFIG_PM
++static int nt7506fb_suspend(struct platform_device *dev, pm_message_t state)
++{
++	struct fb_info *info = platform_get_drvdata(dev);
++
++	printk(KERN_INFO DRIVER_NAME ": Switching to Power Save mode\n");
++
++	info->bl_dev->props.power = FB_BLANK_POWERDOWN;
++	nt7506fb_bl_update_status(info->bl_dev);
++
++	return 0;
++}
++
++static int nt7506fb_resume(struct platform_device *dev)
++{
++	struct fb_info *info = platform_get_drvdata(dev);
++
++	info->bl_dev->props.power = FB_BLANK_UNBLANK;
++	nt7506fb_bl_update_status(info->bl_dev);
++
++	return 0;
++}
++#else
++#define nt7506fb_suspend NULL
++#define nt7506fb_resume  NULL
++#endif
++
++
 +static struct platform_driver nt7506fb_driver = {
 +	.probe	= nt7506fb_probe,
 +	.remove = nt7506fb_remove,
++	.suspend = nt7506fb_suspend,
++	.resume	 = nt7506fb_resume,
 +	.driver	= {
 +		.name	= DRIVER_NAME,
 +	},
@@ -775,7 +841,7 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	NT7506_writeb_ctl(NT_DATA_DIR);	NT7506_writeb_ctl(0);
 +	NT7506_writeb_ctl(NT_FRC_PWM|PWM15);
 +
-+#ifdef LCD_GRAYSCALE
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	/* Feed grayscale palette */
 +	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_WHITE_AB);
 +	NT7506_writeb_ctl(0x00);
@@ -808,7 +874,6 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +	NT7506_writeb_ctl(NT_DISP|ON);
 +	/* Set Initial Start Line Address */
 +	NT7506_writeb_ctl(NT_START_LINE);	NT7506_writeb_ctl(0x00);
-+	_refresh=1;
 +}
 +
 +static void __exit nt7506fb_exit(void)
@@ -830,9 +895,10 @@ diff -urN linux-2.6.27.orig/drivers/video/nt7506fb.c linux-2.6.27/drivers/video/
 +MODULE_AUTHOR("Alexandre Coffignal");
 +MODULE_LICENSE("GPL");
 +
-diff -urN linux-2.6.27.orig/include/linux/nt7506fb.h linux-2.6.27/include/linux/nt7506fb.h
---- linux-2.6.27.orig/include/linux/nt7506fb.h	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.27/include/linux/nt7506fb.h	2009-01-14 12:51:12.000000000 +0100
+Index: linux-2.6.27/include/linux/nt7506fb.h
+===================================================================
+--- /dev/null
++++ linux-2.6.27/include/linux/nt7506fb.h
 @@ -0,0 +1,31 @@
 +
 +/*

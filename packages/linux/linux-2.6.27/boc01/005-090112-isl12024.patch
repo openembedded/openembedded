@@ -840,15 +840,25 @@ Index: linux-2.6.27/drivers/rtc/rtc-isl12024.c
 +
 +module_init(isl12024_init);
 +module_exit(isl12024_exit);
-Index: linux-2.6.27/include/i2c/isl12024.h
+Index: linux-2.6.27/include/linux/i2c/isl12024.h
 ===================================================================
 --- /dev/null
-+++ linux-2.6.27/include/i2c/isl12024.h
-@@ -0,0 +1,93 @@
++++ linux-2.6.27/include/linux/i2c/isl12024.h
+@@ -0,0 +1,103 @@
++/*
++ * Intersil ISL12024 chip registers definitions
++ *
++ *
++ * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ * Guillaume Ligneul
++ * Guillaume.ligneul@gmail.com
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
 +#ifndef ISL12024_H_
 +#define ISL12024_H_
-+
-+
 +
 +#define ISL12024_REG_SR		0x3F	/* status register */
 +#define ISL12024_REG_Y2K		0x37

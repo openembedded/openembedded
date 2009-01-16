@@ -1,6 +1,8 @@
---- linux-2.6.27.orig/drivers/net/gianfar_ethtool.c	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/gianfar_ethtool.c	2008-12-08 15:13:23.000000000 +0100
-@@ -182,13 +182,7 @@
+Index: linux-2.6.27/drivers/net/gianfar_ethtool.c
+===================================================================
+--- linux-2.6.27.orig/drivers/net/gianfar_ethtool.c
++++ linux-2.6.27/drivers/net/gianfar_ethtool.c
+@@ -182,13 +182,7 @@ static void gfar_gdrvinfo(struct net_dev
  
  static int gfar_ssettings(struct net_device *dev, struct ethtool_cmd *cmd)
  {
@@ -15,7 +17,7 @@
  }
  
  
-@@ -196,15 +190,11 @@
+@@ -196,15 +190,11 @@ static int gfar_ssettings(struct net_dev
  static int gfar_gsettings(struct net_device *dev, struct ethtool_cmd *cmd)
  {
  	struct gfar_private *priv = netdev_priv(dev);
@@ -32,7 +34,7 @@
  }
  
  /* Return the length of the register structure */
-@@ -232,18 +222,7 @@
+@@ -232,18 +222,7 @@ static unsigned int gfar_usecs2ticks(str
  	unsigned int count;
  
  	/* The timer is different, depending on the interface speed */
@@ -52,7 +54,7 @@
  
  	/* Make sure we return a number greater than 0
  	 * if usecs > 0 */
-@@ -256,18 +235,7 @@
+@@ -256,18 +235,7 @@ static unsigned int gfar_ticks2usecs(str
  	unsigned int count;
  
  	/* The timer is different, depending on the interface speed */
@@ -72,7 +74,7 @@
  
  	/* Make sure we return a number greater than 0 */
  	/* if ticks is > 0 */
-@@ -283,9 +251,6 @@
+@@ -283,9 +251,6 @@ static int gfar_gcoalesce(struct net_dev
  	if (!(priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_COALESCE))
  		return -EOPNOTSUPP;
  
@@ -82,7 +84,7 @@
  	cvals->rx_coalesce_usecs = gfar_ticks2usecs(priv, priv->rxtime);
  	cvals->rx_max_coalesced_frames = priv->rxcount;
  
-@@ -342,9 +307,6 @@
+@@ -342,9 +307,6 @@ static int gfar_scoalesce(struct net_dev
  	else
  		priv->rxcoalescing = 1;
  
@@ -92,9 +94,27 @@
  	/* Check the bounds of the values */
  	if (cvals->rx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
  		pr_info("Coalescing is limited to %d microseconds\n",
---- linux-2.6.27.orig/drivers/net/gianfar.c	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/gianfar.c	2008-12-08 15:22:51.000000000 +0100
-@@ -424,8 +424,6 @@
+Index: linux-2.6.27/drivers/net/gianfar.c
+===================================================================
+--- linux-2.6.27.orig/drivers/net/gianfar.c
++++ linux-2.6.27/drivers/net/gianfar.c
+@@ -116,7 +116,6 @@ static int gfar_change_mtu(struct net_de
+ static irqreturn_t gfar_error(int irq, void *dev_id);
+ static irqreturn_t gfar_transmit(int irq, void *dev_id);
+ static irqreturn_t gfar_interrupt(int irq, void *dev_id);
+-static void adjust_link(struct net_device *dev);
+ static void init_registers(struct net_device *dev);
+ static int init_phy(struct net_device *dev);
+ static int gfar_probe(struct platform_device *pdev);
+@@ -124,7 +123,6 @@ static int gfar_remove(struct platform_d
+ static void free_skb_resources(struct gfar_private *priv);
+ static void gfar_set_multi(struct net_device *dev);
+ static void gfar_set_hash_for_addr(struct net_device *dev, u8 *addr);
+-static void gfar_configure_serdes(struct net_device *dev);
+ static int gfar_poll(struct napi_struct *napi, int budget);
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+ static void gfar_netpoll(struct net_device *dev);
+@@ -424,8 +422,6 @@ static int gfar_suspend(struct platform_
  			tempval = gfar_read(&priv->regs->maccfg2);
  			tempval |= MACCFG2_MPEN;
  			gfar_write(&priv->regs->maccfg2, tempval);
@@ -103,18 +123,73 @@
  		}
  	}
  
-@@ -446,8 +444,8 @@
+@@ -438,17 +434,12 @@ static int gfar_resume(struct platform_d
+ 	struct gfar_private *priv = netdev_priv(dev);
+ 	unsigned long flags;
+ 	u32 tempval;
+-	int magic_packet = priv->wol_en &&
+-		(priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_MAGIC_PACKET);
+ 
+ 	if (!netif_running(dev)) {
+ 		netif_device_attach(dev);
  		return 0;
  	}
  
 -	if (!magic_packet && priv->phydev)
 -		phy_start(priv->phydev);
-+	//if (!magic_packet && priv->phydev)
-+	//	phy_start(priv->phydev);
- 
+-
  	/* Disable Magic Packet mode, in case something
  	 * else woke us up.
-@@ -524,10 +522,6 @@
+ 	 */
+@@ -476,47 +467,6 @@ static int gfar_resume(struct platform_d
+ #define gfar_resume NULL
+ #endif
+ 
+-/* Reads the controller's registers to determine what interface
+- * connects it to the PHY.
+- */
+-static phy_interface_t gfar_get_interface(struct net_device *dev)
+-{
+-	struct gfar_private *priv = netdev_priv(dev);
+-	u32 ecntrl = gfar_read(&priv->regs->ecntrl);
+-
+-	if (ecntrl & ECNTRL_SGMII_MODE)
+-		return PHY_INTERFACE_MODE_SGMII;
+-
+-	if (ecntrl & ECNTRL_TBI_MODE) {
+-		if (ecntrl & ECNTRL_REDUCED_MODE)
+-			return PHY_INTERFACE_MODE_RTBI;
+-		else
+-			return PHY_INTERFACE_MODE_TBI;
+-	}
+-
+-	if (ecntrl & ECNTRL_REDUCED_MODE) {
+-		if (ecntrl & ECNTRL_REDUCED_MII_MODE)
+-			return PHY_INTERFACE_MODE_RMII;
+-		else {
+-			phy_interface_t interface = priv->einfo->interface;
+-
+-			/*
+-			 * This isn't autodetected right now, so it must
+-			 * be set by the device tree or platform code.
+-			 */
+-			if (interface == PHY_INTERFACE_MODE_RGMII_ID)
+-				return PHY_INTERFACE_MODE_RGMII_ID;
+-
+-			return PHY_INTERFACE_MODE_RGMII;
+-		}
+-	}
+-
+-	if (priv->einfo->device_flags & FSL_GIANFAR_DEV_HAS_GIGABIT)
+-		return PHY_INTERFACE_MODE_GMII;
+-
+-	return PHY_INTERFACE_MODE_MII;
+-}
+-
+ 
+ /* Initializes driver's PHY state, and attaches to the PHY.
+  * Returns 0 on success.
+@@ -524,10 +474,6 @@ static phy_interface_t gfar_get_interfac
  static int init_phy(struct net_device *dev)
  {
  	struct gfar_private *priv = netdev_priv(dev);
@@ -125,7 +200,7 @@
  	char phy_id[BUS_ID_SIZE];
  	phy_interface_t interface;
  
-@@ -537,23 +531,7 @@
+@@ -537,54 +483,11 @@ static int init_phy(struct net_device *d
  
  	snprintf(phy_id, BUS_ID_SIZE, PHY_ID_FMT, priv->einfo->bus_id, priv->einfo->phy_id);
  
@@ -150,7 +225,38 @@
  
  	return 0;
  }
-@@ -678,8 +656,6 @@
+ 
+-/*
+- * Initialize TBI PHY interface for communicating with the
+- * SERDES lynx PHY on the chip.  We communicate with this PHY
+- * through the MDIO bus on each controller, treating it as a
+- * "normal" PHY at the address found in the TBIPA register.  We assume
+- * that the TBIPA register is valid.  Either the MDIO bus code will set
+- * it to a value that doesn't conflict with other PHYs on the bus, or the
+- * value doesn't matter, as there are no other PHYs on the bus.
+- */
+-static void gfar_configure_serdes(struct net_device *dev)
+-{
+-	struct gfar_private *priv = netdev_priv(dev);
+-	struct gfar_mii __iomem *regs =
+-			(void __iomem *)&priv->regs->gfar_mii_regs;
+-	int tbipa = gfar_read(&priv->regs->tbipa);
+-
+-	/* Single clk mode, mii mode off(for serdes communication) */
+-	gfar_local_mdio_write(regs, tbipa, MII_TBICON, TBICON_CLK_SELECT);
+-
+-	gfar_local_mdio_write(regs, tbipa, MII_ADVERTISE,
+-			ADVERTISE_1000XFULL | ADVERTISE_1000XPAUSE |
+-			ADVERTISE_1000XPSE_ASYM);
+-
+-	gfar_local_mdio_write(regs, tbipa, MII_BMCR, BMCR_ANENABLE |
+-			BMCR_ANRESTART | BMCR_FULLDPLX | BMCR_SPEED1000);
+-}
+-
+ static void init_registers(struct net_device *dev)
+ {
+ 	struct gfar_private *priv = netdev_priv(dev);
+@@ -678,8 +581,6 @@ void stop_gfar(struct net_device *dev)
  	struct gfar __iomem *regs = priv->regs;
  	unsigned long flags;
  
@@ -159,7 +265,7 @@
  	/* Lock it down */
  	spin_lock_irqsave(&priv->txlock, flags);
  	spin_lock(&priv->rxlock);
-@@ -949,7 +925,6 @@
+@@ -949,7 +850,6 @@ int startup_gfar(struct net_device *dev)
  		}
  	}
  
@@ -167,7 +273,7 @@
  
  	/* Configure the coalescing support */
  	if (priv->txcoalescing)
-@@ -1217,9 +1192,6 @@
+@@ -1217,9 +1117,6 @@ static int gfar_close(struct net_device 
  	cancel_work_sync(&priv->reset_task);
  	stop_gfar(dev);
  
@@ -177,7 +283,7 @@
  
  	netif_stop_queue(dev);
  
-@@ -1777,86 +1749,6 @@
+@@ -1777,86 +1674,6 @@ static irqreturn_t gfar_interrupt(int ir
  	return IRQ_HANDLED;
  }
  
@@ -264,9 +370,11 @@
  
  /* Update the hash table based on the current list of multicast
   * addresses we subscribe to.  Also, change the promiscuity of
---- linux-2.6.27.orig/drivers/net/gianfar.h	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/gianfar.h	2008-12-08 15:14:41.000000000 +0100
-@@ -150,7 +150,7 @@
+Index: linux-2.6.27/drivers/net/gianfar.h
+===================================================================
+--- linux-2.6.27.orig/drivers/net/gianfar.h
++++ linux-2.6.27/drivers/net/gianfar.h
+@@ -150,7 +150,7 @@ extern const char gfar_driver_version[];
  #define MACCFG1_SYNCD_TX_EN	0x00000002
  #define MACCFG1_TX_EN		0x00000001
  
@@ -275,7 +383,7 @@
  #define MACCFG2_FULL_DUPLEX	0x00000001
  #define MACCFG2_IF              0x00000300
  #define MACCFG2_MII             0x00000100
-@@ -748,7 +748,6 @@
+@@ -748,7 +748,6 @@ struct gfar_private {
  	struct gianfar_platform_data *einfo;
  
  	/* PHY stuff */
@@ -283,9 +391,11 @@
  	struct mii_bus *mii_bus;
  	int oldspeed;
  	int oldduplex;
---- linux-2.6.27.orig/drivers/net/gianfar_mii.c	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/gianfar_mii.c	2008-12-08 15:16:19.000000000 +0100
-@@ -217,22 +217,6 @@
+Index: linux-2.6.27/drivers/net/gianfar_mii.c
+===================================================================
+--- linux-2.6.27.orig/drivers/net/gianfar_mii.c
++++ linux-2.6.27/drivers/net/gianfar_mii.c
+@@ -217,28 +217,10 @@ static int gfar_mdio_probe(struct device
  		if (r)
  			return r;
  
@@ -308,8 +418,16 @@
  	}
  
  	return 0;
---- linux-2.6.27.orig/drivers/net/gianfar_mii.h	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/gianfar_mii.h	2008-12-08 15:16:59.000000000 +0100
+ 
+-bus_register_fail:
+-	iounmap(regs);
+ reg_map_fail:
+ 	kfree(new_bus);
+ 
+Index: linux-2.6.27/drivers/net/gianfar_mii.h
+===================================================================
+--- linux-2.6.27.orig/drivers/net/gianfar_mii.h
++++ linux-2.6.27/drivers/net/gianfar_mii.h
 @@ -27,7 +27,6 @@
  		| SUPPORTED_10baseT_Full \
  		| SUPPORTED_100baseT_Half \
@@ -318,9 +436,11 @@
  		| SUPPORTED_MII)
  
  struct gfar_mii {
---- linux-2.6.27.orig/drivers/net/phy/phy_device.c	2008-10-10 00:13:53.000000000 +0200
-+++ linux-2.6.27.modif/drivers/net/phy/phy_device.c	2008-12-08 15:21:22.000000000 +0100
-@@ -281,7 +281,7 @@
+Index: linux-2.6.27/drivers/net/phy/phy_device.c
+===================================================================
+--- linux-2.6.27.orig/drivers/net/phy/phy_device.c
++++ linux-2.6.27/drivers/net/phy/phy_device.c
+@@ -281,7 +281,7 @@ struct phy_device * phy_connect(struct n
  	if (IS_ERR(phydev))
  		return phydev;
  
@@ -329,7 +449,7 @@
  
  	phy_start_machine(phydev, NULL);
  
-@@ -302,7 +302,7 @@
+@@ -302,7 +302,7 @@ void phy_disconnect(struct phy_device *p
  		phy_stop_interrupts(phydev);
  
  	phy_stop_machine(phydev);
@@ -338,7 +458,7 @@
  	phydev->adjust_link = NULL;
  
  	phy_detach(phydev);
-@@ -438,7 +438,7 @@
+@@ -438,7 +438,7 @@ int genphy_config_advert(struct phy_devi
  	if (adv < 0)
  		return adv;
  
@@ -347,7 +467,7 @@
  		 ADVERTISE_PAUSE_ASYM);
  	if (advertise & ADVERTISED_10baseT_Half)
  		adv |= ADVERTISE_10HALF;
-@@ -503,7 +503,7 @@
+@@ -503,7 +503,7 @@ int genphy_setup_forced(struct phy_devic
  
  	if (DUPLEX_FULL == phydev->duplex)
  		ctl |= BMCR_FULLDPLX;
@@ -356,7 +476,7 @@
  	err = phy_write(phydev, MII_BMCR, ctl);
  
  	if (err < 0)
-@@ -671,7 +671,7 @@
+@@ -671,7 +671,7 @@ int genphy_read_status(struct phy_device
  				phydev->duplex = DUPLEX_FULL;
  		} else if (lpa & (LPA_100FULL | LPA_100HALF)) {
  			phydev->speed = SPEED_100;
@@ -365,4 +485,19 @@
  			if (lpa & LPA_100FULL)
  				phydev->duplex = DUPLEX_FULL;
  		} else
-
+Index: linux-2.6.27/include/linux/phy.h
+===================================================================
+--- linux-2.6.27.orig/include/linux/phy.h
++++ linux-2.6.27/include/linux/phy.h
+@@ -339,6 +339,11 @@ struct phy_driver {
+ 	u32 features;
+ 	u32 flags;
+ 
++	 /* Called during discovery to test if the
++	  * device can attach to the bus, even if
++        phy id and mask do not match */
++	bool (*detect)(struct mii_bus *bus, int addr);
++
+ 	/*
+ 	 * Called to initialize the PHY,
+ 	 * including after a reset

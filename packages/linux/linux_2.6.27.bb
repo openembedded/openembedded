@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r2"
+PR = "r3"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -13,16 +13,16 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
 
 SRC_URI_append_boc01 = "\
 	file://boc01.dts \
-	file://002-081105-headers.patch;patch=1 \
+	file://001-090114-sqn11x0-usb-hack.patch;patch=1 \
 	file://004-081205-usb.patch;patch=1 \
-	file://005-081217-isl12024.patch;patch=1 \
+	file://005-090112-isl12024.patch;patch=1 \
 	file://007-081217-lm73.patch;patch=1 \
 	file://008-081208-spi.patch;patch=1 \
-	file://010-081208-mii.patch;patch=1 \
-	file://011-081218-gpio.patch;patch=1 \
-	file://012-081223-cy3218-btns.patch;patch=1 \
-	file://013-090114-lcd.patch;patch=1 \
-	file://014-090114-sqn11x0-usb-hack.patch;patch=1 \
+	file://010-090112-mii.patch;patch=1 \
+	file://011-090115-gpio.patch;patch=1 \
+	file://012-090115-cy3218-btns.patch;patch=1 \
+	file://013-090116-lcd.patch;patch=1 \
+	file://014-090115-pm-wakeup.patch;patch=1 \
 	"
 
 SRC_URI_append_progear = "file://progear-bl.patch;patch=1\

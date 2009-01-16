@@ -1,8 +1,8 @@
-Index: Goobie-2.6-27/drivers/char/Kconfig
+Index: linux-2.6.27/drivers/char/Kconfig
 ===================================================================
---- Goobie-2.6-27.orig/drivers/char/Kconfig	2008-12-12 11:39:46.000000000 +0100
-+++ Goobie-2.6-27/drivers/char/Kconfig	2008-12-12 11:39:48.000000000 +0100
-@@ -1014,6 +1014,23 @@
+--- linux-2.6.27.orig/drivers/char/Kconfig
++++ linux-2.6.27/drivers/char/Kconfig
+@@ -1014,6 +1014,24 @@ config GPIO_VR41XX
  	tristate "NEC VR4100 series General-purpose I/O Unit support"
  	depends on CPU_VR41XX
  
@@ -18,6 +18,7 @@ Index: Goobie-2.6-27/drivers/char/Kconfig
 +	tristate "mpc8313e exio"
 +	depends on PPC_MPC831x
 +	select INPUT
++	select LEDS_CLASS
 +	default y
 +	help
 +	  Give userspace access to the Extenrder IO pins on the CPE board.
@@ -26,11 +27,11 @@ Index: Goobie-2.6-27/drivers/char/Kconfig
  config RAW_DRIVER
  	tristate "RAW driver (/dev/raw/rawN)"
  	depends on BLOCK
-Index: Goobie-2.6-27/drivers/char/Makefile
+Index: linux-2.6.27/drivers/char/Makefile
 ===================================================================
---- Goobie-2.6-27.orig/drivers/char/Makefile	2008-12-12 11:39:46.000000000 +0100
-+++ Goobie-2.6-27/drivers/char/Makefile	2008-12-12 11:39:48.000000000 +0100
-@@ -109,6 +109,8 @@
+--- linux-2.6.27.orig/drivers/char/Makefile
++++ linux-2.6.27/drivers/char/Makefile
+@@ -109,6 +109,8 @@ obj-$(CONFIG_TCG_TPM)		+= tpm/
  obj-$(CONFIG_PS3_FLASH)		+= ps3flash.o
  
  obj-$(CONFIG_JS_RTC)		+= js-rtc.o
@@ -39,18 +40,18 @@ Index: Goobie-2.6-27/drivers/char/Makefile
  js-rtc-y = rtc.o
  
  # Files generated that shall be removed upon make clean
-Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
+Index: linux-2.6.27/drivers/char/mpc8313e_exio.c
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ Goobie-2.6-27/drivers/char/mpc8313e_exio.c	2008-12-12 11:41:21.000000000 +0100
-@@ -0,0 +1,170 @@
+--- /dev/null
++++ linux-2.6.27/drivers/char/mpc8313e_exio.c
+@@ -0,0 +1,240 @@
 +/*
 +* CPE Extender io driver
 +*
-+*
 +* Copyright (C) 2007, CenoSYS (www.cenosys.com).
-+* Alexandre Coffignal
-+* alexandre.coffignal@cenosys.com
++*
++* Alexandre Coffignal <alexandre.coffignal@cenosys.com>
++* Sylvain Giroudon <sylvain.giroudon@goobie.fr>
 +*
 +* This software program is licensed subject to the GNU General Public License
 +* (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
@@ -69,6 +70,7 @@ Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
 +#include <linux/of_platform.h>
 +#include <sysdev/fsl_soc.h>
 +#include <linux/cdev.h>
++#include <linux/leds.h>
 +
 +static char module_name[] = "exio";
 +
@@ -77,13 +79,61 @@ Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
 +#define DEFAULT_STATE 0x58
 +#define EXIO_BASE 0xfa000000
 +#define EXIO_SIZE 0x2
++#define EXIO_LED_MASK 0x01
 +
 +static int major = 0;
 +static u8 exio_state = DEFAULT_STATE;
 +static void *exio_io = NULL;
 +static struct resource *exio_mem = NULL;
++static struct class * exio_class = NULL;
 +
-+static ssize_t mpc8313e_exio_write(struct file *file, const char __user *data, size_t len, loff_t *ppos)
++
++static void
++exio_led_set(struct led_classdev *led_cdev,
++	     enum led_brightness value)
++{
++	if ( value )
++		exio_state &= ~EXIO_LED_MASK;
++	else
++		exio_state |= EXIO_LED_MASK;
++
++	iowrite8(exio_state, exio_io);
++}
++
++static struct led_classdev exio_led = {
++	.name = "boc:blue:status",
++	.brightness_set = exio_led_set,
++};
++
++static inline int
++exio_led_init(void)
++{
++	return led_classdev_register(NULL, &exio_led);
++}
++
++
++static inline void
++exio_led_exit(void)
++{
++	led_classdev_unregister(&exio_led);
++}
++
++
++static inline void
++exio_led_suspend(void)
++{
++	led_classdev_suspend(&exio_led);
++}
++
++
++static inline void
++exio_led_resume(void)
++{
++	led_classdev_resume(&exio_led);
++}
++
++
++static ssize_t exio_write(struct file *file, const char __user *data, size_t len, loff_t *ppos)
 +{
 +	unsigned m = iminor(file->f_path.dentry->d_inode);
 +	size_t i;
@@ -94,7 +144,6 @@ Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
 +		char c;
 +		if (get_user(c, data + i))
 +			return -EFAULT;
-+		//TODO write
 +
 +		mask=(1<<(7-m));
 +		switch (c) {
@@ -121,7 +170,7 @@ Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
 +}
 +
 +
-+static ssize_t mpc8313e_exio_read(struct file *file, char __user * buf,
++static ssize_t exio_read(struct file *file, char __user * buf,
 +		size_t len, loff_t * ppos)
 +{
 +	unsigned m = iminor(file->f_path.dentry->d_inode);
@@ -137,87 +186,109 @@ Index: Goobie-2.6-27/drivers/char/mpc8313e_exio.c
 +
 +}
 +
-+static int mpc8313e_exio_open(struct inode *inode, struct file *file)
++static int exio_open(struct inode *inode, struct file *file)
 +{
 +    return 0;
 +}
 +
-+static int mpc8313e_exio_close(struct inode *inode, struct file *file)
++static int exio_close(struct inode *inode, struct file *file)
 +{
 +    printk(KERN_DEBUG "close()\n");
 +    return 0;
 +}
 +
-+struct file_operations mpc8313e_exio_fops =
++struct file_operations exio_fops =
 +{
-+	.owner =	THIS_MODULE,
-+    .read = mpc8313e_exio_read,
-+    .write = mpc8313e_exio_write,
-+    .open = mpc8313e_exio_open,
-+    .release = mpc8313e_exio_close  /* correspond a close */
++	.owner   = THIS_MODULE,
++	.read    = exio_read,
++	.write   = exio_write,
++	.open    = exio_open,
++	.release = exio_close  /* correspond a close */
 +};
 +
-+static struct class * exio_class;
 +
-+static int __init mpc8313e_exio_init(void)
++static void exio_cleanup(void)
 +{
-+	int rc,i;
++	if ( exio_mem )
++		release_mem_region(EXIO_BASE, EXIO_SIZE);
++	exio_mem = NULL;
++	exio_io = NULL;
 +
-+	rc = register_chrdev(major, module_name, &mpc8313e_exio_fops);
-+	if (rc < 0) {
++	if ( exio_class )
++		class_destroy(exio_class);
++	exio_class = NULL;
++
++	unregister_chrdev(major, module_name);
++}
++
++
++static int __init exio_init(void)
++{
++	int rc, i;
++
++	rc = register_chrdev(major, module_name, &exio_fops);
++	if ( rc < 0 )
 +		return rc;
-+	}
 +
-+	if (major == 0) {
++	if ( major == 0 ) {
 +		major = rc;  /* accept dynamic major number */
 + 		printk(KERN_INFO "%s: successfully loaded with major %d\n",module_name, major);
 +	}
 +
 +	exio_class = class_create(THIS_MODULE, "exio");
++	if ( exio_class == NULL )
++		goto out_cleanup;
 +
-+	for (i = 0; i < NB_EXIO; i++)
-+	{
++	for (i = 0; i < NB_EXIO; i++) {
 +		device_create(exio_class, NULL,	MKDEV(major, i)	,NULL, "exio%i", i);
-+
 +	}
 +
 +	/* System I/O Configuration Register Low */
-+	if (!(exio_mem = request_mem_region(EXIO_BASE, EXIO_SIZE, "mpc8313-exio")))
-+		return -ENOMEM;
++	exio_mem = request_mem_region(EXIO_BASE, EXIO_SIZE, "exio");
++	if ( exio_mem == NULL )
++		goto out_cleanup;
 +
-+	if (!(exio_io = ioremap(EXIO_BASE, EXIO_SIZE)))
-+	{
-+		release_mem_region(EXIO_BASE, EXIO_SIZE);
-+		exio_mem = NULL;
-+		return -ENOMEM;
-+	}
++	exio_io = ioremap(EXIO_BASE, EXIO_SIZE);
++	if ( exio_io == NULL )
++		goto out_cleanup;
++
++	/* Output default exio state */
 +	iowrite8(exio_state, exio_io);
 +
++	/* Register led class entry for driving the Status led */
++	exio_led_init();
++
 +	return 0;
++
++out_cleanup:
++	exio_cleanup();
++	return -ENOMEM;
 +}
 +
-+static void __exit mpc8313e_exio_cleanup(void)
++static void __exit exio_exit(void)
 +{
-+	if (exio_mem) release_mem_region(EXIO_BASE, EXIO_SIZE);
-+	exio_mem = NULL;
++	/* Unregister Status led */
++	exio_led_exit();
 +
-+    unregister_chrdev(major, module_name);
++	/* Cleanup all other gears */
++	exio_cleanup();
 +}
++
 +
 +module_param(major, int, 0644);
 +MODULE_PARM_DESC(major, "Static major number (none = dynamic)");
 +MODULE_AUTHOR("Alexandre Coffignal <alexandre.coffignal@cenosys.com>");
-+MODULE_DESCRIPTION("mpc8313e exio");
++MODULE_DESCRIPTION("boc01 exio management");
 +MODULE_LICENSE("GPL");
 +
-+module_init(mpc8313e_exio_init);
-+module_exit(mpc8313e_exio_cleanup);
++module_init(exio_init);
++module_exit(exio_exit);
 +
 +
-Index: Goobie-2.6-27/drivers/char/mpc8313e_gpio.c
+Index: linux-2.6.27/drivers/char/mpc8313e_gpio.c
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ Goobie-2.6-27/drivers/char/mpc8313e_gpio.c	2008-12-12 11:40:52.000000000 +0100
+--- /dev/null
++++ linux-2.6.27/drivers/char/mpc8313e_gpio.c
 @@ -0,0 +1,148 @@
 +/*
 +* mpc8313e gpio driver

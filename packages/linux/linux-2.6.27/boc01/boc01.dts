@@ -180,13 +180,12 @@
 			sleep = <&pmc 0x00300000>;
 		};
 
-		
 
 		mdio@24520 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			compatible = "fsl,gianfar-mdio";
-			reg = <0x24520 0x20>;				
+			reg = <0x24520 0x20>;
 			phy4: ethernet-phy@4 {
 				interrupt-parent = <&ipic>;
 				interrupts = <20 0x8>;
@@ -194,7 +193,7 @@
 				device_type = "ethernet-phy";
 			};
 		};
-		
+
 
 		enet1: ethernet@25000 {
 			cell-index = <1>;
@@ -263,6 +262,14 @@
 			interrupts = <91 8 79 8 85 8 73 8>;
 			interrupt-parent = <&ipic>;
 		};
+
+		wakeup@27000 {
+			compatible = "fsl,wakeup-it", "fsl,gtm";
+			reg = <0x27000 0x100>;
+			interrupts = <17 8 19 8>;
+			interrupt-parent = <&ipic>;
+		};
+
 	};
 
 	sleep-nexus {
@@ -275,7 +282,7 @@
 		pci0: pci@e0008500 {
 			cell-index = <1>;
 			interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
-			interrupt-map = <				
+			interrupt-map = <
 					/* IDSEL 0x0F - PCI slot */
 					 0x7800 0x0 0x0 0x1 &ipic 48 0x8
 					 0x7800 0x0 0x0 0x2 &ipic 48 0x8
