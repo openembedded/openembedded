@@ -4,7 +4,7 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "curl-${PV}"
 SRCNAME = "pycurl"
-PR = "ml1"
+PR = "ml2"
 
 SRC_URI = "\
   http://${SRCNAME}.sourceforge.net/download/${SRCNAME}-${PV}.tar.gz \
@@ -13,9 +13,5 @@ SRC_URI = "\
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
-
-do_install_append() {
-	mv -f ${D}${datadir}/share/* ${D}${datadir}/
-}
 
 RDEPENDS = "python-core curl (>=${PV})"

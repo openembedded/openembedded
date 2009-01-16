@@ -58,6 +58,11 @@ distutils_do_install() {
         fi
 
         rm -f ${D}${libdir}/${PYTHON_DIR}/site-packages/easy-install.pth
+        
+        #
+        # FIXME: Bandaid against wrong datadir computation
+        #
+        mv -f ${D}${datadir}/share/* ${D}${datadir}/
 }
 
 EXPORT_FUNCTIONS do_compile do_install
