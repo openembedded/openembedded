@@ -1,60 +1,19 @@
-DESCRIPTION = "Video player and streamer"
-HOMEPAGE = "http://www.videolan.org"
-LICENSE = "GPL"
-PRIORITY = "optional"
-SECTION = "multimedia"
+# This recipe packages vlc as a library as well, so qt4 dependencies
+# can be avoided when ony the library is installed.
+# Would be cool if when newer vlc is added to OE and older ones are phased
+# out that could be made the default.
 
-PR = "r1"
+require vlc.inc
+
+PR = "r2"
 
 # ffmpeg from git (library version => 52) is required
 # libtool-native must be >= 2.2.4
-DEPENDS = "libdvdcss libdvdread libfribidi libtool hal gettext libgcrypt schroedinger libsdl-x11 qt4-x11-free dbus libxml2 gnutls tremor faad2 ffmpeg flac \
-           ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag liba52 mpeg2dec', d)}"
+DEPENDS += "libdvdcss libdvdread"
 
-SRC_URI = "http://download.videolan.org/pub/videolan/vlc/${PV}/vlc-${PV}.tar.bz2"
-
-inherit autotools
-
-EXTRA_OECONF = "\
-	--enable-libtool \
-	--with-contrib \
+EXTRA_OECONF += "\
 	--enable-dvdread \
-	--disable-wxwidgets \
-	--enable-x11 --enable-xvideo \ 
-	--disable-screen --disable-caca \
-	--enable-run-as-root \
-	--enable-httpd --enable-vlm \
-	--enable-freetype \
-	--enable-sdl \ 
-	--enable-png \
-	--enable-live555 --enable-tremor \
-	--enable-v4l2 --enable-v4l --disable-aa --enable-wma --disable-faad \
-	--enable-dbus \
-	--enable-hal \	
-	--without-contrib \
-	--disable-opengl --disable-glx \
-	ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}/moc4 \
-	ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}/rcc4 \
-	ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}/uic4 \
 "
-
-
-do_configure() {
-	cp ${STAGING_DATADIR}/aclocal/libgcrypt.m4 ${S}/m4/ 
-	./bootstrap	
-	gnu-configize --force
-	libtoolize --force
-	#autoreconf --force -i
-	cp ${STAGING_DATADIR}/libtool/config.* ${S}/autotools/
-	oe_runconf
-	rm config.log
-	sed -i -e s:-L/usr/lib:-L${STAGING_LIBDIR}/:g vlc-config
-	sed -i -e s:'$(MOC) $(DEFS) $(CPPFLAGS)':'$(MOC) $(DEFS)'\ -I${S}/include\ -DSYS_LINUX:g ${S}/modules/gui/qt4/Makefile
-}
-
-do_stage() {
-	autotools_stage_all
-}
 
 LEAD_SONAME = "libvlc.so.2"
 
