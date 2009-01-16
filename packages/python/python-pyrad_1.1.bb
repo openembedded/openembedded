@@ -4,6 +4,7 @@ PRIORITY = "optional"
 LICENSE = "BSD"
 RDEPENDS = "python-crypt"
 SRCNAME = "pyrad"
+PR = "r1"
 
 SRC_URI = "http://pypi.python.org/packages/source/p/${SRCNAME}/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

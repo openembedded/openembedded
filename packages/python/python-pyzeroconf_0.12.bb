@@ -2,15 +2,14 @@ DESCRIPTION = "A pure Python implementation of Zeroconf"
 SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "LGPL"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pyzeroconf/pyzeroconf-${PV}.tgz"
-
 S = "${WORKDIR}/pyzeroconf-${PV}"
 
 inherit distutils-base
 
 do_install() {
-
    install -d ${D}${libdir}
    install -d ${D}${libdir}/${PYTHON_DIR}
    install -d ${D}${libdir}/${PYTHON_DIR}/site-packages

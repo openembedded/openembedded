@@ -10,7 +10,7 @@ LICENSE = "Boost Software License"
 
 DEPENDS = "python boost-jam-native zlib bzip2"
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/boost/${BOOST_P}.tar.bz2 \

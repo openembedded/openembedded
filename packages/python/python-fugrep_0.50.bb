@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.j-raedler.de/pages/software/fugrep.php"
 SECTION = "devel/python"
 LICENSE = "${PN}"
 SRCNAME = "FuGrep"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "http://www.j-raedler.de/media/Software/FuGrep-${PV}.zip"
 S = "${WORKDIR}/${SRCNAME}-${PV}"

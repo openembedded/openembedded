@@ -3,7 +3,7 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 DEPENDS = "lirc"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/pylirc/pylirc-${PV}.tar.gz"
 S = "${WORKDIR}/pylirc-${PV}"

@@ -1,15 +1,15 @@
 DESCRIPTION = "The xappy python module is an easy-to-use interface to the Xapian search engine"
+SECTION = "python/devel"
 LICENSE = "GPLv2"
-
-DEPENDS += "xapian-core"
+DEPENDS = "xapian-core"
+PR = "ml0"
 
 SRC_URI = "http://xappy.googlecode.com/files/xappy-${PV}.tar.gz"
+S = "${WORKDIR}/xappy-${PV}"
 
 inherit distutils
-
-S = "${WORKDIR}/xappy-${PV}"
 
 do_stage() {
 	distutils_stage_all
 }
-	
+
