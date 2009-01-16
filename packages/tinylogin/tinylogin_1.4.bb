@@ -1,13 +1,13 @@
-SECTION = "base"
 DESCRIPTION = "TinyLogin is a suite of tiny UNIX \
 utilities for handling logins, user authentication, \
 changing passwords, and otherwise maintaining users \
 and groups on an embedded system."
-HOMEPAGE = "http://tinylogin.tinylogin.net/"
+HOMEPAGE = "http://tinylogin.busybox.net/"
+SECTION = "base"
 LICENSE = "GPL"
 PR = "r6"
 
-SRC_URI = "http://tinylogin.tinylogin.net/downloads/tinylogin-${PV}.tar.bz2 \
+SRC_URI = "http://tinylogin.busybox.net/downloads/tinylogin-${PV}.tar.bz2 \
 	file://cvs-20040608.patch;patch=1;pnum=1 \
 	file://add-system.patch;patch=1;pnum=1 \
 	file://adduser-empty_pwd.patch;patch=1 \
