@@ -1,0 +1,15 @@
+diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
+index 25f1230..789190e 100644
+--- a/arch/arm/boot/Makefile
++++ b/arch/arm/boot/Makefile
+@@ -55,6 +55,10 @@ $(obj)/compressed/vmlinux: $(obj)/Image FORCE
+ 
+ $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
+ 	$(call if_changed,objcopy)
++	devio > foo 'wl 0xe3a01c06,4' 'wl 0xe3811031,4'
++	cat foo $(obj)/zImage > zImage.new
++	mv zImage.new $(obj)/zImage
++	rm foo
+ 	@echo '  Kernel: $@ is ready'
+ 
+ endif

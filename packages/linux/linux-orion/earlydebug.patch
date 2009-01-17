@@ -1,0 +1,22 @@
+diff --git a/kernel/printk.c b/kernel/printk.c
+index a30fe33..9758c4f 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -16,6 +16,8 @@
+  *	01Mar01 Andrew Morton <andrewm@uow.edu.au>
+  */
+ 
++extern void printascii(const char *);
++
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ #include <linux/tty.h>
+@@ -653,6 +655,8 @@ asmlinkage int vprintk(const char *fmt, va_list args)
+ 	/* Emit the output into the temporary buffer */
+ 	printed_len = vscnprintf(printk_buf, sizeof(printk_buf), fmt, args);
+ 
++	printascii(printk_buf);
++
+ 	/*
+ 	 * Copy the output into log_buf.  If the caller didn't provide
+ 	 * appropriate log level tags, we insert them here
