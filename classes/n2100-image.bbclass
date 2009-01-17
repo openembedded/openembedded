@@ -1,6 +1,6 @@
 n2100_pack_image() {
         # find latest kernel
-        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -1`
+        KERNEL=`ls -tr ${DEPLOY_DIR_IMAGE}/zImage* | tail -n 1`
         if [ -z "$KERNEL" ]; then
                 oefatal "No kernel found in ${DEPLOY_DIR_IMAGE}. Bitbake linux to create one."
                 exit 1
