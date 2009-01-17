@@ -3,7 +3,7 @@ SECTION = "kernel"
 LICENSE = "GPL"
 PR = "r1"
 DEPENDS = "devio-native"
-COMPATIBLE_MACHINE = "(dns323|mv2120|kuropro|lspro|ts109|ts209|ts409)"
+COMPATIBLE_MACHINE = "(dns323|mv2120|kuropro|lspro|tsx09|ts409)"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://kuropro-foonas-mtd.patch;patch=1 \
