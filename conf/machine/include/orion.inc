@@ -4,7 +4,7 @@
 TARGET_ARCH = "arm"
 TARGET_FPU  = "soft"
 
-MACHINE_FEATURES 		= "kernel26 usbhost ext2 pci"
+MACHINE_FEATURES 		= "kernel26 usbhost ext2"
 MACHINE_TASK_PROVIDER 		= "task-base"
 
 USE_DEVFS = "0"
