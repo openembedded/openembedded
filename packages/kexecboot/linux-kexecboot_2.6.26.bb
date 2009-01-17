@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-PR = "r6"
+PR = "r7"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
