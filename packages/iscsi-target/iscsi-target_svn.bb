@@ -3,6 +3,8 @@ HOMEPAGE = "http://iscsitarget.sourceforge.net/"
 LICENSE = "GPL"
 PR = "r12"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = "svn://svn.berlios.de/iscsitarget/;module=trunk;rev=HEAD \
 	   file://libs.patch;patch=1 \
 	   file://init \
