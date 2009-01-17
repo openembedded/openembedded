@@ -1,0 +1,111 @@
+#!/bin/sh
+# /usr/sbin/temper - Thecus F75375 fan control script
+#
+# v1: From community n2100 fan control script (who is the author?)
+# v2: Moved to a separate n1200 version
+# v3: Hacked to work on both n1200 and n2100
+
+# Fan controller
+F75375=`find /sys -name 0-002e | grep i2c-0`
+PWM1=$F75375/pwm1
+
+# Chip temperature values, maximum allowed temp. and temp. log threshold
+CHIPS=$F75375/temp?_input
+TC_CRIT=70
+TC_MAX=60
+TC_THRESH=55
+
+# Disk devices and maximum allowed temp. and temp. log threshold
+DISKS=/dev/sd?
+TD_CRIT=70
+TD_MAX=60
+TD_THRESH=55
+
+# Fan device, lowest PWM value and control range
+FAN=$F75375/pwm1
+FAN_MIN=0
+FAN_RNG=140
+
+# Minimum temp
+TMP_MIN=32
+
+# Logging interval, in minutes. Keep this above the hard disk spin
+# down time this will only log when above log thresholds(s)
+LOG=1
+
+# Enable the fan
+echo 1 > $F75375/pwm1_enable
+
+echo $$ > /var/run/temper.pid
+
+while true ; do
+i=0
+while [ $i -lt $LOG ] ; do
+   i=$(($i+1))
+   # read the disk temperatures every minute
+   TD=0
+   for D in $DISKS ; do
+      t=$(hddtemp -q -n $D)
+      if [ $t -gt $TD ] ; then
+         TD=$t
+      fi
+   done
+
+   j=0
+   while [ $j -lt 6 ] ; do
+      j=$(($j+1))
+      # read the chip temperatures every 10 seconds
+      TC=0
+      for C in $CHIPS ; do
+         t=$(($(cat $C)/1000))
+         if [ $t -gt $TC ] && [ $t -lt 255 ]; then
+            TC=$t
+         fi
+      done
+
+      FC=$(((($TC-$TMP_MIN)*$FAN_RNG)/($TC_MAX-$TMP_MIN)+$FAN_MIN))
+
+      if [ $TC -gt $TC_MAX ] ; then
+         FC=255
+      elif [ $FC -gt $(($FAN_MIN+$FAN_RNG)) ] ; then
+         FC=$FAN_MAX
+      elif [ $FC -lt $FAN_MIN ] ; then
+         FC=$FAN_MIN
+      fi
+
+      FD=$(((($TD-$TMP_MIN)*$FAN_RNG)/($TD_MAX-$TMP_MIN)+$FAN_MIN))
+
+      if [ $TD -gt $TD_MAX ] ; then
+         FD=255
+      elif [ $FD -gt $(($FAN_MIN+$FAN_RNG)) ] ; then
+         FD=$FAN_MAX
+      elif [ $FD -lt $FAN_MIN ] ; then
+         FD=$FAN_MIN
+      fi
+
+      if [ $FC -gt $FD ] ; then
+         F=$FC
+      else
+         F=$FD
+      fi
+
+      if [ "$1" = "-m" ] ; then
+         echo "chips $TC disks $TD -> fan $F"
+         exit 0
+      fi
+      echo $F >$FAN
+      # echo 0  >$PWM1
+
+      sleep 10
+   done
+
+done
+
+# If we are over our mid range tempterature thresholds log to syslog
+if [ $TC -gt $TC_THRESH ] || [ $TD -gt $TD_THRESH ] ; then
+   logger -p daemon.notice temper "- chips $TC, disks $TD -> fan $F"
+fi
+
+done
+
+# EOF
