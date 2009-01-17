@@ -1,0 +1,20 @@
+diff -urN qcontrol-0.4.old//Makefile qcontrol-0.4//Makefile
+--- qcontrol-0.4.old//Makefile	2008-05-11 23:32:11.000000000 +0100
++++ qcontrol-0.4//Makefile	2008-10-25 23:53:15.820091908 +0100
+@@ -1,5 +1,5 @@
+-CFLAGS=-Os -Wall -I /usr/include/lua5.1
+-LDFLAGS=-llua5.1 -lpthread
++CFLAGS=-Os -Wall
++LDFLAGS=-lpthread -lm -ldl
+ SOURCES=piccontrol.c ts209.c evdev.c
+ OBJECTS=$(SOURCES:.c=.o)
+ EXECUTABLE=piccontrol
+@@ -7,7 +7,7 @@
+ all:	$(SOURCES) $(EXECUTABLE)
+ 	
+ $(EXECUTABLE): $(OBJECTS) 
+-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
++	$(CC) -o $@ $(OBJECTS) $(LDFLAGS)
+ 
+ .cpp.o:
+ 	$(CC) $(CFLAGS) $< -o $@

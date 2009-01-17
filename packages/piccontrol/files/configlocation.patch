@@ -1,0 +1,13 @@
+diff --git a/piccontrol.c.orig b/piccontrol.c
+index 6c2fba3..e29eb33 100644
+--- a/piccontrol.c.orig
++++ b/piccontrol.c
+@@ -231,7 +231,7 @@ static int pic_lua_setup()
+ 	lua_register(lua, "register", register_module);
+ 	lua_register(lua, "piccmd", run_command_lua);
+ 
+-	luaL_dofile(lua, "config.lua");
++	luaL_dofile(lua, "/etc/piccontrol.conf");
+ 
+ 	return 0;
+ }
