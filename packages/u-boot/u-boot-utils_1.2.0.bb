@@ -3,7 +3,7 @@ SECTION = "bootloaders"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "mtd-utils"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
         file://fw_env.c.patch;patch=1 \
@@ -13,6 +13,8 @@ SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2 \
 
 S = "${WORKDIR}/u-boot-${PV}"
 
+EXTRA_OEMAKE = "CROSS_COMPILE=${TARGET_PREFIX}"
+TARGET_LDFLAGS = ""
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/u-boot-${PV}"
 
 do_configure() {
@@ -25,10 +27,6 @@ do_compile () {
 }
 
 do_install () {
-        :
-}
-
-do_install_openprotium () {
         install -d      ${D}/sbin
         install -d      ${D}${sysconfdir}
         install -m 644 ${WORKDIR}/fw_env.config ${D}${sysconfdir}/fw_env.config
