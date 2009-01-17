@@ -40,6 +40,14 @@ def get_siteinfo_list(d):
                "i486-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i586-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
                "i686-linux-uclibc":       "endian-little bit-32 common-linux common-uclibc ix86-common",\
+               "i386-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i486-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i586-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i686-cygwin":             "endian-little bit-32 common-cygwin ix86-common",\
+               "i386-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i486-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i586-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
+               "i686-mingw32":            "endian-little bit-32 common-mingw ix86-common",\
                "mipsel-linux":            "endian-little bit-32 common-linux common-glibc",\
                "mipsel-linux-uclibc":     "endian-little bit-32 common-linux common-uclibc",\
                "mips-linux":              "endian-big bit-32 common-linux common-glibc",\
