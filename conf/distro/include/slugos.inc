@@ -268,5 +268,9 @@ PREFERRED_VERSION_pkgconfig-native      ?= "0.23"
 # libusb will overwrite libusb-compat in staging.
 PREFERRED_VERSION_libusb                ?= "0.0.0"
 
+# mtd-utils 1.2.0+git cannot be fetched, so SlugOS will stick
+# with 1.1.0 for now:
+PREFERRED_VERSION_mtd-utils             ?= "1.1.0"
+
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc
