@@ -1,0 +1,32 @@
+--- /tmp/opal.m4	2009-01-18 19:24:21.000000000 +0100
++++ opal-3.4.4/opal.m4	2009-01-18 19:25:19.000000000 +0100
+@@ -813,27 +813,9 @@
+           if test "x$opal_gsm" = "xyes"; then
+             AC_MSG_CHECKING(if system GSM library has WAV49)
+             old_LIBS=$LIBS
+-            opal_gsm=no
++            opal_gsm=yes
+ 
+             LIBS="$LIBS -lgsm"
+-            AC_RUN_IFELSE(
+-            [AC_LANG_PROGRAM([[
+-            #include <gsm.h>
+- ]],[[
+-            int option = 0;
+-            gsm handle = gsm_create();
+-            return (gsm_option(handle, GSM_OPT_WAV49, &option) == -1) ? 1 : 0;
+- ]])], opal_gsm=yes) 
+-            LIBS=$old_LIBS
+-            AC_MSG_RESULT($opal_gsm)
+-
+-            if test "x${opal_gsm}" = "xyes" ; then
+-              GSM_CLFAGS=""
+-              GSM_LIBS="-lgsm"
+-            fi
+-            OPAL_MSG_CHECK([System GSM], [$opal_gsm])
+-          fi
+-          AS_IF([test AS_VAR_GET([opal_gsm]) = yes], [$1], [$2])[]
+          ])
+ 
+ 
+ 
