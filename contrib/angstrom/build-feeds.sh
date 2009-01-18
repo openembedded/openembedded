@@ -90,6 +90,7 @@ do
                       duke3d \
                       e-uae \
                       e-wm \
+                      ekiga \
                       empathy \ 
                       epdfview \
                       epiphany \
