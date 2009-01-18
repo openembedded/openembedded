@@ -217,6 +217,11 @@ PACKAGES += "${PN}-overlay-proxycache"
 EXTRA_OECONF += "${OPENLDAP_OPTIONS}"
 DEPENDS      += "${OPENLDAP_DEPENDS}"
 
+do_configure() {
+	gnu-configize
+	oe_runconf
+}
+
 #FIXME: this is a hack, at present an openldap build will pick up the header
 # files from staging rather than the local ones (bad -I order), so remove
 # the headers (from openldap-old.x) before compiling...
@@ -255,7 +260,7 @@ PACKAGES += "${PN}-slapd ${PN}-slurpd ${PN}-bin"
 
 # Package contents - shift most standard contents to -bin
 FILES_${PN} = "${libdir}/lib*.so.* ${sysconfdir}/openldap/ldap.* ${localstatedir}/openldap-data"
-FILES_${PN}-slapd = "${libexecdir}/slapd ${sbindir} ${localstatedir}/run \
+FILES_${PN}-slapd = "${sysconfdir}/init.d ${libexecdir}/slapd ${sbindir} ${localstatedir}/run \
 	${sysconfdir}/openldap/slapd.* ${sysconfdir}/openldap/schema \
 	${sysconfdir}/openldap/DB_CONFIG.example"
 FILES_${PN}-slurpd = "${libexecdir}/slurpd ${localstatedir}/openldap-slurp ${localstatedir}/run"
@@ -270,16 +275,16 @@ do_install_append() {
 	rm -f ${D}${localstatedir}/openldap-data/DB_CONFIG.example
 }
 
-pkg_postinst () {
+pkg_postinst_${PN}-slapd () {
         if test -n "${D}"; then
                 D="-r $D"
         fi
-        update-rc.d $D acpid defaults
+        update-rc.d $D openldap defaults
 }
 
-pkg_prerm () {
+pkg_prerm_${PN}-slapd () {
         if test -n "${D}"; then
                 D="-r $D"
         fi
-        update-rc.d $D acpid remove
+        update-rc.d $D openldap remove
 }
