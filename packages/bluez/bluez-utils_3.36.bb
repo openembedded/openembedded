@@ -1,6 +1,6 @@
 require bluez-utils3.inc
 
-PR = "r1"
+PR = "r2"
 
 # removed hciattach-ti-bts.patch (landed upstream)
 SRC_URI = "http://bluez.sourceforge.net/download/bluez-utils-${PV}.tar.gz \
