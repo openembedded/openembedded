@@ -6,7 +6,10 @@
 TARGET_ARCH = "powerpc"
 PACKAGE_EXTRA_ARCHS = "ppc ppc603e"
 MACHINE_FEATURES = "kernel26 usbhost ext2 pci uboot"
-TARGET_FPU = "hard"
+
+# TARGET_FPU is a distro feature
+# Weakly assign it and remove when all distros supporting this device have updated
+TARGET_FPU ?= "hard"
 
 USE_DEVFS = "0"
 

@@ -2,7 +2,10 @@
 #@DESCRIPTION: Machine configuration for various different Marvell Orion based devices
 
 TARGET_ARCH = "arm"
-TARGET_FPU  = "soft"
+
+# TARGET_FPU is a distro feature
+# Weakly assign it and remove when all distros supporting this device have updated
+TARGET_FPU  ?= "soft"
 
 MACHINE_FEATURES 		= "kernel26 usbhost ext2"
 MACHINE_TASK_PROVIDER 		= "task-base"
