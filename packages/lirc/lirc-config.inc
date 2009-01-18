@@ -1,6 +1,6 @@
 EXTRA_OECONF = "--with-kerneldir=${STAGING_KERNEL_DIR} --with-driver=${DRIVER}"
 
-DRIVER ?= "serial"
+DRIVER ?= "serial mceusb mceusb2"
 # fails to build at the moment, re-enable later
 #DRIVER_collie = "sa1100"
 DRIVER_h3600 = "sa1100"
