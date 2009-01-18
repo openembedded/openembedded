@@ -1,8 +1,8 @@
 DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
-DEPENDS = "python-pygobject-native"
-PR = "ml0"
+DEPENDS = "python-pygobject-native-${PV}"
+PR = "ml1"
 
 DEFAULT_PREFERENCE = "-1"
 
@@ -30,5 +30,9 @@ do_stage() {
 	cp docs/style.css ${STAGING_LIBDIR}/../share/gtk-doc/html/pygobject/
 }
 
+PACKAGES += "${PN}-lib"
+
 FILES_${PN} = "${libdir}/python*"
-FILES_${PN}-dev += "${datadir}/pygobject/xsl"
+FILES_${PN}-lib = "${libdir}/lib*.so.*"
+FILES_${PN}-dev += "${bindir} ${datadir}"
+FILES_${PN}-dbg += "${libdir}/.debug"
