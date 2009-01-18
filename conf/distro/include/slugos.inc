@@ -249,7 +249,7 @@ PREFERRED_PROVIDER_gconf  ?= "gconf"
 # be pulled from a separate include file.  But they can
 # go here for now.
 PREFERRED_VERSION_automake-native       ?= "1.10"
-PREFERRED_VERSION_busybox               ?= "1.11.3"
+PREFERRED_VERSION_busybox               ?= "1.13.2"
 PREFERRED_VERSION_dbus                  ?= "1.2.1"
 PREFERRED_VERSION_glib-2.0              ?= "2.18.3"
 PREFERRED_VERSION_glib-2.0-native       ?= "2.18.0"
