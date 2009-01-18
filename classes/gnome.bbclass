@@ -13,7 +13,7 @@ FILES_${PN} += "${datadir}/application-registry  \
 	${datadir}/mime/packages \	
 	${datadir}/gnome-2.0"
 
-inherit autotools pkgconfig gconf mime
+inherit autotools gtk-icon-cache pkgconfig gconf mime
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
