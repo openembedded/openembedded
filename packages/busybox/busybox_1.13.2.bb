@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -38,7 +38,3 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
 }
 
-pkg_postinst_${PN}_append() {
-
-    update-rc.d $OPT mdev start 06 S .
-}
