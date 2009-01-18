@@ -1,7 +1,7 @@
 DESCRIPTION = "Linux Kernel for Marvell Orion based devices"
 SECTION = "kernel"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 DEPENDS = "devio-native"
 COMPATIBLE_MACHINE = "(dns323|mv2120|kuropro|lspro|tsx09|ts409)"
 
