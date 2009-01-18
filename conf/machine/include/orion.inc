@@ -22,5 +22,7 @@ SERIAL_CONSOLE = "ttyS0 115200"
 
 # Currently all the orion devices we support use uImage
 KERNEL_IMAGETYPE = "uImage"
+UBOOT_ENTRYPOINT = "0x00008000"
+UBOOT_LOADADDRESS = "0x00008000"
 
 require conf/machine/include/tune-arm926ejs.inc
