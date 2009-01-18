@@ -1,6 +1,6 @@
 diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/arm/tools/mach-types
 --- linux-2.6.27.10.old//arch/arm/tools/mach-types	2008-12-18 17:13:59.000000000 +0000
-+++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:53:55.124000375 +0000
++++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:45:14.777942860 +0000
 @@ -539,7 +539,6 @@
  tidsc25			MACH_TIDSC25		TIDSC25			523
  akcpmxl			MACH_AKCPMXL		AKCPMXL			524
@@ -9,12 +9,12 @@ diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/a
  pxa_mpm10		MACH_PXA_MPM10		PXA_MPM10		527
  pxa_kyanite		MACH_PXA_KYANITE	PXA_KYANITE		528
  sgold			MACH_SGOLD		SGOLD			529
-@@ -1682,7 +1681,7 @@
- wbd111			MACH_WBD111		WBD111			1690
- elaracpe		MACH_ELARACPE		ELARACPE		1691
- mabv3			MACH_MABV3		MABV3			1692
--mv2120			MACH_MV2120		MV2120			1693
-+mv2120			MACH_MV2120		MV2120			526
- csb737			MACH_CSB737		CSB737			1695
- mx51_3ds		MACH_MX51_3DS		MX51_3DS		1696
- g900			MACH_G900		G900			1697
+@@ -1558,7 +1557,7 @@
+ davinci_ldk		MACH_DAVINCI_LDK	DAVINCI_LDK		1562
+ phreedom		MACH_PHREEDOM		PHREEDOM		1563
+ sg310			MACH_SG310		SG310			1564
+-ts_x09			MACH_TS209		TS209			1565
++ts_x09			MACH_TS209		TS209			526
+ at91cap9adk		MACH_AT91CAP9ADK	AT91CAP9ADK		1566
+ tion9315		MACH_TION9315		TION9315		1567
+ mast			MACH_MAST		MAST			1568

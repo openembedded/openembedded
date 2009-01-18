@@ -1,15 +1,20 @@
-diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
-index 25f1230..789190e 100644
---- a/arch/arm/boot/Makefile
-+++ b/arch/arm/boot/Makefile
-@@ -55,6 +55,10 @@ $(obj)/compressed/vmlinux: $(obj)/Image FORCE
- 
- $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
- 	$(call if_changed,objcopy)
-+	devio > foo 'wl 0xe3a01c06,4' 'wl 0xe3811031,4'
-+	cat foo $(obj)/zImage > zImage.new
-+	mv zImage.new $(obj)/zImage
-+	rm foo
- 	@echo '  Kernel: $@ is ready'
- 
- endif
+diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/arm/tools/mach-types
+--- linux-2.6.27.10.old//arch/arm/tools/mach-types	2008-12-18 17:13:59.000000000 +0000
++++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:50:39.081913077 +0000
+@@ -539,7 +539,6 @@
+ tidsc25			MACH_TIDSC25		TIDSC25			523
+ akcpmxl			MACH_AKCPMXL		AKCPMXL			524
+ av3xx			MACH_AV3XX		AV3XX			525
+-avila			MACH_AVILA		AVILA			526
+ pxa_mpm10		MACH_PXA_MPM10		PXA_MPM10		527
+ pxa_kyanite		MACH_PXA_KYANITE	PXA_KYANITE		528
+ sgold			MACH_SGOLD		SGOLD			529
+@@ -1578,7 +1577,7 @@
+ tt9200			MACH_TT9200		TT9200			1582
+ digi2410		MACH_DIGI2410		DIGI2410		1583
+ terastation_pro2	MACH_TERASTATION_PRO2	TERASTATION_PRO2	1584
+-linkstation_pro		MACH_LINKSTATION_PRO	LINKSTATION_PRO		1585
++linkstation_pro		MACH_LINKSTATION_PRO	LINKSTATION_PRO		526
+ motorola_a780		MACH_MOTOROLA_A780	MOTOROLA_A780		1587
+ motorola_e6		MACH_MOTOROLA_E6	MOTOROLA_E6		1588
+ motorola_e2		MACH_MOTOROLA_E2	MOTOROLA_E2		1589

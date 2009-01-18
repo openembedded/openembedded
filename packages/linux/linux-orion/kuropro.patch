@@ -1,15 +1,20 @@
-diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
-index 25f1230..789190e 100644
---- a/arch/arm/boot/Makefile
-+++ b/arch/arm/boot/Makefile
-@@ -55,6 +55,10 @@ $(obj)/compressed/vmlinux: $(obj)/Image FORCE
- 
- $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
- 	$(call if_changed,objcopy)
-+	devio > foo 'wl 0xe3a01c05,4' 'wl 0xe38110e5,4'
-+	cat foo $(obj)/zImage > zImage.new
-+	mv zImage.new $(obj)/zImage
-+	rm foo
- 	@echo '  Kernel: $@ is ready'
- 
- endif
+diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/arm/tools/mach-types
+--- linux-2.6.27.10.old//arch/arm/tools/mach-types	2008-12-18 17:13:59.000000000 +0000
++++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:14:20.269277327 +0000
+@@ -539,7 +539,6 @@
+ tidsc25			MACH_TIDSC25		TIDSC25			523
+ akcpmxl			MACH_AKCPMXL		AKCPMXL			524
+ av3xx			MACH_AV3XX		AV3XX			525
+-avila			MACH_AVILA		AVILA			526
+ pxa_mpm10		MACH_PXA_MPM10		PXA_MPM10		527
+ pxa_kyanite		MACH_PXA_KYANITE	PXA_KYANITE		528
+ sgold			MACH_SGOLD		SGOLD			529
+@@ -1503,7 +1502,7 @@
+ apple_iphone		MACH_APPLE_IPHONE	APPLE_IPHONE		1506
+ yl9200			MACH_YL9200		YL9200			1507
+ rd88f5182		MACH_RD88F5182		RD88F5182		1508
+-kurobox_pro		MACH_KUROBOX_PRO	KUROBOX_PRO		1509
++kurobox_pro		MACH_KUROBOX_PRO	KUROBOX_PRO		526
+ se_poet			MACH_SE_POET		SE_POET			1510
+ mx31_3ds		MACH_MX31_3DS		MX31_3DS		1511
+ r270			MACH_R270		R270			1512

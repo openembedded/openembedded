@@ -1,15 +1,20 @@
-diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
-index 25f1230..789190e 100644
---- a/arch/arm/boot/Makefile
-+++ b/arch/arm/boot/Makefile
-@@ -55,6 +55,10 @@ $(obj)/compressed/vmlinux: $(obj)/Image FORCE
- 
- $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
- 	$(call if_changed,objcopy)
-+	devio > foo 'wl 0xe3a01c06,4' 'wl 0xe3811041,4'
-+	cat foo $(obj)/zImage > zImage.new
-+	mv zImage.new $(obj)/zImage
-+	rm foo
- 	@echo '  Kernel: $@ is ready'
- 
- endif
+diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/arm/tools/mach-types
+--- linux-2.6.27.10.old//arch/arm/tools/mach-types	2008-12-18 17:13:59.000000000 +0000
++++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:49:34.032000351 +0000
+@@ -539,7 +539,6 @@
+ tidsc25			MACH_TIDSC25		TIDSC25			523
+ akcpmxl			MACH_AKCPMXL		AKCPMXL			524
+ av3xx			MACH_AV3XX		AV3XX			525
+-avila			MACH_AVILA		AVILA			526
+ pxa_mpm10		MACH_PXA_MPM10		PXA_MPM10		527
+ pxa_kyanite		MACH_PXA_KYANITE	PXA_KYANITE		528
+ sgold			MACH_SGOLD		SGOLD			529
+@@ -1593,7 +1592,7 @@
+ cartesio		MACH_CARTESIO		CARTESIO		1598
+ toybox			MACH_TOYBOX		TOYBOX			1599
+ tx27			MACH_TX27		TX27			1600
+-ts409			MACH_TS409		TS409			1601
++ts409			MACH_TS409		TS409			526
+ p300			MACH_P300		P300			1602
+ xdacomet		MACH_XDACOMET		XDACOMET		1603
+ dexflex2		MACH_DEXFLEX2		DEXFLEX2		1604

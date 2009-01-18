@@ -1,15 +1,20 @@
-diff --git a/arch/arm/boot/Makefile b/arch/arm/boot/Makefile
-index 25f1230..789190e 100644
---- a/arch/arm/boot/Makefile
-+++ b/arch/arm/boot/Makefile
-@@ -55,6 +55,10 @@ $(obj)/compressed/vmlinux: $(obj)/Image FORCE
- 
- $(obj)/zImage:	$(obj)/compressed/vmlinux FORCE
- 	$(call if_changed,objcopy)
-+	devio > foo 'wl 0xe3a01c06,4' 'wl 0xe3811006,4'
-+	cat foo $(obj)/zImage > zImage.new
-+	mv zImage.new $(obj)/zImage
-+	rm foo
- 	@echo '  Kernel: $@ is ready'
- 
- endif
+diff -urN linux-2.6.27.10.old//arch/arm/tools/mach-types linux-2.6.27.10//arch/arm/tools/mach-types
+--- linux-2.6.27.10.old//arch/arm/tools/mach-types	2008-12-18 17:13:59.000000000 +0000
++++ linux-2.6.27.10//arch/arm/tools/mach-types	2009-01-18 22:55:14.757938089 +0000
+@@ -539,7 +539,6 @@
+ tidsc25			MACH_TIDSC25		TIDSC25			523
+ akcpmxl			MACH_AKCPMXL		AKCPMXL			524
+ av3xx			MACH_AV3XX		AV3XX			525
+-avila			MACH_AVILA		AVILA			526
+ pxa_mpm10		MACH_PXA_MPM10		PXA_MPM10		527
+ pxa_kyanite		MACH_PXA_KYANITE	PXA_KYANITE		528
+ sgold			MACH_SGOLD		SGOLD			529
+@@ -1535,7 +1534,7 @@
+ tmxipx425		MACH_TMXIPX425		TMXIPX425		1539
+ leep			MACH_LEEP		LEEP			1540
+ raad			MACH_RAAD		RAAD			1541
+-dns323			MACH_DNS323		DNS323			1542
++dns323			MACH_DNS323		DNS323			526
+ ap1000			MACH_AP1000		AP1000			1543
+ a9sam6432		MACH_A9SAM6432		A9SAM6432		1544
+ shiny			MACH_SHINY		SHINY			1545
