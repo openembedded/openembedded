@@ -1,0 +1,30 @@
+Index: util-linux-2.12r/fdisk/sfdisk.c
+===================================================================
+--- util-linux-2.12r.orig/fdisk/sfdisk.c	2009-01-12 17:00:24.000000000 +0100
++++ util-linux-2.12r/fdisk/sfdisk.c	2009-01-12 17:04:27.000000000 +0100
+@@ -1951,6 +1951,7 @@
+       delta = 0;
+ 
+     if (delta < 0) {
++#if 0 /*@@@@@*/
+ 	p->start -= delta;
+ 	p->size += delta;
+ 	if (is_extended(p->p.sys_type) && boxes == ONESECTOR)
+@@ -1959,6 +1960,17 @@
+ 	    warn(_("no room for partition descriptor\n"));
+ 	    return 0;
+ 	}
++#else
++	unsigned long old_size = p->size;
++	p->start -= delta;
++	p->size += delta;
++	if (is_extended(p->p.sys_type) && boxes == ONESECTOR)
++	    p->size = inc;
++	else if ( old_size <= -delta ) {
++	    warn(_("no room for partition descriptor\n"));
++	    return 0;
++	}
++#endif
+     }
+     base = (!ep ? 0
+ 	        : (is_extended(p->p.sys_type) ?

@@ -8,12 +8,12 @@ PV_dm600pvr = "66"
 PV_dm500plus = "66"
 PV_dm8000 = "70"
 PV_dm800 = "70"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
 
 SECONDSTAGE_UPDATE_SRC = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.nfi \
-	http://sources.dreamboxupdate.com/download/7020/writenfi-${MACHINE}-r0"
+	http://sources.dreamboxupdate.com/download/7020/writenfi-r1"
 
 SRC_URI_append_dm8000 = " ${SECONDSTAGE_UPDATE_SRC}"
 SRC_URI_append_dm800 = " ${SECONDSTAGE_UPDATE_SRC}"
@@ -35,7 +35,7 @@ do_stage_dm8000() {
 do_install_dm8000() {
 	install -d ${D}/tmp
 	install ${WORKDIR}/secondstage-${MACHINE}-${PV}.nfi ${D}/tmp/secondstage.nfi
-	install -m 0755 ${WORKDIR}/writenfi-${MACHINE}-r0 ${D}/tmp/writenfi
+	install -m 0755 ${WORKDIR}/writenfi-r1 ${D}/tmp/writenfi
 }
 
 do_stage_dm800() {
