@@ -7,12 +7,12 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "401b285465488f515290e0f9111872b94e1cf922"
+SRCREV = "9a6536c4eb086b43acab99ef3ac8b6e61ed9b7de"
 
 PV = "2.6.28"
-PR = "r6"
+PR = "r8"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=omap-2.6.28;protocol=git \
 	   file://defconfig"
 
 SRC_URI_append = " \
@@ -42,9 +42,12 @@ SRC_URI_append = " \
            file://0009-DSS-OMAPFB-allocate-fbmem-only-for-fb0-or-if-spes.patch;patch=1 \
            file://0010-DSS-OMAPFB-remove-extra-omapfb_setup_overlay-call.patch;patch=1 \
            file://0011-DSS-OMAPFB-fix-GFX_SYNC-to-be-compatible-with-DSS1.patch;patch=1 \
+           file://0012-DSS-Add-comments-to-FAKE_VSYNC-to-make-things-more.patch;patch=1 \
+           file://0013-DSS-OMAPFB-remove-extra-spaces.patch;patch=1 \
+           file://0014-DSS-fix-clk_get_usecount.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
-           file://musb-hsdma.diff;patch=1 \
+           file://revert-XCCR.patch;patch=1 \
 "
 
 
