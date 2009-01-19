@@ -615,7 +615,7 @@ python package_do_shlibs() {
 			for file in files:
 				soname = None
 				path = os.path.join(root, file)
-				if os.access(path, os.X_OK) or lib_re.match(file):
+				if (os.access(path, os.X_OK) or lib_re.match(file)) and not os.path.islink(path):
 					cmd = bb.data.getVar('OBJDUMP', d, 1) + " -p " + path + " 2>/dev/null"
 					cmd = "PATH=\"%s\" %s" % (bb.data.getVar('PATH', d, 1), cmd)
 					fd = os.popen(cmd)
