@@ -1,9 +1,9 @@
 require gst-plugins.inc
-PR = "r3"
+PR = "r4"
 
 inherit gconf 
 
-EXTRA_OECONF += "--with-check=no"
+EXTRA_OECONF += " --enable-experimental  --enable-gst_v4l2 --enable-gconftool  --enable-external --with-check=no"
 DEPENDS += "gst-plugins-base esound"
 
 PACKAGES =+ "gst-plugin-gconfelements"
