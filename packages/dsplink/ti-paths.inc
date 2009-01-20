@@ -2,6 +2,8 @@
 # https://www-a.ti.com/downloads/sds_support/targetcontent/bios/bios_5_33/sabios-j05/bios_setuplinux_5_33_02.bin
 # https://www-a.ti.com/downloads/sds_support/targetcontent/rtsc/xdctools_3_10_03/exports/xdctools_setuplinux_3_10_03.bin
 # https://www-a.ti.com/downloads/sds_support/targetcontent/LinuxDspTools/download.html
+# Back link for above:
+# https://www-a.ti.com/downloads/sds_support/targetcontent/index.html
 
 # Path to the dir where the TI tools are unpacked
 TITOOLSDIR ?= "/OE/TI"
