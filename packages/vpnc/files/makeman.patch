@@ -5,7 +5,7 @@
  # this pays off when converting the manpage to HTML or such.
  
 -open my $LONGHELP, '-|', "$vpnc --long-help";
-+open my $LONGHELP, '-|', "cat ../vpnc0.5.1--long-help";
++open my $LONGHELP, '-|', "cat ../vpnc*--long-help";
  my $vpnc_options    = '';
  my $relative_indent = 0;
  my $indent_needed   = 0;
