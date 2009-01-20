@@ -1,0 +1,11 @@
+Index: frozen-bubble-2.2.0/settings.mk
+===================================================================
+--- frozen-bubble-2.2.0.orig/settings.mk
++++ frozen-bubble-2.2.0/settings.mk
+@@ -1,4 +1,5 @@
+-PREFIX = /usr/local
++
++PREFIX = /usr
+ DATADIR = $(PREFIX)/share
+ LIBDIR = $(PREFIX)/lib
+ BINDIR = $(PREFIX)/bin

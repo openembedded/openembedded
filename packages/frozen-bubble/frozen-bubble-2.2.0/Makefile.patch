@@ -1,0 +1,13 @@
+Index: frozen-bubble-2.2.0/c_stuff/Makefile
+===================================================================
+--- frozen-bubble-2.2.0.orig/c_stuff/Makefile
++++ frozen-bubble-2.2.0/c_stuff/Makefile
+@@ -51,7 +51,7 @@ PERL_MAKE_OPTS = $(PMO_PREFIX) $(PMO_INS
+     $(PMO_INSTALLMAN1DIR) $(PMO_INSTALLMAN3DIR)
+ 
+ Makefile_c: Makefile.PL
+-	perl Makefile.PL $(PERL_MAKE_OPTS) INSTALLDIRS=$(INSTALLDIRS)
++	perl Makefile.PL $(PERL_MAKE_OPTS) INSTALLDIRS=$(INSTALLDIRS) CC="$(CC)" LD="$(LD)"
+ 
+ fb_c_stuff: %: %.xs Makefile_c
+ 	$(MAKE) -f Makefile_c

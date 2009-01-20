@@ -1,0 +1,32 @@
+Index: frozen-bubble-2.2.0/c_stuff/Makefile.PL
+===================================================================
+--- frozen-bubble-2.2.0.orig/c_stuff/Makefile.PL
++++ frozen-bubble-2.2.0/c_stuff/Makefile.PL
+@@ -16,8 +16,8 @@ $main;
+ }
+ EOTEST
+ 	close(CTEST);
+-	$r = system("$Config{cc} -o $fname $fname.c $cflags $libs 2>/dev/null 1>/dev/null");
+-	warn("RUNNING: $Config{cc} -o $fname $fname.c $cflags $libs\n") if $ENV{VERBOSE};
++	$r = system("$ENV{CC} $ENV{CFLAGS} $ENV{LDFLAGS} -o $fname $fname.c $cflags $libs 2>/dev/null 1>/dev/null");
++	warn("RUNNING: $ENV{CC} $ENV{CFLAGS} $ENV{LDFLAGS} -o $fname $fname.c $cflags $libs\n") if $ENV{VERBOSE};
+ 	unlink($fname, "$fname.c");
+ 	return $r == 0;
+ }
+@@ -70,13 +70,13 @@ ccompile('#include <SDL_Pango.h>',
+   die_ 'Frozen-Bubble patches are needed in SDL_Pango (impossible to create an executable calling the function SDLPango_CreateContext_GivenFontDesc)';
+ 
+ 
+-
++ 
+ WriteMakefile(
+     'NAME'         => 'fb_c_stuff',
+-    'LIBS'         => [ '-lm ' . chomp_(`sdl-config --libs`) . ' -lSDL_mixer ' . chomp_(`pkg-config SDL_Pango --libs`)],
++    'LIBS'         => [ $ENV{LDFLAGS} . " " . '-lm ' . chomp_(`sdl-config --libs`) . ' -lSDL_mixer ' . chomp_(`pkg-config SDL_Pango --libs`)],
+     'VERSION_FROM' => 'fb_c_stuff.pm', # finds VERSION
+     'OBJECT'       => 'fb_c_stuff.o',
+-    'INC'          => chomp_(`sdl-config --cflags`) . ' ' . chomp_(`pkg-config SDL_Pango --cflags`) . ' -I.',
++    'INC'          => $ENV{CFLAGS} . " " . chomp_(`sdl-config --cflags`) . ' ' . chomp_(`pkg-config SDL_Pango --cflags`) . ' -I.',
+     'OPTIMIZE'     => '-O2 -Wall',
+     'MAKEFILE'     => 'Makefile_c',
+ );
