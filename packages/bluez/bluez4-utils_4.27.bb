@@ -1,6 +1,6 @@
 require bluez.inc
 
-PR = "r1"
+PR = "r0"
 
 SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
            file://hcid.conf \
