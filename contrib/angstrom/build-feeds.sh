@@ -245,12 +245,14 @@ do
                       screen \
                       scummvm \
                       sdlquake \
+                      sensors-applet \
                       setserial \
                       shisensho \
                       slcalc \
                       sliderulez \
                       sokoban \
                       squeakvm \
+                      stalonetray \
                       strace \
                       subversion \
                       sugar \
