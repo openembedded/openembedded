@@ -23,10 +23,14 @@ SRC_URI_append_dm8000 = " http://sources.dreamboxupdate.com/download/7020/bootlo
 SRC_URI_append_dm800 = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg \
 	http://sources.dreamboxupdate.com/download/7020/switchoff-${MACHINE}-${IMAGES_VERSION}.mvi"
 
+SRC_URI_append_dm500hd = " http://sources.dreamboxupdate.com/download/7020/bootlogo-${MACHINE}-${IMAGES_VERSION}.jpg \
+	http://sources.dreamboxupdate.com/download/7020/switchoff-${MACHINE}-${IMAGES_VERSION}.mvi"
+
 S = "${WORKDIR}/"
 
 MVI = "bootlogo backdrop bootlogo_wait"
 MVI_append_dm800 = " switchoff"
+MVI_append_dm500hd = " switchoff"
 
 do_install() {
 	install -d ${D}/boot
@@ -48,6 +52,10 @@ do_install_dm800() {
 }
 
 do_install_dm8000() {
+	do_install_dm800
+}
+
+do_install_dm500hd() {
 	do_install_dm800
 }
 
