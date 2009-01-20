@@ -1,0 +1,30 @@
+From: Jason Cooper <jason@lakedaemon.net>
+Date: Tue, 11 Nov 2008 18:02:53 +0000 (-0500)
+Subject: USB: net: asix: add support for Cables-to-Go USB Ethernet adapter
+X-Git-Tag: v2.6.28-rc5~16^2
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Ftmlind%2Flinux-omap-2.6.git;a=commitdiff_plain;h=ccf95402d0ae6f433f29ce88cfd589cec8fc81ad
+
+USB: net: asix: add support for Cables-to-Go USB Ethernet adapter
+
+Add support to drivers/net/usb/asix.c for the Cables-to-Go "USB 2.0 to
+10/100 Ethernet Adapter". USB id 0b95:772a.
+
+Signed-off-by: Jason Cooper <jason@lakedaemon.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
+---
+
+diff --git a/drivers/net/usb/asix.c b/drivers/net/usb/asix.c
+index 37ecf84..e12cdb4 100644
+--- a/drivers/net/usb/asix.c
++++ b/drivers/net/usb/asix.c
+@@ -1444,6 +1444,10 @@ static const struct usb_device_id	products [] = {
+ 	// Apple USB Ethernet Adapter
+ 	USB_DEVICE(0x05ac, 0x1402),
+ 	.driver_info = (unsigned long) &ax88772_info,
++}, {
++	// Cables-to-Go USB Ethernet Adapter
++	USB_DEVICE(0x0b95, 0x772a),
++	.driver_info = (unsigned long) &ax88772_info,
+ },
+ 	{ },		// END
+ };
