@@ -327,7 +327,7 @@ done
 for machine in beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 dns323 mv2120 kuropro lspro tsx09 ts409 qemux86  
 do
         BUILD_MACHINE=$machine
-            BUILD_CLEAN="qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
+            BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
         BUILD_TARGETS="task-base task-boot \
                        task-opie task-opie-all \
                        task-openmoko-base task-openmoko-debug task-openmoko-examples task-openmoko-linux task-openmoko-native-sdk task-openmoko-net task-openmoko-phone task-openmoko-pim task-openmoko-ui \
