@@ -84,7 +84,9 @@ do
                       checkers \
                       cherokee \
                       claws-mail \
+                      contacts \
                       cvs \
+                      dates \
                       distcc \
                       dsniff \
                       duke3d \
@@ -263,6 +265,7 @@ do
                       task-opie-apps \
                       task-opie-games \
                       task-proper-tools \
+                      tasks \
                       texinfo \
                       thttpd \
                       thunar \
