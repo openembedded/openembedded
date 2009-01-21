@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "x11"
 DEPENDS = "edje-native python-pyrex-native python-cython-native"
 PV = "0.0.2+gitr${SRCREV}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/zhone.git;protocol=git;branch=master \
            file://80zhone"

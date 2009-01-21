@@ -3,7 +3,7 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/frameworkd', '${FILE_DIRNA
 PROVIDES = "frameworkd"
 RPROVIDES = "frameworkd"
 PV = "0.8.5.x+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"
 # skip this package
