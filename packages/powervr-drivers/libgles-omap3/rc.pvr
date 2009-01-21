@@ -4,7 +4,7 @@ rmmod bc_example
 rmmod omaplfb
 rmmod pvrsrvkm
 
-insmod $(find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
+insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
 modprobe -f bc_example
 modprobe -f omaplfb
 
