@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=0.7.2
+Name=Pingus
+GenericName=Lemmings Clone
+Comment=Pingus is a free Lemmings-like game
+Icon=pingus
+Exec=pingus -f -g 640x480 -m -s 
+Terminal=false
+StartupNotify=false
+Categories=Application;Games;ArcadeGame;

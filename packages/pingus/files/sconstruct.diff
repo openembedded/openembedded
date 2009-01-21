@@ -1,0 +1,49 @@
+--- a/SConstruct	2007-10-30 10:23:37.000000000 +0100
++++ b/SConstruct	2008-09-30 01:38:17.000000000 +0200
+@@ -334,8 +334,8 @@
+ 
+ def DefineOptions(filename, args):
+    opts = Options(filename, args)
+-   opts.Add('CC', 'C Compiler', 'gcc')
+-   opts.Add('CXX', 'C++ Compiler', 'g++')
++   opts.Add('CC', 'C Compiler', os.environ['CC'])
++   opts.Add('CXX', 'C++ Compiler', os.environ['CXX'])
+ #   opts.Add('debug', 'Build with debugging options', 0)
+ #   opts.Add('profile', 'Build with profiling support', 0)
+ 
+@@ -526,14 +526,15 @@
+     ARGUMENTS = {}
+ 
+ if not ('configure' in COMMAND_LINE_TARGETS):
+-    if ARGUMENTS != {}:
+-        print "Error: You must not supply arguments to the compile step."
+-        print "Use:"
+-        print ""
+-        print "  scons configure [ARGUMENTS]..."
+-        print ""
+-        print "If you want to change the build configuration."
+-        os.sys.exit(1)
++#    if ARGUMENTS != {}:
++#        print "Error: You must not supply arguments to the compile step."
++#        print ARGUMENTS
++#        print "Use:"
++#        print ""
++#        print "  scons configure [ARGUMENTS]..."
++#        print ""
++#        print "If you want to change the build configuration."
++#        os.sys.exit(1)
+         
+     opts = DefineOptions("config.py", {})
+     env = Environment(options = opts)
+@@ -541,6 +542,11 @@
+ 
+     opts.Update(env)
+     env['CPPPATH'] += ['.', 'src/']
++    env['ENV']['CXX'] = os.environ['CXX']
++    env['ENV']['CC'] = os.environ['CC']
++    env['ENV']['CPP'] = os.environ['CPP']
++    env['ENV']['RANLIB'] = os.environ['RANLIB']
++    env['ENV']['PATH'] = os.environ['PATH']
+     Default(env.Program('pingus', pingus_sources + env['optional_sources']))
+     Clean('pingus', ['config.py', 'config.h'])
+ 
