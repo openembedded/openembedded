@@ -4,6 +4,9 @@ SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
 
+# needs 'xmlto', and fails anyway when you install it
+DEFAULT_PREFERENCE = "-9999"
+
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
            file://alsa-utils-automake.patch;patch=1 \
 	  "
