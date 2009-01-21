@@ -3,7 +3,9 @@ SECTION = "base"
 PRIORITY = "optional"
 DEPENDS = "tzcode-native"
 
-PR = "r3.01"
+PR = "r4"
+
+DEFAULT_TIMEZONE ?= "Europe/London"
 
 RCONFLICTS= "timezones timezone-africa timezone-america timezone-antarctica \
              timezone-arctic timezone-asia timezone-atlantic \
@@ -38,8 +40,8 @@ do_install () {
 
         # Install a sane default for timezones
         install -d ${D}${sysconfdir}
-        echo "Europe/London" > ${D}${sysconfdir}/timezone
-        cp -pPR ${S}/usr/share/zoneinfo/Europe/London ${D}${sysconfdir}/localtime
+        echo ${DEFAULT_TIMEZONE} > ${D}${sysconfdir}/timezone
+        cp -pPR ${S}/usr/share/zoneinfo/${DEFAULT_TIMEZONE} ${D}${sysconfdir}/localtime
 }
 
 # Packages primarily organized by directory with a major city
