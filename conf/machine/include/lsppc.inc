@@ -2,10 +2,11 @@
 #@Name: Buffalo PPC Linkstations
 #@DESCRIPTION: Generic Machine configuration for ppc based linkstations
 
-
 TARGET_ARCH = "powerpc"
 PACKAGE_EXTRA_ARCHS = "ppc ppc603e"
+
 MACHINE_FEATURES = "kernel26 usbhost ext2"
+MACHINE_EXTRA_RDEPENDS = "kernel-devicetree"
 
 USE_DEVFS = "0"
 
@@ -21,5 +22,8 @@ udevdir = "/dev"
 IMAGE_DEVICE_TABLES = "files/device_table-slugos.txt"
 IMAGE_FSTYPES = "tar.gz"
 
-#tune for the MPC5200B cpu
+KERNEL_IMAGETYPE = "uImage"
+UBOOT_ENTRYPOINT = "0x00000000"
+UBOOT_LOADADDRESS = "0x00000000"
+
 require conf/machine/include/tune-ppc603e.inc
