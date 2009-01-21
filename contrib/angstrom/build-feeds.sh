@@ -113,6 +113,7 @@ do
                       frameworkd \
                       freenote \
                       froot \
+                      frozen-bubble \
                       gcc \
                       gdal \
                       gdb \
@@ -218,6 +219,7 @@ do
                       perl \
                       pidgin \
                       pine \
+                      pingus \
                       pipeman \
                       pkgconfig \
                       places \
