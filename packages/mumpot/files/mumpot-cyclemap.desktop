@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mumpot cyclemap
+Comment=Mumpot cyclemap
+Exec=mumpot-cyclemap
+Terminal=0
+Type=Application
+Categories=Application;PIM;GTK
+StartupNotify=True
