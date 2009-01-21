@@ -1,15 +1,22 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gst-plugins-base alsa-libs"
+DEPENDS = "gst-plugins-base alsa-libs libusb1 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz"
+SRC_URI = "\
+  http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
+  file://sbc-thumb.patch;patch=1 \
+  file://hid2hci_usb_init.patch;patch=1 \
+"    
 S = "${WORKDIR}/bluez-${PV}"
 
 inherit autotools pkgconfig
+
+OE_LT_RPATH_ALLOW = "any"
+OE_LT_RPATH_ALLOW[export] = "1"
 
 EXTRA_OECONF = "\
   --enable-gstreamer \
@@ -38,9 +45,9 @@ FILES_libasound-module-bluez = "${libdir}/alsa-lib/lib*.so"
 FILES_${PN} += "${libdir}/bluetooth/plugins/*.so"
 FILES_${PN}-dev += "\
   ${libdir}/bluetooth/plugins/*.la \
-  ${libdir}/gstreamer-0.10/lib*.la \
+  ${libdir}/*/*.la \
 "
 FILES_${PN}-dbg += "\
   ${libdir}/bluetooth/plugins/.debug \
-  ${libdir}/gstreamer-0.10/.debug \
+  ${libdir}/*/.debug \
 "
