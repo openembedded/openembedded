@@ -33,7 +33,7 @@ hdparm -X66 /dev/discs/disc0/disc
 hdparm -M 128 /dev/discs/disc0/disc
 
 echo 18 > /proc/progress
-for mod in dreambox_keyboard fp bcm7401; do
+for mod in dreambox_keyboard fp bcm7405; do
 	modprobe $mod
 done
 
