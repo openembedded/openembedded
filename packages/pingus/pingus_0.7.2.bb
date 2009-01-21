@@ -3,7 +3,6 @@ DEPENDS = "virtual/libsdl libsdl-image libsdl-mixer boost libpng"
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
-PV = "0.7.2"
 PR = "r0"
 
 inherit scons
@@ -15,7 +14,7 @@ SRC_URI = "\
   file://pingus.png \
   file://pingus-gta012.sh \
 "
-S = "${WORKDIR}/pingus-0.7.2"
+S = "${WORKDIR}/pingus-${PV}"
 
 do_install() {
 	install -d ${D}${bindir}
@@ -34,6 +33,10 @@ do_install() {
 		install -m 0755 ${S}/pingus ${D}${bindir}/pingus
 	fi
 }
+
+# Account for 1337 script in do_install
+PACKAGE_ARCH_om-gta01 = "${MACHINE_ARCH}"
+PACKAGE_ARCH_om-gta02 = "${MACHINE_ARCH}"
 
 FILES_${PN} += "${datadir}"
 
