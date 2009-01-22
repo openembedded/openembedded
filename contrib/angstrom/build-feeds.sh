@@ -275,6 +275,7 @@ do
                       timesleuth \
                       tofrodos \
                       totem \
+                      transmission \
                       tron \
                       tzdata \
                       ubahnnav \
