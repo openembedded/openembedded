@@ -1,0 +1,11 @@
+--- avr_evtd.old/avr_evtd.c	2006-10-29 12:27:28.000000000 -0600
++++ avr_evtd/avr_evtd.c	2007-12-11 09:38:40.000000000 -0600
+@@ -108,7 +108,7 @@
+ TIMER* poffTimer=NULL;
+ TIMER* ponTimer=NULL;
+ int i_FileDescriptor = 0;
+-time_t tt_LastMelcoAcess = 0;
++time_t tt_LastMelcoAcess = -1;
+ int i_TimerFlag = 0;
+ long l_ShutdownTimer=9999; /* Careful here */
+ char c_FirstTimeFlag=1;

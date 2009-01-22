@@ -1,0 +1,110 @@
+#!/bin/sh
+# Sample Event Script written by Bob Perry
+#
+# Enters via the avr_evtd daemon with the following command options:
+#  0 - Special event following double press of the 'red' reset button
+#  1 - AVR device has requested a halt due to error
+#  2 - Shutdown request from timed shutdown logic
+#  3 - User has released the power button
+#  4 - User has pressed the power button
+#  5 - User has released the 'red' reset button
+#  6 - User has pressed the reset button
+#  7 - User has held the power button > 3 seconds
+#  8 - User has held the reset button > 3 seconds
+#  9 - Disk used beyond DISKCHECK%
+#  F - Fan failure event, fan stopped for > FANSTOP seconds
+#  E - User selected EM-Mode
+#  S - Five minute shutdown warning event
+#  D - Error message handler
+
+DEVICE=$2
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin
+tag=avr-daemon
+facility=user.info
+
+. /etc/default/avr_evtd
+
+if [ "$DEBUG" = "ON" ] && [ -d "$LOG" ]; then
+  echo "`date` command is $1[$3] for $DEVICE" >> $LOG/avr_evtd.log
+fi
+
+if [ -f "/tmp/.inst-instflashing" ] ; then
+  if [ ! -f "/tmp/.inst-instdone" ] ; then
+    NOCMD="1"
+  fi
+fi
+
+case "$1" in
+  0)  case "$3" in
+	1)  # Indicate this mode by flashing the DISK FULL LED
+            echo -n "YYYY" > $DEVICE
+  	    # Add an EM IP address or if no ethernet, start it up
+	    FAIL=1
+	    route -n | grep -q eth0 && FAIL=0
+	    if [ "$FAIL" -eq 0 ]; then
+	      FAIL=1
+	      route -n | grep -q 192.168.11.0 && FAIL=0
+	      if [ "$FAIL" -eq 1 ]; then
+	        ifconfig eth0:EM 192.168.11.150 netmask 255.255.255.0 up
+	      fi
+	    else
+	      /sbin/ifup --force -a -i /etc/avr_evtd/emergency_eth0
+	      sleep 1
+	      route add -net 192.168.11.0 netmask 255.255.255.255.0 eth0:EM
+	    fi
+            if [ -e /sbin/utelnetd ]; then
+              utelnetd -p 1234 -l /bin/bash &
+	    fi ;;
+        3)  # Flash more lights to indicate we are desperate
+            echo -n "SSSS" > $DEVICE
+	    ;;
+	*)  exit -2 ;;
+	esac ;;
+  3)  echo -n "[avr_evtd]: Power Button Up"
+      ;;
+  4)  echo -n "[avr_evtd]: Power Button Down"
+      ;;
+  5)  echo -n "[avr_evtd]: Reset Button Up"
+      ;;
+  6)  echo -n "[avr_evtd]: Reset Button Down"
+      ;;
+  1|2|7)  echo -n "[avr_evtd]: Shutdown"
+      if [ ! "$NOCMD" = "1" ] ; then
+	echo -n "EEEE" > $DEVICE
+        halt 
+      fi ;;
+  8)  echo -n "[avr_evtd]: User demanded reset"
+      if [ ! "$NOCMD" = "1" ] ; then
+        echo -n "CCCC" > $DEVICE
+        reboot
+      fi ;;
+  9)  if [ "$3" -eq 0 ]; then
+        echo -n "[avr_evtd]: Disk usage now safe"
+      else
+        echo -n "[avr_evtd]: Disk used $3% > Monitored $DISKCHECK%"
+      fi ;;
+  E)  echo -n "[avr_evtd]: EM mode selected"
+      ;;
+  F)  echo -n "[avr_evtd]: Fan failure detected"
+      if [ "$3" -eq 0 ]; then
+        logger -p user.emerg 'AVR Detected fan fault'
+      fi
+      if [ "$3" -eq 4 ]; then
+        # Illuminate relevant LED and wait for AVR halt message
+        echo -n "iiii" > $DEVICE
+      fi ;;
+  S)  if [ "$3" -gt 100 ];  then 
+        MESSAGE="System shutdown in less than 5 minutes"
+      else
+        MESSAGE="Shutdown delayed by $3 minutes"
+      fi
+      # Produce relevant message
+      logger -p user.emerg $MESSAGE ;;
+  D)  MESSAGE="[$3] Error with configuration file"
+      logger -t $tag -p $facility $MESSAGE ;;
+  *)  exit 1
+      ;;
+esac
+
+exit 0
