@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "9a6536c4eb086b43acab99ef3ac8b6e61ed9b7de"
 
 PV = "2.6.28"
-PR = "r8"
+PR = "r9"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=omap-2.6.28;protocol=git \
 	   file://defconfig"
@@ -48,6 +48,7 @@ SRC_URI_append = " \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
            file://revert-XCCR.patch;patch=1 \
+           file://0001-board-omap3beagle-set-i2c-3-to-100kHz.patch;patch=1 \
 "
 
 
