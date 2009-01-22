@@ -6,7 +6,8 @@ TARGET_ARCH = "powerpc"
 PACKAGE_EXTRA_ARCHS = "ppc ppc603e"
 
 MACHINE_FEATURES = "kernel26 usbhost ext2"
-MACHINE_EXTRA_RDEPENDS = "kernel-devicetree"
+MACHINE_EXTRA_RDEPENDS = "kernel-devicetree avr-evtd"
+MACHINE_EXTRA_RRECOMMENDS = "u-boot-utils"
 
 USE_DEVFS = "0"
 
