@@ -9,6 +9,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2 \
 			file://sword1.patch;patch=1 \
 			file://tremor.patch;patch=1 \
 			file://mouse.patch;patch=1 "
+PR="r1"
 
 inherit autotools
 
@@ -19,16 +20,11 @@ EXTRA_OECONF = "--host=${HOST_SYS} \
 		--disable-alsa \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
 		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \
-		--with-mpeg2-prefix=${STAGING_LIBDIR}/.. \
-		--with-mad-prefix=${STAGING_BINDIR_CROSS}/.. "
-
+		${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-mpeg2', '--with-mpeg2-prefix=${STAGING_LIBDIR}/..', d)} \		
+		${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-mad', '--with-mad-prefix=${STAGING_BINDIR_CROSS}/..', d)} \
+		"
 do_configure() {
 	./configure ${EXTRA_OECONF}
-}
-
-do_compile() {
-	oe_runmake CC="${CC}" CXX="${CXX}" CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS} -lmpeg2" \
-                   DEFINES="-DUNIX -DSCUMM_NEED_ALIGNMENT -DQTOPIA -DUSE_MAD -DUSE_VORBIS -DUSE_ZLIB -DUSE_MPEG2"
 }
 
 do_install() {

@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.scummvm.org"
 SECTION = "games"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/scummvm/scummvm-${PV}.tar.bz2"
 
@@ -16,8 +16,9 @@ EXTRA_OECONF = "--host=${HOST_SYS} \
 		--prefix=${prefix} \
 		--with-ogg-prefix=${STAGING_LIBDIR}/.. \
 		--with-vorbis-prefix=${STAGING_LIBDIR}/.. \
-		--with-mpeg2-prefix=${STAGING_LIBDIR}/.. \
-		--with-mad-prefix=${STAGING_LIBDIR}/.. "
+		${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-mpeg2', '--with-mpeg2-prefix=${STAGING_LIBDIR}/..', d)} \
+		${@base_conditional('ENTERPRISE_DISTRO', '1', '--disable-mad', '--with-mad-prefix=${STAGING_LIBDIR}/..', d)} \
+		"
 
 EXTRA_OEMAKE = "MANDIR=${mandir}"
 
