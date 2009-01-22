@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r4"
+PR = "r5"
 
 inherit task 
 
@@ -18,7 +18,7 @@ RDEPENDS_${PN} = "\
     psplash \
     mime-support e-wm ${ECONFIG} exhibit \
     xterm xmms \
-    epiphany firefox midori \
+    firefox midori \
     swfdec-mozilla \
     hicolor-icon-theme gnome-icon-theme \
     jaaa nmap iperf gnuplot \
