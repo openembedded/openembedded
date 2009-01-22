@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.postgresql.com"
 LICENSE = "BSD"
 DEPENDS = "zlib readline"
 
+ARM_INSTRUCTION_SET = "arm"
+
 #WARNING: this recipe assumes you have the timezone compiler present in /usr/sbin/zic
 
 SRC_URI = "ftp://ftp-archives.postgresql.org/pub/source/v${PV}/${P}.tar.bz2"
