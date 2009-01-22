@@ -12,7 +12,7 @@ RDEPENDS_${PN} = "\
 #  fso-apmd \
   fso-gpsd \
 #  fso-monitord \
-  connman \
+#  connman \
 "
 
 RRECOMMENDS_${PN} = "\
