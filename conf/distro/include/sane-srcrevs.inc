@@ -50,7 +50,7 @@ SRCREV_pn-epydial ?= "215"
 SRCREV_pn-etk-theme-ninja ?= "5"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-flashrom ?= "3682"
-SRCREV_pn-frameworkd ?= "b10138017b9fcf4dac8d16f22a184c333ddab9ab"
+SRCREV_pn-frameworkd ?= "2a37e3135f711eab55c883e3e8b0cd16877cf5a9"
 SRCREV_pn-frameworkd-devel ?= "${SRCREV_pn-frameworkd}"
 SRCREV_pn-fsod ?= "3fa5eb6f2edcf7c9f0fc2027fda47b91d9f0f136"
 SRCREV_pn-fso-apm ?= "eb39ce7fb81bfa64e1a9eb5f142ca3d1065be3fa"
@@ -229,7 +229,7 @@ SRCREV_pn-wlan-ng-utils ?= "1859"
 SRCREV_pn-wmiconfig ?= "4522"
 SRCREV_pn-xoo ?= "1971"
 SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
-SRCREV_pn-zhone ?= "cedaa8a6dd70fc3e13bd8bcda7fe84019cf9ef54"
+SRCREV_pn-zhone ?= "6afaf3c15aa09603768ab0f212cc651ff5bad29b"
 
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
