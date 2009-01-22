@@ -1,0 +1,48 @@
+#!/bin/sh -e
+## 07-m486.dpatch by Matthias Klose <doko@ubuntu.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: #474817: mtools: FTBFS: cc1: error: unrecognized command line option "-m486"
+
+if [ $# -lt 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
+
+case "$1" in
+       -patch) patch $patch_opts -p1 < $0;;
+       -unpatch) patch $patch_opts -p1 -R < $0;;
+        *)
+                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+                exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+--- mtools-3.9.11.orig/configure.in
++++ mtools-3.9.11/configure.in
+@@ -249,7 +249,7 @@
+ objs=`echo $srcdir/*.c | sed 's/\.c$/.o/' `
+ if [ "X$GCC" = "Xyes" ] ; then
+     if [ "$host_cpu" = i486 ] ; then
+-	    CFLAGS="$CFLAGS -m486"
++	    CFLAGS="$CFLAGS"
+     fi
+     Wall=-Wall
+     if [ "$host_os3" = sunos ] ; then
+unchanged:
+--- mtools-3.9.11.orig/configure
++++ mtools-3.9.11/configure
+@@ -5905,7 +5905,7 @@
+ objs=`echo $srcdir/*.c | sed 's/\.c$/.o/' `
+ if [ "X$GCC" = "Xyes" ] ; then
+     if [ "$host_cpu" = i486 ] ; then
+-	    CFLAGS="$CFLAGS -m486"
++	    CFLAGS="$CFLAGS"
+     fi
+     Wall=-Wall
+     if [ "$host_os3" = sunos ] ; then

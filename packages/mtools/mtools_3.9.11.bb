@@ -8,8 +8,8 @@ LICENSE="GPL"
 PR = "r4"
 
 SRC_URI="http://mtools.linux.lu/mtools-${PV}.tar.gz \
+	file://m486.patch;patch=1 \
 	file://mtools-makeinfo.patch;patch=1 \
-	file://mtools.patch;patch=1 \
 	file://no-x11.patch;patch=1"
 
 S = "${WORKDIR}/mtools-${PV}"
