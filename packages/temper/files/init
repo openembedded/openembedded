@@ -1,0 +1,32 @@
+#! /bin/sh
+# temper - simple init.d temper fan control script - tim.ellis@foonas.org
+set -e
+
+if [ ! -f /usr/sbin/temper ]; then
+    echo -n "Warning: temper fan control script not found. Shutting down"
+    shutdown -h now
+    exit -1
+fi
+
+case "$1" in
+  start)
+	echo -n "Starting temper: "
+	start-stop-daemon -S -b -n temper -a /usr/sbin/temper
+	echo "done"
+	;;
+  stop)
+	echo -n "Stopping temper: "
+	start-stop-daemon -K -n temper >&- 2>&- &
+	echo "done"
+	;;
+  restart)
+  	$0 stop
+	$0 start
+	;;
+  *)
+	echo "Usage: temper { start | stop | restart }" >&2
+	exit 1
+	;;
+esac
+
+exit 0
