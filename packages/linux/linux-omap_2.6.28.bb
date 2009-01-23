@@ -7,10 +7,10 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "9a6536c4eb086b43acab99ef3ac8b6e61ed9b7de"
+SRCREV = "79d042a081d3e467c735bb0d9569ed6296f85a3c"
 
 PV = "2.6.28"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=omap-2.6.28;protocol=git \
 	   file://defconfig"
@@ -47,7 +47,6 @@ SRC_URI_append = " \
            file://0014-DSS-fix-clk_get_usecount.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
-           file://revert-XCCR.patch;patch=1 \
            file://0001-board-omap3beagle-set-i2c-3-to-100kHz.patch;patch=1 \
 "
 
