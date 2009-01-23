@@ -112,6 +112,8 @@ fso_rootfs_postprocess() {
     echo "alias pico=nano" >>./etc/profile
     echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
+    echo "alias vim=vi" >>./etc/profile
+    echo "alias ll=ls -al" >>./etc/profile
     # nfs
     mkdir -p ./local/pkg
     echo >>./etc/fstab
