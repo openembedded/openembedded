@@ -4,9 +4,6 @@ SECTION = "console/network"
 PR = "r2"
 LICENSE = "GPL"
 
-DEPENDS_foonas		= "libpam zlib"
-EXTRA_OECONF_foonas	= "--enable-libpam --enable-libz"
-
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.gz \
 	   file://bftpd.conf \
 		"
