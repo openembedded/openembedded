@@ -1,0 +1,60 @@
+Index: llvm-2.4/include/llvm/System/DynamicLibrary.h
+===================================================================
+--- llvm-2.4.orig/include/llvm/System/DynamicLibrary.h	2008-05-06 03:32:53.000000000 +0200
++++ llvm-2.4/include/llvm/System/DynamicLibrary.h	2009-01-24 11:24:12.000000000 +0100
+@@ -16,6 +16,7 @@
+ 
+ #include "llvm/System/Path.h"
+ #include <string>
++#include <map>
+ 
+ namespace llvm {
+ namespace sys {
+@@ -90,6 +91,10 @@
+       DynamicLibrary(const DynamicLibrary&); ///< Do not implement
+       DynamicLibrary& operator=(const DynamicLibrary&); ///< Do not implement
+     /// @}
++
++    private:
++      static std::map<std::string, void *> &g_symbols();
++
+   };
+ 
+ } // End sys namespace
+Index: llvm-2.4/lib/System/DynamicLibrary.cpp
+===================================================================
+--- llvm-2.4.orig/lib/System/DynamicLibrary.cpp	2008-07-10 02:52:20.000000000 +0200
++++ llvm-2.4/lib/System/DynamicLibrary.cpp	2009-01-24 11:27:42.000000000 +0100
+@@ -14,14 +14,18 @@
+ #include "llvm/System/DynamicLibrary.h"
+ #include "llvm/Config/config.h"
+ #include <cstring>
+-#include <map>
+ 
+ // Collection of symbol name/value pairs to be searched prior to any libraries.
+-static std::map<std::string, void *> g_symbols;
++std::map<std::string, void *> &llvm::sys::DynamicLibrary::g_symbols() {
++  static std::map<std::string, void *> *symbols
++     = new std::map<std::string, void *>();
++
++  return *symbols;
++}
+ 
+ void llvm::sys::DynamicLibrary::AddSymbol(const char* symbolName,
+                                           void *symbolValue) {
+-  g_symbols[symbolName] = symbolValue;
++  g_symbols()[symbolName] = symbolValue;
+ }
+ 
+ // It is not possible to use ltdl.c on VC++ builds as the terms of its LGPL
+@@ -75,8 +79,8 @@
+   //  check_ltdl_initialization();
+ 
+   // First check symbols added via AddSymbol().
+-  std::map<std::string, void *>::iterator I = g_symbols.find(symbolName);
+-  if (I != g_symbols.end())
++  std::map<std::string, void *>::iterator I = g_symbols().find(symbolName);
++  if (I != g_symbols().end())
+     return I->second;
+ 
+   // Now search the libraries.

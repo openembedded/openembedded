@@ -5,11 +5,16 @@ LICENSE = "various"
 SRC_URI = "\
 	http://llvm.org/releases/${PV}/llvm-${PV}.tar.gz \
 	file://fix-build.patch;patch=1 \
+	file://fix-static-initialization.patch;patch=1 \
 	"
 
 DEPENDS = "llvm-native"
 
 inherit autotools
+
+# --enable-debug-runtime disables automatic stripping and lets
+# OE control that
+EXTRA_OECONF += "--enable-debug-runtime --enable-targets=host-only"
 
 do_compile() {
 	# The build wants these binaries, together with the build-fix patch

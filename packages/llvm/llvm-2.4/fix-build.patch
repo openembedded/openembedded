@@ -1,8 +1,22 @@
 Index: llvm-2.4/Makefile.rules
 ===================================================================
 --- llvm-2.4.orig/Makefile.rules	2008-10-03 23:24:52.000000000 +0200
-+++ llvm-2.4/Makefile.rules	2009-01-16 03:19:06.000000000 +0100
-@@ -309,11 +309,7 @@
++++ llvm-2.4/Makefile.rules	2009-01-24 09:59:20.000000000 +0100
+@@ -234,9 +234,10 @@
+       EXTRA_OPTIONS += -fstrict-aliasing -Wstrict-aliasing
+     endif
+ 
+-    CXX.Flags += $(OPTIMIZE_OPTION) $(OmitFramePointer)
+-    C.Flags   += $(OPTIMIZE_OPTION) $(OmitFramePointer)
+-    LD.Flags  += $(OPTIMIZE_OPTION)
++#    OE: Do not interfere with flags given by OE
++#    CXX.Flags += $(OPTIMIZE_OPTION) $(OmitFramePointer)
++#    C.Flags   += $(OPTIMIZE_OPTION) $(OmitFramePointer)
++#    LD.Flags  += $(OPTIMIZE_OPTION)
+   else
+     BuildMode := Debug
+     CXX.Flags += -g
+@@ -309,11 +310,7 @@
  #--------------------------------------------------------------------
  TargetMode :=
  ifeq ($(LLVM_CROSS_COMPILING),1)
@@ -15,7 +29,7 @@ Index: llvm-2.4/Makefile.rules
    BuildLLVMToolDir := $(LLVM_OBJ_ROOT)/$(BuildMode)/Build/bin
  endif
  
-@@ -436,7 +432,7 @@
+@@ -436,7 +433,7 @@
  ifdef EXAMPLE_TOOL
    LD.Flags += -rpath $(ExmplDir) -export-dynamic
  else
@@ -27,7 +41,7 @@ Index: llvm-2.4/Makefile.rules
 Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
 ===================================================================
 --- llvm-2.4.orig/lib/ExecutionEngine/JIT/JIT.cpp	2008-09-24 18:25:55.000000000 +0200
-+++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-16 03:16:27.000000000 +0100
++++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-23 15:10:03.000000000 +0100
 @@ -65,7 +65,7 @@
  }
  
@@ -48,8 +62,8 @@ Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
      _keymgr_get_and_lock_processwide_ptr(KEYMGR_GCC3_DW2_OBJ_LIST);
 Index: llvm-2.4/Makefile
 ===================================================================
---- llvm-2.4.orig/Makefile	2009-01-16 03:16:48.000000000 +0100
-+++ llvm-2.4/Makefile	2009-01-16 03:17:15.000000000 +0100
+--- llvm-2.4.orig/Makefile	2008-10-03 00:56:44.000000000 +0200
++++ llvm-2.4/Makefile	2009-01-23 15:10:33.000000000 +0100
 @@ -27,9 +27,9 @@
  
  # When cross-compiling, there are some things (tablegen) that need to
