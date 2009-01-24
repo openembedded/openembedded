@@ -1,0 +1,37 @@
+#! /bin/sh
+# piccontrol - simple init.d piccontrol script - tim.ellis@foonas.org
+set -e
+
+if [ ! -f /usr/sbin/piccontrol ]; then
+    echo -n "Warning: piccontrol binary not found. Shutting down"
+    shutdown -h now
+    exit -1
+fi
+
+case "$1" in
+  start)
+        echo -n "Starting piccontrol: "
+        rm -f /var/run/piccontrol.sock
+        start-stop-daemon -S -b -n piccontrol -a /usr/sbin/piccontrol -- -d
+        sleep 1
+        piccontrol statusled greenon
+        piccontrol powerled on
+        piccontrol buzzer short
+        echo "done"
+        ;;
+  stop)
+        echo -n "Stopping piccontrol: "
+        start-stop-daemon -K -n piccontrol >&- 2>&- &
+        echo "done"
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        ;;
+  *)
+        echo "Usage: piccontrol { start | stop | restart }" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
