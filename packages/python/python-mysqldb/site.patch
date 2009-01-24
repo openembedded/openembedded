@@ -1,0 +1,22 @@
+Index: MySQL-python-1.2.1_p2/site.cfg
+===================================================================
+--- MySQL-python-1.2.1_p2.orig/site.cfg	2009-01-24 16:36:21.000000000 +0100
++++ MySQL-python-1.2.1_p2/site.cfg	2009-01-24 16:37:07.000000000 +0100
+@@ -6,7 +6,7 @@
+ 
+ [options]
+ embedded = False
+-threadsafe = True
++threadsafe = False
+ static = False
+ 
+ # Use the compiler section to add additional options for the extension build.
+@@ -26,3 +26,8 @@
+ # advapi32
+ #extra_compile_args:
+ #extra_objects:
++
++# Without the following line, bitbake would fail with:
++# CROSS COMPILE Badness: /usr/include in INCLUDEPATH: /usr/include/mysql
++include_dirs:
++
