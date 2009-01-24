@@ -1,0 +1,9 @@
+<service-group>
+  <name replace-wildcards="yes">foonas p910nd on %h</name>
+  <service protocol="any">
+    <host-name></host-name>
+    <type>_pdl-datastream._tcp</type>
+    <port>9100</port>
+    <txt-record>product=foonas network printer</txt-record>
+  </service>
+</service-group>
