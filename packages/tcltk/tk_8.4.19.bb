@@ -3,20 +3,24 @@ LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
 DEPENDS = "tcl virtual/libx11 libxt"
-RDEPENDS = "tcl"
-PR = "r5"
+PR = "r0"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
-           file://disable-xim.patch;patch=1;pnum=0 \
-           file://tk-add-soname.patch;patch=1 \
-           file://fix-configure.patch;patch=1;pnum=2"
-
+SRC_URI = "\
+  ${SOURCEFORGE_MIRROR}/tcl/tk${PV}-src.tar.gz \
+  file://disable-xim.patch;patch=1;pnum=0 \
+  file://tk-add-soname.patch;patch=1;pnum=2 \
+#  file://fix-configure.patch;patch=1;pnum=2 \
+"
 S = "${WORKDIR}/tk${PV}/unix"
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-threads --with-tcl=${STAGING_BINDIR_CROSS} \
-		--x-includes=${STAGING_INCDIR} --x-libraries=${STAGING_LIBDIR}"
+EXTRA_OECONF = "\
+  --enable-threads \
+  --with-tcl=${STAGING_BINDIR_CROSS} \
+  --x-includes=${STAGING_INCDIR} \
+  --x-libraries=${STAGING_LIBDIR} \
+"
 
 do_configure() {
 	gnu-configize
@@ -24,10 +28,10 @@ do_configure() {
 }
 
 do_stage() {
-        oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
-        oe_libinstall -so libtk8.4 ${STAGING_LIBDIR}
-        sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tkConfig.sh
-        install -m 0755 tkConfig.sh ${STAGING_BINDIR_CROSS}
+	oe_libinstall -a libtkstub8.4 ${STAGING_LIBDIR}
+	oe_libinstall -so libtk8.4 ${STAGING_LIBDIR}
+	sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tkConfig.sh
+	install -m 0755 tkConfig.sh ${STAGING_BINDIR_CROSS}
 	cd ..
 	#for dir in compat generic unix
 	#do
@@ -42,8 +46,11 @@ do_stage() {
 
 do_install() {
 	autotools_do_install
+	mv libtk8.4.so libtk8.4.so.0
 	oe_libinstall -so libtk8.4 ${D}${libdir}
 	ln -sf ./wish8.4 ${D}${bindir}/wish
 }
 
-FILES_${PN} += "${libdir}/tk8.4 ${libdir}/libtk8.4.so"
+PACKAGES =+ "${PN}-lib"
+FILES_${PN}-lib = "${libdir}/libtk8.4.so.*"
+FILES_${PN} += "${libdir}"
