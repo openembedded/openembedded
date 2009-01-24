@@ -12,3 +12,8 @@ do_configure() {
         oe_runconf
         sed -i 's:-L\$:-L${STAGING_LIBDIR} -L\$:' ${S}/*libtool
 }
+
+do_install_prepend () {
+        # It only needs this app during the install, so compile it natively
+        $BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
+}

@@ -12,10 +12,6 @@ inherit autotools pkgconfig binconfig update-rc.d
 
 EXTRA_OECONF = "--enable-tls=gnutls --disable-static --disable-nls"
 
-do_install_prepend () {
-        # It only needs this app during the install, so compile it natively
-        $BUILD_CC -DHAVE_SYS_STAT_H -o cherokee_replace cherokee_replace.c
-}
 do_install_append () {
         install -m 0755 -d ${D}${sysconfdir}/init.d
         install -m 755 ${WORKDIR}/cherokee.init ${D}${sysconfdir}/init.d/cherokee
