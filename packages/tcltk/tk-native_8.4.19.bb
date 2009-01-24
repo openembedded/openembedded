@@ -1,5 +1,5 @@
 inherit native
-include tk_8.4.11.bb
+include tk_8.4.19.bb
 DEPENDS = "tcl-native"
 
 do_stage() {

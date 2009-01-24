@@ -1,5 +1,5 @@
 inherit native
-include tcl_8.4.11.bb
+include tcl_8.4.19.bb
 
 do_stage() {
 	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
