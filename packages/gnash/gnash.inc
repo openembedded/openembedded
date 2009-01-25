@@ -4,7 +4,7 @@ LICENSE = "GPL-2"
 DEPENDS = "libtool gtk+ cairo libxml2 libsdl-mixer zlib boost jpeg pango curl freetype \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'ffmpeg libmad', d)}"
           
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gnash/${PV}/gnash-${PV}.tar.bz2 \
           "
@@ -23,12 +23,17 @@ EXTRA_OECONF = "--enable-gui=gtk \
                 ${@base_conditional('ENTERPRISE_DISTRO', '1', '', '--enable-mad', d)} \
                 --enable-cairo \
                 --enable-plugin \
+                --enable-plugins \
+                --enable-npapi \
+                --with-npapi-plugindir=${libdir}/mozilla/plugins \
+                --enable-mit-shm \
                 --disable-cygnal \
                 --with-top-level=${STAGING_DIR_HOST}/usr \
                 "
 
-PACKAGES =+ " libgnashamf libgnashbackend libgnashbase libgnashgeo libgnashgui libgnashplayer libgnashserver "
+PACKAGES =+ " gnash-browser-plugin libgnashamf libgnashbackend libgnashbase libgnashgeo libgnashgui libgnashplayer libgnashserver "
 
+FILES_gnash-browser-plugin= "${libdir}/mozilla/plugins/*"
 FILES_libgnashamf = "${libdir}/gnash/libgnashamf-${PV}.so"
 FILES_libgnashbackend = "${libdir}/gnash/libgnashbackend-${PV}.so"
 FILES_libgnashbase = "${libdir}/gnash/libgnashbase-${PV}.so"
