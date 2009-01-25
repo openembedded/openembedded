@@ -14,9 +14,9 @@ BASE_INSTALL = "\
   modutils-initscripts \
   module-init-tools-depmod \
 #  prelink \
-#  exquisite \
-#  exquisite-themes \
-#  exquisite-theme-illume \
+  exquisite \
+  exquisite-themes \
+  exquisite-theme-illume \
 "
 
 # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
@@ -52,37 +52,46 @@ X_INSTALL = "\
   ttf-dejavu-sans-mono \
   ttf-arphic-uming \
   \
+  task-native-sdk \
+  e-wm-dev \
+  task-proper-tools \
+  ntpdate \
+  nfs-utils-client \
+  gdb \
+  pkgconfig \
+  ltrace \
+  perl-module-file-path \
 "
 
 # useful command line tools
 TOOLS_INSTALL = "\
   dosfstools \
   lsof \
-  mickeydbus \
+#  mickeydbus \
   mtd-utils \
   nano \
   powertop \
-  s3c24xx-gpio \
+#  s3c24xx-gpio \
   sysstat \
 "
 
 # audio
 AUDIO_INSTALL = "\
-  alsa-oss \
-  alsa-state \
-  alsa-utils-aplay \
-  alsa-utils-amixer \
-  gst-meta-audio \
-  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
-  gst-plugin-modplug \
-  gst-plugin-sid \
-  fso-sounds \
+#  alsa-oss \
+#  alsa-state \
+#  alsa-utils-aplay \
+#  alsa-utils-amixer \
+#  gst-meta-audio \
+#  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
+#  gst-plugin-modplug \
+#  gst-plugin-sid \
+#  fso-sounds \
 "
 
 GTK_INSTALL = "\
 #  openmoko-calculator2 \
   vala-terminal \
-#  gpe-scap \
+  gpe-scap \
 #  tangogps \
 "
 
@@ -93,31 +102,30 @@ GAMES_INSTALL = "\
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
 AUDIO_INSTALL_append_om-gta01 = "\
-  openmoko-alsa-scenarios \
+#  openmoko-alsa-scenarios \
 "
 AUDIO_INSTALL_append_om-gta02 = "\
-  openmoko-alsa-scenarios \
+#  openmoko-alsa-scenarios \
 "
 
 # python
 PYTHON_INSTALL = "\
-  task-python-efl \
-  python-codecs \
-  python-gst \
+#  task-python-efl \
+#  python-codecs \
+#  python-gst \
 "
 
 # zhone
 ZHONE_INSTALL = "\
-  fso-gsm0710muxd \
-  frameworkd \
-  fso-gpsd \
-  zhone \
+#  fso-gsm0710muxd \
+#  frameworkd \
+#  fso-gpsd \
+#  zhone \
 "
 
 # additional apps
 APPS_INSTALL = "\
    elementary-alarm \
-   gpe-scap \
    expedite \
    expedite-themes \
 #   libefso \
