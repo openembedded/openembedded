@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -25,9 +25,21 @@ do_compile_prepend() {
 }
 
 do_stage() {
-	autotools_stage_all
-	mv libtcl8.4.so libtcl8.4.so.0
+	oe_libinstall -a libtclstub8.4 ${STAGING_LIBDIR}
 	oe_libinstall -so libtcl8.4 ${STAGING_LIBDIR}
+	sed -i "s+${WORKDIR}+${STAGING_INCDIR}+g" tclConfig.sh
+	sed -i "s,-L${libdir},," tclConfig.sh
+	install -d ${STAGING_BINDIR_CROSS}/
+	install -m 0755 tclConfig.sh ${STAGING_BINDIR_CROSS}
+	cd ..
+	for dir in compat generic unix
+	do
+		install -d ${STAGING_INCDIR}/tcl${PV}/$dir
+		install -m 0644 $dir/*.h ${STAGING_INCDIR}/tcl${PV}/$dir/
+	done
+	install -m 0644 generic/tcl.h ${STAGING_INCDIR}
+	install -m 0644 generic/tclDecls.h ${STAGING_INCDIR}
+	install -m 0644 generic/tclPlatDecls.h ${STAGING_INCDIR}
 }
 
 do_install() {
