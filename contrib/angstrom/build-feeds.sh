@@ -86,6 +86,7 @@ do
                       claws-mail \
                       contacts \
                       cvs \
+                      cwiid \
                       dates \
                       distcc \
                       dsniff \

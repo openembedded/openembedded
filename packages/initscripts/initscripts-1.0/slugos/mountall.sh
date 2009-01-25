@@ -1,4 +1,4 @@
-#
+#!/bin/sh
 # mountall.sh	Mount all filesystems.
 #
 # Version:	@(#)mountall.sh  2.83-2  01-Nov-2001  miquels@cistron.nl

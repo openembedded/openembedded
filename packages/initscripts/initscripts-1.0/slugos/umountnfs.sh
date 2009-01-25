@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 #
 # umountnfs.sh	Unmount all network filesystems.
 #

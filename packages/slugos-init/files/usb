@@ -1,0 +1,2 @@
+install uhci-hcd /sbin/modprobe ehci-hcd ; /sbin/modprobe -i uhci-hcd
+install ohci-hcd /sbin/modprobe ehci-hcd ; /sbin/modprobe -i ohci-hcd
