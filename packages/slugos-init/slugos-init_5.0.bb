@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -60,6 +60,7 @@ do_install() {
                    ${D}${sysconfdir}/default \
                    ${D}${sysconfdir}/init.d \
 		   ${D}${sysconfdir}/modutils \
+		   ${D}${sysconfdir}/modprobe.d \
                    ${D}${sysconfdir}/udev \
 		   ${D}${sbindir} \
 		   ${D}${base_sbindir} \
@@ -107,6 +108,9 @@ do_install() {
 
 	# Developer-only tools, tucked away
 	install -m 0755 reflash ${D}${sysconfdir}/default
+
+	# Modprobe configuration files
+	install -m 0644 usb ${D}${sysconfdir}/modprobe.d
 
 	set +ex
 }
