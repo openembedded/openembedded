@@ -2,7 +2,7 @@ DESCRIPTION = "Tool Command Language"
 LICENSE = "tcl"
 SECTION = "devel/tcltk"
 HOMEPAGE = "http://tcl.sourceforge.net"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${SOURCEFORGE_MIRROR}/tcl/tcl${PV}-src.tar.gz \
@@ -40,4 +40,4 @@ do_install() {
 PACKAGES =+ "${PN}-lib"
 FILES_${PN}-lib = "${libdir}/libtcl8.4.so.*"
 FILES_${PN} += "${libdir}/tcl8.4"
-FILES_${PN}-dev += "${libdir/tclConfig.sh"
+FILES_${PN}-dev += "${libdir}/tclConfig.sh"
