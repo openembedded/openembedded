@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -29,6 +29,7 @@ SRC_URI = "file://boot/flash \
 	   file://leds \
 	   file://turnup \
 	   file://reflash \
+	   file://usb \
 	   "
 
 SBINPROGS = ""
