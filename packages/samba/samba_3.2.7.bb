@@ -1,11 +1,12 @@
 require samba.inc
 inherit update-rc.d
 
-PR = "r8"
+PR = "r0"
 
 SRC_URI += "file://config-lfs.patch;patch=1 \
             file://quota.patch;patch=1;pnum=0 \
             file://config-h.patch;patch=1 \
+            file://mtab.patch;patch=1 \
 	    file://init \
 	    file://smb.conf \
 	        "
@@ -44,6 +45,12 @@ EXTRA_OECONF += "\
 
 do_configure() {
 	oe_runconf
+}
+
+# Override samba.inc because building mount.cifs separately not necessary anymore and causes issues
+do_compile () {
+        oe_runmake proto_exists
+        base_do_compile
 }
 
 do_install_append() {

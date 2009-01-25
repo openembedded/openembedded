@@ -36,7 +36,6 @@ do_compile () {
 }
 
 do_install_append() {
-	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0 || true
 	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
 	mkdir -p ${D}${base_sbindir}
 	rm -f ${D}${sbindir}/mount.smbfs ${D}${base_sbindir}/mount.smbfs
@@ -44,7 +43,6 @@ do_install_append() {
 	ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smbfs
 	rm -f ${D}${bindir}/*.old
 	rm -f ${D}${sbindir}/*.old
-	install -c -m 755 mount.cifs  ${D}${base_sbindir}/mount.cifs
 	[ -f ${D}${sbindir}/mount.cifs ] && mv ${D}${sbindir}/mount.cifs ${D}${base_sbindir}/
 	[ -f ${D}${sbindir}/umount.cifs ] && mv ${D}${sbindir}/umount.cifs ${D}${base_sbindir}/
 }
