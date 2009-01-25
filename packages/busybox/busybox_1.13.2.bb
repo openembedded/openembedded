@@ -1,6 +1,6 @@
 require busybox.inc
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
