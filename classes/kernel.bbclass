@@ -117,6 +117,11 @@ kernel_do_stage() {
 	mkdir -p ${STAGING_KERNEL_DIR}/include/pcmcia
 	cp -fR include/pcmcia/* ${STAGING_KERNEL_DIR}/include/pcmcia/
 
+	if [ -d include/scsi ]; then
+		mkdir -p ${STAGING_KERNEL_DIR}/include/scsi
+		cp -fR include/scsi/* ${STAGING_KERNEL_DIR}/include/scsi/
+	fi
+
 	for entry in drivers/crypto include/media include/acpi include/sound include/video; do
 		if [ -d $entry ]; then
 			mkdir -p ${STAGING_KERNEL_DIR}/$entry
