@@ -1,5 +1,6 @@
 DESCRIPTION = "wiimote library + tools"
 LICENSE = "GPLv2"
+HOMEPAGE = "http://abstrakraft.org/cwiid/"
 
 PR = "r0"
 
