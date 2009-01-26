@@ -31,12 +31,23 @@ EXTRA_OECONF += "\
 	--with-swatdir=${datadir}/swat \
 	"
 
+do_compile () {
+        oe_runmake proto_exists
+        base_do_compile
+        ${CC} client/mount.cifs.c -o mount.cifs
+}
+
 do_install_append() {
 	install -d "${D}${localstatedir}/log"
 	install -d "${D}${sysconfdir}/init.d"
 	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
 	install -d "${D}${sysconfdir}/samba"
 	install -c -m 644 ../examples/smb.conf.default ${D}${sysconfdir}/samba/smb.conf
+}
+
+do_stage() {
+	install -m 0644 include/libsmbclient.h ${STAGING_INCDIR}
+	oe_libinstall -C bin -a -so libsmbclient ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "swat"
