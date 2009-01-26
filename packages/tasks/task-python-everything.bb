@@ -2,11 +2,12 @@ DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PV = "2.6"
-PR = "ml41"
+PR = "ml42"
 
 RDEPENDS = "\
   python-ao \
   python-cheetah \
+  python-coherence \
   python-connexion \
   python-constraint \
   python-daap \
