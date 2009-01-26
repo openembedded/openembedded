@@ -11,5 +11,3 @@ S = "${WORKDIR}/kernel/2.6"
 
 inherit module
 
-#EXTRA_OEMAKE += "KERNELDIR=${KERNEL_SOURCE}"
-
