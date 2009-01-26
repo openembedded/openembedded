@@ -1,19 +1,20 @@
 DESCRIPTION = "A network authentication protocol"
 HOMEPAGE = "http://web.mit.edu/Kerberos/"
 SECTION = "console/network"
-PR = "r3"
+PR = "r4"
 LICENSE = "MIT"
 DEPENDS = "perl-native ncurses e2fsprogs-libs"
 
 inherit autotools binconfig
 
-SRC_URI = "http://web.mit.edu/kerberos/dist/krb5/1.6/krb5-1.6.3-signed.tar"
+SRC_URI = "http://web.mit.edu/kerberos/dist/krb5/1.6/krb5-1.6.3-signed.tar \
+           file://fix-uclibc-ruserpass-collision.patch"
 S = "${WORKDIR}/${PN}-${PV}/src/"
 
 # Will clean this up...
 EXTRA_OECONF += " krb5_cv_attr_constructor_destructor=yes ac_cv_func_regcomp=yes \
-                    ac_cv_printf_positional=yes ac_cv_file__etc_environment=yes \
-                    ac_cv_file__etc_TIMEZONE=no --with-system-et"
+                  ac_cv_printf_positional=yes ac_cv_file__etc_environment=yes \
+                  ac_cv_file__etc_TIMEZONE=no --with-system-et"
 CFLAGS_append += "-DDESTRUCTOR_ATTR_WORKS=1 -I${STAGING_INCDIR}/et"
 LDFLAGS_append += "-lpthread"
 
@@ -21,6 +22,7 @@ FILES_${PN}-doc += /usr/share/examples
 
 do_configure() {
 	tar xzf ${WORKDIR}/krb5-1.6.3.tar.gz -C ${WORKDIR}/
+	patch -p1 < ${WORKDIR}/fix-uclibc-ruserpass-collision.patch
 	oe_runconf
 }
 
