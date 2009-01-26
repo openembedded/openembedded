@@ -38,8 +38,8 @@ Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
-Machines:   cm-x270, logicpd-pxa270, em-x270, gesbc-9302
-Recipes:    mono argtable vala
+Machines:   cm-x270, em-x270, gesbc-9302
+Recipes:    mono, argtable, vala, socketcan
 
 Person:     Erik Hovland
 Mail:       erik@hovland.org
