@@ -35,4 +35,8 @@
 /dev/mmcblk0p1	b	660	0	6	179	1	-	-	-
 /dev/mmcblk0p2	b	660	0	6	179	2	-	-	-
 /dev/mmcblk0p3	b	660	0	6	179	3	-	-	-
+/dev/mmcblk0p4	b	660	0	6	179	4	-	-	-
+/dev/mmcblk0p5	b	660	0	6	179	5	-	-	-
+/dev/mmcblk0p6	b	660	0	6	179	6	-	-	-
+/dev/mmcblk0p7	b	660	0	6	179	7	-	-	-
 /dev/event0 	c	660	0	0	13	64	-	-	-
