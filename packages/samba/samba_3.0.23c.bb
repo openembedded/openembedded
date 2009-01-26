@@ -1,7 +1,7 @@
 require samba.inc
 inherit update-rc.d
 
-PR = "r3"
+PR = "r4"
 
 SRC_URI += "file://config-lfs.patch;patch=1 \
 	   file://init \
