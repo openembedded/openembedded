@@ -1,6 +1,6 @@
 require linux-kexecboot.inc
 
-PR = "r2"
+PR = "r3"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
@@ -53,7 +53,7 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://sharpsl-rc-r1.patch;patch=1 \
            file://sharpsl-rc-r2.patch;patch=1 \
            file://squashfs3.3.patch;patch=1;status=external \
-           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
+#           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1;status=unmergable \
