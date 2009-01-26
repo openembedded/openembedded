@@ -26,7 +26,7 @@ EXTRA_OECONF = " \
                 --enable-gr-audio-oss \
                 --enable-mblock \
 	        --disable-html-docs \
-                PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/python2.5 \
+                PYTHON_CPPFLAGS=-I${PYTHON_DIR} \
 		"
 
 do_configure_prepend() {
