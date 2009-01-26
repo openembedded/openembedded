@@ -32,7 +32,6 @@ do_configure_prepend () {
 do_compile () {
 	oe_runmake proto_exists
 	base_do_compile
-	${CC} client/mount.cifs.c -o mount.cifs
 }
 
 do_install_append() {

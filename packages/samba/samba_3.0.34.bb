@@ -1,7 +1,7 @@
 require samba.inc
 inherit update-rc.d
 
-PR = "r8"
+PR = "r0"
 
 SRC_URI += "file://config-lfs.patch;patch=1 \
             file://quota.patch;patch=1;pnum=0 \
@@ -41,6 +41,11 @@ do_install_append() {
 	install -d "${D}${sysconfdir}/samba"
 	install -c -m 644 ${WORKDIR}/smb.conf ${D}${sysconfdir}/samba/smb.conf
 	install -d ${D}/var/spool/samba
+}
+
+do_stage() {
+	install -m 0644 include/libsmbclient.h ${STAGING_INCDIR}
+	oe_libinstall -C bin -a -so libsmbclient ${STAGING_LIBDIR}
 }
 
 PACKAGES =+ "swat"

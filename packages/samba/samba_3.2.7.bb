@@ -47,12 +47,6 @@ do_configure() {
 	oe_runconf
 }
 
-# Override samba.inc because building mount.cifs separately not necessary anymore and causes issues
-do_compile () {
-        oe_runmake proto_exists
-        base_do_compile
-}
-
 do_install_append() {
 	install -d "${D}/var/log/samba"
 	install -d "${D}${sysconfdir}/init.d"
