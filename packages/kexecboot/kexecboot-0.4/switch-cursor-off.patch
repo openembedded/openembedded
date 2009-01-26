@@ -1,0 +1,11 @@
+--- a/kexecboot.c
++++ b/kexecboot.c
+@@ -512,6 +512,9 @@ int main(int argc, char **argv)
+	DPRINTF("FB angle is %d, input device is %s\n", angle, eventif);
+	DPRINTF("Going to fb mode\n");
+
++	/* Switch cursor off. NOTE: works only when master-console is tty */
++	printf("\033[?25l\n");
++
+	if ((fb = fb_new(angle)) == NULL)
+		exit(-1);

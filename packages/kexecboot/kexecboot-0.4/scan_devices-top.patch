@@ -1,0 +1,39 @@
+--- a/kexecboot.c
++++ b/kexecboot.c
+@@ -508,28 +508,27 @@ int main(int argc, char **argv)
+	if ((fb = fb_new(angle)) == NULL)
+		exit(-1);
+
+-	bl = scan_devices();
+-
+-	if(!bl->size){
+-		puts("No bootable device found");
+-		exit(-1);
+-	}
+-
+	f = fopen(eventif,"r");
+	if(!f){
+	    perror(eventif);
+	    exit(3);
+	}
+
+-
+	// deactivate terminal input
+-
+	tcgetattr(fileno(stdin), &old);
+	new = old;
+	new.c_lflag &= ~ECHO;
+ //	new.c_cflag &=~CREAD;
+	tcsetattr(fileno(stdin), TCSANOW, &new);
+
++	bl = scan_devices();
++/*
++	if(!bl->size){
++		puts("No bootable device found");
++		exit(-1);
++	}
++*/
++
+	do{
+		display_menu(fb, bl, choice);
+		do

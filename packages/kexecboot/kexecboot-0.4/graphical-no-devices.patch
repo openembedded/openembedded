@@ -1,0 +1,20 @@
+--- a/kexecboot.c
++++ b/kexecboot.c
+@@ -66,8 +66,15 @@ void display_menu(FB *fb, struct bootlist *bl, int current)
+		      LOGO_IMG_WIDTH,
+		      LOGO_IMG_HEIGHT,
+		      LOGO_IMG_BYTES_PER_PIXEL, LOGO_IMG_RLE_PIXEL_DATA);
+-	fb_draw_text (fb, LOGO_IMG_WIDTH + margin, margin, 0, 0, 0, &radeon_font,
+-			"Make your choice by selecting\nan item with the cursor keys\nand press OK to continue");
++	/* If no devices found print a message */
++	if (0 == bl->size) {
++		fb_draw_text (fb, LOGO_IMG_WIDTH + margin, margin, 0, 0, 0, &radeon_font,
++			"No bootable devices found.\nInsert bootable device\nand press 'R' to reboot.");
++	} else {
++		fb_draw_text (fb, LOGO_IMG_WIDTH + margin, margin, 0, 0, 0, &radeon_font,
++			"Make your choice by selecting\nan item with the cursor keys\nand press OK to continue.\nPress 'R' to reboot.");
++	}
++
+	if(current < firstslot)
+		firstslot=current;
+	if(current > firstslot + slots -1)
