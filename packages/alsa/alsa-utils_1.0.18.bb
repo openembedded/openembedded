@@ -3,10 +3,12 @@ HOMEPAGE = "http://www.alsa-project.org"
 SECTION = "console/utils"
 LICENSE = "GPL"
 DEPENDS = "alsa-lib ncurses"
+PR = "r1"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
            file://alsa-utils-automake.patch;patch=1 \
 	   file://alsa-utils-remove-xmlto.patch;patch=1 \
+	   file://alsa-utils-strl-funcs-non-static.patch;patch=1 \
 	  "
 
 inherit autotools
