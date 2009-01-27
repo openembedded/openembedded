@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 DESCRIPTION = "Philips USB Webcam driver for Linux that supports VGA resolution"
 HOMEPAGE = "http://www.saillard.org/linux/pwc"
 PRIORITY = "optional"

@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 # Linux kernel modules OE build files for the AMD Geode GX5535/LX5536
 # Copyright (C) 2005-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)

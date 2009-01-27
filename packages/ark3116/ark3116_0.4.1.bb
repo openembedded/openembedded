@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 DESCRIPTION = "Driver for usb serial cables based upon ArkMicroChips 3116s chip"
 HOMEPAGE = "http://avr.auctionant.de/ark3116_linux_driver/"
 PRIORITY = "optional"

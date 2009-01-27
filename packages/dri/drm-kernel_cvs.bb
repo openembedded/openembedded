@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory.  see modules.bbclass
+
 SECTION = "x11/base"
 PR = "r3"
 LICENSE = "MIT"
