@@ -1,25 +1,15 @@
 require procps.inc
 
-PR = "r6"
-
-inherit update-rc.d
-
-INITSCRIPT_NAME = "procps.sh"
-INITSCRIPT_PARAMS = "start 30 S ."
+PR = "r5"
 
 SRC_URI += "file://procmodule.patch;patch=1 \
             file://psmodule.patch;patch=1 \
-	    file://linux-limits.patch;patch=1 \
-	    file://sysctl.conf \
-	    file://procps.init \
-	    "
+	    file://linux-limits.patch;patch=1"
 
 FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${base_bindir}/kill.${PN} \
 	 ${bindir}/free.${PN} ${bindir}/w ${bindir}/watch ${bindir}/pgrep ${bindir}/pmap ${bindir}/pwdx \
 	 ${bindir}/snice ${bindir}/vmstat ${bindir}/slabtop ${bindir}/pkill ${bindir}/skill ${bindir}/tload \
 	 ${base_sbindir}/sysctl.${PN}"
-
-CONFFILES_${PN} = "${sysconfdir}/sysctl.conf"
 
 EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
 		CPPFLAGS=-I${STAGING_INCDIR} \
@@ -29,11 +19,6 @@ EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
                 ldconfig=echo"
 
 do_install_append () {
-	install -d ${D}${sysconfdir}
-	install -m 0644 ${WORKDIR}/sysctl.conf ${D}${sysconfdir}/sysctl.conf
-	install -d ${D}${sysconfdir}/init.d
-	install -m 0755 ${WORKDIR}/procps.init ${D}${sysconfdir}/init.d/procps.sh
-
 	mv ${D}${bindir}/uptime ${D}${bindir}/uptime.${PN}
 	mv ${D}${bindir}/top ${D}${bindir}/top.${PN}
 	mv ${D}${base_bindir}/kill ${D}${base_bindir}/kill.${PN}

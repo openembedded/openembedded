@@ -230,6 +230,8 @@ DISTRO_EXTRA_RRECOMMENDS += " \
     kernel-module-vfat \
     kernel-module-ext2 \
     kernel-module-af-packet \
+    avahi-daemon \
+    avahi-autoipd \
     openssh-sftp-server \
     "
 

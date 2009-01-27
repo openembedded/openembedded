@@ -11,7 +11,7 @@ asound_restore(){
 	echo "ALSA: Restoring mixer settings..."
 	if test -x /usr/sbin/alsactl -a -e /etc/asound.state
 	then
-		/usr/sbin/alsactl -f /etc/asound.state restore &
+		/usr/sbin/alsactl -f /etc/asound.state restore
 	fi
 }
 

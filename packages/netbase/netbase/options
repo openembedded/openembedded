@@ -1,4 +1,3 @@
-# used only when /etc/sysctl.conf does not exist
 ip_forward=no
 spoofprotect=yes
 syncookies=no

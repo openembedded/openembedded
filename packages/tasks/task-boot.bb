@@ -1,5 +1,5 @@
 DESCRIPTION = "Basic task to get a device booting"
-PR = "r47"
+PR = "r48"
 
 inherit task
 
@@ -16,7 +16,6 @@ DISTRO_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev",
 # sysvinit, upstart
 #
 DISTRO_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
-DISTRO_INITSCRIPTS ?= "initscripts"
 
 #
 # tinylogin, getty
@@ -40,7 +39,7 @@ RDEPENDS_task-boot = "\
     base-files \
     base-passwd \
     busybox \
-    ${DISTRO_INITSCRIPTS} \
+    initscripts \
     ${@base_contains("MACHINE_FEATURES", "keyboard", "keymaps", "", d)} \
     modutils-initscripts \
     netbase \
