@@ -1,12 +1,12 @@
 require linux-kexecboot.inc
 
-PR = "r6"
+PR = "r8"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
 DEFAULT_PREFERENCE_qemux86 = "-1"
 DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_collie = "1"
-DEFAULT_PREFERENCE_c7x0 = "-1"
+DEFAULT_PREFERENCE_c7x0 = "1"
 DEFAULT_PREFERENCE_akita = "1"
 
 # Handy URLs
@@ -38,7 +38,7 @@ SRC_URI += "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.26.tar.bz2 \
            ${RPSRC}/poodle_lcd_hack-r0.patch;patch=1 \
            ${RPSRC}/poodle_asoc_fix-r1.patch;patch=1 \
            file://zaurus-i2c-init.patch;patch=1;status=upstream \
-           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
+#           ${RPSRC}/logo_oh-r1.patch.bz2;patch=1;status=unmergable \
            ${RPSRC}/pxa-linking-bug.patch;patch=1;status=unmergable \
            file://hostap-monitor-mode.patch;patch=1;status=unmergable \
            file://serial-add-support-for-non-standard-xtals-to-16c950-driver.patch;patch=1;status=unmergable \

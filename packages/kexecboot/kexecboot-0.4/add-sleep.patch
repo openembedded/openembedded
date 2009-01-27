@@ -1,0 +1,12 @@
+--- a/kexecboot.c	2009-01-24 14:11:17.000000000 +0100
++++ b/kexecboot.c	2009-01-24 14:15:03.000000000 +0100
+@@ -427,6 +427,9 @@
+
+		DPRINTF("I'm the init-process!\n");
+
++		/* extra delay for initializing slow SD/CF */
++		sleep(1);
++
+		/* Mount procfs */
+		if ( -1 == mount("proc", "/proc", "proc",
+				0, NULL) ) {
