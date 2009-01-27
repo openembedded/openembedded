@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r18"
+PR = "r19"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -20,6 +20,8 @@ SRC_URI = "file://halt \
            file://netmount.sh \
            file://var.tar.gz.default \
            file://bootup"
+
+SRC_URI_append_dm8000 = " file://fscking.raw"
 
 do_install () {
 #
@@ -61,6 +63,10 @@ do_install () {
 		install -m 0755 ${WORKDIR}/netmount.sh	${D}${sysconfdir}/network/if-up.d/02netmount
 	fi
 
+	if [ "${MACHINE}" = "dm8000" ]; then
+		install -m 0755    ${WORKDIR}/fscking.raw    ${D}${sysconfdir}/
+	fi
+
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc2.d/S99rmnologin
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc3.d/S99rmnologin
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc4.d/S99rmnologin
@@ -75,3 +81,4 @@ do_install () {
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
 	ln -sf    ../init.d/bootup    ${D}${sysconfdir}/rcS.d/S00bootup
 }
+

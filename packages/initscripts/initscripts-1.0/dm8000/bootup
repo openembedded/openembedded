@@ -2,16 +2,22 @@ echo 10 > /proc/progress
 [ -e /dev/dbox/oled0 ] && ln -s /dev/dbox/oled0 /dev/dbox/lcd0
 
 mount -t sysfs sysfs /sys
-echo 12 > /proc/progress
+echo 11 > /proc/progress
 
 depmod -Ae
-echo 13 > /proc/progress
+echo 12 > /proc/progress
 
 for mod in isofs cifs usb-storage sd_mod autofs4 vfat ide-cd cdfs; do
 	modprobe $mod
 done
 
+echo 13 > /proc/progress
+
+(sleep 10; cat /etc/fscking.raw > /dev/dbox/oled0; sleep 1d) &
+pid=$!
 mount -at nonfs,nosmbfs,noncpfs,nocifs
+kill $pid
+
 echo 14 > /proc/progress
 
 swapon -a
