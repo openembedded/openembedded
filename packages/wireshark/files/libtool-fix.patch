@@ -1,0 +1,14 @@
+Index: wireshark-0.99.4/configure.in
+===================================================================
+--- wireshark-0.99.4.orig/configure.in	2009-01-05 01:23:50.887336868 +0300
++++ wireshark-0.99.4/configure.in	2009-01-05 01:24:03.136385630 +0300
+@@ -16,8 +16,7 @@ dnl Checks for programs.
+ AC_PROG_CC
+ AC_PROG_CPP
+ dnl Work around libtool bug (fixed in the version 1.5a?)
+-AC_DEFUN([AC_PROVIDE_AC_LIBTOOL_DLOPEN], )
+-AC_LIBTOOL_DLOPEN
++LT_INIT([dlopen])
+ AC_PROG_LIBTOOL
+ AC_PROG_YACC
+ AM_PROG_LEX

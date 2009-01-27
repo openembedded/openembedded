@@ -8,6 +8,8 @@ PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${PN}/${PN}-${PV}.tar.bz2 \
            file://use-our-lemon.patch;patch=1 \
+           file://acinclude-net-snmp-fix.patch;patch=1 \
+           file://libtool-fix.patch;patch=1 \
 	   file://no-host-includes.patch;patch=1"
 
 inherit autotools
