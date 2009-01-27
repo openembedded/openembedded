@@ -38,8 +38,8 @@ Person:     Cliff Brake
 Mail:       cbrake@bec-systems.com
 Website:    http://bec-systems.com
 Interests:  Support in OE for single board computers, web application support
-Machines:   cm-x270, logicpd-pxa270, em-x270, gesbc-9302
-Recipes:    mono argtable vala
+Machines:   cm-x270, em-x270, gesbc-9302
+Recipes:    mono, argtable, vala, socketcan
 
 Person:     Erik Hovland
 Mail:       erik@hovland.org
@@ -254,6 +254,16 @@ Recipes:    icecc.bbclass, ppc toolchain, asterisk,perl,php
 Person:     Takashi Nemoto
 Mail:       tnemoto@sourceforge.jp
 Recipes:    mkbold-mkitalic
+
+Person:     Tim Ellis
+Mail:       tim.ellis@foonas.org
+Interests:  NAS
+Distros:    Ångström, foonas
+Machines:   dns323, kuropro, lsmipsel, lspro, lsppchd, lsppchg
+Machines:   mv2120, n2100, tsx09
+Recipes:    avr-evtd, bftpd, iscsi-target, jfsutils, hddtemp, krb5
+Recipes:    linux-linkstationppc, linux-n1200, linux-orion, micro-evtd
+Recipes:    netatalk, piccontrol, p910nd, samba, temper, transmission
 
 Person:     Tim Sander
 Mail:       oe@iss.tu-darmstadt.de

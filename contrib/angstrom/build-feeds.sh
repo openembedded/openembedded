@@ -167,6 +167,7 @@ do
                       iperf \
                       iptables \
                       irssi \
+                      iscsi-target \
                       jamvm \
                       kismet \
                       konqueror-embedded \

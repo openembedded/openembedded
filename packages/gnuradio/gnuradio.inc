@@ -2,14 +2,7 @@ DESCRIPTION = "GNU Radio"
 SECTION =  "apps"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = " guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
-
-RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils \
-                  python-shell python-pickle python-compiler python-pkgutil python-pydoc python-mmap \
-                  python-netclient python-unittest python-difflib python-pprint python-numpy \
-                 "
-
-RDEPENDS_gnuradio-usrp = "python-core"
+DEPENDS = "guile-native fftwf python virtual/libsdl alsa-lib jack boost cppunit sdcc-native swig-native python-numpy"
 
 inherit distutils-base autotools pkgconfig
 
@@ -19,34 +12,42 @@ export HOST_SYS=${MULTIMACH_TARGET_SYS}
 CXXFLAGS_powerpc += "-lstdc++"
 
 EXTRA_OECONF = " \
-                --disable-gr-atsc \
-		--enable-gr-video-sdl \
-		--enable-gr-audio-alsa  \
-                --enable-gr-audio-jack \
-                --enable-gr-audio-oss \
-                --enable-mblock \
-	        --disable-html-docs \
-                PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/python2.5 \
-		"
+  --disable-gr-atsc \
+  --enable-gr-video-sdl \
+  --enable-gr-audio-alsa  \
+  --enable-gr-audio-jack \
+  --enable-gr-audio-oss \
+  --enable-mblock \
+  --disable-html-docs \
+  PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
+"
 
 do_configure_prepend() {
-if [ -e ${WORKDIR}/acinclude.m4 ] ; then
-	cp ${WORKDIR}/acinclude.m4 ${S}
-fi
+	if [ -e ${WORKDIR}/acinclude.m4 ] ; then
+		cp ${WORKDIR}/acinclude.m4 ${S}
+	fi
 }
 
 do_configure_append() {
-        find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':'-I${STAGING_INCDIR}':g
+	find ${S} -name Makefile | xargs sed -i s:'-I/usr/include':'-I${STAGING_INCDIR}':g
 }
 
-PACKAGES =+ "libpmt libpmt-qa \
-             libmblock libmblock-qa \
-	     libgr-audio-alsa libgr-audio-oss libgr-audio-jack\
-	     libusrp libusrp-inband libusrp-inband-qa \
-	     libgromnithread \
-	     libgnuradio-core libgnuradio-core-qa \
-	     gnuradio-usrp-dbg gnuradio-usrp gnuradio-examples"
+RDEPENDS_${PN} = "python-core python-audio python-threading python-codecs python-lang python-textutils \
+                  python-shell python-pickle python-compiler python-pkgutil python-pydoc python-mmap \
+                  python-netclient python-unittest python-difflib python-pprint python-numpy \
+"
 
+RDEPENDS_gnuradio-usrp = "python-core"
+
+PACKAGES =+ "\
+  libpmt libpmt-qa \
+  libmblock libmblock-qa \
+  libgr-audio-alsa libgr-audio-oss libgr-audio-jack\
+  libusrp libusrp-inband libusrp-inband-qa \
+  libgromnithread \
+  libgnuradio-core libgnuradio-core-qa \
+  gnuradio-usrp-dbg gnuradio-usrp gnuradio-examples \
+"
 
 FILES_gnuradio-examples = "${datadir}/gnuradio/examples"
 

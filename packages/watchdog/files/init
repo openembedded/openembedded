@@ -1,0 +1,33 @@
+#!/bin/sh
+DAEMON="/usr/sbin/watchdog"
+NAME="watchdog"
+DESC="watchdog daemon"
+OPTIONS=""
+
+test -f $DAEMON || exit 0
+
+case "$1" in
+    start)
+        echo -n "Starting $DESC: $NAME... "
+        start-stop-daemon -S -x $DAEMON -- $OPTIONS
+        echo "done."
+       ;;
+    stop)
+        echo -n "Stopping $DESC: $NAME... "
+        start-stop-daemon -K -x $DAEMON
+        echo "done."
+        ;;
+    restart)
+        echo "Restarting $DESC: $NAME... "
+        $0 stop
+        sleep 1
+        $0 start
+        echo "done."
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0

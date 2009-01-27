@@ -1,7 +1,8 @@
 DESCRIPTION = "wiimote access library"
 LICENSE = "GPLv2"
+HOMEPAGE = "http://sourceforge.net/projects/libwiimote/"
 
-PR = "r0"
+PR = "r1"
 
 inherit autotools
 
