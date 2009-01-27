@@ -1,0 +1,13 @@
+Index: wireshark-0.99.4/acinclude.m4
+===================================================================
+--- wireshark-0.99.4.orig/acinclude.m4	2009-01-03 22:57:54.106829288 +0300
++++ wireshark-0.99.4/acinclude.m4	2009-01-03 22:57:59.806420438 +0300
+@@ -1117,7 +1117,7 @@ AC_DEFUN([AC_WIRESHARK_NETSNMP_CHECK],
+ 		#
+ 		AC_PATH_PROG(NETSNMPCONFIG, net-snmp-config)
+ 	else
+-		NETSNMPCNFIG=$netsnmpconfig
++		NETSNMPCONFIG=$netsnmpconfig
+ 		if test ! -x $NETSNMPCONFIG -o ! -f $NETSNMPCONFIG ; then
+ 			NETSNMPCONFIG=$netsnmpconfig/bin/net-snmp-config
+ 			if test ! -x $NETSNMPCONFIG -o ! -f $NETSNMPCONFIG ; then
