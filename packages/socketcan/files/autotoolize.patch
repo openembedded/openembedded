@@ -1,0 +1,188 @@
+
+Property changes on: test/Makefile.old
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: test/Makefile.am
+===================================================================
+--- test/Makefile.am	(revision 0)
++++ test/Makefile.am	(revision 0)
+@@ -0,0 +1,43 @@
++AM_CFLAGS = @CFLAGS@
++
++bin_PROGRAMS = 	tst_raw		  \
++		tst_raw_filter	  \
++		tst_err		  \
++		tst_raw_sendto	  \
++		tst_packet	  \
++		tst_filter_master \
++		tst_filter_server \
++		tst_bcm_cycle 	  \
++		tst_bcm_server 	  \
++		tst_bcm_tx_read	  \
++		tst_bcm_rtr	  \
++		tst_bcm_single	  \
++		tst_bcm_filter	  \
++		tst_bcm_throttle  \
++		tst_bcm_rx_sendto \
++		tst_bcm_tx_sendto \
++		tst_bcm_dump	  \
++		tst_proc	  \
++		canecho
++
++tst_raw_SOURCES = tst-raw.c
++tst_raw_filter_SOURCES = tst-raw-filter.c
++tst_err_SOURCES = tst-err.c
++tst_raw_sendto_SOURCES = tst-raw-sendto.c
++tst_packet_SOURCES = tst-packet.c
++tst_filter_master_SOURCES = tst-filter-master.c
++tst_filter_server_SOURCES = tst-filter-server.c
++tst_bcm_cycle_SOURCES = tst-bcm-cycle.c
++tst_bcm_server_SOURCES = tst-bcm-server.c
++tst_bcm_tx_read_SOURCES = tst-bcm-tx_read.c
++tst_bcm_rtr_SOURCES = tst-bcm-rtr.c
++tst_bcm_single_SOURCES = tst-bcm-single.c
++tst_bcm_filter_SOURCES = tst-bcm-filter.c
++tst_bcm_throttle_SOURCES = tst-bcm-throttle.c
++tst_bcm_rx_sendto_SOURCES = tst-bcm-rx-sendto.c
++tst_bcm_tx_sendto_SOURCES = tst-bcm-tx-sendto.c
++tst_bcm_dump_SOURCES = tst-bcm-dump.c
++tst_proc_SOURCES = tst-proc.c
++canecho_SOURCES = canecho.c
++
++
+Index: README
+===================================================================
+--- README	(revision 917)
++++ README	(working copy)
+@@ -57,10 +57,15 @@
+ 
+ 2b. Compile and install the user space utilities and test programs
+ 
+-...
++    autoreconf -i
++    ./configure
++    make install
+ 
+-[ Run make in can-utils and test dirs and cp binaries to /usr/local ]
+ 
++To install to a temporary directory for development, you can do something like:
++   
++   ./configure --prefix=`pwd`/install
++   make install
+ 
+ 3. How to use socketcan
+ 
+
+Property changes on: can-utils/Makefile.old
+___________________________________________________________________
+Added: svn:mergeinfo
+
+Index: can-utils/Makefile.am
+===================================================================
+--- can-utils/Makefile.am	(revision 0)
++++ can-utils/Makefile.am	(revision 0)
+@@ -0,0 +1,47 @@
++
++AM_CFLAGS = @CFLAGS@
++
++lib_LTLIBRARIES = libcanutils.la
++
++libcanutils_la_SOURCES = lib.c lib.h
++
++bin_PROGRAMS = candump cansniffer cansend canplayer canlogserver cangen \
++               canbusload log2long log2asc asc2log vcan slcan_attach \
++               isotpdump isotprecv isotpsend isotpsniffer isotptun slcanpty
++
++
++cansend_SOURCES = cansend.c lib.h
++cansend_LDADD = libcanutils.la
++
++cangen_SOURCES = cangen.c lib.h
++cangen_LDADD = libcanutils.la
++
++candump_SOURCES = candump.c lib.h
++candump_LDADD = libcanutils.la
++
++canplayer_SOURCES = canplayer.c lib.h
++canplayer_LDADD = libcanutils.la
++
++canlogserver_SOURCES = canlogserver.c lib.h
++canlogserver_LDADD = libcanutils.la
++
++log2long_SOURCES = log2long.c lib.h
++log2long_LDADD = libcanutils.la
++
++log2asc_SOURCES = log2asc.c lib.h
++log2asc_LDADD = libcanutils.la
++
++asc2log_SOURCES = asc2log.c lib.h
++asc2log_LDADD = libcanutils.la
++
++canbusload_SOURCES = canbusload.c lib.h
++cansniffer_SOURCES = cansniffer.c
++vcan_SOURCES = vcan.c
++slcan_attach_SOURCES = slcan_attach.c
++isotpdump_SOURCES = isotpdump.c
++isotprecv_SOURCES = isotprecv.c
++isotpsend_SOURCES = isotpsend.c
++isotpsniffer_SOURCES = isotpsniffer.c
++isotptun_SOURCES = isotptun.c
++slcanpty_SOURCES = slcanpty.c
++
+Index: configure.ac
+===================================================================
+--- configure.ac	(revision 0)
++++ configure.ac	(revision 0)
+@@ -0,0 +1,26 @@
++AC_INIT(socketcan, 0.1)
++AM_INIT_AUTOMAKE([-Wall -Werror foreign])
++AC_PROG_CC
++
++# for now we disable shared libs for simplicity -- we might
++# want to use them at some point in the future
++AC_DISABLE_SHARED
++
++AC_PROG_LIBTOOL
++
++CFLAGS="$CFLAGS \
++	-O2 -Wall -Wno-parentheses -I../kernel/2.6/include \
++	-fno-strict-aliasing \
++	-DETH_P_CAN=0x000C \
++	-DPF_CAN=29 \
++	-DAF_CAN=PF_CAN \
++	"
++
++AC_CONFIG_HEADERS([config.h])
++AC_OUTPUT([
++Makefile
++test/Makefile
++can-utils/Makefile
++])
++
++
+Index: Makefile.am
+===================================================================
+--- Makefile.am	(revision 0)
++++ Makefile.am	(revision 0)
+@@ -0,0 +1,19 @@
++
++
++SUBDIRS = test can-utils
++
++KERNELDIR     = /usr/src/linux
++
++VERSION       = $(shell awk '/^VERSION/     {print $$3}' $(KERNELDIR)/Makefile)
++PATCHLEVEL    = $(shell awk '/^PATCHLEVEL/  {print $$3}' $(KERNELDIR)/Makefile)
++SUBLEVEL      = $(shell awk '/^SUBLEVEL/    {print $$3}' $(KERNELDIR)/Makefile)
++EXTRAVERSION  = $(shell awk '/^EXTRAVERSION/{print $$3}' $(KERNELDIR)/Makefile)
++KERNELRELEASE = $(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
++
++patch26:
++	./mkpatch $(KERNELRELEASE) >patch-$(KERNELRELEASE)-socketcan < FILES-2.6
++
++patch26all:
++	./mkpatch $(KERNELRELEASE) >patch-$(KERNELRELEASE)-socketcan-all < FILES-2.6-ALL
++
++
+
