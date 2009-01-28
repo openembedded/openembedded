@@ -19,6 +19,7 @@ EXTRA_OECONF = " \
   --enable-gr-audio-oss \
   --enable-mblock \
   --disable-html-docs \
+  --with-pythondir=/usr/lib/${PYTHON_DIR}/site-packages \
   PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
 "
 

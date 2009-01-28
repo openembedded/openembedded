@@ -136,7 +136,7 @@ do_install () {
 # Codec Engine and friends need a complete tree, so stage it all
 do_stage() {
 	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
-	cp -pPr ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink/ 
+	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink/ 
 }
 
 pkg_postinst_dsplink-module () {

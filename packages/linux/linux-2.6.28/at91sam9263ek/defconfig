@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.28
-# Thu Jan 22 13:17:54 2009
+# Wed Jan 28 15:11:30 2009
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -404,8 +404,6 @@ CONFIG_BT_HCIBTSDIO=m
 # CONFIG_AF_RXRPC is not set
 # CONFIG_PHONET is not set
 # CONFIG_WIRELESS is not set
-# CONFIG_MAC80211_RC_DEFAULT_PID is not set
-# CONFIG_MAC80211_RC_DEFAULT_MINSTREL is not set
 # CONFIG_RFKILL is not set
 # CONFIG_NET_9P is not set
 
@@ -613,7 +611,7 @@ CONFIG_DAVICOM_PHY=y
 CONFIG_NET_ETHERNET=y
 CONFIG_MII=y
 CONFIG_MACB=y
-# CONFIG_MACB_TX_SRAM is not set
+CONFIG_MACB_TX_SRAM=y
 # CONFIG_AX88796 is not set
 # CONFIG_SMC91X is not set
 # CONFIG_DM9000 is not set

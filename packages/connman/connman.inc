@@ -2,12 +2,16 @@ DESCRIPTION = "The Moblin Connection Manager"
 HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
-DEPENDS  = "dbus glib-2.0"
+# we need to define the depends here, the dynamic stuff is too late
+DEPENDS  = "dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
 
 EXTRA_OECONF += "\
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
     ac_cv_path_DHCLIENT=/sbin/dhclient \
-    ac_cv_path_UDHCPC=/sbin/udhcpc"
+    ac_cv_path_UDHCPC=/sbin/udhcpc \
+    ac_cv_path_RESOLVCONF=/sbin/resolvconf \
+    ac_cv_path_PPPD=/usr/sbin/pppd \
+"
 
 INITSCRIPT_NAME = "connman"
 INITSCRIPT_PARAMS = "defaults 22"
@@ -15,6 +19,10 @@ INITSCRIPT_PARAMS = "defaults 22"
 PARALLEL_MAKE = ""
 
 inherit autotools pkgconfig update-rc.d
+
+do_configure_append() {
+	ln -sf . include/connman
+}
 
 do_install_append() {
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
@@ -25,7 +33,7 @@ do_stage() {
 }
 
 python populate_packages_prepend() {
-	depmap = dict( pppd="pppd", udhcp="udhcpc", dhclient="dhcp-client", wifi="wpa-supplicant", resolvconf="resolvconf", bluetooth="bluez4" )
+	depmap = dict( pppd="ppp", udhcp="busybox", dhclient="dhclient", wifi="wpa-supplicant", resolvconf="resolvconf", bluetooth="bluez4" )
 	packages = []
 	hook = lambda file,pkg,b,c,d:packages.append((file,pkg))
 	plugin_dir = bb.data.expand('${libdir}/connman/plugins/', d)
