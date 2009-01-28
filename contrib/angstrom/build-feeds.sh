@@ -81,6 +81,7 @@ do
                       bluez-hcidump \
                       boa \
                       camera-assistant \
+                      cdparanoia \
                       checkers \
                       cherokee \
                       claws-mail \
