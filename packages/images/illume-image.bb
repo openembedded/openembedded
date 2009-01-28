@@ -17,6 +17,8 @@ BASE_INSTALL = "\
   exquisite \
   exquisite-themes \
   exquisite-theme-illume \
+  pointercal \
+  tslib-conf \
 "
 
 # Some machines don't set a *runtime* provider for X, so default to Xfbdev here
@@ -51,7 +53,8 @@ X_INSTALL = "\
 #  ttf-dejavu-serif \
   ttf-dejavu-sans-mono \
   ttf-arphic-uming \
-  \
+"
+DEV_INSTALL = "\
   task-native-sdk \
   e-wm-dev \
   task-proper-tools \
@@ -67,45 +70,38 @@ X_INSTALL = "\
 TOOLS_INSTALL = "\
   dosfstools \
   lsof \
-#  mickeydbus \
+  mickeydbus \
   mtd-utils \
   nano \
   powertop \
-#  s3c24xx-gpio \
   sysstat \
 "
 
 # audio
 AUDIO_INSTALL = "\
-#  alsa-oss \
-#  alsa-state \
-#  alsa-utils-aplay \
-#  alsa-utils-amixer \
-#  gst-meta-audio \
-#  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
-#  gst-plugin-modplug \
-#  gst-plugin-sid \
-#  fso-sounds \
+  alsa-oss \
+  alsa-state \
+  alsa-utils-aplay \
+  alsa-utils-amixer \
+  gst-meta-audio \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'gst-plugin-mad', d)} \
+  gst-plugin-modplug \
+  gst-plugin-sid \
+  fso-sounds \
 "
 
 GTK_INSTALL = "\
-#  openmoko-calculator2 \
   vala-terminal \
   gpe-scap \
-#  tangogps \
-"
-
-GAMES_INSTALL = "\
-#  numptyphysics \
 "
 
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
 AUDIO_INSTALL_append_om-gta01 = "\
-#  openmoko-alsa-scenarios \
+  openmoko-alsa-scenarios \
 "
 AUDIO_INSTALL_append_om-gta02 = "\
-#  openmoko-alsa-scenarios \
+  openmoko-alsa-scenarios \
 "
 
 # python
@@ -117,10 +113,10 @@ PYTHON_INSTALL = "\
 
 # zhone
 ZHONE_INSTALL = "\
-#  fso-gsm0710muxd \
-#  frameworkd \
-#  fso-gpsd \
-#  zhone \
+  fso-gsm0710muxd \
+  frameworkd \
+  fso-gpsd \
+  zhone \
 "
 
 # additional apps
@@ -128,20 +124,21 @@ APPS_INSTALL = "\
    elementary-alarm \
    expedite \
    expedite-themes \
-#   libefso \
-#   essential-dialer \
+   libefso \
+   essential-dialer \
+   elementary-sms \
 "
 
 IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
   ${X_INSTALL} \
   ${GTK_INSTALL} \
-  ${GAMES_INSTALL} \
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
-  ${ZHONE_INSTALL} \
+#  ${ZHONE_INSTALL} \
   ${APPS_INSTALL} \
+  ${DEV_INSTALL} \
 "
 inherit image
 
