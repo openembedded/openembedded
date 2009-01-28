@@ -28,7 +28,7 @@ CXXFLAGS = "${BUILD_CFLAGS}"
 LDFLAGS = "${BUILD_LDFLAGS}"
 
 # Path prefixes
-prefix = "${SDK_PREFIX}"
+prefix = "${SDK_PATH}"
 exec_prefix = "${prefix}"
 base_prefix = "${prefix}"
 

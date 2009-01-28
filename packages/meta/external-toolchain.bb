@@ -1,6 +1,6 @@
 DESCRIPTION = "This package allows OE to work with an external toolchain generated \
                by meta-toolchain instead of building its own. It expects that toolchain \
-               to be located in SDK_PREFIX/prefix."
+               to be located in SDK_PATH/prefix."
 
 PROVIDES = "\
     linux-libc-headers \
