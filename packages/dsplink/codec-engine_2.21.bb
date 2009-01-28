@@ -62,8 +62,8 @@ do_compile_append() {
 
 
 do_stage_append() {
-    install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine
-    cp -pPr ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/
+	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine
+    cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/
 }
 
 INHIBIT_PACKAGE_STRIP = "1"
