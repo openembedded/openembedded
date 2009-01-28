@@ -3,7 +3,7 @@
 #@DESCRIPTION: Generic Machine configuration for ppc based linkstations
 
 TARGET_ARCH = "powerpc"
-PACKAGE_EXTRA_ARCHS = "ppc ppc603e"
+PACKAGE_EXTRA_ARCHS = "ppc"
 
 MACHINE_FEATURES = "kernel26 usbhost ext2"
 MACHINE_EXTRA_RDEPENDS = "kernel-devicetree avr-evtd"

@@ -13,12 +13,17 @@ S = "${WORKDIR}/dmai_1_16_00_03"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-do_compile () {
-	:
+do_compile() {
+	cd packages/ti/sdo/dmai
+	oe_runmake clean
+	oe_runmake dm6467_al dm355_al dm6446_al dm357_al dm6437_db dm6446_db dm6467_db
+	cd packages/ti/sdo/dmai/apps
+	oe_runmake clean
+	oe_runmake dm6467_al dm355_al dm6446_al dm357_al dm6437_db dm6446_db dm6467_db
 }
 
 do_install () {
-	:
+	oe_runmake install
 }
 
 do_stage () {

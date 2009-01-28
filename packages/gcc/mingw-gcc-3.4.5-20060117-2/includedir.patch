@@ -1,0 +1,12 @@
+diff -urN gcc-3.4.5-20060117-2-orig/gcc/Makefile.in gcc-3.4.5-20060117-2/gcc/Makefile.in
+--- gcc-3.4.5-20060117-2-orig/gcc/Makefile.in	2005-12-12 02:24:01.000000000 +0100
++++ gcc-3.4.5-20060117-2/gcc/Makefile.in	2008-10-02 16:07:17.000000000 +0200
+@@ -442,7 +442,7 @@
+ # Directory to search for site-specific includes.
+ local_includedir = $(local_prefix)/include
+ # local_includedir=$(libsubdir)/$(unlibsubdir)/..`echo $(exec_prefix) | sed -e 's|^$(prefix)||' -e 's|/[^/]*|/..|g'`/include
+-includedir = $(prefix)/include
++includedir = @includedir@
+ # where the info files go
+ infodir = @infodir@
+ # Where cpp should go besides $prefix/bin if necessary
