@@ -1,5 +1,5 @@
 require connman.inc
-PR = "r4"
+PR = "r0"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
