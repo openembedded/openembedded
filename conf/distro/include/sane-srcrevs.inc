@@ -231,7 +231,7 @@ SRCREV_pn-wlan-ng-utils ?= "1859"
 SRCREV_pn-wmiconfig ?= "4522"
 SRCREV_pn-xoo ?= "1971"
 SRCREV_pn-xserver-kdrive-glamo ?= "9b28d998424c77fbc057dd3a022ccbb122793a52"
-SRCREV_pn-zhone ?= "3eeee558eba77f88145610a389166d9183fca048"
+SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
