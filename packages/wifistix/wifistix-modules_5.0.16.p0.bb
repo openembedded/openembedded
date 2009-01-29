@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 DESCRIPTION = "Linux Driver for Marvel 88W8385 802.11b/g Wifi Module used in Gumstix daughtercards"
 SECTION = "base"
 PRIORITY = "optional"

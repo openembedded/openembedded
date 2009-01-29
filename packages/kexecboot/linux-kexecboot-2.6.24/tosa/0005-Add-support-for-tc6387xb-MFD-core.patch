@@ -1,0 +1,249 @@
+From a6a6faf1dbb90c950fe55a1719720457bfb5830a Mon Sep 17 00:00:00 2001
+From: Ian Molton <spyro@f2s.com>
+Date: Sun, 16 Dec 2007 02:19:49 +0000
+Subject: [PATCH 05/64] Add support for tc6387xb MFD core
+
+---
+ drivers/mfd/Kconfig          |    6 ++
+ drivers/mfd/Makefile         |    1 +
+ drivers/mfd/tc6387xb.c       |  163 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/tc6387xb.h |   28 +++++++
+ 4 files changed, 198 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mfd/tc6387xb.c
+ create mode 100644 include/linux/mfd/tc6387xb.h
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 9903d0a..1575323 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -9,6 +9,12 @@ config MFD_CORE
+ 	tristate
+ 	default n
+ 
++config MFD_TC6387XB
++	bool "Support Toshiba TC6387XB"
++	select MFD_CORE
++	help
++	  Support for Toshiba Mobile IO Controller TC6387XB
++
+ config MFD_TC6393XB
+ 	bool "Support Toshiba TC6393XB"
+ 	select MFD_CORE
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index ffd342e..41b2190 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -6,6 +6,7 @@ obj-$(CONFIG_MFD_SM501)		+= sm501.o
+ 
+ obj-$(CONFIG_MFD_CORE)		+= mfd-core.o
+ 
++obj-$(CONFIG_MFD_TC6387XB)	+= tc6387xb.o
+ obj-$(CONFIG_MFD_TC6393XB)	+= tc6393xb.o
+ 
+ obj-$(CONFIG_MCP)		+= mcp-core.o
+diff --git a/drivers/mfd/tc6387xb.c b/drivers/mfd/tc6387xb.c
+new file mode 100644
+index 0000000..c81fca2
+--- /dev/null
++++ b/drivers/mfd/tc6387xb.c
+@@ -0,0 +1,163 @@
++/*
++ * Toshiba TC6387XB support
++ * Copyright (c) 2005 Ian Molton
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This file contains TC6387XB base support.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/delay.h>
++#include <linux/platform_device.h>
++
++#include <asm/hardware.h>
++#include <asm/mach-types.h>
++
++#include <linux/mfd-core.h>
++#include <linux/mfd/tc6387xb.h>
++
++#ifdef CONFIG_PM
++static int tc6387xb_suspend(struct platform_device *dev, pm_message_t state)
++{
++	struct tc6387xb_platform_data *pdata = platform_get_drvdata(dev);
++
++	if (pdata && pdata->suspend)
++		pdata->suspend(dev);
++
++	return 0;
++}
++
++static int tc6387xb_resume(struct platform_device *dev)
++{
++	struct tc6387xb_platform_data *pdata = platform_get_drvdata(dev);
++
++	if (pdata && pdata->resume)
++		pdata->resume(dev);
++
++	return 0;
++}
++#else
++#define tc6387xb_suspend  NULL
++#define tc6387xb_resume   NULL
++#endif
++
++/*--------------------------------------------------------------------------*/
++
++static int tc6387xb_mmc_enable(struct platform_device *mmc) {
++	struct platform_device *dev      = to_platform_device(mmc->dev.parent);
++	struct tc6387xb_platform_data *tc6387xb = dev->dev.platform_data;
++
++	if(tc6387xb->enable_mmc_clock)
++		tc6387xb->enable_mmc_clock(dev);
++
++	return 0;
++}
++
++static int tc6387xb_mmc_disable(struct platform_device *mmc) {
++	struct platform_device *dev      = to_platform_device(mmc->dev.parent);
++	struct tc6387xb_platform_data *tc6387xb = dev->dev.platform_data;
++
++	if(tc6387xb->disable_mmc_clock)
++		tc6387xb->disable_mmc_clock(dev);
++
++	return 0;
++}
++
++
++/*--------------------------------------------------------------------------*/
++
++static struct resource tc6387xb_mmc_resources[] = {
++	{
++		.name = TMIO_MMC_CONTROL,
++		.start = 0x800,
++		.end   = 0x9ff,
++		.flags = IORESOURCE_MEM,
++	},
++	{
++		.name = TMIO_MMC_CONFIG,
++		.start = 0x200,
++		.end   = 0x2ff,
++		.flags = IORESOURCE_MEM,
++	},
++	{
++		.name  = TMIO_MMC_IRQ,
++		.start = 0,
++		.end   = 0,
++		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_MFD_SUBDEVICE,
++	},
++};
++
++static struct mfd_cell tc6387xb_cells[] = {
++	{
++		.name = "tmio-mmc",
++		.enable = tc6387xb_mmc_enable,
++		.disable = tc6387xb_mmc_disable,
++		.num_resources = ARRAY_SIZE(tc6387xb_mmc_resources),
++		.resources = tc6387xb_mmc_resources,
++	},
++};
++
++static int tc6387xb_probe(struct platform_device *dev)
++{
++	struct tc6387xb_platform_data *data = platform_get_drvdata(dev);
++	struct resource *iomem;
++	int irq;
++
++	iomem = platform_get_resource(dev, IORESOURCE_MEM, 0);
++	if (!iomem)
++		return -EINVAL;
++
++	irq   = platform_get_irq(dev, 0);
++
++	if(data && data->enable)
++		data->enable(dev);
++
++	printk(KERN_INFO "Toshiba tc6393xb initialised\n");
++
++	return mfd_add_devices(dev, tc6387xb_cells, ARRAY_SIZE(tc6387xb_cells),
++	                       iomem, 0, irq);
++}
++
++static int tc6387xb_remove(struct platform_device *dev)
++{
++	struct tc6387xb_platform_data *data = platform_get_drvdata(dev);
++
++	if(data && data->disable)
++		data->disable(dev);
++
++	return 0;
++}
++
++
++static struct platform_driver tc6387xb_platform_driver = {
++	.driver = {
++		.name		= "tc6387xb",
++	},
++	.probe		= tc6387xb_probe,
++	.remove		= tc6387xb_remove,
++	.suspend        = tc6387xb_suspend,
++	.resume         = tc6387xb_resume,
++};
++
++
++static int __init tc6387xb_init(void)
++{
++	return platform_driver_register (&tc6387xb_platform_driver);
++}
++
++static void __exit tc6387xb_exit(void)
++{
++	platform_driver_unregister(&tc6387xb_platform_driver);
++}
++
++module_init(tc6387xb_init);
++module_exit(tc6387xb_exit);
++
++MODULE_DESCRIPTION("Toshiba TC6387XB core driver");
++MODULE_LICENSE("GPLv2");
++MODULE_AUTHOR("Ian Molton");
+diff --git a/include/linux/mfd/tc6387xb.h b/include/linux/mfd/tc6387xb.h
+new file mode 100644
+index 0000000..496770b
+--- /dev/null
++++ b/include/linux/mfd/tc6387xb.h
+@@ -0,0 +1,28 @@
++/*
++ * linux/include/asm-arm/hardware/tc6387xb.h
++ *
++ * This file contains the definitions for the TC6393XB
++ *
++ * (C) Copyright 2005 Ian Molton <spyro@f2s.com>
++ *
++ * May be copied or modified under the terms of the GNU General Public
++ * License.  See linux/COPYING for more information.
++ *
++ */
++#ifndef MFD_T7L66XB_H
++#define MFD_T7L66XB_H
++
++#include <linux/mfd-core.h>
++#include <linux/mfd/tmio.h>
++
++struct tc6387xb_platform_data
++{
++	int (*enable_mmc_clock)(struct platform_device *dev);
++	int (*disable_mmc_clock)(struct platform_device *dev);
++	int (*enable)(struct platform_device *dev);
++	int (*disable)(struct platform_device *dev);
++	int (*suspend)(struct platform_device *dev);
++	int (*resume)(struct platform_device *dev);
++};
++
++#endif
+-- 
+1.5.3.8
+

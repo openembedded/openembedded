@@ -1,0 +1,239 @@
+From f7dad1cd9c1bd3fce5d228e0b644a51baea50cd9 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Fri, 15 Feb 2008 15:35:07 +0300
+Subject: [PATCH] Preliminary tosa denoiser
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/input/touchscreen/Kconfig       |   12 ++
+ drivers/input/touchscreen/Makefile      |    1 +
+ drivers/input/touchscreen/tosa-wm97xx.c |  182 +++++++++++++++++++++++++++++++
+ 3 files changed, 195 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/input/touchscreen/tosa-wm97xx.c
+
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index 0be05a2..938aed2 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -210,6 +210,18 @@ config TOUCHSCREEN_WM97XX_MAINSTONE
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called mainstone-wm97xx
+ 
++config TOUCHSCREEN_WM97XX_TOSA
++	tristate "WM97xx Tosa denoiser"
++	depends on TOUCHSCREEN_WM97XX && MACH_TOSA
++	help
++	  Say Y here for support for touchscreen denoising on
++	  Sharl Zaurus SL-6000 (tosa) system.
++
++	  If unsure, say N
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called tosa-wm97xx
++
+ config TOUCHSCREEN_TOUCHWIN
+ 	tristate "Touchwin serial touchscreen"
+ 	select SERIO
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index d38156e..d86278b 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
+ obj-$(CONFIG_TOUCHSCREEN_UCB1400)	+= ucb1400_ts.o
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX)	+= wm97xx-ts.o
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX_MAINSTONE)	+= mainstone-wm97xx.o
++obj-$(CONFIG_TOUCHSCREEN_WM97XX_TOSA)	+= tosa-wm97xx.o
+ wm97xx-ts-$(CONFIG_TOUCHSCREEN_WM9705)  += wm9705.o
+ wm97xx-ts-$(CONFIG_TOUCHSCREEN_WM9712)  += wm9712.o
+ wm97xx-ts-$(CONFIG_TOUCHSCREEN_WM9713)  += wm9713.o
+diff --git a/drivers/input/touchscreen/tosa-wm97xx.c b/drivers/input/touchscreen/tosa-wm97xx.c
+new file mode 100644
+index 0000000..8fd542b
+--- /dev/null
++++ b/drivers/input/touchscreen/tosa-wm97xx.c
+@@ -0,0 +1,182 @@
++/*
++ * tosa_ts.c  --  Touchscreen driver for Sharp SL-6000 (Tosa).
++ *
++ * Copyright 2008 Dmitry Baryshkov
++ * Copyright 2006 Wolfson Microelectronics PLC.
++ * Author: Mike Arthur
++ *         linux@wolfsonmicro.com
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ *  Revision history
++ *     1st Sep 2006  Initial version.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/wm97xx.h>
++#include <linux/fb.h>
++
++#include <asm/arch/tosa.h>
++#include <asm/gpio.h>
++
++static unsigned long hsync_time = 0;
++
++static void calc_hsync_time(const struct fb_videomode *mode)
++{
++	/* The 25 and 44 'magic numbers' are from Sharp's 2.4 patches */
++	if (mode->yres == 640) {
++		hsync_time = 25;
++	} else if (mode->yres == 320) {
++		hsync_time = 44;
++	} else {
++		printk(KERN_ERR "unknown video mode res specified: %dx%d!", mode->xres, mode->yres);
++		WARN_ON(1);
++	}
++
++	printk(KERN_ERR "tosa-wm97xx: using %lu hsync time\n", hsync_time);
++}
++
++static int fb_notifier_callback(struct notifier_block *self,
++				unsigned long event, void *_data)
++{
++	if (event != FB_EVENT_MODE_CHANGE && event != FB_EVENT_MODE_CHANGE_ALL)
++		return 0;
++
++	calc_hsync_time(tosa_lcd_get_mode());
++
++	return 0;
++}
++
++static void tosa_lcd_wait_hsync(void)
++{
++	/* Waits for a rising edge on the VGA line */
++	while (gpio_get_value(TOSA_GPIO_VGA_LINE) == 0);
++	while (gpio_get_value(TOSA_GPIO_VGA_LINE) != 0);
++}
++
++/* Taken from the Sharp 2.4 kernel code */
++#define CCNT(a)     asm volatile ("mrc p14, 0, %0, C1, C1, 0" : "=r"(a))
++#define CCNT_ON()   asm("mcr p14, 0, %0, C0, C0, 0" : : "r"(1))
++#define CCNT_OFF()  asm("mcr p14, 0, %0, C0, C0, 0" : : "r"(0))
++
++/* On the Sharp SL-6000 (Tosa), due to a noisy LCD, we need to perform a wait
++ * before sampling the Y axis of the touchscreen */
++static void tosa_lcd_sync_on(int adcsel)
++{
++	unsigned long timer1 = 0, timer2 = 0, wait_time = 0;
++	if (adcsel & WM97XX_ADCSEL_Y) {
++		CCNT_ON();
++		wait_time = hsync_time;
++
++		if (wait_time) {
++
++			/* wait for LCD rising edge */
++			tosa_lcd_wait_hsync();
++			/* get clock */
++			CCNT(timer1);
++			CCNT(timer2);
++
++			while ((timer2 - timer1) < wait_time) {
++				CCNT(timer2);
++			}
++		}
++	}
++}
++
++static void tosa_lcd_sync_off(int adcsel)
++{
++	if (adcsel & WM97XX_ADCSEL_Y)
++		CCNT_OFF();
++}
++
++static struct wm97xx_mach_ops tosa_mach_ops = {
++	.pre_sample =  tosa_lcd_sync_on,
++	.post_sample = tosa_lcd_sync_off,
++};
++
++static int __devinit tosa_ts_probe(struct platform_device *dev) {
++	struct wm97xx *wm = platform_get_drvdata(dev);
++	struct notifier_block *notif;
++	int err = -ENOMEM;
++
++	notif = kzalloc(sizeof(struct notifier_block), GFP_KERNEL);
++	if (!notif)
++		goto err_alloc;
++
++	notif->notifier_call = fb_notifier_callback;
++
++	err = gpio_request(TOSA_GPIO_VGA_LINE, "hsync");
++	if (err)
++		goto err_gpio;
++
++	err = gpio_direction_input(TOSA_GPIO_VGA_LINE);
++	if (err)
++		goto err_gpio;
++
++	platform_set_drvdata(dev, notif);
++
++	err = fb_register_client(notif);
++	if (err)
++		goto err_register;
++
++	err = wm97xx_register_mach_ops(wm, &tosa_mach_ops);
++	if (err)
++		goto err_wm97xx;
++
++	calc_hsync_time(tosa_lcd_get_mode());
++
++	return 0;
++
++err_wm97xx:
++	fb_unregister_client(notif);
++err_register:
++	gpio_free(TOSA_GPIO_VGA_LINE);
++err_gpio:
++	kfree(notif);
++err_alloc:
++	return err;
++}
++
++
++static int __devexit tosa_ts_remove(struct platform_device *dev) {
++	struct wm97xx *wm = platform_get_drvdata(dev);
++
++	wm97xx_unregister_mach_ops(wm);
++
++	fb_unregister_client(platform_get_drvdata(dev));
++	gpio_free(TOSA_GPIO_VGA_LINE);
++	kfree(platform_get_drvdata(dev));
++
++	return 0;
++}
++
++static struct platform_driver tosa_ts_driver = {
++	.driver.name = "wm97xx-touch",
++	.driver.owner = THIS_MODULE,
++	.probe = tosa_ts_probe,
++	.remove = __devexit_p(tosa_ts_remove),
++};
++
++static int __init tosa_ts_init(void)
++{
++	return platform_driver_register(&tosa_ts_driver);
++}
++
++static void __exit tosa_ts_exit(void)
++{
++	platform_driver_unregister(&tosa_ts_driver);
++}
++
++module_init(tosa_ts_init);
++module_exit(tosa_ts_exit);
++
++/* Module information */
++MODULE_AUTHOR("Dmitry Baryshkov, Mike Arthur, mike@mikearthur.co.uk, www.wolfsonmicro.com");
++MODULE_DESCRIPTION("Sharp SL6000 Tosa Touch Screen Denoiser");
++MODULE_LICENSE("GPL");
+-- 
+1.5.4.1
+

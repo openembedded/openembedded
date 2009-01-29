@@ -66,9 +66,7 @@ IMAGE_INSTALL = "\
 	${BASE_INSTALL}\
 	${X_INSTALL}\
 	${MEDIA_INSTALL}\
-	${GAMES_INSTALL}\
 	${TOOLS_INSTALL}\
-	pyneod\
 	zad\
 "
 
@@ -90,6 +88,7 @@ rootfs_postprocess() {
 	echo "hostpc:/media/hostpc /media/hostpc nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >> ${IMAGE_ROOTFS}/etc/fstab
 	# screen
 	echo "startup_message off" >> ${IMAGE_ROOTFS}/home/root/.screenrc
+	echo 'shell -$SHELL' >> ${IMAGE_ROOTFS}/home/root/.screenrc
 	# keys
 	ln -s /media/card/keys/ssh ${IMAGE_ROOTFS}/home/root/.ssh
 	# bootup

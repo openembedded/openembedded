@@ -2,8 +2,10 @@ require gnuradio.inc
 
 DEFAULT_PREFERENCE = "-1"
 
+DEPENDS += " gsl "
+
 PV = "3.1.3+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable-usrp1 --disable--usrp2"
 

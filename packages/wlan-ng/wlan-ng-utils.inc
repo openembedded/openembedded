@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 DESCRIPTION = "linux-wlan-ng userland utilities"
 HOMEPAGE = "http://www.linux-wlan.org"
 SECTION = "kernel/userland"

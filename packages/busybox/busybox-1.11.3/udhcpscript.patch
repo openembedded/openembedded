@@ -19,7 +19,7 @@ Index: busybox-1.11.3/examples/udhcp/simple.script
  case "$1" in
  	deconfig)
 -		/sbin/ifconfig $interface 0.0.0.0
-+		if [ ! root_is_nfs ]; then
++		if ! root_is_nfs ; then
 +			/sbin/ifconfig $interface 0.0.0.0
 +		fi
  		;;

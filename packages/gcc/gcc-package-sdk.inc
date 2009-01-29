@@ -9,10 +9,10 @@ PACKAGES = "${PN} ${PN}-doc"
 
 FILES_${PN} = "\
     ${bindir}/* \
-    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1 \
-    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2 \
-    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771 \
-    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus \
+    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1${EXEEXT} \
+    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/collect2${EXEEXT} \
+    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/f771${EXEEXT} \
+    ${libexecdir}/gcc/${TARGET_SYS}/${BINV}/cc1plus${EXEEXT} \
     ${gcclibdir}/${TARGET_SYS}/${BINV}/*.o \
     ${gcclibdir}/${TARGET_SYS}/${BINV}/specs \
     ${gcclibdir}/${TARGET_SYS}/${BINV}/lib* \
@@ -36,10 +36,10 @@ do_install () {
 	rm -r ${D}${libexecdir}/gcc/${TARGET_SYS}/${BINV}/install-tools
 
 	# We care about g++ not c++
-	rm -f ${D}${bindir}/*c++
+	rm -f ${D}${bindir}/*c++${EXEEXT}
 
 	# We don't care about the gcc-<version> copies
-	rm -f ${D}${bindir}/*gcc-?.?*
+	rm -f ${D}${bindir}/*gcc-?.?*${EXEEXT}
 
 	# We use libiberty from binutils
 	rm -f ${D}${prefix}/${TARGET_SYS}/lib/libiberty.a
@@ -50,7 +50,7 @@ do_install () {
 	for l in ${D}${bindir}/*; do
 		ln -sf "${bindir}/`basename $l`" "${D}${prefix}/${TARGET_SYS}/bin/`basename $l | sed -e 's,${TARGET_PREFIX},,'`"
 	done
-	ln -sf "${bindir}/${TARGET_PREFIX}gcc" "${D}${prefix}/${TARGET_SYS}/bin/cc"
+	ln -sf "${bindir}/${TARGET_PREFIX}gcc${EXEEXT}" "${D}${prefix}/${TARGET_SYS}/bin/cc${EXEEXT}"
 
 	# Manually run the target stripper since we won't get it run by
 	# the packaging.
@@ -60,4 +60,3 @@ do_install () {
 		${TARGET_PREFIX}strip ${D}${prefix}/${TARGET_SYS}/lib/libgcc_s.so.*
 	fi
 }
-

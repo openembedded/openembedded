@@ -1,3 +1,6 @@
+# FIXME, consider using kernel staging directory instead of KERNEL_SOURCE which is
+# located in the work directory. see module.bbclass
+
 DESCRIPTION = "Utilities and system configuration files for the Linux PCMCIA card services"
 SECTION = "base"
 PRIORITY = "required"

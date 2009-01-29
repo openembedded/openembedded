@@ -1,0 +1,412 @@
+From c18b8e34c39ec0d395988318e6651076a748d6bd Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Tue, 12 Feb 2008 04:40:54 +0300
+Subject: [PATCH 47/64] tc6393xb: use bitmasks instead of bit-field structs
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/mfd/tc6393xb.c       |  162 ++++++++++++++++++++++++-----------------
+ include/linux/mfd/tc6393xb.h |   63 +++-------------
+ 2 files changed, 107 insertions(+), 118 deletions(-)
+
+diff --git a/drivers/mfd/tc6393xb.c b/drivers/mfd/tc6393xb.c
+index dfae61d..1a394e4 100644
+--- a/drivers/mfd/tc6393xb.c
++++ b/drivers/mfd/tc6393xb.c
+@@ -24,6 +24,31 @@
+ #include <linux/mfd/tmio.h>
+ #include <linux/mfd/tc6393xb.h>
+ 
++#define TC6393XB_FER_USBEN		BIT(0)	/* USB host enable */
++#define TC6393XB_FER_LCDCVEN		BIT(1)	/* polysilicon TFT enable */
++#define TC6393XB_FER_SLCDEN		BIT(2)	/* SLCD enable */
++
++enum pincontrol {
++	opendrain	= 0,
++	tristate	= 1,
++	pushpull	= 2,
++	/* reserved	= 3, */
++};
++
++#define TC6393XB_MCR_RDY_MASK		(3 << 0)
++#define TC6393XB_MCR_RDY_OPENDRAIN	(0 << 0)
++#define TC6393XB_MCR_RDY_TRISTATE	(1 << 0)
++#define TC6393XB_MCR_RDY_PUSHPULL	(2 << 0)
++#define TC6393XB_MCR_RDY_UNK		BIT(2)
++#define TC6393XB_MCR_RDY_EN		BIT(3)
++#define TC6393XB_MCR_INT_MASK		(3 << 4)
++#define TC6393XB_MCR_INT_OPENDRAIN	(0 << 4)
++#define TC6393XB_MCR_INT_TRISTATE	(1 << 4)
++#define TC6393XB_MCR_INT_PUSHPULL	(2 << 4)
++#define TC6393XB_MCR_INT_UNK		BIT(6)
++#define TC6393XB_MCR_INT_EN		BIT(7)
++/* bits 8 - 16 are unknown */
++
+ struct tc6393xb_scr {
+ 	u8 x00[8];
+ 	u8	revid;		/* 0x08 Revision ID			*/
+@@ -74,8 +99,8 @@ struct tc6393xb {
+ 	spinlock_t			lock; /* protects RMW cycles */
+ 
+ 	struct {
+-		union tc6393xb_scr_fer	fer;
+-		union tc6393xb_scr_ccr	ccr;
++		u8			fer;
++		u16			ccr;
+ 		u8			gpi_bcr[4];
+ 	} suspend_state;
+ 
+@@ -90,13 +115,13 @@ static int tc6393xb_mmc_enable(struct platform_device *mmc) {
+ 	struct platform_device		*dev	= to_platform_device(mmc->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr = tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.ck32ken = 1;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr |= TC6393XB_CCR_CK32K;
++	iowrite16(ccr, &scr->ccr);
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+ 	return 0;
+@@ -106,13 +131,13 @@ static int tc6393xb_mmc_disable(struct platform_device *mmc) {
+ 	struct platform_device		*dev	= to_platform_device(mmc->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.ck32ken = 0;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr &= ~TC6393XB_CCR_CK32K;
++	iowrite16(ccr, &scr->ccr);
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+ 	return 0;
+@@ -148,14 +173,17 @@ int tc6393xb_lcd_set_power(struct platform_device *fb, bool on)
+ 	struct platform_device		*dev	= to_platform_device(fb->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_fer		fer;
++	u8				fer;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	fer.raw	= ioread8(&scr->fer);
+-	fer.bits.slcden = on ? 1 : 0;
+-	iowrite8(fer.raw, &scr->fer);
++	fer = ioread8(&scr->fer);
++	if (on)
++		fer |= TC6393XB_FER_SLCDEN;
++	else
++		fer &= ~TC6393XB_FER_SLCDEN;
++	iowrite8(fer, &scr->fer);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -181,19 +209,19 @@ static int tc6393xb_ohci_disable(struct platform_device *ohci)
+ 	struct platform_device		*dev	= to_platform_device(ohci->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
+-	union tc6393xb_scr_fer		fer;
++	u16				ccr;
++	u8				fer;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	fer.raw = ioread8(&scr->fer);
+-	fer.bits.usben = 0;
+-	iowrite8(fer.raw, &scr->fer);
++	fer = ioread8(&scr->fer);
++	fer &= ~TC6393XB_FER_USBEN;
++	iowrite8(fer, &scr->fer);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.usbcken = 0;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr &= ~TC6393XB_CCR_USBCK;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -205,19 +233,19 @@ static int tc6393xb_ohci_enable(struct platform_device *ohci)
+ 	struct platform_device		*dev	= to_platform_device(ohci->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
+-	union tc6393xb_scr_fer		fer;
++	u16				ccr;
++	u8				fer;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.usbcken = 1;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr |= TC6393XB_CCR_USBCK;
++	iowrite16(ccr, &scr->ccr);
+ 
+-	fer.raw = ioread8(&scr->fer);
+-	fer.bits.usben = 1;
+-	iowrite8(fer.raw, &scr->fer);
++	fer = ioread8(&scr->fer);
++	fer |= TC6393XB_FER_USBEN;
++	iowrite8(fer, &scr->fer);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -229,14 +257,14 @@ static int tc6393xb_ohci_suspend(struct platform_device *ohci)
+ 	struct platform_device		*dev	= to_platform_device(ohci->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.usbcken = 0;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr &= ~TC6393XB_CCR_USBCK;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -248,14 +276,14 @@ static int tc6393xb_ohci_resume(struct platform_device *ohci)
+ 	struct platform_device		*dev	= to_platform_device(ohci->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.usbcken = 1;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr |= TC6393XB_CCR_USBCK;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -267,8 +295,8 @@ static int tc6393xb_fb_disable(struct platform_device *fb)
+ 	struct platform_device		*dev	= to_platform_device(fb->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
+-	union tc6393xb_scr_fer		fer;
++	u16				ccr;
++	u8				fer;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+@@ -276,14 +304,13 @@ static int tc6393xb_fb_disable(struct platform_device *fb)
+ 	/*
+ 	 * FIXME: is this correct or it should be moved to other _disable?
+ 	 */
+-	fer.raw	= ioread8(&scr->fer);
+-	fer.bits.slcden = 0;
+-/*	fer.bits.lcdcven = 0; */
+-	iowrite8(fer.raw, &scr->fer);
++	fer = ioread8(&scr->fer);
++	fer &= ~TC6393XB_FER_SLCDEN;
++	iowrite8(fer, &scr->fer);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.mclksel = disable;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr = (ccr & ~TC6393XB_CCR_MCLK_MASK) | TC6393XB_CCR_MCLK_OFF;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -295,14 +322,14 @@ static int tc6393xb_fb_enable(struct platform_device *fb)
+ 	struct platform_device		*dev	= to_platform_device(fb->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.mclksel = m48MHz;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr = (ccr & ~TC6393XB_CCR_MCLK_MASK) | TC6393XB_CCR_MCLK_48;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -314,14 +341,14 @@ static int tc6393xb_fb_suspend(struct platform_device *fb)
+ 	struct platform_device		*dev	= to_platform_device(fb->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.mclksel = disable;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr = (ccr & ~TC6393XB_CCR_MCLK_MASK) | TC6393XB_CCR_MCLK_OFF;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -333,14 +360,14 @@ static int tc6393xb_fb_resume(struct platform_device *fb)
+ 	struct platform_device		*dev	= to_platform_device(fb->dev.parent);
+ 	struct tc6393xb			*tc6393xb = platform_get_drvdata(dev);
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+-	union tc6393xb_scr_ccr		ccr;
++	u16				ccr;
+ 	unsigned long			flags;
+ 
+ 	spin_lock_irqsave(&tc6393xb->lock, flags);
+ 
+-	ccr.raw = ioread16(&scr->ccr);
+-	ccr.bits.mclksel = m48MHz;
+-	iowrite16(ccr.raw, &scr->ccr);
++	ccr = ioread16(&scr->ccr);
++	ccr = (ccr & ~TC6393XB_CCR_MCLK_MASK) | TC6393XB_CCR_MCLK_48;
++	iowrite16(ccr, &scr->ccr);
+ 
+ 	spin_unlock_irqrestore(&tc6393xb->lock, flags);
+ 
+@@ -592,14 +619,15 @@ static int tc6393xb_hw_init(struct platform_device *dev, int resume)
+ 	struct tc6393xb_scr __iomem	*scr	= tc6393xb->scr;
+ 	int				i;
+ 
+-	iowrite8(resume ?
+-		tc6393xb->suspend_state.fer.raw :
+-		0,				&scr->fer);
++	iowrite8(resume ? tc6393xb->suspend_state.fer : 0,
++						&scr->fer);
+ 	iowrite16(tcpd->scr_pll2cr,		&scr->pll2cr);
+ 	iowrite16(resume?
+-		tc6393xb->suspend_state.ccr.raw :
+-		tcpd->scr_ccr.raw,		&scr->ccr);
+-	iowrite16(tcpd->scr_mcr.raw,		&scr->mcr);
++		tc6393xb->suspend_state.ccr :
++		tcpd->scr_ccr,		&scr->ccr);
++	iowrite16(TC6393XB_MCR_RDY_OPENDRAIN | TC6393XB_MCR_RDY_UNK | TC6393XB_MCR_RDY_EN |
++		  TC6393XB_MCR_INT_OPENDRAIN | TC6393XB_MCR_INT_UNK | TC6393XB_MCR_INT_EN |
++		  BIT(15),		&scr->mcr);
+ 	iowrite16(tcpd->scr_gper,		&scr->gper);
+ 	iowrite8(0,				&scr->irr);
+ 	iowrite8(0xbf,				&scr->imr);
+@@ -730,8 +758,8 @@ static int tc6393xb_suspend(struct platform_device *dev, pm_message_t state)
+ 	int i;
+ 
+ 
+-	tc6393xb->suspend_state.ccr.raw		= ioread16(&scr->ccr);
+-	tc6393xb->suspend_state.fer.raw		= ioread8(&scr->fer);
++	tc6393xb->suspend_state.ccr		= ioread16(&scr->ccr);
++	tc6393xb->suspend_state.fer		= ioread8(&scr->fer);
+ 	for (i = 0; i < 4; i++)
+ 		tc6393xb->suspend_state.gpi_bcr[i] =
+ 			ioread8(scr->gpi_bcr + i);
+diff --git a/include/linux/mfd/tc6393xb.h b/include/linux/mfd/tc6393xb.h
+index e699294..2c69f63 100644
+--- a/include/linux/mfd/tc6393xb.h
++++ b/include/linux/mfd/tc6393xb.h
+@@ -20,60 +20,21 @@
+ #include <linux/mfd-core.h>
+ #include <linux/mfd/tmio.h>
+ 
+-union tc6393xb_scr_fer {
+-	u8		raw;
+-struct {
+-	unsigned	usben:1;	/* D0	USB enable		*/
+-	unsigned	lcdcven:1;	/* D1	polysylicon TFT enable	*/
+-	unsigned	slcden:1;	/* D2	SLCD enable		*/
+-} __attribute__ ((packed)) bits;
+-} __attribute__ ((packed));
+-
+-union tc6393xb_scr_ccr {
+-	u16		raw;
+-struct {
+-	unsigned	ck32ken:1;	/* D0	SD host clock enable	*/
+-	unsigned	usbcken:1;	/* D1	USB host clock enable	*/
+-	unsigned	x00:2;
+-	unsigned	sharp:1;	/* D4	??? set in Sharp's code	*/
+-	unsigned	x01:3;
+-	enum {				disable	= 0,
+-					m12MHz	= 1,
+-					m24MHz	= 2,
+-					m48MHz	= 3,
+-	}		mclksel:3;	/* D10-D8  LCD controller clock	*/
+-	unsigned	x02:1;
+-	enum {				h24MHz	= 0,
+-					h48MHz	= 1,
+-	}		hclksel:2;	/* D13-D12 host bus clock	*/
+-	unsigned	x03:2;
+-} __attribute__ ((packed)) bits;
+-} __attribute__ ((packed));
+-
+-enum pincontrol {
+-	opendrain	= 0,
+-	tristate	= 1,
+-	pushpull	= 2,
+-	/* reserved	= 3, */
+-};
+-
+-union tc6393xb_scr_mcr {
+-	u16		raw;
+-struct {
+-	enum pincontrol	rdyst:2;	/* D1-D0   HRDY control		*/
+-	unsigned	x00:1;
+-	unsigned	aren:1;		/* D3	   HRDY pull up resistance cut off */
+-	enum pincontrol	intst:2;	/* D5-D4   #HINT control	*/
+-	unsigned	x01:1;
+-	unsigned	aien:1;		/* D7      #HINT pull up resitance cut off */
+-	unsigned	x02:8;
+-} __attribute__ ((packed)) bits;
+-} __attribute__ ((packed));
++#define TC6393XB_CCR_CK32K	BIT(0)
++#define TC6393XB_CCR_USBCK	BIT(1)
++#define TC6393XB_CCR_UNK1	BIT(4)
++#define TC6393XB_CCR_MCLK_MASK	(7 << 8)
++#define TC6393XB_CCR_MCLK_OFF	(0 << 8)
++#define TC6393XB_CCR_MCLK_12	(1 << 8)
++#define TC6393XB_CCR_MCLK_24	(2 << 8)
++#define TC6393XB_CCR_MCLK_48	(3 << 8)
++#define TC6393XB_CCR_HCLK_MASK	(3 << 12)
++#define TC6393XB_CCR_HCLK_24	(0 << 12)
++#define TC6393XB_CCR_HCLK_48	(1 << 12)
+ 
+ struct tc6393xb_platform_data {
+ 	u16	scr_pll2cr;	/* PLL2 Control */
+-	union tc6393xb_scr_ccr	scr_ccr;	/* Clock Control */
+-	union tc6393xb_scr_mcr	scr_mcr;	/* Mode Control */
++	u16	scr_ccr;	/* Clock Control */
+ 	u16	scr_gper;	/* GP Enable */
+ 	u32	scr_gpo_doecr;	/* GPO Data OE Control */
+ 	u32	scr_gpo_dsr;	/* GPO Data Set */
+-- 
+1.5.3.8
+

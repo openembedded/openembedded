@@ -4,10 +4,11 @@ SECTION = "kernel/modules"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
 PV = "0.0+svnr${SRCREV}"
+PR = "r1"
 
-SRC_URI = "svn://svn.berlios.de/socketcan/trunk;module=kernel;proto=svn"
+SRC_URI = "svn://svn.berlios.de/socketcan;module=trunk;proto=svn"
 
-S = "${WORKDIR}/kernel/2.6"
+S = "${WORKDIR}/trunk/kernel/2.6"
 
 inherit module
 

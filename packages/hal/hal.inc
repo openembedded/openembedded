@@ -76,6 +76,8 @@ pkg_postrm_hal () {
 }
 
 FILES_${PN} = "${sysconfdir} \
+                ${bindir}/hal-disable-polling \
+                ${bindir}/hal-setup-keymap \
                 ${bindir}/lshal \
                 ${bindir}/hal-find-by-capability \
                 ${bindir}/hal-find-by-property \

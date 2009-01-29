@@ -1,0 +1,79 @@
+--- a/devicescan.c	2009-01-17 00:51:35.000000000 +0100
++++ b/devicescan.c	2009-01-24 22:13:45.000000000 +0100
+@@ -120,14 +120,14 @@
+		    malloc((strlen(split) + strlen("/dev/") +
+			    1) * sizeof(char));
+		sprintf(device, "/dev/%s", split);
+-		printf("Probing %s\n",device);
++		/* printf("Probing %s\n",device); */
+		int fd = open(device, O_RDONLY);
+		if (fd < 0) {
+			perror(device);
+			free(device);
+			continue;
+		}
+-		printf("Device %s is opened\n", device);
++		/* printf("Device %s is opened\n", device); */
+		if (-1 == identify_fs(fd, &fstype, NULL, 0)) {
+			free(device);
+			continue;
+@@ -137,33 +137,33 @@
+			free(device);
+			continue;
+		}
+-		printf("FS on device %s is %s\n", device, fstype);
++		/* printf("FS on device %s is %s\n", device, fstype); */
+		// no unknown filesystems
+		if (contains(fstype, fl) == -1) {
+			free(device);
+			continue;
+		}
+-		printf("found %s (%s)\n",device, fstype);
++		/* printf("found %s (%s)\n",device, fstype); */
+		// mount fs
+		if (mount(device, "/mnt", fstype, MS_RDONLY, NULL)) {
+-			printf("mount failed\n");
++			/* printf("mount failed\n"); */
+			perror(device);
+			free(device);
+			continue;
+		}
+-		printf("mount successful\n");
++		/* printf("mount successful\n"); */
+		if ( (g = fopen("/mnt/zImage", "r")) )
+			kernelpath = "/mnt/zImage";
+		else if ( (g = fopen("/mnt/boot/zImage", "r")) )
+			kernelpath = "/mnt/boot/zImage";
+		else {
+-			printf("%s no kernel found, umounting\n", device);
++			/* printf("%s no kernel found, umounting\n", device); */
+			free(device);
+			umount("/mnt");
+			continue;
+		}
+		fclose(g);
+-		printf("found kernel\n");
++		/* printf("found kernel\n"); */
+		bl->list[count] = malloc(sizeof(struct boot));
+		bl->list[count]->device = device;
+		bl->list[count]->fstype = fstype;
+@@ -174,7 +174,7 @@
+			fgets(bl->list[count]->cmdline, COMMAND_LINE_SIZE,
+			      g);
+			fclose(g);
+-			printf("found command line\n");
++			/* printf("found command line\n"); */
+			bl->list[count]->cmdline[strlen(bl->list[count]->cmdline)-1] = '\0';
+		} else
+			bl->list[count]->cmdline = NULL;
+--- a/kexecboot.c	2009-01-25 10:41:04.000000000 +0100
++++ b/kexecboot.c	2009-01-24 22:13:45.000000000 +0100
+@@ -558,7 +558,7 @@
+		case KEY_R:
+			/* FIXME: Should work while no boot devices is found */
+			sync();
+-			sleep(1);
++			/* REMOVE: we sleep on boot     sleep(1); */
+			/* if ( -1 == reboot(LINUX_REBOOT_CMD_RESTART) ) { */
+			if ( -1 == reboot(RB_AUTOBOOT) ) {
+				perror("Can't initiate reboot");

@@ -1,0 +1,99 @@
+From f24c23ba56cdd072b332e8de3e0cff8a31e7e36a Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 9 Jan 2008 02:03:19 +0300
+Subject: [PATCH 50/64] tosa update for tc6393xb gpio
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ arch/arm/mach-pxa/tosa.c        |    6 +++++-
+ include/asm-arm/arch-pxa/tosa.h |   36 ++++++++++++++++++++++++------------
+ 2 files changed, 29 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index e2eec0f..3e832dc 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -35,6 +35,7 @@
+ #include <asm/mach-types.h>
+ #include <asm/hardware.h>
+ #include <asm/irq.h>
++#include <asm/gpio.h>
+ #include <asm/system.h>
+ #include <asm/arch/pxa-regs.h>
+ #include <asm/arch/irda.h>
+@@ -448,10 +449,13 @@ static struct tc6393xb_platform_data tosa_tc6393xb_setup = {
+ 	.scr_pll2cr	= 0x0cc1,
+ 	.scr_ccr = TC6393XB_CCR_UNK1 | TC6393XB_CCR_HCLK_48,
+ 	.scr_gper	= 0x3300,
+-	.scr_gpo_dsr	= TOSA_TC6393XB_CARD_VCC_ON | TOSA_TC6393XB_CHARGE_OFF_JC,
++	.scr_gpo_dsr	=
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_CARD_VCC_ON) |
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_CHARGE_OFF_JC),
+ 	.scr_gpo_doecr	= TOSA_TC6393XB_GPO_OE,
+ 
+ 	.irq_base	= IRQ_BOARD_START,
++	.gpio_base	= TOSA_TC6393XB_GPIO_BASE,
+ 
+ 	.enable		= tosa_tc6393xb_enable,
+ 	.disable	= tosa_tc6393xb_disable,
+diff --git a/include/asm-arm/arch-pxa/tosa.h b/include/asm-arm/arch-pxa/tosa.h
+index 1b202b2..410fa9a 100644
+--- a/include/asm-arm/arch-pxa/tosa.h
++++ b/include/asm-arm/arch-pxa/tosa.h
+@@ -20,16 +20,21 @@
+ /* Jacket Scoop */
+ #define TOSA_SCOOP_PHYS  	(PXA_CS5_PHYS + 0x00800000)
+ 
+-#define TC6393XB_GPIO(i)		(1 << (i))
+ /*
+  * TC6393 GPIOs
+  */
+-#define TOSA_TC6393XB_TG_ON  		TC6393XB_GPIO(0)
+-#define TOSA_TC6393XB_L_MUTE  		TC6393XB_GPIO(1)
+-#define TOSA_TC6393XB_BL_C20MA		TC6393XB_GPIO(3)
+-#define TOSA_TC6393XB_CARD_VCC_ON 	TC6393XB_GPIO(4)
++
++#define TOSA_TC6393XB_GPIO_BASE		NR_BUILTIN_GPIO
++
++#define TC6393XB_GPIO(i)		(TOSA_TC6393XB_GPIO_BASE + (i))
++#define TC6393XB_GPIO_BIT(gpio)			(1 << (gpio - TOSA_TC6393XB_GPIO_BASE))
++
++#define TOSA_TC6393XB_TG_ON  			TC6393XB_GPIO(0)
++#define TOSA_TC6393XB_L_MUTE  			TC6393XB_GPIO(1)
++#define TOSA_TC6393XB_BL_C20MA			TC6393XB_GPIO(3)
++#define TOSA_TC6393XB_CARD_VCC_ON 		TC6393XB_GPIO(4)
+ #define TOSA_TC6393XB_CHARGE_OFF 		TC6393XB_GPIO(6)
+-#define TOSA_TC6393XB_CHARGE_OFF_JC 	TC6393XB_GPIO(7)
++#define TOSA_TC6393XB_CHARGE_OFF_JC 		TC6393XB_GPIO(7)
+ #define TOSA_TC6393XB_BAT0_V_ON 		TC6393XB_GPIO(9)
+ #define TOSA_TC6393XB_BAT1_V_ON 		TC6393XB_GPIO(10)
+ #define TOSA_TC6393XB_BU_CHRG_ON 		TC6393XB_GPIO(11)
+@@ -37,12 +42,19 @@
+ #define TOSA_TC6393XB_BAT0_TH_ON 		TC6393XB_GPIO(14)
+ #define TOSA_TC6393XB_BAT1_TH_ON 		TC6393XB_GPIO(15)
+ 
+-#define TOSA_TC6393XB_GPO_OE (TOSA_TC6393XB_TG_ON | TOSA_TC6393XB_L_MUTE | TOSA_TC6393XB_BL_C20MA | \
+-		TOSA_TC6393XB_CARD_VCC_ON | TOSA_TC6393XB_CHARGE_OFF | \
+-		TOSA_TC6393XB_CHARGE_OFF_JC | TOSA_TC6393XB_BAT0_V_ON | \
+-		TOSA_TC6393XB_BAT1_V_ON | TOSA_TC6393XB_BU_CHRG_ON | \
+-		TOSA_TC6393XB_BAT_SW_ON | TOSA_TC6393XB_BAT0_TH_ON | \
+-		TOSA_TC6393XB_BAT1_TH_ON)
++#define TOSA_TC6393XB_GPO_OE (			\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_TG_ON) |		\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_L_MUTE) |		\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BL_C20MA) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_CARD_VCC_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_CHARGE_OFF) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_CHARGE_OFF_JC) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BAT0_V_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BAT1_V_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BU_CHRG_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BAT_SW_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BAT0_TH_ON) |	\
++		TC6393XB_GPIO_BIT(TOSA_TC6393XB_BAT1_TH_ON))
+ 
+ /*
+  * SCOOP2 internal GPIOs
+-- 
+1.5.3.8
+

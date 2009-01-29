@@ -1,3 +1,3 @@
 TARGET_CC_ARCH = "-march=prescott"
 BASE_PACKAGE_ARCH = "i686p4c"
-
+PACKAGE_EXTRA_ARCHS += "x86 i386 i486 i586"
