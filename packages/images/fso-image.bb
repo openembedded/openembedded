@@ -80,7 +80,7 @@ ZHONE_INSTALL = "\
 
 # additional apps
 APPS_INSTALL = "\
-#  tichy \
+  paroli \
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \
