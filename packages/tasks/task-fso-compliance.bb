@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "\
   frameworkd \
 #  fso-apmd \
   fso-gpsd \
-#  fso-monitord \
+  fso-monitord \
   connman \
   connman-scripts \
   connman-plugin-bluetooth \
