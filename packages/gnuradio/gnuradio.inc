@@ -12,6 +12,7 @@ export HOST_SYS=${MULTIMACH_TARGET_SYS}
 CXXFLAGS_powerpc += "-lstdc++"
 
 EXTRA_OECONF = " \
+  ${GR_CPU_SELECTION} \
   --disable-gr-atsc \
   --enable-gr-video-sdl \
   --enable-gr-audio-alsa  \
@@ -22,6 +23,8 @@ EXTRA_OECONF = " \
   --with-pythondir=/usr/lib/${PYTHON_DIR}/site-packages \
   PYTHON_CPPFLAGS=-I${STAGING_INCDIR}/${PYTHON_DIR} \
 "
+
+GR_CPU_SELECTION_armv7a = " --with-md-cpu=arm "
 
 do_configure_prepend() {
 	if [ -e ${WORKDIR}/acinclude.m4 ] ; then
