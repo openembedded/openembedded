@@ -6,6 +6,7 @@ LICENSE = "GPL"
 HOMEPAGE = "http://numptyphysics.garage.maemo.org/"
 SECTION = "x11/games"
 PV = "0.2+svnr${SRCREV}"
+PR = "r1"
 
 inherit autotools
 
