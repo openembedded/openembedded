@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r3"
+PR = "r4"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -84,7 +84,7 @@ APPS_INSTALL = "\
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \
-  vagalume \
+  ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'vagalume', d)} \
   starling \
 "
 
