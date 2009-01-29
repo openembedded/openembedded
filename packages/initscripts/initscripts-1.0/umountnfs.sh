@@ -5,9 +5,6 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-# Write a reboot record to /var/log/wtmp before unmounting
-halt -w
-
 echo "Unmounting remote filesystems..."
 
 test -f /etc/fstab && (
