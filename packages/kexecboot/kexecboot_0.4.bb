@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 DEPENDS = "klibc"
 RDEPENDS = "kexec-static"
 
