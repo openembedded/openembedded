@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r5"
+PR = "r6"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -64,6 +64,7 @@ do_compile_append() {
 do_stage_append() {
 	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine
     cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/
+	ln -sf ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/packages/ti/sdo/ce ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools/packages/ti/sdo/
 }
 
 INHIBIT_PACKAGE_STRIP = "1"
