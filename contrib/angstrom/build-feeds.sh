@@ -85,6 +85,8 @@ do
                       checkers \
                       cherokee \
                       claws-mail \
+                      connman \
+                      connman-gnome \
                       contacts \
                       cvs \
                       cwiid \
