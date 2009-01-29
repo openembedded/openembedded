@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 DEPENDS = "klibc"
 RDEPENDS = "kexec-static"
 
@@ -15,6 +15,7 @@ SRC_URI = "http://projects.linuxtogo.org/~jay7/kexecboot-${PV}.tar.gz \
 	file://switch-cursor-off.patch;patch=1 \
 	file://add-sleep.patch;patch=1 \
 	file://silent-output-hack.patch;patch=1 \
+	file://kexecboot-tosa.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/kexecboot-${PV}"

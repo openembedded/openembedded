@@ -1,0 +1,15 @@
+Index: kexecboot-0.4/kexecboot.c
+===================================================================
+--- kexecboot-0.4.orig/kexecboot.c	2009-01-29 00:38:21.000000000 +0000
++++ kexecboot-0.4/kexecboot.c	2009-01-29 00:39:05.000000000 +0000
+@@ -566,7 +566,9 @@
+ 			break;
+ 		}
+ 
+-	}while(evt.code != 87 && evt.code != 63);
++	}while(evt.code != 87 && evt.code != 63 &&
++		evt.code != KEY_SPACE && evt.code != KEY_ENTER &&
++		evt.code != KEY_HIRAGANA && evt.code != KEY_HENKAN);
+ 	fclose(f);
+ 	// reset terminal
+ 	tcsetattr(fileno(stdin), TCSANOW, &old);
