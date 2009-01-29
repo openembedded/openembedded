@@ -17,7 +17,7 @@ RDEPENDS_${PN} = "\
   connman-plugin-bluetooth \
 #  connman-plugin-dhclient \
 #  connman-plugin-dnsproxy \
-  connman-plugin-ethernet \
+#  connman-plugin-ethernet \
 #  connman-plugin-fake \
   connman-plugin-loopback \
   connman-plugin-pppd \
