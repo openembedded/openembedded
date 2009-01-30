@@ -119,13 +119,13 @@ fakeroot rootfs_deb_do_rootfs () {
 	set -e
 
 	# Hacks to allow opkg's update-alternatives and opkg to coexist for now
-	mkdir -p ${IMAGE_ROOTFS}/usr/lib/opkg
+	mkdir -p ${IMAGE_ROOTFS}${libdir}/opkg
 	if [ -e ${IMAGE_ROOTFS}/var/dpkg/alternatives ]; then
 		rmdir ${IMAGE_ROOTFS}/var/dpkg/alternatives
 	fi
-	ln -s /usr/lib/opkg/alternatives ${IMAGE_ROOTFS}/var/dpkg/alternatives
-	ln -s /var/dpkg/info ${IMAGE_ROOTFS}/usr/lib/opkg/info
-	ln -s /var/dpkg/status ${IMAGE_ROOTFS}/usr/lib/opkg/status
+	ln -s ${libdir}/opkg/alternatives ${IMAGE_ROOTFS}/var/dpkg/alternatives
+	ln -s /var/dpkg/info ${IMAGE_ROOTFS}${libdir}/opkg/info
+	ln -s /var/dpkg/status ${IMAGE_ROOTFS}${libdir}/opkg/status
 
 	${ROOTFS_POSTPROCESS_COMMAND}
 
@@ -153,6 +153,6 @@ rootfs_deb_log_check() {
 }
 
 remove_packaging_data_files() {
-	rm -rf ${IMAGE_ROOTFS}/usr/lib/opkg/
+	rm -rf ${IMAGE_ROOTFS}${libdir}/opkg/
 	rm -rf ${IMAGE_ROOTFS}/usr/dpkg/
 }
