@@ -4,6 +4,10 @@ ONLINE_PACKAGE_MANAGEMENT = "none"
 IMAGE_FSTYPES += " cpio.gz"
 inherit image
 
+# These devices need mmcblk* to be 254 instead of 179
+IMAGE_DEVICE_TABLES_hx4700 = "device_table-oldmmc.txt"
+IMAGE_DEVICE_TABLES_h2200 = "device_table-oldmmc.txt"
+
 export IMAGE_BASENAME = "initramfs-kexecboot-image"
 
 IMAGE_INSTALL = "kexecboot"
