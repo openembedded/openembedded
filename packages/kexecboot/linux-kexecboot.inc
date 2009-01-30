@@ -13,6 +13,7 @@ CMDLINE_poodle = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_akita = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 CMDLINE_collie = "console=ttySA0,115200n8 console=tty1 mem=64M fbcon=rotate:1"
 CMDLINE_spitz = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
+CMDLINE_hx4700 = "console=ttyS0,115200n8 console=tty1 fbcon=rotate:1"
 
 PACKAGES = ""
 PROVIDES = ""
