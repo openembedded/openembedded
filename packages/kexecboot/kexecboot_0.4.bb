@@ -1,5 +1,5 @@
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 DEPENDS = "klibc"
 RDEPENDS = "kexec-static"
 
@@ -17,6 +17,8 @@ SRC_URI = "http://projects.linuxtogo.org/~jay7/kexecboot-${PV}.tar.gz \
 	file://silent-output-hack.patch;patch=1 \
 	file://kexecboot-tosa.patch;patch=1 \
 	file://fb-render-16bit.patch;patch=1 \
+	file://logo-img.h \
+	file://logo.png \
 	"
 
 S = "${WORKDIR}/kexecboot-${PV}"
@@ -27,6 +29,11 @@ export CC=${TARGET_PREFIX}klcc
 export CFLAGS = ""
 export CPPFLAGS = ""
 export LDFLAGS = ""
+
+do_configure_prepend () {
+    install -m 0644 ${WORKDIR}/logo-img.h ${S}/res/
+    install -m 0644 ${WORKDIR}/logo.png ${S}/res/
+}
 
 do_install () {
 	install -d ${D}${bindir}
