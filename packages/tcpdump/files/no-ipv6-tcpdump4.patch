@@ -1,0 +1,22 @@
+Compiling tcpdump 4.0.0 without ipv6 - linking against ipv6less
+libpcap too - generates the following error:
+
+print-enc.o: In function `enc_if_print':
+print-enc.c:(.text+0xce): undefined reference to `ip6_print'
+collect2: ld returned 1 exit status
+make: *** [tcpdump] Error 1
+
+--- tcpdump/print-enc.c.orig	2008-09-01 04:44:22 +0200
++++ tcpdump/print-enc.c	2008-11-11 14:48:00 +0100
+@@ -77,9 +77,11 @@
+ 	case AF_INET:
+ 		ip_print(gndo, p, length);
+ 		break;
++#ifdef INET6
+ 	case AF_INET6:
+ 		ip6_print(p, length);
+ 		break;
++#endif
+ 	}
+
+ out:

@@ -1,0 +1,33 @@
+Index: linux-2.6.24/drivers/video/tmiofb.c
+===================================================================
+--- linux-2.6.24.orig/drivers/video/tmiofb.c	2008-12-07 22:30:26.600128369 +0300
++++ linux-2.6.24/drivers/video/tmiofb.c	2008-12-07 22:31:42.537112538 +0300
+@@ -689,14 +689,14 @@ static irqreturn_t tmiofb_irq(int irq, v
+ 	unsigned int			bbisc	= ioread16(&lcr->bbisc);
+ 
+ 
++	iowrite16(bbisc, &lcr->bbisc);
++
++#ifdef CONFIG_FB_TMIO_ACCELL
+ 	if (unlikely(par->use_polling && irq != -1)) {
+ 		printk(KERN_INFO "tmiofb: switching to waitq\n");
+ 		par->use_polling = false;
+ 	}
+ 
+-	iowrite16(bbisc, &lcr->bbisc);
+-
+-#ifdef CONFIG_FB_TMIO_ACCELL
+ 	if (bbisc & 1)
+ 		wake_up(&par->wait_acc);
+ #endif
+@@ -972,8 +972,10 @@ static int tmiofb_suspend(struct platfor
+ 		info->fbops->fb_sync(info);
+ 
+ 
++#ifdef CONFIG_FB_TMIO_ACCELL
+ 	printk(KERN_INFO "tmiofb: switching to polling\n");
+ 	par->use_polling = true;
++#endif
+ 	tmiofb_hw_stop(dev);
+ 
+ 	if (cell->suspend)

@@ -8,6 +8,7 @@ PR = "r2"
 SRC_URI = "http://downloads.mysql.com/archives/mysql-4.1/mysql-${PV}.tar.gz \
            file://autofoo.patch;patch=1 \
            file://fix_host_path.patch;patch=1 \
+	   file://configure-ps-cache-check.patch;patch=1 \
            file://my.cnf \
            file://mysqld.sh"
 
@@ -23,6 +24,8 @@ INITSCRIPT_PACKAGES = "mysql-server"
 INITSCRIPT_NAME = "mysqld"
 INITSCRIPT_PARAMS = "start 45 S . stop 45 0 6 1 ."
 
+export ac_cv_path_PS=/bin/ps
+export ac_cv_FIND_PROC="/bin/ps p \$\$PID | grep -v grep | grep mysqld > /dev/null"
 PARALLEL_MAKE = " "
 #EXTRA_OEMAKE = "'GEN_LEX_HASH=${STAGING_BINDIR_NATIVE}/gen_lex_hash'"
 EXTRA_OECONF = " --with-embedded-server --prefix=/usr --sysconfdir=/etc/mysql --localstatedir=/var/mysql --datadir=/var/mysql --disable-dependency-tracking --without-raid --without-debug --with-low-memory --without-query-cache --without-man --without-docs --without-innodb "

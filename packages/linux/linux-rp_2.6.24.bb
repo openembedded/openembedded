@@ -1,6 +1,6 @@
 require linux-rp.inc
 
-PR = "r17"
+PR = "r18"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "1"

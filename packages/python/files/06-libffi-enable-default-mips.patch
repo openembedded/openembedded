@@ -1,0 +1,12 @@
+Index: Python-2.6.1/Modules/_ctypes/libffi/fficonfig.py.in
+===================================================================
+--- Python-2.6.1.orig/Modules/_ctypes/libffi/fficonfig.py.in
++++ Python-2.6.1/Modules/_ctypes/libffi/fficonfig.py.in
+@@ -5,6 +5,7 @@ src/prep_cif.c
+ ffi_platforms = {
+     'MIPS_IRIX': ['src/mips/ffi.c', 'src/mips/o32.S', 'src/mips/n32.S'],
+     'MIPS_LINUX': ['src/mips/ffi.c', 'src/mips/o32.S'],
++    'MIPS': ['src/mips/ffi.c', 'src/mips/o32.S'],
+     'X86': ['src/x86/ffi.c', 'src/x86/sysv.S'],
+     'X86_FREEBSD': ['src/x86/ffi.c', 'src/x86/sysv.S'],
+     'X86_WIN32': ['src/x86/ffi.c', 'src/x86/win32.S'],

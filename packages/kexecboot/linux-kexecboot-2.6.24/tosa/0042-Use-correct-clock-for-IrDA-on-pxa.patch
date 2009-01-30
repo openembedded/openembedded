@@ -1,0 +1,26 @@
+From 70dfe7e736467af6242c61092cb64f44d2fd50e3 Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Mon, 4 Feb 2008 03:01:05 +0300
+Subject: [PATCH 42/64] Use correct clock for IrDA on pxa
+
+Signed-off-by: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/net/irda/pxaficp_ir.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/net/irda/pxaficp_ir.c b/drivers/net/irda/pxaficp_ir.c
+index 8c09344..36d2ec0 100644
+--- a/drivers/net/irda/pxaficp_ir.c
++++ b/drivers/net/irda/pxaficp_ir.c
+@@ -814,7 +814,7 @@ static int pxa_irda_probe(struct platform_device *pdev)
+ 	si->dev = &pdev->dev;
+ 	si->pdata = pdev->dev.platform_data;
+ 
+-	si->sir_clk = clk_get(&pdev->dev, "UARTCLK");
++	si->sir_clk = clk_get(&pdev->dev, "SIRCLK");
+ 	si->fir_clk = clk_get(&pdev->dev, "FICPCLK");
+ 	if (IS_ERR(si->sir_clk) || IS_ERR(si->fir_clk)) {
+ 		err = PTR_ERR(IS_ERR(si->sir_clk) ? si->sir_clk : si->fir_clk);
+-- 
+1.5.3.8
+

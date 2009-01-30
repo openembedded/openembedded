@@ -1,0 +1,163 @@
+From 57d1450b4e5f27fa78c75895dc30213bde7191bc Mon Sep 17 00:00:00 2001
+From: Dmitry Baryshkov <dbaryshkov@gmail.com>
+Date: Wed, 9 Jan 2008 02:08:18 +0300
+Subject: [PATCH 29/64] Support using VOLTAGE_* properties for apm calculations. It's pretty
+ dummy, but useful for batteries for which we can only get voltages.
+
+---
+ drivers/power/apm_power.c |   63 ++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 51 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/power/apm_power.c b/drivers/power/apm_power.c
+index bbf3ee1..526c96e 100644
+--- a/drivers/power/apm_power.c
++++ b/drivers/power/apm_power.c
+@@ -13,6 +13,12 @@
+ #include <linux/power_supply.h>
+ #include <linux/apm-emulation.h>
+ 
++typedef enum {
++	SOURCE_ENERGY,
++	SOURCE_CHARGE,
++	SOURCE_VOLTAGE,
++} apm_source;
++
+ #define PSY_PROP(psy, prop, val) psy->get_property(psy, \
+ 			 POWER_SUPPLY_PROP_##prop, val)
+ 
+@@ -87,7 +93,7 @@ static void find_main_battery(void)
+ 	}
+ }
+ 
+-static int calculate_time(int status, int using_charge)
++static int calculate_time(int status, apm_source source)
+ {
+ 	union power_supply_propval full;
+ 	union power_supply_propval empty;
+@@ -106,20 +112,34 @@ static int calculate_time(int status, int using_charge)
+ 			return -1;
+ 	}
+ 
+-	if (using_charge) {
++	switch (source) {
++	case SOURCE_CHARGE:
+ 		full_prop = POWER_SUPPLY_PROP_CHARGE_FULL;
+ 		full_design_prop = POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN;
+ 		empty_prop = POWER_SUPPLY_PROP_CHARGE_EMPTY;
+ 		empty_design_prop = POWER_SUPPLY_PROP_CHARGE_EMPTY;
+ 		cur_avg_prop = POWER_SUPPLY_PROP_CHARGE_AVG;
+ 		cur_now_prop = POWER_SUPPLY_PROP_CHARGE_NOW;
+-	} else {
++		break;
++	case SOURCE_ENERGY:
+ 		full_prop = POWER_SUPPLY_PROP_ENERGY_FULL;
+ 		full_design_prop = POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN;
+ 		empty_prop = POWER_SUPPLY_PROP_ENERGY_EMPTY;
+ 		empty_design_prop = POWER_SUPPLY_PROP_CHARGE_EMPTY;
+ 		cur_avg_prop = POWER_SUPPLY_PROP_ENERGY_AVG;
+ 		cur_now_prop = POWER_SUPPLY_PROP_ENERGY_NOW;
++		break;
++	case SOURCE_VOLTAGE:
++		full_prop = POWER_SUPPLY_PROP_VOLTAGE_MAX;
++		full_design_prop = POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN;
++		empty_prop = POWER_SUPPLY_PROP_VOLTAGE_MIN;
++		empty_design_prop = POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN;
++		cur_avg_prop = POWER_SUPPLY_PROP_VOLTAGE_AVG;
++		cur_now_prop = POWER_SUPPLY_PROP_VOLTAGE_NOW;
++		break;
++	default:
++		printk(KERN_ERR "Unsupported source: %d\n", source);
++		return -1;
+ 	}
+ 
+ 	if (_MPSY_PROP(full_prop, &full)) {
+@@ -146,7 +166,7 @@ static int calculate_time(int status, int using_charge)
+ 		return -((cur.intval - empty.intval) * 60L) / I.intval;
+ }
+ 
+-static int calculate_capacity(int using_charge)
++static int calculate_capacity(apm_source source)
+ {
+ 	enum power_supply_property full_prop, empty_prop;
+ 	enum power_supply_property full_design_prop, empty_design_prop;
+@@ -154,20 +174,33 @@ static int calculate_capacity(int using_charge)
+ 	union power_supply_propval empty, full, cur;
+ 	int ret;
+ 
+-	if (using_charge) {
++	switch (source) {
++	case SOURCE_CHARGE:
+ 		full_prop = POWER_SUPPLY_PROP_CHARGE_FULL;
+ 		empty_prop = POWER_SUPPLY_PROP_CHARGE_EMPTY;
+ 		full_design_prop = POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN;
+ 		empty_design_prop = POWER_SUPPLY_PROP_CHARGE_EMPTY_DESIGN;
+ 		now_prop = POWER_SUPPLY_PROP_CHARGE_NOW;
+ 		avg_prop = POWER_SUPPLY_PROP_CHARGE_AVG;
+-	} else {
++		break;
++	case SOURCE_ENERGY:
+ 		full_prop = POWER_SUPPLY_PROP_ENERGY_FULL;
+ 		empty_prop = POWER_SUPPLY_PROP_ENERGY_EMPTY;
+ 		full_design_prop = POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN;
+ 		empty_design_prop = POWER_SUPPLY_PROP_ENERGY_EMPTY_DESIGN;
+ 		now_prop = POWER_SUPPLY_PROP_ENERGY_NOW;
+ 		avg_prop = POWER_SUPPLY_PROP_ENERGY_AVG;
++	case SOURCE_VOLTAGE:
++		full_prop = POWER_SUPPLY_PROP_VOLTAGE_MAX;
++		empty_prop = POWER_SUPPLY_PROP_VOLTAGE_MIN;
++		full_design_prop = POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN;
++		empty_design_prop = POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN;
++		now_prop = POWER_SUPPLY_PROP_VOLTAGE_NOW;
++		avg_prop = POWER_SUPPLY_PROP_VOLTAGE_AVG;
++		break;
++	default:
++		printk(KERN_ERR "Unsupported source: %d\n", source);
++		return -1;
+ 	}
+ 
+ 	if (_MPSY_PROP(full_prop, &full)) {
+@@ -234,10 +267,12 @@ static void apm_battery_apm_get_power_status(struct apm_power_info *info)
+ 		info->battery_life = capacity.intval;
+ 	} else {
+ 		/* try calculate using energy */
+-		info->battery_life = calculate_capacity(0);
++		info->battery_life = calculate_capacity(SOURCE_ENERGY);
+ 		/* if failed try calculate using charge instead */
+ 		if (info->battery_life == -1)
+-			info->battery_life = calculate_capacity(1);
++			info->battery_life = calculate_capacity(SOURCE_CHARGE);
++		if (info->battery_life == -1)
++			info->battery_life = calculate_capacity(SOURCE_VOLTAGE);
+ 	}
+ 
+ 	/* charging status */
+@@ -263,18 +298,22 @@ static void apm_battery_apm_get_power_status(struct apm_power_info *info)
+ 				!MPSY_PROP(TIME_TO_FULL_NOW, &time_to_full)) {
+ 			info->time = time_to_full.intval / 60;
+ 		} else {
+-			info->time = calculate_time(status.intval, 0);
++			info->time = calculate_time(status.intval, SOURCE_ENERGY);
+ 			if (info->time == -1)
+-				info->time = calculate_time(status.intval, 1);
++				info->time = calculate_time(status.intval, SOURCE_CHARGE);
++			if (info->time == -1)
++				info->time = calculate_time(status.intval, SOURCE_VOLTAGE);
+ 		}
+ 	} else {
+ 		if (!MPSY_PROP(TIME_TO_EMPTY_AVG, &time_to_empty) ||
+ 			      !MPSY_PROP(TIME_TO_EMPTY_NOW, &time_to_empty)) {
+ 			info->time = time_to_empty.intval / 60;
+ 		} else {
+-			info->time = calculate_time(status.intval, 0);
++			info->time = calculate_time(status.intval, SOURCE_ENERGY);
++			if (info->time == -1)
++				info->time = calculate_time(status.intval, SOURCE_CHARGE);
+ 			if (info->time == -1)
+-				info->time = calculate_time(status.intval, 1);
++				info->time = calculate_time(status.intval, SOURCE_VOLTAGE);
+ 		}
+ 	}
+ 
+-- 
+1.5.3.8
+

@@ -5,6 +5,7 @@ IMAGE_PKGTYPE ?= "ipk"
 
 IPKGCONF_TARGET = "${STAGING_ETCDIR_NATIVE}/opkg.conf"
 IPKGCONF_SDK =  "${STAGING_ETCDIR_NATIVE}/opkg-sdk.conf"
+IPKGCONF_CANSDK =  "${STAGING_ETCDIR_NATIVE}/opkg-canadian-sdk.conf"
 
 python package_ipk_fn () {
 	from bb import data
@@ -90,6 +91,10 @@ package_update_index_ipk () {
 			touch ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages
 			ipkg-make-index -r ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -p ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages -l ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages.filelist -m ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/
 		fi
+		if [ -e ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/ ] ; then
+			touch ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages
+			ipkg-make-index -r ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages -p ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages -l ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages.filelist -m ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/
+		fi
 	done
 }
 
@@ -102,17 +107,22 @@ package_generate_ipkg_conf () {
 	mkdir -p ${STAGING_ETCDIR_NATIVE}/
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${IPKGCONF_TARGET}
 	echo "src oe file:${DEPLOY_DIR_IPK}" > ${IPKGCONF_SDK}
+	echo "src oe file:${DEPLOY_DIR_IPK}" > ${IPKGCONF_CANSDK}
 	ipkgarchs="${PACKAGE_ARCHS}"
 	priority=1
 	for arch in $ipkgarchs; do
 		echo "arch $arch $priority" >> ${IPKGCONF_TARGET}
 		echo "arch ${BUILD_ARCH}-$arch-sdk $priority" >> ${IPKGCONF_SDK}
+		echo "arch ${SDK_SYS}-sdk-$arch $priority" >> ${IPKGCONF_CANSDK}
 		priority=$(expr $priority + 5)
 		if [ -e ${DEPLOY_DIR_IPK}/$arch/Packages ] ; then
 		        echo "src oe-$arch file:${DEPLOY_DIR_IPK}/$arch" >> ${IPKGCONF_TARGET}
 		fi
 		if [ -e ${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk/Packages ] ; then
 		        echo "src oe-${BUILD_ARCH}-$arch-sdk file:${DEPLOY_DIR_IPK}/${BUILD_ARCH}-$arch-sdk" >> ${IPKGCONF_SDK}
+		fi
+		if [ -e ${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch/Packages ] ; then
+		        echo "src oe-${SDK_SYS}-sdk-$arch file:${DEPLOY_DIR_IPK}/${SDK_SYS}-sdk-$arch" >> ${IPKGCONF_CANSDK}
 		fi
 	done
 }

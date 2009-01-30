@@ -12,3 +12,8 @@ inherit autotools gettext
 # because it uses __mempcpy, there are other things (TBD:
 # see diffutils.mk in buildroot)
 EXTRA_OECONF_linux-uclibc += "--without-included-regex"
+
+do_install_append() {
+	cd ${D}${bindir} && mv find find.findutils
+	cd ${D}${bindir} && mv xargs xargs.findutils
+}

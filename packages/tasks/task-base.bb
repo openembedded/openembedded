@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r78"
+PR = "r79"
 
 inherit task
 
@@ -298,7 +298,10 @@ RRECOMMENDS_task-base-usbhost = "\
     kernel-module-usbmouse \
     kernel-module-mousedev \
     kernel-module-usbserial \
-    kernel-module-usb-storage "
+    kernel-module-usb-storage \
+    kernel-module-asix \
+    kernel-module-pegasus \
+"
 
 RDEPENDS_task-base-uboot = "\
     u-boot"

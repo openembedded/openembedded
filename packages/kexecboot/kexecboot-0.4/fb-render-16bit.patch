@@ -1,0 +1,21 @@
+Index: kexecboot-0.4/fb.c
+===================================================================
+--- kexecboot-0.4.orig/fb.c	2009-01-29 22:03:34.000000000 +0000
++++ kexecboot-0.4/fb.c	2009-01-29 22:08:22.000000000 +0000
+@@ -19,7 +19,15 @@
+ 
+ void fb_render(FB * fb)
+ {
+-	memcpy(fb->data, fb->backbuffer, fb->screensize);
++	uint16 *source, *dest;
++	int n = fb->screensize/2;
++
++	source = (uint16 *)fb->backbuffer;
++	dest = (uint16 *)fb->data;
++
++	while (n--) {
++		*dest++ = *source++;
++	}
+ }
+ 
+ void fb_destroy(FB * fb)

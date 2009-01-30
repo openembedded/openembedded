@@ -20,7 +20,14 @@ EXTRA_OECONF = " \
 	         --enable-echo \
                  --enable-configfile \
 	         --enable-initscripts \
-		 --enable-test \
+		--enable-test \
+		--enable-hidd \
+		--enable-obex \
+		--enable-pand \
+		--enable-dund \
+		--enable-avctrl \
+		--enable-hid2hci \
+		--enable-dfutool \
 		" 
 
 CONFFILES_${PN} = " \
