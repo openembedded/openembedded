@@ -11,3 +11,11 @@ SRC_URI = "${HANDHELDS_CVS};module=linux/kernel26;tag=${@'K' + bb.data.getVar('P
 	   file://defconfig"
 
 S = "${WORKDIR}/kernel26"
+
+
+do_configure_append() {
+	gzip -d ${S}/initramfs.cpio.gz || true
+	sed -i -e s:\.gz::g .config		
+}
+
+
