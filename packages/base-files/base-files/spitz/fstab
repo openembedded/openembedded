@@ -26,5 +26,5 @@ usbfs           /proc/bus/usb   usbfs           defaults              0  0
 #
 # Harddisk
 #
-/dev/hda2           /home           ext3	defaults    0  0
-/dev/hda3           /media/hdd      vfat	defaults    0  0
+##/dev/hda2           /home           ext3	defaults    0  0
+##/dev/hda3           /media/hdd      vfat	defaults    0  0
