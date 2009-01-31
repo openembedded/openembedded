@@ -3,15 +3,18 @@ LICENSE = "GPL"
 DEPENDS = "readline virtual/libiconv"
 
 SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
-           file://configure.patch;patch=1 \
-           file://config-lfs.patch;patch=1 \
-           file://quota.patch;patch=1;pnum=0 \
            file://smb.conf \
-           file://init"
+           file://init \
+           "
 
 S = "${WORKDIR}/samba-${PV}/source"
 
 inherit autotools update-rc.d
+
+FILES_${PN}     += "${libdir}/vfs/*.so ${libdir}/charset/*.so ${libdir}/*.dat \
+                    ${libdir}/auth/*.so ${libdir}/security/*.so"
+FILES_${PN}-dbg += "${libdir}/vfs/.debug/*.so ${libdir}/charset/.debug/*.so \
+                    ${libdir}/auth/.debug/*.so ${libdir}/security/.debug/*.so"
 
 # The file system settings --foodir=dirfoo and overridden unconditionally
 # in the samba config by --with-foodir=dirfoo - even if the --with is not
@@ -37,19 +40,6 @@ INITSCRIPT_NAME = "samba"
 # in rc6.d, the shutdown must precede network shutdown).
 INITSCRIPT_PARAMS = "defaults"
 CONFFILES_${PN} = "${sysconfdir}/samba/smb.conf"
-
-PACKAGES =+ "libsmbclient libsmbclient-dev cifs cifs-doc smbfs smbfs-doc swat"
-FILES_cifs = "${base_sbindir}/mount.cifs ${base_sbindir}/umount.cifs"
-FILES_cifs-doc = "${mandir}/man8/mount.cifs.8 ${mandir}/man8/umount.cifs.8"
-FILES_libsmbclient = "${libdir}/libsmbclient.so.*"
-FILES_libsmbclient-dev = "${libdir}/libsmbclient.so ${includedir}"
-FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt ${base_sbindir}/mount.smbfs ${base_sbindir}/mount.smb"
-FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
-FILES_swat       = "${sbindir}/swat ${datadir}/swat ${libdir}/*.msg"
-FILES_${PN}     += "${libdir}/vfs/*.so ${libdir}/charset/*.so ${libdir}/*.dat \
-                    ${libdir}/auth/*.so ${libdir}/security/*.so"
-FILES_${PN}-dbg += "${libdir}/vfs/.debug/*.so ${libdir}/charset/.debug/*.so \
-                    ${libdir}/auth/.debug/*.so ${libdir}/security/.debug/*.so"
 
 do_configure_prepend () {
 	./script/mkversion.sh

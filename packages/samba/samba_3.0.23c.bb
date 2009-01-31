@@ -1,13 +1,13 @@
 require samba.inc
+require samba-basic.inc
 
-PR = "r4"
+SRC_URI += "file://configure.patch;patch=1 \
+            file://cifs.patch;patch=1"
 
-SRC_URI += "file://cifs.patch;patch=1 \
-                "
+PR = "r5"
 
 EXTRA_OECONF += "\
-                 --without-ads \
-	         "
+                 --without-ads"
 
 do_compile () {
         oe_runmake proto_exists
