@@ -80,3 +80,5 @@ zaurus_make_installkit () {
 }
 
 KERNEL_IMAGETYPE ?= "zImage"
+
+require conf/machine/include/kexecboot.inc
