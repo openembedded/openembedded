@@ -80,6 +80,7 @@ do
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
+                      bonjour \
                       camera-assistant \
                       cdparanoia \
                       checkers \
