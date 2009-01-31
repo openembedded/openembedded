@@ -8,11 +8,19 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
   file://openwrt-ledtrig-netdev.patch;patch=1 \
+  file://0001-MERGE-via-pending-tracking-hist-subject-usb-gadget-r.patch;patch=1 \
+  file://0002-MERGE-via-pending-tracking-hist-subject-usb-gadget-f.patch;patch=1 \
+  file://0003-consider-alrm-enable-in-pcf50633_rtc_set_alarm.patch;patch=1 \
+  file://0004-manage-RTC-alarm-pending-flag-of-PCF50633.patch;patch=1 \
+  file://0005-debug-glamo-allow-slower-memory-bus.patch.patch;patch=1 \
+  file://0006-Subject-fix_glamo_xrandr_bug.patch.patch;patch=1 \
+  file://0007-Subject-glamo_fix_improper_xrandr_geometry_setting.patch;patch=1 \
+  file://0008-Send-pen-up-events-faster-side-effect-improve-illu.patch;patch=1 \
   file://defconfig-oe.patch \
 "
 S = "${WORKDIR}/git"
