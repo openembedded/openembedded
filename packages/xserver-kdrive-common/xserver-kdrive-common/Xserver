@@ -141,7 +141,7 @@ case `module_id` in
                 if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
                 fi
-                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor ${PPM}" ;;
+                ARGS="$ARGS -dpi 181 -screen 320x320 -mouse tslib -hide-cursor ${PPM}" ;;
         "Motorola Ezx Platform")
                 if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
                      PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm ${PPM}"
