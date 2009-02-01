@@ -1,12 +1,12 @@
 DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoCs"
 LICENSE = "GPLv2"
 
-PR = "r3"
+PR = "r4"
 
 inherit module
 
 SRC_URI = "http://dominion.thruhere.net/koen/OE/omap3-sgx-modules-${PV}.tar.bz2 \
-#           file://0001-Compile-fixes-for-DSS2.patch;patch=1 \
+           file://0001-Compile-fixes-for-DSS2.patch;patch=1 \
 "
 
 MAKE_TARGETS = "BUILD=debug"
