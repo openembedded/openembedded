@@ -5,8 +5,8 @@ rmmod omaplfb
 rmmod pvrsrvkm
 
 insmod $(busybox find /lib/modules/$(uname -r) -name "pvrsrvkm.ko")
-modprobe -f bc_example
-modprobe -f omaplfb
+modprobe bc_example
+modprobe omaplfb
 
 pvr_maj=`grep "pvrsrvkm$" /proc/devices | cut -b1,2,3`
 
