@@ -246,7 +246,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "38824"
+EFL_SRCREV ?= "38853"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
@@ -298,6 +298,7 @@ SRCREV_pn-edje-editor ?= "${EFL_SRCREV}"
 SRCREV_pn-edje-player ?= "${EFL_SRCREV}"
 SRCREV_pn-edje-viewer ?= "${EFL_SRCREV}"
 SRCREV_pn-elementary-alarm ?= "${EFL_SRCREV}"
+SRCREV_pn-elementary-sms ?= "${EFL_SRCREV}"
 SRCREV_pn-emphasis ?= "${EFL_SRCREV}"
 SRCREV_pn-ephoto ?= "${EFL_SRCREV}"
 SRCREV_pn-examine ?= "${EFL_SRCREV}"

@@ -14,9 +14,9 @@ BASE_INSTALL = "\
   modutils-initscripts \
   module-init-tools-depmod \
 #  prelink \
-  exquisite \
-  exquisite-themes \
-  exquisite-theme-illume \
+#  exquisite \
+#  exquisite-themes \
+#  exquisite-theme-illume \
   pointercal \
   tslib-conf \
 "
@@ -50,7 +50,6 @@ X_INSTALL = "\
   \
   ttf-dejavu-common \
   ttf-dejavu-sans \
-#  ttf-dejavu-serif \
   ttf-dejavu-sans-mono \
   ttf-arphic-uming \
 "
