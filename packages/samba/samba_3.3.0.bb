@@ -1,12 +1,18 @@
 require samba.inc
 require samba-basic.inc
 
-SRC_URI += "file://configure-3.2.7.patch;patch=1 \
+# 3.3.0 and newer will upgrade your tdb database to a
+# new version that you can not downgrade to use with older
+# releases. More testing will happen before this is removed
+# should there be further issues. Appears to work though :)
+DEFAULT_PREFERENCE = "-1"
+
+SRC_URI += "file://configure-3.3.0.patch;patch=1 \
             file://config-h.patch;patch=1 \
             file://mtab.patch;patch=1 \
 	        "
 
-PR = "r3"
+PR = "r0"
 
 EXTRA_OECONF += "\
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
@@ -21,4 +27,8 @@ EXTRA_OECONF += "\
 
 do_configure() {
 	oe_runconf
+}
+
+do_compile () {
+	base_do_compile
 }
