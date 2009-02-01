@@ -586,7 +586,7 @@ CONFIG_I2C_BOARDINFO=y
 #
 # I2C Algorithms
 #
-# CONFIG_I2C_ALGOBIT is not set
+CONFIG_I2C_ALGOBIT=y
 # CONFIG_I2C_ALGOPCF is not set
 # CONFIG_I2C_ALGOPCA is not set
 
