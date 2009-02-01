@@ -39,7 +39,6 @@ do_stage () {
 }
 
 mtd_utils = " docfdisk \
-	docfdisk \
 	doc_loadbios \
 	flashcp \
 	flash_erase \
