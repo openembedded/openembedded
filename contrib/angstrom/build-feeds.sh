@@ -176,9 +176,11 @@ do
                       kismet \
                       konqueror-embedded \
                       labyrinth \
+                      lcd4linux \
                       leafpad \
                       lighttpd \
                       links-x11 \
+                      lirc \
                       m4 \
                       madplay \
                       mahjongg \
