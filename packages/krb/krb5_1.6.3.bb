@@ -1,7 +1,7 @@
 DESCRIPTION = "A network authentication protocol"
 HOMEPAGE = "http://web.mit.edu/Kerberos/"
 SECTION = "console/network"
-PR = "r4"
+PR = "r5"
 LICENSE = "MIT"
 DEPENDS = "perl-native ncurses e2fsprogs-libs"
 
@@ -20,9 +20,17 @@ LDFLAGS_append += "-lpthread"
 
 FILES_${PN}-doc += /usr/share/examples
 
-do_configure() {
+krb5_do_unpack() {
 	tar xzf ${WORKDIR}/krb5-1.6.3.tar.gz -C ${WORKDIR}/
-	patch -p1 < ${WORKDIR}/fix-uclibc-ruserpass-collision.patch
+	patch -d ${S} -p1 < ${WORKDIR}/fix-uclibc-ruserpass-collision.patch
+}
+
+python do_unpack() {
+	bb.build.exec_func('base_do_unpack', d)
+	bb.build.exec_func('krb5_do_unpack', d)
+}
+
+do_configure() {
 	oe_runconf
 }
 
