@@ -2,7 +2,7 @@
 
 # NOTE: include this file after zaurus-2.6.inc for zaurus machines
 
-MACHINE_FEATURES_append = "kexecboot"
+MACHINE_FEATURES_append = " kexecboot "
 
 # Include Kernel image in kexecboot enabled images
 RDEPENDS_kernel-base = "kernel-image" 
