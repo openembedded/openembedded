@@ -10,7 +10,7 @@ IMAGE_INSTALL += "task-e-x11-core \
 #                        task-gpe-apps \
                         task-gpe-connectivity \
                         task-gpe-games \
-                        task-apps-extra \
+#                        task-apps-extra \
                         figment \
                         xhost \
                         gpe-soundserver \
