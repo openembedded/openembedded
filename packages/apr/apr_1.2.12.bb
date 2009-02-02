@@ -11,6 +11,11 @@ SRC_URI = "${APACHE_MIRROR}/apr/${P}.tar.bz2 \
 inherit autotools lib_package binconfig
 
 OE_BINCONFIG_EXTRA_MANGLE = " -e 's:location=source:location=installed:'"
+EXTRA_OEMAKE = " LIBTOOL=\"${S}/${TARGET_PREFIX}libtool\" "
+
+do_configure_prepend() {
+	rm -f ${S}/build/libtool.m4
+}
 
 do_stage() {
   autotools_stage_all
