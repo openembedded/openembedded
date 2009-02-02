@@ -5,7 +5,7 @@ SECTION = "base"
 PR = "r2"
 DEPENDS = "e2fsprogs-libs"
 
-SRC_URI = "ftp://oss.sgi.com/projects/xfs/download/download/cmd_tars/xfsprogs_2.8.16-1.tar.gz"
+SRC_URI = "http://slackware.osuosl.org/slackware-12.0/source/a/xfsprogs/xfsprogs_2.8.16-1.tar.gz"
 
 PARALLEL_MAKE = ""
 inherit autotools
