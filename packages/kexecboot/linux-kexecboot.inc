@@ -27,7 +27,7 @@ TKSRC = "http://www.informatik.hu-berlin.de/~tkunze/zaurus/patches"
 KERNEL_IMAGE_BASE_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${PV}-${PR}-${MACHINE}"
 KERNEL_IMAGE_SYMLINK_NAME = "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}"
 
-do_compile[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
+do_configure[depends] += "${INITRAMFS_IMAGE}:do_rootfs"
 
 do_configure_append() {
 sed -i -e /CONFIG_BLK_DEV_INITRD/d \
