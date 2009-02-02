@@ -1,6 +1,8 @@
 DEPENDS = "gtk+ glib-2.0 libgpewidget webkit-gtk"
-PV = "0.0.1+svn${SRCDATE}"
+PV = "0.0.1+svnr${SRCREV}"
 PR = "r0"
+
+SRCREV = "9819"
 
 inherit autotools
 
