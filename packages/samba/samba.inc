@@ -3,6 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "readline virtual/libiconv"
 
 SRC_URI = "http://samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
+           file://volatiles.03_samba \
            file://smb.conf \
            file://init \
            "
@@ -72,6 +73,8 @@ do_install_append() {
 	install -d "${D}${sysconfdir}/samba"
 	install -c -m 644 ${WORKDIR}/smb.conf ${D}${sysconfdir}/samba/smb.conf
 	install -d ${D}/var/spool/samba
+
+	install -D -m 0644 ${WORKDIR}/volatiles.03_samba ${D}${sysconfdir}/default/volatiles/volatiles.03_samba
 }
 
 do_stage() {

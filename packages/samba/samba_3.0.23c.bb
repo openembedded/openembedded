@@ -4,7 +4,7 @@ require samba-basic.inc
 SRC_URI += "file://configure.patch;patch=1 \
             file://cifs.patch;patch=1"
 
-PR = "r6"
+PR = "r7"
 
 PACKAGES =+ " smbfs-doc"
 
