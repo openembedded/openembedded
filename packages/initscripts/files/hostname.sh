@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # hostname.sh	Set hostname.
 #

@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # domainname.sh	Set the domainname.
 #
