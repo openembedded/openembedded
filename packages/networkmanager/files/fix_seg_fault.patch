@@ -1,0 +1,13 @@
+Index: NetworkManager-0.6.6/src/nm-device-802-11-wireless.c
+===================================================================
+--- NetworkManager-0.6.6.orig/src/nm-device-802-11-wireless.c	2008-03-06 17:14:39.000000000 -0300
++++ NetworkManager-0.6.6/src/nm-device-802-11-wireless.c	2008-08-26 13:53:22.000000000 -0300
+@@ -944,6 +944,8 @@
+ 		/* If we didn't get any security info, make some up. */
+ 		if (!security)
+ 			security = nm_ap_security_new_from_ap (ap);
++		else
++			g_object_ref (security);
+ 	}
+ 	g_assert (security);
+ 	nm_ap_set_security (ap, security);

@@ -1,0 +1,342 @@
+=== modified file 'src/Makefile.am'
+---
+ src/Makefile.am      |    4 -
+ src/nm-hal-manager.c |   24 ++++++-
+ src/probe-modem.c    |  166 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/probe-modem.h    |   29 ++++++++
+ 4 files changed, 220 insertions(+), 3 deletions(-)
+
+Index: network-manager.07.ubuntu/src/Makefile.am
+===================================================================
+--- network-manager.07.ubuntu.orig/src/Makefile.am
++++ network-manager.07.ubuntu/src/Makefile.am
+@@ -67,17 +67,19 @@
+ 		nm-cdma-device.h		\
+ 		nm-hso-gsm-device.c \
+ 		nm-hso-gsm-device.h \
+ 		wpa.c				\
+ 		wpa.h				\
+ 		nm-netlink.c			\
+ 		nm-netlink.h \
+ 		nm-dhcp4-config.c \
+-		nm-dhcp4-config.h
++		nm-dhcp4-config.h \
++		probe-modem.c \
++		probe-modem.h
+ 
+ nm-access-point-glue.h: $(top_srcdir)/introspection/nm-access-point.xml
+ 	dbus-binding-tool --prefix=nm_access_point --mode=glib-server --output=$@ $<
+ 
+ nm-manager-glue.h: $(top_srcdir)/introspection/nm-manager.xml
+ 	dbus-binding-tool --prefix=nm_manager --mode=glib-server --output=$@ $<
+ 
+ nm-device-interface-glue.h: $(top_srcdir)/introspection/nm-device.xml
+Index: network-manager.07.ubuntu/src/nm-hal-manager.c
+===================================================================
+--- network-manager.07.ubuntu.orig/src/nm-hal-manager.c
++++ network-manager.07.ubuntu/src/nm-hal-manager.c
+@@ -12,16 +12,19 @@
+ #include "nm-dbus-manager.h"
+ #include "nm-utils.h"
+ #include "nm-device-wifi.h"
+ #include "nm-device-ethernet.h"
+ #include "nm-gsm-device.h"
+ #include "nm-hso-gsm-device.h"
+ #include "nm-cdma-device.h"
+ 
++#include "probe-modem.h"
++
++
+ /* Killswitch poll frequency in seconds */
+ #define RFKILL_POLL_FREQUENCY 6
+ 
+ #define HAL_DBUS_SERVICE "org.freedesktop.Hal"
+ 
+ typedef struct {
+ 	LibHalContext *hal_ctx;
+ 	NMDBusManager *dbus_mgr;
+@@ -269,43 +272,51 @@
+ modem_device_creator (NMHalManager *self, const char *udi, gboolean managed)
+ {
+ 	NMHalManagerPrivate *priv = NM_HAL_MANAGER_GET_PRIVATE (self);
+ 	char *serial_device;
+ 	char *parent_udi;
+ 	char *driver_name = NULL;
+ 	GObject *device = NULL;
+ 	char **capabilities, **iter;
+-	gboolean type_gsm = FALSE;
+-	gboolean type_cdma = FALSE;
++	gboolean type_gsm;
++	gboolean type_cdma;
++	gboolean type_v250;
+ 	char *netdev = NULL;
+ 
+ 	serial_device = libhal_device_get_property_string (priv->hal_ctx, udi, "serial.device", NULL);
+ 
+ 	/* Get the driver */
+ 	parent_udi = libhal_device_get_property_string (priv->hal_ctx, udi, "info.parent", NULL);
+ 	if (parent_udi) {
+ 		driver_name = libhal_device_get_property_string (priv->hal_ctx, parent_udi, "info.linux.driver", NULL);
+ 		libhal_free_string (parent_udi);
+ 	}
+ 
+ 	if (!serial_device || !driver_name)
+ 		goto out;
+ 
++	type_gsm = FALSE;
++	type_cdma = FALSE;
++	type_v250 = FALSE;
+ 	capabilities = libhal_device_get_property_strlist (priv->hal_ctx, udi, "modem.command_sets", NULL);
+ 	/* 'capabilites' may be NULL */
+ 	for (iter = capabilities; iter && *iter; iter++) {
+ 		if (!strcmp (*iter, "GSM-07.07")) {
+ 			type_gsm = TRUE;
+ 			break;
+ 		}
+ 		if (!strcmp (*iter, "IS-707-A")) {
+ 			type_cdma = TRUE;
+ 			break;
+ 		}
++		if (!strcmp (*iter, "V.250")) {
++			type_v250 = TRUE;
++			/* no break here! */
++		}
+ 	}
+ 	g_strfreev (capabilities);
+ 
+ 	/* Compatiblity with the pre-specification bits */
+ 	if (!type_gsm && !type_cdma) {
+ 		capabilities = libhal_device_get_property_strlist (priv->hal_ctx, udi, "info.capabilities", NULL);
+ 		for (iter = capabilities; *iter; iter++) {
+ 			if (!strcmp (*iter, "gsm")) {
+@@ -315,16 +326,25 @@
+ 			if (!strcmp (*iter, "cdma")) {
+ 				type_cdma = TRUE;
+ 				break;
+ 			}
+ 		}
+ 		g_strfreev (capabilities);
+ 	}
+ 
++	/* V.250 probe */
++	if (!type_gsm && !type_cdma && type_v250) {
++		gint probed_type = probe_modem (serial_device, udi, priv->hal_ctx);
++		if (probed_type == 1)
++			type_gsm = TRUE;
++		else if (probed_type == 2)
++			type_cdma = TRUE;
++	}
++
+ 	/* Special handling of 'hso' cards (until punted out to a modem manager) */
+ 	if (type_gsm && !strcmp (driver_name, "hso"))
+ 		netdev = get_hso_netdev (priv->hal_ctx, udi);
+ 
+ 	if (type_gsm) {
+ 		if (netdev)
+ 			device = (GObject *) nm_hso_gsm_device_new (udi, serial_device + strlen ("/dev/"), NULL, netdev, driver_name, managed);
+ 		else
+Index: network-manager.07.ubuntu/src/probe-modem.c
+===================================================================
+--- /dev/null
++++ network-manager.07.ubuntu/src/probe-modem.c
+@@ -0,0 +1,166 @@
++/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
++/* Probe modem capabilities
++ *
++ * Copyright (c) 2008 Vitja Makarov, <vitja.makarov@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#include <termios.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <errno.h>
++
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++
++#include "nm-utils.h"
++#include "probe-modem.h"
++
++
++#define MODEM_CAP_GSM         0x0001 /* GSM commands */
++#define MODEM_CAP_IS707_A     0x0002 /* CDMA circuit switched data commands */
++#define MODEM_CAP_DS          0x0004 /* data compression */
++#define MODEM_CAP_ES          0x0008 /* error control */
++#define MODEM_CAP_FCLASS      0x0010 /* Fax commands */
++#define MODEM_CAP_MS          0x0020 /* Modulation control commands */
++#define MODEM_CAP_W           0x0040 /* Wireless commands */      
++
++struct modem_caps {
++	char *name;
++	int bits;
++};
++
++static struct modem_caps modem_caps[] = {
++	{"+CGSM",     MODEM_CAP_GSM},
++	/* TODO: are they the same? */
++	{"+CIS707-A", MODEM_CAP_IS707_A},
++	{"+CIS707",   MODEM_CAP_IS707_A},
++	{"+CIS707P",   MODEM_CAP_IS707_A},
++	{NULL}
++} ;
++
++#define AT_CAPS_PROBE "AT+GCAP\r\n"
++
++static int modem_probe_caps(int fd)
++{
++	char buf[200];
++	char *ptr, *field = NULL;
++	int err, ret = 0;
++
++	err = write(fd, AT_CAPS_PROBE, sizeof(AT_CAPS_PROBE) - 1);
++    
++	if (err != sizeof(AT_CAPS_PROBE) - 1)
++		return -1;
++
++	/* 100ms is enough for modem to send all the data */
++	usleep(100000);
++
++	err = read(fd, buf, sizeof(buf) - 1);
++	if (err <= 0)
++		return -1;
++	buf[err] = 0;
++
++	/* check okay reply */
++	ptr = strstr(buf, "\r\nOK\r\n");
++	if (!ptr)
++		return -1;
++	*ptr = 0;
++
++	/* find +GCAP: string */
++	ptr = strstr(buf, "\r\n+GCAP:");
++    
++	if (ptr == NULL)
++		return -1;
++	ptr += 8;
++
++	/* and parse it */
++	do {
++		err = *ptr == '\0' || *ptr == '\r' || *ptr == '\n';
++		if (*ptr == ' ' || *ptr == ',' || err) {
++			*ptr = 0;
++			if (field) {
++				struct modem_caps *cap = modem_caps;
++
++				while (cap->name) {
++					if (!strcmp(cap->name, field))
++						ret |= cap->bits;
++					cap++;
++				}
++			}
++			field = NULL;
++		} else if (NULL == field) {
++			field = ptr;
++		}
++		ptr++;
++	} while (!err);
++
++	return ret;
++}
++
++int probe_modem (const char* device, const char *udi, LibHalContext *ctx)
++{
++	struct termios orig, attrs;
++	int fd, caps;
++	int rv = -1;
++
++	fd = open(device, O_RDWR|O_NDELAY);
++
++	if (-1 == fd) {
++		nm_warning ("open(%s): %s", device, strerror(errno));
++		return rv;
++	}
++
++	if (tcgetattr(fd, &orig))
++		goto close_and_out;
++	
++	memcpy(&attrs, &orig, sizeof(attrs));
++	attrs.c_iflag &= ~(IGNCR | ICRNL | IUCLC | INPCK | IXON | IXANY | IGNPAR);
++	attrs.c_oflag &= ~(OPOST | OLCUC | OCRNL | ONLCR | ONLRET);
++	attrs.c_lflag &= ~(ICANON | XCASE | ECHO | ECHOE | ECHONL);
++	attrs.c_lflag &= ~(ECHO | ECHOE);
++	attrs.c_cc[VMIN] = 1;
++	attrs.c_cc[VTIME] = 0;
++	attrs.c_cc[VEOF] = 1;
++	
++	tcsetattr(fd, TCSANOW, &attrs);
++	caps = modem_probe_caps(fd);
++	tcsetattr(fd, TCSANOW, &orig);
++
++	if (caps < 0) {
++		nm_debug("Couldn't get caps");
++		goto close_and_out;
++	}
++	
++	if (caps & MODEM_CAP_GSM) {
++		nm_debug("Found GSM modem");
++		rv = 1;
++		goto close_and_out;
++	}
++	
++	if (caps & MODEM_CAP_IS707_A) {
++		nm_debug("Found CDMA modem");
++		rv = 2;
++		goto close_and_out;
++	}
++
++	rv = 0;
++
++close_and_out:
++	close (fd);
++	return rv;
++}
+Index: network-manager.07.ubuntu/src/probe-modem.h
+===================================================================
+--- /dev/null
++++ network-manager.07.ubuntu/src/probe-modem.h
+@@ -0,0 +1,29 @@
++/* Copyright (c) 2008 Antti Kaijanmäki, <antti@kaijanmaki.net>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ */
++
++#ifndef PROBE_MODEM_H
++#define PROBE_MODEM_H
++
++
++#include <glib.h>
++#include <libhal.h>
++
++/* returns '1' if properties were changed */
++int probe_modem (const char* device, const char* udi, LibHalContext *ctx);
++
++#endif /* PROBE_MODEM_H */

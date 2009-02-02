@@ -1,0 +1,64 @@
+=== modified file 'ChangeLog'
+---
+ ChangeLog                           |   10 ++++++++++
+ src/backends/NetworkManagerDebian.c |    6 +++++-
+ 2 files changed, 15 insertions(+), 1 deletion(-)
+
+Index: network-manager-0.7~~svn20081015t024626/ChangeLog
+===================================================================
+--- network-manager-0.7~~svn20081015t024626.orig/ChangeLog
++++ network-manager-0.7~~svn20081015t024626/ChangeLog
+@@ -120,16 +120,26 @@
+ 
+ 2008-10-10  Tambet Ingo  <tambet@gmail.com>
+ 
+ 	* src/nm-logging.c (nm_logging_setup): Don't use LOG_CONS when running as
+ 	a daemon to prevent NM logging spew on console on startup and shutdown (due
+ 	to dependency loop between NM and syslog).
+ 
+ 2008-10-10  Alexander Sack  <asac@ubuntu.com>
++  
++	Fallback to generic enable_loopback if /sbin/ifup isnt installed or
++	fails.
++		* src/backends/NetworkManagerDebian.c
++			- (nm_system_enable_loopback): test for /sbin/ifconfig binary
++				and fallback to nm_generic_enable_loopback if it
++				doesnt exist or when /sbin/ifconfig lo up fails for
++				whatever reason.
++
++2008-10-10  Alexander Sack  <asac@ubuntu.com>
+ 
+ 	Implement managed mode. We bind devices configured in /etc/network/interfaces
+ 	to their connections by updating wired/wireless setting with the
+ 	mac address of the device.
+ 
+ 	* system-settings/plugins/ifupdown/plugin.c
+ 		- (get_net_address_for_udi): implement function to retrieve MAC
+ 			address of udi from hal in GByteArray format
+Index: network-manager-0.7~~svn20081015t024626/src/backends/NetworkManagerDebian.c
+===================================================================
+--- network-manager-0.7~~svn20081015t024626.orig/src/backends/NetworkManagerDebian.c
++++ network-manager-0.7~~svn20081015t024626/src/backends/NetworkManagerDebian.c
+@@ -39,17 +39,21 @@
+ /*
+  * nm_system_enable_loopback
+  *
+  * Bring up the loopback interface
+  *
+  */
+ void nm_system_enable_loopback (void)
+ {
+-	nm_spawn_process ("/sbin/ifup lo");
++	// if wrapper fails we gonna try our own
++	if(!g_file_test ("/sbin/ifconfig", G_FILE_TEST_IS_EXECUTABLE) ||
++		nm_spawn_process ("/sbin/ifconfig lo up") != 0) {
++		nm_generic_enable_loopback ();
++	}
+ }
+ 
+ /*
+  * nm_system_update_dns
+  *
+  * Invalidate the nscd host cache, if it exists, since
+  * we changed resolv.conf.
+  *

@@ -1,0 +1,69 @@
+diff --git a/netm-cli/netm-cli b/netm-cli/netm-cli
+index 46c3fa6..0a53036 100755
+--- a/netm-cli/netm-cli
++++ b/netm-cli/netm-cli
+@@ -29,6 +29,7 @@ __version__ = "0.2"
+ import dbus
+ import gobject
+ import os
++import sys
+ from dbus.mainloop.glib import DBusGMainLoop
+ from ConfigParser import ConfigParser
+ from optparse import OptionParser, OptionGroup
+@@ -499,6 +500,14 @@ class NMCLI:
+                                     self._we_cipher, self._hexkey,
+                                     self._wpa_version, self._key_mgmt)
+ 
++    def scan(self):
++        """Scan the network and update the NM device struct."""
++        for devname in self.devices:
++            device = self.devices[devname]
++            if device['type'] == DEVICE_TYPE_802_11_WIRELESS:
++                devobj = self.bus.get_object(NM_DBUS_SERVICE, device['path'])
++                devobj.performScan()
++
+     def sleep(self):
+         """Tell NetworkManager to go into offline mode mode."""
+         self.nm.sleep(ignore_reply=True)
+@@ -782,7 +791,33 @@ def main():
+     nm = NMCLI(device, essid, hexkey, contype, wep_alg, wpa_pairwise,
+                                                      options.verbose)
+ 
++    loop = gobject.MainLoop()
++
+     # Main actions
++    if options.networks:
++        print "Performing scan...",
++        sys.stdout.flush()
++        devices = [nm.devices[dev]['path'] for dev in nm.devices if
++                   nm.devices[dev]['type'] == DEVICE_TYPE_802_11_WIRELESS]
++
++        def scan_performed(device):
++            """Scan helper."""
++            if device in devices:
++                devices.remove(device)
++            if not devices:
++                loop.quit()
++
++        nm.bus.add_signal_receiver(
++                handler_function=scan_performed, signal_name="ScanPerformed",
++                path=NM_DBUS_PATH, dbus_interface=NM_DBUS_INTERFACE)
++        nm.scan()
++        loop.run()
++        nm.bus.remove_signal_receiver(
++                handler_or_match=scan_performed, signal_name="ScanPerformed",
++                path=NM_DBUS_PATH, dbus_interface=NM_DBUS_INTERFACE)
++        print "OK"
++        sys.stdout.flush()
++        nm.update_devices()
+     if options.monitor:
+         nm.set_signals()
+     if options.nmstatus:
+@@ -811,7 +846,6 @@ def main():
+         config.save()
+ 
+     if options.monitor:
+-        loop = gobject.MainLoop()
+         loop.run()
+ 
+ # Run the program

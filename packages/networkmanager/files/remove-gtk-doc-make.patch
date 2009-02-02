@@ -1,0 +1,11 @@
+Index: trunk/docs/libnm-glib/Makefile.am
+===================================================================
+--- trunk.orig/docs/libnm-glib/Makefile.am	2008-11-17 19:37:20.000000000 -0300
++++ trunk/docs/libnm-glib/Makefile.am	2008-11-17 19:37:30.000000000 -0300
+@@ -75,5 +75,5 @@
+ 
+ 
+ # include common portion ...
+-include $(top_srcdir)/gtk-doc.make
++#include $(top_srcdir)/gtk-doc.make
+ 

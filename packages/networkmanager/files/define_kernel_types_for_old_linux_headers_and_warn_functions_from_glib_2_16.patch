@@ -1,0 +1,57 @@
+Index: trunk/src/nm-device-ethernet.c
+===================================================================
+--- trunk.orig/src/nm-device-ethernet.c	2008-08-21 18:44:59.000000000 -0300
++++ trunk/src/nm-device-ethernet.c	2008-08-21 18:44:59.000000000 -0300
+@@ -28,6 +28,10 @@
+ #include <net/ethernet.h>
+ #include <stdlib.h>
+ #include <linux/sockios.h>
++typedef unsigned long long u64;
++typedef unsigned int u32;
++typedef unsigned short u16;
++typedef unsigned char u8;
+ #include <linux/ethtool.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+Index: trunk/src/nm-device-wifi.c
+===================================================================
+--- trunk.orig/src/nm-device-wifi.c	2008-08-21 18:54:24.000000000 -0300
++++ trunk/src/nm-device-wifi.c	2008-08-21 19:17:17.000000000 -0300
+@@ -165,6 +165,9 @@
+ 	gboolean		has_scan_capa_ssid;
+ };
+ 
++#define g_warn_if_fail(expr)    do { if G_LIKELY (expr) ; else \
++                                       g_warn_message (G_LOG_DOMAIN, __FILE__, __LINE__, G_STRFUNC, #expr); } while (0)
++
+ static guint32 nm_device_wifi_get_frequency (NMDeviceWifi *self);
+ 
+ static void nm_device_wifi_set_ssid (NMDeviceWifi *self, const GByteArray * ssid);
+@@ -220,6 +223,27 @@
+                                       const GValue *handler_return,
+                                       gpointer data);
+ 
++void
++g_warn_message (const char     *domain,
++                const char     *file,
++                int             line,
++                const char     *func,
++                const char     *warnexpr)
++{
++  char *s, lstr[32];
++  g_snprintf (lstr, 32, "%d", line);
++  if (warnexpr)
++    s = g_strconcat ("(", file, ":", lstr, "):",
++                     func, func[0] ? ":" : "",
++                     " runtime check failed: (", warnexpr, ")", NULL);
++  else
++    s = g_strconcat ("(", file, ":", lstr, "):",
++                     func, func[0] ? ":" : "",
++                     " ", "code should not be reached", NULL);
++  g_log (domain, G_LOG_LEVEL_WARNING, "%s", s);
++  g_free (s);
++}
++
+ static GQuark
+ nm_wifi_error_quark (void)
+ {

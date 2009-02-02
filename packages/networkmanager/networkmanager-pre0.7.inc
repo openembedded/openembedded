@@ -1,25 +1,26 @@
 DESCRIPTION = "NetworkManager"
 SECTION = "net/misc"
 LICENSE = "GPL"
-HOMEPAGE = "http://www.gnome.org"
 PRIORITY = "optional"
-DEPENDS = "libnl dbus dbus-glib hal gconf-dbus wireless-tools ppp"
+DEPENDS = "libnl dbus dbus-glib hal wireless-tools ppp policykit gnutls"
 RDEPENDS = "hal wpa-supplicant iproute2 dhcp-client dhcdbd"
 
-SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/NetworkManager/0.6/NetworkManager-${PV}.tar.bz2 \
+# Providers that require this file MUST append the source to SRC_URI
+# These are just the common patches
+SRC_URI = " \
 	  file://25NetworkManager \
 	  file://99_networkmanager"
 
-S = "${WORKDIR}/NetworkManager-${PV}/"
+S = "${WORKDIR}/git"
 
 
 EXTRA_OECONF = " \
-		--without-gnome \
 		--with-distro=debian \
-		--without-gcrypt \
- 		--with-wpa_supplicant=/usr/sbin/wpa_supplicant \
+		--with-wpa_supplicant=/usr/sbin/wpa_supplicant \
 		--with-dhcdbd=/sbin/dhcdbd \
-		--with-ip=/sbin/ip.iproute2"
+		--with-ip=/sbin/ip.iproute2 \
+		--with-crypto=gnutls \
+		--disable-more-warnings"
 
 inherit autotools pkgconfig
 
@@ -37,9 +38,7 @@ do_install_append () {
         install -d ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/nm-tool ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/libnm_glib_test ${D}/usr/bin
-        install -m 0755 ${S}/test/.libs/nminfotest ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/nm-online ${D}/usr/bin
-        install -m 0755 ${S}/test/.libs/nm-supplicant-test ${D}/usr/bin
         install -m 0755 ${S}/test/.libs/nmtestdevices ${D}/usr/bin
 }
 
@@ -59,11 +58,18 @@ FILES_libnmglib-vpn += "${libdir}/libnm_glib_vpn.so.*"
 FILES_${PN} += " \
 		${libexecdir} \
 		${libdir}/pppd/*/nm-pppd-plugin.so \
-		${libdir}/NetworkManager/*.so"
+		${libdir}/NetworkManager/*.so \
+		${datadir}/PolicyKit \
+		${datadir}/dbus-1"
+
 FILES_${PN}-dbg += "${libdir}/NetworkManager/.debug/ \
 		    ${libdir}/pppd/*/.debug/ "
 
-FILES_${PN}-dev += " ${datadir}/NetworkManager/gdb-cmd "
+FILES_${PN}-dev += "${datadir}/NetworkManager/gdb-cmd \
+                    ${libdir}/pppd/*/*.a \
+                    ${libdir}/pppd/*/*.la \
+                    ${libdir}/NetworkManager/*.a \
+                    ${libdir}/NetworkManager/*.la"
 
 FILES_${PN}-tests = "${bindir}/nm-tool \
                      ${bindir}/libnm_glib_test \
