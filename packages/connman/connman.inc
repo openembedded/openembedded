@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
 # we need to define the depends here, the dynamic stuff is too late
-DEPENDS  = "dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
+DEPENDS  = "wpa-supplicant dbus glib-2.0 ppp busybox dhclient resolvconf bluez4"
 
 EXTRA_OECONF += "\
     ac_cv_path_WPASUPPLICANT=/usr/sbin/wpa_supplicant \
@@ -33,7 +33,7 @@ do_stage() {
 }
 
 python populate_packages_prepend() {
-	depmap = dict( pppd="ppp", udhcp="busybox", dhclient="dhclient", wifi="wpa-supplicant", resolvconf="resolvconf", bluetooth="bluez4" )
+	depmap = dict( pppd="ppp", udhcp="busybox connman-scripts", dhclient="dhclient", wifi="wpa-supplicant", resolvconf="resolvconf", bluetooth="bluez4" )
 	packages = []
 	hook = lambda file,pkg,b,c,d:packages.append((file,pkg))
 	plugin_dir = bb.data.expand('${libdir}/connman/plugins/', d)
