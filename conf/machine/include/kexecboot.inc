@@ -4,6 +4,8 @@
 
 MACHINE_FEATURES_append = " kexecboot "
 
+IMAGE_FSTYPES += " tar.gz "
+
 # Include Kernel image in kexecboot enabled images
 RDEPENDS_kernel-base = "kernel-image" 
 
