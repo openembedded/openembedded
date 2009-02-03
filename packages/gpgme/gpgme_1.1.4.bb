@@ -1,3 +1,3 @@
 require gpgme.inc
 
-PR = "r4"
+PR = "r5"
