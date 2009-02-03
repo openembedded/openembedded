@@ -16,7 +16,7 @@ RDEPENDS = ""
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.17"
+PR := "${PR}.18"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -26,7 +26,6 @@ SRC_URI += "file://alignment.sh"
 SRC_URI += "file://domainname.sh"
 SRC_URI += "file://devices.patch;patch=1"
 SRC_URI += "file://bootclean.sh"
-SRC_URI += "file://checkroot"
 
 # Without this it is not possible to patch checkroot
 S = "${WORKDIR}"
@@ -34,14 +33,6 @@ S = "${WORKDIR}"
 do_install_append() {
 	# the image build command now installs this for slugos
 	rm	${D}${sysconfdir}/device_table
-
-	# Ugly - we need to get rid of the checkroot.sh
-	# that was installed by initscript-1.0.bb; the new
-	# rcS script will "source" files that end in .sh,
-	# and that messes up our checkroot.sh script (due
-	# to redirection issues.  We need to use only our
-	# checkroot, without the ".sh" suffix.
-	rm -f ${D}${sysconfdir}/init.d/checkroot.sh
 
 	# slugos specific scripts
 	install -m 0755 ${WORKDIR}/alignment.sh ${D}${sysconfdir}/init.d
