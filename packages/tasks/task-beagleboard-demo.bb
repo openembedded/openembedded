@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r5"
+PR = "r6"
 
 inherit task 
 
@@ -36,6 +36,7 @@ RDEPENDS_${PN} = "\
 	x11vnc angstrom-x11vnc-xinit \
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
+	picodlp-control \
 "
 
 # Install all kernel modules
