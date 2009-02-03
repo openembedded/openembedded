@@ -16,7 +16,7 @@ RDEPENDS = ""
 # All other standard definitions inherited from initscripts
 # Except the PR which is hacked here.  The format used is
 # a suffix
-PR := "${PR}.18"
+PR := "${PR}.19"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -60,7 +60,7 @@ do_install_append() {
 	rm	${D}${sysconfdir}/rc0.d/S40umountfs
 	rm	${D}${sysconfdir}/rc0.d/S90halt
 	rm	${D}${sysconfdir}/rcS.d/S02banner
-	rm	${D}${sysconfdir}/rcS.d/S10checkroot.sh
+	rm	${D}${sysconfdir}/rcS.d/S10checkroot
 #	rm	${D}${sysconfdir}/rcS.d/S30checkfs.sh
 	rm	${D}${sysconfdir}/rcS.d/S35mountall.sh
 	rm	${D}${sysconfdir}/rcS.d/S39hostname.sh
