@@ -2,7 +2,7 @@ SECTION = "console/network"
 DESCRIPTION = "Internet Software Consortium DHCP package"
 HOMEPAGE = "http://www.isc.org/"
 LICENSE = "BSD"
-PR = "r7"
+PR = "r8"
 SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://noattrmode.patch;patch=1 \
 	   file://fixincludes.patch;patch=1 \
@@ -11,6 +11,13 @@ SRC_URI = "ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/dhcp-${PV}.tar.gz \
 	   file://init-relay file://default-relay \
 	   file://init-server file://default-server \
 	   file://dhclient.conf file://dhcpd.conf"
+
+
+inherit update-rc.d
+
+INITSCRIPT_PACKAGES = "dhcp-server"
+INITSCRIPT_NAME_dhcp-server = dhcp-server
+INITSCRIPT_PARAMS_dhcp-server = "start 30 2 3 4 5 . stop 30 0 1 6 ."
 
 do_configure() {
 	./configure
