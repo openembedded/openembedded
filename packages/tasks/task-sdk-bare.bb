@@ -8,7 +8,7 @@ PACKAGES = "${PN}"
 GLIBC_PKGS = "\
     glibc \
     glibc-dbg \
-    glibc-dev \
+    virtual-libc-dev \
     glibc-utils \
     libsegfault \
     glibc-thread-db \
