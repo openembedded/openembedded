@@ -354,7 +354,7 @@ do
         do_build
 done
 
-for machine in collie, h2200 hx4700 spitz akita tosa poodle c7x0
+for machine in collie h2200 hx4700 spitz akita tosa poodle c7x0
 do
         BUILD_MACHINE=$machine
         BUILD_TARGETS="linux-kexecboot \
