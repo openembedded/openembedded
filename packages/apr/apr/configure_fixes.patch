@@ -1,7 +1,5 @@
-Index: apr-1.2.12/configure.in
-===================================================================
---- apr-1.2.12.orig/configure.in	2008-03-08 21:41:43.000000000 +0000
-+++ apr-1.2.12/configure.in	2008-03-08 21:43:08.000000000 +0000
+--- /tmp/configure.in	2009-02-02 17:50:51.000000000 +0100
++++ apr-1.2.12/configure.in	2009-02-02 17:54:55.000000000 +0100
 @@ -13,12 +13,11 @@
  dnl 
  dnl Include our own M4 macros along with those for libtool
@@ -20,3 +18,37 @@ Index: apr-1.2.12/configure.in
  
  dnl Hard-coded inclusion at the tail end of apr_private.h:
  AH_BOTTOM([
+@@ -197,8 +196,8 @@
+ 
+ if test "x$use_libtool" = "xyes"; then
+       lt_compile='$(LIBTOOL) $(LTFLAGS) --mode=compile $(COMPILE) -o $@ -c $< && touch $@'
+-      LT_VERSION="-version-info `$get_version libtool $version_hdr APR`"
+-      link="\$(LIBTOOL) \$(LTFLAGS) --mode=link \$(LT_LDFLAGS) \$(COMPILE) ${LT_VERSION} \$(ALL_LDFLAGS) -o \$@"
++      LV_VERSION="-version-info `$get_version libtool $version_hdr APR`"
++      link="\$(LIBTOOL) \$(LTFLAGS) --mode=link \$(LV_LDFLAGS) \$(COMPILE) ${LV_VERSION} \$(ALL_LDFLAGS) -o \$@"
+       so_ext='lo'
+       lib_target='-rpath $(libdir) $(OBJECTS)'
+       export_lib_target='-rpath \$(libdir) \$(OBJECTS)'
+@@ -225,7 +224,7 @@
+ AC_SUBST(export_lib_target)
+ AC_SUBST(shlibpath_var)
+ AC_SUBST(LTFLAGS)
+-AC_SUBST(LT_LDFLAGS)
++AC_SUBST(LV_LDFLAGS)
+ 
+ dnl ----------------------------- Checks for compiler flags
+ nl='
+@@ -2132,10 +2131,10 @@
+ # against installed versions of libapr instead of those just
+ # built.
+ case $host in
+-*-apple-darwin*) LT_NO_INSTALL="" ;;
+-*) LT_NO_INSTALL="-no-install" ;;
++*-apple-darwin*) LV_NO_INSTALL="" ;;
++*) LV_NO_INSTALL="-no-install" ;;
+ esac
+-AC_SUBST(LT_NO_INSTALL)
++AC_SUBST(LV_NO_INSTALL)
+ 
+ #
+ # BSD/OS (BSDi) needs to use a different include syntax in the Makefiles

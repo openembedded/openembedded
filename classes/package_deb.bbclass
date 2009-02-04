@@ -1,5 +1,5 @@
 #
-# Copyright 2006-2007 OpenedHand Ltd.
+# Copyright 2006-2008 OpenedHand Ltd.
 #
 
 inherit package
@@ -88,13 +88,20 @@ python do_package_deb () {
         return
     bb.mkdirhier(dvar)
 
+    packages = bb.data.getVar('PACKAGES', d, 1)
+    if not packages:
+        bb.debug(1, "PACKAGES not defined, nothing to package")
+        return
 
     tmpdir = bb.data.getVar('TMPDIR', d, 1)
 
     if os.access(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"),os.R_OK):
         os.unlink(os.path.join(tmpdir, "stamps", "DEB_PACKAGE_INDEX_CLEAN"))
 
-    packages = bb.data.getVar('PACKAGES', d, 1)
+    if packages == []:
+        bb.debug(1, "No packages; nothing to do")
+        return
+
     for pkg in packages.split():
         localdata = bb.data.createCopy(d)
         pkgdest = bb.data.getVar('PKGDEST', d, 1)
@@ -242,17 +249,7 @@ python do_package_deb () {
             bb.utils.unlockfile(lf)
             raise bb.build.FuncFailed("dpkg-deb execution failed")
 
-        for script in ["preinst", "postinst", "prerm", "postrm", "control" ]:
-            scriptfile = os.path.join(controldir, script)
-            try:
-                os.remove(scriptfile)
-            except OSError:
-                pass
-        try:
-            os.rmdir(controldir)
-        except OSError:
-            pass
-
+        bb.utils.prunedir(controldir)
         bb.utils.unlockfile(lf)
 }
 
@@ -266,13 +263,8 @@ python () {
 }
 
 python do_package_write_deb () {
-    packages = bb.data.getVar('PACKAGES', d, True)
-    if not packages:
-        bb.debug(1, "No PACKAGES defined, nothing to package")
-        return
-
-    bb.build.exec_func("read_subpackage_metadata", d)
-    bb.build.exec_func("do_package_deb", d)
+	bb.build.exec_func("read_subpackage_metadata", d)
+	bb.build.exec_func("do_package_deb", d)
 }
 do_package_write_deb[dirs] = "${D}"
 addtask package_write_deb before do_package_write after do_package

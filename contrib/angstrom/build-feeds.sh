@@ -80,6 +80,7 @@ do
                       bluez-gnome \
                       bluez-hcidump \
                       boa \
+                      bonjour \
                       camera-assistant \
                       cdparanoia \
                       checkers \
@@ -175,9 +176,11 @@ do
                       kismet \
                       konqueror-embedded \
                       labyrinth \
+                      lcd4linux \
                       leafpad \
                       lighttpd \
                       links-x11 \
+                      lirc \
                       m4 \
                       madplay \
                       mahjongg \

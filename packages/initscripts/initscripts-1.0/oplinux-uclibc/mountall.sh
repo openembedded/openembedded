@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # mountall.sh	Mount all filesystems.
 #

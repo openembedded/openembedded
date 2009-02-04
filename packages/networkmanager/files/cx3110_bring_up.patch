@@ -1,0 +1,19 @@
+Index: NetworkManager-0.6.6/src/nm-device-802-11-wireless.c
+===================================================================
+--- NetworkManager-0.6.6.orig/src/nm-device-802-11-wireless.c	2008-09-03 15:10:43.000000000 -0300
++++ NetworkManager-0.6.6/src/nm-device-802-11-wireless.c	2008-09-03 15:27:23.000000000 -0300
+@@ -295,6 +295,14 @@
+ 	guint32			caps = NM_DEVICE_CAP_NONE;
+ 	iwrange			range;
+ 	struct iwreq		wrq;
++    NMDevice80211Wireless *self = NM_DEVICE_802_11_WIRELESS (dev);
++
++    /* The cx3110 driver has to be UP in order to get its capabilities. */
++    if (!self->priv->is_initialized) {
++        const char *kernel_driver = nm_device_get_driver (dev);
++        if (nm_null_safe_strcmp("cx3110", kernel_driver))
++            nm_device_bring_up (dev);
++    }
+ 
+ 	/* Check for Wireless Extensions support >= 16 for wireless devices */
+ 

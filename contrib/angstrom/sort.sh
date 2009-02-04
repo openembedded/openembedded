@@ -162,4 +162,4 @@ if [ "$1" != "--skip-sorted-list" ]; then
     for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
 fi
 
-#(cd ~/website/repo ; php update.php)
+( cd ~/website/repo-updater ; php update.php ; rm ../repo/feeds.db* ; cp feeds.db* ../repo )

@@ -1,0 +1,74 @@
+Index: dietlibc-0.31/diet.c
+===================================================================
+--- dietlibc-0.31.orig/diet.c	2006-08-27 15:49:00.000000000 +0200
++++ dietlibc-0.31/diet.c	2009-01-31 22:56:06.828080683 +0100
+@@ -127,7 +127,12 @@
+     }
+   }
+   {
+-    char *cc=argv[1];
++    char *cc;
++    if (!strcmp(argv[1],"ccache")) {
++	cc=argv[2];
++    } else {
++   	cc=argv[1];
++    }
+     char *tmp=strchr(cc,0)-2;
+     char *tmp2,*tmp3;
+     if (tmp<cc) goto donttouch;
+@@ -139,7 +144,7 @@
+       if (tmp3<tmp2) tmp2=tmp3;
+       if (tmp2-cc>90) error("platform name too long!\n");
+       shortplatform=platform+len;
+-      memmove(shortplatform,argv[1],(size_t)(tmp2-cc));
++      memmove(shortplatform,cc,(size_t)(tmp2-cc));
+       platform[tmp2-cc+len]=0;
+       if (shortplatform[0]=='i' && shortplatform[2]=='8' && shortplatform[3]=='6') shortplatform[1]='3';
+     } else {
+@@ -285,6 +290,9 @@
+
+       dest=newargv;
+       *dest++=argv[1];
++      if (strcmp(argv[1],"ccache") == 0) {
++	 *dest++=argv[2];
++      }
+       if (argv[2]) {
+ 	if (!strcmp(argv[2],"-V")) {
+ 	  *dest++=argv[2];
+@@ -294,9 +302,9 @@
+ 	} else if (!memcmp(argv[2],"-V",2)) {
+ 	  *dest++=argv[2];
+ 	  ++argv;
+-	  --argc;
+ 	}
+       }
++
+ #ifndef __DYN_LIB
+       if (_link) { *dest++=(char*)nostdlib; *dest++=dashstatic; *dest++=dashL; }
+ #else
+@@ -314,7 +322,15 @@
+ #ifdef WANT_DYNAMIC
+       if (_link) { *dest++=d; }
+ #endif
+-      for (i=2; i<argc; ++i) {
++      if (strcmp(argv[1],"ccache") == 0) {
++         i=3;
++      } else {
++         i=2;
++      }
++      for (i; i<argc; ++i) {
++        if (strstr(argv[i],"isystem") != NULL) {
++		continue;
++	}
+ 	if (mangleopts)
+ 	  if (argv[i][0]=='-' && (argv[i][1]=='O' || argv[i][1]=='f' ||
+ 				  (argv[i][1]=='m' && argv[i][2]!='3' && argv[i][2]!='6'))) {
+@@ -322,6 +338,8 @@
+ 	      continue;
+ 	  }
+ 	*dest++=argv[i];
++	*dest--;
++	*dest++;
+       }
+ #ifndef __DYN_LIB
+       if (compile || _link) {

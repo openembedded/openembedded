@@ -1,0 +1,13 @@
+Index: dietlibc-0.31/include/sys/socket.h
+===================================================================
+--- dietlibc-0.31.orig/include/sys/socket.h	2009-02-03 13:39:38.475445568 +0100
++++ dietlibc-0.31/include/sys/socket.h	2009-02-03 13:39:55.742105983 +0100
+@@ -439,6 +439,8 @@
+ #define EAI_AGAIN -10
+ #define EAI_SYSTEM -11
+ 
++#define AI_ADDRCONFIG 0
++
+ #define AI_NUMERICHOST 1
+ #define AI_CANONNAME 2
+ #define AI_PASSIVE 4

@@ -1,0 +1,15 @@
+Index: trunk/src/nm-device-802-3-ethernet.c
+===================================================================
+--- trunk.orig/src/nm-device-802-3-ethernet.c	2008-05-07 11:06:53.000000000 -0300
++++ trunk/src/nm-device-802-3-ethernet.c	2008-09-04 15:03:11.000000000 -0300
+@@ -28,6 +28,10 @@
+ #include <net/ethernet.h>
+ #include <stdlib.h>
+ #include <linux/sockios.h>
++typedef unsigned long long u64;
++typedef unsigned int u32;
++typedef unsigned short u16;
++typedef unsigned char u8;
+ #include <linux/ethtool.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>

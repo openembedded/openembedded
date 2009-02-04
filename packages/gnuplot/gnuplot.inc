@@ -4,7 +4,7 @@ HOMEPAGE = "http://www.gnuplot.info/"
 SECTION = "console/scientific"
 LICENSE = "BSD-4"
 PRIORITY = "optional"
-DEPENDS = "virtual/libx11 readline"
+DEPENDS = "virtual/libx11 gd cairo readline"
 
 inherit autotools
 

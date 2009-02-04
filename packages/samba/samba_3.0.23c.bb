@@ -1,13 +1,16 @@
 require samba.inc
+require samba-basic.inc
 
-PR = "r4"
+SRC_URI += "file://configure.patch;patch=1 \
+            file://cifs.patch;patch=1"
 
-SRC_URI += "file://cifs.patch;patch=1 \
-                "
+PR = "r7"
 
-EXTRA_OECONF += "\
-                 --without-ads \
-	         "
+PACKAGES =+ " smbfs-doc"
+
+RCONFLICTS_smbfs-doc = "smbfs-ads-doc"
+
+FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
 
 do_compile () {
         oe_runmake proto_exists

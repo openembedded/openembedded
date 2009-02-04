@@ -14,8 +14,8 @@ case $1 in
 
   'stop')
     echo -n "Stopping NetworkManager daemon: NetworkManager"
-    kill `ps |grep  /usr/sbin/NetworkManagerDispatcher | grep -v grep | cut "-d " -f2`
-    kill `ps |grep  /usr/sbin/NetworkManager | grep -v grep | cut "-d " -f2`
+    kill `pidof NetworkManagerDispatcher`
+    kill `pidof NetworkManager`
     echo "."
   ;;
 

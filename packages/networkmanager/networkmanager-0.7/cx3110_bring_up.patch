@@ -1,0 +1,20 @@
+Index: NetworkManager-0.7.0/src/nm-device-wifi.c
+===================================================================
+--- NetworkManager-0.7.0.orig/src/nm-device-wifi.c
++++ NetworkManager-0.7.0/src/nm-device-wifi.c
+@@ -364,6 +364,15 @@ real_get_generic_capabilities (NMDevice 
+ 	const char *iface = nm_device_get_iface (dev);
+ 	gboolean success;
+ 
++	/* The cx3110 driver has to be UP in order to get its capabilities. */
++	gboolean no_firmware = FALSE;
++	const char *driver = nm_device_get_driver (dev);
++	if (driver && !strcmp ("wlan-omap", driver) && !nm_system_device_is_up (dev)) {
++		if (!nm_device_hw_bring_up (dev, TRUE, &no_firmware))
++			nm_warning ("(%s): couldn't bring up interface to get capabilities.",
++					iface);
++	}
++
+ 	memset (&range, 0, sizeof (struct iw_range));
+ 	success = wireless_get_range (NM_DEVICE_WIFI (dev), &range, &response_len);
+ 	if (!success)

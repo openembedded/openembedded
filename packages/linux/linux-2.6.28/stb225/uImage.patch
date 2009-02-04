@@ -1,0 +1,23 @@
+diff -urN linux-2.6.28.orig/arch/mips/Makefile linux-2.6.28/arch/mips/Makefile
+--- linux-2.6.28.orig/arch/mips/Makefile	2009-01-28 16:12:23.000000000 +0200
++++ linux-2.6.28/arch/mips/Makefile	2009-01-28 16:13:54.000000000 +0200
+@@ -682,6 +682,19 @@
+ 
+ all:	$(all-y)
+ 
++# Support for U-Boot image creation (from U-Boot README)
++uImage: vmlinux
++	$(OBJCOPY) -O binary -R .note -R .comment -S vmlinux vmlinux.bin
++	rm -f vmlinux.bin.gz
++	gzip -9 vmlinux.bin
++	LA=`$(OBJDUMP) -p vmlinux | sed -n 's/LOAD.*vaddr \([^ ]*\).*/\1/p'`; \
++	EN=`$(OBJDUMP) -f vmlinux | sed -n 's/.*start address \([^ ]*\).*/\1/p'`; \
++	echo $$LA; \
++	echo $$EN; \
++	mkimage -A mips -O linux -T kernel -C gzip \
++		-a $$LA -e $$EN -n "Linux Kernel Image" \
++		-d vmlinux.bin.gz uImage
++
+ vmlinux.bin: $(vmlinux-32)
+ 	+@$(call makeboot,$@)
+ 

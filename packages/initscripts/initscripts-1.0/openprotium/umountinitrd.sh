@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 # umount the static dev - we'd probably never use it.
 #
 [ -d /dev/.static/dev ] && umount /dev/.static/dev                              

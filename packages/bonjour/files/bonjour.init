@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# A startup script for the Rendezvous mDNS Responder
+#
+
+set -e
+
+RDV_CONF=/etc/bonjour.conf
+prog=bonjour
+exe=/usr/sbin/mdnsd
+
+start() {
+        echo -n "Starting $prog: "
+        start-stop-daemon --start -x $exe -- -f $RDV_CONF -b
+	echo
+}
+
+stop() {
+        echo -n "Stopping $prog: "
+	start-stop-daemon --stop -x $exe
+        echo
+}
+
+reload()
+{
+        echo -n "Reloading $prog:"
+	killall -HUP `basename $exe`
+        echo
+}
+
+case "$1" in
+start)
+        start
+        ;;
+stop)
+        stop
+        ;;
+reload)
+        reload
+        ;;
+restart)
+        stop
+        start
+        ;;
+*)
+        echo "Usage: bonjour {start|stop|reload|restart}"
+        exit 1
+esac

@@ -3,6 +3,8 @@ LICENSE = "GPLv2"
 
 PR = "r1"
 
+ARM_INSTRUCTION_SET = "arm"
+
 inherit gnome
 DEPENDS += " avahi libnotify eds-dbus libgnome gtkmm libsigc++-2.0 gstreamer opal ptlib"
 RDEPENDS += "opal ptlib"

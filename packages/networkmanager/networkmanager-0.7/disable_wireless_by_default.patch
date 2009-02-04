@@ -1,0 +1,22 @@
+Index: NetworkManager-0.7.0/src/nm-manager.c
+===================================================================
+--- NetworkManager-0.7.0.orig/src/nm-manager.c	2009-01-15 17:23:09.000000000 -0300
++++ NetworkManager-0.7.0/src/nm-manager.c	2009-01-15 17:32:36.000000000 -0300
+@@ -286,7 +286,7 @@
+ 	DBusGConnection *g_connection;
+ 	guint id;
+ 
+-	priv->wireless_enabled = TRUE;
++	priv->wireless_enabled = FALSE;
+ 	priv->wireless_hw_enabled = TRUE;
+ 	priv->sleeping = FALSE;
+ 	priv->state = NM_STATE_DISCONNECTED;
+@@ -613,7 +613,7 @@
+ 		 g_param_spec_boolean (NM_MANAGER_WIRELESS_ENABLED,
+ 							   "WirelessEnabled",
+ 							   "Is wireless enabled",
+-							   TRUE,
++							   FALSE,
+ 							   G_PARAM_READWRITE));
+ 
+ 	g_object_class_install_property

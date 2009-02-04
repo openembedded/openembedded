@@ -1,7 +1,9 @@
 DESCRIPTION = "Gnome videoconferencing application"
 LICENSE = "GPLv2"
 
-PR = "r2"
+PR = "r3"
+
+ARM_INSTRUCTION_SET = "arm"
 
 inherit gnome
 DEPENDS += " avahi libnotify eds-dbus libgnome gtkmm libsigc++-2.0 gstreamer gst-plugins-good gst-plugins-base gst-plugins-bad opal ptlib gnome-doc-utils"

@@ -1,0 +1,30 @@
+From 8364891aa9a99eac26e6069840c00489764d963f Mon Sep 17 00:00:00 2001
+From: Koen Kooi <koen@beagleboard.org>
+Date: Thu, 15 Jan 2009 20:11:07 +0100
+Subject: [PATCH] board-omap3beagle: set i2c-3 to 100kHz
+
+Changing it do 100kHz is needed to make more devices works properly. Controlling the TI DLP Pico projector[1] doesn't work properly at 400kHz, 100kHz and lower work fine. EDID readout is unaffected by this change.
+
+[1] http://focus.ti.com/dlpdmd/docs/dlpdiscovery.tsp?sectionId=60&tabId=2234
+
+Signed-off-by: Koen Kooi <koen@beagleboard.org>
+---
+ arch/arm/mach-omap2/board-omap3beagle.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index fe97bab..f279404 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -227,7 +227,7 @@ static int __init omap3_beagle_i2c_init(void)
+ #ifdef CONFIG_I2C2_OMAP_BEAGLE
+ 	omap_register_i2c_bus(2, 400, NULL, 0);
+ #endif
+-	omap_register_i2c_bus(3, 400, NULL, 0);
++	omap_register_i2c_bus(3, 100, NULL, 0);
+ 	return 0;
+ }
+ 
+-- 
+1.5.6.5
+

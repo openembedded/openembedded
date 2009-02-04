@@ -74,9 +74,6 @@ UBOOT_ENTRYPOINT ?= "20008000"
 UBOOT_LOADADDRESS ?= "${UBOOT_ENTRYPOINT}"
 
 kernel_do_compile() {
-	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
-		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
-	fi
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
 	oe_runmake include/linux/version.h CC="${KERNEL_CC}" LD="${KERNEL_LD}"
 	if [ "${KERNEL_MAJOR_VERSION}" != "2.6" ]; then
@@ -188,7 +185,10 @@ kernel_do_install() {
 }
 
 kernel_do_configure() {
-        yes '' | oe_runmake oldconfig
+	yes '' | oe_runmake oldconfig
+	if [ ! -z "${INITRAMFS_IMAGE}" ]; then
+		cp "${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE}-${MACHINE}.cpio.gz" initramfs.cpio.gz
+	fi 
 }
 
 do_menuconfig() {

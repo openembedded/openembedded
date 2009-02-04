@@ -1,6 +1,6 @@
 require gnuplot.inc
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gnuplot/${PN}-${PV}.tar.gz \
            http://www.mneuroth.de/privat/zaurus/qtplot-0.2.tar.gz \

@@ -1,7 +1,7 @@
 TARGET_ARCH = "arm"
 
 PREFERRED_PROVIDER_xserver = "xserver-kdrive"
-PREFERRED_PROVIDER_virtual/kernel ?= "linux-ezx"
+PREFERRED_PROVIDER_virtual/kernel ?= "openezx-kernel"
 
 #cat /proc/mtd
 #dev:    size   erasesize  name
