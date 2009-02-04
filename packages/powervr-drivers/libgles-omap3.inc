@@ -52,7 +52,8 @@ do_install () {
 	cp -pP ${BINLOCATION}/pvrsrvinit ${D}${bindir}/
 	cp -pP ${BINLOCATION}/xgles1test1 ${D}${bindir}/
 
-	cp -pP ${BINLOCATION}/freedesktop/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/
+	cp -pP ${BINLOCATION}/freedesktop/kdrive/usr/X11R6_SGX/bin/Xsgx || true
+	cp -pP ${BINLOCATION}/freedesktop/usr/X11R6_SGX/bin/Xsgx ${D}${bindir}/ || true
 
 	install -d ${D}${includedir}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
