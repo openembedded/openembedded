@@ -5,12 +5,12 @@ HOMEPAGE = "http://www.twistedmatrix.com"
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Twisted/8.2/Twisted-${PV}.tar.bz2 "
 S = "${WORKDIR}/Twisted-${PV}"
 
-inherit distutils
+inherit setuptools
 
 PACKAGES += "\
   ${PN}-zsh \
@@ -25,6 +25,8 @@ PACKAGES += "\
   ${PN}-runner \
   ${PN}-web \
   ${PN}-words \
+  ${PN}-flow \
+  ${PN}-pair \
   ${PN}-core \
 "
 
@@ -67,6 +69,7 @@ FILES_${PN}-conch = " \
   ${bindir}/tkconch \
   ${bindir}/conch \
   ${bindir}/conchftp \
+  ${bindir}/cftp \
   ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_conch.py* \
   ${libdir}/${PYTHON_DIR}/site-packages/twisted/conch  \
 "
@@ -80,6 +83,8 @@ ${bindir}/tap2rpm \
 ${bindir}/tapconvert \
 ${bindir}/tkmktap \
 ${bindir}/trial \
+${bindir}/easy_install* \
+${bindir}/pyhtmlizer \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/*.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/__init__.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/notestplugin.py* \
@@ -147,7 +152,9 @@ ${libdir}/${PYTHON_DIR}/site-packages/twisted/__init__.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/_version.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/copyright.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/im.py* \
-${libdir}/${PYTHON_DIR}/site-packages/twisted/plugin.py* \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/*.py* \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/python/*.py* \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/*.py* \
 "
 
 FILES_${PN}-lore = " \
@@ -188,6 +195,15 @@ FILES_${PN}-words = " \
 ${bindir}/im \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_words.py* \
 ${libdir}/${PYTHON_DIR}/site-packages/twisted/words\
+"
+
+FILES_${PN}-flow = " \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_flow.py* \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/flow \"
+
+FILES_${PN}-pair = " \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/plugins/twisted_pair.py* \
+${libdir}/${PYTHON_DIR}/site-packages/twisted/pair \
 "
 
 FILES_${PN}-dbg += " \
