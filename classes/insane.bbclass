@@ -359,6 +359,8 @@ def package_qa_hash_style(path, name, d, elf):
             elf = True
         if "GNU_HASH" in line:
             sane = True
+        if "[mips32]" in line or "[mips64]" in line:
+	    sane = True
 
     if elf and not sane:
         error_msg = "No GNU_HASH in the elf binary: '%s'" % path
