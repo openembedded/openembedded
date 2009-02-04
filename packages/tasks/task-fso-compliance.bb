@@ -2,7 +2,7 @@ DESCRIPTION = "The freesmartphone.org framework -- install this task to make you
 SECTION = "fso/base"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r6"
+PR = "r7"
 
 inherit task
 
@@ -11,13 +11,13 @@ RDEPENDS_${PN} = "\
   frameworkd \
 #  fso-apmd \
   fso-gpsd \
-#  fso-monitord \
+  fso-monitord \
   connman \
   connman-scripts \
   connman-plugin-bluetooth \
 #  connman-plugin-dhclient \
 #  connman-plugin-dnsproxy \
-  connman-plugin-ethernet \
+#  connman-plugin-ethernet \
 #  connman-plugin-fake \
   connman-plugin-loopback \
   connman-plugin-pppd \

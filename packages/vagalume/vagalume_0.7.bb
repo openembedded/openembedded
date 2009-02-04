@@ -3,6 +3,7 @@ AUTHOR = "agarcia@igalia.com"
 HOMEPAGE = "http://people.igalia.com/berto/"
 SECTION = "x11"
 DEPENDS = "gtk+ gstreamer"
+RRECOMMENDS = "dbus-x11"
 PR = "r0"
 
 SRC_URI = "\
