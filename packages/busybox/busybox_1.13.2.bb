@@ -1,11 +1,12 @@
 require busybox.inc
 
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   \
   file://udhcpscript.patch;patch=1 \
+  file://udhcpc-fix-nfsroot.patch;patch=1 \
   file://B921600.patch;patch=1 \
   file://r24785.patch;patch=1;status=merged \
   file://find-touchscreen.sh \
@@ -37,4 +38,3 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/find-touchscreen.sh ${D}${sysconfdir}/mdev/
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
 }
-
