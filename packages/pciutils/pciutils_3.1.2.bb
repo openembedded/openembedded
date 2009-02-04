@@ -11,10 +11,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.b
 
 PARALLEL_MAKE = ""
 
-PR ="r1"
+PR ="r2"
 
-EXTRA_OEMAKE += "'STRIP='"
-EXTRA_OEMAKE += "'SHARED=yes'"
+EXTRA_OEMAKE += "'STRIP = '"
+export SHARED=yes
 
 do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
