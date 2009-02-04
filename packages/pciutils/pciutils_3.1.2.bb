@@ -11,9 +11,10 @@ SRC_URI = "ftp://ftp.kernel.org/pub/software/utils/pciutils/pciutils-${PV}.tar.b
 
 PARALLEL_MAKE = ""
 
-PR ="r0"
+PR ="r1"
 
 EXTRA_OEMAKE += "'STRIP='"
+EXTRA_OEMAKE += "'SHARED=yes'"
 
 do_configure () {
 	(cd lib && ./configure ${datadir} ${PV} ${TARGET_OS} 2.4.21 ${TARGET_ARCH})
@@ -23,8 +24,6 @@ export PREFIX = "${D}${prefix}"
 export SBINDIR = "${D}${sbindir}"
 export SHAREDIR = "${D}${datadir}"
 export MANDIR = "${D}${mandir}"
-
-LDFLAGS += "-lz"
 
 do_install () {
 	oe_runmake install

@@ -1,6 +1,6 @@
 diff -urN pciutils-3.1.2.orig/lib/configure pciutils-3.1.2.new/lib/configure
 --- pciutils-3.1.2.orig/lib/configure	2009-01-30 14:06:25.000000000 +0100
-+++ pciutils-3.1.2.new/lib/configure	2009-02-04 13:30:55.000000000 +0100
++++ pciutils-3.1.2.new/lib/configure	2009-02-04 18:45:31.000000000 +0100
 @@ -14,11 +14,6 @@
  	fi
  }
@@ -13,15 +13,6 @@ diff -urN pciutils-3.1.2.orig/lib/configure pciutils-3.1.2.new/lib/configure
  echo_n "Configuring libpci for your system..."
  if [ -z "$HOST" ] ; then
  	sys=`uname -s`
-@@ -29,7 +24,7 @@
- 		proc=`/usr/sbin/lsdev -C -c processor -S available -F name | head -1`
- 		cpu=`/usr/sbin/lsattr -F value -l $proc -a type | sed 's/_.*//'`
- 	else
--		cpu=`uname -m | sed 's/^i.86$/i386/;s/^sun4u$/sparc64/;s/^i86pc$/i386/'`
-+		cpu=${5:-`uname -m | sed 's/^i.86$/i386/;s/^sun4u$/sparc64/;s/^i86pc$/i386/'`}
- 	fi
- 	if [ "$sys" = "GNU/kFreeBSD" -o "$sys" = "DragonFly" ]
- 	then
 @@ -44,8 +39,8 @@
  [ -n "$RELEASE" ] && rel="${RELEASE}"
  # CAVEAT: tr on Solaris is a bit weird and the extra [] is otherwise harmless.
@@ -33,15 +24,6 @@ diff -urN pciutils-3.1.2.orig/lib/configure pciutils-3.1.2.new/lib/configure
  echo " $host $rel $cpu $sys"
  
  c=config.h
-@@ -176,7 +171,7 @@
- else
- 	echo >>$m 'PCILIB=$(LIBNAME).so.$(VERSION)'
- 	# We link the dependencies _to_ the library, so we do not need explicit deps in .pc
--	echo >>$m 'LDLIBS='
-+	echo >>$m "LDLIBS+=$LIBRESOLV"
- 	echo >>$m 'LIB_LDLIBS=$(WITH_LIBS)'
- 	echo >>$c '#define PCI_SHARED_LIB'
- 	if [ "$SHARED" = yes ] ; then
 diff -urN pciutils-3.1.2.orig/Makefile pciutils-3.1.2.new/Makefile
 --- pciutils-3.1.2.orig/Makefile	2009-02-01 17:49:22.000000000 +0100
 +++ pciutils-3.1.2.new/Makefile	2009-02-04 13:32:50.000000000 +0100
