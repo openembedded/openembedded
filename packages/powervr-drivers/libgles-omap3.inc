@@ -15,8 +15,6 @@ FILES_${PN} = "${sysconfdir} ${libdir}/lib*.so.* ${bindir}/pvrsrvinit"
 FILES_xserver-kdrive-powervrsgx = "${bindir}/Xsgx"
 FILES_${PN}-tests = "${bindir}/*"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}"
-
 RRECOMMENDS_${PN} = "${PN}-tests \
                      omap3-sgx-modules"
 
