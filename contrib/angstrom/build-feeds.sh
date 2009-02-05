@@ -238,6 +238,7 @@ do
                       pushover \
                       python \
                       python-pybluez \
+                      python-coherence \
                       qfish2 \
                       qmatrix \
                       qpe-nmap \
