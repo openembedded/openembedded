@@ -3,9 +3,8 @@ SECTION = "python/devel"
 LICENSE = "MIT"
 HOMEPAGE = "http://coherence.beebits.net/wiki"
 
-PR = "r1"
+PR = "r2"
 PV = "0.6.0+svnr${SRCREV}"
-DEFAULT_PREFERENCE = "-1"
 
 inherit setuptools
 
