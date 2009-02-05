@@ -3,7 +3,9 @@ HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
 DEPENDS = "gtk+ dbus"
-PR = "r2"
+PR = "r3"
+
+RDEPENDS = "connman"
 
 SRC_URI = "ftp://ftp.moblin.org/connman/releases/connman-gnome-${PV}.tar.gz \
            file://connman-applet.desktop"
