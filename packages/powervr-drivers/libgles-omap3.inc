@@ -32,16 +32,21 @@ Y
 ${S}" | ${WORKDIR}/OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin
 }
 
-addtask accept_license after do_unpack before do_compile
+addtask accept_license after do_unpack before do_configure
 
-do_compile () {
-	:
+do_compile() {
+    for sofile in $(find ${S} -name "lib*Open*.so") $(find ${S} -name "lib*srv*.so")   $(find ${S} -name "lib*gl*.so") $(find ${S} -name "libpvr*.so") $(find ${S} -name "lib*GL*.so"); do
+        if [ "$(readlink -n ${sofile})" = "" ] ; then
+            mv $sofile ${sofile}.${IMGPV}
+            ln -sf $(basename ${sofile}.${IMGPV}) ${sofile}
+        fi
+    done
 }
 
 do_install () {
 
 	install -d ${D}${libdir}
-	cp -pR ${BINLOCATION}/*.so* ${D}${libdir}
+	cp -pP ${BINLOCATION}/*.so* ${D}${libdir}
 
 	install -d ${D}${bindir}/
 	cp -pP ${BINLOCATION}/*_test ${D}${bindir}/
