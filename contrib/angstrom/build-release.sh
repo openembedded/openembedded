@@ -86,7 +86,7 @@ do
 done 
 
 # build kexecboot kernels for supported machines
-for machine in poodle collie
+for machine in h2200 hx4700 c7x0 akita spitz poodle collie
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="linux-kexecboot"
@@ -94,17 +94,8 @@ do
 done 
 
 
-# Make uclibc initramfs-bootmenu-image for ipaqs, this should move to more generic klibc stuff, but till then:
-DO_UCLIBC=1
-for machine in h2200 h3900 h4000 h5000 hx4700
-do
-	BUILD_MACHINE=$machine
-	BUILD_TARGETS="initramfs-bootmenu-image"
-done
-DO_UCLIBC=0
-
 # graphics, flash storage
-for machine in beagleboard omap3evm om-gta01 om-gta02 a780 at91sam9263ek qemuarm qemux86 h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
+for machine in overo omap3-pandora beagleboard omap3evm om-gta01 om-gta02 a780 at91sam9263ek qemuarm qemux86 h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -113,7 +104,7 @@ do
 done
 
 # graphics, disk storage	
-for machine in spitz beagleboard omap3evm 
+for machine in spitz overo omap3-pandora beagleboard omap3evm 
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -130,7 +121,7 @@ do
 done	
 
 # omap3 boards
-for machine in beagleboard omap3evm
+for machine in overo omap3-pandora beagleboard omap3evm
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="beagleboard-demo-image"
