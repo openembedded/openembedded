@@ -3,9 +3,9 @@ HOMEPAGE = "http://www.moblin.org/projects/projects_connman.php"
 SECTION = "libs/network"
 LICENSE = "GPL"
 DEPENDS = "gtk+ dbus"
-PR = "r6"
+PR = "r7"
 
-RRECOMMENDS_${PN} = "connman connman-plugin-udhcp connman-plugin-wifi"
+RRECOMMENDS_${PN} = "connman connman-plugin-ethernet connman-plugin-loopback connman-plugin-udhcp connman-plugin-wifi"
 
 SRC_URI = "http://repo.moblin.org/connman/releases/connman-gnome-${PV}.tar.gz \
            file://phrase-lenght.diff;patch=1 \
