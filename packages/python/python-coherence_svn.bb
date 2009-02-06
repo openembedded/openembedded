@@ -1,5 +1,5 @@
 DESCRIPTION = "Coherence is a DLNA/UPnP mediaserver + backends"
-SECTION = "python/devel"
+SECTION = "devel/python"
 LICENSE = "MIT"
 HOMEPAGE = "http://coherence.beebits.net/wiki"
 

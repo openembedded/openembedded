@@ -1,5 +1,5 @@
 DESCRIPTION = "Google Data APIs Python Client Library"
-SECTION = "python/devel"
+SECTION = "devel/python"
 LICENSE = "Apache"
 HOMEPAGE = "http://code.google.com/p/gdata-python-client/"
 PR = "r0"

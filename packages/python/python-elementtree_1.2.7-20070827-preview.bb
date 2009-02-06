@@ -1,5 +1,5 @@
 DESCRIPTION = "Lightweight Python components for handling XML"
-SECTION = "python/devel"
+SECTION = "devel/python"
 LICENSE = "Python"
 HOMEPAGE = "http://effbot.org/zone/element-index.htm"
 PR = "r0"

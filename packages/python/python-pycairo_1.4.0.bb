@@ -1,5 +1,5 @@
 DESCRIPTION = "Python Bindings for the Cairo canvas library"
-SECTION = "python-devel"
+SECTION = "devel/python"
 HOMEPAGE = "http://cairographics.org/pycairo"
 LICENSE = "LGPL MPL"
 DEPENDS = "cairo"
