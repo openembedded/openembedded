@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r60"
+PR = "r60.1"
 
 inherit task
 
@@ -29,7 +29,8 @@ RDEPENDS_task-openmoko-feed = "\
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
   python python-pygtk python-pyserial python-gst python-pygame \
-  python-lightblue python-pybluez \
+#  python-lightblue \
+  python-pybluez \
   obexpush \
   ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
