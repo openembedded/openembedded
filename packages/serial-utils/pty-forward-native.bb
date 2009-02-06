@@ -1,7 +1,11 @@
-LICENSE="GPL"
-SUMMARY="Receive a forwarded serial from serial-forward and provide a PTY"
+DESCRIPTION = "Receive a forwarded serial from serial-forward and provide a PTY"
+AUTHOR = "Holger 'Zecke' Freyther"
+LICENSE = "GPL"
+SECTION = "console/network"
+PV = "1.0.0+svnr${SRCREV}""
+PR = "r0"
 
-SRC_URI="svn://svn.openmoko.org/developers/zecke/;module=serial_forward;proto=http"
+SRC_URI = "svn://svn.openmoko.org/developers/zecke/;module=serial_forward;proto=http"
 S = "${WORKDIR}/serial_forward"
 
 inherit native
@@ -21,4 +25,3 @@ do_deploy() {
 }
 
 addtask deploy before do_package after do_install
-
