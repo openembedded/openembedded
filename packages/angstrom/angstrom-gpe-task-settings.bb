@@ -1,12 +1,13 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r33"
+PR = "r34"
 
 inherit task
 
 RDEPENDS_${PN} = "\
     matchbox-panel-manager \
     mboxkbd-layouts-gui \
-    gpe-su \
+    connman-gnome \
+	gpe-su \
     gpe-conf \
     gpe-package \
     gpe-shield \
