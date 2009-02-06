@@ -24,6 +24,10 @@ do_configure_append() {
 	ln -sf . include/connman
 }
 
+do_compile_append() {
+	sed -i -e s:deny:allow:g src/connman-dbus.conf
+}
+
 do_install_append() {
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
 }
