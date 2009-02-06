@@ -30,7 +30,7 @@ EXTRA_OECONF += "\
 "
 
 SRC_URI  = "\
-  http://ftp.moblin.org/connman/releases/connman-${PV}.tar.gz \
+  http://repo.moblin.org/connman/releases/connman-${PV}.tar.gz \
   file://connman \
 "
 
