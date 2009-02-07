@@ -4,5 +4,5 @@ Comment=Mumpot Mapnuk
 Exec=mumpot-mapnik
 Terminal=0
 Type=Application
-Categories=Application;PIM;GTK
+Categories=X-PIM;GTK;Education;Science;Geography;
 StartupNotify=True
