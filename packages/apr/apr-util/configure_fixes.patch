@@ -1,7 +1,5 @@
-Index: apr-util-1.2.12/configure.in
-===================================================================
---- apr-util-1.2.12.orig/configure.in	2008-03-08 19:15:00.000000000 +0000
-+++ apr-util-1.2.12/configure.in	2008-03-08 19:15:13.000000000 +0000
+--- /tmp/configure.in	2009-02-06 16:34:14.000000000 +0100
++++ apr-util-1.2.12/configure.in	2009-02-06 16:34:38.000000000 +0100
 @@ -8,13 +8,13 @@
  AC_CONFIG_HEADER(include/private/apu_config.h)
  AC_CONFIG_AUX_DIR(build)
@@ -23,3 +21,17 @@ Index: apr-util-1.2.12/configure.in
  
  dnl Generate ./config.nice for reproducing runs of configure
  dnl 
+@@ -45,10 +45,10 @@
+ # against installed versions of libapr instead of those just
+ # built.
+ case $host in
+-*-apple-darwin*) LT_NO_INSTALL="" ;;
+-*) LT_NO_INSTALL="-no-install" ;;
++*-apple-darwin*) LV_NO_INSTALL="" ;;
++*) LV_NO_INSTALL="-no-install" ;;
+ esac
+-AC_SUBST(LT_NO_INSTALL)
++AC_SUBST(LV_NO_INSTALL)
+ 
+ dnl
+ dnl compute the top directory of the build

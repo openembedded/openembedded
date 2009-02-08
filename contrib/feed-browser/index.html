@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>Feed browser</title>
+	<meta http-equiv="Content-Style-Type" content="text/css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style type="text/css" media="all">@import "css/feed.css";</style>
+	<script language="javascript" type="text/javascript" src="scripts/js/repo.js"></script>
+    </head>
+    <body onLoad=" qs(); getLetter(); getSection();">
+		<div id="right">
+			<div id="searchletter"</div>
+			<form name="pkg_query" onsubmit="javascript:pkgQuery();return false"">
+				<fieldset>
+					<label for="name">Package name</label>
+					<input id="pkgsearch" type="text" name="pkgsearch" value="" />
+					<select name="arch">
+					   <option value="" selected="selected">all architectures</option>
+					   <option value="all">no arch</option>
+<?php
+
+foreach($archs_list as $architecture)
+{
+    echo "<option value='{$architecture['p_arch']}'";
+
+    if($architecture['p_arch'] == $arch)
+    {
+	echo ' selected="selected"';
+    }
+    echo ">{$architecture['p_arch']}</option>";
+}
+
+?>
+
+
+					</select>
+					<input type="submit" value="Search" />
+				</fieldset>
+			</form>
+			<div id="opkgoutput"><?php echo $ipkgoutput; ?></div>
+		</div>
+		<div id="left">
+			<h1>Sections list</h1>
+			<div id="sectionslist"></div>
+		</div>
+    </body>
+</html>

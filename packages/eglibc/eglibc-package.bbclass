@@ -193,9 +193,41 @@ python package_do_split_gconvs () {
 	locales_dir = base_path_join(datadir, "i18n", "locales")
 	binary_locales_dir = base_path_join(libdir, "locale")
 
-	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='eglibc-gconv-%s', description='gconv module for character set %s', extra_depends='eglibc-gconv')
+	def calc_gconv_deps(fn, pkg, file_regex, output_pattern, group):
+		deps = []
+		f = open(fn, "r")
+		c_re = re.compile('^copy "(.*)"')
+		i_re = re.compile('^include "(\w+)".*')
+		for l in f.readlines():
+			m = c_re.match(l) or i_re.match(l)
+			if m:
+				dp = legitimize_package_name('eglibc-gconv-%s' % m.group(1))
+				if not dp in deps:
+					deps.append(dp)
+		f.close()
+		if deps != []:
+			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-gconv-%s' % group.lower(), d)
 
-	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='eglibc-charmap-%s', description='character map for %s encoding', extra_depends='')
+	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='eglibc-gconv-%s', description='gconv module for character set %s', hook=calc_gconv_deps, extra_depends='eglibc-gconv')
+
+	def calc_charmap_deps(fn, pkg, file_regex, output_pattern, group):
+		deps = []
+		f = open(fn, "r")
+		c_re = re.compile('^copy "(.*)"')
+		i_re = re.compile('^include "(\w+)".*')
+		for l in f.readlines():
+			m = c_re.match(l) or i_re.match(l)
+			if m:
+				dp = legitimize_package_name('eglibc-charmap-%s' % m.group(1))
+				if not dp in deps:
+					deps.append(dp)
+		f.close()
+		if deps != []:
+			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-charmap-%s' % group.lower(), d)
+
+	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='eglibc-charmap-%s', description='character map for %s encoding', hook=calc_charmap_deps, extra_depends='')
 
 	def calc_locale_deps(fn, pkg, file_regex, output_pattern, group):
 		deps = []
@@ -211,7 +243,7 @@ python package_do_split_gconvs () {
 		f.close()
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
-		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-localedata-%s' % group, d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-localedata-%s' % group.lower(), d)
 
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='eglibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' eglibc-gconv', d)

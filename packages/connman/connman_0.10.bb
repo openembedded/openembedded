@@ -1,5 +1,5 @@
 require connman.inc
-PR = "r5"
+PR = "r6"
 
 EXTRA_OECONF += "\
   --disable-gtk-doc \
@@ -30,7 +30,7 @@ EXTRA_OECONF += "\
 "
 
 SRC_URI  = "\
-  http://ftp.moblin.org/connman/releases/connman-${PV}.tar.gz \
+  http://repo.moblin.org/connman/releases/connman-${PV}.tar.gz \
   file://connman \
 "
 

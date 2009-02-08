@@ -1,6 +1,6 @@
 require gtk+.inc
 
-PR = "r1"
+PR = "r3"
 
 DEPENDS += "cairo jasper"
 
@@ -41,3 +41,8 @@ python populate_packages_prepend () {
         if (bb.data.getVar('DEBIAN_NAMES', d, 1)):
                 bb.data.setVar('PKG_${PN}', 'libgtk-2.0', d)
 }
+
+RPROVIDES_${PN} = "libgailutil18"
+RCONFLICTS_${PN} = "libgailutil18"
+RREPLACES_${PN} = "libgailutil18"
+
