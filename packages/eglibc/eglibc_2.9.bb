@@ -4,7 +4,7 @@ DEPENDS += "gperf-native"
 DEFAULT_PREFERENCE = "1"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/eglibc-svn"
 PV = "2.9"
-PR = "r2"
+PR = "r3"
 SVN_REV="7430"
 EGLIBC_BRANCH="eglibc-2_9"
 SRC_URI = "svn://svn.eglibc.org/branches;module=eglibc-2_9;rev=${SVN_REV};proto=svn \
