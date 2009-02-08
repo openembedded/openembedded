@@ -17,10 +17,9 @@ CMDLINE_ROTATE_spitz = "fbcon=rotate:1"
 CMDLINE_ROTATE_akita = "fbcon=rotate:1"
 CMDLINE_ROTATE_collie = "fbcon=rotate:1"
 CMDLINE_ROTATE_poodle = "fbcon=rotate:1"
-
-
-FILES = "/boot/kernel-cmdline"
+FILES_${PN} += "/boot/*"
 
 do_install () {
-	echo "${CMDLINE_CON} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"> "${D}/boot/kernel-cmdline"
+	install -d ${D}/boot
+	echo "${CMDLINE_CON} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}"> ${D}/boot/kernel-cmdline
 }
