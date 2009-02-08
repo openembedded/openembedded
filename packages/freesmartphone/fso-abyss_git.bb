@@ -4,7 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgee"
 LICENSE = "GPL"
-PV = "0.1.0+gitr${SRCREV}"
+PV = "0.2.0+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master"
