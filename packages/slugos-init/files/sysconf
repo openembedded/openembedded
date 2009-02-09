@@ -381,7 +381,7 @@ sysconf_restore_conffiles(){
 			else
 				echo "sysconf_restore_conffiles: $file: timestamp copy failed (ignored)" >&2
 			fi
-		elif test -h "$saved/file" -o -h "$ffsdir/$file"
+		elif test -h "$saved/$file" -o -h "$ffsdir/$file"
 		then
 			# new or old symbolic link
 			if test -h "$saved/$file" -a -h "$ffsdir/$file" &&
@@ -396,7 +396,7 @@ sysconf_restore_conffiles(){
 					echo "$file"
 					echo "$file" >&3;;
 				diff)	# need user input
-					if sysconf_verify_link "$file" <>/dev/tty >&0 2>&0
+					if sysconf_verify_link "$file" </dev/tty >/dev/tty 2>&1
 					then
 						echo "$file"
 						echo "$file" >&3
@@ -420,7 +420,7 @@ sysconf_restore_conffiles(){
 					echo "$file"
 					echo "$file" >&3;;
 				diff)	# the files are different, get user input
-					if sysconf_verify "$file" <>/dev/tty >&0 2>&0
+					if sysconf_verify "$file" </dev/tty >/dev/tty 2>&1
 					then
 						echo "$file"
 						echo "$file" >&3
@@ -456,7 +456,7 @@ sysconf_test_restore(){
 		elif test "$file" = "etc/.configured"
 		then
 			: # special handling
-		elif test -h "$saved/file" -o -h "$ffsdir/$file"
+		elif test -h "$saved/$file" -o -h "$ffsdir/$file"
 		then
 			# new or old symbolic link
 			if test -h "$saved/$file" -a -h "$ffsdir/$file" &&

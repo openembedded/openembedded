@@ -1,6 +1,8 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
+PROVIDES += "virtual/egl"
+
 # Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_05.bin" in the same directory as this recipe
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
@@ -60,9 +62,16 @@ do_install () {
 
 	install -d ${D}${includedir}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/* ${D}${includedir}/
+	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${D}${includedir}/
+	cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES/
+	cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${D}${includedir}/GLES2/
 	
 	install -d ${D}${sysconfdir}/init.d/
 	cp -pP ${WORKDIR}/rc.pvr ${D}${sysconfdir}/init.d/pvr-init
+
+	install -d ${D}${sysconfdir}
+	echo "[default]" > ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
 }
 
 do_stage () {
@@ -72,6 +81,9 @@ do_stage () {
 
 	install -d ${STAGING_INCDIR}
 	cp -pPR ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/Include/*  ${STAGING_INCDIR}/
+    cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/Include/* ${STAGING_INCDIR}/
+    cp -pPR ${S}/GFX_Linux_SDK/OGLES/SDKPackage/Builds/OGLES/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES/
+    cp -pPr ${S}/GFX_Linux_SDK/OGLES2/SDKPackage/Builds/OGLES2/LinuxOMAP3/Include/GLES/* ${STAGING_INCDIR}/GLES2/
 }
 
 pkg_postinst() {
