@@ -10,7 +10,7 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
@@ -20,7 +20,7 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 
 do_configure_prepend() {
-	install -m 644 ./arch/arm/configs/gta02-packaging-defconfig ${WORKDIR}/defconfig-oe
+	install -m 644 ./arch/arm/configs/gta02_packaging_defconfig ${WORKDIR}/defconfig-oe
 	cat ${WORKDIR}/defconfig-oe.patch | patch -p0 -d ${WORKDIR}
 }
 
