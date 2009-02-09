@@ -144,11 +144,6 @@ for i in ../* ; do
 echo " DONE"
 cd ${BPWD}
 
-( cd ~/website/repo-updater ; php update.php ; rm ../repo/feeds.db* ; cp feeds.db* ../repo )
-
-echo -n "Stripping source lines from Package files"
-for i in `find . -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; touch $i.sig ; done
-echo " DONE"
 }
 
 echo "Processing 'all' feed"
@@ -163,4 +158,11 @@ if [ "$1" != "--skip-sorted-list" ]; then
     echo "Updating list of sorted packages (takes long)"
     for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
 fi
+
+( cd ~/website/repo-updater ; php update.php ; rm ../repo/feeds.db* ; cp feeds.db* ../repo )
+
+echo -n "Stripping source lines from Package files"
+for i in `find .. -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; touch $i.sig ; done
+echo " DONE"
+
 
