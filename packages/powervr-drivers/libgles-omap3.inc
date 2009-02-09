@@ -1,6 +1,8 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
+PROVIDES += "virtual/egl"
+
 # Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_05.bin" in the same directory as this recipe
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
@@ -66,6 +68,10 @@ do_install () {
 	
 	install -d ${D}${sysconfdir}/init.d/
 	cp -pP ${WORKDIR}/rc.pvr ${D}${sysconfdir}/init.d/pvr-init
+
+	install -d ${D}${sysconfdir}
+	echo "[default]" > ${D}${sysconfdir}/powervr.ini
+	echo "WindowSystem=libpvrPVR2D_FRONTWSEGL.so" >> ${D}${sysconfdir}/powervr.ini
 }
 
 do_stage () {

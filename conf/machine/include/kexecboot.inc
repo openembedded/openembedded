@@ -13,3 +13,4 @@ RDEPENDS_kernel-base = "kernel-image"
 # we store kernel images in rootfs and only a minimal initramfs kernel in mtd1 for booting other kernels
 DONT_CHECK_KERNELSIZE ?= "1"
 
+MACHINE_EXTRA_RRECOMMENDS_append = " kexecboot-cfg"
