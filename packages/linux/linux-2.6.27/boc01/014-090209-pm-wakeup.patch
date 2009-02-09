@@ -1,8 +1,8 @@
 Index: linux-2.6.27/arch/powerpc/platforms/83xx/Kconfig
 ===================================================================
---- linux-2.6.27.orig/arch/powerpc/platforms/83xx/Kconfig
-+++ linux-2.6.27/arch/powerpc/platforms/83xx/Kconfig
-@@ -104,6 +104,13 @@ config ASP834x
+--- linux-2.6.27.orig/arch/powerpc/platforms/83xx/Kconfig	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/arch/powerpc/platforms/83xx/Kconfig	2009-01-23 10:54:03.000000000 +0100
+@@ -104,6 +104,13 @@
  
  endif
  
@@ -18,17 +18,17 @@ Index: linux-2.6.27/arch/powerpc/platforms/83xx/Kconfig
  	bool
 Index: linux-2.6.27/arch/powerpc/platforms/83xx/Makefile
 ===================================================================
---- linux-2.6.27.orig/arch/powerpc/platforms/83xx/Makefile
-+++ linux-2.6.27/arch/powerpc/platforms/83xx/Makefile
-@@ -14,3 +14,4 @@ obj-$(CONFIG_MPC837x_MDS)	+= mpc837x_mds
+--- linux-2.6.27.orig/arch/powerpc/platforms/83xx/Makefile	2008-10-10 00:13:53.000000000 +0200
++++ linux-2.6.27/arch/powerpc/platforms/83xx/Makefile	2009-01-23 10:54:03.000000000 +0100
+@@ -14,3 +14,4 @@
  obj-$(CONFIG_SBC834x)		+= sbc834x.o
  obj-$(CONFIG_MPC837x_RDB)	+= mpc837x_rdb.o
  obj-$(CONFIG_ASP834x)		+= asp834x.o
 +obj-$(CONFIG_WAKEUP_IT)		+= wakeup-it.o
 Index: linux-2.6.27/arch/powerpc/platforms/83xx/wakeup-it.c
 ===================================================================
---- /dev/null
-+++ linux-2.6.27/arch/powerpc/platforms/83xx/wakeup-it.c
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.27/arch/powerpc/platforms/83xx/wakeup-it.c	2009-01-23 10:49:09.000000000 +0100
 @@ -0,0 +1,163 @@
 +/*
 + * This support a driver to be used as a wakeup source on the MPC8313.
@@ -77,8 +77,8 @@ Index: linux-2.6.27/arch/powerpc/platforms/83xx/wakeup-it.c
 +{
 +	//printk(KERN_INFO "===== WAKEUP INTERRUPT %d !!\n", irq);
 +
-+	if ( suspend )
-+		kernel_restart(NULL);
++//	if ( suspend )
++//		kernel_restart(NULL);
 +	return IRQ_HANDLED ;
 +}
 +
