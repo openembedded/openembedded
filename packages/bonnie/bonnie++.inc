@@ -6,7 +6,8 @@ DESCRIPTION="Tests large file IO and creation/deletion of small files."
 LICENSE="GPL"
 
 
-SRC_URI="http://www.coker.com.au/bonnie++/${PN}-${PV}.tgz"
+SRC_URI="http://www.coker.com.au/bonnie++/${PN}-${PV}.tgz \
+	 file://gcc-4.3-fixes.patch;patch=1"
 
 inherit autotools
 

@@ -1,7 +1,7 @@
 DESCRIPTION = "Python Orbit bindings"
 LICENSE = "LGPL"
 
-PR = "r0"
+PR = "r1"
 
 inherit gnome distutils-base pkgconfig
 

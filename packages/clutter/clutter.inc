@@ -36,6 +36,10 @@ DEPENDS_omap3evm = "${STDDEPENDS} libgles-omap3 tslib"
 EXTRA_OECONF_omap3evm = "${BASE_CONF} --with-flavour=eglx --with-gles=2.0"
 PACKAGE_ARCH_omap3evm = "${MACHINE_ARCH}"
 
+DEPENDS_overo = "${STDDEPENDS} libgles-omap3 tslib"
+EXTRA_OECONF_overo = "${BASE_CONF} --with-flavour=eglx --with-gles=2.0"
+PACKAGE_ARCH_overo = "${MACHINE_ARCH}"
+
 DEPENDS_mx31ads = "${STDDEPENDS} libgles-mx31 tslib"
 EXTRA_OECONF_mx31ads = "${BASE_CONF} --with-flavour=eglnative"
 PACKAGE_ARCH_mx31ads = "${MACHINE_ARCH}"

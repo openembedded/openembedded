@@ -15,6 +15,7 @@ EXTRA_OECONF = "\
   --without-libtiff \
   --with-libjpeg \
   --with-libpng \
+  --disable-cups \
 "
 
 do_compile() {

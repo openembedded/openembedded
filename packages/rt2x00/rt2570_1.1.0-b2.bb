@@ -3,6 +3,8 @@ HOMEPAGE = "http://rt2x00.serialmonkey.com/"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 
+PR = "r1"
+
 SRC_URI = "${SOURCEFORGE_MIRROR}/rt2400/rt2570-${PV}.tar.gz"
 
 inherit module

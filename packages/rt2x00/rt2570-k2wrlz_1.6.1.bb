@@ -3,6 +3,8 @@ HOMEPAGE = "http://homepages.tu-darmstadt.de/~p_larbig/wlan"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 
+PR = "r1"
+
 SRC_URI = "http://homepages.tu-darmstadt.de/~p_larbig/wlan/${PN}-${PV}.tar.bz2"
 
 inherit module

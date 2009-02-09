@@ -58,7 +58,7 @@ case "$arch" in
 	"armv7")
 			machines="" ;;
 	"armv7a")
-			machines="beagleboard omap3evm omap3-pandora" ;;
+			machines="beagleboard omap3evm omap3-pandora overo" ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")
@@ -144,9 +144,6 @@ for i in ../* ; do
 echo " DONE"
 cd ${BPWD}
 
-echo -n "Stripping source lines from Package files"
-for i in `find . -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; touch $i.sig ; done
-echo " DONE"
 }
 
 echo "Processing 'all' feed"
@@ -162,4 +159,10 @@ if [ "$1" != "--skip-sorted-list" ]; then
     for i in $(find ../ -name "*.ipk"| grep -v unsorted) ; do basename $i ; done > files-sorted
 fi
 
-#(cd ~/website/repo ; php update.php)
+( cd ~/website/repo-updater ; php update.php ; rm ../repo/feeds.db* ; cp feeds.db* ../repo )
+
+echo -n "Stripping source lines from Package files"
+for i in `find .. -name Packages` ; do grep -v ^Source: $i|gzip -c9>$i.gz ;gunzip -c $i.gz>$i ; touch $i.sig ; done
+echo " DONE"
+
+

@@ -1,13 +1,17 @@
 require busybox.inc
-
-PR = "r9"
+PR = "r12"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
+  http://busybox.net/downloads/fixes-1.13.2/busybox-1.13.2-depmod.patch;patch=1 \
+  http://busybox.net/downloads/fixes-1.13.2/busybox-1.13.2-init.patch;patch=1 \
+  http://busybox.net/downloads/fixes-1.13.2/busybox-1.13.2-mdev.patch;patch=1 \
+  http://busybox.net/downloads/fixes-1.13.2/busybox-1.13.2-modprobe.patch;patch=1 \
+  http://busybox.net/downloads/fixes-1.13.2/busybox-1.13.2-tar.patch;patch=1 \
   \
   file://udhcpscript.patch;patch=1 \
+  file://udhcpc-fix-nfsroot.patch;patch=1 \
   file://B921600.patch;patch=1 \
-  file://r24785.patch;patch=1;status=merged \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
@@ -37,4 +41,3 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/find-touchscreen.sh ${D}${sysconfdir}/mdev/
     install -m 0755 ${WORKDIR}/mdev ${D}${sysconfdir}/init.d/
 }
-

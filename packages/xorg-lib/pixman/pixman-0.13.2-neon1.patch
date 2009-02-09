@@ -110,10 +110,10 @@ index c4612ea..4c1ec6b 100644
  
 diff --git a/pixman/pixman-arm-neon.c b/pixman/pixman-arm-neon.c
 new file mode 100644
-index 0000000..f8a41a8
+index 0000000..10050e4
 --- /dev/null
 +++ b/pixman/pixman-arm-neon.c
-@@ -0,0 +1,1397 @@
+@@ -0,0 +1,1387 @@
 +/*
 + * Copyright © 2009 Mozilla Corporation
 + *
@@ -319,12 +319,10 @@ index 0000000..f8a41a8
 +                        "b 9f\n\t"
 +// LOOP
 +                        "2:\n\t"
-+                        "vld1.8  {d0}, [%[src]]\n\t"
-+                        "vld1.8  {d4}, [%[dst]]\n\t"
++                        "vld1.8  {d0}, [%[src]]!\n\t"
++                        "vld1.8  {d4}, [%[dst]]!\n\t"
 +                        "vst1.8  {d20}, [%[keep_dst]]\n\t"
-+                        "mov     %[keep_dst], %[dst]\n\t"
-+                        "add %[src], %[src], #8\n\t"
-+                        "add %[dst], %[dst], #8\n\t"
++                        "sub     %[keep_dst], %[dst], #8\n\t"
 +                        "subs %[w], %[w], #8\n\t"
 +                        "9:\n\t"
 +                        "vqadd.u8 d20, d0, d4\n\t"
@@ -468,12 +466,10 @@ index 0000000..f8a41a8
 +                        "b 9f\n\t"
 +// LOOP
 +                        "2:\n\t"
-+                        "vld4.8  {d0-d3}, [%[src]]\n\t"
-+                        "vld4.8  {d4-d7}, [%[dst]]\n\t"
++                        "vld4.8  {d0-d3}, [%[src]]!\n\t"
++                        "vld4.8  {d4-d7}, [%[dst]]!\n\t"
 +                        "vst4.8  {d20-d23}, [%[keep_dst]]\n\t"
-+                        "mov     %[keep_dst], %[dst]\n\t"
-+                        "add %[src], %[src], #8*4\n\t"
-+                        "add %[dst], %[dst], #8*4\n\t"
++                        "sub     %[keep_dst], %[dst], #8*4\n\t"
 +                        "subs %[w], %[w], #8\n\t"
 +                        "9:\n\t"
 +                        "vmvn.8  d31, d3\n\t"
@@ -746,12 +742,10 @@ index 0000000..f8a41a8
 +                        "b 9f\n\t"
 +// LOOP
 +                        "2:\n\t"
-+                        "vld4.8       {d0-d3}, [%[src]]\n\t"
-+                        "vld4.8       {d4-d7}, [%[dst]]\n\t"
++                        "vld4.8       {d0-d3}, [%[src]]!\n\t"
++                        "vld4.8       {d4-d7}, [%[dst]]!\n\t"
 +                        "vst4.8       {d20-d23}, [%[keep_dst]]\n\t"
-+                        "mov  %[keep_dst], %[dst]\n\t"
-+                        "add  %[src], %[src], #8*4\n\t"
-+                        "add  %[dst], %[dst], #8*4\n\t"
++                        "sub  %[keep_dst], %[dst], #8*4\n\t"
 +                        "subs  %[w], %[w], #8\n\t"
 +
 +                        "9:\n\t"
@@ -957,12 +951,10 @@ index 0000000..f8a41a8
 +// LOOP
 +                        "2:\n\t"
 +
-+                        "vld1.16      {q12}, [%[dst]]\n\t"
-+                        "vld1.8       {d31}, [%[mask]]\n\t"
++                        "vld1.16      {q12}, [%[dst]]!\n\t"
++                        "vld1.8       {d31}, [%[mask]]!\n\t"
 +                        "vst1.16      {q10}, [%[keep_dst]]\n\t"
-+                        "mov  %[keep_dst], %[dst]\n\t"
-+                        "add  %[mask], %[mask], #8\n\t"
-+                        "add  %[dst], %[dst], #8*2\n\t"
++                        "sub  %[keep_dst], %[dst], #8*2\n\t"
 +                        "subs  %[w], %[w], #8\n\t"
 +                        "9:\n\t"
 +// expand 0565 q12 to 8888 {d4-d7}
@@ -1294,12 +1286,10 @@ index 0000000..f8a41a8
 +                        "b 9f\n\t"
 +// LOOP
 +                        "2:\n\t" 
-+                        "vld4.8       {d4-d7}, [%[dst]]\n\t"
-+                        "vld1.8       {d31}, [%[mask]]\n\t"
++                        "vld4.8       {d4-d7}, [%[dst]]!\n\t"
++                        "vld1.8       {d31}, [%[mask]]!\n\t"
 +                        "vst4.8       {d20-d23}, [%[keep_dst]]\n\t"
-+                        "mov  %[keep_dst], %[dst]\n\t"
-+                        "add  %[mask], %[mask], #8\n\t"
-+                        "add  %[dst], %[dst], #8*4\n\t"
++                        "sub  %[keep_dst], %[dst], #8*4\n\t"
 +                        "subs  %[w], %[w], #8\n\t"
 +                        "9:\n\t"
 +
@@ -1371,7 +1361,7 @@ index 0000000..f8a41a8
 +                dval = vld1_u8((void*)dst);
 +
 +                temp = neon2mul(sval2,alpha);
-+                res = vqadd_u8(temp,neon2mul(dval,vtbl1_u8(vmvn_u8(sval2), alpha_selector)));
++                res = vqadd_u8(temp,neon2mul(dval,vtbl1_u8(vmvn_u8(temp), alpha_selector)));
 +
 +                vst1_u8((void*)dst,res);
 +
@@ -1387,7 +1377,7 @@ index 0000000..f8a41a8
 +                dval = vreinterpret_u8_u32(vld1_dup_u32((void*)dst));
 +
 +                temp = neon2mul(sval2,alpha);
-+                res = vqadd_u8(temp,neon2mul(dval,vtbl1_u8(vmvn_u8(sval2), alpha_selector)));
++                res = vqadd_u8(temp,neon2mul(dval,vtbl1_u8(vmvn_u8(temp), alpha_selector)));
 +
 +                vst1_lane_u32((void*)dst,vreinterpret_u32_u8(res),0);
 +            }
@@ -1513,12 +1503,12 @@ index 0000000..f8a41a8
 +
 diff --git a/pixman/pixman-arm-neon.h b/pixman/pixman-arm-neon.h
 new file mode 100644
-index 0000000..a473841
+index 0000000..bab4dee
 --- /dev/null
 +++ b/pixman/pixman-arm-neon.h
 @@ -0,0 +1,137 @@
 +/*
-+ * Copyright © 2008 Mozilla Corporation
++ * Copyright © 2009 Mozilla Corporation
 + *
 + * Permission to use, copy, modify, distribute, and sell this software and its
 + * documentation for any purpose is hereby granted without fee, provided that
@@ -1539,7 +1529,7 @@ index 0000000..a473841
 + * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 + * SOFTWARE.
 + *
-+ * Author:  Jeff Muizelaar (jeff@infidigm.net)
++ * Author:  Ian Rickards (ian.rickards@arm.com)
 + *
 + */
 +

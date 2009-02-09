@@ -1,0 +1,29 @@
+DESCRIPTION = "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented, flexible 3D engine "
+LICENSE = "LGPL"
+DEPENDS = "zziplib boost freeimage freetype virtual/libx11 virtual/egl"
+
+SRCREV = "8310"
+PV = "1.6.1+svnr${SRCREV}"
+
+SRC_URI = "svn://ogre.svn.sourceforge.net/svnroot/ogre;module=trunk;proto=https \
+           file://ogre-egl-update.diff;patch=1;pnum=0 \
+          "
+
+inherit autotools_stage
+
+# This is the EGL version
+EXTRA_OECONF = " --with-allocator=std --enable-threading=no --disable-cg --enable-gles "
+
+S = "${WORKDIR}/trunk"
+
+
+EXTRA_OEMAKE = " ZZIPLIB_CFLAGS=\"${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DOGRE_CONFIG_LITTLE_ENDIAN', '-DOGRE_CONFIG_BIG_ENDIAN', d)}\" "
+
+do_configure_prepend() {
+	sed -i -e /OGRE_DETECT_ENDIAN/d ${S}/configure.in
+}
+
+FILES_${PN}-dbg += "${libdir}/OGRE/.debug"
+FILES_${PN}-dev += "${libdir}/OGRE/*.la"
+FILES_${PN} += "${libdir}/OGRE/*.so"
+
