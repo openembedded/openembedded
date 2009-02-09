@@ -298,6 +298,7 @@ do
                       wifi-radar \
                       win4 \
                       wpa-gui \
+                      wt \
                       x11vnc \
                       xf86-input-evdev \
                       xf86-input-keyboard \
