@@ -4,9 +4,9 @@ HOMEPAGE = "http://divmod.org/projects/pyflakes"
 PRIORITY = "optional"
 LICENSE = "BSD"
 SRCNAME = "pyflakes"
-PR = "ml1"
+PR = "ml0"
 
-SRC_URI = "http://www.divmod.org/static/projects/pyflakes/pyflakes-${PV}.tar.gz"
+SRC_URI = "http://pypi.python.org/packages/source/p/pyflakes/${SRCNAME}-${PV}.tar.gz"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit distutils
