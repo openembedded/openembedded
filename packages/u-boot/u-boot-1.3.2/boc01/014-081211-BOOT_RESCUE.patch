@@ -2,7 +2,15 @@ Index: u-boot-1.3.2/common/main.c
 ===================================================================
 --- u-boot-1.3.2.orig/common/main.c
 +++ u-boot-1.3.2/common/main.c
-@@ -377,6 +377,15 @@ void main_loop (void)
+@@ -39,6 +39,7 @@
+ #endif
+ 
+ #include <post.h>
++#include <gpio.h>
+ 
+ #ifdef CONFIG_SILENT_CONSOLE
+ DECLARE_GLOBAL_DATA_PTR;
+@@ -377,6 +378,15 @@ void main_loop (void)
  	}
  	else
  #endif /* CONFIG_BOOTCOUNT_LIMIT */
@@ -22,7 +30,7 @@ Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
 ===================================================================
 --- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
 +++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
-@@ -405,6 +405,7 @@
+@@ -406,6 +406,7 @@
  #define PRE_INIT_GPIO	0x28
  #define INIT_GPIO	0x08
  #define	MAX_GPIO_OUT 	7
@@ -30,7 +38,7 @@ Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
  
  /* Digital Thermometer and Thermostat */
  #define CONFIG_DTT_LM73		1
-@@ -558,6 +559,7 @@
+@@ -559,6 +560,7 @@
   * Environment Configuration
   */
  #define CONFIG_ENV_OVERWRITE

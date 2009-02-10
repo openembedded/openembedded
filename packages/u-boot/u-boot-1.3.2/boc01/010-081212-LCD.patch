@@ -181,7 +181,7 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 ===================================================================
 --- /dev/null
 +++ u-boot-1.3.2/common/cmd_lcd.c
-@@ -0,0 +1,243 @@
+@@ -0,0 +1,237 @@
 +/*
 + * (C) Copyright 2008
 + * Alexandre Coffignal, CénoSYS, alexandre.coffignal@cenosys.com
@@ -216,13 +216,6 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +#define DELAY 1
 +#define AEL 0x0F
 +
-+static void NT7506_init_lcd(char ael);
-+static void NT7506_print_splash(char * Picture,char width,char height);
-+static void NT7506_set_xaddr(unsigned char x);
-+static void NT7506_set_yaddr(unsigned char y);
-+static void NT7506_writeb_data(unsigned char value);
-+static void NT7506_writeb_ctl(unsigned char value);
-+static void iowrite16(unsigned short value);
 +
 +static void iowrite16(unsigned short value)
 +{
@@ -269,7 +262,7 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +	NT7506_writeb_ctl(NT_COL_LSB | (x & 0x0F) ); 	//Send low nibble
 +}
 +
-+static void ImageRota(char * src,char * dest, int w ,int h)
++static void ImageRota(unsigned char *src, unsigned char *dest, int w ,int h)
 +{
 +	int i,j,bit,IndexRead;
 +	char mask=0;
@@ -290,14 +283,13 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +}
 +
 +
-+static void NT7506_print_splash(char * picture,char width,char height)
++static void NT7506_print_splash(unsigned char *picture, char width, char height)
 +{
 +	int i;
-+	char value;
-+	char imagerota[2048];
++	unsigned char imagerota[2048];
 +	int indeximage=0;
 +
-+	int x,y,xfb,yfb,Index;
++	int x,y,xfb,yfb;
 +	char src[2048];
 +	if(width>128)
 +		width=128;
@@ -379,7 +371,7 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +
 +
 +/**************************************************/
-+void do_lcd(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
++int do_lcd(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
 +{
 +	char lcd_ael=AEL;
 +	if(argc>1)
@@ -390,6 +382,8 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +
 +	NT7506_init_lcd(lcd_ael);
 +	NT7506_print_splash(Bollore_bits,Bollore_width,Bollore_height);
++
++	return 0;
 +}
 +
 +U_BOOT_CMD(
@@ -398,7 +392,7 @@ Index: u-boot-1.3.2/common/cmd_lcd.c
 +	  "lcd\n"
 +);
 +
-+void do_backlight(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
++int do_backlight(cmd_tbl_t * cmdtp, int flag, int argc, char *argv[])
 +{
 +	if (!strncmp(argv[1], "on", 7))
 +	{
