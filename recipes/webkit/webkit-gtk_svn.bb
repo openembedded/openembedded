@@ -14,7 +14,7 @@ SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http;name=webkit \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitLibraries;proto=http \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitTools;proto=http \
-  file://acinclude.m4 \
+  svn://svn.webkit.org/repository/webkit/trunk/;module=autotools;proto=http \
   file://Makefile \
   file://Makefile.shared \
   file://autogen.sh \
@@ -29,13 +29,13 @@ inherit autotools pkgconfig lib_package
 
 export BISON="${STAGING_BINDIR_NATIVE}/bison"
 ARM_INSTRUCTION_SET = "arm"
-# FIXME: Segfaulting without --with-http-backend=curl
 EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
-		--with-http-backend=curl \
+		--with-http-backend=soup \
                "
+EXTRA_AUTORECONF = " -I autotools "
 
 # Dolt gets used on x86 and ppc and hardcodes 'libtool'
 do_configure_append() {
