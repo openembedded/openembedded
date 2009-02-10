@@ -160,7 +160,7 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +#define LCD_NPAGES	(LCD_HEIGHT/8)    /* LCD pages of 8 vertical pixels */
 +
 +#define DEFAULT_CONTRAST	20
-+#define DEFAULT_FPS	5
++#define DEFAULT_FPS	10
 +
 +static struct resource *lcd_mem = NULL;
 +static void * _lcd_io = NULL;
