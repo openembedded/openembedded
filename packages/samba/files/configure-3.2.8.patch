@@ -1,25 +1,31 @@
-diff -urN source.old/configure source/configure
---- source.old/configure	2008-11-20 14:45:08.000000000 +0000
-+++ source/configure	2008-11-30 17:53:02.116791281 +0000
-@@ -40777,11 +40777,10 @@
+diff -urN source.old//configure source//configure
+--- source.old//configure	2009-02-03 16:34:41.000000000 +0000
++++ source//configure	2009-02-06 00:25:49.502205687 +0000
+@@ -43860,13 +43860,14 @@
      *linux*)
         # glibc <= 2.3.2 has a broken getgrouplist
         if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
 -See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
+-$as_echo "$as_me: error: cannot run test program while cross compiling
 -See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
-+#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling See \`config.log' for more details." >&5
-+# echo "$as_me: error: cannot run test program while cross compiling See \`config.log' for more details." >&2;}
-+#   { (exit 1); exit 1; }; }
+-   { (exit 1); exit 1; }; }; }
++#  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
++#$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
++#{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#$as_echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }; }
 +linux_getgrouplist_ok=no
  else
    cat >conftest.$ac_ext <<_ACEOF
  /* confdefs.h.  */
-diff -urN source.old/configure.in source/configure.in
---- source.old/configure.in	2008-11-18 15:17:17.000000000 +0000
-+++ source/configure.in	2008-11-30 17:33:10.960791551 +0000
+diff -urN source.old//configure.in source//configure.in
+--- source.old//configure.in	2009-02-03 16:10:07.000000000 +0000
++++ source//configure.in	2009-02-06 00:23:27.346211236 +0000
 @@ -275,6 +275,8 @@
  fi
  AC_SUBST(BROKEN_CC)
@@ -58,7 +64,7 @@ diff -urN source.old/configure.in source/configure.in
  ],
  	samba_cv_CC_NEGATIVE_ENUM_VALUES=yes,samba_cv__CC_NEGATIVE_ENUM_VALUES=no)])
  if test x"$samba_cv_CC_NEGATIVE_ENUM_VALUES" != x"yes"; then
-@@ -1187,22 +1175,12 @@
+@@ -1204,22 +1192,12 @@
  case "$host_os" in
      *linux*)
         # glibc <= 2.3.2 has a broken getgrouplist

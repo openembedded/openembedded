@@ -1,12 +1,12 @@
 require samba.inc
 require samba-basic.inc
 
-SRC_URI += "file://configure-3.2.7.patch;patch=1 \
+SRC_URI += "file://configure-3.2.8.patch;patch=1 \
             file://config-h.patch;patch=1 \
             file://mtab.patch;patch=1 \
 	        "
 
-PR = "r4"
+PR = "r0"
 
 EXTRA_OECONF += "\
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
