@@ -1,0 +1,28 @@
+--- a/libparted/arch/linux.c~	2009-02-06 17:22:22.000000000 -0200
++++ a/libparted/arch/linux.c	2009-02-06 17:39:28.000000000 -0200
+@@ -53,6 +53,11 @@
+ 
+ #define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
+ 
++#ifndef HAVE_LLSEEK
++#define _llseek(fd, offset_high, offset_low, result, origin) \
++        syscall(SYS__llseek, fd, offset_high, offset_low, result, origin)
++#endif
++
+ #ifndef __NR__llseek
+ #define __NR__llseek 140
+ #endif
+@@ -1362,13 +1367,6 @@
+ 
+ #if SIZEOF_OFF_T < 8
+ 
+-static _syscall5(int,_llseek,
+-                 unsigned int, fd,
+-                 unsigned long, offset_high,
+-                 unsigned long, offset_low,
+-                 loff_t*, result,
+-                 unsigned int, origin)
+-
+ loff_t
+ llseek (unsigned int fd, loff_t offset, unsigned int whence)
+ {
