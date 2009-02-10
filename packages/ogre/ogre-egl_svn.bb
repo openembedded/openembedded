@@ -2,6 +2,8 @@ DESCRIPTION = "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-orien
 LICENSE = "LGPL"
 DEPENDS = "zziplib boost freeimage freetype virtual/libx11 virtual/egl"
 
+PR = "r1"
+
 SRCREV = "8310"
 PV = "1.6.1+svnr${SRCREV}"
 
@@ -25,5 +27,5 @@ do_configure_prepend() {
 
 FILES_${PN}-dbg += "${libdir}/OGRE/.debug"
 FILES_${PN}-dev += "${libdir}/OGRE/*.la"
-FILES_${PN} += "${libdir}/OGRE/*.so"
+FILES_${PN} += "${libdir}/libOgreMain-*.so ${libdir}/OGRE/*.so"
 

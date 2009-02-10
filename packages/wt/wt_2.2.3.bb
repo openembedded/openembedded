@@ -2,8 +2,9 @@ DESCRIPTION = "A C++ Web Toolkit"
 PRIORITY = "optional"
 SECTION = "devel"
 LICENSE = "GPL"
+HOMEPAGE = "http://www.webtoolkit.eu/wt"
 DEPENDS = "boost zlib openssl"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
 	file://cmakelist.patch;patch=1"
