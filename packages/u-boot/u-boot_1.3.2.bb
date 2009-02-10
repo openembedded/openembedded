@@ -25,6 +25,7 @@ SRC_URI_append_boc01 = "\
            file://001-090205-SPI.patch;patch=1 \
            file://002-081212-GPIO.patch;patch=1 \
            file://003-081205-DTT_LM73.patch;patch=1 \
+           file://004-081205-WATCHDOG.patch;patch=1 \
            file://006-081211-EEPROM_M24C32.patch;patch=1 \
            file://007-090112-CAPSENSE.patch;patch=1 \
            file://008-090107-TSEC.patch;patch=1 \
