@@ -1,0 +1,17 @@
+---
+ Makefile |    2 --
+ 1 file changed, 2 deletions(-)
+
+Index: ltp-full-20090131/Makefile
+===================================================================
+--- ltp-full-20090131.orig/Makefile
++++ ltp-full-20090131/Makefile
+@@ -37,8 +37,6 @@ install: all
+ 	@$(MAKE) -C doc/man1 install
+ 	@$(MAKE) -C doc/man3 install
+ 
+-	@./IDcheck.sh
+-
+ libltp.a: config.h
+ 	@$(MAKE) -C lib $@
+ 

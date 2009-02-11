@@ -30,6 +30,7 @@ EXTRA_OECONF = "\
 	--enable-hal \	
 	--without-contrib \
 	--disable-opengl --disable-glx \
+	--enable-realrtsp \
 	ac_cv_path_MOC=${STAGING_BINDIR_NATIVE}/moc4 \
 	ac_cv_path_RCC=${STAGING_BINDIR_NATIVE}/rcc4 \
 	ac_cv_path_UIC=${STAGING_BINDIR_NATIVE}/uic4 \

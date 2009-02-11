@@ -10,7 +10,7 @@ SRC_URI += " \
 	    file://opkg_wget_nogpg_02_use_vfork_system.patch;patch=1 \
 	    file://opkg_wget_nogpg_03_fix_tmpdirs.patch;patch=1 \
 	   "
-PR = "r3"
+PR = "r4"
 
 SRCREV = "${SRCREV_pn-opkg}"
 

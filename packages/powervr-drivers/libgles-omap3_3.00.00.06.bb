@@ -1,7 +1,7 @@
 require libgles-omap3.inc
 
 # Not released yet
-DEFAULT_PREFERENCE = "-1"
+#DEFAULT_PREFERENCE = "-1"
 PR = "r5"
 
 SGXPV = "3_00_00_06"
