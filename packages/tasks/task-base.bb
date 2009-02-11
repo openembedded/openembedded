@@ -61,6 +61,15 @@ HOTPLUG ?= "${@base_contains("MACHINE_FEATURES", "kernel24",  "linux-hotplug",""
 DISTRO_SSH_DAEMON ?= "dropbear"
 
 #
+# bluetooth manager
+#
+DISTRO_BLUETOOTH_MANAGER ?= "\
+	blueprobe \
+	bluez-utils \
+	bluez-utils-compat \
+	"
+
+#
 # pcmciautils for >= 2.6.13-rc1, pcmcia-cs for others
 #
 PCMCIA_MANAGER ?= "${@base_contains('MACHINE_FEATURES', 'kernel26','pcmciautils','pcmcia-cs',d)} "
@@ -234,10 +243,8 @@ task-base-pcmcia26 = "\
 
 # Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
 
-RDEPENDS_task-base-bluetooth = "\ 
-    blueprobe \
-    bluez-utils \
-    bluez-utils-compat \  
+RDEPENDS_task-base-bluetooth = "\
+    ${DISTRO_BLUETOOTH_MANAGER} \
     "
 
 RRECOMMENDS_task-base-bluetooth = "\
