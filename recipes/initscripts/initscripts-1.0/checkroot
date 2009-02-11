@@ -21,7 +21,6 @@ test -x /sbin/update && update
 #
 # Read /etc/fstab.
 #
-exec 9>&0 </etc/fstab
 rootmode=rw
 rootopts=rw
 test "$ENABLE_ROOTFS_FSCK" = yes && rootcheck="yes" || rootcheck="no"
@@ -81,8 +80,7 @@ do
 				;;
 		esac
 	fi
-done
-exec 0>&9 9>&-
+done < /etc/fstab
 
 #
 # Activate the swap device(s) in /etc/fstab. This needs to be done
