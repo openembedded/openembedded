@@ -76,15 +76,6 @@ do
 	do_build
 done	 
 
-# build altboot images for zaurus
-for machine in c7x0 poodle tosa akita spitz collie
-do
-	BUILD_CLEAN="base-files"
-	BUILD_MACHINE=$machine
-	BUILD_TARGETS="altboot-console-image"
-	do_build
-done 
-
 # build kexecboot kernels for supported machines
 for machine in h2200 hx4700 c7x0 akita spitz poodle collie
 do
