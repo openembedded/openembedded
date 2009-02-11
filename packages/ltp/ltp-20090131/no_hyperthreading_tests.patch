@@ -1,0 +1,14 @@
+---
+ testcases/kernel/sched/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: ltp-full-20090131/testcases/kernel/sched/Makefile
+===================================================================
+--- ltp-full-20090131.orig/testcases/kernel/sched/Makefile
++++ ltp-full-20090131/testcases/kernel/sched/Makefile
+@@ -1,4 +1,4 @@
+-SUBDIRS = cfs-scheduler clisrv hyperthreading nptl process_stress pthreads sched_stress tool 
++SUBDIRS = cfs-scheduler clisrv nptl process_stress pthreads sched_stress tool 
+ 
+ all:
+ 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done

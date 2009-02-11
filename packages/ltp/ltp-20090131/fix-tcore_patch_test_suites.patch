@@ -1,0 +1,20 @@
+---
+ testcases/misc/tcore_patch_test_suites/tcore.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+Index: ltp-full-20090131/testcases/misc/tcore_patch_test_suites/tcore.c
+===================================================================
+--- ltp-full-20090131.orig/testcases/misc/tcore_patch_test_suites/tcore.c
++++ ltp-full-20090131/testcases/misc/tcore_patch_test_suites/tcore.c
+@@ -27,9 +27,10 @@ extern int  Tst_count;               /* 
+ extern char *TESTDIR;                /* temporary dir created by tst_tmpdir() */
+ /* Global Variables */
+ char *TCID     = "tcore";            /* test program identifier.              */
+-int  TST_TOTAL = 1;                  /* total number of tests in this file.   */
+ 
+ #if defined __i386__ || defined(__x86_64__)
++int  TST_TOTAL = 1;                  /* total number of tests in this file.   */
++
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <unistd.h>
