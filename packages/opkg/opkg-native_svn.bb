@@ -1,7 +1,7 @@
 require opkg.inc
 
 DEPENDS = "curl-native"
-PR = "r2"
+PR = "r3"
 
 target_libdir := "${libdir}"
 
