@@ -4,11 +4,13 @@ LICENSE = "GPLv3"
 SECTION = "console/tools"
 DEPENDS = "readline e2fsprogs-libs"
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
            file://syscalls.h \
            file://syscalls.patch;patch=1 \
+	   file://use_llseek_syscall.patch;patch=1 \
+	   file://parted-1.8.x.patch;patch=1 \
 "
            
 EXTRA_OECONF = "--disable-Werror ac_cv_func_calloc_0_nonnull=yes"

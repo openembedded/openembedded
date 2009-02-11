@@ -10,7 +10,7 @@ USE_DEVFS = "0"
 
 PREFERRED_PROVIDER_virtual/bootloader = ""
 PREFERRED_PROVIDER_virtual/kernel = "linux-orion"
-PREFERRED_VERSION_linux-orion = "2.6.27.10"
+PREFERRED_VERSION_linux-orion = "2.6.28.4"
 
 IMAGE_DEVICE_TABLES = "files/device_table-slugos.txt"
 IMAGE_FSTYPES = "tar.gz"
