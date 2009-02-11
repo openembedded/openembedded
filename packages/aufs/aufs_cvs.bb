@@ -2,19 +2,13 @@ DESCRIPTION = "Aufs is a stackable unification filesystem such as Unionfs, which
 HOMEPAGE = "http://aufs.sourceforge.net/"
 LICENSE = "GPL"
 PV = "cvs${SRCDATE}"
-PR = "r2"
+PR = "r3"
 
 RSUGGESTS_${PN} = "${PN}-tools"
 
 inherit module
 
 S = "${WORKDIR}/aufs"
-
-# We do not create the manpage for aufs because we do not install it anyway.
-# If you want to have the manpage created you will need to add host cc to
-# the makefile else it will fail to crosscompile.
-# See http://svn.exactcode.de/t2/trunk/package/filesystem/aufs/compile.patch.cross
-# as an example how this could be done.
 
 SRC_URI = "cvs://anonymous@aufs.cvs.sourceforge.net/cvsroot/aufs;module=aufs;date=${SRCDATE}"
 
@@ -38,6 +32,16 @@ do_configure() {
 		sed -i 's/CONFIG_AUFS_SYSAUFS\ =\ y/CONFIG_AUFS_SYSAUFS\ =/g'  local.mk 
 	fi
 }
+
+do_compile_prepend() {
+#compile binaries for host	
+	cd ${S}/util
+	BRANCH_MAX=$(fgrep CONFIG_AUFS_BRANCH_MAX ../local.mk | grep y | cut -d " " -f 2)
+	${BUILD_CC} -D ${BRANCH_MAX} c2tmac.c ../include/linux/aufs_type.h -o c2tmac
+	${BUILD_CC} -D ${BRANCH_MAX} c2sh.c ../include/linux/aufs_type.h -o c2sh
+	cd ${S}
+}
+
 
 do_install() {
 	install -d ${D}/${sbindir}
