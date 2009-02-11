@@ -6,6 +6,7 @@ PR = "r3"
 DEFAULT_PREFERENCE = "-1"
 
 DEFAULT_PREFERENCE_at91sam9263ek = "28"
+DEFAULT_PREFERENCE_ronetix-pm9263 = "28"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
 
@@ -15,6 +16,11 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
 SRC_URI_append_at91sam9263ek = " \
            file://linux-2.6.28-at91.patch.bz2;patch=1 \
 	   file://linux-2.6.28-exp.patch.bz2;patch=1 "
+
+SRC_URI_append_ronetix-pm9263 = " \
+           file://linux-2.6.28-at91.patch.bz2;patch=1 \
+           file://linux-2.6.28-exp.patch.bz2;patch=1 \
+           file://linux-2.6.28-at91-ronetix-12012009.patch;patch=1 "
 
 SRC_URI_append_stb225 = " \
            file://uImage.patch;patch=1 \
@@ -47,3 +53,4 @@ SRC_URI_append_collie = " \
 	file://0022-mmc_block-print-better-error-messages.patch;patch=1 \
 	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch;patch=1 " 
 
+S = "${WORKDIR}/linux-2.6.28/"
