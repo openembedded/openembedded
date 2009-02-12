@@ -296,6 +296,7 @@ do
                       viking \
                       vlc \
                       vpnc \
+                      w3cat \
                       wifi-radar \
                       win4 \
                       wpa-gui \
