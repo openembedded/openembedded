@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r61"
+PR = "r62"
 
 inherit task
 
@@ -13,9 +13,10 @@ RDEPENDS_task-openmoko-feed = "\
   ppp \
   bluez-hcidump \
   bootchart \
-  eet evas ecore embryo epsilon edje efreet emotion epdf \
+  eet evas ecore embryo epsilon edje efreet emotion \
+#  epdf \
   exhibit edje-viewer \
-  free42-vga \
+#  free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
   ipkg-link ipkg-utils \
   joe \
@@ -32,7 +33,7 @@ RDEPENDS_task-openmoko-feed = "\
 #  python-lightblue \
   python-pybluez \
   obexpush \
-  ruby \
+#  ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
   synergy \
@@ -48,9 +49,9 @@ RDEPENDS_task-openmoko-feed = "\
   gpsdrive \
   gpsd \
   asterisk \
-  gnash \
+#  gnash \
   mono \
-  diversity-daemon \
+#  diversity-daemon \
   om-maps-berlin \
   om-maps-buenos-aires \
   om-maps-hong-kong \
