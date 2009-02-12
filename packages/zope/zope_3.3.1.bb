@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"
-PR = "r6"
+PR = "r7"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
 S = "${WORKDIR}/Zope-${PV}"
@@ -23,6 +23,8 @@ do_install() {
 	install -d ${D}${libdir}/${PYTHON_DIR}
 	oe_runmake install prefix=${D}${prefix} HOST_SYS=${HOST_SYS} BUILD_SYS=${BUILD_SYS}
 	mv ${D}${libdir}/python/* ${D}${libdir}/${PYTHON_DIR} 
+	rm -rf ${D}${libdir}/${PYTHON_DIR}/twisted
+	rm -rf ${D}${libdir}/${PYTHON_DIR}/zope/app/twisted
 }
 
 PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
@@ -42,3 +44,4 @@ ${libdir}/${PYTHON_DIR}/ZODB/.debug"
 FILES_python-zopeinterface-dbg += "${libdir}/${PYTHON_DIR}/zope/interface/.debug "
 
 FILES_python-zopeinterface = "${libdir}/${PYTHON_DIR}/zope/interface/*.* ${libdir}/${PYTHON_DIR}/zope/interface/common"
+
