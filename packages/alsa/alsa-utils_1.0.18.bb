@@ -8,6 +8,7 @@ PR = "r1"
 SRC_URI = "ftp://ftp.alsa-project.org/pub/utils/alsa-utils-${PV}.tar.bz2 \
            file://alsa-utils-automake.patch;patch=1 \
 	   file://alsa-utils-remove-xmlto.patch;patch=1 \
+	   file://alsa-utils-autoconf-strl-funcs.patch;patch=1 \
 	  "
 
 inherit autotools

@@ -23,6 +23,14 @@ export CGTOOLS_V5T="${CROSS_DIR}"
 export CC_V5T="bin/${TARGET_PREFIX}gcc"
 export MVTOOL_PREFIX="${TARGET_PREFIX}"
 
+# This tells codec engine which targets to build
+DEVICES ?= "DM6446"
+DEVICES_omap5912osk = "fixme-ti-paths.inc"
+DEVICES_omap3evm = "OMAP3530"
+DEVICES_beagleboard = "OMAP3530"
+DEVICES_davinci-sffsdr = "DM6446"
+DEVICES_davinci-dvevm = "DM6446"
+
 DSPLINKPLATFORM ?= "DAVINCI"
 DSPLINKPLATFORM_omap5912osk = "OMAP"
 DSPLINKPLATFORM_beagleboard = "OMAP3530"
@@ -51,6 +59,7 @@ GPPOS ?= "MVL5G"
 GPPOS_beagleboard = "OMAPLSP"
 GPPOS_omap3evm = "OMAPLSP"
 
+export DEVICES
 export DSPLINKPLATFORM
 export DSPLINKDSP
 export DSPLINKSOC

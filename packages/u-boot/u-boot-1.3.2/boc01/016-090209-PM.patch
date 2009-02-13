@@ -1,0 +1,56 @@
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
+@@ -60,7 +60,7 @@
+  * to access the PMC registers, unless a JTAG debugger is
+  * connected, or some resistor modifications are made.
+  */
+-#define CFG_8313ERDB_BROKEN_PMC 1
++#undef CFG_8313ERDB_BROKEN_PMC
+ 
+ #define CFG_ACR_PIPE_DEP	3	/* Arbiter pipeline depth (0-3) */
+ #define CFG_ACR_RPTCNT		3	/* Arbiter repeat count (0-7) */
+Index: u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+===================================================================
+--- u-boot-1.3.2.orig/board/freescale/mpc8313erdb/mpc8313erdb.c
++++ u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+@@ -30,6 +30,7 @@
+ #include <mpc83xx.h>
+ #include <spi.h>
+ #include <gpio.h>
++#include <asm/processor.h>
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -39,7 +40,29 @@ int board_early_init_f(void)
+ 	volatile immap_t *im = (immap_t *)CFG_IMMR;
+ 
+ 	if (im->pmc.pmccr1 & PMCCR1_POWER_OFF)
+-		gd->flags |= GD_FLG_SILENT;
++	{
++		volatile immap_t *immap = (immap_t *) CFG_IMMR;
++		ulong msr;
++		/* Interrupts and MMU off */
++		__asm__ __volatile__ ("mfmsr    %0":"=r" (msr):);
++
++		msr &= ~( MSR_EE | MSR_IR | MSR_DR);
++		__asm__ __volatile__ ("mtmsr    %0"::"r" (msr));
++
++		/* enable Reset Control Reg */
++		immap->reset.rpr = 0x52535445;
++		__asm__ __volatile__ ("sync");
++		__asm__ __volatile__ ("isync");
++
++		/* confirm Reset Control Reg is enabled */
++		while(!((immap->reset.rcer) & RCER_CRE));
++
++		udelay(200);
++
++		/* perform reset, only one bit */
++		immap->reset.rcr = RCR_SWHR;
++	}
++
+ #endif
+ 
+ 	return 0;

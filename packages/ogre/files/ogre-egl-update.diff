@@ -1,0 +1,165 @@
+Index: RenderSystems/GLES/include/OgreGLESSupport.h
+===================================================================
+--- RenderSystems/GLES/include/OgreGLESSupport.h	(revision 8310)
++++ RenderSystems/GLES/include/OgreGLESSupport.h	(working copy)
+@@ -80,6 +80,11 @@
+             virtual void initialiseExtensions();
+             virtual bool checkExtension(const String& ext) const;
+ 
++            virtual unsigned int getDisplayMonitorCount() const
++            {
++                return 1;
++            }
++            
+             virtual void start() = 0;
+             virtual void stop() = 0;
+ 
+Index: RenderSystems/GLES/include/OgreGLESRenderSystem.h
+===================================================================
+--- RenderSystems/GLES/include/OgreGLESRenderSystem.h	(revision 8310)
++++ RenderSystems/GLES/include/OgreGLESRenderSystem.h	(working copy)
+@@ -139,9 +139,11 @@
+             void _setTextureBorderColour(size_t stage, const ColourValue& colour);
+             void _setTextureMipmapBias(size_t unit, float bias);
+             void _setTextureMatrix(size_t stage, const Matrix4& xform);
+-            void _setSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor);
+-            void _setSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha);
+-            void _setAlphaRejectSettings(CompareFunction func, unsigned char value);
++            void _setSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendOperation op );
++            void _setSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp );
++            void _setSceneBlendingOperation(SceneBlendOperation op);
++            void _setSeparateSceneBlendingOperation(SceneBlendOperation op, SceneBlendOperation alphaOp);
++            void _setAlphaRejectSettings(CompareFunction func, unsigned char value, bool alphaToCoverage);
+             void _setViewport(Viewport *vp);
+             void _beginFrame(void);
+             void _endFrame(void);
+@@ -195,6 +197,7 @@
+ 
+             GLESContext* _getMainContext() { return mMainContext; }
+             void _unregisterContext(GLESContext *context);
++            unsigned int getDisplayMonitorCount() const;
+             void _switchContext(GLESContext *context);
+             void _oneTimeContextInitialization();
+             void initialiseContext(RenderWindow* primary);
+Index: RenderSystems/GLES/include/OgreGLESDefaultHardwareBufferManager.h
+===================================================================
+--- RenderSystems/GLES/include/OgreGLESDefaultHardwareBufferManager.h	(revision 8310)
++++ RenderSystems/GLES/include/OgreGLESDefaultHardwareBufferManager.h	(working copy)
+@@ -110,6 +110,8 @@
+             HardwareIndexBufferSharedPtr
+                 createIndexBuffer(HardwareIndexBuffer::IndexType itype, size_t numIndexes,
+                     HardwareBuffer::Usage usage, bool useShadowBuffer = false);
++            // Create a render to vertex buffer
++            RenderToVertexBufferSharedPtr createRenderToVertexBuffer();
+     };
+ }
+ 
+Index: RenderSystems/GLES/src/OgreGLESRenderSystem.cpp
+===================================================================
+--- RenderSystems/GLES/src/OgreGLESRenderSystem.cpp	(revision 8310)
++++ RenderSystems/GLES/src/OgreGLESRenderSystem.cpp	(working copy)
+@@ -1182,7 +1182,8 @@
+         return GL_ONE;
+     }
+ 
+-    void GLESRenderSystem::_setSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor)
++
++    void GLESRenderSystem::_setSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendOperation op )
+     {
+         GLint sourceBlend = getBlendMode(sourceFactor);
+         GLint destBlend = getBlendMode(destFactor);
+@@ -1199,17 +1200,19 @@
+             GL_CHECK_ERROR;
+         }
+     }
+-
+-    void GLESRenderSystem::_setSeparateSceneBlending(SceneBlendFactor sourceFactor,
+-                                                   SceneBlendFactor destFactor,
+-                                                   SceneBlendFactor sourceFactorAlpha,
+-                                                   SceneBlendFactor destFactorAlpha)
++    
++    void GLESRenderSystem::_setSeparateSceneBlending(
++        SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, 
++        SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
++        SceneBlendOperation op, SceneBlendOperation alphaOp )
+     {
+         // Not supported
+     }
+ 
+-    void GLESRenderSystem::_setAlphaRejectSettings(CompareFunction func, unsigned char value)
++    void GLESRenderSystem::_setAlphaRejectSettings(CompareFunction func, unsigned char value, bool alphaToCoverage)
+     {
++        bool a2c = false;
++        static bool lasta2c = false;
+         if (func == CMPF_ALWAYS_PASS)
+         {
+             glDisable(GL_ALPHA_TEST);
+@@ -1222,6 +1225,15 @@
+             glAlphaFunc(convertCompareFunction(func), value / 255.0f);
+             GL_CHECK_ERROR;
+         }
++        if (a2c != lasta2c && getCapabilities()->hasCapability(RSC_ALPHA_TO_COVERAGE))
++        {
++            if (a2c)
++                glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
++            else
++                glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
++
++            lasta2c = a2c;
++        } 
+     }
+ 
+     void GLESRenderSystem::_setViewport(Viewport *vp)
+@@ -2084,7 +2096,12 @@
+     {
+         // Not implemented
+     }
+-
++    
++    unsigned int GLESRenderSystem::getDisplayMonitorCount() const
++    {
++        return mGLSupport->getDisplayMonitorCount();
++    }
++    
+     void GLESRenderSystem::setClipPlanesImpl(const Ogre::PlaneList& clipPlanes)
+     {
+         // A note on GL user clipping:
+Index: RenderSystems/GLES/src/OgreGLESDefaultHardwareBufferManager.cpp
+===================================================================
+--- RenderSystems/GLES/src/OgreGLESDefaultHardwareBufferManager.cpp	(revision 8310)
++++ RenderSystems/GLES/src/OgreGLESDefaultHardwareBufferManager.cpp	(working copy)
+@@ -164,4 +164,12 @@
+         return HardwareIndexBufferSharedPtr(
+             new GLESDefaultHardwareIndexBuffer(itype, numIndexes, usage));
+     }
++
++    RenderToVertexBufferSharedPtr 
++        GLESDefaultHardwareBufferManager::createRenderToVertexBuffer()
++    {
++        OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR, 
++                "Cannot create RenderToVertexBuffer in GLESDefaultHardwareBufferManager", 
++                "GLESDefaultHardwareBufferManager::createRenderToVertexBuffer");
++    }
+ }
+Index: RenderSystems/GLES/src/EGL/OgreEGLWindow.cpp
+===================================================================
+--- RenderSystems/GLES/src/EGL/OgreEGLWindow.cpp	(revision 8310)
++++ RenderSystems/GLES/src/EGL/OgreEGLWindow.cpp	(working copy)
+@@ -182,7 +182,7 @@
+ 
+             if ((opt = miscParams->find("parentWindowHandle")) != end)
+             {
+-                std::vector<String> tokens = StringUtil::split(opt->second, " :");
++                StringVector tokens = StringUtil::split(opt->second, " :");
+ 
+                 if (tokens.size() == 3)
+                 {
+@@ -197,7 +197,7 @@
+             }
+             else if ((opt = miscParams->find("externalWindowHandle")) != end)
+             {
+-                std::vector<String> tokens = StringUtil::split(opt->second, " :");
++                StringVector tokens = StringUtil::split(opt->second, " :");
+ 
+                 LogManager::getSingleton().logMessage(
+                                                       "EGLWindow::create: The externalWindowHandle parameter is deprecated.\n"

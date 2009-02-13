@@ -4,5 +4,5 @@ Comment=Mumpot t@h
 Exec=mumpot-tah
 Terminal=0
 Type=Application
-Categories=Application;PIM;GTK
+Categories=X-PIM;GTK;Education;Science;Geography;
 StartupNotify=True

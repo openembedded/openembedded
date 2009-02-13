@@ -1,0 +1,77 @@
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display_fbdev.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/Display_fbdev.c	2009-02-11 19:59:57.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display_fbdev.c	2009-02-11 20:02:46.000000000 -0600
+@@ -41,10 +41,7 @@
+ #include <sys/ioctl.h>
+ #include <linux/fb.h>
+ 
+-#ifdef Dmai_Device_omap3530
+-/* OMAP specific kernel headers */
+-#include <video/omapfbdev.h>
+-#else
++#ifndef Dmai_Device_omap3530
+ /* Davinci specific kernel headers */
+ #include <video/davincifb_ioctl.h>
+ #endif
+@@ -184,11 +181,13 @@
+     }
+ #endif
+ 
++#if 0
+     /* Set up the sysfs variables before opening the display device */
+     if (_Display_sysfsSetup(attrs, channel) < 0) {
+         cleanup(hDisplay);
+         return NULL;
+     }
++#endif
+ 
+     /* Open video display device */
+     hDisplay->fd = open(attrs->displayDevice, O_RDWR);
+@@ -423,6 +422,7 @@
+  ******************************************************************************/
+ Int Display_fbdev_get(Display_Handle hDisplay, Buffer_Handle *hBufPtr)
+ {
++#if defined (FBIO_WAITFORVSYNC)
+     BufTab_Handle hBufTab = hDisplay->hBufTab;
+     int           dummy;
+ 
+@@ -436,7 +436,8 @@
+     }
+ 
+     *hBufPtr = BufTab_getBuf(hBufTab, hDisplay->workingIdx);
+-
++    
++#endif
+     return Dmai_EOK;
+ }
+ 
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/Display.c	2009-02-11 20:00:10.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display.c	2009-02-11 20:02:07.000000000 -0600
+@@ -80,18 +80,18 @@
+ 
+ const Display_Attrs Display_Attrs_O3530_VID_DEFAULT = {
+     3,
+-    Display_Std_V4L2,
+-    VideoStd_VGA,
+-    Display_Output_LCD,
+-    "/dev/video1",
++    Display_Std_FBDEV,
++    VideoStd_D1_NTSC,
++    Display_Output_DVI,
++    "/dev/fb2",
+     0
+ };
+ 
+ const Display_Attrs Display_Attrs_O3530_OSD_DEFAULT = {
+     1,
+     Display_Std_FBDEV,
+-    VideoStd_VGA,
+-    Display_Output_LCD,
++    VideoStd_D1_NTSC,
++    Display_Output_DVI,
+     "/dev/fb0",
+     0
+ };

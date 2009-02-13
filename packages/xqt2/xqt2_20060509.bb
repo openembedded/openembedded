@@ -5,7 +5,7 @@ LICENSE = "GPL"
 SECTION = "opie/applications"
 APPTYPE = "binary"
 APPNAME = "Xqt"
-PR = "r3"
+PR = "r4"
 
 inherit palmtop
 
@@ -22,7 +22,8 @@ SRC_URI = "cvs://anonymous@cvs.sourceforge.jp/cvsroot/xqt;module=xqt2;method=pse
         file://fephack.patch;patch=1 \
         file://xchar2b.patch;patch=1 \
         file://xqt-make.patch;patch=1 \ 
-        file://fix_qtscreen_HACK.patch;patch=1 "
+        file://fix_qtscreen_HACK.patch;patch=1 \
+	file://fix_seqfault_qtscreen.patch;patch=1 "
 S = "${WORKDIR}/xc"
 
 QT_LIBRARY = '${@base_conditional("PALMTOP_USE_MULTITHREADED_QT", "yes", "qte-mt", "qte",d)}'

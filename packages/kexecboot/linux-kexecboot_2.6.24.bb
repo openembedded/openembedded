@@ -1,7 +1,5 @@
 require linux-kexecboot.inc
 
-PR = "r6"
-
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_collie = "-1"
 DEFAULT_PREFERENCE_poodle = "1"

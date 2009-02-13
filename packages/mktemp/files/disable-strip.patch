@@ -1,0 +1,12 @@
+diff -NurpP --minimal mktemp-1.6/Makefile.in mktemp-1.6-disable-strip/Makefile.in
+--- mktemp-1.6/Makefile.in	2009-01-22 15:11:33.000000000 +0800
++++ mktemp-1.6-disable-strip/Makefile.in	2009-01-22 15:13:52.000000000 +0800
+@@ -109,7 +109,7 @@ install-dirs:
+ 	$(SHELL) $(srcdir)/mkinstalldirs ${DESTDIR}/$(bindir) ${DESTDIR}/$(mandir)/man1
+ 
+ install-binaries: $(PROG)
+-	$(INSTALL) -m 0555 -s $(PROG) ${DESTDIR}/$(bindir)/$(PROG)
++	$(INSTALL) -m 0555  $(PROG) ${DESTDIR}/$(bindir)/$(PROG)
+ 
+ install-man:
+ 	$(INSTALL) -m 0444 $(srcdir)/mktemp.$(mantype) ${DESTDIR}/$(mandir)/man1/mktemp.1

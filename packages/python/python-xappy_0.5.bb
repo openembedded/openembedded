@@ -1,5 +1,5 @@
 DESCRIPTION = "The xappy python module is an easy-to-use interface to the Xapian search engine"
-SECTION = "python/devel"
+SECTION = "devel/python"
 LICENSE = "GPLv2"
 DEPENDS = "xapian-core"
 PR = "ml0"

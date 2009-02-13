@@ -1,11 +1,11 @@
 DESCRIPTION = "WebKit browser engine, GTK+ edition"
-DEPENDS = "curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
+DEPENDS = "libsoup-2.4 curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
 # Yes, this is wrong...
 PV = "0.1+svnr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -14,7 +14,7 @@ SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKit;proto=http;name=webkit \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitLibraries;proto=http \
   svn://svn.webkit.org/repository/webkit/trunk/;module=WebKitTools;proto=http \
-  file://acinclude.m4 \
+  svn://svn.webkit.org/repository/webkit/trunk/;module=autotools;proto=http \
   file://Makefile \
   file://Makefile.shared \
   file://autogen.sh \
@@ -29,13 +29,13 @@ inherit autotools pkgconfig lib_package
 
 export BISON="${STAGING_BINDIR_NATIVE}/bison"
 ARM_INSTRUCTION_SET = "arm"
-# FIXME: Segfaulting without --with-http-backend=curl
 EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
-		--with-http-backend=curl \
+		--with-http-backend=soup \
                "
+EXTRA_AUTORECONF = " -I autotools "
 
 # Dolt gets used on x86 and ppc and hardcodes 'libtool'
 do_configure_append() {

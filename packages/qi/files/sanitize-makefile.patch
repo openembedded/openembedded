@@ -1,0 +1,27 @@
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile
++++ git/Makefile
+@@ -16,12 +16,6 @@
+ 
+ include config.mk
+ 
+-BUILD_DATE := $(shell date)
+-BUILD_HOST := $(shell hostname)
+-BUILD_BRANCH := $(shell git branch | grep ^\* | cut -d' ' -f2)
+-BUILD_HEAD := $(shell git show --pretty=oneline | head -n1 | cut -d' ' -f1 | cut -b1-16)
+-BUILD_VERSION := ${BUILD_BRANCH}_${BUILD_HEAD}
+-
+ LDS	= src/cpu/$(CPU)/qi.lds
+ INCLUDE	= include
+ IMAGE_DIR	= image
+@@ -73,7 +67,7 @@ all:${UDFU_IMAGE}
+ ${OBJS}:${SRCS} ${INCLUDE}/*.h
+ 
+ ${MKUDFU}:
+-	 make -C $(TOOLS)
++	 gcc tools/mkudfu.c -o ${MKUDFU} -Itools/
+ 
+ ${UDFU_IMAGE}:${OBJS} ${MKUDFU}
+ 	mkdir -p image
+ 

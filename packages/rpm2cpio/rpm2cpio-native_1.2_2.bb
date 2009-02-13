@@ -4,7 +4,7 @@
 
 DEPENDS="perl-native"
 LICENSE="BSD"
-SRC_URI="${FREEBSD_MIRROR}/ports/packages/archivers/rpm2cpio-1.2_2.tbz"
+SRC_URI="http://www.freebsd.org/cgi/cvsweb.cgi/%7Echeckout%7E/ports/archivers/rpm2cpio/files/rpm2cpio?rev=1.2"
 
 inherit native
 
@@ -15,7 +15,7 @@ do_compile() {
 
 do_stage() {
 	install -d ${STAGING_BINDIR}
-	sed -e '1,1s|${bindir}/|${bindir}/env |' bin/rpm2cpio.pl \
+	sed -e '1,1s|${bindir}/|${bindir}/env |' "rpm2cpio?rev=1.2" \
 		> ${STAGING_BINDIR}/rpm2cpio.pl
 
 	my_PERL="/usr/bin/env perl"

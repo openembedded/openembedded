@@ -112,6 +112,12 @@ def check_sanity(e):
 		missing = missing.rstrip(',')
 		messages = messages + "Please install following missing utilities: %s\n" % missing
 
+	try:
+	    if os.path.basename(os.readlink('/bin/sh')) == 'dash':
+		    messages = messages + "Using dash as /bin/sh causes various subtle build problems, please use bash instead.\n"
+	except:
+		pass
+
 	omask = os.umask(022)
 	if omask & 0755:
 		messages = messages + "Please use a umask which allows a+rx and u+rwx\n"

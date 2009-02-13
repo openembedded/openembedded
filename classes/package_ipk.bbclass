@@ -244,6 +244,10 @@ python do_package_ipk () {
 		rprovides = (bb.data.getVar("RPROVIDES", localdata, 1) or "").split()
 		rreplaces = (bb.data.getVar("RREPLACES", localdata, 1) or "").split()
 		rconflicts = (bb.data.getVar("RCONFLICTS", localdata, 1) or "").split()
+
+		if not '-locale-' and not '-dbg' and not '-dev' in pkgname:
+			rdepends.append('%s-locale*' % pkgname)
+
 		if rdepends:
 			ctrlfile.write("Depends: %s\n" % ", ".join(rdepends))
 		if rsuggests:

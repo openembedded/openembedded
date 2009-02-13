@@ -1,0 +1,17 @@
+---
+ runltp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: ltp-full-20090131/runltp
+===================================================================
+--- ltp-full-20090131.orig/runltp
++++ ltp-full-20090131/runltp
+@@ -74,7 +74,7 @@ setup()
+         echo "FATAL: unable to change directory to $(dirname $0)"
+         exit 1
+     }
+-    export LTPROOT=${PWD}
++    export LTPROOT=/usr/libexec/ltp
+     export TMPBASE="/tmp"
+     export PATH="${PATH}:${LTPROOT}/testcases/bin"
+ 

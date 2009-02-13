@@ -14,7 +14,17 @@ do_configure_append() {
 	sed -i \
 		-e "s|tail -1|tail -n 1|" \
 		-e "s|dist dist-all dist-all:|dist dist-all:|" \
-		Makefile
+		-e "s|docs||g" \
+	Makefile
 
   mkdir ${S}/build
+}
+
+
+do_compile_append() {
+for i in ${S}/*/*.pc ; do
+        sed -i -e s:${STAGING_DIR_TARGET}::g \
+               -e s:/${TARGET_SYS}::g \
+                  $i
+done
 }

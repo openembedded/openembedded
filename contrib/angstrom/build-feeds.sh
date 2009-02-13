@@ -238,6 +238,7 @@ do
                       pushover \
                       python \
                       python-pybluez \
+                      python-coherence \
                       qfish2 \
                       qmatrix \
                       qpe-nmap \
@@ -275,6 +276,7 @@ do
                       task-opie-apps \
                       task-opie-games \
                       task-proper-tools \
+                      task-xqtlauncher \
                       tasks \
                       texinfo \
                       thttpd \
@@ -294,9 +296,11 @@ do
                       viking \
                       vlc \
                       vpnc \
+                      w3cat \
                       wifi-radar \
                       win4 \
                       wpa-gui \
+                      wt \
                       x11vnc \
                       xf86-input-evdev \
                       xf86-input-keyboard \
@@ -340,7 +344,8 @@ done
 
 # machine packages (machine specific (sub)packages)
 
-for machine in beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 dns323 mv2120 kuropro lspro tsx09 ts409 qemux86  
+for machine in overo omap3-pandora beagleboard omap3evm neuros-osd2 efika dht-walnut palmt650 omap5912osk ixp4xxle ixp4xxbe c7x0 poodle tosa akita spitz collie simpad om-gta01 om-gta02 a780 at91sam9263ek qemuarm h2200 h3900 h4000 hx4700 nokia800 dns323 mv2120 kuropro lspro tsx09 ts409 qemux86  
+
 do
         BUILD_MACHINE=$machine
             BUILD_CLEAN="opkg-native qmake-native qmake2-native qt-x11-free python python-native python-pygtk gnome-icon-theme"
@@ -354,3 +359,10 @@ do
         do_build
 done
 
+for machine in collie h2200 hx4700 spitz akita tosa poodle c7x0
+do
+        BUILD_MACHINE=$machine
+        BUILD_TARGETS="linux-kexecboot \
+		       "
+	do_build
+done	

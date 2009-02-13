@@ -7,15 +7,14 @@ LICENSE = "LGPL"
 
 MAJV = "${@bb.data.getVar('PV',d,1)[:3]}"
 
-SRC_URI = "http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2"
+SRC_URI = "\
+  http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2 \
+  file://expose-bytesarray-struct.patch;patch=1 \
+"
 S = "${WORKDIR}/vala-${PV}"
 
-inherit autotools lib_package
+inherit autotools autotools_stage lib_package
 
 EXTRA_OECONF = "--enable-vapigen"
-
-do_stage() {
-	autotools_stage_all
-}
 
 FILES_${PN}-doc += ${datadir}/devhelp

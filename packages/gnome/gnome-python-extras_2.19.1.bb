@@ -1,6 +1,8 @@
 LICENSE = "GPL/LGPL"
 DEPENDS = "python-pygtk libwnck"
 
+PR = "r1"
+
 inherit gnome distutils-base
 
 SRC_URI += "file://acinclude.m4"

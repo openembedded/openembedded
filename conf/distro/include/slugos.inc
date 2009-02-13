@@ -272,5 +272,8 @@ PREFERRED_VERSION_libusb                ?= "0.0.0"
 # with 1.1.0 for now:
 PREFERRED_VERSION_mtd-utils             ?= "1.1.0"
 
+# boost 1.36 won't build
+PREFERRED_VERSION_boost			?= "1.33.1"
+
 require conf/distro/include/sane-srcdates.inc
 require conf/distro/include/sane-srcrevs.inc

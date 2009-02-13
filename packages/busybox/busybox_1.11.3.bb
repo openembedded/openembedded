@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -13,6 +13,7 @@ SRC_URI = "\
   file://default.script \
   file://hwclock.sh \
   file://mount.busybox \
+  file://mountall \
   file://syslog \
   file://syslog.conf \
   file://umount.busybox \

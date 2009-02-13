@@ -1,0 +1,16 @@
+---
+ zcav.cpp |    1 +
+ 1 file changed, 1 insertion(+)
+
+Index: bonnie++-1.03a/zcav.cpp
+===================================================================
+--- bonnie++-1.03a.orig/zcav.cpp
++++ bonnie++-1.03a/zcav.cpp
+@@ -15,6 +15,7 @@ using namespace std;
+ #else
+ #include <vector.h>
+ #endif
++#include <string.h>
+ 
+ // Read the specified number of megabytes of data from the fd and return the
+ // amount of time elapsed in seconds.

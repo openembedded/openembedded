@@ -1,0 +1,17 @@
+---
+ testcases/kernel/syscalls/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: ltp-full-20090131/testcases/kernel/syscalls/Makefile
+===================================================================
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/Makefile
++++ ltp-full-20090131/testcases/kernel/syscalls/Makefile
+@@ -25,7 +25,7 @@ EXCLUDE_DIR=epoll
+ #
+ # Commented this out since there are directories here we don't want built by default
+ #
+-SUBDIR = `ls */Makefile | sed "s/Makefile//g"` 
++SUBDIR = `ls */Makefile | sed "s/Makefile//g | grep -vE "^epoll_create2""` 
+ UCLINUX_SUBDIR = `ls */Makefile | sed "s/Makefile//g" | grep -vE "^fork|epoll|capget|capset|chmod|chown|llseek|nftw|clone|profil|getcontext"`
+ 
+ all:

@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r2"
+PR = "r3"
 
 inherit e update-alternatives
 
@@ -70,6 +70,9 @@ SRC_URI = "\
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
 "
+
+SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1 "
+
 S = "${WORKDIR}/e"
 
 EXTRA_OECONF = "\

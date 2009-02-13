@@ -1,0 +1,94 @@
+Index: u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+===================================================================
+--- u-boot-1.3.2.orig/board/freescale/mpc8313erdb/mpc8313erdb.c
++++ u-boot-1.3.2/board/freescale/mpc8313erdb/mpc8313erdb.c
+@@ -28,6 +28,7 @@
+ #endif
+ #include <pci.h>
+ #include <mpc83xx.h>
++#include <spi.h>
+ 
+ DECLARE_GLOBAL_DATA_PTR;
+ 
+@@ -107,3 +108,33 @@ void ft_board_setup(void *blob, bd_t *bd
+ #endif
+ }
+ #endif
++
++
++/*
++ * The following are used to control the SPI chip selects for the SPI command.
++ */
++#ifdef CONFIG_HARD_SPI
++
++#define SPI_CS_MASK	0x80000000
++
++void spi_eeprom_chipsel(int cs)
++{
++	volatile gpio83xx_t *iopd = &((immap_t *)CFG_IMMR)->gpio[0];
++
++	if (cs)
++		iopd->dat &= ~SPI_CS_MASK;
++	else
++		iopd->dat |=  SPI_CS_MASK;
++}
++
++/*
++ * The SPI command uses this table of functions for controlling the SPI
++ * chip selects.
++ */
++spi_chipsel_type spi_chipsel[] = {
++	spi_eeprom_chipsel,
++};
++int spi_chipsel_cnt = sizeof(spi_chipsel) / sizeof(spi_chipsel[0]);
++
++#endif /* CONFIG_HARD_SPI */
++
+Index: u-boot-1.3.2/include/configs/MPC8313ERDB.h
+===================================================================
+--- u-boot-1.3.2.orig/include/configs/MPC8313ERDB.h
++++ u-boot-1.3.2/include/configs/MPC8313ERDB.h
+@@ -369,6 +369,7 @@
+ #define CONFIG_CMD_PCI
+ #define CONFIG_CMD_NAND
+ #define CONFIG_CMD_JFFS2
++#define CONFIG_CMD_SPI
+ 
+ #if defined(CFG_RAMBOOT)
+     #undef CONFIG_CMD_ENV
+@@ -386,6 +387,11 @@
+ #define MTDPARTS_DEFAULT	"mtdparts=physmap-flash.0:384k(uboot),64k(env)"
+ 
+ 
++/* SPI */
++#define CONFIG_MPC8XXX_SPI
++#define CONFIG_HARD_SPI			/* SPI with hardware support */
++#undef CONFIG_SOFT_SPI			/* SPI bit-banged */
++
+ /*
+  * Miscellaneous configurable options
+  */
+Index: u-boot-1.3.2/drivers/spi/mpc8xxx_spi.c
+===================================================================
+--- u-boot-1.3.2.orig/drivers/spi/mpc8xxx_spi.c
++++ u-boot-1.3.2/drivers/spi/mpc8xxx_spi.c
+@@ -34,6 +34,8 @@
+ #define SPI_MODE_REV	(0x80000000 >> 5)	/* Reverse mode - MSB first */
+ #define SPI_MODE_MS	(0x80000000 >> 6)	/* Always master */
+ #define SPI_MODE_EN	(0x80000000 >> 7)	/* Enable interface */
++#define SPI_MODE_DIV16	(0x80000000 >> 4)	/*Divide by 16.   */
++#define SPI_MODE_LEN_8	(0x00700000)		/*0111 8-bit characters*/
+ 
+ #define SPI_TIMEOUT	1000
+ 
+@@ -45,9 +47,7 @@ void spi_init(void)
+ 	 * SPI pins on the MPC83xx are not muxed, so all we do is initialize
+ 	 * some registers
+ 	 */
+-	spi->mode = SPI_MODE_REV | SPI_MODE_MS | SPI_MODE_EN;
+-	spi->mode = (spi->mode & 0xfff0ffff) | (1 << 16); /* Use SYSCLK / 8
+-							     (16.67MHz typ.) */
++	spi->mode = SPI_MODE_DIV16 |SPI_MODE_LEN_8| SPI_MODE_REV | SPI_MODE_MS | SPI_MODE_EN;
+ 	spi->event = 0xffffffff;	/* Clear all SPI events */
+ 	spi->mask = 0x00000000;	/* Mask  all SPI interrupts */
+ 	spi->com = 0;		/* LST bit doesn't do anything, so disregard */

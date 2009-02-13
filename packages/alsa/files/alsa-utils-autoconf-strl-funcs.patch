@@ -1,0 +1,43 @@
+Index: alsa-utils-1.0.18/alsactl/init_sysdeps.c
+===================================================================
+--- alsa-utils-1.0.18.orig/alsactl/init_sysdeps.c	2008-10-29 05:42:11.000000000 -0700
++++ alsa-utils-1.0.18/alsactl/init_sysdeps.c	2009-02-10 23:17:47.000000000 -0800
+@@ -17,7 +17,7 @@
+  *
+  */
+ 
+-#ifdef __GLIBC__
++#if !HAVE_STRLCPY
+ static size_t strlcpy(char *dst, const char *src, size_t size)
+ {
+ 	size_t bytes = 0;
+@@ -36,7 +36,10 @@
+ 		*q = '\0';
+ 	return bytes;
+ }
++#endif /* !HAVE_STRLCPY */
+ 
++
++#if !HAVE_STRLCAT
+ static size_t strlcat(char *dst, const char *src, size_t size)
+ {
+ 	size_t bytes = 0;
+@@ -60,4 +63,4 @@
+ 	*q = '\0';
+ 	return bytes;
+ }
+-#endif /* __GLIBC__ */
++#endif /* !HAVE_STRLCAT */
+Index: alsa-utils-1.0.18/configure.in
+===================================================================
+--- alsa-utils-1.0.18.orig/configure.in	2008-10-29 05:48:01.000000000 -0700
++++ alsa-utils-1.0.18/configure.in	2009-02-10 23:02:07.000000000 -0800
+@@ -6,7 +6,7 @@
+ 
+ AM_GNU_GETTEXT([external])
+ AM_GNU_GETTEXT_VERSION([0.15])
+-
++AC_CHECK_FUNCS([strlcat strlcpy])
+ dnl Checks for programs.
+ 
+ dnl try to gues cross-compiler if not set

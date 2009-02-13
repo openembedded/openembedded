@@ -1,0 +1,20 @@
+diff -NurpP --minimal mktemp-1.6/Makefile.in mktemp-1.6-addDESTDIR/Makefile.in
+--- mktemp-1.6/Makefile.in	2008-08-17 23:38:34.000000000 +0800
++++ mktemp-1.6-addDESTDIR/Makefile.in	2008-10-20 14:28:42.000000000 +0800
+@@ -106,13 +106,13 @@ $(OBJS): config.h
+ install: install-dirs install-binaries install-man
+ 
+ install-dirs:
+-	$(SHELL) $(srcdir)/mkinstalldirs $(bindir) $(mandir)/man1
++	$(SHELL) $(srcdir)/mkinstalldirs ${DESTDIR}/$(bindir) ${DESTDIR}/$(mandir)/man1
+ 
+ install-binaries: $(PROG)
+-	$(INSTALL) -m 0555 -s $(PROG) $(bindir)/$(PROG)
++	$(INSTALL) -m 0555 -s $(PROG) ${DESTDIR}/$(bindir)/$(PROG)
+ 
+ install-man:
+-	$(INSTALL) -m 0444 $(srcdir)/mktemp.$(mantype) $(mandir)/man1/mktemp.1
++	$(INSTALL) -m 0444 $(srcdir)/mktemp.$(mantype) ${DESTDIR}/$(mandir)/man1/mktemp.1
+ 
+ check:
+ 	@echo nothing to check

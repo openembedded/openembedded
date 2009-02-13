@@ -1,6 +1,6 @@
 DESCRIPTION = "Task for Beagleboard-demo-image"
 
-PR = "r6"
+PR = "r7"
 
 inherit task 
 
@@ -37,6 +37,7 @@ RDEPENDS_${PN} = "\
 	angstrom-gnome-icon-theme-enable \
 	openssh-scp openssh-ssh \
 	picodlp-control \
+	connman-gnome \
 "
 
 # Install all kernel modules
