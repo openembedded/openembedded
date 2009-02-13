@@ -10,6 +10,7 @@ PV = "160"
 # Look for tarball at https://www-a.ti.com/downloads/sds_support/targetcontent/link/link_1_60/index.html
 
 SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_60.tar.gz \
+        file://dsplink-semaphore-27.patch;patch=1;pnum=4 \
 		file://Makefile-dsplink-gpp \
 		file://Makefile-dsplink-dsp \
 "
