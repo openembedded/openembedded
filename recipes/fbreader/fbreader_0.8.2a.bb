@@ -13,6 +13,9 @@ PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 SRC_URI = "http://www.fbreader.org/obsolete/fbreader-sources-${PV}.tgz \
 	   file://fbreader-0.8.2a_buildsys_oe.patch;patch=1 \
 	   file://480x640-buildfix.patch;patch=1"
+
+SRC_URI_append_openmoko = "\
+		file://fbreader-openmoko.patch;patch=1"
 	   
 SRC_URI_append_spitz = "\
 		  file://zaurus-VGA.patch;patch=1"
