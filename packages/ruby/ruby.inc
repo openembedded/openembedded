@@ -6,6 +6,7 @@ LICENSE = "GPL"
 
 SRC_URI = "ftp://ftp.ruby-lang.org/pub/ruby/ruby-${PV}.tar.gz \
            file://extmk_run.patch;patch=1 \
+           file://openssl.patch;patch=1 \
            file://disable_wide_getaddrinfo_check.patch;patch=1"
 
 S = "${WORKDIR}/ruby-${PV}"
