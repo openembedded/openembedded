@@ -42,16 +42,16 @@ PR = "r0"
 SRCDATE = "20090207"
 
 # if you want experimental, use:
-#REL_MAJOR="2"
-#REL_MINOR="6"
-#SUBDIR=
-#MODULE=trunk
+REL_MAJOR="2"
+REL_MINOR="6"
+SUBDIR=
+MODULE=trunk
 
 # if you want a 2.5-based release, use
-REL_MAJOR="2"
-REL_MINOR="5"
-SUBDIR=/branches
-MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
+#REL_MAJOR="2"
+#REL_MINOR="5"
+#SUBDIR=/branches
+#MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
