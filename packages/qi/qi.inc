@@ -1,44 +1,51 @@
-DESCRIPTION = "Qi bootloader w/ Openmoko GTA02 and GTA03 support"
+DESCRIPTION = "Qi bootloader w/ Openmoko GTA01, GTA02, and GTA03 support"
 LICENSE = "GPL"
 SECTION = "bootloader"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "gitr${SRCREV}"
-PV = "0.0.0+${LOCALVERSION}"
+PV = "1.0.0+${LOCALVERSION}"
 
 EXTRA_OEMAKE = ""
 PARALLEL_MAKE = ""
-BUILD_BRANCH ?= "master"
-
-QI_MACHINES = "s3c2442 s3c6410"
 
 do_configure() {
 	echo >config.mk
-	#sed -i s,@,, Makefile
+	# uncomment to debug
+#	sed -i s,@,, Makefile
+	cat >config.mk <<EOF
+
+BUILD_HOST=\$(shell hostname)
+BUILD_VERSION=${PV}
+BUILD_DATE=\$(shell date)
+
+GCCV="`${CC} -dumpversion`"
+COMPILER_LIB_PATH_PRE=${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(GCCV)
+COMPILER_LIB_PATH=\$(COMPILER_LIB_PATH_PRE)/\$(shell ls \$(COMPILER_LIB_PATH_PRE))
+
+AS=${AS}
+LD=${LD}
+CC=${CC}
+OBJCOPY=${OBJCOPY}
+OBJDUMP=${OBJDUMP}
+HOSTCC=${BUILD_CC}
+
+export HOSTCC BUILD_HOST BUILD_VERSION BUILD_DATE CROSS_COMPILE AD LD CC OBJCOPY OBJDUMP MKUDFU
+EOF	
 }
 
-do_compile () {
-	gccv=`${CC} -dumpversion`
-	for mach in ${QI_MACHINES}
-	do
-		${MAKE} clean
-		${MAKE} CPU=$mach \
-			HOSTCC="${BUILD_CC}" \
-			COMPILER_LIB_PATH="${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$gccv/" \
-			BUILD_BRANCH="master" \
-			BUILD_HEAD="${LOCALVERSION}"
-		cp -f image/qi-$mach* ${S}
-	done
+do_compile() {
+	make clean && \
+	make CPU=s3c2442 && \
+	make CPU=s3c2410 && \
+	make CPU=s3c6410
 }
 
 do_deploy () {
 	install -d ${DEPLOY_DIR_IMAGE}
-	for mach in ${QI_MACHINES}
-	do
-		cat qi-$mach-${BUILD_BRANCH}_${LOCALVERSION} >> qi-$mach-${BUILD_BRANCH}_${LOCALVERSION}.udfu
-		install -m 0644 qi-$mach-${BUILD_BRANCH}_${LOCALVERSION}.udfu ${DEPLOY_DIR_IMAGE}/qi-$mach-${BUILD_BRANCH}-${PV}-${PR}.bin
-        ln -sf ${DEPLOY_DIR_IMAGE}/qi-${mach}-${PV}-${PR}.bin ${DEPLOY_DIR_IMAGE}/qi-${mach}-${BUILD_BRANCH}-latest.bin
-	done
+	cp -f image/qi-*.udfu ${DEPLOY_DIR_IMAGE}
 }
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 do_deploy[dirs] = "${S}"
 addtask deploy before do_package after do_install
