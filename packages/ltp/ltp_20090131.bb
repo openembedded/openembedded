@@ -2,6 +2,8 @@ DESCRIPTION = "Linux Test Project"
 HOMEPAGE = "http://ltp.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "console/utils"
+DEPENDS = "zip-native"
+PR = "r1"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://cross-compile.patch;patch=1 \
