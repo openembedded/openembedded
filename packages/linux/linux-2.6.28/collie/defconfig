@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.28
-# Tue Feb 10 20:46:22 2009
+# Fri Feb 13 10:42:04 2009
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -691,7 +691,7 @@ CONFIG_IDE=y
 CONFIG_IDE_GD=y
 CONFIG_IDE_GD_ATA=y
 # CONFIG_IDE_GD_ATAPI is not set
-# CONFIG_BLK_DEV_IDECS is not set
+CONFIG_BLK_DEV_IDECS=y
 # CONFIG_BLK_DEV_IDECD is not set
 # CONFIG_BLK_DEV_IDETAPE is not set
 # CONFIG_BLK_DEV_IDESCSI is not set
@@ -1267,7 +1267,7 @@ CONFIG_RTC_INTF_DEV=y
 #
 # on-CPU RTC drivers
 #
-CONFIG_RTC_DRV_SA1100=y
+# CONFIG_RTC_DRV_SA1100 is not set
 # CONFIG_DMADEVICES is not set
 # CONFIG_REGULATOR is not set
 CONFIG_UIO=m
