@@ -37,7 +37,7 @@ Index: alsa-utils-1.0.18/configure.in
  AM_GNU_GETTEXT([external])
  AM_GNU_GETTEXT_VERSION([0.15])
 -
-+AC_CHECK_FUNCS(strlcat strlcpy)
++AC_CHECK_FUNCS([strlcat strlcpy])
  dnl Checks for programs.
  
  dnl try to gues cross-compiler if not set
