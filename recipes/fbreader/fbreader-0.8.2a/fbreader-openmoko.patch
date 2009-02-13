@@ -1,0 +1,163 @@
+diff -Nurd fbreader-0.8.2a.orig/fbreader/data/default/styles.gpe240x320.xml fbreader-0.8.2a/fbreader/data/default/styles.gpe240x320.xml
+--- fbreader-0.8.2a.orig/fbreader/data/default/styles.gpe240x320.xml	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/data/default/styles.gpe240x320.xml	2008-10-12 17:21:37.000000000 +0100
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <DefaultStyles>
+-	<base family="Sans" fontSize="8"/>
++	<base family="Sans" fontSize="4"/>
+ 	<style id="0" name="Regular Paragraph" firstLineIndentDelta="15" allowHyphenations="true"/>
+ 	<style id="1" name="Title" fontSizeDelta="10" bold="true" spaceBefore="2" spaceAfter="7" alignment="center" allowHyphenations="false"/>
+ 	<style id="3" name="Poem Title" fontSizeDelta="2" bold="true" spaceBefore="6" spaceAfter="6" leftIndent="40" allowHyphenations="false"/>
+diff -Nurd fbreader-0.8.2a.orig/fbreader/openzaurus/Makefile fbreader-0.8.2a/fbreader/openzaurus/Makefile
+--- fbreader-0.8.2a.orig/fbreader/openzaurus/Makefile	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/openzaurus/Makefile	2008-10-12 18:58:44.000000000 +0100
+@@ -13,11 +13,7 @@
+ 	STYLE = gpe$(RESOLUTION)
+ endif
+ 
+-ifeq "$(RESOLUTION)" "240x320"
+-  ICONSIZE = 18x15
+-else
+-  ICONSIZE = 34x28
+-endif
++ICONSIZE = tango-green-blue
+ 
+ DEBDIR = data/DEBIAN
+ 
+diff -Nurd fbreader-0.8.2a.orig/fbreader/src/fbreader/FBReader.cpp fbreader-0.8.2a/fbreader/src/fbreader/FBReader.cpp
+--- fbreader-0.8.2a.orig/fbreader/src/fbreader/FBReader.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/src/fbreader/FBReader.cpp	2008-10-12 17:04:59.000000000 +0100
+@@ -170,8 +170,6 @@
+ 	toolbar().addButton(ACTION_ADD_BOOK, "addbook", "Add File to Library");
+ 	toolbar().addSeparator();
+ 	toolbar().addButton(ACTION_SCROLL_TO_HOME, "home", "Go to Start of Text");
+-	toolbar().addButton(ACTION_UNDO, "leftarrow", "Go Back");
+-	toolbar().addButton(ACTION_REDO, "rightarrow", "Go Forward");
+ 	toolbar().addSeparator();
+ 	toolbar().addButton(ACTION_SHOW_CONTENTS, "contents", "Table of Contents");
+ 	toolbar().addSeparator();
+@@ -184,6 +182,10 @@
+ 	toolbar().addSeparator();
+ 	toolbar().addButton(ACTION_ROTATE_SCREEN, "rotatescreen", "Rotate Text");
+ 	toolbar().addSeparator();
++	toolbar().addButton(ACTION_TOGGLE_FULLSCREEN, "fullscreen", "Full Screen");
++	toolbar().addSeparator();
++	toolbar().addButton(ACTION_LARGE_SCROLL_BACKWARD, "leftarrow", "Scroll Backwards");
++	toolbar().addButton(ACTION_LARGE_SCROLL_FORWARD, "rightarrow", "Scroll Forwards");
+ 	if (ShowHelpIconOption.value()) {
+ 		toolbar().addButton(ACTION_SHOW_HELP, "help", "About FBReader");
+ 	}
+diff -Nurd fbreader-0.8.2a.orig/fbreader/src/textview/BaseTextStyle.cpp fbreader-0.8.2a/fbreader/src/textview/BaseTextStyle.cpp
+--- fbreader-0.8.2a.orig/fbreader/src/textview/BaseTextStyle.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/src/textview/BaseTextStyle.cpp	2008-10-12 18:50:13.000000000 +0100
+@@ -32,11 +32,11 @@
+ 	RightMarginOption(ZLOption::LOOK_AND_FEEL_CATEGORY, OPTIONS, "RightMargin", 0, 1000, 4),
+ 	TopMarginOption(ZLOption::LOOK_AND_FEEL_CATEGORY, OPTIONS, "TopMargin", 0, 1000, 0),
+ 	BottomMarginOption(ZLOption::LOOK_AND_FEEL_CATEGORY, OPTIONS, "BottomMargin", 0, 1000, 4),
+-	BackgroundColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Background", ZLColor(255, 255, 255)),
+-	SelectedTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "SelectedText", ZLColor(0, 0, 127)),
+-	RegularTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Text", ZLColor(0, 0, 0)),
+-	InternalHyperlinkTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Hyperlink", ZLColor(63, 63, 127)),
+-	ExternalHyperlinkTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "ExternalHyperlink", ZLColor(63, 127, 63)),
++	BackgroundColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Background", ZLColor(0, 0, 0)),
++	SelectedTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "SelectedText", ZLColor(51, 51, 51)),
++	RegularTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Text", ZLColor(200, 200, 200)),
++	InternalHyperlinkTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "Hyperlink", ZLColor(255, 255, 255)),
++	ExternalHyperlinkTextColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "ExternalHyperlink", ZLColor(255, 255, 255)),
+ 	TreeLinesColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, COLORS, "TreeLines", ZLColor(127, 127, 127)),
+ 	AutoHyphenationOption(ZLOption::LOOK_AND_FEEL_CATEGORY, OPTIONS, "AutoHyphenation", true),
+ 	FontFamilyOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:fontFamily", fontFamily),
+@@ -44,7 +44,7 @@
+ 	BoldOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:bold", false),
+ 	ItalicOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:italic", false),
+ 	AlignmentOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:alignment", ALIGN_JUSTIFY),
+-	LineSpaceOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:lineSpacing", 1.3) {
++	LineSpaceOption(ZLOption::LOOK_AND_FEEL_CATEGORY, GROUP, "Base:lineSpacing", 3.0) {
+ }
+ 
+ ZLColor BaseTextStyle::color() const {
+diff -Nurd fbreader-0.8.2a.orig/fbreader/src/textview/PositionIndicator.cpp fbreader-0.8.2a/fbreader/src/textview/PositionIndicator.cpp
+--- fbreader-0.8.2a.orig/fbreader/src/textview/PositionIndicator.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/src/textview/PositionIndicator.cpp	2008-10-12 17:28:01.000000000 +0100
+@@ -37,7 +37,7 @@
+ 	ColorOption(ZLOption::LOOK_AND_FEEL_CATEGORY, INDICATOR, "Color", ZLColor(127, 127, 127)),
+ 	HeightOption(ZLOption::LOOK_AND_FEEL_CATEGORY, INDICATOR, "Height", 1, 100, 16),
+ 	OffsetOption(ZLOption::LOOK_AND_FEEL_CATEGORY, INDICATOR, "Offset", 0, 100, 4),
+-	FontSizeOption(ZLOption::LOOK_AND_FEEL_CATEGORY, INDICATOR, "FontSize", 4, 72, 14) {
++	FontSizeOption(ZLOption::LOOK_AND_FEEL_CATEGORY, INDICATOR, "FontSize", 4, 72, 6) {
+ }
+ 
+ TextView::PositionIndicator::PositionIndicator(TextView &textView) : myTextView(textView), myExtraWidth(0) {
+diff -Nurd fbreader-0.8.2a.orig/fbreader/src/textview/TextStyleOptions.cpp fbreader-0.8.2a/fbreader/src/textview/TextStyleOptions.cpp
+--- fbreader-0.8.2a.orig/fbreader/src/textview/TextStyleOptions.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/src/textview/TextStyleOptions.cpp	2008-10-12 22:12:34.000000000 +0100
+@@ -56,7 +56,7 @@
+ 
+ LineSpacingOptionEntry::LineSpacingOptionEntry(ZLDoubleOption &option, bool allowBase) : myOption(option), myAllowBase(allowBase) {
+ 	if (ourAllValuesPlusBase.empty()) {
+-		for (int i = 5; i <= 20; ++i) {
++		for (int i = 5; i <= 40; ++i) {
+ 			ourAllValues.push_back(std::string() + (char)(i / 10 + '0') + '.' + (char)(i % 10 + '0'));
+ 		}
+ 		ourAllValuesPlusBase.push_back(BASE_STRING);
+@@ -78,7 +78,7 @@
+ 	if (value == 0) {
+ 		return BASE_STRING;
+ 	}
+-	for (int i = 5; i < 20; ++i) {
++	for (int i = 5; i < 40; ++i) {
+ 		if (value <= i) {
+ 			return ourAllValues[i - 5];
+ 		}
+@@ -90,7 +90,7 @@
+ 	if (value == BASE_STRING) {
+ 		myOption.setValue(0.0);
+ 	} else {
+-		for (int i = 5; i <= 20; ++i) {
++		for (int i = 5; i <= 40; ++i) {
+ 			if (value == ourAllValues[i - 5]) {
+ 				myOption.setValue(i / 10.0);
+ 			}
+Binary files fbreader-0.8.2a.orig/fbreader/src/textview/.TextStyleOptions.cpp.swp and fbreader-0.8.2a/fbreader/src/textview/.TextStyleOptions.cpp.swp differ
+diff -Nurd fbreader-0.8.2a.orig/fbreader/src/textview/TextView.cpp fbreader-0.8.2a/fbreader/src/textview/TextView.cpp
+--- fbreader-0.8.2a.orig/fbreader/src/textview/TextView.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/fbreader/src/textview/TextView.cpp	2008-10-12 18:45:54.000000000 +0100
+@@ -418,6 +418,14 @@
+ 	  return false;
+ 	}
+ 
++	if(x < 64) {
++		scrollPage(false, NO_OVERLAPPING, 0);
++		repaintView();
++	} else if(x > (context().width() - 64)) {
++		scrollPage(true, NO_OVERLAPPING, 0);
++		repaintView();
++	}
++
+ 	PositionIndicatorStyle &indicatorStyle = TextStyleCollection::instance().indicatorStyle();
+ 	if (indicatorStyle.ShowOption.value() && indicatorStyle.IsSensitiveOption.value()) {
+ 		myTreeStateIsFrozen = true;
+Binary files fbreader-0.8.2a.orig/fbreader/src/textview/.TextView.cpp.swp and fbreader-0.8.2a/fbreader/src/textview/.TextView.cpp.swp differ
+diff -Nurd fbreader-0.8.2a.orig/zlibrary/src/gpe/application/ZLGtkApplicationWindow.cpp fbreader-0.8.2a/zlibrary/src/gpe/application/ZLGtkApplicationWindow.cpp
+--- fbreader-0.8.2a.orig/zlibrary/src/gpe/application/ZLGtkApplicationWindow.cpp	2008-10-12 16:35:25.000000000 +0100
++++ fbreader-0.8.2a/zlibrary/src/gpe/application/ZLGtkApplicationWindow.cpp	2008-10-12 17:03:13.000000000 +0100
+@@ -65,6 +65,7 @@
+ 	myToolbar = GTK_TOOLBAR(gtk_toolbar_new());
+ 	gtk_box_pack_start(GTK_BOX(myVBox), GTK_WIDGET(myToolbar), false, false, 0);
+ 	gtk_toolbar_set_style(myToolbar, GTK_TOOLBAR_ICONS);
++	gtk_toolbar_set_icon_size(myToolbar, GTK_ICON_SIZE_BUTTON);
+ 
+ 	gtk_window_resize(myMainWindow, myWidthOption.value(), myHeightOption.value());
+ 	gtk_widget_show_all(GTK_WIDGET(myMainWindow));
+@@ -104,10 +105,8 @@
+ 
+ 	if (myFullScreen) {
+ 		gtk_window_fullscreen(myMainWindow);
+-		gtk_widget_hide(GTK_WIDGET(myToolbar));
+ 	} else if (!myFullScreen) {
+ 		gtk_window_unfullscreen(myMainWindow);
+-		gtk_widget_show(GTK_WIDGET(myToolbar));
+ 	}
+ 
+ 	gtk_widget_queue_resize(GTK_WIDGET(myMainWindow));
