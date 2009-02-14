@@ -1,10 +1,11 @@
+PR = "r1"
 IMAGE_LINGUAS = ""
 
-DEPENDS = "task-bootstrap task-opie"
+DEPENDS = "task-base task-opie"
 
 extra_stuff = '${@base_conditional("ROOT_FLASH_SIZE", "24", "", "task-opie-extra-games task-opie-extra-apps task-opie-extra-styles konqueror-embedded",d)}'
 
-IMAGE_INSTALL = "task-bootstrap task-opie-base task-opie-base-applets \
+IMAGE_INSTALL = "task-base task-opie-base task-opie-base-applets \
 		    task-opie-base-inputmethods task-opie-base-apps \
 		    task-opie-base-settings task-opie-base-decorations \
 		    task-opie-base-styles task-opie-base-pim \
