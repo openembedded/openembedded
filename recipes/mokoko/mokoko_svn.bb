@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "gstreamer"
 RDEPENDS = "gstreamer"
 
-PV = "0.1+svnr${SRCPV}"
+PV = "0.1+svnr${SRCREV}"
 PR = "r1"
 
 SRC_URI = "svn://om-mediaplayer.googlecode.com/svn/;module=trunk;proto=http"
