@@ -1,7 +1,7 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r60.2"
+PR = "r60.3"
 
 inherit task
 
@@ -33,7 +33,7 @@ RDEPENDS_task-openmoko-feed = "\
 #  python-lightblue \
   python-pybluez \
   obexpush \
-#  ruby \
+  ruby \
   libsdl-x11 libsdl-mixer libsdl-net libsdl-ttf \
   settingsgui \
   synergy \
