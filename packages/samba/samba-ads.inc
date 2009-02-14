@@ -18,21 +18,19 @@ EXTRA_OECONF += "\
         --with-ads \
         "
 
-PACKAGES =+ "libsmbclient-ads libsmbclient-ads-dev cifs-ads cifs-ads-doc smbfs-ads swat-ads"
+PACKAGES =+ "libsmbclient-ads libsmbclient-ads-dev cifs-ads cifs-ads-doc swat-ads"
 
 RCONFLICTS_${PN} = "samba"
 RCONFLICTS_libsmbclient-ads = "libsmbclient"
 RCONFLICTS_libsmbclient-ads-dev = "libsmbclient-dev"
 RCONFLICTS_cifs-ads = "cifs"
 RCONFLICTS_cifs-ads-doc = "cifs-doc"
-RCONFLICTS_smbfs-ads = "smbfs"
 RCONFLICTS_swat-ads = "swat"
 
 FILES_cifs-ads = "${base_sbindir}/mount.cifs ${base_sbindir}/umount.cifs"
 FILES_cifs-ads-doc = "${mandir}/man8/mount.cifs.8 ${mandir}/man8/umount.cifs.8"
 FILES_libsmbclient-ads = "${libdir}/libsmbclient.so.*"
 FILES_libsmbclient-ads-dev = "${libdir}/libsmbclient.so ${includedir}"
-FILES_smbfs-ads = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt ${base_sbindir}/mount.smbfs ${base_sbindir}/mount.smb"
 FILES_swat-ads = "${sbindir}/swat ${datadir}/swat ${libdir}/*.msg"
 
 do_configure() {

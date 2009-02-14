@@ -24,7 +24,6 @@ EXTRA_OECONF='--disable-cups \
               --with-readline=${STAGING_LIBDIR}/.. \
               --with-libiconv=${STAGING_LIBDIR}/.. \
               --without-automount \
-              --with-smbmount \
               --with-configdir=${sysconfdir}/samba \
               --with-privatedir=${sysconfdir}/samba/private \
               --with-lockdir=${localstatedir}/lock \
@@ -59,22 +58,23 @@ do_install_append() {
 	mv ${D}${libdir}/libsmbclient.so ${D}${libdir}/libsmbclient.so.0 || true
 	ln -sf libsmbclient.so.0 ${D}${libdir}/libsmbclient.so
 	mkdir -p ${D}${base_sbindir}
-	rm -f ${D}${sbindir}/mount.smbfs ${D}${base_sbindir}/mount.smbfs
-	ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smb
-	ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smbfs
 	rm -f ${D}${bindir}/*.old
 	rm -f ${D}${sbindir}/*.old
 	[ -f ${D}${sbindir}/mount.cifs ] && mv ${D}${sbindir}/mount.cifs ${D}${base_sbindir}/
 	[ -f ${D}${sbindir}/umount.cifs ] && mv ${D}${sbindir}/umount.cifs ${D}${base_sbindir}/
 
-	install -d "${D}/var/log/samba"
-	install -d "${D}${sysconfdir}/init.d"
-	install -c -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
-	install -d "${D}${sysconfdir}/samba"
-	install -c -m 644 ${WORKDIR}/smb.conf ${D}${sysconfdir}/samba/smb.conf
+	# This is needed for < 3.2.4
+	rm -f ${D}${sbindir}/mount.smbfs ${D}${base_sbindir}/mount.smbfs
+	if [ -f ${D}${bindir}/smbmount ]; then
+		ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smb
+		ln -sf ${bindir}/smbmount ${D}${base_sbindir}/mount.smbfs
+	fi
+	
+	install -D -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/samba
+	install -D -m 644 ${WORKDIR}/smb.conf ${D}${sysconfdir}/samba/smb.conf
+	install -D -m 644 ${WORKDIR}/volatiles.03_samba ${D}${sysconfdir}/default/volatiles/volatiles.03_samba
+	install -d ${D}/var/log/samba
 	install -d ${D}/var/spool/samba
-
-	install -D -m 0644 ${WORKDIR}/volatiles.03_samba ${D}${sysconfdir}/default/volatiles/volatiles.03_samba
 }
 
 do_stage() {
