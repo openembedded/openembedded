@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r60"
+PR = "r61"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -163,6 +163,7 @@ SLUGOS_PACKAGES = "\
 	ncftp \
 	ncurses \
 	net-tools \
+	netatalk \
 	netcat \
 	netpbm \
 	nfs-utils \
@@ -259,7 +260,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	lirc-modules lirc \
 	madfu \
 	motion \
-	netatalk \
 	openldap \
 	postfix \
 	pvrusb2-mci \
