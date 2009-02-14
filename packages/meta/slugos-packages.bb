@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r61"
+PR = "r62"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -208,6 +208,7 @@ SLUGOS_PACKAGES = "\
 	spandsp \
 	sqlite \
 	squid \
+	sshfs-fuse \
 	ssmtp \
 	strace \
 	streamripper \
