@@ -22,15 +22,13 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
-TARGET_beagleboard = " o3530_al o3530_db"
-
-export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
+TARGET_beagleboard = " o3530_al"
 
 do_compile() {
 	cd packages/ti/sdo/dmai
 	oe_runmake clean
 	oe_runmake ${TARGET}
-	cd packages/ti/sdo/dmai/apps
+	cd apps
 	oe_runmake clean
 	oe_runmake ${TARGET}
 }
