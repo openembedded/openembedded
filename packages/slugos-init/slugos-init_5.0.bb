@@ -4,7 +4,7 @@ PRIORITY = "required"
 LICENSE = "GPL"
 DEPENDS = "base-files devio"
 RDEPENDS = "busybox devio"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "file://boot/flash \
 	   file://boot/disk \
@@ -27,6 +27,7 @@ SRC_URI = "file://boot/flash \
 	   file://conffiles \
 	   file://sysconf \
 	   file://leds \
+	   file://setup-optware.sh \
 	   file://turnup \
 	   file://reflash \
 	   file://usb \
@@ -35,7 +36,7 @@ SRC_URI = "file://boot/flash \
 SBINPROGS = ""
 USRSBINPROGS = ""
 CPROGS = "${USRSBINPROGS} ${SBINPROGS}"
-SCRIPTS = "turnup leds sysconf"
+SCRIPTS = "turnup leds sysconf setup-optware.sh"
 BOOTSCRIPTS = "flash disk nfs ram network udhcpc.script"
 INITSCRIPTS = "syslog.buffer syslog.file syslog.network zleds\
 	leds_startup rmrecovery sysconfsetup umountinitrd.sh\
