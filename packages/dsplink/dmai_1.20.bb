@@ -17,6 +17,8 @@ SRC_URI = "file://dmai_1_20_00_06.tar.gz \
           "
 
 S = "${WORKDIR}/dmai_1_20_00_06"
+# Yes, the xdc stuff still breaks with a '.' in PWD
+PV = "120"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
