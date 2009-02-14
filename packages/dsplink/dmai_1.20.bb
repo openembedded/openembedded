@@ -27,7 +27,7 @@ TARGET_beagleboard = " o3530_al"
 do_compile() {
 	cd packages/ti/sdo/dmai
 	oe_runmake clean
-	oe_runmake ${TARGET}
+	oe_runmake ${TARGET} C_FLAGS="-O2 -I${STAGING_INCDIR}"
 	cd apps
 	oe_runmake clean
 	oe_runmake ${TARGET}
