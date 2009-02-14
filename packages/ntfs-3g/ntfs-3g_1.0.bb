@@ -5,6 +5,8 @@ DEPENDS = "fuse"
 RDEPENDS = "fuse"
 PR = "r0"
 
+DEFAULT_PREFERENCE = "-1"
+
 SRC_URI = http://www.ntfs-3g.org/ntfs-3g-${PV}.tgz
 
 inherit autotools
