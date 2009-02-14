@@ -83,13 +83,15 @@ def create_cross_env(bb,d):
 
     #check if user has specified a specific icecc-create-env script
     #if not use the OE provided one
-    cr_env_script = bb.data.getVar('ICECC_ENV_EXEC',  d) or  bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
+    cr_env_script = bb.data.expand('${ICECC_ENV_EXEC}',  d)
+    if cr_env_script == "${ICECC_ENV_EXEC}":
+        cr_env_script = bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
     #call the modified create-env script
     result=os.popen("%s %s %s %s %s %s" %(cr_env_script,
            "--silent",
-           os.path.join(ice_dir,target_sys,'bin','gcc'),
-           os.path.join(ice_dir,target_sys,'bin','g++'),
-           os.path.join(ice_dir,target_sys,'bin','as'),
+           os.path.join(ice_dir, 'bin', "%s-gcc" % target_sys),
+           os.path.join(ice_dir, 'bin', "%s-g++" % target_sys),
+           os.path.join(ice_dir, 'bin', "%s-as" % target_sys),
            os.path.join(ice_dir,"ice",cross_name) ) )
     return tar_file
 
@@ -121,7 +123,9 @@ def create_native_env(bb,d):
 
     #check if user has specified a specific icecc-create-env script
     #if not use the OE provided one
-    cr_env_script = bb.data.getVar('ICECC_ENV_EXEC',  d) or  bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
+    cr_env_script = bb.data.expand('${ICECC_ENV_EXEC}',  d)
+    if cr_env_script == "${ICECC_ENV_EXEC}":
+        cr_env_script = bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
     result=os.popen("%s %s %s %s %s %s" %(cr_env_script,
            "--silent",
            os.popen("%s gcc" % "which").read()[:-1],
@@ -290,9 +294,9 @@ def check_for_kernel(bb,d):
 
 
 set_icecc_env() {
-    ICECC_PATH=${@icc_path(bb,d)}
-    if test x${ICECC_PATH} != x; then
-	export PATH=${ICECC_PATH}$PATH
+    ICE_PATH=${@icc_path(bb,d)}
+    if test x${ICE_PATH} != x; then
+	export PATH=${ICE_PATH}$PATH
 	export CCACHE_PATH=$PATH
         #check if we are building a kernel and select gcc-cross-kernel
         if [ "${@check_for_kernel(bb,d)}" = "yes" ]; then
