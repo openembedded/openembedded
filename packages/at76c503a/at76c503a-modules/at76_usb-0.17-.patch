@@ -1,0 +1,66 @@
+--- at76_usb-0.17/at76_usb.c	2007-09-30 09:21:38.000000000 +0200
++++ at76_usb-0.17.1/at76_usb.c	2008-12-02 17:29:15.000000000 +0100
+@@ -2327,7 +2327,7 @@
+ 		iwe->cmd = SIOCGIWAP;
+ 		iwe->u.ap_addr.sa_family = ARPHRD_ETHER;
+ 		memcpy(iwe->u.ap_addr.sa_data, curr_bss->bssid, 6);
+-		curr_pos = iwe_stream_add_event(curr_pos,
++		curr_pos = iwe_stream_add_event(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						IW_EV_ADDR_LEN);
+ 
+@@ -2335,7 +2335,7 @@
+ 		iwe->cmd = SIOCGIWESSID;
+ 		iwe->u.data.flags = 1;
+ 
+-		curr_pos = iwe_stream_add_point(curr_pos,
++		curr_pos = iwe_stream_add_point(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						curr_bss->ssid);
+ 
+@@ -2346,14 +2346,14 @@
+ 		    IW_MODE_MASTER : IW_MODE_AUTO;
+ 		/* IW_MODE_AUTO = 0 which I thought is
+ 		 * the most logical value to return in this case */
+-		curr_pos = iwe_stream_add_event(curr_pos,
++		curr_pos = iwe_stream_add_event(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						IW_EV_UINT_LEN);
+ 
+ 		iwe->cmd = SIOCGIWFREQ;
+ 		iwe->u.freq.m = curr_bss->channel;
+ 		iwe->u.freq.e = 0;
+-		curr_pos = iwe_stream_add_event(curr_pos,
++		curr_pos = iwe_stream_add_event(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						IW_EV_FREQ_LEN);
+ 
+@@ -2364,7 +2364,7 @@
+ 			iwe->u.data.flags = IW_ENCODE_DISABLED;
+ 
+ 		iwe->u.data.length = 0;
+-		curr_pos = iwe_stream_add_point(curr_pos,
++		curr_pos = iwe_stream_add_point(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						NULL);
+ 
+@@ -2383,7 +2383,7 @@
+ 			iwe->u.qual.updated |= IW_QUAL_QUAL_INVALID;
+ 		}
+ 		/* Add new value to event */
+-		curr_pos = iwe_stream_add_event(curr_pos,
++		curr_pos = iwe_stream_add_event(info, curr_pos,
+ 						extra + IW_SCAN_MAX_DATA, iwe,
+ 						IW_EV_QUAL_LEN);
+ 
+@@ -2401,8 +2401,8 @@
+ 			iwe->u.bitrate.value =
+ 			    ((curr_bss->rates[i] & 0x7f) * 500000);
+ 			/* Add new value to event */
+-			curr_val = iwe_stream_add_value(curr_pos, curr_val,
+-							extra +
++			curr_val = iwe_stream_add_value(info, curr_pos,
++							curr_val, extra +
+ 							IW_SCAN_MAX_DATA, iwe,
+ 							IW_EV_PARAM_LEN);
+ 		}

@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r62"
+PR = "r63"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -49,6 +49,7 @@ SLUGOS_PACKAGES = "\
 	bison \
 	bluez-utils \
 	bluez-hcidump \
+	bluez4 \
 	bogofilter \
 	bonnie++ \
 	boost \
