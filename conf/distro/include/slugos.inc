@@ -92,9 +92,7 @@ FULL_OPTIMIZATION = "-fexpensive-optimizations -fomit-frame-pointer -frename-reg
 # We need to keep OABI compat for things like madwifi-ng.
 ARM_KEEP_OABI = "1"
 
-# We may wish to experiment with this as a further performance improvement, but
-# small steps at a time are the best strategy.
-#TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
+TARGET_LINK_HASH_STYLE = "-Wl,--hash-style=gnu"
 
 CXXFLAGS += "-fvisibility-inlines-hidden"
 
