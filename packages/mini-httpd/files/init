@@ -1,0 +1,70 @@
+#! /bin/sh
+
+# Globals
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=/usr/sbin/mini_httpd
+NAME=mini-httpd
+DESC="web server"
+# Additional options that are passed to the Daemon.
+DAEMON_OPTS="-C /etc/mini-httpd.conf"
+
+test -x $DAEMON || exit 0
+
+# Include mini-httpd defaults if available
+if [ -f /etc/default/mini-httpd ]
+then
+	. /etc/default/mini-httpd
+fi
+
+set -e
+
+case "$1" in
+  start)
+	echo -n "Starting $DESC: "
+	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+		--exec $DAEMON -- $DAEMON_OPTS
+	echo "$NAME."
+	;;
+
+  stop)
+	echo -n "Stopping $DESC: "
+	# Get pid number
+	if [ -e /var/run/$NAME.pid ]
+	then
+		PID=`cat /var/run/$NAME.pid`
+		if [ -d /proc/$PID ]
+		then
+			start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid
+		else
+			# we need to remove the pidfile manually
+			if [ -e /var/run/$NAME.pid ]
+			then
+				rm -f /var/run/$NAME.pid
+			fi
+		fi
+	fi
+	echo "$NAME."
+	;;
+
+  restart|force-reload)
+	echo -n "Restarting $DESC: "
+	if [ "$START" = "0" ]
+	then
+		start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+			--exec $DAEMON -- $DAEMON_OPTS
+	fi
+	sleep 1
+	start-stop-daemon --start --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+	echo "$NAME."
+	;;
+
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0
+
