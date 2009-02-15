@@ -1,0 +1,13 @@
+diff -NurpP --minimal mini_httpd-1.19/Makefile mini_httpd-1.19-new/Makefile
+--- mini_httpd-1.19/Makefile	2008-10-06 15:45:44.000000000 +0800
++++ mini_httpd-1.19-new/Makefile	2008-10-06 15:46:11.000000000 +0800
+@@ -22,7 +22,7 @@ CRYPT_LIB =    -lcrypt
+ 
+ BINDIR =	/usr/sbin
+ MANDIR =	/usr/share/man
+-CC =		gcc
++#CC =		gcc
+ CDEFS =		${SSL_DEFS} ${SSL_INC}
+ CFLAGS =	-O ${CDEFS}
+ #CFLAGS =	-g ${CDEFS}
+
