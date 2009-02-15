@@ -4,14 +4,33 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "vala-native dbus dbus-glib libgsm0710"
 LICENSE = "GPL"
-PV = "0.2.1+gitr${SRCREV}"
+PV = "0.3.0+gitr${SRCREV}"
 PR = "r0"
 
-SRC_URI = "${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master"
+SRC_URI = "\
+  ${FREESMARTPHONE_GIT}/fso-abyss.git;protocol=git;branch=master \
+  file://abyss.conf \
+"
 S = "${WORKDIR}/git"
 
 inherit autotools
 
-#RCONFLICTS = "gsm0710muxd fso-gsm0710muxd"
+do_install_append() {
+	install -d ${D}${sysconfdir}
+	install -m 0644 ${WORKDIR}/abyss.conf ${D}${sysconfdir}/
+}
 
-FILES_${PN} += "${datadir} ${sysconfdir}"
+PACKAGES =+ "${PN}-config"
+
+FILES_${PN} += "${sysconfdir} ${datadir}"
+RRECOMMENDS_${PN} = "${PN}-config"
+
+FILES_${PN}-config = "\
+  ${sysconfdir}/abyss.conf \
+"
+
+CONFFILES_${PN}-config = "\
+  ${sysconfdir}/abyss.conf \
+"
+
+PACKAGE_ARCH_${PN} = "${BASE_PACKAGE_ARCH}"
