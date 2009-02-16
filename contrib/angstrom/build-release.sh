@@ -60,7 +60,7 @@ done
 
 
 # No graphics
-for machine in dns323 mv2120 kuropro lspro tsx09 ts409 gumstix-connex gumstix-verdex efika dht-walnut omap5912osk
+for machine in dns323 mv2120 kuropro lspro tsx09 ts409 gumstix-connex gumstix-verdex efika dht-walnut omap5912osk afeb9260
 do
 	BUILD_MACHINE=$machine
 	BUILD_CLEAN="base-files"
@@ -86,7 +86,7 @@ done
 
 
 # graphics, flash storage
-for machine in overo omap3-pandora beagleboard omap3evm om-gta01 om-gta02 a780 at91sam9263ek qemuarm qemux86 h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad 
+for machine in overo omap3-pandora beagleboard omap3evm om-gta01 om-gta02 a780 at91sam9263ek qemuarm qemux86 h2200 h3900 h4000 h5000 poodle tosa hx4700 c7x0 spitz akita collie simpad palmz72
 do
 	BUILD_CLEAN="base-files"
 	BUILD_MACHINE=$machine
@@ -120,7 +120,7 @@ do
 done
 
 # Opie
-for machine in h2200 h3900 h4000 h5000 hx4700 htcuniversal akita c7x0 collie poodle spitz tosa simpad
+for machine in h2200 h3900 h4000 h5000 hx4700 htcuniversal akita c7x0 collie poodle spitz tosa simpad palmz72
 do
         BUILD_CLEAN="base-files"
         BUILD_MACHINE=$machine
