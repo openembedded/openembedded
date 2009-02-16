@@ -181,6 +181,7 @@ do
                       lighttpd \
                       links-x11 \
                       lirc \
+                      lowpan-utils \
                       m4 \
                       madplay \
                       mahjongg \
@@ -299,6 +300,7 @@ do
                       w3cat \
                       wifi-radar \
                       win4 \
+                      wireshark \
                       wpa-gui \
                       wt \
                       x11vnc \
