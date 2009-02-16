@@ -23,3 +23,5 @@ EXTRA_OECONF = "--enable-amulecmd \
 
 FILES_${PN} += " \
         ${libdir}/xchat"
+
+LDFLAGS += "-ldl"
