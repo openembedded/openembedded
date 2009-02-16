@@ -26,6 +26,8 @@ TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
 TARGET_beagleboard = " o3530_al"
 
+export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
+
 do_compile() {
 	cd packages/ti/sdo/dmai
 	oe_runmake clean
