@@ -8,6 +8,8 @@ PR = "r1"
 
 inherit efl
 
+#SRC_URI += "file://fix-directfb-include.patch;patch=1"
+
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
 PACKAGES += "\
