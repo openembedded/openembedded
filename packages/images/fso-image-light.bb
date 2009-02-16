@@ -2,7 +2,7 @@
 # freesmartphone.org Image Recipe, Light Edition
 #------------------------------------------------------
 
-require fso-image.bb
+require fso-image.inc
 
 IMAGE_LINGUAS = ""
 

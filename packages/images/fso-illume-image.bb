@@ -2,7 +2,7 @@
 # FSO-compliant Illume Image Recipe
 #------------------------------------------------------
 
-require fso-image.bb
+require fso-image.inc
 
 PV = "1.1"
 PR = "r1"

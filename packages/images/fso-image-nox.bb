@@ -4,7 +4,7 @@
 
 PR = "r1.0"
 
-require fso-image.bb
+require fso-image.inc
 
 export IMAGE_BASENAME = "fso-image-nox"
 
