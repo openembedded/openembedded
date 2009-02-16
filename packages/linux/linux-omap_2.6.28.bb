@@ -7,6 +7,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_beagleboard = "1"
+DEFAULT_PREFERENCE_overo = "1"
 
 SRCREV = "79d042a081d3e467c735bb0d9569ed6296f85a3c"
 
@@ -47,17 +48,21 @@ SRC_URI_append = " \
            file://0013-DSS-OMAPFB-remove-extra-spaces.patch;patch=1 \
            file://0014-DSS-fix-clk_get_usecount.patch;patch=1 \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
-           file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
            file://0001-board-omap3beagle-set-i2c-3-to-100kHz.patch;patch=1 \
            file://add-resizer-driver.patch;patch=1 \
 "
 
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
+           file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
 			     "
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \
+"
+
+SRC_URI_append_overo = " \
+	file://overo-ehci.patch;patch=1 \
 "
 
 S = "${WORKDIR}/git"

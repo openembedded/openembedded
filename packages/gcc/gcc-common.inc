@@ -7,8 +7,11 @@ inherit autotools gettext
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 
+# When making a Canadian SDK, we use these files too to make the compiler
+# for building for the new host part.  So only obey TARGET_FPU for the
+# real target.
 def get_gcc_fpu_setting(bb, d):
-    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
+    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ] and bb.data.getVar('TARGET_OS', d, 1) in [ 'linux' ]:
         return "--with-float=soft"
     return ""
 
