@@ -5,7 +5,7 @@
 
 require vlc.inc
 
-PR = "r2"
+PR = "r3"
 
 # ffmpeg from git (library version => 52) is required
 # libtool-native must be >= 2.2.4

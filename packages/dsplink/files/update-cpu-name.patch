@@ -1,0 +1,16 @@
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Cpu.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/Cpu.c	2009-02-12 09:34:22.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Cpu.c	2009-02-12 09:34:51.000000000 -0600
+@@ -103,7 +103,10 @@
+     else if (strcmp(valBuf, "DM357 EVM") == 0) { 
+         *device = Cpu_Device_DM6446;
+     }
+-    else if (strcmp(valBuf, "OMAP3EVM Board") == 0) {
++    else if ((strcmp(valBuf, "OMAP3EVM Board") == 0) ||
++	     (strcmp(valBuf, "OMAP3 EVM") == 0) ||
++	     (strcmp(valBuf, "OMAP3 Beagle Board") == 0)
++	    ){
+         *device = Cpu_Device_OMAP3530;
+     }
+     else {

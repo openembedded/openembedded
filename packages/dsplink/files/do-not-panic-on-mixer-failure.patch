@@ -1,0 +1,31 @@
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Sound_alsa.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/Sound_alsa.c	2009-02-11 19:19:23.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Sound_alsa.c	2009-02-11 19:19:25.000000000 -0600
+@@ -139,7 +139,7 @@
+ 
+     snd_mixer_selem_id_free (sid);
+     snd_mixer_close (rcMixer);
+-
++      
+     return Dmai_EOK;
+ }
+ 
+@@ -431,14 +431,13 @@
+             Sound_alsa_delete(hSound);
+             return NULL;
+         }
+-
++        
+         if (setMixerVolume (attrs) <0) {
+-            Sound_alsa_delete (hSound);
+-            return NULL;
++            Dmai_dbg2("Failed to set the mixer volume on %s (%s)\n",
++                AUDIO_DEVICE, snd_strerror(status));
+         }
+     }
+ 
+-
+     return hSound;
+ }
+ 

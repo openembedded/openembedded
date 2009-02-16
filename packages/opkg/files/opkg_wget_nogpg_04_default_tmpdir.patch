@@ -1,0 +1,20 @@
+# This patch moves the default tmpdir from /tmp, which is
+# normally an in-memory filesystem to /root, which is not.
+# This is desirable on very small-memory systems -- for
+# example, the ipk for samba is nearly 20MB in size, and
+# simply won't fit in /tmp, and attempting to do so very
+# often causes a silent failure due to the OOM killer.
+#
+# Mike Westerhof, Feb 2009
+#
+--- orig/libopkg/opkg_conf.h	2009-02-13 21:56:27.000000000 -0600
++++ opkg/libopkg/opkg_conf.h	2009-02-13 21:56:39.000000000 -0600
+@@ -28,7 +28,7 @@ typedef struct opkg_conf opkg_conf_t;
+ #include "pkg_dest_list.h"
+ #include "nv_pair_list.h"
+
+-#define OPKG_CONF_DEFAULT_TMP_DIR_BASE "/tmp"
++#define OPKG_CONF_DEFAULT_TMP_DIR_BASE "/root"
+ #define OPKG_CONF_TMP_DIR_SUFFIX "opkg-XXXXXX"
+ #define OPKG_CONF_LISTS_DIR  OPKG_STATE_DIR_PREFIX "/lists"
+ #define OPKG_CONF_PENDING_DIR OPKG_STATE_DIR_PREFIX "/pending"

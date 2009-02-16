@@ -1,0 +1,127 @@
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display_v4l2.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/Display_v4l2.c	2009-02-11 19:22:51.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/Display_v4l2.c	2009-02-11 19:27:02.000000000 -0600
+@@ -120,7 +120,9 @@
+     struct v4l2_format         fmt;
+     enum v4l2_buf_type         type;
+     Display_Handle             hDisplay;
+-    Int                        channel;
++#if defined(Dmai_Device_omap3530) && defined(V4L2_CID_ROTATION)
++    struct v4l2_control        control;
++#endif
+ 
+     assert(attrs);
+ 
+@@ -134,44 +136,6 @@
+ 
+     hDisplay->userAlloc = TRUE;
+ 
+-#ifdef Dmai_Device_omap3530
+-    /* channel = 0 - digital video path
+-     * channel = 1 - analog video path
+-     */
+-    switch (attrs->videoOutput) {
+-        case Display_Output_SVIDEO:
+-        case Display_Output_COMPOSITE:
+-            channel = 1;
+-            break;
+-        case Display_Output_DVI:
+-        case Display_Output_LCD:
+-        case Display_Output_SYSTEM:
+-            channel = 0;
+-            break;
+-        default:
+-            /* do nothing */
+-            break;
+-    }
+-#else
+-    if (strcmp(attrs->displayDevice, "/dev/video2") == 0) {
+-        channel = 0;
+-    }
+-    else if (strcmp(attrs->displayDevice, "/dev/video3") == 0) {
+-        channel = 1;
+-    }
+-    else {
+-        Dmai_err1("%s not a display device\n", attrs->displayDevice);
+-        cleanup(hDisplay);
+-        return NULL;
+-    }
+-#endif
+-
+-    /* Set up the sysfs variables before opening the display device */
+-    if (_Display_sysfsSetup(attrs, channel) < 0) {
+-        cleanup(hDisplay);
+-        return NULL;
+-    }
+-
+     /* Open video capture device */
+     hDisplay->fd = open(attrs->displayDevice, O_RDWR, 0);
+ 
+@@ -182,9 +146,8 @@
+         return NULL;
+     }
+ 
+-#ifdef Dmai_Device_omap3530
+-#define VIDIOC_S_OMAP2_ROTATION     _IOW ('V', 3,  int)
+-
++    
++#if defined(Dmai_Device_omap3530) && defined(V4L2_CID_ROTATION)
+     if (attrs->rotation != 0 && attrs->rotation != 90 &&
+         attrs->rotation != 180 && attrs->rotation != 270) {
+ 
+@@ -193,49 +156,16 @@
+         return NULL;
+     }
+ 
+-    if (ioctl(hDisplay->fd, VIDIOC_S_OMAP2_ROTATION, &attrs->rotation) < 0) {
+-        Dmai_err2("Failed VIDIOC_S_OMAP2_ROTATION on %s (%s)\n",
++    control.id = V4L2_CID_ROTATION;
++    control.value = attrs->rotation;
++
++    if (ioctl(hDisplay->fd, VIDIOC_S_CTRL, &control) < 0) {
++        Dmai_err2("Failed VIDIOC_S_CTRL on %s (%s)\n",
+                   attrs->displayDevice, strerror(errno));
+         cleanup(hDisplay);
+         return NULL;
+     }
+ 
+-    switch (attrs->videoStd) {
+-        case VideoStd_D1_NTSC:
+-            fmt.fmt.pix.width = VideoStd_D1_WIDTH;
+-            fmt.fmt.pix.height = VideoStd_D1_NTSC_HEIGHT;
+-            break;
+-        case VideoStd_D1_PAL:
+-            fmt.fmt.pix.width = VideoStd_D1_WIDTH;
+-            fmt.fmt.pix.height = VideoStd_D1_PAL_HEIGHT;
+-            break;
+-        case VideoStd_VGA:
+-            fmt.fmt.pix.width = VideoStd_VGA_WIDTH;
+-            fmt.fmt.pix.height = VideoStd_VGA_HEIGHT;
+-            break;
+-        case VideoStd_480P:
+-            fmt.fmt.pix.width = VideoStd_480P_WIDTH;
+-            fmt.fmt.pix.height = VideoStd_480P_HEIGHT;
+-            break;
+-        case VideoStd_720P_60:
+-            fmt.fmt.pix.width = VideoStd_480P_WIDTH;
+-            fmt.fmt.pix.height = VideoStd_480P_HEIGHT;
+-            break;
+-        default:
+-            Dmai_err1("Unknown video standard %d\n", attrs->videoStd);
+-            cleanup(hDisplay);
+-            return NULL;
+-    }
+-
+-    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_UYVY;
+-    fmt.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+-
+-    if (ioctl(hDisplay->fd, VIDIOC_S_FMT, &fmt) == -1) {
+-        Dmai_err2("Failed VIDIOC_S_FMT on %s (%s)\n", attrs->displayDevice,
+-                                                      strerror(errno));
+-        cleanup(hDisplay);
+-        return NULL;
+-    }
+ #endif /* Dmai_Device_omap3530 */
+ 
+     /* Determine the video image dimensions */

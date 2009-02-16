@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r12"
+PR = "r15"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -12,6 +12,7 @@ SRC_URI = "\
   file://udhcpscript.patch;patch=1 \
   file://udhcpc-fix-nfsroot.patch;patch=1 \
   file://B921600.patch;patch=1 \
+  file://get_header_tar.patch;patch=1 \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
@@ -19,6 +20,7 @@ SRC_URI = "\
   file://default.script \
   file://hwclock.sh \
   file://mount.busybox \
+  file://mountall \
   file://syslog \
   file://syslog.conf \
   file://umount.busybox \
@@ -31,6 +33,9 @@ EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
 do_configure () {
 	install -m 0644 ${WORKDIR}/defconfig ${S}/.config
+	if [ "${TARGET_ARCH}" = "avr32" ] ; then
+		sed -i s:CONFIG_FEATURE_OSF_LABEL=y:CONFIG_FEATURE_OSF_LABEL=n: ${S}/.config
+	fi
 	cml1_do_configure
 }
 

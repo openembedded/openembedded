@@ -6,10 +6,13 @@ SRC_URI += "file://configure.patch;patch=1 \
 
 PR = "r7"
 
-PACKAGES =+ " smbfs-doc"
+EXTRA_OECONF += "\
+	--with-smbmount \
+	"
 
+PACKAGES =+ " smbfs smbfs-doc"
 RCONFLICTS_smbfs-doc = "smbfs-ads-doc"
-
+FILES_smbfs = "${bindir}/smbmount ${bindir}/smbumount ${bindir}/smbmnt ${base_sbindir}/mount.smbfs ${base_sbindir}/mount.smb"
 FILES_smbfs-doc = "${mandir}/man8/smbmount.8 ${mandir}/man8/smbumount.8 ${mandir}/man8/smbmnt.8"
 
 do_compile () {

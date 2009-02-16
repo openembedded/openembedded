@@ -1,0 +1,11 @@
+diff -Nurd neon-0.25.5/macros/neon.m4 neon-0.25.5-patched/macros/neon.m4
+--- neon-0.25.5/macros/neon.m4	2009-02-03 16:23:40.000000000 +0100
++++ neon-0.25.5-patched/macros/neon.m4	2009-02-03 16:24:00.000000000 +0100
+@@ -895,6 +895,7 @@
+    1.0.?|1.0.1?|1.0.20|1.0.21) 
+       AC_MSG_ERROR([GNU TLS version $ne_gnutls_ver is too old -- 1.0.22 or later required]) ;;
+    1.*) ;;
++   2.*) ;;
+    *) AC_MSG_ERROR([GNU TLS version $ne_gnutls_ver is not supported]) ;;
+    esac
+ 

@@ -1,0 +1,48 @@
+Index: dmai_1_20_00_06/packages/config.bld
+===================================================================
+--- dmai_1_20_00_06.orig/packages/config.bld	2009-02-11 19:38:51.000000000 -0600
++++ dmai_1_20_00_06/packages/config.bld	2009-02-11 19:39:23.000000000 -0600
+@@ -42,7 +42,7 @@
+ 
+ /* location of the Codec Sourcery Arm9 tools */
+ var GCArmv5T = xdc.useModule('gnu.targets.arm.GCArmv5T');
+-GCArmv5T.LONGNAME = 'bin/arm-none-linux-gnueabi-gcc';
++GCArmv5T.LONGNAME = 'bin/arm-angstrom-linux-gnueabi-gcc';
+ GCArmv5T.platform = "ti.platforms.evm3530";
+ GCArmv5T.rootDir = java.lang.System.getenv("CSTOOL_DIR");
+ 
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/Makefile
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/Makefile	2009-02-11 19:39:57.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/Makefile	2009-02-11 19:58:05.000000000 -0600
+@@ -33,7 +33,7 @@
+ DMAI_INSTALL_DIR = ../../../..
+ TARGET = dmai
+ 
+-include $(DMAI_INSTALL_DIR)/Rules.make
++#include $(DMAI_INSTALL_DIR)/Rules.make
+ 
+ # Should the full command be echoed to the console during build?
+ VERBOSE=false
+@@ -64,7 +64,7 @@
+ MVL_CPP_FLAGS		= $(GNU_CPP_FLAGS) -Dxdc_target_name__=MVArm9
+ CS_CPP_FLAGS		= $(GNU_CPP_FLAGS) -Dxdc_target_name__=codesourcery/GCArmv5T
+ 
+-GNU_C_FLAGS		= $(C_FLAGS) -Wall -Werror
++GNU_C_FLAGS		= $(C_FLAGS) -Wall
+ C64P_C_FLAGS		= $(C_FLAGS)
+ 
+ GNU_AR_FLAGS		= $(AR_FLAGS)
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/apps/Makefile.app
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/apps/Makefile.app	2009-02-11 19:58:44.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/apps/Makefile.app	2009-02-11 19:59:01.000000000 -0600
+@@ -34,7 +34,7 @@
+ ifndef DMAI_INSTALL_DIR
+     DMAI_INSTALL_DIR = ../../../../../..
+ endif
+-include $(DMAI_INSTALL_DIR)/Rules.make
++#include $(DMAI_INSTALL_DIR)/Rules.make
+ 
+ # Should the full command be echoed to the console during build?
+ VERBOSE=false

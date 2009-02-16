@@ -1,7 +1,6 @@
 #Angstrom X11 image, with apps and kernel modules included
 
 ANGSTROM_EXTRA_INSTALL += " \
-                           ${@base_contains("MACHINE_FEATURES", "phone", "openmoko-dialer2", "",d)} \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
 

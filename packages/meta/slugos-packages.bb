@@ -5,7 +5,7 @@
 DESCRIPTION = "Packages that are compatible with the SlugOS firmware"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r60"
+PR = "r63"
 CONFLICTS = "db3"
 
 COMPATIBLE_MACHINE = "nslu2|ixp4xx"
@@ -49,6 +49,7 @@ SLUGOS_PACKAGES = "\
 	bison \
 	bluez-utils \
 	bluez-hcidump \
+	bluez4 \
 	bogofilter \
 	bonnie++ \
 	boost \
@@ -163,6 +164,7 @@ SLUGOS_PACKAGES = "\
 	ncftp \
 	ncurses \
 	net-tools \
+	netatalk \
 	netcat \
 	netpbm \
 	nfs-utils \
@@ -207,6 +209,7 @@ SLUGOS_PACKAGES = "\
 	spandsp \
 	sqlite \
 	squid \
+	sshfs-fuse \
 	ssmtp \
 	strace \
 	streamripper \
@@ -259,7 +262,6 @@ SLUGOS_BROKEN_PACKAGES = "\
 	lirc-modules lirc \
 	madfu \
 	motion \
-	netatalk \
 	openldap \
 	postfix \
 	pvrusb2-mci \

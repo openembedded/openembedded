@@ -2,9 +2,7 @@ DESCRIPTION = "Python GObject bindings"
 SECTION = "devel/python"
 LICENSE = "LGPL"
 DEPENDS = "python-pygobject-native-${PV}"
-PR = "ml1"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "ml2"
 
 MAJ_VER = "${@bb.data.getVar('PV',d,1).split('.')[0]}.${@bb.data.getVar('PV',d,1).split('.')[1]}"
 
@@ -31,6 +29,8 @@ do_stage() {
 }
 
 PACKAGES += "${PN}-lib"
+
+RDEPENDS_${PN} += "python-textutils"
 
 FILES_${PN} = "${libdir}/python*"
 FILES_${PN}-lib = "${libdir}/lib*.so.*"

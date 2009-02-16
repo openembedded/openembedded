@@ -1,0 +1,17 @@
+Index: dmai_1_20_00_06/packages/ti/sdo/dmai/linux/omap3530/Resize.c
+===================================================================
+--- dmai_1_20_00_06.orig/packages/ti/sdo/dmai/linux/omap3530/Resize.c	2009-02-11 19:20:45.000000000 -0600
++++ dmai_1_20_00_06/packages/ti/sdo/dmai/linux/omap3530/Resize.c	2009-02-11 19:21:09.000000000 -0600
+@@ -557,9 +557,9 @@
+     srcOffset = srcDim.y * srcDim.lineLength + srcDim.x * 2;
+     dstOffset = dstDim.y * dstDim.lineLength + dstDim.x * 2;
+ 
+-    /* Input and output buffers must be 4096 bytes aligned */
+-    assert(((Buffer_getPhysicalPtr(hDstBuf) + srcOffset) & 0xFFF) == 0);
+-    assert(((Buffer_getPhysicalPtr(hSrcBuf) + dstOffset) & 0xFFF) == 0);
++    /* Pointers must be a multiple of 32 bytes */
++    assert((Buffer_getPhysicalPtr(hDstBuf) & 0x1F) == 0);
++    assert((Buffer_getPhysicalPtr(hSrcBuf) & 0x1F) == 0);
+ 
+     /* Queue the resizer buffers */
+     for (i=0; i < 2; i++) { 

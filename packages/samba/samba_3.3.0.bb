@@ -12,7 +12,7 @@ SRC_URI += "file://configure-3.3.0.patch;patch=1 \
             file://mtab.patch;patch=1 \
 	        "
 
-PR = "r1"
+PR = "r2"
 
 EXTRA_OECONF += "\
 	SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \

@@ -129,6 +129,10 @@ do_install () {
 		install -m 0755 ${S}/examples/udhcp/simple.script ${D}${sysconfdir}/udhcpc.d/50default
 		install -m 0755 ${WORKDIR}/default.script ${D}${datadir}/udhcpc/default.script
 	fi
+	if grep "CONFIG_FEATURE_MOUNT_FSTAB=y" ${WORKDIR}/defconfig; then
+		install -d ${D}${sysconfdir}/default
+		install -m 644 ${WORKDIR}/mountall ${D}${sysconfdir}/default/
+	fi
 
 	install -m 0644 ${S}/busybox.links ${D}${sysconfdir}
 }

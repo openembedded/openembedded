@@ -5,7 +5,7 @@ ARM_INSTRUCTION_SET = "arm"
 PACKAGES_DYNAMIC = "libc6*"
 RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
 
-PR = "r8"
+PR = "r9"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
@@ -60,12 +60,14 @@ SRC_URI = "ftp://ftp.gnu.org/pub/gnu/glibc/glibc-${PV}.tar.bz2 \
 	   file://glibc-arm-IO-acquire-lock-fix.diff;patch=1 \
 	   file://all_glibc-i586-chk.patch;patch=1 \
 	   file://glibc-2.6.1-use-short-for-fnstsw.patch;patch=1 \
+           file://glibc-use-isystem-include-fixed.patch;patch=1 \
 	   file://generic-bits_select.h \
 	   file://generic-bits_types.h \
 	   file://generic-bits_typesizes.h \
 	   file://generic-bits_time.h \
            file://etc/ld.so.conf \
-           file://generate-supported.mk"
+           file://generate-supported.mk \
+           "
 
 
 # Build fails on sh3 and sh4 without additional patches
