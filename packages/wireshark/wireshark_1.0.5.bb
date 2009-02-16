@@ -6,9 +6,11 @@ DEPENDS = "perl-native gnutls libpcap pcre expat glib-2.0 libsmi gtk+"
 EXTRA_OECONF = "--disable-usrlocal --with-pcap=${STAGING_DIR_HOST}${layout_prefix} \
                 --with-libsmi=${STAGING_DIR_HOST}${layout_prefix} --enable-tshark --enable-wireshark"
 
-PR = "r4"
+PR = "r5"
 
-SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/wireshark/wireshark-${PV}.tar.bz2 \
+           file://ieee80215.4.patch;patch=1"
+
 ARM_INSTRUCTION_SET = "arm"
 
 PACKAGES += "libwireshark1-dev libwireshark1 libwireshark1-dbg"
