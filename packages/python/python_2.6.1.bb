@@ -1,7 +1,7 @@
 require python.inc
 DEPENDS = "python-native db gdbm openssl readline sqlite3 tcl tk zlib"
 DEPENDS_sharprom = "python-native db readline zlib gdbm openssl"
-PR = "ml3"
+PR = "ml4"
 
 SRC_URI = "\
   http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.bz2 \
@@ -12,6 +12,7 @@ SRC_URI = "\
   file://04-default-is-optimized.patch;patch=1 \
   file://05-enable-ctypes-cross-build.patch;patch=1 \
   file://06-libffi-enable-default-mips.patch;patch=1 \
+  file://99-ignore-optimization-flag.patch;patch=1 \
   \
 # not yet pushed forward
 # sitecustomize, sitebranding
