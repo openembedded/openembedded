@@ -15,10 +15,6 @@ EXTRA_OECONF = "--disable-Werror ac_cv_func_calloc_0_nonnull=yes"
 
 inherit autotools pkgconfig
 
-do_configure_prepend() {
-	cp ${WORKDIR}/syscalls.h ${S}/libparted/arch/
-}
-
 do_stage() {
 	autotools_stage_all
 }
