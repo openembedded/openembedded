@@ -8,7 +8,7 @@ KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 OEV = "oe1"
 PV = "${KERNEL_RELEASE}-${OEV}+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   git://git.openmoko.org/git/kernel.git;protocol=git;branch=andy-tracking \
@@ -24,6 +24,10 @@ SRC_URI = "\
   file://defconfig-oe.patch \
 "
 S = "${WORKDIR}/git"
+
+CONFIG_NAME_om-gta01 = "gta01-moredrivers-defconfig"
+CONFIG_NAME_om-gta02 = "gta02-packaging-defconfig"
+CONFIG_NAME_om-gta03 = "gta03_defconfig"
 
 do_configure_prepend() {
 	install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe

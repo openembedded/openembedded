@@ -7,10 +7,6 @@ UBOOT_ENTRYPOINT = "30008000"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-gta03"
 
-CONFIG_NAME_om-gta01 = "gta01-moredrivers-defconfig"
-CONFIG_NAME_om-gta02 = "gta02-packaging-defconfig"
-
-CONFIG_NAME_om-gta03 = "gta03_defconfig"
 KERNEL_IMAGETYPE_om-gta03 = "zImage"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
