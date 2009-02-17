@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb-compat libusb1 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r0"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
