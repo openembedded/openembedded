@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r15"
+PR = "r16"
 
 SRC_URI = "\
   http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
@@ -13,6 +13,7 @@ SRC_URI = "\
   file://udhcpc-fix-nfsroot.patch;patch=1 \
   file://B921600.patch;patch=1 \
   file://get_header_tar.patch;patch=1 \
+  file://busybox-appletlib-dependency.patch;patch=1 \
   file://find-touchscreen.sh \
   file://busybox-cron \
   file://busybox-httpd \
