@@ -1,0 +1,13 @@
+--- /tmp/config.bld	2009-02-17 19:32:14.000000000 +0100
++++ dmai_1_20_00_06/packages/config.bld	2009-02-17 19:33:03.000000000 +0100
+@@ -46,6 +46,10 @@
+ GCArmv5T.platform = "ti.platforms.evm3530";
+ GCArmv5T.rootDir = java.lang.System.getenv("CSTOOL_DIR");
+ 
++GCArmv5T.cc.$unseal("opts");
++GCArmv5T.cc.opts = "SEDME_CCARCH";
++GCArmv5T.cc.$seal("opts");
++
+ /*
+  *  ======== Build.targets ========
+  * list of targets (ISAs + compilers) to build for
