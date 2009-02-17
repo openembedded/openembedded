@@ -26,7 +26,7 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 
 do_configure_prepend() {
-	install -m 644 ${CONFIG_NAME} ${WORKDIR}/defconfig-oe
+	install -m 644 ./arch/arm/configs/${CONFIG_NAME} ${WORKDIR}/defconfig-oe
 	cat ${WORKDIR}/defconfig-oe.patch | patch -p0 -d ${WORKDIR}
 }
 
