@@ -7,8 +7,6 @@ DEPENDS = "readline e2fsprogs-libs"
 PR = "r2"
 
 SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
-           file://syscalls.h \
-           file://syscalls.patch;patch=1 \
 	   file://use_llseek_syscall.patch;patch=1 \
 	   file://parted-1.8.x.patch;patch=1 \
 "
@@ -16,10 +14,6 @@ SRC_URI = "${GNU_MIRROR}/parted/parted-${PV}.tar.gz \
 EXTRA_OECONF = "--disable-Werror ac_cv_func_calloc_0_nonnull=yes"
 
 inherit autotools pkgconfig
-
-do_configure_prepend() {
-	cp ${WORKDIR}/syscalls.h ${S}/libparted/arch/
-}
 
 do_stage() {
 	autotools_stage_all
