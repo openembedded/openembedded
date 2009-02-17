@@ -1,0 +1,109 @@
+diff -Naur forte-0.3.orig/src/arch/netos/txsocha.cpp forte-0.3/src/arch/netos/txsocha.cpp
+--- forte-0.3.orig/src/arch/netos/txsocha.cpp	2008-07-10 07:33:44.000000000 +0000
++++ forte-0.3/src/arch/netos/txsocha.cpp	2008-09-24 13:29:32.000000000 +0000
+@@ -167,7 +167,7 @@
+   strcpy(ip, pa_stConnectionInformation.m_pcConnectionID);
+   sock_addr.sin_family = AF_INET;
+   sock_addr.sin_port = htons(atoi(splitString(ip)));
+-  memset(&(sock_addr.sin_zero), '\0', 8);
++  memset(&(sock_addr.sin_zero), '\0', sizeof(sock_addr.sin_zero));
+   fprintf(stderr,"CTXSocketHandler:: Opening TCP-Connection at IP: %s\n",pa_stConnectionInformation.m_pcConnectionID);
+ 
+   if ((sock_id = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1) {
+diff -Naur forte-0.3.orig/src/arch/pc/pcsochan.cpp forte-0.3/src/arch/pc/pcsochan.cpp
+--- forte-0.3.orig/src/arch/pc/pcsochan.cpp	2008-07-10 07:33:44.000000000 +0000
++++ forte-0.3/src/arch/pc/pcsochan.cpp	2008-09-30 10:23:36.000000000 +0000
+@@ -116,9 +116,9 @@
+   strcpy(ip, pa_stConnectionInformation.m_pcConnectionID);
+   sock_addr.sin_family = AF_INET;
+   sock_addr.sin_port = htons(atoi(splitString(ip)));
+-  memset(&(sock_addr.sin_zero), '\0', 8);
++  memset(&(sock_addr.sin_zero), '\0', sizeof(sock_addr.sin_zero));
+ 
+-  char acInfo[64] = { "CPCSocketHandler:: Opening TCP-Connection at IP: " };
++  char acInfo[128] = { "CPCSocketHandler:: Opening TCP-Connection at IP: " };
+   strcat(acInfo, pa_stConnectionInformation.m_pcConnectionID);
+   DEVLOG_INFO(cg_nID_CSocketHandler, 0x10, acInfo);
+ 
+@@ -130,6 +130,16 @@
+   }
+   // switch between client/server:
+   if (pa_stConnectionInformation.m_enServiceType == e_Server) {
++    unsigned int opt = 1;
++
++    if (setsockopt(sock_id, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
++    {
++      char acError[80] = { "TCP-Socket setsockopt() failed: " };
++      strcat(acError, strerror(errno));
++      DEVLOG_ERROR(cg_nID_CSocketHandler, 0x10, acError);
++      return -1;
++    }
++
+     sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+     if (bind(sock_id, (struct sockaddr *)&sock_addr, sizeof(struct sockaddr))
+         != 0) {
+@@ -191,8 +201,15 @@
+ int CPCSocketHandler::receiveDataOnTCP(SSocketHandlerListEntry &pa_stData) {
+   DEVLOG_INFO(cg_nID_CSocketHandler, 0x10, "CPCSocketHandler:: Entering ReceiveDataOnTCP\n");
+ 
++  int sock_id;
++
++  if (pa_stData.m_bAcceptedConnection)
++    sock_id = pa_stData.m_nAcceptID;
++  else
++    sock_id = pa_stData.m_nSocketID;
++
+   receveagain: pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_nFilledSize
+-      =recv(pa_stData.m_nAcceptID, pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_pcData, pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_nMaxSize, 0);
++      =recv(sock_id, pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_pcData, pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_nMaxSize, 0);
+ 
+   if (pa_stData.m_stConnectionInformation.m_pstRecvBuffer->m_nFilledSize == -1) {
+     if (errno == EINTR) {
+diff -Naur forte-0.3.orig/src/arch/pc/pctimeha.cpp forte-0.3/src/arch/pc/pctimeha.cpp
+--- forte-0.3.orig/src/arch/pc/pctimeha.cpp	2008-04-22 13:31:52.000000000 +0000
++++ forte-0.3/src/arch/pc/pctimeha.cpp	2008-10-08 12:27:09.000000000 +0000
+@@ -11,6 +11,7 @@
+ #include "pctimeha.h"
+ #include "../../core/devexec.h"
+ #include <time.h>
++#include <sys/time.h>
+ 
+ const TINT32 CPCTimerHandler::csm_nTicksPerSecond = 1000;
+ 
+@@ -28,14 +29,34 @@
+   disableHandler();
+ }
+ 
++static inline unsigned long long GetTicks(struct timeval* stTmVal, TINT32 ticksPerSecond)
++{
++  unsigned long long ret = stTmVal->tv_sec * 1000LL;// sec -> ms
++  ret += stTmVal->tv_usec/1000;// + us -> ms
++  ret /= 1000/ticksPerSecond; // ms -> ticks
++  return ret;
++}
++
+ bool CPCTimerHandler::run(){
+   struct timespec stReq;
++  struct timeval stTmNow;
++  unsigned long long tickStart;
++  unsigned long long tickNow;
++  unsigned long long tickCalled = 0;
+   stReq.tv_sec = 0;
+-  stReq.tv_nsec = 1000000 / (csm_nTicksPerSecond / 1000);
++  stReq.tv_nsec = 1000000000 / (csm_nTicksPerSecond);
++
++  gettimeofday(&stTmNow, NULL);
++  tickNow = tickStart = GetTicks(&stTmNow, csm_nTicksPerSecond);
+   
+   while(m_bAlive){
+-    nanosleep(&stReq, NULL);
++    if( (tickNow-tickStart) <= (tickCalled+1) ) {
++      nanosleep(&stReq, NULL);
++    }
+     nextTick(); 
++    ++tickCalled;
++    gettimeofday(&stTmNow, NULL);
++    tickNow = GetTicks(&stTmNow, csm_nTicksPerSecond);
+   } 
+   return true;
+ }
