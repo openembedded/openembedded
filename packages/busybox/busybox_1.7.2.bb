@@ -1,5 +1,5 @@
 require busybox.inc
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://busybox-cron \
@@ -12,6 +12,7 @@ SRC_URI = "http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
            file://syslog \
            file://syslog.conf \
            file://udhcpscript.patch;patch=1 \
+           file://busybox-appletlib-dependency.patch;patch=1 \
            file://umount.busybox \
            file://run_parts.c"
 
