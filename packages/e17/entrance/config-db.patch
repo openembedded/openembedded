@@ -1,7 +1,7 @@
-Index: entrance-0.9.0.009/data/config/build_config.sh.in
+Index: entrance/data/config/build_config.sh.in
 ===================================================================
---- entrance-0.9.0.009.orig/data/config/build_config.sh.in
-+++ entrance-0.9.0.009/data/config/build_config.sh.in
+--- entrance.orig/data/config/build_config.sh.in	2009-02-17 10:59:01.000000000 +0000
++++ entrance/data/config/build_config.sh.in	2009-02-17 13:45:06.000000000 +0000
 @@ -1,45 +1,45 @@
  #!/bin/sh -e
  
@@ -24,7 +24,26 @@ Index: entrance-0.9.0.009/data/config/build_config.sh.in
 -}
 -
 -SESSION_DIR=""
--DB="./entrance_config.cfg"
++#usage() {
++#	cat <<-EOF
++#	Usage: $0 [options]
++#
++#	Options:
++#	  -d, --dir     Session directory to scan
++#	  -c, --file    Config file (default: $DB)
++#	  -h, --help    This help output :p
++#	EOF
++#
++#	if [ "$1" = "1" ] ; then
++#		echo ""
++#		echo "ERROR: $2"
++#	fi
++#
++#	exit $1
++#}
++#
++#SESSION_DIR=""
+ DB="./entrance_config.cfg"
 -
 -while [ -n "$1" ] ; do
 -	case $1 in
@@ -45,26 +64,6 @@ Index: entrance-0.9.0.009/data/config/build_config.sh.in
 -	FROM="defaults"
 -fi
 -echo "Generating config file '$DB' from '$FROM' ..."
-+#usage() {
-+#	cat <<-EOF
-+#	Usage: $0 [options]
-+#
-+#	Options:
-+#	  -d, --dir     Session directory to scan
-+#	  -c, --file    Config file (default: $DB)
-+#	  -h, --help    This help output :p
-+#	EOF
-+#
-+#	if [ "$1" = "1" ] ; then
-+#		echo ""
-+#		echo "ERROR: $2"
-+#	fi
-+#
-+#	exit $1
-+#}
-+#
-+#SESSION_DIR=""
-+#DB="./entrance_config.cfg"
 +#
 +#while [ -n "$1" ] ; do
 +#	case $1 in
@@ -84,11 +83,11 @@ Index: entrance-0.9.0.009/data/config/build_config.sh.in
 +#if [ -z "$FROM" ] ; then
 +#	FROM="defaults"
 +#fi
-+#echo "Generating config file '$DB' from '$FROM' ..."
++echo "Generating config file '$DB' ..."
  
  rm -f $DB || exit 1
  
-@@ -59,10 +59,10 @@ ecore_config -c $DB -k /entrance/time_fo
+@@ -59,10 +59,10 @@
  #ecore_config -c $DB -k /entrance/fonts/0/-s -s "/usr/share/fonts/truetype/"
  #ecore_config -c $DB -k /entrance/fonts/1/-s -s "/usr/X11R6/lib/X11/fonts/Truetype/"
  ecore_config -c $DB -k /entrance/greeting/before -s "Welcome to"
@@ -101,7 +100,7 @@ Index: entrance-0.9.0.009/data/config/build_config.sh.in
  ecore_config -c $DB -k /entrance/session/0/title -s "Default"
  ecore_config -c $DB -k /entrance/session/0/icon -s "default.png"
  #if [ -z "$SESSION_DIR" ] ; then
-@@ -92,7 +92,7 @@ ecore_config -c $DB -k /entrance/session
+@@ -92,7 +92,7 @@
  #	done
  #fi
  count=`(expr $count + 1)`
@@ -110,10 +109,10 @@ Index: entrance-0.9.0.009/data/config/build_config.sh.in
  ecore_config -c $DB -k /entrance/session/$count/title -s "Failsafe"
  ecore_config -c $DB -k /entrance/session/$count/icon -s "failsafe.png"
  count=`(expr $count + 1)`
-@@ -107,5 +107,5 @@ ecore_config -c $DB -k /entrance/autolog
+@@ -107,5 +107,5 @@
  ecore_config -c $DB -k /entrance/presel/mode -i 1
  
  # for Entranced
--ecore_config -c $DB -k /entranced/xserver -s "@xbin@/X -quiet -nolisten tcp@ENTRANCE_VT_ARG@"
+-ecore_config -c $DB -k /entranced/xserver -s "@xbin@/X -quiet -br -nolisten tcp@ENTRANCE_VT_ARG@"
 +ecore_config -c $DB -k /entranced/xserver -s "/etc/X11/Xserver"
  ecore_config -c $DB -k /entranced/attempts -i 5
