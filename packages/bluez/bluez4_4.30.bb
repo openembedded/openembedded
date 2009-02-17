@@ -39,6 +39,12 @@ EXTRA_OECONF = "\
   --disable-pcmciarules \
 "
 
+do_install_append() {
+        install -m 0644 ${S}/audio/audio.conf ${D}/${sysconfdir}/bluetooth/
+        install -m 0644 ${S}/network/network.conf ${D}/${sysconfdir}/bluetooth/
+        install -m 0644 ${S}/input/input.conf ${D}/${sysconfdir}/bluetooth/
+}
+
 PACKAGES =+ "gst-plugin-bluez libasound-module-bluez"
 
 FILES_gst-plugin-bluez = "${libdir}/gstreamer-0.10/lib*.so"
