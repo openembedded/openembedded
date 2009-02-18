@@ -207,7 +207,7 @@ python package_do_split_gconvs () {
 		f.close()
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
-		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-gconv-%s' % group.lower(), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, pkg.replace('eglibc', 'glibc'), d)
 
 	do_split_packages(d, gconv_libdir, file_regex='^(.*)\.so$', output_pattern='eglibc-gconv-%s', description='gconv module for character set %s', hook=calc_gconv_deps, extra_depends='eglibc-gconv')
 
@@ -225,7 +225,7 @@ python package_do_split_gconvs () {
 		f.close()
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
-		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-charmap-%s' % group.lower(), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, pkg.replace('eglibc', 'glibc'), d)
 
 	do_split_packages(d, charmap_dir, file_regex='^(.*)\.gz$', output_pattern='eglibc-charmap-%s', description='character map for %s encoding', hook=calc_charmap_deps, extra_depends='')
 
@@ -243,7 +243,7 @@ python package_do_split_gconvs () {
 		f.close()
 		if deps != []:
 			bb.data.setVar('RDEPENDS_%s' % pkg, " ".join(deps), d)
-		bb.data.setVar('RPROVIDES_%s' % pkg, 'glibc-localedata-%s' % group.lower(), d)
+		bb.data.setVar('RPROVIDES_%s' % pkg, pkg.replace('eglibc', 'glibc'), d)
 
 	do_split_packages(d, locales_dir, file_regex='(.*)', output_pattern='eglibc-localedata-%s', description='locale definition for %s', hook=calc_locale_deps, extra_depends='')
 	bb.data.setVar('PACKAGES', bb.data.getVar('PACKAGES', d) + ' eglibc-gconv', d)
