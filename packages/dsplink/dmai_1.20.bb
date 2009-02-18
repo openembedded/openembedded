@@ -13,7 +13,6 @@ SRC_URI = "file://dmai_1_20_00_06.tar.gz \
 	   file://dmai-do-not-panic-on-mixer-failure.patch;patch=1 \
 	   file://dmai-support-32bit-align.patch;patch=1 \
 	   file://dmai-built-with-angstrom.patch;patch=1 \
-	   file://dmai-unbreak-xdc-args.patch;patch=1 \
    "
 
 S = "${WORKDIR}/dmai_1_20_00_06"
@@ -25,11 +24,23 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
 TARGET_beagleboard = " o3530_al"
+TARGET_omap3evm = " o3530_al"
 
 export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
 
+do_compile_prepend_omap3evm() {
+
+#temp removal of sources that fail to build
+	if [ -e packages/ti/sdo/dmai/linux/omap3530/Resize.c ]; then
+		rm packages/ti/sdo/dmai/linux/omap3530/Resize.c
+	fi
+
+        if [ -e packages/ti/sdo/dmai/linux/omap3530/Framecopy_accel.c ]; then
+                rm packages/ti/sdo/dmai/linux/omap3530/Framecopy_accel.c
+        fi
+}
+
 do_compile() {
-	sed -i -e s:SEDME_CCARCH:'${TARGET_CCARCH}': ${S}/packages/config.bld 	
 	cd packages/ti/sdo/dmai
 	oe_runmake clean
 	oe_runmake ${TARGET} C_FLAGS="-O2 -I${STAGING_INCDIR}"
