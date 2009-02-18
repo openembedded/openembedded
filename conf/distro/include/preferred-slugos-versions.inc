@@ -32,6 +32,7 @@ SRCREV_pn-opkg-sdk    = "160"
 ### may include preferred versions for toolchain components.
 
 PREFERRED_VERSION_automake-native		?= "1.10"
+PREFERRED_VERSION_avahi				?= "0.6.23"
 PREFERRED_VERSION_binutils			?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross		?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross-sdk		?= "2.18.50.0.7"
@@ -59,6 +60,7 @@ PREFERRED_VERSION_netatalk			?= "2.0.3"
 PREFERRED_VERSION_nslu2-linksys-firmware	?= "2.3r63"
 PREFERRED_VERSION_pkgconfig			?= "0.23"
 PREFERRED_VERSION_pkgconfig-native		?= "0.23"
+PREFERRED_VERSION_tiff				?= "3.7.2"
 PREFERRED_VERSION_udev				?= "118"
 
 ##################### Stuff with special notes, and broken stuff:
