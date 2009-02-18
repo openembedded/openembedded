@@ -5,7 +5,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r19"
+PR = "r21"
 
 FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/${P}', '${FILE_DIRNAME}/initscripts-${PV}', '${FILE_DIRNAME}/files', '${FILE_DIRNAME}' ], d)}"
 
@@ -43,7 +43,6 @@ do_install () {
 	install -m 0755    ${WORKDIR}/rmnologin	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/sendsigs		${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/single		${D}${sysconfdir}/init.d
-	install -m 0755    ${WORKDIR}/umountnfs.sh	${D}${sysconfdir}/init.d
 	install -m 0755    ${WORKDIR}/bootup  ${D}${sysconfdir}/init.d
 
 	install -m 0755    ${WORKDIR}/var.tar.gz.default ${D}${sysconfdir}/var.tar.gz
@@ -61,6 +60,8 @@ do_install () {
 		install -m 0755 ${WORKDIR}/umountfs	${D}${sysconfdir}/init.d/umountfs
 		install -d ${D}${sysconfdir}/network/if-up.d
 		install -m 0755 ${WORKDIR}/netmount.sh	${D}${sysconfdir}/network/if-up.d/02netmount
+		install -d ${D}${sysconfdir}/network/if-down.d
+		install -m 0755 ${WORKDIR}/umountnfs.sh	${D}${sysconfdir}/network/if-down.d/02umountnfs
 	fi
 
 	if [ "${MACHINE}" = "dm8000" ]; then
@@ -72,11 +73,9 @@ do_install () {
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc4.d/S99rmnologin
 	ln -sf		../init.d/rmnologin	${D}${sysconfdir}/rc5.d/S99rmnologin
 	ln -sf		../init.d/sendsigs	${D}${sysconfdir}/rc6.d/S20sendsigs
-	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc6.d/S31umountnfs.sh
 	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc6.d/S40umountfs
 	ln -sf		../init.d/reboot	${D}${sysconfdir}/rc6.d/S90reboot
 	ln -sf		../init.d/sendsigs	${D}${sysconfdir}/rc0.d/S20sendsigs
-	ln -sf		../init.d/umountnfs.sh	${D}${sysconfdir}/rc0.d/S31umountnfs.sh
 	ln -sf		../init.d/umountfs	${D}${sysconfdir}/rc0.d/S40umountfs
 	ln -sf		../init.d/halt		${D}${sysconfdir}/rc0.d/S90halt
 	ln -sf    ../init.d/bootup    ${D}${sysconfdir}/rcS.d/S00bootup

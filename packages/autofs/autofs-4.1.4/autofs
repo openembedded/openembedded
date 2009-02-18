@@ -522,8 +522,6 @@ stop)
 	for file in `ls /var/run/autofs/*.pid 2>/dev/null`
 	do
 		if [ -e "$file" ]
-		echo $file
-		echo $dname
 		then
 			any=1
 			pid=`head -n 1 $file`
@@ -534,7 +532,6 @@ stop)
 			start-stop-daemon --stop --quiet --pidfile $file --name $dname
 
 			ret=$?
-			echo $ret
 			case $ret in
 			0)
 #				echo -n " $mnt"

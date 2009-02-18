@@ -3,16 +3,16 @@ LICENSE = "GPL"
 MAINTAINER = "Felix Domke <tmbinc@elitdvb.net>"
 
 PN = "tuxbox-common"
-PR = "r10"
-SRCDATE = "20081120"
+PR = "r1"
+SRCDATE = "20090130"
 PV = "cvs${SRCDATE}"
 
 SRC_URI = "cvs://anoncvs@cvs.tuxbox.org/cvs/tuxbox/;module=cdk/root/share/tuxbox;method=ext;tag=dreambox;date=${SRCDATE} \
-	http://dreamboxupdate.com/download/opendreambox/tuxbox-common-r8.tar.gz"
+	http://dreamboxupdate.com/download/opendreambox/tuxbox-common-r11.tar.gz"
 
 FILES_${PN} = "/"
 
-S = "${WORKDIR}/tuxbox-common-r8"
+S = "${WORKDIR}/tuxbox-common-r11"
 
 TRANSPONDER_LISTS = "satellites.xml terrestrial.xml"
 

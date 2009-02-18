@@ -28,7 +28,6 @@ DESCRIPTION_append_enigma2-plugin-extensions-cutlisteditor = "enables you to cut
 RDEPENDS_enigma2-plugin-extensions-cutlisteditor = "aio-grab"
 DESCRIPTION_append_enigma2-plugin-extensions-graphmultiepg = "shows a graphical timeline EPG."
 DESCRIPTION_append_enigma2-plugin-extensions-pictureplayer = "displays photos on the TV."
-DESCRIPTION_append_enigma2-plugin-systemplugins-configurationbackup = "backs up your configuration and restores them optionally."
 DESCRIPTION_append_enigma2-plugin-systemplugins-frontprocessorupdate = "keeps your frontprocessor up to date."
 DESCRIPTION_append_enigma2-plugin-systemplugins-positionersetup = "helps you installing a motorized dish."
 DESCRIPTION_append_enigma2-plugin-systemplugins-satelliteequipmentcontrol = "allows you to fine-tune DiSEqC-settings."
@@ -43,16 +42,16 @@ PR = "r0"
 SRCDATE = "20090207"
 
 # if you want experimental, use:
-#REL_MAJOR="2"
-#REL_MINOR="6"
-#SUBDIR=
-#MODULE=trunk
+REL_MAJOR="2"
+REL_MINOR="6"
+SUBDIR=
+MODULE=trunk
 
 # if you want a 2.5-based release, use
-REL_MAJOR="2"
-REL_MINOR="5"
-SUBDIR=/branches
-MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
+#REL_MAJOR="2"
+#REL_MINOR="5"
+#SUBDIR=/branches
+#MODULE=enigma2_rel${REL_MAJOR}${REL_MINOR}
 
 PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
