@@ -39,9 +39,10 @@ do_compile() {
 }
 
 do_install () {
-	oe_runmake install
+	echo oe_runmake install
 }
 
 do_stage () {
-	:
+	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dmai
+	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dmai
 }
