@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "65d02c2c7fe676369b7162459feec60268c7f4ba"
 
 PV = "2.6.28-pm1+gitr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
 	   file://defconfig"
@@ -45,6 +45,7 @@ SRC_URI_append = " \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-This-merges-Steve-Kipisz-USB-EHCI-support.-He-star.patch;patch=1 \
            file://dss2.diff;patch=1 \
+           file://register-all-OPPs.diff;patch=1 \
 "
 
 
