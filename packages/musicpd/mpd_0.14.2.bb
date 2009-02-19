@@ -6,9 +6,10 @@ DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
+	   file://mpd/mpd.conf \
            file://mpd/mpd.init"
 
-PR = "r1"
+PR = "r2"
 
 inherit autotools update-rc.d
 INITSCRIPT_NAME = "mpd"
@@ -38,5 +39,6 @@ do_compile_prepend() {
 do_install_append() {
     install -d ${D}${sysconfdir}/init.d
     install -m 755 ${WORKDIR}/mpd/mpd.init ${D}${sysconfdir}/init.d/mpd
+    install -m 755 ${WORKDIR}/mpd/mpd.conf ${D}${sysconfdir}/mpd.conf
 }
 

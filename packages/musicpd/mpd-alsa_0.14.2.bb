@@ -7,7 +7,10 @@ DEPENDS = "libvorbis libogg libao-alsa zlib flac audiofile virtual/libiconv faad
 RDEPENDS = "libao-alsa"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
+file://mpd/mpd.conf \
 file://mpd/mpd.init"
+
+PR = "r2"
 
 S = "${WORKDIR}/mpd-${PV}"
 inherit autotools update-rc.d
@@ -55,4 +58,5 @@ do_configure_append() {
 do_install_append() {
 	install -d ${D}${sysconfdir}/init.d
 	install -m 755 ${WORKDIR}/mpd/mpd.init ${D}${sysconfdir}/init.d/mpd
+	install -m 755 ${WORKDIR}/mpd/mpd.conf ${D}${sysconfdir}/mpd.conf
 }
