@@ -3,7 +3,20 @@ LICENCE = "proprietary-binary"
 
 PROVIDES += "virtual/egl"
 
-# Put "OMAP35x_Graphics_SDK_setuplinux_3_00_00_05.bin" in the same directory as this recipe
+# some hints to get you going. as this isnt a totally "open" library, you need
+# to do some work. follow the steps below.
+#
+# 1. if you don't already have a ti account get one here. it's free:
+#  http://www.ti.com/hdr_my_ti
+# 2. fetch the gl-es bin from here:
+#  https://www-a.ti.com/downloads/sds_support/targetcontent/dvsdk/oslinux_dvsdk/v3_00_3530/OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin
+# (replace version in .bin file as appropriate)
+# 3. put the OMAP35x_*.bin file in libgles-omap3/
+#  mv OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin ./libgles-omap3/
+# 4. make it executable:
+#  chmod a+x ./libgles-omap3/OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin
+# 
+# voila!
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
           "
