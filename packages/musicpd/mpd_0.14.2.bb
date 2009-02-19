@@ -4,13 +4,9 @@ SECTION = "console/multimedia"
 LICENSE = "GPLv2"
 DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv faad2 pulseaudio \
            ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'libmad libid3tag', d)}"
-PV = "0.12.1+svn${SRCDATE}"
-PR = "r1"
 
-SRC_URI = "svn://svn.musicpd.org/mpd;module=trunk;proto=https \
+SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
            file://mpd/mpd.init"
-#           file://save-volume-state.patch;patch=1"
-S = "${WORKDIR}/trunk"
 
 inherit autotools update-rc.d
 INITSCRIPT_NAME = "mpd"
