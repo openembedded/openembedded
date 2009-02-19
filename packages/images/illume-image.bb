@@ -96,12 +96,19 @@ GTK_INSTALL = "\
 
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
-AUDIO_INSTALL_append_om-gta01 = "\
-  openmoko-alsa-scenarios \
-"
-AUDIO_INSTALL_append_om-gta02 = "\
-  openmoko-alsa-scenarios \
-"
+AUDIO_INSTALL_append_om-gta01 = "openmoko-alsa-scenarios"
+AUDIO_INSTALL_append_om-gta02 = "openmoko-alsa-scenarios"
+
+# GLES libs - put them on if the platform has them
+GLES_INSTALL = ""
+GLES_INSTALL_append_beagleboard  = "libgles-omap3"
+GLES_INSTALL_append_omap-3430sdp = "libgles-omap3"
+GLES_INSTALL_append_omap-3430ldp = "libgles-omap3"
+GLES_INSTALL_append_omap3evm     = "libgles-omap3"
+GLES_INSTALL_append_overo        = "libgles-omap3"
+GLES_INSTALL_append_mx31ads      = "libgles-mx31"
+GLES_INSTALL_append_mx31litekit  = "libgles-mx31"
+GLES_INSTALL_append_zylonite     = "libgles-zylonite"
 
 # python
 PYTHON_INSTALL = "\
@@ -130,6 +137,7 @@ APPS_INSTALL = "\
 
 IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
+  ${GLES_INSTALL} \
   ${X_INSTALL} \
   ${GTK_INSTALL} \
   ${AUDIO_INSTALL} \
