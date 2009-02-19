@@ -17,3 +17,9 @@ SRC_URI = "http://install.tarball.in.source.dir/dsplink_1_60.tar.gz \
 
 S = "${WORKDIR}/dsplink_1_60/dsplink"
 
+require ti-paths.inc
+
+export DSPLINK="${S}"
+
+PARALLEL_MAKE = ""
+
