@@ -53,4 +53,11 @@ SRC_URI_append_collie = " \
 	file://0022-mmc_block-print-better-error-messages.patch;patch=1 \
 	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch;patch=1 " 
 
+SRC_URI_append_tosa = " \
+	file://commit-31c9b28;patch=1 \
+	file://commit-ddfb33c;patch=1 \
+	file://commit-f34ee79;patch=1 \
+	"
+
+
 S = "${WORKDIR}/linux-2.6.28/"
