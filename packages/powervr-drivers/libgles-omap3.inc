@@ -17,6 +17,7 @@ PROVIDES += "virtual/egl"
 #  chmod a+x ./libgles-omap3/OMAP35x_Graphics_SDK_setuplinux_3_00_00_06.bin
 # 
 # voila!
+
 SRC_URI = "file://OMAP35x_Graphics_SDK_setuplinux_${SGXPV}.bin \
            file://rc.pvr \
           "
