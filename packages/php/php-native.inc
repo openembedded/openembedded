@@ -7,7 +7,7 @@ export LIBS=" -lxml2 "
 export LD_LIBRARY_PATH = "${STAGING_LIBDIR_NATIVE}"
 
 EXTRA_OECONF = "--with-cgi --enable-sockets --enable-pcntl \
-                --with-zlib --with-zlib-dir=${STAGING_LIBDIR_NATIVE} \
+                --with-zlib --with-zlib-dir=${STAGING_LIBDIR_NATIVE}/.. \
                 --without-libpng --without-libjpeg \
                 --with-libxml-dir=${STAGING_BINDIR_NATIVE} \
                "
