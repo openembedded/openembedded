@@ -1,6 +1,6 @@
 require procps.inc
 
-PR = "r6"
+PR = "r7"
 
 inherit update-rc.d
 
@@ -40,6 +40,7 @@ do_install_append () {
 	mv ${D}${base_bindir}/ps ${D}${base_bindir}/ps.${PN}
 	mv ${D}${bindir}/free ${D}${bindir}/free.${PN}
 	mv ${D}${base_sbindir}/sysctl ${D}${base_sbindir}/sysctl.${PN}
+	mv ${D}${bindir}/pkill ${D}${bindir}/pkill.${PN}
 }
 
 pkg_postinst() {
@@ -49,6 +50,7 @@ pkg_postinst() {
 	update-alternatives --install ${base_bindir}/kill kill kill.${PN} 90
 	update-alternatives --install ${bindir}/free free free.${PN} 90
 	update-alternatives --install ${base_sbindir}/sysctl sysctl sysctl.${PN} 90
+	update-alternatives --install ${bindir}/pkill pkill pkill.${PN} 90
 }
 
 pkg_postrm() {
@@ -58,4 +60,5 @@ pkg_postrm() {
 	update-alternatives --remove kill kill.${PN}
 	update-alternatives --remove free free.${PN}
 	update-alternatives --remove sysctl sysctl.${PN}
+	update-alternatives --remove pkill pkill.${PN}
 }
