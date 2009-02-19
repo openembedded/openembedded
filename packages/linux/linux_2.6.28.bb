@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r4"
+PR = "r5"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -9,6 +9,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "28"
 DEFAULT_PREFERENCE_ronetix-pm9263 = "28"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
+DEFAULT_PREFERENCE_tosa = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            file://defconfig"
