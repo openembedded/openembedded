@@ -14,7 +14,7 @@ EXTRA_OECONF = "--with-linux-headers=${STAGING_INCDIR}"
 
 do_install () {
 	autotools_do_install
-	mv ${D}${sbindir}/brtl ${D}${sbindir}/brctl.${PN}
+	mv ${D}${sbindir}/brctl ${D}${sbindir}/brctl.${PN}
 }
 
 pkg_postinst_${PN} () {
