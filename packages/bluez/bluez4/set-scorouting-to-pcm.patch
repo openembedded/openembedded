@@ -1,0 +1,25 @@
+From 42094659e2631cfb154690cefd8925b03e1984a3 Mon Sep 17 00:00:00 2001
+From: Jan Luebbe <jluebbe@debian.org>
+Date: Thu, 19 Feb 2009 17:06:10 +0100
+Subject: [PATCH] Set SCORouting to PCM
+
+---
+ audio/audio.conf |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/audio/audio.conf b/audio/audio.conf
+index 33a84e1..7b30f05 100644
+--- a/audio/audio.conf
++++ b/audio/audio.conf
+@@ -13,7 +13,7 @@
+ 
+ # SCO routing. Either PCM or HCI (in which case audio is routed to/from ALSA)
+ # Defaults to HCI
+-#SCORouting=PCM
++SCORouting=PCM
+ 
+ # Headset interface specific options (i.e. options which affect how the audio
+ # service interacts with remote headset devices)
+-- 
+1.5.6.5
+

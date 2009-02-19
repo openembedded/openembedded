@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb1 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -12,6 +12,10 @@ SRC_URI = "\
   file://sbc-thumb.patch;patch=1 \
   file://hid2hci_usb_init.patch;patch=1 \
 "    
+
+# TODO use MACHINE specific variables to generate the config files
+SRC_URI_append_om-gta02 = "  file://set-scorouting-to-pcm.patch;patch=1"
+
 S = "${WORKDIR}/bluez-${PV}"
 
 inherit autotools pkgconfig
