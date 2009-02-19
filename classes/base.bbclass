@@ -180,18 +180,6 @@ def base_package_name(d):
 
   return pn
 
-def base_set_filespath(path, d):
-	import os, bb
-	filespath = []
-	# The ":" ensures we have an 'empty' override
-	overrides = (bb.data.getVar("OVERRIDES", d, 1) or "") + ":"
-	for p in path:
-		for o in overrides.split(":"):
-			filespath.append(os.path.join(p, o))
-	return ":".join(filespath)
-
-FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/${BP}", "${FILE_DIRNAME}/${BPN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
-
 def oe_filter(f, str, d):
 	from re import match
 	return " ".join(filter(lambda x: match(f, x, 0), str.split()))
