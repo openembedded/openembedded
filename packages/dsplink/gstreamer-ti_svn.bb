@@ -14,6 +14,7 @@ require ti-paths.inc
 
 export DMAI_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dmai"
 export CE_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
+export FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
 export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecs"
 
 export XDC_TARGET = "gnu.targets.arm.GCArmv5T"
