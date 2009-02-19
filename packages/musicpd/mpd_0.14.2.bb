@@ -8,6 +8,8 @@ DEPENDS = "libvorbis libogg libao zlib libmikmod flac audiofile virtual/libiconv
 SRC_URI = "${SOURCEFORGE_MIRROR}/musicpd/mpd-${PV}.tar.bz2 \
            file://mpd/mpd.init"
 
+PR = "r1"
+
 inherit autotools update-rc.d
 INITSCRIPT_NAME = "mpd"
 
@@ -32,3 +34,9 @@ EXTRA_OECONF = "\
 do_compile_prepend() {
     find -name Makefile | xargs sed -i 's~-I/usr/include~-I${STAGING_INCDIR}~g'
 }
+
+do_install_append() {
+    install -d ${D}${sysconfdir}/init.d
+    install -m 755 ${WORKDIR}/mpd/mpd.init ${D}${sysconfdir}/init.d/mpd
+}
+
