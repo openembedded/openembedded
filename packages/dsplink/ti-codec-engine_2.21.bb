@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r9"
+PR = "r10"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -97,6 +97,7 @@ do_compile_append() {
         # For now, remove all targets, except dm6446 and omap3530
         sed -i \
         -e '/evmDM357/d' \
+        -e '/evmDM6446/d' \
         -e '/evmDM6467/d' \
         -e '/evmDM355/d' \
         -e '/evmDM6437/d' \
@@ -130,8 +131,6 @@ do_install_append () {
     #driver - kernel module
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
 	cp ${S}/cetools/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
-	# - Not sure what this is... maybe stale
-	#cp ${S}/cetools/packages/ti/bios/power/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
         cp ${S}/cetools/packages/ti/bios/power/modules/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
 
     #library
@@ -175,13 +174,13 @@ do_install_append () {
 		install ${i} ${D}/${datadir}/ti-codec-engine/`dirname ${i}`
 	done
 
+	# we should install the CMEM apps as well here
+
 	# finally, strip targets that we're not supporting here
 	# - TODO...
 }
 
-#FILES_${PN} = "${base_sbindir}"
-
-PACKAGES =+ "ti-lpm-module ti-cmem-module"
+PACKAGES =+ "ti-lpm-module ti-cmem-module ti-codec-engine-apps"
 
 FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
 FILES_ti-cmem-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
@@ -199,7 +198,7 @@ pkg_postrm_ti-lpm-module () {
 	update-modules || true
 }
 
-pkg_postinst_ti-cmemk-module () {
+pkg_postinst_ti-cmem-module () {
 	if [ -n "$D" ]; then        
                 exit 1
         fi
@@ -217,6 +216,9 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #legacy upgrade helpers
 RPROVIDES_ti-cmem-module += "ti-cmemk-module"
+
+# ti-dsplink-module can be built by either codec-engine or standalone dsplink - tell it to use this one, else unwanted dependence
+PREFERRED_PROVIDER_ti-dsplink-module = "ti-codec-engine"
 
 #add run-time dependencies - note for kernel module we can only use RRECOMMENDS, since modules might be built into the kernel
 RRECOMMENDS_ti-codec-engine-apps += "ti-dsplink-module ti-lpm-module ti-cmem-module"

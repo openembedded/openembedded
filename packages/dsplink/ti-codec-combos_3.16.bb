@@ -1,5 +1,5 @@
 DESCRIPTION = "Codec combos for omap3530"
-DEPENDS = "codec-engine"
+DEPENDS = "ti-codec-engine"
 LICENCE = "unknown"
 
 require ti-paths.inc
@@ -13,12 +13,11 @@ SRC_URI = "file://omap3530_dvsdk_combos_3_16.tar.gz \
 S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-
-PACKAGE_ARCH = "${MACHINE_ARCH}"
+PR = "r10"
 
 TARGET = "all"
 
-export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
+export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/packages;${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
 
 do_compile() {
 	sed -i -e s:/db/toolsrc/library/vendors2005/ti/c6x/6.0.16/Linux:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
@@ -32,9 +31,27 @@ do_compile() {
 
 do_install () {
 	echo oe_runmake install
+
+	install -d ${D}/${datadir}/ti-codec-combos
+
+	cd ${S}
+
+	# grab the server executables
+	for i in $(find . -name "*.x64P") ; do
+		install ${i} ${D}/${datadir}/ti-codec-combos
+	done
+	
+	# should copy the generated data sheets as well for reference
 }
 
 do_stage () {
-	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecs
-	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecs
+	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos
+	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos
 }
+
+FILES_ti-codec-combos = "${datadir}/ti-codec-combos/*"
+
+INHIBIT_PACKAGE_STRIP = "1"
+
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
