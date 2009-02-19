@@ -1,4 +1,4 @@
-DEPENDS = "codec-engine dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly libid3tag liboil libmad"
+DEPENDS = "ti-codec-engine dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly libid3tag liboil libmad"
 
 SRC_URI = "svn://omapzoom.org/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https"
 SRCREV = "87"
