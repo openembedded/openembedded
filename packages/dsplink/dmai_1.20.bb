@@ -1,5 +1,5 @@
 DESCRIPTION = "Davinci (and OMAP) Multimedia Application Interface"
-DEPENDS = "virtual/kernel codec-engine"
+DEPENDS = "virtual/kernel codec-engine omap3530-dvsdk-combos"
 LICENCE = "unknown"
 
 require ti-paths.inc
@@ -27,6 +27,7 @@ TARGET_beagleboard = " o3530_al"
 TARGET_omap3evm = " o3530_al"
 
 export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
+export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecs"
 
 do_compile_prepend_omap3evm() {
 
