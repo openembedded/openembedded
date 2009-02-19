@@ -14,7 +14,7 @@ require ti-paths.inc
 
 export DMAI_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dmai"
 export CE_INSTALL_DIR = "${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
-export CODEC_INSTALL_DIR = ""
+export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecs"
 
 export XDC_TARGET = "gnu.targets.arm.GCArmv5T"
 
@@ -38,4 +38,7 @@ CPPFLAGS_append = " -DPlatform_${PLATFORM}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
+FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
+FILES_${PN}-dev += "${libdir}/gstreamer-0.10/*.a ${libdir}/gstreamer-0.10/*.la"
+FILES_${PN}-dbg += "${libdir}/gstreamer-0.10/.debug"
 
