@@ -76,7 +76,10 @@ RRECOMMENDS_${PN} = "ti-dmai-apps"
 FILES_ti-dmai-apps = "${datadir}/ti-dmai/*"
 
 pkg_postinst_ti-dmai-apps () {
-	ln -sf /usr/share/ti-codec-combos/* $D/usr/share/ti-dmai/apps
+        if [ -n "$D" ]; then
+                exit 1
+        fi
+	ln -sf /usr/share/ti-codec-combos/* /usr/share/ti-dmai/apps
 }
 
 INHIBIT_PACKAGE_STRIP = "1"
