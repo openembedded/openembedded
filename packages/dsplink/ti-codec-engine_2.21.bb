@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r10"
+PR = "r11"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -216,6 +216,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #legacy upgrade helpers
 RPROVIDES_ti-cmem-module += "ti-cmemk-module"
+RREPLACES_ti-cmem-module += "ti-cmemk-module"
+
 
 # ti-dsplink-module can be built by either codec-engine or standalone dsplink - tell it to use this one, else unwanted dependence
 PREFERRED_PROVIDER_ti-dsplink-module = "ti-codec-engine"
