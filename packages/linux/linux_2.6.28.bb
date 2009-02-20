@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r4"
+PR = "r5"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -9,6 +9,7 @@ DEFAULT_PREFERENCE_at91sam9263ek = "28"
 DEFAULT_PREFERENCE_ronetix-pm9263 = "28"
 DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
+DEFAULT_PREFERENCE_tosa = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            file://defconfig"
@@ -52,5 +53,12 @@ SRC_URI_append_collie = " \
 	file://0021-mmc-trivial-annotation-of-blocks.patch;patch=1 \
 	file://0022-mmc_block-print-better-error-messages.patch;patch=1 \
 	file://0023-mmc_block-ensure-all-sectors-that-do-not-have-error.patch;patch=1 " 
+
+SRC_URI_append_tosa = " \
+	file://commit-31c9b28;patch=1 \
+	file://commit-ddfb33c;patch=1 \
+	file://commit-f34ee79;patch=1 \
+	"
+
 
 S = "${WORKDIR}/linux-2.6.28/"

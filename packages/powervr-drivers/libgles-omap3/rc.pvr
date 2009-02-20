@@ -15,6 +15,7 @@ if [ -e /dev/pvrsrvkm ] ; then
 fi
 
 mknod /dev/pvrsrvkm c $pvr_maj 0 
+chmod 666 /dev/pvrsrvkm
 
 /usr/bin/pvrsrvinit
 

@@ -3,7 +3,10 @@ require gcc-configure-common.inc
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibc", "no", "", d )}'
 USE_NLS = '${@base_conditional( "TARGET_OS", "linux-uclibcgnueabi", "no", "", d )}'
 
-ARCH_FLAGS_FOR_TARGET=""
+#
+# We need to override this and make sure the compiler can find staging
+#
+export ARCH_FLAGS_FOR_TARGET = "--sysroot=${STAGING_DIR_TARGET}"
 
 # Tools for build
 export CC_FOR_BUILD="${BUILD_CC}"
@@ -57,22 +60,16 @@ export WINDRES_FOR_TARGET="${TARGET_PREFIX}windres"
 
 EXTRA_OECONF_DEP ?= ""
 
-SYSROOT = "${WORKDIR}/sysroot"
 EXTRA_OECONF += ""
 EXTRA_OECONF_PATHS = " \
 	--with-local-prefix=$dollar{prefix}/local \
 	--with-gxx-include-dir=$dollar{prefix}/${TARGET_SYS}/usr/include/c++/${BINV} \
-	--with-build-sysroot=${SYSROOT} \
+	--with-build-sysroot=${STAGING_DIR_TARGET} \
 	--with-sysroot=${SDK_REALPATH}/${TARGET_SYS} \
 "
 
 do_configure () {
 	# Work around Hardcoded path assumptions in gcc
-	mkdir -p ${SYSROOT}/usr
-	ln -sf ${STAGING_DIR_HOST}${layout_includedir} \
-		${SYSROOT}/usr/include
-	ln -sf ${STAGING_DIR_HOST}${layout_libdir} \
-		${SYSROOT}/usr/lib
 	(cd ${S} && gnu-configize) || die "failure running gnu-configize"
 	(cd ${S}/libstdc++-v3 && autoreconf)
 	canadian_sdk_runconf

@@ -1,0 +1,12 @@
+--- /tmp/clock34xx.c	2009-02-18 13:51:18.000000000 +0100
++++ git/arch/arm/mach-omap2/clock34xx.c	2009-02-18 13:51:51.000000000 +0100
+@@ -698,8 +698,7 @@
+ 	if (!mpu_opps)
+ 		return;
+ 
+-	/* Avoid registering the 120% Overdrive with CPUFreq */
+-	prcm = mpu_opps + MAX_VDD1_OPP - 1;
++	prcm = mpu_opps + MAX_VDD1_OPP;
+ 	for (; prcm->rate; prcm--) {
+ 		freq_table[i].index = i;
+ 		freq_table[i].frequency = prcm->rate / 1000;

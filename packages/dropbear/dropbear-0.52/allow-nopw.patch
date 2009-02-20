@@ -1,0 +1,40 @@
+Index: dropbear-0.51/svr-auth.c
+===================================================================
+--- dropbear-0.51.orig/svr-auth.c
++++ dropbear-0.51/svr-auth.c
+@@ -270,7 +270,7 @@ static int checkusername(unsigned char *
+ 		send_msg_userauth_failure(0, 1);
+ 		return DROPBEAR_FAILURE;
+ 	}
+-
++#ifdef DISALLOW_EMPTY_PW
+ 	/* check for an empty password */
+ 	if (ses.authstate.pw_passwd[0] == '\0') {
+ 		TRACE(("leave checkusername: empty pword"))
+@@ -279,7 +279,7 @@ static int checkusername(unsigned char *
+ 		send_msg_userauth_failure(0, 1);
+ 		return DROPBEAR_FAILURE;
+ 	}
+-
++#endif
+ 	TRACE(("shell is %s", ses.authstate.pw_shell))
+ 
+ 	/* check that the shell is set */
+Index: dropbear-0.51/svr-authpasswd.c
+===================================================================
+--- dropbear-0.51.orig/svr-authpasswd.c
++++ dropbear-0.51/svr-authpasswd.c
+@@ -64,9 +64,13 @@ void svr_auth_password() {
+ 	 * since the shadow password may differ to that tested
+ 	 * in auth.c */
+ 	if (passwdcrypt[0] == '\0') {
++#ifdef DISALLOW_EMPTY_PW
+ 		dropbear_log(LOG_WARNING, "user '%s' has blank password, rejected",
+ 				ses.authstate.pw_name);
+ 		send_msg_userauth_failure(0, 1);
++#else
++		send_msg_userauth_success();
++#endif
+ 		return;
+ 	}
+ 

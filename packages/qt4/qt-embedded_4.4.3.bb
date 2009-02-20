@@ -3,7 +3,7 @@ require qtopia-core.inc
 PROVIDES += "qtopia-core"
 RPROVIDES_${PN} = "qtopia-core"
 
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
            file://qconfig-oe.h \
@@ -23,8 +23,8 @@ SRC_URI += " \
 "
 
 QT_CONFIG_FLAGS += " \
-    -no-phonon -webkit \
-	-DQT_KEYPAD_NAVIGATION \
+    -webkit \
+    -DQT_KEYPAD_NAVIGATION \
  "
 
 QT_BASE_NAME = "qt-embedded"

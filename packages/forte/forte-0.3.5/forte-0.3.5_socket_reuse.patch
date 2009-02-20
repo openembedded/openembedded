@@ -1,0 +1,20 @@
+diff -Naur FORTE-0.3.5.orig/src/arch/pc/pcsochan.cpp FORTE-0.3.5/src/arch/pc/pcsochan.cpp
+--- FORTE-0.3.5.orig/src/arch/pc/pcsochan.cpp	2009-01-13 16:17:18.000000000 +0000
++++ FORTE-0.3.5/src/arch/pc/pcsochan.cpp	2009-02-16 10:08:53.000000000 +0000
+@@ -128,6 +128,16 @@
+   }
+   // switch between client/server:
+   if (pa_stConnectionInformation.m_enServiceType == e_Server) {
++    unsigned int opt = 1;
++
++    if (setsockopt(sock_id, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) != 0)
++    {
++      char acError[80] = { "TCP-Socket setsockopt() failed: " };
++      strcat(acError, strerror(errno));
++      DEVLOG_ERROR(cg_nID_CSocketHandler, 0x10, acError);
++      return -1;
++    }
++
+     sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+     if (bind(sock_id, (struct sockaddr *)&sock_addr, sizeof(struct sockaddr)) != 0) {
+       DEVLOG_ERROR_2(cg_nID_CSocketHandler, 0x02, "TCP-Socket bind() failed: %s", strerror(errno) );

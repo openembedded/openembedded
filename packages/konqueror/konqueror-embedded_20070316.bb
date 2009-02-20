@@ -4,7 +4,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.konqueror.org/"
 DEPENDS = "openssl libpcre virtual/libqte2 dcopidl-native dcopidl2cpp-native"
 LICENSE = "LGPL GPL"
-PR = "r6"
+PR = "r7"
 
 # this Konqueror needs the KDEDIR set and the font helvetica installed on the target
 
@@ -14,7 +14,10 @@ SRC_URI = "http://www.basyskom.de/uploads/175/37/kdenox_snapshot_qt2_20070316.ta
 	   file://dont-use-kde-config.patch;patch=1 \
            file://konqe_new_opie.patch;patch=1 \
 	   file://konqe-kapplication.patch;patch=1 \
-           file://fix_configure.patch;patch=1"
+           file://fix_configure.patch;patch=1 \
+           file://fix_acinclude.patch;patch=1 \
+           file://fix_KDE_LDPATH_HACK.patch;patch=1 \
+	   "
 S = "${WORKDIR}/kdenox"
 
 export QMAKE = "${STAGING_BINDIR_NATIVE}/qmake"

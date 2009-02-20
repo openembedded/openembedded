@@ -16,6 +16,28 @@ EXCLUDE_FROM_WORLD = "1"
 
 USE_DEVFS ?= "0"
 
+#
+# udev, devfsd, busybox-mdev (from busybox) or none
+#
+IMAGE_DEV_MANAGER ?= "${@base_contains("MACHINE_FEATURES", "kernel26",  "udev","",d)} "
+#
+# sysvinit, upstart
+#
+IMAGE_INIT_MANAGER ?= "sysvinit sysvinit-pidof"
+IMAGE_INITSCRIPTS ?= "initscripts"
+#
+# tinylogin, getty
+#
+IMAGE_LOGIN_MANAGER ?= "tinylogin" 
+
+IMAGE_VARS = "${IMAGE_INITSCRIPTS} \
+${IMAGE_DEV_MANAGER} \
+${IMAGE_INIT_MANAGER} \
+${IMAGE_LOGIN_MANAGER} "
+
+RDEPENDS += "${IMAGE_VARS}"
+PACKAGE_INSTALL += "${IMAGE_VARS}"
+
 PID = "${@os.getpid()}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"

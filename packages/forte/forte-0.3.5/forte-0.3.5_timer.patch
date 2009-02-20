@@ -1,0 +1,48 @@
+diff -Naur FORTE-0.3.5.orig/src/arch/pc/pctimeha.cpp FORTE-0.3.5/src/arch/pc/pctimeha.cpp
+--- FORTE-0.3.5.orig/src/arch/pc/pctimeha.cpp	2009-01-13 16:17:18.000000000 +0000
++++ FORTE-0.3.5/src/arch/pc/pctimeha.cpp	2009-02-16 10:16:37.000000000 +0000
+@@ -11,6 +11,7 @@
+ #include "pctimeha.h"
+ #include "../../core/devexec.h"
+ #include <time.h>
++#include <sys/time.h>
+ 
+ const TINT32 CPCTimerHandler::csm_nTicksPerSecond = 1000;
+ 
+@@ -28,14 +29,34 @@
+   disableHandler();
+ }
+ 
++static inline unsigned long long GetTicks(struct timeval* stTmVal, TINT32 ticksPerSecond)
++{
++  unsigned long long ret = stTmVal->tv_sec * 1000LL;// sec -> ms
++  ret += stTmVal->tv_usec/1000;// + us -> ms
++  ret /= 1000/ticksPerSecond; // ms -> ticks
++  return ret;
++}
++
+ bool CPCTimerHandler::run(){
+   struct timespec stReq;
++  struct timeval stTmNow;
++  unsigned long long tickStart;
++  unsigned long long tickNow;
++  unsigned long long tickCalled = 0;
+   stReq.tv_sec = 0;
+-  stReq.tv_nsec = 1000000 / (csm_nTicksPerSecond / 1000);
++  stReq.tv_nsec = 1000000000 / (csm_nTicksPerSecond);
++
++  gettimeofday(&stTmNow, NULL);
++  tickNow = tickStart = GetTicks(&stTmNow, csm_nTicksPerSecond);
+   
+   while(m_bAlive){
+-    nanosleep(&stReq, NULL);
++    if( (tickNow-tickStart) <= (tickCalled+1) ) {
++      nanosleep(&stReq, NULL);
++    }
+     nextTick(); 
++    ++tickCalled;
++    gettimeofday(&stTmNow, NULL);
++    tickNow = GetTicks(&stTmNow, csm_nTicksPerSecond);
+   } 
+   return true;
+ }

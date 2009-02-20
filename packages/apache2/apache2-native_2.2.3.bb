@@ -1,9 +1,9 @@
 SECTION = "net"
 DEPENDS = "expat pcre"
 
-inherit cross 
+inherit native 
 
-PR ="r8"
+PR ="r9"
 SRC_URI = "http://www.apache.org/dist/httpd/httpd-${PV}.tar.bz2"
 
 S = "${WORKDIR}/httpd-${PV}"

@@ -17,13 +17,8 @@ require gcc-package-canadian-sdk.inc
 SRC_URI_append = "file://fortran-cross-compile-hack.patch;patch=1 \
 		  file://pr22133-mingw-path-fixup.patch;patch=1 \
 		  file://pr33281-mingw-host-fragment.patch;patch=1 \
-		  file://pr35916-mingw-__USE_MINGW_ACCESS-everywhere.patch;patch=1"
-
-ARCH_FLAGS_FOR_TARGET += "-isystem${STAGING_INCDIR}"
-
-
-SRC_URI_append =+ "\
-	file://canadian-build-modules-configure.patch;patch=1 \
+		  file://pr35916-mingw-__USE_MINGW_ACCESS-everywhere.patch;patch=1 \
+		  file://canadian-build-modules-configure.patch;patch=1 \
 "
 
 EXTRA_OECONF += "--disable-libunwind-exceptions --disable-libssp \

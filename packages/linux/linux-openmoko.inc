@@ -5,10 +5,9 @@ KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
+COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-gta03"
 
-CONFIG_NAME_om-gta01 = "gta01"
-CONFIG_NAME_om-gta02 = "gta02"
+KERNEL_IMAGETYPE_om-gta03 = "zImage"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
@@ -24,6 +23,8 @@ module_autoload_g_ether = "g_ether"
 module_autoload_snd-soc-neo1973-wm8753 = "snd-soc-neo1973-wm8753"
 # audio (GTA02)
 module_autoload_snd-soc-neo1973-gta02-wm8753 = "snd-soc-neo1973-gta02-wm8753"
+# audio (GTA03)
+module_autoload_snd-soc-neo1973-gta02-wm8753 = ""
 # sd/mmc
 module_autoload_s3cmci = "s3cmci"
 

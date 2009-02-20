@@ -11,7 +11,7 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/gcc-${PV}"
 # for building for the new host part.  So only obey TARGET_FPU for the
 # real target.
 def get_gcc_fpu_setting(bb, d):
-    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ] and bb.data.getVar('TARGET_OS', d, 1) in [ 'linux' ]:
+    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ] and bb.data.getVar('TARGET_OS', d, 1).find('linux') >= 0 :
         return "--with-float=soft"
     return ""
 

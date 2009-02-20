@@ -4,7 +4,7 @@ AUTHOR = "Larry Doolittle <larry@doolittle.boa.org>"
 RDEPENDS = "busybox"
 SECTION = "admin"
 LICENSE = "GPLv2"
-PR = "r0"
+PR = "r2"
 # The ntpclient package uses version numbers that include an underscore :(
 PV = "2007_365"
 # ntpclient unpacks into a directory that doesn't include version info :(
@@ -27,8 +27,15 @@ do_compile() {
 do_install () {
     # Install the binary and tools
     install -D -m 0755 ${S}/ntpclient ${D}${base_sbindir}/ntpclient
-    install -D -m 0755 ${S}/adjtimex ${D}${base_sbindir}/adjtimex
+    install -D -m 0755 ${S}/adjtimex ${D}${base_sbindir}/adjtimex.${PN}
     install -D -m 0755 ${S}/rate.awk ${D}${sbindir}/ntpclient-drift-rate.awk
     install -D -m 0755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/ntpclient
 }
 
+pkg_postinst_${PN} () {
+	update-alternatives --install ${base_sbindir}/adjtimex adjtimex adjtimex.${PN} 100
+}
+
+pkg_prerm_${PN} () {
+	update-alternatives --remove adjtimex adjtimex.${PN}
+}

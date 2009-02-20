@@ -13,6 +13,10 @@ TIXDCTOOLSDIR ?= "${TITOOLSDIR}/xdctools_3_10_03"
 # Path under TITOOLSDIR where the dsp toolchain is unpacked
 TICGTOOLSDIR ?= "cg6x_6_0_16"
 
+# Path to codecs/servers package - this is taken from DVSDK 3.00.00.29
+# - This needs fixing to be x-platform (not just omap3)
+#TICODECSDIR ?= "omap3530_dvsdk_combos_3_16"
+
 # export some more variable to point to external TI tools
 # information is duplicated between the js and make based tools
 export CE_INSTALL_DIR=${S}
@@ -22,11 +26,13 @@ export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
 export CGTOOLS_V5T="${CROSS_DIR}"
 export CC_V5T="bin/${TARGET_PREFIX}gcc"
 export MVTOOL_PREFIX="${TARGET_PREFIX}"
-export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/codecengine/cetools"
 export MVTOOL_DIR="${CROSS_DIR}"
+export CSTOOL_PREFIX="${TARGET_PREFIX}"
 export CSTOOL_DIR="${CROSS_DIR}"
 export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
 
+# used by dmai (and gstreamer_ti?)
+#export CODEC_INSTALL_DIR=${TITOOLSDIR}/${TICODECSDIR}
 
 # This tells codec engine which targets to build
 DEVICES ?= "DM6446"

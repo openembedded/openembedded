@@ -63,6 +63,14 @@ PREFERRED_VERSION_udev				?= "118"
 
 ##################### Stuff with special notes, and broken stuff:
 
+# libtool/pkgconfig victims -- these packages are locked down because
+# newer versions also require newer libtool/pkgconfig versions.
+
+PREFERRED_VERSION_avahi				?= "0.6.23"
+PREFERRED_VERSION_gst-plugins-base		?= "0.10.17"
+PREFERRED_VERSION_tiff				?= "3.7.2"
+
+
 # Hack alert - selecting this version of libusb effectively selects
 # the use of libusb1 and libusb-compat in the case that something
 # still depends on libusb. This is required because otherwise

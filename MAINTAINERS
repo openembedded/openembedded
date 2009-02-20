@@ -158,12 +158,10 @@ Machines:   mx31ads
 Recipes:    mx31ads-kernel*	
 
 Person:     Marcin Juszkiewicz
-Mail:       hrw@openembedded.org
-Website:    http://blog.haerwu.biz/
-Machines:   progear, alix, nokia800, nokia770
+Mail:       marcin@juszkiewicz.com.pl
+Website:    http://marcin.juszkiewicz.com.pl/
+Machines:   progear, alix, at91sam9263ek
 Distros:    Poky, Ångström
-Interests:  WiFi, Native SDK, Nokia tablets
-Recipes:    linux, linux-rp, linux-nokia*, gammu, ttf-fonts/* 
 
 Person:     Matthias 'CoreDump' Hentges
 Website:    http://www.hentges.net
@@ -246,6 +244,7 @@ Recipes:    directfb, php
 Person:     Steffen Sledz
 Mail:       sledz@dresearch.de
 Machines:   oxnas
+Recipes:    forte
 
 Person:     Stelios Koroneos
 Mail:       skoroneos@digital-opsis.com
