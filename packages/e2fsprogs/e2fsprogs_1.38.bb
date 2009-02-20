@@ -1,10 +1,12 @@
 require e2fsprogs.inc
 
-PR = "r18"
+PR = "r19"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1 \
 	    file://mkinstalldirs.patch;patch=1 \
 	   "
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX

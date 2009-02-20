@@ -8,7 +8,7 @@ PR = "r0"
 RRECOMMENDS_${PN} = "kernel-module-uvesafb"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-COMPATIBLE_MACHINE = "(qemux86|bootcdx86|i586-generic)"
+COMPATIBLE_HOST = 'i.86.*-linux'
 
 INITSCRIPT_NAME = "fbsetup"
 INITSCRIPT_PARAMS = "start 0 S ."
