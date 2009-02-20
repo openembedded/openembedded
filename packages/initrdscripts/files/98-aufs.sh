@@ -1,7 +1,7 @@
 aufs_mount () {
 	modprobe -q aufs
 
-	mkdir $2 /mnt
+	mkdir -p $2 /mnt
 	mount -t aufs -o br:$1:$2 none /mnt
 }
 
