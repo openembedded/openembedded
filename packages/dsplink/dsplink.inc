@@ -103,7 +103,9 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #legacy upgrade helpers
 RPROVIDES_ti-dsplink-module += "dsplink-module"
+RREPLACES_ti-dsplink-module += "dsplink-module"
 RPROVIDES_ti-dsplink-apps += "dsplink-apps"
+RREPLACES_ti_dsplink-apps += "dsplink-apps"
 
 #add run-time dependencies - note for kernel module we can only use RRECOMMENDS, since modules might be built into the kernel
 RRECOMMENDS_ti-dsplink-apps += "ti-dsplink-module"
