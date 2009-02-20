@@ -1,7 +1,7 @@
 ext3_mount () {
 	modprobe -q ext3
 
-	mkdir $2
+	mkdir -p $2
 	mount -t ext3 -onoatime,data=journal,errors=continue $1 $2
 }
 
