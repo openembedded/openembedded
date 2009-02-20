@@ -4,7 +4,7 @@ AUTHOR = "Larry Doolittle <larry@doolittle.boa.org>"
 RDEPENDS = "busybox"
 SECTION = "admin"
 LICENSE = "GPLv2"
-PR = "r1"
+PR = "r2"
 # The ntpclient package uses version numbers that include an underscore :(
 PV = "2007_365"
 # ntpclient unpacks into a directory that doesn't include version info :(
@@ -33,7 +33,7 @@ do_install () {
 }
 
 pkg_postinst_${PN} () {
-	update-alternatives --install ${sbindir}/adjtimex adjtimex adjtimex.${PN} 100
+	update-alternatives --install ${base_sbindir}/adjtimex adjtimex adjtimex.${PN} 100
 }
 
 pkg_prerm_${PN} () {
