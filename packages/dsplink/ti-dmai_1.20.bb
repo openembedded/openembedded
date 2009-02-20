@@ -20,7 +20,7 @@ SRC_URI = "file://dmai_1_20_00_06.tar.gz \
 S = "${WORKDIR}/dmai_1_20_00_06"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "120"
-PR = "r12"
+PR = "r13"
 
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
@@ -69,6 +69,9 @@ do_stage () {
 }
 
 PACKAGES =+ "ti-dmai-apps"
+
+ALLOW_EMPTY_${PN} = "1"
+RRECOMMENDS_${PN} = "ti-dmai-apps"
 
 FILES_ti-dmai-apps = "${datadir}/ti-dmai/*"
 
