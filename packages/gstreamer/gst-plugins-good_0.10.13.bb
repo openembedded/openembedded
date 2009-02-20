@@ -1,5 +1,4 @@
 require gst-plugins.inc
-PR = "r5"
 
 inherit gconf 
 
