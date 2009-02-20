@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r12"
+PR = "r13"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -22,6 +22,10 @@ SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://lpm-make-symbol-warnings-fix.patch;patch=1 \
            file://Makefile-dsplink-gpp \
            file://Makefile-dsplink-dsp \
+           file://loadmodules-ti-dsplink-apps.sh \
+           file://unloadmodules-ti-dsplink-apps.sh \
+           file://loadmodules-ti-codec-engine-apps.sh \
+           file://unloadmodules-ti-codec-engine-apps.sh \
 "
 
 S = "${WORKDIR}/codec_engine_2_21"
@@ -142,6 +146,11 @@ do_install_append () {
 	# we change pwd so that find gives us relative path to the files, which we use to create the same structure on the target
 	cd ${S}/examples/ti/sdo/ce
 
+    #test app module un/load scripts
+	install ${WORKDIR}/loadmodules-ti-dsplink-apps.sh ${D}/${datadir}/ti-dsplink
+	install ${WORKDIR}/unloadmodules-ti-dsplink-apps.sh ${D}/${datadir}/ti-dsplink
+
+    #ce samples
 	# first find all the app files named '.out'
 	for i in $(find . -name "*.out") ; do
 		# first create the directory
@@ -173,6 +182,10 @@ do_install_append () {
 		# now copy the file		
 		install ${i} ${D}/${datadir}/ti-codec-engine/`dirname ${i}`
 	done
+
+    #test app module un/load scripts
+	install ${WORKDIR}/loadmodules-ti-codec-engine-apps.sh ${D}/${datadir}/ti-codec-engine
+	install ${WORKDIR}/unloadmodules-ti-codec-engine-apps.sh ${D}/${datadir}/ti-codec-engine
 
 	# we should install the CMEM apps as well here
 
