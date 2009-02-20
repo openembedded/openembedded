@@ -136,6 +136,7 @@ do
                       gimp \
                       glider \
                       gmp \
+                      gmpc \
                       gnome-games \
                       gnome-mplayer \
                       gnome-panel \

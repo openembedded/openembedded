@@ -4,13 +4,6 @@ DEPENDS = "virtual/kernel perl-native"
 
 inherit module
 
-S = "${WORKDIR}/dsplink_1_60/dsplink"
-
-# Needed for buildscripts
-export DSPLINK="${S}"
-
-require ti-paths.inc
-
 do_configure () {
 	# Clean up stale binaries
 	find ${S} -name "*.ko" -exec rm {} \; || true
@@ -22,8 +15,6 @@ do_configure () {
 	perl config/bin/dsplinkcfg.pl --platform=${DSPLINKPLATFORM} --nodsp=1 --dspcfg_0=${DSPCFG} --dspos_0=DSPBIOS5XX  --gppos=${GPPOS} --comps=ponslrm
 	)
 }
-
-PARALLEL_MAKE = ""
 
 do_compile () {
 	unset DISPLAY
@@ -48,11 +39,11 @@ do_compile () {
 	export ARCHIVER_AR=${TARGET_PREFIX}ar
 	export BASE_SABIOS=${DSP_BASE_BIOS}
 	
+    #dsplinkk.ko bits
 	if [ ! -d ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE ] ; then 
 		install -d ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE
 	fi
 
-#dsplinkk.ko bits
 	cp ${WORKDIR}/Makefile-dsplink-gpp ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/Makefile
 	cd ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/
 
@@ -65,76 +56,36 @@ do_compile () {
 
 	make -e -f ${WORKDIR}/Makefile-dsplink-dsp
 	cp -a * ${DSPLINK}/gpp/export/BIN/Linux/${DSPLINKPLATFORM}/RELEASE
-
-#lpm bits
-	if [ -e ${S}/cetools/packages/ti/bios/power/ ] ; then
-		
-		# Build the DSP power manager kernel module
-		cd ${S}/cetools/packages/ti/bios/power/modules/${DSPPOWERSOC}/lpm
-
-		# Still need to move this into the patch file
-		if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 26 ] ; then
-			sed -i -e s:asm/semaphore:linux/semaphore: lpm_driver.c
-		fi
-
-		#what is this for?
-		rm -f *o
-		
-		# lpm also needs KERNEL_INSTALL_DIR and MVTOOL_PREFIX which come from ti-paths.inc
-		export DSPLINK_REPO=${DSPLINK}/..
-		# should move the clean step into the clean stage..
-		#oe_runmake clean
-		oe_runmake
-	fi
-
-#cmemk bits
-	if [ -e ${S}/cetools/packages/ti/sdo/linuxutils/cmem ] ; then
-                echo "MVTOOL_PREFIX=${TARGET_PREFIX}" > ${S}/Rules.make
-                echo "UCTOOL_PREFIX=${TARGET_PREFIX}" >> ${S}/Rules.make
-                echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
-                #export DSPLINK=${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
-
-		# Build the cmem kernel module
-		# We unset CFLAGS because kernel modules need different ones, this is basically a verbatim copy of kernel.bbclass and module-base.bbclass	
-		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
-
-		cd ${S}/cetools/packages/ti/sdo/linuxutils/cmem
-		oe_runmake clean
-		oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
-   	        KERNEL_SRC=${STAGING_KERNEL_DIR}    \
-   	        KERNEL_VERSION=${KERNEL_VERSION}    \
-   	        CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
-   	        AR="${KERNEL_AR}"
-	fi
 }
 
 do_install () {
-	install -d ${D}/${bindir}
-	install ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/*gpp ${D}/${bindir} || true
+    #driver - kernel module
+	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
+	cp ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/ 
 
-	install -d ${D}/${datadir}/dsplink
-	for i in $(find ${DSPLINK}/dsp/BUILD/ -name "*.out") ; do
-		install ${i}  ${D}/${datadir}/dsplink
-	done	
-
+    #library
 	install -d ${D}/${libdir}
 	install -m 0755 ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/dsplink.lib  ${D}/${libdir}
 
-	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-	cp ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/dsplinkk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/ 
-	cp ${S}/cetools/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
-	cp ${S}/cetools/packages/ti/bios/power/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
-        cp ${S}/cetools/packages/ti/bios/power/modules/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
+    #sample apps
+	install -d ${D}/${datadir}/ti-dsplink
+	install ${DSPLINK}/gpp/BUILD/EXPORT/RELEASE/*gpp ${D}/${datadir}/ti-dsplink || true
+	for i in $(find ${DSPLINK}/dsp/BUILD/ -name "*.out") ; do
+		install ${i} ${D}/${datadir}/ti-dsplink
+	done
 }
-
 
 # Codec Engine and friends need a complete tree, so stage it all
 do_stage() {
-	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
-	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink/ 
+	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}
+	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/${PN}/ 
 }
 
-pkg_postinst_dsplink-module () {
+PACKAGES =+ "ti-dsplink-module ti-dsplink-apps"
+FILES_ti-dsplink-module  = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/dsplinkk.ko"
+FILES_ti-dsplink-apps = "${datadir}/ti-dsplink/* ${libdir}/dsplink.lib"
+
+pkg_postinst_ti-dsplink-module () {
 	if [ -n "$D" ]; then
 		exit 1
 	fi
@@ -142,45 +93,20 @@ pkg_postinst_dsplink-module () {
 	update-modules || true
 }
 
-pkg_postrm_dsplink-module () {
+pkg_postrm_ti-dsplink-module () {
 	update-modules || true
 }
-
-PACKAGES =+ "dsplink-apps dsplink-module ti-lpm-module ti-cmemk-module"
-FILES_dsplink-module  = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/dsplinkk.ko"
-FILES_dsplink-apps = "${bindir}/* ${datadir}/dsplink/* ${libdir}/dsplink.lib"
-
-FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
-
-pkg_postinst_ti-lpm-module () {
-	if [ -n "$D" ]; then
-		exit 1
-	fi
-	depmod -a
-	update-modules || true
-}
-
-pkg_postrm_ti-lpm-module () {
-	update-modules || true
-}
-
-FILES_ti-cmemk-module = "${sysconfdir} /lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
-
-pkg_postinst_ti-cmemk-module () {
-	if [ -n "$D" ]; then        
-                exit 1
-        fi
-        depmod -a
-        update-modules || true
-}
-
-pkg_postrm_ti-cmemk-module () {
-        update-modules || true
-}
-
-
 
 INHIBIT_PACKAGE_STRIP = "1"
 
-PACKAGE_ARCH = "${MACHINE_ARCH}" 
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+#legacy upgrade helpers
+RPROVIDES_ti-dsplink-module += "dsplink-module"
+RREPLACES_ti-dsplink-module += "dsplink-module"
+RPROVIDES_ti-dsplink-apps += "dsplink-apps"
+RREPLACES_ti_dsplink-apps += "dsplink-apps"
+
+#add run-time dependencies - note for kernel module we can only use RRECOMMENDS, since modules might be built into the kernel
+RRECOMMENDS_ti-dsplink-apps += "ti-dsplink-module"
 

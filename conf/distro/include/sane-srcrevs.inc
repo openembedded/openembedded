@@ -57,7 +57,7 @@ SRCREV_pn-flashrom ?= "3682"
 SRCREV_pn-frameworkd ?= "700ab8250582767628165b7cf6f671ef756ba56d"
 SRCREV_pn-frameworkd-devel ?= "${SRCREV_pn-frameworkd}"
 SRCREV_pn-fsod ?= "3fa5eb6f2edcf7c9f0fc2027fda47b91d9f0f136"
-SRCREV_pn-fso-abyss ?= "49af81918362739fbf2e72b7b703fdc78989875e"
+SRCREV_pn-fso-abyss ?= "1af4f7914c84e050b3b409634c5e7ef70d5d6544"
 SRCREV_pn-fso-apm ?= "eb39ce7fb81bfa64e1a9eb5f142ca3d1065be3fa"
 SRCREV_pn-fso-gpsd ?= "78fe48dffb923175bde9f0aabc3500a9264a57e0"
 SRCREV_pn-fso-gsm0710muxd ?= "abcbcd7cc532a8834906de3fc24c8f8fe7643cd4"
@@ -246,7 +246,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "38544"
+EFL_SRCREV ?= "39089"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"

@@ -1,0 +1,27 @@
+diff -Nur kdenox.vanilla/acinclude.m4 kdenox/acinclude.m4
+--- kdenox.vanilla/acinclude.m4	2009-02-18 16:57:28.000000000 +0100
++++ kdenox/acinclude.m4	2009-02-18 16:59:44.000000000 +0100
+@@ -1887,16 +1887,17 @@
+ AC_SUBST(kde_libraries)
+ AC_SUBST(kde_includes)
+ 
+-if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes"  || test "$kde_includes" = "/usr/include"; then
++#if test "$kde_includes" = "$x_includes" || test "$kde_includes" = "$qt_includes"  || test "$kde_includes" = "/usr/include"; then
+  KDE_INCLUDES=""
+-else
+- KDE_INCLUDES="-I$kde_includes"
+- all_includes="$KDE_INCLUDES $all_includes"
+-fi
++#else
++# KDE_INCLUDES="-I$kde_includes"
++# all_includes="$KDE_INCLUDES $all_includes"
++#fi
+ 
+ KDE_DEFAULT_CXXFLAGS="-DQT_CLEAN_NAMESPACE -DQT_NO_ASCII_CAST -DQT_NO_STL -DQT_NO_COMPAT -DQT_NO_TRANSLATION"
+  
+-KDE_LDFLAGS="-L$kde_libraries"
++#KDE_LDFLAGS="-L$kde_libraries"
++KDE_LDFLAGS=""
+ if test ! "$kde_libraries" = "$x_libraries" && test ! "$kde_libraries" = "$qt_libraries" ; then 
+  all_libraries="$KDE_LDFLAGS $all_libraries"
+ fi
