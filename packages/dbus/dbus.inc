@@ -79,8 +79,10 @@ fi
 MESSAGEUSER=messagebus
 MESSAGEHOME=/var/run/dbus
 mkdir -p $MESSAGEHOME || true
-chgrp "$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || addgroup "$MESSAGEUSER"
-chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME" 2>/dev/null || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
+grep -q ^$MESSAGEUSER: /etc/group || addgroup "$MESSAGEUSER"
+chgrp "$MESSAGEUSER" "$MESSAGEHOME"
+grep -q ^$MESSAGEUSER: /etc/passwd || adduser --system --home "$MESSAGEHOME" --no-create-home --disabled-password --ingroup "$MESSAGEUSER" "$MESSAGEUSER"
+chown "$MESSAGEUSER"."$MESSAGEUSER" "$MESSAGEHOME"
 grep -q netdev: /etc/group || addgroup netdev
 chmod u+s /usr/libexec/dbus-daemon-launch-helper
 }

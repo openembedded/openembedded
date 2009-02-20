@@ -13,12 +13,14 @@ SRC_URI = "file://dmai_1_20_00_06.tar.gz \
 	   file://dmai-do-not-panic-on-mixer-failure.patch;patch=1 \
 	   file://dmai-support-32bit-align.patch;patch=1 \
 	   file://dmai-built-with-angstrom.patch;patch=1 \
+           file://loadmodules-ti-dmai-apps.sh \
+           file://unloadmodules-ti-dmai-apps.sh \
    "
 
 S = "${WORKDIR}/dmai_1_20_00_06"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "120"
-PR = "r11"
+PR = "r12"
 
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
@@ -55,6 +57,10 @@ do_install () {
 
 	export EXEC_DIR="${D}/${datadir}/ti-dmai/apps"
 	oe_runmake install
+
+    #test app module un/load scripts
+        install ${WORKDIR}/loadmodules-ti-dmai-apps.sh ${D}/${datadir}/ti-dmai
+        install ${WORKDIR}/unloadmodules-ti-dmai-apps.sh ${D}/${datadir}/ti-dmai
 }
 
 do_stage () {

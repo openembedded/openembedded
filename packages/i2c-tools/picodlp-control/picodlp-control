@@ -43,8 +43,45 @@ case ${PICO_OPTION} in
 				${I2C_APP} ${PICO_ADDRESS} wb4 0x26 ${WORD_OFF}
 			fi;;
 
+"rled")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x11 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x11 ${WORD_OFF}
+			fi;;
+
+"gled")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x12 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x12 ${WORD_OFF}
+			fi;;
+
+"bled")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x13 ${WORD_ON}
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x13 ${WORD_OFF}
+			fi;;	
+
+"itp")
+			if [ $2 -gt 0 ] ; then
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x0B ${WORD_OFF}
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x04 ${WORD_ON}
+				#Parallel RGB Setting
+			else
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x0B $3
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x04 ${WORD_OFF}
+				#Test Pattern
+			fi;;	
+"ledc")
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x0E $4
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x0F $5
+				${I2C_APP} ${PICO_ADDRESS} wb4 0x10 $6
+			;;
+
 *)
-			echo "Usage: $0 vflip|hflip|temporal-enhance 0/1";;
+			echo "Usage: $0 vflip|hflip|temporal-enhance|rled|gled|bled|itp|ledc 0/1 0x";;
 esac
 
 
