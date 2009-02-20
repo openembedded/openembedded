@@ -35,6 +35,8 @@ read_args() {
                 ROOT_FSTYPE=$optarg ;;
             rootdelay=*)
                 rootdelay=$optarg ;;
+            debug) set -x ;;
+            shell) sh ;;
         esac
     done
 }
