@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r13"
+PR = "r14"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -17,6 +17,7 @@ PV = "221"
 
 SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://cmem-class-device-27-and-sched-include-fix.patch;patch=1 \
+           file://sdma-class-device-and-includes-fix.patch;patch=1 \
            file://dsplink-semaphore-27.patch;patch=1 \
            file://lpm-device-create-and-semaphore-include-fix.patch;patch=1 \
            file://lpm-make-symbol-warnings-fix.patch;patch=1 \
@@ -69,7 +70,7 @@ do_compile_append() {
                 echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
                 #export DSPLINK=${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/dsplink
 
-		# Build the cmem kernel module
+		# Build the cmem kernel module and associated test apps
 		# We unset CFLAGS because kernel modules need different ones, this is basically a verbatim copy of kernel.bbclass and module-base.bbclass	
 		unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS	
 
@@ -82,7 +83,27 @@ do_compile_append() {
    	        AR="${KERNEL_AR}"
 	fi
 
-#need to add other modules here, like SDMA, etc
+#sdma bits
+        if [ -e ${S}/cetools/packages/ti/sdo/linuxutils/sdma ] ; then
+               echo "MVTOOL_PREFIX=${TARGET_PREFIX}" > ${S}/Rules.make
+               echo "UCTOOL_PREFIX=${TARGET_PREFIX}" >> ${S}/Rules.make
+               echo "LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}"  >> ${S}/Rules.make
+
+                # Build the sdma kernel module and associated test apps
+                # We unset CFLAGS because kernel modules need different ones, this is basically a verbatim copy of kernel.bbclass and module-base.bbclass
+                unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+
+                cd ${S}/cetools/packages/ti/sdo/linuxutils/sdma
+                oe_runmake clean
+                oe_runmake KERNEL_PATH=${STAGING_KERNEL_DIR}   \
+                KERNEL_SRC=${STAGING_KERNEL_DIR}    \
+                KERNEL_VERSION=${KERNEL_VERSION}    \
+                CC="${KERNEL_CC}" LD="${KERNEL_LD}" \
+                AR="${KERNEL_AR}"
+        fi
+
+
+#need to add other modules here, like IRQ, etc
 
 
 #now build the CE examples
@@ -134,8 +155,9 @@ do_compile_append() {
 do_install_append () {
     #driver - kernel module
 	install -d ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp
-	cp ${S}/cetools/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
         cp ${S}/cetools/packages/ti/bios/power/modules/${DSPPOWERSOC}/lpm/*.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
+	cp ${S}/cetools/packages/ti/sdo/linuxutils/cmem/src/module/cmemk.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
+        cp ${S}/cetools/packages/ti/sdo/linuxutils/sdma/src/module/sdmak.ko ${D}/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp || true
 
     #library
 	#install -d ${D}/${libdir}
@@ -193,10 +215,11 @@ do_install_append () {
 	# - TODO...
 }
 
-PACKAGES =+ "ti-lpm-module ti-cmem-module ti-codec-engine-apps"
+PACKAGES =+ "ti-lpm-module ti-cmem-module ti-sdma-module ti-codec-engine-apps"
 
 FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
 FILES_ti-cmem-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
+FILES_ti-sdma-moduke = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/sdmak.ko"
 FILES_ti-codec-engine-apps = "${datadir}/ti-codec-engine/*"
 
 pkg_postinst_ti-lpm-module () {
@@ -223,6 +246,18 @@ pkg_postrm_ti-cmem-module () {
         update-modules || true
 }
 
+pkg_postinst_ti-sdma-module () {
+        if [ -n "$D" ]; then
+                exit 1
+        fi
+        depmod -a
+        update-modules || true
+}
+
+pkg_postrm_ti-sdma-module () {
+        update-modules || true
+}
+
 INHIBIT_PACKAGE_STRIP = "1"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -231,10 +266,9 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 RPROVIDES_ti-cmem-module += "ti-cmemk-module"
 RREPLACES_ti-cmem-module += "ti-cmemk-module"
 
-
 # ti-dsplink-module can be built by either codec-engine or standalone dsplink - tell it to use this one, else unwanted dependence
 PREFERRED_PROVIDER_ti-dsplink-module = "ti-codec-engine"
 
 #add run-time dependencies - note for kernel module we can only use RRECOMMENDS, since modules might be built into the kernel
-RRECOMMENDS_ti-codec-engine-apps += "ti-dsplink-module ti-lpm-module ti-cmem-module"
+RRECOMMENDS_ti-codec-engine-apps += "ti-dsplink-module ti-lpm-module ti-cmem-module ti-sdma-module"
 
