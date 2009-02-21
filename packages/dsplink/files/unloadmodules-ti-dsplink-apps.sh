@@ -2,4 +2,4 @@
 
 # remove DSP/BIOS Link driver
 rmmod dsplinkk
-rm -f /dev/dsplink
+#rm -f /dev/dsplink

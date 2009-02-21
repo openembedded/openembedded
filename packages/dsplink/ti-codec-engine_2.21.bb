@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r15"
+PR = "r16"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -19,6 +19,7 @@ SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://cmem-class-device-27-and-sched-include-fix.patch;patch=1 \
            file://sdma-class-device-and-includes-fix.patch;patch=1 \
            file://dsplink-semaphore-27.patch;patch=1 \
+           file://dsplink-add-class-device-create-support.patch;patch=1 \
            file://lpm-device-create-and-semaphore-include-fix.patch;patch=1 \
            file://lpm-make-symbol-warnings-fix.patch;patch=1 \
            file://Makefile-dsplink-gpp \

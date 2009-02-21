@@ -21,5 +21,5 @@ awk '/MemTotal:/ {
 modprobe dsplinkk
 
 # make /dev/dsplink
-rm -f /dev/dsplink
-mknod /dev/dsplink c `awk "\\$2==\"dsplink\" {print \\$1}" /proc/devices` 0
+#rm -f /dev/dsplink
+#mknod /dev/dsplink c `awk "\\$2==\"dsplink\" {print \\$1}" /proc/devices` 0

@@ -83,6 +83,7 @@ do
                       bonjour \
                       camera-assistant \
                       cdparanoia \
+                      cdstatus \
                       checkers \
                       cherokee \
                       claws-mail \

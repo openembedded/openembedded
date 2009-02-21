@@ -29,8 +29,8 @@ modprobe cmemk phys_start=0x85800000 phys_end=0x86800000 pools=20x4096,8x131072,
 modprobe dsplinkk
 
 # make /dev/dsplink
-rm -f /dev/dsplink
-mknod /dev/dsplink c `awk "\\$2==\"dsplink\" {print \\$1}" /proc/devices` 0
+#rm -f /dev/dsplink
+#mknod /dev/dsplink c `awk "\\$2==\"dsplink\" {print \\$1}" /proc/devices` 0
 
 # insert Local Power Manager driver
 #
