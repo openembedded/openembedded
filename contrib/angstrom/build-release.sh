@@ -77,7 +77,7 @@ do
 done	 
 
 # build kexecboot kernels for supported machines
-for machine in h2200 hx4700 c7x0 akita spitz poodle collie
+for machine in h2200 hx4700 c7x0 akita spitz poodle collie tosa
 do
 	BUILD_MACHINE=$machine
 	BUILD_TARGETS="linux-kexecboot"
