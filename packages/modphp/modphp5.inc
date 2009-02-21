@@ -13,7 +13,8 @@ inherit autotools
 FILES_${PN} = "${libdir}/apache2 /etc"
 FILES_${PN}-dbg += "${libdir}/apache2/modules/.debug"
 
-CFLAGS += " -g -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED"
+CFLAGS += " -g -DPTYS_ARE_GETPT -DPTYS_ARE_SEARCHED -I${STAGING_INCDIR_NATIVE}/apache2"
+
 EXTRA_OECONF = "--with-apxs2=${STAGING_BINDIR_NATIVE}/apxs \
                 --without-mysql \
 		--enable-force-cgi-redirect \
@@ -29,7 +30,7 @@ EXTRA_OECONF = "--with-apxs2=${STAGING_BINDIR_NATIVE}/apxs \
 		--disable-simplexml \
 		--disable-libxml \
 		--disable-dom \
-                --with-zlib --with-zlib-dir=${STAGING_DIR_NATIVE}${layout_exec_prefix} \
+                --with-zlib --with-zlib-dir=${STAGING_DIR}${layout_exec_prefix}/.. \
                 --with-config-file-path=/etc/php/apache2-php5"
 
 #		--with-libxml-dir=${STAGING_DIR_NATIVE}${layout_exec_prefix} \
