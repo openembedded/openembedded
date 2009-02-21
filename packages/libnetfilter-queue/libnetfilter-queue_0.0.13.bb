@@ -18,12 +18,6 @@ S = "${WORKDIR}/libnetfilter_queue-${PV}"
 
 inherit autotools pkgconfig
 
-do_configure() {
-	gnu-configize
-	libtoolize --force
-	oe_runconf
-}
-
 do_stage() {
 	autotools_stage_all
 }
