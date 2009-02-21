@@ -9,8 +9,6 @@ MAJV = "${@bb.data.getVar('PV',d,1)[:3]}"
 
 SRC_URI = "\
   http://download.gnome.org/sources/vala/${MAJV}/vala-${PV}.tar.bz2 \
-  file://0001-glib-2.0.vapi-add-necessary-struct-members-to-use-B.patch;patch=1 \
-  file://0002-glib-2.0-bind-g_io_channel_add_watch_full.patch;patch=1 \
   file://static-dbus-methods.patch;patch=1 \
 "
 S = "${WORKDIR}/vala-${PV}"
