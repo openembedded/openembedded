@@ -1,0 +1,26 @@
+diff -ruN dpkg-1.13.22.orig/scripts/update-alternatives.pl dpkg-1.13.22/scripts/update-alternatives.pl
+--- dpkg-1.13.22.orig/scripts/update-alternatives.pl   2006-06-21 01:46:12.000000000 -0300
++++ dpkg-1.13.22/scripts/update-alternatives.pl    2007-08-02 19:36:47.000000000 -0300
+@@ -1,7 +1,7 @@
+ #!/usr/bin/perl --
+ 
+ $admindir= "/var/lib/dpkg"; # This line modified by Makefile
+-$dpkglibdir= "../utils"; # This line modified by Makefile
++$dpkglibdir= "/usr/lib/dpkg"; # This line modified by Makefile
+ $version= '0.93.80'; # This line modified by Makefile
+ push (@INC, $dpkglibdir);
+ require 'dpkg-gettext.pl';
+@@ -129,6 +129,12 @@
+         &checkmanymodes;
+         @ARGV >= 4 || &badusage(_g("--install needs <link> <name> <path> <priority>"));
+         ($alink,$name,$apath,$apriority,@ARGV) = @ARGV;
++  if (! -e $apath) { 
++      $apath = substr($alink,0,rindex($alink,"/")+1).$apath;
++  }
++  if (! -e $apath) { 
++      &quit(sprintf(_g("Error: file not found: %s"), $apath));
++  }
+         $apriority =~ m/^[-+]?\d+/ || &badusage(_g("priority must be an integer"));
+         $mode= 'install';
+     } elsif (m/^--(remove|set)$/) {
+
