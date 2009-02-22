@@ -1,2 +1,2 @@
-include libnetfilter_queue.inc
+include libnetfilter-queue.inc
 
