@@ -23,8 +23,8 @@ BAD_RECOMMENDATIONS ?= ""
 
 IPKG_VARIANT ?= "opkg"
 
-RDEPENDS += "${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
-PACKAGE_INSTALL += "${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
+RDEPENDS_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
+PACKAGE_INSTALL_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
 
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x
