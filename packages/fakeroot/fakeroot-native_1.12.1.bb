@@ -1,13 +1,11 @@
 require fakeroot_${PV}.bb
 
-RDEPENDS="util-linux-native"
-
-SRC_URI += "file://fix-prefix.patch;patch=1 "
+SRC_URI += "file://fix-prefix.patch;patch=1"
 S = "${WORKDIR}/fakeroot-${PV}"
 
 inherit native
 
-EXTRA_OECONF = " --program-prefix="
+EXTRA_OECONF = "--program-prefix="
 
 # Compatability for the rare systems not using or having SYSV
 python () {
@@ -19,3 +17,4 @@ do_stage_append () {
     oe_libinstall -so libfakeroot ${STAGING_LIBDIR}/libfakeroot/
 }
 
+RDEPENDS = "util-linux-native"
