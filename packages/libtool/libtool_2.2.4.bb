@@ -1,8 +1,5 @@
 require libtool.inc
-
-PR = "r14"
-
-DEFAULT_PREFERENCE = "-1"
+PR = "r15"
 
 SRC_URI = "${GNU_MIRROR}/libtool/libtool-${PV}.tar.gz"
 S = "${WORKDIR}/libtool-${PV}"
