@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb-compat libusb1 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -14,6 +14,7 @@ SRC_URI = "\
 "    
 S = "${WORKDIR}/bluez-${PV}"
 
+DEPENDS = "libusb"
 inherit autotools pkgconfig
 
 OE_LT_RPATH_ALLOW = "any"
