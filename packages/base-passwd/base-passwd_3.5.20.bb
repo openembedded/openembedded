@@ -1,19 +1,16 @@
 DESCRIPTION = "Base system password/group files."
 SECTION = "base"
-PR = "r3"
 LICENSE = "GPL"
 
-SRC_URI = "${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
-	   file://configure.patch;patch=1 \
-	   file://nobash.patch;patch=1 \
-	   file://root-home.patch;patch=1 \
-	   file://mysql.patch;patch=1"
-
+SRC_URI = "\
+  ${DEBIAN_MIRROR}/main/b/base-passwd/base-passwd_${PV}.tar.gz \
+  file://nobash.patch;patch=1 \
+  file://root-home.patch;patch=1 \
+  file://mysql.patch;patch=1 \
+"
 S = "${WORKDIR}/base-passwd"
 
 inherit autotools
-
-FILES_${PN}-doc += "${docdir}"
 
 do_install () {
 	install -d -m 755 ${D}${sbindir}
@@ -44,6 +41,7 @@ do_install_append_openmn() {
 	echo "0:Jn6tcg/qjqvUE:0:0:root:/root:/bin/sh" >>${D}${datadir}/base-passwd/passwd.master
 }
 
+FILES_${PN}-doc += "${docdir}"
 
 pkg_postinst () {
 	set -e
