@@ -35,8 +35,14 @@ read_args() {
                 ROOT_FSTYPE=$optarg ;;
             rootdelay=*)
                 rootdelay=$optarg ;;
+            debug) set -x ;;
+            shell) sh ;;
         esac
     done
+}
+
+do_depmod() {
+	[ -e "/lib/modules/$(uname -r)/modules.dep" ] || depmod
 }
 
 load_module() {
@@ -66,6 +72,7 @@ fatal() {
 echo "Starting initramfs boot..."
 early_setup
 load_modules '0*'
+do_depmod
 
 [ -z "$CONSOLE" ] && CONSOLE="/dev/console"
 

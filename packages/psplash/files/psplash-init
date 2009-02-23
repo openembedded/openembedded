@@ -1,13 +1,9 @@
 #!/bin/sh 
 
-for x in $(cat /proc/cmdline); do
-        case $x in
-        psplash=false)
-		echo "Boot splashscreen disabled" 
-		exit 0;
-                ;;
-        esac
-done
+if grep -qE '\s?psplash=false\s?' /proc/cmdline; then
+	echo "Boot splashscreen disabled"
+	exit 0;
+fi
 
 . /etc/init.d/functions
 . /etc/default/psplash
