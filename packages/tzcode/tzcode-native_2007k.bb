@@ -1,10 +1,10 @@
 DESCRIPTION = "tzcode, timezone zoneinfo utils -- zic, zdump, tzselect"
-
 PR = "r0"
 
-SRC_URI = "ftp://elsie.nci.nih.gov/pub/tzcode${PV}.tar.gz \
-           ftp://elsie.nci.nih.gov/pub/tzdata${PV}.tar.gz"
-
+SRC_URI = "\
+  http://bent.latency.net/bent/darcs/zoneinfo-2007k/src/tzcode${PV}.tar.gz \
+  http://bent.latency.net/bent/darcs/zoneinfo-2007k/src/tzdata${PV}.tar.gz \
+"
 S = "${WORKDIR}"
 
 inherit native
