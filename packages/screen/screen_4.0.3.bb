@@ -4,10 +4,12 @@ processes, typically interactive shells."
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "ncurses"
-PR = "r2"
+PR = "r0"
+
+# patch needs adapting
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "${GNU_MIRROR}/screen/screen-${PV}.tar.gz \
-           file://screen_4.0.2-4.1sarge1.diff.gz;patch=1 \
            file://configure.patch;patch=1"
 
 inherit autotools
