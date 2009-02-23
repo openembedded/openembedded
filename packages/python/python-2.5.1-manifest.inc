@@ -229,7 +229,7 @@ FILES_python-mmap="${pydyndir}/mmap.so "
 
 DESCRIPTION_python-zlib="Python zlib Support."
 PR_python-zlib="ml3"
-RDEPENDS_python-zlib="python-core libz1"
+RDEPENDS_python-zlib="python-core"
 FILES_python-zlib="${pydyndir}/zlib.so "
 
 DESCRIPTION_python-db="Python File-Based Database Support"
