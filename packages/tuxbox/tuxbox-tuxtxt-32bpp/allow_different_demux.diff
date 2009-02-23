@@ -26,7 +26,7 @@ diff -Naur tuxtxt_org/python/plugin.py tuxtxt/python/plugin.py
 +
 +		stream = service and service.stream()
 +		demux = stream and stream.getStreamingData()
-+		demux = demux.get("demux", -1)
++		demux = demux and demux.get("demux", -1)
 +		demux = demux > -1 and "%d" %(demux) or ""
  
  		eDBoxLCD.getInstance().lock()
