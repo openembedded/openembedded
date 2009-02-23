@@ -17,7 +17,7 @@
     is a set of metadata used to cross-compile, package and install software
     packages. <application>OpenEmbedded</application> is being used to build
     and maintain a number of embedded Linux distributions, including
-    OpenZaurus, Angström, Familiar and SlugOS.</para>
+    OpenZaurus, &Aring;ngstr&ouml;m, Familiar and SlugOS.</para>
 
     <para>The primary use-case of <application>OpenEmbedded</application> are:
     <itemizedlist>
