@@ -1,37 +1,39 @@
 DESCRIPTION = "Generic Blob [Bootloader] for the Motorola EZX platform"
 SECTION = "bootloaders"
-AUTHOR = "Daniel Riberio"
+AUTHOR = "OpenEZX Team"
 HOMEPAGE = "http://people.openezx.org/wyrm/gen-blob"
-PRIORITY = "optional"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
-PV = "0.1.0+${SRCREV}"
+DEPENDS = "openezx-kernel"
+PV = "1.0.0+${SRCREV}"
 PR = "r0"
 
-DEFAULT_PREFERENCE = "-1"
+SRC_URI = "\
+  svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http \
+  file://remove-bogus-sed.patch;patch=1 \
+"
+S = "${WORKDIR}/gen-blob"
 
 inherit autotools
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http"
-S = "${WORKDIR}/gen-blob"
+EXTRA_OECONF = "\
+  --with-board=lubbock \
+  --with-cpu=pxa262 \
+  --with-linux-prefix=${STAGING_KERNEL_DIR} \
+  --enable-usb \
+"
 
-do_deploy() {
-	dd if=${WORKDIR}/gen-blob bs=1k seek=2 conv=sync of=${WORKDIR}/gen-blob-a1200
-
-	install -d ${DEPLOY_DIR_IMAGE}
-	install -m 0644 gen-blob ${DEPLOY_DIR_IMAGE}/gen-blob-for-1stgen.${SRCDATE}
-	install -m 0644 gen-blob-a1200 ${DEPLOY_DIR_IMAGE}/gen-blob-for-2ndgen.${SRCDATE}
+do_configure() {
+	gnu-configize
+	oe_runconf
 }
 
-do_install() {
-	dd if=${WORKDIR}/gen-blob bs=1k seek=2 conv=sync of=${WORKDIR}/gen-blob-a1200
-
-	install -d ${D}/${datadir}/openezx
-	install -m 0644 gen-blob ${D}${datadir}/openezx/gen-blob-for-1stgen.${SRCDATE}
-	install -m 0644 gen-blob-a1200 ${D}${datadir}/openezx/gen-blob-for-2ndgen.${SRCDATE}
+do_deploy() {
+	install -d ${DEPLOY_DIR_IMAGE}
+	install -m 0644 src/blob/blob-a780  ${DEPLOY_DIR_IMAGE}/gen-blob-for-1stgen.${SRCDATE}
+	install -m 0644 src/blob/blob-a1200 ${DEPLOY_DIR_IMAGE}/gen-blob-for-2ndgen.${SRCDATE}
 }
 
 addtask deploy before do_build after do_compile
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-FILES_${PN} = "${datadir}"
