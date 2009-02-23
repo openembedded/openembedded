@@ -1,0 +1,46 @@
+Some common stuff used by other UTF-8 patches.
+
+================================================================================
+--- mc-4.6.2/src/util.c
++++ mc-4.6.2/src/util.c
+@@ -145,6 +145,30 @@
+ 	return strlen (str);
+ }
+ 
++int
++columns_to_bytes (const char *str, int col)
++{
++    int bytes = 0;
++    int columns = 0;
++    int i;
++#ifdef UTF8
++    if (SLsmg_Is_Unicode) {
++	static mbstate_t s;
++	while (columns < col) {
++	    memset (&s, 0, sizeof (s));
++	    i = mbrlen (str + bytes, -1, &s);
++	    if (i <= 0) {
++		return col + bytes - columns;
++	    }
++	    bytes += i;
++	    columns ++;
++	}
++	return col + bytes - columns;
++    } else
++#endif
++	return col;
++}
++
+ #ifdef UTF8
+ 
+ void 
+--- mc-4.6.2/src/util.h
++++ mc-4.6.2/src/util.h
+@@ -104,6 +104,7 @@
+ 
+ void fix_utf8(char *str);
+ size_t mbstrlen (const char *);
++int columns_to_bytes (const char *, int);
+ wchar_t *mbstr_to_wchar (const char *);
+ char *wchar_to_mbstr (const wchar_t *);
+ char *utf8_to_local(char *str);

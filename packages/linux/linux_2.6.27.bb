@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r4"
+PR = "r5"
 
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
@@ -20,7 +20,7 @@ SRC_URI_append_boc01 = "\
 	file://008-081208-spi.patch;patch=1 \
 	file://010-090112-mii.patch;patch=1 \
 	file://011-090115-gpio.patch;patch=1 \
-	file://012-090115-cy3218-btns.patch;patch=1 \
+	file://012-090219-capsense.patch;patch=1 \
 	file://013-090209-lcd.patch;patch=1 \
 	file://014-090209-pm-wakeup.patch;patch=1 \
 	"

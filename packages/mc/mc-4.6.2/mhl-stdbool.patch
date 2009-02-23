@@ -1,0 +1,16 @@
+Index: mc-4.6.2/mhl/types.h
+===================================================================
+--- mc-4.6.2.orig/mhl/types.h	2009-02-01 19:30:21.000000000 +0000
++++ mc-4.6.2/mhl/types.h	2009-02-22 16:45:06.000000000 +0000
+@@ -7,10 +7,6 @@
+ #ifndef __MHL_TYPES_H
+ #define __MHL_TYPES_H
+ 
+-typedef enum 
+-{
+-    false	= 0,
+-    true	= 1
+-} bool;
++#include <stdbool.h>
+ 
+ #endif

@@ -2,7 +2,7 @@ require u-boot.inc
 
 DEFAULT_PREFERENCE = "-1"
 
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "ftp://ftp.denx.de/pub/u-boot/u-boot-${PV}.tar.bz2"
 
@@ -27,7 +27,7 @@ SRC_URI_append_boc01 = "\
            file://003-081205-DTT_LM73.patch;patch=1 \
            file://004-081205-WATCHDOG.patch;patch=1 \
            file://006-081211-EEPROM_M24C32.patch;patch=1 \
-           file://007-090112-CAPSENSE.patch;patch=1 \
+           file://007-090217-CAPSENSE.patch;patch=1 \
            file://008-090107-TSEC.patch;patch=1 \
            file://009-081212-EXIO.patch;patch=1 \
            file://010-081212-LCD.patch;patch=1 \

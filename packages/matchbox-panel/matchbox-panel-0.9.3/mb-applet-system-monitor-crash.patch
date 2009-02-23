@@ -1,0 +1,85 @@
+Program received signal SIGSEGV, Segmentation fault.
+0x4002dfbc in mb_pixbuf_img_plot_pixel (pb=<value optimized out>, img=0x1ba40, x=22, 
+    y=-434, r=255 'ÿ', g=0 '\0', b=0 '\0') at mbpixbuf.c:2087
+(gdb) bt
+#0  0x4002dfbc in mb_pixbuf_img_plot_pixel (pb=<value optimized out>, img=0x1ba40, x=22, 
+    y=-434, r=255 'ÿ', g=0 '\0', b=0 '\0') at mbpixbuf.c:2087
+#1  0x0000966c in paint_callback (app=<value optimized out>, drw=46137348)
+    at mb-applet-system-monitor.c:272
+#2  0x4002b8f6 in handle_expose (mb=0x1ba40, event=<value optimized out>) at mbtray.c:820
+#3  0x4002b922 in mb_tray_app_repaint (mb=0x1ba40) at mbtray.c:833
+#4  0x00008fd4 in timeout_callback (app=0x1ba40) at mb-applet-system-monitor.c:347
+#5  0x4002c580 in mb_tray_app_main (mb=0x14008) at mbtray.c:302
+#6  0x00009878 in main (argc=1, argv=0xbecf1ca4) at mb-applet-system-monitor.c:410
+(gdb) up
+(gdb) print membox_h
+$1 = 20
+(gdb) print mem_pixels
+$2 = 18798069
+(gdb) print memsize
+$3 = 1597228901
+(gdb) print msd
+$4 = {loadIndex = 15, samples = 16, load = 0x18a90, total = 0x18b18, 
+  mem_used = 18446744073706139648, mem_max = 63750144, swap_used = 0, swap_max = 0, 
+  swap_percent = 0, mem_percent = 1597228901}
+
+Huh, mem_used doesn't look good!
+
+root@zaurus:~# printf %lx\\n -18446744073706139648
+341000
+
+Well, it's negative. The algorithm is a bit stange.
+
+root@zaurus:~# cat /proc/meminfo 
+MemTotal:        62256 kB
+MemFree:          8504 kB
+Buffers:          1508 kB
+Cached:          24692 kB
+SwapCached:       8604 kB
+Active:          22632 kB
+Inactive:        21344 kB
+SwapTotal:      131064 kB
+SwapFree:        72060 kB
+Dirty:               0 kB
+Writeback:           0 kB
+AnonPages:       12636 kB
+Mapped:           5532 kB
+Slab:             4300 kB
+SReclaimable:     1456 kB
+SUnreclaim:       2844 kB
+PageTables:       1116 kB
+NFS_Unstable:        0 kB
+Bounce:              0 kB
+WritebackTmp:        0 kB
+CommitLimit:    162192 kB
+Committed_AS:    81568 kB
+VmallocTotal:   581632 kB
+VmallocUsed:      9112 kB
+VmallocChunk:   565244 kB
+
+Now let's compute what's happening:
+
+cache_used = cache_total - cache_free;
+my_mem_used     = cache_used + used - cached - buffers;
+12636 - 5532 + 8604 - 24692 - 1508 = -10492
+				     ======
+
+Well, I don't know, how to compute a really used memory, but I could at
+least sanitize the value. Here you are:
+
+Index: matchbox-panel-0.9.3/applets/mb-applet-system-monitor.c
+===================================================================
+--- matchbox-panel-0.9.3/applets/mb-applet-system-monitor.c	2006-02-07 22:19:12.000000000 +0000
++++ matchbox-panel-0.9.3/applets/mb-applet-system-monitor.c	2009-02-21 13:19:41.000000000 +0000
+@@ -195,6 +195,11 @@
+       my_mem_max      = total;
+       my_swap_max     = cache_total;
+       my_mem_used     = cache_used + used - cached - buffers;
++      /* Ugly hack! Fix mem-used algorithm is needed. */
++      if (my_mem_used < 0)
++	my_mem_used = 0;
++      if (my_mem_used > my_mem_max)
++	my_mem_used = my_mem_max;
+       msd.mem_used    = my_mem_used;
+       msd.mem_max     = my_mem_max;
+       msd.mem_percent = (100 * msd.mem_used) / msd.mem_max;

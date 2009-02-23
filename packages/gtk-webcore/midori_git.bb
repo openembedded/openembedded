@@ -2,7 +2,9 @@ require midori.inc
 
 DEPENDS += "python-native python-docutils-native"
 
-PV = "0.1.2+gitr${SRCREV}"
+# increment PR every time SRCREV is updated!
+PR = "r0"
+PV = "0.1.2+${PR}+gitr${SRCREV}"
 
 SRC_URI = "http://git.xfce.org/kalikiana/midori/snapshot/midori-${SRCREV}.tar.bz2"
 S = "${WORKDIR}/midori-${SRCREV}"

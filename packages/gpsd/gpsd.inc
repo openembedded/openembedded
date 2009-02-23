@@ -24,7 +24,7 @@ inherit autotools update-rc.d
 INITSCRIPT_NAME = "gpsd"
 INITSCRIPT_PARAMS = "defaults 35"
 
-export LDFLAGS = "-L${STAGING_LIBDIR} -lm"
+LDFLAGS += "-L${STAGING_LIBDIR} -lm"
 export STAGING_INCDIR
 export STAGING_LIBDIR
 
