@@ -1,5 +1,7 @@
 require libsdl.inc
 
+PR="r1"
+
 SECTION = "opie/libs"
 DEPENDS = "virtual/libqpe1 libopie2"
 
@@ -13,6 +15,8 @@ SRC_URI += "\
   file://fixlibs-1.2.9.patch;patch=1 \
   file://explicit-extern-C.patch;patch=1 \
   file://no-PAGE_SIZE.patch;patch=1 \
+  file://fix_Makefile.am.patch;patch=1 \
+  file://fix_configure.in.patch;patch=1 \
 "
 
 EXTRA_OECONF = "--disable-static --disable-debug --enable-cdrom --enable-threads --enable-timers --enable-endian \
