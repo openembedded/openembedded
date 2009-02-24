@@ -14,7 +14,7 @@ FILES_${PN} += "/"
 FILES_${PN}-dbg += "/usr/lib/ICAClient/.debug"
 
 do_configure() {
-	rpm2cpio ${DL_DIR}/ICAClient-${PV}-1.i386.rpm | fakeroot cpio -i --make-directories
+	rpm2cpio.pl ${DL_DIR}/ICAClient-${PV}-1.i386.rpm | fakeroot cpio -i --make-directories
 }
 
 DDIR="${D}/usr/lib/ICAClient"
