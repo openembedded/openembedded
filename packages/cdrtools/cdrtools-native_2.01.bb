@@ -6,7 +6,7 @@ LICENSE="GPL"
 DESCRIPTION="A set of tools for CD recording, including cdrecord"
 HOMEPAGE="http://cdrecord.berlios.de/old/private/cdrecord.html"
 
-SRC_URI="ftp://ftp.berlios.de/pub/cdrecord/cdrtools-${PV}.tar.bz2"
+SRC_URI="http://ftp.berlios.de/pub/cdrecord/cdrtools-${PV}.tar.bz2"
 
 S="${WORKDIR}/cdrtools-${PV}"
 
