@@ -90,6 +90,7 @@ do
                       connman \
                       connman-gnome \
                       contacts \
+                      cron \
                       cvs \
                       cwiid \
                       dates \
