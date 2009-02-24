@@ -2,29 +2,92 @@
 <chapter id="chapter_getting_oe">
   <title>Getting Started</title>
 
+  <section id="gettingoe_directory_setup">
+    <title>OpenEmbedded Directory Structure</title>
+
+    <para>Before you begin downloading OpenEmbedded, you need to setup your
+    working environment.</para>
+
+	<para>The first step is to decide where on your system you wish to
+    work. This document will use the <varname>$OEBASE</varname> variable to
+    denote the base directory of the OpenEmbedded environment. For
+    example, <varname>$OEBASE</varname> could
+    be <literal>/home/joe/work/oe</literal>.</para>
+
+    <para>The base directory of your OpenEmbedded environment
+    (<varname>$OEBASE</varname>) is the location where sources will be checked
+    out (or unpacked). You must choose a location with <emphasis>no symlinks
+    above it</emphasis>.</para>
+
+	<para>To create the directory structure:
+
+    <screen>
+$ mkdir -p $OEBASE/build/conf
+$ cd $OEBASE</screen>
+
+	The <literal>$OEBASE/build</literal> directory will contain your
+	local configurations and extensions to the OpenEmbedded system which allow
+	you to build your applications and images.
+    </para>
+
+	<para>The <varname>$OEBASE</varname> will also contain both bitbake/ and
+	openembedded/ directories. These will be discussed in
+	<xref linkend="gettingoe_getting_bitbake"/> and
+	<xref linkend="gettingoe_getting_oe"/>.
+	</para>
+  </section>
+
   <section id="gettingoe_getting_bitbake">
     <title>Getting <application>BitBake</application></title>
 
-    <para>The required version of <application>BitBake</application> is
-    changing rapidly. At the time of writing (end 2007)
-    <application>BitBake</application> 1.8.latest was required.</para>
+    <para>Before using OE, you must first obtain the build tool it needs:
+    bitbake.</para>
 
-    <para>A safe method is to get the <application>BitBake</application> from
-    a stable Subversion branch (those with an even minor number). <screen>
-<command>svn</command> co http://svn.berlios.de/svnroot/repos/bitbake/branches/bitbake-1.8
-...
-A   bitbake-1.8/classes/base.bbclass
-U   bitbake-1.8
-At revision 827.
-            </screen> <application>BitBake</application> is checked out now;
-    this completes the first and most critical dependency of OpenEmbedded.
-    Issuing <command>svn</command> <command>up</command> in the
-    <emphasis>bitbake-1.8</emphasis> directory will update
-    <application>BitBake</application> to the latest stable version, but
-    generally it is a good idea to stick with a specific known working version
-    of <application>BitBake</application> until OpenEmbedded asks you to
-    upgrade.</para>
+    <para>It is recommended to run bitbake without installing it, as a sibling
+    directory of <literal>openembedded/</literal>
+    and <literal>build/</literal> directories. Indeed, as bitbake is written
+    in python it does not need compilation for being used. You'll just have to
+    set the PATH variable so that the BitBake tools are accessible (see
+    <xref linkend="gettingoe_configuring_oe"/>).</para>
+
+	<section><title>Getting <application>BitBake</application> Using Subversion</title>
+	  <para>To checkout the latest version of the BitBake 1.8 branch, use the
+		following command:
+		<screen>
+$ cd $OEBASE
+$ <command>svn</command> co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
+</screen>
+	  </para>
+
+	  <para><application>BitBake</application> is checked out now and
+		the <varname>$OEBASE</varname> directory will contain
+		a <literal>bitbake/</literal> subdirectory.</para>
+
+	  <para>If you need to access a Subversion server through a proxy, see the
+		<ulink url="http://subversion.tigris.org/faq.html#proxy">SVN FAQ</ulink>
+	  </para>
+	</section>
+
+	<section><title>Updating <application>BitBake</application></title>
+	  <para>Bitbake is being revised fairly often. Periodically it's a good
+		idea to check the repository of bitbake stable branches to see if a
+		new stable branch is available or if the current branch has been
+		revised. Compare your existing bitbake directory with the latest
+		bitbake branch in the repository. Your existing bitbake branch and
+		its 'last changed revision' number can be found as follows:
+
+		<screen>$ cd $OEBASE/bitbake; svn info</screen>
+
+		If there is a new stable branch, you will want to move or delete
+		your existing bitbake directory and repeat the process listed above
+		under "To obtain bitbake". If there is no new branch, it is easy to
+		update bitbake:
+
+		<screen>$ cd $OEBASE/bitbake; svn update</screen>
+	  </para>
+	</section>
   </section>
+
 
   <section id="gettingoe_getting_oe">
     <title>Getting OpenEmbedded</title>
