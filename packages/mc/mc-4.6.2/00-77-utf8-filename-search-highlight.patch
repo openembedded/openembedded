@@ -1,0 +1,17 @@
+Quick filename search (^S) highlights correct width.
+
+================================================================================
+--- mc-4.6.2/src/screen.c
++++ mc-4.6.2/src/screen.c
+@@ -771,8 +771,10 @@
+     widget_move (&panel->widget, llines (panel)+3, 1);
+ 
+     if (panel->searching){
++	int j;
+ 	attrset (INPUT_COLOR);
+-	tty_printf ("/%-*s", panel->widget.cols-3, panel->search_buffer);
++	j = columns_to_bytes (panel->search_buffer, panel->widget.cols-3);
++	tty_printf ("/%-*s", j, panel->search_buffer);
+ 	attrset (NORMAL_COLOR);
+ 	return;
+     }

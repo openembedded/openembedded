@@ -1,0 +1,63 @@
+Fix formatting the output of "mc --help".
+
+================================================================================
+--- mc-4.6.2/src/main.c
++++ mc-4.6.2/src/main.c
+@@ -1865,7 +1865,7 @@
+ 
+     /* print help for options */
+     leftColWidth = poptPrintHelp (ctx, stream, 0);
+-    fprintf (stream, "  %-*s   %s\n", leftColWidth, _("+number"),
++    fprintf (stream, "  %-*s   %s\n", leftColWidth + strlen(_("+number")) - mbstrlen(_("+number")), _("+number"),
+ 	     _("Set initial line number for the internal editor"));
+     fputs (_
+ 	   ("\n"
+--- mc-4.6.2/src/popthelp.c
++++ mc-4.6.2/src/popthelp.c
+@@ -101,7 +101,7 @@
+ 	goto out;
+     }
+ 
+-    helpLength = strlen(help);
++    helpLength = mbstrlen(help);
+     while (helpLength > lineLength) {
+ 	ch = help + lineLength - 1;
+ 	while (ch > help && !isspace((unsigned char) *ch)) ch--;
+@@ -112,7 +112,7 @@
+ 	fprintf(f, "%.*s\n%*s", (int) (ch - help), help, indentLength, " ");
+ 	help = ch;
+ 	while (isspace((unsigned char) *help) && *help) help++;
+-	helpLength = strlen(help);
++	helpLength = mbstrlen(help);
+     }
+ 
+     if (helpLength) fprintf(f, "%s\n", help);
+@@ -233,7 +233,7 @@
+     if (len == 3) return cursor;
+ 
+     if (argDescrip) 
+-	len += strlen(argDescrip) + 1;
++	len += mbstrlen(argDescrip) + 1;
+ 
+     if ((cursor + len) > 79) {
+ 	fprintf(f, "\n       ");
+@@ -304,7 +304,7 @@
+     singleTableUsage(f, cursor, con->options, NULL);
+ 
+     if (con->otherHelp) {
+-	cursor += strlen(con->otherHelp) + 1;
++	cursor += mbstrlen(con->otherHelp) + 1;
+ 	if (cursor > 79) fprintf(f, "\n       ");
+ 	fprintf(f, " %s", con->otherHelp);
+     }
+--- mc-4.6.2/src/util.c
++++ mc-4.6.2/src/util.c
+@@ -152,7 +152,7 @@
+     int columns = 0;
+     int i;
+ #ifdef UTF8
+-    if (SLsmg_Is_Unicode) {
++    if (1) {
+ 	static mbstate_t s;
+ 	while (columns < col) {
+ 	    memset (&s, 0, sizeof (s));

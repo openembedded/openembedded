@@ -1,0 +1,206 @@
+Index: mc-4.6.2~git20080311/src/main.c
+================================================================================
+--- mc-4.6.2/src/main.c
++++ mc-4.6.2/src/main.c
+@@ -276,6 +276,9 @@
+ /* The user's shell */
+ const char *shell = NULL;
+ 
++/* Is the LANG UTF-8 ? */
++gboolean is_utf8 = FALSE;
++
+ /* mc_home: The home of MC */
+ char *mc_home = NULL;
+ 
+@@ -2126,6 +2129,16 @@
+ int
+ main (int argc, char *argv[])
+ {
++    /* Check whether we have UTF-8 locale */
++    char *lang = getenv("LANG");
++    size_t len = 0;
++    
++    if ( lang )
++    	len = strlen(lang);
++    
++    if ( len >= 5 && !strcasecmp(&lang[len-5],"UTF-8") )
++	is_utf8 = TRUE;
++
+     /* We had LC_CTYPE before, LC_ALL includs LC_TYPE as well */
+     setlocale (LC_ALL, "");
+     bindtextdomain ("mc", LOCALEDIR);
+--- mc-4.6.2/src/main.h
++++ mc-4.6.2/src/main.h
+@@ -69,6 +69,7 @@
+ extern int only_leading_plus_minus;
+ extern int output_starts_shell;
+ extern int midnight_shutdown;
++extern gboolean is_utf8;
+ extern char cmd_buf [512];
+ extern const char *shell;
+ 
+--- mc-4.6.2/src/screen.c
++++ mc-4.6.2/src/screen.c
+@@ -892,6 +892,9 @@
+     }
+ #endif				/* HAVE_SLANG */
+ 
++    vscrollbar (panel->widget, panel->widget.lines, panel->widget.cols-1, 2, 2,
++		panel->selected, panel->count, TRUE);
++
+     if (panel->active)
+ 	attrset (REVERSE_COLOR);
+ 
+@@ -1493,7 +1496,7 @@
+     panel->dirty = 1;
+ 
+     /* Status needn't to be split */
+-    usable_columns = ((panel->widget.cols-2)/((isstatus)
++    usable_columns = ((panel->widget.cols-3)/((isstatus)
+ 					      ? 1
+ 					      : (panel->split+1))) - (!isstatus && panel->split);
+ 
+--- mc-4.6.2/src/widget.c
++++ mc-4.6.2/src/widget.c
+@@ -1944,52 +1944,86 @@
+     return in;
+ }
+ 
+-
+-/* Listbox widget */
++/* Vertical scrollbar widget */
+ 
+-/* Should draw the scrollbar, but currently draws only
+- * indications that there is more information
+- */
+-static int listbox_cdiff (WLEntry *s, WLEntry *e);
+-
+-static void
+-listbox_drawscroll (WListbox *l)
++void
++vscrollbar (Widget widget, int height, int width, int tpad, int bpad,
++            int selected, int count, gboolean color)
+ {
+     int line;
+-    int i, top;
+-    int max_line = l->height-1;
+-    
++    int i;
++
+     /* Are we at the top? */
+-    widget_move (&l->widget, 0, l->width);
+-    if (l->list == l->top)
+-	one_vline ();
++    widget_move (&widget, tpad, width);
++#ifndef UTF8
++    if (!selected)
++        one_vline ();
+     else
+-	addch ('^');
++        addch ('^');
++#else
++    if (color) attrset (MARKED_COLOR);
++    if (is_utf8)
++	SLsmg_write_string("▴");
++    else
++        addch ('^');
++    if (color) attrset (NORMAL_COLOR);
++#endif
+ 
+     /* Are we at the bottom? */
+-    widget_move (&l->widget, max_line, l->width);
+-    top = listbox_cdiff (l->list, l->top);
+-    if ((top + l->height == l->count) || l->height >= l->count)
+-	one_vline ();
++    widget_move (&widget, height-1-bpad, width);
++#ifndef UTF8
++    if (selected == count-1)
++        one_vline ();
++    else
++        addch ('v');
++#else
++    if (color) attrset (MARKED_COLOR);
++    if (is_utf8)
++	SLsmg_write_string("▾");
+     else
+-	addch ('v');
++	addch('v');
++    if (color) attrset (NORMAL_COLOR);
++#endif
+ 
+     /* Now draw the nice relative pointer */
+-    if (l->count)
+-	line = 1+ ((l->pos * (l->height-2)) / l->count);
++    if (count > 1)
++        line = tpad + 1 + ((selected * (height-3-tpad-bpad)) / (count-1));
+     else
+-	line = 0;
+-    
+-    for (i = 1; i < max_line; i++){
+-	widget_move (&l->widget, i, l->width);
+-	if (i != line)
+-	    one_vline ();
+-	else
+-	    addch ('*');
++        line = 0;
++
++    for (i = tpad + 1; i < height-1-bpad; i++){
++        widget_move (&widget, i, width);
++        if (i != line)
++#ifndef UTF8
++            one_vline ();
++        else
++            addch ('*');
++#else
++            if (is_utf8)
++		SLsmg_write_string("▒");
++	    else
++		one_vline();
++        else {
++            if (color) attrset (MARKED_COLOR);
++            if (is_utf8)
++		SLsmg_write_string("◈");
++	    else
++		addch('*');
++            if (color) attrset (NORMAL_COLOR);
++        }
++#endif
+     }
+ }
+-    
+-static void
++
++
++/* Listbox widget */
++
++/* Should draw the scrollbar, but currently draws only
++ * indications that there is more information
++ */
++static int listbox_cdiff (WLEntry *s, WLEntry *e);
++
++void
+ listbox_draw (WListbox *l, int focused)
+ {
+     WLEntry *e;
+@@ -2032,7 +2066,7 @@
+     if (!l->scrollbar)
+ 	return;
+     attrset (normalc);
+-    listbox_drawscroll (l);
++    vscrollbar (l->widget, l->height, l->width, 0, 0, l->pos, l->count, FALSE);
+ }
+ 
+ /* Returns the number of items between s and e,
+--- mc-4.6.2/src/widget.h
++++ mc-4.6.2/src/widget.h
+@@ -187,6 +187,10 @@
+ /* Listbox manager */
+ WLEntry *listbox_get_data (WListbox *l, int pos);
+ 
++/* Vertical scrollbar */
++void vscrollbar (Widget widget, int height, int width, int tpad, int bpad,
++        	int selected, int count, gboolean color);
++
+ /* search text int listbox entries */
+ WLEntry *listbox_search_text (WListbox *l, const char *text);
+ void listbox_select_entry (WListbox *l, WLEntry *dest);

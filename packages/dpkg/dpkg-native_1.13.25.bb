@@ -1,14 +1,3 @@
-require dpkg.inc
-PR = "r0"
-DEPENDS += "zlib-native"
-SRC_URI += "file://noman.patch;patch=1"
+require dpkg-native.inc
 
-inherit native
-
-EXTRA_OECONF = "--without-static-progs \
-		--without-dselect \
-		--with-start-stop-daemon \
-		--with-zlib \
-		--with-bz2lib \
-                --without-selinux \
-		--without-sgml-doc"
+PR = "r1"

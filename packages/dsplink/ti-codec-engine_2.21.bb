@@ -8,7 +8,7 @@ RDEPENDS = "update-modules"
 inherit module
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r14"
+PR = "r16"
 PV = "221"
 
 # Get CE tarball from TI website, place in sources and calculate
@@ -19,6 +19,7 @@ SRC_URI = "http://install.tarball.in.source.dir/codec_engine_2_21.tar.gz \
            file://cmem-class-device-27-and-sched-include-fix.patch;patch=1 \
            file://sdma-class-device-and-includes-fix.patch;patch=1 \
            file://dsplink-semaphore-27.patch;patch=1 \
+           file://dsplink-add-class-device-create-support.patch;patch=1 \
            file://lpm-device-create-and-semaphore-include-fix.patch;patch=1 \
            file://lpm-make-symbol-warnings-fix.patch;patch=1 \
            file://Makefile-dsplink-gpp \
@@ -219,7 +220,7 @@ PACKAGES =+ "ti-lpm-module ti-cmem-module ti-sdma-module ti-codec-engine-apps"
 
 FILES_ti-lpm-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/*lpm*ko"
 FILES_ti-cmem-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/cmemk.ko"
-FILES_ti-sdma-moduke = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/sdmak.ko"
+FILES_ti-sdma-module = "/lib/modules/${KERNEL_VERSION}/kernel/drivers/dsp/sdmak.ko"
 FILES_ti-codec-engine-apps = "${datadir}/ti-codec-engine/*"
 
 pkg_postinst_ti-lpm-module () {

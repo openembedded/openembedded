@@ -21,7 +21,10 @@ ONLINE_PACKAGE_MANAGEMENT ?= "full"
 # Which packages to not install on the basis of a recommendation
 BAD_RECOMMENDATIONS ?= ""
 
-DISTRO_EXTRA_RDEPENDS += "${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "opkg opkg-collateral", d)}"
+IPKG_VARIANT ?= "opkg"
+
+RDEPENDS_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
+PACKAGE_INSTALL_append = " ${@base_conditional("ONLINE_PACKAGE_MANAGEMENT", "none", "", "${IPKG_VARIANT} opkg-collateral", d)}"
 
 fakeroot rootfs_ipk_do_rootfs () {
 	set -x

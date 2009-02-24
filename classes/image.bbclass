@@ -2,19 +2,6 @@ inherit rootfs_${IMAGE_PKGTYPE}
 
 LICENSE = "MIT"
 PACKAGES = ""
-RDEPENDS += "${IMAGE_INSTALL}"
-
-# "export IMAGE_BASENAME" not supported at this time
-IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL}"
-
-# We need to recursively follow RDEPENDS and RRECOMMENDS for images
-do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
-
-# Images are generally built explicitly, do not need to be part of world.
-EXCLUDE_FROM_WORLD = "1"
-
-USE_DEVFS ?= "0"
 
 #
 # udev, devfsd, busybox-mdev (from busybox) or none
@@ -28,15 +15,26 @@ IMAGE_INITSCRIPTS ?= "initscripts"
 #
 # tinylogin, getty
 #
-IMAGE_LOGIN_MANAGER ?= "tinylogin" 
+IMAGE_LOGIN_MANAGER ?= "tinylogin"
 
 IMAGE_VARS = "${IMAGE_INITSCRIPTS} \
 ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
 ${IMAGE_LOGIN_MANAGER} "
 
-RDEPENDS += "${IMAGE_VARS}"
-PACKAGE_INSTALL += "${IMAGE_VARS}"
+RDEPENDS += "${IMAGE_INSTALL} ${IMAGE_VARS}"
+
+# "export IMAGE_BASENAME" not supported at this time
+IMAGE_BASENAME[export] = "1"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_VARS}"
+
+# We need to recursively follow RDEPENDS and RRECOMMENDS for images
+do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
+
+# Images are generally built explicitly, do not need to be part of world.
+EXCLUDE_FROM_WORLD = "1"
+
+USE_DEVFS ?= "0"
 
 PID = "${@os.getpid()}"
 
