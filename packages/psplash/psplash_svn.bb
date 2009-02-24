@@ -3,7 +3,7 @@ require psplash-ua.inc
 
 ALTERNATIVE_PRIORITY = "10"
 
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=psplash;proto=http \
           file://psplash-hand-img.h \

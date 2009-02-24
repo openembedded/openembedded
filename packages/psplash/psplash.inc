@@ -3,9 +3,11 @@ HOMEPAGE = "http://projects.o-hand.com/psplash"
 SECTION = "base"
 LICENSE = "GPL"
 RDEPENDS = "initscripts"
+PROVIDES = "virtual/psplash"
+RPROVIDES = "virtual/psplash"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND
