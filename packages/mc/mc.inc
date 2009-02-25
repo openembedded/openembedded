@@ -39,8 +39,6 @@ do_install_append() {
 	fi
 }
 
-PACKAGES_DYNAMIC = "mc-localedata-*"
-
 python populate_packages_prepend () {
 	mcdir   = bb.data.expand('${datadir}/mc', d)
 	do_split_packages(d, mcdir, '^mc\.[hm][ile][npn].*\.(.*)$',
