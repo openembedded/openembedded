@@ -1,0 +1,16 @@
+Index: mc-4.6.2/src/Makefile.am
+===================================================================
+--- mc-4.6.2.orig/src/Makefile.am	2009-02-01 19:30:21.000000000 +0000
++++ mc-4.6.2/src/Makefile.am	2009-02-25 13:24:16.000000000 +0000
+@@ -14,7 +14,10 @@
+ endif
+ 
+ noinst_PROGRAMS = man2hlp
+-man2hlp_LDADD = $(GLIB_LIBS)
++man2hlp_CFLAGS = $(GLIB_CFLAGS_FOR_BUILD)
++man2hlp_LDADD = $(GLIB_LIBS_FOR_BUILD)
++$(man2hlp_OBJECTS): CC=$(CC_FOR_BUILD)
++man2hlp_LINK = $(LD_FOR_BUILD) -o $@
+ 
+ mcmfmt_SOURCES = mfmt.c
+ 

@@ -1,4 +1,5 @@
 require mc.inc
+PR = "r1"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
 # UTF-8 fixes copied from openSUSE Factory:
@@ -13,9 +14,13 @@ SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
 	   file://00-76-utf8-hotlist-highlight.patch;patch=1 \
 	   file://00-77-utf8-filename-search-highlight.patch;patch=1 \
 	   file://mc-utf8-nlink.patch;patch=1 \
-	   file://mc-utf8-look-and-feel.patch;patch=1"
+	   file://mc-utf8-look-and-feel.patch;patch=1 \
+	   file://mc-utf8-slang-codeset.patch;patch=1 \
+	   file://multi-press-f-keys.patch;patch=1 \
+	   file://cross-compile.patch;patch=1"
 
-EXTRA_OECONF = "--enable-charset --libexecdir=${libdir}"
+EXTRA_OECONF = "--libexecdir=${libdir} --without-x --without-samba \   
+--without-nfs --without-gpm-mouse --enable-charset"
 
 do_unpack_append() {
         bb.build.exec_func('do_utf8_conversion', d)
@@ -30,9 +35,11 @@ do_utf8_conversion() {
 	iconv -f iso8859-2 -t utf-8 -o mc.hint.cs.tmp mc.hint.cs && mv mc.hint.cs.tmp mc.hint.cs
 	iconv -f iso8859-2 -t utf-8 -o mc.hint.hu.tmp mc.hint.hu && mv mc.hint.hu.tmp mc.hint.hu
 	iconv -f iso8859-2 -t utf-8 -o mc.hint.pl.tmp mc.hint.pl && mv mc.hint.pl.tmp mc.hint.pl
+	iconv -f iso8859-5 -t utf-8 -o mc.hint.sr.tmp mc.hint.sr && mv mc.hint.sr.tmp mc.hint.sr
 	iconv -f koi8-r -t utf8 -o mc.hint.ru.tmp mc.hint.ru && mv mc.hint.ru.tmp mc.hint.ru
 	iconv -f koi8-u -t utf8 -o mc.hint.uk.tmp mc.hint.uk && mv mc.hint.uk.tmp mc.hint.uk
 	iconv -f big5 -t utf8 -o mc.hint.zh.tmp mc.hint.zh && mv mc.hint.zh.tmp mc.hint.zh
+	iconv -f iso8859-5 -t utf-8 -o mc.menu.sr.tmp mc.menu.sr && mv mc.menu.sr.tmp mc.menu.sr
 	popd
 	# convert docs to utf-8
 	pushd doc
@@ -55,6 +62,11 @@ do_utf8_conversion() {
 	pushd ru
 	iconv -f koi8-r -t utf-8 -o mc.1.in.tmp mc.1.in && mv mc.1.in.tmp mc.1.in
 	iconv -f koi8-r -t utf-8 -o xnc.hlp.tmp xnc.hlp && mv xnc.hlp.tmp xnc.hlp
+	popd
+	pushd sr
+	iconv -f iso8859-5 -t utf-8 -o mc.1.in.tmp mc.1.in && mv mc.1.in.tmp mc.1.in
+	iconv -f iso8859-5 -t utf-8 -o xnc.hlp.tmp xnc.hlp && mv xnc.hlp.tmp xnc.hlp
+	iconv -f iso8859-5 -t utf-8 -o mcserv.8.in.tmp mcserv.8.in && mv mcserv.8.in.tmp mcserv.8.in
 	popd
 	popd
 }

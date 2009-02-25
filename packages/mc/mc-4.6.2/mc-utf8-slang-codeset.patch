@@ -1,0 +1,20 @@
+--- mc-4.6.2/slang/slcommon.c
++++ mc-4.6.2/slang/slcommon.c
+@@ -31,7 +31,7 @@
+ # include <locale.h>
+ #endif
+ 
+-#ifdef HAVE_LANGINFO_H
++#ifdef HAVE_LANGINFO_CODESET
+ # include <langinfo.h>
+ #endif
+ 
+@@ -87,7 +87,7 @@
+ 
+    (void) setlocale (LC_ALL, "");
+ 
+-#ifdef HAVE_NL_LANGINFO_CODESET
++#ifdef HAVE_LANGINFO_CODESET
+    locale = nl_langinfo (CODESET);
+    if ((locale != NULL) && (*locale))
+      {
