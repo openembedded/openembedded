@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_metadata">
+  <title>Metadata</title>
+
+  <section id="metadata_file_layout">
+    <title>File Layout</title>
+
+    <para>OpenEmbedded has six directories three of them hold
+    <application>BitBake</application> metadata.</para>
+
+    <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf,
+    machine and distribution configuration. bitbake.conf is read when
+    <application>BitBake</application> is started and this will include among
+    others a local.conf the machine and distribution configuration files.
+    These files will be searched in the <command>BBPATH</command> environment
+    variable.</para>
+
+    <para><emphasis>classes</emphasis> is the directory holding
+    <application>BitBake</application> bbclass. These classes can be inherited
+    by the <application>BitBake</application> files. BitBake automatically
+    inherits the base.bbclass on every parsed file. <command>BBPATH</command>
+    is used to find the class.</para>
+
+    <para>In <emphasis>packages</emphasis> the
+    <application>BitBake</application> files are stored. For each task or
+    application we have a directory. These directories store the real
+    <application>BitBake</application> files. They are the ones ending with
+    <emphasis>.bb</emphasis>. And for each application and version we have
+    one.</para>
+  </section>
+
+  <section id="metadata_syntax">
+    <title>Syntax</title>
+
+    <para>OpenEmbedded has files ending with <emphasis>.conf</emphasis>,
+    <emphasis>.inc</emphasis>, <emphasis>.bb</emphasis>
+    and<emphasis>.bbclass</emphasis>. The syntax and semantic of these files
+    are best described in the <ulink
+    url="http://bitbake.berlios.de/manual"><application>BitBake</application>
+    manual</ulink>.</para>
+  </section>
+
+  <section id="metadata_classes">
+    <title>Classes</title>
+
+    <para>OpenEmbedded provides special <application>BitBake</application>
+    classes to ease compiling, packaging and other things. FIXME.</para>
+  </section>
+
+  <section id="metadata_writing_data">
+    <title>Writing Meta Data (Adding packages)</title>
+
+    <para>This page will guide you trough the effort of writing a .bb file or
+    <emphasis>recipe</emphasis> in BitBake speak.</para>
+
+    <para>Let's start with the easy stuff, like the package description,
+    license, etc: <screen>
+DESCRIPTION = "My first application, a really cool app containing lots of foo and bar"
+LICENSE = "GPLv2"
+HOMEPAGE = "http://www.host.com/foo/"
+                </screen> The description and license fields are mandatory, so
+    better check them twice.</para>
+
+    <para>The next step is to specify what the package needs to build and run,
+    the so called <emphasis>dependencies</emphasis>: <screen>
+DEPENDS = "gtk+"
+RDEPENDS = "cool-ttf-fonts"
+                </screen> The package needs gtk+ to build ('DEPENDS') and
+    requires the 'cool-ttf-fonts' package to run ('RDEPENDS'). OE will add
+    run-time dependencies on libraries on its own via the so called
+    <emphasis>shlibs</emphasis>-code, but you need to specify everything other
+    by yourself, which in this case is the 'cool-ttf-fonts' package.</para>
+
+    <para>After entering all this OE will know what to build before trying to
+    build your application, but it doesn't know where to get it yet. So let's
+    add the source location: <screen>
+SRC_URI = "http://www.host.com/foo/files/${P}.tar.bz2;md5sum=yoursum"
+                </screen> This will tell the fetcher to where to download the
+    sources from and it will check the integrity using md5sum if you provided
+    the appropriate <emphasis>yoursum</emphasis>. You can make one by doing
+    <screen>md5sum foo-1.9.tar.bz2</screen> and replacing
+    <emphasis>yoursum</emphasis> with the md5sum on your screen. A typical
+    md5sum will look like this: <screen>a6434b0fc8a54c3dec3d6875bf3be8mtn </screen>Notice
+    the <emphasis>${P}</emphasis> variable, that one holds the package name,
+    <emphasis>${PN}</emphasis> in BitBake speak and the package version,
+    <emphasis>${PV}</emphasis> in BitBake speak. It's a short way of writing
+    <emphasis>${PN}-${PV}</emphasis>. Using this notation means you can copy
+    the recipe when a new version is released without having to alter the
+    contents. You do need to check if everything is still correct, because new
+    versions mean new bugs.</para>
+
+    <para>Before we can move to the actual building we need to find out which
+    build system the package is using. If we're lucky, we see a
+    <emphasis>configure</emphasis> file in the build tree this is an indicator
+    that we can <emphasis>inherit autotools</emphasis> if we see a
+    <emphasis>.pro</emphasis> file, it might be qmake, which needs
+    <emphasis>inherit qmake</emphasis>. Virtually all gtk apps use autotools:
+    <screen>
+inherit autotools pkgconfig
+                </screen> We are in luck! The package is a well-behaved
+    application using autotools and pkgconfig to configure and build it
+    self.</para>
+
+    <para>Lets start the build: <screen>
+<command>bitbake</command> foo
+                </screen> Depending on what you have built before and the
+    speed of your computer this can take a few seconds to a few hours, so be
+    prepared.</para>
+
+    <para>.... some time goes by .....</para>
+
+    <para>Your screen should now have something like this on it: <screen>
+NOTE: package foo-1.9-r0: task do_build: completed
+NOTE: package foo-1.9: completed
+NOTE: build 200605052219: completed
+                </screen></para>
+
+    <para>All looks well, but wait, let's scroll up: <screen>
+NOTE: the following files where installed but not shipped:
+    /usr/weirdpath/importantfile.foo
+                </screen> OE has a standard list of paths which need to be
+    included, but it can't know everything, so we have to tell OE to include
+    that file as well: <screen>
+FILES_${PN} += "/usr/weirdpath/importantfile.foo"
+                </screen> It's important to use <emphasis>+=</emphasis> so it
+    will get appended to the standard file-list, not replace the standard
+    one.</para>
+  </section>
+</chapter>

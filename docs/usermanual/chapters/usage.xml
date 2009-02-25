@@ -1,0 +1,1193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_using_bitbake_and_oe">
+  <title>Using bitbake and OpenEmbedded</title>
+
+  <section id="usage_introduction" xreflabel="introduction">
+    <title>Introduction</title>
+
+    <para>If your reading this manual you probably already have some idea of
+    what OpenEmbedded is all about, which is taking a lot of software and
+    creating something that you can run on another device. This involves
+    downloading some source code, compiling it, creating packages (like .deb
+    or .rpm) and/or creating boot images that can written to flash on the
+    device. The difficulties of cross-compiling and the variety of devices
+    which can be supported lead to a lot more complexity in an OpenEmbedded
+    based distribution than you'd find in a typical desktop distribution
+    (which cross-compiling isn't needed).</para>
+
+    <para>A major part of OpenEmbedded deals with compiling source code for
+    various projects. For each project this generally requires the same basic
+    set of tasks:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Download the source code, and any supporting files (such as
+        initscripts);</para>
+      </listitem>
+
+      <listitem>
+        <para>Extract the source code and apply any patches that might be
+        wanted;</para>
+      </listitem>
+
+      <listitem>
+        <para>Configure the software if needed (such as is done by running the
+        configure script);</para>
+      </listitem>
+
+      <listitem>
+        <para>Compile everything;</para>
+      </listitem>
+
+      <listitem>
+        <para>Package up all the files into some package format, like .deb or
+        .rpm or .ipk, ready for installation.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>There's nothing particular unusual about this process when building
+    on the machine the package is to be installed on. What makes this
+    difficult is:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Cross-compiling: cross-compiling is difficult, and lots of
+        software has no support for cross-compiling - all packages included in
+        OE are cross-compiled;</para>
+      </listitem>
+
+      <listitem>
+        <para>Target and host are different: This means you can't compile up a
+        program and then run it - it's compiled to run on the target system,
+        not on the system compiling it. Lots of software tries to build and
+        run little helper and/or test applications and this won't work when
+        cross-compiling.</para>
+      </listitem>
+
+      <listitem>
+        <para>Tool chains (compiler, linker etc) are often difficult to
+        compile. Cross tool chains are even more difficult. Typically you'd go
+        out and download a tool chain made by someone else - but not when your
+        using OE. In OE the entire toolchain is built as part of the process.
+        This may make things take longer initially and may make it more
+        difficult to get started but makes it easier to apply patches and test
+        out changes to the tool chain.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>Of course there's a lot more to OE then just compiling packages
+    though. Some of the features that OE supports includes:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Support for both glibc and uclibc;</para>
+      </listitem>
+
+      <listitem>
+        <para>Support for building for multiple target devices from the one
+        code base;</para>
+      </listitem>
+
+      <listitem>
+        <para>Automatically building anything that is required for the package
+        to compile and/or run (build and run time dependencies);</para>
+      </listitem>
+
+      <listitem>
+        <para>Creation of flash and disk images of any one of a number of
+        types (jffs2, ext2.gz, squashfs etc) for booting directly on the
+        target device;</para>
+      </listitem>
+
+      <listitem>
+        <para>Support for various packaging formats;</para>
+      </listitem>
+
+      <listitem>
+        <para>Automatic building all of the cross-compiling tools you'll
+        need;</para>
+      </listitem>
+
+      <listitem>
+        <para>Support for "native" packages that are built for the host
+        computer and not for the target and used to help during the build
+        process;</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The rest of this chapter assumes you have mastered the Getting Start
+    guides to OpenEmbedded (see the OpenEmbedded web site for details), and
+    therefore have an appropriately configured setup and that you have managed
+    to actually build the cross-compilers for your target. This section talks
+    you through some of the background on what is happening with the aim of
+    helping you understand how to debug and develop within
+    OpenEmbedded.</para>
+
+    <para>You'll also not a lot of reference to variables that define specific
+    directories or change the behaviour of some part of the build process. You
+    should refer to <xref linkend="chapter_recipes" /> for full details on
+    these variables.</para>
+  </section>
+
+  <section id="usage_configuration" xreflabel="configuration">
+    <title>Configuration</title>
+
+    <para>Configuration covers basic items such as where the various files can
+    be found and where output should be placed to more specific items such as
+    which hardware is being targeted and what features you want to have
+    included in the final image. The main configuration areas in OE
+    are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>conf/machine</term>
+
+        <listitem>
+          <para>This directory contains machine configuration information. For
+          each physical device a configuration file is required in this
+          directory that describes various aspects of the device, such as
+          architecture of the device, hardware features of the device (does it
+          have usb? a keyboard? etc), the type of flash or disk images needed
+          for the device, the serial console settings (if any) etc. If you are
+          adding support for a new device you would need to create a machine
+          configuration in this directory for the device.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/distro</term>
+
+        <listitem>
+          <para>This directory contains distribution related files. A
+          distribution decides how various activities are handled in the final
+          image, such as how networking configured, if usb devices will be
+          supported, what packaging system is used, which libc is used
+          etc.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/bitbake.conf</term>
+
+        <listitem>
+          <para>This is the main bitbake configuration file. This file is not
+          to be edited but it is useful to look at it since it declares a
+          larger number of the predefined variables used by OE and controls a
+          lot of the base functionality provided by OE.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>conf/local.conf</term>
+
+        <listitem>
+          <para>This is the end-user specific configuration. This file needs
+          to be copied and edited and is used to specify the various working
+          directories, the machine to build for and the distribution to
+          use.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section id="usage_workspace" xreflabel="workspace">
+    <title>Work space</title>
+
+    <para>Let's start out by taking a look at a typically working area. Note
+    that this may not be exactly what see - there are a lot of options that
+    can effect exactly how things are done, but it gives us a pretty good idea
+    of whats going on. What we are looking at here is the tmp directory (as
+    specified by TMPDIR in your local.conf):<screen>~%&gt; find tmp -maxdepth 2 -type d 
+tmp
+tmp/stamps
+tmp/cross
+tmp/cross/bin
+tmp/cross/libexec
+tmp/cross/lib  
+tmp/cross/share
+tmp/cross/sh4-linux
+tmp/cache
+tmp/cache/titan
+tmp/work
+tmp/work/busybox-1.2.1-r13
+tmp/work/libice-1_1.0.3-r0 
+tmp/work/arpwatch-2.1a15-r2
+...
+tmp/rootfs
+tmp/rootfs/bin
+tmp/rootfs/usr
+tmp/rootfs/media
+tmp/rootfs/dev  
+tmp/rootfs/var  
+tmp/rootfs/lib  
+tmp/rootfs/sbin 
+tmp/rootfs/mnt  
+tmp/rootfs/boot 
+tmp/rootfs/sys  
+tmp/rootfs/proc 
+tmp/rootfs/etc  
+tmp/rootfs/home 
+tmp/rootfs/tmp  
+tmp/staging     
+tmp/staging/man 
+tmp/staging/x86_64-linux
+tmp/staging/pkgdata
+tmp/staging/pkgmaps
+tmp/staging/var
+tmp/staging/sh4-linux
+tmp/staging/local
+tmp/staging/etc  
+tmp/deploy
+tmp/deploy/addons
+tmp/deploy/ipk   
+tmp/deploy/sources
+tmp/deploy/images</screen></para>
+
+    <para>The various top level directories under tmp include:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>stamps</term>
+
+        <listitem>
+          <para>Nothing of interest to users in here. These time stamps are
+          used by bitbake to keep track of what tasks it has completed and
+          what tasks it still has outstanding. This is how it knows that
+          certain actions have been completed and it doesn't need to do them
+          again.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>cross</term>
+
+        <listitem>
+          <para>Contains the cross-compiler toolchain. That is the gcc and
+          binutils that run on the host system but produce output for the
+          target system.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>cache</term>
+
+        <listitem>
+          <para>Nothing of interest to users in here. This contains the
+          bitbake parse cache and is used to avoid the need to parse all of
+          the recipes each time bitbake is run. This makes bitbake a lot
+          faster on the 2nd and subsequent runs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>work</term>
+
+        <listitem>
+          <para>The work directory. This is the directory in which all
+          packages are built - this is where the source code is extract,
+          patches applied, software configure, compiled, installed and
+          package. This is where you'll spend most of you time looking when
+          working in OE.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>rootfs</term>
+
+        <listitem>
+          <para>The generated root filesystem image for your target device.
+          This is the contents of the root filesystem (NOTE: fakeroot means it
+          doesn't have the correct device special nodes and permissions to use
+          directly).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>staging</term>
+
+        <listitem>
+          <para>Contains the staging area, which is used to stored natively
+          compiled tools and and libraries and headers for the target that are
+          required for building other software.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>deploy</term>
+
+        <listitem>
+          <para>Contains the final output from OE. This includes the
+          installation packages (typically .ipkg packages) and flash and/or
+          disk images. This is where you go to get the final product.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>When people refer to the <emphasis>"tmp directory"</emphasis> this
+    is the directory them are talking about.</para>
+
+    <para>To perform a complete rebuild from script you would usually rename
+    or delete tmp and then restart your build. I recommend keeping one old
+    version of tmp around to use for comparison if something goes wrong with
+    your new build. For example:<screen>%&gt; rm -fr tmp.OLD
+$&gt; mv tmp tmp.OLD
+%&gt; bitbake bootstrap-image</screen></para>
+
+    <section id="usage_workdir" xreflabel="work directory">
+      <title>work directory (tmp/work)</title>
+
+      <para>The work directory is where all source code is unpacked into,
+      where source is configured, compiled and packaged. In other words this
+      is where all the action happens. Each bitbake recipe will produce a
+      corresponding sub directory in the work directory. The sub directory
+      name will contain the recipe name, version and the release number (as
+      defined by the PR variable within the recipe).</para>
+
+      <para>Here's an example of a few of the subdirectories under the work
+      directory:<screen>~%&gt; find tmp/work -maxdepth 1 -type d | head -4
+tmp/work
+tmp/work/busybox-1.2.1-r13
+tmp/work/libice-1_1.0.3-r0
+tmp/work/arpwatch-2.1a15-r2</screen>You can see that the first three (of
+      several hundred) recipes here and they are for release 13 of busybox
+      1.2.1, release 0 or libice 1.1.0.3 and release 2 of arpwatch 2.1a15.
+      It's also possible that you may just have a sub directory for your
+      targets architecture and operating system in which case these
+      directories will be in that additional subdirectory, as shown
+      here:<screen>~%&gt; find tmp/work -maxdepth 2 -type d | head -4
+tmp/work
+tmp/work/sh4-linux
+tmp/work/sh4-linux/busybox-1.2.1-r13
+tmp/work/sh4-linux/libice-1_1.0.3-r0
+tmp/work/sh4-linux/arpwatch-2.1a15-r2</screen></para>
+
+      <para>The <emphasis role="bold">sh4-linux</emphasis> directory in the
+      above example is a combination of the target architecture (sh4) and
+      operating system (linux). This subdirectory has been added by the use of
+      one of OpenEmbedded's many features. In this case it's the
+      <emphasis>multimachine</emphasis> feature which is used to allow builds
+      for multiple targets within the one work directory and can be enabled on
+      a per distribution basis. This feature enables the sharing of native and
+      architecture neutral packages and building for multiple targets that
+      support the same architecture but require different linux kernels (for
+      example). We'll assume multimachine isn't being used for the rest of
+      this chapter, just remember to add the extra directory if your
+      distribution is using it.</para>
+
+      <para>Using lzo 1.08 as an example we'll examine the contents of the
+      working directory for a typical recipe:<screen>~%&gt; find tmp/work/lzo-1.08-r14 -maxdepth 1
+tmp/work/lzo-1.08-r14
+tmp/work/lzo-1.08-r14/temp
+tmp/work/lzo-1.08-r14/lzo-1.08
+tmp/work/lzo-1.08-r14/install
+tmp/work/lzo-1.08-r14/image</screen></para>
+
+      <para>The directory, <emphasis
+      role="bold">tmp/work/lzo-1.08-r14</emphasis>, is know as the
+      <emphasis>"working directory"</emphasis> for the recipe and is specified
+      via the <emphasis role="bold">WORKDIR</emphasis> variable in bitbake.
+      You'll sometimes see recipes refer directly to <emphasis
+      role="bold">WORKDIR</emphasis> and this is the directory they are
+      referencing. The <emphasis role="bold">1.08</emphasis> is the version of
+      lzo and <emphasis role="bold">r14</emphasis> is the release number, as
+      defined by the <emphasis role="bold">PR</emphasis> variable within the
+      recipe.</para>
+
+      <para>Under the working directory (<emphasis
+      role="bold">WORKDIR</emphasis>) there are four subdirectories:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>temp</term>
+
+          <listitem>
+            <para>The temp directories contains logs and in some cases scripts
+            that actually implement specific tasks (such as a script to
+            configure or compile the source).</para>
+
+            <para>You can look at the logs in this directory to get more
+            information into what happened (or didn't happen). This is usually
+            the first thing to look at when things are going wrong and these
+            usually need to be included when reporting bugs.</para>
+
+            <para>The scripts can be used to see what a particular task, such
+            as configure or compile, is trying to do.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>lzo-1.08</term>
+
+          <listitem>
+            <para>This is the unpacked source code directory, which was
+            created when the lzo source code was extracted in this directory.
+            The name and format of this directory is therefore dependent on
+            the actual source code packaging. Within recipes this directory is
+            referred to as <emphasis role="bold">S</emphasis> and is usually
+            expected to be named like this, that is
+            <emphasis>"&lt;name&gt;-&lt;version&gt;"</emphasis>. If the source
+            code extracts to somewhere else then that would need to be
+            declared in the recipe by explicitly setting the value of the
+            variable <emphasis role="bold">S</emphasis> to the appropriate
+            directory.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>image</term>
+
+          <listitem>
+            <para>The image directory (or destination directory) is where the
+            software needs to be installed into in order to be packaged. This
+            directory is referred to as <emphasis role="bold">D</emphasis> in
+            recipes. So instead of installing binaries into <emphasis
+            role="bold">/usr/bin</emphasis> and libraries into <emphasis
+            role="bold">/usr/lib</emphasis> for example you would need to
+            install into <emphasis role="bold">${D}/usr/bin</emphasis> and
+            <emphasis role="bold">${D}/usr/lib</emphasis> instead. When
+            installed on the target the ${D} will be not be included so
+            they'll end up in the correct place. You definitely don't wont
+            files on your host system being replaced by cross-compiled
+            binaries for your target!</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>install</term>
+
+          <listitem>
+            <para>The install directory is used to split the installed files
+            into separate packages. One subdirectory is created per package to
+            be generated and the files are moved from the image directory
+            (<emphasis role="bold">D</emphasis>) over to this directory, and
+            into the appropriate package subdirectory, as each packaging
+            instruction is processed. Typically there will be separate
+            documentation (<emphasis>-doc</emphasis>), debugging
+            (<emphasis>-dbg</emphasis>) and development
+            (<emphasis>-dev</emphasis>) packages automatically created. There
+            are variables such as <emphasis role="bold">FILES_</emphasis> and
+            <emphasis role="bold">PACKAGES</emphasis> used in recipes which
+            control the separation of various files into individual
+            packages.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>So lets show some examples of the useful information you now have
+      access to.</para>
+
+      <para>How about checking out what happened during the configuration of
+      lzo? Well that requires checking the log file for configure that is
+      generated in the temp directory:<screen>~%&gt; less tmp/work/lzo-1.08-r14/temp/log.do_configure.*
+...
+checking whether ccache sh4-linux-gcc -ml -m4 suffers the -fschedule-insns bug... unknown
+checking whether ccache sh4-linux-gcc -ml -m4 suffers the -fstrength-reduce bug... unknown
+checking whether ccache sh4-linux-gcc -ml -m4 accepts -fstrict-aliasing... yes
+checking the alignment of the assembler... 0
+checking whether to build assembler versions... no
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating examples/Makefile
+config.status: creating include/Makefile
+config.status: creating ltest/Makefile
+config.status: creating minilzo/Makefile
+config.status: creating src/Makefile
+config.status: creating tests/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands</screen></para>
+
+      <para>Or perhaps you want to see how the files were distributed into
+      individual packages prior to packaging? The install directory is where
+      the files are split into separate packages and so that shows us which
+      files end up where:<screen>~%&gt; find tmp/work/lzo-1.08-r14/install                
+tmp/work/lzo-1.08-r14/install
+tmp/work/lzo-1.08-r14/install/lzo-doc
+tmp/work/lzo-1.08-r14/install/lzo-dbg
+tmp/work/lzo-1.08-r14/install/lzo-dbg/usr
+tmp/work/lzo-1.08-r14/install/lzo-dbg/usr/lib
+tmp/work/lzo-1.08-r14/install/lzo-dbg/usr/lib/.debug
+tmp/work/lzo-1.08-r14/install/lzo-dbg/usr/lib/.debug/liblzo.so.1.0.0
+tmp/work/lzo-1.08-r14/install/lzo-dev
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo2a.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1y.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1b.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1f.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzoconf.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1x.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo16bit.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1a.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1z.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzoutil.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/include/lzo1c.h
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/lib
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/lib/liblzo.a
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/lib/liblzo.so
+tmp/work/lzo-1.08-r14/install/lzo-dev/usr/lib/liblzo.la
+tmp/work/lzo-1.08-r14/install/lzo.shlibdeps
+tmp/work/lzo-1.08-r14/install/lzo-locale
+tmp/work/lzo-1.08-r14/install/lzo
+tmp/work/lzo-1.08-r14/install/lzo/usr
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1
+tmp/work/lzo-1.08-r14/install/lzo/usr/lib/liblzo.so.1.0.0</screen></para>
+    </section>
+  </section>
+
+  <section id="usage_tasks" xreflabel="tasks">
+    <title>Tasks</title>
+
+    <para>When you go about building and installing a software package there
+    are a number of tasks that you generally follow with most software
+    packages. You probably need to start out by downloading the source code,
+    then unpacking the source code. Maye you need to apply some patches for
+    some reason. Then you might run the configure script of the package,
+    perhaps passing it some options to configure it to your liking. The you
+    might run "make install" to install the software. If your actually going
+    to make some packages, such as .deb or .rpm, then you'd have additional
+    tasks you'd perform to make them.</para>
+
+    <para>You find that building things in OpenEmbedded works in a similar way
+    - there are a number of tasks that are executed in a predefined order for
+    each recipe. Any many of the tasks correspond to those listed above like
+    <emphasis>"download the source"</emphasis>. In fact you've probably
+    already seen some of the names of these tasks - bitbake displays them as
+    they are processed:<screen>~%&gt; bitbake lzo
+NOTE: Psyco JIT Compiler (http://psyco.sf.net) not available. Install it to increase performance.
+NOTE: Handling BitBake files: \ (4541/4541) [100 %]
+NOTE: Parsing finished. 4325 cached, 0 parsed, 216 skipped, 0 masked.
+NOTE: build 200705041709: started
+
+OE Build Configuration:
+BB_VERSION     = "1.8.2"
+OE_REVISION    = "&lt;unknown&gt;"
+TARGET_ARCH    = "sh4"
+TARGET_OS      = "linux"
+MACHINE        = "titan"
+DISTRO         = "erouter"
+DISTRO_VERSION = "0.1-20070504"
+TARGET_FPU     = ""
+
+NOTE: Resolving missing task queue dependencies
+NOTE: preferred version 2.5 of glibc not available (for item virtual/sh4-linux-libc-for-gcc)
+NOTE: Preparing Runqueue
+NOTE: Executing runqueue
+NOTE: Running task 208 of 226 (ID: 11, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_fetch</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_fetch</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_fetch</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 209 of 226 (ID: 2, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_unpack</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_unpack</emphasis>: started
+NOTE: Unpacking /home/lenehan/devel/oe/sources/lzo-1.08.tar.gz to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/lzo-1.08-r14/
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_unpack</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 216 of 226 (ID: 3, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_patch</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_patch</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_patch</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 217 of 226 (ID: 4, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_configure</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_configure</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_configure</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 218 of 226 (ID: 12, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_qa_configure</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_qa_configure</emphasis>: started
+NOTE: Checking sanity of the config.log file
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_qa_configure</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 219 of 226 (ID: 0, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_compile</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_compile</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_compile</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 220 of 226 (ID: 1, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_install</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_install</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_install</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 221 of 226 (ID: 5, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_package</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_package</emphasis>: started
+NOTE: DO PACKAGE QA
+NOTE: Checking Package: lzo-dbg
+NOTE: Checking Package: lzo
+NOTE: Checking Package: lzo-doc
+NOTE: Checking Package: lzo-dev
+NOTE: Checking Package: lzo-locale
+NOTE: DONE with PACKAGE QA
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_package</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 222 of 226 (ID: 8, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, <emphasis
+          role="bold">do_package_write</emphasis>)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_package_write</emphasis>: started
+Packaged contents of lzo-dbg into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/liblzo-dbg_1.08-r14_sh4.ipk
+Packaged contents of lzo into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/liblzo1_1.08-r14_sh4.ipk
+NOTE: Not creating empty archive for lzo-doc-1.08-r14
+Packaged contents of lzo-dev into /home/lenehan/devel/oe/build/titan-glibc-25/tmp/deploy/ipk/sh4/liblzo-dev_1.08-r14_sh4.ipk
+NOTE: Not creating empty archive for lzo-locale-1.08-r14
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_package_write</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 223 of 226 (ID: 6, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, do_populate_staging)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_staging</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_populate_staging</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 224 of 226 (ID: 9, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, do_qa_staging)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_qa_staging</emphasis>: started
+NOTE: QA checking staging
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_qa_staging</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 225 of 226 (ID: 7, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, do_distribute_sources)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_distribute_sources</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_distribute_sources</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Running task 226 of 226 (ID: 10, /home/lenehan/devel/oe/build/titan-glibc-25/packages/lzo/lzo_1.08.bb, do_build)
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_build</emphasis>: started
+NOTE: package lzo-1.08-r14: task <emphasis role="bold">do_build</emphasis>: completed
+NOTE: package lzo-1.08: completed
+NOTE: Tasks Summary: Attempted 226 tasks of which 213 didn't need to be rerun and 0 failed.
+NOTE: build 200705041709: completed</screen><note>
+        <para>The output may look different depending on the version of
+        bitbake being used, and some tasks are only run when specific options
+        are enabled in your distribution. The important point to note is that
+        the various tasks are being run and bitbake shows you each time it
+        starts and completes a task.</para>
+      </note></para>
+
+    <para>So there's a set of tasks here which are being run to generate the
+    final packages. And if you'll notice that every recipe runs through the
+    same set of tasks (ok I'll admit that it is possible that some additional
+    tasks could be run for some recipes, but we'll talk about that later). The
+    tasks that you'll need to be most familiar with are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>fetch</term>
+
+        <listitem>
+          <para>The <emphasis>fetch</emphasis> task is responsible for
+          fetching any source code that is required. This means things such as
+          downloading files and checking out from source control repositories
+          such as git or svn.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>unpack</term>
+
+        <listitem>
+          <para>The <emphasis>unpack</emphasis> task is responsible for
+          extracting files from archives, such as <emphasis
+          role="bold">.tar.gz</emphasis>, into the working area and copying
+          any additional files, such as init scripts, into the working
+          area.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>patch</term>
+
+        <listitem>
+          <para>The <emphasis>patch</emphasis> task is responsible for
+          applying any patches to the unpacked source code</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>configure</term>
+
+        <listitem>
+          <para>The <emphasis>configure</emphasis> task takes care of the
+          configuration of the package. Running a configure script
+          (<emphasis>"./configure &lt;options&gt;"</emphasis>) is probably the
+          form of configuration that is most recognised but it's not the only
+          configuration system that exists.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>compile</term>
+
+        <listitem>
+          <para>The <emphasis>compile</emphasis> task actually compiles the
+          software. This could be as simple as running <emphasis
+          role="bold">make</emphasis>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>populate_staging (stage)</term>
+
+        <listitem>
+          <para>The <emphasis>populate_staging</emphasis> task (stage is an
+          alternate, easier to type name, that can be used to refer to this
+          task) is responsible for making available libraries and headers (if
+          any) that may be required by other packages to build. For example if
+          you compile zlib then it's headers and the library need to be made
+          available for other applications to include and link against.</para>
+
+          <note>
+            <para>This is different to the <emphasis>install</emphasis> task
+            in that this is responsible for making available libraries and
+            headers for use during build on the development host. Therefore
+            it's libraries which normal have to stage things while
+            applications normally don't need to. The
+            <emphasis>install</emphasis> task on the other hand is making
+            files available for packaging and ultimately installation on the
+            target.</para>
+          </note>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>install</term>
+
+        <listitem>
+          <para>The <emphasis>install</emphasis> task is responsible for
+          actually installing everything. Now this needs to install the
+          software into the destination directory, <emphasis
+          role="bold">D</emphasis>. This directory won't actually be a part of
+          the final package though. In other words if you install something
+          into <emphasis role="bold">${D}/bin</emphasis> then it will end up
+          in the <emphasis role="bold">/bin</emphasis> directory in the
+          package and therefore on the target.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>package</term>
+
+        <listitem>
+          <para>The <emphasis>package</emphasis> task takes the installed
+          files and splits them into separate directories under the <emphasis
+          role="bold">${WORKDIR}/install</emphasis> directory, one per
+          package. It moves the files for the destination directory, <emphasis
+          role="bold">${D}</emphasis>, that they were installed in into the
+          appropriate packages subdirectory. Usually there will be a main
+          package a separate documentation (-doc), development (-dev) and
+          debugging packages (-dbg) for example.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>package_write</term>
+
+        <listitem>
+          <para>The <emphasis>package_write</emphasis> task is responsible for
+          taking each packages subdirectory and creating any actual
+          installation package, such as .ipk, .deb or .rpm. Currently .ipk is
+          the only fully supported packing format although .deb packages are
+          being actively worked on. It should be reasonably easy for an
+          experienced OpenEmbedded developer to add support for any other
+          packaging formats they might required.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <note>
+      <para>You'll notice that the bitbake output had tasks prefixed with
+      <emphasis>do_</emphasis>, as in <emphasis>do_install</emphasis> vs
+      <emphasis>install</emphasis>. This is slightly confusing but any task
+      <emphasis>x</emphasis> is implemented via a function called
+      <emphasis>do_x</emphasis> in the class or recipe where it is defined.
+      See places refer to the tasks via their name only and some with the
+      <emphasis>do</emphasis> prefix.</para>
+    </note>
+
+    <para>You will almost certainly notice tasks beyond these ones - there are
+    various methods available to insert additional tasks into the tasks
+    sequence. As an example the <emphasis
+    role="bold">insane.bbclass</emphasis>, which performs various QA checks,
+    does these checks by inserting a new task called
+    <emphasis>qa_configure</emphasis> between the
+    <emphasis>configure</emphasis> and <emphasis>compile</emphasis> tasks and
+    another new task called <emphasis>qa_staging</emphasis> between
+    <emphasis>populate_staging</emphasis> and <emphasis>build</emphasis>
+    tasks. The former validates the result of the
+    <emphasis>configure</emphasis> task and the late the results of the
+    <emphasis>populate_staging</emphasis> task.</para>
+
+    <para>To determine the full list of tasks available for a specific recipe
+    you can run bitbake on the recipe and asking it for the full list of
+    available tasks:<screen>~%&gt; bitbake -b packages/perl/perl_5.8.8.bb -c listtasks
+NOTE: package perl-5.8.8: started
+NOTE: package perl-5.8.8-r11: task do_listtasks: started
+do_fetchall
+do_listtasks
+do_rebuild
+do_compile
+do_build
+do_populate_staging
+do_mrproper
+do_fetch
+do_configure
+do_clean
+do_package
+do_unpack
+do_install
+do_package_write
+do_distribute_sources
+do_showdata
+do_qa_configure
+do_qa_staging
+do_patch
+NOTE: package perl-5.8.8-r11: task do_listtasks: completed
+NOTE: package perl-5.8.8: completed
+~%&gt; </screen></para>
+
+    <para>If your being observant you'll note that
+    <emphasis>listtasks</emphasis> is in fact a task itself, and that the
+    <emphasis role="bold">-c</emphasis> option to bitbake allows you to
+    explicitly run specific tasks. We'll make use of this in the next section
+    when we discuss working with a recipe.</para>
+  </section>
+
+  <section id="usage_workwithsinglerecipe"
+           xreflabel="working with a single recipe">
+    <title>Working with a single recipe</title>
+
+    <para>During development you're likely to often find yourself working on a
+    single bitbake recipe - maybe trying to fix something or add a new version
+    or perhaps working on a totally new recipe. Now that you know all about
+    tasks you can use that knowledge to help speed up the development and
+    debugging process.</para>
+
+    <para>Bitbake can be instructed to deal directly with a single recipe file
+    by passing it via the <emphasis role="bold">-b</emphasis> parameter. This
+    option takes the recipe as a parameter and instructs bitbake to process
+    the named recipe only. Note that this ignores any dependencies that are in
+    the recipe, so these must have already been built previously.</para>
+
+    <para>Here's a typically example that cleans up the package (using the
+    <emphasis>clean</emphasis> task) and the rebuilds it with debugging output
+    from bitbake enabled:<screen>~%&gt; bitbake -b &lt;bb-file&gt; -c clean
+~%&gt; bitbake -b &lt;bb-file&gt; -D</screen></para>
+
+    <para>The options to bitbake that are most useful here are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>-b &lt;bb-file&gt;</term>
+
+        <listitem>
+          <para>The recipe to process;</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-c &lt;action&gt;</term>
+
+        <listitem>
+          <para>The action to perform, typically the name of one of the tasks
+          supported by the recipe;</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-D</term>
+
+        <listitem>
+          <para>Display debugging information, use two <emphasis
+          role="bold">-D</emphasis>'s for additional debugging;</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>-f</term>
+
+        <listitem>
+          <para>Force an operation. This is useful in getting bitbake to
+          perform some operation it normally wouldn't do. For example, if you
+          try and call the <emphasis>compile</emphasis> task twice in a row
+          then bitbake will not do anything on the second attempt since it has
+          already performed the task. By adding <emphasis
+          role="bold">-f</emphasis> it will force it to perform the action
+          regardless of if it thinks it's been done previously.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The most common actions (used with -c) are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>fetch</term>
+
+        <listitem>
+          <para>Try to download all of the required source files, but don't do
+          anything else with them.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>unpack</term>
+
+        <listitem>
+          <para>Unpack the source file but don't apply the patches yet.
+          Sometimes you may want to look at the extracted, but not patched
+          source code and that's what just unpacking will give you (some
+          time's handy to get diffs generated against the original
+          source).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>patch</term>
+
+        <listitem>
+          <para>Apply any patches.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>configure</term>
+
+        <listitem>
+          <para>Performs and configuration that is required for the
+          software.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>compile</term>
+
+        <listitem>
+          <para>Perform the actual compilation steps of the software.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>stage</term>
+
+        <listitem>
+          <para>If any files, such as header and libraries, will be required
+          by other packages then they need to be installed into the staging
+          area and that's what this task takes care of.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>install</term>
+
+        <listitem>
+          <para>Install the software in preparation for packaging.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>package</term>
+
+        <listitem>
+          <para>Package the software. Remember that this moves the files from
+          the installation directory, D, into the packing install area. So to
+          re-package you also need to re-install first.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>clean</term>
+
+        <listitem>
+          <para>Delete the entire directory for this version of the software.
+          Usually done to allow a test build with no chance of old files or
+          changes being left behind.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Note that each of the actions that corresponds to task's will run
+    any preceding tasks that have not yet been performed. So starting with
+    compile will also perform the fetch, unpack, patch and configure
+    actions.</para>
+
+    <para>A typically development session might involve editing files in the
+    working directory and then recompiling until it all works:<screen>[<emphasis>... test ...</emphasis>]
+~%&gt; bitbake -b packages/testapp/testapp_4.3.bb -c compile -D
+
+[<emphasis>... save a copy of main.c and make some changes ...</emphasis>]
+~%&gt; vi tmp/work/testapp-4.3-r0/main.c
+~%&gt; bitbake -b packages/testapp/testapp_4.3.bb -c compile -D -f
+
+[<emphasis>... create a patch and add it to the recipe ...</emphasis>]
+~%&gt; vi packages/testapp/testapp_4.3.bb
+
+[<emphasis>... test from clean ...</emphasis>]
+~%&gt; bitbake -b packages/testapp/testapp_4.3.bb -c clean
+~%&gt; bitbake -b packages/testapp/testapp_4.3.bb
+
+[<emphasis>... NOTE: How to create the patch is not covered at this point ...</emphasis>]</screen></para>
+
+    <para>Here's another example showing how you might go about fixing up the
+    packaging in your recipe:<screen>~%&gt; bitbake -b packages/testapp/testapp_4.3.bb -c install -f
+~%&gt; bitbake -b packages/testapp/testapp_4.3.bb -c stage -f
+~%&gt; find tmp/work/testapp_4.3/install
+...
+~%&gt; vi packages/testapp/testapp_4.3.bb</screen>At this stage you play with
+    the <emphasis role="bold">PACKAGE_</emphasis> and <emphasis
+    role="bold">FILES_</emphasis> variables and then repeat the above
+    sequence.</para>
+
+    <para>Note how we install and then stage. This is one of those things
+    where understanding the tasks helps a lot! Remember that stage moves the
+    files from where they were installed into the various subdirectories
+    (under <emphasis role="bold">${WORKDIR}/instal</emphasis>l) for each
+    package. So if you try and run a stage task without a prior install there
+    won't be any files there to stage! Note also that the stage tasks clears
+    all the subdirectories in <emphasis
+    role="bold">${WORKDIR}/install</emphasis> so you won't get any left over
+    files. But beware, the install task doesn't clear <emphasis
+    role="bold">${D}</emphasis> directory, so any left over files from a
+    previous packing attempt will be left behind (which is ok if all you care
+    about it staging).</para>
+  </section>
+
+  <section id="usage_interactive_bitbake" xreflabel="interactive bitbake">
+    <title>Interactive bitbake</title>
+
+    <para>To interactively test things use:<screen>~%&gt; bitbake -i</screen>this
+    will open the bitbake shell. From here there are a lot of commands
+    available (try help).</para>
+
+    <para>First thing you will want to do is parse all of the recipes (recent
+    bitbake version do this automatically when needed, so you don't need to
+    manually do this anymore):<screen>BB&gt;&gt; parse</screen>You can now
+    build a specific recipe:<screen>BB&gt;&gt; build net-snmp</screen>If it
+    fails you may want to clean the build before trying again:<screen>BB&gt;&gt; clean net-snmp</screen>If
+    you update the recipe by editing the .bb file (to fix some issues) then
+    you will want to clean the package, reparse the modified recipe, and the
+    build again:<screen>BB&gt;&gt; clean net-snmp
+BB&gt;&gt; reparse net-snmp
+BB&gt;&gt; build net-snmp</screen>Note that you can use wildcards in the
+    bitbake shell as well:<screen>BB&gt;&gt; build t*</screen></para>
+
+    <para></para>
+  </section>
+
+  <section id="usage_devshell" xreflabel="devshell">
+    <title>Devshell</title>
+
+    <para>One of the areas in which OpenEmbedded helps you out is by setting
+    various environment variables, such as <emphasis role="bold">CC</emphasis>
+    and <emphasis role="bold">PATH</emphasis> etc, to values suitable for
+    cross-compiling. If you wish to manually run configure scripts and compile
+    file during development it would be nice to have all those values set for
+    you. This is what devshell does - it provides you with an interactive
+    shell with all the appropriate variables set for cross-compiling.</para>
+
+    <section>
+      <title>devshell via inherit</title>
+
+      <para>This is the newer method of obtaining a devshell and is the
+      recommended way for most users now. The newer method requires that the
+      devshell class be added to you configuration by inheriting it. This is
+      usually done in your <emphasis role="bold">local.conf</emphasis> or your
+      distributions conf file:<screen><emphasis role="bold">INHERIT +=</emphasis> "src_distribute_local insane multimachine <emphasis
+            role="bold">devshell</emphasis>"</screen></para>
+
+      <para>With the inclusion of this class you'll find that devshell is
+      added as a new task that you can use on recipes:<screen>~%&gt; bitbake -b packages/lzo/lzo_1.08.bb -c listtasks
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task do_listtasks: started
+<emphasis role="bold">do_devshell</emphasis>
+do_fetchall
+do_listtasks
+do_rebuild
+do_compile
+do_build
+do_mrproper
+do_fetch
+do_configure
+do_clean
+do_populate_staging
+do_package
+do_unpack
+do_install
+do_package_write
+do_distribute_sources
+do_showdata
+do_qa_staging
+do_qa_configure
+do_patch
+NOTE: package lzo-1.08-r14: task do_listtasks: completed
+NOTE: package lzo-1.08: completed</screen></para>
+
+      <para>To bring up the devshell you call bitbake on a recipe and ask it
+      for the devshell task:<screen>~%&gt; ./bb -b packages/lzo/lzo_1.08.bb -c devshell
+NOTE: package lzo-1.08: started
+NOTE: package lzo-1.08-r14: task do_devshell: started
+[<emphasis>... devshell will appear here ...</emphasis>]
+NOTE: package lzo-1.08-r14: task do_devshell: completed
+NOTE: package lzo-1.08: completed</screen></para>
+
+      <para>How the devshell appears depends on the settings of the <emphasis
+      role="bold">TERMCMD</emphasis> variable - you can see the default
+      settings and other possible values in <emphasis
+      role="bold">conf/bitbake.conf</emphasis>. Feel free to try settings this
+      to something else in your local.conf. Usually you will see a new
+      terminal window open which is the devshell window.</para>
+
+      <para>The devshell task is inserted after the patch task, so if you have
+      not already run bitbake on the recipe it will download the source and
+      apply any patches prior to opening the shell.</para>
+
+      <note>
+        <para>This method of obtaining a devshell works if you using <emphasis
+        role="bold">bash</emphasis> as your shell, it does not work if you are
+        using <emphasis role="bold">zsh</emphasis> as your shell. Other shells
+        may or may not work.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>devshell addon</title>
+
+      <para>The devshell addon was the original method that was used to create
+      a devshell.</para>
+
+      <para>It requires no changes to your configuration, instead you simply
+      build the devshell recipe:<screen>bitabike devshell</screen></para>
+
+      <para>and then manually startup the shell. Once in the shell you'll
+      usually want to change into the working directory for the recipe you are
+      working on:<screen>~%&gt; ./tmp/deploy/addons/sh4-linux-erouter-titan-devshell
+bash: alias: `./configure': invalid alias name
+[OE::sh4-linux-erouter-titan]:~$ cd tmp/work/lzo-1.08-r14/lzo-1.08
+[OE::sh4-linux-erouter-titan]:~tmp/work/lzo-1.08-r14/lzo-1.08$</screen><note>
+          <para>The name of the devshell addon depends on the target
+          architecture, operating system and machine name. So you name will be
+          different - just check for the appropriate name ending in
+          -devshell.</para>
+        </note></para>
+    </section>
+
+    <section>
+      <title>Working in the devshell</title>
+
+      <para>[To be done]</para>
+    </section>
+  </section>
+
+  <section id="usage_patches" xreflabel="patching">
+    <title>Patching and patch management</title>
+
+    <para>[To be done]</para>
+  </section>
+</chapter>

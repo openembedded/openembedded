@@ -1,0 +1,888 @@
+<BASE HREF="/home/vollmann/winuser/conferences/embworld/embworld-oe.dbk">
+
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+          "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+
+<!-- $Id$ -->
+
+<article lang="en">
+  <articleinfo>
+    <date>First version January 3, 2006</date>
+    <title>OpenEmbedded for Deep Embedded Systems</title>
+
+    <author>
+      <firstname>Detlef</firstname>
+      <surname>Vollmann</surname>
+        <affiliation>
+          <orgname>vollmann engineering gmbh</orgname>
+          <address>
+<pob>P.O. Box 5423</pob>
+<city>6000 Luzern 5</city>
+<country>Switzerland</country>
+<email>dv@vollmann.ch</email>
+          </address>
+        </affiliation>
+    </author>
+
+    <copyright>
+      <year>2006</year>
+      <holder>Detlef Vollmann</holder>
+    </copyright>
+  </articleinfo>
+
+<abstract>
+<title>Abstract</title>
+ <para>
+OpenEmbedded has won the TuxMobil GNU/Linux
+Award 2005 that honors Free Software projects, which improve Linux
+for mobile computers.  OpenEmbedded is a Linux distribution similar
+to Debian that has its roots in the PDA domain.  It is today pretty
+popular among Linux fans who own Zaurus', iPAQs or similar PDAs.
+But OpenEmbedded is targeted at all kinds of embedded Linux systems.
+It features a unique cross build environment that generally allows
+pretty easy adaption of OpenSource software for cross compilation even
+if the original software authors didn't think about cross builds.
+That build environment also allows for easy definition and builds of
+complete distributions for embedded systems.
+ </para>
+
+ <para>
+OpenEmbedded also provides a lightweight and fine-grained package
+system that enables easy installation of new software packages into
+a running system as well as updates of existing software.
+These features makes OpenEmbedded a first choice for the creation
+of embedded Linux systems.
+ </para>
+</abstract>
+
+
+<sect1 label="1" id="introduction">
+<title>Introduction</title>
+ <para>
+When Sharp launched its Zaurus PDA, it came with a Linux based PDA system.
+But not all users were happy with the original Sharp configuration and
+so the OpenZaurus project was created to share the modifications.
+Later, OpenZaurus moved from modifications to the original Sharp image
+to a complete distribution based on Debian.
+ </para>
+
+ <para>
+But the build system for Debian was not really suited for small embedded
+systems and so OpenEmbedded was founded with a build system inspired
+from Gentoo's <command>portage</command>.  As package system iPKG was used, which is
+closely related to Debian's <command>dpkg</command>, but more tuned for small embedded
+devices.
+Later, distributions for other PDAs like Compaq's iPAQs or the Siemens
+SimPad moved to the OpenEmbedded build and package system.
+A very interesting distribution based on OpenEmbedded is OpenSLUG
+for LinkSys' NSLU device.  The NSLU is not a PDA but originally
+an NAS storage system.
+ </para>
+
+ <para>
+Today, OpenEmbedded describes itself as a "set of recipes and metadata
+to build Linux distributions for embedded devices with the BitBake
+build system".
+ </para>
+
+ <para>
+OpenEmbedded provides three major benefits for building a distribution
+for an embedded system:
+ <itemizedlist mark='bullet'>
+<listitem>
+ <para>
+ a build system that builds everything
+ </para>
+</listitem>
+<listitem>
+ <para>
+ recipes and metadata to build more that 1000 different programs
+   and libraries
+ </para>
+</listitem>
+<listitem>
+ <para>
+ a binary package system that provides simple configuration and update
+   mechanisms
+ </para>
+</listitem>
+ </itemizedlist>
+ </para>
+
+ <para>
+The remainder of this article focuses on the use of OpenEmbedded
+for deep embedded systems like the NSLU opposed to PDA like systems
+like the SimPad.
+ </para>
+
+</sect1>
+
+<sect1 id="overview">
+<title>Overview</title>
+ <sect2>
+ <title>Build System</title>
+   <para>
+Like any build tool (make, ant, jam), the OpenEmbedded build tool
+BitBake controls how to build things and the build dependencies.
+But unlike single project tools like <command>make</command> it is not based on one makefile
+or a closed set of inter-dependent makefiles, but collects and manages
+an open set of largely independent build descriptions (package recipes) and
+builds them in proper order.
+ </para>
+
+ <para>
+The OpenEmbedded set of package recipes include not only recipes for
+target packages, but also recipes for tools on the host required to build
+those target packages.  So, OpenEmbedded builds a complete toolchain
+for cross-building before building the target packages and image.
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>Metadata</title>
+   <para>
+The metadata from which an OpenEmbedded distribution is built comes in
+three different forms:
+   <itemizedlist mark='bullet'>
+    <listitem>
+      <para>
+ configuration files
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+ class descriptions
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+ package recipes
+      </para>
+    </listitem>
+   </itemizedlist>
+   </para>
+
+   <para>
+The configuration files provide general variable definitions to control
+the behaviour of BitBake and how things are generally built in
+OpenEmbedded.  This includes the build system's directory structure,
+version preferences, source code mirror sites as well as specific build
+options (e.g. the default optimizing level).
+   </para>
+
+   <para>
+The class descriptions define common procedures to build things, like
+applying the auto-tools for configuration, collecting runtime library
+dependencies or building native build tools for the host.
+These class descriptions are sometimes quite specific, e.g. there exists a
+class to remove NLS parts of a package if NLS support is not wanted.
+   </para>
+
+   <para>
+The package recipes provide the information how to build a specific
+piece of software &dash; a build tool for the host, a library or a
+target application.  Such recipes provide the information how to get
+and how to build a package and dependencies on other packages.
+   </para>
+
+   <para>
+Meta package recipes don't build a specific package, but mainly consist
+of dependency descriptions to build a complete set of packages, often
+a base image for a specific distribution.
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>Package System</title>
+   <para>
+The iPKG package system is (deliberately) very similar to Debian's <command>dpkg</command>,
+but is tuned for small systems.  It contains the package data that is
+simply copied to the target system, metadata and optionally
+installation scripts.  The metadata includes the (run-time) dependencies
+of the package.
+   </para>
+
+   <para>
+Package systems are mainly for the benefit of users of computer-like
+devices who want to install their own specific set of software.
+Such package systems provide two major benefits:
+   <itemizedlist mark='bullet'>
+     <listitem>
+      <para>
+ easy definition of an initial image, often called 'base system'
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ controlled installation, upgrade and de-installation of packages
+   on the running system
+      </para>
+     </listitem>
+   </itemizedlist>
+   </para>
+
+   <para>
+These benefits also apply to (deep) embedded systems.
+Different configurations are just different sets of packages.  They can
+even share the already built packages from existing configurations.
+   </para>
+
+   <para>
+In traditional embedded systems for an update first a new
+complete image is built that then requires on the target a shutdown,
+a complete re-flash of the image and finally a restart of the system.
+Contrasting to that image-based process, a package system allows easy
+updates on a live, running system that
+even allows to have some processes running the old version (though it
+is already de-installed) while other processes already run the new version.
+   </para>
+ </sect2>
+</sect1>
+
+<sect1>
+ <title>Working with OpenEmbedded</title>
+   <para>
+To build a system based on OpenEmbedded, normally a small set of
+configuration files is needed:
+   <itemizedlist mark='bullet'>
+     <listitem>
+      <para>
+ <filename>local.conf</filename> to define what to build and where to get and put it
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ a machine configuration to describe the hardware
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ a distribution configuration to define global properties of the system
+      </para>
+     </listitem>
+   </itemizedlist>
+   </para>
+
+
+   <para>
+Apart from that, typically a meta package for the base image is required.
+And then of course the recipes for specific packages, e.g. a kernel
+package, packages for additional Open Source applications and
+packages for project specific software.
+   </para>
+
+ <sect2>
+      <title><filename>local.conf</filename></title>
+   <para>
+The local configuration file <filename>local.conf</filename> defines the local directory
+structure, the local build environment, some project specific preferences
+and other properties specific to the build system.
+   </para>
+   <para>
+A very simple and short <filename>local.conf</filename> could look like this:
+<programlisting>
+# DL_DIR specifies the download target directory
+DL_DIR = "${PROJECT}/oesrc"
+
+# BBFILES specifies the full set of package recipes to be parsed by BitBake
+BBFILES = "${PROJECT}/org.openembedded.dev/packages/*/*.bb"
+
+# BBMASK specifies which package recipes to ignore from the full set above
+BBMASK = ""
+
+# ASSUME_PROVIDED defines what local host build tools should
+# not be built by BitBake but should be used from the local
+# build host's installation
+ASSUME_PROVIDED = "flex-native"
+
+# For some tools exist different alternative implementations,
+# e.g. for the C runtime library there exist glibc and uClibc.
+# PREFERRED_PROVIDERS defines which specific package to build
+PREFERRED_PROVIDERS = "virtual/kernel:mymach24"
+PREFERRED_PROVIDERS += " virtual/libc:glibc"
+
+# For many packages exist several different recipes.
+# PREFERRED_VERSION defines which specific recipe to use
+PREFERRED_VERSION_gcc-cross = "3.3.2"
+
+# MACHINE defines for which hardware to build
+MACHINE = "mymach"
+
+# DISTRO defines which distribution to build
+DISTRO = "mymini"
+
+# IMAGE_FSTYPES defines which kind of images to create
+IMAGE_FSTYPES = "jffs2 tar"
+
+# For a number of package recipe versions the source code is fetched directly
+# from the original CVS repository head.  To make sure that for separate
+# builds this fetches the same source, use CVSDATE.
+CVSDATE = "20051122"
+
+# For some packages specific CVS versions are provided as tarballs.
+# CVS_TARBALL_STASH defines where to find them.
+CVS_TARBALL_STASH = "http://www.oesources.org/source/current/"
+
+# For a number of software sets it is possible to specify local
+# mirror sites where to get the software.
+export GNU_MIRROR = "http://mirror.switch.ch/ftp/mirror/gnu"
+
+# URL for own stuff
+MY_URL = "http://myserver/projects/oe"
+
+</programlisting>
+
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>Machine Configuration</title>
+   <para>
+The machine configuration file <filename>conf/machine/mymach.conf</filename> specifies
+the hardware for which a distribution is built.  This includes mainly
+the CPU architecture, specific hardware kernel modules and some size
+specifications.
+   </para>
+   <para>
+A simple example could look like this:
+<programlisting>
+#@TYPE: Machine
+#@NAME: My own hardware
+#@DESCRIPTION: Machine configuration for my system XYZ
+
+# the target CPU architecture
+TARGET_ARCH = "arm"
+
+# all compatible binary architectures
+IPKG_ARCHS = "all arm armv4 armv4t armv5e armv5te ipaqpxa mymach"
+
+# some packages for which we know they work best for our hardware
+PREFERRED_PROVIDER_xserver ?= "xserver-kdrive"
+PREFERRED_PROVIDER_virtual/kernel ?= "mykernel24"
+
+# some packages we always need for this hardware
+BOOTSTRAP_EXTRA_DEPENDS = "virtual/kernel sdmmc-support altboot"
+BOOTSTRAP_EXTRA_RDEPENDS = "kernel sdmmc-support altboot"
+BOOTSTRAP_EXTRA_RDEPENDS += " kernel-module-usbdcore kernel-module-usbdmonitor"
+
+# autoload on boot
+module_autoload_mydriver = "mydriver"
+
+# compile with XScale optimization
+include conf/machine/tune-xscale.conf
+
+# some specific settings
+SERIAL_CONSOLE = "115200 ttyS0"
+ROOT_FLASH_SIZE = "16"
+GUI_MACHINE_CLASS = "smallscreen"
+
+</programlisting>
+
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>Distribution Configuration</title>
+   <para>
+The distribution configuration file <filename>conf/distro/mymini.conf</filename> specifies
+global configuration parameters for the whole software system on the
+target.  The main definition here is the OS setting, but included here are
+also internationalization settings or a specific target filesystem layout.
+   </para>
+   <para>
+A simple example could look like this:
+<programlisting>
+#@TYPE: Distribution
+#@NAME: MyMini
+#@DESCRIPTION: A minimal base system for my system
+
+# some general descriptions
+DISTRO = "MyMini"
+DISTRO_NAME = "My Minimal Embedded Linux"
+DISTRO_VERSION = "1.0"
+DISTRO_TYPE = "release"
+
+# feed definitions for ipkg
+FEED_URIS += " \
+     base##${MY_URL}/${DISTRO_VERSION}/feed/base \
+     updates##${MY_URL}/${DISTRO_VERSION}/feed/updates"
+
+# base system
+TARGET_FPU = "soft"
+TARGET_OS = "linux-uclibc"
+
+# specific software versions
+PREFERRED_PROVIDER_xserver ?= "xserver-kdrive"
+PREFERRED_VERSION_xserver-kdrive ?= "20050207"
+
+# i18n
+USE_NLS = "yes"
+
+# distro is based on udev
+UDEV_DEVFS_RULES = "1"
+
+# distro is ipkg based
+INHERIT += " package_ipk"
+
+</programlisting>
+<!-- note MY_URL here -->
+
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>An Image Package</title>
+   <para>
+The image package recipe <filename>packages/meta/my-image.bb</filename>
+builds the base system
+for the root filesystem image.  It mainly defines the packages that
+are included in the base image.
+   </para>
+   <para>
+A simple example could look like this:
+<programlisting>
+# general description data
+DESCRIPTION = "Core packages for a minimal installation for My"
+MAINTAINER = "Me &lt;me@myname.org>"
+LICENSE = "GPL"
+PR = "r0"
+
+MY_PACKAGES = "base-files-my \
+        busybox-my initscripts-colibri netbase \
+        sysvinit usbutils modutils-initscripts \
+        my-modules24 e2fsprogs-mke2fs diffutils ipkg"
+
+# binary architecture for ipkg
+PACKAGE_ARCH = "${MACHINE_ARCH}"
+
+# name
+export IMAGE_BASENAME = "my"
+
+# which languages to include
+export IMAGE_LINGUAS = ""
+
+# which packages to include
+export IPKG_INSTALL = ${MY_PACKAGES}
+
+# give the packages again so the build systems knows they must be built
+DEPENDS = ${MY_PACKAGES}
+
+# inherit the class that finally builds the image
+inherit image_ipk
+
+</programlisting>
+
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>A Kernel Package</title>
+   <para>
+The kernel is typically specific to a hardware, so usually an own kernel
+package is required.
+   </para>
+   <para>
+A simple example <filename>packages/linux/mymach24_2.4.29-mymach</filename>
+could look like this:
+<programlisting>
+DESCRIPTION = "Linux kernel 2.4 for My hardware"
+MAINTAINER = "Me &lt;me@myname.org>"
+SECTION = "kernel"
+LICENSE = "GPL"
+PR = "r0"
+
+# compute the kernel version strings
+KV = "${@bb.data.getVar('PV',d,True).split('-')[0]}"
+MYV = "${@bb.data.getVar('PV',d,True).split('-')[1]}"
+
+# object suffix dependent on kernel version
+KERNEL_OBJECT_SUFFIX = ".o"
+
+# where to get the base kernel
+SRC_URI = "${KERNEL_MIRROR}/v2./linux-${KV}.tar.bz2"
+
+# where to get my specific patches
+SRC_URI_append = " ${MY_URL}/patches/linux-${KV}-${MYV}.patch.gz;patch=1"
+
+# specify the source directory
+# (only necessary where it differs from the package name)
+S = "${WORKDIR}/linux-${KV}"
+
+# inherit the class that actually does the work building kernels
+inherit kernel
+
+# this not only builds the kernel itself but also the modules
+PROVIDES += " my-modules24"
+PACKAGES += " my-modules24"
+
+# tell the packager where the files for the modules package are found
+FILES_my-modules24 = "/lib/modules"
+
+# which machines are supported by this kernel
+COMPATIBLE_HOST = "arm.*-linux"
+
+# nothing special is required to build the kernel, as it comes with
+# full support for cross compilation
+EXTRA_OEMAKE = ""
+
+# the actual configure command
+# oe_runmake just runs make
+do_configure() {
+        oe_runmake mymach_defconfig
+}
+
+# clean up after module installation
+do_install_append() {
+    rm -f ${D}/lib/modules/*/build
+    rm -f ${D}/lib/modules/*/source
+}
+
+</programlisting>
+Some details for this package recipe are explained in the next section.
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>A Package for an Open Source Project</title>
+   <para>
+Though OpenEmbedded comes with recipes for many Open Source projects,
+sometimes a package is required for which no recipe exists yet.
+But providing a recipe for that project is generally quite easy.
+
+Most Open Source projects are based on the configure mechanism to build.
+<command>configure</command> is a script to collect information about
+the build environment
+and creates makefiles based on that information.
+   </para>
+   <para>
+But the configure script itself is normally generated through the auto-tools.
+The normal OpenEmbedded build process for such a project is to rebuild the
+configure script based on the ultimate source <filename>Makefile.am</filename>
+and <filename>configure.ac</filename>.
+   </para>
+   <para>
+So, a simple package file for the <command>at</command> tool looks like this:
+<programlisting>
+DESCRIPTION = "Delayed job execution and batch processing."
+SECTION = "base"
+LICENSE="BSD"
+
+PR = "r1"
+
+DEPENDS = "flex-native"
+
+SRC_URI = "${DEBIAN_MIRROR}/main/a/at/at_${PV}-11.tar.gz \
+	   file://configure.patch;patch=1 \
+	   file://nonrootinstall.patch;patch=1"
+
+inherit autotools
+
+</programlisting>
+   </para>
+   <para>
+That's all.  Here a walkthrough for this recipe:
+The first three lines in this package file are just general information
+(that are included into the resulting binary package).
+   </para>
+   <para>
+<varname>PR</varname> defines the revision and should be incremented
+on each change to the package recipe.
+   </para>
+   <para>
+The <varname>DEPENDS</varname> definition states that the building of
+this package depends
+on an existing flex installation on the host (therefore the
+<filename>-native</filename>).
+   </para>
+   <para>
+The <varname>SRC_URI</varname> defines the place of the source files
+to be downloaded:
+the main distribution tarball with the URL where to find it, and two
+specific patches to build this package with OpenEmbedded.
+These patches are located together with the package file.
+The <varname>patch=1</varname> specifies that this file is to be
+applied as patch with <option>-p1</option>.
+The <varname>${PV}</varname> in the tarball URL is expanded from the
+recipe version
+number.  And the recipe version number is taken from the file name
+of the recipe.  So, if this recipe is provided as
+<filename>packages/at/at_3.1.8.bb</filename>,
+<varname>${PV}</varname> is expanded to <varname>3.1.8</varname>.
+   </para>
+   <para>
+The next line essentially does all the work: it inherits the
+<classname>autotools</classname>
+class that adds the necessary step (task) to rebuild the configure script.
+   </para>
+   <para>
+And that's all.  The <classname>base</classname> class that is inherited
+by all packages
+defines all the other tasks to build the binary package:
+   <itemizedlist mark='bullet'>
+     <listitem>
+      <para>
+ <function>do_fetch()</function>, which does the download
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_unpack()</function>, which builds the working directory
+   and unpacks all files
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_patch()</function>, which applies the patches
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_configure()</function>, which runs the configure script
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_compile()</function>, which basically calls make
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_stage()</function>, which installs library and header
+   files in the cross build environment for subsequent builds
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_install()</function>, which installs the built files
+   into a special packaging area
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ <function>do_package()</function>, which collects the files from
+   the packaging area and creates (possibly several) packages
+      </para>
+     </listitem>
+   </itemizedlist>
+   </para>
+   <para>
+All these tasks can be overwritten: in the kernel package example above
+the <function>do_configure()</function> is redefined to run make with
+a special target, and in the inherited <classname>autotools</classname> class
+for this example the <function>do_configure()</function> is redefined to
+add a <command>autoreconfig</command>
+run to rebuild the configure script before the actual configure.
+   </para>
+ </sect2>
+
+ <sect2>
+ <title>Own Software</title>
+   <para>
+For own software projects it is possible also to use the
+<command>auto</command>-tools and <command>configure</command> to create
+the makefiles.  But this requires some familiarity
+with those tools and is not really necessary.  A standard makefile will
+suffice, if some simple rules are observed:
+   <itemizedlist mark='bullet'>
+     <listitem>
+      <para>
+ don't use fix pathnames for include, library and install directories,
+   use variables for those directories.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ use variables for all building commands (including <command>ar</command>
+and <command>nm</command>, if used).
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+ provide an <varname>install</varname> target.
+      </para>
+     </listitem>
+   </itemizedlist>
+   </para>
+   <para>
+So, a makefile for the standard "Hello, World" example would look like this:
+<programlisting>
+CC = arm-linux-gcc
+LD = arm-linux-ld
+CXX = arm-linux-g++
+INSTALL = install
+
+prefix = ""
+bindir = $(prefix)/usr/bin
+
+TARGETS = hello
+
+all: $(TARGETS)
+
+hello: hello.cxx
+        $(CXX) $(CXXFLAGS) -o $@ $<
+
+clean:
+        rm -f *.o $(TARGETS) *~
+
+install:
+        $(INSTALL) hello $(bindir)
+
+</programlisting>
+   </para>
+   <para>
+The next decision to make is how to provide the source code:
+it might either be available through some download mechanism, possibly
+from a local CVS server, or it might be added as a local tarball to the
+package file.
+   </para>
+   <para>
+Based on that, the actual package recipe file is pretty simple:
+<programlisting>
+DESCRIPTION = "Hello world example"
+SECTION = "base"
+LICENSE="BSD"
+MAINTAINER = "Me &lt;me@myname.org>"
+
+PR = "r0"
+
+SRC_URI = "file://hello-${PV}.tar.gz"
+
+# just don't do any configuring
+do_configure() {
+}
+</programlisting>
+   </para>
+   <para>
+The recipes shown here are all pretty simple.  But actually 90% of
+the recipes in OpenEmbedded are not much more complex.  And for
+more complex packages normally some recipes already exist, if not
+for exactly the wanted package then for a similar one.
+   </para>
+   <para>
+And for the really complicated cases the OpenEmbedded developers
+on the mailing list are always helpful.
+   </para>
+ </sect2>
+</sect1>
+
+
+<sect1 id="conclusion">
+<title>Conclusion</title>
+ <para>
+Most embedded Linux systems currently follow the full image approach:
+if something changes, the complete image is rebuilt and deployed.
+ </para>
+
+ <para>
+An embedded Linux distribution that provides a package system
+follows a different approach: the original image provides only
+a base system that is augmented incrementally by separate packages.
+ </para>
+
+ <para>
+OpenEmbedded provides not only such a package system, but also the
+tools to build these packages, i.e. the BitBake build tools
+and all the metadata in form of predefined classes for most
+common tasks for building an embedded Linux distribution.
+ </para>
+
+ <para>
+And OpenEmbedded comes with lots of ready-to-use package recipes
+for Open Source tools, libraries and applications.
+ </para>
+
+ <para>
+But OpenEmbedded has also drawbacks:
+It is quite complex and though this complexity is often hidden
+in the provided classes, it is sometimes necessary to understand
+that complexity.  And though most package recipes are quite simple,
+even these simple things must be learned, and documentation is a bit scarce.
+But the OpenEmbedded developers on the mailing list are generally
+friendly and willingly provide some pointers to solve simple
+and complex tasks.
+ </para>
+
+ <para>
+Another drawback is the amounts of resources required to build
+OpenEmbedded: to build a basic distribution including a GUI
+takes several hours; to build everything takes nearly two
+days on a Pentium M @ 2GHz.  And it takes about 30GHz disk space.
+ </para>
+
+ <para>
+A last drawback is the SCM monotone used by OpenEmbedded:
+pulling and updating is quite slow.
+ </para>
+
+ <para>
+Some of these drawbacks are just due to the fact that OpenEmbedded
+now provides a huge repository of recipes: to build one package
+and its dependencies, OpenEmbedded must parse all recipes to know
+which recipe provides what, and with more than 3000 recipes this
+takes some time.  But the OpenEmbedded developers are aware especially
+of the performance problems (they are bitten themselves most by them)
+and try to solve at least some of them.
+ </para>
+</sect1>
+
+ <bibliography>
+  <title>References</title>
+  <biblioentry id="OpenEmbeddedBib">
+   <title>OpenEmbedded Homepage</title>
+   <bibliomisc>
+    <ulink url="http://www.openembedded.org/">
+http://www.openembedded.org/
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+  <biblioentry>
+   <title>Developer Documentation</title>
+   <bibliomisc>
+    <ulink url="http://oe.handhelds.org/cgi-bin/moin.cgi">
+http://oe.handhelds.org/cgi-bin/moin.cgi
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+  <biblioentry>
+   <title>OpenEmbedded recipe hints</title>
+   <bibliomisc>
+    <ulink url="http://oe.handhelds.org/cgi-bin/moin.cgi/bb_20file">
+http://oe.handhelds.org/cgi-bin/moin.cgi/bb_20file
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+  <biblioentry>
+   <title>BitBake manual</title>
+   <bibliomisc>
+    <ulink url="http://bitbake.berlios.de/manual/">
+http://bitbake.berlios.de/manual/
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+  <biblioentry>
+   <title>iPKG</title>
+   <bibliomisc>
+    <ulink url="http://www.handhelds.org/moin/moin.cgi/Ipkg">
+http://www.handhelds.org/moin/moin.cgi/Ipkg
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+  <biblioentry>
+   <title>OpenEmbedded monotone hints</title>
+   <bibliomisc>
+    <ulink url="http://oe.handhelds.org/cgi-bin/moin.cgi/MonotonePhraseBook">
+http://oe.handhelds.org/cgi-bin/moin.cgi/MonotonePhraseBook
+    </ulink>
+   </bibliomisc>
+  </biblioentry>
+
+</bibliography>
+
+</article>
+
