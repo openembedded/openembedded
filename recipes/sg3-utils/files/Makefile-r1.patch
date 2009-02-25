@@ -1,8 +1,8 @@
 Index: sg3-utils-1.24/Makefile
 ===================================================================
---- sg3-utils-1.24.orig/Makefile	2009-01-27 16:29:26.000000000 -0800
-+++ sg3-utils-1.24/Makefile	2009-01-27 22:31:04.000000000 -0800
-@@ -1,6 +1,6 @@
+--- sg3-utils-1.24.orig/Makefile	2007-05-07 11:59:19.000000000 -0700
++++ sg3-utils-1.24/Makefile	2009-02-02 16:37:35.000000000 -0800
+@@ -1,13 +1,15 @@
  SHELL = /bin/sh
  
 -PREFIX=/usr/local
@@ -10,15 +10,32 @@ Index: sg3-utils-1.24/Makefile
  LIBDIR=$(DESTDIR)/$(PREFIX)/lib
  INSTDIR=$(DESTDIR)/$(PREFIX)/bin
  MANDIR=$(DESTDIR)/$(PREFIX)/share/man
-@@ -8,6 +8,8 @@
+ INCLUDEDIR=$(DESTDIR)/$(PREFIX)/include
  
- CC = gcc
- LD = gcc
-+LIBTOOL = libtool
+-CC = gcc
+-LD = gcc
++CC ?= gcc
++LD = ${CC}
++LIBTOOL ?= libtool
 +LT_EXTRA = --tag=CC
  
  EXECS = sg_dd sgp_dd sgm_dd sg_read sg_map sg_scan sg_rbuf \
    	sginfo sg_readcap sg_turs sg_inq sg_test_rwbuf \
+@@ -37,12 +39,12 @@
+ S_CFLAGS = $(OS_FLAGS) $(LARGE_FILE_FLAGS)
+ 
+ # CFLAGS = -O2 -Wall -W
+-CFLAGS = -g -O2 -Wall -W
++CFLAGS ?= -g -O2 -Wall -W
+ # CFLAGS = -g -O2 -Wall -W -pedantic -std=c99
+ 
+ CFLAGS_PTHREADS = -D_REENTRANT
+ 
+-LDFLAGS = 
++LDFLAGS ?= 
+ # LDFLAGS = -v -lm
+ 
+ LIB_VINFO = 1:0:0
 @@ -64,164 +66,164 @@
  	$(CC) $(INCLUDES) $(CFLAGS) $(S_CFLAGS) -c -o $@ $<
  
