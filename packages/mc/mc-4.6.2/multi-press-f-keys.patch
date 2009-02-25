@@ -1,0 +1,55 @@
+http://www.midnight-commander.org/ticket/287
+Index: mc-4.6.2/src/key.c
+===================================================================
+--- mc-4.6.2.orig/src/key.c	2009-02-01 19:30:21.000000000 +0000
++++ mc-4.6.2/src/key.c	2009-02-25 20:16:46.000000000 +0000
+@@ -694,6 +694,8 @@
+     /* F0 is the same as F10 for out purposes */
+     if (c == KEY_F (0))
+ 	c = KEY_F (10);
++    if (c == KEY_F_IMMUTABLE (0))
++	c = KEY_F_IMMUTABLE (10);
+ 
+     /*
+      * We are not interested if Ctrl was pressed when entering control
+@@ -765,6 +767,16 @@
+ 	mod &= ~KEY_M_SHIFT;
+     }
+ 
++    /*
++     * Numerals may require modifilers with some keymaps or on obscure
++     * keyboards (e. g. F4 = Esc Shift+4). We have to ignore all
++     * modifiers while interpreting Esc + Numeral.
++     */
++    if (c >= KEY_F_IMMUTABLE (1) && c <= KEY_F_IMMUTABLE (10)) {
++	c += KEY_F (0) - KEY_F_IMMUTABLE (0);
++	mod &= ~KEY_M_MASK;
++    }
++
+     if (!alternate_plus_minus)
+ 	switch (c) {
+ 	case KEY_KP_ADD:
+@@ -917,10 +929,9 @@
+ 		this = this->next;
+ 	    else {
+ 		if (parent != NULL && parent->action == MCKEY_ESCAPE) {
+-
+ 		    /* Convert escape-digits to F-keys */
+ 		    if (isdigit(c))
+-			c = KEY_F (c - '0');
++			c = KEY_F_IMMUTABLE (c - '0');
+ 		    else if (c == ' ')
+ 			c = ESC_CHAR;
+ 		    else
+Index: mc-4.6.2/src/myslang.h
+===================================================================
+--- mc-4.6.2.orig/src/myslang.h	2009-02-25 18:25:29.000000000 +0000
++++ mc-4.6.2/src/myslang.h	2009-02-25 18:25:31.000000000 +0000
+@@ -29,6 +29,7 @@
+ };
+ 
+ #define KEY_F(x) (1000+x)
++#define KEY_F_IMMUTABLE(x) (970+x)
+ 
+ #define ACS_VLINE SLSMG_VLINE_CHAR
+ #define ACS_HLINE SLSMG_HLINE_CHAR
