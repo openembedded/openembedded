@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=XDiskUsage
+GenericName=Disk Usage
+Comment=Utility showing disk usage
+Type=Application
+Exec=xdiskusage
+Icon=xdiskusage
+Categories=System;Filesystem;
+Terminal=false
+
