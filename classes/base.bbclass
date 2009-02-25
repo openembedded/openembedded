@@ -856,10 +856,7 @@ python base_eventhandler() {
 
 	name = getName(e)
 	msg = ""
-	if name.startswith("Pkg"):
-		msg += "package %s: " % data.getVar("P", e.data, 1)
-		msg += messages.get(name[3:]) or name[3:]
-	elif name.startswith("Task"):
+	if name.startswith("Task"):
 		msg += "package %s: task %s: " % (data.getVar("PF", e.data, 1), e.task)
 		msg += messages.get(name[4:]) or name[4:]
 	elif name.startswith("Build"):
@@ -867,6 +864,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
+	else:
+		return NotHandled
 
 	# Only need to output when using 1.8 or lower, the UI code handles it
 	# otherwise
