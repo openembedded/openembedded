@@ -9,5 +9,9 @@ DEPENDS = "libcap"
 SRC_URI="http://cdrkit.org/releases/cdrkit-${PV}.tar.gz"
 
 S="${WORKDIR}/cdrkit-${PV}"
-PR = "r0"
+PR = "r1"
 
+do_install() {
+	oe_runmake install DESTDIR="${D}"
+	mv ${D}/usr/local/* ${D}${prefix}/ -f
+}
