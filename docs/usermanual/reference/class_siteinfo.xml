@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="siteinfo_class" xreflabel="siteinfo class">
+  <title>siteinfo class</title>
+
+  <para>The siteinfo class provides information for a target with a particular
+  emphasis on determining the names of the site files to be passed to
+  autoconf, as described in the <xref linkend="autotools_class" />. Full site
+  information for your target can be determined by looking at the table in the
+  class implementation found in the
+  <command>classes/siteinfo.bbclass</command> file. A typical entry contains
+  the name of the target and a list of site information for the
+  target:<screen>    "sh4-linux":               "endian-little bit-32 common-glibc sh-common",</screen>In
+  the above example for sh4-linux target (that's a build for an sh4 processor
+  using glibc) we see that the endianess and bit-size of target are defined
+  and an additional set of site files that should be used are listed. These
+  include a common site file for glibc and a common site file for sh
+  processors (so sh3 and sh4 can share defines). A <command>"common"</command>
+  entry is automatically added to the end of each of the definitions during
+  processing.</para>
+
+  <para>The class makes available three variables based on the information
+  provided for a target:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>SITEINFO_ENDIANESS</term>
+
+      <listitem>
+        <para>Defines the endianess of the target as either
+        <command>"le"</command> (little endian) or <command>"be"</command>
+        (big endian). The target must list either
+        <command>endian-little</command> or <command>endian-big</command> in
+        it's site information.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>SITEINFO_BITS</term>
+
+      <listitem>
+        <para>Defines the bitsize of the target as either
+        <command>"32"</command> or <command>"64"</command>. The target must
+        list either <command>bit-32</command> or <command>bit-64</command> in
+        it's site information.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>CONFIG_SITE</term>
+
+      <listitem>
+        <para>Defines the site files to be used by autoconf. This is a space
+        separated list of one or more site files for the target.</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>A typical use for the <command>SITEINFO_ENDIANESS</command> and
+  <command>SITEINFO_BITS</command> variables is to provide configuration
+  within a recipe based on their values. The following example from the
+  <emphasis>openssl</emphasis> recipe showw the correct define for the
+  endiness of the target being passed to openssl via the compiler flags. The
+  define to add to the flags is set based on the value of the
+  <command>SITEINFO_ENDIANESS</command> variable. Note that use of the
+  <emphasis>base_conditional</emphasis> method (see the <xref
+  linkend="recipes_advanced_python" /> section) to select a value conditional
+  on the endianess setting:</para>
+
+  <para><screen>  # Additional flag based on target endiness (see siteinfo.bbclass)
+    CFLAG="${CFLAG} ${@base_conditional('SITEINFO_ENDIANESS', 'le', '-DL_ENDIAN', '-DB_ENDIAN', d)}"</screen></para>
+
+  <section>
+    <title>CONFIG_SITE: The autoconf site files</title>
+
+    <para>The autotools configuration method has support for caching the
+    results of tests. In the cross-compilation case it is sometimes necessary
+    to prime the cache with per-calculated results (since tests designed to
+    run on the target cannot be run when cross-compiling). These are defined
+    via the site file(s) for the architecture you are using and may be
+    specific to the package you are building.</para>
+
+    <para>Which site files are used is determined via the
+    <command>CONFIG_SITE</command> definition which is calculated via the
+    siteinfo class. Typically the following site files will be checked for,
+    and used in the order found:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>endian-(big|little)</term>
+
+        <listitem>
+          <para>Either <command>endian-big</command> or
+          <command>endian-little</command> depending on the endianess of the
+          target. This site file would contain defines that only change based
+          on if the target is little endian or big endian.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>bit-(32|64)</term>
+
+        <listitem>
+          <para>Either <command>bit-32</command> or <command>bit-64</command>
+          depending on the bitsize of the target. This site file would contain
+          defines that only change based on if the target is a 32-bit or
+          64-bit cpu.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>common-(libc|uclibc)</term>
+
+        <listitem>
+          <para>Either <command>common-libc</command> or
+          <command>common-uclibc</command> based on the C library being used
+          for the target. This site file would contain defines the are
+          specific to the C library being used.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>&lt;arch&gt;-common</term>
+
+        <listitem>
+          <para>A common site file for the target architecture. For i386,
+          i485, i586 and i686 this would be <command>x86-common</command>, for
+          sh3 and sh4 this would be <command>sh-common</command> and for
+          various arm targets this would be
+          <command>arm-common</command>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>common</term>
+
+        <listitem>
+          <para>This is a site file which is common for all targets and
+          contains definitions which remain the same no matter what target is
+          being built.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>Each of the supported site files for a target is will be checked for
+    in several different directories. Each time a file is found it as added to
+    the list of files in the <command>CONFIG_SITE</command> variable. The
+    following directories are checked:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site-&lt;version&gt;/</term>
+
+        <listitem>
+          <para>This directory is for site files which are specific to a
+          particular version (where version is the PV of the package) of a
+          package.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site/</term>
+
+        <listitem>
+          <para>This directory is for site files which are specific to a
+          particular package, but apply to all versions of the package.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>org.openembedded.dev/site/</term>
+
+        <listitem>
+          <para>This directory is for site files that are common to all
+          packages. Originally this was the only site file directory that was
+          supported.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</section>

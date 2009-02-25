@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_introduction">
+  <title>Introduction</title>
+
+  <section id="intro_overview">
+    <title>Overview</title>
+
+    <para>Like any build tool (make, ant, jam), the OpenEmbedded build tool
+    BitBake controls how to build things and the build dependencies. But
+    unlike single project tools like <command>make</command> it is not based
+    on one makefile or a closed set of inter-dependent makefiles, but collects
+    and manages an open set of largely independent build descriptions (package
+    recipes) and builds them in proper order.</para>
+
+    <para>To be more precise: <ulink
+    url="http://www.openembedded.org"><application>OpenEmbedded</application></ulink>
+    is a set of metadata used to cross-compile, package and install software
+    packages. <application>OpenEmbedded</application> is being used to build
+    and maintain a number of embedded Linux distributions, including
+    OpenZaurus, &Aring;ngstr&ouml;m, Familiar and SlugOS.</para>
+
+    <para>The primary use-case of <application>OpenEmbedded</application> are:
+    <itemizedlist>
+        <listitem>
+          <para>Handle cross-compilation.</para>
+        </listitem>
+
+        <listitem>
+          <para>Handle inter-package dependencies</para>
+        </listitem>
+
+        <listitem>
+          <para>Must be able to emit packages (tar, rpm, ipk)</para>
+        </listitem>
+
+        <listitem>
+          <para>Must be able to create images and feeds from packages</para>
+        </listitem>
+
+        <listitem>
+          <para>Must be highly configurable to support many machines,
+          distribution and architectures.</para>
+        </listitem>
+
+        <listitem>
+          <para>Writing of metadata must be easy and reusable</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>Together with <ulink
+    url="http://bitbake.berlios.de/manual"><application>BitBake</application></ulink>,
+    OpenEmbedded satisfies all these and many more. Flexibility and power have
+    always been the priorities.</para>
+  </section>
+
+  <section id="intro_history">
+    <title>History</title>
+
+    <para>OpenEmbedded was invented and founded by the creators of the
+    OpenZaurus project. At this time the project had pushed
+    <emphasis>buildroot</emphasis> to its limits. It supported the creation of
+    <emphasis>ipk</emphasis> packages, feeds and images and had support for
+    more than one machine. But it was impossible to use different patches,
+    files for different architectures, machines or distributions. To overcome
+    this shortcoming OpenEmbedded was created.</para>
+
+    <para>After a few months other projects started using OpenEmbedded and
+    contributing back. On 7 December 2004 Chris Larson split the project into
+    two parts: BitBake, a generic task executor and OpenEmbedded, the metadata
+    for BitBake.</para>
+  </section>
+</chapter>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_comparing">
+  <title>Comparing</title>
+
+  <section id="comparing_buildroot">
+    <title>buildroot</title>
+
+    <para>Writing of <application>BitBake</application> recipes is more easy
+    and more intuitive than writing Makefiles while providing higher
+    flexibility. This allows you to tweak specific recipes for your very
+    special needs and to add new recipes very fast. You can build toolchains,
+    Software Distribution Kits (SDKs), complete Distributions or just single
+    packages. The flexibility of OpenEmbedded allows you to reuse the once
+    written recipes for many different purposes. OpenEmbedded provides
+    everything buildroot will be able to provide. But in contrast to buildroot
+    OpenEmbedded will allow you to achieve what you really want to achieve.
+    You can add new package formats, new filesystems, new output formats
+    easily. OpenEmbedded will suit your need.</para>
+  </section>
+
+  <section id="comparing_crosstool">
+    <title>crosstool</title>
+
+    <para>Crosstool allows to create toolchains for you. It can only create
+    the initial toolchain for you. It will not compile other needed libraries
+    or applications for you, it will not be able to track dependencies or to
+    package them properly. OpenEmbedded supports all configurations crosstool
+    supports. You can start to create toolchains with OpenEmbedded, then as
+    your needs grow create a more complete SDK from already present base
+    libraries and applications and if you recognize you need to have packages
+    for the target you have them almost built already.</para>
+  </section>
+
+  <section id="comparing_handmade">
+    <title>handmade</title>
+
+    <para>Cross-compilation is a tough business. It is not that
+    cross-compiling is hard itself but many people misuse the buildsystem they
+    use to build their software. This will lead to a variety of issues you can
+    run into. This can be failing tests on configuration because of executing
+    cross compiled binaries or crashes at run-time due wrong sizes of basic
+    types. When utilizing OpenEmbedded you avoid searching for patches at many
+    different places and will be able to get things done more quickly.
+    <application>OpenEmbedded</application> allows you to choose from a pool
+    of ready to use software packages.</para>
+
+    <para>OpenEmbedded will create complete flashable images using different
+    output formats and filesystems. This allows you to create complete and
+    specialized distributions easily.</para>
+  </section>
+</chapter>

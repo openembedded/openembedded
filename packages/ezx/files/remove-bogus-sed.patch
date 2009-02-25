@@ -1,0 +1,15 @@
+Index: gen-blob/configure
+===================================================================
+--- gen-blob.orig/configure
++++ gen-blob/configure
+@@ -1970,8 +1970,8 @@
+ fi  
+ 
+ 
+-CFLAGS=`echo $CFLAGS | sed 's/\ *-g\ */\ /'`
+-LDFLAGS=`echo $LDFLAGS | sed 's/\ *-g\ */\ /'`
++CFLAGS=`echo $CFLAGS`
++LDFLAGS=`echo $LDFLAGS`
+ CCAS=`echo $CC`
+ CCASFLAGS=`echo $CFLAGS -D__ASSEMBLY__ `
+ 

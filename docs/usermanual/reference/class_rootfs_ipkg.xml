@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="rootfs_ipkg_class" xreflabel="rootfs_ipkg class">
+  <title>rootfs_ipkg class</title>
+
+  <para>The <emphasis>rootf_ipk</emphasis> class us used to create a root
+  filesystem for the target device from a set of .ipkg packages. The end
+  result is a directory containing all the files that need to be included in
+  the root filesystem of the target device.</para>
+
+  <para>This class is normally not used directly, but instead used from the
+  <xref linkend="image_class" /> which creates images from a set of package 
+  (typically <command>.ipkg</command>) files.</para>
+
+  <para>Summary of actions performed by the <emphasis>rootfs_ipkg</emphasis>
+  class:</para>
+
+  <orderedlist>
+    <listitem>
+      <para>Erase any existing root filesystem image by deleting the entire
+      contents of <command>${IMAGE_ROOTFS}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Creates the device node directory,
+      <command>${IMAGE_ROOTFS}/dev</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Determines which packages to install in order to provide the
+      locales that have been requested;</para>
+    </listitem>
+
+    <listitem>
+      <para>Configures ipkg to allow it to be used locally to install into the
+      root filesystem <command>${IMAGE_ROOTFS}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Installs locale related .ipkg packages;</para>
+    </listitem>
+
+    <listitem>
+      <para>Installs the list of requested <command>.ipkg</command> packages,
+      <command>${IPKG_INSTALL}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Creates ipkg's arch.conf as
+      <command>${IMAGE_ROOTFS}/etc/ipkg/arch.conf</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Runs any preinst and postinst scripts that were specified by the
+      installed .ipkg packages;</para>
+    </listitem>
+
+    <listitem>
+      <para>Creates the system configuration directory
+      <command>${IMAGE_ROOTFS}/${sysconfdir}</command> (that is the
+      <command>/etc</command> directory on the target);</para>
+    </listitem>
+
+    <listitem>
+      <para>Runs and custom post-processing commands, as described by
+      <command>${ROOTFS_POSTPROCESS_COMMAND}</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Verifies that all the ipkg's were installed correctly and reports
+      an error if they were not;</para>
+    </listitem>
+
+    <listitem>
+      <para>Makes available a set of functions which may be used by callers of
+      the class: <command>zap_root_password</command>,
+      <command>create_etc_timestamp</command> and
+      <command>remove_init_link</command>;</para>
+    </listitem>
+
+    <listitem>
+      <para>Adds the rootfs task to run after the <emphasis>install</emphasis>
+      task <command>"addtask rootfs before do_build and
+      do_install"</command>.</para>
+    </listitem>
+  </orderedlist>
+
+  <para>The following variables may be used to control some of the behaviour
+  of this class:</para>
+
+  <variablelist>
+    <varlistentry>
+      <term>IPKG_INSTALL</term>
+
+      <listitem>
+        <para>The list of packages which will be installed into the root
+        filesystem. This needs to be set in order for this class to perform
+        any useful work.</para>
+
+        <para>Default: empty</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>ROOTFS_POSTPROCESS_COMMAND</term>
+
+      <listitem>
+        <para>Defines additional commands to run after processing of the root
+        filesystem. Could be used to change roots password, remove parts of
+        the install kernel such as the <command>zImage</command> kernel image
+        or to edit the ipkg configuration for example.</para>
+
+        <para>Default: empty</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>PACKAGE_ARCH</term>
+
+      <listitem>
+        <para>Defines the list of architectures that are support by the target
+        platform. This is used to configure the arch settings for ipkg on the
+        target system.</para>
+
+        <para>Default: <command>"all any noarch ${TARGET_ARCH}
+        ${PACKAGE_EXTRA_ARCHS} ${MACHINE}"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_LINGUAS</term>
+
+      <listitem>
+        <para>Specifies which locales should be installed. This is often set
+        to <command>""</command> to indicate that no locales will be
+        installed.</para>
+
+        <para>Default: <command>"de-de fr-fr en-gb"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>EXTRA_IMAGEDEPENDS</term>
+
+      <listitem>
+        <para>A list of dependencies, this is appended to
+        <command>DEPENDS</command>. This is typically used to ensure that any
+        commands that are called by
+        <command>ROOTFS_POSTPROCESS_COMMAND</command> are actually built by
+        the system prior to being called.</para>
+
+        <para>Default: empty</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>BUILDNAME</term>
+
+      <listitem>
+        <para>The name of the build. This is either set by the distro
+        configuration (for released versions) or set to a date stamp which is
+        autogenerated by bitbake.</para>
+
+        <para>Default: <command>'date +%Y%m%d%H%M'</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>IMAGE_ROOTFS</term>
+
+      <listitem>
+        <para>The path to the root of the filesystem image. You can use this
+        when you need to explicitly refer to the root filesystem
+        directory.</para>
+
+        <para>Default: <command>IMAGE_ROOTFS =
+        "${TMPDIR}/rootfs"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>DEPLOY_DIR</term>
+
+      <listitem>
+        <para>The base deploy dir. Used to find the directory containing the
+        ipkg files.</para>
+
+        <para>Default: <command>DEPLOY_DIR =
+        "${TMPDIR}/deploy"</command></para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>DEPLOY_DIR_IPK</term>
+
+      <listitem>
+        <para>The directory in which to search for the ipkg files that are to
+        be installed in the root filesystem.</para>
+
+        <para>Default: <command>DEPLOY_DIR_IPK =
+        "${DEPLOY_DIR}/ipk"</command></para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <para>Note that the entire process is run under the control of <xref
+  linkend="fakeroot" /> in order to handle device files, uids and gids. The
+  <command>ROOTFS_POSTPROCESS_COMMAND</command> is useful due to the fact that
+  it runs within the same <xref linkend="fakeroot" /> instance as the rest of
+  this class.</para>
+
+  <para>The class also provides a function <command>real_do_rootfs</command>
+  which is executed without <xref linkend="fakeroot" /> and therefore can be
+  used from other classes, such as <xref linkend="image_class" />, that
+  are already running under the control of <xref linkend="fakeroot" />.</para>
+</section>

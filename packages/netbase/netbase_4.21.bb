@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
 infrastructure for basic TCP/IP based networking."
 SECTION = "base"
 LICENSE = "GPL"
-PR = "r31"
+PR = "r32"
 
 inherit update-rc.d
 
@@ -16,15 +16,17 @@ INITSCRIPT_PARAMS_openmn = "start 85 1 2 3 4 5 . stop 85 0 6 1 ."
 # Do not stop in single user - there's no way to sulogin!
 INITSCRIPT_PARAMS_slugos = "start 42 S 0 6 ."
 
-SRC_URI = "${DEBIAN_MIRROR}/main/n/netbase/netbase_${PV}.tar.gz \
-           file://options \
-           file://init \
-           file://hosts \
-           file://interfaces \
-           file://if-pre-up.d \
-           file://if-up.d \
-           file://if-down.d \
-           file://if-post-down.d"
+SRC_URI = "\
+  http://developer.irexnet.com/pub/iOn/Sources/1.0/Third%20party/all/netbase-${PV}.tar.gz \
+  file://options \
+  file://init \
+  file://hosts \
+  file://interfaces \
+  file://if-pre-up.d \
+  file://if-up.d \
+  file://if-down.d \
+  file://if-post-down.d \
+"
 
 do_install () {
 	install -d ${D}${sysconfdir}/init.d

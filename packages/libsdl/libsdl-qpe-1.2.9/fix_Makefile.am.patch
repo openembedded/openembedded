@@ -1,0 +1,11 @@
+--- SDL-1.2.9.vanilla/Makefile.am	2009-02-24 19:53:25.000000000 +0100
++++ SDL-1.2.9/Makefile.am	2009-02-24 19:54:14.000000000 +0100
+@@ -85,7 +85,7 @@
+ 	cd src && $(MAKE) install-libLTLIBRARIES
+ 
+ # Run ldconfig after installing the library:
+-install-hook:
++install-exec-hook:
+ 	-ldconfig
+ 
+ # Grab the test programs for the distribution:

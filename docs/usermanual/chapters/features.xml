@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="chapter_special_features">
+  <title>Special features</title>
+
+  <section id="special_debian_naming">
+    <title>Debian package naming <anchor id="debian" /></title>
+
+    <screen>INHERIT += "debian"</screen>
+
+    <para>Placing the above line into your <emphasis>${DISTRO}.conf</emphasis>
+    or <emphasis>local.conf</emphasis> will trigger renaming of packages if
+    they only ship one library. Imagine a package where the package name
+    (<command>PN</command>) is foo and this packages ships a file named
+    <command>libfoo.so.1.2.3</command>. Now this package will be renamed to
+    <command>libfoo1</command> to follow the Debian package naming
+    policy.</para>
+  </section>
+
+  <section id="special_shlibs">
+    <title>Shared Library handling (shlibs) <anchor id="shlibs" /></title>
+
+    <para>Run-time Dependencies (<command>RDEPENDS</command>) will be added
+    when packaging the software. They should only contain the minimal
+    dependencies to run the program. OpenEmbedded will analyze each packaged
+    binary and search for <command>SO_NEEDED</command> libraries. The
+    libraries are absolutely required by the program then OpenEmbedded is
+    searching for packages that installs these libraries. these packages are
+    automatically added to the <command>RDEPENDS</command>. As a packager you
+    don't need to worry about shared libraries anymore they will be added
+    automatically.</para>
+
+    <remark>NOTE: This does not apply to plug-ins used by the
+    program.</remark>
+  </section>
+
+  <section id="special_bitbake_collections">
+    <title>BitBake Collections <anchor id="collections" /></title>
+
+    <para>This section is a stub, help us by expanding it</para>
+
+    <para><screen>
+BBFILES := "${OEDIR}/openembedded/packages/*/*.bb ${LOCALDIR}/packages/*/*.bb"
+BBFILE_COLLECTIONS = "upstream local"
+BBFILE_PATTERN_upstream = "^${OEDIR}/openembedded/packages/"
+BBFILE_PATTERN_local = "^${LOCALDIR}/packages/"
+BBFILE_PRIORITY_upstream = "5"
+BBFILE_PRIORITY_local = "10"
+</screen></para>
+  </section>
+
+  <section id="special_task_base">
+    <title>Task-base <anchor id="task-base" /></title>
+
+    <para>Task-base is new way of creating basic root filesystems. Instead of
+    having each machine setting a ton of duplicate variables, this allow a
+    machine to specify its features and <command>task-base</command> builds it
+    a customised package based on what the machine needs along with what the
+    distro supports.</para>
+
+    <para>To illustrate, the distro config file can say: <screen>
+DISTRO_FEATURES = "nfs smbfs ipsec wifi ppp alsa bluetooth ext2 irda pcmcia usbgadget usbhost"
+</screen> and the machine config: <screen>
+MACHINE_FEATURES = "kernel26 apm alsa pcmcia bluetooth irda usbgadget"
+</screen> and the resulting <command>task-base</command> would support pcmcia
+    but not usbhost.</para>
+
+    <para>Task-base details exactly which options are either machine or distro
+    settings (or need to be in both). Machine options are meant to reflect
+    capabilities of the machine, distro options list things distribution
+    maintainers might want to add or remove from their distros images.</para>
+  </section>
+
+  <section id="special_overrides">
+    <title>Overrides <anchor id="overrides" /></title>
+
+    <para>This section is a stub, help us by expanding it</para>
+  </section>
+</chapter>

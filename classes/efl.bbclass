@@ -15,6 +15,10 @@ AUTOTOOLS_STAGE_PKGCONFIG = "1"
 # do NOT inherit pkgconfig here, see note in autotools_stage_all
 inherit autotools
 
+do_configure_prepend() {
+	touch config.rpath
+}
+
 do_stage() {
 	autotools_stage_all
 }
