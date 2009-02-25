@@ -2,12 +2,16 @@ require dpkg.inc
 
 inherit native
 
-DEPENDS = "bzip2-native zlib-native virtual/update-alternatives-native"
+DEPENDS = "perl-native bzip2-native zlib-native virtual/update-alternatives-native"
+RDEPENDS = ""
 
 SRC_URI += "file://noman.patch;patch=1"
 FILESPATH += "dpkg-${PV}"
 
-PERL_LIBDIR = "${STAGING_LIBDIR}/perl"
+# We need to do this so our perl is picked up.
+do_configure_prepend() {
+	export PERL=${STAGING_BINDIR}/perl
+}
 
 EXTRA_OECONF = "--without-static-progs \
 		--without-dselect \

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="update-alternatives_class" xreflabel="update-alternatives class">
+  <title>update-alternatives class</title>
+
+  <para>Some commands are available from multiple sources. As an example we
+  have <command>/bin/sh</command> available from <emphasis>busybox</emphasis>
+  and from <emphasis>bash</emphasis>. The busybox version is better from a
+  size perspective, but limited in functionality, while the bash version is
+  much larger but also provides far more features. The alternatives system is
+  designed to handle the situation where two commands are provided by two, or
+  more, packages. It ensures that one of the alternatives is always the
+  currently selected one and ensures that there are no problems with
+  installing and/or removing the various alternatives.</para>
+
+  <para>The update-alternatives class is used to register a command provided
+  by a package that may have an alternative implementation in a some other
+  package.</para>
+
+  <para>In the following sections we'll use the <command>/bin/ping</command>
+  command as an example. This command is available as a basic version from
+  busybox and as a more advanced version from iputils.</para>
+
+  <section>
+    <title>Naming of the alternative commands</title>
+
+    <para>When supplying alternative commands the target command itself is not
+    installed directly by any of the available alternatives. This is to ensure
+    that no package will replace files that were installed by one of the other
+    available alternative packages. The alternatives system will create a
+    symlink for the target command that points to the required
+    alternative.</para>
+
+    <para>For the <command>/bin/ping</command> case this means that neither
+    busybox nor iputils should actually install a command called
+    <command>/bin/ping</command>. Instead we see that the iputils recipe
+    installs it's version of ping as
+    <command>/bin/ping.iputils</command>:<screen>do_install () {
+    install -m 0755 -d ${D}${base_bindir} ${D}${bindir} ${D}${mandir}/man8
+    # SUID root programs
+    install -m 4755 ping ${D}${base_bindir}/ping.${PN}
+    ...
+}</screen></para>
+
+    <para>If you were to look at the busybox recipe you would see that it also
+    doesn't install a command called <command>/bin/ping</command>, instead it
+    installs it's command as <command>/bin/busybox</command>.</para>
+
+    <para>The important point to note is that neither package is installing an
+    actual <command>/bin/ping</command> target command.</para>
+  </section>
+
+  <section>
+    <title>How alternatives work</title>
+
+    <para>Before proceeding lets take a look at how alternatives are handled.
+    If we have a base image that includes only busybox then look at
+    <command>/bin/ping</command> we see that it is a symlink to
+    busybox:</para>
+
+    <para><screen>root@titan:/etc# ls -l /bin/ping
+lrwxrwxrwx    1 root     root            7 May  3  2006 /bin/ping -&gt; busybox</screen></para>
+
+    <para>This is what is expected since the busybox version of ping is the
+    only one installed on the system. Note again that it is only a symlink and
+    not an actual command.</para>
+
+    <para>If the iputils version of ping is now installed and we look at the
+    <command>/bin/ping</command> command again we see that it has been changed
+    to a symlink pointing at the iputils version of ping -
+    <command>/bin/ping.iptils</command>:</para>
+
+    <para><screen>root@titan:/etc# ipkg install iputils-ping
+Installing iputils-ping (20020927-r2) to root...
+Downloading http://nynaeve/ipkg-titan-glibc//iputils-ping_20020927-r2_sh4.ipk
+Configuring iputils-ping
+update-alternatives: Linking //bin/ping to ping.iputils
+root@titan:/etc# ls -l /bin/ping
+lrwxrwxrwx    1 root     root           12 May 13  2006 /bin/ping -&gt; ping.iputils</screen></para>
+
+    <para>The iputils version is considered to be the more fully featured
+    version of ping and is therefore the default when both versions are
+    installed.</para>
+
+    <para>What happens if the iputils-ping package is removed now? The symlink
+    should be changed to point back at the busybox version:</para>
+
+    <para><screen>root@titan:/etc# ipkg remove iputils-ping
+Removing package iputils-ping from root...
+update-alternatives: Linking //bin/ping to busybox
+root@titan:/etc# ls -l /bin/ping
+lrwxrwxrwx    1 root     root            7 May 13  2006 /bin/ping -&gt; busybox</screen></para>
+
+    <para>This simple example shows that the alternatives system is taking
+    care of ensuring the symlink is pointing to the correct version of the
+    command without any special interaction from the end users.</para>
+  </section>
+
+  <section>
+    <title>The update-alternatives command</title>
+
+    <para>Available alternatives need to be registered with the alternatives
+    system. This is handled by the <command>update-alternatives</command>
+    command. The help from the command shows it's usage options:<screen>root@titan:/etc# update-alternatives --help
+update-alternatives: help:
+
+Usage: update-alternatives --install &lt;link&gt; &lt;name&gt; &lt;path&gt; &lt;priority&gt;
+       update-alternatives --remove &lt;name&gt; &lt;path&gt;
+       update-alternatives --help
+&lt;link&gt; is the link pointing to the provided path (ie. /usr/bin/foo).
+&lt;name&gt; is the name in /usr/lib/ipkg/alternatives/alternatives (ie. foo)
+&lt;path&gt; is the name referred to (ie. /usr/bin/foo-extra-spiffy)
+&lt;priority&gt; is an integer; options with higher numbers are chosen.
+</screen></para>
+
+    <para>During postinst the update-alternatives command needs to be called
+    with the install option and during postrm it needs to be called with the
+    remove option.</para>
+
+    <para>The iputils recipe actual codes this directly (rather than using the
+    class) so we can see an example of the command being called:<screen>pkg_postinst_${PN}-ping () {
+    update-alternatives --install ${base_bindir}/ping ping ping.${PN} 100
+}
+pkg_prerm_${PN}-ping () {
+    update-alternatives --remove ping ping.${PN}
+}</screen></para>
+
+    <para>In both cases the name that the alternatives are registered against,
+    <command>"ping"</command>, is passed in and the path to the iputils
+    version of the command, <command>"ping.${PN}"</command>. For the install
+    case the actual command name (where the symlink will be made from) and a
+    priority value are also supplied.</para>
+  </section>
+
+  <section>
+    <title>Priority of the alternatives</title>
+
+    <para>So why did the alternatives system prefer the iputils version of
+    ping over the busybox version? It's because of the relative priorities of
+    the available alternatives. When iputils calls update-alternatives the
+    last parameter passed is a priority:<screen> update-alternatives --install ${base_bindir}/ping ping ping.${PN} 100</screen></para>
+
+    <para>So iputils is specifying a priority of 100 and if you look at
+    busybox you'll see it specifies a priority of 50 for ping. The alternative
+    with the highest priority value is the one that update-alternatives will
+    select as the version to actual use. In this particular situation the
+    authors have selected a higher priority for iputils since it is the more
+    capable version of ping and would not normally be installed unless
+    explicitly requested.</para>
+  </section>
+
+  <section>
+    <title>Tracking of the installed alternatives</title>
+
+    <para>You can actually see which alternatives are available and what their
+    priority is on a target system. Here we have an example in which both
+    busybox and iptuils-ping packages are installed: <screen>root@titan:/etc# cat /usr/lib/ipkg/alternatives/ping
+/bin/ping
+busybox 50
+ping.iputils 100</screen>If we remove iputils-ping, then we see that
+    alternatives file is updated to reflect this: <screen>root@titan:/etc# cat /usr/lib/ipkg/alternatives/ping
+/bin/ping
+busybox 50
+root@titan:/etc#</screen></para>
+
+    <para>The file lists the command first, and then each of the available
+    alternatives and their relative priorities.</para>
+  </section>
+
+  <section>
+    <title>Using the update-alternatives class</title>
+
+    <para>Neither busybox nor iputils actually use the update-alternatives
+    class - they call the update-alternatives functions directly. They need to
+    call the command directly since they need to register multiple
+    alternatives and the class does not support this. The class can only be
+    used when you have only a single alternative to register.</para>
+
+    <para>To use the class you need to inherent update-alternatives and then
+    define the name, path, link and priority as show in the following example
+    from the jamvm recipe:</para>
+
+    <para><screen>inherit autotools update-alternatives
+
+ALTERNATIVE_NAME = "java"
+ALTERNATIVE_PATH = "${bindir}/jamvm"
+ALTERNATIVE_LINK = "${bindir}/java"
+ALTERNATIVE_PRIORITY = "10"
+</screen></para>
+
+    <para>where the variables to be specified are:</para>
+
+    <variablelist>
+      <varlistentry>
+        <term>ALTERNATIVE_NAME [Required]</term>
+
+        <listitem>
+          <para>The name that the alternative is registered against and needs
+          to be the same for all alternatives registering this command.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ALTERNATIVE_PATH [Required]</term>
+
+        <listitem>
+          <para>The path of the installed alternative. (This was iputils.ping
+          in the example used previously).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ALTERNATIVE_LINK [Optional]</term>
+
+        <listitem>
+          <para>The name of the actual command. This is what the symlink will
+          be called and is the actual command that the use runs. The default
+          value is: <command>"${bindir}/${ALTERNATIVE_NAME}"</command></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ALTERNATIVE_PRIORITY [Optional]</term>
+
+        <listitem>
+          <para>The priority of this alternative. The alternative with the
+          highest valued priority will be selected as the default. The default
+          value is: <command>"10"</command>.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The actual postinst and postrm commands that are registered by the
+    class are:<screen>update_alternatives_postinst() {
+    update-alternatives --install ${ALTERNATIVE_LINK} ${ALTERNATIVE_NAME} ${ALTERNATIVE_PATH} ${ALTERNATIVE_PRIORITY}
+}
+
+update_alternatives_postrm() {
+    update-alternatives --remove ${ALTERNATIVE_NAME} ${ALTERNATIVE_PATH}
+}</screen></para>
+  </section>
+</section>

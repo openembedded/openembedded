@@ -1,0 +1,14 @@
+--- a/xdiskusage.C        29 Sep 2004 07:32:12 -0000      1.20
++++ b/xdiskusage.C        13 Oct 2004 03:20:26 -0000      1.21
+@@ -261,7 +261,8 @@
+       OutputWindow* d = OutputWindow::make(argv[n++]);
+       if (d) d->show(argc,argv);
+     }
+-  } else if (!isatty(0)) {
++  } else if (!isatty(0) && (n=getc(stdin))>=0) {
++    ungetc(n,stdin);
+     // test for pipe, if so read stdin:
+     OutputWindow* d = OutputWindow::make(0);
+     if (d) d->show(argc,argv);
+
+
