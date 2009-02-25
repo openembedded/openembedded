@@ -1,2 +1,0 @@
-require pkgconfig.inc
-
