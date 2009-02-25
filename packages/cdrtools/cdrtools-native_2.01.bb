@@ -2,14 +2,14 @@
 # Copyright (C) 2004-2006, Advanced Micro Devices, Inc.  All Rights Reserved
 # Released under the MIT license (see packages/COPYING)
 
-LICENSE="GPL"
+LICENSE="OSS"
 DESCRIPTION="A set of tools for CD recording, including cdrecord"
 HOMEPAGE="http://cdrecord.berlios.de/private/cdrecord.html"
 
 SRC_URI="http://ftp.berlios.de/pub/cdrecord/cdrtools-${PV}.tar.bz2"
 
 S="${WORKDIR}/cdrtools-${PV}"
-PR = "r1"
+PR = "r2"
 
 inherit native
 
