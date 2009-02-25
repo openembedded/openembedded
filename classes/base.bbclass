@@ -758,21 +758,45 @@ python base_do_unpack() {
 			raise bb.build.FuncFailed()
 }
 
-def base_get_scmbasepath(d):
-	import bb
-	path_to_bbfiles = bb.data.getVar( 'BBFILES', d, 1 ).split()
+METADATA_SCM = "${@base_get_scm(d)}"
+METADATA_REVISION = "${@base_get_scm_revision(d)}"
+METADATA_BRANCH = "${@base_get_scm_branch(d)}"
 
+def base_get_scm(d):
+	import os
+	from bb import which
+	baserepo = os.path.dirname(os.path.dirname(which(d.getVar("BBPATH", 1), "classes/base.bbclass")))
+	for (scm, scmpath) in {"svn": ".svn",
+			       "git": ".git",
+			       "monotone": "_MTN"}.iteritems():
+		if os.path.exists(os.path.join(baserepo, scmpath)):
+			return "%s %s" % (scm, baserepo)
+	return "<unknown> %s" % baserepo
+
+def base_get_scm_revision(d):
+	(scm, path) = d.getVar("METADATA_SCM", 1).split()
 	try:
-		index = path_to_bbfiles[0].rindex( "recipes" )
-	except ValueError:
-		index = path_to_bbfiles[0].rindex( "packages" )
+		if scm != "<unknown>":
+			return globals()["base_get_metadata_%s_revision" % scm](path, d)
+		else:
+			return scm
+	except KeyError:
+		return "<unknown>"
 
-	return path_to_bbfiles[0][:index]
+def base_get_scm_branch(d):
+	(scm, path) = d.getVar("METADATA_SCM", 1).split()
+	try:
+		if scm != "<unknown>":
+			return globals()["base_get_metadata_%s_branch" % scm](path, d)
+		else:
+			return scm
+	except KeyError:
+		return "<unknown>"
 
-def base_get_metadata_monotone_branch(d):
+def base_get_metadata_monotone_branch(path, d):
 	monotone_branch = "<unknown>"
 	try:
-		monotone_branch = file( "%s/_MTN/options" % base_get_scmbasepath(d) ).read().strip()
+		monotone_branch = file( "%s/_MTN/options" % path ).read().strip()
 		if monotone_branch.startswith( "database" ):
 			monotone_branch_words = monotone_branch.split()
 			monotone_branch = monotone_branch_words[ monotone_branch_words.index( "branch" )+1][1:-1]
@@ -780,10 +804,10 @@ def base_get_metadata_monotone_branch(d):
 		pass
 	return monotone_branch
 
-def base_get_metadata_monotone_revision(d):
+def base_get_metadata_monotone_revision(path, d):
 	monotone_revision = "<unknown>"
 	try:
-		monotone_revision = file( "%s/_MTN/revision" % base_get_scmbasepath(d) ).read().strip()
+		monotone_revision = file( "%s/_MTN/revision" % path ).read().strip()
 		if monotone_revision.startswith( "format_version" ):
 			monotone_revision_words = monotone_revision.split()
 			monotone_revision = monotone_revision_words[ monotone_revision_words.index( "old_revision" )+1][1:-1]
@@ -791,56 +815,29 @@ def base_get_metadata_monotone_revision(d):
 		pass
 	return monotone_revision
 
-def base_get_metadata_svn_revision(d):
+def base_get_metadata_svn_revision(path, d):
 	revision = "<unknown>"
 	try:
-		revision = file( "%s/.svn/entries" % base_get_scmbasepath(d) ).readlines()[3].strip()
+		revision = file( "%s/.svn/entries" % path ).readlines()[3].strip()
 	except IOError:
 		pass
 	return revision
 
-def base_get_metadata_git_branch(d):
+def base_get_metadata_git_branch(path, d):
 	import os
-	branch = os.popen('cd %s; git branch | grep "^* " | tr -d "* "' % base_get_scmbasepath(d)).read()
+	branch = os.popen('cd %s; git symbolic-ref HEAD' % path).read()
 
 	if len(branch) != 0:
-		return branch
+		return branch.replace("refs/heads/", "")
 	return "<unknown>"
 
-def base_get_metadata_git_revision(d):
+def base_get_metadata_git_revision(path, d):
 	import os
-	rev = os.popen("cd %s; git log -n 1 --pretty=oneline --" % base_get_scmbasepath(d)).read().split(" ")[0]
+	rev = os.popen("cd %s; git show-ref HEAD" % path).read().split(" ")[0]
 	if len(rev) != 0:
 		return rev
 	return "<unknown>"
 
-def base_detect_revision(d):
-	scms = [base_get_metadata_monotone_revision, \
-			base_get_metadata_svn_revision, \
-			base_get_metadata_git_revision]
-
-	for scm in scms:
-		rev = scm(d)
-		if rev <> "<unknown>":
-			return rev
-
-	return "<unknown>"	
-
-def base_detect_branch(d):
-	scms = [base_get_metadata_monotone_branch, \
-			base_get_metadata_git_branch]
-
-	for scm in scms:
-		rev = scm(d)
-		if rev <> "<unknown>":
-			return rev.strip()
-
-	return "<unknown>"	
-	
-	
-
-METADATA_BRANCH ?= "${@base_detect_branch(d)}"
-METADATA_REVISION ?= "${@base_detect_revision(d)}"
 
 addhandler base_eventhandler
 python base_eventhandler() {
