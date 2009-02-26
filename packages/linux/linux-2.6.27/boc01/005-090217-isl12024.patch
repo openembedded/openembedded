@@ -1,295 +1,3 @@
-Index: linux-2.6.27/drivers/i2c/chips/isl12024-eeprom.c
-===================================================================
---- /dev/null
-+++ linux-2.6.27/drivers/i2c/chips/isl12024-eeprom.c
-@@ -0,0 +1,254 @@
-+/*
-+ * Intersil ISL12024 EEPROM class driver
-+ *
-+ *
-+ * Copyright (C) 2007, CenoSYS (www.cenosys.com).
-+ * Guillaume Ligneul
-+ * Guillaume.ligneul@gmail.com
-+ *
-+ * Code is based on eeprom.c
-+ *
-+ * This software program is licensed subject to the GNU General Public License
-+ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+//#include <linux/slab.h>
-+//#include <linux/jiffies.h>
-+#include <linux/i2c.h>
-+#include <linux/mutex.h>
-+#include <linux/i2c/isl12024.h>
-+
-+/* Addresses to scan */
-+static const unsigned short normal_i2c[] = { ISL12024_I2C_EEPROM_ADDR, I2C_CLIENT_END };
-+
-+/* Insmod parameters */
-+I2C_CLIENT_INSMOD_1(eeprom);
-+
-+
-+/* Size of EEPROM in bytes */
-+#define EEPROM_SIZE		4096
-+
-+/* Each client has this additional data */
-+struct eeprom_data {
-+	struct i2c_client client;
-+	struct mutex update_lock;
-+};
-+
-+int
-+isl12024_i2c_read(struct i2c_client *client, u8 reg, u8 buf[],
-+		       unsigned len)
-+{
-+	int ret;
-+	u8  dt_addr[2];
-+
-+	struct i2c_msg msgs[2] = {
-+			{
-+					.addr	= client->addr,
-+					.flags	= 0,
-+					.len	= 2,
-+					.buf	= dt_addr,
-+			},
-+			{
-+					.addr	= client->addr,
-+					.flags	= I2C_M_RD,
-+					.len	= len ,
-+					.buf	= buf ,
-+			},
-+	};
-+
-+	dt_addr[0] = 0;
-+	dt_addr[1] = reg;
-+
-+	ret = i2c_transfer(client->adapter, msgs, 2);
-+	if ( ret < 0) {
-+		dev_err(&client->dev, "read error\n");
-+		return -EIO;
-+	}
-+	return ret;
-+}
-+
-+
-+int
-+isl12024_i2c_write(struct i2c_client *client, u8 reg, u8 const buf[],
-+		       unsigned len)
-+{
-+	int ret;
-+	u8 i2c_buf[EEPROM_SIZE];
-+
-+	struct i2c_msg msgs[1] = {
-+			{
-+				.addr	= client->addr,
-+				.flags	= 0,
-+				.len	= len+2,
-+				.buf	= i2c_buf,
-+			 },
-+		};
-+
-+	i2c_buf[0] = 0;
-+	i2c_buf[1] = reg;
-+
-+
-+	memcpy(&i2c_buf[2], &buf[0], len );
-+
-+
-+	ret = i2c_transfer(client->adapter, msgs, 1);
-+	printk(KERN_INFO "i2c_transfer %d\n",ret);
-+	return ret;
-+}
-+static int eeprom_attach_adapter(struct i2c_adapter *adapter);
-+static int eeprom_detect(struct i2c_adapter *adapter, int address, int kind);
-+static int eeprom_detach_client(struct i2c_client *client);
-+
-+/* This is the driver that will be inserted */
-+static struct i2c_driver eeprom_driver = {
-+	.driver = {
-+		.name	= "isl12024-eeprom",
-+	},
-+	.attach_adapter	= eeprom_attach_adapter,
-+	.detach_client	= eeprom_detach_client,
-+};
-+
-+static ssize_t eeprom_read(struct kobject *kobj, struct bin_attribute *bin_attr,
-+			   char *buf, loff_t off, size_t count)
-+{
-+	struct i2c_client *client = to_i2c_client(container_of(kobj, struct device, kobj));
-+	struct eeprom_data *data = i2c_get_clientdata(client);
-+	int rc;
-+
-+	mutex_lock(&data->update_lock);
-+
-+	if (off >= EEPROM_SIZE)
-+		return 0;
-+
-+	if (off + count > EEPROM_SIZE)
-+		count = EEPROM_SIZE - off;
-+
-+	rc = isl12024_i2c_read(client,0,buf,EEPROM_SIZE);
-+
-+	if (rc < 0){
-+		mutex_unlock(&data->update_lock);
-+		return -EIO;
-+	}
-+
-+	mutex_unlock(&data->update_lock);
-+	return count;
-+}
-+
-+static ssize_t eeprom_write(struct kobject *kobj, struct bin_attribute *attr,
-+				   char *buf, loff_t off, size_t count)
-+{
-+	struct i2c_client *client = kobj_to_i2c_client(kobj);
-+	struct eeprom_data *data = i2c_get_clientdata(client);
-+
-+	if (off >= 256)
-+		return -ENOSPC;
-+
-+	if (off + count > 256)
-+		count = 256 - off;
-+
-+	mutex_unlock(&data->update_lock);
-+	if (isl12024_i2c_write(client, off, buf, count) < 0)
-+	{
-+		mutex_unlock(&data->update_lock);
-+		return -EIO;
-+	}
-+
-+	mutex_unlock(&data->update_lock);
-+	return count;
-+}
-+
-+static struct bin_attribute eeprom_attr = {
-+	.attr = {
-+		.name = "eeprom",
-+		.mode = S_IRUGO,
-+	},
-+	.size = EEPROM_SIZE,
-+	.read = eeprom_read,
-+	.write= eeprom_write,
-+};
-+
-+static int eeprom_attach_adapter(struct i2c_adapter *adapter)
-+{
-+	return i2c_probe(adapter, &addr_data, eeprom_detect);
-+}
-+
-+/* This function is called by i2c_probe */
-+static int eeprom_detect(struct i2c_adapter *adapter, int address, int kind)
-+{
-+	struct i2c_client *new_client;
-+	struct eeprom_data *data;
-+	int err = 0;
-+
-+	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_READ_BYTE_DATA
-+					    | I2C_FUNC_SMBUS_BYTE))
-+		goto exit;
-+
-+	if (!(data = kzalloc(sizeof(struct eeprom_data), GFP_KERNEL))) {
-+		err = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	new_client = &data->client;
-+	i2c_set_clientdata(new_client, data);
-+	new_client->addr = address;
-+	new_client->adapter = adapter;
-+	new_client->driver = &eeprom_driver;
-+	new_client->flags = 0;
-+
-+	strlcpy(new_client->name, "isl12024-eeprom", I2C_NAME_SIZE);
-+	mutex_init(&data->update_lock);
-+
-+	/* Tell the I2C layer a new client has arrived */
-+	if ((err = i2c_attach_client(new_client)))
-+		goto exit_kfree;
-+
-+	/* create the sysfs eeprom file */
-+	err = sysfs_create_bin_file(&new_client->dev.kobj, &eeprom_attr);
-+	if (err)
-+		goto exit_detach;
-+
-+	return 0;
-+
-+exit_detach:
-+	i2c_detach_client(new_client);
-+exit_kfree:
-+	kfree(data);
-+exit:
-+	return err;
-+}
-+
-+static int eeprom_detach_client(struct i2c_client *client)
-+{
-+	int err;
-+
-+	sysfs_remove_bin_file(&client->dev.kobj, &eeprom_attr);
-+
-+	err = i2c_detach_client(client);
-+	if (err)
-+		return err;
-+
-+	kfree(i2c_get_clientdata(client));
-+
-+	return 0;
-+}
-+
-+static int __init eeprom_init(void)
-+{
-+	return i2c_add_driver(&eeprom_driver);
-+}
-+
-+static void __exit eeprom_exit(void)
-+{
-+	i2c_del_driver(&eeprom_driver);
-+}
-+
-+
-+MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@cenosys.com>");
-+MODULE_DESCRIPTION("I2C Intersil12024 EEPROM driver");
-+MODULE_LICENSE("GPL");
-+
-+module_init(eeprom_init);
-+module_exit(eeprom_exit);
-Index: linux-2.6.27/drivers/i2c/chips/Kconfig
-===================================================================
---- linux-2.6.27.orig/drivers/i2c/chips/Kconfig
-+++ linux-2.6.27/drivers/i2c/chips/Kconfig
-@@ -40,6 +40,15 @@ config AT24
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called at24.
- 
-+config ISL12024EEPROM
-+	tristate "Intersil 12024 EEPROM"
-+	depends on RTC_DRV_ISL12024
-+	help
-+	  If you say yes here you get support for Intersil12024 EEPROM.
-+
-+	  This driver can also be built as a module.  If so, the module
-+	  will be called isl12024-eeprom.
-+
- config SENSORS_EEPROM
- 	tristate "EEPROM reader"
- 	depends on EXPERIMENTAL
-Index: linux-2.6.27/drivers/i2c/chips/Makefile
-===================================================================
---- linux-2.6.27.orig/drivers/i2c/chips/Makefile
-+++ linux-2.6.27/drivers/i2c/chips/Makefile
-@@ -9,6 +9,8 @@
- # * I/O expander drivers go to drivers/gpio
- #
- 
-+
-+obj-$(CONFIG_ISL12024EEPROM)		+= isl12024-eeprom.o
- obj-$(CONFIG_DS1682)		+= ds1682.o
- obj-$(CONFIG_AT24)		+= at24.o
- obj-$(CONFIG_SENSORS_EEPROM)	+= eeprom.o
 Index: linux-2.6.27/drivers/rtc/Kconfig
 ===================================================================
 --- linux-2.6.27.orig/drivers/rtc/Kconfig
@@ -323,7 +31,7 @@ Index: linux-2.6.27/drivers/rtc/rtc-isl12024.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6.27/drivers/rtc/rtc-isl12024.c
-@@ -0,0 +1,516 @@
+@@ -0,0 +1,517 @@
 +/*
 + * Intersil ISL12024 class driver
 + *
@@ -341,8 +49,9 @@ Index: linux-2.6.27/drivers/rtc/rtc-isl12024.c
 +#include <linux/bcd.h>
 +#include <linux/rtc.h>
 +#include <linux/proc_fs.h>
-+#include <linux/i2c/isl12024.h>
 +#include <linux/delay.h>
++
++#include "isl12024.h"
 +
 +
 +#define DBG 1
@@ -840,11 +549,24 @@ Index: linux-2.6.27/drivers/rtc/rtc-isl12024.c
 +
 +module_init(isl12024_init);
 +module_exit(isl12024_exit);
-Index: linux-2.6.27/include/linux/i2c/isl12024.h
+Index: linux-2.6.27/drivers/i2c/chips/at24.c
+===================================================================
+--- linux-2.6.27.orig/drivers/i2c/chips/at24.c
++++ linux-2.6.27/drivers/i2c/chips/at24.c
+@@ -114,6 +114,8 @@ static const struct i2c_device_id at24_i
+ 	{ "spd", AT24_DEVICE_MAGIC(2048 / 8,
+ 		AT24_FLAG_READONLY | AT24_FLAG_IRUGO) },
+ 	{ "24c04", AT24_DEVICE_MAGIC(4096 / 8, 0) },
++	/* Intersil RTC/Unique-ID isl12024 eeprom handled here */
++	{ "isl12024",AT24_DEVICE_MAGIC(4096 / 8, AT24_FLAG_ADDR16) },
+ 	/* 24rf08 quirk is handled at i2c-core */
+ 	{ "24c08", AT24_DEVICE_MAGIC(8192 / 8, 0) },
+ 	{ "24c16", AT24_DEVICE_MAGIC(16384 / 8, 0) },
+Index: linux-2.6.27/drivers/rtc/isl12024.h
 ===================================================================
 --- /dev/null
-+++ linux-2.6.27/include/linux/i2c/isl12024.h
-@@ -0,0 +1,103 @@
++++ linux-2.6.27/drivers/rtc/isl12024.h
+@@ -0,0 +1,100 @@
 +/*
 + * Intersil ISL12024 chip registers definitions
 + *
@@ -905,17 +627,16 @@ Index: linux-2.6.27/include/linux/i2c/isl12024.h
 +#define ISL12024_HR_MIL		0x80	/* Set in ccr.hour for 24 hr mode */
 +
 +#define ISL12024_INT_AL0E		0x20	/* Alarm 0 enable */
++
 +/* I2C ADDRESS */
 +#define ISL12024_I2C_ADDR 0xDE
 +#define ISL12024_I2C_EEPROM_ADDR 0x57
++
 +/* device id section */
 +#define ISL12024_REG_ID 0x20
++
 +/* Register map */
 +/* rtc section */
-+//#define ISL12024_REG_MSB 0x00
-+//#define ISL12024_REG_SC  0x30 /* Seconds */
-+//#define ISL12024_REG_MN  0x31 /* Minutes */
-+//#define ISL12024_REG_HR  0x32 /* Hours */
 +#define ISL12024_REG_HR_MIL     (1<<7) /* 24h/12h mode */
 +#define ISL12024_REG_HR_PM      (1<<5) /* PM/AM bit in 12h mode */
 +//#define ISL12024_REG_DT  0x33  /* Date */
@@ -924,8 +645,6 @@ Index: linux-2.6.27/include/linux/i2c/isl12024.h
 +//#define ISL12024_REG_DW  0x36
 +//#define ISL12024_REG_Y2K 0x37
 +#define ISL12024_RTC_SECTION_LEN 8
-+
-+
 +
 +/* control/status section */
 +//#define ISL12024_REG_SR  0x3F
