@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN" "http://standards.freedesktop.org/menu-spec/menu-1.0.dtd">
+<Menu>
+  <Name>Applications</Name>
+
+  <!-- Read standard .directory and .desktop file locations -->
+  <DefaultAppDirs>/usr/share/applications</DefaultAppDirs>
+  <DefaultDirectoryDirs/>
+
+  <Menu>
+    <Name>All</Name>
+    <Include>
+      <All/>
+    </Include>
+  </Menu>
+</Menu>
+
