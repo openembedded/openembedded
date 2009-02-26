@@ -4,7 +4,7 @@ SECTION = "base"
 LICENSE = "GPL"
 RDEPENDS = "initscripts"
 PROVIDES = "virtual/psplash"
-RPROVIDES = "virtual/psplash"
+RPROVIDES_${PN} = "virtual/psplash"
 
 PV = "0.0+svnr${SRCREV}"
 PR = "r2"
