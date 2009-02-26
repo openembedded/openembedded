@@ -51,6 +51,7 @@ GTK_INSTALL = "\
 
 GAMES_INSTALL = "\
   numptyphysics \
+  cellhunter \
 "
 
 # FIXME these should rather be part of alsa-state,
