@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r4"
+PR = "r5"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -54,6 +54,7 @@ GTK_INSTALL = "\
 
 GAMES_INSTALL = "\
   numptyphysics \
+  cellhunter \
 "
 
 # FIXME these should rather be part of alsa-state,
