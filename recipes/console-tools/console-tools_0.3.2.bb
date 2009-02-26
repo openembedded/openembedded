@@ -9,16 +9,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/lct/console-tools-${PV}.tar.gz \
            file://compile.patch;patch=1 \
            file://kbdrate.patch;patch=1 \
            file://uclibc-fileno.patch;patch=1 \
-           file://config/*.m4"
+           file://config"
 
 export SUBDIRS = "fontfiletools vttools kbdtools screenfonttools contrib \
 		  examples po intl compat"
-
-acpaths = "-I config"
-do_configure_prepend () {
-	mkdir -p config
-	cp ${WORKDIR}/config/*.m4 config/
-}
 
 do_compile () {
 	oe_runmake -C lib
@@ -26,6 +20,8 @@ do_compile () {
 }
 
 inherit autotools
+
+acpaths = "-I ${WORKDIR}/config"
 
 do_install () {
 	autotools_do_install
