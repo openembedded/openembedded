@@ -689,15 +689,18 @@ def oe_unpack_file(file, data, url = None):
 			cmd = '%s -a' % cmd
 		cmd = '%s %s' % (cmd, file)
 	elif os.path.isdir(file):
-		filesdir = os.path.realpath(bb.data.getVar("FILESDIR", data, 1))
 		destdir = "."
-		if file[0:len(filesdir)] == filesdir:
-			destdir = file[len(filesdir):file.rfind('/')]
-			destdir = destdir.strip('/')
-			if len(destdir) < 1:
-				destdir = "."
-			elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
-				os.makedirs("%s/%s" % (os.getcwd(), destdir))
+		filespath = bb.data.getVar("FILESPATH", data, 1).split(":")
+		for fp in filespath:
+			if file[0:len(fp)] == fp:
+				destdir = file[len(fp):file.rfind('/')]
+				destdir = destdir.strip('/')
+				if len(destdir) < 1:
+					destdir = "."
+				elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
+					os.makedirs("%s/%s" % (os.getcwd(), destdir))
+				break
+
 		cmd = 'cp -pPR %s %s/%s/' % (file, os.getcwd(), destdir)
 	else:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
