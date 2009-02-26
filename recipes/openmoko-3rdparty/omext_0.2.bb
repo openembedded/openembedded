@@ -7,6 +7,4 @@ SRC_URI = "http://www.devzero.net/openmoko/dist/omext-${PV}.tar.gz"
 
 inherit autotools pkgconfig
 
-S = "{WORKDIR}/openmoko-extensionhandler"
-
-
+S = "${WORKDIR}/openmoko-extensionhandler"
