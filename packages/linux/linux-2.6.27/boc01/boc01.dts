@@ -132,6 +132,10 @@
 					compatible = "at24,24c32";
 					reg = <0x50>;
 				};
+				at24@57 {
+					compatible = "at24,isl12024";
+					reg = <0x57>;
+				};
 			};
 
 			crypto@30000 {
@@ -184,7 +188,6 @@
 		mdio@24520 {
 			#address-cells = <1>;
 			#size-cells = <0>;
-			compatible = "fsl,gianfar-mdio";
 			reg = <0x24520 0x20>;
 			phy4: ethernet-phy@4 {
 				interrupt-parent = <&ipic>;
@@ -252,7 +255,7 @@
 		gtm1: timer@500 {
 			compatible = "fsl,mpc8313-gtm", "fsl,gtm";
 			reg = <0x500 0x100>;
-			interrupts = <90 8 78 8 84 8 72 8>;
+			interrupts = <72 8 78 8 84 8 90 8>;
 			interrupt-parent = <&ipic>;
 		};
 
