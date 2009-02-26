@@ -16,8 +16,8 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-CONFIG_NAME_om-gta01 = "gta01-moredrivers-defconfig"
-CONFIG_NAME_om-gta02 = "gta02-packaging-defconfig"
+CONFIG_NAME_om-gta01 = "gta01_moredrivers_defconfig"
+CONFIG_NAME_om-gta02 = "gta02_packaging_defconfig"
 CONFIG_NAME_om-gta03 = "gta03_defconfig"
 
 do_configure_prepend() {
