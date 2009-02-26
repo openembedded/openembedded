@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 inherit e update-alternatives
 
@@ -27,6 +27,7 @@ PACKAGES =+ "\
   ${PN}-config-netbook \
   ${PN}-config-scaleable \
   ${PN}-config-standard \
+  ${PN}-menu \
   ${PN}-theme-default \
   ${PN}-theme-illume \
   ${PN}-background-dark-gradient \
@@ -41,6 +42,7 @@ PACKAGES =+ "\
 
 RRECOMMENDS_${PN} = "\
   ${PN}-config-default \
+  ${PN}-menu \
   ${PN}-images \
   ${PN}-icons \
   ${PN}-other \
@@ -54,6 +56,7 @@ PACKAGE_ARCH_${PN}-config-minimalist = "all"
 PACKAGE_ARCH_${PN}-config-netbook = "all"
 PACKAGE_ARCH_${PN}-config-scaleable = "all"
 PACKAGE_ARCH_${PN}-config-standard = "all"
+PACKAGE_ARCH_${PN}-menu = "all"
 PACKAGE_ARCH_${PN}-theme-default = "all"
 PACKAGE_ARCH_${PN}-theme-illume = "all"
 PACKAGE_ARCH_${PN}-background-dark-gradient = "all"
@@ -122,6 +125,7 @@ FILES_${PN}-config-minimalist = "${datadir}/enlightenment/data/config/minimalist
 FILES_${PN}-config-netbook = "${datadir}/enlightenment/data/config/netbook"
 FILES_${PN}-config-scaleable = "${datadir}/enlightenment/data/config/scaleable"
 FILES_${PN}-config-standard = "${datadir}/enlightenment/data/config/standard"
+FILES_${PN}-menu = "${sysconfdir}/xdg/menus/applications.menu"
 FILES_${PN}-theme-default = "${datadir}/enlightenment/data/themes/default.edj"
 FILES_${PN}-theme-illume = "${datadir}/enlightenment/data/themes/illume.edj"
 FILES_${PN}-theme-default = "${datadir}/enlightenment/data/themes/default.edj"
@@ -147,7 +151,8 @@ FILES_${PN}-dbg += "\
   ${libdir}/enlightenment/modules/*/*/.debug/ \
   ${libdir}/enlightenment/preload/.debug/ \
 "
-CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
+CONFFILES_${PN}-menu = "/etc/xdg/menus/applications.menu"
+CONFFILES_${PN}-sysactions = "/etc/enlightenment/sysactions.conf"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
 ALTERNATIVE_NAME = "x-window-manager"
