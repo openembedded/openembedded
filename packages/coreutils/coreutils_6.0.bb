@@ -2,13 +2,13 @@ require coreutils.inc
 
 PR = "r2"
 
-DEFAULT_PREFERENCE = "-1"
-
-SRC_URI = "ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
-           file://man.patch;patch=1 \
-	   file://oe-old-tools.patch;patch=1 \
-	   file://futimens.patch;patch=1 \
-	   file://onceonly.m4"
+SRC_URI = "\
+  ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
+  file://man.patch;patch=1 \
+  file://oe-old-tools.patch;patch=1 \
+  file://futimens.patch;patch=1 \
+  file://onceonly.m4 \
+"
 
 # [ gets a special treatment and is not included in this
 bindir_progs = "basename cksum comm csplit cut df dir dircolors dirname du \
