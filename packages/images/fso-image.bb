@@ -3,7 +3,7 @@
 #------------------------------------------------------
 
 PV = "1.1"
-PR = "r5"
+PR = "r6"
 
 # no languages for now
 IMAGE_LINGUAS = ""
@@ -16,6 +16,7 @@ ILLUME_THEME = "illume-theme-freesmartphone"
 
 X_INSTALL = "\
   task-x11-illume \
+  menu-freesmartphone \
   task-fonts-truetype-core \
 "
 
@@ -120,11 +121,6 @@ fso_rootfs_postprocess() {
     echo >>./etc/fstab
     echo "# NFS Host" >>./etc/fstab
     echo "192.168.0.200:/local/pkg /local/pkg nfs noauto,nolock,soft,rsize=32768,wsize=32768 0 0" >>./etc/fstab
-    # fix .desktop files for illume
-    desktop=`find ./usr/share/applications -name "*.desktop"`
-    for file in $desktop; do
-        echo "Categories=Office;" >>$file
-    done
     # minimal gtk theme foo
     mkdir -p ./etc/gtk-2.0/
     echo 'gtk-font-name = "Sans 5"' >> ./etc/gtk-2.0/gtkrc
