@@ -30,9 +30,9 @@ PREFERRED_VERSION_linux-libc-headers = "2.6.23"
 #KERNEL_CCSUFFIX_armv7a= "-4.2.1+csl-arm-2007q3-53"
 
 # Binutils
-PREFERRED_VERSION_binutils           ?= "PREFERRED_BINUTILS"
-PREFERRED_VERSION_binutils-cross     ?= "PREFERRED_BINUTILS"
-PREFERRED_VERSION_binutils-cross-sdk ?= "PREFERRED_BINUTILS"
+PREFERRED_VERSION_binutils           ?= "${PREFERRED_BINUTILS}"
+PREFERRED_VERSION_binutils-cross     ?= "${PREFERRED_BINUTILS}"
+PREFERRED_VERSION_binutils-cross-sdk ?= "${PREFERRED_BINUTILS}"
 
 # Avr32 only has patches for binutils 2.17 in OE
 PREFERRED_VERSION_binutils_avr32 =           "2.17"
