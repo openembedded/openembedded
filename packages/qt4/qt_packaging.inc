@@ -124,8 +124,12 @@ FILES_${QT_BASE_LIB}clucene-dbg             = "${libdir}/.debug/libQtCLucene*"
 FILES_${QT_BASE_LIB}webkit                  = "${libdir}/libQtWebKit${QT_LIBINFIX}.so.*"
 FILES_${QT_BASE_LIB}webkit-dev              = "${@qt_default_dev('WebKit')}"
 FILES_${QT_BASE_LIB}webkit-dbg              = "${libdir}/.debug/libQtWebKit*"
-FILES_${QT_BASE_LIB}phonon                  = "${libdir}/libphonon*.so.*"
-FILES_${QT_BASE_LIB}phonon-dev              = "${includedir}/qt4/phonon ${libdir}/libphonon.* ${libdir}/pkgconfig/phonon.pc"
+FILES_${QT_BASE_LIB}phonon                  = "${libdir}/libphonon${QT_LIBINFIX}.so.*"
+FILES_${QT_BASE_LIB}phonon-dev              = "${libdir}/libphonon${QT_LIBINFIX}.la \
+                                               ${libdir}/libphonon${QT_LIBINFIX}.prl \
+                                               ${libdir}/libphonon${QT_LIBINFIX}.so \
+                                               ${includedir}/${QT_DIR_NAME}/phonon \
+                                               ${libdir}/pkgconfig/phonon${QT_LIBINFIX}.pc"
 FILES_${QT_BASE_LIB}phonon-dbg              = "${libdir}/.debug/libphonon*"
 
 FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
