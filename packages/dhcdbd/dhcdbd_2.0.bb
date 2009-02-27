@@ -5,7 +5,7 @@ DEPENDS = "dbus"
 RDEPENDS = "dhcp-client"
 PR = "r1"
 
-SRC_URI = "http://dcantrel.fedorapeople.org/dhcdbd/dhcdbd-${PV}.tar.bz2 \
+SRC_URI = "https://fedorahosted.org/releases/d/h/dhcdbd/dhcdbd-${PV}.tar.bz2 \
            file://dbus_connection_unref.patch;patch=1 \
            file://paths.patch;patch=1 \
            file://no-ext-options.patch;patch=1 \
