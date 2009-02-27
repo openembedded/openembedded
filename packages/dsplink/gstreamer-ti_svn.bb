@@ -1,6 +1,6 @@
 DEPENDS = "ti-codec-engine ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly libid3tag liboil libmad"
 
-SRC_URI = "svn://omapzoom.org/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https"
+SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd=''"
 SRCREV = "127"
 
 PR = "r1"
