@@ -6,7 +6,7 @@ types = $(xmltotypes) $(htmltypes) $(docbooktotypes)
 xmltotypes = 
 docbooktotypes = dvi pdf ps rtf tex texi txt
 htmltypes = html xhtml
-htmlxsl = $(if $(filter $@,$(foreach type,$(htmltypes),$(type)-nochunks)),docbook-utf8.xsl,http://docbook.sourceforge.net/release/xsl/current/$@/chunk.xsl)
+htmlxsl = $(if $(filter $@,$(foreach type,$(htmltypes),$(type)-nochunks)),docbook-utf8.xsl,chunk-utf8.xsl)
 htmlcssfile = docbook.css
 htmlcss = $(topdir)/html.css
 # htmlcssfile =
@@ -20,7 +20,7 @@ endef
 else
 define command
 	@echo $(2) $(3) $(4)
-	@$(1) >/dev/null
+	@$(1) 
 endef
 endif
 

@@ -175,6 +175,7 @@ do
                       iptables \
                       irssi \
                       iscsi-target \
+                      ivman \
                       jamvm \
                       kismet \
                       konqueror-embedded \
@@ -235,6 +236,7 @@ do
                       pipeman \
                       pkgconfig \
                       places \
+                      pmount \
                       pocketcellar \
                       povray \
                       prboom \
