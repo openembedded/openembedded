@@ -1,8 +1,8 @@
 DESCRIPTION = "CellHunter - A game to collect information about mobile phone cells"
 SECTION = "x11/utils"
-DEPENDS = "python python-dbus python-pygobject python-pygtk"
-RDEPENDS = "python-subprocess python-netclient python-math python-core python-io"
-PR = "r0"
+DEPENDS = "python"
+RDEPENDS = "python-subprocess python-netclient python-math python-core python-io python-pygtk python-dbus"
+PR = "r1"
 
 SRC_URI = "http://78.47.116.33/~hole/cellhunter/files/cellhunter-${PV}.tar.gz"
 
