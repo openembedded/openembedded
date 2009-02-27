@@ -45,4 +45,4 @@ require qt_configuration.inc
 require qt_packaging.inc
 require qt_staging.inc
 
-inherit qtopia4core
+inherit qt4e
