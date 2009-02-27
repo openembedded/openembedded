@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PV = "2.6"
-PR = "ml42"
+PR = "ml43"
 
 RDEPENDS = "\
   python-ao \
@@ -14,6 +14,7 @@ RDEPENDS = "\
   python-dbus \
   python-dialog \
   python-docutils \
+  python-dweba \
   task-python-efl \
   task-python-efl-examples \
   python-fam \
@@ -24,7 +25,7 @@ RDEPENDS = "\
   python-fugrep \
   python-fuse \
   python-fusil \
-  python-gammu \
+#  python-gammu \
   python-gmpy \
   python-gnosis	\
   python-gst \
@@ -44,7 +45,8 @@ RDEPENDS = "\
   python-ogg \
   python-opendir \
   python-pexpect \
-  python-psyco \
+# only on x86
+#  python-psyco \
   python-ptrace \
   python-pyalsa \
   python-pyalsaaudio \
@@ -98,7 +100,6 @@ RDEPENDS = "\
   python-sphinx \
   python-sphinxsearch \
   python-spydi \
-  python-spyro \
   python-sqlalchemy \
   python-sqlobject \
   python-traits \
