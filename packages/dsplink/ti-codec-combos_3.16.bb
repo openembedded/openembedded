@@ -13,7 +13,7 @@ SRC_URI = "file://omap3530_dvsdk_combos_3_16.tar.gz \
 S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-PR = "r10"
+PR = "r11"
 
 TARGET = "all"
 
