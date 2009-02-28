@@ -16,7 +16,7 @@ MACHINE_CLASS = "htc-msm7"
 MACHINE_FEATURES = "kernel26 touchscreen screen phone gps usb keyboard"
 
 # filesystems
-IMAGE_FSTYPES = "tar.gz cpio.gz"
+IMAGE_FSTYPES = "tar.gz"
 
 # CPU
 require conf/machine/include/tune-arm1136-novfp.inc
