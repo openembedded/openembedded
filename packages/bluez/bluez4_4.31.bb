@@ -1,10 +1,9 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 SECTION = "libs"
 PRIORITY = "optional"
-DEPENDS = "gst-plugins-base alsa-lib libusb-compat libusb1 dbus-glib"
+DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r2"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -22,7 +21,7 @@ OE_LT_RPATH_ALLOW[export] = "1"
 EXTRA_OECONF = "\
   --enable-gstreamer \
   --enable-alsa \
-  --disable-usb \
+  --enable-usb \
   --enable-netlink \
   --enable-tools \
   --enable-bccmd \
