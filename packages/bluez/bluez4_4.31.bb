@@ -1,6 +1,7 @@
 DESCRIPTION = "Linux Bluetooth Stack Userland V4"
 SECTION = "libs"
 PRIORITY = "optional"
+
 DEPENDS = "gst-plugins-base alsa-lib libusb1 dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
@@ -25,7 +26,7 @@ OE_LT_RPATH_ALLOW[export] = "1"
 EXTRA_OECONF = "\
   --enable-gstreamer \
   --enable-alsa \
-  --disable-usb \
+  --enable-usb \
   --enable-netlink \
   --enable-tools \
   --enable-bccmd \
