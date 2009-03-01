@@ -1,0 +1,17 @@
+# This is cherry-picked from svn version 199 from the opkg repo.
+#
+# Commit message:
+#Initial the 'err' valaible in opkg_install_by_name , or it may be used without
+#initialize.
+#
+--- orig/libopkg/opkg_install.c	2009-02-13 23:59:17.000000000 -0600
++++ opkg/libopkg/opkg_install.c	2009-02-28 21:01:59.000000000 -0600
+@@ -139,7 +139,7 @@ int opkg_install_from_file(opkg_conf_t *
+ 
+ opkg_error_t opkg_install_by_name(opkg_conf_t *conf, const char *pkg_name)
+ {
+-     int cmp, err;
++     int cmp, err = 0;
+      pkg_t *old, *new;
+      char *old_version, *new_version;
+ 
