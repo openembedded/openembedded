@@ -20,8 +20,8 @@ SLUGOS_VERSION = "5.3"
 DISTRO_REVISION ?= ""
 DISTRO_VERSION ?= "${SLUGOS_VERSION}${DISTRO_REVISION}-${DISTRO_TYPE}"
 # For release (only):
-# DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
-DISTRO_FEED ?= "unstable"
+DISTRO_FEED ?= "${SLUGOS_VERSION}-${DISTRO_TYPE}"
+# DISTRO_FEED ?= "unstable"
 
 # We want images supporting the following features (for task-base)
 DISTRO_FEATURES = "nfs smbfs wifi ppp alsa bluetooth ext2 vfat irda pcmcia usbgadget usbhost pci"
