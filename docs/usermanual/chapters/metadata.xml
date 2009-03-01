@@ -5,28 +5,89 @@
   <section id="metadata_file_layout">
     <title>File Layout</title>
 
-    <para>OpenEmbedded has six directories three of them hold
-    <application>BitBake</application> metadata.</para>
+    <para>The OpenEmbedded
+      directory, <filename>$OEBASE/openembedded/</filename>, has seven
+      directories, three of which hold
+      <application>BitBake</application> metadata.
 
-    <para>The <emphasis>conf</emphasis> directory is holding the bitbake.conf,
-    machine and distribution configuration. bitbake.conf is read when
-    <application>BitBake</application> is started and this will include among
-    others a local.conf the machine and distribution configuration files.
-    These files will be searched in the <command>BBPATH</command> environment
-    variable.</para>
+      <variablelist>
+        <varlistentry>
+          <term><filename>classes/</filename></term>
+          <listitem>
+            <para>Contains <application>BitBake</application>
+              <filename>.bbclass</filename> files. These classes can
+              be inherited by other <application>BitBake</application>
+              files. Every <application>BitBake</application>
+              <filename>.bb</filename> file automatically inherits the
+              <filename>base.bbclass</filename>. <varname>BBPATH</varname>
+              is used to find the <filename>.bbclass</filename> files.
+            </para>
+          </listitem>
+        </varlistentry>
 
-    <para><emphasis>classes</emphasis> is the directory holding
-    <application>BitBake</application> bbclass. These classes can be inherited
-    by the <application>BitBake</application> files. BitBake automatically
-    inherits the base.bbclass on every parsed file. <command>BBPATH</command>
-    is used to find the class.</para>
+        <varlistentry>
+          <term><filename>conf/</filename></term>
+          <listitem>
+            <para>Contains the configuration files for OpenEmbedded.
+              The <filename>bitbake.conf</filename> is read when
+              <application>BitBake</application> is started and this will
+              include the <filename>local.conf</filename>, the machine and
+              distribution configuration files, among others. These files
+              will be located using the <varname>BBPATH</varname> environment
+              variable as a search path.
+            </para>
+          </listitem>
+        </varlistentry>
 
-    <para>In <emphasis>packages</emphasis> the
-    <application>BitBake</application> files are stored. For each task or
-    application we have a directory. These directories store the real
-    <application>BitBake</application> files. They are the ones ending with
-    <emphasis>.bb</emphasis>. And for each application and version we have
-    one.</para>
+        <varlistentry>
+          <term><filename>contrib/</filename></term>
+          <listitem>
+            <para>Contains miscellaneous scripts that do not
+              belong in the other directories.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>docs/</filename></term>
+          <listitem>
+            <para>Contains the source for the user manual and other
+              documentation files.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>files/</filename></term>
+          <listitem><para>Contains setup tables for populating
+              the <filename>/dev</filename> directory of various target images.
+          </para></listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>packages/</filename></term>
+          <listitem>
+            <para>Conatins all of the
+              <application>BitBake</application> <filename>.bb</filename>
+              files. There is a subdirectory for each task or application
+              and within that subdirectory is
+              a <application>BitBake</application> <filename>.bb</filename> file
+              for each supported version of an application or task.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>site/</filename></term>
+          <listitem>
+            <para>Contains site configuration files for
+              the <application>autoconf</application>/<application>automake</application>
+              system.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </para>
   </section>
 
   <section id="metadata_syntax">
