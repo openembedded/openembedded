@@ -5,10 +5,12 @@ KERNEL_IMAGETYPE = "uImage"
 UBOOT_ENTRYPOINT = "30008000"
 
 COMPATIBLE_HOST = "arm.*-linux"
-COMPATIBLE_MACHINE = 'om-gta01|om-gta02'
 
-CONFIG_NAME_om-gta01 = "gta01"
-CONFIG_NAME_om-gta02 = "gta02"
+COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
+
+KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA02.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-OM3D7K.bin"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
 
