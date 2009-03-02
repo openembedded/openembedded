@@ -5,14 +5,14 @@ LICENSE = "LGPL"
 DEPENDS = "gtk+-1.2"
 RDEPENDS = "python-shell python-re"
 SRCNAME = "pygtk"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "ftp://ftp.gtk.org/pub/gtk/python/v1.2/${SRCNAME}-${PV}.tar.gz \
            file://remove-imlib-et-al.patch;patch=1 \
            file://acinclude.m4"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-inherit autotools pkgconfig distutils-base
+inherit autotools_stage pkgconfig distutils-base
 
 EXTRA_OECONF += "--with-python-includes=${STAGING_INCDIR}/../"
 
@@ -22,6 +22,4 @@ do_configure_prepend() {
 	rm -f aclocal.m4
 }
 
-do_stage() {
-	autotools_stage_includes
-}
+FILES_${PN}-dev += "${datadir}/pygtk"

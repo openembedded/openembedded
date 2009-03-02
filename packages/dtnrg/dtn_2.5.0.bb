@@ -3,7 +3,10 @@ HOMEPAGE = "http://www.dtnrg.org/wiki"
 SECTION = "libs"
 DEPENDS = "db openssl python-native xerces-c"
 LICENSE = "Apache"
-PR = "r4"
+PR = "r5"
+
+# thread code atomic ops do not play with thumb
+ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "\
   http://www.dtnrg.org/docs/code/dtn_${PV}.tgz \
@@ -51,7 +54,14 @@ PACKAGES =+ "${PN}-lib"
 FILES_${PN}-lib = "${libdir}/*.so*"
 PACKAGES += "python-dtn"
 DESCRIPTION_python-dtn = "Python bindings to the DTN API"
-PR_python-dtn = "ml3"
+PR_python-dtn = "ml4"
 FILES_python-dtn = "${libdir}/${PYTHON_DIR}"
 RDEPENDS_python-dtn = "python-core dtn-lib"
-FILES_${PN}-dbg += "${libdir}/${PYTHON_DIR}/site-packages/.debug"
+
+FILES_${PN}-dbg += "\
+  ${libdir}/${PYTHON_DIR}/site-packages/.debug \
+  ${libdir}/.debug \
+  ${bindir}/.debug \
+"
+
+FILES_${PN} += "${sysconfdir}"

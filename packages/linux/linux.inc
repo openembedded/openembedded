@@ -131,6 +131,10 @@ do_configure_append_avr32() {
         sed -i -e s:-mno-pic::g arch/avr32/Makefile
 }
 
+do_configure_append() {
+        sed -i -e "s:-m0644:-m 0644:g" scripts/Makefile.fwinst
+}
+
 do_compile_append() {
     if test "x${KERNEL_IMAGETYPE}" = "xuImage" ; then 
         if test -e arch/${ARCH}/boot/compressed/vmlinux ; then

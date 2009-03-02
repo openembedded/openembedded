@@ -3,7 +3,7 @@ LICENSE = "GPL"
 SECTION = "bootloader"
 PROVIDES = "virtual/bootloader"
 LOCALVERSION = "gitr${SRCREV}"
-PV = "1.0.0+${LOCALVERSION}"
+PV = "1.0.1+${LOCALVERSION}"
 
 EXTRA_OEMAKE = ""
 PARALLEL_MAKE = ""
@@ -11,13 +11,16 @@ PARALLEL_MAKE = ""
 do_configure() {
 	echo >config.mk
 	# uncomment to debug
-#	sed -i s,@,, Makefile
+	sed -i s,@,, Makefile
 	cat >config.mk <<EOF
 
 BUILD_HOST=\$(shell hostname)
 BUILD_VERSION=${PV}
 BUILD_DATE=\$(shell date)
 
+# NOTE: The following depends on the fact that only one version of the cross-compiler
+# has been built. If it bails out with something like: "| arm-linux-ld: 4.3.3: No such file or directory"
+# then you need to remove all previously built toolchain directories out of the cross library path.
 GCCV="`${CC} -dumpversion`"
 COMPILER_LIB_PATH_PRE=${CROSS_DIR}/lib/gcc/${TARGET_SYS}/$(GCCV)
 COMPILER_LIB_PATH=\$(COMPILER_LIB_PATH_PRE)/\$(shell ls \$(COMPILER_LIB_PATH_PRE))

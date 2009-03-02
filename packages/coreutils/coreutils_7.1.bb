@@ -1,12 +1,13 @@
 require coreutils.inc
+PR = "r0"
 
-PR = "r2"
+# not thoroughly testes yet
+DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "\
-  ftp://alpha.gnu.org/gnu/coreutils/coreutils-${PV}.tar.bz2 \
+  ftp://ftp.gnu.org/gnu/coreutils/coreutils-${PV}.tar.gz \
+  file://automake-version.patch;patch=1 \
   file://man.patch;patch=1 \
-  file://oe-old-tools.patch;patch=1 \
-  file://futimens.patch;patch=1 \
   file://onceonly.m4 \
 "
 
@@ -50,9 +51,12 @@ do_install () {
 	# for the actual source file.
 	mv ${D}${bindir}/[ ${D}${bindir}/lbracket.${PN}
 	# hostname and uptime separated. busybox's versions are preferred
-	mv ${D}${bindir}/hostname ${D}${base_bindir}/hostname.${PN}
-	mv ${D}${bindir}/uptime ${D}${bindir}/uptime.${PN}
-
+	if [ -e ${D}${bindir}/hostname ]; then
+		mv ${D}${bindir}/hostname ${D}${base_bindir}/hostname.${PN}
+	fi
+	if [ -e ${D}${bindir}/uptime ]; then
+		mv ${D}${bindir}/uptime ${D}${bindir}/uptime.${PN}
+	fi
 }
 
 pkg_postinst_${PN} () {

@@ -5,51 +5,6 @@
 SRCDATE_at76c503a-modules ?= "20060814"
 SRCDATE_prism54-module ?= "20060814"
 
-# X11 libs, extentions and protos
-SRCDATE_compositeext ?= "20060814"
-SRCDATE_drm ?= "20060814"
-SRCDATE_drm-kernel ?= "20060814"
-SRCDATE_fixesext ?= "20060814"
-SRCDATE_libxext-native ?= "20060814"
-SRCDATE_libxss ?= "20060814"
-SRCDATE_recordext ?= "20060814"
-SRCDATE_renderext ?= "20060814"
-SRCDATE_calibrateproto ?= "20070802"
-SRCDATE_libxcalibrate ?= "20070802"
-SRCDATE_xxf86dgaext ?= "20060814"
-SRCDATE_xxf86vmext ?= "20060814"
-
-# Matchbox / O-hand
-SRCDATE_contacts ?= "20060707"
-SRCDATE_dates ?= "20060707"
-SRCDATE_fstests ?= "20061122"
-SRCDATE_eds-dbus ?= "20070704"
-SRCDATE_libmatchbox ?= "20060612"
-SRCDATE_libfakekey ?= "20051101"
-SRCDATE_matchbox-common ?= "20060612"
-SRCDATE_matchbox-config-gtk ?= "20060612"
-SRCDATE_matchbox-desktop ?= "20060612"
-SRCDATE_matchbox-keyboard ?= "20070816"
-SRCDATE_matchbox-panel ?= "20060612"
-SRCDATE_matchbox-panel-manager ?= "20060612"
-SRCDATE_matchbox-stroke ?= "20060612"
-SRCDATE_matchbox-themes-extra ?= "20060612"
-SRCDATE_matchbox-wm ?= "20060612"
-SRCDATE_libmatchbox ?= "20060612"
-SRCDATE_libfakekey ?= "20051101"
-SRCDATE_psplash ?= "20070330"
-SRCDATE_web ?= "20060613"
-SRCDATE_zaurusd ?= "20060628"
-
-# GPE
-SRCDATE_dasher-gpe  ?= "20060814"
-SRCDATE_rosetta ?= "20060804"
-SRCDATE_gpesyncd ?= "20070701"
-
-# GNOME
-SRCDATE_gnome-vfs ?= "20060119"
-SRCDATE_gtkhtml2 ?= "20060323"
-
 # Misc packages, sorted by alphabet
 SRCDATE_aufs ?= "20081203"
 SRCDATE_avetanabt ?= "20060814"

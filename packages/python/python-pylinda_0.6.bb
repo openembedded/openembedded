@@ -6,7 +6,7 @@ LICENSE = "LGPL"
 SRCNAME = "linda"
 PR = "r1"
 
-SRC_URI = "http://www-users.cs.york.ac.uk/~aw/pylinda/dist/linda-${PV}.tar.gz \
+SRC_URI = "http://www.handhelds.org/~aquadran/distro/latest/sources/linda-${PV}.tar.gz \
            file://honor-datadir.patch;patch=1"
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
