@@ -3,7 +3,7 @@ SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
            file://makefile.patch;patch=1 \
@@ -41,7 +41,7 @@ pkg_postinst() {
                 exit 1
         fi
         addgroup ftp &&
-        adduser --system --home /var/tmp/ftp --no-create-home --ingroup ftp --disabled-password -s /bin/false ftp &&
+        adduser -S -h /var/tmp/ftp -H -G ftp -D -s /bin/false ftp &&
         mkdir -p ${localstatedir}/share/empty
 }
 
