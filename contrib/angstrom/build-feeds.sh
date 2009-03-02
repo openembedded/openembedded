@@ -302,7 +302,7 @@ do
                       viking \
                       vlc \
                       vpnc \
-                      w3cat \
+                      w3cam \
                       wifi-radar \
                       win4 \
                       wireshark \
