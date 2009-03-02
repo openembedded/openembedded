@@ -85,6 +85,9 @@ PREFERRED_VERSION_mtd-utils			?= "1.1.0"
 # boost 1.36 won't build
 PREFERRED_VERSION_boost				?= "1.33.1"
 
+# the latest git versions of ffmpeg won't fetch, so use this one:
+PREFERRED_VERSION_ffmpeg			?= "0.4.9-pre1"
+
 ####################### Obsolete stuff, not sure why we keep this:
 
 # New pango and older glib-2.0 versions don't mix,
