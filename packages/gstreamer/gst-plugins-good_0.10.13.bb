@@ -1,5 +1,7 @@
 require gst-plugins.inc
 
+PR = "r1"
+
 inherit gconf 
 
 EXTRA_OECONF += " --enable-experimental  --enable-gst_v4l2 --enable-gconftool  --enable-external --with-check=no"

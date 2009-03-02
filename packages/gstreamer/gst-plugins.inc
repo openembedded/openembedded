@@ -19,7 +19,9 @@ LIBV = "0.10"
 python populate_packages_prepend () {
 	gst_libdir = bb.data.expand('${libdir}/gstreamer-${LIBV}', d)
 	postinst = bb.data.getVar('plugin_postinst', d, 1)
+	glibdir = bb.data.expand('${libdir}', d)
 
+	do_split_packages(d, glibdir, '^lib(.*)\.so\.*', 'lib%s', 'gstreamer %s library', extra_depends='', allow_links=True)
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s', postinst=postinst, extra_depends='')
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)', extra_depends='')
 	
@@ -42,5 +44,10 @@ python populate_packages_prepend () {
 
 ALLOW_EMPTY = "1"
 
+PACKAGES += "${PN}-apps"
+FILES_${PN}-apps = "${bindir}"
+
+FILES_${PN} = ""
 FILES_${PN}-dbg += "${libdir}/gstreamer-${LIBV}/.debug"
+
 

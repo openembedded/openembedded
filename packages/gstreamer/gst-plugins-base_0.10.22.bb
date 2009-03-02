@@ -2,6 +2,8 @@ require gst-plugins.inc
 
 PROVIDES += "gst-plugins"
 
+PR = "r1"
+
 # gst-plugins-base only builds the alsa plugin
 # if alsa has been built and is present.  You will
 # not get an error if this is not present, just 

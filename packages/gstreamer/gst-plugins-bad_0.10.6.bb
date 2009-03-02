@@ -1,5 +1,5 @@
 require gst-plugins.inc
-PR = "r1"
+PR = "r2"
 
 SRC_URI += "file://vorbisenc.h file://vorbisdec.h \
             file://gst-plugins-directfb-fix.patch;patch=1;pnum=2 \
