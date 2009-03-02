@@ -67,6 +67,7 @@ PREFERRED_VERSION_udev				?= "118"
 # newer versions also require newer libtool/pkgconfig versions.
 
 PREFERRED_VERSION_avahi				?= "0.6.23"
+PREFERRED_VERSION_gstreamer			?= "0.10.17"
 PREFERRED_VERSION_gst-plugins-base		?= "0.10.17"
 PREFERRED_VERSION_tiff				?= "3.7.2"
 PREFERRED_VERSION_fakeroot			?= "1.9.6"
