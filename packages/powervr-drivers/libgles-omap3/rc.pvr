@@ -19,3 +19,6 @@ chmod 666 /dev/pvrsrvkm
 
 /usr/bin/pvrsrvinit
 
+# Set SGX to full speed
+devmem2 0x48004b40 w 0
+
