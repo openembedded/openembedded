@@ -10,7 +10,7 @@ PR = "r1"
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
   file://sbc-thumb.patch;patch=1 \
-  file://hid2hci_usb_init.patch;patch=1 \
+#  file://hid2hci_usb_init.patch;patch=1 \
 "    
 
 # TODO use MACHINE specific variables to generate the config files
