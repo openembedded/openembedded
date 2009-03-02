@@ -1,0 +1,53 @@
+--- mc-4.6.2/edit/editcmd.c
++++ mc-4.6.2/edit/editcmd.c
+@@ -1511,6 +1511,32 @@
+ 		     sargs[argord[8]], sargs[argord[9]], sargs[argord[10]], sargs[argord[11]], \
+ 		     sargs[argord[12]], sargs[argord[13]], sargs[argord[14]], sargs[argord[15]]
+ 
++#ifdef UTF8
++size_t
++real_mbstrlen (const char *str)
++{
++    if (SLsmg_Is_Unicode) {
++        size_t width = 0;
++
++        for (; *str; str++) {
++            wchar_t c;
++            size_t len;
++
++            len = mbrtowc (&c, str, MB_CUR_MAX, NULL);
++	    
++            if (len == (size_t)(-1) || len == (size_t)(-2)) break;
++	    
++            if (len > 0) {
++                width ++;
++                str += len-1;
++            }
++        }
++
++        return width;
++    } else
++	return strlen (str);
++}
++#endif
+ 
+ /* This function is a modification of mc-3.2.10/src/view.c:regexp_view_search() */
+ /* returns -3 on error in pattern, -1 on not found, found_len = 0 if either */
+@@ -1582,7 +1608,7 @@
+ 	    continue;
+ 	tmp = string[pmatch[i].rm_so];
+ 	string[pmatch[i].rm_so] = 0;
+-	new_o = mbstrlen(string);
++	new_o = real_mbstrlen(string);
+ 	string[pmatch[i].rm_so] = tmp;
+ 	pmatch[i].rm_so = new_o; 
+ 
+@@ -1590,7 +1616,7 @@
+ 	    continue;
+ 	tmp = string[pmatch[i].rm_eo];
+ 	string[pmatch[i].rm_eo] = 0;
+-	new_o = mbstrlen(string);
++	new_o = real_mbstrlen(string);
+ 	string[pmatch[i].rm_eo] = tmp;
+ 	pmatch[i].rm_eo = new_o; 
+     }

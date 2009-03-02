@@ -1,0 +1,32 @@
+--- mc-4.6.2/vfs/direntry.c
++++ mc-4.6.2/vfs/direntry.c
+@@ -251,7 +251,13 @@
+     char * const pathref = g_strdup (a_path);
+     char *path = pathref;
+ 
+-    canonicalize_pathname (path);
++    if (strncmp(me->name, "ftpfs", 5) != 0)
++	canonicalize_pathname (path);
++    else {
++	char *p = path + strlen (path) - 1;
++	while (p > path && *p == PATH_SEP)
++	    *p-- = 0;
++    }
+ 
+     while (root) {
+ 	while (*path == PATH_SEP)	/* Strip leading '/' */
+@@ -324,7 +330,13 @@
+     if (root->super->root != root)
+ 	vfs_die ("We have to use _real_ root. Always. Sorry.");
+ 
+-    canonicalize_pathname (path);
++    if (strncmp (me->name, "ftpfs", 5) != 0)
++	canonicalize_pathname (path);
++    else {
++	char *p = path + strlen (path) - 1;
++	while (p > path && *p == PATH_SEP)
++	    *p-- = 0;
++    }
+ 
+     if (!(flags & FL_DIR)) {
+ 	char *dirname, *name, *save;

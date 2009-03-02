@@ -1,0 +1,11 @@
+--- mc-4.6.2/vfs/ftpfs.c
++++ mc-4.6.2/vfs/ftpfs.c
+@@ -1529,7 +1529,7 @@
+     char buf[BUF_SMALL];
+ 
+     g_snprintf(buf, sizeof(buf), "SITE CHMOD %4.4o /%%s", mode & 07777);
+-    return ftpfs_send_command(me, path, buf, OPT_FLUSH);
++    return ftpfs_send_command(me, path, buf, OPT_FLUSH | OPT_IGNORE_ERROR);
+ }
+ 
+ static int ftpfs_chown (struct vfs_class *me, const char *path, int owner, int group)

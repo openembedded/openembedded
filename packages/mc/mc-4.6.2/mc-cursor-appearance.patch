@@ -1,0 +1,52 @@
+--- mc-4.6.2/edit/editdraw.c
++++ mc-4.6.2/edit/editdraw.c
+@@ -356,8 +356,13 @@
+ 		    if (use_colors && visible_tabs) {
+ 			c = (p->style & ~MOD_CURSOR) | MOD_WHITESPACE;
+ 			if (i > 2) {
+-			    p->ch = '<';
+-			    p->style |= MOD_WHITESPACE;
++			    if (p->style & MOD_CURSOR) {
++				p->ch = ' ';
++			    }
++			    else {
++				p->ch = '<';
++				p->style |= MOD_WHITESPACE;
++			    }
+ 			    p++;
+ 			    while (--i > 1) {
+ 				p->style = c;
+@@ -380,8 +385,13 @@
+ 			    p++;
+ 			}
+ 		    } else if (use_colors && visible_tws && q >= tws) {
+-			p->style |= MOD_WHITESPACE;
+-			p->ch = '.';
++			if (p->style & MOD_CURSOR) {
++			    p->ch = ' ';
++			}
++			else {
++			    p->style |= MOD_WHITESPACE;
++			    p->ch = '.';
++			}
+ 			p++;
+ 			c = p->style & ~MOD_CURSOR;
+ 			while (--i) {
+@@ -390,7 +400,7 @@
+ 			    p++;
+ 			}
+ 		    } else {
+-			p->ch |= ' ';
++			p->ch = ' ';
+ 			c = p->style & ~MOD_CURSOR;
+ 			p++;
+ 			while (--i) {
+@@ -401,7 +411,7 @@
+ 		    }
+ 		    break;
+ 		case ' ':
+-		    if (use_colors && visible_tws && q >= tws) {
++		    if (use_colors && visible_tws && q >= tws && !(p->style & MOD_CURSOR)) {
+ 			p->ch = '.';
+ 			p->style |= MOD_WHITESPACE;
+ 			p++;

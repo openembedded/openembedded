@@ -1,10 +1,8 @@
 require mc.inc
-PR = "r1"
+PR = "r2"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
-# UTF-8 fixes copied from openSUSE Factory:
-# (2009-02-12 by nadvornik@suse.cz)
-# mc-utf8-look-and-feel.patch: debian fix for utf8
+# most of these fixes were copied from openSUSE Factory.
 SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
 	   file://mhl-stdbool.patch;patch=1 \
 	   file://mc-utf8.patch;patch=1 \
@@ -16,8 +14,14 @@ SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
 	   file://mc-utf8-nlink.patch;patch=1 \
 	   file://mc-utf8-look-and-feel.patch;patch=1 \
 	   file://mc-utf8-slang-codeset.patch;patch=1 \
+	   file://99_regexp-replace-fixed.patch;patch=1 \
+	   file://99b_fix-regex-pattern-lengths.patch;patch=1 \
 	   file://multi-press-f-keys.patch;patch=1 \
-	   file://cross-compile.patch;patch=1"
+	   file://cross-compile.patch;patch=1 \
+	   file://01_ftpfs_symlink.patch;patch=1 \
+	   file://02_ignore_ftp_chmod_error.patch;patch=1 \
+	   file://mc-cursor-appearance.patch;patch=1 \
+	   file://mc-esc-seq.patch;patch=1"
 
 EXTRA_OECONF = "--libexecdir=${libdir} --without-x --without-samba \   
 --without-nfs --without-gpm-mouse --enable-charset"

@@ -1,0 +1,312 @@
+--- mc-4.6.2/edit/editcmd.c
++++ mc-4.6.2/edit/editcmd.c
+@@ -2103,6 +2103,33 @@
+     edit_error_dialog (_("Error"), _(" Invalid regular expression, or scanf expression with too many conversions "));
+ }
+ 
++int mc_isdigit(mc_wchar_t c)
++{
++#ifndef UTF8
++    return isdigit(c);
++#else /* UTF8 */
++    return iswdigit(c);
++#endif /* UTF8 */
++}
++
++mc_wchar_t * mc_memmove(mc_wchar_t *to, mc_wchar_t *from, size_t size)
++{
++#ifndef UTF8
++    return memmove(to, from, size);
++#else /* UTF8 */
++    return wmemmove(to, from, size);
++#endif /* UTF8 */
++}
++
++mc_wchar_t * mc_strchr(mc_wchar_t *str, mc_wchar_t c)
++{
++#ifndef UTF8
++    return strchr(str, c);
++#else /* UTF8 */
++    return wcschr(str, c);
++#endif /* UTF8 */
++}
++
+ /* call with edit = 0 before shutdown to close memory leaks */
+ void
+ edit_replace_cmd (WEdit *edit, int again)
+@@ -2119,6 +2146,8 @@
+     int replace_continue;
+     int treplace_prompt = 0;
+     long times_replaced = 0, last_search;
++    mc_wchar_t *repl_templ;
++    mc_wchar_t *repl_str;
+     int argord[NUM_REPL_ARGS];
+ 
+     if (!edit) {
+@@ -2172,7 +2201,68 @@
+ 
+     }
+ 
+-    {
++#ifndef UTF8
++    repl_templ = g_strdup(input2);
++#else /* UTF8 */
++    repl_templ = mbstr_to_wchar(input2);
++#endif /* UTF8 */
++
++    if (replace_regexp) {
++	/*
++	 * edit replace template - convert subpattern references (\1) to
++	 * snprintf_p arguments (%s) and fill "argord" array to match captured
++	 * subpatterns
++	 */
++	int ao;
++	int ord;
++	mc_wchar_t *s;
++	mc_wchar_t *param;
++	mc_wchar_t *endptr;
++#ifndef UTF8
++#define MC_CHAR(c)	((mc_wchar_t) c)
++#else /* UTF8 */
++#define MC_CHAR(c)	(L##c)
++#endif /* UTF8 */
++
++	endptr = mc_strchr(repl_templ, MC_CHAR('\0'));
++	s = repl_templ;
++	ao = 0;
++	while ((s = mc_strchr(s, MC_CHAR('\\')))) {
++	    param = s;
++	    s++;
++	    if (!s) break;
++	    /* implement \n \r and \t escape sequences in replace string */
++	    if (*s == MC_CHAR('n')) {
++		*s = MC_CHAR('\n');
++	    } else if (*s == MC_CHAR('r')) {
++		*s = MC_CHAR('\r');
++	    } else if (*s == MC_CHAR('t')) {
++		*s = MC_CHAR('\t');
++	    }
++	    if (!mc_isdigit(*s)) {
++		mc_memmove(param, s, endptr - s + 1);
++		continue;
++	    }
++	    ord = 0;
++	    while (mc_isdigit(*s)) {
++		ord *= 10;
++		ord += *s - MC_CHAR('0');
++		s++;
++	    }
++	    if ((ord > 0) && (ord <= NUM_REPL_ARGS)) {
++		argord[ao++] = ord - 1;
++		*param++ = MC_CHAR('%');
++		*param++ = MC_CHAR('s');
++		mc_memmove(param, s, endptr - s + 1);
++		s = param;
++	    }
++	}
++	while (ao < NUM_REPL_ARGS) {
++	    argord[ao] = ao;
++	    ao++;
++	}
++
++    } else {
+ 	const char *s;
+ 	int ord;
+ 	size_t i;
+@@ -2203,6 +2293,12 @@
+ 	&& !replace_backwards)
+ 	edit->search_start++;
+ 
++    if (replace_scanf || replace_regexp) {
++	repl_str = g_malloc(((MAX_REPL_LEN + 2)+1) * sizeof(mc_wchar_t));
++    } else {
++	repl_str = repl_templ;
++    }
++
+     do {
+ 	int len = 0;
+ 	long new_start;
+@@ -2227,8 +2323,47 @@
+ 
+ 	    replace_yes = 1;
+ 
++	    if (replace_scanf || replace_regexp) {
++		int ret = 0;
++
++		/* we need to fill in sargs just like with scanf */
++		if (replace_regexp) {
++		    int k, j;
++		    for (k = 1; k < NUM_REPL_ARGS && pmatch[k].rm_eo >= 0;
++			k++) {
++			mc_wchar_t *t;
++
++			if (pmatch[k].rm_eo - pmatch[k].rm_so > 255) {
++			    ret = -1;
++			    break;
++			}
++			t = (mc_wchar_t *) &sargs[k - 1][0];
++			for (j = 0; j < pmatch[k].rm_eo - pmatch[k].rm_so &&
++			    j < 255; j++, t++)
++			    *t = edit_get_byte (edit, edit->search_start -
++				pmatch[0].rm_so + pmatch[k].rm_so + j);
++			*t = '\0';
++		    }
++		    for (; k <= NUM_REPL_ARGS; k++)
++			sargs[k - 1][0] = 0;
++		}
++		if (ret >= 0)
++		    ret = snprintf_p (repl_str, MAX_REPL_LEN + 2, repl_templ,
++					PRINTF_ARGS);
++		if (ret < 0) {
++		    edit_error_dialog (_(" Replace "),
++			ret == -2
++			    ? _(" Error in replacement format string. ")
++			    : _(" Replacement too long. "));
++		    treplace_prompt = 0;
++		    replace_yes = 0;
++		    replace_continue = 0;
++		}
++	    }
++
+ 	    if (treplace_prompt) {
+ 		int l;
++		char *displ_repl_str;
+ 		l = edit->curs_row - edit->num_widget_lines / 3;
+ 		if (l > 0)
+ 		    edit_scroll_downward (edit, l);
+@@ -2242,7 +2377,15 @@
+ 		/*so that undo stops at each query */
+ 		edit_push_key_press (edit);
+ 
+-		switch (edit_replace_prompt (edit, input2,	/* and prompt 2/3 down */
++#ifndef UTF8
++		displ_repl_str = g_strdup(repl_str);
++#else /* UTF8 */
++		displ_repl_str = wchar_to_mbstr(repl_str);
++		/* wchar_to_mbstr(str) returns NULL when length of str == 0 */
++		if (!displ_repl_str) displ_repl_str = g_strdup("");
++#endif /* UTF8 */
++		convert_to_display (displ_repl_str);
++		switch (edit_replace_prompt (edit, displ_repl_str,	/* and prompt 2/3 down */
+ 					     (edit->num_widget_columns -
+ 					      CONFIRM_DLG_WIDTH) / 2,
+ 					     edit->num_widget_lines * 2 /
+@@ -2264,99 +2407,15 @@
+ 		    replace_continue = 0;
+ 		    break;
+ 		}
++		g_free(displ_repl_str);
+ 	    }
+ 	    if (replace_yes) {	/* delete then insert new */
+-#ifdef UTF8
+-		mc_wchar_t *winput2 = mbstr_to_wchar(input2);
+-#endif /* UTF8 */
+-		if (replace_scanf) {
+-		    mc_wchar_t repl_str[MAX_REPL_LEN + 2];
+-		    int ret = 0;
+-
+-		    /* we need to fill in sargs just like with scanf */
+-		    if (replace_regexp) {
+-			int k, j;
+-			for (k = 1;
+-			     k < NUM_REPL_ARGS && pmatch[k].rm_eo >= 0;
+-			     k++) {
+-#ifndef UTF8
+-			    unsigned char *t;
+-#else /* UTF8 */
+-			    mc_wchar_t *t;
+-#endif
+-
+-			    if (pmatch[k].rm_eo - pmatch[k].rm_so > 255) {
+-				ret = -1;
+-				break;
+-			    }
+-#ifndef UTF8
+-			    t = (unsigned char *) &sargs[k - 1][0];
+-#else /* UTF8 */
+-			    t = (mc_wchar_t *) &sargs[k - 1][0];
+-#endif /* UTF8 */
+-			    for (j = 0;
+-				 j < pmatch[k].rm_eo - pmatch[k].rm_so
+-				 && j < 255; j++, t++)
+-				*t = edit_get_byte (edit,
+-								    edit->
+-								    search_start
+-								    -
+-								    pmatch
+-								    [0].
+-								    rm_so +
+-								    pmatch
+-								    [k].
+-								    rm_so +
+-								    j);
+-			    *t = '\0';
+-			}
+-			for (; k <= NUM_REPL_ARGS; k++)
+-			    sargs[k - 1][0] = 0;
+-		    }
+-		    if (!ret)
+-			ret =
+-#ifndef UTF8
+-			    snprintf_p (repl_str, MAX_REPL_LEN + 2, input2,
+-#else /* UTF8 */
+-			    snprintf_p (repl_str, MAX_REPL_LEN + 2, winput2,
+-#endif /* UTF8 */
+-					PRINTF_ARGS);
+-		    if (ret >= 0) {
+-			times_replaced++;
+-			while (i--)
+-			    edit_delete (edit);
+-#ifndef UTF8
+-			while (repl_str[++i])
+-			    edit_insert (edit, repl_str[i]);
+-#else /* UTF8 */
+-			while (winput2[++i])
+-			    edit_insert (edit, winput2[i]);
+-#endif /* UTF8 */
+-		    } else {
+-			edit_error_dialog (_(" Replace "),
+-					   ret ==
+-					   -2 ?
+-					   _
+-					   (" Error in replacement format string. ")
+-					   : _(" Replacement too long. "));
+-			replace_continue = 0;
+-		    }
+-		} else {
+-		    times_replaced++;
+-		    while (i--)
+-			edit_delete (edit);
+-#ifndef UTF8
+-		    while (input2[++i])
+-			edit_insert (edit, input2[i]);
+-#else /* UTF8 */
+-		    while (winput2[++i])
+-			edit_insert (edit, winput2[i]);
+-#endif /* UTF8 */
+-		}
++		times_replaced++;
++		while (i--)
++		    edit_delete (edit);
++		while (repl_str[++i])
++		    edit_insert (edit, repl_str[i]);
+ 		edit->found_len = i;
+-#ifdef UTF8
+-		g_free (winput2);
+-#endif /* UTF8 */
+ 	    }
+ 	    /* so that we don't find the same string again */
+ 	    if (replace_backwards) {
+@@ -2385,6 +2444,12 @@
+ 	}
+     } while (replace_continue);
+ 
++    /* cleanup */
++    if (replace_scanf || replace_regexp) {
++	g_free(repl_str);
++    }
++    g_free(repl_templ);
++
+     edit->force = REDRAW_COMPLETELY;
+     edit_scroll_screen_over_cursor (edit);
+   cleanup:
