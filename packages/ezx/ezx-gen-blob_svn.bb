@@ -4,9 +4,9 @@ AUTHOR = "OpenEZX Team"
 HOMEPAGE = "http://people.openezx.org/wyrm/gen-blob"
 LICENSE = "GPL"
 PROVIDES = "virtual/bootloader"
-DEPENDS = "openezx-kernel"
+DEPENDS = "virtual/kernel"
 PV = "1.0.0+${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   svn://svn.openezx.org/trunk/src/blob/;module=gen-blob;proto=http \
