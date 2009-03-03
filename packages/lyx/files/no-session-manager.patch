@@ -1,0 +1,20 @@
+Index: lyx-1.6.1/src/frontends/qt4/GuiApplication.cpp
+===================================================================
+--- lyx-1.6.1.orig/src/frontends/qt4/GuiApplication.cpp
++++ lyx-1.6.1/src/frontends/qt4/GuiApplication.cpp
+@@ -1320,6 +1320,7 @@
+ 
+ void GuiApplication::commitData(QSessionManager & sm)
+ {
++#if 0 // no session manager in OE's Qt4
+ 	/// The implementation is required to avoid an application exit
+ 	/// when session state save is triggered by session manager.
+ 	/// The default implementation sends a close event to all
+@@ -1329,6 +1330,7 @@
+ 	/// FIXME: verify if the default implementation is enough now.
+ 	if (sm.allowsInteraction() && !closeAllViews())
+  		sm.cancel();
++#endif
+ }
+ 
+ 
