@@ -1,9 +1,10 @@
 DEPENDS = "ti-codec-engine ti-dmai gstreamer gst-plugins-base gst-plugins-good gst-plugins-ugly libid3tag liboil libmad"
 
-SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd=''"
+SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
+           file://gst-buffsize.diff;patch=1"
 SRCREV = "127"
 
-PR = "r3"
+PR = "r4"
 
 # Again, no '.' in PWD allowed :(
 PV = "0+svnr${SRCREV}"
