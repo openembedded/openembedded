@@ -1,3 +1,5 @@
+# XSL sytlesheets downloaded from http://docbook.sourceforge.net/release/xsl/current/html/
+
 topdir = .
 manual = $(topdir)/usermanual.xml
 # types = pdf txt rtf ps xhtml html man tex texi dvi
