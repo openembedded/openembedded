@@ -1,13 +1,14 @@
 DESCRIPTION = "Openmoko: Misc. Feed Items"
 SECTION = "openmoko/base"
 LICENSE = "MIT"
-PR = "r60.4"
+PR = "r60.5"
 
 inherit task
 
 RDEPENDS_task-openmoko-feed = "\
   aspell enchant \
   openmoko-agpsui \
+  openmoko-qa-scripts \
   gypsy \
   fso-gsm0710muxd \
   ppp \
@@ -19,6 +20,8 @@ RDEPENDS_task-openmoko-feed = "\
   exhibit edje-viewer \
 #  free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
+  leafpad abiword \
+  claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
@@ -52,7 +55,7 @@ RDEPENDS_task-openmoko-feed = "\
   gpsd \
   asterisk \
 #  gnash \
-  mono \
+#  mono \
 #  diversity-daemon \
   om-maps-berlin \
   om-maps-buenos-aires \
@@ -108,6 +111,8 @@ RDEPENDS_task-openmoko-feed = "\
   epdfview \
   midori \
   microcom \
+  minicom \
+  cu \
   zhone \
   frameworkd \
   emacs \
@@ -116,6 +121,7 @@ RDEPENDS_task-openmoko-feed = "\
   net-tools \
   iproute2 \
   iputils \
+  i2c-tools \
   psmisc \
   debianutils \
   tcptraceroute \
