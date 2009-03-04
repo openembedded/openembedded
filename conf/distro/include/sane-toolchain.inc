@@ -73,7 +73,7 @@ PREFERRED_ARM_INSTRUCTION_SET         ?=  "arm"
 PREFERRED_ARM_INSTRUCTION_SET_armv4t   = "thumb"
 PREFERRED_ARM_INSTRUCTION_SET_armv5te  = "thumb"
 PREFERRED_ARM_INSTRUCTION_SET_armv5teb = "thumb"
-ARM_INSTRUCTION_SET = "${PREFERRED_ARM_INSTRUCTION_SET}
+ARM_INSTRUCTION_SET = "${PREFERRED_ARM_INSTRUCTION_SET}"
 # "arm" "thumb"
 #    The instruction set the compiler should use when generating application
 #    code.  The kernel is always compiled with arm code at present.  arm code
@@ -91,9 +91,6 @@ THUMB_INTERWORK = "yes"
 
 # We don't want to keep OABI compat
 ARM_KEEP_OABI = "0"
-# Do keep OABI compat for om-gta01 to keep the gllin binary working
-ARM_KEEP_OABI_pn-linux-openmoko-2.6.24_om-gta01 = "1"
-ARM_KEEP_OABI_pn-linux-openmoko-2.6.28_om-gta01 = "1"
 
 # ARM EABI is softfloat by default, but let's make sure :)
 # make it overridable for platforms with FPU, like ep93xx or i.mx31
@@ -108,7 +105,8 @@ TARGET_FPU_armv7a ?= "hard"
 TARGET_FPU_ppc603e ?= "hard"
 
 # webkit-gtk and cairo have alignment issues with double instructions on armv5 so
-# disable them here
+# disable them here. TODO: This knowledge should rather be encoded in the actual
+# recipes!
 TARGET_CC_ARCH_pn-webkit-gtk_armv5te = "-march=armv4t"
 TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 
