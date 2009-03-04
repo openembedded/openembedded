@@ -6,7 +6,7 @@
 
 # Base line versions, good for most things
 PREFERRED_GCC_VERSION                ?= "4.2.4"
-PREFERRED_BINUTILS                   ?= "2.18.50.0.7"
+PREFERRED_BINUTILS                   ?= "2.18"
 
 # Prefer glibc 2.6 and uclibc 0.9.30, these have had the most testing.
 PREFERRED_VERSION_glibc             ?= "2.6.1"
@@ -65,16 +65,14 @@ TARGET_VENDOR = "-oe"
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
-# Angstrom turns on thumb for armv4t machine according to this RFC:
+# Minimal turns on thumb for armv4t machine according to this RFC:
 # http://lists.linuxtogo.org/pipermail/angstrom-distro-devel/2008-October/002714.html
 
 # We can't do ARM_INSTRUCTION_SET_armv4t since that will un-overridable in recipes like gcc
-ANGSTROM_ARM_INSTRUCTION_SET         ?=  "arm"
-ANGSTROM_ARM_INSTRUCTION_SET_armv4t   = "thumb"
-ANGSTROM_ARM_INSTRUCTION_SET_armv5te  = "thumb"
-ANGSTROM_ARM_INSTRUCTION_SET_armv5teb = "thumb"
-
-ARM_INSTRUCTION_SET = "${ANGSTROM_ARM_INSTRUCTION_SET}"
+ARM_INSTRUCTION_SET         ?=  "arm"
+ARM_INSTRUCTION_SET_armv4t   = "thumb"
+ARM_INSTRUCTION_SET_armv5te  = "thumb"
+ARM_INSTRUCTION_SET_armv5teb = "thumb"
 # "arm" "thumb"
 #    The instruction set the compiler should use when generating application
 #    code.  The kernel is always compiled with arm code at present.  arm code
