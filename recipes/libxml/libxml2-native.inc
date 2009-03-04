@@ -1,7 +1,6 @@
 DESCRIPTION = "GNOME XML library"
 DEPENDS = "python-native"
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libxml2-${PV}"
-PR = "r3"
 
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 S = "${WORKDIR}/libxml2-${PV}"
@@ -9,10 +8,10 @@ S = "${WORKDIR}/libxml2-${PV}"
 inherit distutils-base autotools native pkgconfig
 
 EXTRA_OECONF = "\
-  --with-python=${STAGING_INCDIR}/${PYTHON_MAJMIN} \
+  --with-python=${PYTHON_DIR} \
   --without-debug \
   --without-legacy \
-  --without-catalog \
+  --with-catalog \
   --without-docbook \
   --with-c14n \
 "
