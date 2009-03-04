@@ -4,7 +4,7 @@ LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "libgsm0710 vala-native glib-2.0"
 PV = "0.3.1+gitr${SRCREV}"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \
