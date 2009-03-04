@@ -30,6 +30,7 @@ RDEPENDS_task-openmoko-feed = "\
   nano \
   ntpclient ntp \
   openssh openssh-scp openssh-ssh openssh-sshd openssh-sftp openssh-misc \
+  openbmap-logger \
   python python-pygtk python-pyserial python-gst python-pygame \
 #  python-lightblue \
   python-pybluez \
