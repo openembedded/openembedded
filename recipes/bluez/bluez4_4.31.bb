@@ -4,14 +4,14 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
   file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \
   file://sbc-thumb.patch;patch=1 \
 #  file://hid2hci_usb_init.patch;patch=1 \
-"    
+"
 S = "${WORKDIR}/bluez-${PV}"
 
 inherit autotools pkgconfig
@@ -52,7 +52,8 @@ FILES_libasound-module-bluez = "${libdir}/alsa-lib/lib*.so"
 FILES_${PN} += "${libdir}/bluetooth/plugins/*.so"
 FILES_${PN}-dev += "\
   ${libdir}/bluetooth/plugins/*.la \
-  ${libdir}/*/*.la \
+  ${libdir}/alsa-lib/*.la \
+  ${libdir}/gstreamer-0.10/*.la \
 "
 FILES_${PN}-dbg += "\
   ${libdir}/bluetooth/plugins/.debug \
