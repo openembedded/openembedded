@@ -1,6 +1,6 @@
 require opkg.inc
 
-PR = "r2"
+PR = "r3"
 
 PACKAGES =+ "libopkg-dev libopkg"
 

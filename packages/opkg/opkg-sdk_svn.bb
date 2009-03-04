@@ -1,7 +1,7 @@
 require opkg.inc
 
 DEPENDS = "curl-sdk"
-PR = "r3"
+PR = "r4"
 target_libdir := "${libdir}"
 inherit sdk
 

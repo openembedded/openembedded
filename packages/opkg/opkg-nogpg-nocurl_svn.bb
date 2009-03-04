@@ -12,7 +12,7 @@ SRC_URI += " \
 	    file://opkg_wget_nogpg_04_default_tmpdir.patch;patch=1 \
 	    file://opkg_install_err.patch;patch=1;maxrev=198 \
 	   "
-PR = "r6"
+PR = "r7"
 
 SRCREV = "${SRCREV_pn-opkg}"
 

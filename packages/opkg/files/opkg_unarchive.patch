@@ -1,13 +1,21 @@
---- trunk/libbb/unarchive.c.orig	2009-02-11 22:14:58.000000000 +0100
-+++ trunk/libbb/unarchive.c	2009-02-11 22:15:07.000000000 +0100
-@@ -606,6 +606,10 @@
-                 tar_entry->name = concat_path_file(tar.formated.prefix, tar.formated.name);
-         }
- 
-+	if (strlen(tar_entry->name) > 100) {
-+		tar_entry->name[100] = 0;
-+	}
+--- trunk/libbb/unarchive.c.orig	2006/01/25 00:08:53	13584
++++ trunk/libbb/unarchive.c	2006/02/20 19:28:53	14150
+@@ -120,10 +108,14 @@
+ 		linkname = NULL;
+ 	} else
+ #endif
+-	if (tar.formated.prefix[0] == 0) {
+-		file_header->name = strdup(tar.formated.name);
+-	} else {
+-		file_header->name = concat_path_file(tar.formated.prefix, tar.formated.name);
++	{
++		file_header->name = strndup(tar.formated.name,100);
 +
- 	// tar_entry->name = xstrdup(tar.formated.name);
++		if (tar.formated.prefix[0]) {
++			char *temp = file_header->name;
++			file_header->name = concat_path_file(tar.formated.prefix, temp);
++			free(temp);
++		}
+ 	}
  
- /*
+ 	file_header->uid = strtol(tar.formated.uid, NULL, 8);
