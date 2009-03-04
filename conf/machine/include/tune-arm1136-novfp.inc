@@ -6,3 +6,5 @@ FEED_ARCH = "armv6-novfp"
 BASE_PACKAGE_ARCH = "armv6-novfp"
 PACKAGE_EXTRA_ARCHS += "armv4 armv4t armv5te armv6-novfp"
 
+# Include tune file for thumb support, it defaults to off so DISTROs can turn it on if they wish
+require conf/machine/include/tune-thumb.inc
