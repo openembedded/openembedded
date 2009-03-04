@@ -4,19 +4,22 @@ SECTION = "multimedia"
 PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
-MAINTAINER = "Felix Domke <tmbinc@elitedvb.net>"
-DEPENDS = "libxml2 glib-2.0 gettext-native popt"
+MAINTAINER = "Andreas Frisch <andreas.frisch@multimedia-labs.de>"
+DEPENDS = "libmatroska libxml2 glib-2.0 gettext-native popt"
 
 PR = "r0"
-# until we have decided a final naming scheme, 
-# don't use this package as a replacement for
-# version 0.8
-DEFAULT_PREFERENCE = "-1"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-${PV}.tar.bz2"
+
 EXTRA_OECONF = "--disable-docs-build --disable-dependency-tracking --with-check=no"
+
+do_configure_prepend() {
+	for i in libtool ltoptions ltsugar ltversion lt~obsolete; do
+		rm ${S}/common/m4/$i.m4 || /bin/true;
+	done
+}
 
 do_stage() {
 	oe_runmake install prefix=${STAGING_DIR} \
