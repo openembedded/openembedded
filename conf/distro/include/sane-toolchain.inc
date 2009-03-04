@@ -68,11 +68,12 @@ TARGET_VENDOR = "-oe"
 # Minimal turns on thumb for armv4t machine according to this RFC:
 # http://lists.linuxtogo.org/pipermail/angstrom-distro-devel/2008-October/002714.html
 
-# We can't do ARM_INSTRUCTION_SET_armv4t since that will un-overridable in recipes like gcc
-ARM_INSTRUCTION_SET         ?=  "arm"
-ARM_INSTRUCTION_SET_armv4t   = "thumb"
-ARM_INSTRUCTION_SET_armv5te  = "thumb"
-ARM_INSTRUCTION_SET_armv5teb = "thumb"
+# We can't set ARM_INSTRUCTION_SET_<override> directly since that will un-overridable in recipes like gcc
+PREFERRED_ARM_INSTRUCTION_SET         ?=  "arm"
+PREFERRED_ARM_INSTRUCTION_SET_armv4t   = "thumb"
+PREFERRED_ARM_INSTRUCTION_SET_armv5te  = "thumb"
+PREFERRED_ARM_INSTRUCTION_SET_armv5teb = "thumb"
+ARM_INSTRUCTION_SET = "${PREFERRED_ARM_INSTRUCTION_SET}
 # "arm" "thumb"
 #    The instruction set the compiler should use when generating application
 #    code.  The kernel is always compiled with arm code at present.  arm code
