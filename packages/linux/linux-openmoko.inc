@@ -8,10 +8,17 @@ COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = "om-gta01|om-gta02|om-3d7k"
 
 KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA01.bin"
-KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-GTA02.bin"
-KERNEL_IMAGE_SYMLINK_NAME_om-gta01 = "uImage-OM3D7K.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-gta02 = "uImage-GTA02.bin"
+KERNEL_IMAGE_SYMLINK_NAME_om-3d7k  = "uImage-OM3D7K.bin"
 
 CMDLINE = "unused -- bootloader passes ATAG list"
+
+# Do keep OABI compat for om-gta01 to keep the gllin binary working
+ARM_KEEP_OABI_om-gta01 = "1"
+
+# Make sure not to use thumb[-interworking]
+ARM_INSTRUCTION_SET = "arm"
+THUMB_INTERWORKING = "no"
 
 ###############################################################
 # module configs specific to this kernel
