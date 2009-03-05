@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_overo = "1"
 SRCREV = "79d042a081d3e467c735bb0d9569ed6296f85a3c"
 
 PV = "2.6.28"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=omap-2.6.28;protocol=git \
 	   file://defconfig"
@@ -50,6 +50,7 @@ SRC_URI_append = " \
            file://0001-ASoC-Add-support-for-OMAP3-EVM.patch;patch=1 \
            file://0001-board-omap3beagle-set-i2c-3-to-100kHz.patch;patch=1 \
            file://add-resizer-driver.patch;patch=1 \
+           file://usbttyfix.patch;patch=1 \
 "
 
 

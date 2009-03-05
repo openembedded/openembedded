@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "65d02c2c7fe676369b7162459feec60268c7f4ba"
 
 PV = "2.6.28-pm2+gitr${SRCREV}"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
 	   file://defconfig"
@@ -47,6 +47,7 @@ SRC_URI_append = " \
            file://dss2.diff;patch=1 \
            file://register-all-OPPs.diff;patch=1 \
            file://add-cpufreq-for-omap3evm.diff;patch=1 \
+           file://usbttyfix.patch;patch=1 \
 "
 
 
