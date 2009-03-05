@@ -25,8 +25,8 @@ do_configure_prepend() {
 	if [ ${MACHINE} = "om-gta02" ] ; then
 		install -m 644 ./arch/arm/configs/gta02_packaging_defconfig ${WORKDIR}/defconfig-oe
 	fi
-	if [ ${MACHINE} = "om-gta03" ] ; then
-		install -m 644 ./arch/arm/configs/gta03_defconfig ${WORKDIR}/defconfig-oe
+	if [ ${MACHINE} = "om-3d7k" ] ; then
+		install -m 644 ./arch/arm/configs/om_3d7k_defconfig ${WORKDIR}/defconfig-oe
 	fi
 #	cat ${WORKDIR}/defconfig-oe.patch | patch -p0 -d ${WORKDIR}
 }
