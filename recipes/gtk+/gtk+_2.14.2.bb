@@ -4,9 +4,6 @@ PR = "r3"
 
 DEPENDS += "cairo jasper"
 
-# disabled per default - this uses as little patches as possible
-DEFAULT_PREFERENCE = "-1" 
-
 SRC_URI = "http://download.gnome.org/sources/gtk+/2.14/gtk+-${PV}.tar.bz2 \
            file://xsettings.patch;patch=1 \
            file://run-iconcache.patch;patch=1 \
