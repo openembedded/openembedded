@@ -3,7 +3,9 @@ DEPENDS = "virtual/libsdl libsdl-image libsdl-mixer boost libpng"
 LICENSE = "GPL"
 HOMEPAGE = "http://pingus.seul.org/"
 SECTION = "x11/games"
-PR = "r0"
+PR = "r1"
+
+ARM_INSTRUCTION_SET = "arm"
 
 inherit scons
 
