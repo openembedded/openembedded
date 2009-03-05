@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools, python tools-based tools, debug tool
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r4"
+PR = "r5"
 
 inherit task
 
@@ -22,9 +22,12 @@ RDEPENDS_${PN} = "\
 "
 
 RDEPENDS_${PN}-debug = "\
+  evtest \
+  devmem2 \
   i2c-tools \
 #  ltrace \
   procps \
+  pxaregs \
   s3c24xx-gpio \
   s3c64xx-gpio \
   strace \
