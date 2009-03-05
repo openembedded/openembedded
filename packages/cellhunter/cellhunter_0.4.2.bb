@@ -2,9 +2,13 @@ DESCRIPTION = "CellHunter - A game to collect information about mobile phone cel
 SECTION = "x11/utils"
 DEPENDS = "python"
 RDEPENDS = "python-subprocess python-netclient python-math python-core python-io python-pygtk python-dbus"
-PR = "r1"
+PR = "r2"
 
-SRC_URI = "http://78.47.116.33/~hole/cellhunter/files/cellhunter-${PV}.tar.gz"
+SRC_URI = "\
+  http://78.47.116.33/~hole/cellhunter/files/cellhunter-${PV}.tar.gz \
+  file://cellhunter/use-fso-interface.patch;patch=1 \
+  file://cellhunter/retab.patch;patch=1 \
+"
 
 do_configure () {
     :
