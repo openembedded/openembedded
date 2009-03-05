@@ -12,7 +12,7 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git"
 
-inherit autotools_stage pkgconfig
+inherit autotools pkgconfig
 
 do_install_append() {
 	install -d ${D}${sysconfdir}
