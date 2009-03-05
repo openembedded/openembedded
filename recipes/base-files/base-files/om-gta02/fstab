@@ -3,3 +3,7 @@ proc		/proc		proc	defaults	0  0
 
 # microSD slot
 /dev/mmcblk0p1	/media/card	auto	defaults,async	0  0
+
+# home bind mount
+/media/card/bind-home /home/root none	bind
+
