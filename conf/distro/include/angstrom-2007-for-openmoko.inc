@@ -3,7 +3,6 @@
 #@NAME: Angstrom <http://www.angstrom-distribution.org>
 #@DESCRIPTION: The Linux Distribution for Kernel 2.6 based devices
 #@MAINTAINER: Koen Kooi <koen@openembedded.org>
-#@MAINTAINER: Michael 'Mickey' Lauer <mickey@Vanille.de>
 #@--------------------------------------------------------------------
 
 DISTRO_VERSION = "2007.11RC3"
