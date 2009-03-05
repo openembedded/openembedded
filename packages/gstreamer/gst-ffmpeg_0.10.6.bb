@@ -4,12 +4,13 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 HOMEPAGE = "http://www.gstreamer.net/"
 DEPENDS = "ffmpeg gstreamer gst-plugins-base zlib"
-PR = "r0"
+PR = "r1"
 
 inherit autotools pkgconfig
 
 SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
            file://configure-hack.diff;patch=1 \
+           file://lower-rank.diff;patch=1 \
 "
 
 FILES_${PN} += "${libdir}/gstreamer-0.10/*.so"
