@@ -1,12 +1,12 @@
-DESCRIPTION = "A set of command line tools"
+DESCRIPTION = "A set of command line tools, python tools-based tools, debug tools"
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r3"
+PR = "r4"
 
 inherit task
 
-PACKAGES += "${PN}-python"
+PACKAGES += "${PN}-debug ${PN}-python"
 
 RDEPENDS_${PN} = "\
   dosfstools \
@@ -19,7 +19,15 @@ RDEPENDS_${PN} = "\
   screen \
   sysstat \
   tcpdump \
+"
+
+RDEPENDS_${PN}-debug = "\
+  i2c-tools \
+#  ltrace \
+  procps \
   s3c24xx-gpio \
+  s3c64xx-gpio \
+  strace \
 "
 
 RDEPENDS_${PN}-python = "\
