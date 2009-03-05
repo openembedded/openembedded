@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.24
-# Fri Jan  9 09:35:22 2009
+# Thu Mar  5 21:54:07 2009
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -826,9 +826,9 @@ CONFIG_BLK_DEV_RAM_BLOCKSIZE=1024
 # CONFIG_CDROM_PKTCDVD is not set
 # CONFIG_ATA_OVER_ETH is not set
 # CONFIG_MISC_DEVICES is not set
-CONFIG_IDE=m
+CONFIG_IDE=y
 CONFIG_IDE_MAX_HWIFS=4
-CONFIG_BLK_DEV_IDE=m
+CONFIG_BLK_DEV_IDE=y
 
 #
 # Please see Documentation/ide.txt for help/info on IDE drives
@@ -836,7 +836,7 @@ CONFIG_BLK_DEV_IDE=m
 # CONFIG_BLK_DEV_IDE_SATA is not set
 CONFIG_BLK_DEV_IDEDISK=m
 CONFIG_IDEDISK_MULTI_MODE=y
-CONFIG_BLK_DEV_IDECS=m
+CONFIG_BLK_DEV_IDECS=y
 # CONFIG_BLK_DEV_IDECD is not set
 # CONFIG_BLK_DEV_IDETAPE is not set
 # CONFIG_BLK_DEV_IDEFLOPPY is not set
