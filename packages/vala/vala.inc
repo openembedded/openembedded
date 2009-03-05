@@ -17,8 +17,4 @@ inherit autotools autotools_stage lib_package
 
 EXTRA_OECONF = "--enable-vapigen"
 
-do_compile_prepend() {
-	touch gobject/gobject.vala.stamp
-}
-
 FILES_${PN}-doc += ${datadir}/devhelp
