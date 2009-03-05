@@ -17,6 +17,10 @@ SRC_URI_omap3evm = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;prot
 SRCREV_omap3evm = "1e329ec630b31803ee191d2ee335214662b5bfea"
 PV_omap3evm = "2008.10+${PR}+gitr${SRCREV}"
 
+SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
+SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"
+PV_omapzoom = "2009.01+${PR}+gitr${SRCREV}"
+
 SRC_URI_neuros-osd2 = "git://github.com/neuros/u-boot.git;protocol=git;branch=neuros"
 SRCREV_neuros-osd2 = "8de979d346624c0e4cfe2e5c0f08ce20ca4b5d14"
 

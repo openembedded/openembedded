@@ -3,11 +3,12 @@ PRIORITY = "optional"
 SECTION = "console/network"
 LICENSE = "GPL"
 
-PR = "3"
+PR = "r4"
 
 DEPENDS = "e2fsprogs-libs tcp-wrappers libevent"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/nfs/nfs-utils-${PV}.tar.gz \
+	file://nfs-utils-tools-unset-cflags.patch;patch=1 \
 	file://nfsserver \
    "
 

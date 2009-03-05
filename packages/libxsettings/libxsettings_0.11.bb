@@ -4,9 +4,15 @@ LICENSE = "BSD-X"
 PRIORITY = "optional"
 DEPENDS = "virtual/libx11"
 
+PR = "r1"
+
 inherit gpe
 
 headers = "xsettings-common.h"
+
+do_compile_prepend() {
+	sed -i -e 's: -s : :g' Makefile 
+}
 
 do_stage () {
         oe_libinstall -so libXsettings ${STAGING_LIBDIR}

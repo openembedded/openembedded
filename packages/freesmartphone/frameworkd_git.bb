@@ -4,8 +4,8 @@ AUTHOR = "FreeSmartphone.Org Development Team"
 SECTION = "console/network"
 DEPENDS = "python-cython-native python-pyrex-native"
 LICENSE = "GPL"
-PV = "0.8.4.9+gitr${SRCREV}"
-PR = "r5"
+PV = "0.8.5.1+gitr${SRCREV}"
+PR = "r0"
 
 inherit distutils update-rc.d
 
@@ -56,6 +56,7 @@ RRECOMMENDS_${PN} += "\
 # - recommend MUXer on platforms that require one
 RDEPENDS_${PN}_append_om-gta01 = " fso-gsm0710muxd"
 RDEPENDS_${PN}_append_om-gta02 = " fso-gsm0710muxd"
+RDEPENDS_${PN}-append-om-3d7k  = " fso-abyss"
 # - add wmiconfig for wireless configuration
 RDEPENDS_${PN}_append_om-gta02 = " wmiconfig"
 
