@@ -3,7 +3,7 @@ SECTION = "openmoko/base"
 PV = "1.0+svnr${SRCREV}"
 PR = "r1"
 
-COMPATIBLE_MACHINE = "(om-gta01|om-gta02)"
+COMPATIBLE_MACHINE = "(om-gta01|om-gta02|om-3d7k)"
 
 SRC_URI_${MACHINE_ARCH} = "svn://svn.openmoko.org/trunk/src/target/audio/;module=${MACHINE_ARCH};proto=http"
 
@@ -19,3 +19,5 @@ do_install() {
 PACKAGE_ARCH_${PN} = "${MACHINE_ARCH}"
 
 FILES_${PN} += "${datadir}/openmoko"
+
+CONFFILES_${PN} += "${datadir}/openmoko/scenarios/*"
