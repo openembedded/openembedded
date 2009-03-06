@@ -36,6 +36,8 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu wit
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
+RCONFLICTS_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
+RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
 
 PN = "enigma2"
 PR = "r0"
