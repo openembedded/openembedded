@@ -10,7 +10,7 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "65d02c2c7fe676369b7162459feec60268c7f4ba"
 
 PV = "2.6.28-pm2+gitr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
 	   file://defconfig"
