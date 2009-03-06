@@ -10,7 +10,8 @@ IMAGE_INSTALL = "task-base \
 		bridge-utils \
 		task-proper-tools \
 		mtd-utils \
-		wireless-tools"
+		wireless-tools \
+		iptables"
 
 export IMAGE_BASENAME = "distcc-slave-image"
 IMAGE_LINGUAS = ""
