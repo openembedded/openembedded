@@ -1,5 +1,7 @@
 require linux-omap.inc
 
+DEFAULT_PREFERENCE = "-1"
+
 # uncomment the below to get the latest and greatest and avoid a full reparse
 # or override in it local.conf like this: DAVINCI_SRCREV_pn-linux-davinci = "${@bb.fetch.get_srcrev(d)}"
 #DAVINCI_SRCREV = "${@bb.fetch.get_srcrev(d)}"
