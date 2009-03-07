@@ -1,0 +1,13 @@
+Index: esd/configure.in
+===================================================================
+--- esd.orig/configure.in	2005-03-14 12:13:59.000000000 +0000
++++ esd/configure.in	2009-03-07 10:43:45.000000000 +0000
+@@ -167,7 +167,7 @@
+    AC_CHECK_HEADERS(CoreAudio/CoreAudio.h)
+    # mme_api.h directly includes other files from the mme subdir
+    xCPPFLAGS="$CPPFLAGS"
+-   CPPFLAGS="$CPPFLAGS -I/usr/include/mme"
++   CPPFLAGS="$CPPFLAGS -I${MME_INCDIR}"
+    AC_CHECK_HEADERS(mme/mme_api.h)
+    CPPFLAGS="$xCPPFLAGS"
+ 
