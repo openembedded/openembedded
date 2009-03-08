@@ -1,0 +1,23 @@
+--- libcap-2.16/Make.Rules.orig	2009-03-07 18:50:23.000000000 +0100
++++ libcap-2.16/Make.Rules	2009-03-07 18:50:44.000000000 +0100
+@@ -45,19 +45,12 @@
+ KERNEL_HEADERS := $(topdir)/libcap/include
+ IPATH += -I$(topdir)/libcap/include -I$(KERNEL_HEADERS)
+ 
+-CC := gcc
+-CFLAGS := -O2
+-BUILD_CC := $(CC)
+-BUILD_CFLAGS := $(CFLAGS) $(IPATH)
+-AR := ar
+-RANLIB := ranlib
++LD=$(CC) -Wl,-x -shared
+ DEBUG = -g #-DDEBUG
+ WARNINGS=-fPIC -Wall -Wwrite-strings \
+         -Wpointer-arith -Wcast-qual -Wcast-align \
+         -Wstrict-prototypes -Wmissing-prototypes \
+         -Wnested-externs -Winline -Wshadow
+-LD=$(CC) -Wl,-x -shared
+-LDFLAGS := #-g
+ 
+ SYSTEM_HEADERS = /usr/include
+ INCS=$(topdir)/libcap/include/sys/capability.h
