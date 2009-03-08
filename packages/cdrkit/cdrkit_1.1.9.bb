@@ -6,12 +6,14 @@ HOMEPAGE="http://www.cdrkit.org"
 
 PARALLEL_MAKE = ""
 DEPENDS = "libcap"
-SRC_URI="http://cdrkit.org/releases/cdrkit-${PV}.tar.gz"
+SRC_URI="http://cdrkit.org/releases/cdrkit-${PV}.tar.gz \
+	file://xconfig.patch;patch=1"
 
 S="${WORKDIR}/cdrkit-${PV}"
-PR = "r1"
+PR = "r2"
+
+inherit cmake 
 
 do_install() {
 	oe_runmake install DESTDIR="${D}"
-	mv ${D}/usr/local/* ${D}${prefix}/ -f
 }
