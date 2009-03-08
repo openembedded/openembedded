@@ -5,11 +5,11 @@ PV_htcraphael = "2.6.27+${PR}+gitr${SRCREV}"
 PV_htcdiamond = "2.6.27+${PR}+gitr${SRCREV}"
 PR = "r4"
 
-COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond"
+COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond|htcblackstone"
 
 SRCREV = "21895dc01b196bafbfeb13219a7689b96d80bdd6"
-SRCREV_htcraphael = "ed619deca2d062ba190f7e79aafcd8428559ccac"
-SRCREV_htcdiamond = "ed619deca2d062ba190f7e79aafcd8428559ccac"
+SRCREV_htcraphael = "a7bbc84bc783acc349b030a4621541eab84165e0"
+SRCREV_htcdiamond = "a7bbc84bc783acc349b030a4621541eab84165e0"
 
 SRC_BRANCH = "htc-vogue"
 SRC_BRANCH_htcraphael = "htc-msm-2.6.27"
