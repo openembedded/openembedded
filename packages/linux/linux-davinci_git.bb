@@ -5,7 +5,7 @@ KERNEL_IMAGETYPE = "uImage"
 
 COMPATIBLE_MACHINE = "(davinci-dvevm|davinci-sffsdr)"
 
-DEFAULT_PREFERENCE = "-1"
+#DEFAULT_PREFERENCE = "-1"
 
 SRCREV = "0fc192ac07c977ad6f14333651b53096a6027bc6"
 
