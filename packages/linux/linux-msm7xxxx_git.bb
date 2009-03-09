@@ -7,13 +7,15 @@ PR = "r4"
 
 COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond|htcblackstone"
 
-SRCREV = "21895dc01b196bafbfeb13219a7689b96d80bdd6"
-SRCREV_htcraphael = "a7bbc84bc783acc349b030a4621541eab84165e0"
-SRCREV_htcdiamond = "a7bbc84bc783acc349b030a4621541eab84165e0"
+SRCREV = "f89edc3bf353407bd1dd6c2683f539a7c2603191"
+SRCREV_htcraphael = "12008ce2c5c1ab657c46fdc6f6129ccf6730760a"
+SRCREV_htcdiamond = "12008ce2c5c1ab657c46fdc6f6129ccf6730760a"
+SRCREV_htcblackstone = "12008ce2c5c1ab657c46fdc6f6129ccf6730760a"
 
 SRC_BRANCH = "htc-vogue"
 SRC_BRANCH_htcraphael = "htc-msm-2.6.27"
 SRC_BRANCH_htcdiamond = "htc-msm-2.6.27"
+SRC_BRANCH_htcblackstone = "htc-msm-2.6.27"
 
 SRC_URI = "\
   git://git.linuxtogo.org/home/groups/mobile-linux/kernel.git;branch=${SRC_BRANCH};protocol=git \
