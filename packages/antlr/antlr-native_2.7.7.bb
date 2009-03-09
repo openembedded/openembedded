@@ -2,7 +2,7 @@ require antlr_${PV}.bb
 
 SRC_URI += "file://runantlr"
 
-inherit native
+inherit java-native
 
 do_configure() {
 	sed -i -e"s|@JAR_FILE@|${STAGING_DATADIR_NATIVE}/java/antlr.jar|" ${WORKDIR}/runantlr
