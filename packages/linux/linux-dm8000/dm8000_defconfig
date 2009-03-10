@@ -1706,7 +1706,7 @@ CONFIG_NLS_UTF8=y
 # CONFIG_DEBUG_KERNEL is not set
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_CROSSCOMPILE=y
-CONFIG_CMDLINE="root=/dev/mtdblock3 rootfstype=jffs2 rw mem=128M console=null"
+CONFIG_CMDLINE="root=/dev/mtdblock3 rootfstype=jffs2 rw console=null"
 
 #
 # Security options
