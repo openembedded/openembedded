@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "python"
 RDEPENDS = "python-core python-shell"
 LICENSE = "ZPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
 S = "${WORKDIR}/Zope-${PV}"
@@ -43,5 +43,7 @@ ${libdir}/${PYTHON_DIR}/zope/i18nmessageid/.debug \
 ${libdir}/${PYTHON_DIR}/ZODB/.debug"
 FILES_python-zopeinterface-dbg += "${libdir}/${PYTHON_DIR}/zope/interface/.debug "
 
-FILES_python-zopeinterface = "${libdir}/${PYTHON_DIR}/zope/interface/*.* ${libdir}/${PYTHON_DIR}/zope/interface/common"
+FILES_python-zopeinterface = " ${libdir}/${PYTHON_DIR}/zope/__init__.py* \
+	${libdir}/${PYTHON_DIR}/zope/interface/*.* \
+	${libdir}/${PYTHON_DIR}/zope/interface/common"
 
