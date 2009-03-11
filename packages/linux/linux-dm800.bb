@@ -2,7 +2,7 @@ DESCRIPTION = "Linux kernel for Dreambox DM800"
 LICENSE = "GPL"
 KV = "2.6.12"
 PV = "2.6.12"
-PR = "r12"
+PR = "r13"
 
 # note, the rX in the filename is *NOT* the packet revision - it's the patch revision.
 SRC_URI += "ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-${KV}.tar.bz2 \
