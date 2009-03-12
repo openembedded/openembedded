@@ -295,12 +295,14 @@ python populate_packages_prepend () {
 	def extract_modinfo(file):
 		import tempfile, os, re
 		tempfile.tempdir = bb.data.getVar("WORKDIR", d, 1)
-		tmpfile = tempfile.mkstemp()[1]
+		tf = tempfile.mkstemp()
+		tmpfile = tf[1]
 		cmd = "PATH=\"%s\" %sobjcopy -j .modinfo -O binary %s %s" % (bb.data.getVar("PATH", d, 1), bb.data.getVar("HOST_PREFIX", d, 1) or "", file, tmpfile)
 		os.system(cmd)
 		f = open(tmpfile)
 		l = f.read().split("\000")
 		f.close()
+		os.close(tf[0])
 		os.unlink(tmpfile)
 		exp = re.compile("([^=]+)=(.*)")
 		vals = {}
