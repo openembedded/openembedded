@@ -1,0 +1,30 @@
+--- src/eyeD3/tag.py	2006-01-08 07:09:17.000000000 +0100
++++ src/eyeD3/tag.py	2008-12-17 19:39:35.000000000 +0100
+@@ -17,7 +17,7 @@
+ #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ #
+ ################################################################################
+-import re, os, string, stat, shutil, tempfile, binascii;
++import re, os, string, stat, tempfile, binascii;
+ import mimetypes;
+ from stat import *;
+ from eyeD3 import *;
+@@ -29,6 +29,9 @@
+ 
+ ID3_V1_COMMENT_DESC = "ID3 v1 Comment";
+ 
++# overwrite correct filesystem encoding due to missing locale
++sys.getfilesystemencoding = lambda: 'UTF-8'
++
+ ################################################################################
+ class TagException(Exception):
+    '''error reading tag'''
+@@ -495,7 +498,7 @@
+          raise TagException("The Tag is not linked to a file.");
+ 
+       if backup:
+-         shutil.copyfile(self.linkedFile.name, self.linkedFile.name + ".orig");
++         os.system("cp " + self.linkedFile.name + ' ' + self.linkedFile.name + ".orig");
+ 
+       self.setVersion(version);
+       version = self.getVersion();

@@ -6,14 +6,14 @@ SRCDATE = "20090303"
 PACKAGES_DYNAMIC = "enigma2-plugin-*"
 
 # if you want experimental, use:
-#REL_MAJOR="2"
-#REL_MINOR="6"
-#TAG = ""
+REL_MAJOR="2"
+REL_MINOR="6"
+TAG = ""
 
 # if you want a 2.5-based release, use
-REL_MAJOR="2"
-REL_MINOR="5"
-TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
+#REL_MAJOR="2"
+#REL_MINOR="5"
+#TAG = ";tag=${PN}_rel${REL_MAJOR}${REL_MINOR}"
 
 PV = "${REL_MAJOR}.${REL_MINOR}cvs${SRCDATE}"
 
