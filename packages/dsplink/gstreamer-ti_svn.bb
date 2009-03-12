@@ -4,7 +4,7 @@ SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=
            file://gst-buffsize.diff;patch=1"
 SRCREV = "127"
 
-PR = "r4"
+PR = "r5"
 
 # Again, no '.' in PWD allowed :(
 PV = "0+svnr${SRCREV}"
