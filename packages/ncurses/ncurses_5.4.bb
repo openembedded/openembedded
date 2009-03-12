@@ -1,4 +1,4 @@
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
            file://makefile_tweak.patch;patch=1 \
@@ -6,3 +6,5 @@ SRC_URI = "${GNU_MIRROR}/ncurses/ncurses-${PV}.tar.gz \
 S = "${WORKDIR}/ncurses-${PV}"
 
 require ncurses.inc
+
+LEAD_SONAME = "libncurses.so.5"
