@@ -1,7 +1,7 @@
 DESCRIPTION = "Secure ftp daemon"
 SECTION = "console/network"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.nl.uu.net/pub/unix/ftp/proftpd/ftp/distrib/source/${PN}-${PV}.tar.gz \
 	file://make.patch;patch=1 \
@@ -18,10 +18,12 @@ do_configure () {
                    --build=${BUILD_SYS} \
                    --host=${HOST_SYS} \
                    --target=${TARGET_SYS} \
-                   --prefix=${D} \
-                   --includedir=/usr/include \
-                    ${EXTRA_OECONF} \
-                    $@;
+                   --prefix=/usr \
+		   --sysconfdir=/etc \
+		   --sharedstatedir=/com \
+		   --localstatedir=/var \
+                   ${EXTRA_OECONF} \
+                   $@;
 }
 
 do_install () {
