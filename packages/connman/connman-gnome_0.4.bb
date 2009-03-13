@@ -7,7 +7,7 @@ PR = "r7"
 
 RRECOMMENDS_${PN} = "connman connman-plugin-ethernet connman-plugin-loopback connman-plugin-udhcp connman-plugin-wifi"
 
-SRC_URI = "http://repo.moblin.org/connman/releases/connman-gnome-${PV}.tar.gz \
+SRC_URI = "http://www.kernel.org/pub/linux/network/connman/connman-gnome-${PV}.tar.gz \
            file://phrase-lenght.diff;patch=1 \
            file://connman-applet.desktop"
 
