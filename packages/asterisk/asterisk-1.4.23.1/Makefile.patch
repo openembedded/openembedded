@@ -1,0 +1,21 @@
+diff -Nurd asterisk-1.4.23.1.orig/Makefile asterisk-1.4.23.1/Makefile
+--- asterisk-1.4.23.1.orig/Makefile	2008-11-29 17:58:29.000000000 +0100
++++ asterisk-1.4.23.1/Makefile	2009-02-25 11:17:22.000000000 +0100
+@@ -125,7 +125,7 @@
+   ASTSBINDIR=$(sbindir)
+   ASTSPOOLDIR=$(localstatedir)/spool/asterisk
+   ASTLOGDIR=$(localstatedir)/log/asterisk
+-  ASTVARRUNDIR=$(localstatedir)/run
++  ASTVARRUNDIR=$(localstatedir)/run/asterisk
+   ASTMANDIR=$(mandir)
+ ifneq ($(findstring BSD,$(OSARCH)),)
+   ASTVARLIBDIR=$(prefix)/share/asterisk
+@@ -513,7 +513,7 @@
+ 	@exit 1
+ endif
+ 
+-install: badshell datafiles bininstall
++install: badshell datafiles bininstall samples
+ 	@if [ -x /usr/sbin/asterisk-post-install ]; then \
+ 		/usr/sbin/asterisk-post-install $(DESTDIR) . ; \
+ 	fi
