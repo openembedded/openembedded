@@ -10,6 +10,35 @@ def base_path_join(a, *p):
             path += '/' + b
     return path
 
+def base_path_relative(src, dest):
+    """ Return a relative path from src to dest.
+
+    >>> base_path_relative("/usr/bin", "/tmp/foo/bar")
+    ../../tmp/foo/bar
+
+    >>> base_path_relative("/usr/bin", "/usr/lib")
+    ../lib
+
+    >>> base_path_relative("/tmp", "/tmp/foo/bar")
+    foo/bar
+    """
+    from os.path import sep, pardir, normpath, commonprefix
+
+    destlist = normpath(dest).split(sep)
+    srclist = normpath(src).split(sep)
+
+    # Find common section of the path
+    common = commonprefix([destlist, srclist])
+    commonlen = len(common)
+
+    # Climb back to the point where they differentiate
+    relpath = [ pardir ] * (len(srclist) - commonlen)
+    if commonlen < len(destlist):
+        # Add remaining portion
+        relpath += destlist[commonlen:]
+
+    return sep.join(relpath)
+
 # for MD5/SHA handling
 def base_chk_load_parser(config_path):
     import ConfigParser, os, bb
