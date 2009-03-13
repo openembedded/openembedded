@@ -1,0 +1,266 @@
+diff -urN u-boot-2008.10-0rig//doc/README.at91 u-boot-2008.10/doc/README.at91
+--- u-boot-2008.10-0rig//doc/README.at91	1970-01-01 01:00:00.000000000 +0100
++++ u-boot-2008.10/doc/README.at91	2008-12-31 12:16:34.000000000 +0100
+@@ -0,0 +1,88 @@
++Atmel AT91 Evaluation kits
++
++http://atmel.com/dyn/products/tools.asp?family_id=605#1443
++
++------------------------------------------------------------------------------
++AT91SAM9260EK
++------------------------------------------------------------------------------
++
++Memory map
++	0x20000000 - 23FFFFFF	SDRAM (64 MB)
++	0xC0000000 - Cxxxxxxx	Atmel Dataflash card (J13)
++	0xD0000000 - Dxxxxxxx	Soldered Atmel Dataflash 
++
++Environment variables
++
++	U-Boot environment variables can be stored at different places:
++		- Dataflash on SPI chip select 1 (default)
++		- Dataflash on SPI chip select 0 (dataflash card)
++		- Nand flash.
++
++	You can choose your storage location at config step (here for at91sam9260ek) :
++		make at91sam9260ek_config		- use data flash (spi cs1) (default)
++		make at91sam9260ek_nandflash_config	- use nand flash 
++		make at91sam9260ek_dataflash_cs0_config	- use data flash (spi cs0)
++		make at91sam9260ek_dataflash_cs1_config	- use data flash (spi cs1)
++
++
++------------------------------------------------------------------------------
++AT91SAM9261EK
++------------------------------------------------------------------------------
++
++Memory map
++	0x20000000 - 23FFFFFF	SDRAM (64 MB)
++	0xC0000000 - Cxxxxxxx	Soldered Atmel Dataflash 
++	0xD0000000 - Dxxxxxxx	Atmel Dataflash card (J22)
++
++Environment variables
++
++	U-Boot environment variables can be stored at different places:
++		- Dataflash on SPI chip select 0 (default)
++		- Dataflash on SPI chip select 3 (dataflash card)
++		- Nand flash.
++
++	You can choose your storage location at config step (here for at91sam9260ek) :
++		make at91sam9261ek_config		- use data flash (spi cs0) (default)
++		make at91sam9261ek_nandflash_config	- use nand flash 
++		make at91sam9261ek_dataflash_cs0_config	- use data flash (spi cs0)
++		make at91sam9261ek_dataflash_cs3_config	- use data flash (spi cs3)
++
++
++------------------------------------------------------------------------------
++AT91SAM9263EK
++------------------------------------------------------------------------------
++
++Memory map
++	0x20000000 - 23FFFFFF	SDRAM (64 MB)
++	0xC0000000 - Cxxxxxxx	Atmel Dataflash card (J9)
++
++Environment variables
++
++	U-Boot environment variables can be stored at different places:
++		- Dataflash on SPI chip select 0 (dataflash card)
++		- Nand flash.
++
++	You can choose your storage location at config step (here for at91sam9260ek) :
++		make at91sam9263ek_config		- use data flash (spi cs0) (default)
++		make at91sam9263ek_nandflash_config	- use nand flash 
++		make at91sam9263ek_dataflash_cs0_config	- use data flash (spi cs0)
++
++
++------------------------------------------------------------------------------
++AT91SAM9RLEK
++------------------------------------------------------------------------------
++
++Memory map
++	0x20000000 - 23FFFFFF	SDRAM (64 MB)
++	0xC0000000 - Cxxxxxxx	Soldered Atmel Dataflash
++
++Environment variables
++
++	U-Boot environment variables can be stored at different places:
++		- Dataflash on SPI chip select 0
++		- Nand flash.
++
++	You can choose your storage location at config step (here for at91sam9260ek) :
++		make at91sam9263ek_config		- use data flash (spi cs0) (default)
++		make at91sam9263ek_nandflash_config	- use nand flash 
++		make at91sam9263ek_dataflash_cs0_config	- use data flash (spi cs0)
+diff -urN u-boot-2008.10-0rig//include/configs/at91sam9260ek.h u-boot-2008.10/include/configs/at91sam9260ek.h
+--- u-boot-2008.10-0rig//include/configs/at91sam9260ek.h	2008-12-31 12:15:59.000000000 +0100
++++ u-boot-2008.10/include/configs/at91sam9260ek.h	2008-12-31 12:16:34.000000000 +0100
+@@ -127,10 +127,6 @@
+ #define CFG_MEMTEST_START		PHYS_SDRAM
+ #define CFG_MEMTEST_END			0x23e00000
+ 
+-#undef CFG_USE_DATAFLASH_CS0
+-#define CFG_USE_DATAFLASH_CS1		1
+-#undef CFG_USE_NANDFLASH
+-
+ #ifdef CFG_USE_DATAFLASH_CS0
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+diff -urN u-boot-2008.10-0rig//include/configs/at91sam9261ek.h u-boot-2008.10/include/configs/at91sam9261ek.h
+--- u-boot-2008.10-0rig//include/configs/at91sam9261ek.h	2008-12-31 12:15:59.000000000 +0100
++++ u-boot-2008.10/include/configs/at91sam9261ek.h	2008-12-31 12:16:34.000000000 +0100
+@@ -142,9 +142,6 @@
+ #define CFG_MEMTEST_START		PHYS_SDRAM
+ #define CFG_MEMTEST_END			0x23e00000
+ 
+-#define CFG_USE_DATAFLASH_CS0		1
+-#undef CFG_USE_NANDFLASH
+-
+ #ifdef CFG_USE_DATAFLASH_CS0
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+@@ -157,6 +154,20 @@
+ #define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
+ 				"root=/dev/mtdblock0 "			\
+ 				"mtdparts=at91_nand:-(root) "		\
++				"rw rootfstype=jffs2"
++
++#elif CFG_USE_DATAFLASH_CS3
++
++/* bootstrap + u-boot + env + linux in dataflash on CS3 */
++#define CFG_ENV_IS_IN_DATAFLASH	1
++#define CFG_MONITOR_BASE	(CFG_DATAFLASH_LOGIC_ADDR_CS3 + 0x8400)
++#define CFG_ENV_OFFSET		0x4200
++#define CFG_ENV_ADDR		(CFG_DATAFLASH_LOGIC_ADDR_CS3 + CFG_ENV_OFFSET)
++#define CFG_ENV_SIZE		0x4200
++#define CONFIG_BOOTCOMMAND	"cp.b 0xD0042000 0x22000000 0x210000; bootm"
++#define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
++				"root=/dev/mtdblock0 "			\
++				"mtdparts=at91_nand:-(root) "		\
+ 				"rw rootfstype=jffs2"
+ 
+ #else /* CFG_USE_NANDFLASH */
+diff -urN u-boot-2008.10-0rig//include/configs/at91sam9263ek.h u-boot-2008.10/include/configs/at91sam9263ek.h
+--- u-boot-2008.10-0rig//include/configs/at91sam9263ek.h	2008-12-31 12:15:59.000000000 +0100
++++ u-boot-2008.10/include/configs/at91sam9263ek.h	2008-12-31 12:16:34.000000000 +0100
+@@ -148,9 +148,6 @@
+ #define CFG_MEMTEST_START		PHYS_SDRAM
+ #define CFG_MEMTEST_END			0x23e00000
+ 
+-#define CFG_USE_DATAFLASH		1
+-#undef CFG_USE_NANDFLASH
+-
+ #ifdef CFG_USE_DATAFLASH
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+diff -urN u-boot-2008.10-0rig//include/configs/at91sam9rlek.h u-boot-2008.10/include/configs/at91sam9rlek.h
+--- u-boot-2008.10-0rig//include/configs/at91sam9rlek.h	2008-12-31 12:15:59.000000000 +0100
++++ u-boot-2008.10/include/configs/at91sam9rlek.h	2008-12-31 12:16:34.000000000 +0100
+@@ -117,9 +117,6 @@
+ #define CFG_MEMTEST_START		PHYS_SDRAM
+ #define CFG_MEMTEST_END			0x23e00000
+ 
+-#define CFG_USE_DATAFLASH		1
+-#undef CFG_USE_NANDFLASH
+-
+ #ifdef CFG_USE_DATAFLASH
+ 
+ /* bootstrap + u-boot + env + linux in dataflash on CS0 */
+diff -urN u-boot-2008.10-0rig//Makefile u-boot-2008.10/Makefile
+--- u-boot-2008.10-0rig//Makefile	2008-12-31 12:15:55.000000000 +0100
++++ u-boot-2008.10/Makefile	2008-12-31 12:18:31.000000000 +0100
+@@ -2487,15 +2487,6 @@
+ at91rm9200dk_config	:	unconfig
+ 	@$(MKCONFIG) $(@:_config=) arm arm920t at91rm9200dk atmel at91rm9200
+ 
+-at91sam9261ek_config	:	unconfig
+-	@$(MKCONFIG) $(@:_config=) arm arm926ejs at91sam9261ek atmel at91
+-
+-at91sam9263ek_config	:	unconfig
+-	@$(MKCONFIG) $(@:_config=) arm arm926ejs at91sam9263ek atmel at91
+-
+-at91sam9rlek_config	:	unconfig
+-	@$(MKCONFIG) $(@:_config=) arm arm926ejs at91sam9rlek atmel at91
+-
+ cmc_pu2_config	:	unconfig
+ 	@$(MKCONFIG) $(@:_config=) arm arm920t cmc_pu2 NULL at91rm9200
+ 
+@@ -2518,8 +2509,79 @@
+ at91cap9adk_config	:	unconfig
+ 	@$(MKCONFIG) $(@:_config=) arm arm926ejs at91cap9adk atmel at91
+ 
++at91sam9260ek_nandflash_config \
++at91sam9260ek_dataflash_cs0_config \
++at91sam9260ek_dataflash_cs1_config \
+ at91sam9260ek_config	:	unconfig
+-	@$(MKCONFIG) $(@:_config=) arm arm926ejs at91sam9260ek atmel at91
++	@if [ "$(findstring _nandflash,$@)" ] ; then \
++		echo "#define CFG_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	elif [ "$(findstring dataflash_cs0,$@)" ] ; then \
++		echo "#define CFG_USE_DATAFLASH_CS0 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
++	else \
++		echo "#define CFG_USE_DATAFLASH_CS1 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS1" ; \
++	fi;
++	@$(MKCONFIG) -a at91sam9260ek arm arm926ejs at91sam9260ek atmel at91
++
++at91sam9xeek_nandflash_config \
++at91sam9xeek_dataflash_cs0_config \
++at91sam9xeek_dataflash_cs1_config \
++at91sam9xeek_config	:	unconfig
++	@if [ "$(findstring _nandflash,$@)" ] ; then \
++		echo "#define CFG_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	elif [ "$(findstring dataflash_cs0,$@)" ] ; then \
++		echo "#define CFG_USE_DATAFLASH_CS0 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
++	else \
++		echo "#define CFG_USE_DATAFLASH_CS1 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS1" ; \
++	fi;
++	@$(MKCONFIG) -n at91sam9xeek -a at91sam9260ek arm arm926ejs at91sam9260ek atmel at91
++
++at91sam9261ek_nandflash_config \
++at91sam9261ek_dataflash_cs0_config \
++at91sam9261ek_dataflash_cs3_config \
++at91sam9261ek_config	:	unconfig
++	@if [ "$(findstring _nandflash,$@)" ] ; then \
++		echo "#define CFG_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	elif [ "$(findstring dataflash_cs3,$@)" ] ; then \
++		echo "#define CFG_USE_DATAFLASH_CS3 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS3" ; \
++	else \
++		echo "#define CFG_USE_DATAFLASH_CS0 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
++	fi;
++	@$(MKCONFIG) -a at91sam9261ek arm arm926ejs at91sam9261ek atmel at91
++
++at91sam9263ek_nandflash_config \
++at91sam9263ek_dataflash_config \
++at91sam9263ek_dataflash_cs0_config \
++at91sam9263ek_config	:	unconfig
++	@if [ "$(findstring _nandflash,$@)" ] ; then \
++		echo "#define CFG_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	else \
++		echo "#define CFG_USE_DATAFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
++	fi;
++	@$(MKCONFIG) -a at91sam9263ek arm arm926ejs at91sam9263ek atmel at91
++
++at91sam9rlek_nandflash_config \
++at91sam9rlek_dataflash_config \
++at91sam9rlek_dataflash_cs0_config \
++at91sam9rlek_config	:	unconfig
++	@if [ "$(findstring _nandflash,$@)" ] ; then \
++		echo "#define CFG_USE_NANDFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in NAND FLASH" ; \
++	else \
++		echo "#define CFG_USE_DATAFLASH 1"	>>$(obj)include/config.h ; \
++		$(XECHO) "... with environment variable in SPI DATAFLASH CS0" ; \
++	fi;
++	@$(MKCONFIG) -a at91sam9rlek arm arm926ejs at91sam9rlek atmel at91
+ 
+ ########################################################################
+ ## ARM Integrator boards - see doc/README-integrator for more info.
