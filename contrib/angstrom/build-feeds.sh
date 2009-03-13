@@ -241,6 +241,7 @@ do
                       povray \
                       prboom \
                       prelink \
+                      proftpd \
                       pushover \
                       python \
                       python-pybluez \
@@ -308,6 +309,7 @@ do
                       wireshark \
                       wpa-gui \
                       wt \
+                      wt3 \
                       x11vnc \
                       xf86-input-evdev \
                       xf86-input-keyboard \
