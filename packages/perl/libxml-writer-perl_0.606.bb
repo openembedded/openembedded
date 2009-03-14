@@ -1,8 +1,7 @@
 SECTION = "libs"
 LICENSE = "Artistic|GPL"
-HOMEPAGE = "http://www.xmltwig.com/"
-DEPENDS += "libxml-parser-perl"
-PR = "r0"
+HOMEPAGE = "http://search.cpan.org/dist/XML-Writer/"
+PR = "r1"
 
 SRC_URI = "http://search.cpan.org/CPAN/authors/id/J/JO/JOSEPHW/XML-Writer-${PV}.tar.gz"
 
