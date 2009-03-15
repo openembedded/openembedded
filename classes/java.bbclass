@@ -92,8 +92,12 @@ oe_makeclasspath() {
   # 
   # Provide the -s at the beginning otherwise strange things happen.
   # If -s is given the function checks whether the requested jar file exists
-  #	and exits with an error message if it cannot be found.
+  # and exits with an error message if it cannot be found.
   #
+  # Note: In order to encourage usage of the DEPENDS variable, the function
+  # can accept recipe names. If a recipe has no corresponding Jar file it
+  # is ignored. Be careful with recipes where the recipe name is different
+  # from the the Jar file name!
   dir=${datadir_java}
   classpath=
   delimiter=
@@ -102,30 +106,29 @@ oe_makeclasspath() {
   shift
 
   while [ "$#" -gt 0 ]; do
-    case "$1" in
-    -s)
-		# take jar files from native staging if this is a -native recipe
-		if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
-	      dir=${STAGING_DATADIR_JAVA_NATIVE}
-		else
-	      dir=${STAGING_DATADIR_JAVA}
-		fi
-      ;;
-    -*)
-      oefatal "oe_makeclasspath: unknown option: $1"
-      ;;
-    *)
-      file=$dir/$1.jar
+      case "$1" in
+          -s)
+              # take jar files from native staging if this is a -native recipe
+              if [ ${PACKAGE_ARCH} = ${BUILD_ARCH} ]; then
+                  dir=${STAGING_DATADIR_JAVA_NATIVE}
+              else
+                  dir=${STAGING_DATADIR_JAVA}
+              fi
+              ;;
+          -*)
+              oefatal "oe_makeclasspath: unknown option: $1"
+              ;;
+          *)
+              file=$dir/$1.jar
 
-	  if [ -z "$dir" -a ! -f $file ]; then
-	    oefatal "oe_makeclasspath: Jar file for '$1' not found at $file"
-	  fi
+              if [ -e $file ]; then
+                  classpath=$classpath$delimiter$file
+                  delimiter=":"
+              fi
 
-      classpath=$classpath$delimiter$file
-      delimiter=":"
-      ;;
-    esac
-    shift
+          ;;
+      esac
+      shift
   done
 
   eval $retval="$classpath"
