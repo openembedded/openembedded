@@ -2,6 +2,7 @@ require busybox.inc
 PR = "r0"
 
 SRC_URI = "\
+  http://www.busybox.net/downloads/busybox-${PV}.tar.gz \
   file://udhcpscript.patch;patch=1 \
   file://udhcpc-fix-nfsroot.patch;patch=1 \
   file://B921600.patch;patch=1 \
@@ -22,6 +23,7 @@ SRC_URI = "\
   file://mdev \
   file://mdev.conf \
 "
+
 
 EXTRA_OEMAKE += "V=1 ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
