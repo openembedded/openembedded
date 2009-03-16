@@ -11,7 +11,7 @@ S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-PR = "r12"
+PR = "r13"
 
 TARGET = "all"
 
@@ -40,6 +40,13 @@ do_compile() {
         # For now, remove the reference to Rules.make and swap prod for eval, since this only has eval libs included
         sed -i \
         -e '/Rules.make/d' \
+        -e 's:$(FC_INSTALL_DIR)/packages;::g' \
+        -e 's:$(XDAIS_INSTALL_DIR)/packages;::g' \
+        -e 's:$(FC_INSTALL_DIR)/fctools/packages;::g' \
+        -e 's:$(BIOSUTILS_INSTALL_DIR)/packages;::g' \
+        -e 's:$(CMEM_INSTALL_DIR)/packages;::g' \
+        -e 's:$(LINK_INSTALL_DIR)/packages;::g' \
+        -e 's:$(LPM_INSTALL_DIR)/packages;::g' \
         -e s:prod:eval:g \
         ${S}/Makefile
 
@@ -47,6 +54,12 @@ do_compile() {
 	sed -i -e s:/opt/dmsw/cg6x_6_0_16:${TITOOLSDIR}/${TICGTOOLSDIR}:g \
 	${S}/config.bld
 
+	# Add make target to allow package to be prepared for building (normally this package is a binary release)
+        echo "makebuildable:
+	\$(XDC) .make -PR .
+" >> ${S}/Makefile
+
+        oe_runmake makebuildable
 	oe_runmake clean
 	oe_runmake
 }
@@ -64,9 +77,14 @@ do_install () {
 	done
 	
 	# copy the generated data sheets as well for reference
-        for i in $(find . -name "*.DataSheet.*") ; do
+        #for i in $(find . -name "*.DataSheet.*") ; do
+
+        # infact, just copy all the html files (including the server datasheets) from the distro
+        #  - this includes top level html (with codec versions) + some qualiTI codec test reports
+        for i in $(find . -name "*.html") ; do
                 install ${i} ${D}/${datadir}/ti-codec-combos
         done
+
 }
 
 do_stage () {
