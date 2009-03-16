@@ -57,6 +57,7 @@ do_configure () {
         -Uusenm -des
     sed "s!${STAGING_DIR}/bin!${STAGING_BINDIR}!;
          s!${STAGING_DIR}/lib!${STAGING_LIBDIR}!;
+         s!ODBM_File! !;
 	 s!^installbin=.*!installbin=\'${STAGING_BINDIR}\'!;
 	 s!^installsitebin=.*!installsitebin=\'${STAGING_BINDIR}\'!" < config.sh > config.sh.new
     mv config.sh.new config.sh
