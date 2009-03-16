@@ -88,4 +88,6 @@ RDEPENDS_gps-utils = "python-pygps"
 DESCRIPTION_python-pygps = "Python bindings to gpsd"
 FILES_python-pygps = "${libdir}/*/site-packages/*"
 RDEPENDS_python-pygps = "python-core python-curses gpsd"
+PARALLEL_MAKE = ""
+
 
