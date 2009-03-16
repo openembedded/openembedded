@@ -1,7 +1,8 @@
 
 DEPENDS = "libogg libvorbis libsdl-x11"
 
-SRC_URI = "http://downloads.xiph.org/releases/theora/libtheora-${PV}.tar.bz2"
+SRC_URI = "http://downloads.xiph.org/releases/theora/libtheora-${PV}.tar.bz2 \
+	   file://libtheora-1.0-no-docs.patch;patch=1"
 
 inherit autotools lib_package
 
