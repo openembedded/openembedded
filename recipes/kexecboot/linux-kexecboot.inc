@@ -1,4 +1,4 @@
-require packages/linux/linux.inc
+require recipes/linux/linux.inc
 
 SRC_URI = "file://defconfig"
 
