@@ -767,7 +767,13 @@ python base_do_unpack() {
 def base_get_scmbasepath(d):
 	import bb
 	path_to_bbfiles = bb.data.getVar( 'BBFILES', d, 1 ).split()
-	return path_to_bbfiles[0][:path_to_bbfiles[0].rindex( "packages" )]
+
+	try:
+		index = path_to_bbfiles[0].rindex( "recipes" )
+	except ValueError:
+		index = path_to_bbfiles[0].rindex( "packages" )
+
+	return path_to_bbfiles[0][:index]
 
 def base_get_metadata_monotone_branch(d):
 	monotone_branch = "<unknown>"
