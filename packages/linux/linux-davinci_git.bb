@@ -10,8 +10,10 @@ DEFAULT_PREFERENCE = "-1"
 SRCREV = "486afa37130356662213cc1a2199a285b4fd72af"
 
 PV = "2.6.29+2.6.29-rc7-${PR}+gitr${SRCREV}"
+PR = "r1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
+           file://update-mach-types.patch;patch=1 \
            file://defconfig"
 
 SRC_URI_append_davinci-sffsdr = " \
