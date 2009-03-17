@@ -1,0 +1,934 @@
+From 97e062a70c0b1ccc5b3f8236966c13b7b79e7c13 Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Fri, 6 Mar 2009 12:31:34 -0500
+Subject: [PATCH 12/12] Update SFFSDR to support FPGA and lyrvpss drivers
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ arch/arm/configs/davinci_sffsdr_defconfig        |  157 +++++++++----
+ arch/arm/mach-davinci/Kconfig                    |   15 ++
+ arch/arm/mach-davinci/Makefile                   |    1 +
+ arch/arm/mach-davinci/board-sffsdr-fpga.c        |  283 ++++++++++++++++++++++
+ arch/arm/mach-davinci/board-sffsdr.c             |  195 ++++++++++++---
+ arch/arm/mach-davinci/include/mach/sffsdr-fpga.h |   54 ++++
+ 6 files changed, 628 insertions(+), 77 deletions(-)
+ create mode 100644 arch/arm/mach-davinci/board-sffsdr-fpga.c
+ create mode 100644 arch/arm/mach-davinci/include/mach/sffsdr-fpga.h
+
+diff --git a/arch/arm/configs/davinci_sffsdr_defconfig b/arch/arm/configs/davinci_sffsdr_defconfig
+index 8c17858..91c01f9 100644
+--- a/arch/arm/configs/davinci_sffsdr_defconfig
++++ b/arch/arm/configs/davinci_sffsdr_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.28-davinci1
+-# Fri Jan 16 12:33:07 2009
++# Fri Mar  6 12:29:19 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_SYS_SUPPORTS_APM_EMULATION=y
+@@ -179,15 +179,11 @@ CONFIG_ARCH_DAVINCI_DM644x=y
+ #
+ # CONFIG_MACH_DAVINCI_EVM is not set
+ CONFIG_MACH_SFFSDR=y
++CONFIG_SFFSDR_FPGA=m
+ CONFIG_DAVINCI_MUX=y
+ # CONFIG_DAVINCI_MUX_DEBUG is not set
+ # CONFIG_DAVINCI_MUX_WARNINGS is not set
+ # CONFIG_DAVINCI_RESET_CLOCKS is not set
+-CONFIG_DAVINCI_BOOT_TAG=y
+-
+-#
+-# DaVinci Options
+-#
+ 
+ #
+ # Processor Type
+@@ -206,7 +202,7 @@ CONFIG_CPU_CP15_MMU=y
+ #
+ # Processor Features
+ #
+-CONFIG_ARM_THUMB=y
++# CONFIG_ARM_THUMB is not set
+ # CONFIG_CPU_ICACHE_DISABLE is not set
+ # CONFIG_CPU_DCACHE_DISABLE is not set
+ # CONFIG_CPU_DCACHE_WRITETHROUGH is not set
+@@ -378,7 +374,84 @@ CONFIG_EXTRA_FIRMWARE=""
+ # CONFIG_DEBUG_DEVRES is not set
+ # CONFIG_SYS_HYPERVISOR is not set
+ # CONFIG_CONNECTOR is not set
+-# CONFIG_MTD is not set
++CONFIG_MTD=y
++# CONFIG_MTD_DEBUG is not set
++# CONFIG_MTD_CONCAT is not set
++CONFIG_MTD_PARTITIONS=y
++# CONFIG_MTD_REDBOOT_PARTS is not set
++# CONFIG_MTD_CMDLINE_PARTS is not set
++# CONFIG_MTD_AFS_PARTS is not set
++# CONFIG_MTD_AR7_PARTS is not set
++
++#
++# User Modules And Translation Layers
++#
++CONFIG_MTD_CHAR=y
++# CONFIG_MTD_BLKDEVS is not set
++# CONFIG_MTD_BLOCK is not set
++# CONFIG_MTD_BLOCK_RO is not set
++# CONFIG_FTL is not set
++# CONFIG_NFTL is not set
++# CONFIG_INFTL is not set
++# CONFIG_RFD_FTL is not set
++# CONFIG_SSFDC is not set
++# CONFIG_MTD_OOPS is not set
++
++#
++# RAM/ROM/Flash chip drivers
++#
++# CONFIG_MTD_CFI is not set
++# CONFIG_MTD_JEDECPROBE is not set
++CONFIG_MTD_MAP_BANK_WIDTH_1=y
++CONFIG_MTD_MAP_BANK_WIDTH_2=y
++CONFIG_MTD_MAP_BANK_WIDTH_4=y
++# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
++# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
++CONFIG_MTD_CFI_I1=y
++CONFIG_MTD_CFI_I2=y
++# CONFIG_MTD_CFI_I4 is not set
++# CONFIG_MTD_CFI_I8 is not set
++# CONFIG_MTD_RAM is not set
++# CONFIG_MTD_ROM is not set
++# CONFIG_MTD_ABSENT is not set
++
++#
++# Mapping drivers for chip access
++#
++# CONFIG_MTD_COMPLEX_MAPPINGS is not set
++# CONFIG_MTD_PLATRAM is not set
++
++#
++# Self-contained MTD device drivers
++#
++# CONFIG_MTD_SLRAM is not set
++# CONFIG_MTD_PHRAM is not set
++# CONFIG_MTD_MTDRAM is not set
++# CONFIG_MTD_BLOCK2MTD is not set
++
++#
++# Disk-On-Chip Device Drivers
++#
++# CONFIG_MTD_DOC2000 is not set
++# CONFIG_MTD_DOC2001 is not set
++# CONFIG_MTD_DOC2001PLUS is not set
++CONFIG_MTD_NAND=y
++# CONFIG_MTD_NAND_VERIFY_WRITE is not set
++# CONFIG_MTD_NAND_ECC_SMC is not set
++# CONFIG_MTD_NAND_MUSEUM_IDS is not set
++# CONFIG_MTD_NAND_GPIO is not set
++CONFIG_MTD_NAND_IDS=y
++# CONFIG_MTD_NAND_DISKONCHIP is not set
++# CONFIG_MTD_NAND_NANDSIM is not set
++# CONFIG_MTD_NAND_PLATFORM is not set
++CONFIG_MTD_NAND_DAVINCI=y
++# CONFIG_MTD_ONENAND is not set
++
++#
++# UBI - Unsorted block images
++#
++# CONFIG_MTD_UBI is not set
+ # CONFIG_PARPORT is not set
+ CONFIG_BLK_DEV=y
+ # CONFIG_BLK_DEV_COW_COMMON is not set
+@@ -387,7 +460,13 @@ CONFIG_BLK_DEV=y
+ # CONFIG_BLK_DEV_RAM is not set
+ # CONFIG_CDROM_PKTCDVD is not set
+ # CONFIG_ATA_OVER_ETH is not set
+-# CONFIG_MISC_DEVICES is not set
++CONFIG_MISC_DEVICES=y
++# CONFIG_EEPROM_93CX6 is not set
++# CONFIG_ICS932S401 is not set
++# CONFIG_ENCLOSURE_SERVICES is not set
++CONFIG_FPGADL=m
++CONFIG_FPGADL_PAR=m
++# CONFIG_C2PORT is not set
+ CONFIG_HAVE_IDE=y
+ # CONFIG_IDE is not set
+ 
+@@ -499,6 +578,10 @@ CONFIG_UNIX98_PTYS=y
+ # CONFIG_R3964 is not set
+ # CONFIG_RAW_DRIVER is not set
+ # CONFIG_TCG_TPM is not set
++CONFIG_LYRTECH_VPSS=y
++CONFIG_LYRTECH_VPFE=m
++# CONFIG_LYRTECH_VPBE is not set
++CONFIG_LYRVPSS_DEBUG=y
+ CONFIG_I2C=y
+ CONFIG_I2C_BOARDINFO=y
+ CONFIG_I2C_CHARDEV=y
+@@ -628,11 +711,11 @@ CONFIG_SSB_POSSIBLE=y
+ # Display device support
+ #
+ # CONFIG_DISPLAY_SUPPORT is not set
+-CONFIG_SOUND=y
++CONFIG_SOUND=m
+ # CONFIG_SOUND_OSS_CORE is not set
+-CONFIG_SND=y
+-CONFIG_SND_TIMER=y
+-CONFIG_SND_PCM=y
++CONFIG_SND=m
++CONFIG_SND_TIMER=m
++CONFIG_SND_PCM=m
+ # CONFIG_SND_SEQUENCER is not set
+ # CONFIG_SND_MIXER_OSS is not set
+ # CONFIG_SND_PCM_OSS is not set
+@@ -643,38 +726,14 @@ CONFIG_SND_DYNAMIC_MINORS=y
+ # CONFIG_SND_DEBUG is not set
+ # CONFIG_SND_DRIVERS is not set
+ # CONFIG_SND_ARM is not set
+-CONFIG_SND_SOC=y
++CONFIG_SND_SOC=m
+ CONFIG_SND_DAVINCI_SOC=m
+-# CONFIG_SND_DAVINCI_SOC_SFFSDR is not set
++CONFIG_SND_DAVINCI_SOC_I2S=m
++CONFIG_SND_DAVINCI_SOC_SFFSDR=m
+ # CONFIG_SND_SOC_ALL_CODECS is not set
++CONFIG_SND_SOC_PCM3008=m
+ # CONFIG_SOUND_PRIME is not set
+ # CONFIG_USB_SUPPORT is not set
+-# CONFIG_USB_MUSB_HOST is not set
+-# CONFIG_USB_MUSB_PERIPHERAL is not set
+-# CONFIG_USB_MUSB_OTG is not set
+-# CONFIG_USB_GADGET_MUSB_HDRC is not set
+-# CONFIG_USB_GADGET_AT91 is not set
+-# CONFIG_USB_GADGET_ATMEL_USBA is not set
+-# CONFIG_USB_GADGET_FSL_USB2 is not set
+-# CONFIG_USB_GADGET_LH7A40X is not set
+-# CONFIG_USB_GADGET_OMAP is not set
+-# CONFIG_USB_GADGET_PXA25X is not set
+-# CONFIG_USB_GADGET_PXA27X is not set
+-# CONFIG_USB_GADGET_S3C2410 is not set
+-# CONFIG_USB_GADGET_M66592 is not set
+-# CONFIG_USB_GADGET_AMD5536UDC is not set
+-# CONFIG_USB_GADGET_FSL_QE is not set
+-# CONFIG_USB_GADGET_NET2280 is not set
+-# CONFIG_USB_GADGET_GOKU is not set
+-# CONFIG_USB_GADGET_DUMMY_HCD is not set
+-# CONFIG_USB_ZERO is not set
+-# CONFIG_USB_ETH is not set
+-# CONFIG_USB_GADGETFS is not set
+-# CONFIG_USB_FILE_STORAGE is not set
+-# CONFIG_USB_G_SERIAL is not set
+-# CONFIG_USB_MIDI_GADGET is not set
+-# CONFIG_USB_G_PRINTER is not set
+-# CONFIG_USB_CDC_COMPOSITE is not set
+ CONFIG_MMC=m
+ # CONFIG_MMC_DEBUG is not set
+ # CONFIG_MMC_UNSAFE_RESUME is not set
+@@ -766,6 +825,17 @@ CONFIG_TMPFS=y
+ # CONFIG_BEFS_FS is not set
+ # CONFIG_BFS_FS is not set
+ # CONFIG_EFS_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++CONFIG_JFFS2_FS_WRITEBUFFER=y
++# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
++# CONFIG_JFFS2_SUMMARY is not set
++# CONFIG_JFFS2_FS_XATTR is not set
++# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
++CONFIG_JFFS2_ZLIB=y
++# CONFIG_JFFS2_LZO is not set
++CONFIG_JFFS2_RTIME=y
++# CONFIG_JFFS2_RUBIN is not set
+ # CONFIG_CRAMFS is not set
+ # CONFIG_VXFS_FS is not set
+ # CONFIG_MINIX_FS is not set
+@@ -1020,13 +1090,16 @@ CONFIG_CRYPTO=y
+ #
+ # Library routines
+ #
++CONFIG_BITREVERSE=y
+ # CONFIG_CRC_CCITT is not set
+ # CONFIG_CRC16 is not set
+ # CONFIG_CRC_T10DIF is not set
+ # CONFIG_CRC_ITU_T is not set
+-# CONFIG_CRC32 is not set
++CONFIG_CRC32=y
+ # CONFIG_CRC7 is not set
+ # CONFIG_LIBCRC32C is not set
++CONFIG_ZLIB_INFLATE=y
++CONFIG_ZLIB_DEFLATE=y
+ CONFIG_PLIST=y
+ CONFIG_HAS_IOMEM=y
+ CONFIG_HAS_IOPORT=y
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index 0010f2d..769cd6c 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -50,6 +50,21 @@ config MACH_SFFSDR
+ 	  Say Y here to select the Lyrtech Small Form Factor
+ 	  Software Defined Radio (SFFSDR) board.
+ 
++config SFFSDR_FPGA
++	tristate "SFFSDR SX-35 FPGA support"
++	default n
++	depends on MACH_SFFSDR
++	select FPGADL
++	select FW_LOADER
++	help
++	  This driver supports the SX-35 FPGA on the Lyrtech SFFSDR board.
++	  The FPGA is mainly used to generate the clocks for the audio
++	  codec and for transferring data to/from the other stacked boards
++	  (using the EMIF or VPSS ports).
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called sffsdr-fpga.
++
+ config DAVINCI_MUX
+ 	bool "DAVINCI multiplexing support"
+ 	depends on ARCH_DAVINCI
+diff --git a/arch/arm/mach-davinci/Makefile b/arch/arm/mach-davinci/Makefile
+index 6783681..8a7b3c2 100644
+--- a/arch/arm/mach-davinci/Makefile
++++ b/arch/arm/mach-davinci/Makefile
+@@ -19,3 +19,4 @@ obj-$(CONFIG_MACH_DAVINCI_EVM)  	+= board-dm644x-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DM646X_EVM)	+= board-dm646x-evm.o
+ obj-$(CONFIG_MACH_DAVINCI_DM355_EVM)	+= board-dm355-evm.o
+ obj-$(CONFIG_MACH_SFFSDR)		+= board-sffsdr.o
++obj-$(CONFIG_SFFSDR_FPGA)		+= board-sffsdr-fpga.o
+diff --git a/arch/arm/mach-davinci/board-sffsdr-fpga.c b/arch/arm/mach-davinci/board-sffsdr-fpga.c
+new file mode 100644
+index 0000000..b6a64dd
+--- /dev/null
++++ b/arch/arm/mach-davinci/board-sffsdr-fpga.c
+@@ -0,0 +1,283 @@
++/*
++ * SFFSDR-board specific FPGA driver
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/string.h>
++#include <linux/platform_device.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/cdev.h>
++#include <linux/fs.h>
++#include <linux/fpgadl.h>
++
++#include <asm/gpio.h>
++
++#include <mach/sffsdr-fpga.h>
++
++#define MODULE_NAME "sffsdr_fpga"
++
++/* Used to determine if the bitstream is loaded. */
++#define FPGA_DEVICE_NAME "fpgadl_par0"
++
++/* Define this to have verbose debug messages. */
++#define SFFSDR_FPGA_DEBUG 1
++
++#ifdef SFFSDR_FPGA_DEBUG
++#define DBGMSG(fmt, args...)					\
++	printk(KERN_INFO "%s: "fmt"\n" , MODULE_NAME, ## args)
++#define FAILMSG(fmt, args...)					\
++	printk(KERN_ERR "%s: "fmt"\n" , MODULE_NAME, ## args)
++#else
++#define DBGMSG(fmt, args...)
++#define FAILMSG(fmt, args...)
++#endif
++
++#define FPGA_FULL_RESET_VAL	3
++#define FPGA_PARTIAL_RESET_VAL	2
++
++#define FPGA_DS2_ON		(1<<0)
++#define FPGA_DS3_ON		(1<<1)
++#define FPGA_DS4_ON		(1<<2)
++#define FPGA_DS5_ON		(1<<3)
++#define FPGA_DS6_ON		(1<<4)
++
++/* Sampling frequency divider, bits 5:4 */
++#define FPGA_FS_DIV_BY_1	(0<<4)
++#define FPGA_FS_DIV_BY_2	(1<<4)
++#define FPGA_FS_DIV_BY_4	(2<<4)
++#define FPGA_FS_DIV_RSV		(3<<4)
++
++/* Sampling rate selection, bit 2 */
++#define FPGA_SR_STANDARD	(0<<2) /* Standard sampling rate, default */
++#define FPGA_SR_DOUBLE		(1<<2) /* Double sampling rate */
++
++/* Sampling frequency selection, bits 1:0 */
++#define FPGA_FS_48000		(0<<0) /* 48.0 kHz (PLL 12.288 MHz) */
++#define FPGA_FS_44100		(1<<0) /* 44.1 kHz (PLL 11.2896 MHz) */
++#define FPGA_FS_32000		(2<<0) /* 32.0 kHz (PLL 8.192 MHz) */
++#define FPGA_FS_RSV		(3<<0) /* Reserved */
++
++struct sffsdr_fpga_dev_t {
++	int bitstream_mode;
++	u16 *regs;
++};
++
++static enum {
++	SFFSDR_FPGA_STATE_START,
++	SFFSDR_FPGA_STATE_DRV_STRUCT_ALLOCATED,
++	SFFSDR_FPGA_STATE_REGS_MAPPED,
++} sffsdr_fpga_state;
++
++struct sffsdr_fpga_dev_t *sffsdr_fpga_dev;
++
++/* The EMIF address lines A0 to A2 are not routed to the
++ * FPGA. Therefore, the upper 16 bits are never valid. */
++u16 sffsdr_fpga_regread(int offset)
++{
++	return sffsdr_fpga_dev->regs[offset / 2];
++}
++EXPORT_SYMBOL(sffsdr_fpga_regread);
++
++void sffsdr_fpga_regwrite(int offset, u16 value)
++{
++	sffsdr_fpga_dev->regs[offset / 2] = value;
++}
++EXPORT_SYMBOL(sffsdr_fpga_regwrite);
++
++/* Reset the inside logic of the FPGA according to the
++ * bitstream mode. This is done when the bitstream has
++ * been programmed and is Lyrtech SFF-SDR specific. */
++static void sffsdr_fpga_reset(int bitstream_mode)
++{
++	u32 value;
++
++	if (bitstream_mode == BITSTREAM_MODE_FULL)
++		value = FPGA_FULL_RESET_VAL;
++	else
++		value = FPGA_PARTIAL_RESET_VAL;
++
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_GLOBAL_CTRL, value);
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_GLOBAL_CTRL, 0);
++}
++
++static int sffsdr_fpga_post_load(int bitstream_mode)
++{
++	DBGMSG("sffsdr_fpga_post_load()");
++
++	if (fpgadl_is_bitstream_loaded(FPGA_DEVICE_NAME) < 1) {
++		FAILMSG("  FPGA is not programmed");
++		return -ENODEV;
++	}
++
++	sffsdr_fpga_reset(bitstream_mode);
++
++	DBGMSG("FPGA Revision: %d",
++	       sffsdr_fpga_regread(SFFSDR_FPGA_REVISION));
++
++	/* Light some LEDs to indicate success. */
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_LED_CONTROL, FPGA_DS2_ON |
++			     FPGA_DS3_ON | FPGA_DS4_ON | FPGA_DS5_ON |
++			     FPGA_DS6_ON);
++
++	/* Set default CODEC clock values. */
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_PLL_CODEC, FPGA_FS_DIV_BY_1 |
++			     FPGA_FS_44100 | FPGA_SR_STANDARD);
++
++	return 0;
++}
++
++int sffsdr_fpga_set_codec_fs(int fs)
++{
++	u16 fs_mask;
++
++	if (fpgadl_is_bitstream_loaded(FPGA_DEVICE_NAME) < 1) {
++		FAILMSG("FPGA is not programmed");
++		return -ENODEV;
++	}
++
++	switch (fs) {
++	case 32000:
++		fs_mask = FPGA_FS_32000;
++		break;
++	case 44100:
++		fs_mask = FPGA_FS_44100;
++		break;
++	case 48000:
++		fs_mask = FPGA_FS_48000;
++		break;
++	default:
++		FAILMSG("Unsupported sampling frequency");
++		return -EFAULT;
++		break;
++	}
++
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_PLL_CODEC, FPGA_FS_DIV_BY_1 |
++			     fs_mask | FPGA_SR_STANDARD);
++
++	return 0;
++}
++EXPORT_SYMBOL(sffsdr_fpga_set_codec_fs);
++
++static void sffsdr_fpga_cleanup(void)
++{
++	switch (sffsdr_fpga_state) {
++	case SFFSDR_FPGA_STATE_REGS_MAPPED:
++		iounmap(sffsdr_fpga_dev->regs);
++	case SFFSDR_FPGA_STATE_DRV_STRUCT_ALLOCATED:
++		kfree(sffsdr_fpga_dev);
++	case SFFSDR_FPGA_STATE_START:
++		/* Nothing to do. */
++		break;
++	}
++}
++
++static int __devinit sffsdr_fpga_probe(struct platform_device *pdev)
++{
++	struct resource *fpgaregs_res;
++	int len;
++	int result;
++
++	DBGMSG("sffsdr_fpga_probe()");
++
++	sffsdr_fpga_state = SFFSDR_FPGA_STATE_START;
++
++	sffsdr_fpga_dev = kzalloc(sizeof(*sffsdr_fpga_dev), GFP_KERNEL);
++	if (!sffsdr_fpga_dev) {
++		FAILMSG("Failed to allocate device structure");
++		result = -ENOMEM;
++		goto error;
++	}
++	sffsdr_fpga_state = SFFSDR_FPGA_STATE_DRV_STRUCT_ALLOCATED;
++
++	pdev->dev.driver_data = sffsdr_fpga_dev; /* Private driver data */
++
++	/* Assign virtual addresses to FPGAREGS I/O memory regions. */
++	fpgaregs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						    "sffsdr_regs");
++	if (!fpgaregs_res) {
++		FAILMSG("Error getting fpgaregs ressource");
++		result = -ENODEV;
++		goto error;
++	}
++	len = fpgaregs_res->end - fpgaregs_res->start;
++	sffsdr_fpga_dev->regs = ioremap(fpgaregs_res->start, len);
++	if (!sffsdr_fpga_dev->regs) {
++		FAILMSG("Can't remap fpgaregs registers");
++		result = -ENXIO;
++		goto error;
++	}
++	sffsdr_fpga_state = SFFSDR_FPGA_STATE_REGS_MAPPED;
++
++	/* Temporary... */
++	sffsdr_fpga_post_load(BITSTREAM_MODE_FULL);
++
++	return 0;
++
++error:
++	sffsdr_fpga_cleanup();
++	return result;
++}
++
++static int __devexit sffsdr_fpga_remove(struct platform_device *pdev)
++{
++	DBGMSG("sffsdr_fpga_remove()");
++	sffsdr_fpga_cleanup();
++
++	return 0;
++}
++
++static struct platform_driver sffsdr_fpga_platform_driver = {
++	.driver         = {
++		.name   = MODULE_NAME,
++		.owner  = THIS_MODULE,
++	},
++	.remove = sffsdr_fpga_remove,
++};
++
++static int __init sffsdr_fpga_init(void)
++{
++	int res;
++
++	DBGMSG("sffsdr_fpga_init()");
++
++	res = platform_driver_probe(&sffsdr_fpga_platform_driver,
++				    sffsdr_fpga_probe);
++	if (res) {
++		DBGMSG("platform_driver_probe() failed");
++		return res;
++	}
++
++	return 0;
++}
++module_init(sffsdr_fpga_init);
++
++static void __exit sffsdr_fpga_exit(void)
++{
++	DBGMSG("sffsdr_fpga_exit()");
++	platform_driver_unregister(&sffsdr_fpga_platform_driver);
++}
++module_exit(sffsdr_fpga_exit);
++
++MODULE_AUTHOR("Hugo Villeneuve <hvilleneuve@lyrtech.com>");
++MODULE_DESCRIPTION("Lyrtech SFFSDR SX-35 FPGA driver");
++MODULE_LICENSE("GPL");
+diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
+index 0d83cb0..aee4472 100644
+--- a/arch/arm/mach-davinci/board-sffsdr.c
++++ b/arch/arm/mach-davinci/board-sffsdr.c
+@@ -5,8 +5,7 @@
+  * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
+  *
+  * Based on DV-EVM platform, original copyright follows:
+- *
+- * Copyright (C) 2007 MontaVista Software, Inc.
++ *   Copyright (C) 2007 MontaVista Software, Inc.
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -29,7 +28,6 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/platform_device.h>
+ #include <linux/gpio.h>
+-
+ #include <linux/i2c.h>
+ #include <linux/i2c/at24.h>
+ #include <linux/etherdevice.h>
+@@ -38,10 +36,10 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/io.h>
++#include <linux/fpgadl.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/mach-types.h>
+-
+ #include <asm/mach/arch.h>
+ #include <asm/mach/map.h>
+ #include <asm/mach/flash.h>
+@@ -51,11 +49,28 @@
+ #include <mach/emac.h>
+ #include <mach/i2c.h>
+ #include <mach/serial.h>
++#include <mach/mmc.h>
+ #include <mach/psc.h>
+ #include <mach/mux.h>
++#include <mach/nand.h>
++#include <mach/mmc.h>
++#include <mach/sffsdr-lyrvpfe.h>
++
++#define XC4VSX35_PAYLOAD_SIZE	(1707240)
++
++#define DAVINCI_ASYNC_EMIF_CONTROL_BASE		0x01e00000
++#define DAVINCI_ASYNC_EMIF_DATA_CE0_BASE	0x02000000
++
++#define DAVINCI_VPSS_REGS_BASE			0x01C70000
++
++#define FPGA_SELECTMAP_BASE			0x04000000
++#define FPGA_SFFSDR_REGS_BASE			0x04008000
++
++/* DDR2 memory is 256 Mbytes */
++#define DDR2_BASE		0x80000000
+ 
+-#define DAVINCI_ASYNC_EMIF_CONTROL_BASE   0x01e00000
+-#define DAVINCI_ASYNC_EMIF_DATA_CE0_BASE  0x02000000
++#define SFFSDR_MMC_CD_PIN	GPIO(51)
++#define SFFSDR_MMC_RO_PIN	GPIO(50)
+ 
+ struct mtd_partition davinci_sffsdr_nandflash_partition[] = {
+ 	/* U-Boot Environment: Block 0
+@@ -78,9 +93,10 @@ struct mtd_partition davinci_sffsdr_nandflash_partition[] = {
+ 	},
+ };
+ 
+-static struct flash_platform_data davinci_sffsdr_nandflash_data = {
++static struct davinci_nand_pdata davinci_sffsdr_nandflash_data = {
+ 	.parts		= davinci_sffsdr_nandflash_partition,
+ 	.nr_parts	= ARRAY_SIZE(davinci_sffsdr_nandflash_partition),
++	.ecc_mode	= NAND_ECC_HW,
+ };
+ 
+ static struct resource davinci_sffsdr_nandflash_resource[] = {
+@@ -105,9 +121,6 @@ static struct platform_device davinci_sffsdr_nandflash_device = {
+ 	.resource	= davinci_sffsdr_nandflash_resource,
+ };
+ 
+-/* Get Ethernet address from kernel boot params */
+-static u8 davinci_sffsdr_mac_addr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+-
+ static struct at24_platform_data eeprom_info = {
+ 	.byte_len	= (64*1024) / 8,
+ 	.page_size	= 32,
+@@ -137,12 +150,126 @@ static void __init sffsdr_init_i2c(void)
+ 	i2c_register_board_info(1, i2c_info, ARRAY_SIZE(i2c_info));
+ }
+ 
++static int sffsdr_mmc_get_cd(int module)
++{
++	return gpio_get_value(SFFSDR_MMC_CD_PIN);
++}
++
++static int sffsdr_mmc_get_ro(int module)
++{
++	return gpio_get_value(SFFSDR_MMC_RO_PIN);
++}
++
++static struct davinci_mmc_config sffsdr_mmc_config = {
++	.get_cd		= sffsdr_mmc_get_cd,
++	.get_ro		= sffsdr_mmc_get_ro,
++	.wires		= 4
++};
++
++/*
++ * The FPGA is loaded using the SelectMAP mode through
++ * the EMIF interface and some dedicated control signals:
++ *
++ *   FPGA          DM6446
++ *   --------------------
++ *   PROGRAM_B     GPIO37
++ *   DONE          GPIO39
++ *   INIT          GPIO40
++ *   DOUT_BUSY     GPIO42 (Not used)
++ *   CS_B          EMIF_A13 OR CS3n
++ */
++static struct fpgadl_pdata_t fpgadl_par_pdata = {
++	.fpga_family		= FPGA_FAMILY_XILINX_XC4V,
++	.payload_full_size	= XC4VSX35_PAYLOAD_SIZE,
++	.program_b		= GPIO(37),
++	.done			= GPIO(39),
++	.init_b			= GPIO(40),
++	.bitstream_name		= "fpga.bit",
++	.check_init_low		= 0,
++};
++
++/* FPGA physical EMIF register resources. */
++static struct resource davinci_fpgadl_par_resources[] = {
++	{
++		.name           = "selectmap",
++		.start		= FPGA_SELECTMAP_BASE,
++		.end		= FPGA_SELECTMAP_BASE + 4 - 1,
++		.flags		= IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device davinci_fpgadl_par_device = {
++	.name		= "fpgadl_par", /* Name of driver */
++	.id		= 0,
++	.dev		= {
++		.platform_data	= &fpgadl_par_pdata,
++	},
++	.num_resources	= ARRAY_SIZE(davinci_fpgadl_par_resources),
++	.resource	= davinci_fpgadl_par_resources,
++};
++
++/* SFFSDR specific FPGA registers. */
++static struct resource davinci_sffsdr_fpga_resources[] = {
++	{
++		.name           = "sffsdr_regs",
++		.start		= FPGA_SFFSDR_REGS_BASE,
++		.end		= FPGA_SFFSDR_REGS_BASE + SZ_1K - 1,
++		.flags		= IORESOURCE_MEM,
++	},
++};
++
++static struct platform_device davinci_sffsdr_fpga_device = {
++	.name		= "sffsdr_fpga", /* Name of driver */
++	.id		= -1, /* Only one instance = -1 */
++	.num_resources	= ARRAY_SIZE(davinci_sffsdr_fpga_resources),
++	.resource	= davinci_sffsdr_fpga_resources,
++};
++
++static struct lyrvpfe_platform_data lyrvpfe_pdata = {
++	/*
++	 * GPIO(1) for DSP  to FPGA (VPBE)
++	 * GPIO(0) for FPGA to DSP  (VPFE)
++	 */
++	.ready_gpio = GPIO(0), /* DSP to FPGA (VPFE) */
++};
++
++static struct resource lyrvpfe_resources[] = {
++	{
++		.name           = "regs",
++		.start          = DAVINCI_VPSS_REGS_BASE,
++		.end            = DAVINCI_VPSS_REGS_BASE + SZ_16K - 1,
++		.flags          = IORESOURCE_MEM,
++	},
++	{
++		.name           = "irq",
++		.start          = IRQ_VDINT0,
++		.end            = IRQ_VDINT0,
++		.flags          = IORESOURCE_IRQ,
++	},
++};
++
++static struct platform_device lyrvpfe_pdev = {
++	.name           = "lyrvpfe",
++	.id             = 0,
++	.dev		= {
++		.platform_data	= &lyrvpfe_pdata,
++	},
++	.resource       = lyrvpfe_resources,
++	.num_resources  = ARRAY_SIZE(lyrvpfe_resources),
++};
++
+ static struct platform_device *davinci_sffsdr_devices[] __initdata = {
+-	&davinci_sffsdr_nandflash_device,
++	&davinci_fpgadl_par_device, /* Bitstream loading - parallel */
++	&davinci_sffsdr_fpga_device, /* Application functionality */
++	&lyrvpfe_pdev,
+ };
+ 
++/*
++ * UART0: console
++ * UART1: FPGA
++ */
+ static struct davinci_uart_config uart_config __initdata = {
+-	.enabled_uarts = (1 << 0),
++	.enabled_uarts = DAVINCI_UART0_ENA | DAVINCI_UART1_ENA,
+ };
+ 
+ static void __init davinci_sffsdr_map_io(void)
+@@ -151,39 +278,37 @@ static void __init davinci_sffsdr_map_io(void)
+ 	dm644x_init();
+ }
+ 
+-static __init void davinci_sffsdr_init(void)
++static void __init davinci_sffsdr_init(void)
+ {
++	gpio_request(SFFSDR_MMC_CD_PIN, "MMC CD");
++	gpio_direction_input(SFFSDR_MMC_CD_PIN);
++	gpio_request(SFFSDR_MMC_RO_PIN, "MMC RO");
++	gpio_direction_input(SFFSDR_MMC_RO_PIN);
++
++	/* Turn UART1 MUX ON. */
++	davinci_cfg_reg(DM644X_UART1);
++
+ 	platform_add_devices(davinci_sffsdr_devices,
+ 			     ARRAY_SIZE(davinci_sffsdr_devices));
+ 	sffsdr_init_i2c();
+-	davinci_serial_init(&uart_config);
+-	davinci_init_emac(davinci_sffsdr_mac_addr);
+-	setup_usb(0, 0); /* We support only peripheral mode. */
+ 
+-	/* mux VLYNQ pins */
+-	davinci_cfg_reg(DM644X_VLYNQEN);
+-	davinci_cfg_reg(DM644X_VLYNQWD);
+-}
++	davinci_serial_init(&uart_config);
+ 
+-static int davinci_cpmac_eth_setup(char *str)
+-{
+-	int i;
++#if defined(CONFIG_MTD_NAND_DAVINCI) || \
++    defined(CONFIG_MTD_NAND_DAVINCI_MODULE)
++	davinci_cfg_reg(DM644X_HPIEN_DISABLE);
++	davinci_cfg_reg(DM644X_ATAEN_DISABLE);
++	platform_device_register(&davinci_sffsdr_nandflash_device);
++#endif
+ 
+-	if (str == NULL)
+-		return 0;
++	davinci_setup_mmc(0, &sffsdr_mmc_config);
+ 
+-	/* Conversion of a MAC address from a string (AA:BB:CC:DD:EE:FF)
+-	 * to a 6 bytes array. */
+-	for (i = 0; i < 6; i++)
+-		davinci_sffsdr_mac_addr[i] = simple_strtol(&str[i*3],
+-							   (char **)NULL, 16);
++	davinci_init_emac(NULL);
+ 
+-	return 1;
++	setup_usb(0, 0); /* We support only peripheral mode. */
+ }
+-/* Get MAC address from kernel boot parameter eth=AA:BB:CC:DD:EE:FF */
+-__setup("eth=", davinci_cpmac_eth_setup);
+ 
+-static __init void davinci_sffsdr_irq_init(void)
++static void __init davinci_sffsdr_irq_init(void)
+ {
+ 	davinci_irq_init();
+ }
+@@ -195,6 +320,6 @@ MACHINE_START(SFFSDR, "Lyrtech SFFSDR")
+ 	.boot_params  = (DAVINCI_DDR_BASE + 0x100),
+ 	.map_io	      = davinci_sffsdr_map_io,
+ 	.init_irq     = davinci_sffsdr_irq_init,
+-	.timer	      = &davinci_timer,
+ 	.init_machine = davinci_sffsdr_init,
++	.timer	      = &davinci_timer,
+ MACHINE_END
+diff --git a/arch/arm/mach-davinci/include/mach/sffsdr-fpga.h b/arch/arm/mach-davinci/include/mach/sffsdr-fpga.h
+new file mode 100644
+index 0000000..6607ac0
+--- /dev/null
++++ b/arch/arm/mach-davinci/include/mach/sffsdr-fpga.h
+@@ -0,0 +1,54 @@
++/*
++ * sffsdr_fpga.h
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ *
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
++ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
++ * NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
++ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ * You should have received a copy of the  GNU General Public License along
++ * with this program; if not, write  to the Free Software Foundation, Inc.,
++ * 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#ifndef __SFFSDR_FPGA_H
++#define __SFFSDR_FPGA_H
++
++#define SFFSDR_FPGA_REVISION			0x000
++#define SFFSDR_FPGA_GLOBAL_CTRL			0x040
++#define SFFSDR_FPGA_LED_CONTROL			0x300
++#define SFFSDR_FPGA_PLL_CODEC			0x800
++
++/* VPSS configuration register */
++#define SFFSDR_FPGA_VPSS_CONTROL		0xA00
++
++/* VPSS, VPBE packet size configuration register */
++#define SFFSDR_FPGA_VPSS_FROM_DSP_FIFO		0xA40
++
++/* VPSS, VPFE packet size configuration register */
++#define SFFSDR_FPGA_VPSS_TO_DSP_FIFO		0xA80
++
++/* VPSS, VPFE number of lines configuration register */
++#define SFFSDR_FPGA_VPSS_LINES_PER_FRAME	0xAC0
++
++#define SFFSDR_FPGA_CUSTOM_REG0_LSB		0xC00
++#define SFFSDR_FPGA_CUSTOM_REG0_MSB		0xC20
++
++u16 sffsdr_fpga_regread(int offset);
++
++void sffsdr_fpga_regwrite(int offset, u16 value);
++
++int sffsdr_fpga_set_codec_fs(int fs);
++
++#endif /* __SFFSDR_FPGA_H */
+-- 
+1.5.4.5
+

@@ -1,0 +1,54 @@
+From 2e852db8367da3d3f60230419bd36bab2535c0ff Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Thu, 5 Mar 2009 17:11:05 -0500
+Subject: [PATCH 04/12] Davinci: Enable MAC address to be specified on kernel cmd line
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ arch/arm/mach-davinci/devices.c |   23 +++++++++++++++++++++++
+ 1 files changed, 23 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/devices.c b/arch/arm/mach-davinci/devices.c
+index a0f5a60..db433be 100644
+--- a/arch/arm/mach-davinci/devices.c
++++ b/arch/arm/mach-davinci/devices.c
+@@ -353,6 +353,27 @@ static struct platform_device dm646x_emac_device = {
+ 	}
+ };
+ 
++/* Get Ethernet address from kernel boot params */
++static u8 davinci_bootloader_mac_addr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
++
++static int /*__init */ davinci_bootloader_mac_setup(char *str)
++{
++	int i;
++
++	if (str == NULL)
++		return 0;
++
++	/* Conversion of a MAC address from a string (AA:BB:CC:DD:EE:FF)
++	 * to a 6 bytes array. */
++	for (i = 0; i < 6; i++)
++		davinci_bootloader_mac_addr[i] =
++			simple_strtol(&str[i*3], (char **)NULL, 16);
++
++	return 1;
++}
++/* Get MAC address from kernel  boot parameter eth=AA:BB:CC:DD:EE:FF */
++__setup("eth=", davinci_bootloader_mac_setup);
++
+ void davinci_init_emac(char *mac_addr)
+ {
+ 	DECLARE_MAC_BUF(buf);
+@@ -366,6 +387,8 @@ void davinci_init_emac(char *mac_addr)
+ 
+ 	if (mac_addr && is_valid_ether_addr(mac_addr))
+ 		memcpy(emac_pdata.mac_addr, mac_addr, 6);
++	else if (is_valid_ether_addr(davinci_bootloader_mac_addr))
++		memcpy(emac_pdata.mac_addr, davinci_bootloader_mac_addr, 6);
+ 	else {
+ 		/* Use random MAC if none passed */
+ 		random_ether_addr(emac_pdata.mac_addr);
+-- 
+1.5.4.5
+

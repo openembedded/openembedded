@@ -1,0 +1,31 @@
+From f090919d8c0d1ecb0df6148ff34b6c20d4fb4ba3 Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Thu, 5 Mar 2009 14:35:56 -0500
+Subject: [PATCH 02/12] ARM: Mark unsupported syscalls as IGNORE
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ scripts/checksyscalls.sh |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
+index 60d00d1..2a75819 100755
+--- a/scripts/checksyscalls.sh
++++ b/scripts/checksyscalls.sh
+@@ -109,6 +109,13 @@ cat << EOF
+ #define __IGNORE_getpmsg
+ #define __IGNORE_putpmsg
+ #define __IGNORE_vserver
++
++/* Remove some warnings for ARM target. */
++#define __IGNORE_fadvise64
++#define __IGNORE_migrate_pages
++#define __IGNORE_pselect6
++#define __IGNORE_ppoll
++#define __IGNORE_epoll_pwait
+ EOF
+ }
+ 
+-- 
+1.5.4.5
+

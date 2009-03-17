@@ -1,0 +1,26 @@
+From 867883ee8c226ce2c3a43c9d815a2ad706b1c19e Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Thu, 5 Mar 2009 15:43:16 -0500
+Subject: [PATCH 08/12] ALSA: ASoC: Davinci: Fix incorrect machine type for SFFSDR board
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ sound/soc/davinci/Kconfig |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 7d3a85d..411a710 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -21,7 +21,7 @@ config SND_DAVINCI_SOC_EVM
+ 
+ config SND_DAVINCI_SOC_SFFSDR
+ 	tristate "SoC Audio support for SFFSDR"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_SFFSDR
++	depends on SND_DAVINCI_SOC && MACH_SFFSDR
+ 	select SND_DAVINCI_SOC_I2S
+ 	select SND_SOC_PCM3008
+ 	select SFFSDR_FPGA
+-- 
+1.5.4.5
+
