@@ -6,7 +6,7 @@ PR = "r1"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core
+inherit qt4e
 
 SRCREV = "c306f8e1ab92d916d99516d6aebc0749c1be5f5e"
 SRC_URI = "git://git.neurostechnology.com/git/app-photoalbum;protocol=git"

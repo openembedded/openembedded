@@ -1,2 +1,2 @@
 require qtnx.inc
-inherit qtopia4core
+inherit qt4e
