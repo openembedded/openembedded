@@ -11,6 +11,7 @@ DEFAULT_PREFERENCE_stb225 = "28"
 DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_tosa = "1"
 DEFAULT_PREFERENCE_gamecube = "1"
+DEFAULT_PREFERENCE_wrap = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.28.tar.bz2 \
            file://defconfig"
