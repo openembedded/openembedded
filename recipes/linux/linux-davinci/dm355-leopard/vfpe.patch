@@ -1,0 +1,143 @@
+Subject:
+[PATCH 7/7] DM355 platform related changes for vpfe capture driver
+From:
+m-karicheri2-l0cyMroinI0@public.gmane.org
+Date:
+Fri, 13 Mar 2009 17:24:34 -0400
+To:
+davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, davinci_opensource_ccb-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org, psp_video-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org
+Newsgroups:
+gmane.linux.davinci
+
+Add platform related changes for vpfe capture driver on DM355
+
+Signed-off-by: Murali Karicheri <m-karicheri2-l0cyMroinI0@public.gmane.org>
+---
+ arch/arm/mach-davinci/board-dm355-leopard.c    |   91 +++++++++++++++++++++++++++-
+
+diff --git a/arch/arm/mach-davinci/board-dm355-leopard.c b/arch/arm/mach-davinci/board-dm355-leopard.c
+index e104650..aaa58ba 100644
+--- a/arch/arm/mach-davinci/board-dm355-leopard.c
++++ b/arch/arm/mach-davinci/board-dm355-leopard.c
+@@ -20,6 +20,8 @@
+ #include <linux/io.h>
+ #include <linux/gpio.h>
+ #include <linux/clk.h>
++#include <media/v4l2-int-device.h>
++#include <media/tvp514x.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/eeprom.h>
+ 
+@@ -134,12 +136,58 @@ static void dm355leopard_mmcsd_gpios(unsigned gpio)
+ 	dm355leopard_mmc_gpios = gpio;
+ }
+ 
++#define TVP5146_I2C_ADDR		0x5D
++static struct v4l2_ifparm tvp5146_ifparm = {
++	.if_type = V4L2_IF_TYPE_BT656,
++	.u = {
++	      .bt656 = {
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct = 0,
++			.swap = 0,
++			.latch_clk_inv = 0,
++			.nobt_hs_inv = 0,	/* active high */
++			.nobt_vs_inv = 0,	/* active high */
++			.mode = V4L2_IF_TYPE_BT656_MODE_BT_8BIT,
++			.clock_min = TVP514X_XCLK_BT656,
++			.clock_max = TVP514X_XCLK_BT656,
++			},
++	      },
++};
++
++/**
++ * @brief tvp5146_g_ifparm - Returns the TVP5146 decoder interface parameters
++ *
++ * @param p - pointer to v4l2_ifparm structure
++ * @return result of operation - 0 is success
++ */
++static int tvp5146_g_ifparm(struct v4l2_ifparm *p)
++{
++	if (p == NULL)
++		return -EINVAL;
++
++	*p = tvp5146_ifparm;
++	return 0;
++}
++
++#define TVP5146_NUM_INPUTS		ARRAY_SIZE(tvp5146_input_list)
++
++static struct tvp514x_platform_data tvp5146_pdata = {
++	.master = CAPTURE_DRV_NAME,
++	.ifparm = tvp5146_g_ifparm,
++	.hs_polarity = 1,
++	.vs_polarity = 1
++};
++
+ static struct i2c_board_info dm355leopard_i2c_info[] = {
+-	{ I2C_BOARD_INFO("dm355leopard_msp", 0x25),
++	{	I2C_BOARD_INFO("dm355leopard_msp", 0x25),
+ 		.platform_data = dm355leopard_mmcsd_gpios,
+-		/* plus irq */ },
++	},
++	{
++		I2C_BOARD_INFO("tvp5146", TVP5146_I2C_ADDR),
++		.platform_data = &tvp5146_pdata,
++	},
++	/* { plus irq  }, */
+ 	/* { I2C_BOARD_INFO("tlv320aic3x", 0x1b), }, */
+-	/* { I2C_BOARD_INFO("tvp5146", 0x5d), }, */
+ };
+ 
+ static void __init leopard_init_i2c(void)
+@@ -178,6 +226,41 @@ static struct platform_device dm355leopard_dm9000 = {
+ 	.num_resources	= ARRAY_SIZE(dm355leopard_dm9000_rsrc),
+ };
+ 
++#define TVP514X_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
++
++static struct vpfe_capture_input vpfe_capture_inputs = {
++	.num_inputs = VPFE_MAX_DEC_INPUTS,
++	.current_input = 0,
++	.inputs[0] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 0,
++			.name = "COMPOSITE",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_CVBS_VI2B,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++	.inputs[1] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 1,
++			.name = "SVIDEO",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_SVIDEO_VI2C_VI1C,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++};
++
+ static struct platform_device *davinci_leopard_devices[] __initdata = {
+ 	&dm355leopard_dm9000,
+ 	&davinci_nand_device,
+@@ -190,6 +273,8 @@ static struct davinci_uart_config uart_config __initdata = {
+ static void __init dm355_leopard_map_io(void)
+ {
+ 	davinci_map_common_io();
++	/* setup input configuration for VPFE input devices */
++	setup_vpfe_input_config(&vpfe_capture_inputs);
+ 	dm355_init();
+ }
+ 

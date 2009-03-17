@@ -1,0 +1,283 @@
+Subject:
+[PATCH 7/7] DM355 platform related changes for vpfe capture driver
+From:
+m-karicheri2-l0cyMroinI0@public.gmane.org
+Date:
+Fri, 13 Mar 2009 17:24:34 -0400
+To:
+davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, davinci_opensource_ccb-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org, psp_video-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org
+Newsgroups:
+gmane.linux.davinci
+
+Add platform related changes for vpfe capture driver on DM355
+
+Signed-off-by: Murali Karicheri <m-karicheri2-l0cyMroinI0@public.gmane.org>
+---
+ arch/arm/mach-davinci/board-dm355-evm.c    |   91 +++++++++++++++++++++++++++-
+ arch/arm/mach-davinci/dm355.c              |   64 +++++++++++++++++++
+ arch/arm/mach-davinci/include/mach/dm355.h |    2 +
+ arch/arm/mach-davinci/include/mach/mux.h   |    9 +++
+ 4 files changed, 163 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
+index e104650..aaa58ba 100644
+--- a/arch/arm/mach-davinci/board-dm355-evm.c
++++ b/arch/arm/mach-davinci/board-dm355-evm.c
+@@ -20,6 +20,8 @@
+ #include <linux/io.h>
+ #include <linux/gpio.h>
+ #include <linux/clk.h>
++#include <media/v4l2-int-device.h>
++#include <media/tvp514x.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/eeprom.h>
+ 
+@@ -134,12 +136,58 @@ static void dm355evm_mmcsd_gpios(unsigned gpio)
+ 	dm355evm_mmc_gpios = gpio;
+ }
+ 
++#define TVP5146_I2C_ADDR		0x5D
++static struct v4l2_ifparm tvp5146_ifparm = {
++	.if_type = V4L2_IF_TYPE_BT656,
++	.u = {
++	      .bt656 = {
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct = 0,
++			.swap = 0,
++			.latch_clk_inv = 0,
++			.nobt_hs_inv = 0,	/* active high */
++			.nobt_vs_inv = 0,	/* active high */
++			.mode = V4L2_IF_TYPE_BT656_MODE_BT_8BIT,
++			.clock_min = TVP514X_XCLK_BT656,
++			.clock_max = TVP514X_XCLK_BT656,
++			},
++	      },
++};
++
++/**
++ * @brief tvp5146_g_ifparm - Returns the TVP5146 decoder interface parameters
++ *
++ * @param p - pointer to v4l2_ifparm structure
++ * @return result of operation - 0 is success
++ */
++static int tvp5146_g_ifparm(struct v4l2_ifparm *p)
++{
++	if (p == NULL)
++		return -EINVAL;
++
++	*p = tvp5146_ifparm;
++	return 0;
++}
++
++#define TVP5146_NUM_INPUTS		ARRAY_SIZE(tvp5146_input_list)
++
++static struct tvp514x_platform_data tvp5146_pdata = {
++	.master = CAPTURE_DRV_NAME,
++	.ifparm = tvp5146_g_ifparm,
++	.hs_polarity = 1,
++	.vs_polarity = 1
++};
++
+ static struct i2c_board_info dm355evm_i2c_info[] = {
+-	{ I2C_BOARD_INFO("dm355evm_msp", 0x25),
++	{	I2C_BOARD_INFO("dm355evm_msp", 0x25),
+ 		.platform_data = dm355evm_mmcsd_gpios,
+-		/* plus irq */ },
++	},
++	{
++		I2C_BOARD_INFO("tvp5146", TVP5146_I2C_ADDR),
++		.platform_data = &tvp5146_pdata,
++	},
++	/* { plus irq  }, */
+ 	/* { I2C_BOARD_INFO("tlv320aic3x", 0x1b), }, */
+-	/* { I2C_BOARD_INFO("tvp5146", 0x5d), }, */
+ };
+ 
+ static void __init evm_init_i2c(void)
+@@ -178,6 +226,41 @@ static struct platform_device dm355evm_dm9000 = {
+ 	.num_resources	= ARRAY_SIZE(dm355evm_dm9000_rsrc),
+ };
+ 
++#define TVP514X_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
++
++static struct vpfe_capture_input vpfe_capture_inputs = {
++	.num_inputs = VPFE_MAX_DEC_INPUTS,
++	.current_input = 0,
++	.inputs[0] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 0,
++			.name = "COMPOSITE",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_CVBS_VI2B,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++	.inputs[1] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 1,
++			.name = "SVIDEO",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_SVIDEO_VI2C_VI1C,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++};
++
+ static struct platform_device *davinci_evm_devices[] __initdata = {
+ 	&dm355evm_dm9000,
+ 	&davinci_nand_device,
+@@ -190,6 +273,8 @@ static struct davinci_uart_config uart_config __initdata = {
+ static void __init dm355_evm_map_io(void)
+ {
+ 	davinci_map_common_io();
++	/* setup input configuration for VPFE input devices */
++	setup_vpfe_input_config(&vpfe_capture_inputs);
+ 	dm355_init();
+ }
+ 
+diff --git a/arch/arm/mach-davinci/dm355.c b/arch/arm/mach-davinci/dm355.c
+index 5f31649..e2612dd 100644
+--- a/arch/arm/mach-davinci/dm355.c
++++ b/arch/arm/mach-davinci/dm355.c
+@@ -463,6 +463,14 @@ INT_CFG(DM355,  INT_EDMA_TC1_ERR,     4,    1,    1,     false)
+ EVT_CFG(DM355,  EVT8_ASP1_TX,	      0,    1,    0,     false)
+ EVT_CFG(DM355,  EVT9_ASP1_RX,	      1,    1,    0,     false)
+ EVT_CFG(DM355,  EVT26_MMC0_RX,	      2,    1,    0,     false)
++
++MUX_CFG(DM355,	VIN_PCLK,	0,   14,    1,    1,	 false)
++MUX_CFG(DM355,	VIN_CAM_WEN,	0,   13,    1,    1,	 false)
++MUX_CFG(DM355,	VIN_CAM_VD,	0,   12,    1,    1,	 false)
++MUX_CFG(DM355,	VIN_CAM_HD,	0,   11,    1,    1,	 false)
++MUX_CFG(DM355,	VIN_YIN_EN,	0,   10,    1,    1,	 false)
++MUX_CFG(DM355,	VIN_CINL_EN,	0,   0,   0xff, 0x55,	 false)
++MUX_CFG(DM355,	VIN_CINH_EN,	0,   8,     3,    3,	 false)
+ };
+ 
+ /*----------------------------------------------------------------------*/
+@@ -520,6 +528,47 @@ static struct platform_device dm355_edma_device = {
+ 	.resource		= edma_resources,
+ };
+ 
++static struct resource vpfe_resources[] = {
++	{
++		.start          = IRQ_VDINT0,
++		.end            = IRQ_VDINT0,
++		.flags          = IORESOURCE_IRQ,
++	},
++	{
++		.start          = IRQ_VDINT1,
++		.end            = IRQ_VDINT1,
++		.flags          = IORESOURCE_IRQ,
++	},
++	/* CCDC Base address */
++	{
++		.flags          = IORESOURCE_MEM,
++		.start          = 0x01c70600,
++		.end            = 0x01c70600 + 0x1ff,
++	},
++	/* VPSS Base address */
++	{
++		.start          = 0x01c70800,
++		.end            = 0x01c70800 + 0xff,
++		.flags          = IORESOURCE_MEM,
++	},
++};
++
++static u64 vpfe_capture_dma_mask = DMA_32BIT_MASK;
++static struct platform_device vpfe_capture_dev = {
++	.name		= CAPTURE_DRV_NAME,
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(vpfe_resources),
++	.resource	= vpfe_resources,
++	.dev = {
++		.dma_mask		= &vpfe_capture_dma_mask,
++		.coherent_dma_mask	= DMA_32BIT_MASK,
++	},
++};
++
++void setup_vpfe_input_config(struct vpfe_capture_input *input_config)
++{
++	vpfe_capture_dev.dev.platform_data = input_config;
++}
+ /*----------------------------------------------------------------------*/
+ 
+ void __init dm355_init(void)
+@@ -528,13 +577,28 @@ void __init dm355_init(void)
+ 	davinci_mux_register(dm355_pins, ARRAY_SIZE(dm355_pins));;
+ }
+ 
++#define DM355_VPSSCLK_CLKCTRL_REG	0x1c70004
+ static int __init dm355_init_devices(void)
+ {
++	void __iomem *base = IO_ADDRESS(DM355_VPSSCLK_CLKCTRL_REG);
+ 	if (!cpu_is_davinci_dm355())
+ 		return 0;
+ 
+ 	davinci_cfg_reg(DM355_INT_EDMA_CC);
+ 	platform_device_register(&dm355_edma_device);
++	/* setup clock for vpss modules */
++	__raw_writel(0x79, base);
++	/* setup Mux configuration for vpfe input and register
++	 * vpfe capture platform device
++	 */
++	davinci_cfg_reg(DM355_VIN_PCLK);
++	davinci_cfg_reg(DM355_VIN_CAM_WEN);
++	davinci_cfg_reg(DM355_VIN_CAM_VD);
++	davinci_cfg_reg(DM355_VIN_CAM_HD);
++	davinci_cfg_reg(DM355_VIN_YIN_EN);
++	davinci_cfg_reg(DM355_VIN_CINL_EN);
++	davinci_cfg_reg(DM355_VIN_CINH_EN);
++	platform_device_register(&vpfe_capture_dev);
+ 	return 0;
+ }
+ postcore_initcall(dm355_init_devices);
+diff --git a/arch/arm/mach-davinci/include/mach/dm355.h b/arch/arm/mach-davinci/include/mach/dm355.h
+index f7100b6..0b3bd76 100644
+--- a/arch/arm/mach-davinci/include/mach/dm355.h
++++ b/arch/arm/mach-davinci/include/mach/dm355.h
+@@ -12,6 +12,7 @@
+ #define __ASM_ARCH_DM355_H
+ 
+ #include <mach/hardware.h>
++#include <media/davinci/vpfe_capture.h>
+ 
+ void __init dm355_init(void);
+ 
+@@ -19,5 +20,6 @@ struct spi_board_info;
+ 
+ void dm355_init_spi0(unsigned chipselect_mask,
+ 		struct spi_board_info *info, unsigned len);
++void setup_vpfe_input_config(struct vpfe_capture_input *input_config);
+ 
+ #endif /* __ASM_ARCH_DM355_H */
+diff --git a/arch/arm/mach-davinci/include/mach/mux.h b/arch/arm/mach-davinci/include/mach/mux.h
+index cd95629..4c135b0 100644
+--- a/arch/arm/mach-davinci/include/mach/mux.h
++++ b/arch/arm/mach-davinci/include/mach/mux.h
+@@ -149,6 +149,15 @@ enum davinci_dm355_index {
+ 	DM355_EVT8_ASP1_TX,
+ 	DM355_EVT9_ASP1_RX,
+ 	DM355_EVT26_MMC0_RX,
++
++	/* Video In Pin Mux */
++	DM355_VIN_PCLK,
++	DM355_VIN_CAM_WEN,
++	DM355_VIN_CAM_VD,
++	DM355_VIN_CAM_HD,
++	DM355_VIN_YIN_EN,
++	DM355_VIN_CINL_EN,
++	DM355_VIN_CINH_EN,
+ };
+ 
+ #ifdef CONFIG_DAVINCI_MUX
+-- 1.6.0.4 
