@@ -6,7 +6,7 @@ PR = "r7"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core update-rc.d
+inherit qt4e update-rc.d
 
 SRCREV = "b042e49d3a71cea6d4545ef6f2fc90979518b22e"
 SRC_URI = "git://git.neurostechnology.com/git/app-nwm;protocol=git \

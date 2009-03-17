@@ -6,7 +6,7 @@ PR = "r2"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core
+inherit qt4e
 
 SRCREV = "4dfc8ec91c284be45582bc51de8117610269d04d"
 SRC_URI = "git://git.neurostechnology.com/git/app-mainmenu;protocol=git"

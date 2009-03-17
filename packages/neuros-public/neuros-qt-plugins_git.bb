@@ -6,7 +6,7 @@ PR = "r4"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core
+inherit qt4e
 
 SRCREV = "7636920455c7e963f004e394de9db39d2e9ac35f"
 SRC_URI = "git://git.neurostechnology.com/git/qt-plugins;protocol=git"
