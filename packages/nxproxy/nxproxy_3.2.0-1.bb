@@ -14,5 +14,5 @@ S = "${WORKDIR}/nxproxy"
 
 do_install () {
        install -d ${D}${bindir}/
-       install -s -m 0755 nxproxy ${D}${bindir}/
+       install -m 0755 nxproxy ${D}${bindir}/
 }

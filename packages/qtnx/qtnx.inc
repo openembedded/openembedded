@@ -30,10 +30,10 @@ do_configure_prepend () {
 
 do_install () {
        install -d ${D}${bindir}/
-       install -s -m 0755 qtnx ${D}${bindir}/
+       install -m 0755 qtnx ${D}${bindir}/
        install -d ${D}${datadir}/qtnx
        install -m 0644 id.key ${D}${datadir}/qtnx
        install -d ${D}${datadir}/applications
-       install -m 0644 qtnx.desktop ${D}${datadir}/applications
+       install -m 0644 ${WORKDIR}/qtnx.desktop ${D}${datadir}/applications
 }
 

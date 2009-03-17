@@ -16,5 +16,5 @@ S = "${WORKDIR}/nxssh"
 
 do_install () {
        install -d ${D}${bindir}/
-       install -s -m 0755 nxssh ${D}${bindir}/
+       install -m 0755 nxssh ${D}${bindir}/
 }
