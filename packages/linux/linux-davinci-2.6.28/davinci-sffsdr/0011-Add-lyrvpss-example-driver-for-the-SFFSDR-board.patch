@@ -1,0 +1,919 @@
+From 25a91bba1bcc8d9f120e8b85b0ec53a18ccec244 Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Thu, 5 Mar 2009 16:04:23 -0500
+Subject: [PATCH 11/12] Add lyrvpss example driver for the SFFSDR board
+
+Currently there is only a VPFE driver in lyrvpss, and it is called luyrvpfe.
+It works with a FPGA bitstream that generates a ramp and sends it over the
+VPFE interface. The lyrvpfe driver receives an interrupt each time the HSYNC
+line is pulsed (even if the VDINT0 interrupt line is used), and stores and
+checks the data to make sure that it is valid. The driver will request a new
+frame from the FPGA each time there is a read from /proc/lyrvpfe. For example,
+to receive a new frame, issue the following:
+
+  $> cat /proc/lyrvpfe
+
+This will send a request to the FPGA (using the GPIO line) to send a new frame,
+wait one second then display the contents of the PING and PONG reception buffers.
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ .../arm/mach-davinci/include/mach/sffsdr-lyrvpfe.h |   32 +
+ drivers/char/Kconfig                               |    2 +
+ drivers/char/Makefile                              |    2 +
+ drivers/char/lyrvpss/Kconfig                       |   42 ++
+ drivers/char/lyrvpss/Makefile                      |    8 +
+ drivers/char/lyrvpss/vpfe.c                        |  753 ++++++++++++++++++++
+ 6 files changed, 839 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-davinci/include/mach/sffsdr-lyrvpfe.h
+ create mode 100644 drivers/char/lyrvpss/Kconfig
+ create mode 100644 drivers/char/lyrvpss/Makefile
+ create mode 100644 drivers/char/lyrvpss/vpfe.c
+
+diff --git a/arch/arm/mach-davinci/include/mach/sffsdr-lyrvpfe.h b/arch/arm/mach-davinci/include/mach/sffsdr-lyrvpfe.h
+new file mode 100644
+index 0000000..fb47851
+--- /dev/null
++++ b/arch/arm/mach-davinci/include/mach/sffsdr-lyrvpfe.h
+@@ -0,0 +1,32 @@
++/*
++ * lyrvpfe.h
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
++ *
++ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
++ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
++ * NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
++ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
++ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
++ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
++ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
++ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++ *
++ * You should have received a copy of the  GNU General Public License along
++ * with this program; if not, write  to the Free Software Foundation, Inc.,
++ * 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#ifndef __LYRVPFE_H
++#define __LYRVPFE_H
++
++struct lyrvpfe_platform_data {
++	unsigned ready_gpio;
++};
++
++#endif /* __LYRVPFE_H */
+diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+index 43d6ba8..b98a8e2 100644
+--- a/drivers/char/Kconfig
++++ b/drivers/char/Kconfig
+@@ -1073,5 +1073,7 @@ config DEVPORT
+ 
+ source "drivers/s390/char/Kconfig"
+ 
++source "drivers/char/lyrvpss/Kconfig"
++
+ endmenu
+ 
+diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+index 438f713..8800b3f 100644
+--- a/drivers/char/Makefile
++++ b/drivers/char/Makefile
+@@ -109,6 +109,8 @@ obj-$(CONFIG_PS3_FLASH)		+= ps3flash.o
+ obj-$(CONFIG_JS_RTC)		+= js-rtc.o
+ js-rtc-y = rtc.o
+ 
++obj-$(CONFIG_LYRTECH_VPSS)	+= lyrvpss/
++
+ # Files generated that shall be removed upon make clean
+ clean-files := consolemap_deftbl.c defkeymap.c
+ 
+diff --git a/drivers/char/lyrvpss/Kconfig b/drivers/char/lyrvpss/Kconfig
+new file mode 100644
+index 0000000..80b1487
+--- /dev/null
++++ b/drivers/char/lyrvpss/Kconfig
+@@ -0,0 +1,42 @@
++#
++# Lyrtech VPSS drivers
++#
++
++menuconfig LYRTECH_VPSS
++	bool 'Lyrtech SFFSDR VPSS drivers'
++	depends on ARCH_DAVINCI && MACH_SFFSDR
++	help
++	  This enables support for Lyrtech SFFSDR VPSS drivers.
++
++	  If unsure, say N.
++
++if LYRTECH_VPSS
++
++config LYRTECH_VPFE
++	tristate "Lyrtech VPFE Driver Support"
++	help
++	  This option enables support for the Lyrtech VPFE driver
++	  for FPGA to DaVinci data transfers.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called lyrvpfe.
++
++	  If unsure, say N.
++
++config LYRTECH_VPBE
++	tristate "Lyrtech VPBE Driver Support"
++	help
++	  This option enables support for the Lyrtech VPBE driver
++	  for DaVinci to FPGA data transfers.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called lyrvpbe.
++
++	  If unsure, say N.
++
++config LYRVPSS_DEBUG
++	boolean "Debug support for LYRVPSSS drivers"
++	help
++	  Say "yes" to enable verbose debug messaging.
++
++endif # LYRTECH_VPSS
+diff --git a/drivers/char/lyrvpss/Makefile b/drivers/char/lyrvpss/Makefile
+new file mode 100644
+index 0000000..ac36807
+--- /dev/null
++++ b/drivers/char/lyrvpss/Makefile
+@@ -0,0 +1,8 @@
++#
++# Makefile for the Lyrtech SFFSDR VPSS driver
++#
++
++obj-$(CONFIG_LYRTECH_VPFE) += lyrvpfe.o
++obj-$(CONFIG_LYRTECH_VPBE) += lyrvpbe.o
++lyrvpfe-objs := vpfe.o
++lyrvpbe-objs := vpbe.o
+diff --git a/drivers/char/lyrvpss/vpfe.c b/drivers/char/lyrvpss/vpfe.c
+new file mode 100644
+index 0000000..45e2853
+--- /dev/null
++++ b/drivers/char/lyrvpss/vpfe.c
+@@ -0,0 +1,753 @@
++/*
++ * lyrvpfe driver
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/delay.h>
++#include <linux/firmware.h>
++#include <linux/interrupt.h>
++#include <linux/jiffies.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/io.h>
++#include <linux/irq.h>
++
++#ifdef CONFIG_PROC_FS
++#include <linux/proc_fs.h>
++#include <linux/seq_file.h>
++#include <asm/uaccess.h>
++#endif /* CONFIG_PROC_FS */
++
++#include <asm/gpio.h>
++
++#include <mach/sffsdr-fpga.h>
++#include <mach/sffsdr-lyrvpfe.h>
++#include <mach/mux.h>
++#include <mach/irqs.h>
++
++#define MODULE_NAME "lyrvpfe"
++
++#ifdef CONFIG_LYRVPSS_DEBUG
++#define DBGMSG(fmt, args...)				\
++	printk(KERN_INFO "%s: "fmt"\n" , MODULE_NAME, ## args)
++#else
++#define DBGMSG(fmt, args...)
++#endif
++
++#define FAILMSG(fmt, args...)					\
++	printk(KERN_ERR "%s: "fmt"\n" , MODULE_NAME, ## args)
++
++#define DAVINCI_CCDC_REGS_OFFSET	0x400
++
++/* This word is written at index 0 to mark a buffer as invalid. */
++#define INVALIDATE_BUFFER_CODE	0x11222211
++
++/* Default values for our driver. */
++#define LYRVPFE_LINES_PER_FRAME	2
++#define LYRVPFE_WORDS_PER_LINE	8 /* Minimum is 8 words */
++
++/* SFFSDR VPSS limits */
++#define LYRVPFE_MAX_WORDS_PER_LINE	1024
++#define LYRVPFE_MAX_LINES_PER_FRAME	10
++#define LYRVPFE_MAX_BUFFER_SIZE		65536
++
++#define BUFFER_PING	0
++#define BUFFER_PONG	1
++
++struct ccdc_regs {
++	u32 pid;
++	u32 pcr;
++	u32 syn_mode;
++	u32 hd_vd_wid;
++	u32 pix_lines;
++	u32 horz_info;
++	u32 vert_start;
++	u32 vert_lines;
++	u32 culling;
++	u32 hsize_off;
++	u32 sdofst;
++	u32 sdr_addr;
++	u32 clamp;
++	u32 dcsub;
++	u32 colptn;
++	u32 blkcmp;
++	u32 fpc;
++	u32 fpc_addr;
++	u32 vdint;
++	u32 alaw;
++	u32 rec656if;
++	u32 ccdcfg;
++	u32 fmtcfg;
++	u32 fmt_horz;
++	u32 fmt_vert;
++	u32 unused[48];
++	u32 vp_out;
++};
++
++#define CCDC_REGS_COUNT 38
++
++#define CCDC_WEN_BIT	(1 << 17)
++#define CCDC_VDHDEN_BIT	(1 << 16)
++#define CCDC_VDPOL_NEG	(1 <<  2)
++
++/* Structure containing driver informations. */
++struct lyrvpfe_private {
++	enum {
++		LYRVPFE_INIT_START,
++		LYRVPFE_INIT_HAVE_REGS,
++		LYRVPFE_INIT_HAVE_IRQ,
++		LYRVPFE_INIT_HAVE_GPIO,
++		LYRVPFE_INIT_VPFE,
++		LYRVPFE_INIT_HAVE_PING_BUFFER,
++		LYRVPFE_INIT_HAVE_PONG_BUFFER,
++		LYRVPFE_INIT_HAVE_PROC
++	} init_state;
++	u32 id;
++	unsigned ready_gpio;
++	unsigned int irq;
++	void *regs;
++	volatile struct ccdc_regs *ccdc_regs;
++	u32 ramp_index;
++	u32 lines_per_frame;
++	u32 words_per_line;
++	int line_size;
++	int bufsize;
++	int wrid; /* 0 (ping) or 1 (pong) */
++	u32 *data_buffers[2];
++	struct device dev;
++};
++
++static struct lyrvpfe_private lyrvpfe;
++
++/* Informs the FPGA that the DaVinci can receive a new frame. */
++static void lyrvpfe_set_ready(void)
++{
++	int value;
++
++	/* Read current pin state */
++	value = gpio_get_value(lyrvpfe.ready_gpio);
++
++	/* Toggle state. */
++	value ^= 1;
++
++	/* Toggle pin. */
++	gpio_set_value(lyrvpfe.ready_gpio, value);
++}
++
++#ifdef CONFIG_PROC_FS
++
++#define LYRVPFE_PROC_NAME	"lyrvpfe"
++
++static void *lyrvpfe_start(struct seq_file *m, loff_t *pos)
++{
++	return *pos < 1 ? (void *)1 : NULL;
++}
++
++static void *lyrvpfe_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	++*pos;
++	return NULL;
++}
++
++static void lyrvpfe_stop(struct seq_file *m, void *v)
++{
++}
++
++static void lyrvpfe_display_regs(char *msg, u32 *regs, int size,
++				 struct seq_file *m)
++{
++	int k;
++
++	seq_printf(m, "%s:", msg);
++	for (k = 0; k < size; k++) {
++		if ((k % 4) == 0)
++			seq_printf(m, "\n");
++
++		seq_printf(m, "  [$%02X] $%08X", k * 4, regs[k]);
++	}
++	seq_printf(m, "\n");
++}
++
++static int lyrvpfe_show(struct seq_file *m, void *v)
++{
++	u32 *regs;
++	unsigned long jtarget, jcurrent;
++
++	/* Toggle pin to receive next frame */
++	lyrvpfe_set_ready();
++
++	jtarget = jiffies + (1 * HZ);
++
++	/* Wait 1 second for data to arrive. */
++	do {
++		jcurrent = jiffies;
++		cpu_relax();
++	} while (time_before(jcurrent, jtarget));
++
++	regs = (u32 *) lyrvpfe.ccdc_regs;
++	lyrvpfe_display_regs("CCDC registers", regs, CCDC_REGS_COUNT, m);
++
++	seq_printf(m, "FPGA registers:\n");
++
++	seq_printf(m, "  [$%04X] $%04X  [$%04X] $%04X" \
++		   "  [$%04X] $%04X  [$%04X] $%04X\n",
++		   SFFSDR_FPGA_REVISION,
++		   sffsdr_fpga_regread(SFFSDR_FPGA_REVISION),
++		   SFFSDR_FPGA_VPSS_CONTROL,
++		   sffsdr_fpga_regread(SFFSDR_FPGA_VPSS_CONTROL),
++		   SFFSDR_FPGA_VPSS_TO_DSP_FIFO,
++		   sffsdr_fpga_regread(SFFSDR_FPGA_VPSS_TO_DSP_FIFO),
++		   SFFSDR_FPGA_VPSS_LINES_PER_FRAME,
++		   sffsdr_fpga_regread(SFFSDR_FPGA_VPSS_LINES_PER_FRAME));
++
++	regs = lyrvpfe.data_buffers[BUFFER_PING];
++	lyrvpfe_display_regs("PING buffer", regs, 64, m);
++
++	regs = lyrvpfe.data_buffers[BUFFER_PONG];
++	lyrvpfe_display_regs("PONG buffer", regs, 64, m);
++
++	return 0;
++}
++
++static const struct seq_operations lyrvpfe_op = {
++	.start	= lyrvpfe_start,
++	.next	= lyrvpfe_next,
++	.stop	= lyrvpfe_stop,
++	.show	= lyrvpfe_show
++};
++
++static int lyrvpfe_open(struct inode *inode, struct file *file)
++{
++	struct seq_file *m;
++	int ret;
++
++	DBGMSG("lyrvpfe_open");
++
++	ret = seq_open(file, &lyrvpfe_op);
++	if (ret < 0)
++		return ret;
++
++	m = file->private_data;
++
++	return 0;
++}
++
++static const struct file_operations proc_lyrvpfe_operations = {
++	.open		= lyrvpfe_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= seq_release,
++	.owner		= THIS_MODULE,
++};
++
++static int lyrvpfe_proc_init(void)
++{
++	struct proc_dir_entry *entry;
++
++	entry = create_proc_entry(LYRVPFE_PROC_NAME, 0, NULL);
++	if (!entry) {
++		FAILMSG("Error creating proc entry");
++		return -EFAULT;
++	}
++
++	entry->proc_fops = &proc_lyrvpfe_operations;
++	entry->data = &lyrvpfe;
++
++	return 0;
++}
++
++#endif /* CONFIG_PROC_FS */
++
++static int lyrvpfe_validate_buffer(u32 *buffer)
++{
++	u8 xor, xnor;
++	u8 *cksum_data = (u8 *) buffer;
++
++	/* Compute XOR of bytes 4 and 5 */
++	xnor = ~(cksum_data[4] ^ cksum_data[5]);
++	xor = cksum_data[4] ^ cksum_data[5];
++
++	if ((xor != cksum_data[1]) || (xnor != cksum_data[0]))
++		return -1;
++	else
++		return 0;
++}
++
++static inline void lyrvpfe_invalidate_buffer(u32 *buffer)
++{
++	int line;
++	int offset;
++
++	for (line = 0; line < lyrvpfe.lines_per_frame; line++) {
++		/* Get offset of next line. */
++		offset = (line * lyrvpfe.ccdc_regs->hsize_off) / 4;
++
++		/* Mark buffer as invalid. */
++		buffer[offset] = INVALIDATE_BUFFER_CODE;
++	}
++}
++
++/*
++ * Lyrtech SFFSDR custom VPFE format:
++ *
++ * Length is in u32 units
++ *
++ * Format for each line:
++ *
++ * | u32  |                bits               |
++ * |offset| 31..24 | 23..16 | 15..08 | 07..00 |
++ * ============================================
++ *   0    | dummy    dummy    dummy    dummy
++ *   1    | dummy    dummy    dummy    dummy
++ *   2    | length   length   cksum    cksum
++ *   3    | data0    data0    data0    data0
++ *   4    | data1    data1    data1    data1
++ *  ...      ...
++ */
++static int vpfe_check_buffer(u32 *buffer)
++{
++	int k;
++	int line;
++	u16 length;
++	int offset;
++	int ret;
++
++	for (line = 0; line < lyrvpfe.lines_per_frame; line++) {
++		/* Get offset of next line. */
++		offset = (line * lyrvpfe.ccdc_regs->hsize_off) / 4;
++
++		if (buffer[offset] == INVALIDATE_BUFFER_CODE) {
++			/* No error. Means that HD pulses generated the VDINT0
++			 * interruption, but VD was not asserted. */
++			return -1;
++		}
++
++		/* First two words contain empty/dummy data. */
++		offset += 2;
++
++		if (line == 0) {
++			if (lyrvpfe.wrid == BUFFER_PING)
++				DBGMSG("VDINT: PING buffer");
++			else
++				DBGMSG("VDINT: PONG buffer");
++		}
++
++		ret = lyrvpfe_validate_buffer(&buffer[offset]);
++		if (ret < 0) {
++			/* This may mean a checksum error, or that
++			 * the FPGA sent fewer lines than the maximum
++			 * configured. */
++			FAILMSG("  Checksum error line %d", line);
++			return -1;
++		}
++
++		length = buffer[offset] >> 16;
++
++		/* Points to first data word. */
++		offset++;
++
++		for (k = 0; k < length; k++) {
++			if (buffer[offset + k] != (lyrvpfe.ramp_index + k)) {
++				FAILMSG("    Ramp error at index %d, line %d",
++					lyrvpfe.ramp_index, line);
++				FAILMSG("    read:     $%08X",
++					buffer[offset + k]);
++				FAILMSG("    expected: $%08X",
++					lyrvpfe.ramp_index + k);
++
++				lyrvpfe_invalidate_buffer(buffer);
++				return -1;
++			}
++		}
++
++		lyrvpfe.ramp_index += length;
++	}
++
++	return 0;
++}
++
++static void lyrvpfe_set_ccdc_buffer(u32 *virt_address)
++{
++	lyrvpfe.ccdc_regs->sdr_addr = (u32) virt_to_phys(virt_address);
++}
++
++/*
++ * The CCDC VDINT0 and VDINT1 HD counters begin counting HD pulses from the
++ * rising edge of the external VD. The Lyrtech FPGA VPFE design only drives VD
++ * when the ARM request data by toggling the SET_VPFE_READY GPIO. Unfortunately,
++ * the FPGA never disable the HD line, and the ISR will be called all the time
++ * with invalid data when VD is not driven. This is why we need to invalidate a
++ * buffer once it has been read.
++ */
++static irqreturn_t lyrvpfe_isr(int irq, void *dev_id)
++{
++	int ret;
++	int buffer_read_id;
++
++	/* Buffer index for reading data */
++	buffer_read_id = lyrvpfe.wrid;
++
++	ret = vpfe_check_buffer(lyrvpfe.data_buffers[buffer_read_id]);
++	if (ret) {
++		/* This could mean a real error or simply that we received a
++		 * dummy HD interrupt. */
++		lyrvpfe_invalidate_buffer(lyrvpfe.data_buffers[buffer_read_id]);
++	} else {
++		/* Valid data was received. We can now switch the pong-pong
++		 * buffers. */
++
++		/* Switch ping-pong buffers for writing. */
++		lyrvpfe.wrid ^= 1;
++		lyrvpfe_set_ccdc_buffer(lyrvpfe.data_buffers[lyrvpfe.wrid]);
++
++		/* Make sure to invalidate the new buffer */
++		lyrvpfe_invalidate_buffer(lyrvpfe.data_buffers[lyrvpfe.wrid]);
++	}
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * Configures the VPFE interface to receive data from the FPGA.
++ *
++ * lines_per_frame:  Lines per frame (within the VSYNC period).
++ * words_per_line:   32-bits data words per line (within the HSYNC period).
++ */
++static int lyrvpfe_init_vpfe(u16 lines_per_frame, u16 words_per_line)
++{
++	int bytes_per_buffer;
++
++	lyrvpfe.ramp_index = 0;
++	lyrvpfe.wrid = BUFFER_PING;
++
++	if (words_per_line > LYRVPFE_MAX_WORDS_PER_LINE) {
++		FAILMSG("VPFE init: invalid words_per_line (%d)",
++			words_per_line);
++		return -1;
++	}
++
++	if (lines_per_frame > LYRVPFE_MAX_LINES_PER_FRAME) {
++		FAILMSG("VPFE init: invalid lines_per_frame (%d)",
++			lines_per_frame);
++		return -1;
++	}
++
++	bytes_per_buffer = (words_per_line + 3) * 4 * lines_per_frame;
++	if (bytes_per_buffer > LYRVPFE_MAX_BUFFER_SIZE) {
++		FAILMSG("VPFE init: wrong bytes_per_buffer (%d)",
++			bytes_per_buffer);
++		return -1;
++	}
++
++	DBGMSG("  words_per_line  = $%04X", words_per_line);
++	DBGMSG("  lines_per_frame = $%04X", lines_per_frame);
++
++	/* Setup FPGA parameters */
++	sffsdr_fpga_regwrite(SFFSDR_FPGA_VPSS_TO_DSP_FIFO,
++			     (words_per_line & 0x3ff) |
++			     (lines_per_frame << 10));
++
++	/* 2 additional for blanking and 1 for header (length and checksum). */
++	words_per_line = words_per_line + 3;
++
++	lyrvpfe.words_per_line = words_per_line;
++	lyrvpfe.lines_per_frame = lines_per_frame;
++
++	/************************************************/
++	/* Setup Fix VPFE parameter                     */
++	/************************************************/
++	/* Setup VPFE Hardware */
++	lyrvpfe.ccdc_regs->syn_mode = CCDC_WEN_BIT | CCDC_VDHDEN_BIT |
++		CCDC_VDPOL_NEG;
++
++	/* Start at Line 0 */
++	lyrvpfe.ccdc_regs->vert_start = 0;
++
++	/* Disable culling */
++	lyrvpfe.ccdc_regs->culling = 0xFFFF00FF;
++
++	lyrvpfe.ccdc_regs->sdofst   = 0;
++	lyrvpfe.ccdc_regs->clamp    = 0;
++	lyrvpfe.ccdc_regs->dcsub    = 0;
++	lyrvpfe.ccdc_regs->colptn   = 0;
++	lyrvpfe.ccdc_regs->blkcmp   = 0;
++	lyrvpfe.ccdc_regs->fpc      = 0;
++	lyrvpfe.ccdc_regs->vdint    = 0;
++	lyrvpfe.ccdc_regs->alaw     = 0;
++	lyrvpfe.ccdc_regs->rec656if = 0;
++
++	/* Disable shadowing as recommended in silicon errata. Very important,
++	 * if not set, a lot of problems may occur. */
++	/* VDLC: Not latched on VSYNC. */
++	lyrvpfe.ccdc_regs->ccdcfg = (1 << 15);
++
++	/************************************************/
++	/* Setup variable VPFE parameter                */
++	/************************************************/
++	/* Max. length of a line */
++	lyrvpfe.ccdc_regs->horz_info = words_per_line * 4;
++
++	/* Max. number of lines per frame - 1 */
++	lyrvpfe.ccdc_regs->vert_lines = lines_per_frame - 1;
++
++	/* Offset of a line in memory (in bytes).
++	 * Must be on 32 bytes boundary */
++	lyrvpfe.line_size = ((words_per_line * sizeof(u32)) + 31) & ~31;
++	lyrvpfe.ccdc_regs->hsize_off = lyrvpfe.line_size;
++
++	/* Enable CCDC */
++	lyrvpfe.ccdc_regs->pcr = 0x1;
++
++	return 0;
++}
++
++static void lyrvpfe_disable_vpfe(void)
++{
++	/* Disable CCDC */
++	lyrvpfe.ccdc_regs->pcr = 0;
++}
++
++static void lyrvpfe_dev_cleanup(void)
++{
++	DBGMSG("lyrvpfe_dev_cleanup()");
++
++	switch (lyrvpfe.init_state) {
++	case LYRVPFE_INIT_HAVE_PROC:
++#ifdef CONFIG_PROC_FS
++		remove_proc_entry(LYRVPFE_PROC_NAME, NULL);
++#endif
++	case LYRVPFE_INIT_HAVE_IRQ:
++		free_irq(lyrvpfe.irq, &lyrvpfe);
++	case LYRVPFE_INIT_HAVE_PONG_BUFFER:
++		kfree(lyrvpfe.data_buffers[BUFFER_PONG]);
++	case LYRVPFE_INIT_HAVE_PING_BUFFER:
++		kfree(lyrvpfe.data_buffers[BUFFER_PING]);
++	case LYRVPFE_INIT_VPFE:
++		lyrvpfe_disable_vpfe();
++	case LYRVPFE_INIT_HAVE_GPIO:
++		gpio_free(lyrvpfe.ready_gpio);
++	case LYRVPFE_INIT_HAVE_REGS:
++		iounmap(lyrvpfe.regs);
++	case LYRVPFE_INIT_START:
++		break;
++	}
++}
++
++struct bus_type lyrvpfe_bus_type = {
++	.name = "lyrvpfe",
++};
++EXPORT_SYMBOL(lyrvpfe_bus_type);
++
++static int lyrvpfe_probe(struct platform_device *pdev)
++{
++	struct lyrvpfe_platform_data *pdata;
++	struct resource *regs_res;
++	struct resource *irq_res;
++	int result;
++	void *buf;
++
++	DBGMSG("lyrvpfe_probe()");
++
++	/* We Should enable the VPFE with the PSC controller and PINMUX0. */
++
++	lyrvpfe.id = pdev->id;
++	lyrvpfe.dev.bus = &lyrvpfe_bus_type;
++	lyrvpfe.dev.parent = &pdev->dev;
++	snprintf(lyrvpfe.dev.bus_id, BUS_ID_SIZE, "lyrvpfe%d", lyrvpfe.id);
++	lyrvpfe.dev.bus_id[BUS_ID_SIZE - 1] = 0;
++	lyrvpfe.init_state = LYRVPFE_INIT_START;
++
++	regs_res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
++	if (!regs_res) {
++		FAILMSG("Error getting REGS ressource");
++		result = -ENODEV;
++		goto error;
++	}
++
++	lyrvpfe.regs = ioremap(regs_res->start,
++			       regs_res->end - regs_res->start);
++	if (!lyrvpfe.regs) {
++		FAILMSG("Can't remap CCDC registers");
++		result = -ENXIO;
++		goto error;
++	}
++	lyrvpfe.ccdc_regs = (struct ccdc_regs *)
++		(lyrvpfe.regs + DAVINCI_CCDC_REGS_OFFSET);
++
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_REGS;
++
++	pdata = pdev->dev.platform_data;
++	if (!pdata) {
++		FAILMSG("Error getting platform data");
++		result = -ENODEV;
++		goto error;
++	}
++	lyrvpfe.dev.platform_data = pdata;
++
++	/* Configure VPFE SET READY GPIO. */
++	lyrvpfe.ready_gpio = pdata->ready_gpio;
++
++	result = gpio_request(lyrvpfe.ready_gpio, "vpfe_ready");
++	if (result == 0) {
++		/* Must start at 1, if not gives errors. */
++		result = gpio_direction_output(lyrvpfe.ready_gpio, 1);
++	}
++	if (result != 0)
++		goto error;
++
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_GPIO;
++
++	result = lyrvpfe_init_vpfe(LYRVPFE_LINES_PER_FRAME,
++				   LYRVPFE_WORDS_PER_LINE);
++	if (result < 0) {
++		FAILMSG("lyrvpfe_init_vpfe() failed (%d)", result);
++		goto error;
++	}
++	lyrvpfe.init_state = LYRVPFE_INIT_VPFE;
++
++	/* Adding 256 to compensate for 256 bytes alignment */
++	lyrvpfe.bufsize = lyrvpfe.line_size * lyrvpfe.lines_per_frame + 256;
++
++	buf = kmalloc(lyrvpfe.bufsize /*LYRVPFE_BUFFER_SIZE*/, GFP_KERNEL);
++	if (!buf) {
++		result = -ENOMEM;
++		goto error;
++	}
++	/* Buffer must be 32 bytes aligned for the hardware but must be
++	 * 256 bytes aligned to cope with cache line size. */
++	lyrvpfe.data_buffers[BUFFER_PING] =
++		(u32 *) (((u32) buf + 255) & 0xFFFFFF00);
++	lyrvpfe.data_buffers[BUFFER_PING][0] = 0x11111111;
++	lyrvpfe.data_buffers[BUFFER_PING][1] = 0x22222222;
++	lyrvpfe_invalidate_buffer(lyrvpfe.data_buffers[BUFFER_PING]);
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_PING_BUFFER;
++
++	buf = kmalloc(lyrvpfe.bufsize /*LYRVPFE_BUFFER_SIZE*/, GFP_KERNEL);
++	if (!buf) {
++		result = -ENOMEM;
++		goto error;
++	}
++	/* Buffer must be 32 bytes aligned for the hardware but must be
++	 * 256 bytes aligned to cope with cache line size. */
++	lyrvpfe.data_buffers[BUFFER_PONG] =
++		(u32 *) (((u32) buf + 255) & 0xFFFFFF00);
++	lyrvpfe.data_buffers[BUFFER_PONG][0] = 0x33333333;
++	lyrvpfe.data_buffers[BUFFER_PONG][1] = 0x44444444;
++	lyrvpfe_invalidate_buffer(lyrvpfe.data_buffers[BUFFER_PONG]);
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_PONG_BUFFER;
++
++	lyrvpfe_set_ccdc_buffer(lyrvpfe.data_buffers[lyrvpfe.wrid]);
++
++	/* setup interrupt handling */
++	irq_res = platform_get_resource_byname(pdev, IORESOURCE_IRQ, "irq");
++	if (!irq_res) {
++		FAILMSG("Error getting IRQ ressource");
++		result = -ENODEV;
++		goto error;
++	}
++
++	lyrvpfe.irq = irq_res->start;
++	result = request_irq(lyrvpfe.irq, lyrvpfe_isr,
++			     IRQF_SHARED /*IRQF_DISABLED*/,
++			     MODULE_NAME, &lyrvpfe);
++	if (result) {
++		FAILMSG("Error requesting IRQ ressource");
++		result = -ENODEV; /* To check */
++		goto error;
++	}
++
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_IRQ;
++
++#ifdef CONFIG_PROC_FS
++	result = lyrvpfe_proc_init();
++	if (result < 0) {
++		FAILMSG("Error creating proc entry");
++		goto error;
++	}
++#endif
++
++	lyrvpfe.init_state = LYRVPFE_INIT_HAVE_PROC;
++
++	return 0;
++
++error:
++	lyrvpfe_dev_cleanup();
++	return result;
++}
++
++static int __devexit lyrvpfe_remove(struct platform_device *pdev)
++{
++	DBGMSG("lyrvpfe_remove()");
++
++	lyrvpfe_dev_cleanup();
++	return 0;
++}
++
++static struct platform_driver lyrvpfe_pdriver = {
++	.driver         = {
++		.name   = MODULE_NAME,
++		.owner  = THIS_MODULE,
++	},
++	.remove = lyrvpfe_remove,
++};
++
++static int __init lyrvpfe_init(void)
++{
++	int res = 0;
++
++	DBGMSG("lyrvpfe_init()");
++
++	res = bus_register(&lyrvpfe_bus_type);
++	if (res) {
++		FAILMSG("bus_register() failed");
++		goto fail_bus;
++	}
++
++	res = platform_driver_probe(&lyrvpfe_pdriver, lyrvpfe_probe);
++	if (res) {
++		FAILMSG("platform_driver_probe() failed");
++		goto fail_platform;
++	}
++
++	return 0;
++
++fail_platform:
++	bus_unregister(&lyrvpfe_bus_type);
++fail_bus:
++	return res;
++}
++module_init(lyrvpfe_init);
++
++static void __exit lyrvpfe_exit(void)
++{
++	DBGMSG("lyrvpfe_exit()");
++
++	platform_driver_unregister(&lyrvpfe_pdriver);
++	bus_unregister(&lyrvpfe_bus_type);
++}
++module_exit(lyrvpfe_exit);
++
++MODULE_AUTHOR("Hugo Villeneuve <hvilleneuve@lyrtech.com>");
++MODULE_DESCRIPTION("Lyrtech SFFSDR VPFE driver");
++MODULE_LICENSE("GPL");
+-- 
+1.5.4.5
+

@@ -1,0 +1,1512 @@
+From 500b0887632165f77f2604b07df746b4a3a16d2c Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Fri, 6 Mar 2009 10:23:44 -0500
+Subject: [PATCH 10/12] Add generic FPGA bitstream loader driver
+
+This driver is a generic interface for programming a
+bitstream into a FPGA. It can work with serial or
+parallel programming interfaces and support multiple
+devices and partial reconfiguration. Currently Xilinx
+XC3S and XC4V FPGAs are implemented, but other
+manufacturers like Altera could be easily added.
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ drivers/misc/Kconfig      |   31 ++
+ drivers/misc/Makefile     |    3 +
+ drivers/misc/fpgadl.c     |  806 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/misc/fpgadl_par.c |  258 +++++++++++++++
+ drivers/misc/fpgadl_ser.c |  244 ++++++++++++++
+ include/linux/fpgadl.h    |   96 ++++++
+ 6 files changed, 1438 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/misc/fpgadl.c
+ create mode 100644 drivers/misc/fpgadl_par.c
+ create mode 100644 drivers/misc/fpgadl_ser.c
+ create mode 100644 include/linux/fpgadl.h
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index a11e2a0..bdc0517 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -510,6 +510,37 @@ config SGI_GRU_DEBUG
+ 	This option enables addition debugging code for the SGI GRU driver. If
+ 	you are unsure, say N.
+ 
++config FPGADL
++	tristate "FPGA bitstream loader support"
++	help
++	  This option enables support for the FPGA bitstream loader.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called fpgadl.
++
++	  If unsure, say N.
++
++config FPGADL_SER
++	tristate "FPGA serial programming driver"
++	depends on SPI_MASTER && FPGADL
++	help
++	  Say Y here if your FPGA bitstream is loaded using a serial
++	  interface (SPI).
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called fpgadl_ser.
++
++config FPGADL_PAR
++	tristate "FPGA parallel programming driver"
++	depends on FPGADL
++	select BITREVERSE
++	help
++	  Say Y here if your FPGA bitstream is loaded using a parallel
++	  interface.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called fpgadl_par.
++
+ source "drivers/misc/c2port/Kconfig"
+ 
+ endif # MISC_DEVICES
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 78be134..4fb6dfc 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -32,5 +32,8 @@ obj-$(CONFIG_ENCLOSURE_SERVICES) += enclosure.o
+ obj-$(CONFIG_KGDB_TESTS)	+= kgdbts.o
+ obj-$(CONFIG_SGI_XP)		+= sgi-xp/
+ obj-$(CONFIG_SGI_GRU)		+= sgi-gru/
++obj-$(CONFIG_FPGADL)		+= fpgadl.o
++obj-$(CONFIG_FPGADL_SER)	+= fpgadl_ser.o
++obj-$(CONFIG_FPGADL_PAR)	+= fpgadl_par.o
+ obj-$(CONFIG_HP_ILO)		+= hpilo.o
+ obj-$(CONFIG_C2PORT)		+= c2port/
+diff --git a/drivers/misc/fpgadl.c b/drivers/misc/fpgadl.c
+new file mode 100644
+index 0000000..2f03d9b
+--- /dev/null
++++ b/drivers/misc/fpgadl.c
+@@ -0,0 +1,806 @@
++/*
++ * fpgadl core driver
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * Based on code found in book "Linux Device Drivers" by
++ * Alessandro Rubini and Jonathan Corbet, published by O'Reilly & Associates.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/miscdevice.h>
++#include <linux/string.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/firmware.h>
++#include <linux/delay.h>
++#include <linux/fpgadl.h>
++
++#include <asm/gpio.h>
++#include <asm/uaccess.h>
++
++#define MODULE_NAME "fpgadl"
++
++/* Define this to enable verbose debug messages */
++#define FPGADL_DEBUG 1
++
++static const char fpgadl_driver_version[] = "v1.0";
++
++/* Module parameters */
++static unsigned int fpgadl_debug;
++EXPORT_SYMBOL_GPL(fpgadl_debug);
++module_param_named(debug, fpgadl_debug, int, 0644);
++
++#ifdef FPGADL_DEBUG
++#define INFOMSG(fmt, args...)						\
++	do {								\
++		printk(KERN_INFO "%s: "fmt"\n", MODULE_NAME, ## args);	\
++	} while (0)
++#define DBGMSG(fmt, args...)						\
++	do {								\
++		if (fpgadl_debug > 0)					\
++			printk(KERN_DEBUG "%s: "fmt"\n", \
++			       MODULE_NAME, ## args);	 \
++	} while (0)
++#define DBGMSG_ENTER()				\
++	DBGMSG("%s() enter", __func__);
++#define DBGMSG_LEAVE()				\
++	DBGMSG("%s() leave", __func__);
++#else
++#define INFOMSG(fmt, args...) do {} while (0)
++#define DBGMSG(fmt, args...) do {} while (0)
++#define DBGMSG_ENTER() do {} while (0)
++#define DBGMSG_LEAVE() do {} while (0)
++#endif
++
++#define FAILMSG(fmt, args...)						\
++	do {								\
++		printk(KERN_ERR "%s: "fmt"\n", MODULE_NAME, ## args);	\
++	} while (0)
++
++#define FPGA_WAIT_TIMEOUT	100000
++#define XFER_SIZE		100	/* Transfer size when writing bytes to
++					 * device. */
++
++#define BITSTREAM_MAX_SIZE_OVERHEAD 10240
++
++#define XC3S_WORD_SIZE	2
++#define XC4V_WORD_SIZE	4
++
++#define BITSTREAM_SYNC_BYTE1		0xAA
++#define BITSTREAM_SYNC_BYTE2		0x99
++#define BITSTREAM_SYNC_BYTE3		0x55
++#define BITSTREAM_SYNC_BYTE4 		0x66
++
++#define BITSTREAM_PACKET_HEADER_TYPE1	1
++#define BITSTREAM_PACKET_HEADER_TYPE2	2
++#define BITSTREAM_TYPE1_OPCODE_WRITE	2
++#define BITSTREAM_TYPE1_REG_ADDR_FDRI	2
++
++/* Structure of a TYPE1 packet. */
++struct t1_pkt_xc4v_t {
++	u32 word_count:11;
++	u32 reserved2:2;
++	u32 address:5;
++	u32 reserved1:9;
++	u32 opcode:2;
++	u32 header:3;
++};
++
++struct t1_pkt_xc3s_t {
++	u16 word_count:5;
++	u16 address:6;
++	u16 opcode:2;
++	u16 header:3; /* type */
++};
++
++/* Structure of a TYPE2 packet. */
++struct t2_pkt_xc4v_t {
++	u32 word_count:27;
++	u32 opcode:2; /* Reserved. */
++	u32 header:3;
++};
++
++struct t2_pkt_xc3s_t {
++	u16 word_count:11;
++	u16 opcode:2; /* Reserved. */
++	u16 header:3;
++};
++
++#define MAX_FPGADL_DEV	4
++
++static int fpgadl_dev_count;
++static struct fpgadl_device *fpgadl_dev_array[MAX_FPGADL_DEV];
++
++int fpgadl_is_bitstream_loaded(const char *name)
++{
++	int k;
++	struct fpgadl_device *fpgadl_dev;
++
++	DBGMSG_ENTER();
++
++	for (k = 0; k < MAX_FPGADL_DEV; k++) {
++		fpgadl_dev = fpgadl_dev_array[k];
++		if (fpgadl_dev)
++			if (strncmp(fpgadl_dev->name, name, strlen(name)) == 0)
++				return fpgadl_dev->bitstream_loaded;
++	}
++
++	FAILMSG("  Device <%s> not found", name);
++	return -ENOMEM;
++}
++EXPORT_SYMBOL(fpgadl_is_bitstream_loaded);
++
++/* Respond to hotplug events. */
++static int fpgadl_uevent(struct device *dev, struct kobj_uevent_env *env)
++{
++	DBGMSG_ENTER();
++
++	if (add_uevent_var(env, "FPGADL_BUS_VERSION=%s", fpgadl_driver_version))
++		return -ENOMEM;
++	return 0;
++};
++
++/*
++ * Toggles the CCLK line on the board-specific interface the number of times
++ * specified by <cycles>.
++ */
++static int bitstr_load_make_clock(struct fpgadl_device *fpgadl_dev,
++				  int cycles)
++{
++	int retval;
++	int k;
++	u8 dummy = 0;
++
++	for (k = 0; k < cycles; k++) {
++		retval = fpgadl_dev->write_byte(fpgadl_dev, &dummy, 1);
++		if (retval < 0)
++			return retval;
++	}
++
++	return 0;
++}
++
++/* Search for bitstream sync word. */
++static int bitstr_search_sync_word(const u8 *buffer, size_t length,
++				   const u8 *sync_word, ssize_t sync_word_size)
++{
++	int k;
++
++	for (k = 0; k < length; k++, buffer++) {
++		if (memcmp(buffer, sync_word, sync_word_size) == 0) {
++			DBGMSG("  Synchronization word found at offset 0x%02X",
++			       k);
++			return k;
++		}
++	}
++
++	return 0;
++}
++
++static int bitstr_get_payload_size(int fpga_family, int sws,
++				   const u8 *buffer, ssize_t length)
++{
++	int index = 0;
++
++	/* Find the payload size. */
++	while (index < length) {
++		switch (fpga_family) {
++		case FPGA_FAMILY_XILINX_XC4V:
++		{
++			u32 tmp = ntohl(*((u32 *) &buffer[index]));
++			struct t1_pkt_xc4v_t *t1 =
++				(struct t1_pkt_xc4v_t *) &tmp;
++
++			/* Search for type 1 packet header. */
++			if ((t1->header == BITSTREAM_PACKET_HEADER_TYPE1) &&
++			    (t1->opcode == BITSTREAM_TYPE1_OPCODE_WRITE) &&
++			    (t1->address == BITSTREAM_TYPE1_REG_ADDR_FDRI)) {
++				if (t1->word_count != 0)
++					return t1->word_count;
++				else {
++					struct t2_pkt_xc4v_t *t2;
++
++					tmp = ntohl(*((u32 *)
++						      &buffer[index + sws]));
++					t2 = (struct t2_pkt_xc4v_t *) &tmp;
++
++					/* Search for type 2 packet header just
++					 * after type1 packet. */
++					if ((t2->header ==
++					     BITSTREAM_PACKET_HEADER_TYPE2))
++						return t2->word_count;
++				}
++			}
++		}
++		break;
++		case FPGA_FAMILY_XILINX_XC3S:
++		{
++			u16 tmp = ntohs(*((u16 *) &buffer[index]));
++			struct t2_pkt_xc3s_t *t2 =
++				(struct t2_pkt_xc3s_t *) &tmp;
++
++			/* Search for type 2 packet header just after
++			 * type1 packet. */
++			if ((t2->header == BITSTREAM_PACKET_HEADER_TYPE2)) {
++				DBGMSG("  Type 2 packet found at offset $%02X",
++				       index);
++				return ntohl(*((u32 *) &buffer[index + sws]));
++			}
++			/* Word-size aligned when sync word has been found. */
++			index += sws;
++		}
++		break;
++		}
++
++		/* Word-size aligned when sync word has been found. */
++		index += sws;
++	}
++
++	return 0; /* Not found */
++}
++
++/*
++ * Return value:
++ *   0: Error
++ *   1: Full bitstream
++ *   2: Partial bitstream
++ */
++static int bitstream_parse_header(const u8 *buffer, size_t length,
++				  int fpga_family, size_t payload_full_size)
++{
++	int index = 0;
++	size_t payload_size = 0;
++	u8 sync_word[] = {
++		BITSTREAM_SYNC_BYTE1,
++		BITSTREAM_SYNC_BYTE2,
++		BITSTREAM_SYNC_BYTE3,
++		BITSTREAM_SYNC_BYTE4,
++	};
++	int sync_word_size; /* Size in bytes */
++
++	switch (fpga_family) {
++	case FPGA_FAMILY_XILINX_XC3S:
++		sync_word_size = XC3S_WORD_SIZE;
++		break;
++	case FPGA_FAMILY_XILINX_XC4V:
++		sync_word_size = XC4V_WORD_SIZE;
++		break;
++	default:
++		FAILMSG("Error, invalid FPGA family number");
++		return BITSTREAM_MODE_UNKNOWN;
++	}
++
++	/* Search for bitstream sync word. */
++	index = bitstr_search_sync_word(buffer, length,
++					sync_word, sync_word_size);
++	if (index == 0) {
++		FAILMSG("Error: Synchronization word not found");
++		return BITSTREAM_MODE_UNKNOWN;
++	}
++
++	/* Get payload size. */
++	payload_size = bitstr_get_payload_size(fpga_family, sync_word_size,
++					       &buffer[index], length - index);
++	payload_size *= sync_word_size; /* Length in bytes. */
++
++	if (payload_size == 0) {
++		/* Warning only, assuming FULL bitstream. */
++		DBGMSG("  Warning: payload size not found");
++		return BITSTREAM_MODE_FULL;
++	} else {
++		DBGMSG("  Payload size: %d kb", payload_size / 1024);
++
++		/* Is it a full or a partial bitstream? */
++		if (payload_size == payload_full_size)
++			return BITSTREAM_MODE_FULL;
++		else
++			return BITSTREAM_MODE_PARTIAL;
++	}
++}
++
++/*
++ * Bitstreams supported: Full or Partial.
++ * Note: Full bitstream that supports partial bitstream must be generated with
++ *       option "Persist = true" in ISE.
++ */
++static int fpgadl_bitstream_load(struct fpgadl_device *fpgadl_dev,
++				 const u8 *data, size_t size)
++{
++	int k;
++	int retval;
++	int timeout_counter;
++
++	fpgadl_dev->bitstream_loaded = 0;
++
++	fpgadl_dev->bitstream_mode =
++		bitstream_parse_header(data, size,
++				       fpgadl_dev->pdata->fpga_family,
++				       fpgadl_dev->pdata->payload_full_size);
++	switch (fpgadl_dev->bitstream_mode) {
++	case BITSTREAM_MODE_FULL:
++		DBGMSG("  Bitstream type: FULL");
++		/* Toggle PROG_B Pin and wait 300nS before proceeding. */
++		gpio_set_value(fpgadl_dev->pdata->program_b, 0);
++		udelay(1);
++
++		/* Confirm that INIT_B is low */
++		if (gpio_get_value(fpgadl_dev->pdata->init_b) != 0) {
++			FAILMSG("Error: INIT_B not LOW when PROG is LOW");
++			return -EIO;
++		}
++
++		break;
++	case BITSTREAM_MODE_PARTIAL:
++		DBGMSG("  Bitstream type: PARTIAL");
++		break;
++	case BITSTREAM_MODE_UNKNOWN:
++	default:
++		FAILMSG("  Bitstream type: UNKNOWN");
++		return -EINVAL;
++		break;
++	}
++
++	/* For partial bitstream, PROGRAM_B is already high. */
++	retval = bitstr_load_make_clock(fpgadl_dev, 3);
++	if (retval < 0)
++		return retval;
++
++	gpio_set_value(fpgadl_dev->pdata->program_b, 1);
++
++	/* Wait for INIT_B pin to go high. */
++	timeout_counter = 0;
++	while ((gpio_get_value(fpgadl_dev->pdata->init_b) == 0) &&
++	       (timeout_counter < FPGA_WAIT_TIMEOUT)) {
++		retval = bitstr_load_make_clock(fpgadl_dev, 3);
++		if (retval < 0)
++			return retval;
++
++		timeout_counter++;
++	}
++
++	if (timeout_counter == FPGA_WAIT_TIMEOUT) {
++		/* Timeout error. */
++		FAILMSG("Error: timeout while waiting for INIT_B to go HIGH");
++		return -EIO;
++	}
++
++	/* Send actual bitstream data to FPGA one byte at a time. */
++	for (k = 0; k < size; k += XFER_SIZE) {
++		retval = fpgadl_dev->write_byte(fpgadl_dev,
++						(u8 *) &data[k], XFER_SIZE);
++		if (retval < 0)
++			return retval;
++
++		if (fpgadl_dev->pdata->check_init_low) {
++			if (gpio_get_value(fpgadl_dev->pdata->init_b) == 0) {
++				/* Error if INIT_B goes low here. */
++				FAILMSG("Error: INIT_B LOW during programming");
++				return -EIO;
++			}
++		}
++	}
++
++	/* Pulse the clock line ten times at the end. */
++	retval = bitstr_load_make_clock(fpgadl_dev, 10);
++	if (retval < 0)
++		return retval;
++
++	/* FPGA DONE pin must go high. */
++	timeout_counter = 0;
++	while ((gpio_get_value(fpgadl_dev->pdata->done) == 0) &&
++	       (timeout_counter < FPGA_WAIT_TIMEOUT))
++		timeout_counter++;
++
++	if (gpio_get_value(fpgadl_dev->pdata->done) == 0) {
++		/* Timeout error. */
++		FAILMSG("Error: timeout while waiting for DONE to go HIGH");
++		return -EIO;
++	}
++
++	INFOMSG("Bitstream loaded");
++	fpgadl_dev->bitstream_loaded = 1;
++
++	return 0;
++}
++
++/* Open method. */
++static int fpgadl_open(struct inode *inode, struct file *filp)
++{
++	int k;
++	int found = 0;
++	struct fpgadl_device *fpgadl_dev;
++
++	DBGMSG_ENTER();
++	DBGMSG("  Opening device minor %d", MINOR(inode->i_rdev));
++
++	for (k = 0; k < fpgadl_dev_count; k++) {
++		fpgadl_dev = fpgadl_dev_array[k];
++		if (fpgadl_dev) {
++			if (fpgadl_dev->miscdev.minor == MINOR(inode->i_rdev)) {
++				found = 1;
++				break;
++			}
++		}
++	}
++
++	if (!found) {
++		FAILMSG("  Invalid minor device");
++		return -ENOMEM;
++	}
++
++	filp->private_data = fpgadl_dev;
++
++	fpgadl_dev->bitstream_length = 0;
++	fpgadl_dev->bitstream_data = kmalloc(fpgadl_dev->bitstream_max_size,
++					     GFP_KERNEL);
++	if (!fpgadl_dev->bitstream_data) {
++		FAILMSG("Failed to allocate memory for bitstream");
++		return -ENOMEM;
++	}
++
++	fpgadl_dev->bitstream_buffer_allocated = 1;
++
++	return 0;
++}
++
++/* Write method. Fill buffer with bitstream data. */
++static ssize_t fpgadl_write(struct file *filp, const char __user *buff,
++			    size_t count, loff_t *offp)
++{
++	struct fpgadl_device *fpgadl_dev = filp->private_data;
++
++	if ((fpgadl_dev->bitstream_length + count) >=
++	    fpgadl_dev->bitstream_max_size) {
++		FAILMSG("Bitstream buffer size exceeded");
++		return -EFBIG;
++	}
++
++	if (copy_from_user(fpgadl_dev->bitstream_data +
++			   fpgadl_dev->bitstream_length,
++			   (void __user *) buff, count))
++		return -EFAULT;
++
++	fpgadl_dev->bitstream_length += count;
++
++	return count;
++}
++
++/* Release method. This will initiate the FPGA programming. */
++static int fpgadl_release(struct inode *inode, struct file *filp)
++{
++	int retval;
++	struct fpgadl_device *fpgadl_dev = filp->private_data;
++
++	if (!fpgadl_dev->bitstream_data)
++		return -EFAULT;
++
++	retval = fpgadl_bitstream_load(fpgadl_dev,
++				       fpgadl_dev->bitstream_data,
++				       fpgadl_dev->bitstream_length);
++	kfree(fpgadl_dev->bitstream_data);
++	fpgadl_dev->bitstream_buffer_allocated = 0;
++
++	return retval;
++}
++
++static struct file_operations fops_fpgadl = {
++	.owner   = THIS_MODULE,
++	.open    = fpgadl_open,
++	.write   = fpgadl_write,
++	.release = fpgadl_release
++};
++
++/* Match fpgadl devices to drivers. Just do a simple name test. */
++static int fpgadl_device_match(struct device *dev,
++			       struct device_driver *drv)
++{
++	DBGMSG_ENTER();
++	return !strncmp(dev->bus_id, drv->name, strlen(drv->name));
++}
++
++static ssize_t show_version(struct device_driver *driver, char *buf)
++{
++	struct fpgadl_driver *fpgadldriver = to_fpgadl_driver(driver);
++
++	sprintf(buf, "%s\n", fpgadldriver->version);
++	return strlen(buf);
++}
++
++int fpgadl_register_driver(struct fpgadl_driver *drv)
++{
++	int res;
++
++	DBGMSG_ENTER();
++
++	/* Initialize common driver fields */
++	drv->driver.bus = &fpgadl_bus_type;
++
++	/* Register with core */
++	res = driver_register(&drv->driver);
++	if (res)
++		FAILMSG("  driver_register() failed");
++
++	drv->version_attr.attr.name = "version";
++	drv->version_attr.attr.owner = drv->module;
++	drv->version_attr.attr.mode = S_IRUGO;
++	drv->version_attr.show = show_version;
++	drv->version_attr.store = NULL;
++	res = driver_create_file(&drv->driver, &drv->version_attr);
++
++	return res;
++}
++EXPORT_SYMBOL(fpgadl_register_driver);
++
++void fpgadl_unregister_driver(struct fpgadl_driver *drv)
++{
++	DBGMSG_ENTER();
++	driver_unregister(&drv->driver);
++}
++EXPORT_SYMBOL(fpgadl_unregister_driver);
++
++/* The fpgadl bus device. */
++static void fpgadl_bus_release(struct device *dev)
++{
++	DBGMSG_ENTER();
++}
++
++struct device fpgadl_bus = {
++	.bus_id   = "fpgadl0",
++	.release  = fpgadl_bus_release
++};
++
++struct bus_type fpgadl_bus_type = {
++	.name = "fpgadl",
++	.match = fpgadl_device_match,
++	.uevent  = fpgadl_uevent,
++};
++EXPORT_SYMBOL(fpgadl_bus_type);
++
++/* Export a simple sysfs attribute. */
++static ssize_t show_bus_version(struct bus_type *bus, char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "%s\n", fpgadl_driver_version);
++}
++
++static BUS_ATTR(version, S_IRUGO, show_bus_version, NULL);
++
++/*
++ * fpgadl devices.
++ * For now, no references to fpgadlbus devices go out which are not
++ * tracked via the module reference count, so we use a no-op
++ * release function.
++ */
++static void fpgadl_dev_release(struct device *dev)
++{
++	DBGMSG_ENTER();
++}
++
++/* Release DaVinci GPIO to FPGA control pins. */
++static void fpgadl_release_gpio(struct fpgadl_pdata_t *pdata)
++{
++	gpio_free(pdata->done);
++	gpio_free(pdata->init_b);
++	gpio_free(pdata->program_b);
++}
++
++static int fpgadl_setup_gpio(struct fpgadl_pdata_t *pdata)
++{
++	int retval;
++
++	/* Configure FPGA PROGRAM_B GPIO. */
++	retval = gpio_request(pdata->program_b, "fpga_program_b");
++	if (retval == 0) /* FPGA_PROGRAM_B must be initially HIGH. */
++		retval = gpio_direction_output(pdata->program_b, 1);
++	if (retval != 0)
++		goto gpio_error;
++
++	/* Configure FPGA INIT_B GPIO. */
++	retval = gpio_request(pdata->init_b, "fpga_init_b");
++	if (retval == 0)
++		retval = gpio_direction_input(pdata->init_b);
++	if (retval != 0)
++		goto gpio_error;
++
++	/* Configure FPGA DONE GPIO. */
++	retval = gpio_request(pdata->done, "fpga_done");
++	if (retval == 0)
++		retval = gpio_direction_input(pdata->done);
++	if (retval != 0)
++		goto gpio_error;
++
++	return 0;
++
++gpio_error:
++	fpgadl_release_gpio(pdata);
++	return retval;
++}
++
++static void fpgadl_cleanup(struct fpgadl_device *fpgadl_dev)
++{
++	DBGMSG_ENTER();
++
++	if (!fpgadl_dev)
++		return;
++
++	fpgadl_dev_array[fpgadl_dev->id] = NULL;
++
++	/* Get rid of any allocated buffer, not freed */
++	if (fpgadl_dev->bitstream_buffer_allocated)
++		kfree(fpgadl_dev->bitstream_data);
++
++	switch (fpgadl_dev->state) {
++	case FPGADL_DEV_STATE_CHAR_DEV_REGISTERED:
++		misc_deregister(&fpgadl_dev->miscdev);
++	case FPGADL_DEV_STATE_GPIO_REGISTERED:
++		fpgadl_release_gpio(fpgadl_dev->pdata);
++	case FPGADL_DEV_STATE_DEVICE_REGISTERED:
++		device_unregister(&fpgadl_dev->dev);
++	case FPGADL_DEV_STATE_START:
++		break;
++	}
++}
++
++int fpgadl_register_device(struct fpgadl_device *fpgadl_dev)
++{
++	int res;
++	const struct firmware *fw_entry;
++
++	DBGMSG_ENTER();
++
++	fpgadl_dev->state = FPGADL_DEV_STATE_START;
++
++	/* Sanity checks. */
++	if (!fpgadl_dev->name) {
++		FAILMSG("  Error, missing device name");
++		res = -EFAULT;
++		goto error;
++	}
++
++	if (!fpgadl_dev->write_byte) {
++		FAILMSG("  Error, missing write_byte() callback");
++		res = -ENOMEM;
++		goto error;
++	}
++
++	if (fpgadl_dev_count == MAX_FPGADL_DEV) {
++		FAILMSG("Maximum number of devices reached (%d)",
++			fpgadl_dev_count);
++		res = -ENODEV;
++		goto error;
++	}
++
++	DBGMSG("  device %d", fpgadl_dev_count);
++
++	/* Set some default values. */
++	fpgadl_dev->bitstream_loaded = 0;
++	fpgadl_dev->bitstream_buffer_allocated = 0;
++	fpgadl_dev->bitstream_max_size =
++		fpgadl_dev->pdata->payload_full_size +
++		BITSTREAM_MAX_SIZE_OVERHEAD;
++
++	fpgadl_dev->dev.bus = &fpgadl_bus_type;
++	fpgadl_dev->dev.parent = &fpgadl_bus;
++	fpgadl_dev->dev.release = fpgadl_dev_release;
++	strncpy(fpgadl_dev->dev.bus_id, fpgadl_dev->name, BUS_ID_SIZE);
++	res = device_register(&fpgadl_dev->dev);
++	if (res) {
++		FAILMSG("  device_register() failed");
++		goto error;
++	}
++	fpgadl_dev->state = FPGADL_DEV_STATE_DEVICE_REGISTERED;
++
++	res = fpgadl_setup_gpio(fpgadl_dev->pdata);
++	if (res < 0) {
++		FAILMSG("Error registering GPIOs");
++		goto error;
++	}
++	fpgadl_dev->state = FPGADL_DEV_STATE_GPIO_REGISTERED;
++
++	fpgadl_dev->miscdev.name = fpgadl_dev->name;
++	fpgadl_dev->miscdev.minor = MISC_DYNAMIC_MINOR;
++	fpgadl_dev->miscdev.fops = &fops_fpgadl;
++	res = misc_register(&fpgadl_dev->miscdev);
++	if (res < 0) {
++		FAILMSG("Error registering misc driver");
++		goto error;
++	}
++	DBGMSG("  MINOR = %d", fpgadl_dev->miscdev.minor);
++	fpgadl_dev->state = FPGADL_DEV_STATE_CHAR_DEV_REGISTERED;
++
++	/* Try to load firmware through hotplug if available. */
++	res = request_firmware(&fw_entry, fpgadl_dev->pdata->bitstream_name,
++			       &fpgadl_dev->dev);
++	if (res < 0) {
++		/* Not an error preventing the driver from being loaded. */
++		res = 0;
++		DBGMSG("Info: firmware not available");
++	} else {
++		res = fpgadl_bitstream_load(fpgadl_dev, fw_entry->data,
++					    fw_entry->size);
++		release_firmware(fw_entry);
++	}
++
++	fpgadl_dev->id = fpgadl_dev_count;
++	fpgadl_dev_array[fpgadl_dev_count] = fpgadl_dev;
++	fpgadl_dev_count++;
++
++	return 0;
++
++error:
++	fpgadl_cleanup(fpgadl_dev);
++	return res;
++}
++EXPORT_SYMBOL(fpgadl_register_device);
++
++void fpgadl_unregister_device(struct fpgadl_device *fpgadl_dev)
++{
++	DBGMSG_ENTER();
++	fpgadl_cleanup(fpgadl_dev);
++}
++EXPORT_SYMBOL(fpgadl_unregister_device);
++
++static int __init fpgadl_init(void)
++{
++	int res;
++
++	DBGMSG_ENTER();
++	INFOMSG("FPGA bitstream loader %s", fpgadl_driver_version);
++
++	res = bus_register(&fpgadl_bus_type);
++	if (res) {
++		FAILMSG("  bus_register() failed");
++		goto fail_bus;
++	}
++
++	if (bus_create_file(&fpgadl_bus_type, &bus_attr_version)) {
++		FAILMSG("Unable to create version attribute");
++		goto fail_create_file;
++	}
++
++	res = device_register(&fpgadl_bus);
++	if (res) {
++		FAILMSG("  failed registering %s", fpgadl_bus.bus_id);
++		goto fail_dev_reg;
++	}
++
++	return 0;
++
++fail_dev_reg:
++fail_create_file:
++	bus_unregister(&fpgadl_bus_type);
++fail_bus:
++	return res;
++}
++module_init(fpgadl_init);
++
++static void __exit fpgadl_exit(void)
++{
++	DBGMSG_ENTER();
++	device_unregister(&fpgadl_bus);
++	bus_unregister(&fpgadl_bus_type);
++}
++module_exit(fpgadl_exit);
++
++MODULE_AUTHOR("Hugo Villeneuve <hvilleneuve@lyrtech.com>");
++MODULE_DESCRIPTION("FPGA bitstream loader");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/misc/fpgadl_par.c b/drivers/misc/fpgadl_par.c
+new file mode 100644
+index 0000000..66f8eba
+--- /dev/null
++++ b/drivers/misc/fpgadl_par.c
+@@ -0,0 +1,258 @@
++/*
++ * fpgadl_par.c - FPGA parallel programming driver
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/delay.h>
++#include <linux/bitrev.h>
++#include <linux/fpgadl.h>
++
++#include <asm/gpio.h> /* For ioremap() */
++
++#define MODULE_NAME "fpgadl_par"
++#define MODULE_VERSION_STR "v1.0"
++
++/* Define this to enable verbose debug messages */
++#define FPGADL_PAR_DEBUG 1
++
++/* Module parameters */
++static unsigned int fpgadl_par_debug;
++EXPORT_SYMBOL_GPL(fpgadl_par_debug);
++module_param_named(debug, fpgadl_par_debug, int, 0644);
++
++#ifdef FPGADL_PAR_DEBUG
++#define INFOMSG(fmt, args...) \
++do { \
++  printk(KERN_INFO "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++#define DBGMSG(fmt, args...) \
++do { if (fpgadl_par_debug > 0) \
++  printk(KERN_DEBUG "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++#define DBGMSG_ENTER() \
++  DBGMSG("%s() enter", __func__);
++#define DBGMSG_LEAVE() \
++  DBGMSG("%s() leave", __func__);
++#else
++#define INFOMSG(fmt, args...) do {} while (0)
++#define DBGMSG(fmt, args...) do {} while (0)
++#define DBGMSG_ENTER() do {} while (0)
++#define DBGMSG_LEAVE() do {} while (0)
++#endif
++
++#define FAILMSG(fmt, args...) \
++do { \
++  printk(KERN_ERR "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++
++struct fpgadl_par_dev_t {
++	char devname[32];
++	enum {
++		FPGADL_PAR_DEV_STATE_STRUCT_ALLOCATED,
++		FPGADL_PAR_DEV_STATE_HAVE_IOREMAP,
++		FPGADL_PAR_DEV_STATE_FPGADL_DEV_REGISTERED,
++	} state;
++	u8 *selectmap;
++	struct fpgadl_device fpgadl_dev;
++};
++
++#define MAX_FPGADL_PAR_DEV 5
++
++static int fpgadl_par_dev_count;
++
++/*
++ * Writes a byte of data to the FPGA using the SelectMAP
++ * interface. The FPGA_SELECT_MAP_REG address is within
++ * the FPGA address space (CS3), and when we write a byte
++ * to that address, the CCLK line will be toggled.
++ */
++static int selectmap_write_byte(struct fpgadl_device *fpgadl_dev,
++				u8 *data, int size)
++{
++	int k;
++	struct fpgadl_par_dev_t *fpgadl_par_dev;
++
++	fpgadl_par_dev = (struct fpgadl_par_dev_t *) fpgadl_dev->devdata;
++
++	for (k = 0; k < size; k++)
++		fpgadl_par_dev->selectmap[0] = bitrev8(data[k]);
++
++	return 0;
++}
++
++static void fpgadl_par_cleanup(struct fpgadl_par_dev_t *dev)
++{
++	DBGMSG("fpgadl_par_cleanup");
++
++	if (!dev)
++		return;
++
++	switch (dev->state) {
++	case FPGADL_PAR_DEV_STATE_FPGADL_DEV_REGISTERED:
++		fpgadl_unregister_device(&dev->fpgadl_dev);
++	case FPGADL_PAR_DEV_STATE_HAVE_IOREMAP:
++		iounmap(dev->selectmap);
++	case FPGADL_PAR_DEV_STATE_STRUCT_ALLOCATED:
++		kfree(dev);
++		break;
++	}
++}
++
++static int __devinit fpgadl_par_probe(struct platform_device *pdev)
++{
++	int len;
++	int res;
++	struct fpgadl_par_dev_t *dev = NULL;
++	const struct resource *selectmap_res;
++
++	DBGMSG("fpgadl_par_probe()");
++
++	if (fpgadl_par_dev_count == MAX_FPGADL_PAR_DEV) {
++		FAILMSG("Maximum number of devices reached (%d)",
++			fpgadl_par_dev_count);
++		res = -ENODEV;
++		goto error;
++	}
++
++	DBGMSG("  device %d", fpgadl_par_dev_count);
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev) {
++		FAILMSG("Failed to allocate device structure");
++		res = -ENOMEM;
++		goto error;
++	}
++	/* Set some default values. */
++	dev->state = FPGADL_PAR_DEV_STATE_STRUCT_ALLOCATED;
++
++	if (!pdev->dev.platform_data) {
++		FAILMSG("Error getting platform data");
++		res = -ENODEV;
++		goto error;
++	}
++	dev->fpgadl_dev.pdata = pdev->dev.platform_data;
++	pdev->dev.driver_data = dev; /* Private driver data */
++
++	/* Assign virtual addresses to SELECTMAP I/O memory regions. */
++	selectmap_res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
++						     "selectmap");
++	if (!selectmap_res) {
++		FAILMSG("Error getting selectmap ressource");
++		res = -ENODEV;
++		goto error;
++	}
++	len = selectmap_res->end - selectmap_res->start;
++	dev->selectmap = ioremap(selectmap_res->start, len);
++	if (!dev->selectmap) {
++		FAILMSG("Can't remap selectmap register");
++		res = -ENXIO;
++		goto error;
++	}
++	dev->state = FPGADL_PAR_DEV_STATE_HAVE_IOREMAP;
++
++	dev->fpgadl_dev.write_byte = selectmap_write_byte;
++	sprintf(dev->devname, "fpgadl_par%d", fpgadl_par_dev_count);
++	DBGMSG("  NAME = %s", dev->devname);
++	dev->fpgadl_dev.name = dev->devname;
++	dev->fpgadl_dev.devdata = dev; /* For our write_byte() callback */
++	res = fpgadl_register_device(&dev->fpgadl_dev);
++	if (res < 0) {
++		FAILMSG("Error registering fpgadl_par device");
++		goto error;
++	}
++	dev->state = FPGADL_PAR_DEV_STATE_FPGADL_DEV_REGISTERED;
++
++	fpgadl_par_dev_count++;
++
++	return 0;
++
++error:
++	fpgadl_par_cleanup(dev);
++	return res;
++}
++
++static int __devexit fpgadl_par_remove(struct platform_device *pdev)
++{
++	struct fpgadl_par_dev_t *dev = platform_get_drvdata(pdev);
++
++	DBGMSG("fpgadl_par_remove()");
++
++	fpgadl_par_cleanup(dev);
++
++	return 0;
++}
++
++static struct fpgadl_driver fpgadl_par_driver = {
++	.version = MODULE_VERSION_STR,
++	.module  = THIS_MODULE,
++	.driver = {
++		.name = "fpgadl_par",
++	},
++};
++
++static struct platform_driver fpgadl_platform_driver = {
++	.driver         = {
++		.name   = MODULE_NAME,
++		.owner  = THIS_MODULE,
++	},
++	.remove = fpgadl_par_remove,
++};
++
++static int __init fpgadl_par_init(void)
++{
++	int res;
++
++	DBGMSG("fpgadl_par_init()");
++
++	/* Register with the driver core. */
++	res = fpgadl_register_driver(&fpgadl_par_driver);
++	if (res) {
++		FAILMSG("Can't register fpgadl parallel driver");
++		return res;
++	}
++
++	/* The probe function will be called for each platform device declared
++	 * in board setup code. */
++	res = platform_driver_probe(&fpgadl_platform_driver,
++				    fpgadl_par_probe);
++	if (res) {
++		FAILMSG("platform_driver_probe() failed");
++		return res;
++	}
++
++	return 0;
++}
++module_init(fpgadl_par_init);
++
++static void __exit fpgadl_par_exit(void)
++{
++	DBGMSG("fpgadl_par_exit()");
++	platform_driver_unregister(&fpgadl_platform_driver);
++	fpgadl_unregister_driver(&fpgadl_par_driver);
++}
++module_exit(fpgadl_par_exit);
++
++MODULE_AUTHOR("Hugo Villeneuve <hvilleneuve@lyrtech.com>");
++MODULE_DESCRIPTION("FPGA parallel programming driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/misc/fpgadl_ser.c b/drivers/misc/fpgadl_ser.c
+new file mode 100644
+index 0000000..01ca5e0
+--- /dev/null
++++ b/drivers/misc/fpgadl_ser.c
+@@ -0,0 +1,244 @@
++/*
++ * fpgadl_ser.c - FPGA serial programming driver
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * Based on SH SCI SPI interface
++ *   Copyright (c) 2008 Magnus Damm
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/platform_device.h>
++#include <linux/spi/spi.h>
++#include <linux/fpgadl.h>
++
++#define MODULE_NAME "fpgadl_ser"
++#define MODULE_VERSION_STR "v1.0"
++
++/* Define this to enable verbose debug messages */
++#define FPGADL_SER_DEBUG 1
++
++/* Module parameters */
++static unsigned int fpgadl_ser_debug;
++EXPORT_SYMBOL_GPL(fpgadl_ser_debug);
++module_param_named(debug, fpgadl_ser_debug, int, 0644);
++
++#ifdef FPGADL_SER_DEBUG
++#define INFOMSG(fmt, args...) \
++do { \
++  printk(KERN_INFO "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++#define DBGMSG(fmt, args...) \
++do { if (fpgadl_ser_debug > 0) \
++  printk(KERN_DEBUG "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++#define DBGMSG_ENTER() \
++  DBGMSG("%s() enter", __func__);
++#define DBGMSG_LEAVE() \
++  DBGMSG("%s() leave", __func__);
++#else
++#define INFOMSG(fmt, args...) do {} while (0)
++#define DBGMSG(fmt, args...) do {} while (0)
++#define DBGMSG_ENTER() do {} while (0)
++#define DBGMSG_LEAVE() do {} while (0)
++#endif
++
++#define FAILMSG(fmt, args...) \
++do { \
++  printk(KERN_ERR "%s: "fmt"\n", MODULE_NAME, ## args); } while (0)
++
++struct fpgadl_ser_dev_t {
++	char devname[32];
++	enum {
++		FPGADL_SER_DEV_STATE_STRUCT_ALLOCATED,
++		FPGADL_SER_DEV_STATE_SPI_SETUP,
++		FPGADL_SER_DEV_STATE_FPGADL_DEV_REGISTERED,
++	} state;
++	struct spi_transfer t;
++	struct spi_message m;
++	struct spi_device *spi;
++	struct fpgadl_device fpgadl_dev;
++};
++
++#define MAX_FPGADL_SER_DEV 5
++
++static int fpgadl_ser_dev_count;
++
++static int fpgadl_ser_write_byte(struct fpgadl_device *fpgadl_dev,
++				   u8 *data, int size)
++{
++	int status;
++	struct fpgadl_ser_dev_t *fpgadl_ser_dev;
++
++	fpgadl_ser_dev = (struct fpgadl_ser_dev_t *) fpgadl_dev->devdata;
++
++	if (!data) {
++		FAILMSG("NULL data pointer");
++		return -EFAULT;
++	}
++
++	spi_message_init(&fpgadl_ser_dev->m);
++	fpgadl_ser_dev->t.tx_buf = data;
++	fpgadl_ser_dev->t.len = size;
++	spi_message_add_tail(&fpgadl_ser_dev->t, &fpgadl_ser_dev->m);
++
++	status = spi_sync(fpgadl_ser_dev->spi, &fpgadl_ser_dev->m);
++	if (status < 0)
++		FAILMSG("spi_sync() failed (%d)", status);
++
++	return status;
++}
++
++static void fpgadl_ser_cleanup(struct fpgadl_ser_dev_t *dev)
++{
++	DBGMSG_ENTER();
++
++	if (!dev)
++		return;
++
++	switch (dev->state) {
++	case FPGADL_SER_DEV_STATE_FPGADL_DEV_REGISTERED:
++		fpgadl_unregister_device(&dev->fpgadl_dev);
++	case FPGADL_SER_DEV_STATE_SPI_SETUP:
++	case FPGADL_SER_DEV_STATE_STRUCT_ALLOCATED:
++		kfree(dev);
++		break;
++	}
++}
++
++static int __devinit fpgadl_ser_probe(struct spi_device *spi)
++{
++	int res;
++	struct fpgadl_ser_dev_t *dev = NULL;
++
++	DBGMSG_ENTER();
++
++	if (fpgadl_ser_dev_count == MAX_FPGADL_SER_DEV) {
++		FAILMSG("Maximum number of devices reached (%d)",
++			fpgadl_ser_dev_count);
++		res = -ENODEV;
++		goto error;
++	}
++
++	DBGMSG("  device %d", fpgadl_ser_dev_count);
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev) {
++		FAILMSG("Failed to allocate device structure");
++		res = -ENOMEM;
++		goto error;
++	}
++	/* Set some default values. */
++	dev->state = FPGADL_SER_DEV_STATE_STRUCT_ALLOCATED;
++
++	DBGMSG("  SPI mode = %d", spi->mode);
++
++	if (!spi->dev.platform_data) {
++		FAILMSG("Error getting platform data");
++		res = -ENODEV;
++		goto error;
++	}
++	dev->fpgadl_dev.pdata = spi->dev.platform_data;
++	spi->dev.driver_data = dev; /* Private driver data */
++
++	spi->bits_per_word = 8; /* Size of Tx and Rx transfers. */
++	res = spi_setup(spi);
++	if (res < 0) {
++		FAILMSG("Error setting-up SPI");
++		goto error;
++	}
++	dev->spi = spi;
++	dev->state = FPGADL_SER_DEV_STATE_SPI_SETUP;
++
++	dev->fpgadl_dev.write_byte = fpgadl_ser_write_byte;
++	sprintf(dev->devname, "fpgadl_ser%d", fpgadl_ser_dev_count);
++	DBGMSG("  NAME = %s", dev->devname);
++	dev->fpgadl_dev.name = dev->devname;
++	dev->fpgadl_dev.devdata = dev; /* For our write_byte() callback */
++	res = fpgadl_register_device(&dev->fpgadl_dev);
++	if (res < 0) {
++		FAILMSG("Error registering fpgadl_ser device");
++		goto error;
++	}
++	dev->state = FPGADL_SER_DEV_STATE_FPGADL_DEV_REGISTERED;
++
++	fpgadl_ser_dev_count++;
++
++	return 0;
++
++error:
++	fpgadl_ser_cleanup(dev);
++	return res;
++}
++
++static int __devexit fpgadl_ser_remove(struct spi_device *spi)
++{
++	struct fpgadl_ser_dev_t *dev = spi_get_drvdata(spi);
++
++	DBGMSG_ENTER();
++	fpgadl_ser_cleanup(dev);
++	return 0;
++}
++
++static struct spi_driver fpgadl_ser_spi_driver = {
++	.driver = {
++		.name	= MODULE_NAME,
++		.bus	= &spi_bus_type,
++		.owner	= THIS_MODULE,
++	},
++	.probe		= fpgadl_ser_probe,
++	.remove		= fpgadl_ser_remove,
++};
++
++static struct fpgadl_driver fpgadl_ser_driver = {
++	.version = MODULE_VERSION_STR,
++	.module  = THIS_MODULE,
++	.driver = {
++		.name = "fpgadl_ser",
++	},
++};
++
++static int __init fpgadl_ser_init(void)
++{
++	int res;
++
++	DBGMSG_ENTER();
++
++	/* Register with the driver core. */
++	res = fpgadl_register_driver(&fpgadl_ser_driver);
++	if (res) {
++		FAILMSG("Can't register fpgadl serial driver");
++		return res;
++	}
++
++	return spi_register_driver(&fpgadl_ser_spi_driver);
++}
++module_init(fpgadl_ser_init);
++
++static void __exit fpgadl_ser_exit(void)
++{
++	DBGMSG_ENTER();
++	spi_unregister_driver(&fpgadl_ser_spi_driver);
++	fpgadl_unregister_driver(&fpgadl_ser_driver);
++}
++module_exit(fpgadl_ser_exit);
++
++MODULE_DESCRIPTION("FPGA serial programming driver");
++MODULE_AUTHOR("Hugo Villeneuve");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/fpgadl.h b/include/linux/fpgadl.h
+new file mode 100644
+index 0000000..27d83f1
+--- /dev/null
++++ b/include/linux/fpgadl.h
+@@ -0,0 +1,96 @@
++/*
++ * FPGA bitstream load header file.
++ *
++ * Copyright (C) 2008 Lyrtech <www.lyrtech.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#ifndef FPGADL_H
++#define FPGADL_H 1
++
++#include <linux/miscdevice.h>
++
++/* FPGA device-specific informations and functions. */
++struct fpgadl_pdata_t {
++	enum {
++		FPGA_VENDOR_XILINX,
++		FPGA_VENDOR_ALTERA,
++	} fpga_vendor;
++	enum {
++		FPGA_FAMILY_XILINX_XC3S,
++		FPGA_FAMILY_XILINX_XC4V,
++	} fpga_family;
++	ssize_t payload_full_size;
++	u8 program_b;
++	u8 init_b;
++	u8 done;
++	char *bitstream_name;
++	int check_init_low; /* Set to 1 to check that the INIT pin is low during
++			     * programming. Normally, we should check if INIT_B
++			     * is low during configuration, indicating a
++			     * configuration error. But this may cause problems
++			     * for bitstreams where the INIT_B pin is used as a
++			     * GPIO after configuration. */
++};
++
++struct fpgadl_driver {
++	char *version;
++	struct module *module;
++	struct device_driver driver;
++	struct driver_attribute version_attr;
++};
++
++struct fpgadl_device {
++	int id;
++	char *name;
++	enum {
++		FPGADL_DEV_STATE_START,
++		FPGADL_DEV_STATE_DEVICE_REGISTERED,
++		FPGADL_DEV_STATE_GPIO_REGISTERED,
++		FPGADL_DEV_STATE_CHAR_DEV_REGISTERED,
++	} state;
++	int bitstream_buffer_allocated;
++	u8 *bitstream_data;
++	size_t bitstream_length;
++	size_t bitstream_max_size;
++	int bitstream_mode;
++	int bitstream_loaded;
++	int (*write_byte)(struct fpgadl_device *, u8 *, int);
++	void *devdata; /* Pointer to interface-specific (SPI/PAR) device */
++	struct miscdevice miscdev;
++	struct fpgadl_driver *driver;
++	struct fpgadl_pdata_t *pdata;
++	struct device dev;
++};
++
++/* Bitstream types. */
++#define BITSTREAM_MODE_UNKNOWN	0
++#define BITSTREAM_MODE_FULL	1
++#define BITSTREAM_MODE_PARTIAL	2
++
++extern struct bus_type fpgadl_bus_type;
++
++#define to_fpgadl_driver(drv) container_of(drv, struct fpgadl_driver, driver);
++
++extern int fpgadl_register_driver(struct fpgadl_driver *drv);
++extern void fpgadl_unregister_driver(struct fpgadl_driver *drv);
++
++extern int fpgadl_register_device(struct fpgadl_device *fpgadldev);
++extern void fpgadl_unregister_device(struct fpgadl_device *fpgadldev);
++
++int fpgadl_is_bitstream_loaded(const char *name);
++
++#endif /* FPGADL_H */
+-- 
+1.5.4.5
+
