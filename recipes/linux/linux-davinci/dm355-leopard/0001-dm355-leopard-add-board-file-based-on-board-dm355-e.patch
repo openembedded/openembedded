@@ -203,13 +203,13 @@ index 0000000..a1e97e8
 +static struct resource dm355leopard_dm9000_rsrc[] = {
 +	{
 +		/* addr */
-+		.start	= 0x04014000,
-+		.end	= 0x04014001,
++		.start	= 0x04000000,
++		.end	= 0x04000001,
 +		.flags	= IORESOURCE_MEM,
 +	}, {
 +		/* data */
-+		.start	= 0x04014002,
-+		.end	= 0x04014003,
++		.start	= 0x04000016,
++		.end	= 0x04000017,
 +		.flags	= IORESOURCE_MEM,
 +	}, {
 +		.flags	= IORESOURCE_IRQ
@@ -296,9 +296,9 @@ index 0000000..a1e97e8
 +{
 +	struct clk *aemif;
 +
-+	gpio_request(1, "dm9000");
-+	gpio_direction_input(1);
-+	dm355leopard_dm9000_rsrc[2].start = gpio_to_irq(1);
++	gpio_request(9, "dm9000");
++	gpio_direction_input(9);
++	dm355leopard_dm9000_rsrc[2].start = gpio_to_irq(9);
 +
 +	aemif = clk_get(&dm355leopard_dm9000.dev, "aemif");
 +	clk_enable(aemif);
