@@ -10,6 +10,6 @@ do_stage() {
 
 do_install() {
 	install -d ${D}${bindir} ${D}${mandir}/man1
-	install -s -m 755 stat ${D}${bindir}
+	install -m 755 stat ${D}${bindir}
 	install -m 644 stat.1 ${D}${mandir}/man1
 }
