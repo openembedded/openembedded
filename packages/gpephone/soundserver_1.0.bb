@@ -2,14 +2,12 @@ LICENSE     = "LiPS"
 DESCRIPTION = "Cellphone alarm daemon"
 SECTION = "gpe"
 PRIORITY    = "optional"
-PR          = "r1"
+PR          = "r2"
 
 DEPENDS = "glib-2.0 libiac gstreamer"
 
 GPE_TARBALL_SUFFIX = "bz2"
 inherit gpephone autotools
-
-SRC_URI += " file://libtool.patch;patch=1"
 
 EXTRA_OECONF="--disable-osc8k"
 
