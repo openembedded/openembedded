@@ -1,16 +1,18 @@
 DESCRIPTION = "OpenEZX 2.6 Linux Development Kernel for the Motorola EZX GSM phones"
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
-KV = "2.6.27"
+KV = "2.6.28+2.6.29rc8"
 PV = "${KV}+gitr${SRCREV}"
 PR = "r0"
 
 require linux.inc
 
-DEFAULT_PREFERENCE = "-1"
+# Make sure not to use thumb[-interworking]
+ARM_INSTRUCTION_SET = "arm"
+THUMB_INTERWORKING = "no"
 
 SRC_URI = "\
-  git://git.openezx.org/openezx.git;protocol=git \
+  git://git.openezx.org/openezx.git;protocol=git;branch=ezx/current \
 "
 S = "${WORKDIR}/git"
 
@@ -22,23 +24,7 @@ S = "${WORKDIR}/git"
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rorkre2|rokre6)'
 
-# For now the code for serial console is disabled in compress.c
-#CMDLINE_CON = "console=ttyS2,115200n8 console=tty1 "
-CMDLINE_CON = "console=tty1 "
-
-CMDLINE_ROOT = "root=/dev/mmcblk0p2 rootfstype=ext2 rootwait=1"
-CMDLINE_NFSROOT = "root=/dev/nfs rootfstype=nfs nfsroot=192.168.0.200:/export/ezx-image rootdelay=1 "
-# Uncomment to enable dyntick
-#CMDLINE_OTHER = "dyntick=enable"
-CMDLINE_DEBUG = '${@base_conditional("DISTRO_TYPE", "release", "quiet", "debug",d)}'
-CMDLINE_IP = "ip=192.168.0.202:192.168.0.200:192.168.0.200:255.255.255.0"
-CMDLINE_MEM = "mem=32M@0xA0000000 mem=16M@0xAC000000"
-CMDLINE = "${CMDLINE_CON} ${CMDLINE_ROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} ${CMDLINE_MEM}"
-# Uncomment to use root-over-nfs-over-usb
-#CMDLINE_NFSROOT_USB = "${CMDLINE_CON} ${CMDLINE_NFSROOT} ${CMDLINE_IP} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG} ${CMDLINE_MEM}"
-
-# 1024x1024 once was the maximum kernel size for boot-over-usb -- is it still?
-#KERNEL_IMAGE_MAXSIZE = "1294336"
+# Kernel command line parameters are given over boot_usb or gen-blob's menu
 
 ###############################################################
 # module configs specific to this kernel
