@@ -6,7 +6,7 @@ PR = "r1"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core
+inherit qt4e
 
 SRCREV = "647d1fa634072f78894aecd090474389eaf6d6a4"
 SRC_URI = "git://git.neurostechnology.com/git/app-vplayer;protocol=git"

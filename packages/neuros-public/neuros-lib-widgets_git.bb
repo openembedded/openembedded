@@ -6,7 +6,7 @@ PR = "r3"
 
 DEPENDS = "qt-embedded"
 
-inherit qtopia4core
+inherit qt4e
 
 SRCREV = "e00c2fe1c5be9f4bb94512363e1b21e07ba5c55d"
 SRC_URI = "git://git.neurostechnology.com/git/lib-widgets;protocol=git"
