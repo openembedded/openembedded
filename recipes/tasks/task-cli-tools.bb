@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools, python tools-based tools, debug tool
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r5"
+PR = "r6"
 
 inherit task
 
@@ -15,6 +15,7 @@ RDEPENDS_${PN} = "\
   lsof \
   mtd-utils \
   nano \
+  nfs-utils-client \
   powertop \
   screen \
   sysstat \
