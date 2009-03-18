@@ -890,22 +890,11 @@ python base_eventhandler() {
 	from bb.event import Handled, NotHandled, getName
 	import os
 
-	messages = {}
-	messages["Completed"] = "completed"
-	messages["Succeeded"] = "completed"
-	messages["Started"] = "started"
-	messages["Failed"] = "failed"
-
 	name = getName(e)
-	msg = ""
-	if name.startswith("Task"):
-		msg += "package %s: task %s: " % (data.getVar("PF", e.data, 1), e.task)
-		msg += messages.get(name[4:]) or name[4:]
-	elif name.startswith("Build"):
-		msg += "build %s: " % e.name
-		msg += messages.get(name[5:]) or name[5:]
+	if name == "TaskCompleted":
+		msg = "package %s: task %s is complete." % (data.getVar("PF", e.data, 1), e.task)
 	elif name == "UnsatisfiedDep":
-		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
+		msg = "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
 	else:
 		return NotHandled
 
