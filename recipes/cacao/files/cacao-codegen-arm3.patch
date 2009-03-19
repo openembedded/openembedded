@@ -1,0 +1,98 @@
+
+# HG changeset patch
+# User Michael Starzinger <michi@complang.tuwien.ac.at>
+# Date 1219071051 -7200
+# Node ID 560d90393144976fb3a4e25c6ab6c5bba6c24945
+# Parent 3f50e293a509895992c2781322f2199a481a87a2
+Fixed PR99 (hopefully).
+* src/vm/jit/arm/codegen.h (M_RECOMPUTE_IP): Shifted sub instructions go
+first now (order of instruction reveresed).
+* src/vm/jit/arm/md.h (md_codegen_get_pv_from_pc): Only load additional
+instructions if definitely allowed to. This was made possible by
+above change.
+
+--- a/src/vm/jit/arm/codegen.h	Mon Aug 18 16:03:26 2008 -0400
++++ b/src/vm/jit/arm/codegen.h	Mon Aug 18 16:50:51 2008 +0200
+@@ -1103,15 +1103,22 @@
+ /* M_RECOMPUTE_PV:
+    used to recompute our PV (we use the IP for this) out of the current PC
+    ATTENTION: if you change this, you have to look at other functions as well!
+-   Following things depend on it: asm_call_jit_compiler(); codegen_findmethod();
++   Following things depend on it: md_codegen_get_pv_from_pc();
+ */
+ #define M_RECOMPUTE_PV(disp) \
+ 	disp += 8; /* we use PC relative addr.  */ \
+ 	assert((disp & 0x03) == 0); \
+ 	assert(disp >= 0 && disp <= 0x03ffffff); \
+-	M_SUB_IMM(REG_PV, REG_PC, IMM_ROTL(disp >> 2, 1)); \
+-	if (disp > 0x000003ff) M_SUB_IMM(REG_PV, REG_PV, IMM_ROTL(disp >> 10, 5)); \
+-	if (disp > 0x0003ffff) M_SUB_IMM(REG_PV, REG_PV, IMM_ROTL(disp >> 18, 9)); \
++	if (disp > 0x0003ffff) { \
++		M_SUB_IMM(REG_PV, REG_PC, IMM_ROTL(disp >> 18, 9)); \
++		M_SUB_IMM(REG_PV, REG_PV, IMM_ROTL(disp >> 10, 5)); \
++		M_SUB_IMM(REG_PV, REG_PV, IMM_ROTL(disp >> 2, 1)); \
++	} else if (disp > 0x000003ff) { \
++		M_SUB_IMM(REG_PV, REG_PC, IMM_ROTL(disp >> 10, 5)); \
++		M_SUB_IMM(REG_PV, REG_PV, IMM_ROTL(disp >> 2, 1)); \
++	} else { \
++		M_SUB_IMM(REG_PV, REG_PC, IMM_ROTL(disp >> 2, 1)); \
++	}
+ 
+ /* M_INTMOVE:
+    generates an integer-move from register a to b.
+--- a/src/vm/jit/arm/md.h	Mon Aug 18 16:03:26 2008 -0400
++++ b/src/vm/jit/arm/md.h	Mon Aug 18 16:50:51 2008 +0200
+@@ -68,29 +68,37 @@
+ {
+ 	uint32_t* pc;
+ 	uintptr_t pv;
+-	uint32_t mcode1, mcode2, mcode3;
++	uint32_t mcode;
++	int mcode_idx;
+ 
+ 	pc = (uint32_t*) ra;
+ 	pv = (uintptr_t) ra;
+ 
+ 	/* this can either be a RECOMPUTE_IP in JIT code or a fake in asm_calljavafunction */
+-	mcode1 = pc[0];
+-	if ((mcode1 & 0xffffff00) == 0xe24fcf00 /*sub ip,pc,#__*/)
+-		pv -= (uintptr_t) ((mcode1 & 0x000000ff) << 2);
+-	else if ((mcode1 & 0xffffff00) == 0xe24fc000 /*sub ip,pc,#__*/)
+-		pv -= (uintptr_t) (mcode1 & 0x000000ff);
++	mcode_idx = 0;
++	mcode = pc[0];
++
++	/* if this was shifted by 18 bits, we have to load additional instructions */
++	if ((mcode & 0xfff0ff00) == 0xe240c700 /*sub ip,??,#__*/) {
++		pv -= (uintptr_t) ((mcode & 0x000000ff) << 18);
++		mcode = pc[++mcode_idx];
++	}
++
++	/* if this was shifted by 10 bits, we have to load additional instructions */
++	if ((mcode & 0xfff0ff00) == 0xe240cb00 /*sub ip,??,#__*/) {
++		pv -= (uintptr_t) ((mcode & 0x000000ff) << 10);
++		mcode = pc[++mcode_idx];
++	}
++
++	/* this is the default path with just one instruction, shifted by 2 or no bits */
++	if ((mcode & 0xfff0ff00) == 0xe240cf00 /*sub ip,??,#__*/)
++		pv -= (uintptr_t) ((mcode & 0x000000ff) << 2);
++	else if ((mcode & 0xffffff00) == 0xe24fc000 /*sub ip,pc,#__*/)
++		pv -= (uintptr_t) (mcode & 0x000000ff);
+ 	else {
+ 		/* if this happens, we got an unexpected instruction at (*ra) */
+-		vm_abort("Unable to find method: %p (instr=%x)", ra, mcode1);
++		vm_abort("Unable to find method: %p (instr=%x)", ra, mcode);
+ 	}
+-
+-	/* if we have a RECOMPUTE_IP there can be more than one instruction */
+-	mcode2 = pc[1];
+-	mcode3 = pc[2];
+-	if ((mcode2 & 0xffffff00) == 0xe24ccb00 /*sub ip,ip,#__*/)
+-		pv -= (uintptr_t) ((mcode2 & 0x000000ff) << 10);
+-	if ((mcode3 & 0xffffff00) == 0xe24cc700 /*sub ip,ip,#__*/)
+-		pv -= (uintptr_t) ((mcode3 & 0x000000ff) << 18);
+ 
+ 	/* we used PC-relative adressing; but now it is LR-relative */
+ 	pv += 8;
+
