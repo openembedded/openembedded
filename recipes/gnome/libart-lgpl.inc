@@ -11,7 +11,7 @@ SRC_URI = "http://ftp.gnome.org/pub/GNOME/sources/libart_lgpl/2.3/libart_lgpl-${
 
 inherit autotools pkgconfig
 
-DEPENDS = ""
+DEPENDS = "install-native"
 
 FILES_${PN} = "${libdir}/*.so.*"
 FILES_${PN}-dev += "${bindir}/libart2-config"
@@ -23,6 +23,13 @@ do_configure_prepend() {
 }
 
 EXTRA_OECONF = "--disable-gtk-doc"
+
+# With automake-native 1.10.2 the configure and m4 scripts are confused
+# and detect the following stuff wrong. Correct programs are hereby
+# enforced.
+export MKDIR_P = "mkdir -p"
+export mkdir_p = "mkdir -p"
+export INSTALL = "${STAGING_BINDIR_NATIVE}/install-sh"
 
 do_stage() {
 	autotools_stage_includes
