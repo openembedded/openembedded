@@ -3,7 +3,8 @@ LICENSE = "CPL MPL LGPL"
 
 inherit java-library
 
-DEPENDS = "fastjar-native cairo gtk+ atk libxtst"
+# classpath provides jni.h which is needed herein
+DEPENDS = "fastjar-native cairo gtk+ atk libxtst classpath"
 
 S = "${WORKDIR}/swt-source"
 
