@@ -10,7 +10,7 @@ DEPENDS += "glib-2.0-native gtk-doc"
 DEPENDS += "virtual/libiconv virtual/libintl"
 PACKAGES =+ "gobject-2.0 gmodule-2.0 gthread-2.0 gio-2.0 glib-2.0-utils "
 
-PR = "r3"
+PR = "r4"
 
 LEAD_SONAME = "libglib-2.0.*"
 FILES_glib-2.0-utils = "${bindir}/*"
@@ -21,6 +21,10 @@ FILES_gmodule-2.0 = "${libdir}/libgmodule-2.0.so.*"
 FILES_gobject-2.0 = "${libdir}/libgobject-2.0.so.*"
 FILES_gio-2.0 = "${libdir}/libgio-2.0.so.*"
 FILES_gthread-2.0 = "${libdir}/libgthread-2.0.so.*"
+
+# Let the gthread library end up in glib package
+# for compatibility.
+FILES_gthread-2.0_chinook-compat = ""
 
 EXTRA_OECONF = "--disable-debug "
 
