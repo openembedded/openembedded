@@ -117,9 +117,6 @@ TARGET_CC_ARCH_pn-cairo_armv5te = "-march=armv4t"
 # Can be "glibc", "eglibc" or "uclibc"
 PREFERRED_LIBC ?= "glibc"
 PSTAGE_EXTRAPATH = "${PREFERRED_LIBC}"
-
-CACHE = "${TMPDIR}/cache/${PREFERRED_LIBC}/${MACHINE}"
-DEPLOY_DIR = "${TMPDIR}/deploy/${PREFERRED_LIBC}"
 require conf/distro/include/sane-toolchain-${PREFERRED_LIBC}.inc
 
 # Generate locales on the buildsystem instead of on the target. Speeds up first boot, set to "1" to enable

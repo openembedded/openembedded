@@ -773,7 +773,13 @@ python base_do_unpack() {
 def base_get_scmbasepath(d):
 	import bb
 	path_to_bbfiles = bb.data.getVar( 'BBFILES', d, 1 ).split()
-	return path_to_bbfiles[0][:path_to_bbfiles[0].rindex( "packages" )]
+
+	try:
+		index = path_to_bbfiles[0].rindex( "recipes" )
+	except ValueError:
+		index = path_to_bbfiles[0].rindex( "packages" )
+
+	return path_to_bbfiles[0][:index]
 
 def base_get_metadata_monotone_branch(d):
 	monotone_branch = "<unknown>"
@@ -1060,6 +1066,19 @@ python read_subpackage_metadata () {
 		for key in sdata.keys():
 			bb.data.setVar(key, sdata[key], d)
 }
+
+
+#
+# Collapse FOO_pkg variables into FOO
+#
+def read_subpkgdata_dict(pkg, d):
+	import bb
+	ret = {}
+	subd = read_pkgdatafile(get_subpkgedata_fn(pkg, d))
+	for var in subd:
+		newvar = var.replace("_" + pkg, "")
+		ret[newvar] = subd[var]
+	return ret
 
 # Make sure MACHINE isn't exported
 # (breaks binutils at least)

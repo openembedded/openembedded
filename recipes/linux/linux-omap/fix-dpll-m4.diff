@@ -1,0 +1,37 @@
+From linux-omap-owner@vger.kernel.org Mon Dec 08 14:41:05 2008
+
+This fixes commit e42218d45afbc3e654e289e021e6b80c657b16c2. The commit
+was based on old kernel tree, and with bad luck applied ok but to wrong
+position, modifying dpll4_m6_ck instead of dpll4_m4_ck.
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+---
+ arch/arm/mach-omap2/clock34xx.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/clock34xx.h b/arch/arm/mach-omap2/clock34xx.h
+index 1c2b49f..5357507 100644
+--- a/arch/arm/mach-omap2/clock34xx.h
++++ b/arch/arm/mach-omap2/clock34xx.h
+@@ -825,6 +825,8 @@ static struct clk dpll4_m4_ck = {
+ 				PARENT_CONTROLS_CLOCK,
+ 	.clkdm		= { .name = "dpll4_clkdm" },
+ 	.recalc		= &omap2_clksel_recalc,
++	.set_rate	= &omap2_clksel_set_rate,
++	.round_rate	= &omap2_clksel_round_rate,
+ };
+ 
+ /* The PWRDN bit is apparently only available on 3430ES2 and above */
+@@ -879,8 +881,6 @@ static struct clk dpll4_m6_ck = {
+ 				PARENT_CONTROLS_CLOCK,
+ 	.clkdm		= { .name = "dpll4_clkdm" },
+ 	.recalc		= &omap2_clksel_recalc,
+-	.set_rate	= &omap2_clksel_set_rate,
+-	.round_rate	= &omap2_clksel_round_rate,
+ };
+ 
+ /* The PWRDN bit is apparently only available on 3430ES2 and above */
+-- 
+1.6.0.3
+
+

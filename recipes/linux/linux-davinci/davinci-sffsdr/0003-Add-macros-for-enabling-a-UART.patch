@@ -1,0 +1,29 @@
+From 33beaeec0dfec8cc5bf7a88f524a2a1f41fa30ba Mon Sep 17 00:00:00 2001
+From: Hugo Villeneuve <hugo@hugovil.com>
+Date: Thu, 5 Mar 2009 14:45:19 -0500
+Subject: [PATCH 03/12] Add macros for enabling a UART
+
+Signed-off-by: Hugo Villeneuve <hugo@hugovil.com>
+---
+ arch/arm/mach-davinci/include/mach/serial.h |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/include/mach/serial.h b/arch/arm/mach-davinci/include/mach/serial.h
+index de7c667..d77d25b 100644
+--- a/arch/arm/mach-davinci/include/mach/serial.h
++++ b/arch/arm/mach-davinci/include/mach/serial.h
+@@ -30,6 +30,11 @@ struct davinci_uart_config {
+ 	unsigned int enabled_uarts;
+ };
+ 
++/* Use these macros in board setup code to enable a specific UART. */
++#define DAVINCI_UART0_ENA (1 << 0)
++#define DAVINCI_UART1_ENA (1 << 1)
++#define DAVINCI_UART2_ENA (1 << 2)
++
+ extern void davinci_serial_init(struct davinci_uart_config *);
+ 
+ #endif /* __ASM_ARCH_SERIAL_H */
+-- 
+1.5.4.5
+

@@ -1,0 +1,29 @@
+From 70c3edb223f7bfbc6c5b095826c779b7dd853f10 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 7 Jan 2009 17:00:46 +0200
+Subject: [PATCH] OMAPFB: remove extra omapfb_setup_overlay call
+
+It kinda messed things up...
+---
+ drivers/video/omap2/omapfb-ioctl.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-ioctl.c b/drivers/video/omap2/omapfb-ioctl.c
+index 1f0f044..bb5f791 100644
+--- a/drivers/video/omap2/omapfb-ioctl.c
++++ b/drivers/video/omap2/omapfb-ioctl.c
+@@ -67,11 +67,6 @@ static int omapfb_setup_plane(struct fb_info *fbi, struct omapfb_plane_info *pi)
+ 			goto out;
+ 	}
+ 
+-	r = omapfb_setup_overlay(fbi, ovl, pi->pos_x, pi->pos_y,
+-			pi->out_width, pi->out_height);
+-	if (r)
+-		goto out;
+-
+ 	ovl->enable(ovl, pi->enabled);
+ 
+ 	if (ovl->manager)
+-- 
+1.5.6.3
+
