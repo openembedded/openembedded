@@ -1081,9 +1081,9 @@ ${FILE_DIRNAME}/${PN}:${FILE_DIRNAME}/files:${FILE_DIRNAME}"</screen></para>
 
       <para>First we'll create the myhelloworld.c file and a readme file.
       We'll place this in the files subdirectory, which is one of the places
-      that is searched for file:// URI's:<screen>mkdir packages/myhelloworld
-mkdir packages/myhelloworld/files
-cat &gt; packages/myhelloworld/files/myhelloworld.c
+      that is searched for file:// URI's:<screen>mkdir recipes/myhelloworld
+mkdir recipes/myhelloworld/files
+cat &gt; recipes/myhelloworld/files/myhelloworld.c
 #include &lt;stdio.h&gt;
 
 int main(int argc, char** argv)
@@ -1092,11 +1092,11 @@ int main(int argc, char** argv)
         return 0;
 }
 ^D
-cat &gt; packages/myhelloworld/files/README.txt
+cat &gt; recipes/myhelloworld/files/README.txt
 Readme file for myhelloworld.
 ^D</screen></para>
 
-      <para>Now we have a directory for our recipe, packages/myhelloworld, and
+      <para>Now we have a directory for our recipe, recipes/myhelloworld, and
       we've created a files subdirectory in there to store our local files.
       We've created two local files, the C source code for our helloworld
       program and a readme file. Now we need to create the bitbake
@@ -1186,7 +1186,7 @@ PR = "r0"</screen></para>
       </itemizedlist>
 
       <para>We'll consider this release 0 and version 0.1 of a program called
-      helloworld. So we'll name the recipe myhelloworld_0.1.bb:<screen>cat &gt; packages/myhelloworld/myhelloworld_0.1.bb
+      helloworld. So we'll name the recipe myhelloworld_0.1.bb:<screen>cat &gt; recipes/myhelloworld/myhelloworld_0.1.bb
 DESCRIPTION = "Hello world program"
 PR = "r0"
 
@@ -1203,13 +1203,13 @@ do_install() {
         install -m 0644 ${WORKDIR}/README.txt ${D}${docdir}/myhelloworld
 }
 ^D</screen>Now we are ready to build our package, hopefully it'll all work
-      since it's such a simple example:<screen>~/oe%&gt; bitbake -b packages/myhelloworld/myhelloworld_0.1.bb
+      since it's such a simple example:<screen>~/oe%&gt; bitbake -b recipes/myhelloworld/myhelloworld_0.1.bb
 NOTE: package myhelloworld-0.1: started
 NOTE: package myhelloworld-0.1-r0: task do_fetch: started
 NOTE: package myhelloworld-0.1-r0: task do_fetch: completed
 NOTE: package myhelloworld-0.1-r0: task do_unpack: started
-NOTE: Unpacking /home/lenehan/devel/oe/local-packages/myhelloworld/files/helloworld.c to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
-NOTE: Unpacking /home/lenehan/devel/oe/local-packages/myhelloworld/files/README.txt to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
+NOTE: Unpacking /home/lenehan/devel/oe/local-recipes/myhelloworld/files/helloworld.c to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
+NOTE: Unpacking /home/lenehan/devel/oe/local-recipes/myhelloworld/files/README.txt to /home/lenehan/devel/oe/build/titan-glibc-25/tmp/work/myhelloworld-0.1-r0/
 NOTE: package myhelloworld-0.1-r0: task do_unpack: completed
 NOTE: package myhelloworld-0.1-r0: task do_patch: started
 NOTE: package myhelloworld-0.1-r0: task do_patch: completed
@@ -1354,7 +1354,7 @@ tmp/work/myhelloworld-0.1-r0/install/myhelloworld/usr/bin/myhelloworld: ELF 32-b
       of building an autotools based packages.</para>
 
       <para>Let's take a look at the tuxnes recipe which is an example of a
-      very simple autotools based recipe:<screen>%~oe&gt; cat packages/tuxnes/tuxnes_0.75.bb
+      very simple autotools based recipe:<screen>%~oe&gt; cat recipes/tuxnes/tuxnes_0.75.bb
 DESCRIPTION = "Tuxnes Nintendo (8bit) Emulator"
 HOMEPAGE = "http://prdownloads.sourceforge.net/tuxnes/tuxnes-0.75.tar.gz"
 LICENSE = "GPLv2"
@@ -3366,7 +3366,7 @@ do_configure() {
     via the <command>PV</command> variable).</para>
 
     <para>For example if we were to ask bitbake to build procps and the
-    following packages are available:<screen>~/oe%&gt; ls packages/procps 
+    following packages are available:<screen>~/oe%&gt; ls recipes/procps 
 procps-3.1.15/    procps-3.2.1/    procps-3.2.5/    procps-3.2.7/    procps.inc
 procps_3.1.15.bb  procps_3.2.1.bb  procps_3.2.5.bb  procps_3.2.7.bb
 ~/oe%&gt;</screen>then we would expect it to select version
@@ -3397,7 +3397,7 @@ procps_3.1.15.bb  procps_3.2.1.bb  procps_3.2.5.bb  procps_3.2.7.bb
     version until it works. By adding:<screen>DEFAULT_PREFERENCE = "-1"</screen>to
     the recipe this is what will happen. Bitbake will now ignore this version
     (since all of the existing versions have a preference of 0). Note that you
-    can still call bitbake directly on the recipe:<screen>bitbake -b packages/procps/procps_4.0.0.bb</screen>This
+    can still call bitbake directly on the recipe:<screen>bitbake -b recipes/procps/procps_4.0.0.bb</screen>This
     enables you to test, and fix the package manually without having bitbake
     automatically select normally.</para>
 
@@ -3406,7 +3406,7 @@ procps_3.1.15.bb  procps_3.2.1.bb  procps_3.2.5.bb  procps_3.2.7.bb
     example from glibc shows that this version has been disabled for the sh3
     architecture because it doesn't support sh3. This will force bitbake to
     try and select one of the other available versions of glibc
-    instead:<screen>packages/glibc/glibc_2.3.2+cvs20040726.bb:DEFAULT_PREFERENCE_sh3 = "-99"</screen></para>
+    instead:<screen>recipes/glibc/glibc_2.3.2+cvs20040726.bb:DEFAULT_PREFERENCE_sh3 = "-99"</screen></para>
   </section>
 
   <section id="recipes_initscripts" xreflabel="initscripts">
@@ -3634,7 +3634,7 @@ which find
         <listitem>
           <para>The only directories that you can assume exist are those
           listed in the default volatiles file:
-          <command>packages/initscripts/initscripts-1.0/volatiles</command>.</para>
+          <command>recipes/initscripts/initscripts-1.0/volatiles</command>.</para>
         </listitem>
 
         <listitem>

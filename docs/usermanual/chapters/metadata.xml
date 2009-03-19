@@ -65,7 +65,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term><filename>packages/</filename></term>
+          <term><filename>recipes/</filename></term>
           <listitem>
             <para>Conatins all of the
               <application>BitBake</application> <filename>.bb</filename>
