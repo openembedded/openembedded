@@ -1,0 +1,75 @@
+From: Russell King <rmk@dyn-67.arm.linux.org.uk>
+Date: Sun, 25 Jan 2009 17:36:34 +0000 (+0000)
+Subject: [ARM] fix section-based ioremap
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Fkhilman%2Flinux-omap-pm.git;a=commitdiff_plain;h=9ae635f00a568cf95dbd15fa2c50eaee0aa27d2a
+
+[ARM] fix section-based ioremap
+
+Tomi Valkeinen reports:
+  Running with latest linux-omap kernel on OMAP3 SDP board, I have
+  problem with iounmap(). It looks like iounmap() does not properly
+  free large areas. Below is a test which fails for me in 6-7 loops.
+
+	for (i = 0; i < 200; ++i) {
+		vaddr = ioremap(paddr, size);
+		if (!vaddr) {
+			printk("couldn't ioremap\n");
+			break;
+		}
+		iounmap(vaddr);
+	}
+
+The changes to vmalloc.c weren't reflected in the ARM ioremap
+implementation.  Turns out the fix is rather simple.
+
+Tested-by: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Tested-by: Matt Gerassimoff <mgeras@gmail.com>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+(cherry picked from commit 24f11ec001920f1cfaeeed8e8b55725d900bbb56)
+---
+
+diff --git a/arch/arm/mm/ioremap.c b/arch/arm/mm/ioremap.c
+index 18373f7..9f88dd3 100644
+--- a/arch/arm/mm/ioremap.c
++++ b/arch/arm/mm/ioremap.c
+@@ -138,7 +138,7 @@ void __check_kvm_seq(struct mm_struct *mm)
+  */
+ static void unmap_area_sections(unsigned long virt, unsigned long size)
+ {
+-	unsigned long addr = virt, end = virt + (size & ~SZ_1M);
++	unsigned long addr = virt, end = virt + (size & ~(SZ_1M - 1));
+ 	pgd_t *pgd;
+ 
+ 	flush_cache_vunmap(addr, end);
+@@ -337,10 +337,7 @@ void __iounmap(volatile void __iomem *io_addr)
+ 	void *addr = (void *)(PAGE_MASK & (unsigned long)io_addr);
+ #ifndef CONFIG_SMP
+ 	struct vm_struct **p, *tmp;
+-#endif
+-	unsigned int section_mapping = 0;
+ 
+-#ifndef CONFIG_SMP
+ 	/*
+ 	 * If this is a section based mapping we need to handle it
+ 	 * specially as the VM subsystem does not know how to handle
+@@ -352,11 +349,8 @@ void __iounmap(volatile void __iomem *io_addr)
+ 	for (p = &vmlist ; (tmp = *p) ; p = &tmp->next) {
+ 		if ((tmp->flags & VM_IOREMAP) && (tmp->addr == addr)) {
+ 			if (tmp->flags & VM_ARM_SECTION_MAPPING) {
+-				*p = tmp->next;
+ 				unmap_area_sections((unsigned long)tmp->addr,
+ 						    tmp->size);
+-				kfree(tmp);
+-				section_mapping = 1;
+ 			}
+ 			break;
+ 		}
+@@ -364,7 +358,6 @@ void __iounmap(volatile void __iomem *io_addr)
+ 	write_unlock(&vmlist_lock);
+ #endif
+ 
+-	if (!section_mapping)
+-		vunmap(addr);
++	vunmap(addr);
+ }
+ EXPORT_SYMBOL(__iounmap);

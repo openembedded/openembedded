@@ -1,0 +1,57 @@
+From: Paul Walmsley <paul@pwsan.com>
+Date: Fri, 17 Oct 2008 22:18:42 +0000 (-0600)
+Subject: OMAP3 clock: fix non-CORE DPLL rate assignment bugs
+X-Git-Tag: v2.6.27-omap1~8
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Ftmlind%2Flinux-omap-2.6.git;a=commitdiff_plain;h=2ac1da8c787f73f067e717408e631501ba60aabc
+
+OMAP3 clock: fix non-CORE DPLL rate assignment bugs
+
+Commit 8b1f0bd44fe490ec631230c8c040753a2bda8caa introduced a bug that
+caused non-CORE DPLL rates to be incorrectly set on boot in
+omap3_noncore_dpll_enable().  Debugged by Tomi Valkeinen
+<tomi.valkeinen@nokia.com> - thanks Tomi.
+
+Also fix omap3_noncore_dpll_set_rate() to assign clk->rate after a
+DPLL reprogram.
+
+Tested on 3430SDP.
+
+Signed-off-by: Paul Walmsley <paul@pwsan.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Cc: Rick Bronson <rick@efn.org>
+Cc: Timo Kokkonen <timo.t.kokkonen@nokia.com>
+Cc: Sakari Poussa <sakari.poussa@nokia.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+
+diff --git a/arch/arm/mach-omap2/clock34xx.c b/arch/arm/mach-omap2/clock34xx.c
+index df258f7..cc43f4f 100644
+--- a/arch/arm/mach-omap2/clock34xx.c
++++ b/arch/arm/mach-omap2/clock34xx.c
+@@ -271,7 +271,6 @@ static int _omap3_noncore_dpll_stop(struct clk *clk)
+ static int omap3_noncore_dpll_enable(struct clk *clk)
+ {
+ 	int r;
+-	long rate;
+ 	struct dpll_data *dd;
+ 
+ 	if (clk == &dpll3_ck)
+@@ -287,7 +286,7 @@ static int omap3_noncore_dpll_enable(struct clk *clk)
+ 		r = _omap3_noncore_dpll_lock(clk);
+ 
+ 	if (!r)
+-		clk->rate = rate;
++		clk->rate = omap2_get_dpll_rate(clk);
+ 
+ 	return r;
+ }
+@@ -430,6 +429,9 @@ static int omap3_noncore_dpll_set_rate(struct clk *clk, unsigned long rate)
+ 		ret = omap3_noncore_dpll_program(clk, dd->last_rounded_m,
+ 						 dd->last_rounded_n, freqsel);
+ 
++		if (!ret)
++			clk->rate = rate;
++
+ 	}
+ 
+ 	omap3_dpll_recalc(clk);

@@ -1,0 +1,134 @@
+Enables support for camera (as creative) requiring high bandwidth
+isochronous transfer.
+
+Signed-off-by: Ajay Kumar Gupta <ajay.gupta@ti.com>
+---
+ drivers/usb/musb/musb_core.c |   18 +++++++++---------
+ drivers/usb/musb/musb_host.c |   32 +++++++++++++++++++++-----------
+ 2 files changed, 30 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/usb/musb/musb_core.c b/drivers/usb/musb/musb_core.c
+index c939f81..9914f70 100644
+--- a/drivers/usb/musb/musb_core.c
++++ b/drivers/usb/musb/musb_core.c
+@@ -1063,17 +1063,17 @@ static struct fifo_cfg __initdata mode_4_cfg[] = {
+ { .hw_ep_num =  7, .style = FIFO_TX,   .maxpacket = 512, },
+ { .hw_ep_num =  7, .style = FIFO_RX,   .maxpacket = 512, },
+ { .hw_ep_num =  8, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num =  8, .style = FIFO_RX,   .maxpacket = 512, },
++{ .hw_ep_num =  8, .style = FIFO_RX,   .maxpacket =  64, },
+ { .hw_ep_num =  9, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num =  9, .style = FIFO_RX,   .maxpacket = 512, },
++{ .hw_ep_num =  9, .style = FIFO_RX,   .maxpacket =  64, },
+ { .hw_ep_num = 10, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num = 10, .style = FIFO_RX,   .maxpacket = 512, },
+-{ .hw_ep_num = 11, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num = 11, .style = FIFO_RX,   .maxpacket = 512, },
+-{ .hw_ep_num = 12, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num = 12, .style = FIFO_RX,   .maxpacket = 512, },
+-{ .hw_ep_num = 13, .style = FIFO_TX,   .maxpacket = 512, },
+-{ .hw_ep_num = 13, .style = FIFO_RX,   .maxpacket = 512, },
++{ .hw_ep_num = 10, .style = FIFO_RX,   .maxpacket =  64, },
++{ .hw_ep_num = 11, .style = FIFO_TX,   .maxpacket = 256, },
++{ .hw_ep_num = 11, .style = FIFO_RX,   .maxpacket = 256, },
++{ .hw_ep_num = 12, .style = FIFO_TX,   .maxpacket = 256, },
++{ .hw_ep_num = 12, .style = FIFO_RX,   .maxpacket = 256, },
++{ .hw_ep_num = 13, .style = FIFO_TX,   .maxpacket = 256, },
++{ .hw_ep_num = 13, .style = FIFO_RX,   .maxpacket = 4096, },
+ { .hw_ep_num = 14, .style = FIFO_RXTX, .maxpacket = 1024, },
+ { .hw_ep_num = 15, .style = FIFO_RXTX, .maxpacket = 1024, },
+ };
+diff --git a/drivers/usb/musb/musb_host.c b/drivers/usb/musb/musb_host.c
+index 08e421f..84173df 100644
+--- a/drivers/usb/musb/musb_host.c
++++ b/drivers/usb/musb/musb_host.c
+@@ -1443,6 +1443,10 @@ void musb_host_rx(struct musb *musb, u8 epnum)
+ 			/* packet error reported later */
+ 			iso_err = true;
+ 		}
++	} else if (rx_csr & MUSB_RXCSR_INCOMPRX) {
++		DBG(3, "end %d Highbandwidth  incomplete ISO packet received\n"
++					, epnum);
++		status = -EPROTO;
+ 	}
+ 
+ 	/* faults abort the transfer */
+@@ -1595,7 +1599,13 @@ void musb_host_rx(struct musb *musb, u8 epnum)
+ 				val &= ~MUSB_RXCSR_H_AUTOREQ;
+ 			else
+ 				val |= MUSB_RXCSR_H_AUTOREQ;
+-			val |= MUSB_RXCSR_AUTOCLEAR | MUSB_RXCSR_DMAENAB;
++
++			if (qh->maxpacket & ~0x7ff)
++				/* Autoclear doesn't work in high bandwidth iso */
++				val |= MUSB_RXCSR_DMAENAB;
++			else
++				val |= MUSB_RXCSR_AUTOCLEAR
++					| MUSB_RXCSR_DMAENAB;
+ 
+ 			musb_writew(epio, MUSB_RXCSR,
+ 				MUSB_RXCSR_H_WZC_BITS | val);
+@@ -1666,6 +1676,7 @@ static int musb_schedule(
+ 	int			best_end, epnum;
+ 	struct musb_hw_ep	*hw_ep = NULL;
+ 	struct list_head	*head = NULL;
++	u16 			maxpacket;
+ 
+ 	/* use fixed hardware for control and bulk */
+ 	switch (qh->type) {
+@@ -1708,6 +1719,13 @@ static int musb_schedule(
+ 	best_diff = 4096;
+ 	best_end = -1;
+ 
++	if (qh->maxpacket & (1<<11))
++		maxpacket = 2 * (qh->maxpacket & 0x7ff);
++	else if (qh->maxpacket & (1<<12))
++		maxpacket = 3 * (qh->maxpacket & 0x7ff);
++	else
++		maxpacket = (qh->maxpacket & 0x7ff);
++
+ 	for (epnum = 1; epnum < musb->nr_endpoints; epnum++) {
+ 		int	diff;
+ 
+@@ -1718,9 +1736,9 @@ static int musb_schedule(
+ 			continue;
+ 
+ 		if (is_in)
+-			diff = hw_ep->max_packet_sz_rx - qh->maxpacket;
++			diff = hw_ep->max_packet_sz_rx - maxpacket;
+ 		else
+-			diff = hw_ep->max_packet_sz_tx - qh->maxpacket;
++			diff = hw_ep->max_packet_sz_tx - maxpacket;
+ 
+ 		if (diff > 0 && best_diff > diff) {
+ 			best_diff = diff;
+@@ -1797,13 +1815,6 @@ static int musb_urb_enqueue(
+ 	qh->is_ready = 1;
+ 
+ 	qh->maxpacket = le16_to_cpu(epd->wMaxPacketSize);
+-
+-	/* no high bandwidth support yet */
+-	if (qh->maxpacket & ~0x7ff) {
+-		ret = -EMSGSIZE;
+-		goto done;
+-	}
+-
+ 	qh->epnum = epd->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
+ 	qh->type = epd->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK;
+ 
+@@ -1897,7 +1908,6 @@ static int musb_urb_enqueue(
+ 	}
+ 	spin_unlock_irqrestore(&musb->lock, flags);
+ 
+-done:
+ 	if (ret != 0) {
+ 		usb_hcd_unlink_urb_from_ep(hcd, urb);
+ 		kfree(qh);
+-- 
+1.5.6
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

@@ -7,15 +7,16 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "65d02c2c7fe676369b7162459feec60268c7f4ba"
+SRCREV = "fe30e75b8c0b91b259fcea781b859e594ba21ae9"
 
-PV = "2.6.28-pm2+gitr${SRCREV}"
-PR = "r5"
+PV = "2.6.28-pm3+gitr${SRCREV}"
+PR = "r7"
 
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-2.6.28 \
 	   file://defconfig"
 
 SRC_URI_append = " \
+           file://fixup-evm-cpufreq.diff;patch=1 \
            file://no-empty-flash-warnings.patch;patch=1 \
            file://no-cortex-deadlock.patch;patch=1 \
            file://read_die_ids.patch;patch=1 \
@@ -48,6 +49,7 @@ SRC_URI_append = " \
            file://register-all-OPPs.diff;patch=1 \
            file://add-cpufreq-for-omap3evm.diff;patch=1 \
            file://usbttyfix.patch;patch=1 \
+           file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
 "
 
 
