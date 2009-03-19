@@ -13,6 +13,7 @@ do_configure_prepend () {
 	cp ${STAGING_DATADIR_NATIVE}/gettext/config.rpath ${S}
 }
 
+export JAVA="${STAGING_BINDIR_NATIVE}/java-initial"
 export JAVAC="${STAGING_BINDIR_NATIVE}/ecj-initial"
 export JAVACFLAGS="-nowarn"
 
