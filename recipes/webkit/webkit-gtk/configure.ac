@@ -2,7 +2,7 @@ AC_PREREQ(2.59)
 
 m4_define([webkit_major_version], [1])
 m4_define([webkit_minor_version], [1])
-m4_define([webkit_micro_version], [0])
+m4_define([webkit_micro_version], [3])
 
 AC_INIT([WebKit],[webkit_major_version.webkit_minor_version.webkit_micro_version],[http://bugs.webkit.org/])
 
@@ -23,12 +23,9 @@ AC_SUBST(WEBKIT_MICRO_VERSION)
 AC_CONFIG_SRCDIR([WebCore/config.h])
 
 dnl # Libtool library version, not to confuse with API version
-dnl # see http://www.gnu.org/software/libtool/manual.html#Versioning
-LIBWEBKITGTK_VERSION=1:0:0
+dnl # see http://www.gnu.org/software/libtool/manual/html_node/Libtool-versioning.html#Libtool-versioning
+LIBWEBKITGTK_VERSION=3:0:1
 AC_SUBST([LIBWEBKITGTK_VERSION])
-
-# Recent libtool+automake don't assume you want C++, explicitly enable it
-AC_PROG_CXX
 
 AM_INIT_AUTOMAKE([foreign subdir-objects tar-ustar])
 
@@ -178,20 +175,6 @@ if test "$with_hildon" = "yes"; then
     AC_SUBST([HILDON_LIBS])
 fi
 
-# determine the http backend
-AC_MSG_CHECKING([the HTTP backend to use])
-AC_ARG_WITH(http_backend,
-            AC_HELP_STRING([--with-http-backend=@<:@curl/soup@:>@],
-                           [Select HTTP backend [default=curl]]),
-            [],[with_http_backend="curl"])
-
-case "$with_http_backend" in
-     curl|soup) ;;
-     *) AC_MSG_ERROR([Invalid HTTP backend: must be curl, soup.]) ;;
-esac
-
-AC_MSG_RESULT([$with_http_backend])
-
 # minimum base dependencies
 CAIRO_REQUIRED_VERSION=1.2
 FONTCONFIG_REQUIRED_VERSION=2.4
@@ -203,8 +186,7 @@ PANGO_REQUIRED_VERSION=1.0
 GTK_REQUIRED_VERSION=2.8
 
 # optional modules
-LIBCURL_REQUIRED_VERSION=7.15
-LIBSOUP_REQUIRED_VERSION=2.23
+LIBSOUP_REQUIRED_VERSION=2.25.91
 LIBXSLT_REQUIRED_VERSION=1.1.7
 SQLITE_REQUIRED_VERSION=3.0
 GSTREAMER_REQUIRED_VERSION=0.10
@@ -221,7 +203,9 @@ PKG_CHECK_MODULES(LIBXML, libxml-2.0 >= $LIBXML_REQUIRED_VERSION)
 AC_SUBST(LIBXML_CFLAGS)
 AC_SUBST(LIBXML_LIBS)
 
-PKG_CHECK_MODULES(PANGO, pango >= $PANGO_REQUIRED_VERSION)
+PKG_CHECK_MODULES(PANGO, 
+                  [pango >= $PANGO_REQUIRED_VERSION
+                   pangoft2])
 AC_SUBST(PANGO_CFLAGS)
 AC_SUBST(PANGO_LIBS)
 
@@ -286,6 +270,22 @@ AC_ARG_ENABLE(dashboard_support,
               [],[enable_dashboard_support="yes"])
 AC_MSG_RESULT([$enable_dashboard_support])
 
+# check whether to enable 3D transforms support
+AC_MSG_CHECKING([whether to enable support for 3D Transforms])
+AC_ARG_ENABLE(3D_transforms,
+              AC_HELP_STRING([--enable-3D-transforms],
+                             [enable support for 3D transforms [default=no]]),
+              [],[enable_3D_transforms="no"])
+AC_MSG_RESULT([$enable_3D_transforms])
+
+# check whether to enable channel messaging support
+AC_MSG_CHECKING([whether to enable HTML5 Channel Messaging support])
+AC_ARG_ENABLE(channel_messaging,
+              AC_HELP_STRING([--enable-channel-messaging],
+                             [enable HTML5 channel messaging support [default=no]]),
+              [],[enable_channel_messaging="no"])
+AC_MSG_RESULT([$enable_channel_messaging])
+
 # check whether to enable HTML5 Offline Web Applications support
 AC_MSG_CHECKING([whether to enable HTML5 offline web applications support])
 AC_ARG_ENABLE(offline_web_applications,
@@ -322,8 +322,8 @@ AC_MSG_RESULT([$enable_icon_database])
 AC_MSG_CHECKING([whether to enable HTML5 video support])
 AC_ARG_ENABLE(video,
               AC_HELP_STRING([--enable-video],
-                             [enable HTML5 video support [default=no]]),
-              [],[enable_video="no"])
+                             [enable HTML5 video support [default=yes]]),
+              [],[enable_video="yes"])
 AC_MSG_RESULT([$enable_video])
 
 # check whether to enable XPath support
@@ -350,6 +350,14 @@ AC_ARG_ENABLE(geolocation,
               [],[enable_geolocation="no"])
 AC_MSG_RESULT([$enable_geolocation])
 
+# check whether to enable gnomekeyring support
+AC_MSG_CHECKING([whether to enable gnomekeyring support])
+AC_ARG_ENABLE(gnomekeyring,
+              AC_HELP_STRING([--enable-gnomekeyring],
+                             [enable support for gnomekeyring [default=no]]),
+              [],[enable_gnomekeyring="no"])
+AC_MSG_RESULT([$enable_gnomekeyring])
+
 # check whether to enable SVG support
 AC_MSG_CHECKING([whether to enable SVG support])
 AC_ARG_ENABLE(svg,
@@ -369,7 +377,7 @@ AC_MSG_RESULT([$enable_wml])
 # check whether to enable Web Workers support
 AC_MSG_CHECKING([whether to enable Web Workers support])
 AC_ARG_ENABLE(web_workers,
-              AC_HELP_STRING([--enable-workers],
+              AC_HELP_STRING([--enable-web-workers],
                              [enable support for Web Workers [default=yes]]),
               [],[enable_web_workers="yes"])
 AC_MSG_RESULT([$enable_web_workers])
@@ -514,22 +522,16 @@ else
    CFLAGS="$CFLAGS -O0"
 fi
 
-# check if curl is available
-if test "$with_http_backend" = "curl"; then
-   PKG_CHECK_MODULES([LIBCURL],
-                     [libcurl >= $LIBCURL_REQUIRED_VERSION])
-   if test "$os_win32" = "yes"; then
-      LIBCURL_LIBS="$LIBCURL_LIBS -lws2_32"
-   fi
-   AC_SUBST([LIBCURL_CFLAGS])
-   AC_SUBST([LIBCURL_LIBS])
-fi
+PKG_CHECK_MODULES([LIBSOUP],
+                  [libsoup-2.4 >= $LIBSOUP_REQUIRED_VERSION])
+AC_SUBST([LIBSOUP_CFLAGS])
+AC_SUBST([LIBSOUP_LIBS])
 
-if test "$with_http_backend" = "soup"; then
-   PKG_CHECK_MODULES([LIBSOUP],
-                     [libsoup-2.4 >= $LIBSOUP_REQUIRED_VERSION])
-   AC_SUBST([LIBSOUP_CFLAGS])
-   AC_SUBST([LIBSOUP_LIBS])
+if test "$enable_gnomekeyring" = "yes"; then
+   PKG_CHECK_MODULES([GNOMEKEYRING],
+                     [gnome-keyring-1])
+   AC_SUBST([GNOMEKEYRING_CFLAGS])
+   AC_SUBST([GNOMEKEYRING_LIBS])
 fi
 
 # check if FreeType/FontConfig are available
@@ -541,7 +543,6 @@ if test "$with_font_backend" = "freetype"; then
    else
    PKG_CHECK_MODULES([FREETYPE],
                      [cairo-ft
-                     pangoft2
                      fontconfig >= $FONTCONFIG_REQUIRED_VERSION
                      freetype2 >= $FREETYPE2_REQUIRED_VERSION])
    fi
@@ -572,7 +573,6 @@ if test "$enable_geolocation" = "yes"; then
     AC_SUBST([GEOCLUE_CFLAGS])
     AC_SUBST([GEOCLUE_LIBS])
 fi
-
 
 # check if gstreamer is available
 if test "$enable_video" = "yes"; then
@@ -610,9 +610,8 @@ AM_CONDITIONAL([TARGET_WIN32], [test "$with_target" = "win32"])
 AM_CONDITIONAL([TARGET_QUARTZ], [test "$with_target" = "quartz"])
 AM_CONDITIONAL([TARGET_DIRECTFB], [test "$with_target" = "directfb"])
 
-# HTTP backend conditionals
-AM_CONDITIONAL([USE_CURL], [test "$with_http_backend" = "curl"])
-AM_CONDITIONAL([USE_SOUP], [test "$with_http_backend" = "soup"])
+# Auth backend conditionals
+AM_CONDITIONAL([USE_GNOMEKEYRING], [test "$enable_gnomekeyring" = "yes"])
 
 # Font backend conditionals
 AM_CONDITIONAL([USE_FREETYPE], [test "$with_font_backend" = "freetype"])
@@ -621,6 +620,8 @@ AM_CONDITIONAL([USE_PANGO], [test "$with_font_backend" = "pango"])
 # WebKit feature conditionals
 AM_CONDITIONAL([ENABLE_DEBUG],[test "$enable_debug" = "yes"])
 AM_CONDITIONAL([ENABLE_DASHBOARD_SUPPORT],[test "$enable_dashboard_support" = "yes"])
+AM_CONDITIONAL([ENABLE_3D_TRANSFORMS],[test "$enable_3D_transforms" = "yes"])
+AM_CONDITIONAL([ENABLE_CHANNEL_MESSAGING],[test "$enable_channel_messaging" = "yes"])
 AM_CONDITIONAL([ENABLE_OFFLINE_WEB_APPLICATIONS],[test "$enable_offline_web_applications" = "yes"])
 AM_CONDITIONAL([ENABLE_DOM_STORAGE],[test "$enable_dom_storage" = "yes"])
 AM_CONDITIONAL([ENABLE_DATABASE],[test "$enable_database" = "yes"])
@@ -660,13 +661,16 @@ Build configuration:
  Enable GCC build optimization                            : $enable_optimizations
  Code coverage support                                    : $enable_coverage
  Unicode backend                                          : $unicode_backend
- HTTP backend                                             : $with_http_backend
  Font backend                                             : $with_font_backend
  Optimized memory allocator                               : $enable_fast_malloc
 Features:
+ 3D Transforms                                            : $enable_3D_transforms
  JIT compilation                                          : $enable_jit
  Dashboard support                                        : $enable_dashboard_support
+ Geolocation support                                      : $enable_geolocation
+ GNOME Keyring support                                    : $enable_gnomekeyring
  HTML5 offline web applications support                   : $enable_offline_web_applications
+ HTML5 channel messaging support                          : $enable_channel_messaging
  HTML5 client-side session and persistent storage support : $enable_dom_storage
  HTML5 client-side database storage support               : $enable_database
  HTML5 video element support                              : $enable_video
@@ -678,11 +682,10 @@ Features:
  SVG foreign object support                               : $enable_svg_foreign_object
  SVG as image support                                     : $enable_svg_as_image
  SVG use element support                                  : $enable_svg_use_element
- XPATH support                                            : $enable_xpath
- XSLT support                                             : $enable_xslt
  WML support                                              : $enable_wml
  Web Workers support                                      : $enable_web_workers
- Geolocation support                                      : $enable_geolocation
+ XPATH support                                            : $enable_xpath
+ XSLT support                                             : $enable_xslt
 GTK+ configuration:
  GDK target                                               : $with_target
  Hildon UI extensions                                     : $with_hildon
