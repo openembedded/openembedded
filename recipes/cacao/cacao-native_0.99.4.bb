@@ -1,3 +1,5 @@
+# Do not use this on amd64 hosts yet!
+
 require cacao-native.inc
 
 PR = "r0"
