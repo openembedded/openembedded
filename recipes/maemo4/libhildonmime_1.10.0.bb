@@ -1,8 +1,8 @@
 require libhildonmime.inc
 
-DEPENDS += "osso-gnome-vfs2"
+DEPENDS = "gnome-vfs"
 
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "http://repository.maemo.org/pool/maemo4.0/free/source/libh/${PN}/${PN}_${PV}-1.tar.gz"
 
