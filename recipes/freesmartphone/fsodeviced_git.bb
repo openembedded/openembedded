@@ -10,6 +10,4 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/git/fsodeviced"
 
-inherit autotools
-
-FILES_${PN} += "${datadir}"
+inherit autotools fso-plugin vala
