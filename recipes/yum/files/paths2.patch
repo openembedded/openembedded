@@ -13,7 +13,7 @@
 -PYSYSDIR := $(shell $(PYTHON) -c 'import sys; print sys.prefix')
 +PYSYSDIR = $(prefix)
  PYLIBDIR = $(PYSYSDIR)/lib/python$(PYVER)
- PKGDIR = $(PYLIBDIR)/site-recipes/$(PACKAGE)
+ PKGDIR = $(PYLIBDIR)/site-packages/$(PACKAGE)
  
  all: 
  	echo "Nothing to do"
@@ -27,7 +27,7 @@
 -PYSYSDIR := $(shell $(PYTHON) -c 'import sys; print sys.prefix')
 +PYSYSDIR = $(prefix)
  PYLIBDIR = $(PYSYSDIR)/lib/python$(PYVER)
- PKGDIR = $(PYLIBDIR)/site-recipes/$(PACKAGE)
+ PKGDIR = $(PYLIBDIR)/site-packages/$(PACKAGE)
  
  all: 
  	echo "Nothing to do"

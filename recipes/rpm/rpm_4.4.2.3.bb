@@ -7,6 +7,7 @@ PR = "r13"
 SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
            file://external-tools.patch;patch=1 \
 	   file://cross_libpaths.patch;patch=1 \
+	   file://rpmconfigdir.patch;patch=1 \
 	   file://weakdeps.patch;patch=1;pnum=0 \
 	   file://tagsbackport.patch;patch=1;pnum=0 \
 	   file://missingok.patch;patch=1;pnum=0 \
@@ -30,7 +31,7 @@ EXTRA_OECONF = "--with-python \
 		--without-efence"
 
 PACKAGES += "python-rpm"
-FILES_python-rpm = "${libdir}/python*/site-recipes/rpm/_*"
+FILES_python-rpm = "${libdir}/python*/site-packages/rpm/_*"
 
 # Handle the db MUTEX settings here, the POSIX library is
 # the default - "POSIX/pthreads/library".
