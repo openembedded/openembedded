@@ -30,7 +30,7 @@ EXTRA_OECONF = "--with-python \
 		--without-efence"
 
 PACKAGES += "python-rpm"
-FILES_python-rpm = "${libdir}/python*/site-recipes/rpm/_*"
+FILES_python-rpm = "${libdir}/python*/site-packages/rpm/_*"
 
 # Handle the db MUTEX settings here, the POSIX library is
 # the default - "POSIX/pthreads/library".
