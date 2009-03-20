@@ -7,6 +7,7 @@ PR = "r13"
 SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
            file://external-tools.patch;patch=1 \
 	   file://cross_libpaths.patch;patch=1 \
+	   file://rpmconfigdir.patch;patch=1 \
 	   file://weakdeps.patch;patch=1;pnum=0 \
 	   file://tagsbackport.patch;patch=1;pnum=0 \
 	   file://missingok.patch;patch=1;pnum=0 \
