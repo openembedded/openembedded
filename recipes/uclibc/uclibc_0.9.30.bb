@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.30"
-PR = "r5"
+PR = "r6"
 DEFAULT_PREFERENCE = "1"
 
 require uclibc.inc
@@ -18,6 +18,8 @@ SRC_URI += "file://uClibc.machine file://uClibc.distro \
             file://arm-linuxthreads.patch;patch=1 \
             file://linuxthreads-changes.patch;patch=1 \
 	    file://pthread_atfork.patch;patch=1 \
+	    file://uclibc_ldso_use_O0.patch;patch=1 \
+	    file://ldso_use_arm_dl_linux_resolve_in_thumb_mode.patch;patch=1 \
 	   "
 #recent versions uclibc require real kernel headers
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -29,5 +31,3 @@ KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${UCLIBC_BASE}"
-
-LEAD_SONAME = "libc.so"
