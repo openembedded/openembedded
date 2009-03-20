@@ -7,7 +7,7 @@ HOMEPAGE="http://sourceforge.net/projects/beecrypt"
 SRC_URI="${SOURCEFORGE_MIRROR}/beecrypt/beecrypt-${PV}.tar.gz \
          file://x64fix.patch;patch=1"
 
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 acpaths=""
