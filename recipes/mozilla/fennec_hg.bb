@@ -1,13 +1,13 @@
 DESCRIPTION = "Mozilla Mobile browser"
 DEPENDS += "cairo alsa-lib "
 
-PV = "0.9+1.0a2"
-MOZPV = "1.0a2"
-PR = "r2"
+PV = "0.9+1.0b2pre"
+MOZPV = "1.0b2pre"
+PR = "r3"
 PE = "1"
 
-SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=df94feb90a4f \
-           hg://hg.mozilla.org/;module=mobile-browser;rev=0361cd36d50d \
+SRC_URI = "hg://hg.mozilla.org/;module=mozilla-central;rev=451c1f1753f0 \
+           hg://hg.mozilla.org/;module=mobile-browser;rev=9435ee77dda3 \
            file://jsautocfg.h \
            file://jsautocfg-dontoverwrite.patch;patch=1 \
 "
@@ -33,6 +33,12 @@ do_configure_prepend() {
 }
 
 do_compile_prepend() {
+	# A compile time assert is broken:
+	# http://mxr.mozilla.org/mozilla-central/source/nsprpub/pr/include/prlog.h#259
+	for i in $(find ${S} -name "autoconf.mk") ; do 
+		sed -i -e s:fsigned-char:fno-signed-char:g $i
+	done
+
 	cp ${WORKDIR}/jsautocfg.h ${S}/js/src/
 	cp ${WORKDIR}/jsautocfg.h ${S}/objdir/xulrunner/js/src/
 	sed -i -e "s|CPU_ARCH =|CPU_ARCH = ${TARGET_ARCH}|" \
