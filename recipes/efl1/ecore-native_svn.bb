@@ -7,7 +7,7 @@ EXTRA_OECONF = "\
                 --enable-ecore-txt \
                 --enable-ecore-config \
                 --disable-ecore-x-xcb \
-                --disable-ecore-x \
+                --enable-ecore-x \
                 --enable-ecore-job \
                 --disable-ecore-directfb \
                 --disable-ecore-sdl \
