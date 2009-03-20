@@ -1,7 +1,7 @@
 DESCRIPTION = "Task package for maemo environment"
 LICENSE = "MIT"
 ALLOW_EMPTY = "1"
-PR = "r0"
+PR = "r1"
 
 PACKAGES = "\
     maemo-task-base \
@@ -42,7 +42,7 @@ RDEPENDS_maemo-task-base = "\
     osso-af-utils \
     osso-af-startup \
     osso-core-config \
-    osso-gnome-vfs2 \
+    gnome-vfs \
     osso-thumbnail \
     xauth \
     esd"
