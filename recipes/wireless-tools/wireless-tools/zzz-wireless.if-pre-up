@@ -18,6 +18,8 @@ SLEEPTIME=1
 ONLY_FOR="dhcp"
 
 if [ -z "$IF_WIRELESS_TYPE" ] && echo "$ONLY_FOR" | grep -q "$METHOD" ; then
+	$IFCONFIG $IFACE down
+	$SLEEP 1
 	$IFCONFIG $IFACE up
 	$LOGGER Checking for WLAN association...
 	while ( [ $RETRIES -gt 0 ] && ($IWCONFIG "$IFACE" | $GREP -q "Access Point: Not-Associated") ); do
