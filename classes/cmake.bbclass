@@ -19,9 +19,10 @@ cmake_do_configure() {
   fi
 
   cmake ${OECMAKE_SOURCEPATH} \
-    -DCMAKE_INSTALL_PREFIX:PATH=${prefix} -Wno-dev \
+    -DCMAKE_INSTALL_PREFIX:PATH=${prefix} \
     -DCMAKE_FIND_ROOT_PATH=${STAGING_DIR_HOST} \
-    ${EXTRA_OECMAKE}
+    ${EXTRA_OECMAKE} \
+    -Wno-dev
 }
 
 EXPORT_FUNCTIONS do_configure
