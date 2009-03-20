@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r79"
+PR = "r80"
 
 inherit task
 
@@ -235,9 +235,7 @@ task-base-pcmcia26 = "\
 # Provide bluez-utils-compat utils for the time being, the binaries in that package will vanish soon from upstream releases, so beware! 
 
 RDEPENDS_task-base-bluetooth = "\ 
-    blueprobe \
-    bluez-utils \
-    bluez-utils-compat \  
+    bluez4 \
     "
 
 RRECOMMENDS_task-base-bluetooth = "\
