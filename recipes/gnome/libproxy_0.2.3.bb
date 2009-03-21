@@ -1,6 +1,6 @@
 DESCRIPTION = "A library handling all the details of proxy configuration"
 LICENSE = "LGPL"
-DEPENDS = "gconf virtual/libx11"
+DEPENDS = "libxmu gconf virtual/libx11"
 
 SRC_URI = "http://libproxy.googlecode.com/files/libproxy-${PV}.tar.gz"
 
