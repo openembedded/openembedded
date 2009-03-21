@@ -2,7 +2,7 @@ DESCRIPTION = "The RPM Package Manager."
 HOMEPAGE = "http://rpm.org/"
 LICENSE = "LGPL GPL"
 DEPENDS = "zlib beecrypt file popt python sed-native"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "http://www.rpm.org/releases/rpm-4.4.x/rpm-4.4.2.3.tar.gz \
            file://external-tools.patch;patch=1 \
@@ -21,15 +21,6 @@ ARM_INSTRUCTION_SET = "arm"
 
 acpaths = "-I ${S}/db/dist/aclocal -I ${S}/db/dist/aclocal_java"
 
-EXTRA_OECONF = "--with-python \
-		--with-python-incdir=${STAGING_INCDIR}/${PYTHON_DIR} \
-		--with-python-libdir=${libdir}/${PYTHON_DIR} \
-		--without-apidocs \
-		--without-selinux \
-		--without-lua \
-		--without-dmalloc \
-		--without-efence"
-
 PACKAGES += "python-rpm"
 FILES_python-rpm = "${libdir}/python*/site-packages/rpm/_*"
 
@@ -45,6 +36,17 @@ MUTEX_armeb = "${ARM_MUTEX}"
 EXTRA_OECONF += "${MUTEX}"
 
 export varprefix = "${localstatedir}"
+
+do_configure_prepend (){
+	EXTRA_OECONF = "--with-python \
+		--with-python-incdir=${STAGING_INCDIR}/${PYTHON_DIR} \
+		--with-python-libdir=${libdir}/${PYTHON_DIR} \
+		--without-apidocs \
+		--without-selinux \
+		--without-lua \
+		--without-dmalloc \
+		--without-efence"
+}
 
 do_configure () {
 	rm ${S}/popt/ -Rf
