@@ -78,6 +78,7 @@ SRCREV_pn-illume-theme-freesmartphone ?= "b1b0f6adc59e6f72a3929771058e3750bf181b
 SRCREV_pn-kismet ?= "2285"
 SRCREV_pn-kismet-newcore ?= "2285"
 SRCREV_pn-libcalenabler2 ?= "1410"
+SRCREV_pn-libeflvala ?= "f34ef380ce5c789745b249d96c3f1b7aa04fbd45"
 SRCREV_pn-libefso ?= "60"
 SRCREV_pn-libexalt ?= "78"
 SRCREV_pn-libexalt-dbus ?= "76"
@@ -244,7 +245,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "39263"
+EFL_SRCREV ?= "39502"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
