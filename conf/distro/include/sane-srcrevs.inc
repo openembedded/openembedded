@@ -74,6 +74,7 @@ SRCREV_pn-illume-theme-freesmartphone ?= "b1b0f6adc59e6f72a3929771058e3750bf181b
 SRCREV_pn-kismet ?= "2285"
 SRCREV_pn-kismet-newcore ?= "2285"
 SRCREV_pn-libcalenabler2 ?= "1410"
+SRCREV_pn-libeflvala ?= "f34ef380ce5c789745b249d96c3f1b7aa04fbd45"
 SRCREV_pn-libefso ?= "60"
 SRCREV_pn-libexalt ?= "78"
 SRCREV_pn-libexalt-dbus ?= "76"
