@@ -7,13 +7,17 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r5"
+PR = "r6"
 
 SRC_URI = "\
   file://asound.conf \
   file://asound.state \
   file://alsa-state \
 "
+
+SRC_URI_append_a780 = "file://gsmhandset.state \
+                       file://gsmheadset.state \
+		       file://stereoout.state"
 
 inherit update-rc.d
 
