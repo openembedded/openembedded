@@ -211,7 +211,7 @@ def base_package_name(d):
 
 def base_set_filespath(path, d):
 	import os, bb
-	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getar("P", 1))
+	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
 	filespath = []
 	# The ":" ensures we have an 'empty' override
 	overrides = (bb.data.getVar("OVERRIDES", d, 1) or "") + ":"
