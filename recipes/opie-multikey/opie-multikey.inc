@@ -28,10 +28,13 @@ ${bindir}/qcop QPE/TaskBar "reloadInputMethods()"
 }
 
 # FILES plugins/inputmethods/libqmultikey.so* share/multikey/*
+
+SRC_URI_append = " file://ru.keymap"
+
 do_install() {
 	install -d ${D}${palmtopdir}/share/multikey/
 	install -m 0644 ${WORKDIR}/share/multikey/*.keymap ${D}${palmtopdir}/share/multikey/
 	install -m 0644 ${WORKDIR}/share/multikey/README ${D}${palmtopdir}/share/multikey/
-	install -m 0644 ${FILESDIR}/ru.keymap ${D}${palmtopdir}/share/multikey/
+	install -m 0644 ${WORKDIR}/ru.keymap ${D}${palmtopdir}/share/multikey/
 }
 
