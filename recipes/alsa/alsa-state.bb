@@ -7,13 +7,21 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r3"
+PR = "r4"
 
 SRC_URI = "\
   file://asound.conf \
   file://asound.state \
   file://alsa-state \
-  file://*.state \
+  file://asound.state \
+  file://at91sam9263ek/asound.state \
+  file://spitz/asound.state \
+  file://tosa/asound.state \
+  file://c7x0/asound.state \
+  file://magician/asound.state \
+  file://hx4700/asound.state \
+  file://nokia800/asound.state \
+  file://akita/asound.state \
 "
 
 inherit update-rc.d
