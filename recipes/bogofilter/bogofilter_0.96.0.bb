@@ -5,11 +5,11 @@ DESCRIPTION = "Bogofilter is a mail filter that classifies mail as spam or ham (
 by a statistical analysis of the message's header and content (body). \
 The program is able to learn from the user's classifications and corrections."
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 PRIORITY = "optional"
 
 SRC_URI = "http://download.sourceforge.net/bogofilter/bogofilter-${PV}.tar.bz2 \
-           file://${FILESDIR}/configure.ac.patch;patch=1 \
+           file://configure.ac.patch;patch=1 \
 	   file://volatiles \
 	   file://postfix-filter.sh \
 	   file://bogohelper.sh \
