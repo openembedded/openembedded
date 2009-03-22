@@ -110,7 +110,6 @@ SLUGOS_PACKAGES = "\
 	ipkg-utils \
 	iptables \
 	ircp \
-	irssi \
 	joe \
 	jpeg \
 	kexec-tools \
@@ -258,6 +257,7 @@ SLUGOS_BROKEN_PACKAGES = "\
 	dsniff \
 	eciadsl \
 	gspcav1 \
+	irssi \
 	linphone \
 	lirc-modules lirc \
 	madfu \

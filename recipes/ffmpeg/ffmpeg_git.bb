@@ -4,7 +4,7 @@ DEPENDS += "schroedinger libgsm"
 
 PE = "1"
 PV = "0.4.9+${PR}+gitr${SRCREV}" 
-PR = "r38"
+PR = "r39"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_arm = "1"

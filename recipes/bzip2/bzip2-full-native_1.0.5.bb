@@ -16,7 +16,6 @@ inherit autotools native
 do_configure_prepend () {
 	cp ${WORKDIR}/configure.ac ${S}/
 	cp ${WORKDIR}/Makefile.am ${S}/
-	cp ${STAGING_DATADIR_NATIVE}/automake*/install-sh ${S}/
 }
 
 do_stage () {
