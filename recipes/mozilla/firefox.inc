@@ -37,6 +37,12 @@ do_install() {
 	install -m 0644 ${WORKDIR}/mozilla-${PN}.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-${PN}.png ${D}${datadir}/pixmaps/
 	rm -f ${D}${libdir}/${PN}-*/TestGtkEmbed
+	rm -f ${D}${libdir}/${PN}-*/defaults/pref/firefox-l10n.js
+
+	# use locale settings
+	grep -Rl intl.locale.matchOS ${D}${libdir}/${PN}-*/ \
+	   | grep '.js$' \
+	   | xargs -n 1 sed -i 's/\(pref("intl.locale.matchOS",\s*\)false)/\1true)/g'
 
 	# disable application updating
 	grep -Rl app.update.enabled ${D}${libdir}/${PN}-*/ \
