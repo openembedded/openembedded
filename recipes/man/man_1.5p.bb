@@ -3,7 +3,7 @@ SECTION = "base"
 DESCRIPTION = "The man page suite, including man, apropos, \
 and whatis consists of programs that are used to read most \
 of the documentation available on a Linux system."
-PR = "r3"
+PR = "r4"
 RDEPENDS_${PN} = "less groff"
 
 # Note: The default man.conf uses wrong names for GNU eqn and troff,
@@ -33,7 +33,7 @@ do_compile() {
 
 do_install() {
 	oe_runmake 'PREFIX=${D}' 'DEFS=${DEFS}' install
-	install -m 644 ${FILESDIR}/man.conf ${D}/etc
+	install -m 644 ${WORKDIR}/man.conf ${D}/etc
 }
 
 FILES_${PN} = "${bindir}/* ${sbindir} ${libexecdir} ${libdir}/lib*.so.* \

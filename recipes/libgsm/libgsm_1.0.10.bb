@@ -4,12 +4,12 @@ PRIORITY = "optional"
 #DEPENDS = ""
 LICENSE = "libgsm"
 
-PR = "r1"
+PR = "r2"
 
 inherit pkgconfig gpe
 
 SRC_URI = "http://www.netsw.org/audio/convert/gsm-${PV}.tar.gz \
-           file://${FILESDIR}/libgsm_patch;patch=1;pnum=0"
+           file://libgsm_patch;patch=1;pnum=0"
 
 S = "${WORKDIR}/gsm-1.0-pl10/"
 

@@ -1,9 +1,10 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
 PV = "0.9.1+svnr${SRCREV}"
-PR = "r14"
+PR = "r15"
 
-FILESPATH = "${FILE_DIRNAME}/qemu-${PV}/:${FILE_DIRNAME}/qemu-0.9.1+svn/"
+FILESPATH = "${FILE_DIRNAME}/qemu-0.9.1+svn/"
+FILESDIR = "${WORKDIR}"
 
 SRC_URI = "\
     svn://svn.savannah.nongnu.org/qemu;module=trunk \
