@@ -37,6 +37,11 @@ do_install() {
 	install -m 0644 ${WORKDIR}/mozilla-${PN}.desktop ${D}${datadir}/applications/
 	install -m 0644 ${WORKDIR}/mozilla-${PN}.png ${D}${datadir}/pixmaps/
 	rm -f ${D}${libdir}/${PN}-*/TestGtkEmbed
+
+	# disable application updating
+	grep -Rl app.update.enabled ${D}${libdir}/${PN}-*/ \
+	   | grep '.js$' \
+	   | xargs -n 1 sed -i 's/\(pref("app.update.enabled",\s*\)true)/\1false)/g'
 }
 
 pkg_postinst_${PN}() {
