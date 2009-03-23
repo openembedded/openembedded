@@ -1,0 +1,27 @@
+Index: rpm-4.4.2.3/Makefile.am
+===================================================================
+--- rpm-4.4.2.3.orig/Makefile.am	2009-03-18 17:12:48.000000000 +0000
++++ rpm-4.4.2.3/Makefile.am	2009-03-18 17:32:34.000000000 +0000
+@@ -122,14 +122,14 @@
+ 
+ install-data-local:
+ 	@$(mkinstalldirs) $(DESTDIR)$(varprefix)/lib/rpm
+-	@rm -f $(DESTDIR)$(libdir)/rpm/rpmt
+-	@@LN_S@ rpmb $(DESTDIR)$(libdir)/rpm/rpmt
+-	@rm -f $(DESTDIR)$(libdir)/rpm/rpme
+-	@@LN_S@ rpmi $(DESTDIR)$(libdir)/rpm/rpme
+-	@rm -f $(DESTDIR)$(libdir)/rpm/rpmu
+-	@@LN_S@ rpmi $(DESTDIR)$(libdir)/rpm/rpmu
+-	@rm -f $(DESTDIR)$(libdir)/rpm/rpmv
+-	@@LN_S@ rpmq $(DESTDIR)$(libdir)/rpm/rpmv
++	@rm -f $(DESTDIR)@RPMCONFIGDIR@/rpmt
++	@@LN_S@ rpmb $(DESTDIR)@RPMCONFIGDIR@/rpmt
++	@rm -f $(DESTDIR)@RPMCONFIGDIR@/rpme
++	@@LN_S@ rpmi $(DESTDIR)@RPMCONFIGDIR@/rpme
++	@rm -f $(DESTDIR)@RPMCONFIGDIR@/rpmu
++	@@LN_S@ rpmi $(DESTDIR)@RPMCONFIGDIR@/rpmu
++	@rm -f $(DESTDIR)@RPMCONFIGDIR@/rpmv
++	@@LN_S@ rpmq $(DESTDIR)@RPMCONFIGDIR@/rpmv
+ 	rm -f $(DESTDIR)$(bindir)/rpmbuild
+ 	@LN_S@ ../lib/rpm/rpmb $(DESTDIR)$(bindir)/rpmbuild
+ 	rm -f $(DESTDIR)$(bindir)/rpmquery

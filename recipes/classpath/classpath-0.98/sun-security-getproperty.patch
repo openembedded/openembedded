@@ -1,0 +1,503 @@
+Index: gnu/classpath/debug/Simple1LineFormatter.java
+===================================================================
+--- gnu/classpath/debug/Simple1LineFormatter.java.orig	2006-07-11 18:03:59.000000000 +0200
++++ gnu/classpath/debug/Simple1LineFormatter.java	2009-03-19 19:00:47.000000000 +0100
+@@ -38,8 +38,6 @@
+ 
+ package gnu.classpath.debug;
+ 
+-import gnu.java.security.action.GetPropertyAction;
+-
+ import java.io.PrintWriter;
+ import java.io.StringWriter;
+ import java.security.AccessController;
+@@ -51,6 +49,8 @@
+ import java.util.logging.Formatter;
+ import java.util.logging.LogRecord;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * A simple 1-line formatter to use instead of the 2-line SimpleFormatter used
+  * by default in the JDK logging handlers.
+Index: gnu/classpath/debug/SystemLogger.java
+===================================================================
+--- gnu/classpath/debug/SystemLogger.java.orig	2006-12-10 21:25:41.000000000 +0100
++++ gnu/classpath/debug/SystemLogger.java	2009-03-19 19:00:47.000000000 +0100
+@@ -38,13 +38,13 @@
+ 
+ package gnu.classpath.debug;
+ 
+-import gnu.java.security.action.GetPropertyAction;
+-
+ import java.security.AccessController;
+ import java.util.StringTokenizer;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++import sun.security.action.GetPropertyAction;
++
+ public final class SystemLogger extends Logger
+ {
+   public static final SystemLogger SYSTEM = new SystemLogger();
+Index: gnu/java/security/PolicyFile.java
+===================================================================
+--- gnu/java/security/PolicyFile.java.orig	2008-06-16 00:07:30.000000000 +0200
++++ gnu/java/security/PolicyFile.java	2009-03-19 19:01:31.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.classpath.debug.SystemLogger;
+ 
+ import gnu.java.lang.CPStringBuilder;
+-import gnu.java.security.action.GetPropertyAction;
+ 
+ import java.io.File;
+ import java.io.IOException;
+@@ -74,6 +73,8 @@
+ import java.util.StringTokenizer;
+ import java.util.logging.Logger;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An implementation of a {@link java.security.Policy} object whose
+  * permissions are specified by a <em>policy file</em>.
+Index: gnu/java/security/action/GetPropertyAction.java
+===================================================================
+--- gnu/java/security/action/GetPropertyAction.java	2006-12-10 21:25:42.000000000 +0100
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,89 +0,0 @@
+-/* GetPropertyAction.java
+-   Copyright (C) 2004 Free Software Foundation, Inc.
+-
+-This file is part of GNU Classpath.
+-
+-GNU Classpath is free software; you can redistribute it and/or modify
+-it under the terms of the GNU General Public License as published by
+-the Free Software Foundation; either version 2, or (at your option)
+-any later version.
+-
+-GNU Classpath is distributed in the hope that it will be useful, but
+-WITHOUT ANY WARRANTY; without even the implied warranty of
+-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-General Public License for more details.
+-
+-You should have received a copy of the GNU General Public License
+-along with GNU Classpath; see the file COPYING.  If not, write to the
+-Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+-02110-1301 USA.
+-
+-Linking this library statically or dynamically with other modules is
+-making a combined work based on this library.  Thus, the terms and
+-conditions of the GNU General Public License cover the whole
+-combination.
+-
+-As a special exception, the copyright holders of this library give you
+-permission to link this library with independent modules to produce an
+-executable, regardless of the license terms of these independent
+-modules, and to copy and distribute the resulting executable under
+-terms of your choice, provided that you also meet, for each linked
+-independent module, the terms and conditions of the license of that
+-module.  An independent module is a module which is not derived from
+-or based on this library.  If you modify this library, you may extend
+-this exception to your version of the library, but you are not
+-obligated to do so.  If you do not wish to do so, delete this
+-exception statement from your version. */
+-
+-package gnu.java.security.action;
+-
+-import java.security.PrivilegedAction;
+-
+-/**
+- * PrivilegedAction implementation that calls System.getProperty() with
+- * the property name passed to its constructor.
+- *
+- * Example of use:
+- * <code>
+- * GetPropertyAction action = new GetPropertyAction("http.proxyPort");
+- * String port = AccessController.doPrivileged(action);
+- * </code>
+- */
+-public class GetPropertyAction implements PrivilegedAction<String>
+-{
+-  String name;
+-  String value = null;
+-
+-  public GetPropertyAction()
+-  {
+-  }
+-  
+-  public GetPropertyAction(String propName)
+-  {
+-    setParameters(propName);
+-  }
+-
+-  public GetPropertyAction(String propName, String defaultValue)
+-  {
+-    setParameters(propName, defaultValue);
+-  }
+-  
+-  public String run()
+-  {
+-    return System.getProperty(name, value);
+-  }
+-  
+-  public GetPropertyAction setParameters(String propName)
+-  {
+-    this.name = propName;
+-    this.value = null;
+-    return this;
+-  }
+-
+-  public GetPropertyAction setParameters(String propName, String defaultValue)
+-  {
+-    this.name = propName;
+-    this.value = defaultValue;
+-    return this;
+-  }
+-}
+Index: gnu/java/security/key/dss/DSSKey.java
+===================================================================
+--- gnu/java/security/key/dss/DSSKey.java.orig	2008-03-16 23:04:49.000000000 +0100
++++ gnu/java/security/key/dss/DSSKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.java.lang.CPStringBuilder;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.util.FormatUtil;
+ 
+ import java.math.BigInteger;
+@@ -51,6 +50,8 @@
+ import java.security.interfaces.DSAParams;
+ import java.security.spec.DSAParameterSpec;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * A base asbtract class for both public and private DSS (Digital Signature
+  * Standard) keys. It encapsulates the three DSS numbers: <code>p</code>,
+Index: gnu/java/security/key/dss/DSSPrivateKey.java
+===================================================================
+--- gnu/java/security/key/dss/DSSPrivateKey.java.orig	2008-03-16 23:04:49.000000000 +0100
++++ gnu/java/security/key/dss/DSSPrivateKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -42,7 +42,6 @@
+ 
+ import gnu.java.security.Configuration;
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+ import java.math.BigInteger;
+@@ -50,6 +49,8 @@
+ import java.security.PrivateKey;
+ import java.security.interfaces.DSAPrivateKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An object that embodies a DSS (Digital Signature Standard) private key.
+  * 
+Index: gnu/java/security/key/dss/DSSPublicKey.java
+===================================================================
+--- gnu/java/security/key/dss/DSSPublicKey.java.orig	2008-03-16 23:04:49.000000000 +0100
++++ gnu/java/security/key/dss/DSSPublicKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.java.lang.CPStringBuilder;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+ import java.math.BigInteger;
+@@ -49,6 +48,8 @@
+ import java.security.PublicKey;
+ import java.security.interfaces.DSAPublicKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An object that embodies a DSS (Digital Signature Standard) public key.
+  * 
+Index: gnu/java/security/key/rsa/GnuRSAKey.java
+===================================================================
+--- gnu/java/security/key/rsa/GnuRSAKey.java.orig	2008-03-16 23:04:49.000000000 +0100
++++ gnu/java/security/key/rsa/GnuRSAKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.java.lang.CPStringBuilder;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.util.FormatUtil;
+ 
+ import java.math.BigInteger;
+@@ -49,6 +48,8 @@
+ import java.security.Key;
+ import java.security.interfaces.RSAKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * A base asbtract class for both public and private RSA keys.
+  */
+Index: gnu/java/security/key/rsa/GnuRSAPrivateKey.java
+===================================================================
+--- gnu/java/security/key/rsa/GnuRSAPrivateKey.java.orig	2008-03-16 23:04:50.000000000 +0100
++++ gnu/java/security/key/rsa/GnuRSAPrivateKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.java.lang.CPStringBuilder;
+ 
+ import gnu.java.security.Configuration;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.Registry;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+@@ -51,6 +50,8 @@
+ import java.security.interfaces.RSAPrivateCrtKey;
+ import java.security.interfaces.RSAPrivateKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An object that embodies an RSA private key.
+  * <p>
+Index: gnu/java/security/key/rsa/GnuRSAPublicKey.java
+===================================================================
+--- gnu/java/security/key/rsa/GnuRSAPublicKey.java.orig	2008-03-16 23:04:50.000000000 +0100
++++ gnu/java/security/key/rsa/GnuRSAPublicKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -41,7 +41,6 @@
+ import gnu.java.lang.CPStringBuilder;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+ import java.math.BigInteger;
+@@ -49,6 +48,8 @@
+ import java.security.PublicKey;
+ import java.security.interfaces.RSAPublicKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An object that encapsulates an RSA public key.
+  * <p>
+Index: gnu/javax/crypto/key/dh/GnuDHKey.java
+===================================================================
+--- gnu/javax/crypto/key/dh/GnuDHKey.java.orig	2006-07-11 18:03:59.000000000 +0200
++++ gnu/javax/crypto/key/dh/GnuDHKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -39,7 +39,6 @@
+ package gnu.javax.crypto.key.dh;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.util.FormatUtil;
+ 
+ import java.math.BigInteger;
+@@ -49,6 +48,8 @@
+ import javax.crypto.interfaces.DHKey;
+ import javax.crypto.spec.DHParameterSpec;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * A base asbtract class for both public and private Diffie-Hellman keys. It
+  * encapsulates the two DH numbers: <code>p</code>, and <code>g</code>.
+Index: gnu/javax/crypto/key/dh/GnuDHPrivateKey.java
+===================================================================
+--- gnu/javax/crypto/key/dh/GnuDHPrivateKey.java.orig	2006-07-11 18:03:59.000000000 +0200
++++ gnu/javax/crypto/key/dh/GnuDHPrivateKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -40,7 +40,6 @@
+ 
+ import gnu.java.security.Configuration;
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+ import java.math.BigInteger;
+@@ -48,6 +47,8 @@
+ 
+ import javax.crypto.interfaces.DHPrivateKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An implementation of the Diffie-Hellman private key.
+  * <p>
+Index: gnu/javax/crypto/key/dh/GnuDHPublicKey.java
+===================================================================
+--- gnu/javax/crypto/key/dh/GnuDHPublicKey.java.orig	2006-07-11 18:03:59.000000000 +0200
++++ gnu/javax/crypto/key/dh/GnuDHPublicKey.java	2009-03-19 19:00:47.000000000 +0100
+@@ -39,7 +39,6 @@
+ package gnu.javax.crypto.key.dh;
+ 
+ import gnu.java.security.Registry;
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.key.IKeyPairCodec;
+ 
+ import java.math.BigInteger;
+@@ -47,6 +46,8 @@
+ 
+ import javax.crypto.interfaces.DHPublicKey;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * An implementation of the Diffie-Hellman public key.
+  * <p>
+Index: gnu/javax/crypto/sasl/plain/PasswordFile.java
+===================================================================
+--- gnu/javax/crypto/sasl/plain/PasswordFile.java.orig	2008-05-05 23:29:46.000000000 +0200
++++ gnu/javax/crypto/sasl/plain/PasswordFile.java	2009-03-19 19:00:47.000000000 +0100
+@@ -40,7 +40,6 @@
+ 
+ import gnu.java.lang.CPStringBuilder;
+ 
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.javax.crypto.sasl.NoSuchUserException;
+ import gnu.javax.crypto.sasl.UserAlreadyExistsException;
+ 
+@@ -58,6 +57,8 @@
+ import java.util.NoSuchElementException;
+ import java.util.StringTokenizer;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * A representation of a Plain password file.
+  */
+Index: gnu/javax/net/ssl/provider/X509TrustManagerFactory.java
+===================================================================
+--- gnu/javax/net/ssl/provider/X509TrustManagerFactory.java.orig	2006-12-10 21:25:43.000000000 +0100
++++ gnu/javax/net/ssl/provider/X509TrustManagerFactory.java	2009-03-19 19:00:47.000000000 +0100
+@@ -66,11 +66,12 @@
+ import javax.net.ssl.TrustManagerFactorySpi;
+ import javax.net.ssl.X509TrustManager;
+ 
+-import gnu.java.security.action.GetPropertyAction;
+ import gnu.java.security.x509.X509CertPath;
+ import gnu.javax.net.ssl.NullManagerParameters;
+ import gnu.javax.net.ssl.StaticTrustAnchors;
+ 
++import sun.security.action.GetPropertyAction;
++
+ /**
+  * This class implements a {@link javax.net.ssl.TrustManagerFactory} engine
+  * for the ``JessieX509'' algorithm.
+Index: gnu/xml/aelfred2/XmlParser.java
+===================================================================
+--- gnu/xml/aelfred2/XmlParser.java.orig	2008-01-11 22:22:59.000000000 +0100
++++ gnu/xml/aelfred2/XmlParser.java	2009-03-19 19:00:47.000000000 +0100
+@@ -53,8 +53,6 @@
+ 
+ package gnu.xml.aelfred2;
+ 
+-import gnu.java.security.action.GetPropertyAction;
+-
+ import java.io.BufferedInputStream;
+ import java.io.CharConversionException;
+ import java.io.EOFException;
+@@ -74,6 +72,7 @@
+ import org.xml.sax.InputSource;
+ import org.xml.sax.SAXException;
+ 
++import sun.security.action.GetPropertyAction;
+ 
+ /**
+  * Parse XML documents and return parse events through call-backs.
+Index: sun/security/action/GetPropertyAction.java
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ sun/security/action/GetPropertyAction.java	2009-03-19 19:00:47.000000000 +0100
+@@ -0,0 +1,92 @@
++/* GetPropertyAction.java
++   Copyright (C) 2004, 2008 Free Software Foundation, Inc.
++
++This file is part of GNU Classpath.
++
++GNU Classpath is free software; you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation; either version 2, or (at your option)
++any later version.
++
++GNU Classpath is distributed in the hope that it will be useful, but
++WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with GNU Classpath; see the file COPYING.  If not, write to the
++Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++02110-1301 USA.
++
++Linking this library statically or dynamically with other modules is
++making a combined work based on this library.  Thus, the terms and
++conditions of the GNU General Public License cover the whole
++combination.
++
++As a special exception, the copyright holders of this library give you
++permission to link this library with independent modules to produce an
++executable, regardless of the license terms of these independent
++modules, and to copy and distribute the resulting executable under
++terms of your choice, provided that you also meet, for each linked
++independent module, the terms and conditions of the license of that
++module.  An independent module is a module which is not derived from
++or based on this library.  If you modify this library, you may extend
++this exception to your version of the library, but you are not
++obligated to do so.  If you do not wish to do so, delete this
++exception statement from your version. */
++
++package sun.security.action;
++
++import java.security.PrivilegedAction;
++
++/**
++ * PrivilegedAction implementation that calls System.getProperty() with
++ * the property name passed to its constructor.
++ *
++ * Example of use:
++ * <code>
++ * GetPropertyAction action = new GetPropertyAction("http.proxyPort");
++ * String port = AccessController.doPrivileged(action);
++ * </code>
++ *
++ * Note: Usage of this class is discouraged as it is not a part of the 
++ * J2SE API.
++ */
++public class GetPropertyAction implements PrivilegedAction<String>
++{
++  String name;
++  String value = null;
++
++  public GetPropertyAction()
++  {
++  }
++  
++  public GetPropertyAction(String propName)
++  {
++    setParameters(propName);
++  }
++
++  public GetPropertyAction(String propName, String defaultValue)
++  {
++    setParameters(propName, defaultValue);
++  }
++  
++  public String run()
++  {
++    return System.getProperty(name, value);
++  }
++  
++  public GetPropertyAction setParameters(String propName)
++  {
++    this.name = propName;
++    this.value = null;
++    return this;
++  }
++
++  public GetPropertyAction setParameters(String propName, String defaultValue)
++  {
++    this.name = propName;
++    this.value = defaultValue;
++    return this;
++  }
++}

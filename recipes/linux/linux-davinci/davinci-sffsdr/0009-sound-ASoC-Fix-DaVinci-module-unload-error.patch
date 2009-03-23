@@ -1,0 +1,54 @@
+From 8d9e736833e9e765098353117e022b96ccc72ab1 Mon Sep 17 00:00:00 2001
+From: Kevin Hilman <khilman@deeprootsystems.com>
+Date: Fri, 13 Feb 2009 19:36:37 -0800
+Subject: [PATCH 09/12] sound: ASoC: Fix DaVinci module unload error
+
+sound: ASoC: Fix DaVinci module unload error
+
+Fix for the error when the audio module is unloaded.  On unregistering
+the platform_device, platform_device_release will free the platform
+data.If platform data is static the kernel panics when it is freed.
+Instead use the platform device helper function to add data.
+
+This change has been tested on DM644x EVM, DM644x SFFSDR and DM355 EVM.
+
+Signed-off-by: Chaithrika U S <chaithrika@ti.com>
+Signed-off-by: Kevin Hilman <khilman@deeprootsystems.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/soc/davinci/davinci-evm.c    |    3 ++-
+ sound/soc/davinci/davinci-sffsdr.c |    3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 9420c96..0297703 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -225,7 +225,8 @@ static int __init evm_init(void)
+ 
+ 	platform_set_drvdata(evm_snd_device, &evm_snd_devdata);
+ 	evm_snd_devdata.dev = &evm_snd_device->dev;
+-	evm_snd_device->dev.platform_data = data;
++	platform_device_add_data(evm_snd_device, &evm_snd_data,
++				 sizeof(evm_snd_data));
+ 
+ 	ret = platform_device_add_resources(evm_snd_device, resources, 1);
+ 	if (ret) {
+diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
+index b20e36c..f3c3185 100644
+--- a/sound/soc/davinci/davinci-sffsdr.c
++++ b/sound/soc/davinci/davinci-sffsdr.c
+@@ -140,7 +140,8 @@ static int __init sffsdr_init(void)
+ 
+ 	platform_set_drvdata(sffsdr_snd_device, &sffsdr_snd_devdata);
+ 	sffsdr_snd_devdata.dev = &sffsdr_snd_device->dev;
+-	sffsdr_snd_device->dev.platform_data = &sffsdr_snd_data;
++	platform_device_add_data(sffsdr_snd_device, &sffsdr_snd_data,
++				 sizeof(sffsdr_snd_data));
+ 
+ 	ret = platform_device_add_resources(sffsdr_snd_device,
+ 					    sffsdr_snd_resources,
+-- 
+1.5.4.5
+

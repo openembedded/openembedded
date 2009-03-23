@@ -2,6 +2,11 @@
 # no need for them to be a direct target of 'world'
 EXCLUDE_FROM_WORLD = "1"
 
+# In order to keep TARGET_PREFIX decoupled from TARGET_SYS, let's force the
+# binary names to match the former, rather than relying on autoconf's implicit
+# prefixing based on the latter.
+EXTRA_OECONF_append = " --program-prefix=${TARGET_PREFIX}"
+
 # Save PACKAGE_ARCH before changing HOST_ARCH
 OLD_PACKAGE_ARCH := "${PACKAGE_ARCH}"
 PACKAGE_ARCH = "${OLD_PACKAGE_ARCH}"

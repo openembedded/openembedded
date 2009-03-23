@@ -1,0 +1,224 @@
+Subject:
+[PATCH 6/7] platform-related-updates for vpfe capture driver on DM6446
+From:
+m-karicheri2-l0cyMroinI0@public.gmane.org
+Date:
+Fri, 13 Mar 2009 17:24:04 -0400
+To:
+davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, davinci_opensource_ccb-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org, psp_video-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org
+Newsgroups:
+gmane.linux.davinci
+
+Add platform related changes for vpfe capture driver on DM6446
+
+Signed-off-by: Murali Karicheri <m-karicheri2-l0cyMroinI0@public.gmane.org>
+---
+ arch/arm/mach-davinci/board-dm644x-evm.c    |   88 ++++++++++++++++++++++++++-
+ arch/arm/mach-davinci/dm644x.c              |   42 +++++++++++++
+ arch/arm/mach-davinci/include/mach/dm644x.h |    2 +
+ 3 files changed, 130 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
+index 20ec961..5f4d9a8 100644
+--- a/arch/arm/mach-davinci/board-dm644x-evm.c
++++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+@@ -27,7 +27,9 @@
+ #include <linux/io.h>
+ #include <linux/phy.h>
+ #include <linux/clk.h>
+-
++#include <linux/videodev2.h>
++#include <media/v4l2-int-device.h>
++#include <media/tvp514x.h>
+ #include <asm/setup.h>
+ #include <asm/mach-types.h>
+ 
+@@ -161,6 +163,41 @@ static struct platform_device davinci_fb_device = {
+ 	.num_resources = 0,
+ };
+ 
++
++#define TVP514X_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
++static struct vpfe_capture_input vpfe_capture_inputs = {
++	.num_inputs = VPFE_MAX_DEC_INPUTS,
++	.current_input = 0,
++	.inputs[0] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 0,
++			.name = "COMPOSITE",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_CVBS_VI2B,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++	.inputs[1] = {
++		.dec_name = TVP514X_MODULE_NAME,
++		.input = {
++			.index = 1,
++			.name = "SVIDEO",
++			.type = V4L2_INPUT_TYPE_CAMERA,
++			.std = TVP514X_STD_ALL,
++		},
++		.route = {
++			.input = INPUT_SVIDEO_VI2C_VI1C,
++			.output = OUTPUT_10BIT_422_EMBEDDED_SYNC,
++		},
++		.routing_supported = 1,
++	},
++};
++
+ static struct platform_device rtc_dev = {
+ 	.name           = "rtc_davinci_evm",
+ 	.id             = -1,
+@@ -447,6 +484,48 @@ int dm6446evm_eeprom_write(void *buf, off_t off, size_t count)
+ }
+ EXPORT_SYMBOL(dm6446evm_eeprom_write);
+ 
++#define TVP5146_I2C_ADDR		(0x5D)
++static struct v4l2_ifparm tvp5146_ifparm = {
++	.if_type = V4L2_IF_TYPE_BT656,
++	.u = {
++	      .bt656 = {
++			.frame_start_on_rising_vs = 1,
++			.bt_sync_correct = 0,
++			.swap = 0,
++			.latch_clk_inv = 0,
++			.nobt_hs_inv = 0,	/* active high */
++			.nobt_vs_inv = 0,	/* active high */
++			.mode = V4L2_IF_TYPE_BT656_MODE_BT_8BIT,
++			.clock_min = TVP514X_XCLK_BT656,
++			.clock_max = TVP514X_XCLK_BT656,
++			},
++	      },
++};
++
++/**
++ * @brief tvp5146_g_ifparm - Returns the TVP5146 decoder interface parameters
++ *
++ * @param p - pointer to v4l2_ifparm structure
++ * @return result of operation - 0 is success
++ */
++static int tvp5146_g_ifparm(struct v4l2_ifparm *p)
++{
++	if (p == NULL)
++		return -EINVAL;
++
++	*p = tvp5146_ifparm;
++	return 0;
++}
++
++#define TVP5146_NUM_INPUTS		ARRAY_SIZE(tvp5146_input_list)
++
++static struct tvp514x_platform_data tvp5146_pdata = {
++	.master = CAPTURE_DRV_NAME,
++	.ifparm = tvp5146_g_ifparm,
++	.hs_polarity = 1,
++	.vs_polarity = 1
++};
++
+ /*
+  * MSP430 supports RTC, card detection, input from IR remote, and
+  * a bit more.  It triggers interrupts on GPIO(7) from pressing
+@@ -557,9 +636,12 @@ static struct i2c_board_info __initdata i2c_info[] =  {
+ 		I2C_BOARD_INFO("24c256", 0x50),
+ 		.platform_data	= &eeprom_info,
+ 	},
++	{
++		I2C_BOARD_INFO("tvp5146", TVP5146_I2C_ADDR),
++		.platform_data = &tvp5146_pdata,
++	},
+ 	/* ALSO:
+ 	 * - tvl320aic33 audio codec (0x1b)
+-	 * - tvp5146 video decoder (0x5d)
+ 	 */
+ };
+ 
+@@ -591,6 +673,8 @@ static void __init
+ davinci_evm_map_io(void)
+ {
+ 	davinci_map_common_io();
++	/* setup input configuration for VPFE input devices */
++	setup_vpfe_input_config(&vpfe_capture_inputs);
+ 	dm644x_init();
+ }
+ 
+diff --git a/arch/arm/mach-davinci/dm644x.c b/arch/arm/mach-davinci/dm644x.c
+index 03946fd..f46095e 100644
+--- a/arch/arm/mach-davinci/dm644x.c
++++ b/arch/arm/mach-davinci/dm644x.c
+@@ -419,6 +419,46 @@ static struct platform_device dm644x_edma_device = {
+ 	.resource		= edma_resources,
+ };
+ 
++static struct resource vpfe_resources[] = {
++	{
++		.start          = IRQ_VDINT0,
++		.end            = IRQ_VDINT0,
++		.flags          = IORESOURCE_IRQ,
++	},
++	{
++		.start          = IRQ_VDINT1,
++		.end            = IRQ_VDINT1,
++		.flags          = IORESOURCE_IRQ,
++	},
++	{
++		.start          = 0x01c70400,
++		.end            = 0x01c70400 + 0xff,
++		.flags          = IORESOURCE_MEM,
++	},
++	{
++		.start          = 0x01c73400,
++		.end            = 0x01c73400 + 0xff,
++		.flags          = IORESOURCE_MEM,
++	},
++};
++
++static u64 vpfe_capture_dma_mask = DMA_32BIT_MASK;
++static struct platform_device vpfe_capture_dev = {
++	.name		= CAPTURE_DRV_NAME,
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(vpfe_resources),
++	.resource	= vpfe_resources,
++	.dev = {
++		.dma_mask		= &vpfe_capture_dma_mask,
++		.coherent_dma_mask	= DMA_32BIT_MASK,
++	},
++};
++
++void setup_vpfe_input_config(struct vpfe_capture_input *input_config)
++{
++	vpfe_capture_dev.dev.platform_data = input_config;
++}
++
+ /*----------------------------------------------------------------------*/
+ 
+ void __init dm644x_init(void)
+@@ -433,6 +473,8 @@ static int __init dm644x_init_devices(void)
+ 		return 0;
+ 
+ 	platform_device_register(&dm644x_edma_device);
++	/* Register VPFE capture device */
++	platform_device_register(&vpfe_capture_dev);
+ 	return 0;
+ }
+ postcore_initcall(dm644x_init_devices);
+diff --git a/arch/arm/mach-davinci/include/mach/dm644x.h b/arch/arm/mach-davinci/include/mach/dm644x.h
+index 5b3d512..14f9a8a 100644
+--- a/arch/arm/mach-davinci/include/mach/dm644x.h
++++ b/arch/arm/mach-davinci/include/mach/dm644x.h
+@@ -23,7 +23,9 @@
+ #define __ASM_ARCH_DM644X_H
+ 
+ #include <mach/hardware.h>
++#include <media/davinci/vpfe_capture.h>
+ 
+ void __init dm644x_init(void);
++void setup_vpfe_input_config(struct vpfe_capture_input *input_config);
+ 
+ #endif /* __ASM_ARCH_DM644X_H */
+-- 1.6.0.4 

@@ -18,6 +18,9 @@ MACHINE_DISPLAY_HEIGHT_PIXELS = "320"
 MACHINE_DISPLAY_ORIENTATION = "0"
 MACHINE_DISPLAY_PPI = "180"
 
+# use this for overrides
+MACHINE_CLASS = "motorola-ezx"
+
 XSERVER = "xserver-kdrive-fbdev"
 
 ROOT_FLASH_SIZE = "24"

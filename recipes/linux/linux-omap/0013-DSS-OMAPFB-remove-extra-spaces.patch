@@ -1,0 +1,25 @@
+From 17f3d30a218efba9bf947a667c9c1fa2f4286794 Mon Sep 17 00:00:00 2001
+From: Tomi Valkeinen <tomi.valkeinen@nokia.com>
+Date: Wed, 7 Jan 2009 17:40:59 +0200
+Subject: [PATCH] OMAPFB: remove extra spaces
+
+---
+ drivers/video/omap2/omapfb-sysfs.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/video/omap2/omapfb-sysfs.c b/drivers/video/omap2/omapfb-sysfs.c
+index 4383e44..0e153b9 100644
+--- a/drivers/video/omap2/omapfb-sysfs.c
++++ b/drivers/video/omap2/omapfb-sysfs.c
+@@ -337,7 +337,7 @@ static ssize_t show_overlays(struct device *dev, struct device_attribute *attr,
+ 				break;
+ 
+ 		l += snprintf(buf + l, size - l,
+-			"%s t:%s x:%d y:%d iw:%d ih:%d w: %d h: %d e:%d\n",
++			"%s t:%s x:%d y:%d iw:%d ih:%d w:%d h:%d e:%d\n",
+ 			ovl->name,
+ 			mgr ? mgr->name : "none",
+ 			ovl->info.pos_x,
+-- 
+1.5.6.3
+

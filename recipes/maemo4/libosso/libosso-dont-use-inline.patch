@@ -1,0 +1,66 @@
+Index: libosso-2.13/src/osso-init.c
+===================================================================
+--- libosso-2.13.orig/src/osso-init.c	2007-09-21 12:53:31.000000000 +0200
++++ libosso-2.13/src/osso-init.c	2009-03-19 23:14:11.000000000 +0100
+@@ -657,7 +657,8 @@
+     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+ }
+ 
+-inline int __attribute__ ((visibility("hidden")))
++/*inline int __attribute__ ((visibility("hidden")))*/
++int
+ muali_convert_msgtype(int t)
+ {
+     switch (t) {
+Index: libosso-2.13/src/osso-internal.h
+===================================================================
+--- libosso-2.13.orig/src/osso-internal.h	2007-09-21 12:53:31.000000000 +0200
++++ libosso-2.13/src/osso-internal.h	2009-03-19 23:13:23.000000000 +0100
+@@ -209,7 +209,8 @@
+ #  define dprint(f, a...)
+ # endif /* LIBOSSO_DEBUG */
+ 
+-inline int __attribute__ ((visibility("hidden")))
++/*inline int __attribute__ ((visibility("hidden")))*/
++int
+ muali_convert_msgtype(int t);
+ 
+ muali_arg_t* _get_muali_args(DBusMessageIter *iter);
+@@ -293,11 +294,12 @@
+ 
+ void _close_all_plugins(osso_context_t *osso);
+ 
+-inline void __attribute__ ((visibility("hidden")))
++/*inline void __attribute__ ((visibility("hidden")))*/
+ _muali_parse_id(const char *id, muali_bus_type *bus, char *sender,
+                 int *serial);
+ 
+-inline void __attribute__ ((visibility("hidden")))
++/*inline void __attribute__ ((visibility("hidden")))*/
++void
+ _muali_make_id(muali_bus_type bus, const char *sender, int serial, char *id);
+ 
+ #endif /* OSSO_INTERNAL_H_ */
+Index: libosso-2.13/src/osso-rpc.c
+===================================================================
+--- libosso-2.13.orig/src/osso-rpc.c	2009-03-19 23:09:32.000000000 +0100
++++ libosso-2.13/src/osso-rpc.c	2009-03-19 23:13:03.000000000 +0100
+@@ -992,7 +992,7 @@
+  * muali = maemo user application library
+  ******************************************************/
+ 
+-inline void __attribute__ ((visibility("hidden")))
++/*inline void __attribute__ ((visibility("hidden")))*/
+ _muali_parse_id(const char *id, muali_bus_type *bus, char *sender,
+                 int *serial)
+ {
+@@ -1026,7 +1026,8 @@
+         *serial = atoi(buf);
+ }
+ 
+-inline void __attribute__ ((visibility("hidden")))
++/*inline void __attribute__ ((visibility("hidden")))*/
++void
+ _muali_make_id(muali_bus_type bus, const char *sender, int serial, char *id)
+ {
+         snprintf(id, MAX_MSGID_LEN, "%d,%s,%d", bus, sender, serial);
