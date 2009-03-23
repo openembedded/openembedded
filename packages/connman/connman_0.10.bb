@@ -30,7 +30,11 @@ EXTRA_OECONF += "\
 "
 
 SRC_URI  = "\
+<<<<<<< HEAD:packages/connman/connman_0.10.bb
   ftp://ftp.moblin.org/connman/releases/connman-${PV}.tar.gz \
+=======
+  http://www.kernel.org/pub/linux/network/connman/connman-${PV}.tar.gz \
+>>>>>>> 82e5731... connman: Moved from moblin.org to kernel.org:packages/connman/connman_0.10.bb
   file://connman \
 "
 
