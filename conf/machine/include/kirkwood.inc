@@ -3,17 +3,15 @@
 
 TARGET_ARCH = "arm"
 
-MACHINE_FEATURES 		= "kernel26 usbhost ext2 vfat"
+MACHINE_FEATURES 		= "kernel26 usbhost ext2 vfat mmc"
 MACHINE_TASK_PROVIDER 		= "task-base"
 
 USE_DEVFS = "0"
 
 PREFERRED_PROVIDER_virtual/bootloader = ""
 PREFERRED_PROVIDER_virtual/kernel = "linux-kirkwood"
-PREFERRED_VERSION_linux-kirkwood = "2.6.29-rc7+git"
 
-IMAGE_DEVICE_TABLES = "files/device_table-slugos.txt"
-IMAGE_FSTYPES = "tar.gz"
+IMAGE_FSTYPES += "tar.gz"
 SERIAL_CONSOLE = "ttyS0 115200"
 
 # Currently all the orion devices we support use uImage
