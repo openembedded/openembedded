@@ -142,10 +142,10 @@ pkg_postinst_${PN} () {
 	# so the update-alternatives script will get the utilities it needs
 	# (update-alternatives have no problem replacing links later anyway)
 	test -n 2> /dev/null || alias test='busybox test'
-	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
+	if test "x$D" = "x"; then while read link; do if test ! -h "$link"; then case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; busybox ln -s $to $link; fi; done </etc/busybox.links; fi
 	
 	# This adds the links, remember that this has to work when building an image too, hence the $D
-	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
+	while read link; do case "$link" in /*/*/*) to="../../bin/busybox";; /bin/*) to="busybox";; /*/*) to="../bin/busybox";; /*) to="/bin/busybox";; esac; bn=`basename $link`; update-alternatives --install $link $bn $to 50; done <$D/etc/busybox.links
 }
 
 pkg_prerm_${PN} () {
@@ -173,6 +173,7 @@ pkg_prerm_${PN} () {
 			/*/*/*) to="../../bin/busybox";;
 			/bin/*) to="busybox";;
 			/*/*) to="../bin/busybox";;
+			/*) to="/bin/busybox";;		
 		esac
 		bn=`basename $link`
 		sh /usr/bin/update-alternatives --remove $bn $to
@@ -183,6 +184,10 @@ PACKAGES =+ "${PN}-mdev"
 FILES_${PN}-mdev = "${sysconfdir}/mdev ${sysconfdir}/mdev.conf ${sysconfdir}/init.d/mdev"
 RDEPENDS_${PN}-mdev += "${PN}"
 
+PACKAGES =+ "${PN}-linuxrc"
+FILES_${PN}-linuxrc = "linuxrc"
+RDEPENDS_${PN}-linuxrc += "${PN}"
+
 pkg_postinst_${PN}-mdev() {
 if test "x$D" != "x"; then
 	OPT="-r $D"
@@ -191,6 +196,4 @@ else
 fi
 	update-rc.d $OPT mdev start 06 S .
 }
-
-
 
