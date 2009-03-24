@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r6"
+PR = "r7"
 
 # We call 'moc' during the build 
 DEPENDS = "uicmoc4-native"
@@ -62,4 +62,6 @@ do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}	
 	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
 	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake-qt4
+	install -d ${STAGING_DATADIR_NATIVE}/qt4
+	cp -PfR mkspecs ${STAGING_DATADIR_NATIVE}/qt4/
 }
