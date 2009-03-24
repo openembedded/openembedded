@@ -7,14 +7,16 @@ S = "${WORKDIR}/libxml2-${PV}"
 
 inherit distutils-base autotools native pkgconfig
 
-EXTRA_OECONF = "\
-  --with-python=${PYTHON_DIR} \
-  --without-debug \
-  --without-legacy \
-  --with-catalog \
-  --without-docbook \
-  --with-c14n \
-"
+do_configure_prepend () {
+	EXTRA_OECONF = "\
+	--with-python=${PYTHON_DIR} \
+	--without-debug \
+	--without-legacy \
+	--with-catalog \
+	--without-docbook \
+	--with-c14n \
+	"
+}
 
 do_stage () {
 	oe_runmake install
