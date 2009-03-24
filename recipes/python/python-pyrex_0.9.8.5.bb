@@ -5,10 +5,10 @@ SECTION = "devel/python"
 PRIORITY = "optional"
 LICENSE = "GPL"
 SRCNAME = "Pyrex"
-PR = "ml0"
+PR = "ml1"
 
 SRC_URI = "\
-  http://nz.cosc.canterbury.ac.nz/~greg/python/${SRCNAME}/${SRCNAME}-${PV}.tar.gz \
+  http://www.cosc.canterbury.ac.nz/greg.ewing/python/${SRCNAME}/${SRCNAME}-${PV}.tar.gz \
   file://pyrex-fix-optimized-mode.patch;patch=1 \
 "
 S = "${WORKDIR}/${SRCNAME}-${PV}"
