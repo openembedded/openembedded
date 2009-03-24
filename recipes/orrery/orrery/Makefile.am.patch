@@ -1,0 +1,67 @@
+Nur in files: aclocal.m4.
+Nur in files.fixed: autogen.sh.
+Nur in files: autom4te.cache.
+Nur in files: configure.
+diff -uri files/configure.in files.fixed/configure.in
+--- files/configure.in	2008-08-17 05:32:06.000000000 +0200
++++ files.fixed/configure.in	2009-02-18 16:01:30.102497178 +0100
+@@ -2,4 +2,13 @@
+ AM_INIT_AUTOMAKE(orrery,1.1)
+ AC_PROG_CC
+ AC_PROG_INSTALL
++
++PKG_CHECK_MODULES(GTK, gtk+-x11-2.0 gthread-2.0)
++PKG_CHECK_MODULES(X11, x11 xext xau xcursor xfixes xdmcp xrender)
++
++AC_SUBST(GTK_CFLAGS)
++AC_SUBST(GTK_LIBS)
++AC_SUBST(X11_CFLAGS)
++AC_SUBST(X11_LIBS)
++
+ AC_OUTPUT(Makefile)
+Nur in files: depcomp.
+Nur in files: install-sh.
+diff -uri files/Makefile.am files.fixed/Makefile.am
+--- files/Makefile.am	2008-09-03 08:54:55.000000000 +0200
++++ files.fixed/Makefile.am	2009-02-18 16:14:19.574262603 +0100
+@@ -1,36 +1,4 @@
+-CFLAGS = -g -O3 -Wall
+-CC = $(OM)/build/tmp/cross/arm-angstrom-linux-gnueabi/bin/gcc
+-INCLUDES = -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/include/gtk-2.0/    \
+-           -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/include/cairo/      \
+-           -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/include/glib-2.0/   \
+-           -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/include/pango-1.0/  \
+-           -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/gtk-2.0/include \
+-           -I$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/include/atk-1.0/
+-LDADD = $(OM)/build/tmp/rootfs/usr/lib/libgobject-2.0.so.0                            \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libpangocairo-1.0.so.0 \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libpango-1.0.so.0      \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libcairo.so.2          \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgmodule-2.0.so.0    \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libglib-2.0.so.0       \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libfontconfig.so.1     \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXext.so.6           \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXrender.so.1        \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libpopt.so.0           \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgthread-2.0.so.0    \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libX11.so.6            \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXcursor.so.1        \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXfixes.so.3         \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgdk_pixbuf-2.0.so.0 \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libpangoft2-1.0.so.0   \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libz.so.1              \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libpng12.so.0          \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libfreetype.so.6       \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libexpat.so.1          \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXau.so.6            \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libXdmcp.so.6          \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgtk-x11-2.0.so.0    \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libatk-1.0.so.0        \
+-	$(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgcrypt.so.11.2.2    \
+-        $(OM)/build/tmp/staging/arm-angstrom-linux-gnueabi/lib/libgpg-error.so.0.3.0
+ bin_PROGRAMS = orrery
+ orrery_SOURCES = planetInfo.c orrery.c
++orrery_CFLAGS = -g -O3 -Wall @GTK_CFLAGS@ @X11_CFLAGS@
++orrery_LDADD = @GTK_LIBS@ @X11_LIBS@ -lpopt -lz -lexpat -lgcrypt -lgpg-error
+Nur in files: Makefile.in.
+Nur in files: missing.

@@ -92,6 +92,7 @@ RDEPENDS_task-openmoko-feed = "\
 #  qtopia-phone-enable-debug \
   git \
   navit \
+  orrery \
   libnotify \
   notification-daemon \
   libxine \
