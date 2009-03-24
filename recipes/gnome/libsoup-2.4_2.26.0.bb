@@ -3,6 +3,8 @@ SECTION = "x11/gnome/libs"
 LICENSE = "GPL"
 DEPENDS = "libproxy glib-2.0 gnutls libxml2"
 
+Pr = "r1"
+
 inherit gnome
 
 SRC_URI = "${GNOME_MIRROR}/libsoup/${@gnome_verdir("${PV}")}/libsoup-${PV}.tar.bz2"
@@ -12,6 +14,8 @@ do_stage() {
 	autotools_stage_all
 }
 
-FILES_${PN} = "${libdir}/lib*.so.*"
+PACKAGES =+ "libsoup-gnome"
+FILES_libsoup-gnome = "${libdir}/libsoup-gnome*.so.*"
+FILES_${PN} = "${libdir}/libsoup-2*.so.*"
 FILES_${PN}-dev = "${includedir}/ ${libdir}/"
 FILES_${PN}-doc = "${datadir}/"
