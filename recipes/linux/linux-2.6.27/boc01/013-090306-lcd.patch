@@ -47,7 +47,7 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6.27/drivers/video/nt7506fb.c
-@@ -0,0 +1,847 @@
+@@ -0,0 +1,880 @@
 +/*
 + * linux/drivers/video/nt7506fb.c -- FB driver for NT7506 monochrome LCD board
 + *
@@ -153,6 +153,19 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +#define GRAY_DARK_CD	5
 +#define GRAY_BLACK_AB	6
 +#define GRAY_BLACK_CD	7
++
++#define GRAY_INDEX_WHITE GRAY_WHITE_AB
++#define GRAY_INDEX_LIGHT GRAY_LIGHT_AB
++#define GRAY_INDEX_DARK  GRAY_DARK_AB
++#define GRAY_INDEX_BLACK GRAY_BLACK_AB
++
++#define GRAY_LEVEL_WHITE 0
++#define GRAY_LEVEL_LIGHT 5
++#define GRAY_LEVEL_DARK  10
++#define GRAY_LEVEL_BLACK 15
++#define GRAY_LEVEL_MAX 15
++
++#define GRAY_VALUE(level) (((level)<<4)+(level))
 +
 +// Geometric settings
 +#define LCD_WIDTH	128
@@ -469,7 +482,6 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +				NT7506_writeb_data(plane1);
 +				NT7506_writeb_data(plane2);
 +			}
-+			NT7506_writeb_data((unsigned char)0);
 +		}
 +
 +	} else {
@@ -488,7 +500,6 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +				NT7506_writeb_data(plane1);
 +				NT7506_writeb_data(plane2);
 +			}
-+			NT7506_writeb_data((unsigned char)0);
 +		}
 +
 +	}
@@ -526,7 +537,7 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +	unsigned int fbmemlength;
 +	int err = 0;
 +
-+	fbmemlength = (info->var.xres * info->var.yres)/8;
++	fbmemlength = (info->var.xres * info->var.yres) / (8 / info->var.bits_per_pixel);
 +
 +	if ( p > fbmemlength ) {
 +		return -EFBIG;
@@ -633,6 +644,31 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +	nt7506fb_start_timer();
 +}
 +
++/*
++ * Grayscale levels adjustment
++ */
++
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++
++static void nt7506fb_set_gray_level(unsigned char index, unsigned char level)
++{
++	NT7506_writeb_ctl(NT_GRAY_SCALE | index);
++	NT7506_writeb_ctl(GRAY_VALUE(level));
++	NT7506_writeb_ctl(NT_GRAY_SCALE | (index+1));
++	NT7506_writeb_ctl(GRAY_VALUE(level));
++}
++
++#ifdef CONFIG_PROC_FS
++#include "nt7506fb-procfs.c"
++#endif
++
++#endif
++
++
++/*
++ * Device driver intialisation
++ */
++
 +static int __init
 +nt7506fb_probe(struct platform_device *dev)
 +{
@@ -695,6 +731,13 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +	       "fb%d: nt7506 frame buffer device, using %dK of video memory\n",
 +	       info->node, videomemorysize >> 10);
 +
++	/* Create procfs entries for grayscale levels adjustment */
++#ifdef CONFIG_PROC_FS
++#ifdef CONFIG_FB_NT7506_GRAYSCALE
++	nt7506fb_proc_init(par);
++#endif
++#endif
++
 +	/* Initialize backlight and contrast control (do not abort driver if it fails) */
 +	nt7506fb_bl_init(par);
 +	nt7506fb_lcd_init(par);
@@ -732,7 +775,7 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +{
 +	struct fb_info *info = platform_get_drvdata(dev);
 +
-+	printk(KERN_INFO DRIVER_NAME ": Switching to Power Save mode\n");
++	printk(KERN_INFO DRIVER_NAME ": suspend\n");
 +
 +	info->bl_dev->props.power = FB_BLANK_POWERDOWN;
 +	nt7506fb_bl_update_status(info->bl_dev);
@@ -743,6 +786,8 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +static int nt7506fb_resume(struct platform_device *dev)
 +{
 +	struct fb_info *info = platform_get_drvdata(dev);
++
++	printk(KERN_INFO DRIVER_NAME ": resume\n");
 +
 +	info->bl_dev->props.power = FB_BLANK_UNBLANK;
 +	nt7506fb_bl_update_status(info->bl_dev);
@@ -843,22 +888,10 @@ Index: linux-2.6.27/drivers/video/nt7506fb.c
 +
 +#ifdef CONFIG_FB_NT7506_GRAYSCALE
 +	/* Feed grayscale palette */
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_WHITE_AB);
-+	NT7506_writeb_ctl(0x00);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_WHITE_CD);
-+	NT7506_writeb_ctl(0x00);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_LIGHT_AB);
-+	NT7506_writeb_ctl(0x55);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_LIGHT_CD);
-+	NT7506_writeb_ctl(0x55);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_DARK_AB);
-+	NT7506_writeb_ctl(0xAA);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_DARK_CD);
-+	NT7506_writeb_ctl(0xAA);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_BLACK_AB);
-+	NT7506_writeb_ctl(0xFF);
-+	NT7506_writeb_ctl(NT_GRAY_SCALE | GRAY_BLACK_CD);
-+	NT7506_writeb_ctl(0xFF);
++	nt7506fb_set_gray_level(GRAY_INDEX_WHITE, GRAY_LEVEL_WHITE);
++	nt7506fb_set_gray_level(GRAY_INDEX_LIGHT, GRAY_LEVEL_LIGHT);
++	nt7506fb_set_gray_level(GRAY_INDEX_DARK,  GRAY_LEVEL_DARK);
++	nt7506fb_set_gray_level(GRAY_INDEX_BLACK, GRAY_LEVEL_BLACK);
 +#endif
 +
 +	/* Select power circuit functions */
@@ -931,3 +964,127 @@ Index: linux-2.6.27/include/linux/nt7506fb.h
 +#define FBIO_FRAMERATE		_IOR('f', 1, char)
 +
 +#endif
+Index: linux-2.6.27/drivers/video/nt7506fb-procfs.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/video/nt7506fb-procfs.c
+@@ -0,0 +1,119 @@
++/*
++ * FB driver for NT7506 monochrome/grayscale LCD board
++ * Device setup using procfs
++ *
++ * Copyright (C) 2009, Goobie (www.goobie.fr).
++ *
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/proc_fs.h>
++#include <linux/uaccess.h>
++
++struct nt7506fb_proc_entry {
++	char *name;
++	unsigned char index;
++	unsigned char level;
++	struct nt7506fb_par *par;
++};
++
++static struct nt7506fb_proc_entry nt7506fb_proc_entries[] = {
++	{ "white", GRAY_INDEX_WHITE, GRAY_LEVEL_WHITE },
++	{ "light", GRAY_INDEX_LIGHT, GRAY_LEVEL_LIGHT },
++	{ "dark",  GRAY_INDEX_DARK,  GRAY_LEVEL_DARK  },
++	{ "black", GRAY_INDEX_BLACK, GRAY_LEVEL_BLACK },
++};
++
++static int nt7506fb_proc_read(char *page, char **start, off_t off, int count,
++			      int *eof, void *data)
++{
++	struct nt7506fb_proc_entry *entry = data;
++	int len;
++
++	len = sprintf(page, "%d\n", entry->level);
++
++	len -= off;
++	if ( len < count ) {
++		*eof = 1;
++		if ( len <= 0 )
++			return 0;
++	} else {
++		len = count;
++	}
++
++	*start = page + off;
++
++	return len;
++}
++
++
++static int nt7506fb_proc_write(struct file *file, const char *buf,
++			       unsigned long count, void *data)
++{
++	struct nt7506fb_proc_entry *entry = data;
++	char lbuf[count+1];
++
++	/* Only root can do this */
++	if ( !capable(CAP_SYS_ADMIN) )
++		return -EACCES;
++
++	memset(lbuf, 0, sizeof(lbuf));
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	if ( sscanf(lbuf, "%hhi", &entry->level) == 1 ) {
++		if ( entry->level > GRAY_LEVEL_MAX )
++			entry->level = GRAY_LEVEL_MAX;
++
++		/* Set grayscale palette entry */
++		nt7506fb_set_gray_level(entry->index, entry->level);
++	}
++	else {
++		printk(KERN_INFO DRIVER_NAME ": [%s] Syntax error in expression\n", entry->name);
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++
++static int nt7506fb_proc_init(struct nt7506fb_par *par)
++{
++	struct proc_dir_entry *root;
++	struct proc_dir_entry *ent;
++	int i;
++
++	/* Create nt7506fb proc directory */
++	printk(KERN_INFO DRIVER_NAME ": Creating setup entries in /proc/" DRIVER_NAME "/\n");
++
++	root = proc_mkdir(DRIVER_NAME, NULL);
++	if ( root == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "\n");
++		return -1;
++	}
++
++	root->owner = THIS_MODULE;
++
++	/* Create gray level entries */
++	for (i = 0; i < ARRAY_SIZE(nt7506fb_proc_entries); i++) {
++		struct nt7506fb_proc_entry *entry = &nt7506fb_proc_entries[i];
++
++		entry->par = par;
++
++		ent = create_proc_entry(entry->name, S_IFREG|S_IWUSR, root);
++		if ( ent == NULL ) {
++			printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/%s\n", entry->name);
++			return -1;
++		}
++
++		ent->owner = THIS_MODULE;
++		ent->data = entry;
++		ent->write_proc = nt7506fb_proc_write;
++		ent->read_proc = nt7506fb_proc_read;
++	}
++	return 0;
++}
