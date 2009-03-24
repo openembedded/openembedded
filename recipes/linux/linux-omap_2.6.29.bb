@@ -8,10 +8,8 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 # This is missing the EHCI patch for beagle
 DEFAULT_PREFERENCE = "-1"
 
-
 SRCREV = "90e758af52ba803cba233fabee81176d99589f09"
 
-#PV = "2.6.29+2.6.30-rc1+${PR}+gitr${SRCREV}"
 PV = "2.6.29-${PR}+gitr${SRCREV}"
 PR = "r0"
 
