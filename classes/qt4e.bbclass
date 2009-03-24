@@ -4,6 +4,7 @@ inherit qmake2
 QT_DIR_NAME = "qtopia"
 # override variables set by qmake-base to compile Qt/Embedded apps
 #
+export QMAKESPEC = "${STAGING_DATADIR}/qtopia/mkspecs/${TARGET_OS}-oe-g++"
 export OE_QMAKE_INCDIR_QT = "${STAGING_INCDIR}/qtopia"
 export OE_QMAKE_LIBDIR_QT = "${STAGING_LIBDIR}"
 export OE_QMAKE_LIBS_QT = "qt"
