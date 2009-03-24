@@ -16,6 +16,7 @@ do_stage_append() {
     sed -i s#"-L${S}/lib"##g libQt*.la
     sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g libQt*.la
 
+    # FIXME: is this really needed?
     install -d ${STAGING_DIR_TARGET}/qt4/bin
     cp ${STAGING_DIR_NATIVE}/qt4/bin/* ${STAGING_DIR_TARGET}/qt4/bin/ || true 
     cp ${STAGING_DIR_NATIVE}/${bindir}/{rcc*,uic*,moc*} ${STAGING_DIR_TARGET}/qt4/bin/ || true	
@@ -30,9 +31,11 @@ do_stage() {
     mkdir -p ${STAGE_TEMP}
     oe_runmake install INSTALL_ROOT=${STAGE_TEMP}
 
-    install -d ${STAGING_INCDIR}/
+    install -d ${STAGING_INCDIR}
     install -d ${STAGING_LIBDIR}
-    cp -pPRf ${STAGE_TEMP}/$includedir/* ${STAGING_INCDIR}/
+    cp -pPRf ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/
+    install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs
+    cp -pPRf ${STAGE_TEMP}/${datadir}/${QT_DIR_NAME}/mkspecs/* ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs/
 
     for i in ${STAGE_TEMP}/${libdir}/*.la
     do

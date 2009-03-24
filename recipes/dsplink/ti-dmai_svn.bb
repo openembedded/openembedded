@@ -4,22 +4,17 @@ LICENCE = "unknown"
 
 require ti-paths.inc
 
-# https://www-a.ti.com/downloads/sds_support/applications_packages/dmai/dmai_1_20_00_06/dmai_setuplinux_1_20_00_06.bin
-# Install the above link and put the dmai_1_20_00_06.tar.gz file in the same directory as this recipe
-SRC_URI = "file://dmai_1_20_00_06.tar.gz \
-	   file://dmai-update-cpu-name.patch;patch=1 \
-	   file://dmai-update-fb-display.patch;patch=1 \
-	   file://dmai-update-v4l2-display.patch;patch=1 \
-	   file://dmai-do-not-panic-on-mixer-failure.patch;patch=1 \
-	   file://dmai-support-32bit-align.patch;patch=1 \
+SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_022309;proto=https;user=anonymous;pswd='' \
 	   file://dmai-built-with-angstrom.patch;patch=1 \
            file://loadmodules-ti-dmai-apps.sh \
            file://unloadmodules-ti-dmai-apps.sh \
    "
 
-S = "${WORKDIR}/dmai_1_20_00_06"
+SRCREV = "36"
+
+S = "${WORKDIR}/BRIJESH_GIT_022309/davinci_multimedia_application_interface/dmai"
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "120"
+PV = "120+svnr${SRCREV}"
 PR = "r15"
 
 TARGET = "all"
@@ -30,18 +25,6 @@ TARGET_omap3evm = " o3530_al"
 export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine"
 export FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/cetools"
 export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos"
-
-do_compile_prepend_omap3evm() {
-
-#temp removal of sources that fail to build on evm3530
-	if [ -e packages/ti/sdo/dmai/linux/omap3530/Resize.c ]; then
-		rm packages/ti/sdo/dmai/linux/omap3530/Resize.c
-	fi
-
-        if [ -e packages/ti/sdo/dmai/linux/omap3530/Framecopy_accel.c ]; then
-                rm packages/ti/sdo/dmai/linux/omap3530/Framecopy_accel.c
-        fi
-}
 
 do_compile() {
 	cd packages/ti/sdo/dmai

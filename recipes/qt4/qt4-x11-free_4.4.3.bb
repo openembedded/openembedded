@@ -1,5 +1,5 @@
 require qt4-x11-free.inc
-PR = "r4"
+PR = "r5"
 
 SRC_URI += " \
            file://0002-fix-resinit-declaration.patch;patch=1 \
