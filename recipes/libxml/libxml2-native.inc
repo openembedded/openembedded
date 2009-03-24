@@ -5,10 +5,10 @@ FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/libxml2-${PV}"
 SRC_URI = "ftp://xmlsoft.org/libxml2/libxml2-${PV}.tar.gz"
 S = "${WORKDIR}/libxml2-${PV}"
 
-inherit distutils-base autotools native pkgconfig
+inherit autotools native pkgconfig distutils-native-base
 
 do_configure_prepend () {
-	EXTRA_OECONF = "\
+	EXTRA_LIBXML2_OECONF="\
 	--with-python=${PYTHON_DIR} \
 	--without-debug \
 	--without-legacy \
@@ -16,6 +16,10 @@ do_configure_prepend () {
 	--without-docbook \
 	--with-c14n \
 	"
+}
+
+do_configure (){
+	autotools_do_configure ${EXTRA_LIBXML2_OECONF}
 }
 
 do_stage () {
