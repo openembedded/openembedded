@@ -232,7 +232,7 @@ $ vi build/conf/local.conf</screen>
         distribution and the Openmoko gta01 machine:
 
         <screen>
-BBFILES = "${OEBASE}/openembedded/packages/*/*.bb"
+BBFILES = "${OEBASE}/openembedded/recipes/*/*.bb"
 DISTRO = "angstrom-2008.1"
 MACHINE = "om-gta01"</screen>
       </para>
@@ -297,11 +297,11 @@ MACHINE = "om-gta01"</screen>
     <para>To build a single package, bypassing the long parse step (and
       therefore its dependencies -- use with care):
 
-      <screen>$ bitbake -b $OEBASE/openembedded/packages/blah/blah.bb</screen>
+      <screen>$ bitbake -b $OEBASE/openembedded/recipes/blah/blah.bb</screen>
     </para>
 
     <para>There are a few groups of special recipes located in subdirectories
-      of the <filename>$OEBASE/openembedded/packages/</filename>
+      of the <filename>$OEBASE/openembedded/recipes/</filename>
       directory. These groups are:
 
       <variablelist>
