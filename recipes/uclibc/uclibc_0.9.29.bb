@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r29"
+PR = "r30"
 
 require uclibc.inc
 
@@ -42,5 +42,3 @@ KERNEL_SOURCE = "${STAGING_DIR_HOST}/${exec_prefix}"
 SRC_URI += "http://www.uclibc.org/downloads/uClibc-${PV}.tar.bz2"
 
 S = "${WORKDIR}/uClibc-${UCLIBC_BASE}"
-
-LEAD_SONAME = "libc.so"

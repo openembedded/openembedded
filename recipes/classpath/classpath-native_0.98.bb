@@ -1,5 +1,8 @@
 require classpath-native.inc
 
+# Deadlocks occur on at least amd64 hosts.
+DEFAULT_PREFERENCE = "-1"
+
 PR = "r0"
 
 # The code affected by the javanet-local patch

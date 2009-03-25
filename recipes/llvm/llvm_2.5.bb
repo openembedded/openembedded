@@ -1,7 +1,3 @@
-# TODO:
-# - packages examples
-# - fix staging (and probably llvm-config script)
-
 DESCRIPTION = "The Low Level Virtual Machine"
 HOMEPAGE = "http://llvm.org"
 LICENSE = "various"
@@ -10,6 +6,8 @@ SRC_URI = "\
   http://llvm.org/releases/${PV}/llvm-${PV}.tar.gz \
   file://fix-build.patch;patch=1 \
 "
+
+PR = "r2"
 
 DEPENDS = "llvm-native"
 
@@ -30,7 +28,11 @@ EXTRA_OECMAKE = "\
 "
 
 do_stage() {
-  oe_runmake DESTDIR="${STAGE_TEMP}" install
+  oe_runmake DESTDIR="${STAGING_DIR_HOST}" install
+
+  install -d ${STAGING_INCDIR}/llvm
+	find include/llvm -name "*.h" -maxdepth 1 -exec \
+    install {} ${STAGING_INCDIR}/llvm \;
 
   install -d ${STAGING_BINDIR_CROSS}
 

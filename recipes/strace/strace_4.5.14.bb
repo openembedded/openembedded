@@ -1,7 +1,7 @@
 DESCRIPTION = "strace is a system call tracing tool."
 SECTION = "console/utils"
 LICENSE = "GPL"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
            file://glibc-2.5.patch;patch=1 \
@@ -12,6 +12,7 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/strace/strace-${PV}.tar.bz2 \
            file://strace-fix-arm-bad-syscall.patch;patch=1 \
            file://strace-undef-syscall.patch;patch=1 \
            file://strace-arm-no-cachectl.patch;patch=1 \
+           file://strace-dont-include-linux-dirent-h.patch;patch=1 \
           "
 
 # The strace-4.5.14-avr32.patch conflicts with some other patches.

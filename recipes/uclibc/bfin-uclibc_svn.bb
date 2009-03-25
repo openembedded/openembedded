@@ -7,7 +7,7 @@
 # on whether the base patches apply to the selected (SRCDATE) svn release.
 #
 UCLIBC_BASE ?= "0.9.29"
-PR = "r4"
+PR = "r5"
 PV = "${UCLIBC_BASE}+svnr${SRCREV}"
 
 require uclibc.inc
@@ -29,6 +29,4 @@ FILESPATH = "${@base_set_filespath([ '${FILE_DIRNAME}/uclibc-${UCLIBC_BASE}', '$
 
 
 S = "${WORKDIR}/uClibc"
-
-LEAD_SONAME = "libc.so"
 
