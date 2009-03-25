@@ -13,7 +13,9 @@ DEFAULT_PREFERENCE = "-2"
 SRC_URI = "http://hostap.epitest.fi/releases/wpa_supplicant-${PV}.tar.gz \
 	file://defconfig-0.6.0-gnutls \
 	file://ifupdown.sh \
-	file://functions.sh"
+	file://functions.sh \
+	file://service-activation-binary-path.patch;patch=1;pnum=2 \
+	"
 
 #	file://gnutlsfix.patch;patch=1 \
 
@@ -63,7 +65,8 @@ do_install () {
 	install -d ${D}/${sysconfdir}/dbus-1/system.d
 	install -m 644 ${S}/dbus-wpa_supplicant.conf ${D}/${sysconfdir}/dbus-1/system.d
 	install -d ${D}/${datadir}/dbus-1/system-services
-	install -m 644 ${S}/dbus-wpa_supplicant.service ${D}/${datadir}/dbus-1/system-services
+	install -m 644 ${S}/dbus-wpa_supplicant.service ${D}/${datadir}/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
+
 
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-pre-up.d/wpasupplicant
 	ln -s /etc/wpa_supplicant/ifupdown.sh ${D}${sysconfdir}/network/if-post-down.d/wpasupplicant
