@@ -16,12 +16,10 @@ do_stage_append() {
     sed -i s#"-L${S}/lib"##g libQt*.la
     sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g libQt*.la
 
-    # FIXME: is this really needed?
-    install -d ${STAGING_DIR_TARGET}/qt4/bin
-    cp ${STAGING_DIR_NATIVE}/qt4/bin/* ${STAGING_DIR_TARGET}/qt4/bin/ || true 
-    cp ${STAGING_DIR_NATIVE}/${bindir}/{rcc*,uic*,moc*} ${STAGING_DIR_TARGET}/qt4/bin/ || true	
-    for qttool in ${STAGING_DIR_TARGET}/qt4/bin/*4 ; do
-         ln -sf $qttool  ${STAGING_DIR_TARGET}/qt4/bin/$(basename $qttool |sed s:4::g) 
+    install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/bin
+    ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/qmake
+    for qttool in qmake moc uic uic3 rcc lrelease lupdate; do
+         ln -sf ${STAGING_BINDIR_NATIVE}/${qttool}4 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/${qttool}
     done
 }
 

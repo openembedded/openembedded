@@ -2,9 +2,9 @@ SECTION = "x11/libs"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 LICENSE = "GPL QPL"
-DEPENDS = "uicmoc4-native qmake2-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor"
+DEPENDS = "qt4-tools-native freetype jpeg virtual/libx11 xft libxext libxrender libxrandr libxcursor"
 PROVIDES = "qt4x11"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz \
            file://cross-compile.patch;patch=1 \
