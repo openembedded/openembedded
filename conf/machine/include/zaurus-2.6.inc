@@ -16,6 +16,7 @@ EXTRA_IMAGEDEPENDS += "${ZAURUS-UPDATER}"
 SERIAL_CONSOLE = "115200 ttyS0"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
+PREFERRED_PROVIDER_virtual/kernel_tosa = "linux"
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 
