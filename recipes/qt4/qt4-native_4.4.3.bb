@@ -8,7 +8,8 @@ PR = "r0"
 
 inherit native
 
-SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2" 
+SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
+           file://qt-config.patch;patch=1" 
 S = "${WORKDIR}/qt-embedded-linux-opensource-src-${PV}"
 
 EXTRA_OECONF = "-prefix ${prefix} \
