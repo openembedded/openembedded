@@ -4,7 +4,7 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
@@ -18,7 +18,10 @@ SRC_URI_append_om-gta02 = "  file://set-scorouting-to-pcm.patch;patch=1"
 
 S = "${WORKDIR}/bluez-${PV}"
 
-inherit autotools pkgconfig
+inherit autotools pkgconfig update-rc.d
+
+INITSCRIPT_NAME = "bluetooth"
+INITSCRIPT_PARAMS = "defaults 23 19"
 
 OE_LT_RPATH_ALLOW = "any"
 OE_LT_RPATH_ALLOW[export] = "1"
