@@ -4,8 +4,6 @@ LICENSE = "GPL"
 PV = "0.0+${PR}+gitr${SRCREV}"
 PR = "r4"
 
-DEPENDS = "qt-embedded"
-
 inherit qt4e
 
 SRCREV = "7636920455c7e963f004e394de9db39d2e9ac35f"
