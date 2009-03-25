@@ -18,7 +18,7 @@ do_stage_append() {
 
     install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/bin
     ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/qmake
-    for qttool in qmake moc uic uic3 rcc lrelease lupdate; do
+    for qttool in moc uic uic3 rcc lrelease lupdate; do
          ln -sf ${STAGING_BINDIR_NATIVE}/${qttool}4 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/${qttool}
     done
 }
