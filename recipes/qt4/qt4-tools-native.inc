@@ -4,7 +4,6 @@ SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
 LICENSE = "GPL"
-PR = "r2"
 
 inherit native
 
