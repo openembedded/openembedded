@@ -1,4 +1,4 @@
-inherit pkgconfig qmake_base
+inherit qmake_base
 
 DEPENDS += " qt4-tools-native freetype jpeg libpng zlib dbus openssl glib-2.0 gstreamer gst-plugins-base"
 
@@ -21,6 +21,68 @@ EXTRA_ENV = 'QMAKE="${STAGING_BINDIR_NATIVE}/qmake2 -after \
              MOC="${STAGING_BINDIR_NATIVE}/moc4" UIC="${STAGING_BINDIR_NATIVE}/uic4" MAKE="make -e"'
 
 export QT_CONF_PATH="${WORKDIR}/qt.conf"
+
+# Library packages
+QT_LIB_NAMES = "Qt3Support QtAssistantClient QtCLucene QtCore QtDBus QtDesigner QtDesignerComponents QtGui QtHelp QtNetwork QtOpenGL QtScript QtSql QtSvg QtTest QtUiTools QtWebKit QtXml phonon"
+python __anonymous () {
+    import bb
+
+    lib_packages = []
+    dev_packages = []
+    dbg_packages = []
+    for name in bb.data.getVar("QT_LIB_NAMES", d, 1).split():
+        pkg = "${QT_BASE_LIB}"+ name.lower().replace("qt", "") + "4"
+        # NOTE: the headers for QtAssistantClient are different
+        incname = name.replace("QtAssistantClient", "QtAssistant")
+        bb.data.setVar("FILES_%s" % pkg, "%(pkg)s ${libdir}/lib%(name)s${QT_LIBINFIX}.so.*" % locals(), d)
+        bb.data.setVar("FILES_%s-dev" % pkg, """${libdir}/lib%(name)s${QT_LIBINFIX}.prl
+                  ${libdir}/lib%(name)s${QT_LIBINFIX}.a
+                  ${libdir}/lib%(name)s${QT_LIBINFIX}.la
+                  ${libdir}/lib%(name)s${QT_LIBINFIX}.so
+                  ${includedir}/${QT_DIR_NAME}/%(incname)s
+                  ${libdir}/pkgconfig/%(name)s${QT_LIBINFIX}.pc""" % locals(), d)
+        bb.data.setVar("FILES_%s-dbg" % pkg, "${libdir}/.debug/lib%(name)s${QT_LIBINFIX}.so.*" % locals(), d)
+        lib_packages.append(pkg)
+        dev_packages.append("%s-dev" % pkg)
+        dbg_packages.append("%s-dbg" % pkg)
+    bb.data.setVar("LIB_PACKAGES", " ".join(lib_packages), d)
+    bb.data.setVar("DEV_PACKAGES", " ".join(dev_packages), d)
+    bb.data.setVar("DBG_PACKAGES", " ".join(dbg_packages), d)
+}
+
+OTHER_PACKAGES = "\
+             ${QT_BASE_NAME}-assistant \
+             ${QT_BASE_NAME}-common \
+             ${QT_BASE_NAME}-dbus \
+             ${QT_BASE_NAME}-demos \
+             ${QT_BASE_NAME}-designer \
+             ${QT_BASE_NAME}-examples \
+             ${QT_BASE_NAME}-fonts \
+             ${QT_BASE_NAME}-linguist \
+             ${QT_BASE_NAME}-pixeltool"
+
+PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
+PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
+
+ALLOW_EMPTY_${PN} = "1"
+ALLOW_EMPTY_${QT_BASE_LIB}uitools4 = "1"
+FILES_${PN}     = ""
+FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
+FILES_${PN}-dbg = "${bindir}/*/.debug "
+RRECOMMENDS_${PN} = "${LIB_PACKAGES} ${OTHER_PACKAGES}"
+RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
+RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
+
+FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
+FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
+FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
+FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
+FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
+FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
+FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
+FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
+FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
+
 
 do_configure() {
     unset QMAKESPEC
@@ -71,166 +133,6 @@ do_compile() {
     oe_runmake ${EXTRA_ENV}
 }
 
-#
-# Fixup some pkgconfig files
-# moc_location=/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/work/arm-oabi-angstrom-linux/qtopia-core-4.3.0-r2/qtopia-core-opensource-src-4.3.0/bin/moc
-# uic_location=/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/work/arm-oabi-angstrom-linux/qtopia-core-4.3.0-r2/qtopia-core-opensource-src-4.3.0/bin/uic
-#
-# Libs: -L${libdir} -lQtNetwork -L/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/staging/arm-angstrom-linux/lib -L/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/work/arm-oabi-angstrom-linux/qtopia-core-4.3.0-r2/qtopia-core-opensource-src-4.3.0/lib  $(LIBS_EXTRA) -lQtCore -L/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/staging/arm-angstrom-linux/lib -L/home/zecke/gmit/dela_build/git/openembedded-gmit.zecke/build/oetmp/work/arm-oabi-angstrom-linux/qtopia-core-4.3.0-r2/qtopia-core-opensource-src-4.3.0/lib -lm -lrt -lpthread -ldl
-#
-do_compile_append() {
-    cd ${S}/lib/pkgconfig
-    sed -i s#"-L${S}/lib"##g *.pc
-    sed -i s#"moc_location=${S}/bin/moc"#moc_location=${STAGING_BINDIR}/moc4# *.pc
-    sed -i s#"uic_location=${S}/bin/uic"#uic_location=${STAGING_BINDIR}/uic4# *.pc
-}
-
-
-NONDEV_PACKAGES += "${QT_BASE_LIB}core4 ${QT_BASE_LIB}gui4 ${QT_BASE_LIB}network4  \
-             ${QT_BASE_LIB}sql4 ${QT_BASE_LIB}svg4 ${QT_BASE_LIB}test4 ${QT_BASE_LIB}xml4 \
-             ${QT_BASE_LIB}designer4 ${QT_BASE_LIB}designercomponents4 \
-             ${QT_BASE_LIB}3support4 ${QT_BASE_LIB}assistantclient4 ${QT_BASE_LIB}script4 \
-             ${QT_BASE_LIB}dbus4 ${QT_BASE_LIB}opengl4 \
-             ${QT_BASE_LIB}help ${QT_BASE_LIB}clucene ${QT_BASE_LIB}webkit ${QT_BASE_LIB}phonon\
-             ${QT_BASE_NAME}-assistant ${QT_BASE_NAME}-common \
-             ${QT_BASE_NAME}-designer \
-             ${QT_BASE_NAME}-demos ${QT_BASE_NAME}-examples \
-             ${QT_BASE_NAME}-linguist \
-             ${QT_BASE_NAME}-pixeltool ${QT_BASE_NAME}-dbus \
-             ${QT_BASE_NAME}-fonts "
-
-DEV_PACKAGES += "${QT_BASE_LIB}core4-dev \
-             ${QT_BASE_LIB}gui4-dev \
-             ${QT_BASE_LIB}network4-dev \
-             ${QT_BASE_LIB}sql4-dev \
-             ${QT_BASE_LIB}svg4-dev \
-             ${QT_BASE_LIB}test4-dev \
-             ${QT_BASE_LIB}xml4-dev \
-             ${QT_BASE_LIB}designer4-dev \
-             ${QT_BASE_LIB}designercomponents4-dev \
-             ${QT_BASE_LIB}3support4-dev \
-             ${QT_BASE_LIB}assistantclient4-dev \
-             ${QT_BASE_LIB}script4-dev \
-             ${QT_BASE_LIB}dbus4-dev \
-             ${QT_BASE_LIB}opengl4-dev \
-             ${QT_BASE_LIB}uitools4-dev \
-             ${QT_BASE_LIB}help-dev \
-             ${QT_BASE_LIB}clucene-dev \
-             ${QT_BASE_LIB}webkit-dev \
-             ${QT_BASE_LIB}phonon-dev \
-             "
-
-DBG_PACKAGES += "${QT_BASE_LIB}core4-dbg \
-             ${QT_BASE_LIB}gui4-dbg \
-             ${QT_BASE_LIB}network4-dbg \
-             ${QT_BASE_LIB}sql4-dbg \
-             ${QT_BASE_LIB}svg4-dbg \
-             ${QT_BASE_LIB}test4-dbg \
-             ${QT_BASE_LIB}xml4-dbg \
-             ${QT_BASE_LIB}designer4-dbg \
-             ${QT_BASE_LIB}designercomponents4-dbg \
-             ${QT_BASE_LIB}3support4-dbg \
-             ${QT_BASE_LIB}assistantclient4-dbg \
-             ${QT_BASE_LIB}script4-dbg \
-             ${QT_BASE_LIB}dbus4-dbg \
-             ${QT_BASE_LIB}opengl4-dbg \
-             ${QT_BASE_LIB}help-dbg \
-             ${QT_BASE_LIB}clucene-dbg \
-             ${QT_BASE_LIB}webkit-dbg \
-             ${QT_BASE_LIB}phonon-dbg \
-             "
-
-PACKAGES += "${DEV_PACKAGES} ${NONDEV_PACKAGES} ${DBG_PACKAGES}"
-PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
-
-ALLOW_EMPTY_${PN} = "1"
-FILES_${PN}     = ""
-FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
-FILES_${PN}-dbg = "${bindir}/*/.debug "
-RRECOMMENDS_${PN} = "${NONDEV_PACKAGES}"
-RRECOMMENDS_${PN}-dev = "${DEV_PACKAGES}"
-RRECOMMENDS_${PN}-dbg = "${DBG_PACKAGES}"
-
-def qt_default_dev(name):
-    return """${libdir}/libQt%(name)s${QT_LIBINFIX}.la
-              ${libdir}/libQt%(name)s${QT_LIBINFIX}.prl
-              ${libdir}/libQt%(name)s${QT_LIBINFIX}.so
-              ${includedir}/${QT_DIR_NAME}/Qt%(name)s*
-              ${libdir}/pkgconfig/Qt%(name)s${QT_LIBINFIX}.pc""" % locals()
-
-
-FILES_${QT_BASE_LIB}core4                   = "${libdir}/libQtCore${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}core4-dev               = "${@qt_default_dev('Core')}"
-FILES_${QT_BASE_LIB}core4-dbg               = "${libdir}/.debug/libQtCore*"
-FILES_${QT_BASE_LIB}gui4                    = "${libdir}/libQtGui${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}gui4-dev                = "${@qt_default_dev('Gui')}"
-FILES_${QT_BASE_LIB}gui4-dbg                = "${libdir}/.debug/libQtGui*"
-FILES_${QT_BASE_LIB}network4                = "${libdir}/libQtNetwork${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}network4-dev            = "${@qt_default_dev('Network')}"
-FILES_${QT_BASE_LIB}network4-dbg            = "${libdir}/.debug/libQtNetwork${QT_LIBINFIX}*"
-FILES_${QT_BASE_LIB}sql4                    = "${libdir}/libQtSql${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}sql4-dev                = "${@qt_default_dev('Sql')}"
-FILES_${QT_BASE_LIB}sql4-dbg                = "${libdir}/.debug/libQtSql*"
-FILES_${QT_BASE_LIB}svg4                    = "${libdir}/libQtSvg${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}svg4-dev                = "${@qt_default_dev('Svg')}"
-FILES_${QT_BASE_LIB}svg4-dbg                = "${libdir}/.debug/libQtSvg*"
-FILES_${QT_BASE_LIB}test4                   = "${libdir}/libQtTest${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}test4-dev               = "${@qt_default_dev('Test')}"
-FILES_${QT_BASE_LIB}test4-dbg               = "${libdir}/.debug/libQtTest*"
-FILES_${QT_BASE_LIB}xml4                    = "${libdir}/libQtXml${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}xml4-dev                = "${@qt_default_dev('Xml')}"
-FILES_${QT_BASE_LIB}xml4-dbg                = "${libdir}/.debug/libQtXml*"
-FILES_${QT_BASE_LIB}designer4               = "${libdir}/libQtDesigner${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}designer4-dev           = "${@qt_default_dev('Designer')}"
-FILES_${QT_BASE_LIB}designer4-dbg           = "${libdir}/.debug/libQtDesigner*"
-FILES_${QT_BASE_LIB}designercomponents4     = "${libdir}/libQtDesignerComponents${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}designercomponents4-dev = "${@qt_default_dev('DesignerComponents')}"
-FILES_${QT_BASE_LIB}designercomponents4-dbg = "${libdir}/.debug/libQtDesignerComponents*"
-FILES_${QT_BASE_LIB}3support4               = "${libdir}/libQt3Support${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}3support4-dev           = "${@qt_default_dev('3Support')}"
-FILES_${QT_BASE_LIB}3support4-dbg           = "${libdir}/.debug/libQt3Support*"
-FILES_${QT_BASE_LIB}assistantclient4        = "${libdir}/libQtAssistantClient${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}assistantclient4-dev    = "${@qt_default_dev('AssistantClient')} ${includedir}/${QT_DIR_NAME}/QtAssistant*"
-FILES_${QT_BASE_LIB}assistantclient4-dbg    = "${libdir}/.debug/libQtAssistantClient*"
-FILES_${QT_BASE_LIB}script4                 = "${libdir}/libQtScript${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}script4-dev             = "${@qt_default_dev('Script')}"
-FILES_${QT_BASE_LIB}script4-dbg             = "${libdir}/.debug/libQtScript*"
-FILES_${QT_BASE_LIB}dbus4                   = "${libdir}/libQtDBus${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}dbus4-dev               = "${@qt_default_dev('DBus')}"
-FILES_${QT_BASE_LIB}dbus4-dbg               = "${libdir}/.debug/libQtDBus*"
-FILES_${QT_BASE_LIB}opengl4                 = "${libdir}/libQtOpenGL${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}opengl4-dev             = "${@qt_default_dev('OpenGL')}"
-FILES_${QT_BASE_LIB}opengl4-dbg             = "${libdir}/.debug/libQtOpenGL*"
-FILES_${QT_BASE_LIB}uitools4-dev            = "${libdir}/libQtUiTools* ${includedir}/${QT_DIR_NAME}/QtUiTools* ${libdir}/pkgconfig/QtUiTools${QT_LIBINFIX}.pc"
-FILES_${QT_BASE_LIB}help                    = "${libdir}/libQtHelp${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}help-dev                = "${@qt_default_dev('Help')}"
-FILES_${QT_BASE_LIB}help-dbg                = "${libdir}/.debug/libQtHelp*"
-FILES_${QT_BASE_LIB}clucene                 = "${libdir}/libQtCLucene${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}clucene-dev             = "${@qt_default_dev('CLucene')}"
-FILES_${QT_BASE_LIB}clucene-dbg             = "${libdir}/.debug/libQtCLucene*"
-FILES_${QT_BASE_LIB}webkit                  = "${libdir}/libQtWebKit${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}webkit-dev              = "${@qt_default_dev('WebKit')}"
-FILES_${QT_BASE_LIB}webkit-dbg              = "${libdir}/.debug/libQtWebKit*"
-FILES_${QT_BASE_LIB}phonon                  = "${libdir}/libphonon${QT_LIBINFIX}.so.*"
-FILES_${QT_BASE_LIB}phonon-dev              = "${libdir}/libphonon${QT_LIBINFIX}.la \
-                                               ${libdir}/libphonon${QT_LIBINFIX}.prl \
-                                               ${libdir}/libphonon${QT_LIBINFIX}.so \
-                                               ${includedir}/${QT_DIR_NAME}/phonon \
-                                               ${libdir}/pkgconfig/phonon${QT_LIBINFIX}.pc"
-FILES_${QT_BASE_LIB}phonon-dbg              = "${libdir}/.debug/libphonon*"
-
-FILES_${QT_BASE_NAME}-assistant            = "${bindir}/*assistant*"
-FILES_${QT_BASE_NAME}-designer             = "${bindir}/*designer*"
-FILES_${QT_BASE_NAME}-linguist             = "${bindir}/*linguist* ${bindir}/lrelease ${bindir}/lupdate ${bindir}/qm2ts"
-FILES_${QT_BASE_NAME}-pixeltool            = "${bindir}/pixeltool"
-FILES_${QT_BASE_NAME}-dbus                 = "${bindir}/qdbus ${bindir}/qdbusxml2cpp ${bindir}/qdbuscpp2xml ${bindir}/qdbusviewer"
-
-FILES_${QT_BASE_NAME}-common               = "${bindir}/qtconfig"
-FILES_${QT_BASE_NAME}-examples             = "${bindir}/${QT_DIR_NAME}/examples/*"
-FILES_${QT_BASE_NAME}-demos                = "${bindir}/qtdemo ${bindir}/${QT_DIR_NAME}/demos/*"
-
-FILES_${QT_BASE_NAME}-fonts                = "${libdir}/fonts"
-
 python populate_packages_prepend() {
 	translation_dir = bb.data.expand('${datadir}/${QT_DIR_NAME}/translations/', d)
 	translation_name = bb.data.expand('${QT_BASE_NAME}-translation-%s', d)
@@ -243,29 +145,29 @@ python populate_packages_prepend() {
 	# Package all the plugins and their -dbg version and create a meta package
 	import os
 	def qtopia_split(path, name, glob):
-	    """
-	    Split the package into a normal and -dbg package and then add the
-	    new packages to the meta package.
-	    """
-	    plugin_dir     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/' % path, d)
-	    if not os.path.exists("%s%s" % (bb.data.expand('${D}',d), plugin_dir)):
-		bb.note("The path does not exist:", bb.data.expand('${D}', d), plugin_dir)
-		return
+		"""
+		Split the package into a normal and -dbg package and then add the
+		new packages to the meta package.
+		"""
+		plugin_dir     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/' % path, d)
+		if not os.path.exists("%s%s" % (bb.data.expand('${D}',d), plugin_dir)):
+			bb.note("The path does not exist:", bb.data.expand('${D}', d), plugin_dir)
+			return
 
-            plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
-            dev_packages = []
-            dev_hook = lambda file,pkg,b,c,d:dev_packages.append((file,pkg))
-            do_split_packages(d, plugin_dir,     glob, plugin_name,     '${PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
-            # Create a -dbg package as well
-            plugin_dir_dbg     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug' % path, d)
-            packages = bb.data.getVar('PACKAGES',d)
-            for (file,package) in dev_packages:
-                packages = "%s %s-dbg" % (packages, package)
-                file_name = os.path.join(plugin_dir_dbg, os.path.basename(file))
-                bb.data.setVar("FILES_%s-dbg" % package, file_name, d)
-                bb.data.setVar("DESCRIPTION_%s-dbg" % package, "${PN} %s for %s" % (name, package), d) 
+		plugin_name    = bb.data.expand('${QT_BASE_NAME}-plugin-%s-%%s' % name, d)
+		dev_packages = []
+		dev_hook = lambda file,pkg,b,c,d:dev_packages.append((file,pkg))
+		do_split_packages(d, plugin_dir,     glob, plugin_name,     '${PN} %s for %%s' % name, extra_depends='', hook=dev_hook)
+		# Create a -dbg package as well
+		plugin_dir_dbg     = bb.data.expand('${libdir}/${QT_DIR_NAME}/plugins/%s/.debug' % path, d)
+		packages = bb.data.getVar('PACKAGES',d)
+		for (file,package) in dev_packages:
+			packages = "%s %s-dbg" % (packages, package)
+			file_name = os.path.join(plugin_dir_dbg, os.path.basename(file))
+			bb.data.setVar("FILES_%s-dbg" % package, file_name, d)
+			bb.data.setVar("DESCRIPTION_%s-dbg" % package, "${PN} %s for %s" % (name, package), d) 
 
-            bb.data.setVar('PACKAGES', packages, d)
+		bb.data.setVar('PACKAGES', packages, d)
 
 	qtopia_split('accessible',  'accessible',  '^libq(.*)\.so$')
 	qtopia_split('codecs',      'codec',       '^libq(.*)\.so$')
@@ -282,7 +184,6 @@ python populate_packages_prepend() {
 	qtopia_split('phonon_backend',      'phonon-backend',       '^libphonon_(.*)\.so$')
 }
 
-
 do_install() {
     oe_runmake install INSTALL_ROOT=${D}
 
@@ -293,14 +194,17 @@ do_install() {
     rm -rf ${D}/${bindir}/${QT_DIR_NAME}
     rm -rf ${D}/${datadir}/${QT_DIR_NAME}/mkspecs
 
-    # fix some .la and .pc files
-    sed -i s#"moc_location=${STAGING_BINDIR}/moc4$"#"moc_location=${bindir}/moc4"# ${D}/${libdir}/pkgconfig/Qt*.pc
-    sed -i s#"uic_location=${STAGING_BINDIR}/uic4$"#"uic_location=${bindir}/uic4"# ${D}/${libdir}/pkgconfig/Qt*.pc
-    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g ${D}/${libdir}/pkgconfig/Qt*.pc
-    sed -i s#-L${STAGING_LIBDIR}##g ${D}${libdir}/pkgconfig/Qt*.pc
+    # fix pkgconfig, libtool and prl files
+    sed -i -e s#-L${S}/lib##g \
+           -e s#-L${STAGING_LIBDIR}##g \
+           -e s#-L${libdir}##g \
+           -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
+           ${D}${libdir}/*.la ${D}${libdir}/*.prl ${D}${libdir}/pkgconfig/*.pc
 
-    sed -i s#-L${STAGING_LIBDIR}#-L${libdir}#g ${D}${libdir}/libQt*.la
-    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g ${D}/${libdir}/libQt*.la
+    # fix pkgconfig files
+    sed -i -e s#"moc_location=.*$"#"moc_location=${bindir}/moc4"# \
+           -e s#"uic_location=.*$"#"uic_location=${bindir}/uic4"# \
+           ${D}${libdir}/pkgconfig/*.pc
 
     install -d ${D}/${libdir}/fonts
     touch ${D}/${libdir}/fonts/fontdir
@@ -312,57 +216,49 @@ do_stage() {
     mkdir -p ${STAGE_TEMP}
     oe_runmake install INSTALL_ROOT=${STAGE_TEMP}
 
+    # fix pkgconfig, libtool and prl files
+    sed -i -e s#-L${S}/lib##g \
+           -e s#-L${STAGING_LIBDIR}##g \
+           -e s#-L${libdir}##g \
+           -e s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g \
+           ${STAGE_TEMP}${libdir}/*.la ${STAGE_TEMP}${libdir}/*.prl ${STAGE_TEMP}${libdir}/pkgconfig/*.pc
+
+    # fix pkgconfig files
+    sed -i -e s#"moc_location=.*$"## \
+           -e s#"uic_location=.*$"## \
+           ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc
+
+    # fix libtool files
+    sed -i -e s#installed=yes#installed=no#g ${STAGE_TEMP}/${libdir}/*.la
+
+    # install headers
     install -d ${STAGING_INCDIR}
-    install -d ${STAGING_LIBDIR}
     cp -pPRf ${STAGE_TEMP}/${includedir}/* ${STAGING_INCDIR}/
+
+    # install libraries
+    install -d ${STAGING_LIBDIR}
+    for i in ${STAGE_TEMP}/${libdir}/*.prl; do
+        cp -pPRf $i ${STAGING_LIBDIR}
+        cp -pPRf ${STAGE_TEMP}/${libdir}/$(basename $i .prl).la ${STAGING_LIBDIR} || true
+        oe_libinstall -C ${STAGE_TEMP}/${libdir} -a $(basename $i .prl) ${STAGING_LIBDIR} || true
+        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .prl) ${STAGING_LIBDIR} || true
+    done
+
+    # install pkgconfig files
+    install -d ${STAGING_LIBDIR}/pkgconfig
+    cp -pPRf ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
+
+    # install mkspecs
     install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs
     cp -pPRf ${STAGE_TEMP}/${datadir}/${QT_DIR_NAME}/mkspecs/* ${STAGING_DATADIR}/${QT_DIR_NAME}/mkspecs/
 
-    for i in ${STAGE_TEMP}/${libdir}/*.la
-    do
-        sed -i s,installed=yes,installed=no, $i
-        sed -i -e "/^dependency_libs=/s,-L${libdir},-L${STAGING_LIBDIR},g" $i
-        sed -i -e "s,-L${libdir},-L${STAGING_LIBDIR},g" ${STAGE_TEMP}/${libdir}/$(basename $i .la).prl
-        cp -fpPR $i ${STAGING_LIBDIR}
-        cp -fpPR ${STAGE_TEMP}/${libdir}/$(basename $i .la).prl ${STAGING_LIBDIR}
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $(basename $i .la) ${STAGING_LIBDIR}
-    done
-
-    for i in libQtAssistantClient${QT_LIBINFIX} libQtDesignerComponents${QT_LIBINFIX} libQtUiTools${QT_LIBINFIX} libQtDesigner${QT_LIBINFIX}
-    do
-        sed -i -e "s,-L${libdir},-L${STAGING_LIBDIR},g" $i.prl || true
-        cp ${STAGE_TEMP}/${libdir}/$i.prl ${STAGING_LIBDIR} || true
-        sed -i -e "/^dependency_libs=/s,-L${libdir},-L${STAGING_LIBDIR},g" $i.la || true
-        cp ${STAGE_TEMP}/${libdir}/$i.la  ${STAGING_LIBDIR} || true
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -so $i ${STAGING_LIBDIR} || true
-        oe_libinstall -C ${STAGE_TEMP}/${libdir} -a $i ${STAGING_LIBDIR} || true
-    done
-
     rm -rf ${STAGE_TEMP}
-}
 
-# Fixing up some Qt .pc files
-do_stage_append() {
-    cd ${STAGING_LIBDIR}/pkgconfig
-    sed -i s#"-L${S}/lib"##g Qt*.pc
-    sed -i s#"moc_location=${STAGING_BINDIR}/moc4$"## Qt*.pc
-    sed -i s#"uic_location=${STAGING_BINDIR}/uic4$"## Qt*.pc
-    sed -i s#"-L${STAGING_LIBDIR}"##g Qt*.pc
-    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g Qt*.pc
-	sed -i s#"-L${S}/lib"##g phonon*.pc
-	sed -i s#"moc_location=${STAGING_BINDIR}/moc4$"## phonon*.pc
-    sed -i s#"uic_location=${STAGING_BINDIR}/uic4$"## phonon*.pc
-    sed -i s#"-L${STAGING_LIBDIR}"##g phonon*.pc
-    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g phonon*.pc
-
-    cd ${STAGING_LIBDIR}
-    sed -i s#"-L${S}/lib"##g libQt*.la
-    sed -i s#'$(OE_QMAKE_LIBS_X11)'#"${OE_QMAKE_LIBS_X11}"#g libQt*.la
-
-    install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/bin
-    ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/qmake
-    for qttool in moc uic uic3 rcc lrelease lupdate; do
-         ln -sf ${STAGING_BINDIR_NATIVE}/${qttool}4 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/${qttool}
-    done
+    # FIXME: install symlinks to tools?
+    #install -d ${STAGING_DATADIR}/${QT_DIR_NAME}/bin
+    #ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/qmake
+    #for qttool in moc uic uic3 rcc lrelease lupdate; do
+    #     ln -sf ${STAGING_BINDIR_NATIVE}/${qttool}4 ${STAGING_DATADIR}/${QT_DIR_NAME}/bin/${qttool}
+    #done
 }
 
