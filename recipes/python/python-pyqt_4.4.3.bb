@@ -7,7 +7,7 @@ LICENSE = "GPL"
 DEPENDS = "sip-native python-sip"
 RDEPENDS = "python-core"
 SRCNAME = "pyqt"
-PR = "ml4"
+PR = "ml5"
 
 PYQT_OE_VERSION = "Qt_4_4_1"
 
@@ -16,12 +16,20 @@ SRC_URI = "\
   file://cross-compile.patch;patch=1 \
   file://01_configure.dpatch;patch=1 \
   file://02_htmllinks.dpatch;patch=1 \
-  file://03_qreal.dpatch;patch=1 \
-  file://04_qreal_api_fixes-for-4.4.3.dpatch;patch=1 \
   \
   file://assistantclient-fix.patch;patch=1 \
 "
 S = "${WORKDIR}/PyQt-x11-gpl-${PV}"
+
+# arm and mips machines need some extra patches
+
+SRC_URI_append_arm = "\
+  file://03_qreal.dpatch;patch=1 \
+  file://04_qreal_api_fixes-for-4.4.3.dpatch;patch=1"
+
+SRC_URI_append_mipsel = "\
+  file://03_qreal.dpatch;patch=1 \
+  file://04_qreal_api_fixes-for-4.4.3.dpatch;patch=1"
 
 inherit qt4x11 sip distutils-base
 

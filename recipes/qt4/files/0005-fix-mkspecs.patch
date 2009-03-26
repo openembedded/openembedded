@@ -1,25 +1,15 @@
-From aa0377910cfd8d0fce6bdc9355994a4e267b1696 Mon Sep 17 00:00:00 2001
-From: Michael Krelin <hacker@klever.net>
-Date: Sat, 2 Jun 2007 16:39:58 +0200
-Subject: [PATCH] fix mkspecs
-
----
- mkspecs/common/g++.conf   |   18 +++++++++---------
- mkspecs/common/linux.conf |   26 +++++++++++++-------------
- 2 files changed, 22 insertions(+), 22 deletions(-)
-
-Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf
+Index: qt-embedded-linux-opensource-src-4.4.3/mkspecs/common/g++.conf
 ===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/g++.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf	2007-12-26 02:58:21.000000000 +0100
+--- qt-embedded-linux-opensource-src-4.4.3.orig/mkspecs/common/g++.conf	2009-03-25 14:46:10.000000000 +0100
++++ qt-embedded-linux-opensource-src-4.4.3/mkspecs/common/g++.conf	2009-03-25 14:46:14.000000000 +0100
 @@ -2,12 +2,12 @@
  # qmake configuration for common gcc
  #
  
 -QMAKE_CC		= gcc
 -QMAKE_CFLAGS		+= -pipe
-+QMAKE_CC		= $(OE_QMAKE_CC)
-+QMAKE_CFLAGS		+= -pipe $(OE_QMAKE_CFLAGS)
++QMAKE_CC       = $(OE_QMAKE_CC)
++QMAKE_CFLAGS       += -pipe $(OE_QMAKE_CFLAGS)
  QMAKE_CFLAGS_DEPS	+= -M
  QMAKE_CFLAGS_WARN_ON	+= -Wall -W
  QMAKE_CFLAGS_WARN_OFF	+= -w
@@ -34,8 +24,8 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf
  
 -QMAKE_CXX		= g++
 -QMAKE_CXXFLAGS		+= $$QMAKE_CFLAGS
-+QMAKE_CXX		= $(OE_QMAKE_CXX)
-+QMAKE_CXXFLAGS		+= $$QMAKE_CFLAGS $(OE_QMAKE_CXXFLAGS)
++QMAKE_CXX      = $(OE_QMAKE_CXX)
++QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS $(OE_QMAKE_CXXFLAGS)
  QMAKE_CXXFLAGS_DEPS	+= $$QMAKE_CFLAGS_DEPS
  QMAKE_CXXFLAGS_WARN_ON	+= $$QMAKE_CFLAGS_WARN_ON
  QMAKE_CXXFLAGS_WARN_OFF	+= $$QMAKE_CFLAGS_WARN_OFF
@@ -46,26 +36,26 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/g++.conf
 -QMAKE_LINK		= g++
 -QMAKE_LINK_SHLIB	= g++
 -QMAKE_LFLAGS		+=
-+QMAKE_LINK		= $(OE_QMAKE_LINK)
-+QMAKE_LINK_SHLIB	= $(OE_QMAKE_LINK)
-+QMAKE_LFLAGS		+= $(OE_QMAKE_LDFLAGS)
++QMAKE_LINK     = $(OE_QMAKE_LINK)
++QMAKE_LINK_SHLIB   = $(OE_QMAKE_LINK)
++QMAKE_LFLAGS       += $(OE_QMAKE_LDFLAGS)
  QMAKE_LFLAGS_RELEASE	+=
  QMAKE_LFLAGS_DEBUG	+=
  QMAKE_LFLAGS_APP	+=
-@@ -40,7 +40,7 @@
- QMAKE_LFLAGS_PLUGIN	+= $$QMAKE_LFLAGS_SHLIB
+@@ -41,7 +41,7 @@
  QMAKE_LFLAGS_SONAME	+= -Wl,-soname,
  QMAKE_LFLAGS_THREAD	+=
+ QMAKE_LFLAGS_NOUNDEF	+= -Wl,--no-undefined
 -QMAKE_RPATH		= -Wl,-rpath,
-+QMAKE_RPATH		= -Wl,-rpath-link,
++QMAKE_RPATH        = -Wl,-rpath-link,
  
  QMAKE_PCH_OUTPUT_EXT    = .gch
  
-Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
+Index: qt-embedded-linux-opensource-src-4.4.3/mkspecs/common/linux.conf
 ===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/common/linux.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf	2007-12-26 02:58:21.000000000 +0100
-@@ -7,26 +7,26 @@
+--- qt-embedded-linux-opensource-src-4.4.3.orig/mkspecs/common/linux.conf	2009-03-25 14:46:10.000000000 +0100
++++ qt-embedded-linux-opensource-src-4.4.3/mkspecs/common/linux.conf	2009-03-25 14:47:59.000000000 +0100
+@@ -7,26 +7,29 @@
  
  QMAKE_INCDIR          =
  QMAKE_LIBDIR          =
@@ -75,12 +65,13 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
 -QMAKE_LIBDIR_QT       = $$[QT_INSTALL_LIBS]
 -QMAKE_INCDIR_OPENGL   = /usr/X11R6/include
 -QMAKE_LIBDIR_OPENGL   = /usr/X11R6/lib
-+QMAKE_INCDIR_X11      = 
-+QMAKE_LIBDIR_X11      = 
++QMAKE_INCDIR_X11      =
++QMAKE_LIBDIR_X11      =
 +QMAKE_INCDIR_QT       = $(OE_QMAKE_INCDIR_QT)
 +QMAKE_LIBDIR_QT       = $(OE_QMAKE_LIBDIR_QT)
-+QMAKE_INCDIR_OPENGL   = 
-+QMAKE_LIBDIR_OPENGL   = 
++QMAKE_INCDIR_OPENGL   =
++QMAKE_LIBDIR_OPENGL   =
++
  
  QMAKE_LIBS            =
  QMAKE_LIBS_DYNLOAD    = -ldl
@@ -97,13 +88,15 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
 -QMAKE_UIC             = $$[QT_INSTALL_BINS]/uic
 +QMAKE_MOC             = $(OE_QMAKE_MOC)
 +QMAKE_UIC             = $(OE_QMAKE_UIC)
++QMAKE_UIC3            = $(OE_QMAKE_UIC3)
++QMAKE_RCC             = $(OE_QMAKE_RCC)
  
 -QMAKE_AR              = ar cqs
 +QMAKE_AR              = $(OE_QMAKE_AR) cqs
+ QMAKE_OBJCOPY         = objcopy
  QMAKE_RANLIB          =
  
- QMAKE_TAR             = tar -cf
-@@ -38,11 +38,11 @@
+@@ -39,7 +42,7 @@
  QMAKE_MOVE            = mv -f
  QMAKE_DEL_FILE        = rm -f
  QMAKE_DEL_DIR         = rmdir
@@ -112,22 +105,3 @@ Index: qtopia-core-opensource-src-4.3.3/mkspecs/common/linux.conf
  QMAKE_STRIPFLAGS_LIB += --strip-unneeded
  QMAKE_CHK_DIR_EXISTS  = test -d
  QMAKE_MKDIR           = mkdir -p
- QMAKE_INSTALL_FILE    = install -m 644 -p
- QMAKE_INSTALL_PROGRAM = install -m 755 -p
- 
--include(unix.conf)
-\ No newline at end of file
-+include(unix.conf)
-Index: qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf
-===================================================================
---- qtopia-core-opensource-src-4.3.3.orig/mkspecs/linux-g++/qmake.conf	2007-12-26 02:58:15.000000000 +0100
-+++ qtopia-core-opensource-src-4.3.3/mkspecs/linux-g++/qmake.conf	2007-12-26 03:00:49.000000000 +0100
-@@ -5,7 +5,7 @@
- MAKEFILE_GENERATOR	= UNIX
- TEMPLATE		= app
- CONFIG			+= qt warn_on release incremental link_prl
--QT			+= core gui
-+QT			+= core gui $$(OE_QMAKE_EXTRA_MODULES)
- QMAKE_INCREMENTAL_STYLE = sublib
- 
- include(../common/g++.conf)

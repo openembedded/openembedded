@@ -6,6 +6,7 @@ SRC_URI = "\
 	http://llvm.org/releases/${PV}/llvm-${PV}.tar.gz \
 	file://fix-build.patch;patch=1 \
 	file://fix-static-initialization.patch;patch=1 \
+	file://fix-ldr_pre.patch;patch=1 \
 	"
 
 DEPENDS = "llvm-native"

@@ -7,7 +7,6 @@ S = "${WORKDIR}/linux-2.6.28"
 # Mark archs/machines that this kernel supports
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_vortex86sx = "1"
-DEFAULT_PREFERENCE_tosa = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/linux-2.6.28.tar.bz2 \
            ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/testing/patch-2.6.29-rc6.bz2;patch=1 \

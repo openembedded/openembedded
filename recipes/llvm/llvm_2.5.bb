@@ -7,7 +7,7 @@ SRC_URI = "\
   file://fix-build.patch;patch=1 \
 "
 
-PR = "r1"
+PR = "r2"
 
 DEPENDS = "llvm-native"
 

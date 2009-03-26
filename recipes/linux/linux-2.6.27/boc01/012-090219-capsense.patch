@@ -29,7 +29,7 @@ Index: linux-2.6.27/drivers/input/misc/capsense-btns.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6.27/drivers/input/misc/capsense-btns.c
-@@ -0,0 +1,438 @@
+@@ -0,0 +1,456 @@
 +/*
 + * CAPSENSE Interface driver
 + *
@@ -68,7 +68,21 @@ Index: linux-2.6.27/drivers/input/misc/capsense-btns.c
 +
 +#define BUTTONS_POLL_INTERVAL	30	/* msec */
 +
++#define CAP_INPUT_PORT(port)    (0x00+(port))
++#define CAP_STATUS_PORT(port)   (0x02+(port))
 +#define CAP_OUTPUT_PORT(port)   (0x04+(port))
++#define CAP_CS_ENABLE(port)     (0x06+(port))
++#define CAP_GPIO_ENABLE(port)   (0x08+(port))
++#define CAP_INVERSION_MASK(port) (0x0A+(port))
++#define CAP_INT_MASK(port)      (0x0C+(port))
++#define CAP_STATUS_HOLD_MSK(port) (0x0E+(port))
++#define CAP_DM_PULL_UP(port)    (0x10+(4*(port)))
++#define CAP_DM_STRONG(port)     (0x11+(4*(port)))
++#define CAP_DM_HIGHZ(port)      (0x12+(4*(port)))
++#define CAP_OD_LOW(port)        (0x13+(4*(port)))
++#define CAP_PWM_ENABLE(port)    (0x18+(port))
++#define CAP_PWM_MODE_DC         0x1A
++#define CAP_PWM_DELAY           0x1B
 +#define CAP_OP_SEL(port,bit)    (0x1C+(25*(port))+(5*(bit)))
 +#define CAP_READ_STATUS(port)   (0x88+(port))
 +
@@ -433,6 +447,8 @@ Index: linux-2.6.27/drivers/input/misc/capsense-btns.c
 +{
 +	struct capsense_ctx *capsense = i2c_get_clientdata(client);
 +
++	printk(KERN_INFO DRIVER_NAME ": suspend\n");
++
 +	capsense_led_suspend(capsense);
 +
 +	return 0;
@@ -441,6 +457,8 @@ Index: linux-2.6.27/drivers/input/misc/capsense-btns.c
 +static int capsense_resume(struct i2c_client *client)
 +{
 +	struct capsense_ctx *capsense = i2c_get_clientdata(client);
++
++	printk(KERN_INFO DRIVER_NAME ": resume\n");
 +
 +	capsense_led_resume(capsense);
 +

@@ -3,7 +3,7 @@ PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 SECTION = "devel"
 LICENSE = "GPL"
-PR = "r5"
+PR = "r7"
 
 # We call 'moc' during the build 
 DEPENDS = "uicmoc4-native"
@@ -16,9 +16,6 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/${QTVER}.tar.bz2 \
            file://use-lflags-last.patch;patch=1 \
            file://linux-oe-qmake.conf"
 S = "${WORKDIR}/${QTVER}"
-
-# we need the real target system here
-CROSS_SYS := "${MULTIMACH_TARGET_SYS}"
 
 inherit autotools  
 
@@ -39,7 +36,6 @@ do_configure() {
     QMAKESPEC=
     PLATFORM=${HOST_OS}-oe-g++
     export PLATFORM
-    # yes, TARGET_SYS is correct, because this is a 'cross'-qmake-native :) :M:
     export OE_QMAKE_CC="${CC}"
     export OE_QMAKE_CFLAGS="${CFLAGS}"
     export OE_QMAKE_CXX="${CXX}"
@@ -55,7 +51,7 @@ do_configure() {
     export QMAKE_RCC="${STAGING_BINDIR_NATIVE}/rcc4"
     export OE_QMAKE_QMAKE="${STAGING_BINDIR_NATIVE}/qmake"
     export OE_QMAKE_RPATH="-Wl,-rpath-link,"
-    echo yes | ./configure -prefix ${STAGING_DIR_TARGET}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
+    echo yes | ./configure -prefix ${STAGING_DIR_NATIVE}/qt4 ${EXTRA_OECONF} || die "Configuring qt failed"
 }
 
 do_compile() {
@@ -65,8 +61,7 @@ do_compile() {
 do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}	
 	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
-    install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake-qt4
-
-    install -d ${CROSS_DATADIR}/qt4
-    cp -PfR mkspecs ${CROSS_DATADIR}/qt4/
+	install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake-qt4
+	install -d ${STAGING_DATADIR_NATIVE}/qt4
+	cp -PfR mkspecs ${STAGING_DATADIR_NATIVE}/qt4/
 }

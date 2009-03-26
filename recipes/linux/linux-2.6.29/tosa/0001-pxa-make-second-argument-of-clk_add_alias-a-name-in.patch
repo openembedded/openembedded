@@ -1,0 +1,109 @@
+From 93898651be8333421bd849eb801255c885bc9279 Mon Sep 17 00:00:00 2001
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Date: Thu, 5 Mar 2009 04:04:53 +0300
+Subject: [PATCH] pxa: make second argument of clk_add_alias a name instead of the device
+
+clk_add_alias is commonly called for platform devices that are not yet
+registered in the device tree. Thus the clock alias is associated with
+NULL device name. Fix this by passing the device name instead of just device
+pointer.
+
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ arch/arm/mach-pxa/clock.c |    4 ++--
+ arch/arm/mach-pxa/clock.h |    2 +-
+ arch/arm/mach-pxa/e740.c  |    2 +-
+ arch/arm/mach-pxa/e750.c  |    2 +-
+ arch/arm/mach-pxa/e800.c  |    2 +-
+ arch/arm/mach-pxa/tosa.c  |    2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/mach-pxa/clock.c b/arch/arm/mach-pxa/clock.c
+index 40b7740..db52d2c 100644
+--- a/arch/arm/mach-pxa/clock.c
++++ b/arch/arm/mach-pxa/clock.c
+@@ -87,7 +87,7 @@ void clks_register(struct clk_lookup *clks, size_t num)
+ 		clkdev_add(&clks[i]);
+ }
+ 
+-int clk_add_alias(char *alias, struct device *alias_dev, char *id,
++int clk_add_alias(const char *alias, const char *alias_dev_name, char *id,
+ 	struct device *dev)
+ {
+ 	struct clk *r = clk_get(dev, id);
+@@ -96,7 +96,7 @@ int clk_add_alias(char *alias, struct device *alias_dev, char *id,
+ 	if (!r)
+ 		return -ENODEV;
+ 
+-	l = clkdev_alloc(r, alias, alias_dev ? dev_name(alias_dev) : NULL);
++	l = clkdev_alloc(r, alias, alias_dev_name);
+ 	clk_put(r);
+ 	if (!l)
+ 		return -ENODEV;
+diff --git a/arch/arm/mach-pxa/clock.h b/arch/arm/mach-pxa/clock.h
+index 4e9c613..5599bce 100644
+--- a/arch/arm/mach-pxa/clock.h
++++ b/arch/arm/mach-pxa/clock.h
+@@ -69,6 +69,6 @@ extern void clk_pxa3xx_cken_disable(struct clk *);
+ #endif
+ 
+ void clks_register(struct clk_lookup *clks, size_t num);
+-int clk_add_alias(char *alias, struct device *alias_dev, char *id,
++int clk_add_alias(const char *alias, const char *alias_name, char *id,
+ 	struct device *dev);
+ 
+diff --git a/arch/arm/mach-pxa/e740.c b/arch/arm/mach-pxa/e740.c
+index 6d48e00..f2402f6 100644
+--- a/arch/arm/mach-pxa/e740.c
++++ b/arch/arm/mach-pxa/e740.c
+@@ -189,7 +189,7 @@ static void __init e740_init(void)
+ {
+ 	pxa2xx_mfp_config(ARRAY_AND_SIZE(e740_pin_config));
+ 	eseries_register_clks();
+-	clk_add_alias("CLK_CK48M", &e740_t7l66xb_device.dev,
++	clk_add_alias("CLK_CK48M", e740_t7l66xb_device.name,
+ 			"UDCCLK", &pxa25x_device_udc.dev),
+ 	eseries_get_tmio_gpios();
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+diff --git a/arch/arm/mach-pxa/e750.c b/arch/arm/mach-pxa/e750.c
+index be1ab8e..1379f9a 100644
+--- a/arch/arm/mach-pxa/e750.c
++++ b/arch/arm/mach-pxa/e750.c
+@@ -190,7 +190,7 @@ static struct platform_device *devices[] __initdata = {
+ static void __init e750_init(void)
+ {
+ 	pxa2xx_mfp_config(ARRAY_AND_SIZE(e750_pin_config));
+-	clk_add_alias("CLK_CK3P6MI", &e750_tc6393xb_device.dev,
++	clk_add_alias("CLK_CK3P6MI", e750_tc6393xb_device.name,
+ 			"GPIO11_CLK", NULL),
+ 	eseries_get_tmio_gpios();
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+diff --git a/arch/arm/mach-pxa/e800.c b/arch/arm/mach-pxa/e800.c
+index cc9b129..0cc0062 100644
+--- a/arch/arm/mach-pxa/e800.c
++++ b/arch/arm/mach-pxa/e800.c
+@@ -196,7 +196,7 @@ static struct platform_device *devices[] __initdata = {
+ 
+ static void __init e800_init(void)
+ {
+-	clk_add_alias("CLK_CK3P6MI", &e800_tc6393xb_device.dev,
++	clk_add_alias("CLK_CK3P6MI", e800_tc6393xb_device.name,
+ 			"GPIO11_CLK", NULL),
+ 	eseries_get_tmio_gpios();
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
+index 3332e5d..3fe137f 100644
+--- a/arch/arm/mach-pxa/tosa.c
++++ b/arch/arm/mach-pxa/tosa.c
+@@ -919,7 +919,7 @@ static void __init tosa_init(void)
+ 	pxa2xx_set_spi_info(2, &pxa_ssp_master_info);
+ 	spi_register_board_info(spi_board_info, ARRAY_SIZE(spi_board_info));
+ 
+-	clk_add_alias("CLK_CK3P6MI", &tc6393xb_device.dev, "GPIO11_CLK", NULL);
++	clk_add_alias("CLK_CK3P6MI", tc6393xb_device.name, "GPIO11_CLK", NULL);
+ 
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ }
+-- 
+1.5.6.5
+
