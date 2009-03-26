@@ -88,7 +88,8 @@ do_configure() {
     unset QMAKESPEC
     unset QTDIR
     ln -sf ${STAGING_BINDIR_NATIVE}/qmake2 bin/qmake
-    ln -s linux-g++ mkspecs/${TARGET_OS}-oe-g++
+    ln -sf linux-g++ mkspecs/${TARGET_OS}-oe-g++
+    cp -f ${WORKDIR}/g++.conf ${WORKDIR}/linux.conf mkspecs/common/
 
     echo "[Paths]"                                 > $QT_CONF_PATH
     echo "Prefix=${prefix}"                       >> $QT_CONF_PATH

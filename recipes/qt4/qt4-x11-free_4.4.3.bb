@@ -12,10 +12,12 @@ SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-${PV}.tar.gz 
            file://0002-fix-resinit-declaration.patch;patch=1 \
            file://0003-no-tools.patch;patch=1 \
            file://0004-no-qmake.patch;patch=1 \
-           file://0005-fix-mkspecs.patch;patch=1 \
            file://0006-freetype-host-includes.patch;patch=1 \
            file://0007-openssl-host-includes.patch;patch=1 \ 
-           file://0008-qt-lib-infix.patch;patch=1"
+           file://0008-qt-lib-infix.patch;patch=1 \
+           file://g++.conf \
+           file://linux.conf \
+           "
 S = "${WORKDIR}/qt-x11-opensource-src-${PV}"
 
 
