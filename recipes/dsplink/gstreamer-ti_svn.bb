@@ -4,7 +4,7 @@ SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=
           "
 SRCREV = "160"
 
-PR = "r5"
+PR = "r6"
 
 # Again, no '.' in PWD allowed :(
 PV = "0+svnr${SRCREV}"

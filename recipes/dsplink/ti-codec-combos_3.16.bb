@@ -11,7 +11,7 @@ S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-PR = "r13"
+PR = "r14"
 
 TARGET = "all"
 

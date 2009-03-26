@@ -15,7 +15,7 @@ SRCREV = "36"
 S = "${WORKDIR}/BRIJESH_GIT_022309/davinci_multimedia_application_interface/dmai"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "120+svnr${SRCREV}"
-PR = "r15"
+PR = "r16"
 
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
