@@ -3,7 +3,9 @@ SECTION = "x11/gnome"
 
 inherit autotools gnome pkgconfig
 
-DEPENDS = "gtk+ libtasn1 libgcrypt"
+PR = "r1"
+
+DEPENDS = "gtk+ libtasn1 libgcrypt gconf"
 
 EXTRA_OECONF = "--disable-gtk-doc"
 
