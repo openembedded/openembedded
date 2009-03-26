@@ -1,6 +1,6 @@
 SUMMARY = "Qt is a versatile cross-platform application framework -- this is the embedded version."
 SECTION = "libs"
-LICENSE = "GPL"
+LICENSE = "GPL QPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "tslib"
