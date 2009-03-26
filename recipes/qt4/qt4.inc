@@ -65,7 +65,6 @@ PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
 PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
 
 ALLOW_EMPTY_${PN} = "1"
-ALLOW_EMPTY_${QT_BASE_LIB}uitools4 = "1"
 FILES_${PN}     = ""
 FILES_${PN}-dev = " ${includedir}/${QT_DIR_NAME}/Qt/*"
 FILES_${PN}-dbg = "${bindir}/*/.debug "
