@@ -26,6 +26,9 @@ do_configure_append() {
 
 do_install_append() {
     install -m 0755 ${WORKDIR}/connman ${D}${sysconfdir}/init.d/connman
+    install -d ${D}${libdir}/connman/test/
+    for file in test/*; do install -m 0755 $file ${D}${libdir}/connman/test/; done
+    rm ${D}${libdir}/connman/test/Makefile*
 }
 
 do_stage() {
@@ -49,7 +52,7 @@ python populate_packages_prepend() {
 
 PACKAGES_DYNAMIC = "${PN}-plugin-*"
 
-PACKAGES += "${PN}-scripts"
+PACKAGES += "${PN}-scripts ${PN}-test-utils"
 
 FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
             ${sysconfdir} ${sharedstatedir} ${localstatedir} \
@@ -58,6 +61,8 @@ FILES_${PN} = "${bindir}/* ${sbindir}/* ${libexecdir}/* ${libdir}/lib*.so.* \
             ${datadir}/idl ${datadir}/omf ${datadir}/sounds \
             ${libdir}/bonobo/servers \
             ${datadir}/dbus-1/system-services/*"
+
+FILES_${PN}-test-utils += "${libdir}/connman/test/*"
 
 FILES_${PN}-scripts += "${libdir}/connman/scripts"
 FILES_${PN}-dbg += "${libdir}/connman/*/.debug"
