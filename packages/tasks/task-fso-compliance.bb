@@ -24,6 +24,7 @@ RDEPENDS_${PN} = "\
 #  connman-plugin-resolvconf \
   connman-plugin-udhcp \
   connman-plugin-wifi \
+  connman-test-utils \
 "
 
 RRECOMMENDS_${PN} = "\
