@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PV = "2.6"
-PR = "ml43"
+PR = "ml44"
 
 RDEPENDS = "\
   python-ao \
@@ -115,4 +115,5 @@ RDEPENDS = "\
   moin \
   plone	\
   zope \
+  zope-interfaces \
 "
