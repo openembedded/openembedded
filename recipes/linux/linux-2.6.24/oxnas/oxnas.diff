@@ -45037,7 +45037,7 @@ diff -Nurd linux-2.6.24/fs/jffs2/file.c linux-2.6.24-oxe810/fs/jffs2/file.c
  	.mmap =		generic_file_readonly_mmap,
  	.fsync =	jffs2_fsync,
 -	.splice_read =	generic_file_splice_read,
-+	.sendfile =	generic_file_sendfile
++	.sendfile =	generic_file_sendfile,
 +  	.splice_read =	generic_file_splice_read,
  };
  
