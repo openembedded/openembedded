@@ -1,0 +1,6 @@
+On popular request by popular people a list of tasks to-do:
+
+	-Kill insecure usage of os.system either by properly escaping
+         the strings or a faster replacement not involving /bin/sh
+	-Introduce a -p option to automatically hotshot/profile the
+	 run

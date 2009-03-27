@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+# ex:ts=4:sw=4:sts=4:et
+# -*- tab-width: 4; c-basic-offset: 4; indent-tabs-mode: nil -*-
+#
+# Copyright (C) 2003, 2004  Chris Larson
+# Copyright (C) 2003, 2004  Phil Blundell
+# Copyright (C) 2003 - 2005 Michael 'Mickey' Lauer
+# Copyright (C) 2005        Holger Hans Peter Freyther
+# Copyright (C) 2005        ROAD GmbH
+# Copyright (C) 2006        Richard Purdie
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import sys, os, getopt, re, time, optparse
+sys.path.insert(0,os.path.join(os.path.dirname(os.path.dirname(sys.argv[0])), 'lib'))
+import bb
+from bb import cooker
+
+__version__ = "1.8.12"
+
+#============================================================================#
+# BBOptions
+#============================================================================#
+class BBConfiguration( object ):
+    """
+    Manages build options and configurations for one run
+    """
+    def __init__( self, options ):
+        for key, val in options.__dict__.items():
+            setattr( self, key, val )
+
+
+#============================================================================#
+# main
+#============================================================================#
+
+def main():
+    parser = optparse.OptionParser( version = "BitBake Build Tool Core version %s, %%prog version %s" % ( bb.__version__, __version__ ),
+    usage = """%prog [options] [package ...]
+
+Executes the specified task (default is 'build') for a given set of BitBake files.
+It expects that BBFILES is defined, which is a space separated list of files to
+be executed.  BBFILES does support wildcards.
+Default BBFILES are the .bb files in the current directory.""" )
+
+    parser.add_option( "-b", "--buildfile", help = "execute the task against this .bb file, rather than a package from BBFILES.",
+               action = "store", dest = "buildfile", default = None )
+
+    parser.add_option( "-k", "--continue", help = "continue as much as possible after an error. While the target that failed, and those that depend on it, cannot be remade, the other dependencies of these targets can be processed all the same.",
+               action = "store_false", dest = "abort", default = True )
+
+    parser.add_option( "-a", "--tryaltconfigs", help = "continue with builds by trying to use alternative providers where possible.",
+               action = "store_true", dest = "tryaltconfigs", default = False )
+
+    parser.add_option( "-f", "--force", help = "force run of specified cmd, regardless of stamp status",
+               action = "store_true", dest = "force", default = False )
+
+    parser.add_option( "-i", "--interactive", help = "drop into the interactive mode also called the BitBake shell.",
+               action = "store_true", dest = "interactive", default = False )
+
+    parser.add_option( "-c", "--cmd", help = "Specify task to execute. Note that this only executes the specified task for the providee and the packages it depends on, i.e. 'compile' does not implicitly call stage for the dependencies (IOW: use only if you know what you are doing). Depending on the base.bbclass a listtasks tasks is defined and will show available tasks",
+               action = "store", dest = "cmd" )
+
+    parser.add_option( "-r", "--read", help = "read the specified file before bitbake.conf",
+               action = "append", dest = "file", default = [] )
+
+    parser.add_option( "-v", "--verbose", help = "output more chit-chat to the terminal",
+               action = "store_true", dest = "verbose", default = False )
+
+    parser.add_option( "-D", "--debug", help = "Increase the debug level. You can specify this more than once.",
+               action = "count", dest="debug", default = 0)
+
+    parser.add_option( "-n", "--dry-run", help = "don't execute, just go through the motions",
+               action = "store_true", dest = "dry_run", default = False )
+
+    parser.add_option( "-p", "--parse-only", help = "quit after parsing the BB files (developers only)",
+               action = "store_true", dest = "parse_only", default = False )
+
+    parser.add_option( "-d", "--disable-psyco", help = "disable using the psyco just-in-time compiler (not recommended)",
+               action = "store_true", dest = "disable_psyco", default = False )
+
+    parser.add_option( "-s", "--show-versions", help = "show current and preferred versions of all packages",
+               action = "store_true", dest = "show_versions", default = False )
+
+    parser.add_option( "-e", "--environment", help = "show the global or per-package environment (this is what used to be bbread)",
+               action = "store_true", dest = "show_environment", default = False )
+
+    parser.add_option( "-g", "--graphviz", help = "emit the dependency trees of the specified packages in the dot syntax",
+                action = "store_true", dest = "dot_graph", default = False )
+
+    parser.add_option( "-I", "--ignore-deps", help = """Stop processing at the given list of dependencies when generating dependency graphs. This can help to make the graph more appealing""",
+                action = "append", dest = "ignored_dot_deps", default = [] )
+
+    parser.add_option( "-l", "--log-domains", help = """Show debug logging for the specified logging domains""",
+                action = "append", dest = "debug_domains", default = [] )
+
+    parser.add_option( "-P", "--profile", help = "profile the command and print a report",
+               action = "store_true", dest = "profile", default = False )
+
+    options, args = parser.parse_args(sys.argv)
+
+    configuration = BBConfiguration(options)
+    configuration.pkgs_to_build = []
+    configuration.pkgs_to_build.extend(args[1:])
+
+    cooker = bb.cooker.BBCooker(configuration)
+
+    # Clear away any spurious environment variables. But don't wipe the
+    # environment totally.
+    bb.utils.clean_environment()
+
+    cooker.parseConfiguration()
+
+    if configuration.profile:
+        try:
+            import cProfile as profile
+        except:
+            import profile
+
+        profile.runctx("cooker.cook()", globals(), locals(), "profile.log")
+        import pstats
+        p = pstats.Stats('profile.log')
+        p.sort_stats('time')
+        p.print_stats()
+        p.print_callers()
+        p.sort_stats('cumulative')
+        p.print_stats()
+    else:
+        cooker.cook()
+
+if __name__ == "__main__":
+    main()
