@@ -10,6 +10,7 @@ S="${WORKDIR}/iperf-${PV}"
 
 # --disable-threads is needed on epia/x86 with uclibc
 do_configure() {
+	export ac_cv_func_malloc_0_nonnull=yes
 	gnu-configize
 	oe_runconf --exec-prefix=${STAGING_DIR_HOST}${layout_exec_prefix}  --disable-threads
 }
