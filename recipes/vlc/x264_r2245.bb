@@ -16,7 +16,8 @@ X264_ECFLAGS = ""
 # disable use of assembler written functions
 X264_DISABLE_ASM = "--disable-asm"
 # use assembler written functions for those archs supporting this
-#X264_DISABLE_ASM_x86 = ""
+X264_DISABLE_ASM_x86 = ""
+DEPENDS_x86 = "yasm-native"
 
 EXTRA_OECONF = '--enable-shared ${X264_DISABLE_ASM} --extra-cflags="${X264_ECFLAGS}"'
 
