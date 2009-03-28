@@ -1,0 +1,12 @@
+https://bugs.freedesktop.org/show_bug.cgi?id=20921
+
+--- /tmp/pk-backend-opkg.c	2009-03-28 12:31:01.000000000 +0100
++++ PackageKit-0.4.5/backends/opkg/pk-backend-opkg.c	2009-03-28 12:31:12.000000000 +0100
+@@ -27,7 +27,6 @@
+ #include <pk-backend.h>
+ #include <pk-backend-internal.h>
+ #include <egg-debug.h>
+-#include <pk-enum.h>
+ 
+ #include <libopkg/opkg.h>
+ 
