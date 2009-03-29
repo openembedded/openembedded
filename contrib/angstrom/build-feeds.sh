@@ -108,6 +108,7 @@ do
                       fakeroot \
                       fennec \
                       flame \
+                      fluxbox \
                       ffmpeg \
                       fftw \
                       fftwf \
