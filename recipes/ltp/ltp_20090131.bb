@@ -3,7 +3,9 @@ HOMEPAGE = "http://ltp.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "zip-native"
-PR = "r1"
+PR = "r2"
+
+inherit autotools
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://cross-compile.patch;patch=1 \
@@ -73,3 +75,4 @@ do_install(){
 	rm -rf ${D}/opt/ltp/include
 	rm ${D}/usr/libexec/ltp/share/pkgconfig/ltp.pc
 }
+
