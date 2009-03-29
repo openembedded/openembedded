@@ -1,6 +1,6 @@
 DESCRIPTION = "H.264 encoder"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 X264PV = "snapshot-20090127-2245"
 
@@ -8,7 +8,7 @@ SRC_URI = "http://download.videolan.org/pub/videolan/x264/snapshots/x264-${X264P
 
 S = "${WORKDIR}/${PN}-${X264PV}"
 
-inherit autotools lib_package
+inherit autotools lib_package pkgconfig
 
 # default --extra-cflags
 X264_ECFLAGS = ""
@@ -24,8 +24,3 @@ EXTRA_OECONF = '--enable-shared ${X264_DISABLE_ASM} --extra-cflags="${X264_ECFLA
 do_stage() {
         autotools_stage_all
 }
-
-do_configure() {
-        ${S}/configure ${EXTRA_OECONF}
-}
-
