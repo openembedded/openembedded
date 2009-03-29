@@ -1,0 +1,26 @@
+From: Modestas Vainius <modestas@vainius.eu>
+Subject: [PATCH] debian/link_interface_libraries
+
+Set libtag LINK_INTERFACE_LIBRARIES to empty string to avoid
+extensive recursive linking.
+
+Signed-off-by: Modestas Vainius <modestas@vainius.eu>
+
+---
+ taglib/CMakeLists.txt |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/taglib/CMakeLists.txt b/taglib/CMakeLists.txt
+index c4976f9..ef74465 100644
+--- a/taglib/CMakeLists.txt
++++ b/taglib/CMakeLists.txt
+@@ -141,6 +141,7 @@ SET(tag_LIB_SRCS ${mpeg_SRCS} ${id3v1_SRCS} ${id3v2_SRCS} ${frames_SRCS} ${ogg_S
+ ADD_LIBRARY(tag SHARED ${tag_LIB_SRCS})
+ 
+ TARGET_LINK_LIBRARIES(tag )
++SET_TARGET_PROPERTIES(tag PROPERTIES LINK_INTERFACE_LIBRARIES "")
+ if(ZLIB_FOUND)
+ 	TARGET_LINK_LIBRARIES(tag ${ZLIB_LIBRARIES})
+ endif(ZLIB_FOUND)
+-- 
+tg: (2a52182..) general/link_interface_libraries_fix (depends on: upstream)

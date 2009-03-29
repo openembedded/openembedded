@@ -9,6 +9,7 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 IMAGE_INSTALL = "task-boot \
             util-linux-mount util-linux-umount \
             ${DISTRO_SSH_DAEMON} \
+            ${ANGSTROM_EXTRA_INSTALL} \
             angstrom-version \
 	   "
 

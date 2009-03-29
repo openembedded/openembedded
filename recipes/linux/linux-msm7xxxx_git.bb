@@ -3,7 +3,7 @@ require linux.inc
 PV = "2.6.25+${PR}+gitr${SRCREV}"
 PV_htcraphael = "2.6.27+${PR}+gitr${SRCREV}"
 PV_htcdiamond = "2.6.27+${PR}+gitr${SRCREV}"
-PR = "r6"
+PR = "r8"
 
 COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond|htcblackstone"
 

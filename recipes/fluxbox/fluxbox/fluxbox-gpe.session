@@ -1,9 +1,0 @@
-#!/bin/sh
-
-XRES=`xdpyinfo | awk '/dimensions/ { print $2 }' | cut -dx -f1`
-
-matchbox-desktop &
-matchbox-panel  --orientation south --no-flip&
-sleep 5
-exec startfluxbox $@            
-

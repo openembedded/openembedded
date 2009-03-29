@@ -1,0 +1,7 @@
+--- linux-2.6.24/arch/arm/tools/mach-types.orig	2009-03-27 08:58:44.000000000 +0100
++++ linux-2.6.24/arch/arm/tools/mach-types	2009-03-27 09:00:25.000000000 +0100
+@@ -1367,3 +1367,4 @@
+ csb726			MACH_CSB726		CSB726			1359
+ tik27			MACH_TIK27		TIK27			1360
+ mx_uc7420		MACH_MX_UC7420		MX_UC7420		1361
++hipox			MACH_HIPOX		HIPOX			2151
