@@ -1,0 +1,23 @@
+--- mozilla/js/src/Makefile.in.orig	2006-12-12 11:46:02.000000000 +0000
++++ mozilla/js/src/Makefile.in	2006-12-12 11:46:27.000000000 +0000
+@@ -319,20 +319,8 @@
+ 
+ jsopcode.h jsopcode.c: jsopcode.tbl
+ 
+-ifeq (,$(CROSS_COMPILE)$(filter-out WINNT,$(OS_ARCH)))
+ jsautocfg.h:
+ 	touch $@
+-else
+-ifeq ($(OS_ARCH),WINCE)
+-jsautocfg.h:
+-	touch $@
+-else
+-jsautocfg.h: jscpucfg$(HOST_BIN_SUFFIX)
+-	@rm -f $@ jsautocfg.tmp
+-	./jscpucfg > jsautocfg.tmp
+-	mv jsautocfg.tmp $@
+-endif
+-endif
+ 
+ # jscpucfg is a strange target
+ # Needs to be built with the host compiler but needs to include
