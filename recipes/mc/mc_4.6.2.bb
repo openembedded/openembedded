@@ -23,7 +23,7 @@ SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
 	   file://mc-cursor-appearance.patch;patch=1 \
 	   file://mc-esc-seq.patch;patch=1"
 
-EXTRA_OECONF = "--libexecdir=${libdir} --without-x --without-samba \   
+EXTRA_OECONF = "--without-x --without-samba \   
 --without-nfs --without-gpm-mouse --enable-charset"
 
 do_unpack_append() {
