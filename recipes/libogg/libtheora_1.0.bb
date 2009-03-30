@@ -1,9 +1,10 @@
 
 DEPENDS = "libogg libvorbis"
 
-PR = "r1"
+PR = "r3"
 
-SRC_URI = "http://downloads.xiph.org/releases/theora/libtheora-${PV}.tar.bz2"
+SRC_URI = "http://downloads.xiph.org/releases/theora/libtheora-${PV}.tar.bz2 \
+	   file://libtheora-1.0-no-docs.patch;patch=1"
 
 inherit autotools lib_package
 
@@ -17,3 +18,6 @@ do_configure_append() {
 
 AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
+do_stage() {
+         autotools_stage_all
+}
