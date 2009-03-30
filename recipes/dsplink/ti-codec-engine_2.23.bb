@@ -125,7 +125,7 @@ do_compile () {
       COMPILER="${KERNEL_CC}" \
       ARCHIVER="${KERNEL_AR}" \
       KERNEL_DIR="${STAGING_KERNEL_DIR}" \
-      clean default
+      clean all
 
     # Build the gpp samples
     cd ${DSPLINK}/gpp/src/samples
@@ -230,7 +230,8 @@ do_compile () {
           CGTOOLS_V5T="${CROSS_DIR}" \
           CGTOOLS_C64P="${TICGTOOLSDIR}" \ 
           -C ${S}/examples/ti/sdo/ce/examples/$i \
-         clean all
+         clean 
+#all
     done    
 }
 
