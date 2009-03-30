@@ -11,13 +11,14 @@ SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.
 
 inherit autotools
 
-EXTRA_OECONF = "--libexecdir=${libdir} --disable-glibtest --without-x --without-samba \
+EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
 --without-nfs --without-gpm-mouse --with-screen=ncurses"
 
 PACKAGES += "${PN}-extfs ${PN}-hilite"
-FILES_${PN} = "${bindir}/ ${libdir}/ ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/*.hint ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d"
+FILES_${PN} = "${bindir}/ ${libexecdir}/mc ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/*.hint ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d"
 FILES_${PN}-extfs = "${datadir}/mc/extfs/"
 FILES_${PN}-hilite = "${datadir}/mc/syntax/"
+FILES_${PN}-dbg += "${libexecdir}/mc/.debug"
 RRECOMMENDS_${PN} += "${PN}-extfs ${PN}-hilite"
 RDEPENDS_${PN}-extfs = "${PN}"
 RDEPENDS_${PN}-hilite = "${PN}"
