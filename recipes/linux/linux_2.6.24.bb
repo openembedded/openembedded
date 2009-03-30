@@ -9,9 +9,10 @@ DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_at32stk1000 = "1"
 DEFAULT_PREFERENCE_ts72xx = "1"
 DEFAULT_PREFERENCE_oxnas = "1"
+DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
-PR = "r25"
+PR = "r26"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            http://kamikaze.waninkoko.info/patches/2.6.24/kamikaze1/broken-out/squashfs-lzma-2.6.24.patch;patch=1 \
@@ -89,6 +90,14 @@ SRC_URI_append_oxnas = " \
 	file://oxnas-uart.patch;patch=1 \
 	file://oxnas-pci-config-delay.patch;patch=1 \
 	file://oxnas-pci-max-size.patch;patch=1 \
+	"
+
+SRC_URI_append_hipox = " \
+	file://hipox-mach-type.patch;patch=1 \
+	file://hipox.patch;patch=1 \
+	file://hipox-uart.patch;patch=1 \
+	file://hipox-pci-config-delay.patch;patch=1 \
+	file://hipox-pci-max-size.patch;patch=1 \
 	"
 
 CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=1 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),-(root);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd3 rootfstype=jffs2"

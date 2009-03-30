@@ -37,6 +37,10 @@ export LINUXKERNEL_INSTALL_DIR=${STAGING_KERNEL_DIR}
 # This tells codec engine which targets to build
 DEVICES ?= "DM6446"
 DEVICES_omap5912osk = "fixme-ti-paths.inc"
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+DEVICES_armv7a = "OMAP3530"
+
 DEVICES_omap3evm = "OMAP3530"
 DEVICES_beagleboard = "OMAP3530"
 DEVICES_davinci-sffsdr = "DM6446"
@@ -44,6 +48,10 @@ DEVICES_davinci-dvevm = "DM6446"
 
 DSPLINKPLATFORM ?= "DAVINCI"
 DSPLINKPLATFORM_omap5912osk = "OMAP"
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+DSPLINKPLATFORM_armv7a = "OMAP3530"
+
 DSPLINKPLATFORM_beagleboard = "OMAP3530"
 DSPLINKPLATFORM_omap3evm = "OMAP3530"
 DSPLINKPLATFORM_davinci-sffsdr = "DAVINCI"
@@ -51,6 +59,10 @@ DSPLINKPLATFORM_davinci-dvevm = "DAVINCI"
 
 PLATFORM ?= "dm6446"
 PLATFORM_omap5912osk = "OMAP"
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+PLATFORM_armv7a = "omap3530"
+
 PLATFORM_beagleboard = "omap3530"
 PLATFORM_omap3evm = "omap3530"
 PLATFORM_davinci-sffsdr = "dm6446"
@@ -58,15 +70,26 @@ PLATFORM_davinci-dvevm = "dm6446"
 
 DSPLINKDSP ?= "C64XX"
 
+# Set a default for armv7a now, change this when omap4 and friends become available
+DSPLINKSOC_armv7a = "3530"
+
 DSPLINKSOC ?= "DM6446"
 DSPLINKSOC_beagleboard = "3530"
 DSPLINKSOC_omap3evm = "3530"
 
 DSPCFG ?= "DM6446GEMSHMEM"
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+DSPCFG_armv7a ?= "OMAP3530SHMEM"
+
 DSPCFG_beagleboard ?= "OMAP3530SHMEM"
 DSPCFG_omap3evm ?= "OMAP3530SHMEM"
 
 GPPOS ?= "MVL5G"
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+GPPOS_armv7a = "OMAPLSP"
+
 GPPOS_beagleboard = "OMAPLSP"
 GPPOS_omap3evm = "OMAPLSP"
 
@@ -77,6 +100,9 @@ export DSPLINKSOC
 export DSPCFG
 export GPPOS
 export PLATFORM
+
+# Set a default for armv7a now, change this when omap4 and friends become available
+DSPPOWERSOC_armv7a = "omap3530"
 
 DSPPOWERSOC ?= "dm6446"
 DSPPOWERSOC_beagleboard = "omap3530"

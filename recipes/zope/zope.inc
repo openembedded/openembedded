@@ -2,7 +2,7 @@ DESCRIPTION = "A full fledged pluggable content management system with integrate
 SECTION = "console/network"
 PRIORITY = "optional"
 LICENSE = "ZPL"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "http://www.zope.org/Products/Zope3/${PV}/Zope-${PV}.tgz"
 S = "${WORKDIR}/Zope-${PV}"
@@ -21,9 +21,9 @@ do_install() {
 	mv ${D}${libdir}/python/* ${D}${libdir}/${PYTHON_DIR} 
 	rm -rf ${D}${libdir}/${PYTHON_DIR}/twisted
 	rm -rf ${D}${libdir}/${PYTHON_DIR}/zope/app/twisted
+	# shipped as seperate package
+	rm -rf ${D}${libdir}/${PYTHON_DIR}/zope/interface
 }
-
-PACKAGES =+ "python-zopeinterface python-zopeinterface-dbg"
 
 FILES_${PN} = "${prefix}"
 FILES_${PN}_doc = "${prefix}/doc"
@@ -37,9 +37,3 @@ ${libdir}/${PYTHON_DIR}/zope/hookable/.debug \
 ${libdir}/${PYTHON_DIR}/zope/app/container/.debug \
 ${libdir}/${PYTHON_DIR}/zope/i18nmessageid/.debug \
 ${libdir}/${PYTHON_DIR}/ZODB/.debug"
-FILES_python-zopeinterface-dbg += "${libdir}/${PYTHON_DIR}/zope/interface/.debug "
-
-FILES_python-zopeinterface = " ${libdir}/${PYTHON_DIR}/zope/__init__.py* \
-	${libdir}/${PYTHON_DIR}/zope/interface/*.* \
-	${libdir}/${PYTHON_DIR}/zope/interface/common"
-

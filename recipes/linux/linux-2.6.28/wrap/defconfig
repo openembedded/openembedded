@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.28
-# Tue Mar 17 15:09:12 2009
+# Thu Mar 26 01:13:12 2009
 #
 # CONFIG_64BIT is not set
 CONFIG_X86_32=y
@@ -290,14 +290,12 @@ CONFIG_ACPI_SYSFS_POWER=y
 # CONFIG_ACPI_PROC_EVENT is not set
 # CONFIG_ACPI_AC is not set
 # CONFIG_ACPI_BATTERY is not set
-# CONFIG_ACPI_BUTTON is not set
 # CONFIG_ACPI_FAN is not set
 # CONFIG_ACPI_DOCK is not set
 CONFIG_ACPI_PROCESSOR=y
 CONFIG_ACPI_THERMAL=y
 # CONFIG_ACPI_WMI is not set
 # CONFIG_ACPI_ASUS is not set
-# CONFIG_ACPI_TOSHIBA is not set
 # CONFIG_ACPI_CUSTOM_DSDT is not set
 CONFIG_ACPI_BLACKLIST_YEAR=0
 # CONFIG_ACPI_DEBUG is not set
@@ -954,27 +952,7 @@ CONFIG_SLIP_SMART=y
 #
 # Input device support
 #
-CONFIG_INPUT=y
-# CONFIG_INPUT_FF_MEMLESS is not set
-# CONFIG_INPUT_POLLDEV is not set
-
-#
-# Userland interfaces
-#
-# CONFIG_INPUT_MOUSEDEV is not set
-# CONFIG_INPUT_JOYDEV is not set
-# CONFIG_INPUT_EVDEV is not set
-# CONFIG_INPUT_EVBUG is not set
-
-#
-# Input Device Drivers
-#
-# CONFIG_INPUT_KEYBOARD is not set
-# CONFIG_INPUT_MOUSE is not set
-# CONFIG_INPUT_JOYSTICK is not set
-# CONFIG_INPUT_TABLET is not set
-# CONFIG_INPUT_TOUCHSCREEN is not set
-# CONFIG_INPUT_MISC is not set
+# CONFIG_INPUT is not set
 
 #
 # Hardware I/O ports
@@ -1013,13 +991,13 @@ CONFIG_SERIAL_CORE=y
 CONFIG_SERIAL_CORE_CONSOLE=y
 # CONFIG_SERIAL_JSM is not set
 CONFIG_UNIX98_PTYS=y
-# CONFIG_LEGACY_PTYS is not set
+CONFIG_LEGACY_PTYS=y
+CONFIG_LEGACY_PTY_COUNT=256
 # CONFIG_IPMI_HANDLER is not set
 # CONFIG_HW_RANDOM is not set
-# CONFIG_NVRAM is not set
+CONFIG_NVRAM=m
 # CONFIG_R3964 is not set
 # CONFIG_APPLICOM is not set
-# CONFIG_SONYPI is not set
 # CONFIG_MWAVE is not set
 CONFIG_SCx200_GPIO=m
 CONFIG_PC8736x_GPIO=m
@@ -1171,9 +1149,6 @@ CONFIG_SENSORS_LM77=m
 # CONFIG_SENSORS_W83L786NG is not set
 # CONFIG_SENSORS_W83627HF is not set
 # CONFIG_SENSORS_W83627EHF is not set
-# CONFIG_SENSORS_HDAPS is not set
-# CONFIG_SENSORS_LIS3LV02D is not set
-# CONFIG_SENSORS_APPLESMC is not set
 # CONFIG_HWMON_DEBUG_CHIP is not set
 CONFIG_THERMAL=y
 CONFIG_WATCHDOG=y
@@ -1267,7 +1242,6 @@ CONFIG_SSB_POSSIBLE=y
 #
 # CONFIG_DISPLAY_SUPPORT is not set
 # CONFIG_SOUND is not set
-# CONFIG_HID_SUPPORT is not set
 # CONFIG_USB_SUPPORT is not set
 # CONFIG_UWB is not set
 # CONFIG_MMC is not set
@@ -1280,7 +1254,6 @@ CONFIG_LEDS_CLASS=m
 #
 # CONFIG_LEDS_NET48XX is not set
 CONFIG_LEDS_WRAP=m
-# CONFIG_LEDS_PCA9532 is not set
 # CONFIG_LEDS_HP_DISK is not set
 # CONFIG_LEDS_PCA955X is not set
 
