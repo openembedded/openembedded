@@ -3,14 +3,13 @@
 #
 inherit qmake_base
 
-DEPENDS_prepend = "qmake2-native uicmoc4-native "
+DEPENDS_prepend = "qt4-tools-native "
 
-export QMAKESPEC = "${CROSS_DATADIR}/qt4/mkspecs/${TARGET_OS}-oe-g++"
+export QMAKESPEC = "${STAGING_DATADIR}/qt4/mkspecs/${TARGET_OS}-oe-g++"
 export OE_QMAKE_UIC = "${STAGING_BINDIR_NATIVE}/uic4"
 export OE_QMAKE_UIC3 = "${STAGING_BINDIR_NATIVE}/uic34"
 export OE_QMAKE_MOC = "${STAGING_BINDIR_NATIVE}/moc4"
 export OE_QMAKE_RCC = "${STAGING_BINDIR_NATIVE}/rcc4"
-export QMAKE_RCC = "${STAGING_BINDIR_NATIVE}/rcc4"
 export OE_QMAKE_QMAKE = "${STAGING_BINDIR_NATIVE}/qmake2"
 export OE_QMAKE_LINK = "${CXX}"
 export OE_QMAKE_CXXFLAGS = "${CXXFLAGS}"

@@ -1,0 +1,24 @@
+Index: llvm-2.5/tools/llvm-config/CMakeLists.txt
+===================================================================
+--- llvm-2.5.orig/tools/llvm-config/CMakeLists.txt	2009-01-07 20:24:44.000000000 +0100
++++ llvm-2.5/tools/llvm-config/CMakeLists.txt	2009-03-23 13:45:24.000000000 +0100
+@@ -83,13 +83,13 @@
+   COMMENT "Checking for cyclic dependencies between LLVM libraries.")
+ 
+ add_custom_command(OUTPUT ${LLVM_CONFIG}
+-  COMMAND echo 's,@LLVM_CPPFLAGS@,${CMAKE_CPP_FLAGS},' > temp.sed
+-  COMMAND echo 's,@LLVM_CFLAGS@,${CMAKE_C_FLAGS},' >> temp.sed
+-  COMMAND echo 's,@LLVM_CXXFLAGS@,${CMAKE_CXX_FLAGS},' >> temp.sed
++  COMMAND echo 's!@LLVM_CPPFLAGS@!${CMAKE_CPP_FLAGS}!' > temp.sed
++  COMMAND echo 's!@LLVM_CFLAGS@!${CMAKE_C_FLAGS} -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS!' >> temp.sed
++  COMMAND echo 's!@LLVM_CXXFLAGS@!${CMAKE_CXX_FLAGS} -D_GNU_SOURCE -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -fpermissive -fvisibility-inlines-hidden -Woverloaded-virtual!' >> temp.sed
+   # TODO: Use general flags for linking, not just for shared libs:
+-  COMMAND echo 's,@LLVM_LDFLAGS@,${CMAKE_SHARED_LINKER_FLAGS},' >> temp.sed
+-  COMMAND echo 's,@LIBS@,,' >> temp.sed                    # TODO: System libs
+-  COMMAND echo 's,@LLVM_BUILDMODE@,${CMAKE_BUILD_TYPE},' >> temp.sed
++  COMMAND echo 's!@LLVM_LDFLAGS@!${CMAKE_SHARED_LINKER_FLAGS}!' >> temp.sed
++  COMMAND echo 's!@LIBS@!!' >> temp.sed                    # TODO: System libs
++  COMMAND echo 's!@LLVM_BUILDMODE@!${CMAKE_BUILD_TYPE}!' >> temp.sed
+   COMMAND sed -f temp.sed < ${LLVM_CONFIG_IN} > ${LLVM_CONFIG}
+   COMMAND ${CMAKE_COMMAND} -E remove -f temp.sed
+   COMMAND cat ${FINAL_LIBDEPS} >> ${LLVM_CONFIG}

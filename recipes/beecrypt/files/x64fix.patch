@@ -1,0 +1,54 @@
+Index: beecrypt-3.1.0/configure.ac
+===================================================================
+--- beecrypt-3.1.0.orig/configure.ac	2003-08-17 06:46:57.000000000 +0000
++++ beecrypt-3.1.0/configure.ac	2009-03-20 14:36:59.000000000 +0000
+@@ -752,19 +752,6 @@
+ 
+ AC_SUBST([MAYBE_OPT])
+ 
+-# Check where to install the libraries
+-bc_libalt=
+-case $target_os in
+-linux*)
+-  case $bc_target_arch in
+-  alpha* | powerpc64 | s390x | x86_64)
+-    bc_libalt="64"
+-    ;;
+-  esac
+-  ;;
+-esac
+-AC_SUBST(LIBALT,$bc_libalt)
+-
+ # Generate output files.
+ AC_CONFIG_FILES([Makefile
+                  Doxyfile
+Index: beecrypt-3.1.0/Makefile.am
+===================================================================
+--- beecrypt-3.1.0.orig/Makefile.am	2003-08-17 06:46:57.000000000 +0000
++++ beecrypt-3.1.0/Makefile.am	2009-03-20 14:36:59.000000000 +0000
+@@ -43,9 +43,7 @@
+ 
+ BEECRYPT_OBJECTS = aes.lo aesopt.lo base64.lo beecrypt.lo blockmode.lo blockpad.lo blowfish.lo blowfishopt.lo dhaes.lo dldp.lo dlkp.lo dlpk.lo dlsvdp-dh.lo dsa.lo elgamal.lo endianness.lo entropy.lo fips186.lo hmac.lo hmacmd5.lo hmacsha1.lo hmacsha256.lo md5.lo memchunk.lo mp.lo mpopt.lo mpbarrett.lo mpnumber.lo mpprime.lo mtprng.lo rsa.lo rsakp.lo rsapk.lo sha1.lo sha1opt.lo sha256.lo timestamp.lo
+ 
+-libaltdir=$(prefix)/lib@LIBALT@
+-
+-libalt_LTLIBRARIES = libbeecrypt.la
++lib_LTLIBRARIES = libbeecrypt.la
+ 
+ libbeecrypt_la_SOURCES = aes.c base64.c beecrypt.c blockmode.c blockpad.c blowfish.c dhaes.c dldp.c dlkp.c dlpk.c dlsvdp-dh.c dsa.c elgamal.c endianness.c entropy.c fips186.c hmac.c hmacmd5.c hmacsha1.c hmacsha256.c md5.c memchunk.c mp.c mpbarrett.c mpnumber.c mpprime.c mtprng.c rsa.c rsakp.c rsapk.c sha1.c sha256.c timestamp.c
+ 
+Index: beecrypt-3.1.0/java/Makefile.am
+===================================================================
+--- beecrypt-3.1.0.orig/java/Makefile.am	2003-06-25 19:25:41.000000000 +0000
++++ beecrypt-3.1.0/java/Makefile.am	2009-03-20 14:37:19.000000000 +0000
+@@ -26,9 +26,7 @@
+ 
+ BEECRYPT_JAVA_OBJECTS = javaglue.lo
+ 
+-libaltdir=$(prefix)/lib@LIBALT@
+-
+-libalt_LTLIBRARIES = libbeecrypt_java.la
++lib_LTLIBRARIES = libbeecrypt_java.la
+ 
+ noinst_HEADERS = javaglue.h
+ 

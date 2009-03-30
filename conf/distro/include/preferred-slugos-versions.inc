@@ -31,7 +31,7 @@ SRCREV_pn-opkg-sdk    = "160"
 ### alphabetically.  Note that the main slugos.inc file
 ### may include preferred versions for toolchain components.
 
-PREFERRED_VERSION_automake-native		?= "1.10"
+PREFERRED_VERSION_automake-native		?= "1.10.2"
 PREFERRED_VERSION_binutils			?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross		?= "2.18.50.0.7"
 PREFERRED_VERSION_binutils-cross-sdk		?= "2.18.50.0.7"
@@ -48,10 +48,10 @@ PREFERRED_VERSION_glibc				?= "2.6.1"
 PREFERRED_VERSION_glibc-initial			?= "2.6.1"
 PREFERRED_VERSION_ipkg				?= "0.99.163"
 PREFERRED_VERSION_ipkg-native			?= "0.99.163"
-PREFERRED_VERSION_libtool			?= "1.5.10"
-PREFERRED_VERSION_libtool-native		?= "1.5.10"
-PREFERRED_VERSION_libtool-cross			?= "1.5.10"
-PREFERRED_VERSION_libtool-sdk			?= "1.5.10"
+PREFERRED_VERSION_libtool			?= "2.2.4"
+PREFERRED_VERSION_libtool-native		?= "2.2.4"
+PREFERRED_VERSION_libtool-cross			?= "2.2.4"
+PREFERRED_VERSION_libtool-sdk			?= "2.2.4"
 PREFERRED_VERSION_linux-libc-headers		?= "2.6.23"
 PREFERRED_VERSION_m4				?= "1.4.8"
 PREFERRED_VERSION_m4-native			?= "1.4.8"
@@ -63,43 +63,17 @@ PREFERRED_VERSION_udev				?= "118"
 
 ##################### Stuff with special notes, and broken stuff:
 
-# libtool/pkgconfig victims -- these packages are locked down because
-# newer versions also require newer libtool/pkgconfig versions.
-
-PREFERRED_VERSION_avahi				?= "0.6.23"
-PREFERRED_VERSION_gstreamer			?= "0.10.17"
-PREFERRED_VERSION_gst-plugins-base		?= "0.10.17"
-PREFERRED_VERSION_tiff				?= "3.7.2"
-PREFERRED_VERSION_fakeroot			?= "1.9.6"
-PREFERRED_VERSION_fakeroot-native		?= "1.9.6"
-
 # Hack alert - selecting this version of libusb effectively selects
 # the use of libusb1 and libusb-compat in the case that something
 # still depends on libusb. This is required because otherwise
 # libusb will overwrite libusb-compat in staging.
 PREFERRED_VERSION_libusb			?= "0.0.0"
 
-# mtd-utils 1.2.0+git cannot be fetched, so SlugOS will stick
-# with 1.1.0 for now:
-PREFERRED_VERSION_mtd-utils			?= "1.1.0"
-
 # boost 1.36 won't build
 PREFERRED_VERSION_boost				?= "1.33.1"
 
-####################### Obsolete stuff, not sure why we keep this:
-
-# New pango and older glib-2.0 versions don't mix,
-# so specify exactly what we would like to build.
-#PREFERRED_VERSION_pango    ?= "1.20.5"
-#PREFERRED_VERSION_glib-2.0 ?= "2.16.1"
-#PREFERRED_VERSION_cairo    ?= "1.4.8"
-#
-# Stick with an older gettext and e2fsprogs stuff
-# and gnutls... (our autotools is too old at the moment)
-#PREFERRED_VERSION_gnutls           ?= "1.6.3"
-#PREFERRED_VERSION_gettext          ?= "0.14.1"
-#PREFERRED_VERSION_gettext-native   ?= "0.14.1"
-#PREFERRED_VERSION_e2fsprogs-libs   ?= "1.39"
-#PREFERRED_VERSION_e2fsprogs        ?= "1.38"
-#PREFERRED_VERSION_e2fsprogs-native ?= "1.38"
-
+# We don't really care which openssl and openssl-native we get, but
+# the DEFAULT_PREFERENCE set in the recipes is such that if we don't
+# specify explicitly, we may get mismatched versions.
+PREFERRED_VERSION_openssl			?= "0.9.8j"
+PREFERRED_VERSION_openssl-native		?= "0.9.8j"

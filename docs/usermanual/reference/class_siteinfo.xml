@@ -148,7 +148,7 @@
 
     <variablelist>
       <varlistentry>
-        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site-&lt;version&gt;/</term>
+        <term>org.openembedded.dev/recipes/&lt;packagename&gt;/site-&lt;version&gt;/</term>
 
         <listitem>
           <para>This directory is for site files which are specific to a
@@ -158,7 +158,7 @@
       </varlistentry>
 
       <varlistentry>
-        <term>org.openembedded.dev/packages/&lt;packagename&gt;/site/</term>
+        <term>org.openembedded.dev/recipes/&lt;packagename&gt;/site/</term>
 
         <listitem>
           <para>This directory is for site files which are specific to a

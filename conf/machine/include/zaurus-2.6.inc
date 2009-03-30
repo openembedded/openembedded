@@ -16,6 +16,7 @@ EXTRA_IMAGEDEPENDS += "${ZAURUS-UPDATER}"
 SERIAL_CONSOLE = "115200 ttyS0"
 
 PREFERRED_PROVIDER_virtual/kernel = "linux-rp"
+PREFERRED_PROVIDER_virtual/kernel_tosa = "linux"
 PREFERRED_PROVIDER_virtual/xserver = "xserver-kdrive"
 PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 
@@ -37,6 +38,8 @@ GUI_MACHINE_CLASS_poodle = "smallscreen"
 
 KERNEL_IMAGE_MAXSIZE = "1294336"
 
+KERNEL_IMAGETYPE ?= "zImage"
+
 MACHINE_POSTPROCESS_COMMAND = "zaurus_make_installkit"
 
 zaurus_make_installkit () {
@@ -44,13 +47,13 @@ zaurus_make_installkit () {
     rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/         
     mkdir ${IMAGE_NAME}-installkit/
 
-    # Get the latest kernel using the zImage-<machine>.bin symlink
+    # Get the latest kernel using the ${KERNEL_IMAGETYPE}-<machine>.bin symlink
     if [ "${@base_contains('MACHINE_FEATURES', 'kexecboot', 'true', 'false',d)}" = "true" ]; then
-	    [ -f "zImage-kexecboot-${MACHINE}.bin" ] && cp zImage-kexecboot-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
+	    [ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin ${IMAGE_NAME}-installkit/${KERNEL_IMAGETYPE}
 	    # we need also tgz for mmc or cf cards
 	    cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/image.tgz
     else
-	    cp zImage-${MACHINE}.bin ${IMAGE_NAME}-installkit/zImage
+	    cp ${KERNEL_IMAGETYPE}-${MACHINE}.bin ${IMAGE_NAME}-installkit/${KERNEL_IMAGETYPE}
     fi
 
     if [ "${MACHINE}" = "spitz" ]; then
@@ -67,7 +70,5 @@ zaurus_make_installkit () {
     md5sum ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz.md5
     rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/     
 }
-
-KERNEL_IMAGETYPE ?= "zImage"
 
 require conf/machine/include/kexecboot.inc

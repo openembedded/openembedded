@@ -23,7 +23,7 @@
 DL_DIR = "${HOME}/sources"
 
 # Delete the line below. Then specify which .bb files to consider for
-# your build. Typically this will be something like BBFILES = "/path/to/openembedded/packages/*/*.bb"
+# your build. Typically this will be something like BBFILES = "/path/to/openembedded/recipes/*/*.bb"
 BBFILES := "${@bb.fatal('Edit your conf/local.conf: BBFILES')}"
 
 # Use the BBMASK below to instruct BitBake to _NOT_ consider some .bb files

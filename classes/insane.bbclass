@@ -343,6 +343,8 @@ def package_qa_hash_style(path, name, d, elf):
     gnu_hash = "--hash-style=gnu" in bb.data.getVar('LDFLAGS', d, True)
     if not gnu_hash:
         gnu_hash = "--hash-style=both" in bb.data.getVar('LDFLAGS', d, True)
+    if not gnu_hash:
+        return True
 
     objdump = bb.data.getVar('OBJDUMP', d, True)
     env_path = bb.data.getVar('PATH', d, True)

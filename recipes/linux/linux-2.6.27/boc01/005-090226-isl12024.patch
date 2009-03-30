@@ -1,0 +1,693 @@
+Index: linux-2.6.27/drivers/i2c/chips/at24.c
+===================================================================
+--- linux-2.6.27.orig/drivers/i2c/chips/at24.c
++++ linux-2.6.27/drivers/i2c/chips/at24.c
+@@ -114,6 +114,8 @@ static const struct i2c_device_id at24_i
+ 	{ "spd", AT24_DEVICE_MAGIC(2048 / 8,
+ 		AT24_FLAG_READONLY | AT24_FLAG_IRUGO) },
+ 	{ "24c04", AT24_DEVICE_MAGIC(4096 / 8, 0) },
++	/* Intersil RTC/Unique-ID isl12024 eeprom handled here */
++	{ "isl12024",AT24_DEVICE_MAGIC(4096 / 8, AT24_FLAG_ADDR16) },
+ 	/* 24rf08 quirk is handled at i2c-core */
+ 	{ "24c08", AT24_DEVICE_MAGIC(8192 / 8, 0) },
+ 	{ "24c16", AT24_DEVICE_MAGIC(16384 / 8, 0) },
+Index: linux-2.6.27/drivers/rtc/Kconfig
+===================================================================
+--- linux-2.6.27.orig/drivers/rtc/Kconfig
++++ linux-2.6.27/drivers/rtc/Kconfig
+@@ -124,6 +124,12 @@ comment "I2C RTC drivers"
+ 
+ if I2C
+ 
++config RTC_DRV_ISL12024
++	tristate "Intersil 12024 RTC/ UniqueID"
++	help
++	  If you say yes ....
++	  This driver can also be built as a module.
++
+ config RTC_DRV_DS1307
+ 	tristate "Dallas/Maxim DS1307/37/38/39/40, ST M41T00"
+ 	help
+Index: linux-2.6.27/drivers/rtc/Makefile
+===================================================================
+--- linux-2.6.27.orig/drivers/rtc/Makefile
++++ linux-2.6.27/drivers/rtc/Makefile
+@@ -34,6 +34,7 @@ obj-$(CONFIG_RTC_DRV_DS1742)	+= rtc-ds17
+ obj-$(CONFIG_RTC_DRV_EP93XX)	+= rtc-ep93xx.o
+ obj-$(CONFIG_RTC_DRV_FM3130)	+= rtc-fm3130.o
+ obj-$(CONFIG_RTC_DRV_ISL1208)	+= rtc-isl1208.o
++obj-$(CONFIG_RTC_DRV_ISL12024)	+= rtc-isl12024.o
+ obj-$(CONFIG_RTC_DRV_M41T80)	+= rtc-m41t80.o
+ obj-$(CONFIG_RTC_DRV_M41T94)	+= rtc-m41t94.o
+ obj-$(CONFIG_RTC_DRV_M48T59)	+= rtc-m48t59.o
+Index: linux-2.6.27/drivers/rtc/isl12024.h
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/rtc/isl12024.h
+@@ -0,0 +1,100 @@
++/*
++ * Intersil ISL12024 chip registers definitions
++ *
++ *
++ * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ * Guillaume Ligneul
++ * Guillaume.ligneul@gmail.com
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#ifndef ISL12024_H_
++#define ISL12024_H_
++
++#define ISL12024_REG_SR		0x3F	/* status register */
++#define ISL12024_REG_Y2K		0x37
++#define ISL12024_REG_DW		0x36
++#define ISL12024_REG_YR		0x35
++#define ISL12024_REG_MO		0x34
++#define ISL12024_REG_DT		0x33
++#define ISL12024_REG_HR		0x32
++#define ISL12024_REG_MN		0x31
++#define ISL12024_REG_SC		0x30
++#define ISL12024_REG_DTR		0x13
++#define ISL12024_REG_ATR		0x12
++#define ISL12024_REG_INT		0x11
++#define ISL12024_REG_0		0x10
++#define ISL12024_REG_Y2K1		0x0F
++#define ISL12024_REG_DWA1		0x0E
++#define ISL12024_REG_YRA1		0x0D
++#define ISL12024_REG_MOA1		0x0C
++#define ISL12024_REG_DTA1		0x0B
++#define ISL12024_REG_HRA1		0x0A
++#define ISL12024_REG_MNA1		0x09
++#define ISL12024_REG_SCA1		0x08
++#define ISL12024_REG_Y2K0		0x07
++#define ISL12024_REG_DWA0		0x06
++#define ISL12024_REG_YRA0		0x05
++#define ISL12024_REG_MOA0		0x04
++#define ISL12024_REG_DTA0		0x03
++#define ISL12024_REG_HRA0		0x02
++#define ISL12024_REG_MNA0		0x01
++#define ISL12024_REG_SCA0		0x00
++
++#define ISL12024_CCR_BASE		0x30	/* Base address of CCR */
++#define ISL12024_ALM0_BASE		0x00	/* Base address of ALARM0 */
++
++#define ISL12024_SR_RTCF		0x01	/* Clock failure */
++#define ISL12024_SR_WEL		0x02	/* Write Enable Latch */
++#define ISL12024_SR_RWEL		0x04	/* Register Write Enable */
++#define ISL12024_SR_AL0		0x20	/* Alarm 0 match */
++
++#define ISL12024_DTR_DTR0		0x01
++#define ISL12024_DTR_DTR1		0x02
++#define ISL12024_DTR_DTR2		0x04
++
++#define ISL12024_HR_MIL		0x80	/* Set in ccr.hour for 24 hr mode */
++
++#define ISL12024_INT_AL0E		0x20	/* Alarm 0 enable */
++
++/* I2C ADDRESS */
++#define ISL12024_I2C_ADDR 0xDE
++#define ISL12024_I2C_EEPROM_ADDR 0x57
++
++/* device id section */
++#define ISL12024_REG_ID 0x20
++
++/* Register map */
++/* rtc section */
++#define ISL12024_REG_HR_MIL     (1<<7) /* 24h/12h mode */
++#define ISL12024_REG_HR_PM      (1<<5) /* PM/AM bit in 12h mode */
++//#define ISL12024_REG_DT  0x33  /* Date */
++//#define ISL12024_REG_MO  0x34  /* Month */
++//#define ISL12024_REG_YR  0x35  /* Year */
++//#define ISL12024_REG_DW  0x36
++//#define ISL12024_REG_Y2K 0x37
++#define ISL12024_RTC_SECTION_LEN 8
++
++/* control/status section */
++//#define ISL12024_REG_SR  0x3F
++//#define ISL12024_REG_SR_BAT    (1<<7) /* battery */
++//#define ISL12024_REG_SR_AL1    (1<<6) /* alarm 0 */
++//#define ISL12024_REG_SR_AL0    (1<<5) /* alarm 1 */
++//#define ISL12024_REG_SR_OSCF   (1<<4) /* oscillator fail */
++//#define ISL12024_REG_SR_RWEL   (1<<2) /* register write enable latch */
++//#define ISL12024_REG_SR_WEL    (1<<1) /* write enable latch */
++//#define ISL12024_REG_SR_RTCF    (1<<0) /* rtc fail */
++//#define ISL12024_REG_INT 0x11
++
++#define CCR_SEC			0
++#define CCR_MIN			1
++#define CCR_HOUR		2
++#define CCR_MDAY		3
++#define CCR_MONTH		4
++#define CCR_YEAR		5
++#define CCR_WDAY		6
++#define CCR_Y2K			7
++
++#endif /*ISL12024_H_*/
+Index: linux-2.6.27/drivers/rtc/rtc-isl12024.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/rtc/rtc-isl12024.c
+@@ -0,0 +1,541 @@
++/*
++ * Intersil ISL12024 class driver
++ *
++ *
++ * Copyright (C) 2007, CenoSYS (www.cenosys.com).
++ * 
++ * Guillaume Ligneul <guillaume.ligneul@gmail.com>
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/bcd.h>
++#include <linux/rtc.h>
++#include <linux/proc_fs.h>
++#include <linux/delay.h>
++
++#include "isl12024.h"
++
++
++#define DBG 1
++#undef DBG
++
++#define DRV_NAME "isl12024"
++#define DRV_VERSION "0.2"
++
++/* i2c configuration */
++static const unsigned short normal_i2c[] = {
++	ISL12024_I2C_ADDR >>1, I2C_CLIENT_END
++};
++I2C_CLIENT_INSMOD;
++
++static int isl12024_get_status(struct i2c_client *client, unsigned char *sr);
++static int isl12024_fix_osc(struct i2c_client *client);
++
++static int isl12024_attach_adapter(struct i2c_adapter *adapter);
++static int isl12024_detach_client(struct i2c_client *client);
++
++
++/* Bufer to store unique identifier in */
++static u8 buf_id[ISL12024_RTC_SECTION_LEN] = { 0 };
++
++
++// To debug (may be added in include/linux/i2c-id.h)
++#define I2C_DRIVERID_ISL12024   97
++
++
++static struct i2c_driver isl12024_driver = {
++	.driver		= {
++		.name	= DRV_NAME,
++	},
++	.id		= I2C_DRIVERID_ISL12024,
++	.attach_adapter = &isl12024_attach_adapter,
++	.detach_client	= &isl12024_detach_client,
++};
++
++
++int
++isl12024_i2c_read_regs(struct i2c_client *client, u8 reg, u8 buf[],
++		       unsigned len)
++{
++	int ret;
++	u8  dt_addr[2];
++
++	struct i2c_msg msgs[2] = {
++			{
++					.addr	= client->addr,
++					.flags	= 0,
++					.len	= 2,
++					.buf	= dt_addr,
++			},
++			{
++					.addr	= client->addr,
++					.flags	= I2C_M_RD,
++					.len	= len ,
++					.buf	= buf ,
++			},
++	};
++
++	dt_addr[0] = 0;
++	dt_addr[1] = reg;
++
++	ret = i2c_transfer(client->adapter, msgs, 2);
++	if ( ret < 0) {
++		dev_err(&client->dev, "read error\n");
++		return -EIO;
++	}
++	return ret;
++}
++
++EXPORT_SYMBOL(isl12024_i2c_read_regs);
++
++
++int
++isl12024_i2c_set_regs(struct i2c_client *client, u8 reg, u8 const buf[],
++		       unsigned len)
++{
++	int ret;
++	u8 i2c_buf[10];
++
++	struct i2c_msg msgs[1] = {
++			{
++				.addr	= client->addr,
++				.flags	= 0,
++				.len	= len+2,
++				.buf	= i2c_buf,
++			 },
++		};
++
++	i2c_buf[0] = 0;
++	i2c_buf[1] = reg;
++
++
++	memcpy(&i2c_buf[2], &buf[0], len );
++
++	ret = i2c_transfer(client->adapter, msgs, 1);
++	if ( ret < 0 )
++		printk(KERN_ERR DRV_NAME ": i2c_transfer failed (%d)\n", ret);
++
++	return ret;
++}
++
++EXPORT_SYMBOL(isl12024_i2c_set_regs);
++
++
++static int isl12024_i2c_validate_client(struct i2c_client *client)
++{
++	u8 regs[ISL12024_RTC_SECTION_LEN] = { 0, };
++	u8 zero_mask[ISL12024_RTC_SECTION_LEN] = {
++		0x80, 0x80, 0x40, 0xc0, 0xe0, 0x00, 0xf8, 0xc6
++	};
++
++	int i;
++	int ret;
++
++	ret = isl12024_i2c_read_regs(client, ISL12024_REG_SC, regs, ISL12024_RTC_SECTION_LEN);
++
++	if (ret < 0)
++		return ret;
++
++	for (i = 0; i < ISL12024_RTC_SECTION_LEN; ++i) {
++		if (regs[i] & zero_mask[i]) /* check if bits are cleared */
++			return -ENODEV;
++
++	}
++
++	return 0;
++}
++
++
++static int isl12024_read_time(struct i2c_client *client,
++				 struct rtc_time *tm)
++{
++	unsigned char sr;
++	int err;
++	u8 regs[ISL12024_RTC_SECTION_LEN] = { 0, };
++
++	//printk(KERN_INFO DRV_NAME "%s\n ",__FUNCTION__ );
++
++	if (isl12024_get_status(client, &sr) < 0) {
++		dev_err(&client->dev, "%s: reading SR failed\n", __func__);
++		return -EIO;
++	}
++
++	err = isl12024_i2c_read_regs(client, ISL12024_REG_SC, regs, ISL12024_RTC_SECTION_LEN);
++
++#ifdef DBG
++	int i;
++	for(i=0; i<ISL12024_RTC_SECTION_LEN; i++)
++		printk(KERN_INFO DRV_NAME "0x%2X\n", regs[i]);
++#endif
++
++	if (err < 0) {
++		dev_err(&client->dev, "%s: reading RTC section failed\n",
++				__func__);
++		return sr;
++	}
++
++	tm->tm_sec = BCD2BIN(regs[0]);
++	tm->tm_min = BCD2BIN(regs[1]);
++
++	{ /* HR field has a more complex interpretation */
++		const u8 _hr = regs[2];
++		if (_hr & ISL12024_REG_HR_MIL) /* 24h format */
++			tm->tm_hour = BCD2BIN(_hr & 0x3f);
++		else { // 12h format
++			tm->tm_hour = BCD2BIN(_hr & 0x1f);
++			if (_hr & ISL12024_REG_HR_PM) /* PM flag set */
++				tm->tm_hour += 12;
++		}
++	}
++
++	tm->tm_mday = BCD2BIN(regs[3]);
++	tm->tm_mon  = BCD2BIN(regs[4]);
++	tm->tm_year = BCD2BIN(regs[5]) + 100;
++	tm->tm_wday = BCD2BIN(regs[6]);
++
++	return rtc_valid_tm(tm);
++}
++
++
++static int isl12024_get_status(struct i2c_client *client, unsigned char *sr)
++{
++	static unsigned char sr_addr[2] = { 0, ISL12024_REG_SR };
++
++	struct i2c_msg msgs[] = {
++		{ client->addr, 0, 2, sr_addr },	/* setup read ptr */
++		{ client->addr, I2C_M_RD, 1, sr },	/* read status */
++	};
++
++	/* read status register */
++	if (i2c_transfer(client->adapter, &msgs[0], 2) != 2) {
++		dev_err(&client->dev, "%s: read error\n", __func__);
++		return -EIO;
++	}
++
++	return 0;
++}
++
++
++static int isl12024_set_datetime(struct i2c_client *client, struct rtc_time *tm,
++			int datetoo, u8 reg_base, unsigned char alm_enable)
++{
++	int i, xfer, nbytes;
++	unsigned char buf[8];
++	unsigned char rdata[10] = { 0, reg_base };
++
++	static const unsigned char wel[3] = { 0, ISL12024_REG_SR,
++						ISL12024_SR_WEL };
++
++	static const unsigned char rwel[3] = { 0, ISL12024_REG_SR,
++						ISL12024_SR_WEL | ISL12024_SR_RWEL };
++
++	static const unsigned char diswe[3] = { 0, ISL12024_REG_SR, 0 };
++
++	dev_dbg(&client->dev,
++		"%s: secs=%d, mins=%d, hours=%d\n",
++		__func__,
++		tm->tm_sec, tm->tm_min, tm->tm_hour);
++
++	buf[CCR_SEC] = BIN2BCD(tm->tm_sec);
++	buf[CCR_MIN] = BIN2BCD(tm->tm_min);
++
++	/* set hour and 24hr bit */
++	buf[CCR_HOUR] = BIN2BCD(tm->tm_hour) | ISL12024_HR_MIL;
++
++	/* should we also set the date? */
++	if (datetoo) {
++		dev_dbg(&client->dev,
++			"%s: mday=%d, mon=%d, year=%d, wday=%d\n",
++			__func__,
++			tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
++
++		buf[CCR_MDAY] = BIN2BCD(tm->tm_mday);
++
++		/* month, 1 - 12 */
++		buf[CCR_MONTH] = BIN2BCD(tm->tm_mon);
++
++		/* year, since the rtc epoch*/
++		buf[CCR_YEAR] = BIN2BCD(tm->tm_year % 100);
++		buf[CCR_WDAY] = tm->tm_wday & 0x07;
++		buf[CCR_Y2K] = BIN2BCD(tm->tm_year / 100);
++	}
++
++	/* If writing alarm registers, set compare bits on registers 0-4 */
++	if (reg_base < ISL12024_CCR_BASE)
++		for (i = 0; i <= 4; i++)
++			buf[i] |= 0x80;
++
++	/* this sequence is required to unlock the chip */
++	if ((xfer = i2c_master_send(client, wel, 3)) != 3) {
++		dev_err(&client->dev, "%s: wel - %d\n", __func__, xfer);
++		return -EIO;
++	}
++
++	if ((xfer = i2c_master_send(client, rwel, 3)) != 3) {
++		dev_err(&client->dev, "%s: rwel - %d\n", __func__, xfer);
++		return -EIO;
++	}
++
++
++	/* write register's data */
++	if (datetoo)
++		nbytes = 8;
++	else
++		nbytes = 3;
++	for (i = 0; i < nbytes; i++)
++		rdata[2+i] = buf[i];
++
++	xfer = i2c_master_send(client, rdata, nbytes+2);
++	if (xfer != nbytes+2) {
++		dev_err(&client->dev,
++			"%s: result=%d addr=%02x, data=%02x\n",
++			__func__,
++			 xfer, rdata[1], rdata[2]);
++		return -EIO;
++	}
++
++	/* If we wrote to the nonvolatile region, wait 10msec for write cycle*/
++	if (reg_base < ISL12024_CCR_BASE) {
++		unsigned char al0e[3] = { 0, ISL12024_REG_INT, 0 };
++
++		msleep(10);
++
++		/* ...and set or clear the AL0E bit in the INT register */
++
++		/* Need to set RWEL again as the write has cleared it */
++		xfer = i2c_master_send(client, rwel, 3);
++		if (xfer != 3) {
++			dev_err(&client->dev,
++				"%s: aloe rwel - %d\n",
++				__func__,
++				xfer);
++			return -EIO;
++		}
++
++		if (alm_enable)
++			al0e[2] = ISL12024_INT_AL0E;
++
++		xfer = i2c_master_send(client, al0e, 3);
++		if (xfer != 3) {
++			dev_err(&client->dev,
++				"%s: al0e - %d\n",
++				__func__,
++				xfer);
++			return -EIO;
++		}
++
++		/* and wait 10msec again for this write to complete */
++		msleep(10);
++	}
++
++	/* disable further writes */
++	if ((xfer = i2c_master_send(client, diswe, 3)) != 3) {
++		dev_err(&client->dev, "%s: diswe - %d\n", __func__, xfer);
++		return -EIO;
++	}
++
++	return 0;
++}
++
++
++static int isl12024_fix_osc(struct i2c_client *client)
++{
++	int err;
++	struct rtc_time tm;
++
++	tm.tm_hour = tm.tm_min = tm.tm_sec = 0;
++
++	err = isl12024_set_datetime(client, &tm, 0, ISL12024_CCR_BASE, 0);
++	if ( err < 0 )
++		printk(KERN_ERR DRV_NAME ": Unable to restart the oscillator (%d)\n", err);
++
++	return err;
++}
++
++
++static int isl12024_rtc_read_time(struct device *dev, struct rtc_time *tm)
++{
++	return isl12024_read_time(to_i2c_client(dev), tm);
++
++}
++
++
++static int isl12024_rtc_set_time(struct device *dev, struct rtc_time *tm)
++{
++	return isl12024_set_datetime(to_i2c_client(dev),
++			tm, 1, ISL12024_CCR_BASE, 0);
++}
++
++
++static int
++isl12024_rtc_proc(struct device *dev, struct seq_file *seq)
++{
++
++	/* Nothing to do */
++
++	return 0;
++}
++
++
++static const struct rtc_class_ops isl12024_rtc_ops = {
++	.proc		= isl12024_rtc_proc,
++	.read_time	= isl12024_rtc_read_time,
++	.set_time	= isl12024_rtc_set_time,
++};
++
++static int
++read_proc(char * page, char ** start, off_t off, int count, int * eof, void * data)
++{
++	int len = 0;
++	int i;
++
++	for (i = 0; i < ISL12024_RTC_SECTION_LEN; i++)
++		len += sprintf(page+len, "%02X", buf_id[i]);
++	len += sprintf(page+len, "\n");
++
++	len -= off;
++	if ( len < count ) {
++		*eof = 1;
++		if ( len <= 0 )
++			return 0;
++	} else {
++		len = count;
++	}
++
++	*start = page + off;
++
++	return len;
++}
++
++
++static int
++isl12024_probe(struct i2c_adapter *adapter, int addr, int kind)
++{
++	int rc = 0;
++	int err = 0;
++	unsigned char sr;
++	struct i2c_client *new_client = NULL;
++	struct rtc_device *rtc = NULL;
++	struct proc_dir_entry *proc_root;
++	struct proc_dir_entry *proc_entry;
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
++		rc = -ENODEV;
++		goto failout;
++	}
++
++	new_client = kzalloc(sizeof(struct i2c_client), GFP_KERNEL);
++	if (new_client == NULL) {
++		rc = -ENOMEM;
++		goto failout;
++	}
++
++	new_client->addr = addr;
++	new_client->adapter = adapter;
++	new_client->driver = &isl12024_driver;
++	new_client->flags = 0;
++	strcpy(new_client->name, DRV_NAME);
++
++	if (kind < 0) {
++		rc = isl12024_i2c_validate_client(new_client);
++		if (rc < 0)
++			goto failout;
++	}
++
++	rc = i2c_attach_client(new_client);
++	if (rc < 0)
++		goto failout;
++
++	rtc = rtc_device_register(isl12024_driver.driver.name,
++				  &new_client->dev,
++				  &isl12024_rtc_ops, THIS_MODULE);
++
++	if (IS_ERR(rtc)) {
++		printk(KERN_ERR DRV_NAME ": Error during rtc registration\n");
++		rc = PTR_ERR(rtc);
++		goto failout;
++	}
++
++	i2c_set_clientdata(new_client, rtc);
++
++	/* Check for power failures and eventualy enable the osc */
++	if ((err = isl12024_get_status(new_client, &sr)) == 0) {
++		if (sr & ISL12024_SR_RTCF) {
++			printk(KERN_INFO DRV_NAME ": Power failure detected, please set the clock\n");
++			udelay(50);
++			isl12024_fix_osc(new_client);
++		}
++	}
++	else {
++		printk(KERN_ERR DRV_NAME ": Couldn't read status\n");
++	}
++
++	proc_root = proc_mkdir(DRV_NAME, 0);
++	proc_entry = create_proc_entry("id",  S_IFREG | S_IRUGO, proc_root);
++	if (proc_entry == NULL)
++		return -1;
++
++	proc_entry->owner = THIS_MODULE;
++	proc_entry->read_proc = read_proc;
++
++	/* Read unique id from eeprom */
++	isl12024_i2c_read_regs(new_client, ISL12024_REG_ID, buf_id, sizeof(buf_id));
++
++	return 0;
++
++ failout:
++	kfree(new_client);
++	return rc;
++}
++
++
++static int
++isl12024_attach_adapter (struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, isl12024_probe);
++}
++
++
++static int
++isl12024_detach_client(struct i2c_client *client)
++{
++	int rc;
++	struct rtc_device *const rtc = i2c_get_clientdata(client);
++
++	if (rtc)
++		rtc_device_unregister(rtc);
++
++	rc = i2c_detach_client(client);
++	if (rc)
++		return rc;
++
++	kfree(client);
++
++	return 0;
++}
++
++
++/* module init/exit */
++
++static int __init isl12024_init(void)
++{
++	return i2c_add_driver(&isl12024_driver);
++}
++
++static void __exit isl12024_exit(void)
++{
++	i2c_del_driver(&isl12024_driver);
++}
++
++MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@cenosys.com>");
++MODULE_DESCRIPTION("Intersil ISL12024 driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION(DRV_VERSION);
++
++module_init(isl12024_init);
++module_exit(isl12024_exit);

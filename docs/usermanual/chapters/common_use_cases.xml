@@ -252,10 +252,10 @@ export LOCALDIR=$PWD/secret-isv
 
         <screen>
 DL_DIR = "${OEDIR}/sources"
-BBFILES := "${OEDIR}/openembedded/packages/*/*.bb ${LOCALDIR}/packages/*/*.bb"
+BBFILES := "${OEDIR}/openembedded/recipes/*/*.bb ${LOCALDIR}/recipes/*/*.bb"
 BBFILE_COLLECTIONS = "upstream local"
-BBFILE_PATTERN_upstream = "^${OEDIR}/openembedded/packages/"
-BBFILE_PATTERN_local = "^${LOCALDIR}/packages/"
+BBFILE_PATTERN_upstream = "^${OEDIR}/openembedded/recipes/"
+BBFILE_PATTERN_local = "^${LOCALDIR}/recipes/"
 BBFILE_PRIORITY_upstream = "5"
 BBFILE_PRIORITY_local = "10"
 BBMASK = ""

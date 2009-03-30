@@ -1,0 +1,88 @@
+diff -urN mpeg_encode.old/headers/libpnmrw.h mpeg_encode/headers/libpnmrw.h
+--- mpeg_encode.old/headers/libpnmrw.h	1995-08-09 16:17:41.000000000 +0100
++++ mpeg_encode/headers/libpnmrw.h	2009-03-24 23:24:25.000000000 +0000
+@@ -13,18 +13,7 @@
+ #ifndef _PNMRW_H_
+ #define _PNMRW_H_
+ 
+-/* CONFIGURE: On some systems, malloc.h doesn't declare these, so we have
+-** to do it.  On other systems, for example HP/UX, it declares them
+-** incompatibly.  And some systems, for example Dynix, don't have a
+-** malloc.h at all.  A sad situation.  If you have compilation problems
+-** that point here, feel free to tweak or remove these declarations.
+-*/
+ #include <malloc.h>
+-#if !defined(sco)  &&  !defined(sgi) && !defined(IRIX)
+-extern char* malloc();
+-#endif
+-/* End of configurable definitions. */
+-
+ 
+ /* Definitions to make PBMPLUS work with either ANSI C or C Classic. */
+ 
+diff -urN mpeg_encode.old/jpeg/Makefile mpeg_encode/jpeg/Makefile
+--- mpeg_encode.old/jpeg/Makefile	1995-08-05 00:27:00.000000000 +0100
++++ mpeg_encode/jpeg/Makefile	2009-03-24 23:24:25.000000000 +0000
+@@ -20,9 +20,6 @@
+ manprefix =
+ manext = 1
+ 
+-# The name of your C compiler:
+-CC= gcc
+-
+ # You may need to adjust these cc options:
+ CFLAGS= -O -I$(srcdir)
+ # Generally, we recommend defining any configuration symbols in jconfig.h,
+@@ -49,10 +46,8 @@
+ RM= rm -f
+ # file rename command
+ MV= mv
+-# library (.a) file creation command
+-AR= ar rc
+ # second step in .a creation (use "touch" if not needed)
+-AR2= ranlib
++AR2= $(RANLIB)
+ # installation program
+ INSTALL= /bin/install -c
+ INSTALL_PROGRAM= $(INSTALL)
+@@ -121,7 +116,7 @@
+ 
+ libjpeg.a:  $(LIBOBJECTS)
+ 	$(RM) libjpeg.a
+-	$(AR) libjpeg.a  $(LIBOBJECTS)
++	$(AR) rc libjpeg.a  $(LIBOBJECTS)
+ 	$(AR2) libjpeg.a
+ 
+ cjpeg: $(COBJECTS) libjpeg.a
+diff -urN mpeg_encode.old/libpnmrw.c mpeg_encode/libpnmrw.c
+--- mpeg_encode.old/libpnmrw.c	1995-08-16 23:24:26.000000000 +0100
++++ mpeg_encode/libpnmrw.c	2009-03-24 23:24:25.000000000 +0000
+@@ -28,6 +28,7 @@
+ #endif
+ 
+ #include <stdio.h>
++#include <errno.h>
+ #include "libpnmrw.h"
+ 
+ /* if don't have string.h, try strings.h */
+@@ -126,8 +127,6 @@
+   pm_perror( reason )
+ char* reason;
+ {
+-  extern char* sys_errlist[];
+-  extern int errno;
+   char* e;
+ 
+   e = sys_errlist[errno];
+diff -urN mpeg_encode.old/Makefile mpeg_encode/Makefile
+--- mpeg_encode.old/Makefile	1995-08-16 23:16:56.000000000 +0100
++++ mpeg_encode/Makefile	2009-03-24 23:24:47.000000000 +0000
+@@ -204,7 +204,7 @@
+ 
+ mpeg_encode: $(MP_ALL_OBJS) $(JPEG_LIB)
+ 	$(PURIFY) $(CC) $(CFLAGS) -o $@ $(MP_ALL_OBJS) $(LIBDIRS) $(LIBS)
+-	strip mpeg_encode
++	$(STRIP) mpeg_encode
+ 
+ profile: $(MP_ALL_OBJS)
+ 	$(PURIFY) $(CC) -Bstatic -pg $(CFLAGS) -o $@ $(MP_ALL_OBJS) $(LIBDIRS) $(LIBS)

@@ -10,6 +10,35 @@ def base_path_join(a, *p):
             path += '/' + b
     return path
 
+def base_path_relative(src, dest):
+    """ Return a relative path from src to dest.
+
+    >>> base_path_relative("/usr/bin", "/tmp/foo/bar")
+    ../../tmp/foo/bar
+
+    >>> base_path_relative("/usr/bin", "/usr/lib")
+    ../lib
+
+    >>> base_path_relative("/tmp", "/tmp/foo/bar")
+    foo/bar
+    """
+    from os.path import sep, pardir, normpath, commonprefix
+
+    destlist = normpath(dest).split(sep)
+    srclist = normpath(src).split(sep)
+
+    # Find common section of the path
+    common = commonprefix([destlist, srclist])
+    commonlen = len(common)
+
+    # Climb back to the point where they differentiate
+    relpath = [ pardir ] * (len(srclist) - commonlen)
+    if commonlen < len(destlist):
+        # Add remaining portion
+        relpath += destlist[commonlen:]
+
+    return sep.join(relpath)
+
 # for MD5/SHA handling
 def base_chk_load_parser(config_path):
     import ConfigParser, os, bb
@@ -182,6 +211,7 @@ def base_package_name(d):
 
 def base_set_filespath(path, d):
 	import os, bb
+	bb.note("base_set_filespath usage is deprecated, %s should be fixed" % d.getVar("P", 1))
 	filespath = []
 	# The ":" ensures we have an 'empty' override
 	overrides = (bb.data.getVar("OVERRIDES", d, 1) or "") + ":"
@@ -189,8 +219,6 @@ def base_set_filespath(path, d):
 		for o in overrides.split(":"):
 			filespath.append(os.path.join(p, o))
 	return ":".join(filespath)
-
-FILESPATH = "${@base_set_filespath([ "${FILE_DIRNAME}/${PF}", "${FILE_DIRNAME}/${P}", "${FILE_DIRNAME}/${PN}", "${FILE_DIRNAME}/${BP}", "${FILE_DIRNAME}/${BPN}", "${FILE_DIRNAME}/files", "${FILE_DIRNAME}" ], d)}"
 
 def oe_filter(f, str, d):
 	from re import match
@@ -701,15 +729,18 @@ def oe_unpack_file(file, data, url = None):
 			cmd = '%s -a' % cmd
 		cmd = '%s %s' % (cmd, file)
 	elif os.path.isdir(file):
-		filesdir = os.path.realpath(bb.data.getVar("FILESDIR", data, 1))
 		destdir = "."
-		if file[0:len(filesdir)] == filesdir:
-			destdir = file[len(filesdir):file.rfind('/')]
-			destdir = destdir.strip('/')
-			if len(destdir) < 1:
-				destdir = "."
-			elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
-				os.makedirs("%s/%s" % (os.getcwd(), destdir))
+		filespath = bb.data.getVar("FILESPATH", data, 1).split(":")
+		for fp in filespath:
+			if file[0:len(fp)] == fp:
+				destdir = file[len(fp):file.rfind('/')]
+				destdir = destdir.strip('/')
+				if len(destdir) < 1:
+					destdir = "."
+				elif not os.access("%s/%s" % (os.getcwd(), destdir), os.F_OK):
+					os.makedirs("%s/%s" % (os.getcwd(), destdir))
+				break
+
 		cmd = 'cp -pPR %s %s/%s/' % (file, os.getcwd(), destdir)
 	else:
 		(type, host, path, user, pswd, parm) = bb.decodeurl(url)
@@ -763,22 +794,54 @@ python base_do_unpack() {
 		try:
 			local = bb.data.expand(bb.fetch.localpath(url, localdata), localdata)
 		except bb.MalformedUrl, e:
-			raise FuncFailed('Unable to generate local path for malformed uri: %s' % e)
+			raise bb.build.FuncFailed('Unable to generate local path for malformed uri: %s' % e)
+		if not local:
+			raise bb.build.FuncFailed('Unable to locate local file for %s' % url)
 		local = os.path.realpath(local)
 		ret = oe_unpack_file(local, localdata, url)
 		if not ret:
 			raise bb.build.FuncFailed()
 }
 
-def base_get_scmbasepath(d):
-	import bb
-	path_to_bbfiles = bb.data.getVar( 'BBFILES', d, 1 ).split()
-	return path_to_bbfiles[0][:path_to_bbfiles[0].rindex( "packages" )]
+METADATA_SCM = "${@base_get_scm(d)}"
+METADATA_REVISION = "${@base_get_scm_revision(d)}"
+METADATA_BRANCH = "${@base_get_scm_branch(d)}"
 
-def base_get_metadata_monotone_branch(d):
+def base_get_scm(d):
+	import os
+	from bb import which
+	baserepo = os.path.dirname(os.path.dirname(which(d.getVar("BBPATH", 1), "classes/base.bbclass")))
+	for (scm, scmpath) in {"svn": ".svn",
+			       "git": ".git",
+			       "monotone": "_MTN"}.iteritems():
+		if os.path.exists(os.path.join(baserepo, scmpath)):
+			return "%s %s" % (scm, baserepo)
+	return "<unknown> %s" % baserepo
+
+def base_get_scm_revision(d):
+	(scm, path) = d.getVar("METADATA_SCM", 1).split()
+	try:
+		if scm != "<unknown>":
+			return globals()["base_get_metadata_%s_revision" % scm](path, d)
+		else:
+			return scm
+	except KeyError:
+		return "<unknown>"
+
+def base_get_scm_branch(d):
+	(scm, path) = d.getVar("METADATA_SCM", 1).split()
+	try:
+		if scm != "<unknown>":
+			return globals()["base_get_metadata_%s_branch" % scm](path, d)
+		else:
+			return scm
+	except KeyError:
+		return "<unknown>"
+
+def base_get_metadata_monotone_branch(path, d):
 	monotone_branch = "<unknown>"
 	try:
-		monotone_branch = file( "%s/_MTN/options" % base_get_scmbasepath(d) ).read().strip()
+		monotone_branch = file( "%s/_MTN/options" % path ).read().strip()
 		if monotone_branch.startswith( "database" ):
 			monotone_branch_words = monotone_branch.split()
 			monotone_branch = monotone_branch_words[ monotone_branch_words.index( "branch" )+1][1:-1]
@@ -786,10 +849,10 @@ def base_get_metadata_monotone_branch(d):
 		pass
 	return monotone_branch
 
-def base_get_metadata_monotone_revision(d):
+def base_get_metadata_monotone_revision(path, d):
 	monotone_revision = "<unknown>"
 	try:
-		monotone_revision = file( "%s/_MTN/revision" % base_get_scmbasepath(d) ).read().strip()
+		monotone_revision = file( "%s/_MTN/revision" % path ).read().strip()
 		if monotone_revision.startswith( "format_version" ):
 			monotone_revision_words = monotone_revision.split()
 			monotone_revision = monotone_revision_words[ monotone_revision_words.index( "old_revision" )+1][1:-1]
@@ -797,56 +860,29 @@ def base_get_metadata_monotone_revision(d):
 		pass
 	return monotone_revision
 
-def base_get_metadata_svn_revision(d):
+def base_get_metadata_svn_revision(path, d):
 	revision = "<unknown>"
 	try:
-		revision = file( "%s/.svn/entries" % base_get_scmbasepath(d) ).readlines()[3].strip()
+		revision = file( "%s/.svn/entries" % path ).readlines()[3].strip()
 	except IOError:
 		pass
 	return revision
 
-def base_get_metadata_git_branch(d):
+def base_get_metadata_git_branch(path, d):
 	import os
-	branch = os.popen('cd %s; git branch | grep "^* " | tr -d "* "' % base_get_scmbasepath(d)).read()
+	branch = os.popen('cd %s; git symbolic-ref HEAD' % path).read().rstrip()
 
 	if len(branch) != 0:
-		return branch
+		return branch.replace("refs/heads/", "")
 	return "<unknown>"
 
-def base_get_metadata_git_revision(d):
+def base_get_metadata_git_revision(path, d):
 	import os
-	rev = os.popen("cd %s; git log -n 1 --pretty=oneline --" % base_get_scmbasepath(d)).read().split(" ")[0]
+	rev = os.popen("cd %s; git show-ref HEAD" % path).read().split(" ")[0].rstrip()
 	if len(rev) != 0:
 		return rev
 	return "<unknown>"
 
-def base_detect_revision(d):
-	scms = [base_get_metadata_monotone_revision, \
-			base_get_metadata_svn_revision, \
-			base_get_metadata_git_revision]
-
-	for scm in scms:
-		rev = scm(d)
-		if rev <> "<unknown>":
-			return rev
-
-	return "<unknown>"	
-
-def base_detect_branch(d):
-	scms = [base_get_metadata_monotone_branch, \
-			base_get_metadata_git_branch]
-
-	for scm in scms:
-		rev = scm(d)
-		if rev <> "<unknown>":
-			return rev.strip()
-
-	return "<unknown>"	
-	
-	
-
-METADATA_BRANCH ?= "${@base_detect_branch(d)}"
-METADATA_REVISION ?= "${@base_detect_revision(d)}"
 
 addhandler base_eventhandler
 python base_eventhandler() {
@@ -862,10 +898,7 @@ python base_eventhandler() {
 
 	name = getName(e)
 	msg = ""
-	if name.startswith("Pkg"):
-		msg += "package %s: " % data.getVar("P", e.data, 1)
-		msg += messages.get(name[3:]) or name[3:]
-	elif name.startswith("Task"):
+	if name.startswith("Task"):
 		msg += "package %s: task %s: " % (data.getVar("PF", e.data, 1), e.task)
 		msg += messages.get(name[4:]) or name[4:]
 	elif name.startswith("Build"):
@@ -873,6 +906,8 @@ python base_eventhandler() {
 		msg += messages.get(name[5:]) or name[5:]
 	elif name == "UnsatisfiedDep":
 		msg += "package %s: dependency %s %s" % (e.pkg, e.dep, name[:-3].lower())
+	else:
+		return NotHandled
 
 	# Only need to output when using 1.8 or lower, the UI code handles it
 	# otherwise
@@ -882,12 +917,12 @@ python base_eventhandler() {
 
 	if name.startswith("BuildStarted"):
 		bb.data.setVar( 'BB_VERSION', bb.__version__, e.data )
-		statusvars = ['BB_VERSION', 'METADATA_BRANCH', 'METADATA_REVISION', 'TARGET_ARCH', 'TARGET_OS', 'MACHINE', 'DISTRO', 'DISTRO_VERSION','TARGET_FPU']
+		statusvars = bb.data.getVar("BUILDCFG_VARS", e.data, 1).split()
 		statuslines = ["%-17s = \"%s\"" % (i, bb.data.getVar(i, e.data, 1) or '') for i in statusvars]
 		statusmsg = "\nOE Build Configuration:\n%s\n" % '\n'.join(statuslines)
 		print statusmsg
 
-		needed_vars = [ "TARGET_ARCH", "TARGET_OS" ]
+		needed_vars = bb.data.getVar("BUILDCFG_NEEDEDVARS", e.data, 1).split()
 		pesteruser = []
 		for v in needed_vars:
 			val = bb.data.getVar(v, e.data, 1)
@@ -1060,6 +1095,19 @@ python read_subpackage_metadata () {
 		for key in sdata.keys():
 			bb.data.setVar(key, sdata[key], d)
 }
+
+
+#
+# Collapse FOO_pkg variables into FOO
+#
+def read_subpkgdata_dict(pkg, d):
+	import bb
+	ret = {}
+	subd = read_pkgdatafile(get_subpkgedata_fn(pkg, d))
+	for var in subd:
+		newvar = var.replace("_" + pkg, "")
+		ret[newvar] = subd[var]
+	return ret
 
 # Make sure MACHINE isn't exported
 # (breaks binutils at least)

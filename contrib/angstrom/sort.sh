@@ -48,7 +48,7 @@ case "$arch" in
 	"armv4t")
 			machines="ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
+			machines="sheevaplug dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6-novfp")
@@ -58,7 +58,7 @@ case "$arch" in
 	"armv7")
 			machines="" ;;
 	"armv7a")
-			machines="beagleboard omap3evm omap3-pandora overo" ;;
+			machines="beagleboard omap3evm omap3-pandora omapzoom overo" ;;
 	"avr32")
 			machines="atngw100 at32stk1000" ;;
 	"bfin")

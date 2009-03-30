@@ -1,0 +1,28 @@
+--- /tmp/board-omap3evm.c	2009-02-27 17:02:00.000000000 +0100
++++ git/arch/arm/mach-omap2/board-omap3evm.c	2009-02-27 17:21:10.000000000 +0100
+@@ -37,11 +37,14 @@
+ #include <mach/common.h>
+ #include <mach/mcspi.h>
+ #include <mach/display.h>
++#include <mach/omap-pm.h>
++#include <mach/clock.h>
+ 
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ #include "twl4030-generic-scripts.h"
+ #include "mmc-twl4030.h"
+-
++#include "pm.h"
++#include "omap3-opp.h"
+ 
+ static struct resource omap3evm_smc911x_resources[] = {
+ 	[0] =	{
+@@ -406,7 +409,8 @@
+ 
+ static void __init omap3_evm_init_irq(void)
+ {
+-	omap2_init_common_hw(mt46h32m32lf6_sdrc_params, NULL, NULL, NULL);
++	omap2_init_common_hw(mt46h32m32lf6_sdrc_params, omap3_mpu_rate_table,
++	                     omap3_dsp_rate_table, omap3_l3_rate_table);
+ 	omap_init_irq();
+ 	omap_gpio_init();
+ 	omap3evm_init_smc911x();

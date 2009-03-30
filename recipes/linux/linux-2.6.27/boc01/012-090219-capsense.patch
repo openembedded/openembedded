@@ -1,0 +1,883 @@
+Index: linux-2.6.27/drivers/input/misc/Kconfig
+===================================================================
+--- linux-2.6.27.orig/drivers/input/misc/Kconfig
++++ linux-2.6.27/drivers/input/misc/Kconfig
+@@ -207,4 +207,13 @@ config HP_SDC_RTC
+ 	  Say Y here if you want to support the built-in real time clock
+ 	  of the HP SDC controller.
+ 
++config INPUT_CAPSENSE_BTNS
++	tristate "CAPSENSE CY8C201xx buttons interface"
++	select INPUT_POLLDEV
++	select LEDS_CLASS
++	help
++	  To compile this driver as a module, choose M here:
++	  the module will be called capsense-btns.
++	  To change poll interval, invoque poll parameter in msecs.
++
+ endif
+Index: linux-2.6.27/drivers/input/misc/Makefile
+===================================================================
+--- linux-2.6.27.orig/drivers/input/misc/Makefile
++++ linux-2.6.27/drivers/input/misc/Makefile
+@@ -20,3 +20,4 @@ obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.
+ obj-$(CONFIG_INPUT_UINPUT)		+= uinput.o
+ obj-$(CONFIG_INPUT_APANEL)		+= apanel.o
+ obj-$(CONFIG_INPUT_SGI_BTNS)		+= sgi_btns.o
++obj-$(CONFIG_INPUT_CAPSENSE_BTNS)	+= capsense-btns.o
+Index: linux-2.6.27/drivers/input/misc/capsense-btns.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/input/misc/capsense-btns.c
+@@ -0,0 +1,456 @@
++/*
++ * CAPSENSE Interface driver
++ *
++ *
++ * Copyright (C) 2008, CenoSYS (www.cenosys.com).
++ *
++ * Guillaume Ligneul <guillaume.ligneul@gmail.com>
++ * Jeremy Lainé <jeremy.laine@bolloretelecom.eu>
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/init.h>
++#include <linux/input-polldev.h>
++#include <linux/ioport.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/leds.h>
++
++
++static int capsense_attach_adapter(struct i2c_adapter *adapter);
++static int capsense_detach_client(struct i2c_client *client);
++#ifdef CONFIG_PM
++static int capsense_suspend(struct i2c_client *client, pm_message_t mesg);
++static int capsense_resume(struct i2c_client *client);
++#endif
++
++#define DRIVER_NAME "capsense"
++
++/* i2c configuration */
++#define CAPSENSE_I2C_ADDR 0x25
++// To debug (may be add in include/linux/i2c-id.h)
++#define I2C_DRIVERID_CAPSENSE   98
++
++#define BUTTONS_POLL_INTERVAL	30	/* msec */
++
++#define CAP_INPUT_PORT(port)    (0x00+(port))
++#define CAP_STATUS_PORT(port)   (0x02+(port))
++#define CAP_OUTPUT_PORT(port)   (0x04+(port))
++#define CAP_CS_ENABLE(port)     (0x06+(port))
++#define CAP_GPIO_ENABLE(port)   (0x08+(port))
++#define CAP_INVERSION_MASK(port) (0x0A+(port))
++#define CAP_INT_MASK(port)      (0x0C+(port))
++#define CAP_STATUS_HOLD_MSK(port) (0x0E+(port))
++#define CAP_DM_PULL_UP(port)    (0x10+(4*(port)))
++#define CAP_DM_STRONG(port)     (0x11+(4*(port)))
++#define CAP_DM_HIGHZ(port)      (0x12+(4*(port)))
++#define CAP_OD_LOW(port)        (0x13+(4*(port)))
++#define CAP_PWM_ENABLE(port)    (0x18+(port))
++#define CAP_PWM_MODE_DC         0x1A
++#define CAP_PWM_DELAY           0x1B
++#define CAP_OP_SEL(port,bit)    (0x1C+(25*(port))+(5*(bit)))
++#define CAP_READ_STATUS(port)   (0x88+(port))
++
++#define CAP_CS(command,port,bit)     ((command)+(5*(port))+(bit))
++#define CAP_CS_FINGER_TH(port,bit)   CAP_CS(0x61,port,bit)
++#define CAP_CS_IDAC(port,bit)        CAP_CS(0x6B,port,bit)
++
++#define CAP_DEVICE_ID           0x7A
++#define CAP_DEVICE_STATUS       0x7B
++#define CAP_I2C_ADDR_DM         0x7C
++
++#define CAP_COMMAND_REG         0xA0
++#define CAP_COMMAND_STORE_NVM        0x01
++#define CAP_COMMAND_RESTORE_FACTORY  0x02
++#define CAP_COMMAND_RECONFIGURE      0x06
++#define CAP_COMMAND_NORMAL_MODE      0x07
++#define CAP_COMMAND_SETUP_MODE       0x08
++
++#define CAP_NLEDS               5
++
++static int poll_interval = BUTTONS_POLL_INTERVAL;
++module_param_named(poll, poll_interval, uint, 0);
++MODULE_PARM_DESC(poll, "poll interval in msec (30=default)");
++
++static const unsigned short normal_i2c[] = {
++	CAPSENSE_I2C_ADDR , I2C_CLIENT_END
++};
++I2C_CLIENT_INSMOD;
++
++static struct i2c_driver capsense_driver = {
++	.driver		= {
++		.name	= DRIVER_NAME,
++	},
++	.id		= I2C_DRIVERID_CAPSENSE,
++	.attach_adapter = &capsense_attach_adapter,
++	.detach_client	= &capsense_detach_client,
++#ifdef CONFIG_PM
++	.suspend        = &capsense_suspend,
++	.resume         = &capsense_resume,
++#endif
++};
++
++struct capsense_led {
++	struct led_classdev cdev;
++	struct capsense_ctx *capsense;
++	int port;
++	int bit;
++};
++
++struct capsense_ctx {
++	struct input_polled_dev *ipdev;
++	struct i2c_client client;
++	unsigned char key_state;
++	struct capsense_led leds[CAP_NLEDS];
++	unsigned char led_state[2];
++	struct mutex mutex;
++};
++
++static unsigned short input_keymap[] = {
++	// GP0
++	KEY_F1,
++	KEY_ENTER,
++	KEY_DOWN,
++	KEY_BACKSPACE,
++	// GP1
++	KEY_UP,
++};
++
++struct capsense_keymap {
++	char *name;
++	int port, bit;
++};
++
++static struct capsense_keymap phys_keymap[] = {
++	{ "info", 0, 4 },
++	{ "ok",   0, 2 },
++	{ "down", 0, 3 },
++	{ "back", 0, 0 },
++	{ "up",   1, 4 },
++};
++
++
++struct capsense_ledmap {
++	char *name;
++	int port, bit;
++};
++
++static struct capsense_ledmap ledmap[CAP_NLEDS] = {
++	{ "capsense:blue:back", 0, 1 },
++	{ "capsense:blue:info", 1, 0 },
++	{ "capsense:blue:down", 1, 1 },
++	{ "capsense:blue:ok",   1, 2 },
++	{ "capsense:blue:up",   1, 3 },
++};
++
++
++/*
++ * Buttons events handling
++ */
++
++static void handle_buttons(struct input_polled_dev *dev)
++{
++	struct capsense_ctx *capsense = dev->private;
++	u8 port_value;
++	u8 new_state = 0;
++	int port;
++	u8 changed;
++	int i;
++
++	mutex_lock(&capsense->mutex);
++
++	// read status
++	port = -1;
++	port_value = 0;
++	for (i = 0; i < ARRAY_SIZE(phys_keymap); i++) {
++		if ( phys_keymap[i].port != port ) {
++			port = phys_keymap[i].port;
++			port_value = i2c_smbus_read_byte_data(&capsense->client, CAP_READ_STATUS(port));
++		}
++
++		if ( port_value & (1 << phys_keymap[i].bit) )
++			new_state |= (1 << i);
++	}
++
++	mutex_unlock(&capsense->mutex);
++
++	// update keyboard state
++	changed = capsense->key_state ^ new_state;
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++		if (changed & (1 << i))
++			input_report_key(dev->input, input_keymap[i], (new_state & (1 << i)));
++	capsense->key_state = new_state;
++	input_sync(dev->input);
++}
++
++
++/*
++ * LEDs management
++ */
++
++static void
++capsense_led_set(struct led_classdev *led_cdev,
++		 enum led_brightness value)
++{
++	struct capsense_led *led = (struct capsense_led *) led_cdev;
++	struct capsense_ctx *capsense = led->capsense;
++	int port = led->port;
++	unsigned char mask = (1 << led->bit);
++
++	if ( value )
++		capsense->led_state[port] |= mask;
++	else
++		capsense->led_state[port] &= ~mask;
++
++	mutex_lock(&capsense->mutex);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(port), capsense->led_state[port]);
++	mutex_unlock(&capsense->mutex);
++}
++
++static void
++capsense_led_enable(struct capsense_led *led, int state)
++{
++	struct capsense_ctx *capsense = led->capsense;
++
++	mutex_lock(&capsense->mutex);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OP_SEL(led->port, led->bit), state ? 0x00 : 0x80);
++	mutex_unlock(&capsense->mutex);
++}
++
++static int
++capsense_led_init(struct capsense_ctx *capsense)
++{
++	int i;
++	int ret;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		struct capsense_led *led = &(capsense->leds[i]);
++
++		led->cdev.name = ledmap[i].name;
++		led->cdev.brightness_set = capsense_led_set;
++		led->capsense = capsense;
++		led->port = ledmap[i].port;
++		led->bit = ledmap[i].bit;
++
++		ret = led_classdev_register(&capsense->ipdev->input->dev, &led->cdev);
++		if ( ret < 0 )
++			return -1;
++
++		capsense_led_enable(led, 1);
++	}
++
++	/* Switch all leds off */
++	mutex_lock(&capsense->mutex);
++
++	capsense->led_state[0] = 0x00;
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(0), 0x00);
++
++	capsense->led_state[1] = 0x00;
++	i2c_smbus_write_byte_data(&capsense->client, CAP_OUTPUT_PORT(1), 0x00);
++
++	mutex_unlock(&capsense->mutex);
++
++	return 0;
++}
++
++
++static void
++capsense_led_exit(struct capsense_ctx *capsense)
++{
++	int i;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		led_classdev_unregister(&capsense->leds[i].cdev);
++	}
++}
++
++
++static inline void
++capsense_led_suspend(struct capsense_ctx *capsense)
++{
++	int i;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		struct capsense_led *led = &(capsense->leds[i]);
++
++		led_classdev_suspend(&led->cdev);
++		capsense_led_enable(led, 0);
++	}
++}
++
++
++static inline void
++capsense_led_resume(struct capsense_ctx *capsense)
++{
++	int i;
++
++	for (i = 0; i < CAP_NLEDS; i++) {
++		struct capsense_led *led = &(capsense->leds[i]);
++
++		capsense_led_enable(led, 1);
++		led_classdev_resume(&led->cdev);
++	}
++}
++
++
++/*
++ * Device configuration through procfs entries
++ */
++
++#ifdef CONFIG_PROC_FS
++#include "capsense-procfs.c"
++#endif
++
++
++/*
++ * Device initialisation
++ */
++
++static int
++capsense_probe(struct i2c_adapter *adapter, int addr, int kind)
++{
++	struct capsense_ctx *capsense;
++	struct input_polled_dev *ipdev;
++	struct input_dev *input;
++	int rc = 0, err = -ENOMEM, i=0;
++
++	capsense = kzalloc(sizeof(*capsense), GFP_KERNEL);
++		if (!capsense)
++			goto failout;
++
++	mutex_init(&capsense->mutex);
++
++	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
++		goto failout;
++	}
++
++	ipdev = input_allocate_polled_device();
++		if (!ipdev)
++			goto failout;
++
++	capsense->key_state = 0;
++	capsense->ipdev = ipdev;
++	capsense->client.adapter = adapter;
++	capsense->client.addr = addr;
++	capsense->client.driver = &capsense_driver;
++	strlcpy(capsense->client.name, DRIVER_NAME, I2C_NAME_SIZE);
++	i2c_set_clientdata(&capsense->client, capsense);
++
++	rc = i2c_attach_client(&capsense->client);
++	if (rc)
++		goto out_attach;
++
++	ipdev->poll = handle_buttons;
++	ipdev->private = capsense;
++	ipdev->poll_interval = poll_interval;
++
++	input = ipdev->input;
++	input->name = "Capsense buttons";
++	input->phys = "capsense/input0";
++	input->id.bustype = BUS_I2C;
++	input->dev.parent = &capsense->client.dev;
++
++	input->keycode = input_keymap;
++	input->keycodemax = ARRAY_SIZE(input_keymap);
++	input->keycodesize = sizeof(unsigned short);
++
++	input_set_capability(input, EV_MSC, MSC_SCAN);
++	set_bit(EV_KEY, ipdev->input->evbit);
++
++	for (i = 0; i < ARRAY_SIZE(input_keymap); i++)
++		set_bit(input_keymap[i], ipdev->input->keybit);
++
++	rc = input_register_polled_device(ipdev);
++	if(rc)
++		goto out_polled;
++
++	if ( capsense_led_init(capsense) )
++		goto out_registered;
++
++#ifdef CONFIG_PROC_FS
++	/* Create /proc entries for hardware device configuration */
++	capsense_proc_init(capsense);
++#endif
++
++	return 0;
++
++out_registered:
++	input_unregister_polled_device(ipdev);
++out_polled:
++	i2c_detach_client(&capsense->client);
++out_attach:
++	input_free_polled_device(ipdev);
++failout:
++	return err;
++}
++
++static int
++capsense_attach_adapter (struct i2c_adapter *adapter)
++{
++	return i2c_probe(adapter, &addr_data, capsense_probe);
++}
++
++static int
++capsense_detach_client(struct i2c_client *client)
++{
++	struct capsense_ctx *capsense = i2c_get_clientdata(client);
++
++	capsense_led_exit(capsense);
++	input_unregister_polled_device(capsense->ipdev);
++	i2c_detach_client(&capsense->client);
++	input_free_polled_device(capsense->ipdev);
++	return 0;
++}
++
++
++/*
++ * Power management
++ */
++
++#ifdef CONFIG_PM
++static int capsense_suspend(struct i2c_client *client, pm_message_t mesg)
++{
++	struct capsense_ctx *capsense = i2c_get_clientdata(client);
++
++	printk(KERN_INFO DRIVER_NAME ": suspend\n");
++
++	capsense_led_suspend(capsense);
++
++	return 0;
++}
++
++static int capsense_resume(struct i2c_client *client)
++{
++	struct capsense_ctx *capsense = i2c_get_clientdata(client);
++
++	printk(KERN_INFO DRIVER_NAME ": resume\n");
++
++	capsense_led_resume(capsense);
++
++	return 0;
++}
++#endif
++
++
++/*
++ * Driver initialisation
++ */
++
++static int __init capsense_buttons_init(void)
++{
++	return i2c_add_driver(&capsense_driver);
++}
++
++static void __exit capsense_buttons_exit(void)
++{
++	i2c_del_driver(&capsense_driver);
++}
++
++MODULE_AUTHOR("Guillaume Ligneul <guillaume.ligneul@cenosys.com>");
++MODULE_DESCRIPTION("Capsense CY8C201xx Input driver");
++MODULE_LICENSE("GPL");
++module_init(capsense_buttons_init);
++module_exit(capsense_buttons_exit);
+Index: linux-2.6.27/drivers/input/misc/capsense-procfs.c
+===================================================================
+--- /dev/null
++++ linux-2.6.27/drivers/input/misc/capsense-procfs.c
+@@ -0,0 +1,390 @@
++/*
++ * CAPSENSE Interface driver
++ * Device setup using procfs
++ *
++ * Copyright (C) 2008, Goobie (www.goobie.fr).
++ *
++ * Sylvain Giroudon <sylvain.giroudon@goobie.fr>
++ *
++ * This software program is licensed subject to the GNU General Public License
++ * (GPL).Version 2,June 1991, available at http://www.fsf.org/copyleft/gpl.html
++ */
++
++#include <linux/proc_fs.h>
++#include <linux/uaccess.h>
++
++
++struct capsense_proc_data {
++	struct capsense_ctx *capsense;
++	struct capsense_keymap *phys;
++	char *name;
++	unsigned char command;
++	unsigned char hex;
++};
++
++struct capsense_proc_entry {
++	char *name;
++	unsigned char command;
++	struct capsense_proc_data data[ARRAY_SIZE(phys_keymap)];
++};
++
++static struct capsense_proc_entry capsense_proc_key_entries[] = {
++	{ "CS_FINGER_TH", CAP_CS_FINGER_TH(0,0) },
++	{ "CS_IDAC",      CAP_CS_IDAC(0,0)      },
++};
++
++static struct capsense_proc_entry capsense_proc_device_entries[] = {
++	{ "DEVICE_ID",     CAP_DEVICE_ID        },
++	{ "DEVICE_STATUS", CAP_DEVICE_STATUS    },
++};
++
++struct capsense_proc_command {
++	char *name;
++	unsigned char command;
++	struct capsense_ctx *capsense;
++};
++
++static struct capsense_proc_command capsense_proc_commands[] = {
++	{ "store",       CAP_COMMAND_STORE_NVM       },
++	//{ "factory",     CAP_COMMAND_RESTORE_FACTORY },
++	//{ "reconfigure", CAP_COMMAND_RECONFIGURE     },
++};
++
++
++static int capsense_proc_read(char *page, char **start, off_t off, int count,
++			      int *eof, void *_data)
++{
++	struct capsense_proc_data *data = _data;
++	struct capsense_ctx *capsense = data->capsense;
++	u8 value;
++	int len;
++
++	mutex_lock(&capsense->mutex);
++	value = i2c_smbus_read_byte_data(&capsense->client, data->command);
++	mutex_unlock(&capsense->mutex);
++
++	if ( data->hex )
++		len = sprintf(page, "%02X\n", value);
++	else
++		len = sprintf(page, "%u\n", value);
++
++	len -= off;
++	if ( len < count ) {
++		*eof = 1;
++		if ( len <= 0 )
++			return 0;
++	} else {
++		len = count;
++	}
++
++	*start = page + off;
++
++	return len;
++}
++
++
++static int capsense_proc_write(struct file *file, const char *buf,
++			       unsigned long count, void *_data)
++{
++	struct capsense_proc_data *data = _data;
++	struct capsense_ctx *capsense = data->capsense;
++	char lbuf[count+1];
++	u8 value;
++
++	/* Only root can do this */
++	if ( !capable(CAP_SYS_ADMIN) )
++		return -EACCES;
++
++	memset(lbuf, 0, sizeof(lbuf));
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	if ( sscanf(lbuf, "%hhi", &value) == 1 ) {
++		mutex_lock(&capsense->mutex);
++		i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
++		i2c_smbus_write_byte_data(&capsense->client, data->command, value);
++		i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
++		mutex_unlock(&capsense->mutex);
++	}
++	else {
++		printk(KERN_INFO DRIVER_NAME ": [%s/%s] Syntax error in expression\n", data->phys->name, data->name);
++		return -EINVAL;
++	}
++
++	return count;
++}
++
++
++static inline char *str_skip_blanks(char *s)
++{
++	while ( (*s != '\0') && (*s <= ' ') )
++		s++;
++	return s;
++}
++
++
++static inline char *str_skip_chars(char *s)
++{
++	while ( *s > ' ' )
++		s++;
++	return s;
++}
++
++
++static int capsense_proc_write_iic(struct file *file, const char *buf,
++				   unsigned long count, void *data)
++{
++	struct capsense_ctx *capsense = data;
++	char lbuf[count+1];
++	int lnum;
++	char *s;
++
++	/* Only root can do this */
++	if ( !capable(CAP_SYS_ADMIN) )
++		return -EACCES;
++
++	printk(KERN_INFO DRIVER_NAME ": Reading configuration script from /proc/" DRIVER_NAME "/iic (%lu bytes)\n", count);
++
++	memset(lbuf, 0, sizeof(lbuf));
++
++	if (copy_from_user(lbuf, buf, count))
++		return -EFAULT;
++
++	s = lbuf;
++	lnum = 0;
++
++	while ( *s != '\0' ) {
++		char *line;
++		char operation;
++		unsigned char data[255];
++		int size;
++		struct i2c_msg msg;
++		int ret;
++
++		lnum++;
++
++		/* Spot the end of the line */
++		line = s;
++		while ( (*s != '\0') && (*s != '\n') )
++			s++;
++		if ( *s != '\0' )
++			*(s++) = '\0';
++
++		//printk(KERN_INFO DRIVER_NAME ": iic:%d: '%s'\n", lnum, line);
++
++		/* Strip leading blank characters */
++		line = str_skip_blanks(line);
++
++		/* Empty or commented line: skip! */
++		if ( (*line == '\0') || (*line == '#') )
++			continue;
++
++		/* Only accept write operations 'w' */
++		operation = *(line++);
++		if ( operation != 'w' ) {
++			printk(KERN_ERR DRIVER_NAME ": iic:%d: Unknown operation '%c ...' -- skipped\n", lnum, operation);
++			continue;
++		}
++
++		/* Extract data values */
++		size = 0;
++		while ( (*line != '\0') && (size < sizeof(data)) ) {
++			line = str_skip_blanks(line);
++			if ( *line != '\0' )
++				sscanf(line, "%hhx", &data[size++]);
++			line = str_skip_chars(line);
++		}
++
++		{
++			int i;
++
++			printk(KERN_DEBUG DRIVER_NAME ": iic:%d: %c", lnum, operation);
++			for (i = 0; i < size; i++)
++				printk(" %02X", data[i]);
++			printk("\n");
++		}
++
++		/* Do nothing if there are less than 2 data bytes (address, command) */
++		if ( size < 3 ) {
++			printk(KERN_ERR DRIVER_NAME ": iic:%d: Too few data for operation '%c ...' -- skipped\n", lnum, operation);
++			continue;
++		}
++
++		/* First data byte is the i2c device address:
++		   Warn if it does not match the standard i2c address */
++		if ( data[0] != CAPSENSE_I2C_ADDR ) {
++			printk(KERN_WARNING DRIVER_NAME ": iic:%d: WARNING - Specified i2c address (%02X) differs from standard i2c address (%02X)\n", lnum, data[0], CAPSENSE_I2C_ADDR);
++		}
++
++		/* Second data byte is the capsense register:
++		   Warn if changing the device I2C address */
++		if ( data[1] == CAP_I2C_ADDR_DM ) {
++			printk(KERN_WARNING DRIVER_NAME ": iic:%d: WARNING - Changing i2c address to %02X (I2C_ADDR_DM=%02X)\n", lnum, data[2] & 0x7F, data[2]);
++		}
++
++		/* Send command to i2c device */
++		mutex_lock(&capsense->mutex);
++
++		msg.addr = data[0];
++		msg.flags = capsense->client.flags;
++		msg.len = size - 1;
++		msg.buf = data + 1;
++		//printk(KERN_INFO DRIVER_NAME ": iic:%d: i2c transfer: addr=0x%02X flags=0x%04X len=%d\n", lnum, msg.addr, msg.flags, msg.len);
++
++		ret = i2c_transfer(capsense->client.adapter, &msg, 1);
++		if ( ret < 0 )
++			printk(KERN_ERR DRIVER_NAME ": iic:%d: i2c transfer failed (%d), command rejected\n", lnum, ret);
++
++		mutex_unlock(&capsense->mutex);
++	}
++
++	return count;
++}
++
++
++static int capsense_proc_write_command(struct file *file, const char *buf,
++				       unsigned long count, void *data)
++{
++	struct capsense_proc_command *command = data;
++	struct capsense_ctx *capsense = command->capsense;
++
++	/* Only root can do this */
++	if ( !capable(CAP_SYS_ADMIN) )
++		return -EACCES;
++
++	printk(KERN_INFO DRIVER_NAME ": %s (%02X)\n", command->name, command->command);
++
++	mutex_lock(&capsense->mutex);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_SETUP_MODE);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, command->command);
++	i2c_smbus_write_byte_data(&capsense->client, CAP_COMMAND_REG, CAP_COMMAND_NORMAL_MODE);
++	mutex_unlock(&capsense->mutex);
++
++	return count;
++}
++
++
++static int capsense_proc_init(struct capsense_ctx *capsense)
++{
++	struct proc_dir_entry *root;
++	struct proc_dir_entry *dir;
++	struct proc_dir_entry *ent;
++	int i;
++
++	/* Create capsense proc directory */
++	printk(KERN_INFO DRIVER_NAME ": Creating setup entries in /proc/" DRIVER_NAME "/\n");
++
++	root = proc_mkdir(DRIVER_NAME, NULL);
++	if ( root == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "\n");
++		return -1;
++	}
++
++	root->owner = THIS_MODULE;
++
++	/* Create iic config file dump entry */
++	ent = create_proc_entry("iic", S_IFREG|S_IWUSR, root);
++	if ( ent == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/iic\n");
++		return -1;
++	}
++
++	ent->owner = THIS_MODULE;
++	ent->data = capsense;
++	ent->write_proc = capsense_proc_write_iic;
++
++	/* Create commands directory */
++	dir = proc_mkdir("commands", root);
++	if ( dir == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "/commands\n");
++		return -1;
++	}
++
++	dir->owner = THIS_MODULE;
++
++	/* Create command entries */
++	for (i = 0; i < ARRAY_SIZE(capsense_proc_commands); i++) {
++		struct capsense_proc_command *command = &capsense_proc_commands[i];
++
++		command->capsense = capsense;
++
++		ent = create_proc_entry(command->name, S_IFREG|S_IWUSR, dir);
++		if ( ent == NULL ) {
++			printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/commands/%s\n", command->name);
++			return -1;
++		}
++
++		ent->owner = THIS_MODULE;
++		ent->data = command;
++		ent->write_proc = capsense_proc_write_command;
++	}
++
++	/* Create device status read entries */
++	for (i = 0; i < ARRAY_SIZE(capsense_proc_device_entries); i++) {
++		struct capsense_proc_entry *entry = &(capsense_proc_device_entries[i]);
++		struct capsense_proc_data *data = &(entry->data[i]);
++
++		data->capsense = capsense;
++		data->phys = NULL;
++		data->name = entry->name;
++		data->command = entry->command;
++		data->hex = 1;
++
++		ent = create_proc_entry(entry->name, S_IFREG|S_IRUSR, root);
++		if ( ent == NULL ) {
++			printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/%s\n", entry->name);
++			continue;
++		}
++
++		ent->owner = THIS_MODULE;
++		ent->data = data;
++		ent->read_proc = capsense_proc_read;
++	}
++
++	/* Create keys management directory */
++	dir = proc_mkdir("keys", root);
++	if ( dir == NULL ) {
++		printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "/keys\n");
++		return -1;
++	}
++
++	dir->owner = THIS_MODULE;
++
++	/* Create keys sensitivity adjustment entries */
++	for (i = 0; i < ARRAY_SIZE(phys_keymap); i++) {
++		struct capsense_keymap *phys = &phys_keymap[i];
++		struct proc_dir_entry *subdir;
++		int ientry;
++
++		subdir = proc_mkdir(phys->name, dir);
++		if ( subdir == NULL ) {
++			printk(KERN_WARNING DRIVER_NAME ": Cannot create directory /proc/" DRIVER_NAME "/keys/%s\n", phys->name);
++			continue;
++		}
++
++		for (ientry = 0; ientry < ARRAY_SIZE(capsense_proc_key_entries); ientry++) {
++			struct capsense_proc_entry *entry = &(capsense_proc_key_entries[ientry]);
++			struct capsense_proc_data *data = &(entry->data[i]);
++
++			data->capsense = capsense;
++			data->phys = phys;
++			data->name = entry->name;
++			data->command = CAP_CS(entry->command, phys->port, phys->bit);
++			data->hex = 0;
++
++			ent = create_proc_entry(entry->name, S_IFREG|S_IRUSR|S_IWUSR, subdir);
++			if ( ent == NULL ) {
++				printk(KERN_WARNING DRIVER_NAME ": Cannot create entry /proc/" DRIVER_NAME "/keys/%s/%s\n", phys->name, entry->name);
++				continue;
++			}
++
++			ent->owner = THIS_MODULE;
++			ent->data = data;
++			ent->read_proc = capsense_proc_read;
++			ent->write_proc = capsense_proc_write;
++		}
++	}
++
++	return 0;
++}

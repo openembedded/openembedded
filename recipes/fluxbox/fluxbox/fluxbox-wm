@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -e $HOME/.fluxbox/session ] ; then
+	exec $HOME/.fluxbox/session
+fi
+
+if [ -e /usr/share/fluxbox/session  ] ; then
+	exec /usr/share/fluxbox/session
+fi
+
+# Fall-through
+exec startfluxbox $@  

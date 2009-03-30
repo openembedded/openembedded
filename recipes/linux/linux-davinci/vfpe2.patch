@@ -1,0 +1,200 @@
+Subject:
+[PATCH 2/7] interface for configuring CCDC and common ccdc types
+From:
+m-karicheri2-l0cyMroinI0@public.gmane.org
+Date:
+Fri, 13 Mar 2009 17:22:39 -0400
+To:
+davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, davinci_opensource_ccb-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org, psp_video-uAqBSO/uNfhBDgjK7y7TUQ@public.gmane.org
+Newsgroups:
+gmane.linux.davinci
+
+Adding an interface for configuring ccdc as per data format of decoder
+output. Also adds a header file for common ccdc data types. 
+
+Signed-off-by: Murali Karicheri <m-karicheri2-l0cyMroinI0@public.gmane.org>
+---
+ include/media/davinci/ccdc_common.h    |   48 +++++++++++++
+ include/media/davinci/ccdc_hw_device.h |  117 ++++++++++++++++++++++++++++++++
+ 2 files changed, 165 insertions(+), 0 deletions(-)
+ create mode 100644 include/media/davinci/ccdc_common.h
+ create mode 100644 include/media/davinci/ccdc_hw_device.h
+
+diff --git a/include/media/davinci/ccdc_common.h b/include/media/davinci/ccdc_common.h
+new file mode 100644
+index 0000000..0992af5
+--- /dev/null
++++ b/include/media/davinci/ccdc_common.h
+@@ -0,0 +1,48 @@
++/*
++ * Copyright (C) 2008-2009 Texas Instruments Inc
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
++ *
++ **************************************************************************/
++#ifndef _CCDC_COMMON_H
++#define _CCDC_COMMON_H
++enum ccdc_pixfmt {
++	CCDC_PIXFMT_RAW = 0,
++	CCDC_PIXFMT_YCBCR_16BIT = 1,
++	CCDC_PIXFMT_YCBCR_8BIT = 2
++};
++
++enum ccdc_frmfmt {
++	CCDC_FRMFMT_PROGRESSIVE = 0,
++	CCDC_FRMFMT_INTERLACED = 1
++};
++
++/* PIXEL ORDER IN MEMORY from LSB to MSB */
++/* only applicable for 8-bit input mode  */
++enum ccdc_pixorder {
++	CCDC_PIXORDER_CBYCRY = 1,
++	CCDC_PIXORDER_YCBYCR = 0
++};
++
++enum ccdc_buftype {
++	CCDC_BUFTYPE_FLD_INTERLEAVED,
++	CCDC_BUFTYPE_FLD_SEPARATED
++};
++
++enum ccdc_pinpol {
++	CCDC_PINPOL_POSITIVE = 0,
++	CCDC_PINPOL_NEGATIVE = 1
++};
++#endif
+diff --git a/include/media/davinci/ccdc_hw_device.h b/include/media/davinci/ccdc_hw_device.h
+new file mode 100644
+index 0000000..4ae9876
+--- /dev/null
++++ b/include/media/davinci/ccdc_hw_device.h
+@@ -0,0 +1,117 @@
++/*
++ * Copyright (C) 2008 Texas Instruments Inc
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ *
++ * ccdc device API
++ */
++#ifndef _CCDC_HW_DEVICE_H
++#define _CCDC_HW_DEVICE_H
++
++#ifdef __KERNEL__
++#include <linux/videodev2.h>
++#include <linux/device.h>
++#include <media/davinci/vpfe_types.h>
++#include <media/davinci/ccdc_common.h>
++/*
++ * Maximum number of capture channels supported by VPFE
++ */
++#define CCDC_CAPTURE_NUM_CHANNELS 1
++/*
++ * vpfe hw interface
++ */
++struct ccdc_hw_device {
++
++	/* vpfe device name */
++	char name[30];
++
++	/* Pointer to initialize function to initialize ccdc device */
++	int (*open) (struct device *dev);
++	/* Set of functions pointers for control related functions.
++	 * Use queryctrl of decoder interface to check if it is a decoder
++	 * control id. If not passed to ccdc to process it
++	 */
++	/* set ccdc base address */
++	void (*set_ccdc_base)(void *base, int size);
++
++	/* set vpss base address */
++	void (*set_vpss_base)(void *base, int size);
++
++	/* get ccdc base */
++	void * (*get_ccdc_base)(void);
++
++	/* get vpss base */
++	void * (*get_vpss_base)(void);
++
++	void (*enable) (int en);
++	/*
++	 * Pointer to function to enable or disable ccdc
++	 */
++	u32 (*reset) (void);
++	/* reset sbl. only for 6446 */
++	void (*enable_out_to_sdram) (int en);
++	/* Pointer to function to set hw frame type */
++	int (*set_hw_if_type) (enum vpfe_hw_if_type iface);
++	/* get interface parameters */
++	int (*get_hw_if_params) (struct vpfe_hw_if_param *param);
++	/* Pointer to function to set parameters. Used
++	 * for implementing VPFE_S_CCDC_PARAMS
++	 */
++	int (*setparams) (void *params);
++	/* Pointer to function to get parameter. Used
++	 * for implementing VPFE_G_CCDC_PARAMS
++	 */
++	int (*getparams) (void *params);
++	/* Pointer to function to configure ccdc */
++	int (*configure) (void);
++
++	/* enumerate hw pix formats */
++	int (*enum_pix)(enum vpfe_hw_pix_format *hw_pix, int i);
++	/* Pointer to function to set buffer type */
++	int (*set_buftype) (enum ccdc_buftype buf_type);
++	/* Pointer to function to get buffer type */
++	int (*get_buftype) (enum ccdc_buftype *buf_type);
++	/* Pointer to function to set frame format */
++	int (*set_frame_format) (enum ccdc_frmfmt frm_fmt);
++	/* Pointer to function to get frame format */
++	int (*get_frame_format) (enum ccdc_frmfmt *frm_fmt);
++	/* Pointer to function to set buffer type */
++	int (*get_pixelformat) (enum vpfe_hw_pix_format *pixfmt);
++	/* Pointer to function to get pixel format. Uses V4L2 type */
++	int (*set_pixelformat) (enum vpfe_hw_pix_format pixfmt);
++	/* Pointer to function to set image window */
++	int (*set_image_window) (struct v4l2_rect *win);
++	/* Pointer to function to set image window */
++	int (*get_image_window) (struct v4l2_rect *win);
++	/* Pointer to function to get line length */
++	int (*get_line_length) (unsigned int *len);
++
++	/* Query SoC control IDs */
++	int (*queryctrl)(struct v4l2_queryctrl *qctrl);
++	/* Set SoC control */
++	int (*setcontrol)(struct v4l2_control *ctrl);
++	/* Get SoC control */
++	int (*getcontrol)(struct v4l2_control *ctrl);
++	/* Pointer to function to set current standard info */
++	/* Pointer to function to set frame buffer address */
++	void (*setfbaddr) (unsigned long addr);
++	/* Pointer to function to get field id */
++	int (*getfid) (void);
++	/* Pointer to deinitialize function */
++	int (*close) (struct device *dev);
++};
++
++#endif
++#endif
+-- 1.6.0.4 

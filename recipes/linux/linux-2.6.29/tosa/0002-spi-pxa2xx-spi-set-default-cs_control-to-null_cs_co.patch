@@ -1,0 +1,29 @@
+From d57683c06e2698fd4da98a7e4cfd99d9a9680657 Mon Sep 17 00:00:00 2001
+From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Date: Thu, 5 Mar 2009 04:29:36 +0300
+Subject: [PATCH] spi: pxa2xx-spi set default cs_control to null_cs_control
+
+As under some circumstances pxa2xx-spi driver can try to use cs_control left
+from the previously used chip, set the default cs_control to w/a null pointer
+error.
+
+Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+---
+ drivers/spi/pxa2xx_spi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/spi/pxa2xx_spi.c b/drivers/spi/pxa2xx_spi.c
+index d0fc4ca..d5c5946 100644
+--- a/drivers/spi/pxa2xx_spi.c
++++ b/drivers/spi/pxa2xx_spi.c
+@@ -1437,6 +1437,7 @@ static int __init pxa2xx_spi_probe(struct platform_device *pdev)
+ 	drv_data->master_info = platform_info;
+ 	drv_data->pdev = pdev;
+ 	drv_data->ssp = ssp;
++	drv_data->cs_control = null_cs_control;
+ 
+ 	master->bus_num = pdev->id;
+ 	master->num_chipselect = platform_info->num_chipselect;
+-- 
+1.5.6.5
+
