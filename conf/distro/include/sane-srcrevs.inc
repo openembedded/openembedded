@@ -50,7 +50,7 @@ SRCREV_pn-epydial ?= "215"
 SRCREV_pn-etk-theme-ninja ?= "5"
 SRCREV_pn-fbgrab-viewer-native ?= "1943"
 SRCREV_pn-flashrom ?= "3682"
-SRCREV_pn-frameworkd ?= "c9e5d80540d505fe64d2acae7bbd0645625446f2"
+SRCREV_pn-frameworkd ?= "0f01e26216d642c9e8b65a297051c801667d15c5"
 SRCREV_pn-frameworkd-devel ?= "${SRCREV_pn-frameworkd}"
 SRCREV_pn-fsod ?= "3fa5eb6f2edcf7c9f0fc2027fda47b91d9f0f136"
 SRCREV_pn-fso-abyss ?= "6ed342f833930474ac506cbaad705c0d8beaa71f"
@@ -240,7 +240,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "39659"
+EFL_SRCREV ?= "39796"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
