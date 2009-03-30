@@ -4,7 +4,7 @@ DEPENDS = "curl eet evas tslib libxtst libxcomposite libxinerama libxscrnsaver l
 # optional
 # DEPENDS += "directfb libsdl-x11 openssl virtual/libiconv"
 PV = "0.9.9.050+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
 
@@ -25,6 +25,7 @@ PACKAGES += "\
     ${PN}-job \
     ${PN}-txt \
     ${PN}-x \
+    ${PN}-input \
     "
 FILES_${PN} = "${libdir}/libecore.so.*"
 FILES_${PN}-con = "${libdir}/libecore_con.so.*"
@@ -41,3 +42,4 @@ FILES_${PN}-ipc = "${libdir}/libecore_ipc.so.*"
 FILES_${PN}-job = "${libdir}/libecore_job.so.*"
 FILES_${PN}-txt = "${libdir}/libecore_txt.so.*"
 FILES_${PN}-x = "${libdir}/libecore_x.so.*"
+FILES_${PN}-input = "${libdir}/libecore_input.so.*"
