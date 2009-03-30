@@ -1,7 +1,7 @@
 SECTION = "libs"
 DESCRIPTION = "Free OSM/Motif implementation."
 LICENSE = "LGPL"
-PR = "r0"
+PR = "r1"
 
 SRC_URI = "\
 	${SOURCEFORGE_MIRROR}/lesstif/${BP}.tar.bz2 \
@@ -48,3 +48,6 @@ PACKAGES += "${PN}-bin"
 FILES_${PN} = "${libdir}"
 FILES_${PN}-bin = "${bindir}"
 
+do_stage() {
+  autotools_stage_all
+}
