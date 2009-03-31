@@ -1,0 +1,19 @@
+
+#
+# Patch managed by http://www.holgerschurig.de/patcher.html
+#
+
+--- xine-lib-1.1.0/configure.ac~no-caca
++++ xine-lib-1.1.0/configure.ac
+@@ -749,8 +749,9 @@
+ dnl Checks for Color AsCii Art library
+ dnl ---------------------------------------------
+ 
+-AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
+-AM_CONDITIONAL(HAVE_CACA, test x$no_caca != "xyes")
++dnl AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
++AM_CONDITIONAL(HAVE_CACA, 0)
++
+ 
+ 
+ dnl ---------------------------------------------

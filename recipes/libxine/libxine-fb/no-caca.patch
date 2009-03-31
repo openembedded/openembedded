@@ -1,0 +1,16 @@
+Index: xine-lib-1.0/configure.ac
+===================================================================
+--- xine-lib-1.0.orig/configure.ac	2005-03-06 16:50:09.019575452 +0100
++++ xine-lib-1.0/configure.ac	2005-03-06 17:07:55.605266498 +0100
+@@ -719,8 +719,9 @@
+ dnl Checks for Color AsCii Art library
+ dnl ---------------------------------------------
+ 
+-AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
+-AM_CONDITIONAL(HAVE_CACA, test x$no_caca != "xyes")
++dnl AM_PATH_CACA(0.3,, AC_MSG_RESULT([*** All CACA-dependent parts will be disabled ***]))
++AM_CONDITIONAL(HAVE_CACA, 0)
++
+ 
+ 
+ dnl ---------------------------------------------

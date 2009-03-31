@@ -1,0 +1,138 @@
+--- xine-lib-1.0.orig/src/xine-engine/post.c	2004-10-17 22:14:30.000000000 +0300
++++ xine-lib-1.0/src/xine-engine/post.c	2006-02-09 22:15:08.000000000 +0200
+@@ -241,7 +241,7 @@
+     if (!*input) return port;
+     (*input)->xine_in.name = "video in";
+     (*input)->xine_in.type = XINE_POST_DATA_VIDEO;
+-    (xine_video_port_t *)(*input)->xine_in.data = &port->new_port;
++    (*input)->xine_in.data = &port->new_port;
+     (*input)->post = post;
+     xine_list_append_content(post->input, *input);
+   }
+@@ -251,7 +251,7 @@
+     if (!*output) return port;
+     (*output)->xine_out.name = "video out";
+     (*output)->xine_out.type = XINE_POST_DATA_VIDEO;
+-    (xine_video_port_t **)(*output)->xine_out.data = &port->original_port;
++    (*output)->xine_out.data = &port->original_port;
+     (*output)->xine_out.rewire = post_video_rewire;
+     (*output)->post = post;
+     (*output)->user_data = port;
+@@ -718,7 +718,7 @@
+     if (!*input) return port;
+     (*input)->xine_in.name = "audio in";
+     (*input)->xine_in.type = XINE_POST_DATA_AUDIO;
+-    (xine_audio_port_t *)(*input)->xine_in.data = &port->new_port;
++    (*input)->xine_in.data = &port->new_port;
+     (*input)->post = post;
+     xine_list_append_content(post->input, *input);
+   }
+@@ -728,7 +728,7 @@
+     if (!*output) return port;
+     (*output)->xine_out.name = "audio out";
+     (*output)->xine_out.type = XINE_POST_DATA_AUDIO;
+-    (xine_audio_port_t **)(*output)->xine_out.data = &port->original_port;
++    (*output)->xine_out.data = &port->original_port;
+     (*output)->xine_out.rewire = post_audio_rewire;
+     (*output)->post = post;
+     (*output)->user_data = port;
+--- xine-lib-1.0.orig/src/xine-utils/color.c	2003-12-09 02:02:38.000000000 +0200
++++ xine-lib-1.0/src/xine-utils/color.c	2006-02-09 22:13:36.000000000 +0200
+@@ -495,8 +495,10 @@
+ 
+   /* process blocks of 4 pixels */
+   for (x=0; x < (width / 4); x++) {
+-    n1  = *(((unsigned int *) src1)++);
+-    n2  = *(((unsigned int *) src2)++);
++    n1  = *((unsigned int *) src1);
++    src1+=sizeof(unsigned int);
++    n2  = *((unsigned int *) src2);
++    src2+=sizeof(unsigned int);
+     n3  = (n1 & 0xFF00FF00) >> 8;
+     n4  = (n2 & 0xFF00FF00) >> 8;
+     n1 &= 0x00FF00FF;
+--- xine-lib-1.0.orig/src/libffmpeg/libavcodec/avcodec.h	2004-05-30 22:24:19.000000000 +0300
++++ xine-lib-1.0/src/libffmpeg/libavcodec/avcodec.h	2006-02-09 22:33:27.000000000 +0200
+@@ -1639,6 +1639,13 @@
+ #define FF_OPT_MAX_DEPTH 10
+ } AVOption;
+
++#ifdef HAVE_MMX
++extern const struct AVOption avoptions_common[3 + 5];
++#else
++extern const struct AVOption avoptions_common[3];
++#endif
++extern const struct AVOption avoptions_workaround_bug[11];
++
+ /**
+  * Parse option(s) and sets fields in passed structure
+  * @param strct  structure where the parsed results will be written
+--- xine-lib-1.0.orig/src/libffmpeg/libavcodec/common.h	2004-05-30 22:24:19.000000000 +0300
++++ xine-lib-1.0/src/libffmpeg/libavcodec/common.h	2006-02-09 22:32:56.000000000 +0200
+@@ -66,13 +66,13 @@
+ #define AVOPTION_SUB(ptr) { .name = NULL, .help = (const char*)ptr }
+ #define AVOPTION_END() AVOPTION_SUB(NULL)
+ 
+-struct AVOption;
++/*struct AVOption;
+ #ifdef HAVE_MMX
+ extern const struct AVOption avoptions_common[3 + 5];
+ #else
+ extern const struct AVOption avoptions_common[3];
+ #endif
+-extern const struct AVOption avoptions_workaround_bug[11];
++extern const struct AVOption avoptions_workaround_bug[11];*/
+ 
+ #endif /* HAVE_AV_CONFIG_H */
+ 
+--- xine-lib-1.0.orig/src/libffmpeg/libavcodec/mpegvideo.h	2004-05-30 22:24:22.000000000 +0300
++++ xine-lib-1.0/src/libffmpeg/libavcodec/mpegvideo.h	2006-02-09 22:35:54.000000000 +0200
+@@ -904,7 +904,7 @@
+ int ff_h263_resync(MpegEncContext *s);
+ int ff_h263_get_gob_height(MpegEncContext *s);
+ int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my);
+-int ff_h263_round_chroma(int x);
++/*int ff_h263_round_chroma(int x);*/
+ void ff_h263_encode_motion(MpegEncContext * s, int val, int f_code);
+ int ff_mpeg4_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
+ 
+--- xine-lib-1.0.orig/src/libxineadec/nosefart/nes_apu.c	2004-12-12 08:55:59.000000000 +0200
++++ xine-lib-1.0/src/libxineadec/nosefart/nes_apu.c	2006-02-11 22:42:29.000000000 +0200
+@@ -1012,9 +1012,15 @@
+ 
+       /* signed 16-bit output, unsigned 8-bit */
+       if (16 == apu->sample_bits)
+-         *((int16 *) buffer)++ = (int16) accum;
++      {
++         *((int16 *) buffer) = (int16) accum;
++         buffer=((int16 *)buffer)+1;
++      }
+       else
+-         *((uint8 *) buffer)++ = (accum >> 8) ^ 0x80;
++      {
++         *((uint8 *) buffer) = (accum >> 8) ^ 0x80;
++         buffer=((int8 *)buffer)+1;
++      }
+    }
+ 
+    /* resync cycle counter */
+--- xine-lib-1.0.orig/src/post/audio/stretch.c	2004-10-30 02:11:38.000000000 +0300
++++ xine-lib-1.0/src/post/audio/stretch.c	2006-02-11 22:45:14.000000000 +0200
+@@ -476,7 +476,7 @@
+     memcpy( outbuf->mem, data_out, 
+             outbuf->num_frames * this->bytes_per_frame );
+     num_frames_out -= outbuf->num_frames;
+-    (uint8_t *)data_out += outbuf->num_frames * this->bytes_per_frame;
++    data_out = (uint8_t *)data_out + outbuf->num_frames * this->bytes_per_frame;
+                 
+     outbuf->vpts        = this->pts;
+     this->pts           = 0;
+@@ -587,7 +587,7 @@
+     memcpy( (uint8_t *)this->audiofrag + this->num_frames * this->bytes_per_frame,
+             data_in, frames_to_copy * this->bytes_per_frame );
+     
+-    (uint8_t *)data_in += frames_to_copy * this->bytes_per_frame;
++    data_in = (uint8_t *)data_in + frames_to_copy * this->bytes_per_frame;
+     this->num_frames += frames_to_copy;
+     buf->num_frames -= frames_to_copy;
+ 
