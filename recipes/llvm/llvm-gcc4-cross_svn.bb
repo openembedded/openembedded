@@ -2,9 +2,11 @@ DESCRIPTION = "The Low Level Virtual Machine - gcc4 frontend"
 HOMEPAGE = "http://llvm.org"
 LICENSE = "various"
 
-DEPENDS = "llvm-native"
+DEPENDS = "llvm2.5-native"
 
 PV = "2.1+svnr${SRCREV}"
+
+PR = "r1"
 
 inherit autotools cross
 
