@@ -20,7 +20,7 @@ IMAGE_INSTALL = "task-boot \
                  e2fsprogs dosfstools \
                  wireless-tools zd1211-firmware \
                  ${DISTRO_SSH_DAEMON} \
-                 qt-embedded dbus \
+                 qt4-embedded dbus \
                  neuros-mainmenu \
                  neuros-nwm \
 #                 vlc-davinci \
