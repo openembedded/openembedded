@@ -60,8 +60,7 @@ PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
            file://enigma2.sh"
 
-SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1 \
-           file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
+SRC_URI_append_dm7025 = "file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/${MODULE}"
 
