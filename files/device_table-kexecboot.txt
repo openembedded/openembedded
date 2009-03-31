@@ -1,7 +1,0 @@
-# mmc numbers are assigned dynamicly so if you have other dynamic assigned block devices it may be wrong
-/dev/mmcblk0	b	660	0	6	179	0	-	-	-
-/dev/mmcblk0p1	b	660	0	6	179	1	-	-	-
-/dev/mmcblk0p2	b	660	0	6	179	2	-	-	-
-/dev/mmcblk0p3	b	660	0	6	179	3	-	-	-
-/dev/event0 	c	660	0	0	13	64	-	-	-
-/dev/fb0	c	660	0	0	29	0	-	-	-
