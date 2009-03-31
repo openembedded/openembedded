@@ -3,15 +3,14 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
 
 # This is missing the EHCI patch for beagle
 DEFAULT_PREFERENCE = "-1"
 
 SRCREV = "90e758af52ba803cba233fabee81176d99589f09"
 
-PV = "2.6.29-${PR}+gitr${SRCREV}"
-PR = "r0"
+PR = "r0+gitr${SRCREV}"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
