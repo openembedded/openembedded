@@ -1,0 +1,171 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          hotplug2
+# Required-Start:    mountvirtfs 
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Start hotplug2, populate /dev and load drivers.
+### END INIT INFO
+
+# we need to unmount /dev/pts/ and remount it later over the tmpfs
+unmount_devpts() {
+  if mountpoint -q /dev/pts/; then
+    umount -l /dev/pts/
+  fi
+
+  if mountpoint -q /dev/shm/; then
+    umount -l /dev/shm/
+  fi
+}
+
+# mount a tmpfs over /dev, if somebody did not already do it
+mount_tmpfs() {
+  if grep -E -q "^[^[:space:]]+ /dev tmpfs" /proc/mounts; then
+    return
+  fi
+
+  # /dev/.static/dev/ is used by MAKEDEV to access the real /dev/ directory.
+  # /etc/udev/ is recycled as a temporary mount point because it's the only
+  # directory which is guaranteed to be available.
+  mount -n -o bind /dev /etc/udev
+
+  if ! mount -n -o size=$tmpfs_size,mode=0755 -t tmpfs udev /dev; then
+    umount /etc/udev
+    echo "udev requires tmpfs support, not started."
+    exit 1
+  fi
+
+  mkdir -p /dev/.static/dev
+  chmod 700 /dev/.static/
+  # The mount options in busybox are non-standard...
+  if test -x /bin/mount.util-linux
+  then
+    /bin/mount.util-linux --move /etc/udev /dev/.static/dev
+  elif test -x /bin/busybox
+  then
+    busybox mount -n -o move /etc/udev /dev/.static/dev
+  else
+    echo "udev requires an identifiable mount command, not started."
+    umount /etc/udev
+    umount /dev
+    exit 1
+  fi
+}
+
+make_extra_nodes() {
+  [ -c /dev/null ] || mknod -m 666 /dev/null c 1 3
+# I hate this hack.  -- Md
+#  if [ "$(echo /lib/udev/devices/*)" != "/lib/udev/devices/*" ]; then
+#    cp -a /lib/udev/devices/* /dev/
+#  fi
+
+  [ -e /etc/udev/links.conf ] || return 0
+  grep '^[^#]' /etc/udev/links.conf | \
+  while read type name arg1; do
+    [ "$type" -a "$name" -a ! -e "/dev/$name" -a ! -L "/dev/$name" ] ||continue
+    case "$type" in
+      L) ln -s $arg1 /dev/$name ;;
+      D) mkdir -p /dev/$name ;;
+      M) mknod -m 600 /dev/$name $arg1 ;;
+      *) echo "links.conf: unparseable line ($type $name $arg1)" ;;
+    esac
+  done
+}
+
+supported_kernel() {
+  case "$(uname -r)" in
+    2.[012345].*|2.6.[0-9]|2.6.[0-9][!0-9]*) return 1 ;;
+    2.6.1[0134]|2.6.1[01234][!0-9]*) return 1 ;;
+  esac
+  return 0
+}
+
+# shell version of /usr/bin/tty
+my_tty() {
+  [ -x /bin/readlink ] || return 0
+  [ -e /proc/self/fd/0 ] || return 0
+  readlink --silent /proc/self/fd/0 || true
+}
+
+##############################################################################
+
+PATH="/sbin:/bin:/usr/bin"
+
+[ -x /sbin/udevd ] || exit 0
+
+# defaults
+tmpfs_size="2M"
+
+. /etc/hotplug2/hotplug2.conf
+
+if ! supported_kernel; then
+  echo "udev requires a kernel >= 2.6.15, not started."
+  exit 1
+fi
+
+if [ ! -e /proc/filesystems ]; then
+  echo "udev requires a mounted procfs, not started."
+  exit 1
+fi
+
+if ! grep -q '[[:space:]]tmpfs$' /proc/filesystems; then
+  echo "udev requires tmpfs support, not started."
+  exit 1
+fi
+
+if [ ! -d /sys/class/ ]; then
+  echo "udev requires a mounted sysfs, not started."
+  exit 1
+fi
+
+##############################################################################
+
+# When modifying this script, do not forget that between the time that
+# the new /dev has been mounted and udevsynthesize has been run there will be
+# no /dev/null. This also means that you cannot use the "&" shell command.
+case "$1" in
+    start)
+    unmount_devpts
+    mount_tmpfs
+    [ -d /proc/1 ] || mount -n /proc
+
+    # /dev/null must be created before udevd is started
+    make_extra_nodes
+
+    # It's all over netlink now
+    if [ -e /proc/sys/kernel/hotplug ]; then
+        echo "hotplug2" > /proc/sys/kernel/hotplug
+    fi
+
+    echo "Starting the hotplug events dispatcher" "hotplug2"
+    start-stop-daemon --start --oknodo --name hotplug2 --pidfile /var/run/hotplug2.pid --startas /sbin/hotplug2 -- --persist
+
+    #echo "Synthesizing the initial hotplug events"
+    #udevtrigger
+    #udevsettle
+    ;;
+
+    stop)
+    echo "Stopping the hotplug events dispatcher" "hotplug2"
+    start-stop-daemon --stop --name hotplug2 --quiet
+    ;;
+
+    restart|force-reload)
+    echo "Stopping the hotplug events dispatcher" "hotplug2"
+    if start-stop-daemon --stop --name hotplug2 --quiet ; then
+	exit 1
+    fi
+
+    echo "Starting the hotplug events dispatcher" "hotplug2"
+    start-stop-daemon --start --oknodo --name hotplug2 --pidfile /var/run/hotplug2.pid --startas /sbin/hotplug2 -- --persist
+    ;;
+
+    *)
+    echo "Usage: /etc/init.d/udev {start|stop|restart|force-reload}"
+    exit 1
+    ;;
+esac
+
+exit 0
+
