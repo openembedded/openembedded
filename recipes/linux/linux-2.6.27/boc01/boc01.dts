@@ -2,7 +2,7 @@
  * Bolloré telecom CPE v01 Device Tree Source
  *
  * Copyright 2005, 2006, 2007 Freescale Semiconductor Inc.
- * Copyright 2008 Bolloré telecom.
+ * Copyright 2008, 2009 Bolloré telecom.
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -171,7 +171,6 @@
 			mode = "cpu";
 		};
 
-
 		/* phy type (ULPI, UTMI, UTMI_WIDE, SERIAL) */
 		usb@23000 {
 			compatible = "fsl-usb2-dr";
@@ -184,20 +183,6 @@
 			sleep = <&pmc 0x00300000>;
 		};
 
-
-		mdio@24520 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <0x24520 0x20>;
-			phy4: ethernet-phy@4 {
-				interrupt-parent = <&ipic>;
-				interrupts = <20 0x8>;
-				reg = <0x4>;
-				device_type = "ethernet-phy";
-			};
-		};
-
-
 		enet1: ethernet@25000 {
 			cell-index = <1>;
 			device_type = "network";
@@ -207,7 +192,7 @@
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <34 0x8 33 0x8 32 0x8>;
 			interrupt-parent = <&ipic>;
-			phy-handle = < &phy4 >;
+			fixed-link = <1 1 100 0 0>;
 			sleep = <&pmc 0x10000000>;
 			fsl,magic-packet;
 		};
