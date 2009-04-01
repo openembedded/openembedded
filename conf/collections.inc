@@ -2,8 +2,72 @@
 # lowest), and use those to populate BBFILES, BBFILE_COLLECTIONS,
 # BBFILE_PATTERN_*, and BBFILE_PRIORITY_*.  By default, COLLECTIONS is
 # prepopulated with the locations the user specified in their BBPATH.
+#
+# Specifying an archive in COLLECTIONS is also supported.  Any archives of a
+# supported format will be unpacked into COLLECTIONS_UNPACKDIR and used from
+# there.
 
 COLLECTIONS = "${@' '.join(d.getVar('BBPATH', 1).split(':'))}"
+COLLECTIONS_UNPACKDIR = "${TMPDIR}/collections"
+
+def collection_unpack(collection, name, d):
+    """ Unpack a collection archive and return the path to it. """
+    import bb
+    import os
+    from md5 import md5
+
+    handlers = {
+        ("tar"): "tar x --no-same-owner -f %s",
+        ("tar.gz", "tgz", "tar.Z"): "tar xz --no-same-owner -f %s",
+        ("tar.bz2", "tbz", "tbz2"): "tar xj --no-same-owner -f %s",
+        ("zip", "jar"): "unzip -q -o %s",
+    }
+
+    outpath = os.path.join(d.getVar("COLLECTIONS_UNPACKDIR", 1), name)
+
+    try:
+        collectiondata = open(collection, "r").read()
+    except IOError:
+        bb.fatal("Unable to open %s to calculate md5 sum" % collection)
+
+    md5obj = md5()
+    md5obj.update(collectiondata)
+    md5sum = md5obj.hexdigest()
+
+    md5file = os.path.join(outpath, "md5")
+    if os.path.exists(md5file):
+        try:
+            oldmd5sum = open(md5file).read()
+        except IOError:
+            pass
+        else:
+            if oldmd5sum == md5sum:
+                bb.debug(1, "Using existing %s for collection %s" % (outpath, name))
+                return outpath
+
+        bb.note("Removing old unpacked collection at %s" % outpath)
+        os.system("rm -rf %s" % outpath)
+
+    try:
+        cmd = (cmd for (exts, cmd) in handlers.iteritems()
+                   for e in exts
+                   if collection.endswith(e)).next()
+        cmd = "cd %s && PATH=\"%s\" %s" % (outpath, d.getVar("PATH", 1), cmd)
+    except StopIteration:
+        bb.fatal("Unable to find unpack handler for %s" % collection)
+
+    if not os.path.isdir(outpath):
+        os.makedirs(outpath)
+
+    bb.note("Unpacking %s to %s/" % (collection, outpath))
+    ret = os.system(cmd % collection)
+    if ret != 0:
+        bb.fatal("Unable to unpack %s" % collection)
+
+    md5out = open(md5file, "w")
+    md5out.write(md5sum)
+    md5out.close()
+    return outpath
 
 def collections_setup(d):
     """ Populate collection and bbfiles metadata from the COLLECTIONS var. """
@@ -38,6 +102,15 @@ def collections_setup(d):
         name = collectionmap[collection]
         if not name:
             bb.fatal("Unable to determine collection name for %s" % collection)
+
+        if not os.path.isdir(collection):
+            del collectionmap[collection]
+            unpacked = collection_unpack(collection, name, d)
+            if unpacked:
+                collection = unpacked
+                collectionmap[collection] = name
+            else:
+                bb.fatal("Unable to unpack collection %s" % collection)
 
         setifunset("BBFILE_PATTERN_%s" % name, "^%s/" % collection)
         setifunset("BBFILE_PRIORITY_%s" % name, str(priority))
