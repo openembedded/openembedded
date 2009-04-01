@@ -3,7 +3,7 @@ It plays mp3, mpeg, wav, ogg, quicktime, divx, etc. and is capable of streaming.
 SECTION = "opie/multimedia"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "libxine-fb libqtaux2 opie-mediaplayer2-skin-default"
+DEPENDS = "libxine libqtaux2 opie-mediaplayer2-skin-default"
 RDEPENDS = "opie-mediaplayer2-skin-default"
 RRECOMMENDS = "libxine-plugin-ao-out-oss libxine-plugin-inp-file \
 libxine-plugin-decode-ff libxine-plugin-decode-mad \

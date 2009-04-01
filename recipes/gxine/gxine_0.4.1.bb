@@ -1,7 +1,7 @@
 DESCRIPTION = "gxine is a front-end for libxine."
 SECTION = "x11/multimedia"
 LICENSE = "GPL"
-DEPENDS = "gtk+ libxine-x11"
+DEPENDS = "gtk+ libxine"
 PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
