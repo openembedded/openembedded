@@ -1,0 +1,50 @@
+# to keep configure from failing on checking for posix getgrgid_r... configure: error: cannot run test program while cross compiling
+# workaround by skipping this test
+
+--- glib-2.20.0/configure.in	2009-03-13 06:19:11.000000000 +0100
++++ glib-2.20.0/configure.in	2009-03-18 13:48:25.000000000 +0100
+@@ -2114,43 +2114,8 @@
+ 		fi
+ 	fi
+ 	if test "$ac_cv_header_grp_h" = "yes"; then
+-	   	AC_CACHE_CHECK([for posix getgrgid_r],
+-			ac_cv_func_posix_getgrgid_r,
+-			[AC_TRY_RUN([
+-#include <errno.h>
+-#include <grp.h>
+-int main () { 
+-    char buffer[10000];
+-    struct group grp, *grpptr = &grp;
+-    int error;
+-    errno = 0;
+-    error = getgrgid_r (0, &grp, buffer, 
+-                        sizeof (buffer), &grpptr);
+-   return (error < 0 && errno == ENOSYS) 
+-	   || error == ENOSYS; 
+-}                              ],
+-			       [ac_cv_func_posix_getgrgid_r=yes],
+-			       [ac_cv_func_posix_getgrgid_r=no])])
+-		GLIB_ASSERT_SET(ac_cv_func_posix_getgrgid_r)
+-		if test "$ac_cv_func_posix_getgrgid_r" = yes; then
+-		   	AC_DEFINE(HAVE_POSIX_GETGRGID_R,1,
++		AC_DEFINE(HAVE_POSIX_GETGRGID_R,1,
+ 				[Have POSIX function getgrgid_r])
+-		else
+-			AC_CACHE_CHECK([for nonposix getgrgid_r],
+-				ac_cv_func_nonposix_getgrgid_r,
+-				[AC_TRY_LINK([#include <grp.h>],
+-                               		[char buffer[10000];
+-					struct group grp;	
+-					getgrgid_r (0, &grp, buffer, 
+-                                       	sizeof (buffer));],
+-				[ac_cv_func_nonposix_getgrgid_r=yes],
+-				[ac_cv_func_nonposix_getgrgid_r=no])])
+-			GLIB_ASSERT_SET(ac_cv_func_nonposix_getgrgid_r)
+-			if test "$ac_cv_func_nonposix_getgrgid_r" = yes; then
+-			   	AC_DEFINE(HAVE_NONPOSIX_GETGRGID_R,1,
+-					[Have non-POSIX function getgrgid_r])
+-			fi
+-		fi
+ 	fi
+ 	LIBS="$G_THREAD_LIBS $LIBS"
+ 	if test x"$have_threads" = xposix; then

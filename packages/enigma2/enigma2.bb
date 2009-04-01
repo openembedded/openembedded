@@ -36,12 +36,13 @@ DESCRIPTION_append_enigma2-plugin-systemplugins-skinselector = "shows a menu wit
 DESCRIPTION_append_enigma2-plugin-systemplugins-videomode = "selects advanced video modes"
 RDEPENDS_enigma2-plugin-extensions-dvdplayer = "libdreamdvd0"
 RDEPENDS_enigma2-plugin-systemplugins-nfiflash = "twisted-web"
+RDEPENDS_enigma2-plugin-systemplugins-softwaremanager = "twisted-web"
 RCONFLICTS_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
 RREPLACES_enigma2-plugin-systemplugins-softwaremanager = "enigma2-plugin-systemplugins-configurationbackup enigma2-plugin-systemplugins-softwareupdate"
 
 PN = "enigma2"
 PR = "r0"
-SRCDATE = "20090319"
+SRCDATE = "20090401"
 
 # if you want experimental, use:
 REL_MAJOR="2"
@@ -59,8 +60,7 @@ PV = "${REL_MAJOR}.${REL_MINOR}git${SRCDATE}"
 SRC_URI = "svn://git.opendreambox.org/enigma2${SUBDIR};module=${MODULE};date=${SRCDATE} \
            file://enigma2.sh"
 
-SRC_URI_append_dm7025 = " file://enigma2-disable-iframesearch.patch;patch=1;pnum=1 \
-           file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
+SRC_URI_append_dm7025 = " file://enigma2-disable-hardware-mp3-decode.patch;patch=1;pnum=1"
 
 S = "${WORKDIR}/${MODULE}"
 
