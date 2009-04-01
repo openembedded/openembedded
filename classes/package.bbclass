@@ -384,8 +384,12 @@ python populate_packages () {
 			globbed = glob.glob(file)
 			if globbed:
 				if [ file ] != globbed:
-					files += globbed
-					continue
+					if not file in globbed:
+						files += globbed
+						continue
+					else:
+						globbed.remove(file)
+						files += globbed
 			if (not os.path.islink(file)) and (not os.path.exists(file)):
 				continue
 			if file in seen:
