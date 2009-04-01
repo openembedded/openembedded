@@ -1,0 +1,26 @@
+Index: xine-lib-1.1.16/src/combined/ffmpeg/ffmpeg_decoder.h
+===================================================================
+--- xine-lib-1.1.16.orig/src/combined/ffmpeg/ffmpeg_decoder.h	2009-03-25 00:27:52.177883234 +0100
++++ xine-lib-1.1.16/src/combined/ffmpeg/ffmpeg_decoder.h	2009-03-25 00:27:58.048708749 +0100
+@@ -26,8 +26,6 @@
+ #endif
+ 
+ #ifdef HAVE_FFMPEG_AVUTIL_H
+-#  include <avcodec.h>
+-#elif defined HAVE_FFMPEG
+ #  include <libavcodec/avcodec.h>
+ #else
+ #  include "../../libffmpeg/libavcodec/avcodec.h"
+Index: xine-lib-1.1.16/src/combined/ffmpeg/ff_dvaudio_decoder.c
+===================================================================
+--- xine-lib-1.1.16.orig/src/combined/ffmpeg/ff_dvaudio_decoder.c	2009-03-25 00:28:05.839130673 +0100
++++ xine-lib-1.1.16/src/combined/ffmpeg/ff_dvaudio_decoder.c	2009-03-25 00:28:28.411467638 +0100
+@@ -53,8 +53,6 @@
+ #endif
+ 
+ #ifdef HAVE_FFMPEG_AVUTIL_H
+-#  include <avcodec.h>
+-#elif defined HAVE_FFMPEG
+ #  include <libavcodec/avcodec.h>
+ #else
+ #  include "../../libffmpeg/libavcodec/avcodec.h"

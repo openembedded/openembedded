@@ -1,7 +1,7 @@
 DESCRIPTION = "foo"
 HOMEPAGE = "http://projects.o-hand.com/matchbox/"
 LICENSE = "GPL"
-DEPENDS = "matchbox-desktop libxine-x11"
+DEPENDS = "matchbox-desktop libxine"
 RDEPENDS = "libxine-plugin-vo-out-xshm \
             libxine-plugin-vo-out-none \
             libxine-plugin-ao-out-esd \
