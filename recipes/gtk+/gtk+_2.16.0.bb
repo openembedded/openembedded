@@ -43,6 +43,16 @@ python populate_packages_prepend () {
 RPROVIDES_${PN} = "libgailutil18"
 RCONFLICTS_${PN} = "libgailutil18"
 RREPLACES_${PN} = "libgailutil18"
+RPROVIDES_${PN}-dev = "libgailutil-dev"
+RCONFLICTS_${PN}-dev = "libgailutil-dev"
+RREPLACES_${PN}-dev = "libgailutil-dev"
+RPROVIDES_${PN}-doc = "libgailutil-doc"
+RCONFLICTS_${PN}-doc = "libgailutil-doc"
+RREPLACES_${PN}-doc = "libgailutil-doc"
+RPROVIDES_${PN}-dbg = "libgailutil-dbg"
+RCONFLICTS_${PN}-dbg = "libgailutil-dbg"
+RREPLACES_${PN}-dbg = "libgailutil-dbg"
+# FIXME: replace locales as well
 
 do_stage_append() {
 
