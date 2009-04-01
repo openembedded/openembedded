@@ -21,15 +21,12 @@ FILES_${PN} = "${bindir}/gdk-pixbuf-query-loaders \
 FILES_${PN}-dev += " \
         ${datadir}/gtk-2.0/include \
 	${libdir}/gtk-2.0/include \
-	${libdir}/gtk-2.0/${LIBV}/loaders/*.la \
-	${libdir}/gtk-2.0/${LIBV}/immodules/*.la \
-	${libdir}/gtk-2.0/${LIBV}/engines/*.la \
-	${libdir}/gtk-2.0/${LIBV}/printbackends/*.la \
 	${bindir}/gdk-pixbuf-csource \
 	${bindir}/gtk-builder-convert"
 
 FILES_${PN}-dbg += " \
-        ${libdir}/gtk-2.0/${LIBV}/loaders/.debug/* \
+	${libdir}/gtk-2.0/modules/.debug/* \
+	${libdir}/gtk-2.0/${LIBV}/loaders/.debug/* \
 	${libdir}/gtk-2.0/${LIBV}/immodules/.debug/* \
 	${libdir}/gtk-2.0/${LIBV}/engines/.debug/* \
 	${libdir}/gtk-2.0/${LIBV}/printbackends/.debug/*"
@@ -60,6 +57,7 @@ do_stage () {
 
 do_install_append () {
 	install -d ${D}${sysconfdir}/gtk-2.0
+	rm -f ${D}${libdir}/gtk-2.0/*/*.la ${D}${libdir}/gtk-2.0/${LIBV}/*/*.la
 }
 
 postinst_prologue() {
