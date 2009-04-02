@@ -5,7 +5,7 @@ LICENSE = "Artistic|GPL"
 PRIORITY = "optional"
 # We need gnugrep (for -I)
 DEPENDS = "virtual/db perl-native grep-native"
-PR = "r26"
+PR = "r27"
 
 # Major part of version
 PVM = "5.8"
@@ -29,6 +29,7 @@ SRC_URI = "ftp://ftp.funet.fi/pub/CPAN/src/perl-${PV}.tar.gz \
         file://62_debian_cpan_definstalldirs.patch;patch=1 \
         file://64_debian_enc2xs_inc.patch;patch=1 \
         file://asm-pageh-fix.patch;patch=1 \
+        file://shared-ldflags.patch;patch=1 \
         file://config.sh \
         file://config.sh-32 \
         file://config.sh-32-le \
@@ -42,6 +43,9 @@ HOSTPERL = "${STAGING_BINDIR_NATIVE}/perl${PV}"
 
 # Where to find .so files - use the -native versions not those from the target build
 export PERLHOSTLIB = "${STAGING_LIBDIR_NATIVE}/perl/${PV}/"
+
+# LDFLAGS for shared libraries
+export LDDLFLAGS = "${LDFLAGS} -shared"
 
 do_configure() {
         # Make hostperl in build directory be the native perl
