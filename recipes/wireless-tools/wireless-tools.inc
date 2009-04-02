@@ -7,6 +7,7 @@ LICENSE = "GPL"
 SRC_URI += "\
   http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.${PV}.tar.gz \
   file://man.patch;patch=1 \
+  file://shared_lib_ldflags.patch;patch=1 \
   file://wireless-tools.if-pre-up \
   file://zzz-wireless.if-pre-up"
 S = "${WORKDIR}/wireless_tools.${PV}"

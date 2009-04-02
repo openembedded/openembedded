@@ -6,7 +6,7 @@ PRIORITY = "required"
 SRC_URI = "file://makedevs.c"
 S = "${WORKDIR}/makedevs-${PV}"
 
-PR = "r6"
+PR = "r7"
 
 inherit update-alternatives
 
@@ -15,7 +15,7 @@ do_configure() {
 }
 
 do_compile() {
-	${CC} ${CFLAGS} -L${STAGING_LIBDIR}/ -o ${S}/makedevs ${S}/makedevs.c
+	${CC} ${CFLAGS} ${LDFLAGS} -o ${S}/makedevs ${S}/makedevs.c
 }
 
 do_install() {
