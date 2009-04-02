@@ -1,0 +1,634 @@
+From aa1671e0b1a5b72dbf714a1c13cb9850f9ecaee7 Mon Sep 17 00:00:00 2001
+From: Stefan Roese <sr@denx.de>
+Date: Wed, 10 Sep 2008 06:02:17 +0200
+Subject: [PATCH] powerpc/4xx: Add PPC4xx PCIe MSI support
+
+This MSI driver can be used on all PCIe enabled PPC4xx variants.
+This is currently 405EX, 440SPe and 460EX/GT.
+
+This driver version is a testing version and no release. It still
+has some known problems which need to be solved:
+
+- Longshine LCS-8337TXR
+  MSI's are successfully generated on 405EX (Kilauea) and 460EX
+  (Canyonlands). But the MSI generation stops at some time and
+  not further MSI's are generated anymore.
+
+- Intel PRO/1000 PT Desktop
+  No MSI is generated at all
+
+Signed-off-by: Stefan Roese <sr@denx.de>
+---
+ arch/powerpc/boot/dts/canyonlands.dts |   25 +++
+ arch/powerpc/boot/dts/katmai.dts      |   12 +
+ arch/powerpc/boot/dts/kilauea.dts     |   21 ++
+ arch/powerpc/include/asm/dcr-regs.h   |    5 +
+ arch/powerpc/sysdev/Makefile          |    3 +-
+ arch/powerpc/sysdev/ppc4xx_msi.c      |  358 +++++++++++++++++++++++++++++++++
+ arch/powerpc/sysdev/ppc4xx_pci.c      |   46 ++++-
+ arch/powerpc/sysdev/ppc4xx_pci.h      |   11 +
+ 8 files changed, 479 insertions(+), 2 deletions(-)
+ create mode 100644 arch/powerpc/sysdev/ppc4xx_msi.c
+
+diff --git a/arch/powerpc/boot/dts/canyonlands.dts b/arch/powerpc/boot/dts/canyonlands.dts
+index 79fe412..5c8b419 100644
+--- a/arch/powerpc/boot/dts/canyonlands.dts
++++ b/arch/powerpc/boot/dts/canyonlands.dts
+@@ -111,6 +111,11 @@
+ 		ranges;
+ 		clock-frequency = <0>; /* Filled in by U-Boot */
+ 
++		MQ0: memqueue {
++			compatible = "ibm,mq-460ex";
++			dcr-reg = <0x040 0x011>;
++		};
++
+ 		SDRAM0: sdram {
+ 			compatible = "ibm,sdram-460ex", "ibm,sdram-405gp";
+ 			dcr-reg = <0x010 0x002>;
+@@ -395,6 +400,8 @@
+ 				0x0 0x0 0x0 0x2 &UIC3 0xd 0x4 /* swizzled int B */
+ 				0x0 0x0 0x0 0x3 &UIC3 0xe 0x4 /* swizzled int C */
+ 				0x0 0x0 0x0 0x4 &UIC3 0xf 0x4 /* swizzled int D */>;
++
++			mq-device = <&MQ0>;
+ 		};
+ 
+ 		PCIE1: pciex@d20000000 {
+@@ -436,6 +443,24 @@
+ 				0x0 0x0 0x0 0x2 &UIC3 0x11 0x4 /* swizzled int B */
+ 				0x0 0x0 0x0 0x3 &UIC3 0x12 0x4 /* swizzled int C */
+ 				0x0 0x0 0x0 0x4 &UIC3 0x13 0x4 /* swizzled int D */>;
++
++			mq-device = <&MQ0>;
++		};
++
++		MSI: msi@c10000000 {
++			compatible = "ibm,ppc4xx-msi-460ex", "ibm,ppc4xx-msi";
++			reg = <0xc 0x10000000 0x100>;
++			sdr-base = <0x36c>;
++			interrupts =   <24 1
++					25 1
++					26 1
++					27 1
++					28 1
++					29 1
++					30 1
++					31 1>;
++			interrupt-parent = <&UIC3>;
++			mq-device = <&MQ0>;
+ 		};
+ 	};
+ };
+diff --git a/arch/powerpc/boot/dts/katmai.dts b/arch/powerpc/boot/dts/katmai.dts
+index 077819b..b70bdcb 100644
+--- a/arch/powerpc/boot/dts/katmai.dts
++++ b/arch/powerpc/boot/dts/katmai.dts
+@@ -392,6 +392,18 @@
+ 				0x0 0x0 0x0 0x3 &UIC3 0xa 0x4 /* swizzled int C */
+ 				0x0 0x0 0x0 0x4 &UIC3 0xb 0x4 /* swizzled int D */>;
+ 		};
++
++		MSI: msi@400300000 {
++			compatible = "ibm,ppc4xx-msi-440spe", "ibm,ppc4xx-msi";
++			reg = <0x4 0x00300000 0x100>;
++			sdr-base = <0x3b0>;
++			/* test-only: right only 4 UIC interrupts are mapped on 440SPe */
++			interrupts =   <12 1
++					13 1
++					14 1
++					15 1>;
++			interrupt-parent = <&UIC0>;
++		};
+ 	};
+ 
+ 	chosen {
+diff --git a/arch/powerpc/boot/dts/kilauea.dts b/arch/powerpc/boot/dts/kilauea.dts
+index dececc4..56fad7c 100644
+--- a/arch/powerpc/boot/dts/kilauea.dts
++++ b/arch/powerpc/boot/dts/kilauea.dts
+@@ -342,5 +342,26 @@
+ 				0x0 0x0 0x0 0x3 &UIC2 0xd 0x4 /* swizzled int C */
+ 				0x0 0x0 0x0 0x4 &UIC2 0xe 0x4 /* swizzled int D */>;
+ 		};
++
++		MSI: msi@0ef620000 {
++			compatible = "ibm,ppc4xx-msi-405ex", "ibm,ppc4xx-msi";
++			reg = <0xef620000 0x100>;
++			sdr-base = <0x4b0>;
++			interrupts =   <15 1
++					16 1
++					17 1
++					18 1
++					19 1
++					20 1
++					21 1
++					22 1
++					23 1
++					24 1
++					25 1
++					26 1
++					27 1
++					28 1>;
++			interrupt-parent = <&UIC2>;
++		};
+ 	};
+ };
+diff --git a/arch/powerpc/include/asm/dcr-regs.h b/arch/powerpc/include/asm/dcr-regs.h
+index 828e3aa..c69dfc2 100644
+--- a/arch/powerpc/include/asm/dcr-regs.h
++++ b/arch/powerpc/include/asm/dcr-regs.h
+@@ -157,4 +157,9 @@
+ #define  L2C_SNP_SSR_32G	0x0000f000
+ #define  L2C_SNP_ESR		0x00000800
+ 
++/*
++ * Memory Queue Modules DCR offsets
++ */
++#define MQ0_BAUH		0x10
++
+ #endif /* __DCR_REGS_H__ */
+diff --git a/arch/powerpc/sysdev/Makefile b/arch/powerpc/sysdev/Makefile
+index 5afce11..034a989 100644
+--- a/arch/powerpc/sysdev/Makefile
++++ b/arch/powerpc/sysdev/Makefile
+@@ -6,6 +6,7 @@ mpic-msi-obj-$(CONFIG_PCI_MSI)	+= mpic_msi.o mpic_u3msi.o mpic_pasemi_msi.o
+ obj-$(CONFIG_MPIC)		+= mpic.o $(mpic-msi-obj-y)
+ fsl-msi-obj-$(CONFIG_PCI_MSI)	+= fsl_msi.o
+ obj-$(CONFIG_PPC_MSI_BITMAP)	+= msi_bitmap.o
++ppc4xx-msi-obj-$(CONFIG_PCI_MSI) += ppc4xx_msi.o
+ 
+ obj-$(CONFIG_PPC_MPC106)	+= grackle.o
+ obj-$(CONFIG_PPC_DCR_NATIVE)	+= dcr-low.o
+@@ -35,7 +36,7 @@ obj-$(CONFIG_4xx_SOC)		+= ppc4xx_soc.o
+ obj-$(CONFIG_XILINX_VIRTEX)	+= xilinx_intc.o
+ obj-$(CONFIG_OF_RTC)		+= of_rtc.o
+ ifeq ($(CONFIG_PCI),y)
+-obj-$(CONFIG_4xx)		+= ppc4xx_pci.o
++obj-$(CONFIG_4xx)		+= ppc4xx_pci.o $(ppc4xx-msi-obj-y)
+ endif
+ obj-$(CONFIG_PPC4xx_GPIO)	+= ppc4xx_gpio.o
+ 
+diff --git a/arch/powerpc/sysdev/ppc4xx_msi.c b/arch/powerpc/sysdev/ppc4xx_msi.c
+new file mode 100644
+index 0000000..7c95499
+--- /dev/null
++++ b/arch/powerpc/sysdev/ppc4xx_msi.c
+@@ -0,0 +1,358 @@
++/*
++ * IBM/AMCC PPC4xx PCIe MSI handling
++ *
++ * Copyright 2008 Stefan Roese <sr@denx.de>, DENX Software Engineering
++ *
++ * Loosly based on a PPC4xx MSI version posted to linuxppc-dev from
++ * Preetesh Parekh <pparekh@amcc.com>
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#undef DEBUG
++
++#include <linux/irq.h>
++#include <linux/bootmem.h>
++#include <linux/bitmap.h>
++#include <linux/msi.h>
++#include <linux/pci.h>
++#include <linux/of_platform.h>
++#include <asm/ppc-pci.h>
++
++#include <asm/dcr.h>
++#include <asm/dcr-regs.h>
++#include <asm/reg.h>
++
++#define U64_TO_U32_LOW(val)	((u32)((val) & 0x00000000ffffffffULL))
++#define U64_TO_U32_HIGH(val)	((u32)((val) >> 32))
++
++#define RES_TO_U32_LOW(val)    \
++	((sizeof(resource_size_t) > sizeof(u32)) ? U64_TO_U32_LOW(val) : (val))
++#define RES_TO_U32_HIGH(val)   \
++	((sizeof(resource_size_t) > sizeof(u32)) ? U64_TO_U32_HIGH(val) : (0))
++
++/*
++ * Byte reversal for PEIH message handling is handled differently
++ * on 4xx PPC variants:
++ *
++ * 405EX	One bit for both directions (in- and outbound)
++ * 440SPe	No byte-reversal configuration bit at all
++ * 460EX/GT	2 bits, one for inbound and one for outbount messages
++ */
++
++/* 405EX */
++#define SDR0_PEIHS2_BREV	(0x80000000 >> 30)
++
++/* 460EX/GT */
++#define SDR0_PEIHS2_OMBR	(0x80000000 >> 29)
++#define SDR0_PEIHS2_IMBR	(0x80000000 >> 30)
++
++#define PEIH_TERMADH		0x00
++#define PEIH_TERMADL		0x08
++#define PEIH_MSIED		0x10
++#define PEIH_MSIMK		0x18
++#define PEIH_MSIASS		0x20
++#define PEIH_FLUSH0		0x30
++#define PEIH_FLUSH1		0x38
++#define PEIH_CNTRST		0x48
++
++#define PPC4XX_MSI_DATA		0x00000000
++#define PPC4XX_MSI_DATA_MASK	0xFFFFFFE0
++
++#define NR_MSI_IRQS		32
++
++struct ppc4xx_msi {
++	u32 msi_addr_lo;
++	u32 msi_addr_hi;
++	int virq[NR_MSI_IRQS];
++	int irqs;
++
++	unsigned long *irq_bitmap;
++	spinlock_t bitmap_lock;
++
++	dma_addr_t paddr;
++};
++
++static struct ppc4xx_msi *ppc4xx_msi;
++
++static int ppc4xx_msi_alloc_irqs(struct ppc4xx_msi *msi, int num)
++{
++	unsigned long flags;
++	int order = get_count_order(num);
++	int offset;
++
++	spin_lock_irqsave(&msi->bitmap_lock, flags);
++	offset = bitmap_find_free_region(msi->irq_bitmap, NR_MSI_IRQS, order);
++	spin_unlock_irqrestore(&msi->bitmap_lock, flags);
++
++	pr_debug("%s: allocated 0x%x (2^%d) at offset 0x%x\n",
++		__func__, num, order, offset);
++
++	return offset;
++}
++
++static void ppc4xx_msi_free_irqs(struct ppc4xx_msi *msi, int offset, int num)
++{
++	unsigned long flags;
++	int order = get_count_order(num);
++
++	pr_debug("%s: freeing 0x%x (2^%d) at offset 0x%x\n",
++		__func__, num, order, offset);
++
++	spin_lock_irqsave(&msi->bitmap_lock, flags);
++	bitmap_release_region(msi->irq_bitmap, offset, order);
++	spin_unlock_irqrestore(&msi->bitmap_lock, flags);
++}
++
++static int ppc4xx_msi_init_allocator(struct ppc4xx_msi *msi)
++{
++	int size = BITS_TO_LONGS(NR_MSI_IRQS) * sizeof(u32);
++
++	msi->irq_bitmap = kzalloc(size, GFP_KERNEL);
++	if (msi->irq_bitmap == NULL) {
++		pr_debug("%s: ENOMEM allocating allocator bitmap!\n", __func__);
++		return -ENOMEM;
++	}
++
++	bitmap_allocate_region(msi->irq_bitmap, 0, get_count_order(NR_MSI_IRQS));
++	ppc4xx_msi_free_irqs(msi, 0, NR_MSI_IRQS);
++
++	return 0;
++}
++
++static int ppc4xx_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
++{
++	struct msi_desc *entry;
++	struct msi_msg msg;
++	int msi_irq;
++	struct ppc4xx_msi *msi = ppc4xx_msi;
++	int rc;
++
++	msg.address_hi = ppc4xx_msi->msi_addr_hi;
++	msg.address_lo = ppc4xx_msi->msi_addr_lo;
++
++	list_for_each_entry(entry, &dev->msi_list, list) {
++		msi_irq = ppc4xx_msi_alloc_irqs(msi, 1);
++		if ((msi_irq < 0) || (msi_irq >= msi->irqs)) {
++			pr_debug("%s: fail allocating msi interrupt\n", __func__);
++			rc = -ENOSPC;
++			goto out_free;
++		}
++
++		set_irq_msi(ppc4xx_msi->virq[msi_irq], entry);
++		pr_debug("%s: allocated virq %d (hw %d) addr 0x%08x\n",
++			 __func__, ppc4xx_msi->virq[msi_irq], msi_irq, msg.address_lo);
++
++		/* Write message to PCI device */
++		msg.data = PPC4XX_MSI_DATA | msi_irq;
++		write_msi_msg(ppc4xx_msi->virq[msi_irq], &msg);
++	}
++
++	return 0;
++
++out_free:
++	return rc;
++}
++
++static int ppc4xx_msi_check_device(struct pci_dev *pdev, int nvec, int type)
++{
++	if (type == PCI_CAP_ID_MSIX)
++		pr_debug("ppc4xx_msi: MSI-X untested, trying anyway\n");
++
++	return 0;
++}
++
++static void ppc4xx_teardown_msi_irqs(struct pci_dev *dev)
++{
++	struct msi_desc *entry;
++	struct ppc4xx_msi *msi = ppc4xx_msi;
++
++	list_for_each_entry(entry, &dev->msi_list, list) {
++		if (entry->irq == NO_IRQ)
++			continue;
++
++		pr_debug("%s: freeing virq %d\n", __func__, entry->irq);
++		set_irq_msi(entry->irq, NULL);
++		ppc4xx_msi_free_irqs(msi, entry->irq, 1);
++		irq_dispose_mapping(entry->irq);
++	}
++
++	return;
++}
++
++static int __devinit ppc4xx_of_msi_probe(struct of_device *dev,
++					 const struct of_device_id *match)
++{
++	struct device_node *np = dev->node;
++	struct device_node *mq_np;
++	struct resource res;
++	struct ppc4xx_msi *msi = NULL;
++	void __iomem *peih_regs = NULL;
++	void *vaddr = NULL;
++	const u32 *pval;
++	u32 sdr_base;
++	int count;
++	int i;
++	int rc;
++	u64 msi_addr = 0;
++	u32 val = 0;
++
++	printk(KERN_INFO "Setting up PPC4xx MSI support\n");
++
++	msi = kzalloc(sizeof(struct ppc4xx_msi), GFP_KERNEL);
++	if (!msi) {
++		printk(KERN_ERR "No memory for MSI structure!\n");
++		rc = -ENOMEM;
++		goto error_out;
++	}
++
++	/* Fetch PCIe interrupt handler registers address */
++	if (of_address_to_resource(np, 0, &res)) {
++		printk(KERN_ERR "%s: Can't get PCI-E interrupt handler space!\n",
++		       np->full_name);
++		rc = -ENOMEM;
++		goto error_out;
++	}
++
++	peih_regs = ioremap(res.start, res.end - res.start + 1);
++	if (!peih_regs) {
++		printk(KERN_ERR "%s: ioremap failed!\n", np->full_name);
++		rc = -ENOMEM;
++		goto error_out;
++	}
++
++	pval = of_get_property(np, "sdr-base", NULL);
++	if (pval == NULL) {
++		printk(KERN_ERR "%s: Missing sdr-base!\n", np->full_name);
++		rc = -ENOMEM;
++		goto error_out;
++	}
++	sdr_base = *pval;
++
++	/* Set byte reversal bit(s) if necessary */
++	if (of_device_is_compatible(np, "ibm,ppc4xx-msi-405ex"))
++		val = SDR0_PEIHS2_BREV;
++	if ((of_device_is_compatible(np, "ibm,ppc4xx-msi-460ex")) ||
++	    (of_device_is_compatible(np, "ibm,ppc4xx-msi-460gt")))
++		val = SDR0_PEIHS2_IMBR | SDR0_PEIHS2_OMBR;
++
++	/* Set base address for PEIH */
++	mtdcri(SDR0, sdr_base + 0, RES_TO_U32_HIGH(res.start));
++	mtdcri(SDR0, sdr_base + 1, RES_TO_U32_LOW(res.start) | val);
++	pr_debug("%s: MSI PEIH physical address at %llx\n", __func__, (u64)res.start);
++
++	/*
++	 * MSI termintaion address needs to be located in an local
++	 * area mapped to the PCIe bus via a PIM (PCI Inbound Message Window).
++	 * Only this way the accesses get forwarded to the PLB where they are
++	 * decoded.
++	 */
++	vaddr = dma_alloc_coherent(&dev->dev, PAGE_SIZE, &msi->paddr, GFP_KERNEL);
++
++	/*
++	 * On 460EX/GT the PEIH (PCIe Interrupt Handler) logic is implemented
++	 * on the HB (High Bandwidth) segment of the PLB. This implies that the
++	 * target address must reside in the HB segment range.
++	 * The DCR MQ0_BAUH (PLB Base Address, upper 32 bits (HB)) configures
++	 * the offset for this HB access window. The optional "mq-device"
++	 * points to the Memory-Queue Module device node, which configures
++	 * the base address of the HB PLB segment.
++	 */
++	pval = of_get_property(np, "mq-device", NULL);
++	if (pval) {
++		mq_np = of_find_node_by_phandle(*pval);
++		if (mq_np) {
++			pval = of_get_property(mq_np, "dcr-reg", NULL);
++			if (pval)
++				msi_addr = (u64)mfdcr(*pval + MQ0_BAUH) << 32;
++		}
++	}
++
++	/* Now add physical address of the cache coherent area */
++	msi_addr += msi->paddr;
++	msi->msi_addr_hi = U64_TO_U32_HIGH(msi_addr);
++	msi->msi_addr_lo = U64_TO_U32_LOW(msi_addr);
++	pr_debug("%s: MSI termination address: vaddr=%p paddr=%llx\n",
++		 __func__, vaddr, msi_addr);
++
++	/* Progam the Interrupt handler Termination addr registers */
++	out_be32(peih_regs + PEIH_TERMADH, msi->msi_addr_hi);
++	out_be32(peih_regs + PEIH_TERMADL, msi->msi_addr_lo);
++
++	/* Program MSI Expected data and Mask bits */
++	out_be32(peih_regs + PEIH_MSIED, PPC4XX_MSI_DATA);
++	out_be32(peih_regs + PEIH_MSIMK, PPC4XX_MSI_DATA_MASK);
++
++	rc = ppc4xx_msi_init_allocator(msi);
++	if (rc) {
++		printk(KERN_ERR "Error allocating MSI bitmap!\n");
++		goto error_out;
++	}
++
++	pval = of_get_property(np, "interrupts", &count);
++	if (!pval) {
++		printk(KERN_ERR "No interrupts property found on %s!\n",
++		       np->full_name);
++		rc = -ENODEV;
++		goto error_out;
++	}
++	if (count % 8 != 0) {
++		printk(KERN_ERR "Malformed interrupts property on %s!\n",
++		       np->full_name);
++		rc = -EINVAL;
++		goto error_out;
++	}
++
++	count /= sizeof(u32);
++	for (i = 0; i < count / 2; i++) {
++		msi->virq[i] = irq_of_parse_and_map(np, i);
++		pr_debug("%s: virq[%d] = %d\n", __func__, i, msi->virq[i]);
++	}
++
++	iounmap(peih_regs);
++
++	msi->irqs = count;
++	ppc4xx_msi = msi;
++
++	WARN_ON(ppc_md.setup_msi_irqs);
++	ppc_md.setup_msi_irqs = ppc4xx_setup_msi_irqs;
++	ppc_md.teardown_msi_irqs = ppc4xx_teardown_msi_irqs;
++	ppc_md.msi_check_device = ppc4xx_msi_check_device;
++
++	return 0;
++
++error_out:
++	if (vaddr)
++		dma_free_coherent(&dev->dev, PAGE_SIZE, vaddr, msi->paddr);
++
++	if (peih_regs)
++		iounmap(peih_regs);
++
++	if (msi)
++		kfree(msi);
++
++	return rc;
++}
++
++static const struct of_device_id ppc4xx_of_msi_ids[] = {
++	{
++		.compatible = "ibm,ppc4xx-msi",
++	},
++	{}
++};
++
++static struct of_platform_driver ppc4xx_of_msi_driver = {
++	.name = "ibm-msi",
++	.match_table = ppc4xx_of_msi_ids,
++	.probe = ppc4xx_of_msi_probe,
++};
++
++static __init int ppc4xx_of_msi_init(void)
++{
++	return of_register_platform_driver(&ppc4xx_of_msi_driver);
++}
++
++subsys_initcall(ppc4xx_of_msi_init);
+diff --git a/arch/powerpc/sysdev/ppc4xx_pci.c b/arch/powerpc/sysdev/ppc4xx_pci.c
+index d3e4d61..03e5c63 100644
+--- a/arch/powerpc/sysdev/ppc4xx_pci.c
++++ b/arch/powerpc/sysdev/ppc4xx_pci.c
+@@ -1393,6 +1393,10 @@ static void __init ppc4xx_configure_pciex_PIMs(struct ppc4xx_pciex_port *port,
+ {
+ 	resource_size_t size = res->end - res->start + 1;
+ 	u64 sa;
++	struct device_node *np = port->node;
++	struct device_node *mq_np;
++	const u32 *pval;
++	u32 bauh = 0;
+ 
+ 	if (port->endpoint) {
+ 		resource_size_t ep_addr = 0;
+@@ -1442,10 +1446,50 @@ static void __init ppc4xx_configure_pciex_PIMs(struct ppc4xx_pciex_port *port,
+ 
+ 		out_le32(mbase + PCI_BASE_ADDRESS_0, RES_TO_U32_LOW(res->start));
+ 		out_le32(mbase + PCI_BASE_ADDRESS_1, RES_TO_U32_HIGH(res->start));
++
++		/*
++		 * For MSI support some 4xx platforms (e.g. 460EX/GT) need
++		 * to configure a 2nd PIM to enable access to the HB PLB
++		 * segment where the PEIH MSI termination address is located
++		 * and snooped from the PEIH.
++		 * The optional "mq-device" points to the Memory-Queue Module
++		 * device node, which configures the base address of the HB PLB
++		 * segment.
++		 */
++		pval = of_get_property(np, "mq-device", NULL);
++		if (pval) {
++			mq_np = of_find_node_by_phandle(*pval);
++			if (mq_np) {
++				pval = of_get_property(mq_np, "dcr-reg", NULL);
++				if (pval)
++					bauh = mfdcr(*pval + MQ0_BAUH);
++			}
++		}
++
++		if (bauh) {
++			out_le32(mbase + PECFG_BAR2HMPA, RES_TO_U32_HIGH(sa));
++			out_le32(mbase + PECFG_BAR2LMPA, RES_TO_U32_LOW(sa));
++
++			/* The setup of the split looks weird to me ... let's see
++			 * if it works
++			 */
++			out_le32(mbase + PECFG_PIM3LAL, 0x00000000);
++			out_le32(mbase + PECFG_PIM3LAH, 0x00000000);
++			out_le32(mbase + PECFG_PIM4LAL, 0x00000000);
++			out_le32(mbase + PECFG_PIM4LAH, 0x00000000);
++			out_le32(mbase + PECFG_PIM34SAH, 0xffff0000);
++			out_le32(mbase + PECFG_PIM34SAL, 0x00000000);
++
++			out_le32(mbase + PECFG_RTBAR2L, RES_TO_U32_LOW(res->start));
++			out_le32(mbase + PECFG_RTBAR2H, RES_TO_U32_HIGH(res->start) + bauh);
++		}
+ 	}
+ 
+ 	/* Enable inbound mapping */
+-	out_le32(mbase + PECFG_PIMEN, 0x1);
++	if (bauh == 0)
++		out_le32(mbase + PECFG_PIMEN, 0x1);
++	else
++		out_le32(mbase + PECFG_PIMEN, 0x5);
+ 
+ 	/* Enable I/O, Mem, and Busmaster cycles */
+ 	out_le16(mbase + PCI_COMMAND,
+diff --git a/arch/powerpc/sysdev/ppc4xx_pci.h b/arch/powerpc/sysdev/ppc4xx_pci.h
+index d04e40b..b1d7d31 100644
+--- a/arch/powerpc/sysdev/ppc4xx_pci.h
++++ b/arch/powerpc/sysdev/ppc4xx_pci.h
+@@ -398,6 +398,14 @@
+ #define PECFG_PIM1LAH		0x34c
+ #define PECFG_PIM01SAL		0x350
+ #define PECFG_PIM01SAH		0x354
++#define PECFG_PIM2LAL		0x358
++#define PECFG_PIM2LAH		0x35c
++#define PECFG_PIM3LAL		0x360
++#define PECFG_PIM3LAH		0x364
++#define PECFG_PIM4LAL		0x368
++#define PECFG_PIM4LAH		0x36c
++#define PECFG_PIM34SAL		0x370
++#define PECFG_PIM34SAH		0x374
+ 
+ #define PECFG_POM0LAL		0x380
+ #define PECFG_POM0LAH		0x384
+@@ -406,6 +414,9 @@
+ #define PECFG_POM2LAL		0x390
+ #define PECFG_POM2LAH		0x394
+ 
++#define PECFG_RTBAR2L		0x3b8
++#define PECFG_RTBAR2H		0x3bc
++
+ /* SDR Bit Mappings */
+ #define PESDRx_RCSSET_HLDPLB	0x10000000
+ #define PESDRx_RCSSET_RSTGU	0x01000000
+-- 
+1.6.2.1
+

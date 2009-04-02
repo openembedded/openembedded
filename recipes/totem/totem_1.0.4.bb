@@ -15,7 +15,7 @@ SRC_URI="http://ftp.gnome.org/pub/GNOME/sources/totem/1.0/totem-${PV}.tar.gz \
 	file://cflags.patch;patch=1 \
 	file://gtkonly.patch;patch=1"
 
-DEPENDS="gtk+ libglade gnome-vfs gconf libxine-x11 libxml2"
+DEPENDS="gtk+ libglade gnome-vfs gconf libxine libxml2"
 
 inherit autotools
 

@@ -156,7 +156,6 @@ PREFERRED_PROVIDER_virtual/db           ?= "db"
 PREFERRED_PROVIDER_virtual/db-native    ?= "db-native"
 PREFERRED_PROVIDER_virtual/libsdl       ?= "libsdl-x11"
 PREFERRED_PROVIDER_virtual/libx11       ?= "libx11"
-PREFERRED_PROVIDER_virtual/libxine      ?= "libxine-x11"
 PREFERRED_PROVIDER_virtual/xserver      ?= "xserver-kdrive"
 
 # Others:

@@ -1,7 +1,7 @@
 DESCRIPTION = "gxine is a front-end for libxine."
 SECTION = "x11/multimedia"
 LICENSE = "GPL"
-DEPENDS = "gtk+ libxine-x11"
+DEPENDS = "gtk+ libxine"
 PR = "r1"
 
 # Long list of RDEPENDS required to playback mp3/ogg audio and mpeg/mpeg4 video

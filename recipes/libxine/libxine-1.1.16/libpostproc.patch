@@ -1,0 +1,34 @@
+Index: xine-lib-1.1.16/src/post/planar/pp.c
+===================================================================
+--- xine-lib-1.1.16.orig/src/post/planar/pp.c	2009-03-25 00:11:21.375059193 +0100
++++ xine-lib-1.1.16/src/post/planar/pp.c	2009-03-25 00:11:51.259320837 +0100
+@@ -29,11 +29,7 @@
+ #include "xineutils.h"
+ #include <pthread.h>
+ 
+-#ifdef HAVE_FFMPEG_AVUTIL_H
+-#  include <postprocess.h>
+-#else
+-#  include <libpostproc/postprocess.h>
+-#endif
++#include <libpostproc/postprocess.h>
+ 
+ #define PP_STRING_SIZE 256 /* size of pp mode string (including all options) */
+ 
+Index: xine-lib-1.1.16/src/combined/ffmpeg/ff_video_decoder.c
+===================================================================
+--- xine-lib-1.1.16.orig/src/combined/ffmpeg/ff_video_decoder.c	2009-03-25 00:20:01.437924936 +0100
++++ xine-lib-1.1.16/src/combined/ffmpeg/ff_video_decoder.c	2009-03-25 00:20:16.771556770 +0100
+@@ -45,11 +45,7 @@
+ #include "ffmpeg_decoder.h"
+ #include "ff_mpeg_parser.h"
+ 
+-#ifdef HAVE_FFMPEG_AVUTIL_H
+-#  include <postprocess.h>
+-#else
+-#  include <libpostproc/postprocess.h>
+-#endif
++#include <libpostproc/postprocess.h>
+ 
+ #define VIDEOBUFSIZE        (128*1024)
+ #define SLICE_BUFFER_SIZE   (1194*1024)

@@ -3,10 +3,12 @@ require xorg-lib-common.inc
 DESCRIPTION = "X11 toolkit intrinsics library"
 DEPENDS += "libsm virtual/libx11 kbproto"
 PROVIDES = "xt"
-PR = "r1"
+PR = "r2"
 PE = "1"
 
 XORG_PN = "libXt"
+
+SRC_URI += "file://pr10970-header-fix.patch;patch=1"
 
 EXTRA_OECONF += "--disable-install-makestrs --disable-xkb"
 
