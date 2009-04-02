@@ -313,3 +313,8 @@ Person:     Sergey Lapin
 Mail:       slapin@ossfans.org
 Machines:   palm*, afeb9260
 Recipes:    at91bootstrap
+
+Person:     Christopher Larson
+Mail:       clarson@kergoth.com
+Recipes:    autoconf, automake, libtool, gnu-config
+Recipes:    autoconf*.bbclass
