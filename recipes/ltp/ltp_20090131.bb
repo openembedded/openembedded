@@ -14,8 +14,10 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://no-IDcheck.patch;patch=1 \
            file://no_hyperthreading_tests.patch;patch=1"
 
-SRC_URI_append_mips += "file://no_epoll_create2_mips.patch;patch=1"
-SRC_URI_append_mipsel += "file://no_epoll_create2_mips.patch;patch=1"
+SRC_URI_append_mips += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_mipsel += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_arm += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_armeb += "file://no_epoll_create2.patch;patch=1"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 
