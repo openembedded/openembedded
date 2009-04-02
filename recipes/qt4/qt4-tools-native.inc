@@ -8,6 +8,7 @@ LICENSE = "GPL"
 inherit native
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
+           file://configure-lflags.patch;patch=1 \
            file://qt-config.patch;patch=1 \
            file://g++.conf \
            file://linux.conf"
@@ -29,7 +30,7 @@ EXTRA_OECONF = "-prefix ${prefix} \
 EXTRA_OEMAKE = " "
 
 do_configure() {
-    echo yes | ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+    echo yes | LFLAGS="-L${STAGING_LIBDIR_NATIVE}" ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 TOBUILD = "\
