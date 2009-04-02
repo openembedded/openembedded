@@ -1,0 +1,12 @@
+diff -urN zeroconf-0.9.orig/Makefile zeroconf-0.9/Makefile
+--- zeroconf-0.9.orig/Makefile	2006-04-29 10:41:15.000000000 +0000
++++ zeroconf-0.9/Makefile	2009-04-02 09:27:38.000000000 +0000
+@@ -18,7 +18,7 @@
+ 
+ zeroconf: zeroconf.o delay.o
+ 	$(Q)echo "Creating $@"
+-	$(Q)$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
++	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+ 
+ 
+ # Automatic dependency generation
