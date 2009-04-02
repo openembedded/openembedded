@@ -3,11 +3,12 @@
 # Released under the MIT license (see packages/COPYING)
 
 inherit gnome
+PR = "r2"
 
 LICENSE="GPL"
 SRC_URI += "file://configure.patch;patch=1"
 
-DEPENDS="libgnomeui gail"
+DEPENDS="libgnomeui virtual/gail"
 EXTRA_OECONF = "--disable-gtk-doc"
 
 edir="${STAGING_INCDIR}/eel-2/eel"

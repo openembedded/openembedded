@@ -44,6 +44,9 @@ do_stage () {
 	oe_libinstall -so -C gdk libgdk-x11-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C contrib/gdk-pixbuf-xlib libgdk_pixbuf_xlib-2.0 ${STAGING_LIBDIR}
 	oe_libinstall -so -C gdk-pixbuf libgdk_pixbuf-2.0 ${STAGING_LIBDIR}
+	if test -d modules/other/gail/libgail-util ; then
+		oe_libinstall -so -C modules/other/gail/libgail-util libgailutil ${STAGING_LIBDIR}
+	fi
 
 	autotools_stage_includes
 

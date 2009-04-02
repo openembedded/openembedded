@@ -1,7 +1,7 @@
 require gtkhtml.inc
 
-DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui gal-2.0"
-PR = "r2"
+DEPENDS = "gtk+ virtual/gail libbonoboui libgnomeprintui libgnomeui gal-2.0"
+PR = "r3"
 
 SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.0/gtkhtml-${PV}.tar.bz2 \
 	file://fix-missing-colormap.patch;patch=1"

@@ -1,7 +1,7 @@
 require gtkhtml.inc
 
-DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui gal-2.0"
-PR = "r0"
+DEPENDS = "gtk+ virtual/gail libbonoboui libgnomeprintui libgnomeui gal-2.0"
+PR = "r1"
 
 SRC_URI = "http://ftp.debian.org/debian/pool/main/libg/libgtkhtml2/libgtkhtml2_2.6.3.orig.tar.gz"
 
