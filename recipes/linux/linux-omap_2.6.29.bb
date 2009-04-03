@@ -7,9 +7,9 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "90e758af52ba803cba233fabee81176d99589f09"
+SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
-PR = "r5+gitr${SRCREV}"
+PR = "r6+gitr${SRCREV}"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"

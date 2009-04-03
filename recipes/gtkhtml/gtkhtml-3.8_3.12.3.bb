@@ -2,7 +2,8 @@ DESCRIPTION = "HTML rendering/editing library"
 SECTION = "x11/libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui"
+DEPENDS = "gtk+ virtual/gail libbonoboui libgnomeprintui libgnomeui"
+PR = "r2"
 
 SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.12/gtkhtml-${PV}.tar.bz2 \
            file://60_glib-2.15-g-gnuc-function.patch;patch=1"

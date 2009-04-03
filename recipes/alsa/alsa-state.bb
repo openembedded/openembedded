@@ -7,7 +7,7 @@
 DESCRIPTION = "Alsa Scenario Files"
 LICENSE = "MIT"
 PV = "0.2.0"
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "\
   file://asound.conf \
@@ -22,7 +22,7 @@ SRC_URI_append_a780 = "file://gsmhandset.state \
 inherit update-rc.d
 
 INITSCRIPT_NAME = "alsa-state"
-INITSCRIPT_PARAMS = "start 39 S ."
+INITSCRIPT_PARAMS = "start 39 S . stop 31 0 6 ."
 
 do_install() {
     install -d ${D}${sysconfdir}/init.d
