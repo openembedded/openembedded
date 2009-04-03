@@ -1,6 +1,7 @@
 require gtkhtml.inc
 
-DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui"
+DEPENDS = "gtk+ virtual/gail libbonoboui libgnomeprintui libgnomeui"
+PR = "r2"
 
 SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.6/gtkhtml-${PV}.tar.bz2 \
 	file://cross-includedir.patch;patch=1"

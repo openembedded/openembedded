@@ -1,7 +1,7 @@
 require gtk+.inc
 
 DEPENDS += "cairo jasper"
-PR = "r1"
+PR = "r2"
 
 # disabled per default - this uses as little patches as possible
 DEFAULT_PREFERENCE = "-1" 
@@ -40,6 +40,8 @@ python populate_packages_prepend () {
                 bb.data.setVar('PKG_${PN}', 'libgtk-2.0', d)
 }
 
+# gail is part of gtk+ since gtk+-2.13.0 (targetting >=GNOME 2.23):
+PROVIDES = "virtual/gail"
 RPROVIDES_${PN} = "libgailutil18"
 RCONFLICTS_${PN} = "libgailutil18"
 RREPLACES_${PN} = "libgailutil18"

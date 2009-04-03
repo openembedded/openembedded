@@ -1,6 +1,7 @@
 require gtkhtml.inc
 
-DEPENDS = "gtk+ gail libbonoboui libgnomeprintui libgnomeui"
+DEPENDS = "gtk+ virtual/gail libbonoboui libgnomeprintui libgnomeui"
+PR = "r2"
 
 SRC_URI = "${GNOME_MIRROR}/gtkhtml/3.18/gtkhtml-${PV}.tar.bz2"
 FILES_${PN} += "${datadir}/gtkhtml-3.8"
