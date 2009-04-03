@@ -45,7 +45,7 @@ done
 sed -f /tmp/delete.sed depends.dot >reduced.dot
 
 # create a PNG
-neato -v -Tpng -o depends.png reduced.dot
+dot -v -Tpng -o depends.png reduced.dot
 
 # show it
 gthumb depends.png

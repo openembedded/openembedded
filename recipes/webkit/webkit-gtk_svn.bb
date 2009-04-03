@@ -1,11 +1,9 @@
 DESCRIPTION = "WebKit browser engine, GTK+ edition"
-DEPENDS = "gnome-keyring libsoup-2.4 curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
+DEPENDS = "gtk-doc-native gtk-doc gnome-keyring libsoup-2.4 curl icu libxml2 cairo libxslt libxt libidn gnutls gtk+ gstreamer gst-plugins-base gnome-vfs bison-native flex-native gperf-native perl-native sqlite3"
 
 SRCREV_FORMAT = "webcore-rwebkit"
 
-# Yes, this is wrong...
-PV = "0.1+svnr${SRCREV}"
-PR = "r9"
+PV = "1.1.4+svnr${SRCREV}"
 
 SRC_URI = "\
   svn://svn.webkit.org/repository/webkit/trunk/;module=JavaScriptCore;proto=http \
@@ -33,9 +31,14 @@ EXTRA_OECONF = "\
                 --enable-debug=no \
                 --enable-svg \
                 --enable-icon-database=yes \
-		--with-http-backend=soup \
+                --with-http-backend=soup \
                "
+
 EXTRA_AUTORECONF = " -I autotools "
+
+do_configure_prepend() {
+	touch gtk-doc.make
+}
 
 # Dolt gets used on x86 and ppc and hardcodes 'libtool'
 do_configure_append() {

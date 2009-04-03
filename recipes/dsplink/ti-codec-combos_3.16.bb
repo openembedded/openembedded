@@ -4,7 +4,9 @@ LICENCE = "unknown"
 
 require ti-paths.inc
 
-SRC_URI = "http://software-dl.ti.com/sdo/sdo_apps_public_sw/omap3530_dvsdk_combos_tspa/omap3530_dvsdk_combos_tspa-3_16-Linux-x86.bin \
+
+# Tar-Up Codec Combos from the OMAP DVSDK (http://www.ti.com/dvevmupdates) and drop in files/
+SRC_URI = "file://omap3530_dvsdk_combos_3_16.tar.gz \
     "
 
 S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
@@ -19,21 +21,6 @@ export CE_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/pa
 
 # Needed for now since makefile in latest package assumes this is set
 export CODEC_INSTALL_DIR="${S}"
-
-# Helper function to run the binary installer and unpack the tar.gz in the same place as it was before - this could be optimised later
-do_accept_license() {
-        export HOME="${WORKDIR}"
-	chmod +x ${WORKDIR}/omap3530_dvsdk_combos_tspa-3_16-Linux-x86.bin
-        ${WORKDIR}/omap3530_dvsdk_combos_tspa-3_16-Linux-x86.bin --mode silent --prefix ${S}_install
-        cd "${S}_install"
-	tar -xzvf omap3530_dvsdk_combos_tspa_3_16.tar.gz
-	if [ -d ${S} ] ; then 
-            rm -rf ${S}
-        fi
-        mv omap3530_dvsdk_combos_tspa_3_16 ${S}
-}
-
-addtask accept_license after do_unpack before do_configure
 
 do_compile() {
 

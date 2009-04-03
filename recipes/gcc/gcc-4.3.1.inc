@@ -1,11 +1,12 @@
 # No armeb and thumb patches - really needs checking 
 DEFAULT_PREFERENCE = "-99"
+ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
 
 DEPENDS = "mpfr gmp"
 
-SRC_URI = "ftp://ftp.gnu.org/pub/gnu/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
+SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-ia64-libunwind.patch;patch=1;pnum=0 \
 	file://fedora/gcc43-java-nomulti.patch;patch=1;pnum=0 \

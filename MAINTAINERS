@@ -99,7 +99,7 @@ Website:    http://www.jerryweb.org/
 Machines:   mpc8313e-rdb
 Recipes:    libexosip2, python-cheetah, python-django, python-pyopenssl,
 Recipes:    pump, squid, squidview, hostap-daemon, wpa-supplicant, linux,
-Recipes:    u-boot
+Recipes:    u-boot, qt4/*
 
 Person:     Joaquim Duran
 Mail:       joaquinduran@adtelecom.es
@@ -313,3 +313,8 @@ Person:     Sergey Lapin
 Mail:       slapin@ossfans.org
 Machines:   palm*, afeb9260
 Recipes:    at91bootstrap
+
+Person:     Christopher Larson
+Mail:       clarson@kergoth.com
+Recipes:    autoconf, automake, libtool, gnu-config
+Recipes:    autoconf*.bbclass

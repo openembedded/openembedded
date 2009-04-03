@@ -171,6 +171,7 @@ def package_qa_get_elf(path, bits32):
 # 6 - .pc contains reference to /usr/include or workdir
 # 7 - the desktop file is not valid
 # 8 - .la contains reference to the workdir
+# 9 - LDFLAGS ignored
 
 def package_qa_clean_path(path,d):
     """ Remove the common prefix from the path. In this case it is the TMPDIR"""

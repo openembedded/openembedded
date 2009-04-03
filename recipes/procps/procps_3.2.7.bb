@@ -1,6 +1,6 @@
 require procps.inc
 
-PR = "r7"
+PR = "r8"
 
 inherit update-rc.d
 
@@ -22,8 +22,8 @@ FILES = "${bindir}/top.${PN} ${base_bindir}/ps.${PN} ${bindir}/uptime.${PN} ${ba
 CONFFILES_${PN} = "${sysconfdir}/sysctl.conf"
 
 EXTRA_OEMAKE = "CFLAGS=-I${STAGING_INCDIR} \
-		CPPFLAGS=-I${STAGING_INCDIR} \
-                LDFLAGS=-L${STAGING_LIBDIR} -Wl,--rpath-link,${STAGING_LIBDIR} \
+                CPPFLAGS=-I${STAGING_INCDIR} \
+                LDFLAGS="${LDFLAGS}" \
                 CURSES=-lncurses \
                 install='install -D' \
                 ldconfig=echo"

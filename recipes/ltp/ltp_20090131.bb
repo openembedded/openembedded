@@ -3,7 +3,7 @@ HOMEPAGE = "http://ltp.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "zip-native"
-PR = "r2"
+PR = "r3"
 
 inherit autotools
 
@@ -14,35 +14,26 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://no-IDcheck.patch;patch=1 \
            file://no_hyperthreading_tests.patch;patch=1"
 
-SRC_URI_append_mips += "file://no_epoll_create2_mips.patch;patch=1"
-SRC_URI_append_mipsel += "file://no_epoll_create2_mips.patch;patch=1"
+SRC_URI_append_mips += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_mipsel += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_arm += "file://no_epoll_create2.patch;patch=1"
+SRC_URI_append_armeb += "file://no_epoll_create2.patch;patch=1"
 
 S = "${WORKDIR}/ltp-full-${PV}"
 
 EXTRA_OEMAKE_append = " CROSS_COMPILE=${HOST_PREFIX}"
 
-FILES_${PN}-dbg =  "${libexecdir}/ltp/*/*/*/*/*/.debug"
+FILES_${PN}-dbg  = "${libexecdir}/ltp/*/*/*/*/*/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/*/*/.debug"
+FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/*/.debug"
 FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/*/.debug"
 FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/*/.debug"
 FILES_${PN}-dbg += "${libexecdir}/ltp/*/*/.debug"
 FILES_${PN}-dbg += "${libexecdir}/ltp/*/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/trigo/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/iperb/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/exp_log/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/power/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/float/bessel/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/abs/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/atof/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/nextafter/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/math/fptests/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/f00f/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/misc/crash/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/pan/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/network/ipv6/*/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/network/rpc/rpc01/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/bin/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/kernel/syscalls/*/.debug"
-#FILES_${PN}-dbg += "${libexecdir}/ltp/testcases/kernel/mem/*/.debug"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile(){
         oe_runmake CROSS_COMPILE=${HOST_PREFIX}

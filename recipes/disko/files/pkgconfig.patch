@@ -1,0 +1,26 @@
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	2009-03-24 14:41:03.000000000 +0100
++++ git/Makefile	2009-03-25 02:20:38.613872577 +0100
+@@ -59,7 +59,7 @@
+ install-pkgconfig:
+ 	@echo "writing pkgconfig information"
+ 	@install -d "$(DESTDIR)$(libdir)/../pkgconfig"
+-	@echo "prefix=$(prefix)" > $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
++	@echo "prefix=/usr" > $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
+ 	@echo "exec_prefix=\$${prefix}/bin" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
+ 	@echo "libdir=\$${prefix}/lib/disko" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
+ 	@echo "includedir=\$${prefix}/include/disko" >> $(DESTDIR)$(libdir)/../pkgconfig/$(PROJECTNAME).pc
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct	2009-03-25 02:22:03.018024446 +0100
++++ git/SConstruct	2009-03-25 02:22:41.668240834 +0100
+@@ -473,7 +473,7 @@
+ 	if 'mysql' in env['database']:
+ 		disko_pc_requires += ', mysql'
+ 
+-	disko_pc.write('prefix=' + env['prefix'] + '\n')
++	disko_pc.write('prefix=/usr' + '\n')
+ 	disko_pc.write('exec_prefix=${prefix}\n')
+ 	disko_pc.write('libdir=${exec_prefix}/lib/disko\n')
+ 	disko_pc.write('includedir=${exec_prefix}/include/disko\n\n')

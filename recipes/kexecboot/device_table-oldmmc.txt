@@ -32,5 +32,5 @@
 
 # mmc numbers are assigned dynamicly so if you have other dynamic assigned block devices it may be wrong
 /dev/mmcblk0	b	660	0	6	254	0	-	-	-
-/dev/mmcblk0p	b	660	0	6	254	1	1	1	7
+/dev/mmcblk0p	b	660	0	6	254	1	1	1	8
 /dev/event0 	c	660	0	0	13	64	-	-	-

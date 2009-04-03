@@ -13,7 +13,7 @@ DEFAULT_PREFERENCE_omap5912osk = "1"
 SRCREV = "79d042a081d3e467c735bb0d9569ed6296f85a3c"
 
 PV = "2.6.28"
-PR = "r17"
+PR = "r18"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;branch=omap-2.6.28;protocol=git \
 	   file://defconfig"
@@ -54,6 +54,7 @@ SRC_URI_append = " \
            file://usbttyfix.patch;patch=1 \
            file://ioremap-fix.patch;patch=1 \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
+           file://mmctiming.patch;patch=1 \
 "
 
 

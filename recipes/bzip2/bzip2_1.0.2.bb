@@ -1,10 +1,11 @@
 DESCRIPTION = "Very high-quality data compression program."
 SECTION = "console/utils"
-PR = "r1"
+PR = "r2"
 
 LICENSE = "bzip2"
 SRC_URI = "ftp://sources.redhat.com/pub/bzip2/v102/bzip2-${PV}.tar.gz \
-	   file://installpaths.patch;patch=1"
+	   file://installpaths.patch;patch=1 \
+	   file://ldflags.patch;patch=1"
 
 CFLAGS_append = " -fPIC -fpic -Winline -fno-strength-reduce -D_FILE_OFFSET_BITS=64"
 

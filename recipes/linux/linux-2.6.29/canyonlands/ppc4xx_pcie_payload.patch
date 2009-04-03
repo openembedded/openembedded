@@ -1,0 +1,15 @@
+Index: linux-2.6.28/arch/powerpc/sysdev/ppc4xx_pci.c
+===================================================================
+--- linux-2.6.28.orig/arch/powerpc/sysdev/ppc4xx_pci.c	2009-03-19 17:46:18.000000000 +0100
++++ linux-2.6.28/arch/powerpc/sysdev/ppc4xx_pci.c	2009-03-19 17:46:55.000000000 +0100
+@@ -1591,7 +1591,9 @@
+ 	if (!port->endpoint) {
+ 		/* Set Class Code to PCI-PCI bridge and Revision Id to 1 */
+ 		out_le32(mbase + 0x208, 0x06040001);
+-
++		printk(KERN_INFO "maximum payload size 512 bytes.\n");
++		/* maximum payload size 512 bytes */
++		out_le32(mbase + 0x25C, 0x00000002);
+ 		printk(KERN_INFO "PCIE%d: successfully set as root-complex\n",
+ 		       port->index);
+ 	} else {

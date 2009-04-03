@@ -3,15 +3,13 @@ require linux.inc
 DESCRIPTION = "Linux kernel for OMAP processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
+COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
 
-# This is missing the EHCI patch for beagle
 DEFAULT_PREFERENCE = "-1"
 
-SRCREV = "90e758af52ba803cba233fabee81176d99589f09"
+SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
-PV = "2.6.29-${PR}+gitr${SRCREV}"
-PR = "r0"
+PR = "r6+gitr${SRCREV}"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -22,6 +20,11 @@ SRC_URI_append = " \
            file://read_die_ids.patch;patch=1 \
            file://fix-install.patch;patch=1 \
            file://DSS2.diff;patch=1 \
+           file://0001-board-ldp-add-regulator-info-to-get-the-microSD-slo.patch;patch=1 \
+           file://fix-unaligned-access.diff;patch=1 \
+           file://make-alignment-visible.diff;patch=1 \
+           file://mmctiming.patch;patch=1 \
+           file://ehci.patch;patch=1 \
 "
 
 
