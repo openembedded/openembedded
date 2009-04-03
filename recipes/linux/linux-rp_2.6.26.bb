@@ -1,10 +1,10 @@
 require linux-rp.inc
 
-PR = "r10"
+PR = "r11"
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_qemuarm = "-1"
-DEFAULT_PREFERENCE_qemux86 = "-1"
+DEFAULT_PREFERENCE_qemux86 = "1"
 DEFAULT_PREFERENCE_spitz = "1"
 DEFAULT_PREFERENCE_collie = "1"
 DEFAULT_PREFERENCE_akita = "1"
