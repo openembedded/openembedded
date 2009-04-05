@@ -9,6 +9,9 @@ S = "${WORKDIR}/e2fsprogs-${PV}"
 
 inherit autotools
 
-EXTRA_OECONF = "--enable-dynamic-e2fsck --disable-nls --sbindir=${base_sbindir}"
+#if uclibc ntpl is merged into trunk we can enable tls for armv4 again
+EXTRA_OECONF = "${@['','--disable-tls'][bb.data.getVar('ARM_ABI', d, 1) == 'oabi' and \
+		bb.data.getVar('TARGET_OS', d, 1).find('uclibc') >= 0 ]} \
+		--enable-dynamic-e2fsck --disable-nls --sbindir=${base_sbindir}"
 
 PARALLEL_MAKE = ""

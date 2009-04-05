@@ -13,7 +13,7 @@ S = "${WORKDIR}/omap3530_dvsdk_combos_3_16"
 
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "316"
-PR = "r14"
+PR = "r15"
 
 TARGET = "all"
 
@@ -77,6 +77,10 @@ do_install () {
 do_stage () {
 	install -d ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos
 	cp -pPrf ${S}/* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos
+	for codec in encode decode ; do
+		mkdir -p  ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos/packages/ti/sdo/servers/$codec/package/info/${datadir}/ti-codec-combos
+		ln -sf ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos/packages/ti/sdo/servers/$codec/package/info/$codec* ${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos/packages/ti/sdo/servers/$codec/package/info/${datadir}/ti-codec-combos
+	done
 }
 
 FILES_ti-codec-combos = "${datadir}/ti-codec-combos/*"
