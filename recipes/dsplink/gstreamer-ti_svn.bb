@@ -4,7 +4,7 @@ SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=
           "
 SRCREV = "160"
 
-PR = "r6"
+PR = "r7"
 
 # Again, no '.' in PWD allowed :(
 PV = "0+svnr${SRCREV}"
@@ -31,6 +31,14 @@ export XDC_PLATFORM
 #GCArmv5T.cc.$unseal("opts");
 #GCArmv5T.cc.opts = "SEDME_CCARCH";
 #GCArmv5T.cc.$seal("opts");
+
+do_configure_prepend() {
+	for i in ${S}/src/*.cfg ; do
+		sed -i -e s:\./encodeCombo.x64P:${datadir}/ti-codec-combos/encodeCombo.x64P:g \
+	           -e s:\./decodeCombo.x64P:${datadir}/ti-codec-combos/decodeCombo.x64P:g \
+	           $i
+	done
+}
 
 do_compile_prepend() {
 	for i in $(find ${S} -name "config.bld") ; do

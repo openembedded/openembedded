@@ -4630,7 +4630,7 @@ index 071f4b0..267bb6b 100644
 +
 +static struct omap_dss_display_config overo_display_data_lcd = {
 +	.type = OMAP_DISPLAY_TYPE_DPI,
-+	.name = "lcd",
++	.name = "lcd43",
 +	.panel_name = "samsung-lte430wq-f0c",
 +	.u.dpi.data_lines = 24,
 +	.panel_enable = overo_panel_enable_lcd,

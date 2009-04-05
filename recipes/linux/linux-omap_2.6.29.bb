@@ -6,10 +6,11 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo|omapzoom"
 
 DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_overo = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
-PR = "r6+gitr${SRCREV}"
+PR = "r7+gitr${SRCREV}"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"
@@ -25,15 +26,20 @@ SRC_URI_append = " \
            file://make-alignment-visible.diff;patch=1 \
            file://mmctiming.patch;patch=1 \
            file://ehci.patch;patch=1 \
+           file://fix-audio-capture.patch;patch=1 \
+           file://ads7846-detection.patch;patch=1 \
 "
 
 
 SRC_URI_append_beagleboard = " file://logo_linux_clut224.ppm \
-			     "
+			                   file://beagle-asoc.patch;patch=1 \
+"
 
 SRC_URI_append_omap3evm = " \
 	file://evm-mcspi-ts.diff;patch=1 \
 "
+
+
 
 S = "${WORKDIR}/git"
 
