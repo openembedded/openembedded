@@ -9,7 +9,6 @@ inherit module
 DEFAULT_PREFERENCE = "-1"
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r0"
 PV = "223"
 
 # Get CE tarball from TI website, place in sources and calculate md5sum

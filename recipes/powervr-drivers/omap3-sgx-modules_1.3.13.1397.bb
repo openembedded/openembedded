@@ -1,8 +1,6 @@
 DESCRIPTION = "Kernel drivers for the PowerVR SGX chipset found in the omap3 SoCs"
 LICENSE = "GPLv2"
 
-PR = "r6"
-
 inherit module
 
 SRC_URI = "http://dominion.thruhere.net/koen/OE/omap3-sgx-modules-${PV}.tar.bz2 \
