@@ -8,8 +8,6 @@ SRC_URI = "ftp://ftp.easysw.com/pub/cups/${PV}/cups-${PV}-source.tar.bz2 \
 
 inherit autotools binconfig
 
-LDFLAGS += " -L${STAGING_LIBDIR} "
-
 EXTRA_OECONF = " \
                 --enable-gnutls \
 		--enable-dbus \
@@ -26,7 +24,7 @@ EXTRA_OECONF = " \
 do_configure() {
 	gnu-configize
 	libtoolize --force
-	oe_runconf
+	DSOFLAGS="${LDFLAGS}" oe_runconf
 }
 
 do_compile () {
