@@ -31,6 +31,8 @@ led_set(){
 				esac >"$1/brightness";;
 
 		slow|fast|panic|blink|flash)
+				modprobe ledtrig-timer > /dev/null 2>&1 || true
+
 				echo -n timer
 
 				case "$setting" in
