@@ -1,0 +1,12 @@
+--- git/tools/env/fw_env.config.orig	2009-02-04 09:42:50.000000000 -0700
++++ git/tools/env/fw_env.config	2009-02-04 14:25:09.000000000 -0700
+@@ -4,8 +4,4 @@
+ # Notice, that the "Number of sectors" is ignored on NOR.
+ 
+ # MTD device name	Device offset	Env. size	Flash sector size	Number of sectors
+-/dev/mtd1		0x0000		0x4000		0x4000
+-/dev/mtd2		0x0000		0x4000		0x4000
+-
+-# NAND example
+-#/dev/mtd0		0x4000		0x4000		0x20000			2
++/dev/mtd2		0x0000		0x20000		0x40000

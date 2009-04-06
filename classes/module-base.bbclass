@@ -5,6 +5,10 @@ inherit kernel-arch
 export OS = "${TARGET_OS}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 
+# A machine.conf or local.conf can increase MACHINE_KERNEL_PR to force
+# rebuilds for kernel and external modules
+PR = "${MACHINE_KERNEL_PR}"
+
 export KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion')}"
 export KERNEL_SOURCE = "${@base_read_file('${STAGING_KERNEL_DIR}/kernel-source')}"
 KERNEL_OBJECT_SUFFIX = "${@[".o", ".ko"][base_read_file('${STAGING_KERNEL_DIR}/kernel-abiversion') > "2.6.0"]}"
