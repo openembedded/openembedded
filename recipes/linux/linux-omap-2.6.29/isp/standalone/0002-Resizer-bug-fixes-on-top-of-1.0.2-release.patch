@@ -125,11 +125,11 @@ index 54bc425..8059c70 100644
  	}
  
 -	if (fh->isp_addr_read) {
--		ispmmu_unmap(fh->isp_addr_read);
+-		ispmmu_vunmap(fh->isp_addr_read);
 -		fh->isp_addr_read = 0;
 -	}
 -	if (fh->isp_addr_write) {
--		ispmmu_unmap(fh->isp_addr_write);
+-		ispmmu_vunmap(fh->isp_addr_write);
 -		fh->isp_addr_write = 0;
 -	}
 -
@@ -270,11 +270,11 @@ index 54bc425..8059c70 100644
 +	dma = videobuf_to_dma(q->bufs[vb->i]);
 +	videobuf_dma_unmap(q, dma);
 +	videobuf_dma_free(dma);
-+	ispmmu_unmap(fh->config->buf_address[vb->i]);
++	ispmmu_vunmap(fh->config->buf_address[vb->i]);
 +	fh->config->buf_address[vb->i] = 0;
  
--	ispmmu_unmap(fh->isp_addr_read);
--	ispmmu_unmap(fh->isp_addr_write);
+-	ispmmu_vunmap(fh->isp_addr_read);
+-	ispmmu_vunmap(fh->isp_addr_write);
 -	fh->isp_addr_read = 0;
 -	fh->isp_addr_write = 0;
  	spin_lock(&fh->vbq_lock);
@@ -429,7 +429,7 @@ index 54bc425..8059c70 100644
  	if (vb->state == VIDEOBUF_NEEDS_INIT) {
 -		err = videobuf_iolock(q, vb, NULL);
 -		if (!err) {
--			isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
+-			isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
 -			if (!isp_addr)
 -				err = -EIO;
 -			else {
@@ -491,7 +491,7 @@ index 54bc425..8059c70 100644
 +				goto buf_release;
 +			spin_unlock(&fh->vbq_lock);
 +		}
-+		isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
++		isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
 +		if (!isp_addr)
 +			err = -EIO;
 +		else {
