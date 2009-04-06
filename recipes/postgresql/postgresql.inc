@@ -11,6 +11,9 @@ SRC_URI = "ftp://ftp-archives.postgresql.org/pub/source/v${PV}/${P}.tar.bz2"
 
 LEAD_SONAME = "libpq.so"
 
+# LDFLAGS for shared libraries
+export LDFLAGS_SL = "${LDFLAGS}"
+
 inherit autotools pkgconfig
 
 do_compile_append() {
