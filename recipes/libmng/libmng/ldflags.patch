@@ -1,0 +1,12 @@
+diff -urN libmng-1.0.8.orig/makefiles/makefile.linux libmng-1.0.8/makefiles/makefile.linux
+--- libmng-1.0.8.orig/makefiles/makefile.linux	2004-08-06 07:17:40.000000000 +0000
++++ libmng-1.0.8/makefiles/makefile.linux	2009-04-06 11:49:45.000000000 +0000
+@@ -105,7 +105,7 @@
+ libmng.so.$(MNGVER): $(OBJSDLL)
+ #	$(CC) -shared -Wl,-soname,libmng.so.$(MNGMAJ) -o libmng.so.$(MNGVER) \
+ #	$(OBJSDLL) -L$(ZLIBLIB) -L$(JPEGLIB) -L$(LCMSLIB) -lz -lm -lc
+-	$(CC) -shared -Wl,-soname,libmng.so.$(MNGMAJ) -o libmng.so.$(MNGVER) \
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,libmng.so.$(MNGMAJ) -o libmng.so.$(MNGVER) \
+ 	$(OBJSDLL) -L$(ZLIBLIB) -L$(JPEGLIB) -ljpeg -L$(LCMSLIB) -llcms \
+     -lz -lm -lc
+ 
