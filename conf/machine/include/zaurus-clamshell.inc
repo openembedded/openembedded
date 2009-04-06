@@ -3,9 +3,8 @@ include conf/machine/include/tune-xscale.inc
 UBOOT_ENTRYPOINT = "0x80008000"
 UBOOT_LOADADDRESS = "0x80008000"
 
-
-LEGACY_IMAGEDEPENDS = "${ZAURUS-UPDATER} sharp-flash-header-c700"
 EXTRA_IMAGEDEPENDS += "sharp-flash-header-c700"
+KEXECBOOT_IMAGEDEPENDS += "sharp-flash-header-c700"
 
 IMAGE_CMD_jffs2 = "mkfs.jffs2 --root=${IMAGE_ROOTFS} --faketime -m favourlzo \
                    --output=${T}/${IMAGE_NAME}.rootfs.jffs2 --pad --little-endian --eraseblock=${ERASEBLOCKSIZE} -n \

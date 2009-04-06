@@ -10,8 +10,8 @@ ERASEBLOCKSIZE_akita = "0x20000"
 
 EXTRA_IMAGECMD_jffs2 = "--little-endian --eraseblock=${ERASEBLOCKSIZE} --pad --faketime -n" 
 
-ZAURUS-UPDATER = "zaurus-updater"
-EXTRA_IMAGEDEPENDS += "${ZAURUS-UPDATER}"
+EXTRA_IMAGEDEPENDS += "zaurus-updater"
+KEXECBOOT_IMAGEDEPENDS = "zaurus-updater"
 
 SERIAL_CONSOLE = "115200 ttyS0"
 
