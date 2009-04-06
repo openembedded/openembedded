@@ -1,0 +1,12 @@
+diff -urN gsoap-2.7.orig/soapcpp2/wsdl/Makefile.am gsoap-2.7/soapcpp2/wsdl/Makefile.am
+--- gsoap-2.7.orig/soapcpp2/wsdl/Makefile.am	2005-07-15 21:04:42.000000000 +0000
++++ gsoap-2.7/soapcpp2/wsdl/Makefile.am	2009-04-06 14:22:23.000000000 +0000
+@@ -6,7 +6,7 @@
+ AUTOMAKE_OPTIONS = foreign 1.4
+ 
+ INCLUDES=-I$(top_builddir)/soapcpp2
+-LDFLAGS=$(INCLUDES)
++AM_LDFLAGS=$(INCLUDES)
+ SOAP=$(top_builddir)/soapcpp2/src/soapcpp2
+ SOAP_CPP_LIB=$(top_builddir)/soapcpp2/libgsoap++.a
+ SOAP_CPP_SRC=wsdlC.cpp

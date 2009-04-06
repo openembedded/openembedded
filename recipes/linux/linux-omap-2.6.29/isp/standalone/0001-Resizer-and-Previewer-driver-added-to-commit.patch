@@ -443,7 +443,7 @@ index 0000000..634a056
 +	wait_for_completion_interruptible(&device->wfc);
 +
 +	if (device->isp_addr_read) {
-+		ispmmu_unmap(device->isp_addr_read);
++		ispmmu_vunmap(device->isp_addr_read);
 +		device->isp_addr_read = 0;
 +	}
 +
@@ -465,7 +465,7 @@ index 0000000..634a056
 +	struct prev_fh *fh = q->priv_data;
 +	struct prev_device *device = fh->device;
 +
-+	ispmmu_unmap(device->isp_addr_read);
++	ispmmu_vunmap(device->isp_addr_read);
 +	device->isp_addr_read = 0;
 +	spin_lock(&device->vbq_lock);
 +	vb->state = VIDEOBUF_NEEDS_INIT;
@@ -550,7 +550,7 @@ index 0000000..634a056
 +	if (vb->state == VIDEOBUF_NEEDS_INIT) {
 +		err = videobuf_iolock(q, vb, NULL);
 +		if (!err) {
-+			isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
++			isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
 +			if (!isp_addr)
 +				err = -EIO;
 +			else
@@ -1450,11 +1450,11 @@ index 0000000..54bc425
 +	}
 +
 +	if (fh->isp_addr_read) {
-+		ispmmu_unmap(fh->isp_addr_read);
++		ispmmu_vunmap(fh->isp_addr_read);
 +		fh->isp_addr_read = 0;
 +	}
 +	if (fh->isp_addr_write) {
-+		ispmmu_unmap(fh->isp_addr_write);
++		ispmmu_vunmap(fh->isp_addr_write);
 +		fh->isp_addr_write = 0;
 +	}
 +
@@ -2128,8 +2128,8 @@ index 0000000..54bc425
 +		videobuf_dma_free(dma);
 +	}
 +
-+	ispmmu_unmap(fh->isp_addr_read);
-+	ispmmu_unmap(fh->isp_addr_write);
++	ispmmu_vunmap(fh->isp_addr_read);
++	ispmmu_vunmap(fh->isp_addr_write);
 +	fh->isp_addr_read = 0;
 +	fh->isp_addr_write = 0;
 +	spin_lock(&fh->vbq_lock);
@@ -2231,7 +2231,7 @@ index 0000000..54bc425
 +	if (vb->state == VIDEOBUF_NEEDS_INIT) {
 +		err = videobuf_iolock(q, vb, NULL);
 +		if (!err) {
-+			isp_addr = ispmmu_map_sg(dma->sglist, dma->sglen);
++			isp_addr = ispmmu_vmap(dma->sglist, dma->sglen);
 +			if (!isp_addr)
 +				err = -EIO;
 +			else {
