@@ -10,6 +10,7 @@ DEFAULT_PREFERENCE_overo = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
+# The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
 PR_append = "+gitr${SRCREV}"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
@@ -33,6 +34,11 @@ SRC_URI_append = " \
            file://dss2/0011-DSS2-Allocated-memory-for-Color-Look-up-table.patch;patch=1 \
            file://dss2/0012-DSS2-Fix-DMA-rotation.patch;patch=1 \
            file://dss2/0013-DSS2-Verify-that-overlay-paddr-0.patch;patch=1 \
+           file://dss2/0014-DSS2-Add-function-to-get-DSS-logic-clock-rate.patch;patch=1 \
+           file://dss2/0015-DSS2-DSI-calculate-VP_CLK_RATIO-properly.patch;patch=1 \
+           file://dss2/0016-DSS2-DSI-improve-packet-len-calculation.patch;patch=1 \
+           file://dss2/0017-DSS2-Disable-video-planes-on-sync-lost-error.patch;patch=1 \
+           file://dss2/0018-DSS2-check-for-ovl-paddr-only-when-enabling.patch;patch=1 \
            file://0001-board-ldp-add-regulator-info-to-get-the-microSD-slo.patch;patch=1 \
            file://fix-unaligned-access.diff;patch=1 \
            file://make-alignment-visible.diff;patch=1 \
@@ -95,6 +101,7 @@ SRC_URI_append = " \
 #           file://isp/standalone/0001-Resizer-and-Previewer-driver-added-to-commit.patch;patch=1 \
 #           file://isp/standalone/0002-Resizer-bug-fixes-on-top-of-1.0.2-release.patch;patch=1 \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
+           file://modedb-hd720.patch;patch=1 \
 "
 
 

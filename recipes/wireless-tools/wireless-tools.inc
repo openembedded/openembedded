@@ -31,7 +31,7 @@ do_stage() {
 }
 
 do_install() {
-    oe_runmake PREFIX=${D} install-iwmulticall install-dynamic install-man install-hdr
+    oe_runmake PREFIX=${D} install-iwmulticall install-dynamic install-static install-man install-hdr
     install -d ${D}${sbindir}
     install -m 0755 ifrename ${D}${sbindir}/ifrename
     install -d ${D}${sysconfdir}/network/if-pre-up.d
@@ -39,13 +39,12 @@ do_install() {
     install ${WORKDIR}/zzz-wireless.if-pre-up ${D}${sysconfdir}/network/if-pre-up.d/zzz-wireless
 }
 
-PACKAGES += "libiw libiw-dev libiw-doc libiw-dbg ifrename ifrename-dbg ifrename-doc"
-FILES_libiw += "${libdir}/*.so.*"
-FILES_libiw-dbg += "${libdir}/.debug/*.so.*"
-FILES_libiw-dev += "${libdir}/*.a ${libdir}/*.so ${includedir}"
-FILES_libiw-doc += "${mandir}/man7"
-FILES_ifrename += "${sbindir}/ifrename"
-FILES_ifrename-dbg += "${sbindir}/.debug/ifrename"
-FILES_ifrename-doc += "${mandir}/man8/ifrename.8 ${mandir}/man5/iftab.5"
-FILES_${PN} += "${bindir} ${sbindir}/iw* ${base_sbindir} ${base_bindir} ${sysconfdir}/network"
-FILES_${PN}-doc += "${mandir}/man8"
+PACKAGES =+ "libiw libiw-dev libiw-doc libiw-dbg ifrename ifrename-dbg ifrename-doc"
+FILES_libiw = "${libdir}/*.so.*"
+FILES_libiw-dbg = "${libdir}/.debug/*.so.*"
+FILES_libiw-dev = "${libdir}/*.a ${libdir}/*.so ${includedir}"
+FILES_libiw-doc = "${mandir}/man7"
+FILES_ifrename = "${sbindir}/ifrename"
+FILES_ifrename-dbg = "${sbindir}/.debug/ifrename"
+FILES_ifrename-doc = "${mandir}/man8/ifrename.8 ${mandir}/man5/iftab.5"
+FILES_${PN} += "${sysconfdir}/network"

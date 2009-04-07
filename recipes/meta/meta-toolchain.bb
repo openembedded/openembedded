@@ -117,6 +117,12 @@ do_populate_sdk() {
 	# gcc-cross-sdk get built :( (30/11/07)
 	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
 
+	# With sysroot support, gcc expects the default C++ headers to be
+	# in a specific place.
+	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include
+	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/usr/include/c++ \
+		${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
+
 	# Fix or remove broken .la files
 	for i in `find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS} -name \*.la`; do
 		sed -i 	-e "/^dependency_libs=/s,\([[:space:]']\)${layout_base_libdir},\1${prefix}/${TARGET_SYS}${layout_base_libdir},g" \
