@@ -53,6 +53,7 @@ SRC_URI_append = " \
            file://ioremap-fix.patch;patch=1 \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
            file://mmctiming.patch;patch=1 \
+           file://modedb-hd720.patch;patch=1 \
 "
 
 
