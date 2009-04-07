@@ -2,7 +2,7 @@ DESCRIPTION = "A set of command line tools, python tools-based tools, debug tool
 SECTION = "console"
 LICENSE = "MIT"
 PV = "1.0"
-PR = "r6"
+PR = "r7"
 
 inherit task
 
@@ -18,6 +18,7 @@ RDEPENDS_${PN} = "\
   nfs-utils-client \
   powertop \
   screen \
+  socat \
   sysstat \
   tcpdump \
 "
