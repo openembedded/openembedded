@@ -1,17 +1,13 @@
-require vala_0.5.7.bb
+require vala.inc
+inherit native
+
+DEPENDS = "glib-2.0-native"
 # vala from git always needs the latest released version to compile itself
-DEPENDS = "vala-native"
-
-SRCREV = "e7462e3ed00b75c16c11c27f6d8a640c7f35fafc"
-PV := "0.5.7+0.5.8pre02-gitr${SRCREV}"
-
-DEFAULT_PREFERENCE = "-1"
+DEPENDS += "vala-bootstrap-native"
+PV = "0.6.0-fso1-gitr${SRCREV}"
 
 SRC_URI = "\
-  ${FREESMARTPHONE_GIT}/vala;protocol=git;branch=master \
+  ${FREESMARTPHONE_GIT}/vala-lang;protocol=git;branch=mickey/0.6/posix \
   file://static-dbus-methods.patch;patch=1 \
 "         
 S = "${WORKDIR}/git"
-
-inherit native
-DEPENDS = "glib-2.0-native"
