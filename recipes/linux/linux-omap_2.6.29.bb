@@ -101,6 +101,7 @@ SRC_URI_append = " \
 #           file://isp/standalone/0001-Resizer-and-Previewer-driver-added-to-commit.patch;patch=1 \
 #           file://isp/standalone/0002-Resizer-bug-fixes-on-top-of-1.0.2-release.patch;patch=1 \
            file://0124-leds-gpio-broken-with-current-git.patch;patch=1 \
+           file://modedb-hd720.patch;patch=1 \
 "
 
 

@@ -278,6 +278,7 @@ do
                       subversion \
                       sugar \
                       sylpheed \
+                      systray \
                       task-gpe-pim \
                       task-openmoko-feed \
                       task-openmoko-games \
