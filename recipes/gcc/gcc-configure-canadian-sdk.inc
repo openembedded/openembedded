@@ -61,11 +61,12 @@ export WINDRES_FOR_TARGET="${TARGET_PREFIX}windres"
 EXTRA_OECONF_DEP ?= ""
 
 EXTRA_OECONF += ""
+# On MinGW hosts we want to prepend a drive letter, in ${SDK_REALPATH_MINGW}
+# to the sysroot path.
+SYSROOT = "${@['${SDK_REALPATH}/${TARGET_SYS}', '${SDK_REALPATH_MINGW}${SDK_REALPATH}/${TARGET_SYS}'][bb.data.getVar('SDK_OS', d, 1) in ['mingw32', 'mingw64']]}"
 EXTRA_OECONF_PATHS = " \
-	--with-local-prefix=$dollar{prefix}/local \
-	--with-gxx-include-dir=$dollar{prefix}/${TARGET_SYS}/usr/include/c++/${BINV} \
 	--with-build-sysroot=${STAGING_DIR_TARGET} \
-	--with-sysroot=${SDK_REALPATH}/${TARGET_SYS} \
+	--with-sysroot=${SYSROOT} \
 "
 
 do_configure () {
