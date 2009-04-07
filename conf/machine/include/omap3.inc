@@ -1,6 +1,6 @@
 require conf/machine/include/tune-cortexa8.inc
 PREFERRED_PROVIDER_virtual/kernel = "linux-omap"
-MACHINE_KERNEL_PR = "r21" 
+MACHINE_KERNEL_PR = "r22" 
 
 KERNEL_IMAGETYPE = "uImage"
 
