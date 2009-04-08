@@ -5,7 +5,7 @@ LICENSE = "BSD"
 DEPENDS = "hal"
 RDEPENDS_${PN} = "hal"
 
-SRC_URI = "http://alioth.debian.org/download.php/2479/pcsc-lite-${PV}.tar.bz2 \
+SRC_URI = "https://alioth.debian.org/frs/download.php/2795/pcsc-lite-${PV}.tar.bz2 \
            file://pcscd.init "
 
 inherit autotools_stage update-rc.d
