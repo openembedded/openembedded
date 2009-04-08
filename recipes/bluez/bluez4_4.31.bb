@@ -4,12 +4,13 @@ PRIORITY = "optional"
 DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
-PR = "r4"
+PR = "r6"
 
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
   file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \
   file://sbc-thumb.patch;patch=1 \
+  file://bluetooth.conf \
 #  file://hid2hci_usb_init.patch;patch=1 \
 "
 S = "${WORKDIR}/bluez-${PV}"
@@ -43,6 +44,8 @@ do_install_append() {
         install -m 0644 ${S}/audio/audio.conf ${D}/${sysconfdir}/bluetooth/
         install -m 0644 ${S}/network/network.conf ${D}/${sysconfdir}/bluetooth/
         install -m 0644 ${S}/input/input.conf ${D}/${sysconfdir}/bluetooth/
+        # at_console doesn't really work with the current state of OE, so punch some more holes so people can actually use BT
+        install -m 0644 ${WORKDIR}/bluetooth.conf ${D}/${sysconfdir}/dbus-1/system.d/
 }
 
 PACKAGES =+ "gst-plugin-bluez libasound-module-bluez"

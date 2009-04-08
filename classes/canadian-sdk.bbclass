@@ -24,9 +24,12 @@ LDFLAGS = "${SDK_LDFLAGS}"
 # and otherwise just
 DEPENDS_prepend = "virtual/${HOST_PREFIX}binutils "
 
-SDK_PATH_sdk-mingw32 = "/OpenEmbedded/${SDK_NAME}"
+
+# On mingw systems we want to have the real sysroot default to c:/... and
+# assume that the default install will be on the C drive.  This can be changed
+# by setting SDK_REALPATH_MINGW.
 SDK_REALPATH = "${SDK_PATH}"
-SDK_REALPATH_sdk-mingw32 = "C:/OpenEmbedded/${SDK_NAME}"
+SDK_REALPATH_MINGW ?= "C:"
 
 # Path prefixes
 prefix = "${SDK_PATH}"
