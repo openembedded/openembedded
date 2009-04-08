@@ -91,13 +91,15 @@ def collections_setup(d):
     collectionmap = {}
     namemap = {}
     for collection in collections:
+        if collection.endswith(os.sep):
+            collection = collection[:-1]
         basename = os.path.basename(collection).split(os.path.extsep)[0]
         if namemap.get(basename):
             basename = "%s-%s" % (basename, hash(collection))
         namemap[basename] = collection
         collectionmap[collection] = basename
 
-    for (collection, priority) in izip(collections, xrange(len(collections), 0, -1)):
+    for (collection, priority) in izip(collectionmap, xrange(len(collections), 0, -1)):
         if not os.path.exists(collection):
             bb.fatal("Collection %s does not exist" % collection)
 
