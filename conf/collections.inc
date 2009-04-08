@@ -2,6 +2,8 @@
 # lowest), and use those to populate BBFILES, BBFILE_COLLECTIONS,
 # BBFILE_PATTERN_*, and BBFILE_PRIORITY_*.  By default, COLLECTIONS is
 # prepopulated with the locations the user specified in their BBPATH.
+# Note that it will not overwrite existing BBFILES or BBFILE_* variables, so
+# you'll need to remove those from your config in order to use this.
 #
 # Specifying an archive in COLLECTIONS is also supported.  Any archives of a
 # supported format will be unpacked into COLLECTIONS_UNPACKDIR and used from
