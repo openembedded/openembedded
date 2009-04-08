@@ -1,0 +1,17 @@
+diff -urN hostapd-0.6.9.orig/Makefile hostapd-0.6.9/hostapd/Makefile
+--- hostapd-0.6.9.orig/Makefile	2009-03-23 14:06:28.000000000 +0000
++++ hostapd-0.6.9/Makefile	2009-04-08 08:59:23.000000000 +0000
+@@ -555,11 +555,11 @@
+ 	for i in $(ALL); do cp $$i /usr/local/bin/$$i; done
+ 
+ hostapd: $(OBJS)
+-	$(CC) -o hostapd $(OBJS) $(LIBS)
++	$(CC) $(LDFLAGS) -o hostapd $(OBJS) $(LIBS)
+ 
+ OBJS_c = hostapd_cli.o ../src/common/wpa_ctrl.o ../src/utils/os_$(CONFIG_OS).o
+ hostapd_cli: $(OBJS_c)
+-	$(CC) -o hostapd_cli $(OBJS_c)
++	$(CC) $(LDFLAGS) -o hostapd_cli $(OBJS_c)
+ 
+ NOBJS = nt_password_hash.o ../src/crypto/ms_funcs.o ../src/crypto/sha1.o ../src/crypto/rc4.o ../src/crypto/md5.o
+ NOBJS += ../src/crypto/crypto_openssl.o ../src/utils/os_$(CONFIG_OS).o
