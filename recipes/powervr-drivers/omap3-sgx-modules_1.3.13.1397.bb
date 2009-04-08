@@ -14,7 +14,10 @@ PVRBUILD = "release"
 MAKE_TARGETS = " BUILD=${PVRBUILD}"
 
 do_compile_prepend() {
-	find ${S} -name "*.*o" | xargs rm
+	find ${S} -name "*.*o" | xargs rm || true
+	if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 28 ] ; then
+		sed -i -e 's:omap_dispc_unregister_isr(OMAPLFBVSyncISR):omap_dispc_unregister_isr(OMAPLFBVSyncISR, psSwapChain, DISPC_IRQ_VSYNC):g' services4/3rdparty/dc_omap3430_linux/omaplfb_linux.c
+	fi
 }
 
 do_install() {
