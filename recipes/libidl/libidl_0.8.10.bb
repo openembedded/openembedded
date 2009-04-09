@@ -1,6 +1,6 @@
 require libidl.inc
 
-DEPENDS = "glib-2.0 libidl-native"
+DEPENDS = "glib-2.0 flex-native libidl-native"
 
 PR = "r0"
 
