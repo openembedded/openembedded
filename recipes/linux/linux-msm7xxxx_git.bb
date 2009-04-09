@@ -7,7 +7,7 @@ PR = "r8"
 
 COMPATIBLE_MACHINE = "htckaiser|htcpolaris|htcvogue|htctitan|htcnike|htcraphael|htcdiamond|htcblackstone"
 
-SRCREV = "f89edc3bf353407bd1dd6c2683f539a7c2603191"
+SRCREV = "d2fc2471ba384dabad1c9a4126e2e2372349d34c"
 SRCREV_htcraphael = "1e936f767872234a9b299e209a5e33212de473fa"
 SRCREV_htcdiamond = "12008ce2c5c1ab657c46fdc6f6129ccf6730760a"
 SRCREV_htcblackstone = "12008ce2c5c1ab657c46fdc6f6129ccf6730760a"
