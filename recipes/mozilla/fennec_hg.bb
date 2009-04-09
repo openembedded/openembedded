@@ -1,5 +1,5 @@
 DESCRIPTION = "Mozilla Mobile browser"
-DEPENDS += "cairo alsa-lib "
+DEPENDS += "autoconf213-native cairo alsa-lib"
 
 PV = "0.9+1.0b2pre"
 MOZPV = "1.0b2pre"

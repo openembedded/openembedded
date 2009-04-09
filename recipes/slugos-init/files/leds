@@ -31,6 +31,8 @@ led_set(){
 				esac >"$1/brightness";;
 
 		slow|fast|panic|blink|flash)
+				modprobe ledtrig-timer > /dev/null 2>&1 || true
+
 				echo -n timer
 
 				case "$setting" in
@@ -196,6 +198,11 @@ beep(){
 				break
 			fi
 		done
+		# If udev hasn't run, then /dev/input doesn't exist, so
+		# fallback to /dev/buzzer if possible.
+		if test -e /dev/buzzer -a ! -d /dev/input; then
+			arg="-e /dev/buzzer"
+		fi
 		/bin/beep $arg "$@" 2>/dev/null
 	fi
 	return 0

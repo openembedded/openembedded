@@ -4,11 +4,12 @@ SECTION = "kernel/userland"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libnl openssl"
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "http://hostap.epitest.fi/releases/hostapd-${PV}.tar.gz \
+	file://ldflags.patch;patch=1 \
 	file://defconfig \
 	file://init"
 

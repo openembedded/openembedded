@@ -2,6 +2,8 @@ DESCRIPTION = "Davinci (and OMAP) Multimedia Application Interface"
 DEPENDS = "virtual/kernel ti-codec-engine ti-codec-combos"
 LICENCE = "unknown"
 
+inherit module-base
+
 require ti-paths.inc
 
 SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_022309;proto=https;user=anonymous;pswd='' \
@@ -15,7 +17,6 @@ SRCREV = "36"
 S = "${WORKDIR}/BRIJESH_GIT_022309/davinci_multimedia_application_interface/dmai"
 # Yes, the xdc stuff still breaks with a '.' in PWD
 PV = "120+svnr${SRCREV}"
-PR = "r16"
 
 TARGET = "all"
 TARGET_neuros-osd2 = " dm6446_al dm6446_db"
@@ -30,6 +31,10 @@ export FC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-engine/ce
 export CODEC_INSTALL_DIR="${STAGING_DIR}/${MULTIMACH_TARGET_SYS}/ti-codec-combos"
 
 do_compile() {
+	if [ $(echo ${KERNEL_VERSION} | cut -c5,6) -gt 28 ] ; then
+		sed -i -e s:mach/omapfb:linux/omapfb:g packages/ti/sdo/dmai/linux/Display_fbdev.c
+	fi
+	
 	cd packages/ti/sdo/dmai
 	oe_runmake clean
 	oe_runmake ${TARGET} C_FLAGS="-O2 -I${STAGING_INCDIR}"

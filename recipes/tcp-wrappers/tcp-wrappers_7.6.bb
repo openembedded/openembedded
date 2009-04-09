@@ -3,7 +3,7 @@ DESCRIPTION = "Tools for monitoring and filtering incoming requests for tcp \
 LICENSE = "tcp-wrappers"
 PRIORITY = "optional"
 SECTION = "console/network"
-PR ="r2"
+PR ="r3"
 
 
 PACKAGES = "${PN}-dbg libwrap libwrap-doc libwrap-dev tcp-wrappers tcp-wrappers-doc"
@@ -35,6 +35,7 @@ SRC_URI = "ftp://ftp.porcupine.org/pub/security/tcp_wrappers_${PV}.tar.gz \
            file://siglongjmp;patch=1 \
            file://size_t;patch=1 \
            file://tcpdchk_libwrapped;patch=1 \
+           file://ldflags;patch=1 \
            \
            file://try-from.8 \
            file://safe_finger.8"

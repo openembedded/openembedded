@@ -4,6 +4,9 @@
 
 inherit gnome
 
+SRC_URI += "file://idl-sysroot.patch;patch=1"
+export SYSROOT = "${STAGING_DIR_HOST}"
+
 LICENSE="GPL"
 
 PR = "r1"

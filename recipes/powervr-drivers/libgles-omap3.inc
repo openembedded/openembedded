@@ -1,6 +1,11 @@
 DESCRIPTION = "libGLES for the omap3"
 LICENCE = "proprietary-binary"
 
+#HACK! These are binaries, so we can't guarantee that LDFLAGS match :(
+INSANE_SKIP_${PN} = True
+INSANE_SKIP_${PN}-tests = True
+
+
 PROVIDES += "virtual/egl"
 
 # some hints to get you going. as this isnt a totally "open" library, you need

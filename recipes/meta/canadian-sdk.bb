@@ -1,7 +1,7 @@
 DESCRIPTION = "Meta package for building a installable toolchain"
 LICENSE = "MIT"
 DEPENDS = "ipkg-native ipkg-utils-native fakeroot-native sed-native zip-native"
-PR = "r2"
+PR = "r3"
 
 inherit canadian-sdk meta
 
@@ -99,6 +99,12 @@ do_populate_sdk() {
 	# RP: it gets smashed up depending on the order that gcc, gcc-cross and
 	# gcc-cross-sdk get built :( (30/11/07)
 	ln -sf libgcc_s.so.1 ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/lib/libgcc_s.so
+
+	# With sysroot support, gcc expects the default C++ headers to be
+	# in a specific place.
+	install -d ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include
+	mv ${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/usr/include/c++ \
+		${SDK_OUTPUT}/${prefix}/${TARGET_SYS}/include/
 
 	# Fix or remove broken .la files
 	for i in `find ${SDK_OUTPUT}/${prefix}/${TARGET_SYS} -name \*.la`; do
