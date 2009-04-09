@@ -48,9 +48,9 @@ do_install_dm800() {
 	do_install_dm8000
 }
 
-#do_stage_dm500hd() {
-#	do_stage_dm8000
-#}
+do_stage_dm500hd() {
+	do_stage_dm8000
+}
 
 #do_install_dm500hd() {
 #	do_install_dm8000
