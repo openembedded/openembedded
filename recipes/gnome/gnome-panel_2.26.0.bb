@@ -3,6 +3,8 @@ DEPENDS = "librsvg libgweather startup-notification libwnck orbit2 gtk+ libgnome
 
 inherit gnome pkgconfig
 
+SRC_URI += "file://idl-sysroot.patch;patch=1"
+
 do_configure_prepend() {
         sed -i -e s:help:: ${S}/Makefile.am
 }
@@ -14,7 +16,8 @@ FILES_libpanel-applet = "${libdir}/libpanel-applet-2.so.*"
 FILES_${PN} =+ "${datadir}/gnome* \
                 ${datadir}/icons"
 
-EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2"
+export SYSROOT = "${STAGING_DIR_HOST}"
+EXTRA_OEMAKE = "ORBIT_IDL=${STAGING_BINDIR_NATIVE}/orbit-idl-2 SYSROOT=${SYSROOT}"
 EXTRA_OECONF = "--disable-scrollkeeper \
                 --disable-eds \
                "
