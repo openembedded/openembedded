@@ -3,7 +3,7 @@ SECTION = "console/network"
 MAINTAINER = "Oyvind Repvik <nail@nslu2-linux.org>"
 LICENSE = "GPL"
 DEPENDS = "openssl"
-PR = "r0"
+PR = "r2"
 
 SRC_URI = "ftp://vsftpd.beasts.org/users/cevans/vsftpd-${PV}.tar.gz \
            file://makefile.patch;patch=1 \
@@ -18,6 +18,12 @@ do_configure() {
         cat tunables.c|sed s:\"/usr:\"${prefix}:g|sed s:\"/var:\"${localstatedir}:g \
         |sed s:\"${prefix}/share/empty:\"${localstatedir}/share/empty:g |sed s:\"/etc:\"${sysconfdir}:g > tunables.c.new
         mv tunables.c.new tunables.c
+}
+
+do_configure_append_opendreambox() {
+	# do not link against libcap
+	sed -i '/^#define VSF_SYSDEP_HAVE_LIBCAP$/ d' sysdeputil.c
+	sed -i '/libcap/ d' vsf_findlibs.sh
 }
 
 do_compile() {
@@ -41,7 +47,7 @@ pkg_postinst() {
                 exit 1
         fi
         addgroup ftp &&
-        adduser --system --home /var/tmp/ftp --no-create-home --ingroup ftp --disabled-password -s /bin/false ftp &&
+        adduser -S -h /var/tmp/ftp -H -G ftp -D -s /bin/false ftp &&
         mkdir -p ${localstatedir}/share/empty
 }
 

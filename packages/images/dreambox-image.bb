@@ -18,10 +18,9 @@ OPENDREAMBOX_COMMON_R = "util-linux-sfdisk util-linux-fdisk e2fsprogs-mke2fs \
 # experimental packages
 OPENDREAMBOX_EXPERIMENTAL = "enigma2 tuxbox-tuxtxt-32bpp twisted twisted-web2 aio-grab"
 OPENDREAMBOX_EXPERIMENTAL_R = "enigma2-plugin-systemplugins-frontprocessorupgrade \
-	enigma2-plugin-systemplugins-softwareupdate \
+	enigma2-plugin-systemplugins-softwaremanager \
 	enigma2-plugin-systemplugins-positionersetup \
 	enigma2-plugin-extensions-cutlisteditor \
-	enigma2-plugin-systemplugins-configurationbackup \
 	enigma2-plugin-systemplugins-satfinder \
 	enigma2-plugin-systemplugins-videotune \
 	enigma2-plugin-extensions-mediascanner \
@@ -127,8 +126,8 @@ OPENDREAMBOX_COMMON_MACHINE_D_dm500hd += ""
 OPENDREAMBOX_COMMON_MACHINE_dm8000 += "${OPENDREAMBOX_V3_ONLY} ${OPENDREAMBOX_EXPERIMENTAL} ${WLAN_SUPPORT} ${WLAN_MADWIFI}"
 OPENDREAMBOX_COMMON_MACHINE_R_dm8000 += "${OPENDREAMBOX_EXPERIMENTAL_R} \
 	${WLAN_SUPPORT_R} ${WLAN_MADWIFI_R} ${DVDPLAYER_SUPPORT_R} \
-	${DVDBURN_SUPPORT_R}  enigma2-plugin-systemplugins-videomode \
-	${CDPLAYER_SUPPORT_R}"
+	${DVDBURN_SUPPORT_R} enigma2-plugin-systemplugins-videomode \
+	${CDPLAYER_SUPPORT_R} enigma2-plugin-systemplugins-commoninterfaceassignment"
 OPENDREAMBOX_COMMON_MACHINE_D_dm8000 += ""
 
 # collect the stuff into OPENDREAMBOX_COMMON

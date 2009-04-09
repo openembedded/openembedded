@@ -9,8 +9,10 @@ PRIORITY = "optional"
 LICENSE = "LGPL"
 DEPENDS = "twisted twisted-native"
 RDEPENDS = "twisted python-netserver"
+PR="r1"
 
-SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Web2/8.1/TwistedWeb2-${PV}.tar.bz2"
+SRC_URI = "http://tmrc.mit.edu/mirror/twisted/Web2/8.1/TwistedWeb2-${PV}.tar.bz2\
+	file://fix-connectionlost.patch;patch=1;pnum=1"
 S = "${WORKDIR}/TwistedWeb2-${PV}"
 
 inherit distutils

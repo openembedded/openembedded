@@ -1,0 +1,12 @@
+--- TwistedWeb2-8.1.0/twisted/web2/channel/http.py	2007-01-02 00:41:33.000000000 +0100
++++ TwistedWeb2-8.1.0/twisted/web2/channel/http.py	2009-01-24 07:21:29.000000000 +0100
+@@ -845,6 +845,9 @@
+         # probably a client abort, so lose the connection.
+         if self.chanRequest:
+             self.transport.loseConnection()
++
++        # Workaround for enigma2's webinterface.
++        self.transport.loseConnection()
+         
+     def connectionLost(self, reason):
+         self.factory.outstandingRequests-=1

@@ -2,13 +2,12 @@ DESCRIPTION = "Plugins for GStreamer"
 SECTION = "multimedia"
 PRIORITY = "optional"
 MAINTAINER = "Felix Domke <tmbinc@openembedded.org>"
-DEPENDS = "gstreamer libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon flac"
-PR = "r1"
+DEPENDS = "gstreamer libcdio libmikmod libmad libogg tremor libvorbis libid3tag liboil alsa-lib neon flac"
+PR = "r0"
 
 inherit autotools pkgconfig
 
-SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2 \
-	file://sed-with-autoconf-2.59.patch;patch=1;pnum=1"
+SRC_URI = "http://gstreamer.freedesktop.org/src/${PN}/${PN}-${PV}.tar.bz2"
 
 EXTRA_OECONF = "--disable-x --disable-aalib --disable-esd --disable-shout2 \
 		--disable-sdl --with-check=no --enable-neon"
@@ -23,6 +22,12 @@ python populate_packages_prepend () {
 
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.so$', 'gst-plugin-%s', 'GStreamer plugin for %s', postinst=postinst)
 	do_split_packages(d, gst_libdir, '^libgst(.*)\.l?a$', 'gst-plugin-%s-dev', 'GStreamer plugin for %s (development files)')
+}
+
+do_configure_prepend() {
+	for i in libtool ltoptions ltsugar ltversion lt~obsolete; do
+		rm ${S}/m4/$i.m4 || /bin/true;
+	done
 }
 
 do_stage() {

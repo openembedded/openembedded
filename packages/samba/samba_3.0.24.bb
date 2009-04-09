@@ -1,4 +1,4 @@
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "http://us2.samba.org/samba/ftp/stable/samba-${PV}.tar.gz \
 	   file://configure.patch;patch=1 \

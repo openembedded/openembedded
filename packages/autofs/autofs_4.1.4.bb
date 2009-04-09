@@ -2,7 +2,7 @@ DESCRIPTION = "Kernel based automounter for linux."
 SECTION = "base"
 LICENSE = "GPL"
 
-PR="r3"
+PR="r4"
 
 SRC_URI = "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-${PV}.tar.bz2 \
            ftp://ftp.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4-misc-fixes.patch;patch=1 \
