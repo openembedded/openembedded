@@ -7,6 +7,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/linux-diag/sysfsutils-${PV}.tar.gz"
 
 inherit autotools autotools_stage
 
+acpaths = "-I ${S}/m4"
+
 PACKAGES = "libsysfs libsysfs-dbg libsysfs-dev \
 	    ${PN} ${PN}-dbg ${PN}-doc ${PN}-locale"
 
