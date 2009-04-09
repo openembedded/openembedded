@@ -3,13 +3,13 @@ for the development of SOAP Web Services and clients."
 SECTION = "devel"
 LICENSE = "GPL"
 DEPENDS = "gsoap-native"
-PR = "r2"
+PR = "r4"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/gsoap2/gsoap_${PV}.tar.gz \
            file://rename_bogus_ldflags.patch;patch=1"
 S = "${WORKDIR}/gsoap-2.7"
 
-inherit autotools
+inherit autotools_stage
 
 PARALLEL_MAKE = ""
 
