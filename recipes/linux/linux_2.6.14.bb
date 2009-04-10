@@ -2,6 +2,9 @@ DESCRIPTION = "Linux Kernel"
 SECTION = "kernel"
 LICENSE = "GPL"
 
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_acern30 = "1"
+
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${PV}.tar.bz2 \
            file://defconfig"
 

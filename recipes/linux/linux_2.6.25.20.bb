@@ -8,6 +8,7 @@ require linux.inc
 
 PR = "r2"
 
+DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_ronetix-pm9263 = "1"
 DEFAULT_PREFERENCE_ronetix-pm9261 = "1"
 
