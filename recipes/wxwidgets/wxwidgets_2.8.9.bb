@@ -1,6 +1,6 @@
 require wxwidgets.inc
 
-PR = "r0"
+PR = "r1"
 
 LEAD_SONAME = "libwx_gtk2_core-2.8.so"
 
