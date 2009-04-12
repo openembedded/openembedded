@@ -5,6 +5,11 @@ DEPENDS = "gst-plugins-base alsa-lib libusb-compat dbus-glib"
 HOMEPAGE = "http://www.bluez.org"
 LICENSE = "GPL"
 
+# For angstrom we want this to replace at least bluez-libs
+PROVIDES_append_angstrom = " bluez-libs"
+
+PR = "r1"
+
 SRC_URI = "\
   http://www.kernel.org/pub/linux/bluetooth/bluez-${PV}.tar.gz \
   file://fix-dfutool-usb-declaration-mismatch.patch;patch=1 \
@@ -13,10 +18,8 @@ SRC_URI = "\
 "
 S = "${WORKDIR}/bluez-${PV}"
 
-inherit autotools pkgconfig
-
-OE_LT_RPATH_ALLOW = "any"
-OE_LT_RPATH_ALLOW[export] = "1"
+inherit autotools_stage
+AUTOTOOLS_STAGE_PKGCONFIG = "1"
 
 EXTRA_OECONF = "\
   --enable-gstreamer \
@@ -56,6 +59,7 @@ FILES_${PN}-dev += "\
   ${libdir}/alsa-lib/*.la \
   ${libdir}/gstreamer-0.10/*.la \
 "
+
 FILES_${PN}-dbg += "\
   ${libdir}/bluetooth/plugins/.debug \
   ${libdir}/*/.debug \
