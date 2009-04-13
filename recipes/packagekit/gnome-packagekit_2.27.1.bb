@@ -1,7 +1,7 @@
 DESCRIPTION = "GNOME frontend for packagekit"
 LICENSE = "GPL"
 
-DEPENDS = "packagekit libgnome"
+DEPENDS = "packagekit libsexy gconf-dbus policykit policykit-gnome libunique gnome-menus"
 
 inherit gnome
 
