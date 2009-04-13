@@ -5,6 +5,8 @@ LICENSE = "GPL"
 DEPENDS = "gtk+ python cppunit policykit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
 RDEPENDS_${PN} = "opkg"
 
+inherit gnome autotools_stage
+
 SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
            file://no_validate.patch;patch=1 \
            file://opkg-fix-includes.diff;patch=1 \
@@ -13,8 +15,6 @@ SRC_URI = "http://www.packagekit.org/releases/PackageKit-${PV}.tar.gz \
 PE = "1"
 
 S = "${WORKDIR}/PackageKit-${PV}"
-
-inherit gnome autotools_stage
 
 EXTRA_OECONF = "--with-security-framework=dummy \
                 --with-default-backend=opkg \
@@ -37,6 +37,7 @@ do_configure_append() {
 	for i in $(find . -name Makefile) ; do
 		sed -i -e s:${STAGING_DIR_NATIVE}::g -e s:${bindir}/mkdir:${STAGING_BINDIR_NATIVE}/mkdir:g $i
 	done
+	( cd data ; for i in *.xml.in ; do mv $i $(echo $i | sed 's:.in::g') ; done ; touch foo.xml.in )
 }
 
 
@@ -49,7 +50,7 @@ FILES_${PN}-python = "${libdir}/python*"
 PACKAGES =+ "${PN}-gtkmodule"
 FILES_${PN}-gtkmodule = "${libdir}/gtk-2.0/*/*.so"
 
-FILES_${PN} += "${libdir}/packagekit-backend/*.so ${libdir}/pm-utils ${datadir}/dbus-1/system-services/ ${datadir}/PolicyKit"
+FILES_${PN} += "${libdir}/packagekit-backend/*.so ${libdir}/pm-utils ${datadir}/dbus-1/system-services/ ${datadir}/PolicyKit ${datadir}/PackageKit"
 FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so ${libdir}/gtk-2.0/*/.debug"
 FILES_${PN}-dev += "${libdir}/packagekit-backend/*a ${libdir}/gtk-2.0/*/*a"
 
