@@ -1,12 +1,12 @@
 LICENSE = "GPL"
 SECTION = "x11/gnome"
 
-PR = "r2"
+PR = "r3"
 
 inherit autotools gnome pkgconfig
 
-DEPENDS = "obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
-RDEPENDS += "obexd"
+DEPENDS = "obexd obex-data-server gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
+RRECOMMENDS_${PN} += "obexd obex-data-server"
 RCONFLICTS_${PN} = "bluez-gnome"
 
 do_configure_prepend() {
