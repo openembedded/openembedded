@@ -4,15 +4,16 @@
 
 inherit gnome
 
-SRC_URI += "file://idl-sysroot.patch;patch=1"
+SRC_URI += "file://idl-sysroot.patch;patch=1 \
+            file://no-try-run-strftime.diff;patch=1 \
+"
+
 export SYSROOT = "${STAGING_DIR_HOST}"
 
 LICENSE="GPL"
 
-PR = "r1"
-
 DEPENDS += " gvfs tracker librsvg libexif eel esound gnome-desktop orbit2-native"
-RDEPENDS = "gvfs"
+RDEPENDS = "gvfs gvfsd-ftp gvfsd-sftp gvfsd-trash"
 
 EXTRA_OECONF = " --disable-gtk-doc  --disable-update-mimedb "
 
@@ -21,6 +22,10 @@ PACKAGES += " libnautilus"
 FILES_${PN} += "${datadir}/icons  /usr/libexec/ "
 FILES_libnautilus = "/usr/lib/*.so*"
 FILES_${PN}-dbg += "/usr/libexec/.debug"
+
+do_configure_prepend() {
+	sed -i -e /docs/d Makefile.am
+}
 
 # We need native orbit-idl with target idl files. No way to say it in a clean way:
 do_configure_append () {
