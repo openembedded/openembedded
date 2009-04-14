@@ -1,0 +1,22 @@
+--- python-ecore/ecore/x/ecore.x.c_ecore_x_window.pxi.orig	2009-04-13 22:20:36.000000000 -0600
++++ python-ecore/ecore/x/ecore.x.c_ecore_x_window.pxi	2009-04-13 22:21:54.000000000 -0600
+@@ -99,7 +99,7 @@
+     def delete(self):
+         "Deletes the current window."
+         if self.xid != 0:
+-            ecore_x_window_del(self.xid)
++            ecore_x_window_free(self.xid)
+             self.xid = 0
+ 
+     def delete_request_send(self):
+--- python-ecore/include/ecore/x/c_ecore_x.pxd.orig	2009-04-13 22:20:58.000000000 -0600
++++ python-ecore/include/ecore/x/c_ecore_x.pxd	2009-04-13 22:21:25.000000000 -0600
+@@ -919,7 +919,7 @@
+     Ecore_X_Window ecore_x_window_input_new(Ecore_X_Window parent, int x, int y, int w, int h)
+     void ecore_x_window_configure(Ecore_X_Window win, Ecore_X_Window_Configure_Mask mask, int x, int y, int w, int h, int border_width, Ecore_X_Window sibling, int stack_mode)
+     void ecore_x_window_cursor_set(Ecore_X_Window win, Ecore_X_Cursor c)
+-    void ecore_x_window_del(Ecore_X_Window win)
++    void ecore_x_window_free(Ecore_X_Window win)
+     void ecore_x_window_ignore_set(Ecore_X_Window win, int ignore)
+     Ecore_X_Window *ecore_x_window_ignore_list(int *num)
+ 
