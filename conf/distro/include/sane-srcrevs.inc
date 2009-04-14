@@ -327,7 +327,3 @@ SRCREV_pn-rage ?= "${EFL_SRCREV}"
 SRCREV_pn-illume ?= "${EFL_SRCREV}"
 SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
 SRCREV_pn-waker ?= "${EFL_SRCREV}"
-
-# Swisstelecom E stuff
-SRCREV_pn-libefso ?= "60"
-SRCREV_pn-essential-dialer ?= "60"
