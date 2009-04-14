@@ -11,6 +11,7 @@ RDEPENDS_task-openmoko-feed = "\
   openmoko-qa-scripts \
   gypsy \
   hotplug2 \
+  linphone \
   fso-gsm0710muxd \
   ppp \
   bluez-hcidump \
