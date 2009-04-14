@@ -2,7 +2,7 @@ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
 DEPENDS = "eet evas ecore embryo edje-native"
 LICENSE = "MIT BSD"
 PV = "0.5.0.050+svnr${SRCREV}"
-PR = "r1"
+PR = "r3"
 
 inherit efl
 
@@ -17,7 +17,6 @@ RRECOMMENDS_${PN}-utils = "\
   libevas-saver-png \
   libevas-saver-jpeg \
   libevas-saver-eet \
-  libevas-saver-tiff \
 "
 
 DEBIAN_NOAUTONAME_${PN}-utils = "1"

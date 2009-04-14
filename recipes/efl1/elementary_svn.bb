@@ -31,3 +31,7 @@ FILES_${PN}-tests = "\
   ${datadir}/applications/* \
   ${datadir}/icons/* \
 "
+
+EXTRA_OECONF = "\
+  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+"
