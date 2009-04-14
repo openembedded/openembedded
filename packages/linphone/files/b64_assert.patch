@@ -1,0 +1,11 @@
+--- linphone-3.1.0/oRTP/src/b64.c.orig	2009-04-13 23:04:35.000000000 -0600
++++ linphone-3.1.0/oRTP/src/b64.c	2009-04-13 23:05:00.000000000 -0600
+@@ -205,7 +205,7 @@
+             /* characters[3] is the right-most 6 bits of src[2] */
+             characters[3] = (char)(src[2] & 0x3f);
+ 
+-#ifndef __WATCOMC__
++#ifdef XXXX
+             assert(characters[0] >= 0 && characters[0] < 64);
+             assert(characters[1] >= 0 && characters[1] < 64);
+             assert(characters[2] >= 0 && characters[2] < 64);
