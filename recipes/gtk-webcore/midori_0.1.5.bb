@@ -1,5 +1,7 @@
 require midori.inc
 
+PR = "r1"
+
 DEPENDS += "python-native python-docutils-native"
 
 SRC_URI = "http://goodies.xfce.org/releases/midori/midori-${PV}.tar.bz2 \
