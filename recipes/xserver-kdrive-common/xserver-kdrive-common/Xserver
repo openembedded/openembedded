@@ -41,7 +41,8 @@ export USER=root
 
 SCREEN_SIZE=`fallback_screen_arg`
 
-ARGS=" -br -pn"
+ARGS=" -pn"
+PPM=" -br"
 
 # use ucb 1x00 touchscreen if present
 if [ -z "$TSLIB_TSDEVICE" ] && [ -e /dev/touchscreen/ucb1x00 ]; then
@@ -104,18 +105,30 @@ case `module_id` in
                 ARGS="$ARGS -fb /dev/fb1" ;;
         "GTA01")
                 if [ `screen_width` -gt 330 ] ; then
+                     if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
+                          PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
+                     fi
                      DPI=285
                 else
-                     DPI=140
+                     if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
+                          PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
+                     fi
+                     DPI=142
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib" ;;
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" ;;
        "GTA02")
                 if [ `screen_width` -gt 330 ] ; then
+                     if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
+                          PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
+                     fi
                      DPI=285
                 else 
-                     DPI=140
+                     if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
+                          PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
+                     fi
+                     DPI=142
                 fi 
-                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib" 
+                ARGS="$ARGS -dpi ${DPI} -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" 
 		XSERVER=/usr/bin/Xglamo 
 		;;
 	"Nokia N770")
@@ -125,14 +138,28 @@ case `module_id` in
                 ARGS="$ARGS -dpi 225 -screen ${SCREEN_SIZE} -mouse tslib" 
                 XSERVER=/usr/bin/Xomap ;;
 	"Palm Treo 650")
-		ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor" ;;
+                if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
+                     PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
+                fi
+                ARGS="$ARGS -dpi 181 -screen 320x320 -mouse tslib -hide-cursor ${PPM}" ;;
         "Motorola Ezx Platform")
+                if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
+                     PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm ${PPM}"
+                fi
                 ARGS="$ARGS -dpi 170 -screen ${SCREEN_SIZE}" ;;
 	"Glofiish M800")
-                ARGS="$ARGS -dpi 285 -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor" ;;
+                if [ -f "/usr/share/pixmaps/xsplash-vga.ppm" ]; then
+                     PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
+                fi
+                ARGS="$ARGS -dpi 285 -screen ${SCREEN_SIZE} -mouse tslib -hide-cursor ${PPM} vt1" ;;
         "Freescale MX21ADS")
 	# That's what /proc/cpuinfo shows as hardware on the chumby
                  ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib" ;;
+        "OMAP3 Beagle Board")
+                 ARGS="$ARGS ${PPM}"
+# 32bpp - we'll enable it once newer kernels are.. working.                 
+#                 ARGS="$ARGS -fbbpp32"
+                 XSERVER=/usr/bin/Xorg ;;
         *)
                 # It is a device we do not know about, in which case we force
                 # kdrive to use the current framebuffer geometry -- otherwise
