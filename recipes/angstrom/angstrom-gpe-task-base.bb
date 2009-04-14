@@ -1,5 +1,5 @@
 DESCRIPTION = "Task packages for the Angstrom distribution"
-PR = "r36"
+PR = "r37"
 
 inherit task
 
@@ -36,7 +36,6 @@ RDEPENDS_${PN} = "\
     gdk-pixbuf-loader-jpeg \
     pango-module-basic-x \
     pango-module-basic-fc \
-    ${@base_contains("COMBINED_FEATURES", "bluetooth", "gpe-bluetooth", "",d)} \
-    ${@base_contains("COMBINED_FEATURES", "bluetooth", "bluez-gnome", "",d)} \
+    ${@base_contains("COMBINED_FEATURES", "bluetooth", "gnome-bluetooth", "",d)} \
     "
 
