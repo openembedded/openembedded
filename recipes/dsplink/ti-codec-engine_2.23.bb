@@ -3,6 +3,10 @@ DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
 DEPENDS = "virtual/kernel perl-native"
 RDEPENDS = "update-modules"
 
+INSANE_SKIP_ti-codec-engine-apps = True
+INSANE_SKIP_ti-dsplink-apps = True
+INSANE_SKIP_${PN} = True
+
 inherit module
 
 # disable this package for now, while we're in test mode
