@@ -64,6 +64,7 @@ PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
 
+#  file://${HOME}/C/svn/ssh+svn/e/trunk/e \
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
   file://enlightenment_start.oe \
@@ -107,6 +108,7 @@ do_install_append() {
 
 FILES_${PN} = "\
   ${bindir}/* \
+  ${libdir}/enlightenment/utils/* \
   ${libdir}/enlightenment/modules/*/*.* \
   ${libdir}/enlightenment/modules/*/*/* \
   ${libdir}/enlightenment/preload/e_precache.so \
@@ -116,6 +118,7 @@ FILES_${PN} = "\
   ${datadir}/enlightenment/data/config/profile.cfg \
   ${datadir}/enlightenment/AUTHORS \
   ${datadir}/enlightenment/COPYING \
+  ${datadir}/xsessions/enlightenment.desktop \
   ${sysconfdir}/xdg \
 "
 FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"

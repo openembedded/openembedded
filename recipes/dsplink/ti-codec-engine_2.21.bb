@@ -1,5 +1,9 @@
 require dsplink.inc
 
+INSANE_SKIP_ti-codec-engine-apps = True
+INSANE_SKIP_ti-dsplink-apps = True
+INSANE_SKIP_${PN} = True
+
 DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
 
 DEPENDS = "virtual/kernel perl-native"

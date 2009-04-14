@@ -254,7 +254,7 @@ index 0000000..e4bb781
 +		.vfp		= 4,
 +		.vbp		= 12-10,
 +	},
-+
++	.recommended_bpp = 16,
 +	.config = OMAP_DSS_LCD_TFT | OMAP_DSS_LCD_IHS | OMAP_DSS_LCD_IVS,
 +};
 +

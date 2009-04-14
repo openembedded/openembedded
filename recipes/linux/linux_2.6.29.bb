@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r1"
+PR = "r2"
 
 S = "${WORKDIR}/linux-2.6.29"
 
@@ -10,6 +10,7 @@ DEFAULT_PREFERENCE_boc01 = "1"
 DEFAULT_PREFERENCE_canyonlands = "1"
 DEFAULT_PREFERENCE_tosa = "1"
 DEFAULT_PREFERENCE_vortex86sx = "1"
+DEFAULT_PREFERENCE_atngw100 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
            file://defconfig"

@@ -6,9 +6,9 @@ PACKAGE_ARCH = "all"
 
 RDEPENDS = "libdevice-serialport-perl libtimedate-perl perl-module-file-basename perl-module-getopt-std"
 
-SRC_URI = "http://www.rigacci.org/wiki/lib/exe/fetch.php/tecnica/download/local_software/mtkbabel-${PV}.tar.gz"
+SRC_URI = "${SOURCEFORGE_MIRROR}/sourceforge/${PN}/${P}.tar.gz"
 
-do_install() {                                                                                                                                               
+do_install() {
 	install -d ${D}${bindir}
 	install -m 0755 mtkbabel ${D}${bindir}/
 	install -d ${D}${mandir}/man1

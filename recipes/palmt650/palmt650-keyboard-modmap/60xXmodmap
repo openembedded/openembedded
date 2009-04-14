@@ -1,0 +1,8 @@
+# -*- sh -*-
+# Xsession.d script for Xmodmap
+#
+#
+# This file is sourced by Xsession(5), not executed.
+
+xmodmap /etc/X11/Xmodmap
+xmodmap -e 'remove Control = Mode_switch'

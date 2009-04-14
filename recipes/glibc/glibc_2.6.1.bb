@@ -41,7 +41,6 @@ SRC_URI = "\
   file://arm-longlong.patch;patch=1 \
   file://fhs-linux-paths.patch;patch=1 \
   file://dl-cache-libcmp.patch;patch=1 \
-  file://ldsocache-varrun.patch;patch=1 \
   file://nptl-crosscompile.patch;patch=1 \
   file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1;pnum=0 \
   file://glibc-check_pf.patch;patch=1;pnum=0 \
@@ -60,6 +59,8 @@ SRC_URI = "\
   file://armv4t-interworking.patch;patch=1 \
   file://march-i686.patch;patch=1;pnum=0 \
 "
+
+#  file://ldsocache-varrun.patch;patch=1 \
 
 # Build fails on sh3 and sh4 without additional patches
 SRC_URI_append_sh3 = " file://no-z-defs.patch;patch=1"

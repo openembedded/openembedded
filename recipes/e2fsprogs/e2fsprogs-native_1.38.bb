@@ -2,11 +2,12 @@ SECTION = "base"
 require e2fsprogs.inc
 inherit native
 
-PR = "r2"
+PR = "r3"
 
 SRC_URI += "file://no-hardlinks.patch;patch=1 \
 	    file://mkinstalldirs.patch;patch=1 \
-	   "
+            file://file-open-mode.patch;patch=1 \
+            "
 
 EXTRA_OECONF = ""
 

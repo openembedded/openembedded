@@ -2,7 +2,9 @@ require e2fsprogs.inc
 
 SRC_URI += "file://mkinstalldirs.patch;patch=1"
 
-PR = "r2"
+DEPENDS += "gettext-native"
+
+PR = "r3"
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
