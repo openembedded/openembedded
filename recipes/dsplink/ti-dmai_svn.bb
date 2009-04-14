@@ -6,6 +6,9 @@ inherit module-base
 
 require ti-paths.inc
 
+INSANE_SKIP_${PN} = True
+INSANE_SKIP_${PN}-apps = True
+
 SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_022309;proto=https;user=anonymous;pswd='' \
 	   file://dmai-built-with-angstrom.patch;patch=1 \
            file://loadmodules-ti-dmai-apps.sh \
