@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r9"
+PR = "r10"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -41,11 +41,11 @@ do_install_append() {
        	echo "${E_CONFIG_DIR}/applications/all/paroli.desktop" >> ${D}${E_CONFIG_DIR}/applications/startup/.order
 
 	install -d ${D}${sysconfdir}/freesmartphone/oevents
-	install ${S}/data/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/rules.yaml
-	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/frameworkd.conf
+	install ${S}/data/rules.yaml ${D}${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml
+	install ${S}/data/frameworkd.conf ${D}${sysconfdir}/paroli_frameworkd.conf
 
 	install -d ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone
-	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+	install ${S}/data/default.yaml ${D}${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml
 
 	install -d ${D}${datadir}/sounds
 	install ${S}/data/sounds/* ${D}${datadir}/sounds
@@ -55,28 +55,39 @@ do_install_append() {
 pkg_postinst_${PN}-autostart() {
 #!/bin/sh
 # post installation script
-echo "*******************************************"
-echo "Deactivating zhone autostart"
-echo "*******************************************"
-chmod -x ${sysconfdir}/X11/Xsession.d/80zhone || true
+if [ -e ${sysconfdir}/X11/Xsession.d/80zhone ]; then
+   echo "*******************************************"
+   echo "Deactivating zhone autostart"
+   echo "*******************************************"
+   chmod -x ${sysconfdir}/X11/Xsession.d/80zhone || true
+fi
 exit 0
 }
 
 pkg_postinst_${PN}() {
 #!/bin/sh
 # post installation script
-#mv ${sysconfdir}/frameworkd.conf ${sysconfdir}/old_frameworkd.conf
-#cp ${sysconfdir}/frameworkd_paroli.conf ${sysconfdir}/frameworkd.conf
-#mv ${sysconfdir}/freesmartphone/oevents/rules.yaml ${sysconfdir}/freesmartphone/oevents/old_rules.yaml
-#cp ${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${sysconfdir}/freesmartphone/oevents/rules.yaml
+if [ ! -e ${sysconfdir}/old_frameworkd.conf ] ; then
+    echo "Backing up ${sysconfdir}/frameworkd.conf"
+    mv ${sysconfdir}/frameworkd.conf ${sysconfdir}/old_frameworkd.conf
+fi
+cp ${sysconfdir}/paroli_frameworkd.conf ${sysconfdir}/frameworkd.conf
+if [ ! -e ${sysconfdir}/freesmartphone/oevents/old_rules.yaml ] ; then
+    echo "Backing up ${sysconfdir}/freesmartphone/oevents/rules.yaml"
+    mv ${sysconfdir}/freesmartphone/oevents/rules.yaml ${sysconfdir}/freesmartphone/oevents/old_rules.yaml
+fi
+cp ${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml ${sysconfdir}/freesmartphone/oevents/rules.yaml
 exit 0
 }
 
 pkg_postinst_${PN}-sounds() {
 #!/bin/sh
 # post installation script
-#mv ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
-#cp ${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+if [ ! -e ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml ] ; then
+    echo "Backing up ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml"
+    mv ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
+fi;
+cp ${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
 exit 0
 }
 
@@ -84,7 +95,7 @@ FILES_${PN} += " \
 	    ${sysconfdir}/dbus-1 \
 	    ${sysconfdir}/paroli \
 	    ${sysconfdir}/freesmartphone/oevents \
-	    ${sysconfdir}/frameworkd.conf \ 
+	    ${sysconfdir}/paroli_frameworkd.conf \ 
 	    ${datadir} \
 	    "
 
@@ -98,13 +109,13 @@ FILES_${PN}-autostart = "${E_CONFIG_DIR}/applications"
 
 FILES_${PN}-sounds = " \
 	${datadir}/sounds/ \
-	${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
+	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
 	"
 
 CONFFILES_${PN} += " \
-	${sysconfdir}/frameworkd.conf \
-	${sysconfdir}/freesmartphone/oevents/rules.yaml \
+	${sysconfdir}/paroli_frameworkd.conf \
+	${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml \
 	"
 CONFFILES_${PN}-sounds += " \
-	${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml \
+	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
 	"
