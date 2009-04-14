@@ -90,7 +90,7 @@ RDEPENDS_task-openmoko-feed = "\
   gdb \
   lsof \
   openmoko-set-root-password \
-#  qtopia-phone-enable-debug \
+  dbus-x11 \
   git \
   navit \
   orrery \
