@@ -1,0 +1,118 @@
+!!!!! get modifiers right
+remove Control = Mode_switch
+remove Control = Shift_R
+remove Shift = Menu
+remove Shift = Control_R
+! Alt key -> Alt_R
+keycode 108 = Alt_R
+! Shift(R) key -> Shift_R
+!keycode 105 = Shift_R
+!add Shift = Shift_R
+! hack - should be Control_R for terminal
+keycode 105 = Control_R
+add Control = Control_R
+! blue key -> Mode_switch
+keycode 37 = Mode_switch
+add mod5 = Mode_switch
+
+!!!!! top mute/unmute
+! keycode mute = has no keycode
+
+!!!!! side buttons
+keycode 123 = Prior
+keycode 122 = Next
+keycode 71 = End
+
+!!!!! top 2 buttons left/right and up from arrow key nav
+!! below - added hacked symbols: percent asciicircum
+keycode 69 = Home percent asciicircum
+!! below - added hacked symbols: percent asciicircum
+keycode 9 = Menu Delete Insert
+
+!!!!! arrowkeys
+keycode 111 = Up
+keycode 116 = Down
+keycode 113 = Left
+keycode 114 = Right
+keycode 104 = KP_Enter
+
+!!!!! answer, calendar, mail, hangup/power
+!!!! CHECKME
+!! below - added hacked symbols: Escape Print
+keycode 72 = F1 Escape Print
+!! below - added hacked symbols: equal semicolon
+keycode 67 = F2 equal semicolon
+!! below - added hacked symbols: bracketleft braceleft
+keycode 68 = F3 bracketleft braceleft
+!! below - added hacked symbols: bracketright braceright
+keycode 70 = F4 bracketright braceright
+
+!!!!! 1st row
+keycode 24 = q Q slash
+keycode 25 = w W plus
+keycode 26 = e E 1
+keycode 27 = r R 2
+keycode 28 = t T 3
+keycode 29 = y Y parenleft
+keycode 30 = u U parenright
+keycode 31 = i I at
+keycode 32 = o O quotedbl
+!! below - added hacked symbols: underscore
+keycode 33 = p P underscore
+!!!!! 2nd row
+keycode 38 = a A ampersand
+keycode 39 = s S minus
+keycode 40 = d D 4
+keycode 41 = f F 5
+keycode 42 = g G 6
+keycode 43 = h H dollar
+keycode 44 = j J exclam
+keycode 45 = k K colon
+keycode 46 = l L apostrophe
+!! below - added hacked symbols: backslash asciitilde
+keycode 22 = BackSpace backslash asciitilde
+!!!!! 3rd row
+keycode 37 = Mode_switch
+keycode 52 = z S asterisk
+keycode 53 = x D 7
+keycode 54 = c F 8
+keycode 55 = v G 9
+keycode 56 = b H numbersign
+keycode 57 = n J question
+keycode 58 = m K comma
+!! below - added hacked symbols: bar grave
+keycode 60 = period bar grave
+keycode 36 = Return
+!!!!! bottom row
+keycode 50 = Shift_L
+!! below - added hacked symbols: less greater
+keycode 19 = 0 less greater
+keycode 65 = space
+keycode 108 = Alt_R
+!! below - hacked to be Control_R instead of Shift_R
+keycode 105 = Control_R
+
+!!!!! missing standard key symbols:
+! % hacked
+! ^ hacked
+! _ hacked
+! = hacked
+! [ hacked
+! ] hacked
+! { hacked
+! } hacked
+! ; hacked
+! < hacked
+! > hacked
+! \ hacked
+! | hacked
+! ` hacked
+! ~ hacked
+! Escape hacked
+! Delete hacked
+! Insert hacked
+! Print hacked
+! Pause
+! Caps_Lock
+! Num_Lock
+! Sroll_Lock
