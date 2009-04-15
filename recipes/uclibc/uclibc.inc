@@ -208,7 +208,7 @@ do_install() {
 		rmdir ${D}/usr/bin
 	fi
 
-        oe_runmake utils
+        oe_runmake "SSP_ALL_CFLAGS=${TARGET_LINK_HASH_STYLE}" utils
         oe_runmake STRIPTOOL=true PREFIX=${D} DEVEL_PREFIX=${prefix}/ RUNTIME_PREFIX=/ \
                 install_utils
 	

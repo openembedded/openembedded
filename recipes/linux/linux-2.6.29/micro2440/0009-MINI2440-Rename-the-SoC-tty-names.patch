@@ -1,0 +1,35 @@
+From 356642f304af65f33a3ae756eff93bc91974ccce Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Sat, 14 Mar 2009 10:39:49 +0000
+Subject: [PATCH] MINI2440: Rename the SoC tty names.
+
+The 24c2410 default serial ports are created with non-
+standard names, that confuses most embedded distros and
+is also inconsistent with the internal name used for the
+console= parameter. This patch makes the driver use
+the standardized names.
+---
+ drivers/serial/samsung.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/serial/samsung.c b/drivers/serial/samsung.c
+index 41ac948..e85a6db 100644
+--- a/drivers/serial/samsung.c
++++ b/drivers/serial/samsung.c
+@@ -823,7 +823,13 @@ static struct uart_ops s3c24xx_serial_ops = {
+ 
+ static struct uart_driver s3c24xx_uart_drv = {
+ 	.owner		= THIS_MODULE,
++#ifdef CONFIG_MACH_MINI2440
++	/* this was probably meant to be there in the first place, since the #define exists
++	 * having non-standard names like "s3c2410_serial" is a royal pain for every distro */
++	.dev_name	= S3C24XX_SERIAL_NAME,
++#else
+ 	.dev_name	= "s3c2410_serial",
++#endif
+ 	.nr		= CONFIG_SERIAL_SAMSUNG_UARTS,
+ 	.cons		= S3C24XX_SERIAL_CONSOLE,
+ 	.driver_name	= S3C24XX_SERIAL_NAME,
+-- 
+1.5.6.3
+
