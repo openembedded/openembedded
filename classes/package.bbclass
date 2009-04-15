@@ -568,7 +568,11 @@ python package_do_shlibs() {
 		return
 		
 	lib_re = re.compile("^lib.*\.so")
-	libdir_re = re.compile(".*/lib$")
+	multilibdir = bb.data.getVar('LIB_MULTILIB', d, 1)
+	if not multilibdir:
+		libdir_re = re.compile(".*/lib$")
+	else:
+		libdir_re = re.compile(".*/(lib|%s)$" % (multilibdir))
 
 	packages = bb.data.getVar('PACKAGES', d, 1)
 
