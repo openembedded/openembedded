@@ -1,0 +1,28 @@
+From 95c835a4a2d6ff9c8073136d7673ddc3eba45dfa Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Sat, 14 Mar 2009 10:35:26 +0000
+Subject: [PATCH] 920T: Use specific 920t mtune=
+
+Modern toolchains have an option for it, lets use it ?
+
+Signed-off-by: Michel Pollet <buserror@gmail.com>
+---
+ arch/arm/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 24e0f01..f47f9c9 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -68,7 +68,7 @@ tune-$(CONFIG_CPU_ARM740T)	:=-mtune=arm7tdmi
+ tune-$(CONFIG_CPU_ARM9TDMI)	:=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM940T)	:=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM946E)	:=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
+-tune-$(CONFIG_CPU_ARM920T)	:=-mtune=arm9tdmi
++tune-$(CONFIG_CPU_ARM920T)	:=-mtune=arm920t
+ tune-$(CONFIG_CPU_ARM922T)	:=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM925T)	:=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM926T)	:=-mtune=arm9tdmi
+-- 
+1.5.6.3
+
