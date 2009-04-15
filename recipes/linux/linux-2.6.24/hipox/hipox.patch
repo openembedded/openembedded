@@ -23398,7 +23398,7 @@ diff -Nurd linux-2.6.24/arch/arm/mach-hipox/hipox.c linux-2.6.24-oxe810/arch/arm
 +#endif // CONFIG_HIPOX_SATA_POWER_2
 +}
 +
-+MACHINE_START(OXNAS, "Oxsemi NAS")
++MACHINE_START(HIPOX, "OXE810 based HydraIP")
 +    /* Maintainer: Oxford Semiconductor Ltd */
 +#ifdef CONFIG_ARCH_HIPOX_UART1
 +    .phys_io = UART_1_BASE_PA,
