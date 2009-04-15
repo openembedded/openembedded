@@ -64,4 +64,16 @@ do_stage () {
 	cp -pfLR ${STAGE_TEMP}${includedir}/linux ${STAGING_INCDIR}/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm ${STAGING_INCDIR}/
 	cp -pfLR ${STAGE_TEMP}${includedir}/asm-generic ${STAGING_INCDIR}/
+        if [ "${ARCH}" == "x86_64" ]; then
+		cp -pfLR ${STAGE_TEMP}${includedir}/asm-x86_64 ${STAGING_INCDIR}/
+		cp -pfLR ${STAGE_TEMP}${includedir}/asm-i386 ${STAGING_INCDIR}/
+	fi
+}
+
+do_stage_append_multilib () {
+	mkdir ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}
+	ln -s ../linux ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/linux
+	ln -s ../asm ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/asm
+	ln -s ../asm-generic ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/asm-generic
+	ln -s ../asm-i386 ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/asm-i386
 }
