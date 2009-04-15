@@ -1,0 +1,192 @@
+From 8f148bda065698d45ab955b2c700ff1a58e28003 Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Wed, 25 Mar 2009 17:45:09 +0000
+Subject: [PATCH] MINI2440: Add touchscreen support
+
+Uses the newly merged moko's touchscreen, optional.
+Updated defconfig too.
+
+Signed-off-by: Michel Pollet <buserror@gmail.com>
+---
+ arch/arm/configs/mini2440_defconfig   |   10 +++-
+ arch/arm/mach-s3c2440/mach-mini2440.c |   99 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 106 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/configs/mini2440_defconfig b/arch/arm/configs/mini2440_defconfig
+index 1602aca..4e79b4e 100644
+--- a/arch/arm/configs/mini2440_defconfig
++++ b/arch/arm/configs/mini2440_defconfig
+@@ -1,7 +1,7 @@
+ #
+ # Automatically generated make config: don't edit
+ # Linux kernel version: 2.6.29
+-# Wed Mar 25 17:21:37 2009
++# Wed Mar 25 17:47:16 2009
+ #
+ CONFIG_ARM=y
+ CONFIG_HAVE_PWM=y
+@@ -814,8 +814,15 @@ CONFIG_MOUSE_PS2_TRACKPOINT=y
+ # CONFIG_INPUT_JOYSTICK is not set
+ # CONFIG_INPUT_TABLET is not set
+ CONFIG_INPUT_TOUCHSCREEN=y
++CONFIG_TOUCHSCREEN_FILTER=y
++CONFIG_TOUCHSCREEN_FILTER_GROUP=y
++CONFIG_TOUCHSCREEN_FILTER_MEDIAN=y
++CONFIG_TOUCHSCREEN_FILTER_MEAN=y
++CONFIG_TOUCHSCREEN_FILTER_LINEAR=y
+ # CONFIG_TOUCHSCREEN_ADS7846 is not set
+ # CONFIG_TOUCHSCREEN_FUJITSU is not set
++CONFIG_TOUCHSCREEN_S3C2410=y
++# CONFIG_TOUCHSCREEN_S3C2410_DEBUG is not set
+ # CONFIG_TOUCHSCREEN_GUNZE is not set
+ # CONFIG_TOUCHSCREEN_ELO is not set
+ # CONFIG_TOUCHSCREEN_WACOM_W8001 is not set
+@@ -1302,6 +1309,7 @@ CONFIG_LOGO=y
+ # CONFIG_LOGO_LINUX_MONO is not set
+ # CONFIG_LOGO_LINUX_VGA16 is not set
+ # CONFIG_LOGO_LINUX_CLUT224 is not set
++CONFIG_LOGO_ARMWORKS_CLUT224=y
+ CONFIG_SOUND=y
+ CONFIG_SOUND_OSS_CORE=y
+ CONFIG_SND=y
+diff --git a/arch/arm/mach-s3c2440/mach-mini2440.c b/arch/arm/mach-s3c2440/mach-mini2440.c
+index 0cddb11..9f7d0ff 100644
+--- a/arch/arm/mach-s3c2440/mach-mini2440.c
++++ b/arch/arm/mach-s3c2440/mach-mini2440.c
+@@ -48,6 +48,16 @@
+ #include <plat/mci.h>
+ #include <plat/udc.h>
+ 
++/*
++ * This is compiled conditionaly, as:
++ * 1) not everyone needs the touchscreen
++ * 2) that s3c_ts code might not have been added
++ * 	to the kernel with this file
++ */
++#ifdef CONFIG_TOUCHSCREEN_S3C2410
++#include <mach/ts.h>
++#endif
++
+ #include <plat/regs-serial.h>
+ #include <mach/regs-gpio.h>
+ #include <mach/regs-mem.h>
+@@ -64,6 +74,13 @@
+ 
+ #include <sound/s3c24xx_uda134x.h>
+ 
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++#include <../drivers/input/touchscreen/ts_filter_linear.h>
++#include <../drivers/input/touchscreen/ts_filter_mean.h>
++#include <../drivers/input/touchscreen/ts_filter_median.h>
++#include <../drivers/input/touchscreen/ts_filter_group.h>
++#endif
++
+ #define MACH_MINI2440_DM9K_BASE (S3C2410_CS4 + 0x300)
+ 
+ static struct map_desc mini2440_iodesc[] __initdata = {
+@@ -123,6 +140,69 @@ static struct s3c2410_udc_mach_info mini2440_udc_cfg __initdata = {
+ 	.udc_command		= mini2440_udc_pullup,
+ };
+ 
++/* touchscreen configuration */
++
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++static struct ts_filter_linear_configuration mini2440_ts_linear_config __initdata = {
++	.constants = {
++		0, /* x factor */
++		1, /* y proportion */
++		0, /* x offset */
++		
++		1, /* x factor */
++		0, /* y factor */
++		0, /* y offset */
++		
++		1  /* common divisor */
++	},	
++	.coord0 = 0,
++	.coord1 = 1,
++};
++
++static struct ts_filter_group_configuration mini2440_ts_group_config __initdata = {
++	.extent = 12,
++	.close_enough = 10,
++	.threshold = 6,		/* at least half of the points in a group */
++	.attempts = 10,
++};
++
++static struct ts_filter_median_configuration mini2440_ts_median_config __initdata = {
++	.extent = 20,
++	.decimation_below = 3,
++	.decimation_threshold = 8 * 3,
++	.decimation_above = 4,
++};
++
++static struct ts_filter_mean_configuration mini2440_ts_mean_config __initdata = {
++	.bits_filter_length = 2, /* 4 points */
++};
++
++static struct s3c2410_ts_mach_info mini2440_ts_cfg __initdata = {
++	.delay = 10000,
++	.presc = 0xff, /* slow as we can go */
++	.filter_sequence = {
++		[0] = &ts_filter_group_api,
++		[1] = &ts_filter_median_api,
++		[2] = &ts_filter_mean_api,
++		[3] = &ts_filter_linear_api,
++	},
++	.filter_config = {
++		[0] = &mini2440_ts_group_config,
++		[1] = &mini2440_ts_median_config,
++		[2] = &mini2440_ts_mean_config,
++		[3] = &mini2440_ts_linear_config,
++	},
++};
++#else /* !CONFIG_TOUCHSCREEN_FILTER */
++#ifdef CONFIG_TOUCHSCREEN_S3C2410
++static struct s3c2410_ts_mach_info mini2440_ts_cfg = {
++	.delay = 10000,
++	.presc = 0xff, /* slow as we can go */
++};
++#endif /* CONFIG_TOUCHSCREEN_S3C2410 */
++#endif
++
++/* LCD driver info */
+ 
+ /* LCD timing and setup */
+ 
+@@ -646,8 +726,18 @@ static void mini2440_parse_features(
+ 			features->done |= FEATURE_BACKLIGHT;
+ 			break;
+ 		case 't':
+-			printk(KERN_INFO "MINI2440: '%c' ignored, "
+-				"touchscreen not compiled in\n", f);
++#ifdef CONFIG_TOUCHSCREEN_S3C2410
++			if (features->done & FEATURE_TOUCH)
++				printk(KERN_INFO "MINI2440: '%c' ignored, "
++					"touchscreen already set\n", f);
++			else 
++				features->optional[features->count++] = 
++						&s3c_device_ts;
++			features->done |= FEATURE_TOUCH;
++#else
++				printk(KERN_INFO "MINI2440: '%c' ignored, "
++					"touchscreen not compiled in\n", f);
++#endif
+ 			break;
+ 		case 'c':
+ 			if (features->done & FEATURE_CAMERA)
+@@ -714,6 +804,11 @@ static void __init mini2440_init(void)
+ 	i2c_register_board_info(0, mini2440_i2c_devs, 
+ 				ARRAY_SIZE(mini2440_i2c_devs));
+ 
++#ifdef CONFIG_TOUCHSCREEN_S3C2410
++	if (features.done & FEATURE_TOUCH)
++		set_s3c2410ts_info(&mini2440_ts_cfg);
++#endif
++
+ 	platform_add_devices(mini2440_devices, ARRAY_SIZE(mini2440_devices));
+ 	
+ 	if (features.count)	/* the optional features */
+-- 
+1.5.6.3
+

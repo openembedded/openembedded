@@ -1,0 +1,49 @@
+From be7844e174757ecc8aae7eb0411a7a8801da3aa8 Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Fri, 13 Mar 2009 18:16:48 +0000
+Subject: [PATCH] S3C: Allow the machine code to get the BBT table from NAND
+
+Added a flag to allow the machine code to tell the NAND
+subsystem that it should try to pickup a BBT from the flash,
+and also skip the NAND full scan at startup.
+---
+ arch/arm/plat-s3c/include/plat/nand.h |    4 +++-
+ drivers/mtd/nand/s3c2410.c            |    7 +++++++
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/plat-s3c/include/plat/nand.h b/arch/arm/plat-s3c/include/plat/nand.h
+index f4dcd14..0bcd5d0 100644
+--- a/arch/arm/plat-s3c/include/plat/nand.h
++++ b/arch/arm/plat-s3c/include/plat/nand.h
+@@ -22,7 +22,9 @@
+ */
+ 
+ struct s3c2410_nand_set {
+-	unsigned int		disable_ecc : 1;
++	unsigned int		disable_ecc : 1,
++			 /* openmoko u-boot can create BBT */
++				flash_bbt : 1;
+ 
+ 	int			nr_chips;
+ 	int			nr_partitions;
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 8e375d5..f813ca9 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -757,6 +757,13 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ 
+ 	if (set->disable_ecc)
+ 		chip->ecc.mode	= NAND_ECC_NONE;
++
++	/* If you use u-boot BBT creation code, specifying this flag will
++	 * let the kernel fish out the BBT from the NAND, and also skip the
++	 * full NAND scan that can take 1/2s or so. Little things... */
++	if (set->flash_bbt)
++		chip->options |= NAND_USE_FLASH_BBT|NAND_SKIP_BBTSCAN;
++
+ }
+ 
+ /* s3c2410_nand_update_chip
+-- 
+1.5.6.3
+
