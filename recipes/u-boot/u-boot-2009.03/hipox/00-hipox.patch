@@ -2010,7 +2010,7 @@ diff -Nurd u-boot-2009.03.orig/board/hipox/hipox.c u-boot-2009.03/board/hipox/hi
 +
 +void reset_cpu (ulong addr)
 +{
-+    printf("Resetting Oxsemi NAS...");
++    printf("Resetting OXE810 HydraIP...");
 +
 +    // Assert reset to cores as per power on defaults
 +    *(volatile u32*)SYS_CTRL_RSTEN_SET_CTRL =
