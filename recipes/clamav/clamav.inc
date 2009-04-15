@@ -19,7 +19,6 @@ RRECOMMENDS_${PN}-daemon = "${PN}-freshclam"
 RPROVIDES_${PN}-freshclam = "${PN}-data"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/clamav/clamav-${PV}.tar.gz \
-          file://cross-compile-fix.patch;patch=1 \
           file://clamav-daemon.init \
           file://clamav-freshclam.init \
           file://clamd.conf \
@@ -67,10 +66,11 @@ do_stage () {
 PACKAGES += "${PN}-freshclam ${PN}-daemon ${PN}-conf ${PN}-data ${PN}-lib \
              ${PN}-clamconf"
 
+LEAD_SONAME = "libclamav.so.*"
 FILES_${PN} = "${bindir}/clamscan \
                ${bindir}/sigtool \
                ${bindir}/clamdscan"
-FILES_${PN}-lib = "${libdir}/libclamav.so.*"
+FILES_${PN}-lib = "${libdir}/libclamav.so.* ${libdir}/libclamunrar.so* ${libdir}/libclamunrar_iface.so*"
 FILES_${PN}-conf = "${sysconfdir}/clamd.conf"
 FILES_${PN}-clamconf = "${bindir}/clamconf"
 FILES_${PN}-freshclam = "${bindir}/freshclam \
