@@ -23,6 +23,7 @@ RDEPENDS_task-openmoko-feed = "\
 #  free42-vga \
   gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
   leafpad abiword \
+  fennec \
   claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   ipkg-link ipkg-utils \
   joe \
