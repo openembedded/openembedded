@@ -3,7 +3,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r7"
+INC_PR = "r8"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://100-uclibc-conf.patch;patch=1 \
@@ -38,6 +38,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.0.2-e300c2c3.patch;patch=1 \
 	file://fortran-static-linking.patch;patch=1 \
 	file://intermask-bigendian.patch;patch=1 \
+	file://gcc-multilib64dir.patch;patch=1;pnum=0 \
 "
 
 SRC_URI_append_ep93xx = " \

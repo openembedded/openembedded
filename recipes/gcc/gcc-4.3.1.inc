@@ -7,7 +7,7 @@ LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
-INC_PR = "r19"
+INC_PR = "r20"
 
 SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fedora/gcc43-c++-builtin-redecl.patch;patch=1;pnum=0 \
@@ -61,6 +61,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	file://zecke-xgcc-cpp.patch;patch=1 \
 	file://gcc-flags-for-build.patch;patch=1 \
+	file://gcc-multilib64dir.patch;patch=1;pnum=0 \
 "
 
 SRC_URI_append_sh3  = " file://sh3-installfix-fixheaders.patch;patch=1 "
