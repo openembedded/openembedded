@@ -36,6 +36,8 @@ INSANE_SKIP_glibc-dbg = True
 
 libc_baselibs = "${base_libdir}/libcrypt*.so.* ${base_libdir}/libcrypt-*.so ${base_libdir}/libc*.so.* ${base_libdir}/libc-*.so ${base_libdir}/libm*.so.* ${base_libdir}/libm-*.so ${base_libdir}/ld*.so.* ${base_libdir}/ld-*.so ${base_libdir}/libpthread*.so.* ${base_libdir}/libpthread-*.so ${base_libdir}/libresolv*.so.* ${base_libdir}/libresolv-*.so ${base_libdir}/librt*.so.* ${base_libdir}/librt-*.so ${base_libdir}/libutil*.so.* ${base_libdir}/libutil-*.so ${base_libdir}/libnsl*.so.* ${base_libdir}/libnsl-*.so ${base_libdir}/libnss_files*.so.* ${base_libdir}/libnss_files-*.so ${base_libdir}/libnss_compat*.so.* ${base_libdir}/libnss_compat-*.so ${base_libdir}/libnss_dns*.so.* ${base_libdir}/libnss_dns-*.so ${base_libdir}/libdl*.so.* ${base_libdir}/libdl-*.so ${base_libdir}/libanl*.so.* ${base_libdir}/libanl-*.so ${base_libdir}/libBrokenLocale*.so.* ${base_libdir}/libBrokenLocale-*.so"
 
+libc_baselibs_append_x86_64 = " /lib64/ld-linux-x86-64.so.2"
+
 FILES_${PN} = "${libc_baselibs} ${libexecdir}/* ${datadir}/zoneinfo ${@base_conditional('USE_LDCONFIG', '1', '/sbin/ldconfig', '', d)}"
 FILES_ldd = "${bindir}/ldd"
 FILES_libsegfault = "${base_libdir}/libSegFault*"
@@ -60,11 +62,6 @@ DESCRIPTION_ldd = "glibc: print shared library dependencies"
 DESCRIPTION_localedef = "glibc: compile locale definition files"
 DESCRIPTION_glibc-utils = "glibc: misc utilities like iconf, local, gencat, tzselect, rpcinfo, ..."
 
-def get_glibc_fpu_setting(bb, d):
-    if bb.data.getVar('TARGET_FPU', d, 1) in [ 'soft' ]:
-        return "--without-fp"
-    return ""
-
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
 OVERRIDES_append = ":${TARGET_ARCH}-${TARGET_OS}"
@@ -83,6 +80,12 @@ do_install() {
 		mv ${WORKDIR}/SUPPORTED.tmp ${WORKDIR}/SUPPORTED
 	done
 	rm -f ${D}/etc/rpc
+}
+
+# Compatibility with third-party 64-bit software
+do_install_append_x86_64 () {
+	install -d ${D}/lib64
+	ln -s ${base_libdir}/ld-linux-x86-64.so.2 ${D}/lib64/ld-linux-x86-64.so.2
 }
 
 TMP_LOCALE="/tmp/locale${libdir}/locale"

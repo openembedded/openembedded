@@ -1,13 +1,13 @@
 require glibc.inc
-PR = "${INC_PR}.0"
+require glibc-multilib.inc
 
-PACKAGES_DYNAMIC = "libc6*"
-RPROVIDES_${PN}-dev = "libc6-dev virtual-libc-dev"
+PROVIDES = "virtual/${GLIBC_PREFIX}libc-for-gcc"
+PACKAGES_DYNAMIC = "libc6-${ARCH_MULTILIB}*"
+RPROVIDES_${PN}-dev = "libc6-${ARCH_MULTILIB}-dev virtual-libc-${ARCH_MULTILIB}-dev"
 
 # the -isystem in bitbake.conf screws up glibc do_stage
 BUILD_CPPFLAGS = "-I${STAGING_INCDIR_NATIVE}"
 TARGET_CPPFLAGS = "-I${STAGING_DIR_TARGET}${layout_includedir}"
-
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/glibc-2.4"
 
@@ -27,8 +27,8 @@ python __anonymous () {
     import bb, re
     uc_os = (re.match('.*uclibc$', bb.data.getVar('TARGET_OS', d, 1)) != None)
     if uc_os:
-        raise bb.parse.SkipPackage("incompatible with target %s" %
-                                   bb.data.getVar('TARGET_OS', d, 1))
+	raise bb.parse.SkipPackage("incompatible with target %s" %
+				   bb.data.getVar('TARGET_OS', d, 1))
 }
 
 RDEPENDS_${PN}-dev = "linux-libc-headers-dev"
@@ -41,6 +41,7 @@ SRC_URI = "\
   file://arm-longlong.patch;patch=1 \
   file://fhs-linux-paths.patch;patch=1 \
   file://dl-cache-libcmp.patch;patch=1 \
+  file://ldsocache-varrun.patch;patch=1 \
   file://nptl-crosscompile.patch;patch=1 \
   file://glibc-2.5-local-dynamic-resolvconf.patch;patch=1;pnum=0 \
   file://glibc-check_pf.patch;patch=1;pnum=0 \
@@ -58,15 +59,6 @@ SRC_URI = "\
   file://glibc-arm-no-asm-page.patch;patch=1 \
   file://armv4t-interworking.patch;patch=1 \
   file://march-i686.patch;patch=1;pnum=0 \
-"
-
-SRC_URI_append_ep9312 = "\
-  file://glibc-crunch-endian-littleword-littlebyte.patch;patch=1 \
-  file://glibc-crunch-eabi-setjmp_longjmp.patch;patch=1 \
-  file://glibc-crunch-eabi-unwind.patch;patch=1 \
-  file://glibc-crunch-eabi.patch;patch=1 \
-  file://glibc-crunch-eabi-force.patch;patch=1 \
-  file://glibc-crunch-eabi-fraiseexcpt.patch;patch=1 \
 "
 
 # Build fails on sh3 and sh4 without additional patches
@@ -91,6 +83,8 @@ EXTRA_OECONF = "\
   --without-selinux \
   ${GLIBC_EXTRA_OECONF} \
 "
+
+EXTRA_OEMAKE += "asm-CPPFLAGS="${CFLAGS_MULTILIB}""
 
 EXTRA_OECONF += "${@get_glibc_fpu_setting(bb, d)}"
 
@@ -140,6 +134,9 @@ do_configure () {
 	fi
 	(cd ${S} && gnu-configize) || die "failure in running gnu-configize"
 	export libc_cv_slibdir=${layout_base_libdir}
+	export libc_cv_forced_unwind=yes
+	export libc_cv_c_cleanup=yes
+	export libc_cv_gnu99_inline=yes
 	CPPFLAGS="" oe_runconf
 }
 
@@ -151,6 +148,9 @@ do_compile () {
 	# -Wl,-rpath-link <staging>/lib in LDFLAGS can cause breakage if another glibc is in staging
 	unset LDFLAGS
 	export libc_cv_slibdir=${layout_base_libdir}
+	export libc_cv_forced_unwind=yes
+	export libc_cv_c_cleanup=yes
+	export libc_cv_gnu99_inline=yes
 	base_do_compile
 	(
 		cd ${S}/sunrpc/rpcsvc
@@ -162,5 +162,4 @@ do_compile () {
 }
 
 require glibc-stage.inc
-
-require glibc-package.bbclass
+require glibc-package-multilib.bbclass
