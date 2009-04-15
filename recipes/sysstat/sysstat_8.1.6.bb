@@ -2,6 +2,7 @@ DESCRIPTION = "The sysstat utilities are a collection of performance monitoring 
 HOMEPAGE = "http://pagesperso-orange.fr/sebastien.godard/"
 LICENSE = "GPL"
 SECTION = "console/utils"
+PR = "r1"
 
 SRC_URI = "http://pagesperso-orange.fr/sebastien.godard/sysstat-${PV}.tar.gz"
 
@@ -13,3 +14,4 @@ do_configure_prepend() {
 
 FILES_${PN} += "${libdir}/sa"
 
+TARGET_CC_ARCH += "${LDFLAGS}"
