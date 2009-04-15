@@ -1,5 +1,7 @@
 DEPENDS = "virtual/${TARGET_PREFIX}binutils"
+DEPENDS_multilib = "virtual/${TARGET_PREFIX}binutils"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc-initial"
+PROVIDES_multilib = "virtual/${TARGET_PREFIX}gcc-initial virtual/${TARGET_SYS_MULTILIB}-gcc-initial"
 PACKAGES = ""
 
 # This is intended to be a -very- basic config
@@ -18,6 +20,12 @@ EXTRA_OECONF = "--with-local-prefix=${STAGING_DIR_TARGET}${layout_prefix} \
 		--with-build-sysroot=${STAGING_DIR_TARGET} \
 		${@get_gcc_fpu_setting(bb, d)}"
 
+EXTRA_OECONF_append_multilib = " --enable-multilib"
+
 do_install () {
+	:
+}
+
+do_install_multilib () {
 	:
 }
