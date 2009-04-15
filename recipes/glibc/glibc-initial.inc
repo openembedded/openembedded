@@ -1,6 +1,7 @@
 SECTION = "libs"
-DEPENDS = "virtual/${TARGET_PREFIX}gcc-initial linux-libc-headers"
-PROVIDES = "virtual/${TARGET_PREFIX}libc-initial"
+GLIBC_PREFIX ?= "${TARGET_PREFIX}"
+DEPENDS = "virtual/${GLIBC_PREFIX}gcc-initial linux-libc-headers"
+PROVIDES = "virtual/${GLIBC_PREFIX}libc-initial"
 
 PACKAGES = ""
 PACKAGES_DYNAMIC = ""
@@ -32,6 +33,7 @@ do_compile () {
 do_stage () {
 	oe_runmake cross-compiling=yes install_root=${STAGING_DIR_HOST} \
 	includedir='${layout_includedir}' prefix='${layout_prefix}' \
+	libdir='${layout_libdir}' slibdir='${layout_base_libdir}' \
 	install-bootstrap-headers=yes install-headers
 
 	oe_runmake csu/subdir_lib
