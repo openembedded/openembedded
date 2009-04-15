@@ -15,6 +15,13 @@ FILES_libgcc = "${target_base_libdir}/libgcc_s.so.1"
 
 FILES_libstdc++ = "${target_libdir}/libstdc++.so.*"
 
+PACKAGES_append_multilib = " libgcc-${ARCH_MULTILIB} libssp-${ARCH_MULTILIB} libstdc++-${ARCH_MULTILIB} libg2c-${ARCH_MULTILIB} libgfortran-${ARCH_MULTILIB}"
+FILES_libgcc-${ARCH_MULTILIB} = "${layout_base_prefix}/${LIB_MULTILIB}/libgcc_s.so.1"
+FILES_libssp-${ARCH_MULTILIB} = "${layout_exec_prefix}/${LIB_MULTILIB}/libssp.so.*"
+FILES_libstdc++-${ARCH_MULTILIB} = "${layout_exec_prefix}/${LIB_MULTILIB}/libstdc++.so.*"
+FILES_libg2c-${ARCH_MULTILIB} = "${layout_exec_prefix}/${LIB_MULTILIB}/libg2c.so.*"
+FILES_libgfortran-${ARCH_MULTILIB} = "${layout_exec_prefix}/${LIB_MULTILIB}/libgfortran.so.*"
+
 do_install () {
 	oe_runmake 'DESTDIR=${D}' install
 
@@ -72,4 +79,32 @@ do_install () {
               ln -sf gfortran g77 || true
               cd $currdir
        fi
+}
+
+do_install_append_multilib () {
+	mkdir -p ${D}${base_multilibdir}
+        if [ -f ${D}${base_multilibdir}/libgcc_s.so.? ]; then
+                # Already in the right location
+                :
+        elif [ -f ${D}${prefix}/${LIB_MULTILIB}/libgcc_s.so.? ]; then
+                mv -f ${D}${prefix}/${LIB_MULTILIB}/libgcc_s.so* ${D}${base_multilibdir} || true
+        else
+                mv -f ${D}${prefix}/*/${LIB_MULTILIB}/libgcc_s.so* ${D}${base_multilibdir} || true 
+        fi
+
+        mkdir -p ${D}${multilibdir}
+
+        mv -f ${D}${prefix}/*/${LIB_MULTILIB}/libstdc++.so* ${D}${multilibdir} || true
+        mv -f ${D}${prefix}/*/${LIB_MULTILIB}/libg2c.so* ${D}${multilibdir} || true
+        mv -f ${D}${prefix}/*/${LIB_MULTILIB}/libgfortran*.so* ${D}${multilibdir} || true
+        mv -f ${D}${prefix}/*/${LIB_MULTILIB}/libssp*.so* ${D}${multilibdir} || true
+
+        # Manually run the target stripper since we won't get it run by
+        # the packaging.
+        if [ "x${OLD_INHIBIT_PACKAGE_STRIP}" != "x1" ]; then
+                ${TARGET_PREFIX}strip ${D}${multilibdir}/libstdc++.so.*
+                ${TARGET_PREFIX}strip ${D}${multilibdir}/libg2c.so.* || true
+                ${TARGET_PREFIX}strip ${D}${base_multilibdir}/libgcc_s.so.* || true
+                ${TARGET_PREFIX}strip ${D}${multilibdir}/libgfortran*.so* || true
+	fi
 }

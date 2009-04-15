@@ -9,4 +9,6 @@ target_base_libdir := "${base_libdir}"
 inherit cross
 
 DEPENDS = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc"
+DEPENDS_multilib = "virtual/${TARGET_PREFIX}binutils virtual/${TARGET_PREFIX}libc-for-gcc virtual/${TARGET_SYS_MULTILIB}-libc-for-gcc"
 PROVIDES = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++"
+PROVIDES_multilib = "virtual/${TARGET_PREFIX}gcc virtual/${TARGET_PREFIX}g++ virtual/${TARGET_SYS_MULTILIB}gcc virtual/${TARGET_SYS_MULTILIB}g++"
