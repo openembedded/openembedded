@@ -155,7 +155,7 @@ case `module_id` in
         "Freescale MX21ADS")
 	# That's what /proc/cpuinfo shows as hardware on the chumby
                  ARGS="$ARGS -dpi 121 -screen 320x240 -hide-cursor -mouse tslib" ;;
-        "OMAP3 Beagle Board")
+        "OMAP3 Beagle Board" | "Gumstix Overo")
                  ARGS="$ARGS ${PPM}"
 # 32bpp - we'll enable it once newer kernels are.. working.                 
 #                 ARGS="$ARGS -fbbpp32"
