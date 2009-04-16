@@ -1,6 +1,6 @@
 require navit.inc
 
-PR = "r1"
+PR = "r2"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/navit/navit-${PV}.tar.gz"
 
