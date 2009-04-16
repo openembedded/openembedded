@@ -74,13 +74,12 @@ PYTHON_INSTALL = "\
 # fso+zhone
 ZHONE_INSTALL = "\
   task-fso-compliance \
-  zhone \
 "
 
 # additional apps
 APPS_INSTALL = "\
   cellhunter \
-  paroli \
+#  paroli \
   gpe-gallery \
   gpe-sketchbook \
   gpe-filemanager \

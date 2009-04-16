@@ -1,4 +1,4 @@
-require fso-image.bb
+require fso-image.inc
 
 ILLUME_THEME = ""
 
@@ -10,7 +10,7 @@ GTK_INSTALL = " \
 GAMES_INSTALL = ""
 APPS_INSTALL = ""
 
-# fso+zhone
+# fso
 ZHONE_INSTALL = "\
   paroli \
   paroli-theme \
