@@ -8,7 +8,7 @@ RRECOMMENDS_${PN} = "exquisite"
 
 SRCREV = "${EFL_SRCREV}"
 PV = "1.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit update-alternatives
 
