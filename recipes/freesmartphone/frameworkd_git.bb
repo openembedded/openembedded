@@ -14,7 +14,9 @@ INITSCRIPT_PARAMS = "defaults 29"
 
 SRC_URI = "${FREESMARTPHONE_GIT}/framework.git;protocol=git;branch=master \
            file://frameworkd \
-           file://frameworkd.conf"
+           file://frameworkd.conf \
+	   file://otimed.patch;patch=1 \
+	   "
 S = "${WORKDIR}/git"
 
 do_configure_append() {
