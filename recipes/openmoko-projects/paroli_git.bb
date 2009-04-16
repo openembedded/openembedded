@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r10"
+PR = "r11"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -92,18 +92,22 @@ exit 0
 }
 
 FILES_${PN} += " \
-	    ${sysconfdir}/dbus-1 \
-	    ${sysconfdir}/paroli \
-	    ${sysconfdir}/freesmartphone/oevents \
-	    ${sysconfdir}/paroli_frameworkd.conf \ 
-	    ${datadir} \
-	    "
+	${sysconfdir}/dbus-1 \
+	${sysconfdir}/paroli \
+	${sysconfdir}/freesmartphone/oevents \
+	${sysconfdir}/paroli_frameworkd.conf \ 
+	${datadir}/lib \
+	${datadir}/bin \
+	${datadir}/applications \
+	${datadir}/elementary \
+	${datadir}/paroli \	    
+	"
 
 FILES_${PN}-theme = " \
-		  ${E_CONFIG_DIR}/themes \
-		  ${E_CONFIG_DIR}/config \
-		  ${sysconfdir}/enlightenment \
-		  "
+	${E_CONFIG_DIR}/themes \
+	${E_CONFIG_DIR}/config \
+	${sysconfdir}/enlightenment \
+	"
 
 FILES_${PN}-autostart = "${E_CONFIG_DIR}/applications"
 
@@ -112,6 +116,9 @@ FILES_${PN}-sounds = " \
 	${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml \
 	"
 
+CONFILES_${PN}-theme = " \
+	${sysconfdir}/enlightenment/default_profile \
+	"
 CONFFILES_${PN} += " \
 	${sysconfdir}/paroli_frameworkd.conf \
 	${sysconfdir}/freesmartphone/oevents/paroli_rules.yaml \
