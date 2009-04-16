@@ -72,7 +72,7 @@ oe_jarinstall() {
       oewarn "file was in the way. removing:" $dir/$1
       rm $dir/$1
     fi
-    ln -s $destname $dir/$1
+    ln -sf $destname $dir/$1
     shift
   done
 }
