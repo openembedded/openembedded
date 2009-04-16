@@ -6,9 +6,7 @@ SECTION = "x11"
 DEPENDS = "edje-native"
 RRECOMMENDS_${PN} = "exquisite"
 
-SRCREV = "${EFL_SRCREV}"
-PV = "1.0+svnr${SRCREV}"
-PR = "r2"
+PV = "1.1"
 
 inherit update-alternatives
 
@@ -17,16 +15,12 @@ ALTERNATIVE_LINK = "${sysconfdir}/exquisite/config"
 ALTERNATIVE_PATH = "${sysconfdir}/exquisite/config-angstrom"
 ALTERNATIVE_PRIORITY = "20"
 
-SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=THEMES/b_and_w;proto=http \
-           file://exq-logo.png \
-           file://exq-logoglow.png \
-"
+SRC_URI = "file://angstrom/"
 
-S = "${WORKDIR}/THEMES/b_and_w"
+S = "${WORKDIR}/angstrom"
 
 do_compile() {
-   cp ${WORKDIR}/*png ${S}/
-   edje_cc exquisite.edc angstrom.edj
+   edje_cc exquisite-ang.edc angstrom.edj
 }
 
 do_install() {
