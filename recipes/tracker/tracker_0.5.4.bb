@@ -1,6 +1,6 @@
 DESCRIPTION = "Tracker is a tool designed to extract information and metadata about your personal data so that it can be searched easily and quickly."
 LICENSE = "GPLv2"
-DEPENDS = "file gtk+ gstreamer gamin libgmime dbus poppler libexif libgsf"
+DEPENDS = "file gtk+ gstreamer gamin libgmime dbus poppler libexif libgsf libgnomecanvas"
 
 PR = "r3"
 
