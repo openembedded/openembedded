@@ -38,7 +38,7 @@ do_stage() {
 
 do_install_append() {
 	install -d ${D}${sysconfdir}/default/volatiles
-	install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/volatiles.04_pulse
+	install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/04_pulse
 	
 	if [ "x${TARGET_PFPU}" == "xsoft" ] ; then 
 	     sed -i -e s:\;\ resample-method\ =\ sinc-fastest:resample-method\ =\ trivial: ${D}${sysconfdir}/pulse/daemon.conf
@@ -64,7 +64,8 @@ FILES_${PN}-dbg += "${libexecdir}/pulse/.debug \
 FILES_${PN}-dev += "${libdir}/pulse-0.9/modules/*.la"		    
 FILES_${PN}-conf = "${sysconfdir}"
 FILES_${PN}-bin = "${bindir}/* \
-                   ${sysconfdir}/default/volatiles/volatiles.04_pulse"
+                   ${sysconfdir}/default/volatiles/ \
+                   ${datadir}/PolicyKit"
 FILES_${PN}-server = "${bindir}/pulseaudio ${sysconfdir}"
 FILES_${PN}-gconf-helper = "${libexecdir}/pulse/gconf-helper"
 FILES_${PN}-misc = "${bindir}/*"
