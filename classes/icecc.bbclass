@@ -137,7 +137,8 @@ def create_native_env(bb,d):
 
 def get_cross_kernel_cc(bb,d):
     kernel_cc = bb.data.expand('${KERNEL_CC}', d)
-    kernel_cc = kernel_cc.replace('ccache', '')
+    kernel_cc = kernel_cc.replace('ccache', '').strip()
+    kernel_cc = kernel_cc.split(' ')[0]
     kernel_cc = kernel_cc.strip()
     return kernel_cc
 
@@ -182,10 +183,10 @@ def create_cross_kernel_env(bb,d):
     cr_env_script = bb.data.getVar('ICECC_ENV_EXEC',  d) or  bb.data.expand('${STAGING_DIR}', d)+"/ice/icecc-create-env"
     result=os.popen("%s %s %s %s %s %s" %(cr_env_script,
            "--silent",
-           os.path.join(ice_dir,'bin',kernel_cc),
-           os.path.join(ice_dir,target_sys,'bin','g++'),
-           os.path.join(ice_dir,target_sys,'bin','as'),
-           os.path.join(ice_dir,"ice",cross_name) ) )
+           os.path.join(ice_dir, 'bin', kernel_cc),
+           os.path.join(ice_dir, 'bin', "%s-g++" % target_sys),
+           os.path.join(ice_dir, 'bin', "%s-as" % target_sys),
+           os.path.join(ice_dir, "ice", cross_name) ) )
     return tar_file
 
 
