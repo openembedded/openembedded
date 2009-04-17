@@ -1,0 +1,309 @@
+images {
+   image: "exq-bglight.png" COMP;
+   image: "exq-logo-ang.png" COMP;
+   image: "exq-logoglow-ang.png" COMP;
+   image: "exq-bar.png" COMP;
+   image: "exq-barglow.png" COMP;
+}
+
+collections {
+   group {
+      name: "exquisite/theme";
+      parts {
+	 part { name: "base";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 255;
+	    }
+	 }
+	 part { name: "light";
+	    description { state: "default" 0.0;
+	       align: 0.5 0.222222222;
+	       rel1.relative: 0.104166667 0.515625;
+	       rel2.relative: 0.895833333 0.796875;
+	       aspect: 2.111111111 2.111111111;
+	       aspect_preference: HORIZONTAL;
+	       max: 380 180;
+	       image.normal: "exq-bglight.png";
+	       color: 0 0 0 255;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "logoclip";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "logoglow";
+	    clip_to: "logoclip";
+	    description { state: "default" 0.0;
+	       align: 0.5 0.5;
+	       rel1.to: "logo";
+	       rel1.relative: -0.045454545 -0.02764977;
+	       rel2.to: "logo";
+	       rel2.relative: 1.045454545 0.774193548;
+	       aspect: 0.75862069 0.75862069;
+	       aspect_preference: HORIZONTAL;
+	       max: 132 174;
+	       image.normal: "exq-logoglow-ang.png";
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "logo";
+	    clip_to: "logoclip";
+	    description { state: "default" 0.0;
+	       align: 0.5 0.774193548;
+	       rel1.relative: 0.272916667 0.315625;
+	       rel2.relative: 0.727083333 0.6546875;
+	       aspect: 0.557603687 0.557603687;
+	       aspect_preference: BOTH;
+	       max: 121 217;
+	       image.normal: "exq-logo-ang.png";
+	    }
+	 }
+	 part { name: "bar";
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to: "bar_clip";
+		  offset: -9 -9;
+	       }
+	       rel2 {
+                  to_x: "exquisite.progress";
+		  to_y: "bar_clip";
+		  offset: 8 -1;
+	       }
+	       image.normal: "exq-bar.png";
+	       image.border: 10 10 10 0;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "barglow";
+	    description { state: "default" 0.0;
+	       align: 1.0 0.5;
+	       max: 31 999;
+	       rel1 {
+		  to: "bar";
+		  relative: 0.0 0.0;
+		  offset: 9 4;
+	       }
+	       rel2 {
+		  to_x: "bar";
+		  to_y: "bar_clip";
+		  relative: 1.0 0.52173913;
+		  offset: -5 4;
+	       }
+	       image.normal: "exq-barglow.png";
+	       image.border: 0 10 10 10;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "bar_clip";
+	    mouse_events:  0;
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       rel1.relative: 0.0625 0.59375;
+	       rel2.relative: 0.9375 0.7375;
+	    }
+	 }
+	 part {
+	    name: "exquisite.progress";
+	    mouse_events: 0;
+	    type: RECT;
+	    dragable {
+	       x: 1 1 0;
+	       y: 0 0 0;
+	       confine: "bar_clip";
+	    }
+	    description {
+	       state: "default" 0.0;
+	       visible: 0;
+	       rel1 {
+		  to: "bar_clip";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "bar_clip";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	    }
+	 }
+
+	 part { name: "exquisite.title";
+	    type: TEXT;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to_y: "logo";
+		  relative: 0.05 -0.4;
+	       }
+	       rel2 {
+		  to_y: "logo";
+		  relative: 0.95 -0.2;
+	       }
+	       color: 255 255 255 0;
+	       text {
+		  font: "Sans:style=Bold";
+		  size: 24;
+		  fit: 0 1;
+	       }
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "exquisite.message";
+	    type: TEXT;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to: "exquisite.title";
+		  relative: 0.0 1.0;
+	       }
+	       rel2 {
+		  to: "exquisite.title";
+		  relative: 1.0 1.5;
+	       }
+	       color: 255 255 255 0;
+	       text {
+		  font: "Sans";
+		  size: 10;
+		  fit: 0 1;
+	       }
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 128;
+	    }
+	 }
+      }
+      
+      programs {
+	 program { name: "show1";
+	    signal: "show";
+	    source: "";
+	    in: 0.5 0.0;
+	    action: STATE_SET "visible" 0.0;
+            transition: LINEAR 2.0;
+	    target: "light";
+	    after: "show2";
+	 }
+	 program { name: "show2";
+	    action: STATE_SET "visible" 0.0;
+            transition: LINEAR 2.0;
+	    target: "logoclip";
+	    after: "show3";
+	 }
+	 program { name: "show3";
+	    action: STATE_SET "visible" 0.0;
+            transition: LINEAR 2.0;
+	    target: "bar";
+	    target: "barglow";
+	 }
+	 
+	 program { name: "title1";
+	    signal: "exquisite";
+	    source: "title";
+	    action: STATE_SET "default" 0.0;
+	    target: "exquisite.title";
+	    after: "title2";
+	 }
+	 program { name: "title2";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exquisite.title";
+	    transition: SINUSOIDAL 1.0;
+	 }
+
+	 program { name: "message1";
+	    signal: "exquisite";
+	    source: "message";
+	    action: STATE_SET "default" 0.0;
+	    target: "exquisite.message";
+	    after: "message2";
+	 }
+	 program { name: "message2";
+	    action: STATE_SET "visible" 0.0;
+	    target: "exquisite.message";
+	    transition: SINUSOIDAL 1.0;
+	 }
+	 
+	 program { name: "pulsate1";
+	    signal: "exquisite";
+	    source: "pulsate";
+	    action: STATE_SET "visible" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target: "logoglow";
+	    after: "pulsate2";
+	 }
+	 program { name: "pulsate2";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target: "logoglow";
+	    after: "pulsate1";
+	 }
+	 program { name: "pulsate_stop";
+	    action: ACTION_STOP;
+	    target: "pulsate1";
+	    target: "pulsate2";
+	 }
+	 program { name: "progress";
+	    signal: "exquisite";
+	    source: "progress";
+	    action: STATE_SET "default" 0.0;
+	    target: "logoglow";
+	    after: "pulsate_stop";
+	 }
+	 
+	 program { name: "exit1";
+	    signal: "exquisite";
+	    source: "exit";
+	    action: STATE_SET "default" 0.0;
+	    transition: ACCELERATE 0.5;
+	    target: "bar";
+	    target: "barglow";
+	    after: "exit2";
+	 }
+	 program { name: "exit2";
+	    action: STATE_SET "default" 0.0;
+	    transition: ACCELERATE 0.5;
+	    target: "logoclip";
+	    target: "logoglow";
+	    target: "exquisite.title";
+	    target: "exquisite.message";
+	    after: "exit3";
+	 }
+	 program { name: "exit3";
+	    action: STATE_SET "default" 0.0;
+	    transition: ACCELERATE 0.5;
+	    target: "light";
+	    after: "exit4";
+	 }
+	 program { name: "exit4";
+	    action: SIGNAL_EMIT "exquisite" "done";
+	 }
+      }
+   }
+}

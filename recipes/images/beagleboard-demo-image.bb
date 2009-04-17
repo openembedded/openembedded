@@ -10,6 +10,7 @@ XSERVER ?= "xserver-xorg \
 "
 
 ANGSTROM_EXTRA_INSTALL ?= ""
+SPLASH = "exquisite exquisite-themes exquisite-theme-angstrom"
 
 export IMAGE_BASENAME = "Beagleboard-demo-image"
 
@@ -18,6 +19,7 @@ IMAGE_INSTALL = "\
     ${XSERVER} \
     ${ANGSTROM_EXTRA_INSTALL} \
     task-beagleboard-demo \
+    ${SPLASH} \
     "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

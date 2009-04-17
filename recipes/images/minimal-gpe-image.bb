@@ -3,6 +3,7 @@
 # Very angstrom and opkg centric
 
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "minimalist-gpe-image"
 
@@ -17,6 +18,7 @@ IMAGE_INSTALL = "\
     gpe-terminal \
     angstrom-feed-configs \
     opkg-nogpg opkg-collateral \
+    ${SPLASH} \
     "
 
 #zap root password for release images

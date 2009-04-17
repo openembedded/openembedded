@@ -1,0 +1,24 @@
+diff -urN hostap-utils-0.4.7.orig/Makefile hostap-utils-0.4.7/Makefile
+--- hostap-utils-0.4.7.orig/Makefile	2005-01-01 06:42:51.000000000 +0000
++++ hostap-utils-0.4.7/Makefile	2009-04-08 08:36:46.000000000 +0000
+@@ -14,17 +14,17 @@
+ hostap_crypt_conf: hostap_crypt_conf.c
+ 
+ hostap_diag: hostap_diag.o util.o
+-	$(CC) -o hostap_diag $(CFLAGS) hostap_diag.o util.o
++	$(CC) -o hostap_diag $(CFLAGS) $(LDFLAGS) hostap_diag.o util.o
+ 
+ hostap_diag.o: hostap_diag.c util.h
+ 
+ util.o: util.c util.h
+ 
+ hostap_io_debug: hostap_io_debug.c
+-	$(CC) -o hostap_io_debug $(CFLAGS) hostap_io_debug.c
++	$(CC) -o hostap_io_debug $(CFLAGS) $(LDFLAGS) hostap_io_debug.c
+ 
+ hostap_rid: hostap_rid.o util.o
+-	$(CC) -o hostap_rid $(CFLAGS) hostap_rid.o util.o
++	$(CC) -o hostap_rid $(CFLAGS) $(LDFLAGS) hostap_rid.o util.o
+ 
+ hostap_rid.o: hostap_rid.c util.h
+ 

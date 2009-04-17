@@ -5,9 +5,10 @@ LICENSE = "GPL"
 RDEPENDS = "initscripts"
 PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual/psplash"
+RCONFLICTS_${PN} = "exquisite"
 
 PV = "0.0+svnr${SRCREV}"
-PR = "r2"
+PR = "r20"
 
 # You can create your own pslash-hand-img.h by doing
 # ./make-image-header.sh <file>.png HAND
@@ -27,11 +28,15 @@ do_configure_append() {
 }
 
 do_install_prepend() {
-	install -d ${D}/mnt/.psplash/
+	install -d ${D}/mnt/.splash/
 	install -d ${D}${sysconfdir}/default/
 	install -m 0644 ${WORKDIR}/psplash-default ${D}${sysconfdir}/default/psplash
 	install -d ${D}${sysconfdir}/init.d/
 	install -m 0755 ${WORKDIR}/psplash-init ${D}${sysconfdir}/init.d/psplash
+	install -d ${D}${bindir}
+	ln -s psplash-write ${D}${bindir}/splash-write
+	install -d ${D}${sysconfdir}/default
+	install -m 0755 ${WORKDIR}/splashfuncs ${D}${sysconfdir}/default/splashfuncs
 }
 
 INITSCRIPT_NAME = "psplash"
@@ -40,4 +45,4 @@ INITSCRIPT_PARAMS = "start 01 S . stop 20 0 1 6 ."
 PACKAGES =+ "psplash-support"
 
 RDEPENDS_${PN} += "psplash-support"
-FILES_psplash-support += "/mnt/.psplash ${sysconfdir} ${bindir}/psplash-write"
+FILES_psplash-support += "/mnt/.splash ${sysconfdir} ${bindir}/psplash-write ${bindir}/splash-write"

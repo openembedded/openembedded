@@ -15,7 +15,7 @@ case `machine_id` in
 	PARAMS='-a 270' ;;
 esac
 
-export TMPDIR=/mnt/.psplash
+export TMPDIR=/mnt/.splash
 mount tmpfs -t tmpfs $TMPDIR -o,size=40k
 
 /usr/bin/psplash $PARAMS &

@@ -1,0 +1,16 @@
+Index: ffmpeg-0.5/libavcodec/arm/dsputil_arm_s.S
+===================================================================
+--- ffmpeg-0.5.orig/libavcodec/arm/dsputil_arm_s.S	2009-04-01 23:20:21.590344985 +0200
++++ ffmpeg-0.5/libavcodec/arm/dsputil_arm_s.S	2009-04-01 23:21:29.952427128 +0200
+@@ -722,5 +722,11 @@
+         bne             1b
+ 
+         pop             {r4-r10}
++#if defined(__ARM_ARCH_2__) || defined(__ARM_ARCH_3__) \
++    || defined(__ARM_ARCH_3M__) || defined(__ARM_ARCH_4__)
++ 	mov		pc, lr
++#else
+         bx              lr
++#endif
+         .endfunc
++

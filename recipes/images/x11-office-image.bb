@@ -3,6 +3,7 @@
 ANGSTROM_EXTRA_INSTALL += " \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "x11-office-image"
 
@@ -21,6 +22,7 @@ IMAGE_INSTALL = "\
     claws-mail claws-mail claws-plugin-mailmbox claws-plugin-rssyl \
     midori minimo \
     gphoto2 \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

@@ -1,5 +1,6 @@
 require linux.inc
 
+DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_at91sam9263ek = "-1"
 DEFAULT_PREFERENCE_gumstix-connex = "1"
 DEFAULT_PREFERENCE_gumstix-verdex = "1"

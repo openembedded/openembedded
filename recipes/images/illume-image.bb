@@ -4,6 +4,9 @@
 
 IMAGE_LINGUAS = "en-us de-de fr-fr pt-br ca-es zh-cn zh-tw bg-bg cs-cz da-dk nl-nl fi-fi hu-hu it-it ja-jp ko-kr nb-no pl-pl ru-ru sk-sk sl-si es-ar sv-se"
 
+# use exquisite splash
+SPLASH = "exquisite exquisite-themes exquisite-theme-illume"
+
 # getting the base system up
 BASE_INSTALL = "\
   angstrom-libc-fixup-hack \
@@ -11,12 +14,12 @@ BASE_INSTALL = "\
   task-base \
   netbase \
   sysfsutils \
+  wireless-tools \
   modutils-initscripts \
   module-init-tools-depmod \
+  pointercal \
+  tslib-conf \
 #  prelink \
-  exquisite \
-  exquisite-themes \
-  exquisite-theme-illume \
 #  rsync \
 #  screen \
 #  fbset \
@@ -29,8 +32,13 @@ XSERVER ?= "xserver-kdrive-fbdev"
 
 # getting an X window system up
 X_INSTALL = "\
+  libx11-locale \
+  localedef \
   glibc-charmap-utf-8 \
+  shared-mime-info \
+  mime-support \
   e-wm \
+  e-wm-sysactions \
   e-wm-config-illume \
   e-wm-config-standard \
   e-wm-config-netbook \
@@ -49,26 +57,31 @@ X_INSTALL = "\
   \
   ttf-dejavu-common \
   ttf-dejavu-sans \
-#  ttf-dejavu-serif \
+  ttf-dejavu-serif \
   ttf-dejavu-sans-mono \
   ttf-arphic-uming \
-  \
+"
+DEV_INSTALL = "\
+  task-native-sdk \
+  e-wm-dev \
+  task-proper-tools \
+  ntpdate \
+  nfs-utils-client \
+  gdb \
+  pkgconfig \
+  ltrace \
+  perl-module-file-path \
 "
 
 # useful command line tools
 TOOLS_INSTALL = "\
-#  bash \
   dosfstools \
-#  iptables \
   lsof \
   mickeydbus \
-  mickeyterm \
   mtd-utils \
   nano \
   powertop \
-  s3c24xx-gpio \
   sysstat \
-#  tcpdump \
 "
 
 # audio
@@ -85,30 +98,31 @@ AUDIO_INSTALL = "\
 "
 
 GTK_INSTALL = "\
-#  openmoko-calculator2 \
   vala-terminal \
-#  gpe-scap \
-#  tangogps \
-"
-
-GAMES_INSTALL = "\
-#  numptyphysics \
+  gpe-scap \
 "
 
 # FIXME these should rather be part of alsa-state,
 # once Om stabilizes them...
-AUDIO_INSTALL_append_om-gta01 = "\
-  openmoko-alsa-scenarios \
-"
-AUDIO_INSTALL_append_om-gta02 = "\
-  openmoko-alsa-scenarios \
-"
+AUDIO_INSTALL_append_om-gta01 = "openmoko-alsa-scenarios"
+AUDIO_INSTALL_append_om-gta02 = "openmoko-alsa-scenarios"
+
+# GLES libs - put them on if the platform has them
+GLES_INSTALL = ""
+GLES_INSTALL_append_beagleboard  = "libgles-omap3 devmem2"
+GLES_INSTALL_append_omap-3430sdp = "libgles-omap3"
+GLES_INSTALL_append_omap-3430ldp = "libgles-omap3"
+GLES_INSTALL_append_omap3evm     = "libgles-omap3"
+#GLES_INSTALL_append_overo        = "libgles-omap3"
+GLES_INSTALL_append_mx31ads      = "libgles-mx31"
+GLES_INSTALL_append_mx31litekit  = "libgles-mx31"
+GLES_INSTALL_append_zylonite     = "libgles-zylonite"
 
 # python
 PYTHON_INSTALL = "\
-  task-python-efl \
-  python-codecs \
-  python-gst \
+#  task-python-efl \
+#  python-codecs \
+#  python-gst \
 "
 
 # zhone
@@ -116,35 +130,31 @@ ZHONE_INSTALL = "\
   fso-gsm0710muxd \
   frameworkd \
   fso-gpsd \
-#  zhone \
+  zhone \
 "
 
 # additional apps
 APPS_INSTALL = "\
-#  tichy \
-#  gpe-gallery \
-#  gpe-sketchbook \
-#  gpe-filemanager \
-#  vagalume \
-#  starling \
-   rxvt-unicode \
-   gpe-terminal \
    elementary-alarm \
-   gpe-scap \
+   expedite \
+   expedite-themes \
    libefso \
    essential-dialer \
+   elementary-sms \
 "
 
 IMAGE_INSTALL = "\
   ${BASE_INSTALL} \
+  ${GLES_INSTALL} \
   ${X_INSTALL} \
   ${GTK_INSTALL} \
-  ${GAMES_INSTALL} \
   ${AUDIO_INSTALL} \
   ${TOOLS_INSTALL} \
   ${PYTHON_INSTALL} \
-  ${ZHONE_INSTALL} \
+#  ${ZHONE_INSTALL} \
   ${APPS_INSTALL} \
+  ${DEV_INSTALL} \
+  ${SPLASH} \
 "
 inherit image
 
@@ -156,7 +166,6 @@ fso_rootfs_postprocess() {
     date "+%m%d%H%M%Y" >./etc/timestamp
     # alias foo
     echo "alias pico=nano" >>./etc/profile
-#    echo "alias fso='cd /local/pkg/fso'" >>./etc/profile
     echo "alias ipkg='opkg'" >>./etc/profile
     # dns
     echo "nameserver 208.67.222.222" >>./etc/resolv.conf

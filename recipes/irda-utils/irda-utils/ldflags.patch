@@ -1,0 +1,28 @@
+diff -urN irda-utils-0.9.16.orig/irattach/Makefile irda-utils-0.9.16/irattach/Makefile
+--- irda-utils-0.9.16.orig/irattach/Makefile	2004-03-31 23:55:41.000000000 +0200
++++ irda-utils-0.9.16/irattach/Makefile	2009-04-08 10:17:39.000000000 +0200
+@@ -53,10 +53,10 @@
+ all: $(TARGETS)
+ 
+ irattach: irattach.o util.o
+-	$(CC) $(CFLAGS) irattach.o util.o -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) irattach.o util.o -o $@
+ 
+ dongle_attach: dongle_attach.o
+-	$(CC) $(CFLAGS) dongle_attach.o -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) dongle_attach.o -o $@
+ 
+ .c.o:
+ 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+diff -urN irda-utils-0.9.16.orig/irdaping/Makefile irda-utils-0.9.16/irdaping/Makefile
+--- irda-utils-0.9.16.orig/irdaping/Makefile	2004-03-31 23:55:47.000000000 +0200
++++ irda-utils-0.9.16/irdaping/Makefile	2009-04-08 10:17:57.000000000 +0200
+@@ -52,7 +52,7 @@
+ all:: irdaping
+ 
+ irdaping: $(OBJS)
+-	$(CC) $(CFLAGS) $(OBJS) -o $@
++	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $@
+ 
+ .c.o:
+ 	$(CC) $(CFLAGS) $(INCLUDES) -c $<

@@ -48,7 +48,8 @@ do_install () {
 	# Create the ${prefix}/${TARGET_SYS}/bin/* symlinks
 	install -d ${D}${prefix}/${TARGET_SYS}/bin/
 	for l in ${D}${bindir}/*; do
-		ln -sf "${bindir}/`basename $l`" "${D}${prefix}/${TARGET_SYS}/bin/`basename $l | sed -e 's,${TARGET_PREFIX},,'`"
+		echo $l
+		ln -sf "../../${layout_base_bindir}/`basename $l`" "${D}${prefix}/${TARGET_SYS}/bin/`basename $l | sed -e 's,${TARGET_PREFIX},,'`"
 	done
 	ln -sf "${bindir}/${TARGET_PREFIX}gcc${EXEEXT}" "${D}${prefix}/${TARGET_SYS}/bin/cc${EXEEXT}"
 

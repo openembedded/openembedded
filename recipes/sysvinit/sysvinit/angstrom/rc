@@ -16,19 +16,23 @@
 #
 
 . /etc/default/rcS
+if [ -f /etc/default/splashfuncs ]; then
+    . /etc/default/splashfuncs
+    export SPLASH="1"
+fi
 export VERBOSE
 
 startup_progress() {
-    step=$(($step + $step_change))
-    if [ "$num_steps" != "0" ]; then
-        progress=$((($step * $progress_size / $num_steps) + $first_step))
-    else
-        progress=$progress_size
-    fi
-    #echo "PROGRESS is $progress $runlevel $first_step + ($step of $num_steps) $step_change $progress_size"
-    if type psplash-write >/dev/null 2>&1; then
-        TMPDIR=/mnt/.psplash psplash-write "PROGRESS $progress" || true
-    fi
+	if [ "$SPLASH" = "1" ] ; then
+        step=$(($step + $step_change))
+        if [ "$num_steps" != "0" ] ; then
+            progress=$((($step * $progress_size / $num_steps) + $first_step))
+        else
+            progress=$progress_size
+        fi
+        #echo "PROGRESS is $progress $runlevel $first_step + ($step of $num_steps) $step_change $progress_size"
+        status_position $progress || true
+	fi
 }
 
 
@@ -169,8 +173,8 @@ startup() {
 
 #Uncomment to cause psplash to exit manually, otherwise it exits when it sees a VC switch
 #if [ "x$runlevel" != "xS" ]; then
-#    if type psplash-write >/dev/null 2>&1; then
-#        TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
-#    	umount /mnt/.psplash
+#    if type splash-write >/dev/null 2>&1; then
+#        TMPDIR=/mnt/.splash splash-write "QUIT" || true
+#    	umount /mnt/.splash
 #    fi
 #fi

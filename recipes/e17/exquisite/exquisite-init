@@ -28,13 +28,13 @@ case `machine_id` in
 esac
 args=$args" $FPS $THEME"
 
-export EXDIR=/mnt/.exquisite
+export EXDIR=/mnt/.splash
 export EXQUISITE_IPC=$EXDIR/exquisite
 mount tmpfs -t tmpfs $EXDIR -o,size=40k
 exquisite -fb -fs $args &
 
-exquisite-write -wait 40
+exquisite-write -wait 120
 exquisite-write "PULSATE"
-
-# kill off exquisite in 300 seconds if its not gone yet
-(sleep 300; exquisite-write "QUIT")&
+setterm -blank 0
+setterm -powersave off
+setterm -powerdown 0

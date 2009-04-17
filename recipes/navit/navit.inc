@@ -10,8 +10,8 @@ EXTRA_OECONF = "--disable-binding-python --disable-gui-sdl --disable-samplemap -
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN} ${PN}-doc ${PN}-locale"
 
+FILES_${PN} += "${libdir}/${PN}/*/*.so"
 FILES_${PN}-dbg += "${libdir}/${PN}/*/.debug"
-FILES_${PN}-dev += "${libdir}/${PN}/*/*.so ${libdir}/${PN}/*/*.la"
 
 SRC_URI_append = " \
                   file://navit.desktop \
@@ -27,4 +27,6 @@ do_install_append() {
 
         mv ${D}${bindir}/navit ${D}${bindir}/navit.real
         install -m 0755 ${WORKDIR}/navit.launcher ${D}${bindir}/navit
+
+	rm ${D}${libdir}/${PN}/*/*.la
 }

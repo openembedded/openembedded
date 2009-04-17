@@ -2,7 +2,7 @@ DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r3"
+PR = "r5"
 
 inherit e update-alternatives
 
@@ -64,11 +64,13 @@ PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
 
+#  file://${HOME}/C/svn/ssh+svn/e/trunk/e \
 SRC_URI = "\
   svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
   file://enlightenment_start.oe \
   file://applications.menu \
   file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
+  file://fix-profiles.diff;patch=1;maxrev=39889 \
 "
 
 SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1 "
@@ -106,14 +108,17 @@ do_install_append() {
 
 FILES_${PN} = "\
   ${bindir}/* \
+  ${libdir}/enlightenment/utils/* \
   ${libdir}/enlightenment/modules/*/*.* \
   ${libdir}/enlightenment/modules/*/*/* \
+  ${libdir}/enlightenment/preload/e_precache.so \
   ${datadir}/locale \
   ${datadir}/enlightenment/data/icons \
   ${datadir}/enlightenment/data/input_methods \
   ${datadir}/enlightenment/data/config/profile.cfg \
   ${datadir}/enlightenment/AUTHORS \
   ${datadir}/enlightenment/COPYING \
+  ${datadir}/xsessions/enlightenment.desktop \
   ${sysconfdir}/xdg \
 "
 FILES_${PN}-config-default = "${datadir}/enlightenment/data/config/default"

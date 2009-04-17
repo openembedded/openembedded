@@ -1,0 +1,30 @@
+From 94e4986b61d385491a89b5c287cebd54428df399 Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Sat, 14 Mar 2009 10:37:57 +0000
+Subject: [PATCH] MINI2440: Delays command check response on SD
+
+The mini2440 faidl to initializes the SD cards reliably
+without this small delay.
+---
+ drivers/mmc/core/sd.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 26fc098..2449230 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -449,6 +449,11 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 		if (err < 0)
+ 			goto free_card;
+ 
++#ifdef CONFIG_MACH_MINI2440
++		/* Prevents the -110 error at startup/insertion */
++		mdelay(10);
++#endif
++
+ 		/*
+ 		 * Fetch switch information from card.
+ 		 */
+-- 
+1.5.6.3
+

@@ -2,7 +2,7 @@
 # command line, from teh choices of block device, loop back images (including
 # recursive) and NFS.
 
-IMAGE_INSTALL = "initramfs-module-block initramfs-module-loop initramfs-module-nfs"
+IMAGE_INSTALL = "busybox-static initramfs-module-block initramfs-module-loop initramfs-module-nfs"
 IMAGE_LINGUAS = ""
 
 # Remove any kernel-image that the kernel-module-* packages may have pulled in.

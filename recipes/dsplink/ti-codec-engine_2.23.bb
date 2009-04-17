@@ -3,13 +3,16 @@ DESCRIPTION = "Codec Engine for TI ARM/DSP processors"
 DEPENDS = "virtual/kernel perl-native"
 RDEPENDS = "update-modules"
 
+INSANE_SKIP_ti-codec-engine-apps = True
+INSANE_SKIP_ti-dsplink-apps = True
+INSANE_SKIP_${PN} = True
+
 inherit module
 
 # disable this package for now, while we're in test mode
 DEFAULT_PREFERENCE = "-1"
 
 # tconf from xdctools dislikes '.' in pwd :/
-PR = "r0"
 PV = "223"
 
 # Get CE tarball from TI website, place in sources and calculate md5sum

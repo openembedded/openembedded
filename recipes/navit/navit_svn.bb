@@ -1,7 +1,7 @@
 require navit.inc
 
 PV = "0.1.0+svnrev${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"
 

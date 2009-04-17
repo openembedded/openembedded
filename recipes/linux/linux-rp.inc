@@ -147,7 +147,3 @@ do_configure() {
 
 	yes '' | oe_runmake oldconfig
 }
-
-# wlan-ng stuff need compiled kernel sources
-do_rm_work() {
-}

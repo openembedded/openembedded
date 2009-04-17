@@ -10,7 +10,10 @@ S = "${WORKDIR}/wxWidgets-${PV}"
 
 inherit autotools pkgconfig
 
-EXTRA_OECONF = " --enable-gpe "
+EXTRA_OECONF = " --enable-gpe --disable-visibility "
+
+CXXFLAGS := "${@oe_filter_out('-fvisibility-inlines-hidden', '${CXXFLAGS}', d)}"
+
 
 do_configure() {
        oe_runconf

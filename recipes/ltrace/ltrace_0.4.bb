@@ -3,7 +3,7 @@ HOMEPAGE = "http://packages.debian.org/unstable/utils/ltrace.html"
 SECTION = "devel"
 DEPENDS = "binutils libelf"
 LICENSE = "GPL"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "${DEBIAN_MIRROR}/main/l/ltrace/ltrace_0.4.orig.tar.gz \
            ${DEBIAN_MIRROR}/main/l/ltrace/ltrace_0.4-1.diff.gz;patch=1 \
@@ -18,6 +18,7 @@ EXTRA_OEMAKE = "INSTALL_FILE='$(INSTALL) -p -m 0644' \
 		INSTALL_DIR='$(INSTALL) -p -d -m 0755' "
 
 export TARGET_CFLAGS = "${SELECTED_OPTIMIZATION} -isystem ${STAGING_INCDIR}"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure_prepend() {
 	ln -sf ./linux-gnu sysdeps/linux-gnueabi
