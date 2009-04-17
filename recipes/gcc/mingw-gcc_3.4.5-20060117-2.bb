@@ -4,8 +4,8 @@ HOMEPAGE = "http://www.mingw.org/"
 SECTION = "devel"
 LICENSE = "GPL"
 
-DEFAULT_PREFERENCE = "0"
-DEFAULT_PREFERENCE_sdk-mingw32 = "1"
+DEFAULT_PREFERENCE = "-1"
+DEFAULT_PREFERENCE_mingw32 = "1"
 
 inherit autotools gettext
 
