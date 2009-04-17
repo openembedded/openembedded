@@ -1,0 +1,413 @@
+#!/usr/bin/python
+#
+# Download Apple sources and prepare them for OpenEmbedded.
+#
+# You need the following on your system to run this script:
+#
+#  python
+#  python-beautifulsoup
+#  libssl-dev
+#  sudo (to mount HFS+ images)
+#
+# Version: 0.4
+
+import cookielib
+import os
+import re
+import subprocess
+import shutil
+import sys
+import urllib
+import urllib2
+import urlparse
+from BeautifulSoup import BeautifulSoup
+import Cookie
+try:
+    import xml.etree.cElementTree as ET
+except:
+    import cElementTree as ET
+
+DOWNLOAD_DIR = "downloads"
+MOUNT_DIR = "mnt"
+OUTPUT_DIR = "files"
+TEMP_DIR = "tmp"
+TOOLS_DIR = "tools"
+
+class CustomCookieHandler(urllib2.BaseHandler):
+    """
+    Custom handler for cookies, as for some reason HTTPCookieProcessor
+    has issues parsing the cookies received from Apple.
+    """
+    def __init__(self):
+        self.cookiejar = Cookie.SimpleCookie()
+
+    def http_request(self, request):
+        # add cookies
+        attrs = []
+        for key in self.cookiejar:
+            attrs.append( key + "=" + self.cookiejar[key].value)
+        if len(attrs):
+            if not request.has_header("Cookie"):
+                request.add_unredirected_header(
+                    "Cookie", "; ".join(attrs))
+        return request
+
+    def http_response(self, request, response):
+        # store cookies
+        cookie = response.info().getheader('set-cookie')
+        if cookie:
+            self.cookiejar.load(cookie)
+
+        return response
+
+    https_request = http_request
+    https_response = http_response
+
+def plist_value(e):
+    """
+    Convert an XML element into its python representation.
+    """
+    if e.tag == "integer":
+        return int(e.text)
+    elif e.tag == "string":
+        return e.text
+    elif e.tag == "array":
+        return [ plist_value(c) for c in e.getchildren() ]
+    elif e.tag == "dict":
+        key = None
+        val = {}
+        for c in e.getchildren():
+            if c.tag == "key":
+                key = c.text
+            else:
+                val[key] = plist_value(c)
+        return val
+    else:
+        raise Exception("Could not parse dict entry %s" % e)
+
+def plist_to_hash(plist_string):
+    """
+    Convert the contents of an Apple .plist file to a hash.
+    """
+    return plist_value(ET.fromstring(plist_string).find('dict'))
+
+def extract_pkg(pkg, dest):
+    print "Extracting package %s to %s" % (pkg, dest)
+    if os.system("cd %s && xar -xf %s Payload && zcat Payload | cpio -id && rm Payload" % (dest, os.path.abspath(pkg))):
+        raise Exception("Could not extract package")
+
+def mount_dmg(dmg, mnt):
+    """
+    Convert a DMG image to an HFS+ image then mount it.
+
+    NOTE: requires sudo access
+    """
+    img = os.path.join(TEMP_DIR, os.path.basename(dmg).replace(".dmg", ".img"))
+
+    # Check image is not mounted
+    if not os.path.exists(mnt):
+        os.mkdir(mnt)
+
+    # Convert image
+    if not os.path.exists(img):
+        print "Converting image %s to %s " % (dmg, img)
+    	if os.system("%s -i %s -o %s" % (os.path.join(TOOLS_DIR, "dmg2img"), dmg, img)):
+            raise Exception("Could not convert image")
+
+    # Mount image
+    print "Mounting image %s on %s" % (img, mnt)
+    if os.system("sudo mount -t hfsplus -o loop %s %s" % (img, mnt)):
+        raise Exception("Could not mount image")
+
+    return img
+
+def umount_dmg(dmg, mnt):
+    """
+    Unmount a DMG image.
+
+    NOTE: requires sudo access
+    """
+    img = os.path.join(TEMP_DIR, os.path.basename(dmg).replace(".dmg", ".img"))
+    print "Unmounting %s" % (mnt)
+    if os.system("sudo umount %s" % mnt):
+        raise Exception("Could not unmount image")
+    os.remove(img)
+
+def pagetype(page):
+     return page.info().getheader('content-type').split(';')[0]
+
+def request(url, data=None):
+    """
+    Wrapper around urllibs2.urlopen to handle Apple's authentication form.
+    """
+    page = urllib2.urlopen(url, data)
+
+    if page.geturl() != url:
+        # check for connect form
+        soup = BeautifulSoup(page)
+        form = soup.find("form", {"name": "appleConnectForm"})
+        if form:
+            login_url = urlparse.urljoin(page.geturl(), form['action'])
+
+            # log in
+            print "* Logging into %s" % login_url
+            page = urllib2.urlopen(urllib2.Request(login_url, data=urllib.urlencode({
+                'theAccountName': apple_id,
+                'theAccountPW': apple_password, 
+                'theAuxValue': '',
+                '1.Continue.x': '1',
+                '1.Continue.y': '1'}),
+                headers={'Referer': page.geturl()}))
+
+    # follow refresh
+    while pagetype(page) == "text/html":
+        soup = BeautifulSoup(page)
+        meta = soup.find('meta', {'http-equiv': 'REFRESH'})
+        if not meta:
+            break
+
+        refresh_url = meta['content'].split(';',1)[1].split("=",1)[1]
+        print "* Following refresh to %s" % refresh_url
+        page = urllib2.urlopen(urllib2.Request(refresh_url, data=data, headers={'Referer': page.geturl()}))
+
+    return page
+
+def download(url, dest):
+    """
+    Download a file to a directory.
+    """
+    tempname = os.path.join(TEMP_DIR, os.path.basename(url)) + ".part"
+    filename = os.path.join(dest, os.path.basename(url))
+    if os.path.exists(filename):
+        print "* Not downloading %s" % url
+        return filename
+
+    print "* Downloading %s" % url
+    page = request(url)
+    size = page.info().getheader('content-length')
+    if pagetype(page) == "text/html":
+        raise Exception("We got an HTML page, download failed")
+
+    done = 0
+    output = open(tempname, 'wb')
+    sys.stdout.write("\r* Receiving..")
+    sys.stdout.flush()
+    while True:
+        data = page.read(100000)
+        if data:
+            done += len(data)
+            if size:
+                sys.stdout.write("\r* Received %i bytes (%f %%)" % (done, float(done * 100) / float(size)))
+            else:
+                sys.stdout.write("\r* Received %i bytes (unknown)" % done)
+            sys.stdout.flush()
+            output.write(data)
+        else:
+            sys.stdout.write("\n")
+            break
+    output.close()
+
+    shutil.move(tempname, filename)
+    return filename
+ 
+def build_tools(url, binaries):
+    """
+    Build DMG handling tools.
+    """
+    print "[ Building tools ]"
+    done = True
+    for bin in binaries:
+        tool = os.path.join(TOOLS_DIR, bin)
+        if not os.path.exists(tool):
+            print "* Tool %s is missing" % bin
+            done = False
+    
+    if done:
+        print "* Tools already built"
+        return
+
+    # download and extract tools
+    workdir = os.path.join(TEMP_DIR, "tools")
+    if os.path.exists(workdir):
+        shutil.rmtree(workdir)
+    os.mkdir(workdir)
+    tarball = download(url, TEMP_DIR)
+    if os.system("tar -C %s --strip-components=1 -xf %s" % (workdir, tarball)):
+        raise Exception("Could not extract tarball")
+
+    # build tools
+    if os.system("make -C %s" % workdir):
+        raise Exception("Could not build tools")
+    for bin in binaries:
+        shutil.move(os.path.join(workdir, bin), os.path.join(TOOLS_DIR, bin))
+
+    # cleanup
+    shutil.rmtree(workdir)
+    os.remove(tarball)
+   
+def get_darwin_sources(urls):
+    """
+    Download the source .tar.gz of Darwin opensource components.
+    """
+    print "[ Darwin sources ]"
+    for url in urls:
+        download(url, OUTPUT_DIR)
+
+def get_firmware_key(firmware_version, firmware_build):
+    """
+    Return the key for a given firmware by parsing the iPhone wiki.
+    """
+    page = urllib2.urlopen('http://www.theiphonewiki.com/wiki/index.php?title=VFDecrypt_Keys:_2.x')
+    soup = BeautifulSoup(page)
+
+    for title in soup.findAll('span', {'class': 'mw-headline'}):
+        v = title.contents[0].strip()
+        if v.startswith(firmware_version) and v.count("(Build %s)" % firmware_build):
+            p = title.parent.findNextSibling('p')
+            return p.contents[0].strip().upper()
+
+    return None
+
+def generate_iphone_rootfs(url, exclude):
+    """
+    Generate a .tar.bz2 for the iPhone rootfs.
+    """
+    print "[ iPhone rootfs ]"
+    ipsw = download(url, DOWNLOAD_DIR)
+
+    # Get image contents
+    plist = plist_to_hash(subprocess.Popen(["unzip", "-p", ipsw, "Restore.plist"], stdout=subprocess.PIPE).communicate()[0])
+
+    tarname = "iphone-rootfs-%s" % plist['ProductVersion']
+    workdir = os.path.join(TEMP_DIR, tarname)
+    tarball = os.path.join(OUTPUT_DIR, tarname + ".tar.bz2")
+    tartemp = os.path.join(TEMP_DIR, tarname + ".tar.bz2")
+    imagename = plist['SystemRestoreImages']['User']
+    image = os.path.join(TEMP_DIR, imagename)
+
+    if os.path.exists(tarball):
+        print "Skipping %s" % tarball
+        return
+
+    for i in ['ProductType', 'ProductVersion', 'ProductBuildVersion']:
+        print "\t%s: %s" % (i, plist[i]) 
+
+    # Get firmware key
+    print "Fetching decryption key for %s" % image 
+    key = get_firmware_key(plist['ProductVersion'], plist['ProductBuildVersion'])
+    if not key:
+        raise Exception("Could not get decryption key for firmware")
+    print "Got decryption key %s" % key
+
+    # Get dmg
+    if not os.path.exists(image):
+        # Extract
+        print "Extracting %s" % image
+        os.system("unzip %s %s -d %s" % (ipsw, imagename, TEMP_DIR))
+
+        # Decrypt
+        temp = image + ".decrypted"
+        if os.system("%s -k %s -i %s -o %s" % (os.path.join(TOOLS_DIR, "vfdecrypt"), key, image, temp)):
+            raise Exception("Could not decrypt image")
+        os.remove(image)
+        os.rename(temp, image)
+
+    # Generate tarball
+    os.mkdir(workdir)
+    mount_dmg(image, workdir)
+
+    print "Generating %s" % tarball
+    excludes = " ".join([ "--exclude %s/%s" % (tarname, x) for x in exclude ])
+    if os.system("tar %s --hard-dereference -C %s -cjf %s %s" % (excludes, TEMP_DIR, tartemp, tarname)):
+        raise Exception("Could not create tarball")
+    shutil.move(tartemp, tarball)
+
+    umount_dmg(image, workdir)
+    os.rmdir(workdir)
+    os.remove(image)
+    return tarball
+
+def generate_iphone_sdk(url, iphone_version, macosx_version):
+    """
+    Generate a .tar.bz2 for the iPhone SDKs.
+    """
+    print "[ iPhone SDKs ]"
+    #request('http://developer.apple.com/iphone/login.action')
+    image = download(url, DOWNLOAD_DIR)
+
+    tarname = "iphone-sdks-%s" % iphone_version
+    workdir = os.path.join(TEMP_DIR, tarname)
+    tarball = os.path.join(OUTPUT_DIR, tarname + ".tar.bz2")
+    tartemp = os.path.join(TEMP_DIR, tarname + ".tar.bz2")
+
+    if os.path.exists(tarball):
+        print "Skipping %s" % tarball
+        return
+
+    # Cleanup
+    if os.path.exists(workdir):
+        shutil.rmtree(workdir)
+
+    # Mount image
+    mount_dmg(image, MOUNT_DIR)
+    os.mkdir(workdir)
+
+    # Extract iPhone stuff
+    sdk = "iPhoneOS%s.sdk" % iphone_version
+    tmpdir = os.path.join(TEMP_DIR, sdk)
+    os.mkdir(tmpdir)
+    extract_pkg("%s/Packages/iPhoneSDKHeadersAndLibs.pkg" % MOUNT_DIR, tmpdir)
+    shutil.move("%s/Platforms/iPhoneOS.platform/Developer/SDKs/%s" % (tmpdir, sdk), os.path.join(workdir, sdk))
+    shutil.rmtree(tmpdir)
+
+    # Extract MacOS stuff
+    sdk = "MacOSX%s.sdk" % macosx_version
+    tmpdir = os.path.join(TEMP_DIR, sdk)
+    os.mkdir(tmpdir)
+    extract_pkg("%s/Packages/MacOSX%s.pkg" % (MOUNT_DIR, macosx_version), tmpdir)
+    shutil.move("%s/SDKs/%s" % (tmpdir, sdk), os.path.join(workdir, sdk))
+    shutil.rmtree(tmpdir)
+
+    # Unmount image
+    umount_dmg(image, MOUNT_DIR)
+
+    print "Generating %s" % tarball
+    if os.system("tar -C %s -cjf %s %s" % (TEMP_DIR, tartemp, tarname)):
+        raise Exception("Could not create tarball")
+    shutil.move(tartemp, tarball)
+    shutil.rmtree(workdir)
+
+    return tarball
+
+if __name__ == "__main__":
+    # Check arguments
+    if len(sys.argv) < 4:
+        print """Usage: iphone-sources <manifest> <apple_id> <apple_password>"""
+        sys.exit(1)
+    cmd = sys.argv[1]
+
+    # Initialise directories
+    for d in [DOWNLOAD_DIR, OUTPUT_DIR, MOUNT_DIR, TEMP_DIR, TOOLS_DIR]:
+        if not os.path.exists(d):
+            print "Creating %s" % d
+            os.mkdir(d)
+
+    # Read manifest
+    manifest = eval(file(sys.argv[1]).read())
+    apple_id = sys.argv[2]
+    apple_password = sys.argv[3]
+
+    # Register cookies
+    opener = urllib2.build_opener(CustomCookieHandler())
+    urllib2.install_opener(opener)
+
+    # Perform all build steps
+    build_tools(manifest['tools']['url'], manifest['tools']['binaries'])
+    get_darwin_sources(manifest['sources'])
+    generate_iphone_rootfs(manifest['firmware']['url'], manifest['firmware']['exclude'])
+    generate_iphone_sdk(manifest['sdk']['url'], manifest['firmware']['version'], manifest['macosx']['version'])
+
+    # Cleanup
+    for d in [MOUNT_DIR, TEMP_DIR]:
+        os.rmdir(d)
+
