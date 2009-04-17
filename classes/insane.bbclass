@@ -31,6 +31,9 @@ PACKAGEFUNCS += " do_package_qa "
 #           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian, 32bit?
 def package_qa_get_machine_dict():
     return {
+            "darwin9" : { 
+                        "arm" :       (40,     0,    0,          True,          True),
+                      },
             "linux" : { 
                         "arm" :       (40,    97,    0,          True,          True),
                         "armeb":      (40,    97,    0,          False,         True),
