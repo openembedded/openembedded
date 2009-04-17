@@ -2,41 +2,59 @@ DESCRIPTION = "PackageKit package management abstraction"
 SECTION = "libs"
 PRIORITY = "optional"
 LICENSE = "GPL"
-DEPENDS = "dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
-RDEPENDS_${PN} = "opkg"
-PV = "0.2.3+gitr${SRCREV}"
-PR = "r18"
-PE = "1"
+DEPENDS = "gtk+ python cppunit policykit dbus (>= 1.1.1) dbus-glib glib-2.0 sqlite3 opkg intltool intltool-native (>= 0.37.1)"
+RDEPENDS_${PN} = "${IPKG_VARIANT}"
+
+inherit gnome autotools_stage
 
 SRC_URI = "git://anongit.freedesktop.org/git/packagekit;protocol=git \
-           file://disable-docbook2man.patch;patch=1 \
-           file://repository-ping.patch;patch=1 \
-           file://force_depends.patch;patch=1 \
-           file://remove_search_memory_leak.patch;patch=1 \
-           file://racing_condition.patch;patch=1 \
-           file://modify_summary_and_adding_reposi_info.patch;patch=1 \
-           "
+"
 
+PV = "0.4.6+git"
+PR = "r0+gitr${SRCREV}"
+PE = "1"
 
 S = "${WORKDIR}/git"
-
-inherit autotools pkgconfig
 
 EXTRA_OECONF = "--with-security-framework=dummy \
                 --with-default-backend=opkg \
                 --enable-opkg \
+                --disable-tests \
+                --disable-qt \
+                --disable-gstreamer-plugin \
+                --disable-local  \
                 ac_cv_path_XMLTO=no \
                 "
 
 
 do_configure_prepend() {
-        echo "EXTRA_DIST=" > gtk-doc.make
-        sed -i -e s:0\.1\.5:0\.1\.6:g configure.ac
+	mkdir -p m4
+	echo "EXTRA_DIST=" > gtk-doc.make
+	sed -i -e s:0\.1\.5:0\.1\.6:g -e /Werror/d configure.ac
 }
 
-do_stage () {
-        autotools_stage_all
+do_configure_append() {
+	for i in $(find . -name Makefile) ; do
+		sed -i -e s:${STAGING_DIR_NATIVE}::g \
+		       -e s:${bindir}/mkdir:${STAGING_BINDIR_NATIVE}/mkdir:g \
+		       -e s:/usr/bin/intltool-merge:${STAGING_BINDIR_NATIVE}/intltool-merge:g \
+		$i
+	done
 }
 
-FILES_${PN} += "${libdir}/packagekit-backend/*.so ${datadir}/dbus-1/system-services/"
-FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so "
+
+PACKAGES =+ "${PN}-website"
+FILES_${PN}-website = "${datadir}/PackageKit/website"
+
+PACKAGES =+ "${PN}-python"
+FILES_${PN}-python = "${libdir}/python*"
+
+PACKAGES =+ "${PN}-gtkmodule"
+FILES_${PN}-gtkmodule = "${libdir}/gtk-2.0/*/*.so"
+
+FILES_${PN} += "${libdir}/packagekit-backend/*.so ${libdir}/pm-utils ${datadir}/dbus-1/system-services/ ${datadir}/PolicyKit ${datadir}/PackageKit"
+FILES_${PN}-dbg += "${libdir}/packagekit-backend/.debug/*.so ${libdir}/gtk-2.0/*/.debug"
+FILES_${PN}-dev += "${libdir}/packagekit-backend/*a ${libdir}/gtk-2.0/*/*a"
+
+
+
