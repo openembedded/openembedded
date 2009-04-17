@@ -12,6 +12,7 @@ IMAGE_INSTALL = "\
     angstrom-x11-base-depends \
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

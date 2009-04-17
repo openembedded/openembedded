@@ -18,6 +18,7 @@ IMAGE_INSTALL = "\
     ${XSERVER} \
     ${ANGSTROM_EXTRA_INSTALL} \
     task-beagleboard-demo \
+    ${SPLASH} \
     "
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

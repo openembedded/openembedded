@@ -43,6 +43,7 @@ IMAGE_INSTALL = " task-base-extended \
 	uucp picocom \
 	angstrom-zeroconf-audio avahi-utils \
 	${ANGSTROM_EXTRA_INSTALL} \
+        ${SPLASH} \
 "
 
 inherit image

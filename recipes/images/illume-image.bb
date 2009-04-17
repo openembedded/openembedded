@@ -4,6 +4,9 @@
 
 IMAGE_LINGUAS = "en-us de-de fr-fr pt-br ca-es zh-cn zh-tw bg-bg cs-cz da-dk nl-nl fi-fi hu-hu it-it ja-jp ko-kr nb-no pl-pl ru-ru sk-sk sl-si es-ar sv-se"
 
+# use exquisite splash
+SPLASH = "exquisite exquisite-themes exquisite-theme-illume"
+
 # getting the base system up
 BASE_INSTALL = "\
   angstrom-libc-fixup-hack \
@@ -17,9 +20,6 @@ BASE_INSTALL = "\
   pointercal \
   tslib-conf \
 #  prelink \
-#  exquisite \
-#  exquisite-themes \
-#  exquisite-theme-illume \
 #  rsync \
 #  screen \
 #  fbset \
@@ -154,6 +154,7 @@ IMAGE_INSTALL = "\
 #  ${ZHONE_INSTALL} \
   ${APPS_INSTALL} \
   ${DEV_INSTALL} \
+  ${SPLASH} \
 "
 inherit image
 

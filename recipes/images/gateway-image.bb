@@ -11,6 +11,7 @@ IMAGE_INSTALL = "task-boot \
             dnsmasq \
 #            vsftpd \
             angstrom-version \
+            ${SPLASH} \
 	   "
 
 export IMAGE_BASENAME = "gateway-image"

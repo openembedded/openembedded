@@ -16,6 +16,7 @@ IMAGE_INSTALL = "\
     kernel-modules \
     hal \
     angstrom-gpe-task-pim \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 

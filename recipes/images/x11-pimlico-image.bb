@@ -16,6 +16,7 @@ IMAGE_INSTALL = "\
     kernel-modules \
     hal \
     angstrom-ohand-task-pim \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

@@ -21,6 +21,7 @@ IMAGE_INSTALL = "\
     claws-mail claws-mail claws-plugin-mailmbox claws-plugin-rssyl \
     midori minimo \
     gphoto2 \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

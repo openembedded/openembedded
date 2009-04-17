@@ -11,6 +11,7 @@ IMAGE_INSTALL = "task-boot \
             ${DISTRO_SSH_DAEMON} \
             ${ANGSTROM_EXTRA_INSTALL} \
             angstrom-version \
+            ${SPLASH} \
 	   "
 
 export IMAGE_BASENAME = "minimalist-image"
