@@ -1,6 +1,6 @@
 require opkg.inc
 
-PR = "r11"
+PR = "r12"
 
 PACKAGES =+ "libopkg-dev libopkg"
 
@@ -11,13 +11,6 @@ FILES_libopkg = "${libdir}/*.so.*"
 # (for example, to enable loading of ethernet kernel modules before networking starts)
 OPKG_INIT_POSITION = "98"
 OPKG_INIT_POSITION_slugos = "41"
-
-SRC_URI += "file://configure"
-
-do_install_prepend() {
-  install -d ${D}${sysconfdir}/rcS.d
-  install -m 0755 ${WORKDIR}/configure ${D}${sysconfdir}/rcS.d/S98configure
-}
 
 pkg_postinst_${PN} () {
   update-alternatives --install ${bindir}/opkg opkg ${bindir}/opkg-cl 100
