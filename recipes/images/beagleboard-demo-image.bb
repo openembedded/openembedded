@@ -10,6 +10,7 @@ XSERVER ?= "xserver-xorg \
 "
 
 ANGSTROM_EXTRA_INSTALL ?= ""
+SPLASH = "exquisite exquisite-themes exquisite-theme-angstrom"
 
 export IMAGE_BASENAME = "Beagleboard-demo-image"
 

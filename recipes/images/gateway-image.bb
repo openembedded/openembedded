@@ -1,6 +1,8 @@
 #Angstrom gateway image
 #gives you a gateway with SMB, ssh and dnsmasqs
 
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
+
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
 

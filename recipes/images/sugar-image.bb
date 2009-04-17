@@ -1,4 +1,5 @@
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "sugar-image"
 

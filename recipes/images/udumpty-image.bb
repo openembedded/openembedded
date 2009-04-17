@@ -1,5 +1,6 @@
 # Image that mimics the default desktop of a certain distro
 
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 XSERVER ?= "xserver-xorg \
            xf86-input-evdev \
            xf86-input-mouse \

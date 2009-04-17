@@ -3,6 +3,7 @@
 ANGSTROM_EXTRA_INSTALL += " \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "x11-gpe-image"
 
