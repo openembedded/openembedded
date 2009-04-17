@@ -19,11 +19,7 @@ CFLAGS = "${SDK_CFLAGS}"
 CXXFLAGS = "${SDK_CFLAGS}"
 LDFLAGS = "${SDK_LDFLAGS}"
 
-# TODO: add logic to add the following unless PN ~= gcc*
-#DEPENDS_prepend = "virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc "
-# and otherwise just
-DEPENDS_prepend = "virtual/${HOST_PREFIX}binutils "
-
+DEPENDS_prepend = "virtual/${HOST_PREFIX}binutils virtual/${HOST_PREFIX}gcc "
 
 # On mingw systems we want to have the real sysroot default to c:/... and
 # assume that the default install will be on the C drive.  This can be changed
