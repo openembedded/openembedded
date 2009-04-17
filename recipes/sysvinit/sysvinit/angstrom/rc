@@ -18,18 +18,21 @@
 . /etc/default/rcS
 if [ -f /etc/default/splashfuncs ]; then
     . /etc/default/splashfuncs
+    export SPLASH="1"
 fi
 export VERBOSE
 
 startup_progress() {
-    step=$(($step + $step_change))
-    if [ "$num_steps" != "0" ]; then
-        progress=$((($step * $progress_size / $num_steps) + $first_step))
-    else
-        progress=$progress_size
-    fi
-    #echo "PROGRESS is $progress $runlevel $first_step + ($step of $num_steps) $step_change $progress_size"
-    status_position $progress || true
+	if [ "$SPLASH" = "1" ] ; then
+        step=$(($step + $step_change))
+        if [ "$num_steps" != "0" ] ; then
+            progress=$((($step * $progress_size / $num_steps) + $first_step))
+        else
+            progress=$progress_size
+        fi
+        #echo "PROGRESS is $progress $runlevel $first_step + ($step of $num_steps) $step_change $progress_size"
+        status_position $progress || true
+	fi
 }
 
 
