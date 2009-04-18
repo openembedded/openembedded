@@ -47,3 +47,10 @@ do_stage () {
 	set_arch
 	oe_runmake headers_install INSTALL_HDR_PATH=${STAGING_DIR_HOST}${layout_prefix} ARCH=$ARCH
 }
+
+do_stage_append_multilib () {
+	install -d ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}
+	ln -s ../linux ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/linux
+	ln -s ../asm ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/asm
+	ln -s ../asm-generic ${STAGING_INCDIR}/${TARGET_SYS_MULTILIB}/asm-generic
+}
