@@ -9,6 +9,14 @@ DEPENDS="dbus-glib eel glib-2.0 gtk+ hal libglade libgnomeui nautilus"
 # FIXME: recipes are missing
 #RDEPENDS = "genisoimage growisofs wodim"
 
+PACKAGES += "nautilus-extension-nautilus-cd-burner"
+FILES_nautilus-extension-nautilus-cd-burner = "${libdir}/nautilus"
+FILES_${PN}-dbg += "${libdir}/nautilus/extensions-*/.debug"
+
+do_install_append() {
+	rm ${D}${libdir}/nautilus/extensions-*/*.la
+}
+
 do_stage() {
 	autotools_stage_all
 }
