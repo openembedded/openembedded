@@ -5,8 +5,10 @@ DEPENDS = "gconf glib-2.0 gstreamer gst-plugins-base gtk+ gdk-pixbuf-csource-nat
 # optional for volume control:
 DEPENDS += "pulseaudio"
 # optional for gnome-cd and cddbslave:
-# DEPENDS += "nautilus-cd-burner"
+DEPENDS += "nautilus-cd-burner"
 inherit gnome
+
+PR = "r1"
 
 EXTRA_OECONF = "--disable-static --disable-gtk-doc --disable-scrollkeeper"
 
@@ -18,3 +20,10 @@ do_configure_prepend() {
 do_stage() {
         autotools_stage_all
 }
+
+FILES_${PN} += "${libdir}/libglade/2.0/libgnome-media-profiles.so \
+                ${datadir}/gstreamer-properties \
+                ${datadir}/gnome-sound-recorder"
+
+FILES_${PN}-dbg += "${libdir}/libglade/2.0/.debug"
+
