@@ -1,4 +1,5 @@
-require vala_${PV}.bb
+require vala.inc
+PR = "r2"
 
 inherit native
 DEPENDS = "glib-2.0-native"
