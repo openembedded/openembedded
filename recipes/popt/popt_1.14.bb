@@ -1,8 +1,7 @@
 require popt.inc
-DEPENDS = "gettext virtual/libintl"
-PR = "r1"
+PR = "r2"
 
-inherit autotools_stage
+inherit autotools_stage gettext
 
 SRC_URI = "\
   http://rpm5.org/files/popt/popt-${PV}.tar.gz \
