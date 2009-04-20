@@ -12,7 +12,7 @@ DEFAULT_PREFERENCE_oxnas = "1"
 DEFAULT_PREFERENCE_hipox = "1"
 DEFAULT_PREFERENCE_cs-e9302 = "1"
 
-PR = "r29"
+PR = "r30"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
