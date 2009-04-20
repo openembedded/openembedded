@@ -17,6 +17,8 @@ RDEPENDS = "\
   python-textutils \
   python-dbus \
   python-pygobject \
+  dbus-x11 \
+  task-fso-compliance \
 "
 
 #E_CONFIG_DIR="/home/root/.e/e"
