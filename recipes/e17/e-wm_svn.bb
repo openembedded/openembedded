@@ -1,10 +1,49 @@
 DESCRIPTION = "The Enlightenment Window Manager Version 17"
 DEPENDS = "eet evas ecore edje efreet edbus"
 LICENSE = "MIT BSD"
+SRCNAME = "e"
 PV = "0.16.999.050+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit e update-alternatives
+
+SRC_URI += "\
+  file://enlightenment_start.oe \
+  file://applications.menu \
+  file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
+  file://fix-profiles.diff;patch=1;maxrev=39889 \
+"
+
+SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1"
+
+EXTRA_OECONF = "\
+  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
+  --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
+  --x-includes=${STAGING_INCDIR}/X11 \
+  --x-libraries=${STAGING_LIBDIR} \
+  --enable-simple-x11 \
+"
+
+do_configure_prepend() {
+	autopoint
+}
+
+do_stage() {
+    autotools_stage_all
+    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.la" -print`; do rm -f $I; done
+    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.a" -print`; do rm -f $I; done
+    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.la" -print`; do rm -f $I; done
+    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.a" -print`; do rm -f $I; done
+}
+
+do_install_append() {
+    # customising - should rather make this simple upstream
+    install -m 755 ${WORKDIR}/enlightenment_start.oe ${D}/${bindir}
+    install -d ${D}/${sysconfdir}/xdg/menus
+    install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
+    for I in `find ${D}/${libdir}/enlightenment -name "*.a" -print`; do rm -f $I; done
+    for I in `find ${D}/${libdir}/enlightenment -name "*.la" -print`; do rm -f $I; done
+}
 
 RDEPENDS_${PN} += "\
   shared-mime-info \
@@ -64,48 +103,6 @@ PACKAGE_ARCH_${PN}-other = "all"
 PACKAGE_ARCH_${PN}-input-methods = "all"
 PACKAGE_ARCH_${PN}-sysactions = "all"
 
-#  file://${HOME}/C/svn/ssh+svn/e/trunk/e \
-SRC_URI = "\
-  svn://svn.enlightenment.org/svn/e/trunk;module=e;proto=http \
-  file://enlightenment_start.oe \
-  file://applications.menu \
-  file://gsm-segfault-fix.patch;patch=1;maxrev=37617 \
-  file://fix-profiles.diff;patch=1;maxrev=39889 \
-"
-
-SRC_URI_append_openmoko = " file://illume-disable-screensaver.patch;patch=1 "
-
-S = "${WORKDIR}/e"
-
-EXTRA_OECONF = "\
-  --with-edje-cc=${STAGING_BINDIR_NATIVE}/edje_cc \
-  --with-eet-eet=${STAGING_BINDIR_NATIVE}/eet \
-  --x-includes=${STAGING_INCDIR}/X11 \
-  --x-libraries=${STAGING_LIBDIR} \
-  --enable-simple-x11 \
-"
-
-do_configure_prepend() {
-	autopoint
-}
-
-do_stage() {
-    autotools_stage_all
-    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.la" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR}/enlightenment -name "*.a" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.la" -print`; do rm -f $I; done
-    for I in `find ${STAGING_LIBDIR_CROSS}/enlightenment -name "*.a" -print`; do rm -f $I; done
-}
-
-do_install_append() {
-    # customising - should rather make this simple upstream
-    install -m 755 ${WORKDIR}/enlightenment_start.oe ${D}/${bindir}
-    install -d ${D}/${sysconfdir}/xdg/menus
-    install -m 644 ${WORKDIR}/applications.menu ${D}/${sysconfdir}/xdg/menus/
-    for I in `find ${D}/${libdir}/enlightenment -name "*.a" -print`; do rm -f $I; done
-    for I in `find ${D}/${libdir}/enlightenment -name "*.la" -print`; do rm -f $I; done
-}
-
 FILES_${PN} = "\
   ${bindir}/* \
   ${libdir}/enlightenment/utils/* \
@@ -141,17 +138,27 @@ FILES_${PN}-utils = "${libdir}/enlightenment/utils/*"
 
 RRECOMMENDS_${PN}-config-default = "${PN}-theme-default"
 RRECOMMENDS_${PN}-config-illume = "${PN}-theme-illume"
-RRECOMMENDS_${PN}-config-minimalist = "${PN}-background-light-gradient \
-${PN}-theme-default"
-RRECOMMENDS_${PN}-config-netbook = "${PN}-background-dark-gradient \
-${PN}-theme-default"
+RRECOMMENDS_${PN}-config-minimalist = "\
+  ${PN}-background-light-gradient \
+  ${PN}-theme-default \
+"
+RRECOMMENDS_${PN}-config-netbook = "\
+  ${PN}-background-dark-gradient \
+  ${PN}-theme-default \
+"
 RRECOMMENDS_${PN}-config-scaleable = "${PN}-theme-default"
 RRECOMMENDS_${PN}-config-standard = "${PN}-theme-default"
 
 FILES_${PN}-dbg += "\
   ${libdir}/enlightenment/modules/*/*/.debug/ \
   ${libdir}/enlightenment/preload/.debug/ \
+  ${libdir}/enlightenment/utils/.debug/ \
 "
+
+FILES_${PN}-doc += "\
+  ${datadir}/enlightenment/doc \
+"
+
 CONFFILES_${PN} = "/etc/xdg/menus/applications.menu"
 
 ALTERNATIVE_PATH = "${bindir}/enlightenment_start.oe"
