@@ -1,15 +1,8 @@
 require e2fsprogs.inc
 
-PR = "r1"
+SRC_URI += "file://mkinstalldirs.patch;patch=1"
 
-#SRC_URI += "file://no-hardlinks.patch;patch=1 \
-#	    file://mkinstalldirs.patch;patch=1 \
-#	   "
-
-do_configure() {
-	# avoid autoreconf
-	oe_runconf $@
-}
+PR = "r2"
 
 do_compile_prepend () {
 	find ./ -print|xargs chmod u=rwX
