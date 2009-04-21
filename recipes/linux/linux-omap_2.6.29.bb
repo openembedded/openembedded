@@ -7,6 +7,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_overo = "1"
+DEFAULT_PREFERENCE_beagleboard = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 

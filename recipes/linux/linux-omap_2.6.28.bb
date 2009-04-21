@@ -6,7 +6,6 @@ KERNEL_IMAGETYPE = "uImage"
 COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|omap3evm|omap3-pandora|overo"
 
 DEFAULT_PREFERENCE = "-1"
-DEFAULT_PREFERENCE_beagleboard = "1"
 DEFAULT_PREFERENCE_omap5912osk = "1"
 
 SRCREV = "79d042a081d3e467c735bb0d9569ed6296f85a3c"
