@@ -39,6 +39,7 @@ SRC_URI = "${GNU_MIRROR}/gcc/gcc-${PV}/gcc-${PV}.tar.bz2 \
 	file://fortran-static-linking.patch;patch=1 \
 	file://intermask-bigendian.patch;patch=1 \
 	file://gcc-multilib64dir.patch;patch=1;pnum=0 \
+	file://gcc-fix-glibc-dynamic-linker-amd64.patch;patch=1 \
 "
 
 SRC_URI_append_ep93xx = " \

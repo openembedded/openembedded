@@ -1,0 +1,14 @@
+OE's glibc builds with dynamic linker installed in /lib, so for OE-built
+software we fix dynamic linker used by GCC and we provide then compatibility
+hooks for third-party software.
+--- a/gcc/config/i386/linux64.h	2009-04-20 13:25:49.366506316 +0400
++++ b/gcc/config/i386/linux64.h	2009-04-20 13:27:58.687506336 +0400
+@@ -49,7 +49,7 @@
+    done.  */
+ 
+ #define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "/lib/ld-linux-x86-64.so.2"
+ 
+ #undef	LINK_SPEC
+ #define LINK_SPEC "%{!m32:-m elf_x86_64} %{m32:-m elf_i386} \
