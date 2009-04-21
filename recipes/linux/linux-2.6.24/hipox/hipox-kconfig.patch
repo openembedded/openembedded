@@ -1,0 +1,16 @@
+--- linux-2.6.24/arch/arm/mach-hipox/Kconfig.orig	2009-04-20 10:17:34.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-hipox/Kconfig	2009-04-20 10:20:06.000000000 +0000
+@@ -1,6 +1,12 @@
+ if ARCH_HIPOX
+ 
+-menu "Oxford Semiconductor NAS Options"
++menu "OXE810 based HydraIP Options"
++
++config MACH_HIPOX
++	bool "OXE810 based HydraIP board"
++	help
++	  Say 'Y' here if you want your kernel to run on the
++	  OXE810 based HydraIP board.
+ 
+ config ARCH_HIPOX_FPGA
+ 	bool "FPGA platform"

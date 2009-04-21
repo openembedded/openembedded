@@ -4,7 +4,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "libgsm0710 vala-native glib-2.0"
-PV = "0.3.3+gitr${SRCREV}"
+PV = "0.3.4+gitr${SRCREV}"
 PR = "r0"
 
 SRC_URI = "\

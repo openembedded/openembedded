@@ -61,7 +61,7 @@ SRCREV_pn-fso-abyss ?= "0c713f42f078ae4aa3138ea487f044b9cd9d525b"
 SRCREV_pn-fso-apm ?= "eb39ce7fb81bfa64e1a9eb5f142ca3d1065be3fa"
 SRCREV_pn-fso-term ?= "2cd15459c689d56e3ddde761129f4b00beab68ef"
 SRCREV_pn-fso-gpsd ?= "78fe48dffb923175bde9f0aabc3500a9264a57e0"
-SRCREV_pn-fso-gsm0710muxd ?= "abcbcd7cc532a8834906de3fc24c8f8fe7643cd4"
+SRCREV_pn-fso-gsm0710muxd ?= "af1b80c7ded08b697730c3191d110dfd6dd872d3"
 SRCREV_pn-fso-monitord ?= "0f64979a11d6263c7b7ed0e945a0889744f295f1"
 SRCREV_pn-fso-sounds ?= "3d2cf5231cb0e81770a246530574142bd2b8bbff"
 SRCREV_pn-fstests ?= "204"
@@ -258,7 +258,7 @@ SRCREV_pn-zhone ?= "f38cc52fbf11f7fe945797a6b8ade29ed479d924"
 # Enlightenment Foundation Libraries
 # Caution: This is not alphabetically, but (roughly) dependency-sorted.
 # Please leave it like that.
-EFL_SRCREV ?= "40125"
+EFL_SRCREV ?= "40244"
 SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
 SRCREV_pn-edb ?= "${EFL_SRCREV}"
 SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
