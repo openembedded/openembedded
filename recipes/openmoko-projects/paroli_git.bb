@@ -26,9 +26,11 @@ E_CONFIG_DIR="/usr/share/enlightenment/data"
 
 do_install_append() {
        	# install paroli theme
-       	install -d ${D}${E_CONFIG_DIR}/config/illume/
-       	install ${S}/data/module.illume.cfg ${D}${E_CONFIG_DIR}/config/illume/
-       	install ${S}/data/e.cfg ${D}${E_CONFIG_DIR}/config/illume/
+       	#install -d ${D}${E_CONFIG_DIR}/config/illume/
+       	#install ${S}/data/module.illume.cfg ${D}${E_CONFIG_DIR}/config/illume/
+       	#install ${S}/data/e.cfg ${D}${E_CONFIG_DIR}/config/illume/
+       	install -d ${D}${E_CONFIG_DIR}/config/paroli
+       	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
        	install -d ${D}${E_CONFIG_DIR}/themes
 	install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
