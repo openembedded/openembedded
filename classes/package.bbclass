@@ -670,7 +670,12 @@ python package_do_shlibs() {
 		bb.utils.unlockfile(lf)
 
 	shlib_provider = {}
-	list_re = re.compile('^(.*)\.list$')
+	# Exclude multilib library providers by default
+	multilibarch = bb.data.getVar('ARCH_MULTILIB', d, 1)
+	if not multilibarch:
+		list_re = re.compile('^(.*)\.list$')
+	else:
+		list_re = re.compile("^((-?[^-]*(?!-%s))+)\.list$" % (multilibarch))
 	for dir in [shlibs_dir]: 
 		if not os.path.exists(dir):
 			continue
