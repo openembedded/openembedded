@@ -231,6 +231,10 @@ autotools_stage_all() {
 			echo "cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/"
 			cp -f ${STAGE_TEMP}/${libdir}/pkgconfig/*.pc ${STAGING_LIBDIR}/pkgconfig/
 		fi
+		if [ -e ${STAGE_TEMP}/${datadir}/pkgconfig/ ] ; then
+			echo "cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/"
+			cp -f ${STAGE_TEMP}/${datadir}/pkgconfig/*.pc ${STAGING_DATADIR}/pkgconfig/
+		fi
 	fi
 	rm -rf ${STAGE_TEMP}/${mandir} || true
 	rm -rf ${STAGE_TEMP}/${infodir} || true

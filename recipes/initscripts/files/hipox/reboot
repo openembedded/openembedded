@@ -1,0 +1,19 @@
+#! /bin/sh
+#
+# reboot	Execute the reboot command.
+#
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+# Test if we should boot into the new kernel
+if test -x /usr/sbin/kexec -a -f /sys/kernel/kexec_loaded ; then
+    read loaded < /sys/kernel/kexec_loaded
+    if test "$loaded" = "1" ; then
+        echo -n "Loaded kernel image found, executing ... "
+        /usr/sbin/kexec --exec
+        echo "${warn}failed, doing normal reboot${norm}"
+    fi
+fi
+
+echo -n "Rebooting... "
+reboot -d -f -i

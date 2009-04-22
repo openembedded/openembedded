@@ -1,0 +1,281 @@
+diff -Nurd u-boot-2009.03.orig/cpu/arm926ejs/cpu.c u-boot-2009.03/cpu/arm926ejs/cpu.c
+--- u-boot-2009.03.orig/cpu/arm926ejs/cpu.c	2009-04-20 16:00:48.000000000 +0200
++++ u-boot-2009.03/cpu/arm926ejs/cpu.c	2009-04-20 16:03:56.000000000 +0200
+@@ -77,6 +77,245 @@
+ 	for (i = 0; i < 100; i++);
+ }
+ 
++#ifdef CONFIG_ARM926EJS
++#include <asm/io.h>
++
++/* read co-processor 15, register #3 (domain register) */
++static unsigned long read_p15_c3 (void)
++{
++	unsigned long value;
++
++	__asm__ __volatile__(
++		"mrc	p15, 0, %0, c3, c0, 0   @ read domain reg\n"
++		: "=r" (value)
++		:
++		: "memory");
++
++#ifdef MMU_DEBUG
++	printf ("p15/c3 is = %08lx\n", value);
++#endif
++	return value;
++}
++
++/* write to co-processor 15, register #3 (domain register) */
++static void write_p15_c3 (unsigned long value)
++{
++#ifdef MMU_DEBUG
++	printf ("write %08lx to p15/c3\n", value);
++#endif
++	__asm__ __volatile__(
++		"mcr	p15, 0, %0, c3, c0, 0   @ write it back\n"
++		:
++		: "r" (value)
++		: "memory");
++
++	read_p15_c3 ();
++}
++
++/* read co-processor 15, register #2 (ttb register) */
++static unsigned long read_p15_c2 (void)
++{
++	unsigned long value;
++
++	__asm__ __volatile__(
++		"mrc	p15, 0, %0, c2, c0, 0   @ read domain reg\n"
++		: "=r" (value)
++		:
++		: "memory");
++
++#ifdef MMU_DEBUG
++	printf ("p15/c2 is = %08lx\n", value);
++#endif
++	return value;
++}
++
++/* write to co-processor 15, register #2 (ttb register) */
++static void write_p15_c2 (unsigned long value)
++{
++#ifdef MMU_DEBUG
++	printf ("write %08lx to p15/c2\n", value);
++#endif
++	__asm__ __volatile__(
++		"mcr	p15, 0, %0, c2, c0, 0   @ write it back\n"
++		:
++		: "r" (value)
++		: "memory");
++
++	read_p15_c2 ();
++}
++
++typedef struct {
++	unsigned int vAddress;
++	unsigned int ptAddress;
++	unsigned int masterPtAddress;
++	unsigned int type;
++	unsigned int dom;
++} Pagetable;
++
++#define FAULT 0
++#define COARSE 1
++#define MASTER 2
++#define FINE 3
++
++// put the page table before u-boot and heap, pagetable is 16kb
++#define MPT (TEXT_BASE - CONFIG_SYS_MALLOC_LEN - 64*1024)
++
++/* Page Tables */
++/* VADDRESS, PTADDRESS, PTTYPE, DOM */
++Pagetable masterPT = {MPT, MPT, MPT, MASTER, 3};
++
++typedef struct {
++	unsigned int vAddress;
++	unsigned int pageSize;
++	unsigned int numPages;
++	unsigned int AP;
++	unsigned int CB;
++	unsigned int pAddress;
++	Pagetable *PT;
++} Region;
++
++#define NANA 0x00
++#define RWNA 0x01
++#define RWRO 0x02
++#define RWRW 0x03
++
++/* cb = not cached/not buffered */
++/* cB = not Cached/Buffered */
++/* Cb = Cached/not Buffered */
++/* WT = write through cache */
++/* WB = write back cache */
++#define cb 0x0
++#define cB 0x1
++#define WT 0x2
++#define WB 0x3
++
++/* REGION TABLES */
++/* VADDRESS, PAGESIZE, NUMPAGES, AP, CB, PADDRESS, &PT */
++
++// create one region for all the 4GB memory space
++Region wholeRegion =
++	{0x00000000, 1024, 4096, RWRW, cb, 0x00000000, &masterPT};
++
++// Size of SDRAM, starting at PHYS_SDRAM_1_PA
++Region SDRAMRegion =
++	{PHYS_SDRAM_1_PA, 1024, PHYS_SDRAM_1_MAX_SIZE >> 20, RWRW, WT, PHYS_SDRAM_1_PA, &masterPT};
++
++static void mmuInitPT(Pagetable *pt)
++{
++	int index; /* number of lines in PT/entries written per loop*/
++	unsigned int PTE, *PTEptr; /* points to page table entry in PT */
++
++	PTEptr = (unsigned int *)pt->ptAddress; /* set pointer base PT */
++	PTE = FAULT;
++
++	for (index = 4096; index > 0; index--)
++	{
++		*PTEptr++ = PTE;
++	}
++}
++
++static void mmuMapRegion(Region *region)
++{
++	int i;
++	unsigned int *PTEptr, PTE;
++
++	PTEptr = (unsigned int *)region->PT->ptAddress; /* base addr PT */
++	PTEptr += region->vAddress >> 20; /* set to first PTE in region */
++	PTEptr += region->numPages - 1; /* set to last PTE in region */
++	PTE = region->pAddress & 0xfff00000; /* set physical address */
++	PTE |= (region->AP & 0x3) << 10; /* set Access Permissions */
++	PTE |= region->PT->dom << 5; /* set Domain for section */
++	PTE |= (region->CB & 0x3) << 2; /* set Cache & WB attributes */
++	PTE |= 0x12; /* set as section entry */
++
++	for (i=region->numPages - 1; i >= 0; i--) /* fill PTE in region */
++	{
++		*PTEptr-- = PTE + (i << 20); /* i = 1 MB section */
++	}
++}
++
++static void mmuAttachPT(Pagetable *pt) /* attach L2 PT to L1 master PT */
++{
++	unsigned int *ttb;
++
++	ttb = (unsigned int *)pt->masterPtAddress; /* read ttb from PT */
++
++	write_p15_c2((unsigned long)ttb);
++}
++
++static void domainAccessSet(unsigned int value, unsigned int mask)
++{
++	uint32_t reg;
++
++	reg = read_p15_c3();	/* get domain reg. */
++
++	reg &= ~mask; /* clear bits that change */
++	reg |= value; /* set bits that change */
++
++	cp_delay();
++	write_p15_c3(reg);
++}
++
++static void controlSet(unsigned int value, unsigned int mask)
++{
++	uint32_t reg;
++
++	reg = read_p15_c1();	/* get control reg. */
++
++	reg &= ~mask; /* clear bits that change */
++	reg |= value; /* set bits that change */
++
++	cp_delay();
++	write_p15_c1(reg);
++}
++
++static void flushDCache(void)
++{
++	unsigned int c7format = 0;
++
++	__asm__ __volatile__(
++		"mcr p15, 0, %0, c7, c6, 0    @ invalidate caches \n\t"
++			:
++			: "r" (c7format) 
++			: "memory");
++}
++
++#define DOM3CLT 0x00000040
++#define CHANGEALLDOM 0xffffffff
++#define ENABLEMMU 0x00000001
++#define ENABLEDCACHE 0x00000004
++#define ENABLEICACHE 0x00001000
++#define CHANGEMMU 0x00000001
++#define CHANGEDCACHE 0x00000004
++#define CHANGEICACHE 0x00001000
++#define ENABLEWB 0x00000008
++#define CHANGEWB 0x00000008
++
++static void mmu_enable(void)
++{
++	int enable, change;
++
++	/* Initialize system (fixed) page tables */
++	mmuInitPT(&masterPT); /* init master L1 PT with FAULT PTE */
++
++	/* Filling page tables with translation & attribute data */
++	mmuMapRegion(&wholeRegion);
++	mmuMapRegion(&SDRAMRegion);
++
++	/* Activating page tables */
++	mmuAttachPT(&masterPT); /* load L1 TTB to cp15:c2:c0 register */
++
++	/* Set Domain Access */
++	domainAccessSet(DOM3CLT , CHANGEALLDOM); /* set Domain Access */
++
++	/* Enable MMU, caches and write buffer */
++	enable = ENABLEMMU;
++	change = CHANGEMMU;
++
++	controlSet(enable, change); /* enable cache and MMU */
++}
++#endif
++
+ /* See also ARM926EJ-S Technical Reference Manual */
+ #define C1_MMU		(1<<0)		/* mmu off/on */
+ #define C1_ALIGN	(1<<1)		/* alignment faults off/on */
+@@ -171,6 +410,20 @@
+ 
+ void dcache_enable(void)
+ {
++#ifdef CONFIG_ARM926EJS
++	int istat = icache_status();
++
++	if(istat)
++		icache_disable();
++
++	mmu_enable();
++
++	if(istat)
++		icache_enable();
++
++	flushDCache();
++#endif
++
+ 	cache_enable(C1_DC);
+ }
+ 
+diff -Nurd u-boot-2009.03.orig/include/configs/hipox.h u-boot-2009.03/include/configs/hipox.h
+--- u-boot-2009.03.orig/include/configs/hipox.h	2009-04-20 16:00:48.000000000 +0200
++++ u-boot-2009.03/include/configs/hipox.h	2009-04-20 16:03:56.000000000 +0200
+@@ -34,6 +34,7 @@
+ #define CONFIG_CMD_DHCP
+ #define CONFIG_CMD_DIAG
+ #define CONFIG_CMD_PING
++#define CONFIG_CMD_CACHE
+ 
+ /**
+  * Architecture

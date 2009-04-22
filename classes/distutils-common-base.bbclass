@@ -17,6 +17,7 @@ PACKAGES = "${PN}-dev ${PN}-dbg ${PN}-doc ${PN}"
 FILES_${PN} = "${bindir}/* ${libdir}/* ${libdir}/${PYTHON_DIR}/*"
 
 FILES_${PN}-dev += "\
+  ${datadir}/pkgconfig \
   ${libdir}/pkgconfig \
   ${libdir}/${PYTHON_DIR}/site-packages/*.la \
 "

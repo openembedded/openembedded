@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Poky Automated Build Server Enviroment Setup Script
+#
+# Copyright (C) 2006-2007 OpenedHand Ltd.
+# Adapted to OpenEmbedded by Marcin Juszkiewicz in 2008.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+CURRDIR=`pwd`
+
+BB_DIR=$PWD/bitbake
+
+PATH=$BB_DIR/bin:$PATH
+
+# Don't export TARGET_ARCH - it *will* cause build failures
+export PATH LD_LIBRARY_PATH
+
+export BBPATH=`pwd`
+export BB_ENV_EXTRAWHITE="MACHINE ANGSTROMLIBC"
+
+CONFFILE="./conf/local.conf"
+
+umask 000
+
+rm conf/auto.conf
+
+CONFFILE="./conf/local.conf"
+
+if [ ! -e "$CONFFILE" ]; then
+    if [ ! -d "./conf" ]; then
+        mkdir -p "./conf"
+    fi
+	echo "BBFILES = '$PWD/recipes/*/*.bb'" > "$CONFFILE"
+	echo 'DISTRO = "angstrom-2008.1"' >> "$CONFFILE"
+	echo 'BB_NUMBER_THREADS = "6"' >> "$CONFFILE"
+	echo 'PARALLEL_MAKE = "-j 8"' >> "$CONFFILE"
+	echo 'DL_DIR = "/home/hrw/devel/sources/dl_dir/"' >> "$CONFFILE"
+	echo 'DEBIAN_MIRROR = "ftp://ftp.pl.debian.org/pub/debian/pool"' >> "$CONFFILE"
+	echo 'INHERIT += "rm_work"' >> "$CONFFILE"
+	echo 'BBINCLUDELOGS = "1"' >> "$CONFFILE"
+fi
+
+touch ./conf/local.conf
+
+MACHINE=$2 nice ionice -c3 bitbake $1
+
+retval=$?
+
+exit $retval

@@ -20,8 +20,6 @@ INITSCRIPT_PARAMS = "start 03 S ."
 
 FILES_${PN} += "${base_libdir}/udev/*"
 FILES_${PN}-dbg += "${base_libdir}/udev/.debug"
-UDEV_EXTRAS = "extras/firmware/ extras/scsi_id/ extras/volume_id/"
-EXTRA_OEMAKE += "libudevdir=/lib/udev libdir=${base_libdir} prefix="
 
 do_install () {
 	install -d ${D}${usrsbindir} \

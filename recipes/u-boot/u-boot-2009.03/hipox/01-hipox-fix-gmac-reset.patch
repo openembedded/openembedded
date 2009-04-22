@@ -1,0 +1,16 @@
+diff -Nurd u-boot-2009.03.orig/board/hipox/eth.c u-boot-2009.03/board/hipox/eth.c
+--- u-boot-2009.03.orig/board/hipox/eth.c	2009-04-20 16:00:48.000000000 +0200
++++ u-boot-2009.03/board/hipox/eth.c	2009-04-20 16:01:54.000000000 +0200
+@@ -1415,6 +1415,12 @@
+     // Disable all GMAC interrupts
+     dma_reg_write(priv, DMA_INT_ENABLE_REG, 0);
+ 
++#ifdef CONFIG_HIPOX
++    // reset phy first, preventing lock up after linux warm start
++    if (phy_detect())
++        start_phy_reset();
++#endif
++
+     // Reset the entire GMAC
+     dma_reg_write(priv, DMA_BUS_MODE_REG, 1UL << DMA_BUS_MODE_SWR_BIT);
+ 
