@@ -3,9 +3,11 @@ require linux.inc
 DESCRIPTION = "Linux kernel for Davinci processors"
 KERNEL_IMAGETYPE = "uImage"
 
-COMPATIBLE_MACHINE = "davinci-sffsdr"
+COMPATIBLE_MACHINE = "(dm6446-evm|dm6467-evm|davinci-sffsdr)"
 
 SRCREV = "0fc192ac07c977ad6f14333651b53096a6027bc6"
+
+PR = "r1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git \
            file://defconfig"
