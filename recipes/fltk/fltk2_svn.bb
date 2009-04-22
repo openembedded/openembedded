@@ -39,3 +39,7 @@ python populate_packages_prepend () {
 }
 
 LEAD_SONAME = "libfltk2.so"
+
+FILES_${PN} += "${libdir}/libfltk2*.so.*"
+
+FILES_${PN}_dev += "/usr/bin/fluid"
