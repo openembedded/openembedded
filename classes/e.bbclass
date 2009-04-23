@@ -5,6 +5,8 @@ SRCNAME ?= "${PN}"
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
 
+DEBIAN_NOAUTONAME = "1"
+
 ARM_INSTRUCTION_SET = "arm"
 
 inherit autotools pkgconfig binconfig
