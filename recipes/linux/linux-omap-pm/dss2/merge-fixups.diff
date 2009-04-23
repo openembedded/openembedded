@@ -1,0 +1,49 @@
+
+--- /tmp/io.c	2009-04-23 12:31:45.000000000 +0200
++++ git/arch/arm/mach-omap2/io.c	2009-04-23 12:32:35.000000000 +0200
+@@ -18,6 +18,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/omapfb.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
+ 
+@@ -25,7 +26,6 @@
+ 
+ #include <asm/mach/map.h>
+ #include <mach/mux.h>
+-#include <mach/omapfb.h>
+ #include <mach/sram.h>
+ #include <mach/sdrc.h>
+ #include <mach/gpmc.h>
+--- /tmp/board-3430sdp.c	2009-04-23 12:31:45.000000000 +0200
++++ git/arch/arm/mach-omap2/board-3430sdp.c	2009-04-23 12:32:51.000000000 +0200
+@@ -38,6 +38,7 @@
+ #include <mach/dma.h>
+ #include <mach/gpmc.h>
+ #include <mach/omap-pm.h>
++#include <mach/display.h>
+ 
+ #include <mach/control.h>
+ #include <mach/clock.h>
+--- /tmp/board-omap3beagle.c	2009-04-23 12:31:45.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3beagle.c	2009-04-23 12:33:07.000000000 +0200
+@@ -46,6 +46,7 @@
+ #include <mach/mux.h>
+ #include <mach/omap-pm.h>
+ #include <mach/clock.h>
++#include <mach/display.h>
+ 
+ #include "twl4030-generic-scripts.h"
+ #include "mmc-twl4030.h"
+--- /tmp/board-omap3evm.c	2009-04-23 12:31:45.000000000 +0200
++++ git/arch/arm/mach-omap2/board-omap3evm.c	2009-04-23 12:33:22.000000000 +0200
+@@ -38,6 +38,7 @@
+ #include <mach/mcspi.h>
+ #include <mach/omap-pm.h>
+ #include <mach/clock.h>
++#include <mach/display.h>
+ 
+ #include "sdram-micron-mt46h32m32lf-6.h"
+ #include "twl4030-generic-scripts.h"
