@@ -2,7 +2,7 @@ DESCRIPTION= "Everything Python"
 HOMEPAGE = "http://www.vanille.de/projects/python.spy"
 LICENSE = "MIT"
 PV = "2.6"
-PR = "ml40"
+PR = "ml41"
 
 RDEPENDS = "\
   python-ao \
@@ -10,6 +10,7 @@ RDEPENDS = "\
   python-connexion \
   python-constraint \
   python-daap \
+  python-dateutil \
   python-dbus \
   python-dialog \
   python-docutils \
