@@ -4,13 +4,15 @@ IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"
 
 IMAGE_EXTRA_INSTALL ?= ""
 
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)}'
+
 DEPENDS = "task-base-extended \
-           ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)} \
+           ${SPLASH} \
 	   "
 
 IMAGE_INSTALL = "task-base-extended \
 	    ${IMAGE_EXTRA_INSTALL} \
-	    ${@base_contains("MACHINE_FEATURES", "screen", "psplash-zap", "",d)} \
+	    ${SPLASH} \
             oprofile \
             screen \
             ntp ntp-bin \
