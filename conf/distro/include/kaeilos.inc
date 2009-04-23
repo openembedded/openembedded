@@ -20,12 +20,12 @@ SRC_DIST_LOCAL ?= "symlink"
 INHERIT += "src_distribute_local"
 
 # Can be "glibc", "eglibc" or "uclibc"
-ANGSTROMLIBC ?= "glibc"
-PSTAGE_EXTRAPATH = "${ANGSTROMLIBC}"
+LIBC ?= "glibc"
+PSTAGE_EXTRAPATH = "${LIBC}"
 
-CACHE = "${TMPDIR}/cache/${ANGSTROMLIBC}/${MACHINE}"
-DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROMLIBC}"
-require conf/distro/include/angstrom-${ANGSTROMLIBC}.inc
+CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
+DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
+require conf/distro/include/angstrom-${LIBC}.inc
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
@@ -283,7 +283,7 @@ PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
 
 
 #Name the generated images in a sane way
-IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${ANGSTROMLIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
+IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
 DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
 
 # KaeilOS *always* has some form of release config, so error out if someone thinks he knows better 

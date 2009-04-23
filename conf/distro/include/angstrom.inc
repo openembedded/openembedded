@@ -18,11 +18,12 @@ SRC_DIST_LOCAL ?= "symlink"
 
 # Can be "glibc", "eglibc" or "uclibc"
 ANGSTROMLIBC ?= "glibc"
-PSTAGE_EXTRAPATH = "${ANGSTROMLIBC}"
+LIBC ?= "${ANGSTROMLIBC}"
+PSTAGE_EXTRAPATH = "${LIBC}"
 
-CACHE = "${TMPDIR}/cache/${ANGSTROMLIBC}/${MACHINE}"
-DEPLOY_DIR = "${TMPDIR}/deploy/${ANGSTROMLIBC}"
-require conf/distro/include/angstrom-${ANGSTROMLIBC}.inc
+CACHE = "${TMPDIR}/cache/${LIBC}/${MACHINE}"
+DEPLOY_DIR = "${TMPDIR}/deploy/${LIBC}"
+require conf/distro/include/angstrom-${LIBC}.inc
 
 # ARM920T and up can use thumb mode to decrease binary size at the expense of speed
 # (the complete story is a bit more nuanced due to cache starvation)
@@ -144,7 +145,7 @@ PACKAGE_EXTRA_ARCHS_htcwallaby = "arm-oabi"
 
 
 #Name the generated images in a sane way
-IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${ANGSTROMLIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
+IMAGE_NAME = "${DISTRO_NAME}-${IMAGE_BASENAME}-${LIBC}-${ANGSTROM_PKG_FORMAT}-${DISTRO_VERSION}-${MACHINE}"
 DEPLOY_DIR_IMAGE = "${DEPLOY_DIR}/images/${MACHINE}"
 
 # Angstrom *always* has some form of release config, so error out if someone thinks he knows better 
@@ -156,7 +157,7 @@ DISTRO_CHECK := "${@bb.data.getVar("DISTRO_VERSION",d,1) or bb.fatal('Remove thi
 # in their local.conf 
 
 #Name of the client
-TINDER_MACHINE  = "${MACHINE}-${ANGSTROMLIBC}-build-image"
+TINDER_MACHINE  = "${MACHINE}-${LIBC}-build-image"
 
 # Which lof file to write to, which tree to report to
 TINDER_LOG        = "${TMPDIR}/tinder.log"
