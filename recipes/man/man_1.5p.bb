@@ -14,13 +14,14 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/man/man-${PV}.tar.bz2 \
 # Disable parallel make or it tries to link objects before they are built
 PARALLEL_MAKE = ""
 
-EXTRA_OEMAKE = ""
+EXTRA_OEMAKE = 'LFDLAGS="${LDFLAGS}"'
 GS = "-DGREPSILENT=\"q\""
 DEFS = "-DUSG -DDO_COMPRESS ${GS}"
 
 do_configure() {
 	# this doesn't support cross compilation, so it generates a
 	# bogus configuration
+	sed -i /^LDFLAGS/d src/Makefile.in
 	./configure -d -confdir ${sysconfdir}
 }
 
