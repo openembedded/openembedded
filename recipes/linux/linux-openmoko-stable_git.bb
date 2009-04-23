@@ -6,7 +6,7 @@ DESCRIPTION_${PN} = "Linux ${KERNEL_RELEASE} kernel for the Openmoko Neo GSM Sma
 DEFAULT_PREFERENCE = "-1"
 
 KERNEL_RELEASE = "2.6.28"
-KERNEL_VERSION = "${KERNEL_RELEASE}"
+KERNEL_VERSION = "2.6.29-rc2"
 
 OMV = "stable"
 PV = "${KERNEL_RELEASE}-${OMV}+gitr${SRCREV}"
