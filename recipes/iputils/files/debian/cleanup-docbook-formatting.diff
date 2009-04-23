@@ -1,0 +1,20 @@
+--- iputils-upstream/doc/docbook2man-spec.pl	2007-10-28 12:24:10.000000000 -0400
++++ iputils/doc/docbook2man-spec.pl	2007-10-28 12:19:17.000000000 -0400
+@@ -428,7 +428,7 @@
+ 	output ' ';
+ 
+ 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
+-		output '[ ';
++		output '[';
+ 	}
+ 	bold_on();
+ }
+@@ -441,7 +441,7 @@
+ 		font_off();
+ 	}
+ 	if($_[0]->attribute('CHOICE')->value =~ /opt/i) {
+-		output '] ';
++		output ']';
+ 	}
+ }
+ 
