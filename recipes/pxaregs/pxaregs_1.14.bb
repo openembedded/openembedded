@@ -12,7 +12,7 @@ SRC_URI = "http://www.mn-logistik.de/unsupported/pxa250/pxaregs.c \
 S = "${WORKDIR}"
 
 do_compile() {
-    ${CC} pxaregs.c -o pxaregs ${CFLAGS}
+    ${CC} pxaregs.c -o pxaregs ${CFLAGS} ${LDFLAGS}
 }
 
 do_install() {
