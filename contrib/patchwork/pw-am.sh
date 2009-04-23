@@ -10,5 +10,6 @@
 for patchnumber in $@;
 do
 	wget -nv http://patchwork.openembedded.org/patch/$patchnumber/mbox/ -O pw-am-$patchnumber.patch
-	git am pw-am-$patchnumber.patch
+	git am -s pw-am-$patchnumber.patch
+	rm pw-am-$patchnumber.patch
 done

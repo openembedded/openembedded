@@ -1,10 +1,11 @@
 DESCRIPTION = "A GSM 07.10 Multiplexing Engine"
+HOMEPAGE = "http://www.freesmartphone.org/index.php/Implementations/libgsm0710mux"
 AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
-DEPENDS = "libgsm0710 vala-native glib-2.0"
-PV = "0.3.1+gitr${SRCREV}"
-PR = "r2"
+DEPENDS = "libgsm0710 vala-native glib-2.0 libfsotransport"
+PV = "0.3.4+gitr${SRCREV}"
+PR = "r1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \

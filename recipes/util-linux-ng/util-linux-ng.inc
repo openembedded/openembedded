@@ -1,17 +1,14 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "udev zlib ncurses e2fsprogs-libs"
+DEPENDS = "udev zlib ncurses e2fsprogs-libs virtual/libintl"
 
 inherit autotools
 
-# I'm finishing this recipe during the 2.13.1 candidate release cycle
-# @todo Remove $RC later. See if patches are needed. Move files from /usr/*.
-# --  Leon 'likewise' Woestenberg
-
-#RC="-rc2"
-RC=""
 DEFAULT_PREFERENCE = "-1"
+
+# allows for a release candidate
+RC ?= ""
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/utils/util-linux-ng/v${PV}/util-linux-ng-${PV}${RC}.tar.bz2"
 
@@ -114,11 +111,11 @@ do_install () {
 	install -d ${D}${sysconfdir}/default/
 	echo 'MOUNTALL="-t nonfs,nosmbfs,noncpfs"' > ${D}${sysconfdir}/default/mountall
 
-	ln -sf ${base_sbindir}/swapon ${D}${base_sbindir}/swapoff.${PN}
-	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/reboot.${PN}
-	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/halt.${PN}
-	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fastboot
-	ln -sf ${base_sbindir}/shutdown ${D}${base_sbindir}/fasthalt
+	ln -sf ${sbindir}/swapon ${D}${sbindir}/swapoff.${PN}
+	ln -sf ${sbindir}/shutdown ${D}${sbindir}/reboot.${PN}
+	ln -sf ${sbindir}/shutdown ${D}${sbindir}/halt.${PN}
+	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fastboot
+	ln -sf ${sbindir}/shutdown ${D}${sbindir}/fasthalt
 }
 
 pkg_postinst_${PN} () {

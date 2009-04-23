@@ -43,8 +43,8 @@ fi
 case $1 in
 'start')
     # Turn off psplash if any - sleep is required for anti-race
-    if [ -e /mnt/.psplash ]; then
-        TMPDIR=/mnt/.psplash psplash-write "QUIT" || true
+    if [ -e /mnt/.splash ]; then
+        TMPDIR=/mnt/.splash splash-write "QUIT" || true
         sleep 1
     fi
     

@@ -1,4 +1,5 @@
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "sugar-image"
 
@@ -10,6 +11,7 @@ IMAGE_INSTALL = "\
     angstrom-gpe-task-base \
     angstrom-gpe-task-settings \
     sugar-sucrose \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

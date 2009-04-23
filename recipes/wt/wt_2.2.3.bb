@@ -12,6 +12,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/witty/wt-${PV}.tar.gz \
 FILES_${PN} += "${datadir}/Wt"
 FILES_${PN}-dev += "${datadir}/cmake-2.*"
 
+ARM_INSTRUCTION_SET = "arm"
+
 inherit cmake
 
 STAGE_TEMP = "${WORKDIR}/temp-staging"

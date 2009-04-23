@@ -1,7 +1,7 @@
 DESCRIPTION = "Open Phone Abstraction Library, implementation of the ITU H.323 teleconferencing protocol, and successor of the openh323 library."
 LICENSE = "MPL"
 
-PR = "r1"
+PR = "r2"
 
 inherit gnome
 
@@ -13,6 +13,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/opalvoip/opal-${PV}.tar.bz2 \
 
 EXTRA_OECONF = "--enable-localgsm --disable-spandsp "
 ARM_INSTRUCTION_SET = "arm"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure() {
 	libtoolize --force

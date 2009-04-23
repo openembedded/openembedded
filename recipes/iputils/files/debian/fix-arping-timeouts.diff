@@ -1,0 +1,24 @@
+--- iputils-upstream/arping.c	2007-10-28 12:24:10.000000000 -0400
++++ iputils/arping.c	2007-10-28 12:19:17.000000000 -0400
+@@ -168,12 +168,17 @@
+ 	if (start.tv_sec==0)
+ 		start = tv;
+ 
+-	if (count-- == 0 || (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500))
+-		finish();
++	if (timeout && MS_TDIFF(tv,start) > timeout*1000 + 500)
++ 		finish();
+ 
+-	if (last.tv_sec==0 || MS_TDIFF(tv,last) > 500) {
++	if ((!timeout) && (count == 0))
++		finish();
++ 
++	if ( count!=0  && (last.tv_sec==0 || MS_TDIFF(tv,last) > 500 ) ) {
+ 		send_pack(s, src, dst, &me, &he);
+-		if (count == 0 && unsolicited)
++		if (count >= 0)
++			count--;
++		if (count==0 && unsolicited)
+ 			finish();
+ 	}
+ 	alarm(1);

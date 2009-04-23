@@ -1,0 +1,27 @@
+--- iputils-upstream/Makefile	2007-10-28 12:24:10.000000000 -0400
++++ iputils/Makefile	2007-10-28 12:19:18.000000000 -0400
+@@ -16,7 +16,7 @@
+ CCOPT=-D_GNU_SOURCE -O2 -Wstrict-prototypes -Wall -g
+ CFLAGS=$(CCOPT) $(GLIBCFIX) $(DEFINES) 
+ 
+-IPV4_TARGETS=tracepath ping clockdiff rdisc arping tftpd rarpd
++IPV4_TARGETS=tracepath ping arping
+ IPV6_TARGETS=tracepath6 traceroute6 ping6
+ TARGETS=$(IPV4_TARGETS) $(IPV6_TARGETS)
+ 
+@@ -25,7 +25,6 @@
+ 
+ all: $(TARGETS)
+ 
+-
+ tftpd: tftpd.o tftpsubs.o
+ ping: ping.o ping_common.o
+ ping6: ping6.o ping_common.o
+@@ -37,7 +36,6 @@
+ rdisc_srv.o: rdisc.c
+ 	$(CC) $(CFLAGS) -DRDISC_SERVER -o rdisc_srv.o rdisc.c
+ 
+-
+ check-kernel:
+ ifeq ($(KERNEL_INCLUDE),)
+ 	@echo "Please, set correct KERNEL_INCLUDE"; false

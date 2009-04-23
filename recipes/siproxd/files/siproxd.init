@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+#	/etc/rc.d/init.d/siproxd
+#
+# Starts the siproxd daemon
+#
+# description: Listen and dispatch SIP messages
+# processname: siproxd
+
+
+DAEMON=/usr/sbin/siproxd
+NAME=siproxd
+
+test -x $DAEMON || exit 0
+
+start() {
+	echo -n $"Starting sip proxy: "
+	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+		--exec $DAEMON -- $DAEMON_OPTS || true
+	echo "$NAME."
+}
+
+stop() {
+	echo -n $"Stopping sip proxy: "
+	start-stop-daemon --stop --quiet --pidfile /var/run/$NAME.pid \
+		--exec $DAEMON || true
+	echo "$NAME."
+}
+
+
+restart() {
+	stop
+	start
+}	
+
+reload() {
+	trap "" SIGHUP
+	killall -HUP siproxd
+}	
+
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+reload)
+	reload
+	;;
+restart)
+	restart
+	;;
+*)
+	echo $"Usage: $0 {start|stop|restart|reload}"
+	exit 1
+esac
+
+exit 0

@@ -1,0 +1,333 @@
+diff -Nurd linux-2.6.24-base/arch/arm/mach-hipox/hipox.c linux-2.6.24/arch/arm/mach-hipox/hipox.c
+--- linux-2.6.24-base/arch/arm/mach-hipox/hipox.c	2009-04-16 13:21:06.000000000 +0000
++++ linux-2.6.24/arch/arm/mach-hipox/hipox.c	2009-04-17 07:04:33.000000000 +0000
+@@ -155,7 +155,7 @@
+     { CORE_MODULE_BASE,     __phys_to_pfn(CORE_MODULE_BASE_PA),     SZ_4K,   MT_DEVICE },
+     { APB_BRIDGE_A_BASE,    __phys_to_pfn(APB_BRIDGE_A_BASE_PA),    SZ_16M,  MT_DEVICE },
+     { STATIC_CONTROL_BASE,  __phys_to_pfn(STATIC_CONTROL_BASE_PA),  SZ_4K,   MT_DEVICE },
+-    { STATIC_CS0_BASE,      __phys_to_pfn(STATIC_CS0_BASE_PA),      SZ_4K,   MT_DEVICE },
++    { STATIC_CS0_BASE,      __phys_to_pfn(STATIC_CS0_BASE_PA),      SZ_4M,   MT_DEVICE },
+     { STATIC_CS1_BASE,      __phys_to_pfn(STATIC_CS1_BASE_PA),      SZ_4K,   MT_DEVICE },
+     { STATIC_CS2_BASE,      __phys_to_pfn(STATIC_CS2_BASE_PA),      SZ_4K,   MT_DEVICE },
+     { APB_BRIDGE_B_BASE,    __phys_to_pfn(APB_BRIDGE_B_BASE_PA),    SZ_16M,  MT_DEVICE },
+diff -Nurd linux-2.6.24-base/drivers/mtd/maps/physmap.c linux-2.6.24/drivers/mtd/maps/physmap.c
+--- linux-2.6.24-base/drivers/mtd/maps/physmap.c	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/mtd/maps/physmap.c	2009-04-17 07:04:33.000000000 +0000
+@@ -22,6 +22,12 @@
+ #include <linux/mtd/physmap.h>
+ #include <asm/io.h>
+ 
++#if defined (CONFIG_ARCH_HIPOX)
++#include <asm/arch/hardware.h>
++/* timing for NOR flash */
++#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast ASIC settings, 70ns */
++#endif /* CONFIG_ARCH_HIPOX */
++
+ struct physmap_flash_info {
+ 	struct mtd_info		*mtd;
+ 	struct map_info		map;
+@@ -88,6 +94,11 @@
+ 	if (physmap_data == NULL)
+ 		return -ENODEV;
+ 
++#if defined (CONFIG_ARCH_HIPOX)
++/* init timing for static memory controller */
++		 writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
++#endif /* CONFIG_ARCH_HIPOX */
++
+        	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
+ 	    (unsigned long long)(dev->resource->end - dev->resource->start + 1),
+ 	    (unsigned long long)dev->resource->start);
+@@ -207,6 +218,10 @@
+ #endif
+ 
+ #ifdef PHYSMAP_COMPAT
++static void physmap_flash_release(struct device *dev)
++{
++}
++
+ static struct physmap_flash_data physmap_flash_data = {
+ 	.width		= CONFIG_MTD_PHYSMAP_BANKWIDTH,
+ };
+@@ -222,6 +237,7 @@
+ 	.id		= 0,
+ 	.dev		= {
+ 		.platform_data	= &physmap_flash_data,
++		.release	= physmap_flash_release, /* needed for module build */
+ 	},
+ 	.num_resources	= 1,
+ 	.resource	= &physmap_flash_resource,
+diff -Nurd linux-2.6.24-base/drivers/mtd/nand/Kconfig linux-2.6.24/drivers/mtd/nand/Kconfig
+--- linux-2.6.24-base/drivers/mtd/nand/Kconfig	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/mtd/nand/Kconfig	2009-04-17 07:04:33.000000000 +0000
+@@ -283,6 +283,11 @@
+ 	tristate "Support for NAND Flash on CM-X270 modules"
+ 	depends on MTD_NAND && MACH_ARMCORE
+ 
++config MTD_NAND_HIPOX
++	tristate "NAND Flash device on OXE810 based HydraIP board"
++	depends on MTD_NAND && ARCH_HIPOX
++	help
++	  Support for NAND flash on OXE180 based HydraIP platform.
+ 
+ config MTD_NAND_NANDSIM
+ 	tristate "Support for NAND Flash Simulator"
+diff -Nurd linux-2.6.24-base/drivers/mtd/nand/Makefile linux-2.6.24/drivers/mtd/nand/Makefile
+--- linux-2.6.24-base/drivers/mtd/nand/Makefile	2008-01-24 22:58:37.000000000 +0000
++++ linux-2.6.24/drivers/mtd/nand/Makefile	2009-04-17 07:04:33.000000000 +0000
+@@ -29,5 +29,6 @@
+ obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
+ obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
+ obj-$(CONFIG_MTD_ALAUDA)		+= alauda.o
++obj-$(CONFIG_MTD_NAND_HIPOX)    += hipox_nand.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff -Nurd linux-2.6.24-base/drivers/mtd/nand/hipox_nand.c linux-2.6.24/drivers/mtd/nand/hipox_nand.c
+--- linux-2.6.24-base/drivers/mtd/nand/hipox_nand.c	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.24/drivers/mtd/nand/hipox_nand.c	2009-04-17 07:26:17.000000000 +0000
+@@ -0,0 +1,230 @@
++/*
++ * drivers/mtd/nand/hipox_nand.c
++ *
++ * Copyright (C) 2009 DResearch Digital Media Systems GmbH
++ *
++ * $Id:$
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * Overview:
++ *   This is a device driver for the NAND flash device found on the
++ *   OXE810 based HydraIP board.
++ */
++
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <linux/delay.h>
++#include <asm/io.h>
++#include <asm/arch/hardware.h>
++#include <asm/sizes.h>
++#include <asm/mach-types.h>
++
++// the testboards ran down to a value of 4
++//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f3f  /* slow settings, 345 ns */
++//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f0d  /* fast settings, 70 ns */
++//#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f09  /* ultra fast settings, 50 ns */
++#define STATIC_BUS_FLASH_CONFIG 0x4f1f3f04  /* warp settings, 27 ns */
++
++/*
++ * MTD structure for HydraIP board
++ */
++static struct mtd_info *hipox_nand_mtd = NULL;
++
++#ifdef CONFIG_MTD_PARTITIONS
++static const char *part_probes[] = { "cmdlinepart", NULL };
++
++#define NUM_PARTITIONS 2
++
++/*
++ * Define static partitions for flash device
++ */
++static struct mtd_partition partition_info[NUM_PARTITIONS] = {
++	{
++		.name		= "boot",
++		.offset		= 0x00000000,
++		.size		= 0x02000000,
++	}, {
++		.name		= "system",
++		.offset		= 0x02000000,
++		.size		= 0x0e000000,
++	},
++};
++#endif
++
++
++/*
++ *	hardware specific access to control-lines
++ */
++static void hipox_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
++{
++	struct nand_chip *this = mtd->priv;
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		unsigned long IO_ADDR_W = (unsigned long) this->IO_ADDR_W;
++
++		IO_ADDR_W = CONFIG_SYS_NAND_BASE;
++
++		if (ctrl & NAND_NCE)
++			writel(0x20000000, GPIO_A_OUTPUT_CLEAR); /* assert CS-NAND */
++		else
++			writel(0x20000000, GPIO_A_OUTPUT_SET); /* deassert CS-NAND */
++
++		if (ctrl & NAND_CLE)
++			IO_ADDR_W = CONFIG_SYS_NAND_COMMAND_LATCH;
++		if (ctrl & NAND_ALE)
++			IO_ADDR_W = CONFIG_SYS_NAND_ADDRESS_LATCH;
++
++		this->IO_ADDR_W = (void *)IO_ADDR_W;
++	}
++
++	if (cmd != NAND_CMD_NONE)
++		writeb(cmd, this->IO_ADDR_W);
++}
++
++static void hipox_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
++{
++   struct nand_chip *chip = mtd->priv;
++   volatile uint8_t *io = chip->IO_ADDR_R;
++
++	if((((int)buf) & 1) || (len & 1))
++	{
++		while(len-- > 0)
++			*buf++ = *io;
++
++		return;
++	}
++
++	// now it's aligned, group to 16 bit access
++	{
++		uint16_t *ptr16 = (uint16_t *)buf;
++		len >>= 1;
++ 
++		while(len-- > 0)
++			*ptr16++ = *io | (*io << 8);
++	}
++}
++
++/*
++ * Main initialization routine
++ */
++static int __init hipox_nand_init(void)
++{
++	struct nand_chip *this;
++	const char *part_type = NULL;
++	int mtd_parts_nb = 0;
++	struct mtd_partition *mtd_parts = NULL;
++
++	if (!machine_is_hipox())
++		return -ENXIO;
++
++	/* Allocate memory for MTD device structure and private data */
++	hipox_nand_mtd = kmalloc(sizeof(struct mtd_info)+sizeof(struct nand_chip), GFP_KERNEL);
++
++	if (!hipox_nand_mtd) {
++		printk("Unable to allocate HIPOX_NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *)&hipox_nand_mtd[1];
++
++	if (!this) {
++		printk("Unable to allocate HIPOX_NAND MTD NAND device structure.\n");
++		kfree(hipox_nand_mtd);
++		return -ENOMEM;
++	}
++
++	writel(STATIC_BUS_FLASH_CONFIG, STATIC_CONTROL_BANK0);
++
++	/* Initialize structures */
++	memset(hipox_nand_mtd, 0, sizeof(struct mtd_info));
++	memset(this, 0, sizeof(struct nand_chip));
++
++	// assert CS-NAND
++	writel(0x20000000, GPIO_A_OUTPUT_SET);
++	writel(0x20000000, GPIO_A_OUTPUT_ENABLE_SET);
++
++	// deselect alternate function
++   writel(readl(SYS_CTRL_GPIO_PRIMSEL_CTRL_0) & ~0x20000000,
++		SYS_CTRL_GPIO_PRIMSEL_CTRL_0);
++   writel(readl(SYS_CTRL_GPIO_SECSEL_CTRL_0) & ~0x20000000,
++		SYS_CTRL_GPIO_SECSEL_CTRL_0);
++   writel(readl(SYS_CTRL_GPIO_TERTSEL_CTRL_0) & ~0x20000000,
++		SYS_CTRL_GPIO_TERTSEL_CTRL_0);
++
++	writel(0x20000000, GPIO_A_OUTPUT_CLEAR);
++
++	// reset NAND unit
++	writeb(0xff, CONFIG_SYS_NAND_COMMAND_LATCH); // reset command
++	udelay(500);
++
++	// deassert CS-NAND
++	writel(0x20000000, GPIO_A_OUTPUT_SET);
++
++	/* Link the private data with the MTD structure */
++	hipox_nand_mtd->priv = this;
++	hipox_nand_mtd->owner = THIS_MODULE;
++
++	/* insert callbacks */
++	this->IO_ADDR_R = (void *)CONFIG_SYS_NAND_BASE;
++	this->IO_ADDR_W = (void *)CONFIG_SYS_NAND_BASE;
++	this->cmd_ctrl = hipox_nand_hwcontrol;
++	this->read_buf = hipox_read_buf;
++	this->chip_delay = 25; // 23 still worked on our EvalBoard
++	this->ecc.mode = NAND_ECC_SOFT;
++	printk("Searching for NAND flash...\n");
++
++	/* Scan to find existence of the device */
++	if (nand_scan(hipox_nand_mtd, 1)) {
++		kfree(hipox_nand_mtd);
++		return -ENXIO;
++	}
++#ifdef CONFIG_MTD_PARTITIONS
++	hipox_nand_mtd->name = "hipox-nand";
++	mtd_parts_nb = parse_mtd_partitions(hipox_nand_mtd, part_probes, &mtd_parts, 0);
++	if (mtd_parts_nb > 0)
++		part_type = "command line";
++	else
++		mtd_parts_nb = 0;
++#endif
++	if (mtd_parts_nb == 0) {
++		mtd_parts = partition_info;
++		mtd_parts_nb = NUM_PARTITIONS;
++		part_type = "static";
++	}
++
++	/* Register the partitions */
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
++	add_mtd_partitions(hipox_nand_mtd, mtd_parts, mtd_parts_nb);
++
++	/* Return happy */
++	return 0;
++}
++
++module_init(hipox_nand_init);
++
++/*
++ * Clean up routine
++ */
++static void __exit hipox_nand_cleanup(void)
++{
++	/* Unregister the device */
++	//del_mtd_device(hipox_nand_mtd);
++	nand_release(hipox_nand_mtd);
++
++	/* Free the MTD device structure */
++	kfree(hipox_nand_mtd);
++}
++
++module_exit(hipox_nand_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Rene Grosser <rgrosser@dresearch.de>, Steffen Sledz <sledz@dresearch.de>");
++MODULE_DESCRIPTION("MTD map driver for OXE810 based HydraIP device");
+diff -Nurd linux-2.6.24-base/include/asm-arm/arch-hipox/hardware.h linux-2.6.24/include/asm-arm/arch-hipox/hardware.h
+--- linux-2.6.24-base/include/asm-arm/arch-hipox/hardware.h	2009-04-16 13:21:35.000000000 +0000
++++ linux-2.6.24/include/asm-arm/arch-hipox/hardware.h	2009-04-17 07:25:53.000000000 +0000
+@@ -134,6 +134,11 @@
+ #define COPRO_REGS_BASE        (APB_BRIDGE_B_BASE + 0xB00000)
+ #define DMA_SG_BASE            (APB_BRIDGE_B_BASE + 0xC00000)
+ 
++/* NAND access */
++#define CONFIG_SYS_NAND_BASE    STATIC_CS0_BASE
++#define CONFIG_SYS_NAND_ADDRESS_LATCH   (CONFIG_SYS_NAND_BASE + 0x8000)
++#define CONFIG_SYS_NAND_COMMAND_LATCH   (CONFIG_SYS_NAND_BASE + 0x4000)
++
+ /* Interrupt Controller registers */
+ #define RPS_IC_BASE         RPS_BASE
+ #define RPS_IRQ_STATUS     (RPS_IC_BASE)

@@ -3,6 +3,7 @@
 ANGSTROM_EXTRA_INSTALL += " \
 			  " 
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 export IMAGE_BASENAME = "x11-gpe-java-image"
 
@@ -18,6 +19,7 @@ IMAGE_INSTALL = "\
     kernel-modules \
     hal \
     angstrom-gpe-task-pim \
+    ${SPLASH} \
     ${ANGSTROM_EXTRA_INSTALL}"
 
 IMAGE_PREPROCESS_COMMAND = "create_etc_timestamp"

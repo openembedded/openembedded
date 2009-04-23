@@ -1,0 +1,1260 @@
+From fe4e1650cff50bff8e8ad62dc036609f53307442 Mon Sep 17 00:00:00 2001
+From: Michel Pollet <buserror@gmail.com>
+Date: Sat, 14 Mar 2009 10:24:07 +0000
+Subject: [PATCH] S3C: Backported openmoko's touchscreen filters
+
+Openmoko's touchscreen layer supports various filtering policy
+for the ADC and touchscreen corrdinates. This is a staight port.
+---
+ drivers/input/touchscreen/Kconfig            |   48 ++++++
+ drivers/input/touchscreen/Makefile           |    5 +
+ drivers/input/touchscreen/ts_filter.c        |   73 +++++++++
+ drivers/input/touchscreen/ts_filter.h        |   62 +++++++
+ drivers/input/touchscreen/ts_filter_group.c  |  221 ++++++++++++++++++++++++++
+ drivers/input/touchscreen/ts_filter_group.h  |   39 +++++
+ drivers/input/touchscreen/ts_filter_linear.c |  173 ++++++++++++++++++++
+ drivers/input/touchscreen/ts_filter_linear.h |   64 ++++++++
+ drivers/input/touchscreen/ts_filter_mean.c   |  174 ++++++++++++++++++++
+ drivers/input/touchscreen/ts_filter_mean.h   |   34 ++++
+ drivers/input/touchscreen/ts_filter_median.c |  217 +++++++++++++++++++++++++
+ drivers/input/touchscreen/ts_filter_median.h |   36 ++++
+ 12 files changed, 1146 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/input/touchscreen/ts_filter.c
+ create mode 100644 drivers/input/touchscreen/ts_filter.h
+ create mode 100644 drivers/input/touchscreen/ts_filter_group.c
+ create mode 100644 drivers/input/touchscreen/ts_filter_group.h
+ create mode 100644 drivers/input/touchscreen/ts_filter_linear.c
+ create mode 100644 drivers/input/touchscreen/ts_filter_linear.h
+ create mode 100644 drivers/input/touchscreen/ts_filter_mean.c
+ create mode 100644 drivers/input/touchscreen/ts_filter_mean.h
+ create mode 100644 drivers/input/touchscreen/ts_filter_median.c
+ create mode 100644 drivers/input/touchscreen/ts_filter_median.h
+
+diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
+index 9076492..75ff0a8 100644
+--- a/drivers/input/touchscreen/Kconfig
++++ b/drivers/input/touchscreen/Kconfig
+@@ -11,6 +11,54 @@ menuconfig INPUT_TOUCHSCREEN
+ 
+ if INPUT_TOUCHSCREEN
+ 
++menuconfig TOUCHSCREEN_FILTER
++	boolean "Touchscreen Filtering"
++	depends on INPUT_TOUCHSCREEN
++	select TOUCHSCREEN_FILTER_GROUP
++	select TOUCHSCREEN_FILTER_MEDIAN
++	select TOUCHSCREEN_FILTER_MEAN
++	select TOUCHSCREEN_FILTER_LINEAR
++	help
++	  Select this to include kernel touchscreen filter support.  The filters
++	  can be combined in any order in your machine init and the parameters
++	  for them can also be set there.
++
++if TOUCHSCREEN_FILTER
++
++config TOUCHSCREEN_FILTER_GROUP
++	bool "Group Touchscreen Filter"
++	depends on INPUT_TOUCHSCREEN && TOUCHSCREEN_FILTER
++	default Y
++	help
++	  Say Y here if you want to use the Group touchscreen filter, it
++	  avoids using atypical samples.
++
++config TOUCHSCREEN_FILTER_MEDIAN
++	bool "Median Average Touchscreen Filter"
++	depends on INPUT_TOUCHSCREEN && TOUCHSCREEN_FILTER
++	default Y
++	help
++	  Say Y here if you want to use the Median touchscreen filter, it's
++	  highly effective if you data is noisy with occasional excursions.
++
++config TOUCHSCREEN_FILTER_MEAN
++	bool "Mean Average Touchscreen Filter"
++	depends on INPUT_TOUCHSCREEN && TOUCHSCREEN_FILTER
++	default Y
++	help
++	  Say Y here if you want to use the Mean touchscreen filter, it
++	  can further improve decent quality data by removing jitter
++
++config TOUCHSCREEN_FILTER_LINEAR
++	bool "Linear Touchscreen Filter"
++	depends on INPUT_TOUCHSCREEN && TOUCHSCREEN_FILTER
++	default Y
++	help
++	  Say Y here if you want to use the Linear touchscreen filter, it
++	  enables the use of calibration data for the touchscreen.
++
++endif
++
+ config TOUCHSCREEN_ADS7846
+ 	tristate "ADS7846/TSC2046 and ADS7843 based touchscreens"
+ 	depends on SPI_MASTER
+diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+index fbcde99..4b0a03e 100644
+--- a/drivers/input/touchscreen/Makefile
++++ b/drivers/input/touchscreen/Makefile
+@@ -35,3 +35,8 @@ wm97xx-ts-$(CONFIG_TOUCHSCREEN_WM9712)	+= wm9712.o
+ wm97xx-ts-$(CONFIG_TOUCHSCREEN_WM9713)	+= wm9713.o
+ obj-$(CONFIG_TOUCHSCREEN_WM97XX_MAINSTONE)	+= mainstone-wm97xx.o
+ obj-$(CONFIG_TOUCHSCREEN_S3C2410)	+= s3c2410_ts.o
++obj-$(CONFIG_TOUCHSCREEN_FILTER)	+= ts_filter.o
++obj-$(CONFIG_TOUCHSCREEN_FILTER_GROUP)	+= ts_filter_group.o
++obj-$(CONFIG_TOUCHSCREEN_FILTER_LINEAR)	+= ts_filter_linear.o
++obj-$(CONFIG_TOUCHSCREEN_FILTER_MEDIAN)	+= ts_filter_median.o
++obj-$(CONFIG_TOUCHSCREEN_FILTER_MEAN)	+= ts_filter_mean.o
+diff --git a/drivers/input/touchscreen/ts_filter.c b/drivers/input/touchscreen/ts_filter.c
+new file mode 100644
+index 0000000..832844d
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter.c
+@@ -0,0 +1,73 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (c) 2008 Andy Green <andy@openmoko.com>
++ */
++
++#include <linux/kernel.h>
++#include <linux/device.h>
++#include "ts_filter.h"
++
++static DEFINE_MUTEX(chain_mutex);
++
++int ts_filter_create_chain(struct platform_device *pdev,
++			   struct ts_filter_api **api, void **config,
++			   struct ts_filter **arr, int count_coords)
++{
++	int count = 0;
++	struct ts_filter *last = NULL;
++
++	if (!api)
++		return 0;
++
++	mutex_lock(&chain_mutex);
++
++	while (*api) {
++		*arr = ((*api)->create)(pdev, *config++, count_coords);
++		if (!*arr) {
++			printk(KERN_ERR "Filter %d failed init\n", count);
++			return count;
++		}
++		(*arr)->api = *api++;
++		if (last)
++			last->next = *arr;
++		last = *arr;
++		arr++;
++		count++;
++	}
++
++	mutex_unlock(&chain_mutex);
++
++	return count;
++}
++EXPORT_SYMBOL_GPL(ts_filter_create_chain);
++
++void ts_filter_destroy_chain(struct platform_device *pdev,
++			     struct ts_filter **arr)
++{
++	struct ts_filter **first = arr;
++
++	mutex_lock(&chain_mutex);
++
++	while (*arr) {
++		((*arr)->api->destroy)(pdev, *arr);
++		arr++;
++	}
++	*first = NULL;
++
++	mutex_unlock(&chain_mutex);
++}
++EXPORT_SYMBOL_GPL(ts_filter_destroy_chain);
++
+diff --git a/drivers/input/touchscreen/ts_filter.h b/drivers/input/touchscreen/ts_filter.h
+new file mode 100644
+index 0000000..3746e45
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter.h
+@@ -0,0 +1,62 @@
++#ifndef __TS_FILTER_H__
++#define __TS_FILTER_H__
++
++/*
++ * Touchscreen filter.
++ *
++ * (c) 2008 Andy Green <andy@openmoko.com>
++ */
++
++#include <linux/platform_device.h>
++
++#define MAX_TS_FILTER_CHAIN		8  /* Max. filters we can chain up. */
++#define MAX_TS_FILTER_COORDS		3  /* X, Y and Z (pressure). */
++
++struct ts_filter;
++
++/* Operations that a filter can perform. */
++
++struct ts_filter_api {
++	struct ts_filter * (*create)(struct platform_device *pdev, void *config,
++				     int count_coords);
++	void (*destroy)(struct platform_device *pdev, struct ts_filter *filter);
++	void (*clear)(struct ts_filter *filter);
++	int (*process)(struct ts_filter *filter, int *coords);
++	void (*scale)(struct ts_filter *filter, int *coords);
++};
++
++/*
++ * This is the common part of all filters.
++ * We use this type as an otherwise opaque handle on to
++ * the actual filter.  Therefore you need one of these
++ * at the start of your actual filter struct.
++ */
++
++struct ts_filter {
++	struct ts_filter *next;		/* Next in chain. */
++	struct ts_filter_api *api;	/* Operations to use for this object. */
++	int count_coords;
++	int coords[MAX_TS_FILTER_COORDS];
++};
++
++/*
++ * Helper to create a filter chain from an array of API pointers and
++ * array of config ints. Leaves pointers to created filters in arr
++ * array and fills in ->next pointers to create the chain.
++ */
++
++#ifdef CONFIG_TOUCHSCREEN_FILTER
++extern int ts_filter_create_chain(struct platform_device *pdev,
++				  struct ts_filter_api **api, void **config,
++				  struct ts_filter **arr, int count_coords);
++
++/* Helper to destroy a whole chain from the list of filter pointers. */
++
++extern void ts_filter_destroy_chain(struct platform_device *pdev,
++				    struct ts_filter **arr);
++#else
++#define ts_filter_create_chain(pdev, api, config, arr, count_coords) (0)
++#define ts_filter_destroy_chain(pdev, arr) do { } while (0)
++#endif
++
++#endif
+diff --git a/drivers/input/touchscreen/ts_filter_group.c b/drivers/input/touchscreen/ts_filter_group.c
+new file mode 100644
+index 0000000..f2ecd92
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_group.c
+@@ -0,0 +1,221 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (C) 2008 by Openmoko, Inc.
++ * Author: Nelson Castillo <arhuaco@freaks-unidos.net>
++ * All rights reserved.
++ *
++ * This filter is useful to reject samples that are not reliable. We consider
++ * that a sample is not reliable if it deviates form the Majority.
++ *
++ * 1) We collect S samples.
++ *
++ * 2) For each dimension:
++ *
++ *  - We sort the points.
++ *  - Points that are "close enough" are considered to be in the same set.
++ *  - We choose the set with more elements. If more than "threshold"
++ *    points are in this set we use the first and the last point of the set
++ *    to define the valid range for this dimension [min, max], otherwise we
++ *    discard all the points and go to step 1.
++ *
++ * 3) We consider the unsorted S samples and try to feed them to the next
++ *    filter in the chain. If one of the points of each sample
++ *    is not in the allowed range for its dimension, we discard the sample.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/sort.h>
++#include "ts_filter_group.h"
++
++static void ts_filter_group_clear_internal(struct ts_filter_group *tsfg,
++					   int attempts)
++{
++	tsfg->N = 0;
++	tsfg->tries_left = attempts;
++}
++
++static void ts_filter_group_clear(struct ts_filter *tsf)
++{
++	struct ts_filter_group *tsfg = (struct ts_filter_group *)tsf;
++
++	ts_filter_group_clear_internal(tsfg, tsfg->config->attempts);
++
++	if (tsf->next) /* chain */
++		(tsf->next->api->clear)(tsf->next);
++}
++
++static struct ts_filter *ts_filter_group_create(struct platform_device *pdev,
++						void *conf, int count_coords)
++{
++	struct ts_filter_group *tsfg;
++	int i;
++
++	BUG_ON((count_coords < 1) || (count_coords > MAX_TS_FILTER_COORDS));
++
++	tsfg = kzalloc(sizeof(struct ts_filter_group), GFP_KERNEL);
++	if (!tsfg)
++		return NULL;
++
++	tsfg->config = (struct ts_filter_group_configuration *)conf;
++	tsfg->tsf.count_coords = count_coords;
++
++	BUG_ON(tsfg->config->attempts <= 0);
++
++	tsfg->samples[0] = kmalloc((2 + count_coords) * sizeof(int) *
++				   tsfg->config->extent, GFP_KERNEL);
++	if (!tsfg->samples[0]) {
++		kfree(tsfg);
++		return NULL;
++	}
++	for (i = 1; i < count_coords; ++i)
++		tsfg->samples[i] = tsfg->samples[0] + i * tsfg->config->extent;
++	tsfg->sorted_samples = tsfg->samples[0] + count_coords *
++			       tsfg->config->extent;
++	tsfg->group_size = tsfg->samples[0] + (1 + count_coords) *
++			       tsfg->config->extent;
++
++	ts_filter_group_clear_internal(tsfg, tsfg->config->attempts);
++
++	printk(KERN_INFO"  Created group ts filter len %d depth %d close %d "
++			"thresh %d\n", tsfg->config->extent, count_coords,
++			tsfg->config->close_enough, tsfg->config->threshold);
++
++	return &tsfg->tsf;
++}
++
++static void ts_filter_group_destroy(struct platform_device *pdev,
++				    struct ts_filter *tsf)
++{
++	struct ts_filter_group *tsfg = (struct ts_filter_group *)tsf;
++
++	kfree(tsfg->samples[0]); /* first guy has pointer from kmalloc */
++	kfree(tsf);
++}
++
++static void ts_filter_group_scale(struct ts_filter *tsf, int *coords)
++{
++	if (tsf->next)
++		(tsf->next->api->scale)(tsf->next, coords);
++}
++
++static int int_cmp(const void *_a, const void *_b)
++{
++	const int *a = _a;
++	const int *b = _b;
++
++	if (*a > *b)
++		return 1;
++	if (*a < *b)
++		return -1;
++	return 0;
++}
++
++static int ts_filter_group_process(struct ts_filter *tsf, int *coords)
++{
++	struct ts_filter_group *tsfg = (struct ts_filter_group *)tsf;
++	int n;
++	int i;
++	int ret = 0; /* ask for more samples by default */
++
++	BUG_ON(tsfg->N >= tsfg->config->extent);
++
++	for (n = 0; n < tsf->count_coords; n++)
++		tsfg->samples[n][tsfg->N] = coords[n];
++
++	if (++tsfg->N < tsfg->config->extent)
++		return 0;	/* we meed more samples */
++
++	for (n = 0; n < tsfg->tsf.count_coords; n++) {
++		int *v = tsfg->sorted_samples;
++		int ngroups = 0;
++		int best_size;
++		int best_idx = 0;
++		int idx = 0;
++
++		memcpy(v, tsfg->samples[n], tsfg->N * sizeof(int));
++		sort(v, tsfg->N, sizeof(int), int_cmp, NULL);
++
++		tsfg->group_size[0] = 1;
++		for (i = 1; i < tsfg->N; ++i) {
++			if (v[i] - v[i - 1] <= tsfg->config->close_enough)
++				tsfg->group_size[ngroups]++;
++			else
++				tsfg->group_size[++ngroups] = 1;
++		}
++		ngroups++;
++
++		best_size = tsfg->group_size[0];
++		for (i = 1; i < ngroups; i++) {
++			idx += tsfg->group_size[i - 1];
++			if (best_size < tsfg->group_size[i]) {
++				best_size = tsfg->group_size[i];
++				best_idx = idx;
++			}
++		}
++
++		if (best_size < tsfg->config->threshold) {
++			/* this set is not good enough for us */
++			if (--tsfg->tries_left) {
++				ts_filter_group_clear_internal
++					(tsfg, tsfg->tries_left);
++				return 0; /* ask for more samples */
++			}
++			return -1; /* we give up */
++		}
++
++		tsfg->range_min[n] = v[best_idx];
++		tsfg->range_max[n] = v[best_idx + best_size - 1];
++	}
++
++	for (i = 0; i < tsfg->N; ++i) {
++		int r;
++
++		for (n = 0; n < tsfg->tsf.count_coords; ++n) {
++			coords[n] = tsfg->samples[n][i];
++			if (coords[n] < tsfg->range_min[n] ||
++			    coords[n] > tsfg->range_max[n])
++				break;
++		}
++
++		if (n != tsfg->tsf.count_coords) /* sample not OK */
++			continue;
++
++		if (tsf->next) {
++			r = (tsf->next->api->process)(tsf->next, coords);
++			if (r)  {
++				ret = r;
++				break;
++			}
++		} else if (i == tsfg->N - 1) {
++			ret = 1;
++		}
++	}
++
++	ts_filter_group_clear_internal(tsfg, tsfg->config->attempts);
++
++	return ret;
++}
++
++struct ts_filter_api ts_filter_group_api = {
++	.create = ts_filter_group_create,
++	.destroy = ts_filter_group_destroy,
++	.clear = ts_filter_group_clear,
++	.process = ts_filter_group_process,
++	.scale = ts_filter_group_scale,
++};
++
+diff --git a/drivers/input/touchscreen/ts_filter_group.h b/drivers/input/touchscreen/ts_filter_group.h
+new file mode 100644
+index 0000000..c411080
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_group.h
+@@ -0,0 +1,39 @@
++#ifndef __TS_FILTER_GROUP_H__
++#define __TS_FILTER_GROUP_H__
++
++#include "ts_filter.h"
++
++/*
++ * Touchscreen group filter.
++ *
++ * Copyright (C) 2008 by Openmoko, Inc.
++ * Author: Nelson Castillo <arhuaco@freaks-unidos.net>
++ *
++ */
++
++struct ts_filter_group_configuration {
++	int extent;
++	int close_enough;
++	int threshold;
++	int attempts;
++};
++
++struct ts_filter_group {
++	struct ts_filter tsf;
++	struct ts_filter_group_configuration *config;
++
++	int N;		/* How many samples we have */
++	int *samples[MAX_TS_FILTER_COORDS];	/* the samples, our input */
++
++	int *group_size;	/* used for temporal computations */
++	int *sorted_samples;	/* used for temporal computations */
++
++	int range_max[MAX_TS_FILTER_COORDS];	/* max computed ranges */
++	int range_min[MAX_TS_FILTER_COORDS];	/* min computed ranges */
++
++	int tries_left;		/* We finish if we don't get enough samples */
++};
++
++extern struct ts_filter_api ts_filter_group_api;
++
++#endif
+diff --git a/drivers/input/touchscreen/ts_filter_linear.c b/drivers/input/touchscreen/ts_filter_linear.c
+new file mode 100644
+index 0000000..c336252
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_linear.c
+@@ -0,0 +1,173 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (C) 2008 by Openmoko, Inc.
++ * Author: Nelson Castillo <arhuaco@freaks-unidos.net>
++ * All rights reserved.
++ *
++ * Linearly scale touchscreen values.
++ *
++ * Expose the TS_FILTER_LINEAR_NCONSTANTS for the linear transformation
++ * using sysfs.
++ *
++ */
++
++#include "ts_filter_linear.h"
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++
++
++/* sysfs functions */
++
++
++static ssize_t const_attr_show(struct kobject *kobj,
++			       struct attribute *attr,
++			       char *buf)
++{
++	struct const_attribute *a = to_const_attr(attr);
++
++	return a->show(to_const_obj(kobj), a, buf);
++}
++
++static ssize_t const_attr_store(struct kobject *kobj,
++				struct attribute *attr,
++				const char *buf, size_t len)
++{
++	struct const_attribute *a = to_const_attr(attr);
++
++	return a->store(to_const_obj(kobj), a, buf, len);
++}
++
++static struct sysfs_ops const_sysfs_ops = {
++	.show =		const_attr_show,
++	.store =	const_attr_store,
++};
++
++static void const_release(struct kobject *kobj)
++{
++	kfree(to_const_obj(kobj)->tsfl);
++}
++
++static ssize_t const_show(struct const_obj *obj, struct const_attribute *attr,
++			  char *buf)
++{
++	int who;
++
++	sscanf(attr->attr.name, "%d", &who);
++	return sprintf(buf, "%d\n", obj->tsfl->constants[who]);
++}
++
++static ssize_t const_store(struct const_obj *obj, struct const_attribute *attr,
++			   const char *buf, size_t count)
++{
++	int who;
++
++	sscanf(attr->attr.name, "%d", &who);
++	sscanf(buf, "%d", &obj->tsfl->constants[who]);
++	return count;
++}
++
++/* filter functions */
++
++static struct ts_filter *ts_filter_linear_create(struct platform_device *pdev,
++						 void *conf, int count_coords)
++{
++	struct ts_filter_linear *tsfl;
++	int i;
++	int ret;
++
++	tsfl = kzalloc(sizeof(struct ts_filter_linear), GFP_KERNEL);
++	if (!tsfl)
++		return NULL;
++
++	tsfl->config = (struct ts_filter_linear_configuration *)conf;
++	tsfl->tsf.count_coords = count_coords;
++
++	for (i = 0; i < TS_FILTER_LINEAR_NCONSTANTS; ++i) {
++		tsfl->constants[i] = tsfl->config->constants[i];
++
++		/* sysfs */
++		sprintf(tsfl->attr_names[i], "%d", i);
++		tsfl->kattrs[i].attr.name = tsfl->attr_names[i];
++		tsfl->kattrs[i].attr.mode = 0666;
++		tsfl->kattrs[i].show = const_show;
++		tsfl->kattrs[i].store = const_store;
++		tsfl->attrs[i] = &tsfl->kattrs[i].attr;
++	}
++	tsfl->attrs[i] = NULL;
++
++	tsfl->const_ktype.sysfs_ops = &const_sysfs_ops;
++	tsfl->const_ktype.release = const_release;
++	tsfl->const_ktype.default_attrs = tsfl->attrs;
++	tsfl->c_obj.tsfl = tsfl; /* kernel frees tsfl in const_release */
++
++	ret = kobject_init_and_add(&tsfl->c_obj.kobj, &tsfl->const_ktype,
++				   &pdev->dev.kobj, "calibration");
++	if (ret) {
++		kobject_put(&tsfl->c_obj.kobj);
++		return NULL;
++	}
++
++	printk(KERN_INFO"  Created Linear ts filter depth %d\n", count_coords);
++
++	return &tsfl->tsf;
++}
++
++static void ts_filter_linear_destroy(struct platform_device *pdev,
++				     struct ts_filter *tsf)
++{
++	struct ts_filter_linear *tsfl = (struct ts_filter_linear *)tsf;
++
++	/* kernel frees tsfl in const_release */
++	kobject_put(&tsfl->c_obj.kobj);
++}
++
++static void ts_filter_linear_clear(struct ts_filter *tsf)
++{
++	if (tsf->next) /* chain */
++		(tsf->next->api->clear)(tsf->next);
++}
++
++
++static void ts_filter_linear_scale(struct ts_filter *tsf, int *coords)
++{
++	struct ts_filter_linear *tsfl = (struct ts_filter_linear *)tsf;
++	int *k = tsfl->constants;
++	int c0 = coords[tsfl->config->coord0];
++	int c1 = coords[tsfl->config->coord1];
++
++	coords[tsfl->config->coord0] = (k[2] + k[0] * c0 + k[1] * c1) / k[6];
++	coords[tsfl->config->coord1] = (k[5] + k[3] * c0 + k[4] * c1) / k[6];
++
++	if (tsf->next)
++		(tsf->next->api->scale)(tsf->next, coords);
++}
++
++static int ts_filter_linear_process(struct ts_filter *tsf, int *coords)
++{
++	if (tsf->next)
++		return (tsf->next->api->process)(tsf->next, coords);
++
++	return 1;
++}
++
++struct ts_filter_api ts_filter_linear_api = {
++	.create = ts_filter_linear_create,
++	.destroy = ts_filter_linear_destroy,
++	.clear = ts_filter_linear_clear,
++	.process = ts_filter_linear_process,
++	.scale = ts_filter_linear_scale,
++};
+diff --git a/drivers/input/touchscreen/ts_filter_linear.h b/drivers/input/touchscreen/ts_filter_linear.h
+new file mode 100644
+index 0000000..fc27cf7
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_linear.h
+@@ -0,0 +1,64 @@
++#ifndef __TS_FILTER_LINEAR_H__
++#define __TS_FILTER_LINEAR_H__
++
++#include "ts_filter.h"
++#include <linux/kobject.h>
++
++/*
++ * Touchscreen linear filter.
++ *
++ * Copyright (C) 2008 by Openmoko, Inc.
++ * Author: Nelson Castillo <arhuaco@freaks-unidos.net>
++ *
++ */
++
++#define TS_FILTER_LINEAR_NCONSTANTS 7
++
++/* sysfs */
++
++struct ts_filter_linear;
++
++struct const_obj {
++	struct ts_filter_linear *tsfl;
++	struct kobject kobj;
++};
++
++#define to_const_obj(x) container_of(x, struct const_obj, kobj)
++
++struct const_attribute {
++	struct attribute attr;
++	ssize_t (*show)(struct const_obj *const, struct const_attribute *attr,
++			char *buf);
++	ssize_t (*store)(struct const_obj *const, struct const_attribute *attr,
++			 const char *buf, size_t count);
++};
++
++#define to_const_attr(x) container_of(x, struct const_attribute, attr)
++
++/* filter configuration */
++
++struct ts_filter_linear_configuration {
++	int constants[TS_FILTER_LINEAR_NCONSTANTS];
++	int coord0;
++	int coord1;
++};
++
++/* the filter */
++
++struct ts_filter_linear {
++	struct ts_filter tsf;
++	struct ts_filter_linear_configuration *config;
++
++	int constants[TS_FILTER_LINEAR_NCONSTANTS];
++
++	/* sysfs */
++	struct const_obj c_obj;
++	struct kobj_type const_ktype;
++	struct const_attribute kattrs[TS_FILTER_LINEAR_NCONSTANTS];
++	struct attribute *attrs[TS_FILTER_LINEAR_NCONSTANTS + 1];
++	char attr_names[TS_FILTER_LINEAR_NCONSTANTS][2];
++};
++
++extern struct ts_filter_api ts_filter_linear_api;
++
++#endif
+diff --git a/drivers/input/touchscreen/ts_filter_mean.c b/drivers/input/touchscreen/ts_filter_mean.c
+new file mode 100644
+index 0000000..e4e0f2a
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_mean.c
+@@ -0,0 +1,174 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (c) 2008 Andy Green <andy@openmoko.com>
++ *
++ *
++ * Mean has no effect if the samples are changing by more that the
++ * threshold set by averaging_threshold in the configuration.
++ *
++ * However while samples come in that don't go outside this threshold from
++ * the last reported sample, Mean replaces the samples with a simple mean
++ * of a configurable number of samples (set by bits_filter_length in config,
++ * which is 2^n, so 5 there makes 32 sample averaging).
++ *
++ * Mean works well if the input data is already good quality, reducing + / - 1
++ * sample jitter when the stylus is still, or moving very slowly, without
++ * introducing abrupt transitions or reducing ability to follow larger
++ * movements.  If you set the threshold higher than the dynamic range of the
++ * coordinates, you can just use it as a simple mean average.
++ */
++
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include "ts_filter_mean.h"
++
++static void ts_filter_mean_clear_internal(struct ts_filter *tsf)
++{
++	struct ts_filter_mean *tsfs = (struct ts_filter_mean *)tsf;
++	int n;
++
++	for (n = 0; n < tsfs->tsf.count_coords; n++) {
++		tsfs->fhead[n] = 0;
++		tsfs->ftail[n] = 0;
++		tsfs->lowpass[n] = 0;
++	}
++}
++
++static void ts_filter_mean_clear(struct ts_filter *tsf)
++{
++	ts_filter_mean_clear_internal(tsf);
++
++	if (tsf->next) /* chain */
++		(tsf->next->api->clear)(tsf->next);
++}
++
++static struct ts_filter *ts_filter_mean_create(struct platform_device *pdev,
++					       void *config, int count_coords)
++{
++	int *p;
++	int n;
++	struct ts_filter_mean *tsfs = kzalloc(
++				  sizeof(struct ts_filter_mean), GFP_KERNEL);
++
++	if (!tsfs)
++		return NULL;
++
++	BUG_ON((count_coords < 1) || (count_coords > MAX_TS_FILTER_COORDS));
++	tsfs->tsf.count_coords = count_coords;
++
++	tsfs->config = (struct ts_filter_mean_configuration *)config;
++
++	tsfs->config->extent = 1 << tsfs->config->bits_filter_length;
++	BUG_ON((tsfs->config->extent > 256) || (!tsfs->config->extent));
++
++	p = kmalloc(tsfs->config->extent * sizeof(int) * count_coords,
++								    GFP_KERNEL);
++	if (!p)
++		return NULL;
++
++	for (n = 0; n < count_coords; n++) {
++		tsfs->fifo[n] = p;
++		p += tsfs->config->extent;
++	}
++
++	if (!tsfs->config->averaging_threshold)
++		tsfs->config->averaging_threshold = 0xffff; /* always active */
++
++	ts_filter_mean_clear_internal(&tsfs->tsf);
++
++	printk(KERN_INFO"  Created Mean ts filter len %d depth %d thresh %d\n",
++	       tsfs->config->extent, count_coords,
++	       tsfs->config->averaging_threshold);
++
++	return &tsfs->tsf;
++}
++
++static void ts_filter_mean_destroy(struct platform_device *pdev,
++				   struct ts_filter *tsf)
++{
++	struct ts_filter_mean *tsfs = (struct ts_filter_mean *)tsf;
++
++	kfree(tsfs->fifo[0]); /* first guy has pointer from kmalloc */
++	kfree(tsf);
++}
++
++static void ts_filter_mean_scale(struct ts_filter *tsf, int *coords)
++{
++	if (tsf->next) /* chain */
++		(tsf->next->api->scale)(tsf->next, coords);
++}
++
++/*
++ * Give us the raw sample data in x and y, and if we return 1 then you can
++ * get a filtered coordinate from tsm->x and tsm->y. If we return 0 you didn't
++ * fill the filter with samples yet.
++ */
++
++static int ts_filter_mean_process(struct ts_filter *tsf, int *coords)
++{
++	struct ts_filter_mean *tsfs = (struct ts_filter_mean *)tsf;
++	int n;
++	int len;
++
++	for (n = 0; n < tsf->count_coords; n++) {
++
++		/*
++		 * Has he moved far enough away that we should abandon current
++		 * low pass filtering state?
++		 */
++		if ((coords[n] < (tsfs->reported[n] -
++					  tsfs->config->averaging_threshold)) ||
++		    (coords[n] > (tsfs->reported[n] +
++					  tsfs->config->averaging_threshold))) {
++			tsfs->fhead[n] = 0;
++			tsfs->ftail[n] = 0;
++			tsfs->lowpass[n] = 0;
++		}
++
++		/* capture this sample into fifo and sum */
++		tsfs->fifo[n][tsfs->fhead[n]++] = coords[n];
++		if (tsfs->fhead[n] == tsfs->config->extent)
++			tsfs->fhead[n] = 0;
++		tsfs->lowpass[n] += coords[n];
++
++		/* adjust the sum into an average and use that*/
++		len = (tsfs->fhead[n] - tsfs->ftail[n]) &
++						     (tsfs->config->extent - 1);
++		coords[n] = (tsfs->lowpass[n] + (len >> 1)) / len;
++		tsfs->reported[n] = coords[n];
++
++		/* remove oldest sample if we are full */
++		if (len == (tsfs->config->extent - 1)) {
++			tsfs->lowpass[n] -= tsfs->fifo[n][tsfs->ftail[n]++];
++			if (tsfs->ftail[n] == tsfs->config->extent)
++				tsfs->ftail[n] = 0;
++		}
++	}
++
++	if (tsf->next) /* chain */
++		return (tsf->next->api->process)(tsf->next, coords);
++
++	return 1;
++}
++
++struct ts_filter_api ts_filter_mean_api = {
++	.create = ts_filter_mean_create,
++	.destroy = ts_filter_mean_destroy,
++	.clear = ts_filter_mean_clear,
++	.process = ts_filter_mean_process,
++	.scale = ts_filter_mean_scale,
++};
+diff --git a/drivers/input/touchscreen/ts_filter_mean.h b/drivers/input/touchscreen/ts_filter_mean.h
+new file mode 100644
+index 0000000..44c506c
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_mean.h
+@@ -0,0 +1,34 @@
++#ifndef __TS_FILTER_MEAN_H__
++#define __TS_FILTER_MEAN_H__
++
++#include "ts_filter.h"
++
++/*
++ * Touchscreen filter.
++ *
++ * mean
++ *
++ * (c) 2008 Andy Green <andy@openmoko.com>
++ */
++
++struct ts_filter_mean_configuration {
++	int bits_filter_length;
++	int averaging_threshold;
++
++	int extent;
++};
++
++struct ts_filter_mean {
++	struct ts_filter tsf;
++	struct ts_filter_mean_configuration *config;
++
++	int reported[MAX_TS_FILTER_COORDS];
++	int lowpass[MAX_TS_FILTER_COORDS];
++	int *fifo[MAX_TS_FILTER_COORDS];
++	int fhead[MAX_TS_FILTER_COORDS];
++	int ftail[MAX_TS_FILTER_COORDS];
++};
++
++extern struct ts_filter_api ts_filter_mean_api;
++
++#endif
+diff --git a/drivers/input/touchscreen/ts_filter_median.c b/drivers/input/touchscreen/ts_filter_median.c
+new file mode 100644
+index 0000000..b3b6a9c
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_median.c
+@@ -0,0 +1,217 @@
++/*
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ *
++ * Copyright (c) 2008 Andy Green <andy@openmoko.com>
++ *
++ *
++ * Median averaging stuff.  We sort incoming raw samples into an array of
++ * MEDIAN_SIZE length, discarding the oldest sample each time once we are full.
++ * We then return the sum of the middle three samples for X and Y.  It means
++ * the final result must be divided by (3 * scaling factor) to correct for
++ * avoiding the repeated /3.
++ *
++ * This strongly rejects brief excursions away from a central point that is
++ * sticky in time compared to the excursion duration.
++ *
++ * Thanks to Dale Schumacher (who wrote some example code) and Carl-Daniel
++ * Halifinger who pointed out this would be a good method.
++ */
++
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include "ts_filter_median.h"
++
++static void ts_filter_median_insert(int *p, int sample, int count)
++{
++	int n;
++
++	/* search through what we got so far to find where to put sample */
++	for (n = 0; n < count; n++)
++		 /* we met somebody bigger than us? */
++		if (sample < p[n]) {
++			/* starting from the end, push bigger guys down one */
++			for (count--; count >= n; count--)
++				p[count + 1] = p[count];
++			p[n] = sample; /* and put us in place of first bigger */
++			return;
++		}
++
++	p[count] = sample; /* nobody was bigger than us, add us on the end */
++}
++
++static void ts_filter_median_del(int *p, int value, int count)
++{
++	int index;
++
++	for (index = 0; index < count; index++)
++		if (p[index] == value) {
++			for (; index < count; index++)
++				p[index] = p[index + 1];
++			return;
++		}
++}
++
++
++static void ts_filter_median_clear_internal(struct ts_filter *tsf)
++{
++	struct ts_filter_median *tsfm = (struct ts_filter_median *)tsf;
++
++	tsfm->pos = 0;
++	tsfm->valid = 0;
++
++}
++static void ts_filter_median_clear(struct ts_filter *tsf)
++{
++	ts_filter_median_clear_internal(tsf);
++
++	if (tsf->next) /* chain */
++		(tsf->next->api->clear)(tsf->next);
++}
++
++static struct ts_filter *ts_filter_median_create(struct platform_device *pdev,
++						 void *conf, int count_coords)
++{
++	int *p;
++	int n;
++	struct ts_filter_median *tsfm = kzalloc(sizeof(struct ts_filter_median),
++								    GFP_KERNEL);
++
++	if (!tsfm)
++		return NULL;
++
++	tsfm->config = (struct ts_filter_median_configuration *)conf;
++	BUG_ON((count_coords < 1) || (count_coords > MAX_TS_FILTER_COORDS));
++	tsfm->tsf.count_coords = count_coords;
++
++	tsfm->config->midpoint = (tsfm->config->extent >> 1) + 1;
++
++	p = kmalloc(2 * count_coords * sizeof(int) * (tsfm->config->extent + 1),
++								    GFP_KERNEL);
++	if (!p) {
++		kfree(tsfm);
++		return NULL;
++	}
++
++	for (n = 0; n < count_coords; n++) {
++		tsfm->sort[n] = p;
++		p += tsfm->config->extent + 1;
++		tsfm->fifo[n] = p;
++		p += tsfm->config->extent + 1;
++	}
++
++	ts_filter_median_clear_internal(&tsfm->tsf);
++
++	printk(KERN_INFO"  Created Median ts filter len %d depth %d dec %d\n",
++	       tsfm->config->extent, count_coords,
++	       tsfm->config->decimation_threshold);
++
++	return &tsfm->tsf;
++}
++
++static void ts_filter_median_destroy(struct platform_device *pdev,
++				     struct ts_filter *tsf)
++{
++	struct ts_filter_median *tsfm = (struct ts_filter_median *)tsf;
++
++	kfree(tsfm->sort[0]); /* first guy has pointer from kmalloc */
++	kfree(tsf);
++}
++
++static void ts_filter_median_scale(struct ts_filter *tsf, int *coords)
++{
++	int n;
++
++	for (n = 0; n < tsf->count_coords; n++)
++		coords[n] = (coords[n] + 2) / 3;
++
++	if (tsf->next) /* chain */
++		(tsf->next->api->scale)(tsf->next, coords);
++}
++
++/*
++ * Give us the raw sample data coords, and if we return 1 then you can
++ * get a filtered coordinate from coords. If we return 0 you didn't
++ * fill all the filters with samples yet.
++ */
++
++static int ts_filter_median_process(struct ts_filter *tsf, int *coords)
++{
++	struct ts_filter_median *tsfm = (struct ts_filter_median *)tsf;
++	int n;
++	int movement = 1;
++
++	for (n = 0; n < tsf->count_coords; n++) {
++		/* grab copy in insertion order to remove when oldest */
++		tsfm->fifo[n][tsfm->pos] = coords[n];
++		/* insert these samples in sorted order in the median arrays */
++		ts_filter_median_insert(tsfm->sort[n], coords[n], tsfm->valid);
++	}
++	/* move us on in the fifo */
++	if (++tsfm->pos == (tsfm->config->extent + 1))
++		tsfm->pos = 0;
++
++	/* we have finished a median sampling? */
++	if (++tsfm->valid != tsfm->config->extent)
++		return 0; /* no valid sample to use */
++
++	/* discard the oldest sample in median sorted array */
++	tsfm->valid--;
++
++	/*
++	 * Sum the middle 3 in the median sorted arrays. We don't divide back
++	 * down which increases the sum resolution by a factor of 3 until the
++	 * scale API is called.
++	 */
++	for (n = 0; n < tsfm->tsf.count_coords; n++)
++		/* perform the deletion of the oldest sample */
++		ts_filter_median_del(tsfm->sort[n], tsfm->fifo[n][tsfm->pos],
++								   tsfm->valid);
++
++	tsfm->decimation_count--;
++	if (tsfm->decimation_count >= 0)
++		return 0;
++
++	for (n = 0; n < tsfm->tsf.count_coords; n++) {
++		/* give the coordinate result from summing median 3 */
++		coords[n] = tsfm->sort[n][tsfm->config->midpoint - 1] +
++			    tsfm->sort[n][tsfm->config->midpoint] +
++			    tsfm->sort[n][tsfm->config->midpoint + 1]
++			;
++
++		movement += abs(tsfm->last_issued[n] - coords[n]);
++	}
++
++	if (movement > tsfm->config->decimation_threshold) /* fast */
++		tsfm->decimation_count = tsfm->config->decimation_above;
++	else
++		tsfm->decimation_count = tsfm->config->decimation_below;
++
++	memcpy(&tsfm->last_issued[0], coords,
++	       tsfm->tsf.count_coords * sizeof(int));
++
++	if (tsf->next) /* chain */
++		return (tsf->next->api->process)(tsf->next, coords);
++
++	return 1;
++}
++
++struct ts_filter_api ts_filter_median_api = {
++	.create = ts_filter_median_create,
++	.destroy = ts_filter_median_destroy,
++	.clear = ts_filter_median_clear,
++	.process = ts_filter_median_process,
++	.scale = ts_filter_median_scale,
++};
+diff --git a/drivers/input/touchscreen/ts_filter_median.h b/drivers/input/touchscreen/ts_filter_median.h
+new file mode 100644
+index 0000000..8f25e27
+--- /dev/null
++++ b/drivers/input/touchscreen/ts_filter_median.h
+@@ -0,0 +1,36 @@
++#ifndef __TS_FILTER_MEDIAN_H__
++#define __TS_FILTER_MEDIAN_H__
++
++#include "ts_filter.h"
++
++/*
++ * Touchscreen filter.
++ *
++ * median
++ *
++ * (c) 2008 Andy Green <andy@openmoko.com>
++ */
++
++struct ts_filter_median_configuration {
++	int extent;
++	int midpoint;
++	int decimation_threshold;
++	int decimation_above;
++	int decimation_below;
++};
++
++struct ts_filter_median {
++	struct ts_filter tsf;
++	struct ts_filter_median_configuration *config;
++
++	int decimation_count;
++	int last_issued[MAX_TS_FILTER_COORDS];
++	int valid; /* how many samples in the sort buffer are valid */
++	int *sort[MAX_TS_FILTER_COORDS]; /* samples taken for median */
++	int *fifo[MAX_TS_FILTER_COORDS]; /* samples taken for median */
++	int pos; /* where we are in the fifo sample memory */
++};
++
++extern struct ts_filter_api ts_filter_median_api;
++
++#endif
+-- 
+1.5.6.3
+

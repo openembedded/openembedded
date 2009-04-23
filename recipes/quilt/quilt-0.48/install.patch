@@ -1,0 +1,13 @@
+Index: quilt-0.48/Makefile.in
+===================================================================
+--- quilt-0.48.orig/Makefile.in	2009-01-31 09:09:47.000000000 -0800
++++ quilt-0.48/Makefile.in	2009-04-09 15:36:25.000000000 -0700
+@@ -13,7 +13,7 @@
+ mandir :=	@mandir@
+ localedir :=	$(datadir)/locale
+ emacsdir :=	$(datadir)/emacs/site-lisp
+-etcdir :=	$(subst /usr/etc,/etc,$(prefix)/etc)
++etcdir :=	@sysconfdir@
+ 
+ INSTALL :=	@INSTALL@
+ POD2MAN :=	@POD2MAN@

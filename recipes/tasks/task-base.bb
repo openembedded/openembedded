@@ -1,5 +1,5 @@
 DESCRIPTION = "Merge machine and distro options to create a basic machine task/package"
-PR = "r80"
+PR = "r83"
 
 inherit task
 
@@ -256,7 +256,7 @@ RRECOMMENDS_task-base-bluetooth = "\
     kernel-module-hidp \
     kernel-module-hci-uart \
     kernel-module-sco \
-    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-hci-usb', '',d)} \
+    ${@base_contains('COMBINED_FEATURES', 'usbhost', 'kernel-module-btusb kernel-module-hci-usb', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluetooth3c-cs', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluecard-cs', '',d)} \
     ${@base_contains('COMBINED_FEATURES', 'pcmcia', 'kernel-module-bluetoothuart-cs', '',d)} \

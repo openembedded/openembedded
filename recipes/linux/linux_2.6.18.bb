@@ -3,6 +3,7 @@
 
 require linux.inc
 
+DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_avr32 = "1"
 
 PR = "r0"

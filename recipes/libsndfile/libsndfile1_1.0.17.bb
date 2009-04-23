@@ -23,3 +23,5 @@ do_stage() {
 	install -m 0644 ${S}/src/sndfile.h ${STAGING_INCDIR}/
 }
 
+PACKAGES =+ "${PN}-octave"
+FILES_${PN}-octave += "/usr/share/octave/site/m"

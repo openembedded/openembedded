@@ -12,7 +12,11 @@ SRC_URI = "http://www.ibiblio.org/pub/Linux/utils/file/managers/mc/mc-${PV}.tar.
 inherit autotools
 
 EXTRA_OECONF = "--disable-glibtest --without-x --without-samba \
---without-nfs --without-gpm-mouse --with-screen=ncurses"
+--without-nfs --without-gpm-mouse --with-screen=ncurses \
+ac_cv_path_PERL=${bindir}/perl \
+ac_cv_path_ZIP=${bindir}/zip \
+ac_cv_path_UNZIP=${bindir}/unzip \
+"
 
 PACKAGES += "${PN}-extfs ${PN}-hilite"
 FILES_${PN} = "${bindir}/ ${libexecdir}/mc ${datadir}/mc/*.charsets ${datadir}/mc/*.ext ${datadir}/mc/*.hint ${datadir}/mc/*.hlp ${datadir}/mc/*.lib ${datadir}/mc/*.menu ${datadir}/mc/*.rc ${datadir}/mc/bin /etc/profile.d"

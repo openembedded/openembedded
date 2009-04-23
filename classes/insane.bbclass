@@ -31,6 +31,9 @@ PACKAGEFUNCS += " do_package_qa "
 #           TARGET_OS  TARGET_ARCH   MACHINE, OSABI, ABIVERSION, Little Endian, 32bit?
 def package_qa_get_machine_dict():
     return {
+            "darwin9" : { 
+                        "arm" :       (40,     0,    0,          True,          True),
+                      },
             "linux" : { 
                         "arm" :       (40,    97,    0,          True,          True),
                         "armeb":      (40,    97,    0,          False,         True),
@@ -184,7 +187,7 @@ def package_qa_make_fatal_error(error_class, name, path,d):
 
     TODO: Load a whitelist of known errors
     """
-    return not error_class in [0, 5, 7, 9]
+    return not error_class in [0, 5, 7]
 
 def package_qa_write_error(error_class, name, path, d):
     """

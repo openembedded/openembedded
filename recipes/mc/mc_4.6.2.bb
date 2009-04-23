@@ -1,5 +1,5 @@
 require mc.inc
-PR = "r2"
+PR = "r3"
 HOMEPAGE = "http://www.midnight-commander.org/"
 
 # most of these fixes were copied from openSUSE Factory.
@@ -23,8 +23,12 @@ SRC_URI = "http://www.midnight-commander.org/downloads/${P}.tar.gz \
 	   file://mc-cursor-appearance.patch;patch=1 \
 	   file://mc-esc-seq.patch;patch=1"
 
-EXTRA_OECONF = "--without-x --without-samba \   
---without-nfs --without-gpm-mouse --enable-charset"
+EXTRA_OECONF = "--without-x --without-samba \
+--without-nfs --without-gpm-mouse --enable-charset \
+ac_cv_path_PERL=${bindir}/perl \
+ac_cv_path_ZIP=${bindir}/zip \
+ac_cv_path_UNZIP=${bindir}/unzip \
+"
 
 do_unpack_append() {
         bb.build.exec_func('do_utf8_conversion', d)

@@ -1,11 +1,15 @@
---- a/libbb/Kbuild	2008-11-09 20:28:09.000000000 +0300
-+++ b/libbb/Kbuild	2009-02-17 17:41:48.718747865 +0300
-@@ -147,3 +147,8 @@ lib-$(CONFIG_PGREP) += xregcomp.o
- lib-$(CONFIG_PKILL) += xregcomp.o
- lib-$(CONFIG_DEVFSD) += xregcomp.o
- lib-$(CONFIG_FEATURE_FIND_REGEX) += xregcomp.o
+Index: busybox-1.13.2/Makefile
+===================================================================
+--- busybox-1.13.2.orig/Makefile	2009-03-19 15:44:37.419270265 +0300
++++ busybox-1.13.2/Makefile	2009-03-19 15:45:57.737521296 +0300
+@@ -471,6 +471,10 @@
+ 		util-linux/ \
+ 		util-linux/volume_id/ \
+ 
++# Lib interdeps
++# libbb uses headers generated in applets
++libbb: applets
 +
-+libbb/appletlib.o: include/usage_compressed.h include/applet_tables.h
-+
-+include/usage_compressed.h include/applet_tables.h:
-+        $(Q)$(MAKE) $(build)=applets $@
+ endif # KBUILD_EXTMOD
+ 
+ ifeq ($(dot-config),1)

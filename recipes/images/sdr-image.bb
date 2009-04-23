@@ -15,6 +15,7 @@ IMAGE_FSTYPES += "tar.bz2"
 ANGSTROM_EXTRA_INSTALL ?= ""
 DISTRO_SSH_DAEMON ?= "dropbear"
 XSERVER ?= "xserver-kdrive-fbdev"
+SPLASH ?= ' ${@base_contains("MACHINE_FEATURES", "screen", "psplash-angstrom", "",d)}'
 
 # Install "big" X if the target has a screen
 GUIPACKAGES_BIGX = " \
@@ -43,6 +44,7 @@ IMAGE_INSTALL = " task-base-extended \
 	uucp picocom \
 	angstrom-zeroconf-audio avahi-utils \
 	${ANGSTROM_EXTRA_INSTALL} \
+        ${SPLASH} \
 "
 
 inherit image

@@ -6,6 +6,7 @@ RDEPENDS_${PN} = "portaudio-v19 ${EXTRA_PHONEMES}"
 PR = "r0"
 
 CXXFLAGS += "-DUSE_PORTAUDIO"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 FILES_${PN} += "${datadir}/espeak-data"
 

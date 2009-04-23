@@ -1,0 +1,19 @@
+--- iputils-upstream/ping6.c	2007-10-28 12:24:10.000000000 -0400
++++ iputils/ping6.c	2007-10-28 12:19:18.000000000 -0400
+@@ -414,7 +414,7 @@
+ 			fprintf(stderr, "ping: unknown iface %s\n", device);
+ 			exit(2);
+ 		}
+-		cmsg = (struct cmsghdr*)cmsgbuf;
++		cmsg = (struct cmsghdr*)(cmsgbuf+cmsglen);
+ 		cmsglen += CMSG_SPACE(sizeof(*ipi));
+ 		cmsg->cmsg_len = CMSG_LEN(sizeof(*ipi));
+ 		cmsg->cmsg_level = SOL_IPV6;
+@@ -486,7 +486,6 @@
+ 	/*
+ 	 *	select icmp echo reply as icmp type to receive
+ 	 */
+-
+ 	ICMP6_FILTER_SETBLOCKALL(&filter);
+ 
+ 	if (!working_recverr) {

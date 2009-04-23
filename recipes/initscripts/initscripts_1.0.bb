@@ -4,7 +4,7 @@ PRIORITY = "required"
 DEPENDS = "makedevs"
 RDEPENDS = "makedevs"
 LICENSE = "GPL"
-PR = "r113"
+PR = "r114"
 
 SRC_URI = "file://functions \
            file://halt \
@@ -129,4 +129,9 @@ do_install () {
 # Angstrom doesn't support devfs
 do_install_append_angstrom () {
 	rm ${D}${sysconfdir}/init.d/devices ${D}${sysconfdir}/rcS.d/S05devices
+}
+
+# HIPOX needs /sys in reboot for kexec check
+do_install_append_hipox () {
+	ln -sf		../init.d/sysfs.sh	${D}${sysconfdir}/rc6.d/S80sysfs
 }

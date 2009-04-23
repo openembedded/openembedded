@@ -1,0 +1,12 @@
+diff -urN aircrack-ng-0.9.3.orig/Makefile aircrack-ng-0.9.3/Makefile
+--- aircrack-ng-0.9.3.orig/Makefile	2008-02-24 20:22:35.000000000 +0100
++++ aircrack-ng-0.9.3/Makefile	2009-04-09 07:53:12.000000000 +0200
+@@ -3,7 +3,7 @@
+ 
+ CC              = gcc
+ CFLAGS          ?= -g -W -Wall -O3
+-OPTFLAGS        = -D_FILE_OFFSET_BITS=64
++OPTFLAGS        = -D_FILE_OFFSET_BITS=64 $(LDFLAGS)
+ 
+ iCC             = /opt/intel/cc/9.0/bin/icc
+ iCFLAGS         = -w -mcpu=pentiumpro -march=pentiumpro

@@ -24,6 +24,8 @@ EXTRA_OECONF = "--without-openldap --with-dbus --without-bug-buddy --without-sou
 
 PACKAGES =+ "libcamel-collateral libcamel libcamel-dev libebook libebook-dev libecal libecal-dev libedata-book libedata-book-dev libedata-cal libedata-cal-dev libedataserver libedataserver-dev"
 
+FILES_${PN} =+ "${datadir}/evolution-data-server-*/glade/*.glade"
+
 FILES_${PN}-dev =+ "${libdir}/pkgconfig/evolution-data-server-*.pc"
 FILES_${PN}-dbg =+ "${libdir}/evolution-data-server-*/camel-providers/.debug ${libdir}/evolution-data-server*/extensions/.debug/"
 
@@ -50,4 +52,8 @@ FILES_libedataserver-dev = "${libdir}/libedataserver-*.so ${libdir}/pkgconfig/li
 
 do_stage () {
         autotools_stage_all
+}
+
+do_install_append () {
+	rm ${D}${libdir}/evolution-data-server-*/*/*.la
 }

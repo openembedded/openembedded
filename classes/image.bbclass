@@ -17,16 +17,16 @@ IMAGE_INITSCRIPTS ?= "initscripts"
 #
 IMAGE_LOGIN_MANAGER ?= "tinylogin"
 
-IMAGE_VARS = "${IMAGE_INITSCRIPTS} \
+IMAGE_BOOT ?= "${IMAGE_INITSCRIPTS} \
 ${IMAGE_DEV_MANAGER} \
 ${IMAGE_INIT_MANAGER} \
 ${IMAGE_LOGIN_MANAGER} "
 
-RDEPENDS += "${IMAGE_INSTALL} ${IMAGE_VARS}"
+RDEPENDS += "${IMAGE_INSTALL} ${IMAGE_BOOT}"
 
 # "export IMAGE_BASENAME" not supported at this time
 IMAGE_BASENAME[export] = "1"
-export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_VARS}"
+export PACKAGE_INSTALL ?= "${IMAGE_INSTALL} ${IMAGE_BOOT}"
 
 # We need to recursively follow RDEPENDS and RRECOMMENDS for images
 do_rootfs[recrdeptask] += "do_deploy do_populate_staging"
@@ -104,8 +104,8 @@ LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVa
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
-do_rootfs[lockfiles] = "${IMAGE_ROOTFS}.lock"
 do_build[nostamp] = "1"
+do_install[nostamp] = "1"
 
 # Must call real_do_rootfs() from inside here, rather than as a separate
 # task, so that we have a single fakeroot context for the whole process.
@@ -234,5 +234,5 @@ rootfs_update_timestamp () {
 # export the zap_root_password, create_etc_timestamp and remote_init_link
 EXPORT_FUNCTIONS zap_root_password create_etc_timestamp remove_init_link do_rootfs make_zimage_symlink_relative set_image_autologin rootfs_update_timestamp
 
-addtask rootfs before do_build after do_install
+addtask rootfs after do_compile before do_install
 addtask deploy_to after do_rootfs
