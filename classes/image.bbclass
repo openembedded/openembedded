@@ -104,7 +104,6 @@ LINGUAS_INSTALL = "${@" ".join(map(lambda s: "locale-base-%s" % s, bb.data.getVa
 
 do_rootfs[nostamp] = "1"
 do_rootfs[dirs] = "${TOPDIR}"
-do_rootfs[lockfiles] = "${IMAGE_ROOTFS}.lock"
 do_build[nostamp] = "1"
 do_install[nostamp] = "1"
 
