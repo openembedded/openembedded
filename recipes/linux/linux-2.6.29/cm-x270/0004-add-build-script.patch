@@ -1,0 +1,27 @@
+From dc0aeffcd6bde310f2fefe305c41da8d6d010033 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Thu, 12 Mar 2009 14:33:08 -0400
+Subject: [PATCH] add build script
+
+---
+ setup-env |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+ create mode 100644 setup-env
+
+diff --git a/setup-env b/setup-env
+new file mode 100644
+index 0000000..b869dcd
+--- /dev/null
++++ b/setup-env
+@@ -0,0 +1,8 @@
++# script that can be sourced to setup up the compiler
++# env for cross-compiling u-boot
++
++CROSS_COMPILER_PATH=`cd /build/oe/oe-stable/build/angstrom-2008.1/tmp/cross/armv5te/bin; pwd`
++export PATH=$CROSS_COMPILER_PATH:$PATH
++export ARCH=arm
++export CROSS_COMPILE=arm-angstrom-linux-gnueabi-
++
+-- 
+1.5.6.3
+
