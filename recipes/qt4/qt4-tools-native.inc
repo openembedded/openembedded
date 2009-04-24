@@ -59,7 +59,7 @@ do_compile() {
 do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}/
     install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
-    for i in moc uic uic3 rcc lrelease lupdate qdbusxml2cpp; do
+    for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
         install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4
     done
     
