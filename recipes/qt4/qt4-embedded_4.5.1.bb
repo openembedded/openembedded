@@ -4,7 +4,6 @@ LICENSE = "GPL LGPL QPL"
 PRIORITY = "optional"
 HOMEPAGE = "http://www.trolltech.com"
 DEPENDS += "tslib"
-PR = "r1"
 DEFAULT_PREFERENCE = "-1"
 
 SRC_URI = "ftp://ftp.trolltech.com/qt/source/qt-embedded-linux-opensource-src-${PV}.tar.bz2 \
