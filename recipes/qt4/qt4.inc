@@ -62,7 +62,7 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-pixeltool"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
-PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
+PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*  ${QT_BASE_NAME}-translation-*"
 
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
