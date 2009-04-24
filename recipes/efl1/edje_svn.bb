@@ -20,6 +20,8 @@ RRECOMMENDS_${PN}-utils = "\
   evas-saver-tiff \
 "
 
+DEBIAN_NOAUTONAME_${PN} = "1"
+DEBIAN_NOAUTONAME_${PN}-themes = "1"
 DEBIAN_NOAUTONAME_${PN}-utils = "1"
 FILES_${PN}-utils = "\
   ${bindir}/edje_* \

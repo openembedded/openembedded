@@ -9,7 +9,11 @@ DEPENDS += "pkgconfig-native"
 # revision 0d93ec84b30bc1bee2caaee72d667f87bc468a70 made SRCDATE and hence PV go backwards, so we need to up PE to unbreak builds and feeds :(
 PE = "2"
 
-DEBIAN_NOAUTONAME = "1"
+DEBIAN_NOAUTONAME_${PN} = "1"
+DEBIAN_NOAUTONAME_${PN}-dbg = "1"
+DEBIAN_NOAUTONAME_${PN}-doc = "1"
+DEBIAN_NOAUTONAME_${PN}-dev = "1"
+DEBIAN_NOAUTONAME_${PN}-themes = "1"
 
 ARM_INSTRUCTION_SET = "arm"
 

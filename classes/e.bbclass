@@ -5,7 +5,11 @@ SRCNAME ?= "${PN}"
 SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=${SRCNAME};proto=http"
 S = "${WORKDIR}/${SRCNAME}"
 
-DEBIAN_NOAUTONAME = "1"
+DEBIAN_NOAUTONAME_${PN} = "1"
+DEBIAN_NOAUTONAME_${PN}-dbg = "1"
+DEBIAN_NOAUTONAME_${PN}-doc = "1"
+DEBIAN_NOAUTONAME_${PN}-dev = "1"
+DEBIAN_NOAUTONAME_${PN}-themes = "1"
 
 ARM_INSTRUCTION_SET = "arm"
 
