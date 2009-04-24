@@ -16,7 +16,7 @@ SRC_URI = "svn://svn.mplayerhq.hu/mplayer;module=trunk \
 	   "
 
 SRC_URI_append_armv7a = " \
-#		file://omapfb.patch;patch=1 \
+		file://omapfb.patch;patch=1 \
 	   file://vo_omapfb.c \
 	   file://yuv.S \
 	  "
@@ -37,7 +37,7 @@ RCONFLICTS_${PN} = "mplayer-atty"
 RREPLACES_${PN} = "mplayer-atty"
 
 PV = "0.0+1.0rc2+svnr${SRCREV}"
-PR = "r9"
+PR = "r10"
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_armv7a = "1"
 
@@ -198,6 +198,8 @@ do_configure_prepend_armv7a() {
  	cp ${WORKDIR}/vo_omapfb.c ${S}/libvo
 	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S}/libvo/omapfb.h || true
  	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S}/libvo/omapfb.h || true
+	cp ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ${S}/libvo/omapfb.h || true
+ 	sed -e 's/__user//g' -i ${S}/libvo/omapfb.h || true
 }
 
 CFLAGS_append = " -I${S}/libdvdread4 "

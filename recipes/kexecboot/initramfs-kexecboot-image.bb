@@ -12,8 +12,9 @@ export IMAGE_BASENAME = "initramfs-kexecboot-image"
 
 KEXECBOOT_IMAGEDEPENDS ?= ""
 
-# avoid to depend from kexecboot
+# avoid circular dependencies
 EXTRA_IMAGEDEPENDS = "${KEXECBOOT_IMAGEDEPENDS}"
+
 IMAGE_INSTALL = "kexecboot"
 IMAGE_LINGUAS = ""
 
@@ -21,4 +22,3 @@ IMAGE_LOGIN_MANAGER = ""
 IMAGE_INIT_MANAGER = ""
 IMAGE_INITSCRIPTS = ""
 IMAGE_DEV_MANAGER = ""
-#ONLINE_PACKAGE_MANAGEMENT = "none"

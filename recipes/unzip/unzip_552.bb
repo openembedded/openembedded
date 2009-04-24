@@ -6,7 +6,7 @@ PR = "r1"
 SRC_URI = "http://ftp.info-zip.org/pub/infozip/src/unzip${PV}.tar.gz"
 S = "${WORKDIR}/unzip-5.52"
 
-export LD = "${CC}"
+export LD = "${CC} ${LDFLAGS}"
 
 do_compile() {
         oe_runmake -f unix/Makefile generic
