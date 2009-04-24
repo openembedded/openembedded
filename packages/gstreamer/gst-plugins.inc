@@ -28,6 +28,11 @@ do_configure_prepend() {
 	for i in libtool ltoptions ltsugar ltversion lt~obsolete; do
 		rm ${S}/m4/$i.m4 || /bin/true;
 	done
+	
+	for i in shave gtk-doc; do
+		rm ${S}/common/m4/$i.m4 || /bin/true;
+	done
+
 }
 
 do_stage() {
