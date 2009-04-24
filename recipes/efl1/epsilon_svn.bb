@@ -4,7 +4,7 @@ LICENSE = "MIT BSD"
 # can also depend on xine for movie thumbnails
 DEPENDS = "libpng evas ecore edje perl-native"
 PV = "0.3.0.012+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 inherit efl
 

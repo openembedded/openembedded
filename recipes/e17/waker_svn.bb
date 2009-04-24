@@ -3,7 +3,7 @@ LICENSE = "LGPL"
 DEPENDS = "ecore edbus"
 SECTION = "console"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
 

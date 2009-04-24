@@ -3,6 +3,6 @@ LICENSE = "MIT"
 # also requires yacc and lex on host
 DEPENDS = "evas ecore"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl

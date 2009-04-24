@@ -1,7 +1,7 @@
 DESCRIPTION = "The Enlightenment C-like scripting language for Edje"
 LICENSE = "MIT BSD"
 PV = "0.9.9.050+svnr${SRCREV}"
-PR = "r1"
+PR = "r2"
 
 inherit efl
 
