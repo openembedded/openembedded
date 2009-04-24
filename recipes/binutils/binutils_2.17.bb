@@ -1,7 +1,7 @@
 require binutils.inc
 require binutils-avr32.inc
 
-PR = "r6"
+PR = "r7"
 
 SRC_URI = \
     "http://ftp.gnu.org/gnu/binutils/binutils-${PV}.tar.bz2 \
