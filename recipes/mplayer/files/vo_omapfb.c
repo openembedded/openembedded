@@ -58,8 +58,8 @@ It's an interpolation bug in the color conversion that needs to be fixed
 #include "fastmemcpy.h"
 #include "sub.h"
 #include "mp_msg.h"
-
 #include "omapfb.h"
+#include "x11_common.h"
 
 #include "libswscale/swscale.h"
 #include "libmpcodecs/vf_scale.h"
@@ -87,10 +87,12 @@ static int fb_overlay_only = 0; // if set, we need only framebuffer overlay, but
 static int dbl_buffer = 0;
 static int fullscreen_flag = 0;
 static int plane_ready = 0;
+static uint32_t drwX, drwY;
 
 extern void yuv420_to_yuv422(uint8_t *yuv, uint8_t *y, uint8_t *u, uint8_t *v, int w, int h, int yw, int cw, int dw);
 static struct fb_var_screeninfo sinfo_p0;
 static struct fb_var_screeninfo sinfo;
+static struct fb_fix_screeninfo finfo;
 static struct omapfb_mem_info minfo;
 static struct omapfb_plane_info pinfo;
 static struct {
@@ -155,154 +157,19 @@ static void x11_get_window_abs_position(Display *display, Window window,
         XFree(child);
 }
 
-
-/**
- * Function that controls fullscreen state for x11 window
- * action = 1 (set fullscreen)
- * action = 0 (set windowed mode)
- */
-static void x11_set_fullscreen_state(Display *display, Window window, int action)
+static void x11_check_events(void)
 {
-    XEvent xev;
+    int e = vo_x11_check_events(mDisplay);
 
-    /* init X event structure for _NET_WM_FULLSCREEN client msg */
-    xev.xclient.type = ClientMessage;
-    xev.xclient.serial = 0;
-    xev.xclient.send_event = True;
-    xev.xclient.message_type = XInternAtom(display, "_NET_WM_STATE", False);
-    xev.xclient.window = window;
-    xev.xclient.format = 32;
-    xev.xclient.data.l[0] = action;
-    xev.xclient.data.l[1] = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
-    xev.xclient.data.l[2] = 0;
-    xev.xclient.data.l[3] = 0;
-    xev.xclient.data.l[4] = 0;
+    if (e & VO_EVENT_RESIZE)
+        vo_calc_drwXY(&drwX, &drwY);
 
-    /* finally send that damn thing */
-    if (!XSendEvent(display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &xev)) {
-        mp_msg(MSGT_VO, MSGL_ERR, "[omapfb] failure in x11_set_fullscreen_state\n");
-        exit(1);
-    }
-    XSync(display, False);
-}
-
-
-XClassHint classhint = {"mediaplayer-ui", "mediaplayer-ui"};
-
-
-/**
- * Initialize x11 window (it is used to allocate some screen area for framebuffer overlay)
- */
-static void x11_init()
-{
-    display = XOpenDisplay(getenv("DISPLAY"));
-    if (display == NULL) {
-        mp_msg(MSGT_VO, MSGL_ERR, "[omapfb] failure in x11_init, can't open display\n");
-        exit(1);
-    }
-
-    screen_num = DefaultScreen(display);
-
-    if (WinID > 0)
+    if (e & VO_EVENT_EXPOSE || e & VO_EVENT_RESIZE)
     {
-        Window root;
-        Window *child;
-        unsigned int n_children;
-
-        win = WinID;
-
-        /* Query window tree information */
-        XQueryTree(display, win, &root, &parent, &child, &n_children);
-        if (n_children)
-            XFree(child);
-
-        XUnmapWindow(display, win);
-        if (parent)
-            XSelectInput(display, parent, StructureNotifyMask);
-        XMapWindow(display, win);
-
-        wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
-        XSetWMProtocols(display, win, &wm_delete_window, 1);
-    } else {
-        win = XCreateSimpleWindow(display, RootWindow(display, screen_num),
-                                  sinfo_p0.xres / 2 - sinfo.xres / 2, sinfo_p0.yres / 2 - sinfo.yres / 2, sinfo.xres, sinfo.yres, 0,
-                                  WhitePixel(display, screen_num),
-                                  TRANSPARENT_COLOR_KEY);
-
-        XSetClassHint(display, win, &classhint);
-
-        XStoreName(display, win, "MPlayer");
-        XMapWindow(display, win);
-
-        /* Set WM_DELETE_WINDOW atom in WM_PROTOCOLS property (to get window_delete requests).  */
-        wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
-        XSetWMProtocols(display, win, &wm_delete_window, 1);
-        XSelectInput(display, win, StructureNotifyMask | KeyPressMask);
+        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1);
+        omapfb_update(0, 0, 0, 0, 1);
     }
 }
-
-
-void print_properties(Window win2)
-{
-	Atom *p;
-	int num, j;
-	char *aname;
-	Atom type;
-	int format;
-	unsigned long nitems, bytes_after;
-	unsigned char *ret = NULL;
-
-	p = XListProperties(display, win2, &num);
-	printf("found %d properties for window %d\n", num, (int)win2);
-	for (j = 0; j < num; j++) {
-		aname = XGetAtomName(display, p[j]);
-		if (aname) {
-			if(Success == XGetWindowProperty(display, win2, XInternAtom(display, aname, False),
-						0L, ~0L, False, XA_STRING,
-						&type, &format, &nitems,
-						&bytes_after, &ret))
-			{
-/*				printf("format = %d, nitems = %d, bytes_after = %d\n", format, nitems, bytes_after);*/
-				printf("%s = %s\n", aname, ret);
-				XFree(ret);
-			}
-			XFree(aname);
-		} else printf("NULL\n");
-	}
-	XFree(p);
-}
-
-
-static int x11_check_events()
-{
-    if (!display) {
-        mp_msg(MSGT_VO, MSGL_ERR, "[omapfb] 'x11_check_events' called out of sequence\n");
-        exit(1);
-    }
-
-    int ret = 0;
-    XEvent Event;
-    while (XPending(display)) {
-        XNextEvent(display, &Event);
-        if (Event.type == UnmapNotify)
-            omapfb_update(0, 0, 0, 0, 0);
-        else if ((Event.type == MapNotify) || (Event.type == ConfigureNotify))
-            omapfb_update(0, 0, 0, 0, 1);
-        else if (Event.type == KeyPress) {
-            int key;
-            KeySym keySym = XKeycodeToKeysym(display, Event.xkey.keycode, 0);
-            key = ((keySym & 0xff00) != 0 ? ((keySym & 0x00ff) + 256) : (keySym));
-            ret |= VO_EVENT_KEYPRESS;
-            vo_x11_putkey(key);
-        } else if (Event.type == ClientMessage) {
-            if ((Atom)Event.xclient.data.l[0] == wm_delete_window) {
-                mplayer_put_key(KEY_ESC);
-            }
-        }
-    }
-    return ret;
-}
-
 
 static void x11_uninit()
 {
@@ -312,13 +179,11 @@ static void x11_uninit()
     }
 }
 
-
 /**
  * Initialize framebuffer
  */
 static int preinit(const char *arg)
 {
-
     opt_t subopts[] = {
         {"fb_overlay_only", OPT_ARG_BOOL, &fb_overlay_only, NULL},
         {"dbl_buffer", OPT_ARG_BOOL, &dbl_buffer, NULL},
@@ -351,49 +216,28 @@ static int preinit(const char *arg)
     ioctl(dev_fd, OMAPFB_QUERY_PLANE, &pinfo);
     ioctl(dev_fd, OMAPFB_QUERY_MEM, &minfo);
 
-    if (!fb_overlay_only)
-        x11_init();
+    if (!fb_overlay_only && !vo_init())
+    {
+        mp_msg(MSGT_VO, MSGL_FATAL, "[omapfb] Could not open X, overlay only...\n");        
+        fb_overlay_only = 1;
+    }
 
     return 0;
 }
 
-
 static void omapfb_update(int x, int y, int out_w, int out_h, int show)
 {
     if (!fb_overlay_only)
-        x11_get_window_abs_position(display, win, &x, &y, &out_w, &out_h);
+        x11_get_window_abs_position(mDisplay, vo_window, &x, &y, &out_w, &out_h);
 
-    if ((x < 0) || (y < 0)
-
-// If you develop the right scaling-down patch in kernel, uncomment the line below and comment the next one
-//        || (out_w < sinfo.xres / 4) || (out_h < sinfo.yres / 4)
-        || (out_w < sinfo.xres) || (out_h < sinfo.yres)
-
-// If you don't have the right scaling-up patch in kernel, comment the line below and uncomment the next one
-/* Kernel patch to enable scaling up on the omap3
-======================================================
---- a/drivers/video/omap/dispc.c	2008-11-01 20:08:04.000000000 -0700
-+++ b/drivers/video/omap/dispc.c	2008-11-01 20:09:02.000000000 -0700
-@@ -523,9 +523,6 @@
- 	if ((unsigned)plane > OMAPFB_PLANE_NUM)
- 		return -ENODEV;
- 
--	if (out_width != orig_width || out_height != orig_height)
--		return -EINVAL;
--
- 	enable_lcd_clocks(1);
- 	if (orig_width < out_width) {
- 		/*
-======================================================
-*/
-        || (out_w > sinfo.xres * 8) || (out_h > sinfo.yres * 8)
-//        || (out_w > sinfo.xres) || (out_h > sinfo.yres)
-
-        || (x + out_w > sinfo_p0.xres) || (y + out_h > sinfo_p0.yres)) {
+    if (x < 0 || y < 0 || (x + out_w > sinfo_p0.xres) || (y + out_h > sinfo_p0.yres) || /* Clipping not currently supported */
+        (out_w < sinfo.xres / 4) || (out_h < sinfo.yres / 4) ||  /* HW can't scale down by more than 4x */
+        (out_w > sinfo.xres * 8) || (out_h > sinfo.yres * 8) ) { /* HW can't scale up by more than 8x */
         pinfo.enabled = 0;
         pinfo.pos_x = 0;
         pinfo.pos_y = 0;
         ioctl(dev_fd, OMAPFB_SETUP_PLANE, &pinfo);
+        ioctl(dev_fd, FBIOGET_FSCREENINFO, &finfo);
         return;
     }
 
@@ -403,8 +247,8 @@ static void omapfb_update(int x, int y, int out_w, int out_h, int show)
     pinfo.out_width  = out_w;
     pinfo.out_height = out_h;
     ioctl(dev_fd, OMAPFB_SETUP_PLANE, &pinfo);
+    ioctl(dev_fd, FBIOGET_FSCREENINFO, &finfo);
 }
-
 
 static int config(uint32_t width, uint32_t height, uint32_t d_width,
 		uint32_t d_height, uint32_t flags, char *title,
@@ -414,7 +258,56 @@ static int config(uint32_t width, uint32_t height, uint32_t d_width,
     int i;
     struct omapfb_color_key color_key;
 
+    XVisualInfo vinfo;
+    XSetWindowAttributes xswa;
+    XWindowAttributes attribs;
+    unsigned long xswamask;
+    int depth;
+
+    Window root, parent;
+    Window *child;
+    unsigned int n_children;
+
     fullscreen_flag = flags & VOFLAG_FULLSCREEN;
+    if (!fb_overlay_only)
+    {
+        if (!title)
+            title = "MPlayer OMAPFB (X11/FB) render";
+
+        XGetWindowAttributes(mDisplay, mRootWin, &attribs);
+        depth = attribs.depth;
+        if (depth != 15 && depth != 16 && depth != 24 && depth != 32)
+            depth = 24;
+        XMatchVisualInfo(mDisplay, mScreen, depth, TrueColor, &vinfo);
+
+        xswa.border_pixel = 0;
+        xswa.background_pixel = xv_colorkey = TRANSPARENT_COLOR_KEY;
+
+        xswamask = CWBackPixel | CWBorderPixel;
+        xv_ck_info.method = CK_METHOD_BACKGROUND;
+
+        vo_x11_create_vo_window(&vinfo, vo_dx, vo_dy, vo_dwidth, vo_dheight,
+                                flags, CopyFromParent, "omapfb", title);
+        XChangeWindowAttributes(mDisplay, vo_window, xswamask, &xswa);
+
+        /* Need to receive events on the parent window -- so when it is
+           moved / resized / etc., we know. */
+        if(WinID > 0)
+        {
+            /* Query window tree information */
+            XQueryTree(mDisplay, vo_window, &root, &parent, &child, &n_children);
+            if (n_children)
+                XFree(child);
+
+            XUnmapWindow(mDisplay, vo_window);
+            if (parent)
+                XSelectInput(mDisplay, parent, StructureNotifyMask);
+            XMapWindow(mDisplay, vo_window);
+        }
+
+        vo_calc_drwXY(&drwX, &drwY);
+        vo_xv_draw_colorkey(drwX, drwY, vo_dwidth - 1, vo_dheight - 1);
+    }
 
     fbmem = mmap(NULL, minfo.size, PROT_READ|PROT_WRITE, MAP_SHARED, dev_fd, 0);
     if (fbmem == MAP_FAILED) {
@@ -452,12 +345,8 @@ static int config(uint32_t width, uint32_t height, uint32_t d_width,
 
     if (WinID <= 0) {
         if (fullscreen_flag) {
-            if (!fb_overlay_only)
-                x11_set_fullscreen_state(display, win, 1);
             omapfb_update(0, 0, sinfo_p0.xres, sinfo_p0.yres, 1);
         } else {
-            if (!fb_overlay_only)
-                x11_set_fullscreen_state(display, win, 0);
             omapfb_update(sinfo_p0.xres / 2 - sinfo.xres / 2, sinfo_p0.yres / 2 - sinfo.yres / 2, sinfo.xres, sinfo.yres, 1);
         }
     }
@@ -475,24 +364,20 @@ static int config(uint32_t width, uint32_t height, uint32_t d_width,
     return 0;
 }
 
-
 static void draw_alpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
 {
-    vo_draw_alpha_yuy2(w, h, src, srca, stride, fb_pages[page].buf + sinfo.xres * y0 * 2 + x0 * 2, sinfo.xres);
+    vo_draw_alpha_yuy2(w, h, src, srca, stride, fb_pages[page].buf + y0 * finfo.line_length + x0 * 2, finfo.line_length);
 }
-
 
 static void draw_osd(void)
 {
     vo_draw_text(sinfo.xres, sinfo.yres, draw_alpha);
 }
 
-
 static int draw_frame(uint8_t *src[])
 {
     return 1;
 }
-
 
 static int draw_slice(uint8_t *src[], int stride[], int w, int h, int x, int y)
 {
@@ -504,11 +389,9 @@ static int draw_slice(uint8_t *src[], int stride[], int w, int h, int x, int y)
 
     ioctl(dev_fd, OMAPFB_SYNC_GFX);
 
-    yuv420_to_yuv422(fb_pages[page].buf + 2 * sinfo.xres * y, src[0], src[1], src[2], w & ~15, h, stride[0], stride[1], 2 * sinfo.xres_virtual);
-
+    yuv420_to_yuv422(fb_pages[page].buf + y * finfo.line_length, src[0], src[1], src[2], w & ~15, h, stride[0], stride[1], finfo.line_length);
     return 0;
 }
-
 
 static void flip_page(void)
 {
@@ -519,7 +402,6 @@ static void flip_page(void)
         page ^= fb_page_flip;
     }
 }
-
 
 static int query_format(uint32_t format)
 {
@@ -563,17 +445,20 @@ static int control(uint32_t request, void *data, ...)
             if (WinID > 0) return VO_FALSE;
             if (fullscreen_flag) {
                 if (!fb_overlay_only)
-                    x11_set_fullscreen_state(display, win, 0);
+                    vo_x11_fullscreen();
                 fullscreen_flag = 0;
                 omapfb_update(sinfo_p0.xres / 2 - sinfo.xres / 2, sinfo_p0.yres / 2 - sinfo.yres / 2, sinfo.xres, sinfo.yres, 1);
             } else {
                 if (!fb_overlay_only)
-                    x11_set_fullscreen_state(display, win, 1);
+                    vo_x11_fullscreen();
                 fullscreen_flag = 1;
                 omapfb_update(0, 0, sinfo_p0.xres, sinfo_p0.yres, 1);
             }
             return VO_TRUE;
         }
+        case VOCTRL_UPDATE_SCREENINFO:
+            update_xinerama_info();
+            return VO_TRUE;
     }
     return VO_NOTIMPL;
 }
