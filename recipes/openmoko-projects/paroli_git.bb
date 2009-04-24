@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r11"
+PR = "r12"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -30,9 +30,10 @@ do_install_append() {
        	#install ${S}/data/module.illume.cfg ${D}${E_CONFIG_DIR}/config/illume/
        	#install ${S}/data/e.cfg ${D}${E_CONFIG_DIR}/config/illume/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli
+       	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/config/
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
        	install -d ${D}${E_CONFIG_DIR}/themes
-	install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
+	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
 	install -d ${D}${datadir}/elementary/themes
 	install ${S}/data/default.edj ${D}${datadir}/elementary/themes
     	install -d ${D}/etc/enlightenment/
