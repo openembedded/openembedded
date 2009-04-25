@@ -11,6 +11,12 @@ S = "${WORKDIR}/e_dbus"
 
 EXTRA_OECONF = "--enable-build-test-gui"
 
+DEBIAN_NOAUTONAME_${PN}-enotify = "1"
+DEBIAN_NOAUTONAME_${PN}-edbus = "1"
+DEBIAN_NOAUTONAME_${PN}-enm = "1"
+DEBIAN_NOAUTONAME_${PN}-ehal = "1"
+DEBIAN_NOAUTONAME_${PN}-test-gui = "1"
+
 PACKAGES =+ "${PN}-enotify ${PN}-edbus ${PN}-enm ${PN}-ehal ${PN}-test-gui"
 FILES_${PN}-enotify = "${libdir}/libenotify.so.*"
 FILES_${PN}-edbus = "${libdir}/libedbus.so.*"

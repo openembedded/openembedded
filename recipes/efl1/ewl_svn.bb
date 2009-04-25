@@ -18,6 +18,9 @@ EXTRA_OECONF = "\
   --disable-opengl-glew \
 "
 
+DEBIAN_NOAUTONAME_${PN}-plugins = "1"
+DEBIAN_NOAUTONAME_${PN}-engines = "1"
+
 # TODO package engines more granular
 PACKAGES += "${PN}-plugins ${PN}-engines"
 
