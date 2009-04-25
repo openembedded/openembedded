@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r12"
+PR = "r13"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -26,9 +26,6 @@ E_CONFIG_DIR="/usr/share/enlightenment/data"
 
 do_install_append() {
        	# install paroli theme
-       	#install -d ${D}${E_CONFIG_DIR}/config/illume/
-       	#install ${S}/data/module.illume.cfg ${D}${E_CONFIG_DIR}/config/illume/
-       	#install ${S}/data/e.cfg ${D}${E_CONFIG_DIR}/config/illume/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli
        	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/config/
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
@@ -38,6 +35,9 @@ do_install_append() {
 	install ${S}/data/default.edj ${D}${datadir}/elementary/themes
     	install -d ${D}/etc/enlightenment/
 	echo 'E_PROFILE="-profile illume"' > ${D}${sysconfdir}/enlightenment/default_profile
+
+    	install -d ${D}${datadir}/pixmaps	
+	install ${S}/data/paroli.png ${D}${datadir}/pixmaps
 
        	# install autostart
     	install -d ${D}${E_CONFIG_DIR}/applications/all
@@ -105,7 +105,8 @@ FILES_${PN} += " \
 	${datadir}/bin \
 	${datadir}/applications \
 	${datadir}/elementary \
-	${datadir}/paroli \	    
+	${datadir}/paroli \
+	${datadir}/pixmaps \
 	"
 
 FILES_${PN}-theme = " \
