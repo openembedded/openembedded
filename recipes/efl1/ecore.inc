@@ -10,7 +10,7 @@ inherit efl
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/ecore"
 
-PACKAGES += "\
+PACKAGES =+ "\
     ${PN}-con \
     ${PN}-config \
     ${PN}-desktop \
