@@ -2,7 +2,7 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0.042+svnr${SRCREV}"
-PR = "r7"
+PR = "r8"
 
 inherit efl
 
@@ -15,6 +15,13 @@ RRECOMMENDS_${PN} = "\
   etk-engines-x11 \
   etk-engines-software-x11-16 \
 "
+
+DEBIAN_NOAUTONAME_${PN}-engines-evas = "1"
+DEBIAN_NOAUTONAME_${PN}-engines-fb = "1"
+DEBIAN_NOAUTONAME_${PN}-engines-x11 = "1"
+DEBIAN_NOAUTONAME_${PN}-engines-gl-x11 = "1"
+DEBIAN_NOAUTONAME_${PN}-engines-software-x11 = "1"
+DEBIAN_NOAUTONAME_${PN}-engines-software-x11-16 = "1"
 
 do_compile_prepend() {
 	touch ${S}/po/etk.pot
