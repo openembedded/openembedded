@@ -4,12 +4,14 @@ LICENSE = "MIT BSD"
 # can also depend on xine for movie thumbnails
 DEPENDS = "libpng evas ecore edje perl-native"
 PV = "0.3.0.012+svnr${SRCREV}"
-PR = "r5"
+PR = "r6"
 
 inherit efl
 
 # a gstreamer thumbnailer would be nice now that we have emotion using gstreamer as well
 EXTRA_OECONF = "--disable-xine"
+
+DEBIAN_NOAUTONAME_${PN}-thumbd = "1"
 
 # package the thumb daemon seperately
 PACKAGES =+ "${PN}-thumbd"
