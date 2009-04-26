@@ -1,0 +1,39 @@
+Index: madwifi-trunk-r3837-20080802/Makefile
+===================================================================
+--- madwifi-trunk-r3837-20080802.orig/Makefile	2009-04-27 00:34:19.000000000 +0200
++++ madwifi-trunk-r3837-20080802/Makefile	2009-04-27 00:34:31.000000000 +0200
+@@ -61,7 +61,7 @@
+ 		$(MAKE) -C $$i || exit 1; \
+ 	done
+ else
+-	$(MAKE) -C $(KERNELPATH) SUBDIRS=$(shell pwd) modules
++	$(MAKE) -C $(KERNELPATH) LDFLAGS= SUBDIRS=$(shell pwd) modules
+ endif
+ 
+ $(addprefix $(obj)/, $(obj-y:/=)): $(TOP)/svnversion.h
+Index: madwifi-trunk-r3837-20080802/tools/Makefile
+===================================================================
+--- madwifi-trunk-r3837-20080802.orig/tools/Makefile	2009-04-27 00:34:19.000000000 +0200
++++ madwifi-trunk-r3837-20080802/tools/Makefile	2009-04-27 00:34:36.000000000 +0200
+@@ -55,7 +55,7 @@
+ INCS = -I. -I$(HAL) -I$(TOP) -I$(ATH_HAL)
+ CFLAGS = -g -O2 -Wall
+ ALL_CFLAGS = $(CFLAGS) $(INCS)
+-LDFLAGS =
++#LDFLAGS =
+ 
+ all: all-subdirs $(PROGRAMS)
+ 
+Index: madwifi-trunk-r3837-20080802/tools/ath_info/Makefile
+===================================================================
+--- madwifi-trunk-r3837-20080802.orig/tools/ath_info/Makefile	2009-04-27 00:34:19.000000000 +0200
++++ madwifi-trunk-r3837-20080802/tools/ath_info/Makefile	2009-04-27 00:34:40.000000000 +0200
+@@ -5,7 +5,7 @@
+ USER_CROSS_COMPILE ?= $(CROSS_COMPILE)
+ CC = $(USER_CROSS_COMPILE)gcc
+ CFLAGS = -g -O2 -W -Wall
+-LDFLAGS =
++#LDFLAGS =
+ PREFIX = /usr/local
+ BINDIR = $(PREFIX)/bin
+ MANDIR = $(PREFIX)/share/man
