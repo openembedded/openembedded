@@ -1,5 +1,5 @@
 DESCRIPTION = "Native tools for Qt/[X11|Mac|Embedded] version 4.x"
-DEPENDS = "zlib-native"
+DEPENDS = "zlib-native dbus-native"
 SECTION = "libs"
 HOMEPAGE = "http://www.trolltech.com"
 PRIORITY = "optional"
@@ -30,13 +30,14 @@ EXTRA_OECONF = "-prefix ${prefix} \
 EXTRA_OEMAKE = " "
 
 do_configure() {
-    echo yes | LFLAGS="-L${STAGING_LIBDIR_NATIVE}" ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
+   (echo o; echo yes) | LFLAGS="-L${STAGING_LIBDIR_NATIVE}" ./configure ${EXTRA_OECONF} || die "Configuring qt failed. EXTRA_OECONF was ${EXTRA_OECONF}"
 }
 
 TOBUILD = "\
   src/tools/moc \
   src/corelib \
   src/sql \
+  src/dbus \
   src/qt3support \
   src/xml \
   src/tools/uic \
@@ -46,6 +47,7 @@ TOBUILD = "\
   src/tools/uic3 \
   tools/linguist/lrelease \
   tools/linguist/lupdate \
+  tools/qdbus \
 "
 
 do_compile() {
@@ -57,7 +59,7 @@ do_compile() {
 do_stage() {
 	install -d ${STAGING_BINDIR_NATIVE}/
     install -m 0755 bin/qmake ${STAGING_BINDIR_NATIVE}/qmake2
-    for i in moc uic uic3 rcc lrelease lupdate; do
+    for i in moc uic uic3 rcc lrelease lupdate qdbuscpp2xml qdbusxml2cpp; do
         install -m 0755 bin/${i} ${STAGING_BINDIR_NATIVE}/${i}4
     done
     

@@ -1,0 +1,25 @@
+From 86c657eb50e8b28fd0438a8885810996947f7032 Mon Sep 17 00:00:00 2001
+From: Cliff Brake <cbrake@bec-systems.com>
+Date: Thu, 12 Mar 2009 14:31:56 -0400
+Subject: [PATCH] cm-x270 nand: change name of device
+
+---
+ drivers/mtd/nand/cmx270_nand.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/cmx270_nand.c b/drivers/mtd/nand/cmx270_nand.c
+index fa129c0..d456fa4 100644
+--- a/drivers/mtd/nand/cmx270_nand.c
++++ b/drivers/mtd/nand/cmx270_nand.c
+@@ -199,6 +199,8 @@ static int cmx270_init(void)
+ 	cmx270_nand_mtd->owner = THIS_MODULE;
+ 	cmx270_nand_mtd->priv = this;
+ 
++	cmx270_nand_mtd->name = "cm-x270-nand";
++
+ 	/* insert callbacks */
+ 	this->IO_ADDR_R = cmx270_nand_io;
+ 	this->IO_ADDR_W = cmx270_nand_io;
+-- 
+1.5.6.3
+

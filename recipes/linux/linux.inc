@@ -98,8 +98,11 @@ do_configure_prepend() {
             -e '/CONFIG_LOGO=/d' \
             -e '/CONFIG_LOGO_LINUX_CLUT224=/d' \
             -e '/CONFIG_LOCALVERSION/d' \
+            -e '/CONFIG_LOCALVERSION_AUTO/d' \
 	    < '${WORKDIR}/defconfig' >>'${S}/.config'
 
+        echo 'CONFIG_LOCALVERSION=""' >>${S}/.config
+        echo '# CONFIG_LOCALVERSION_AUTO is not set' >>${S}/.config
         #
         # root-over-nfs-over-usb-eth support. Limited, but should cover some cases.
         # Enable this by setting a proper CMDLINE_NFSROOT_USB.

@@ -20,6 +20,7 @@ CFLAGS += " -I. -I${STAGING_KERNEL_DIR}/include "
 do_compile() {
 	cp ${STAGING_KERNEL_DIR}/arch/arm/plat-omap/include/mach/omapfb.h ${S} || true
 	cp ${STAGING_KERNEL_DIR}/include/asm-arm/arch-omap/omapfb.h ${S} || true
+	cp ${STAGING_KERNEL_DIR}/include/linux/omapfb.h ${S} || true
 	oe_runmake -e
 }
 

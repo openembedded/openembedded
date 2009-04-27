@@ -1,10 +1,10 @@
 DESCRIPTION = "gvfs is a userspace virtual filesystem"
 LICENSE = "LGPL"
-DEPENDS = "gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf-dbus samba gphoto2"
+DEPENDS = "gawk-native gnome-keyring glib-2.0 obexftp fuse avahi fuse hal gconf-dbus samba gphoto2"
 
 inherit gnome
 
-EXTRA_OECONF = "--enable-samba  --with-archive-includes=${STAGING_INCDIR}"
+EXTRA_OECONF = "--enable-samba  --with-archive-includes=${STAGING_INCDIR} --with-samba-includes=${STAGING_INCDIR}"
 
 PACKAGES =+ "gvfsd-ftp gvfsd-sftp gvfsd-trash"
 

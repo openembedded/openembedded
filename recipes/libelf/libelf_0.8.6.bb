@@ -2,6 +2,7 @@ DESCRIPTION = "libelf is an ELF object file access library. \
 The elf library provides routines to access, and manipulate, Elf object files."
 LICENSE = "LGPL"
 SECTION = "libs"
+PR = "r1"
 
 SRC_URI = "http://www.mr511.de/software/libelf-${PV}.tar.gz \
            http://www.stud.uni-hannover.de/~michael/software/libelf-${PV}.tar.gz"
@@ -9,6 +10,8 @@ SRC_URI = "http://www.mr511.de/software/libelf-${PV}.tar.gz \
 inherit autotools
 
 PARALLEL_MAKE = ""
+
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_configure_prepend () {
 	if test ! -e acinclude.m4; then

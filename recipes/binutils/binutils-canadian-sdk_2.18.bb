@@ -2,11 +2,7 @@ SECTION = "devel"
 require binutils_${PV}.bb
 inherit canadian-sdk
 
-DEPENDS="\
-	virtual/${HOST_PREFIX}binutils \
-	virtual/${HOST_PREFIX}gcc \
-	flex-native bison-native \
-"
+DEPENDS = "flex-native bison-native"
 
 FILESDIR = "${@os.path.dirname(bb.data.getVar('FILE',d,1))}/binutils-${PV}"
 # On MinGW hosts we want to prepend a drive letter, in ${SDK_REALPATH_MINGW}

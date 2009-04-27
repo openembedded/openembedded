@@ -2,9 +2,11 @@ DESCRIPTION = "Etk is an advanced widget toolkit based on the Enlightenment Foun
 DEPENDS = "evas ecore edje"
 LICENSE = "MIT"
 PV = "0.1.0.042+svnr${SRCREV}"
-PR = "r4"
+PR = "r5"
 
 inherit efl
+
+SRC_URI += "file://mkinstalldirs"
 
 RRECOMMENDS_${PN} = "\
   etk-engines-software-x11 \
@@ -13,6 +15,12 @@ RRECOMMENDS_${PN} = "\
   etk-engines-x11 \
   etk-engines-software-x11-16 \
 "
+
+do_compile_prepend() {
+	touch ${S}/po/etk.pot
+	cp ${WORKDIR}/mkinstalldirs ${S}
+	sed -i -e 's:@MKINSTALLDIRS@:${S}/mkinstalldirs:g' ${S}/po/Makefile
+}
 
 PACKAGES += "etk-engines-software-x11"
 FILES_${PN}-engines-software-x11 = "${libdir}/etk/engines/ecore_evas_software_x11.so"

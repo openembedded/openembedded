@@ -1,7 +1,7 @@
 DESCRIPTION = "Util-linux-ng is a suite of essential utilities for any Linux system."
 SECTION = "base"
 LICENSE = "GPL"
-DEPENDS = "udev zlib ncurses e2fsprogs-libs"
+DEPENDS = "udev zlib ncurses e2fsprogs-libs virtual/libintl"
 
 inherit autotools
 

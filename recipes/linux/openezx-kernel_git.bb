@@ -1,9 +1,9 @@
 DESCRIPTION = "OpenEZX 2.6 Linux Development Kernel for the Motorola EZX GSM phones"
 AUTHOR = "The OpenEZX Team <openezx-devel@lists.openezx.org>"
 HOMEPAGE = "http://www.openezx.org"
-KV = "2.6.28+2.6.29rc8"
+KV = "2.6.29+2.6.30rc2"
 PV = "${KV}+gitr${SRCREV}"
-PR = "r0"
+PR = "r3"
 
 require linux.inc
 
@@ -17,14 +17,14 @@ SRC_URI = "\
 S = "${WORKDIR}/git"
 
 ##############################################################
-# kernel image resides on a seperate flash partition (for now)
-# But we can flash it from userspace (flash_unlock /dev/mtdX && flash_eraseall /dev/mtdX && flashcp /boot/zImage /dev/mtdX)
-# so lets make a package of it. What about a postinst that flashes the new kernel?
+# The kernel image used to reside on a seperate flash partition
+# It can be flashed from userspace, so we should package it anyways
+# (flash_unlock /dev/mtdX && flash_eraseall /dev/mtdX && flashcp /boot/zImage /dev/mtdX)
 
 COMPATIBLE_HOST = "arm.*-linux"
 COMPATIBLE_MACHINE = '(a780|e680|a910|a1200|rorkre2|rokre6)'
 
-# Kernel command line parameters are given over boot_usb or gen-blob's menu
+# The Kernel command line parameters are given via boot_usb or gen-blob
 
 ###############################################################
 # module configs specific to this kernel

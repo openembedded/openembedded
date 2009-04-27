@@ -11,13 +11,8 @@ S = "${WORKDIR}/SDL_mixer-${PV}"
 
 export SDL_CONFIG = "${STAGING_BINDIR_CROSS}/sdl-config"
 
-inherit autotools
+inherit autotools_stage
 
 EXTRA_OECONF = "--disable-music-mp3"
 # although we build smpeg... need to find out how
 # to deal with optional dependencies
-
-do_stage() {
-	autotools_stage_all
-}
-

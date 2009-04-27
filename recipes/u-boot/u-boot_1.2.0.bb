@@ -14,7 +14,7 @@ SRC_URI_append_lsppchd = "file://u-boot-kurobox.patch;patch=1 \
                           file://u-boot-kurobox-fdt.patch;patch=1 \ 
                           file://defconfig_lsppchg"
 
-SRC_URI_append_dm355-leopard = "file://dm355-leopard.diff"
+SRC_URI_append_dm355-leopard = " file://dm355-leopard.diff;patch=1"
 
 do_compile_prepend_lsppchg () {
         cp ${WORKDIR}/defconfig_lsppchg ${S}/include/configs/linkstation.h

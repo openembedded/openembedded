@@ -7,6 +7,7 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_overo = "1"
+DEFAULT_PREFERENCE_beagleboard = "1"
 
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
@@ -51,6 +52,29 @@ SRC_URI_append = " \
            file://dss2/0028-DSS2-OMAPFB-Added-support-for-the-YUV-VRFB-rotatio.patch;patch=1 \
            file://dss2/0029-DSS2-OMAPFB-Set-line_length-correctly-for-YUV-with.patch;patch=1 \
            file://dss2/0030-DSS2-dispc_get_trans_key-was-returning-wrong-key-ty.patch;patch=1 \
+           file://dss2/0031-DSS2-do-bootmem-reserve-for-exclusive-access.patch;patch=1 \
+           file://dss2/0032-DSS2-Fix-DISPC_VID_FIR-value-for-omap34xx.patch;patch=1 \
+           file://dss2/0033-DSS2-Prefer-3-tap-filter.patch;patch=1 \
+           file://dss2/0034-DSS2-VRAM-improve-omap_vram_add_region.patch;patch=1 \
+           file://dss2/0035-DSS2-Added-the-function-pointer-for-getting-default.patch;patch=1 \
+           file://dss2/0036-DSS2-Added-support-for-setting-and-querying-alpha-b.patch;patch=1 \
+           file://dss2/0037-DSS2-Added-support-for-querying-color-keying.patch;patch=1 \
+           file://dss2/0038-DSS2-OMAPFB-Some-color-keying-pointerd-renamed-in-D.patch;patch=1 \
+           file://dss2/0039-DSS2-Add-sysfs-entry-to-for-the-alpha-blending-supp.patch;patch=1 \
+           file://dss2/0040-DSS2-Provided-proper-exclusion-for-destination-colo.patch;patch=1 \
+           file://dss2/0041-DSS2-Disable-vertical-offset-with-fieldmode.patch;patch=1 \
+           file://dss2/0042-DSS2-Don-t-enable-fieldmode-automatically.patch;patch=1 \
+           file://dss2/0043-DSS2-Swap-field-0-and-field-1-registers.patch;patch=1 \
+           file://dss2/0044-DSS2-add-sysfs-entry-for-seting-the-rotate-type.patch;patch=1 \
+           file://dss2/0045-DSS2-Fixed-line-endings-from-to.patch;patch=1 \
+           file://dss2/0046-DSS2-DSI-decrease-sync-timeout-from-60s-to-2s.patch;patch=1 \
+           file://dss2/0047-DSS2-fix-return-value-for-rotate_type-sysfs-functio.patch;patch=1 \
+           file://dss2/0048-OMAP2-3-DMA-implement-trans-copy-and-const-fill.patch;patch=1 \
+           file://dss2/0049-DSS2-VRAM-clear-allocated-area-with-DMA.patch;patch=1 \
+           file://dss2/0050-DSS2-OMAPFB-remove-fb-clearing-code.patch;patch=1 \
+           file://dss2/0051-DSS2-VRAM-use-debugfs-not-procfs.patch;patch=1 \
+           file://dss2/0052-DSS2-VRAM-fix-section-mismatch-warning.patch;patch=1 \
+           file://dss2/0053-DSS2-disable-LCD-DIGIT-before-resetting-DSS.patch;patch=1 \
            file://0001-board-ldp-add-regulator-info-to-get-the-microSD-slo.patch;patch=1 \
            file://fix-unaligned-access.diff;patch=1 \
            file://make-alignment-visible.diff;patch=1 \

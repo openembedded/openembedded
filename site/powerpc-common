@@ -36,6 +36,7 @@ ac_cv_time_r_type=${ac_cv_time_r_type=POSIX}
 cookie_io_functions_use_off64_t=${cookie_io_functions_use_off64_t=yes}
 ac_cv_va_copy=${ac_cv_va_copy=yes}
 ac_cv___va_copy=${ac_cv___va_copy=yes}
+ac_cv_va_val_copy=${ac_cv_va_val_copy=no}
 
 # apache
 ac_cv_func_pthread_key_delete=${ac_cv_func_pthread_key_delete=yes}

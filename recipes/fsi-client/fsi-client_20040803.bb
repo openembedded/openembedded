@@ -10,7 +10,7 @@ S = "${WORKDIR}/client"
 FILES_${PN} += "${libdir}/libfsiclient.so"
 
 do_compile() {
-	oe_runmake all examples
+	oe_runmake all examples CC="${CC} ${LDFLAGS}"
 }
 
 do_install() {
@@ -19,4 +19,3 @@ do_install() {
 	install libfsiclient.so ${D}${libdir}
 	install fsidumpraw fsidumppgm ${D}${bindir}
 }
-

@@ -1,0 +1,153 @@
+---
+ genext2fs.c |   26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
+
+--- genext2fs-1.4.1.orig/genext2fs.c
++++ genext2fs-1.4.1/genext2fs.c
+@@ -507,11 +507,13 @@ swab32(uint32 val)
+ #define utdecl32(x,n) uint32 x[n];
+ 
+ typedef struct
+ {
+ 	superblock_decl
+-	uint32 s_reserved[235];       // Reserved
++	uint32  s_reserved1[9];
++	char s_volume[16];
++	uint32 s_reserved2[222];       // Reserved
+ } superblock;
+ 
+ typedef struct
+ {
+ 	groupdescriptor_decl
+@@ -1219,11 +1221,11 @@ extend_blk(filesystem *fs, uint32 nod, b
+ 			lbw = bw;
+ 		bw = lbw;
+ 		while(create)
+ 		{
+ 			int i, copyb = 0;
+-			if(!(fs->sb.s_reserved[200] & OP_HOLES))
++			if(!(fs->sb.s_reserved2[187] & OP_HOLES))
+ 				copyb = 1;
+ 			else
+ 				for(i = 0; i < BLOCKSIZE / 4; i++)
+ 					if(((int32*)(b + BLOCKSIZE * (amount - create)))[i])
+ 					{
+@@ -1891,11 +1893,12 @@ swap_badfs(filesystem *fs)
+ 	}
+ }
+ 
+ // initialize an empty filesystem
+ static filesystem *
+-init_fs(int nbblocks, int nbinodes, int nbresrvd, int holes, uint32 fs_timestamp)
++init_fs(int nbblocks, int nbinodes, int nbresrvd, int holes,
++		uint32 fs_timestamp, char *volumeid)
+ {
+ 	uint32 i;
+ 	filesystem *fs;
+ 	directory *d;
+ 	uint8 * b;
+@@ -1956,10 +1959,13 @@ init_fs(int nbblocks, int nbinodes, int 
+ 	fs->sb.s_inodes_per_group = nbinodes_per_group;
+ 	fs->sb.s_wtime = fs_timestamp;
+ 	fs->sb.s_magic = EXT2_MAGIC_NUMBER;
+ 	fs->sb.s_lastcheck = fs_timestamp;
+ 
++	if (volumeid != NULL)
++		strncpy(fs->sb.s_volume, volumeid, sizeof(fs->sb.s_volume));
++
+ 	// set up groupdescriptors
+ 	for(i=0, bbmpos=gdsz+2, ibmpos=bbmpos+1, itblpos=ibmpos+1;
+ 		i<nbgroups;
+ 		i++, bbmpos+=nbblocks_per_group, ibmpos+=nbblocks_per_group, itblpos+=nbblocks_per_group)
+ 	{
+@@ -2055,11 +2061,11 @@ init_fs(int nbblocks, int nbinodes, int 
+ 	fs->sb.s_state = 1;
+ 	fs->sb.s_max_mnt_count = 20;
+ 
+ 	// options for me
+ 	if(holes)
+-		fs->sb.s_reserved[200] |= OP_HOLES;
++		fs->sb.s_reserved2[187] |= OP_HOLES;
+ 	
+ 	return fs;
+ }
+ 
+ // loads a filesystem from disk
+@@ -2351,11 +2357,11 @@ print_fs(filesystem *fs)
+ 
+ static void
+ dump_fs(filesystem *fs, FILE * fh, int swapit)
+ {
+ 	uint32 nbblocks = fs->sb.s_blocks_count;
+-	fs->sb.s_reserved[200] = 0;
++	fs->sb.s_reserved2[187] = 0;
+ 	if(swapit)
+ 		swap_goodfs(fs);
+ 	if(fwrite(fs, BLOCKSIZE, nbblocks, fh) < nbblocks)
+ 		perror_msg_and_die("output filesystem image");
+ 	if(swapit)
+@@ -2465,10 +2471,11 @@ main(int argc, char **argv)
+ 	int squash_uids = 0;
+ 	int squash_perms = 0;
+ 	uint16 endian = 1;
+ 	int bigendian = !*(char*)&endian;
+ 	filesystem *fs;
++	char *volumeid = NULL;
+ 	int i;
+ 	int c;
+ 	struct stats stats;
+ 
+ #if HAVE_GETOPT_LONG
+@@ -2477,10 +2484,11 @@ main(int argc, char **argv)
+ 	  { "root",		required_argument,	NULL, 'd' },
+ 	  { "devtable",		required_argument,	NULL, 'D' },
+ 	  { "size-in-blocks",	required_argument,	NULL, 'b' },
+ 	  { "bytes-per-inode",	required_argument,	NULL, 'i' },
+ 	  { "number-of-inodes",	required_argument,	NULL, 'N' },
++	  { "volume-id",	required_argument,	NULL, 'L' },
+ 	  { "reserved-percentage", required_argument,	NULL, 'm' },
+ 	  { "block-map",	required_argument,	NULL, 'g' },
+ 	  { "fill-value",	required_argument,	NULL, 'e' },
+ 	  { "allow-holes",	no_argument, 		NULL, 'z' },
+ 	  { "faketime",		no_argument,		NULL, 'f' },
+@@ -2493,11 +2501,11 @@ main(int argc, char **argv)
+ 	  { 0, 0, 0, 0}
+ 	} ;
+ 
+ 	app_name = argv[0];
+ 
+-	while((c = getopt_long(argc, argv, "x:d:D:b:i:N:m:g:e:zfqUPhVv", longopts, NULL)) != EOF) {
++	while((c = getopt_long(argc, argv, "x:d:D:b:i:N:L:m:g:e:zfqUPhVv", longopts, NULL)) != EOF) {
+ #else
+ 	app_name = argv[0];
+ 
+ 	while((c = getopt(argc, argv,      "x:d:D:b:i:N:m:g:e:zfqUPhVv")) != EOF) {
+ #endif /* HAVE_GETOPT_LONG */
+@@ -2517,10 +2525,13 @@ main(int argc, char **argv)
+ 				bytes_per_inode = SI_atof(optarg);
+ 				break;
+ 			case 'N':
+ 				nbinodes = SI_atof(optarg);
+ 				break;
++			case 'L':
++				volumeid = optarg;
++				break;
+ 			case 'm':
+ 				reserved_frac = SI_atof(optarg) / 100;
+ 				break;
+ 			case 'g':
+ 				gopt[gidx++] = optarg;
+@@ -2607,11 +2618,12 @@ main(int argc, char **argv)
+ 			if(tmp_nbinodes > nbinodes)
+ 				nbinodes = tmp_nbinodes;
+ 		}
+ 		if(fs_timestamp == -1)
+ 			fs_timestamp = time(NULL);
+-		fs = init_fs(nbblocks, nbinodes, nbresrvd, holes, fs_timestamp);
++		fs = init_fs(nbblocks, nbinodes, nbresrvd, holes,
++				fs_timestamp, volumeid);
+ 	}
+ 	
+ 	populate_fs(fs, dopt, didx, squash_uids, squash_perms, fs_timestamp, NULL);
+ 
+ 	if(emptyval) {

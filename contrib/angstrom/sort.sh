@@ -46,15 +46,15 @@ case "$arch" in
 	"arm-oabi")
 			machines="h3600 h3800 collie simpad htcwallaby" ;;
 	"armv4t")
-			machines="ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
+			machines="micro2440 ep93xx h6300 om-gta01 om-gta02 fic-gta01 fic-gta02" ;;
 	"armv5te")
-			machines="sheevaplug dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
+			machines="topas910 sheevaplug dm355-leopard n2100 dns323 mv2120 kuropro lspro tsx09 ts409 davinci-dvevm davinci-sffsdr neuros-osd neuros-osd2 gumstix-connex gumstix-verdex gumstix e680 a780 a1200 at91sam9263ek rokre6 rokre2 rokr-e2 akita c7x0 h2200 h3900 h4000 h5000 htcapache htctornado htcblueangel htcuniversal hx4700 nslu2le hx2000 ixp4xxle magician netbook-pro nokia770 palmt650 palmt680 palmld palmtx palmtt3 palmz72 qemuarm omap5912osk poodle spitz tosa" ;;
 	"armv5teb")
 			machines="ixp4xxbe nslu2be" ;;
 	"armv6-novfp")
 			machines="htcdiamond htckaiser htcpolaris htcraphael htcvogue" ;;	
 	"armv6")	
-			machines="mx31ads nokia800 " ;;
+			machines="bug mx31ads nokia800 " ;;
 	"armv7")
 			machines="" ;;
 	"armv7a")
@@ -149,6 +149,8 @@ cd ${BPWD}
 echo "Processing 'all' feed"
 for i in `find . -name  "*.ipk"| grep _all` ; do mkdir -p ../all/ || true ;mv $i ../all/ ; done
  (mkdir -p ../all ; cd ../all && ipkg-make-index -p Packages -m . >& /dev/null ; touch Packages.sig )  
+
+rm *x86_64*
 
 for arch in arm-oabi armv4t armv5teb armv5te armv6-novfp armv6 armv7a armv7 avr32 bfin geode i486 i586 i686 iwmmxt ppc405 ppc603e sparc ; do 
 	do_sort

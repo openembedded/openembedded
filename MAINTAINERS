@@ -145,12 +145,12 @@ Interests:  wifi, kernels, emulation, qemu, git
 Recipes:    linux-jlime*, scummvm, blackbox
 
 Person:     Leon Woestenberg
-Mail:       leonw@mailcan.com
+Mail:       leon@sidebranch.com
 Website:    http://www.sidebranch.com/
-Interests:  Real-time embedded Linux for highly available applications.
+Interests:  Real-time and/or embedded Linux for industrial applications.
 Interests:  Small read-only Linux based firmware, deterministic builds.
-Recipes:    lighttpd, fastcgi
-Machines:   mpc8313e-rdb, efika, ixp4xxbe, x86, davinci-dvevm
+Recipes:    lighttpd, fastcgi, squashfs-tools, rt-tests, linux-rt, linux
+Machines:   mpc8313e-rdb, mpc8315e-rdb, efika, ixp4xxbe, x86, canyonlands
 
 Person:	    Liam Girdwoord
 Mail:       liam.girdwood@wolfsonmicro.com

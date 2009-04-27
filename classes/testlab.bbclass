@@ -22,7 +22,7 @@
 # Needs 'dot', 'opkg-cl'
 
 do_testlab() {
-if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] ; then
+if [ -e  ${IMAGE_ROOTFS}/etc/opkg ] && [ "${ONLINE_PACKAGE_MANAGEMENT}" = "full" ] ; then
 
 	TESTLAB_DIR="${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-testlab"
         mkdir -p ${TESTLAB_DIR}/

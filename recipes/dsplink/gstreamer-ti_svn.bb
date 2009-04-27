@@ -2,7 +2,7 @@ DEPENDS = "ti-codec-engine ti-dmai gstreamer gst-plugins-base gst-plugins-good g
 
 SRC_URI = "svn://gforge.ti.com/svn/gstreamer_ti/trunk;module=gstreamer_ti;proto=https;user=anonymous;pswd='' \
           "
-SRCREV = "177"
+SRCREV = "189"
 
 PR = "${MACHINE_KERNEL_PR}"
 
