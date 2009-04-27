@@ -53,7 +53,7 @@ zaurus_make_installkit () {
 
 	cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
  
-	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-/
+	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-${MACHINE}/
 	md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5
 	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/     
 
