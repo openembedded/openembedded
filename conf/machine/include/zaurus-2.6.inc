@@ -44,32 +44,19 @@ KERNEL_IMAGETYPE = "${ZAURUS_KERNEL_IMAGETYPE}"
 MACHINE_POSTPROCESS_COMMAND = "zaurus_make_installkit"
 
 zaurus_make_installkit () {
-    cd ${DEPLOY_DIR_IMAGE}
-    rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/         
-    mkdir ${IMAGE_NAME}-installkit/
 
-    # Get the latest kernel using the ${KERNEL_IMAGETYPE}-<machine>.bin symlink
-    if [ "${@base_contains('MACHINE_FEATURES', 'kexecboot', 'true', 'false',d)}" = "true" ]; then
-	    [ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin ${IMAGE_NAME}-installkit/${KERNEL_IMAGETYPE}
-	    # we need also tgz for mmc or cf cards
-	    cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/image.tgz
-    else
-	    cp ${KERNEL_IMAGETYPE}-${MACHINE}.bin ${IMAGE_NAME}-installkit/${KERNEL_IMAGETYPE}
-    fi
+	cd ${DEPLOY_DIR_IMAGE}
+	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/         
+	mkdir installkit-${MACHINE}/
 
-    if [ "${MACHINE}" = "spitz" ]; then
-        cp gnu-tar ${IMAGE_NAME}-installkit/
-        cp ${IMAGE_NAME}.rootfs.tar.gz ${IMAGE_NAME}-installkit/hdimage1.tgz
-    else
-        [ -f ${IMAGE_NAME}.rootfs.jffs2 ] && cp ${IMAGE_NAME}.rootfs.jffs2 ${IMAGE_NAME}-installkit/initrd.bin
-    fi
+	[ -f "${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin" ] && cp ${KERNEL_IMAGETYPE}-kexecboot-${MACHINE}.bin installkit-${MACHINE}/${KERNEL_IMAGETYPE}
 
-    cp updater.sh.${MACHINE} ${IMAGE_NAME}-installkit/updater.sh
-   
+	cp updater.sh.${MACHINE} installkit-${MACHINE}/updater.sh
  
-    tar czf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz ${IMAGE_NAME}-installkit/
-    md5sum ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz > ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit.tgz.md5
-    rm -rf ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}-installkit/     
+	tar czf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz installkit-/
+	md5sum ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz > ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}.tar.gz.md5
+	rm -rf ${DEPLOY_DIR_IMAGE}/installkit-${MACHINE}/     
+
 }
 
 require conf/machine/include/kexecboot.inc
