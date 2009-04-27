@@ -1,4 +1,5 @@
 require gcc-common.inc
+LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 

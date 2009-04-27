@@ -3,6 +3,7 @@ DEFAULT_PREFERENCE = "-99"
 ARM_INSTRUCTION_SET = "arm"
 
 require gcc-common.inc
+LICENSE = "GPLv3"
 
 DEPENDS = "mpfr gmp"
 
