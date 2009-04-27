@@ -3,6 +3,8 @@ HOMEPAGE = "http://www.linphone.org/?lang=us"
 SECTION = "x11/utils"
 LICENSE = "GPLv2"
 
+PR = "r1"
+
 DEPENDS = "intltool libosip2 speex libogg alsa-lib readline libexosip2"
 DEPENDS_${PN} = "liblinphone"
 DEPENDS_${PN}c = "liblinphone readline"
@@ -20,6 +22,7 @@ PROVIDES += "linphone linphonec liblinphone"
 
 SRC_URI = "http://download.savannah.nongnu.org/releases/linphone/3.1.x/sources/linphone-${PV}.tar.gz \
 	file://b64_assert.patch;patch=1 \
+	file://preferences-segv.patch;patch=1 \
 	"
 
 S = "${WORKDIR}/linphone-${PV}"
