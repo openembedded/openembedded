@@ -1,0 +1,13 @@
+diff -c -r patcher_original/zenity-2.20.1/src/Makefile.am zenity-2.20.1/src/Makefile.am
+*** patcher_original/zenity-2.20.1/src/Makefile.am	Mon Nov 26 22:57:40 2007
+--- zenity-2.20.1/src/Makefile.am	Thu Apr  2 00:31:39 2009
+***************
+*** 21,27 ****
+  	zenity.h
+  
+  zenity_CPPFLAGS = \
+- 	-I$(includedir)					\
+  	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+  	-DZENITY_DATADIR=\""$(pkgdatadir)"\"		\
+  	$(AM_CPPFLAGS)
+--- 21,26 ----
