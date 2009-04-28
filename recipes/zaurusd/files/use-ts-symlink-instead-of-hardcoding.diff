@@ -1,0 +1,88 @@
+--- /tmp/mach-akita-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-akita-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
+--- /tmp/mach-borzoi-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-borzoi-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
+--- /tmp/mach-corgi-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-corgi-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
+--- /tmp/mach-husky-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-husky-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
+--- /tmp/mach-poodle-vars	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-poodle-vars	2009-04-28 16:40:06.000000000 +0200
+@@ -4,6 +4,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ #TSKEYS_CONF=@appconfdir@/tskeys/zaurus-clamshell.conf
+-#TSKEYS_DEVICE=/dev/input/event1
++#TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/poodle-default.state
+\ No newline at end of file
+--- /tmp/mach-shepherd-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-shepherd-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-c7x0.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/c7x0-default.state
+\ No newline at end of file
+--- /tmp/mach-spitz-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-spitz-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -5,6 +5,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ TSKEYS_CONF=@appconfdir@/tskeys/zaurus-cxx00.conf
+-TSKEYS_DEVICE=/dev/input/event1
++TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/cxx00-default.state
+\ No newline at end of file
+--- /tmp/mach-tosa-vars.in	2009-04-28 16:39:58.000000000 +0200
++++ zaurusd/config/mach-config/mach-tosa-vars.in	2009-04-28 16:40:06.000000000 +0200
+@@ -4,6 +4,6 @@
+ SWITCH_EVENT_DEVICE=/dev/input/event0
+ 
+ #TSKEYS_CONF=@appconfdir@/tskeys/zaurus-clamshell.conf
+-#TSKEYS_DEVICE=/dev/input/event1
++#TSKEYS_DEVICE=/dev/input/touchscreen0
+ 
+ ALSA_MIXER_INIT=@appconfdir@/alsa/6000x-default.state
+\ No newline at end of file
