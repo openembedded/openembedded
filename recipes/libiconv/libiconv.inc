@@ -4,7 +4,6 @@ HOMEPAGE = "http://www.gnu.org/software/libiconv"
 SECTION = "libs"
 PRIORITY = "optional"
 NOTES = "Needs to be stripped down to: ascii iso8859-1 eucjp iso-2022jp gb utf8"
-LICENSE = "LGPL"
 
 SRC_URI = "ftp://ftp.gnu.org/pub/gnu/libiconv/libiconv-${PV}.tar.gz \
 	   file://autotools.patch;patch=1 \
