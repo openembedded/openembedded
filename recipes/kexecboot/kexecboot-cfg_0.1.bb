@@ -21,7 +21,7 @@ FILES_${PN} += "/boot/*"
 
 
 do_install_prepend () {
-	echo "DEFAULT" > ${S}/boot.cfg
+        echo "DEFAULT=${DISTRO}" > ${S}/boot.cfg
         echo "LABEL=${DISTRO}" >> ${S}/boot.cfg
         echo "KERNEL=/boot/${KERNEL_IMAGETYPE}" >> ${S}/boot.cfg
         echo "APPEND=${CMDLINE_CON} ${CMDLINE_MEM} ${CMDLINE_ROTATE} ${CMDLINE_OTHER} ${CMDLINE_DEBUG}" >> ${S}/boot.cfg

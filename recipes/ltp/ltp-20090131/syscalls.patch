@@ -1,0 +1,317 @@
+--- ltp-full-20090131.orig/testcases/kernel/include/i386.in	2008-11-25 23:02:31.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/include/i386.in	2009-02-04 09:49:26.000000000 +0900
+@@ -40,3 +40,9 @@ __NR_eventfd 323
+ __NR_fallocate 324
+ __NR_timerfd_settime 325
+ __NR_timerfd_gettime 326
++__NR_signalfd4 327
++__NR_eventfd2 328
++__NR_epoll_create2 329
++__NR_dup3 330
++__NR_pipe2 331
++__NR_inotify_init1 332
+--- ltp-full-20090131.orig/testcases/kernel/include/regen.sh	2008-11-13 04:18:27.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/include/regen.sh	2009-02-04 10:05:46.000000000 +0900
+@@ -20,6 +20,7 @@ cat << EOF > ${output}
+ #ifndef __LINUX_SYSCALL_NUMBERS_H__
+ #define __LINUX_SYSCALL_NUMBERS_H__
+ 
++#include <errno.h>
+ #include <sys/syscall.h>
+ 
+ static void cleanup(void);
+--- ltp-full-20090131.orig/testcases/kernel/include/x86_64.in	2008-11-19 19:34:37.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/include/x86_64.in	2009-02-04 09:49:26.000000000 +0900
+@@ -27,3 +27,9 @@ __NR_eventfd 284
+ __NR_fallocate 285
+ __NR_timerfd_settime 286
+ __NR_timerfd_gettime 287
++__NR_signalfd4 289
++__NR_eventfd2 290
++__NR_epoll_create2 291
++__NR_dup3 292
++__NR_pipe2 293
++__NR_inotify_init1 294
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/dup3/dup3_01.c	2009-01-16 19:16:53.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/dup3/dup3_01.c	2009-02-04 10:45:38.000000000 +0900
+@@ -60,21 +60,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_dup3
+-# ifdef __x86_64__
+-#  define __NR_dup3 292
+-# elif defined __i386__
+-#  define __NR_dup3 330
+-# else
+-#  error "need __NR_dup3"
+-# endif
+-#endif
+-
+ /* Extern Global Variables */
+ extern int  Tst_count;               /* counter for tst_xxx routines.         */
+ extern char *TESTDIR;                /* temporary dir created by tst_tmpdir() */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/epoll_create2/epoll_create2_01.c	2009-01-16 19:14:35.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/epoll_create2/epoll_create2_01.c	2009-02-04 10:45:52.000000000 +0900
+@@ -62,16 +62,7 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+-
+-#ifndef __NR_epoll_create2
+-# ifdef __x86_64__
+-#  define __NR_epoll_create2 291
+-# elif defined __i386__
+-#  define __NR_epoll_create2 329
+-# else
+-#  error "need __NR_epoll_create2"
+-# endif
+-#endif
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/eventfd2/eventfd2_01.c	2009-01-16 19:10:17.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/eventfd2/eventfd2_01.c	2009-02-04 10:46:08.000000000 +0900
+@@ -61,21 +61,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_eventfd2
+-# ifdef __x86_64__
+-#  define __NR_eventfd2 290
+-# elif defined __i386__
+-#  define __NR_eventfd2 328
+-# else
+-#  error "need __NR_eventfd2"
+-# endif
+-#endif
+-
+ #define EFD_CLOEXEC O_CLOEXEC
+ 
+ /* Extern Global Variables */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/eventfd2/eventfd2_02.c	2009-01-16 19:31:43.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/eventfd2/eventfd2_02.c	2009-02-04 10:46:19.000000000 +0900
+@@ -58,21 +58,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_eventfd2
+-# ifdef __x86_64__
+-#  define __NR_eventfd2 290
+-# elif defined __i386__
+-#  define __NR_eventfd2 328
+-# else
+-#  error "need __NR_eventfd2"
+-# endif
+-#endif
+-
+ #define EFD_NONBLOCK O_NONBLOCK
+ 
+ /* Extern Global Variables */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c	2009-01-16 19:21:40.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/inotify_init/inotify_init1_01.c	2009-02-04 10:46:28.000000000 +0900
+@@ -61,20 +61,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_inotify_init1
+-# ifdef __x86_64__
+-#  define __NR_inotify_init1 294
+-# elif defined __i386__
+-#  define __NR_inotify_init1 332
+-# else
+-#  error "need __NR_inotify_init1"
+-# endif
+-#endif
+ #define IN_CLOEXEC O_CLOEXEC
+ 
+ /* Extern Global Variables */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c	2009-01-16 19:36:22.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/inotify_init/inotify_init1_02.c	2009-02-04 10:46:39.000000000 +0900
+@@ -58,21 +58,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_inotify_init1
+-# ifdef __x86_64__
+-#  define __NR_inotify_init1 294
+-# elif defined __i386__
+-#  define __NR_inotify_init1 332
+-# else
+-#  error "need __NR_inotify_init1"
+-# endif
+-#endif
+-
+ #define IN_NONBLOCK O_NONBLOCK
+ 
+ /* Extern Global Variables */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/pipe2/pipe2_01.c	2009-01-16 19:18:58.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/pipe2/pipe2_01.c	2009-02-04 10:46:48.000000000 +0900
+@@ -69,21 +69,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_pipe2
+-# ifdef __x86_64__
+-#  define __NR_pipe2 293
+-# elif defined __i386__
+-#  define __NR_pipe2 331
+-# else
+-#  error "need __NR_pipe2"
+-# endif
+-#endif
+-
+ /* Extern Global Variables */
+ extern int  Tst_count;               /* counter for tst_xxx routines.         */
+ extern char *TESTDIR;                /* temporary dir created by tst_tmpdir() */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/pipe2/pipe2_02.c	2009-01-16 19:34:52.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/pipe2/pipe2_02.c	2009-02-04 10:46:58.000000000 +0900
+@@ -60,21 +60,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_pipe2
+-# ifdef __x86_64__
+-#  define __NR_pipe2 293
+-# elif defined __i386__
+-#  define __NR_pipe2 331
+-# else
+-#  error "need __NR_pipe2"
+-# endif
+-#endif
+-
+ /* Extern Global Variables */
+ extern int  Tst_count;               /* counter for tst_xxx routines.         */
+ extern char *TESTDIR;                /* temporary dir created by tst_tmpdir() */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/signalfd4/signalfd4_01.c	2009-01-16 19:07:56.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/signalfd4/signalfd4_01.c	2009-02-04 10:47:08.000000000 +0900
+@@ -63,20 +63,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_signalfd4
+-# ifdef __x86_64__
+-#  define __NR_signalfd4 289
+-# elif defined __i386__
+-#  define __NR_signalfd4 327
+-# else
+-#  error "need __NR_signalfd4"
+-# endif
+-#endif
+ #define SFD_CLOEXEC O_CLOEXEC
+ 
+ /* Extern Global Variables */
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/signalfd4/signalfd4_02.c	2009-01-16 19:29:50.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/signalfd4/signalfd4_02.c	2009-02-04 10:47:19.000000000 +0900
+@@ -59,16 +59,7 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+-
+-#ifndef __NR_signalfd4
+-# ifdef __x86_64__
+-#  define __NR_signalfd4 289
+-# elif defined __i386__
+-#  define __NR_signalfd4 327
+-# else
+-#  error "need __NR_signalfd4"
+-# endif
+-#endif
++#include "linux_syscall_numbers.h"
+ 
+ #define SFD_NONBLOCK O_NONBLOCK
+ 
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/timerfd/timerfd02.c	2009-01-16 19:12:03.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/timerfd/timerfd02.c	2009-02-04 10:47:29.000000000 +0900
+@@ -63,16 +63,7 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+-
+-#ifndef __NR_timerfd_create
+-# ifdef __x86_64__
+-#  define __NR_timerfd_create 283
+-# elif defined __i386__
+-#  define __NR_timerfd_create 322
+-# else
+-#  error "need __NR_timerfd_create"
+-# endif
+-#endif
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+--- ltp-full-20090131.orig/testcases/kernel/syscalls/timerfd/timerfd03.c	2009-01-16 19:33:26.000000000 +0900
++++ ltp-full-20090131.modified/testcases/kernel/syscalls/timerfd/timerfd03.c	2009-02-04 10:47:40.000000000 +0900
+@@ -59,21 +59,12 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
++#include "linux_syscall_numbers.h"
+ 
+ #ifndef O_CLOEXEC
+ # define O_CLOEXEC 02000000
+ #endif
+ 
+-#ifndef __NR_timerfd_create
+-# ifdef __x86_64__
+-#  define __NR_timerfd_create 283
+-# elif defined __i386__
+-#  define __NR_timerfd_create 322
+-# else
+-#  error "need __NR_timerfd_create"
+-# endif
+-#endif
+-
+ #define TFD_NONBLOCK O_NONBLOCK
+ 
+ /* Extern Global Variables */
