@@ -1,6 +1,7 @@
 PR = "r1"
 
 require binutils.inc
+LICENSE = "GPLv3"
 
 SRC_URI = "\
      ${KERNELORG_MIRROR}/pub/linux/devel/binutils/binutils-${PV}.tar.bz2 \

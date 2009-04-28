@@ -1,4 +1,5 @@
 SECTION = "devel"
+LICENSE = "GPL"
 inherit autotools gettext
 
 PR = "r5"

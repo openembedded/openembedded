@@ -1,6 +1,7 @@
 PR = "r5"
 
 require binutils.inc
+LICENSE = "GPLv3"
 
 SRC_URI = "\
      ${GNU_MIRROR}/binutils/binutils-${PV}.tar.bz2 \
