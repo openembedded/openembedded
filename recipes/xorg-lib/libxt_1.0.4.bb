@@ -9,10 +9,6 @@ PROVIDES = "xt"
 
 XORG_PN = "libXt"
 
-SRC_URI += "file://pr10970-header-fix.patch;patch=1"
-
-PR = "r1"
-
 EXTRA_OECONF="--enable-malloc0returnsnull --disable-install-makestrs --disable-xkb"
 
 do_compile() {

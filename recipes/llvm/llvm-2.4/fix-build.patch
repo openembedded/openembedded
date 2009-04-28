@@ -1,0 +1,79 @@
+Index: llvm-2.4/Makefile.rules
+===================================================================
+--- llvm-2.4.orig/Makefile.rules	2008-10-03 23:24:52.000000000 +0200
++++ llvm-2.4/Makefile.rules	2009-01-24 09:59:20.000000000 +0100
+@@ -234,9 +234,10 @@
+       EXTRA_OPTIONS += -fstrict-aliasing -Wstrict-aliasing
+     endif
+ 
+-    CXX.Flags += $(OPTIMIZE_OPTION) $(OmitFramePointer)
+-    C.Flags   += $(OPTIMIZE_OPTION) $(OmitFramePointer)
+-    LD.Flags  += $(OPTIMIZE_OPTION)
++#    OE: Do not interfere with flags given by OE
++#    CXX.Flags += $(OPTIMIZE_OPTION) $(OmitFramePointer)
++#    C.Flags   += $(OPTIMIZE_OPTION) $(OmitFramePointer)
++#    LD.Flags  += $(OPTIMIZE_OPTION)
+   else
+     BuildMode := Debug
+     CXX.Flags += -g
+@@ -309,11 +310,7 @@
+ #--------------------------------------------------------------------
+ TargetMode :=
+ ifeq ($(LLVM_CROSS_COMPILING),1)
+-  ifeq ($(BUILD_COMPONENT),1)
+-    TargetMode := Build
+-  else
+-    TargetMode := Host
+-  endif
++  TargetMode := Host
+   BuildLLVMToolDir := $(LLVM_OBJ_ROOT)/$(BuildMode)/Build/bin
+ endif
+ 
+@@ -436,7 +433,7 @@
+ ifdef EXAMPLE_TOOL
+   LD.Flags += -rpath $(ExmplDir) -export-dynamic
+ else
+-  LD.Flags += -rpath $(ToolDir) -export-dynamic
++  LD.Flags += -export-dynamic
+ endif
+ endif
+ 
+Index: llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp
+===================================================================
+--- llvm-2.4.orig/lib/ExecutionEngine/JIT/JIT.cpp	2008-09-24 18:25:55.000000000 +0200
++++ llvm-2.4/lib/ExecutionEngine/JIT/JIT.cpp	2009-01-23 15:10:03.000000000 +0100
+@@ -65,7 +65,7 @@
+ }
+ 
+ 
+-#if defined (__GNUC__)
++#if defined (__GNUC__) && ! defined (__ARM_EABI__)
+  
+ // libgcc defines the __register_frame function to dynamically register new
+ // dwarf frames for exception handling. This functionality is not portable
+@@ -225,7 +225,7 @@
+   }
+   
+   // Register routine for informing unwinding runtime about new EH frames
+-#if defined(__GNUC__)
++#if defined(__GNUC__) && ! defined(__ARM_EABI__)
+ #if defined(__APPLE__)
+   struct LibgccObjectInfo* LOI = (struct LibgccObjectInfo*)
+     _keymgr_get_and_lock_processwide_ptr(KEYMGR_GCC3_DW2_OBJ_LIST);
+Index: llvm-2.4/Makefile
+===================================================================
+--- llvm-2.4.orig/Makefile	2008-10-03 00:56:44.000000000 +0200
++++ llvm-2.4/Makefile	2009-01-23 15:10:33.000000000 +0100
+@@ -27,9 +27,9 @@
+ 
+ # When cross-compiling, there are some things (tablegen) that need to
+ # be build for the build system.
+-ifeq ($(LLVM_CROSS_COMPILING),1)
+-  BUILD_TARGET_DIRS := lib/System lib/Support utils
+-endif
++#ifeq ($(LLVM_CROSS_COMPILING),1)
++#  BUILD_TARGET_DIRS := lib/System lib/Support utils
++#endif
+ 
+ # llvm-gcc4 doesn't need runtime libs.  llvm-gcc4 is the only supported one.
+ # FIXME: Remove runtime entirely once we have an understanding of where
