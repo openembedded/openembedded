@@ -9,7 +9,7 @@
 TITOOLSDIR ?= "/OE/TI"
 # Path under TITOOLSDIR where dspbios is unpacked
 TIBIOSDIR ?= "bios_5_33_02"
-TIXDCTOOLSDIR ?= "${TITOOLSDIR}/xdctools_3_10_03"
+TIXDCTOOLSDIR ?= "xdctools_3_10_03"
 # Path under TITOOLSDIR where the dsp toolchain is unpacked
 TICGTOOLSDIR ?= "cg6x_6_0_16"
 
@@ -20,7 +20,7 @@ TICGTOOLSDIR ?= "cg6x_6_0_16"
 # export some more variable to point to external TI tools
 # information is duplicated between the js and make based tools
 export CE_INSTALL_DIR=${S}
-export XDC_INSTALL_DIR=${TIXDCTOOLSDIR}
+export XDC_INSTALL_DIR=${TITOOLSDIR}/${TIXDCTOOLSDIR}
 export BIOS_INSTALL_DIR=${TITOOLSDIR}/${TIBIOSDIR}
 # needed for configuro:
 export CGTOOLS_V5T="${CROSS_DIR}"
