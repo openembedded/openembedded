@@ -1,5 +1,6 @@
 require samba.inc
 require samba-basic.inc
+LICENSE = "GPLv3"
 
 # 3.3.0 and newer will upgrade your tdb database to a
 # new version that you can not downgrade to use with older
