@@ -212,6 +212,7 @@ do
                       mythtv \
                       nautilus \
                       navit \
+                      netkit-ftp \
                       netsurf \
                       news \
                       nmap \

@@ -2,8 +2,9 @@ DESCRIPTION = "Evas is the Enlightenment canvas API"
 LICENSE = "MIT BSD"
 # can also depend on valgrind, libsdl-x11, directfb
 DEPENDS = "eina eet freetype jpeg libpng virtual/libx11 libxext libxrender fontconfig libfribidi"
-PV = "0.9.9.060+svnr${SRCREV}"
-PR = "r0"
+PV = "0.9.9.050+svnr${SRCREV}"
+PR = "r1"
+
 
 # disable thumb mode for arm
 ARM_INSTRUCTION_SET = "arm"
@@ -31,23 +32,23 @@ do_install_append() {
 FILES_${PN}-dev += "${libdir}/evas/modules/*/*/*/*.a ${libdir}/evas/modules/*/*/*/*.la"
 FILES_${PN}-dbg += "${libdir}/evas/modules/*/*/*/.debug/"
 
-PACKAGES_DYNAMIC = "evas-engine-* evas-loader-* evas-saver-*"
+PACKAGES_DYNAMIC = "libevas-engine-* libevas-loader-* libevas-saver-*"
 
 RRECOMMENDS_${PN} = "\
-  evas-engine-buffer \
-  evas-engine-fb \
-  evas-engine-software-generic \
-  evas-engine-software-x11 \
-  evas-engine-software-16 \
-  evas-engine-software-16-x11 \
-  evas-engine-xrender-x11 \
+  libevas-engine-buffer \
+  libevas-engine-fb \
+  libevas-engine-software-generic \
+  libevas-engine-software-x11 \
+  libevas-engine-software-16 \
+  libevas-engine-software-16-x11 \
+  libevas-engine-xrender-x11 \
   \
-  evas-loader-png \
-  evas-loader-jpeg \
-  evas-loader-eet \
+  libevas-loader-png \
+  libevas-loader-jpeg \
+  libevas-loader-eet \
 "
 
 # disabling this, since (due to OE bugs) it drags in whole Gtk+
 #RRECOMMENDS_${PN} += "\
-#  evas-loader-svg \
+#  libevas-loader-svg \
 #"

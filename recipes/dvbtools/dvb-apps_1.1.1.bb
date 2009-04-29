@@ -19,6 +19,8 @@ PACKAGES += "evtest evtest-dbg \
              dvb-zap-data"
 
 
+TARGET_CC_ARCH += "${LDFLAGS}"
+
 FILES_${PN} = ""
 FILES_${PN}-dbg = ""
 FILES_${PN}-doc = ""

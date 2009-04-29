@@ -250,20 +250,34 @@ def package_qa_check_rpath(file,name,d, elf):
 
     return sane
 
-def package_qa_check_devdbg(path, name,d, elf):
+def package_qa_check_dev(path, name,d, elf):
     """
-    Check for debug remains inside the binary or
-    non dev packages containing
+    Check for ".so" library symlinks in non-dev packages
     """
 
     import bb, os
     sane = True
+
+    # SDK packages are special.
+    for s in ['sdk', 'canadian-sdk']:
+        if bb.data.inherits_class(s, d):
+            return True
 
     if not "-dev" in name:
         if path[-3:] == ".so" and os.path.islink(path):
             error_msg = "non -dev package contains symlink .so: %s path '%s'" % \
                      (name, package_qa_clean_path(path,d))
             sane = package_qa_handle_error(0, error_msg, name, path, d)
+
+    return sane
+
+def package_qa_check_dbg(path, name,d, elf):
+    """
+    Check for ".debug" files or directories outside of the dbg package
+    """
+
+    import bb, os
+    sane = True
 
     if not "-dbg" in name:
         if '.debug' in path:
@@ -493,9 +507,10 @@ python do_package_qa () {
     if not packages:
         return
 
-    checks = [package_qa_check_rpath, package_qa_check_devdbg,
+    checks = [package_qa_check_rpath, package_qa_check_dev,
               package_qa_check_perm, package_qa_check_arch,
-              package_qa_check_desktop, package_qa_hash_style]
+              package_qa_check_desktop, package_qa_hash_style,
+              package_qa_check_dbg]
     walk_sane = True
     rdepends_sane = True
     for package in packages.split():

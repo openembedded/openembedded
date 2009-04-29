@@ -16,9 +16,9 @@ SRC_URI_beagleboard = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap
 SRCREV_beagleboard = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
 PV_beagleboard = "2009.03+${PR}+gitr${SRCREV}"
 
-SRC_URI_omap3evm = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3;protocol=git" 
-SRCREV_omap3evm = "1e329ec630b31803ee191d2ee335214662b5bfea"
-PV_omap3evm = "2008.10+${PR}+gitr${SRCREV}"
+SRC_URI_omap3evm = "git://gitorious.org/u-boot-omap3/mainline.git;branch=omap3-dev;protocol=git"
+SRCREV_omap3evm = "2dea1db2a3b7c12ed70bbf8ee50755089c5e5170"
+PV_omap3evm = "2009.03+${PR}+gitr${SRCREV}"
 
 SRC_URI_omapzoom = "git://www.sakoman.net/git/u-boot-omap3.git;branch=omap3-dev;protocol=git"
 SRCREV_omapzoom = "d691b424f1f5bf7eea3a4131dfc578d272e8f335"

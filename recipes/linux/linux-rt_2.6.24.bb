@@ -5,9 +5,11 @@ DEFAULT_PREFERENCE = "-1"
 DEFAULT_PREFERENCE_mpc8313e-rdb = "1"
 DEFAULT_PREFERENCE_mpc8315e-rdb = "1"
 
-PR = "r7"
+PR = "r8"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
+           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt27.bz2;patch=1;p=1 \
            file://squashfs-lzma-2.6.24.patch;patch=1 \
            file://powerpc-clockres.patch;patch=1 \
            file://defconfig"
@@ -17,11 +19,9 @@ SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 S = "${WORKDIR}/linux-2.6.24"
 
 SRC_URI_append_mpc8313e-rdb = " \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.7.bz2;patch=1;p=1 \
-           ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/patch-2.6.24.7-rt11.bz2;patch=1;p=1 \
            file://leds-cpu-activity.patch;patch=1 \
            file://leds-cpu-activity-powerpc.patch;patch=1 \
-	file://mpc8313e-rdb-leds.patch;patch=1"
+           file://mpc8313e-rdb-leds.patch;patch=1"
 #	file://mpc831x-nand.patch;patch=1 \
 #	file://mpc8313e-rdb-rtc.patch;patch=1 "
 
@@ -32,11 +32,14 @@ KERNEL_DEVICETREE_mpc8315e-rdb = "arch/${ARCH}/boot/dts/mpc8315erdb_default.dts"
 
 # Patch series taken from MPC8315ERDB_20080627-ltib.iso, available as-is from
 # Freescale's web site. Patches also available at www.bitshrine.org, which I
-# use here. -- Leon Woestenberg
+# use here. -- Leon Woestenberg <leon@sidebranch.com>
 
-SRC_URI_append_mpc8315e-rdb = " \
+SRC_URI_mpc8315e-rdb = " \
+${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.24.tar.bz2 \
 ${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/patch-2.6.24.3.bz2;patch=1;p=1 \
 ${KERNELORG_MIRROR}/pub/linux/kernel/projects/rt/older/patch-2.6.24.3-rt3.bz2;patch=1;p=1 \
+file://squashfs-lzma-2.6.24.patch;patch=1 \
+file://powerpc-clockres.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-platform-support.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-add-all-interrupts.patch;patch=1 \
 http://www.bitshrine.org/gpp/linux-fsl-2.6.24.3-MPC8315ERDB-Realtek-821x-phy.patch;patch=1 \

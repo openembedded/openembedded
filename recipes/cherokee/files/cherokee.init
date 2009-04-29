@@ -12,7 +12,7 @@ test ! -r "$CONFIG" && exit 0
 case "$1" in
   start)
     echo "Starting $DESC: "
-    start-stop-daemon --oknodo -S -x $DAEMON -- -b -C $CONFIG
+    start-stop-daemon --oknodo -S -x $DAEMON -- -d -C $CONFIG
     ;;
 
   stop)

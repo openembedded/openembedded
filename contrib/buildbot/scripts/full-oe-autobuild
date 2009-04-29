@@ -1,9 +1,10 @@
 #!/bin/sh
 
 # Poky Automated Build Server Enviroment Setup Script
+# OpenEmbedded Automated Build Server Environment Setup Script
 #
 # Copyright (C) 2006-2007 OpenedHand Ltd.
-# Adapted to OpenEmbedded by Marcin Juszkiewicz in 2008.
+# Copyright (C) 2008-2009 Marcin Juszkiewicz
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,23 +20,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-CURRDIR=`pwd`
-
-BB_DIR=$PWD/bitbake
-
-PATH=$BB_DIR/bin:$PATH
-
-# Don't export TARGET_ARCH - it *will* cause build failures
-export PATH LD_LIBRARY_PATH
-
-export BBPATH=`pwd`
+export PATH=$PWD/bitbake/bin:$PATH
+export LC_ALL=C
+export BBPATH=$PWD
 export BB_ENV_EXTRAWHITE="MACHINE ANGSTROMLIBC"
 
-CONFFILE="./conf/local.conf"
-
 umask 000
-
-rm conf/auto.conf
 
 CONFFILE="./conf/local.conf"
 
@@ -53,9 +43,7 @@ if [ ! -e "$CONFFILE" ]; then
 	echo 'BBINCLUDELOGS = "1"' >> "$CONFFILE"
 fi
 
-touch ./conf/local.conf
-
-MACHINE=$2 nice ionice -c3 bitbake $1
+nice ionice -c3 bitbake $1
 
 retval=$?
 

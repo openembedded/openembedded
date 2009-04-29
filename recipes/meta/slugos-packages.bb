@@ -63,7 +63,6 @@ SLUGOS_PACKAGES = "\
 	coreutils \
 	cron \
 	cryptsetup \
-	ctrlproxy \
 	cups \
 	curl \
 	cvs \
@@ -250,7 +249,11 @@ SLUGOS_PACKAGES = "\
 	"
 
 # Packages currently broken on all platforms
+# Notes:
+#  ctrlproxy - dependency on tdb.h (part of samba but not packaged/staged).
+#
 SLUGOS_BROKEN_PACKAGES = "\
+	ctrlproxy \
 	ctorrent \
 	cyrus-imapd \
 	cyrus-sasl \
