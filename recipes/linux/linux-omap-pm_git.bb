@@ -76,6 +76,7 @@ SRC_URI_append = " \
            file://dss2/0053-DSS2-disable-LCD-DIGIT-before-resetting-DSS.patch;patch=1 \
            file://dss2/merge-fixups.diff;patch=1 \
            file://overo-cpufreq.diff;patch=1 \
+           file://register-all-OPPs.diff;patch=1 \
 "
 
 

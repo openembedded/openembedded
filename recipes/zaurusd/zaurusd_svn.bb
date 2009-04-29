@@ -4,7 +4,7 @@ LICENSE = "GPL"
 DEPENDS = "tslib"
 RDEPENDS = "procps"
 PV = "0.0+svn${SRCDATE}"
-PR = "r18"
+PR = "r19"
 
 SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
            file://zaurus-hinge.in \
@@ -18,7 +18,8 @@ SRC_URI = "svn://svn.o-hand.com/repos/misc/trunk;module=zaurusd;proto=http \
 	   file://zaurus-hinge.bl-on \
 	   file://zaurus-hinge.bl-off \
 	   file://01-check-toggle-landscape \
-	   file://01-check-toggle-portait"
+	   file://01-check-toggle-portait \
+       file://use-ts-symlink-instead-of-hardcoding.diff;patch=1 "
 
 
 S = "${WORKDIR}/${PN}"

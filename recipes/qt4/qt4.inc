@@ -62,7 +62,7 @@ OTHER_PACKAGES = "\
              ${QT_BASE_NAME}-pixeltool"
 
 PACKAGES += "${LIB_PACKAGES} ${DEV_PACKAGES} ${DBG_PACKAGES} ${OTHER_PACKAGES}"
-PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*"
+PACKAGES_DYNAMIC = "${QT_BASE_NAME}-plugin-*  ${QT_BASE_NAME}-translation-*"
 
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN}     = ""
@@ -103,7 +103,7 @@ do_configure() {
     echo "Examples=${bindir}/${QT_DIR_NAME}/examples" >> $QT_CONF_PATH
     echo "Demos=${bindir}/${QT_DIR_NAME}/demos"   >> $QT_CONF_PATH
 
-    echo yes | ./configure -v \
+    (echo o; echo yes) | ./configure -v \
             -prefix ${prefix} \
             -bindir ${bindir} \
             -libdir ${libdir} \

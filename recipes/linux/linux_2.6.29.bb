@@ -1,6 +1,6 @@
 require linux.inc
 
-PR = "r3"
+PR = "r4"
 
 S = "${WORKDIR}/linux-2.6.29"
 
@@ -13,6 +13,7 @@ DEFAULT_PREFERENCE_vortex86sx = "1"
 DEFAULT_PREFERENCE_atngw100 = "1"
 DEFAULT_PREFERENCE_micro2440 = "1"
 DEFAULT_PREFERENCE_ep93xx = "1"
+DEFAULT_PREFERENCE_cm-x270 = "1"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-2.6.29.tar.bz2 \
            file://defconfig"
@@ -57,3 +58,12 @@ SRC_URI_append_ep93xx = " \
         file://add-edb9301.patch;patch=1 \
 	file://edb9301-fix-machine-id.patch;patch=1 \
 	"
+
+SRC_URI_append_cm-x270 = "\
+	file://0001-xm_x2xx-config-fix-up-CMDLINE.patch;patch=1 \
+	file://0002-cm-x270-nand-change-name-of-device.patch;patch=1 \
+	file://0003-cm-x2xx.c-add-support-for-sharp-VGA-display-panel.patch;patch=1 \
+	"	
+
+CMDLINE_cm-x270 = "console=${CMX270_CONSOLE_SERIAL_PORT},38400 monitor=8 bpp=16 mem=64M mtdparts=physmap-flash.0:256k(boot)ro,0x180000(kernel),0x230000(root),-(config);cm-x270-nand:64m(app),-(data) rdinit=/sbin/init root=mtd4 rootfstype=jffs2"
+

@@ -3,7 +3,7 @@ HOMEPAGE = "http://ltp.sourceforge.net"
 LICENSE = "GPL"
 SECTION = "console/utils"
 DEPENDS = "zip-native"
-PR = "r3"
+PR = "r4"
 
 inherit autotools
 
@@ -12,7 +12,8 @@ SRC_URI = "${SOURCEFORGE_MIRROR}/ltp/ltp-full-${PV}.tgz \
            file://runltp-path.patch;patch=1 \
            file://fix-tcore_patch_test_suites.patch;patch=1 \
            file://no-IDcheck.patch;patch=1 \
-           file://no_hyperthreading_tests.patch;patch=1"
+           file://no_hyperthreading_tests.patch;patch=1 \
+           file://syscalls.patch;patch=1"
 
 SRC_URI_append_mips += "file://no_epoll_create2.patch;patch=1"
 SRC_URI_append_mipsel += "file://no_epoll_create2.patch;patch=1"

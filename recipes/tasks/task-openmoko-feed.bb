@@ -16,12 +16,16 @@ RDEPENDS_task-openmoko-feed = "\
   eet evas ecore embryo epsilon edje efreet emotion epdf \
   exhibit edje-viewer \
   free42-vga \
-  gpe-filemanager gpe-gallery gpe-timesheet gpe-todo \
+  gpe-filemanager gpe-gallery gpe-timesheet gpe-todo gpe-contacts \
+  leafpad abiword \
+  claws-mail claws-plugin-mailmbox claws-plugin-gtkhtml2-viewer claws-plugin-rssyl \
   ipkg-link ipkg-utils \
   joe \
   kbdd \
   kexec-tools \
   midori \
+  dillo \
+  fennec \
   ${@base_conditional('ENTERPRISE_DISTRO', '1', '', 'mplayer', d)} \
   mtpaint \
   mysql \

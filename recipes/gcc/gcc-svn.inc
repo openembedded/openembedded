@@ -15,6 +15,7 @@ PR = "r0"
 FILESPATHPKG .= ":gcc-svn"
 
 SRC_URI = "svn://gcc.gnu.org/svn/gcc;module=trunk \
+	   file://gcc-4.3.1-ARCH_FLAGS_FOR_TARGET.patch;patch=1 \
 	  "
 # Language Overrides
 FORTRAN = ""

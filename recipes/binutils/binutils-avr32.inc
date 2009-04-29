@@ -2,6 +2,7 @@
 # See http://avr32linux.org/twiki/bin/view/Main/BinutilsPatches for
 # more information
 
+DEPENDS += "autoconf-native automake-native"
 
 do_avr32_reconf () {
         if test ${TARGET_ARCH} == avr32; then

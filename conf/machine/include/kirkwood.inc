@@ -11,7 +11,9 @@ USE_DEVFS = "0"
 PREFERRED_PROVIDER_virtual/bootloader = ""
 PREFERRED_PROVIDER_virtual/kernel = "linux-kirkwood"
 
-IMAGE_FSTYPES += "tar.gz"
+MACHINE_KERNEL_PR = "r1"
+
+IMAGE_FSTYPES += "tar.gz ubi"
 SERIAL_CONSOLE = "ttyS0 115200"
 
 # Currently all the orion devices we support use uImage
