@@ -9,7 +9,7 @@ LICENSE = "GPL MIT Artistic"
 # licenses.  The compiled and linked command line utilties are
 # subject to the licenses of the libraries they use too - including
 # libpng libz, IJG, and libtiff licenses
-DEPENDS = "jpeg zlib libpng tiff install-native flex-native"
+DEPENDS = "jpeg zlib libpng tiff flex-native"
 RDEPENDS = "perl\
 	perl-module-cwd\
 	perl-module-english\
