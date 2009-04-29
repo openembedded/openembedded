@@ -120,13 +120,6 @@ PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc-intermediate = "gcc-cross-interme
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}gcc		    = "gcc-cross"
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}g++		    = "gcc-cross"
 
-#Set preferred provider for the C library that is used to build the crosscompiler (NPTL voodoo)
-PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/arm-linux-libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/armeb-linux-libc-for-gcc	    = "glibc"
-PREFERRED_PROVIDER_virtual/arm-linux-gnueabi-libc-for-gcc   = "glibc"
-PREFERRED_PROVIDER_virtual/armeb-linux-gnueabi-libc-for-gcc = "glibc"
-
 # Set the preferred provider for a few toolchain-related items, otherwise
 # these may be selected from the external-toolchain instead.
 PREFERRED_PROVIDER_virtual/${TARGET_PREFIX}binutils	    = "binutils-cross"
