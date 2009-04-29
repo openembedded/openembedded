@@ -10,6 +10,8 @@ PV_dm8000 = "73"
 PV_dm800 = "72"
 PR = "r0"
 
+RDEPENDS_dm8000 = "dreambox-bootlogo (>=5.1-r3)"
+
 SRC_URI = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.bin"
 
 SECONDSTAGE_UPDATE_SRC = "http://sources.dreamboxupdate.com/download/7020/secondstage-${MACHINE}-${PV}.nfi \
