@@ -5,7 +5,7 @@ LICENSE = "GPL"
 DEPENDS = "virtual/libusb0"
 SRCNAME = "librfid"
 
-PV = "0.2.0+svnr${SRCREV}"
+PV = "0.2.0+svnr${SRCPV}"
 PR = "r5"
 
 SRC_URI = "svn://svn.gnumonks.org/trunk;module=${SRCNAME};proto=http \

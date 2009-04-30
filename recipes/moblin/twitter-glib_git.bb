@@ -1,7 +1,8 @@
 HOMEPAGE = "http://live.gnome.org/TwitterGlib"
 SRC_URI = "git://github.com/ebassi/${PN}.git;protocol=git"
-PV = "0.0+git${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 DEPENDS = "glib-2.0 gtk+ json-glib"
 

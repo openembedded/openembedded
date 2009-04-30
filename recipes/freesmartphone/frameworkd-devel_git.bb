@@ -2,8 +2,9 @@ require frameworkd_git.bb
 FILESPATHPKG =. "frameworkd:"
 PROVIDES = "frameworkd"
 RPROVIDES = "frameworkd"
-PV = "0.8.5.x+gitr${SRCREV}"
+PV = "0.8.5.x+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
 

@@ -14,7 +14,7 @@ SRC_URI = "svn://opencvlibrary.svn.sourceforge.net/svnroot/opencvlibrary/trunk;m
            file://acinclude.m4"
 
 SRCREV = "1820"
-PV = "1.0.0+svnr${SRCREV}"
+PV = "1.0.0+svnr${SRCPV}"
 
 S = "${WORKDIR}/opencv"
 

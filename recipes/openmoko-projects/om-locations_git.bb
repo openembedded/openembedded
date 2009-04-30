@@ -4,8 +4,9 @@ SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "eet evas edje ecore edbus etk"
 RDEPENDS_${PN} = "diversity-daemon"
-PV = "0.2+gitr${SRCREV}"
-PR = "r1.03"
+PV = "0.2+gitr${SRCPV}"
+PR = "r0"
+PE = "1"
 
 SRC_URI = "git://git.openmoko.org/git/om-locations.git;protocol=git"
 

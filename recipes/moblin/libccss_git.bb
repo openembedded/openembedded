@@ -1,6 +1,7 @@
 SRC_URI = "git://anongit.freedesktop.org/git/ccss.git;protocol=git"
-PV = "0.0+git${SRCREV}"
+PV = "0.0+git${SRCPV}"
 PR = "r0"
+PE = "1"
 
 DEPENDS = "glib-2.0 cairo librsvg libsoup-2.4"
 

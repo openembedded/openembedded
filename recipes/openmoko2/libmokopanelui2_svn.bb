@@ -1,6 +1,6 @@
 SECTION = "openmoko/libs"
 DEPENDS = "gtk+ matchbox-panel-2"
-PV = "0.3.0+svnr${SRCREV}"
+PV = "0.3.0+svnr${SRCPV}"
 PR = "r0"
 
 inherit openmoko2

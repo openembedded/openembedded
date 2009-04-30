@@ -4,7 +4,7 @@ LICENSE = "LGPL"
 SECTION = "libs/multimedia"
 DEPENDS = "virtual/libsdl"
 PROVIDES = "smpeg"
-PV = "0.4.5+svnr${SRCREV}"
+PV = "0.4.5+svnr${SRCPV}"
 PE = "1"
 SRCREV = "370"
 

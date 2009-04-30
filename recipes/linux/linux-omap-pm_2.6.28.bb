@@ -7,8 +7,9 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 
 SRCREV = "fe30e75b8c0b91b259fcea781b859e594ba21ae9"
 
-PV = "2.6.28-pm3+gitr${SRCREV}"
+PV = "2.6.28-pm3+gitr${SRCPV}"
 PR = "r7"
+PE = "1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git;protocol=git;branch=pm-2.6.28 \
 	   file://defconfig"

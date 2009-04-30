@@ -9,7 +9,8 @@ DEFAULT_PREFERENCE = "-1"
 
 SRCREV = "7c5cb7862d32cb344be7831d466535d5255e35ac"
 
-PV = "2.6.30+2.6.31rc1-pm1+gitr${SRCREV}"
+PV = "2.6.30+2.6.31rc1-pm1+gitr${SRCPV}"
+PE = "1"
 
 FILESPATHPKG_prepend = "linux-omap-pm-2.6.31:"
 

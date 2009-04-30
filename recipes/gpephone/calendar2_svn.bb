@@ -2,7 +2,7 @@ DESCRIPTION = "Calendar application for GPE Phone Edition"
 LICENSE     = "LiPS"
 SECTION = "gpe"
 PRIORITY    = "optional"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr-${SRCPV}"
 PR          = "r1"
 
 DEPENDS = "gtk+ libgpewidget libgpephone libgemwidget dbus-glib libcalenabler2 libiac"

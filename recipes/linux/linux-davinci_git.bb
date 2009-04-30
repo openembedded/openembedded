@@ -10,7 +10,8 @@ DEFAULT_PREFERENCE = "1"
 SRCREV = "5bbb6571043c7e3a1d73b874334037a64d10612f"
 
 # The main PR is now using MACHINE_KERNEL_PR, for davinci see conf/machine/include/davinci.inc
-PV = "2.6.30-${PR}+gitr${SRCREV}"
+PV = "2.6.30+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git;protocol=git;branch=staging/vpfe \
            file://defconfig"

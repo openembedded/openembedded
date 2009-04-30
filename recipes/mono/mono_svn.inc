@@ -7,7 +7,7 @@ SRC_URI = "svn://anonsvn.mono-project.com/source/trunk/;module=mcs;rev=${SRCREV}
 	svn://anonsvn.mono-project.com/source/trunk/;module=mono;rev=${SRCREV};name=mono "
 SRCREV_FORMAT = "rmono"
 
-PV = "1.2.5.1+svnr${SRCREV}"
+PV = "1.2.5.1+svnr${SRCPV}"
 S = "${WORKDIR}/mono"
 
 inherit autotools

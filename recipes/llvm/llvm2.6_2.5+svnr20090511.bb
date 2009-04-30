@@ -2,7 +2,7 @@ require llvm.inc
 
 SRCREV = "71428"
 
-PV = "2.5+svnr${SRCREV}"
+PV = "2.5+svnr${SRCPV}"
 
 PR = "r0"
 

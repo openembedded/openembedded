@@ -6,7 +6,7 @@ DEPENDS = "virtual/libsdl xsp libmad zlib libpng jpeg liba52 freetype fontconfig
 
 DEFAULT_PREFERENCE_avr32 = "-1"
 
-PV = "0.0+1.0rc1+svnr${SRCREV}"
+PV = "0.0+1.0rc1+svnr${SRCPV}"
 PE = "1"
 
 RCONFLICTS_${PN} = "mplayer"

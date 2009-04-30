@@ -2,7 +2,7 @@ DESCRIPTION = "An Elementary based Alarm app"
 LICENSE = "GPL"
 DEPENDS = "elementary"
 SECTION = "x11"
-PV = "0.0.0+svnr${SRCREV}"
+PV = "0.0.0+svnr${SRCPV}"
 PR = "r1"
 
 inherit e

@@ -1,6 +1,7 @@
 require connman.inc
-PV = "0.12+gitr${SRCREV}"
+PV = "0.12+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
 

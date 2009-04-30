@@ -3,7 +3,7 @@ HOMEPAGE = "http://www.coreboot.org/Flashrom"
 LICENSE = "GPL"
 DEPENDS = "zlib pciutils"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = " \

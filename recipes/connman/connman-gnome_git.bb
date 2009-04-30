@@ -6,8 +6,8 @@ DEPENDS = "gtk+ dbus"
 
 RRECOMMENDS_${PN} = "connman connman-plugin-ethernet connman-plugin-loopback connman-plugin-udhcp connman-plugin-wifi"
 
-PV = "0.5+git"
-PR_append = ".gitr${SRCREV}"
+PV = "0.5+gitr${SRCPV}"
+PE = "1"
 
 DEFAULT_PREFERENCE = "-1"
 

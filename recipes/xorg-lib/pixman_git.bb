@@ -3,9 +3,9 @@ PRIORITY = "optional"
 DESCRIPTION = "Low-level pixel manipulation library."
 LICENSE = "X11"
 
-PV = "0.15.16"
+PV = "0.15.16+gitr${SRCPV}"
 PR = "r1"
-PR_append = "+gitr${SRCREV}"
+PE = "1"
 
 SRCREV = "f9660ce29ed072c6cbaec711c5d18b9f0ba113ae"
 

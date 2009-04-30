@@ -8,7 +8,7 @@
 #
 UCLIBC_BASE ?= "0.9.29"
 PR = "r5"
-PV = "${UCLIBC_BASE}+svnr${SRCREV}"
+PV = "${UCLIBC_BASE}+svnr${SRCPV}"
 
 require uclibc.inc
 

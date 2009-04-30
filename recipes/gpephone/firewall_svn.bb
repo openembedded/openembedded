@@ -3,7 +3,7 @@ DESCRIPTION = "Cellphone firewall tool"
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r0"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr-${SRCPV}"
 
 DEFAULT_PREFERENCE = "-1"
 

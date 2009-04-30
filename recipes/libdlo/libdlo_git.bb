@@ -2,8 +2,8 @@ DESCRIPTION = "Library for controlling displaylink based usb devices"
 LICENSE = "LGPLv2"
 
 SRCREV = "d50f082699787c3c6531df431b35c9ad52a82667"
-PV = "0.1.0"
-PR_append = "+gitr${SRCREV}"
+PV = "0.1.0+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://anongit.freedesktop.org/libdlo;protocol=git"
 S = "${WORKDIR}/git"

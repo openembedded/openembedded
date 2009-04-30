@@ -12,9 +12,9 @@ SRC_URI = "git://git.gnome.org/gnome-bluetooth;protocol=git \
 S = "${WORKDIR}/git"
 
 SRCREV = "59efa1c06153cd5bdaff64f7efca791c11c77f2f"
-PV = "2.27.8"
+PV = "2.27.8+gitr${SRCPV}"
 PR = "r0"
-PR_append = "+gitr${SRCREV}"
+PE = "1"
 
 DEPENDS = "geoclue obexd gconf-dbus gtk+ dbus-glib libunique libnotify hal bluez4 gnome-keyring"
 RRECOMMENDS_${PN} += "obexd"

@@ -4,7 +4,7 @@ require contacts.inc
 #RDEPENDS += "gnome-vfs-plugin-file"
 #RRECOMMENDS += "gnome-vfs-plugin-http"
 
-PV = "0.8+svnr${SRCREV}"
+PV = "0.8+svnr${SRCPV}"
 
 DEFAULT_PREFERENCE = "-1"
 

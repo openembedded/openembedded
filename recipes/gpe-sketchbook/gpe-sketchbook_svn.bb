@@ -3,7 +3,7 @@ SECTION = "gpe"
 PRIORITY = "optional"
 LICENSE = "GPL"
 DEPENDS = "libgpewidget sqlite"
-PV = "0.2.9+svnr${SRCREV}"
+PV = "0.2.9+svnr${SRCPV}"
 
 DEFAULT_PREFERENCE = "-1"
 

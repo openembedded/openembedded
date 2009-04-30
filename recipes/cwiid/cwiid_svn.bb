@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 HOMEPAGE = "http://abstrakraft.org/cwiid/"
 
 SRCREV = "192"
-PV = "0.6.00+svnr${SRCREV}"
+PV = "0.6.00+svnr${SRCPV}"
 
 inherit autotools
 inherit distutils-base

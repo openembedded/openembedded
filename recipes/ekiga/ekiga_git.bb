@@ -4,8 +4,10 @@ LICENSE = "GPLv2"
 ARM_INSTRUCTION_SET = "arm"
 
 DEFAULT_PREFERENCE = "-1"
-PV = "3.2.0+git"
-PR = "r0+gitr${SRCREV}"
+PV = "3.2.0+gitr${SRCPV}"
+PR = "r0"
+PE = "1"
+
 SRCREV = "c7f3abd149ccca669bb13e2a02b0d46076301f7d"
 
 inherit gnome

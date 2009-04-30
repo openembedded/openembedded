@@ -4,8 +4,9 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 SECTION = "console/network"
 DEPENDS = "dbus dbus-glib readline libfsotransport"
 LICENSE = "GPL"
-PV = "0.0.0.0+gitr${SRCREV}"
+PV = "0.0.0.0+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/fso-term.git;protocol=git;branch=master \

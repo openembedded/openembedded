@@ -12,7 +12,7 @@ file://codec_combo_directory_fix.patch;patch=1 \
 
 # Again, no '.' in PWD allowed :(
 PR = "r24"
-PV = "svnr${SRCREV}"
+PV = "svnr${SRCPV}"
 
 S = "${WORKDIR}/gstreamer_ti/ti_build/ticodecplugin"
 

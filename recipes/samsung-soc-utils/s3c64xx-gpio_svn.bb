@@ -2,7 +2,7 @@ DESCRIPTION = "A user-space tool to show and modify the state of GPIOs on the S3
 SECTION = "console/utils"
 AUTHOR = "Werner Almesberger <werner@openmoko.org>"
 LICENSE = "GPL"
-PV = "1.0+svnr${SRCREV}"
+PV = "1.0+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/trunk/src/target;module=gpio;proto=http"

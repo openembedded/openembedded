@@ -2,7 +2,7 @@ DESCRIPTION = "Legacy Om calendar application."
 SECTION = "openmoko/pim"
 DEPENDS = "libmokoui2 libmokojournal2 gtk+ libglade eds-dbus libjana"
 RDEPENDS = "libedata-cal"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svnr${SRCPV}"
 PR = "r3"
 
 inherit openmoko2 pkgconfig

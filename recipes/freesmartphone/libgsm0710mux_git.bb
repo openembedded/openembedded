@@ -4,8 +4,9 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 LICENSE = "GPL"
 SECTION = "devel"
 DEPENDS = "libgsm0710 vala-native glib-2.0 libfsotransport"
-PV = "0.3.4+gitr${SRCREV}"
+PV = "0.3.4+gitr${SRCPV}"
 PR = "r1"
+PE = "1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/libgsm0710mux;protocol=git;branch=master \

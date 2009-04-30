@@ -1,5 +1,5 @@
 LICENSE = "MIT"
-PV = "0.0.3+svnr${SRCREV}"
+PV = "0.0.3+svnr${SRCPV}"
 
 require e-module.inc
 

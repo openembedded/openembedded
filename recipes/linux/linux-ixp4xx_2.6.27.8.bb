@@ -7,9 +7,9 @@ VANILLA_VERSION = "2.6.27"
 KERNEL_RELEASE = "2.6.27.8"
 
 # If you use a rc, you will need to use this:
-#PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCREV}"
+#PV = "${VANILLA_VERSION}+${KERNEL_RELEASE}+svnr${SRCPV}"
 
-PV = "${KERNEL_RELEASE}+svnr${SRCREV}"
+PV = "${KERNEL_RELEASE}+svnr${SRCPV}"
 PR = "r2"
 
 SRC_URI = "${KERNELORG_MIRROR}/pub/linux/kernel/v2.6/linux-${VANILLA_VERSION}.tar.bz2 \

@@ -3,7 +3,7 @@ DESCRIPTION = "A cellphone application launcher."
 SECTION = "gpe"
 PRIORITY    = "optional"
 PR          = "r1"
-PV          = "0.11+svnr-${SRCREV}"
+PV          = "0.11+svnr-${SRCPV}"
 
 SRC_URI_OVERRIDES_PACKAGE_ARCH = "0"
 DEFAULT_PREFERENCE = "-1"

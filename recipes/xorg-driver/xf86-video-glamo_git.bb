@@ -1,7 +1,7 @@
 require xorg-driver-video.inc
 SRC_URI = "git://git.openmoko.org/git/xf86-video-glamo;protocol=git;branch=master"
-PV = "0.1+gitr${SRCREV}"
-PE = "1"
+PV = "0.1+gitr${SRCPV}"
+PE = "2"
 
 DESCRIPTION = "X.Org X server -- fbdev display driver"
 

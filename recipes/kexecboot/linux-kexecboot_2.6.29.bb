@@ -5,7 +5,8 @@ COMPATIBLE_MACHINE = "omap5912osk|omap1710h3|omap2430sdp|omap2420h4|beagleboard|
 SRCREV = "58cf2f1425abfd3a449f9fe985e48be2d2555022"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PR_append = "+gitr${SRCREV}"
+PV = "2.6.29+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap-2.6.git;protocol=git \
 	   file://defconfig"

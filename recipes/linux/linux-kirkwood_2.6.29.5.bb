@@ -6,9 +6,8 @@ COMPATIBLE_MACHINE = "sheevaplug"
 require linux.inc
 
 # Change MACHINE_KERNEL_PR in conf/machine/include/kirkwood.inc
-PV = "2.6.29.5"
-PR_append = "+gitr${SRCREV}"
-#PV = "2.6.28+2.6.29rc7-${PR}+gitr${SRCREV}"
+PV = "2.6.29.5+gitr${SRCPV}"
+PE = "1"
 
 SRCREV = "70deca35020a5dc3bd3c228bd46852cab77a7f6b"
 SRC_URI = "git://git.marvell.com/orion.git;protocol=git;branch=stable-2.6.29 \

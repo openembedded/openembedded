@@ -2,8 +2,8 @@ DESCRIPTION = "OpenGL ES quake3 port to the omap3-pandora"
 LICENSE = "GPL"
 
 SRCREV = "39d08bf6e81f7cdc29380858dfe671b0722332a3"
-PR_append = "+gitr${SRCREV}"
-PV = "0.0"
+PV = "0.0+gitr${SRCPV}"
+PE = "1"
 
 DEPENDS = "virtual/libsdl libgles-omap3"
 

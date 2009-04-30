@@ -5,7 +5,7 @@ DEPENDS += "schroedinger libgsm"
 SRCREV = "16396"
 
 PE = "1"
-PV = "0.4.9+svnr${SRCREV}"
+PV = "0.4.9+svnr${SRCPV}"
 PR = "r2"
 
 DEFAULT_PREFERENCE = "-1"

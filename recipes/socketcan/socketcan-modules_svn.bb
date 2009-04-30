@@ -3,7 +3,7 @@ HOMEPAGE = "http://developer.berlios.de/projects/socketcan/"
 SECTION = "kernel/modules"
 LICENSE = "GPL"
 DEPENDS = "virtual/kernel"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 
 SRC_URI = "svn://svn.berlios.de/socketcan;module=trunk;proto=svn"

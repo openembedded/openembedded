@@ -2,7 +2,7 @@ LICENSE = "GPL"
 
 inherit qt4x11 cmake mime
 
-PV = "4.1+svnr${SRCREV}"
+PV = "4.1+svnr${SRCPV}"
 SRCREV = "856719"
 SRC_URI = "svn://anonsvn.kde.org/home/kde/branches/KDE/4.1;module=${PN};proto=svn"
 

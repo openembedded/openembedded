@@ -3,8 +3,8 @@ HOMEPAGE = "http://assassin.projects.openmoko.org/"
 LICENSE = "GPL"
 DEPENDS = "dbus (>= 1.1.1) glib-2.0 e-wm packagekit etk edbus eet"
 RDEPENDS = "etk-theme-ninja"
-PV = "0.2+svnr${SRCREV}"
-PR = "r6.04"
+PV = "0.2+svnr${SRCPV}"
+PR = "r7"
 
 SRC_URI = "svn://om-assassin.googlecode.com/svn/;module=trunk;proto=http"
 

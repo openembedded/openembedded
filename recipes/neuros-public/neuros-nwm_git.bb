@@ -1,8 +1,9 @@
 DESCRIPTION = "Neuros window manager"
 LICENSE = "GPL"
 
-PV = "0.0+${PR}+gitr${SRCREV}"
+PV = "0.0+gitr${SRCPV}"
 PR = "r7"
+PE = "1"
 
 inherit qt4e update-rc.d
 

@@ -2,7 +2,7 @@ DESCRIPTION = "Receive a forwarded serial from serial-forward and provide a PTY"
 AUTHOR = "Holger 'Zecke' Freyther"
 LICENSE = "GPL"
 SECTION = "console/network"
-PV = "1.0.0+svnr${SRCREV}""
+PV = "1.0.0+svnr${SRCPV}""
 PR = "r0"
 
 SRC_URI = "svn://svn.openmoko.org/developers/zecke/;module=serial_forward;proto=http"

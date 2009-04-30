@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "curl dbus eet evas edje ecore edbus emotion"
 DEPENDS += "libmusicbrainz lightmediascanner libxml2 taglib"
 SECTION = "x11/multimedia"
-PV = "0.2.0+svnr${SRCREV}"
+PV = "0.2.0+svnr${SRCPV}"
 PR = "r1"
 
 inherit e

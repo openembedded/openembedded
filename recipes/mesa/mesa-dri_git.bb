@@ -5,7 +5,7 @@ LIB_DEPS = "libdrm virtual/libx11 libxext libxxf86vm libxdamage libxfixes"
 
 DEPENDS = "${PROTO_DEPS}  ${LIB_DEPS}"
 
-PV = "7.2+gitr${SRCREV}"
+PV = "7.2+gitr${SRCPV}"
 PR = "r1"
 PE = "1"
 

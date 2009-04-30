@@ -11,6 +11,6 @@ SRC_URI = "svn://gforge.ti.com/svn/dmai/branches;module=BRIJESH_GIT_031809;proto
 
 S = "${WORKDIR}/BRIJESH_GIT_031809/davinci_multimedia_application_interface"
 # Yes, the xdc stuff still breaks with a '.' in PWD
-PV = "svnr${SRCREV}"
+PV = "svnr${SRCRpV}"
 PR = "r27"
 

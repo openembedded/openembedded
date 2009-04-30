@@ -1,5 +1,6 @@
-PV = "0.5"
-PR = "r3+gitr${SRCREV}"
+PV = "0.5+gitr${SRCPV}"
+PR = "r3"
+PE = "1"
 
 SRC_URI = "git://git.linuxtogo.org/home/groups/kexecboot/kexecboot.git;protocol=git;branch=cfgfiles "
 SRCREV = "0d4d33d85baa6251de3b1e20bd7bd464f11c5097"

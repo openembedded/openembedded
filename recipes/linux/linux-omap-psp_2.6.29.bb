@@ -8,7 +8,8 @@ COMPATIBLE_MACHINE = "omap3evm"
 SRCREV = "9abb6eb717acbca192ab251a056e3a66b2b47884"
 
 # The main PR is now using MACHINE_KERNEL_PR, for omap3 see conf/machine/include/omap3.inc
-PR_append = "+gitr${SRCREV}"
+PV = "2.6.29+gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "git://arago-project.org/git/people/sriram/ti-psp-omap.git;protocol=git;branch=int_030000_build3 \
 	   file://defconfig"

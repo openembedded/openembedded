@@ -4,8 +4,8 @@ SECTION = "openmoko/applications"
 LICENSE = "GPL"
 DEPENDS = "python-evas python-edje python-ecore python-edbus python-dbus python-etk"
 RDEPENDS_${PN} = "diversity-daemon"
-PV = "0.0.4+svnr${SRCREV}"
-PR = "r0.01"
+PV = "0.0.4+svnr${SRCPV}"
+PR = "r1"
 
 SRC_URI = "svn://svn.projects.openmoko.org/svnroot/diversity/toys;module=diversity-radar;proto=http"
 

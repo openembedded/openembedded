@@ -1,7 +1,7 @@
 DESCRIPTION = "Free and Open On-Chip Debugging, In-System Programming and Boundary-Scan Testing"
 HOMEPAGE = "http://openocd.berlios.de/"
 LICENSE = "GPL"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r3"
 
 inherit autotools

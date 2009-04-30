@@ -4,7 +4,7 @@ AUTHOR = "Valério Valério"
 LICENSE = "GPL"
 SECTION = "console/network"
 DEPENDS = "edje-native"
-PV = "0.3.2+svnr${SRCREV}"
+PV = "0.3.2+svnr${SRCPV}"
 PE = "1"
 
 SRC_URI = "svn://remoko.googlecode.com/svn/trunk;module=BT_HID_UI;proto=http"

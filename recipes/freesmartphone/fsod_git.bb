@@ -6,8 +6,9 @@ DEPENDS = "dbus dbus-glib libnl vala-native"
 # for pygobject-codegen
 DEPENDS += "python-pygtk"
 LICENSE = "LGPL"
-PV = "0.1+gitr${SRCREV}"
+PV = "0.1+gitr${SRCPV}"
 PR = "r1"
+PE = "1"
 
 inherit autotools pkgconfig update-rc.d distutils-base
 

@@ -5,7 +5,7 @@ SECTION = "x11/utils"
 PROVIDES = "gconf"
 RPROVIDES_${PN} = "gconf"
 RPROVIDES_${PN}-dev = "gconf-dev"
-PV = "2.16.0+svnr${SRCREV}"
+PV = "2.16.0+svnr${SRCPV}"
 PR = "r0"
 
 inherit autotools pkgconfig

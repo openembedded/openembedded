@@ -3,7 +3,7 @@ SECTION = "gpephone"
 PRIORITY = "optional"
 LICENSE = "LiPS"
 DEPENDS = "gtk+ ptim-headers"
-PV = "0.1+svnr-${SRCREV}"
+PV = "0.1+svnr-${SRCPV}"
 PR = "r1"
 
 DEFAULT_PREFERENCE = "-1"

@@ -1,6 +1,6 @@
 DESCRIPTION = "Common files for the Openmoko framework"
 SECTION = "openmoko/base"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svnr${SRCPV}"
 PR = "r0"
 
 inherit openmoko2

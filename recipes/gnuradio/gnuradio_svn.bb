@@ -4,7 +4,7 @@ DEFAULT_PREFERENCE = "-1"
 
 DEPENDS += " gsl "
 
-PV = "3.2.1+svnr${SRCREV}"
+PV = "3.2.1+svnr${SRCPV}"
 PR = "${INC_PR}.1"
 
 EXTRA_OECONF += "--with-boost=${STAGING_DIR_TARGET}/usr CXXFLAGS=-DBOOST_SP_USE_PTHREADS --disable--usrp2"

@@ -4,9 +4,8 @@ HOMEPAGE = "http://www.freedesktop.org/wiki/Software/GeoClue"
 DEPENDS = "libgpsmgr libgpsbt gtk+ gypsy libxml2 gconf-dbus libsoup dbus-glib"
 
 SRCREV = "3a31d260074397a968afaf1065856ab763befb01"
-PV = "0.11.1"
-PR_append = "+gitr${SRCREV}"
-PE = "1"
+PV = "0.11.1+gitr${SRCPV}"
+PE = "2"
 
 inherit gnome autotools_stage
 

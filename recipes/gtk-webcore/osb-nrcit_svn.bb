@@ -4,7 +4,7 @@ LICENSE = "nokia"
 PRIORITY = "optional"
 SECTION = "gpe"
 
-PV = "0.5.2+svnr${SRCREV}"
+PV = "0.5.2+svnr${SRCPV}"
 PR = "r1"
 
 DEPENDS = "curl librsvg osb-nrcore pango"

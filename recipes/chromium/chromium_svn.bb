@@ -3,7 +3,7 @@ LICENSE = "BSD"
 
 DEPENDS = "perl-native python-native flex-native gperf-native"
 
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 
 SRCREV = "17935"
 SRC_URI = "svn://src.chromium.org/svn/trunk/;module=src;proto=http"

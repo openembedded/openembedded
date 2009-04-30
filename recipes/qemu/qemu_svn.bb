@@ -1,6 +1,6 @@
 LICENSE = "GPL"
 DEPENDS = "zlib"
-PV = "0.9.1+svnr${SRCREV}"
+PV = "0.9.1+svnr${SRCPV}"
 PR = "r15"
 
 FILESPATH = "${FILE_DIRNAME}/qemu-0.9.1+svn/"

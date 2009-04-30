@@ -3,7 +3,7 @@ DESCRIPTION = "LiPS message backend library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 dbus-glib librecord2 liblipsevent2 telepathy-mission-control libgsmd-lips"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr-${SRCPV}"
 PR          = "r2"
 
 DEFAULT_PREFERENCE = "-1"

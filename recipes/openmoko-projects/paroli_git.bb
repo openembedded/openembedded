@@ -1,8 +1,9 @@
 DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
-PV = "0.2+gitr${SRCREV}"
+PV = "0.2+gitr${SRCPV}"
 PR = "r0"
+PE = "1"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"

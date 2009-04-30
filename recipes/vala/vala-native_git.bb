@@ -4,7 +4,8 @@ inherit native
 DEPENDS = "glib-2.0-native"
 # vala from git always needs the latest released version to compile itself
 DEPENDS += "vala-bootstrap-native"
-PV = "0.6.0-fso1-gitr${SRCREV}"
+PV = "0.6.0-fso1-gitr${SRCPV}"
+PE = "1"
 
 SRC_URI = "\
   ${FREESMARTPHONE_GIT}/vala-lang;protocol=git;branch=mickey/0.6/posix \

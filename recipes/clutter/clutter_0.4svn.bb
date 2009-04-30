@@ -1,6 +1,6 @@
 require clutter.inc
 
-PV = "0.4.0+svnr${SRCREV}"
+PV = "0.4.0+svnr${SRCPV}"
 
 SRC_URI = "svn://svn.o-hand.com/repos/clutter/branches;module=clutter-0-4;proto=http \
 	   file://enable_tests-0.4.patch;patch=1 "

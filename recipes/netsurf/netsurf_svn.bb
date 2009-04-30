@@ -3,7 +3,7 @@ web standards in use today."
 HOMEPAGE = "http://www.netsurf-browser.org/"
 SECTION = "x11/network"
 LICENSE = "GPLv2"
-PV = "1.1+svnr${SRCREV}"
+PV = "1.1+svnr${SRCPV}"
 PR = "r0"
 
 SRC_URI = "svn://svn.netsurf-browser.org/trunk;module=netsurf \

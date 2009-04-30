@@ -3,7 +3,7 @@ SECTION = "gpe/libs"
 PRIORITY = "required"
 LICENSE = "LiPS"
 DEPENDS = "glib-2.0 gconf-dbus"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr-${SRCPV}"
 
 DEFAULT_PREFERENCE = "-1"
 

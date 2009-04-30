@@ -2,7 +2,7 @@ DESCRIPTION = "An EFL base at/alarm wakeup daemon"
 LICENSE = "LGPL"
 DEPENDS = "ecore edbus"
 SECTION = "console"
-PV = "0.0.0+svnr${SRCREV}"
+PV = "0.0.0+svnr${SRCPV}"
 PR = "r1"
 
 inherit efl

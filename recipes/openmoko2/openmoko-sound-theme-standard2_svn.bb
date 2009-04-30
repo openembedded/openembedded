@@ -2,7 +2,7 @@ DESCRIPTION = "Standard sound theme for the Openmoko framework"
 SECTION = "openmoko/base"
 RREPLACES = "openmoko-sound-theme-standard"
 RPROVIDES = "openmoko-sound-theme-standard"
-PV = "0.1+svnr${SRCREV}"
+PV = "0.1+svnr${SRCPV}"
 PR = "r3"
 
 inherit openmoko2 autotools

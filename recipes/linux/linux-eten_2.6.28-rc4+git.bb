@@ -9,8 +9,9 @@ KERNEL_RELEASE = "2.6.28-rc4"
 KERNEL_VERSION = "${KERNEL_RELEASE}"
 
 # See http://wiki.openembedded.net/index.php/Versioning_Policy
-PV = "2.6.27+${KERNEL_RELEASE}+${PR}+gitr${SRCREV}"
+PV = "2.6.27+${KERNEL_RELEASE}+gitr${SRCPV}"
 PR = "r2"
+PE = "1"
 
 SRC_URI = "\
   git://git.openezx.org/gnufiish.git;protocol=git;branch=master \

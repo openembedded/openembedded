@@ -2,7 +2,7 @@ DESCRIPTION = "An Elementary based SMS app"
 LICENSE = "GPL"
 DEPENDS = "ecore edbus elementary libefso"
 SECTION = "x11"
-PV = "0.0.0+svnr${SRCREV}"
+PV = "0.0.0+svnr${SRCPV}"
 PR = "r1"
 
 inherit e

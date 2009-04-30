@@ -3,7 +3,7 @@ AUTHOR = "Michael 'Mickey' Lauer <mlauer@vanille-media.de>"
 HOMEPAGE = "http://www.vanille-media.de/site/index.php/projects/efl/"
 LICENSE = "LGPL"
 DEPENDS = "evas ecore edje emotion esmart etk ewl libsigc++-2.0"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svnr${SRCPV}"
 PR = "r1" 
 
 inherit efl

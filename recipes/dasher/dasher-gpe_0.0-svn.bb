@@ -1,5 +1,5 @@
 LICENSE="GPL"
-PV = "0.0+svnr${SRCREV}"
+PV = "0.0+svnr${SRCPV}"
 PR = "r1"
 DEPENDS = "libxsettings-client libglade libxtst gconf gtk+"
 SECTION = "gpe"

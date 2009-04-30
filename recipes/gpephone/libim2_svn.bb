@@ -3,7 +3,7 @@ DESCRIPTION = "LiPS instant messenger library."
 SECTION = "gpe/libs"
 PRIORITY    = "optional"
 DEPENDS     = "glib-2.0 librecord2 libabenabler2 liblipsevent2 telepathy-glib telepathy-mission-control"
-PV = "0.0+svnr-${SRCREV}"
+PV = "0.0+svnr-${SRCPV}"
 PR          = "r1"
 
 inherit gpephone pkgconfig autotools

@@ -2,9 +2,9 @@ require clutter.inc
 
 SRCREV = "fdaaa8b6d701d2b43fd2750de1b018b5af5577ea"
 
-PV = "0.9.4"
+PV = "0.9.4+gitr${SRCPV}"
 PR = "r0"
-PR_append = "+git${SRCREV}"
+PE = "1"
 
 SRC_URI = "git://git.clutter-project.org/clutter.git;protocol=git \
            file://enable_tests.patch;patch=1 "

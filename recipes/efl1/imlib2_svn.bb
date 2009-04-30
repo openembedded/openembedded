@@ -3,7 +3,7 @@ LICENSE = "BSD"
 # can also depend on tiff34, ungif or gif, z, bz2, id3tag
 DEPENDS = "freetype libpng jpeg virtual/libx11 libxext"
 PROVIDES = "virtual/imlib2"
-PV = "1.4.2.001+svnr${SRCREV}"
+PV = "1.4.2.001+svnr${SRCPV}"
 PR = "r0"
 
 inherit efl

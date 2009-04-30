@@ -2,7 +2,7 @@ DESCRIPTION = "Om application for playing media files."
 SECTION = "openmoko/tools"
 DEPENDS = "libmokoui2 expat gstreamer libspiff curl"
 RDEPENDS = "gst-meta-audio gconf gst-plugin-alsa"
-PV = "0.1.0+svnr${SRCREV}"
+PV = "0.1.0+svnr${SRCPV}"
 PR = "r6"
 
 inherit openmoko2

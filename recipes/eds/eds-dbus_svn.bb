@@ -3,7 +3,7 @@ HOMEPAGE = "http://projects.o-hand.com/eds"
 LICENSE = "LGPL"
 DEPENDS = "intltool-native libglade glib-2.0 gtk+ gconf dbus db gnome-common virtual/libiconv zlib intltool"
 
-PV = "1.4.0+svnr${SRCREV}"
+PV = "1.4.0+svnr${SRCPV}"
 PR = "r7"
 
 SRC_URI = "svn://svn.o-hand.com/repos/${PN};module=trunk;proto=http \

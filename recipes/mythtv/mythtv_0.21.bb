@@ -2,7 +2,10 @@ require mythtv.inc
 
 inherit qmake qt3x11
 
-PR = "${SRCREV}+r5"
+PV = "0.21+svnr${SRCPV}"
+PR = "r0"
+PE = "1"
+
 REALPV = "0.21"
 
 SRCREV = "20763"
