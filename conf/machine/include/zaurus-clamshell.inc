@@ -1,11 +1,5 @@
 include conf/machine/include/tune-xscale.inc
 
-UBOOT_ENTRYPOINT_c7x0 = "0xA0008000"
-UBOOT_ENTRYPOINT_akita = "0xA1000000"
-UBOOT_ENTRYPOINT_spitz = "0xA1000000"
-
-UBOOT_LOADADDRESS = "${UBOOT_ENTRYPOINT}"
-
 EXTRA_IMAGEDEPENDS += "sharp-flash-header-c700"
 KEXECBOOT_IMAGEDEPENDS += "sharp-flash-header-c700"
 

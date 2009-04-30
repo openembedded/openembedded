@@ -1,5 +1,10 @@
 /dev/mtdblock6	/ 		jffs2	rw,noatime	1  1
 proc		/proc		proc	defaults	0  0
+tmpfs		/var/volatile	tmpfs	defaults	0  0
+tmpfs		/dev/shm	tmpfs	mode=0777	0  0
+tmpfs		/media/ram	tmpfs	defaults	0  0
 
 # microSD slot
 /dev/mmcblk0p1	/media/card	auto	defaults,async	0  0
+# stock fstab - you probably want to override this with a machine specific one
+

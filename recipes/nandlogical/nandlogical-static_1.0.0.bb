@@ -1,5 +1,7 @@
+PR = "r2"
+
 require nandlogical_${PV}.bb
 
 do_compile () {
-	${CC} -o nandlogical ${WORKDIR}/nandlogical.c -static
+	${CC} nandlogical.c -o nandlogical ${CFLAGS} ${LDFLAGS}
 }
