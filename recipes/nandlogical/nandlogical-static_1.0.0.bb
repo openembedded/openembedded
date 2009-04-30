@@ -1,5 +1,3 @@
-PR = "r2"
-
 require nandlogical_${PV}.bb
 
 do_compile () {
