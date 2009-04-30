@@ -4,7 +4,6 @@ DESCRIPTION = "A console utility to make a beep noise"
 SECTION = "console/utils"
 LICENSE = "GPL"
 PR = "r2"
-DEPENDS = "install-native"
 
 SRC_URI  = "http://johnath.com/beep/beep-${PV}.tar.gz"
 SRC_URI += "file://linux-input.patch;patch=1"
