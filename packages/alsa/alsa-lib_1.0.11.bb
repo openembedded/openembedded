@@ -11,6 +11,7 @@ PR = "r1"
 ARM_INSTRUCTION_SET = "arm"
 
 SRC_URI = "ftp://ftp.alsa-project.org/pub/lib/alsa-lib-${PV}.tar.bz2"
+SRC_URI_append_opendreambox = " file://asound.conf"
 
 inherit autotools pkgconfig
 
@@ -25,10 +26,16 @@ do_stage() {
 	install -m 0644 utils/alsa.m4 ${STAGING_DATADIR}/aclocal/
 }
 
+do_install_append_opendreambox() {
+        install -d ${D}${sysconfdir}
+        install -m 0644 ${WORKDIR}/asound.conf ${D}${sysconfdir}/asound.conf
+}
+
 PACKAGES =+ "alsa-server libasound alsa-conf alsa-doc alsa-dev"
 PACKAGES_DYNAMIC = "libasound*"
 FILES_${PN}-dbg += "${libdir}/alsa-lib/*/.debu*"
 FILES_libasound = "${libdir}/libasound.so*"
 FILES_alsa-server = "${bindir}"
 FILES_alsa-conf = "${datadir}"
+FILES_alsa-conf_opendreambox += "${datadir} ${sysconfdir}/asound.conf"
 FILES_alsa-dev = "${libdir}/pkgconfig/ /usr/include/"
