@@ -114,7 +114,7 @@
     </varlistentry>
 
     <varlistentry>
-      <term>PACKAGE_ARCH</term>
+      <term>PACKAGE_ARCHS</term>
 
       <listitem>
         <para>Defines the list of architectures that are support by the target
