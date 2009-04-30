@@ -27,7 +27,7 @@ EXTRA_OECONF = "\
   --disable-doxygen-docs \
   --with-xml=expat \
   --with-x \
-  --with-dbus-default-reply-timeout=60000 \
+  --with-dbus-default-reply-timeout=200000 \
 "
 
 do_install_append() {
