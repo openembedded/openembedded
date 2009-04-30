@@ -71,8 +71,8 @@ gcc:
 
 Index: gcc-4.3.2/configure.ac
 ===================================================================
---- gcc-4.3.2.orig/configure.ac	2008-02-01 19:29:30.000000000 -0800
-+++ gcc-4.3.2/configure.ac	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/configure.ac	2009-04-29 18:00:53.648110617 -0700
++++ gcc-4.3.2/configure.ac	2009-04-29 18:01:03.136108885 -0700
 @@ -1667,6 +1667,38 @@
    [DEBUG_PREFIX_CFLAGS_FOR_TARGET=])
  AC_SUBST(DEBUG_PREFIX_CFLAGS_FOR_TARGET)
@@ -114,8 +114,8 @@ Index: gcc-4.3.2/configure.ac
  if test x"${with_headers}" != x && test x"${with_headers}" != xno ; then
 Index: gcc-4.3.2/Makefile.def
 ===================================================================
---- gcc-4.3.2.orig/Makefile.def	2007-10-23 08:53:18.000000000 -0700
-+++ gcc-4.3.2/Makefile.def	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/Makefile.def	2009-04-29 18:00:53.644110402 -0700
++++ gcc-4.3.2/Makefile.def	2009-04-29 18:01:03.136108885 -0700
 @@ -214,6 +214,7 @@
  flags_to_pass = { flag= INSTALL_DATA ; };
  flags_to_pass = { flag= INSTALL_PROGRAM ; };
@@ -186,8 +186,8 @@ Index: gcc-4.3.2/Makefile.def
 +	stage_libcflags='$(STAGE3_LIBCFLAGS) -fprofile-use' ; };
 Index: gcc-4.3.2/Makefile.tpl
 ===================================================================
---- gcc-4.3.2.orig/Makefile.tpl	2008-08-28 18:05:25.000000000 -0700
-+++ gcc-4.3.2/Makefile.tpl	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/Makefile.tpl	2009-04-29 18:00:53.632110629 -0700
++++ gcc-4.3.2/Makefile.tpl	2009-04-29 18:01:44.964117849 -0700
 @@ -23,6 +23,14 @@
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  #
@@ -288,7 +288,7 @@ Index: gcc-4.3.2/Makefile.tpl
 +
  LIBCFLAGS_FOR_TARGET = $(CFLAGS_FOR_TARGET)
  LIBCXXFLAGS_FOR_TARGET = $(CXXFLAGS_FOR_TARGET) -fno-implicit-templates
--LDFLAGS_FOR_TARGET = @LDFLAGS@ 
+-LDFLAGS_FOR_TARGET = 
 -PICFLAG_FOR_TARGET = 
 +LDFLAGS_FOR_TARGET = @LDFLAGS@
  
@@ -439,8 +439,8 @@ Index: gcc-4.3.2/Makefile.tpl
  # ------------------------------
 Index: gcc-4.3.2/config/mh-ppc-darwin
 ===================================================================
---- gcc-4.3.2.orig/config/mh-ppc-darwin	2007-05-23 07:26:31.000000000 -0700
-+++ gcc-4.3.2/config/mh-ppc-darwin	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/config/mh-ppc-darwin	2009-04-29 18:00:53.672107979 -0700
++++ gcc-4.3.2/config/mh-ppc-darwin	2009-04-29 18:01:03.144109485 -0700
 @@ -2,5 +2,4 @@
  # position-independent-code -- the usual default on Darwin. This fix speeds
  # compiles by 3-5%.
@@ -450,8 +450,8 @@ Index: gcc-4.3.2/config/mh-ppc-darwin
 +BOOT_CFLAGS=-g -O2 -mdynamic-no-pic
 Index: gcc-4.3.2/gcc/doc/install.texi
 ===================================================================
---- gcc-4.3.2.orig/gcc/doc/install.texi	2008-06-18 22:59:30.000000000 -0700
-+++ gcc-4.3.2/gcc/doc/install.texi	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/gcc/doc/install.texi	2009-04-29 18:00:53.580105141 -0700
++++ gcc-4.3.2/gcc/doc/install.texi	2009-04-29 18:01:03.148108524 -0700
 @@ -1778,33 +1778,35 @@
  stage2 of the 3-stage bootstrap of the compiler are deleted as
  soon as they are no longer needed.
@@ -526,8 +526,8 @@ Index: gcc-4.3.2/gcc/doc/install.texi
  fixed name to be used for the assembler input file, instead of a
 Index: gcc-4.3.2/Makefile.in
 ===================================================================
---- gcc-4.3.2.orig/Makefile.in	2008-08-28 18:05:25.000000000 -0700
-+++ gcc-4.3.2/Makefile.in	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/Makefile.in	2009-04-29 18:00:53.624110396 -0700
++++ gcc-4.3.2/Makefile.in	2009-04-29 18:02:01.101111195 -0700
 @@ -20,6 +20,14 @@
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  #
@@ -628,7 +628,7 @@ Index: gcc-4.3.2/Makefile.in
 +
  LIBCFLAGS_FOR_TARGET = $(CFLAGS_FOR_TARGET)
  LIBCXXFLAGS_FOR_TARGET = $(CXXFLAGS_FOR_TARGET) -fno-implicit-templates
--LDFLAGS_FOR_TARGET = @LDFLAGS@ 
+-LDFLAGS_FOR_TARGET = 
 -PICFLAG_FOR_TARGET = 
 +LDFLAGS_FOR_TARGET = @LDFLAGS@
  
@@ -5673,8 +5673,8 @@ Index: gcc-4.3.2/Makefile.in
  # ------------------------------
 Index: gcc-4.3.2/configure
 ===================================================================
---- gcc-4.3.2.orig/configure	2008-02-01 19:29:30.000000000 -0800
-+++ gcc-4.3.2/configure	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/configure	2009-04-29 18:00:53.636109494 -0700
++++ gcc-4.3.2/configure	2009-04-29 18:01:03.196106813 -0700
 @@ -272,7 +272,7 @@
  PACKAGE_BUGREPORT=
  
@@ -5734,8 +5734,8 @@ Index: gcc-4.3.2/configure
  s,@build_tooldir@,$build_tooldir,;t t
 Index: gcc-4.3.2/libiberty/Makefile.in
 ===================================================================
---- gcc-4.3.2.orig/libiberty/Makefile.in	2007-07-24 23:26:45.000000000 -0700
-+++ gcc-4.3.2/libiberty/Makefile.in	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/libiberty/Makefile.in	2009-04-29 18:00:53.604104991 -0700
++++ gcc-4.3.2/libiberty/Makefile.in	2009-04-29 18:01:03.200107313 -0700
 @@ -60,7 +60,7 @@
  MAKEINFO = @MAKEINFO@
  PERL = @PERL@
@@ -6348,8 +6348,8 @@ Index: gcc-4.3.2/libiberty/Makefile.in
  	  $(COMPILE.c) $(PICFLAG) $(srcdir)/xstrndup.c -o pic/$@; \
 Index: gcc-4.3.2/libiberty/configure
 ===================================================================
---- gcc-4.3.2.orig/libiberty/configure	2007-07-17 10:52:28.000000000 -0700
-+++ gcc-4.3.2/libiberty/configure	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/libiberty/configure	2009-04-29 18:00:53.612111269 -0700
++++ gcc-4.3.2/libiberty/configure	2009-04-29 18:01:03.204108038 -0700
 @@ -309,7 +309,7 @@
  # include <unistd.h>
  #endif"
@@ -6435,8 +6435,8 @@ Index: gcc-4.3.2/libiberty/configure
  s,@CHECK@,$CHECK,;t t
 Index: gcc-4.3.2/libiberty/configure.ac
 ===================================================================
---- gcc-4.3.2.orig/libiberty/configure.ac	2007-07-17 10:52:28.000000000 -0700
-+++ gcc-4.3.2/libiberty/configure.ac	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/libiberty/configure.ac	2009-04-29 18:00:53.620111089 -0700
++++ gcc-4.3.2/libiberty/configure.ac	2009-04-29 18:01:03.212108977 -0700
 @@ -187,9 +187,7 @@
  esac
  
@@ -6505,8 +6505,8 @@ Index: gcc-4.3.2/libiberty/configure.ac
  if [[ "${shared}" = "yes" ]]; then
 Index: gcc-4.3.2/gcc/Makefile.in
 ===================================================================
---- gcc-4.3.2.orig/gcc/Makefile.in	2008-08-28 18:05:19.000000000 -0700
-+++ gcc-4.3.2/gcc/Makefile.in	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/gcc/Makefile.in	2009-04-29 18:00:53.584104780 -0700
++++ gcc-4.3.2/gcc/Makefile.in	2009-04-29 18:01:03.216107994 -0700
 @@ -672,7 +672,7 @@
  BUILD_CFLAGS= @BUILD_CFLAGS@ -DGENERATOR_FILE
  
@@ -6518,8 +6518,8 @@ Index: gcc-4.3.2/gcc/Makefile.in
  # Actual name to use when installing a native compiler.
 Index: gcc-4.3.2/gcc/configure
 ===================================================================
---- gcc-4.3.2.orig/gcc/configure	2008-08-28 18:05:26.000000000 -0700
-+++ gcc-4.3.2/gcc/configure	2008-08-28 18:19:35.000000000 -0700
+--- gcc-4.3.2.orig/gcc/configure	2009-04-29 18:00:53.592104930 -0700
++++ gcc-4.3.2/gcc/configure	2009-04-29 18:01:03.240118619 -0700
 @@ -458,7 +458,7 @@
  # include <unistd.h>
  #endif"
@@ -6663,8 +6663,8 @@ Index: gcc-4.3.2/gcc/configure
  s,@collect2@,$collect2,;t t
 Index: gcc-4.3.2/gcc/configure.ac
 ===================================================================
---- gcc-4.3.2.orig/gcc/configure.ac	2008-08-28 18:05:26.000000000 -0700
-+++ gcc-4.3.2/gcc/configure.ac	2008-08-28 18:18:37.000000000 -0700
+--- gcc-4.3.2.orig/gcc/configure.ac	2009-04-29 18:00:53.596105081 -0700
++++ gcc-4.3.2/gcc/configure.ac	2009-04-29 18:01:03.252118542 -0700
 @@ -1480,6 +1480,7 @@
  	esac
  	saved_CFLAGS="${CFLAGS}"
