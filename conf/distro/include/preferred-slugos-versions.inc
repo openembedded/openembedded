@@ -71,9 +71,3 @@ PREFERRED_VERSION_libusb			?= "0.0.0"
 
 # boost 1.36 won't build
 PREFERRED_VERSION_boost				?= "1.33.1"
-
-# We don't really care which openssl and openssl-native we get, but
-# the DEFAULT_PREFERENCE set in the recipes is such that if we don't
-# specify explicitly, we may get mismatched versions.
-PREFERRED_VERSION_openssl			?= "0.9.8j"
-PREFERRED_VERSION_openssl-native		?= "0.9.8j"
