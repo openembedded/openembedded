@@ -4,11 +4,8 @@ LICENSE = "GPL+LGPL"
 DEPENDS = "dbus-glib gconf libnotify gtk+"
 RRECOMMENDS = "gnome-icon-theme"
 
-PR = "r4"
-
-SRC_URI = "http://bluez.sourceforge.net/download/${P}.tar.gz"
+SRC_URI = "http://www.kernel.org/pub/linux/bluetooth/${P}.tar.gz"
 
 inherit autotools pkgconfig gconf mime
 
 FILES_${PN} += "${datadir}/gconf ${datadir}/icons ${datadir}/mime/packages"
-
