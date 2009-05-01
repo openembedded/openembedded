@@ -5,7 +5,7 @@
  
  install-program: all
 -	install -Ds $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
-+	install -D -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
++	install -D $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/$(PACKAGE)
  
  clean:
  	rm -f $(PACKAGE).o $(PACKAGE) $(DEPS)
