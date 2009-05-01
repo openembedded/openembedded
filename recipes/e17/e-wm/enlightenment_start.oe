@@ -1,8 +1,11 @@
 #!/bin/sh
 
 E_PROFILE=""
-if [ -r /etc/enlightenment/default_profile ]; then
+if [ -r /etc/enlightenment/default_profile ] && [ ! -e ~/.e ]; then
   . /etc/enlightenment/default_profile
+  echo "Enlightenment : using system default"
+else
+  echo "Enlightenment : using user default"
 fi
 
 renice -10 -p $$
