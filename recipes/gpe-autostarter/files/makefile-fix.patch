@@ -1,0 +1,11 @@
+--- /tmp/Makefile.old	2006-08-23 15:08:36.000000000 +0200
++++ gpe-autostarter-0.12/Makefile	2009-05-01 22:32:50.000000000 +0200
+@@ -28,7 +28,7 @@
+ 
+ install-program: all
+ 	install -d $(DESTDIR)$(PREFIX)/bin
+-	install -s $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/
++	install $(PACKAGE) $(DESTDIR)$(PREFIX)/bin/
+ 	install -d $(DESTDIR)/etc/X11/Xsession.d
+ 	install $(PACKAGE).xsession $(DESTDIR)/etc/X11/Xsession.d/50$(PACKAGE)
+ 

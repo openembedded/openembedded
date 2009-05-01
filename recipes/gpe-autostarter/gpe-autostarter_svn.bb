@@ -8,6 +8,8 @@ inherit gpe
 SRC_URI = "${GPE_SVN} \
            file://svn-build.patch;patch=1"
 
+SRC_URI += "file://makefile-fix.patch;patch=1"
+
 S = "${WORKDIR}/${PN}"
 
 export CVSBUILD="no"
