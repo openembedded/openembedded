@@ -195,7 +195,6 @@ OE_vars = [
     'UBOOT_MACHINE',
     'UCLIBC_BASE',
     'UCLIBC_PATCHES',
-    'UNSLUNG_PACKAGES',
     'VIRTUAL_NAME',
     'XORG_PN',
     'XSERVER',
