@@ -14,6 +14,7 @@ APPS_INSTALL = ""
 ZHONE_INSTALL = "\
   paroli \
   paroli-theme \
+  paroli-sounds \
   paroli-autostart \
   task-fso-compliance \
 "
