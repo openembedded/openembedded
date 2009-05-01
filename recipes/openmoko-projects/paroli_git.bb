@@ -2,7 +2,7 @@ DESCRIPTION = "Paroli"
 SECTION = "x11"
 LICENSE = "GPL"
 PV = "0.2.1+gitr${SRCREV}"
-PR = "r13"
+PR = "r14"
 
 SRC_URI = "git://git.paroli-project.org/paroli.git;protocol=http"
 S = "${WORKDIR}/git"
@@ -21,13 +21,13 @@ RDEPENDS = "\
   task-fso-compliance \
 "
 
-#E_CONFIG_DIR="/home/root/.e/e"
 E_CONFIG_DIR="/usr/share/enlightenment/data"
 
 do_install_append() {
        	# install paroli theme
+       	install -d ${D}${E_CONFIG_DIR}/themes
+       	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/themes/
        	install -d ${D}${E_CONFIG_DIR}/config/paroli
-       	install ${S}/data/e-config/paroli.edj ${D}${E_CONFIG_DIR}/config/
        	install ${S}/data/e-config/paroli/* ${D}${E_CONFIG_DIR}/config/paroli/
        	install -d ${D}${E_CONFIG_DIR}/themes
 	#install ${S}/data/illume.edj ${D}${E_CONFIG_DIR}/themes
@@ -93,6 +93,13 @@ if [ ! -e ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml 
     mv ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/old_default.yaml
 fi;
 cp ${sysconfdir}/freesmartphone/opreferences/conf/phone/paroli_default.yaml ${sysconfdir}/freesmartphone/opreferences/conf/phone/default.yaml
+exit 0
+}
+
+pkg_postinst_${PN}-theme() {
+#!/bin/sh
+# post installation script
+echo 'E_PROFILE="-profile paroli"' > ${sysconfdir}/enlightenment/default_profile
 exit 0
 }
 
