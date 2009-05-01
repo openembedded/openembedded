@@ -1,8 +1,0 @@
---- nslu2-linksys-ramdisk-2.3r25/etc/rc~	2004-11-21 21:43:35.000000000 +1030
-+++ nslu2-linksys-ramdisk-2.3r25/etc/rc	2004-11-21 21:49:54.000000000 +1030
-@@ -6,2 +6,5 @@
- mount -t proc proc /proc
- mount -o remount,rw /dev/root /
-+
-+sed -n -e '/^#/p' < /etc/fstab > /etc/mtab
-+
