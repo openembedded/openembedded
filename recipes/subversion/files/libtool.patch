@@ -1,0 +1,12 @@
+Index: subversion-1.4.5/configure.in
+===================================================================
+--- subversion-1.4.5.orig/configure.in	2007-01-01 14:41:51.000000000 +0000
++++ subversion-1.4.5/configure.in	2009-04-30 21:19:12.000000000 +0000
+@@ -11,6 +11,7 @@
+ 
+ AC_CONFIG_SRCDIR(subversion/include/svn_types.h)
+ AC_CONFIG_AUX_DIR([build])
++AC_CONFIG_MACRO_DIR([build/ac-macros])
+ 
+ AC_MSG_NOTICE([Configuring Subversion ]AC_PACKAGE_VERSION)
+ 

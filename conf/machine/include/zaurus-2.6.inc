@@ -22,6 +22,8 @@ PREFERRED_PROVIDER_virtual/xserver_c7x0 = "xserver-kdrive-imageon"
 
 PCMCIA_MANAGER ?= "pcmciautils"
 
+IMAGE_FSTYPES += "jffs2"
+
 MACHINE_FEATURES = "kernel26 apm alsa pcmcia irda usbgadget keyboard touchscreen screen vfat ext2"
 MACHINE_FEATURES_append_tosa  = " usbhost wifi "
 MACHINE_FEATURES_append_akita = " usbhost "

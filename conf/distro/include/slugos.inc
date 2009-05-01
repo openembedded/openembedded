@@ -81,7 +81,7 @@ FEED_URIS_append += "native##http://ipkg.nslu2-linux.org/feeds/${IMAGE_BASENAME}
 # to enable/disable debugging in the distro.  Here noirqdebug is used to
 # remove the messages about unhandled interrupts - people debugging interrupt
 # issues in the kernel need to cancel this (set CMDLINE_DEBUG empty in local.conf)
-CMDLINE_ROOT  = "root=/dev/mtdblock4 rootfstype=jffs2 rw init=/linuxrc"
+CMDLINE_ROOT  = "root=/dev/mtdblock4 rootfstype=jffs2 rootflags=noatime rw init=/linuxrc"
 CMDLINE_DEBUG = "noirqdebug"
 
 # EXTRA PACKAGES
