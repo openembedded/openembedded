@@ -5,11 +5,12 @@
 
 DESCRIPTION = "SlugOS Extended image"
 
-PR = "r1"
+PR = "r2"
 
 require slugos-image.inc
 
 IMAGE_NAME = "${IMAGE_BASENAME}-extd-${DISTRO_VERSION}"
+IMAGE_LINK_NAME = "${IMAGE_BASENAME}-extd-${MACHINE}"
 DEPENDS += "task-slugos-extd"
 IMAGE_INSTALL += "task-slugos-extd"
 
