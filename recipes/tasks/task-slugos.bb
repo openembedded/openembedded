@@ -6,7 +6,7 @@
 DESCRIPTION = "Task packages for the SlugOS distribution"
 HOMEPAGE = "http://www.nslu2-linux.org"
 LICENSE = "MIT"
-PR = "r22.3"
+PR = "r23"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 COMPATIBLE_MACHINE = "(nslu2|ixp4xx|sheevaplug)"
 ALLOW_EMPTY = "1"
@@ -21,6 +21,8 @@ ALLOW_EMPTY = "1"
 # the standard set of software for the 8-MByte NSLU2 device.
 SLUGOS_STANDARD_RDEPENDS = ""
 SLUGOS_STANDARD_RRECOMMENDS = ""
+SLUGOS_MACHINE_RDEPENDS = ""
+SLUGOS_MACHINE_RRECOMMENDS = ""
 
 # The full cpio (non-busybox) is required for turnup and sysconfig.
 SLUGOS_STANDARD_RRECOMMENDS += "\
@@ -72,19 +74,24 @@ kernel-module-ohci-hcd \
 kernel-module-uhci-hcd \
 "
 
-# Add modules required for Network support
-# Note - this needs to be made machine-specific.
-SLUGOS_STANDARD_RRECOMMENDS += "\
-kernel-module-mii \
-kernel-module-ixp4xx-mac \
-kernel-module-ixp4xx-qmgr \
-"
-
 # Add packages and modules required for RAID-1 support
 SLUGOS_STANDARD_RRECOMMENDS += "\
 mdadm \
 kernel-module-md-mod \
 kernel-module-raid1 \
+"
+
+# Add the machine-specific RRECOMMENDS stuff -- kernel modules required for
+# network support.
+SLUGOS_MACHINE_RRECOMMENDS_nslu2 = "\
+kernel-module-mii \
+kernel-module-ixp4xx-mac \
+kernel-module-ixp4xx-qmgr \
+"
+
+# Add machine-specific RDEPENDS stuff - packages such as the NPE firmware
+SLUGOS_MACHINE_RDEPENDS_nslu2 = "\
+ixp4xx-npe \
 "
 
 DISTRO_EXTRA_DEPENDS ?= ""
@@ -117,7 +124,7 @@ DISTRO_EXTRA_RDEPENDS ?= ""
 ## SlugOS 5.4 - util-linux-mount reinstated due to busybox bugs - MJW
 
 RDEPENDS += "\
-	kernel ixp4xx-npe \
+	kernel \
 	base-files base-passwd netbase \
         busybox initscripts-slugos slugos-init \
         update-modules sysvinit udev \
@@ -127,10 +134,12 @@ RDEPENDS += "\
 	beep \
 	util-linux-mount \
 	${SLUGOS_STANDARD_RDEPENDS} \
+	${SLUGOS_MACHINE_RDEPENDS} \
 	${DISTRO_EXTRA_RDEPENDS}"
 
 DISTRO_EXTRA_RRECOMMENDS ?= ""
 RRECOMMENDS += "\
 	openssh \
 	${SLUGOS_STANDARD_RRECOMMENDS} \
+        ${SLUGOS_MACHINE_RRECOMMENDS} \
 	${DISTRO_EXTRA_RRECOMMENDS}"
