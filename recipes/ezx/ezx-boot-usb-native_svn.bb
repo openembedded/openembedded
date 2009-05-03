@@ -4,8 +4,12 @@ SECTION = "devel"
 AUTHOR = "Team OpenEZX <openezx-devel@lists.openezx.org>"
 LICENSE = "GPL"
 PV = "0.3.0+svnr${SRCREV}"
+PR = "r1"
 
-SRC_URI = "svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http" 
+SRC_URI = "\
+  svn://svn.openezx.org/trunk/src/host;module=boot_usb;proto=http \
+  file://add-missing-include.patch;patch=1 \
+"
 S = "${WORKDIR}/boot_usb"
 
 EXTRA_OECONF := '--with-kernel-dir="${STAGING_DIR}/${MACHINE_ARCH}${TARGET_VENDOR}-${TARGET_OS}/kernel"'
