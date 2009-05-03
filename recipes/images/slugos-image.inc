@@ -20,6 +20,6 @@ IMAGE_LINGUAS = ""
 # kernel image is removed from the root file system to recover the space used -
 # SlugOS is assumed to boot from a separate kernel image in flash (not in the
 # root file system), if this is not the case the following must not be done!
-IMAGE_PREPROCESS_COMMAND += "rm ${IMAGE_ROOTFS}/boot/zImage*;"
+IMAGE_PREPROCESS_COMMAND += "rm -f ${IMAGE_ROOTFS}/boot/?Image*;"
 
 inherit image
